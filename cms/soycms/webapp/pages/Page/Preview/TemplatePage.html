@@ -1,0 +1,59 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+
+<body>
+
+<form id="main_form" soy:id="template_form">
+			
+<div style="margin-left:10px;">
+	
+	<h3 soy:id="title">テンプレート</h3>
+	
+	<div>
+		<div id="template_toolbox" style="margin:10px 0;">
+			<button type="button" onclick="showPreview();">プレビュ</button>
+			<button type="button" onclick="common_to_layer(editorLink+'/InsertLink');">リンク挿入</button>
+			<button type="button" onclick="common_to_layer(editorLink+'/FileUpload');">画像を挿入</button>
+			<!-- <button type="button" onclick="showHelp();" id="helpbutton">ヘルプ表示</button> -->
+			<button type="button" onclick="toggle_editor();">エディタの切り替え</button>
+			<input type="submit" name="template_save_button" value="保存" />
+			<button type="button" onclick="if(confirm('閉じてもよいですか？'))common_close_layer(window.parent);">閉じる</button>
+		</div>
+		
+		<div id="template_wrapper" style="position:relative;border:solid 1px #666666;width:100%;">
+			<div id="template_editor_wrapper">
+				<textarea soy:id="template" id="template_content" wrap="off" style="width:100%;height:500px;border:none;margin:0;padding:0;line-height:12px;font-size:12px;"></textarea>
+				<iframe id="template_editor_frame" soy:id="template_editor" style="display:none;height:400px;" frameborder="0"></iframe>
+			</div>
+		</div>
+		
+		<input type="hidden" soy:id="is_blog" />
+		
+		
+	</div>
+</div>
+
+<div id="css_editarea" style="display:none;width:100%;height:100%;">
+	<div id="css_selector">
+		<select id="css_list" name="css_list" onchange="onSelectCSS(this.value);">
+			<option value="none">このページで使われているCSS一覧</option>
+		</select>
+		<input type="button" value="CSSを保存" onclick="saveCSS();" style="margin:0.5em 0;">
+	</div>
+	<div style="width:170px;float:left;overflow:auto;text-align:left;background-color:gray;height:100%;">
+		<div id="cssMenu" ></div>
+		<br style="clear:both;" />
+	</div>
+	<div style="float:left;height:100%;">
+		<textarea id="css_editor" name="css_editor" wrap="off" style="width:100%;margin:0;border:none;padding:0;padding-left:5px;line-height:12px;font-size:12px;"></textarea>
+	</div>
+	<input type="hidden" soy:id="filepath" name="filePath">
+	<span soy:id="filePath"></span>
+</div>
+
+</form soy:id="template_form">
+
+</body>
+</html>

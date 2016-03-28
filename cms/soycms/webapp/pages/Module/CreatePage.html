@@ -1,0 +1,44 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+	<div><div id="toolbox" class="span-24 last" soy:page="_common.ToolBoxPage"></div></div>
+
+	<!-- content start -->
+	<div id="content" class="span-24 last">
+		
+		<div class="span-16 last">
+			<h2><a soy:link="Module">モジュール一覧</a> &gt; モジュールの作成</h2>
+		</div>			
+		
+		<form soy:id="form">
+			<div class="prepend-1 span-22 last">
+				<div class="section_top">
+					<p class="sub">モジュールID&nbsp;ドット区切りの半角英数字（例：parts.sample）</p>
+					<input type="text" soy:id="module_id">
+					<p class="sub">モジュール名</p>
+					<input type="text" soy:id="module_name">
+					
+				</div>
+				
+				<div id="buttons" style="margin:20px 0 0 10px;height:10%;">
+					<input id="update_button" soy:id="update_button" type="submit" value="更新" />
+				</div>
+			</div>
+		</form>
+
+		
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		<!-- content end -->
+	</div>
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

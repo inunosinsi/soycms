@@ -1,0 +1,217 @@
+<head>
+<script type="text/JavaScript" src="../prototype.js"></script>
+<script type="text/JavaScript">
+/*
+RichTextEditor Class
+require prototype.js
+*/
+
+var RichTextEditor = Class.create();
+RichTextEditor.prototype = {
+	
+	id : null,	//TextArea ID
+	menu : [],	//Menu
+	viewMode : true,	//viewMode true = wysiwyg mode
+	width : 640,
+	height : 480,
+	callback : null,
+	
+	initialize: function(id, callback){
+		this.id = id;
+		this.callback = callback;
+		
+		var toolbarList = [
+			//1st line
+			[ 
+				{id : "TextStyle" },
+				{id : "Bold" ,			label : "<b>太</b>", 	labelImage: "", title : "選択範囲を太字にします。",callback : this.execCommand},
+				{id : "italic",			label : "<i>斜</i>", 	labelImage: "", title : "選択範囲を斜体にします。",callback : this.execCommand},
+				{id : "underline",		label : "<u>下線</u>", labelImage: "", title : "選択範囲に下線をつけます。",callback : this.execCommand},
+				{id : "strikethrough",	label : "<s>打消</s>", labelImage: "", title : "選択範囲に取消し線をつけます。",callback : this.execCommand},
+				{id : "separator"																},
+				{id : "forecolor",		label : "色", labelImage: "", title : "文字色を選択します。",callback : this.execCommand},
+				{id : "backcolor",		label : "背景色",labelImage: "", title : "背景色を選択します。",callback : this.execCommand},
+				{id : "undo",			label : "←",labelImage: "", title : "戻す",callback : this.execCommand},
+				{id : "redo",			label : "→",labelImage: "", title : "やりなおし",callback : this.execCommand},
+			
+			],
+			//2nd line
+			[
+				{id : "insertImage" },
+				{id : "toggle",			label : "見",labelImage: "", title : "切り替え"},
+			],
+			//3rd line
+			[
+				{id : "CSSStyle" }
+			]
+		];
+		
+		//add default menu
+		for(var i in toolbarList){
+			for(var j in toolbarList[i]){
+				var menu = toolbarList[i][j];
+				
+				if(!menu.id)continue;
+				
+				//見出し選択
+				if(menu.id == "TextStyle"){
+					menu.label = "<select><option>aaa</option></select>";
+					//menu.label = this.generateTextStylePullDown();
+					//continue;
+				}
+				
+				if(menu.id == "separator"){
+					this.addMenu(menu.id);
+				}else{
+					this.addMenu(this.id + menu.id,menu,i);
+				}
+			}			
+		}
+	},
+	
+	addMenu : function(id,config,depth){
+		if(!depth){
+			depth = 0;
+		}
+		
+		if(!this.menu[depth]){
+			this.menu[depth] = new Array();
+		}
+		
+		if(id == "separator"){
+			var icon = document.createTextNode("|");
+			this.menu[depth].push(icon);		
+			return;
+		}
+
+		var icon = document.createElement("span");
+		
+		icon.id = id;
+		icon.config = config;
+		icon.editor = this;
+		icon.setAttribute("title",config.title);
+
+		icon.className = "RichTextEditor_button";
+		icon.onmouseover = function(e){
+			this.className = "buttonOver";
+		}
+		icon.onmouseout = function(e){
+			this.className = "RichTextEditor_button";
+		}
+		
+		//callbackが設定されていたならば
+		if(config.callback != undefined){
+			icon.onclick = function(){this.config.callback(id,this.editor)};
+		}
+		
+		//ラベルが無ければIDを付与
+		if(config.labelImage){
+			icon.innerHTML = '<img src="'+config.labelImage;+'">';
+		}else if(config.label && (typeof(config.label) == "string")){
+			icon.innerHTML = config.label;
+		}else if(config.label && (typeof(config.label) != "string")){
+			icon.appendChild(config.label);
+		}else{
+			icon.appendChild(document.createTextNode(config.id));
+		}
+
+		this.menu[depth].push(icon);
+	},
+	
+	render : function(){
+		
+		//Hide the textarea
+		$(this.id).style.display = "none";
+		
+		//initialize ids
+		var wrapper_id = this.id + "_wrapper";
+		var wysiwyg_id = this.id + "_wysiwyg";
+		
+		
+		//build wrapper html
+		var wrapper = document.createElement("div");
+		wrapper.setAttribute("id",wrapper_id);
+		wrapper.innerHTML = '<iframe src="blank.html" frameborder="1" name="'+wysiwyg_id+'" id="'+wysiwyg_id + '"></iframe>';
+		
+		$(this.id).parentNode.appendChild(wrapper);
+		wrapper.appendChild($(this.id));
+		
+		
+		//build menu html
+		for(var i=0;i<this.menu.length;i++){
+			
+			var toolbar = document.createElement("div");
+			toolbar.setAttribute("id",this.id + "_toolbar_" + i);
+			toolbar.className = "RichTextEditor_toolbar";
+			toolbar.style.width= "100%";
+			
+			for(var j=0;j<this.menu[i].length;j++){
+				toolbar.appendChild(this.menu[i][j]);			
+			}
+			
+			wrapper.insertBefore(toolbar,$(wysiwyg_id));
+		}
+				
+		
+		var content = $(this.id).value;
+		var callback = this.callback;
+		var frame = $(wysiwyg_id);
+		frame.onreadystatechange = frame.onload = function(){
+			if(this.readyState == "complete" || !document.all || is_opera){
+				var doc = frame.contentWindow.document;
+	  	
+			  	doc.body.innerHTML = content;
+					  	
+			  	doc.body.contentEditable = true;
+				doc.designMode = "on";
+					
+				doc.close();
+					
+				if(callback){
+					callback();
+				}
+				//frame.onreadystatechange = null;
+			}
+		};
+		
+		//Event.observe($(this.id).form,"submit",this.updateTextArea,true);
+	},
+	
+	execCommand : function(id,editor){
+		command = id.replace(editor.id,"");
+		$(editor.id + "_wysiwyg").focus();
+		$(editor.id + "_wysiwyg").contentWindow.document.execCommand(command, false, null);
+	},
+	
+	toggleViewMode : function(){
+	
+	
+	},
+	
+	updateTextArea : function(){
+	
+	}
+	
+	
+};
+
+window.onload = function(){
+	(new RichTextEditor("hoge")).render();
+}
+</script>
+<style type="text/css">
+#RichTextEditor_toolbar{
+}
+
+.RichTextEditor_button{
+	margin : 1 1;
+	border : solid 1px black;
+}
+</style>
+</head>
+
+<body>
+<textarea id="hoge" cols="20" rows="10" wrap="off">
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+</textarea>
+</body>

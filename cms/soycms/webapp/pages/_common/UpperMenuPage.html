@@ -1,0 +1,47 @@
+<div class="span-24 last">
+<div id="header_sitename" class="span-13">
+	<h1><a soy:id="sitepath" target="_blank"></a></h1>
+	<p soy:id="sitename"></p>
+</div>
+
+<div id="userInfo" class="span-7">
+	<div class="span-7 last">
+		<h2 soy:id="adminname">管理者</h2>
+	</div>
+	<div class="span-7 last">
+		<ul class="inline" soy:id="display_app_link">
+            <li soy:id="display_inquiry_link"><a soy:id="inquiry_link">お問い合わせフォーム</a></li>
+            <li soy:id="display_mail_link"><a soy:id="mail_link">メールマガジン</a></li>
+        </ul>
+		<ul class="inline">
+			<!-- soy:display="ext_mode_link" -->
+			<li soy:id="display_ext_link"><a href="?ext_mode">画面切替</a></li>
+			<!-- /soy:display="ext_mode_link" -->
+			<!-- 
+			<li><a href="http://www.soycms.net/man/">マニュアル</a></li>
+			-->
+			<li><a onclick="return common_click_to_layer(this);" soy:id="account_link">ユーザー情報</a></li>
+			<li><a soy:link="Login.Logout">ログアウト</a></li>
+		</ul>
+	</div>
+</div>
+
+<div class="span-4 last">
+	<img style="margin-right:23px;_margin-right:3px;" soy:src="./css/img/logo_final.gif" alt="logo" id="soy_logo" />
+</div>
+
+<div soy:id="popup" id="popup">
+	<div id="popup_left"></div>
+	<div id="popup_content" soy:id="message">ここにエラーメッセージが表示されます。</div>
+	<div id="popup_right"></div>
+</div soy:id="popup">
+
+</div>
+
+<script type="text/javascript">
+//大豆君消去
+$.event.add(window,"load",function(){
+	setTimeout(common_hide_soy_boy,800);
+	$("#soy_logo").mouseover(function(){common_show_soy_boy(true);});
+});
+</script>

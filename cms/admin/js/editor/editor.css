@@ -1,0 +1,40 @@
+.myEditor {
+	
+}
+
+.toolbar{
+	border-top: 1px solid #aaaaaa;
+	height: 26px; 
+	background-image: url(background_silver.jpg);
+}
+
+.toolbar .button{
+	height: 20px;
+	border: 0px solid transparent;
+	margin: 1px;
+	padding: 0px;
+	background: transparent;
+}
+
+.toolbar .buttonOver{
+	height: 20px;
+	border: 1px solid #999999;
+	margin: 0; padding: 0px;
+}
+
+.searchBox {
+	background-image: url(background_silver.jpg);
+	height:26px;
+	font-size:12px;
+	margin:0;
+	padding-top:0px;
+	padding-bottom:8px;
+	line-height:1;
+}
+
+
+.searchBox input {
+	height:18px;
+	margin:4px 4px;
+	padding:0;
+}

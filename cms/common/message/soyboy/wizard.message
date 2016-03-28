@@ -1,0 +1,11 @@
+//ウィザード用のメッセージ
+
+WIZARD_NO_SELECT_TEMPLATE	=	テンプレートが選択されていません。
+
+WIZARD_CREATE_PAGE_SUCCESS	=	ページを作成しました。
+WIZARD_CREATE_PAGE_FAILED	=	ページの作成に失敗しました。
+
+WIZARD_PAGE_OPEN_SUCCCESS	=	ページを公開しました。
+WIZARD_PAGE_OPEN_FAILED		=	ページの公開に失敗しました。
+
+WIZARD_BLOG_NAME_EMPTY		=	ブログページの名前は必須項目です。

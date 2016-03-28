@@ -1,0 +1,67 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+	
+	
+	<style type="text/css">
+	#soy_page_list li{
+		list-style:none;
+	}
+	#soy_page_list ul,#soy_page_list li{
+		padding:0;
+		margin:0;
+	}
+	</style>		
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			<div class="span-23 last">
+				<h2>Webpage List</h2>
+			</div>
+			
+			<div class="prepend-1 span-22 last functions">
+				<a soy:link="Page.Create" onclick="return common_click_to_layer(this);">Add New Webpage</a><img soy:message="HELP_PAGE_CREATE">
+				<a soy:link="Blog">Blogpage List</a>
+				<a href="javascript:$('page_style_form').submit();">Change View</a><img soy:message="HELP_PAGE_DISPLAY_TOGGLE">
+				<a soy:link="Template">Template Pack Manager</a>
+			</div>
+			
+			<form style="display:none" id="page_style_form" method="post">
+				<input type="hidden" name="toggle_page_style" value="">
+			</form>
+
+			<div id="soy_page_list" class="prepend-1 span-22 last" soy:id="page_list">
+				<ul>
+					<li></li>
+				</ul>
+			</div soy:id="page_list">
+			
+			<!-- soy:display="not_empty_trash" -->
+			<div class="prepend-1 span-22 last">
+				<div class="span-22 last">
+					<h3>Trush</h3>
+				</div>
+				<div soy:id="trash_page_list" class="span-22 last">
+					<ul>
+						<li></li>
+					</ul>
+				</div soy:id="trash_page_list">
+			</div>
+			<!-- /soy:display="not_empty_trash" -->
+					
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">			
+			<div class="span-22 prepend-1">
+
+				<h3>File Manager</h3>
+				
+				<iframe id="filemanager_filepage" soy:src="FileManager.FilePage" style="width:870px;height:480px;border:none;overflow:hidden;" frameborder="no" scrolling="no" onload="frameonload()"></iframe>
+			
+			</div>
+										
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<script type="text/javascript">
+	function previewImage(id,src){
+		if(!$("preview_image")){
+			var img = document.createElement("img");
+			img.style.display = "none";
+			img.setAttribute("id","preview_image");
+			document.body.appendChild(img);
+		}
+		
+		var temp = new Image();
+		temp.src = src;
+		
+		$("preview_image").src = temp.src;
+		
+		common_element_to_layer($("preview_image"),{
+			height : Math.min(600,Math.max(400,temp.height + 20)),
+			width  : Math.min(800,Math.max(400,temp.width + 20))
+		});
+		
+		$("preview_image").show();
+		
+	}
+	
+	function frameonload(){
+		$("filemanager_filepage").contentWindow.addCustomFunction(previewImage,{
+			"label" : "Preview",
+			type : "image"
+		});
+		
+		//$("filemanager_filepage").contentWindow.addCustomFunction(dragAndDropUpload,{
+		//	"label" : "Upload a file to this path",
+		//	type : "directory"
+		//});
+		
+		$("filemanager_filepage").contentWindow.addCustomFunction(editCSS,{
+			"label" : "Edit by CSS Editor",
+			type : "css"
+		});
+	}
+	
+	function dragAndDropUpload(id,src){
+		common_to_layer(DragAndDropPageURL + "/" + id,{
+			onclose : function(){
+				$("filemanager_filepage").contentWindow.showList("file:" + id);
+			}
+		});
+	}
+	
+	function editCSS(id,src){
+
+		var form = document.createElement("form");
+		form.method = "POST";
+		form.action = css_editor_url;
+		
+		var input = document.createElement("input");
+		input.type = "hidden";
+		input.value = src;
+		input.name = "cssName";
+		
+		form.appendChild(input);
+		
+		document.body.appendChild(form);
+		common_submit_to_layer(form,{width:800,height:600})
+		form.submit();
+		document.body.removeChild(form);
+		return;
+	}
+
+	</script>
+	
+	<div soy:page="_common.FooterPage"></div>
+</div>
+</body>
+</html>

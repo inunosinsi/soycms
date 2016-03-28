@@ -1,0 +1,65 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>Remove Website - <span soy:id="site_name_title" /></h2>
+		
+		<div class="functions" soy:display="only_default_user">
+			<p><a soy:link="Site">Cancel</a></p>
+		</div>
+
+		<p class="notify" soy:id="error"></p>
+			
+		<h3>Remove Website</h3>
+		
+			<form soy:id="delete_site_form">
+				<table class="globalpage_input">
+					<col style="width:120px;" />
+					<tr>
+						<th nowrap="nowrap">Site ID</th>
+						<td><span soy:id="site_id" /></td>
+					</tr>
+					<tr>
+						<th nowrap="nowrap">Title</th>
+						<td><span soy:id="site_name" /></td>
+					</tr>
+					<tr>
+						<th nowrap="nowrap">Website URL</th>
+						<td><a soy:id="site_url">http://localhost/path/to</a></td>
+					</tr>
+					
+					<tr>
+						<th nowrap="nowrap">Confirmation</th>
+						<td>
+							<input type="checkbox" soy:id="checkbox"/>
+						</td>
+					</tr>
+
+					<tr>
+						<th nowrap="nowrap">Option</th>
+						<td>
+							<input type="checkbox" soy:id="checkbox_delete_dir"/><br/>
+							<input type="checkbox" soy:id="checkbox_delete_db"/>
+						</td>
+					</tr>
+
+					<tr>
+						<td>&nbsp;</td>
+						<td class="button">
+							<input id="update_button" type="submit" value="Delete" soy:id="button">
+						</td>
+					</tr>
+				</table>
+			</form soy:id="delete_site_form">
+		</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+</body>
+</html>

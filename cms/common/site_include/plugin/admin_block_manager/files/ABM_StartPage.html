@@ -1,0 +1,56 @@
+<h4>ブロック一括管理</h4>
+
+<div soy:id="message" style="color:red;font-weight:800;"></div>
+
+<form method="post" action="#main" name="pages">
+
+<a name="main"><!--  --></a>
+
+<div class="section">
+	<p>
+		変更するページを選択して下さい。
+		[<input soy:id="checkall">]
+	</p>
+	<table border="1">
+		<!-- soy:id="page_list" -->
+		<tr>
+			<td><input type="text" soy:id="checkbox" /></td>
+			<td>
+				<span soy:id="name"></span>
+			</td>
+		</tr>
+		<!-- /soy:id="page_list" -->
+	</table>
+</div>
+
+<div class="section">
+	<p class="sub">ブロックID</p>
+	<input soy:id="block_id" />
+</div>
+
+<div class="section">
+	<p class="sub">ブロックの種類を選択して下さい。</p>
+	<table>
+		<tr soy:id="component_loop">
+			<td><input type="radio" soy:id="component_check"></td>
+		</tr soy:id="component_loop">
+	</table>	
+</div>
+
+<input type="submit" name="next" value="次へ" />
+
+</form>
+
+
+<style type="text/css">
+table{
+	border-collapse: collapse;
+	margin: 1em 0;
+}
+table, tr, td, th{
+	border: solid 1px gray;
+}
+td, th{
+	padding: 2px;
+}
+</style>

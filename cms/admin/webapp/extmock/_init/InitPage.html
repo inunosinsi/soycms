@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>Extモードのモック</title>
+</head>
+<body>
+
+<form soy:id="initform">
+	<div>
+		<img soy:id="biglogo" alt="logo" />
+		<h1>初期管理者を作成します</h1>
+		<div soy:id="message_db">DBに接続できません！</div>
+		<div>
+			<p>初期管理者ID（ログインID, 4～30文字）</p>
+			<input type="text" name="userId" value="" soy:id="userId" />
+			<div soy:id="message_userId"/>
+		</div>
+		<div>
+			<p>パスワード（6～30文字）</p>
+			<input type="password" name="password" value="" soy:id="password" />
+			<div soy:id="message_password"/>
+		</div>
+		<div class="item">
+			<p>パスワード（確認）</p>
+			<input type="password" name="password_confirm" value="" soy:id="password_confirm" />
+			<div soy:id="message_password_confirm"/>
+		</div>
+		<input soy:id="submit_button" type="submit" name="login" value="設定" />
+
+	</div>
+</form soy:id="initform">
+
+</body>
+
+</html>

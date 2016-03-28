@@ -1,0 +1,152 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			
+			<div class="span-22 prepend-1 last">
+				<h3><a soy:link="Entry">記事一覧</a> &gt; ラベルの管理</h3>
+				
+				<div style="margin-bottom:10px;">
+					<form soy:id="create_label" id="create_label">
+						<input id="create_label_caption" type="text" name="caption" size="60" placeholder="ラベル名 または 分類名/ラベル名" soy:id="create_label_caption">
+						<input type="submit" value="ラベルを追加" onclick="if(!this.form.caption.value)return false;">
+						
+						<a soy:link="Label.BulkCreate">一括追加</a>
+
+						<img soy:message="HELP_LABEL_NAME_HINT"/>
+					</form soy:id="create_label">
+					
+				</div>
+				<div soy:id="no_label_message"></div soy:id="no_label_message">
+			
+			</div>
+			
+			<form soy:id="update_display_order_form">
+			
+			<!-- soy:display="must_exist_label" -->
+			<div class="span-22 last">
+				<!-- soy:id="label_lists" -->
+				<h2 soy:id="category_name">カテゴリー名</h2>
+				<table id="label_list" class="list" cellpadding="0" cellspacing="0">
+					<thead>
+						<tr>
+							<td class="name">ラベル名</td>
+							<td class="icon">アイコン</td>
+							<td class="memo">メモ</td>
+							<td class="order"><input type="submit" soy:id="update_display_order" name="update_display_order" value="表示順" /></td>
+							<td class="label_functions">操作</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="label_list_item" soy:id="list">
+							<td class="name">
+								<a soy:id="label_link"><span soy:id="label_name">dd</span></a>
+							</td>
+							<td class="icon" style="text-align:center;">
+								<img soy:id="label_icon" style="cursor:pointer;width:64px;height:64px" />
+							</td>
+							<td class="memo"><span soy:id="description" style="color:red;">dd</span></td>
+							<td class="order" style="text-align:center;">
+								<input type="text" soy:id="display_order" size="4" />
+							</td>
+							<td class="label_functions">
+								<a soy:id="detail_link" style="text-decoration:none;">詳細</a>
+								<a soy:id="remove_link" style="text-decoration:none;" onclick="return confirm('削除してもよろしいですか？');">
+									削除
+								</a>
+							</td>
+						</tr soy:id="list">
+					</tbody>
+				</table>
+				<!-- /soy:id="label_lists" -->
+			</div>
+			<!-- /soy:display="must_exist_label" -->
+			
+			</form soy:id="update_display_order_form">
+			
+			<form style="display:none;" id="reNameForm" soy:id="reNameForm">
+				<input type="hidden" name="id" id="reNameId" value="">
+				<input type="hidden" name="caption" id="labelcaption" value="">
+				<input type="hidden" name="description" id="description" value="">
+				<input type="hidden" name="labelicon" id="labelicon" value="">
+			</form soy:id="reNameForm">
+			
+			<script lang="text/javascript">
+				function postReName(id,description){
+					var newName = prompt('新しい名前を入力してください',"");
+					
+					if(!newName){
+						return false;
+					}
+					$("#labelcaption").val(newName);
+					$("#reNameId").val(id);
+					$("#description").val(description);
+					$("#reNameForm").attr("action",reNameLink);
+					$("#reNameForm").submit(); 
+					
+					return false;
+				}
+				
+				function postDescription(id,caption,description){
+					var newDesc = prompt('新しい説明を入力してください',description);
+					
+					if(newDesc == description){
+						return;
+					}
+					$("#labelcaption").val(caption);
+					$("#reNameId").val(id);
+					$("#description").val(newDesc);
+					$("#reNameForm").attr("action",reDesciptionLink);
+					$("#reNameForm").submit();
+					
+					return false;
+				}
+				
+				function changeImageIcon(id){
+					common_element_to_layer($("#image_list"),
+						{	width:440,
+							height:500,
+							onclose:function(){
+								$("body").append($("#image_list"));
+								$("#image_list").hide();
+							}});
+					$("#image_list").attr("label_id",id);
+					$("#image_list").show();
+				}
+				
+				function postChangeLabelIcon(filename){
+					$("#reNameId").val($("#image_list").attr("label_id"));
+					$("#labelicon").val(filename);
+					$("#reNameForm").attr("action",ChangeLabelIconLink);
+					$("#reNameForm").submit();
+					
+					return false;
+				}
+			</script>
+			
+			<div id="image_list" style="width:100%;height:100%;display:none;text-align:center;">
+				<h4>ダブルクリックで変更</h4>
+				
+				<span soy:id="image_list">
+					<img soy:id="image_list_icon" style="width:64px;height:64px;">
+				</span soy:id="image_list">
+			</div>
+			
+				<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

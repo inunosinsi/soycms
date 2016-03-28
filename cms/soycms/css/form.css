@@ -1,0 +1,200 @@
+@charset "UTF-8";
+
+#input_form {
+	/*background-color:#f8f8f8;*/
+}
+
+.section {
+	margin:10px 0px;
+	margin-bottom:0px;
+	padding:5px 10px;
+	/*background-color:#E2E2E2;*/
+	width:98%;
+	/**clear: both;**/
+}
+
+.section input[type="text"]{
+	border:solid 1px #bbb;
+	padding-left:2px;
+	margin-right:2px;
+}
+
+.section input[type="text"]:focus{
+	border:solid 1px black;
+}
+
+.section input.short{
+	width:3em;
+}
+
+.section_top {
+	margin:10px 0px;
+	margin-bottom:0px;
+	padding:5px 10px;
+	/*background-color:#E2E2E2;*/
+	width:65%;
+}
+
+.subsection {
+	float:left;
+	margin-left:10px;	
+	height:30px;
+	line-height:30px;
+}
+
+.section .head{
+	width:150px;
+	height:100%;
+	font-weight:bold;
+	float:left;
+	margin:0.5em 0;
+}
+
+.section .body{
+	border-left:solid 1px #EFEFEF;
+	margin-left:150px;
+	padding-left:5px;
+}
+
+.content {
+}
+
+.content_tab_active{
+	float:left;
+	height:30px;
+	line-height:30px;
+	padding-right:10px;
+	padding-left:10px;
+	border:solid 1px #CCCCCC;
+	background-color:#EFDF50;
+	border-bottom:none;
+	border-radius: 8px 8px 0 0;
+}
+
+.content_tab_inactive{
+	float:left;
+	cursor:pointer;
+	height:30px;
+	line-height:30px;
+	margin-top:4px;
+	padding-right:10px;
+	padding-left:10px;
+	border:solid 1px #CCCCCC;
+	border-bottom:none;
+	border-radius: 8px 8px 0 0;
+	color: #999999;
+}
+.content_tab_inactive:hover{
+	margin-top: 0px;
+}
+
+/** IE10のTinyMCE表示対策 **/
+#entry_content_wrapper,
+#entry_more_wrapper{
+	min-height: 300px;
+	height: auto!important;
+	height: 300px;
+}
+
+
+
+#entry_more_switch{
+	margin-left:5px;
+}
+
+p.sub {
+	font-size:12px;
+	margin:0;
+	padding-left:7px;
+	padding-bottom:1px;
+	color:gray;
+}
+
+.entry_memos p{
+	font-weight:bold;
+	color:#9C9C9C;
+	margin:0;
+	padding:0;
+}
+
+#title {
+	width:100%;
+	height:40px;
+	font-size:32px;
+}
+
+#icon {
+	float:left;
+	margin-left:10px;
+	border:1px solid #dfdfdf;
+	padding:10px 10px;
+}
+
+#icon img{
+	cursor:pointer;
+	width:64px;
+	height:64px
+}
+
+#uri_prefix {
+	font-size:14px;
+	color:#8F8F8F;
+}
+
+#uri-prefix-category {
+	font-size:14px;
+	color:#8F8F8F;
+}
+
+#uri {
+	width:200px;
+	height:20px;
+	font-size:14px;
+	margin-left:2px;
+}
+
+#title_format {
+	width:400px;
+	height:20px;
+	font-size:14px;
+}
+
+#release_wrapper {
+	float:left;
+	border:1px solid #CFCFCF;
+	padding:10px 10px;
+}
+
+#buttons {
+	vertical-align:middle;
+}
+
+#update_button {
+	width:100px;
+	height:50px;
+	font-size:16px;
+	float:left;
+	font-weight: bolder;
+}
+
+#create_button {
+	width:100px;
+	height:50px;
+	font-size:16px;
+	float:left;
+	margin-left:10px;
+}
+
+
+/* blueprint.cssの上書き*/
+fieldset {
+	padding:0.5em 1em;
+	margin:0 0 0.5em 0;
+	border:1px solid #ccc;
+}
+legend {
+	font-weight:bold;
+	font-size:1em;
+}
+* html legend {padding: 1ex 0.5ex; margin-top:-10px;padding-right:1em;}
+*:first-child+ html legend {padding: 1ex 0.5ex;margin-top:-18px;}

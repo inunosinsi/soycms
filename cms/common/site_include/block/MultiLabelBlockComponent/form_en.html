@@ -1,0 +1,99 @@
+<script type="text/javascript">
+function add_item(ele){
+	if(!$("#selected_label").val() || !$("#selected_blog").val())return;
+	
+	var input = $("<input/>");
+	input.attr("name","object[mapping][" + $("#selected_label").val() + "]");
+	input.val($("#selected_blog").val());
+	input.attr("type","hidden");
+	$(ele).after(input);
+	
+	return true;
+}
+function add_reload_input(ele){
+	var input = $("<input/>");
+	input.attr("name","after_submit");
+	input.val("reload");
+	input.attr("type","hidden");
+	$(ele).after(input);
+	
+}
+function delete_mapping(ele){
+	$(ele).attr("name","");
+	if($(".input.mapping_input").length <= 1){
+		var input = $("<input/>");
+		input.attr("name","object[mapping][]");
+		input.val("");
+		input.attr("type","hidden");
+		$(ele).after(input);
+	}
+}
+</script>
+
+<form soy:id="sites_form">
+	
+	<fieldset class="inline"><legend>Select a website</legend>
+		Website ID: <select style="width:180px;" soy:id="site"></select>
+		<input type="submit" value="Change website" />
+		<input type="hidden" value="reload" name="after_submit" />
+	</fieldset>
+</form soy:id="sites_form">
+
+<form soy:id="main_form">
+	<fieldset>
+		<legend>Select labels and blogpages</legend>
+
+		<span>Label to display : </span>
+		<select id="selected_label" soy:id="label_select">
+			<option value="">Select</option>
+		</select><br/>
+		<span>Blogpage to link : </span>
+		<select id="selected_blog" soy:id="blog_select">
+			<option value="">Select</option>
+		</select>
+		
+		<input type="submit" name="add" value="Add" onclick="add_reload_input(this);add_item(this);" />
+
+		<input type="hidden" soy:id="old_site_id" value="" />
+		<input type="hidden" id="delete_hidden_input" value="" />
+
+		<table class="list" style="margin-left:0;">
+			<thead>
+				<tr>
+					<th>Label title</th>
+					<th>Blogpage title</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<!-- soy:id="label_list" -->
+			<tr>
+				<td soy:id="label"></td>
+				<td soy:id="title"></td>
+				<td>
+					<input type="hidden" soy:id="mapping" />
+					<input type="submit" name="delete" soy:id="delete_button" />
+				</td>
+			</tr>
+			<!-- /soy:id="label_list" -->
+		</table>
+	</fieldset>
+	
+	<fieldset>
+		<legend>Number of items<img soy:message="HELP_BLOCK_DISPLAY_NUMBER"/></legend>
+		Number of items : <input type="text" soy:id="display_number_start" name="object[displayCountFrom]" size="2"> ~ <input type="text" soy:id="display_number_end" size="2" object[displayCountTo]>
+	</fieldset>
+	
+	<fieldset class="inline">
+		<legend>Display Order</legend>
+		<input type="text" soy:id="display_order_desc"><label for="display_order_desc">Ascending</label>
+		<input type="text" soy:id="display_order_asc"><label for="display_order_asc">Descending</label>
+		By Created Date.
+		<br />(This setting will be applied when the individual Display Order for an entry is not specified .)
+	</fieldset>
+
+	<div style="margin:10px;text-align:center;">
+		<input class="submit_button" type="submit" value="Save" name="update" />
+		<input class="submit_button" type="button" value="Cancel" onclick="common_close_layer(window.parent);return false;" style="margin-left:20px;">
+	</div>
+	
+</form soy:id="main_form">

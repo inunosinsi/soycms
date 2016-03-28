@@ -1,0 +1,24 @@
+.blog_news_list {
+	list-style-type: none;
+	
+	width:90%;
+	margin: 0px;
+	margin-bottom:5px;
+	padding:0px;
+}
+
+.blog_news_list li{
+	border-bottom:1px dashed green;
+	margin-bottom:5px;
+	padding: 0px;
+	padding-left:5px;
+
+	white-space: nowrap; 
+	overflow:hidden;
+}
+
+.blog_news_list li a{
+	font-size:1.2em;
+	text-decoration: none;
+}
+

@@ -1,0 +1,27 @@
+<html>
+    <head soy:page="_common.HeaderPage" isOverWrite="true">
+
+        <script src="http://java.com/js/deployJava.js"></script>
+        <title></title>
+    </head soy:page="_common.HeaderPage">
+<body>
+    <h1>Drag and drop here, the file will be uploaded.</h1>
+    
+    <script>
+    var attributes = {
+                  code: applet_code,
+                  archive: archive_url,
+                  width:480, height:300};
+              
+    var parameters = {fontSize:16, 
+        server_url  : server_url,
+        program_name: upload_label,
+        mode        :'upload' ,           // 'upload'にするとアップロード機能のみが使えるようになります。
+        type_file_name:'file'
+    } ;
+
+    deployJava.writeAppletTag(attributes, parameters);
+
+    </script>
+</body>
+</html>

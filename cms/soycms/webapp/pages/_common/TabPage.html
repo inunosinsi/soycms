@@ -1,0 +1,59 @@
+<?php /* 通常はこっちだけ表示 */ ?>
+<div soy:id="not_simple_mode" id="tab" class="span-24 last">
+		<a soy:link="Index">
+			<div soy:id="dashboard" id="tab_left" class="menu_active">
+				<p>ホーム</p>
+			</div>
+		</a>
+		<a soy:link="Entry">
+			<div soy:id="entry" class="menu_inactive span-3">
+				<p>記事</p>
+			</div>
+		</a>
+		<a soy:link="Label">
+			<div soy:id="label" class="menu_inactive span-3">
+				<p>ラベル</p>
+			</div>
+		</a>
+		<a soy:link="Page">
+			<div soy:id="page" class="menu_inactive span-3">
+				<p>ページ</p>
+			</div>
+		</a>
+		
+		<a soy:link="Plugin">
+			<div soy:id="plugin" class="menu_inactive span-3">
+				<p>プラグイン</p>
+			</div>
+		</a>
+</div soy:id="not_simple_mode">
+
+<?php /* Simpleモードはこっちだけ表示 */ ?>
+<div soy:id="simple_mode" id="tab" class="span-24 last">
+	<a soy:link="Simple"><div soy:id="simple_dashboard" class="menu_active"><p>新着一覧</p></div></a>
+	<a soy:link="Entry"><div soy:id="simple_entry" class="menu_inactive"><p>記事の管理</p></div></a>
+	<a soy:link="Blog.List"><div soy:id="simple_blog" class="menu_inactive"><p>ブログ</p></div></a>
+	<a soy:link="Page.Preview" target="_blank"><div soy:id="simple_preview" class="menu_inactive" style="font-size:0.85em"><p>ダイナミック編集</p></div></a>
+
+	<div style="clear:both;"></div>
+</div soy:id="simple_mode">
+
+<script type="text/javascript">
+
+$(".menu_inactive").each(function(){
+	$(this).mouseover(function(e){
+		$(this).attr("class","menu_inactive_hover span-3");
+		$(this).attr("className","menu_inactive_hover span-3");
+	});
+	
+	$(this).mouseout(function(e){
+		$(this).attr("class","menu_inactive span-3");
+		$(this).attr("className","menu_inactive span-3");
+	});
+	
+	/*$(this).mousedown(function(e){
+		$(this).attr("class","menu_inactive_active span-3");
+		$(this).attr("className","menu_inactive_active span-3");
+	});*/
+});
+</script>

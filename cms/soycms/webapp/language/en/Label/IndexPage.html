@@ -1,0 +1,144 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			
+			<div class="span-22 prepend-1 last">
+				<h3><a soy:link="Entry">Entry Manager</a> &gt; Label Manager</h3>
+				
+				<div style="margin-bottom:10px;">
+					<form soy:id="create_label" id="create_label">
+						<input id="create_label_caption" type="text" name="caption" size="60" placeholder="input label name to create" soy:id="create_label_caption">
+						<input type="submit" value="Add new label" onclick="if(!this.form.caption.value)return false;">
+						<a soy:id="Label.BulkCreate">Bulk Create</a>
+						<img soy:message="HELP_LABEL_NAME_HINT"/>
+					</form soy:id="create_label">
+				</div>
+				<div soy:id="no_label_message"></div soy:id="no_label_message">
+			
+			</div>
+			
+			<form soy:id="update_display_order_form">
+			
+			<div soy:display="must_exist_label" class="span-22 last">
+				<table id="label_list" class="list" cellpadding="0" cellspacing="0">
+					<thead>
+						<tr>
+							<td class="name">Label Name</td>
+							<td class="icon">Icon</td>
+							<td class="memo">Memo</td>
+							<td class="order"><input type="submit" soy:id="update_display_order" name="update_display_order" value="Display Order" /></td>
+							<td class="label_functions">Operation</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="label_list_item" soy:id="list">
+							<td class="name">
+								<a soy:id="label_link"><span soy:id="label_name">dd</span></a>
+							</td>
+							<td class="icon" style="text-align:center;">
+								<img soy:id="label_icon" style="cursor:pointer;width:64px;height:64px" />
+							</td>
+							<td class="memo"><span soy:id="description" style="color:red;">dd</span></td>
+							<td class="order" style="text-align:center;">
+								<input type="text" soy:id="display_order" size="4" />
+							</td>
+							<td class="label_functions">
+								<a soy:id="detail_link" style="text-decoration:none;">Edit</a>
+								<a soy:id="remove_link" style="text-decoration:none;" onclick="return confirm('Are you OK to delete ?');">
+									Delete
+								</a>
+							</td>
+						</tr soy:id="list">
+					</tbody>
+				</table>
+			</div soy:display="must_exist_label">
+			
+			</form soy:id="update_display_order_form">
+			
+			<form style="display:none;" id="reNameForm" soy:id="reNameForm">
+				<input type="hidden" name="id" id="reNameId" value="">
+				<input type="hidden" name="caption" id="labelcaption" value="">
+				<input type="hidden" name="description" id="description" value="">
+				<input type="hidden" name="labelicon" id="labelicon" value="">
+			</form soy:id="reNameForm">
+			
+			<script lang="text/javascript">
+				function postReName(id,description){
+					var newName = prompt('Enter new name',"");
+					
+					if(!newName){
+						return false;
+					}
+					$("labelcaption").value = newName;
+					$("reNameId").value = id;
+					$("description").value = description;
+					$("reNameForm").action = reNameLink;
+					$("reNameForm").submit(); 
+					
+					return false;
+				}
+				
+				function postDescription(id,caption,description){
+					var newDesc = prompt('Enter new description',description);
+					
+					if(!newDesc){
+						return;
+					}
+					$("labelcaption").value = caption;
+					$("reNameId").value = id;
+					$("description").value = newDesc;
+					$("reNameForm").action = reDesciptionLink;
+					$("reNameForm").submit();
+					
+					return false;
+				}
+				
+				function changeImageIcon(id){
+					common_element_to_layer($("image_list"),
+						{	width:200,
+							height:150,
+							onclose:function(){
+								document.body.appendChild($("image_list"));
+								$("image_list").hide();
+							}});
+					$("image_list").label_id = id;
+					$("image_list").show();
+				}
+				
+				function postChangeLabelIcon(filename){
+					$("reNameId").value = $("image_list").label_id;
+					$("labelicon").value = filename
+					$("reNameForm").action = ChangeLabelIconLink;
+					$("reNameForm").submit();
+					
+					return false;
+				}
+			</script>
+			
+			<div id="image_list" style="width:100%;height:100%;display:none;">
+				<h4>Double-click to select</h4>
+				
+				<span soy:id="image_list">
+					<img soy:id="image_list_icon" style="width:64px;height:64px;">
+				</span soy:id="image_list">
+			</div>
+			
+				<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

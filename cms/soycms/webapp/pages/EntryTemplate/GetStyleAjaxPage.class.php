@@ -1,0 +1,21 @@
+<?php
+
+class GetStyleAjaxPage extends CMSWebPageBase{
+	
+	function GetStyleAjaxPage($args) {
+    	
+    	$id = @$args[0];
+    	
+    	$result = SOY2ActionFactory::createInstance("EntryTemplate.TemplateDetailAction",array(
+    		"id" => $id
+    	))->run();
+    	$template = $result->getAttribute("entity");
+    	
+    	$templates = $template->getTemplates();
+    	
+    	echo $templates["style"];
+    	
+    	exit;
+    }
+}
+?>

@@ -1,0 +1,48 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>Users Management</h2>
+		
+		<p class="message" soy:id="message"></p>
+		
+		<div class="functions" soy:display="only_default_user">
+			<p><a href="#" soy:id="addAdministrator">Add a New User</a></p>
+			<p><a href="#" soy:id="changepassword">Change Your Password</a></p>
+		</div>
+		<h3>Users</h3>
+		<div soy:id="main_table">
+			<table class="list" cellpadding="0" cellspacing="0">
+				<thead>
+					<tr>
+						<th>User ID</th>
+						<th>User Name</th>
+						<th>Website</th>
+						<th colspan="3">Action</th>
+					</tr>
+				</thead>
+			
+				<tbody>
+					<tr soy:id="list">
+						<td><span soy:id="userId"></span></td>
+						<td><span soy:id="userName"></span></td>
+						<td><span soy:id="managingSite"></span></td>
+						<td><a soy:id="update_link">Details</a> <a soy:id="update_password_link">Change password</a></td>
+						<td><a soy:id="detail_link">Role Settings</a></td>
+						<td><a soy:id="remove_link">Delete</a></td>
+					</tr soy:id="list">
+				</tbody>
+			</table>
+		</div>	
+	</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+</body>
+</html>

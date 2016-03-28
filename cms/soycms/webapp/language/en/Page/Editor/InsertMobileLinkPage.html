@@ -1,0 +1,77 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<script soy:id="prototypejs"></script>
+	<script soy:id="commonjs"></script>
+	<script soy:id="otherdata"></script>
+	<style type="text/css">
+	.virtual_page_tree ul{
+		clear:both;
+	}
+	.virtual_page_tree li{
+		margin-left:20px;
+	}
+	.tree_function{
+		display:inline;
+	}
+	</style>
+</head>
+<body>
+<p>Select refering page of hyperlink</p>
+
+<h5>Selected page</h5>
+<p soy:id="page_title"></p>
+<p soy:id="page_url"></p>
+<form method="post">
+	<input type="submit" value="Submit" class="soycms_custom_button" onclick="return onsubmit()" />
+	<input type="button" value="Cancel" class="soycms_custom_button" onclick="location.href=back_link;">
+</form>
+
+<div soy:id="page_tree"></div soy:id="page_tree">
+
+<script type="text/JavaScript">
+	function onsubmit(){
+		var ele = document.getElementsByName("mobile_link");
+		for(var i=0; i<ele.length; i++){
+			if(ele[i].checked){
+				var checked_radio = ele[i];
+			}
+		}
+		
+		if(!checked_radio){
+			alert("Select");
+			return false;
+		}
+		
+		var innerHTML = "";
+		
+		if(innerHTML == ""){
+			innerHTML = document.getElementById("mobile_label_"+checked_radio.value).innerHTML;
+		}
+		if(siteId.length == 0){
+			parent.insertHTML('<a href="'+page_url
+				+'" cms:link="'+page_id
+				+'" treeId="'+checked_radio.value
+				+'">'
+				+innerHTML+'</a>'
+			);
+		}else{
+			parent.insertHTML('<a href="'+page_url
+				+'" cms:link="'+page_id
+				+'" treeId="'+checked_radio.value
+				+'" site="'+siteId
+				+'">'
+				+innerHTML+'</a>'
+			);
+				
+		}
+		window.parent.common_close_layer(window.parent);
+		return false;
+		return false;
+	}
+
+	common_init_custom_button();
+
+</script>
+</body>
+</html>

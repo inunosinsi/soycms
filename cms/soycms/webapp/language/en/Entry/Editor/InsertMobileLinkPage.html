@@ -1,0 +1,81 @@
+<html>
+<head>
+	<script soy:id="popupScript"></script>
+	<script soy:id="prototypejs"></script>
+	<script soy:id="commonjs"></script>
+	<script soy:id="otherdata"></script>
+</head>
+<body>
+<p>Select Hyperlink Type</p>
+<h5>Selected Webpage</h5>
+<p soy:id="page_title"></p>
+<p soy:id="page_url"></p>
+<script type="text/JavaScript">
+	function on_submit(){
+		var ele = document.getElementsByName("mobile_link");
+		
+		for(var i=0; i<ele.length; i++){
+			if(ele[i].checked){
+				var checked_radio = ele[i];
+			}
+		}
+		
+		
+		if(!checked_radio){
+			alert("Not Selected");
+			return false;
+		}
+		
+		var innerHTML = "";
+		
+		if(innerHTML == ""){
+			innerHTML = document.getElementById("mobile_label_"+checked_radio.value).innerHTML;
+		}
+		if(siteId.length == 0){
+			tinyMCEPopup.execCommand('mceInsertRawHTML',false,
+				'<a href="'+page_url
+				+'" cms:link="'+page_id
+				+'" treeId="'+checked_radio.value
+				+'">'
+				+innerHTML+'</a>'
+			);
+		}else{
+			tinyMCEPopup.execCommand('mceInsertRawHTML',false,
+				'<a href="'+page_url
+				+'" cms:link="'+page_id
+				+'" treeId="'+checked_radio.value
+				+'" site="'+siteId
+				+'">'
+				+innerHTML+'</a>'
+			);
+		}
+		
+		tinyMCEPopup.close();
+		return false;
+	}
+
+	
+	common_init_custom_button();
+	
+</script>
+<form method="post">
+	<input type="submit" class="soycms_custom_button" value="Submit" onclick="return on_submit()" />
+	<input type="button" class="soycms_custom_button" value="Cancel" onclick="location.href=back_link;">
+</form>
+
+<div soy:id="page_tree"></div soy:id="page_tree">
+
+
+<style type="text/css">
+.virtual_page_tree ul{
+	clear:both;
+}
+.virtual_page_tree li{
+	margin-left:20px;
+}
+.tree_function{
+	display:inline;
+}
+</style>
+</body>
+</html>

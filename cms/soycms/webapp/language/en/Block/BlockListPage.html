@@ -1,0 +1,37 @@
+<div class="block_list">
+	<h5>Blocks without settings</h5>
+		<p soy:id="block_list">
+			<span soy:id="block_name">hoge</span>
+			<a soy:id="block_add_link" onclick="return common_click_to_layer(this,{height:480});">Make setting</a>
+		</p soy:id="block_list">
+		
+	<h5>Blocks not in the template</h5>
+		<p soy:id="removed_block">
+			<span soy:id="block_name">aaa</span>
+			<span soy:id="block_type">Block Type</span>
+			<div>
+				<span soy:id="block_info">Block Information</span>
+				<a href="DetailPage.html" soy:id="block_detail_link" onclick="return common_click_to_layer(this,{width:800,height:600});">Detail</a>
+				<a href="DetailPage.html" soy:id="block_delete_link" target="delete_target_iframe" onclick="return confirm('Delete this setting ?');">Delete</a>			
+			</div>
+			
+		</p soy:id="removed_block">
+</div>
+
+<div class="block_list2">
+	<h5>Set Blocks</h5>
+		<!-- soy:id="entry_display" -->
+		<div class="block_list_section" style="clear:both;width:100%;">
+			<div soy:id="block_name">aaa</div>
+			<div soy:id="block_type">Block Type</div>
+			<div soy:id="block_info">Block Information</div>
+			<div style="float:right;">
+				<a href="DetailPage.html" soy:id="block_detail_link" onclick="return common_click_to_layer(this,{width:800,height:600});">Detail</a>
+				<a href="DetailPage.html" soy:id="block_delete_link" target="delete_target_iframe" onclick="return confirm('Delete this setting ?');">Delete</a>			
+			</div>
+		</div>
+		<!--/soy:id="entry_display" -->
+		
+		<iframe id="delete_target_iframe" name="delete_target_iframe" style="display:none;"></iframe>
+
+</div>

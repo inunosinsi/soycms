@@ -1,0 +1,99 @@
+<script type="text/javascript">
+function add_item(ele){
+	if(!$("#selected_label").val() || !$("#selected_blog").val())return;
+	
+	var input = $("<input/>");
+	input.attr("name","object[mapping][" + $("#selected_label").val() + "]");
+	input.val($("#selected_blog").val());
+	input.attr("type","hidden");
+	$(ele).after(input);
+	
+	return true;
+}
+function add_reload_input(ele){
+	var input = $("<input/>");
+	input.attr("name","after_submit");
+	input.val("reload");
+	input.attr("type","hidden");
+	$(ele).after(input);
+	
+}
+function delete_mapping(ele){
+	$(ele).attr("name","");
+	if($(".input.mapping_input").length <= 1){
+		var input = $("<input/>");
+		input.attr("name","object[mapping][]");
+		input.val("");
+		input.attr("type","hidden");
+		$(ele).after(input);
+	}
+}
+</script>
+
+<form soy:id="sites_form">
+	
+	<fieldset class="inline"><legend>サイトを選択して下さい</legend>
+		サイトID: <select style="width:180px;" soy:id="site"></select>
+		<input type="submit" value="サイトを変更する" />
+		<input type="hidden" value="reload" name="after_submit" />
+	</fieldset>
+</form soy:id="sites_form">
+
+<form soy:id="main_form">
+	<fieldset>
+		<legend>ラベルとブログの選択</legend>
+
+		<span>表示するラベル: </span>
+		<select id="selected_label" soy:id="label_select">
+			<option value="">選択</option>
+		</select><br/>
+		<span>リンク先ブログ: </span>
+		<select id="selected_blog" soy:id="blog_select">
+			<option value="">選択</option>
+		</select>
+		
+		<input type="submit" name="add" value="追加" onclick="add_reload_input(this);add_item(this);" />
+		<input type="hidden" soy:id="old_site_id" value="" />
+		<input type="hidden" id="delete_hidden_input" value="" />
+
+		<table class="list" style="margin-left:0;">
+			<thead>
+				<tr>
+					<th>ラベル名</th>
+					<th>ブログ名</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+			<!-- soy:id="label_list" -->
+			<tr>
+				<td soy:id="label"></td>
+				<td soy:id="title"></td>
+				<td>
+					<input type="hidden" soy:id="mapping" />
+					<input type="submit" name="delete" soy:id="delete_button" />
+				</td>
+			</tr>
+			</tbody>
+			<!-- /soy:id="label_list" -->
+		</table>
+	</fieldset>
+	
+	<fieldset>
+		<legend>表示件数<img soy:message="HELP_BLOCK_DISPLAY_NUMBER"/></legend>
+		表示件数: <input type="text" soy:id="display_number_start" name="object[displayCountFrom]" size="2">件目～<input type="text" soy:id="display_number_end" size="2" object[displayCountTo]>件目
+	</fieldset>
+
+	<fieldset class="inline">
+		<legend>表示順</legend>
+		作成日の<input type="text" soy:id="display_order_desc"><label for="display_order_desc">降順</label>
+		<input type="text" soy:id="display_order_asc"><label for="display_order_asc">昇順</label>
+		<br />（表示順の指定されていない記事にのみ有効です。）
+	</fieldset>
+	
+	<div style="margin:10px;text-align:center;">
+		<input class="submit_button" type="submit" value="設定の保存" name="update" />
+		<input class="submit_button" type="button" value="キャンセル" onclick="common_close_layer(window.parent);return false;" style="margin-left:20px;">
+	</div>
+	
+</form soy:id="main_form">

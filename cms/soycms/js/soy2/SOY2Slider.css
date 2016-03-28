@@ -1,0 +1,14 @@
+.slider_bg{
+	background-image:url("./images/slider_bg.gif");
+	width:219px;
+	height:23px;
+}
+
+.slider_cursor{
+	background-image:url("./images/slider.gif");
+	width:11px;
+	height:21px;
+	top:0;
+	left:105px;
+	position:absolute;
+}

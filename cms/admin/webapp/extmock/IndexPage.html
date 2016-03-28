@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>Extモードのモック</title>
+</head>
+
+<body>
+<div id="wrapper">
+	<div id="siteboxes">
+		<h3>サイト一覧</h3>
+		
+		<?php $counter = 0; ?>
+		<!-- soy:id="list" -->
+		<dl>
+			<dt soy:id="site_name" class="sitename">日本情報化農業研究所</dt>
+			<dd class="login_button"><a soy:id="login_link" href="javascript:void(0);">ログイン</a></dd>
+		</dl>
+		<?php $counter++; ?>
+		<?php if(($counter % 2) == 0) echo "<br style=\"clear:both;\">"; ?>
+		<!-- /soy:id="list" -->
+		
+		<div soy:id="no_site" style="margin:10px;">
+			<p>現在サイトは作成されていません。<!-- soy:display="only_default_user" -->→<a soy:link="Site.Create">サイトの作成</a><!-- /soy:display="only_default_user" --></p>
+		</div>
+		
+		<div style="clear:both"><!----></div>
+	</div>
+		
+	<!-- soy:id="application_list_wrapper" -->
+	<div class="siteboxes">
+		<h3>アプリケーション</h3>
+		<dl soy:id="application_list">
+			<dt soy:id="name" class="sitename">SOYMAIL</dt>
+			<dd class="login_button"><a soy:id="login_link" href="javascript:void(0);">ログイン</a></dd>
+			<dd class="description" soy:id="description"></dd>
+			<dd class="version" soy:id="version"></dd>
+		</dl soy:id="application_list">
+			
+	</div>
+	<!-- /soy:id="application_list_wrapper" -->
+		
+	<div id="soycms_info">
+		<h3>SOY CMSについて</h3>
+		
+		<div style="margin-left:10px;margin-top:2px;">
+			<p>Version: <?php echo SOYCMS_VERSION; ?>
+			(Build Date: <?php echo date("Y-m-d H:i:s T",strtotime(SOYCMS_BUILD)); ?>)</p>
+			<p>DB Type: <?php echo SOYCMS_DB_TYPE; ?></p>
+			<!-- soy:id="allow_php" -->
+			<p>Allow PHP Script: true</p>
+			<!-- /soy:id="allow_php" -->
+
+			<p><a href="http://www.soycms.net/">SOY CMS公式サイト</a></p>
+		</div>
+	</div>
+		
+		
+	<div style="clear:both"><!----></div>
+</div>
+</body>
+</html>

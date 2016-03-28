@@ -1,0 +1,301 @@
+
+<div style="line-height:2em;">
+<p>
+カスタムフィールドプラグインはエントリー編集画面に独自の要素を追加するプラグインです。
+</p>
+<p>
+カスタムフィールドを活用することで、簡単なデータベースとして運用することができます。<br/>
+※他サイトラベルブロックとブログリンクブロックでカスタムフィールドを使う場合、呼び出し側のサイト（ブロックを設定するサイト）でもカスタムフィールドを同じように設定しておく必要があります。
+</p>
+</div>
+
+
+<form method="POST">
+	
+	<fieldset>
+		<legend>カスタムフィールドを追加する</legend>
+		<div style="margin:10px;">
+		ID:<input type="text" name="id" />
+		フィールド名:<input type="text" name="label" />
+		<select name="type" style="width:100px;">
+		<?php
+		foreach(CustomField::$TYPES as $key => $value){
+			echo "<option value=\"$key\">$value</option>";
+		}
+		?>
+		</select>
+		<input type="submit" value="追加" />
+		
+		<span style="margin-left:20px;">
+		<a href="#" onclick="$('#add_field_help').toggle();return false;">使い方</a>
+		</span>
+		
+		</div>
+		
+		<div id="add_field_help" style="display:none;margin:10px;">
+			<p>エントリーに対して、任意のフィールドを追加することができます。</p>
+			<p>例えば、IDに<b>「customer」</b>を設定し、フィールド名に「<b>連絡先</b>」を設定すると、エントリー編集画面に<b>カスタムフィールド：連絡先</b>と書かれた入力項目が追加されます。<br />
+			ここで入力したデータは <b>cms:id="customer"</b> で表示させることが可能です。</p>
+			<p>
+			チェックボックスではチェックされたときにフィールド名が値として保持されます（&lt;input type=&quot;checkbox&quot; value=&quot;[フィールド名]&quot;&gt;）。<br/>
+			ただし初期値が設定されている場合は初期値を値として使います（&lt;input type=&quot;checkbox&quot; value=&quot;[初期値]&quot;&gt;）。
+			</p>
+		</div>
+		
+	</fieldset>
+</form>
+
+	
+<div soy:id="add_field">
+	<div>
+		<p>
+			カスタムフィールドは作成されていません。<br />
+			上のフォームより、カスタムフィールドを追加して下さい。
+		</p>
+	</div>
+	
+	<form soy:id="import_form">
+		<div>
+			<p>カスタムフィールドから設定と記事に紐づいた値をコピーする。
+				<input type="submit" name="import" value="実行">
+			</p>
+		</div>
+	</form>
+		
+</div soy:id="add_field">
+
+<table soy:id="field_table" class="list" style="margin-left:0px;">
+	<thead>
+		<tr>
+			<td>ID</td>
+			<td>フィールド名</td>
+			<td>タイプ</td>
+			<td>操作</td>
+			<td>表示順</td>
+			<td>表示のさせ方</td>
+			<td>&nbsp;</td>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- soy:id="field_list" -->
+		<tr>
+			<form method="post">
+			<td soy:id="id">ID</td>
+			<td>
+				<span soy:id="label">説明</span>
+				<input soy:id="label_input" style="display:none;" />
+			</td>
+			<td>
+				<span soy:id="type">input</span>
+				<select soy:id="type_select" style="display:none;" />
+			</td>
+			<td>
+				<a soy:id="toggle_update">設定変更</a>
+				<a soy:id="update_link" style="display:none;">変更する</a>
+				
+				<input type="submit" soy:id="update_submit" style="display:none;" />
+			</td>
+			<td style="text-align:center;">
+				<input type="hidden" soy:id="field_id" />
+				<input type="submit" name="move_up" value="△" />
+				<input type="submit" name="move_down" value="▽" />
+			</td>
+			<td soy:id="display_form">表示のためのcms:id</td>
+			<td>
+				<a soy:id="toggle_config">Detail</a>
+				
+				<a soy:id="delete">Delete</a>
+				
+				<input type="submit" soy:id="delete_submit" style="display:none;" />
+			</td>
+			</form>
+		</tr>
+		<tr soy:id="field_config" style="display:none;">
+			<td colspan="2"></td>
+			<td colspan="5">
+				<h5 style="margin-bottom:0;">高度な設定</h5>
+				<form method="post">
+					<div class="section">
+						<p class="head">ラベルとの関連付け<a href="javascript:void(0);" onclick="common_show_message_popup(this,'記事編集画面において特定のラベルが設定されている時のみ表示するようにできます。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
+						<div class="body">
+							<input type="radio" soy:id="editer_show"  /><a href="javascript:void(0);" onclick="common_show_message_popup(this,'どの記事でもカスタムフィールドの入力欄を表示します。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a><br/>
+							<input type="radio" soy:id="editer_hide"  /><a href="javascript:void(0);" onclick="common_show_message_popup(this,'カスタムフィールドの入力欄を表示しません。他のサイトと同じ設定が必要なときに使うと不要な入力欄が表示されないため便利です。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a><br/>
+							<input type="radio" soy:id="editer_label" /><a href="javascript:void(0);" onclick="common_show_message_popup(this,'特定のラベルが設定されている時のみカスタムフィールドの入力欄を表示します。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a>
+							&nbsp;
+							<select soy:id="labels">
+								<option value="">----</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="section">
+						<p class="head">初期値<a href="javascript:void(0);" onclick="common_show_message_popup(this,'初期状態で入力される値です。ラジオボタンとセレクトボックスでは初期状態で選択される項目になります。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
+						<div class="body">
+							<input type="text" class="text" soy:id="default_value" />
+						</div>
+					</div>
+					
+					<div class="section">
+						<p class="head">空の時の動作：</p>
+						<div class="body">
+							<input type="radio" soy:id="empty_show" id="radio_empty_show" />&nbsp;<input type="text" class="text" soy:id="empty_value" /><a href="javascript:void(0);" onclick="common_show_message_popup(this,'カスタムフィールドの値が空の場合に出力される値を指定できます。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a><br/>
+							<input type="radio" soy:id="empty_hide" id="radio_empty_hide" /><a href="javascript:void(0);" onclick="common_show_message_popup(this,'カスタムフィールドの値が空の場合にタグごと表示されなくなります。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a>
+						</div>
+					</div>
+										
+					<div class="section">
+						<p class="head">指定の属性に出力<a href="javascript:void(0);" onclick="common_show_message_popup(this,'altやsrcなど属性名を設定することで、タグに囲まれた部分ではなく&lt;br&gt;そのタグのその属性の値として出力されるようになります。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
+						<div class="body">
+							<input type="text" class="text" soy:id="output" size="20" />
+						</div>
+					</div>
+					
+					<div class="section">
+						<p class="head">フォームの説明<a href="javascript:void(0);" onclick="common_show_message_popup(this,'記事投稿画面のフォームの上にフィールドの説明文を表示します。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
+						<div class="body">
+							<input type="text" class="text" soy:id="description" size="20" />
+						</div>
+					</div>
+
+					<div class="section" soy:id="use_extra">
+						<p class="head">属性を追加<a href="javascript:void(0);" onclick="common_show_message_popup(this,'altやwidth、heightなどの属性名を一行ごとに入力して下さい。指定の属性に出力を設定している場合のみ使用されます。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
+						<div class="body">
+							<textarea soy:id="extra_outputs"></textarea>
+						</div>
+					</div soy:id="use_extra">
+					
+					<div class="section" soy:id="with_options">
+						<p class="head">選択項目<a href="javascript:void(0);" onclick="common_show_message_popup(this,'ラジオボタンとセレクトボックスの選択項目を一行ごとに入力してください。最初に選択されている項目は「初期値」で設定できます。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
+						<div class="body">
+							<textarea soy:id="option"></textarea>
+						</div>
+					</div soy:id="with_options">
+																	
+					<div style="margin:10px 1em 2em;text-align:right;">
+						<input type="button" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
+					</div>
+					
+					<input type="submit" style="display:none;" soy:id="update_advance_submit" />
+				</form>	
+			</td>
+		</tr>
+		<!-- /soy:id="field_list" -->
+	</tbody>
+</table soy:id="field_table">
+
+<form method="POST">
+	<fieldset style="width:670px">
+		<legend>設定</legend>
+		<table style="margin:0;">
+			<tr>
+				<th colspan="3">記事編集画面でのフィールド名の表示形式</th>
+			</tr>
+			<tr>
+				<td colspan="2"><input soy:id="config_display_title"/>&nbsp;&nbsp;<input soy:id="config_display_id"/></td>
+			</tr>				
+			<tr>
+				<td colspan="3">表示例：<span id="display_sample_title">カスタムフィールド：</span>フィールド名<span id="display_sample_id"> (ID)</span></td>
+			</tr>
+			<tr>
+				<th colspan="3">表示の高速化β</th>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="checkbox" soy:id="acceleration">
+				</td>
+				<td rowspan="2" style="text-align:right;">
+					<input type="submit" style="padding:10px 20px;" value="設定保存" />
+				</td>
+			</tr>
+			<tr>
+				<td>
+					フィールド数が増え公開側の表示に時間がかかる場合にフィールド取得を制限して表示の高速化を行います。(フィールド数が少ない場合は低速になる可能性があります)
+				</td>
+			</tr>
+		</table>
+	</fieldset>
+</form>
+
+<fieldset style="width:670px">
+	<legend>フィールドID_visible</legend>
+		<div>cms:id="<strong>フィールドID_visible</strong>"またはcms:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空の時に表示されなくなります。</div>
+		<div>cms:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空ではない時に表示されます。</div>
+		<div>例:フィールドIDがsampleの時</div>
+		<div style="border:1px solid #000000;">
+			&lt;div <strong>cms:id="sample_visible"</strong>&gt;<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;カスタムフィールドの値は<strong>&lt;!-- cms:id="sample" /--&gt;</strong>です。<br />
+			&lt;/div&gt;
+			&lt;div <strong>cms:id="sample_is_empty"</strong>&gt;<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;カスタムフィールドの値は空です。<br />
+			&lt;/div&gt;
+		</div>
+</fieldset>
+
+<form id="export_form" method="post">
+<fieldset style="width:670px;">
+	<legend>CSVエクスポートβ</legend>
+	<div>
+		<label><input type="checkbox" name="format[label]" value="1" checked="checked">1行目をラベルとする</label><br>
+		<label><input type="checkbox" name="format[quote]" value="1">データをダブルクォーテーションで必ず括る（オフの場合は自動判別）</label><br>
+		<label><input type="radio" name="format[separator]" value="comma" checked="checked">カンマ区切り</label>
+		<label><input type="radio" name="format[separator]" value="tab">タブ区切り</label><br/>
+		<label><input type="radio" name="format[charset]" value="Shift-JIS" checked="checked">Shift-JIS</label>
+		<label><input type="radio" name="format[charset]" value="UTF-8">UTF-8</label>&nbsp;
+		<input type="submit" name="csv" value="CSV出力">
+	</div>
+</fieldset>
+</form>
+
+<form id="import_form" method="post" enctype="multipart/form-data">
+<fieldset style="width:670px;">
+	<legend>CSVインポートβ</legend>
+	<div>
+		<label><input type="checkbox" name="format[label]" value="1" checked="checked">1行目をラベルとする</label><br>
+		<label><input type="checkbox" name="format[quote]" value="1">データをダブルクォーテーションで必ず括る（オフの場合は自動判別）</label><br>
+		<label><input type="radio" name="format[separator]" value="comma" checked="checked">カンマ区切り</label>
+		<label><input type="radio" name="format[separator]" value="tab">タブ区切り</label><br/>
+		<label><input type="radio" name="format[charset]" value="Shift-JIS" checked="checked">Shift-JIS</label>
+		<label><input type="radio" name="format[charset]" value="UTF-8">UTF-8</label>&nbsp;
+		<input type="file" name="import_file" value="">&nbsp;
+		<input type="submit" name="upload" value="CSVアップロード">
+	</div>
+</fieldset>
+</form>
+
+
+<style type="text/css">
+.section{
+	background-color:#DAFF9F;
+}
+</style>
+<script type="text/javascript">
+$(function(){
+	$("#export_form").attr("target","download_frame");
+	$("#export_form").submit(function(){
+		setTimeout(function(){location.reload();},1000);
+	});
+});
+
+function check_update(old){
+	var res = window.prompt("New Label?",old);
+	if(res != null && res.length > 0){
+		$("#new_label").val(res);
+		return true;
+	}
+	
+	return false;
+}
+function update_display_sample(){
+	if($("#config_display_title").prop('checked')){
+		$("#display_sample_title").show();
+	}else{
+		$("#display_sample_title").hide();
+	}
+	if($("#config_display_id").prop('checked')){
+		$("#display_sample_id").show();
+	}else{
+		$("#display_sample_id").hide();
+	}
+}
+update_display_sample();
+</script>

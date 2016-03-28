@@ -1,0 +1,121 @@
+/* -- main layout -- */
+
+* {
+	margin:0;
+	padding:0;
+}
+
+body {
+	background-image:url("../img/main/background.jpg");
+	background-repeat:repeat-x;
+	height:100%;
+	font-family:
+		'Hiragino Kaku Gothic Pro',
+		'ヒラギノ角ゴ Pro W3',
+		'Osaka',
+		'ＭＳ Ｐゴシック',
+		sans-serif;
+}
+
+select option{
+	margin-right:10px;
+}
+
+#wrapper {
+	width:82%;
+	min-width:800px;
+	height:100%;
+	margin:0 auto;
+	text-align:left;
+	position:relative;
+
+}
+
+/* --- for IE min-width ---*/
+* html .minwidth {
+	border-left: 800px solid white;
+}
+* html .container {
+	margin-left: -800px;
+	position: relative;
+	background-image:url("../img/main/background.jpg");
+	background-repeat:repeat-x;
+}
+/*\*/
+* html .minwidth,
+* html .container,
+* html .content {
+	height: 1px;
+}
+
+/*/
+#wrapper {
+	display: inline-block;
+}
+/**/
+
+/* -- main layout end -- */
+
+h1{
+	font-size: 30px;
+	font-weight: bold;
+}
+
+/* init form */
+#init_wrapper_for_IE {
+	/*for IE*/
+	text-align:center;
+}
+
+#init_wrapper {
+	margin:0 auto;
+	text-align:left;
+	padding:0;
+	width:370px;
+	margin-top:100px;
+}
+
+#init_main {
+	background-image:url("./img/init.gif");
+	background-repeat:no-repeat;
+	width:370px;
+	height:368px;
+	padding-top: 20px;
+}
+
+.item{
+	font-size:12px;
+	margin:0px;/* 横のmarginを指定すると子のinputにも効いてしまう（IE） */
+	height: 90px;
+	padding-left: 20px;
+} 
+
+.item p {
+	font-size: normal;
+	font-weight: bold;
+	color:#333333;
+	margin:5px 5px;
+}
+	
+.item input {
+	font-size:30px;
+	color:#333333;
+	width:320px;
+	height:50px;
+	padding:4px;
+}
+
+.submit_button {
+	width:100px;
+	height:50px;
+	font-size:16px;
+	float:right;
+	margin-right:20px;
+}
+
+.failed_message{
+	font-weight: bold;
+	color:red;
+	padding: 2px;
+}
+

@@ -1,0 +1,71 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div id="layer_content">
+
+<h3>登録情報</h3>
+
+<span>登録情報の変更を行えます。</span>
+
+<input type="submit" value="パスワードを変更する" />
+<input type="submit" value="登録情報を変更する" />
+<input type="submit" value="メールアドレスを変更する" />
+
+<div class="section">
+	<p class="sub">名前</p>
+	姓：<input type="text" soy:id="firstname" />
+	名：<input type="text" soy:id="lastname" />
+</div>
+
+<div class="section">
+	<p class="sub">名前（ふりがな）</p>
+	姓：<input type="text" soy:id="firstnameReading" />
+	名：<input type="text" soy:id="lastnameReading" />
+</div>
+
+<div class="section">
+	<p class="sub">生年月日</p>
+	<select soy:id="birthday_year"></select>年
+	<select soy:id="birthday_month"></select>月
+	<select soy:id="birthday_day"></select>日
+</div>
+
+<div class="section">
+	<p class="sub">表示名</p>
+	<input type="text" soy:id="nickname" />
+	
+	<input type="submit" value="登録情報を変更する" />
+</div>
+
+<h3>パスワードの変更</h3>
+
+<div class="section">
+	<p class="sub">古いパスワード</p>
+	<input type="text" soy:id="password" />
+</div>
+
+<div class="section">
+	<p class="sub">新しいパスワード</p>
+	<input type="text" soy:id="newPassword" />
+</div>
+
+<div class="section">
+	<p class="sub">新しいパスワード（確認）</p>
+	<input type="text" soy:id="newPasswordConfirm" />
+	
+	
+</div>
+
+<h3>登録メールアドレスの変更</h3>
+
+<div class="section">
+	<p class="sub">メールアドレス</p>
+	<input type="text" soy:id="email" />
+	
+	<input type="submit" value="確認メールの送信" />
+</div>
+
+</div>
+</body>
+</html>

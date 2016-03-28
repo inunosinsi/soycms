@@ -1,0 +1,68 @@
+#page_panels{
+	width:95%;
+	clear:both;
+}
+
+.page_panel{
+	border:1px solid orange;
+	background-image:url("./images/page_panel_bg.jpg");
+	float:left;
+	height:80px;
+	margin:10px;
+	padding-left:10px;
+	padding-top:10px;
+	position:relative;
+	width:100%;
+}
+.page_name {
+	font-size:1.2em;
+	font-weight:bold;
+}
+
+.page_image_box{
+	width:64px;
+	height:64px;
+	
+	float:left;
+	position:relative;
+}
+
+.page_image_blog{
+	position:absolute;
+	bottom:2px;
+	left:2px;
+}
+
+.page_image_deleted{
+	position:absolute;
+	bottom:5px;
+	right:5px;
+	width:32px;
+	height:32px;
+}
+
+.page_panel_info{
+	float:left;
+	margin-left:10px;
+}
+
+.page_panel_functions{
+	bottom: 15px;
+	font-size:0.9em;
+	left:300px;
+	padding-left:117px;
+	padding-top:5px;
+	position:absolute;
+}
+
+.page_panel_functions a {
+	margin-right:10px;
+}
+
+.page_panel_update_date{
+	position:absolute;
+	bottom:15px;
+	right:10px;
+	font-size:0.9em;
+	color:#666666;
+}

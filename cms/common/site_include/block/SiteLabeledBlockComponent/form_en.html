@@ -1,0 +1,54 @@
+<form soy:id="sites_form">
+	<fieldset class="inline"><legend>Select a website</legend>
+		Website ID: <select style="width:180px;" soy:id="site"></select>
+		<input type="submit" value="Change" />
+		<input type="hidden" value="reload" name="after_submit" />
+	</fieldset>
+</form soy:id="sites_form">
+	
+<form soy:id="main_form">
+	<input type="hidden" soy:id="site_hidden" />
+	
+	<fieldset>
+		<legend>Labels to Display</legend>
+		<h5 style="margin-bottom:0px;">Select a label to display.</h5>
+			
+		<div id="labels_wrapper" style="_width: 643px;">
+			<div class="label_wrapper" soy:id="label_loop">
+				<input type="radio" soy:id="radio" name="object[labelId]"/>
+				<label soy:id="label">
+					<img soy:id="label_icon" class="label_icon" />
+					<span soy:id="label_text" class="label_caption"></span>
+				</label soy:id="label">
+			</div soy:id="label_loop">
+		</div>
+	</fieldset>
+	
+	<fieldset class="inline">
+		<legend>Number of items<img soy:message="HELP_BLOCK_DISPLAY_NUMBER"/></legend>
+		Number of items : <input type="text" soy:id="display_number_start" name="object[displayCountFrom]" size="2"> ~ <input type="text" soy:id="display_number_end" size="2" object[displayCountTo]>
+	</fieldset>
+
+	<fieldset class="inline">
+		<legend>Display Order</legend>
+		<input type="text" soy:id="display_order_desc"><label for="display_order_desc">Ascending</label>
+		<input type="text" soy:id="display_order_asc"><label for="display_order_asc">Descending</label>
+		By Created Date.
+		<br />(This setting will be applied when the individual Display Order for an entry is not specified .)
+	</fieldset>
+
+	<!-- soy:display="blog_link" -->
+	<fieldset>
+		<legend>Hyperlink to blogpage</legend>
+		<input soy:id="no_stick_url" type="hidden" name="object[blogPageId]" value="0"/>
+		<input soy:id="stick_url" type="checkbox" onclick="common_toggle('blog_page_list');common_toggle('blog_page_list_label');"><br/>
+		<span id="blog_page_list_label" soy:id="blog_page_list_label">Set a blogpage label: </span><select id="blog_page_list" soy:id="blog_page_list"></select>
+	</fieldset>
+	<!-- /soy:display="blog_link" -->
+	
+	<div style="margin:10px;text-align:center;">
+		<input class="submit_button" type="submit" value="Save">
+		<input class="submit_button" type="button" value="Cancel" onclick="common_close_layer(window.parent);return false;" style="margin-left:20px;">
+	</div>
+	
+</form soy:id="main_form">

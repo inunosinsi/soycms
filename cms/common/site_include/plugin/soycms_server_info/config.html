@@ -1,0 +1,10 @@
+<p>サーバーの情報を表示するプラグインです。初期管理者のみが使えます。</p>
+
+<div>
+	<div style="float:left;margin-left:1ex;"><a href="#soycms" onclick="$('#server_info').show();$('#php_info').hide();">SOY CMS情報</a></div>
+	<div style="float:left;margin-left:1ex;"><a href="#phpinfo" onclick="$('#php_info').show();$('#server_info').hide();">PHP Info</a></div>
+</div>
+
+<textarea id="server_info" soy:id="server_info"></textarea>
+
+<iframe   id="php_info"    soy:id="php_info" ></iframe>

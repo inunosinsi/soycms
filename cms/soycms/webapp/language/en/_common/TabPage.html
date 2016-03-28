@@ -1,0 +1,59 @@
+<?php /* 通常はこっちだけ表示 */ ?>
+<div soy:id="not_simple_mode" id="tab" class="span-24 last">
+		<a soy:link="Index">
+			<div soy:id="dashboard" id="tab_left" class="menu_active">
+				<p>HOME</p>
+			</div>
+		</a>
+		<a soy:link="Entry">
+			<div soy:id="entry" class="menu_inactive span-3">
+				<p>ENTRY</p>
+			</div>
+		</a>
+		<a soy:link="Label">
+			<div soy:id="label" class="menu_inactive span-3">
+				<p>LABEL</p>
+			</div>
+		</a>
+		<a soy:link="Page">
+			<div soy:id="page" class="menu_inactive span-3">
+				<p>WEBPAGE</p>
+			</div>
+		</a>
+		
+		<a soy:link="Plugin">
+			<div soy:id="plugin" class="menu_inactive span-3">
+				<p>PLUGIN</p>
+			</div>
+		</a>
+</div soy:id="not_simple_mode">
+
+<?php /* Simpleモードはこっちだけ表示 */ ?>
+<div soy:id="simple_mode" id="tab" class="span-24 last">
+	<a soy:link="Simple"><div soy:id="simple_dashboard" class="menu_active"><p>RECENT UPDATE</p></div></a>
+	<a soy:link="Entry"><div soy:id="simple_entry" class="menu_inactive"><p>ENTRY</p></div></a>
+	<a soy:link="Blog.List"><div soy:id="simple_blog" class="menu_inactive"><p>BLOG</p></div></a>
+	<a soy:link="Page.Preview" target="_blank"><div soy:id="simple_preview" class="menu_inactive" style="font-size:0.85em"><p>DYNAMIC EDIT</p></div></a>
+
+	<div style="clear:both;"></div>
+</div soy:id="simple_mode">
+
+<script type="text/javascript">
+
+$$("div.menu_inactive").each(function(element){
+	element.onmouseover = function(e){
+		this.setAttribute("class","menu_inactive_hover span-3");
+		this.setAttribute("className","menu_inactive_hover span-3");
+	};
+	
+	element.onmouseout = function(e){
+		this.setAttribute("class","menu_inactive span-3");
+		this.setAttribute("className","menu_inactive span-3");
+	};
+	
+	/*element.onmousedown = function(e){
+		this.setAttribute("class","menu_inactive_active span-3");
+		this.setAttribute("className","menu_inactive_active span-3");
+	};*/
+});
+</script>

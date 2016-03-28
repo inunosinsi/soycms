@@ -1,0 +1,100 @@
+<p><a href="http://www.google.co.jp/analytics/" target="_blank">Google Analytics</a>のためのプラグインです。</p>
+
+
+<form method="post">
+	<fieldset>
+		<legend>トラッキングコード</legend>
+
+		<div>Google Analyticsのトラッキングコードをそのまま入力してください（&lt;script type="text/javascript"&gt;から&lt;/script&gt;まで）。<br>
+		<a href="http://support.google.com/analytics/bin/answer.py?answer=1012283" target="_blank">従来のコード</a>でも<a href="http://support.google.com/googleanalytics/bin/answer.py?answer=174090" target="_blank">非同期トラッキング コード</a>でも利用可能です。</div>
+		<div>「携帯自動振り分けプラグイン」が有効な場合はモバイルとスマートフォン向けの設定が可能です。</div>
+
+		<table class="list" style="margin-left:0;">
+			<tr>
+				<th>PC</th>
+				<td>
+					<textarea soy:id="google_analytics_track_code" name="google_analytics_track_code"></textarea>
+				</td>
+			</tr>
+	
+			<!-- soy:id="has_util_mobile_check" -->
+			<tr>
+				<th>モバイル</th>
+				<td>
+					<input type="text" soy:id="google_analytics_track_code_mobile" /><br />
+					※モバイルの場合はUAから始まるプロファイル IDのみ入力してください（例：UA-99999-1）。自動的に測定用のimgタグを生成しページ末尾に挿入します。
+				</td>
+			</tr>
+			<tr>
+				<th>スマートフォン</th>
+				<td>
+					<textarea soy:id="google_analytics_track_code_smartphone" name="google_analytics_track_code_smartphone"></textarea>
+				</td>
+			</tr>
+			<!-- /soy:id="has_util_mobile_check" -->
+			
+			<tr><td colspan="2">
+				<input type="submit" style="padding:10px 20px;display:block;margin:auto;" value="保存"/>
+			</td></tr>
+		</table>
+	</fieldset>
+</form>
+
+<form method="post">
+	<fieldset>
+		<legend>挿入箇所（PC、スマートホンのみ有効）</legend>
+		<ul style="margin-bottom: 0;">
+			<li style="list-style:none">
+				<input type="radio" soy:id="insert_into_the_end_of_head" />
+			</li>
+			<li style="list-style:none">
+				<input type="radio" soy:id="insert_into_the_beginning_of_body" />
+			</li>
+			<li style="list-style:none">
+				<input type="radio" soy:id="insert_into_the_end_of_body" />
+			</li>
+		</ul>
+		<input type="submit" style="padding:10px 20px;" value="保存" />
+	</fieldset>
+</form>
+
+
+<form method="post" soy:id="config_per_page_panel">
+	<fieldset>
+		<legend>ページ別設定</legend>
+		<div>ページ毎にトラックコードを挿入するかしないかを設定します。</div>
+		<ul>
+			<li soy:id="page_list" style="list-style:none">
+				<input type="hidden" soy:id="page_item_hidden" /><input type="checkbox" soy:id="page_item" />
+				<ul soy:id="for_blog_page" style="list-style:none">
+					<li><input type="hidden" soy:id="blog_top_hidden" /><input type="checkbox" soy:id="blog_top" /></li>
+					<li><input type="hidden" soy:id="blog_month_hidden" /><input type="checkbox" soy:id="blog_month" /></li>
+					<li><input type="hidden" soy:id="blog_category_hidden" /><input type="checkbox" soy:id="blog_category" /></li>
+					<li><input type="hidden" soy:id="blog_entry_hidden" /><input type="checkbox" soy:id="blog_entry" /></li>
+				</ul soy:id="for_blog_page">
+			</li soy:id="page_list">
+		</ul>
+
+		<input type="submit" style="padding:10px 20px;" value="保存" />
+	</fieldset>
+</form>
+
+<script type="text/javascript">
+	function update_blog_pages(selfId){
+		if($("#"+selfId).prop("checked")){
+			$("#"+selfId+"-top").attr("disabled",false);
+			$("#"+selfId+"-month").attr("disabled",false);
+			$("#"+selfId+"-category").attr("disabled",false);
+			$("#"+selfId+"-entry").attr("disabled",false);
+		}else{
+			$("#"+selfId+"-top").attr("disabled",true);
+			$("#"+selfId+"-month").attr("disabled",true);
+			$("#"+selfId+"-category").attr("disabled",true);
+			$("#"+selfId+"-entry").attr("disabled",true);
+		}
+	}
+	
+	$.each($(".blog"), function(){
+		update_blog_pages(this.id);
+	});
+</script>

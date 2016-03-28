@@ -1,0 +1,56 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div id="layer_content" style="text-align:left;">
+
+<p soy:id="changepassword_message">Password is changed.</p>
+
+<p soy:id="changeuserinfo_message">User information is updated.</p>
+
+<form soy:id="changeuser_form">
+
+<h3>
+	<input style="float:right;" type="submit" name="changeuser" value="Change user information" />
+	User information
+</h3>
+
+
+
+<div class="section">
+	<p class="sub">Name</p>
+	<span soy:id="name"></span>
+</div>
+
+
+<div class="button">
+	
+</div>
+
+
+<div class="section">
+	<p class="sub">Email address</p>
+	<span soy:id="email">hogehoge@hoge.com</span>
+</div>
+
+</form soy:id="changeuser_form">
+<form soy:id="changepassword_form">
+
+<h3>
+	<input style="float:right;" type="submit" name="changepassword" value="Change password" />
+	Password
+</h3>
+
+</form soy:id="changepassword_form">
+
+
+<div class="section">
+	<p class="sub">Password</p>
+	<span>(Password is not displayed for your security)</span>
+</div>
+	
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">		
+			
+			<div class="span-23 last">
+				<h2>記事雛形管理</h2>
+			</div>
+			
+			<div class="soy-push-1 span-22 last">
+			
+				<div class="functions span-22 last">
+					<a soy:link="Entry" style="margin-right:10px">記事管理に戻る</a>
+					<a soy:link="EntryTemplate" style="margin-right:10px">記事雛形管理に戻る</a>
+				</div>
+				
+				<script type="text/javascript">
+				function showPreview(){
+					var $iframe = $("#preview_frame");
+					
+					if($iframe.size() > 0){
+						$iframe.remove();
+					}
+					
+					var div = document.createElement("div");
+					div.innerHTML = '<iframe id="preview_frame" src="" frameborder="0" style="width:100%;height:100%;background-color:white;border:none;"></iframe>';
+					div.setAttribute("id","preview_frame_wrapper");
+					div.style.position = "absolute";
+					div.style.visibility = "hidden";
+					div.style.backgroundColor = "red";
+					document.body.appendChild(div);
+					
+					$iframe = $("#preview_frame");
+							
+					common_element_to_layer($iframe);
+					
+					//iframe.parentNode.style.visibility = "visible";
+
+					var iframe = $iframe[0];
+					iframe.contentWindow.document.open();
+					iframe.contentWindow.document.write("<html><head><style type=\"text/css\">"+ $("#template_style").val()+ "</style></head><body></body></html>");
+					iframe.contentWindow.document.close();
+					iframe.contentWindow.document.body.innerHTML = "<div>" + $("#template_content").val() + "</div><div>" + $("#template_more").val() + "</div>";
+					iframe.contentWindow.document.body.style.height = "300px";
+					iframe.contentWindow.document.body.style.width = "300px";
+	
+				}
+				</script>
+				
+				<div class="span-22 last">
+				<form soy:id="update_form">
+					
+					<div style="margin:15px 5px;">
+						<button type="button" onclick="showPreview();" >プレビューを表示</button>
+					</div>
+				
+					<table class="list">
+						
+						<tr>
+							<th>名前<img soy:message="ENTRY_TEMPLATE_NAME"/></th>
+							<td><input type="text" soy:id="name" style="width:100%;"><input type="hidden" soy:id="template_id"></td>
+						</tr>
+						<tr>
+							<th style="padding:4px 12px;">関連ラベル<img soy:message="ENTRY_TEMPLATE_LABEL"/></th>
+							<td>
+								<select soy:id="label_list">
+									<option value="">------</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<th>本文<img soy:message="ENTRY_TEMPLATE_CONTENT"/></th>
+							<td><textarea id="template_content" cols="80" rows="10" style="width:100%;" soy:id="content">aaaaaa</textarea></td>
+						</tr>
+						<tr>
+							<th>追記<img soy:message="ENTRY_TEMPLATE_MORE"/></th>
+							<td><textarea id="template_more" cols="80" rows="10" style="width:100%;" soy:id="more"></textarea></td>
+						</tr>
+						<tr>
+							<th>スタイル<img soy:message="ENTRY_TEMPLATE_STYLE"/></th>
+							<td><textarea id="template_style" cols="40" rows="5" style="width:100%;" soy:id="style"></textarea></td>
+						</tr>
+						<tr>
+							<th>説明<img soy:message="ENTRY_TEMPLATE_DESCRIPTION"/></th>
+							<td><textarea cols="40" rows="5" style="width:100%;" soy:id="description"></textarea></td>
+						</tr>
+					</table>
+					
+					<div style="margin:15px 5px;">
+						<input type="submit" class="submit_button" soy:id="submit_button" value="更新" />
+					</div>
+					
+				</form soy:id="update_form">
+				</div>
+			</div>
+
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div soy:id="wrapper" >
+
+</body>
+</html>

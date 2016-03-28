@@ -1,0 +1,105 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			<div class="span-23 last">
+				<h2>Template pack detail - <span soy:id="template_name"></span></h2>
+			</div>
+			<div class="functions prepend-1 span-22 last">
+				<a soy:link="Template" style="margin-right:10px">Return to templatepack manager</a>
+				<a soy:id="operation_link" style="margin-right:10px">Install/Uninstall</a>
+			</div>
+			
+			<div soy:display="installed" class="prepend-1 span-22 last">
+				<p>This templatepack is available.</p>
+				<p>
+				Files displayed in red characters are not foun in this server.<br />
+				Check file manager.
+				</p>
+			</div soy:display="installed">
+			
+			<div soy:display="not_installed" class="prepend-1 span-22 last">
+				<p>This templatepack is not available.</p>
+				<!-- soy:display="file_list" -->
+				<p>
+				Files which have same name as the files displayed in red characters are found in this server.<br />
+				Check filemanager.
+				</p>
+				<!-- /soy:display="file_list" -->
+				
+			</div soy:display="not_installed">
+			
+			<div class="span-23 last">
+				<div class="span-22 last soy-push-1">
+					<h4>Templatepack list</h4>
+				</div>
+				<table class="span-22 last list soy-push-1" id="file_list">
+					<thead>
+						<tr>
+							<td class="function">Title</td>
+							<td class="function">Description</td>
+							<td class="function" soy:display="installed">Operation</td soy:display="installed">				
+						</tr>
+					</thead>
+					<tbody>
+						<tr soy:id="template_list">
+							<td>
+								<span soy:id="name">File list</span>
+							</td>
+							<td>
+								<span soy:id="description">Description</span>
+							</td>
+							<td soy:display="installed">
+								<a soy:id="edit_link">Edit</a>
+							</td soy:display="installed">
+						</tr soy:id="template_list">			
+					</tbody>
+				</table>
+			</div>
+			
+			<!-- soy:display="file_list" -->
+			<div class="span-23 last">
+				<div class="span-22 last soy-push-1">
+					<h4>File list</h4>			
+				</div>
+				<table class="list span-22 last soy-push-1" id="file_list">
+					<thead>
+						<tr>
+							<td class="function">Path</td>
+							<td class="function">Description</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr soy:id="file_list">
+							<td>
+								<a soy:id="name" target="_blnak">File list</a>
+							</td>
+							<td>
+								<span soy:id="description">Description</span>
+							</td>
+						</tr soy:id="file_list">			
+					</tbody>
+				</table>
+			</div>
+			<!-- /soy:display="file_list" -->
+			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div soy:id="wrapper" >
+
+</body>
+</html>

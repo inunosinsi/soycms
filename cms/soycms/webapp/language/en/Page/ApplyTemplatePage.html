@@ -1,0 +1,44 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div id="layer_content">
+<h3>Apply webpage template pack</h3>
+<form soy:id="main_form" onsubmit="return confirm('Are you OK to overwrite webpage template?');">
+	<span style="color:red;font-weight:bold">Notice: If you apply a templatepack, webpage template will be overwritten by the templatepack.</span>
+	<table class="" cellpadding="0" cellspacing="0">
+		<tr>
+			<th>Template pack(s)</th>
+			<td>
+				<select id="normal_template_select" soy:id="normal_template_select"></select>
+				<select id="blog_template_select" soy:id="blog_template_select"></select>
+			</td>
+		</tr>
+	</table>
+	<input class="submit_button" type="submit" value="Apply" onclick="return check_selected();" />
+	<input class="submit_button" type="button" value="Cancel" onclick="common_close_layer(window.parent);" />
+</form soy:id="main_form">
+</div>
+
+<script type="text/javascript">
+function check_selected(){
+	if($("normal_template_select")){
+	 	if($("normal_template_select").value.length < 1){
+	 		alert("Select webpage template pack.");
+			return false;
+		}
+	}
+	
+	if($("blog_template_select")){
+		if($("blog_template_select").value.length < 1){
+	 		alert("Select webpage template pack.");
+			return false;
+		}
+	}
+	
+	return true;
+}
+</script>
+
+</body>
+</html>

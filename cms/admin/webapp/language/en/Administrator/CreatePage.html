@@ -1,0 +1,79 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>Add a New User</h2>
+		
+		<div class="functions">
+			<p><a soy:link="Administrator">User List</a></p>
+		</div>
+		
+		<div soy:id="error">
+			<p class="notify">Failed to add a new user.</p>
+		</div>
+		
+		<form soy:id="change_password_form">
+		<table class="globalpage_input">
+			<tr>
+				<th>User ID</th>
+				<td><input name="userid" type="text"></td>
+			</tr>
+			<tr class="example">
+				<td>&nbsp;</td>
+				<td>Required. 4 to 30 letters (bytes). Used as Log-in ID.</td>
+			</tr>
+			
+			<tr>
+				<th>Password</th>
+				<td>
+					<input id="password" name="password" type="password" size="60" autocomplete="off">
+					<a href="#" onclick="common_toggle_password('password')">Show/hide password</a>
+				</td>
+			</tr>
+			<tr class="example">
+				<td>&nbsp;</td>
+				<td>Required. 6 to 30 letters (bytes).</td>
+			</tr>
+
+			<tr>
+				<th>Name</th>
+				<td>
+					<input name="name" type="text" size="60" autocomplete="off">
+				</td>
+			</tr>
+			<tr class="example">
+				<td>&nbsp;</td>
+				<td>Optional. Up to 255 letters (bytes).</td>
+			</tr>
+
+			<tr>
+				<th>E-mail</th>
+				<td>
+					<input name="email" type="text" size="60" autocomplete="off">
+				</td>
+			</tr>
+			<tr class="example">
+				<td>&nbsp;</td>
+				<td>Optional. Up to 255 letters (bytes).</td>
+			</tr>
+
+			<tr>
+				<td>&nbsp;</td>
+				<td class="button">
+					<input id="update_button" type="submit" value="Create" style="width:10em;">
+				</td>
+			</tr>
+		</table>
+		</form soy:id="change_password_form">
+	</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+</body>
+</html>

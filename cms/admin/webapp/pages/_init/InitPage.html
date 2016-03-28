@@ -1,0 +1,40 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>初回設定 - SOY CMS</title>
+	<link rel="stylesheet" soy:link="css/init/style.css"/>
+</head>
+
+<body>
+
+<form soy:id="initform">
+	<div id="init_wrapper_for_IE">
+		<div id="init_wrapper">
+			<img soy:id="biglogo" alt="logo" />
+			<h1>初期管理者を作成します</h1>
+			<div class="failed_message" soy:id="message_db">DBに接続できません！</div>
+			<div id="init_main"> 
+				<div class="item">
+					<p>初期管理者ID（ログインID, 4～30文字）</p>
+					<input type="text" name="userId" value="" soy:id="userId" />
+					<div class="failed_message" soy:id="message_userId"/>
+				</div>
+				<div class="item">
+					<p>パスワード（6～30文字）</p>
+					<input type="password" name="password" value="" soy:id="password" />
+					<div class="failed_message" soy:id="message_password"/>
+				</div>
+				<div class="item">
+					<p>パスワード（確認）</p>
+					<input type="password" name="password_confirm" value="" soy:id="password_confirm" />
+					<div class="failed_message" soy:id="message_password_confirm"/>
+				</div>
+				<input soy:id="submit_button" class="submit_button" type="submit" name="login" value="設定" />
+			</div>
+		</div>
+	</div>
+</form soy:id="initform">
+
+</body>
+
+</html>

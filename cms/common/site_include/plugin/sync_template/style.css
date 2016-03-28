@@ -1,0 +1,35 @@
+fieldset{
+	padding: 1ex;
+}
+
+.export_description p{
+	margin-left:10px;
+}
+ 
+.html_sample {
+	padding-left:100px;
+	margin: 0px;
+}
+
+.export_time_head {
+	float:left;
+	width:160px;
+	text-align:center;
+	background-color:#89BE38;
+	border:1px solid #EFEFEF;
+	line-height:1.5em;
+}
+
+.export_time_body {
+	float:left;
+	text-align:center;
+	padding-left:10px;
+	padding-right:10px;
+	line-height:1.5em;
+}
+
+.export_function_block {
+	width:40%;
+	float:left;
+	margin-right:20px;	
+}

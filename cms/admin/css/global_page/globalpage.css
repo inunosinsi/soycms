@@ -1,0 +1,158 @@
+body {
+	_text-align:center;
+}
+
+#wrapper {
+	min-width:736px;
+	width:736px;
+}
+
+h3{
+	padding:5px 0 5px 15px;
+	border-left:#009900 8px solid;
+	border-bottom:#009900 1px solid;
+	font-size:0.9em;
+}
+
+#upperMenu {
+	border: 1px solid transparent;
+	border-bottom-color: lightgrey;
+}
+
+#upperMenu img {
+	float:left;
+	width:212px;
+	height:107px;
+	border:0;
+}
+
+#tabs {
+	clear:both;
+	
+}
+
+/* IEで #tabs > * が動かなかった */
+#tabs a {
+	width:177px;
+	height:37px;
+	line-height:37px;
+	font-weight:bold;
+	font-size:14px;
+	margin-top:10px;
+	margin-right:5px;
+	text-align:center;
+	float:left;	
+}
+
+#tabs a {
+	text-decoration:none;
+}
+
+#tabs .tab_active,
+#tabs .tab_inactive_hover,
+#tabs .tab_inactive_active {
+	background-image:url("./globalpage_images/tab_active.jpg");
+	background-repeat:no-repeat;
+	color:grey;
+	border-bottom: 1px solid rgb(254,250,193);
+	margin-bottom: -1px;
+}
+
+#tabs .tab_inactive {
+	background-image:url("./globalpage_images/tab_inactive.jpg");
+	background-repeat:no-repeat;
+	color:white;
+}
+
+
+#content {
+	width:710px;
+	_width:736px;
+	border:1px solid #CCCCCC;
+	border-top-style: none;
+	background-image:none;
+	background-color:white;
+	margin:0;
+	padding:12px 12px;
+}
+
+#content h2 {
+	border-bottom:1px solid #c3c3c3;
+	font-size:1.3em;
+	margin-bottom:12px;
+}
+
+
+#siteboxes h3,
+.siteboxes h3{
+	margin-bottom:15px;
+}
+
+.siteboxes {
+}
+
+.sitebox,
+.sitebox_big {
+	position: relative;
+	width:300px;
+	min-height: 85px;
+	_height: 85px;
+	border:1px solid grey;
+	padding:10px 10px;
+	margin:0 16px 16px;
+	float:left;
+}
+
+
+.sitebox p , .sitebox_big p , .sitebox_functions{
+	margin-top:10px;
+	font-size:16px;
+}
+
+.sitebox p.version,
+.sitebox_big p.version
+{
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+}
+
+h4.sitename {
+	position: relative;
+/*	float:left;*/
+	font-size:20px;
+	width:230px;
+}
+
+p.login_button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width:300px;
+	text-align:right;
+}
+
+p.login_button a {
+	color:red;
+	font-size:16px;
+}
+
+.sitebox_functions p{
+	display:inline;
+	margin-right:5px;
+}
+
+#soycms_info{
+	margin-left:2px;
+	padding-bottom:10px;
+	margin-bottom:10px;
+}
+
+#soycms_info p{
+	letter-spacing:1px;
+	height:1.2em;
+}
+
+#footer {
+	width:736px;
+}

@@ -1,0 +1,26 @@
+<div>
+記事の作成日時から下記で設定した期間中はcms:id="<!-- soy:id="cms_id" /-->"で示された箇所が表示されます。<br/>
+</div>
+
+<form method="post" soy:id="this_is_new_form">
+<fieldset><legend>設定</legend>
+	新着期間: <input soy:id="days_to_be_new" style="text-align:right" />日<br />
+	<input soy:id="ignore_future_entry" id="ignore_future_entry" value="1" /><br />
+	<input type="submit" name="save" value="設定" />
+</fieldset>
+</form soy:id="this_is_new_form">
+
+<h4>使用例</h4>
+<pre style="margin: 1.5em 2em; border: 1px solid gray; padding: 1ex 1.5ex;">
+&lt;!-- cms:id="<!-- soy:id="cms_id" /-->" --&gt;
+	新着記事！
+&lt;!-- /cms:id="<!-- soy:id="cms_id" /-->" --&gt;
+</pre>
+<pre style="margin: 1.5em 2em; border: 1px solid gray; padding: 1ex 1.5ex;">
+&lt;!-- cms:id="<!-- soy:id="cms_id" /-->" --&gt;
+	&lt;img src="new.png" alt="新着" /&gt;
+&lt;!-- /cms:id="<!-- soy:id="cms_id" /-->" --&gt;
+</pre>
+<pre style="margin: 1.5em 2em; border: 1px solid gray; padding: 1ex 1.5ex;">
+&lt;img src="new.png" alt="新着" cms:id="<!-- soy:id="cms_id" /-->" /&gt;
+</pre>

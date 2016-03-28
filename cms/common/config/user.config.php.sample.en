@@ -1,0 +1,48 @@
+<?php
+/*
+ * User's configuration file
+ * Rename this file to user.config.php if you would like to make this configuration file effective.
+ */
+
+// Add file types that you can upload in File Manager.
+// Designate extensions separated by comma.
+// By default, you can upload files with following extentions: "txt","html","htm","jpg","jpeg","png","gif","bmp","swf","ico","js","css","pdf","zip"
+//define("SOYCMS_ALLOWED_EXTENSIONS","php,doc,xls,pdf");
+
+// Allow PHP code in page templates or not.
+// Not allowed by default (=false).
+//define("SOYCMS_ALLOW_PHP_SCRIPT",false);
+
+// Disable automatically resizing images for cellphone.
+// Enabled by default (=false).
+//define("SOYCMS_SKIP_MOBILE_RESIZE",true);
+
+// Type of Block
+//define("SOYCMS_BLOCK_LIST","EntryBlockComponent,LabeledBlockComponent,MultiLabelBlockComponent,SiteLabeledBlockComponent");
+/* Blocks available
+ * HTMLBlockComponent
+ * EntryBlockComponent
+ * LabeledBlockComponent
+ * MultiLabelBlockComponent
+ * SiteLabeledBlockComponent
+ * ScriptModuleBlockComponent (1.2.3 or later) 
+ */
+ 
+// Designate the directory in which Sites are created.
+//define("SOYCMS_TARGET_DIRECTORY", $_SERVER["DOCUMENT_ROOT"]);
+
+// Designate the publish url which corresponds to SOYCMS_TARGET_DIRECTORY.
+//define("SOYCMS_TARGET_URL", "");
+
+// Designate the Administrator's Document Root.
+//define("SOYCMS_ADMIN_ROOT", "");
+
+// Language: English (en) or Japanese (ja) is now available.
+define("SOYCMS_LANGUAGE", "en");
+
+// Auto-Logout (second): When 0 is set to this constant, you will never logout automatically.
+// See also session.cookie_lifetime in php.ini.
+//define("SOYCMS_LOGIN_LIFETIME", 0);
+
+//define("SOYINQUIRY_USE_SITE_DB", false);
+//define("SOYMAIL_USE_SITE_DB", false);

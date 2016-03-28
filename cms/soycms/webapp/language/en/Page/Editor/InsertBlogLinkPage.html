@@ -1,0 +1,145 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<script soy:id="prototypejs"></script>
+	<script soy:id="commonjs"></script>
+	<script soy:id="otherdata"></script>
+	<style type="text/css">
+		h4{
+			margin-bottom: 6px;
+		}
+		h5,p{
+			margin: 0 0 6px;
+			font-size:16px;
+		}
+		p, .sub{
+			margin-left:16px;
+			margin-bottom:12px;
+		}
+	</style>
+</head>
+<body>
+<?php /* コンテンツ部分 */ ?>
+<div>
+	<h4>Blogpage link setting</h4>
+	<h5>Selected page</h5>
+	<div class="sub">
+		<!-- soy:id="page_title" /--><br/>
+		<!-- soy:id="page_url" /-->
+	</div>
+	<h5>Select blog page type</h5>
+	<select id="link_style" name="link_style" class="sub" style="width:90%">
+		<!-- soy:display="show_top" --><option value="top">Blog top</option><!-- /soy:display="show_top" -->
+		<!-- soy:display="show_entry" --><option value="entry" selected="selected">Entry page</option><!-- /soy:display="show_entry" -->
+		<!-- soy:display="show_category" --><option value="category">Category page</option><!-- /soy:display="show_category" -->
+		<!-- soy:display="show_archive" --><option value="month">Monthly archive page</option><!-- /soy:display="show_archive" -->
+	</select>
+	<!-- soy:display="show_entry" -->
+	<div style="display:none;" id="entry_view">
+		<h4>Select an entry</h4>
+		<select soy:id="entry_list" id="entry_input" class="sub" style="width:90%"></select>
+	</div>
+	<!-- /soy:display="show_entry" -->
+	<!-- soy:display="show_top" -->
+	<div style="display:none;" id="top_view"></div>
+	<!-- /soy:display="show_top" -->
+	<!-- soy:display="show_category" -->
+	<div style="display:none;" id="category_view">
+		<h4>Select a category</h4>
+		<select soy:id="category_list" id="category_input" class="sub" style="width:90%"></select>
+	</div>
+	<!-- /soy:display="show_category" -->
+	<!-- soy:display="show_archive" -->
+	<div style="display:none;" id="month_view">
+		<h4>Select a month</h4>
+		<input type="text" value="" soy:id="month_today" id="month_input" class="sub">
+	</div>
+	<!-- /soy:display="show_archive" -->
+	
+	<div>
+		<input type="button" value="Add hyperlink" class="soycms_custom_button" onclick="return checkURL();">
+		<input type="button" value="Cancel"       class="soycms_custom_button" onclick="location.href=back_link;">
+	</div>
+</div>
+<?php /* コンテンツ部分終わり */ ?>
+
+<script type="text/javascript">
+	window.onload = function(){
+		if($("link_style").value != "null"){
+			$($("link_style").value + "_view").style.display = "";
+		}
+		
+		$("link_style").onchange = function(){
+			if($("category_view"))$("category_view").style.display = "none";
+			if($("entry_view"))$("entry_view").style.display = "none";
+			if($("month_view"))$("month_view").style.display = "none";
+			
+			if($("link_style").value != "null"){
+				$($("link_style").value + "_view").style.display = "";
+			}
+		}
+	};
+	
+
+	function checkURL(){
+		var href = 'href="'+page[1]+'"';
+		
+		var innerHTML = "";
+		
+		var cmslink = 'cms:link="'+page[0]+'"';
+		var extAttrib = "";
+		
+		if(siteId.length != 0){
+			extAttrib = ' site="'+siteId+'" ';
+		}
+		
+		switch($("link_style").value){
+			case "null":
+				alert("Select hyperlink type");
+				return false;
+			case "category":
+				extAttrib += 'category="'+$("category_input").value+'"';
+				tmpHTML = 'Category'+$("category_input").options[$("category_input").selectedIndex].innerHTML;
+				break;
+			case "entry":
+				extAttrib += 'entry="'+$("entry_input").value+'"';
+				tmpHTML = 'Entry'+$("entry_input").options[$("entry_input").selectedIndex].innerHTML;
+				break;
+			case "month":
+				extAttrib += 'month="'+$("month_input").value+'"';
+				tmpHTML = $("month_input").value;
+				break;
+			case "top":
+				extAttrib += '';
+				tmpHTML ='<!-- soy:id="blog_title" /-->';
+				break;
+			default:
+				return false;
+		}
+		
+		if(innerHTML == ""){
+			innerHTML = tmpHTML;
+		}
+		
+		if(extAttrib.length > 0)extAttrib = " " + extAttrib;
+		
+		window.parent.insertHTML(
+			'<a '
+			+href+" "
+			+cmslink
+			+extAttrib
+			+'>'
+			+innerHTML+'</a>'
+		);
+		
+		window.parent.common_close_layer(window.parent);
+		return false;
+	
+		
+	}
+
+	common_init_custom_button();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>総当たり攻撃</h2>
+
+		<p class="notify">総当たり攻撃を試されてる可能性があります</p>
+		
+		<div id="siteboxes">
+			<h3>総当たり攻撃を試みている可能性のあるIPアドレス</h3>
+			
+			<table class="list" cellpadding="0" cellspacing="0">
+				<thead>
+					<tr>
+						<th>IPアドレス</th>
+						<th>ログインエラー数</th>
+						<th>開始日時</th>
+						<th>最終実行日時</th>
+						<th>&nbsp;</th>
+					</tr>
+				</thead>
+				
+				<tbody>
+					<tr soy:id="candidate_list">
+						<td soy:id="ip"></td>
+						<td><!-- soy:id="count" /-->&nbsp;<!-- soy:id="successed" /--></td>
+						<td soy:id="start_date"></td>
+						<td soy:id="update_date"></td>
+						<td><a soy:id="measure_link">対策済みにする</a></td>
+					</tr>
+				</tbody>
+			</table>
+			※ログインエラー数のカッコの数字が表示されている場合はログインが成功した時のトライ数になります
+			
+			<div style="clear:both"><!----></div>
+		</div>
+		
+		<section id="description_area">
+			<h3>総当たり攻撃の対策</h3>
+			<div>
+				<h4>攻撃の可能性があるIPアドレスが関係者のアクセスでないか確認</h4>
+				<p>
+					<strong>IPアドレス</strong>で検索し、関係者の接続元のIPアドレスを調べて、身内のアドレスでないことを調べます。
+				</p>
+			</div>
+			<div>
+				<h4>パスワードの変更</h4>
+				<p>
+					すべてのアカウントのパスワードを変更しましょう。<br>
+					パスワードは数字、アルファベットと#や!等の記号を組み合わせ作成しましょう。<br>
+					アルファベットは大文字と小文字を含めると良いです。<br>
+					例：<strong>F/xJjYUTR#%.tt*$</strong>
+				</p>
+			</div>
+			<div>
+				<h4>htaccessでIPアドレスのアクセス制限を設定</h4>
+				<p>
+					/ルート/インストールディレクトリ/以下に.htaccessを配置し、下記の内容を記述します。<br>
+					<div class="square">
+						order allow,deny<br>
+						allow from all<br>
+						deny from <strong>127.0.0.1</strong>
+					</div>
+					<p>※deny fromはアクセスを禁止したいIP分だけ記載します。</p>
+				</p>
+			</div>
+		</section>
+		
+	</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+<style>
+#description_area{
+	margin:20px 0 0 0;
+}
+#description_area div{
+	margin:15px 0 0 10px;
+}
+#description_area div p{
+	padding:5px 0 0 10px;
+}
+div.square{
+	min-width:100px;
+	max-width:150px;
+	padding:2px;
+	border:1px solid #000000;
+}
+</style>
+</body>
+</html>

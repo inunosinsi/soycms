@@ -1,0 +1,122 @@
+#input_form {
+	background-color:#f8f8f8;
+}
+
+.section {
+	margin:10px 0px;
+	margin-bottom:0px;
+	padding:5px 10px;
+	/*background-color:#E2E2E2;*/
+	width:98%;
+}
+
+.section_top {
+	margin:10px 0px;
+	margin-bottom:0px;
+	padding:5px 10px;
+	/*background-color:#E2E2E2;*/
+	width:65%;
+}
+
+.subsection {
+	float:left;
+	margin-left:20px;	
+	height:30px;
+	line-height:30px;
+}
+
+.content {
+	cursor:pointer;
+
+}
+
+.content_tab_active{
+	padding:10px;
+	border:solid 1px lightgray;
+	background-color:#EFDF50;
+}
+
+.content_tab_inactive{
+	padding:10px;
+	border:solid 1px lightgray;
+}
+
+p.sub {
+	font-size:12px;
+	margin:0;
+	padding-left:7px;
+	padding-bottom:1px;
+	color:gray;
+}
+
+.entry_memos p{
+	font-weight:bold;
+	color:grey;
+	padding:3px 3px;
+}
+
+#title {
+	width:100%;
+	height:40px;
+	font-size:34px;
+}
+
+#labels {
+	line-height:50px;
+	border:1px solid lightgray;
+}
+
+#labels input {
+	margin:auto;
+	margin-left:5px;
+}
+
+#labels label {
+	margin:5px;
+	margin-right:15px;
+	vertical-align:middle;
+}
+
+#uri_prefix {
+	font-size:14px;
+	color:#8F8F8F;
+}
+
+#uri {
+	width:200px;
+	height:20px;
+	font-size:14px;
+}
+
+#release_wrapper {
+	float:left;
+	border:1px solid #CFCFCF;
+	padding:10px 10px;
+}
+
+#buttons {
+	/*float:right;*/
+	padding-top:10px;
+	vertical-align:middle;
+}
+
+#update_button {
+	width:100px;
+	height:50px;
+	font-size:16px;
+	float:left;
+}
+
+#create_button {
+	width:100px;
+	height:50px;
+	float:left;
+	margin-left:10px;
+}
+
+#send_button {
+	width:100px;
+	height:50px;
+	font-size:16px;
+	float:left;
+}

@@ -1,0 +1,2 @@
+HELP_LABEL_NAME_HINT	= A label starting with "*" will not be shown to an Entry Editor. So is an entry labeled with it.
+HELP_USE_LABEL_CATEGORY	= Use "/" for a label's name if you want to use grouping.

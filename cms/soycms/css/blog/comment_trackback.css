@@ -1,0 +1,32 @@
+table.list tbody.comment_list   td,
+table.list tbody.trackback_list td {
+	text-align:center;
+}
+
+table.list tbody.comment_list   td.state,
+table.list tbody.trackback_list td.state {
+	width:40px;
+}
+
+table.list tbody.comment_list   td.date,
+table.list tbody.trackback_list td.date {
+	width:90px;
+}
+
+table.list tbody.comment_list   td.author,
+table.list tbody.comment_list   td.entry,
+table.list tbody.trackback_list td.receive,
+table.list tbody.trackback_list td.sender {
+	width:150px;
+}
+
+table.list tbody.comment_list   td.title,
+table.list tbody.trackback_list td.title {
+	width:160px;
+}
+
+table.list tbody.comment_list   td.content,
+table.list tbody.trackback_list td.excerpt
+{
+	text-align: left;
+}

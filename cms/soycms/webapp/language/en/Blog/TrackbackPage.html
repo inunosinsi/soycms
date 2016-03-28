@@ -1,0 +1,168 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<script lang="text/javascript">
+	function onToggleAccept(state){
+		var count = count_checked_trackback();
+		if(count == 0) return;
+		
+		var msg = ( state ? "Accept " : "Reject " ) +count+" checked trackback"+( (count > 1) ? "s" : "" )+"?";
+		
+		if(!confirm(msg)) return;
+
+		$("op_code_id").value = "toggleApproved";
+		$("accept_state").value = state;
+		$("main_form").submit();
+	}
+	
+	function deleteTrackback(){
+		var count = count_checked_trackback();
+		if(count == 0) return;
+
+		var msg = "Delete "+count+" checked trackback"+( (count > 1) ? "s" : "" )+"?";
+		if(!confirm(msg)) return;
+		
+		$("op_code_id").value = "delete";
+		$("main_form").submit();
+	}
+	
+	function toggle_all_trackback_check(value){
+		$$("input.trackback_check").each(function(ele){
+			ele.checked = value;
+		});																	
+	}
+
+	function count_checked_trackback(){
+		var count = 0;
+		$$("input.trackback_check").each(function(ele){
+			if(ele.checked) count++;
+		});
+		if(count == 0){
+			alert("No trackback checked.");
+		}
+		return count;
+	}
+</script>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+	<div><div id="toolbox" class="span-24 last" soy:page="_common.ToolBoxPage"></div></div>
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">			
+			<form soy:id="self_form" style="display:none" id="trackback_form">
+				<input type="hidden" name="trackback_id" id="trackback_id">
+				<input type="hidden" name="state" id="state">
+				<input type="hidden" name="op_code" value="toggleApproved">
+			</form soy:id="self_form">
+			
+			<div class="blogMenu span-23 last" soy:id="BlogMenu"></div soy:id="BlogMenu">
+			
+			<div class="comment_menu soy-push-1 span-22 last">
+				<form soy:id="accept_form">
+				<div class="row">Default Setting of Trackbacks : <select soy:id="default_accept" style="width:100px"></select><input type="submit" value="Apply" /></div>
+				
+				<input type="hidden" name="op_code" value="change_defaults"/>
+				</form soy:id="accept_form">
+			</div>
+			
+			<div soy:display="must_exists_trackback" class="span-22 last soy-push-1">
+			
+				<div soy:panel="checkbox_functions" class="checkbox_functions">
+					<div class="checkbox_functions_left"><!----></div>
+					<div class="checkbox_functions_content">
+						<p>
+							<a href="javascript:onToggleAccept(1);">Accept</a>
+							/
+							<a href="javascript:onToggleAccept(0);">Reject</a>
+							/
+							<a href="javascript:deleteTrackback();">Delete</a>
+							checked trackback(s).
+						</p>
+					</div>
+					<div class="checkbox_functions_right"><!----></div>
+				</div soy:panel="checkbox_functions">
+
+			
+				<div soy:panel="pager" class="pager">
+					<h5 soy:id="topPager">
+						<a soy:id="prevAnchor" href="#">&lt;Previous</a>
+						<span soy:id="contentPage">1-5 items of (5 items)</span>
+						<a soy:id="nextAnchor" href="#">Next&gt;</a>
+					</h5 soy:id="topPager">
+					<h5>
+						<p>Display Number</p>
+						<p><a href="#" soy:id="limit_10">10</a></p>
+						<p><a href="#" soy:id="limit_50">50</a></p>
+						<p><a href="#" soy:id="limit_100">100</a></p>
+					</h5>
+				</div soy:panel="pager">
+			
+				<div style="clear:both;"></div>
+				
+				<form soy:id="index_form" id="main_form">
+				<input type="hidden" name="op_code" value="toggleApproved" id="op_code_id"/>
+				<input type="hidden" name="state" id="accept_state" value="" />
+				<table class="list" cellpadding="0" cellspacing="0">
+					<thead>
+					<tr>
+						<th><input type="checkbox" onclick="toggle_all_trackback_check(this.checked);"></th>
+						<th>Status</th>
+						<th>Submit Date<img soy:message="HELP_BLOG_TRACKBACK_DATE"/></th>
+						<th>Entry</th>
+						<th>Blog</th>
+						<th>Title</th>
+						<th>Content</th>
+					</tr>
+					</thead>
+					<tbody class="trackback_list">
+					<!-- soy:id="trackback_list" -->
+					<tr>
+						<td><input type="checkbox" soy:id="trackback_id" class="trackback_check"/></td>
+						<td class="state"><span soy:id="approved" >Accepted</span></td>
+						<td class="date"><a soy:id="submitdate">20008-01-01</a></td>
+						<td class="receive"><a target="_blank" soy:id="entry_title">Entry</a></td>
+						<td class="sender" soy:id="sender">Sender Blog</td>
+						<td class="title"><a target="_blank" soy:id="title">Sender Blog Article Title</a></td>
+						<td class="excerpt" soy:id="excerpt"></td>
+					</tr>
+					<!-- /soy:id="trackback_list" -->
+					</tbody>
+				</table>
+				
+				</form soy:id="index_form">
+				<div soy:panel="checkbox_functions" class="checkbox_functions">
+					<div class="checkbox_functions_left"><!----></div>
+					<div class="checkbox_functions_content">
+						<p>Checked Comments</p>
+						<p><a href="javascript:onToggleAccept(1);">Accept</a></p>
+						<p><a href="javascript:onToggleAccept(0);">Reject</a></p>
+						<p><a href="javascript:deleteTrackback();">Delete</a></p>
+					</div>
+					<div class="checkbox_functions_right"><!----></div>
+				</div soy:panel="checkbox_functions">
+			
+				<div class="pager" soy:panel="pager"></div soy:panel="pager">
+
+			</div soy:display="must_exists_trackback">	
+			
+			<div class="prepend-1 span-22 last">
+				<div soy:display="no_trackback_message">
+					<div class="span-22 last">
+						<p>There is no trackbacks.</p>
+					</div>
+				</div soy:display="no_trackback_message">
+			</div>
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+
+</body>
+</html>

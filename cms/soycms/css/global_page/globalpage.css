@@ -1,0 +1,119 @@
+body {
+	_text-align:center;
+}
+
+#wrapper {
+	min-width:706px;
+	width:706px;
+}
+
+#upperMenu img {
+	float:left;
+	width:212px;
+	height:107px;
+	border:0;
+}
+
+#tabs {
+	clear:both;
+}
+
+/* IEで #tabs > * が動かなかった */
+#tabs a {
+	width:177px;
+	height:37px;
+	line-height:37px;
+	font-weight:bold;
+	font-size:14px;
+	margin-top:10px;
+	margin-right:5px;
+	text-align:center;
+	float:left;	
+}
+
+#tabs a {
+	text-decoration:none;
+}
+
+#tabs .tab_active {
+	background-image:url("./globalpage_images/tab_active.jpg");
+	background-repeat:no-repeat;
+	color:grey;
+
+}
+
+#tabs .tab_inactive {
+	background-image:url("./globalpage_images/tab_inactive.jpg");
+	background-repeat:no-repeat;
+	color:white;
+}
+
+#tabs .tab_inactive_hover {
+	background-image:url("./globalpage_images/tab_active.jpg");
+	background-repeat:no-repeat;
+	color:grey;
+}
+
+#tabs .tab_inactive_active {
+	background-image:url("./globalpage_images/tab_active.jpg");
+	background-repeat:no-repeat;
+	color:grey;
+}
+
+#content {
+	width:680px;
+	_width:706px;
+	border:1px solid #CCCCCC;
+	background-image:none;
+	background-color:white;
+	margin:0;
+	padding:12px 12px;
+}
+
+#content h2 {
+	border-bottom:1px solid #c3c3c3;
+	font-size:1.3em;
+	margin-bottom:12px;
+}
+
+#siteboxes {
+	margin-left:12px;
+}
+
+.sitebox {
+	width:280px;
+	border:1px solid grey;
+	padding:10px 10px;
+	margin-right:32px;
+	margin-bottom:16px;
+	float:left;
+
+}
+
+.sitebox > p , .sitebox_functions{
+	margin-top:10px;
+	font-size:16px;
+}
+
+h4.sitename {
+	float:left;
+	font-size:20px;
+}
+
+p.login_button {
+	float:right;
+}
+
+p.login_button a {
+	color:red;
+	font-size:16px;
+}
+
+.sitebox_functions p{
+	display:inline;
+	margin-right:15px;
+}
+
+#footer {
+	width:706px;
+}

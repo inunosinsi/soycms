@@ -1,0 +1,125 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<script soy:id="prototypejs"></script>
+	<script soy:id="entry_form"></script>
+	<script soy:id="alias_list"></script>
+	<script type="text/JavaScript">
+		function onChangeSelect(){
+			if($("#display_type").val() == 0){
+				$("#entry_select").show();
+				$("#label_select").hide();
+			}else{
+				$("#label_select").show();
+				$("#entry_select").hide();			
+			}
+		}
+		
+		function onSubmit(){
+			var ids = new Array();
+		
+			$(".selected").each(function(){
+				ids.push($(this).val());
+			});
+			
+			var form = $("<form/>");
+			form.attr("method","POST");
+			form.css("display","none");
+			
+			ids.each(function(ele){
+				var input = $("<input/>");
+				input.attry("type","hidden");
+				input.val(ele);
+				input.attr("name","entries[]");
+				form.append(input);
+			});
+			
+			var labels = document.getElementsByName("object[labelId]");
+			
+			for(var i = 0; i<labels.length; i++){
+				if(labels[i].checked){
+					var input = $("<input/>");
+					input.attr("type","hidden");
+					input.attr("name","label");
+					input.val(labels[i].value);
+					form.append(input);
+					break;
+				}
+			}
+			
+			var input = $("<input/>");
+			input.attr("type","hidden");
+			input.val($("#display_title").val());
+			input.attr("name",$("#display_title").attr("name");
+			form.append(input);
+			
+			var input = $("<input/>");
+			input.attr("type","hidden");
+			input.val($("#display_type").val());
+			input.attr("name",$("#display_type").attr("name");
+			form.append(input);
+			
+			var input = $("<input/>");
+			input.attr("type","hidden");
+			input.val($("#display_number").val());
+			input.attr("name",$("#display_number").attr("name");
+			form.append(input);
+			
+			var input = $("<input/>");
+			input.attr("type","hidden");
+			input.val($("#display_alias").val());
+			input.attr("name",$("#display_alias").attr("name");
+			form.append(input);
+			
+			//CSRF対策
+			var input = $("<input/>");
+			input.attr("type","hidden");
+			input.val(window.parent.document.main_form.soy2_token.value);
+			input.attr("name","soy2_token");
+			form.append(input);
+			
+			//エイリアスのチェック（すでに使用されているか）
+			try{
+				$H(alias_list).each(function(pair){
+					if(pair.value === $("#display_alias").val() && pair.key != treeId){
+						throw "別名「"+pair.value+"」はすでに使用されています。";
+					}
+				});
+				
+				//エイリアスのチェック（不正なパターン)
+				var alias = $("#display_alias").val();
+				if(alias.match(/^\/+/))throw "別名を「/」で開始することは出来ません。";
+				if(alias.match(/^[0-9]+$/))throw "別名に数字のみを設定することは出来ません。";
+				if(alias.match(/\/+[\d]*$/))throw "別名を「/」または「/+数字」で終えることは出来ません。";
+								
+			}catch(e){
+				alert(e);
+				return false;
+			}
+			
+			$("body").append(form);
+			form.submit();
+			return false;
+		}
+		
+	</script>
+</head>
+<body>
+	<table>
+		<tr>
+			<th>Title</th>
+			<td><input soy:id="display_title" id="display_title"/></td>
+			<th>Display type</th>
+			<td><select soy:id="display_type" id="display_type" onchange="onChangeSelect()"></select></td>
+			<th>Display items</th>
+			<td><input soy:id="display_number" id="display_number" style="width:32px"/></td>
+			<th>Alias</th>
+			<td><input soy:id="display_alias" id="display_alias" /></td>
+			<td><input type="button" value="Update" onclick="return onSubmit();" /></td>
+		</tr>
+	</table>
+	
+	<div soy:id="entry_select_component" id="entry_select" style="display:none;"></div soy:id="entry_select_component">	
+	<div soy:id="label_select_component" id="label_select" style="display:none;"></div soy:id="label_select_component">	
+</body>
+</html>

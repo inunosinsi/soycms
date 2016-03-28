@@ -1,0 +1,146 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+
+<style type="text/css">
+.entry_popup{
+	font-weight:500;
+	border:solid 1px black;
+	background-color:#EEE685;
+
+	display:inline;	
+	position:absolute;
+	margin-top:10px;
+	margin-left:10px;
+}
+
+.label_popup{
+	font-weight:500;
+	border:solid 1px black;
+	background-color:#EECFA1;
+	
+	display:inline;
+	position:absolute;
+	margin-top:20px;
+	margin-left:10px;
+}
+</style>
+
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+		<!-- content start -->
+		<div id="content" class="span-24 last">			
+			
+			<div class="span-22 prepend-1 last">
+				<h3>Welcome to SOY CMS !</h3>
+			</div>
+						
+			<div id="entry_functions" class="span-22 last" style="margin-bottom:15px;">
+				<div class="prepend-1 span-6 colborder" style="_width:271px;">
+					<div class="span-6 last">
+						<h5>Operation</h5>
+					</div>
+					
+					<div class="span-3 icon">
+						<a soy:link="Entry.Create">
+							<img soy:src="./image/simplemode/new.gif" />
+							<h6>Add new entry</h6>
+						</a>
+					</div>
+					
+					<div class="span-3 icon last">
+						<a soy:link="Entry.Search">
+							<img soy:src="./image/simplemode/search.gif" />
+							<h6>Search</h6>
+						</a>
+					</div>
+				</div>
+				
+				<div class="labels span-14 last">
+				
+					<div class="span-14 last">
+						<h5>Recent use labels</h5>
+					</div>
+					
+					<!-- soy:id="recent_labels" -->
+					<div class="icon span-3">
+					<a soy:id="label_link">
+						<img soy:id="label_icon" height="64" width="64">
+						<h6 soy:id="label_title"></h6>
+					</a>
+					</div>
+					<!-- /soy:id="recent_labels" -->
+				</div>
+			</div>
+							
+			<div class="prepend-1 span-21">
+			<div class="span-21 last">
+				<div class="news_box span-21 last">
+					<div class="span-21 last">
+						<h4>Recent Entries</h4>
+					</div>
+					<div class="span-21 last">
+						<table class="news_table">
+							<tr soy:id="recentEntries">
+								<td class="title">
+									<a soy:id="title">What's new</a>
+									<div class="entry_popup" soy:id="popup" style="display:none;"></div	>
+								</td>
+								<td class="content"><span  soy:id="content">「2007/11/24 Aboutを更新しました」</span></td>
+								<td class="date" soy:id="udate">2007/11/28</td>
+							</tr soy:id="recentEntries">
+						</table>
+					</div>
+				</div>
+			</div>
+			
+			<!--  soy:display="only_comment_exists" -->
+			<div class="news_box span-21 last">
+				<div class="span-21 last">
+					<h4>Recent Comments</h4>
+				</div>
+				<div class="span-21 last">
+					<table class="news_table">
+						<tr soy:id="recentComment">
+							<td class="title"><a soy:id="title">What's new</a></td>
+							<td class="content"><span  soy:id="content">「2007/11/24 Aboutを更新しました」</span></td>
+							<td class="date" soy:id="udate">2007/11/28</td>
+						</tr soy:id="recentComment">
+					</table>
+				</div>
+			</div>
+			<!--  /soy:display="only_comment_exists" -->
+			<!--  soy:display="only_trackback_exists" -->
+			<div class="news_box span-21 last">
+				<div class="span-21 last">
+					<h4>Recent Trackbacks</h4>
+				</div>
+				<div class="span-21 last">
+					<table class="news_table">
+						<tr soy:id="recentTrackback">
+							<td class="title"><a soy:id="title">What's new</a></td>
+							<td class="content"><span soy:id="content">「2007/11/24 Aboutを更新しました」</span></td>
+							<td class="date" soy:id="udate">2007/11/28</td>
+						</tr soy:id="recentTrackback"> 
+					</table>
+				</div>
+			</div>
+			<!--  /soy:display="only_trackback_exists" -->
+		</div>
+					
+			<div id="widgets" soy:id="widgets" class="prepend-1 span-21 last"></div>
+			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body style="text-align:center;">
+
+<div style="width:90%;margin: 0px auto;text-align: left;">
+
+<h3>Entry Detail</h3>
+
+<form soy:id="detail_form">
+	<div class="section_top">
+		<p class="sub">Title</p>
+		<input type="text" id="title" soy:id="title">
+		<input type="hidden" id="entry_description" name="description" style="width" soy:id="description">
+	</div>
+	
+	<div class="section">
+		<div class="subsection" style="width:150px;">
+			<div id="entry_content_switch" class="content_tab_active">Content</div>
+			<div id="entry_more_switch" class="content_tab_inactive">More</div>
+		</div>
+		
+		<div class="subsection row">
+			Apply entry template
+			<select soy:id="list_templates" id="list_templates">
+				<option value="">------------</option>
+			</select>
+			<input type="button" value="Apply" onclick="applyTemplate()">					
+		</div>
+		<div style="clear:both"><!--  --></div>
+							
+		<div id="entry_content_wrapper" style="position:absolute;visibility:hidden;">
+			<textarea soy:id="content" id="entry_content" rows="15" cols="80"></textarea>
+		</div>
+		
+		<div id="entry_more_wrapper" style="position:abotlue;visibility:hidden;">
+			<textarea soy:id="more" id="entry_more" rows="15" cols="80"></textarea>
+		</div>
+	</div>
+	
+	<div class="section">
+		<p class="sub">Labels</p>
+		<div id="labels">
+			<div id="labels_wrapper">
+				<!-- soy:id="labels" -->
+				<div class="label_wrapper">
+					<nobr>
+					<input type="checkbox" soy:id="label_check">
+					<label soy:id="label_label">
+						<img soy:id="label_icon" class="label_icon" />
+						<span soy:id="label_caption" class="label_caption"></span>
+					</label soy:id="label_label">
+					</nobr>
+				</div>
+				<!-- /soy:id="labels" -->
+				<br style="clear:both;"/>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+	if(is_ie){
+		$("entry_content_wrapper").style.position = "relative";
+		$("entry_content_wrapper").style.height = "0px";
+		$("entry_content_wrapper").style.width = "0px";
+		$("entry_more_wrapper").style.position = "relative";
+		$("entry_more_wrapper").style.height = "0px";
+		$("entry_more_wrapper").style.width = "0px";
+	}		
+	</script>
+
+<!-- soy:custom="Entry.Detail" -->
+<!-- /soy:custom="Entry.Detail" -->
+
+	<div class="section">
+		<p class="sub">Create date</p>
+		<span soy:id="createdate_show" id="create_show"></span>
+		<input type="text" soy:id="createdate" id="create_input" style="display:none;" size="25">
+		<input type="button" value="Change" onclick="document.getElementById('create_show').style.display='none';document.getElementById('create_input').style.display='';this.style.display='none'">
+	</div>
+
+	<!-- soy:display="publish" -->
+		<div class="section">
+			<p class="sub">Opening setting<img soy:message="HELP_ENTRY_DRAFT" /></p>
+			<input type="radio" soy:id="state_draft"/>
+			<input type="radio" soy:id="state_public"/>
+		</div>
+		<!-- /soy:display="publish" -->
+		
+		<div id="buttons" style="float:right;height:10%;">
+			<input id="update_button" soy:id="update_button" type="submit" value="Update" />
+			<input id="create_button" soy:id="create_button" type="submit" value="Create" />
+		</div>
+		
+		<!-- soy:display="publish" -->		
+		<div class="section">
+				<p class="sub">Opening period<img soy:message="HELP_ENTRY_OPEN_PERIOD"/></p>
+				
+				<span soy:id="open_period_show" id="open_period_show"></span>
+				<button id="open_period_show_button" type="button" onclick="$('open_period_show').hide();$('open_period_input').show();$('open_period_show_button').hide();">Set opening period</button>
+
+				<div id="open_period_input" style="display:none;">
+					<table style="width: 28em">
+						<tr>
+							<td style="vertical-align:top;">
+								<input type="text" soy:id="start_date" id="start_date" size="25" maxlength="19" style="width:100%">
+								
+								<div style="font-size:10px;margin-top:5px;margin-left:5px;">
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),true,false);return false;">Today</a><br/>
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,1,0,0,0),true,false);return false;">Tomorrow</a><br/>
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,7,0,0,0),true,false);return false;">Next week</a><br/>
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,1,0,0,0,0),true,false);return false;">Next month</a><br/>
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),false,false);return false;">Now</a><br/>
+									<a href="#" onclick="$('start_date').value = '';return false;">Clear</a>
+								</div>
+							</td>
+							<td style="vertical-align:top;text-align:center;width:4em;"> ~ </td>
+							<td style="vertical-align:top;">
+								<input type="text" soy:id="end_date" id="end_date" size="25" maxlength="19" style="width:100%">
+								<div style="font-size:10px;">
+									<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,1,0,0,0),true,true);return false;">Tomorrow</a><br/>
+									<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,7,0,0,0),true,true);return false;">Next week</a><br/>
+									<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,1,0,0,0,0),true,true);return false;">Next month</a><br/>
+									<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),false,true);return false;">Now</a><br/>
+									<a href="#" onclick="$('end_date').value = '';return false;">Clear</a>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+		</div>
+		<!-- /soy:display="publish" -->
+		
+		<!-- soy:display="publish_info" -->
+		<div class="section">
+			<p class="sub">Opening status</p>
+			<span soy:id="publish_info">Published</span>
+			<p class="sub">Opening period</p>
+			<span soy:id="period_info">No setting</span>
+		</div>
+		<!-- /soy:display="publish_info" -->
+	
+	<div style="clear:both;"></div>
+	
+</div>
+
+<input type="hidden" name="style" id="style" soy:id="style" />
+</form soy:id="detail_form">
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,129 @@
+<form soy:id="form">
+	<h4>連携するSOY Shopのサイトを選択してください。</h4>
+	<p>
+		<select soy:id="shop_list"></select>&nbsp;
+		<input type="submit" value="選択">
+	</p>
+</form>
+
+<p>
+SOY CMSのブログ記事でSOY Shopにある商品を取り上げることができます。
+</p>
+<p>
+記事投稿画面を開くと、商品コードを入力するフォームが表示されています。<br />
+フォームに商品コードを入力して記事を投稿すると、<br />
+SOY Shopのデータベースから商品情報を取得し、<br />
+その情報を公開しているブログに表示することができるようになります。
+</p>
+
+<p>
+<textarea style="width:480px;height:320px; overflow: hidden;" onfocus="this.select();">
+<!-- 記事を表示するブロックの外でitemブロックを記述できます。 -->
+
+<!-- b_block:id="entry" -->
+記事に関する記述
+<!-- /b_block:id="entry" -->
+
+<!-- i_block:id="item" -->
+<p><!-- cms:id="item_id" /--></p>
+<p><!-- cms:id="item_name" /--></p>
+<p><!-- cms:id="item_alias" /--></p>
+<p><!-- cms:id="item_price" /-->円</p>
+<p><!-- cms:id="item_sale_price" /-->円</p>
+<p><!-- cms:id="item_code" /--></p>
+<p><img cms:id="item_large_image" /></p>
+<p><img cms:id="item_small_image" /></p>
+<p><a cms:id="item_link">詳細ページへ</a></p>
+<!-- /i_block:id="item" -->
+</textarea>
+<br style="clear:both;" />
+
+<style type="text/stylesheet">
+.table_caption{
+	font-weight: bold;
+}
+.plugin_table{
+	
+}
+
+.plugin_table tr{
+}
+
+.plugin_table tr th{
+	border-top: #000000 solid 1px;
+	border-left: #000000 solid 1px;
+	border-bottom: #000000 solid 1px;
+}
+
+.plugin_table tr td{
+	text-indent: 0.1em;
+	border-left: #000000 solid 1px;
+	border-bottom: #000000 solid 1px;
+}
+
+.plugin_table_td {
+	border-right: #000000 solid 1px;
+}
+</style>
+
+<span class="table_caption">記事の表示に追加されるcms:id</span>
+<table class="plugin_table">
+	<tr>
+
+		<th>cms:id</th>
+		<th>タグ</th>
+		<th class="plugin_table_td">説明</th>
+	</tr>
+	<tr>
+		<td>item_id</td>
+		<td>全て</td>
+
+		<td class="plugin_table_td">商品IDを出力します</td>
+	</tr>
+	<tr>
+		<td>item_code</td>
+		<td>全て</td>
+
+		<td class="plugin_table_td">商品コードを出力します</td>
+	</tr>
+	<tr>
+		<td>item_name</td>
+		<td>全て</td>
+
+		<td class="plugin_table_td">商品名を出力します</td>
+	</tr>
+	<tr>
+		<td>item_alias</td>
+		<td>全て</td>
+
+		<td class="plugin_table_td">商品のエイリアスを出力します</td>
+	</tr>
+	<tr>
+		<td>item_link</td>
+		<td>A</td>
+		<td class="plugin_table_td">商品詳細で入力したリンクを出力します</td>
+	</tr>
+	<tr>
+		<td>item_small_image</td>
+		<td>img</td>
+		<td class="plugin_table_td">商品のサムネイル画像(小)を出力します</td>
+	</tr>
+	<tr>
+		<td>item_large_image</td>
+		<td>img</td>
+		<td class="plugin_table_td">商品のサムネイル画像(大)を出力します</td>
+	</tr>
+	<tr>
+		<td>item_price</td>
+		<td>全て</td>
+		<td class="plugin_table_td">商品の価格を出力します</td>
+	</tr>
+	<tr>
+		<td>item_sale_price</td>
+		<td>全て</td>
+		<td class="plugin_table_td">商品のセール価格を出力します</td>
+	</tr>
+
+</table>
+<span style="font-weight:bold;">※カスタムフィールド以外の商品用のcms:idはすべて使えます</span>
+</p>

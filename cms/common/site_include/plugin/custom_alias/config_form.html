@@ -1,0 +1,16 @@
+<div>
+このプラグインを有効にするだけで記事編集画面で記事のエイリアス（URL）を指定できるようになります。<br>
+重複しないように注意してください。また数字だけのエイリアスや?,#,/,%,\を含むエイリアスを設定しても動作しません。
+</div>
+
+<form method="post" soy:id="custom_alias_form">
+<fieldset><legend>設定</legend>
+	<input name="custom_alias_use_id" soy:id="use_id_hidden" type="hidden" value="0" />
+	<input name="custom_alias_use_id" soy:id="use_id" type="checkbox" /><br/>
+<?php /* ?>
+	接頭辞: <input soy:id="custom_alias_prefix" /><br/>
+	接尾辞: <input soy:id="custom_alias_postfix" /><br/>
+<?php */ ?>
+	<input type="submit" name="save" value="設定" />
+</fieldset>
+</form soy:id="custom_alias_form">

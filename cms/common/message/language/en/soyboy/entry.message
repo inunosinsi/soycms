@@ -1,0 +1,26 @@
+//Messages for Entry
+
+//Entry
+ENTRY_CREATE_SUCCESS		=		Entry is created successfully.
+ENTRY_CREATE_FAILED			=		Creating new entry failed.
+
+ENTRY_UPDATE_SUCCESS		=		Entry is updated successfully. 
+ENTRY_UPDATE_FAILED			=		Updating entry failed.
+
+ENTRY_PUBLISH_SUCCESS		=		Entry is published successfully. 
+ENTRY_PUBLISH_FAILED		=		Publishing entry failed.
+
+ENTRY_NONPUBLISH_SUCCESS	=		Entry is closed successfully.
+ENTRY_NONPUBLISH_FAILED		=		Closing entry failed.
+
+ENTRY_REMOVE_SUCCESS		=		Entry is deleted successfully.
+ENTRY_REMOVE_FAILED			=		Deleting entry failed.
+
+ENTRY_COPY_SUCCESS			=		Entry is copyed successfully.
+ENTRY_COPY_FAILED			=		Copying entry is failed.
+ENTRY_COPY_TITLE			=		Copy of 
+
+ENTRY_BLOG_LABEL_NOTFOUND	=		Label is required to add new blog entry.
+
+//Entry.Search
+ENTRY_NO_ENTRY_IS_UNDER_THE_CONDITION=There is no entry under this condition.

@@ -1,0 +1,5 @@
+#cache関連
+*.html.php
+*.inc.php
+*_dao_cache_*.class.php
+dao_cache_*.class.php

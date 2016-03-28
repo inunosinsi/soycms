@@ -1,0 +1,46 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2 soy:id="app_name"></h2>
+		
+		<div class="functions" soy:display="only_default_user">
+			<p><a soy:link="Application">Cancel</a></p>
+		</div>
+				
+		<p class="message" soy:id="message"></p>
+		<p class="notify" soy:id="error"></p>
+		
+		<form soy:id="form">
+		<table class="list" cellpadding="0" cellspacing="0">
+			<thead>
+				<tr>
+					<td>User ID</td>
+					<td class="authority">Role</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr soy:id="role_list">
+					<td>
+						<span soy:id="user_name">admin1</span>
+					</td>
+					<td class="authority">
+						<select soy:id="role">
+						</select>
+					</td>
+				</tr soy:id="role_list">
+			</tbody>
+		</table>
+		<input class="submit_button" soy:id="modify_button" type="submit" value="Update">
+		</form soy:id="form">
+	</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+</body>
+</html>

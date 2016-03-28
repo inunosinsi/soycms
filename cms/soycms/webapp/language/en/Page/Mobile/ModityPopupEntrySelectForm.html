@@ -1,0 +1,28 @@
+<script soy:id="entry_list"></script>
+<script soy:id="selector_js"></script>
+
+<div style="width:38%;height:250px;float:left;padding:5px">
+<h4 id="selected_entry_title">Selected entry list</h4>
+<select id="selected_entry_list" style="width:100%;height:230px;line-height:12px" size="25"></select>
+</div>
+<div style="width:18%;height:250px;float:left;text-align:center;padding:5px;padding-top:25px;">
+<!--  <input type="button" id="update" value="Update" style="width:120px"><br> -->
+<input type="button" id="move_button" value="Add" style="width:120px;margin-top:30px"><br>
+<input type="button" id="up_button" disabled="disabled" value="Up" style="width:120px;margin-top:30px"><br>
+<input type="button" id="down_button" disabled="disabled" value="Down" style="width:120px;margin-top:30px"> 
+<input type="button" id="display_outline" value="Detail"  style="width:120px;margin-top:30px"><br>
+<input type="button" id="move_entry_form" value="Create new entry" style="width:120px;margin-top:30px" ><br />
+
+</div>
+
+<div style="width:38%;height:250px;float:right;padding:5px">
+<h4 id="all_entry_title">Entry list</h4>
+<select soy:id="labelList" id="labelList" onchange="labelFilter(this.value)" style="width:100%;height:20px;"><option value="##NO_FILTER##">Show all</option></select>
+<select id="all_entry_list" style="width:100%;height:210px;line-height:12px" size="25"></select>
+</div>
+<div style="width:95%;margin-left:2%;height:220px;float:left;">
+<h4>Entry detail</h4>
+<iframe id="outlineFrame" style="width:100%;height:90%;" src="about:blank"></iframe>
+</div>
+
+<br style="clear:both;" />

@@ -1,0 +1,49 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+
+		<h2>Delete an Administrator</h2>
+
+		<div class="functions">
+			<p><a soy:link="Administrator">User List</a></p>
+		</div>
+
+		<p class="message" soy:id="message"></p>
+		
+		<h3>Delete an Administrator below.</h3>
+
+		<form soy:id="removeForm">
+			<table class="globalpage_input">
+				<tr class="no_example">
+					<td class="item_name">User ID</td>
+					<td><span soy:id="userId"></span></td>
+				</tr>
+				<tr class="no_example">
+					<th class="item_name">Name</th>
+					<td><span soy:id="name_text"></span></td>
+				</tr>
+				<tr class="no_example">
+					<th class="item_name">e-mail</th>
+					<td><span soy:id="email_text"></span></td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td class="button">
+						<input id="update_button" type="submit" value="Delete">
+					</td>
+				</tr>
+			</table>
+		</form soy:id="removeForm">
+	</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+</body>
+</html>

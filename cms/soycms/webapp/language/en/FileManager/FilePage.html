@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>File Manager</title>
+<link rel="stylesheet" soy:link="./css/filemanager/file.css" type="text/css" />
+
+<link rel="stylesheet" type="text/css" soy:link="./js/cms/PanelManager.css" />
+<script type="text/javascript" soy:src="./js/cms/PanelManager.js"></script>
+<script type="text/javascript" soy:src="./js/prototype.js"></script>
+</head>
+<body>
+
+<div id="filetree_wrapper">
+	<div id="filetree_tab">
+		<div class="active" target="filetree" onclick="activeTab(this);">File Tree</div>
+		<div class="inactive" target="search_form" onclick="activeTab(this);">Search</div>
+		<br style="clear:both;" />
+	</div>
+		
+	<ul soy:id="filetree" id="filetree"></ul>
+	
+	<div id="search_form" style="display:none;">
+		<input id="search_query" type="text" value="" />
+		<button type="button" onclick="search();">Search</button>
+		
+		<ul>
+			<li onclick="$('search_query').value='isimage:true';">Image</li>
+			<li onclick="$('search_query').value='ext:html|ext:htm';">HTML</li>
+			<li onclick="$('search_query').value='ext:css';">CSS</li>
+		</ul>
+	</div>
+</div>
+
+<div id="direcotry_functions">
+	<input type="button" onclick="reload();" value="Refresh" style="width:120px;"/>
+	<input type="button" onclick="mkdir();" value="Make New Directory" style="width:12em;"/>
+	
+	<iframe id="upload_dialog_iframe" name="upload_dialog_iframe" src="about:blank;" style="height:0px;width:0px;visibility:hidden;"></iframe>
+
+	<div style="display:inline;">
+		<form soy:id="uploaddialogform" id="upload_dialog_form" enctype="multipart/form-data" method="post" target="upload_dialog_iframe">
+		<input type="hidden" name="id" id="upload_form_current_dir_id" style="width:10px;"/>
+		Upload : <input type="file" name="file" id="upload_file" size="10" />
+		<input type="submit" value="Upload"/>
+		</form soy:id="uploaddialogform">
+	</div>
+	
+	<div id="loading_image"><!----></div>
+</div>
+
+<div id="wrapper"></div>
+<!-- end of wrapper -->
+
+<div id="file_list_wrapper">
+	
+	<div id="file_list"></div>
+	<div id="no_file" style="display:none;">There is no file.</div>
+
+</div>
+
+<div id="file_detail" style="display:none;height:100%;overflow:auto;">
+
+<table>
+
+<tr>
+	<th>Filename</th>
+	<td>
+		<div id="detaildiv_thumbnail"></div>
+		
+		<div id="detaildiv_filename" />
+		<button type="button">Rename</button>
+	</td>
+</tr>
+
+<tr>
+	<th>Path</th>
+	<td>
+		<a id="detaildiv_filepath" target="_blank">abcd</a>
+	</td>
+</tr>
+<tr>
+	<th>URL</th>
+	<td>
+		<a id="detaildiv_url" target="_blank">abcd</a>
+	</td>
+</tr>
+
+<!-- 
+<tr>
+	<th>Size</th>
+	<td>
+		<div id="detaildiv_size">Size</div>
+	</td>
+</tr>
+ -->
+
+<tr>
+	<th>Create Date</th>
+	<td>
+		<div id="detaildiv_create">2007/10/10</div>
+	</td>
+</tr>
+
+<tr>
+	<th>Update Date</th>
+	<td>
+		<div id="detaildiv_update">2007/10/10</div>
+	</td>
+</tr>
+
+<tr>
+	<td colspan="2" class="separator"></td>
+</tr>
+
+<tr>
+	<td colspan="2">
+		<button id="delete_button" type="button" style="float:left;">Delete</button>
+		
+		<div id="custom_functions" style="float:left;"></div>
+		
+	</td>
+</tr>
+
+</table>
+
+</div>
+<!-- end of file_detail -->
+
+<script type="text/javascript" soy:id="cmsscript"></script>
+
+</body>
+</html>

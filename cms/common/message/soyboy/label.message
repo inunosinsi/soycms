@@ -1,0 +1,32 @@
+//ラベル用メッセージ
+
+LABEL_STICK_SUCCESS		=		ラベルを付けました。
+LABEL_STICK_FAILED		=		ラベル付けに失敗しました。
+
+LABEL_UNSTICK_SUCCESS	=		ラベルをはずしました。
+LABEL_UNSTICK_FAILED	=		ラベルを外すのに失敗しました。
+
+ENTRYLABEL_DISPLAYORDER_MODIFY_SUCCESS =	記事の表示順を変更しました。
+ENTRYLABEL_DISPLAYORDER_MODIFY_FAILED  =	記事の表示順を変更に失敗しました。
+
+LABEL_CREATE_SUCCESS		=		ラベルを新規作成しました。
+LABEL_CREATE_FAILED			=		ラベルの新規作成に失敗しました。
+
+LABEL_UPDATE_SUCCESS		=		ラベルを更新しました
+LABEL_UPDATE_FAILED		=		ラベルの更新に失敗しました。
+
+LABEL_RENAME_SUCCESS		=		ラベルの名前を変更しました。
+LABEL_RENAME_FAILED			=		ラベルの名前の変更に失敗しました。
+
+LABEL_REMOVE_SUCCESS		=		ラベルを削除しました。
+LABEL_REMOVE_FAILED			=		ラベルの削除に失敗しました。
+
+LABEL_MEMO_UPDATE_SUCCESS	=		ラベルメモを変更しました。
+LABEL_MEMO_UPDATE_FAILED	=		ラベルメモの変更に失敗しました。
+
+LABEL_ICON_UPDATE_SUCCESS	=		アイコンを変更しました。
+LABEL_ICON_UPDATE_FAILED	=		アイコンの変更に失敗しました。
+
+LABEL_FLIP_BLOG_ERROR		=		ラベルがブログで使用されているため削除できません。
+
+LABEL_UPDATE_DISPLAY_ORDER	=		表示順を更新しました。

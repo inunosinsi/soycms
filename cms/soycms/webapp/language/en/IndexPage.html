@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+	<!-- content start -->
+	<div id="content" class="span-24 last">
+		<div class="span-23 last">
+			<h2>Welcome to SOY CMS !</h2>
+		</div>
+
+		<div class="prepend-1 span-16 colborder">
+
+			<!--  soy:display="only_comment_exists" -->
+			<div class="news_box span-16 last">
+				<div class="span-16 last">
+					<h4>Latest Comments</h4>
+				</div>
+				<div class="span-16 last">
+					<table class="news_table">
+						<tr soy:id="recentComment">
+							<td class="title"><a soy:id="title">What's new</a></td>
+							<td class="content"><span  soy:id="content">[About] is update.</span></td>
+							<td class="date" soy:id="udate">2007/11/28</td>
+						</tr soy:id="recentComment">
+					</table>
+				</div>
+			</div>
+			<!--  /soy:display="only_comment_exists" -->
+
+			<!--  soy:display="only_trackback_exists" -->
+			<div class="news_box span-16 last">
+				<div class="span-16 last">
+					<h4>Latest Trackbacks</h4>
+				</div>
+				<div class="span-16 last">
+					<table class="news_table">
+						<tr soy:id="recentTrackback">
+							<td class="title"><a soy:id="title">What's new</a></td>
+							<td class="content"><span soy:id="content">[About] is update.</span></td>
+							<td class="date" soy:id="udate">2007/11/28</td>
+						</tr soy:id="recentTrackback"> 
+					</table>
+				</div>
+			</div>
+			<!--  /soy:display="only_trackback_exists" -->
+
+			<div class="span-16 last">
+				<div class="news_box span-16 last">
+					<div class="span-16 last">
+						<h4>Last Updated Entries</h4>
+					</div>
+					<div class="span-16 last">
+						<table class="news_table">
+							<tr soy:id="recentEntries">
+								<td class="title">
+									<a soy:id="title">What's new</a>
+									<div class="entry_popup" soy:id="popup" style="display:none;"></div	>
+								</td>
+								<td class="content" soy:id="content">[About] is update</td>
+								<td class="date" soy:id="udate">2007/11/28</td>
+							</tr soy:id="recentEntries">
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<div class="news_box span-16 last">
+				<div class="span-16 last">
+					<h4>Last Updated Webpages</h4>
+				</div>
+				<div class="span-16 last">
+					<table class="news_table">
+						<tr soy:id="recentPage">
+							<td class="title"><a soy:id="title">What's new</a></td>
+							<td class="content"><a href="#" soy:id="content">Top Page</a></td>
+							<td class="date" soy:id="udate">2007/11/28</td>
+						</tr soy:id="recentPage">
+					</table>
+				</div>
+			</div>
+			
+		</div>
+
+		<div class="span-5 last">
+			<div class="widget">
+				<h3>Entry Manager</h3>
+				<ul>
+					<li><a soy:link="Entry.Create">Add New Entry</a></li>
+					<li><a soy:link="Entry">Entry List</a></li>
+					<li><a soy:link="EntryTemplate">Entry-Template</a></li>
+					<li><a soy:link="Label">Label Manager</a></li>
+				</ul>
+
+			</div>
+			<div class="widget">
+				<h3>Webpage Magager</h3>
+				<ul>
+					<li><a soy:link="Page.Create" onclick="return common_click_to_layer(this);">Add New Webpage</a></li>
+					<li><a soy:link="Page">Webpage List</a></li>
+					<li><a soy:link="Template">Template Pack Manager</a></li>
+					<li><select soy:id="page_tree" class="span-4">
+						<option value="">Jump to Webpage Detail</option>
+					</select></li>
+				</ul>
+			</div>
+		</div>
+		<div id="widgets" soy:id="widgets" class="prepend-1 span-22 last"></div>
+
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		<!-- content end -->
+		</div>
+
+		<div soy:page="_common.FooterPage" class="span-24 last"></div>
+	</div>
+</body>
+</html>

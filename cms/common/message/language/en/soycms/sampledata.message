@@ -1,0 +1,11 @@
+SOYCMS_SAMPLE_TOP_TITLE = Soybean, Inc
+SOYCMS_SAMPLE_NEWS_LABEL = News
+SOYCMS_SAMPLE_TITLE = Soybean, Inc.
+SOYCMS_SAMPLE_COMPANY_INFORMATION =Company Information
+SOYCMS_SAMPLE_ENTRY_TITLE=Soybean, Inc. website is renewaled.
+SOYCMS_SAMPLE_ENTRY_CONTENT=Soybean, Inc. website is renewaled.<br />My best regards in the future. 
+SOYCMS_SAMPLE_NO_ZIP=GZIP or Archive_ZIP(PEAR) is required to insert sample data.
+SOYCMS_SAMPLE_IF_YOU_WANT= to insert sampledata
+SOYCMS_SAMPLE_INSERT_SAMPLE_LINK=[Insert sample data]
+SOYCMS_SAMPLE_PLEASE_CLICK=Click 
+SOYCMS_SAMPLE_CANNOT_USE_SAMPLEDATA=Sampledata is not available on this server.

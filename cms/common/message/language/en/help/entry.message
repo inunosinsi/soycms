@@ -1,0 +1,10 @@
+//記事に設定するヘルプメッセージ
+
+HELP_ENTRY_TITLE		=		You can display this in the template by using [cms:id="title"].
+HELP_ENTRY_CONTENT		=		You can display this in the template by using [cms:id="content"].
+HELP_ENTRY_MORE			=		You can display this in the template by using [cms:id="more"].
+HELP_ENTRY_TEMPLATE		=		You should make entry template if there are some high frequency patterns of entry.
+HELP_ENTRY_LABEL		=		Labels are used to arrange entries. <br>You select a label when you want to display some type of entries. 
+HELP_ENTRY_CREATE_DATE	=		Create date of entry is changable.
+HELP_ENTRY_DRAFT		=		Draft entry will never be displayed even if it is accessed in opening period.
+HELP_ENTRY_OPEN_PERIOD	=		You can set open and close time as opening period.<br />ex.：2007/1/1 11:24:52<br /><span style="color:red">You should set open or close time in second order.<br />The entry will close as soon as the close time passes.</span>

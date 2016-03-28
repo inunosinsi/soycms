@@ -1,0 +1,105 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			<div class="span-23 last">
+				<h2>ページ雛形の詳細 - <span soy:id="template_name"></span></h2>
+			</div>
+			<div class="functions prepend-1 span-22 last">
+				<a soy:link="Template" style="margin-right:10px">ページ雛形管理に戻る</a>
+				<a soy:id="operation_link" style="margin-right:10px">インストール</a>
+			</div>
+			
+			<div soy:display="installed" class="prepend-1 span-22 last">
+				<p>このページ雛形はインストール済みです。</p>
+				<p>
+				以下のファイルで赤く表示されているものは、サーバー上に存在しないファイルです。<br />
+				ファイルマネージャで確認してください。
+				</p>
+			</div soy:display="installed">
+			
+			<div soy:display="not_installed" class="prepend-1 span-22 last">
+				<p>このページ雛形は未インストールです。</p>
+				<!-- soy:display="file_list" -->
+				<p>
+				以下のファイルで赤く表示されているものは、すでに同じファイル名のファイルが存在しています。<br />
+				ファイルマネージャで確認してください。
+				</p>
+				<!-- /soy:display="file_list" -->
+				
+			</div soy:display="not_installed">
+			
+			<div class="span-23 last">
+				<div class="span-22 last soy-push-1">
+					<h4>ページ雛形一覧</h4>
+				</div>
+				<table class="span-22 last list soy-push-1" id="file_list">
+					<thead>
+						<tr>
+							<td class="function">名前</td>
+							<td class="function">説明</td>
+							<td class="function" soy:display="installed">操作</td soy:display="installed">				
+						</tr>
+					</thead>
+					<tbody>
+						<tr soy:id="template_list">
+							<td>
+								<span soy:id="name">ファイルリスト</span>
+							</td>
+							<td>
+								<span soy:id="description">説明</span>
+							</td>
+							<td soy:display="installed">
+								<a soy:id="edit_link">編集</a>
+							</td soy:display="installed">
+						</tr soy:id="template_list">			
+					</tbody>
+				</table>
+			</div>
+			
+			<!-- soy:display="file_list" -->
+			<div class="span-23 last">
+				<div class="span-22 last soy-push-1">
+					<h4>ファイル一覧</h4>			
+				</div>
+				<table class="list span-22 last soy-push-1" id="file_list">
+					<thead>
+						<tr>
+							<td class="function">パス</td>
+							<td class="function">説明</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr soy:id="file_list">
+							<td>
+								<a soy:id="name" target="_blnak">ファイルリスト</a>
+							</td>
+							<td>
+								<span soy:id="description">説明</span>
+							</td>
+						</tr soy:id="file_list">			
+					</tbody>
+				</table>
+			</div>
+			<!-- /soy:display="file_list" -->
+			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div soy:id="wrapper" >
+
+</body>
+</html>

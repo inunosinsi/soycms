@@ -1,0 +1,1 @@
+alter table EntryHistory add column change_is_published int default 0;

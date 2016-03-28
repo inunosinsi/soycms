@@ -1,0 +1,107 @@
+<form soy:id="form">
+	<table class="list" style="width:80%;">
+		<tr>
+			<th>Facebookのapp_idとadminsの設定</th>
+		</tr>
+		<tr>
+			<td>
+					app_id：<input type="text" soy:id="app_id">
+					admins：<input type="text" soy:id="admins"><br />
+					descripions：<input type="text" soy:id="description"><br />
+					サムネイルのパス：<input type="text" soy:id="image"><br />
+					※サムネイル(og:image)を設定しなければ、og:imageタグは出力されません。<br />
+					※値を空にしてテンプレートにog:imageを直接記述することもできます。
+			</td>
+		</tr>
+		<tr>
+			<th>mixiイイネの設定</th>
+		</tr>
+		<tr>
+			<td>
+				key：<input type="text" soy:id="mixi_like_key">
+			</td>
+		</tr>
+		<tr>
+			<th>mixiチェックの設定</th>
+		</tr>
+		<tr>
+			<td>
+				key：<input type="text" soy:id="mixi_check_key">
+			</td>
+		</tr>
+		<tr>
+			<th>fb_rootの挿入設定</th>
+		</tr>
+		<tr>
+			<td>
+				<ul>
+					<li soy:id="page_list" style="list-style:none">
+						<input type="hidden" soy:id="page_item_hidden" /><input type="checkbox" soy:id="page_item" />
+						<ul soy:id="for_blog_page" style="list-style:none">
+							<li><input type="hidden" soy:id="blog_top_hidden" /><input type="checkbox" soy:id="blog_top" /></li>
+							<li><input type="hidden" soy:id="blog_month_hidden" /><input type="checkbox" soy:id="blog_month" /></li>
+							<li><input type="hidden" soy:id="blog_category_hidden" /><input type="checkbox" soy:id="blog_category" /></li>
+							<li><input type="hidden" soy:id="blog_entry_hidden" /><input type="checkbox" soy:id="blog_entry" /></li>
+						</ul soy:id="for_blog_page">
+					</li soy:id="page_list">
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>
+					<input type="submit" name="save" value="保存" />
+			</td>
+		</tr>
+	</table>
+				
+</form>
+
+<h3>テンプレートへの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- ヘッダ内 --&gt;
+<strong>&lt;!-- sns:id="og_meta" /--&gt;</strong>
+<strong>&lt;!-- sns:id="facebook_meta" /--&gt;</strong>
+&lt;!-- ページに対するボタンの設置 --&gt;
+<strong>&lt;!-- sns:id="facebook_like_button" /--&gt;</strong>
+<strong>&lt;!-- sns:id="twitter_button" /--&gt;</strong>
+<strong>&lt;!-- sns:id="hatena_button" /--&gt;</strong>
+<strong>&lt;!-- sns:id="google_plus_button" /--&gt;</strong>
+&lt;!-- 詳細ページに対するボタンの設置 b_block:id="entry_list"内 --&gt;
+<strong>&lt;!-- cms:id="facebook_like_button" /--&gt;</strong>
+<strong>&lt;!-- cms:id="twitter_button" /--&gt;</strong>
+<strong>&lt;!-- cms:id="hatena_button" /--&gt;</strong>
+<strong>&lt;!-- cms:id="google_plus_button" /--&gt;</strong>
+</pre>
+
+<h3>出力されるメタタグ</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;meta property="og:title" content="**************" /&gt;
+&lt;meta property="og:site_name" content="**************" /&gt;
+&lt;meta property="og:url" content="**************" /&gt;
+&lt;meta property="og:type" content="****" /&gt;
+&lt;meta property="og:image" content="**************" /&gt;
+&lt;meta property="og:description" content="**************" /&gt;
+&lt;meta property="fb:app_id" content="**************" /&gt;
+&lt;meta property="fb:admins" content="**************" /&gt;
+</pre>
+<p style="padding:3px 40px">※****の部分には自動で値が入ります</p>
+
+<script type="text/javascript">
+	function update_blog_pages(selfId){
+		if($("#"+selfId).prop("checked")){
+			$("#"+selfId+"-top").attr("disabled",false);
+			$("#"+selfId+"-month").attr("disabled",false);
+			$("#"+selfId+"-category").attr("disabled",false);
+			$("#"+selfId+"-entry").attr("disabled",false);
+		}else{
+			$("#"+selfId+"-top").attr("disabled",true);
+			$("#"+selfId+"-month").attr("disabled",true);
+			$("#"+selfId+"-category").attr("disabled",true);
+			$("#"+selfId+"-entry").attr("disabled",true);
+		}
+	}
+	
+	$.each($(".blog"), function(){
+		update_blog_pages(this.id);
+	});
+</script>

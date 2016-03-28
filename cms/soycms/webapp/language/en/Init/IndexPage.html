@@ -1,0 +1,37 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="content_bar_top_for_wizard">
+		<div id="content_bar_top_left"><!----></div>
+		<div id="content_bar_top_right"><!----></div>
+		<div style="clear:both;"><!----></div>
+	</div>
+	
+	<!-- content start -->
+	<div id="content" class="span-24 last " style="border-style:solid;">
+		
+		<div class="span-22 prepend-1 append-1">
+
+			<h3>Add new webpage</h3>
+			
+				<p>Add new webpage.</p>
+				
+				<ol>
+					<li>Please click -><a soy:link="Page.Create" onclick="return common_click_to_layer(this)">Add new webpage</a></li>
+					<li>If you want to add sample data (top page,entries,labels),click -><a soy:link="Init.CreateSample" onclick="return common_click_to_layer(this)">Install sample data</a></li>
+				</ol>
+		</div>
+		
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+	</div>
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

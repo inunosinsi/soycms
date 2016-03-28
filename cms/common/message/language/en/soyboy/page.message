@@ -1,0 +1,51 @@
+//ページ用　メッセージ
+
+//ページ編集
+PAGE_CREATE_SUCCESS		=		Webpage is created successfully.
+PAGE_CREATE_FAILED		=		Creation new webpage failed.
+
+PAGE_UPDATE_SUCCESS		=		Webpage is updated successfully.
+PAGE_UPDATE_FAILED		=		Updating webpage failed.
+
+PAGE_REMOVE_SUCCESS		=		Webpage is deleted successfully.
+PAGE_REMOVE_FAILED		=		Deleting webpage failed.
+
+PAGE_TRASH_SUCCESS		=		Webpage is moved to trashbox successfully.
+PAGE_TRASH_FAILED		=		Moving webpage to trashbox failed.
+
+PAGE_RECOVER_SUCCESS	=		Webpage is restored successfully.
+PAGE_RECOVER_FAILED		=		Restoring webpage failed.
+
+//ブログページ
+BLOG_CREATE_SUCCESS		=		Blogpage is created successfully.
+BLOG_CREATE_FAILED		=		Creation blogpage failed.
+
+BLOG_UPDATE_SUCCESS		=		Blogpage is updated successfully.
+BLOG_UPDATE_FAILED		=		Updating blogpage failed.
+
+BLOG_TEMPLATE_UPDATE_SUCCESS	=	Blogpage template is updated successfully.
+BLOG_TEMPLATE_UPDATE_FAILED		=	Updating blogpage template failed.
+
+BLOG_TRACKBACK_CERTIFICATION_SUCCESS	=	Trackback setting is set to [Accept].
+BLOG_TRACKBACK_INCERTIFICATION_SUCCESS	=	Trackback setting is set to [Reject].
+BLOG_TRACKBACK_CERTIFICATION_FAILD		=	Toggling trackback setting failed.
+
+BLOG_TRACKBACK_DELETE_SUCCESS	=	Tracback is deleted successfully.
+BLOG_TRACKBACK_DELETE_FAILED	=	Deleting trackback failed.
+BLOG_TRACKBACK_DEFAULT_CHANGE_SUCCESS = Trackback setting is updated successfully.
+BLOG_TRACKBACK_DEFAULT_CHANGE_FAILED = Updating trackback setting failed.
+
+BLOG_COMMENT_AUTHENTICATE_SUCCESS	=	Comment setting is set to [Accept].
+BLOG_COMMENT_INAUTHENTICATE_SUCCESS	=	Comment setting is set to [Reject].
+BLOG_COMMENT_AUTHENTICATE_FAILED	=	Updating comment setting failed.
+
+BLOG_COMMENT_DELETE_SUCCESS		=		Comment is deleted successfully.
+BLOG_COMMENT_DELETE_FAILED		=		Deleting comment failed.
+BLOG_COMMENT_DEFAULT_CHANGE_SUCCESS = Comment setting is updated successfully.
+BLOG_COMMENT_DEFAULT_CHANGE_FAILED = Updating comment setting failed.
+
+PAGE_PREVIEW_FAILED		=		Preview webpage failed.
+
+PAGE_DETAIL_GET_FAILED	=		Getting webpage information failed.
+
+PAGE_LIST_GET_FAILED	=		Getting webpage list failed.

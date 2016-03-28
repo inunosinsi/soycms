@@ -1,0 +1,38 @@
+<h4>使い方</h4>
+
+<p>テンプレートに以下のように記述してください。</p>
+
+<pre style="margin:5px;padding:10px;border:solid 1px #ccddFF;background-color:#ccddFF;font-size:0.8em;">
+&lt;div cms:plugin="calendar"&gt;
+	&lt;div class="caption"&gt;
+		&lt;span class="prev"&gt;&lt;a href="#"&gt;&amp;lt;&amp;lt;&lt;/a&gt;&lt;/span&gt;
+		&lt;span class="current_month"&gt;YYYY年MM月&lt;/span&gt;
+		&lt;span class="next"&gt;&lt;a href="#"&gt;&amp;gt;&amp;gt;&lt;/a&gt;&lt;/span&gt;
+	&lt;/div&gt;
+	&lt;table class="calendar_table"&gt;
+		&lt;thead&gt;
+		&lt;tr&gt;&lt;th&gt;月&lt;/th&gt;&lt;th&gt;火&lt;/th&gt;&lt;th&gt;水&lt;/th&gt;&lt;th&gt;木&lt;/th&gt;&lt;th&gt;金&lt;/th&gt;&lt;th&gt;土&lt;/th&gt;&lt;th&gt;日&lt;/th&gt;&lt;/tr&gt;
+		&lt;/thead&gt;
+		&lt;tbody&gt;
+		&lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;1&lt;/td&gt;&lt;td&gt;2&lt;/td&gt;&lt;td&gt;3&lt;/td&gt;&lt;/tr&gt;
+		&lt;tr&gt;&lt;td&gt;4&lt;/td&gt;&lt;td&gt;5&lt;/td&gt;&lt;td&gt;6&lt;/td&gt;&lt;td&gt;7&lt;/td&gt;&lt;td&gt;8&lt;/td&gt;&lt;td&gt;9&lt;/td&gt;&lt;td&gt;10&lt;/td&gt;&lt;/tr&gt;
+		&lt;tr&gt;&lt;td&gt;11&lt;/td&gt;&lt;td&gt;12&lt;/td&gt;&lt;td&gt;13&lt;/td&gt;&lt;td&gt;14&lt;/td&gt;&lt;td&gt;15&lt;/td&gt;&lt;td&gt;16&lt;/td&gt;&lt;td&gt;17&lt;/td&gt;&lt;/tr&gt;
+		&lt;tr&gt;&lt;td&gt;18&lt;/td&gt;&lt;td&gt;19&lt;/td&gt;&lt;td&gt;20&lt;/td&gt;&lt;td&gt;21&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;td&gt;23&lt;/td&gt;&lt;td&gt;24&lt;/td&gt;&lt;/tr&gt;
+		&lt;tr&gt;&lt;td&gt;25&lt;/td&gt;&lt;td&gt;26&lt;/td&gt;&lt;td&gt;27&lt;/td&gt;&lt;td&gt;28&lt;/td&gt;&lt;td&gt;29&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+		&lt;/tbody&gt;
+	&lt;/table&gt;
+&lt;/div cms:plugin="calendar"&gt;
+</pre>
+
+<p>
+&lt;div cms:plugin="calendar"&gt;～&lt;/div cms:plugin="calendar"&gt;の中身は置き換わります。<br>
+テンプレートに記述し、レイアウトの参考にお使いください。
+</p>
+
+<p>フォーマットを指定したい場合は</p>
+
+<pre style="margin:5px;padding:10px;border:solid 1px #ccddFF;background-color:#ccddFF">
+&lt;div cms:plugin="calendar" cms:format="Y-m" &gt;
+</pre>
+
+<p>のように、<span style="text-style:Italic;margin:0 3px;">cms:format</span>属性を設定してください。デフォルトは「Y年m月」です。</p>

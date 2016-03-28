@@ -1,0 +1,71 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div id="layer_content">
+
+<h3>User information</h3>
+
+<span>You can change your user information.</span>
+
+<input type="submit" value="Change password" />
+<input type="submit" value="Change user informaiton" />
+<input type="submit" value="Change email address" />
+
+<div class="section">
+	<p class="sub">Name</p>
+	Family name : <input type="text" soy:id="firstname" />
+	First name : <input type="text" soy:id="lastname" />
+</div>
+
+<div class="section">
+	<p class="sub">Name (reading)</p>
+	Family name : <input type="text" soy:id="firstnameReading" />
+	First name : <input type="text" soy:id="lastnameReading" />
+</div>
+
+<div class="section">
+	<p class="sub">Birthday</p>
+	<select soy:id="birthday_year"></select>Year
+	<select soy:id="birthday_month"></select>Month
+	<select soy:id="birthday_day"></select>Day
+</div>
+
+<div class="section">
+	<p class="sub">Display name</p>
+	<input type="text" soy:id="nickname" />
+	
+	<input type="submit" value="Change user information" />
+</div>
+
+<h3>Change password</h3>
+
+<div class="section">
+	<p class="sub">Old password</p>
+	<input type="text" soy:id="password" />
+</div>
+
+<div class="section">
+	<p class="sub">New password</p>
+	<input type="text" soy:id="newPassword" />
+</div>
+
+<div class="section">
+	<p class="sub">New password (confirm)</p>
+	<input type="text" soy:id="newPasswordConfirm" />
+	
+	
+</div>
+
+<h3>Change email address</h3>
+
+<div class="section">
+	<p class="sub">Email address</p>
+	<input type="text" soy:id="email" />
+	
+	<input type="submit" value="Send test mail" />
+</div>
+
+</div>
+</body>
+</html>

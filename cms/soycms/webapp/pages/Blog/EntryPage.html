@@ -1,0 +1,189 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+	<div><div id="toolbox" class="span-24 last" soy:page="_common.ToolBoxPage"></div></div>
+
+	<!-- content start -->
+	<div id="content" class="span-24 last">			
+		<div class="blogMenu span-16 last" soy:id="BlogMenu"></div soy:id="BlogMenu">
+		
+		<form soy:id="detail_form">
+			<div class="prepend-1 span-22 last">	
+				<div class="section_top">
+					<p class="sub">記事のタイトル<img soy:message="HELP_ENTRY_TITLE"/></p>
+					<input type="text" id="title" soy:id="title">
+					
+					<div soy:id="entry_memos" id="entry_memo_wrapper" class="entry_memos">
+						<p>
+							<span>[メモ]</span>
+							<span id="entry_memo" soy:id="entry_memo" ondblclick="edit_entry_memo();">メモはこちらに表示</span>
+						</p>
+					</div soy:id="entry_memos">
+										
+					<div id="labelmemos">
+						<div class="entry_memos">
+							<!-- soy:id="entry_label_memos" -->
+							<p soy:id="entry_label_memo">ラベルのメモはこちらに表示</p>
+							<!-- /soy:id="entry_label_memos" -->
+						</div>
+					</div>
+					
+					<input type="hidden" id="entry_description" name="description" style="width" soy:id="description">
+				</div>
+			</div>
+			
+			<div class="prepend-1 span-22 last">
+				<div class="section" id="entry_editor">
+					<div class="subsection" style="width:150px;">
+						<div id="entry_content_switch" class="content_tab_active">本文</div>
+						<div id="entry_more_switch" class="content_tab_inactive">追記</div>
+					</div>
+					
+					<div class="subsection row">
+						雛形を読み込む
+						<select soy:id="list_templates" id="list_templates">
+							<option value="">------------</option>
+						</select>
+						<input type="button" value="読み込み" onclick="applyTemplate()">
+						<img soy:message="HELP_ENTRY_TEMPLATE" />
+					</div>
+					<div style="clear:both"><!--  --></div>
+					
+					<div id="entry_content_wrapper" style="position:absolute;visibility:hidden;">
+						<textarea soy:id="content" id="entry_content" style="width:99%;height:400px;"></textarea>
+					</div>
+					
+					<div id="entry_more_wrapper" style="position:abotlue;visibility:hidden;">
+						<textarea soy:id="more" id="entry_more" style="width:99%;height:400px;"></textarea>
+					</div>
+				</div>
+			</div>
+			<div class="prepend-1 span-22 last">
+				<div class="section entry_label">
+					<p class="sub">ラベル<img soy:message="HELP_ENTRY_LABEL"/></p>
+
+					<div id="labels">
+						<div id="labels_wrapper">
+							<!-- soy:id="labels" -->
+							<div class="label_wrapper">
+								<nobr>
+								<input type="checkbox" soy:id="label_check">
+								<label soy:id="label_label">
+									<img soy:id="label_icon" class="label_icon" />
+									<span soy:id="label_caption" class="label_caption"></span>
+								</label soy:id="label_label">
+								</nobr>
+							</div>
+							<!-- /soy:id="labels" -->
+							<!-- soy:id="hidden_labels" -->
+								<input soy:id="hidden_label" type="hidden" />
+							<!-- /soy:id="hidden_labels" -->
+							<br style="clear:both;" />
+						</div>
+					</div>				
+				</div>
+				
+				<div class="section send_trackback">
+					<p class="sub">トラックバック送信</p>
+					<textarea id="trackback_id" name="trackback" style="width:100%;height:3em;"></textarea>
+				</div>
+				
+				<!-- soy:custom="Blog.Entry" --><!-- /soy:custom="Blog.Entry" -->
+				
+				<div class="section">
+					<div class="span-10">
+						<p class="sub">日付<img soy:message="HELP_ENTRY_CREATE_DATE"/></p>
+						<span soy:id="createdate_show" id="create_show"></span>
+						<button id="create_show_button" type="button" onclick="$('#create_show').hide();$('#create_input').show();$('#create_show_button').hide();">変更する</button>
+						<input type="text" soy:id="createdate" id="create_input" style="display:none;" size="25">
+					</div>
+					<div class="span-11 last">
+						<p class="sub">最終更新日時</p>
+						<span soy:id="updatedate_show"></span>
+					</div>
+					<div style="clear:both;"><!--  --></div>
+				</div>
+				
+				
+				<!-- soy:display="publish" -->
+				<div class="section">
+					<p class="sub">公開設定<img soy:message="HELP_ENTRY_DRAFT" /></p>
+					<input type="radio" soy:id="state_draft"/>
+					<input type="radio" soy:id="state_public"/>
+				</div>
+				<!-- /soy:display="publish" -->
+				
+				<div id="buttons" style="float:right;height:10%;">
+					<input id="update_button" soy:id="update_button" type="submit" value="更新" />
+					<input id="create_button" soy:id="create_button" type="submit" value="新規" />
+				</div>
+				
+				<!-- soy:display="publish" -->		
+				<div class="section">
+						<p class="sub">公開期間<img soy:message="HELP_ENTRY_OPEN_PERIOD"/></p>
+						
+						<span soy:id="open_period_show" id="open_period_show"></span>
+						<button id="open_period_show_button" type="button" onclick="$('#open_period_show').hide();$('#open_period_input').show();$('#open_period_show_button').hide();">公開期間を設定する</button>
+
+						<div id="open_period_input" style="display:none;">
+							<table style="width: 28em">
+								<tr>
+									<td style="vertical-align:top;">
+										<input type="text" soy:id="start_date" id="start_date" size="25" maxlength="19" style="width:100%">
+										
+										<div style="font-size:10px;margin-top:5px;margin-left:5px;">
+											<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,0,0,0,0,0),true,false));return false;">今日</a><br/>
+											<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,0,1,0,0,0),true,false));return false;">明日</a><br/>
+											<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,0,7,0,0,0),true,false));return false;">来週</a><br/>
+											<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,1,0,0,0,0),true,false));return false;">来月</a><br/>
+											<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,0,0,0,0,0),false,false));return false;">現在の時刻</a><br/>
+											<a href="#" onclick="$('#start_date').val('');return false;">日時のクリア</a>
+										</div>
+									</td>
+									<td style="vertical-align:top;text-align:center;width:4em;">から</td>
+									<td style="vertical-align:top;">
+										<input type="text" soy:id="end_date" id="end_date" size="25" maxlength="19" style="width:100%">
+										<div style="font-size:10px;">
+											<a href="#" onclick="$('#end_date').val(buildDateString(movedate(new Date,0,0,1,0,0,0),true,true));return false;">明日</a><br/>
+											<a href="#" onclick="$('#end_date').val(buildDateString(movedate(new Date,0,0,7,0,0,0),true,true));return false;">来週</a><br/>
+											<a href="#" onclick="$('#end_date').val(buildDateString(movedate(new Date,0,1,0,0,0,0),true,true));return false;">来月</a><br/>
+											<a href="#" onclick="$('#end_date').val(buildDateString(movedate(new Date,0,0,0,0,0,0),false,true));return false;">現在の時刻</a><br/>
+											<a href="#" onclick="$('#end_date').val('');return false;">日時のクリア</a>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+				</div>
+				<!-- /soy:display="publish" -->
+				
+				<!-- soy:display="publish_info" -->
+				<div class="section">
+					<p class="sub">公開情報</p>
+					<span soy:id="publish_info">公開中</span>
+					<p class="sub">公開期間</p>
+					<span soy:id="period_info">設定なし</span>
+				</div>
+				<!-- /soy:display="publish_info" -->
+				
+				<div style="clear:both"></div>
+				
+				<input type="hidden" name="style" id="style" soy:id="style" />
+			</div>
+		</form soy:id="detail_form">
+
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		<!-- content end -->
+	</div>
+
+
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

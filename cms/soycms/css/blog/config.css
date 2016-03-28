@@ -1,0 +1,24 @@
+#blog_config_generator td{
+	white-space: nowrap;
+}
+#blog_config_generator .blog_config_title_format{
+	width: 220px;
+}
+#blog_config_generator .blog_config_title_format input{
+	width: 100%;
+	*width: 98%;
+}
+#blog_config_generator .blog_config_generate_flag{
+	text-align: center;
+}
+#blog_config_generator .blog_config_display_number{
+	text-align: center;
+}
+
+#blog_config_blog_label .label_wrapper,
+#blog_config_category_label .label_wrapper {
+	margin: 5px;
+	color: rgb(0, 0, 0);
+	background-color: rgb(255, 255, 255);
+	float: left;
+}

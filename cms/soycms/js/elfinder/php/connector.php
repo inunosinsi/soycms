@@ -1,0 +1,256 @@
+<?php
+
+set_time_limit(0); // just in case it too long, not recommended for production
+error_reporting(E_ALL | E_STRICT); // Set E_ALL for debuging
+
+//ログインしていなければelfinderを実行させない
+include_once("../../../../common/common.inc.php");
+SOY2::import("util.UserInfoUtil");
+
+if(!UserInfoUtil::isLoggined()) exit;
+
+// error_reporting(0);
+ini_set('max_file_uploads', 50);   // allow uploading up to 50 files at once
+
+// needed for case insensitive search to work, due to broken UTF-8 support in PHP
+ini_set("default_charset","UTF-8");
+ini_set('mbstring.func_overload', 2);
+
+if (function_exists('date_default_timezone_set')) {
+	date_default_timezone_set('Asia/Tokyo');
+}
+
+include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderConnector.class.php';
+include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinder.class.php';
+include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeDriver.class.php';
+include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeLocalFileSystem.class.php';
+//include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeMySQL.class.php';
+//include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeFTP.class.php';
+
+function debug($o) {
+	echo '<pre>';
+	print_r($o);
+}
+
+/**
+ * Simple logger function.
+ * Demonstrate how to work with elFinder event api.
+ *
+ * @package elFinder
+ * @author Dmitry (dio) Levashov
+ **/
+class elFinderSimpleLogger {
+
+	/**
+	 * Log file path
+	 *
+	 * @var string
+	 **/
+	protected $file = '';
+
+	/**
+	 * constructor
+	 *
+	 * @return void
+	 * @author Dmitry (dio) Levashov
+	 **/
+	public function __construct($path) {
+		$this->file = $path;
+		$dir = dirname($path);
+		if (!is_dir($dir)) {
+			@mkdir($dir);
+		}
+	}
+
+	/**
+	 * Create log record
+	 *
+	 * @param  string   $cmd       command name
+	 * @param  array    $result    command result
+	 * @param  array    $args      command arguments from client
+	 * @param  elFinder $elfinder  elFinder instance
+	 * @return void|true
+	 * @author Dmitry (dio) Levashov
+	 **/
+	public function log($cmd, $result, $args, $elfinder) {
+		$log = '['.date('Y-m-d H:i:s')."] ".$cmd;
+		if(class_exists("UserInfoUtil")) $log .= " by ".UserInfoUtil::getLoginId() . " (".UserInfoUtil::getUserId().")";
+		$log .= "\n";
+
+		if (!empty($result['error'])) {
+			$log .= "\tERROR: ".implode(' ', $result['error'])."\n";
+		}
+
+		if (!empty($result['warning'])) {
+			$log .= "\tWARNING: ".implode(' ', $result['warning'])."\n";
+		}
+
+		if (!empty($result['removed'])) {
+			foreach ($result['removed'] as $file) {
+				// removed file contain additional field "realpath"
+				$log .= "\tREMOVED: ".$file['realpath']."\n";
+			}
+		}
+
+		if (!empty($result['added'])) {
+			foreach ($result['added'] as $file) {
+				$log .= "\tADDED: ".$elfinder->realpath($file['hash'])."\n";
+			}
+		}
+
+		if (!empty($result['changed'])) {
+			foreach ($result['changed'] as $file) {
+				$log .= "\tCHANGED: ".$elfinder->realpath($file['hash'])."\n";
+			}
+		}
+
+		$this->write($log);
+	}
+
+	/**
+	 * Write log into file
+	 *
+	 * @param  string  $log  log record
+	 * @return void
+	 * @author Dmitry (dio) Levashov
+	 **/
+	protected function write($log) {
+
+		if (($fp = @fopen($this->file, 'a'))) {
+			fwrite($fp, $log);
+			fclose($fp);
+		}
+	}
+
+
+} // END class
+
+
+/**
+ * Simple function to demonstrate how to control file access using "accessControl" callback.
+ * This method will disable accessing files/folders starting from  '.' (dot)
+ *
+ * @param  string    $attr   attribute name (read|write|locked|hidden)
+ * @param  string    $path   file path relative to volume root directory started with directory separator
+ * @param  object    $volume elFinder volume driver object
+ * @param  bool|null $isDir  path is directory (true: directory, false: file, null: unknown)
+ * @return bool|null
+ **/
+function access($attr, $path, $data, $volume, $isDir) {
+	return strpos(basename($path), '.') === 0       // if file/folder begins with '.' (dot)
+		? !($attr == 'read' || $attr == 'write')    // set read+write to false, other (locked+hidden) set to true
+		:  null;                                    // else elFinder decide it itself
+}
+
+//function validName($name) {
+//	return strpos($name, '.') !== 0;
+//}
+
+$logger = new elFinderSimpleLogger('../files/temp/log.txt');
+
+if(isset($_GET["site_id"])){
+	//SOY CMSとの接続:サイトのパスを取得
+	SOY2::import("domain.admin.Site");
+	SOY2::import("domain.admin.SiteDAO");
+
+	include_once(SOY2::RootDir() . "/config/db/" . SOYCMS_DB_TYPE . ".php");
+	SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
+	SOY2DAOConfig::user(ADMIN_DB_USER);
+	SOY2DAOConfig::pass(ADMIN_DB_PASS);
+	$siteDAO = SOY2DAOFactory::create("admin.SiteDAO");
+	try{
+		$site = $siteDAO->getBySiteId($_GET["site_id"]);
+	}catch(Exception $e){
+		exit;
+	}
+
+	$path = $site->getPath();
+	$url = $site->getUrl();
+}else if(isset($_GET["shop_id"])){
+	//SOY Shopとの接続:サイトのパスを取得
+	$path = str_replace("soycms", "soyshop", dirname(dirname(dirname(dirname(__FILE__)))) . "/webapp/conf/shop/" . $_GET["shop_id"] . ".conf.php");
+	if(!file_exists($path)) exit;
+	include_once($path);
+
+	$path = SOYSHOP_SITE_DIRECTORY;
+	$url = SOYSHOP_SITE_URL;
+}
+
+$opts = array(
+	'locale' => 'ja_JP.UTF-8',
+	'bind' => array(
+		// '*' => 'logger',
+		'mkdir mkfile rename duplicate upload rm paste' => array($logger, "log")
+	),
+	'debug' => true,
+	'netVolumesSessionKey' => 'netVolumes',
+	'roots' => array(
+		array(
+			'driver'     => 'LocalFileSystem',
+			'path'       => $path,
+			//'startPath'  => $site->getPath(),
+			'URL'        => $url,
+			// 'treeDeep'   => 3,
+			// 'alias'      => 'File system',
+			'mimeDetect' => 'internal',
+			'tmbPath'    => '.tmb',
+			'utf8fix'    => true,
+			'tmbCrop'    => false,
+			'tmbBgColor' => 'transparent',
+			'accessControl' => 'access',
+			'acceptedName'    => '/^[^\.].*$/',
+			// 'disabled' => array('extract', 'archive'),
+			// 'tmbSize' => 128,
+			'attributes' => array(
+				//フロントコントローラー
+				array(
+					'pattern' => '/(index|im)\\.php(\\.old(\\.[0-9][0-9])?)?$/',
+					'read' => false,
+					'write' => false,
+					'locked' => true,
+					'hidden' => true,
+				),
+			)
+			// 'uploadDeny' => array('application', 'text/xml')
+		),
+		// array(
+		// 	'driver'     => 'LocalFileSystem',
+		// 	'path'       => '../files2/',
+		// 	// 'URL'        => dirname($_SERVER['PHP_SELF']) . '/../files2/',
+		// 	'alias'      => 'File system',
+		// 	'mimeDetect' => 'internal',
+		// 	'tmbPath'    => '.tmb',
+		// 	'utf8fix'    => true,
+		// 	'tmbCrop'    => false,
+		// 	'startPath'  => '../files/test',
+		// 	// 'separator' => ':',
+		// 	'attributes' => array(
+		// 		array(
+		// 			'pattern' => '~/\.~',
+		// 			// 'pattern' => '/^\/\./',
+		// 			'read' => false,
+		// 			'write' => false,
+		// 			'hidden' => true,
+		// 			'locked' => false
+		// 		),
+		// 		array(
+		// 			'pattern' => '~/replace/.+png$~',
+		// 			// 'pattern' => '/^\/\./',
+		// 			'read' => false,
+		// 			'write' => false,
+		// 			// 'hidden' => true,
+		// 			'locked' => true
+		// 		)
+		// 	),
+		// 	// 'defaults' => array('read' => false, 'write' => true)
+		// ),
+	)
+
+);
+
+
+
+// sleep(3);
+header('Access-Control-Allow-Origin: *');
+$connector = new elFinderConnector(new elFinder($opts), true);
+$connector->run();

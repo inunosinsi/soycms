@@ -1,0 +1,131 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<script type="text/JavaScript">
+
+</script>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+	<div><div id="toolbox" class="toolbox_blog" soy:page="_common.ToolBoxPage"></div></div>
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+		
+			<div class="span-22 last">
+				<div class="blogMenu span-22 last" soy:id="BlogMenu"></div soy:id="BlogMenu">
+			
+				<div id="blog_menu_template" class="blogMenu span-22 last soy-push-1">
+					<a soy:id="blog_template_link_top">Blog Top Page</a>
+					<a soy:id="blog_template_link_archive">Archive Page(Monthly and Category)</a>
+					<a soy:id="blog_template_link_entry">Blog Entry Page</a>
+		<!-- 		<a soy:id="blog_template_link_popup">Popup Comment</a>  -->
+				</div>
+			</div>
+			
+			<!-- 
+			<h3><span soy:id="blog_name">Title</span>&gt;<span soy:id="template_type">Archive</span></h3>
+			-->
+			<div class="prepend-1 span-22 last">
+				<form id="main_form" soy:id="page_detail_form">
+				
+				<div class="section">
+					
+					<div>
+						<div id="template_toolbox" style="margin:10px 0;">
+							<button type="button" onclick="showPreview();">Preview</button>
+							<button type="button" onclick="common_to_layer(editorLink+'/InsertLink');">Insert Hyperlink</button>
+							<button type="button" onclick="common_to_layer(editorLink+'/FileUpload');">Insert Image</button>
+							<button type="button" onclick="showCSSEditor();" id="cssButton">CSS</button>
+							<!-- <button type="button" onclick="showHelp();" id="helpbutton">Help</button> -->
+							<button type="button" onclick="toggle_editor();">Toggle Editor</button>
+							<button type="button" onclick="common_to_layer(mceSOYCMSEmojiURL,{height:510});" id="emojiButton">Insert Pictograph</button>
+							<button type="button" soy:id="save_template_button">Save this template</button>
+						</div>
+						
+						<div id="template_wrapper" style="position:relative;border:solid 1px #666666;width:100%;">
+							<div id="template_editor_wrapper">
+								<textarea soy:id="template" id="template_content" rows="40" cols="80" wrap="off" style="width:100%;border:none;margin:0;padding:0;line-height:12px;font-size:12px;"></textarea>
+								<iframe id="template_editor_frame" soy:id="template_editor" style="display:none;height:400px;" frameborder="0"></iframe>
+							</div>
+						</div>
+						
+						
+					</div>
+				</div>
+				
+				<div id="block_list" soy:id="page_block_info" style="background-color:white;height:100%;width:100%;overflow:auto;"></div soy:id="page_block_info">
+				
+				<!--
+				<div id="block_help_area" style="display:none;width:100%;height:100%"><iframe id="help_frame" style="width:100%;height:100%;border:none;"></iframe></div>
+				-->
+							
+				<div id="css_editarea" style="display:none;width:100%;height:100%;">
+					<div id="css_selector">
+						<select id="css_list" name="css_list" onchange="onSelectCSS(this.value);">
+							<option value="none">CSS files in this Webpage</option>
+						</select>
+						<input type="button" id="save_css_button" soy:id="save_css_button" value="Save CSS" onclick="saveCSS();" style="margin:0.5em 0;">
+					</div>
+					<div style="width:170px;float:left;overflow:auto;text-align:left;background-color:gray;height:100%;">
+						<div id="cssMenu" ></div>
+						<br style="clear:both;" />
+					</div>
+					<div style="float:left;height:100%;">
+						<textarea id="css_editor" name="css_editor" wrap="off" style="width:100%;margin:0;border:none;padding:0;padding-left:5px;line-height:12px;font-size:12px;"></textarea>
+					</div>
+					<input type="hidden" soy:id="filepath" name="filePath">
+					<span soy:id="filePath"></span>
+				</div>
+				
+				
+				<script lang="text/javascript">
+				var CSSView;
+				Event.observe(window,'load',function(){
+					CSSView = new CSSList("cssMenu","css_editor");
+					CSSView.lineHeight = 12;
+				});
+				function changeImageIcon(id){
+					common_element_to_layer($("image_list"),
+						{	width:200,
+							height:150,
+							targetId : "image_list_layer",
+							onclose:function(){
+								document.body.appendChild($("image_list"));
+								$("image_list").hide();
+							}});
+					$("image_list").label_id = id;
+					$("image_list").show();
+				}
+				
+				function setChangeLabelIcon(filename,fileAddress){
+					$("page_icon").value = filename;
+					$("page_icon_show").src = fileAddress;
+					
+					common_close_layer_by_targetId("image_list_layer");
+				}
+				</script>
+				
+				
+				<div id="buttons" style="float:right;margin-top:10px;">
+					<button type="submit" id="update_button" class="submit_button" soy:id="update_button">Update</button>	
+				</div>
+				
+				<br style="clear:both;" />
+				
+				</form soy:id="page_detail_form">
+			</div>
+						
+			<div soy:id="page_block_info" style="width:200px;"></div soy:id="page_block_info">
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=@@ENCODING@@" />
+<meta name="description" content="*********" />
+<meta name="keywords" content="*********" />
+<meta name="author" content="*********" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="copyright" content="*********" />
+<meta name="robots" content="all" />
+<meta http-equiv="imagetoolbar" content="no" />
+<!-- b_block:id="meta_feed_link" --><!-- フィードへのメタ情報が表示されます。 --><!-- /b_block:id="meta_feed_link" -->
+<title>@@TITLE@@</title>
+<link rev="made" href="mailto:info@*********" />
+<style type="text/css">
+* {margin: 0;padding: 0;}
+body{font-family: 'ヒラギノ角ゴ Pro W3','Hiragino Kaku Gothic Pro','メイリオ',Meiryo,'ＭＳ Ｐゴシック',sans-serif;font-size: 12px;color: #333333;}
+h1,h2,h3{margin-bottom: 1em;color: #000000;}
+h1 a, h2 a, h3 a {text-decoration: none;}
+h1 {font-size: 2.6em;}
+h2 {font-size: 1.5em;}
+h3 {font-size: 1em;}
+p, ul, ol, blockquote, pre {margin-bottom: 1.3em;}
+p, ul, ol {line-height: 135%;}
+blockquote, pre{background-color:#EEEEEE;margin-left:1em;padding:1em;margin-bottom: 1.3em;}
+ul, ol {margin-left: 3em;}
+a {text-decoration: none;color: #333333;}
+a:hover {text-decoration: underline;color: #FF6600;}
+/* Header */#header {width: 980px;height: 120px;margin: 0 auto;background-color: #E8E8E8;}
+/* Title */#title h1 {margin: 0;padding-top: 30px;padding-left: 20px;}
+/* Page */#page {width: 980px;height: 100%;margin: 0 auto; background-color: #D7D7D7;}
+/* Sidebars */.sidebars {float: left;width: 180px;height:100%;padding: 20px 10px 30px 10px;text-align: left;background-color: #D7D7D7;}
+.sidebars ul {margin: 0;padding: 0;list-style: none;}
+.sidebars li {padding-bottom: 30px;}
+.sidebars li li {margin: 0;padding: 0;}
+#sidebarRight {float: right;}
+/* Main */#main {float: left;width: 780px;display:block;}
+/* Content */#content {float: right;width: 580px;background-color:white;}
+.post {padding: 30px 30px 10px 30px;}
+.post .title {margin: 0;}
+.post .entry {padding: 20px 0 20px 0;}
+.post .entry a {text-decoration: underline;}
+.post .links {margin: 0;line-height: normal;font-size: smaller;text-align: right;padding-top: 30px;}
+#trackback .trackback_link { width: 100%;}
+#comment_form {margin-top: 20px;margin-left: 65px;}
+.navi{margin:10px auto;text-align:center;width:90%;}
+/* Calendar */#calendar_wrap {padding: 0 5px;}
+#calendar_wrap table {width: 100%;text-align: center;border-collapse: collapse;border: 1px solid #CCCCCC;}
+#calendar_wrap thead th {padding: 5px 0;border-bottom: 1px solid #CCCCCC;color: #333333;}
+#calendar_wrap tbody td {padding: 5px 0;border-right: 1px dotted #CCCCCC;border-bottom: 1px dotted #CCCCCC;}
+#calendar_wrap tbody a {border: none;font-weight: bold;}
+#calendar_wrap .caption {text-align:center;}
+#calendar_wrap .current_month {padding-bottom: 5px;font-size: 1.2em;font-weight: bold;}
+#calendar_wrap .next {text-align: right;}
+#calendar_wrap .prev {text-align: left;}
+/* Footer */#footer {clear:both;width: 980px;margin: 0 auto;padding: 20px 0;text-align: center;background-color: #E8E8E8;}
+#footer address {margin: 0;padding: 0;font-size: smaller;}
+
+/* clearfix */
+.clearfix:after {content: ".";display: block;height: 0;clear: both;visibility: hidden;}
+.clearfix {display: inline-block;}
+/* Hides from IE-mac \*/*
+html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */
+
+/* trackback */
+#trackback,.comment_body{
+	margin-top: 20px;margin-left: 65px;
+}
+</style>
+</head>
+	
+<body>
+
+<!--ヘッダーの記述-->
+<div id="header">
+	<div id="title">
+		<h1><a href="#" title="" b_block:id="blog_url"><!-- b_block:id="blog_name" -->@@TITLE@@<!-- /b_block:id="blog_name" --></a></h1>
+	</div>
+</div>
+<!--/ヘッダーの記述-->
+
+<!--ページメインの記述-->
+<div id="page" class="clearfix">
+
+	<!--メインの記述-->
+	<div id="main" class="clearfix">
+	
+		<!--中央コンテンツの記述-->
+		<div id="content">
+			
+			<div class="navi" style="margin-bottom:0;">
+				<!-- b_block:id="prev_entry" -->
+				<a cms:id="entry_link"><!-- cms:id="title" -->前のエントリー<!-- /cms:id="title" --></a>
+				<!-- /b_block:id="prev_entry" -->
+				
+				| <a b_block:id="top_link">TOP</a> |
+				
+				<!-- b_block:id="next_entry" -->
+				<a cms:id="entry_link"><!-- cms:id="title" -->次のエントリー<!-- /cms:id="title" --></a>
+				<!-- /b_block:id="next_entry" -->
+			</div>
+			
+			<div class="post">
+				
+				<!-- b_block:id="entry" エントリーの記述-->
+				<h2 cms:id="title" class="title">エントリータイトル01</h2>
+	
+				<div class="entry">
+					<div cms:id="content">ダミーテキストになります。コンテンツの内容とは一切関係ありません。</div>
+					<div cms:id="more"><a name="more"></a>ダミーテキストになります。コンテンツの内容とは一切関係ありません。</div>
+					<p class="links"><a href="#" cms:id="entry_link"><!-- cms:id="create_date" cms:format="Y.m.d" -->2008.02.00<!-- /cms:id="create_date" --> <!-- cms:id="create_time" cms:format="H:i" -->12:34<!-- /cms:id="create_time" --></a>  |  <a href="#" cms:id="comment_link">Comments(<!-- cms:id="comment_count" -->0<!-- /cms:id="comment_count" -->)</a>  |  <a href="#" cms:id="trackback_link">Trackback(<!-- cms:id="trackback_count" -->0<!-- /cms:id="trackback_count" -->)</a></p>
+				</div>
+				<!-- /b_block:id="entry" エントリーの記述-->
+	
+				<!-- b_block:id="comment_list" -->
+				<div class="comment_body">
+					<h4 class="comment_body_title"><!-- cms:id="title" cms:alt="無題" -->コメントのタイトル<!-- /cms:id="title" --> <!-- cms:id="author" cms:alt="名無しさん" -->名前<!-- /cms:id="author" --> | <!-- cms:id="submit_date" cms:format="Y/m/d H:i" -->March 23:15<!-- /cms:id="submit_date" --></h4>
+					<p class="comment_body_content" cms:id="body">コメントの本文がここに<br />改行つきで表示されます。<br />コメントの本文がここに<br />改行つきで表示されます。<br />コメントの本文がここに<br />改行つきで表示されます。<br />コメントの本文がここに<br />改行つきで表示されます。<br /></p>
+				</div>
+				<!-- cms:ignore 以下表示確認用ダミー -->
+				<div class="comment_body">
+					<h4 class="comment_body_title">コメントのタイトル | March 23:15</h4>
+					<p class="comment_body_content">コメントの本文がここに<br />改行つきで表示されます。<br />コメントの本文がここに<br />改行つきで表示されます。<br />コメントの本文がここに<br />改行つきで表示されます。<br />コメントの本文がここに<br />改行つきで表示されます。<br /></p>
+				</div>
+				<!-- /cms:ignore 以下表示確認用ダミー -->
+				<!-- /b_block:id="comment_list" -->
+	
+				<!--フォームの記述-->
+				<div id="comment_form">
+				<form name="#" action="#" method="post" b_block:id="comment_form">
+				<table border="0" cellpadding="0" cellspacing="0" width="380">
+	
+					<tr>
+						<td>タイトル : </td>
+						<td><input type="text" name="#" size="8" style="font-family:osaka,verdana,arial; width:320px;" value="" cms:id="title"/></td>
+					</tr>
+	
+					<tr>
+						<td>名前 : </td>
+						<td><input type="text" name="#" size="8" style="font-family:osaka,verdana,arial; width:120px;" value="" cms:id="author"/>
+						URL :<input type="text" name="#" value="http://" size="40" style="font-family:osaka,verdana,arial; width:160px;" cms:id="url"/></td>
+					</tr>
+	
+					<tr><td colspan="5"></td></tr>
+					<tr>
+					  <td colspan="5"><textarea name="#" cols="60" rows="3" style="font-family:osaka,verdana,arial; width:380px;" cms:id="body"></textarea></td>
+					</tr>
+					
+					<tr>
+					  <td colspan="5"><input type="submit" value="コメント投稿" /></td>
+					</tr>
+	
+				</table>
+				</form b_block:id="comment_form">
+				<!--/フォームの記述-->
+	
+				</div>
+				
+				<!--トラックバックの記述-->
+				<div id="trackback">
+					
+					<h4>トラックバックURL</h4>
+						<input class="trackback_link" b_block:id="trackback_link" onclick="this.select()" />
+				
+					<ul>
+					<!-- b_block:id="trackback_list" -->
+					<li>
+						<span class="comment_body_title"><a cms:id="url"><!-- cms:id="blog_name"-->ブログ名<!-- /cms:id="blog_name"--></a></span>
+						<span cms:id="submit_date" cms:format="Y/m/d H:i">2008/03/15 12:35</span>
+					</li>
+					<!-- /b_block:id="trackback_list" -->
+					
+					<!-- cms:ignore 以下表示確認用ダミー -->
+					<li>
+						<span class="comment_body_title"><a href="#">ブログ名</a></span>
+						<span >2008/03/15 12:35</span>
+					</li>
+					<!-- /cms:ignore 以下表示確認用ダミー -->
+					</ul>
+				
+				</div>
+				<!--/トラックバックの記述-->
+				
+			</div>
+		</div>
+		<!--/中央コンテンツの記述-->
+	
+		<!--左サイドの記述-->
+		<div class="sidebars">
+			<ul>
+				<!--プロフィールの記述-->
+				<li>
+					<h2>プロフィール</h2>
+					<p b_block:id="blog_description">ブログの説明がここに記述されます。</p b_block:id="blog_description">
+					
+					<p><a b_block:id="rss_link">[RSS]</a><br /><a b_block:id="atom_link">[XML]</a></p>
+				</li>
+				<!--/プロフィールの記述-->
+	
+				<!--カテゴリーの記述-->
+				<li>
+					<h2>カテゴリー</h2>
+					<ul>
+						<!-- b_block:id="category" カテゴリーリスト出力 -->
+						<li><a href="#" title="" cms:id="category_link"><!-- cms:id="category_name" -->ダミーカテゴリー<!-- /cms:id="category_name" --></a> (<!-- cms:id="entry_count" -->00<!-- /cms:id="entry_count" -->) </li>
+						<!-- cms:ignore 以下表示用のダミー -->
+						<li><a href="#" title="">ダミーカテゴリー</a> (00) </li>
+						<li><a href="#" title="">ダミーカテゴリー</a> (00) </li>
+						<li><a href="#" title="">ダミーカテゴリー</a> (00) </li>
+						<li><a href="#" title="">ダミーカテゴリー</a> (00) </li>
+						<!-- /cms:ignore 以下表示用のダミー -->
+						<!-- /b_block:id="category" カテゴリーリストここまで -->
+					</ul>
+				</li>
+				<!--/カテゴリーの記述-->
+	
+				<!--アーカイブの記述-->
+				<li>
+					<h2>アーカイブ</h2>
+					<ul>
+						<!-- b_block:id="archive" 月別アーカイブ出力-->
+						<li><a href="#" title="" cms:id="archive_link"><!-- cms:id="archive_month" cms:format="F Y" -->February 2008<!-- /cms:id="archive_month" --></a> (<!-- cms:id="entry_count" -->00<!-- /cms:id="entry_count" -->)</li>
+						<!-- /b_block:id="archive" -->
+						<!-- cms:ignore 以下表示用ダミー -->
+						<li><a href="#" title="">January 2008</a> (00)</li>
+						<li><a href="#" title="">December 2008</a> (00)</li>
+						<li><a href="#" title="">November 2008</a> (00)</li>
+						<li><a href="#" title="">October 2008</a> (00)</li>
+						<li><a href="#" title="">September 2008</a> (00)</li>
+						<li><a href="#" title="">August 2008</a> (00)</li>
+						<li><a href="#" title="">July 2008</a> (00)</li>
+						<li><a href="#" title="">June 2008</a> (00)</li>
+						<li><a href="#" title="">May 2008</a> (00)</li>
+						<li><a href="#" title="">April 2008</a> (00)</li>
+						<li><a href="#" title="">March 2008</a> (00)</li>
+						<!-- /cms:ignore 以下表示用ダミー -->
+					</ul>
+				</li>
+				<!--/アーカイブの記述-->
+	
+				<!--最近の記事の記述-->
+				<li>
+					<h2>最近の記事</h2>
+					<ul>
+						<!-- b_block:id="recent_entry_list" -->
+						<li><a href="#" title="" cms:id="entry_link"><!-- cms:id="title" -->最近の記事のタイトルが入ります<!-- /cms:id="title" -->(<!-- cms:id="create_date" cms:format="Y/m/d" -->03/01<!-- /cms:id="create_date" -->)</a></li>
+						<!-- /b_block:id="recent_entry_list" -->
+						<!-- cms:ignore 以下表示用ダミー -->
+						<li><a href="#" title="">最近の記事のタイトルが入ります(03/06)</a></li>
+						<li><a href="#" title="">最近の記事のタイトルが入ります(03/10)</a></li>
+						<!-- /cms:ignore 以下表示用ダミー -->
+					</ul>
+				</li>
+				<!--/最近の記事の記述-->
+	
+				<!--最近のコメントの記述-->
+				<li>
+					<h2>最近のコメント</h2>
+					<ul>
+						<!-- b_block:id="recent_comment_list" -->
+						<li><!-- cms:id="title" -->最近のコメントのタイトルが入ります<!-- /cms:id="title" -->(<!-- cms:id="submit_date" cms:format="Y/m/d" -->03/01<!-- /cms:id="submit_date" -->)
+							- <a href="#" title="" cms:id="entry_link"><!-- cms:id="entry_title" -->エントリーのタイトルが入ります。<!-- /cms:id="entry_title" --></a>
+						</li>
+						<!-- /b_block:id="recent_comment_list" -->
+						<!-- cms:ignore 以下表示用ダミー -->
+						<li>最近のコメントのタイトルが入ります(03/06)
+							- <a href="#" title="">エントリーのタイトルが入ります。</a>
+						</li>
+						<li>最近のコメントのタイトルが入ります(03/06)
+							- <a href="#" title="">エントリーのタイトルが入ります。</a>
+						</li>
+						<!-- /cms:ignore 以下表示用ダミー -->
+					</ul>
+				</li>
+				<!--/最近のコメントの記述-->
+			</ul>
+		</div>
+		<!--/左サイドの記述-->
+
+	</div>
+	<!--/メインの記述-->
+
+	<!--右サイドの記述-->
+	<div class="sidebars" id="sidebarRight">
+		<ul>
+			
+			<!--カレンダーの記述-->
+			<li id="calendar">
+				<h2>カレンダー</h2>
+				<div cms:plugin="calendar" id="calendar_wrap">
+					<table class="calendar_table"  summary="Calendar">
+						<tr><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th>土</th><th>日</th></tr>
+						<tr><td></td><td></td><td></td><td></td><td>1</td><td>2</td><td>3</td></tr>
+						<tr><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+						<tr><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td></tr>
+						<tr><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td></tr>
+						<tr><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td></td><td></td></tr>
+					</table>
+				</div cms:plugin="calendar">
+			</li>
+			<!--/カレンダーの記述-->
+
+		</ul>
+	</div>
+	<!--/右サイドの記述-->
+</div>
+<!--/ページメインの記述-->
+
+<!--フッターの記述-->
+<div id="footer">
+<address>&copy;2009-2013 This website is powered by <a href="http://www.soycms.net/">SOY CMS</a></address>
+</div>
+<!--/フッターの記述-->
+
+</body>
+</html>

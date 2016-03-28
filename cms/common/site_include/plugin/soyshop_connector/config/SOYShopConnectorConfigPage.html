@@ -1,0 +1,29 @@
+<form soy:id="form">
+	<h4>連携するSOY Shopのサイトを選択してください。</h4>
+	<p>
+		<select soy:id="shop_list"></select>&nbsp;
+		<input type="submit" value="選択">
+	</p>
+</form>
+
+<p>
+	SOY Shopで使用できるshop:moduleをSOY CMSでも使用できるようになります。<br>
+	新たに作成したモジュールやHTMLモジュールも使用可能です。
+</p>
+
+<h4>使用例:マイページのログイン、ログアウトリンク</h4>
+<pre style="padding:7px; border:1px solid #000000;">&lt;!-- <strong>shop:module="common.parts.mypage_login"</strong> --&gt;
+&lt;!-- cms:id="not_loggedin" --&gt;
+&lt;section id="login"&gt;
+	&lt;p&gt;新規会員登録は&lt;a cms:id="register_link"&gt;こちら&lt;/a&gt;&lt;/p&gt;
+	&lt;p&gt;&lt;a cms:id="login_link"&gt;会員ログイン"&lt;/a&gt;&lt;/p&gt;
+&lt;/section&gt;
+&lt;!-- /cms:id="not_loggedin" --&gt;
+
+&lt;!-- cms:id="is_loggedin" --&gt;
+&lt;section id="login"&gt;
+	&lt;p&gt;&lt;a cms:id="logout_link"&gt;ログアウト&lt;/a&gt;&lt;/p&gt;
+	&lt;p&gt;&lt;a cms:id="order_link"&gt;マイページ&lt;/a&gt;&lt;/p&gt;
+&lt;/section&gt;
+&lt;!-- /cms:id="is_loggedin" --&gt;
+&lt;!-- <strong>/shop:module="common.parts.mypage_login"</strong> --&gt;</pre>

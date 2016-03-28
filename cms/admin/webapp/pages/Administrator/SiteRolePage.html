@@ -1,0 +1,90 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>管理者権限設定</h2>
+		
+		<div class="functions">
+			<p><a soy:link="Administrator">管理者一覧に戻る</a></p>
+		</div>
+		
+		<p class="message" soy:id="message"></p>
+				
+
+		<h3 soy:id="user_name">管理者の権限設定</h3>
+
+		<form soy:id="siteRoleForm">
+			<table class="list" cellpadding="0" cellspacing="0" style="margin:12px 24px;">				
+				<thead>
+					<tr>
+						<th>サイト名</th>
+						<th class="authority">権限設定</th>
+					</tr>
+				</thead>
+			
+				<tr soy:id="siterole_block">
+					<td>
+						<span soy:id="site_name">admin1</span>
+					</td>
+					<td class="authority">
+						<select soy:id="site_role"></select>
+						<span soy:id="site_role_text"></span>
+					</td>
+				</tr soy:id="siterole_block">
+				
+			</table>
+			
+			<div style="margin:12px 24px;">
+				<input id="update_button" soy:id="modify_button" type="submit" value="変更" />
+			</div>
+			
+			<br style="clear:both;" />
+		</form soy:id="siteRoleForm">
+	</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+
+<?php /*<div id="container">
+	<div id="upperMenu" soy:page="UpperMenuPage"></div>
+	<div id="wrapper">
+		<div id="leftMenu">
+			<div soy:page="MenuPage"></div>
+		</div>
+		
+		<div id="contents">
+			<h2 soy:id="user_name"></h2>
+			<form soy:id="siteRoleForm">
+			<table id="main">
+				
+				<thead>
+				<tr>
+					<th>サイト名</th>
+					<th>権限</th>
+				</tr>
+				</thead>
+			
+				<tr soy:id="siterole_block">
+					<td>
+						<span soy:id="site_name">admin1</span>
+					</td>
+					<td>
+						<select soy:id="site_role">
+						</select>
+					</td>
+				</tr soy:id="siterole_block">
+			</table>
+			<input soy:id="modify_button" type="submit" value="変更">
+			</form soy:id="siteRoleForm">
+		</div>
+	</div>
+</div> */ ?>
+
+</body>
+</html>

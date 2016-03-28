@@ -1,0 +1,26 @@
+<p>SOY CMSの更新情報と、フォーラムの更新情報をダッシュボードに表示するプラグインです。</p>
+
+
+<form method="post">
+	<fieldset>
+		<legend>キャッシュ</legend>
+		<div>更新情報のキャッシュを削除する場合は、キャッシュのクリアを押してください。<br/>
+		RSSの再読込を行います。</div>
+		<input type="submit" style="padding:10px 20px;" name="cache_clear_button" value="キャッシュのクリア" />
+	</fieldset>
+</form>
+
+<form method="post" soy:id="display_admin_level_panel">
+	<fieldset>
+		<legend>管理者権限別設定</legend>
+		<div>管理者の権限によって表示・非表示を切り替えます。<br/>この設定は初期管理者のみ行えます。</div>
+		<div>
+			<input type="checkbox" soy:id="default_admin" />
+			<input type="checkbox" soy:id="site_admin" />
+			<input type="checkbox" soy:id="entry_admin" />
+			<input type="checkbox" soy:id="limited_admin" />
+		</div>
+
+		<input type="submit" style="padding:10px 20px;" value="設定保存" />
+	</fieldset>
+</form>

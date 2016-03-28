@@ -1,0 +1,42 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>Edit index.php - <span soy:id="site_name" /></h2>
+		
+		<div class="functions" soy:display="only_default_user">
+			<p><a soy:id="detail_link">Cancel</a></p>
+		</div>
+		
+		<p class="message" soy:id="message"></p>
+		<p class="notify" soy:id="error"></p>
+		
+		<h3>Edit index.php</h3>
+		
+			<form soy:id="update_site_form">
+				<table class="globalpage_input">
+					<input soy:id="site_id" />
+					<tr>
+						<td style="width:100%;">
+						<textarea soy:id="contents"></textarea>
+						</td>
+					</tr>
+					<tr>
+						<td class="button">
+							<input type="submit" value="save" soy:id="button">
+						</td>
+					</tr>
+				</table>
+			</form soy:id="update_site_form">
+		</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+</body>
+</html>

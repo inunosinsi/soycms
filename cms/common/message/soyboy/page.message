@@ -1,0 +1,51 @@
+//ページ用　メッセージ
+
+//ページ編集
+PAGE_CREATE_SUCCESS		=		ページを新規作成しました。
+PAGE_CREATE_FAILED		=		ページの新規作成に失敗しました。
+
+PAGE_UPDATE_SUCCESS		=		ページを更新しました。
+PAGE_UPDATE_FAILED		=		ページの更新に失敗しました。
+
+PAGE_REMOVE_SUCCESS		=		ページを削除しました。
+PAGE_REMOVE_FAILED		=		ページの削除に失敗しました。
+
+PAGE_TRASH_SUCCESS		=		ページをゴミ箱へ移動しました。
+PAGE_TRASH_FAILED		=		ページをゴミ箱へ移動するのに失敗しました。
+
+PAGE_RECOVER_SUCCESS	=		ページをゴミ箱から復元しました。
+PAGE_RECOVER_FAILED		=		ページをゴミ箱から復元するのに失敗しました。
+
+//ブログページ
+BLOG_CREATE_SUCCESS		=		ブログページを新規作成しました。
+BLOG_CREATE_FAILED		=		ブログページの新規作成に失敗しました。
+
+BLOG_UPDATE_SUCCESS		=		ブログページを更新しました。
+BLOG_UPDATE_FAILED		=		ブログページの更新に失敗しました。
+
+BLOG_TEMPLATE_UPDATE_SUCCESS	=	ブログテンプレートを更新しました。
+BLOG_TEMPLATE_UPDATE_FAILED		=	ブログテンプレートの更新に失敗しました。
+
+BLOG_TRACKBACK_CERTIFICATION_SUCCESS	=	トラックバック認証を許可に設定しました。
+BLOG_TRACKBACK_INCERTIFICATION_SUCCESS	=	トラックバック認証を拒否に設定しました。
+BLOG_TRACKBACK_CERTIFICATION_FAILD		=	トラックバック認証の許可/拒否の設定に失敗しました。
+
+BLOG_TRACKBACK_DELETE_SUCCESS	=	トラックバックを削除しました。
+BLOG_TRACKBACK_DELETE_FAILED	=	トラックバックの削除に失敗しました。
+BLOG_TRACKBACK_DEFAULT_CHANGE_SUCCESS = トラックバックの標準設定を変更しました。
+BLOG_TRACKBACK_DEFAULT_CHANGE_FAILED = トラックバックの標準設定に失敗しました。
+
+BLOG_COMMENT_AUTHENTICATE_SUCCESS	=	コメントを許可しました。
+BLOG_COMMENT_INAUTHENTICATE_SUCCESS	=	コメントを拒否しました。
+BLOG_COMMENT_AUTHENTICATE_FAILED	=	コメントの許可/拒否の設定に失敗しました。
+
+BLOG_COMMENT_DELETE_SUCCESS		=		コメントを削除しました。
+BLOG_COMMENT_DELETE_FAILED		=		コメントの削除に失敗しました。
+BLOG_COMMENT_DEFAULT_CHANGE_SUCCESS = コメントの標準設定を変更しました。
+BLOG_COMMENT_DEFAULT_CHANGE_FAILED = コメントの標準設定に失敗しました。
+
+PAGE_PREVIEW_FAILED		=		ページのプレビューに失敗しました。
+
+PAGE_DETAIL_GET_FAILED	=		ページ情報の取得に失敗しました。
+
+PAGE_LIST_GET_FAILED	=		ページリストの取得に失敗しました

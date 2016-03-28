@@ -1,0 +1,53 @@
+#entry_editor textarea{
+	width:auto;
+	height:300px;
+	margin-top:0;
+}
+
+/* Label List */
+#labels,
+#use_label_list,
+#category_label_list
+{
+	border:1px solid #CCCCCC;
+	border-radius: 2px;
+	padding: 1ex;
+}
+
+#labels_wrapper {
+	width:100%;
+	_width:851px;/* for IE6, IE7 */
+}
+
+#labels_wrapper div.label_wrapper{
+	float:left;
+	height: 25px;
+	margin-right: 1ex;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+#labels_wrapper div.label_wrapper *{
+	vertical-align:middle;
+}
+
+#labels_wrapper div.label_wrapper input{
+	margin:6px 0px 6px 6px;
+}
+
+#labels_wrapper div.label_wrapper label{
+	 margin:0px;
+	 line-height:1;
+/*	 cursor:default;*/
+}
+
+#labels_wrapper div.label_wrapper label img.label_icon{
+	width:25px;
+	height:25px;
+}
+
+/* for coloring background of label captions */
+#labels_wrapper div.label_wrapper label span.label_caption{
+	padding: 2px;
+	margin: -2px;
+}

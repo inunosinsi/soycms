@@ -1,0 +1,104 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<?php /* Content */ ?>
+<div id="layer_content">
+<h3>Add New Webpage</h3>
+<script lang="text/javascript">
+	function checkURL(){
+		var url = $('uri').value;
+		if(pageList.indexOf(url) != -1){
+				$('uri_exists_error').style.display = "";
+				$('uri').focus();
+				return false;
+		}else if(url.match(/\/$/)){
+				$('uri_cannot_end_slash').style.display = "";
+				$('uri').focus();
+				return true;
+		}else{
+			$('uri_exists_error').style.display = "none";
+		}
+		return true;
+	
+	}
+</script>
+<form soy:id="create_label" onsubmit="return checkURL();">
+<table class="globalpage_input" cellpadding="0" cellspacing="0">
+	<tbody>
+		<tr class="no_example">
+			<td  class="item_name">Title<img soy:message="HELP_PAGE_TITLE" /></td>
+			<td><input soy:id="title" style="width:332px" /></td>
+		</tr>
+		<tr class="no_example">
+			<td class="item_name">URI<img soy:message="HELP_PAGE_URI" /></td>
+			<td>
+				<span id="uri_prefix" soy:id="uri_prefix"></span><input soy:id="uri" id="uri" onblur="return checkURL();">
+				<div id="uri_exists_error" style="display:none;background-color:red;">*This URL already used.</div>
+				<div id="uri_cannot_end_slash" style="display:none;background-color:red;">* The end of URL string must not be "/". </div>
+			</td>
+		</tr>
+		<tr>
+			<td class="item_name">Webpage Type<img soy:message="HELP_PAGE_TYPE" /></td>
+			<td>
+				<div>
+					<input soy:id="page_type_default" type="radio" checked="checked" onchange="$('blog_template_select').name='_normal';$('normal_template_select').name='template';$('normal_template_list').show();$('blog_template_list').hide();">
+				</div>
+				<div>
+					<input soy:id="page_type_blog" type="radio" onchange="$('blog_template_select').name='template';$('normal_template_select').name='_normal';$('normal_template_list').hide();$('blog_template_list').show();">
+				</div>
+				<div>
+					<input soy:id="page_type_mobile" type="radio" onchange="$('blog_template_select').name='_normal';$('normal_template_select').name='template';$('normal_template_list').show();$('blog_template_list').hide();">
+				</div>
+				<div>
+					<input soy:id="page_type_application" type="radio" checked="checked" onchange="$('blog_template_select').name='_normal';$('normal_template_select').name='template';$('normal_template_list').show();$('blog_template_list').hide();">
+				</div>
+			</td>
+		</tr>
+		<tr class="example">
+			<td></td>
+			<td>You cannnot change this after the webpage is made.</td>
+		</tr>
+		
+		<tr class="no_example" id="normal_template_list">
+			<td class="item_name">Template Pack<img soy:message="HELP_PAGE_TEMPLATE" /></td>
+			<td><select id="normal_template_select" soy:id="normal_template_select" style="width:222px"></select>
+			</td>
+		</tr>
+		
+		<tr class="no_example" id="blog_template_list" style="display:none;">
+			<td class="item_name">Templete Pack<img soy:message="HELP_PAGE_TEMPLATE" /></td>
+			<td><select id="blog_template_select" soy:id="blog_template_select" style="width:222px"></select>
+			</td>
+		</tr>
+		
+		<tr class="no_example">
+			<td class="item_name">Parent Webpage<img soy:message="HELP_PAGE_OWNER_PAGE" /></td>
+			<td>
+				<select soy:id="parent_page_select" style="width:222px"><option value="">Choice</option></select>
+			</td>
+		</tr>
+
+		<tr class="no_example">
+			<td class="item_name">Opening Period<img soy:message="HELP_PAGE_DRAFT"/></td>
+			<td>
+				<input type="radio" soy:id="state_draft">
+				<input type="radio" soy:id="state_public">
+			</td>
+		</tr>
+
+		
+		<tr>
+			<td></td>
+			<td class="button">
+				<input type="submit" value="Add New Webpage" style="width:12em;">
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+</form soy:id="create_label">
+</div>
+<?php /* End Content */ ?>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<img soy:id="biglogo" src="./../css/img/logo_big.gif" alt="logo" />
+<div id="administrator">
+	<p>User <span id="adminname" soy:id="adminname">ryan5500</span></p>
+	<a soy:id="update_link" href="#">Account Setting</a>
+	<a soy:link="Login.Logout" onclick="return confirm('Logout OK?');">Logout</a>
+</div>
+<div id="tabs">
+	<a soy:link=""><div class="tab_active" soy:id="top">TOP</div></a>
+
+	<!-- soy:display="for_default_user" -->
+	<a soy:link="Site"><div class="tab_inactive" soy:id="site">Websites</div></a>
+	<a soy:link="Administrator"><div class="tab_inactive" soy:id="administrator">Users</div></a>
+	<!-- soy:id="is_application_installed" -->
+	<a soy:link="Application"><div class="tab_inactive" soy:id="application">SOY Apps</div></a>
+	<!-- /soy:id="is_application_installed" -->
+	<!-- /soy:display="for_default_user" -->
+
+	<!-- soy:display="for_not_default_user" -->
+	<a soy:link="Administrator"><div class="tab_inactive" soy:id="update_link*">Account Settings</div></a>
+	<!-- /soy:display="for_not_default_user" -->
+
+</div>
+<div style="clear:both;"></div>
+
+<script type="text/javascript">
+$$("div.tab_inactive").each(function(element){
+	element.onmouseover = function(e){
+		this.setAttribute("class","tab_inactive_hover");
+		this.setAttribute("className","tab_inactive_hover");
+	};
+	
+	element.onmouseout = function(e){
+		this.setAttribute("class","tab_inactive");
+		this.setAttribute("className","tab_inactive");
+	};
+	
+	element.onmousedown = function(e){
+		this.setAttribute("class","tab_inactive_active");
+		this.setAttribute("className","tab_inactive_active");
+	};
+});
+</script>

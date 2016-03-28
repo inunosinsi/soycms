@@ -1,0 +1,46 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body align="center">
+	
+	<div style="width:80%;margin:0 auto;">
+		<h3>トラックバック詳細</h3>
+	</div>
+	
+	<table class="list" style="width:80%;margin:10px auto;">
+		<tr>
+			<th class="item_name" style="width:150px;">タイトル</th>
+			<td soy:id="title"></td>
+		</tr>
+		<tr>
+			<th class="item_name">ブログ名</th>
+			<td soy:id="blogName"></td>
+		</tr>
+		<tr>
+			<th class="item_name">ブログアドレス</th>
+			<td soy:id="blogAddress"></td>
+		</tr>
+		<tr>
+			<th class="item_name">対象記事タイトル</th>
+			<td soy:id="entry_title"></td>
+		</tr>
+		<tr>
+			<th class="item_name">投稿日時</th>
+			<td soy:id="submit_date"></td>
+		</tr>
+		<tr>
+			<th class="item_name">承認状態</th>
+			<td soy:id="state"></td>
+		</tr>
+		<tr>
+			<th colspan="2">本文</th>
+		</tr>
+		<tr>
+			<td style="text-align:left;" colspan="2" class="comment_content">
+				<pre soy:id="content"></pre>
+			</td>
+		</tr>
+	</table>
+	
+</body>
+</html>

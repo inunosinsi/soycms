@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>ファイル管理</title>
+<script soy:src="./js/elfinder/jquery/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script soy:src="./js/elfinder/jquery/jquery-ui-1.10.1.custom.min.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" soy:link="./js/elfinder/jquery/ui-themes/smoothness/jquery-ui-1.10.1.custom.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+<link rel="stylesheet" soy:link="./js/elfinder/css/common.css"      type="text/css">
+<link rel="stylesheet" soy:link="./js/elfinder/css/dialog.css"      type="text/css">
+<link rel="stylesheet" soy:link="./js/elfinder/css/toolbar.css"     type="text/css">
+<link rel="stylesheet" soy:link="./js/elfinder/css/navbar.css"      type="text/css">
+<link rel="stylesheet" soy:link="./js/elfinder/css/statusbar.css"   type="text/css">
+<link rel="stylesheet" soy:link="./js/elfinder/css/contextmenu.css" type="text/css">
+<link rel="stylesheet" soy:link="./js/elfinder/css/cwd.css"         type="text/css">
+<link rel="stylesheet" soy:link="./js/elfinder/css/quicklook.css"   type="text/css">
+<link rel="stylesheet" soy:link="./js/elfinder/css/commands.css"    type="text/css">
+
+<link rel="stylesheet" soy:link="./js/elfinder/css/fonts.css"       type="text/css">
+<link rel="stylesheet" soy:link="./js/elfinder/css/theme.css"       type="text/css">
+
+<!-- elfinder core -->
+<script soy:src="./js/elfinder/js/elFinder.js"></script>
+<script soy:src="./js/elfinder/js/elFinder.version.js"></script>
+<script soy:src="./js/elfinder/js/jquery.elfinder.js"></script>
+<script soy:src="./js/elfinder/js/elFinder.resources.js"></script>
+<script soy:src="./js/elfinder/js/elFinder.options.js"></script>
+<script soy:src="./js/elfinder/js/elFinder.history.js"></script>
+<script soy:src="./js/elfinder/js/elFinder.command.js"></script>
+
+<!-- elfinder ui -->
+<script soy:src="./js/elfinder/js/ui/overlay.js"></script>
+<script soy:src="./js/elfinder/js/ui/workzone.js"></script>
+<script soy:src="./js/elfinder/js/ui/navbar.js"></script>
+<script soy:src="./js/elfinder/js/ui/dialog.js"></script>
+<script soy:src="./js/elfinder/js/ui/tree.js"></script>
+<script soy:src="./js/elfinder/js/ui/cwd.js"></script>
+<script soy:src="./js/elfinder/js/ui/toolbar.js"></script>
+<script soy:src="./js/elfinder/js/ui/button.js"></script>
+<script soy:src="./js/elfinder/js/ui/uploadButton.js"></script>
+<script soy:src="./js/elfinder/js/ui/viewbutton.js"></script>
+<script soy:src="./js/elfinder/js/ui/searchbutton.js"></script>
+<script soy:src="./js/elfinder/js/ui/sortbutton.js"></script>
+<script soy:src="./js/elfinder/js/ui/panel.js"></script>
+<script soy:src="./js/elfinder/js/ui/contextmenu.js"></script>
+<script soy:src="./js/elfinder/js/ui/path.js"></script>
+<script soy:src="./js/elfinder/js/ui/stat.js"></script>
+<script soy:src="./js/elfinder/js/ui/places.js"></script>
+
+<!-- elfinder commands -->
+<script soy:src="./js/elfinder/js/commands/back.js"></script>
+<script soy:src="./js/elfinder/js/commands/forward.js"></script>
+<script soy:src="./js/elfinder/js/commands/reload.js"></script>
+<script soy:src="./js/elfinder/js/commands/up.js"></script>
+<script soy:src="./js/elfinder/js/commands/home.js"></script>
+<script soy:src="./js/elfinder/js/commands/copy.js"></script>
+<script soy:src="./js/elfinder/js/commands/cut.js"></script>
+<script soy:src="./js/elfinder/js/commands/paste.js"></script>
+<script soy:src="./js/elfinder/js/commands/open.js"></script>
+<script soy:src="./js/elfinder/js/commands/rm.js"></script>
+<script soy:src="./js/elfinder/js/commands/info.js"></script>
+<script soy:src="./js/elfinder/js/commands/duplicate.js"></script>
+<script soy:src="./js/elfinder/js/commands/rename.js"></script>
+<script soy:src="./js/elfinder/js/commands/help.js"></script>
+<script soy:src="./js/elfinder/js/commands/getfile.js"></script>
+<script soy:src="./js/elfinder/js/commands/mkdir.js"></script>
+<script soy:src="./js/elfinder/js/commands/mkfile.js"></script>
+<script soy:src="./js/elfinder/js/commands/upload.js"></script>
+<script soy:src="./js/elfinder/js/commands/download.js"></script>
+<script soy:src="./js/elfinder/js/commands/edit.js"></script>
+<script soy:src="./js/elfinder/js/commands/quicklook.js"></script>
+<script soy:src="./js/elfinder/js/commands/quicklook.plugins.js"></script>
+<script soy:src="./js/elfinder/js/commands/extract.js"></script>
+<script soy:src="./js/elfinder/js/commands/archive.js"></script>
+<script soy:src="./js/elfinder/js/commands/search.js"></script>
+<script soy:src="./js/elfinder/js/commands/view.js"></script>
+<script soy:src="./js/elfinder/js/commands/resize.js"></script>
+<script soy:src="./js/elfinder/js/commands/sort.js"></script>	
+<script soy:src="./js/elfinder/js/commands/netmount.js"></script>	
+
+<!-- elfinder languages -->
+<script soy:src="./js/elfinder/js/i18n/elfinder.ar.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.bg.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.ca.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.cs.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.de.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.el.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.en.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.es.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.fa.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.fr.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.hu.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.it.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.jp.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.ko.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.nl.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.no.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.pl.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.pt_BR.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.ru.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.sl.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.sv.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.tr.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.zh_CN.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.zh_TW.js"></script>
+<script soy:src="./js/elfinder/js/i18n/elfinder.vi.js"></script>
+
+<!-- elfinder dialog -->
+<script soy:src="./js/elfinder/js/jquery.dialogelfinder.js"></script>
+
+<!-- elfinder 1.x connector API support -->
+<script soy:src="./js/elfinder/js/proxy/elFinderSupportVer1.js"></script>
+
+<script>
+	$(document).ready(function() {
+		//元の記述は soycms/js/elfinder/elfinder.src.html にある
+		//オプション一覧：https://github.com/Studio-42/elFinder/wiki/Client-configuration-options
+		$('#finder').elfinder({
+			url : '<!-- soy:id="connector_path" /-->',  // connector URL (REQUIRED)
+			getFileCallback : function(obj) {
+				if(window.parent.filemanager_ondblclick != undefined){
+					window.parent.filemanager_ondblclick(obj.url);
+				}else{
+					window.open(obj.url, "imgwindow", "width=" + obj.width + ",height=" + obj.height);
+				}
+			},            
+			lang : 'jp',
+			customData : {answer : 42},
+			height: 540,
+			uiOptions : {
+				toolbar : [
+					//['home', 'up'],
+					//['back', 'forward'],
+					//['netmount'],
+					['reload'],
+					['mkdir', 'mkfile', 'upload'],
+					//['open', 'download', 'getfile'],
+					['download'],
+					['copy', 'cut', 'paste'],
+					['rm'],
+					['duplicate', 'rename', 'edit', 'resize'],
+					//['extract', 'archive'],
+					['quicklook', 'info'],
+					['view', 'sort'],
+					['search'],
+					['help']
+				]
+			}
+		});
+
+	});
+</script>
+</head>
+<body>
+
+<div id="finder"></div>
+
+<script type="text/javascript" soy:id="cmsscript"></script>
+
+</body>
+</html>

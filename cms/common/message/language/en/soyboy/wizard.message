@@ -1,0 +1,11 @@
+//ウィザード用のメッセージ
+
+WIZARD_NO_SELECT_TEMPLATE	=	Template pack is not selected.
+
+WIZARD_CREATE_PAGE_SUCCESS	=	Webpage is created successfully.
+WIZARD_CREATE_PAGE_FAILED	=	Creating webpage failed.
+
+WIZARD_PAGE_OPEN_SUCCCESS	=	Webpage is published successfully.
+WIZARD_PAGE_OPEN_FAILED		=	Publishing webpage failed.
+
+WIZARD_BLOG_NAME_EMPTY		=	Blogpage titile is required.

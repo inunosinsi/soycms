@@ -1,0 +1,162 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<script soy:id="jqueryjs"></script>
+	<script soy:id="jqueryuijs"></script>
+	<script soy:id="commonjs"></script>
+	<script soy:id="otherdata"></script>
+	<style type="text/css">
+		h4{
+			margin-bottom: 6px;
+		}
+		h5,p{
+			margin: 0 0 6px;
+			font-size:16px;
+		}
+		p, .sub{
+			margin-left:16px;
+			margin-bottom:12px;
+		}
+	</style>
+</head>
+<body>
+<?php /* コンテンツ部分 */ ?>
+<div>
+<h4>リンクを挿入<span soy:id="current_site"></span></h4>
+<div id="controlle_panel">
+	
+	<div class="sub">
+		<select soy:id="insert_link" id="insert_link" style="width:90%"></select>
+	</div>
+
+	<div id="foreign_input" style="display:none">
+		<h4>外部リンクのURLを入力してください</h4>
+		<div class="sub">
+			<input type="text" size="60" name="foreignLink" id="foreignLink">
+			<button type="button" onclick="toggle_Filemanager();return false;">ファイルマネージャ起動</button>
+		</div>
+	</div>
+	<div>
+		<input type="button" value="リンク追加" class="soycms_custom_button" onclick="return checkURL();">
+	</div>
+</div>
+<div id="filemanager" style="display:none" soy:id="file_manager_iframe">
+	<button id="close_filemanager_button" onclick="toggle_Filemanager();return false;" style="display:none;">ファイルマネージャ終了</button>
+	<iframe id="file_manager_iframe" style="width:750px;height:480px;border:none;"></iframe>
+</div>
+<?php /* コンテンツ部分終わり */ ?>
+
+<script lang="text/javascript">
+	window.onload = function(){
+		var show_foreign_input = function(){
+			var selectedItem = $("#insert_link").val();
+			
+			if(selectedItem == "foreign_address"){
+				$("#foreign_input").css("display","");
+			}else{
+				$("#foreign_input").css("display","none");
+			}
+		};
+		show_foreign_input();
+		$("#insert_link").change(function(){
+			//checkURL();
+			show_foreign_input();
+		});
+	};
+	
+	function _resizeWindow(w,h){
+		window.parent.common_resize_layer({width:w,height:h},window.parent);
+	}
+	
+	function checkURL(){
+		var selectedItem = $("#insert_link").val();
+		var addr = $("#foreignLink").val();
+		var innerHTML = "";
+		if(selectedItem == "null_insert_link"){
+			alert("リンク先を選択してください");
+			return false;
+		}else if(selectedItem == "foreign_address"){
+			if(addr.length == 0){
+				alert("外部アドレスが空です");
+				return false;
+			}else{
+				if(innerHTML == ""){
+					innerHTML = addr;
+				}
+				
+				if(addr.search(siteURL,"") == 0) addr = '/' + addr.replace(siteURL,"")
+				parent.insertHTML('<a href="'+ addr +'">'+innerHTML+'</a>');
+				window.parent.common_close_layer(window.parent);
+				return false;
+			}
+		}else if(selectedItem == "foreign_site"){
+			location.href = foreignLinkAddress;
+		}else{
+			if(page_list[selectedItem].pageType == 200){
+				//blogPageの時の処理
+				location.href = blogLinkAddress+'/'+selectedItem + '/' + siteId;
+				return false;
+			}else if(page_list[selectedItem].pageType == 100){
+				//Mobileページのときの処理
+				location.href = mobileLinkAddress+'/'+selectedItem + '/' + siteId;
+				return false;
+			}else{
+				//標準ページのときの処理
+				if(innerHTML == ""){
+					innerHTML = page_list[selectedItem].title;
+				}
+				if(siteId.length == 0){
+					parent.insertHTML('<a href="/'+encodeURI(page_list[selectedItem].uri,true)
+						+'" cms:link="'+page_list[selectedItem].id
+						+'">'
+						+innerHTML+'</a>'
+					);
+				}else{
+					parent.insertHTML('<a href="/'+encodeURI(page_list[selectedItem].uri,true)
+						+'" cms:link="'+page_list[selectedItem].id
+						+'" site="'+siteId
+						+'">'
+						+innerHTML+'</a>'
+					);
+				
+				}
+				window.parent.common_close_layer(window.parent);
+				return false;
+			}
+		
+		}
+		return false;
+	}
+	var mode = "upload";
+	function toggle_Filemanager(){
+		if(mode == "upload"){
+			$("#controlle_panel").hide();
+			if(!$("#file_manager_iframe").attr("src")){
+				$("#file_manager_iframe").attr("src",$("#filemanager").attr("target_src"));
+				setTimeout(function(){
+					$("#close_filemanager_button").show();
+				},500);
+			}
+			_resizeWindow(800,600);
+			$("#filemanager").show();			
+			mode = "filemanager";
+		}else{
+			$("#controlle_panel").show();
+			$("#filemanager").hide();
+			mode = "upload";
+		}
+	}
+	
+	function filemanager_ondblclick(url){
+		
+		toggle_Filemanager();
+		var image = new Image;
+		image.src = url;
+		$('#foreignLink').val(image.src);
+	}
+	
+	common_init_custom_button();
+
+</script>
+</body>
+</html>

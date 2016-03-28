@@ -1,0 +1,154 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+	<link rel="stylesheet" href="./../../../../css/entry/listPanel.css" type="text/css">
+	<link rel="stylesheet" href="./../../../../css/label/labelList.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+	
+		
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+
+		<div class="span-16 last">
+			<h2><a soy:id="back_link">記事管理</a>&gt;記事の検索</h2>
+		</div>
+		
+		<div class="prepend-1 span-22 last">
+		<form soy:id="main_form">
+		<table class="list" style="margin-left:0;">
+			<col style="width:110px;" />
+			<tr>
+				<th>文字列検索</th>
+				<td>
+					<input type="text" name="freeword_text" soy:id="freewordText" style="width:80%">
+					<input type="submit" value="検索">
+				</td>
+			</tr>
+			<tr>
+				<th>ラベル絞込み</th>
+				<td>
+				<input soy:id="label_op_and" type="radio" value="AND"  name="labelOperator">
+				<input soy:id="label_op_or" type="radio" value="OR" name="labelOperator">
+					<br />
+					<!-- soy:id="label_list" -->
+					<div class="label_list_item">
+						<!-- soy:id="if_ie9" -->
+						<nobr>
+						<!-- /soy:id="if_ie9" -->
+						<input type="checkbox" soy:id="label_check">
+						<label soy:id="label_label">
+							<img  class="label_icon"    soy:id="label_icon"/>
+							<span class="label_caption" soy:id="label_name"></span>
+						</label soy:id="label_label">
+						<!-- soy:id="if_ie9*" -->
+						</nobr>
+						<!-- /soy:id="if_ie9*" -->
+					</div>
+					<!-- /soy:id="label_list" -->
+				</td>
+			</tr>
+		</table>
+		</form soy:id="main_form">
+		
+		<form soy:id="index_form" id="index_form">
+				<input type="hidden" name="op_code" id="op_code">
+				<input type="hidden" name="label_select" id="label_select">
+				
+				<div soy:panel="checkbox_functions" class="checkbox_functions">
+					<div class="checkbox_functions_left"><!----></div>
+					<div soy:display="publish" class="checkbox_functions_content">
+						<p>チェックのついた記事を..</p>
+						<p><a href="javascript:void(0);" onclick="javascript:onTogglePublic(false);return false;">非公開にする</a></p>
+						<p><a href="javascript:void(0);" onclick="javascript:onTogglePublic(true); return false;">公開にする</a></p>
+						<p><a href="javascript:void(0);" onclick="javascript:onOpenListPanel();    return false;">ラベル操作</a></p>
+						<p><a href="javascript:void(0);" onclick="javascript:copyEntry();          return false;">複製する</a></p>
+						<p><a href="javascript:void(0);" onclick="javascript:deleteEntry();        return false;">削除する</a></p>
+					</div>
+					<div class="checkbox_functions_right"><!----></div>
+				</div soy:panel="checkbox_functions">
+			
+				<div soy:panel="pager" class="pager">
+					<h5 soy:id="topPager">
+						<a soy:id="prevAnchor" href="#">&nbsp;&laquo;前&nbsp;</a>
+						<span soy:id="contentPage">5件中 1-5件目</span>
+						<a soy:id="nextAnchor" href="#">&nbsp;次&raquo;&nbsp;</a>
+					</h5 soy:id="topPager">
+					<h5>
+						<p>表示件数</p>
+						<p><a href="#" soy:id="showCount10">10件</a></p>
+						<p><a href="#" soy:id="showCount50">50件</a></p>
+						<p><a href="#" soy:id="showCount100">100件</a></p>
+						<p><a href="#" soy:id="showCount500">500件</a></p>
+					</h5>
+				</div soy:panel="pager">
+				
+				<div style="clear:both"><!----></div>
+				<table class="list" cellpadding="0" cellspacing="0" style="margin-left:0;">
+					<thead>
+						<tr>
+							<td class="checkbox">
+								<input type="checkbox" onclick="toggleAllEntryCheck(this.checked);">
+							</td>
+							<td class="title">タイトル</td>
+							<td class="status">公開状態</td>
+							<td>本文</td>
+							<td>ラベル</td>
+							<td soy:display="no_label">
+								<input type="button" soy:id="display_order_submit" value="表示順更新" onclick="document.getElementById('op_code').value='update_display';return confirm('表示順の更新を行います');">
+							</td>
+						</tr>
+					</thead>
+				
+					<tbody>
+						<tr soy:id="list">
+							<td class="checkbox">
+								<div id="checkall">
+									<input soy:id="entry_check" class="entry_check">
+								</div>
+							</td>
+							<td>
+								<a soy:id="title" class="title" href="#" >タイトルsssssssssss</a>
+							</td>
+							<td class="status">
+								<p soy:id="status"></p>
+							</td>
+							<td>
+								<div soy:id="content"style="width:190px;overflow:hidden;height:1.8em;float:left;"></div>
+							</td>
+							<td>
+								&nbsp;
+								<span soy:id="label">
+									<a soy:id="entry_list_link">ラベル１</a>
+								</span soy:id="label">
+							</td>  
+							<td class="order" soy:display="no_label" style="text-align:center;">
+								<input soy:id="order" size="5">
+							</td>
+							 
+						</tr soy:id="list">
+					</tbody>
+				</table>		
+				
+				<div soy:panel="checkbox_functions" class="checkbox_functions"></div soy:panel="checkbox_functions">
+				<div soy:panel="pager" class="pager"></div soy:panel="pager">
+				
+				<div style="clear:both;"><!----></div>
+				
+			</form soy:id="index_form">
+			</div>
+			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

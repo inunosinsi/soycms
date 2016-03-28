@@ -1,0 +1,34 @@
+//ブログに表示するメッセージ
+
+HELP_BLOG_TITLE				=	This is a title of this BlogPage.<br>Use %BLOG% in title format of BlogPage setting, <br/> this will be use as HTML title.
+HELP_BLOG_URI				=	This is URL of this BlogPage.<br><span style="color:red">It must be unique.</span>
+HELP_BLOG_TEMPLATE			=	You can apply blog page template pack to <br> your BlogPage template after installing templatepacks.<br>You can get template packs from SOY CMS Forum or another website.
+HELP_BLOG_OWNER_PAGE		=	Set the rerative position of this page in this website.<br>This is used only to make sitemaps and controlpanel view.
+HELP_BLOG_TITLE_FORMAT		=	&lt;title&gt; will be replace to [Title Format] .<br>%SITE%, %BLOG% means Website title and BlogPage Title.<br>In Entry page, you can use %ENTRY% as the title of the entry displayed in the page.<br>In monthly archive page, %YEAR% and %MONTH% mean the year and the month,in category archive page %CATEGORY% means the category title.
+HELP_BLOG_TEMPLATE_CONETNT	=	You can write HTML and SOY CMS Blocks in webpage template.<br>Please read online manual to get more information about [Block].
+HELP_BLOG_OPEN_PERIOD		=	Please set the publishing period.<br>Webpage will be displayed only if the access to the webpage is in the period. <br>Example : 2007/1/1 11:24:52
+HELP_BLOG_DRAFT				=	Draft webpage will not be displayed, even if be accessed in Publishing period.
+HELP_BLOG_ICON				=	Blog icon is displayed in webpage list.
+HELP_BLOG_DESCRIPTION		=	Description of this BlogPage. You can use this in the templates with b_block:id="blog_description".
+HELP_BLOG_BLOG_LABEL		=	Only entries labeled by this label<br> will be recognized as entry of this blog.
+HELP_BLOG_CATEGORY_LABEL	=	These labels are used as category of entries in this blog.
+HELP_BLOG_GENERATE_FLAG		=	Unchek if you want not to display some types of pages in this blog.
+HELP_BLOG_DISPLAY_NUMBER	=	Enter display number of entries in these page.
+HELP_BLOG_PAGE_URL			=	URL must be unique.
+HELP_BLOG_TOP				=	Top page of this blog page.
+HELP_BLOG_ENTRY				=	Pages that increases whenever the article(entry) is contributed. 
+HELP_BLOG_ARCHIVE			=	Monthly archive pages.
+HELP_BLOG_CATEGORY			=	Categoy archive pages.
+HELP_BLOG_FEED				=	Atom or RSS feeds.
+
+HELP_BLOG_COMMENT_DATE		=	Clisk date to see or edit comments.
+HELP_BLOG_COMMENT_ENTRY		=	The Commented Entry.
+HELP_BLOG_COMMENT_AUTHOR	=	The one who commented.
+HELP_BLOG_COMMENT_TITLE		=	The Title of a comment. Linked if a URL is inputted.
+HELP_BLOG_COMMENT_BODY		=	Comment itself. Clisk it to see or edit comments.
+
+HELP_BLOG_TRACKBACK_DATE	=	Clisk date to see or edit trackbacks.
+HELP_BLOG_TRACKBACK_ENTRY	=	The trackbacked Entry.
+HELP_BLOG_TRACKBACK_BLOG	=	The trackbacking blog.
+HELP_BLOG_TRACKBACK_TITLE	=	The trackbacking entry.
+HELP_BLOG_TRACKBACK_EXCERPT	=	The excerpt of the trackbacking entry.

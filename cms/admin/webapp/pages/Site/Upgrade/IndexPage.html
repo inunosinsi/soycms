@@ -1,0 +1,39 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>サイト管理 - データベースの更新</h2>
+
+		<p class="notify">以下のサイトのデータベースのバージョンアップを行なってください → <a soy:link="Site.Upgrade.Confirm">一括でバージョンアップする</a></p>
+		
+		<div id="siteboxes">
+			<h3>バージョンアップの対象</h3>
+			
+			<?php $counter = 0; ?>
+			<!-- soy:id="list" -->
+			<div class="sitebox">
+				<div class="sitebox_top">
+					<h4 soy:id="site_name" class="sitename">日本情報化農業研究所</h4>
+					<p class="login_button"><a soy:id="site_detail_link">詳細</a></p>
+				</div>
+				<div style="clear:both"><!----></div>
+				<p class="uri"><a soy:id="domain_root_site_url" href="javascript:void(0);"></a></p>
+				<p class="uri"><a soy:id="site_link" href="javascript:void(0);"></a></p>
+			</div>
+			<?php $counter++; ?>
+			<?php if(($counter % 2) == 0) echo "<br style=\"clear:both;\">"; ?>
+			<!-- /soy:id="list" -->
+			
+			<div style="clear:both"><!----></div>
+		</div>
+		
+	</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+</html>

@@ -1,0 +1,69 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			<div class="span-23 last">
+				<h2>Entry Template Manager</h2>
+			</div>
+			
+			<div class="soy-push-1 span-22 last">
+				
+				<div class="functions span-22 last">
+					<a soy:link="EntryTemplate.Detail" style="margin-right:10px">Add New Entry Template</a>
+					<a soy:link="EntryTemplate.Upload" style="margin-right:10px" onclick="return common_click_to_layer(this);">Upload Entry Template</a>
+				</div>	
+				
+				<div class="span-22 last">
+				<!-- soy:display="no_template" -->
+				<div>
+					<div class="blank">
+						There is no entry template.<br>
+					</div>
+				</div>
+				<!-- /soy:display="no_template" -->
+				
+				<!-- soy:display="has_template" -->
+				<table class="list" cellpadding="0" cellspacing="0">
+					<thead>
+						<tr>
+							<td class="name">Title</td>
+							<td class="memo">Description</td>
+							<td class="label_functions">Operation</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr soy:id="template_list">
+							<td class="name">
+								<a soy:id="title"></a>
+							</td>
+							<td class="memo"><span soy:id="description">dd</span></td>
+							<td class="label_functions">
+								<a soy:id="modify_link">Edit</a>
+								<a soy:id="remove_link" onclick="return confirm('Delete this entry template OK?');">Delete</a>					</td>
+						</tr soy:id="template_list">
+					</tbody>
+				</table>
+				<!-- /soy:display="has_template" -->
+				</div>
+			</div>
+			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div soy:id="wrapper" >
+
+</body>
+</html>

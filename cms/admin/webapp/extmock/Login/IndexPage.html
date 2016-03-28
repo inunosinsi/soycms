@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<title>Extモードのモック</title>
+</head>
+
+<body>
+
+<form soy:id="AuthForm" name="AuthForm" action="" method="post">
+	<div id="login_wrapper_for_IE">
+		<div id="login_wrapper">
+			<img soy:id="biglogo" alt="logo" />
+			
+			<div id="login_main"> 
+				<div class="user">
+					<p>ログインID（管理者ID）</p>
+					<input type="text" soy:id="username" />
+				</div>
+				<div class="password">
+					<p>パスワード <span soy:id="reminder"></span soy:id="reminder"></p>
+					<input type="password" soy:id="password" />
+				</div>
+				<div class="failed_message" soy:id="message"></div soy:id="message">
+							
+				<input class="login" type="submit" name="login" value="ログイン" />
+			</div>
+		</div>
+	</div>
+</form soy:id="AuthForm">
+
+<script type="text/JavaScript">
+if (top != self) { top.location.href =self.location.href }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+<style type="text/css">
+#siteconfig_form table td.caption{
+	vertical-align:middle;
+}
+</style>
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			
+			<div class="span-22 prepend-1 last">
+				<h3>Website setting</h3>
+			</div>
+
+			<form soy:id="index_form" id="siteconfig_form">
+			<div class="span-22 last">
+				<table>
+					<tr>			
+						<td class="caption">Website Title</td>
+						<td>
+							<input type="text" name="name" soy:id="name" class="siteconfig_text" value="hoge">
+						</td>					
+					</tr>
+					<tr>			
+						<td class="caption">Description</td>
+						<td>
+							<textarea type="text" soy:id="description" soy:id="description">aaaaaaa</textarea>
+						</td>					
+					</tr>
+					<tr>			
+						<td class="caption">character Set</td>
+						<td>
+							<select name="charset" soy:id="charset"></select>
+						</td>
+					</tr>
+
+					<tr>
+						<td class="caption">Label</td>
+						<td>
+							<input type="hidden" name="useLabelCategory" value="0" />
+							<input soy:id="useLabelCategory" />
+						</td>
+					</tr>
+
+					<tr>
+						<td class="caption">File Upload Path</td>
+						<td>
+							<input type="text"  class="siteconfig_text" soy:id="uploadpath" />
+							<div>
+								<input type="hidden" name="createUploadDirectoryByDate" value="0" />
+								<input soy:id="create_by_date" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="caption">Display Limitation</td>
+						<td>
+							<input type="hidden" name="isShowOnlyAdministrator" value="0" />
+							<input soy:id="isShowOnlyAdministrator" />
+						</td>
+					</tr>
+					
+					<tr>
+						<td/><td><input type="submit" class="submit_button" value="Update" /></td>
+					</tr>
+				</table>
+			</div>			
+			</form soy:id="index_form">
+
+				<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

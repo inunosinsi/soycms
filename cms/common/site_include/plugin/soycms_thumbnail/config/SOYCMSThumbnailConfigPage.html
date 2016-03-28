@@ -1,0 +1,84 @@
+<form soy:id="form">
+<fieldset>
+	<legend>アスペクト比の設定</legend>	
+	<div>
+		width:<input type="number" soy:id="ratio_w"> ： height:<input type="number" soy:id="ratio_h">
+	</div>		
+</fieldset>
+
+<fieldset>
+	<legend>リサイズの設定</legend>
+	<div>
+		width:<input type="number" soy:id="resize_w">&nbsp;px&nbsp;height:<input type="number" soy:id="resize_h">&nbsp;px
+	</div>
+</fieldset>
+
+<fieldset>
+	<legend>サムネイルの登録をしていない時の画像の設定</legend>
+	<div>
+		画像のパス：<input type="text" soy:id="no_thumbnail_path" id="noimage_image_path">
+		<input type="button" onclick="open_noimage_filemanager($('#noimage_image_path'));" value="ファイルを指定する">
+		<!-- soy:id="display_noimage_ppreview_button" -->
+		&nbsp;<a href="#" onclick="return preview_thumbnail_plugin($('#noimage_image_path'));">Preview</a>
+		<!-- /soy:id="display_noimage_ppreview_button" -->
+	</div>
+</fieldset>
+
+<div>
+	<input type="submit" value="保存">
+</div>
+</form>
+
+<h4>使用例</h4>
+<p>※cms:idはブロック内で使用します。</p>
+<pre style="border: 1px solid gray; padding: 1ex 1.5ex;">
+&lt;ul&gt;
+&lt;!-- b_block:id="entry_list" --&gt;
+&lt;li&gt;
+	&lt;a cms:id="entry_link"&gt;
+		<strong>&lt;!-- cms:id="is_thumbnail" --&gt;</strong>
+		&lt;!-- サムネイルがある時に表示する箇所 --&gt;
+		<strong>&lt;img cms:id="thumbnail"&gt;</strong>
+		<strong>&lt;!-- /cms:id="is_thumbnail" --&gt;</strong>
+		
+		<strong>&lt;!-- cms:id="no_thumbnail" --&gt;</strong>
+		サムネイルが無い時に表示する箇所
+		<strong>&lt;!-- /cms:id="no_thumbnail" --&gt;</strong>
+		&lt;!-- cms:id="title" --&gt;新着情報のタイトル&lt;!-- /cms:id="title" --&gt;
+	&lt;/a&gt;
+&lt;/li&gt;
+&lt;!-- /b_block:id="entry_list" --&gt;
+&lt;/ul&gt;
+</pre>
+
+<script>
+function open_noimage_filemanager($form){
+	common_to_layer("/main/soycms/index.php/Page/Editor/FileUpload?noimage_image_path");
+}
+function preview_thumbnail_plugin($form){
+	var domainURL = "http://localhost:8000/";
+	var siteURL = "http://localhost:8000/site/";
+
+	var url = "";
+	var href = $form.val();
+
+	if(href && href.indexOf("/") == 0){
+		url = domainURL + href.substring(1, href.length);
+	}else{
+		url = siteURL + href;
+	}
+
+	var temp = new Image();
+	temp.src = url;
+	temp.onload = function(e){
+		common_element_to_layer(url, {
+			height : Math.min(600, Math.max(400, temp.height + 20)),
+			width  : Math.min(800, Math.max(400, temp.width + 20))
+		});
+	};
+	temp.onerror = function(e){
+		alert(url + "が見つかりません。");
+	}
+	return false;
+}
+</script>

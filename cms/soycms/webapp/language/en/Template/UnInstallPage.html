@@ -1,0 +1,74 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			<div>
+				<h2>Uninstall Templatepack</h2>
+			</div>
+
+			<div class="functions prepend-1 span-22 last">
+				<a soy:link="Template" style="margin-right:10px">Return to Templatepack Manager</a>
+			</div>
+			
+			<div class="span-23 last">
+				<div class="span-22 prepend-1 last">
+				<p>Are you sure to uninstall this template pack "<span soy:id="template_name">Template pack title</span>"?</p>
+				<p>Uncheck files that you do not want to delete.</p>
+				<p>Files included in this template pack that do not exist, shown in <span style="color:red;">red letters</span> below, can not be deleted. </p>
+				
+				<form soy:id="form">
+				
+				<table id="file_list">
+					<tr>
+						<th style="text-align:center;">
+							<input type="checkbox" onclick="change_checkbox(this.checked);" checked="checked" />
+						</th>
+						<th>Path</th>
+						<th>Description</th>					
+					</tr>
+					<tr soy:id="file_list">
+						<td style="text-align:center;">
+							<input type="checkbox" soy:id="check" class="file_list_checkbox" />
+						</td>
+						<td>
+							<span soy:id="name">File List</span>
+						</td>
+						<td>
+							<span soy:id="description">Description</span>
+						</td>
+					</tr soy:id="file_list">			
+				</table>
+	
+					<input type="submit" class="submit_button" value="Uninstall" />
+				</form soy:id="form">
+			</div>
+			
+			<script type="text/javascript">
+			function change_checkbox(value){
+				$$(".file_list_checkbox").each(function(ele){
+					ele.checked = value;
+				});
+			}
+			</script>
+			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+			
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div soy:id="wrapper" >
+
+</body>
+</html>

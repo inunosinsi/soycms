@@ -1,0 +1,124 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link soy:id="jcropcss"/>
+<script soy:id="jqueryjs"></script>
+<script soy:id="jqueryuijs"></script>
+<script soy:id="commonjs"></script>
+<script soy:id="jcropjs"></script>
+</head>
+<body>
+<div>
+<div id="controll_panel">
+	<!-- soy:id="display_jcrop_image" -->
+	<img soy:id="jcrop_image">
+	
+	<form soy:id="form" id="submit_form">
+		<input type="hidden" id="x" name="x" />
+		<input type="hidden" id="y" name="y" />
+		<input type="hidden" id="w" name="w" />
+		<input type="hidden" id="h" name="h" />
+	</form>
+	<!-- /soy:id="display_jcrop_image" -->
+	
+	<!-- soy:id="display_jcrop_thumbnail" -->
+	<div>
+		<img soy:id="jcrop_thumbnail">
+		<input type="hidden" soy:id="jcrop_thumbnail_path">
+	</div>
+	<div>
+		<input type="button" value="適用" id="apply">&nbsp;
+		<input type="button" value="キャンセル" id="cancel">
+	</div>
+	<!-- /soy:id="display_jcrop_thumbnail" -->
+</div>
+<script>
+var applyButton = $("#apply");
+var cancelButton = $("#cancel");
+
+//GETの値があるか調べる
+var queries = window.location.search.substring(1).split("&");
+var ratio_w;
+var ratio_h;
+
+queries.forEach(function(q){
+	if(q.indexOf("w=") === 0){
+		ratio_w = parseInt(q.substr(2));
+	}else if(q.indexOf("h=") === 0){
+		ratio_h = parseInt(q.substr(2));
+	}
+});
+
+jQuery(function($){
+	
+	if($("#target")[0]){
+		$('#target').Jcrop({
+			aspectRatio : ratio_w / ratio_h,
+			onSelect : updateCoords,
+			onChange : confirmCoords,
+			onRelease : resetCoords
+		});
+	}
+	
+	if($("#apply")[0]){
+		$("#apply").on("click", function(event){
+			apply();
+		});
+	}
+	
+	if($("#cancel")[0]){
+		$("#cancel").on("click", function(event){
+			cancel();
+		});
+	}
+});
+
+function confirmCoords(e){
+	if($('#x').val().length > 0){
+		var res = confirm("トリミング？");
+		
+		//Yesを選択した場合
+		if(res){
+			$("#submit_form").submit();
+		//Noを選択した場合
+		} else {
+			resetCoords();
+		}
+	}
+}
+
+function updateCoords(c){
+	$('#x').val(c.x);
+	$('#y').val(c.y);
+	$('#w').val(c.w);
+	$('#h').val(c.h);
+}
+
+function resetCoords(){
+	$('#x').val(null);
+	$('#y').val(null);
+	$('#w').val(null);
+	$('#h').val(null);
+}
+
+function apply(){
+	var src = $("#thumbnail_path").val();
+	
+	window.parent.$("#" + queries[0]).val(src);
+	window.parent.$("#" + queries[0].replace("_trimming_", "_resize_")).val("");
+	
+	//おまじない
+	iframe = null;
+	
+	window.parent.common_close_layer(window.parent);
+}
+
+function cancel(){
+	//おまじない
+	iframe = null;
+		
+	window.parent.common_close_layer(window.parent);
+}
+</script>
+</body>
+</html>

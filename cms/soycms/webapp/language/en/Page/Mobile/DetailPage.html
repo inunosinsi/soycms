@@ -1,0 +1,185 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<script type="text/javascript">
+
+</script>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+	<div id="toolbox" soy:page="_common.ToolBoxPage"></div>
+	
+	<!-- content start -->
+	<div id="content" class="span-24 last">			
+		<div class="span-16 last">
+			<h2><a soy:link="Page">Webpage list</a> &gt; Detail</h2>
+		</div>
+		
+		<div class="prepend-1 span-22 last">		
+		<form soy:id="page_detail_form" id="main_form">
+			<div class="section_top">
+				<div style="float:left;width:80%;">
+					<p class="sub">Webpage Title<img soy:message="HELP_PAGE_TITLE" /></p>
+					<input type="text" id="title" soy:id="title">
+				</div>
+				<div id="icon">
+					<img soy:id="page_icon_show" id="page_icon_show" />
+					<input type="hidden" soy:id="page_icon" name="icon" id="page_icon">					
+				</div>
+				<img soy:message="HELP_PAGE_ICON"/>
+				<div style="clear:both"><!----></div>
+			</div>
+			
+			<div class="section" style="margin-top:-10px;">
+				<p class="sub">URL<img soy:message="HELP_PAGE_URI"/></p>
+				<span id="uri_prefix" soy:id="uri_prefix"></span><input type="text" id="uri" soy:id="uri">
+			</div>
+			
+			<div class="section">
+				<p class="sub">Title format<img soy:message="HELP_PAGE_TITLE_FORMAT"/></p>
+				<span id="title_format" soy:id="title_format"></span><input type="text" id="title_format" soy:id="title_format">
+			</div>
+			
+			<div class="section">
+				<p class="sub">Pearent page<img soy:message="HELP_PAGE_OWNER_PAGE"/></p>
+				<select soy:id="parent_page" style="width:220px;">
+					<option value="">----------</option>
+				</select>
+				
+				<div id="debug"></div>
+			</div>
+			
+			<div class="section">
+				<p class="sub">Template<img soy:message="HELP_PAGE_TEMPLATE_CONETNT"/></p>
+				
+				<div>
+					<div id="template_toolbox">
+						<button type="button" onclick="showPreview();">Preview</button>
+						<button type="button" onclick="common_to_layer(editorLink+'/InsertLink');">Insert hyperlink</button>
+						<button type="button" onclick="common_to_layer(editorLink+'/FileUpload');">Insert image</button>
+						<button type="button" onclick="showCSSEditor();" id="cssButton">CSS</button>
+						<button type="button" onclick="toggle_editor();">Toggle editor</button>
+						<button type="button" onclick="common_to_layer(mceSOYCMSEmojiURL,{height:510});" id="emojiButton">Insert pictgram</button>
+						<button type="button" soy:id="save_template_button">Save template</button>
+					</div>
+					
+					<div id="template_wrapper" style="position:relative;border:solid 1px #666666;width:100%;">
+						<div id="template_editor_wrapper">
+							<textarea soy:id="template" id="template_content" rows="40" cols="80" wrap="off" style="width:100%;border:none;margin:0;padding:0;line-height:12px;font-size:12px;"></textarea>
+							<iframe id="template_editor_frame" soy:id="template_editor" style="display:none;height:400px;" src="" frameborder="0"></iframe>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- soy:custom="Mobile.Detail" --><!-- /soy:custom="Mobile.Detail" -->
+			
+			<div soy:display="openperiod_section">
+					
+				<div class="section">
+					<p class="sub">Opening period<img soy:message="HELP_PAGE_OPEN_PERIOD"/></p>
+					<span soy:id="open_period_show" id="open_period_show"></span>
+					<button id="open_period_show_button" type="button" onclick="$('open_period_show').hide();$('open_period_input').show();$('open_period_show_button').hide();">Set opening period</button>
+					<div id="open_period_input" style="display:none;">
+						<table style="width: 28em">
+							<tr>
+								<td style="vertical-align:top;">
+									<input type="text" soy:id="start_date" id="start_date" size="25" maxlength="19" style="width:100%">
+									
+									<div style="font-size:10px;margin-top:5px;margin-left:5px;">
+										<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),true,false);return false;">Today</a><br/>
+										<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,1,0,0,0),true,false);return false;">Tomorrow</a><br/>
+										<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,7,0,0,0),true,false);return false;">Next week</a><br/>
+										<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,1,0,0,0,0),true,false);return false;">Next month</a><br/>
+										<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),false,false);return false;">Now</a><br/>
+										<a href="#" onclick="$('start_date').value = '';return false;">Clear</a>
+									</div>
+								</td>
+								<td style="vertical-align:top;text-align:center;width:4em;"> ~ </td>
+								<td style="vertical-align:top;">
+									<input type="text" soy:id="end_date" id="end_date" size="25" maxlength="19" style="width:100%">
+									<div style="font-size:10px;">
+										<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,1,0,0,0),true,true);return false;">Tomorrow</a><br/>
+										<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,7,0,0,0),true,true);return false;">Next week</a><br/>
+										<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,1,0,0,0,0),true,true);return false;">Next month</a><br/>
+										<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),false,true);return false;">Now</a><br/>
+										<a href="#" onclick="$('end_date').value = '';return false;">Clear</a>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				
+				<div id="buttons" style="float:right;height:1%;">
+					<button type="submit" class="submit_button" soy:id="update_button">Update</button>
+				</div>
+				
+				<div class="section">
+					<p class="sub">Opening setting<img soy:message="HELP_PAGE_DRAFT"/></p>
+					<input type="radio" soy:id="state_draft">
+					<input type="radio" soy:id="state_public">
+				</div>
+			
+			</div soy:display="openperiod_section">
+			
+			<div soy:display="error_submit_button">
+				<div id="buttons" style="float:right;">
+					<button type="submit" class="submit_button" soy:id="update_button">Update</button>
+				</div>
+				
+				<br style="clear:both">
+			</div soy:display="error_submit_button">
+			
+		</form soy:id="page_detail_form">
+		</div>
+		
+		<!-- ブロックの情報 -->
+		<div id="block_list" soy:id="page_block_info" style="background-color:white;height:100%;width:100%;overflow:auto;"></div soy:id="page_block_info">
+		<!-- /ブロックの情報 -->
+		
+		<!-- CSSの情報 -->
+		<div id="css_editarea" style="display:none;width:100%;height:100%;">
+			<div id="css_selector">
+				<select id="css_list" name="css_list" onchange="onSelectCSS(this.value);">
+					<option value="none">CSSs used in this webpage</option>
+				</select>
+				<input type="button" id="save_css_button" soy:id="save_css_button" value="Save CSS" onclick="saveCSS();" style="margin:0.5em 0;">
+			</div>
+			<div style="width:170px;float:left;overflow:auto;text-align:left;background-color:gray;height:100%;">
+				<div id="cssMenu"></div>
+			</div>
+			<div style="float:left;height:100%;">
+				<textarea id="css_editor" name="css_editor" wrap="off" style="width:100%;height:100%;margin:0;border:none;padding:0;padding-left:5px;line-height:12px;font-size:12px;"></textarea>
+			</div>
+			<input type="hidden" soy:id="filepath" name="filePath">
+			<span soy:id="filePath"></span>
+		</div>
+		<!-- /CSSの情報 -->
+		
+		<!-- アイコン -->
+		<div id="image_list" style="width:100%;height:100%;display:none;">
+			<h4>Double click to change</h4>
+			
+			<span soy:id="image_list">
+				<img soy:id="image_list_icon" style="width:64px;height:64px;">
+			</span soy:id="image_list">
+		</div>
+		<!-- /アイコン -->
+		
+		<!-- ページの仮想ツリー -->
+		<iframe id="virtual_tree" soy:id="virtual_tree" style="border:none;width:100%;height:100%;display:none;"></iframe soy:id="virtual_tree">
+		<!-- /ページの仮想ツリー -->
+		
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+	</div>
+	
+	
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

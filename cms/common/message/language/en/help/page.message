@@ -1,0 +1,18 @@
+//ページに表示するメッセージ
+
+HELP_PAGE_CREATE			=	Click here to add new webpage.
+HELP_PAGE_DISPLAY_TOGGLE	=	Change display type of webpage list. List type, table type and tree type are available. It will be toggled click by ckick.
+
+HELP_PAGE_TITLE				=	String "%PAGE%" in title format will be replaced to webpage title.
+HELP_PAGE_URI				=	Used for the URL of this page, i.e. http://example.com/[Site ID]/[Page URI].<br>Keep this blank if this page should be the top page.<br><span style="color:red">URI must be unique in a website</span>
+HELP_PAGE_URL_SHORTENER		=	Used for redirect to the URL of this page.<br><span style="color:red">URL Shortener must be unique in a website</span>
+HELP_PAGE_TEMPLATE			=	You can make and use webpage templatepack.<br>Webpage templatepack are distributed on SOY CMS Forum. 
+HELP_PAGE_OWNER_PAGE		=	You can set parent - child relation of wabpages.<br>This will be use on webpage list and pull-down.<br>And also use it in making sitemap with sitemap plugin.
+HELP_PAGE_TYPE				=	Nomal page is a type of webpage, it is consist in a pair of URI and HTML template. <br>Blog page is a set of some type of webpages.It can be used as blog. <br><span style="color:red">* You cannnot change this after create webpage.</span>
+HELP_PAGE_TITLE_FORMAT		=	This will be used as &lt;title&gt; element in the webpage.<br>%SITE%, %PAGE%  will be replaced to website title and webpage title.<br>If this stay blank, webpage title will be displayed.
+HELP_PAGE_TEMPLATE_CONETNT	=	You can use "block" in webpage template.<br>Please read online manual in detail.
+HELP_PAGE_OPEN_PERIOD		=	You can set open and close time as opening period.<br />ex.：2007/1/1 11:24:52<br /><span style="color:red">You should set open or close time in second order.<br />The webpage will close as soon as the close time passes.</span>
+HELP_PAGE_DRAFT				=	Draft webpage will never be displayed even if it is accessed in opening period.
+HELP_PAGE_ICON				=	Webpage icon will be displayed on webpage list.
+
+HELP_PAGE_APPLICATION		=	You can set one SOY App.

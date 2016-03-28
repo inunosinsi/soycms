@@ -1,0 +1,49 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head soy:page="_common.HeaderPage">
+<body style="text-align:center;">
+		
+<div style="width: 90%; text-align: left; margin-right: auto; margin-left: auto;">
+
+<form soy:id="create_form" onsubmit="return checkClass()">
+
+<h3>Add New Block Setting (<span soy:id="block_id"></span>)</h3>
+
+<div class="info">
+Choose a block type and click [next].
+</div>
+
+<script lang="text/javascript">
+	function checkClass(){
+		var blocktype = document.getElementsByName("class");
+		for(var i =0; i< blocktype.length; i++){
+			if(blocktype[i].checked){
+				return true;
+			}
+		}
+		alert("Choose a block type.");
+		return false;
+	}
+</script>
+<table style="width:100%;margin-top:10px;">
+	<tr soy:id="component_loop">
+		<td nowrap="nowrap"><input type="radio" soy:id="component_check"></td>
+		<td soy:id="component_description"></td>
+	</tr soy:id="component_loop">
+</table>
+
+<div align="center" style="margin: 10px auto 0px;">
+	<input type="submit" class="submit_button" name="next_submit" value="Next" style="margin-right: 20px;">
+	<input type="submit" class="submit_button" value="Cancel" onclick="common_close_layer(window.parent);return false;">
+</div>
+
+<input type="hidden" name="soyId" soy:id="soyId">
+<input type="hidden" name="pageId" soy:id="pageId">
+</form soy:id="create_form">
+
+</div>
+
+
+</body>
+</html>

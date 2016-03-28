@@ -1,0 +1,112 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<style type="text/css">
+.plugin_box {
+	float:left;
+	width:135px;
+	height:120px;
+	background-position:50% 0%;
+	margin:5px;
+	padding:5px 0;
+	text-align:center;
+	overflow:hidden;
+	font-size:75%;
+}
+
+.plugin_box img{
+	width:64px;
+	height:64px;
+	border:none;
+}
+
+h4{
+	background-color:#EEEEEE;
+	height:40px;
+	line-height:40px;
+	padding-left:20px;
+	
+	margin:5px 0;
+}
+
+.no_plugin{
+	margin:10px 20px;
+	clear:both;
+}
+
+</style>
+<script type="text/JavaScript">
+function create_category(){
+	var category = prompt("Enter Category Name","");
+	if(!category || category.length == 0){
+		return false;
+	}else{
+		$("category_name").value = category;
+		$("hidden_form").submit();
+	}
+}
+</script>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			<div class="span-23 last">
+				<h2>Plugin Manager</h2>
+			</div>
+			
+			<div class="functions prepend-1 span-22 last">
+				<p class="span-2"><a soy:link="Plugin">Show All</a></p>
+				<p class="span-6"><a href="#" onclick="return create_category();">Add Category</a></p>
+			</div>
+						
+			<div soy:display="have_categories" class="prepend-1 span-22 last">
+				<h6 style="display:inline;">Category : </h6>
+				
+				<!-- soy:id="plugin_category_menu" -->
+				<span><a soy:id="plugin_category_link"></a></span>
+				<!-- /soy:id="plugin_category_menu" -->
+
+			</div soy:display="have_categories">
+			
+			<div class="prepend-1 span-22 last">
+			<!-- soy:id="plguin_category_list" -->
+				<div class="span-22 last">
+					<h6 style="display:inline;" soy:id="category_name">Category Name</h6>
+					<span><a soy:id="plugin_category_delete_link">delete</a></span>
+				</div>
+				<!-- soy:id="plugin_list" -->
+				<div soy:id="plugin_box" class="plugin_box">
+					<a soy:id="config_link">
+						<img soy:id="plugin_icon" /><br>
+						<p soy:id="plugin_name"></p>
+					</a>
+				</div soy:id="plugin_box">
+				<!--/soy:id="plugin_list" -->
+				
+				<div class="no_plugin">
+					<span soy:id="no_plugin">There is no plugin.</span>
+				</div>
+				
+			<!-- /soy:id="plguin_category_list" -->
+			</div>
+			
+			<form style="display:none" id="hidden_form" soy:id="hidden_form">
+				<input type="hidden" name="category_name" id="category_name">
+			</form soy:id="hidden_form">
+			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

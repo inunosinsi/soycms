@@ -1,0 +1,165 @@
+h6.heading {
+	border-bottom: 1px solid #eeeeee;
+	padding-bottom:3px;
+	padding-left: 3px;
+	margin-bottom:10px;
+}
+
+
+/* entry list */
+table.list tbody.entry_list td {
+	text-align:center;
+}
+
+table.list tbody.entry_list td.title,
+table.list tbody.entry_list td.content,
+table.list tbody.entry_list td.labels {
+	text-align: left;
+}
+
+/* checkbox functions */
+.checkbox_functions{
+	clear:both;
+	
+	width:560px;
+	_width:540px;/* IE */
+	height:30px;
+	line-height:30px;
+	float:left;
+	/*margin:18px 0;*/
+	background-image:url("./entry_images/function_middle.jpg");
+	background-repeat:repeat-x;
+	font-weight:bold;
+	font-size:12px;
+	
+	margin-bottom:10px;
+}
+
+.checkbox_functions_left {
+	width:8px;
+	height:30px;
+	float:left;
+	background-image:url("./entry_images/function_left.jpg");
+	background-repeat:no-repeat;
+}
+
+.checkbox_functions_content p, .pager p{
+	float:left;
+	padding-right:12px;
+}
+
+.checkbox_functions_content a, .pager a{
+	color:#CB6703;
+}
+
+.checkbox_functions_content select{
+	float:left;
+	width:110px;
+	margin-top:3px;
+}
+
+.checkbox_functions_right {
+	width:8px;
+	height:30px;
+	float:right;
+	background-image:url("./entry_images/function_right.jpg");
+	background-repeat:no-repeat;	
+}
+
+.pager{
+	width:290px;
+	_width:260px;/* IE */
+	height:30px;
+}
+
+#content h5{
+	margin-left:15px;
+	margin-bottom:5px;
+}
+
+#entry_functions{
+	margin-left:10px;
+}
+
+.pager h5{
+	font-size:0.83em;
+	line-height:1;
+	margin:0px 0px 5px;
+	padding:0px;
+	
+	vertical-align:bottom;
+}
+
+.status p{
+	margin-bottom:0;
+}
+
+/*
+#entry_functions .entry_function{
+	float:left;
+}*/
+
+/* Label Table/List/Icon */
+
+.toggle_list{
+	cursor:pointer;
+}
+.toggle_list_opened{
+}
+.toggle_list_closed{
+	display:none;
+	margin-bottom:11px;
+}
+
+.icon{
+	float:left;
+	text-align:center;
+	height:104px;
+	overflow:hidden;
+	padding: 0px;
+}
+.icon h6{
+	font-size:0.8em;
+}
+
+.label_table{
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+}
+
+.label_table .icon{
+	text-align:left;
+	height:64px;
+	overflow:hidden;
+}
+
+.label_table .icon img{
+	float:left;
+	vertical-align:text-top;
+	padding-right:4px;
+}
+
+.label_table .icon h6{
+	display:inline;
+	margin:0px;
+}
+
+.label_table .info p{
+	margin-bottom:0;
+}
+
+#sublabel_list{
+	margin-bottom: 10px;
+	/*
+	overflow:hidden;height:95px;margin-bottom:20px;
+	*/
+}
+
+#sublabel_list .icon{
+	margin-bottom: 4px;
+	overflow:hidden;
+	/* style="float:left;margin:0 5px;text-align:center;" */
+}
+#sublabel_list .icon h6{
+/*	font-size: 0.67em;*/
+}

@@ -1,0 +1,27 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<script soy:id="prototypejs"></script>
+	<script soy:id="commonjs"></script>
+	<script soy:id="popupScript"></script>
+	<script soy:id="urls"></script>
+</head>
+<body>
+<script type="text/javascript">
+	function relocation(){
+		window.location.href = link_url+"/"+$("site_list").value;
+		
+		return false;
+	}
+	
+	common_init_custom_button();
+	
+</script>
+<h4>Slect a website</h4>
+<div id="controlle_panel">
+	
+	<select soy:id="site_list" id="site_list" style="width:280px"></select>
+	<input type="button" class="soycms_custom_button" value="Add Hyperlink" onclick="return relocation();">
+</div>
+</body>
+</html>

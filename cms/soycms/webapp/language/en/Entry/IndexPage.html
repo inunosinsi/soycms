@@ -1,0 +1,290 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+
+<style type="text/css">
+#content h4{
+	margin-top:10px;
+	margin-bottom:5px;
+	margin-left:5px;
+}
+</style>
+
+
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+	
+		
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			<div id="top" class="span-23 last">
+				<h2>Entry Manager</h2>
+			</div>
+
+			<div class="functions prepend-1 span-22 last">
+				<a href="#" soy:link="Label">Label Manager</a>
+				<a href="#" soy:link="EntryTemplate" style="margin-left:15px;">Entry Template Manager</a>
+			</div>
+			
+			<div id="entry_functions" class="span-22 last">
+				<div class="prepend-1 span-6 colborder" style="_width:271px;">
+					<div class="span-6 last">
+						<h5>Operation</h5>
+					</div>
+					
+					<div class="span-3 icon">
+						<a soy:link="Entry.Create">
+							<img soy:src="./image/simplemode/new.gif" />
+							<h6>Create</h6>
+						</a>
+					</div>
+					
+					<div class="span-3 icon last">
+						<a soy:link="Entry.Search">
+							<img soy:src="./image/simplemode/search.gif" />
+							<h6>Search</h6>
+						</a>
+					</div>
+				</div>
+				
+				<div class="labels span-14 last">
+				
+					<div class="span-14 last">
+						<h5>Search By Recent Use Label</h5>
+					</div>
+					
+					<!-- soy:id="recent_labels" -->
+					<div class="icon span-3">
+					<a soy:id="label_link">
+						<img soy:id="label_icon" height="64" width="64">
+						<h6 soy:id="label_title"></h6>
+					</a>
+					</div>
+					<!-- /soy:id="recent_labels" -->
+				</div>
+			</div>
+			
+			<hr class="span-22" style="margin-left:40px;" />
+			
+			<div class="prepend-1 span-22 last">
+				<h5 id="toggle_label_list_opened" class="span-10 last" onclick="return toggle_label_list(this);">Search By Label [-]</h5>
+				<h5 id="toggle_label_list_closed" class="span-10 last" onclick="return toggle_label_list(this);">Search By Label [+]</h5>
+			</div>
+					
+			<div id="label_list" class="prepend-2 span-22 last">
+				<!-- soy:id="label_list" -->
+				<div class="label_table span-6">
+					
+					<div class="icon span-6 last">
+						<a soy:id="detail_link_01">
+							<img soy:id="label_icon" soy:src="./image/labelicon/default.gif" height="64" width="64" />
+							<h6 soy:id="label_name">Label A</h6>
+						</a>
+						<br/>
+						<a soy:id="create_link" href="#">Add new entry</a>
+					</div>
+						
+					<div class="info span-6 last">
+						<p soy:id="label_description">Label Memo</p>
+					</div>
+					
+				</div>
+				<!-- /soy:id="label_list" -->
+			</div>
+			
+			<script type="text/javascript">
+			<!--
+				//get labellist status from cookie
+				var regexp = new RegExp('; label_list=(.*?);');
+				var match  = ('; ' + document.cookie + ';').match(regexp);
+				var is_opened = (match) ? match[1] : 1;
+				if(is_opened != 1){
+					$("toggle_label_list_opened").hide();
+					$("toggle_label_list_closed").show();
+					$("label_list").hide();
+				}
+				
+				function toggle_label_list(ele){
+					if(ele.getAttribute("id") == "toggle_label_list_opened"){
+						$("toggle_label_list_opened").hide();
+						$("toggle_label_list_closed").show();
+						$("label_list").hide();
+						
+						is_opened = 0;
+					}else{
+						$("toggle_label_list_opened").show();
+						$("toggle_label_list_closed").hide();
+						$("label_list").show();
+						
+						is_opened = 1;
+					}
+					
+					document.cookie = 'label_list=' + is_opened + "; expires=" + new Date(2030, 1).toUTCString();
+					
+					return false;
+				}
+			//-->
+			</script>
+			
+			<hr class="span-22" style="margin-left:40px;">
+			
+			<div class="span-22 last">
+				<h5>Search By Opening Status</h5>
+			</div>
+			<div class="prepend-2 span-22 last">
+				<div class="label_table span-6">
+					<div class="icon span-6"" style="text-align:left;height:64px;">
+						<a href="#" soy:link="Entry.List.Closed">
+							<img soy:src="./image/labelicon/default.gif" height="64" width="64" style="vertical-align:text-top;float:left;padding-right: 4px;"/>
+							<h6 soy:id="closedTitle" style="display:inline;margin:0px;font-size:0.8em;">Draft</h6>
+						</a>
+						<p>List of draft (unpublished) entries.</p>
+					</div>
+				</div>
+				<div class="label_table span-6">
+					<div class="icon span-6"" style="text-align:left;height:64px;">
+						<a href="#" soy:link="Entry.List.OutOfDate">
+							<img soy:src="./image/labelicon/default.gif" height="64" width="64" style="vertical-align:text-top;float:left;padding-right: 4px;"/>
+							<h6 soy:id="outofdateTitle" style="display:inline;margin:0px;font-size:0.8em;">Out-of-date</h6>
+						</a>
+						<p>List of out-of-date entries.</p>
+					</div>
+				</div>
+				<div class="label_table span-6 last">
+					<div class="icon span-6"" style="text-align:left;height:64px;">
+						<a href="#" soy:link="Entry.List.NoLabel">
+							<img soy:src="./image/labelicon/default.gif" height="64" width="64" style="vertical-align:text-top;float:left;padding-right: 4px;"/>
+							<h6 soy:id="noLabelTitle" style="display:inline;margin:0px;font-size:0.8em;">Without Label</h6>
+						</a>
+						<p>List of entries without label.</p>
+					</div>
+				</div>
+			</div>
+			
+			<hr class="span-22"  style="margin-left:40px;"/>
+			
+			<div class="span-23 last">
+				<div class="span-23 last">
+					<h2>All Entries</h2>
+				</div>
+				<a name="entry_list"></a>
+			
+				<!-- copy from ListPage.html -->
+				<div class="span-23 last soy-push-1">
+				<form soy:id="index_form" id="index_form">
+					<input type="hidden" name="op_code" id="op_code">
+					<input type="hidden" name="label_select" id="label_select">
+					
+					<div soy:panel="checkbox_functions" class="checkbox_functions">
+						<div class="checkbox_functions_left"><!----></div>
+						<div soy:display="publish" class="checkbox_functions_content">
+							<p>
+								<a href="javascript:void(0);" onclick="javascript:onTogglePublic(false);return false;">Unpublish</a>
+								/
+								<a href="javascript:void(0);" onclick="javascript:onTogglePublic(true); return false;">Publish</a>
+								/
+								<a href="javascript:void(0);" onclick="javascript:onOpenListPanel();    return false;">Modify label</a>
+								/
+								<a href="javascript:void(0);" onclick="javascript:copyEntry();          return false;">Copy</a>
+								/
+								<a href="javascript:void(0);" onclick="javascript:deleteEntry();        return false;">Delete</a>
+								checked entries.
+							</p>
+						</div>
+						<div class="checkbox_functions_right"><!----></div>
+					</div soy:panel="checkbox_functions">
+				
+					<div soy:panel="pager" class="pager">
+						<h5 soy:id="topPager">
+							<a soy:id="prevAnchor" href="#">&nbsp;&laquo;&nbsp;</a>
+							<span soy:id="contentPage">1-5 of all 100 items.</span>
+							<a soy:id="nextAnchor" href="#">&nbsp;&raquo;&nbsp;</a>
+						</h5 soy:id="topPager">
+						<h5>
+							<p>Display number</p>
+							<p><a href="#" soy:id="showCount10" >10</a></p>
+							<p><a href="#" soy:id="showCount50" >50</a></p>
+							<p><a href="#" soy:id="showCount100">100</a></p>
+							<p><a href="#" soy:id="showCount500">500</a></p>
+						</h5>
+					</div soy:panel="pager">
+					
+					<div style="clear:both"><!----></div>
+					<div soy:id="no_entry_message"></div soy:id="no_entry_message">
+					
+					<div class="span-23 last" soy:display="must_exist_entry">
+						<table class="span-22 list last">
+							<thead>
+								<tr>
+									<td class="checkbox">
+										<script type="text/javascript">
+											function toggle_all_entry_check(value){
+												$$("input.entry_check").each(function(ele){
+													ele.checked = value;
+												});																	
+											}
+							   			</script>
+										<input type="checkbox" onclick="toggle_all_entry_check(this.checked);">
+									</td>
+									<td class="title">Title</td>
+									<td class="status">Status</td>
+									<td>More</td>
+									<td>Label</td>
+									<td>Create date</td>
+									<td soy:display="no_label">
+										<input type="button" soy:id="display_order_submit" value="Update Order" onclick="document.getElementById('op_code').value='update_display';return confirm('Update Display Order');">
+									</td>
+								</tr>
+							</thead>
+							<tbody class="entry_list">
+								<tr soy:id="list">
+									<td class="checkbox">
+										<div id="checkall">
+											<input soy:id="entry_check" class="entry_check">
+										</div>
+									</td>
+									<td class="title">
+										<a soy:id="title" href="#" >Title...</a>
+									</td>
+									<td class="status">
+										<p soy:id="status"></p>
+									</td>
+									<td class="content">
+										<div soy:id="content"></div>
+									</td>
+									<td class="labels">
+										<span soy:id="label">
+											<a soy:id="entry_list_link">Label1...</a>
+										</span soy:id="label">
+									</td>
+									<td class="create_date" style="text-align:center;">
+										<span soy:id="create_date" />
+									</td>
+									<td class="order" soy:display="no_label" style="text-align:center;">
+										<input soy:id="order" size="5">
+									</td>
+								</tr soy:id="list">
+							</tbody>
+						</table>		
+						</div soy:display="must_exist_entry">
+					<div soy:panel="checkbox_functions" class="checkbox_functions"></div soy:panel="checkbox_functions">
+					<div soy:panel="pager" class="pager"></div soy:panel="pager">
+					
+				</form soy:id="index_form">
+				</div>
+				<!-- end of copy from ListPage.html -->
+			</div>			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+	
+</div>
+</body>
+</html>

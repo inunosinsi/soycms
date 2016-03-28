@@ -1,0 +1,72 @@
+.checkbox_functions{
+	clear:both;
+	
+	width:530px;
+	height:30px;
+	line-height:30px;
+	float:left;
+	margin:18px 0;
+	background-image:url("./entry_images/function_middle.jpg");
+	background-repeat:repeat-x;
+	font-weight:bold;
+	font-size:12px;
+}
+
+.checkbox_functions_left {
+	width:8px;
+	height:30px;
+	float:left;
+	background-image:url("./entry_images/function_left.jpg");
+	background-repeat:no-repeat;
+}
+
+.checkbox_functions_content p, .pager p{
+	float:left;
+	padding-right:12px;
+}
+
+.checkbox_functions_content a, .pager a{
+	color:#CB6703;
+}
+
+.checkbox_functions_content select{
+	float:left;
+	width:110px;
+	margin-top:3px;
+}
+
+.checkbox_functions_right {
+	width:8px;
+	height:30px;
+	float:right;
+	background-image:url("./entry_images/function_right.jpg");
+	background-repeat:no-repeat;	
+}
+
+.pager{
+	width:200px;
+}
+
+#content h5{
+	margin-left:15px;
+	margin-bottom:5px;
+}
+
+/* icon */
+.icon{
+	float:left;
+	width:64px;
+	margin-right:13px;
+	margin-left:13px;
+	height:90px;
+	text-align:center;
+}
+
+.icon h6 {
+	width:64px;
+}
+
+.icon img{
+	border:none;
+}
+/* end of icon */

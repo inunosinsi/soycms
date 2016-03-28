@@ -1,0 +1,18 @@
+#list_panel_wrapper{
+	overflow:auto;
+	text-align:left;
+	width:98%;
+	height:390px;
+	_height:360px;/* IE */
+	border:1px solid gray;
+	background-color:white;
+	margin:0.8em auto;
+}
+
+.list_panel_buttons{
+	margin:0px auto;
+	padding: 0px;
+	width: 90%;
+	text-align:center;
+}
+

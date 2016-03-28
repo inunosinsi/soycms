@@ -1,0 +1,68 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>サイト詳細 - <span soy:id="site_name_title" /></h2>
+		
+		<div class="functions" soy:display="only_default_user">
+			<p><a soy:link="Site">サイト一覧に戻る	</a></p>
+			<p><a soy:id="regenerate_link">フロントコントローラーの再生成</a></p>
+			<p><a soy:id="edit_indexphp">index.phpの編集</a></p>
+			<p><a soy:id="edit_htaccess">.htaccessの編集</a></p>
+		</div>
+		
+		<p class="message" soy:id="message"></p>
+		<p class="notify" soy:id="error"></p>
+		
+		<h3>サイトURLの変更</h3>
+		
+			<form soy:id="update_site_form">
+				<table class="globalpage_input">
+					<col style="width:120px;" />
+					<tr>
+						<th nowrap="nowrap">サイトID</th>
+						<td><span soy:id="site_id" /></td>
+					</tr>
+					<tr>
+						<th nowrap="nowrap">サイト名称</th>
+						<td><span soy:id="site_name" /></td>
+					</tr>
+					<tr>
+						<th nowrap="nowrap" valign="top">サイトURL<img soy:message="HELP_ADMIN_SITE_DETAIL_SITEURL" /></td>
+						<td>
+							<!-- soy:id="display_soycms" -->
+							<input id="site_url" type="text" soy:id="site_url_soycms" style="width:400px;">
+							<br />
+							元のURL (<span id="default_url" soy:id="default_url" ></span>) に<a href="javascript:void(0);" onclick="$('#site_url').val($('#default_url').html());return false;">戻す</a><br />
+							<span style="color:red;">※設定したURLでアクセス出来ることを確認してください。</span> →<a href="javascript:void(0);" onclick="$(this).attr('href',$('#site_url').val());return common_click_to_layer(this);">確認する</a><br />
+							※mod_rewriteなどでURLを変更した場合に、SOY CMS内部で出力している絶対URLを変更内容に対応させるための設定項目です。<br />
+							<!-- /soy:id="display_soycms" -->
+							<!-- soy:id="display_soyshop" -->
+							<input id="site_url" type="text" soy:id="site_url_shop" style="width:400px;">
+							<br />
+							<span style="color:red;">※設定したURLでアクセス出来ることを確認してください。</span> →<a href="javascript:void(0);" onclick="$(this).attr('href',$('#site_url').val());return common_click_to_layer(this);">確認する</a><br />
+							<!-- /soy:id="display_soyshop" -->
+						</td>
+					</tr>
+					<!-- soy:id="display_soycms*" -->
+					<tr>
+						<td></td>
+						<td class="button">
+							<input id="update_button" type="submit" value="変更">
+						</td>
+					</tr>
+					<!-- /soy:id="display_soycms*" -->
+				</table>
+			</form soy:id="update_site_form">
+		</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+</body>
+</html>

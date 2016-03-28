@@ -1,0 +1,12 @@
+//テンプレートメッセージ
+TEMPLATE_ID_INVALID			=	テンプレートIDに使用できる文字は英数小文字のみです。
+TEMPLATE_ID_IS_BLANK		=	テンプレートIDが空です。
+TEMPLATE_NAME_ID_BLANK		=	テンプレートの名前が空です。
+TEMPLATE_TYPE_ID_INVALID	=	テンプレートの種類が不正です。	
+
+TEMPLATE_FILE_NAME_IS_BLANK	=	テンプレートファイル名が空白です。
+TEMPLATE_GET_PAGE_ERROR		=	ページ情報の取得に失敗しました。
+
+TEMPLATE_CREATE_SUCCESS		=	テンプレートを作成しました。
+TEMPLATE_UPDATE_SUCCESS		=	テンプレートを更新しました。
+TEMPLATE_UPDATE_FAILED		=	テンプレートの更新に失敗しました。

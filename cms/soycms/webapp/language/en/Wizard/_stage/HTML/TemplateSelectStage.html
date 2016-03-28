@@ -1,0 +1,36 @@
+<h3>Webpage Making Wizard 3/6</h3>
+<h5>Select Template Pack</h5>
+
+<p>
+	Select one from following templatepacks.
+</p>
+<table class="templates">
+	<tr>		
+		<th>Default Template</th>
+		<td>Empty HTML</td>
+		<td>
+			<table>
+				<tr>
+					<td><input type="radio" name="template_id" value="" checked></td>
+					<td>Default Template</td>
+				</tr>
+			</table>
+	</tr>	
+	
+	<!-- soy:id="template_list" -->
+	<tr>
+		<th><span soy:id="template_name"></span></th>
+		<td soy:id="template_description"></td>
+		<td>
+			<table>
+				<!-- soy:id="template_details" -->
+				<tr>
+					<td><input type="radio" name="template_id" soy:id="tempalte_radio"></td>
+					<td><div soy:id="description"></div soy:id="description"></td>
+				</tr>
+				<!-- /soy:id="template_details" -->
+			</table>
+		</td>
+	</tr>
+	<!-- /soy:id="template_list" -->
+</table>

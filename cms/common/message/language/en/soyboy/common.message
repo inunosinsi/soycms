@@ -1,0 +1,55 @@
+//更新しました
+UPDATE_SUCCESS					=		Updated successfully.
+UPDATE_FAILED					=		Updating failed.
+CREATE_SUCCESS					=		Created successfully.
+CREATE_FAILED					=		Creation failed.
+REMOVE_SUCCESS					=		Deleted successfully.
+REMOVE_FAILED					=		Deleting failed.
+TARGET_DIRECTORY_NOT_WRITABLE	=		Directory is not writable.
+
+//サイト設定
+SITECONFIG_UPDATE_SUCCESS		=		Site config is updated successfully.
+SITECONFIG_UPDATE_FAILED		=		Updating site config failed.
+
+//メール設定
+MAILCONFIG_UPDATE_SUCCESS		=		Mail config is updated successfully.
+MAILCONFIG_UPDATE_FAILED		=		Updating mail config failed.
+TESTMAIL_SEND_SUCCESS			=		Sent Test-mail successfully.
+TESTMAIL_SEND_FAILED			=		Sending Test-mail failed.
+
+//プラグイン設定
+PLUGIN_ACTIVATION_SUCCESS			=		The plugin is activated.
+PLUGIN_INACTIVATION_SUCCESS			=		The plugin is inactivated.
+PLUGIN_ACTIVATION_FAILED			=		Plugin activation/inactivation failed.
+
+PAGE_CSS_SAVE_SUCCESS	=		CSS is saved successfully.
+PAGE_CSS_SAVE_FAILED	=		Saving CSS failed.
+
+PAGE_JUMP_MESSAGE	=	Jump to webpage
+
+//テンプレートメッセージ
+PAGE_TEMPLATE_CREATE_SUCCESS	=	Webpage template pack is created successfully.
+PAGE_TEMPLATE_CREATE_FAILED		=	Creation webpage templatepack failed.
+PAGE_TEMPLATE_SAVE_SUCCESS		=	Webpage template pack is saved successfully.
+PAGE_TEMPLATE_SAVE_FAIELD		=	Saving webpage template pack failed.
+PAGE_TEMPLATE_REMOVE_SUCCESS	=	Webpage template pack is deleted successfully.
+PAGE_TEMPLATE_REMOVE_FAILED		=	Deleting webpage template pack failed.
+PAGE_TEMPLATE_UPLOAD_SUCCESS	=	Webpage template pack is uploaded successfully.
+PAGE_TEMPLATE_UPLOAD_FAILED		=	Uploading webpage template pack failed.
+
+ENTRY_TEMPLATE_CREATE_SUCCESS	=	Entry template is created successfully.
+ENTRY_TEMPLATE_CREATE_FAILED	=	Creation entry template failed.
+ENTRY_TEMPLATE_SAVE_SUCCESS		=	Entry template is saved successfully.
+ENTRY_TEMPLATE_SAVE_FAIELD		=	Saving entry template failed.
+ENTRY_TEMPLATE_REMOVE_SUCCESS	=	Entry template is deleted successfully.
+ENTRY_TEMPLATE_REMOVE_FAILED	=	Deleting entry template failed.
+ENTRY_TEMPLATE_UPLOAD_SUCCESS	=	Entry template is uploaded successfully.
+ENTRY_TEMPLATE_UPLOAD_FAILED	=	Uploading entry template failed.
+
+
+PASSWORD_FAILED		=	Password is wrong.
+CHANGE_PASSWORD_SUCCESS = Password is changed successfully.
+
+BLOG_LABEL_ERROR	=	You must set a label in Blogpage setting.
+
+NOTIFY_DOUBLE_LOGIN	=	<strong style="color:red;">You have logged out from [%SITE_NAME%]</strong>

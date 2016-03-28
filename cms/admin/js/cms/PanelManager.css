@@ -1,0 +1,42 @@
+.panel_tab{
+	float:left;
+}
+.panel_tab_inactive{
+	float:left;
+}
+
+.panel_container{
+	width:100%;
+	height:100%;
+}
+
+.panel_tab, .panel_tab_inactive {
+	background-repeat:no-repeat;
+	width:92px;
+	height:23px;
+	line-height:23px;
+	text-align:center;
+	margin-top:6px;
+	margin-left:5px;
+
+}
+.panel_tab {
+	background-image:url("./editor_images/tab_active.gif");	
+	color:#666666;
+}
+
+.panel_tab_inactive {
+	background-image:url("./editor_images/tab_inactive.gif");
+	color:#FFFFFF;
+}
+
+.panel_container {
+	border:1px solid #d0d0d0;
+	margin:5px;
+	background-color:white;
+}
+
+#west_panel, #east_panel, #south_panel{
+	border:1px solid #d0d0d0;
+	background-color:#EFEFEF;
+}

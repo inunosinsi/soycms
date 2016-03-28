@@ -1,0 +1,36 @@
+p, table, select{
+	margin:10px 10px;
+}
+
+table {
+	border: 0;
+}
+
+th, td, tr {
+	margin:0px;
+	padding:5px 5px;
+}
+
+table.templates {
+	border:1px solid grey;
+}
+
+h5 {
+	padding:4px 5px;
+	margin:5px 5px;
+	background-color:green;
+	color:white;
+}
+
+select {
+	width:100px;
+}
+
+input.submit_button {
+	font-size: 150%;
+	width: 20em;
+	height: 4em;
+	margin: 40px auto 0px;
+	text-align: center;
+	display: block;
+}

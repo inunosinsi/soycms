@@ -1,0 +1,32 @@
+.label_list_item{
+	display:inline;
+	margin:0 1em 0 0;
+	line-height:2;
+}
+
+.label_list_item *{
+	vertical-align:middle;
+}
+
+.label_list_item input{
+	margin:0px 0px 0px 4px;
+}
+
+.label_list_item label{
+	margin:0px;
+	line-height:2;
+	cursor:pointer;
+}
+
+.label_list_item label img.label_icon{
+	width:25px;
+	height:25px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.label_list_item label .label_caption{
+	padding:2px;
+	margin:-2px;
+}
+

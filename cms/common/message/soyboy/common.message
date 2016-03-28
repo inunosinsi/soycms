@@ -1,0 +1,56 @@
+//更新しました
+UPDATE_SUCCESS					=		更新しました。
+UPDATE_FAILED					=		更新に失敗しました。
+CREATE_SUCCESS					=		作成しました。
+CREATE_FAILED					=		作成に失敗しました。
+REMOVE_SUCCESS					=		削除しました。
+REMOVE_FAILED					=		削除に失敗しました。
+TARGET_DIRECTORY_NOT_WRITABLE	=		ディレクトリの書き込み権限がありません。
+
+
+//サイト設定
+SITECONFIG_UPDATE_SUCCESS		=		サイト設定の更新に成功しました。
+SITECONFIG_UPDATE_FAILED		=		サイト設定の更新に失敗しました。
+
+//メール設定
+MAILCONFIG_UPDATE_SUCCESS		=		メール設定の更新に成功しました。
+MAILCONFIG_UPDATE_FAILED		=		メール設定の更新に失敗しました。
+TESTMAIL_SEND_SUCCESS			=		テストメールの送信に成功しました。
+TESTMAIL_SEND_FAILED			=		テストメールの送信に失敗しました。
+
+//プラグイン設定
+PLUGIN_ACTIVATION_SUCCESS			=		プラグインを有効にしました。
+PLUGIN_INACTIVATION_SUCCESS			=		プラグインを無効にしました。
+PLUGIN_ACTIVATION_FAILED			=		プラグインの有効/無効の切り替えに失敗しました。
+
+PAGE_CSS_SAVE_SUCCESS	=		CSSの保存に成功しました
+PAGE_CSS_SAVE_FAILED	=		CSSの保存に失敗しました
+
+PAGE_JUMP_MESSAGE	=	ページへジャンプ
+
+//テンプレートメッセージ
+PAGE_TEMPLATE_CREATE_SUCCESS	=	ページテンプレートを作成しました。
+PAGE_TEMPLATE_CREATE_FAILED		=	ページテンプレートの作成に失敗しました。
+PAGE_TEMPLATE_SAVE_SUCCESS		=	ページテンプレートの保存しました
+PAGE_TEMPLATE_SAVE_FAIELD		=	ページテンプレートの保存に失敗しました。
+PAGE_TEMPLATE_REMOVE_SUCCESS	=	ページテンプレートを削除しました。
+PAGE_TEMPLATE_REMOVE_FAILED		=	ページテンプレートの削除に失敗しました。
+PAGE_TEMPLATE_UPLOAD_SUCCESS	=	ページテンプレートを登録しました。
+PAGE_TEMPLATE_UPLOAD_FAILED		=	ページテンプレートの登録に失敗しました。
+
+ENTRY_TEMPLATE_CREATE_SUCCESS	=	記事テンプレートを作成しました。
+ENTRY_TEMPLATE_CREATE_FAILED	=	記事テンプレートの作成に失敗しました。
+ENTRY_TEMPLATE_SAVE_SUCCESS		=	記事テンプレートの保存しました
+ENTRY_TEMPLATE_SAVE_FAIELD		=	記事テンプレートの保存に失敗しました。
+ENTRY_TEMPLATE_REMOVE_SUCCESS	=	記事テンプレートを削除しました。
+ENTRY_TEMPLATE_REMOVE_FAILED	=	記事テンプレートの削除に失敗しました。
+ENTRY_TEMPLATE_UPLOAD_SUCCESS	=	記事テンプレートを登録しました。
+ENTRY_TEMPLATE_UPLOAD_FAILED	=	記事テンプレートの登録に失敗しました。
+
+
+PASSWORD_FAILED		=	パスワードが一致しませんでした。
+CHANGE_PASSWORD_SUCCESS = パスワードを変更しました。
+
+BLOG_LABEL_ERROR	=	ブログに使用するラベルが設定されていません。
+
+NOTIFY_DOUBLE_LOGIN	=	<strong style="color:red;">「%SITE_NAME%」からログアウトしました</strong>

@@ -1,0 +1,36 @@
+<form soy:id="main_form">
+
+	<input type="hidden" soy:id="site_hidden" />
+	
+	<fieldset><legend>File to include</legend>
+	<input type="text" size="60" soy:id="script_path" />
+	<span style="color:red" soy:id="script_path_error" />
+	</fieldset>
+	
+	<fieldset><legend>Function to call</legend>
+	<input type="text" size="60" soy:id="function_name" />
+	<span style="color:red" soy:id="function_name_error" />
+	</fieldset>
+	
+	<fieldset><legend>Hyperlink to blogpage</legend>
+		<input soy:id="no_stick_url" type="hidden" name="object[blogPageId]" value="0"/>
+		<input soy:id="stick_url" type="checkbox" onclick="common_toggle('blog_page_list');common_toggle('blog_page_list_label');"><br/>
+		<span id="blog_page_list_label" soy:id="blog_page_list_label">Select blog</span><select id="blog_page_list" soy:id="blog_page_list"></select>
+	</fieldset>
+	
+
+	<div style="margin:10px;text-align:center;">
+		<input class="submit_button" type="submit" value="Save" />
+		<input class="submit_button" type="button" value="Cancel" style="margin-left:20px;" onclick="common_close_layer(window.parent);return false;">
+	</div>
+	
+</form soy:id="main_form">
+
+<form soy:id="sites_form">
+	<fieldset><legend>Select a website</legend>
+		Website ID: <select style="width:180px;" soy:id="site"></select>
+		<input type="submit" value="Change" />
+		<input type="hidden" value="reload" name="after_submit" />
+	</fieldset>
+</form soy:id="sites_form">
+

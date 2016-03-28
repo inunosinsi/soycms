@@ -1,0 +1,26 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div style="margin:1em;">
+<h2>Template History</h2>
+<table class="list" cellpadding="0" cellspacing="0" style="margin:auto;">
+	<thead>
+	<tr>
+		<th>Saved time</th>
+		<th>Content</th>
+		<th class="function"></th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr soy:id="templateList">
+		<td><a soy:id="date">2008-03-15 15:40</a></td>
+		<td soy:id="contents">Content</td>
+		<td class="function"><form soy:id="restoreForm"><input type="hidden" soy:id="historyId"><input type="submit" value="Restore"></form soy:id="restoreForm"></td>
+	</tr soy:id="templateList">
+	</tbody>
+</table>
+</div>
+</body>
+</html>

@@ -1,0 +1,121 @@
+
+/* login menu */
+#login_wrapper_for_IE {
+	/*for IE*/
+	text-align:center;
+}
+
+#login_wrapper {
+	margin:0 auto;
+	text-align:left;
+	padding:0;
+	width:370px;
+	margin-top:100px;
+}
+
+#logo {
+	width:221px;
+	height:111px;
+	background-image:url("../img/logo_big.gif");
+	background-repeat:no-repeat;
+}
+
+#login_main {
+	background-image:url("./login.gif");
+	background-repeat:no-repeat;
+	width:370px;
+	height:275px;
+}
+
+.remind {
+	background-image:url("./login.gif");
+	background-repeat:no-repeat;
+	width:370px;
+	height:275px;
+}
+
+.remind h2 {
+	font-size: 16px;
+	color: #333333;
+	margin: 0 20px;
+	padding-top: 20px;
+}
+
+.user , .password, .mail_address {
+	font-size:12px;
+	color:#333333;
+	margin:0 20px;
+	padding-top:20px;
+} 
+
+.user p, .password p, .mail_address p {
+	font-weight: bold;
+	color:#333333;
+	margin:5px 5px;
+}
+	
+.user input, .password input, .mail_address input {
+	font-size:30px;
+	color:#333333;
+	width:320px;
+	height:50px;
+	padding:4px;
+}
+
+.login {
+	width:100px;
+	height:50px;
+	font-size:16px;
+	float:right;
+	margin-top:20px;
+	margin-right:20px;
+}
+
+.submit {
+	width:100px;
+	height:50px;
+	font-size:16px;
+	float:right;
+	margin-top:20px;
+	margin-right:20px;
+}
+
+.submit_min {
+	width:100px;
+	height:30px;
+	font-size:16px;
+	float:right;
+	margin-top:10px;
+	margin-right:30px;
+}
+
+.failed_message{
+	text-align:left;
+	color:red;
+	float:left;
+	width:180px;
+	margin-top:10px;
+	margin-left:20px;
+	margin-right:0;
+}
+
+.error_message{
+	margin: 0 20px;
+	color:red;
+}
+
+.return{
+	float:left;
+	width:180px;
+	margin-top:10px;
+	margin-left: 20px;
+}
+
+.message {
+	font-size:15px;
+	color:#333333;
+	margin:0 20px;
+	padding-top:20px;
+} 
+
+/* login menu end*/

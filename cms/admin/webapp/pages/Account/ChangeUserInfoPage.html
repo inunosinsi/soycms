@@ -1,0 +1,30 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div id="layer_content" style="text-align:left;">
+
+<h3>登録情報の変更</h3>
+
+<form soy:id="changeform">
+
+<div class="section">
+	<p class="sub">名前（255文字まで）</p>
+	<input type="text" soy:id="name" size="60">
+</div>
+<div class="section">
+	<p class="sub">メールアドレス（255文字まで）</p>
+	<input type="text" soy:id="email" size="60">
+</div>
+
+<div class="section">
+	<input type="hidden" soy:id="user_id">
+	<input type="submit" name="changeuser" value="登録情報を変更する" />
+</div>
+<a soy:link="Account">&lt;&lt;戻る</a>
+</form soy:id="changeform">
+
+
+</div>
+</body>
+</html>

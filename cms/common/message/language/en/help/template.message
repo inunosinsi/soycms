@@ -1,0 +1,21 @@
+//テンプレートのメッセージ類
+TEMPLATE_ID				=	Templatepack ID must be unique in one website.<br>If you distribute templatepacks, please be careful not to overlap. 
+TEMPLATE_NAME			=	You don't have to make this unique. Please give a comprehensible name.
+TEMPLATE_TYPE			=	Select a webpage type. You can apply templatepacks only if the type of webpage is same as the type of template pack.
+TEMPLATE_DESCRIPTION	=	A description of this template pack.
+
+TEMPLATE_FILE_NAME		=	A title of template file.
+TEMPLATE_FILE_IMPORT	=	You can copy the webpage template to template file.
+TEMPLATE_FILE_CREATE	=	You can cretate brand new template file.
+
+TEMPLATE_FILE_DESCRIPTION	=	A description of a template file.
+TEMPLATE_FILE_CONTENT	=	A content of a template file.
+TEMPLATE_CREATE_ERROR	=	Something wrong happend in creation of template file.
+
+ENTRY_TEMPLATE_NAME		=	A title of entry template.
+ENTRY_TEMPLATE_DESCRIPTION	=	A description of entry template.
+ENTRY_TEMPLATE_CONTENT	=	This will be inserted as [content] of a entry.
+ENTRY_TEMPLATE_MORE	=	This will be inserted as [more] of a entry.
+ENTRY_TEMPLATE_STYLE	=	CSS only used in template editor preview. This will never be applied in publish side of this website.
+ENTRY_TEMPLATE_LABEL	=	This entry template will be applied to a new entry according to its label.
+

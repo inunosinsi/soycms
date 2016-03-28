@@ -1,0 +1,163 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+	<link rel="stylesheet" href="./../../../../css/entry/listPanel.css" type="text/css">
+	<link rel="stylesheet" href="./../../../../css/label/labelList.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+	
+		
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+
+		<div class="span-16 last">
+			<h2><a soy:id="back_link">Entry Manager</a>>Search</h2>
+		</div>
+		
+		<div class="prepend-1 span-22 last">
+		<form soy:id="main_form">
+		<table class="list" style="margin-left:0;">
+			<col style="width:110px;" />
+			<tr>
+				<th>Serch by String</th>
+				<td>
+					<input type="text" name="freeword_text" soy:id="freewordText" style="width:80%">
+					<input type="submit" value="Search">
+				</td>
+			</tr>
+			<tr>
+				<th>Label</th>
+				<td>
+				<input soy:id="label_op_and" type="radio" value="AND"  name="labelOperator">
+				<input soy:id="label_op_or" type="radio" value="OR" name="labelOperator">
+					<br />
+					<!-- soy:id="label_list" -->
+					<div class="label_list_item">
+						<nobr>
+						<input type="checkbox" soy:id="label_check">
+						<label soy:id="label_label">
+							<img  class="label_icon"    soy:id="label_icon"/>
+							<span class="label_caption" soy:id="label_name"></span>
+						</label soy:id="label_label">
+						</nobr>
+					</div>
+					<!-- /soy:id="label_list" -->
+				</td>
+			</tr>
+		</table>
+		</form soy:id="main_form">
+		
+		<form soy:id="index_form" id="index_form">
+				<input type="hidden" name="op_code" id="op_code">
+				<input type="hidden" name="label_select" id="label_select">
+				
+				<div soy:panel="checkbox_functions" class="checkbox_functions">
+					<div class="checkbox_functions_left"><!----></div>
+					<div soy:display="publish" class="checkbox_functions_content">
+						<p>
+							<a href="javascript:void(0);" onclick="javascript:onTogglePublic(false);return false;">Unpublish</a>
+							/
+							<a href="javascript:void(0);" onclick="javascript:onTogglePublic(true); return false;">Publish</a>
+							/
+							<a href="javascript:void(0);" onclick="javascript:onOpenListPanel();    return false;">Modify label</a>
+							/
+							<a href="javascript:void(0);" onclick="javascript:copyEntry();          return false;">Copy</a>
+							/
+							<a href="javascript:void(0);" onclick="javascript:deleteEntry();        return false;">Delete</a>
+							checked entries.
+						</p>
+					</div>
+					<div class="checkbox_functions_right"><!----></div>
+				</div soy:panel="checkbox_functions">
+			
+				<div soy:panel="pager" class="pager">
+					<h5 soy:id="topPager">
+						<a soy:id="prevAnchor" href="#">&nbsp;&laquo;&nbsp;</a>
+						<span soy:id="contentPage">1-5 of all 100 items.</span>
+						<a soy:id="nextAnchor" href="#">&nbsp;&raquo;&nbsp;</a>
+					</h5 soy:id="topPager">
+					<h5>
+						<p>Display Number</p>
+						<p><a href="#" soy:id="showCount10">10</a></p>
+						<p><a href="#" soy:id="showCount50">50</a></p>
+						<p><a href="#" soy:id="showCount100">100</a></p>
+						<p><a href="#" soy:id="showCount500">500</a></p>
+					</h5>
+				</div soy:panel="pager">
+				
+				<div style="clear:both"><!----></div>
+				<table class="list" cellpadding="0" cellspacing="0" style="margin-left:0;">
+					<thead>
+						<tr>
+							<td class="checkbox">
+								<script type="text/javascript">
+									function toggle_all_entry_check(value){
+										$$("input.entry_check").each(function(ele){
+											ele.checked = value;
+										});																	
+									}
+					   			</script>
+								<input type="checkbox" onclick="toggle_all_entry_check(this.checked);">
+							</td>
+							<td class="title">Title</td>
+							<td class="status">Status</td>
+							<td>Content</td>
+							<td>Label</td>
+							<td soy:display="no_label">
+								<input type="button" soy:id="display_order_submit" value="Update Order" onclick="document.getElementById('op_code').value='update_display';return confirm('Update Display Order');">
+							</td>
+						</tr>
+					</thead>
+				
+					<tbody>
+						<tr soy:id="list">
+							<td class="checkbox">
+								<div id="checkall">
+									<input soy:id="entry_check" class="entry_check">
+								</div>
+							</td>
+							<td>
+								<a soy:id="title" class="title" href="#" >aaaaaaaaaa</a>
+							</td>
+							<td class="status">
+								<p soy:id="status"></p>
+							</td>
+							<td>
+								<div soy:id="content"style="width:190px;overflow:hidden;height:1.8em;float:left;"></div>
+							</td>
+							<td>
+								&nbsp;
+								<span soy:id="label">
+									<a soy:id="entry_list_link">LabelA</a>
+								</span soy:id="label">
+							</td>  
+							<td class="order" soy:display="no_label" style="text-align:center;">
+								<input soy:id="order" size="5">
+							</td>
+							 
+						</tr soy:id="list">
+					</tbody>
+				</table>		
+				
+				<div soy:panel="checkbox_functions" class="checkbox_functions"></div soy:panel="checkbox_functions">
+				<div soy:panel="pager" class="pager"></div soy:panel="pager">
+				
+				<div style="clear:both;"><!----></div>
+				
+			</form soy:id="index_form">
+			</div>
+			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

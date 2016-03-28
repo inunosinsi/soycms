@@ -1,0 +1,4 @@
+//Help for Block Config
+
+HELP_BLOCK_DISPLAY_NUMBER	=	Specify entries to display by the order in the list.
+HELP_BLOCK_BLOG_LINK		=	Add the link to the specified blog's EntryPage to the title.<br/>You can use cms:id="entry_link" in this block.

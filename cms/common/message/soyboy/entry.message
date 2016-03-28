@@ -1,0 +1,26 @@
+//記事用　メッセージ
+
+//記事編集
+ENTRY_CREATE_SUCCESS		=		記事を新規作成しました。
+ENTRY_CREATE_FAILED			=		記事の新規作成に失敗しました。
+
+ENTRY_UPDATE_SUCCESS		=		記事を更新しました。
+ENTRY_UPDATE_FAILED			=		記事の更新に失敗しました。
+
+ENTRY_PUBLISH_SUCCESS		=		記事を公開にしました。
+ENTRY_PUBLISH_FAILED		=		記事の公開に失敗しました。
+
+ENTRY_NONPUBLISH_SUCCESS	=		記事を非公開にしました。
+ENTRY_NONPUBLISH_FAILED		=		記事を非公開するのに失敗しました。
+
+ENTRY_REMOVE_SUCCESS		=		記事を削除しました。
+ENTRY_REMOVE_FAILED			=		記事の削除に失敗しました。
+
+ENTRY_COPY_SUCCESS			=		記事を複製しました。
+ENTRY_COPY_FAILED			=		記事の複製に失敗しました。
+ENTRY_COPY_TITLE			=		コピー～
+
+ENTRY_BLOG_LABEL_NOTFOUND	=		ブログ記事投稿にはラベル必須です。
+
+//検索結果
+ENTRY_NO_ENTRY_IS_UNDER_THE_CONDITION=該当する記事は見つかりませんでした

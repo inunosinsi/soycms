@@ -1,0 +1,70 @@
+.wrapper {
+}
+
+.box {
+	float:left;
+	width:78px;
+	height:78px;
+	border:1px dashed olive;
+	margin:5px 5px;
+}
+
+.box .img {
+	width:34px;
+	height:34px;
+	background-image:url("./pagetree_images/page.png");
+	margin:5px 5px;
+}
+
+.box p {
+	margin:0;
+	padding:0;
+	margin-left:5px;
+	margin-top:2px;
+}
+
+.box .blogimg {
+	width:34px;
+	height:34px;
+	background-image:url("./pagetree_images/blogpage.png");
+	margin:5px 5px;
+}
+
+.pathbox {
+	float:left;
+}
+
+.top_path {
+	height:90px;
+	width:45px;
+	background:url("./pagetree_images/top_path.png");
+}
+
+.none_path {
+	height:90px;
+	width:45px;
+	background:url("./pagetree_images/none_path.png");
+}
+
+.middle_path {
+	height:90px;
+	width:45px;
+	background:url("./pagetree_images/middle_path.png");
+}
+
+.bottom_path {
+	height:90px;
+	width:45px;
+	background:url("./pagetree_images/bottom_path.png");	
+}
+
+.childbox {
+	float:left;
+}
+
+.buttons a{
+	font-size:12px;
+	text-decoration:none;
+	text-align:center;
+	margin-left:3px;
+}

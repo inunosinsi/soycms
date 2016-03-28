@@ -1,0 +1,400 @@
+<pre> SOY CMS
+ブロック
+http://www.soycms.net/manual/index.php?%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF
+Return to Front Page
+[ トップ ]   [ 編集 | 凍結解除 | 差分 | バックアップ | 添付 | リロード ]   [ 新規 | 一覧 | 単語検索 | 最終更新 | ヘルプ ]
+最新の17件
+2008-03-11
+
+    * ブロック
+
+2008-02-18
+
+    * ページの作り方
+    * FrontPage
+    * SOY CMSの概要
+
+2007-12-21
+
+    * 標準ページ
+
+2007-12-18
+
+    * ブログページ
+
+2007-12-12
+
+    * ラベル
+    * 記事
+
+2007-11-22
+
+    * サイトの設定
+
+2007-11-15
+
+    * インストール
+
+2007-11-14
+
+    * サイト作成時に自動的に作成されるページ
+
+2007-11-10
+
+    * ログイン
+
+2007-11-09
+
+    * 標準ページの作り方
+
+2007-11-08
+
+    * ページ
+    * 管理者の設定
+    * InterWikiName
+
+2006-10-21
+
+    * MenuBar
+
+	
+ブロック †
+
+ページのテンプレートの中で、どの部分をどのように記事の内容に置き換えるかを決定するのがブロックの役割です。
+
+ブロックには、全てのページで利用可能なブロックと、ブログページでのみ利用可能なブロックがあります。
+↑
+目次 †
+
+    * ブロック
+          o 目次
+          o 全てのページで利用可能なブロック
+          o ブログページで利用可能なブロック
+                + 記事リストブロック
+                + 次ページリンクブロック
+                + 前ページリンクブロック
+                + カテゴリーブロック
+                + カレンダーブロック
+                + アーカイブブロック
+                + 新着コメントブロック
+                + コメントリストブロック
+                + 記事ブロック
+                + コメントフォームブロック
+                + トラックバックリンク
+                + トラックバックリストブロック
+                + 新着記事ブロック
+                + 新着トラックバックブロック(実装予定) 
+
+↑
+全てのページで利用可能なブロック †
+
+ &lt;body&gt;
+   &lt;div block:id=&quot;sampleblock&quot;&gt;
+     &lt;h1 class=&quot;title&quot; cms:id=&quot;title&quot;&gt;ここがタイトルに書き換わる&lt;/h1&gt;
+
+     &lt;h2&gt;関係ない見出し&lt;/h2&gt;
+     &lt;p id=&quot;p_1&quot; cms:id=&quot;content&quot;&gt;ここが本文に書き換わる&lt;/p&gt;
+     &lt;p cms:id=&quot;more&quot;&gt;ここが追記に書き換わる&lt;/p&gt;
+
+   &lt;/div block:id=&quot;sampleblock&quot;&gt;
+ &lt;/body&gt;
+
+上の書式のブロックは、全てのページで利用可能ですが、ブロック追加時の設定で二種類のブロックに分かれます。
+
+    * 記事単体ブロック
+
+ブロックに指定した箇所の中の、cms:idが指定されている箇所を、ブロックで設定する特定の記事の内容に置換えます。企業ページであれば企業情報や、ナビゲーションなど、変更する可能性はあるが頻度は高くない情報の書き換えに利用できます。
+
+    * 記事繰返しブロック
+
+置換えの内容は記事単体ブロックと同じですが、ブロックで設定したラベルのついた記事を、ブロックで指定した個数だけ表示します。表示する順番は、記事管理でラベルごとに設定できる表示順です。表示順が設定されていない場合、新しい記事ほど先に表示されます。
+↑
+ブログページで利用可能なブロック †
+
+ブログページでだけ利用可能なブロックをブログブロックと呼びます。ブログブロックを設定する場合、block:idではなくb_block:idをブロックの開始位置と終了位置のタグに追加します。b_block:idはブログブロックの種類ごとに決まっており、任意に設定することはできません。また、ブログブロックはテンプレートにb_block:idを追加するだけで機能するので、テンプレート更新後にブロックを追加する必要はありません（ブロックリストには現れません）。
+↑
+記事リストブロック †
+
+    * b_block:id=&quot;entry_list&quot;
+
+記事を複数個表示するブロックです。ブログトップページ、アーカイブページで利用します。表示件数の設定はブロックではなく、ブログページの設定で行います。
+
+    * cms:id=&quot;title&quot;　
+
+記事のタイトルが表示されます。
+
+    * cms:id=&quot;create_date&quot;　
+
+記事の作成日が表示されます。cms:formatで日付・時刻の書式を指定する必要があります。指定できる日付・時刻の書式はPHPのdate()と同じです。
+
+    * cms:id=&quot;content&quot;　
+
+記事の「本文」が表示されます。
+
+    * cms:id=&quot;more&quot;
+
+記事の「追記」が表示されます。
+
+    * cms:id=&quot;more_link&quot;
+
+記事ページの追記部分へのリンクが表示されます。必ず&lt;a&gt;タグに設定してください。
+
+    * cms:id=&quot;entry_link&quot;
+
+記事ページへのリンクが表示されます。必ず&lt;a&gt;タグに設定してください。
+
+&lt;div b_block:id=&quot;entry_list&quot;&gt;
+
+   &lt;h1 cms:id=&quot;title&quot;&gt;タイトル&lt;/h1&gt;
+   &lt;hr&gt;
+   &lt;span cms:id=&quot;create_date&quot; cms:format=&quot;Y年n月d日&quot;&gt;2008年1月24日&lt;/span&gt;
+
+   &lt;div cms:id=&quot;content&quot;&gt;本文&lt;/div&gt;
+   
+   &lt;a cms:id=&quot;more_link&quot;&gt;続きを表示&lt;/a&gt;
+   &lt;a cms:id=&quot;entry_link&quot;&gt;この記事を読む&lt;/a&gt;
+
+   投稿時刻 &lt;span cms:id=&quot;create_date&quot; cms:format=&quot;h:i&quot;&gt;11:22&lt;/span&gt;
+ 　&lt;a cms:id=&quot;comment_link&quot;&gt;コメント(&lt;span cms:id=&quot;comment_count&quot;&gt;0&lt;/span&gt;)&lt;/a&gt;
+
+ 　&lt;a cms:id=&quot;trackback_link&quot;&gt;トラックバック(&lt;span cms:id=&quot;trackback_count&quot;&gt;0&lt;/span&gt;)&lt;/a&gt;
+&lt;/div b_block:id=&quot;entry_list&quot;&gt;
+
+↑
+次ページリンクブロック †
+
+    * b_block:id=&quot;next_link&quot;
+
+ブログトップページ、アーカイブページで利用します。表示件数を超える記事がある場合、次の表示件数分のページへのリンクが表示されます。必ず&lt;a&gt;タグに設定してください。
+
+&lt;a b_block:id=&quot;next_link&quot;&gt;次の１０件へ&lt;/a&gt;
+
+↑
+前ページリンクブロック †
+
+    * b_block:id=&quot;prev_link&quot;
+
+ブログトップページ、アーカイブページで利用します。表示件数を超える記事がある場合、前の表示件数分のページへのリンクが表示されます。必ず&lt;a&gt;タグに設定してください。
+
+
+&lt;a b_block:id=&quot;prev_link&quot;&gt;前の１０件へ&lt;/a&gt;
+
+↑
+カテゴリーブロック †
+
+    * b_block:id=&quot;category&quot;
+
+カテゴリブロックは、カテゴリー（カテゴリーとして利用するように設定されているラベル）一覧を表示します。一覧のそれぞれの項目はカテゴリー別アーカイブページへのリンクが生成されるので、必ず&lt;a&gt;タグに設定してください。
+
+&lt;ul&gt;
+&lt;!-- b_block:id=&quot;category&quot; --&gt;
+
+	&lt;li&gt;&lt;a cms:id=&quot;category_link&quot;&gt;
+			&lt;span cms:id=&quot;category_name&quot;&gt;&lt;/span&gt;(&lt;span cms:id=&quot;entry_count&quot;&gt;0&lt;/span&gt;)
+		&lt;/a&gt;
+
+	&lt;/li&gt;
+&lt;!-- /b_block:id=&quot;category&quot; --&gt;
+&lt;/ul&gt;
+
+↑
+カレンダーブロック †
+
+    * cms:plugin=&quot;calendar&quot;
+
+カレンダーブロックはカレンダーを表示します。
+
+&lt;div cms:plugin=&quot;calendar&quot;&gt;&lt;/div&gt;
+
+「プラグイン」から「カレンダープラグイン」を有効にしてください。
+↑
+アーカイブブロック †
+
+    * b_block:id=&quot;archive&quot;
+
+アーカイブブロックは、月別アーカイブページへのリンクになっている月別アーカイブ一覧を表示します。
+
+cms:formatで表示フォーマットを指定します。Yで年、mで月です。
+
+cms:id=&quot;archive_link&quot;は必ず&lt;a&gt;タグに設定してください。
+
+&lt;ul&gt;
+&lt;!-- b_block:id=&quot;archive&quot; --&gt;
+
+					&lt;li&gt;&lt;a cms:id=&quot;archive_link&quot; href=&quot;#&quot;&gt;&lt;span cms:id=&quot;archive_month&quot; cms:format=&quot;Y年m月&quot;&gt;&lt;/span&gt;
+						(&lt;span cms:id=&quot;entry_count&quot;&gt;948&lt;/span&gt;)&lt;/a&gt;&lt;/li&gt;
+
+&lt;!-- /b_block:id=&quot;archive&quot; --&gt;
+&lt;/ul&gt;
+
+↑
+新着コメントブロック †
+
+    * b_block:id=&quot;recent_comment_list&quot;
+
+新着コメントブロックは、新着コメントの一覧を表示します。
+
+cms:id=&quot;entry_link&quot;は必ず&lt;a&gt;タグに設定してください。
+
+
+&lt;ul&gt;
+&lt;!-- b_block:id=&quot;recent_comment_list&quot; --&gt;
+&lt;li&gt;
+	&lt;a cms:id=&quot;entry_link&quot;&gt;
+		&lt;span cms:id=&quot;title&quot;&gt;コメントのタイトル&lt;/span&gt;
+
+		&lt;span cms:id=&quot;entry_title&quot;&gt;記事のタイトル&lt;/span&gt;
+		&lt;span cms:id=&quot;submit_date&quot; cms:format=&quot;Y-m-d H:i:s&quot;&gt;投稿日時&lt;/span&gt;
+	&lt;/a&gt;
+
+&lt;/li&gt;
+&lt;!--/b_block:id=&quot;recent_comment_list&quot; --&gt;
+&lt;/ul&gt;
+
+↑
+コメントリストブロック †
+
+    * b_block:id=&quot;comment_list&quot;
+
+コメントリストブロックは、単記事ページで使用します。その記事に対し投稿されたコメントの一覧を表示します。
+
+&lt;ul&gt;
+
+&lt;!-- b_block:id=&quot;comment_list&quot; --&gt;
+&lt;li&gt;
+&lt;div cms:id=&quot;title&quot;&gt;タイトル&lt;/div&gt;
+&lt;a cms:id=&quot;mail_address&quot;&gt;
+    &lt;div cms:id=&quot;author&quot;&gt;名前&lt;/div&gt;
+
+&lt;/a&gt;
+&lt;div cms:id=&quot;body&quot;&gt;本文&lt;/div&gt;
+&lt;div cms:id=&quot;submit_date&quot;&gt;本文&lt;/div&gt;
+&lt;div cms:id=&quot;url&quot;&gt;本文&lt;/div&gt;
+
+&lt;/li&gt;
+&lt;!--/b_block:id=&quot;comment_list&quot; --&gt;
+&lt;/ul&gt;
+
+↑
+記事ブロック †
+
+    * b_block:id=&quot;entry&quot;
+
+記事ブロックは、単記事ページで使用します。記事の情報が表示されます。
+
+&lt;div b_block:id=&quot;entry&quot;&gt;
+
+   &lt;h1 cms:id=&quot;title&quot;&gt;タイトル&lt;/h1&gt;
+   &lt;hr&gt;
+   &lt;div cms:id=&quot;content&quot;&gt;本文&lt;/div&gt;
+   
+   &lt;a cms:id=&quot;more_link&quot;&gt;続きを表示&lt;/a&gt;
+
+   &lt;a cms:id=&quot;entry_link&quot;&gt;この記事を読む&lt;/a&gt;
+   &lt;a cms:id=&quot;comment_link&quot;&gt;コメント(&lt;span cms:id=&quot;comment_count&quot;&gt;0&lt;/span&gt;)&lt;/a&gt;
+
+   &lt;a cms:id=&quot;trackback_link&quot;&gt;コメント(&lt;span cms:id=&quot;trackback_count&quot;&gt;0&lt;/span&gt;)&lt;/a&gt;
+&lt;/div b_block:id=&quot;entry&quot;&gt;
+
+↑
+コメントフォームブロック †
+
+    * b_block:id=&quot;comment_form&quot;
+
+記事ブロックは、単記事ページで使用します。そのページの記事に対するコメントを投稿するためのフォームが表示されます。
+
+必ず&lt;form&gt;&lt;input&gt;&lt;textarea&gt;タグに設定してください。
+
+&lt;form b_block:id=&quot;comment_form&quot;&gt;
+&lt;input cms:id=&quot;title&quot;&gt;
+&lt;input cms:id=&quot;author&quot;&gt;
+&lt;input cms:id=&quot;mail_address&quot;&gt;
+
+&lt;input cms:id=&quot;url&quot;&gt;
+&lt;textarea cms:id=&quot;body&quot;&gt;&lt;/textarea&gt;
+&lt;input type=&quot;submit&quot; value=&quot;投稿&quot; onclick=&quot;this.disabled=true;&quot;&gt;
+&lt;/form&gt; 
+
+
+↑
+トラックバックリンク †
+
+    * b_block:id=&quot;trackback_link&quot;
+
+ページの記事に対するトラックバック送信先URLを表示します。
+
+必ず&lt;input&gt;タグに設定してください。
+
+&lt;input b_block:id=&quot;trackback_link&quot;&gt;
+
+↑
+トラックバックリストブロック †
+
+    * b_block:id=&quot;trackback_list&quot;
+
+トラックバックリストブロックは、単記事ページで使用します。その記事に対し送信されたトラックバックの一覧を表示します。
+
+&lt;ul&gt;
+
+&lt;!-- b_block:id=&quot;trackback_list&quot; --&gt;
+&lt;li&gt;
+&lt;div cms:id=&quot;title&quot;&gt;タイトル&lt;/div&gt;
+&lt;div cms:id=&quot;url&quot;&gt;URL&lt;/div&gt;
+
+&lt;div cms:id=&quot;blog_name&quot;&gt;ブログ名&lt;/div&gt;
+&lt;div cms:id=&quot;excerpt&quot;&gt;要約&lt;/div&gt;
+&lt;div cms:id=&quot;submit_date&quot;&gt;送信日時&lt;/div&gt;
+&lt;/li&gt;
+
+&lt;!--/b_block:id=&quot;trackback_list&quot; --&gt;
+&lt;/ul&gt;
+
+↑
+新着記事ブロック †
+
+    * b_block:id=&quot;recent_entry_list&quot;
+
+新着記事ブロックはどこでも使用可能です。最新の記事を表示します。
+
+表示件数はフィードに出力する個数と同じです。
+
+&lt;ul&gt;
+&lt;!-- b_block:id=&quot;recent_entry_list&quot; --&gt;
+
+&lt;li&gt;&lt;a cms:id=&quot;entry_link&quot;&gt;ああああああ&lt;/a&gt;&lt;/li&gt;
+&lt;!--/b_block:id=&quot;recent_entry_list&quot; --&gt;
+&lt;/ul&gt;
+
+↑
+新着トラックバックブロック(実装予定) †
+
+    * b_block:id=&quot;recent_trackback_list&quot;
+
+新着トラックバックブロックはどこでも使用可能です。最新のトラックバックを表示します。
+
+&lt;ul&gt;
+&lt;!-- b_block:id=&quot;recent_trackback_list&quot; --&gt;
+&lt;li&gt;
+	&lt;span cms:id=&quot;title&quot;&gt;タイトル&lt;/span&gt;
+
+	&lt;a cms:id=&quot;url&quot;&gt;ブログへのリンク&lt;/a&gt;
+	&lt;a cms:id=&quot;entry_link&quot;&gt;記事へのリンク&lt;/a&gt;
+	&lt;span cms:id=&quot;entry_title&quot;&gt;&lt;/span&gt;
+
+	&lt;span cms:id=&quot;blog_name&quot;&gt;ブログ名&lt;/span&gt;
+	&lt;span cms:id=&quot;excerpt&quot;&gt;要約&lt;/span&gt;
+	&lt;span cms:id=&quot;submit_date&quot; cms:format=&quot;Y-m-d H:i;s&quot;&gt;送信日時&lt;/span&gt;
+
+&lt;/li&gt;
+&lt;!--/b_block:id=&quot;recent_trackback_list&quot; --&gt;
+&lt;/ul&gt;
+
+FrontPageへ戻る
+Last-modified: 2008-03-11 (火) 16:09:31 (1d)
+Link: ページの作り方(22d) FrontPage(22d) 標準ページの作り方(124d)
+Site admin: Nippon Institute of Agroinformatics Ltd.
+
+PukiWiki 1.4.7 Copyright © 2001-2006 PukiWiki Developers Team. License is GPL.
+Based on &quot;PukiWiki&quot; 1.3 by yu-ji. Powered by PHP 5.2.5. HTML convert time: 0.044 sec.
+
+</pre>

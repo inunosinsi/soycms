@@ -1,0 +1,94 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		
+		<h2>Welcome to SOY CMS !</h2>
+				
+		<div soy:id="message"></div>
+		<div class="functions" soy:display="only_default_user">
+			<p><a soy:id="create_link">Add New Website </a></p>
+			<p><a soy:id="addAdministrator">Add New User</a></p>
+			<form id="file_form" method="post" style="display:inline;">
+				<input type="hidden" name="file_db_update" value="1" />
+				<p><a href="#" onclick="$('file_form').submit();">Reflesh File DB</a><img soy:message="HELP_ADMIN_INDEX_DBUPDATE" /></p>
+			</form id="file_form">
+			<form id="cache_form" method="post" style="display:inline;">
+				<input type="hidden" name="cache_clear" value="1" />
+				<p><a href="#" onclick="$('cache_form').submit();">Clear Cache Files</a><img soy:message="HELP_ADMIN_INDEX_CLEARCACHE" /></p>
+			</form soy:id="cache_form">
+			<p><a soy:link="Server">Server Information</a></p>
+			
+		</div>
+		
+		<div id="siteboxes">
+			<h3>Websites</h3>
+			
+			<?php $counter = 0; ?>
+			<!-- soy:id="list" -->
+			<div class="sitebox">
+				<div class="sitebox_top">
+					<h4 soy:id="site_name" class="sitename">Nippon Institute of Agroinformatics, Ltd.</h4>
+					<p class="login_button"><a soy:id="login_link" href="#">Login</a></p>
+				</div>
+				<div style="clear:both"><!----></div>
+				<p class="uri"><a soy:id="domain_root_site_url" href="#"></a></p>
+				<p class="uri"><a soy:id="site_link" href="#"></a></p>
+			</div>
+			<?php $counter++; ?>
+			<?php if(($counter % 2) == 0) echo "<br style=\"clear:both;\">"; ?>
+			<!-- /soy:id="list" -->
+			
+			<div soy:id="no_site" style="margin:10px;">
+				<p>There is NO Websites →<a soy:link="Site.Create">Add New Website</a></p>
+			</div>
+			
+			<div style="clear:both"><!----></div>
+		</div>
+		
+		<!-- soy:id="application_list_wrapper" -->
+		<div class="siteboxes">
+			<h3>SOY Apps</h3>
+			<div soy:id="application_list" class="sitebox">
+				<div class="sitebox_top">
+					<h4 soy:id="name" class="sitename">SOYMAIL</h4>
+					<p class="login_button"><a soy:id="login_link" href="#">Login</a></p>
+				</div>
+				<div style="clear:both"><!----></div>
+				<p class="description" soy:id="description"></p>
+				<p class="version" soy:id="version"></p>
+			</div soy:id="application_list">
+			
+			<div style="clear:both"><!----></div>
+		</div>
+		<!-- /soy:id="application_list_wrapper" -->
+		
+		<div id="soycms_info">
+			<h3>About SOY CMS</h3>
+			
+			<div style="margin-left:10px;margin-top:2px;">
+				<p>Version: <?php echo SOYCMS_VERSION; ?>
+				(Build Date <?php echo date("Y-m-d H:i:s T",strtotime(SOYCMS_BUILD)); ?>)</p>
+				<p>DB Type: <?php echo SOYCMS_DB_TYPE; ?></p>
+				<!-- soy:id="allow_php" -->
+				<p>Allow PHP Script: true</p>
+				<!-- /soy:id="allow_php" -->
+				
+				<p><a href="http://www.soycms.net/">SOY CMS Official Site</a></p>
+			</div>
+		</div>
+		
+		
+		<div style="clear:both"><!----></div>
+		
+	</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+</body>
+</html>

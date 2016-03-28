@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0
+Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<script type="text/javascript" src="../jquery.js"></script>
+<!--script type="text/javascript" src="../prototype.js"></script-->
+<script type="text/javascript">
+//htmlをリプレースする
+function template_editor_replace(html){
+
+	html = html.replace(/\r\n/g,"\n");
+	html = html.replace(/\r/g,"");
+	//html = html.replace(/&/g,"&amp;");
+	//html = html.replace(/</g,'&lt;');
+	//html = html.replace(/>/g,'&gt;');
+	
+	var result = detectBlockId(html);
+	if(!result)result = [];
+
+	var new_html = "";
+	
+	var prev_end = 0;
+	for(var i=0;i<result.length;i++){
+		var res = result[i];
+		new_html += html.substring(prev_end,res.start);
+		
+		if(document.all){
+			new_html += "<span";
+		}else{
+			new_html += "<span";
+		}
+		
+		new_html += '@@@NBSP_MARKER@@@class=@@@QUOTE_MARKER@@@block@@@QUOTE_MARKER@@@>';
+		
+		var tmp = "";
+		
+		tmp += html.substring(res.start,res.end);
+		
+		tmp = tmp.replace(/(b?_?block:id="[^"]*")/g,"<span@@@NBSP_MARKER@@@class=@@@QUOTE_MARKER@@@blockid@@@QUOTE_MARKER@@@>$1</span>");
+		tmp = tmp.replace(/(cms:id="[^"]*")/g,"<span@@@NBSP_MARKER@@@class=@@@QUOTE_MARKER@@@cmsid@@@QUOTE_MARKER@@@>$1</span>");
+
+		new_html += tmp;
+		if(document.all){
+			new_html += "</span>";
+		}else{
+			new_html += "</span>";
+		}
+		prev_end = res.end;
+	}
+	
+	new_html += html.substr(prev_end);
+	html = new_html.replace(/<\/p>\n/,"</p>");
+	
+	//quote
+	html = html.replace(/("[^"]*")/g,"<span@@@NBSP_MARKER@@@class=@@@QUOTE_MARKER@@@quote@@@QUOTE_MARKER@@@>$1</span>");
+	
+	html = html.replace(/ /g,'&nbsp;');
+	html = html.replace(/@@@NBSP_MARKER@@@/g,' ');
+	html = html.replace(/@@@QUOTE_MARKER@@@/g,'"');
+	
+	//script	
+	html = html.replace(/(&lt;script)/g,"<span class=\"script\">$1");
+	html = html.replace(/(&lt;\/script&gt;)/g,"$1</span>");
+	
+	//tag
+	html = html.replace(/(&lt;.*?&gt;)/g,"<span class=\"tag\">$1</span>");
+	
+	//comment
+	html = html.replace(/\n/g,"<!--DUMMY_BR--><br>");
+	html = html.replace(/(&lt;!--.*?--&gt.)/g,"<span class=\"comment\">$1</span>");
+	if(document.all){
+		html = html.replace(/<!--DUMMY_BR--><br>/gi,"\n");
+	}
+
+	return html;
+	
+}
+
+//htmlからblockを探す
+function detectBlockId(html,id){
+	var match = html.match(/&lt;[^\s]+[^(&gt;)]*block:id="[^"]*"[^(&gt;)]*&gt;/ig);
+	if(!match){
+		return;
+	}
+	
+	var result = [];
+	var detected_ids = [];//すでに検出したblock:idは無視する。ためのアレイ
+	
+	//ネストされる可能性も考慮にいれる
+	var last_end = 0;
+	
+	for(var i=0;i<match.length;i++){
+		
+		//開始タグのみ処理対象
+		if(match[i].charAt(4) == '/' || match[i].search(/\/([mb]_)?block:id="[^"]*"/i) != -1){
+			continue;
+		}
+		
+		var str = match[i];
+		var detect = str.match(/&lt;([^\s]+)[^(&gt;)]*block:id="([^"]*)"[^(&gt;)]*&gt;/);
+		
+		try{
+			var start = html.search(match[i]);//html.substring(0,).split("\n").length;
+		}catch(e){
+			continue;
+		}
+	
+		if(id != undefined){
+			if(id != detect[2]){
+				continue;
+			}
+		}
+		
+		if(detected_ids.indexOf(detect[2])){
+			detected_ids.push(detect[2]);
+		}else{
+			continue;
+		}
+		var end = -1;
+		if(detect[1] == "!--"){
+			var regex = new RegExp('&lt;!--[^(&gt;)]*\\/(b_)?block:id="'+detect[2]+'"\\s?[^(&gt;)]*&gt;',"i");
+			var detect_end = html.match(regex);
+			if(!detect_end){
+				continue;
+			}
+			
+			end = html.search(regex) + detect_end[0].length + 1;//html.substring(0,html.search(regex)).split("\n").length;
+
+		}else{
+			detect[1] = detect[1].replace(/&nbsp;/,"");
+			var regex = new RegExp('&lt;\/'+detect[1]+'[^(&gt;)]*block:id="'+detect[2]+'".*&gt;',"i");
+			var detect_end = html.match(regex);
+			
+			if(!detect_end){
+				continue;
+			}
+			
+			end = html.search(regex) + detect_end[0].length + 1;//end = html.substring(0,html.search(detect_end[0])).split("\n").length;
+			
+		}
+		
+		if(end != -1){
+			
+			var r_start = html.lastIndexOf("\n",start);
+			if(r_start == -1){
+				r_start = 0;
+			}else{
+				r_start += 1;
+			}
+			if(html.charCodeAt(end-1) != 10){
+				var r_end = html.indexOf("\n",end);
+				if(r_end == -1){
+					r_end = html.length;
+				}
+			}else{
+				var r_end = end;
+			}
+			
+			//前の最後が今の最初より大きかった場合
+			if(last_end > r_start || r_start > r_end ){
+				continue;
+			}
+			
+			result.push({
+				"start":r_start,
+				"end":r_end,
+				"id":detect[2]
+			});
+			
+			//最後のマッチを保存
+			last_end = r_end;
+		}
+	}
+
+	return result;
+}
+</script>
+<script type="text/javascript">
+var ts = (new Date).getTime(); // timestamp to avoid cache
+var ua = navigator.userAgent;
+
+if(ua.match('MSIE')){
+	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_msie.js?ts='+ts+'"></scr'+'ipt>');
+}else if(ua.match('Opera')){
+	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_opera.js?ts='+ts+'"></scr'+'ipt>');
+}else if(ua.match('WebKit')){
+	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_safari.js?ts='+ts+'"></scr'+'ipt>');
+}else{
+	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_gecko.js?ts='+ts+'"></scr'+'ipt>');
+}
+</script>
+<style type="text/css">
+*{
+	margin:0;
+	padding:0;
+}
+
+html{
+	height:100%;
+}
+
+body{
+	background-color:white;
+	height:100%;
+	font-family:monospace;
+	font-size:13px;
+	line-height:16px;
+	width:100%;
+	border-left:solid 5px white;
+}
+
+#main{
+	width:100%;
+	height:100%;
+	position:relative;
+}
+
+.quote{
+	color:green;
+}
+
+.script{
+	color:green;
+}
+
+.comment{
+	color:brown;
+	font-style:Italic;
+}
+
+.block{
+	background-color: 	cornsilk;
+}
+
+div.block{
+	float:left;
+	width:100%;
+}
+
+span{
+	clear:both;
+}
+
+br{
+	clear:both;
+}
+
+.blockid{
+	font-weight:800;
+}
+
+.cmsid{
+	font-weight:800;
+}
+
+.tag{
+	color:#1111FF;
+}
+
+.tab{
+	background-color:red;
+	width:30px;
+}
+</style>
+</head>
+<body onload=""><div id="main"></div></body>
+</html>

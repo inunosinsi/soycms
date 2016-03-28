@@ -1,0 +1,5 @@
+//CMS管理で表示するメッセージ
+
+HELP_ADMIN_INDEX_DBUPDATE	=	Do [Reflesh] if you aploaded files by FTP, SSH or in other way besides SOY CMS File Manager.
+HELP_ADMIN_INDEX_CLEARCACHE = Clear template chaches. [Do this when you update SOY CMS.]
+HELP_ADMIN_SITE_DETAIL_SITEURL	=	Apply this URL to an image&#039;s path when it is inserted to an Entry or Page.<br/>This URL is also used as the base URL in dynamic edit.<br/>You don&#039;t need to change this when you set this Site as the Root Site.

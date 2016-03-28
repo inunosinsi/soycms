@@ -1,0 +1,181 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+	<div><div id="toolbox" class="span-24 last" soy:page="_common.ToolBoxPage"></div></div>
+
+	<!-- content start -->
+	<div id="content" class="span-24 last">
+		
+		<div class="span-16 last">
+			<h2><a soy:id="back_entry_list">Entry List</a> &gt; <span soy:id="page_title">Detail</span></h2>
+		</div>			
+		
+		<form id="input_form" soy:id="detail_form">
+			<div class="prepend-1 span-22 last">
+				<div class="section_top">
+					<p class="sub">Title<img soy:message="HELP_ENTRY_TITLE"/></p>
+					<input type="text" id="title" soy:id="title">
+					
+					<div soy:id="entry_memos" id="entry_memo_wrapper" class="entry_memos">
+						<p>
+							<span>[Memo]</span>
+							<span id="entry_memo" soy:id="entry_memo" ondblclick="edit_entry_memo();">Memo</span>
+						</p>
+					</div soy:id="entry_memos">
+					
+					<div id="labelmemos">
+						<div class="entry_memos">
+							<!-- soy:id="entry_label_memos" -->
+							<p soy:id="entry_label_memo">Label Memo</p>
+							<!-- /soy:id="entry_label_memos" -->
+						</div>
+					</div>
+					
+					<input type="hidden" id="entry_description" name="description" style="width" soy:id="description">
+				</div>
+				
+				<div class="section" id="entry_editor">
+					<div class="subsection" style="width:150px;">
+						<div id="entry_content_switch" class="content_tab_active">Content</div>
+						<div id="entry_more_switch" class="content_tab_inactive">More</div>
+					</div>
+					
+					<div class="subsection row">
+						Apply Entry Template
+						<select soy:id="list_templates" id="list_templates">
+							<option value="">------------</option>
+						</select>
+						<input type="button" value="Apply" onclick="applyTemplate()">
+						<img soy:message="HELP_ENTRY_TEMPLATE" />
+					</div>
+					<div style="clear:both"><!--  --></div>
+										
+					<div id="entry_content_wrapper" style="position:absolute;visibility:hidden;">
+						<textarea soy:id="content" id="entry_content" rows="15" cols="80"></textarea>
+					</div>
+					
+					<div id="entry_more_wrapper" style="position:absolute;visibility:hidden;">
+						<textarea soy:id="more" id="entry_more" rows="15" cols="80"></textarea>
+					</div>
+				</div>
+				
+				<!-- soy:id="label_categories" -->
+				<div class="section entry_label">
+					<p class="sub"><!-- soy:id="category_name" /--><img soy:message="HELP_ENTRY_LABEL"/></p>
+					
+					<div id="labels">
+						<div id="labels_wrapper">
+							<!-- soy:id="labels" -->
+							<div class="label_wrapper">
+								<input type="checkbox" soy:id="label_check">
+								<label soy:id="label_label">
+									<img soy:id="label_icon" class="label_icon" />
+									<span soy:id="label_caption" class="label_caption"></span>
+								</label soy:id="label_label">
+							</div>
+							<!-- /soy:id="labels" -->
+							<br style="clear:both"/>							
+						</div>
+					</div>				
+				</div>
+				<!-- /soy:id="label_categories" -->
+				
+				<!-- soy:custom="Entry.Detail" -->
+				<!-- /soy:custom="Entry.Detail" -->
+				<div class="section">
+					<div class="span-10">
+						<p class="sub">Date<img soy:message="HELP_ENTRY_CREATE_DATE"/></p>
+						<span soy:id="createdate_show" id="create_show"></span>
+						<button id="create_show_button" type="button" onclick="$('create_show').hide();$('create_input').show();$('create_show_button').hide();">Change</button>
+						<input type="text" soy:id="createdate" id="create_input" style="display:none;" size="25">
+					</div>
+					<div class="span-11 last">
+						<p class="sub">Last Modified</p>
+						<span soy:id="updatedate_show"></span>
+					</div>
+					<div style="clear:both;"><!--  --></div>
+				</div>
+								
+				<!-- soy:display="publish" -->
+				<div class="section">
+					<p class="sub">Opening Status<img soy:message="HELP_ENTRY_DRAFT" /></p>
+					<input type="radio" soy:id="state_draft"/>
+					<input type="radio" soy:id="state_public"/>
+				</div>
+				<!-- /soy:display="publish" -->
+				
+				<div id="buttons" style="float:right;height:10%;">
+					<input id="update_button" soy:id="update_button" type="submit" value="Update" />
+					<input id="create_button" soy:id="create_button" type="submit" value="Add as new entry" />
+				</div>
+				
+				<!-- soy:display="publish" -->		
+				<div class="section">
+						<p class="sub">Opening Period<img soy:message="HELP_ENTRY_OPEN_PERIOD"/></p>
+						
+						<span soy:id="open_period_show" id="open_period_show"></span>
+						<button id="open_period_show_button" type="button" onclick="$('open_period_show').hide();$('open_period_input').show();$('open_period_show_button').hide();">公開期間を設定する</button>
+
+						<div id="open_period_input" style="display:none;">
+							<table style="width: 28em">
+								<tr>
+									<td style="vertical-align:top;">
+										<input type="text" soy:id="start_date" id="start_date" size="25" maxlength="19" style="width:100%">
+										
+										<div style="font-size:10px;margin-top:5px;margin-left:5px;">
+											<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),true,false);return false;">Today</a><br/>
+											<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,1,0,0,0),true,false);return false;">Tommorow</a><br/>
+											<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,7,0,0,0),true,false);return false;">Next Week</a><br/>
+											<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,1,0,0,0,0),true,false);return false;">Next Month</a><br/>
+											<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),false,false);return false;">Now</a><br/>
+											<a href="#" onclick="$('start_date').value = '';return false;">Clear</a>
+										</div>
+									</td>
+									<td style="vertical-align:top;text-align:center;width:4em;">から</td>
+									<td style="vertical-align:top;">
+										<input type="text" soy:id="end_date" id="end_date" size="25" maxlength="19" style="width:100%">
+										<div style="font-size:10px;">
+											<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,1,0,0,0),true,true);return false;">Tommorow</a><br/>
+											<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,7,0,0,0),true,true);return false;">Next Week</a><br/>
+											<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,1,0,0,0,0),true,true);return false;">Next Month</a><br/>
+											<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),false,true);return false;">Now</a><br/>
+											<a href="#" onclick="$('end_date').value = '';return false;">Clear</a>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+				</div>
+				<!-- /soy:display="publish" -->
+				
+				<!-- soy:display="publish_info" -->
+				<div class="section">
+					<p class="sub">Opening Status</p>
+					<span soy:id="publish_info">Open</span>
+					<p class="sub">Opening Period</p>
+					<span soy:id="period_info">None Setting</span>
+				</div>
+				<!-- /soy:display="publish_info" -->
+				
+				<div style="clear:both"></div>
+											
+				<input type="hidden" name="style" id="style" soy:id="style" />
+			</div>
+		</form soy:id="detail_form">
+
+		
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		<!-- content end -->
+	</div>
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

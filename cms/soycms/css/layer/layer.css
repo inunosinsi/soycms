@@ -1,0 +1,152 @@
+/* for iframe */
+.common_to_layer_wrapper{
+	z-index:500;
+	position:absolute;
+	visibility:hidden;
+	background-color:transparent;
+}
+
+.common_to_layer_wrapper *{
+	color:black;
+	cursor:default;
+	letter-spacing: normal;
+	line-height:normal;
+	text-align:left;
+	text-indent:0;
+	white-space:normal;
+	word-spacing:normal;
+	
+	border:medium none;
+	font-size:small;
+	margin:0pt;
+	padding:0pt;
+}
+
+.layer_bar {
+	float:left;
+	width:100%;
+	height:25px;
+	background-image:url("./layer_images/bar_middle.gif");
+	background-repeat:repeat-x;
+}
+
+.layer_bar_left{
+	width:14px;
+	height:25px;
+	float:left;
+	background-image:url("./layer_images/bar_left.gif");
+	background-repeat:no-repeat;
+}
+
+.layer_bar_right{
+	width:13px;
+	height:25px;
+	float:right;
+	background-image:url("./layer_images/bar_right.gif");
+	background-repeat:no-repeat;
+}
+
+.click_to_layer_close {
+	position:absolute;
+	top:5px;
+	right:5px;
+	width:14px;
+	height:14px;
+	background-image:url("./layer_images/close_button.gif");
+	clear:both;
+}
+
+.click_to_layer_close_down {
+	position:absolute;
+	top:5px;
+	right:5px;
+	width:14px;
+	height:14px;
+	background-image:url("./layer_images/close_button_down.png");
+	clear:both;
+}
+
+.click_to_layer_small {
+	position:absolute;
+	top:5px;
+	right:24px;
+	width:14px;
+	height:14px;
+	background-image:url("./layer_images/small.png");
+	clear:both;
+}
+
+.click_to_layer_small_down {
+	position:absolute;
+	top:5px;
+	right:24px;
+	width:14px;
+	height:14px;
+	background-image:url("./layer_images/small_down.png");
+	clear:both;
+}
+
+.layer_left {
+	clear:both;
+	float:left;
+	width:5px;
+	height:100%;
+	background-color:#B3C76D;
+}
+
+.layer_right {
+	float:right;
+	width:5px;
+	height:100%;
+	background-color:#B3C76D;
+
+}
+
+.layer_wrapper{
+	background-color:white;
+	overflow:auto;
+	margin:0;
+	padding:0;
+	position:absolute;
+	left:5px;
+}
+
+.layer_bottom {
+	float:left;
+	width:100%;
+	height:6px;
+	background-image:url("./layer_images/bottom_bar_middle.gif");
+	background-repeat:repeat-x;
+}
+
+.layer_bottom_left{
+	clear:both;
+	width:8px;
+	height:6px;
+	position:relative;
+	left:0;
+	bottom:0;
+	float:left;
+	background-image:url("./layer_images/bottom_bar_left.gif");
+	background-repeat:no-repeat;
+}
+
+
+.layer_bottom_right{
+	width:9px;
+	height:6px;
+	float:right;
+	background-image:url("./layer_images/bottom_bar_right.gif");
+	background-repeat:no-repeat;
+	
+	cursor:se-resize;
+}
+
+#layer_content {
+	padding:0px;
+	margin: -1.5em 0;/* screen.css > body */
+	padding: 2% 2% 0px;
+	width:96%;
+	height:96%;
+}
+/* for iframe end */

@@ -1,0 +1,96 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<style type="text/css">
+
+.plugin_box{
+	margin:15px;
+	width:45%;
+	padding:0;
+	vertical-align:top;
+}
+.plugin_box p{
+	margin:5px 0 5px 10px;
+}
+
+.plugin_box h4{
+	margin:0px;
+	margin-bottom:7px;
+	border-left-width:10px;
+}
+
+.toggle_form{
+	margin:15px;
+}
+
+</style>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			<div class="span-23 last">
+				<h2><!-- soy:id="plugin_name" -->Plagin Name<!-- /soy:id="plugin_name" --></h2>
+			</div>
+			<!-- plugin upper menu -->
+			<div class="span-22 prepend-1 last">
+			<table style="border-spacing:15px;width:99%;">
+				<tr>
+					<td class="plugin_box">
+						<h4>Information</h4>
+						<p>Version : <!-- soy:id="plugin_version" --><!-- /soy:id="plugin_version" --></p>
+						<p>Author : <!-- soy:id="plugin_author" --><!-- /soy:id="plugin_author" --> (<a soy:id="plugin_email"></a>)</p>
+						<p>URL :<a soy:id="plugin_url"></a></p>
+					</td>
+					
+					<td class="plugin_box">
+						<h4>Description</h4>
+						<p soy:id="plugin_description"></p>
+					</td>
+				</tr>
+			</table>
+			</div>
+			<!-- plugin upper menu -->
+			
+			<a name="config"></a>
+			
+			<div class="toggle_form span-22 prepend-1 last inline">
+				<form soy:id="plugin_config_form">
+					<a soy:link="Plugin">Return to Plugin List</a>
+					
+					<!-- soy:display="only_active" -->
+						<select soy:id="category_select" name="category" style="width:120px"><option>None</option></select>
+						<input type="submit" name="category_modify" value="Change category">
+						<input type="submit" name="toggle_nonactive" value="Disactivate this plugin">
+					<!-- /soy:display="only_active" -->
+					<!-- soy:display="only_nonactive" -->
+						<input type="submit" name="toggle_active" value="Activate this plugin">
+					<!-- /soy:display="only_nonactive" -->
+						<input type="hidden" soy:id="back_url" />
+						<input type="hidden" soy:id="plugin_id" />
+				</form soy:id="plugin_config_form">
+			</div>
+			
+			<!-- soy:display="only_active" -->
+			<div class="span-22 prepend-1 last">
+				<h3 soy:id="plugin_name">Plugin Detail Setting</h3>
+		
+				<div style="margin-left:10px;" soy:id="plugin_config"></div>
+			</div>
+			<!-- /soy:display="only_active" -->
+		
+				<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

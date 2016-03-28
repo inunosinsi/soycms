@@ -1,0 +1,49 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div id="layer_content">
+
+<h3>登録情報の変更</h3>
+
+<form soy:id="changeform">
+
+<div class="section">
+	<p class="sub">姓名</p>
+	(姓)<input soy:id="lastName" type="text">
+	(名)<input soy:id="firstName" type="text">
+	
+	<span soy:id="name_error"></span>
+</div>
+
+<div class="section">
+	<p class="sub">姓名(ふりがな）</p>
+	(姓)<input soy:id="lastNameReading" type="text">
+	(名)<input soy:id="firstNameReading" type="text">
+	
+	<span soy:id="nameReading_error"></span>
+</div>
+
+<div class="section">
+	<p class="sub">表示名</p>
+	<input soy:id="nickname">
+	<span soy:id="nickname_error"></span>
+</div>
+
+<div class="section">
+	<p class="sub">生年月日</p>
+	<select soy:id="birthday_year"><option value="">年</option></select>/
+	<select soy:id="birthday_month"><option value="">月</option></select>/
+	<select soy:id="birthday_day"><option value="">日</option></select>
+</div>
+
+<div class="section">
+	<input type="submit" name="changeuser" value="登録情報を変更する" />
+</div>
+
+</form soy:id="changeform">
+
+
+</div>
+</body>
+</html>

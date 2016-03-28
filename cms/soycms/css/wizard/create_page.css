@@ -1,0 +1,28 @@
+p, table, select{
+	margin:10px 10px;
+}
+
+table {
+	border-collapse:collapse;
+}
+
+th, td, tr {
+	margin:0px;
+	padding:5px 5px;
+	border:1px solid #d0d0d0;
+}
+
+table.templates {
+	border:1px solid grey;
+}
+
+h5 {
+	padding:4px 5px;
+	margin:5px 5px;
+	background-color:green;
+	color:white;
+}
+
+select {
+	width:100px;
+}

@@ -1,0 +1,83 @@
+<html>		
+	<head>
+		<script soy:id="jqueryjs"></script>
+		<script soy:id="jqueryuijs"></script>
+		<script soy:id="commonjs"></script>
+		<script soy:id="otherdata"></script>
+	</head>
+	<body>
+		<p>リンクの対象を選択してください。</p>
+		<h5>選択されているページ</h5>
+		<p soy:id="page_title"></p>
+		<p soy:id="page_url"></p>
+		<form method="post">
+			<input type="submit" class="soycms_custom_button" value="決定" onclick="return on_submit()" />
+			<input type="button" class="soycms_custom_button" value="戻る" onclick="location.href=back_link;">
+		</form>
+		
+		<div soy:id="page_tree"></div soy:id="page_tree">
+
+		<script type="text/JavaScript">
+
+    var tinymce = top.tinymce || parent.tinymce;
+    var tinymce_window_manager = tinymce.activeEditor.windowManager;
+
+		function on_submit(){
+			var ele = document.getElementsByName("mobile_link");
+		
+			for(var i=0; i<ele.length; i++){
+				if(ele[i].checked){
+					var checked_radio = ele[i];
+				}
+			}
+
+			if(!checked_radio){
+				alert("選択されていません");
+				return false;
+			}
+		
+			var innerHTML = "";
+		
+			if(innerHTML == ""){
+				innerHTML = document.getElementById("mobile_label_"+checked_radio.value).innerHTML;
+			}
+			if(siteId.length == 0){
+				tinymce.execCommand('mceInsertRawHTML',false,
+																 '<a href="'+page_url
+																 +'" cms:link="'+page_id
+																 +'" treeId="'+checked_radio.value
+																 +'">'
+																 +innerHTML+'</a>'
+				);
+			}else{
+				tinymce.execCommand('mceInsertRawHTML',false,
+																 '<a href="'+page_url
+																 +'" cms:link="'+page_id
+																 +'" treeId="'+checked_radio.value
+																 +'" site="'+siteId
+																 +'">'
+																 +innerHTML+'</a>'
+				);
+			}
+		
+			tinymce_window_manager.close();
+			return false;
+		}
+
+    common_init_custom_button();
+	
+</script>
+		
+		<style type="text/css">
+			.virtual_page_tree ul{
+			clear:both;
+			}
+			.virtual_page_tree li{
+			margin-left:20px;
+			}
+			.tree_function{
+			display:inline;
+			}
+		</style>
+	</body>
+</html>

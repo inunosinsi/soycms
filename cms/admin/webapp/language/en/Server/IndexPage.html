@@ -1,0 +1,34 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		
+		<h2>Server Information</h2>
+		
+		<div class="functions" soy:display="only_default_user">
+			<div style="float:left;margin-left:1ex;"><a href="#soycms"  id="soycms_info_link" onclick="$('server_info').show();$('php_info').hide();$('server_info_link').style.color='#CB9766';this.style.color='#CB6703';">SOY CMS Settings</a></div>
+			<div style="float:left;margin-left:1ex;"><a href="#phpinfo" id="server_info_link" onclick="$('php_info').show();$('server_info').hide();$('soycms_info_link').style.color='#CB9766';this.style.color='#CB6703';" style="color:#CB9766;">PHP Info</a></div>
+		</div>
+
+		<div id="server_info">
+			<h3>SOY CMS Settings</h3>
+			<textarea soy:id="server_info"></textarea>
+		</div>
+		
+		<div id="php_info" style="display:none;">
+			<h3>PHP Info</h3>
+			<iframe soy:id="php_info" ></iframe>			
+		</div>
+		
+	</div>
+
+	<div soy:page="_common.FooterPage"></div>
+</div>
+</body>
+</html>

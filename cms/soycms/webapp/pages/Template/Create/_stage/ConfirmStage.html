@@ -1,0 +1,44 @@
+<h3>ページ雛形の新規作成 - 作成内容の確認(4/5)</h3>
+<h4 class="notify">以下の内容で作成します。</h4>
+
+<div class="section">
+	<p class="sub">ページ雛形ID</p>
+	<div soy:id="template_id"></div>
+</div>
+
+<div class="section">
+	<p class="sub">ページ雛形名称</p>
+	<div soy:id="template_name"></div>
+</div>
+
+<div class="section">
+	<p class="sub">説明</p>
+	<div soy:id="template_description"></div>
+</div>
+
+<div class="section">
+	<p class="sub">追加テンプレート</p>
+	<div>
+		<table class="list">
+			<thead>
+			<tr class="section">
+				<td>名前</td>
+				<td>説明</td>
+			</tr>
+			</thead>
+			<tr soy:id="template_list">
+				<td soy:id="template_list_name"></td>
+				<td soy:id="template_list_description"></td>
+			</tr soy:id="template_list">
+		</table>
+	</div>
+</div>
+
+<div class="section">
+	<p class="sub">追加ファイル</p>
+	<div style="margin-left:20px;">
+		<ul soy:id="add_file_list">
+			<li><a soy:id="add_file"></a></li>
+		</ul soy:id="add_file_list">
+	</div>
+</div>

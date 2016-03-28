@@ -1,0 +1,12 @@
+//テンプレートメッセージ
+TEMPLATE_ID_INVALID			=	Only singlebyte character is permitted in template pack ID.
+TEMPLATE_ID_IS_BLANK		=	Template pack id is required.
+TEMPLATE_NAME_ID_BLANK		=	Template pack title is requried.
+TEMPLATE_TYPE_ID_INVALID	=	Template pack type is wrong.
+
+TEMPLATE_FILE_NAME_IS_BLANK	=	Template pack filename is required.
+TEMPLATE_GET_PAGE_ERROR		=	Cannot get webpage information.
+
+TEMPLATE_CREATE_SUCCESS		=	Template pack is created successfully.
+TEMPLATE_UPDATE_SUCCESS		=	Template pack is updated successfully.
+TEMPLATE_UPDATE_FAILED		=	Updating template pack failed.

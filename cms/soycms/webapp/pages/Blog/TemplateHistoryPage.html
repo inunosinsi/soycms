@@ -1,0 +1,28 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<?php /* コンテンツ部分 */ ?>
+<div style="margin:1em;">
+<h2>テンプレートの履歴です</h2>
+<table class="list" cellpadding="0" cellspacing="0" style="margin:auto;">
+	<thead>
+	<tr>
+		<th>保存日時</th>
+		<th>内容</th>
+		<th class="function"></th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr soy:id="templateList">
+		<td><a soy:id="date">2008-03-15 15:40</a></td>
+		<td soy:id="contents">内容</td>
+		<td class="function"><form soy:id="restoreForm"><input type="hidden" soy:id="historyId"><input type="submit" value="復元する"></form soy:id="restoreForm"></td>
+	</tr soy:id="templateList">
+	</tbody>
+</table>
+</div>
+<?php /* コンテンツ部分終わり */ ?>
+</body>
+</html>

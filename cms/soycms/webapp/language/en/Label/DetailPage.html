@@ -1,0 +1,171 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			
+			<div class="span-22 prepend-1 last">
+			<h3><a soy:link="Entry">Entry Managre</a> &gt; <a soy:link="Label">Label Managre</a> &gt; Label Detail</h3>
+			
+			<form soy:id="update_form">
+			
+			<div class="section" style="float:left;width:50%">
+				<p class="sub">Label Name</p>
+				<input id="title" type="text" soy:id="caption" onblur="$('preview').innerHTML = this.value.escapeHTML();" />				
+			</div>
+				
+			<div id="icon">
+				<p class="sub">Icon</p>
+				<img id="icon_preview" soy:id="label_icon" style="cursor:pointer;width:64px;height:64px" />
+				<input type="hidden" soy:id="icon" />
+			</div>
+			
+			<br style="clear:both;" />
+			
+			<div class="section">
+				<p class="sub">Memo</p>
+				<textarea type="text" soy:id="description" cols="80" rows="5"></textarea>
+			</div>
+			
+			<div id="debug">
+			</div>
+			
+			<div class="section">
+				<p class="sub">Preview</p>
+				<span id="preview" soy:id="preview"></span>
+			</div>
+			
+			<div class="section" style="float:left;width:280px;">
+				
+				<p class="sub">Font Color</p>
+				<input type="text" id="fcolor" soy:id="color" maxlength="6" onclick="showColorSetting('fcolor','fcolorSetting');" onblur="showColorSetting('fcolor','fcolorSetting');" />
+								
+				<div id="fcolorSetting" style="display:none">
+					<span>Red</span>
+					<div id="fcolorSetting_red"></div>				
+					<span>Green</span>
+					<div id="fcolorSetting_green"></div>
+					<span>Blue</span>
+					<div id="fcolorSetting_blue"></div>
+					
+					<button type="button" style="float:right;border:none;background-color:white;" onclick="$('fcolorSetting').hide();">↑</button>			
+				</div>
+			</div>
+			<div class="section" style="float:left;width:280px;">
+				<p class="sub">Background Color</p>
+				<input type="text" id="bcolor" soy:id="background_color" maxlength="6" onclick="showColorSetting('bcolor','bcolorSetting');" onblur="showColorSetting('bcolor','bcolorSetting');"/>
+				<div id="bcolorSetting" style="display:none">
+					<span>Red</span>
+					<div id="bcolorSetting_red"></div>
+					<span>Green</span>
+					<div id="bcolorSetting_green"></div>
+					<span>Blue</span>
+					<div id="bcolorSetting_blue"></div>
+					
+					<button type="button" style="float:right;border:none;background-color:white;"  onclick="$('bcolorSetting').hide();">↑</button>			
+				</div>
+			</div>
+			
+			<br style="clear:both;" />
+			
+			<div class="section">
+				<input type="submit" value="Update" class="submit_button" />
+			</div>
+			
+			
+			</form soy:id="update_form">
+			</div>
+			
+			
+			<script lang="text/javascript">
+				
+				function changeImageIcon(id){
+					common_element_to_layer($("image_list"),
+						{	width:200,
+							height:150,
+							onclose:function(){
+								document.body.appendChild($("image_list"));
+								$("image_list").hide();
+							}});
+					$("image_list").label_id = id;
+					$("image_list").show();
+				}
+				
+				function postChangeLabelIcon(ele,filename){
+					$("labelicon").value = filename;
+					$("icon_preview").src = ele.src;
+					common_close_layer();
+					return false;
+				}
+				
+				function showColorSetting(target,setting){
+					
+					$(setting).show();
+					
+					if(!$(setting + "_red").slider){
+						new SOY2Slider(setting + "_red",{min : 0, max:255, onchange : function(){
+							changeColor(target,setting);
+						}});
+					}
+					
+					if(!$(setting + "_green").slider){
+						new SOY2Slider(setting + "_green",{min : 0, max:255, onchange : function(){
+							changeColor(target,setting);
+						}});
+					}
+					
+					if(!$(setting + "_blue").slider){
+						new SOY2Slider(setting + "_blue",{min : 0, max:255, onchange : function(){
+							changeColor(target,setting);
+						}});
+					}
+					
+					var value = $(target).value;
+					if(value.length < 6)value = '000000';
+					
+					$(setting + "_red").slider.setValue(parseInt(value.substr(0,2),16));
+					$(setting + "_green").slider.setValue(parseInt(value.substr(2,2),16));
+					$(setting + "_blue").slider.setValue(parseInt(value.substr(4,2),16));
+				}
+				
+				function changeColor(target,setting){
+					
+					var value = 					
+						 $(setting + "_red").slider.getValue(0).toColorPart()
+						+$(setting + "_green").slider.getValue(0).toColorPart()
+						+$(setting + "_blue").slider.getValue(0).toColorPart();
+					
+					$(target).value = value.toUpperCase();
+					
+					$("preview").style.color = "#" + $("fcolor").value;
+					$("preview").style.backgroundColor = "#" + $("bcolor").value;
+					
+				}
+			</script>
+			
+			<div id="image_list" style="width:100%;height:100%;display:none;">
+				<h4>ダブルクリックで変更</h4>
+				
+				<span soy:id="image_list">
+					<img soy:id="image_list_icon" style="width:64px;height:64px;">
+				</span soy:id="image_list">
+			</div>
+			
+				<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

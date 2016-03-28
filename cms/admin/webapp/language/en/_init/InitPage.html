@@ -1,0 +1,39 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<title>Initial Setting - SOY CMS</title>
+	<link rel="stylesheet" href="css/init/style.css"/>
+</head>
+
+<body>
+
+<form soy:id="initform">
+	<div id="init_wrapper_for_IE">
+		<div id="init_wrapper">
+			<img soy:id="biglogo" alt="logo" />
+			<h2>Create a Super User Account (Administrator) to login</h2>
+			<div class="failed_message" soy:id="message_db">DB not found.</div>
+			<div id="init_main"> 
+				<div class="item">
+					<p>Super User ID (4 to 30 letters, used as Log-in ID)</p>
+					<input type="text" name="userId" value="" soy:id="userId" />
+					<div class="failed_message" soy:id="message_userId"/>
+				</div>
+				<div class="item">
+					<p>Password (6 to 30 letters)</p>
+					<input type="password" name="password" value="" soy:id="password" />
+					<div class="failed_message" soy:id="message_password"/>
+				</div>
+				<div class="item">
+					<p>Retype password for confirmation</p>
+					<input type="password" name="password_confirm" value="" soy:id="password_confirm" />
+					<div class="failed_message" soy:id="message_password_confirm"/>
+				</div>
+				<input soy:id="submit_button" class="submit_button" type="submit" name="login" value="Submit" />
+			</div>
+		</div>
+	</div>
+</form soy:id="initform">
+
+</body>
+</html>

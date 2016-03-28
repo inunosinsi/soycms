@@ -1,0 +1,230 @@
+.pagetree {
+	clear:both;
+}
+
+table.list{
+ 	border:solid 1px #EFEFEF;
+	font-size:0.92em;
+	margin-bottom:10px;
+	
+	empty-cells:show;
+	border-collapse:collapse;
+	margin-left:40px;
+/*	width:100%;*/
+}
+
+table.list thead{
+	background-color:#89BE38;
+	padding:4px 4px;
+}
+
+
+table.list thead td{
+	text-align:center;
+	border-bottom:none;
+	border-top:none;
+}
+
+table.list tr{
+  border:solid 1px #EFEFEF;
+}
+
+
+table.list tr.gray td {
+	background-color:#EFEFEF;
+}
+
+table.list th{
+	text-align:center;
+}
+
+table.list td, table.list th{  
+	border:solid 1px #EFEFEF;
+	
+	padding-left:5px;
+	padding-right:5px;
+/*	line-height:1.8em;*/
+	
+	border-collapse:collapse;
+}
+
+table.list td.checkbox {
+	width:28px;
+	text-align:center;
+}
+
+table.list td.title {
+	width:220px;
+}
+
+table.list td.status {
+	width:70px;
+}
+
+table.list td.order {
+	width:50px;
+	text-align:center;
+}
+
+
+table.list td.address {
+	width:100px;
+}
+
+table.list td.create{
+	width:150px;
+}
+
+table.list td.label_list{
+	width:auto;
+}
+
+table.list td.update_date{
+	width:100px;
+	text-align:center;
+}
+
+table.list td img {
+	margin-left:-5px;
+	_margin-left:0px;
+	_margin-right:5px;
+	padding:0 0.4em;
+	vertical-align: middle;
+}
+
+table.list td.function {
+	width:100px;
+	text-align:center;
+	border-right:none;
+}
+
+table.list td.authority {
+	text-align:center;
+	border-right:none;
+}
+
+table.list td.function a {
+	padding:0 7px;
+
+}
+table.list td.memo {
+	width:400px;
+}
+
+table.list td.label_functions {
+	width:150px;
+	text-align:center;
+	border-right:none;
+}
+
+table.list td.label_functions a {
+	padding:0 7px;
+	_padding:0;
+	white-space: nowrap;
+}
+
+table.list td a {
+  color:#CB6703;
+}
+
+/* global page input table style */
+
+table.globalpage_input {
+	margin:12px 24px;
+}
+
+table.globalpage_input tbody {
+	padding-right:5px;
+}
+
+table.globalpage_input tbody .item_name{
+	text-align:right;
+}
+
+table.globalpage_input tbody .button {
+	padding-top:12px;
+	text-align:left;
+}
+
+table.globalpage_input tbody .button input{
+	font-size:1.2em;
+	height:50px;
+}
+
+
+table.globalpage_input tbody tr.example  {
+	padding-bottom:8px;
+	font-size:0.8em;
+	color:grey;
+}
+
+table.globalpage_input tbody tr.no_example  {
+	padding-bottom:8px;
+}
+
+
+/* global page input table style end */
+
+#siteconfig_form table {
+	margin-left:10px;
+}
+
+#siteconfig_form table  {
+	padding:10px 0;
+	padding-right:10px;
+}
+
+#siteconfig_form table .caption {
+	text-align:right;
+	vertical-align:top;
+}
+
+#plugin_table {
+	border:solid 1px #FDC288;
+	font-size:0.92em;
+}
+
+#plugin_table thead {
+	background-color:#89BE38;
+}
+
+
+#plugin_table tr {
+	border:solid 1px #EFEFEF;
+}
+
+#plugin_table tr.active  {
+	background-color:#DEEED3;
+}
+
+#plugin_table {  
+	width:200px;
+	padding-left:10px;
+	line-height:40px;
+	border:solid 1px #EFEFEF;
+	border-top-color:#FDC288;
+	border-left:none;
+}
+
+#plugin_table thead {
+	line-height:20px;
+	text-align:center;
+	border-bottom:none;
+	border-top:none;
+}
+
+#plugin_table .plugin_name {
+	font-weight:bold;
+	width:300px;
+}
+
+#plugin_table .plugin_summary {
+	width:250px;
+}
+
+#plugin_table .function {
+	border-right:none;
+	padding:0;
+	text-align:center;
+	width:170px;
+}

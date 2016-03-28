@@ -1,0 +1,80 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+			<div class="span-23 last">
+				<h2>Install Templatepack</h2>
+			</div>
+
+			<div class="functions prepend-1 span-22 last">
+				<a soy:link="Template" style="margin-right:10px">Return to Templatepack Manager</a>
+			</div>
+			
+			<div class="prepend-1 span-22 last">
+				<p>Are you OK to install [<span soy:id="template_name">Templatepack Title</span>] ?</p>
+				
+				<!-- soy:display="file_list" -->
+				<p>Choose files to install with webpage templates.</p>
+				<p>
+				*If there are same name files in the directory, they are shown by <span style="color:red;">RED LETTERS</span>.<br />
+				*If you install them, they will be overwrited.
+				</p>
+				<!-- /soy:display="file_list" -->
+			</div>
+			
+			<div class="prepend-1 span-22 last">
+				<form soy:id="form">
+				
+				<!-- soy:display="file_list" -->
+				<table id="file_list">
+					<tr>
+						<th>
+							<input type="checkbox" onclick="change_checkbox(this.checked);" checked="checked" />
+							Path
+						</th>
+						<th>Description</th>					
+					</tr>
+					<tr soy:id="file_list">
+						<td>
+							<input type="checkbox" soy:id="check" class="file_list_checkbox" />
+							<label soy:id="name">File List</label>
+						</td>
+						<td>
+							<span soy:id="description">Description</span>
+						</td>
+					</tr soy:id="file_list">			
+				</table>
+				<!-- /soy:display="file_list" -->
+	
+					<input type="submit" value="Install" class="submit_button" />
+				</form soy:id="form">
+			</div>		
+				
+			<script type="text/javascript">
+			function change_checkbox(value){
+				$$(".file_list_checkbox").each(function(ele){
+					ele.checked = value;
+				});
+			}
+			</script>
+			
+			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div soy:id="wrapper" >
+
+</body>
+</html>

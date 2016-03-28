@@ -1,0 +1,58 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>Website Details - <span soy:id="site_name_title" /></h2>
+		
+		<div class="functions" soy:display="only_default_user">
+			<p><a soy:link="Site">Cancel</a></p>
+			<p><a soy:id="regenerate_link">Regenerate the front controller</a></p>
+		</div>
+
+		<p class="message" soy:id="message"></p>
+		<p class="notify" soy:id="error"></p>
+		
+		<h3>Change Website URL</h3>
+		
+			<form soy:id="update_site_form">
+				<table class="globalpage_input">
+					<col style="width:120px;" />
+					<tr>
+						<th>Site ID</td>
+						<td><span soy:id="site_id" /></td>
+					</tr>
+					<tr>
+						<th>Title</td>
+						<td><span soy:id="site_name" /></td>
+					</tr>
+					<tr>
+						<th valign="top">Website URL<img soy:message="HELP_ADMIN_SITE_DETAIL_SITEURL" /></td>
+						<td>
+							<input id="site_url" type="text" soy:id="site_url" style="width:400px;">
+							<br />
+							<a href="#" onclick="$('site_url').value=$('default_url').innerHTML;return false;">Restore</a> to Original URL (<span id="default_url" soy:id="default_url" ></span>) <br />
+							<span style="color:red;">*Check you are accessble with new URL</span> -> <a href="#" onclick="this.href=$('site_url').value;return common_click_to_layer(this);">Check NOW</a><br />
+							*You should use this setting if you want to change absolute path of SOY CMS generation in case you have changed the URL in someway like mod_rewrite.<br />
+						</td>
+					</tr>
+					
+					<tr>
+						<td></td>
+						<td class="button" >
+							<input type="submit" value="Change" style="width:8em;">
+						</td>
+					</tr>
+				</table>
+			</form soy:id="update_site_form">
+		</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+</body>
+</html>

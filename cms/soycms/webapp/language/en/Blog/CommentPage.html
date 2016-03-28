@@ -1,0 +1,163 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<script lang="text/javascript">
+	function onToggleAccept(state){
+		var count = count_checked_comment();
+		if(count == 0) return;
+		
+		var msg = ( state ? "Accept " : "Reject " ) +count+" checked comment"+( (count > 1) ? "s" : "" )+"?";
+		
+		if(!confirm(msg)) return;
+			
+		$("op_code_id").value = "toggleApproved";
+		$("accept_state").value = state;
+		$("main_form").submit();
+	}
+	
+	function deleteComment(){
+		var count = count_checked_comment();
+		if(count == 0) return;
+
+		var msg = "Delete "+count+" checked comment"+( (count > 1) ? "s" : "" )+"?";
+		if(!confirm(msg)) return;
+		
+		$("op_code_id").value = "delete";
+		$("main_form").submit();
+	}
+	
+	function toggle_all_comment_check(value){
+		$$("input.comment_check").each(function(ele){
+			ele.checked = value;
+		});																	
+	}
+	
+	function count_checked_comment(){
+		var count = 0;
+		$$("input.comment_check").each(function(ele){
+			if(ele.checked) count++;
+		});
+		if(count == 0){
+			alert("No comment checked.");
+		}
+		return count;
+	}
+</script>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+	<div><div id="toolbox" class="span-24 last" soy:page="_common.ToolBoxPage"></div></div>
+
+	<!-- content start -->
+	<div id="content" class="span-24 last">			
+
+		<form soy:id="self_form" style="display:none" id="comment_form">
+			<input type="hidden" name="comment_id" id="comment_id">
+			<input type="hidden" name="state" id="state">
+			<input type="hidden" name="op_code" value="toggleApproved">
+		</form soy:id="self_form">
+		
+		<div class="blogMenu span-23 last" soy:id="BlogMenu"></div soy:id="BlogMenu">
+		
+		<div class="comment_menu span-22 soy-push-1">
+			<form soy:id="accept_form">
+			
+			<div class="row">Default Setting of Trackbacks : <select soy:id="default_accept" style="width:100px"></select><input type="submit" value="Apply" /></div>
+			
+			<input type="hidden" name="op_code" value="change_defaults"/>
+			</form soy:id="accept_form">
+		</div>
+		
+		<div soy:display="must_exists_comment" class="span-22 last soy-push-1">
+		
+			<div soy:panel="checkbox_functions" class="checkbox_functions">
+				<div class="checkbox_functions_left"><!----></div>
+				<div class="checkbox_functions_content">
+						<p>
+							<a href="javascript:onToggleAccept(1);">Accept</a>
+							/
+							<a href="javascript:onToggleAccept(0);">Reject</a>
+							/
+							<a href="javascript:deleteComment();">Delete</a>
+							checked comment(s).
+						</p>
+				</div>
+				<div class="checkbox_functions_right"><!----></div>
+			</div soy:panel="checkbox_functions">
+			
+			<div soy:panel="pager" class="pager">
+				<h5 soy:id="topPager">
+					<a soy:id="prevAnchor" href="#">&lt;Previous</a>
+					<span soy:id="contentPage">1-5 items of (5 items)</span>
+					<a soy:id="nextAnchor" href="#">Next&gt;</a>
+				</h5 soy:id="topPager">
+				<h5>
+					<p>Display Number</p>
+					<p><a href="#" soy:id="limit_10">10</a></p>
+					<p><a href="#" soy:id="limit_50">50</a></p>
+					<p><a href="#" soy:id="limit_100">100</a></p>
+				</h5>
+			</div soy:panel="pager">
+
+			<div style="clear:both;"></div>
+		
+			<form soy:id="index_form" id="main_form">
+			<input type="hidden" name="op_code" value="toggleApproved" id="op_code_id"/>
+			<input type="hidden" name="state" id="accept_state" value="" />
+			<table class="list" cellpadding="0" cellspacing="0">
+				<thead>
+				<tr>
+					<th><input type="checkbox" onclick="toggle_all_comment_check(this.checked);"></th>
+					<th>Status</th>
+					<th>Submit Date<img soy:message="HELP_BLOG_COMMENT_DATE"/></th>
+					<th>Entry<img soy:message="HELP_BLOG_COMMENT_ENTRY"/></th>
+					<th>Author<img soy:message="HELP_BLOG_COMMENT_AUTHOR"/></th>
+					<th>Title<img soy:message="HELP_BLOG_COMMENT_TITLE"/></th>
+					<th>Content<img soy:message="HELP_BLOG_COMMENT_BODY"/></th>
+				</tr>
+				</thead>
+				<tbody class="comment_list">
+				<!--  soy:id="comment_list" -->
+				<tr>
+					<td><input type="checkbox" soy:id="comment_id" class="comment_check"/></td>
+					<td class="state"><span soy:id="approved" >Reject</span></td>
+					<td class="date"><a soy:id="submitdate"></a></td>
+					<td class="entry"><a target="_blank" soy:id="entry_title">Entry... </a></td>
+					<td class="author" soy:id="author">Author...</td>
+					<td class="title" soy:id="title">Title...</td>
+					<td	class="content"><a soy:id="body">Content...</a></td>
+				</tr>			
+				<!--  /soy:id="comment_list" -->
+				</tbody>
+			</table>
+			</form soy:id="index_form">
+			<div soy:panel="checkbox_functions" class="checkbox_functions">
+				<div class="checkbox_functions_left"><!----></div>
+				<div class="checkbox_functions_content">
+					<p>Checked Comments</p>
+					<p><a href="javascript:onToggleAccept(1);">Accept</a></p>
+					<p><a href="javascript:onToggleAccept(0);">Reject</a></p>
+					<p><a href="javascript:deleteComment();">Delete</a></p>
+				</div>
+				<div class="checkbox_functions_right"><!----></div>
+			</div soy:panel="checkbox_functions">
+			<div class="pager" soy:panel="pager"></div soy:panel="pager">
+		</div soy:display="must_exists_comment">			
+		
+		<div soy:display="no_comment_message" class="prepend-1 span-22 last">
+			<div class="span-22 last">
+				<p>There is no comment.</p>
+			</div>
+		</div soy:display="no_comment_message">
+		
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>	
+	<!-- content end -->
+	</div>
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

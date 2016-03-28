@@ -1,0 +1,33 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+	
+	<!-- content start -->
+	<div id="content" class="span-24 last">
+		
+		<div class="span-22 prepend-1 last">
+			<h3><a soy:link="Entry">Entry Manager</a> &gt; <a soy:link="Label">Label Manager</a> &gt; Bulk Create</h3>
+			
+			<div style="margin-bottom:10px;">
+				<form soy:id="bulk_create_label" id="bulk_create_label">
+					Input one Label per line<br/>
+					<textarea soy:id="bulk_create_label_captions" id="bulk_create_label_captions" type="text" name="captions"></textarea>
+					<br/>
+					<input type="submit" value="Add new Labels" onclick="if(!this.form.captions.value)return false;">
+				</form soy:id="bulk_create_label">
+			</div>
+		
+		</div>
+		
+	</div>
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

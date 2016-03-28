@@ -1,0 +1,32 @@
+//ラベル用メッセージ
+
+LABEL_STICK_SUCCESS		=		Entries are labeled successfully.
+LABEL_STICK_FAILED		=		Labeling failed.
+
+LABEL_UNSTICK_SUCCESS	=		Entries are unlabeled successfully.
+LABEL_UNSTICK_FAILED	=		Unlabelign failed.
+
+ENTRYLABEL_DISPLAYORDER_MODIFY_SUCCESS =	Entry display order is updated successfully.
+ENTRYLABEL_DISPLAYORDER_MODIFY_FAILED  =	Updating entry display order failed.
+
+LABEL_CREATE_SUCCESS		=		A new label added successfully.
+LABEL_CREATE_FAILED			=		Adding a new label failed.
+
+LABEL_UPDATE_SUCCESS		=		Label information is updated successfully.
+LABEL_UPDATE_FAILED			=		Updating failed.  
+
+LABEL_RENAME_SUCCESS		=		Label is renamed successfully.
+LABEL_RENAME_FAILED			=		Renaming failed.
+
+LABEL_REMOVE_SUCCESS		=		Label is deleted successfully.
+LABEL_REMOVE_FAILED			=		Deleting failed.
+
+LABEL_MEMO_UPDATE_SUCCESS	=		Label memo is updated successfully.
+LABEL_MEMO_UPDATE_FAILED	=		Updating label memo failed.
+
+LABEL_ICON_UPDATE_SUCCESS	=		Label icon is updated successfully.
+LABEL_ICON_UPDATE_FAILED	=		Updating label icon failed.
+
+LABEL_FLIP_BLOG_ERROR		=		You cannot delete this label because its on use in blogpage.
+
+LABEL_UPDATE_DISPLAY_ORDER	=		Label display order is updated successfully.

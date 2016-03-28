@@ -1,0 +1,79 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div id="layer_content">
+
+<p soy:id="changepassword_message">パスワードを変更しました。</p>
+
+<p soy:id="changeuserinfo_message">登録情報を変更しました。</p>
+
+<form soy:id="changeuser_form">
+
+<h3>
+	<input soy:id="chang_info_submit" style="float:right;" type="submit" name="changeuser" value="登録情報を変更する" />
+	登録情報
+</h3>
+
+</form soy:id="changeuser_form">
+
+<div class="section">
+	<p class="sub">姓名</p>
+	<span soy:id="name">山田 太郎(やまだ たろう）</span>
+</div>
+
+<div class="section">
+	<p class="sub">表示名</p>
+	<span soy:id="nickname">山田 太郎</span>
+</div>
+
+<div class="section">
+	<p class="sub">生年月日</p>
+	<span soy:id="birthday">2001/01/10</span>
+</div>
+
+<div class="button">
+	
+</div>
+
+<form soy:id="changemail_form">
+
+<h3>
+	<?php /* <input style="float:right;" type="submit" name="changemail" value="メールアドレスを変更する" />*/ ?>
+	メールアドレス
+</h3>
+
+</form soy:id="changemail_form">
+
+<div class="section">
+	<p class="sub">メールアドレス</p>
+	<span soy:id="email">hogehoge@hoge.com</span>
+</div>
+
+<form soy:id="changepassword_form">
+
+<h3>
+	<input soy:id="password_submit" style="float:right;" type="submit" name="changepassword" value="パスワードを変更する" />
+	パスワード
+</h3>
+
+</form soy:id="changepassword_form">
+
+
+<div class="section">
+	<p class="sub">パスワード</p>
+	<span>（セキュリティのために表示されません）</span>
+</div>
+
+<form soy:id="withdraw_form">
+<h3 soy:display="only_enable_withdrow_user">
+	<input style="float:right" type="submit" name="withdraw" value="退会する">
+	退会
+</h3 soy:display="only_enable_withdrow_user">
+</form soy:id="withdraw_form">
+	
+
+
+</div>
+</body>
+</html>

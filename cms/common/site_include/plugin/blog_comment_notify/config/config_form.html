@@ -1,0 +1,89 @@
+<h4>利用可能な置換文字</h4>
+<div class="section">
+	
+	<table>
+		<tr>
+			<td style="width:130px;"><p class="sub">出力内容</p></td>
+			<td><p class="sub">置換文字</p></td>
+		</tr>
+		<tr>
+			<td>ブログ名</td>
+			<td>[BLOG_TITLE]</td>
+		</tr>
+		<tr>
+			<td>記事名</td>
+			<td>[ENTRY_TITLE]</td>
+		</tr>
+		<tr>
+			<td>記事URL</td>
+			<td>[ENTRY_URL]</td>
+		</tr>
+		<tr>
+			<td>記事投稿日時</td>
+			<td>[ENTRY_DATE]</td>
+		</tr>
+		<tr>
+			<td>コメントタイトル</td>
+			<td>[COMMENT_TITLE]</td>
+		</tr>
+		<tr>
+               <td>コメント本文</td>
+               <td>[COMMENT_BODY]</td>
+           </tr>
+		<tr>
+			<td>コメント投稿者</td>
+			<td>[COMMENT_AUTHOR]</td>
+		</tr>
+		<tr>
+			<td>コメント投稿日時</td>
+			<td>[COMMENT_DATE]</td>
+		</tr>
+	</table>
+</div>
+
+<script>
+function toggle_area(blogId){
+	status = $("#blog_checkbox_" + blogId + ":checked").val();
+	if(status == 1){
+		$("#toggle_area_" + blogId).show();
+	}else{
+		$("#toggle_area_" + blogId).hide();
+	}
+	
+}
+</script>
+
+<form soy:id="blog_form">
+
+<div style="width:80%; margin-bottom:20px;">
+
+	<!-- soy:id="blog_list" -->
+	<h4><!-- soy:id="blog_name" /-->の設定</h4>
+	<div class="section">
+		<p class="sub">コメント通知</p>
+		<label soy:id="blog_checkbox_label"><input type="checkbox" soy:id="blog_checkbox" class="toggle_checkbox"><!-- soy:id="blog_name*" /-->のコメント通知を有効にする</label>
+	</div>
+	<div soy:id="toggle_area">
+		<div class="section">
+			<p class="sub">メールアドレス(改行で複数入力)</p>
+			<textarea soy:id="mail_to" style="height:100px;"></textarea>
+		</div>
+		<div class="section">
+			<p class="sub">タイトル</p>
+			<input type="text" soy:id="mail_title" style="width:390px;"/>
+		</div>
+		<div class="section">
+			<p class="sub">本文</p>
+			<textarea soy:id="mail_content"></textarea>
+		</div>
+	</div>
+	<script>toggle_area(<!-- soy:id="toggle_id" /-->);</script>
+	<!-- /soy:id="blog_list" -->
+
+	<div style="text-align:center;text-align:center;margin-top:20px;padding-top:20px;border-top:solid 1px #999;">
+		<input type="submit" class="submit_btn" name="blog_config" value='ブログの設定を保存' />
+	</div>
+
+</div>
+
+</form>

@@ -1,0 +1,64 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">			
+			<div class="span-23 last">
+				<h2>Blog List</h2>
+			</div>
+			<div id="page_panels" soy:id="exists_blog_page" class="prepend-1 span-22 last">
+				<!-- soy:id="page_list" -->
+				<div class="page_panel span-22 last">
+					<div soy:id="page_icon" class="page_image_box">				
+						<img soy:id="is_deleted" class="page_image_deleted" />
+					</div>
+					<div class="page_panel_info">
+						<p class="page_name">
+							<a soy:id="title">Sample Title</a>
+						</p>
+						<p class="page_url"><a soy:id="page_url"></a></p>
+					</div>
+					<div class="page_panel_functions">
+				        <a soy:id="edit_link" href="#">Latest-Info</a>
+				        <a soy:id="entry_link" href="#">Entries</a>
+				        <a soy:id="post_entry_link" href="#">Add New Entry</a>
+				        <a soy:id="template_link" href="#">Webpage Template</a>
+				        <a soy:id="trackback_link" href="#">Trackbacks</a>
+				        <a soy:id="comment_link" href="#">Comments</a>
+				        <a soy:id="config_link" href="#">Settings</a>
+				        <a soy:id="delete_link" href="#">Delete</a>
+				     	<a soy:id="recover_link" href="#">restore</a>
+				     	<a href="#" target="_blank" soy:id="client_view">View</a>
+					</div>
+					<div class="page_panel_update_date">Update date <span  soy:id="update_date">2007/12/25</span></div>
+				</div>
+				<!--/soy:id="page_list" -->
+			</div soy:id="exists_blog_page">
+			<div soy:id="no_blog_message"  class="span-22 prepend-1 last">
+				<div class="blank">
+					There is no Blog Page.<br />
+					You can add New Blogpage from <a soy:link="Page.Create" onclick="return common_click_to_layer(this);">[Add New Webpage]</a>
+				</div>
+			</div soy:id="no_blog_message">
+			
+			<div style="clear:both;"><!-- --></div>
+			
+				<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		</div>
+
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div soy:id="wrapper" >
+
+</body>
+</html>

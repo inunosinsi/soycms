@@ -1,0 +1,29 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div id="layer_content" style="text-align:left;">
+
+<h3>User Information</h3>
+
+<form soy:id="changeform">
+
+<div class="section">
+	<p class="sub">Name (max 255 letters (bytes).)</p>
+	<input type="text" soy:id="name" size="60">
+</div>
+<div class="section">
+	<p class="sub">Email Address (max 255 letters (bytes).)</p>
+	<input type="text" soy:id="email" size="60">
+</div>
+
+<div class="section">
+	<input type="submit" name="changeuser" value="Update" style="width:8em;"/>
+</div>
+<a soy:link="Account">&lt;&lt;Return</a>
+</form soy:id="changeform">
+
+
+</div>
+</body>
+</html>

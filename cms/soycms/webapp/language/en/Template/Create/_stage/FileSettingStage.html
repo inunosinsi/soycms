@@ -1,0 +1,94 @@
+<h3>Make a new template pack - Add files(3/5)</h3>
+
+<p>Select files to add.</p>
+
+<iframe id="filemanager_filepage" soy:src="FileManager.FilePage" style="width:850px;height:480px;border:none;overflow:hidden;" frameborder="no" onload="frameonload();"></iframe>
+
+<table id="add_file_table" soy:id="add_file_table" class="list">
+<thead>
+	<tr>
+		<td>File</td>
+		<td>Description</td>
+		<td>Delete</td>
+	</tr>
+</thead>
+
+<tbody id="add_file_list">
+<!-- soy:id="add_file_list" -->
+	<tr soy:id="add_file_li">
+		<td>
+			<a soy:id="add_file_link"></a>
+			<input soy:id="add_file_hidden_input" type="hidden" />
+			<input soy:id="add_file_url_input" type="hidden" />
+		</td>
+		
+		<td>
+			<input soy:id="add_file_description_input" type="text" />
+		</td>
+		
+		<td>
+			<a href="javascript:void(0);" onclick="$('add_file_list').removeChild(this.parentNode.parentNode);">Delete</a>
+		</td>
+	</tr>	
+<!--/soy:id="add_file_list" -->
+</tbody>
+</table soy:id="add_file_table">
+
+<script soy:id="add_file_list_url" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+function frameonload(){
+	$("filemanager_filepage").contentWindow.addCustomFunction(add_file_list,{
+		"label" : "Add this file"
+	});
+}
+
+function add_file_list(id,url){
+	
+	var post = "id=" + id;
+	
+	var myAjax = new Ajax.Request(
+		add_file_list_url,
+		{	method: 'post', 
+			parameters: post, 
+			onComplete: function(req){
+				var obj = eval('(' + req.responseText + ')');
+				
+				if(obj.length < 1)alert("This directory or file is empty.");
+				
+				$("add_file_table").show();
+				
+				for(var i=0;i<obj.length;i++){
+					var id = obj[i].id;
+					var path = obj[i].path;
+					var url = obj[i].url;
+					
+					if($("add_file_list_" + id) != undefined)continue;
+					
+					var li = document.createElement("tr");
+					li.id = "add_file_list_" + id;
+					$("add_file_list").appendChild(li);
+					
+					var td = document.createElement("td");
+					td.innerHTML = '<a href="' + url + '" target="_blank">' + path + '</a>'
+								+ "<input type=\"hidden\" value=\""+path+"\" name=\"add_file_list["+id+"]\">"
+								+ "<input type=\"hidden\" value=\""+url+"\" name=\"add_file_list_url["+id+"]\">";
+					li.appendChild(td);
+					
+					var td = document.createElement("td");
+					td.innerHTML = "<input type=\"text\" value=\"\" name=\"descriptions["+id+"]\">";
+					li.appendChild(td);
+					
+					var td = document.createElement("td");
+					td.innerHTML = "<a href=\"javascript:void(0);\" onclick=\"$('add_file_list').removeChild(this.parentNode.parentNode);\">削除</a>";
+					li.appendChild(td);
+				
+				}
+			}
+		}
+	);
+}
+
+
+</script>

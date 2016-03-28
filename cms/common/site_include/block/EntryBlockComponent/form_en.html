@@ -1,0 +1,42 @@
+<script soy:id="entry_list"></script>
+<script soy:id="selector_js"></script>
+<script soy:id="entry_form"></script>
+
+<form soy:id="update_form"></form soy:id="update_form">
+
+<div style="height:290px;width:100%;position:relative;">
+
+	<div style="width:100%;height:280px;margin: 5px 0;text-align:center;position:absolute;">
+	<input type="button" id="move_button" value="Add" style="width:120px;margin-top:55px"/><br>
+	<input type="button" id="up_button" disabled="disabled" value="Up" style="width:120px;margin-top:15px"/><br/>
+	<input type="button" id="down_button" disabled="disabled" value="Down" style="width:120px;margin-top:5px"/><br/>
+	<input type="button" id="display_outline" value="Detail"  style="width:120px;margin-top:15px"/><br/>
+	<input type="button" id="move_entry_form" value="New entry" style="width:120px;margin-top:25px" /><br />
+	</div>
+
+	<div style="width:40%;height:280px;margin: 5px 0px;position:absolute;left:0px;">
+	<h4 id="selected_entry_title">Selected entries</h4>
+	<select id="selected_entry_list" style="width:100%;height:220px;" size="14"></select>
+	</div>
+	
+	<div style="width:40%;height:280px;margin: 5px 0px;position:absolute;right:0px;">
+	<h4 id="all_entry_title">All entries</h4>
+	<select soy:id="labelList" id="labelList" onchange="labelFilter(this.value)" style="width:100%;height:20px;"><option value="##NO_FILTER##">Show all</option></select>
+	<select id="all_entry_list" style="width:100%;height:188px;" size="12"></select>
+	</div>
+
+	<br style="clear:both;" />
+</div>
+
+<div style="padding: 5px; margin-top: 5px; text-align:center;">
+	<input class="submit_button" type="button" value="Save" id="update"/>
+	<input class="submit_button" type="button" value="Cancel" onclick="common_close_layer(window.parent);return false;" style="margin-left:20px;"/>
+</div>
+
+<h4>Entry detail</h4>
+<div style="width:95%;margin-left:2%;height:400px;float:left;">
+	<iframe id="outlineFrame" style="border:solid 1px black;width:100%;height:90%;"></iframe>
+</div>
+
+<br style="clear:both;" />
+

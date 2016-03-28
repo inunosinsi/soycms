@@ -1,0 +1,20 @@
+<h3>初期ページ作成ウィザード 3/6</h3>
+<h5>テンプレート選択</h5>
+
+<p>
+	現在以下のページ雛形がご利用いただけます。利用したいページ雛形を選択し、次へボタンを押してください。
+</p>
+<table>
+	
+	<tr>
+		<td><input type="radio" name="template_id" value="" checked></td>
+		<td><div>デフォルトのテンプレート</div></td>
+	</tr>
+	
+	<!-- soy:id="template_list" -->
+	<tr>
+		<td><input type="radio" name="template_id" soy:id="tempalte_radio"></td>
+		<td><div soy:id="description"></div soy:id="description"></td>
+	</tr>
+	<!-- /soy:id="template_list" -->
+</table>

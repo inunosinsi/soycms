@@ -1,0 +1,346 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+	<div soy:display="only_exists_label">
+	<div id="toolbox" class="toolbox_blog" soy:page="_common.ToolBoxPage"></div>
+	</div soy:display="only_exists_label">	
+	
+	<script type="text/JavaScript">
+		Event.observe(window,"load",function(){
+			Validation.add('duplication', 'URL must be unique', function(value,ele) {
+				if($('entry_page_uri').id != ele.id && $('entry_page_uri').value == value){
+					return false;
+				};
+				
+				if($('month_page_uri').id != ele.id && $('month_page_uri').value == value){
+					return false;
+				}
+				
+				if($('category_page_uri').id != ele.id && $('category_page_uri').value == value){
+					return false;
+				}
+				
+				if($('rss_page_uri').id != ele.id && $('rss_page_uri').value == value){
+					return false;
+				}
+								
+				return true;
+			});
+		});
+	</script>
+
+	<!-- content start -->
+	<div id="content" class="span-24 last">			
+		
+		<div class="blogMenu span-16 last" soy:id="BlogMenu"></div soy:id="BlogMenu">
+		
+		<div class="prepend-1 span-16 last">
+			<h3>Blog Page Settings</h3>
+		</div>
+	
+		<form soy:id="page_detail_form">
+		<div class="prepend-1 span-16 last">				
+			<div class="section span-16">
+				<div class="span-10">
+					<p class="sub">Title<img soy:message="HELP_BLOG_TITLE"/></p>
+					<input type="text" id="title" soy:id="title">
+				</div>
+				<div id="icon" class="span-2 last">
+					<img soy:id="page_icon_show" id="page_icon_show" />
+					<input type="hidden" soy:id="page_icon" name="icon" id="page_icon">						
+				</div>
+				<img soy:message="HELP_BLOG_ICON"/>
+			</div>
+			
+			<div style="clear:both"><!----></div>
+				
+			<div class="section">
+				<p class="sub">Blog Page URL<img soy:message="HELP_BLOG_URI"/></p>
+				<span id="uri_prefix" soy:id="uri_prefix"></span><input type="text" id="uri" soy:id="uri">/
+			</div>
+			
+			<div class="section">
+				<p class="sub">Pearent Webpage<img soy:message="HELP_BLOG_OWNER_PAGE"/></p>
+				<select soy:id="parent_page" style="width:220px;">
+					<option value="">----------</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="prepend-1 span-22 last">		
+			<div class="section" id="blog_config_description">
+				<p class="sub">Description<img soy:message="HELP_BLOG_DESCRIPTION"/></p>
+				<textarea type="text" id="description" soy:id="description" style="width:50%;height:5em;" row="5"></textarea>
+			</div>
+			
+			<h3>Label Settings</h3>
+						
+			<div class="section" id="blog_config_blog_label">
+				<p>Blog page label<img soy:message="HELP_BLOG_BLOG_LABEL"/></p>
+				<div soy:id="no_label_message"></div soy:id="no_label_message">
+				<div id="use_label_list" soy:id="label_exists">
+					<div id="labels_wrapper">
+					<!-- soy:id="use_label_list" -->
+						<div class="label_wrapper">
+							<input type="radio" soy:id="label_check">
+							<label soy:id="label_label">
+								<img soy:id="label_icon" class="label_icon" />
+								<span soy:id="label_caption" class="label_caption"></span>
+							</label soy:id="label_label">
+					</div>
+					<!-- /soy:id="use_label_list" -->
+						<br style="clear:both"/>
+			</div>
+				</div soy:id="label_exists">				
+			</div>
+			
+			<br style="clear:both;" />
+			
+			<div class="section" id="blog_config_category_label">
+				<p>Category label<img soy:message="HELP_BLOG_CATEGORY_LABEL"/></p>
+				<div soy:id="no_label_message2"></div soy:id="no_label_message2">
+				<div id="category_label_list" soy:id="label_exists2">
+					<div id="labels_wrapper">
+					<!-- soy:id="category_label_list" -->
+						<div class="label_wrapper">
+							<input type="checkbox" soy:id="label_check">
+							<label soy:id="label_label">
+								<img soy:id="label_icon" class="label_icon" />
+								<span soy:id="label_caption" class="label_caption"></span>
+							</label soy:id="label_label">
+					</div>
+					<!-- /soy:id="category_label_list" -->
+						<br style="clear:both"/>
+			</div>
+				</div soy:id="label_exists2">				
+			</div>
+			
+			<br style="clear:both;" />
+			
+			<h3>Publishing setting</h3>
+			
+			<div class="section" id="blog_config_generator">
+				<table class="list" style="margin-left:0;">
+					<tr>
+						<th>Blogpage type</th>
+						<th>Publish<img soy:message="HELP_BLOG_GENERATE_FLAG"/></th>
+						<th>Display number<img soy:message="HELP_BLOG_DISPLAY_NUMBER"/></th>
+						<th>URL<img soy:message="HELP_BLOG_PAGE_URL"/></th>
+						<th>Title format<img soy:message="HELP_BLOG_TITLE_FORMAT"/></th>
+					</tr>
+					<tr id="blog_config_top">
+						<td>Blog top<img soy:message="HELP_BLOG_TOP"/></td>
+						<td class="blog_config_generate_flag"><input type="checkbox" soy:id="generateTopFlag" name="generateTopFlag"></td>
+						<td class="blog_config_display_number">
+							<input soy:id="top_display_count" class="validate-number short" type="text"> items
+						</td>
+						<td class="blog_config_generate_url">
+							<span id="uri_prefix" soy:id="top_page_uri"></span>
+						</td>
+						<td class="blog_config_title_format"><input soy:id="top_title_format" type="text"></td>
+					</tr>
+					<tr class="even" id="blog_config_entry">
+						<td>Entry page<img soy:message="HELP_BLOG_ENTRY"/></td>
+						<td class="blog_config_generate_flag"><input type="checkbox" soy:id="generateEntryFlag" name="generateEntryFlag"></td>
+						<td class="blog_config_display_number">&nbsp;</td>
+						<td class="blog_config_generate_url">
+							<span id="uri_prefix" soy:id="entry_page_uri_prefix"></span><input soy:id="entry_page_uri" id="entry_page_uri" type="text">/&lt;Entry title&gt;
+						</td>
+						<td class="blog_config_title_format"><input soy:id="entry_title_format" type="text"></td>
+					</tr>
+					<tr id="blog_config_top_archive">
+						<td>Monthly archive<img soy:message="HELP_BLOG_ARCHIVE"/></td>
+						<td class="blog_config_generate_flag"><input type="checkbox" soy:id="generateMonthFlag" name="generateMonthFlag"></td>
+						<td class="blog_config_display_number">
+							<input soy:id="month_display_count" class="validate-number short" type="text"> items
+						</td>
+						<td class="blog_config_generate_url">
+							<span id="uri_prefix" soy:id="month_page_uri_prefix"></span><input soy:id="month_page_uri" id="month_page_uri" type="text">/YYYY/MM
+						</td>
+						<td class="blog_config_title_format"><input soy:id="month_title_format" type="text"></td>
+					</tr>
+					<tr class="even" id="blog_config_category">
+						<td>Category archive<img soy:message="HELP_BLOG_CATEGORY"/></td>
+						<td class="blog_config_generate_flag"><input type="checkbox" soy:id="generateCategoryFlag" name="generateCategoryFlag"></td>
+						<td class="blog_config_display_number">
+							<input soy:id="category_display_count" class="validate-number short" type="text"> items
+						</td>
+						<td>
+							<span id="uri-prefix-category" soy:id="category_page_uri_prefix"></span><input soy:id="category_page_uri" id="category_page_uri" type="text">/&lt;Label&gt;/
+						</td>
+						<td class="blog_config_title_format"><input soy:id="category_title_format" type="text"></td>
+					</tr>
+					<tr id="blog_config_feed">
+						<td>Feeds<img soy:message="HELP_BLOG_FEED"/></td>
+						<td class="blog_config_generate_flag"><input type="checkbox" soy:id="generateRssFlag" name="generateRssFlag">	</td>
+						<td class="blog_config_display_number">
+							<input soy:id="rss_display_count" class="validate-number short" type="text">items
+						</td>
+						<td class="blog_config_generate_url">
+							<span id="uri_prefix" soy:id="rss_page_uri_prefix"></span><input soy:id="rss_page_uri" id="rss_page_uri" type="text">
+						</td>
+						<td class="blog_config_title_format"><input soy:id="feed_title_format" type="text"></td>
+					</tr>
+				</table>
+			</div>
+			
+			<h3>Opening period</h3>
+			<div soy:display="openperiod_section">
+			<div class="section" id="blog_config_open_period">
+				<p class="sub">Opening period<img soy:message="HELP_BLOG_OPEN_PERIOD"/></p>
+				<span soy:id="open_period_show" id="open_period_show"></span>
+				<button id="open_period_show_button" type="button" onclick="$('open_period_show').hide();$('open_period_input').show();$('open_period_show_button').hide();">Set opening period</button>
+				<div id="open_period_input" style="display:none;">
+					<table style="width: 28em">
+						<tr>
+							<td style="vertical-align:top;">
+								<input type="text" soy:id="start_date" id="start_date" size="25" maxlength="19" style="width:100%">
+								
+								<div style="font-size:10px;margin-top:5px;margin-left:5px;">
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),true,false);return false;">Today</a><br/>
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,1,0,0,0),true,false);return false;">Tommorow</a><br/>
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,7,0,0,0),true,false);return false;">Next week</a><br/>
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,1,0,0,0,0),true,false);return false;">Next month</a><br/>
+									<a href="#" onclick="$('start_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),false,false);return false;">Now</a><br/>
+									<a href="#" onclick="$('start_date').value = '';return false;">Clear</a>
+								</div>
+							</td>
+							<td style="vertical-align:top;text-align:center;width:4em;"> ~ </td>
+							<td style="vertical-align:top;">
+								<input type="text" soy:id="end_date" id="end_date" size="25" maxlength="19" style="width:100%">
+								<div style="font-size:10px;">
+									<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,1,0,0,0),true,true);return false;">Tommorow</a><br/>
+									<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,7,0,0,0),true,true);return false;">Next week</a><br/>
+									<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,1,0,0,0,0),true,true);return false;">Next month</a><br/>
+									<a href="#" onclick="$('end_date').value = buildDateString(movedate(new Date,0,0,0,0,0,0),false,true);return false;">Now</a><br/>
+									<a href="#" onclick="$('end_date').value = '';return false;">Clear</a>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			
+			<div id="buttons" style="float:right;height:1%;">
+				<button type="submit" class="submit_button">Update</button>	
+			</div>		
+			
+			<div class="section">
+				<p class="sub">Opening status<img soy:message="HELP_BLOG_DRAFT"/></p>
+				<input type="radio" soy:id="state_draft">
+				<input type="radio" soy:id="state_public">
+			</div>	
+			</div soy:display="openperiod_section">
+		</div>
+		</form soy:id="page_detail_form">
+		
+		<script lang="text/javascript">
+		function changeImageIcon(id){
+			common_element_to_layer($("image_list"),
+				{	width:200,
+					height:150,
+					targetId:"image_list_layer",
+					onclose:function(){
+						document.body.appendChild($("image_list"));
+						$("image_list").hide();
+					}});
+			$("image_list").label_id = id;
+			$("image_list").show();
+		}
+		
+		function setChangeLabelIcon(filename,fileAddress){
+			$("page_icon").value = filename;
+			$("page_icon_show").src = fileAddress;
+			
+			//消し方がわからないのでとりあえず隠す
+			common_close_layer_by_targetId("image_list_layer");
+		}
+		function create_label(){
+			var str = prompt("Enter new label name","");
+			if(str == null)return;
+			
+			new Ajax.Request(CreateLabelLink,{
+				method:"post",
+				parameters:"caption="+encodeURI(str),
+				onSuccess:function(result){
+					var obj = eval('('+result.responseText+')');
+					if(obj.result == 1){
+						var wrapper = document.createElement("div");
+						wrapper.setAttribute("class","label_wrapper");
+						wrapper.setAttribute("className","label_wrapper");
+						
+						var checkbox = document.createElement("input");
+						checkbox.type = "radio";
+						checkbox.value = obj.labelId;
+						checkbox.id = 'blogLabelId_'+obj.labelId;
+						checkbox.name = 'blogLabelId';
+						
+						var label = document.createElement("label");
+						label.setAttribute("for",checkbox.id);
+						label.appendChild(document.createTextNode(str));
+						
+						var span = document.createElement("span");
+						span.appendChild(checkbox);
+						span.appendChild(label);
+						
+						wrapper.appendChild(span);
+						
+						$("use_label_list").appendChild(wrapper);
+						
+						
+						/* ------------------------------------- */
+						
+						var wrapper = document.createElement("div");
+						wrapper.setAttribute("class","label_wrapper");
+						wrapper.setAttribute("className","label_wrapper");
+						
+						var checkbox = document.createElement("input");
+						checkbox.type = "checkbox";
+						checkbox.value = obj.labelId;
+						checkbox.id = 'categoryLabelList_'+obj.labelId;
+						checkbox.name = 'categoryLabelList[]';
+						
+						var label = document.createElement("label");
+						label.setAttribute("for",checkbox.id);
+						label.appendChild(document.createTextNode(str));
+						
+						var span = document.createElement("span");
+						span.appendChild(checkbox);
+						span.appendChild(label);
+						
+						wrapper.appendChild(span);
+						
+						$("category_label_list").appendChild(wrapper);	
+					}
+					alert(obj.message);
+				},
+				onFailure:function(result){
+					alert("Failure");
+				}
+			});
+		}
+		</script>
+		
+		<div class="span-24 last">
+			<div id="image_list" style="width:100%;height:100%;display:none;">
+				<h4>Double click to change</h4>
+				
+				<span soy:id="image_list">
+					<img soy:id="image_list_icon" style="width:64px;height:64px;">
+				</span soy:id="image_list">
+			</div>
+		</div>
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>	<!-- content end -->
+	</div>
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<h3>ページ雛形の新規作成 - ファイルの追加(3/5)</h3>
+
+<p>追加するファイルを選択し、ファイルを追加ボタンを押してください。</p>
+
+<iframe id="filemanager_filepage" soy:src="FileManager.FilePage" style="width:850px;height:480px;border:none;overflow:hidden;" frameborder="no"></iframe>
+
+<table id="add_file_table" soy:id="add_file_table" class="list">
+<thead>
+	<tr>
+		<td>追加するファイル</td>
+		<td>説明</td>
+		<td>削除</td>
+	</tr>
+</thead>
+
+<tbody id="add_file_list">
+<!-- soy:id="add_file_list" -->
+	<tr soy:id="add_file_li">
+		<td>
+			<a soy:id="add_file_link"></a>
+			<input soy:id="add_file_hidden_input" type="hidden" />
+			<input soy:id="add_file_url_input" type="hidden" />
+		</td>
+		
+		<td>
+			<input soy:id="add_file_description_input" type="text" />
+		</td>
+		
+		<td>
+			<a href="javascript:void(0);" onclick="$(this).closest('tr').remove();">削除</a>
+		</td>
+	</tr>	
+<!--/soy:id="add_file_list" -->
+</tbody>
+</table soy:id="add_file_table">
+
+<script soy:id="add_file_list_url" type="text/javascript"></script>
+
+<script type="text/javascript">
+
+function filemanager_ondblclick(url, id){
+	add_file_list(url, id);
+};
+
+function add_file_list(url, id){
+
+	$("#add_file_table").show();
+
+	var path = url;
+
+	if($("#add_file_list_" + id).size() > 0 || id < 0){
+		return false;
+	}
+
+	var $tr = $("<tr>", {id:"add_file_list_"+id});
+	$("#add_file_list").append($tr);
+
+	var $td = $("<td>");
+	$td.html('<a href="' + url + '" target="_blank">' + path + '</a>'
+			+ "<input type=\"hidden\" value=\""+path+"\" name=\"add_file_list["+id+"]\">"
+			+ "<input type=\"hidden\" value=\""+url+"\" name=\"add_file_list_url["+id+"]\">");
+	$tr.append($td);
+
+	var $td = $("<td>");
+	$td.html("<input type=\"text\" value=\"\" name=\"descriptions["+id+"]\">");
+	$tr.append($td);
+
+	var $td = $("<td>");
+	$td.html("<a href=\"javascript:void(0);\" onclick=\"$(this).closest('tr').remove();\">削除</a>");
+	$tr.append($td);
+}
+
+
+</script>

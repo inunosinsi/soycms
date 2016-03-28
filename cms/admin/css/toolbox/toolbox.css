@@ -1,0 +1,126 @@
+#toolbox {
+	width:245px;
+	font-size:0.8em;
+	line-height:24px;
+	text-align:center;
+	margin-left:5px;
+}
+
+.toolbox {
+	width:245px;
+	font-size:0.8em;
+	line-height:24px;
+	text-align:center;
+	margin-left:5px;
+}
+
+.toolbox_singletab{
+	width:238px; /* original size 245px */
+	_width:245px;/* for IE */
+	height:26px; /* original size 29px */
+	_height:29px;
+	background-image:url("./toolbox_images/toolbox_singletab.jpg");
+	background-repeat:no-repeat;
+	padding-left:7px;
+	padding-top:3px;
+}
+
+.toolbox_tabs {
+	width:245px;
+	height:24px;
+	font-size:0.8em;
+	line-height:24px;
+	text-align:center;
+	margin-left:5px;
+}
+
+.toolbox_tab_active {
+	width:72px; 
+	height:24px;
+	float:left;
+	background-image:url("./toolbox_images/toolbox_active.jpg");
+	background-repeat:no-repeat;
+}
+
+.toolbox_tab_inactive {
+	width:72px;
+	height:24px; 
+	float:left;
+	background-image:url("./toolbox_images/toolbox_inactive.jpg");
+}
+
+.toolbox_top {
+	width:245px;
+	height:7px;
+	background-image:url("./toolbox_images/toolbox_top.jpg");
+	background-repeat:no-repeat;
+}
+
+.toolbox_middle {
+	width:245px;
+	background-image:url("./toolbox_images/toolbox_middle.jpg");
+	background-repeat:repeat-y;
+	padding-left:10px;
+	z-index:300;
+	position:relative;
+}
+
+.toolbox_bottom {
+	width:245px;
+	height:10px;
+	background-image:url("./toolbox_images/toolbox_bottom.jpg");
+	background-repeat:no-repeat;
+	z-index:300;
+	position:relative;
+}
+
+#toolbox_filetree{
+	height:500px;
+}
+
+#toolbox_filetree iframe{
+	margin-left:-20px;
+	width:230px;
+	height:500px;
+	background-color:white;
+	overflow:hidden;
+	z-index:300;
+	position:relative;
+}
+
+/* widget styles */
+#widgets table td {
+	_padding-left:10px;
+}
+
+.widget_top{
+	width:238px; /* original size 245px */
+	_width:245px;/* for IE */
+	height:26px; /* original size 29px */
+	_height:29px;
+	background-image:url("./toolbox_images/toolbox_singletab.jpg");
+	background-repeat:no-repeat;
+	padding-left:7px;
+	padding-top:3px;
+	margin-top:15px;
+	font-weight:bold;
+	font-size:0.9em;
+}
+
+.widget_middle {
+	width:245px;
+	background-image:url("./toolbox_images/toolbox_middle.jpg");
+	background-repeat:repeat-y;
+	padding-left:10px;
+	z-index:300;
+	position:relative;
+}
+
+.widget_bottom {
+	width:245px;
+	height:10px;
+	background-image:url("./toolbox_images/toolbox_bottom.jpg");
+	background-repeat:no-repeat;
+	z-index:300;
+	position:relative;
+}

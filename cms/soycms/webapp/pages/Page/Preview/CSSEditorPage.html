@@ -1,0 +1,110 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<style type="text/css">
+	body,html{
+		margin:0;padding:0;
+		text-align:center;
+	}
+	.css_menu_table{
+		width:98%;
+		height:98%;
+		
+		margin-left:auto;
+		margin-right:auto;
+		
+		margin-top:1%;
+		
+		border: 1px solid rgb(187, 187, 187);
+		/*border-collapse:collapse;*/
+	}
+	
+	.css_menu_table td{
+		margin:0;padding:0;
+		vertical-align:top;
+	}
+	
+	.cssToolBar {
+		background-color:darkslategray;
+		text-align:center;
+		cursor:pointer;
+		color:white;
+		
+		width:65px;
+		float:left;
+		margin-left:1px;
+	}
+	
+	.short{
+		width:30px;
+	}
+	
+	.menu_row td{
+		height:2em;
+		vertical-align:middle;
+	}
+	
+	.menu_row input{
+		vertical-align:middle;
+	}
+	
+	#cssMenu{
+		background-color:gray;
+		text-align:left;
+		margin-top:5px;
+	}
+</style>
+<script lang="text/javascript">
+var CSSView;
+$.event.add(window,"load",function(){
+	
+	init_text_area($('#cssContents'));
+	
+	CSSView = new CSSList("cssMenu","cssContents");
+	CSSView.render();
+
+});
+</script>
+
+<body>
+
+<form soy:id="update_form" target="css_update_frame">
+<table class="css_menu_table" style="width:95%;height:95%;">
+	<tr class="menu_row">
+		<td style="width:170px;background-color:darkslategray;">
+			<div class="cssToolBar short" onclick="CSSView.toggleList('all');" onmouseover="this.style.color='red';" onmouseout="this.style.color='white'">All</div>
+			<div class="cssToolBar" onclick="CSSView.toggleList('comment');" onmouseover="this.style.color='red';" onmouseout="this.style.color='white'">Comment</div>
+			<div class="cssToolBar" onclick="CSSView.toggleList('class');" onmouseover="this.style.color='red';" onmouseout="this.style.color='white'">Selector</div>
+		</td>
+		
+		<td style="padding-left:10px;border:solid 1px #BBBBBB;background-color:white;">
+			
+			<!-- soy:display="writable" -->
+			<input type="submit" id="css_save_button" value="CSSを保存">
+			<input type="submit" name="reload" value="保存して閉じる" />
+			<!-- /soy:display="writable" -->
+			
+			<input type="button" onClick="common_close_layer(window.parent)" value="閉じる" />
+			
+			<input type="hidden" soy:id="filepath" name="filePath">
+			<input type="hidden" name="op_code" value="update">
+		</td>
+	</tr>
+		
+	<tr>
+		<td style="background-color:gray;">
+			<div id="cssMenu" ></div>
+		</td>
+		<td>
+			<textarea wrap="off" soy:id="contents" name="contents" id="cssContents" style="line-height:20px;width:100%;height:100%;margin:0;"></textarea>
+		</td>
+		
+	</tr>
+</table>
+</form soy:id="update_form">
+		
+<iframe id="css_update_frame" name="css_update_frame" src="about:blank;" frameborder="0" style="width:1px;height:1px;visibility:hidden;"></iframe>
+
+</body>
+</html>

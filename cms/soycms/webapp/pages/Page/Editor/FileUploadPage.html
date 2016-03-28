@@ -1,0 +1,572 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<script soy:id="jqueryjs"></script>
+	<script soy:id="jqueryuijs"></script>
+	<script soy:id="commonjs"></script>
+	<script soy:id="parameters"></script>
+</head>
+<body>
+<?php /* コンテンツ部分 */ ?>
+<div>
+<script lang="text/javascript">
+	var defaultWidth,defaultHeight;
+	var originalWidth,originalHeight;
+	
+	var mode = "";//"upload";
+	
+	function validateNumber(e){
+		if(!e) e = $.Event();
+		if(window.navigator.appName.toLowerCase().indexOf("microsoft") == -1) {//for firefox
+			var keyCode = e.which;
+		}else{//for ie
+			var keyCode = e.keyCode;
+		}
+		if(((keyCode<48)||(keyCode>57)) && keyCode != 8 && keyCode != 0){
+			return false;
+		}
+	}
+	
+	function onChangeSize(type){
+		
+		if(type && $("#keep_aspect_ratio:checked").val() == "on"){
+			if(type == "width"){
+				$("#image_height").val(Math.floor(originalHeight * ($("#image_width").val() / originalWidth)));
+			}else{
+				$("#image_width").val(Math.floor(originalWidth * ($("#image_height").val() / originalHeight)));
+			}
+		}		
+		
+		var w = $("#image_width").val();
+		var h = $("#image_height").val();
+		
+		$("#preview_image").width(w);
+		$("#preview_image").height(h);
+		
+		resizeWindow(w,h);
+	}
+	
+	function onChangeUploadFileName(){
+		var alter_name_value = $("#alter_name").val();
+		if(alter_name_value.length != 0){
+			var url = remotoURI +'/'+ $("#alter_name").val();
+		}else{
+			var fname = $("#file").val();
+			var file = fname.substring(fname.lastIndexOf('\\',fname.length)+1,fname.length);
+			var url = remotoURI +'/'+ file;
+		}
+		
+		//display_url(url);
+		//display_preview_if_image(url);
+		
+		$("#alter_name").val("");
+	}
+	
+	window.onload = function(){
+		defaultWidth = 640;
+		defaultHeight= 480;
+		
+		$("#image_width").attr("onkeypress", validateNumber());
+		$("#image_height").attr("onkeypress", validateNumber());
+		
+		$("#image_width").bind('keyup',function(){
+			onChangeSize("width");
+		});
+		
+		$("#image_height").bind("keyup",function(){
+			onChangeSize("height");
+		});
+		
+		$("#file").bind("change",function(){
+			onChangeUploadFileName()
+		});
+	};
+	
+	function _resizeWindow(w,h){
+		window.parent.common_resize_layer({width:w,height:h},window.parent);
+	}
+	
+	function resizeWindow(w,h){
+		//クライアントサイズ→ウィンドウサイズ
+		
+		w = parseInt(w,10)+ 30;
+		h = parseInt(h,10)+ 200;
+		
+		if(w < defaultWidth){
+			w = defaultWidth;
+		}
+		
+		if(w > 700 ){
+			w = 700;
+		}
+		
+		if(h < defaultHeight){
+			h = defaultHeight;
+		}
+		_resizeWindow(w,h);
+	}
+	
+	//アップロードしてファイルを指定
+	function prepare(resObj){
+		if(!resObj.result){
+			switch(resObj.errorCode){
+				case 1://already file exists
+				if(confirm("リモートフォルダに同名ファイルが存在しました。\n名前を変えてアップロードしますか？")){
+					var newName = prompt('新しいファイル名を入力してください','');
+					if(newName === false || newName.length == 0){
+						// do nothing
+					}else{
+						//新しいファイル名に拡張子がなかった場合、変更前と同様のものを挿入
+						if(newName.lastIndexOf(".") == -1){
+							var fname = $("#file").val();
+							var ext = fname.substring(fname.lastIndexOf("."));
+							newName += ext;
+						}
+						$("#alter_name").val(newName);
+						$("#upload_form").submit();
+						onChangeUploadFileName();
+					}
+				}else{
+					//select outer linkと同じ
+					return select_outer_link($("#display_link").attr("href"));
+				}
+				break;
+				
+				case 2://fatial error
+					alert('致命的なエラーが発生しました');
+					break;
+
+				default:
+					alert(resObj.message);
+			}
+			$("#applySubmit").hide();
+			return;
+		}else{
+			$("#applySubmit").show();
+		}
+		
+		//resObj.filepath 絶対URL
+		//resObj.serverpath ファイル名
+		//resObj.imageWidth
+		//resObj.imageHeight
+		
+		$("#serverpath").val(resObj.serverpath);
+
+		display(resObj.filepath);
+		
+	}
+	
+	function cancel(resObj){
+		if(!resObj.result){
+			alert(resObj.message);
+			return;
+		}
+		
+		$("#serverpath").val("");
+		$("#preview_image").attr("src","");
+		$("#onlyImage").hide();
+		$("#file").val("");
+		$("#alter_name").val("");
+		$("#display_link").css("display","none");
+		resizeWindow(defaultWidth,defaultHeight);
+	}
+	
+	//元の画面に適用
+	function apply(){
+		
+		var display_link_href = $("#display_link").attr("href");
+		var src = display_link_href.replace(siteURL,"");
+		
+		if(!src.match(/^https?:\/\//)){
+			src = '/' + src;
+		}
+		
+		if($("#output_image_size:checked").val() == "on"){
+			var html = '<img src="'+src+'" width="'+$("#image_width").val()+'" height="'+$('#image_height').val()+'" alt="'+$('#image_alt').val()+'" />';
+		}else{
+			var html = '<img src="'+src+'" alt="'+$('#image_alt').val()+'" />';
+		}
+		
+		if($("#wrap_ancher:checked").val() == "on"){
+			html = '<a href="'+src+'" target="_blank">' + html + '</a>';
+		}
+
+		var alt = $("#image_alt").val();
+		var width = $("#image_width").val();
+		var height = $("#image_height").val();
+		
+		//GETの値があるか調べる
+		var query = window.location.search.substring(1);
+		
+		if(query.length === 0){
+			//queryの指定がない場合
+			window.parent.insertHTML(
+				html,src,alt,width,height
+			);
+		}else{
+			//queryの指定がある場合
+			window.parent.$("#" + query).val(src);
+		}
+		
+		//おまじない
+		iframe = null;
+		
+		window.parent.common_close_layer(window.parent);
+		
+		return false;
+	}
+	
+	function iframeOnLoad(response){
+		if(!response){
+			$("#applySubmit").hide();
+			return;
+		}
+		var resObj = eval('('+response+')');
+		switch(resObj.mode){
+			case "prepare":
+				prepare(resObj);
+				break;
+			case "cancel":
+				cancel(resObj);
+				break;
+			default:
+				break;
+		}
+	}
+	
+	function cancelUpload(){
+		if(mode == "upload"){
+			return confirm("ファイルの挿入をキャンセルしてもよろしいでしょうか");
+		}else{
+			$("#serverpath").val("");
+			$("#preview_image").attr("src","");
+			$("#onlyImage").hide();
+			$("#file").val("");
+			$("#alter_name").val("");
+			$("#display_link").css("display","none");
+			resizeWindow(defaultWidth,defaultHeight);
+			mode = "upload";
+			return false;
+		}
+	}
+	
+	function onPrepare(){
+		if($("#serverpath").val("")){
+			return true;
+		}
+		
+		mode = "upload";
+		
+		//前のファイルを削除するためにパスを用意
+		$("#beforepath").val($("#serverpath").val());
+		return true;
+	}
+	
+	function restoreSize(){
+		$("#preview_image").width(originalWidth);
+		$("#preview_image").height(originalHeight);
+		
+		$("#image_width").val(originalWidth);
+		$("#image_height").val(originalHeight);
+		
+		onChangeSize();
+		
+		return false;
+	}
+	
+	function set_upload_mode(){
+		mode = "upload";
+	}
+	
+	//ファイルマネージャー起動・閉じる
+	function toggle_Filemanager(){
+		if(mode != "filemanager"){
+			$("#controlle_panel").hide();
+			if(!$("#file_manager_iframe").attr("src")){
+				$("#file_manager_iframe").attr("src",$("#filemanager").attr("target_src"));
+				setTimeout(function(){
+					$("#close_filemanager_button").show();
+				},500);
+			}
+			_resizeWindow(800,600);
+			$("#filemanager").show();			
+			mode = "filemanager";
+		}else{
+			$("#controlle_panel").show();
+			$("#filemanager").hide();
+			mode = "filemanager_closed";
+		}
+	}
+	
+	//ファイルマネージャーからファイルを指定
+	function filemanager_ondblclick(url){
+		toggle_Filemanager();
+		
+		mode = "filemanager";
+		$("#serverpath").val(url);
+
+		display(url);
+	}
+	
+	//外部リンクでファイルを指定
+	function select_outer_link(url){
+		mode = "outer_link";
+		$("#serverpath").val(url);
+
+		display(url);
+	}
+	
+	function display(url){
+		var image = new Image;
+		if(is_image(url)){
+			image.onload = function(){
+				display_thumbnail(image);
+				display_preview(image);
+			};
+			image.onerror = function(){
+				$("#onlyImage").hide();
+				$("#image_thumb").hide();
+				$("#image_thumb_large").hide();
+			};
+			image.onabort = function(){
+				$("#onlyImage").hide();
+				$("#image_thumb").hide();
+				$("#image_thumb_large").hide();
+			};
+		}else{
+			$("#onlyImage").hide();
+			$("#image_thumb").hide();
+			$("#image_thumb_large").hide();
+		}
+		image.src = url;
+
+		display_url(image.src);
+
+	}
+
+	function display_url(url){
+		$("#display_link").html(url);
+		$("#display_link").attr("href",url);
+		$("#display_link").show();
+	}
+	
+	function display_preview(image){
+		if(is_image(image.src)){
+	
+			$("#preview_image").attr("src",image.src);
+			$("#preview_image").width(image.width);
+			$("#preview_image").height(image.height);
+			
+			$("#image_width").val(image.width);
+			$("#image_height").val(image.height);
+			
+			originalWidth  = image.width;
+			originalHeight = image.height;
+
+			$("#onlyImage").show();
+			
+		}else{
+			$("#onlyImage").hide();
+		}
+	}
+	
+	function display_thumbnail(image){
+		if(is_image(image.src)){
+			$("#image_thumb").attr("src",image.src);
+			$("#image_thumb_large").attr("src",image.src);
+			
+			var max_length = Math.max(image.width, image.height);
+			var thumb_width  = image.width  / max_length * 64 ;
+			var thumb_height = image.height / max_length * 64 ;
+			
+			if(image.width > thumb_width || image.height > thumb_height){
+				$("#image_thumb").width(thumb_width);
+				$("#image_thumb").height(thumb_height);
+				
+				if(image.width > 500){
+					$("#image_thumb_large").width(500);
+				}else{
+					$("#image_thumb_large").width(image.width);
+				}
+				
+				$("#image_thumb").mouseover(function(){
+					$("#image_thumb_large").show();
+				});
+				$("#image_thumb_large").mouseout(function(){
+					$("#image_thumb_large").hide();
+				});
+			}else{
+				$("#image_thumb").width(image.width);
+				$("#image_thumb").height(image.height);
+				$("#image_thumb").mouseover(function(){});
+			}
+			
+			$("#image_thumb").show();
+		}else{
+			$("#image_thumb").hide();
+		}
+	}
+	
+	function is_image(url){
+		return url.match(/\.(jpe?g|gif|png|bmp|ico)(\?.*)?(#.*)?$/i);
+	}
+	
+	function toggle_method_panel(method_num){
+		for(var i=1;i<=3;i++){
+			if(i == method_num){
+				$('#method_'+i).show();
+			}else{
+				$('#method_'+i).hide();
+			}
+		}
+	}
+	
+	function targetIframeOnload(){
+		var iframe=$("#targetIframe");
+		var response = iframe.contents().find("body").html();
+		if(response){
+			iframe.contents().find("body").html("");
+			iframeOnLoad(response);
+		}			
+	}
+
+  function outerLinkOnFocus(input, placeHolder){
+		if($(input).val() == placeHolder){
+			$(input).val("");
+			$(input).css("color", "");
+		}
+
+		$("#outer_link_button").prop("disabled", false);
+	}
+
+  function outerLinkOnBlur(input, placeHolder){
+		if($(input).val().length < 1){
+			$(input).val(placeHolder);
+			$(input).css("color", "grey");
+		};
+
+		if($(input).val() == placeHolder){
+			$("#outer_link_button").prop("disabled", true);
+		}else{
+			$("#outer_link_button").prop("disabled", false);
+		}
+	}
+	
+	common_init_custom_button();
+</script>
+
+<style>
+#preview_block{
+	padding: 0;
+	margin:0 auto;	
+	width:100%;
+}
+.input_block{
+	text-align:center;
+}
+.submit_block{
+	display:block;
+	text-align: center;
+	padding: 5px 0 5px 0;
+}
+#upload_form form{
+	margin: 0;
+}
+fieldset{
+	margin-bottom:1ex;
+}
+</style>
+
+<div id="controlle_panel">
+	<fieldset>
+		<legend>1. 方法を選ぶ</legend>
+		<ul>
+			<li><input type="radio" name="select_method" id="select_method_1" onclick="toggle_method_panel(1)" checked="checked"><label for="select_method_1">ファイルをアップロードする</label></li>
+			<li><input type="radio" name="select_method" id="select_method_2" onclick="toggle_method_panel(2)"><label for="select_method_2">既存のファイルから選ぶ</label></li>
+			<li><input type="radio" name="select_method" id="select_method_3" onclick="toggle_method_panel(3)"><label for="select_method_3">URLを直接指定する</label></li>
+		</ul>
+	</fieldset>
+	
+	<fieldset id="method_1">
+		<legend>2. ファイルをアップロードする</legend>
+		
+		<form soy:id="uploadForm" method="post" enctype="multipart/form-data" target="targetIframe" onsubmit="return onPrepare()" id="upload_form">
+		    <input type="file" name="file" id="file" size="80"/>
+		    <input type="hidden" id="beforepath" name="beforepath"/>
+		    <input type="hidden" name="alter_name" id="alter_name"/>
+		    <input type="submit" class="soycms_custom_button" value="アップロード" onclick="set_upload_mode();"/>
+		</form soy:id="uploadForm">
+	</fieldset>
+	
+	<fieldset id="method_2" style="display:none;">
+		<legend>2. 既存のファイルから選ぶ</legend>
+		<button class="soycms_custom_button" onclick="toggle_Filemanager();return false;" type="button">ファイルマネージャー起動</button>（アップロードも可能です）
+	</fieldset>
+	
+	<fieldset id="method_3" style="display:none;">
+		<legend>2. URLを直接指定する</legend>
+		<input type="text" id="outer_link" soy:id="outer_link"/>
+		<button class="soycms_custom_button" id="outer_link_button" onclick="select_outer_link($('#outer_link').val());return false;" disabled>指定</button>
+	</fieldset>
+	
+	
+	<form soy:id="cancelForm" method="post" onsubmit="return cancelUpload()" id="cancelForm" target="targetIframe">
+
+	<fieldset>
+		<legend>3. 決定</legend>
+		<div id="preview_block" style="position:relative;">
+			<input type="hidden" name="serverpath" id="serverpath"/>
+			<img src="" id="image_thumb_large" style="display:none;position:absolute;left:0px;border:1px solid #999999;padding: 2px;background-color:white;"/>
+			<img src="" id="image_thumb" style="display:none;float:left;margin-right:1ex;border:1px solid #999999;padding: 2px;"/>
+			<a href="#" id="display_link" style="display:none">bbbbb</a>
+		</div>
+		<div class="submit_block">
+			<input type="submit" class="soycms_custom_button" id="applySubmit" onclick="return apply()" value="決定">
+<!--			<input type="submit" class="soycms_custom_button" value="キャンセル">-->
+			<input type="button" class="soycms_custom_button" onclick="common_close_layer(window.parent);" value="キャンセル">
+
+		</div>
+	</fieldset>
+
+	<div id="onlyImage" style="display:none;">
+		<fieldset>
+			<legend>画像オプション</legend>
+			<table id="image_table" style="text-align:left">
+				<tr>
+					<td colspan="2">
+						alt<input type="text" id="image_alt" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="checkbox" id="wrap_ancher" /><label for="wrap_ancher">画像にリンクを張る</label><br />
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input type="checkbox" id="output_image_size" checked="checked" />
+						<label for="output_image_size">widthとheightを指定する</label>
+					</td>
+					<td class="input_block">
+						幅<input type="text" id="image_width" name="imageWidth" size="5">×高さ<input type="text" id="image_height" name="imageHeight" size="5">
+						（<input type="checkbox" id="keep_aspect_ratio" checked="checked" /><label for="keep_aspect_ratio">アスペクト比を維持</label>）
+						<input type="submit" class="soycms_custom_button" onclick="return restoreSize()" value="元に戻す"> <br />
+					</td>
+				</tr>
+			</table>
+			<img id="preview_image" src="" alt="" style="border:1px solid #999999;display:block;margin:0 auto;padding:2px;" />
+		</fieldset>
+	</div>
+
+	</form soy:id="cancelForm">
+	
+</div>
+<div id="filemanager" style="display:none" soy:id="file_manager_iframe">
+	<button id="close_filemanager_button" onclick="toggle_Filemanager();return false;" style="display:none;">ファイルマネージャ終了</button> ファイルをダブルクリックするとそのファイルが選択されます。
+	<iframe id="file_manager_iframe" style="width:780px;height:560px;border:none;"></iframe>
+</div>
+
+<iframe style="display:none;width:0px;height:0px;" name="targetIframe" id="targetIframe" onload="targetIframeOnload()"></iframe>
+<?php /* コンテンツ部分終わり */ ?>
+</body>
+</html>

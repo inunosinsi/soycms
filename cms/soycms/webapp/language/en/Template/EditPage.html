@@ -1,0 +1,89 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+			
+	
+		<!-- content start -->
+		<div id="content" class="span-24 last">
+		
+		<form soy:id="edit_form" id="main_form">
+			<div class="span-23 last">
+				<h2>Edit template - <!-- soy:id="name" /--></h2>
+			</div>
+			
+			<div class="functions prepend-1 span-22 last">
+				<a soy:id="back_link">Return to detail editor</a>
+			</div>
+						
+			<div class="prepend-1 span-22 last">
+			
+			<div class="section">
+				<p class="sub">Description<img soy:message="TEMPLATE_FILE_DESCRIPTION"/></p>
+			<div soy:id="description"></div>
+			</div>
+			
+			<div class="section">
+			<p class="sub">Template<img soy:message="TEMPLATE_FILE_CONTENT"/></p>
+			<div>
+				<div>
+					<div id="template_toolbox">
+						<button type="button" onclick="showPreview();">Preview</button>
+						<button type="button" onclick="common_to_layer(editorLink+'/InsertLink');">Insert hyperlink</button>
+						<button type="button" onclick="common_to_layer(editorLink+'/FileUpload');">Insert image</button>
+						<button type="button" onclick="showCSSEditor();" id="cssButton">CSS</button>
+						<button type="button" onclick="toggle_editor();">Toggle editor</button>
+					</div>
+					
+					<div id="template_wrapper" style="position:relative;border:solid 1px #666666;width:100%;">
+						<div id="template_editor_wrapper">
+							<textarea soy:id="template" id="template_content" rows="40" cols="80" wrap="off" style="width:100%;border:none;margin:0;padding:0;line-height:12px;font-size:12px;"></textarea>
+							<iframe id="template_editor_frame" soy:id="template_editor" style="display:none;height:400px;" src="" frameborder="0"></iframe>
+						</div>
+					</div>
+				</div>
+				<div id="css_editarea" style="display:none;width:100%;height:100%;">
+					<div id="css_selector">
+						<select id="css_list" name="css_list" onchange="onSelectCSS(this.value);">
+							<option value="none">CSSs Used in this webpage</option>
+						</select>
+						<input type="button" id="save_css_button" value="Save CSS" onclick="saveCSS();" style="margin:0.5em 0;">
+					</div>
+					<div style="width:170px;float:left;overflow:auto;text-align:left;background-color:gray;height:100%;">
+						<div id="cssMenu" ></div>
+						<br style="clear:both;" />
+					</div>
+					<div style="float:left;height:100%;">
+						<textarea id="css_editor" name="css_editor" wrap="off" style="width:100%;margin:0;border:none;padding:0;padding-left:5px;line-height:12px;font-size:12px;"></textarea>
+					</div>
+					<input type="hidden" soy:id="filepath" name="filePath">
+					<span soy:id="filePath"></span>
+				</div>
+						
+			</div>
+			
+			<div style="margin-top:10px;">
+				<input id="update_button" type="submit" value="Update">
+			</div>
+			
+			</div>
+		</form soy:id="edit_form">
+		
+		</div>	
+
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		
+		</div>
+
+	
+	<div soy:page="_common.FooterPage"></div>
+
+</div soy:id="wrapper" >
+
+</body>
+</html>

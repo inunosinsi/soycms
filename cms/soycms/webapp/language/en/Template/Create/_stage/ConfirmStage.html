@@ -1,0 +1,44 @@
+<h3>Make a new template pack - Confirm(4/5)</h3>
+<h4 class="notify">Are you OK to make this template pack ?</h4>
+
+<div class="section">
+	<p class="sub">Template pack ID</p>
+	<div soy:id="template_id"></div>
+</div>
+
+<div class="section">
+	<p class="sub">Template pack title</p>
+	<div soy:id="template_name"></div>
+</div>
+
+<div class="section">
+	<p class="sub">Description</p>
+	<div soy:id="template_description"></div>
+</div>
+
+<div class="section">
+	<p class="sub">Contain Templates</p>
+	<div>
+		<table class="list">
+			<thead>
+			<tr class="section">
+				<td>Name</td>
+				<td>Description</td>
+			</tr>
+			</thead>
+			<tr soy:id="template_list">
+				<td soy:id="template_list_name"></td>
+				<td soy:id="template_list_description"></td>
+			</tr soy:id="template_list">
+		</table>
+	</div>
+</div>
+
+<div class="section">
+	<p class="sub">Contain Files</p>
+	<div style="margin-left:20px;">
+		<ul soy:id="add_file_list">
+			<li><a soy:id="add_file"></a></li>
+		</ul soy:id="add_file_list">
+	</div>
+</div>

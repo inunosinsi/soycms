@@ -1,0 +1,55 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>Webiste Management</h2>
+		<p class="message" soy:id="message"></p>
+		<p class="notify" soy:id="error"></p>
+		
+		<div class="functions" soy:display="only_default_user">
+			<p><a soy:id="create_link">Add a New Website</a></p>
+		</div>
+		
+		<div id="siteboxes">
+			<h3>Website List</h3>
+			
+			<?php $counter = 0; ?>
+			<!-- soy:id="list" -->
+			<div class="sitebox_big">
+				<div class="sitebox_top">
+					<h4 soy:id="site_name" class="sitename">Nipon Institute of Agroinformatics, Ltd.</h4>
+					<p class="login_button"><a soy:id="login_link" href="#">Login</a></p>
+				</div>
+				<div style="clear:both"><!----></div>
+				<p class="uri"><a soy:id="domain_root_site_url" href="#"></a></p>
+				<p class="uri"><a soy:id="site_link" href="#"></a></p>
+				<div class="sitebox_functions" soy:display="only_default_user">
+					<p><a soy:id="site_detail_link">Detail</a></p>
+					<p><a soy:id="auth_link">Admins</a></p>
+					<p><a soy:id="root_site_link">Root Site Setting</a></p>
+					<p><a soy:id="remove_link">Delete</a></p>
+					
+					<form soy:id="remove_form" method="post"></form>
+				</div>
+			</div>
+			<?php $counter++; ?>
+			<?php if(($counter % 2) == 0) echo "<br style=\"clear:both;\">"; ?>
+			<!-- /soy:id="list" -->
+			
+			<div soy:id="no_site" style="margin-left:10px;">
+				<p>There is NO Websites -> <a soy:link="Site.Create">Add New Website</a></p>
+			</div>
+			
+			<div style="clear:both"><!----></div>
+		</div>
+		
+	</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+</html>

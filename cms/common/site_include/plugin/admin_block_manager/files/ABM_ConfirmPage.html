@@ -1,0 +1,62 @@
+<h4>ブロック一括管理</h4>
+
+<p>戻るまたは詳細を押して変更して下さい。</p>
+
+<div class="section">
+	<p>対象ページ</p>
+	<ul style="margin-left:30px;">
+		<!-- soy:id="page_list" -->
+		<li>	<span soy:id="name"></span>
+				(<span soy:id="url"></span>)
+		</li>
+		<!-- /soy:id="page_list" -->
+	</ul>
+</div>
+
+<div class="section">
+	<p class="sub">ブロックID</p>
+	<p soy:id="block_id"></p>
+</div>
+
+<div class="section">
+	<p class="sub">ブロック種別</p>
+	<p>
+		<span soy:id="block_name"></span>
+	</p>
+</div>
+
+<div class="section">
+	<p class="sub">ブロック情報</p>
+	<p>
+		<span soy:id="block_info"></span>
+	</p>
+</div>
+
+<form id="detail_form" method="post" action="?admin_block_manager&amp;mode=2" onsubmit="return common_submit_to_layer($(this),{onclose:function(){window.location.reload();}});">
+	<input id="detail_form_submit" type="submit" style="display:none;" />
+</form>
+
+
+
+<form method="post" action="#main">
+<input type="submit" name="prev" value="前へ" style="width:100px;height:30px;" />
+
+<input type="button" name="detail" value="詳細" onclick="$('#detail_form_submit').click();return false;" style="width:100px;height:30px;"/>
+
+<input type="submit" name="next" value="実行" style="width:100px;height:30px;" onclick="return show_confirm();" />
+
+</form>
+
+<script type="text/javascript">
+var show_confirm = function(){
+	
+	var str = 
+			"※※※※注意※※※※\n\n" +
+			"この処理を実行すると、既に追加されているブロックを上書きする可能性や、\n" + 
+			"ページの表示が崩れる可能性があります。\n\n" +
+			"実行してもよろしいですか？";
+
+	return window.confirm(str);	
+	
+};
+</script>

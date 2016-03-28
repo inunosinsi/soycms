@@ -1,0 +1,153 @@
+#loading_image{
+	background-image:url("loading.gif");
+	position:absolute;
+	top:5px;
+	right:5px;
+
+	display:block;
+
+	width:16px;
+	height:16px;
+
+	visibility:hidden;
+}
+
+body {
+	margin:0;
+	padding:0;
+}
+
+td.separator{
+	height:2px;
+	background-color:gray;
+}
+
+#filetree_wrapper{
+	background-color:white;
+	border:solid 1px #D0D0D0;
+	overflow:auto;
+	margin:0;
+	
+	padding:0;
+	
+	font-size:12px;
+	
+	height:478px;
+	width:199px;
+}
+
+#file_list_wrapper{
+	overflow:auto;
+	height:100%;
+	font-size:12px;
+	width:100%;
+}
+
+#wrapper{
+	position:absolute;
+	left:200px;
+	top:30px;
+}
+
+#south_split{
+	border-right:solid 1px #bbb;
+	padding-right:1px;
+	_padding-right:3px;
+}
+
+#direcotry_functions{
+	position:absolute;
+	left:200px;
+	top:0px;
+	height:30px;
+	background-color:#EFEFEF;
+	line-height:30px;
+	font-size:12px;
+	border:solid 1px #D0D0D0;
+	border-style:solid solid none none;
+	
+	width:649px;
+	_width:651px;
+}
+
+#direcotry_functions *{
+	display:inline;
+}
+
+ul#filetree{
+	margin:10px 0;
+	padding-left:23px;
+	
+}
+
+.file_small{float:left;margin:10px;cursor:pointer;}
+.file_name{width:90px;text-align:center;}
+.file_icon{height:64px;width:90px;border:solid 1px black;text-align:center;background:url('icon_plain.gif') no-repeat 50% white;}
+.file_icon *{width:64px;height:64px;margin-right:auto;margin-left:auto;}
+.file_icon img{width:64px;height:64px;}
+
+#filetree ul{
+	margin-top:3px;
+	margin-left:0;padding-left:10px;
+}
+#filetree li{cursor:pointer;}
+#filetree li span{
+	padding:3px;
+}
+#filetree_tab{
+	background-color:#EFEFEF;
+	border-bottom:solid 1px #D0D0D0;
+	padding-left:10px;
+
+	height:29px;
+}
+#filetree_tab  div{
+	margin-right:2px;
+	border:solid 1px #bbb;
+	margin-top:8px;
+	_margin-top:7px;
+	
+	float:left;
+	width:50px;
+	height:20px;
+	line-height:20px;
+	text-align:center;
+
+	cursor:pointer;
+
+}
+#filetree_tab .active{ background-color:yellow; }
+#filetree_tab .inactive{ background-color:white; }
+
+#file_detail{margin-left:10px;margin-top:10px;font-size:12px;}
+
+#search_form{ margin-left:10px;margin-top:10px;}
+#search_form li{ cursor:pointer; }
+
+.folder{
+	background-image:url('folder.gif');
+}
+
+.icon_image{
+	background-image:none;
+}
+
+.icon_css {
+	background-image:url('./icons/css.gif');
+}
+
+.icon_html {
+	background-image:url('./icons/html.gif');
+}
+
+.icon_js {
+	background-image:url('./icons/js.gif');
+}
+
+.icon_swf {
+	background-image:url('./icons/swf.gif');
+}
+
+.icon_txt {
+	background-image:url('./icons/txt.gif');
+}

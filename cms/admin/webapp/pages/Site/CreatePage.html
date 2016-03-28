@@ -1,0 +1,106 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>サイトの作成</h2>
+			<p class="message" soy:id="message"></p>
+			<p class="notify" soy:id="error"></p>
+		
+			<form soy:id="create_site_form">
+				<table class="globalpage_input">
+					<tr>
+						<td style="text-align:right">サイトID</td>
+						<td><input name="siteId" type="text" size="60"></td>
+					</tr>
+					<tr class="example">
+						<td></td>
+						<td>サイトのURLに使用されます。URLは後で変更できますがサイトIDは変更できません。　例）　http://＜ドメイン＞/＜サイトID＞</td>
+					</tr>
+					
+					<tr>
+						<td style="text-align:right">サイト名</td>
+						<td><input name="siteName" type="text" size="60"></td>
+					</tr>
+					<tr class="example">
+						<td></td>
+						<td>タイトルなどで使用することが出来ます。</td>
+					</tr>
+					<tr>
+						<td>文字コード</td>
+						<td><select soy:id="encoding"></select></td>
+					</tr>
+					<tr class="example">
+						<td>&nbsp;</td>
+						<td>UTF-8を推奨します</td>
+					</tr>
+					<!-- soy:display="only_first_site" -->
+					<tr>
+						<td>&nbsp;</td>
+						<td><input type="checkbox" soy:id="separate"></td>
+					</tr>
+					<tr class="example">
+						<td></td>
+						<td>データーベース作成権限が無い場合はこちらを選択して下さい。<br/>この場合サイトはこの1サイトしか作成できません。</td>
+					</tr>
+					<!-- /soy:display="only_first_site" -->
+					<!-- tr>
+						<td style="text-align:right">サイトをコピー</td>
+						<td><select soy:id="copy_from"></select></td>
+					</tr -->
+					
+					<tr>
+						<td>&nbsp;</td>
+						<td class="button">
+							<input id="update_button" type="submit" value="実行">
+						</td>
+					</tr>
+				</table>
+			</form soy:id="create_site_form">
+		</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+<?php /*
+<div id="container">
+	<div id="upperMenu" soy:page="UpperMenuPage"></div>
+	<div id="wrapper">
+		<div id="leftMenu">
+			<div soy:page="MenuPage"></div>
+		</div>
+	
+		<div id="contents">
+			<h2>サイト新規作成</h2>
+			<div style="margin-left:30%;margin-top:10%">
+				<form soy:id="create_site_form">
+				<table>
+					<tr>
+						<td style="text-align:right">サイトID</td>
+						<td><input name="siteId" type="text"></td>
+					</tr>
+					<tr>
+						<td style="text-align:right">サイト名</td>
+						<td><input name="siteName" type="text"></td>
+					</tr>
+					<tr>
+						<td style="text-align:right">文字コード</td>
+						<td><select soy:id="encoding"></select></td>
+					</tr>
+				</table>
+				<br />	<br />
+				<div style="width:100%;">
+					<input type="submit" value="作成" style="color:#000080; background-color:#ffffff; border:solid #c0c0c0 1px;margin-left:60%;width:40%"/>
+				</div>
+				</form soy:id="create_site_form">
+			</div>
+		</div>
+	</div>
+</div> */ ?>
+
+</body>
+</html>

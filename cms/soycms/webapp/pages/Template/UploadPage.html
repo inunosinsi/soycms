@@ -1,0 +1,36 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body style="text-align: left">
+<?php /* コンテンツ部分 */ ?>
+<div id="layer_content" soy:display="enable_zip">
+<h3>ページ雛形のアップロード</h3>
+※ページ雛形を選択し、「アップロード」ボタンを押してください。
+<form soy:id="upload_form" enctype="multipart/form-data">
+	<input type="file" name="template_pack" style="width:100%; margin: 10px 0px;" size="90" />
+	<input type="submit" value="アップロード" class="submit_button" />
+</form soy:id="upload_form">
+</div soy:display="enable_zip">
+
+<div id="layer_content" soy:display="disable_zip">
+<h3>ERROR:この環境ではページ雛形の作成は出来ません。</h3>
+
+<p style="margin:5px;">
+テンプレーパック作成機能を利用する場合には、ZIP圧縮・解凍が出来るPHP環境が必要です。
+</p>
+
+<ul style="margin:10px;margin-left:20px;">
+	<li>PHP5.2.2以上で、PHPのZIP機能を有効にしてビルドを行う。</li>
+	<li>PEARの「<a href="http://pear.php.net/package/Archive_Zip" target="_blank">Archive_Zip</a>」をインストールする。</li>
+	<li>PEARの「<a href="http://pear.php.net/package/Archive_Zip" target="_blank">Archive_Zip</a>」をダウンロードし、「common/lib」以下に設置する（common/lib/Archive/Zip.php となるようにしてください）。<br/>
+		（共有サーバでPEARのインストール権限が無い方はこちらを利用して下さい。)
+	</li>
+</ul>
+
+<input type="button" value="閉じる" class="submit_button" onclick="common_close_layer(window.parent);return false;" />
+
+</div soy:display="disable_zip">
+
+<?php /* コンテンツ部分終わり */ ?>
+</body>
+</html>

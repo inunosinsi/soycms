@@ -1,0 +1,100 @@
+<html>
+
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+
+<body>
+
+<div id="wrapper">
+	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
+	<div id="content">
+		<h2>Add New Website</h2>
+			<p class="message" soy:id="message"></p>
+			<p class="notify" soy:id="error"></p>
+			<form soy:id="create_site_form">
+				<table class="globalpage_input">
+					<tr>
+						<td style="text-align:right">Website ID</td>
+						<td><input name="siteId" type="text" size="60"></td>
+					</tr>
+					<tr class="example">
+						<td></td>
+						<td>This value will be used as part of URL and cannot be changed once a site is created. ex.) http://[DOMAIN]/[Website ID]/</td>
+					</tr>
+					
+					<tr>
+						<td style="text-align:right">Title</td>
+						<td><input name="siteName" type="text" size="60"></td>
+					</tr>
+					<tr class="example">
+						<td></td>
+						<td>This value will can be used in a html title.</td>
+					</tr>
+					<tr>
+						<td>Character Set</td>
+						<td><select soy:id="encoding"></select></td>
+					</tr>
+					<tr class="example">
+						<td></td>
+						<td>UTF-8 is recommended.</td>
+					</tr>
+					<!-- soy:display="only_first_site" -->
+					<tr>
+						<td></td>
+						<td><input type="checkbox" soy:id="separate"></td>
+					</tr>
+					<tr class="example">
+						<td></td>
+						<td>Check this in case your database user has NO permission to create a new database.<br/>You can make Only One Website when you choose this option.</td>
+					</tr>
+					<!-- /soy:display="only_first_site" -->
+					<tr>
+						<td></td>
+						<td class="button">
+							<input type="submit" value="Add New Website" style="width:12em;">
+						</td>
+					</tr>
+				</table>
+			</form soy:id="create_site_form">
+		</div>
+	<div soy:page="_common.FooterPage"></div>
+</div>
+
+<?php /*
+<div id="container">
+	<div id="upperMenu" soy:page="UpperMenuPage"></div>
+	<div id="wrapper">
+		<div id="leftMenu">
+			<div soy:page="MenuPage"></div>
+		</div>
+	
+		<div id="contents">
+			<h2>Add New Website</h2>
+			<div style="margin-left:30%;margin-top:10%">
+				<form soy:id="create_site_form">
+				<table>
+					<tr>
+						<td style="text-align:right">Site ID</td>
+						<td><input name="siteId" type="text"></td>
+					</tr>
+					<tr>
+						<td style="text-align:right">Title</td>
+						<td><input name="siteName" type="text"></td>
+					</tr>
+					<tr>
+						<td style="text-align:right">Charactor Set</td>
+						<td><select soy:id="encoding"></select></td>
+					</tr>
+				</table>
+				<br />	<br />
+				<div style="width:100%;">
+					<input type="submit" value="Add New Website" style="color:#000080; background-color:#ffffff; border:solid #c0c0c0 1px;margin-left:60%;width:8em"/>
+				</div>
+				</form soy:id="create_site_form">
+			</div>
+		</div>
+	</div>
+</div> */ ?>
+
+</body>
+</html>

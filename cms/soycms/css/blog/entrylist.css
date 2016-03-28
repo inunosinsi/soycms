@@ -1,0 +1,8 @@
+table.list tbody.blog_entry_list td {
+	text-align:center;
+}
+
+table.list tbody.blog_entry_list td.title,
+table.list tbody.blog_entry_list td.content {
+	text-align: left;
+}

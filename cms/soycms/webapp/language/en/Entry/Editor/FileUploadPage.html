@@ -1,0 +1,501 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+	<script soy:id="prototypejs"></script>
+	<script soy:id="commonjs"></script>
+	<script soy:id="popupScript"></script>
+	<script soy:id="parameters"></script>
+</head>
+<body>
+<?php /* コンテンツ部分 */ ?>
+<div>
+<script lang="text/javascript">
+	var defaultWidth,defaultHeight;
+	var originalWidth,originalHeight;
+	
+	var mode = "upload";
+	
+	function validateNumber(e){
+		if(!e) e = event;
+		if(window.navigator.appName.toLowerCase().indexOf("microsoft") == -1) {//for firefox
+			var keyCode = e.which;
+		}else{//for ie
+			var keyCode = e.keyCode;
+		}
+		if(((keyCode<48)||(keyCode>57)) && keyCode != 8 && keyCode != 0){
+			return false;
+		}
+		
+		
+	}
+	
+	function onChangeUploadFileName(){
+		if($("alter_name").value.length != 0){
+			var url = remotoURI +'/'+ $("alter_name").value;
+		}else{
+			var fname = $("file").value;
+			var file = fname.substring(fname.lastIndexOf('\\',fname.length)+1,fname.length);
+			var url = remotoURI +'/'+ file;
+		}
+		
+		$("alter_name").value = "";
+	}
+	
+	function onChangeSize(type){
+		
+		if(type && $("keep_aspect_ratio").checked){
+			if(type == "width"){
+				$("image_height").value = Math.floor(originalHeight * ($("image_width").value / originalWidth));
+			}else{
+				$("image_width").value = Math.floor(originalWidth * ($("image_height").value / originalHeight));
+			}
+		}
+		
+		var w = $("image_width").value;
+		var h = $("image_height").value;
+		
+		$("preview_image").width = w;
+		$("preview_image").height = h;
+
+		resizeWindow(w,h);
+	}
+	
+	tinyMCEPopup.onInit.add(function(){
+		defaultWidth = tinyMCEPopup.getWindowArg('mce_width');
+		defaultHeight= tinyMCEPopup.getWindowArg('mce_height');
+		
+		$("image_width").onkeypress = validateNumber;
+		$("image_height").onkeypress = validateNumber;
+		
+		$("image_width").onkeyup = function(){
+			onChangeSize("width");
+		};
+		
+		$("image_height").onkeyup = function(){
+			onChangeSize("height");
+		};
+		
+		$("file").onchange = onChangeUploadFileName;
+		
+		var iframe=$("targetIframe");
+		if(document.all){
+			iframe.onreadystatechange=function(){
+				if(iframe.readyState=="complete"){
+					var response = iframe.contentWindow.document.body.innerHTML;
+					iframe.contentWindow.document.body.innerHTML = "";
+					iframeOnLoad(response);
+					
+				}
+			}
+		}else{
+			iframe.onload=function(){
+				var response = iframe.contentWindow.document.body.innerHTML;
+				iframe.contentWindow.document.body.innerHTML = "";
+				iframeOnLoad(response);
+				
+			}
+		}
+	});
+	
+	function _resizeWindow(w,h){
+		tinyMCEPopup.params['mce_width'] = w;
+		tinyMCEPopup.params['mce_height'] = h;
+		tinyMCEPopup.resizeToInnerSize();	
+	}
+	
+	function resizeWindow(w,h){
+		//クライアントサイズ→ウィンドウサイズ
+		
+		w = parseInt(w,10)+ 30;
+		h = parseInt(h,10)+ 85;
+		
+		if(w < defaultWidth){
+			w = defaultWidth;
+		}
+		
+		if(w > 700 ){
+			w = 700;
+		}
+		
+		if(h < defaultHeight){
+			h = defaultHeight;
+		}
+		_resizeWindow(w,h);
+	}
+	
+	function prepare(resObj){
+		if(!resObj.result){
+			switch(resObj.errorCode){
+				case 1://already file exists
+				if(confirm("A file of same name is in the remote folder . Upload as a new name ?")){
+					var newName = prompt('Enter new file name','');
+					if(newName === false || newName.length == 0){
+						// do nothing
+					}else{
+						//新しいファイル名に拡張子がなかった場合、変更前と同様のものを挿入
+						if(newName.lastIndexOf(".") == -1){
+							var fname = $("file").value;
+							var ext = fname.substring(fname.lastIndexOf("."));
+							newName += ext;
+						}
+						$("alter_name").value = newName;
+						$("upload_form").submit();
+						onChangeUploadFileName();
+					}
+				}else{
+					//do nothing
+					return select_outer_link($("image_link").href);
+				}
+				break;
+				
+				case 2://fatial error
+					alert('Error');
+				break;
+			}
+			$("insert").hide();
+			return;
+		}else{
+			$("insert").show();
+		}
+		
+		
+		
+		$("serverpath").value = resObj.serverpath;
+			
+		display(resObj.filepath);
+	}
+	
+	function cancel(resObj){
+		if(!resObj.result){
+			alert(resObj.message);
+			return;
+		}
+		
+		$("serverpath").value = "";
+		$("preview_image").src= "";
+		$("onlyImage").hide();
+		$("file").value = "";
+		$("alter_name").value = "";
+		$("display_link").style.display = "none";
+		resizeWindow(defaultWidth,defaultHeight);
+	}
+	
+	function apply(){
+		
+		ed = tinyMCEPopup.editor, dom = ed.dom;
+		
+		if($("output_image_size").checked){
+			var html = '<img src="'+$("preview_image").src+'" width="'+$("image_width").value+'" height="'+$('image_height').value+'" /></a>';
+		}else{
+			var html = '<img src="'+$("preview_image").src+'" />';
+		}
+		
+		if($("wrap_ancher").checked){
+			html = '<a href="'+$("preview_image").src+'" target="_blank">' + html + '</a>';
+		}
+				
+		tinyMCEPopup.execCommand('mceInsertRawHTML', false,	html);
+		
+		//おまじない
+		iframe = null;
+		
+		tinyMCEPopup.close();
+		
+		return false;
+	}
+	
+	function iframeOnLoad(response){
+		if(!response){
+			$("insert").hide();
+			return;
+		}
+		
+		var resObj = eval('('+response+')');
+		switch(resObj.mode){
+			case "prepare":
+				prepare(resObj);
+				break;
+			case "cancel":
+				cancel(resObj);
+				break;
+			default:
+				break;
+		}
+	}
+	
+	
+	
+	function cancelUpload(){
+		
+		if(mode == "upload"){
+			return confirm("Cancel ?");
+		}else{
+			$("serverpath").value = "";
+			$("preview_image").src= "";
+			$("onlyImage").hide();
+			$("file").value = "";
+			$("alter_name").value = "";
+			$("display_link").style.display = "none";
+			resizeWindow(defaultWidth,defaultHeight);
+			mode = "upload";
+			return false;
+		}
+	}
+	
+	function onPrepare(){
+		if($("serverpath").value == ""){
+			return true;
+		}
+		mode = "upload";
+		//前のファイルを削除するためにパスを用意
+		$("beforepath").value = $("serverpath").value;
+		return true;
+		
+	}
+	
+	function restoreSize(){
+		$("preview_image").width = originalWidth;
+		$("preview_image").height = originalHeight;
+		
+		$("image_width").value = originalWidth;
+		$("image_height").value = originalHeight;
+		
+		onChangeSize();
+		
+		return false;
+	
+	}
+	
+	function openRemotoFilePreview(href){
+	
+		var ed = tinyMCEPopup.editor, dom = ed.dom;
+	
+		ed.windowManager.open({
+			file : href,
+			width : 320,
+			height : 240,
+			inline : 1
+		},{});
+		
+		return false;
+	}
+	
+	function set_upload_mode(){
+		mode = "upload";
+	}
+	
+	function toggle_Filemanager(){
+		if(mode !== "filemanager"){
+			$("controlle_panel").hide();
+			if(!$("file_manager_iframe").src){
+				$("file_manager_iframe").src = $("filemanager").getAttribute("target_src");
+				setTimeout(function(){
+					$("close_filemanager_button").show();
+				},500);
+			}
+			_resizeWindow(800,600);
+			$("filemanager").show();			
+			mode = "filemanager";
+		}else{
+			$("controlle_panel").show();
+			$("filemanager").hide();
+			mode = "filemanager_closed";
+		}
+	}
+	
+	function filemanager_ondblclick(url){
+		toggle_Filemanager();
+
+		mode = "filemanager";
+		$("serverpath").value = url;
+
+		display(url);
+	}
+	
+	function select_outer_link(url){
+		mode = "outer_link";
+		$("serverpath").value = url;
+		
+		display(url);
+	}
+
+	function display(url){
+		var image = new Image;
+		if(is_image(url)){
+			image.onload = function(){
+				display_thumbnail(image);
+				display_preview(image);
+			};
+			image.onerror = function(){
+				$("onlyImage").hide();
+				$("image_thumb").hide();
+			};
+			image.onabort = function(){
+				$("onlyImage").hide();
+				$("image_thumb").hide();
+			};
+		}else{
+			$("onlyImage").hide();
+			$("image_thumb").hide();
+		}
+		image.src = url;
+		
+		display_url(image.src);
+
+	}
+
+	function display_url(url){
+		$("display_link").innerHTML = url;
+		$("display_link").href = url;
+		$("display_link").show();
+	}
+	
+	function display_preview(image){
+		if(is_image(image.src)){
+	
+			$("preview_image").src    = image.src
+			$("preview_image").width  = image.width;
+			$("preview_image").height = image.height;
+		
+		$("image_width").value = image.width;
+		$("image_height").value = image.height;
+		
+		originalWidth = image.width;
+		originalHeight = image.height;
+		
+		$("onlyImage").show();
+			
+		}else{
+			$("onlyImage").hide();
+		}
+	}
+	
+	function display_thumbnail(image){
+		if(is_image(image.src)){
+			$("image_thumb").src = image.src;
+		
+			var max_length = Math.max(image.width, image.height);
+			var thumb_width  = image.width  / max_length * 64 ;
+			var thumb_height = image.height / max_length * 64 ;
+		
+			if(image.width > thumb_width || image.height > thumb_height){
+				$("image_thumb").width   = thumb_width;
+				$("image_thumb").height  = thumb_height;
+			}else{
+				$("image_thumb").width   = image.width;
+				$("image_thumb").height  = image.height;
+			}
+		
+			$("image_thumb").show();
+		}else{
+			$("image_thumb").hide();
+		}
+	}
+		
+	function is_image(url){
+		return url.match(/\.(jpe?g|gif|png|bmp|ico)(\?.*)?(#.*)?$/i);
+	}
+		
+	function toggle_method_panel(method_num){
+		for(var i=1;i<=3;i++){
+			if(i == method_num){
+				$('method_'+i).show();
+			}else{
+				$('method_'+i).hide();
+			}
+		}
+	}
+
+	common_init_custom_button();
+		
+</script>
+
+<div id="controlle_panel">
+	<fieldset>
+		<legend>1. Select source</legend>
+		<ul style="list-style: none; padding: 0; margin: 0;">
+			<li><input type="radio" name="select_method" id="select_method_1" onclick="toggle_method_panel(1)" style="border-style:none; background-color:transparent;"checked="checked"><label for="select_method_1">Upload a file.</label></li>
+			<li><input type="radio" name="select_method" id="select_method_2" onclick="toggle_method_panel(2)" style="border-style:none; background-color:transparent;"><label for="select_method_2">Select a file from uploaded files.</label></li>
+			<li><input type="radio" name="select_method" id="select_method_3" onclick="toggle_method_panel(3)" style="border-style:none; background-color:transparent;"><label for="select_method_3">Enter a URL.</label></li>
+		</ul>
+	</fieldset>
+	
+	<fieldset id="method_1">
+		<legend>2. Upload a file.</legend>
+		
+		<form soy:id="uploadForm" method="post" enctype="multipart/form-data" target="targetIframe" onsubmit="return onPrepare()" id="upload_form" style="margin:0 0 2px;">
+		    <input type="file" name="file" id="file" size="16"/>
+		    <input type="hidden" id="beforepath" name="beforepath"/>
+		    <input type="hidden" name="alter_name" id="alter_name"/>
+		    <input type="submit" class="soycms_custom_button" value="Upload" onclick="set_upload_mode();"/>
+		</form soy:id="uploadForm">
+	</fieldset>
+	
+	<fieldset id="method_2" style="display:none;">
+		<legend>2. Select a file from uploaded files.</legend>
+		<button class="soycms_custom_button" onclick="toggle_Filemanager();return false;" type="button">Use File Manager.</button> (You can upload files via File Manager.)
+	</fieldset>
+	
+	<fieldset id="method_3" style="display:none;">
+		<legend>2. Enter a URL</legend>
+		<input type="text" id="outer_link" soy:id="outer_link"/>
+		<button class="soycms_custom_button" id="outer_link_button" onclick="select_outer_link($('outer_link').value);return false;">Preview</button>
+	</fieldset>
+	
+	
+	<form soy:id="cancelForm" method="post" onsubmit="return cancelUpload()" id="cancelForm" target="targetIframe" style="margin: 0;">
+
+	<fieldset>
+		<legend>3. Preview</legend>
+		<div id="preview_block" style="position:relative;">
+			<input type="hidden" name="serverpath" id="serverpath"/>
+			<img src="" id="image_thumb_large" style="display:none;position:absolute;left:0px;border:1px solid #999999;padding: 2px;background-color:white;"/>
+			<a href="#" id="display_link" style="display:none">bbbbb</a>
+		</div>
+		<div class="mceActionPanel">
+			<input type="submit" class="soycms_custom_button" id="insert" onclick="return apply()" value="Send">
+			<input type="button" class="soycms_custom_button" id="cancel" onclick="tinyMCEPopup.close();" value="Cancel">
+
+		</div>
+	</fieldset>
+
+	<div id="onlyImage" style="display:none;">
+		<fieldset>
+			<legend>Image Option</legend>
+			<table id="image_table" style="text-align:left">
+				<tr>
+					<td colspan="2">
+						<input type="checkbox" id="wrap_ancher" /><label for="wrap_ancher">Link to an image.</label><br />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="checkbox" id="output_image_size" checked="checked" />
+						<label for="output_image_size">Designate width and height.</label>
+					</td>
+				</tr>
+				<tr>
+					<td class="input_block">&nbsp;&nbsp;</td>
+					<td class="input_block">
+						Width<input type="text" id="image_width" name="imageWidth" size="5">×Height<input type="text" id="image_height" name="imageHeight" size="5"><br/>
+						（<input type="checkbox" id="keep_aspect_ratio" checked="checked" /><label for="keep_aspect_ratio">Keep its ratio</label>）
+						<input type="submit" class="soycms_custom_button" onclick="return restoreSize()" value="reset"> <br />
+					</td>
+				</tr>
+			</table>
+			<img id="preview_image" src="" alt="" style="border:1px solid #999999;display:block;margin:0 auto;padding:2px;" />
+		</fieldset>
+	</div>
+
+	</form soy:id="cancelForm">
+</div>
+<div id="filemanager" style="display:none" soy:id="file_manager_iframe">
+	<button id="close_filemanager_button" onclick="toggle_Filemanager();return false;" style="display:none;">Exit File Manager</button>
+	<iframe id="file_manager_iframe" style="width:750px;height:480px;border:none;"></iframe>
+</div>
+
+
+<iframe style="display:none;width:0px;height:0px;" name="targetIframe" id="targetIframe"></iframe>
+<?php /* コンテンツ部分終わり */ ?>
+</body>
+</html>

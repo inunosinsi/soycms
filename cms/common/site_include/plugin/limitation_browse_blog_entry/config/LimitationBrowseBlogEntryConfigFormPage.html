@@ -1,0 +1,23 @@
+<h3>テンプレートへの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;meta b_block:id="meta_robots"&gt;
+
+&lt;!-- b_block:id="entry" --&gt;
+&lt;h2 cms:id="title_plain"&gt;タイトル&lt;/h2&gt;
+
+&lt;!-- パスワード認証後に表示する箇所 --&gt;
+&lt;!-- cms:id="allow_browse_entry" --&gt;
+&lt;div cms:id="content"&gt;本文を記載します&lt;/div&gt;
+&lt;div cms:id="more"&gt;追記を記載します&lt;/div&gt;
+&lt;!-- /cms:id="allow_browse_entry" --&gt;
+
+&lt;!-- パスワードによる閲覧制限がある場合に表示する箇所 --&gt;
+&lt;!-- cms:id="not_allow_browse_entry" --&gt;
+&lt;h2&gt;閲覧するためにはパスワードが必要です。&lt;/h2&gt;
+&lt;form cms:id="browse_password_form"&gt;
+	&lt;input type="text" cms:id="browse_password_input"&gt;
+	&lt;input type="submit" value="送信"&gt;
+&lt;/form&gt;
+&lt;!-- /cms:id="not_allow_browse_entry" --&gt;
+&lt;!-- /b_block:id="entry" --&gt;
+</pre>

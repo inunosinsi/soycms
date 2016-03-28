@@ -1,0 +1,69 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+	<!-- content start -->
+	<div id="content" class="span-24 last">
+		<div class="blogMenu span-23 last" soy:id="BlogMenu"></div soy:id="BlogMenu">
+
+		<div class="prepend-1 span-22 last" soy:id="notify_blog_label">		
+			<p class="notify">
+				Blog-Label must be set -> <a href="#" soy:id="blog_config_page_link">Settings</a>
+			</p>
+		</div>
+		
+		<div class="prepend-1 span-22 last" soy:id="notify_entry_count">		
+			<p class="notify">
+				There is no entries.  -> <a href="#" soy:id="blog_entry_page_link">Add New Entry</a>
+			</p>
+		</div>
+						
+		<div class="blog_dashboard prepend-1 span-22 last">		
+			<h4>Latest Entries</h4>
+			<div style="margin-left:10px;">
+				<p soy:id="empty_entry_msg">There is no Entry.</p>
+				<ul class="blog_news_list" soy:id="has_entry_msg">
+					<!-- soy:id="recent_entry" -->
+						<li><a soy:id="message">New Entry</a></li>
+					<!-- /soy:id="recent_entry" -->
+				</ul>
+			</div>
+		</div>
+		
+		<div class="blog_dashboard prepend-1 span-22 last">
+			<h4>Latest Comments</h4>
+			<div style="margin-left:10px;">
+				<p soy:id="empty_comment_msg">There is no comment.</p>
+				<ul class="blog_news_list" soy:id="has_comment_msg">
+					<!-- soy:id="recent_comment" -->
+						<li><a soy:id="message">New comment</a></li>
+					<!-- /soy:id="recent_comment" -->
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="blog_dashboard prepend-1 span-22 last">
+			<h4>Latest Trackbacks</h4>
+			<div style="margin-left:10px;">
+				<p soy:id="empty_trackback_msg">There is no trackback.</p>
+				<ul class="blog_news_list" soy:id="has_trackback_msg">
+					<!-- soy:id="recent_trackback" -->
+						<li><a soy:id="message">New trackback</a></li>
+					<!-- /soy:id="recent_trackback" -->
+				</ul>
+			</div>
+		</div>
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>	
+	<!-- content end -->
+	</div>
+	
+	<div soy:page="_common.FooterPage"></div>
+	
+</div>
+</body>
+</html>

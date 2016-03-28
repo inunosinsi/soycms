@@ -1,0 +1,69 @@
+<html>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head>
+<body>
+<div class="container">
+	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
+	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
+
+	<!-- content start -->
+	<div id="content" class="span-24 last">
+		<div class="blogMenu span-23 last" soy:id="BlogMenu"></div soy:id="BlogMenu">
+		
+		<div class="prepend-1 span-22 last" soy:id="notify_blog_label">		
+			<p class="notify">
+				ブログに使用するラベルが設定されていません → <a href="#" soy:id="blog_config_page_link">設定</a>
+			</p>
+		</div>
+		
+		<div class="prepend-1 span-22 last" soy:id="notify_entry_count">		
+			<p class="notify">
+				記事がありません → <a href="#" soy:id="blog_entry_page_link">投稿</a>
+			</p>
+		</div>
+						
+		<div class="blog_dashboard prepend-1 span-22 last">		
+			<h4>最新更新した記事</h4>
+			<div style="margin-left:10px;">
+				<p soy:id="empty_entry_msg">記事がありません。</p>
+				<ul class="blog_news_list" soy:id="has_entry_msg">
+					<!-- soy:id="recent_entry" -->
+						<li><a soy:id="message">新着エントリー</a></li>
+					<!-- /soy:id="recent_entry" -->
+				</ul>
+			</div>
+		</div>
+		
+		<div class="blog_dashboard prepend-1 span-22 last">
+			<h4>新着コメント</h4>
+			<div style="margin-left:10px;">
+				<p soy:id="empty_comment_msg">コメントがありません。</p>
+				<ul class="blog_news_list" soy:id="has_comment_msg">
+					<!-- soy:id="recent_comment" -->
+						<li><a soy:id="message">新着コメント</a></li>
+					<!-- /soy:id="recent_comment" -->
+				</ul>
+			</div>
+		</div>
+		
+		
+		<div class="blog_dashboard prepend-1 span-22 last">
+			<h4>新着トラックバック</h4>
+			<div style="margin-left:10px;">
+				<p soy:id="empty_trackback_msg">トラックバックがありません。</p>
+				<ul class="blog_news_list" soy:id="has_trackback_msg">
+					<!-- soy:id="recent_trackback" -->
+						<li><a soy:id="message">新着トラックバック</a></li>
+					<!-- /soy:id="recent_trackback" -->
+				</ul>
+			</div>
+		</div>
+		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>	
+	<!-- content end -->
+	</div>
+	
+	<div soy:page="_common.FooterPage"></div>
+	
+</div>
+</body>
+</html>

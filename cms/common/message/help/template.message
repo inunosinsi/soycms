@@ -1,0 +1,20 @@
+//テンプレートのメッセージ類
+TEMPLATE_ID				=	テンプレートIDはテンプレートを識別するための記号英数小文字のみ使用できます。重複することができません。<br>配布するテンプレートを作成する場合は十分ご注意ください。
+TEMPLATE_NAME			=	テンプレート名はテンプレートの名前です。<br>重複は可能ですが、わかりやすい名前をつけることをお勧めします。
+TEMPLATE_TYPE			=	テンプレートがどの種類のページのものかを指定します。異なる種類のページにはテンプレートを適用できませんのでご注意ください。
+TEMPLATE_DESCRIPTION	=	テンプレートの説明欄です。
+
+TEMPLATE_FILE_NAME		=	テンプレートファイルの名前です。
+TEMPLATE_FILE_IMPORT	=	現在あるページのテンプレートファイルをコピーします。
+TEMPLATE_FILE_CREATE	=	新しく、空のテンプレートファイルを作成します。
+
+TEMPLATE_FILE_DESCRIPTION	=	テンプレートファイルの概要を記入します。
+TEMPLATE_FILE_CONTENT	=	テンプレートの内容を記入します。
+TEMPLATE_CREATE_ERROR	=	テンプレートの作成に失敗しました。
+
+ENTRY_TEMPLATE_NAME		=	記事テンプレート名はテンプレートの名前です。
+ENTRY_TEMPLATE_DESCRIPTION	=	記事テンプレートの説明欄です。
+ENTRY_TEMPLATE_CONTENT	=	記事の「内容」部分に挿入する雛形です。
+ENTRY_TEMPLATE_MORE	=	記事の「追記」部分に挿入する雛形です。
+ENTRY_TEMPLATE_STYLE	=	記事を編集する際にだけ適用されるスタイルシートを指定します。表示しているページ側ではここで指定したスタイルは適用されません。<br>記事管理時に見栄えの調節が必要がある場合は入力してください。
+ENTRY_TEMPLATE_LABEL	=	ラベルと関連づけることで新規作成時に自動で挿入されます
