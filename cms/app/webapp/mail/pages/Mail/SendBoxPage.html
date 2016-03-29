@@ -1,0 +1,69 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="mail.Mail">メールの作成</a>
+	</div>
+	<div class="function">
+		<a soy:link="mail.Mail.DraftBox">下書きトレイ</a>
+	</div>
+	<div class="function">
+		<a soy:link="mail.Mail.SendBox">送信トレイ</a>
+	</div>
+	<div class="function">
+		<a soy:link="mail.Mail.HistoryBox">送信履歴</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0 20px;">
+	
+	<p soy:id="sended_message" class="notice">即時配信に設定しました。</p>
+
+	<!--form method="post">
+	<h1>ジョブは<span soy:id="job_is_active">なし</span>です。</h1>
+	<p>前回実行時刻:<span soy:id="job_last_execute_time">----/--/-- --:--:--</span> 次回実行時刻:<span soy:id="job_next_execute_time">----/--/-- --:--:--</span></p>
+	<p><span soy:id="error">前回の実行に失敗しました。</span></p>
+	<input type="submit" name="job_toggle_button" soy:id="job_toggle_button" style="margin-bottom:1em;">
+	</form-->
+	
+	<h1>送信トレイ</h1>
+	<div class="table_container">
+		<table class="nowrap">
+			<thead>
+				<tr>
+					<th class="middle">状態</th>
+					<th class="middle">件名</th>
+					<th class="middle">配信予定時刻</th>
+					<th class="short">件数</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="mail_list" -->
+				<tr>
+					<td class="middle"><span soy:id="status_text">件名</span></td>
+					<td class="middle"><a soy:id="title">件名</a></td>
+					<td class="middle"><nobr><span soy:id="schedule"></span></td>
+					<td class="short"><span soy:id="mail_count">3</span></td>
+				</tr>
+				<!-- /soy:id="mail_list" -->
+				<tr class="pager">
+					<td colspan="4">
+						<div class="pager_item">
+							<a soy:id="prev_pager">&lt;</a>
+							<!-- soy:id="pager_list" -->
+							<a soy:id="target_link">1</a>
+							<!-- /soy:id="pager_list" -->
+							<a soy:id="next_pager">&gt;</a>
+						</div>
+						<div class="pager_item">
+							<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<iframe id="sendnow_iframe" name="sendnow_iframe" style="visibility:hidden;width:1px;height:1px;"></iframe>
+	</div>
+</div>
+

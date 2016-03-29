@@ -1,0 +1,58 @@
+<div style="padding:0 20px;">
+	<div class="table_container">
+		<h1>送信確認</h1>
+		<div class="error" soy:id="error">送信予約日時が設定されていません。</div>
+	
+		<p soy:id="send_count"></p>
+	
+		<form soy:id="form">
+	
+		<input type="hidden" soy:id="hidden_value" />
+		<table class="form_table list">
+			<col style="width:150px" />
+			<tr>
+				<th>送信予約日時</th>
+				<td>
+					<span soy:id="mail_schedule"></span>
+				</td>
+			</tr>
+			<tr>
+				<th>件名</th>
+				<td>
+					<span soy:id="mail_title">aaa</span>
+				</td>
+			</tr>
+		</table>
+		<table class="form_table list">
+			<tr>
+				<th colspan="2">本文</th>
+			</tr>
+			
+			<tr>
+				<td colspan="2">
+					<pre soy:id="mail_content" style="width:96%;padding:5px 2%;overflow:auto;"></pre>
+				</td>
+			</tr>
+			
+		</table>
+		<h1>メールアドレスの有効性</h1>
+		<p><!-- soy:id="ignore_count" --><!-- /soy:id="ignore_count" --></p>
+	
+		<pre soy:id="ignore_address_list" style="margin:auto;width:75%;padding:5px 2%;"></pre>
+		<table class="button_table">
+			<tr class="button_table_row">
+				<td style="backgruond-color:white;">
+					<input type="submit" name="back" value="戻る" />
+				</td>
+				<td>
+					<input type="submit" name="wait" value="送信予約" />
+				</td>
+				<td>
+					<input type="submit" name="sendnow" value="即時配信" />
+				</td>
+			</tr>
+		</table>
+		</form soy:id="form">
+	</div>
+
+</div>

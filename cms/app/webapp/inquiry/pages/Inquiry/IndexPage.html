@@ -1,0 +1,115 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="inquiry.Inquiry">一覧</a>
+	</div>
+	<div class="function">
+		<a soy:link="inquiry.Inquiry.Export">CSVエクスポート</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0px 20px;">
+
+<h1>問い合わせ一覧</h1>
+
+<div soy:panel="search_form" style="margin-bottom:1.4em;">
+	<form method="GET" soy:id="search_form">
+		<select soy:id="forms"><option value="">フォームを指定</option></select>
+		<input type="text" soy:id="trackId" />
+		<input type="text" soy:id="start" class="date_picker_start" />～<input type="text" soy:id="end" class="date_picker_end" />
+		<select soy:id="flag">状態</select>
+		<select soy:id="comment_flag">すべて</select>
+		<input type="submit" value="検索" />&nbsp;&nbsp;
+		<a soy:link="inquiry.Inquiry">リセット</a>
+	</form soy:id="search_form">
+</div soy:panel="search_form">
+
+<form soy:id="bulk_modify_form">
+
+	<div class="table_container">
+		<table class="nowrap list" id="inquiry_list">
+			<thead>
+				<tr>
+					<th class="checkbox">
+						<input type="checkbox" id="toggle_checkbox_header" onclick="toggle_all_inquiry_check(this);show_bulk_modify_panel();" />
+					</th>
+					<th class="short" soy:id="form_name_th">フォーム</th>
+					<th class="short">受付番号</th>
+					<th class="long">内容</th>	
+					<th class="middle" style="width:10em;">投稿日時</th>
+					<th class="short">状態</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr id="bulk_modify_panel" style="display:none;">
+					<th class="checkbox">
+						<input type="checkbox" id="toggle_checkbox_footer" onclick="toggle_all_inquiry_check(this);" />
+					</th>
+					<th soy:id="bulk_modify_buttons" colspan="5">
+						チェックを
+						<input type="submit" soy:id="bulk_delete"  value="削除する"/>
+						<input type="submit" soy:id="bulk_read"  value="既読にする"/>
+						<input type="submit" soy:id="bulk_new"  value="未読にする"/>
+					</th>
+				</tr>
+				<tr class="pager" soy:id="pager_row">
+					<td soy:id="pager_col" colspan="6">
+						<div class="pager_item">
+							<select soy:id="pager_select"></select>
+						</div>
+						<div class="pager_item">
+							<a soy:id="prev_pager">&lt;</a>
+							<!-- soy:id="pager_list" -->
+							<a soy:id="target_link">1</a>
+							<!-- /soy:id="pager_list" -->
+							<a soy:id="next_pager">&gt;</a>
+						</div>
+						<div class="pager_item">
+							<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+						</div>
+					</td>
+				</tr soy:id="pager_row">	
+			</tfoot>
+			<tbody>
+				<!-- soy:id="inquiry_list" -->
+				<tr>
+				<td class="checkbox">
+					<input type="checkbox" name="inquiry[]" value="1" soy:id="inquiry_check" class="inquiry_check" onclick="show_bulk_modify_panel();" />
+				</td>
+				<td class="short" soy:id="form_name_td"><a href="#" soy:id="form_name">フォームA</a></td>
+				<td class="short" soy:id="traking_number_td"><a soy:id="traking_number">1</a></td>
+				<td class="long" soy:id="content">あああああああああああああ</td>
+				<td class="middle" soy:id="create_date_td"><nobr><span soy:id="create_date"></span></nobr></td>
+				<td class="short" soy:id="flag_td"><a soy:id="flag">状態</a></td>
+				</tr>
+				<!-- /soy:id="inquiry_list" -->
+				
+				<!-- soy:id="no_inquiry" -->
+				<tr>
+				<td colspan="6" soy:id="no_inquiry_text">
+					新着の問い合わせはありません。
+				</td>
+				</tr>
+				<!-- /soy:id="no_inquiry" -->
+			</tbody>
+		</table>
+	</div>
+
+</form soy:id="bulk_modify_form">
+
+</div>
+
+<script type="text/javascript">
+	function toggle_all_inquiry_check(checkbox){
+		$(".inquiry_check").each(function(){
+			$(this).prop("checked",!$(this).prop("checked"));
+		});
+		if($(checkbox).attr("id") != "toggle_checkbox_header") $("#toggle_checkbox_header").prop("checked",$(checkbox).prop("checked"));
+		if($(checkbox).attr("id") != "toggle_checkbox_footer") $("#toggle_checkbox_footer").prop("checked",$(checkbox).prop("checked"));
+	}
+	function show_bulk_modify_panel(){
+		$("#bulk_modify_panel").show();											
+	}
+</script>
+

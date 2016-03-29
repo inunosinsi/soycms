@@ -1,0 +1,338 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="mail.User">一覧</a>
+	</div>
+	<div class="function" soy:id="no_connect">
+		<a soy:link="mail.User.Register">新規登録</a>
+	</div>
+	<div class="function" soy:id="no_connect*">
+		<a soy:link="mail.User.Export">エクスポート</a>
+	</div>
+	<div class="function" soy:id="no_connect*">
+		<a soy:link="mail.User.Import">インポート</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0 20px;">
+	<h1>ユーザ</h1>
+	
+	<div soy:id="search_condition"></div>
+	
+	<div class="table_container">
+		<table class="nowrap list">
+			<thead>
+				<tr>
+					<th class="short" style="width:2em;">ID <a soy:id="sort_id">↓</a> <a soy:id="sort_id_desc">↑</a></th>
+					<th class="middle">姓名 <a soy:id="sort_name">↓</a> <a soy:id="sort_name_desc">↑</a></th>
+					<th class="middle">メールアドレス <a soy:id="sort_mail_address">↓</a> <a soy:id="sort_mail_address_desc">↑</a></th>
+					<th class="short">配信</th>
+					<th class="middle">属性１</th>
+					<th class="middle">属性２</th>
+					<th class="middle">属性３</th>
+					<th class="operation">編集</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr class="search last_row">
+					<script type="text/javascript">
+						advanced_search_form = function(){
+							var win = new soycms.UI.Window({
+								width : 640,
+								height : 640
+							});
+							
+							if(!arguments.callee.advanced_search_form_content){
+								arguments.callee.advanced_search_form_content = $("#advanced_search_form_container").html();
+								$("#advanced_search_form_container").html('');
+							}
+							win.update(arguments.callee.advanced_search_form_content);
+						};
+					</script>
+					<form soy:id="search_form">
+						<td><input soy:id="search_id" value=""/></td>
+						<td class="middle"><input soy:id="search_name" value=""/></td>
+						<td class="middle"><input soy:id="search_mail_address" value=""/></td>
+						<td>&nbsp;</td>
+						<td class="middle"><input soy:id="search_attribute1" value=""/></td>
+						<td class="middle"><input soy:id="search_attribute2" value=""/></td>
+						<td class="middle"><input soy:id="search_attribute3" value=""/></td>
+						<td class="operation">
+							<input soy:id="search_submit" type="submit" value="検索"/>
+							<a soy:id="advanced_search">詳細検索</a>
+							
+							<input soy:id="soy2_token" type="hidden" value="" />
+						</td>
+					</form soy:id="search_form">
+				</tr>
+				<tr class="pager">
+					<td colspan="8">
+						<div class="pager_item">
+							<form soy:id="pager_jump">
+								<select soy:id="pager_select"></select>
+								<noscript><input type="submit" value="移動"/></noscript>
+							</form soy:id="pager_jump">
+						</div>
+						<div class="pager_item">
+							<a soy:id="prev_pager">&lt;</a>
+							<!-- soy:id="pager_list" -->
+							<a soy:id="target_link">1</a>
+							<!-- /soy:id="pager_list" -->
+							<a soy:id="next_pager">&gt;</a>
+						</div>
+						<div class="pager_item">
+							<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+						</div>
+					</td>
+				</tr>	
+			</tfoot>
+			<tbody>
+				<!-- soy:id="user_list" -->
+				<tr>
+					<td><span soy:id="id"></span></td>
+					<td class="middle"><span soy:id="name"></span></td>
+					<td class="middle"><span soy:id="mailaddress">メールアドレス</span></td>
+					<td class="short center"><span soy:id="not_send">許可</span></td>
+					<td class="middle"><span soy:id="attribute1">属性１</span></td>
+					<td class="middle"><span soy:id="attribute2">属性２</span></td>
+					<td class="middle"><span soy:id="attribute3">属性３</span></td>
+					<td class="operation">
+						<a soy:id="edit_link">編集</a>
+						<!-- soy:id="no_connect*" --><a soy:id="remove_link">削除</a><!-- /soy:id="no_connect*" -->
+					</td>
+				</tr>
+				<!-- /soy:id="user_list" -->
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div id="advanced_search_form_container" style="display:none">
+<form soy:id="advanced_search_form" style="margin-top: 2em;">
+	<div class="table_container">
+		<table class="form_table list">
+			<tr>
+				<th>ID</th>
+				<td>
+					<input soy:id="advanced_search_id" type="text" value="" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>メールアドレス</th>
+				<td>
+					<input soy:id="advanced_search_mail_address" type="text" value="" />
+				</td>
+			</tr>
+			<tr>
+				<th>メール配信</th>
+				<td>
+					メール配信を
+					<input soy:id="advanced_search_mail_send_true" id="checkbox_send_email_true" type="radio" value="" />
+					<label for="checkbox_send_email_true">する</label>
+					<input soy:id="advanced_search_mail_send_false" id="checkbox_send_email_false" type="radio" value="" />
+					<label for="checkbox_send_email_false">しない</label>
+				</td>
+			</tr>
+			
+			<tr>
+				<th>メール配信失敗回数</th>
+				<td>
+					<input soy:id="advanced_search_mail_error_count" type="text" value="" />
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table list">
+			<tr>
+				<th>氏名</th>
+				<td>
+					<input soy:id="advanced_search_name" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>フリガナ</th>
+				<td>
+					<input soy:id="advanced_search_furigana" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>性別</th>
+				<td>
+					<input soy:id="advanced_search_gender_male" type="checkbox" id="checkbox_gender_male" />
+					<label for="checkbox_gender_male">男</label>
+					<input soy:id="advanced_search_gender_female" type="checkbox" id="checkbox_gender_female" />
+					<label for="checkbox_gender_female">女</label>
+					<input soy:id="advanced_search_gender_other" type="checkbox" id="checkbox_gender_other" />
+					<label for="checkbox_gender_other">指定なし</label>
+				</td>
+			</tr>
+			
+			<tr>
+				<th>生年月日</th>
+				<td>
+					<input soy:id="advanced_search_birth_date_start_year" type="text" value="" />/
+					<input soy:id="advanced_search_birth_date_start_month" type="text" value="" />/
+					<input soy:id="advanced_search_birth_date_start_day" type="text" value="" />
+					～
+					<input soy:id="advanced_search_birth_date_end_year" type="text" value="" />/
+					<input soy:id="advanced_search_birth_date_end_month" type="text" value="" />/
+					<input soy:id="advanced_search_birth_date_end_day" type="text" value="" />
+				</td>
+			</tr>
+		</table>
+
+		<table class="button_table">
+			<tr class="button_table_row">
+				<td style="backgruond-color:white;">
+					<input type="submit" name="conduct" value="詳細検索" />
+				</td>
+				<td style="backgruond-color:white;">
+					<input type="submit" name="reset" value="全ユーザ表示" />
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table list">
+			<tr>
+				<th>郵便番号</th>
+				<td>
+					<input soy:id="advanced_search_post_number" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>住所</th>
+				<td>
+					<select soy:id="advanced_search_area">
+						<option selected="selected" value="all">全て</option>
+					</select>
+					<input soy:id="advanced_search_address1" type="text" value="" /><br>
+					<input soy:id="advanced_search_address2" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>電話番号</th>
+				<td>
+					<input soy:id="advanced_search_tel_number" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>FAX番号</th>
+				<td>
+					<input soy:id="advanced_search_fax_number" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>携帯電話番号</th>
+				<td>
+					<input soy:id="advanced_search_ketai_number" type="text" value="" />
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table list">
+			<tr>
+				<th>勤務先名称・職種</th>
+				<td>
+					<input soy:id="advanced_search_office" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>勤務先郵便番号</th>
+				<td>
+					<input soy:id="advanced_search_office_post_number" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>勤務先住所</th>
+				<td>
+					<select soy:id="advanced_search_jobArea">
+						<option selected="selected" value="all">全て</option>
+					</select>
+					<input soy:id="advanced_search_jobAddress1" type="text" value="" /><br>
+					<input soy:id="advanced_search_jobAddress2" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>勤務先電話番号</th>
+				<td>
+					<input soy:id="advanced_search_office_tel_number" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>勤務先FAX番号</th>
+				<td>
+					<input soy:id="advanced_search_office_fax_number" type="text" value="" />
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table list">
+			<tr>
+				<th>属性</th>
+				<td>
+					属性Ａ：<input type="text" soy:id="advanced_search_attribute1" value="" /><br>
+					属性Ｂ：<input type="text" soy:id="advanced_search_attribute2" value="" /><br>
+					属性Ｃ：<input type="text" soy:id="advanced_search_attribute3" value="" /><br>
+				</td>
+			</tr>
+			<tr>
+				<th>備考</th>
+				<td>
+					<textarea soy:id="advanced_search_memo" style="width:100%; padding: 2px; margin: 0;"></textarea>
+				</td>
+			</tr>
+			
+			<tr>
+				<th>登録年月日</th>
+				<td>
+					<input soy:id="advanced_search_register_date_start_year" type="text" value="" />/
+					<input soy:id="advanced_search_register_date_start_month" type="text" value="" />/
+					<input soy:id="advanced_search_register_date_start_day" type="text" value="" />
+					～
+					<input soy:id="advanced_search_register_date_end_year" type="text" value="" />/
+					<input soy:id="advanced_search_register_date_end_month" type="text" value="" />/
+					<input soy:id="advanced_search_register_date_end_day" type="text" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>更新年月日</th>
+				<td>
+					<input soy:id="advanced_search_update_date_start_year" type="text" value="" />/
+					<input soy:id="advanced_search_update_date_start_month" type="text" value="" />/
+					<input soy:id="advanced_search_update_date_start_day" type="text" value="" />
+					～
+					<input soy:id="advanced_search_update_date_end_year" type="text" value="" />/
+					<input soy:id="advanced_search_update_date_end_month" type="text" value="" />/
+					<input soy:id="advanced_search_update_date_end_day" type="text" value="" />
+				</td>
+			</tr>
+			
+		</table>
+		
+		<table class="button_table">
+			<tr class="button_table_row">
+				<td style="backgruond-color:white;">
+					<input type="submit" name="conduct" value="詳細検索" />
+				</td>
+				<td style="backgruond-color:white;">
+					<input type="submit" name="reset" value="全ユーザ表示" />
+				</td>
+			</tr>
+		</table>
+
+	</div>
+</form soy:id="advanced_search_form">
+</div>

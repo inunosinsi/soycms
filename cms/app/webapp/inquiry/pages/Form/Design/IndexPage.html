@@ -1,0 +1,56 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="inquiry.Form">戻る</a>
+	</div>
+	
+	<div class="function">
+		<a soy:id="config_link">設定</a>
+	</div>
+	
+	<div class="function">
+		<a soy:id="preview_link">プレビュー</a>
+	</div>
+	
+	<div class="function">
+		<a soy:id="template_link">SOY CMS連携</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0px 20px;">
+
+<h1><span soy:id="form_name">フォーム名</span> - 問い合わせ項目の編集</h1>
+	
+	<div style="border:1px solid lightgrey; border-bottom:none;padding:8px 20px 0px;">
+		<a soy:id="add_column_link" onclick="return show_form(this);" style="margin-right:10px;">項目を追加する</a>
+		<a soy:id="change_order_link" onclick="return show_form(this);">順番を変更する</a>
+	</div>
+	<div style="border:1px solid lightgrey; border-top:none;">
+		<iframe id="column_fr" name="column_fr" soy:id="column_fr" style="width:100%;height:300px;" frameborder="0"></iframe>
+	</div>
+	
+	<iframe id="target_fr" name="target_fr" style="width:0;height:0;visibility:hidden;"></iframe>
+	
+</div>
+
+<script type="text/javascript">
+var add_win = null;
+function show_form(ele){
+	if(add_win)add_win.close();
+	
+	add_win = new soycms.UI.TargetWindow(ele,{
+		width : 640,
+		height: 480
+	});
+	
+	return false;
+}
+function reloadColumnPage(){
+	window.column_fr.location.reload();
+	if(add_win){
+		add_win.close();
+		add_win = null;
+	}
+}
+</script>

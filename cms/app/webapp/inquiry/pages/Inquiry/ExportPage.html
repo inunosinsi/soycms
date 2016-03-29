@@ -1,0 +1,25 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="inquiry.Inquiry">一覧</a>
+	</div>
+	<div class="function">
+		<a soy:link="inquiry.Inquiry.Export">CSVエクスポート</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0px 20px;">
+
+<h1>CSV出力</h1>
+
+<form method="post" soy:id="export_form">
+	フォームを指定<select soy:id="forms"></select>
+	<input type="text" soy:id="start" />～<input type="text" soy:id="end" />
+	<select soy:id="flag">状態</select>
+	<input type="radio" soy:id="charset_sjis" />
+	<input type="radio" soy:id="charset_utf8" />
+	<input type="submit" name="output" value="出力" />
+</form soy:id="export_form">
+
+</div>

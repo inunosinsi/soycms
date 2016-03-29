@@ -1,0 +1,50 @@
+.functions .function{
+	float:left;
+	width:100px;
+	height:30px;
+	text-align:center;
+	line-height:30px;
+}
+
+.menu_active{
+	background-color:#CCCCCC;
+	border-bottom-color:#CCCCCC;
+}
+
+/* pager */
+.pager_disable{
+	text-decoration:none;
+	cursor:normal;
+	color:gray;
+}
+.pager_current{
+	text-decoration:none;
+	cursor:normal;
+	font-weight:bold;
+	color:black;
+}
+.pager select{
+	margin :0;
+}
+
+/* mail editor */
+.mail_replace_word_panel{
+	width:10px;
+}
+.mail_replace_word_panel div{
+	display:none;
+}
+
+td.actived{
+	width:100px;
+}
+td.actived div{
+	vertical-align:top;
+	display:block !important;
+}
+.mail_replace_word_panel ul,
+.mail_replace_word_panel li{
+	list-style-type:none;
+	margin:0;
+	font-sisze:1em;
+}

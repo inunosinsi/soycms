@@ -1,0 +1,184 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="mail.User">一覧</a>
+	</div>
+	<div class="function" soy:id="no_connect">
+		<a soy:link="mail.User.Register">新規登録</a>
+	</div>
+	<div class="function" soy:id="no_connect*">
+		<a soy:link="mail.User.Export">エクスポート</a>
+	</div>
+	<div class="function" soy:id="no_connect*">
+		<a soy:link="mail.User.Import">インポート</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0 20px;">
+	<h1>ユーザ新規登録</h1>
+	
+	<p soy:id="register_failed" class="error">ユーザの登録に失敗しました</p>
+	
+	<form soy:id="register_form">
+	
+	<div class="table_container">
+		<table class="form_table list">
+			<col style="width:150px;" />
+			<tr>
+				<th>メールアドレス(*)</th>
+				<td>
+					<input soy:id="mail_address" type="text" name="" value="" />
+				</td>
+			</tr>
+			<tr>
+				<th>氏名</th>
+				<td>
+					<input soy:id="name" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>フリガナ</th>
+				<td>
+					<input soy:id="furigana" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>性別</th>
+				<td>
+					<input soy:id="gender_male" type="radio" id="radio_sex_man" name="" value="0" />
+					<label for="radio_sex_man">男</label>
+					<input soy:id="gender_female" type="radio" id="radio_sex_woman" name="" value="1" />
+					<label for="radio_sex_woman">女</label>
+				</td>
+			</tr>
+			
+			<tr>
+				<th>生年月日</th>
+				<td>
+					<input soy:id="birth_year" type="text" name="" value="" />/
+					<input soy:id="birth_month" type="text" name="" value="" />/
+					<input soy:id="birth_day" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>郵便番号</th>
+				<td>
+					<input soy:id="post_number" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>住所</th>
+				<td>
+					<select soy:id="area">
+						<option value="">▼選択</option>
+					</select>
+					<input soy:id="address1" type="text" name="" value="" /><br>
+					<input soy:id="address2" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>電話番号</th>
+				<td>
+					<input soy:id="tel_number" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>FAX番号</th>
+				<td>
+					<input soy:id="fax_number" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>携帯電話番号</th>
+				<td>
+					<input soy:id="ketai_number" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>勤務先名称・職種</th>
+				<td>
+					<input soy:id="office" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>勤務先郵便番号</th>
+				<td>
+					<input soy:id="office_post_number" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>勤務先住所</th>
+				<td>
+					<select soy:id="jobArea">
+						<option value="">▼選択</option>
+					</select>
+					<input soy:id="jobAddress1" type="text" name="" value="" /><br>
+					<input soy:id="jobAddress2" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>勤務先電話番号</th>
+				<td>
+					<input soy:id="office_tel_number" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>勤務先FAX番号</th>
+				<td>
+					<input soy:id="office_fax_number" type="text" name="" value="" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>属性</th>
+				<td>
+					属性Ａ：<input type="text" soy:id="attribute1" name="" value="" /><br>
+					属性Ｂ：<input type="text" soy:id="attribute2" name="" value="" /><br>
+					属性Ｃ：<input type="text" soy:id="attribute3" name="" value="" /><br>
+				</td>
+			</tr>
+			<tr>
+				<th>備考</th>
+				<td>
+					<textarea soy:id="memo"></textarea>
+				</td>
+			</tr>
+			
+			<tr>
+				<th>メール配信</th>
+				<td>
+					<input soy:id="mail_send" type="checkbox" name="" value="" />
+					<label for="checkbox_send_email">メール配信をしない</label>
+				</td>
+			</tr>
+			
+		</table>
+		
+		<table class="button_table">
+			<tr class="button_table_row">
+				<td style="backgruond-color:white;">
+					<input type="submit" name="conduct" value="登録" />
+				</td>
+				<td style="backgruond-color:white;">
+					<button type="reset">Cancel</button>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+	
+	</form soy:id="register_form">
+</div>

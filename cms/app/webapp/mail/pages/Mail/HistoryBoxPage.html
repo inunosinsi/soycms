@@ -1,0 +1,59 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="mail.Mail">メールの作成</a>
+	</div>
+	<div class="function">
+		<a soy:link="mail.Mail.DraftBox">下書きトレイ</a>
+	</div>
+	<div class="function">
+		<a soy:link="mail.Mail.SendBox">送信トレイ</a>
+	</div>
+	<div class="function">
+		<a soy:link="mail.Mail.HistoryBox">送信履歴</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0 20px;">
+	<h1>送信履歴</h1>
+	<div class="table_container">
+		<table class="nowrap">
+			<thead>
+				<tr>
+					<th class="middle">件名</th>
+					<th class="middle">配信開始時刻</th>
+					<th class="middle">配信完了時刻</th>
+					<th class="short">件数</th>
+					<th class="short"><nobr>エラー</nobr></th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="mail_list" -->
+				<tr>
+					<td class="middle"><a soy:id="title">件名</a></td>
+					<td class="middle"><nobr soy:id="send_start_date"></nobr></td>
+					<td class="middle"><nobr soy:id="send_end_date"></nobr></td>
+					<td class="short"><span soy:id="mail_count"></span></td>
+					<td class="short"><span soy:id="error_count"></span></td>
+				</tr>
+				<!-- /soy:id="mail_list" -->
+				<tr class="pager">
+					<td colspan="5">
+						<div class="pager_item">
+							<a soy:id="prev_pager">&lt;</a>
+							<!-- soy:id="pager_list" -->
+							<a soy:id="target_link">1</a>
+							<!-- /soy:id="pager_list" -->
+							<a soy:id="next_pager">&gt;</a>
+						</div>
+						<div class="pager_item">
+							<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+

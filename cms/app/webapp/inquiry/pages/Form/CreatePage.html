@@ -1,0 +1,51 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="inquiry.Form">戻る</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0px 20px;">
+
+<h1>フォームの新規作成</h1>
+
+<div class="table_container">
+	<form soy:id="create_form">
+	
+	<div soy:id="error"></div>
+	
+	<table class="form_table list">
+		<col style="width:200px" />
+		<tr>
+			<th>
+				フォーム名
+			</th>
+			<td>
+				<input class="text" soy:id="form_name" />
+			</td>
+		</tr>
+		
+		<tr>
+			<th>
+				フォームID(半角英数字のみ)
+			</th>
+			<td>
+				<input class="text" soy:id="form_id" />
+			</td>
+		</tr>
+		
+	</table>
+	
+	<table class="button_table">
+		<tr class="button_table_row">
+			<td>
+				<button type="submit">作成</button>
+			</td>
+		</tr>
+	</table>
+	
+	</form soy:id="create_form">
+</div>			
+
+</div>

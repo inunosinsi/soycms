@@ -1,0 +1,197 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="mail.Config">サーバ設定</a>
+	</div>
+	
+	<div class="function">
+		<a soy:link="mail.Config.JobConfig">ジョブ設定</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+
+<style type="text/css">
+.form_table th{
+	width:200px;
+}
+.inner_table{
+	margin:10px 5px;
+	table-layout:fixed;
+}
+.inner_table .even td{
+	background-color:white;
+}
+</style>
+
+<div style="padding:0 20px;">
+
+	<h1>ジョブ設定</h1>
+	
+	<div class="table_container">
+		<table class="form_table list">
+			<col style="width:200px" />
+			<thead>
+				<tr>
+					<td colspan="2">送信設定</td>
+				</tr>
+			</thead>
+			<tr>
+				<th>送信方法</th>
+				<td>
+					<input type="radio" name="server_type" />
+					SMTP
+					
+					<input type="radio" name="server_type" />
+					IMAP
+					
+					<input type="radio" name="server_type" />
+					sendmail
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="3">SMTP認証</th>
+				<td>
+					<input type="checkbox" name="" />
+					<label for="">SMTP認証を使用する</label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table class="inner_table">
+						<col style="width:100px;text-align:left;" />
+						<tr>
+							<th>サーバ</th>
+							<td><input type="text" name="" value="" /></td>
+						</tr>
+							<th>ユーザ名</th>
+							<td><input type="text" value=""></td>
+						</tr>
+						<tr>
+							<th>パスワード</th>
+							<td><input type="text" name="" value="" /></td>
+						</tr>
+						<tr>
+							<th>ポート</th>
+							<td><input type="text" name="" value="" /></td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="checkbox" name="" />
+					<label for="">SSL(暗号化)を使用する</label>
+				</td>
+			</tr>
+		</table>
+		
+		<table class="form_table list">
+			<col style="width:200px" />
+			<thead>
+				<tr>
+					<td colspan="2">受信設定</td>
+				</tr>
+			</thead>
+			<tr>
+				<th>受信方法</th>
+				<td>
+					<input type="radio" name="server_type" />
+					POP3
+					
+					<input type="radio" name="server_type" />
+					IMAP
+					
+					<input type="radio" name="server_type" />
+					sendmail
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="3">POP3/IMAP設定</th>
+				<td style="background-color:white;">
+					<table class="inner_table">
+						<col style="width:100px;text-align:left;" />
+						<tr>
+							<th>サーバ</th>
+							<td><input type="text" name="" value="" /></td>
+						</tr>
+							<th>ユーザ名</th>
+							<td><input type="text" value=""></td>
+						</tr>
+						<tr>
+							<th>パスワード</th>
+							<td><input type="text" name="" value="" /></td>
+						</tr>
+						<tr>
+							<th>ポート</th>
+							<td><input type="text" name="" value="" /></td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td><input type="checkbox" name="" />
+					<label for="">「POP/IMAP before SMTP」を使用する</label><br></td>
+			</tr>
+			
+			<tr>
+				<td>
+					<input type="checkbox" name="" />
+					<label for="">SSL(暗号化)を使用する</label>
+				</td>
+			</tr>
+		</table>
+		
+		<table class="form_table list">
+			<col style="width:200px" />
+			<thead>
+				<tr>
+					<td colspan="2">管理者設定</td>
+				</tr>
+			</thead>
+			<tr>
+				<th>管理者メールアドレス</th>
+				<td>
+					<input type="text" value="" />
+				</td>
+			</tr>
+			<tr>
+				<th>管理者名称</th>
+				<td>
+					<input type="text" value="" />
+				</td>
+			</tr>
+			<tr>
+				<th>差出人メールアドレス</th>
+				<td>
+					<input type="text" value="" />
+				</td>
+			</tr>
+			<tr>
+				<th>返信先メールアドレス</th>
+				<td>
+					<input type="text" value="" />
+				</td>
+			</tr>
+			<tr>
+				<th>返信先名称</th>
+				<td>
+					<input type="text" value="" />
+				</td>
+			</tr>
+		</table>
+		
+		<table class="form_table list">
+			<tr>
+				<th colspan="2">署名</th>
+			</tr>
+			
+			<tr>
+				<td colspan="2">
+					<textarea style="width:96%;padding:5px 2%"></textarea>
+				</td>
+			</tr>
+		</table>
+</div>
