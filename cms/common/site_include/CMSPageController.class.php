@@ -194,7 +194,7 @@ class CMSPageController extends SOY2PageController{
 		return $html;
 	}
 
-	function onNotFound(){
+	function onNotFound($path = NULL, $args = NULL, $classPath = NULL){
 
 		$page = $this->dao->getErrorPage();
 		$this->pageType = $page->getPageType();

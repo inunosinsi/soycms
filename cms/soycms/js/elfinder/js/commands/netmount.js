@@ -29,12 +29,12 @@ elFinder.prototype.commands.netmount = function() {
 			o = self.options,
 			create = function() {
 				var inputs = {
-						protocol : $('<select/>').change(function(){
+						protocol : $('<select/>').change(function(e, data){
 							var protocol = this.value;
 							content.find('.elfinder-netmount-tr').hide();
 							content.find('.elfinder-netmount-tr-'+protocol).show();
 							if (typeof o[protocol].select == 'function') {
-								o[protocol].select(fm);
+								o[protocol].select(fm, e, data);
 							}
 						})
 					},
@@ -44,13 +44,14 @@ elFinder.prototype.commands.netmount = function() {
 						modal          : true,
 						destroyOnClose : true,
 						close          : function() { 
-							delete self.dialog; 
+							//delete self.dialog; 
 							dfrd.state() == 'pending' && dfrd.reject();
 						},
 						buttons        : {}
 					},
 					content = $('<table class="elfinder-info-tb elfinder-netmount-tb"/>'),
-					hidden  = $('<div/>');
+					hidden  = $('<div/>'),
+					dialog;
 
 				content.append($('<tr/>').append($('<td>'+fm.i18n('protocol')+'</td>')).append($('<td/>').append(inputs.protocol)));
 
@@ -66,6 +67,7 @@ elFinder.prototype.commands.netmount = function() {
 							hidden.append(input);
 						}
 					});
+					o[protocol].protocol = inputs.protocol;
 				});
 				
 				content.append(hidden);
@@ -73,8 +75,9 @@ elFinder.prototype.commands.netmount = function() {
 				content.find('.elfinder-netmount-tr').hide();
 
 				opts.buttons[fm.i18n('btnMount')] = function() {
-					var protocol = inputs.protocol.val();
-					var data = {cmd : 'netmount', protocol: protocol};
+					var protocol = inputs.protocol.val(),
+						data = {cmd : 'netmount', protocol: protocol},
+						cur = o[protocol];
 					$.each(content.find('input.elfinder-netmount-inputs-'+protocol), function(name, input) {
 						var val;
 						if (typeof input.val == 'function') {
@@ -88,39 +91,56 @@ elFinder.prototype.commands.netmount = function() {
 					});
 
 					if (!data.host) {
-						return self.fm.trigger('error', {error : 'errNetMountHostReq'});
+						return fm.trigger('error', {error : 'errNetMountHostReq'});
 					}
 
-					self.fm.request({data : data, notify : {type : 'netmount', cnt : 1, hideCnt : true}})
-						.done(function() { dfrd.resolve(); })
-						.fail(function(error) { dfrd.reject(error); });
+					fm.request({data : data, notify : {type : 'netmount', cnt : 1, hideCnt : true}})
+						.done(function(data) {
+							data.added && data.added.length && fm.exec('open', data.added[0].hash);
+							dfrd.resolve();
+						})
+						.fail(function(error) {
+							//self.dialog.elfinderdialog('open');
+							if (cur.fail && typeof cur.fail == 'function') {
+								cur.fail(fm, error);
+							}
+							dfrd.reject(error);
+						});
 
-					self.dialog.elfinderdialog('close');	
+					self.dialog.elfinderdialog('close');
 				};
 
 				opts.buttons[fm.i18n('btnCancel')] = function() {
 					self.dialog.elfinderdialog('close');
 				};
 				
-				return fm.dialog(content, opts).ready(function(){inputs.protocol.change();});
+				dialog = fm.dialog(content, opts);
+				dialog.ready(function(){
+					inputs.protocol.change();
+					dialog.elfinderdialog('posInit');
+				});
+				return dialog;
 			}
 			;
 		
-		fm.bind('netmount', function(e) {
-			var d = e.data || null;
-			if (d && d.protocol) {
-				if (o[d.protocol] && typeof o[d.protocol].done == 'function') {
-					o[d.protocol].done(fm, d);
-				}
-			}
-		});
-
 		if (!self.dialog) {
 			self.dialog = create();
+		} else {
+			self.dialog.elfinderdialog('open');
 		}
 
 		return dfrd.promise();
 	}
+
+	self.fm.bind('netmount', function(e) {
+		var d = e.data || null,
+			o = self.options;
+		if (d && d.protocol) {
+			if (o[d.protocol] && typeof o[d.protocol].done == 'function') {
+				o[d.protocol].done(self.fm, d);
+			}
+		}
+	});
 
 }
 

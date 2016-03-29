@@ -27,16 +27,26 @@ elFinder.prototype.commands.search = function() {
 	 * @param  String  search string
 	 * @return $.Deferred
 	 **/
-	this.exec = function(q) {
-		var fm = this.fm;
+	this.exec = function(q, target, mime) {
+		var fm = this.fm,
+			reqDef;
 		
-		if (typeof(q) == 'string' && q) {
-			fm.trigger('searchstart', {query : q});
+		if (typeof q == 'string' && q) {
+			if (typeof target == 'object') {
+				mime = target.mime || '';
+				target = target.target || '';
+			}
+			target = target? target : '';
+			mime = mime? $.trim(mime).replace(',', ' ').split(' ') : [];
+			$.each(mime, function(){ return $.trim(this); });
+			fm.trigger('searchstart', {query : q, target : target, mimes : mime});
 			
-			return fm.request({
-				data   : {cmd : 'search', q : q},
-				notify : {type : 'search', cnt : 1, hideCnt : true}
+			reqDef = fm.request({
+				data   : {cmd : 'search', q : q, target : target, mimes : mime},
+				notify : {type : 'search', cnt : 1, hideCnt : true},
+				cancel : true
 			});
+			return reqDef;
 		}
 		fm.getUI('toolbar').find('.'+fm.res('class', 'searchbtn')+' :text').focus();
 		return $.Deferred().reject();

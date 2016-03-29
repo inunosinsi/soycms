@@ -7,7 +7,7 @@ elFinder.prototype.commands.quicklook.plugins = [
 	 * @param elFinder.commands.quicklook
 	 **/
 	function(ql) {
-		var mimes   = ['image/jpeg', 'image/png', 'image/gif'],
+		var mimes   = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'],
 			preview = ql.preview;
 		
 		// what kind of images we can display
@@ -58,7 +58,7 @@ elFinder.prototype.commands.quicklook.plugins = [
 							img.fadeIn(100);
 						}, 1)
 					})
-					.attr('src', ql.fm.url(file.hash));
+					.attr('src', ql.fm.openUrl(file.hash));
 			}
 			
 		});
@@ -245,7 +245,7 @@ elFinder.prototype.commands.quicklook.plugins = [
 			if (ql.support.audio[type]) {
 				e.stopImmediatePropagation();
 				
-				node = $('<audio class="elfinder-quicklook-preview-audio" controls preload="auto" autobuffer><source src="'+ql.fm.url(file.hash)+'" /></audio>')
+				node = $('<audio class="elfinder-quicklook-preview-audio" controls preload="auto" autobuffer><source src="'+ql.fm.openUrl(file.hash)+'" /></audio>')
 					.appendTo(preview);
 				autoplay && node[0].play();
 			}
@@ -283,7 +283,7 @@ elFinder.prototype.commands.quicklook.plugins = [
 				e.stopImmediatePropagation();
 
 				ql.hideinfo();
-				node = $('<video class="elfinder-quicklook-preview-video" controls preload="auto" autobuffer><source src="'+ql.fm.url(file.hash)+'" /></video>').appendTo(preview);
+				node = $('<video class="elfinder-quicklook-preview-video" controls preload="auto" autobuffer><source src="'+ql.fm.openUrl(file.hash)+'" /></video>').appendTo(preview);
 				autoplay && node[0].play();
 				
 			}
@@ -320,7 +320,7 @@ elFinder.prototype.commands.quicklook.plugins = [
 			if ($.inArray(file.mime, mimes) !== -1) {
 				e.stopImmediatePropagation();
 				(video = mime.indexOf('video/') === 0) && ql.hideinfo();
-				node = $('<embed src="'+ql.fm.url(file.hash)+'" type="'+mime+'" class="elfinder-quicklook-preview-'+(video ? 'video' : 'audio')+'"/>')
+				node = $('<embed src="'+ql.fm.openUrl(file.hash)+'" type="'+mime+'" class="elfinder-quicklook-preview-'+(video ? 'video' : 'audio')+'"/>')
 					.appendTo(preview);
 			}
 		}).bind('change', function() {
@@ -330,6 +330,67 @@ elFinder.prototype.commands.quicklook.plugins = [
 			}
 		});
 		
-	}
+	},
 	
+	/**
+	 * Any supported files preview plugin using Google docs online viewer
+	 *
+	 * @param elFinder.commands.quicklook
+	 **/
+	function(ql) {
+		var fm      = ql.fm,
+			mimes   = ql.options.googleDocsMimes || [],
+			preview = ql.preview;
+			
+		preview.bind('update', function(e) {
+			var win  = ql.window,
+				file = e.file, node, loading;
+			
+			if ($.inArray(file.mime, mimes) !== -1) {
+				if (file.url == '1') {
+					$('<div class="elfinder-quicklook-info-data"><button class="elfinder-info-button">'+fm.i18n('getLink')+'</button></div>').appendTo(ql.info.find('.elfinder-quicklook-info'))
+					.on('click', function() {
+						$(this).html('<span class="elfinder-info-spinner">');
+						fm.request({
+							data : {cmd : 'url', target : file.hash},
+							preventDefault : true
+						})
+						.always(function() {
+							$(this).html('');
+						})
+						.done(function(data) {
+							var rfile = fm.file(file.hash);
+							ql.value.url = rfile.url = data.url || '';
+							if (ql.value.url) {
+								preview.trigger($.Event('update', {file : ql.value}));
+							}
+						});
+					});
+				}
+				if (file.url !== '' && file.url != '1') {
+					e.stopImmediatePropagation();
+					preview.one('change', function() {
+						loading.remove();
+						node.off('load').remove();
+					});
+					
+					loading = $('<div class="elfinder-quicklook-info-data"> Now loading...<span class="elfinder-info-spinner"></div>').appendTo(ql.info.find('.elfinder-quicklook-info'));
+					
+					node = $('<iframe class="elfinder-quicklook-preview-iframe"/>')
+						.css('background-color', 'transparent')
+						.appendTo(preview)
+						.on('load', function() {
+							ql.hideinfo();
+							loading.remove();
+							$(this).css('background-color', '#fff').show();
+						})
+						.attr('src', 'http://docs.google.com/gview?embedded=true&url=' + encodeURIComponent(fm.url(file.hash)));
+
+					var test;
+				}
+			}
+			
+		});
+	}
+
 ]

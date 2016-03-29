@@ -38,13 +38,16 @@
 
 /* buttons */
 .std42-dialog .ui-dialog-buttonpane {
-	border:0 solid;
-	margin:0;
-	padding:.5em .7em;
+	border: 0 solid;
+	margin: 0;
+	padding: .5em;
+	text-align: right;
 }
+.elfinder-rtl .std42-dialog .ui-dialog-buttonpane { text-align: left; }
 
-.std42-dialog .ui-dialog-buttonpane button { margin:0 0 0 .4em;	padding:0; outline:0px solid; }
+.std42-dialog .ui-dialog-buttonpane button { margin:.7em 0 0 .4em; padding: .2em; outline:0px solid; }
 .std42-dialog .ui-dialog-buttonpane button span { padding:2px 9px; }
+.std42-dialog .ui-dialog-buttonpane button span.ui-icon { padding: 2px; }
 
 .elfinder-dialog .ui-resizable-e, 
 .elfinder-dialog .ui-resizable-s { width:0; height:0;}
@@ -118,6 +121,7 @@
 
 /* icons */
 .elfinder-dialog-icon-open, 
+.elfinder-dialog-icon-readdir,
 .elfinder-dialog-icon-file        { background-position: 0 -225px; }
 .elfinder-dialog-icon-reload      { background-position: 0 -225px; }
 .elfinder-dialog-icon-mkdir       { background-position: 0 -64px; }
@@ -131,6 +135,7 @@
 .elfinder-dialog-icon-download    { background-position: 0 -260px; }
 .elfinder-dialog-icon-save        { background-position: 0 -295px; }
 .elfinder-dialog-icon-rename      { background-position: 0 -330px; }
+.elfinder-dialog-icon-zipdl,
 .elfinder-dialog-icon-archive,
 .elfinder-dialog-icon-extract     { background-position: 0 -365px; }
 .elfinder-dialog-icon-search      { background-position: 0 -402px; }
@@ -138,15 +143,22 @@
 .elfinder-dialog-icon-loadimg,
 .elfinder-dialog-icon-netmount,
 .elfinder-dialog-icon-netunmount,
+.elfinder-dialog-icon-chmod,
+.elfinder-dialog-icon-preupload,
 .elfinder-dialog-icon-dim         { background-position: 0 -434px; }
 
 /*********************** CONFIRM DIALOG **************************/
 
-.elfinder-dialog-confirm-applyall {	padding-top:3px; }
+.elfinder-dialog-confirm-applyall {
+	padding: 0 1em;
+	margin: 0;
+}
+.elfinder-ltr .elfinder-dialog-confirm-applyall { text-align: left; }
+.elfinder-rtl .elfinder-dialog-confirm-applyall { text-align: right; }
 
 .elfinder-dialog-confirm .elfinder-dialog-icon { background-position:0 -32px; }
 
-
+.elfinder-dialog-confirm .ui-dialog-buttonset { width: auto; }
 
 /*********************** FILE INFO DIALOG **************************/
 
@@ -156,6 +168,12 @@
 	width:48px;
 	height:48px;
 	margin-right:1em;
+}
+
+.elfinder-rtl .elfinder-info-title .elfinder-cwd-icon {
+	float: right;
+	margin-right: 0;
+	margin-left: 1em;
 }
 
 .elfinder-info-title strong { display:block; padding:.3em 0 .5em 0; }
@@ -183,6 +201,13 @@
 
 .elfinder-netmount-tb { margin:0 auto; }
 .elfinder-netmount-tb input { border:1px solid #ccc; }
+.elfinder-netmount-tb .elfinder-button-icon { cursor: pointer; }
+
+button.elfinder-info-button {
+	margin: -3.5px 0;
+	cursor: pointer;
+}
+
 /*********************** UPLOAD DIALOG **************************/
 
 .elfinder-upload-dropbox {
@@ -245,3 +270,33 @@
 .elfinder-rtl .dialogelfinder-drag-close { left:12px; }
 
 
+/*********************** RM CONFIRM **************************/
+.elfinder-rm-title {
+	margin-bottom: .5ex;
+}
+
+.elfinder-rm-title .elfinder-cwd-icon {
+	float:left;
+	width:48px;
+	height:48px;
+	margin-right:1em;
+}
+
+.elfinder-rtl .elfinder-rm-title .elfinder-cwd-icon {
+	float: right;
+	margin-right: 0;
+	margin-left: 1em;
+}
+
+.elfinder-rm-title strong {
+	display: block;
+	/*word-wrap: break-word;*/
+	white-space: pre-wrap;
+	word-break: normal;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.elfinder-rm-title+br {
+	display: none;
+}

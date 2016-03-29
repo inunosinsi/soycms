@@ -11,13 +11,13 @@ $.fn.elfinderworkzone = function(fm) {
 			wdelta = wz.outerHeight(true) - wz.height(),
 			parent = wz.parent();
 			
-		parent.add(window).bind('resize', function() {
+		parent.add(window).on('resize', function() {
 				var height = parent.height();
 
 				parent.children(':visible:not(.'+cl+')').each(function() {
 					var ch = $(this);
 
-					if (ch.css('position') != 'absolute') {
+					if (ch.css('position') != 'absolute' && ch.css('position') != 'fixed') {
 						height -= ch.outerHeight(true);
 					}
 				});

@@ -36,20 +36,26 @@ var dirmode = 0755,
 
 		'images':	grep(path.join(src, 'img'), '\\.png|\\.gif'),
 
+		'sounds':	grep(path.join(src, 'sounds'), '\\.wav'),
+		
 		'i18n': grep(path.join(src, 'js', 'i18n'), '\\.js', 'elfinder.en.js'),
 
 		'php':
 			[
-				path.join(src, 'php', 'connector.minimal.php'),
+				path.join(src, 'php', 'connector.minimal.php-dist'),
 				path.join(src, 'php', 'mime.types'),
-				path.join(src, 'php', 'MySQLStorage.sql')
+				path.join(src, 'php', 'MySQLStorage.sql'),
+				path.join(src, 'php', 'elFinderSession.php'),
+				path.join(src, 'php', 'elFinderSessionInterface.php')
 			]
-			.concat(grep(path.join(src, 'php'), '\\.class\.php$')),
+			.concat(grep(path.join(src, 'php'), '\\.class\.php$'))
+			.concat(grep(path.join(src, 'php'), 'Netmount\.php$')),
 		'misc':
 			[
 				path.join(src, 'js', 'proxy', 'elFinderSupportVer1.js'),
 				path.join(src, 'Changelog'),
 				path.join(src, 'README.md'),
+				path.join(src, 'composer.json'),
 				path.join(src, 'elfinder.html')
 			]
 	};
@@ -88,7 +94,7 @@ function grep(prefix, mask, exculde) {
 }
 
 function copyFile(from, to, overwrite) {
-	if (!overwrite && path.existsSync(to)) {
+	if (!overwrite && fs.existsSync(to)) {
 		return false;
 	}
 	console.log('\t' + from);
@@ -110,14 +116,14 @@ function getComment() {
 		' * Version ' + ver[1] + ' (' + bd + ')\n' +
 		' * http://elfinder.org\n' +
 		' * \n' +
-		' * Copyright 2009-2013, Studio 42\n' +
+		' * Copyright 2009-' + d.getFullYear() + ', Studio 42\n' +
 		' * Licensed under a 3 clauses BSD license\n' +
 		' */\n';
 	return comment;
 }
 
 // tasks
-desc('Help')
+desc('Help');
 task('default', function(){
 	console.log(
 		"This is elFinder build script, run `jake --tasks` for more info, for a default build run:\n" +
@@ -125,11 +131,11 @@ task('default', function(){
 	);
 });
 
-desc('pre build task')
+desc('pre build task');
 task('prebuild', function(){
 	console.log('build dir:  ' + path.resolve());
 	console.log('src dir:    ' + src);
-	var dir = ['css', 'js', 'img', path.join('js', 'i18n'), path.join('js', 'proxy'), 'php', 'files'];
+	var dir = ['css', 'js', 'img', 'sounds', path.join('js', 'i18n'), path.join('js', 'proxy'), 'php', 'files'];
 	if (plugins.length) {
 		dir.push(path.join('php', 'plugins'));
 		for (var i in plugins) {
@@ -138,7 +144,7 @@ task('prebuild', function(){
 	}
 	for (d in dir) {
 		var bd = dir[d];
-		if (!path.existsSync(bd)) {
+		if (!fs.existsSync(bd)) {
 			console.log('mkdir ' + bd);
 			fs.mkdirSync(bd, dirmode);
 		}
@@ -146,20 +152,20 @@ task('prebuild', function(){
 	//jake.Task['elfinder'].invoke();
 });
 
-desc('build elFinder')
+desc('build elFinder');
 task({'elfinder': ['prebuild', 'css/elfinder.min.css', 'js/elfinder.min.js', 'misc']}, function(){
 	console.log('elFinder build done');
 });
 
 // CSS
-desc('concat elfinder.full.css')
+desc('concat elfinder.full.css');
 file({'css/elfinder.full.css': files['elfinder.full.css']}, function(){
-	console.log('concat ' + this.name)
+	console.log('concat ' + this.name);
 	var data = '';
 	for (f in this.prereqs) {
 		file = this.prereqs[f];
 		console.log('\t' + file);
-		data += '\n/* File: ' + file + ' */\n';
+		data += '\n/* File: ' + file.replace(src, '') + ' */\n';
 		data += fs.readFileSync(file);
 	}
 	fs.writeFileSync(this.name, getComment() + data);
@@ -168,12 +174,12 @@ file({'css/elfinder.full.css': files['elfinder.full.css']}, function(){
 desc('optimize elfinder.min.css');
 file({'css/elfinder.min.css': ['css/elfinder.full.css']}, function () {
 	console.log('optimize elfinder.min.css');
-	var css_optimized = csso.justDoIt(fs.readFileSync('css/elfinder.full.css').toString())
+	var css_optimized = csso.justDoIt(fs.readFileSync('css/elfinder.full.css').toString());
 	fs.writeFileSync(this.name, getComment() + css_optimized);
 });
 
 // JS
-desc('concat elfinder.full.js')
+desc('concat elfinder.full.js');
 file({'js/elfinder.full.js': files['elfinder.full.js']}, function(){
 	console.log('concat elfinder.full.js');
 	var strict = new RegExp('"use strict"\;?\n?');
@@ -182,7 +188,7 @@ file({'js/elfinder.full.js': files['elfinder.full.js']}, function(){
 	for (f in elf) {
 		file = elf[f];
 		console.log('\t' + file);
-		data += '\n\n/*\n * File: ' + file + '\n */\n\n';
+		data += '\n\n/*\n * File: ' + file.replace(src, '') + '\n */\n\n';
 		data += fs.readFileSync(file);
 		data = data.replace(strict, '');
 	}
@@ -193,24 +199,26 @@ file({'js/elfinder.full.js': files['elfinder.full.js']}, function(){
 desc('uglify elfinder.min.js');
 file({'js/elfinder.min.js': ['js/elfinder.full.js']}, function () {
 	console.log('uglify elfinder.min.js');
+	var result;
 	if (typeof ugjs.minify == 'undefined') {
 		var ugp  = ugjs.parser;
 		var ugu  = ugjs.uglify;
 		var ast = ugp.parse(fs.readFileSync('js/elfinder.full.js').toString()); // parse code and get the initial AST
 		ast = ugu.ast_mangle(ast); // get a new AST with mangled names
 		ast = ugu.ast_squeeze(ast); // get an AST with compression optimizations
-		var result = ugu.split_lines(ugu.gen_code(ast), 1024 * 8); // insert new line every 8 kb
+		result = ugu.split_lines(ugu.gen_code(ast), 1024 * 8); // insert new line every 8 kb
 	} else {
-		var result = ugjs.minify('js/elfinder.full.js').code;
+		result = ugjs.minify('js/elfinder.full.js').code;
 	}
 	fs.writeFileSync(this.name, getComment() + result);
 });
 
-// IMG + I18N + PHP
-desc('copy misc files')
+// IMG + SOUNDS + I18N + PHP
+desc('copy misc files');
 task('misc', function(){
 	console.log('copy misc files');
 	var cf = files['images']
+		.concat(files['sounds'])
 		.concat(files['i18n'])
 		.concat(path.join(src, 'css', 'theme.css'))
 		.concat(files['php'])
@@ -226,20 +234,21 @@ task('misc', function(){
 	// copyFile(hs, hd);
 
 	// connector
-	var cs = path.join(src, 'php', 'connector.minimal.php');
-	var cd = path.join('php', 'connector.php');
+	var cs = path.join(src, 'php', 'connector.minimal.php-dist');
+	var cd = path.join('php', 'connector.php-dist');
 	copyFile(cs, cd);
 });
 
 // other
-desc('clean build dir')
+desc('clean build dir');
 task('clean', function(){
-	console.log('cleaning the floor')
+	console.log('cleaning the floor');
 	uf = ['js/elfinder.full.js', 'js/elfinder.min.js', 'css/elfinder.full.css', 'css/elfinder.min.css'];
-	// clean images, js/i18n and php only if we are not in src
+	// clean images, sounds, js/i18n and php only if we are not in src
 	if (src != path.resolve()) {
 		uf = uf
 			.concat(grep('img', '\\.png|\\.gif'))
+			.concat(grep('sounds', '\\.wav'))
 			.concat(grep(path.join('js', 'i18n')))
 			.concat(path.join('css', 'theme.css'))
 			.concat(grep('php'))
@@ -247,7 +256,7 @@ task('clean', function(){
 	}
 	for (f in uf) {
 		var file = uf[f];
-		if (path.existsSync(file)) {
+		if (fs.existsSync(file)) {
 			console.log('\tunlink ' + file);
 			fs.unlinkSync(file);
 		}
@@ -256,10 +265,10 @@ task('clean', function(){
 	// 	fs.unlinkSync('elfinder.html');
 	// }
 	if (src != path.resolve()) {
-		var ud = ['css', path.join('js', 'proxy'), path.join('js', 'i18n'), 'js', 'img', 'php', 'files'];
+		var ud = ['css', path.join('js', 'proxy'), path.join('js', 'i18n'), 'js', 'img', 'sounds', 'php', 'files'];
 		for (d in ud) {
 			var dir = ud[d];
-			if (path.existsSync(dir)) {
+			if (fs.existsSync(dir)) {
 				console.log('\trmdir	' + dir);
 				fs.rmdirSync(dir);
 			}
@@ -267,7 +276,7 @@ task('clean', function(){
 	}
 });
 
-desc('get current build version from git')
+desc('get current build version from git');
 task('version', function(){
 	jake.exec(['git describe --tags > .version'], function(){
 		version = fs.readFileSync('.version').toString().replace(/\n$/, '');
@@ -277,10 +286,10 @@ task('version', function(){
 	});
 }, {async: true});
 
-desc('create package task')
+desc('create package task');
 task('prepack', function(){
 	new jake.PackageTask('elfinder', version, function(){
-		var fls = (files['php'].concat(files['images']).concat(files['i18n']).concat(files['misc'])).map(function(i){
+		var fls = (files['php'].concat(files['images']).concat(files['sounds']).concat(files['i18n']).concat(files['misc'])).map(function(i){
 			return i.substr(src.length + 1);
 		});
 		fls.push(path.join('css', 'elfinder.min.css'));
@@ -295,7 +304,7 @@ task('prepack', function(){
 	});
 });
 
-desc('pack release')
+desc('pack release');
 task({'release': ['version']}, function(){
 	var prePack = jake.Task['prepack'];
 	prePack.addListener('complete', function() {
