@@ -1,0 +1,218 @@
+<h1>
+	注文を追加する
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; 
+		<a soy:link="Order">注文管理</a> &gt; 
+		<a soy:link="Order.Register">注文を追加する</a> &gt;
+		確認
+	</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>注文の追加</h2>
+
+		<div class="block_title_right">
+			<a class="button" soy:link="Order.Register">戻る</a>
+		</div>
+	</div>
+	
+
+	<div class="block_body">
+
+		<dl>
+			<dt>商品
+				<!-- soy:id="item_info*" -->
+				<a class="button" soy:link="Order.Register.Item">変更</a>
+				<!-- /soy:id="item_info*" -->
+			</dt>
+			<dd>
+				<p class="require" soy:id="no_item">
+					商品を指定してください。
+					<a class="button" soy:link="Order.Register.Item">商品登録</a>
+				</p>
+
+				<!-- soy:id="item_info" -->
+				<table class="form_table">
+					<thead>
+						<tr>
+							<th scope="col">商品コード</th>
+							<th scope="col">商品</th>
+							<th scope="col">価格</th>
+							<th scope="col">個数</th>
+							<th scope="col">小計</th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<th colspan="4" class="alR">合計</th>
+							<td colspan="1" class="alR"><!-- soy:id="total_price" /-->&nbsp;円</td>
+						</tr>
+					</tfoot>
+					<tbody>
+						<!-- soy:id="item_list" -->
+						<tr>
+							<td><a soy:id="item_id">11</a></td>
+							<td>
+								<!-- soy:id="item_name_text" -->ナノブロック（フレンチブルドッグ）<!-- /soy:id="item_name_text" --><br>
+								<!-- soy:id="item_option" /-->
+							</td>
+							<td class="alR"><!-- soy:id="item_price_text" /-->&nbsp;円</td>
+							<td class="alR"><!-- soy:id="item_count_text" /-->&nbsp;点</td>
+							<td class="alR"><!-- soy:id="item_total_price" /-->&nbsp;円</td>
+						</tr>
+						<!-- /soy:id="item_list" -->
+						<tr>
+							<th colspan="4" class="alR">小計</th>
+							<td colspan="1" class="alR"><!-- soy:id="total_item_price" /-->&nbsp;円</td>
+						</tr>
+						<!-- soy:id="module_list" -->
+						<tr>
+							<th colspan="4" class="alR"><!-- soy:id="module_name" -->送料（国内）<!-- /soy:id="module_name" --></th>
+							<td colspan="1" class="alR"><!-- soy:id="module_price" /-->&nbsp;円</td>
+						</tr>
+						<!-- /soy:id="module_list" -->
+					</tbody>
+				</table>
+				<!-- /soy:id="item_info" -->
+			</dd>
+			
+			<dt>注文者
+				<!-- soy:id="user_info*" -->
+				<a class="button" soy:link="Order.Register.User">変更</a>
+				<!-- /soy:id="user_info*" -->
+			</dt>
+			<dd>
+				<!-- soy:id="no_user" -->
+				<p class="require">
+					注文者を指定してください。
+					<a class="button" soy:link="Order.Register.User">注文者登録</a>
+				</p>
+				<!-- /soy:id="no_user" -->
+				<table class="form_table" soy:id="user_info">
+					<tr soy:id="user_is_registered">
+						<th>ID</th>
+						<td>
+							<!-- soy:id="user_id" /-->
+							<a href="" soy:id="user_detail_link" class="button">詳細</a>
+						</td>
+					</tr>
+					<tr>
+						<th>メールアドレス</th>
+						<td soy:id="mail_address"></td>
+					</tr>
+					<tr>
+						<th>氏名</th>
+						<td soy:id="name"></td>
+					</tr>
+					<tr>
+						<th>フリガナ</th>
+						<td soy:id="furigana"></td>
+					</tr>
+					<tr>
+						<th>郵便番号</th>
+						<td soy:id="post_number">
+						</td>
+					</tr>
+					<tr>
+						<th>住所</th>
+						<td >
+							<!-- soy:id="area" /-->
+							<!-- soy:id="address1" /-->
+							<!-- soy:id="address2" /-->
+						</td>
+					</tr>
+					<tr>
+						<th>電話番号</th>
+						<td soy:id="tel_number"></td>
+					</tr>
+					<tr>
+						<th>FAX番号</th>
+						<td soy:id="fax_number" size="30"><input type="text" name="" value="" soy:id="fax_number" size="30" /></td>
+					</tr>
+					<tr>
+						<th>携帯電話番号</th>
+						<td soy:id="ketai_number"></td>
+					</tr>
+					<tr>
+						<th>勤務先名称・職種</th>
+						<td soy:id="office"></td>
+					</tr>
+				</table>
+			</dd>
+
+			<dt>送付先
+				<!-- soy:id="no_send_address*" -->
+				<a class="button" soy:link="Order.Register.SendAddress">変更</a>
+				<!-- /soy:id="no_send_address*" -->
+				<!-- soy:id="has_send_address*" -->
+				<a class="button" soy:link="Order.Register.SendToUser">クリア</a>
+				<!-- /soy:id="has_send_address*" -->
+			</dt>
+			<dd>
+				<p class="" soy:id="no_send_address">注文者の住所と同じ</p>
+
+				<table class="form_table" soy:id="has_send_address">
+					<tr>
+						<th>氏名</th>
+						<td soy:id="send_name"></td>
+					</tr>
+					<tr>
+						<th>フリガナ</th>
+						<td soy:id="send_furigana"></td>
+					</tr>
+					<tr>
+						<th>郵便番号</th>
+						<td soy:id="send_post_number">
+						</td>
+					</tr>
+					<tr>
+						<th>住所</th>
+						<td >
+							<!-- soy:id="send_area" /-->
+							<!-- soy:id="send_address1" /-->
+							<!-- soy:id="send_address2" /-->
+						</td>
+					</tr>
+					<tr>
+						<th>電話番号</th>
+						<td soy:id="send_tel_number"></td>
+					</tr>
+					<tr>
+						<th>法人名</th>
+						<td soy:id="send_office"></td>
+					</tr>
+				</table>
+			</dd>
+			
+			<dt>支払方法・配送方法・備考など
+				<a class="button" soy:link="Order.Register">変更</a>
+				<!--
+				<a class="button" soy:link="Order.Register.Payment">支払方法の変更</a>
+				<a class="button" soy:link="Order.Register.Delivery">配送方法の変更</a>
+				-->
+			</dt>
+			<dd>
+				<table class="form_table">
+					<!-- soy:id="order_attribute_list" -->
+					<tr>
+						<th nowrap><!-- soy:id="attribute_title" /--><span class="require"></span></th>
+						<td nowrap><!-- soy:id="attribute_value" /--></td>
+					</tr>
+					<!-- /soy:id="order_attribute_list" -->
+				</table>
+			</dd>
+			
+		</dl>
+
+		<form soy:id="order_form">
+		<div class="pageBtn">
+			<input type="submit" name="order" value="注文実行" soy:id="order_button" />
+			<p class="caution">メールは送信されません。</p>
+		</div>
+		</form soy:id="order_form">
+		
+	</div>
+</div>
+

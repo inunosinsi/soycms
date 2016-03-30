@@ -1,0 +1,72 @@
+<p class="notice" soy:display="updated">変更しました</p>
+<p class="notice" soy:display="error">表示件数は半角数字で入力してください</p>
+
+<h1>取得するサイトIDの設定</h1>
+<div class="table_container">
+	<form soy:id="form">
+		<h3>サイトIDの選択</h3>
+		<dl>
+		<dd><!-- soy:id="site" /--></dd>
+		</dl>
+		<p class="pageBtn">
+			<input type="submit" name="confirm" value="サイトの設定" class="submit_button" />
+		</p>
+	</form soy:id="form">
+</div>
+
+<!-- soy:id="config" -->
+<h1>ブログ記事表示の詳細設定</h1>
+<div class="table_container">
+	<form soy:id="config_form">	
+	<h3>ページIDの選択</h3>
+	<dl>
+		<dd>
+			<input type="hidden" soy:id="site_id" />
+			<!-- soy:id="page" /-->
+		</dd>
+	</dl>
+
+	<h3>表示件数</h3>
+	<dl>
+		<dd><input type="text" soy:id="entry_count" />件</dd>
+	</dl>
+	<p class="pageBtn">
+		<input type="submit" name="complete" value="記事の設定" class="submit_button" />
+	</p>
+	</form soy:id="config_form">
+</div>
+<!-- /soy:id="config" -->
+
+<!-- soy:display="example" -->
+<h1>テンプレートへの記述</h1>
+
+<h3>block&#58;id="entry_list"内で使用できるcms&#58;id</h3>
+<table class="form_list">
+	<thead>
+		<tr>
+			<th>cms&#58;id</th>
+			<th>使用できるタグ</th>
+			<th>詳細</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- soy:id="tag_list" -->
+		<tr>
+			<td soy:id="id">entry_id</td>
+			<td soy:id="tag">全て</td>
+			<td soy:id="description">対象記事のIDを出力します。</td>
+		</tr>
+		<!-- /soy:id="tag_list" -->
+	</tbody>
+</table>
+
+<h3><a href="javascript:void(0);" onclick="$('.template_example').toggle();">記述例を表示する</a></h3>
+<textarea class="template_example" style="display:none;height:200px;"  >
+<!-- block:id="entry_list" -->
+<h2 cms:id="title">タイトルを表示します</h2>
+<div cms:id="content">本文を表示します</div>
+<div cms:id="more">追記を表示します</div>
+<div cms:id="create_date" cms:format="Y-m-d">日付を表示します</div>
+<!-- /block:id="entry_list" -->
+</textarea>
+<!-- /soy:display="example" -->

@@ -1,0 +1,100 @@
+<h1>
+	注文を追加する
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; 
+		<a soy:link="Order">注文管理</a> &gt; 
+		<a soy:link="Order.Register">注文を追加する</a> &gt;
+		注文者を指定する
+	</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>注文の追加</h2>
+
+		<div class="block_title_right">
+			<a class="button" soy:link="Order.Register">戻る</a>
+		</div>
+	</div>
+	
+
+	<div class="block_body">
+		<h3>1. 注文者</h3>
+		<dl>
+		<dt>IDで検索</dt>
+		<dd>
+			<p soy:id="search_by_id_error" class="require">エラー</p>
+			<form soy:id="user_search_by_id_form">
+				<input type="text" soy:id="search_by_id" name="" value="" size="20" />
+				<input type="submit" value="決定">
+			</form soy:id="user_search_by_id_form">
+		</dd>		
+		<dt>メールアドレスで検索</dt>
+		<dd>
+			<p soy:id="search_by_email_error" class="require">エラー</p>
+			<form soy:id="user_search_by_email_form">
+				<input type="text" soy:id="search_by_email" name="" value="" size="60" />
+				<input type="submit" value="決定">
+			</form soy:id="user_search_by_email_form">
+		</dd>
+		<dt>新規登録</dt>
+		<dd>
+			<p soy:id="register_user_error" class="require ml20 mb">エラー</p>
+			<form soy:id="user_create_form">
+			<table class="form_table">
+				<tr>
+					<th>メールアドレス</th>
+					<td><input type="text" soy:id="mail_address" name="" value="" size="60" /></td>
+				</tr>
+				<tr>
+					<th>氏名</th>
+					<td><input type="text" soy:id="name" name="" value="" size="60" /></td>
+				</tr>
+				<tr>
+					<th>フリガナ</th>
+					<td><input type="text" soy:id="furigana" name="" value="" size="60" /></td>
+				</tr>
+				<tr>
+					<th>郵便番号</th>
+					<td>
+						<input type="text" soy:id="post_number" name="" value="" size="20" />
+						<!--input type="submit" name="user_zip_search" value="検索" /-->
+					</td>
+				</tr>
+				<tr>
+					<th>住所</th>
+					<td>
+						<select soy:id="area">
+							<option value="">▼選択</option>
+						</select>
+						<input type="text" name="" value="" soy:id="address1" size="40" /><br />
+						<input type="text" name="" value="" soy:id="address2" size="60" />
+					</td>
+				</tr>
+				<tr>
+					<th>電話番号</th>
+					<td><input type="text" name="" value="" soy:id="tel_number" size="30" /></td>
+				</tr>
+				<tr>
+					<th>FAX番号</th>
+					<td><input type="text" name="" value="" soy:id="fax_number" size="30" /></td>
+				</tr>
+				<tr>
+					<th>携帯電話番号</th>
+					<td><input type="text" name="" value="" soy:id="ketai_number" size="30" /></td>
+				</tr>
+				<tr>
+					<th>勤務先名称・職種</th>
+					<td><input type="text" name="" value="" soy:id="office" size="60" /></td>
+				</tr>
+			</table>
+			<p class="pageBtn">
+				<input type="submit" value="決定" class="button">
+			</p>
+			</form soy:id="user_create_form">
+		</dd>
+		</dl>
+
+	</div>
+</div>

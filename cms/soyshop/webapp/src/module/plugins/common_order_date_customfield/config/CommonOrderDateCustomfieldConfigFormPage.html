@@ -1,0 +1,129 @@
+<div class="alR">
+	<a class="button" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
+</div>
+
+<br />
+
+<div class="block_body clearfix">
+		
+	<p class="notice" soy:id="updated">更新しました</p>
+	<p class="notice" soy:id="error">入力したIDは使用できません</p>
+		
+	<table class="form_list">
+		<caption>カスタム項目</caption>
+		<tr>
+			<td>ID</td>
+			<td>フィールド名</td>
+			<td>タイプ</td>
+			<td>操作</td>
+			<td>表示順</td>
+			<td>表示のさせ方</td>
+			<td>&nbsp;</td>
+		</tr>
+
+		<!-- soy:id="field_list" -->
+		<tr>
+			<form method="post">
+			<td soy:id="field_text">ID</td>
+			<td>
+				<span soy:id="label">説明</span>
+				<input soy:id="label_input" style="display:none;" />
+			</td>
+			<td>
+				<span soy:id="type">input</span>
+				<select soy:id="type_select" style="display:none;" />
+			</td>
+			<td>
+				<a soy:id="toggle_update">設定変更</a>
+				<a soy:id="update_link" class="button" style="display:none;">変更を保存する</a>
+				<input type="submit" soy:id="update_submit" style="display:none;" />
+			</td>
+			<td style="text-align:center;">
+				<input type="hidden" soy:id="field_id" />
+				<input type="submit" name="move_up" value="△" />
+				<input type="submit" name="move_down" value="▽" />
+			</td>
+			<td soy:id="display_form">表示のさせ方</td>
+			<td>
+				<a soy:id="toggle_config">Detail</a>
+
+				<a soy:id="delete">Delete</a>
+				<input type="submit" soy:id="delete_submit" style="display:none;" />
+			</td>
+			</form>
+		</tr>
+		<tr soy:id="field_config" style="display:none;">
+			<td colspan="2"></td>
+			<td colspan="5">
+				<h5 style="margin-bottom:0;">詳細設定</h5>
+				<form method="post">
+					<dl>
+						<!--dt>項目名</dt>
+						<dd>
+							<input type="text" class="text" soy:id="attribute_name" />
+						</dd-->
+						
+						<dt>カートに表示する説明文</dt>
+						<dd>
+							<textarea soy:id="attribute_description"></textarea>
+						</dd>
+						
+						<dt>表示年数</dt>
+						<dd>
+							<input type="text" soy:id="attribute_year_start" />から
+							<input type="text" soy:id="attribute_year_end" size="5" style="text-align:right;ime-mode:inactive;" />まで<br />
+							※前のカラムが空の時は今年を表示します。<br />
+							※後のカラムが空の時は前の年+5を表示します。
+						</dd>
+						<!--dt>初期値</dt>
+						<dd>
+							<input type="text" class="text" soy:id="default_value" />
+						</dd>
+							<dt>空の時の動作：</dt>
+						<dd>
+							<input type="radio" soy:id="empty_show" id="radio_empty_show" /><label for="">指定の値を出力</label><input type="text" class="text" soy:id="empty_value" /><br/>
+							<input type="radio" soy:id="empty_hide" id="radio_empty_hide" /><label for="radio_empty_hide">表示しない</label>
+						</dd-->
+					</dl>
+
+					<div style="margin:10px 1em 2em;text-align:right;">
+						<input type="button" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
+					</div>
+
+					<input type="submit" style="display:none;" soy:id="update_advance_submit" />
+				</form>
+			</td>
+		</tr>
+		<!-- /soy:id="field_list" -->
+	</table>
+
+	<div id="append_form_el" class="popup" style="display:none;">
+		<form soy:id="create_form" id="create_form">
+			<input type="hidden" name="create" value="create" />
+			<p>
+				項目名
+				<div class="alL">
+				<input id="custom_new_name" name="custom_new_name" type="text" class="text validate">
+				<p class="require" id="custom_new_name_error" style="display:none;">必須項目を入力してください</p>
+				</div>
+
+				項目ID
+				<div class="alL">
+				<input id="custom_id" name="custom_id" type="text" class="text validate">
+				<p class="require" id="custom_id_error" style="display:none;">必須項目を入力してください</p>
+				</div>
+
+				項目種別
+				<div class="alL">
+					<select name="custom_type" soy:id="custom_type_select"></select>
+				</div>
+
+			</p>
+			<p class="alC">
+				<a class="button" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+			</p>
+			<p class="close"></p>
+		</form soy:id="create_form">
+	</div>
+
+</div><!-- /block_body -->

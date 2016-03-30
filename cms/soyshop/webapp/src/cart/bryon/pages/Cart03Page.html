@@ -1,0 +1,179 @@
+<p><img soy:src="themes/common/images/cart/step_2.png" alt="STEP2.お支払・配送方法の選択"></p>
+
+<form soy:id="order_form">
+	<section id="cart_detail">
+		<h1 class="cart_txt">カートに入っている商品</h1>
+		
+		<table cellpadding="0" cellspacing="0" class="cart_detail_table">
+			<thead>
+				<tr>
+					<th scope="col">商品番号</th>
+					<th scope="col">商品</th>
+					<th scope="col">価格</th>
+					<th scope="col">個数</th>
+					<th scope="col">小計</th>
+					<th scope="col">削除</th>
+				</tr>
+			</thead>
+	
+			<tfoot>
+				<tr>
+					<th colspan="4">合計</th>
+					<td colspan="2" class="price subsum"><span soy:id="total_price">4,200</span>円</td>
+				</tr>
+			</tfoot>
+	
+			<tbody>
+				<!-- soy:id="item_list" -->
+				<tr>
+					<td soy:id="item_id">123456</td>
+					<td>
+						<a href="#" soy:id="item_name">ナノブロック（フレンチブルドッグ）</a><br>
+						<!-- soy:id="item_option" /-->
+					</td>
+					<td class="price"><span soy:id="item_price">2,100</span>円</td>
+		
+					<td class="alC"><!-- soy:id="order_number_text" -->1<!-- /soy:id="order_number_text" --></td>
+					<td class="price subsum"><span soy:id="item_total">2,100</span>円</td>
+					<td nowrap class="alC"><a href="#" class="delete" soy:id="item_delete">削除</a></td>
+				</tr>
+				<!-- /soy:id="item_list" -->
+				<tr soy:id="is_subtotal">
+                    <th colspan="4">小計</th>
+                    <td colspan="2" class="price subsum"><span soy:id="total_item_price">4,200</span>円</td>
+                </tr>
+				<!-- soy:id="module_list" -->
+                <tr>
+                    <th colspan="4"><!-- soy:id="module_name" -->送料（国内）<!-- /soy:id="module_name" --></th>
+                    <td colspan="2" class="price subsum"><span soy:id="module_price">0</span>円</td>
+                </tr>
+                <!-- /soy:id="module_list" -->
+			<tbody>
+		</table>
+		<!-- soy:id="has_bonus_plugin" -->
+		<!-- soy:id="bonus_plugin_list" -->
+		<!-- soy:id="content" /-->
+		<!-- /soy:id="bonus_plugin_list" -->
+		<!-- /soy:id="has_bonus_plugin" -->
+	</section>
+
+	<section>
+		<h1 class="cart_txt">お支払・配送方法の選択</h1>
+		<section class="soycart_narrow" soy:id="has_payment_method">
+			<h1>お支払方法の選択</h1>
+			<p>お支払方法を選択してください。</p>
+			<!-- soy:display="has_payment_error" -->
+			<div class="error">
+				<p soy:id="payment_error">お支払い方法が入力されていません。</p>
+			</div>
+			<!-- /soy:display="has_payment_error" -->
+			<table class="soycart_form">
+				<!-- soy:id="payment_method_list" -->
+				<tr onclick="$('input[name=payment_module][type=radio]',this).attr('checked',true);">
+					<th scope="row"><!-- soy:id="payment_name" /--><span class="require"></span></th>
+					<td nowrap>
+						<input type="radio" name="" id="" value="" soy:id="payment_method">
+					</td>
+					<td><!-- soy:id="payment_description" /-->&nbsp;<!-- soy:id="payment_charge" /--></td>
+				</tr>
+				<!-- /soy:id="payment_method_list" -->
+			</table>
+			<!--p class="link"><a href="#">お支払方法と手数料について</a></p-->
+		</section>
+		
+		<section class="soycart_narrow" soy:id="has_delivery_method">
+			<h1>配送方法の選択</h1>
+			<p>配送方法を選択してください。</p>
+			<!-- soy:display="has_delivery_error" -->
+			<div class="error">
+				<p soy:id="delivery_error">配送方法が入力されていません。</p>
+			</div>
+			<!-- /soy:display="has_delivery_error" -->
+		
+			<table class="soycart_form">
+				<!-- soy:id="delivery_method_list" -->
+				<tr onclick="$('input[name=delivery_module][type=radio]',this).attr('checked',true);">
+					<th scope="row"><!-- soy:id="delivery_name" /--><span class="require"></span></th>
+					<td nowrap>
+						<input type="radio" name="" id="" value="" soy:id="delivery_method">
+					</td>
+					<td><!-- soy:id="delivery_description" /-->&nbsp;<!-- soy:id="delivery_charge" /--></td>
+				</tr>
+				<!-- /soy:id="delivery_method_list" -->
+			</table>
+		</section>
+		 
+		<!-- soy:id="has_discount_method" -->
+		<section class="soycart_narrow">
+			<h1>クーポン</h1>
+
+			<table class="soycart_form">
+				<!-- soy:id="discount_method_list" -->
+				<tr>
+					<th nowrap scope="row"><!-- soy:id="discount_name" /--></th>
+					<td colspan="2">
+						<!-- soy:id="has_discount_error" -->
+						<p class="error" soy:id="discount_error"></p>
+						<!-- /soy:id="has_discount_error" -->
+						<!-- soy:id="discount_description" /-->
+					</td>
+				</tr>
+				<!-- /soy:id="discount_method_list" -->
+			</table>
+		</section>
+		<!-- /soy:id="has_discount_method" -->
+		
+		<!-- soy:id="has_point_method" -->
+		<section class="soycart_narrow">
+			<h1>ポイント支払</h1>
+			
+			<table class="soycart_form">
+				<!-- soy:id="point_method_list" -->
+				<tr>
+					<th nowrap scope="row"><!-- soy:id="point_name" /--></th>
+					<td colspan="2">
+						<!-- soy:id="has_point_error" -->
+						<p class="error" soy:id="point_error"></p>
+						<!-- /soy:id="has_point_error" -->
+						<!-- soy:id="point_description" /-->
+					</td>
+				</tr>
+				<!-- /soy:id="point_method_list" -->
+			</table>
+			
+		</section>
+		<!-- /soy:id="has_point_method" -->
+	</section>
+		 
+	<!-- soy:id="has_customfield_method" -->
+	<section class="soycart_narrow">
+		<h1>その他</h1>
+
+		<table class="soycart_form">
+			<!-- soy:id="customfield_method_list" -->
+			<tr>
+				<th nowrap scope="row"><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></th>
+				<td colspan="2">
+					<!-- soy:id="has_customfield_error" -->
+					<p class="error" soy:id="customfield_error"></p>
+					<!-- /soy:id="has_customfield_error" -->
+					<!-- soy:id="customfield_description" /-->
+				</td>
+			</tr>
+			<!-- /soy:id="customfield_method_list" -->
+		</table>
+	</section>
+	<!-- /soy:id="has_customfield_method" -->
+
+	<!--p class="link"><a href="#">配送方法と送料について</a></p-->
+	<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_confirm_off.png" alt="次へ（ご注文内容の確認）"></p>
+	<p class="alC"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
+</form soy:id="order_form">
+
+<!-- soy:id="has_cart_plugin" -->
+
+<!-- soy:id="cart_plugin_list" -->
+<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- /soy:id="cart_plugin_list" -->
+
+<!-- /soy:id="has_cart_plugin" -->

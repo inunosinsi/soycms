@@ -1,0 +1,185 @@
+<p class="notice" soy:id="updated">変更しました</p>
+
+<h3>文言設定</h3>
+<form soy:id="text_form">
+	<table class="form_table" style="">
+		<tr>
+			<th>タイトル</th>
+		</tr>
+		<tr>
+			<td><input class="text" value="" soy:id="title" /></td>
+		</tr>
+		
+		<tr>
+			<th>注意書き（HTML可）</th>
+		</tr>
+		<tr>
+			<td><textarea class="minieditor" soy:id="description"></textarea></td>
+		</tr>
+	</table>
+	
+	<p class="pageBtn" style="clear:both;">
+		<input type="submit" class="submit_button" value="変更" />
+	</p>
+</form soy:id="text_form">
+
+<h3>配送料無料設定</h3>
+<form soy:id="free_form">
+	<table class="form_table" style="">
+		<tr>
+			<th style="width:20%;">購入金額</th>
+			<td>
+				<input type="text" class="alR text" name="" soy:id="price_free" style="text-align:right;ime-mode:inactive;width:30%;"/>
+				&nbsp;円以上お買い上げの方は配送料無料
+			</td>
+		</tr>
+	</table>
+	
+	<p class="pageBtn" style="clear:both;">
+		<input type="submit" class="submit_button" value="変更" />
+	</p>
+</form soy:id="free_form">
+
+<h3>都道府県別料金</h3>
+<div class="table_container">
+		
+	<table class="form_table" style="">
+		<tr>
+			<th style="width:20%;">
+				<input type="checkbox" id="toggle_checkbox" onclick="toggle_check(this);return true;" />
+				<label for="toggle_checkbox">一括設定</label>
+			</th>
+			<td>
+				<input class="text" style="text-align:right;width:30%;" id="toggle_price" value="" />
+				<button type="button" onclick="toggle_all();">設定する</button>
+			</td>
+		</tr>
+	</table>
+		
+	<form method="post" soy:id="price_form">
+
+		<table class="form_table" style="width:35%;float:left;margin-left:10%;">
+			<tr>
+				<th style="width:5em;">県名</th>
+				<th style="width:5em;">送料</th>
+			</tr>
+			<!--  soy:id="prices" -->
+			<tr>
+			<th class="alC">
+				<input type="checkbox" class="price_input_check" soy:id="area_check" />
+			</th>
+			<td>
+				<input class="alR text" style="width: 100px;" type="text" soy:id="price" /> 円
+			</td>
+			</tr>
+	
+		<!--  soy:id="second_table" -->
+		</table>
+		<table class="form_table" style="width:35%;float:left;margin-left:5%;" >
+			<tr>
+				<th style="width:5em;">県名</th>
+				<th style="width:5em;">送料</th>
+			</tr>
+		<!--  /soy:id="second_table" -->
+
+			<!--  /soy:id="prices" -->
+
+		</table>
+		
+		<p class="pageBtn" style="clear:both;">
+			<input type="submit" class="submit_button" value="変更" />
+		</p>
+	
+	</form soy:id="price_form">
+</div>
+
+<h3>配達時間帯</h3>
+<div class="table_container" style="width: 100%">
+	<form method="post" soy:id="time_form">
+		
+		<table class="form_table" style="">
+			<tr>
+				<th style="width:20%;">表示設定</th>
+				<td>
+					<input type="checkbox" soy:id="use_delivery_time" />
+					<label for="use_delivery_time">配達時間帯指定を表示する</label>
+				</td>
+			</tr>
+		</table>
+	
+		<table class="form_table alC" style="width:480px;margin: 1ex auto;" id="delivery_time_config_table">
+		<thead>
+			<tr>
+				<th>配達時間帯希望の選択肢</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<td>
+					<a class="button" href="javascript:void(0);" onclick="add_time_form();">入力欄の追加</a>
+				</td>
+			</tr>
+		</tfoot>
+		<tbody>
+			<!-- soy:id="delivery_time_config" -->
+			<tr>
+				<td>
+					<input class="text" value="" soy:id="delivery_time" />
+					<a class="button" href="javascript:void(0);" onclick="delete_time_form(this);">削除</a>
+				</td>
+			</tr>
+			<!-- /soy:id="delivery_time_config" -->
+		</tbody>
+		</table>
+		
+		<p class="pageBtn" style="clear:both;">
+			<input type="submit" class="submit_button" value="変更" />
+		</p>
+	
+	</form soy:id="time_form">
+</div>
+
+<script type="text/javascript">
+function toggle_check(all){
+	$(".price_input_check").each(function(){
+		var ele = $(this);
+		if(all.checked){
+			ele.attr("checked","checked");
+		}else{
+			ele.removeAttr("checked");
+		}
+
+	});
+
+}
+
+function toggle_all(){
+	var price = $("#toggle_price").val();
+	$(".price_input_check").each(function(){
+		var ele = $(this);
+
+		if(ele.attr("checked")){
+			$("#" + ele.attr("targetId")).val(price);
+		}
+
+	});
+}
+var add_time_form = function(){
+	var target = $("#delivery_time_config_table tbody");
+	$("input", $("<tr>"+($("tr:first",target).html())+"</tr>").appendTo(target)).attr("value","");
+
+	if($("#delivery_time_config_table tbody tr").size() == 2){
+		$("#delivery_time_config_table tbody tr a").each(function(){
+			$(this).show();
+		});
+	}
+}
+var delete_time_form = function(ele){
+	if($("#delivery_time_config_table tbody tr").size() >1){
+		$(ele).parent().parent().remove();
+	}
+	if($("#delivery_time_config_table tbody tr").size() == 1){
+		$("#delivery_time_config_table tbody tr a").hide();
+	}
+}
+</script>

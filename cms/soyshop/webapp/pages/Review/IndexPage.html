@@ -1,0 +1,128 @@
+<h1>
+	レビュー
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; レビュー</span>
+</h1>
+
+<div class="block">
+	<div class="block_title">
+		<h2>レビュー一覧</h2>
+
+		<div class="block_title_right">
+			
+		</div>
+	</div>
+
+	<div class="block_body">
+
+		<p class="notice" soy:display="deleted">削除しました</p>
+		<p class="notice" soy:display="updated">更新しました</p>
+		
+		<table class="form_list">
+			<caption>
+				レビュー一覧 (<span soy:id="count_max*">100000</span>件)：
+				<span soy:id="count_start*">1</span> ～ <span soy:id="count_end*">20</span>
+			</caption>
+			<thead>
+				<tr class="alC">
+					<th>
+						<input class="review_checkbox" type="checkbox" onclick="$('#reviews_operation').show();$('.review_checkbox').attr('checked',$(this).attr('checked'));" />
+					</th>
+					<th><nobr>承認</nobr></th>
+					<th><nobr>商品名</nobr></th>
+					<th><nobr>投稿者名<a soy:id="sort_nickname">↓</a> <a soy:id="sort_nickname_desc">↑</a></nobr></th>
+					<th><nobr>評価<a soy:id="sort_evaluation">↓</a> <a soy:id="sort_evaluation_desc">↑</a></nobr></th>
+					<th><nobr>更新日時<a soy:id="sort_update_date">↓</a> <a soy:id="sort_update_date_desc">↑</a></nobr></th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			
+			<tfoot>
+				<tr id="reviews_operation" style="display:none;">
+					<td colspan="7">
+						<span class="option">操作：</span>
+						<a href="javascript:void(0);" onclick="$('#do_change_publish_btn').val(1).trigger('click');" class="button">許可</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_publish_btn').val(0).trigger('click');" class="button">拒否</a>
+
+						<a href="javascript:void(0);" onclick="$('#remove_confirm').trigger('popup');" class="button fr">レビューの削除</a>
+
+						<div id="remove_confirm"  class="popup alC" style="display:none;">
+							<p class="mb40">本当にレビューを削除しても良いですか？</p>
+
+							<p>
+							<a href="javascript:void(0);" onclick="$('#do_remove_btn').trigger('click');" class="button">削除実行</a>
+							<a href="javascript:void(0);" onclick="$('#remove_confirm').hide();" class="button ml20">キャンセル</a>
+							</p>
+
+
+						</div>
+					</td>
+				</tr>
+				<tr class="pager">
+					<td colspan="7">
+						<a soy:id="reset_link" class="button fl">並び順のリセット</a>
+
+						<div class="pager_item">
+							<form soy:id="pager_jump">
+								<select soy:id="pager_select"></select>
+								<noscript><input type="submit" value="移動"/></noscript>
+							</form soy:id="pager_jump">
+						</div>
+						<div class="pager_item">
+							<a soy:id="prev_pager">&lt;</a>
+							<!-- soy:id="pager_list" -->
+							<a soy:id="target_link">1</a>
+							<!-- /soy:id="pager_list" -->
+							<a soy:id="next_pager">&gt;</a>
+						</div>
+						<div class="pager_item">
+							<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+						</div>
+					</td>
+				</tr>
+			</tfoot>
+			
+			<tbody>
+				<form soy:id="review_form">
+				<!-- soy:id="review_list" -->
+				<tr>
+					<td class="alC"><input soy:id="review_check" class="review_checkbox" type="checkbox" /></td>
+					<td class="alC"><!-- soy:id="is_approved" -->許可<!-- /soy:id="is_approved" --></td>
+					<td><a soy:id="item_name">大豆</a></td>
+					<td>
+						<!-- soy:id="is_user_id" --><a soy:id="user_link"><!-- soy:id="user_name" /--></a><!-- /soy:id="is_user_id" -->
+						<!-- soy:id="no_user_id" --><!-- soy:id="user_name" /--><!-- /soy:id="no_user_id" -->
+					</td>
+					<td class="alC" soy:id="evaluation">☆☆☆☆☆</td>
+					<td class="alC" soy:id="update_date">2011-03-09 14:56</td>
+					<td class="operation">
+						<a class="button" soy:id="detail_link">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="review_list" -->
+
+				<input type="submit" id="do_remove_btn" name="do_remove" value="1" style="display:none;" />
+				<input type="submit" id="do_change_publish_btn" name="do_change_publish" value="1" style="display:none;" />
+
+				</form soy:id="review_form">
+			</tbody>
+			
+		</table>
+	</div><!-- /block_body -->
+</div>
+
+<div class="block">
+	<div class="block_title">
+		<h2>その他</h2>
+	</div>
+
+	<div class="block_body">
+
+	<dl>
+		<dt><a soy:link="Config.Detail?plugin=item_review">レビュー設定</a></dt>
+		<dd>商品レビューの設定を行います。</dd>
+
+	</dl>
+
+	</div><!-- /block_body -->
+</div>

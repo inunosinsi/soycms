@@ -1,0 +1,225 @@
+<p><img soy:src="themes/common/images/cart/step_3.png" alt="STEP3.ご注文内容の確認"></p>
+
+<form soy:id="order_form">
+
+	<!-- soy:id="no_confirm_error" -->
+	<aside class="note">
+		<p>まだご注文は確定していません。最後に必ず「ご注文確定」ボタンを押して決定ください。</p>
+	</aside>
+	<!-- /soy:id="no_confirm_error" -->
+	<!-- soy:id="is_confirm_error" -->
+	<aside>
+		<p soy:id="confirm_error" class="error">入力されていない項目があります。</p>
+	</aside>
+	<!-- /soy:id="is_confirm_error" -->
+
+	<section id="cart_detail">
+		<h1 class="cart_txt">ご注文の商品</h1>
+		<table cellpadding="0" cellspacing="0" class="cart_detail_table">
+			<thead>
+				<tr>
+					<th scope="col">商品番号</th>
+					<th scope="col">商品</th>
+					<th scope="col">価格</th>
+					<th scope="col">個数</th>
+					<th scope="col">小計</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<th colspan="3">合計</th>
+					<td colspan="2" class="price subsum"><span soy:id="total_price">4,200</span>円</td>
+				</tr>
+			</tfoot>
+			<tbody>
+				<!-- soy:id="item_list" -->
+				<tr>
+					<td soy:id="item_code">123456</td>
+					<td>
+						<a href="#" soy:id="item_name">ナノブロック（フレンチブルドッグ）</a><br>
+						<!-- soy:id="item_option" /-->
+					</td>
+					<td class="price"><span soy:id="item_price">2,100</span>円</td>
+					<td class="alC" soy:id="order_number_text">1</td>
+					<td class="price subsum"><span soy:id="item_total">2,100</span>円</td>
+				</tr>
+				<!-- /soy:id="item_list" -->
+				<tr>
+					<th colspan="3">小計</th>
+					<td colspan="2" class="price subsum"><span soy:id="total_item_price">4,200</span>円</td>
+				</tr>
+				<!-- soy:id="module_list" -->
+				<tr>
+					<th colspan="3"><!-- soy:id="module_name" -->送料（国内）<!-- /soy:id="module_name" --></th>
+					<td colspan="2" class="price subsum"><span soy:id="module_price">0</span>円</td>
+				</tr>
+				<!-- /soy:id="module_list" -->
+			</tbody>
+		</table>
+		
+		<!-- soy:id="has_bonus_plugin" -->
+		<!-- soy:id="bonus_plugin_list" -->
+		<!-- soy:id="content" /-->
+		<!-- /soy:id="bonus_plugin_list" -->
+		<!-- /soy:id="has_bonus_plugin" -->
+		
+	</section>
+			
+	<section>
+		<h1 class="cart_txt">お客様情報</h1>
+		<section class="soycart_narrow">
+			<h1>基本情報</h1>
+			<table class="cart_detail_table">
+				<tr soy:id="name_show">
+					<th nowrap scope="row">お名前</th>
+					<td soy:id="name_text">曽井 太郎</td>
+				</tr>
+				<tr soy:id="reading_show">
+					<th nowrap scope="row">お名前カナ</th>
+					<td soy:id="reading_text">ソイ タロウ</td>
+				</tr>
+				<tr soy:id="jobName_show">
+					<th nowrap scope="row">法人名（勤務先など）</th>
+					<td soy:id="job_name_text">&nbsp;</td>
+				</tr>
+				<tr soy:id="zipCode_show">
+					<th nowrap scope="row">郵便番号</th>
+					<td soy:id="zip_code_text">606-8232</td>
+				</tr>
+				<tr soy:id="address_show">
+					<th nowrap scope="row">ご住所</th>
+					<td>
+						<!-- soy:id="area_text" /-->
+						<!-- soy:id="address1_text" /-->
+						<!-- soy:id="address2_text" /-->
+					</td>
+				</tr>
+				<tr soy:id="telephoneNumber_show">
+					<th nowrap scope="row">お電話番号</th>
+					<td soy:id="telephone_number_text">075-204-4823</td>
+				</tr>
+				<tr soy:id="mailAddress_show">
+					<th nowrap scope="row">メールアドレス</th>
+					<td soy:id="mail_address_text">info＠n-i-agroinformatics.com</td>
+				</tr>
+				<!--tr>
+					<th nowrap scope="row">パスワード</th>
+					<td>***********（セキュリティのため非表示）</td>
+				</tr-->
+				<tr soy:id="gender_show">
+					<th nowrap scope="row">性別</th>
+					<td><!-- soy:id="gender_text" -->だんせい<!-- /soy:id="gender_text" --></td>
+				</tr>
+				<tr soy:id="birthday_show">
+					<th nowrap scope="row">生年月日</th>
+					<td soy:id="birthday_text">MMMM/YY/XX</td>
+				</tr>
+				<tr soy:id="faxNumber_show">
+					<th nowrap scope="row">FAX番号</th>
+					<td soy:id="fax_number_text">&nbsp;</td>
+				</tr>
+				<tr soy:id="cellphoneNumber_show">
+					<th nowrap scope="row">携帯番号</th>
+					<td soy:id="cellphone_number_text">&nbsp;</td>
+				</tr>
+				<!-- soy:id="has_user_customfield" -->
+				<!-- soy:id="user_customfield_list" -->
+				<tr>
+					<th nowrap scope="row"><!-- soy:id="customfield_name" /--></th>
+					<td>
+						<!-- soy:id="customfield_confirm" /-->
+					</td>
+				</tr>
+				<!-- /soy:id="user_customfield_list" -->
+				<!-- /soy:id="has_user_customfield" -->
+				<tr soy:id="memo_show">
+					<th nowrap scope="row">備考・その他</th>
+					<td soy:id="memo">&nbsp;</td>
+				</tr>	
+			</table>
+			<!--p class="link"><a href="#">基本情報を変更する</a></p-->
+		</section>
+
+		<!-- soy:id="display_send_form" -->
+		<!-- soy:id="is_use_address" -->
+		<section class="soycart_narrow">
+			<h1>お届け先情報</h1>
+			<table class="cart_detail_table">
+				<tr>
+					<th nowrap scope="row">お届け先<span class="require"></span></th>
+					<td>
+						<!-- soy:id="send_office" /--><!-- soy:id="if_send_office" --><br /><!-- /soy:id="if_send_office" /-->
+						<!-- soy:id="send_name" /--> (<!-- soy:id="send_reading" /-->)<br />
+						<!-- soy:id="send_zip_code" /--><br />
+						<!-- soy:id="send_area" /--> <!-- soy:id="send_address1" /--> <!-- soy:id="send_address2" /--><br />
+						<!-- soy:id="send_tel" /-->
+					</td>
+				</tr>
+			</table>
+			<!--p class="link"><a href="#">お届け先情報を変更する</a></p-->
+		</section>
+		<!-- /soy:id="is_use_address" -->
+		<!-- /soy:id="display_send_form" -->
+	</section>
+
+	<section>
+		<h1 class="cart_txt">お支払・配送方法</h1>
+		<section class="soycart_narrow">
+			<table class="cart_detail_table">
+				<!-- soy:id="order_attribute_list" -->
+				<tr>
+					<th nowrap scope="row"><!-- soy:id="attribute_title" /--><span class="require"></span></th>
+					<td nowrap scope="row"><!-- soy:id="attribute_value" /--></td>
+				</tr>
+				<!-- /soy:id="order_attribute_list" -->
+			</table>
+			<!--p class="link"><a href="#">お支払方法を変更する</a></p-->
+		</section>
+			
+		<!--section class="soycart_narrow">
+			<h1>配送方法の選択</h1>
+			<table class="cart_detail_table">
+				<tr>
+					<th nowrap scope="row">ゆうパック<span class="require"></span></th>
+					<td nowrap scope="row">ゆうパックで配送します。<br>
+					配達時間の指定：12時〜14時</td>
+				</tr>
+			</table>
+			<p class="link"><a href="#">配送方法を変更する</a></p>
+
+			<aside class="note">
+				<p>この内容でご注文を確定します。よろしければ下の「ご注文確定」ボタンを押してください。</p>
+			</aside>
+		</section-->
+		
+		<!-- soy:id="no_confirm_plugin" -->
+		<aside class="note">
+			<p>
+まだご注文は確定していません。最後に必ず「ご注文確定」ボタンを押して決定ください。<br>
+「ご注文を受け付けました」の画面が表示され、注文受付メールが届きましたら注文完了となりますので、<br>
+注文受付メールが届かなかった場合はお問合せ下さい。
+			</p>
+		</aside>
+		<!-- /soy:id="no_confirm_plugin" -->
+		
+		<!-- soy:id="confirm_plugin_list" -->
+		<p soy:id="error" class="error"></p>
+		<aside class="note">
+			<p soy:id="content"></p>
+		</aside>
+		<!-- /soy:id="confirm_plugin_list" -->
+
+
+		<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_ok_off.png" alt="ご注文確定"></a></p>
+		<p class="alC"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
+	</section>
+	
+</form soy:id="order_form">
+
+<!-- soy:id="has_cart_plugin" -->
+
+<!-- soy:id="cart_plugin_list" -->
+<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- /soy:id="cart_plugin_list" -->
+
+<!-- /soy:id="has_cart_plugin" -->

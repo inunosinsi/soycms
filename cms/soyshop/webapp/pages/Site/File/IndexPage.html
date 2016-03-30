@@ -1,0 +1,106 @@
+<script>
+$(document).ready(function() {
+	$('#elfinder').elfinder({
+		// requestType : 'post',
+
+		// url : 'php/connector.php',
+		url : '<!-- soy:id="connector_file_path" /-->',  // connector URL (REQUIRED)
+		// transport : new elFinderSupportVer1(),
+		// getFileCallback : function(files, fm) {
+		// 	console.log(files);
+		// },
+		handlers : {
+            select : function(event, elfinderInstance) {
+                var selected = event.data.selected;
+				
+				if (selected.length) {
+					// console.log(elfinderInstance.file(selected[0]))
+				}
+				
+            }
+        },
+		// handlers : {
+		// 	select : function(e) {
+		// 		console.log(e.data)
+		// 	}
+		// },
+		// onlyMimes : ['image', 'text/plain']
+		// sync : 20000,
+		lang : 'jp',
+		customData : {answer : 42},
+		// requestType : 'POST',
+		// rememberLastDir : false,
+		// ui : ['tree', 'toolbar'],
+		// ui : ['toolbar', 'path', 'stat'],
+		// commands : [],
+		// commandsOptions : {
+		// 	edit : {
+		// 		mimes : ['text/plain', 'text/html', 'text/javascript'],
+		// 		editors : [
+		// 			{
+		// 				mimes : ['text/html'],
+		// 				load : function(textarea) {
+		// 					tinyMCE.execCommand("mceAddControl", true, textarea.id);
+		// 				},
+		// 				close : function(textarea, instance) {
+		// 					tinyMCE.execCommand('mceRemoveControl', false, textarea.id);
+		// 				},
+		// 				save : function(textarea, editor) {
+		// 					textarea.value = tinyMCE.get(textarea.id).selection.getContent({format : 'html'});
+		// 					tinyMCE.execCommand('mceRemoveControl', false, textarea.id);
+		// 				}
+		// 
+		// 			}
+		// 		]
+		// 	}
+		// }
+		// uiOptions : {
+		// 	toolbar : [['help']]
+		// }
+	});
+
+	// $('#finder2').elfinder({
+	// 	url : 'connectors/php/connector.php',
+	// 	width:650,
+	// 	lang : 'ru'
+	// })
+
+	// console.log(f1)
+	// 
+	// setTimeout(function() {
+	// 	console.log($('#finder').elfinder('instance'))
+	// }, 2000)
+
+	// new elFinder($('<div/>'))
+
+	// var f2 = $('#asd').elfinder({
+	// 	url : 'connectors/php/connector.php',
+	// 	lang : 'ru'
+	// }).elfinder('instance')
+});
+</script>
+
+<h1>
+	ファイル管理
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; ファイル管理</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>ファイルマネージャ</h2>
+	</div>
+
+	<div class="block_body">
+		<div id="elfinder"></div>
+	</div>
+
+</div>
+
+<style type="text/css">
+.elfinder-dialog{
+	position: absolute !important;
+	top: 150px !important;
+}
+</style>

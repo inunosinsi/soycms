@@ -1,0 +1,558 @@
+<div class="block">
+	
+	<p class="notice always" soy:id="do_db_update">
+		データベースの変更を行いました。
+	</p>
+		
+	<p class="error always" soy:id="has_db_update">
+		データベースの変更があります&nbsp;→&nbsp;<a soy:link="Update">データベースのバージョンアップを行う</a>
+	</p>
+	
+	<div class="block_title">
+		<h2>新着の注文</h2>
+		<div class="block_title_right">
+			<a soy:link="Order" class="button">注文一覧</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+		<!-- soy:id="has_order" -->
+
+		<!-- soy:id="more_order" -->
+		<p class="notice always">
+			新着の注文が15件以上あります	-&gt;
+			<a soy:link="Order">注文管理へ</a>
+		</p>
+		<!-- /soy:id="more_order" -->
+
+		<table class="form_list">
+			<caption>新着の注文</caption>
+			<thead>
+				<tr class="alC">
+					<th>注文日時</th>
+					<th>注文番号</th>
+					<th>顧客名</th>
+					<th>購入金額</th>
+					<th>支払い状況</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<!-- soy:id="order_list" -->
+				<tr>
+					<td class="alC" soy:id="order_date">2009-10-10</td>
+					<td class="alC" soy:id="order_id">1</td>
+					<td><a soy:id="customer_link">まめ蔵</a></td>
+					<td class="alR"><span soy:id="order_price">10000</span> 円</td>
+					<td class="alC" soy:id="payment_status">着払い</td>
+					<td class="operation">
+						<a soy:id="detail_link" class="button">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="order_list" -->
+			</tbody>
+		</table>
+
+		<!-- /soy:id="has_order" -->
+
+		<!-- soy:id="no_order" -->
+		<p class="notice always">
+			新着の注文はありません。
+		</p>
+		<!-- /soy:id="no_order" -->
+
+	</div>
+</div>
+
+<!-- soy:id="is_coupon_history_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>新着のクーポン使用履歴</h2>
+		<div class="block_title_right">
+			<a soy:link="Config.Detail?plugin=discount_free_coupon" class="button">クーポン自由設定プラグイン</a>
+		</div>
+	</div>
+	<div class="block_body">
+		<!-- soy:id="has_coupon_history" -->
+		<table class="form_list">
+			<caption>クーポン使用の新着5件</caption>
+			<thead>
+				<tr class="alC">
+					<th>使用時刻</th>
+					<th>クーポン名</th>
+					<th>注文番号</th>
+					<th>顧客名</th>
+					<th>値引き額</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="coupon_history_list" -->
+				<tr>
+					<td class="alC"><!-- soy:id="create_date" /--></td>
+					<td soy:id="coupon_name">hoge</td>
+					<td class="alC"><a soy:id="order_tracking_number">1-1111-1111</a></td>
+					<td><a soy:id="customer_link">まめくらまめぞう</a></td>
+					<td class="alC"><span soy:id="coupon_price">1000</span> 円</td>
+				</tr>
+				<!-- /soy:id="coupon_history_list" -->
+			</tbody>
+		</table>
+		<!-- /soy:id="has_coupon_history" -->
+		
+		<!-- soy:id="more_coupon_history" -->
+		
+		<!-- /soy:id="more_coupon_history" -->
+		
+		<!-- soy:id="no_coupon_history" -->
+		<p class="notice always">
+			クーポンの使用履歴はありません。
+		</p>
+		<!-- /soy:id="no_coupon_history" -->
+	</div>
+</div>
+<!-- /soy:id="is_coupon_history_list" -->
+
+<!-- soy:id="is_auto_ranking_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>売上ランキング</h2>
+		<div class="block_title_right">
+			<a soy:link="Config.Detail?plugin=common_auto_ranking" class="button">自動売上ランキングプラグインの設定</a>
+		</div>
+	</div>
+	<div class="block_body">
+		<!-- soy:id="has_auto_ranking" -->
+		<table class="form_list">
+			<caption>売上ランキング上位5件&nbsp;<!-- soy:id="latest_calc_date" /--></caption>
+			<thead>
+				<tr class="alC">
+					<th>順位</th>
+					<th>公開状況</th>
+					<th>商品名</th>
+					<th>商品コード</th>
+					<th>価格</th>
+					<th>在庫数</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="auto_ranking_list" -->
+				<tr>
+					<td class="alC" soy:id="ranking">1</td>
+					<td class="alC" soy:id="item_publish">公開</td>
+					<td soy:id="item_name">大豆</td>
+					<td soy:id="item_code">ITEM_001</td>
+					<td class="alR"><span soy:id="item_price">1000</span> 円</td>
+					<td class="alR"><span soy:id="item_stock">0</span> 点</td>
+					<td class="operation">
+						<a soy:id="detail_link" class="button">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="auto_ranking_list" -->
+			</tbody>
+		</table>
+		<!-- /soy:id="has_auto_ranking" -->
+				
+		<!-- soy:id="no_auto_ranking" -->
+		<p class="notice always">
+			売上ランキングの集計がありません。
+		</p>
+		<!-- /soy:id="no_auto_ranking" -->
+	</div>
+</div>
+<!-- /soy:id="is_auto_ranking_list" -->
+
+<!-- soy:id="is_notice_arrival_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>入荷通知希望顧客</h2>
+	</div>
+	<div class="block_body">
+		<!-- soy:id="has_notice_arrival" -->
+		<table class="form_list">
+			<caption>入荷通知希望顧客</caption>
+			<thead>
+				<tr class="alC">
+					<th>登録日</th>
+					<th>商品名</th>
+					<th>姓名</th>
+					<th>メールアドレス</th>
+					
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="notice_arrival_list" -->
+				<tr>
+					<td class="alC" soy:id="create_date">2014-08-08</td>
+					<td><a soy:id="item_name_link">大豆</a></td>
+					<td><a soy:id="user_name_link">まめくらまめぞう</a></td>
+					<td soy:id="mail_address">mamezo@omame.ma.me</td>
+				</tr>
+				<!-- /soy:id="notice_arrival_list" -->
+			</tbody>
+		</table>
+		<!-- /soy:id="has_notice_arrival" -->
+				
+		<!-- soy:id="no_notice_arrival" -->
+		<p class="notice always">
+			入荷通知希望者はいません。
+		</p>
+		<!-- /soy:id="no_notice_arrival" -->
+	</div>
+</div>
+<!-- /soy:id="is_notice_arrival_list" -->
+
+<!-- soy:id="is_stock_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>在庫切れ商品</h2>
+		<div class="block_title_right">
+			<a soy:link="Config.ShopConfig" class="button">ショップ設定</a>
+		</div>
+	</div>
+	<div class="block_body">
+		<!-- soy:id="has_stock" -->
+		<table class="form_list">
+			<caption>在庫切れ商品</caption>
+			<thead>
+				<tr class="alC">
+					<th>更新日時</th>
+					<th>公開状況</th>
+					<th>商品名</th>
+					<th>商品コード</th>
+					<th>価格</th>
+					<th>在庫数</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="stock_list" -->
+				<tr>
+					<td class="alC"><!-- soy:id="update_date" /--></td>
+					<td class="alC" soy:id="item_publish">公開</td>
+					<td soy:id="item_name">大豆</td>
+					<td soy:id="item_code">ITEM_001</td>
+					<td class="alR"><span soy:id="item_price">1000</span> 円</td>
+					<td class="alR"><span soy:id="item_stock">0</span> 点</td>
+					<td class="operation">
+						<a soy:id="detail_link" class="button">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="stock_list" -->
+			</tbody>
+		</table>
+		<!-- /soy:id="has_stock" -->
+		
+		<!-- soy:id="more_stock" -->
+		<p class="notice always">
+			在庫切れ商品が5件以上あります	-&gt;
+			<a soy:link="Item">商品管理へ</a>
+		</p>
+		<!-- /soy:id="more_stock" -->
+		
+		<!-- soy:id="no_stock" -->
+		<p class="notice always">
+			在庫切れの商品はありません
+		</p>
+		<!-- /soy:id="no_stock" -->
+	</div>
+</div>
+<!-- /soy:id="is_stock_list" -->
+
+<!-- soy:id="is_reviews_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>新着のレビュー</h2>
+		
+		<div class="block_title_right">
+			<a soy:link="Review" class="button">レビュー一覧</a>
+		</div>
+	</div>
+	<div class="block_body">
+		<!-- soy:id="has_reviews" -->
+		<table class="form_list">
+			<caption>新着のレビュー</caption>
+			<thead>
+				<tr class="alC">
+					<th>投稿日時</th>
+					<th>承認</th>
+					<th>商品名</th>
+					<th>投稿者名</th>
+					<th>評価</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="reviews_list" -->
+				<tr>
+					<td class="alC" soy:id="create_date">2011-03-15 18:18</td>
+					<td class="alC" soy:id="is_approved">許可</td>
+					<td><a soy:id="item_name">大豆</a></td>
+					<td>
+						<!-- soy:id="is_user_id" --><a soy:id="user_link"><!-- soy:id="user_name" /--></a><!-- /soy:id="is_user_id" -->
+						<!-- soy:id="no_user_id" --><!-- soy:id="user_name" /--><!-- /soy:id="no_user_id" -->
+					</td>
+					<td class="alC" soy:id="evaluation">☆☆☆☆☆</td>
+					<td class="operation">
+						<a soy:id="detail_link" class="button">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="reviews_list" -->
+			</tbody>
+		</table>
+		<!-- /soy:id="has_reviews" -->
+		
+		<!-- soy:id="more_reviews" -->
+		<p class="notice always">
+			新着のレビューが6件以上あります	-&gt;
+			<a soy:link="Review">レビュー一覧へ</a>
+		</p>
+		<!-- /soy:id="more_reviews" -->
+		
+		<!-- soy:id="no_reviews" -->
+		<p class="notice always">
+			新着のレビューはありません。
+		</p>
+		<!-- /soy:id="no_reviews" -->
+	</div>
+	
+</div>
+<!-- /soy:id="is_reviews_list" -->
+
+<!-- soy:id="is_news_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>新着情報</h2>
+		
+		<div class="block_title_right">
+			<a soy:link="Config.Detail?plugin=common_simple_news" class="button">新着情報の編集</a>
+		</div>
+	</div>
+	<div class="block_body">
+		<!-- soy:id="has_news" -->
+		<table class="form_list">
+			<caption>現在表示している新着情報</caption>
+			<thead>
+				<tr class="alC">
+					<th>日時</th>
+					<th>テキスト</th>
+					<th>リンク先</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="news_list" -->
+				<tr>
+					<td><!-- soy:id="create_date" -->2010-10-21<!-- /soy:id="create_date" --></td>
+					<td><!-- soy:id="text" -->新着情報テキスト<!-- /soy:id="text" --></td>
+					<td><!-- soy:id="url" -->新着情報リンク<!-- /soy:id="url" --></td>
+				</tr>
+				<!-- /soy:id="news_list" -->
+			</tbody>
+		</table>
+		<!-- /soy:id="has_news" -->
+		
+		<!-- soy:id="no_news" -->
+		<p class="notice always">
+			設定している新着情報はありません。
+		</p>
+		<!-- /soy:id="no_news" -->
+	</div>
+	
+</div>
+<!-- /soy:id="is_news_list" -->
+
+<!-- soy:id="is_recommend_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>おすすめ商品</h2>
+		<div class="block_title_right">
+			<a soy:link="Item" class="button">商品管理</a>
+		</div>
+	</div>
+	<div class="block_body">
+		<!-- soy:id="has_recommend" -->
+		<table class="form_list">
+			<caption>おすすめ商品</caption>
+			<thead>
+				<tr class="alC">
+					<th>更新日時</th>
+					<th>公開状況</th>
+					<th>商品名</th>
+					<th>商品コード</th>
+					<th>価格</th>
+					<th>在庫数</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="recommend_list" -->
+				<tr>
+					<td class="alC"><!-- soy:id="update_date" /--></td>
+					<td class="alC" soy:id="item_publish">公開</td>
+					<td soy:id="item_name">大豆</td>
+					<td soy:id="item_code">ITEM_001</td>
+					<td class="alR"><span soy:id="item_price">1000</span> 円</td>
+					<!-- soy:id="ignore_stock" -->
+                    <td class="alC">-----</td>
+                    <!-- /soy:id="ignore_stock" -->
+                    <!-- soy:id="display_stock" -->
+                    <td class="alR"><span soy:id="item_stock">0</span> 点</td>
+                    <!-- /soy:id="display_stock" -->
+					<td class="operation">
+						<a soy:id="detail_link" class="button">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="recommend_list" -->
+			</tbody>
+		</table>
+		<!-- /soy:id="has_recommend" -->
+		
+		<!-- soy:id="no_recommend" -->
+		<p class="notice always">
+			おすすめ設定の商品はありません
+		</p>
+		<!-- /soy:id="no_recommend" -->
+	</div>
+</div>
+<!-- /soy:id="is_recommend_list" -->
+	
+<!-- soy:id="is_update_item_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>最近更新した商品</h2>
+
+		<div class="block_title_right">
+			<a soy:link="Item" class="button">商品管理</a>
+		</div>
+	</div>
+	<div class="block_body">
+	<table class="form_list">
+		<caption>最近更新した商品(5件)</caption>
+		<thead>
+			<tr class="alC">
+				<th>更新日時</th>
+				<th>公開状況</th>
+				<th>商品名</th>
+				<th>商品コード</th>
+				<th>価格</th>
+				<th>在庫数</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<!-- soy:id="item_list" -->
+			<tr>
+				<td class="alC" soy:id="update_date"></td>
+				<td class="alC" soy:id="item_publish">公開</td>
+				<td soy:id="item_name">大豆</td>
+				<td soy:id="item_code">ITEM_001</td>
+				<td class="alR"><span soy:id="item_price">1000</span> 円</td>
+				<!-- soy:id="ignore_stock" -->
+                <td class="alC">-----</td>
+                <!-- /soy:id="ignore_stock" -->
+                <!-- soy:id="display_stock" -->
+                <td class="alR"><span soy:id="item_stock">0</span> 点</td>
+                <!-- /soy:id="display_stock" -->
+				<td class="operation">
+					<a soy:id="detail_link" class="button">詳細</a>
+				</td>
+			</tr>
+			<!-- /soy:id="item_list" -->
+		</tbody>
+
+	</table>
+	</div>
+</div>
+<!-- /soy:id="is_update_item_list" -->
+
+<!-- soy:id="is_update_page_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>最近更新したページ</h2>
+
+		<div class="block_title_right">
+			<a soy:link="Site.Pages" class="button">ページ管理</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+	<table class="form_list">
+		<caption>最近更新したページ</caption>
+		<thead>
+			<tr class="alC">
+				<th>更新日時</th>
+				<th>名前</th>
+				<th>URL</th>
+				<th>種類</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<!-- soy:id="page_list" -->
+			<tr>
+				<td class="alC" soy:id="update_date"></td>
+				<td>
+					<span soy:id="name">あああああ</span>
+				</td>
+				<td>
+					<a soy:id="uri">あああああ</a>
+				</td>
+				<td>
+					<span soy:id="type_text">トップページ</span>
+				</td>
+				<td class="operation">
+					<a soy:id="detail_link" href="#" class="button">編集</a>
+				</td>
+			</tr>
+			<!-- /soy:id="page_list" -->
+		</tbody>
+	</table>
+	</div>
+</div>
+<!-- /soy:id="is_update_page_list" -->
+
+<!-- soy:id="is_info" -->
+<div class="block">
+	<div class="block_title">
+		<h2>ショップ情報</h2>
+
+		<div class="block_title_right">
+			<a soy:link="Config.ShopConfig" class="button">ショップ設定</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+		<dl>
+			<dt>ショップ名</dt>
+			<dd><!-- soy:id="shop_name" /--></dd>
+
+			<dt>公開URL</dt>
+			<dd><a soy:id="shop_url" target="_blank"></a></dd>
+		</dl>
+
+
+	</div><!-- /block_body -->
+</div><!-- /block -->
+<!-- /soy:id="is_info" -->
+
+<div class="block">
+	<div class="block_body">
+		<p class="mb">
+			<a class="button" href="?clear_cache">キャッシュのクリア</a>
+			<!--  soy:id="init_link" -->
+			<!--
+			@TODO カスタマイズ機能の追加
+			<a class="button" soy:link="Config.Top">新着画面のカスタマイズ</a>
+			 -->
+			<a class="button" href="?init_template">テンプレート初期化</a>
+			<a class="button" href="?init_theme">CSSファイル初期化</a>
+			<a class="button" href="?init_mail">メール初期化</a>
+			<!--  /soy:id="init_link" -->
+		</p>
+	</div>
+</div>

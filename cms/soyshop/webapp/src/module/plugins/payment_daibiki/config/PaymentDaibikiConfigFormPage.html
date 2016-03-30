@@ -1,0 +1,159 @@
+<p class="notice" soy:id="updated">変更しました。</p>
+<p class="notice" soy:id="error">保存に失敗しました。</p>
+
+<form method="post" soy:id="config_form">
+
+<div style="width:95%; margin:0 auto 15px;">
+<table id="price_table" class="form_table" style="width:480px;margin: 0px;">
+	<caption>代引き手数料の設定</caption>
+	<thead>
+		<tr>
+			<th>商品代金（支払金額）</th>
+			<th>手数料</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="3" class="alC">
+				<a class="button" href="javascript:void(0);" onclick="add_price();" tabindex="99">入力欄の追加</a>
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+		<!-- soy:id="price_list" -->
+		<tr>
+			<td>
+				<input class="price_key alR" name="payment_daibiki[price_table][key][]"  soy:id="item_price" /> 円以上
+			</td>
+			<td>
+				<input class="alR" name="payment_daibiki[price_table][price][]"  soy:id="daibiki_fee" /> 円
+			</td>
+			<td>
+				<a class="button alC" href="javascript:void(0);" onclick="$(this).parent().parent().remove();">削除</a>
+			</td>
+		</tr>
+		<!-- /soy:id="price_list" -->
+		<tr style="display:none;">
+			<td>
+				<input class="price_key alR" name="payment_daibiki[price_table][key][]" value="" disabled="disabled" tabindex="0" /> 円以上
+			</td>
+			<td>
+				<input class="alR" name="payment_daibiki[price_table][price][]" value="" disabled="disabled" tabindex="100"  /> 円
+			</td>
+			<td>
+				<a class="button alC" href="javascript:void(0);" onclick="delete_price(this);">削除</a>
+			</td>
+		</tr>
+	</tbody>
+
+</table>
+</div>
+
+
+<div style="width:95%; margin:0 auto 15px;">
+<table id="forbidden_items_table" class="form_table" style="width:480px;margin: 0px;">
+	<caption>代引き不可商品の設定</caption>
+	<thead>
+		<tr>
+			<th>商品コード</th>
+			<th>商品名</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td colspan="3" class="alC">
+				<a class="button" href="javascript:void(0);" onclick="add_item();" tabindex="299">入力欄の追加</a>
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+		<!-- soy:id="item_list" -->
+		<tr>
+			<td>
+				<input class="" name="payment_daibiki[item_table][]" value="" soy:id="item_code" />
+			</td>
+			<td>
+				<a href="" soy:id="item_name">商品名です</a>
+			</td>
+			<td>
+				<a class="button alC" href="javascript:void(0);" onclick="$(this).parent().parent().remove();">削除</a>
+			</td>
+		</tr>
+		<!-- /soy:id="item_list" -->
+		<tr style="display:none;">
+			<td>
+				<input class="" name="payment_daibiki[item_table][]" value="" disabled="disabled" tabindex="200" />
+			</td>
+			<td>&nbsp;</td>
+			<td>
+				<a class="button alC" href="javascript:void(0);" onclick="delele_item(this);">削除</a>
+			</td>
+		</tr>
+	</tbody>
+
+</table>
+</div>
+
+
+<h3>文言設定</h3>
+
+<dl>
+	<dt>支払い方法選択時の文言<span class="option">HTML可。改行は反映されます。#PRICE#が計算後の代引き手数料に置換されます。</span></dt>
+	<dd>
+		<textarea class="minieditor" name="payment_daibiki[description]"tabindex="300" soy:id="description"></textarea>
+	</dd>
+
+	<dt>メールの文章</dt>
+	<dd>
+		<textarea class="minieditor" name="payment_daibiki[mail]"tabindex="300" soy:id="mail"></textarea>
+	</dd>
+</dl>
+
+<p class="pageBtn">
+	<input type="submit" class="submit_button" value="変更" tabindex="400" />
+</p>
+
+</form soy:id="config_form">
+
+<script type="text/javascript">
+var _add = function(table_id){
+	var tbody = $("#"+table_id+" tbody");
+	var origin = $("#"+table_id+" tbody tr:last");
+	var append = $("<tr>"+(origin.html())+"</tr>").insertBefore(origin);
+	$("td input", append).each(function(i){
+		$(this).removeAttr("disabled");
+		var tabindex = $("tr", tbody).length +1;
+		if(i==0) $(this).attr("tabindex", $(this).attr("tabindex")*1 + tabindex);
+		if(i==1) $(this).attr("tabindex", $(this).attr("tabindex")*1 + tabindex);
+	});
+	if($("#price_table tbody tr").size() == 3){
+		$("#price_table tbody tr a").each(function(){
+			$(this).css("visibility","");
+		});
+	}
+}
+var add_price = function(){
+	_add("price_table");
+}
+var add_item  = function(){
+	_add("forbidden_items_table")
+}
+
+var _delete = function(ele,table_id){
+	if($("#"+table_id+" tbody tr").size() >2){
+		$(ele).parent().parent().remove();
+	}
+	if($("#price_table tbody tr").size() == 2){
+		$("#price_table tbody tr a").css("visibility","hidden");
+	}
+}
+var delete_price = function(ele){
+	_add(ele,"price_table");
+}
+var delete_item = function(ele){
+	_add(ele,"forbidden_items_table");
+}
+
+</script>

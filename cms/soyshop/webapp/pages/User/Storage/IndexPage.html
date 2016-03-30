@@ -1,0 +1,46 @@
+<div class="block" style="background-color:#FFFFFF;">
+	<div class="block_title">
+		<h2>ストレージ</h2>
+		
+	</div>
+
+	<form soy:id="form">
+	<div class="block_body">
+		<p class="notice" soy:id="updated">写真のアップロードをしました。</p>
+		
+		<!-- soy:id="is_storage" -->
+		<dl>
+			<dd>
+				<input type="file" name="storage[]" multiple="multiple">&nbsp;
+				<input type="submit" name="submit" value="アップロード" />
+			</dd>
+		</dl>
+		
+		<!-- soy:id="has_storage" -->
+		<table class="form_list">
+			<thead>
+				<tr>
+					<th class="short">アップロード日時</th>
+					<th class="middle">ファイル名</th>
+					<th class="long">ダウンロードURL</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="storage_list" -->
+				<tr>
+					<td soy:id="upload_date">2014-04-01</td>
+					<td soy:id="file_name">hoge.pdf</td>
+					<td>
+						<input type="text" class="text" soy:id="download_input" value="">&nbsp;
+						<a class="button" soy:id="download_link" target="_blank">ダウンロード</a>
+					</td>
+				</tr>
+				<!-- /soy:id="storage_list" -->
+			</tbody>
+		</table>
+		
+		<!-- /soy:id="has_storage" -->		
+		<!-- /soy:id="is_storage" -->
+	</div>
+	</form>
+</div>

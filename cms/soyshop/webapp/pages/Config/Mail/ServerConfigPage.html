@@ -1,0 +1,368 @@
+<h1>
+	メール設定
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Config">設定</a> &gt; <a soy:link="Config.Mail">メール設定</a> &gt; サーバ・アドレス設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>メールサーバ・メールアドレス設定</h2>
+	</div>
+
+	<div class="block_body">
+		<div class="error" soy:id="error_message"></div>
+
+		<p class="notice" soy:display="updated">更新しました</p>
+		<p class="notice" soy:display="failed">更新に失敗しました</p>
+		<p class="notice" soy:id="sended">メールを送信しました</p>
+		<p class="notice always" soy:id="failed_to_send">送信に失敗しました。サーバの設定を確認して下さい。</p>
+
+		<form soy:id="form">
+		<input type="hidden" soy:id="is_ssl_enabled" id="is_ssl_enabled" value="0" />
+		<input type="hidden" soy:id="is_imap_enabled" id="is_imap_enabled" value="0" />
+
+		<table class="form_table">
+			<col style="width:100px" />
+			<caption>SMTP設定</caption>
+			<tr>
+				<th>送信方法</th>
+				<td>
+					<input soy:id="send_server_type_sendmail" type="radio" name="server_type" />
+					<label for="send_server_type_sendmail">sendmail (PHPのmail関数)</label>
+					<input soy:id="send_server_type_smtp" type="radio" name="server_type" />
+					<label for="send_server_type_smtp">SMTP</label>
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="2">SMTP</th>
+				<td>
+					<table class="inner_table">
+						<col style="width:100px;text-align:left;" />
+						<tr>
+							<th>サーバ</th>
+							<td><input soy:id="send_server_address" type="text" name="" value="" size="80" /></td>
+						</tr>
+						<tr>
+							<th>ポート</th>
+							<td><input soy:id="send_server_port" type="text" name="" value="" size="80" /></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="hidden" name="isUseSSLSendServer" value="0" />
+					<input soy:id="is_use_ssl_send_server" type="checkbox" name="" />
+					<label for="is_use_ssl_send_server">SSL(暗号化)を使用する</label>
+					
+					<p class="error always" soy:id="ssl_disabled">SSLが使えないサーバーです。</p>
+				</td>
+			</tr>
+
+			<tr>
+				<th rowspan="2">認証</th>
+				<td>
+					<input name="isUseSMTPAuth" type="hidden" value="0" />
+					<input soy:id="is_use_smtp_auth" type="checkbox" id="is_use_smtp_auth" />
+					<label for="is_use_smtp_auth">SMTP認証(SMTP-AUTH)を使用する</label>
+					<table class="inner_table">
+						<col style="width:100px;text-align:left;" />
+						<tr>
+							<th>ユーザ名</th>
+							<td><input soy:id="send_server_user" type="text" value="" size="80" /></td>
+						</tr>
+						<tr>
+							<th>パスワード</th>
+							<td><input soy:id="send_server_password" type="password" name="" value="" size="80" /></td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input name="isUsePopBeforeSMTP" type="hidden" value="0" />
+					<input soy:id="is_use_pop_before_smtp" type="checkbox" name="" />
+					<label for="is_use_pop_before_smtp">「POP/IMAP before SMTP」を使用する</label>
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table">
+			<col style="width:100px" />
+			<caption>POP/IMAP設定（POP/IMAP before SMTPの場合のみ）</caption>
+
+			<tr>
+				<th>受信方法</th>
+				<td>
+					<input soy:id="receive_server_type_pop" type="radio" name="server_type" />
+					<label for="receive_server_type_pop">POP3</label>
+
+					<input soy:id="receive_server_type_imap" type="radio" name="server_type" />
+					<label for="receive_server_type_imap">IMAP</label>
+
+					<p class="error always" soy:id="imap_disabled">IMAPが使えないサーバーです。</p>
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="2">サーバ設定</th>
+				<td style="background-color:white;">
+					<table class="inner_table">
+						<col style="width:100px;text-align:left;" />
+						<tr>
+							<th>サーバ</th>
+							<td><input soy:id="receive_server_address" type="text" name="" value="" size="80" /></td>
+						</tr>
+						<tr>
+							<th>ポート</th>
+							<td><input soy:id="receive_server_port" type="text" name="" value="" size="80" /></td>
+						</tr>
+						<tr>
+							<th>ユーザ名</th>
+							<td><input soy:id="receive_server_user" type="text" value="" size="80" /></td>
+						</tr>
+						<tr>
+							<th>パスワード</th>
+							<td><input soy:id="receive_server_password" type="password" name="" value="" size="80" /></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					<input name="isUseSSLReceiveServer" type="hidden" value="0" />
+					<input soy:id="is_use_ssl_receive_server" type="checkbox" name="" />
+					<label for="is_use_ssl_receive_server">SSL(暗号化)を使用する</label>
+					
+					<p class="error always" soy:id="ssl_disabled">SSLが使えないサーバーです。</p>
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table">
+			<col style="width:200px" />
+			<caption>管理者メールアドレス（送信元アドレス）設定</caption>
+			<tr>
+				<th>送信元アドレス（From）</th>
+				<td>
+					<input id="administrator_address" soy:id="administrator_address" type="text" value="" size="80" />
+				</td>
+			</tr>
+			<tr>
+				<th>送信元名称</th>
+				<td>
+					<input soy:id="administrator_name" type="text" value="" size="80" />
+				</td>
+			</tr>
+			<!--
+			<tr>
+				<th>差出人メールアドレス</th>
+				<td>
+					<input soy:id="administrator_mail" type="text" value="" size="80" />
+				</td>
+			</tr>
+			-->
+			<tr>
+				<th>返信先メールアドレス（Reply-To）</th>
+				<td>
+					<input soy:id="return_address" type="text" value="" size="80" />
+				</td>
+			</tr>
+			<tr>
+				<th>返信先名称</th>
+				<td>
+					<input soy:id="return_name" type="text" value="" size="80" />
+				</td>
+			</tr>
+			<tr>
+				<th rowspan="3">送信オプション</th>
+				<td>
+					<input soy:id="is_send_with_administrator" type="checkbox" />
+					<label for="is_send_with_administrator">ユーザ向けメールのコピーを送信元アドレスにも送付する</label>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="additional_mail_address_for_user_mail">ユーザ向けメールのコピーを以下のアドレスにも送付する（１行１アドレス）</label>
+					<textarea soy:id="additional_mail_address_for_user_mail" id="additional_mail_address_for_user_mail" onclick="$(this).css('height',100);"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label for="additional_mail_address_for_admin_mail">管理者向けメールのコピーを以下のアドレスにも送付する（１行１アドレス）</label>
+					<textarea soy:id="additional_mail_address_for_admin_mail" id="additional_mail_address_for_admin_mail" onclick="$(this).css('height',100);"></textarea>
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table">
+			<col style="width:200px" />
+			<caption>文字コード設定</caption>
+			<tr>
+				<th>標準文字コード</th>
+				<td>
+					<select soy:id="encoding_select"></select>
+				</td>
+			</tr>
+			<tr>
+				<th>個別指定<span class="option">(「ドメイン,文字コード」の順に記入してください)</span></th>
+				<td>
+					<textarea soy:id="encoding_config" onclick="$(this).css('height',160);"></textarea>
+				</td>
+			</tr>
+		</table>
+
+		<p class="pageBtn">
+			<input type="submit" class="submit_button" value="更新"  />
+		</p>
+
+		</form soy:id="form">
+	</div>
+
+
+</div>
+
+<div class="block">
+	<div class="block_title">
+		<h2>送信テスト</h2>
+	</div>
+
+	<div class="block_body">
+		<form soy:id="test_form">
+		<table class="form_table">
+			<col style="width:200px" />
+			<caption>送信テスト</caption>
+			<tr>
+				<th>テストメールの送信先</th>
+				<td>
+					<input type="text" value="" id="test_mail_address" soy:id="test_mail_address" size="80" />
+				</td>
+			</tr>
+		</table>
+
+		<p class="pageBtn">
+			<input name="test" type="submit" class="submit_button" value="テスト送信" onclick="return confirm_test_send();" />
+		</p>
+
+		</form soy:id="test_form">
+	</div>
+</div>
+
+
+<style type="text/css">
+table.inner_table{
+	margin:8px auto 13px;
+}
+</style>
+
+<script type="text/javascript">
+function changeSendPort(){
+	var port = 25;
+	if($("#is_use_ssl_send_server").prop("checked")){
+		if($("#send_server_type_smtp").prop("checked"))port = 465;
+	}
+
+	$('#send_server_port').val(port);
+}
+
+function changeReceivePort(){
+	var port = 110;
+	if($("#is_use_ssl_receive_server").prop("checked")){
+		if($("#receive_server_type_pop").prop("checked"))port = 995;
+		if($("#receive_server_type_imap").prop("checked"))port = 993;
+	}else{
+		if($("#receive_server_type_pop").prop("checked"))port = 110;
+		if($("#receive_server_type_imap").prop("checked"))port = 147;
+	}
+
+	$('#receive_server_port').val(port);
+}
+
+function toggleSMTP(){
+	var ids = [
+		"send_server_address","send_server_port","send_server_user","send_server_password","is_use_ssl_send_server",
+		"is_use_pop_before_smtp","is_use_smtp_auth",
+		"receive_server_type_pop","receive_server_type_imap","receive_server_address","receive_server_port","receive_server_user","receive_server_password","is_use_ssl_receive_server"
+	];
+
+	if($("#send_server_type_smtp").prop("checked")){
+
+		$(ids).each(function(index,id){
+			$("#"+id).removeAttr("disabled");
+		});
+		disableUseSSL();
+		togglePOPIMAPSetting();
+		toggleSMTPAUTHSetting();
+	}else{
+		$(ids).each(function(index,id){
+			$("#"+id).prop("disabled","disabled");
+		});
+	}
+}
+
+function toggleSMTPAUTHSetting(){
+	if($("#is_use_smtp_auth").prop("checked")){
+		$("#send_server_user").removeAttr("disabled");
+		$("#send_server_password").removeAttr("disabled");
+
+		$("#is_use_pop_before_smtp").prop("checked",false);
+		togglePOPIMAPSetting();
+	}else{
+		$("#send_server_user").prop("disabled","disabled");
+		$("#send_server_password").prop("disabled","disabled");
+	}
+}
+
+function togglePOPIMAPSetting(){
+	var ids = ["receive_server_type_pop","receive_server_type_imap","receive_server_address","receive_server_port","receive_server_user","receive_server_password","is_use_ssl_receive_server"];
+	if($("#is_use_pop_before_smtp").prop("checked")){
+		$(ids).each(function(index,id){
+			$("#"+id).removeAttr("disabled");
+		});
+
+		disableUseSSL();
+		disableUseIMAP();
+
+		$("#is_use_smtp_auth").prop("checked",false);
+		toggleSMTPAUTHSetting();
+	}else{
+		$(ids).each(function(index,id){
+			$("#"+id).prop("disabled","disabled");
+		});
+	}
+}
+
+function disableUseSSL(){
+	if($("#is_ssl_enabled").val() == 0){
+		$("#is_use_ssl_send_server").prop("disabled","disabled");
+		$("#is_use_ssl_receive_server").prop("disabled","disabled");
+	}
+}
+
+function disableUseIMAP(){
+	if($("#is_imap_enabled").val() == 0){
+		$("#receive_server_type_imap").prop("disabled","disabled");
+	}
+}
+
+function confirm_test_send(){
+	if($("#administrator_address").val().length < 1){
+		alert("先に「送信元アドレス」を入力して設定を保存してください。");
+		return false;
+	};
+
+	if($("#test_mail_address").val().length < 1){
+		alert("「テストメールの送信先」を入力してください。");
+		return false;
+	};
+
+	return confirm(
+			"現在保存されている設定内容でテストメールを送信します。\n" + 
+			"送信先: " + $("#test_mail_address").val() + "\n\n"
+			+ "よろしければ「OK」を押してください。\n"
+			+ "中止する場合は「キャンセル」を押してください。"
+	);
+}
+</script>

@@ -1,0 +1,103 @@
+<div class="block_body clearfix">
+	<form soy:id="form">
+		<table class="form_table" style="table-layout:auto;">
+			<caption>本文</caption>
+			<tr>
+				<th colspan="2">ユーザ向けメール文面</th>
+			</tr>
+			<tr class="last_row">
+				<td>
+					<textarea soy:id="mail_user" id="mail_user" class="editor" style="height:500px;"></textarea>
+				</td>
+				<td class="mail_replace_word_panel">
+					<a href="javascript:void(0);" class="button" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
+					<div class="word_list">
+						<h5>置換文字列</h5>
+						<ul>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#TRACKING_NUMBER#');">注文番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#ORDER_DATE#');">注文日時</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#ITEM_ORDER_LIST#');">商品リスト</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#MODULE_LIST#');">モジュールリスト</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#SEND_OFFICE#');">お届け先法人名</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#SEND_NAME#');">お届け先名前</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#SEND_READING#');">お届け先フリガナ</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#SEND_ZIPCODE#');">お届け先郵便番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#SEND_AREA#');">お届け先都道府県</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#SEND_ADDRESS1#');">お届け先住所1</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#SEND_ADDRESS2#');">お届け先住所2</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#SEND_TELEPHONE#');">お届け先電話番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_OFFICE#');">請求先法人名</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_NAME#');">請求先名前</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_READING#');">請求先フリガナ</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_MAILADDRESS#');">請求先メールアドレス</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_ZIPCODE#');">請求先郵便番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_AREA#');">請求先都道府県</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_ADDRESS1#');">請求先住所1</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_ADDRESS2#');">請求先住所2</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_TELEPHONE#');">請求先電話番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#MEMO#');">備考</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<th colspan="2">管理者向けメール文面</th>
+			</tr>
+			<tr class="last_row">
+				<td>
+					<textarea soy:id="mail_admin" id="mail_admin" class="editor" style="height:500px;"></textarea>
+				</td>
+				<td class="mail_replace_word_panel">
+					<a href="javascript:void(0);" class="button" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
+					<div class="word_list">
+						<h5>置換文字列</h5>
+						<ul>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#TRACKING_NUMBER#');">注文番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#ORDER_DATE#');">注文日時</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#ITEM_ORDER_LIST#');">商品リスト</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#MODULE_LIST#');">モジュールリスト</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#SEND_OFFICE#');">お届け先法人名</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#SEND_NAME#');">お届け先名前</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#SEND_READING#');">お届け先フリガナ</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#SEND_ZIPCODE#');">お届け先郵便番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#SEND_AREA#');">お届け先都道府県</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#SEND_ADDRESS1#');">お届け先住所1</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#SEND_ADDRESS2#');">お届け先住所2</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#SEND_TELEPHONE#');">お届け先電話番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_OFFICE#');">請求先法人名</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_NAME#');">請求先名前</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_READING#');">請求先フリガナ</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_MAILADDRESS#');">請求先メールアドレス</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_ZIPCODE#');">請求先郵便番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_AREA#');">請求先都道府県</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_ADDRESS1#');">請求先住所1</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_ADDRESS2#');">請求先住所2</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_TELEPHONE#');">請求先電話番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#MEMO#');">備考</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<div class="alC">
+			<p class="pageBtn"><input type="submit" value="更新" /></p>
+		</div>
+	</form>
+</div>
+
+<style type="text/css">
+.mail_replace_word_panel{
+	vertical-align:top;
+	width:70px;
+	text-align:center;
+}
+.mail_replace_word_panel .word_list{
+	display:none;
+	text-align:left;
+}
+.actived .word_list{
+	display:block;
+	width:130px;
+}
+</style>

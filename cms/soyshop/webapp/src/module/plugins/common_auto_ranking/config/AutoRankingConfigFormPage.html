@@ -1,0 +1,45 @@
+<p class="notice" soy:id="updated">更新しました</p>
+
+<form soy:id="form">
+<dl>
+	<dt>ランキング商品表示件数</dt>
+	<dd>
+		<input type="text" soy:id="count">&nbsp;件
+	</dd>
+	
+	<dt>集計期間</dt>
+	<dd>
+		<input type="text" soy:id="period">&nbsp;日間
+	</dd>
+</dl>
+<p class="pageBtn">
+	<input type="submit" name="update" value="更新" />
+</p>
+</form soy:id="form">
+
+<h1>ジョブの設定</h1>
+<div class="section">
+<h3>jobの実行</h3>
+<p class="ml20">php.exe <!-- soy:id="job_path" /--></p>
+<p class="ml20 mb">※exe.phpと<!-- soy:id="site_id" /-->の間には半角スペースが必要です</p>
+</div>
+
+
+<h1>テンプレートへの記述</h1>
+
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- shop:module="common.auto_ranking" --&gt;
+&lt;section&gt;
+	&lt;h1&gt;ランキング&lt;/h1&gt;
+	&lt;ul&gt;
+		&lt;li block:id="ranking_item_list"&gt;
+			&lt;a cms:id="item_link"&gt;&lt;img cms:id="item_small_image"&gt;&lt;/a&gt;
+			&lt;p&gt;
+				&lt;a cms:id="item_link*"&gt;&lt;!-- cms:id="item_name" /--&gt;&lt;/a&gt;
+			&lt;/p&gt;
+		&lt;/li&gt;
+	&lt;/ul&gt;
+&lt;/section&gt;
+&lt;!-- /shop:module="common.auto_ranking" --&gt;
+</pre>
+<p class="ml40 mb">※block:id="ranking_item_list"内では、block:id="item"やblock:id="item_list"で使用できるcms:idを使用できます。</p>

@@ -1,0 +1,203 @@
+<section id="cart_procedure">
+	<form soy:id="form">
+		<h1 class="cart_txt">登録情報の変更</h1>
+		<!-- soy:display="has_error" -->
+		<div class="error narrow">
+			<p>正しく入力されていない項目があります。</p>
+		</div>
+		<!-- /soy:display="has_error" -->
+
+		<section class="soycart_narrow">
+			<table class="soycart_form">
+				<tr soy:id="name_show">
+					<th nowrap scope="row">お名前<span soy:id="name_required">（必須）</span></th>
+					<td>
+						<p class="error" soy:id="name_error">お名前が正しく入力されていません。</p>
+						<input name="" type="text" id="" class="w300" soy:id="user_name">
+						<span class="note">【全角】</span>
+					</td>
+				</tr>
+				<tr soy:id="reading_show">
+					<th nowrap scope="row">お名前カナ<span soy:id="reading_required">（必須）</span></th>
+					<td>
+						<p class="error" soy:id="reading_error">お名前カナが正しく入力されていません。</p>
+						<input name="" type="text" id="" class="w300" soy:id="user_reading">
+						<span class="note">【全角カナ】</span>
+					</td>
+				</tr>
+				<tr soy:id="nickname_show">
+					<th nowrap scope="row">ニックネーム<span soy:id="nickname_required">（必須）</span></th>
+					<td>
+						<p class="error" soy:id="nickname_error">ニックネームが正しく入力されていません。</p>
+						<input name="" type="text" id="" class="w300" soy:id="user_nickname">
+						<span class="note">【全角】</span>
+					</td>
+				</tr>
+				<tr>
+					<th nowrap scope="row">プロフィールページ</th>
+					<td><input type="checkbox" soy:id="profile_display"></td>
+				</tr>
+				<tr>
+					<th nowrap scope="row">プロフィール画像</th>
+					<td>
+						<img soy:id="user_image">
+						<input type="hidden" soy:id="user_image_path" />
+						<!-- soy:id="is_user_image" --><input type="checkbox" soy:id="delete_image"><br><!-- /soy:id="is_user_image" -->
+						<input name="image" type="file" />
+					</td>
+				</tr>
+				<tr soy:id="jobName_show">
+					<th nowrap scope="row">法人名（勤務先など）<span soy:id="jobName_required">（必須）</span></th>
+					<td>
+						<p class="error" soy:id="job_name_error">職種が正しく入力されていません。</p>
+						<input name="" type="text" id="" class="w300" soy:id="user_job_name">
+					</td>
+				</tr>
+				<tr id="zipcode1" soy:id="zipCode_show">
+					<th nowrap scope="row">郵便番号<span soy:id="zipCode_required">（必須）</span></th>
+					<td>
+						<p class="error" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
+						<input name="" type="text" id="" class="input-zip w80" soy:id="user_zip_code">
+						<span class="note">【半角数字】</span> 
+						<span class="search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
+					</td>
+				</tr>
+				<!-- soy:id="address_show" -->
+				<tr>
+					<th nowrap scope="row">ご住所<span soy:id="address_required">（必須）</span></th>
+					<td>
+						<p class="error" soy:id="address_error">ご住所が正しく入力されていません。</p>
+						<select name="" id="" class="input-pref" soy:id="user_area">
+							<option value="">都道府県名</option>
+						</select>
+						<table>
+							<tr>
+								<td>市区郡：</td>
+								<td><input name="" type="text" id="" class="input-city w130" soy:id="user_address1"></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><span class="exmpl">（例）京都市左京区</span></td>
+							</tr>
+							<tr>
+								<td>町番地：</td>
+								<td><input name="" type="text" id="" class="input-town w300" soy:id="user_address2"></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td><span class="exmpl">（例）左京区高野東開町8-5 SOYビル1F</span></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<!-- /soy:id="address_show" -->
+				<tr soy:id="telephoneNumber_show">
+					<th nowrap scope="row">電話番号<span soy:id="telephoneNumber_required">（必須）</span></th>
+					<td>
+						<p class="error" soy:id="tel_number_error">電話番号が正しく入力されていません。</p>
+						<input name="" type="text" id="" class="w130" soy:id="user_telephone_number">
+						<span class="note">【半角数字】</span><span class="exmpl">（例）075-204-4823</span>
+					</td>
+				</tr>			
+				<tr soy:id="mailAddress_show">
+					<th nowrap scope="row">メールアドレス<span soy:id="mailAddress_required">（必須）</span></th>
+					<td>
+						<p class="error" soy:id="mail_address_error">メールアドレスが正しく入力されていません。</p>
+						<input name="" type="text" id="" class="w300" soy:id="user_mail_address">
+						<span class="note">【半角英数】</span><br>
+						<span class="exmpl">（例）info＠n-i-agroinformatics.com</span>
+					</td>
+				</tr>
+				<tr soy:id="accountId_show">
+					<th nowrap scope="row">ログインID<span soy:id="accountId_required">（必須）</span></th>
+					<td>
+						<!-- soy:id="user_account_id_text" /-->
+					</td>
+				</tr>
+				<tr soy:id="gender_show">
+					<th nowrap scope="row">性別<span soy:id="gender_required">(必須)</span></th>
+					<td>
+						<p class="error" soy:id="gender_error">性別が選択されていません。</p>
+						<input type="radio" name="" id="" soy:id="gender_male">
+						<label for="radio_sex_male">男性</label>
+						<input type="radio" name="" id="" value="" soy:id="gender_female">
+						<label for="radio_sex_female">女性</label>
+					</td>
+				</tr>
+				<tr id="birthday" soy:id="birthday_show">
+					<th nowrap scope="row">生年月日<span soy:id="birthday_required">(必須)</span></th>
+					<td>
+						<p class="error" soy:id="birthday_error">誕生日が正しく入力されていません。</p>
+						西暦
+						<input name="" type="text" id="" class="w50" soy:id="birth_year">
+						年
+						<input name="" type="text" id="" class="w50" soy:id="birth_month">
+						月
+						<input name="" type="text" id="" class="w50" soy:id="birth_day">
+						日
+					</td>
+				</tr>
+				<tr soy:id="faxNumber_show">
+					<th nowrap scope="row">FAX番号<span soy:id="faxNumber_required">(必須)</span></th>
+					<td>
+						<p class="error" soy:id="fax_number_error">FAX番号が正しく入力されていません。</p>
+						<input name="" type="text" id="" class="w130" soy:id="user_fax_number">
+						<span class="note">【半角数字】</span><span class="exmpl">（例）075-204-4823</span>
+					</td>
+				</tr>
+				<tr soy:id="cellphoneNumber_show">
+					<th nowrap scope="row">携帯番号<span soy:id="cellphoneNumber_required">(必須)</span></th>
+					<td>
+						<p class="error" soy:id="cellphone_number_error">携帯番号が正しく入力されていません。</p>
+						<input name="" type="text" id="" class="w130" soy:id="user_cellphone_number">
+						<span class="note">【半角数字】</span><span class="exmpl">（例）080-1234-5678</span>
+					</td>
+				</tr>
+				<tr soy:id="url_show">
+					<th nowrap scope="row">URL<span soy:id="url_required">(必須)</span></th>
+					<td>
+						<p class="error" soy:id="url_error">URLが正しく入力されていません。</p>
+						<input name="" type="text" id="" class="w300" soy:id="user_url">
+						<span class="note">【半角数字】</span><br>
+						<span class="exmpl">（例）http://www.soyshop.net/</span>
+					</td>
+				</tr>
+
+				<tr soy:id="active_soymail_connector">
+					<th nowrap scope="row">メールマガジン</th>
+					<td>
+						<input type="hidden" soy:id="mail_magazine_hidden">
+						<input name="" type="checkbox" id="" soy:id="mail_magazine">
+					</td>
+				</tr>
+				
+				<!-- soy:id="has_user_customfield" -->
+				<!-- soy:id="user_customfield_list" -->
+				<tr>
+					<th nowrap scope="row"><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></th>
+					<td>
+						<!-- soy:id="has_customfield_error" -->
+						<p class="error" soy:id="customfield_error"></p>
+						<!-- /soy:id="has_customfield_error" -->
+						<!-- soy:id="customfield_form" /-->
+					</td>
+				</tr>
+				<!-- /soy:id="user_customfield_list" -->
+				<!-- /soy:id="has_user_customfield" -->
+				<tr soy:id="memo_show">
+					<th nowrap scope="row">備考・その他<span soy:id="memo_required">（必須)</span></th>
+					<td>
+						<p class="error" soy:id="memo_error">備考が入力されていません。</p>
+						<textarea name="" rows="6" class="w450" id="" soy:id="order_memo"></textarea>
+						<br>
+						<span class="exmpl">何かありましたらご自由にお書きください。</span>
+					</td>
+				</tr>
+			</table>
+			<p class="btn"><input type="image" name="confirm" soy:src="themes/common/images/mypage/btn_confirm_off.jpg" alt="確認する"></p>
+			<p class="alC"><a onclick="history.back();">&lt;&lt; 戻る</a></p>
+		</section>
+	</form soy:id="form">
+</section>
+		
+<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->

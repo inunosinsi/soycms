@@ -1,0 +1,58 @@
+<h1>
+	プラグイン詳細
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Plugin">プラグイン管理</a> &gt; プラグイン詳細</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>プラグイン詳細 - <!-- soy:id="module_name_text" /--></h2>
+	</div>
+
+	<div class="block_body">
+
+		<table class="form_list">
+
+			<tbody>
+				<tr>
+					<th>ID</th>
+					<td soy:id="module_id">1</td>
+				</tr>
+				<tr>
+					<th>プラグイン名</th>
+					<td soy:id="module_name">1</td>
+				</tr>
+				<tr>
+					<th>バージョン</th>
+					<td soy:id="module_version"></td>
+				</tr>
+				<tr>
+					<th>状態</th>
+					<td soy:id="module_status"></td>
+				</tr>
+				<tr>
+					<th>説明</th>
+					<td soy:id="module_description"></td>
+				</tr>
+				<tr soy:id="display_module_detail_link">
+					<th>紹介記事</th>
+					<td><a soy:id="module_detail_link" target="_blank">記事のタイトル</a></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div soy:id="has_info" class="section">
+			<h3 style="margin-top:5px;">詳細</h3>
+			<div class="ml20 mb20" soy:id="plugin_info"></div>
+		</div soy:id="has_info">
+
+		<form soy:id="toggle_form">
+		<p class="pageBtn">
+			<input type="submit" soy:id="button" style="width:150px;" />
+		</p>
+		</form soy:id="toggle_form">
+
+
+	</div>
+</div>

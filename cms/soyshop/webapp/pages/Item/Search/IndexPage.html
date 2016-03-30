@@ -1,0 +1,199 @@
+<h1>
+	商品管理
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Item">商品管理</a> &gt; 商品検索</span>
+</h1>
+
+<!-- soy:id="search_result" -->
+<div class="block">
+	<div class="block_title">
+		<h2>検索結果</h2>
+
+		<div class="block_title_right">
+			<a soy:link="Item.Search#search_items" class="button">商品検索</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+		<table class="form_list">
+			<caption>
+				合計 <span soy:id="count_max*">100000</span>件：
+				<span soy:id="count_start*">1</span> ～ <span soy:id="count_end*">20</span>
+			</caption>
+			<thead>
+				<tr>
+					<th>
+						<input id="item_checkbox" class="item_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
+					</th>
+					<th>公開状態</th>
+					<th>カテゴリ<a soy:id="sort_category">↓</a> <a soy:id="sort_category_desc">↑</a></th>
+					<th>商品名<a soy:id="sort_name">↓</a> <a soy:id="sort_name_desc">↑</a></th>
+					<th>商品コード<a soy:id="sort_code">↓</a> <a soy:id="sort_code_desc">↑</a></th>
+					<th>価格 / セール<a soy:id="sort_price">↓</a> <a soy:id="sort_price_desc">↑</a></th>
+					<th>在庫数 (注文数)<a soy:id="sort_stock">↓</a> <a soy:id="sort_stock_desc">↑</a></th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<form soy:id="item_form">
+				<!-- soy:id="item_list" -->
+				<tr>
+					<td><input soy:id="item_check" class="item_checkbox" type="checkbox" /></td>
+					<td class="alC"><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
+					<td class="alC" soy:id="item_category">１</td>
+					<td soy:id="item_name">大豆</td>
+					<td soy:id="item_code">ITEM_001</td>
+					<td class="alR"><span soy:id="item_price">1000</span> 円 <!-- soy:id="is_sale" --> / <span soy:id="sale_price">1000</span> 円<!-- /soy:id="is_sale" --></td>
+					<td class="alR">
+						<span soy:id="item_stock">100</span>
+						(<span soy:id="order_count">100</span>)
+					</td>
+					<td class="operation">
+						<a soy:id="detail_link">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="item_list" -->
+
+				<input type="submit" id="do_remove_btn" name="do_remove" value="1" style="display:none;" />
+				<input type="submit" id="do_change_publish_btn" name="do_change_publish" value="1" style="display:none;" />
+
+				</form soy:id="item_form">
+			</tbody>
+
+			<tfoot>
+				<tr id="items_operation" style="display:none;">
+					<td colspan="8">
+						<span class="option">操作：</span>
+						<a href="javascript:void(0);" onclick="$('#do_change_publish_btn').val(1).trigger('click');" class="button">公開</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_publish_btn').val(0).trigger('click');" class="button">非公開</a>
+
+						<a href="javascript:void(0);" onclick="$('#remove_confirm').trigger('popup');" class="button fr">商品の削除</a>
+
+						<div id="remove_confirm"  class="popup alC" style="display:none;">
+							<p class="mb40">本当に商品を削除しても良いですか？</p>
+
+							<p>
+							<a href="javascript:void(0);" onclick="$('#do_remove_btn').trigger('click');" class="button">削除実行</a>
+							<a href="javascript:void(0);" onclick="$('#remove_confirm').hide();" class="button ml20">キャンセル</a>
+							</p>
+
+
+						</div>
+					</td>
+				</tr>
+				<tr class="pager">
+					<td colspan="8">
+						<a soy:id="reset_link" class="button fl">検索条件のリセット</a>
+
+						<div class="pager_item">
+							<a soy:id="prev_pager">&lt;</a>
+							<!-- soy:id="pager_list" -->
+							<a soy:id="target_link">1</a>
+							<!-- /soy:id="pager_list" -->
+							<a soy:id="next_pager">&gt;</a>
+						</div>
+						<div class="pager_item">
+							<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+						</div>
+					</td>
+				</tr>
+			</tfoot>
+
+		</table>
+
+	</div><!-- /block_body -->
+</div>
+<!-- /soy:id="search_result" -->
+
+<!-- soy:id="no_result" -->
+<div class="block">
+	<div class="block_title">
+		<h2>検索結果</h2>
+	</div>
+
+	<div class="block_body">
+		<p class="error always">
+			該当の商品が見つかりませんでした。条件を変えて検索してください
+			<a soy:id="reset_link*" class="button fr">検索条件のリセット</a>
+		</p>
+
+	</div><!-- /block_body -->
+</div>
+<!-- /soy:id="no_result" -->
+
+<form method="get">
+
+<a name="search_items"></a>
+
+<div class="block">
+	<div class="block_title">
+		<h2>検索条件</h2>
+	</div>
+
+	<div class="block_body">
+
+		<input type="hidden" name="search" value="1" />
+
+		<table class="form_table">
+			<caption>商品検索条件</caption>
+			<tr><th>商品名</th>
+			<td>
+				<input type="text" class="text" soy:id="item_name" />
+
+				<input type="checkbox" class="option" soy:id="is_open" checked/>
+				<label for="is_open_check">公開中</label>
+				<input type="checkbox" class="option" soy:id="is_close" checked/>
+				<label for="is_close_check">非公開</label>
+				<input type="checkbox" class="option" soy:id="is_sale" />
+				<label for="is_sale_check">セール中</label>
+			</td>
+
+			<tr><th>商品コード</th>
+			<td>
+				<input type="text" class="text" soy:id="item_code" />
+			</td>
+
+			<tr><th>商品カテゴリ</th>
+			<td>
+				<input type="hidden" soy:id="item_categories" />
+				<ul id="category_tree" soy:id="category_tree"></ul>
+			</td>
+		</table>
+
+		<p class="pageBtn">
+			<input type="submit" value="検索" />
+		</p>
+
+	</div><!-- /block_body -->
+</div>
+
+</form>
+
+<script type="text/javascript">
+function changeCheckBoxAuto(){
+	$('#items_operation').show();
+	$('.item_checkbox').each(function(){
+		$(this).prop("checked", $("#item_checkbox").prop("checked"));
+	});
+}
+function onClickLeaf(id,ele){
+	$(ele).toggleClass("selected_category");
+
+	var ids = [];
+
+	$(".selected_category").each(function(){
+		ids.push($(this).attr("object:id"));
+	});
+
+	$("#item_categories").val(ids.join(" "));
+
+	$("#category_count").text(ids.length);
+}
+</script>
+<style type="text/css">
+.selected_category{
+	background-color:yellow;
+}
+</style>

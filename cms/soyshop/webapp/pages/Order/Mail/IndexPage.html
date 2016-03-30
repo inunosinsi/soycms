@@ -1,0 +1,102 @@
+<h1>
+	メール送信
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Order">注文管理</a> &gt; <a soy:id="order_detail_link">注文詳細</a> &gt; メールの送信
+	</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>メールの送信　<!-- soy:id="mail_type_text" /--></h2>
+		
+		<div class="block_title_right" soy:id="is_storage">
+			<a href="javascript:void(0);" onclick="return ChangeAccountInfo.popup();" class="button">ストレージ</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+	<form soy:id="form">
+
+	<!-- soy:id="on_confirm" -->
+
+	<h3>以下の内容で送信しますか？</h3>
+
+	<table class="form_table">
+		<tr>
+			<th style="width:200px;">送信先</th>
+			<td>
+				<?php echo $page["send_to"]; ?>
+			</td>
+		</tr>
+		<tr>
+			<th style="width:200px;">件名</th>
+			<td>
+				<?php echo $page["mail_title"]; ?>
+			</td>
+		</tr>
+	</table>
+
+	<table class="form_table">
+		<tr>
+			<th>本文</th>
+		</tr>
+		<tr class="last_row">
+			<td>
+				<pre><?php echo $page["mail_content"]; ?></pre>
+			</td>
+		</tr>
+	</table>
+
+	<input type="hidden" soy:id="mail_value" />
+
+	<p class="pageBtn">
+		<input type="submit" name="send" class="submit_button" value="送信実行" />
+	</p>
+
+	<h3>修正する場合は以下から修正して下さい</h3>
+
+	<!-- /soy:id="on_confirm" -->
+
+	<p class="error" soy:id="error">メールの送信に失敗しました</p>
+
+			<table class="form_table">
+				<tr>
+					<th style="width:200px;">送信先</th>
+					<td>
+						<input soy:id="send_to" type="text" class="text" />
+					</td>
+				</tr>
+				<tr>
+					<th style="width:200px;">件名</th>
+					<td>
+						<input soy:id="mail_title" class="text" />
+					</td>
+				</tr>
+			</table>
+
+			<table class="form_table">
+				<tr>
+					<th>本文</th>
+				</tr>
+				<tr class="last_row">
+					<td>
+						<textarea soy:id="mail_content" class="editor"></textarea>
+					</td>
+				</tr>
+			</table>
+
+			<p class="pageBtn">
+				<input type="submit" soy:id="send_button" class="submit_button" value="送信" />
+			</p>
+
+	</form soy:id="form">
+
+	</div><!-- /block_body -->
+</div><!-- /block -->
+
+<div id="account_form_el" class="popup" style="display:none;">
+	<iframe src="<!-- soy:id="storage_url" /-->"></iframe>
+	<p class="close"></p>
+</div>

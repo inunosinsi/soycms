@@ -1,0 +1,352 @@
+<h1>
+	注文詳細
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Order">注文管理</a> &gt; 注文詳細</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>注文詳細 - <!-- soy:id="order_name_text" /--></h2>
+		
+		<div class="block_title_right">
+			<a soy:id="edit_link" class="button">注文の編集</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+	<p class="notice" soy:id="sended">メールを送信しました</p>
+	<p class="notice" soy:display="updated">状態を変更しました</p>
+
+	<table class="form_list">
+		<caption>注文詳細</caption>
+		<col style="width:180px;" />
+		<tbody>
+			<tr>
+				<th>注文番号（注文ID）</th>
+				<td><!-- soy:id="order_id" -->123-4567-8979<!-- /soy:id="order_id" --> (<!-- soy:id="order_raw_id" -->123<!-- /soy:id="order_raw_id" -->)</td>
+			</tr>
+			<tr>
+				<th>注文日時</th>
+				<td soy:id="order_date">2008-12-1 00:00</td>
+			</tr>
+			<tr>
+				<th>状態</th>
+				<td soy:id="order_status">ITEM_001</td>
+			</tr>
+			<tr>
+				<th>支払い状況</th>
+				<td soy:id="payment_status">ITEM_001</td>
+			</tr>
+
+			<tr>
+				<th>合計金額</th>
+				<td soy:id="order_price">1000円</td>
+			</tr>
+
+			<tr>
+				<th>お客様</th>
+				<td>
+					<!-- soy:id="customer_name" -->お客様の名前<!-- /soy:id="customer_name" -->
+					<!-- soy:id="show_customer_area" -->（<!-- soy:id="customer_area" -->京都府<!-- /soy:id="customer_area" -->）<!-- /soy:id="show_customer_area" -->
+					<a soy:id="customer_email">someone@example.com</a>
+					<a soy:id="customer_link" class="button">詳細</a>
+				</td>
+			</tr>
+
+			<!-- soy:id="attribute_list" -->
+			<tr>
+				<th soy:id="attribute_title">属性</th>
+				<td soy:id="attribute_value">値</td>
+			</tr>
+			<!-- /soy:id="attribute_list" -->
+			<!-- soy:id="point_history_list" -->
+			<tr>
+				<th>&nbsp;</th>
+				<td soy:id="point_history_value">値</td>
+			</tr>
+			<!-- /soy:id="point_history_list" -->
+			<!-- soy:id="customfield_list" -->
+			<tr>
+				<th soy:id="customfield_title">フィールド</th>
+				<td soy:id="customfield_value">値</td>
+			</tr>
+			<!-- /soy:id="customfield_list" -->
+			<tr>
+				<th>請求先</th>
+				<td>
+					<!-- soy:id="claimed_customerinfo" /-->
+				</td>
+			</tr>
+			<tr>
+				<th>送付先</th>
+				<td>
+					<!--  soy:id="order_customerinfo" /-->
+				</td>
+			</tr>
+			
+			<!-- soy:id="has_action" -->
+			<tr>
+				<td colspan="2" class="alR">
+				<!-- soy:id="action_list" -->
+					<a class="button" target="_blank" soy:id="action_link"></a>
+				<!-- /soy:id="action_list" -->
+				</td>
+			</tr>
+			<!-- /soy:id="has_action" -->
+		</tbody>
+
+	</table>
+
+	<h3>注文の内訳</h3>
+	<table class="form_table">
+		<thead>
+			<tr class="alC">
+				<th>商品コード</th>
+				<th>商品名</th>
+				<th>単価</th>
+				<th>注文数</th>
+				<th>代金小計</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<!--  soy:id="item_list" -->
+			<tr>
+				<td class="alC"><a soy:id="item_id">11</a></td>
+				<td>
+					<!-- soy:id="item_name" -->豆腐<!-- /soy:id="item_name" --><br />
+					<!-- soy:id="item_option" /-->
+				</td>
+				<td class="alR"><!-- soy:id="item_price" /--> 円</td>
+				<td class="alR"><!-- soy:id="item_count" /--> 点</td>
+				<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
+			</tr>
+			<!--  /soy:id="item_list" -->
+
+			<!--  soy:id="module_list" -->
+			<tr>
+				<td colspan="4" class="alR" soy:id="module_name" style="font-weight:bold;padding-right:1em;">モジュール名</td>
+				<td class="alR"><!-- soy:id="module_price" /--> 円</td>
+			</tr>
+			<!--  /soy:id="module_list" -->
+
+			<tr>
+				<th colspan="4" class="alR" style="font-weight:bold;padding-right:1em;">代金合計</th>
+				<td class="alR">
+					<!-- soy:id="order_total_price" /--> 円
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<!-- soy:id="actived_download_plugin" -->
+	<h3>ダウンロード詳細</h3>
+	<table class="form_table">
+		<thead>
+			<tr class="alC">
+				<th>ファイル名</th>
+				<th>ダウンロード期限</th>
+				<th>ダウンロード回数</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<!--  soy:id="file_list" -->
+			<tr class="alC">
+				<td soy:id="file_name">italian.zip</td>
+				<td soy:id="time_limit">無期限</td>
+				<td soy:id="count">無期限</td>
+			</tr>
+			<!--  /soy:id="file_list" -->
+		</tbody>
+	</table>
+	<!-- /soy:id="actived_download_plugin" -->
+
+	</div>
+</div>
+
+<div class="block">
+	<div class="block_title">
+		<h2>注文状態の変更</h2>
+	</div>
+
+	<div class="block_body">
+		<h3>注文状態の変更</h3>
+		<script type="text/javascript">
+		<!--//
+			function confirm_update_state(){
+				return confirm('注文内容を変更しますか？');
+			}
+		//-->
+		</script>
+	
+		<form soy:id="update_form">
+			<table class="form_table">
+				<col style="width:130px;" />
+				<tbody>
+					<tr>
+						<th>注文状態の変更</th>
+						<td>
+						  	<!--  soy:id="order_status_radio_list" -->
+						 	 	<input type="radio" soy:id="button" />
+						  	<!-- /soy:id="order_status_radio_list" -->
+						</td>
+		
+						<td<!-- soy:id="app_limit_function" --> rowspan="2"<!-- /soy:id="app_limit_function" --> style="text-align:center;vertical-align:middle;">
+							<input type="submit" class="submit_button" value="変更" onclick="return confirm_update_state();" />
+						</td>
+					</tr>
+					<!-- soy:id="app_limit_function*" -->
+					<tr>
+						<th>支払い状況の変更</th>
+						<td>
+						  	<!--  soy:id="payment_status_radio_list" -->
+						 	 	<input type="radio" soy:id="button" />
+						  	<!-- /soy:id="payment_status_radio_list" -->
+						</td>
+					</tr>
+					<!-- /soy:id="app_limit_function*" -->
+				</tbody>
+			</table>
+		</form soy:id="update_form">
+	
+		<h3>コメント</h3>
+		<form soy:id="comment_form">
+			<table class="form_table">
+			<col style="width:130px;" />
+			<tbody>
+				<tr>
+					<th>コメント</th>
+					<td>
+						<input type="text" soy:id="state_comment" />
+					</td>
+					<td style="text-align:center;vertical-align:middle;">
+						<input type="submit" class="submit_button" value="投稿" />
+					</td>
+					</tr>
+				</tbody>
+			</table>
+		</form soy:id="comment_form">
+	</div>
+</div>
+
+<div class="block">
+	<div class="block_title">
+		<a name="mail_status"></a>
+		<h2>メール送信</h2>
+	</div>
+
+	<div class="block_body">
+		<h3>メール送信</h3>
+	  	<table class="form_table">
+			<tbody>
+				<tr>
+					<th>注文受付メール</th>
+					<td><!-- soy:id="order_mail_status" /--></td>
+					<td>
+						<a soy:id="order_mail_link">送信（編集）</a>
+					</td>
+	  			</tr>
+	
+	  			<tr>
+					<th>注文確定メール</th>
+					<td><!-- soy:id="confirm_mail_status" /--></td>
+					<td>
+						<a soy:id="confirm_mail_link">送信（編集）</a>
+					</td>
+	  			</tr>
+	
+	  			<tr>
+					<th>支払確認メール</th>
+					<td><!-- soy:id="payment_mail_status" /--></td>
+					<td>
+						<a soy:id="payment_mail_link">送信（編集）</a>
+					</td>
+	  			</tr>
+	
+	  			<tr>
+					<th>配送確認メール</th>
+					<td><!-- soy:id="delivery_mail_status" /--></td>
+					<td>
+						<a soy:id="delivery_mail_link">送信（編集）</a>
+					</td>
+	  			</tr>
+				
+				<tr>
+					<th>その他のメール</th>
+					<td><!-- soy:id="other_mail_status" /--></td>
+					<td>
+						<a soy:id="other_mail_link">送信（編集）</a>
+					</td>
+	  			</tr>
+	  		</tbody>
+	  	</table>
+	</div>
+</div>
+
+<div class="block">
+	<div class="block_title">
+		<h2>注文状態の変更履歴</h2>
+	</div>
+
+	<div class="block_body">
+		<h3>注文状態の変更履歴</h3>
+		<table class="form_table">
+			<thead>
+				<tr>
+					<th>日時</th>
+					<th>変更内容</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!--  soy:id="history_list" -->
+				<tr>
+					<td nowrap><!-- soy:id="history_date" /--></td>
+					<td><!-- soy:id="history_content" /--></td>
+				</tr>
+				<!--  /soy:id="history_list" -->
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="block">
+	<div class="block_title">
+		<h2>メールの送信履歴</h2>
+	</div>
+
+	<div class="block_body">
+		<h3>メールの送信履歴</h3>
+		<table class="form_table">
+			<thead>
+				<tr>
+					<th>日時</th>
+					<th>タイトル</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!--  soy:id="mail_history_list" -->
+				<tr>
+					<td nowrap><!-- soy:id="send_date" /--></td>
+					<td><a soy:id="mail_title"></a></td>
+				</tr>
+				<!--  /soy:id="mail_history_list" -->
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!-- soy:display="operate_credit_menu" -->
+<div class="block">
+	<!-- soy:id="operate_list" -->
+	<div class="block_title">
+		<h2><!-- soy:id="operate_credit_title" /--></h2>
+	</div>
+	<div class="block_body">
+		<!-- soy:id="operate_credit_content" /-->
+	</div>
+	<!-- /soy:id="operate_list" -->
+</div>
+<!-- /soy:display="operate_credit_menu" -->

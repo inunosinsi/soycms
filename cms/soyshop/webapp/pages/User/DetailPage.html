@@ -1,0 +1,376 @@
+<h1>
+	顧客情報詳細
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="User">顧客管理</a> &gt; 顧客情報詳細
+	</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>顧客情報詳細</h2>
+		
+		<div class="block_title_right">
+			<a soy:id="order_list_link" class="button">この顧客の注文 (<!-- soy:id="order_count" /-->)</a>
+		</div>
+		<div class="block_title_right">
+			<a soy:id="order_register_link" class="button">商品を注文する</a>
+		</div>
+		<div class="block_title_right" soy:id="is_storage">
+			<a href="javascript:void(0);" onclick="return OptionWindow.popup();" class="button">ストレージ</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+	<p class="notice" soy:id="update_message">更新しました</p>
+
+	<form soy:id="detail_form">
+
+		<table class="form_table">
+			<tr>
+				<th>ID</th>
+				<td>
+					<!-- soy:id="id" /-->
+				</td>
+			</tr>
+			<tr>
+				<th>メールアドレス</th>
+				<td>
+					<!-- soy:id="mail_address" /-->
+					<a href="" soy:id="mail_edit_link" class="button">変更</a>
+				</td>
+			</tr>
+
+			<tr>
+				<th>パスワード</th>
+				<td>
+					<!-- soy:id="password_is_registered" -->パスワード登録済み<!-- /soy:id="password_is_registered" -->
+					<!-- soy:id="password_is_not_registered" -->パスワード未登録<!-- /soy:id="password_is_not_registered" -->
+					<a href="" soy:id="password_edit_link" class="button">変更</a>
+				</td>
+			</tr>
+
+			<tr>
+				<th>氏名</th>
+				<td>
+					<input soy:id="name" type="text" size="100" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>フリガナ</th>
+				<td>
+					<input soy:id="furigana" type="text" size="100" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>ニックネーム</th>
+				<td>
+					<input soy:id="nickname" type="text" size="100" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>プロフィール画像</th>
+				<td>
+					<img soy:id="image">
+					<input type="hidden" soy:id="image_path" />
+					<!-- soy:id="is_image" --><input type="checkbox" soy:id="delete_image"><br><!-- /soy:id="is_image" -->
+					<input type="file" name="image" />
+				</td>
+			</tr>
+			
+			<tr>
+				<th>性別</th>
+				<td>
+					<input soy:id="gender_male" type="radio" id="radio_sex_male" name="" />
+					<label for="radio_sex_male">男</label>
+					<input soy:id="gender_female" type="radio" id="radio_sex_female" name="" />
+					<label for="radio_sex_female">女</label>
+				</td>
+			</tr>
+
+			<tr>
+				<th>生年月日</th>
+				<td>
+					<input soy:id="birth_year" type="text" size="5" />年
+					<input soy:id="birth_month" type="text" size="3" />月
+					<input soy:id="birth_day" type="text" size="3" />日
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table">
+			<tr>
+				<th>郵便番号</th>
+				<td>
+					<input soy:id="post_number" type="text" size="20" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>住所</th>
+				<td>
+					<select soy:id="area">
+						<option value="">▼選択</option>
+					</select>
+					<input soy:id="address1" type="text" size="40" /><br>
+					<input soy:id="address2" type="text" size="100" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>電話番号</th>
+				<td>
+					<input soy:id="tel_number" type="text" size="30" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>FAX番号</th>
+				<td>
+					<input soy:id="fax_number" type="text" size="30" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>携帯電話番号</th>
+				<td>
+					<input soy:id="ketai_number" type="text" size="30" />
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table">
+			<tr>
+				<th>法人名（勤務先など）</th>
+				<td>
+					<input soy:id="office" type="text" />
+				</td>
+			</tr>
+			<tr>
+				<th>法人所在地郵便番号</th>
+				<td>
+					<input soy:id="office_post_number" type="text" />
+				</td>
+			</tr>
+			<tr>
+				<th>法人所在地</th>
+				<td>
+					<select soy:id="office_area">
+						<option value="">▼選択</option>
+					</select>
+					<input soy:id="office_address1" type="text" /><br>
+					<input soy:id="office_address2" type="text" />
+				</td>
+			</tr>
+			<tr>
+				<th>法人電話番号</th>
+				<td>
+					<input soy:id="office_tel_number" type="text" />
+				</td>
+			</tr>
+			<tr>
+				<th>法人FAX番号</th>
+				<td>
+					<input soy:id="office_fax_number" type="text" />
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table">
+			<tr>
+				<th>ログインID</th>
+				<td>
+					<input soy:id="account_id" type="text" size="100" />
+				</td>
+			</tr>
+			<tr>
+				<th>URL</th>
+				<td>
+					<input soy:id="url" type="text" size="100"/>
+				</td>
+			</tr>
+			<tr>
+				<th>属性</th>
+				<td>
+					属性Ａ：<input type="text" soy:id="attribute1" size="100" /><br>
+					属性Ｂ：<input type="text" soy:id="attribute2" size="100" /><br>
+					属性Ｃ：<input type="text" soy:id="attribute3" size="100" /><br>
+				</td>
+			</tr>
+			<!-- soy:id="has_user_customfield" -->
+				<!-- soy:id="user_customfield_list" -->
+				<tr>
+					<th><!-- soy:id="customfield_name" /--></th>
+					<td>
+						<!-- soy:id="customfield_form" /-->
+					</td>
+				</tr>
+				<!-- /soy:id="user_customfield_list" -->
+			<!-- /soy:id="has_user_customfield" -->
+			<tr>
+				<th>メール配信(SOY Mail)</th>
+				<td>
+					<input type="checkbox" soy:id="not_send" />
+					<label for="not_send">メール配信をしない</label>
+				</td>
+			</tr>
+			<tr>
+				<th>備考</th>
+				<td>
+					<textarea soy:id="memo"></textarea>
+				</td>
+			</tr>
+		</table>
+		
+		<table class="form_table">
+			<tr>
+				<th>プロフィールページ</th>
+				<td>
+					<input soy:id="is_profile_display" type="checkbox" />
+				</td>
+			</tr>
+			<tr>
+				<th>プロフィールID</th>
+				<td>
+					<input soy:id="profile_id" type="text" />
+				</td>
+			</tr>
+		</table>
+
+		<table class="form_table">
+			<tr>
+				<th>登録年月日</th>
+				<td>
+					<span soy:id="register_date"></span>
+				</td>
+			</tr>
+			<tr>
+				<th>本登録年月日</th>
+				<td>
+					<span soy:id="real_register_date"></span>
+				</td>
+			</tr>
+			<tr>
+				<th>更新年月日</th>
+				<td>
+					<span soy:id="update_date"></span>
+				</td>
+			</tr>
+		</table>
+
+		<!-- soy:id="address_list" -->
+		<h3>お届け先<!-- soy:id="address_index" /--></h3>
+		<table class="form_table">
+			<tr>
+				<th>法人名(勤務先)</th>
+				<td>
+					<input soy:id="send_office" type="text" name="" value="" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>氏名</th>
+				<td>
+					<input soy:id="send_name" type="text" name="" value="" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>フリガナ</th>
+				<td>
+					<input soy:id="send_reading" type="text" name="" value="" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>郵便番号</th>
+				<td>
+					<input soy:id="send_zip_code" type="text" name="" value="" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>住所</th>
+				<td>
+					<select soy:id="send_area">
+						<option value=""></option>
+					</select>
+					<input soy:id="send_address1" type="text" name="" value="" /><br>
+					<input soy:id="send_address2" type="text" name="" value="" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>電話番号</th>
+				<td>
+					<input soy:id="send_tel_number" type="text" name="" value="" />
+				</td>
+			</tr>
+		</table>
+		<!-- /soy:id="address_list" -->
+		
+		<!-- soy:id="is_point" -->
+		<h3>ポイント</h3>
+		<table class="form_table">
+			<tr>
+				<th>ポイント</th>
+				<td>
+					<input soy:id="point" type="text">&nbsp;pt
+				</td>
+			</tr>
+			<tr>
+				<th>ポイントの有効期限</th>
+				<td><!-- soy:id="time_limit" /-->&nbsp;</td>
+			</tr>
+		</table>
+		<!-- /soy:id="is_point" -->
+
+		<p class="pageBtn">
+			<input type="submit" name="conduct" value="更新" />
+		</p>
+
+
+		</form soy:id="detail_form">
+		
+		<!-- soy:id="is_point*" -->
+		<!-- soy:id="has_point_history" -->
+		<h3>ポイント履歴(新着10件)</h3>
+		<table class="form_table">
+			<tr>
+				<th>日時</th>
+				<th>内容</th>
+			</tr>
+			<!-- soy:id="point_history_list" -->
+			<tr>
+				<td class="alC" soy:id="create_date">2013/1/1</td>
+				<td><a soy:id="order_link"><!-- soy:id="content" /--></a></td>
+			</tr>
+			<!-- /soy:id="point_history_list" -->
+		</table>
+		<!-- /soy:id="has_point_history" -->
+		<!-- /soy:id="is_point*" -->
+		
+		</div><!-- /block_body -->
+</div><!-- /block -->
+
+<!-- soy:display="operate_credit_menu" -->
+<div class="block">
+	<!-- soy:id="operate_list" -->
+	<div class="block_title">
+		<h2><!-- soy:id="operate_credit_title" /--></h2>
+	</div>
+	<div class="block_body">
+		<!-- soy:id="operate_credit_content" /-->
+	</div>
+	<!-- /soy:id="operate_list" -->
+</div>
+<!-- /soy:display="operate_credit_menu" -->
+
+<div id="option_window_el" class="popup" style="display:none;">
+	<iframe src="<!-- soy:id="storage_url" /-->"></iframe>
+	<p class="close"></p>
+</div>

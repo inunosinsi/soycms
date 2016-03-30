@@ -1,0 +1,26 @@
+<p class="notice" soy:id="updated">更新しました。</p>
+
+<div class="block_body clearfix">
+	
+	<form soy:id="form">
+		<dl>
+			<dt>テンプレート </dt>
+			<dd><select soy:id="template"></select></dd>
+		
+			<dt>振込先</dt>
+			<dd><input type="checkbox" soy:id="payment"></dd>
+			
+			
+			<dt>その他メッセージ</dt>
+			<dd>
+				<input type="text" soy:id="title">
+				<textarea soy:id="content"></textarea><br>
+				※両方のフォームに入力することで、納品書の末尾に入力内容が追加されます。
+			</dd>
+		</dl>
+		
+		<div class="alC">
+			<p class="pageBtn"><input type="submit" value="更新" /></p>
+		</div>
+	</form>
+</div>

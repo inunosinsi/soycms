@@ -1,0 +1,429 @@
+<h1>
+	商品詳細
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Item">商品管理</a> &gt; 商品の詳細</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>商品の詳細 - <!-- soy:id="item_name_text"  /--></h2>
+		
+		<div class="block_title_right" soy:id="is_notice_arrival">
+			<a href="javascript:void(0);" onclick="return OptionWindow.popup('Arrival');" class="button">入荷通知希望顧客</a>
+		</div>
+		<div class="block_title_right" soy:id="is_favorite">
+			<a href="javascript:void(0);" onclick="return OptionWindow.popup('Favorite');" class="button">お気に入り登録</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+		<form soy:id="update_form" enctype="multipart/form-data">
+
+		<p class="notice" soy:display="updated">更新しました</p>
+		<p class="notice" soy:display="copy">複製しました</p>
+		<p class="error" soy:display="error">失敗しました</p>
+
+		<dl class="form center">
+			<dt>商品名</dt>
+			<dd>
+				<span class="option" soy:id="open_text" />
+				<span class="option" soy:id="is_sale">[セール中]</span>
+				<br soy:id="item_name_wrap"/>
+				<input type="text" style="width:100%" class="text" soy:id="item_name" />
+				<p class="require" soy:id="error_name"></p>
+			</dd>
+			
+			<!-- soy:id="extension_item_name_input" /-->
+
+			<dt>商品コード</dt>
+			<dd>
+				<input type="text" class="text" soy:id="item_code" />
+				<p class="require" soy:id="error_code"></p>
+			</dd>
+			
+			<!-- soy:id="item_category_area" -->
+			<dt>商品カテゴリ</dt>
+			<dd>
+				<p class="mb" soy:id="item_category_choice"></p>
+				<input type="hidden" soy:id="item_category" />
+				<!-- soy:id="app_limit_function" -->
+				<a class="button" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
+				<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
+				<!-- /soy:id="app_limit_function" -->
+			</dd>
+			<!-- /soy:id="item_category_area" -->
+			
+			<!-- soy:id="multi_category_area" -->
+			<dt>商品カテゴリ(複数選択可)</dt>
+			<dd>
+				<p class="mb" soy:id="multi_category_text"></p>
+				<input type="hidden" soy:id="multi_category" />
+				<a class="button" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
+				<ul id="category_tree" soy:id="multi_category_tree" style="display:none;"></ul>
+			</dd>
+			<!-- /soy:id="multi_category_area" -->
+			
+			<!-- soy:id="item_parent_area" -->
+			<dt>親商品</dt>
+			<dd>
+				<a soy:id="parent_item_link">親商品</a>
+			</dd>
+			<!-- /soy:id="item_parent_area" -->
+			
+			<!-- soy:id="child_item_list_area" -->
+			<dt class="child_item">子商品</dt>
+			<dd class="child_item">
+				<ul>
+					<!-- soy:id="child_item_list" -->
+					<li>
+						<a soy:id="item_detail_link">子商品へのリンク</a>
+					</li>
+					<!-- /soy:id="child_item_list" -->
+				</ul>
+				
+				<hr />
+				<a class="button" soy:id="add_child_item">子商品の追加</a>
+			</dd>
+			<!-- /soy:id="child_item_list_area" -->
+
+			<dt>価格</dt>
+			<dd>
+				<table>
+					<tr>
+						<th>定価</th>
+						<td>
+							<input type="text" class="text" soy:id="item_list_price" />
+						</td>
+					</tr>
+					<tr>
+						<th>通常価格</th>
+						<td>
+							<input type="text" class="text" soy:id="item_normal_price" />
+						</td>
+					</tr>
+					<tr>
+						<th style="vertical-align:top;padding-top:10px;">セール価格</th>
+						<td>
+							<input type="text" class="text" soy:id="item_sale_price" />
+							<!-- soy:id="app_limit_function*" -->
+							<h4>セール設定</h4>
+							<input type="checkbox" soy:id="item_is_sale" />
+							<label for="item_is_sale">セール中に設定する</label>
+							<!-- /soy:id="app_limit_function*" -->
+						</td>
+					</tr>
+					<!-- soy:id="extension_price_option_list" -->
+					<tr>
+						<th soy:id="title"></th>
+						<td soy:id="form"></td>
+					</tr>
+					<!-- /soy:id="extension_price_option_list" -->
+				</table>
+			</dd>
+			
+			
+
+			<dt>在庫数(注文数)</dt>
+			<dd>
+				<input type="text" class="text" soy:id="item_stock" />
+				(<!-- soy:id="item_order_count" /-->)
+			</dd>
+
+			<dt>商品URL</dt>
+			<dd>
+				<!-- soy:id="item_url_text" /-->
+				<!-- soy:id="item_alias_edit" -->
+				<a href="javascript:void(0);" class="button" onclick="$(this).hide();$('#custom_alias_input').show();">編集する</a>
+				<!-- /soy:id="item_alias_edit" -->
+				<hr />
+				詳細ページ:<select soy:id="detail_page_list"></select>
+				<p class="require" soy:id="error_detail_page_id"></p>
+
+				<div id="custom_alias_input" soy:id="custom_alias_input">
+					商品URL:<input type="text" class="text" soy:id="item_alias" />
+					<p class="require" soy:id="error_alias"></p>
+				</div>
+
+			</dd>
+
+			<dt>キーワード (&lt;meta type="keywords"&gt;)</dt>
+			<dd>
+				<input type="text" class="text" style="width:100%" soy:id="item_keywords" />
+			</dd>
+
+			<dt>説明 (&lt;meta type="description"&gt;)</dt>
+			<dd>
+				<textarea soy:id="item_description"></textarea>
+			</dd>
+
+			<dt>一覧用画像</dt>
+			<dd>
+				<input type="text" id="item_small_image" soy:id="item_small_image" />
+			</dd>
+
+			<dt>詳細画像</dt>
+			<dd>
+				<input type="text" id="item_large_image"  soy:id="item_large_image" />
+			</dd>
+
+			<!-- soy:id="custom_field" --><!-- /soy:id="custom_field" -->
+			
+			<dt>販売期限</dt>
+			<dd>
+				<input type="text" class="date_picker_start" soy:id="item_order_period_start" />～<input type="text" class="date_picker_end" soy:id="item_order_period_end" />
+			</dd>
+			
+			<dt>公開期限</dt>
+			<dd>
+				<input type="text" class="date_picker_start" soy:id="item_open_period_start" />～<input type="text" class="date_picker_end" soy:id="item_open_period_end" />
+			</dd>
+		</dl>
+
+		<p class="pageBtn">
+			<input type="submit" name="do_open" value="変更(公開)" style="width:180px;margin-right:50px;" />
+			<!-- soy:id="app_limit_function*" -->
+			<input type="submit" name="do_close" value="変更(非公開)" style="width:180px;" />
+			<!-- /soy:id="app_limit_function*" -->
+		</p>
+
+	</form soy:id="update_form">
+
+	<!-- image_select -->
+	<div id="upload_form_el" class="popup" style="display:none;">
+		<iframe name="upload_target_frame" src="about:blank;" frameborder="0" style="height:0;width:0;position:absolute;"></iframe>
+		<form soy:id="upload_form" id="upload_form" target="upload_target_frame" enctype="multipart/form-data">
+		<input type="hidden" name="upload" soy:id="upload_entry_id" />
+		<p>
+			<span>
+			<input id="upload_input" name="upload_file[]" type="file" multiple="true" />
+			</span>
+			<a class="button" href="javascript:void(0);" onclick="$('#upload_form').trigger('submit');">Upload</a>
+		</p>
+		<hr />
+		<div id="select_image_list" class="image_list">
+		<!-- soy:id="image_list" -->
+		<img soy:id="image" class="image_list_image" />
+		<!-- /soy:id="image_list" -->
+		</div>
+
+		<p class="close"></p>
+		</form soy:id="upload_form">
+	</div>
+	<!-- /image_select -->
+
+	</div><!-- /block_body -->
+</div>
+
+<!--
+@TODO 商品詳細から注文履歴表示
+-->
+<div class="block" style="display:none;">
+	<div class="block_title">
+		<h2>注文履歴</h2>
+	</div>
+
+	<div class="block_body">
+
+		<table class="list">
+			<thead>
+				<tr>
+					<th>注文ID</th>
+					<th>注文時刻</th>
+					<th>個数</th>
+					<th>料金小計</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<!-- soy:id="order_list" -->
+				<tr>
+					<td><a soy:id="order_id">1</a></td>
+					<td soy:id="order_date">大豆</td>
+					<td soy:id="itemorder_count">ITEM_001</td>
+					<td soy:id="itemorder_totalprice">ITEM_001</td>
+				</tr>
+				<tr>
+					<td colspan="4">
+						<span soy:id="item_list"></span>
+					</td>
+				</tr>
+				<!-- /soy:id="order_list" -->
+			</tbody>
+
+		</table>
+
+
+
+
+	</div><!-- /block_body -->
+</div>
+
+<!-- soy:id="is_change_history" -->
+<div class="block">
+	<div class="block_title">
+		<h2>在庫数の変更履歴</h2>
+	</div>
+
+	<div class="block_body">
+		<h3>在庫数の変更履歴</h3>
+		<table class="form_table">
+			<thead>
+				<tr>
+					<th>日時</th>
+					<th>変更内容</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!--  soy:id="history_list" -->
+				<tr>
+					<td nowrap><!-- soy:id="history_date" /--></td>
+					<td><!-- soy:id="history_content" /--></td>
+				</tr>
+				<!--  /soy:id="history_list" -->
+			</tbody>
+		</table>
+	</div>
+</div>
+<!-- /soy:id="is_change_history" -->
+
+<script type="text/javascript" soy:src="../soycms/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	tinymce.init({
+		mode : "specific_textareas",
+		editor_selector : "mceEditor",
+		theme : "modern",
+		skin : "lightgray",
+		plugins : "save,pagebreak,table,hr,insertdatetime,searchreplace,contextmenu,code,textcolor,paste,directionality,fullscreen,noneditable,charmap,visualchars,nonbreaking,innerlink,insertimage,insertwidget,youTube",
+		tools : "inserttable",
+		language : "ja",	
+		menubar : false,
+		toolbar1 : "save | cut copy paste pastetext | searchreplace | bold italic underline strikethrough | subscript superscript | forecolor backcolor | alignleft aligncenter alignright | formatselect fontselect fontsizeselect",
+		toolbar2 : "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | fullscreen preview | insertdate inserttime | insertwidget | table youTube",
+	
+		init_instance_callback : function(editor) {
+//			onInitTinymceEditor(editor.id);
+		},
+		oninit : function(){
+//			onInitTinymce();
+		},
+	
+		cleanup : true,
+		verify_html : false,
+		convert_urls : false,
+		relative_urls : false,
+		entity_encoding : "named"
+	});
+});
+</script>
+<script type="text/javascript">
+function onClickLeaf(id,ele){
+	$("#item_category").val(id);
+	$("#item_category_text").text($(ele).text());
+
+	$(".selected_category").removeClass("selected_category");
+	$(ele).addClass("selected_category");
+}
+function onMultiClickLeaf(id,ele){
+	if ($(ele).hasClass("selected_category")) {
+		$("#multi_category").val($("#multi_category").val().replace(id,""));
+		$("#multi_category_text").text($("#multi_category_text").text().replace($(ele).text(),""));
+		
+		$(ele).removeClass("selected_category");
+	}else{
+		$("#multi_category").val($("#multi_category").val() + "," + id);
+		$("#multi_category_text").text($("#multi_category_text").text() + "," + $(ele).text());
+
+		$(ele).addClass("selected_category");
+	}
+
+/**
+	$(".selected_category").removeClass("selected_category");
+	$(ele).addClass("selected_category");
+	
+	if($(ele).hasClass("selected_category")){
+		$("#multi_category").val($("#multi_category").val().replace(id,""));
+		$("#categories_text").text($("#categories_text").text().replace($(ele).text(),""));
+
+		$(ele).removeClass("selected_category");
+	}else{
+		$("#categories_input").val($("#categories_input").val() + "," + id);
+		$("#categories_text").text($("#categories_text").text() + "," + $(ele).text());
+
+		$(ele).addClass("selected_category");
+	}
+**/
+}
+function onPopup(){
+
+	var image_list = [];
+	//img list
+	$("img").each(function(){
+		if(!$(this).hasClass("image_list_image")){
+			var image = new Image;
+			image.src = $(this).attr("src");
+			image_list.push(image.src);
+		}
+	});
+
+	$("#select_image_list img").each(function(){
+		var src = $(this).attr("src");
+
+		if($.inArray(src,image_list) > 0){
+			$(this).addClass("image_used");
+		}else{
+			$(this).removeClass("image_used");
+		}
+	});
+}
+</script>
+<style type="text/css">
+#upload_form_el .image_list img.image_used{
+	border:solid 3px #ffd700;
+}
+#upload_form_el .image_list{
+	width:640px;
+	height:400px;
+	overflow:auto;
+}
+
+#upload_form_el .image_list img{
+	margin:5px;
+	border:solid 3px #666;
+	cursor:pointer;
+	vertical-align:top;
+}
+
+#upload_form_el .image_list img.append_new{
+	border:solid 3px #ffff00;
+}
+
+#select_image_info{
+	position:absolute;
+	border:solid 1px #eee;
+	background-color:white;
+	text-align:left;
+
+	box-shadow: 2px 2px 3px #999;
+	-webkit-box-shadow: 2px 2px 3px #999;
+	-moz-box-shadow: 2px 2px 3px #999;
+}
+
+.image_select{
+	width:20%;
+}
+
+.image_select_preview{
+	display:block;
+	margin-top:3px;
+}
+
+
+</style>
+
+<div id="option_window_el" class="popup" style="display:none;">
+	<iframe src="" id="option_window"></iframe>
+	<p class="close"></p>
+</div>

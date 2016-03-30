@@ -1,0 +1,314 @@
+<h1>
+	詳細検索
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="User">顧客管理</a> &gt; 詳細検索
+	</span>
+</h1>
+
+<!-- soy:id="has_result" -->
+<div class="block">
+	<div class="block_title">
+		<h2>検索結果</h2>
+	</div>
+
+	<div class="block_body">
+
+		<table class="form_list nowrap">
+			<caption>検索結果(<span soy:id="count_max*">100000</span>件)：
+				<span soy:id="count_start*">1</span> ～ <span soy:id="count_end*">20</span> 件
+			</caption>
+			<thead>
+				<tr class="alC">
+					<th class="short">ID <a soy:id="sort_id">↓</a> <a soy:id="sort_id_desc">↑</a></th>
+					<th class="middle">姓名 <a soy:id="sort_name">↓</a> <a soy:id="sort_name_desc">↑</a></th>
+					<th class="middle">メールアドレス <a soy:id="sort_mail_address">↓</a> <a soy:id="sort_mail_address_desc">↑</a></th>
+					<th class="middle">属性１</th>
+					<th class="middle">属性２</th>
+					<th class="middle">属性３</th>
+					<th class="operation">編集</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr class="pager">
+					<td colspan="7">
+						<div class="pager_item">
+							<form soy:id="pager_jump">
+								<select soy:id="pager_select"></select>
+								<noscript><input type="submit" value="移動"/></noscript>
+							</form soy:id="pager_jump">
+						</div>
+						<div class="pager_item">
+							<a soy:id="prev_pager">&lt;</a>
+							<!-- soy:id="pager_list" -->
+							<a soy:id="target_link">1</a>
+							<!-- /soy:id="pager_list" -->
+							<a soy:id="next_pager">&gt;</a>
+						</div>
+						<div class="pager_item">
+							<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+						</div>
+					</td>
+				</tr>
+			</tfoot>
+			<tbody>
+				<!-- soy:id="user_list" -->
+				<tr>
+					<td class="alC short"><span soy:id="id"></span></td>
+					<td class="middle"><span soy:id="name"></span></td>
+					<td class="middle"><span soy:id="mailaddress">メールアドレス</span></td>
+					<td class="middle"><span soy:id="attribute1">属性１</span></td>
+					<td class="middle"><span soy:id="attribute2">属性２</span></td>
+					<td class="middle"><span soy:id="attribute3">属性３</span></td>
+					<td class="operation">
+						<a class="button" soy:id="edit_link">編集</a>
+						<a class="button" soy:id="remove_link">削除</a>
+					</td>
+				</tr>
+				<!-- /soy:id="user_list" -->
+			</tbody>
+		</table>
+	</div><!-- /block_body -->
+</div><!-- /block -->
+<!-- /soy:id="has_result" -->
+
+<!-- 詳細検索フォーム -->
+
+<div class="block">
+	<div class="block_title">
+		<h2>詳細検索</h2>
+
+		<div class="block_title_right">
+			<a onclick="$('#advanced_search_form_reset').trigger('click');" href="javascript:void(0);" class="button">リセット(全て表示)</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+		<p class="error" soy:id="no_result_error">検索結果は0件です。条件を変えて検索してください。</p>
+
+
+		<form id="reset_form" soy:id="reset_form">
+				<!-- reset btn -->
+				<input id="advanced_search_form_reset" type="submit" name="reset" style="display:none;" />
+		</form soy:id="reset_form">
+		
+		<form id="advanced_search_form" soy:id="advanced_search_form">
+
+				<table class="form_table form_search">
+					<caption>顧客情報</caption>
+					<tr>
+						<th>ID</th>
+						<td>
+							<input soy:id="advanced_search_id" type="text" value="" size="40" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>メールアドレス</th>
+						<td>
+							<input soy:id="advanced_search_mail_address" type="text" value="" size="40" />
+						</td>
+					</tr>
+					<!--tr>
+						<th>メール配信</th>
+						<td>
+							メール配信を
+							<input soy:id="advanced_search_mail_send_true" id="checkbox_send_email_true" type="radio" value="" />
+							<label for="checkbox_send_email_true">する</label>
+							<input soy:id="advanced_search_mail_send_false" id="checkbox_send_email_false" type="radio" value="" />
+							<label for="checkbox_send_email_false">しない</label>
+						</td>
+					</tr-->
+
+					<!--tr>
+						<th>メール配信失敗回数</th>
+						<td>
+							<input soy:id="advanced_search_mail_error_count" type="text" value="" />
+						</td>
+					</tr-->
+				</table>
+
+				<table class="form_table form_search">
+					<caption>氏名、性別、生年月日</caption>
+					<tr>
+						<th>氏名</th>
+						<td>
+							<input soy:id="advanced_search_name" type="text" value="" size="40" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>フリガナ</th>
+						<td>
+							<input soy:id="advanced_search_furigana" type="text" value="" size="40" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>性別</th>
+						<td>
+							<input soy:id="advanced_search_gender_male" type="checkbox" id="checkbox_gender_male" />
+							<label for="checkbox_gender_male">男</label>
+							<input soy:id="advanced_search_gender_female" type="checkbox" id="checkbox_gender_female" />
+							<label for="checkbox_gender_female">女</label>
+							<!--input soy:id="advanced_search_gender_other" type="checkbox" id="checkbox_gender_other" />
+							<label for="checkbox_gender_other">指定なし</label-->
+						</td>
+					</tr>
+
+					<!--tr>
+						<th>生年月日</th>
+						<td>
+							<input soy:id="advanced_search_birth_date_start_year" type="text" value="" />/
+							<input soy:id="advanced_search_birth_date_start_month" type="text" value="" />/
+							<input soy:id="advanced_search_birth_date_start_day" type="text" value="" />
+							～
+							<input soy:id="advanced_search_birth_date_end_year" type="text" value="" />/
+							<input soy:id="advanced_search_birth_date_end_month" type="text" value="" />/
+							<input soy:id="advanced_search_birth_date_end_day" type="text" value="" />
+						</td>
+					</tr-->
+				</table>
+
+				<p class="pageBtn">
+					<input type="submit" name="conduct" value="詳細検索" />
+				</p>
+
+				<table class="form_table form_search">
+					<caption>住所</caption>
+					<tr>
+						<th>郵便番号</th>
+						<td>
+							<input soy:id="advanced_search_post_number" type="text" value="" size="20" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>住所</th>
+						<td>
+							<select soy:id="advanced_search_area">
+								<option selected="selected" value="all">全て</option>
+							</select>
+							<input soy:id="advanced_search_address1" type="text" value="" size="40" /><br>
+							<input soy:id="advanced_search_address2" type="text" value="" size="60" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>電話番号</th>
+						<td>
+							<input soy:id="advanced_search_tel_number" type="text" value="" size="30" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>FAX番号</th>
+						<td>
+							<input soy:id="advanced_search_fax_number" type="text" value="" size="30" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>携帯電話番号</th>
+						<td>
+							<input soy:id="advanced_search_ketai_number" type="text" value="" size="30" />
+						</td>
+					</tr>
+				</table>
+
+				<table class="form_table form_search">
+					<caption>勤務先</caption>
+					<tr>
+						<th>勤務先名称・職種</th>
+						<td>
+							<input soy:id="advanced_search_office" type="text" value="" size="40" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>勤務先郵便番号</th>
+						<td>
+							<input soy:id="advanced_search_office_post_number" type="text" value="" size="20" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>勤務先住所</th>
+						<td>
+							<select soy:id="advanced_search_jobArea">
+								<option selected="selected" value="all">全て</option>
+							</select>
+							<input soy:id="advanced_search_jobAddress1" type="text" value="" size="40" /><br>
+							<input soy:id="advanced_search_jobAddress2" type="text" value="" size="60" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>勤務先電話番号</th>
+						<td>
+							<input soy:id="advanced_search_office_tel_number" type="text" value="" size="30" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>勤務先FAX番号</th>
+						<td>
+							<input soy:id="advanced_search_office_fax_number" type="text" value="" size="30" />
+						</td>
+					</tr>
+				</table>
+
+				<table class="form_table form_search">
+					<caption>属性</caption>
+					<tr>
+						<th>属性</th>
+						<td>
+							属性Ａ：<input type="text" soy:id="advanced_search_attribute1" value="" /><br>
+							属性Ｂ：<input type="text" soy:id="advanced_search_attribute2" value="" /><br>
+							属性Ｃ：<input type="text" soy:id="advanced_search_attribute3" value="" /><br>
+						</td>
+					</tr>
+					<tr>
+						<th>備考</th>
+						<td>
+							<textarea soy:id="advanced_search_memo" style="width:100%; padding: 2px; margin: 0;"></textarea>
+						</td>
+					</tr>
+
+					<tr>
+						<th>登録年月日</th>
+						<td>
+							<input soy:id="advanced_search_register_date_start_year" type="text" value="" />/
+							<input soy:id="advanced_search_register_date_start_month" type="text" value="" />/
+							<input soy:id="advanced_search_register_date_start_day" type="text" value="" />
+							～
+							<input soy:id="advanced_search_register_date_end_year" type="text" value="" />/
+							<input soy:id="advanced_search_register_date_end_month" type="text" value="" />/
+							<input soy:id="advanced_search_register_date_end_day" type="text" value="" />
+						</td>
+					</tr>
+
+					<tr>
+						<th>更新年月日</th>
+						<td>
+							<input soy:id="advanced_search_update_date_start_year" type="text" value="" />/
+							<input soy:id="advanced_search_update_date_start_month" type="text" value="" />/
+							<input soy:id="advanced_search_update_date_start_day" type="text" value="" />
+							～
+							<input soy:id="advanced_search_update_date_end_year" type="text" value="" />/
+							<input soy:id="advanced_search_update_date_end_month" type="text" value="" />/
+							<input soy:id="advanced_search_update_date_end_day" type="text" value="" />
+						</td>
+					</tr>
+
+				</table>
+
+				<p class="pageBtn">
+					<input type="submit" name="conduct" value="詳細検索" />
+				</p>
+
+		</form soy:id="advanced_search_form">
+
+
+	</div><!-- /block_body -->
+</div><!-- /block -->

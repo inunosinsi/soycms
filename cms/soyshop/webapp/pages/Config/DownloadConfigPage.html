@@ -1,0 +1,100 @@
+<h1>
+	ダウンロード販売の設定
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Config">設定</a> &gt; ダウンロード販売の設定</span>
+</h1>
+
+<div class="block">
+	<div class="block_title">
+		<h2>ダウンロード販売の設定</h2>
+	</div>
+	
+	<div class="block_body">
+		
+		<p class="notice" soy:display="updated">更新しました</p>
+		
+		<form soy:id="form">
+			
+			<dl>
+				<dt>ダウンロード期間日数(商品ごとに設定できます)</dt>
+				<dd>
+					<input type="text" soy:id="download_limit_time" size="4" style="text-align:right;ime-mode:inactive;" />&nbsp;日
+					<p>※値がない場合は無期限</p>
+				</dd>
+				
+				<dt>ダウンロード回数(商品ごとに設定できます)</dt>
+				<dd>
+					<input type="text" soy:id="download_count" size="4" style="text-align:right;ime-mode:inactive;" />&nbsp;回
+					<p>※値がない場合は無制限</p>
+				</dd>
+				
+				<dt>メールからのダウンロード</dt>
+				<dd>
+					<input type="checkbox" soy:id="download_mail_allow" />
+					<label for="download_mail_allow">メールからのダウンロードを許可する</label>
+				</dd>
+
+				<!-- soy:id="is_download_mail" -->
+				<dt>メール文面の設定</dt>
+				<dd>
+					<textarea class="minieditor" tabindex="300" soy:id="download_mail"></textarea>
+					<ul>
+						<li>※##DOWNLOAD_URL##はメール送信時にダウンロード用のURLに置換されます。</li>
+						<li>※直接ダウンロードページを表示させたい場合は##DOWNLOAD_PAGE##にしてください。</li>
+					</ul>
+				</dd>
+				<!-- /soy:id="is_download_mail" -->
+			</dl>
+			
+			<p class="pageBtn">
+				<input type="submit" class="submit_button" value="変更" tabindex="400" />
+			</p>
+			
+		</form soy:id="form">
+
+	</div><!-- /block_body -->
+</div><!-- /block -->
+
+<div class="block">
+	<div class="block_title">
+		<h2>ダウンロード販売の手順</h2>
+	</div>
+	<div class="block_body">
+		<dl>
+			<dt>ダウンロード販売補助プラグインを使用するにあたって</dt>
+			<dd>
+				<p>ダウンロード販売補助プラグインは配送モジュールの一種として動作するので、</p>
+				<p><strong>配送モジュール系のプラグインをアンインストール</strong>しておく</p>
+			</dd>
+			
+			<dt>商品を登録する</dt>
+			<dd>
+				<p>商品追加時、<strong>ダウンロード販売商品</strong>を選択してください</p>
+				<p style="font-size:0.9em;">※ダウンロードの時にメールアドレスとパスワードが必要なことがありますので、<strong>購入時に必ずパスワードを入力する</strong>ようにしてください</p>
+			</dd>
+			
+			<dt>登録した商品にダウンロード用ファイルを配置する</dt>
+			<dd>
+				<p>ダウンロード商品として登録した商品の詳細画面にダウンロード販売用のフォームが表示されています</p>
+				<p>そのフォームに従って<strong>ファイルとダウンロード条件を設定してください</strong></p>
+				<p>※登録可能な拡張子：&nbsp;<!-- soy:id="download_allow_extension" /--></p>
+			</dd>
+			
+			<dt>商品が購入された後について</dt>
+			<dd>
+				<p>ダウンロード商品のファイルは商品の<strong>支払い状況が支払確認済み</strong>でなければダウンロードすることができません</p>
+				<p>支払いが確認できましたら、注文詳細の<strong>支払確認メール</strong>でお客様にダウンロードURLを送信します</p>
+				<p style="font-size:0.9em;">※クレジット決済等の支払方法によっては注文完了した時点でダウンロードURLが記載されたメールが送信されます</p>
+			</dd>
+			
+			<dt>ファイルをダウンロードできる箇所</dt>
+			<dd>
+				<ul style="list-style:disc;padding:0 15px">
+					<li><strong>支払確認メールに記載されたURL</strong></li>
+					<li><strong>マイページのダウンロードページ</strong></li>
+				</ul>
+			</dd>
+			
+		</dl>
+	</div>
+</div>

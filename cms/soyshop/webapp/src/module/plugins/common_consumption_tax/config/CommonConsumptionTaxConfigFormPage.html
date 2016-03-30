@@ -1,0 +1,81 @@
+<div class="block_body clearfix">
+
+<p class="notice" soy:id="updated">登録しました</p>
+<p class="error" soy:id="failed">登録に失敗しました</p>
+
+<p class="notice" soy:id="success">削除しました</p>
+<p class="error" soy:id="delete_failed">削除に失敗しました</p>
+
+<form soy:id="time_confirm_form">
+<h3>サーバに設定されている時刻の確認</h3>
+<div class="table_container">
+	<dl>
+		<dd>
+			<input type="submit" name="confirm" value="今の時間を確認する">&nbsp;&nbsp;&nbsp;&nbsp;
+			<span soy:id="confirm_time"></span>
+		</dd>
+	</dl>
+</div>
+</form>
+
+<!-- soy:id="is_schedule_list" -->
+<h3>登録済み開始日</h3>
+<form soy:id="form">
+	<table class="form_table" style="width:60%;">
+		<thead>
+			<tr>
+				<th style="width:50%;">開始日</th>
+				<th style="width:20%;">消費税率</th>
+				<th style="width:30%;">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="schedule_list" -->
+			<tr>
+				<td soy:id="start_date" class="alC">2014-04-01</td>
+				<td soy:id="tax_rate" class="alR">8%</td>
+				<td class="operation">
+					<a class="button" soy:id="remove_link">削除</a>
+				</td>
+			</tr>
+			<!-- /soy:id="schedule_list" -->
+		</tbody>
+	</table>
+</form>
+<!-- /soy:id="is_schedule_list" -->
+
+<h3>消費税開始日の設定</h3>
+<form soy:id="register_form">
+	<table class="form_table" style="width:50%;">
+		<tr>
+			<th>開始日</th>
+			<td>
+				<input type="text" name="" class="date_picker_start text" soy:id="start_date" value="" style="width:80%;">
+			</td>
+			<th style="width:20%;">消費税率</th>
+			<td style="width:20%;">
+				<input type="text" class="alR text" name="" soy:id="tax_rate" style="text-align:right;ime-mode:inactive;width:45%;"/>%
+			</td>
+		</tr>
+	</table>
+	
+	<p class="pageBtn" style="clear:both;">
+		<input type="submit" class="submit_button" value="登録" />
+	</p>
+</form>
+
+<h3>テンプレートへの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:5px 35px 10px 0;">
+&lt;!-- block:id="entry" --&gt;
+&lt;h3 cms:id="item_name"&gt;商品名&lt;/h3&gt;
+
+&lt;p&gt;￥&lt;!-- cms:id="item_price" /--&gt;(本体価格)&lt;/p&gt;
+&lt;p&gt;￥&lt;!-- cms:id="post_tax_price" /--&gt;(税込価格)&lt;/p&gt;
+
+&lt;!-- /block:id="entry" --&gt;
+</pre>
+
+</div><!-- /block_body -->
+
+<link rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink('./js/tools/soy2_date_picker.css');?>" />
+<script type="text/javascript" src="<?php echo SOY2PageController::createRelativeLink('./js/tools/soy2_date_picker.pack.js');?>" charset="utf-8"></script>

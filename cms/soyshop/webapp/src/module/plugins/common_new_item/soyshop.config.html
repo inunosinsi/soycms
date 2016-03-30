@@ -1,0 +1,39 @@
+<p class="notice" soy:id="updated">更新しました</p>
+
+<form soy:id="form">
+
+<dl>
+	<dt>新着商品の最大表示件数</dt>
+	<dd>
+		<input type="text" soy:id="count" size="4" />&nbsp;件
+	</dd>
+	
+</dl>
+
+<p class="pageBtn" style="clear:both;">
+	<input type="submit" class="submit_button" value="変更" />
+</p>
+
+</form soy:id="form">
+
+<h3>テンプレートへの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- shop:module="common.new_items" --&gt;
+&lt;section id="new_items"&gt;
+    &lt;h1&gt;新着の商品&lt;/h1&gt;
+    &lt;div class="item_list"&gt;
+        &lt;!-- block:id="new_item_list" cms:count="3" --&gt;</b>&lt;!-- ←cms:countで表示数を指定できます。 --&gt;
+        &lt;article&gt;
+            &lt;a href="detail1.html" cms:id="item_link"&gt;&lt;img cms:id="item_small_image" src="/bryon/themes/photos/list_sample1.jpg" width="150" height="113" alt="苔オブジェ"&gt;
+            &lt;h1 cms:id="item_name"&gt;苔オブジェ&lt;/h1&gt;&lt;/a&gt;
+            &lt;p class="tag"&gt;&lt;!-- cms:id="custom_icon_field" /--&gt;&lt;/p&gt;
+            &lt;p class="price"&gt;\&lt;!-- cms:id="item_price" --&gt;2,750&lt;!-- /cms:id="item_price" --&gt;&lt;/p&gt;
+            &lt;p class="text" cms:id="item_copy1"&gt;ロゴをかたどったオブジェ、本物の苔を植えています。&lt;/p&gt;
+            &lt;p class="new" cms:id="this_is_new" &gt;&lt;img src="/bryon/themes/common/images/new_icon.png" alt="NEW!"&gt;&lt;/p&gt;
+            &lt;p class="more"&gt;&lt;a href="detail1.html" cms:id="item_link*"&gt;&amp;gt;&amp;gt;詳細を見る&lt;/a&gt;&lt;/p&gt;
+        &lt;/article&gt;
+        &lt;-- /block:id="new_item_list" --&gt;
+    &lt;/div&gt;
+&lt;/section&gt;
+&lt;!-- /shop:module="common.new_items" --&gt;
+</pre>

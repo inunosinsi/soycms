@@ -1,0 +1,272 @@
+<h1>
+	ショップの設定
+	<span class="navi"><a soy:link="">ショップ管理</a> &gt; <a soy:link="Config">設定</a> &gt; ショップの設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>ショップの設定</h2>
+	</div>
+
+	<div class="block_body">
+
+	<p class="notice" soy:id="is_updated">更新しました</p>
+
+		<form soy:id="update_form">
+
+			<table class="form_table">
+				<caption>ショップの情報</caption>
+				<col style="width:30%" />
+
+				<tr>
+					<th>ショップ名</th>
+					<td>
+						<input type="text" class="text" soy:id="shop_name" />
+					</td>
+				</tr>
+
+				<tr>
+					<th>会社名</th>
+					<td>
+						<input type="text" class="text" soy:id="company_name" />
+					</td>
+				</tr>
+
+				<tr>
+					<th>郵便番号</th>
+					<td>
+						<input type="text" class="text" soy:id="company_address1" />
+					</td>
+				</tr>
+
+				<tr>
+					<th>住所</th>
+					<td>
+						<input type="text" class="text" soy:id="company_address2" />
+					</td>
+				</tr>
+
+				<tr>
+					<th>電話番号</th>
+					<td>
+						<input type="text" class="text" soy:id="company_telephone" />
+					</td>
+				</tr>
+
+				<tr>
+					<th>FAX番号</th>
+					<td>
+						<input type="text" class="text" soy:id="company_fax" />
+					</td>
+				</tr>
+
+				<tr>
+					<th>連絡先メールアドレス</th>
+					<td>
+						<input type="text" class="text" soy:id="company_mailaddress" />
+					</td>
+				</tr>
+			</table>
+
+		<table class="form_table customer_form">
+			<caption>ショップの設定</caption>
+			<col style="width:30%" />
+			<tr>
+				<th>項目名</th>
+				<th></th>
+			</tr>
+			<tr>
+				<th>消費税設定</th>
+				<td>
+					<!-- soy:id="consumptionTaxInclusivePricingModeOff" -->
+					<input type="checkbox" soy:id="consumptionTax" />&nbsp;&nbsp;
+					<!-- soy:id="noTaxModuleList" -->
+					<a soy:link="Plugin.List">プラグインの管理を開く</a>
+					<br>※この設定はプラグインを利用します。税率系のプラグインをインストールしてください。
+					<!-- /soy:id="noTaxModuleList" -->
+					
+					<!-- soy:id="isTaxModuleList" -->
+					<select soy:id="taxModuleList"></select>&nbsp;
+					<a soy:id="taxModuleLink">消費税別表示設定</a>
+					<!-- /soy:id="isTaxModuleList" -->
+					<br />
+					<!-- /soy:id="consumptionTaxInclusivePricingModeOff" -->
+					
+					<!-- soy:id="consumptionTaxModeOff" -->
+					<input type="checkbox" soy:id="consumptionTaxInclusivePricing" />&nbsp;&nbsp;
+					税率:<input type="text" class="text" soy:id="consumptionTaxInclusivePricingRate">%
+					<!-- /soy:id="consumptionTaxModeOff" -->
+				</td>
+			</tr>
+			<tr>
+				<th>SSL設定</th>
+				<td>
+					<select soy:id="sslConfig"></select><br>
+					※ここでSSLの設定を行ってもカートとマイページのSSLは設定されません。<a soy:link="Config.CartConfig">カート</a>と<a soy:link="Config.MyPageConfig">マイページ</a>のSSLの使用にもチェックを入れてください。
+				</td>
+			</tr>
+			<tr>
+				<th>新着に在庫切れ商品を表示する</th>
+				<td>
+					<input type="checkbox" soy:id="displayStock" />&nbsp;&nbsp;&nbsp;
+					残りの在庫数が<input type="text" soy:id="displayStockCount" size="3" style="text-align:right;ime-mode:inactive;"/>点から表示する
+				</td>
+			</tr>
+			<tr>
+				<th>在庫数を無視する</th>
+				<td><input type="checkbox" soy:id="ignoreStock" /></td>
+			</tr>
+			<tr>
+				<th>子商品を商品詳細ページに表示する</th>
+				<td><input type="checkbox" soy:id="displayChildItem" /></td>
+			</tr>
+			<tr>
+				<th>子商品の在庫管理設定1</th>
+				<td><input type="checkbox" soy:id="childItemStock" /></td>
+			</tr>
+			<tr>
+				<th>子商品の在庫管理設定2</th>
+				<td><input type="checkbox" soy:id="noChildItemStock" /></td>
+			</tr>
+			<tr>
+				<th>仮登録を確認できるようにする</th>
+				<td><input type="checkbox" soy:id="checkPreOrder" /></td>
+			</tr>
+			<tr>
+				<th>購入手続きの進み具合の保持期限</th>
+				<td>
+					<input type="text" soy:id="cartPageTimeLimit" size="4" style="text-align:right;ime-mode:inactive;"/>分<br>
+					※購入手続きの画面へのアクセスが指定の時間途絶えると進み具合がリセットされます。0を入力するとリセットされません。
+				</td>
+			</tr>
+			<tr>
+				<th>ログアウト後に表示するページ</th>
+				<td><input type="checkbox" soy:id="displayPageAfterLogout"></td>
+			</tr>
+			<tr>
+				<th>お届け先情報</th>
+				<td><input type="checkbox" soy:id="displaySendInformationForm"></td>
+			</tr>
+			<tr>
+				<th>マイページログイン</th>
+				<td>
+					<input type="checkbox" soy:id="allowMailAddressLogin"><br />
+					<input type="checkbox" soy:id="allowLoginIdLogin">
+				</td>
+			</tr>
+			<tr>
+				<th>テンプレート編集</th>
+				<td>
+					<input type="checkbox" soy:id="displayUsableTagList">
+				</td>
+			</tr>
+			<tr soy:ignore="maintenance">
+				<th>メンテナンスモード（カートの停止）</th>
+				<td>
+					<input type="checkbox" soy:id="isShowOnlyAdministrator" /><br>
+					※管理画面にログインしている時はカートが表示されます
+				</td>
+			</tr>
+			<tr soy:ignore="multi">
+				<th>カテゴリーの設定</th>
+				<td>
+					<input type="checkbox" soy:id="multiCategory">
+					<!-- soy:id="multiCategory_batch" --><!--&nbsp;<a soy:id="batch_url"></a--><!-- /soy:id="multiCategory_batch" -->
+				</td>
+			</tr>
+		</table>
+
+
+		<table class="form_list" id="customer_form_config">
+			<caption>顧客情報の入力フォームの設定</caption>
+			<tr>
+				<th class="middle">項目名</th>
+				<th>フォームを表示する</th>
+				<th>必須項目にする</th>
+			</tr>
+			<tr>
+				<th>メールアドレス</th>
+				<td><input type="checkbox" onclick="return false;" soy:id="mailAddress_form" /></td>
+				<td><input type="checkbox" onclick="return false;" soy:id="mailAddress" /></td>
+			</tr>
+			<tr>
+				<th>ログインID(マイページのみ)</th>
+				<td><input type="checkbox" soy:id="accountId_form" /></td>
+				<td><input type="checkbox" soy:id="accountId" /></td>
+			</tr>
+			<tr>
+				<th>名前</th>
+				<td><input type="checkbox" onclick="return false;" soy:id="name_form" /></td>
+				<td><input type="checkbox" onclick="return false;" soy:id="name" /></td>
+			</tr>
+			<tr>
+				<th>フリガナ</th>
+				<td><input type="checkbox" soy:id="reading_form" /></td>
+				<td><input type="checkbox" soy:id="reading" /></td>
+			</tr>
+			<tr>
+				<th>ニックネーム(マイページのみ)</th>
+				<td><input type="checkbox" soy:id="nickname_form" /></td>
+				<td><input type="checkbox" soy:id="nickname" /></td>
+			</tr>
+			<tr>
+				<th>郵便番号</th>
+				<td><input type="checkbox" soy:id="zipCode_form" /></td>
+				<td><input type="checkbox" soy:id="zipCode" /></td>
+			</tr>
+			<tr>
+				<th>住所</th>
+				<td><input type="checkbox" soy:id="address_form" /></td>
+				<td><input type="checkbox" soy:id="address" /></td>
+			</tr>
+			<tr>
+				<th>電話番号</th>
+				<td><input type="checkbox" soy:id="telephoneNumber_form" /></td>
+				<td><input type="checkbox" soy:id="telephoneNumber" /></td>
+			</tr>
+			<tr>
+				<th>性別</th>
+				<td><input type="checkbox" soy:id="gender_form" /></td>
+				<td><input type="checkbox" soy:id="gender" /></td>
+			</tr>
+			<tr>
+				<th>生年月日</th>
+				<td><input type="checkbox" soy:id="birthday_form" /></td>
+				<td><input type="checkbox" soy:id="birthday" /></td>
+			</tr>
+			<tr>
+				<th>FAX番号</th>
+				<td><input type="checkbox" soy:id="faxNumber_form" /></td>
+				<td><input type="checkbox" soy:id="faxNumber" /></td>
+			</tr>
+			<tr>
+				<th>携帯番号</th>
+				<td><input type="checkbox" soy:id="cellphoneNumber_form" /></td>
+				<td><input type="checkbox" soy:id="cellphoneNumber" /></td>
+			</tr>
+			<tr>
+				<th>URL(マイページのみ)</th>
+				<td><input type="checkbox" soy:id="url_form" /></td>
+				<td><input type="checkbox" soy:id="url" /></td>
+			</tr>
+			<tr>
+				<th>職業</th>
+				<td><input type="checkbox" soy:id="jobName_form" /></td>
+				<td><input type="checkbox" soy:id="jobName" /></td>
+			</tr>
+			<tr>
+				<th>備考</th>
+				<td><input type="checkbox" soy:id="memo_form" /></td>
+				<td><input type="checkbox" soy:id="memo" /></td>
+			</tr>
+		</table>
+
+		<p class="pageBtn">
+					<input type="submit" class="submit_button" value="設定" />
+		</p>
+
+		</form soy:id="update_form">
+
+	</div>
+</div>

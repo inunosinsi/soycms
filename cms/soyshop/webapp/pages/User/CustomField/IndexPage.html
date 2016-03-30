@@ -1,0 +1,164 @@
+<h1>
+	ユーザーカスタム項目管理
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="User">顧客管理</a> &gt; ユーザカスタム項目管理</span>
+</h1>
+
+
+<div id="category" class="block">
+	<div class="block_title">
+		<h2>ユーザーカスタム項目設定</h2>
+
+		<div class="block_title_right">
+			<a class="button" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
+		</div>
+	</div>
+
+	<div class="block_body clearfix">
+		
+		<p class="notice" soy:id="updated">更新しました</p>
+		<p class="notice" soy:id="error">入力したIDは使用できません</p>
+		
+		<table class="form_list">
+			<caption>
+				カスタム項目
+			</caption>
+			<tr>
+				<td>ID</td>
+				<td>フィールド名</td>
+				<td>タイプ</td>
+				<td>操作</td>
+				<td>表示順</td>
+				<td>表示のさせ方</td>
+				<td>&nbsp;</td>
+			</tr>
+
+			<!-- soy:id="field_list" -->
+			<tr>
+				<form method="post">
+				<td soy:id="field_text">ID</td>
+				<td>
+					<span soy:id="label">説明</span>
+					<input soy:id="label_input" style="display:none;" />
+				</td>
+				<td>
+					<span soy:id="type">input</span>
+					<select soy:id="type_select" style="display:none;" />
+				</td>
+				<td>
+					<a soy:id="toggle_update">設定変更</a>
+					<a soy:id="update_link" class="button" style="display:none;">変更を保存する</a>
+
+					<input type="submit" soy:id="update_submit" style="display:none;" />
+				</td>
+				<td style="text-align:center;">
+					<input type="hidden" soy:id="field_id" />
+					<input type="submit" name="move_up" value="△" />
+					<input type="submit" name="move_down" value="▽" />
+				</td>
+				<td soy:id="display_form">表示のさせ方</td>
+				<td>
+					<a soy:id="toggle_config">Detail</a>
+
+					<a soy:id="delete">Delete</a>
+
+					<input type="submit" soy:id="delete_submit" style="display:none;" />
+				</td>
+				</form>
+			</tr>
+			<tr soy:id="field_config" style="display:none;">
+				<td colspan="2"></td>
+				<td colspan="5">
+					<h5 style="margin-bottom:0;">高度な設定</h5>
+					<form method="post">
+						<dl>
+							<dt>必須項目</dt>
+							<dd>
+								<input type="checkbox" soy:id="is_required">
+							</dd>
+							<dt>初期値</dt>
+							<dd>
+								<input type="text" class="text" soy:id="default_value" />
+								<!-- soy:id="display_description_type_checkbox" -->
+								<br>※カンマ区切りで指定してください。
+								<!-- /soy:id="display_description_type_checkbox" -->
+							</dd>
+							<!-- 
+
+							<dt>空の時の動作：</dt>
+							<dd>
+								<input type="radio" soy:id="empty_show" id="radio_empty_show" /><label for="">指定の値を出力</label><input type="text" class="text" soy:id="empty_value" /><br/>
+								<input type="radio" soy:id="empty_hide" id="radio_empty_hide" /><label for="radio_empty_hide">表示しない</label>
+							</dd>
+							-->
+							
+							<!-- soy:id="with_options" -->
+							<dt>選択項目<span class="option">(項目を改行で区切ってください)</span></dt>
+							<dd>
+								<textarea soy:id="option"></textarea>
+							</dd>
+							<!-- /soy:id="with_options" -->
+							
+						</dl>
+
+						<div style="margin:10px 1em 2em;text-align:right;">
+							<input type="button" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
+						</div>
+
+						<input type="submit" style="display:none;" soy:id="update_advance_submit" />
+
+					</form>
+				</td>
+			</tr>
+			<!-- /soy:id="field_list" -->
+		</table>
+
+		<div id="append_form_el" class="popup" style="display:none;">
+			<form soy:id="create_form" id="create_form">
+			<input type="hidden" name="create" value="create" />
+			<p>
+				項目名
+				<div class="alL">
+				<input id="custom_new_name" name="custom_new_name" type="text" class="text validate">
+				<p class="require" id="custom_new_name_error" style="display:none;">必須項目を入力してください</p>
+				</div>
+
+				項目ID
+				<div class="alL">
+				<input id="custom_id" name="custom_id" type="text" class="text validate">
+				<p class="require" id="custom_id_error" style="display:none;">必須項目を入力してください</p>
+				</div>
+
+				項目種別
+				<div class="alL">
+					<select name="custom_type" soy:id="custom_type_select"></select>
+				</div>
+
+			</p>
+			<p class="alC">
+				<a class="button" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+			</p>
+			</dt>
+			<p class="close"></p>
+			</form soy:id="create_form">
+		</div>
+
+	</div><!-- /block_body -->
+</div>
+
+<div class="block">
+	<div class="block_title">
+		<h2>その他</h2>
+	</div>
+
+	<div class="block_body">
+
+	<dl>
+		<dt>
+			<a soy:link="User.CustomField.Config" href="javascript:void(0);">設定のインポート・エクスポート</a>
+		</dt>
+		<dd>ユーザーカスタム項目の設定のインポート／エクスポートを行います。</dd>
+	</dl>
+
+	</div><!-- /block_body -->
+</div>

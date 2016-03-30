@@ -1,0 +1,46 @@
+<div class="alR">
+	<a class="button" soy:link="Config.Detail?plugin=custom_search_field">カスタムサーチフィールド一覧</a>
+</div>
+
+<br />
+
+<div class="block_body clearfix">
+	
+	<p class="notice" soy:display="successed">成功しました</p>
+	<p class="error" soy:display="failed">失敗しました</p>
+	
+	<dl>
+		<dt>カスタムフィールドの設定を取得する</dt>
+		<dd>
+			<form soy:id="export_form" id="export_form">
+				<input type="submit" name="output_customfield_config" value="CSV出力"><br>
+				※カスタムフィールドの値を取得出来たら、使用するフィールドのみを残してインポートします。<br>
+				※一行テキストは文字列(string)として出力されます。<br>
+				※数字の場合はinteger、範囲の場合はrangeにします。
+			</form>
+		</dd>
+		<dt>カスタムフィールドの設定をインポートする</dt>
+		<dd>
+			<form soy:id="import_form">
+				<input type="file" name="csv">
+				<input type="submit" name="import_customfield_config" value="CSVインポート">
+			</form>
+		</dd>
+		<dt>各商品のカスタムフィールドに登録した値をインポートする</dt>
+		<dd>
+			<form soy:id="migrate_form">
+				<input type="submit" name="migrate_customfield_values" value="値の移行">
+			</form>
+		</dd>
+	</dl>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	$("#export_form").attr("target","download_frame");
+	$("#export_form").submit(function(){
+		setTimeout(function(){location.reload();},1000);
+	});
+});
+
+</script>

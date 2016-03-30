@@ -1,0 +1,188 @@
+<form soy:id="order_form">
+	<section id="cart_detail">
+		<div class="pconly">
+			<ul class="flow">
+				<li>お客様情報の入力</li><!--
+				--><li class="active">お支払・配送方法の選択</li><!--
+				--><li>ご注文内容の確認</li><!--
+				--><li>ご注文確定</li>
+			</ul>
+		</div>
+
+		<h1 class="cart_txt">カートに入っている商品</h1>
+		
+		<div class="cart_detail_dl">
+			<div class="cart_li title">
+				<div class="cart_itemthumb">&nbsp;</div>
+				<div class="cart_itemtitle">商品名</div>
+				<ul>
+					<li class="cart_itemid">商品番号</li>
+					<li class="cart_itemprice">価格</li>
+					<li class="cart_itemnum">個数</li>
+					<li class="cart_itemdelete">削除</li>
+					<li class="cart_itemsubsum">小計</li>
+				</ul>
+			</div>
+			<!-- soy:id="item_list" -->
+			<div class="cart_li">
+				<div class="cart_itemthumb"><img soy:id="item_small_image" src="" width="80"></div>
+				<div class="cart_itemdetail">
+					<h3 class="cart_itemtitle">
+						<a soy:id="item_name">商品名</a>
+						<!-- soy:id="item_option" /-->
+					</h3>
+					<ul>
+						<li class="cart_itemid" soy:id="item_id">dummy-001</li>
+						<li class="cart_itemprice"><!-- soy:id="item_price" /-->円</li>					
+						<li class="cart_itemnum">
+							<p class="error" soy:id="item_stock_error"></p>
+							<input name="ItemCount[0]" type="text" class="alR" id="" size="2" value="" soy:id="order_number" />個
+						</li>
+						<li class="cart_itemdelete"><a soy:id="item_delete">削除</a></li>
+						<li class="cart_itemsubsum"><!-- soy:id="item_total" /-->円</li>
+					</ul>
+				</div>
+			</div>
+			<!-- /soy:id="item_list" -->
+			
+			<div class="sumelse" soy:id="is_subtotal">
+				<ul>
+					<li class="sumtitle">小計</li>
+					<li class="sumprice"><!-- soy:id="total_item_price" /-->円</li>
+				</ul>
+			</div>
+		
+			<!-- soy:id="module_list" -->
+			<div class="sumelse">
+				<ul>
+					<li class="sumtitle"><!-- soy:id="module_name" -->送料（国内）<!-- /soy:id="module_name" --></li>
+					<li class="sumprice"><!-- soy:id="module_price" /-->円</li>
+				</ul>
+			</div>
+			<!-- /soy:id="module_list" -->
+			
+			<div class="sumarea">
+				<ul>
+					<li class="sumtitle">合計金額</li>
+					<li class="sumprice"><!-- soy:id="total_price" /-->円</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+	
+	<section>
+		<!-- soy:id="has_payment_method" -->
+		<h1 class="cart_txt">お支払・配送方法の選択</h1>
+		<h2>お支払方法の選択</h2>
+		<!-- soy:display="has_payment_error" -->
+		<div class="error">
+			<p soy:id="payment_error">お支払い方法が入力されていません。</p>
+		</div>
+		<!-- /soy:display="has_payment_error" -->
+		<div class="cart_detail_dl">
+			<dl>
+				<!-- soy:id="payment_method_list" -->
+				<dt soy:id="payment_name">代金引換</dt>
+				<dd onclick="$('input[name=payment_module][type=radio]',this).attr('checked',true);">
+					<input type="radio" name="" id="" value="" soy:id="payment_method">
+					<p class="remarks" soy:id="payment_description">代金引換でのお支払です。</p>
+					<p class="price" soy:id="payment_charge">手数料：315円</p>
+				</dd>
+				<!-- /soy:id="payment_method_list" -->
+			</dl>
+		</div>
+		<!-- /soy:id="has_payment_method" -->
+		
+		<!-- soy:id="has_delivery_method" -->
+		<h2>配送方法の選択</h2>
+		<!-- soy:display="has_delivery_error" -->
+		<div class="error">
+			<p soy:id="delivery_error">配送方法が入力されていません。</p>
+		</div>
+		<!-- /soy:display="has_delivery_error" -->
+		<div class="cart_detail_dl">
+			<dl>
+				<!-- soy:id="delivery_method_list" -->
+				<dt soy:id="delivery_name">宅配便</dt>
+				<dd onclick="$('input[name=delivery_module][type=radio]',this).attr('checked',true);">
+					<input type="radio" name="" id="" value="" soy:id="delivery_method">
+					<p class="remarks" soy:id="delivery_description">宅配便で配送します。</p>
+					<p class="price" soy:id="delivery_charge">送料：800円</p>
+				</dd>
+				<!-- /soy:id="delivery_method_list" -->
+			</dl>
+		</div>
+		<!-- /soy:id="has_delivery_method" -->
+		
+		<!-- soy:id="has_discount_method" -->
+		<h2>クーポン</h2>
+
+		<div class="cart_detail_dl">
+			<dl>
+				<!-- soy:id="discount_method_list" -->
+				<dt nowrap scope="row"><!-- soy:id="discount_name" /--></dt>
+				<dd>
+					<!-- soy:id="has_discount_error" -->
+					<p class="error" soy:id="discount_error"></p>
+					<!-- /soy:id="has_discount_error" -->
+					<!-- soy:id="discount_description" /-->
+				</dd>
+			<!-- /soy:id="discount_method_list" -->
+			</dl>
+		</div>
+		<!-- /soy:id="has_discount_method" -->
+		
+		<!-- soy:id="has_point_method" -->
+		<h2>ポイント支払</h2>
+			
+		<div class="cart_detail_dl">
+			<dl>
+				<!-- soy:id="point_method_list" -->
+				<dt><!-- soy:id="point_name" /--></dt>
+				<dd>
+					<!-- soy:id="has_point_error" -->
+					<p class="error" soy:id="point_error"></p>
+					<!-- /soy:id="has_point_error" -->
+					<!-- soy:id="point_description" /-->
+				</dd>
+			
+				<!-- /soy:id="point_method_list" -->
+			</dl>
+		</div>
+		<!-- /soy:id="has_point_method" -->
+		
+		<!-- soy:id="has_customfield_method" -->
+		<h2>その他</h2>
+
+		<div class="cart_detail_dl">
+			<dl>
+				<!-- soy:id="customfield_method_list" -->
+				<dt><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></dt>
+				<dd>
+					<!-- soy:id="has_customfield_error" -->
+					<p class="error" soy:id="customfield_error"></p>
+					<!-- /soy:id="has_customfield_error" -->
+					<!-- soy:id="customfield_description" /-->
+				</dd>
+				<!-- /soy:id="customfield_method_list" -->
+			</dl>			
+		</div>
+		<!-- /soy:id="has_customfield_method" -->
+
+		<!--変更なし-->
+		
+		<p class="btn"><input type="image" name="next" alt="次へ（ご注文内容の確認）" soy:src="themes/common/images/cart/btn_next_confirm_off.png"></p>
+		<p class="textcenter"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
+
+		<!--変更なしここまで-->
+
+	</section>
+</form soy:id="order_form">
+
+<!-- soy:id="has_cart_plugin" -->
+
+<!-- soy:id="cart_plugin_list" -->
+<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- /soy:id="cart_plugin_list" -->
+
+<!-- /soy:id="has_cart_plugin" -->

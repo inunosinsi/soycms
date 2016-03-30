@@ -1,0 +1,69 @@
+<div style="padding:0px 20px;">
+
+<h1>サイト設定</h1>
+
+<div class="notice" soy:id="created">再生成しました。</div>
+<div class="notice" soy:id="success">ルート設定を行いました。</div>
+<div class="notice" soy:id="detach">ルート設定を解除しました。</div>
+<div class="notice" soy:id="updated">更新しました。</div>
+<div class="notice" soy:id="error">失敗しました。</div>
+
+
+<div class="table_container">
+		
+	<form soy:id="form">
+	
+	<table class="form_table list">
+		<tr>
+			<th width="30%">サイトID</th>
+			<td soy:id="site_id">shop</td>
+		</tr>
+		<tr>
+			<th>サイト名</th>
+			<td><input type="text" soy:id="site_name" /></td>
+		</tr>
+		<tr>
+			<th>データベース</th>
+			<td soy:id="site_db">MySQL</td>
+		</tr>
+		<tr>
+			<th>URL</th>
+			<td>
+				<a soy:id="site_root_link"></a><!-- soy:id="is_root" --><br /><!-- /soy:id="is_root" -->
+				<a soy:id="site_url"></a>
+			</td>
+		</tr>
+		<tr style="display:none;">
+			<th>サイトURL</th>
+			<td>
+				<input type="url" soy:id="site_url_input"><br>
+				元のURL（<span soy:id="default_url">http://www.example.com/</span>）に<a href="javascript:void(0);" onclick="$('#site_url').val($('#default_url').html());return false;">戻す</a>
+			</td>
+		</tr>
+		<tr>
+			<th>フロントコントローラの再生成</th>
+			<td><a soy:id="controller_link">再生成を実行</a></td>
+		</tr>
+		<tr>
+			<th>ルート設定</th>
+			<td>
+				<!-- soy:id="config_root" -->
+				<a soy:id="set_root_link">設定する</a>
+				<!-- /soy:id="config_root" -->
+				<!-- soy:id="is_root*" -->
+				<a soy:id="detach_root_link">解除する</a>
+				<!-- /soy:id="is_root*" -->
+			</td>
+		</tr>
+		<tr>
+			<th>サイトの権限設定</th>
+			<td><a soy:id="detail_link">詳細</a></td>
+		</tr>
+	</table>
+	
+	<div style="text-align:center;">
+		<input type="submit" value="変更" />
+	</div>
+	
+	</form soy:id="form">
+</div>

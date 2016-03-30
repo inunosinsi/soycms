@@ -1,0 +1,114 @@
+<h1>
+	商品のカテゴリ一括設定
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Item">商品管理</a> &gt; 商品のカテゴリ一括設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>商品一覧</h2>
+
+	</div>
+	
+	<div class="block_body">
+		
+		<div class="ml20 mb">
+			カテゴリ：<select soy:id="category_select"><option value="-1">カテゴリなし</option></select>
+		</div>
+		
+		<form soy:id="form">
+			<table class="form_list">
+				<caption>商品一覧</caption>
+				<thead>
+					<tr class="alC">
+						<th>
+							<!-- soy:id="app_limit_function" -->
+							<input id="item_checkbox" class="item_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
+							<!-- /soy:id="app_limit_function" -->
+						</th>
+						<th>&nbsp;</th>
+						<th><nobr>公開状態</nobr></th>
+						<th>カテゴリ</th>
+						<th>商品名</th>
+						<th>商品コード</th>
+						<th>価格 / セール</th>
+					</tr>
+				</thead>
+				
+				<tfoot>
+					<tr id="items_operation" style="display:none;">
+						<td colspan="7">
+							<span class="option">操作：</span>
+							カテゴリを<select soy:id="category_change_select"></select>に<input type="submit" name="change" value="変更する">&nbsp;
+							カテゴリの設定を<input type="submit" name="remove" value="外す">
+	
+						</td>
+					</tr>
+				</tfoot>
+				
+				<tbody>
+					<!-- soy:id="item_list" -->
+					<tr>
+						<td class="checkbox"><input soy:id="item_check" class="item_checkbox" type="checkbox" /></td>
+						<td><img soy:id="item_small_image"></td>
+						<td class="alC"><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
+						<td class="alC" soy:id="item_category">１</td>
+						<td soy:id="item_name">大豆</td>
+						<td soy:id="item_code">ITEM_001</td>
+						<td class="alR"><span soy:id="item_price">1000</span> 円 <!-- soy:id="is_sale" --> / <span soy:id="sale_price">1000</span> 円<!-- /soy:id="is_sale" --></td>
+					</tr>
+					<!-- /soy:id="item_list" -->
+				</tbody>
+	
+			</table>
+		</form>
+
+	</div><!-- /block_body -->
+</div>
+
+<!-- soy:display="app_limit_function" -->
+<div class="block">
+	<div class="block_title">
+		<h2>その他</h2>
+	</div>
+
+	<div class="block_body">
+
+	<dl>
+		<dt><a soy:link="Item.Category">カテゴリ管理</a></dt>
+		<dd>商品カテゴリを編集します</dd>
+		
+		<dt><a soy:link="Item.Setting">商品カテゴリの一括設定</a></dt>
+		<dd>商品カテゴリを一括で変更します</dd>
+
+		<dt><a soy:link="Item.CustomField">カスタム項目設定</a></dt>
+		<dd>商品の追加項目を編集します</dd>
+
+		<dt><a soy:link="Item.Import">CSVインポート</a></dt>
+		<dd>商品情報をCSVから入力します。</dd>
+
+		<dt><a soy:link="Item.Export">CSVエクスポート</a></dt>
+		<dd>商品情報をCSV出力します。</dd>
+	</dl>
+
+	</div><!-- /block_body -->
+</div>
+<!-- /soy:display="app_limit_function" -->
+
+<script type="text/javascript">
+function changeCheckBoxAuto(){
+	$('#items_operation').show();
+	$('.item_checkbox').each(function(){
+		$(this).prop("checked", $("#item_checkbox").prop("checked"));
+	});
+}
+function redirectAfterSelect(e){
+	var selected = $(e).val();
+	var u = location.href;
+	if(location.search){
+		u = u.replace(location.search, "");
+	}
+	location.href = u + "?category=" + selected;
+}
+</script>

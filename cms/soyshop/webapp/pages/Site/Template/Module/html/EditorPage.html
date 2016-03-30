@@ -1,0 +1,59 @@
+<h1>
+	<!-- soy:id="module_name_text" /--> - HTMLモジュール編集
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Template#module_list">テンプレート管理</a> &gt; HTMLモジュール編集</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>編集</h2>
+	</div>
+
+	<div class="block_body">
+
+		<p class="notice" soy:display="updated">更新しました</p>
+
+		<form soy:id="update_form">
+		
+		<dl>
+			<dt>モジュール名</dt>
+			<dd>
+				<input type="text" class="title" soy:id="module_name" />
+			</dd>
+		</dl>
+			
+		<table class="form_list">
+			<caption soy:id="module_id">モジュール</caption>
+			<tr>
+				<td>
+					<textarea id="module_editor" class="editor" soy:id="module_content"></textarea>
+				</td>
+			</tr>
+		</table>
+		
+		<p class="pageBtn">
+			<input type="submit" value="保存" />
+		</p>
+
+		</form soy:id="update_form">
+		<table class="form_list">
+			<caption style="cursor:pointer;" onclick="$('#example').toggle();">テンプレート記述例を表示</caption>
+			<tr id="example" style="display:none;">
+				<td>
+					<textarea id="module_example" soy:id="module_example"></textarea>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+</div>
+
+<style type="text/css">
+#module_editor{
+	height:400px;
+}
+#module_example{
+	height:100px;
+}
+</style>

@@ -1,0 +1,238 @@
+<h1>
+	注文詳細
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Order">注文管理</a> &gt; <a soy:id="order_detail_link*">注文詳細</a> &gt; 注文編集</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>注文編集 - <!-- soy:id="order_name_text" /--></h2>
+		
+		<div class="block_title_right">
+			<a soy:id="order_detail_link*" class="button">戻る</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+		
+	<form soy:id="update_form">
+
+	<table class="form_list">
+		<caption>注文詳細</caption>
+		<col style="width:180px;" />
+		<tbody>
+			<tr>
+				<th>注文番号（注文ID）</th>
+				<td><!-- soy:id="order_id" -->123-4567-8979<!-- /soy:id="order_id" --> (<!-- soy:id="order_raw_id" -->123<!-- /soy:id="order_raw_id" -->)</td>
+			</tr>
+			<tr>
+				<th>注文日時</th>
+				<td soy:id="order_date">2008-12-1 00:00</td>
+			</tr>
+			<tr>
+				<th>状態</th>
+				<td soy:id="order_status">ITEM_001</td>
+			</tr>
+			<tr>
+				<th>支払い状況</th>
+				<td soy:id="payment_status">ITEM_001</td>
+			</tr>
+
+			<tr>
+				<th>合計金額</th>
+				<td soy:id="order_price">1000円</td>
+			</tr>
+
+			<tr>
+				<th>お客様</th>
+				<td>
+					<!-- soy:id="customer_name" -->お客様の名前<!-- /soy:id="customer_name" -->
+					<!-- soy:id="show_customer_area" -->（<!-- soy:id="customer_area" -->京都府<!-- /soy:id="customer_area" -->）<!-- /soy:id="show_customer_area" -->
+					<a soy:id="customer_email">someone@example.com</a>
+					<a soy:id="customer_link" class="button">詳細</a>
+				</td>
+			</tr>
+
+			<!-- soy:id="attribute_list" -->
+			<tr>
+				<th soy:id="attribute_title">属性</th>
+				<td>
+					<textarea class="text" soy:id="attribute_value" />
+				</td>
+			</tr>
+			<!-- /soy:id="attribute_list" -->
+			<!-- soy:id="customfield_list" -->
+			<tr>
+				<th soy:id="customfield_title">属性</th>
+				<td>
+					<!-- soy:id="customfield_value" /-->
+				</td>
+			</tr>
+			<!-- /soy:id="customfield_list" -->
+
+			<tr>
+				<th>請求先</th>
+				<td>
+					<input tyoe="text" class="text" soy:id="claimed_customerinfo_office" /><br />
+					<input type="text" class="text" soy:id="claimed_customerinfo_name" /><br />
+					<input type="text" class="text" soy:id="claimed_customerinfo_reading" /><br />
+					〒<input type="text" soy:id="claimed_customerinfo_zip_code" />
+					<select soy:id="claimed_customerinfo_area"><option></option></select><br />
+					<input type="text" class="text" soy:id="claimed_customerinfo_address1" /><br />
+					<input type="text" class="text" soy:id="claimed_customerinfo_address2" /><br />
+					<input type="text" class="text" soy:id="claimed_customerinfo_tel_number" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>送付先</th>
+				<td>
+					<input type="text" class="text" soy:id="order_customerinfo_office" /><br >
+					<input type="text" class="text" soy:id="order_customerinfo_name" /><br />
+					<input type="text" class="text" soy:id="order_customerinfo_reading" /><br />
+					〒<input type="text" soy:id="order_customerinfo_zip_code" />
+					<select soy:id="order_customerinfo_area"><option></option></select><br />
+					<input type="text" class="text" soy:id="order_customerinfo_address1" /><br />
+					<input type="text" class="text" soy:id="order_customerinfo_address2" /><br />
+					<input type="text" class="text" soy:id="order_customerinfo_tel_number" />
+				</td>
+			</tr>
+			
+		</tbody>
+
+	</table>
+
+	<h3>注文の内訳</h3>
+	<table class="form_table" id="order_content">
+		<thead>
+			<tr class="alC">
+				<th>削除</th>
+				<th>商品コード</th>
+				<th>商品名</th>
+				<th>単価</th>
+				<th>注文数</th>
+				<th>代金小計</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<!--  soy:id="item_list" -->
+			<tr>
+				<td class="alC"><input soy:id="item_delete" type="checkbox" /></td>
+				<td class="alC"><a soy:id="item_id">11</a></td>
+				<td>
+					<p><input type="text" soy:id="item_name" style="width:320px;" /></p>
+					<!-- soy:id="item_option_list" -->
+					<p><!-- soy:id="label" /-->:<input type="text" soy:id="option" /></p>
+					<!-- /soy:id="item_option_list" -->
+				</td>
+				<td class="alR"><input type="text" soy:id="item_price" style="width:60px;" class="alR" /> 円</td>
+				<td class="alR"><input type="text" soy:id="item_count" style="width:40px;" class="alR" /> 点</td>
+				<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
+			</tr>
+			<!--  /soy:id="item_list" -->
+
+			<tr id="add_item_by_code_template" style="display:none">
+				<td class="alC">&nbsp;</td>
+				<td class="alC"><input name="AddItemByCode[code][]" type="text" /></td>
+				<td class="alC">
+					<input name="AddItemByCode[name][]" type="text" style="width:320px;" /><br />
+					※商品コードが分からない場合は商品名で登録できます。
+				</td>
+				<td class="alR">&nbsp;</td>
+				<td class="alR"><input name="AddItemByCode[count][]" type="text" style="width:40px;" class="alR" /> 点</td>
+				<td class="alR">&nbsp;</td>
+			</tr>
+
+			<tr id="add_item_by_name_template" style="display:none">
+				<td class="alC">&nbsp;</td>
+				<td class="alC">&nbsp;</td>
+				<td class="alC"><input name="AddItemByName[name][]" type="text" style="width:320px;" /></td>
+				<td class="alR"><input name="AddItemByName[price][]" type="text" style="width:60px;" /> 円</td>
+				<td class="alR"><input name="AddItemByName[count][]" type="text" style="width:40px;" class="alR" /> 点</td>
+				<td class="alR">&nbsp;</td>
+			</tr>
+
+			<tr>
+				<td class="alC">&nbsp;</td>
+				<td colspan="4" class="alC">
+					<a class="button" id="add_item_by_code_button">登録されている商品を追加（商品コードで商品を検索）</a>
+					<a class="button" id="add_item_by_name_button">未登録商品を追加</a>
+				</td>
+				<td>&nbsp;</td>
+			</tr>
+
+
+			<!--  soy:id="module_list" -->
+			<tr>
+				<td class="alC"><input soy:id="module_delete" type="checkbox" /></td>
+				<td colspan="4" class="alR" style="font-weight:bold;padding-right:1em;">
+					<input type="text" soy:id="module_name" style="text-align:right;" />
+				</td>
+				<td class="alR" style="width:120px;"><input soy:id="module_price" type="text" style="width:100px;text-align:right;" /> 円</td>
+			</tr>
+			<!--  /soy:id="module_list" -->
+
+			<tr id="add_module_template" style="display:none;">
+				<td class="alC">&nbsp;</td>
+				<td colspan="4" class="alR" style="font-weight:bold;padding-right:1em;">
+					<input type="text" name="AddModule[name][]" style="text-align:right;" disabled="disabled" />
+				</td>
+				<td class="alR" style="width:120px;"><input name="AddModule[price][]" type="text" style="width:100px;text-align:right;" disabled="disabled" /> 円</td>
+			</tr>
+
+			<tr>
+				<td class="alC">&nbsp;</td>
+				<td colspan="4" class="alR" style="font-weight:bold;padding-right:1em;">
+					<a class="button" id="add_module_button" >項目追加</a>
+				</td>
+				<td class="alR" style="width:120px;">&nbsp;</td>
+			</tr>
+
+
+			<tr>
+				<th colspan="5" class="alR" style="font-weight:bold;padding-right:1em;">代金合計</th>
+				<td class="alR">
+					<!-- soy:id="order_total_price" /--> 円
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+	
+	<p class="pageBtn">
+		<input type="submit" name="do_open" value="変更" style="width:180px;margin-right:50px;" />
+	</p>
+	
+	</form soy:id="update_form">
+	</div>
+</div>
+
+
+<script type="text/javascript">
+$('#add_item_by_code_button').click(function(){
+	var origin = $("#add_item_by_code_template");
+	var append = $("<tr>"+(origin.html())+"</tr>").insertBefore(origin);
+	$("td input", append).each(function(i){
+		$(this).removeAttr("disabled");
+	});
+	return false;
+});
+$('#add_item_by_name_button').click(function(){
+	var origin = $("#add_item_by_name_template");
+	var append = $("<tr>"+(origin.html())+"</tr>").insertBefore(origin);
+	$("td input", append).each(function(i){
+		$(this).removeAttr("disabled");
+	});
+	return false;
+});
+$('#add_module_button').click(function(){
+	var origin = $("#add_module_template");
+	var append = $("<tr>"+(origin.html())+"</tr>").insertBefore(origin);
+	$("td input", append).each(function(i){
+		$(this).removeAttr("disabled");
+	});
+	return false;
+});
+</script>

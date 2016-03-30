@@ -1,0 +1,35 @@
+<p class="notice" soy:id="updated">変更しました</p>
+
+<div class="table_container">
+	<form method="post">
+	
+		<dl>
+			<dt>Google Analytics トラッキングコード</dt>
+			<dd>
+				<textarea class="minieditor" soy:id="tracking_code"></textarea>
+				<p>※注文完了画面にご注文番号を表示させている場合、<a href="https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingEcommerce?hl=ja-JP" target="_blank">非同期型eコマーストラッキングタグ</a>が挿入されます。</p>
+			</dd>
+			<dt>挿入箇所</dt>
+			<dd>
+				<input type="radio" soy:id="insert_before_end_head" />
+				<input type="radio" soy:id="insert_to_head" />
+				<input type="radio" soy:id="insert_to_tail" />
+			</dd>
+			
+			<dt>ページ別設定</dt>
+			<dd>
+				<div>ページ毎にトラックコードを挿入するかしないかを設定します。(カートとマイページには必ず挿入されます)</div>
+				<ul>
+					<!-- soy:id="page_list" -->
+					<li><input type="checkbox" soy:id="page"></li>
+					<!-- /soy:id="page_list" -->
+				</ul>
+			</dd>
+		</dl>
+	
+		<p class="pageBtn">
+			<input type="submit" class="submit_button" value="変更" />
+		</p>
+		
+	</form>
+</div>
