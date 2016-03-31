@@ -4,7 +4,7 @@ PHP7でSOY CMSを動かすためにいくつか修正している他、PHP5で�
 本家:http://www.soycms.net/  
   
 Download ZIPでダウンロードしたファイル群をルートディレクトリに配置したら動作します。  
-動作しない場合は、https://saitodev.co/contactまでご連絡ください。
+動作しない場合は、https://saitodev.co/contact までご連絡ください。
 
 そのまま配置した場合はSQLite版になりますが、  
 MySQL版をご利用したい場合は、  
