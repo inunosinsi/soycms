@@ -36,7 +36,7 @@ elFinder.prototype.commands.netmount = function() {
 							if (typeof o[protocol].select == 'function') {
 								o[protocol].select(fm, e, data);
 							}
-						})
+						}).addClass('ui-corner-all')
 					},
 					opts = {
 						title          : fm.i18n('netMountDialogTitle'),
@@ -56,7 +56,7 @@ elFinder.prototype.commands.netmount = function() {
 				content.append($('<tr/>').append($('<td>'+fm.i18n('protocol')+'</td>')).append($('<td/>').append(inputs.protocol)));
 
 				$.each(self.drivers, function(i, protocol) {
-					inputs.protocol.append('<option value="'+protocol+'">'+fm.i18n(protocol)+'</option>');
+					inputs.protocol.append('<option value="'+protocol+'">'+fm.i18n(o[protocol].name || protocol)+'</option>');
 					$.each(o[protocol].inputs, function(name, input) {
 						input.attr('name', name);
 						if (input.attr('type') != 'hidden') {
@@ -183,6 +183,9 @@ elFinder.prototype.commands.netunmount = function() {
 				accept : {
 					label    : 'btnUnmount',
 					callback : function() {  
+						var chDrive = (fm.root() == drive.hash),
+							base = $('#'+fm.navHash2Id(drive.hash)).parent(),
+							navTo = (base.next().length? base.next() : base.prev()).find('.elfinder-navbar-root');
 						fm.request({
 							data   : {cmd  : 'netmount', protocol : 'netunmount', host: drive.netkey, user : drive.hash, pass : 'dum'}, 
 							notify : {type : 'netunmount', cnt : 1, hideCnt : true},
@@ -192,17 +195,20 @@ elFinder.prototype.commands.netunmount = function() {
 							dfrd.reject(error);
 						})
 						.done(function(data) {
-							var chDrive = (fm.root() == drive.hash);
-							data.removed = [ drive.hash ];
-							fm.remove(data);
+							var open = fm.root();
 							if (chDrive) {
-								var files = fm.files();
-								for (var i in files) {
-									if (fm.file(i).mime == 'directory') {
-										fm.exec('open', i);
-										break;
+								if (navTo.length) {
+									open = fm.navId2Hash(navTo[0].id);
+								} else {
+									var files = fm.files();
+									for (var i in files) {
+										if (fm.file(i).mime == 'directory') {
+											open = i;
+											break;
+										}
 									}
 								}
+								fm.exec('open', open);
 							}
 							dfrd.resolve();
 						});
