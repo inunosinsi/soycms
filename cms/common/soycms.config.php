@@ -1,5 +1,5 @@
 <?php
-define("SOYCMS_DB_TYPE","sqlite");
+define("SOYCMS_DB_TYPE","mysql");
 //define("SOY2HTML_CACHE_FORCE",false);
 define("SOYCMS_VERSION","1.8.18");
 define("SOYCMS_BUILD","2016-03-28T22:13:48+09:00");

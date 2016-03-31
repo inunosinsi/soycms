@@ -47,6 +47,11 @@ function soy_cms_blog_output_entry($page,$entry){
 					"text"=>$entry->getBranchName(),
 					"soy2prefix"=>"cms"
 				));
+				
+				$this->createAdd("category_alias", "CMSLabel", array(
+					"text" => $entry->getAlias(),
+					"soy2prefix" => "cms"
+				));
 			}
 		}
 	}
