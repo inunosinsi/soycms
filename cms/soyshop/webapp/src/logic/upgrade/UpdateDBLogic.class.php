@@ -98,7 +98,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	 * バージョン番号を保存する
 	 * @param string version
 	 */
-	function registerVersion($version){
+	public static function registerVersion($version){
 		try{
 			SOYShop_DataSets::put(self::VERSION_KEY, $version);
 		}catch(Exception $e){
