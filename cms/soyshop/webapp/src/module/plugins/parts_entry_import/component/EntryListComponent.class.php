@@ -46,6 +46,11 @@ class EntryListComponent extends HTMLList{
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"defaultFormat"=>"Y-m-d"
 		));
+
+        $this->addLabel("create_date_ymd", array(
+            "soy2prefix" => SOYSHOP_SITE_PREFIX,
+            "text" => date("Y-m-d", $entity->getCdate())
+        ));
 		
 		$more = $entity->getMore();
 		$this->addLabel("more", array(
