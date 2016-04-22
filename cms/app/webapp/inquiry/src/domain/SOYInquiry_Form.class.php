@@ -92,6 +92,9 @@ class SOYInquiry_FormConfig{
 	private $isUseCaptcha = false;
 	private $isSmartPhone = false;
 	private $isReplyToUser = false;
+	
+	//お問い合わせ詳細からの返答設定
+	private $isCcOnReplyForm = false;
 
 	private $administratorMailAddress = "";
 	private $notifyMailSubject = "[SOYInquiry]問い合わせがあります";
@@ -262,6 +265,12 @@ class SOYInquiry_FormConfig{
 	public function setIsReplyToUser($isReplyToUser) {
 		$this->isReplyToUser = $isReplyToUser;
 	}
-
+	
+	function getIsCcOnReplyForm(){
+		return $this->isCcOnReplyForm;
+	}
+	function setIsCcOnReplyForm($isCcOnReplyForm){
+		$this->isCcOnReplyForm = $isCcOnReplyForm;
+	}
 }
 ?>

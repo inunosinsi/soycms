@@ -391,7 +391,7 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 		$this->replacement = isset($config["replacement"])? $config["replacement"] : null;
 		$this->annotation = isset($config["annotation"])? $config["annotation"] : null;
 		
-		if(!defined(SOYINQUIRY_FORM_DESIGN_PAGE)){
+		if(!defined("SOYINQUIRY_FORM_DESIGN_PAGE")){
 			define("SOYINQUIRY_FORM_DESIGN_PAGE", (strpos($_SERVER["PATH_INFO"], "/" . APPLICATION_ID . "/Form/Design/") !== false));
 		}
 	}

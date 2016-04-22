@@ -120,7 +120,7 @@ class ConfigPage extends WebPage{
     	));	
     	
     	$config = $this->form->getConfigObject();
-
+    	
     	$this->createAdd("config_notUseCaptcha","HTMLInput",array(
     		"type" => "hidden",
 			"name" => "Config[isUseCaptcha]",
@@ -149,7 +149,6 @@ class ConfigPage extends WebPage{
     	$this->createAdd("gd_disabled","HTMLModel",array(
     		"visible" => !$config->enabledGD()
     	));
-    	
     }
     
     /**
@@ -290,7 +289,18 @@ class ConfigPage extends WebPage{
     		"name" => "Mail[returnAddressName]",
 			"value" => $config->getReturnAddressName()
     	));
-    	
+
+        $this->addInput("config_noCcOnReplyForm", array(
+            "name" => "Mail[isCcOnReplyForm]",
+            "value" => 0
+        ));
+        
+    	$this->addCheckBox("config_isCcOnReplyForm", array(
+    		"name" => "Mail[isCcOnReplyForm]",
+    		"value" => "1",
+    		"selected" => $config->getIsCcOnReplyForm(),
+    		"label" => "CCに管理者のメールアドレスを追加する"
+    	));    	
     }
     
     /**

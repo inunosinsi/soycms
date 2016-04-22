@@ -3,6 +3,7 @@
 class DetailPage extends WebPage{
 
 	var $id;
+    var $form;
 	
 	function doPost(){
 
@@ -41,8 +42,23 @@ class DetailPage extends WebPage{
 				$mailLogic->prepareSend();
 				if(isset($cc)) $mailLogic->getSend()->addRecipient($cc);
 				$mailLogic->getSend()->setFrom($from, null);	//fromの入れ替え
+                
 				$mailLogic->sendMail($to, $subject, $content, null);
-				
+
+                //CCがある場合はcc宛にもメールする
+                if(isset($cc) && strlen($cc)){
+                    $mailLogic->sendMail($cc, $subject, $content, null);
+                }
+                
+                //管理者に確認メールを送信する
+                if($this->form->getConfigObject()->getIsSendNotifyMail()) {
+                    $serverConfig = SOY2DAOFactory::create("SOYInquiry_ServerConfigDAO")->get();
+                    $adminFrom = $serverConfig->getAdministratorMailAddress();
+                    if($adminFrom != $cc){
+                        $mailLogic->sendMail($adminFrom, $subject, $content, null);
+                    }
+                }
+                
 				$comment = new SOYInquiry_Comment();
 				$comment->setInquiryId($this->id);
 				
@@ -76,19 +92,11 @@ class DetailPage extends WebPage{
 	function DetailPage($args) {
 		$this->id = @$args[0];
 		
-		WebPage::WebPage();
-		
 		$dao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
 		$formDao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
 		
 		try{
 			$inquiry = $dao->getById($this->id);
-			
-			//未読の場合
-			if($inquiry->isUnread()){
-				$dao->setReaded($inquiry->getId());
-			}
-			
 		}catch(Exception $e){
 			CMSApplication::jump("Inquiry");
 		}
@@ -98,6 +106,19 @@ class DetailPage extends WebPage{
 		}catch(Exception $e){
 			$form = new SOYInquiry_Form();
 		}
+
+        $this->form = $form;
+
+        WebPage::WebPage();
+
+        try{
+            //未読の場合
+			if($inquiry->isUnread()){
+				$dao->setReaded($inquiry->getId());
+			}
+        }catch(Exception $e){
+            //
+        }
 		
 		$this->addLabel("create_date", array(
 			"text" => date("Y-m-d H:i:s", $inquiry->getCreateDate())
@@ -199,7 +220,6 @@ class DetailPage extends WebPage{
 					}
 				}
 			}
-			//unlink($cols);
 		}
 		
 		return $mailAddress;
@@ -214,7 +234,9 @@ class DetailPage extends WebPage{
 		if(is_null($from) || !strlen($from)){
 			$from = $serverConfig->getAdministratorMailAddress();
 		}else{
-			$cc = $serverConfig->getAdministratorMailAddress();
+            if($this->form->getConfigObject()->getIsCcOnReplyForm()){
+                $cc = $serverConfig->getAdministratorMailAddress();
+            }
 		}
 		
 		return array($from, $cc);
