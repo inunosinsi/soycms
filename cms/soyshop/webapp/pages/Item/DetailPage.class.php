@@ -127,6 +127,11 @@ class DetailPage extends WebPage{
 					$item->setIsOpen(SOYShop_Item::IS_OPEN);
 				}
 
+				//作成日の値が空の場合は今の時刻を入れる
+				if(is_null($item->getCreateDate())){
+				    $item->setCreateDate(time());
+				}
+
 				$logic->update($item,$alias);
 				$id = $this->id;
 
