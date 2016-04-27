@@ -6,7 +6,8 @@ class CommonRelativeItemConfig extends SOYShopConfigPageBase{
 	 */
 	function getConfigPage(){
 
-		$form = SOY2HTMLFactory::createInstance("CommonRelativeItemConfigFormPage");
+		SOY2::import("module.plugins.common_relative_item.config.RelativeItemConfigPage");
+		$form = SOY2HTMLFactory::createInstance("RelativeItemConfigPage");
 		$form->setConfigObj($this);
 		$form->execute();
 		return $form->getObject();
@@ -21,26 +22,4 @@ class CommonRelativeItemConfig extends SOYShopConfigPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.config","common_relative_item","CommonRelativeItemConfig");
-
-class CommonRelativeItemConfigFormPage extends WebPage{
-
-	function CommonRelativeItemConfigFormPage(){
-
-	}
-
-	function execute(){
-		WebPage::WebPage();
-
-	}
-
-	function getTemplateFilePath(){
-		return dirname(__FILE__) . "/soyshop.config.html";
-	}
-
-	function setConfigObj($obj) {
-		$this->config = $obj;
-	}
-
-}
-
 ?>
