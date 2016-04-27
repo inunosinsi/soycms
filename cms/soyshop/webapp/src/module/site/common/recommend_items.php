@@ -15,14 +15,22 @@ function soyshop_recommend_items($html, $htmlObj){
 		$config = RecommendItemUtil::getConfig();
 		
 		$sql = "SELECT * FROM soyshop_item ".
-				"WHERE id IN (". implode(",", $ids) . ") ".
-				"AND item_is_open != 0 ".
-				"AND is_disabled != 1 ";
+             "WHERE id IN (". implode(",", $ids) . ") ".
+             "AND item_is_open != 0 ".
+             "AND is_disabled != 1 ";
 				
 		//ソートの設定
-		
 		if(isset($config["defaultSort"])){
-			switch($config["defaultSort"]){
+            //ランダム表示
+            if($config["defaultSort"] == "random"){
+                if(SOY2DAOConfig::type() == "mysql"){
+                    $sql .= "ORDER BY Rand() ";
+                }else{
+                    $sql .= "ORDER BY Random() ";
+                }
+            }else{
+                //ランダム以外
+                switch($config["defaultSort"]){
 				case "cdate":
 					$key = "create_date";
 					break;
@@ -31,12 +39,11 @@ function soyshop_recommend_items($html, $htmlObj){
 					break;
 				default:
 					$key = "item_" . $config["defaultSort"];
-			}
-			$sql .= "ORDER BY " . $key . " ";
-			$sql .= ($config["isReverse"] == 1) ? "ASC" : "DESC";
-		}
-		
-		
+                }
+                $sql .= "ORDER BY " . $key . " ";
+                $sql .= ($config["isReverse"] == 1) ? "ASC" : "DESC";    
+            }	
+		}		
 		
 		try{
 			$res = $dao->executeQuery($sql, array());

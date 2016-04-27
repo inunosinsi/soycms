@@ -31,7 +31,8 @@ class RecommendItemConfigPage extends WebPage{
 				"stock" => "在庫数",
 				"price" => "販売価格",
 				"cdate" => "作成日",
-				"udate" => "更新日"
+				"udate" => "更新日",
+                "random" => "ランダム"
 			),
 			'populateItem:function($entity,$key)' =>
 					'$this->createAdd("sort_input","HTMLCheckbox", array(' .
