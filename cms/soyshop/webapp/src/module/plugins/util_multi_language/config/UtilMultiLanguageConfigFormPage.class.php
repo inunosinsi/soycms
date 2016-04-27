@@ -82,7 +82,7 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 				
 				if(strpos($file, ".php") || strpos($file, ".html")){
 					copy($oldDir . $file, $newDir . $file);
-				//ディレクトリの場合
+                    //ディレクトリの場合
 				}elseif(is_dir($oldDir . $file)){
 					mkdir($newDir . $file);
 					self::copyFileRecursive($oldDir . $file . "/", $newDir . $file . "/");
@@ -121,6 +121,13 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 			"selected" => (isset($config["check_browser_language_config"])) ? (int)$config["check_browser_language_config"] : 0,
 			"label" => "確認する"
 		));
+
+        $this->addCheckBox("first_access_config", array(
+            "name" => "Config[check_first_access_config]",
+            "value" => UtilMultiLanguageUtil::IS_USE,
+            "selected" => (isset($config["check_first_access_config"])) ? (int)$config["check_first_access_config"] : 0,
+            "label" => "初回アクセスのみ確認する"
+        ));
 	}
 	
 	function setConfigObj($obj) {

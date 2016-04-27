@@ -33,7 +33,8 @@ class UtilMultiLanguageUtil {
 							"prefix" => "zh-tw",
 							"is_use" => self::NO_USE
 						),
-			"check_browser_language_config" => 0
+			"check_browser_language_config" => 0,
+            "check_first_access" => 0
 		));
 	}
 	
@@ -69,6 +70,7 @@ class UtilMultiLanguageUtil {
 	
 	public static function saveConfig($values){
 		if(!isset($values["check_browser_language_config"])) $values["check_browser_language_config"] = 0;
+        if(!isset($values["check_first_access_config"])) $values["check_first_access_config"] = 0;
 		SOYShop_DataSets::put("util_multi_language.config", $values);
 	}
 	

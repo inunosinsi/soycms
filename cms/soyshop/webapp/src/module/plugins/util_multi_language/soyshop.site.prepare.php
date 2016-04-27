@@ -14,19 +14,9 @@ class UtilMultiLanguagePrepareAction extends SOYShopSitePrepareAction{
 		
 		//ブラウザの言語設定を確認するモード
 		if($config["check_browser_language_config"]){
-			$language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
+            $languageConfig = self::getAcceptLanguage();
 			
-			foreach(UtilMultiLanguageUtil::allowLanguages() as $lang => $title){
-				if(preg_match('/^' . $lang . '/i', $language)) {
-					$languageConfig = $lang;
-					break;
-				}
-			}
-			
-			//念の為
-			if(!isset($languageConfig)) $languageConfig = "jp";
-			
-		//言語切替ボタンを使うモード
+            //言語切替ボタンを使うモード
 		}else{
 			$userSession = SOY2ActionSession::getUserSession();
 			
@@ -36,7 +26,7 @@ class UtilMultiLanguagePrepareAction extends SOYShopSitePrepareAction{
 				$languageConfig = $redirectLogic->getLanguageArterCheck($config);
 				$userSession->setAttribute("soyshop_publish_language", $languageConfig);
 				$userSession->setAttribute("soycms_publish_language", $languageConfig);
-			//押してないとき
+                //押してないとき
 			}else{
 				$languageConfig = $userSession->getAttribute("soyshop_publish_language");
 				if(is_null($languageConfig)){
@@ -44,7 +34,13 @@ class UtilMultiLanguagePrepareAction extends SOYShopSitePrepareAction{
 					$languageConfig = $userSession->getAttribute("soycms_publish_language");
 					
 					if(is_null($languageConfig)){
-						$languageConfig = "jp";
+
+                        //初回アクセスのみブラウザの言語設定をみる
+                        if($config["check_first_access_config"]){
+                            $languageConfig = self::getAcceptLanguage();
+                        }else{
+                            $languageConfig = "jp";
+                        }
 						$userSession->setAttribute("soyshop_publish_language", $languageConfig);
 					}
 				}
@@ -65,6 +61,23 @@ class UtilMultiLanguagePrepareAction extends SOYShopSitePrepareAction{
 			exit;
 		}
 	}
+
+    private function getAcceptLanguage(){
+        $language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
+
+        $languageConfig = null;
+        foreach(UtilMultiLanguageUtil::allowLanguages() as $lang => $title){
+            if(preg_match('/^' . $lang . '/i', $language)) {
+                $languageConfig = $lang;
+                break;
+            }
+        }
+
+        //念の為
+        if(!isset($languageConfig)) $languageConfig = "jp";
+
+        return $languageConfig;
+    }
 }
 SOYShopPlugin::extension("soyshop.site.prepare", "util_multi_languare", "UtilMultiLanguagePrepareAction");
 ?>
