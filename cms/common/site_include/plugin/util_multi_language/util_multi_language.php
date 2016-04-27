@@ -8,6 +8,9 @@ class UtilMultiLanguagePlugin{
 	private $config;
 	private $check_browser_language;
 
+    //ブラウザの言語を読み込む設定をしていない時に初回アクセスのみブラウザの言語設定を見るか？
+    private $check_first_access;
+
 	function getId(){
 		return self::PLUGIN_ID;
 	}
@@ -19,7 +22,7 @@ class UtilMultiLanguagePlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.7"
+			"version"=>"0.7.1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 			$this,"config_page"
@@ -35,7 +38,7 @@ class UtilMultiLanguagePlugin{
 			CMSPlugin::setEvent('onSiteAccess', self::PLUGIN_ID, array($this, "onSiteAccess"));
 			CMSPlugin::setEvent('onPageOutput', self::PLUGIN_ID, array($this, "onPageOutput"));
 
-		//プラグインの初回動作
+            //プラグインの初回動作
 		}else{
 			//
 		}
@@ -73,19 +76,9 @@ class UtilMultiLanguagePlugin{
 		
 		//ブラウザの言語設定を確認するモード
 		if($this->check_browser_language){
-			$language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
+            $languageConfig = self::getAcceptLanguage();
 			
-			foreach(self::getLanguageList() as $lang => $title){
-				if(preg_match('/^' . $lang . '/i', $language)) {
-					$languageConfig = $lang;
-					break;
-				}
-			}
-			
-			//念の為
-			if(!isset($languageConfig)) $languageConfig = "jp";
-			
-		//言語切替ボタンを使うモード
+            //言語切替ボタンを使うモード
 		}else{
 			$userSession = SOY2ActionSession::getUserSession();
 			
@@ -94,7 +87,7 @@ class UtilMultiLanguagePlugin{
 				$languageConfig = $redirectLogic->getLanguageArterCheck($config);
 				$userSession->setAttribute("soycms_publish_language", $languageConfig);
 				$userSession->setAttribute("soyshop_publish_language", $languageConfig);
-			//押してないとき
+                //押してないとき
 			}else{
 				$languageConfig = $userSession->getAttribute("soycms_publish_language");
 				if(is_null($languageConfig)){
@@ -102,7 +95,13 @@ class UtilMultiLanguagePlugin{
 					$languageConfig = $userSession->getAttribute("soyshop_publish_language");
 					
 					if(is_null($languageConfig)){
-						$languageConfig = "jp";
+                        //初回のみブラウザの言語設定を確認する
+                        if($this->check_first_access){
+                            $languageConfig = self::getAcceptLanguage();    
+                        }else{
+                            $languageConfig = "jp";    
+                        }
+                        
 						$userSession->setAttribute("soycms_publish_language", $languageConfig);
 					}
 				}
@@ -149,6 +148,32 @@ class UtilMultiLanguagePlugin{
 	function setCheckBrowserLanguage($check_browser_language){
 		$this->check_browser_language = $check_browser_language;
 	}
+
+    function getCheckFirstAccess(){
+        return $this->check_first_access;
+    }
+    function setCheckFirstAccess($check_first_access){
+        $this->check_first_access = $check_first_access;
+    }
+
+    private function getAcceptLanguage(){
+        $language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
+
+        $languageConfig = null;
+        foreach(SOYCMSUtilMultiLanguageUtil::allowLanguages() as $lang => $title){
+            if(preg_match('/^' . $lang . '/i', $language)) {
+                $languageConfig = $lang;
+                break;
+            }
+        }
+
+        //念の為
+        if(!isset($languageConfig)) $languageConfig = "jp";
+
+        var_dump($languageConfig);
+
+        return $languageConfig;
+    }
 	
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);

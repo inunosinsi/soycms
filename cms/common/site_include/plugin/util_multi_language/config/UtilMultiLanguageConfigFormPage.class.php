@@ -12,6 +12,8 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 			$this->pluginObj->setConfig($_POST["Config"]);
 			$check = (isset($_POST["check_browser_language"])) ? (int)$_POST["check_browser_language"] : 0;
 			$this->pluginObj->setCheckBrowserLanguage($check);
+            $checkFirst = (isset($_POST["check_first_access"])) ? (int)$_POST["check_first_access"] : 0;
+            $this->pluginObj->setCheckFirstAccess($checkFirst);
 			CMSPlugin::savePluginConfig($this->pluginObj->getId(),$this->pluginObj);
 		}
 		CMSPlugin::redirectConfigPage();
@@ -35,7 +37,14 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 			"value" => 1,
 			"selected" => $this->pluginObj->getCheckBrowserLanguage(),
 			"label" => "確認する"
-		));	
+		));
+
+        $this->addCheckBox("first_access_only", array(
+            "name" => "check_first_access",
+            "value" => 1,
+            "selected" => $this->pluginObj->getCheckFirstAccess(),
+            "label" => "初回アクセスのみブラウザの言語設定を確認する"
+        ));
 	}
 	
 	private function getSmartPhonePrefix(){
