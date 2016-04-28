@@ -56,6 +56,11 @@ class NewItemConfigPage extends WebPage{
 			"value" => 1,
 			"label" => "降順",
 		));
+
+        $this->addInput("try_count", array(
+            "name" => "Page[tryCount]",
+            "value" => (isset($config["tryCount"])) ? (int)$config["tryCount"] : 3
+        ));
 		
 	}
 	

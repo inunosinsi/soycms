@@ -28,27 +28,26 @@ function soyshop_new_items($html, $htmlObj){
              "AND open_period_end > " . time() . " ".
              "AND (create_date > :edate AND create_date <= :cdate) ";
 
-        //データの取得回数 @ToDo 何ヶ月前まで遡るかの設定を追加したい
-        $try = 3;
+        //データの取得回数
+        SOY2::import("module.plugins.common_new_item.util.NewItemUtil");
+        $config = NewItemUtil::getConfig();
+        $try = (isset($config["tryCount"])) ? (int)$config["tryCount"] : 1;
         
         //登録時刻を一ヶ月ずつ前にして商品が登録されているか調べる
         $cdate = time();
         do{
-            if($try === 0) break;
+            if($try-- === 0) break;
             
             try{
-                $res = $itemDao->executeQuery($sql, array(":cdate" => $cdate, ":edate" => $cdate - 30*24*60*60));
+                $res = $itemDao->executeQuery($sql, array(":cdate" => $cdate, ":edate" => $cdate - 31*24*60*60));
             }catch(Exception $e){
                 $res = array();
             }
 
             //次回用に更新
-            $cdate -= 30*24*60*60;
+            $cdate -= 31*24*60*60;
         
-            if(!count($res)){
-                $try--;
-                continue;
-            }
+            if(!count($res)) continue;
             
             foreach($res as $v){
                 if(isset($v["id"]) && is_numeric($v["id"])){
@@ -60,9 +59,7 @@ function soyshop_new_items($html, $htmlObj){
         }while($c > 0);
 
         if(count($ids)){
-            SOY2::import("module.plugins.common_new_item.util.NewItemUtil");
-            $config = NewItemUtil::getConfig();
-
+            
             //すでに公開に関する諸々の条件は調べてある
             $sql = "SELECT * FROM soyshop_item ".
                  "WHERE id IN (" . implode(",", $ids) . ") ";
