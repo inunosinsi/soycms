@@ -714,42 +714,43 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 	/**
 	 * @index id
-	 * @order ##displayOrder## ,id
+	 * @order EntryLabel.display_order ,Entry.id
 	 * @distinct
 	 */
 	abstract function getByLabelId($labelId);
 
 	/**
 	 * @index id
-	 * @order ##displayOrder##, Entry.cdate desc, id desc
+	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
 	 * @distinct
-	 * @query ##labelId## in (<?php implode(',',:labelids) ?>)
-	 * @group id
-	 * @having count(id) = <?php count(:labelids) ?>
+	 * @query EntryLabel.label_id in (<?php implode(',',:labelIds) ?>)
+     * @group Entry.id
+     * @having count(Entry.id) = <?php count(:labelIds) ?>
 	 */
-	abstract function getByLabelIds($labelids);
+	abstract function getByLabelIds($labelIds);
 
 	/**
 	 * getByLabelIdsだと重すぎる場所があったので追加
 	 *
-	 * @index id
-	 * @columns id,#displayOrder#,cdate
-	 * @order ##displayOrder##, Entry.cdate desc, id desc
+	 * @index Entry.id
+	 * @columns Entry.id,EntryLabel.display_order,Entry.cdate
+	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
 	 * @distinct
-	 * @query ##labelId## in (<?php implode(',',:labelids) ?>)
-	 * @group id
-	 * @having count(id) = <?php count(:labelids) ?>
+     * @group Entry.id,EntryLabel.display_order
+     * @having count(Entry.id) = <?php count(:labelIds) ?>
+	 * @query EntryLabel.label_id in (<?php implode(',',:labelIds) ?>)
 	 */
-	function getByLabelIdsOnlyId($labelids, $orderReverse = false){
+	function getByLabelIdsOnlyId($labelIds, $orderReverse = false){
 		$query = $this->getQuery();
 		$binds = $this->getBinds();
 
 		if($orderReverse){
-			$query->setOrder(" display_order, cdate asc, id asc ");
+			$query->setOrder(" EntryLabel.display_order, Entry.cdate asc, Entry.id asc ");
 		}
 
+        //MySQL5.7以降対策。groupingとhagingをnullにした
 		$result = $this->executeQuery($query,$binds);
-
+        
 		$array = array();
 		foreach($result as $row){
 			$array[$row["id"]] = $this->getObject($row);
@@ -794,11 +795,11 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * ラベルの絞り込みをアンドとオアを切り替える
 	 * ORのときの表示順は保証できない（？）
 	 *
-	 * @columns id,alias,title,content,more,cdate,udate,#displayOrder#
-	 * @order ##displayOrder##,cdate desc,id desc
+	 * @columns Entry.id,Entry.alias,Entry.title,Entry.content,Entry.more,Entry.cdate,Entry.udate,EntryLabel.display_order
+	 * @order EntryLabel.display_order asc,Entry.cdate desc,Entry.id desc
 	 * @distinct
-	 * @group id
-	 * @having count(id) = <?php count(:labelIds) ?>
+     * @group Entry.id,EntryLabel.display_order
+     * @having count(Entry.id) = <?php count(:labelIds) ?>
 	 */
 	function getOpenEntryByLabelIdsImplements($labelIds, $now, $isAnd, $start = null, $end = null, $orderReverse = false){
 		$query = $this->getQuery();
@@ -811,7 +812,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			}
 			//数値のみ
 			$labelIds = array_map(create_function('$val','return (int)$val;'),$labelIds);
-			$query->where .= " EntryLabel.label_id in (" . implode(",",$labelIds) .") ";
+            $query->where .= " EntryLabel.label_id in (" . implode(",",$labelIds) .") ";
 		}else{
 			//保険（ラベル指定なし）
 			$query->where .= " true ";
@@ -821,7 +822,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		if(!defined("CMS_PREVIEW_ALL")){
 			$query->where .= "AND Entry.isPublished = 1 ";
-			$query->where .= "AND (openPeriodEnd >= :now AND openPeriodStart < :now)";
+			$query->where .= "AND (Entry.openPeriodEnd >= :now AND Entry.openPeriodStart < :now)";
 
 			$binds[":now"] = $now;
 		}
@@ -832,14 +833,14 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		if(strlen($start) && strlen($end)){
 			//endに等号は付けない
-			$query->where .= " AND (cdate >= :start AND cdate < :end)";
+			$query->where .= " AND (Entry.cdate >= :start AND Entry.cdate < :end)";
 
 			$binds[":start"] = $start;
 			$binds[":end"] = $end;
 		}
 
 		if($orderReverse){
-			$query->setOrder(" display_order, cdate asc, id asc ");
+			$query->setOrder(" EntryLabel.display_order, Entry.cdate asc, Entry.id asc ");
 		}
 
 		$result = $this->executeQuery($query,$binds);
@@ -857,11 +858,11 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * 公開しているエントリーをラベルでフィルタリングして数え上げる
 	 *
 	 * @index id
-	 * @columns id
+	 * @columns Entry.id
 	 * @distinct
-	 * @query EntryLabel.label_id in (<?php implode(',',:labelIds) ?>) AND Entry.isPublished = 1 AND (openPeriodEnd > :now AND openPeriodStart <= :now)
-	 * @group id
-	 * @having count(id) = <?php count(:labelIds) ?>
+	 * @query EntryLabel.label_id in (<?php implode(',',:labelIds) ?>) AND Entry.isPublished = 1 AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)
+     * @group Entry.id
+     * @having count(Entry.id) = <?php count(:labelIds) ?>
 	 * @return array
 	 */
 	abstract function getOpenEntryCountByLabelIds($labelIds,$now);
@@ -882,8 +883,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 	/**
 	 * 公開しているエントリーの次のエントリーを取得する
-	 * @query #labelId# = :labelId AND ( #displayOrder# < :displayOrder OR #displayOrder# = :displayOrder AND ( #cdate# > :cdate OR #cdate# = :cdate AND #id# > :id ) ) AND (Entry.isPublished = 1 AND openPeriodStart <= :now AND :now < openPeriodEnd)
-	 * @order #displayOrder# desc, cdate asc,id asc
+	 * @query EntryLabel.label_id = :labelId AND ( EntryLabel.display_order < :displayOrder OR EntryLabel.display_order = :displayOrder AND ( Entry.cdate > :cdate OR Entry.cdate = :cdate AND Entry.id > :id ) ) AND (Entry.isPublished = 1 AND Entry.openPeriodStart <= :now AND :now < Entry.openPeriodEnd)
+	 * @order EntryLabel.display_order desc, Entry.cdate asc,Entry.id asc
 	 * @return object
 	 */
 	abstract function getNextOpenEntryImpl($labelId,$entry,$now);
@@ -903,8 +904,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 	/**
 	 * 公開しているエントリーの前のエントリーを取得する
-	 * @query #labelId# = :labelId AND ( #displayOrder# > :displayorder OR #displayOrder# = :displayorder AND ( #cdate# < :cdate OR #cdate# = :cdate AND #id# < :id ) ) AND (Entry.isPublished = 1 AND openPeriodStart <= :now AND :now < openPeriodEnd)
-	 * @order #displayOrder# asc, cdate desc, id desc
+	 * @query EntryLabel.label_id = :labelId AND ( EntryLabel.display_order > :displayorder OR EntryLabel.display_order = :displayorder AND ( Entry.cdate < :cdate OR Entry.cdate = :cdate AND Entry.id < :id ) ) AND (Entry.isPublished = 1 AND Entry.openPeriodStart <= :now AND :now < Entry.openPeriodEnd)
+	 * @order EntryLabel.display_order asc, Entry.cdate desc, Entry.id desc
 	 * @return object
 	 */
 	abstract function getPrevOpenEntryImpl($labelId,$entry,$now);
@@ -923,7 +924,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
 				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
 				'AND Entry.isPublished = 1 ' .
-				'AND (openPeriodEnd > :now AND openPeriodStart <= :now)';
+				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)';
 
 		$result = $this->executeQuery($spanSQL,$binds);
 
@@ -941,8 +942,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
 				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
 				'AND Entry.isPublished = 1 ' .
-				'AND (openPeriodEnd > :now AND openPeriodStart <= :now)' .
-				'AND (cdate >= :begin AND cdate < :end)';
+				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)' .
+				'AND (Entry.cdate >= :begin AND Entry.cdate < :end)';
 
 		for($y = $minYear; $y <= $maxYear; $y++){
 			$span_min = ($y == $minYear)?$minMonth:1;
@@ -984,7 +985,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
 				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
 				'AND Entry.isPublished = 1 ' .
-				'AND (openPeriodEnd > :now AND openPeriodStart <= :now)';
+				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)';
 
 		$result = $this->executeQuery($spanSQL,$binds);
 
@@ -1000,8 +1001,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
 				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
 				'AND Entry.isPublished = 1 ' .
-				'AND (openPeriodEnd > :now AND openPeriodStart <= :now)' .
-				'AND (cdate >= :begin AND cdate < :end)';
+				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)' .
+				'AND (Entry.cdate >= :begin AND Entry.cdate < :end)';
 
 		for($y = $minYear; $y <= $maxYear; $y++){
 			$begin = mktime(0,0,0,1,1,$y);
@@ -1026,8 +1027,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 	/**
 	 * @table Entry left outer join EntryLabel on(Entry.id = EntryLabel.entry_id)
-	 * @columns id,alias,title,content,more,cdate,udate,openPeriodStart,openPeriodEnd,isPublished
-	 * @query isPublished <> 1
+	 * @columns Entry.*
+	 * @query Entry.isPublished <> 1
 	 * @order Entry.udate desc, Entry.id desc
 	 * @distinct
 	 */
@@ -1035,8 +1036,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 	/**
 	 * @table Entry left outer join EntryLabel on(Entry.id = EntryLabel.entry_id)
-	 * @columns id,alias,title,content,more,cdate,udate,openPeriodStart,openPeriodEnd,isPublished
-	 * @query openPeriodStart >= :now OR openPeriodEnd < :now
+	 * @columns Entry.*
+	 * @query Entry.openPeriodStart >= :now OR Entry.openPeriodEnd < :now
 	 * @order Entry.udate desc, Entry.id desc
 	 * @distinct
 	 */
