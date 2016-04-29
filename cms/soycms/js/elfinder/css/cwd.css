@@ -111,6 +111,19 @@
 	background-clip: padding-box;
 }
 
+/* thumbnail image */
+.elfinder-cwd-icon-image.elfinder-cwd-bgurl {
+	background-position: center center;
+	background-repeat: no-repeat;
+	-moz-background-size: contain;
+	background-size: contain;
+}
+/* thumbnail self */
+.elfinder-cwd-icon-image.elfinder-cwd-bgurl.elfinder-cwd-bgself {
+	-moz-background-size: cover;
+	background-size: cover;
+}
+
 /* "opened folder" icon on dragover */
 .elfinder-cwd .elfinder-droppable-active .elfinder-cwd-icon { background-position: 0 -100px; }
 .elfinder-cwd .elfinder-droppable-active {
@@ -262,11 +275,11 @@
 	box-sizing: content-box;
 }
 
-.elfinder .elfinder-cwd tr.elfinder-touch td {
+.elfinder-touch .elfinder-cwd tr td {
 	padding: 10px 12px;
 }
 
-.elfinder .elfinder-cwd tr.elfinder-cwd-file.elfinder-touch td {
+.elfinder-touch .elfinder-cwd tr.elfinder-cwd-file td {
 	padding: 13px 12px;
 }
 

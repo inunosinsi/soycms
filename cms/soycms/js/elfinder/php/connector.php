@@ -6,6 +6,7 @@ SOY2::import("util.UserInfoUtil");
 
 if(!UserInfoUtil::isLoggined()) exit;
 
+
 error_reporting(0); // Set E_ALL for debuging
 
 include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderConnector.class.php';
@@ -87,12 +88,13 @@ if(isset($_GET["site_id"])){
 	$url = $site->getUrl();
 }else if(isset($_GET["shop_id"])){
 	//SOY Shopとの接続:サイトのパスを取得
-	$path = str_replace("soycms", "soyshop", dirname(dirname(dirname(dirname(__FILE__)))) . "/webapp/conf/shop/" . $_GET["shop_id"] . ".conf.php");
+	$path = dirname(SOYCMS_COMMON_DIR) . "/soyshop/webapp/conf/shop/" . $_GET["shop_id"] . ".conf.php";
 	if(!file_exists($path)) exit;
 	include_once($path);
 
 	$path = SOYSHOP_SITE_DIRECTORY;
 	$url = SOYSHOP_SITE_URL;
+	
 }
 
 // Documentation for connector options:

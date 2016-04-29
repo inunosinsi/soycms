@@ -1,4 +1,29 @@
-2016-0x-xx  
+2016-04-11  
+
+	* elFinder (2.1.12):
+		- Fixed #1321 Not trim white spaces on editing the text file
+		- Fixed #1320 Supported operation in the modal dialog
+		- Correction of the context menu (Mobile devices, Right-to-Left Language etc.)
+		- Correction of Quicklook (Supported 'video/quicktime', improvement of IFRAME, For Mobile devices etc)
+		- Fixed #1272 Correct detection of timestamp on FTP volume
+		- Fixed #1315 Implement function for `copyJoin` of the volume root option
+		- Fixed #1344 Use self image as thumbnail when without `imgLib`
+		- Fixed #1342 Bugfix of method `getFullPath` that was problems relative path can not be resolved
+		- Added a volume root option `uploadMaxConn`
+			- Maximum number of chunked upload connection. `-1` to disable chunked upload.
+		- And some minor bug fixes
+
+
+2016-04-11  Naoki Sawada  <hypweb@gmail.com>
+
+	* elFinder (2.1.11):
+		- Added Archive(zip|gzip|tar) quicklook preview plugin
+		- DnD upload supports Microsoft Edge
+		- Fixed problem which directory is not detected in the LocalFileSystem driver (Bug of 2.1.10)
+		- And some minor bug fixes
+
+
+2016-04-02  Naoki Sawada  <hypweb@gmail.com>
 
 	* elFinder (2.1.10):
 		- Fixed #1061, #1231 Supported controllable folder icons
@@ -7,6 +32,7 @@
 		- Return file.url in result on file upload for 3rd party uploader
 		- Supported elFinder API version 1
 		- Added a new volume driver FlysystemGoogleDriveNetmount that based on flysystem-google-drive
+		- Added a new connector plugin "AutoRotate"
 		- And some minor bug fixes
 
 

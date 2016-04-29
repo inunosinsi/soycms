@@ -26,14 +26,15 @@ class elFinderConnector {
 	 * @var string
 	 **/
 	protected $header = 'Content-Type: application/json';
-	
-	
-	/**
-	 * Constructor
-	 *
-	 * @return void
-	 * @author Dmitry (dio) Levashov
-	 **/
+
+
+    /**
+     * Constructor
+     *
+     * @param $elFinder
+     * @param bool $debug
+     * @author Dmitry (dio) Levashov
+     */
 	public function __construct($elFinder, $debug=false) {
 		
 		$this->elFinder = $elFinder;
@@ -104,7 +105,7 @@ class elFinderConnector {
 			} else {
 				$arg = isset($src[$name])? $src[$name] : '';
 			
-				if (!is_array($arg)) {
+				if (!is_array($arg) && $req !== '') {
 					$arg = trim($arg);
 				}
 				if ($req && $arg === '') {

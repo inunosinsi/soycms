@@ -171,7 +171,9 @@ elFinder.prototype._options = {
 			// allow to return filers info
 			folders  : false,
 			// action after callback (""/"close"/"destroy")
-			oncomplete : ''
+			oncomplete : '',
+			// get image sizes before callback call
+			getImgSize : false
 		},
 		// "upload" command options.
 		upload : {
@@ -186,7 +188,7 @@ elFinder.prototype._options = {
 			autoplay : true,
 			jplayer  : 'extensions/jplayer',
 			// MIME types to use Google Docs online viewer
-			// Example ['application/pdf', 'image/tiff', 'application/msword', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
+			// Example ['application/pdf', 'image/tiff', 'application/vnd.ms-office', 'application/msword', 'application/vnd.ms-word', 'application/vnd.ms-excel', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
 			googleDocsMimes : []
 		},
 		// "quicklook" command options.
@@ -301,7 +303,10 @@ elFinder.prototype._options = {
 				// }
 			}
 		},
-		
+		mkdir: {
+			// Enable automatic switching function ["New Folder" / "Into New Folder"] of toolbar buttton
+			intoNewFolderToolbtn: false,
+		},
 		netmount: {
 			ftp: {
 				name : 'FTP',
@@ -405,9 +410,9 @@ elFinder.prototype._options = {
 							}));
 						$(f.host[1]).val('googledrive');
 						if (data.folders) {
-							f.path.after(
+							f.path.next().remove().end().after(
 								$('<div/>').append(
-									$('<select style="max-width:200px;">').append(
+									$('<select class="ui-corner-all" style="max-width:200px;">').append(
 										$($.map(data.folders, function(n,i){return '<option value="'+i+'">'+fm.escape(n)+'</option>'}).join(''))
 									).on('change', function(){f.path.val($(this).val());})
 								)
@@ -424,7 +429,7 @@ elFinder.prototype._options = {
 			}
 		},
 
-		help : {view : ['about', 'shortcuts', 'help']}
+		help : {view : ['about', 'shortcuts', 'help', 'debug']}
 	},
 	
 	/**
@@ -721,7 +726,7 @@ elFinder.prototype._options = {
 	 * @type Number
 	 * @default  50
 	 */
-	showFiles : 30,
+	showFiles : 50,
 	
 	/**
 	 * Lazy load config.
@@ -796,7 +801,7 @@ elFinder.prototype._options = {
 	 */
 	contextmenu : {
 		// navbarfolder menu
-		navbar : ['open', 'download', '|', 'upload', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'rename', '|', 'places', 'info', 'chmod', 'netunmount'],
+		navbar : ['open', 'download', '|', 'upload', '|', 'copy', 'cut', 'paste', 'duplicate', '|', 'rm', '|', 'rename', '|', 'archive', '|', 'places', 'info', 'chmod', 'netunmount'],
 		// current directory menu
 		cwd    : ['reload', 'back', '|', 'upload', 'mkdir', 'mkfile', 'paste', '|', 'sort', '|', 'info'],
 		// current directory file menu
@@ -810,4 +815,4 @@ elFinder.prototype._options = {
 	 */
 	// debug : true
 	debug : ['error', 'warning', 'event-destroy']
-}
+};

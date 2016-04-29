@@ -17,17 +17,18 @@ elFinder.prototype.commands.rename = function() {
 		return !this._disabled && sel.length == 1 && sel[0].phash && !sel[0].locked  ? 0 : -1;
 	};
 	
-	this.exec = function(hashes) {
+	this.exec = function(hashes, opts) {
 		var fm       = this.fm,
 			cwd      = fm.getUI('cwd'),
 			sel      = hashes || (fm.selected().length? fm.selected() : false) || [fm.cwd().hash],
 			cnt      = sel.length,
 			file     = fm.file(sel.shift()),
 			filename = '.elfinder-cwd-filename',
-			type     = (hashes && hashes._type)? hashes._type : (fm.selected().length? 'files' : 'navbar'),
+			opts     = opts || {},
+			incwd    = (fm.cwd().hash == file.hash),
+			type     = opts._currentType? opts._currentType : (incwd? 'navbar' : 'files'),
 			navbar   = (type === 'navbar'),
 			target   = $('#'+fm[navbar? 'navHash2Id' : 'cwdHash2Id'](file.hash)),
-			incwd    = (fm.cwd().hash == file.hash),
 			tarea    = (type === 'files' && fm.storage('view') != 'list'),
 			rest     = function(){
 				if (!overlay.is(':hidden')) {
@@ -73,6 +74,7 @@ elFinder.prototype.commands.rename = function() {
 				})
 				.always(function() {
 					rest();
+					fm.unbind('resize', resize);
 					fm.enable();
 				}),
 			input = $(tarea? '<textarea/>' : '<input type="text"/>')
@@ -92,6 +94,7 @@ elFinder.prototype.commands.rename = function() {
 					if (e.keyCode == $.ui.keyCode.ESCAPE) {
 						dfrd.reject();
 					} else if (e.keyCode == $.ui.keyCode.ENTER) {
+						e.preventDefault();
 						input.blur();
 					}
 				})
@@ -110,7 +113,7 @@ elFinder.prototype.commands.rename = function() {
 						parent = input.parent(),
 						valid  = true;
 
-					if (pnode.length) {
+					if (!inError && pnode.length) {
 						if (input[0].setSelectionRange) {
 							input[0].setSelectionRange(0, 0)
 						}
@@ -181,9 +184,13 @@ elFinder.prototype.commands.rename = function() {
 					dfrd.reject();
 				}
 			},
+			resize = function() {
+				target.trigger('scrolltoview');
+			},
 			inError = false;
 		
 		pnode.addClass('ui-front').css('position', 'relative');
+		fm.bind('resize', resize);
 		if (navbar) {
 			node.replaceWith(input.val(file.name));
 		} else {
@@ -220,4 +227,4 @@ elFinder.prototype.commands.rename = function() {
 		return dfrd;
 	};
 
-}
+};
