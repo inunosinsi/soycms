@@ -2,6 +2,8 @@
 非公式 PHP7用  
 PHP7でSOY CMSを動かすためにいくつか修正している他、PHP5でも影響のある不具合を修正  
 公式:http://www.soycms.net/  
+
+MySQL5.7で標準設定になったsql_modeのONLY_FULL_GROUP_BYにも対応  
   
 ~~Download ZIPでダウンロードしたファイル群をルートディレクトリに配置したら動作します。~~  
 packageディレクトリ内にパッケージ化したzipファイルがあります。  
