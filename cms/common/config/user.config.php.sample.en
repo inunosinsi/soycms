@@ -18,13 +18,14 @@
 //define("SOYCMS_SKIP_MOBILE_RESIZE",true);
 
 // Type of Block
-//define("SOYCMS_BLOCK_LIST","EntryBlockComponent,LabeledBlockComponent,MultiLabelBlockComponent,SiteLabeledBlockComponent");
+//define("SOYCMS_BLOCK_LIST","EntryBlockComponent,LabeledBlockComponent,MultiLabelBlockComponent,SiteLabeledBlockComponent,PluginBlockComponent");
 /* Blocks available
  * HTMLBlockComponent
  * EntryBlockComponent
  * LabeledBlockComponent
  * MultiLabelBlockComponent
  * SiteLabeledBlockComponent
+ * PluginBlockComponent
  * ScriptModuleBlockComponent (1.2.3 or later) 
  */
  

@@ -138,8 +138,8 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 		$this->createAdd("entry_list","HTMLScript",array(
 			"lang"=>"text/javascript",
 			"script"=>'var entryList='.json_encode($allEntry).";\n"
-					 .'var initEntries = '.json_encode($entryIds).';'
-					 .'var outlineLink = "'.SOY2PageController::createLink("Entry.Outline").'";'
+            .'var initEntries = '.json_encode($entryIds).';'
+            .'var outlineLink = "'.SOY2PageController::createLink("Entry.Outline").'";'
 		));
 		
 		$this->createAdd("entry_form","HTMLScript",array(
@@ -206,9 +206,9 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 	function getTemplateFilePath(){
 	  
 		if(!defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja" || !file_exists(CMS_BLOCK_DIRECTORY . "EntryBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html")){
-		   return CMS_BLOCK_DIRECTORY . "EntryBlockComponent" . "/form.html";
+            return CMS_BLOCK_DIRECTORY . "EntryBlockComponent" . "/form.html";
 		}else{
-		   return CMS_BLOCK_DIRECTORY . "EntryBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html";			
+            return CMS_BLOCK_DIRECTORY . "EntryBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html";			
 		}
 	
 	}

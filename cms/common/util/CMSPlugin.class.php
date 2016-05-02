@@ -63,7 +63,11 @@ class CMSPlugin {
 		"onBlockCreate"=>array(),		//*ブロックが作成される直前(blockId)
 		"onBlockUpdate"=>array(),		//*ブロックが更新される直前(blockId)
 		"onBlockRemove"=>array(),		//*ブロックが削除される直前(blockId)
-		
+
+        //プラグインブロック
+        "onPluginBlockLoad"=>array(),   //*プラグインブロックが呼び出される直前 array()
+        "onPluginBlockAdminReturnPluginId"=>array(),  //*プラグインブロックの管理画面が表示される直前 array()
+        
 		//その他
 		"onActive"=>array(),			//プラグインが有効になる直前
 		"onDisable"=>array(),			//プラグインが無効になる直前

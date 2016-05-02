@@ -18,13 +18,14 @@ define("SOYCMS_ALLOW_PHP_SCRIPT",false);
 define("SOYCMS_SKIP_MOBILE_RESIZE",true);
 
 //ブロックの種類：「,」区切りで設定する。管理画面で表示されるブロックの順番を入れ替えたり、不要なブロックを削除したりできる。
-define("SOYCMS_BLOCK_LIST","EntryBlockComponent,LabeledBlockComponent,MultiLabelBlockComponent,SiteLabeledBlockComponent");
+define("SOYCMS_BLOCK_LIST","EntryBlockComponent,LabeledBlockComponent,MultiLabelBlockComponent,SiteLabeledBlockComponent,PluginBlockComponent");
 /* 使用可能なブロックのリスト
  * HTMLBlockComponent
  * EntryBlockComponent
  * LabeledBlockComponent
  * MultiLabelBlockComponent
  * SiteLabeledBlockComponent
+ * PluginBlockComponent
  * ScriptModuleBlockComponent (1.2.3以降) 
  */
  

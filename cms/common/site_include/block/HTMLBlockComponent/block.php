@@ -86,7 +86,7 @@ class HTMLBlockComponent_FormPage extends HTMLPage{
 	function getTemplateFilePath(){
 		
 		if(!defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja"||!file_exists(CMS_BLOCK_DIRECTORY . "HTMLBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html")){
-		   return CMS_BLOCK_DIRECTORY . "HTMLBlockComponent" . "/form.html";
+            return CMS_BLOCK_DIRECTORY . "HTMLBlockComponent" . "/form.html";
 		}else{
 			return CMS_BLOCK_DIRECTORY . "HTMLBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html";			
 		}

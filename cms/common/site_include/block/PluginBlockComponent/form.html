@@ -1,0 +1,19 @@
+<form soy:id="main_form">
+
+    <fieldset><legend>プラグイン</legend>
+	<select soy:id="plugin_id_list"></select>
+    </fieldset>
+    
+    <fieldset><legend>ブログへのリンク</legend>
+	<input soy:id="no_stick_url" type="hidden" name="object[blogPageId]" value="0"/>
+	<input soy:id="stick_url" type="checkbox" onclick="common_toggle('blog_page_list');common_toggle('blog_page_list_label');"><br/>
+	<span id="blog_page_list_label" soy:id="blog_page_list_label">ブログのラベルを指定してください: </span><select id="blog_page_list" soy:id="blog_page_list"></select>
+    </fieldset>
+    
+
+    <div style="margin:10px;text-align:center;">
+	<input class="submit_button" type="submit" value="設定の保存">
+	<input class="submit_button" type="button" value="キャンセル" style="margin-left:20px;" onclick="common_close_layer(window.parent);return false;">
+    </div>
+    
+</form soy:id="main_form">
