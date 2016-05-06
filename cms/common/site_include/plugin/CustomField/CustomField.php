@@ -21,7 +21,7 @@ class CustomFieldPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.7"
+			"version"=>"1.7.1"
 		));
 
 		CMSPlugin::addPluginConfigPage(CustomFieldPlugin::PLUGIN_ID, array(
@@ -89,6 +89,14 @@ class CustomFieldPlugin{
 					$htmlObj->addLabel($field->getId() . "_text", array(
 						"soy2prefix" => "cms",
 						"text" => $field->getValue()
+					));
+				}
+				
+				//複数行テキストの場合は\n\rを<br>に変換するタグを追加
+				if($master->getType() == "textarea"){
+					$htmlObj->addLabel($field->getId() . "_br_mode", array(
+						"soy2prefix" => "cms",
+						"html" => nl2br(htmlspecialchars($field->getValue(), ENT_QUOTES, "UTF-8"))
 					));
 				}
 
