@@ -96,7 +96,7 @@ class CustomFieldPlugin{
 				if($master->getType() == "textarea"){
 					$htmlObj->addLabel($field->getId() . "_br_mode", array(
 						"soy2prefix" => "cms",
-						"html" => nl2br(htmlspecialchars($field->getValue(), ENT_QUOTES, "UTF-8"))
+						"html" => nl2br($field->getValue())
 					));
 				}
 
