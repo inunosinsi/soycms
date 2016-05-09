@@ -33,26 +33,36 @@ function soyshop_breadcrumb_navigation($html, $page){
 			$type = $pageObject->getType();
 			switch($type){
 				
-				case "list":
+				case SOYShop_Page::TYPE_LIST:
 					$current = $pageObject->getObject()->getCurrentCategory();
 					if(isset($current)){
 						$uri = $pageObject->getUri();
 						$categories = $dao->getAncestry($current, false);
 						$name = $current->getOpenCategoryName();
 						$alias = $current->getAlias();
-					//カスタムフィールドの場合
 					}else{
-						$itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-						$list = SOYShop_ItemAttributeConfig::load(true);
-						$object = $pageObject->getObject();
-						$uri = null;
-						$categories = array();
-						$name = (isset($list[$object->getFieldId()])) ? $list[$object->getFieldId()]->getLabel() : "";
-						$alias = "";
+						//カスタムフィールドの場合
+						if($pageObject->getObject()->getType() == "field"){
+							$itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+							$list = SOYShop_ItemAttributeConfig::load(true);
+							$object = $pageObject->getObject();
+							$uri = null;
+							$categories = array();
+							$name = (isset($list[$object->getFieldId()])) ? $list[$object->getFieldId()]->getLabel() : "";
+							$alias = "";
+						//その他
+						}else{
+							//カスタムサーチフィールド
+							if(!is_null($pageObject->getObject()->getModuleId()) && $pageObject->getObject()->getModuleId() === "custom_search_field"){
+								$args = $page->getArguments();
+								if(isset($args[1])) $name = htmlspecialchars($args[1], ENT_QUOTES, "UTF-8");
+							}
+						}
+							
 					}
 					break;
 					
-				case "detail":
+				case SOYShop_Page::TYPE_DETAIL:
 					$item = $page->getItem();
 					
 					//商品グループの子商品の時
@@ -115,15 +125,15 @@ function soyshop_breadcrumb_navigation($html, $page){
 					$alias = $current->getAlias();
 					
 					break;
-				case "search":
+				case SOYShop_Page::TYPE_SEARCH:
 					$categories = array();
 					
 					$uri = "";
 					$name = isset($_GET["q"]) ? $_GET["q"] : "";
 					$alias = "";
 					break;
-				case "free":
-				case "complex":
+				case SOYShop_Page::TYPE_FREE:
+				case SOYShop_Page::TYPE_COMPLEX:
 				default:
 					$categories = array();
 					$uri = "";
