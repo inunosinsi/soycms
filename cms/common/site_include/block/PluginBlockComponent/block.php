@@ -313,6 +313,8 @@ class PluginBlockComponent_ViewPage extends HTMLList{
 			"text"=>$entryUrl,
 			"soy2prefix"=>"cms",
 		));
+
+		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entity->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entity));
 	}    
 }
 ?>
