@@ -145,6 +145,16 @@ class SearchItemUtil extends SOY2LogicBase{
 				case "udate":
 					return "update_date" . $suffix;
 					break;
+				//カスタムフィールドによるソート
+				default:
+					//ソート用のカラムがあるか調べる
+					try{
+						$res = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->executeQuery("SHOW COLUMNS FROM soyshop_item LIKE :pattern", array(":pattern" => $sort));
+						if(count($res)) return $sort . $suffix;
+					}catch(Exception $e){
+						//
+					}
+				
 			}
 		}
 
