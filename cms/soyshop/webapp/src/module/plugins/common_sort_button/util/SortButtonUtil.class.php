@@ -19,7 +19,10 @@ class SortButtonUtil{
 		
 		//カスタムフィールド		
 		SOY2::import("domain.shop.SOYShop_ItemAttribute");
-		foreach(SOYShop_ItemAttributeConfig::load(true) as $field){
+		$fields = SOYShop_ItemAttributeConfig::load(true);
+		if(!count($fields)) return $list;
+		
+		foreach($fields as $field){
 			$conf = $field->getConfig();
 			if(isset($conf) && is_array($conf) && isset($conf["isIndex"]) && $conf["isIndex"] == 1){
 				$list["custom_" . $field->getFieldId()] = $field->getLabel() . "(カスタムフィールド)";
