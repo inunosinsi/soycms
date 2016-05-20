@@ -8,6 +8,8 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 
 	function getSOYShopSiteList(){
 
+		$sites = array();
+
 		if(!$this->checkVersion) $this->checkVersion = $this->checkVersion();
 
 		$old = SOYInquiryUtil::switchConfig();
@@ -19,10 +21,8 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 					//SOY Shopがインストールされていない可能性がある
 					$sites = $siteDao->get();
 				}catch(Exception $e){
-					$sites = array();
+					//
 				}
-			}else{
-				$sites = array();
 			}
 		}
 

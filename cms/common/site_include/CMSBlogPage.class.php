@@ -453,6 +453,16 @@ class CMSBlogPage extends CMSPage{
 
 			//return 404 if uri does not match to any type of blogpage
 			default:
+				//404を飛ばす前に、再度ブログページの各タイプのURIを調べる
+				switch($default){
+					case CMSBlogPage::MODE_ENTRY:
+						if(is_null($this->page->getEntryPageUri())) return $default;
+					case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
+						if(is_null($this->page->getCategoryPageUri())) return $default;
+					case CMSBlogPage::MODE_MONTH_ARCHIVE:
+						if(is_null($this->page->getMonthPageUri())) return $default;
+				}
+			
 				header("HTTP/1.1 404 Not Found");
 				return $default;
 				break;
