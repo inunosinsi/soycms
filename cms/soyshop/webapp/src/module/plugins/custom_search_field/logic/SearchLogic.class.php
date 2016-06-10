@@ -160,19 +160,30 @@ class SearchLogic extends SOY2LogicBase{
 	
 	/** 商品一覧ページ用 **/
 	function getItemList($key, $value, $current, $offset, $limit){
+		$confs = CustomSearchFieldUtil::getConfig();
+		if(!isset($confs[$key])) return array();
+		
+		$binds = array(":now" => time());
+		
 		$sql = "SELECT i.* " .
 				"FROM soyshop_item i " .
 				"INNER JOIN soyshop_custom_search s ".
 				"ON i.id = s.item_id ";
 		$sql .= self::buildWhere();	//カウントの時と共通の処理は切り分ける
-		$sql .= "AND s." . $key . " = :" . $key;
+		switch($confs[$key]["type"]){
+			case CustomSearchFieldUtil::TYPE_CHECKBOX:
+				$sql .= "AND s." . $key . " LIKE :" . $key;
+				$binds[":" . $key] = "%" . trim($value) . "%";
+				break;
+			default:
+				$sql .= "AND s." . $key . " = :" . $key;
+				$binds[":" . $key] = trim($value);
+		}
 		$sql .= " LIMIT " . $limit;
 		
 		//OFFSET
 		$offset = $limit * ($current - 1);
 		if($offset > 0) $sql .= " OFFSET " . $offset;
-		
-		$binds = array(":now" => time(), ":" . $key => trim($value));
 		
 		try{
 			$res = $this->itemDao->executeQuery($sql, $binds);
@@ -192,14 +203,25 @@ class SearchLogic extends SOY2LogicBase{
 	}
 	
 	function countItemList($key, $value){
+		$confs = CustomSearchFieldUtil::getConfig();
+		if(!isset($confs[$key])) return 0;
+		
+		$binds = array(":now" => time());
+		
 		$sql = "SELECT COUNT(i.id) AS total " .
 				"FROM soyshop_item i " .
 				"INNER JOIN soyshop_custom_search s ".
 				"ON i.id = s.item_id ";
 		$sql .= self::buildWhere();	//カウントの時と共通の処理は切り分ける
-		$sql .= "AND s." . $key . " = :" . $key;
-		
-		$binds = array(":now" => time(), ":" . $key => trim($value));
+		switch($confs[$key]["type"]){
+			case CustomSearchFieldUtil::TYPE_CHECKBOX:
+				$sql .= "AND s." . $key . " LIKE :" . $key;
+				$binds[":" . $key] = "%" . trim($value) . "%";
+				break;
+			default:
+				$sql .= "AND s." . $key . " = :" . $key;
+				$binds[":" . $key] = trim($value);
+		}
 		
 		try{
 			$res = $this->itemDao->executeQuery($sql, $binds);

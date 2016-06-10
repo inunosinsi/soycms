@@ -18,22 +18,30 @@ class CopyPage extends WebPage{
 			
 			if($old->getType() == SOYShop_Item::TYPE_SINGLE || $old->getType() == SOYShop_Item::TYPE_DOWNLOAD){
 				$itemId = $old->getId();
-				
-				$old->setId(null);
-				$old->setName($old->getName() . "_copy");
-				$old->setCode($old->getCode() . "_copy");
-				$old->setAlias(null);
-				$old->setIsOpen(SOYShop_Item::NO_OPEN);
-				$old->setOrderPeriodStart(SOYShop_Item::PERIOD_START);
-				$old->setOrderPeriodStart(SOYShop_Item::PERIOD_END);
-				$old->setOpenPeriodStart(SOYShop_Item::PERIOD_START);
-				$old->setOpenPeriodStart(SOYShop_Item::PERIOD_END);
-								
-				try{
-					$newId = $itemDao->insert($old);
-				}catch(Exception $e){
-					SOY2PageController::jump("Item.Detail." . $this->id . "?error");
+				$try = 0;
+
+				for(;;){
+					$old->setId(null);
+					$old->setName($old->getName() . "_copy");
+					$old->setCode($old->getCode() . "_copy");
+					$old->setAlias(null);
+					$old->setIsOpen(SOYShop_Item::NO_OPEN);
+					$old->setOrderPeriodStart(SOYShop_Item::PERIOD_START);
+					$old->setOrderPeriodStart(SOYShop_Item::PERIOD_END);
+					$old->setOpenPeriodStart(SOYShop_Item::PERIOD_START);
+					$old->setOpenPeriodStart(SOYShop_Item::PERIOD_END);
+									
+					try{
+						$newId = $itemDao->insert($old);
+						break;
+					}catch(Exception $e){
+						$try++;
+					}
+					
+					if($try > 10) SOY2PageController::jump("Item.Detail." . $this->id . "?error");
 				}
+				
+					
 				
 				$itemAttrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 				try{
