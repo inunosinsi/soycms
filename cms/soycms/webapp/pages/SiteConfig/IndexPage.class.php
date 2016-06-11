@@ -64,7 +64,7 @@ class IndexPage extends CMSWebPageBase{
 			"value" => 1,
 			"type" => "checkbox",
 			"selected" => $entity->useLabelCategory(),
-			"label" => $this->getMessage(SOYCMS_CONFIG_USE_LABEL_CATEGORY)
+			"label" => $this->getMessage("SOYCMS_CONFIG_USE_LABEL_CATEGORY")
 		));
 
 		$this->createAdd("uploadpath","HTMLInput",array(
@@ -77,7 +77,7 @@ class IndexPage extends CMSWebPageBase{
 			"value" => 1,
 			"type" => "checkbox",
 			"selected" => $entity->isCreateDefaultUploadDirectory(),
-			"label" => $this->getMessage(SOYCMS_CONFIG_CREATE_UPLOAD_DIRECTORY_BY_DATE),
+			"label" => $this->getMessage("SOYCMS_CONFIG_CREATE_UPLOAD_DIRECTORY_BY_DATE"),
 		));
 
 		$this->createAdd("isShowOnlyAdministrator","HTMLCheckBox",array(
@@ -85,7 +85,7 @@ class IndexPage extends CMSWebPageBase{
 			"value" => 1,
 			"type" => "checkbox",
 			"selected" => $entity->isShowOnlyAdministrator(),
-			"label" => $this->getMessage(SOYCMS_CONFIG_SHOW_ONLY_ADMINISTRATOR),
+			"label" => $this->getMessage("SOYCMS_CONFIG_SHOW_ONLY_ADMINISTRATOR"),
 		));
 	}
 
