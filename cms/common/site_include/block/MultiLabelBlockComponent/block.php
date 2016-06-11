@@ -74,7 +74,13 @@ class MultiLabelBlockComponent implements BlockComponent{
 			SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
 			$siteDAO = SOY2DAOFactory::create("admin.SiteDAO");
 
-			$site = $siteDAO->getById($this->siteId);
+			//サイトのIDがnullの場合でもサイトの情報を取得できるようにした
+			if(is_null($this->siteId)){
+				$siteId = substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/") + 1);
+				$site = $siteDAO->getBySiteId($siteId);
+			}else{
+				$site = $siteDAO->getById($this->siteId);
+			}
 			SOY2DAOConfig::Dsn($site->getDataSourceName());
 
 			$dsn = $site->getDataSourceName();
