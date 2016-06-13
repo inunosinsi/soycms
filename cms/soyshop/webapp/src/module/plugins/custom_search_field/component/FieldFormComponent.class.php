@@ -72,5 +72,30 @@ class FieldFormComponent {
 				return implode("\n", $html);
 		}
 	}
+	
+	function buildSearchConditionForm($fieldId, $field, $cnd) {
+		$form = self::buildForm($fieldId, $field);
+		$form = str_replace("custom_search", "search_condition", $form);
+		
+		switch($field["type"]){
+			case CustomSearchFieldUtil :: TYPE_CHECKBOX:
+				$forms = explode("\n", $form);
+				if(!count($forms)) break;
+				$fs = array();
+				foreach($forms as $f){
+					preg_match('/value="(.*)"/', $f, $tmp);
+					if(in_array($tmp[1], $cnd[$fieldId])){
+						$f = str_replace("value=\"" . $tmp[1] . "\"", "value=\"" . $tmp[1] . "\" checked=\"checked\"", $f);
+						$fs[] = $f;
+					}else{
+						$fs[] = $f;
+					}
+				}
+				$form = implode("\n", $fs);
+				break;
+		}
+		
+		return $form;
+	}
 }
 ?>

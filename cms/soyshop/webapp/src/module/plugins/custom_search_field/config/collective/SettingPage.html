@@ -15,11 +15,19 @@
 		<dt class="search_btn_dt">
 			検索する
 		</dt>
-		<dd class="search_area_dd" style="display:none;">
+		<div class="search_area_dd" soy:id="search_area">
 			<form soy:id="search_form">
-
+				<p>
+					<!-- soy:id="csf_label" /-->：
+					<input type="checkbox" soy:id="nothing_check">
+					<!-- soy:id="csf_cnd_form" /-->
+				</p>
+				<p class="pageBtn">
+					<input type="submit" name="search" value="検索">
+				</p>
 			</form>
-		</dd>
+			
+		</div>
 	</dl>
 
 	<form soy:id="form">
@@ -32,7 +40,7 @@
 				")の一括設定
 			</dt>
 			<dd>
-				<!-- soy:id="checkbox" /-->
+				<!-- soy:id="csf_form" /-->
 				&nbsp;&nbsp;
 				<!--input type="submit" value="検索"-->
 			</dd>

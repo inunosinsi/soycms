@@ -42,6 +42,8 @@ class SettingPage extends WebPage{
 		
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 		
+		self::buildSearchForm();
+		
 		$this->addForm("form");
 		
 		$field = $this->config[$this->fieldId];
@@ -57,8 +59,8 @@ class SettingPage extends WebPage{
 			"text" => $this->fieldId
 		));
 		
-		$this->addLabel("checkbox", array(
-			"html" => self::buildCheckBox($field)
+		$this->addLabel("csf_form", array(
+			"html" => self::buildForm($field)
 		));
 		
 		SOY2::import("domain.config.SOYShop_ShopConfig");
@@ -73,26 +75,50 @@ class SettingPage extends WebPage{
 		));
 	}
 	
-	private function buildCheckBox($field){
-		static $html;
-		if(is_null($html)){
-			SOY2::import("module.plugins." . $this->configObj->getModuleId() . ".component.FieldFormComponent");
-			$html = array();
-			$html[] = FieldFormComponent::buildForm($this->fieldId, $field);
-		}
-
-		return implode("\n", $html);
+	private function buildSearchForm(){
+		
+		$cnd = self::getParameter("search_condition");
+		
+		$this->addModel("search_area", array(
+			"style" => (isset($cnd) && count($cnd)) ? "display:inline;" : "display:none;"
+		));
+		
+		$this->addForm("search_form");
+		
+		$this->addLabel("csf_label", array(
+			"text" => $this->config[$this->fieldId]["label"]
+		));
+				
+		$this->addCheckBox("nothing_check", array(
+			"name" => "search_condition[nothing]",
+			"value" => 1,
+			"selected" => (isset($cnd["nothing"])),
+			"label" => "値の設定なし"
+		));
+				
+		$this->addLabel("csf_cnd_form", array(
+			"html" => self::buildSearchConditionForm($this->config[$this->fieldId], $cnd)
+		));
+	}
+	
+	private function buildForm($field){
+		SOY2::import("module.plugins." . $this->configObj->getModuleId() . ".component.FieldFormComponent");
+		$h = array();
+		$h[] = FieldFormComponent::buildForm($this->fieldId, $field);
+		return implode("\n", $h);
+	}
+	
+	private function buildSearchConditionForm($field, $cnd){
+		SOY2::import("module.plugins." . $this->configObj->getModuleId() . ".component.FieldFormComponent");
+		$h = array();
+		$h[] = FieldFormComponent::buildSearchConditionForm($this->fieldId, $field, $cnd);
+		return implode("\n", $h);
 	}
 	
 	private function getItems(){
-		//何も検索していない時はとりあえず50件表示
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$dao->setLimit(50);
-		try{
-			return $dao->get();
-		}catch(Exception $e){
-			return array();
-		}
+		$searchLogic = SOY2Logic::createInstance("module.plugins." . $this->configObj->getModuleId() . ".logic.admin.SearchLogic", array("fieldId" => $this->fieldId));
+		$searchLogic->setLimit(50);
+		return $searchLogic->get();
 	}
 	
 	private function getCategories(){
@@ -101,6 +127,19 @@ class SettingPage extends WebPage{
 		}catch(Exception $e){
 			return array();
 		}
+	}
+	
+	private function getParameter($key){
+		if(array_key_exists($key, $_POST)){
+			$value = $_POST[$key];
+			self::setParameter($key,$value);
+		}else{
+			$value = SOY2ActionSession::getUserSession()->getAttribute("Custom.Search:" . $key);
+		}
+		return $value;
+	}
+	private function setParameter($key,$value){
+		SOY2ActionSession::getUserSession()->setAttribute("Custom.Search:" . $key, $value);
 	}
 	
 	function setConfigObj($configObj){

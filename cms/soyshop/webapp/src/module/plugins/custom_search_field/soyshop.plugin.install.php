@@ -2,6 +2,7 @@
 class CustomSearchFieldInstall extends SOYShopPluginInstallerBase{
 	
 	function onInstall(){
+
 		//初期化時のみテーブルを作成する
 		$sql = $this->getSQL();
 		$dao = new SOY2DAO();
@@ -9,9 +10,35 @@ class CustomSearchFieldInstall extends SOYShopPluginInstallerBase{
 		try{
 			$dao->executeQuery($sql);
 		}catch(Exception $e){
-			//データベースが存在する場合はスルー
+			//
 		}
 		
+		try{
+			$res = $dao->executeQuery("SELECT * FROM soyshop_custom_search");
+		}catch(Exception $e){
+			return;
+		}
+		
+		if(!count($res)){
+			//実行後、商品IDを全て登録する
+			try{
+				$items = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->get();
+			}catch(Exception $e){
+				return;
+			}
+			
+			
+			foreach($items as $item){
+				$sql = "INSERT INTO soyshop_custom_search (item_id) VALUES (" . $item->getId() . ")";
+				try{
+					$dao->executeQuery($sql);
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+		
+			
 	}
 	
 	function onUnInstall(){
