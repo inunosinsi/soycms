@@ -48,13 +48,19 @@
 			<td colspan="2"></td>
 			<td colspan="3">
 				<h5 style="margin-bottom:0;">詳細設定</h5>
-				<!-- soy:id="with_options" -->
+				
 				<form method="post">
 					<dl>
-						
+						<!-- soy:id="with_options" -->		
 						<dt>選択項目<span class="option">(項目を改行で区切ってください)</span></dt>
 						<dd>
 							<textarea soy:id="option"></textarea>
+						</dd>
+						<!-- /soy:id="with_options" -->
+						
+						<dt>一括設定</dt>
+						<dd>
+							<a href="" soy:id="setting_link">一括設定ページを開く</a>
 						</dd>
 					</dl>
 
@@ -64,7 +70,7 @@
 
 					<input type="submit" style="display:none;" soy:id="update_advance_submit" />
 				</form>
-				<!-- /soy:id="with_options" -->
+				
 			</td>
 		</tr>
 		<!-- /soy:id="field_list" -->

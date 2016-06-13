@@ -64,6 +64,10 @@ class CustomSearchFieldListComponent extends HTMLList{
 			"value"=>"設定保存",
 			"onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'
 		));
+		
+		$this->addLink("setting_link", array(
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=custom_search_field&collective&field_id=".$key)
+		));
 
 		$this->addInput("update_advance_submit", array(
 			"name" => "update_advance",

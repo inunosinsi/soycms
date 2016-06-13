@@ -9,6 +9,10 @@ class CustomSearchFieldConfig extends SOYShopConfigPageBase{
 		if(isset($_GET["eximport"])){
 			include_once(dirname(__FILE__) . "/config/CustomSearchExImportPage.class.php");
 			$form = SOY2HTMLFactory::createInstance("CustomSearchExImportPage");
+		//一括設定画面
+		}elseif(isset($_GET["collective"])){
+			include_once(dirname(__FILE__) . "/config/collective/SettingPage.class.php");
+			$form = SOY2HTMLFactory::createInstance("SettingPage");
 		}else{
 			include_once(dirname(__FILE__) . "/config/CustomSearchFieldConfigFormPage.class.php");
 			$form = SOY2HTMLFactory::createInstance("CustomSearchFieldConfigFormPage");

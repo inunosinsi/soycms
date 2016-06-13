@@ -29,79 +29,15 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 		
 		$html = array();
 		
+		SOY2::import("module.plugins." . self::FIELD_ID . ".component.FieldFormComponent");
 		foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 			$html[] = "<dt>" . $field["label"] . " (" . CustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")</dt>";
+			$html[] = "<dd>";
 			
-			switch($field["type"]){
-				case CustomSearchFieldUtil::TYPE_STRING:
-					$value = (isset($values[$key])) ? $values[$key] : null;
-					$html[] = "<dd><input type=\"text\" name=\"custom_search[" . $key . "]\" value=\"" . $value . "\" style=\"width:100%;\"></dd>";
-					break;
-				case CustomSearchFieldUtil::TYPE_TEXTAREA:
-					$value = (isset($values[$key])) ? $values[$key] : null;
-					$html[] = "<dd><textarea name=\"custom_search[" . $key . "]\" style=\"width:100%;\">" . $value . "</textarea></dd>";
-					break;
-				case CustomSearchFieldUtil::TYPE_RICHTEXT:
-					$value = (isset($values[$key])) ? $values[$key] : null;
-					$html[] = "<dd><textarea class=\"custom_field_textarea mceEditor\" name=\"custom_search[" . $key . "]\">" . $value . "</textarea></dd>";
-					break;
-				case CustomSearchFieldUtil::TYPE_INTEGER:
-				case CustomSearchFieldUtil::TYPE_RANGE:
-					$value = (isset($values[$key])) ? $values[$key] : null;
-					$html[] = "<dd><input type=\"number\" name=\"custom_search[" . $key . "]\" value=\"" . $value . "\"></dd>";
-					break;
-				case CustomSearchFieldUtil::TYPE_CHECKBOX:
-					if(isset($field["option"]) && strlen(trim($field["option"])) > 0){
-						$chks = explode(",", $values[$key]);	//valuesを配列化
-						$options = explode("\n", $field["option"]);
-						$html[] = "<dd>";
-						foreach($options as $option){
-							$oVal = trim($option);
-							if(in_array($oVal, $chks)){
-								$html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $key . "][]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
-							}else{
-								$html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $key . "][]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
-							}
-						}
-						$html[] = "</dd>";
-					}
-					break;
-				case CustomSearchFieldUtil::TYPE_RADIO:
-					if(isset($field["option"]) && strlen(trim($field["option"])) > 0){
-						$options = explode("\n", $field["option"]);
-						$html[] = "<dd>";
-						foreach($options as $option){
-							$oVal = trim($option);
-							if($oVal === $values[$key]){
-								$html[] = "<label><input type=\"radio\" name=\"custom_search[" . $key . "]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
-							}else{
-								$html[] = "<label><input type=\"radio\" name=\"custom_search[" . $key . "]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
-							}
-						}
-						$html[] = "</dd>";
-					}
-					break;
-				case CustomSearchFieldUtil::TYPE_SELECT:
-					if(isset($field["option"]) && strlen(trim($field["option"])) > 0){
-						$options = explode("\n", $field["option"]);
-						$html[] = "<dd>";
-						$html[] = "<select name=\"custom_search[" . $key . "]\">";
-						$html[] = "<option value=\"\"></option>";
-						foreach($options as $option){
-							$oVal = trim($option);
-							if($oVal === $values[$key]){
-								$html[] = "<option value=\"" . $oVal . "\" selected=\"selected\">" . $oVal . "</option>";
-							}else{
-								$html[] = "<option value=\"" . $oVal . "\">" . $oVal . "</option>";
-							}
-						}
-						$html[] = "</select>";
-						$html[] = "</dd>";
-					}
-					break;
-			}
+			$value = (isset($values[$key])) ? $values[$key] : null;
+			$html[] = FieldFormComponent::buildForm($key, $field, $value);
+			$html[] = "</dd>";
 		}
-		
 		
 		return implode("\n", $html);
 	}
