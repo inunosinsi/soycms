@@ -65,13 +65,21 @@ class DataBaseLogic extends SOY2LogicBase{
 					$sets[$key] = (is_numeric($values[$key])) ? (int)$values[$key] : null;
 					break;
 				case CustomSearchFieldUtil::TYPE_CHECKBOX:
-					$sets[$key] = (count($values[$key])) ? implode(",", $values[$key]) : null;
+					if(is_array($values[$key]) && count($values[$key])){
+						$sets[$key] = implode(",", $values[$key]);
+						
+					//一括更新の際は、そのまま値を入れなければならない
+					}elseif(strpos($values[$key], ",")){
+						$sets[$key] = $values[$key];
+						
+					}else{
+						$sets[$key] = null;
+					}
 					break;
 				default:
 					$sets[$key] = (strlen($values[$key])) ? $values[$key] : null;
 			}
 		}
-		
 		$this->insert($itemId, $sets);
 	}
 	

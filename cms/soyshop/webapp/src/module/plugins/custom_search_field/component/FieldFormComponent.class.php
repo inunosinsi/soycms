@@ -93,6 +93,24 @@ class FieldFormComponent {
 				}
 				$form = implode("\n", $fs);
 				break;
+			case CustomSearchFieldUtil :: TYPE_RADIO:
+				$forms = explode("\n", $form);
+				if(!count($forms)) break;
+				$fs = array();
+				foreach($forms as $f){
+					preg_match('/value="(.*)"/', $f, $tmp);
+					if($tmp[1] ==  $cnd[$fieldId]){
+						$f = str_replace("value=\"" . $tmp[1] . "\"", "value=\"" . $tmp[1] . "\" checked=\"checked\"", $f);
+						$fs[] = $f;
+					}else{
+						$fs[] = $f;
+					}
+				}
+				$form = implode("\n", $fs);
+			default:
+				if(isset($cnd[$fieldId]) && strlen($cnd[$fieldId])){
+					$form = str_replace("value=\"\"", "value=\"" . htmlspecialchars($cnd[$fieldId], ENT_QUOTES, "UTF-8") . "\"", $form);
+				}
 		}
 		
 		return $form;

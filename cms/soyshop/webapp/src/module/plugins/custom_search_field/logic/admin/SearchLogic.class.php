@@ -5,20 +5,24 @@ class SearchLogic extends SOY2LogicBase{
 	private $fieldId;
 	private $config;
 	private $limit;
+	private $itemDao;
+	
+	private $where = array();
+	private $binds = array();
 
 	function SearchLogic(){
 		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 		$this->config = CustomSearchFieldUtil::getConfig();
+		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
 
 	function get(){
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		self::register();
 		
 		$sql = self::buildQuery();
-		$binds = self::buildBinds();
 		
 		try{
-			$res = $itemDao->executeQuery($sql, $binds);
+			$res = $this->itemDao->executeQuery($sql, $this->binds);
 		}catch(Exception $e){
 			$res = array();
 		}
@@ -27,7 +31,7 @@ class SearchLogic extends SOY2LogicBase{
 		
 		$items = array();
 		foreach($res as $v){
-			$items[] = $itemDao->getObject($v);
+			$items[] = $this->itemDao->getObject($v);
 		}
 		
 		return $items;
@@ -36,13 +40,69 @@ class SearchLogic extends SOY2LogicBase{
 	private function buildQuery(){
 		$sql = "SELECT i.* from soyshop_item i ".
 				"INNER JOIN soyshop_custom_search s ".
-				"ON i.id = s.item_id ";
+				"ON i.id = s.item_id ".
+				"WHERE i.is_disabled != " . SOYShop_Item::IS_DISABLED . " ";
+				
+		foreach($this->where as $where){
+			$sql .= " AND " . $where;
+		}
 				
 		return $sql;
 	}
 	
-	private function buildBinds(){
-		return array();
+	function setCondition($conditions){
+		foreach($conditions as $key => $value){
+			switch($key){
+				case $this->fieldId:
+					switch($this->config[$this->fieldId]["type"]){
+						case CustomSearchFieldUtil::TYPE_CHECKBOX:
+							foreach($value as $i => $v){
+								$this->where[] = "s." . $this->fieldId . " LIKE :" . $this->fieldId . $i;
+								$this->binds[":" . $this->fieldId . $i] = "%" . trim($v) . "%";
+							}
+							
+							break;
+						default:
+							$this->where[] = "s." . $this->fieldId . " LIKE :" . $this->fieldId;
+							$this->binds[":" . $this->fieldId] = "%" . trim($value) . "%";
+					}
+					break;
+				case "nothing":
+					$this->where[] = "s." . $this->fieldId . " IS NULL";
+					break;
+				default:
+					$this->where[] = "i." . $key . " LIKE :" . $key;
+					$this->binds[":" . $key] = "%" . trim($value) . "%";
+			}
+		}
+	}
+	
+	private function register(){
+		try{
+			$res = $this->itemDao->executeQuery("SELECT item_id FROM soyshop_custom_search ORDER BY item_id DESC LIMIT 1;", array());
+		}catch(Exception $e){
+			return;
+		}
+		
+		if(!isset($res[0]["item_id"])) return;
+		
+		$lastId = (int)$res[0]["item_id"];
+		
+		try{
+			$res = $this->itemDao->executeQuery("SELECT id FROM soyshop_item WHERE id > :id;", array(":id" => $lastId));
+		}catch(Exception $e){
+			return;
+		}
+		
+		if(!count($res)) return;
+		
+		foreach($res as $v){
+			try{
+				$this->itemDao->executeQuery("INSERT INTO soyshop_custom_search (item_id) VALUES (:id)", array(":id" => $v["id"]));
+			}catch(Exception $e){
+				//
+			}
+		}
 	}
 	
 	function setFieldId($fieldId){
