@@ -75,7 +75,12 @@ class SOYShopPageController extends SOY2PageController{
 		}
 		
 		//ポップアップ用のテンプレート
-		if(strpos($classPath,"Storage") !== false || strpos($classPath,"Arrival") !== false || strpos($classPath,"Favorite") !== false){
+		if(
+			strpos($classPath,"Storage") !== false || 
+			strpos($classPath,"Arrival") !== false || 
+			strpos($classPath,"Favorite") !== false || 
+			(isset($_GET["display_mode"]) && $_GET["display_mode"] == "free")
+		){
 			$template = "free";
 		}
 		

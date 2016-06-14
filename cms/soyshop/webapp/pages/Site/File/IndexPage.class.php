@@ -15,6 +15,9 @@ class IndexPage extends WebPage{
 		$this->addLabel("connector_file_path", array(
 			"text" => $this->cmsElFinderPath . "elfinder/php/connector.php?shop_id=" . SOYSHOP_ID
 		));
+		
+		DisplayPlugin::toggle("normal_template_area", (!isset($_GET["display_mode"]) || $_GET["display_mode"] != "free"));
+		DisplayPlugin::toggle("free_template_area", (isset($_GET["display_mode"]) && $_GET["display_mode"] == "free"));
 	}
 	
 	/** ここからelfinder **/

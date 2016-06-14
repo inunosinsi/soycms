@@ -1,0 +1,79 @@
+<div class="alR">
+	<a class="button" soy:link="Config.Detail?plugin=campaign">キャンペーン一覧</a>
+</div>
+
+<form soy:id="form">
+
+<dl>
+	<dt>タイトル</dt>
+	<dd><input type="text" class="title"></dd>
+	
+	<dt>本文</dt>
+	<dd>
+		<textarea class="mceEditor" style="height:400px;"></textarea>
+	</dd>
+	
+	<dt>公開期限</dt>
+	<dd></dd>
+	
+	<dt>公開状況</dt>
+	<dd>
+		
+	</dd>
+</dl>
+
+<p class="pageBtn">
+	<input type="submit" name="do_open" value="更新" style="width:180px;margin-right:50px;" />
+</p>
+
+</form>
+
+<script soy:src="../soycms/js/tinymce/tinymce.min.js"></script>
+<script>
+	var InsertImagePage = "/main/soyshop/index.php/Site/File?display_mode=free";
+	
+	function filemanager_ondblclick(imgsrc){
+		if(imgsrc.indexOf(location.host) >= 0){
+			if(imgsrc.indexOf("https://") >= 0) imgsrc = imgsrc.replace("https://", "");
+			if(imgsrc.indexOf("http://") >= 0) imgsrc = imgsrc.replace("http://", "");
+			
+			//hostを除く
+			if(imgsrc.indexOf(location.host) >= 0) imgsrc = imgsrc.replace(location.host, "");
+			
+			//www.が残っていればwww.も削除
+			if(imgsrc.indexOf("www.") >= 0) imgsrc = imgsrc.replace("www.", "");
+		}
+		
+		var html = '<img src="'+imgsrc+'">';
+		tinymce.execCommand('mceInsertRawHTML', false,	html);
+	}
+</script>
+<script>
+$(function(){
+	tinymce.init({
+		mode : "specific_textareas",
+		editor_selector : "mceEditor",
+		theme : "modern",
+		skin : "lightgray",
+		plugins : "save,pagebreak,table,hr,insertdatetime,searchreplace,contextmenu,code,textcolor,paste,directionality,fullscreen,noneditable,charmap,visualchars,nonbreaking,innerlink,insertimageshop,insertwidget,youTube",
+		tools : "inserttable",
+		language : "ja",	
+		menubar : false,
+		toolbar1 : "save | cut copy paste pastetext | searchreplace | bold italic underline strikethrough | subscript superscript | forecolor backcolor | alignleft aligncenter alignright | formatselect fontselect fontsizeselect",
+		toolbar2 : "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | fullscreen preview | insertdate inserttime | innerlink insertimageshop insertwidget | table youTube",
+	
+		init_instance_callback : function(editor) {
+//			onInitTinymceEditor(editor.id);
+		},
+		oninit : function(){
+//			onInitTinymce();
+		},
+	
+		cleanup : true,
+		verify_html : false,
+		convert_urls : false,
+		relative_urls : false,
+		entity_encoding : "named"
+	});
+});
+</script>

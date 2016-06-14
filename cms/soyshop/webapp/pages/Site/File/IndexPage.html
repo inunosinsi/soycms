@@ -6,9 +6,13 @@ $(document).ready(function() {
 		// url : 'php/connector.php',
 		url : '<!-- soy:id="connector_file_path" /-->',  // connector URL (REQUIRED)
 		// transport : new elFinderSupportVer1(),
-		// getFileCallback : function(files, fm) {
-		// 	console.log(files);
-		// },
+		getFileCallback : function(obj) {
+			if(window.parent.filemanager_ondblclick != undefined){
+				window.parent.filemanager_ondblclick(obj.url);
+			}else{
+				window.open(obj.url, "imgwindow", "width=" + obj.width + ",height=" + obj.height);
+			}
+		},
 		handlers : {
             select : function(event, elfinderInstance) {
                 var selected = event.data.selected;
@@ -80,6 +84,7 @@ $(document).ready(function() {
 });
 </script>
 
+<!-- soy:display="normal_template_area" -->
 <h1>
 	ファイル管理
 	<span class="navi">
@@ -95,8 +100,12 @@ $(document).ready(function() {
 	<div class="block_body">
 		<div id="elfinder"></div>
 	</div>
-
 </div>
+<!-- /soy:display="normal_template_area" -->
+
+<!-- soy:display="free_template_area" -->
+<div id="elfinder"></div>
+<!-- /soy:display="free_template_area" -->
 
 <style type="text/css">
 .elfinder-dialog{
