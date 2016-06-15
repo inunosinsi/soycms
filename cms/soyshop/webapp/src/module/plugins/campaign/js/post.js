@@ -5,17 +5,17 @@ $(function(){
 	
 	setInterval(function(){
 		AutoSaveEntry.save();
-	}, parseInt($("#save_period_seconds").val()) * 1000);
+	}, 30000);
 });
 
 var AutoSaveEntry = {
 	save : function(){
-		var content = $('#entry_content_ifr').contents().find("body").html();
-		var more = $('#entry_more_ifr').contents().find("body").html();
+		var content = $('#main_content_ifr').contents().find("body").html();
+
 		$.ajax({
 			type: "POST",
-			url: $("#auto_save_action").val(),
-			data: "soy2_token=" + $("input[name=soy2_token]").val() + "&mode=auto_save&login_id=" + $("#current_login_id").val() + "&title=" + $("#title").val() + "&content=" + content + "&more=" + more,
+			url: AutoSagePage,
+			data: "soy2_token=" + $("input[name=soy2_token]").val() + "&mode=auto_save&login_id=" + CurrentLoginId + "&title=" + $("#title").val() + "&content=" + content,
 			dataType: 'text',
 			success: function(data){
 				var res = eval("array="+data);
@@ -40,14 +40,15 @@ var AutoSaveEntry = {
 				}, 500);
 			}
 		});
+
 	},
 	
 	restore : function(){
 		$("#restoratoin_area").css("display", "none");
 		$.ajax({
 			type: "POST",
-			url: $("#restore_action").val(),
-			data: "soy2_token=" + $("input[name=soy2_token]").val() + "&mode=load&login_id=" + $("#current_login_id").val(),
+			url: AutoLoadPage,
+			data: "soy2_token=" + $("input[name=soy2_token]").val() + "&mode=load&login_id=" + CurrentLoginId,
 			dataType: 'text',
 			success: function(data){
 				var res = eval("array="+data);
@@ -57,8 +58,7 @@ var AutoSaveEntry = {
 				$("#update_button").attr("disabled", true);
 				
 				$("#title").val(res.title);
-				$('#entry_content_ifr').contents().find("body").html(res.content);
-				$('#entry_more_ifr').contents().find("body").html(res.more);
+				$('#main_content_ifr').contents().find("body").html(res.content);
 				
 				//0.5秒後に戻す
 				setTimeout(function(){
@@ -67,4 +67,5 @@ var AutoSaveEntry = {
 			}
 		});
 	}
+
 };

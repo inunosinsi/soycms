@@ -17,6 +17,8 @@ class CampaignEntryPage extends WebPage{
 		
 		$campaign = self::getCampaign();
 		
+		self::buildForm();
+		
 		$this->addLabel("insert_image_url", array(
 			"text" => SOY2PageController::createLink("Site.File?display_mode=free")
 		));
@@ -24,6 +26,26 @@ class CampaignEntryPage extends WebPage{
 		$this->addLabel("insert_link_url", array(
 			"text" => SOY2PageController::createLink("Site.Link?display_mode=free")
 		));
+		
+		$this->addLabel("auto_save_url", array(
+			"text" => SOY2PageController::createLink("Site.AutoSave.Save")
+		));
+		
+		$this->addLabel("auto_load_url", array(
+			"text" => SOY2PageController::createLink("Site.AutoSave.Load")
+		));
+				
+		$this->addLabel("current_login_id", array(
+			"text" => SOY2ActionSession::getUserSession()->getAttribute("loginid")
+		));
+		
+		$this->addLabel("auto_save_js", array(
+			"html" => "\n" . file_get_contents(dirname(dirname(__FILE__)) . "/js/post.js") . "\n"
+		));
+	}
+	
+	private function buildForm(){
+		$this->addForm("form");
 	}
 	
 	private function getCampaign(){

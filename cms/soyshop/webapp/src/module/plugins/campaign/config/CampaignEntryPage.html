@@ -6,11 +6,16 @@
 
 <dl>
 	<dt>タイトル</dt>
-	<dd><input type="text" class="title"></dd>
+	<dd><input type="text" id="title" class="title"></dd>
 	
 	<dt>本文</dt>
 	<dd>
-		<textarea class="mceEditor" style="height:400px;"></textarea>
+		<textarea id="main_content" class="mceEditor" style="height:400px;"></textarea>
+		
+		<div>
+			<span id="restoratoin_area">記事を復元する:<input type="button" id="restore_from_backup" value="復元"></span>
+			<span id="auto_save_entry_message">記事のバックアップは実行されていません。</span>
+		</div>
 	</dd>
 	
 	<dt>公開期限</dt>
@@ -23,7 +28,7 @@
 </dl>
 
 <p class="pageBtn">
-	<input type="submit" name="do_open" value="更新" style="width:180px;margin-right:50px;" />
+	<input type="submit" id="update_button" name="do_open" value="更新" style="width:180px;margin-right:50px;" />
 </p>
 
 </form>
@@ -32,6 +37,9 @@
 <script>
 	var InsertImagePage = "<!-- soy:id="insert_image_url" /-->";
 	var InsertLinkAddress = "<!-- soy:id="insert_link_url" /-->";
+	var AutoSagePage = "<!-- soy:id="auto_save_url" /-->";
+	var AutoLoadPage = "<!-- soy:id="auto_load_url" /-->";
+	var CurrentLoginId = "<!-- soy:id="current_login_id" /-->";
 		
 	function filemanager_ondblclick(imgsrc){
 		if(imgsrc.indexOf(location.host) >= 0){
@@ -79,3 +87,5 @@ $(function(){
 	});
 });
 </script>
+
+<script soy:id="auto_save_js"></script>
