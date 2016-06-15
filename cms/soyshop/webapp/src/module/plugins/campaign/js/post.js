@@ -5,7 +5,7 @@ $(function(){
 	
 	setInterval(function(){
 		AutoSaveEntry.save();
-	}, 30000);
+	}, 10000);
 });
 
 var AutoSaveEntry = {

@@ -2,28 +2,35 @@
 	<a class="button" soy:link="Config.Detail?plugin=campaign">キャンペーン一覧</a>
 </div>
 
+<p class="notice" soy:display="updated">更新しました。</p>
+
 <form soy:id="form">
 
 <dl>
 	<dt>タイトル</dt>
-	<dd><input type="text" id="title" class="title"></dd>
+	<dd><input type="text" soy:id="title" id="title" class="title"></dd>
 	
 	<dt>本文</dt>
 	<dd>
-		<textarea id="main_content" class="mceEditor" style="height:400px;"></textarea>
+		<textarea soy:id="content" id="main_content" class="mceEditor" style="height:400px;"></textarea>
 		
 		<div>
+			<!-- soy:display="show_auto_load_button" -->
 			<span id="restoratoin_area">記事を復元する:<input type="button" id="restore_from_backup" value="復元"></span>
+			<!-- /soy:display="show_auto_load_button" -->
 			<span id="auto_save_entry_message">記事のバックアップは実行されていません。</span>
 		</div>
 	</dd>
 	
 	<dt>公開期限</dt>
-	<dd></dd>
+	<dd>
+		<input type="text" class="date_picker_start" soy:id="post_period_start" />～<input type="text" class="date_picker_end" soy:id="post_period_end" />
+	</dd>
 	
 	<dt>公開状況</dt>
 	<dd>
-		
+		<input type="radio" soy:id="no_open">
+		<input type="radio" soy:id="is_open">
 	</dd>
 </dl>
 
@@ -89,3 +96,6 @@ $(function(){
 </script>
 
 <script soy:id="auto_save_js"></script>
+<script soy:id="data_picker_js"></script>
+<link rel="stylesheet" soy:id="data_picker_css" charset="utf-8">
+

@@ -97,7 +97,7 @@ class SOYShop_Campaign {
 		return $this->isDisabled;
 	}
 	function setIsDisabled($isDisabled){
-		$this->isDisabled($isDisabled);
+		$this->isDisabled = $isDisabled;
 	}
 	
 	function getCreateDate(){

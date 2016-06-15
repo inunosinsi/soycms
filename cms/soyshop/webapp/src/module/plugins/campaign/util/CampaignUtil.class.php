@@ -16,14 +16,13 @@ class CampaignUtil {
 	
 	public static function checkBackupFile($loginId){
 		$dir = SOYSHOP_SITE_DIRECTORY . ".entry/" . $loginId . "/";
-		return (file_exists($dir . "title.backup") || file_exists($dir . "content.backup") || file_exists($dir . "more.backup"));
+		return (file_exists($dir . "title.backup") || file_exists($dir . "content.backup"));
 	}
 	
 	public static function deleteBackup($loginId){
 		$dir = SOYSHOP_SITE_DIRECTORY . ".entry/" . $loginId . "/";
 		if(file_exists($dir . "title.backup")) unlink($dir . "title.backup");
 		if(file_exists($dir . "content.backup")) unlink($dir . "content.backup");
-		if(file_exists($dir . "more.backup")) unlink($dir . "more.backup");
 	}
 }
 ?>

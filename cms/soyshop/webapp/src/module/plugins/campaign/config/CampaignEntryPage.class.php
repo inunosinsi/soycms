@@ -4,18 +4,54 @@ class CampaignEntryPage extends WebPage{
 	
 	private $configObj;
 	private $id;
+	private $loginId;
 	
 	function CampaignEntryPage(){
 		SOY2::import("module.plugins.campaign.util.CampaignUtil");
 		SOY2::imports("module.plugins.campaign.domain.*");
+		$this->loginId = SOY2ActionSession::getUserSession()->getAttribute("loginid");
+	}
+	
+	function doPost(){
+		
+		if(soy2_check_token()){
+			
+			if(isset($_POST["Campaign"]["postPeriodStart"]) && strlen($_POST["Campaign"]["postPeriodStart"]) > 0){
+				$_POST["Campaign"]["postPeriodStart"] = soyshop_convert_timestamp($_POST["Campaign"]["postPeriodStart"], "start");
+			}
+			
+			if(isset($_POST["Campaign"]["postPeriodEnd"]) && strlen($_POST["Campaign"]["postPeriodEnd"]) > 0){
+				$_POST["Campaign"]["postPeriodEnd"] = soyshop_convert_timestamp($_POST["Campaign"]["postPeriodEnd"], "end");
+			}
+						
+			$old = self::getCampaign();
+			$campaign = SOY2::cast($old, $_POST["Campaign"]);
+			
+			//更新
+			if(isset($this->id)){
+				try{
+					self::dao()->update($campaign);
+				}catch(Exception $e){
+					var_dump($e);
+				}
+			//新規
+			}else{
+				try{
+					$this->id = self::dao()->insert($campaign);
+				}catch(Exception $e){
+					var_dump($e);
+				}
+			}
+			
+			//バックアップの削除
+			CampaignUtil::deleteBackup($this->loginId);
+			$this->configObj->redirect("updated&mode=entry&id=" . $this->id);
+		}
 	}
 	
 	function execute(){
 		$this->id = (isset($_GET["id"])) ? $_GET["id"] : null;
-		
 		WebPage::WebPage();
-		
-		$campaign = self::getCampaign();
 		
 		self::buildForm();
 		
@@ -36,24 +72,77 @@ class CampaignEntryPage extends WebPage{
 		));
 				
 		$this->addLabel("current_login_id", array(
-			"text" => SOY2ActionSession::getUserSession()->getAttribute("loginid")
+			"text" => $this->loginId
 		));
 		
 		$this->addLabel("auto_save_js", array(
 			"html" => "\n" . file_get_contents(dirname(dirname(__FILE__)) . "/js/post.js") . "\n"
 		));
+		
+		$this->addModel("data_picker_js", array(
+			"src" => SOY2PageController::createRelativeLink("./js/tools/soy2_date_picker.pack.js")
+		));
+		$this->addModel("data_picker_css", array(
+			"href" => SOY2PageController::createRelativeLink("./js/tools/soy2_date_picker.css")
+		));
 	}
 	
 	private function buildForm(){
+		$campaign = self::getCampaign();
+		
 		$this->addForm("form");
+		
+		$this->addInput("title", array(
+			"name" => "Campaign[title]",
+			"value" => $campaign->getTitle()
+		));
+		
+		$this->addTextArea("content", array(
+			"name" => "Campaign[content]",
+			"value" => $campaign->getContent()
+		));
+		
+		DisplayPlugin::toggle("show_auto_load_button", CampaignUtil::checkBackupFile($this->loginId));
+		
+		$this->addInput("post_period_start", array(
+			"name" => "Campaign[postPeriodStart]",
+			"value" => soyshop_convert_date_string($campaign->getPostPeriodStart()),
+			"readonly" => true
+		));
+
+		$this->addInput("post_period_end", array(
+			"name" => "Campaign[postPeriodEnd]",
+			"value" => soyshop_convert_date_string($campaign->getPostPeriodEnd()),
+			"readonly" => true
+		));
+		
+		$this->addCheckBox("no_open", array(
+			"name" => "Campaign[IsOpen]",
+			"value" => SOYShop_Campaign::NO_OPEN,
+			"selected" => (is_null($campaign->getIsOpen()) || $campaign->getIsOpen() == SOYShop_Campaign::NO_OPEN),
+			"label" => "非公開"
+		));
+		
+		$this->addCheckBox("is_open", array(
+			"name" => "Campaign[IsOpen]",
+			"value" => SOYShop_Campaign::IS_OPEN,
+			"selected" => ($campaign->getIsOpen() == SOYShop_Campaign::IS_OPEN),
+			"label" => "公開"
+		));
 	}
 	
 	private function getCampaign(){
 		try{
-			return SOY2DAOFactory::create("SOYShop_CampaignDAO")->getById($this->id);
+			return self::dao()->getById($this->id);
 		}catch(Exception $e){
 			return new SOYShop_Campaign();
 		}
+	}
+	
+	private function dao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShop_CampaignDAO");
+		return $dao;
 	}
 	
 	function setConfigObj($configObj){
