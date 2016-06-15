@@ -16,6 +16,14 @@ class CampaignEntryPage extends WebPage{
 		WebPage::WebPage();
 		
 		$campaign = self::getCampaign();
+		
+		$this->addLabel("insert_image_url", array(
+			"text" => SOY2PageController::createLink("Site.File?display_mode=free")
+		));
+		
+		$this->addLabel("insert_link_url", array(
+			"text" => SOY2PageController::createLink("Site.Link?display_mode=free")
+		));
 	}
 	
 	private function getCampaign(){

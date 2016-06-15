@@ -30,8 +30,9 @@
 
 <script soy:src="../soycms/js/tinymce/tinymce.min.js"></script>
 <script>
-	var InsertImagePage = "/main/soyshop/index.php/Site/File?display_mode=free";
-	
+	var InsertImagePage = "<!-- soy:id="insert_image_url" /-->";
+	var InsertLinkAddress = "<!-- soy:id="insert_link_url" /-->";
+		
 	function filemanager_ondblclick(imgsrc){
 		if(imgsrc.indexOf(location.host) >= 0){
 			if(imgsrc.indexOf("https://") >= 0) imgsrc = imgsrc.replace("https://", "");
@@ -46,6 +47,7 @@
 		
 		var html = '<img src="'+imgsrc+'">';
 		tinymce.execCommand('mceInsertRawHTML', false,	html);
+		tinymce.activeEditor.windowManager.close();
 	}
 </script>
 <script>
