@@ -18,7 +18,8 @@
 		<div class="search_area_dd" soy:id="search_area">
 			<form soy:id="search_form">
 				<p>
-					<!-- soy:id="csf_label" /-->：
+					<!-- soy:id="csf_label" /-->
+					：
 					<input type="checkbox" soy:id="nothing_check">
 					<!-- soy:id="csf_cnd_form" /-->
 				</p>
@@ -40,7 +41,7 @@
 					<input type="submit" name="search" value="検索">
 				</p>
 			</form>
-			
+
 		</div>
 	</dl>
 
@@ -121,6 +122,7 @@
 	}
 </style>
 
+<script soy:src="../soycms/js/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">
 	(function() {
 		document.querySelector(".search_btn_dt").addEventListener("click", function() {
@@ -139,4 +141,32 @@
 			$(this).prop("checked", $("#item_checkbox").prop("checked"));
 		});
 	}
+
+	$(function() {
+		tinymce.init({
+			mode : "specific_textareas",
+			editor_selector : "mceEditor",
+			theme : "modern",
+			skin : "lightgray",
+			plugins : "save,pagebreak,table,hr,insertdatetime,searchreplace,contextmenu,code,textcolor,paste,directionality,fullscreen,noneditable,charmap,visualchars,nonbreaking,innerlink,insertimageshop,insertwidget,youTube",
+			tools : "inserttable",
+			language : "ja",
+			menubar : false,
+			toolbar1 : "save | cut copy paste pastetext | searchreplace | bold italic underline strikethrough | subscript superscript | forecolor backcolor | alignleft aligncenter alignright | formatselect fontselect fontsizeselect",
+			toolbar2 : "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | fullscreen preview | insertdate inserttime | insertwidget | table youTube",
+
+			init_instance_callback : function(editor) {
+				//			onInitTinymceEditor(editor.id);
+			},
+			oninit : function() {
+				//			onInitTinymce();
+			},
+
+			cleanup : true,
+			verify_html : false,
+			convert_urls : false,
+			relative_urls : false,
+			entity_encoding : "named"
+		});
+	}); 
 </script>
