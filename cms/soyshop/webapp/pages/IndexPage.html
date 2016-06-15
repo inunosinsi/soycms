@@ -66,6 +66,50 @@
 	</div>
 </div>
 
+<!-- soy:display="campaign" -->
+<div class="block">
+	<div class="block_title">
+		<h2>キャンペーン</h2>
+		<div class="block_title_right">
+			<a soy:link="Config.Detail?plugin=campaign" class="button">キャンペーンプラグイン</a>
+		</div>
+	</div>
+	
+	<div class="block_body">
+		<!-- soy:display="has_campaign" -->
+		<table class="form_table">
+			<thead>
+				<tr class="alC">
+					<th>タイトル</th>
+					<th>掲載期間</th>
+					<th>公開状態</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="campaign_list" -->
+				<tr>
+					<td class="middle" nowrap style="overflow-x:hidden;"><a soy:id="detail_link"><!-- soy:id="title" /--></a></td>
+					<td soy:id="post_period"></td>
+					<td class="short alC" soy:id="is_open"></td>
+					<td class="operation">
+						<a soy:id="detail_link*" class="button">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="campaign_list" -->
+			</tbody>
+		</table>
+		<!-- /soy:display="has_campaign" -->
+		
+		<!-- soy:display="no_campaign" -->
+		<p class="notice always">
+			現在公開、もしくは公開待ちのキャンペーンはありません。
+		</p>
+		<!-- /soy:display="no_campaign" -->
+	</div>
+</div>
+<!-- /soy:display="campaign" -->
+
 <!-- soy:display="coupon_history" -->
 <div class="block">
 	<div class="block_title">

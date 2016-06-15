@@ -101,24 +101,26 @@ class IndexPage extends WebPage{
 		
 		$this->action();
 
-		$this->buildOrderList();
-		$this->buildCouponHistoryList();
-		$this->buildAutoRankingList();
-		$this->buildNoticeArrivalList();
-		$this->buildStockList();
-		$this->buildReviewsList();
-		$this->buildNewsList();
-		$this->buildRecommendList();
-		$this->buildInfoBlock();
-		$this->buildItemList();
-		$this->buildPageList();
+
+		self::buildOrderList();
+		self::buildCampaignList();
+		self::buildCouponHistoryList();
+		self::buildAutoRankingList();
+		self::buildNoticeArrivalList();
+		self::buildStockList();
+		self::buildReviewsList();
+		self::buildNewsList();
+		self::buildRecommendList();
+		self::buildInfoBlock();
+		self::buildItemList();
+		self::buildPageList();
 
 		$this->addModel("init_link", array(
 			"visible" => DEBUG_MODE
 		));
 	}
 
-	function buildOrderList(){
+	private function buildOrderList(){
 
 		$this->orderDao->setLimit(16);
 		try{
@@ -138,7 +140,32 @@ class IndexPage extends WebPage{
 		));
 	}
 	
-	function buildCouponHistoryList(){
+	private function buildCampaignList(){
+		
+		$isActive = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("campaign")));
+		
+		DisplayPlugin::toggle("campaign", $isActive);
+		
+		if($isActive){
+			SOY2::imports("module.plugins.campaign.domain.*");
+			$campaigns = SOY2DAOFactory::create("SOYShop_CampaignDAO")->getBeforePostPeriodEnd(6);
+		}else{
+			$campaigns = array();
+		}
+		
+		DisplayPlugin::toggle("more_campaign", (count($campaigns) > 5));
+		DisplayPlugin::toggle("has_campaign", (count($campaigns) > 0));
+		DisplayPlugin::toggle("no_campaign", (count($campaigns) === 0));
+		
+		$campaigns = array_slice($campaigns, 0, 5);
+		
+		SOY2::imports("module.plugins.campaign.component.*");
+		$this->createAdd("campaign_list", "CampaignListComponent", array(
+			"list" => $campaigns
+		));
+	}
+	
+	private function buildCouponHistoryList(){
 		
 		DisplayPlugin::toggle("coupon_history", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("discount_free_coupon"))));		
 		
@@ -170,7 +197,7 @@ class IndexPage extends WebPage{
 		
 	}
 	
-	function buildAutoRankingList(){
+	private function buildAutoRankingList(){
 		
 		$isActive = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_auto_ranking")));
 		
@@ -208,7 +235,7 @@ class IndexPage extends WebPage{
 		));
 	}
 	
-	function buildNoticeArrivalList(){
+	private function buildNoticeArrivalList(){
 		$isActive = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_notice_arrival")));
 		
 		$users = array();
@@ -226,7 +253,7 @@ class IndexPage extends WebPage{
 		));
 	}
 
-	function buildStockList(){
+	private function buildStockList(){
 		
 		DisplayPlugin::toggle("stock", (($this->config->getDisplayStock()) > 0 && ($this->config->getIgnoreStock()) == 0));
 
@@ -251,7 +278,7 @@ class IndexPage extends WebPage{
 		));
 	}
 
-	function buildReviewsList(){
+	private function buildReviewsList(){
 		
 		DisplayPlugin::toggle("reviews", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("item_review"))));
 
@@ -279,7 +306,7 @@ class IndexPage extends WebPage{
 		));
 	}
 
-	function buildNewsList(){
+	private function buildNewsList(){
 
 		DisplayPlugin::toggle("news", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_simple_news"))));
 
@@ -293,7 +320,7 @@ class IndexPage extends WebPage{
 		));
 	}
 
-	function buildRecommendList(){
+	private function buildRecommendList(){
 
 		DisplayPlugin::toggle("recommend", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_recommend_item"))));
 
@@ -318,7 +345,7 @@ class IndexPage extends WebPage{
 		DisplayPlugin::toggle("no_recommend", (count($items) === 0));
 	}
 
-	function buildInfoBlock(){
+	private function buildInfoBlock(){
 		
 		//管理制限者の場合、表示させない
 		DisplayPlugin::toggle("info", $this->appLimit);
@@ -333,7 +360,7 @@ class IndexPage extends WebPage{
 		));
 	}
 
-	function buildItemList(){
+	private function buildItemList(){
 
 		//管理制限者の場合、表示させない
 		DisplayPlugin::toggle("update_item", $this->appLimit);
@@ -353,7 +380,7 @@ class IndexPage extends WebPage{
 		));
 	}
 
-	function buildPageList(){
+	private function buildPageList(){
 
 		//管理制限者の場合、表示させない
 		DisplayPlugin::toggle("update_page", $this->appLimit);

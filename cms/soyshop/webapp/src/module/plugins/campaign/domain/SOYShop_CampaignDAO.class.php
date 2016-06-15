@@ -26,6 +26,30 @@ abstract class SOYShop_CampaignDAO extends SOY2DAO {
 	 */
 	abstract function getById($id);
 	
+	function getBeforePostPeriodEnd($lim = 10){
+		$sql = "SELECT * FROM soyshop_campaign ".
+				"WHERE is_open = 1 ".
+				"AND is_disabled != 1 ".
+				"AND post_period_end > :now ".
+				"ORDER BY post_period_start ASC ".
+				"LIMIT " . $lim;
+				
+		try{
+			$res = $this->executeQuery($sql, array(":now" => time()));
+		}catch(Exception $e){
+			return array();
+		}
+		
+		if(!count($res)) return array();
+		
+		$list = array();
+		foreach($res as $v){
+			$list[] = $this->getObject($v);
+		}
+		
+		return $list;
+	}
+	
 	/**
 	 * @final
 	 */
