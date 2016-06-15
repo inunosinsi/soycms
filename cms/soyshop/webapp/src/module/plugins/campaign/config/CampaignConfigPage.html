@@ -1,3 +1,30 @@
 <div class="alR">
 	<a class="button" soy:link="Config.Detail?plugin=campaign&mode=entry">新規登録</a>
 </div>
+
+<div class="edit_form">
+	<h3>キャンペーン一覧</h3>
+	<table class="form_table">
+		<thead>
+			<tr class="alC">
+				<th>タイトル</th>
+				<th>掲載期間</th>
+				<th>公開状態</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="campaign_list" -->
+			<tr>
+				<td class="middle" nowrap style="overflow-x:hidden;"><a soy:id="detail_link"><!-- soy:id="title" /--></a></td>
+				<td soy:id="post_period"></td>
+				<td class="short alC" soy:id="is_open"></td>
+				<td class="operation">
+					<a soy:id="detail_link*" class="button">詳細</a>
+				</td>
+			</tr>
+			<!-- /soy:id="campaign_list" -->
+		</tbody>
+	</table>
+</div>
+<br>

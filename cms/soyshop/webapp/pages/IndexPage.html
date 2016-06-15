@@ -1,10 +1,10 @@
 <div class="block">
 	
-	<p class="notice always" soy:id="do_db_update">
+	<p class="notice always" soy:display="do_db_update">
 		データベースの変更を行いました。
 	</p>
 		
-	<p class="error always" soy:id="has_db_update">
+	<p class="error always" soy:display="has_db_update">
 		データベースの変更があります&nbsp;→&nbsp;<a soy:link="Update">データベースのバージョンアップを行う</a>
 	</p>
 	
@@ -17,14 +17,14 @@
 
 	<div class="block_body">
 
-		<!-- soy:id="has_order" -->
+		<!-- soy:display="has_order" -->
 
-		<!-- soy:id="more_order" -->
+		<!-- soy:display="more_order" -->
 		<p class="notice always">
 			新着の注文が15件以上あります	-&gt;
 			<a soy:link="Order">注文管理へ</a>
 		</p>
-		<!-- /soy:id="more_order" -->
+		<!-- /soy:display="more_order" -->
 
 		<table class="form_list">
 			<caption>新着の注文</caption>
@@ -55,18 +55,18 @@
 			</tbody>
 		</table>
 
-		<!-- /soy:id="has_order" -->
+		<!-- /soy:display="has_order" -->
 
-		<!-- soy:id="no_order" -->
+		<!-- soy:display="no_order" -->
 		<p class="notice always">
 			新着の注文はありません。
 		</p>
-		<!-- /soy:id="no_order" -->
+		<!-- /soy:display="no_order" -->
 
 	</div>
 </div>
 
-<!-- soy:id="is_coupon_history_list" -->
+<!-- soy:display="coupon_history" -->
 <div class="block">
 	<div class="block_title">
 		<h2>新着のクーポン使用履歴</h2>
@@ -75,7 +75,7 @@
 		</div>
 	</div>
 	<div class="block_body">
-		<!-- soy:id="has_coupon_history" -->
+		<!-- soy:display="has_coupon_history" -->
 		<table class="form_list">
 			<caption>クーポン使用の新着5件</caption>
 			<thead>
@@ -99,22 +99,22 @@
 				<!-- /soy:id="coupon_history_list" -->
 			</tbody>
 		</table>
-		<!-- /soy:id="has_coupon_history" -->
+		<!-- /soy:display="has_coupon_history" -->
 		
-		<!-- soy:id="more_coupon_history" -->
+		<!-- soy:display="more_coupon_history" -->
 		
-		<!-- /soy:id="more_coupon_history" -->
+		<!-- /soy:display="more_coupon_history" -->
 		
-		<!-- soy:id="no_coupon_history" -->
+		<!-- soy:display="no_coupon_history" -->
 		<p class="notice always">
 			クーポンの使用履歴はありません。
 		</p>
-		<!-- /soy:id="no_coupon_history" -->
+		<!-- /soy:display="no_coupon_history" -->
 	</div>
 </div>
-<!-- /soy:id="is_coupon_history_list" -->
+<!-- /soy:display="coupon_history" -->
 
-<!-- soy:id="is_auto_ranking_list" -->
+<!-- soy:display="auto_ranking" -->
 <div class="block">
 	<div class="block_title">
 		<h2>売上ランキング</h2>
@@ -123,7 +123,7 @@
 		</div>
 	</div>
 	<div class="block_body">
-		<!-- soy:id="has_auto_ranking" -->
+		<!-- soy:display="has_auto_ranking" -->
 		<table class="form_list">
 			<caption>売上ランキング上位5件&nbsp;<!-- soy:id="latest_calc_date" /--></caption>
 			<thead>
@@ -153,24 +153,24 @@
 				<!-- /soy:id="auto_ranking_list" -->
 			</tbody>
 		</table>
-		<!-- /soy:id="has_auto_ranking" -->
+		<!-- /soy:display="has_auto_ranking" -->
 				
-		<!-- soy:id="no_auto_ranking" -->
+		<!-- soy:display="no_auto_ranking" -->
 		<p class="notice always">
 			売上ランキングの集計がありません。
 		</p>
-		<!-- /soy:id="no_auto_ranking" -->
+		<!-- /soy:display="no_auto_ranking" -->
 	</div>
 </div>
-<!-- /soy:id="is_auto_ranking_list" -->
+<!-- /soy:display="auto_ranking" -->
 
-<!-- soy:id="is_notice_arrival_list" -->
+<!-- soy:display="notice_arrival" -->
 <div class="block">
 	<div class="block_title">
 		<h2>入荷通知希望顧客</h2>
 	</div>
 	<div class="block_body">
-		<!-- soy:id="has_notice_arrival" -->
+		<!-- soy:display="has_notice_arrival" -->
 		<table class="form_list">
 			<caption>入荷通知希望顧客</caption>
 			<thead>
@@ -193,18 +193,18 @@
 				<!-- /soy:id="notice_arrival_list" -->
 			</tbody>
 		</table>
-		<!-- /soy:id="has_notice_arrival" -->
+		<!-- /soy:display="has_notice_arrival" -->
 				
-		<!-- soy:id="no_notice_arrival" -->
+		<!-- soy:display="no_notice_arrival" -->
 		<p class="notice always">
 			入荷通知希望者はいません。
 		</p>
-		<!-- /soy:id="no_notice_arrival" -->
+		<!-- /soy:display="no_notice_arrival" -->
 	</div>
 </div>
-<!-- /soy:id="is_notice_arrival_list" -->
+<!-- /soy:display="notice_arrival" -->
 
-<!-- soy:id="is_stock_list" -->
+<!-- soy:display="stock" -->
 <div class="block">
 	<div class="block_title">
 		<h2>在庫切れ商品</h2>
@@ -213,7 +213,7 @@
 		</div>
 	</div>
 	<div class="block_body">
-		<!-- soy:id="has_stock" -->
+		<!-- soy:display="has_stock" -->
 		<table class="form_list">
 			<caption>在庫切れ商品</caption>
 			<thead>
@@ -243,25 +243,25 @@
 				<!-- /soy:id="stock_list" -->
 			</tbody>
 		</table>
-		<!-- /soy:id="has_stock" -->
+		<!-- /soy:display="has_stock" -->
 		
-		<!-- soy:id="more_stock" -->
+		<!-- soy:display="more_stock" -->
 		<p class="notice always">
 			在庫切れ商品が5件以上あります	-&gt;
 			<a soy:link="Item">商品管理へ</a>
 		</p>
-		<!-- /soy:id="more_stock" -->
+		<!-- /soy:display="more_stock" -->
 		
-		<!-- soy:id="no_stock" -->
+		<!-- soy:display="no_stock" -->
 		<p class="notice always">
 			在庫切れの商品はありません
 		</p>
-		<!-- /soy:id="no_stock" -->
+		<!-- /soy:display="no_stock" -->
 	</div>
 </div>
-<!-- /soy:id="is_stock_list" -->
+<!-- /soy:display="stock" -->
 
-<!-- soy:id="is_reviews_list" -->
+<!-- soy:display="reviews" -->
 <div class="block">
 	<div class="block_title">
 		<h2>新着のレビュー</h2>
@@ -271,7 +271,7 @@
 		</div>
 	</div>
 	<div class="block_body">
-		<!-- soy:id="has_reviews" -->
+		<!-- soy:display="has_reviews" -->
 		<table class="form_list">
 			<caption>新着のレビュー</caption>
 			<thead>
@@ -302,26 +302,26 @@
 				<!-- /soy:id="reviews_list" -->
 			</tbody>
 		</table>
-		<!-- /soy:id="has_reviews" -->
+		<!-- /soy:display="has_reviews" -->
 		
-		<!-- soy:id="more_reviews" -->
+		<!-- soy:display="more_reviews" -->
 		<p class="notice always">
 			新着のレビューが6件以上あります	-&gt;
 			<a soy:link="Review">レビュー一覧へ</a>
 		</p>
-		<!-- /soy:id="more_reviews" -->
+		<!-- /soy:display="more_reviews" -->
 		
-		<!-- soy:id="no_reviews" -->
+		<!-- soy:display="no_reviews" -->
 		<p class="notice always">
 			新着のレビューはありません。
 		</p>
-		<!-- /soy:id="no_reviews" -->
+		<!-- /soy:display="no_reviews" -->
 	</div>
 	
 </div>
-<!-- /soy:id="is_reviews_list" -->
+<!-- /soy:display="reviews" -->
 
-<!-- soy:id="is_news_list" -->
+<!-- soy:display="news" -->
 <div class="block">
 	<div class="block_title">
 		<h2>新着情報</h2>
@@ -331,7 +331,7 @@
 		</div>
 	</div>
 	<div class="block_body">
-		<!-- soy:id="has_news" -->
+		<!-- soy:display="has_news" -->
 		<table class="form_list">
 			<caption>現在表示している新着情報</caption>
 			<thead>
@@ -351,19 +351,18 @@
 				<!-- /soy:id="news_list" -->
 			</tbody>
 		</table>
-		<!-- /soy:id="has_news" -->
+		<!-- /soy:display="has_news" -->
 		
-		<!-- soy:id="no_news" -->
+		<!-- soy:display="no_news" -->
 		<p class="notice always">
 			設定している新着情報はありません。
 		</p>
-		<!-- /soy:id="no_news" -->
+		<!-- /soy:display="no_news" -->
 	</div>
-	
 </div>
-<!-- /soy:id="is_news_list" -->
+<!-- /soy:display="news" -->
 
-<!-- soy:id="is_recommend_list" -->
+<!-- soy:display="recommend" -->
 <div class="block">
 	<div class="block_title">
 		<h2>おすすめ商品</h2>
@@ -372,7 +371,7 @@
 		</div>
 	</div>
 	<div class="block_body">
-		<!-- soy:id="has_recommend" -->
+		<!-- soy:display="has_recommend" -->
 		<table class="form_list">
 			<caption>おすすめ商品</caption>
 			<thead>
@@ -407,18 +406,18 @@
 				<!-- /soy:id="recommend_list" -->
 			</tbody>
 		</table>
-		<!-- /soy:id="has_recommend" -->
+		<!-- /soy:display="has_recommend" -->
 		
-		<!-- soy:id="no_recommend" -->
+		<!-- soy:display="no_recommend" -->
 		<p class="notice always">
 			おすすめ設定の商品はありません
 		</p>
-		<!-- /soy:id="no_recommend" -->
+		<!-- /soy:display="no_recommend" -->
 	</div>
 </div>
-<!-- /soy:id="is_recommend_list" -->
+<!-- /soy:display="recommend" -->
 	
-<!-- soy:id="is_update_item_list" -->
+<!-- soy:display="update_item" -->
 <div class="block">
 	<div class="block_title">
 		<h2>最近更新した商品</h2>
@@ -466,9 +465,9 @@
 	</table>
 	</div>
 </div>
-<!-- /soy:id="is_update_item_list" -->
+<!-- /soy:display="update_item" -->
 
-<!-- soy:id="is_update_page_list" -->
+<!-- soy:display="update_page" -->
 <div class="block">
 	<div class="block_title">
 		<h2>最近更新したページ</h2>
@@ -513,9 +512,9 @@
 	</table>
 	</div>
 </div>
-<!-- /soy:id="is_update_page_list" -->
+<!-- /soy:display="update_page" -->
 
-<!-- soy:id="is_info" -->
+<!-- soy:display="info" -->
 <div class="block">
 	<div class="block_title">
 		<h2>ショップ情報</h2>
@@ -538,7 +537,7 @@
 
 	</div><!-- /block_body -->
 </div><!-- /block -->
-<!-- /soy:id="is_info" -->
+<!-- /soy:display="info" -->
 
 <div class="block">
 	<div class="block_body">

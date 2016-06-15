@@ -94,14 +94,10 @@ class IndexPage extends WebPage{
 		
 		//データベースの更新を調べる
 		$checkVersionLogic = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic");
-		$this->addModel("has_db_update", array(
-			"visible" => $checkVersionLogic->checkVersion()
-		));
+		DisplayPlugin::toggle("has_db_update", $checkVersionLogic->checkVersion());
 		
 		//データベースの更新終了時に表示する
-		$this->addModel("do_db_update", array(
-			"visible" => (isset($_GET["update"]) && $_GET["update"] == "finish")
-		));
+		DisplayPlugin::toggle("do_db_update", (isset($_GET["update"]) && $_GET["update"] == "finish"));
 		
 		$this->action();
 
@@ -131,31 +127,20 @@ class IndexPage extends WebPage{
 			$orders = array();
 		}
 
-		$this->addModel("more_order", array(
-			"visible" => (count($orders) > 15)
-		));
+		DisplayPlugin::toggle("more_order", (count($orders) > 15));
+		DisplayPlugin::toggle("has_order", (count($orders) > 0));
+		DisplayPlugin::toggle("no_order", (count($orders) === 0));
 
 		$orders = array_slice($orders, 0, 15);
 
 		$this->createAdd("order_list", "_common.Order.OrderListComponent", array(
 			"list" => $orders
 		));
-
-		$this->addModel("has_order", array(
-			"visible" => (count($orders) > 0)
-		));
-
-		$this->addModel("no_order", array(
-			"visible" => (count($orders) < 1)
-		));
-
 	}
 	
 	function buildCouponHistoryList(){
 		
-		$this->addModel("is_coupon_history_list", array(
-			"visible" => (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("discount_free_coupon")))
-		));
+		DisplayPlugin::toggle("coupon_history", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("discount_free_coupon"))));		
 		
 		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
 		SOY2::imports("module.plugins.discount_free_coupon.logic.*");
@@ -170,21 +155,12 @@ class IndexPage extends WebPage{
 			$histories = array();
 		}
 		
-		
-		$this->addModel("more_coupon_history", array(
-			"visible" => (count($histories) > 5)
-		));
+		DisplayPlugin::toggle("more_coupon_history", (count($histories) > 5));
+		DisplayPlugin::toggle("has_coupon_history", (count($histories) > 0));
+		DisplayPlugin::toggle("no_coupon_history", (count($histories) === 0));
 		
 		$histories = array_slice($histories, 0, 5);
-		
-		$this->addModel("has_coupon_history", array(
-			"visible" => (count($histories) > 0)
-		));
-		
-		$this->addModel("no_coupon_history", array(
-			"visible" => (count($histories) === 0)
-		));
-		
+				
 		$this->createAdd("coupon_history_list", "_common.Coupon.CouponHistoryComponent", array(
 			"list" => $histories,
 			"userDao" => $this->userDao,
@@ -198,9 +174,7 @@ class IndexPage extends WebPage{
 		
 		$isActive = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_auto_ranking")));
 		
-		$this->addModel("is_auto_ranking_list", array(
-			"visible" => $isActive
-		));
+		DisplayPlugin::toggle("auto_ranking", $isActive);
 		
 		$items = array();
 		$latestDate = null;
@@ -223,19 +197,14 @@ class IndexPage extends WebPage{
 			"text" => $calcMessage
 		));
 
+		DisplayPlugin::toggle("has_auto_ranking", (count($items) > 0));
+		DisplayPlugin::toggle("no_auto_ranking", (count($items) === 0));
+
 		$this->createAdd("auto_ranking_list", "_common.Item.ItemListComponent", array(
 			"list" => $items,
 			"config" => $this->config,
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
 			"itemOrderDAO" => $this->itemOrderDao
-		));
-
-		$this->addModel("has_auto_ranking", array(
-			"visible" => (count($items) > 0)
-		));
-
-		$this->addModel("no_auto_ranking", array(
-			"visible" => (count($items) == 0)
 		));
 	}
 	
@@ -248,18 +217,10 @@ class IndexPage extends WebPage{
 			$users = $noticeLogic->getUsersForNewsPage(SOYShop_NoticeArrival::NOT_SENDED, SOYShop_NoticeArrival::NOT_CHECKED);
 		}
 		
-		$this->addModel("is_notice_arrival_list", array(
-			"visible" => $isActive
-		));
-		
-		$this->addModel("has_notice_arrival", array(
-			"visible" => (count($users) > 0)
-		));
-		
-		$this->addModel("no_notice_arrival", array(
-			"visible" => (count($users) === 0)
-		));
-		
+		DisplayPlugin::toggle("notice_arrival", $isActive);
+		DisplayPlugin::toggle("has_notice_arrival", (count($users) > 0));
+		DisplayPlugin::toggle("no_notice_arrival", (count($users) === 0));
+
 		$this->createAdd("notice_arrival_list", "_common.Plugin.NoticeArrivalListComponent", array(
 			"list" => $users
 		));
@@ -267,9 +228,7 @@ class IndexPage extends WebPage{
 
 	function buildStockList(){
 		
-		$this->addModel("is_stock_list", array(
-			"visible" => (($this->config->getDisplayStock()) > 0 && ($this->config->getIgnoreStock()) == 0)
-		));
+		DisplayPlugin::toggle("stock", (($this->config->getDisplayStock()) > 0 && ($this->config->getIgnoreStock()) == 0));
 
 		$this->itemDao->setLimit(6);
 		try{
@@ -278,10 +237,10 @@ class IndexPage extends WebPage{
 			$items = array();
 		}
 
-		$this->addModel("more_stock", array(
-			"visible" => (count($items) > 5)
-		));
-
+		DisplayPlugin::toggle("more_stock", (count($items) > 5));
+		DisplayPlugin::toggle("has_stock", (count($items) > 0));
+		DisplayPlugin::toggle("no_stock", (count($items) === 0));
+		
 		$items = array_slice($items, 0, 5);
 
 		$this->createAdd("stock_list", "_common.Item.ItemListComponent", array(
@@ -290,21 +249,11 @@ class IndexPage extends WebPage{
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
 			"itemOrderDAO" => $this->itemOrderDao
 		));
-
-		$this->addModel("has_stock", array(
-			"visible" => (count($items) > 0)
-		));
-
-		$this->addModel("no_stock", array(
-			"visible" => (count($items) == 0)
-		));
 	}
 
 	function buildReviewsList(){
-
-		$this->addModel("is_reviews_list", array(
-			"visible" => (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("item_review")))
-		));
+		
+		DisplayPlugin::toggle("reviews", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("item_review"))));
 
 		SOY2::imports("module.plugins.item_review.domain.*");
 		SOY2::imports("module.plugins.item_review.logic.*");
@@ -318,58 +267,37 @@ class IndexPage extends WebPage{
 			$reviews = array();
 		}
 
-		$this->addModel("more_reviews", array(
-			"visible" => (count($reviews) > 5)
-		));
+		DisplayPlugin::toggle("more_reviews", (count($reviews) > 5));
+		DisplayPlugin::toggle("has_reviews", (count($reviews) > 0));
+		DisplayPlugin::toggle("no_reviews", (count($reviews) === 0));
 
 		$reviews = array_slice($reviews, 0, 5);
-
-		$this->addModel("has_reviews", array(
-			"visible" => (count($reviews) > 0)
-		));
 
 		$this->createAdd("reviews_list", "_common.Review.ReviewListComponent", array(
 			"list" => $reviews,
 			"itemDao" => $this->itemDao
 		));
-
-		$this->addModel("no_reviews", array(
-			"visible" => (count($reviews) == 0)
-		));
 	}
 
 	function buildNewsList(){
 
-		$this->addModel("is_news_list", array(
-			"visible" => (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_simple_news")))
-		));
+		DisplayPlugin::toggle("news", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_simple_news"))));
 
 		$news = SOYShop_DataSets::get("plugin.simple_news", array());
 
-		$this->addModel("has_news", array(
-			"visible" => (count($news) > 0)
-		));
+		DisplayPlugin::toggle("has_news", (count($news) > 0));
+		DisplayPlugin::toggle("no_news", (count($news) === 0));
 
 		$this->createAdd("news_list", "_common.Plugin.NewsListComponent", array(
 			"list" => $news
-		));
-
-		$this->addModel("no_news", array(
-			"visible" => (count($news) == 0)
 		));
 	}
 
 	function buildRecommendList(){
 
-		$this->addModel("is_recommend_list", array(
-			"visible" => (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_recommend_item")))
-		));
+		DisplayPlugin::toggle("recommend", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_recommend_item"))));
 
 		$itemIds = SOYShop_DataSets::get("item.recommend_items", array());
-
-		$this->addModel("has_recommend", array(
-			"visible" => (count($itemIds) > 0)
-		));
 		
 		$items = array();
 		foreach($itemIds as $itemId){
@@ -386,18 +314,14 @@ class IndexPage extends WebPage{
 			"itemOrderDAO" => $this->itemOrderDao
 		));
 
-
-		$this->addModel("no_recommend", array(
-			"visible" => (count($items) == 0)
-		));
+		DisplayPlugin::toggle("has_recommend", (count($items) > 0));
+		DisplayPlugin::toggle("no_recommend", (count($items) === 0));
 	}
 
 	function buildInfoBlock(){
 		
 		//管理制限者の場合、表示させない
-		$this->addModel("is_info", array(
-			"visible" => ($this->appLimit)
-		));
+		DisplayPlugin::toggle("info", $this->appLimit);
 
 		$this->addLabel("shop_name", array(
 			"text" => $this->config->getShopName()
@@ -412,9 +336,7 @@ class IndexPage extends WebPage{
 	function buildItemList(){
 
 		//管理制限者の場合、表示させない
-		$this->addModel("is_update_item_list", array(
-			"visible" => ($this->appLimit)
-		));
+		DisplayPlugin::toggle("update_item", $this->appLimit);
 
 		$this->itemDao->setLimit(5);
 		try{
@@ -434,14 +356,17 @@ class IndexPage extends WebPage{
 	function buildPageList(){
 
 		//管理制限者の場合、表示させない
-		$this->addModel("is_update_page_list", array(
-			"visible" => ($this->appLimit)
-		));
+		DisplayPlugin::toggle("update_page", $this->appLimit);
 
 		$pageDAO = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 		$pageDAO->setLimit(5);
 
-		$pages = $pageDAO->newPages();
+		try{
+			$pages = $pageDAO->newPages();
+		}catch(Exception $e){
+			$pages = array();
+		}
+		
 
 		$this->createAdd("page_list", "_common.PageListComponent", array(
 			"list" => $pages
