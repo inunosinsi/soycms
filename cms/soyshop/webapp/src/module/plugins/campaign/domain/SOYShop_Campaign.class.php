@@ -11,6 +11,9 @@ class SOYShop_Campaign {
 	const IS_OPEN = 1;
 	const NO_OPEN = 0;
 	
+	const IS_LOGGED_IN = 1;
+	const NO_LOGGED_IN = 0;
+	
 	const IS_DISABLED = 1;
 	const NO_DISABLED = 0;
 	
@@ -35,6 +38,11 @@ class SOYShop_Campaign {
 	 * @column is_open
 	 */
 	private $isOpen = 0;
+	
+	/**
+	 * @column is_logged_in
+	 */
+	private $isLoggedIn = 0;
 	
 	/**
 	 * @column is_disabled
@@ -91,6 +99,13 @@ class SOYShop_Campaign {
 	}
 	function setIsOpen($isOpen){
 		$this->isOpen = $isOpen;
+	}
+	
+	function getIsLoggedIn(){
+		return $this->isLoggedIn;
+	}
+	function setIsLoggedIn($isLoggedIn){
+		$this->isLoggedIn = $isLoggedIn;
 	}
 	
 	function getIsDisabled(){

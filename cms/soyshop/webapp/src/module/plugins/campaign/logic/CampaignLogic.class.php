@@ -22,6 +22,12 @@ class CampaignLogic extends SOY2LogicBase{
 		//公開期限を調べる
 		if($campaign->getPostPeriodStart() > time() || $campaign->getPostPeriodEnd() < time()) return new SOYShop_Campaign();
 		
+		//ログインの有無がある場合はログインしているか調べる
+		if($campaign->getIsLoggedIn() == SOYShop_Campaign::IS_LOGGED_IN){
+			$mypage = MyPageLogic::getMyPage();
+			if(!$mypage->getIsLoggedin()) return new SOYShop_Campaign();
+		}
+		
 		return $campaign;
 	}
 	

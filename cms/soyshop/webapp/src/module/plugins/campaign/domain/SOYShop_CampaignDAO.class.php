@@ -50,7 +50,7 @@ abstract class SOYShop_CampaignDAO extends SOY2DAO {
 		
 		return $list;
 	}
-	
+		
 	function getBeforePostPeriodEnd($lim = 10){
 		$sql = "SELECT * FROM soyshop_campaign ".
 				"WHERE is_disabled != 1 ".

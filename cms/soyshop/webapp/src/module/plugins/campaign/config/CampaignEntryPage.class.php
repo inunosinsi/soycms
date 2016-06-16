@@ -23,6 +23,8 @@ class CampaignEntryPage extends WebPage{
 			if(isset($_POST["Campaign"]["postPeriodEnd"]) && strlen($_POST["Campaign"]["postPeriodEnd"]) > 0){
 				$_POST["Campaign"]["postPeriodEnd"] = soyshop_convert_timestamp($_POST["Campaign"]["postPeriodEnd"], "end");
 			}
+			
+			$_POST["Campaign"]["isLoggedIn"] = (isset($_POST["Campaign"]["isLoggedIn"])) ? (int)$_POST["Campaign"]["isLoggedIn"] : 0;
 						
 			$old = self::getCampaign();
 			$campaign = SOY2::cast($old, $_POST["Campaign"]);
@@ -104,6 +106,13 @@ class CampaignEntryPage extends WebPage{
 		
 		DisplayPlugin::toggle("show_auto_load_button", CampaignUtil::checkBackupFile($this->loginId));
 		
+		$this->addCheckBox("is_logged_in", array(
+			"name" => "Campaign[isLoggedIn]",
+			"value" => SOYShop_Campaign::IS_LOGGED_IN,
+			"selected" => $campaign->getIsLoggedIn(),
+			"label" => "マイページにログインしている会員にのみ表示する"
+		));
+		
 		$this->addInput("post_period_start", array(
 			"name" => "Campaign[postPeriodStart]",
 			"value" => soyshop_convert_date_string($campaign->getPostPeriodStart()),
@@ -117,14 +126,14 @@ class CampaignEntryPage extends WebPage{
 		));
 		
 		$this->addCheckBox("no_open", array(
-			"name" => "Campaign[IsOpen]",
+			"name" => "Campaign[isOpen]",
 			"value" => SOYShop_Campaign::NO_OPEN,
 			"selected" => (is_null($campaign->getIsOpen()) || $campaign->getIsOpen() == SOYShop_Campaign::NO_OPEN),
 			"label" => "非公開"
 		));
 		
 		$this->addCheckBox("is_open", array(
-			"name" => "Campaign[IsOpen]",
+			"name" => "Campaign[isOpen]",
 			"value" => SOYShop_Campaign::IS_OPEN,
 			"selected" => ($campaign->getIsOpen() == SOYShop_Campaign::IS_OPEN),
 			"label" => "公開"

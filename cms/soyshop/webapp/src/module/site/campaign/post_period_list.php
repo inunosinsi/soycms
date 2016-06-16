@@ -4,6 +4,7 @@ function soyshop_post_period_list($html, $htmlObj){
 	$obj = $htmlObj->create("soyshop_post_period_list", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_post_period_list", $html)
 	));
+	
 
 	$campaigns = array();
 	
@@ -20,6 +21,20 @@ function soyshop_post_period_list($html, $htmlObj){
 		}catch(Exception $e){
 			
 		}
+		
+		//ログインしていない場合は、ログインのチェックをついたものだけを除く
+		
+		$mypage = MyPageLogic::getMyPage();
+		if(!$mypage->getIsLoggedin()){
+			$list = array();
+			foreach($campaigns as $cmp){
+				if($cmp->getIsLoggedIn() != SOYShop_Campaign::IS_LOGGED_IN){
+					$list[] = $cmp;
+				}
+			}
+			$campaigns = $list;
+		}
+		
 	}
 
 	$obj->createAdd("campaign_list", "SOYShop_CampaignPostPeriodListComponent", array(
