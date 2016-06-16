@@ -78,6 +78,16 @@ class FieldFormComponent {
 		$form = str_replace("custom_search", "search_condition", $form);
 		
 		switch($field["type"]){
+			case CustomSearchFieldUtil :: TYPE_TEXTAREA :
+			case CustomSearchFieldUtil :: TYPE_RICHTEXT :
+				if(strpos($form, "mceEditor")){
+					$form = str_replace(" mceEditor", "", $form);
+				}
+				if(isset($cnd[$fieldId]) && strlen($cnd[$fieldId])){
+					$form = str_replace("</textarea>", $cnd[$fieldId] . "</textarea>", $form);	
+				}
+				break;
+			
 			case CustomSearchFieldUtil :: TYPE_CHECKBOX:
 				$forms = explode("\n", $form);
 				if(!count($forms)) break;
