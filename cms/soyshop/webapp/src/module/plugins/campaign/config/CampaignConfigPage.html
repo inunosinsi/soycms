@@ -28,3 +28,78 @@
 	</table>
 </div>
 <br>
+
+<div class="block_body clearfix" style="margin:10px 0;">
+	<div class="section">
+		<h3>設定方法</h3>
+		<ul style="list-style-type: decimal;margin-left:45px;margin-bottom:10px;">
+			<li>
+				下記のタグをテンプレートに貼り付けます<br>
+				※カートやマイページのシステムから出力されるページのテンプレートに貼ることも可能です<br>
+				　↑/soyshop/webapp/src/cart/bryon/以下や/soyshop/webapp/src/mypage/bryon/以下にあるHTMLファイルです。<br>
+				　<a href="http://www.soycms.net/blog/article/%E3%82%AB%E3%83%BC%E3%83%88%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA_%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA%E7%94%A8%E3%81%AE%E3%82%AB%E3%83%BC%E3%83%88%E3%81%AE%E6%BA%96%E5%82%99" target="_blank">カートのカスタマイズ カスタマイズ用のカートの準備 | SOY Shop</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<h3>テンプレートの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- shop:module="campaign.post_period_list" --&gt;
+&lt;section&gt;
+	&lt;h1&gt;キャンペーン開催中！&lt;/h1&gt;
+	&lt;ul&gt;
+		&lt;!-- block:id="campaign_list" --&gt;
+		&lt;li&gt;
+			&lt;a cms:id="campaign_link"&gt;
+				&lt;!-- cms:id="campaign_title" --&gt;キャンペーン名&lt;!-- cms:id="campaign_title" --&gt;
+			&lt;/a&gt;
+		&lt;/li&gt;
+		&lt;!-- /block:id="campaign_list" --&gt;
+	&lt;/ul&gt;
+&lt;/section&gt;
+&lt;!-- /shop:module="campaign.post_period_list" --&gt;
+</pre>
+<br>
+
+<table class="form_list id_example">
+	<caption>block:id="campaign_list"内で使用できるcms:id</caption>
+	<thead>
+		<tr>
+			<th>cms:id</th>
+			<th>タグ</th>
+			<th>説明</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>campaign_title</td>
+			<td>すべて</td>
+			<td>キャンペーン名を表示します</td>
+		</tr>
+		<tr>
+			<td>campaign_content</td>
+			<td>すべて</td>
+			<td>キャンペーン内容を表示します</td>
+		</tr>
+		<tr>
+			<td>post_period_start</td>
+			<td>すべて</td>
+			<td>
+				キャンペーンの公開開始日を表示します<br>
+				cms:format="Y-m-d"が使用できます
+			</td>
+		</tr>
+		<tr>
+			<td>post_period_end</td>
+			<td>すべて</td>
+			<td>キャンペーンの公開終了日を表示します<br>
+				cms:format="Y-m-d"が使用できます</td>
+		</tr>
+		<tr>
+			<td>campaign_link</td>
+			<td>A</td>
+			<td>キャンペーンの詳細ページへのリンクを出力します</td>
+		</tr>
+	</tbody>
+</table>
