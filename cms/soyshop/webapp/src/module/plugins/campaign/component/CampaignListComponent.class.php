@@ -1,5 +1,7 @@
 <?php
-
+if(!class_exists("SOYShop_Campaign")){
+	SOY2::imports("module.plugins.campaign.domain.*");
+}
 class CampaignListComponent extends HTMLList{
 	
 	function populateItem($entity, $key, $index){
