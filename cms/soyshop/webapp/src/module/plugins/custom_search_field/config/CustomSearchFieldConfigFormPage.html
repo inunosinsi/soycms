@@ -110,6 +110,7 @@
 
 <h3 style="margin:10px 0;">テンプレートへの記述例</h3>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:5px 35px; overflow-x: auto;" class="script_example">
+&lt;!-- shop:module="common.custom_search_field" --&gt;
 &lt;form action="/shop/search.html"&gt;
 	商品名:
 	&lt;input type="text" csf:id="custom_search_item_name"&gt;
@@ -122,7 +123,11 @@
 	
 <!-- soy:id="example_tag_list" -->
 <!-- /soy:id="example_tag_list" -->
+
+&lt;input type="submit" value="検索"&gt;
+
 &lt;/form&gt;
+&lt;!-- /shop:module="common.custom_search_field" --&gt;
 </pre>
 
 <div class="block_body clearfix" style="margin:10px 0;">
