@@ -45,10 +45,10 @@ jQuery(function($){
 				<p class="head_btn"><a cms:id="cart_link"><img src="@@SOYSHOP_URI@@/themes/common/images/btn_cart_off.png" alt="カートを見る"></a></p>
 				<h1>現在のカートの中身</h1>
 				<!-- cms:id="full_cart" -->
-				<p id="sum">商品点数：<!-- cms:id="item_total" -->0<!-- /cms:id="item_total" --> 点｜小計：¥ <!-- cms:id="cart_total" -->0<!-- /cms:id="cart_total" --></p>
+				<p id="sum">商品点数：<span id="soyshop_cart_item_count" cms:id="item_total">0</span> 点｜小計：¥ <span id="soyshop_cart_sub_total" cms:id="cart_total">0</span></p>
 				<!-- /cms:id="full_cart" -->
 				<!-- cms:id="empty_cart" -->
-				<p id="sum">商品点数：0 点｜小計：¥ 0</p>
+				<p id="sum">商品点数：<span id="soyshop_cart_item_count">0</span> 点｜小計：¥ <span id="soyshop_cart_sub_total">0</span></p>
 				<!-- /cms:id="empty_cart" -->
 			</section>
 			<!-- /shop:module="common.parts.cart" -->
