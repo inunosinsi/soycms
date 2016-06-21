@@ -29,6 +29,12 @@ class SearchItemLogic extends SOY2LogicBase{
 
 		"stock" =>  "item_stock",
 		"stock_desc" =>  "item_stock desc",
+		
+		"create_date" => "create_date",
+		"create_date_desc" => "create_date desc",
+		
+		"update_date" => "update_date",
+		"update_date_desc" => "update_date desc"
 
 	);
 
