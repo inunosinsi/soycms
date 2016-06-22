@@ -72,6 +72,10 @@ class IndexPage extends WebPage{
 
 			SOY2PageController::jump("");
 		}
+		
+		//何でもできる拡張ポイント
+		SOYShopPlugin::load("soyshop.admin");
+		SOYShopPlugin::invoke("soyshop.admin");
 	}
 
 	function IndexPage(){
