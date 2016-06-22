@@ -39,6 +39,14 @@ function soyshop_custom_search_field($html, $htmlObj){
 			));
 		}
 		
+		//カテゴリのセレクトボックス
+		$obj->addSelect("custom_search_item_category", array(
+			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+			"name" => "c_search[item_category]",
+			"options" => CustomSearchFieldUtil::getIsOpenCategoryList(),
+			"selected" => (isset($params["item_category"])) ? (int)$params["item_category"] : false 
+		));
+		
 		foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 			switch($field["type"]){
 				case CustomSearchFieldUtil::TYPE_RANGE:
@@ -60,7 +68,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 								"type" => "checkbox",
 								"name" => "c_search[" . $key . "][]",
 								"value" => $o,
-								"selected" => (in_array($o, $params[$key])),
+								"selected" => (is_array($params[$key]) && in_array($o, $params[$key])),
 								"label" => $o
 							));
 						}

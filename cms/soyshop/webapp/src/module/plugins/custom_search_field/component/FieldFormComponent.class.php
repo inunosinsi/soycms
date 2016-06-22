@@ -1,7 +1,7 @@
 <?php
 class FieldFormComponent {
 
-	function buildForm($fieldId, $field, $value = null) {
+	public static function buildForm($fieldId, $field, $value = null) {
 		
 		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 
@@ -73,7 +73,7 @@ class FieldFormComponent {
 		}
 	}
 	
-	function buildSearchConditionForm($fieldId, $field, $cnd) {
+	public static function buildSearchConditionForm($fieldId, $field, $cnd) {
 		$form = self::buildForm($fieldId, $field);
 		$form = str_replace("custom_search", "search_condition", $form);
 		
@@ -94,7 +94,7 @@ class FieldFormComponent {
 				$fs = array();
 				foreach($forms as $f){
 					preg_match('/value="(.*)"/', $f, $tmp);
-					if(in_array($tmp[1], $cnd[$fieldId])){
+					if(is_array($cnd[$fieldId]) && in_array($tmp[1], $cnd[$fieldId])){
 						$f = str_replace("value=\"" . $tmp[1] . "\"", "value=\"" . $tmp[1] . "\" checked=\"checked\"", $f);
 						$fs[] = $f;
 					}else{

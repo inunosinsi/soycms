@@ -34,6 +34,7 @@ class UtilMobileCheckPlugin{
 	private $config;
 	
 	private $carrier;
+	private $queryString;
 
 
 	function getId(){
@@ -47,7 +48,7 @@ class UtilMobileCheckPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.9.1"
+			"version"=>"0.9.3"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 			$this, "config_page"
@@ -98,7 +99,10 @@ class UtilMobileCheckPlugin{
 	function redirect(){
 		$config = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		$this->config = $config;
-
+		
+		//$_SERVER["QUERY_STRING"]にpathインフォがある場合は除いておく
+		$this->queryString = self::checkQueryString($_SERVER["QUERY_STRING"]);
+		
 		$redirect = self::REDIRECT_PC;
 		$isMobile = false;
 		$isSmartPhone = false;
@@ -152,7 +156,7 @@ class UtilMobileCheckPlugin{
 				self::checkCarrier($redirectPrefix);
 			}
 		}
-		
+
 		//PCの場合以外のリダイレクト処理
 		if($redirect != self::REDIRECT_PC){
 			//prefixの決定
@@ -191,6 +195,19 @@ class UtilMobileCheckPlugin{
 		
 		//リダイレクトをしなかった場合、prefixを定数に入れておく
 		if(!defined("SOYCMS_CARRIER_PREFIX")) define("SOYCMS_CARRIER_PREFIX", $prefix);
+	}
+	
+	//query_stringからpathinfo分を除いておく
+	private function checkQueryString($queryString){
+		if(strpos($queryString, "pathinfo=") !== false){
+			//２つ以上値がある場合
+			if(strpos($queryString, "&") !== false){
+				$queryString = preg_replace('/pathinfo=(.*?)&/', "", $queryString);
+			}else{
+				$queryString = "";
+			}
+		}
+		return $queryString;
 	}
 
 	/**
@@ -424,11 +441,11 @@ class UtilMobileCheckPlugin{
 		$path = $siteDir. $prefix. $pathInfo;
 
 		//絶対パスにQuery Stringを追加する
-		if(isset($_SERVER["QUERY_STRING"]) && strlen($_SERVER["QUERY_STRING"]) > 0){
+		if(isset($this->queryString) && strlen($this->queryString) > 0){
 
 			//セッションIDが入っている場合にregenerateされている可能性があるので
-			if(strpos($_SERVER["QUERY_STRING"], session_name()) !== false){
-				$queries = explode("&", $_SERVER["QUERY_STRING"]);
+			if(strpos($this->queryString, session_name()) !== false){
+				$queries = explode("&", $this->queryString);
 				foreach($queries as $id => $item){
 					if(strpos($item, session_name()) === 0){
 						$queries[$id] = session_name() . "=" . session_id();
@@ -437,11 +454,11 @@ class UtilMobileCheckPlugin{
 				}
 				$querystring = implode("&", $queries);
 			}else{
-				$querystring = $_SERVER["QUERY_STRING"];
+				$querystring = $this->queryString;
 			}
 
 
-			$path .= "?" . $_SERVER["QUERY_STRING"];
+			$path .= "?" . $querystring;
 		}
 
 		return $path;
@@ -493,9 +510,9 @@ class UtilMobileCheckPlugin{
 	
 	private function addQueryString($path){
 		//絶対パスにQuery Stringを追加する
-		if(isset($_SERVER["QUERY_STRING"]) && strlen($_SERVER["QUERY_STRING"]) > 0){
+		if(isset($this->queryString) && strlen($this->queryString) > 0){
 			$path = rtrim($path, "/");
-			$array = explode("&", $_SERVER["QUERY_STRING"]);
+			$array = explode("&", $this->queryString);
 			$queries = array();
 			foreach($array as $query){
 				if(strpos($query, "=")){
@@ -508,8 +525,8 @@ class UtilMobileCheckPlugin{
 				$queries[$key] = $value;
 			}
 			
-			//pathinfoの値はここで除く
-			if(array_key_exists("pathinfo", $queries)) unset($queries["pathinfo"]);
+			//pathinfoの値はここで除く→他の箇所でも影響があったため、ここの処理は除く
+//			if(array_key_exists("pathinfo", $queries)) unset($queries["pathinfo"]);
 			
 			if(count($queries) > 0){
 				$querystring = "?";
