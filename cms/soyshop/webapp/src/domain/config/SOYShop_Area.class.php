@@ -61,6 +61,7 @@ class SOYShop_Area {
 	 */
 	public static function getAreas(){
 		//ショップによって名前を変える要件があるため、拡張ポイントで対応
+		if(!class_exists("SOYShopPlugin")) SOY2::import("logic.plugin.SOYShopPlugin");
 		SOYShopPlugin::load("soyshop.area");
 		$delegate = SOYShopPlugin::invoke("soyshop.area", array(
 			"mode" => "area"

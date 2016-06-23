@@ -38,7 +38,7 @@ class SOYInquiryUtil{
 		return $old;
 	}
 	
-	public static function switchSOYShopConfig($shopId){
+	public static function switchSOYShopConfig($shopId="shop"){
 		
 		$old["root"] = SOY2::RootDir();
 		$old["dao"] = SOY2DAOConfig::DaoDir();
@@ -47,6 +47,7 @@ class SOYInquiryUtil{
 		$old["user"] = SOY2DAOConfig::user();
 		$old["pass"] = SOY2DAOConfig::pass();
 				
+		if(is_null($shopId)) $shopId = "shop";
 		$soyshopWebapp = dirname(CMS_COMMON) . "/soyshop/webapp/";
 		include_once($soyshopWebapp."conf/shop/" . $shopId . ".conf.php");
 		
@@ -58,6 +59,7 @@ class SOYInquiryUtil{
 		SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
 		SOY2DAOConfig::user(SOYSHOP_SITE_USER);
 		SOY2DAOConfig::pass(SOYSHOP_SITE_PASS);
+		
 		
 		return $old;
 	}

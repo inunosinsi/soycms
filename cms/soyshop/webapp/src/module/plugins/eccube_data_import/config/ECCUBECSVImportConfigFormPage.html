@@ -1,0 +1,96 @@
+<p class="notice" soy:display="saved">保存しました</p>
+<p class="notice" soy:display="successed">実行しました</p>
+<p class="error" soy:display="failed">失敗しました</p>
+<p class="error always" soy:display="defect">データベースの設定に不備があります</p>
+
+<h1>EC CUBE データインポート</h1>
+
+<form soy:id="dump_form">
+<dl>
+	<dt>データベースからダンプ</dt>
+	<dd>
+		<ul>
+			<li>MySQLホスト名：<input type="text" soy:id="host"></li>
+			<li>MySQLポート番号(空欄可):<input type="text" soy:id="port"></li>
+			<li>MySQLデータベース名:<input type="text" soy:id="db"></li>
+			<li>MySQLユーザ名:<input type="text" soy:id="user"></li>
+			<li>MySQLパスワード:<input type="password" name="Password" value=""></li>
+		</ul>
+		※注文詳細の送料等の費用はインポートできません<br>
+		※実行後、保存した設定は削除されます<br>
+		※パスワードは保持せず、実行前に必ず入力してください
+	</dd>
+</dl>	
+
+<p class="pageBtn">
+	<input type="submit" class="submit_button" name="save" value="保存" />
+	<!-- soy:display="display_exe_button" -->
+	&nbsp;&nbsp;<input type="submit" class="submit_button" name="execute" value="実行" />
+	<!-- /soy:display="display_exe_button" -->
+</p>
+</form>
+
+<dl>
+	<form soy:id="pass_form"　id="export_form">
+	<dt>顧客情報毎にパスワードを生成&nbsp;→&nbsp;結果をCSV出力</dt>
+	<dd>
+		<input type="submit" name="create" value="パスワードを生成する">&nbsp;&nbsp;
+		<strong>文字コード=</strong>
+		<input id="charset_utf_8" type="radio" name="charset" value="UTF-8" checked="checked"/>
+		<label for="charset_utf_8">UTF-8</label>
+	</dd>
+	</form>
+</dl>
+
+<dl style="display:none;">
+	<form soy:id="form">
+	<dt>1.会員情報のインポート</dt>
+	<dd>
+		<input type="file" name="CSV[customer]"><input type="submit" value="アップロード"><br>
+		※customer_{日時}.csvのファイルをインポートします。
+	</dd>
+	
+	<dt>2.ポイントのインポート(会員情報のインポート後に実行してください。会員情報と同じCSVファイルです)</dt>
+	<dd>
+		<input type="file" name="CSV[point]"><input type="submit" value="アップロード"><br>
+		※customer_{日時}.csvのファイルをインポートします。
+	</dd>
+	
+	<dt>3.カテゴリ情報のインポート</dt>
+	<dd>
+		<input type="file" name="CSV[category]"><input type="submit" value="アップロード"><br>
+		※category_{日時}.csvのファイルをインポートします。
+	</dd>
+	
+	<dt>4.商品情報のインポート(カテゴリ情報のインポート後に実行してください。)</dt>
+	<dd>
+		<input type="file" name="CSV[product]"><input type="submit" value="アップロード"><br>
+		※product_{日時}.csvのファイルをインポートします。<br>
+		※詳細の項目はインポート終了後にSOY ShopのCSV<a soy:link="Item.Export">エクスポート</a>・<a soy:link="Item.Import">インポート</a>機能で登録してください。
+	</dd>
+	
+	<dt>5.商品毎の付与ポイントのインポート(商品情報のインポート後に実行してください。商品情報と同じCSVファイルです)</dt>
+	<dd>
+		<input type="file" name="CSV[grant]"><input type="submit" value="アップロード"><br>
+		※product_{日時}.csvのファイルをインポートします。
+	</dd>
+	
+	<dt>6.受注情報のインポート(会員情報と商品情報のインポート後に実行してください)</dt>
+	<dd>
+		※未対応
+	</dd>
+	<dd style="display:none;">
+		<input type="file" name="CSV[order]"><input type="submit" value="アップロード"><br>
+		※order_{日時}.csvのファイルをインポートします。
+	</dd>
+	</form>
+</dl>
+
+<script type="text/javascript">
+$(function(){
+	$("#export_form").attr("target","download_frame");
+	$("#export_form").submit(function(){
+		setTimeout(function(){location.reload();},1000);
+	});
+});
+</script>
