@@ -10,6 +10,8 @@ SOY2::import("domain.user.SOYShop_UserToken");
  * セッションを使ってユーザ情報を保存
  */
 class MyPageLogic extends SOY2LogicBase{
+	
+	const REGISTER_REDIRECT_KEY = "register_redirect";
 
 	/**
 	 * マイページを取得

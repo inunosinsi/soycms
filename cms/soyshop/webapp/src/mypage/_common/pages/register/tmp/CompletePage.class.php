@@ -16,8 +16,12 @@ class CompletePage extends MainMyPagePageBase{
 			"visible" => ($register)
 		));
 
+		$loginUrl = SOYSHOP_SITE_URL.soyshop_get_mypage_uri() . "/login";
+		if(isset($_GET["r"])){
+			$loginUrl .= "?r=" . $_GET["r"];
+		}
 		$this->addLink("login_link", array(
-			"link" => SOYSHOP_SITE_URL.soyshop_get_mypage_uri() . "/login"
+			"link" => $loginUrl
 		));
 
 		

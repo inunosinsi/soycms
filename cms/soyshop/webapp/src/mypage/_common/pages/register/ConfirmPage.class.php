@@ -115,6 +115,14 @@ class ConfirmPage extends IndexPage{
 		$title = $mailLogic->convertMailContent($config["title"], $user, new SOYShop_Order());
 
 		$query = soyshop_get_mypage_url(true) . "/register/tmp/complete?q=" . $token;
+		
+		//リダイレクト
+		$mypage = MyPageLogic::getMyPage();
+		$r = $mypage->getAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
+		if(isset($r)){
+			$mypage->clearAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
+			$query .= "&r=" . $r;
+		}
 		$text = "\n" . MessageManager::get("MYPAGE_LIMIT_TERM_CONTENT", array("limit" => date("Y年m月d日 H:i", $limit))) . "\n";
 
 		//convert content

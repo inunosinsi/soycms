@@ -4,6 +4,15 @@ class CompletePage extends MainMyPagePageBase{
 	function CompletePage(){
 
 		$mypage = MyPageLogic::getMyPage();
+		
+		//リダイレクト
+		$loginUrl = soyshop_get_mypage_url() . "/login";
+		$r = $mypage->getAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
+		if(isset($r)){
+			$mypage->clearAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
+			$loginUrl .= "?r=" . $r;
+		}
+		
 		$mypage->clearUserInfo();
 		$mypage->clearErrorMessage();
 		$mypage->save();
@@ -11,9 +20,8 @@ class CompletePage extends MainMyPagePageBase{
 		WebPage::WebPage();
 
 		$this->addLink("login_link", array(
-			"link" => soyshop_get_mypage_url() . "/login"
+			"link" => $loginUrl
 		));
-
 	}
 }
 ?>

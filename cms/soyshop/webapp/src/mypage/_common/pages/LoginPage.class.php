@@ -15,9 +15,20 @@ class LoginPage extends MainMyPagePageBase{
 						//auto login
 						if(isset($_POST["login_memory"])) $this->autoLogin();
 						
-						//jump
+						//リダイレクト
 						if(isset($_GET["r"]) && strlen($_GET["r"])){
-							$param = soyshop_remove_get_value($_GET["r"]);
+							$r = $_GET["r"];
+						}else{
+							$mypage = MyPageLogic::getMyPage();
+							$r = $mypage->getAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
+							if(isset($r)){
+								$mypage->clearAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
+							}
+						}
+						
+						//jump
+						if(isset($r)){
+							$param = soyshop_remove_get_value($r);
 							soyshop_redirect_designated_page($param, "login=complete");
 							exit;
 						}
@@ -45,6 +56,12 @@ class LoginPage extends MainMyPagePageBase{
 		//ログインチェック
 		if($mypage->getIsLoggedin()){
 			$this->jumpToTop();
+		}
+		
+		//リダイレクト指定で遷移してきた場合はURIを保存する
+		if(isset($_GET["r"])){
+			$mypage->setAttribute(MyPageLogic::REGISTER_REDIRECT_KEY, $_GET["r"]);
+			$mypage->save();
 		}
 
 		$this->addForm("login_form");

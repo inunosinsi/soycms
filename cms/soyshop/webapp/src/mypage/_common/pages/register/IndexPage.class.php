@@ -73,6 +73,12 @@ class IndexPage extends MainMyPagePageBase{
 		if($mypage->getIsLoggedin()){
 			$this->jumpToTop();
 		}
+		
+		//リダイレクト指定で遷移してきた場合はURIを保存する
+		if(isset($_GET["r"])){
+			$mypage->setAttribute(MyPageLogic::REGISTER_REDIRECT_KEY, $_GET["r"]);
+			$mypage->save();
+		}
 
 		$user = $mypage->getUserInfo();
 		if(is_null($user)) $user = new SOYShop_User();
