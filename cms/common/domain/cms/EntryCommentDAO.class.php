@@ -36,7 +36,7 @@ abstract class EntryCommentDAO extends SOY2DAO{
 	 * @final
 	 */
 	function setupComment($query,$binds){
-		if(is_null($binds[':isApproved'])){
+		if(is_null($binds[':isApproved']) || !strlen($binds[':isApproved'])){
 			$binds[':isApproved'] = 1;
 		}
 		$binds[':submitDate'] = time();
