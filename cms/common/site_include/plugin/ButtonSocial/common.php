@@ -295,10 +295,19 @@ class ButtonSocialCommon{
 		}elseif(property_exists($obj, "entryPageUrl")){
 			$uri = ltrim($obj->entryPageUrl,"/");
 		}
+		
+		//uriにドメインが混じっている場合はドメインまでを削除
+		if(strpos($uri, $_SERVER["HTTP_HOST"])){
+			$pos = strpos($uri, $_SERVER["HTTP_HOST"]);
+			$len = strlen($_SERVER["HTTP_HOST"]);
+			$uri = substr($uri, $pos + $len);
+			//念の為、最初のスラッシュの後から取得
+			$uri = substr($uri, strpos($uri, "/") + 1);
+		}
 
 		$rootLink = UserInfoUtil::getSiteURLBySiteId("");
 		$url = $rootLink.$uri;
-
+		
 		$entry = $this->getEntry($entryId);
 		$url .= rawurlencode($entry->getAlias());
 
