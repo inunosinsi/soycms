@@ -53,8 +53,20 @@ class CommentDetailPage extends CMSWebPageBase{
     		"text"=>$title
     	));
     	
+    	$this->addForm("title_form");
+    	$this->addInput("title_edit", array(
+    		"name" => "title",
+    		"value" => $title
+    	));
+    	
     	$this->createAdd("author","HTMLLabel",array(
     		"text"=>$author
+    	));
+    	
+    	$this->addForm("author_form");
+    	$this->addInput("author_edit", array(
+    		"name" => "author",
+    		"value" => $author
     	));
     	
     	$this->createAdd("entry_title","HTMLLabel",array(

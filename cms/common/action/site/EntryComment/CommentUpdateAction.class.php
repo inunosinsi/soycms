@@ -8,10 +8,22 @@ class CommentUpdateAction extends SOY2Action{
     	$dao = SOY2DAOFactory::create("cms.EntryCommentDAO");
     	
     	try{
-    		$body = $req->getParameter("content");	
-    		
     		$comment = $dao->getById($this->commentId);
-    		$comment->setBody($body);
+    		
+    		$title = $req->getParameter("title");
+    		if(isset($title)){
+    			$comment->setTitle($title);
+    		}
+    		
+    		$author = $req->getParameter("author");
+    		if(isset($author)){
+    			$comment->setAuthor($author);
+    		}
+    		
+    		$body = $req->getParameter("content");
+    		if(isset($body)){
+    			$comment->setBody($body);
+    		}
     		
     		$dao->update($comment);
     	}catch(Exception $e){

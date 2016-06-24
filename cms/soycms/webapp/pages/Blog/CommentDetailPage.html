@@ -10,11 +10,35 @@
 	<table class="list" style="width:80%;margin:10px auto;">
 		<tr>
 			<th class="item_name">タイトル</th>
-			<td soy:id="title"></td>
+			<td>
+				<div>
+					<!-- soy:id="title" /-->&nbsp;
+					<input type="button" onclick="return toggle_edit(this, 'title');" value="タイトルを編集する" />
+				</div>
+				
+				<div id="title_edit" style="display:none;">
+					<form method="post" soy:id="title_form">
+						<input soy:id="title_edit" style="width:40%;">
+						<input type="submit" name="" value="更新" />
+					</form>
+				</div>
+			</td>
 		</tr>
 		<tr>
 			<th class="item_name">投稿者名</th>
-			<td soy:id="author"></td>
+			<td>
+				<div>
+					<!-- soy:id="author" /-->&nbsp;
+					<input type="button" onclick="return toggle_edit(this, 'author');" value="投稿者名を編集する" />
+				</div>
+				
+				<div id="author_edit" style="display:none;">
+					<form method="post" soy:id="author_form">
+					<input soy:id="author_edit" style="width:40%;">
+					<input type="submit" name="" value="更新" />
+					</form>
+				</div>
+			</td>
 		</tr>
 		<tr>
 			<th class="item_name">対象記事タイトル</th>
@@ -35,23 +59,23 @@
 			<td style="text-align:left;" colspan="2" class="comment_content">
 				<div>
 					<pre soy:id="content"></pre>
-					<input type="button" onclick="return toggle_edit(this);" value="本文を編集する" />
+					<input type="button" onclick="return toggle_edit(this, 'content');" value="本文を編集する" />
 				</div>
 				
 				<div id="content_edit" style="display:none;">
 					<form method="post" soy:id="comment_form">
-					<textarea soy:id="content_edit" style="margin:0 0 5px;height:100px;width:100%;"></textarea><br>
-					<input type="submit" name="" value="更新" />
-					</form soy:id="comment_form">
+						<textarea soy:id="content_edit" style="margin:0 0 5px;height:100px;width:100%;"></textarea><br>
+						<input type="submit" name="" value="更新" />
+					</form>
 				</div>
 			</td>
 		</tr>
 	</table>
 	
 	<script type="text/javascript">
-	function toggle_edit(ele){
+	function toggle_edit(ele, mode){
 	  $(ele).parent().hide();
-		$("#content_edit").show();
+		$("#" + mode + "_edit").show();
 	}
 	</script>
 </body>
