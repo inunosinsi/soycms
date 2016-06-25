@@ -53,6 +53,11 @@ class ButtonSocialBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		  "soy2prefix" => "block",
  		  "html" => $common->getGooglePlusButton()
 		));
+		
+		$page->addLabel("pocket_button", array(
+		  "soy2prefix" => "block",
+ 		  "html" => $common->getPocketButton()
+		));
 	}	
 }
 SOYShopPlugin::extension("soyshop.site.beforeoutput", "button_social", "ButtonSocialBeforeOutput");

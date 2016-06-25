@@ -28,10 +28,10 @@ class ButtonSocialPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ソーシャルボタン設置プラグイン",
 			"description"=>"ページにソーシャルボタンを設置します。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
-			"mail"=>"soycms@soycms.net",
-			"version"=>"1.1"
+			"author"=>"齋藤毅",
+			"url"=>"https://saitodev.co/",
+			"mail"=>"tsuyoshi@saitodev.co",
+			"version"=>"1.2"
 		));
 
 		$logic = new ButtonSocialCommon();
@@ -130,6 +130,11 @@ class ButtonSocialPlugin{
 			"soy2prefix" => "cms",
 			"html" => $logic->getGooglePlusButton()
 		));
+		
+		$htmlObj->addLabel("pocket_button", array(
+			"soy2prefix" => "cms",
+			"html" => $logic->getPocketButton()
+		));
 	}
 
 	function onPageOutput($obj){
@@ -170,6 +175,11 @@ class ButtonSocialPlugin{
 		$obj->addLabel("google_plus_button", array(
 			"soy2prefix" => "sns",
 			"html" => $logic->getGooglePlusButton()
+		));
+		
+		$obj->addLabel("pocket_button", array(
+			"soy2prefix" => "sns",
+			"html" => $logic->getPocketButton()
 		));
 
 		/*

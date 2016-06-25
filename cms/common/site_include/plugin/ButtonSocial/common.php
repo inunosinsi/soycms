@@ -65,69 +65,93 @@ class ButtonSocialCommon{
 	}
 
 	function getFbButton($appId,$entryLink=null){
-
-		if(isset($entryLink)){
-			$url = $entryLink;
-		}else{
-			$url = $this->getPageUrl();
-		}
+		static $b;
+		if(is_null($b)){
+			if(isset($entryLink)){
+				$url = $entryLink;
+			}else{
+				$url = $this->getPageUrl();
+			}
+			
+			$b = "<div class=\"fb-like fb-like-comment\" data-href=\"" . $url . "\" data-send=\"false\" data-layout=\"button_count\" data-width=\"450\" data-show-faces=\"false\"></div>";
+		}	
 		
-		return "<div class=\"fb-like fb-like-comment\" data-href=\"" . $url . "\" data-send=\"false\" data-layout=\"button_count\" data-width=\"450\" data-show-faces=\"false\"></div>";
+		return $b;
 	}
 
 	function getTwitterButton($entryLink=null){
-
-		if(isset($entryLink)){
-			$url = $entryLink;
-		}else{
-			$url = $this->getPageUrl();
-		}
-
-		return "<a href=\"http://twitter.com/share\" " .
+		static $b;
+		if(is_null($b)){
+			if(isset($entryLink)){
+				$url = $entryLink;
+			}else{
+				$url = $this->getPageUrl();
+			}
+			
+			$b = "<a href=\"https://twitter.com/share\" " .
 				"class=\"twitter-share-button\" " .
 				"data-url=\"".$url."\" " .
 				"data-count=\"horizontal\">Tweet</a>" .
 				"<script type=\"text/javascript\" " .
-				"src=\"https://platform.twitter.com/widgets.js\"></script>";
+				"src=\"https://platform.twitter.com/widgets.js\"></script>";	
+		}
+
+		return $b;
 	}
 
 	function getTwitterButtonMobile($entryLink=null,$title="記事タイトル"){
-		if(isset($entryLink)){
-			$url = $entryLink;
-		}else{
-			$url = $this->getPageUrl();
+		static $b;
+		if(is_null($b)){
+			if(isset($entryLink)){
+				$url = $entryLink;
+			}else{
+				$url = $this->getPageUrl();
+			}
+			$url = rawurlencode($url);
+	
+			$title = rawurlencode(mb_convert_encoding($title,"SJIS-win","UTF-8"));
+			
+			$b = "http://twtr.jp/share?url=".$url."&text=".$title;
 		}
-		$url = rawurlencode($url);
-
-		$title = rawurlencode(mb_convert_encoding($title,"SJIS-win","UTF-8"));
-
-		return "http://twtr.jp/share?url=".$url."&text=".$title;
+		
+		return $b;
 	}
 
 	function getHatenaButton($entryLink=null){
-
-		if(isset($entryLink)){
-			$url = $entryLink;
-		}else{
-			$url = $this->getPageUrl();
+		static $b;
+		if(is_null($b)){
+			if(isset($entryLink)){
+				$url = $entryLink;
+			}else{
+				$url = $this->getPageUrl();
+			}
+	
+			$b = "<a href=\"https://b.hatena.ne.jp/entry/" . $url . "\" " .
+					"class=\"hatena-bookmark-button\" " .
+					"data-hatena-bookmark-layout=\"standard\" " .
+					"title=\"このエントリーをはてなブックマークに追加\">" .
+					"<img src=\"//b.st-hatena.com/images/entry-button/button-only.gif\" " .
+					"alt=\"このエントリーをはてなブックマークに追加\" " .
+					"width=\"20\" height=\"20\" style=\"border: none;\" /></a>" .
+					"<script type=\"text/javascript\" " .
+					"src=\"//b.st-hatena.com/js/bookmark_button.js\" charset=\"utf-8\" async=\"async\"></script>";
 		}
 
-		return "<a href=\"http://b.hatena.ne.jp/entry/" . $url . "\" " .
-				"class=\"hatena-bookmark-button\" " .
-				"data-hatena-bookmark-layout=\"standard\" " .
-				"title=\"このエントリーをはてなブックマークに追加\">" .
-				"<img src=\"http://b.st-hatena.com/images/entry-button/button-only.gif\" " .
-				"alt=\"このエントリーをはてなブックマークに追加\" " .
-				"width=\"20\" height=\"20\" style=\"border: none;\" /></a>" .
-				"<script type=\"text/javascript\" " .
-				"src=\"https://b.st-hatena.com/js/bookmark_button.js\" charset=\"utf-8\" async=\"async\"></script>";
+		return $b;
+	}
+	
+	function getPocketButton(){
+		return "<a data-pocket-label=\"pocket\" data-pocket-count=\"horizontal\" class=\"pocket-btn\" data-lang=\"en\"></a>".
+				"<script type=\"text/javascript\">" .
+				"!function(d,i){if(!d.getElementById(i)){var j=d.createElement(\"script\");j.id=i;j.src=\"https://widgets.getpocket.com/v1/j/btn.js?v=1\";var w=d.getElementById(i);d.body.appendChild(j);}}(document,\"pocket-btn-js\");" .
+				"</script>";
 	}
 
 	function getMixiCheckScript(){
 		return "<script type=\"text/javascript\" src=\"https://static.mixi.jp/js/share.js\"></script>";
 	}
 
-	function getMixiCheckButtonMobile($url,$key,$title){
+	function getMixiCheckButtonMobile($url, $key,$title){
 		return "<form action=\"http://m.mixi.jp/share.pl?guid=ON\" method=\"POST\" >".
         		"<input type=\"hidden\" name=\"check_key\" value=\"".$key."\" />".
         		"<input type=\"hidden\" name=\"title\" value=\"".$title."\" />".

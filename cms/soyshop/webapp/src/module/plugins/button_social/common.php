@@ -87,12 +87,12 @@ class ButtonSocialCommon {
 	
 	function getTwitterButton(){
 		
-		return "<a href=\"http://twitter.com/share\" " .
+		return "<a href=\"https://twitter.com/share\" " .
 				"class=\"twitter-share-button\" " .
 				"data-url=\"" . $this->page->getCanonicalUrl() . "\" " .
 				"data-count=\"horizontal\">Tweet</a>" .
 				"<script type=\"text/javascript\" " .
-				"src=\"http://platform.twitter.com/widgets.js\"></script>";
+				"src=\"https://platform.twitter.com/widgets.js\"></script>";
 	}
 	
 	function getTwitterButtonMobile(){
@@ -107,15 +107,15 @@ class ButtonSocialCommon {
 	}
 	
 	function getHatenaButton(){
-		return "<a href=\"http://b.hatena.ne.jp/entry/" . $this->page->getCanonicalUrl() . "\" " .
+		return "<a href=\"https://b.hatena.ne.jp/entry/" . $this->page->getCanonicalUrl() . "\" " .
 				"class=\"hatena-bookmark-button\" " .
 				"data-hatena-bookmark-layout=\"standard\" " .
 				"title=\"このエントリーをはてなブックマークに追加\">" .
-				"<img src=\"http://b.st-hatena.com/images/entry-button/button-only.gif\" " .
+				"<img src=\"https://b.st-hatena.com/images/entry-button/button-only.gif\" " .
 				"alt=\"このエントリーをはてなブックマークに追加\" " .
 				"width=\"20\" height=\"20\" style=\"border: none;\" /></a>" .
 				"<script type=\"text/javascript\" " .
-				"src=\"http://b.st-hatena.com/js/bookmark_button.js\" charset=\"utf-8\" async=\"async\"></script>";
+				"src=\"https://b.st-hatena.com/js/bookmark_button.js\" charset=\"utf-8\" async=\"async\"></script>";
 	}
 
 	function getMixiCheckButton(){
@@ -151,6 +151,13 @@ class ButtonSocialCommon {
 				"    po.src = 'https://apis.google.com/js/plusone.js';\n".
 				"    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);\n".
 				"  })();\n".
+				"</script>";
+	}
+	
+	function getPocketButton(){
+		return "<a data-pocket-label=\"pocket\" data-pocket-count=\"horizontal\" class=\"pocket-btn\" data-lang=\"en\"></a>".
+				"<script type=\"text/javascript\">" .
+				"!function(d,i){if(!d.getElementById(i)){var j=d.createElement(\"script\");j.id=i;j.src=\"https://widgets.getpocket.com/v1/j/btn.js?v=1\";var w=d.getElementById(i);d.body.appendChild(j);}}(document,\"pocket-btn-js\");" .
 				"</script>";
 	}
 		
