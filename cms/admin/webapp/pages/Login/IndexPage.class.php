@@ -5,23 +5,26 @@ class IndexPage extends CMSHTMLPageBase{
 	var $username;
 
 	function doPost(){
-		$action = SOY2ActionFactory::createInstance('LoginAction');
-		$result = $action->run();
-
-		//ログイン
-		if($result->success()){
-			//ログインエラーを削除する
-			SOY2Logic::createInstance("logic.admin.Login.ErrorLogic")->saveLogin();
-			SOY2PageController::redirect("");
-		}else{
-			//力づく攻撃の対応　攻撃を受けている可能性のあるIPアドレスを記録する
-			SOY2Logic::createInstance("logic.admin.Login.ErrorLogic")->save();
-			
-			//失敗したときは2秒待たせる
-			sleep(2);
+		if(soy2_check_token()){
+			$action = SOY2ActionFactory::createInstance('LoginAction');
+			$result = $action->run();
+	
+			//ログイン
+			if($result->success()){
+				//ログインエラーを削除する
+				SOY2Logic::createInstance("logic.admin.Login.ErrorLogic")->saveLogin();
+				SOY2PageController::redirect("");
+			}else{
+				//力づく攻撃の対応　攻撃を受けている可能性のあるIPアドレスを記録する
+				SOY2Logic::createInstance("logic.admin.Login.ErrorLogic")->save();
+				
+				//失敗したときは2秒待たせる
+				sleep(2);
+			}
+			$this->message = CMSMessageManager::get("ADMIN_FAILURE_TO_LOGIN");
+			$this->username = $result->getAttribute('username');
 		}
-		$this->message = CMSMessageManager::get("ADMIN_FAILURE_TO_LOGIN");
-		$this->username = $result->getAttribute('username');
+		
 
 	}
 
