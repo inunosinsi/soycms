@@ -156,13 +156,13 @@ class IndexPage extends WebPage{
 		$link = SOY2PageController::createLink("Item");
 
 		$sorts = $logic->getSorts();
-
+		
 		foreach($sorts as $key => $value){
 
 			$text = (!strpos($key,"_desc")) ? "▲" : "▼";
 			$title = (!strpos($key,"_desc")) ? "昇順" : "降順";
 
-			$this->createAdd("sort_${key}","HTMLLink", array(
+			$this->addLink("sort_${key}", array(
 				"text" => $text,
 				"link" => $link . "?sort=" . $key,
 				"title" => $title,
