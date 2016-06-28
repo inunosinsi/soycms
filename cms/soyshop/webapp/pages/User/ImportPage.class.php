@@ -19,21 +19,10 @@ class ImportPage extends WebPage{
     	WebPage::WebPage();
     	$this->buildForm();
 
-    	$this->addModel("fail", array(
-    		"visible" => (isset($_GET["fail"]))
-    	));
-    	$this->addModel("invalid", array(
-    		"visible" => (isset($_GET["invalid"]))
-    	));
+		DisplayPlugin::toggle("fail", (isset($_GET["fail"])));
+		DisplayPlugin::toggle("invalid", (isset($_GET["invalid"])));
 
-    	$this->addModel("updated", array(
-    		"visible" => (isset($_GET["updated"]))
-    	));
-
-    	$this->addModel("display_point_checkbox", array(
-    		"visible" => SOYShopPluginUtil::checkIsActive("common_point_base")
-    	));
-
+		DisplayPlugin::toggle("point_checkbox", SOYShopPluginUtil::checkIsActive("common_point_base"));
     	$this->createAdd("customfield_list", "_common.User.CustomFieldListComponent", array(
     		"list" => $this->getCustomFieldList()
     	));

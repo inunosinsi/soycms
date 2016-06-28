@@ -13,8 +13,8 @@
 
 	<div class="block_body">
 
-		<p class="error always" soy:id="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
-		<p class="error always" soy:id="fail">ファイルのアップロードに失敗しました。アップロード制限サイズ（<?php echo ini_get("upload_max_filesize"); ?>）超えていないかご確認ください。</p>
+		<p class="error always" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
+		<p class="error always" soy:display="fail">ファイルのアップロードに失敗しました。アップロード制限サイズ（<?php echo ini_get("upload_max_filesize"); ?>）超えていないかご確認ください。</p>
 		<p class="notice always" soy:display="updated">インポートが完了しました</p>
 
 		<form soy:id="import_form">
@@ -77,9 +77,9 @@
                     <input type="checkbox" checked="checked" name="item[attribute3]" value="checked" id="item[attribute3]_id" /><label for="item[attribute3]_id">属性３ (attribute3)</label><br/>
                     <input type="checkbox" checked="checked" name="item[memo]" value="checked" id="item[memo]_id" /><label for="item[memo]_id">備考 (memo)</label><br/>
                     
-                    <!-- soy:id="display_point_checkbox" -->
+                    <!-- soy:display="point_checkbox" -->
                     <input type="checkbox" checked="checked" name="item[point]" value="checked" id="item[point]_id" /><label for="item[point]_id">ポイント (point)</label><br/>
-					<!-- /soy:id="display_point_checkbox" -->
+					<!-- /soy:display="point_checkbox" -->
 					
 					<!-- soy:id="customfield_list" -->
 					<input type="checkbox" checked="checked" soy:id="customfield_input" /><br/>

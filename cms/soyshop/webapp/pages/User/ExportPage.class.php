@@ -18,17 +18,13 @@ class ExportPage extends WebPage{
 
 		$this->buildForm();
 
-		$this->addModel("retry", array(
-			"visible" => (isset($_GET["retry"]))
-		));
+		DisplayPlugin::toggle("retry", isset($_GET["retry"]));
 	}
 
 	function buildForm(){
 		$this->addForm("export_form");
 
-		$this->addModel("display_point_checkbox", array(
-    		"visible" => SOYShopPluginUtil::checkIsActive("common_point_base")
-    	));
+		DisplayPlugin::toggle("display_point_checkbox", SOYShopPluginUtil::checkIsActive("common_point_base"));
 
 		$this->createAdd("customfield_list", "_common.User.CustomFieldListComponent", array(
 			"list" => $this->getCustomFieldList()

@@ -16,14 +16,16 @@
 		<div class="block_title_right">
 			<a soy:id="order_register_link" class="button">商品を注文する</a>
 		</div>
-		<div class="block_title_right" soy:id="is_storage">
+		<!-- soy:display="storage" -->
+		<div class="block_title_right">
 			<a href="javascript:void(0);" onclick="return OptionWindow.popup();" class="button">ストレージ</a>
 		</div>
+		<!-- /soy:display="storage" -->
 	</div>
 
 	<div class="block_body">
 
-	<p class="notice" soy:id="update_message">更新しました</p>
+	<p class="notice" soy:display="update_message">更新しました</p>
 
 	<form soy:id="detail_form">
 
@@ -201,7 +203,7 @@
 					属性Ｃ：<input type="text" soy:id="attribute3" size="100" /><br>
 				</td>
 			</tr>
-			<!-- soy:id="has_user_customfield" -->
+			<!-- soy:display="has_user_customfield" -->
 				<!-- soy:id="user_customfield_list" -->
 				<tr>
 					<th><!-- soy:id="customfield_name" /--></th>
@@ -210,7 +212,7 @@
 					</td>
 				</tr>
 				<!-- /soy:id="user_customfield_list" -->
-			<!-- /soy:id="has_user_customfield" -->
+			<!-- /soy:display="has_user_customfield" -->
 			<tr>
 				<th>メール配信(SOY Mail)</th>
 				<td>
@@ -313,7 +315,7 @@
 		</table>
 		<!-- /soy:id="address_list" -->
 		
-		<!-- soy:id="is_point" -->
+		<!-- soy:display="point" -->
 		<h3>ポイント</h3>
 		<table class="form_table">
 			<tr>
@@ -327,7 +329,7 @@
 				<td><!-- soy:id="time_limit" /-->&nbsp;</td>
 			</tr>
 		</table>
-		<!-- /soy:id="is_point" -->
+		<!-- /soy:display="point" -->
 
 		<p class="pageBtn">
 			<input type="submit" name="conduct" value="更新" />
@@ -336,8 +338,8 @@
 
 		</form soy:id="detail_form">
 		
-		<!-- soy:id="is_point*" -->
-		<!-- soy:id="has_point_history" -->
+		<!-- soy:display="point2" -->
+		<!-- soy:display="point_history" -->
 		<h3>ポイント履歴(新着10件)</h3>
 		<table class="form_table">
 			<tr>
@@ -351,8 +353,8 @@
 			</tr>
 			<!-- /soy:id="point_history_list" -->
 		</table>
-		<!-- /soy:id="has_point_history" -->
-		<!-- /soy:id="is_point*" -->
+		<!-- /soy:display="point_history" -->
+		<!-- /soy:display="point2" -->
 		
 		</div><!-- /block_body -->
 </div><!-- /block -->

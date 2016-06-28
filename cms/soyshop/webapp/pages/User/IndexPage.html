@@ -94,20 +94,20 @@
 					</td>
 				</tr>
 				<!-- /soy:id="user_list" -->
-				<!-- soy:id="no_user" -->
+				<!-- soy:display="no_user" -->
 				<tr>
 					<td colspan="7">
 						<p class="notice always">顧客情報が登録されていません</p>
 					</td>
 				</tr>
-				<!-- /soy:id="no_user" -->
+				<!-- /soy:display="no_user" -->
 			</tbody>
 		</table>
 
 	</div><!-- /block_body -->
 </div><!-- /block -->
 
-<!-- soy:id="app_limit_function" -->
+<!-- soy:display="app_limit_function" -->
 <div class="block">
 	<div class="block_title">
 		<h2>その他</h2>
@@ -116,12 +116,16 @@
 	<div class="block_body">
 
 	<dl>
-		<!-- soy:id="is_custom_plugin" -->
+		<!-- soy:display="custom_plugin" -->
 		<dt>
 			<a soy:link="User.CustomField">カスタム項目設定</a>
 		</dt>
 		<dd>ユーザの追加項目を編集します。</dd>
-		<!-- /soy:id="is_custom_plugin" -->
+		<!-- /soy:display="custom_plugin" -->
+		<dt>
+			<a soy:link="User.Setting">顧客属性の一括設定</a>
+		</dt>
+		<dd>ユーザ属性を一括で設定します。</dd>
 		<dt>
 			<a soy:link="User.Export">CSVエクスポート</a>
 		</dt>
@@ -146,7 +150,7 @@
 	
 	</div><!-- /block_body -->
 </div>
-<!-- /soy:id="app_limit_function" -->
+<!-- /soy:display="app_limit_function" -->
 
 <style type="text/css">
 .delete_btn{

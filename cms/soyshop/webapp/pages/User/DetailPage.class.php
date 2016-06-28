@@ -161,9 +161,7 @@ class DetailPage extends WebPage{
 			}
 		}
 
-		$this->addModel("has_user_customfield", array(
-			"visible" => count($forms) > 0,
-		));
+		DisplayPlugin::toggle("has_user_customfield", (count($forms) > 0));
 
 		$this->createAdd("user_customfield_list", "_common.User.CustomFieldFormListComponent", array(
 			"list" => $forms
@@ -183,10 +181,8 @@ class DetailPage extends WebPage{
 		$this->addLink("order_register_link", array(
 			"link" => SOY2PageController::createLink("Order.Register.User." . $shopUser->getId())
 		));
-		$this->addModel("is_storage", array(
-			"visible" => (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("store_user_folder")))
-		));
 		
+		DisplayPlugin::toggle("storage", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("store_user_folder"))));		
 		$this->addLabel("storage_url", array(
 			"text" => SOY2PageController::createLink("User.Storage." . $shopUser->getId())
 		));
@@ -207,9 +203,7 @@ class DetailPage extends WebPage{
 		
 		
 		//更新メッセージ
-		$this->addModel("update_message", array(
-    		"visible" => (isset($_GET["updated"]))
-    	));
+		DisplayPlugin::toggle("update_message", isset($_GET["updated"]));
 
     	$this->addForm("detail_form", array(
     		"enctype" => "multipart/form-data"
@@ -360,9 +354,8 @@ class DetailPage extends WebPage{
 
 		//ポイント
     	$activedPointPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_point_base")));
-    	$this->addModel("is_point", array(
-    		"visible" => $activedPointPlugin
-    	));
+    	DisplayPlugin::toggle("point", $activedPointPlugin);
+    	DisplayPlugin::toggle("point2", $activedPointPlugin);
 		
 		//ポイントプラグインを無効にしていても下記の処理は行う
 		
@@ -382,9 +375,7 @@ class DetailPage extends WebPage{
     	
     	$histories = $this->getPointHistories($user->getId());
     	
-    	$this->addModel("has_point_history", array(
-    		"visible" => (count($histories) > 0)
-    	));
+    	DisplayPlugin::toggle("point_history", (count($histories) > 0));
     	
     	$this->createAdd("point_history_list", "_common.User.PointHistoryListComponent", array(
     		"list" => $histories

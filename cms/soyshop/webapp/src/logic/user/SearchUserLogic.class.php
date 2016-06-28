@@ -17,6 +17,21 @@ class SearchUserLogic extends SOY2LogicBase{
 	const SORT_READING_DESC	  = "reading_desc";
 	const SORT_MAIL_ADDRESS	  = "mail_address";
 	const SORT_MAIL_ADDRESS_DESC = "mail_address_desc";
+	
+	private $sorts = array(
+
+		"id" =>  "id",
+		"id_desc" =>  "id desc",
+
+		"name" =>  "item_name",
+		"name_desc" =>  "item_name desc",
+
+		"reading" =>  "reading",
+		"reading_desc" =>  "reading desc",
+
+		"mail_address" =>  "mail_address",
+		"mail_address_desc" =>  "mail_address desc",
+	);
 
 	const TABLE_NAME = "soyshop_user";
 
@@ -66,8 +81,12 @@ class SearchUserLogic extends SOY2LogicBase{
 				$order = " order by id desc";
 		}
 		$this->order = $order;
-
 	}
+	
+	function getSorts(){
+		return $this->sorts;
+	}
+	
 	function setSearchCondition($search){
 		
 		$where = array();

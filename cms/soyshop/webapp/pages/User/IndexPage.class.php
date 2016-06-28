@@ -37,7 +37,7 @@ class IndexPage extends WebPage{
 		/*表示*/
 
 		//表示順リンク
-		$this->buildSortLink($sort);
+		$this->buildSortLink($searchLogic, $sort);
 		//絞込みフォーム
 		$this->buildSearchForm($search);
 		//リセットボタン
@@ -50,9 +50,7 @@ class IndexPage extends WebPage{
 		$this->createAdd("user_list", "_common.User.UserListComponent", array(
 			"list" => $users
 		));
-		$this->addModel("no_user", array(
-			"visible" => (count($users) < 1)
-		));
+		DisplayPlugin::toggle("no_user", (count($users) < 1));
 
 		//ページャー
 		$start = $offset + 1;
@@ -72,13 +70,8 @@ class IndexPage extends WebPage{
 
 		//管理制限の権限を取得し、権限がない場合は表示しない
 		$session = SOY2ActionSession::getUserSession();
-		$this->addModel("app_limit_function", array(
-			"visible" => $session->getAttribute("app_shop_auth_limit")
-		));
-
-		$this->addModel("is_custom_plugin", array(
-			"visible" => class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_user_customfield"))
-		));
+		DisplayPlugin::toggle("app_limit_function", $session->getAttribute("app_shop_auth_limit"));
+		DisplayPlugin::toggle("custom_plugin", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_user_customfield"))));
 
 		//user.function
 		$this->createAdd("function_list", "_common.User.FunctionListComponent", array(
@@ -131,46 +124,24 @@ class IndexPage extends WebPage{
 		SOY2ActionSession::getUserSession()->setAttribute("User.Search:" . $key, $value);
 	}
 
-	function buildSortLink($sort){
+	function buildSortLink(SearchUserLogic $logic, $sort){
 
 		$link = SOY2PageController::createLink("User");
 
-		$this->addLink("sort_id", array(
-			"text" => "▲",
-			"link" => $link . "?sort=".SearchUserLogic::SORT_ID,
-			"title" => "昇順",
-			"class" => ($sort === SearchUserLogic::SORT_ID) ? "pager_disable" : ""
-		));
-		$this->addLink("sort_id_desc", array(
-			"text" => "▼",
-			"link" => $link . "?sort=".SearchUserLogic::SORT_ID_DESC,
-			"title" => "降順",
-			"class" => ($sort === SearchUserLogic::SORT_ID_DESC) ? "pager_disable" : ""
-		));
-		$this->addLink("sort_name", array(
-			"text" => "▲",
-			"link" => $link . "?sort=".SearchUserLogic::SORT_READING,
-			"title" => "昇順",
-			"class" => ($sort === SearchUserLogic::SORT_READING) ? "pager_disable" : ""
-		));
-		$this->addLink("sort_name_desc", array(
-			"text" => "▼",
-			"link" => $link . "?sort=".SearchUserLogic::SORT_READING_DESC,
-			"title" => "降順",
-			"class" => ($sort === SearchUserLogic::SORT_READING_DESC) ? "pager_disable" : ""
-		));
-		$this->addLink("sort_mail_address", array(
-			"text" => "▲",
-			"link" => $link . "?sort=".SearchUserLogic::SORT_MAIL_ADDRESS,
-			"title" => "昇順",
-			"class" => ($sort === SearchUserLogic::SORT_MAIL_ADDRESS) ? "pager_disable" : ""
-		));
-		$this->addLink("sort_mail_address_desc", array(
-			"text" => "▼",
-			"link" => $link . "?sort=".SearchUserLogic::SORT_MAIL_ADDRESS_DESC,
-			"title" => "降順",
-			"class" => ($sort === SearchUserLogic::SORT_MAIL_ADDRESS_DESC) ? "pager_disable" : ""
-		));
+		$sorts = $logic->getSorts();
+
+		foreach($sorts as $key => $value){
+
+			$text = (!strpos($key,"_desc")) ? "▲" : "▼";
+			$title = (!strpos($key,"_desc")) ? "昇順" : "降順";
+
+			$this->addLink("sort_${key}", array(
+				"text" => $text,
+				"link" => $link . "?sort=" . $key,
+				"title" => $title,
+				"class" => ($sort === $key) ? "sorter_selected" : "sorter"
+			));
+		}
 	}
 
 	function buildSearchForm($search){
