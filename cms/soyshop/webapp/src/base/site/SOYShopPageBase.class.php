@@ -51,7 +51,7 @@ class SOYShopPageBase extends WebPage{
 				'<link rel="stylesheet" href="' . $url . '" />' . "\n"
 			);
 		}
-
+			
 		$canonical = $this->getPageObject()->getConvertedCanonical();
 
     	if(!empty($canonical)){
@@ -74,6 +74,7 @@ class SOYShopPageBase extends WebPage{
     	
     	//cms:ignore
     	$html = $this->parseComment($html);
+    	$html = $this->replaceTags($html);
 
 		$pageObj = $this->getPageObject();
 
@@ -187,7 +188,13 @@ class SOYShopPageBase extends WebPage{
 		}
 
 		return $html;
-
+	}
+	
+	function replaceTags($html){
+		//ページタイトルを置換@@page_title;
+		$html = str_replace("@@page_title;", $this->getPageObject()->getName(), $html);
+		
+		return $html;
 	}
 
     function getPageObject() {
