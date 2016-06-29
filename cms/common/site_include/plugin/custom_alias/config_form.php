@@ -10,9 +10,9 @@ class CustomAliasPluginFormPage extends WebPage{
 
     	if(soy2_check_token()){
 			if(isset($_POST["custom_alias_use_id"])){
-				$this->pluginObj->setUseId($_POST["custom_alias_use_id"]);
-				$this->pluginObj->setPrefix($_POST["custom_alias_prefix"]);
-				$this->pluginObj->setPostfix($_POST["custom_alias_postfix"]);
+				if(isset($_POST["custom_alias_use_id"])) $this->pluginObj->setUseId($_POST["custom_alias_use_id"]);
+				if(isset($_POST["custom_alias_prefix"])) $this->pluginObj->setPrefix($_POST["custom_alias_prefix"]);
+				if(isset($_POST["custom_alias_postfix"])) $this->pluginObj->setPostfix($_POST["custom_alias_postfix"]);
 				CMSPlugin::savePluginConfig($this->pluginObj->getId(),$this->pluginObj);
 			}
 			CMSPlugin::redirectConfigPage();
@@ -23,19 +23,18 @@ class CustomAliasPluginFormPage extends WebPage{
 	function execute(){
 		WebPage::WebPage();
 
-		$this->createAdd("custom_alias_form","HTMLForm",array(
-		));
+		$this->addForm("custom_alias_form");
 		
-		$this->createAdd("custom_alias_prefix","HTMLInput",array(
+		$this->addInput("custom_alias_prefix", array(
 			"name" => "custom_alias_prefix",
 			"value" => $this->pluginObj->prefix,
 		));
-		$this->createAdd("custom_alias_postfix","HTMLInput",array(
+		$this->addInput("custom_alias_postfix", array(
 			"name" => "custom_alias_postfix",
 			"value" => $this->pluginObj->postfix,
 		));
 
-		$this->createAdd("use_id","HTMLCheckbox",array(
+		$this->addCheckBox("use_id", array(
 			"name" => "custom_alias_use_id",
 			"value" => 1,
 			"selected" => $this->pluginObj->useId,

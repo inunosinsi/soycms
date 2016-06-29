@@ -57,13 +57,13 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => number_format($item->getPrice())
+			"text" => number_format((int)$item->getPrice())
 		));
 		$this->addModel("is_sale", array(
 			"visible" => $item->isOnSale()
 		));
 		$this->addLabel("sale_price", array(
-			"text" => number_format($item->getSalePrice())
+			"text" => number_format((int)$item->getSalePrice())
 		));
 		
 		//在庫無視モード
