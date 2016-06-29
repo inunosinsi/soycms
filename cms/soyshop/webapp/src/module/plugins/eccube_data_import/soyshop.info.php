@@ -1,6 +1,6 @@
 <?php
 
-class ECCUBECSVImportInfo extends SOYShopInfoPageBase{
+class ECCUBEDataImportInfo extends SOYShopInfoPageBase{
 
 	function getPage($active = false){
 
@@ -11,5 +11,5 @@ class ECCUBECSVImportInfo extends SOYShopInfoPageBase{
 		}
 	}
 }
-SOYShopPlugin::extension("soyshop.info","eccube_data_import","ECCUBECSVImportInfo");
+SOYShopPlugin::extension("soyshop.info","eccube_data_import","ECCUBEDataImportInfo");
 ?>

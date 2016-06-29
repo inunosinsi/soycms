@@ -749,7 +749,14 @@ class SOYShop_User {
 			list($algo, $salt, $hash) = $array;
 			return ( $stored == self::hashString($input, $salt, $algo) );
 		}else{
-			return false;
+			//ec cubeから移行した会員のパスワードをそのまま使用するためのチェック
+			if(strpos($stored, ":") >= 0){
+				/** @Todo 暗号化の仕組みを調べる **/
+			//ec cube 2.10以前 saltを利用していない　:での区切りがない
+			}else{
+				$hash = sha1($input);
+				return ($stored == $hash);
+			}
 		}
 	}
 

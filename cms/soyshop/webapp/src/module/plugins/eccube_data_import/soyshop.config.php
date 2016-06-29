@@ -1,13 +1,13 @@
 <?php
-class ECCUBECSVImportConfig extends SOYShopConfigPageBase{
+class ECCUBEDataImportConfig extends SOYShopConfigPageBase{
 
 	/**
 	 * @return string
 	 */
 	function getConfigPage(){
 		
-		SOY2::import("module.plugins.eccube_data_import.config.ECCUBECSVImportConfigFormPage");
-		$form = SOY2HTMLFactory::createInstance("ECCUBECSVImportConfigFormPage");
+		SOY2::import("module.plugins.eccube_data_import.config.ECCUBEDataImportConfigFormPage");
+		$form = SOY2HTMLFactory::createInstance("ECCUBEDataImportConfigFormPage");
 		$form->setConfigObj($this);
 		$form->execute();
 		return $form->getObject();
@@ -22,5 +22,5 @@ class ECCUBECSVImportConfig extends SOYShopConfigPageBase{
 	}
 
 }
-SOYShopPlugin::extension("soyshop.config","eccube_data_import","ECCubeCSVImportConfig");
+SOYShopPlugin::extension("soyshop.config","eccube_data_import","ECCubeDataImportConfig");
 ?>

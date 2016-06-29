@@ -48,8 +48,8 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		self::registerOrder();
 		
 		//設定内容の削除
-		SOY2::import("module.plugins.eccube_data_import.util.EccubeCsvImportUtil");
-		EccubeCsvImportUtil::clearTable();
+		SOY2::import("module.plugins.eccube_data_import.util.EccubeDataImportUtil");
+		EccubeDataImportUtil::clearTable();
 		
 		return true;
 	}
@@ -65,7 +65,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		do{
 			$offset = self::LIMIT * ($n - 1) + 1;
 			foreach($this->pdo->query(
-				"SELECT name01,name02,kana01,kana02,zip01,zip02,pref,addr01,addr02,email,tel01,tel02,tel03,fax01,fax02,fax03,sex,birth,note,point,status,create_date,update_date,del_flg FROM dtb_customer ORDER BY customer_id ASC LIMIT " . self::LIMIT . " OFFSET " . $offset
+				"SELECT name01,name02,kana01,kana02,zip01,zip02,pref,addr01,addr02,email,tel01,tel02,tel03,fax01,fax02,fax03,sex,birth,password,note,point,status,create_date,update_date,del_flg FROM dtb_customer ORDER BY customer_id ASC LIMIT " . self::LIMIT . " OFFSET " . $offset
 			) as $r){
 				if(strlen($r["email"]) === 0) continue;
 				try{
@@ -105,6 +105,15 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				
 				try{
 					$id = $dao->insert($user);
+				}catch(Exception $e){
+					//
+				}
+				
+				//処理が重くなるけど、ここでパスワードをコピーする update時はセットした値がハッシュ化されないため
+				$user->setId($id);
+				$user->setPassword(self::t($r["password"]));
+				try{
+					$dao->update($user);
 				}catch(Exception $e){
 					//
 				}
@@ -447,8 +456,8 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 	}
 	
 	private function pdo(){
-		SOY2::import("module.plugins.eccube_data_import.util.EccubeCsvImportUtil");
-		$config = EccubeCsvImportUtil::getConfig();
+		SOY2::import("module.plugins.eccube_data_import.util.EccubeDataImportUtil");
+		$config = EccubeDataImportUtil::getConfig();
 
 		$dsn = "mysql:host=" . self::ent($config["host"]) . ";dbname=" . self::ent($config["db"]);
 		if(isset($config["port"]) && strlen($config["port"])) $dsn .= ";port=" . self::ent($config["port"]);
