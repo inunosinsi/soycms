@@ -151,6 +151,16 @@ class IndexPage extends WebPage{
 	}
 
 	private function buildSearchForm($search){
+		
+		foreach(range(1, 3) as $key){
+			$this->addCheckbox("search_no_attribute" . $key, array(
+				"name" => "search[no][attribute" . $key . "]",
+				"value" => 1,
+				"selected" => (isset($search["no"]["attribute" . $key])),
+				"label" => "属性" . $key
+			));
+		}
+		
 		foreach(array("id", "name", "mail_address", "attribute1", "attribute2", "attribute3") as $key){
 			$this->addInput("search_" . $key, array(
 				"name" => "search[" . $key . "]",

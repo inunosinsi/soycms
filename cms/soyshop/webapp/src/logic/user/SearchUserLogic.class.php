@@ -163,6 +163,12 @@ class SearchUserLogic extends SOY2LogicBase{
 							$binds[":$key_end"] = $value_end;
 						}
 						break;
+					//一括設定用
+					case "no":
+						foreach($value as $k => $v){
+							$where[] = "(" . $k . " IS NULL or " . $k . " = '')";
+						}
+						break;
 				}
 			}
 		}
