@@ -192,7 +192,9 @@ class SOYShopPageBase extends WebPage{
 	
 	function replaceTags($html){
 		//ページタイトルを置換@@page_title;
-		$html = str_replace("@@page_title;", $this->getPageObject()->getName(), $html);
+		if(!is_null($this->getPageObject()) && method_exists($this->getPageObject(), "getName")){
+			$html = str_replace("@@page_title;", $this->getPageObject()->getName(), $html);
+		}
 		
 		return $html;
 	}
