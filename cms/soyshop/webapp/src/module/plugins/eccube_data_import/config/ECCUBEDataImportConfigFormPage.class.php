@@ -38,6 +38,11 @@ class ECCUBEDataImportConfigFormPage extends WebPage{
 			
 		}
 		
+		if(isset($_POST["auth_magic"])){
+			EccubeDataImportUtil::saveAuthMagic($_POST["auth_magic"]);
+			$this->configObj->redirect("saved");
+		}
+		
 		//パスワードの生成
 		if(isset($_POST["create"])){
 			$logic = SOY2Logic::createInstance("module.plugins.eccube_data_import.logic.CreatePasswordLogic");
@@ -106,6 +111,13 @@ class ECCUBEDataImportConfigFormPage extends WebPage{
 		
 		$this->addForm("form", array(
 			"enctype" => "multipart/form-data"
+		));
+		
+		$this->addForm("conf_form");
+		
+		$this->addInput("auth_magic", array(
+			"name" => "auth_magic",
+			"value" => EccubeDataImportUtil::getAuthMagic()
 		));
 		
 		$this->addForm("pass_form");
