@@ -748,15 +748,11 @@ class SOYShop_User {
 		if(count($array) == 3){
 			list($algo, $salt, $hash) = $array;
 			return ( $stored == self::hashString($input, $salt, $algo) );
+
+		//EC CUBEで使われている暗号化の仕組みでパスワードのチェックを行う
 		}else{
-			//ec cubeから移行した会員のパスワードをそのまま使用するためのチェック
-			if(strpos($stored, ":") >= 0){
-				/** @Todo 暗号化の仕組みを調べる **/
-			//ec cube 2.10以前 saltを利用していない　:での区切りがない
-			}else{
-				$hash = sha1($input);
-				return ($stored == $hash);
-			}
+			$hash = self::hashStringEcCube($input);
+			return ($stored == $hash);
 		}
 	}
 
@@ -799,6 +795,25 @@ class SOYShop_User {
 		}
 
 		return "$algo/$salt/$hash";
+	}
+	
+	private function hashStringEcCube($input){
+		
+		//ec cubeから移行した会員のパスワードをそのまま使用するためのチェック
+		if(strpos($input, ":") !== false){
+		
+			/** @Todo 暗号化の仕組みを調べる **/
+		
+		//ec cube 2.11より前のバージョン saltを利用していない　:での区切りがない
+		}else{
+			if(file_exists(SOY2::rootDir() . "module/plugins/eccube_data_import/util/EccubeDataImportUtil.class.php")){
+				SOY2::import("module.plugins.eccube_data_import.util.EccubeDataImportUtil");
+				$authMagic = EccubeDataImportUtil::getAuthMagic();
+			}else{
+				$authMagic = "";
+			}
+			return sha1($input . ":" . $authMagic);
+		}
 	}
 
 	public static function getTableName(){
