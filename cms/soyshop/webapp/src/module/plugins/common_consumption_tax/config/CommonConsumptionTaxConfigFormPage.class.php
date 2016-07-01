@@ -28,6 +28,14 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 						//
 					}
 				}
+				
+			//消費税の金額の小数点の扱いについての設定
+			}else if(isset($_POST["Update"])){
+				SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");
+				$values["method"] = $_POST["Method"];
+				ConsumptionTaxUtil::saveConfig($values);
+				
+				SOY2PageController::jump("Config.Detail?plugin=common_consumption_tax&updated");
 			}
 			
 			//サーバで設定されている時間の確認
@@ -94,6 +102,33 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 			"name" => "Register[startDate]",
 			"value" => "",
 			"readonly" => true
+		));
+		
+		/** 小数点の扱いについて **/
+		
+		SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");
+		$config = ConsumptionTaxUtil::getConfig();
+		$this->addForm("method_form");
+		
+		$this->addCheckBox("method_floor", array(
+			"name" => "Method",
+			"value" => ConsumptionTaxUtil::METHOD_FLOOR,
+			"selected" => ($config["method"] == ConsumptionTaxUtil::METHOD_FLOOR),
+			"label" => "切り捨て(推奨)"
+		));
+		
+		$this->addCheckBox("method_round", array(
+			"name" => "Method",
+			"value" => ConsumptionTaxUtil::METHOD_ROUND,
+			"selected" => ($config["method"] == ConsumptionTaxUtil::METHOD_ROUND),
+			"label" => "四捨五入"
+		));
+		
+		$this->addCheckBox("method_ceil", array(
+			"name" => "Method",
+			"value" => ConsumptionTaxUtil::METHOD_CEIL,
+			"selected" => ($config["method"] == ConsumptionTaxUtil::METHOD_CEIL),
+			"label" => "切り上げ"
 		));
 	}
 	

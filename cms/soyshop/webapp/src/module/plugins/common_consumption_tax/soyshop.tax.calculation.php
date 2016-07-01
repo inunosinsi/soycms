@@ -28,6 +28,21 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 		}
 		
 		if($totalPrice === 0) return;
+		
+		SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");
+		$config = ConsumptionTaxUtil::getConfig();
+		$m = (isset($config["method"])) ? $config["method"] : 0;
+		switch($m){
+			case ConsumptionTaxUtil::METHOD_ROUND:
+				$price = round($totalPrice * $taxRate / 100);
+				break;
+			case ConsumptionTaxUtil::METHOD_CEIL:
+				$price = ceil($totalPrice * $taxRate / 100);
+				break;
+			case ConsumptionTaxUtil::METHOD_FLOOR:
+			default:
+				$price = floor($totalPrice * $taxRate / 100);
+		}
 				
 		//消費税がある場合
 		SOY2::import("domain.order.SOYShop_ItemModule");
@@ -35,7 +50,7 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 		$module->setId("consumption_tax");
 		$module->setName("消費税");
 		$module->setType(SOYShop_ItemModule::TYPE_TAX);	//typeを指定しておくといいことがある
-		$module->setPrice(floor($totalPrice * $taxRate / 100));
+		$module->setPrice($price);
 		$cart->addModule($module);
 	}
 }

@@ -14,18 +14,50 @@ class CommonConsumptionTaxCustomField extends SOYShopItemCustomFieldBase{
 	function onOutput($htmlObj, SOYShop_Item $item){
 		
 		$taxRate = $this->getTaxRate();
-		$sellingPrice = $item->getSellingPrice();
+		
+		//0:表示価格 1:通常価格 2:セール価格
+		$prices = array(
+			$item->getSellingPrice(),
+			$item->getPrice(),
+			$item->getSalePrice()
+		);
 		
 		if(isset($taxRate)){
-			$postTaxPrice = floor($sellingPrice * $taxRate / 100);
-			$sellingPrice += $postTaxPrice;
+			SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");
+			$config = ConsumptionTaxUtil::getConfig();
+			$m = (isset($config["method"])) ? $config["method"] : 0;
+			for($i = 0; $i < count($prices); $i++){
+				switch($m){
+					case ConsumptionTaxUtil::METHOD_ROUND:
+						$postTaxPrice = round($prices[$i] * $taxRate / 100);
+						break;
+					case ConsumptionTaxUtil::METHOD_CEIL:
+						$postTaxPrice = ceil($prices[$i] * $taxRate / 100);
+						break;
+					case ConsumptionTaxUtil::METHOD_FLOOR:
+					default:
+						$postTaxPrice = floor($prices[$i] * $taxRate / 100);
+				}
+				
+				$prices[$i] += $postTaxPrice;
+			}
+				
 		}
 		
 		$htmlObj->addLabel("post_tax_price", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => number_format($sellingPrice)
+			"text" => number_format($prices[0])
 		));
 		
+		$htmlObj->addLabel("post_tax_normal_price", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => number_format($prices[1])
+		));
+		
+		$htmlObj->addLabel("post_tax_sale_price", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => number_format($prices[2])
+		));
 	}
 
 	function onDelete($id){}
