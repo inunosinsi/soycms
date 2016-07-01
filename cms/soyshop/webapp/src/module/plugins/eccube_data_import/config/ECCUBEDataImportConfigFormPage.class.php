@@ -120,6 +120,10 @@ class ECCUBEDataImportConfigFormPage extends WebPage{
 			"value" => EccubeDataImportUtil::getAuthMagic()
 		));
 		
+		$this->addLabel("image_dir", array(
+			"text" => SOYSHOP_SITE_DIRECTORY . "files/"
+		));
+		
 		$this->addForm("pass_form");
 
 		self::buildMailForm();

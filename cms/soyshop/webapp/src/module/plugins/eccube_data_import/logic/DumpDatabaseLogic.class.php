@@ -237,8 +237,8 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 					
 					//画像
 					if(!file_exists(SOYSHOP_SITE_DIRECTORY . "files/" . $item->getCode() . "/")) mkdir(SOYSHOP_SITE_DIRECTORY . "files/" . $item->getCode() . "/");
-					if(isset($r["main_list_image"])) $item->setAttribute("image_small", "/" . SOYSHOP_ID . "/files/" . $item->getCode() . "/" . $r["main_list_image"]);
-					if(isset($r["main_large_image"])) $item->setAttribute("image_large", "/" . SOYSHOP_ID . "/files/" . $item->getCode() . "/" . $r["main_large_image"]);
+					if(isset($r["main_list_image"])) $item->setAttribute("image_small", "/" . SOYSHOP_ID . "/files/save_image/" . $r["main_list_image"]);
+					if(isset($r["main_large_image"])) $item->setAttribute("image_large", "/" . SOYSHOP_ID . "/files/save_image/" . $r["main_large_image"]);
 					
 					//登録時期
 					$item->setCreateDate(self::convertTimestamp($r["create_date"]));
