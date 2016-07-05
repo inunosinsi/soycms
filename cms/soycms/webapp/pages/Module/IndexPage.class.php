@@ -13,6 +13,9 @@ class IndexPage extends CMSWebPageBase{
 		
 		WebPage::WebPage();
 		
+		//PHPモジュールの使用が許可されているか？
+		DisplayPlugin::toggle("allow_php_module", (defined("SOYCMS_ALLOW_PHP_MODULE") && SOYCMS_ALLOW_PHP_MODULE));
+		
 		$modules = self::getModules();
 		
 		$this->addModel("is_module_list", array(

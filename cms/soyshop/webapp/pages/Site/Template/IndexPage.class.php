@@ -45,26 +45,21 @@ class IndexPage extends WebPage{
 			"list" => $custom
 		));
 
-		$this->addModel("custom_template_list_empty", array(
-			"visible" => (empty($custom))
-		));
-
-		$this->addModel("custom_template_list_exists", array(
-			"visible" => !empty($custom)
-		));
+		DisplayPlugin::toggle("custom_template_list_empty", empty($custom));
+		DisplayPlugin::toggle("custom_template_list_exists", !empty($custom));
 	}
 		
 	function buildModule(){
 		
+		//PHPモジュールの使用が許可されているか？
+		DisplayPlugin::toggle("allow_php_module", (defined("SOYCMS_ALLOW_PHP_MODULE") && SOYCMS_ALLOW_PHP_MODULE));
+		
 		//モジュール
 		$modules = $this->getModules();
 		
-		$this->addModel("module_list_exists", array(
-			"visible" => (count($modules) > 0)
-		));
-		$this->addModel("module_list_empty", array(
-			"visible" => (count($modules) < 1)
-		));
+		DisplayPlugin::toggle("module_list_exists", (count($modules) > 0));
+		DisplayPlugin::toggle("module_list_empty", (count($modules) < 1));
+
 		$this->createAdd("module_list", "_common.Site.ModuleListComponent", array(
 			"list" => $modules,
 			"moduleType" => "php"
@@ -76,12 +71,9 @@ class IndexPage extends WebPage{
 		//モジュール
 		$modules = $this->getHtmlModules();
 	
-		$this->addModel("html_module_list_exists", array(
-			"visible" => (count($modules) > 0)
-		));
-		$this->addModel("html_module_list_empty", array(
-			"visible" => (count($modules) < 1)
-		));
+		DisplayPlugin::toggle("html_module_list_exists", (count($modules) > 0));
+		DisplayPlugin::toggle("html_module_list_empty", (count($modules) < 1));
+	
 		$this->createAdd("html_module_list","_common.Site.ModuleListComponent", array(
 			"list" => $modules,
 			"moduleType" => "html"
