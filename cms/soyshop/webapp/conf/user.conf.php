@@ -81,4 +81,13 @@ define("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE", ($config->getConsumptio
 
 //SOYShop側のサイトを表示しているか？
 define("DISPLAY_SOYSHOP_SITE", true);
+
+//PHP許可モード
+//SOY CMSのuser.config.phpを読み込む
+if(file_exists(dirname(SOYSHOP_ROOT) . "/common/config/user.config.php")) include_once(dirname(SOYSHOP_ROOT) . "/common/config/user.config.php");
+if(defined("SOYCMS_ALLOW_PHP_SCRIPT")){
+	define("SOY2HTML_ALLOW_PHP_SCRIPT",SOYCMS_ALLOW_PHP_SCRIPT);
+}else{
+	define("SOY2HTML_ALLOW_PHP_SCRIPT",false);
+}
 ?>
