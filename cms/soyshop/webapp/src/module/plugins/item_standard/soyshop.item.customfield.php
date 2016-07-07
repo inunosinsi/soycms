@@ -21,6 +21,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 					$obj->setFieldId(self::PLUGIN_ID . "_" . $confId);
 					try{
 						$this->attrDao->insert($obj);
+						$res = true;
 					}catch(Exception $e){
 						//
 					}
@@ -32,6 +33,37 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 					}catch(Exception $e){
 						//
 					}
+				}
+			}
+			
+			//登録終了した後、商品のタイプをsingleからgroupに変更　逆もある
+			$res = false;
+			foreach($_POST["Standard"] as $std){
+				if(strlen($std)) {
+					$res = true;
+					break;
+				}
+			}
+			
+			$exe = false;
+			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+			if($res){
+				if($item->getType() == SOYShop_Item::TYPE_SINGLE){
+					$item->setType(SOYShop_Item::TYPE_GROUP);
+					$exe = true;
+				}
+			}else{
+				if($item->getType() == SOYShop_Item::TYPE_GROUP){
+					$item->setType(SOYShop_Item::TYPE_SINGLE);
+					$exe = true;
+				}
+			}
+				
+			if($exe){
+				try{
+					$itemDao->update($item);
+				}catch(Exception $e){
+					//
 				}
 			}
 		}
