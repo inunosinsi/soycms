@@ -75,7 +75,7 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
     	try{
     		$res = $this->executeQuery($query, $binds);	
     	}catch(Exception $e){
-    		
+    		$res = array();
     	}
     	
     	$commentDao = SOY2DAOFactory::create("SOYInquiry_CommentDAO");
