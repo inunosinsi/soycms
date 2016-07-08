@@ -13,6 +13,10 @@ define("SOYCMS_ALLOWED_EXTENSIONS","php,doc,xls,pdf");
 //デフォルトは不許可 (false)
 define("SOYCMS_ALLOW_PHP_SCRIPT",false);
 
+//PHPモジュールの使用の許可、不許可 (true or false)
+//デフォルトは不許可 (false)
+define("SOYCMS_ALLOW_PHP_MODULE",false);
+
 //携帯で画像のリサイズを行わないようにする (true or false)
 //デフォルトは行う (false)
 define("SOYCMS_SKIP_MOBILE_RESIZE",true);

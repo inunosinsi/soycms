@@ -34,6 +34,7 @@ class CreatePage extends WebPage{
 	}
 
     function CreatePage() {
+    	
     	$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
     	
     	WebPage::WebPage();

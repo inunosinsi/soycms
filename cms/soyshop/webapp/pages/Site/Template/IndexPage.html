@@ -103,13 +103,13 @@
 		</table>
 
 		<h3>ページのテンプレート</h3>
-		<!-- soy:id="custom_template_list_empty" -->
+		<!-- soy:display="custom_template_list_empty" -->
 		<dl>
 			<dd>個別設定されているページはありません</dd>
 		</dl>
-		<!-- /soy:id="custom_template_list_empty" -->
+		<!-- /soy:display="custom_template_list_empty" -->
 
-		<!-- soy:id="custom_template_list_exists" -->
+		<!-- soy:display="custom_template_list_exists" -->
 		<table class="form_list">
 			
 			<tr>
@@ -130,13 +130,14 @@
 			<!-- /soy:id="custom_template_list" -->
 
 		</table>
-		<!-- /soy:id="custom_template_list_exists" -->
+		<!-- /soy:display="custom_template_list_exists" -->
 
 
 	</div>
 
 </div>
 
+<!-- soy:display="allow_php_module" -->
 <div class="block">
 	<div class="block_title">
 		<h2>モジュール一覧</h2>
@@ -146,18 +147,18 @@
 		</div>
 
 	</div>
-	
+
 	<a name="module_list"></a>
 
 	<div class="block_body">
 			
-		<!-- soy:id="module_list_empty" -->
+		<!-- soy:display="module_list_empty" -->
 		<dl>
 			<dd>モジュールはありません</dd>
 		</dl>
-		<!-- /soy:id="module_list_empty" -->
+		<!-- /soy:display="module_list_empty" -->
 		
-		<!-- soy:id="module_list_exists" -->
+		<!-- soy:display="module_list_exists" -->
 		<table class="form_list">
 			<caption>モジュール一覧</caption>
 			<tr>
@@ -178,10 +179,11 @@
 			<!-- /soy:id="module_list" -->
 
 		</table>
-		<!-- /soy:id="module_list_exists" -->
+		<!-- /soy:display="module_list_exists" -->
 		
 	</div>
 </div>
+<!-- /soy:display="allow_php_module" -->
 
 <div class="block">
 	<div class="block_title">
@@ -197,13 +199,13 @@
 
 	<div class="block_body">
 			
-		<!-- soy:id="html_module_list_empty" -->
+		<!-- soy:display="html_module_list_empty" -->
 		<dl>
 			<dd>モジュールはありません</dd>
 		</dl>
-		<!-- /soy:id="html_module_list_empty" -->
+		<!-- /soy:display="html_module_list_empty" -->
 		
-		<!-- soy:id="html_module_list_exists" -->
+		<!-- soy:display="html_module_list_exists" -->
 		<table class="form_list">
 			<caption>モジュール一覧</caption>
 			<tr>
@@ -224,7 +226,7 @@
 			<!-- /soy:id="html_module_list" -->
 
 		</table>
-		<!-- /soy:id="html_module_list_exists" -->
+		<!-- /soy:display="html_module_list_exists" -->
 		
 	</div>
 </div>

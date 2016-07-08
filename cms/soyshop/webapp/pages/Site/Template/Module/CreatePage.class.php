@@ -42,6 +42,9 @@ class CreatePage extends WebPage{
 	}
 
 	function CreatePage($args){
+		
+		//PHPモジュールの使用が許可されていない場合はモジュール一覧に遷移
+		if(!defined("SOYCMS_ALLOW_PHP_MODULE") || !SOYCMS_ALLOW_PHP_MODULE) SOY2PageController::jump("Site.Template");
 	
 		WebPage::WebPage();
 		

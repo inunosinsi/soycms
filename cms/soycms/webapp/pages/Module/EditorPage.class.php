@@ -39,6 +39,9 @@ class EditorPage extends CMSWebPageBase{
 	
 	function EditorPage(){
 		
+		//PHPモジュールの使用が許可されていない場合はモジュール一覧に遷移
+		if(!defined("SOYCMS_ALLOW_PHP_MODULE") || !SOYCMS_ALLOW_PHP_MODULE) SOY2PageController::jump("Module");
+		
 		$this->moduleId = (isset($_GET["moduleId"])) ? htmlspecialchars(str_replace("/", ".", $_GET["moduleId"])) : null;
 
 		$moduleDir = self::getModuleDirectory();

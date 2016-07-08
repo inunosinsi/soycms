@@ -20,6 +20,10 @@ class DownloadStatusLogic extends SOY2LogicBase{
 		}
 	}
 	
+	function cancel($orderId){
+		self::cancelStatus($orderId);
+	}
+	
 	private function cancelStatus($orderId){
 		foreach(self::getDownloadFile($orderId) as $file){
 			self::cancelDownloadFile($file);

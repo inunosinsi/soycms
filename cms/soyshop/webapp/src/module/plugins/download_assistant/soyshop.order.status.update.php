@@ -18,7 +18,7 @@ class DownloadAssitantOrderStatusUpdate extends SOYShopOrderStatusUpdate{
 			case SOYShop_Order::PAYMENT_STATUS_WAIT:
 			case SOYShop_Order::PAYMENT_STATUS_ERROR:
 			default:
-				$statusLogic->cancelStatus($order->getId());
+				$statusLogic->cancel($order->getId());
 				break;
 		}
 	}
