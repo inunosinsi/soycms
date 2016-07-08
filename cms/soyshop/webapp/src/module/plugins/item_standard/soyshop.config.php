@@ -8,6 +8,9 @@ class ItemStandardConfig extends SOYShopConfigPageBase{
 		if(isset($_GET["item_id"])){
 			include_once(dirname(__FILE__) . "/config/SettingStandardPage.class.php");
 			$form = SOY2HTMLFactory::createInstance("SettingStandardPage");
+		}elseif(isset($_GET["collective"])){
+			include_once(dirname(__FILE__) . "/config/collective/SettingPage.class.php");
+			$form = SOY2HTMLFactory::createInstance("SettingPage");
 		}else{
 			include_once(dirname(__FILE__) . "/config/ItemStandardConfigPage.class.php");
 			$form = SOY2HTMLFactory::createInstance("ItemStandardConfigPage");

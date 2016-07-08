@@ -12,6 +12,8 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		if(isset($_POST["Standard"])){
 			self::prepare();
 			foreach($_POST["Standard"] as $confId => $value){
+				if(!strlen($value)) $value = null;
+
 				$obj = self::get($item->getId(), $confId);
 				$obj->setValue(trim($value));
 				
@@ -64,6 +66,26 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 					$itemDao->update($item);
 				}catch(Exception $e){
 					//
+				}
+				
+				//SINGLEに戻すとき、小商品をすべて削除したい
+				if($item->getType() == SOYShop_Item::TYPE_SINGLE){
+					try{
+						$children = $itemDao->getByType($item->getId());
+					}catch(Exception $e){
+						return;
+					}
+					
+					if(!count($children)) return;
+					
+					//データベース高速化のために完全削除
+					foreach($children as $child){
+						try{
+							$itemDao->delete($child->getId());
+						}catch(Exception $e){
+							
+						}
+					}
 				}
 			}
 		}

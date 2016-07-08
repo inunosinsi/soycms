@@ -49,6 +49,24 @@ class BuildFormLogic extends SOY2LogicBase{
 		return implode("\n", $html);
 	}
 	
+	function buildCollectiveFormArea(){
+		$configs = ItemStandardUtil::getConfig();
+		
+		if(!count($configs)) return "";
+
+		$html = array();
+		$html[] = "<dl>";
+		foreach($configs as $conf){
+			
+			$html[] = "<dt>" . $conf["standard"] . "(" . $conf["id"] . ")</dt>";
+			$html[] = "<dd><textarea name=\"Standard[" . $conf["id"] . "]\"></textarea>";
+		}
+		
+		$html[] = "</dl>";
+		
+		return implode("\n", $html);
+	}
+	
 	function buildStandardListArea(){
 		$list = array();	//使用する規格を保持しておく配列
 		

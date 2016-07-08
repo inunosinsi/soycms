@@ -1,0 +1,115 @@
+<div class="alR">
+	<a class="button" soy:link="Config.Detail?plugin=item_standard">商品規格一覧</a>
+</div>
+
+<br>
+
+<div class="block_body clearfix">
+
+	<p class="notice" soy:display="updated">
+		更新しました
+	</p>
+
+	<!--dl>
+		<dt class="search_btn_dt">
+			検索する
+		</dt>
+		<div class="search_area_dd" soy:id="search_area">
+			<form soy:id="search_form">
+				<p>
+				</p>
+				<p class="pageBtn">
+					<input type="submit" name="search" value="検索">
+				</p>
+			</form>
+
+		</div>
+	</dl-->
+
+	<form soy:id="form">
+
+		<table class="form_list">
+			<caption>
+				商品一覧
+			</caption>
+			<thead>
+				<tr class="alC">
+					<th>
+					<input id="item_checkbox" class="item_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
+					</th>
+					<th>&nbsp;</th>
+					<th nowrap>公開状態 </th>
+					<th nowrap>カテゴリ</th>
+					<th nowrap>商品名</th>
+					<th nowrap>商品コード</th>
+					<th nowrap>価格 / セール</th>
+					<th nowrap>在庫数 (注文数)</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+
+			<tbody>
+
+				<!-- soy:id="item_list" -->
+				<tr>
+					<td>
+					<input soy:id="item_check" class="item_checkbox" type="checkbox" />
+					</td>
+					<td><img soy:id="item_small_image"></td>
+					<td class="alC"><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
+					<td class="alC" soy:id="item_category">１</td>
+					<td soy:id="item_name">大豆</td>
+					<td soy:id="item_code">ITEM_001</td>
+					<td class="alR"><span soy:id="item_price">1000</span> 円 <!-- soy:id="is_sale" --> / <span soy:id="sale_price">1000</span> 円<!-- /soy:id="is_sale" --></td>
+					<!-- soy:id="ignore_stock" -->
+					<td class="alC"> ------ </td>
+					<!-- /soy:id="ignore_stock" -->
+					<!-- soy:id="display_stock" -->
+					<td class="alR"><span soy:id="item_stock">100</span> (<span soy:id="order_count">100</span>) </td>
+					<!-- /soy:id="display_stock" -->
+					<td class="operation"><a class="button" soy:id="detail_link">詳細</a></td>
+				</tr>
+				<!-- /soy:id="item_list" -->
+			</tbody>
+		</table>
+		
+		<section id="standard_form_area">
+			<!-- soy:id="standard_form_area" /-->
+		</section>
+
+		<p class="pageBtn">
+			<input type="submit" name="set" value="設定する">
+		</p>
+
+	</form>
+</div>
+
+<style>
+	dt.search_btn_dt {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	dd.search_area_dd {
+	}
+	
+	#standard_form_area{
+		display:none;
+	}
+</style>
+
+<script>
+	(function() {
+		$(".item_checkbox").each(function() {
+			$(this).click(function(){
+				$('#standard_form_area').show();
+			});
+		});
+	})();
+	function changeCheckBoxAuto() {
+		$('#items_operation').show();
+		$('#standard_form_area').show();
+		$('.item_checkbox').each(function() {
+			$(this).prop("checked", $("#item_checkbox").prop("checked"));
+		});
+	}
+</script>
