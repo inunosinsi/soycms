@@ -1,6 +1,6 @@
 <?php
 //@ToDo アプリケーションIDを決めてください。
-define('APPLICATION_ID', "stepmail");
+if(!defined("APPLICATION_ID")) define('APPLICATION_ID', "stepmail");
 
 //SOYShop_Userオブジェクトをインクルードする
 if(!defined("SOYSHOP_WEBAPP")) define("SOYSHOP_WEBAPP", dirname(dirname(dirname(dirname(__FILE__)))) . "/soyshop/webapp/");
@@ -25,10 +25,10 @@ SOY2DAOConfig::EntityDir(SOY2::RootDir() . "domain/");
 
 
 //データベースの読み込み:soyshopのデータベースを使う
-if(file_exists(dirname(RESERVE_SRC) . "/shop_id.php")){
-	include_once(dirname(RESERVE_SRC) . "/shop_id.php");	
+if(file_exists(dirname(__FILE__) . "/shop_id.php")){
+	include_once(dirname(__FILE__) . "/shop_id.php");	
 }else{
-	define(STEPMAIL_SHOP_ID, "shop");
+	define("STEPMAIL_SHOP_ID", "shop");
 }
 include_once(SOYSHOP_WEBAPP . "conf/shop/" . STEPMAIL_SHOP_ID . ".conf.php");
 SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
