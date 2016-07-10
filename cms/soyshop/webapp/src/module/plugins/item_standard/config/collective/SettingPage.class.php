@@ -17,9 +17,9 @@ class SettingPage extends WebPage{
 			
 			//子商品生成
 			$logic = SOY2Logic::createInstance("module.plugins.item_standard.logic.ChildItemLogic");
+			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 			
 			foreach($_POST["items"] as $itemId){
-				$values = array();
 				foreach($_POST["Standard"] as $confId => $value){
 					if(strlen($value)){
 						$obj = self::get($itemId, $confId);
@@ -43,43 +43,97 @@ class SettingPage extends WebPage{
 								continue;
 							}
 						}
-						
-						$values[] = explode("\n", $value);
+					}
+				}
+			}
+			
+			//一旦ループをやめる
+			
+			$values = array();
+			foreach($_POST["Standard"] as $confId => $value){
+				if(strlen(trim($value))) $values[] = explode("\n", trim($value));
+			}
+			
+			if(count($values)){
+				$result;
+				$keyCnt = count($values);
+				for($i = 0; $i < count($values); $i++){
+					if(isset($values[$i + 1])){
+						foreach ($values[$i] as $val1) {
+							foreach ($values[$i + 1] as $val2) {
+								if(!is_array($val1)) $val1 = trim($val1);
+								$result[] = array_merge((array)$val1, (array)trim($val2));
+							}
+						}
+						if(isset($values[$i + 2])){
+							$values[$i + 1] = $result;
+						}
 					}
 				}
 				
-				if(count($values)){
-					$result;
-					$keyCnt = count($values);
-					for($i = 0; $i < count($values); $i++){
-						if(isset($values[$i + 1])){
-							foreach ($values[$i] as $val1) {
-								foreach ($values[$i + 1] as $val2) {
-									if(!is_array($val1)) $val1 = trim($val1);
-									$result[] = array_merge((array)$val1, (array)trim($val2));
-								}
-							}
-							if(isset($values[$i + 2])){
-								$values[$i + 1] = $result;
-							}
-						}
-					}
-					
-					//整形
-					$list = array();
-					foreach($result as $res){
-						if(count($res) === $keyCnt){
-							$list[] = $res;
-						}
-					}
-					
-					/**
-					 * @ToDo ここから一括登録　いろいろ練らなければならない
-					 */
-					foreach($list as $keys){
-						
+				//整形
+				$list = array();
+				foreach($result as $res){
+					if(count($res) === $keyCnt){
+						$list[] = $res;
 					}
 				}
+				
+				foreach($_POST["items"] as $itemId){
+					try{
+						$parent = $itemDao->getById($itemId);
+					}catch(Exception $e){
+						continue;
+					}
+					
+					//小商品のリセット
+					try{
+						$children = $itemDao->getByType($parent->getId());
+					}catch(Exception $e){
+						return;
+					}
+					
+					if(!count($children)) return;
+					
+					//データベース高速化のために完全削除
+					foreach($children as $child){
+						try{
+							$itemDao->delete($child->getId());
+						}catch(Exception $e){
+							
+						}
+					}
+					
+					//小商品の登録
+					$doExe = false;
+					foreach($list as $keys){
+						
+						$child = new SOYShop_Item();
+						$child = $logic->setChildItemName($child, $parent, $keys);
+						$child->setPrice((int)$parent->getPrice());
+						$child->setStock((int)$parent->getStock());
+						
+						$child = $logic->setParentInfo($child, $parent);
+						
+						try{
+							$itemDao->insert($child);
+							$doExe = true;
+						}catch(Exception $e){
+							var_dump($e);
+						}
+					}
+					
+					//一度でも実行したら、親商品のタイプをGroupにする
+					if($doExe && $parent->getType() !== SOYShop_Item::TYPE_GROUP){
+						$parent->setType(SOYShop_Item::TYPE_GROUP);
+						try{
+							$itemDao->update($parent);
+						}catch(Exception $e){
+							var_dump($e);
+						}
+					}
+				}
+				
 			}
 			
 			$this->configObj->redirect("collective&updated");
