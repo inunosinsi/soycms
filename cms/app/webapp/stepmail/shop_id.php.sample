@@ -1,0 +1,3 @@
+<?php
+define(STEPMAIL_SHOP_ID, "shop");
+?>
