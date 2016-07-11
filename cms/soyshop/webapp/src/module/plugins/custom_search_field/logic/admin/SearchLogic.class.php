@@ -46,6 +46,8 @@ class SearchLogic extends SOY2LogicBase{
 		foreach($this->where as $where){
 			$sql .= " AND " . $where;
 		}
+		
+		$sql .= " Limit" . $this->limit;
 				
 		return $sql;
 	}
