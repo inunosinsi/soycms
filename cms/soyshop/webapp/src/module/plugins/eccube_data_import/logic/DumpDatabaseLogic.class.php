@@ -231,8 +231,9 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				foreach($this->pdo->query(
 					"SELECT name,status,comment3,main_list_image,main_large_image,del_flg,create_date,update_date FROM dtb_products WHERE product_id = " . $id . " LIMIT 1"
 				) as $r){
+					$status = ((int)$r["status"] === 2) ? 0 : 1;
 					$item->setName(self::t($r["name"]));
-					$item->setIsOpen((int)$r["status"]);
+					$item->setIsOpen($status);
 					$item->setAttribute("keywords", $r["comment3"]);
 					
 					//画像
