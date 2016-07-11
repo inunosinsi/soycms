@@ -6,10 +6,13 @@ class SettingPage extends WebPage{
 	private $itemDao;
 	private $attrDao;
 	
+	private $categories = array();
+	
 	function SettingPage(){
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+		$this->categories = self::getCategories();
 	}
 	
 	function doPost(){
@@ -145,7 +148,7 @@ class SettingPage extends WebPage{
 		
 		WebPage::WebPage();
 		
-		//self::buildSearchForm();
+		self::buildSearchForm();
 		
 		$this->addForm("form");
 				
@@ -165,10 +168,59 @@ class SettingPage extends WebPage{
 		));
 	}
 	
+	private function buildSearchForm(){
+		
+		
+		//リセット
+		if(isset($_POST["search_condition"])){
+			foreach($_POST["search_condition"] as $key => $value){
+				if(is_array($value)){
+					//
+				}else{
+					if(!strlen($value)){
+						unset($_POST["search_condition"][$key]);
+					}
+				}
+			}
+		}
+		
+		if(isset($_POST["search"]) && !isset($_POST["search_condition"])){
+			self::setParameter("search_condition", null);
+			$cnd = array();
+		}else{
+			$cnd = self::getParameter("search_condition");
+		}
+		//リセットここまで
+		
+		
+		$this->addModel("search_area", array(
+			"style" => (isset($cnd) && count($cnd)) ? "display:inline;" : "display:none;"
+		));
+		
+		$this->addForm("search_form");
+				
+		foreach(array("item_name", "item_code") as $t){
+			$this->addInput("search_" . $t, array(
+				"name" => "search_condition[" . $t . "]",
+				"value" => (isset($cnd[$t])) ? $cnd[$t] : ""
+			));
+		}
+		
+		$opts = array();
+		foreach($this->categories as $cat){
+			$opts[$cat->getId()] = $cat->getName();
+		}
+		$this->addSelect("search_item_category", array(
+			"name" => "search_condition[item_category]",
+			"options" => $opts,
+			"selected" => $cnd["item_category"]
+		));
+	}
+	
 	private function getItems(){
 		$searchLogic = SOY2Logic::createInstance("module.plugins." . $this->configObj->getModuleId() . ".logic.SearchLogic");
 		$searchLogic->setLimit(50);	//仮
-		//$searchLogic->setCondition(self::getParameter("search_condition"));
+		$searchLogic->setCondition(self::getParameter("search_condition"));
 		return $searchLogic->get();
 	}
 	
@@ -200,6 +252,27 @@ class SettingPage extends WebPage{
 		}
 
 		return $result;
+	}
+	
+	private function getCategories(){
+		try{
+			return SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
+		}catch(Exception $e){
+			return array();
+		}
+	}
+	
+	private function getParameter($key){
+		if(array_key_exists($key, $_POST)){
+			$value = $_POST[$key];
+			self::setParameter($key,$value);
+		}else{
+			$value = SOY2ActionSession::getUserSession()->getAttribute("Plugin.Standard:" . $key);
+		}
+		return $value;
+	}
+	private function setParameter($key,$value){
+		SOY2ActionSession::getUserSession()->setAttribute("Plugin.Standard:" . $key, $value);
 	}
 			
 	function setConfigObj($configObj) {

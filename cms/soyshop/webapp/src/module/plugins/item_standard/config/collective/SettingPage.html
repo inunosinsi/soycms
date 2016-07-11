@@ -10,13 +10,25 @@
 		更新しました
 	</p>
 
-	<!--dl>
+	<dl>
 		<dt class="search_btn_dt">
 			検索する
 		</dt>
 		<div class="search_area_dd" soy:id="search_area">
 			<form soy:id="search_form">
 				<p>
+					商品名：
+					<input type="search" soy:id="search_item_name">
+				</p>
+				<p>
+					商品コード：
+					<input type="search" soy:id="search_item_code">
+				</p>
+				<p>
+					カテゴリ：
+					<select soy:id="search_item_category">
+						<option value=""></option>
+					</select>
 				</p>
 				<p class="pageBtn">
 					<input type="submit" name="search" value="検索">
@@ -24,7 +36,7 @@
 			</form>
 
 		</div>
-	</dl-->
+	</dl>
 
 	<form soy:id="form">
 
@@ -99,6 +111,14 @@
 
 <script>
 	(function() {
+		document.querySelector(".search_btn_dt").addEventListener("click", function() {
+			sarea = document.querySelector(".search_area_dd");
+			if (sarea.style.display == "none") {
+				sarea.style.display = "inline";
+			} else {
+				sarea.style.display = "none";
+			}
+		});
 		$(".item_checkbox").each(function() {
 			$(this).click(function(){
 				$('#standard_form_area').show();
