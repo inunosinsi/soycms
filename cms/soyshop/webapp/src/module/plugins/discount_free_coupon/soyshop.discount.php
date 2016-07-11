@@ -57,6 +57,13 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 				}elseif($couponType == SOYShop_Coupon::TYPE_PERCENT){
 					$discount = $cart->getItemPrice() * $coupon->getDiscountPercent() / 100;
 				
+				//送料無料
+				}elseif($couponType == SOYShop_Coupon::TYPE_DELIVERY){
+					foreach($cart->getModules() as $moduleId => $obj){
+						if(strpos($moduleId, "delivery") === 0){
+							$discount = $obj->getPrice();
+						}
+					}
 				//念のため
 				}else{
 					$discount = 0;
@@ -70,6 +77,7 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 					//属性の登録
 					$cart->setAttribute("discount_free_coupon.code", $code);
 					$cart->setOrderAttribute("discount_free_coupon.code", MessageManager::get("MODULE_NAME_COUPON"), $code);
+				
 				}
 			}	
 		}

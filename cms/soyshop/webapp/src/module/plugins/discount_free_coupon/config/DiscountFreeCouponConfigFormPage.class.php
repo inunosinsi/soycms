@@ -264,6 +264,13 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 			"label" => "値引き率"
 		));
 		
+		$this->addCheckBox("coupon_type_delivery", array(
+			"name" => "Register[couponType]",
+			"value" => SOYShop_Coupon::TYPE_DELIVERY,
+			"selected" => (isset($_POST["Register"]["couponType"]) && $_POST["Register"]["couponType"] == SOYShop_Coupon::TYPE_DELIVERY),
+			"label" => "送料無料"
+		));
+		
 		$this->addInput("discount", array(
 			"name"  => "Register[discount]",
 			"value" => (isset($_POST["Register"]["discount"]) && strlen($_POST["Register"]["discount"]) > 0) ? (int)$_POST["Register"]["discount"] : 0

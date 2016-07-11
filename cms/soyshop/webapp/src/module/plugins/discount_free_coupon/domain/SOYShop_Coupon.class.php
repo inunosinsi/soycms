@@ -6,6 +6,7 @@ class SOYShop_Coupon {
 
 	const TYPE_PRICE = 0;		//値引き額
 	const TYPE_PERCENT = 1;		//値引き率
+	const TYPE_DELIVERY = 2;	//値引き率
 	
 	const NOT_DELETED = 0;
 	const DELETED = 1;

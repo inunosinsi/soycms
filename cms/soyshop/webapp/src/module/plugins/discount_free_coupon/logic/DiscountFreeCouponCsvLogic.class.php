@@ -49,7 +49,17 @@ class DiscountFreeCouponCsvLogic extends SOY2LogicBase{
 			
 			$line[] = $coupon->getId();
 			$line[] = $coupon->getCouponCode();
-			$line[] = ($coupon->getCouponType() == SOYShop_Coupon::TYPE_PRICE) ? "値引き額" : "値引き率";
+			switch($coupon->getCouponType()){
+				case SOYShop_Coupon::TYPE_PRICE:
+					$line[] = "値引き額";
+					break;
+				case SOYShop_Coupon::TYPE_PERCENT:
+					$line[] = "値引き率";
+					break;
+				case SOYShop_Coupon::TYPE_DELIVERY:
+					$line[] = "送料無料";
+					break;
+			}
 			$line[] = $coupon->getName();
 			$line[] = ($coupon->getCount() > 900000) ? "無制限" : $coupon->getCount();
 			

@@ -85,6 +85,13 @@ class CouponListComponent extends HTMLList{
 			"label" => "値引き率"
 		));
 		
+		$this->addCheckBox("radio_coupon_type_delivery", array(
+			"name" => "Edit[couponType]",
+			"value" => SOYShop_Coupon::TYPE_DELIVERY,
+			"selected" => ($entity->getCouponType() == SOYShop_Coupon::TYPE_DELIVERY),
+			"label" => "送料無料"
+		));
+		
 		$this->addInput("input_count", array(
 			"name" => "Edit[count]",
 			"value" => ($entity->getCount() < 990000) ? $entity->getCount() : ""
