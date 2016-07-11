@@ -167,7 +167,7 @@ class SettingPage extends WebPage{
 	
 	private function getItems(){
 		$searchLogic = SOY2Logic::createInstance("module.plugins." . $this->configObj->getModuleId() . ".logic.SearchLogic");
-		//$searchLogic->setLimit(50);	//仮
+		$searchLogic->setLimit(50);	//仮
 		//$searchLogic->setCondition(self::getParameter("search_condition"));
 		return $searchLogic->get();
 	}

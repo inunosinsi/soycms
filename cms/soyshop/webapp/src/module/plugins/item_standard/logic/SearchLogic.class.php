@@ -4,6 +4,8 @@ class SearchLogic extends SOY2LogicBase{
 	
 	private $itemDao;
 	
+	private $limit;
+	
 	private $where = array();
 	private $binds = array();
 	
@@ -35,8 +37,14 @@ class SearchLogic extends SOY2LogicBase{
 		$sql = "SELECT * FROM soyshop_item ".
 				"WHERE item_type IN (\"".SOYShop_Item::TYPE_SINGLE."\",\"".SOYShop_Item::TYPE_GROUP."\") ".
 				"AND is_disabled != " . SOYShop_Item::IS_DISABLED . " ";
+
+		$sql .= " LIMIT " . $this->limit;
 				
 		return $sql;
+	}
+	
+	function setLimit($limit){
+		$this->limit = $limit;
 	}
 }
 ?>
