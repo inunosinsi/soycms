@@ -91,6 +91,8 @@ class IndexPage extends WebPage{
 			$binds[":cat"] = (int)$selectCat;
 		}
 		
+		$sql .= " LIMIT 50";
+		
 		try{
 			$res = $itemDao->executeQuery($sql, $binds);
 		}catch(Exception $e){
