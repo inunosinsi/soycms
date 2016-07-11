@@ -17,12 +17,25 @@
 	<legend>サムネイルの登録をしていない時の画像の設定</legend>
 	<div>
 		画像のパス：<input type="text" soy:id="no_thumbnail_path" id="noimage_image_path">
-		<input type="button" onclick="open_noimage_filemanager($('#noimage_image_path'));" value="ファイルを指定する">
-		<!-- soy:id="display_noimage_ppreview_button" -->
+		<input type="button" onclick="open_plugin_image_filemanager($('#noimage_image_path'));" value="ファイルを指定する">
+		<!-- soy:display="display_noimage_ppreview_button" -->
 		&nbsp;<a href="#" onclick="return preview_thumbnail_plugin($('#noimage_image_path'));">Preview</a>
-		<!-- /soy:id="display_noimage_ppreview_button" -->
+		<!-- /soy:display="display_noimage_ppreview_button" -->
 	</div>
 </fieldset>
+
+<!-- soy:diplay="display_label_upload_area" -->
+<fieldset>
+	<legend>ラベル毎の標準の画像設定</legend>
+	<div soy:id="label_list">
+		<!-- soy:id="caption" /-->：<input type="text" soy:id="label_thumbnail_path">
+		<input type="button" onclick="open_plugin_image_filemanager($('#<!-- soy:id="label_thumbnail_path_id" /-->'));" value="ファイルを指定する">
+		<!-- soy:id="display_label_image_ppreview_button" -->
+		&nbsp;<a href="#" onclick="return preview_thumbnail_plugin($('#<!-- soy:id="label_thumbnail_path_id" /-->'));">Preview</a>
+		<!-- /soy:id="display_label_image_ppreview_button" -->
+	</div>
+</fieldset>
+<!-- /soy:diplay="display_label_upload_area" -->
 
 <div>
 	<input type="submit" value="保存">
@@ -52,12 +65,13 @@
 </pre>
 
 <script>
-function open_noimage_filemanager($form){
-	common_to_layer("/main/soycms/index.php/Page/Editor/FileUpload?noimage_image_path");
+function open_plugin_image_filemanager($form){
+	common_to_layer("/main/soycms/index.php/Page/Editor/FileUpload?" + $form.selector.replace("#", ""));
 }
 function preview_thumbnail_plugin($form){
-	var domainURL = "http://localhost:8000/";
-	var siteURL = "http://localhost:8000/site/";
+	
+	var domainURL = location.protocol + "//" + location.host + "/";
+	var siteURL = domainURL + "<!-- soy:id="site_id" /-->/";
 
 	var url = "";
 	var href = $form.val();

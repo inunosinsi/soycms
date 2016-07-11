@@ -21,6 +21,12 @@ class SOYCMSThumbnailConfigPage extends WebPage{
 			
 			$this->pluginObj->setNoThumbnailPath(trim($config["no_thumbnail_path"]));
 			
+			$labels = array();
+			if(count($config["label_thumbnail_path"])) foreach($config["label_thumbnail_path"] as $labelId => $path){
+				if(strlen($path)) $labels[$labelId] = $path;
+			}
+			$this->pluginObj->setLabelThumbnailPaths($labels);
+			
 			CMSPlugin::savePluginConfig($this->pluginObj->getId(), $this->pluginObj);
 			CMSPlugin::redirectConfigPage();
 		}
@@ -57,9 +63,28 @@ class SOYCMSThumbnailConfigPage extends WebPage{
 			"style" => "width:60%"
 		));
 		
-		$this->addModel("display_noimage_ppreview_button", array(
-			"visible" => (strlen($this->pluginObj->getNoThumbnailPath()) > 0)
+		DisplayPlugin::toggle("display_noimage_ppreview_button",strlen($this->pluginObj->getNoThumbnailPath()));
+		
+		$labels = self::getLabels();
+		DisplayPlugin::toggle("display_label_upload_area", count($labels));
+		
+		SOY2::imports("site_include.plugin.soycms_thumbnail.component.*");
+		$this->createAdd("label_list", "LabelListComponent", array(
+			"list" => $labels,
+			"paths" => $this->pluginObj->getLabelThumbnailPaths()
 		));
+		
+		$this->addLabel("site_id", array(
+			"text" => UserInfoUtil::getSite()->getSiteId()
+		));
+	}
+	
+	private function getLabels(){
+		try{
+			return SOY2DAOFactory::create("cms.LabelDAO")->get();
+		}catch(Exception $e){
+			return array();
+		}
 	}
 	
 	function setPluginObj($pluginObj){
