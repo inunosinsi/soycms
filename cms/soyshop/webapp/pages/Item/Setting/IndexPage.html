@@ -14,7 +14,9 @@
 	<div class="block_body">
 		
 		<div class="ml20 mb">
-			カテゴリ：<select soy:id="category_select"><option value="-1">カテゴリなし</option></select>
+			カテゴリ：<select soy:id="category_select" id="category"><option value="-1">カテゴリなし</option></select>&nbsp;
+			商品状態：<label><input type="checkbox" soy:id="item_is_open" id="item_is_open">公開</label>
+			&nbsp;<label><input type="checkbox" soy:id="item_no_open" id="item_no_open">非公開</label>
 		</div>
 		
 		<form soy:id="form">
@@ -103,12 +105,34 @@ function changeCheckBoxAuto(){
 		$(this).prop("checked", $("#item_checkbox").prop("checked"));
 	});
 }
-function redirectAfterSelect(e){
-	var selected = $(e).val();
+function redirectAfterSelect(){
+	var query = "";
+	
+	//カテゴリ
+	if($("#category").val() > 0){
+		query = query + "category=" + $("#category").val();
+	}
+	
+	//公開
+	if(query.length) query = query + "&";
+	if($("#item_is_open").is(":checked")){
+		query = query + "item_is_open=1";
+	}else{
+		query = query + "item_is_open=0";
+	}
+	
+	//非公開
+	if($("#item_no_open").is(":checked")){
+		query = query + "&item_no_open=1";
+	}else{
+		query = query + "&item_no_open=0";
+	}
+		
 	var u = location.href;
 	if(location.search){
 		u = u.replace(location.search, "");
 	}
-	location.href = u + "?category=" + selected;
+	if(query.length > 0) query = "?" + query;
+	location.href = u + query;
 }
 </script>

@@ -3,15 +3,16 @@
 class IndexPage extends WebPage{
 	
 	private $page;
+	private $itemDao;
 	
 	function doPost(){
 		
 		if(soy2_check_token() && count($_POST["items"])){
 			
-			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+			
 			foreach($_POST["items"] as $itemId){
 				try{
-					$item = $itemDao->getById($itemId);
+					$item = $this->itemDao->getById($itemId);
 				}catch(Exception $e){
 					continue;
 				}
@@ -23,7 +24,7 @@ class IndexPage extends WebPage{
 				}
 				
 				try{
-					$itemDao->update($item);
+					$this->itemDao->update($item);
 				}catch(Exception $e){
 					//
 				}
@@ -41,6 +42,8 @@ class IndexPage extends WebPage{
 		$session = SOY2ActionSession::getUserSession();
 		$appLimit = $session->getAttribute("app_shop_auth_limit");
 		
+		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		
 		WebPage::WebPage();
 		
 		DisplayPlugin::toggle("app_limit_function", $appLimit);
@@ -49,12 +52,25 @@ class IndexPage extends WebPage{
 		
 		$categories = self::getCategories();
 		$catList = self::buildCategoryList($categories);
-		$selectCat = self::getParameter("category");
 		
 		$this->addSelect("category_select", array(
 			"options" => $catList,
-			"selected" => $selectCat,
-			"onchange" => "redirectAfterSelect(this);"
+			"selected" => self::getParameter("category"),
+			"onchange" => "redirectAfterSelect();"
+		));
+		
+		$this->addCheckBox("item_is_open", array(
+			"value" => SOYShop_Item::IS_OPEN,
+			"selected" => (self::getParameter("item_is_open") == 1),
+			"elementid" => "item_is_open",
+			"onchange" => "redirectAfterSelect();"
+		));
+		
+		$this->addCheckBox("item_no_open", array(
+			"value" => SOYShop_Item::NO_OPEN,
+			"selected" => (self::getParameter("item_no_open") == 1),
+			"elementid" => "item_no_open",
+			"onchange" => "redirectAfterSelect();"
 		));
 						
 		SOY2::import("domain.config.SOYShop_ShopConfig");
@@ -76,13 +92,13 @@ class IndexPage extends WebPage{
 	
 	private function getItems($selectCat, $catList){
 		
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$sql = "SELECT * FROM soyshop_item ".
 				"WHERE is_disabled != " . SOYShop_Item::IS_DISABLED . " ";
 		
 		$binds = array();
 		
-		//カテゴリがnullの場合は、	
+		//カテゴリがnullの場合は、
+		$selectCat = self::getParameter("category");
 		if(is_null($selectCat) || (int)$selectCat < 0){
 			$catIds = array_keys($catList);
 			$sql .= "AND (item_category NOT IN (" . implode(",", $catIds) . ") OR item_category IS NULL) ";
@@ -91,10 +107,23 @@ class IndexPage extends WebPage{
 			$binds[":cat"] = (int)$selectCat;
 		}
 		
+		//小商品は表示しない
+		$sql .= " AND item_type IN (\"". SOYShop_Item::TYPE_SINGLE. "\",\"" . SOYShop_Item::TYPE_GROUP ."\",\"". SOYShop_Item::TYPE_DOWNLOAD ."\") ";
+		
+		$isOpen = self::getParameter("item_is_open");
+		if(isset($isOpen) && $isOpen == 1){
+			$sql .= " AND item_is_open = 1 ";
+		}
+		
+		$noOpen = self::getParameter("item_no_open");
+		if(isset($noOpen) && $noOpen == 1){
+			$sql .= " AND item_is_open = 0 ";
+		}
+		
 		$sql .= " LIMIT 50";
 		
 		try{
-			$res = $itemDao->executeQuery($sql, $binds);
+			$res = $this->itemDao->executeQuery($sql, $binds);
 		}catch(Exception $e){
 			return array();
 		}
@@ -103,7 +132,7 @@ class IndexPage extends WebPage{
 		
 		$items = array();
 		foreach($res as $values){
-			$items[] = $itemDao->getObject($values);
+			$items[] = $this->itemDao->getObject($values);
 		}
 		
 		return $items;
