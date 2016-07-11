@@ -533,10 +533,15 @@ class CartLogic extends SOY2LogicBase{
 		//IPアドレス
 		if(isset($_SERVER['REMOTE_ADDR'])){
 			$this->setOrderAttribute("order_ip_address", "IPアドレス", $_SERVER['REMOTE_ADDR'], true);
-		}
+		}		
 
 		//顧客情報の登録
 		$this->registerCustomerInformation();
+
+		//初回購入であるか調べる
+		if($this->checkFirstOrder()){
+			$this->setOrderAttribute("order_first_order", "初回購入", "初回購入", true);
+		}
 
 		//注文情報の登録
 		$this->orderItems();
@@ -874,6 +879,21 @@ class CartLogic extends SOY2LogicBase{
 		}
 
 		$this->customerInformation->setId($id);
+	}
+	
+	/**
+	 * 初回購入であるか調べる
+	 */
+	function checkFirstOrder(){
+		$userId = $this->getCustomerInformation()->getId();
+		if(!isset($userId)) return true;
+		try{
+			$orders = SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getByUserId($userId);
+		}catch(Exception $e){
+			$orders = array();
+		}
+		
+		return (!count($orders));
 	}
 
 	/**
