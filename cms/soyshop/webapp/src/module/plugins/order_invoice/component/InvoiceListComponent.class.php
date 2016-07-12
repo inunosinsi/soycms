@@ -68,6 +68,10 @@ class InvoiceListComponent extends HTMLList{
 		$this->addLabel("order_total_price", array(
 			"text" => number_format($order->getPrice())
 		));
+		
+		$this->addModel("order_first_order", array(
+			"visible" => (isset($this->config["firstOrder"]) && $this->config["firstOrder"] == 1 && array_key_exists("order_first_order", $order->getAttributeList()))
+		));
 	}
 	
 	/*** お届け先 ***/

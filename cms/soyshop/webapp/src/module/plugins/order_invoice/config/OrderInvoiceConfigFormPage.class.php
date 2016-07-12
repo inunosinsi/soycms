@@ -44,6 +44,13 @@ class OrderInvoiceConfigFormPage extends WebPage{
 			"label" => " 表示する"
 		));
 		
+		$this->addCheckBox("first_order", array(
+			"name" => "Config[firstOrder]",
+			"value" => 1,
+			"selected" => (isset($config["firstOrder"]) && $config["firstOrder"] == 1),
+			"label" => " 表示する"
+		));
+		
 		$this->addInput("title", array(
 			"name" => "Config[title]",
 			"value" => (isset($config["title"])) ? $config["title"] : ""

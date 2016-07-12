@@ -6,7 +6,8 @@ class OrderInvoiceCommon{
 		return SOYShop_DataSets::get("order_invoice.config", array(
 			"title" => "お店からのお便り",
 			"content" => "",
-			"payment" => 0	//振込先情報を表示するか？
+			"payment" => 0,	//振込先情報を表示するか？,
+			"firstOrder" => 1	//初回購入であることの表示
 		));
 	}
 	
