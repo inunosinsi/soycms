@@ -107,7 +107,7 @@ $opts = array(
 			'path'          => $path,                 // path to files (REQUIRED)
 			'URL'           => $url, // URL to files (REQUIRED)
 			'uploadDeny'    => array('all'),                // All Mimetypes not allowed to upload
-			'uploadAllow'   => array('image', 'text/plain', , 'application/epub+zip'),// Mimetype `image` and `text/plain` allowed to upload
+			'uploadAllow'   => array('image', 'text/plain', 'application/epub+zip'),// Mimetype `image` and `text/plain` allowed to upload
 			'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
 			'accessControl' => 'access'                     // disable and hide dot starting files (OPTIONAL)
 		)
