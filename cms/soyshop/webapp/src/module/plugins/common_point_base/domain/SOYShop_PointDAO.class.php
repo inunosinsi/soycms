@@ -29,7 +29,6 @@ abstract class SOYShop_PointDAO extends SOY2DAO{
 		try{
 			$results = $this->executeQuery($sql, $binds);
 		}catch(Exception $e){
-			var_dump($e);
 			return array();
 		}
 		

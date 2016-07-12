@@ -90,9 +90,34 @@ class SOYMailConnectorOrderCustomfield extends SOYShopOrderCustomfield{
 		}
 				
 		$obj["description"] = implode("\n", $html);
+		
+		//初回時ポイント設定：パスワードを登録していることが表示条件
+		if(class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("common_point_base")){
+			if(is_null($cart->getCustomerInformation()->getId()) && isset($config["first_order_add_point"]) && $config["first_order_add_point"] > 0){
+				if(strlen($cart->getCustomerInformation()->getPassword()) > 0){
+					
+					//念の為、すでに顧客登録がないかメールアドレスで調べる
+					if(self::checkNoRegisterMailAdress($cart->getCustomerInformation())){
+						$text = htmlspecialchars($config["first_order_add_point_text"], ENT_QUOTES, "UTF-8");
+						$obj["description"] .= "<br>" . str_replace("#POINT#", $config["first_order_add_point"], $text);
+					}
+				}
+			}
+		}
+		
 		$obj["error"] = "";			
 		
 		return array(self::PLUGIN_ID => $obj);
+	}
+	
+	private function checkNoRegisterMailAdress($mailAddress){
+		try{
+			$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress);
+		}catch(Exception $e){
+			return true;
+		}
+		
+		return false;
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "soymail_connector", "SOYMailConnectorOrderCustomfield");

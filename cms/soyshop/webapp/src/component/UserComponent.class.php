@@ -59,161 +59,180 @@ class UserComponent {
 		
 		//メールアドレス
 		$page->addInput("mail_address", array(
-    		"name" => "Customer[mailAddress]",
-    		"value" => $user->getMailAddress(),
-    	));
+			"name" => "Customer[mailAddress]",
+			"value" => $user->getMailAddress(),
+		));
 
 		
 		//パスワード
-    	$page->addInput("password", array(
-    		"name" => "Customer[password]",
-    		"value" => $user->getPassword(),
-    	));
+		$page->addInput("password", array(
+			"name" => "Customer[password]",
+			"value" => $user->getPassword(),
+		));
 		
 		//氏名
-    	$page->addInput("name", array(
-    		"name" => "Customer[name]",
-    		"value" => $user->getName(),
-    	));
+		$page->addInput("name", array(
+			"name" => "Customer[name]",
+			"value" => $user->getName(),
+		));
 		
 		//フリガナ
-    	$page->addInput("reading", array(
-    		"name" => "Customer[reading]",
-    		"value" => $user->getReading(),
-    	));
+		$page->addInput("reading", array(
+			"name" => "Customer[reading]",
+			"value" => $user->getReading(),
+		));
 
-    	//ニックネーム
-    	$page->addInput("nickname", array(
-    		"name" => "Customer[nickname]",
-    		"value" => $user->getNickname(),
-    	));
-    	
+		//ニックネーム
+		$page->addInput("nickname", array(
+			"name" => "Customer[nickname]",
+			"value" => $user->getNickname(),
+		));
+		
 		//性別 男
-    	$page->addCheckBox("gender_male", array(
-    		"type" => "radio",
+		$page->addCheckBox("gender_male", array(
+			"type" => "radio",
 			"name" => "Customer[gender]",
 			"value" => 0,
 			"elementId" => "radio_sex_male",
 			"selected" => ($user->getGender() === 0 || $user->getGender() === "0")
-    	));
+		));
 		
 		//性別 女
-    	$page->addCheckBox("gender_female", array(
-    		"type" => "radio",
-    		"name" => "Customer[gender]",
+		$page->addCheckBox("gender_female", array(
+			"type" => "radio",
+			"name" => "Customer[gender]",
 			"value" => 1,
 			"elementId" => "radio_sex_female",
 			"selected" => ($user->getGender() === 1 || $user->getGender() === "1")
-    	));
-    	
-    	$gender = $user->getGender();
-    	$page->addLabel("gender_text", array(
+		));
+		
+		$gender = $user->getGender();
+		$page->addLabel("gender_text", array(
 			"text" => ($gender == SOYShop_User::USER_SEX_MALE) ? MessageManager::get("SEX_MALE") :
-			        ( ($gender == SOYShop_User::USER_SEX_FEMALE) ? MessageManager::get("SEX_FEMALE") : "" )
+					( ($gender == SOYShop_User::USER_SEX_FEMALE) ? MessageManager::get("SEX_FEMALE") : "" )
 		));
 
 		//生年月日 年
-    	$page->addInput("birth_year", array(
-    		"name" => "Customer[birthday][]",
-    		"value" => $user->getBirthdayYear(),
-    	));
+		$page->addInput("birth_year", array(
+			"name" => "Customer[birthday][]",
+			"value" => $user->getBirthdayYear(),
+		));
 		
 		//生年月日 月
-    	$page->addInput("birth_month", array(
-    		"name" => "Customer[birthday][]",
-    		"value" => $user->getBirthdayMonth(),
-    	));
+		$page->addInput("birth_month", array(
+			"name" => "Customer[birthday][]",
+			"value" => $user->getBirthdayMonth(),
+		));
 		
 		//生年月日 日
-    	$page->addInput("birth_day", array(
-    		"name" => "Customer[birthday][]",
-    		"value" => $user->getBirthdayDay(),
-    	));
-    	
-    	$page->addLabel("birthday_text", array(
-    		"text" => $user->getBirthdayText()
-    	));
+		$page->addInput("birth_day", array(
+			"name" => "Customer[birthday][]",
+			"value" => $user->getBirthdayDay(),
+		));
+		
+		$page->addLabel("birthday_text", array(
+			"text" => $user->getBirthdayText()
+		));
 		
 		//郵便番号
-    	$page->addInput("zip_code", array(
-    		"name" => "Customer[zipCode]",
-    		"value" => $user->getZipCode()
-    	));
+		$page->addInput("zip_code", array(
+			"name" => "Customer[zipCode]",
+			"value" => $user->getZipCode()
+		));
 		
 		//都道府県
-    	$page->addSelect("area", array(
-    		"name" => "Customer[area]",
-    		"options" => SOYShop_Area::getAreas(),
-    		"value" => $user->getArea()
-    	));
-    	
+		$page->addSelect("area", array(
+			"name" => "Customer[area]",
+			"options" => SOYShop_Area::getAreas(),
+			"value" => $user->getArea()
+		));
+		
 		$page->addLabel("area_text", array(
 			"text" => SOYShop_Area::getAreaText($user->getArea())
 		));
 		
 		//住所入力1
-    	$page->addInput("address1", array(
-    		"name" => "Customer[address1]",
-    		"value" => $user->getAddress1(),
-    	));
+		$page->addInput("address1", array(
+			"name" => "Customer[address1]",
+			"value" => $user->getAddress1(),
+		));
 		
 		//住所入力2
-    	$page->addInput("address2", array(
-    		"name" => "Customer[address2]",
-    		"value" => $user->getAddress2(),
-    	));
+		$page->addInput("address2", array(
+			"name" => "Customer[address2]",
+			"value" => $user->getAddress2(),
+		));
 		
 		//電話番号
-    	$page->addInput("telephone_number", array(
-    		"name" => "Customer[telephoneNumber]",
-    		"value" => $user->getTelephoneNumber(),
-    	));
+		$page->addInput("telephone_number", array(
+			"name" => "Customer[telephoneNumber]",
+			"value" => $user->getTelephoneNumber(),
+		));
 		
 		//FAX番号
-    	$page->addInput("fax_number", array(
-    		"name" => "Customer[faxNumber]",
-    		"value" => $user->getFaxNumber(),
-    	));
+		$page->addInput("fax_number", array(
+			"name" => "Customer[faxNumber]",
+			"value" => $user->getFaxNumber(),
+		));
 		
 		//携帯電話番号
-    	$page->addInput("cellphone_number", array(
-    		"name" => "Customer[cellphoneNumber]",
-    		"value" => $user->getCellphoneNumber(),
-    	));
+		$page->addInput("cellphone_number", array(
+			"name" => "Customer[cellphoneNumber]",
+			"value" => $user->getCellphoneNumber(),
+		));
 
-    	//URL
-    	$page->addInput("url", array(
-    		"name" => "Customer[url]",
-    		"value" => $user->getUrl(),
-    	));
-    	
-    	//メールマガジン(ユーザカスタムフィールド内で登録の処理を行う)
-    	$page->addModel("active_soymail_connector", array(
-    		"visible" => (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("soymail_connector")))
-    	));	
-    	$page->addInput("mail_magazine_hidden", array(
-    		"name" => "Customer[notSend]",
-    		"value" => SOYShop_User::USER_NOT_SEND
-    	));
-    	$page->addCheckBox("mail_magazine", array(
-    		"name" => "Customer[notSend]",
-    		"value" => SOYShop_User::USER_SEND,
-    		"selected" => $this->getIsCheckMailMagazine($user),
-    		"label" => "メールマガジンを希望する"
-    	));
-    	$page->addLabel("mail_magazine_select", array(
-    		"text" => ($user->getNotSend() == SOYShop_User::USER_SEND) ? "希望する" : "希望しない"
-    	));
+		//URL
+		$page->addInput("url", array(
+			"name" => "Customer[url]",
+			"value" => $user->getUrl(),
+		));
+		
+		$activeSOYMail = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("soymail_connector")));
+		//メールマガジン(ユーザカスタムフィールド内で登録の処理を行う)
+		$page->addModel("active_soymail_connector", array(
+			"visible" => $activeSOYMail
+		));	
+		
+		DisplayPlugin::toggle("active_soymail_connector", $activeSOYMail);
+		
+		$page->addInput("mail_magazine_hidden", array(
+			"name" => "Customer[notSend]",
+			"value" => SOYShop_User::USER_NOT_SEND
+		));
+		$page->addCheckBox("mail_magazine", array(
+			"name" => "Customer[notSend]",
+			"value" => SOYShop_User::USER_SEND,
+			"selected" => $this->getIsCheckMailMagazine($user),
+			"label" => "メールマガジンを希望する"
+		));
+		
+		$text = "";
+		if($activeSOYMail){
+			SOY2::import("module.plugins.soymail_connector.util.SOYMailConnectorUtil");
+			$config = SOYMailConnectorUtil::getConfig();
+			if(isset($config["first_order_add_point"]) && $config["first_order_add_point"] > 0){
+				$text = htmlspecialchars($config["first_order_add_point_text"], ENT_QUOTES, "UTF-8");
+				$text = "<br>" . str_replace("#POINT#", $config["first_order_add_point"], $text);
+			}
+		}
+		
+		$page->addLabel("mail_magazine_description", array(
+			"html" => $text
+		));
+		
+		$page->addLabel("mail_magazine_select", array(
+			"text" => ($user->getNotSend() == SOYShop_User::USER_SEND) ? "希望する" : "希望しない"
+		));
 		
 		//勤務先名称・職種
-    	$page->addInput("job_name", array(
-    		"name" => "Customer[jobName]",
-    		"value" => $user->getJobName(),
-    	));
+		$page->addInput("job_name", array(
+			"name" => "Customer[jobName]",
+			"value" => $user->getJobName(),
+		));
 		
 		
 		/* ユーザカスタムフィールド */		
-    	SOYShopPlugin::load("soyshop.user.customfield");
+		SOYShopPlugin::load("soyshop.user.customfield");
 		$delegate = SOYShopPlugin::invoke("soyshop.user.customfield", array(
 			"mode" => $mode,
 			"app" => $app,
@@ -262,7 +281,7 @@ class UserComponent {
 			"list" => $form
 		));
 		
-    	//各項目をcreateAdd
+		//各項目をcreateAdd
 		$delegate = SOYShopPlugin::invoke("soyshop.user.customfield", array(
 			"mode" => "build_named_form",
 			"app" => $app,
@@ -501,8 +520,8 @@ class UserComponent {
 					$res = false;
 				}elseif(!preg_match("/^[a-zA-Z0-9]+$/", $user->getPassword())){
 					//パスワードの書式に誤りがある場合
-		    		$app->addErrorMessage("password", MessageManager::get("PASSWORD_FALSE"));
-		    	}
+					$app->addErrorMessage("password", MessageManager::get("PASSWORD_FALSE"));
+				}
 				
 				break;
 			
