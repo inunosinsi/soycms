@@ -185,15 +185,36 @@ class SOYShop_DetailPagePager extends SOYShop_PagerBase{
 	function getNextPageUrl(){
 		$url = $this->getPagerUrl();
 		$page = $this->page;
-		$next_link = ($page->getNextItem()) ? $url . "/" . ($page->getNextItem()->getAlias()) : "-";
+		$nextItem = $page->getNextItem();
+		if(!is_null($nextItem)){
+			if($this->page->getPageObject()->getId() != $nextItem->getDetailPageId()){
+				try{
+					$uri = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getById($nextItem->getDetailPageId())->getUri();
+					$url = soyshop_get_page_url($uri);
+				}catch(Exception $e){
+					$nextItem = null;
+				}
+			}
+		}
+		$next_link = ($nextItem) ? $url . "/" . ($nextItem->getAlias()) : "-";
 		return $next_link;
 	}
 
 	function getPrevPageUrl(){
 		$url = $this->getPagerUrl();
 		$page = $this->page;
-
-		$prev_link = ($page->getPrevItem()) ? $url . "/" . ($page->getPrevItem()->getAlias()) : "-";
+		$prevItem = $page->getPrevItem();
+		if(!is_null($prevItem)){
+			if($this->page->getPageObject()->getId() != $prevItem->getDetailPageId()){
+				try{
+					$uri = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getById($prevItem->getDetailPageId())->getUri();
+					$url = soyshop_get_page_url($uri);
+				}catch(Exception $e){
+					$prevItem = null;
+				}
+			}
+		}
+		$prev_link = ($prevItem) ? $url . "/" . ($prevItem->getAlias()) : "-";
 		return $prev_link;
 	}
 
