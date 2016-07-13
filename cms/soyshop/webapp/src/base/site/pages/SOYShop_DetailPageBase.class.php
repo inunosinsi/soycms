@@ -15,40 +15,48 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 		$obj = $page->getPageObject();
 
 		$alias = implode("/", $args);
+		
+		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		try{
+			$item = $itemDAO->getByAlias($alias);
+		}catch(Exception $e){
+			header("HTTP/1.0 404 Not Found");
+			echo "error";
+			exit;
+		}
+		
+		$forAdminOnly = self::getForAdminOnly($item);
+		
+		//非公開(非公開プレビューモードは除く) && 削除フラグのチェック
+		if((!$forAdminOnly && $item->getIsOpen() != SOYShop_Item::IS_OPEN)  || $item->getIsDisabled() == SOYShop_Item::IS_DISABLED){
+			//header("HTTP/1.1 410 Gone");
+			header("HTTP/1.0 404 Not Found");
+			echo "error";
+			exit;
+		}
+
+		//子商品だった場合は、親商品の詳細ページにリダイレクト
+		if(is_numeric($item->getType())){
+			$config = SOYShop_ShopConfig::load();
+			$displayDetail = $config->getDisplayChildItem();
+			if($displayDetail == 0){
+				$parent = $itemDAO->getById($item->getType());
+				header("Location: " . soyshop_get_page_url($page->getUri(),$parent->getAlias()));
+			}
+		}
+
+		$this->setItem($item);
+
+		//現在の商品を保存
+		$obj->setCurrentItem($item);
+		
+		soyshop_convert_item_detail_page_id($item, $page);
+
+		if(strlen($item->getDetailPageId()) > 0 && $item->getDetailPageId() != $page->getId()){
+			throw new Exception();
+		}
 
 		try{
-			$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-			$item = $itemDAO->getByAlias($alias);
-
-			//削除フラグのチェック
-			if($item->getIsDisabled() == SOYShop_Item::IS_DISABLED){
-				//header("HTTP/1.1 410 Gone");
-				header("HTTP/1.0 404 Not Found");
-				echo "error";
-				exit;
-			}
-
-			//子商品だった場合は、親商品の詳細ページにリダイレクト
-			if(is_numeric($item->getType())){
-				$config = SOYShop_ShopConfig::load();
-				$displayDetail = $config->getDisplayChildItem();
-				if($displayDetail == 0){
-					$parent = $itemDAO->getById($item->getType());
-					header("Location: " . soyshop_get_page_url($page->getUri(),$parent->getAlias()));
-				}
-			}
-
-			$this->setItem($item);
-
-			//現在の商品を保存
-			$obj->setCurrentItem($item);
-			
-			soyshop_convert_item_detail_page_id($item, $page);
-
-			if(strlen($item->getDetailPageId()) > 0 && $item->getDetailPageId() != $page->getId()){
-				throw new Exception();
-			}
-
 			$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil");
 			list($items, $total) = $logic->getByCategoryId($item->getCategory());
 			$this->setTotalItemCount($total);
@@ -93,7 +101,7 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 			"list" => array($item),
 			"obj" => $obj,
 			"soy2prefix" => "block",
-			"forAdminOnly" => $this->getForAdminOnly($item) //商品詳細ページ確認モード
+			"forAdminOnly" => $forAdminOnly //商品詳細ページ確認モード
 		));
 	}
 	
