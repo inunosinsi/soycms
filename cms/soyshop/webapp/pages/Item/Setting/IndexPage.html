@@ -111,6 +111,8 @@ function redirectAfterSelect(){
 	//カテゴリ
 	if($("#category").val() > 0){
 		query = query + "category=" + $("#category").val();
+	}else{
+		query = query + "category=";
 	}
 	
 	//公開

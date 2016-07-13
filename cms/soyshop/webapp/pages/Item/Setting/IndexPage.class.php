@@ -99,6 +99,7 @@ class IndexPage extends WebPage{
 		
 		//カテゴリがnullの場合は、
 		$selectCat = self::getParameter("category");
+		if(!strlen($selectCat)) $selectCat = null;
 		if(is_null($selectCat) || (int)$selectCat < 0){
 			$catIds = array_keys($catList);
 			$sql .= "AND (item_category NOT IN (" . implode(",", $catIds) . ") OR item_category IS NULL) ";
