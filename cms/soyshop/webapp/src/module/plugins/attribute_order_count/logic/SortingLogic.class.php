@@ -23,7 +23,19 @@ class SortingLogic extends SOY2LogicBase{
 		$attr = AttributeOrderCountUtil::getAttrConfig();
 		
 		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		$sql = "SELECT COUNT(*) FROM soyshop_order WHERE user_id = :userId";
+		$sql = "SELECT COUNT(*) FROM soyshop_order " .
+				"WHERE user_id = :userId ".
+				"AND order_status >= " . SOYShop_Order::ORDER_STATUS_REGISTERED . " ".
+				"AND order_status <= " . SOYShop_Order::ORDER_STATUS_SENDED . " ";
+		
+		//期間設定がある場合はそれも加味
+		$period = (int)AttributeOrderCountUtil::getPeriodConfig();
+		
+		if(isset($period) && $period > 0) {
+			$start = time() - ($period * 24 * 60 * 60);
+			$sql .= "AND order_date > " . $start . " ";
+		}
+		
 		foreach($res as $v){
 			if(!isset($v["id"])) continue;
 			try{
@@ -60,7 +72,7 @@ class SortingLogic extends SOY2LogicBase{
 					
 					if($configs[$i]["count"] == $cnt){
 						$hit = true;
-					}else if(isset($configs[$i + 1]) && $configs[$i]["count"] <= $cnt && $configs[$i + 1]["count"] > $cnt){
+					}else if(isset($configs[$i + 1]) && $configs[$i]["count"] < $cnt && $configs[$i + 1]["count"] > $cnt){
 						$i++;
 						$hit = true;
 					//ラスト

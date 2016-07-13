@@ -50,11 +50,14 @@ class AttributeOrderCountConfigPage extends WebPage{
 			}
 			
 			array_multisort($cnts, SORT_ASC, SORT_NUMERIC, $values);
-			
 			AttributeOrderCountUtil::saveConfig($values);
 			
+			//属性値設定
 			$checked = (isset($_POST["attribute"])) ? (int)$_POST["attribute"] : 1;
 			AttributeOrderCountUtil::saveAttrConfig($checked);
+			
+			//期間設定
+			AttributeOrderCountUtil::savePeriodConfig(soyshop_convert_number($_POST["period"], null));
 			
 			$this->configObj->redirect("updated");
 		}
@@ -108,6 +111,13 @@ class AttributeOrderCountConfigPage extends WebPage{
 				"label" => "属性" . $i
 			));
 		}
+		
+		
+		$this->addInput("analyze_period", array(
+			"name" => "period",
+			"value" => AttributeOrderCountUtil::getPeriodConfig(),
+			"style" => "width:150px;text-align:right;"
+		));
 		
 		$this->addLabel("job_path", array(
 			"text" => self::buildPath(). " " . SOYSHOP_ID
