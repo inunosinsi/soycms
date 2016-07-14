@@ -78,7 +78,7 @@ class SearchLogic extends SOY2LogicBase{
 					//カスタムサーチフィールドの値
 					$val = $value[$csfId];
 					
-					//$vが配列の場合はチェックボックス
+					//$vが配列の場合はチェックボックス、ラジオ、セレクトボックス
 					if(is_array($val)){
 						$q = " id IN (" .
 								"SELECT item_id FROM soyshop_custom_search " ;
@@ -94,6 +94,9 @@ class SearchLogic extends SOY2LogicBase{
 						}
 						$q .= ") ";
 						$this->where[] = $q;
+					}else{
+						$this->where[] = "id IN (SELECT item_id FROM soyshop_custom_search WHERE " . $csfId . " LIKE :" . $csfId .")";
+						$this->binds[":" . $csfId] = "%" . $val . "%";
 					}
 					break;
 				default:
