@@ -796,8 +796,6 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @columns Entry.id,Entry.alias,Entry.title,Entry.content,Entry.more,Entry.cdate,Entry.udate,EntryLabel.display_order
 	 * @order EntryLabel.display_order asc,Entry.cdate desc,Entry.id desc
 	 * @distinct
-     * @group Entry.id,EntryLabel.display_order
-     * @having count(Entry.id) = <?php count(:labelIds) ?>
 	 */
 	function getOpenEntryByLabelIdsImplements($labelIds, $now, $isAnd, $start = null, $end = null, $orderReverse = false){
 		$query = $this->getQuery();
