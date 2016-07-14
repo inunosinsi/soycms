@@ -8,7 +8,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
 
 	function build($args){
-
+		
 		$page = $this->getPageObject();
 		$obj = $page->getPageObject();
 		
@@ -23,7 +23,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 			//ページ部分の引数は取り除く
 			$this->setArguments($args);
 		}
-
+        
 		switch($type){
 
 			case SOYShop_ListPage::TYPE_CUSTOM:
@@ -47,7 +47,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
         if($total <= (int)$obj->getLimit() * ((int)$this->getCurrentPage() - 1)) {
             SOY2PageController::redirect(soyshop_get_site_url(true) . SOYSHOP_404_PAGE_MARKER);
         }
-
+       
 		$this->setTotal($total);
 
 		//item_list
@@ -55,7 +55,6 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 			"list" => $items,
 			"soy2prefix" => "block"
 		));
-
 	}
 
 	/**
@@ -289,6 +288,12 @@ class SOYShop_ListPagePager extends SOYShop_PagerBase{
 			$url = $this->page->getPageUrl(true);
 			if($url[strlen($url) - 1] == "/")$url = substr($url, 0, strlen($url) - 1);
 			$this->_pagerUrl = $url;
+		}
+		if(strpos($this->_pagerUrl, "/" . SOYShop_Page::URI_HOME)){
+			$this->_pagerUrl = str_replace("/" . SOYShop_Page::URI_HOME, "", $this->_pagerUrl);
+		}
+		if(strpos($this->_pagerUrl, "/" . SOYShop_Page::NOT_FOUND)){
+			$this->_pagerUrl = str_replace("/" . SOYShop_Page::NOT_FOUND, "", $this->_pagerUrl);
 		}
 		return $this->_pagerUrl;
 	}

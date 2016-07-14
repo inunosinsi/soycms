@@ -48,14 +48,20 @@ class SOYShopSiteController extends SOY2PageController{
 		
 		//https → http
 		self::checkSSL($uri, $args);
-
+				
 		try{
 			//URIからページを取得
 			try{
 				$page = $dao->getByUri($uri);
 			}catch(Exception $e){
-				//ページが存在しない場合
-				$page = $dao->getByUri(SOYSHOP_404_PAGE_MARKER);
+				//ルートでページャ対策
+				try{
+					$page = $dao->getByUri("_home");
+				}catch(Exception $e){
+					//ページが存在しない場合
+					$page = $dao->getByUri(SOYSHOP_404_PAGE_MARKER);
+				}
+					
 			}
 			
 			//ページIDを放り込んでおく
@@ -228,8 +234,8 @@ class SOYShopSiteController extends SOY2PageController{
 
 		$this->countTimer("Search");
 
-		$webPage = $page->getWebPageObject($args);
-		$webPage->setArguments($args);
+        $webPage = $page->getWebPageObject($args);
+        $webPage->setArguments($args);
 
 		/* Event OnLoad */
 		SOYShopPlugin::load("soyshop.site.onload");
