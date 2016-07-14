@@ -351,22 +351,23 @@ class PointBaseLogic extends SOY2LogicBase{
 	//商品ごとに設定したポイント付与の割合
 	function getPointPercentage($itemId, $totalPrice){
 		try{
-			$obj = $this->itemAttributeDao->get($itemId, self::PLUGIN_ID);
+			$percentage = (int)$this->itemAttributeDao->get($itemId, self::PLUGIN_ID)->getValue();
 		}catch(Exception $e){
-			$obj = new SOYShop_ItemAttribute();
+			$percentage = $this->percentage;
 		}
-		
-		$percentage = (!is_null($obj->getValue())) ? (int)$obj->getValue() : $this->percentage;
-		
+
+		//ポイント付与プラグインの方の設定を持ってくる
+		SOY2::import("util.SOYShopPluginUtil");
+		if(SOYShopPluginUtil::checkIsActive("common_point_grant")){
+			$percentage = SOY2Logic::createInstance("module.plugins.common_point_grant.logic.PointGrantLogic")->getPercentageAfterCheckSale($itemId, $percentage);
+		}
+				
 		return floor($totalPrice * $percentage / 100);
 	}
 	
 	function getUser($userId){
-		
-		if(!$this->userDao){
-			$this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		}
-				
+		if(!$this->userDao) $this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+
 		try{
 			return $this->userDao->getById($userId);
 		}catch(Exception $e){

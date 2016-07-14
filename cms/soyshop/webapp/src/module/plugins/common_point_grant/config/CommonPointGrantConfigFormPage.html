@@ -1,0 +1,27 @@
+<p class="notice" soy:display="updated">更新しました</p>
+<p class="error" soy:display="error">失敗しました</p>
+
+<form soy:id="form">
+
+<dl>
+	<dt>セール商品のポイント設定</dt>
+	<dd>
+		<input type="checkbox" soy:id="sale_point_double_on">&nbsp;
+		セール商品のポイント付与率を<input type="number" soy:id="sale_point_double">倍にする
+	</dd>
+</dl>
+
+<p class="pageBtn" style="clear:both;">
+	<input type="submit" class="submit_button" value="変更" />
+</p>
+
+</form>
+
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 20px 0;">
+&lt;!-- block:id="item" --&gt;
+
+ポイント付与:&lt;!-- cms:id="item_point_grant_percentage" /--&gt;%
+
+&lt;!-- /block:id="item" --&gt;
+</pre>
+

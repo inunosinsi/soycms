@@ -2,7 +2,7 @@
 
 class CommonPointBaseCustomField extends SOYShopItemCustomFieldBase{
 	
-	const PLUGIN_ID = "common_point_base"; 
+	const PLUGIN_ID = "common_point_base";
 	
 	private $itemAttributeDao;
 	private $percentage;
@@ -35,7 +35,7 @@ class CommonPointBaseCustomField extends SOYShopItemCustomFieldBase{
 		$html = array();
 		$html[] = "<dt>ポイント</dt>";
 		$html[] = "<dd>";
-		$html[] = "<input type=\"text\" name=\"" . self::PLUGIN_ID . "\" value=\"" . $this->getPercentage($item) . "\" style=\"width:40px;ime-mode:inactive;\">&nbsp;%";
+		$html[] = "<input type=\"text\" name=\"" . self::PLUGIN_ID . "\" value=\"" . self::getPercentage($item) . "\" style=\"width:40px;ime-mode:inactive;\">&nbsp;%";
 		$html[] = "</dd>";
 
 		return implode("\n", $html);
@@ -48,7 +48,7 @@ class CommonPointBaseCustomField extends SOYShopItemCustomFieldBase{
 		
 		$htmlObj->addLabel("item_point_percentage", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => $this->getPercentage($item)
+			"text" => self::getPercentage($item)
 		));
 	}
 
@@ -58,19 +58,16 @@ class CommonPointBaseCustomField extends SOYShopItemCustomFieldBase{
 	}
 	
 	function getPercentage(SOYShop_Item $item){
-		$this->prepare();
+		self::prepare();
 		
 		try{
-			$obj = $this->itemAttributeDao->get($item->getId(), self::PLUGIN_ID);
+			return (int)$this->itemAttributeDao->get($item->getId(), self::PLUGIN_ID)->getValue();
 		}catch(Exception $e){
-			echo $e->getPDOExceptionMessage();
-			$obj = new SOYShop_ItemAttribute();
+			return $this->percentage;
 		}
-		
-		return (!is_null($obj->getValue())) ? (int)$obj->getValue() : $this->percentage;
 	}
 	
-	function prepare(){
+	private function prepare(){
 		if(!$this->itemAttributeDao) $this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		if(!$this->percentage){
 			SOY2::imports("module.plugins.common_point_base.util.*");
@@ -80,5 +77,5 @@ class CommonPointBaseCustomField extends SOYShopItemCustomFieldBase{
 	}
 }
 
-SOYShopPlugin::extension("soyshop.item.customfield","common_point_base","CommonPointBaseCustomField");
+SOYShopPlugin::extension("soyshop.item.customfield", "common_point_base", "CommonPointBaseCustomField");
 ?>

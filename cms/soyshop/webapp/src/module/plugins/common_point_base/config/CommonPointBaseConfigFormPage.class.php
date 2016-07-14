@@ -1,6 +1,8 @@
 <?php
 class CommonPointBaseConfigFormPage extends WebPage{
 
+	private $configObj;
+
     function CommonPointBaseConfigFormPage() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     	SOY2::imports("module.plugins.common_point_base.util.*");
@@ -24,7 +26,7 @@ class CommonPointBaseConfigFormPage extends WebPage{
 				PointBaseUtil::saveMailContent($_POST["Mail"]["content"]);
 			}
 			
-			SOY2PageController::jump("Config.Detail?plugin=common_point_base&updated");
+			$this->configObj->redirect("updated");
     	}
     }
     
@@ -33,14 +35,8 @@ class CommonPointBaseConfigFormPage extends WebPage{
     	
     	$config = PointBaseUtil::getConfig();
     	
-    	$this->addModel("updated", array(
-			"visible" => (isset($_GET["updated"]))
-		));
-		
-		$this->addModel("error", array(
-			"visible" => (isset($_GET["error"]))
-		));
-
+    	DisplayPlugin::toggle("error", isset($_GET["error"]));
+    	
 		$this->addForm("form");
 		
 		$this->addInput("point_percentage", array(
@@ -99,7 +95,7 @@ class CommonPointBaseConfigFormPage extends WebPage{
 	}
 
     function setConfigObj($obj) {
-		$this->config = $obj;
+		$this->configObj = $obj;
 	}
 }
 ?>
