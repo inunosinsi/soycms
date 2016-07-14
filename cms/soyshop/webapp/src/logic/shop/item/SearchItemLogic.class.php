@@ -103,6 +103,21 @@ class SearchItemLogic extends SOY2LogicBase{
 						$where[] = "item_category in (" . implode(",", $ids) . ")";
 					}
 					break;
+				//カテゴリ単体で調べたい時に使う
+				case "category":
+					if(strlen($value)){
+						
+						if($value < 0){
+							$where[] = "item_category IS NULL";
+						}else{
+							$where[] = "item_category = :item_category";
+							$binds[":item_category"] = $value;
+						}
+					}
+					break;
+				case "type":
+					$where[] = "item_type IN (\"". implode("\",\"", $value) . "\")";
+					break;
 				case "attributes":
 					$attributes = $value;
 					foreach($attributes as $key => $value){
@@ -185,7 +200,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		$this->getQuery()->setLimit($this->limit);
 		$this->getQuery()->setOffset($this->offset);
 		$sql = $this->getItemsSQL();
-
+		
 		try{
 			$result = $this->getQuery()->executeQuery($sql, $this->binds);
 		}catch(Exception $e){

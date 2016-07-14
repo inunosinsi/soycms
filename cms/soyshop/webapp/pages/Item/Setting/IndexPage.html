@@ -13,11 +13,44 @@
 	
 	<div class="block_body">
 		
-		<div class="ml20 mb">
-			カテゴリ：<select soy:id="category_select" id="category"><option value="-1">カテゴリなし</option></select>&nbsp;
-			商品状態：<label><input type="checkbox" soy:id="item_is_open" id="item_is_open">公開</label>
-			&nbsp;<label><input type="checkbox" soy:id="item_no_open" id="item_no_open">非公開</label>
+		<dl>
+		<dt class="search_btn_dt">
+			検索する
+		</dt>
+		<div class="search_area_dd" soy:id="search_area">
+			<form soy:id="search_form">
+				<table class="form_table">
+					<tr>
+						<th nowrap>商品名</th>
+						<td><input type="search" soy:id="item_name"></td>
+						<th nowrap>商品コード</th>
+						<td><input type="search" soy:id="item_code"></td>
+					</tr>
+					<tr>
+						<th nowrap>カテゴリ</th>
+						<td>
+							<select soy:id="item_category">
+								<option value=""></option>
+							</select>
+						</td>
+						<th nowrap>公開状況</th>
+						<td>
+							<input type="checkbox" soy:id="is_open">&nbsp;
+							<input type="checkbox" soy:id="is_close">
+						</td>
+					</tr>
+				</table>
+				<p class="pageBtn">
+					<input type="hidden" name="SearchForm[type][]" value="single">
+					<input type="hidden" name="SearchForm[type][]" value="group">
+					<input type="hidden" name="SearchForm[type][]" value="download">
+					<input type="submit" name="search" value="検索">&nbsp;
+					<input type="submit" name="reset" value="リセット">
+				</p>
+			</form>
+
 		</div>
+	</dl>
 		
 		<form soy:id="form">
 			<table class="form_list">
@@ -98,43 +131,31 @@
 </div>
 <!-- /soy:display="app_limit_function" -->
 
+<style>
+	dt.search_btn_dt {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	dd.search_area_dd {
+	}
+</style>
+
 <script type="text/javascript">
-function changeCheckBoxAuto(){
-	$('#items_operation').show();
-	$('.item_checkbox').each(function(){
-		$(this).prop("checked", $("#item_checkbox").prop("checked"));
-	});
-}
-function redirectAfterSelect(){
-	var query = "";
-	
-	//カテゴリ
-	if($("#category").val() > 0){
-		query = query + "category=" + $("#category").val();
-	}else{
-		query = query + "category=";
+	(function() {
+		document.querySelector(".search_btn_dt").addEventListener("click", function() {
+			sarea = document.querySelector(".search_area_dd");
+			if (sarea.style.display == "none") {
+				sarea.style.display = "inline";
+			} else {
+				sarea.style.display = "none";
+			}
+		});
+
+	})();
+	function changeCheckBoxAuto(){
+		$('#items_operation').show();
+		$('.item_checkbox').each(function(){
+			$(this).prop("checked", $("#item_checkbox").prop("checked"));
+		});
 	}
-	
-	//公開
-	if(query.length) query = query + "&";
-	if($("#item_is_open").is(":checked")){
-		query = query + "item_is_open=1";
-	}else{
-		query = query + "item_is_open=0";
-	}
-	
-	//非公開
-	if($("#item_no_open").is(":checked")){
-		query = query + "&item_no_open=1";
-	}else{
-		query = query + "&item_no_open=0";
-	}
-		
-	var u = location.href;
-	if(location.search){
-		u = u.replace(location.search, "");
-	}
-	if(query.length > 0) query = "?" + query;
-	location.href = u + query;
-}
 </script>

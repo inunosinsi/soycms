@@ -5,138 +5,139 @@ class IndexPage extends WebPage{
 	private $page;
 	private $itemDao;
 	
+	private $categories = array();
+	
 	function doPost(){
 		
-		if(soy2_check_token() && count($_POST["items"])){
+		if(soy2_check_token()){
+			if(count($_POST["items"])){
 			
 			
-			foreach($_POST["items"] as $itemId){
-				try{
-					$item = $this->itemDao->getById($itemId);
-				}catch(Exception $e){
-					continue;
+				foreach($_POST["items"] as $itemId){
+					try{
+						$item = $this->itemDao->getById($itemId);
+					}catch(Exception $e){
+						continue;
+					}
+					
+					if(isset($_POST["change"])){
+						$item->setCategory($_POST["category"]);
+					}elseif(isset($_POST["remove"])){
+						$item->setCategory(null);
+					}
+					
+					try{
+						$this->itemDao->update($item);
+					}catch(Exception $e){
+						//
+					}
 				}
-				
-				if(isset($_POST["change"])){
-					$item->setCategory($_POST["category"]);
-				}elseif(isset($_POST["remove"])){
-					$item->setCategory(null);
-				}
-				
-				try{
-					$this->itemDao->update($item);
-				}catch(Exception $e){
-					//
-				}
+			
+				SOY2PageController::jump("Item.Setting?success");
 			}
 			
-			SOY2PageController::jump("Item.Setting?success");
+			if(isset($_POST["reset"])){
+				$this->setParameter("search", null);
+				$this->setParameter("SearchForm", null);
+				SOY2PageController::jump("Item.Setting");
+			}
 		}
-		
-		SOY2PageController::jump("Item.Setting?failed");
 	}
 	
 	function IndexPage($args){
 		MessageManager::addMessagePath("admin");
 		
-		$session = SOY2ActionSession::getUserSession();
-		$appLimit = $session->getAttribute("app_shop_auth_limit");
-		
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		$this->categories = self::getCategories();
 		
 		WebPage::WebPage();
+
+		if(isset($_REQUEST["search"])){
+			$this->setParameter("search", true);
+		}
 		
+		$this->addForm("search_form");
+		$searchItems = self::buildForm();
+		
+		//リセットしている時もしくはGETの値が何もない時は強制的に検索を止める
+		if(isset($_POST["reset"])) $searchItems = null;
+		
+		/*引数など取得*/
+		//表示件数
+		$limit = 50;
+
+		/*データ*/
+		$searchLogic = SOY2Logic::createInstance("logic.shop.item.SearchItemLogic");
+		$searchLogic->setLimit($limit);
+		$searchLogic->setSearchCondition($searchItems);
+
+		//データ取得
+		$items = (count($searchItems)) ? $searchLogic->getItems() : array();
+
+		/*表示*/
+
+		//表示順リンク
+//		$this->buildSortLink($searchLogic, $sort);
+		
+		$appLimit = SOY2ActionSession::getUserSession()->getAttribute("app_shop_auth_limit");
 		DisplayPlugin::toggle("app_limit_function", $appLimit);
 		
-		$this->addForm("form");
+		$this->addForm("form");		
 		
-		$categories = self::getCategories();
-		$catList = self::buildCategoryList($categories);
-		
-		$this->addSelect("category_select", array(
-			"options" => $catList,
-			"selected" => self::getParameter("category"),
-			"onchange" => "redirectAfterSelect();"
-		));
-		
-		$this->addCheckBox("item_is_open", array(
-			"value" => SOYShop_Item::IS_OPEN,
-			"selected" => (self::getParameter("item_is_open") == 1),
-			"elementid" => "item_is_open",
-			"onchange" => "redirectAfterSelect();"
-		));
-		
-		$this->addCheckBox("item_no_open", array(
-			"value" => SOYShop_Item::NO_OPEN,
-			"selected" => (self::getParameter("item_no_open") == 1),
-			"elementid" => "item_no_open",
-			"onchange" => "redirectAfterSelect();"
-		));
-						
 		SOY2::import("domain.config.SOYShop_ShopConfig");
-		$config = SOYShop_ShopConfig::load();
 		$this->createAdd("item_list", "_common.Item.ItemListComponent", array(
-			"list" => self::getItems($selectCat, $catList),
+			"list" => $items,
 			"itemOrderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO"),
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"categories" => $categories,
-			"config" => $config,
+			"categories" => $this->categories,
+			"config" => SOYShop_ShopConfig::load(),
 			"appLimit" => $appLimit
 		));
 		
 		$this->addSelect("category_change_select", array(
 			"name" => "category",
-			"options" => $catList,
+			"options" => self::buildCategoryList(),
 		));
 	}
 	
-	private function getItems($selectCat, $catList){
+	private function buildForm(){
+		$form = $this->getParameter("SearchForm");
+		$form = (is_array($form)) ? $form : array("is_open" => 1, "is_sale" => 0, "type" => array(SOYShop_Item::TYPE_SINGLE, SOYShop_Item::TYPE_GROUP, SOYShop_Item::TYPE_DOWNLOAD));
 		
-		$sql = "SELECT * FROM soyshop_item ".
-				"WHERE is_disabled != " . SOYShop_Item::IS_DISABLED . " ";
+		$this->addInput("item_name", array(
+			"name" => "SearchForm[name]",
+			"value" => (isset($form["name"])) ? $form["name"] : ""
+		));
+
+		$this->addCheckBox("is_open", array(
+			"elementId" => "is_open_check",
+			"name" => "SearchForm[is_open]",
+			"value" => 1,
+			"selected" => (isset($form["is_open"])),
+			"label" => "公開"
+		));
+
+		$this->addCheckBox("is_close", array(
+			"elementId" => "is_close_check",
+			"name" => "SearchForm[is_close]",
+			"value" => 1,
+			"selected" => (isset($form["is_close"])),
+			"label" => "非公開"
+		));
+
+		$this->addInput("item_code", array(
+			"name" => "SearchForm[code]",
+			"value" => (isset($form["code"])) ? $form["code"] : ""
+		));
+
+		//カテゴリ
+		$this->addSelect("item_category", array(
+			"name" => "SearchForm[category]",
+			"options" => self::buildCategoryList(true),
+			"selected" => $form["category"]
+		));
 		
-		$binds = array();
-		
-		//カテゴリがnullの場合は、
-		$selectCat = self::getParameter("category");
-		if(!strlen($selectCat)) $selectCat = null;
-		if(is_null($selectCat) || (int)$selectCat < 0){
-			$catIds = array_keys($catList);
-			$sql .= "AND (item_category NOT IN (" . implode(",", $catIds) . ") OR item_category IS NULL) ";
-		}else{
-			$sql .= "AND item_category = :cat ";
-			$binds[":cat"] = (int)$selectCat;
-		}
-		
-		//小商品は表示しない
-		$sql .= " AND item_type IN (\"". SOYShop_Item::TYPE_SINGLE. "\",\"" . SOYShop_Item::TYPE_GROUP ."\",\"". SOYShop_Item::TYPE_DOWNLOAD ."\") ";
-		
-		$isOpen = self::getParameter("item_is_open");
-		if(isset($isOpen) && $isOpen == 1){
-			$sql .= " AND item_is_open = 1 ";
-		}
-		
-		$noOpen = self::getParameter("item_no_open");
-		if(isset($noOpen) && $noOpen == 1){
-			$sql .= " AND item_is_open = 0 ";
-		}
-		
-		$sql .= " LIMIT 50";
-		
-		try{
-			$res = $this->itemDao->executeQuery($sql, $binds);
-		}catch(Exception $e){
-			return array();
-		}
-		
-		if(!count($res)) return array();
-		
-		$items = array();
-		foreach($res as $values){
-			$items[] = $this->itemDao->getObject($values);
-		}
-		
-		return $items;
+		return $form;
 	}
 	
 	private function getCategories(){
@@ -147,17 +148,21 @@ class IndexPage extends WebPage{
 		}
 	}
 	
-	private function buildCategoryList($categories){
+	private function buildCategoryList($minusMode = false){
 		$list = array();
-		foreach($categories as $category){
+		if($minusMode){
+			$list["-1"] = "カテゴリなし";
+		}
+		foreach($this->categories as $category){
 			$list[(string)$category->getId()] = $category->getName();
 		}
+		
 		return $list;
 	}
 	
 	private function getParameter($key){
-		if(array_key_exists($key, $_GET)){
-			$value = $_GET[$key];
+		if(array_key_exists($key, $_POST)){
+			$value = $_POST[$key];
 			$this->setParameter($key,$value);
 		}else{
 			$value = SOY2ActionSession::getUserSession()->getAttribute("Item.Setting.Search:" . $key);
@@ -166,26 +171,6 @@ class IndexPage extends WebPage{
 	}
 	private function setParameter($key,$value){
 		SOY2ActionSession::getUserSession()->setAttribute("Item.Setting.Search:" . $key, $value);
-	}
-	
-	function buildSortLink(SearchItemLogic $logic,$sort){
-
-		$link = SOY2PageController::createLink("Item.Setting");
-
-		$sorts = $logic->getSorts();
-
-		foreach($sorts as $key => $value){
-
-			$text = (!strpos($key,"_desc")) ? "▲" : "▼";
-			$title = (!strpos($key,"_desc")) ? "昇順" : "降順";
-
-			$this->addLink("sort_${key}", array(
-				"text" => $text,
-				"link" => $link . "?sort=" . $key,
-				"title" => $title,
-				"class" => ($sort === $key) ? "sorter_selected" : "sorter"
-			));
-		}
 	}
 }
 ?>
