@@ -16,7 +16,6 @@ class SearchLogic extends SOY2LogicBase{
 	function get(){
 		
 		$sql = self::buildQuery();
-		var_dump($sql);
 		
 		try{
 			$res = $this->itemDao->executeQuery($sql, $this->binds);
@@ -77,14 +76,24 @@ class SearchLogic extends SOY2LogicBase{
 				case "csf":
 					$csfId = key($value);
 					//カスタムサーチフィールドの値
-					$v = $value[$csfId];
+					$val = $value[$csfId];
 					
 					//$vが配列の場合はチェックボックス
-					if(is_array($v)){
-						$this->where[] = " id IN (" .
-											"SELECT item_id FROM soyshop_custom_search ".
-											"WHERE " . $csfId . " IN (\"". implode("\",\"", $v). "\") ".
-											") ";
+					if(is_array($val)){
+						$q = " id IN (" .
+								"SELECT item_id FROM soyshop_custom_search " ;
+						$c = 0;
+						foreach($val as $v){
+							if($c === 0){
+								$q .= " WHERE ";
+							}else{
+								$q .= " OR ";
+							}
+							$q .= $csfId . " LIKE :" . $csfId . $c;
+							$this->binds[":" . $csfId . $c++] = "%" . $v . "%";
+						}
+						$q .= ") ";
+						$this->where[] = $q;
 					}
 					break;
 				default:

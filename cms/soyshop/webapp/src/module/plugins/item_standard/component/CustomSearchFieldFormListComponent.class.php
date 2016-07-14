@@ -14,10 +14,12 @@ class CustomSearchFieldFormListComponent extends HTMLList {
 		if(isset($entity["type"])){
 			switch($entity["type"]){
 				case CustomSearchFieldUtil::TYPE_CHECKBOX:
+				case CustomSearchFieldUtil::TYPE_RADIO:
+				case CustomSearchFieldUtil::TYPE_SELECT:
 					$opts = explode("\n", $entity["option"]);
 					foreach($opts as $opt){
 						$o = trim($opt);
-						if(in_array($o, $this->conditions[$key])){
+						if(isset($this->conditions[$key]) && in_array($o, $this->conditions[$key])){
 							$html[] = "<label><input type=\"checkbox\" name=\"search_condition[csf][" . $key . "][]\" value=\"" . $o . "\" checked=\"checked\">". $o. "</label>";
 						}else{
 							$html[] = "<label><input type=\"checkbox\" name=\"search_condition[csf][" . $key . "][]\" value=\"" . $o . "\">". $o. "</label>";
