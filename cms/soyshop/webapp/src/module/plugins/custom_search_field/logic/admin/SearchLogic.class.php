@@ -47,7 +47,7 @@ class SearchLogic extends SOY2LogicBase{
 			$sql .= " AND " . $where;
 		}
 		
-		$sql .= " Limit" . $this->limit;
+		$sql .= " Limit " . $this->limit;
 				
 		return $sql;
 	}
@@ -71,6 +71,11 @@ class SearchLogic extends SOY2LogicBase{
 					break;
 				case "nothing":
 					$this->where[] = "s." . $this->fieldId . " IS NULL";
+					break;
+				case "item_is_open":
+					if(count($value)){
+						$this->where[] = $key . " IN (" . implode(",", $value) . ") ";
+					}
 					break;
 				default:
 					$this->where[] = "i." . $key . " LIKE :" . $key;

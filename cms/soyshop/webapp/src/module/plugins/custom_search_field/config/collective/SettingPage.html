@@ -20,7 +20,7 @@
 				<table class="form_table">
 					<tr>
 						<th nowrap><!-- soy:id="csf_label" /--></th>
-						<td colspan="5"><input type="checkbox" soy:id="nothing_check">
+						<td colspan="3"><input type="checkbox" soy:id="nothing_check">
 						<!-- soy:id="csf_cnd_form" /--></td>
 					</tr>
 					<tr>
@@ -28,11 +28,18 @@
 						<td><input type="search" soy:id="search_item_name"></td>
 						<th nowrap>商品コード</th>
 						<td><input type="search" soy:id="search_item_code"></td>
+					</tr>
+					<tr>
 						<th nowrap>カテゴリ</th>
 						<td>
 							<select soy:id="search_item_category">
 								<option value=""></option>
 							</select>
+						</td>
+						<th nowrap>公開状況</th>
+						<td>
+							<input type="checkbox" soy:id="search_item_is_open">&nbsp;
+							<input type="checkbox" soy:id="search_item_no_open">
 						</td>
 					</tr>
 				</table>

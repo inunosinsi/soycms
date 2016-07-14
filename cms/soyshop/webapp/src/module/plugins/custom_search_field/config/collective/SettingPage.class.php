@@ -16,6 +16,7 @@ class SettingPage extends WebPage{
 		$this->config = CustomSearchFieldUtil::getConfig();
 		$this->dbLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
 		$this->categories = self::getCategories();
+		SOY2::import("domain.shop.SOYShop_Item");
 	}
 	
 	function doPost(){
@@ -142,6 +143,20 @@ class SettingPage extends WebPage{
 			"name" => "search_condition[item_category]",
 			"options" => $opts,
 			"selected" => $cnd["item_category"]
+		));
+		
+		$this->addCheckBox("search_item_is_open", array(
+			"name" => "search_condition[item_is_open][]",
+			"value" => SOYShop_Item::IS_OPEN,
+			"selected" => (isset($cnd["item_is_open"]) && in_array(SOYShop_Item::IS_OPEN, $cnd["item_is_open"])),
+			"label" => "公開"
+		));
+		
+		$this->addCheckBox("search_item_no_open", array(
+			"name" => "search_condition[item_is_open][]",
+			"value" => SOYShop_Item::NO_OPEN,
+			"selected" => (isset($cnd["item_is_open"]) && in_array(SOYShop_Item::NO_OPEN, $cnd["item_is_open"])),
+			"label" => "非公開"
 		));
 	}
 	
