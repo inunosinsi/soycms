@@ -736,8 +736,6 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @columns Entry.id,EntryLabel.display_order,Entry.cdate
 	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
 	 * @distinct
-     * @group Entry.id,EntryLabel.display_order
-     * @having count(Entry.id) = <?php count(:labelIds) ?>
 	 * @query EntryLabel.label_id in (<?php implode(',',:labelIds) ?>)
 	 */
 	function getByLabelIdsOnlyId($labelIds, $orderReverse = false){
