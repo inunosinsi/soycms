@@ -409,10 +409,10 @@ class CMSBlogPage extends CMSPage{
 		if(strlen($this->page->getMonthPageUri())<1)$default = CMSBlogPage::MODE_MONTH_ARCHIVE;
 		if(strlen($this->page->getRssPageUri())<1)$default = CMSBlogPage::MODE_RSS;
 		if(strlen($this->page->getTopPageUri())<1)$default = CMSBlogPage::MODE_TOP;
-
+		
 		//空の時はトップページ
 		if(strlen($arguments)<1)return CMSBlogPage::MODE_TOP;
-
+		
 		switch(true){
 
 			case (strpos($arguments,$this->page->getEntryPageUri()."/") === 0):
@@ -773,7 +773,8 @@ class CMSBlogPage extends CMSPage{
 		$dao = SOY2DAOFactory::create("cms.LabelDAO");
 
 		try{
-			if(is_numeric($label)){
+			//0から始まる場合は文字列とみなす
+			if($label[0] != "0" && is_numeric($label)){
 				$label = $dao->getById($label);
 			}else{
 				$label = $dao->getByAlias($label);
@@ -854,7 +855,7 @@ class CMSBlogPage extends CMSPage{
 		if($this->page->getCategoryEntrySort() == BlogPage::ENTRY_SORT_ASC){
 			$logic->setReverse(true);
 		}
-
+		
 		//ブログ用のラベルIdも同時に指定して絞込み
 		if($label->getId() == $this->page->getBlogLabelId()){
 			$entries = $logic->getOpenEntryByLabelIds(array($label->getId()));

@@ -733,9 +733,11 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * getByLabelIdsだと重すぎる場所があったので追加
 	 *
 	 * @index Entry.id
-	 * @columns Entry.id,EntryLabel.display_order,Entry.cdate
+	 * @columns Entry.*,EntryLabel.display_order
 	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
 	 * @distinct
+     * @group Entry.id,EntryLabel.display_order
+     * @having count(Entry.id) = <?php count(:labelIds) ?>
 	 * @query EntryLabel.label_id in (<?php implode(',',:labelIds) ?>)
 	 */
 	function getByLabelIdsOnlyId($labelIds, $orderReverse = false){
@@ -748,7 +750,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
         //MySQL5.7以降対策。groupingとhagingをnullにした
 		$result = $this->executeQuery($query,$binds);
-        
+		
 		$array = array();
 		foreach($result as $row){
 			$array[$row["id"]] = $this->getObject($row);
@@ -793,9 +795,11 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * ラベルの絞り込みをアンドとオアを切り替える
 	 * ORのときの表示順は保証できない（？）
 	 *
-	 * @columns Entry.id,Entry.alias,Entry.title,Entry.content,Entry.more,Entry.cdate,Entry.udate,EntryLabel.display_order
+	 * @columns Entry.*
 	 * @order EntryLabel.display_order asc,Entry.cdate desc,Entry.id desc
 	 * @distinct
+     * @group Entry.id,EntryLabel.display_order
+     * @having count(Entry.id) = <?php count(:labelIds) ?>
 	 */
 	function getOpenEntryByLabelIdsImplements($labelIds, $now, $isAnd, $start = null, $end = null, $orderReverse = false){
 		$query = $this->getQuery();
