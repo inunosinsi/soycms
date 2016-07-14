@@ -43,5 +43,23 @@ class CustomSearchFieldUtil{
 		$list = self::getTypeList();
 		return (isset($list[$type]));
 	}
+	
+	public static function getIsOpenCategoryList(){
+		try{
+			$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getByIsOpen(1);
+		}catch(Exception $e){
+			return array();
+		}
+		
+		if(!count($categories)) return array();
+		
+		$list = array();
+		
+		foreach($categories as $category){
+			$list[$category->getId()] = $category->getName();
+		}
+		
+		return $list;
+	}
 }
 ?>

@@ -87,6 +87,12 @@ class SearchLogic extends SOY2LogicBase{
 				}
 			}
 			
+			//カテゴリー
+			if(isset($_GET["c_search"]["item_category"]) && is_numeric($_GET["c_search"]["item_category"])){
+				$this->where["item_category"] = "i.item_category = :item_category";
+				$this->binds[":item_category"] = (int)trim($_GET["c_search"]["item_category"]);
+			}
+			
 			$pmin = "";$pmax = "";
 			if(isset($_GET["c_search"]["item_price_min"]) && strlen($_GET["c_search"]["item_price_min"]) && is_numeric($_GET["c_search"]["item_price_min"])) {
 				$pmin = "i.item_price >= :item_price_min";

@@ -16,20 +16,38 @@
 		</dt>
 		<div class="search_area_dd" soy:id="search_area">
 			<form soy:id="search_form">
-				<p>
-					商品名：
-					<input type="search" soy:id="search_item_name">
-				</p>
-				<p>
-					商品コード：
-					<input type="search" soy:id="search_item_code">
-				</p>
-				<p>
-					カテゴリ：
-					<select soy:id="search_item_category">
-						<option value=""></option>
-					</select>
-				</p>
+				<table class="form_table">
+					<tr>
+						<th>商品名</th>
+						<td><input type="search" soy:id="search_item_name"></td>
+						<th>商品コード</th>
+						<td><input type="search" soy:id="search_item_code"></td>
+					</tr>
+					<tr>
+						<th>カテゴリ</th>
+						<td>
+							<select soy:id="search_item_category">
+								<option value=""></option>
+							</select>
+						</td>
+						<th>公開状態</th>
+						<td>
+							<input type="checkbox" soy:id="search_item_is_open">&nbsp;
+							<input type="checkbox" soy:id="search_item_no_open">
+						</td>
+					</tr>
+				</table>
+				
+				<!-- soy:display="custom_search_field" -->
+				<table class="form_table">
+					<!-- soy:id="form_list" -->
+					<tr>
+						<th soy:id="label" nowrap></th>
+						<td soy:id="form"></td>
+					</tr>
+					<!-- /soy:id="form_list" -->
+				</table>
+				<!-- /soy:display="custom_search_field" -->
 				<p class="pageBtn">
 					<input type="submit" name="search" value="検索">
 				</p>

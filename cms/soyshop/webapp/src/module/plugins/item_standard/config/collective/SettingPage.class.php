@@ -170,7 +170,6 @@ class SettingPage extends WebPage{
 	
 	private function buildSearchForm(){
 		
-		
 		//リセット
 		if(isset($_POST["search_condition"])){
 			foreach($_POST["search_condition"] as $key => $value){
@@ -214,6 +213,37 @@ class SettingPage extends WebPage{
 			"name" => "search_condition[item_category]",
 			"options" => $opts,
 			"selected" => $cnd["item_category"]
+		));
+		
+		$this->addCheckBox("search_item_is_open", array(
+			"name" => "search_condition[item_is_open][]",
+			"value" => SOYShop_Item::IS_OPEN,
+			"selected" => (isset($cnd["item_is_open"]) && in_array(SOYShop_Item::IS_OPEN, $cnd["item_is_open"])),
+			"label" => "公開"
+		));
+		
+		$this->addCheckBox("search_item_no_open", array(
+			"name" => "search_condition[item_is_open][]",
+			"value" => SOYShop_Item::NO_OPEN,
+			"selected" => (isset($cnd["item_is_open"]) && in_array(SOYShop_Item::NO_OPEN, $cnd["item_is_open"])),
+			"label" => "非公開"
+		));
+		
+		//カスタムサーチフィールド
+		SOY2::import("util.SOYShopPluginUtil");
+		$isCsf = SOYShopPluginUtil::checkIsActive("custom_search_field");
+		DisplayPlugin::toggle("custom_search_field", $isCsf);
+		
+		if($isCsf) self::buildCustomSearchForm($cnd);
+	}
+	
+	private function buildCustomSearchForm($cnd){
+		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+		
+		SOY2::import("module.plugins.item_standard.component.CustomSearchFieldFormListComponent");
+		$this->createAdd("form_list", "CustomSearchFieldFormListComponent", array(
+			"list" => CustomSearchFieldUtil::getConfig(),
+			"conditions" => (isset($cnd["csf"]) && is_array($cnd["csf"])) ? $cnd["csf"] : array()
 		));
 	}
 	

@@ -17,26 +17,25 @@
 		</dt>
 		<div class="search_area_dd" soy:id="search_area">
 			<form soy:id="search_form">
-				<p>
-					<!-- soy:id="csf_label" /-->
-					：
-					<input type="checkbox" soy:id="nothing_check">
-					<!-- soy:id="csf_cnd_form" /-->
-				</p>
-				<p>
-					商品名：
-					<input type="search" soy:id="search_item_name">
-				</p>
-				<p>
-					商品コード：
-					<input type="search" soy:id="search_item_code">
-				</p>
-				<p>
-					カテゴリ：
-					<select soy:id="search_item_category">
-						<option value=""></option>
-					</select>
-				</p>
+				<table class="form_table">
+					<tr>
+						<th nowrap><!-- soy:id="csf_label" /--></th>
+						<td colspan="5"><input type="checkbox" soy:id="nothing_check">
+						<!-- soy:id="csf_cnd_form" /--></td>
+					</tr>
+					<tr>
+						<th nowrap>商品名</th>
+						<td><input type="search" soy:id="search_item_name"></td>
+						<th nowrap>商品コード</th>
+						<td><input type="search" soy:id="search_item_code"></td>
+						<th nowrap>カテゴリ</th>
+						<td>
+							<select soy:id="search_item_category">
+								<option value=""></option>
+							</select>
+						</td>
+					</tr>
+				</table>
 				<p class="pageBtn">
 					<input type="submit" name="search" value="検索">
 				</p>
