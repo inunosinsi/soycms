@@ -68,7 +68,11 @@ function soy_cms_blog_output_category_link($page){
 					"text"=>$entry->getid(),
 					"soy2prefix"=>"cms"
 				));
-
+				
+				$this->createAdd("category_description", "CMSLabel", array(
+					"text" => $entry->getDescription(),
+					"soy2prefix" => "cms"
+				));
 			}
 
 			function getEntryCount() {
