@@ -51,9 +51,11 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 		$obj->setCurrentItem($item);
 		
 		soyshop_convert_item_detail_page_id($item, $page);
-
+		
 		if(strlen($item->getDetailPageId()) > 0 && $item->getDetailPageId() != $page->getId()){
-			throw new Exception();
+			header("HTTP/1.0 404 Not Found");
+			echo "error";
+			exit;
 		}
 
 		try{
