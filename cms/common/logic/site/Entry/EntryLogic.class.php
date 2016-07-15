@@ -733,7 +733,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * getByLabelIdsだと重すぎる場所があったので追加
 	 *
 	 * @index Entry.id
-	 * @columns Entry.*,EntryLabel.display_order
+	 * @columns Entry.id,EntryLabel.display_order,Entry.cdate
 	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
 	 * @distinct
      * @group Entry.id,EntryLabel.display_order
@@ -750,7 +750,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
         //MySQL5.7以降対策。groupingとhagingをnullにした
 		$result = $this->executeQuery($query,$binds);
-		
+        
 		$array = array();
 		foreach($result as $row){
 			$array[$row["id"]] = $this->getObject($row);
@@ -795,7 +795,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * ラベルの絞り込みをアンドとオアを切り替える
 	 * ORのときの表示順は保証できない（？）
 	 *
-	 * @columns Entry.*
+	 * @columns Entry.id,Entry.alias,Entry.title,Entry.content,Entry.more,Entry.cdate,Entry.udate,EntryLabel.display_order
 	 * @order EntryLabel.display_order asc,Entry.cdate desc,Entry.id desc
 	 * @distinct
      * @group Entry.id,EntryLabel.display_order
