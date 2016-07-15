@@ -671,10 +671,10 @@ class CMSApplication {
      * CMSの初期管理者かどうか
      */
     public static function checkAuthDefaultUser(){
-    	$sessioin = SOY2ActionSession::getUserSession();
+    	$session = SOY2ActionSession::getUserSession();
 
     	//ディフォルトユーザなら無条件にtrue
-    	if($sessioin->getAttribute("isdefault")){
+    	if($session->getAttribute("isdefault")){
     		return true;
     	}
 
@@ -685,15 +685,15 @@ class CMSApplication {
      * ログイン中のSOY Appの権限レベルを取得
      */
     public static function getAppAuthLevel(){
-    	$sessioin = SOY2ActionSession::getUserSession();
+    	$session = SOY2ActionSession::getUserSession();
 
     	//ディフォルトユーザの場合は無条件でSUPER USERにする
-    	if($sessioin->getAttribute("isdefault")){
+    	if($session->getAttribute("isdefault")){
     		return 1;	//SUPER USER
     	}
 
      	//権限レベル
-    	$level = $sessioin->getAttribute("app_auth_level");
+    	$level = $session->getAttribute("app_auth_level");
     	if(isset($level[APPLICATION_ID])){
     		return $level[APPLICATION_ID];
     	}
@@ -704,9 +704,9 @@ class CMSApplication {
      * ログイン中のSOY Appの権限設定を取得
      */
     public static function getAppAuthConfig(){
-    	$sessioin = SOY2ActionSession::getUserSession();
+    	$session = SOY2ActionSession::getUserSession();
      	//権限レベル
-    	$level = $sessioin->getAttribute("app_auth_config");
+    	$level = $session->getAttribute("app_auth_config");
     	if(isset($level[APPLICATION_ID])){
     		return $level[APPLICATION_ID];
     	}
