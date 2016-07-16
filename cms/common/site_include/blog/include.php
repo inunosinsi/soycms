@@ -73,6 +73,18 @@ function soy_cms_blog_output_category_link($page){
 					"text" => $entry->getDescription(),
 					"soy2prefix" => "cms"
 				));
+				
+				
+				$arg = substr($_SERVER["REQUEST_URI"], strrpos($_SERVER["REQUEST_URI"], "/") + 1);
+				$alias = rawurlencode($entry->getAlias());
+				$this->createAdd("is_current_category", "HTMLModel", array(
+					"visible" => ($arg === $alias),
+					"soy2prefix" => "cms"
+				));
+				$this->createAdd("no_current_category", "HTMLModel", array(
+					"visible" => ($arg !== $alias),
+					"soy2prefix" => "cms"
+				));
 			}
 
 			function getEntryCount() {
