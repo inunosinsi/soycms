@@ -15,7 +15,13 @@ class SOYShopSortButtonBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$pageType = $page->getPageObject()->getType();
 		if($pageType == SOYShop_Page::TYPE_LIST || $pageType == SOYShop_Page::TYPE_SEARCH){
 			
-			$pageUrl = soyshop_get_page_url($page->getPageObject()->getUri());
+			//_homeでもソートボタン設置プラグインを使用できるようにする
+			if($page->getPageObject()->getUri() == SOYShop_Page::URI_HOME){
+				$pageUrl = soyshop_get_page_url(null);
+			}else{
+				$pageUrl = soyshop_get_page_url($page->getPageObject()->getUri());
+			}
+			
 								
 			//検索ページで使う場合
 			$query = (isset($_GET["type"]) && isset($_GET["q"])) ? "&type=" . trim($_GET["type"]) . "&q=" . trim($_GET["q"]) : "";
