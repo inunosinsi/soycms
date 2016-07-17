@@ -428,7 +428,7 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 			if($res){
 				exec("jpegoptim -V", $out);
 				if(isset($out) && count($out)){
-					exec("jpegoptim " . $savepath);
+					exec("jpegoptim --strip-all " . $savepath);
 				}
 			}
 			return $res;
