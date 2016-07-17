@@ -402,6 +402,13 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 
 	/* 変換 */
 	$dstImage = imagecreatetruecolor($width,$height);
+	
+	//PNGの場合で画像に透過が入っている場合、透過の箇所を黒にしない
+	if($filetype == "png"){
+		imagealphablending($dstImage, false);
+		imagesavealpha($dstImage, true);
+	}
+	
 	imagecopyresampled(
 		$dstImage,$srcImage,
 		0, 0, 0, 0,
@@ -416,7 +423,15 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 	switch($savetype){
 		case "jpg":
 		case "jpeg":
-			return imagejpeg($dstImage,$savepath,100);
+			$res = imagejpeg($dstImage,$savepath,100);
+			//ロスレス圧縮
+			if($res){
+				exec("jpegoptim -V", $out);
+				if(isset($out) && count($out)){
+					exec("jpegoptim " . $savepath);
+				}
+			}
+			return $res;
 			break;
 		default:
 			$to = "image" . $savetype;
