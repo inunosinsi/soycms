@@ -24,6 +24,9 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		    $logic->prepare();
 		    $logic->installModule("common_point_base");
 		    unset($logic);
+		    
+		    //住所
+		    SOY2::import("domain.config.SOYShop_Area");
 		}
 	}
 	
@@ -65,7 +68,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		do{
 			$offset = self::LIMIT * ($n - 1) + 1;
 			foreach($this->pdo->query(
-				"SELECT name01,name02,kana01,kana02,zip01,zip02,pref,addr01,addr02,email,tel01,tel02,tel03,fax01,fax02,fax03,sex,birth,password,note,point,status,create_date,update_date,del_flg FROM dtb_customer ORDER BY customer_id ASC LIMIT " . self::LIMIT . " OFFSET " . $offset
+				"SELECT customer_id, name01,name02,kana01,kana02,zip01,zip02,pref,addr01,addr02,email,tel01,tel02,tel03,fax01,fax02,fax03,sex,birth,password,note,point,status,create_date,update_date,del_flg,mailmaga_flg FROM dtb_customer ORDER BY customer_id ASC LIMIT " . self::LIMIT . " OFFSET " . $offset
 			) as $r){
 				if(strlen($r["email"]) === 0) continue;
 				try{
@@ -96,6 +99,9 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 				$user->setAttribute3("EC CUBE");
 				
+				//メルマガ 1と2が登録、3が拒否
+				if((int)$r["mailmaga_flg"] === 3) $user->setNotSend(SOYShop_User::USER_NOT_SEND);
+				
 				//def_flgを見る
 				if((int)$r["del_flg"] > 0){
 					/**
@@ -119,6 +125,33 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				}
 				
 				if((int)$r["point"] > 0) $logic->insert($r["point"], "EC CUBEからの移行分", $id);
+				
+				//お届け先住所がある場合
+				$address = array();
+				foreach($this->pdo->query(
+					"SELECT name01,name02,kana01,kana02,zip01,zip02,pref,addr01,addr02,tel01,tel02,tel03 FROM dtb_other_deliv WHERE customer_id = " . $r["customer_id"]
+				) as $rr){
+					$addr = array();
+					$addr["office"] = self::t($rr["name01"]);
+					$addr["name"] = self::t($rr["name02"]);
+					$addr["reading"] = self::t($rr["kana02"]);
+					$addr["zipCode"] = self::t($rr["zip01"]) . self::t($rr["zip02"]);
+					$addr["area"] = (int)$rr["pref"];
+					$addr["address1"] = self::t($rr["addr01"]);
+					$addr["address2"] = self::t($rr["addr02"]);
+					$addr["telephoneNumber"] = self::t($rr["tel01"]). self::t($rr["tel02"]) . self::t($rr["tel03"]);
+					
+					$address[] = $addr;
+				}
+				
+				if(count($address)){
+					$user->setAddressList($address);
+					try{
+						$dao->update($user);
+					}catch(Exception $e){
+						//
+					}
+				}
 			}
 		}while($total > self::LIMIT * $n++);
 		$dao->commit();
@@ -127,7 +160,11 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		unset($logic);
 		unset($dao);
 		
+		unset($addr);
+		unset($address);
+		
 		unset($r);
+		unset($rr);
 		unset($n);
 		unset($total);
 		unset($offset);
