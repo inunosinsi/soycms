@@ -29,9 +29,7 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
 
 		$content = CommonMailbuilderCommon::getMailContent($type);
 		
-		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-		$orderItems = $logic->getItemsByOrderId($order->getId());
-		
+		$orderItems = SOY2Logic::createInstance("module.plugins.common_mailbuilder.logic.OrderLogic")->getItemsByOrderId($order->getId());		
 		
 		list($itemContent, $subprice) = $this->buildItemOrderInfo($orderItems);
 		list($moduleContent, $moduleprice) = $this->buildModuleInfo($order);

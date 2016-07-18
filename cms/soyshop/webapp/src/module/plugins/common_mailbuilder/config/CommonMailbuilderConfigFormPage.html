@@ -1,5 +1,17 @@
 <div class="block_body clearfix">
 	<form soy:id="form">
+		<dl>
+			<dt>商品一覧の並び順</dt>
+			<dd>
+				<!-- soy:id="sort_list" -->
+				<input type="radio" soy:id="sort_input" />
+				<!-- /soy:id="sort_list" -->
+
+				<h4>昇順・降順</h4>
+				<input type="radio" soy:id="sort_normal" />
+				<input type="radio" soy:id="sort_reverse" />
+			</dd>
+		</dl>
 		<table class="form_table" style="table-layout:auto;">
 			<caption>本文</caption>
 			<tr>
