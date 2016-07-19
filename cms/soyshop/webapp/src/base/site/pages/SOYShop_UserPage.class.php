@@ -69,8 +69,14 @@ class SOYShop_UserPage extends SOYShopPageBase{
 	}
 
 	function getTemplateFilePath(){
-		$templateDir = SOYSHOP_SITE_DIRECTORY . ".template/";
-		return $templateDir . "mypage/" . $this->getMyPageId() . ".html";
+		$templateDir = SOYSHOP_SITE_DIRECTORY . ".template/mypage/";
+		
+		//隠し機能 ログインしていない時に$this->getMyPageId() . "_no_login.ini"があればそちらを見る
+		if(!MyPageLogic::getMyPage()->getIsLoggedin() && file_exists($templateDir . $this->getMyPageId() . "_no_login.ini")){
+			return $templateDir . $this->getMyPageId() . "_no_login.html";
+		}
+
+		return $templateDir . $this->getMyPageId() . ".html";
     }
 
     /**
