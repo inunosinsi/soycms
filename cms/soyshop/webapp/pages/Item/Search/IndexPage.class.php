@@ -161,6 +161,13 @@ class IndexPage extends WebPage{
 			"name" => "SearchForm[code]",
 			"value" => (isset($form["code"])) ? $form["code"] : ""
 		));
+		
+		$this->addCheckBox("is_child", array(
+			"name" => "SearchForm[is_child]",
+			"value" => 1,
+			"label" => "小商品も表示する",
+			"selected" => (isset($form["is_child"]))
+		));
 
 		//カテゴリ
 		$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
