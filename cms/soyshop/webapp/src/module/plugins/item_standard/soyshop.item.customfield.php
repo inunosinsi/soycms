@@ -9,6 +9,8 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 	function doPost(SOYShop_Item $item){
 		
+		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		
 		if(isset($_POST["Standard"])){
 			self::prepare();
 			foreach($_POST["Standard"] as $confId => $value){
@@ -48,7 +50,6 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 			}
 			
 			$exe = false;
-			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 			if($res){
 				if($item->getType() == SOYShop_Item::TYPE_SINGLE){
 					$item->setType(SOYShop_Item::TYPE_GROUP);
@@ -86,6 +87,23 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 							
 						}
 					}
+				}
+			}
+			
+			//セールの一括設定
+			try{
+				$children = $itemDao->getByType($item->getId());
+			}catch(Exception $e){
+				return;
+			}
+			
+			$saleFlag = (int)$item->getSaleFlag();
+			if(count($children)) foreach($children as $child){
+				$child->setSaleFlag($saleFlag);
+				try{
+					$itemDao->update($child);
+				}catch(Exception $e){
+					//
 				}
 			}
 		}

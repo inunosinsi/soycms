@@ -87,6 +87,7 @@ class BuildFormLogic extends SOY2LogicBase{
 		}
 		$html[] = "<th class=\"short\">在庫数</th>";
 		$html[] = "<th class=\"middle\">価格</th>";
+		$html[] = "<th class=\"middle\">セール価格</th>";
 		$html[] = "<th class=\"operation\"></th>";
 		
 		$html[] = "		</tr>";
@@ -153,11 +154,13 @@ class BuildFormLogic extends SOY2LogicBase{
 		
 		$stock = (!is_null($child->getStock())) ? (int)$child->getStock() : 0;
 		$price = (!is_null($child->getPrice())) ? (int)$child->getPrice() : null;
+		$salePrice = (!is_null($child->getSalePrice())) ? (int)$child->getSalePrice() : null;
 		
 		//子商品の情報が無ければ親商品の情報を取得しておく
 		if(is_null($child->getId())){
 			$parent = self::getParentItem();
 			if(!$price) $price = (int)$parent->getPrice();
+			if(!$salePrice) $salePrice = (int)$parent->getSalePrice();
 		}
 		
 		$html = array();
@@ -172,6 +175,7 @@ class BuildFormLogic extends SOY2LogicBase{
 		
 		$html[] = "<td><input type=\"number\" name=\"Item[" . $key . "][stock]\" value=\"" . $stock . "\" class=\"short\"></td>";
 		$html[] = "<td><input type=\"number\" name=\"Item[" . $key . "][price]\" value=\"" . $price . "\"></td>";
+		$html[] = "<td><input type=\"number\" name=\"Item[" . $key . "][salePrice]\" value=\"" . $salePrice . "\"></td>";
 		$html[] = "<td>";
 		$html[] = "<input type=\"submit\" value=\"更新\">";
 		$html[] = "</td>";

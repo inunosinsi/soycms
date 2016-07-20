@@ -24,6 +24,7 @@ class SettingStandardPage extends WebPage{
 				$child = $logic->getChildItem($this->itemId, $values["key"]);
 				$child = $logic->setChildItemName($child, $this->parentItem, $values["key"]);
 				$child->setPrice((int)$values["price"]);
+				$child->setSalePrice((int)$values["salePrice"]);
 				$child->setStock((int)$values["stock"]);
 				
 				
@@ -73,6 +74,10 @@ class SettingStandardPage extends WebPage{
 		
 		$this->addLabel("item_price", array(
 			"text" => number_format($item->getPrice())
+		));
+		
+		$this->addLabel("item_sale_price", array(
+			"text" => number_format($item->getSalePrice())
 		));
 	}
 	
