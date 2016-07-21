@@ -232,13 +232,15 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 	));
 	
 	$htmlObj->createAdd("create_date", "DateLabel", array(
-		"text" => $item->getUpdateDate(),
-		"soy2prefix" => SOYSHOP_SITE_PREFIX
+		"text" => $item->getCreateDate(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"defaultFormat" => "Y.m.d"
 	));
 	
 	$htmlObj->createAdd("update_date", "DateLabel", array(
 		"text" => $item->getUpdateDate(),
-		"soy2prefix" => SOYSHOP_SITE_PREFIX
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"defaultFormat" => "Y.m.d"
 	));
 
 	/* event SOY CMSから読み込んだ時はカスタムフィールドは表示できない様にする*/
