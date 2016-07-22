@@ -7,11 +7,9 @@ class SOYShopAdminBase implements SOY2PluginAction{
 }
 
 class SOYShopAdminDeletageAction implements SOY2PluginDelegateAction{
-
-	private $_area;
 	
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){		
-		$this->_area = $action->execute();
+		$action->execute();
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.admin", "SOYShopAdminDeletageAction");

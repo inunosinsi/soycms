@@ -18,12 +18,12 @@ class AsyncCartButtonCustomField extends SOYShopItemCustomFieldBase{
 		$htmlObj->addLink("async_cart_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"link" => "javascript:void(0);",
-			"onclick" => "AsyncCartButton.addItem(" . $item->getId() . "," . $item->getPrice() . ");"
+			"onclick" => "AsyncCartButton.addItem(this," . $item->getId() . "," . $item->getPrice() . ");"
 		));
 	
 		$htmlObj->addModel("async_cart_button", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"onclick" => "AsyncCartButton.addItem(" . $item->getId() . "," . $item->getPrice() . ");"
+			"onclick" => "AsyncCartButton.addItem(this," . $item->getId() . "," . $item->getPrice() . ");"
 		));
 	}
 }
