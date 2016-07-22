@@ -255,7 +255,8 @@ class InvoiceListComponent extends HTMLList{
 		//ordersが空の時は再度取得する
 		if(count($itemOrders) === 0){
 			try{
-				$itemOrders = $this->itemOrderDao->getByOrderId($orderId);
+				//一件しか取得できないのがちらほらあるので、再度コンストラクトすることにした
+				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
 			}catch(Exception $e){
 				$itemOrders = array();
 			}
