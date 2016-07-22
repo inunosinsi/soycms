@@ -187,7 +187,8 @@ class UserComponent {
 			"value" => $user->getUrl(),
 		));
 		
-		$activeSOYMail = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("soymail_connector")));
+		SOY2::import("util.SOYShopPluginUtil");
+		$activeSOYMail = (SOYShopPluginUtil::checkIsActive("soymail_connector"));
 		//メールマガジン(ユーザカスタムフィールド内で登録の処理を行う)
 		$page->addModel("active_soymail_connector", array(
 			"visible" => $activeSOYMail
