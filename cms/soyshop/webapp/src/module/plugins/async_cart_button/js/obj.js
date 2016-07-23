@@ -22,8 +22,24 @@ AsyncCartButton = {
 		}
 		
 		xhr = new XMLHttpRequest();
-		xhr.open("GET",url);
-		xhr.send();
+		xhr.open("POST",url);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		
+		var param = "";
+		
+		//商品規格がある場合はPOSTの内容も送信したい
+		var sels = document.querySelectorAll('select option:checked');
+		if(sels.length){
+			
+			for (var i = 0; i < sels.length; i++){
+				if(sels[i].parentElement.name.indexOf("Standard") === 0){
+					if(param.length) param += "&";
+					param += sels[i].parentElement.name + "=" + sels[i].innerHTML.trim();
+				}
+			}
+		}
+		
+		xhr.send(param);
 		
 		xhr.addEventListener("load", function(){
 			//HTTPステータスが200でカートに商品が入ったことを確認
