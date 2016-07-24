@@ -137,7 +137,14 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 				"name" => "Standard[" . $values["id"] . "]",
 				"options" => explode("\n", $obj->getValue())
 			));
+			
 		}
+		
+		//小商品に在庫切れのものがあるか？
+		$htmlObj->addModel("has_no_stock_child", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"visible" => (self::checkIsChildItemStock($item->getId(), $item->getType()))
+		));
 		
 		
 		//カートを表示する場合は$obj->getValue()が1ではない		
@@ -155,6 +162,23 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		}catch(Exception $e){
 			return new SOYShop_ItemAttribute();
 		}
+	}
+	
+	private function checkIsChildItemStock($parentId, $type){
+		if($type != "group") return false;
+		
+		$sql = "SELECT COUNT(*) FROM soyshop_item ".
+				"WHERE item_type = :parentId ".
+				"AND item_stock = 0 ".
+				"AND is_disabled != 1";
+				
+		try{
+			$res = $this->attrDao->executeQuery($sql, array(":parentId" => $parentId));
+		}catch(Exception $e){
+			$res = array();
+		}
+		
+		return (isset($res[0]["COUNT(*)"]) && $res[0]["COUNT(*)"] > 0);
 	}
 	
 	private function prepare(){
