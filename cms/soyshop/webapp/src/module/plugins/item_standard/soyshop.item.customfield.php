@@ -111,7 +111,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 	function getForm(SOYShop_Item $item){
 		//子商品の詳細は表示させない
-		if(is_numeric($item->getType())) SOY2PageController::jump("Item.Detail." . $item->getId());
+		if(is_numeric($item->getType())) SOY2PageController::jump("Item.Detail." . $item->getType());
 		
 		return SOY2Logic::createInstance("module.plugins.item_standard.logic.BuildFormLogic", array("parentId" => $item->getId()))->buildCustomFieldArea();
 	}
