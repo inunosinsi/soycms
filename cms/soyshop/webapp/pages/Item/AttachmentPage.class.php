@@ -80,7 +80,8 @@ class AttachmentPage extends DetailPage{
     	$file1 = str_replace(soyshop_get_site_url(), SOYSHOP_SITE_DIRECTORY, $file1);
     	$file2 = str_replace(soyshop_get_site_url(), SOYSHOP_SITE_DIRECTORY, $file2);
 
-    	return (filemtime($file1) <= filemtime($file2));
+		//filemtimeが使用出来ないサーバ対策
+    	return (@filemtime($file1) <= @filemtime($file2));
     }
 }
 ?>
