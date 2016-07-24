@@ -217,7 +217,7 @@ class BlockDetailList extends HTMLList{
 				"name" => "商品名",
 				"code" => "商品コード",
 				"stock" => "在庫数",
-				"stock" => "標準価格",
+				"price" => "標準価格",
 				"cdate" => "作成日",
 				"udate" => "更新日"
 			),
