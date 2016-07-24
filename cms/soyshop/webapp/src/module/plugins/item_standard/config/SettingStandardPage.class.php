@@ -19,10 +19,15 @@ class SettingStandardPage extends WebPage{
 		if(soy2_check_token() && isset($_POST["Item"])){
 			
 			$logic = SOY2Logic::createInstance("module.plugins.item_standard.logic.ChildItemLogic");
+			SOYShopPlugin::load("soyshop.item.update");
 			
 			foreach($_POST["Item"] as $values){
 				$child = $logic->getChildItem($this->itemId, $values["key"]);
 				$child = $logic->setChildItemName($child, $this->parentItem, $values["key"]);
+
+				//在庫数チェックの前に更新前の在庫数を取得しておく
+				$oldStock = $child->getStock();
+
 				$child->setPrice((int)$values["price"]);
 				$child->setSalePrice((int)$values["salePrice"]);
 				$child->setStock((int)$values["stock"]);
@@ -44,6 +49,12 @@ class SettingStandardPage extends WebPage{
 					}catch(Exception $e){
 						//
 					}
+					
+					//更新の場合
+					SOYShopPlugin::invoke("soyshop.item.update", array(
+						"item" => $child,
+						"old" => $oldStock
+					));
 				}
 			}
 		}

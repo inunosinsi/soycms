@@ -10,16 +10,16 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 		//これらの条件を満たさないと処理は開始しない
 		if(isset($_GET["notice"]) && isset($_GET["a"]) && soy2_check_token()){
-			
+						
 			$noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
 			$itemId = (int)$_GET["notice"];
 			
 			//現時点で在庫切れ商品であるかを確認する
-			if(!$noticeLogic->checkStock($itemId)) $this->redirect();			
+			if(!$noticeLogic->checkStock($itemId)) $this->redirect();
 			
 			//ログインしているかを調べる
 			$userId = $noticeLogic->getUserId();
-			if(!isset($userId)) $this->redirect();
+			if(!isset($userId)) $this->jumpLoginPage();
 			
 			switch($_GET["a"]){
 				case "add":
@@ -53,6 +53,8 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 						$body = $noticeLogic->convertMailContent($content, $user, $item);
 					
 						$mailLogic->sendMail($adminMailAddress, $title, $body);
+						
+						$this->redirect(array("notice" => "successed"));
 					}
 					
 					break;
@@ -64,8 +66,24 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
 	}
 	
-	function redirect(){
-		header("Location:" . $_SERVER["HTTP_REFERER"]);
+	function redirect($params = array()){
+		$referer = $_SERVER["HTTP_REFERER"];
+		if(strpos($referer, "?")) $referer = substr($_SERVER["HTTP_REFERER"], 0, strpos($_SERVER["HTTP_REFERER"], "?"));
+		
+		$q = "";
+		if(count($params)){
+			foreach($params as $key => $p){
+				$q .= (!strlen($q)) ? "?" : "&";
+				$q .= $key . "=" . $p;
+			}
+		}
+		header("Location:" . $referer . $q);
+		exit;
+	}
+	
+	function jumpLoginPage(){
+		header("Location:" . soyshop_get_mypage_url(true) . "/login?r=" . $_SERVER["REDIRECT_URL"]);
+		exit;
 	}
 }
 SOYShopPlugin::extension("soyshop.site.beforeoutput", "common_notice_arrival", "CommonNoticeArrivalBeforeOutput");

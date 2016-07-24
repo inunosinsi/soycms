@@ -23,11 +23,18 @@ class CommonNoticeArrivalCustomField extends SOYShopItemCustomFieldBase{
 		
 		$this->prepare($item->getId());
 		
+//		$htmlObj->addActionLink("notice_arrival_register_link", array(
+//			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+//			"link" => "?notice=" . $item->getId() ."&a=add",
+//			"onclick" => "return confirm('入荷通知登録をしますか？');",
+//			"visible" => ($this->isLoggedIn && $this->checkStock && !$this->checkRegister)
+//		));
+		
 		$htmlObj->addActionLink("notice_arrival_register_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"link" => "?notice=" . $item->getId() ."&a=add",
 			"onclick" => "return confirm('入荷通知登録をしますか？');",
-			"visible" => ($this->isLoggedIn && $this->checkStock && !$this->checkRegister)
+			"visible" => ($this->checkStock && !$this->checkRegister)
 		));
 		
 		
@@ -39,6 +46,17 @@ class CommonNoticeArrivalCustomField extends SOYShopItemCustomFieldBase{
 	}
 	
 	function prepare($itemId){
+		if(!$this->noticeLogic) $this->noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
+
+		$this->checkRegister = $this->noticeLogic->checkRegisterNotice($itemId);
+		$this->checkStock = $this->noticeLogic->checkStock($itemId);
+			
+		//マイページのみ動かす
+		if(isset($_SERVER["PATH_INFO"]) && $_SERVER["PATH_INFO"] == "/" . soyshop_get_mypage_uri() . "/notice"){
+			$this->checkNotice = $this->noticeLogic->checkNotice($itemId);
+		}
+
+/**		
 		//１ページで一回だけ調べる
 		if(!$this->noticeLogic && isset($itemId)){
 			$this->noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
@@ -55,6 +73,7 @@ class CommonNoticeArrivalCustomField extends SOYShopItemCustomFieldBase{
 				$this->checkNotice = $this->noticeLogic->checkNotice($itemId);
 			}
 		}
+**/
 	}
 }
 
