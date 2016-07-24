@@ -52,15 +52,37 @@
 	</form soy:id="form">
 </div>
 
-<h1>テンプレートへの記述</h1>
-
+<section>
+	<h1>テンプレートへの記述</h1>
+	
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;">
 &lt;!-- block:id="item" --&gt;
 
 &lt;a <strong>cms:id="notice_arrival_register_link"</strong>&gt;入荷通知登録&lt;/a&gt;
 
-&lt;!-- /block:id="item" --&gt;
-</pre>
+&lt;!-- /block:id="item" --&gt;</pre>	
+</section>
+
+<section>
+	<h1>商品規格プラグインとの連携</h1>
+
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;">
+&lt;!-- block:id="item" --&gt;
+	
+&lt;!-- cms:id="has_no_stock_child" --&gt;
+&lt;div&gt;在庫切れ商品の規格&lt;/div&gt;
+&lt;ul&gt;
+	&lt;!-- block:id="child_item_list" --&gt;
+	&lt;!-- cms:id="no_stock" --&gt;
+	&lt;li&gt;&lt;!-- cms:id="item_name" /--&gt; &lt;a <strong>cms:id="notice_arrival_register_link"</strong>&gt;入荷通知登録&lt;/a&gt;&lt;/li&gt;
+	&lt;!-- /cms:id="no_stock" --&gt;
+	&lt;!-- /block:id="child_item_list" --&gt;
+&lt;/ul&gt;
+&lt;!-- /cms:id="has_no_stock_child" --&gt;
+	
+&lt;!-- /block:id="item" --&gt;</pre>	
+</section>
+
 
 <style type="text/css">
 .mail_replace_word_panel{
