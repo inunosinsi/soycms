@@ -68,7 +68,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 								"type" => "checkbox",
 								"name" => "c_search[" . $key . "][]",
 								"value" => $o,
-								"selected" => (is_array($params[$key]) && in_array($o, $params[$key])),
+								"selected" => (isset($params[$key]) && is_array($params[$key]) && in_array($o, $params[$key])),
 								"label" => $o
 							));
 						}
@@ -83,7 +83,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 								"type" => "radio",
 								"name" => "c_search[" . $key . "]",
 								"value" => $o,
-								"selected" => ((!isset($params[$key]) && $i === 0) || ($o === $params[$key])),
+								"selected" => ((!isset($params[$key]) && $i === 0) || (isset($params[$key] && $o === $params[$key])),
 								"label" => $o
 							));
 						}
