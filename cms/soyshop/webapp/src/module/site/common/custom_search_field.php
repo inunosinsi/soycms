@@ -83,7 +83,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 								"type" => "radio",
 								"name" => "c_search[" . $key . "]",
 								"value" => $o,
-								"selected" => ((!isset($params[$key]) && $i === 0) || (isset($params[$key] && $o === $params[$key])),
+								"selected" => ((!isset($params[$key]) && $i === 0) || (isset($params[$key]) && $o === $params[$key])),
 								"label" => $o
 							));
 						}
