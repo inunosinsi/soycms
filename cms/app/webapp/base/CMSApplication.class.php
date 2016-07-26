@@ -138,7 +138,7 @@ class CMSApplication {
 		$properties = $self->properties;
 		
 		//modeプロパティにはどのテンプレートを使うか？の値が格納されている。modeプロパティはrun関数で定義されている
-		$isCustomTemp = ($self->mode !== "template" && $self->mode !== "plain");
+		$isCustomTemp = ($self->mode !== "template" && $self->mode !== "wide" && $self->mode !== "plain");
 	
 		$html = "";
 		$isActive = (is_null($self->activeTab)) ? true : false;
