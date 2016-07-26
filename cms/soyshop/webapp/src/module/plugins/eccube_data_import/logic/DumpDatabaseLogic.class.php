@@ -21,13 +21,21 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		//ポイントプラグインのインストール
 		if(!SOYShopPluginUtil::checkIsActive("common_point_base")){
 			$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
-		    $logic->prepare();
-		    $logic->installModule("common_point_base");
-		    unset($logic);
-		    
-		    //住所
-		    SOY2::import("domain.config.SOYShop_Area");
+			$logic->prepare();
+			$logic->installModule("common_point_base");
+			unset($logic);
 		}
+		
+		//お気に入り商品の登録
+		if(!SOYShopPluginUtil::checkIsActive("common_favorite_item")){
+			$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
+			$logic->prepare();
+			$logic->installModule("common_favorite_item");
+			unset($logic);
+		}
+		
+		//住所
+		SOY2::import("domain.config.SOYShop_Area");
 	}
 	
 	function execute(){
@@ -46,6 +54,9 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		
 		//商品の登録
 		self::registerItem();
+		
+		//お気に入りの登録
+		self::registerFavorite();
 		
 		//注文の登録
 		self::registerOrder();
@@ -313,6 +324,79 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		unset($item);
 		
 		unset($r);
+		unset($n);
+		unset($total);
+		unset($offset);
+	}
+	
+	private function registerFavorite(){
+		SOY2::imports("module.plugins.common_favorite_item.domain.*");
+		$dao = SOY2DAOFactory::create("SOYShop_FavoriteItemDAO");
+		$logic = SOY2Logic::createInstance("module.plugins.common_favorite_item.logic.FavoriteLogic");
+		
+		$n = 1;
+		$total = self::getTotal("dtb_customer_favorite_products");
+		
+		$dao->begin();
+		do{
+			$offset = self::LIMIT * ($n - 1) + 1;
+			foreach($this->pdo->query(
+				"SELECT customer_id, product_id FROM dtb_customer_favorite_products ORDER BY product_id ASC LIMIT " . self::LIMIT . " OFFSET " . $offset
+			) as $r){
+				
+				$userId = null;
+				$itemId = null;
+				
+				//対応するユーザIDを調べる
+				foreach($this->pdo->query(
+					"SELECT email FROM dtb_customer WHERE customer_id = " . $r["customer_id"]
+				) as $rr){
+					try{
+						$res = $dao->executeQuery("SELECT id FROM soyshop_user WHERE mail_address = :email", array(":email" => $rr["email"]));
+					}catch(Exception $e){
+						continue;
+					}
+					
+					if(isset($res[0]["id"]) && is_numeric($res[0]["id"])){
+						$userId = (int)$res[0]["id"];
+						break;
+					}
+				}
+				
+				if(is_null($userId)) continue;
+				
+				//対応する商品IDを調べる
+				foreach($this->pdo->query(
+					"SELECT product_code FROM dtb_products_class WHERE product_id = " . $r["product_id"]
+				) as $rr){
+					try{
+						$res = $dao->executeQuery("SELECT id FROM soyshop_item WHERE item_code = :code", array(":code" => $rr["product_code"]));
+					}catch(Exception $e){
+						continue;
+					}
+					
+					if(isset($res[0]["id"]) && is_numeric($res[0]["id"])){
+						$itemId = (int)$res[0]["id"];
+						break;
+					}
+				}
+				
+				if(is_null($itemId)) continue;
+				
+				//お気に入りに登録する
+				$logic->registerFavorite($itemId, $userId);
+			}
+		}while($total > self::LIMIT * $n++);
+		$dao->commit();
+		
+		unset($dao);
+		unset($logic);
+		unset($userId);
+		unset($itemId);
+		
+		unset($r);
+		unset($rr);
+		
 		unset($n);
 		unset($total);
 		unset($offset);
