@@ -70,7 +70,8 @@ function soyshop_custom_search_field($html, $htmlObj){
 								"name" => "c_search[" . $key . "][]",
 								"value" => $o,
 								"selected" => (isset($params[$key]) && is_array($params[$key]) && in_array($o, $params[$key])),
-								"label" => $o
+								"label" => $o,
+								"elementId" => "custom_search_" . $key . "_" . $i
 							));
 						}
 					}
@@ -86,7 +87,8 @@ function soyshop_custom_search_field($html, $htmlObj){
 								"name" => "c_search[" . $key . "]",
 								"value" => $o,
 								"selected" => ((!isset($params[$key]) && $i === 0) || (isset($params[$key]) && $o === $params[$key])),
-								"label" => $o
+								"label" => $o,
+								"elementId" => "custom_search_" . $key . "_" . $i
 							));
 						}
 					}

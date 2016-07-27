@@ -1,121 +1,255 @@
 <?php
+SOYShopPlugin::load("soyshop.item.customfield");
 
-function soyshop_custom_search_field($html, $htmlObj){
-	$obj = $htmlObj->create("soyshop_custom_search_field", "HTMLTemplatePage", array(
-		"arguments" => array("soyshop_custom_search_field", $html)
+/**
+ * 商品情報を出力
+ * テンプレートに記述しない
+ */
+function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
+
+	$htmlObj->addLabel("id", array(
+		"text" => $item->getId(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	//商品名
+	$htmlObj->addLabel("item_name", array(
+		"text" => $item->getOpenItemName(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	//グループの場合の処理
+	if($item->getType() == SOYShop_Item::TYPE_GROUP){
+		$type = (method_exists($obj, "getSortType")) ? $obj->getSortType() : "item_code";
+		$order = (method_exists($obj, "getSortOrder") && $obj->getSortOrder() == 1) ? $type . " desc" : $type . " asc";
+		$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array(
+		));
+		$childItems = $logic->getChildItems($item->getId(), $order);
+	}
+	if(!$htmlObj instanceof SOYShop_ChildItemListComponent){
+		$htmlObj->createAdd("child_item_list", "SOYShop_ChildItemListComponent", array(
+			"list" => ($item->getType() == SOYShop_Item::TYPE_GROUP) ? $childItems : array(),
+			"soy2prefix" => "block"
+		));
+	}
+
+	//表示価格が0円以上の場合は表示する
+	$htmlObj->addModel("item_price_visible", array(
+		"visible" => ((int)$item->getSellingPrice() > 0),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	//表示価格(通常価格、セール設定中はセール価格)
+	$htmlObj->addLabel("item_price", array(
+		"text" => soyshop_display_price($item->getSellingPrice()),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 	
-	SOY2::import("util.SOYShopPluginUtil");
-	if(SOYShopPluginUtil::checkIsActive("custom_search_field")){
-		
-		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-		
-		//GETの値を変数に入れておく。そのうちページャ対応を行わなければならないため
-		$params = (isset($_GET["c_search"])) ? $_GET["c_search"] : array();
-		
-		//商品名
-		$obj->addInput("custom_search_item_name", array(
-			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-			"type" => "text",
-			"name" => "c_search[item_name]",
-			"value" => (isset($params["item_name"]) && strlen($params["item_name"])) ? $params["item_name"] : null
-		));
-		
-		//商品名
-		$obj->addInput("custom_search_item_code", array(
-			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-			"type" => "text",
-			"name" => "c_search[item_code]",
-			"value" => (isset($params["item_code"]) && strlen($params["item_code"])) ? $params["item_code"] : null
-		));
-		
-		//商品価格
-		foreach(array("min", "max") as $t){
-			$obj->addInput("custom_search_item_price_" . $t, array(
-				"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-				"type" => "text",
-				"name" => "c_search[item_price_" . $t . "]",
-				"value" => (isset($params["item_price_" . $t]) && strlen($params["item_price_" . $t])) ? $params["item_price_" . $t] : null
-			));
-		}
-		
-		//カテゴリのセレクトボックス
-		$obj->addSelect("custom_search_item_category", array(
-			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-			"name" => "c_search[item_category]",
-			"options" => CustomSearchFieldUtil::getIsOpenCategoryList(),
-			"selected" => (isset($params["item_category"])) ? (int)$params["item_category"] : false 
-		));
-		
-		foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
-			switch($field["type"]){
-				case CustomSearchFieldUtil::TYPE_RANGE:
-					foreach(array("start", "end") as $t){
-						$obj->addInput("custom_search_" . $key . "_" . $t, array(
-							"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-							"type" => "number",
-							"name" => "c_search[" . $key . "_" . $t . "]",
-							"value" => (isset($params[$key . "_" . $t]) && strlen($params[$key . "_" . $t])) ? (int)$params[$key . "_" . $t] : null
-						));
-					}
-					break;
-				case CustomSearchFieldUtil::TYPE_CHECKBOX:
-					if(strlen($field["option"])){
-						foreach(explode("\n", $field["option"]) as $i => $o){
-							$o = trim($o);	//改行を除く
-							if(!strlen($o)) continue;
-							$obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
-								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-								"type" => "checkbox",
-								"name" => "c_search[" . $key . "][]",
-								"value" => $o,
-								"selected" => (isset($params[$key]) && is_array($params[$key]) && in_array($o, $params[$key])),
-								"label" => $o,
-								"elementId" => "custom_search_" . $key . "_" . $i
-							));
-						}
-					}
-					break;
-				case CustomSearchFieldUtil::TYPE_RADIO:
-					if(strlen($field["option"])){
-						foreach(explode("\n", $field["option"]) as $i => $o){
-							$o = trim($o);	//改行を除く
-							if(!strlen($o)) continue;
-							$obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
-								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-								"type" => "radio",
-								"name" => "c_search[" . $key . "]",
-								"value" => $o,
-								"selected" => ((!isset($params[$key]) && $i === 0) || (isset($params[$key]) && $o === $params[$key])),
-								"label" => $o,
-								"elementId" => "custom_search_" . $key . "_" . $i
-							));
-						}
-					}
-					break;
-				case CustomSearchFieldUtil::TYPE_SELECT:
-					$options = array();
-					foreach(explode("\n", $field["option"]) as $o){
-						$options[trim($o)] = trim($o);
-					}
-					$obj->addSelect("custom_search_" . $key, array(
-						"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-						"name" => "c_search[" . $key . "]",
-						"options" => $options,
-						"selected" => (isset($params[$key])) ? $params[$key] : false
-					));
-					break;
-				default:
-					$obj->addInput("custom_search_" . $key, array(
-						"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-						"name" => "c_search[" . $key . "]",
-						"value" => (isset($params[$key])) ? $params[$key] : null
-					));
-			}
-				
-		}
-	}	
+	$htmlObj->addModel("item_normal_price_visible", array(
+		"visible" => ((int)$item->getPrice() > 0),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	//通常価格
+	$htmlObj->addLabel("item_normal_price", array(
+		"text" => soyshop_display_price($item->getPrice()),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
 	
-	$obj->display();
+	$htmlObj->addModel("item_sale_price_visible", array(
+		"visible" => ((int)$item->getSalePrice() > 0),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	//セール価格
+	$htmlObj->addLabel("item_sale_price", array(
+		"text" => soyshop_display_price($item->getSalePrice()),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+
+	$htmlObj->addModel("item_list_price_visible", array(
+		"visible" => ((int)$item->getAttribute("list_price") > 0),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	//定価
+	$htmlObj->addLabel("item_list_price", array(
+		"text" => soyshop_display_price($item->getAttribute("list_price")),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	//セール設定中のみ表示される
+	$htmlObj->addModel("on_sale", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => $item->getSaleFlag()
+	));
+
+	//セール設定中は表示されない
+	$htmlObj->addModel("not_on_sale", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => (!$item->getSaleFlag())
+	));
+
+	//定価から表示価格の割引率
+	$htmlObj->addLabel("item_discount_percentage", array(
+		"text" => ($item->getSellingPrice() > 0 && $item->getAttribute("list_price") > 0) ? soyshop_display_price(100 - ($item->getSellingPrice() / $item->getAttribute("list_price") * 100)) : 0,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => ($item->getSellingPrice() > 0 && $item->getAttribute("list_price") > 0)
+	));
+
+	//定価から通常価格の割引率
+	$htmlObj->addLabel("item_normal_discount_percentage", array(
+		"text" => ($item->getPrice() > 0 && $item->getAttribute("list_price") > 0) ? soyshop_display_price(100 - ($item->getPrice() / $item->getAttribute("list_price") * 100)) : 0,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => ($item->getPrice() > 0 && $item->getAttribute("list_price") > 0)
+	));
+
+	//定価からセール価格の割引率
+	$htmlObj->addLabel("item_sale_discount_percentage", array(
+		"text" => ($item->getSalePrice() > 0 && $item->getAttribute("list_price") > 0) ? soyshop_display_price(100 - ($item->getSalePrice() / $item->getAttribute("list_price") * 100)) : 0,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => ($item->getSalePrice() > 0 && $item->getAttribute("list_price") > 0)
+	));
+
+	//在庫数
+	$htmlObj->addLabel("item_stock", array(
+		"text" => $item->getStock(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$htmlObj->addModel("is_stock", array(
+		"visible" => ($item->getStock() > 0),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$htmlObj->addModel("no_stock", array(
+		"visible" => ($item->getStock() == 0),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$htmlObj->addLabel("item_code", array(
+		"text" => $item->getCode(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+	
+	$categoryObj = soyshop_get_category_object($item->getCategory());
+	
+	//カテゴリの表示
+	$htmlObj->addLabel("category_name", array(
+		"text" => $categoryObj->getName(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+	
+	$htmlObj->addLink("category_link", array(
+		"link" => soyshop_get_item_list_link($categoryObj),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+	
+	$imageSmall = soyshop_convert_file_path($item->getAttribute("image_small"), $item);
+	$htmlObj->addImage("item_small_image", array(
+		"src" => $imageSmall,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => (strlen($imageSmall) > 0)
+	));
+	$htmlObj->addLink("item_small_image_link", array(
+		"link" => $imageSmall,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => (strlen($imageSmall) > 0)
+	));
+
+	$imageLarge = soyshop_convert_file_path($item->getAttribute("image_large"), $item);
+	$htmlObj->addImage("item_large_image", array(
+		"src" => $imageLarge,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => (strlen($imageLarge) > 0)
+	));
+
+	$htmlObj->addLink("item_large_image_link", array(
+		"link" => $imageLarge,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => (strlen($imageLarge) > 0)
+	));
+
+
+	$htmlObj->addLink("item_link", array(
+		"link" => soyshop_get_item_detail_link($item),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$htmlObj->addLink("item_cart_link", array(
+		"link" => soyshop_get_cart_url(true) . "?a=add&count=1&item=" . $item->getId(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => ($item->isOrderable()),
+	));
+		
+	$htmlObj->addForm("item_cart_form", array(
+		"method" => "post",
+		"action" => soyshop_get_cart_url(true) . "?a=add&count=1&item=" . $item->getId(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => ($item->isOrderable()),
+	));
+
+	$htmlObj->addForm("item_cart_default_form", array(
+		"method" => "post",
+		"action" => soyshop_get_cart_url(true) . "?a=add&count=1&item=" . $item->getId(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+	));
+
+	$htmlObj->addSelect("item_cart_select", array(
+		"name" => "count",
+		"options" => range(1,10),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	/*
+	 * "sumbit"だけど互換性のために残しておく
+	 */
+	$htmlObj->addInput("item_cart_sumbit", array(
+		"disabled" => ($item->getStock() == 0),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$htmlObj->addLabel("item_alias", array(
+		"text" => $item->getAlias(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+	));
+
+	//model
+	$htmlObj->addModel("type_group", array(
+		"visible" => ($item->getType() == SOYShop_Item::TYPE_GROUP),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$htmlObj->addModel("no_type_parent", array(
+		"visible" => ($item->getType() != SOYShop_Item::TYPE_GROUP),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$htmlObj->addModel("type_child", array(
+		"visible" => ($item->isChild()),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+	
+	$htmlObj->createAdd("create_date", "DateLabel", array(
+		"text" => $item->getCreateDate(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"defaultFormat" => "Y.m.d"
+	));
+	
+	$htmlObj->createAdd("update_date", "DateLabel", array(
+		"text" => $item->getUpdateDate(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"defaultFormat" => "Y.m.d"
+	));
+
+	/* event SOY CMSから読み込んだ時はカスタムフィールドは表示できない様にする*/
+	if(defined("DISPLAY_SOYSHOP_SITE") && DISPLAY_SOYSHOP_SITE){
+		SOYShopPlugin::invoke("soyshop.item.customfield", array(
+			"item" => $item,
+			"htmlObj" => $htmlObj,
+			"pageObj" => $obj,
+		));
+	}
 }
 ?>
