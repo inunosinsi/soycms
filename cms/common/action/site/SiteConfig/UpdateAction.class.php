@@ -4,6 +4,7 @@ class UpdateAction extends SOY2Action{
 
     protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
     	SOY2::import("domain.cms.SiteConfig");
+    	if(!is_numeric($form->defaultUploadResizeWidth)) $form->defaultUploadResizeWidth = null;
     	$siteConfig = SOY2::cast("SiteConfig",$form);
     	$siteConfig->setConfigValue("url", $_POST["url"]);
     	$logic = SOY2Logic::createInstance("logic.site.SiteConfig.SiteConfigLogic");
@@ -28,6 +29,7 @@ class UpdateActionForm extends SOY2ActionForm{
 	var $charset;
 	var $siteConfig;
 	var $defaultUploadDirectory;
+	var $defaultUploadResizeWidth;
 	var $createUploadDirectoryByDate;
 	var $isShowOnlyAdministrator;
 	var $useLabelCategory;
@@ -53,6 +55,10 @@ class UpdateActionForm extends SOY2ActionForm{
 	}
 	function setCreateUploadDirectoryByDate($createUploadDirectoryByDate) {
 		$this->createUploadDirectoryByDate = $createUploadDirectoryByDate;
+	}
+	
+	function setDefaultUploadResizeWidth($defaultUploadResizeWidth){
+		$this->defaultUploadResizeWidth = $defaultUploadResizeWidth;	
 	}
 
 	function getIsShowOnlyAdministrator() {

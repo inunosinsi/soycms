@@ -71,6 +71,11 @@ class IndexPage extends CMSWebPageBase{
 			"name"=>"defaultUploadDirectory",
 			"value"=>$entity->getDefaultUploadDirectory(),
 		));
+		
+		$this->createAdd("resizewidth","HTMLInput",array(
+			"name"=>"defaultUploadResizeWidth",
+			"value"=>$entity->getDefaultUploadResizeWidth(),
+		));
 
 		$this->createAdd("create_by_date","HTMLCheckBox",array(
 			"name" => "createUploadDirectoryByDate",

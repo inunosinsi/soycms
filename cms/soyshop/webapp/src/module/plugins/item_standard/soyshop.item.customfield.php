@@ -132,10 +132,16 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 				"visible" => (strlen($obj->getValue()))
 			));
 			
+			$opts = explode("\n", $obj->getValue());
+			$list = array();
+			foreach($opts as $opt){
+				$list[] = trim($opt);
+			}
+			
 			$htmlObj->addSelect("item_standard_" . $values["id"], array(
 				"soy2prefix" => SOYSHOP_SITE_PREFIX,
 				"name" => "Standard[" . $values["id"] . "]",
-				"options" => explode("\n", $obj->getValue())
+				"options" => $list
 			));
 			
 		}

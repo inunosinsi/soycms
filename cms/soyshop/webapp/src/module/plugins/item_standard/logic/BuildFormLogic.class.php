@@ -96,7 +96,7 @@ class BuildFormLogic extends SOY2LogicBase{
 		$html[] = "	<tbody>";
 		
 		//候補を作成する
-		if(isset($list)) foreach(self::getCandidate($list) as $key =>  $candidate){
+		if(count($list)) foreach(self::getCandidate($list) as $key =>  $candidate){
 			$html[] = "		<tr>";
 			$html[] = self::buildTd($candidate, $key);
 			$html[] = "		</tr>";

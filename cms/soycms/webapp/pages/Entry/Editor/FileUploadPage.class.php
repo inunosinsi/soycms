@@ -4,7 +4,11 @@ class FileUploadPage extends CMSWebPageBase {
 
 	function doPost(){
 		
-		$res = $this->run("Entry.UploadFileAction");
+		$action = SOY2ActionFactory::createInstance("SiteConfig.DetailAction");
+		$result = $action->run();
+		$entity = $result->getAttribute("entity");
+				
+		$res = $this->run("Entry.UploadFileAction", array("maxWidth" => $entity->getDefaultUploadResizeWidth()));
 		echo json_encode($res->getAttribute("result"));
 		exit;
 	}
