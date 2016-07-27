@@ -63,6 +63,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 					if(strlen($field["option"])){
 						foreach(explode("\n", $field["option"]) as $i => $o){
 							$o = trim($o);	//改行を除く
+							if(!strlen($o)) continue;
 							$obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
 								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 								"type" => "checkbox",
@@ -78,6 +79,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 					if(strlen($field["option"])){
 						foreach(explode("\n", $field["option"]) as $i => $o){
 							$o = trim($o);	//改行を除く
+							if(!strlen($o)) continue;
 							$obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
 								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 								"type" => "radio",
