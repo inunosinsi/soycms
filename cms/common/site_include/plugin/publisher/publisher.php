@@ -27,6 +27,9 @@ class PublisherPlugin{
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 			CMSPlugin::setEvent('onOutput',self::PLUGIN_ID, array($this,"onOutput"), array("filter"=>"all"));
 			
+			CMSPlugin::setEvent('onPageUpdate', self::PLUGIN_ID, array($this, "onPageUpdate"));
+			CMSPlugin::setEvent('onPageRemove', self::PLUGIN_ID, array($this, "onPageUpdate"));
+			
 			CMSPlugin::setEvent('onEntryUpdate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
 			CMSPlugin::setEvent('onEntryCreate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
 		}
@@ -35,17 +38,20 @@ class PublisherPlugin{
 	function onOutput($arg){
 		$html = &$arg["html"];
 		
+		//アプリケーションページの場合は静的化しない
+		if($arg["page"]->getPageType() == 150) return $html;
+		
+		//ブログページの場合はトップページのみ静的化の対象とする
+		if($arg["page"]->getPageType() == 200){
+			//PATH_INFOがある場合はトップではないとみなす
+			/**
+			 * @ToDo もっときれいな書き方を検討する
+			 */
+			if(isset($_SERVER["PATH_INFO"])) return $html;
+		}
+		
 		//トップページである
 		if(!strlen($arg["page"]->getUri())){
-			
-			if($arg["page"]->getPageType() == 200){
-				//PATH_INFOがある場合はトップではないとみなす
-				/**
-				 * @ToDo もっときれいな書き方を検討する
-				 */
-				if(isset($_SERVER["PATH_INFO"])) return $html;
-			}
-			
 			//ルート直下
 			if(file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.php") && !file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.html")){
 				file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/index.html", $html);
@@ -54,9 +60,52 @@ class PublisherPlugin{
 					file_put_contents(_SITE_ROOT_ . "/index.html", $html);
 				}
 			}
+		//それ以外のページ
+		}else{
+			$currentDir = $_SERVER["DOCUMENT_ROOT"];
+			$dirs = explode("/", trim($_SERVER["REQUEST_URI"], "/"));
+			foreach($dirs as $dir){
+				
+				//繰り返し中に嫌だが、jsonとxmlの場合は処理を止める
+				if(strpos($dir, ".json") || strpos($dir, ".xml")) return $html;
+				
+				if(strpos($dir, ".html") || strpos($dir, ".php")) break;
+				$currentDir .= "/" . $dir;
+				if(!file_exists($currentDir)){
+					mkdir($currentDir);
+				}
+			}
+			
+			//配列の最後の値がhtmlかどうかを確認する
+			$lastDir = end($dirs);
+			
+			if(strpos($lastDir, ".html")){
+				file_put_contents($currentDir . "/" . $lastDir, $html);
+			}else{
+				file_put_contents($currentDir . "/index.html", $html);
+			}
 		}
 		
 		return $html;
+	}
+	
+	function onPageUpdate($arg){
+		$page = $arg["new_page"];
+		
+		$uri = $page->getUri();
+		
+		//ルート設定していない場合はURIの頭にサイトIDを付与する
+		if(!UserInfoUtil::getSiteIsDomainRoot()){
+			$uri = UserInfoUtil::getSite()->getSiteId() . "/" . $uri;
+		}
+		
+		if(!strpos($uri, ".html")) {
+			$uri = rtrim($uri, "/");
+			$uri .= "/index.html";
+		}
+		
+		$path = $_SERVER["DOCUMENT_ROOT"] . "/" . $uri;
+		if(file_exists($path)) unlink($path);
 	}
 	
 	function onEntryUpdate($arg){
