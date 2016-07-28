@@ -27,8 +27,8 @@ class PublisherPlugin{
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 			CMSPlugin::setEvent('onOutput',self::PLUGIN_ID, array($this,"onOutput"), array("filter"=>"all"));
 			
-			CMSPlugin::setEvent('onEntryUpdate', CustomFieldPluginAdvanced::PLUGIN_ID, array($this, "onEntryUpdate"));
-			CMSPlugin::setEvent('onEntryCreate', CustomFieldPluginAdvanced::PLUGIN_ID, array($this, "onEntryUpdate"));
+			CMSPlugin::setEvent('onEntryUpdate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
+			CMSPlugin::setEvent('onEntryCreate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
 		}
 	}
 	
@@ -63,7 +63,7 @@ class PublisherPlugin{
 		
 		//記事を更新した時にルート直下のindex.htmlを削除する
 		if(file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.html")){
-			unlink(file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.html"));
+			unlink($_SERVER["DOCUMENT_ROOT"] . "/index.html");
 		}else{
 			if(file_exists(UserInfoUtil::getSiteDirectory(true) . "index.html")){
 				unlink(UserInfoUtil::getSiteDirectory(true) . "index.html");
