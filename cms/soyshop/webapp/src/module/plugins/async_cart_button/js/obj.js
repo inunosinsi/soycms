@@ -42,6 +42,9 @@ AsyncCartButton = {
 		xhr.send(param);
 		
 		xhr.addEventListener("load", function(){
+			
+			var text;
+			
 			//HTTPステータスが200でカートに商品が入ったことを確認
 			if(xhr.status == 200){
 				//現在表示されているカートの商品合計を更新
@@ -63,6 +66,16 @@ AsyncCartButton = {
 					subTotalSpan.innerHTML = subTotal;
 				}
 				
+				text = "商品をカゴに入れました<br>";
+				text += "商品件数: " + itemCnt + "点<br>";
+				text += "小計: " + subTotal + "円";
+				
+			//在庫数なし
+			} else if(xhr.status == 204){
+				text = "在庫切れ商品です。";
+			}
+			
+			if(text){
 				
 				var parent = ele.parentNode;
 				parent.style.position = "relative";
@@ -70,9 +83,7 @@ AsyncCartButton = {
 				//吹き出しを表示
 				var div = document.createElement("div");
 				div.className = "async_tooltip";
-				var text = "商品をカゴに入れました<br>";
-				text += "商品件数: " + itemCnt + "点<br>";
-				text += "小計: " + subTotal + "円";
+				
 				div.innerHTML = text;
 				
 				div.style.position = "absolute";
@@ -104,6 +115,9 @@ AsyncCartButton = {
 					py -= ele.offsetHeight;
 				}
 				
+				//pyの調整
+				if(xhr.status == 204) py += 35;
+				
 				div.style.left = px + "px";
 				div.style.top = py + "px";
 								
@@ -111,7 +125,7 @@ AsyncCartButton = {
 				parent.insertBefore(div, ele);
 				setTimeout(function(){
 					parent.removeChild(div);
-				}, 3000);
+				}, 5000);
 				
 				//処理が確実に終わったことを確認してからフラグを解除
 				AsyncCartButton.isInvalid = false;
