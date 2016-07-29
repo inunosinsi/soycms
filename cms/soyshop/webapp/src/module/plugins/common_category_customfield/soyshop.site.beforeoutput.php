@@ -18,32 +18,42 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 		if($obj->getType() == SOYShop_Page::TYPE_COMPLEX || $obj->getType() == SOYShop_Page::TYPE_FREE || $obj->getType() == SOYShop_Page::TYPE_SEARCH){
 			return;
 		}
-
-
+		
 		//商品一覧ページ以外では動作しない
 		switch($obj->getType()){
 			case SOYShop_Page::TYPE_LIST:
 				$current = $obj->getObject()->getCurrentCategory();
-				if(is_null($current)){
-					return;
+				
+				if(!is_null($current)){
+					$category = $current;
+					$name = $category->getName();
+				}else{
+					//カスタムサーチフィールドを調べる
+					SOY2::import("util.SOYShopPluginUtil");
+					if(SOYShopPluginUtil::checkIsActive("custom_search_field")){
+						$category = new SOYShop_Category();
+						$args = $page->getArguments();
+						$name = (isset($args[1])) ? trim($args[1]) : "";
+					}
 				}
-				$category = $current;
+					
 				break;
 			case SOYShop_Page::TYPE_DETAIL:
 				$current = $obj->getObject()->getCurrentItem();
 				if(is_null($current->getCategory())) return;
 				if(is_numeric($current->getCategory())){
-					$parent = $this->getItem($current->getCategory());
-					$category = $this->getCategory($parent->getCategory());
+					$parent = self::getItem($current->getCategory());
+					$category = self::getCategory($parent->getCategory());
 				}else{
-					$category = $this->getCategory($current->getCategory());
+					$category = self::getCategory($current->getCategory());
 				}
+				$name = $category->getName();
 				break;
 		}
 
 		$page->addLabel("current_category_name", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => $category->getName()
+			"text" => $name
 		));
 
 
@@ -157,24 +167,19 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 		}
 	}
 
-	function getItem($itemId){
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+	private function getItem($itemId){
 		try{
-			$item = $itemDao->getById($itemId);
+			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
 		}catch(Exception $e){
-			$item = new SOYShop_Item();
+			return new SOYShop_Item();
 		}
-
-		return $item;
 	}
-	function getCategory($categoryId){
-		$categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+	private function getCategory($categoryId){
 		try{
-			$category = $categoryDao->getById($categoryId);
+			return SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getById($categoryId);
 		}catch(Exception $e){
-			$category = new SOYShop_Category();
+			return new SOYShop_Category();
 		}
-		return $category;
 	}
 }
 SOYShopPlugin::extension("soyshop.site.beforeoutput","common_category_customfield","CommonCategoryCustomfieldBeforeOutput");
