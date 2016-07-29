@@ -61,9 +61,11 @@ function soyshop_custom_search_field($html, $htmlObj){
 					break;
 				case CustomSearchFieldUtil::TYPE_CHECKBOX:
 					if(strlen($field["option"])){
+						$opt = array();
 						foreach(explode("\n", $field["option"]) as $i => $o){
 							$o = trim($o);	//改行を除く
 							if(!strlen($o)) continue;
+							$opt[] = $o;
 							$obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
 								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 								"type" => "checkbox",
@@ -74,6 +76,16 @@ function soyshop_custom_search_field($html, $htmlObj){
 								"elementId" => "custom_search_" . $key . "_" . $i
 							));
 						}
+						
+						/**
+						 * セレクトボックスバージョン
+						 */
+						$obj->addSelect("custom_search_" . $key . "_select", array(
+							"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+							"name" => "c_search[" . $key . "][]",
+							"options" => $opt,
+							"selected" => (isset($params[$key][0])) ? $params[$key][0] : null
+						));
 					}
 					break;
 				case CustomSearchFieldUtil::TYPE_RADIO:

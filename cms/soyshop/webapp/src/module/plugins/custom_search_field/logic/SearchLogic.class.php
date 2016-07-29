@@ -145,10 +145,11 @@ class SearchLogic extends SOY2LogicBase{
 						if(isset($_GET["c_search"][$key]) && count($_GET["c_search"][$key])){
 							$w = array();
 							foreach($_GET["c_search"][$key] as $i => $v){
+								if(!strlen($v)) continue;
 								$w[] = "s." . $key . " LIKE :" . $key . $i;
 								$this->binds[":" . $key . $i] = "%" . trim($v) . "%";
 							}
-							$this->where[$key] = "(" . implode(" OR ", $w) . ")";
+							if(count($w)) $this->where[$key] = "(" . implode(" OR ", $w) . ")";
 						}
 						break;
 					
