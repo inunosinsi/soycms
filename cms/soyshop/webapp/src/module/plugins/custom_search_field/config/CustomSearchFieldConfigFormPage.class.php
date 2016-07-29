@@ -146,6 +146,10 @@ class CustomSearchFieldConfigFormPage extends WebPage{
 					$html[] = "\t<input type=\"text\" csf:id=\"custom_search_" . $key . "\">\n\n";
 			}
 			
+			if($field["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX){
+				$html[] = "\t" . $field["label"] . "(セレクトボックス):\n";
+				$html[] = "\t<select csf:id=\"custom_search_" . $key . "_select\"><option value=\"\"></option></select>\n\n";
+			}
 		}
 		
 		return "\t" . trim(implode("", $html));
