@@ -152,6 +152,18 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 			"visible" => (self::checkIsChildItemStock($item->getId(), $item->getType()))
 		));
 		
+		//小商品の価格の最小値
+		$htmlObj->addLabel("standard_price_min", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => number_format(self::getItemStandardPrice($item, "min"))
+		));
+		
+		//小商品の価格の最大値
+		$htmlObj->addLabel("standard_price_max", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => number_format(self::getItemStandardPrice($item, "max"))
+		));
+		
 		
 		//カートを表示する場合は$obj->getValue()が1ではない		
 //		$htmlObj->addModel("has_cart_link", array(
@@ -185,6 +197,42 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		}
 		
 		return (isset($res[0]["COUNT(*)"]) && $res[0]["COUNT(*)"] > 0);
+	}
+	
+	private function getItemStandardPrice(SOYShop_Item $item, $mode = "min"){
+		if($item->getType() != SOYShop_Item::TYPE_GROUP) return 0;
+		
+		$sql = "SELECT item_selling_price FROM soyshop_item ".
+				"WHERE item_type = :t ".
+				"AND item_is_open = " . SOYShop_Item::IS_OPEN . " ".
+				"AND is_disabled != " . SOYShop_Item::IS_DISABLED . " ".
+				"AND order_period_start < ". time() . " ".
+				"AND order_period_end > " . time();
+						
+		try{
+			$res = $this->attrDao->executeQuery($sql, array(":t" => $item->getId()));
+		}catch(Exception $e){
+			return 0;
+		}
+		
+		if(!count($res)) return 0;
+		
+		$price = null;
+		
+		foreach($res as $v){
+			if(!isset($v["item_selling_price"])) continue;
+			
+			//初回は必ずデータを入れる
+			if(is_null($price)) $price = (int)$v["item_selling_price"];
+			
+			if($mode == "min"){
+				if($v["item_selling_price"] < $price) $price = (int)$v["item_selling_price"];
+			}else{
+				if($v["item_selling_price"] > $price) $price = (int)$v["item_selling_price"];
+			}
+		}
+		
+		return $price;
 	}
 	
 	private function prepare(){
