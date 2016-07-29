@@ -50,6 +50,9 @@ class PublisherPlugin{
 			if(isset($_SERVER["PATH_INFO"])) return $html;
 		}
 		
+		//GETがある場合は検索ページと見なして対象外とする
+		if(isset($_GET["q"])) return $html;
+		
 		//トップページである
 		if(!strlen($arg["page"]->getUri())){
 			//ルート直下
