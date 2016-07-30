@@ -358,7 +358,7 @@ class ShopLogic extends SOY2LogicBase{
 		return ($site->getIsDomainRoot()==1) ? true : false;
 	}
 
-	function updateDomainRootSite($site, $shopSite, $htaccess = null){
+	function updateDomainRootSite($site, $htaccess = null){
 		$old = ShopUtil::switchConfig();
 		ShopUtil::setCMSDsn();
 
