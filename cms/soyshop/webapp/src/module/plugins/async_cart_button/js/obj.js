@@ -22,7 +22,7 @@ AsyncCartButton = {
 		}
 		
 		//helperに値があればそれを取得する
-		var helper = document.querySelector("#standard_price_helper");
+		var helper = document.querySelector("#standard_price_helper_" + itemId);
 		if(helper){
 			price = parseInt(helper.value);
 		}
@@ -151,40 +151,53 @@ AsyncCartButton = {
 
 //商品規格プラグインと併用している時
 (function(){
-	var priceHelper = document.querySelector("#standard_price_helper");
-	var idHelper = document.querySelector("#standard_id_helper");
-	if(priceHelper && idHelper){
-		var sels = document.querySelectorAll('select');
-		if(sels.length){
-			for (var i = 0; i < sels.length; i++){
-				if(sels[i].name.indexOf("Standard") === 0){
-					sels[i].addEventListener("change", function(){
-						
-						var param = "";
-						var chks = document.querySelectorAll('select option:checked');
-						if(chks.length){
-							for (var j = 0; j < chks.length; j++){
-								if(chks[j].parentElement.name.indexOf("Standard") === 0){
-									if(param.length) param += "&";
-									param += chks[j].parentElement.name + "=" + chks[j].innerHTML.trim();
-								}
-							}
-						}
-						
-						xhr = new XMLHttpRequest();
-						xhr.open("POST",location.href + "?async_cart_button=" + idHelper.value);
-						xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-						xhr.send(param);
-		
-						xhr.addEventListener("load", function(){
-							var res = JSON.parse(xhr.response);
-							if(res.price >= 0){
-								priceHelper.value = res.price;
-							}
-						});
-					});
-				}		
-			}
+	var ids = [];
+	var hdns = document.querySelectorAll('input[type="hidden"]');
+	for (var i = 0; i< hdns.length; i++){
+		if(hdns[i].id.indexOf("standard_price_helper_") === 0){
+			ids.push(parseInt(hdns[i].id.replace("standard_price_helper_", "")));
 		}
 	}
+	
+	if(ids.length > 0){
+		ids.forEach(function(id){
+			var priceHelper = document.querySelector("#standard_price_helper_" + id);
+			if(priceHelper){
+				var sels = document.querySelectorAll('select');
+				if(sels.length){
+					for (var j = 0; j < sels.length; j++){
+						if(sels[j].name.indexOf("Standard") === 0){
+							sels[j].addEventListener("change", function(){
+								
+								var param = "";
+								var chks = document.querySelectorAll('select option:checked');
+								if(chks.length){
+									for (var k = 0; k < chks.length; k++){
+										if(chks[k].parentElement.name.indexOf("Standard") === 0){
+											if(param.length) param += "&";
+											param += chks[k].parentElement.name + "=" + chks[k].innerHTML.trim();
+										}
+									}
+								}
+								
+								xhr = new XMLHttpRequest();
+								xhr.open("POST",location.href + "?async_cart_button=" + id);
+								xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+								xhr.send(param);
+				
+								xhr.addEventListener("load", function(){
+									var res = JSON.parse(xhr.response);
+									if(res.price >= 0){
+										priceHelper.value = res.price;
+									}
+								});
+							});
+						}		
+					}
+				}
+			}
+		});
+	}
+	
+			
 })();

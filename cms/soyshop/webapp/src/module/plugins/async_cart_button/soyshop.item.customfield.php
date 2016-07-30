@@ -32,14 +32,7 @@ class AsyncCartButtonCustomField extends SOYShopItemCustomFieldBase{
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"type" => "hidden",
 			"value" => self::getStandardFirstPrice($item),
-			"attr:id" => "standard_price_helper"
-		));
-		
-		$htmlObj->addInput("standard_id_helper", array(
-			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"type" => "hidden",
-			"value" => $item->getId(),
-			"attr:id" => "standard_id_helper"
+			"attr:id" => "standard_price_helper_" . $item->getId()
 		));
 	}
 	

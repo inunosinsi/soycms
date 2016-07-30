@@ -18,6 +18,7 @@ class ChildItemLogic extends SOY2LogicBase{
 		
 		$q = "";
 		foreach($keys as $key){
+			if(!strlen($key)) continue;
 			$q .= " " . $key;
 		}
 		
