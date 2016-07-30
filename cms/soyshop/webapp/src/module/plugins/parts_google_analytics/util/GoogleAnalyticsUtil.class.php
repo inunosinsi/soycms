@@ -47,13 +47,11 @@ class GoogleAnalyticsUtil{
 	}
 	
 	private static function getPages(){
-		$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 		try{
-			$pages = $pageDao->get();
+			return SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
 		}catch(Exception $e){
-			$pages = array();
+			return array();
 		}
-		return $pages;
 	}
 }
 ?>

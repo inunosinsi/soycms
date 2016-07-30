@@ -34,6 +34,20 @@ class SOYMailConnectorConfigFormPage extends WebPage{
 			"label" => "メルマガ希望のチェックボックスで最初からチェックしておく(カートページのみ)"
 		));
 		
+		$this->addInput("first_order_add_point", array(
+			"name" => "Config[first_order_add_point]",
+			"value" => (isset($config["first_order_add_point"])) ? (int)$config["first_order_add_point"] : 0,
+			"style" => "width:70px;text-align:right;"
+		));
+		
+		DisplayPlugin::toggle("no_active_point_plugin", (!class_exists("SOYShopPluginUtil") || !SOYShopPluginUtil::checkIsActive("common_point_base")));
+		
+		$this->addInput("first_order_add_point_description", array(
+			"name" => "Config[first_order_add_point_text]",
+			"value" => (isset($config["first_order_add_point_text"])) ? $config["first_order_add_point_text"] : "",
+			"style" => "width:80%;"
+		));
+		
 		$this->addInput("label", array(
 			"name" => "Config[label]",
 			"value" => (isset($config["label"])) ? $config["label"] : ""

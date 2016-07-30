@@ -26,7 +26,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		//アナリティクスタグの挿入設定　カートとマイページは無条件で挿入
 		if(defined("SOYSHOP_PAGE_ID")){
 			$displayConfig = GoogleAnalyticsUtil::getPageDisplayConfig();
-			if(isset($displayConfig[SOYSHOP_PAGE_ID]) && $displayConfig[SOYSHOP_PAGE_ID] == 0){
+			if(isset($displayConfig[SOYSHOP_PAGE_ID]) && $displayConfig[SOYSHOP_PAGE_ID] == GoogleAnalyticsUtil::INSERT_TAG_NOT_DISPLAY){
 				return $html;
 			}
 		}

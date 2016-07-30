@@ -11,11 +11,13 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 
 	function doPost(){
 
-		if(isset($_POST["google_analytics"])){
-			GoogleAnalyticsUtil::saveConfig($_POST["google_analytics"]);
-			
-			GoogleAnalyticsUtil::savePageDisplayConfig($_POST["display_config"]);
-			$this->config->redirect("updated");
+		if(soy2_check_token()){
+			if(isset($_POST["google_analytics"])){
+				GoogleAnalyticsUtil::saveConfig($_POST["google_analytics"]);
+				
+				GoogleAnalyticsUtil::savePageDisplayConfig($_POST["display_config"]);
+				$this->config->redirect("updated");
+			}
 		}
 	}
 
@@ -23,6 +25,8 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 		WebPage::WebPage();
 
 		$code = GoogleAnalyticsUtil::getConfig();
+		
+		$this->addForm("form");
 
 		$this->addTextArea("tracking_code", array(
 			"value" => $code["tracking_code"],
@@ -51,14 +55,10 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 			"label" => "</body>タグの直前に挿入する"
 		));
 		
-		include_once(dirname(dirname(__FILE__)) . "/component/PageListComponent.class.php");
+		SOY2::import("module.plugins.parts_google_analytics.component.PageListComponent");
 		$this->createAdd("page_list", "PageListComponent", array(
 			"list" => $this->getPageList(),
 			"displayConfig" => GoogleAnalyticsUtil::getPageDisplayConfig()
-		));
-
-		$this->addModel("updated", array(
-			"visible" => isset($_GET["updated"])
 		));
 	}
 	

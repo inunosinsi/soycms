@@ -8,6 +8,21 @@
 		<input type="checkbox" soy:id="is_check">
 	</dd>
 	
+	<dt>ポイント付与設定</dt>
+	<dd>
+		<input type="number" soy:id="first_order_add_point">&nbsp;ポイント<br>
+		登録時、初回購入時にポイントを付与します。0よりも大きな値を登録すると付与モードになります。
+		<!-- soy:display="no_active_point_plugin" -->
+		<br><strong>ポイント制設定プラグインをインストールしなければ動作しません。</strong>
+		<!-- /soy:display="no_active_point_plugin" -->
+	</dd>
+	
+	<dt>ポイント付与設定の説明文</dt>
+	<dd>
+		<input type="text" class="text" soy:id="first_order_add_point_description"><br>
+		※#POINT#は上のポイント付与設定で登録したポイントに置換されます。
+	</dd>
+	
 	<dt>フォームのラベル</dt>
 	<dd>
 		<input type="text" class="text" soy:id="label">

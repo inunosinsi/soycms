@@ -21,9 +21,11 @@ AsyncCartButton = {
 			location.href = url;
 		}
 		
-		xhr = new XMLHttpRequest();
-		xhr.open("POST",url);
-		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		//helperに値があればそれを取得する
+		var helper = document.querySelector("#standard_price_helper");
+		if(helper){
+			price = parseInt(helper.value);
+		}
 		
 		var param = "";
 		
@@ -39,6 +41,10 @@ AsyncCartButton = {
 			}
 		}
 		
+		xhr = new XMLHttpRequest();
+		xhr.open("POST",url);
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		
 		xhr.send(param);
 		
 		xhr.addEventListener("load", function(){
@@ -47,6 +53,7 @@ AsyncCartButton = {
 			
 			//HTTPステータスが200でカートに商品が入ったことを確認
 			if(xhr.status == 200){
+				
 				//現在表示されているカートの商品合計を更新
 				var countSpan = document.querySelector("#soyshop_cart_item_count");
 				var itemCnt = parseInt(countSpan.innerHTML) + cnt;
@@ -141,3 +148,43 @@ AsyncCartButton = {
   		return num.toString().replace(/([0-9]+?)(?=(?:[0-9]{3})+$)/g , '$1,');
 	}
 };
+
+//商品規格プラグインと併用している時
+(function(){
+	var priceHelper = document.querySelector("#standard_price_helper");
+	var idHelper = document.querySelector("#standard_id_helper");
+	if(priceHelper && idHelper){
+		var sels = document.querySelectorAll('select');
+		if(sels.length){
+			for (var i = 0; i < sels.length; i++){
+				if(sels[i].name.indexOf("Standard") === 0){
+					sels[i].addEventListener("change", function(){
+						
+						var param = "";
+						var chks = document.querySelectorAll('select option:checked');
+						if(chks.length){
+							for (var j = 0; j < chks.length; j++){
+								if(chks[j].parentElement.name.indexOf("Standard") === 0){
+									if(param.length) param += "&";
+									param += chks[j].parentElement.name + "=" + chks[j].innerHTML.trim();
+								}
+							}
+						}
+						
+						xhr = new XMLHttpRequest();
+						xhr.open("POST",location.href + "?async_cart_button=" + idHelper.value);
+						xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+						xhr.send(param);
+		
+						xhr.addEventListener("load", function(){
+							var res = JSON.parse(xhr.response);
+							if(res.price >= 0){
+								priceHelper.value = res.price;
+							}
+						});
+					});
+				}		
+			}
+		}
+	}
+})();
