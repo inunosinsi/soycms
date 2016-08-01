@@ -107,6 +107,14 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 		foreach($list as $config){
 			$value = self::getFieldValue($config->getFieldId());
 			
+			//空の時の挙動
+			if(!is_null($config->getConfig()) && (is_null($value) || !strlen($value))){
+				$fieldConf = $config->getConfig();
+				if(isset($fieldConf["hideIfEmpty"]) && !$fieldConf["hideIfEmpty"] && isset($fieldConf["emptyValue"])){
+					$value = $fieldConf["emptyValue"];
+				}
+			}
+			
 			$htmlObj->addModel($config->getFieldId() . "_visible", array(
 				"visible" => (strlen(strip_tags($value)) > 0),
 				"soy2prefix" => SOYSHOP_SITE_PREFIX
@@ -115,13 +123,13 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 			switch($config->getType()){
 
 				case "image":
-										
+
 					/**
 					 * 隠し機能:携帯自動振り分け、多言語化プラグイン用で画像の配置場所を別で用意する
 					 * @ToDo 管理画面でもいじれる様にしたい
 					 */
 					$value = soyshop_convert_file_path($value, $item);
-										
+					
 					$extraValues = (isset($this->fieldTable[$config->getFieldId()])) ? $this->fieldTable[$config->getFieldId()]->getExtraValuesArray() : array();
 					if(strlen($config->getOutput() > 0)){
 						$class = "HTMLModel";
