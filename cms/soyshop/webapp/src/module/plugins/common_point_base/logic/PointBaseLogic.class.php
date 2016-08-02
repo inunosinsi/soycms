@@ -350,6 +350,16 @@ class PointBaseLogic extends SOY2LogicBase{
 	
 	//商品ごとに設定したポイント付与の割合
 	function getPointPercentage($itemId, $totalPrice){
+		
+		//親商品がないか調べる
+		try{
+			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+			$item = $itemDao->getById($itemId);
+			if(is_numeric($item->getType())) $itemId = $item->getType();
+		}catch(Exception $e){
+			
+		}
+		
 		try{
 			$percentage = (int)$this->itemAttributeDao->get($itemId, self::PLUGIN_ID)->getValue();
 		}catch(Exception $e){

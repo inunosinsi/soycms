@@ -78,7 +78,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 
    	/**
    	 * @return list
-   	 * @query item_stock <= :stock AND item_is_open = 1 AND is_disabled != 1
+   	 * @query item_stock <= :stock AND is_disabled != 1
    	 */
    	abstract function getByStock($stock);
 

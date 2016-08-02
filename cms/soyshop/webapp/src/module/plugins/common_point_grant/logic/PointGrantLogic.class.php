@@ -17,8 +17,11 @@ class PointGrantLogic extends SOY2LogicBase{
 	}
 	
 	function getPercentage(SOYShop_Item $item){
+		//小商品の場合は親商品のポイント設定を調べる
+		$itemId = (is_numeric($item->getType())) ? (int)$item->getType() : (int)$item->getId();
+			
 		try{
-			$percentage = $this->itemAttributeDao->get($item->getId(), self::PONIT_PLUGIN_ID)->getValue();
+			$percentage = $this->itemAttributeDao->get($itemId, self::PONIT_PLUGIN_ID)->getValue();
 		}catch(Exception $e){
 			$percentage = $this->percentage;
 		}
