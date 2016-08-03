@@ -95,9 +95,12 @@ class SettingStandardPage extends WebPage{
 	private function buildStandardList(){
 		$this->addForm("form");
 		
+		$logic = SOY2Logic::createInstance("module.plugins.item_standard.logic.BuildFormLogic", array("parentId" => $this->itemId));
 		$this->addLabel("table", array(
-			"html" => SOY2Logic::createInstance("module.plugins.item_standard.logic.BuildFormLogic", array("parentId" => $this->itemId))->buildStandardListArea()
+			"html" => $logic->buildStandardListArea()
 		));
+		
+		DisplayPlugin::toggle("is_first", $logic->getIsFirst());
 	}
 	
 	private function getItem(){

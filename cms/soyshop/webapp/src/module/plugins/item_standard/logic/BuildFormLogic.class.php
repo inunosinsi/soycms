@@ -11,6 +11,8 @@ class BuildFormLogic extends SOY2LogicBase{
 	private $childLogic;
 	private $parentItem;
 	
+	private $isFirst = false;
+	
 	function BuildFormLogic(){
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
 		if(!$this->attrDao) $this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
@@ -161,6 +163,7 @@ class BuildFormLogic extends SOY2LogicBase{
 			$parent = self::getParentItem();
 			if(!$price) $price = (int)$parent->getPrice();
 			if(!$salePrice) $salePrice = (int)$parent->getSalePrice();
+			$this->isFirst = true;
 		}
 		
 		$html = array();
@@ -205,6 +208,10 @@ class BuildFormLogic extends SOY2LogicBase{
 		}
 		
 		return $this->parentItem;
+	}
+	
+	function getIsFirst(){
+		return $this->isFirst;
 	}
 	
 	function setParentId($parentId){
