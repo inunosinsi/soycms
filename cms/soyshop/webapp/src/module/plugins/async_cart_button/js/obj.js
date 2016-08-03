@@ -34,9 +34,14 @@ AsyncCartButton = {
 		if(sels.length){
 			
 			for (var i = 0; i < sels.length; i++){
-				if(sels[i].parentElement.name.indexOf("Standard") === 0){
-					if(param.length) param += "&";
-					param += sels[i].parentElement.name + "=" + sels[i].innerHTML.trim();
+				var parent = sels[i].parentElement;
+				if(parent.name.indexOf("Standard") === 0 && parent.id.indexOf("item_standard_") === 0){
+					var key = parent.name.replace("Standard[", "");
+					key = key.replace("]", "");
+					if(parent.id == "item_standard_" + key + "_" + itemId){
+						if(param.length) param += "&";
+						param += parent.name + "=" + sels[i].innerHTML.trim();
+					}
 				}
 			}
 		}

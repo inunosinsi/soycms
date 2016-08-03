@@ -141,7 +141,8 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 			$htmlObj->addSelect("item_standard_" . $values["id"], array(
 				"soy2prefix" => SOYSHOP_SITE_PREFIX,
 				"name" => "Standard[" . $values["id"] . "]",
-				"options" => $list
+				"options" => $list,
+				"id" => "item_standard_" . $values["id"] . "_" . $item->getId()
 			));
 			
 		}
