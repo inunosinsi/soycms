@@ -1,8 +1,8 @@
 <?php
 
-class OrderLogic extends SOY2LogicBase{
+class MailBuilderOrderLogic extends SOY2LogicBase{
 
-	function OrderLogic(){}
+	function MailBuilderOrderLogic(){}
 
     function getItemsByOrderId($orderId) {
     	SOY2::import("module.plugins.common_mailbuilder.common.CommonMailbuilderCommon");
