@@ -9,6 +9,7 @@ class IndexPage extends MainMyPagePageBase{
 	function IndexPage($args) {
 		
 		//ポイント制導入プラグインがアクティブでない場合はトップページに飛ばす
+		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("common_point_base")){
 			$this->jumpToTop();
 		}

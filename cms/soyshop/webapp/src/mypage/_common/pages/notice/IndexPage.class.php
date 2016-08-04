@@ -6,6 +6,7 @@ class IndexPage extends MainMyPagePageBase{
 	
 	function IndexPage(){
 		//お気に入り登録プラグインがアクティブでない場合はトップページに飛ばす
+		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("common_notice_arrival")){
 			$this->jumpToTop();
 		}
