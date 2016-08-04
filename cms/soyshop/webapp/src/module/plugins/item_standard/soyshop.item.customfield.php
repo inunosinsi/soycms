@@ -6,6 +6,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 	const PLUGIN_ID = "item_standard_plugin";
 	
 	private $attrDao;
+	private $itemDao;
 
 	function doPost(SOYShop_Item $item){
 		
@@ -154,17 +155,29 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		));
 		
 		//小商品の価格の最小値
+		$min = self::getItemStandardPrice($item, "min");
 		$htmlObj->addLabel("standard_price_min", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => number_format(self::getItemStandardPrice($item, "min"))
+			"text" => number_format($min)
 		));
 		
 		//小商品の価格の最大値
+		$max = self::getItemStandardPrice($item, "max");
 		$htmlObj->addLabel("standard_price_max", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => number_format(self::getItemStandardPrice($item, "max"))
+			"text" => ($max > $min) ? number_format($max) : ""
 		));
 		
+		
+		$htmlObj->addModel("standart_price_not_same", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"visible" => ($max > $min)
+		));
+		
+		$htmlObj->addLabel("standard_chain", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => self::getStandartChain($item)
+		));
 		
 		//カートを表示する場合は$obj->getValue()が1ではない		
 //		$htmlObj->addModel("has_cart_link", array(
@@ -236,8 +249,21 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		return $price;
 	}
 	
+	private function getStandartChain(SOYShop_Item $item){
+		if(!is_numeric($item->getType())) return "";
+		
+		try{
+			$parent = $this->itemDao->getById($item->getType());
+		}catch(Exception $e){
+			return "";
+		}
+		
+		return trim(str_replace($parent->getName(), "", $item->getName()));
+	}
+	
 	private function prepare(){
 		if(!$this->attrDao) $this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+		if(!$this->itemDao) $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
 }
 
