@@ -513,6 +513,12 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		if(strlen($cart->getErrorMessage("delivery")) < 1) DisplayPlugin::hide("has_delivery_error");
+		
+		$this->createAdd("point_error", "ErrorMessageLabel", array(
+			"text" => $cart->getErrorMessage("point")
+		));
+
+		if(strlen($cart->getErrorMessage("point")) < 1) DisplayPlugin::hide("has_point_error");
 	}
 
 	/**
