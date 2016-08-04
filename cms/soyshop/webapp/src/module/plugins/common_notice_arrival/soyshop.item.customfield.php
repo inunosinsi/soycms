@@ -33,7 +33,7 @@ class CommonNoticeArrivalCustomField extends SOYShopItemCustomFieldBase{
 		$htmlObj->addActionLink("notice_arrival_register_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"link" => "?notice=" . $item->getId() ."&a=add",
-			"onclick" => "return confirm('入荷通知登録をしますか？');",
+			"attr:onclick" => "return confirm('入荷通知登録をしますか？');",
 			"visible" => ($this->checkStock && !$this->checkRegister)
 		));
 		

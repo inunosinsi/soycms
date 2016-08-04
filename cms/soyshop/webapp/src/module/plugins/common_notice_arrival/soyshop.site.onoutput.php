@@ -17,8 +17,8 @@ class CommonNoticeArrivalOnOutput extends SOYShopSiteOnOutputAction{
 
 		//登録した時の挙動
 		if(isset($_GET["notice"]) && $_GET["notice"] == "successed"){
-			$script = "<script>alert(\"入荷通知登録を行いました\");</script>";
-			$html .= $html . "\n" . $script;
+			$script = "<script>(function(){alert('入荷通知登録を行いました。\\n詳しくはマイページの「入荷通知一覧」をご確認ください。');})();</script>";
+			$html = $html . "\n" . $script;
 		}
 
 		return $html;
