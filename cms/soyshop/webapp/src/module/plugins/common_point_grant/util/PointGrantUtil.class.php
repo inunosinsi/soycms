@@ -5,7 +5,8 @@ class PointGrantUtil {
     public static function getConfig(){
 		return SOYShop_DataSets::get("point_grant_config", array(
 			"sale_point_double_on" => 0,
-			"sale_point_double" => 1,	//倍率
+			"sale_point_double" => 1,	//倍率,
+			"point_birthday_present" => 0
 		));
 	}
 	

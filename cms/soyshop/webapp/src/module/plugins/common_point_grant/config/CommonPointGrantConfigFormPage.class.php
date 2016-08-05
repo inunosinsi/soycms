@@ -37,6 +37,12 @@ class CommonPointGrantConfigFormPage extends WebPage{
 			"value" => (isset($config["sale_point_double"])) ? (int)$config["sale_point_double"] : 1,
 			"style" => "width:50px;text-align:right;"
 		));
+		
+		$this->addInput("point_birthday_present", array(
+			"name" => "Config[point_birthday_present]",
+			"value" => (isset($config["point_birthday_present"])) ? (int)$config["point_birthday_present"] : 0,
+			"style" => "width:100px;text-align:right;"
+		));
     }
     
     function setConfigObj($obj) {
