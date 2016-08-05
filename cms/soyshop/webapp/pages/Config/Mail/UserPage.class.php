@@ -33,7 +33,7 @@ class UserPage extends WebPage{
 
 	private $mail;
 
-	function UserPage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$this->addForm("form");

@@ -40,7 +40,7 @@ class CreateConfirmPage extends WebPage{
 		}
 	}
 
-    function CreateConfirmPage($args) {
+    function __construct($args) {
     	$this->id = (isset($args[0])) ? $args[0] : null;
     	$dao = SOY2DAOFactory::create("MailDAO");
 	    $this->mail = $dao->getById($this->id);

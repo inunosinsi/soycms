@@ -21,7 +21,7 @@ class IndexPage extends CMSWebPageBase{
 	
 	var $blogIds;
 
-	function IndexPage(){
+	function __construct(){
 		
 		//記事管理者以上の時
 		if(UserInfoUtil::hasSiteAdminRole()){

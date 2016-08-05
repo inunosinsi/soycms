@@ -14,7 +14,7 @@ class ImportGrantLogic extends ExImportLogicBase{
 	const CODE = 0;		//商品コード
 	const PER = 1;		//ポイント付与率
 	
-	function ImportGrantLogic(){
+	function __construct(){
 		$this->setCharset("Shift_JIS");
 		$this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		

@@ -2,7 +2,7 @@
 
 class GetStyleAjaxPage extends CMSWebPageBase{
 	
-	function GetStyleAjaxPage($args) {
+	function __construct($args) {
     	
     	$id = @$args[0];
     	

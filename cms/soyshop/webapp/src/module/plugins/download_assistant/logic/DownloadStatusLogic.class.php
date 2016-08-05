@@ -6,7 +6,7 @@ class DownloadStatusLogic extends SOY2LogicBase{
 	private $config;
 	private $commonLogic;
 
-	function DownloadStatusLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.download_assistant.domain.*");
 		if(!$this->dao) $this->dao = SOY2DAOFactory::create("SOYShop_DownloadDAO");
 		

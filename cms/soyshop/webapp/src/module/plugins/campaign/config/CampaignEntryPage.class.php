@@ -6,7 +6,7 @@ class CampaignEntryPage extends WebPage{
 	private $id;
 	private $loginId;
 	
-	function CampaignEntryPage(){
+	function __construct(){
 		SOY2::import("module.plugins.campaign.util.CampaignUtil");
 		SOY2::imports("module.plugins.campaign.domain.*");
 		$this->loginId = SOY2ActionSession::getUserSession()->getAttribute("loginid");

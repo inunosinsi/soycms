@@ -2,7 +2,7 @@
 
 class IndexPage extends WebPage{
 	
-	function IndexPage(){
+	function __construct(){
 		
 		//データベースの変更の必要がない場合はトップページに戻す
 		$checkVersionLogic = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic");

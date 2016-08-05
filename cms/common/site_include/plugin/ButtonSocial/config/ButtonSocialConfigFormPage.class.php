@@ -4,9 +4,7 @@ class ButtonSocialConfigFormPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function ButtonSocialConfigFormPage(){
-		
-	}
+	function __construct(){}
 	
 	function doPost(){
 		

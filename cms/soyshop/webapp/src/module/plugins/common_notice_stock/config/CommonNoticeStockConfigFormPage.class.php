@@ -2,7 +2,7 @@
 
 class CommonNoticeStockConfigFormPage extends WebPage{
 
-    function CommonNoticeStockConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     	SOY2::import("module.plugins.common_notice_stock.common.CommonNoticeStockCommon");
     }

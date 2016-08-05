@@ -32,7 +32,7 @@ class SaveTemplatePage extends CMSWebPageBase {
 
 	}
 
-    function SaveTemplatePage($args) {
+    function __construct($args) {
     	$this->id = $args;
 
     	WebPage::WebPage();

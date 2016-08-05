@@ -16,7 +16,7 @@ class SiteRootDetachPage extends CMSUpdatePageBase {
 		exit;
 	}
 
-    function SiteRootDetachPage($args) {
+    function __construct($args) {
 
     	//初期管理者のみ
     	if(!UserInfoUtil::isDefaultUser()){

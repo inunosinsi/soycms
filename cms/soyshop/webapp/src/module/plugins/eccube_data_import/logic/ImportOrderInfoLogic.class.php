@@ -4,7 +4,7 @@ class ImportOrderInfoLogic extends ExImportLogicBase{
 	
 	private $type;
 	
-	function ImportOrderInfoLogic(){
+	function __construct(){
 		$this->setCharset("Shift_JIS");
 	}
 	

@@ -2,7 +2,7 @@
 
 class FilePage extends CMSWebPageBase{
 
-	function FilePage(){
+	function __construct(){
 
 		WebPage::WebPage();
 

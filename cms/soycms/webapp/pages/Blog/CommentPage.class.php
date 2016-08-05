@@ -46,7 +46,7 @@ class CommentPage extends CMSWebPageBase{
 		$this->jump('Blog.Comment.'.$this->pageId);
 	}
 
-    function CommentPage($arg) {
+    function __construct($arg) {
     	if(is_null($arg[0])){
     		$this->jump('Blog');//どっかに飛ばす
     	}

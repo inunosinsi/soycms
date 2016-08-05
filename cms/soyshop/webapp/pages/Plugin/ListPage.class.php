@@ -8,7 +8,7 @@ class ListPage extends WebPage{
 
 	private $logic;
 
-	function ListPage(){
+	function __construct(){
 		
 		SOY2::import("domain.plugin.SOYShop_PluginConfig");
 		WebPage::WebPage();

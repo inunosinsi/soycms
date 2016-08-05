@@ -15,6 +15,8 @@ tinymce.init({
 
 	init_instance_callback : function(editor) {
 		onInitTinymceEditor(editor.id);
+	},
+	oninit : function(){
 		onInitTinymce();
 	},
 

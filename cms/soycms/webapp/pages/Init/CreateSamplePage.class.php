@@ -49,7 +49,7 @@ class CreateSamplePage extends CMSWebPageBase{
 		exit;
 	}
 
-    function CreateSamplePage() {
+    function __construct() {
 		WebPage::WebPage();
 		
 		HTMLHead::addLink("avav",array(

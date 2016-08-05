@@ -63,7 +63,7 @@ class MyPageConfigPage extends WebPage{
 		SOY2PageController::jump("Config.MyPageConfig?updated");
 	}
 
-	function MyPageConfigPage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$this->addForm("update_form");

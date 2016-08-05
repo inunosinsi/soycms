@@ -67,7 +67,7 @@ class DetailPage extends CMSUpdatePageBase{
 		$this->jump("Site.Detail." . $this->id);
 	}
 	
-	function DetailPage($args) {
+	function __construct($args) {
     		
     	if(!UserInfoUtil::isDefaultUser() || count($args) < 1){
     		//デフォルトユーザのみ変更可能

@@ -48,7 +48,7 @@ class TrackbackPage extends CMSWebPageBase{
 		$this->jump('Blog.Trackback.'.$this->pageId);
 	}
 
-    function TrackbackPage($arg) {
+    function __construct($arg) {
     	if(is_null($arg[0])){
     		$this->jump('Blog');//どっかに飛ばす
     	}

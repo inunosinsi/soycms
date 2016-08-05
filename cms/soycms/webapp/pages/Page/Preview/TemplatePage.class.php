@@ -47,7 +47,7 @@ class TemplatePage extends CMSWebPageBase{
     	}
 	}
 	
-    function TemplatePage($args) {
+    function __construct($args) {
     	
     	$pageId = $args[0];
     	$mode = @$args[1];

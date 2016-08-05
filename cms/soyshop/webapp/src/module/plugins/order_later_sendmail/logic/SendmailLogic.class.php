@@ -9,7 +9,7 @@ class SendmailLogic extends SOY2LogicBase{
 	private $itemDao;
 	private $pageDao;
 	
-	function SendmailLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.order_later_sendmail.util.*");
 		$this->orderDao = SOY2DAOFactory::create(".order.SOYShop_OrderDAO");
 		$this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");

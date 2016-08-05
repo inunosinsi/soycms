@@ -3,7 +3,7 @@
 //TopPage.class.phpへリダイレクト用
 class IndexPage extends MainMyPagePageBase{
 
-    function IndexPage(){
+    function __construct(){
     	WebPage::WebPage();
     	
     	$mypage = MyPageLogic::getMyPage();

@@ -17,7 +17,7 @@ class ChangeUserInfoPage extends CMSUpdatePageBase{
 		}
 	}
 	
-    function ChangeUserInfoPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	

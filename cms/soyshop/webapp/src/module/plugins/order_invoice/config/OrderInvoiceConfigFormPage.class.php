@@ -4,7 +4,7 @@ class OrderInvoiceConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function OrderInvoiceConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.order_invoice.common.OrderInvoiceCommon");
 	}
 	

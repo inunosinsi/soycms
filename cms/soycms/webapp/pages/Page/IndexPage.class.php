@@ -21,7 +21,7 @@ class IndexPage extends CMSWebPageBase{
 		exit;
 	}
 
-    function IndexPage() {
+    function __construct() {
     	WebPage::WebPage();
     	$page = null;
     	switch($this->getPageListStyle()){

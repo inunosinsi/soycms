@@ -6,7 +6,7 @@ class CompletePage extends MobileMyPagePageBase{
 
 	}
 
-    function CompletePage() {
+    function __construct() {
     	$mypage = MyPageLogic::getMyPage();
 
     	$logic = SOY2Logic::createInstance("logic.user.UserLogic");

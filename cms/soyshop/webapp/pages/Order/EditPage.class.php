@@ -293,7 +293,7 @@ class EditPage extends WebPage{
 		$historyDAO->insert($history);
 	}
 
-	function EditPage($args) {
+	function __construct($args) {
 		MessageManager::addMessagePath("admin");
 		$this->id = (isset($args[0])) ? (int)$args[0] : "";
 		WebPage::WebPage();

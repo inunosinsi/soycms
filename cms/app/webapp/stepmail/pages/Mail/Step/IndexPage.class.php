@@ -43,7 +43,7 @@ class IndexPage extends WebPage{
 	}
 	
 	
-	function IndexPage($args){
+	function __construct($args){
 		if(!isset($_GET["mail_id"])) CMSApplication::jump("Mail");
 		$this->stepId = (isset($args[0])) ? (int)$args[0] : null;
 		

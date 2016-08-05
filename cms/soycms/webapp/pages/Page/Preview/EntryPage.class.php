@@ -44,7 +44,7 @@ class EntryPage extends CMSEntryEditorPageBase{
 		exit;
 	}
 
-    function EntryPage($arg) {
+    function __construct($arg) {
     	
     	//$id == null ならば新規作成
     	$this->id = (isset($arg[0]) && is_numeric($arg[0])) ? $arg[0] : null;

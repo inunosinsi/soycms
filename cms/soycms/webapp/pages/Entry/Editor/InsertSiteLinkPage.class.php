@@ -2,7 +2,7 @@
 
 class InsertSiteLinkPage extends CMSWebPageBase{
 
-    function InsertSiteLinkPage() {
+    function __construct() {
     	SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
 		
 		$logic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");

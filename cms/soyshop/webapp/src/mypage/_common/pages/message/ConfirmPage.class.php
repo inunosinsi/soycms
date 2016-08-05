@@ -40,7 +40,7 @@ class ConfirmPage extends IndexPage{
 		}
 	}
 
-	function ConfirmPage() {
+	function __construct() {
 		
 		$mypage = MyPageLogic::getMyPage();
 		if(!$mypage->getIsLoggedin())$this->jump("login");//ログインしていなかったら飛ばす

@@ -18,7 +18,7 @@ class CreatePage extends CMSUpdatePageBase{
 		$this->failed = true;
 	}
 
-    function CreatePage() {
+    function __construct() {
     	if(!UserInfoUtil::isDefaultUser()){
     		$this->jump("Administrator");
     	}

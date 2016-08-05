@@ -97,7 +97,7 @@ class ItemPage extends WebPage{
 		return $empty;
 	}
 */
-	function ItemPage($args) {
+	function __construct($args) {
 		$this->cart = AdminCartLogic::getCart();
 		WebPage::WebPage();
 

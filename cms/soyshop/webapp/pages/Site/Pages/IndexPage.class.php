@@ -9,7 +9,7 @@ class IndexPage extends WebPage{
 	//全ページリスト
 	private $all = array();
 		
-	function IndexPage(){
+	function __construct(){
 		//ページの初期化
 		if(soy2_check_token()){
 			SOY2Logic::createInstance("logic.site.page.PageCreateLogic")->initPageByIniFile();

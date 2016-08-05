@@ -63,7 +63,7 @@ class DetailPage extends WebPage{
 		}
 	}
 
-    function DetailPage($args) {
+    function __construct($args) {
     	MessageManager::addMessagePath("admin");
     	$this->id = (isset($args[0])) ? $args[0] : null;
 
@@ -78,7 +78,7 @@ class DetailPage extends WebPage{
 		if(!$order){
 			SOY2PageController::jump("Order");
 		}
-
+		
     	$this->addLabel("order_name_text", array(
 			"text" => $order->getTrackingNumber()
 		));

@@ -30,7 +30,7 @@ class CreatePage extends CMSWebPageBase{
 		}
 	}
 	
-	function CreatePage(){
+	function __construct(){
 		WebPage::WebPage();
 		
 		if($this->moduleId) DisplayPlugin::visible("failed");

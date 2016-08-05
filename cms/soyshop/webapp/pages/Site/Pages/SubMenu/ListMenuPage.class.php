@@ -2,7 +2,7 @@
 
 class ListMenuPage extends HTMLPage{
 
-    function ListMenuPage($arg = array()){
+    function __construct($arg = array()){
 		$this->id = $arg[0];
 		HTMLPage::HTMLPage();
 

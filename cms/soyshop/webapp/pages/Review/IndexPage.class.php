@@ -32,7 +32,7 @@ class IndexPage extends WebPage{
 		}
 	}
 
-    function IndexPage($args) {
+    function __construct($args) {
     	if(!$this->isReview()){
     		SOY2PageController::jump("");
     	}

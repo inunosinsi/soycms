@@ -18,7 +18,7 @@ class IndexPage extends WebPage{
 		
 	}
 	
-	function IndexPage($args){
+	function __construct($args){
 		$this->pageId = (isset($args[0])) ? (int)$args[0] : null;
 		$this->page = $this->getPageObj();
 		

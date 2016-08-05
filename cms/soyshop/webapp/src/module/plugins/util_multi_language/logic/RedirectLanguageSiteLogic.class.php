@@ -2,7 +2,7 @@
 
 class RedirectLanguageSiteLogic extends SOY2LogicBase{
 	
-	function RedirectLanguageSiteLogic(){
+	function __construct(){
 		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
 	}
 	

@@ -4,7 +4,7 @@ class BreadcrumbConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function BreadcrumbConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.common_breadcrumb.util.BreadcrumbUtil");
 	}
 	

@@ -3,9 +3,7 @@ class SOYCMSServerInfoConfigPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function SOYCMSServerInfoConfigPage(){
-		
-	}
+	function __construct(){}
 	
 	function doPost(){
 		

@@ -2,7 +2,7 @@
 
 class UpperMenuPage extends CMSHTMLPageBase{
 
-    function UpperMenuPage() {
+    function __construct() {
     	HTMLPage::HTMLPage();
     }
     

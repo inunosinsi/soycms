@@ -2,7 +2,7 @@
 SOY2HTMLFactory::importWebPage("_common.CommonPartsPage");
 class DetailPage extends CommonPartsPage{
 
-    function DetailPage($args) {
+    function __construct($args) {
     	WebPage::WebPage();
     	
     	$this->createTag();

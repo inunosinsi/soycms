@@ -6,7 +6,7 @@ class NoticeMailLogic extends SOY2LogicBase{
 	private $pointDao;
 	private $shopConfig;
 	
-	function NoticeMailLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.common_point_base.util.*");
 		$this->config = PointBaseUtil::getConfig();
 	}

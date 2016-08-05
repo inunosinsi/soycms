@@ -52,7 +52,7 @@ class ConfigPage extends WebPage{
     	parent::prepare();
 	}
 
-    function ConfigPage($args) {
+    function __construct($args) {
     	
     	if(count($args)<1)CMSApplication::jump("Form");
     	$this->id = $args[0];

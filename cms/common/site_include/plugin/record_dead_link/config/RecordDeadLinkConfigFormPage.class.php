@@ -4,7 +4,7 @@ class RecordDeadLinkConfigFormPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function RecordDeadLinkConfigFormPage(){
+	function __construct(){
 		SOY2::imports("site_include.plugin.record_dead_link.domain.*");
 	}
 	

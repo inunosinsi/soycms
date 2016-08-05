@@ -3,7 +3,7 @@ class OrderLaterSendmailConfigFormPage extends WebPage{
 
 	private $config;
 
-    function OrderLaterSendmailConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     	SOY2::imports("module.plugins.order_later_sendmail.util.*");
     }

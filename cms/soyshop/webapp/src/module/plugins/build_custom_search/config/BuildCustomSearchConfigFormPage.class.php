@@ -2,7 +2,7 @@
 include(dirname(dirname(__FILE__)) . "/common/common.php");
 class BuildCustomSearchConfigFormPage extends WebPage{
 
-    function BuildCustomSearchConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     }
     

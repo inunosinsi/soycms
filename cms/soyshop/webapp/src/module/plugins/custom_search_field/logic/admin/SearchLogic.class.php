@@ -10,7 +10,7 @@ class SearchLogic extends SOY2LogicBase{
 	private $where = array();
 	private $binds = array();
 
-	function SearchLogic(){
+	function __construct(){
 		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 		$this->config = CustomSearchFieldUtil::getConfig();
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");

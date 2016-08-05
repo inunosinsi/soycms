@@ -16,7 +16,7 @@ class TemplateHistoryPage extends CMSWebPageBase {
 		exit;	
 	}
 
-    function TemplateHistoryPage($arg) {
+    function __construct($arg) {
     	$pageId = @$arg[0];
     	$this->mode = @$arg[1];
     	if(strlen($this->mode) ==0) $this->mode = "top";

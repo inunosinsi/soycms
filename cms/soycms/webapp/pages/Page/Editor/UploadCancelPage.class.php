@@ -9,7 +9,7 @@ class UploadCancelPage extends CMSWebPageBase{
     	exit;
 	}
 	
-    function UploadCancelPage() {
+    function __construct() {
     	WebPage::WebPage();
     }
 }

@@ -2,7 +2,7 @@
 
 class LoginPage extends CMSWebPageBase{
 
-    function LoginPage($args) {
+    function __construct($args) {
 
     	WebPage::WebPage();
 

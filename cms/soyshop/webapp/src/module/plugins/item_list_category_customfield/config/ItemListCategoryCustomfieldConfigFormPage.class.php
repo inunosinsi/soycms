@@ -4,9 +4,7 @@ class ItemListCategoryCustomfieldConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function ItemListCategoryCustomfieldConfigFormPage(){
-		
-	}
+	function __construct(){}
 	
 	function execute(){
 		WebPage::WebPage();

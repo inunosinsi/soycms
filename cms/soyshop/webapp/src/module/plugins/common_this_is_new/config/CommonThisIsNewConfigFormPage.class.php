@@ -2,7 +2,7 @@
 
 class CommonThisIsNewConfigFormPage extends WebPage{
 
-    function CommonThisIsNewConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     }
     

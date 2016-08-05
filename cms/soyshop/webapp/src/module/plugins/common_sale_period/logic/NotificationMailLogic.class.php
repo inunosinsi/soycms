@@ -5,7 +5,7 @@ class NotificationMailLogic extends SOY2LogicBase{
 	private $shopConfig;
 	private $saleDao;
 	
-	function NotificationMailLogic(){
+	function __construct(){
 		SOY2::import("module.plugins.common_sale_period.util.SalePeriodUtil");
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$this->shopConfig = SOYShop_ShopConfig::load();

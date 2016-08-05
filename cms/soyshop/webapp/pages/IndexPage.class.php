@@ -78,7 +78,7 @@ class IndexPage extends WebPage{
 		SOYShopPlugin::invoke("soyshop.admin");
 	}
 
-	function IndexPage(){
+	function __construct(){
 		MessageManager::addMessagePath("admin");
 		
 		//管理制限の権限を取得
@@ -171,7 +171,7 @@ class IndexPage extends WebPage{
 	
 	private function buildCouponHistoryList(){
 		
-		DisplayPlugin::toggle("coupon_history", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("discount_free_coupon"))));		
+		DisplayPlugin::toggle("coupon_history", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("discount_free_coupon"))));
 		
 		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
 		SOY2::imports("module.plugins.discount_free_coupon.logic.*");

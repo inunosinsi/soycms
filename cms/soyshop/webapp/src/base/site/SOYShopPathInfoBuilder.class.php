@@ -7,7 +7,7 @@ class SOYShopPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 	var $mapping;
 	var $mappingMode = true;
 
-	function SOYShopPathInfoBuilder(){
+	function __construct(){
 
 		$mapping = SOYShop_DataSets::get("site.url_mapping","");
 

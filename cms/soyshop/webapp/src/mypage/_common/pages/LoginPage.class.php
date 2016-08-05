@@ -48,7 +48,7 @@ class LoginPage extends MainMyPagePageBase{
 		}
 	}
 
-	function LoginPage(){
+	function __construct(){
 		
 		WebPage::WebPage();
 

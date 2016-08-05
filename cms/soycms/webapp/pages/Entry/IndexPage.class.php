@@ -3,7 +3,7 @@
 class IndexPage extends CMSUpdatePageBase{
 	private $labelList;
 
-	function IndexPage(){
+	function __construct(){
 
 		$this->updateCookie();
 

@@ -17,7 +17,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 	private $relatives = array(null);
 	private $parents = array();
 	
-	function DumpDatabaseLogic(){
+	function __construct(){
 		//ポイントプラグインのインストール
 		if(!SOYShopPluginUtil::checkIsActive("common_point_base")){
 			$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");

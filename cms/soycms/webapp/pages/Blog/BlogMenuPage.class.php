@@ -14,7 +14,7 @@ class BlogMenuPage extends CMSHTMLPageBase{
 	
 	var $activeTab;
 
-    function BlogMenuPage($args) {
+    function __construct($args) {
     	
     	$id = $args[0];
     	

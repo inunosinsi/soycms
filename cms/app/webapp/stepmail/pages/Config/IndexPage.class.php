@@ -12,7 +12,7 @@ class IndexPage extends WebPage{
 		CMSApplication::jump("Config?failed");
 	}
 	
-	function IndexPage(){
+	function __construct(){
 		SOY2::import("domain.StepMail_DataSets");
 		
 		WebPage::WebPage();

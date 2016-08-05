@@ -11,7 +11,7 @@ class PagerLogic {
 	private $total;
 	private $limit = 15;
 
-	function PagerLogic(){
+	function __construct(){
 
 	}
 

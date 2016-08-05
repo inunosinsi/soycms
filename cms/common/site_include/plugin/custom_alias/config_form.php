@@ -3,8 +3,7 @@ class CustomAliasPluginFormPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function CustomAliasPluginFormPage(){
-	}
+	function __construct(){}
 	
 	function doPost(){
 

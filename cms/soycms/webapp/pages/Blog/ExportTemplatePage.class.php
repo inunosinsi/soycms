@@ -4,7 +4,7 @@ class ExportTemplatePage extends CMSWebPageBase{
 
     var $pageId;
 
-    function ExportTemplatePage($arg) {
+    function __construct($arg) {
     	$this->pageId = isset($arg[0])? $arg[0] : null;
     	$this->mode = isset($arg[1])? $arg[1] : null;
     	

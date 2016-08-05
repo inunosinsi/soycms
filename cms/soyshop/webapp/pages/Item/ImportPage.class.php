@@ -7,7 +7,7 @@ class ImportPage extends WebPage{
 	private $categories;
 	private $detailPage;
 
-	function ImportPage() {
+	function __construct() {
 		WebPage::WebPage();
 		$this->buildForm();
 

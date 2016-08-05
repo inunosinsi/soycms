@@ -4,7 +4,7 @@ class MenuPage extends CMSWebPageBase{
 	
 	var $type = SOY2HTML::SOY_BODY;
 	
-	function MenuPage(){
+	function __construct(){
 		WebPage::WebPage();
 	}
 	

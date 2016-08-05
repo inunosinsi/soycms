@@ -22,7 +22,7 @@ class SOYShop_Item {
 	const IS_OPEN = 1;
 	
 	const NO_SALE = 0;
-	const IS_SALE = 1;
+    const IS_SALE = 1;
 
 	const PERIOD_START = 0;
 	const PERIOD_END = 2147483647;

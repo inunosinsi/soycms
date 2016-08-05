@@ -12,7 +12,7 @@ class ECCUBEDataImportConfigFormPage extends WebPage{
 	private $configObj;
 	private $type;
 	
-	function ECCUBEDataImportConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.eccube_data_import.util.EccubeDataImportUtil");
 	}
 	

@@ -8,9 +8,7 @@ class CustomFieldPluginFormPage extends WebPage{
 	const SHOW_INPUT_LABEL = 2;
 
 
-	function CustomFieldPluginFormPage(){
-
-	}
+	function __construct(){}
 
 	function doPost(){
 		

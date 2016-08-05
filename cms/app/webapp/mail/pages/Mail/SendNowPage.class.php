@@ -8,7 +8,7 @@ class SendNowPage extends WebPage{
 
 	var $serverConfig;
 
-    function SendNowPage($args) {
+    function __construct($args) {
     	$id = $args[0];
 
     	$mailDAO = SOY2DAOFactory::create("MailDAO");

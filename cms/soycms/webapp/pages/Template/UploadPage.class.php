@@ -20,7 +20,7 @@ class UploadPage extends CMSWebPageBase{
 	
 	}
 
-    function UploadPage() {
+    function __construct() {
     	WebPage::WebPage();
     	$this->createAdd("upload_form","HTMLForm");
     	

@@ -41,7 +41,7 @@ class ChangeOrderPage extends WebPage{
     	parent::prepare();
 	}	
 
-	function ChangeOrderPage($args) {
+	function __construct($args) {
     	
     	$this->formId = $args[0];
     	WebPage::WebPage();

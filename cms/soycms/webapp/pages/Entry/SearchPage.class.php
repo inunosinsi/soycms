@@ -67,7 +67,7 @@ class SearchPage extends CMSWebPageBase{
 		
 	}
 	
-	function SearchPage($arg) {
+	function __construct($arg) {
     	
     	$this->labelIds = array_map(create_function('$v','return (int)$v;'),$arg);
     	$labelIds = $this->labelIds;

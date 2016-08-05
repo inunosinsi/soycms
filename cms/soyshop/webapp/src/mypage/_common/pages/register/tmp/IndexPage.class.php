@@ -1,7 +1,7 @@
 <?php 
 class IndexPage extends MainMyPagePageBase{
 	
-	function IndexPage(){
+	function __construct(){
 
 		$mypage = MyPageLogic::getMyPage();
 		$mypage->clearUserInfo();

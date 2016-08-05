@@ -30,6 +30,11 @@ class LabelUpdateAction extends SOY2Action{
 			}
 			return SOY2Action::FAILED;
 		}
+		
+		if(isset($form->alias) && is_numeric($form->alias)){
+			$this->setErrorMessage("failed","URLで数字は使用できません");
+			return SOY2Action::FAILED;
+		}
 
 		$logic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
 		$label = $logic->getById($this->id);

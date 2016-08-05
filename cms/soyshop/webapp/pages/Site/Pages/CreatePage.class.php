@@ -30,7 +30,7 @@ class CreatePage extends WebPage{
 	var $obj;
 	var $errors = array();
 
-	function CreatePage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$this->addForm("create_form");

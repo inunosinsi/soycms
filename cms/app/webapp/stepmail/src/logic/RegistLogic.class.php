@@ -4,7 +4,7 @@ class RegistLogic extends SOY2LogicBase{
 	
 	private $sendDao;
 	
-	function RegistLogic(){
+	function __construct(){
 		$this->sendDao = SOY2DAOFactory::create("StepMail_NextSendDAO");
 	}
 	

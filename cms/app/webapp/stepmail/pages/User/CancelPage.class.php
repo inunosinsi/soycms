@@ -2,7 +2,7 @@
 
 class CancelPage extends WebPage{
 	
-	function CancelPage($args){
+	function __construct($args){
 		
 		if(soy2_check_token() && isset($args[0])){
 			$dao = SOY2DAOFactory::create("StepMail_NextSendDAO");

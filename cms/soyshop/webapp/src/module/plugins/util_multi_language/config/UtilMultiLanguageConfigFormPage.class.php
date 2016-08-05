@@ -2,7 +2,7 @@
 
 class UtilMultiLanguageConfigFormPage extends WebPage{
 	
-	function UtilMultiLanguageConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
 	}

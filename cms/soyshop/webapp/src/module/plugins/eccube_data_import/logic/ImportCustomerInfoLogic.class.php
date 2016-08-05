@@ -22,7 +22,7 @@ class ImportCustomerInfoLogic extends ExImportLogicBase{
 	private $type;
 	private $userDao;
 	
-	function ImportCustomerInfoLogic(){
+	function __construct(){
 		$this->setCharset("Shift_JIS");
 		$this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 	}

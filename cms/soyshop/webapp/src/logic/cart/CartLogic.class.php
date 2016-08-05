@@ -52,7 +52,7 @@ class CartLogic extends SOY2LogicBase{
 	/**
 	 * construct
 	 */
-	function CartLogic($cartId = null){
+	function __construct($cartId = null){
 		$this->id = $cartId;
 	}
 

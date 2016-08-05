@@ -4,9 +4,7 @@ class SOYCMSThumbnailConfigPage extends WebPage{
 
 	private $pluginObj;
 
-	function SOYCMSThumbnailConfigPage(){
-		
-	}
+	function __construct(){}
 	
 	function doPost(){
 		

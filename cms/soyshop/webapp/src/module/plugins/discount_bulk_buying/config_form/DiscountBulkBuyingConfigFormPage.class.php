@@ -6,9 +6,7 @@ class DiscountBulkBuyingConfigFormPage extends WebPage{
 	/**
 	 * コンストラクタ
 	 */
-	function DiscountBulkBuyingConfigFormPage(){
-
-	}
+	function __construct(){}
 	
 	function doPost(){
 		if(soy2_check_token()){

@@ -2,7 +2,7 @@
 
 class NoticePage extends CMSWebPageBase{
 	
-	function NoticePage(){
+	function __construct(){
 		WebPage::WebPage();
 		
 		$this->createAdd("candidate_list", "CandidateList", array(

@@ -6,7 +6,7 @@ class TemplateLogic extends SOY2LogicBase{
 	private $files;
 	private $mode;
 	
-	function TemplateLogic(){
+	function __construct(){
 		SOY2::import("domain.site.SOYShop_Page");
 		$this->dir = SOYSHOP_SITE_DIRECTORY . ".template/";
 	}

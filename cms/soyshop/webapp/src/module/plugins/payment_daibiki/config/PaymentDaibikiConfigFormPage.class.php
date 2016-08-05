@@ -4,7 +4,7 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 
 	private $config;
 
-	function PaymentDaibikiConfigFormPage() {
+	function __construct() {
 		SOY2::imports("module.plugins.payment_daibiki.component.*");
 	}
 

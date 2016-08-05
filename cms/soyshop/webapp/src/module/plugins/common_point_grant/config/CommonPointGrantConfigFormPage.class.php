@@ -3,7 +3,7 @@ class CommonPointGrantConfigFormPage extends WebPage{
 
 	private $configObj;
 
-    function CommonPointGrantConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     	SOY2::imports("module.plugins.common_point_grant.util.*");
     }

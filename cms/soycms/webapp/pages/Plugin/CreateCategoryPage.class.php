@@ -9,7 +9,7 @@ class CreateCategoryPage extends CMSWebPageBase{
     	}
 	}
 
-    function CreateCategoryPage() {
+    function __construct() {
     	WebPage::WebPage();
     	$this->jump("Plugin");
     }

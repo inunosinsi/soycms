@@ -8,7 +8,7 @@ class FreeMenuPage extends HTMLPage{
 
 	var $id;
 
-	function FreeMenuPage($arg = array()){
+	function __construct($arg = array()){
 		$this->id = $arg[0];
 		HTMLPage::HTMLPage();
 		

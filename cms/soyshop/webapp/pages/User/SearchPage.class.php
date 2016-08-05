@@ -19,7 +19,7 @@ class SearchPage extends WebPage{
 		SOY2PageController::jump("User.Search");
 	}
 
-	function SearchPage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$this->addForm("advanced_search_form");

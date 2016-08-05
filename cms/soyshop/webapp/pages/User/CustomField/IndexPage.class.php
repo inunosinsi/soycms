@@ -89,7 +89,7 @@ class IndexPage extends WebPage{
 		SOY2PageController::jump("User.CustomField?updated");
 	}
 
-    function IndexPage() {
+    function __construct() {
     	//利用権限があるか
     	$correct = class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_user_customfield"));
     	if(!$correct){

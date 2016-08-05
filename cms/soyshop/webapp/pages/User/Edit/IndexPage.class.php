@@ -4,7 +4,7 @@ class IndexPage extends WebPage{
 
 	var $id;
 
-	function IndexPage($args) {
+	function __construct($args) {
 		SOY2PageController::jump("User");
 		exit;
 	}

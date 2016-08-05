@@ -4,7 +4,7 @@ class ItemStandardConfigPage extends WebPage{
 	
 	private $configObj;
 	
-	function ItemStandardConfigPage(){
+	function __construct(){
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
 		SOY2::import("module.plugins.item_standard.component.StandardListComponent");
 	}

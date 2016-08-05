@@ -9,7 +9,7 @@ class SqliteDatabaseBackupConfigPage extends WebPage{
 	const HASH_ALGO = "sha512";
 	const HASH_SALT = "a723f4bf4d023dacaff800376408b448";
 
-	function SqliteDatabaseBackupConfigPage(){
+	function __construct(){
 		$this->sitePath = CMSPlugin::getSiteDirectory();
 		$this->dbFile = $this->sitePath . ".db/sqlite.db";
 	}

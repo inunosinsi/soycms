@@ -29,7 +29,7 @@ class DetailPage extends SOYShopWebPage{
 		}
 	}
 
-    function DetailPage($args) {
+    function __construct($args) {
     	$this->id = (isset($args[0])) ? (int)$args[0] : null;
    
     	WebPage::WebPage();

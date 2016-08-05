@@ -1,7 +1,7 @@
 <?php 
 class IndexPage extends MainMyPagePageBase{
 		
-	function IndexPage(){
+	function __construct(){
 		
 		//ダウンロードページの廃止
 		$this->jumpToTop();

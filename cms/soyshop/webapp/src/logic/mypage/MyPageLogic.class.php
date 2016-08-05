@@ -114,7 +114,7 @@ class MyPageLogic extends SOY2LogicBase{
 	/**
 	 * construct
 	 */
-	function MyPageLogic($myPageId){
+	function __construct($myPageId){
 		$this->id = $myPageId;
 	}
 

@@ -2,7 +2,7 @@
 
 class SiteRootPage extends SOYShopWebPage{
 
-    function SiteRootPage($args) {
+    function __construct($args) {
     	$id = (int)$args[0];
     	
     	$dao = SOY2DAOFactory::create("SOYShop_SiteDAO");

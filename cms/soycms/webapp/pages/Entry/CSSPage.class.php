@@ -2,7 +2,7 @@
 
 class CSSPage extends CMSWebPageBase{
 
-    function CSSPage($arg) {
+    function __construct($arg) {
     	$id = @$arg[0];
     	$entry = $this->getEntryInformation($id);
     	

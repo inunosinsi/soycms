@@ -26,7 +26,7 @@ class ConfigPage extends WebPage{
 		
 	}	
 	
-	function ConfigPage(){
+	function __construct(){
     	//利用権限があるか
     	$correct = class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_user_customfield"));
     	if(!$correct){

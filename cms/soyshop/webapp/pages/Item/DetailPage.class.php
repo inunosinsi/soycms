@@ -195,7 +195,7 @@ class DetailPage extends WebPage{
 	var $obj;
 	var $config;
 
-	function DetailPage($args) {
+	function __construct($args) {
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 		
 		$this->config = SOYShop_ShopConfig::load();

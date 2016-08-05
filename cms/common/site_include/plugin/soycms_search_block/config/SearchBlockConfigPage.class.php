@@ -3,9 +3,7 @@ class SearchBlockConfigPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function SearchBlockConfigPage(){
-		
-	}
+	function __construct(){}
 	
 	function doPost(){}
 	

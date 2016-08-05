@@ -2,7 +2,7 @@
 
 class ComplexMenuPage extends HTMLPage{
 
-    function ComplexMenuPage($arg = array()){
+    function __construct($arg = array()){
 		$this->id = $arg[0];
 		HTMLPage::HTMLPage();
 

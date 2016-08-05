@@ -5,7 +5,7 @@ class ImportPage extends WebPage{
 	private $attributeDAO;
 	private $pointLogic;
 
-    function ImportPage() {
+    function __construct() {
 
     	//管理制限の権限を取得
 		$session = SOY2ActionSession::getUserSession();

@@ -2,7 +2,7 @@
 
 class ListPage extends CMSWebPageBase{
 
-    function ListPage() {
+    function __construct() {
     	$result = $this->run("Blog.BlogListAction");
     	
     	$list = $result->getAttribute("list");

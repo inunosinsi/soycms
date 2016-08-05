@@ -34,7 +34,7 @@ class AdminPage extends WebPage{
 		SOY2PageController::jump("Config.Mail.Admin?updated&type=" . $type);
 	}
 
-	function AdminPage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$this->addForm("form");

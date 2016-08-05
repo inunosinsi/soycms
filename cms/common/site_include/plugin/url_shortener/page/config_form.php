@@ -4,8 +4,7 @@ class URLShortenerPluginFormPage extends WebPage{
 	private $pluginObj;
 	private $lastUpdate;
 	
-	function URLShortenerPluginFormPage(){
-	}
+	function __construct(){}
 	
 	function doPost(){
 

@@ -19,7 +19,7 @@ class SearchUsersLogic extends SOY2LogicBase{
 	const SORT_MAIL_ADDRESS	  = "mail_address";
 	const SORT_MAIL_ADDRESS_DESC = "mail_address_desc";
 	
-	function SearchUsersLogic(){
+	function __construct(){
 		SOY2DAOConfig::setOption("limit_query",true);
 		$extendLogic = SOY2Logic::createInstance("logic.user.ExtendUserDAO");
 		$this->query = $extendLogic->getDAO();

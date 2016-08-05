@@ -2,7 +2,7 @@
 
 class CreateControllerPage extends SOYShopWebPage{
 
-    function CreateControllerPage($args) {
+    function __construct($args) {
     	
     	if(soy2_check_token()){
     		$id = (isset($args[0])) ? (int)$args[0] : null;

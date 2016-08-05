@@ -4,7 +4,7 @@ class SalePeriodOptionConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function SalePeriodOptionConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.common_sale_period.util.SalePeriodUtil");
 	}
 	

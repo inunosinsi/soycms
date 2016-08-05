@@ -20,7 +20,7 @@ class EditPage extends CMSWebPageBase{
 		
 	}
 
-    function EditPage($arg) {
+    function __construct($arg) {
     	
     	$this->id = $arg[0];
     	$file = $arg[1];

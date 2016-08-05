@@ -3,9 +3,7 @@ class SOYCMSInfoConfigPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function SOYCMSInfoConfigPage(){
-		
-	}
+	function __construct(){}
 	
 	function doPost(){
 		

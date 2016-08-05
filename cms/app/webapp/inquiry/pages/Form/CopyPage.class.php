@@ -59,7 +59,7 @@ class CopyPage extends WebPage{
     	parent::prepare();
 	}
 
-    function CopyPage() {
+    function __construct() {
     	    	 
     	WebPage::WebPage();
     	

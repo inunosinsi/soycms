@@ -38,7 +38,7 @@ class DetailPage extends WebPage{
 	private $page;
 	private $errors = array();
 
-	function DetailPage($args){
+	function __construct($args){
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 		if(!$this->id) SOY2PageController::jump("Site.Pages");
 

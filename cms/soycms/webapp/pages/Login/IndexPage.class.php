@@ -21,7 +21,7 @@ class IndexPage extends WebPage{
 		exit;
 	}
 	
-	function IndexPage(){
+	function __construct(){
 		WebPage::WebPage();
 		
 		if(defined("SOYCMS_ASP_MODE")){

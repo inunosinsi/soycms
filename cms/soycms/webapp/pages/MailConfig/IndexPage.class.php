@@ -41,7 +41,7 @@ class IndexPage extends CMSWebPageBase{
     	}		
 	}
 	
-	function IndexPage(){
+	function __construct(){
 		$this->logic = SOY2LogicContainer::get("logic.site.MailConfig.MailConfigLogic");
 		
 		WebPage::WebPage();

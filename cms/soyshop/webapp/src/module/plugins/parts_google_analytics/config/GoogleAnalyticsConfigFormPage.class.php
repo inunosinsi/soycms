@@ -4,7 +4,7 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 
 	private $config;
 
-	function GoogleAnalyticsConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::import("module.plugins.parts_google_analytics.util.GoogleAnalyticsUtil");
 	}

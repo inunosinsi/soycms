@@ -7,7 +7,7 @@ class RedirectLogic extends SOY2LogicBase{
 	private $loginPageUrl;
 	private $configPerBlog;
 	
-	function RedirectLogic(){}
+	function __construct(){}
 	
 	function redirectLoginForm($page, $mode){
 		

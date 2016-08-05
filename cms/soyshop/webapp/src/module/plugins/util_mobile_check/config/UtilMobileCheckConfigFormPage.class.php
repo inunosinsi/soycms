@@ -1,7 +1,7 @@
 <?php
 class UtilMobileCheckConfigFormPage extends WebPage{
 	
-	function UtilMobileCheckConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.util_mobile_check.util.UtilMobileCheckUtil");
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}

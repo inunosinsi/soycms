@@ -148,7 +148,7 @@
 		_redirect();
 	}
 	$cache = $cache_dir . "/" . $cache_file;
-
+	
 	//すでにキャッシュがあればそれを返す（$_GET["force"]があればキャッシュを無視して再変換）
 	if(is_readable($cache) && !isset($_GET["force"])){
 		/* 変更がなければ304を返す（If-Modified-Since） */
@@ -362,7 +362,7 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 	/* 読み込み */
 	$filetype = _get_extension($filepath);
 	if($filetype == "jpg")$filetype = "jpeg";
-
+	
 	//読み込み関数
 	$from = "imagecreatefrom" . $filetype;
 	if(!function_exists($from)){
@@ -377,7 +377,7 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 
 	//source
 	$srcImage = $from($filepath);
-
+	
 	/* 出力サイズ */
 	$imageSize = getimagesize($filepath);
 	if(is_null($width) && is_null($height)){

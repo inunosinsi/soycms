@@ -154,7 +154,6 @@ class SearchItemUtil extends SOY2LogicBase{
 					}catch(Exception $e){
 						//
 					}
-				
 			}
 		}
 

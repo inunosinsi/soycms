@@ -46,7 +46,7 @@ class MailDetailPage extends WebPage{
 		exit;
 	}
 
-    function MailDetailPage($args) {
+    function __construct($args) {
     	$this->id = (isset($args[0])) ? $args[0] : null;
 
  	  	WebPage::WebPage();

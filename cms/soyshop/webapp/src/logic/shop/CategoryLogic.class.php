@@ -7,7 +7,7 @@ class CategoryLogic extends SOY2LogicBase{
 	private $categories = array();
 	private $dao;
 
-	function CategoryLogic(){
+	function __construct(){
     	$this->dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 	}
 

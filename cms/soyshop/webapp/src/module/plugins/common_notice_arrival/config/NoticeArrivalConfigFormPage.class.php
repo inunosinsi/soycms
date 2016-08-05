@@ -4,7 +4,7 @@ class NoticeArrivalConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function NoticeArrivalConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.common_notice_arrival.util.NoticeArrivalUtil");
 	}
 	

@@ -3,9 +3,7 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 
 	private $pluginObj;
 
-	function GoogleAnalyticsPluginConfigPage(){
-
-	}
+	function __construct(){}
 
 	function doPost(){
 		if(isset($_POST["google_analytics_track_code"])){

@@ -2,7 +2,7 @@
 
 class DraftBoxPage extends WebPage{
 
-    function DraftBoxPage($args) {
+    function __construct($args) {
     	WebPage::WebPage();
     	
     	//メール表示件数

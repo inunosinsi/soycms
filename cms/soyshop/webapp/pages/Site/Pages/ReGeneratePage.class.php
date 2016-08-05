@@ -4,7 +4,7 @@ class ReGeneratePage extends WebPage{
 
 	var $id;
 
-    function ReGeneratePage($args) {
+    function __construct($args) {
     	$this->id = $args[0];
 
 		if($this->id){

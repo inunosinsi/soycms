@@ -5,7 +5,7 @@ class IndexPage extends MainMyPagePageBase{
 	//表示件数
 	private $limit = 15;
 
-	function IndexPage($args){
+	function __construct($args){
 		
 		$mypage = MyPageLogic::getMyPage();
 		

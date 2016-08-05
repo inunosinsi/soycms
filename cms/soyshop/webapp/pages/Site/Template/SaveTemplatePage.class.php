@@ -2,7 +2,7 @@
 
 class SaveTemplatePage extends WebPage{
 	
-	function SaveTemplatePage($args){
+	function __construct($args){
 		if(soy2_check_token() && isset($_POST["template"])){
 			
 			$filePath = SOYSHOP_SITE_DIRECTORY . ".template/" . implode("/", $args);

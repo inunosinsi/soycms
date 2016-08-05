@@ -9,7 +9,7 @@ class IndexPage extends CMSWebPageBase {
 	var $siteConfig;
 	var $showAllEntry;
 
-    function IndexPage($arg) {
+    function __construct($arg) {
 
     	$this->showAllEntry = (!isset($_GET["show_all"]) or $_GET["show_all"] == 1);
 

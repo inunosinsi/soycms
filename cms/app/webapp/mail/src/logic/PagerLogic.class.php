@@ -7,11 +7,7 @@ class PagerLogic {
 	private $end;
 	private $total;
 	private $limit = 15;
-	
-	function PagerLogic(){
 		
-	}
-	
 	function setPageURL($value){
 		$this->pageURL = SOY2PageController::createLink($value);
 	}

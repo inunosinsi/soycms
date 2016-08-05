@@ -2,7 +2,7 @@
 
 class RemovePage extends WebPage{
 
-    function RemovePage($args) {
+    function __construct($args) {
 
 		$templateType = $_GET["type"];
 		$templateId = $_GET["id"];

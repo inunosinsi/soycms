@@ -2,7 +2,7 @@
 
 class HistoryBoxPage extends WebPage{
 
-    function HistoryBoxPage($args) {
+    function __construct($args) {
     	WebPage::WebPage();
 
     	//メール表示件数

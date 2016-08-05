@@ -26,7 +26,7 @@ class RemovePage extends CMSUpdatePageBase{
 
 	}
 
-    function RemovePage($args) {
+    function __construct($args) {
     	if(!UserInfoUtil::isDefaultUser() || count($args) < 1){
     		//デフォルトユーザのみ削除可能
     		$this->jump("Site");

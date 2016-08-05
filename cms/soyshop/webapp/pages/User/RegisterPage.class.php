@@ -63,7 +63,7 @@ class RegisterPage extends WebPage{
 		}
 	}
 
-    function RegisterPage() {
+    function __construct() {
     	/* 共通コンポーネント */
     	SOY2::import("base.site.classes.SOYShop_UserCustomfieldList");
     	SOY2::import("component.UserComponent");

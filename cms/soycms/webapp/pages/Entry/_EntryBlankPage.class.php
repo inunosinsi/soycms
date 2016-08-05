@@ -8,7 +8,7 @@ class _EntryBlankPage extends CMSWebPageBase{
 		$this->labelIds = $labelIds;
 	}
 
-	function _EntryBlankPage() {
+	function __construct() {
     	WebPage::WebPage();
     }
     

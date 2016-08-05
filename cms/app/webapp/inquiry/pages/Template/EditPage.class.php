@@ -26,7 +26,7 @@ class EditPage extends WebPage{
 		exit;
 	}
 	
-    function EditPage() {
+    function __construct() {
   		
   		$target = @$_GET["target"];
   		$this->target = $target;

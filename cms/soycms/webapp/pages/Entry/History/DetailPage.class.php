@@ -2,7 +2,7 @@
 
 class DetailPage extends CMSWebPageBase {
 
-    function DetailPage($arg) {
+    function __construct($arg) {
     	$entryId = @$arg[0];
     	$historyId = @$arg[1];
 

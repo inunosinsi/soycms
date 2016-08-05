@@ -11,7 +11,7 @@ class CompletePage extends MainCartPageBase{
 		exit;
 	}
 
-	function CompletePage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$cart = CartLogic::getCart();

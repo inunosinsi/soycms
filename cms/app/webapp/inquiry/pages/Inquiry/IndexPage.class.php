@@ -44,7 +44,7 @@ class IndexPage extends WebPage{
 		CMSApplication::jump("Inquiry");
 	}
 
-    function IndexPage($args) {
+    function __construct($args) {
 		SOY2DAOFactory::importEntity("SOYInquiry_Inquiry");
     	WebPage::WebPage();
 

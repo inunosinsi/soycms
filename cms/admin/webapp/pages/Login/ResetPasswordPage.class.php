@@ -17,7 +17,7 @@ class ResetPasswordPage extends WebPage{
 		}
 	}
 	
-	function ResetPasswordPage() {
+	function __construct() {
 		
 		WebPage::WebPage();
 

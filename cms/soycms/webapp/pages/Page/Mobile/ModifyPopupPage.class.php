@@ -13,7 +13,7 @@ class ModifyPopupPage extends CMSWebPageBase{
 		$this->printReload();
 	}
 
-	function ModifyPopupPage($arg) {
+	function __construct($arg) {
     	$pageId = @$arg[0];
     	$treeId = @$arg[1];
     	

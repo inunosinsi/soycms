@@ -42,7 +42,7 @@ class IndexPage extends WebPage{
 
 	}
 
-    function IndexPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	//メール情報出力

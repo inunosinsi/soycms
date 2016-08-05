@@ -45,7 +45,7 @@ class IndexPage extends CMSWebPageBase{
 		SOY2PageController::jump("Application.Secret?error");
 	}
 	
-	function IndexPage(){
+	function __construct(){
 		if(UserInfoUtil::isDefaultUser() != 1) SOY2PageController::jump("");
 		
 		WebPage::WebPage();

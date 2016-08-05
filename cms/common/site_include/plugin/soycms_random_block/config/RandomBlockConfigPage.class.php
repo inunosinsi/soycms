@@ -3,9 +3,7 @@ class RandomBlockConfigPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function RandomBlockConfigPage(){
-		
-	}
+	function __construct(){}
 	
 	function doPost(){}
 	

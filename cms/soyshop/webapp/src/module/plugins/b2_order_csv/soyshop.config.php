@@ -25,7 +25,7 @@ class B2OrderCSVConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function B2OrderCSVConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

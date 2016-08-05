@@ -3,9 +3,7 @@ class SOYListConnectorConfigPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function SOYListConnectorConfigPage(){
-		
-	}
+	function __construct(){}
 	
 	function doPost(){
 

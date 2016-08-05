@@ -2,7 +2,7 @@
 
 class InsertLinkPage extends CMSWebPageBase{
 
-    function InsertLinkPage($arg) {
+    function __construct($arg) {
 		$logic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
 		$old = $this->changeDsn();
 		$sites = $logic->getSiteOnly();

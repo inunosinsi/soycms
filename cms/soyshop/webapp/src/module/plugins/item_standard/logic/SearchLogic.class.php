@@ -9,7 +9,7 @@ class SearchLogic extends SOY2LogicBase{
 	private $where = array();
 	private $binds = array();
 	
-	function SearchLogic(){
+	function __construct(){
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
 	

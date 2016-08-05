@@ -1,9 +1,7 @@
 <?php
 
 class SortingLogic extends SOY2LogicBase{
-	
-	function SortingLogic(){}
-	
+		
 	function execute(){
 		//全ユーザのIDを取得
 		$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");

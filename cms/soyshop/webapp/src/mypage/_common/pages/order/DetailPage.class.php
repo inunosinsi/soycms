@@ -11,7 +11,7 @@ class DetailPage extends MainMyPagePageBase{
 
 	}
 	
-	function DetailPage($args){
+	function __construct($args){
 		
 		$mypage = MyPageLogic::getMyPage();
 		

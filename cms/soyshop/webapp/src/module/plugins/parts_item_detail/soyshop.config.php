@@ -25,7 +25,7 @@ class ItemDetailConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function ItemDetailConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

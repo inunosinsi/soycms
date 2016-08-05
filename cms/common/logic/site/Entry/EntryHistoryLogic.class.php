@@ -4,7 +4,7 @@ class EntryHistoryLogic extends SOY2LogicBase{
 
 	private $dao;
 
-	public function EntryHistoryLogic(){
+	public function __construct(){
 		$this->dao = SOY2DAOFactory::create("cms.EntryHistoryDAO");
 		$this->entryDao = SOY2DAOFactory::create("cms.EntryDAO");
 	}

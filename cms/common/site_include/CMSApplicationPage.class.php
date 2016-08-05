@@ -2,7 +2,7 @@
 
 class CMSApplicationPage extends CMSPage{
 
-	function CMSApplicationPage($args) {
+	function __construct($args) {
 
   		$id = $args[0];
 		$this->arguments = $args[1];

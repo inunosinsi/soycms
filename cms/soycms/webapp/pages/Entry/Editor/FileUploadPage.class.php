@@ -12,7 +12,7 @@ class FileUploadPage extends CMSWebPageBase {
 		echo json_encode($res->getAttribute("result"));
 		exit;
 	}
-    function FileUploadPage($arg) {
+    function __construct($arg) {
     	WebPage::WebPage();
 		
 		$this->createAdd("jqueryjs","HTMLModel",array(

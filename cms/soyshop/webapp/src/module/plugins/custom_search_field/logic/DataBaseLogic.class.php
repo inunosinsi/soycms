@@ -2,7 +2,7 @@
 
 class DataBaseLogic extends SOY2LogicBase{
 	
-	function DataBaseLogic(){
+	function __construct(){
 		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 	}
 	

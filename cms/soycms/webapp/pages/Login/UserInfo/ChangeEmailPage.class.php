@@ -2,7 +2,7 @@
 
 class ChangeEmailPage extends CMSWebPageBase{
 
-    function ChangeEmailPage() {
+    function __construct() {
     	$dao = SOY2DAOFactory::create("asp.ASPUserDAO");
     	$user = $dao->getById(UserInfoUtil::getUserId());
     	

@@ -14,7 +14,7 @@ class UpperMenuPage extends CMSWebPageBase{
 
 	private $activeTab;
 
-    function UpperMenuPage() {
+    function __construct() {
     	WebPage::WebPage();
 
     	//リクエストされたパスからActiveなパスを取得

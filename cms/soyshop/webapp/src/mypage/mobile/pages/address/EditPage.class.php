@@ -56,7 +56,7 @@ class EditPage extends MobileMyPagePageBase{
 		}
 	}
 
-	function EditPage($args){
+	function __construct($args){
 
 		$this->address_key = isset($args[0]) ? $args[0] : 0 ;
 

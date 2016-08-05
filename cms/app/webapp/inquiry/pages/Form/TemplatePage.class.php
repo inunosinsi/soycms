@@ -2,7 +2,7 @@
 
 class TemplatePage extends WebPage{
 
-    function TemplatePage($args) {
+    function __construct($args) {
     	if(count($args)<1)CMSApplication::jump("Form");
     	$this->id = $args[0];
 

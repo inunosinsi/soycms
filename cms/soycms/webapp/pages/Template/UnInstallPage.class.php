@@ -22,7 +22,7 @@ class UnInstallPage extends CMSWebPageBase{
     	}
 	}
 	
-    function UnInstallPage($args) {
+    function __construct($args) {
     	$id = $args[0];
     	$this->id = $id;
     	

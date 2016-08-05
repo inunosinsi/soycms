@@ -4,7 +4,7 @@ class DiscountItemStockConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function DiscountItemStockConfigFormPage(){
+	function __construct(){
 		SOY2::imports("module.plugins.discount_item_stock.component.*");
 		SOY2::import("module.plugins.discount_item_stock.util.DiscountItemStockUtil");
 	}

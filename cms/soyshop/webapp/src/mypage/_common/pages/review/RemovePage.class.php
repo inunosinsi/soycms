@@ -2,7 +2,7 @@
 SOY2::imports("module.plugins.item_review.domain.*");
 class RemovePage extends MainMyPagePageBase{
 
-    function RemovePage($args) {
+    function __construct($args) {
 
 		if(soy2_check_token()){
 			$mypage = MyPageLogic::getMyPage();

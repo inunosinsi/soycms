@@ -6,7 +6,7 @@
  */
 class IndexPage extends WebPage{
 
-	function IndexPage($args){
+	function __construct($args){
 		MessageManager::addMessagePath("admin");
 
 		WebPage::WebPage();

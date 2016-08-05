@@ -112,7 +112,7 @@ class FileActionPage extends CMSWebPageBase{
 	
 	}
 	
-    function FileActionPage($args) {
+    function __construct($args) {
     	$this->action = $args[0];
 
     	//WebPage::WebPage();

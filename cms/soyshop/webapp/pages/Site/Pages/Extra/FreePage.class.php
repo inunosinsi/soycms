@@ -38,7 +38,7 @@ class FreePage extends WebPage{
 	var $id;
 	var $page;
 
-	function FreePage($args){
+	function __construct($args){
 		$this->id = $args[0];
 
 		WebPage::WebPage();

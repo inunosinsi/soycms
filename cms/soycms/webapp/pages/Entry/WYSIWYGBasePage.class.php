@@ -4,7 +4,7 @@ class WYSIWYGBasePage extends CMSWebPageBase{
 	
 	var $id;
 	
-    function WYSIWYGBasePage($args) {
+    function __construct($args) {
     	
     	@$this->id = $args[0];
     	

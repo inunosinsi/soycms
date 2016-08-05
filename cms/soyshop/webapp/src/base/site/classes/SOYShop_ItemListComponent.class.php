@@ -8,7 +8,7 @@ class SOYShop_ItemListComponent extends HTMLList{
 	private $pageClassName;
 	private $iteration;
 	private $forAdminOnly;
-
+	
 	function execute(){
 		$iteration = $this->getAttribute("cms:count");
 		if(strlen($iteration)){
@@ -26,7 +26,7 @@ class SOYShop_ItemListComponent extends HTMLList{
 		if($this->iteration > 0 && $counter > $this->iteration){
 			return false;
 		}
-
+		
 		//実行
 		soyshop_output_item($this, $entity, $this->obj);
 				
@@ -61,7 +61,7 @@ class SOYShop_ItemListComponent extends HTMLList{
 	function setForAdminOnly($forAdminOnly){
 		$this->forAdminOnly = $forAdminOnly;
 	}
-
+	
 	public function getPageClassName(){
 		return $this->pageClassName;
 	}

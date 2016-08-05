@@ -2,7 +2,7 @@
 SOY2HTMLFactory::importWebPage("_common.CommonPartsPage");
 class RemovePage extends CommonPartsPage{
 
-    function RemovePage($args) {
+    function __construct($args) {
     	$this->redirectCheck();
     	$id = @$args[0];
     	

@@ -35,7 +35,7 @@ class IndexPage extends CMSWebPageBase{
 
 	}
 
-	function IndexPage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$this->createAdd("index_form","HTMLForm",array(

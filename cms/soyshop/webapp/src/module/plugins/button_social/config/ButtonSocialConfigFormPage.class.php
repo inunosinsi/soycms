@@ -4,7 +4,7 @@ class ButtonSocialConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function ButtonSocialConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::import("module.plugins.button_social.util.ButtonSocialUtil");
 	}

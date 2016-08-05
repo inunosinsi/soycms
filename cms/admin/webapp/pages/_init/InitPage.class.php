@@ -41,7 +41,7 @@ class InitPage extends CMSHTMLPageBase{
 		}
 	}
 
-	function InitPage(){
+	function __construct(){
 		$loginable = $this->checkLoginable();
 
 		//初期管理者が作成済み

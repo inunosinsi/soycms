@@ -49,7 +49,7 @@ class IndexPage extends WebPage{
 		SOY2PageController::jump("User.Setting");
 	}
 
-	function IndexPage($args) {
+	function __construct($args) {
 
 		WebPage::WebPage();
 

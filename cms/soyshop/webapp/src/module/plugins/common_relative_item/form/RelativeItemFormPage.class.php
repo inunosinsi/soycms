@@ -7,7 +7,7 @@ class RelativeItemFormPage extends WebPage{
 	
 	private $itemDao;
 	
-	function RelativeItemFormPage(){
+	function __construct(){
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
 	

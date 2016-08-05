@@ -1,0 +1,56 @@
+<div style="padding:4px 20px;">
+
+<div class="functions">
+	<div class="function">
+		<a soy:link="calendar">一覧</a>
+	</div><!-- class="function"の終了 -->
+	<div class="function">
+		<a soy:link="calendar.Create">予定の追加</a>
+	</div><!-- class="function"の終了 -->
+	<div class="function">
+		<a soy:link="calendar.Remove">予定の一括削除</a>
+	</div><!-- class="function"の終了 -->
+	<br style="clear:both;" />
+</div><!-- class="functions"の終了 -->
+
+<h1>予定の一括削除</h1>
+
+<p class="error" soy:id="error">終了日は開始日よりも後の日付にしてください</p>
+
+<form soy:id="form">
+
+<h2>条件の指定</h2>
+	<p style="margin-left:100px;">
+		日程 : 
+		<select soy:id="year"></select>年
+		&nbsp;
+		<select soy:id="month"></select>月
+		&nbsp;
+		<select soy:id="day"></select>日
+		&nbsp;&nbsp;～&nbsp;&nbsp;
+		<select soy:id="end_year"></select>年
+		&nbsp;
+		<select soy:id="end_month"></select>月
+		&nbsp;
+		<select soy:id="end_day"></select>日
+	</p>
+	
+	<p style="margin-left:100px;">
+		タイトル : 
+		<select soy:id="title">
+			<option value="0">指定しない</option>
+		</select>
+	</p>
+
+	<table class="button_table">
+		<tr class="button_table_row">
+			<td>
+				<input type="submit" name="delete" value="一括削除" onclick='return window.confirm("指定した期間の予定を削除しますがよろしいですか？");' />
+			</td>
+			
+		</tr>
+	</table>
+
+</form soy:id="form">
+
+</div>

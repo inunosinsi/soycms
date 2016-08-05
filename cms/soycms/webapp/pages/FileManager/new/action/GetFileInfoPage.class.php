@@ -13,7 +13,7 @@ class GetFileInfoPage extends CMSWebPageBase{
 	}
 
 
-    function GetFileInfoPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     }

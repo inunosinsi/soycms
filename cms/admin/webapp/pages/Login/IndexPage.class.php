@@ -24,11 +24,9 @@ class IndexPage extends CMSHTMLPageBase{
 			$this->message = CMSMessageManager::get("ADMIN_FAILURE_TO_LOGIN");
 			$this->username = $result->getAttribute('username');
 		}
-		
-
 	}
 
-	function IndexPage(){
+	function __construct(){
 		//ログインしていたらルートに飛ばす
 		if(UserInfoUtil::isLoggined()){
 			SOY2PageController::jump("");

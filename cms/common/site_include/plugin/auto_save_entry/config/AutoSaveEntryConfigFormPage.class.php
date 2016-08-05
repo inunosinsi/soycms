@@ -4,7 +4,7 @@ class AutoSaveEntryConfigFormPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function AutoSaveEntryConfigFormPage(){}
+	function __construct(){}
 	
 	function doPost(){
 		if(soy2_check_token() && isset($_POST["Config"])){

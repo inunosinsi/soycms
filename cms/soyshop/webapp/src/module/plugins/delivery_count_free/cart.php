@@ -5,8 +5,7 @@
 class DeliveryCountFreeCartFormPage extends WebPage{
 	private $cart;
 	
-	function DeliveryCountFreeConfigFormPage(){
-	}
+	function __construct(){}
 	
 	function execute(){
 		WebPage::WebPage();

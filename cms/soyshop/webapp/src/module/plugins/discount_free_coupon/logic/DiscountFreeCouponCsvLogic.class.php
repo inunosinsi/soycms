@@ -2,7 +2,7 @@
 
 class DiscountFreeCouponCsvLogic extends SOY2LogicBase{
 	
-	function DiscountFreeCouponCsvLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
 	}
 

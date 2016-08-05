@@ -2,7 +2,7 @@
 
 class IndexPage extends CMSWebPageBase{
 	
-	function IndexPage(){
+	function __construct(){
 		WebPage::WebPage();
 		$result = SOY2ActionFactory::createInstance("EntryTemplate.TemplateListAction")->run();
 		

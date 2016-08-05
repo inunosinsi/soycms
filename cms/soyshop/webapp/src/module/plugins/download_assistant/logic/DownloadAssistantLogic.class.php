@@ -5,7 +5,7 @@ class DownloadAssistantLogic extends SOY2LogicBase{
 	private $dao;
 	private $itemDao;
 	
-	function DownloadAssistantLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.download_assistant.logic.*");
 		SOY2::imports("module.plugins.download_assistant.domain.*");
 		

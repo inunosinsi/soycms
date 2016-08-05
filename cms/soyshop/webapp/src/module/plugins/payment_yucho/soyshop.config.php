@@ -30,7 +30,7 @@ class PaymentYuchoConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function PaymentYuchoConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

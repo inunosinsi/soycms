@@ -4,7 +4,7 @@ class FavoriteLogic extends SOY2LogicBase{
 	
 	private $favoriteDao;
 	
-	function FavoriteLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.common_favorite_item.domain.*");
 		$this->favoriteDao = SOY2DAOFactory::create("SOYShop_FavoriteItemDAO");
 	}

@@ -15,7 +15,7 @@ class CommentDetailPage extends CMSWebPageBase{
 	var $id;
     
     
-    function CommentDetailPage($arg) {
+    function __construct($arg) {
     	$commentId = @$arg[0];
     	$this->id = $commentId;
     	

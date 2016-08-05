@@ -41,7 +41,7 @@ class SendAddressPage extends WebPage{
 		}
 	}
 
-    function SendAddressPage($args) {
+    function __construct($args) {
     	$this->session = SOY2ActionSession::getUserSession();
 
 		//入力値を呼び出す

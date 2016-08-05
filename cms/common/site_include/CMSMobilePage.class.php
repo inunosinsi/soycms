@@ -8,7 +8,7 @@ class CMSMobilePage extends CMSPage{
 	var $pagerMax = 0;
 	var $imageUrl = "";
 	
-	function CMSMobilePage($args){
+	function __construct($args){
 		$id = $args[0];
 		$this->arguments = $args[1];
 		$this->siteConfig = $args[2];

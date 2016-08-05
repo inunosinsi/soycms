@@ -2,7 +2,7 @@
 
 class RemovePage extends CMSWebPageBase{
 	
-	function RemovePage($args){
+	function __construct($args){
 		
 		if(soy2_check_token() && isset($args[0]) && is_numeric($args[0])){
 			

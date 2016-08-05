@@ -2,8 +2,7 @@
 class UtilMobileCheckPluginConfigFormPage extends WebPage{
 	private $pluginObj;
 
-	function UtilMobileCheckPluginConfigFormPage(){
-	}
+	function __construct(){}
 
 	function doPost(){
 

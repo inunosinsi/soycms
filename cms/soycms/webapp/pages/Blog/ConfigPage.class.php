@@ -22,7 +22,7 @@ class ConfigPage extends CMSWebPageBase{
 		$this->jump("Blog.Config.".$this->id);		
 	}
 	
-	function ConfigPage($args) {
+	function __construct($args) {
     	
     	$id = $args[0];
     	$this->id = $id;

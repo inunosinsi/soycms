@@ -4,7 +4,7 @@ class PointMailLogic extends SOY2LogicBase{
 	private $pointDao;
 	private $pointHistoryDao;
 	
-	function PointMailLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.common_point_base.util.*");
 		SOY2::imports("module.plugins.common_point_base.domain.*");
 	}

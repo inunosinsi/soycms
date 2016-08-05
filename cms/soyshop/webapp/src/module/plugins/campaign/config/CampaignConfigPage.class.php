@@ -4,7 +4,7 @@ class CampaignConfigPage extends WebPage{
 	
 	private $configObj;
 	
-	function CampaignConfigPage(){
+	function __construct(){
 		SOY2::import("module.plugins.campaign.util.CampaignUtil");
 		SOY2::imports("module.plugins.campaign.domain.*");
 		SOY2::imports("module.plugins.campaign.component.*");

@@ -50,7 +50,7 @@ class CartConfigPage extends WebPage{
 		SOY2PageController::jump("Config.CartConfig?updated");
 	}
 
-	function CartConfigPage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$this->addForm("update_form");

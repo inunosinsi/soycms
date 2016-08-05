@@ -4,7 +4,7 @@ class CalculateRankingLogic extends SOY2LogicBase{
 	
 	private $rankingDao;
 	
-	function CalculateRankingLogic(){
+	function __construct(){
 		SOY2::import("module.plugins.common_auto_ranking.util.AutoRankingUtil");
 		SOY2::imports("module.plugins.common_auto_ranking.domain.*");
 		$this->rankingDao = SOY2DAOFactory::create("SOYShop_AutoRankingDAO");

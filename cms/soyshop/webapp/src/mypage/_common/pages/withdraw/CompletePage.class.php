@@ -2,7 +2,7 @@
 
 class CompletePage extends MainMyPagePageBase{
 
-    function CompletePage() {
+    function __construct() {
 
     	WebPage::WebPage();
     	

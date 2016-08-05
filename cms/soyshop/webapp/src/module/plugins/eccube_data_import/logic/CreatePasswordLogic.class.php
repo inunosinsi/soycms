@@ -5,7 +5,7 @@ class CreatePasswordLogic extends SOY2LogicBase{
 	private $userDao;
 	private $logic;
 	
-	function CreatePasswordLogic(){
+	function __construct(){
 		$this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 	}
 	

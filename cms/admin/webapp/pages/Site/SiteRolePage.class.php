@@ -19,7 +19,7 @@ class SiteRolePage extends CMSUpdatePageBase{
 		}
 	}
 
-    function SiteRolePage($arg) {
+    function __construct($arg) {
     	
     	$siteId = (isset($arg[0])) ? $arg[0] : null;
     	if(is_null($siteId)){

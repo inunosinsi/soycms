@@ -4,7 +4,7 @@ class CustomPage extends CMSWebPageBase{
 
 	private $html;
 
-    function CustomPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	

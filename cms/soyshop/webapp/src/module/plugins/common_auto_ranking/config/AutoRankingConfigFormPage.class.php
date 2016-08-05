@@ -4,7 +4,7 @@ class AutoRankingConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function AutoRankingConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.common_auto_ranking.util.AutoRankingUtil");
 	}
 	

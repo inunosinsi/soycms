@@ -47,7 +47,7 @@ class CreatePage extends CMSWebPageBase {
 		}
 	}
 
-    function CreatePage($args) {
+    function __construct($args) {
     	$pageId = $args[0];
     	$this->pageId = $pageId;
     	$soyId = $args[1];

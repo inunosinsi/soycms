@@ -2,8 +2,7 @@
 
 class CreateSampleLogic extends SOY2LogicBase {
 
-    function CreateSampleLogic() {
-    }
+    function __construct() {}
 
 	/**
 	 * Insert Sample Data

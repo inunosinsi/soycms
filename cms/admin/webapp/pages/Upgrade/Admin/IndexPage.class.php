@@ -2,7 +2,7 @@
 
 class IndexPage extends CMSWebPageBase{
 	
-	function IndexPage(){
+	function __construct(){
 		
 		//初期管理者のみ
 		if(!UserInfoUtil::isDefaultUser()){

@@ -24,7 +24,7 @@ class RecentlyCheckedItemsConfigFormPage extends WebPage{
 	private $configObj;
 	const KEY = "recently_checked_items";
 
-	function RecentlyCheckedItemsConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 

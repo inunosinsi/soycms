@@ -14,7 +14,7 @@ class ImportPointLogic extends ExImportLogicBase{
 	const EMAIL = 0;
 	const POINT = 1;
 	
-	function ImportPointLogic(){
+	function __construct(){
 		$this->setCharset("Shift_JIS");
 		$this->dao = new SOY2DAO();
 				

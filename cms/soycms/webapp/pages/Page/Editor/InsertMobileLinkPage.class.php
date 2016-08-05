@@ -2,7 +2,7 @@
 
 class InsertMobileLinkPage extends CMSWebPageBase{
 
-    function InsertMobileLinkPage($arg) {
+    function __construct($arg) {
     	$this->pageId = @$arg[0];
     	if(isset($arg[1])){
     		$old = $this->changeDsn();

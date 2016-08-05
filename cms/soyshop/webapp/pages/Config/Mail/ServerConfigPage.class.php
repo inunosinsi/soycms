@@ -31,7 +31,7 @@ class ServerConfigPage extends WebPage{
 		}
 	}
 
-    function ServerConfigPage() {
+    function __construct() {
     	WebPage::WebPage();
 
     	$this->buildForm();

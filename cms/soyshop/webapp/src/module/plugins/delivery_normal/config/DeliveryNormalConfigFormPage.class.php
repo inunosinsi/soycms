@@ -3,7 +3,7 @@ class DeliveryNormalConfigFormPage extends WebPage{
 
 	private $config;
 
-	function DeliveryNormalConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
 		SOY2DAOFactory::importEntity("config.SOYShop_Area");
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");

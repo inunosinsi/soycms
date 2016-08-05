@@ -6,7 +6,7 @@ class SearchLogic extends SOY2LogicBase{
 	
 	private $saleDao;
 	
-	function SearchLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins." . self::PLUGIN_ID . ".domain.*");
 		$this->saleDao = SOY2DAOFactory::create("SOYShop_SalePeriodDAO");
 	}

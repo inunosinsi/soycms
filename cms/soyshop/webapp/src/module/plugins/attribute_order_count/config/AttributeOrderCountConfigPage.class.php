@@ -5,7 +5,7 @@ class AttributeOrderCountConfigPage extends WebPage{
 	private $configObj;
 	const MAX = 2147483647;
 		
-	function AttributeOrderCountConfigPage(){
+	function __construct(){
 		SOY2::import("module.plugins.attribute_order_count.util.AttributeOrderCountUtil");
 		SOY2::imports("module.plugins.attribute_order_count.component.*");
 	}

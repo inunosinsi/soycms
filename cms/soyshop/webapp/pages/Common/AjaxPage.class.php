@@ -5,7 +5,7 @@
  */
 class AjaxPage extends WebPage {
 
-	function AjaxPage($args){
+	function __construct($args){
 		if(count($args) < 1)exit;
 
 		$action = $args[0];

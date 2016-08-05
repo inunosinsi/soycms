@@ -1,0 +1,99 @@
+<div style="padding:4px 20px;">
+
+<div class="functions">
+	<div class="function">
+		<a soy:link="calendar">一覧</a>
+	</div><!-- class="function"の終了 -->
+	<div class="function">
+		<a soy:link="calendar.Create">予定の追加</a>
+	</div><!-- class="function"の終了 -->
+	<div class="function">
+		<a soy:link="calendar.Remove">予定の一括削除</a>
+	</div><!-- class="function"の終了 -->
+	<br style="clear:both;" />
+</div><!-- class="functions"の終了 -->
+
+
+<h1>スケジュールの追加</h1>
+
+<div class="table_container">
+	<p class="error" soy:id="error">登録に失敗しました。</p>
+	
+	<form soy:id="form">
+
+	<table class="form_table list">
+		<tr>
+			<th width="20%">タイトル</th>
+			<td><select soy:id="title"></select></td>
+		</tr>
+		<tr>
+			<th>日時</th>
+			<td>
+				<select soy:id="year"></select>年
+				&nbsp;
+				<select soy:id="month"></select>月
+				&nbsp;
+				<select soy:id="day"></select>日
+				&nbsp;&nbsp;
+				<input type="text" soy:id="start" />&nbsp;～&nbsp;<input type="text" soy:id="end" />
+			</td>
+		</tr>
+		<tr>
+			<th>数日の予定を登録</th>
+			<td>
+				<input type="checkbox" soy:id="confirm" />
+				<label for="confirm">繰返し登録を利用する</label>
+			</td>
+		</tr>
+	</table>
+
+	<div class="repeat">
+	<table class="form_table list">
+		<tr>
+			<th width="20%">繰返し</th>
+			<td><select soy:id="repeat"></select></td>
+		</tr>
+		<tr>
+			<th>曜日</th>
+			<td>
+				<input type="checkbox" soy:id="sun" /><label for="sun">日</label>
+				<input type="checkbox" soy:id="mon" /><label for="mon">月</label>
+				<input type="checkbox" soy:id="tue" /><label for="tue">火</label>
+				<input type="checkbox" soy:id="wed" /><label for="wed">水</label>
+				<input type="checkbox" soy:id="thu" /><label for="thu">木</label>
+				<input type="checkbox" soy:id="fri" /><label for="fri">金</label>
+				<input type="checkbox" soy:id="sat" /><label for="sat">土</label><br />
+				※繰返しが<strong>毎週</strong>と<strong>毎月</strong>の時に有効
+			</td>
+		</tr>
+		<tr>
+			<th>終了</th>
+			<td>
+				<select soy:id="end_year"></select>年
+				&nbsp;
+				<select soy:id="end_month"></select>月
+				&nbsp;
+				<select soy:id="end_day"></select>日<br />
+				※繰返しが<strong>毎日</strong>と<strong>毎週</strong>の時は、その月の最後の日より先の日は登録されません
+			</td>
+		</tr>
+	</table>
+	</div>
+	
+	<table class="button_table">
+		<tr class="button_table_row">
+			<td>
+				<input type="submit" name="confirm" value="登録" onclick='return window.confirm("この内容で登録しますがよろしいですか？");' />
+			</td>
+		</tr>
+	</table>
+	
+	</form soy:id="form">
+	
+</div>
+	
+<div class="table_container">
+	<!-- soy:id="calendar" /-->
+</div>
+
+</div>

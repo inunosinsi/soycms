@@ -45,7 +45,7 @@ class EditorPage extends WebPage{
 		SOY2PageController::jump("Site.Template.Module.html.EditorPage?updated&moduleId=" . $this->moduleId);
 	}
 
-	function EditorPage($args){
+	function __construct($args){
 		
 		$this->moduleId = (isset($_GET["moduleId"])) ? htmlspecialchars(str_replace("/", ".", $_GET["moduleId"])) : null;
 

@@ -2,7 +2,7 @@
 
 class ToolBoxPage extends CMSHTMLPageBase{
 
-    function ToolBoxPage() {
+    function __construct() {
     	HTMLPage::HTMLPage();
     }
     

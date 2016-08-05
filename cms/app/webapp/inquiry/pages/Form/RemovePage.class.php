@@ -2,7 +2,7 @@
 
 class RemovePage extends WebPage{
 
-    function RemovePage($args) {
+    function __construct($args) {
     	$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
     	
     	$id = @$args[0];

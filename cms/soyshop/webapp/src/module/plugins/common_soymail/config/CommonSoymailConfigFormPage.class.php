@@ -2,7 +2,7 @@
 
 class CommonSoymailConfigFormPage extends WebPage{
 
-    function CommonSoymailConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     }
     

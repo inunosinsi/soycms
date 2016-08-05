@@ -89,7 +89,7 @@ class ListPage extends CMSUpdatePageBase{
 		}
 	}
 	
-	function ListPage($arg){
+	function __construct($arg){
 		
 		$offset = isset($_GET['offset'])? (int)$_GET['offset'] : 0 ;
 		$limit  = isset($_GET['limit'])? (int)$_GET['limit'] : ( isset($_COOKIE['Entry_List_Limit'])? (int)$_COOKIE['Entry_List_Limit'] : 10 );

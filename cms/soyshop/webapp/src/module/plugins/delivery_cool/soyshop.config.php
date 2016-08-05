@@ -48,7 +48,7 @@ class DeliveryCoolConfigFormPage extends WebPage{
 
 	private $config;
 
-	function DeliveryCoolConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 

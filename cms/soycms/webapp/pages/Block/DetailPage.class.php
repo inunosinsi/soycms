@@ -49,7 +49,7 @@ class DetailPage extends CMSWebPageBase {
 
 	}
 
-    function DetailPage($args) {
+    function __construct($args) {
     	$id = $args[0];
     	$this->id = $id;
     	$block = $this->getBlock($id);

@@ -4,9 +4,7 @@ class CommonItemOptionExImportPage extends WebPage{
 	
 	private $configObj;
 	
-	function CommonItemOptionExImportPage(){
-		
-	}
+	function __construct(){}
 	
 	function doPost(){
 		if(soy2_check_token() && isset($_POST["import"]) && strlen(trim($_POST["configure"])) > 0){

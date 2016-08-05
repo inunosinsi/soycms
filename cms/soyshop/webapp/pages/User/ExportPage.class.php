@@ -3,7 +3,7 @@ class ExportPage extends WebPage{
 
 	var $logic;
 
-	function ExportPage() {
+	function __construct() {
 
 		//管理制限の権限を取得
 		$session = SOY2ActionSession::getUserSession();

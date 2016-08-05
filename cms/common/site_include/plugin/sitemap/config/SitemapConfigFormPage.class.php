@@ -4,7 +4,7 @@ class SitemapConfigFormPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function SitemapConfigFormPage(){}
+	function __construct(){}
 	
 	function doPost(){
 		if(isset($_POST["config_per_page"])){

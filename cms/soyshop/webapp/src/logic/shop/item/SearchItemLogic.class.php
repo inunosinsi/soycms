@@ -141,6 +141,11 @@ class SearchItemLogic extends SOY2LogicBase{
 		if(count($openConditions) > 0){
 			$where[] = "(" . implode(" OR ", $openConditions) .")";
 		}
+		
+		//小商品の表示
+		if(!isset($search["is_child"])){
+			$where[] = " item_type in (" . $this->getItemType() . ")";
+		}
 				
 		
 		$this->where = $where;

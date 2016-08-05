@@ -4,7 +4,7 @@ class CustomSearchFieldConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function CustomSearchFieldConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 		SOY2::import("module.plugins.custom_search_field.component.CustomSearchFieldListComponent");
 	}

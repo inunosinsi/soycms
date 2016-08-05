@@ -2,7 +2,7 @@
 
 class ActionPage extends WebPage{
 
-    function ActionPage($args) {
+    function __construct($args) {
     	$id = $args[0];
 
     	$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");

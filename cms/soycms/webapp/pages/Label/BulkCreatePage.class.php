@@ -22,7 +22,7 @@ class BulkCreatePage extends CMSWebPageBase{
 		
 	}
 	
-    function BulkCreatePage() {
+    function __construct() {
     	WebPage::WebPage();
     	$this->createAdd("bulk_create_label","HTMLForm");
 

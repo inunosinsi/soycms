@@ -23,7 +23,7 @@ class TabPage extends CMSHTMLPageBase {
 	
 	private $activeTab;
 	
-    function TabPage() {
+    function __construct() {
     	HTMLPage::HTMLPage();
     	    	
     	//リクエストされたパスからActiveなパスを取得

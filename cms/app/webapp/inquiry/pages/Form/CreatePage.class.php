@@ -51,7 +51,7 @@ class CreatePage extends WebPage{
     	parent::prepare();
 	}
 
-    function CreatePage() {
+    function __construct() {
     	    	 
     	WebPage::WebPage();
     	

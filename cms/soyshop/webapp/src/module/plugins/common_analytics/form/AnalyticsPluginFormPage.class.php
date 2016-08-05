@@ -4,7 +4,7 @@ class AnalyticsPluginFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function AnalyticsPluginFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.common_analytics.util.AnalyticsPluginUtil");
 		SOY2::import("util.SOYShopPluginUtil");
 	}

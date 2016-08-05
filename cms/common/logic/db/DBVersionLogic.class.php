@@ -27,7 +27,7 @@ class DBVersionLogic extends SOY2LogicBase{
 	/**
 	 * コンストラクタ
 	 */
-	public function DBVersionLogic(){
+	public function __construct(){
 		$this->db = new SOY2DAO();
 	}
 

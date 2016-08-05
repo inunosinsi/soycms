@@ -2,7 +2,7 @@
 
 class CalendarLogic extends SOY2LogicBase{
 	
-	function CalendarLogic(){
+	function __construct(){
 		SOY2::import("module.plugins.parts_calendar.common.PartsCalendarCommon");
 	}
 	

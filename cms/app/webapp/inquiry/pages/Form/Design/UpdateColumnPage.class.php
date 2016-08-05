@@ -4,7 +4,7 @@ class UpdateColumnPage extends WebPage{
 	private $dao;
 	private $id;
 	private $post;
-    function UpdateColumnPage($args) {
+    function __construct($args) {
     	$id = $args[0];
     	$this->id = $id;
     	$dao = SOY2DAOFactory::create("SOYInquiry_ColumnDAO");

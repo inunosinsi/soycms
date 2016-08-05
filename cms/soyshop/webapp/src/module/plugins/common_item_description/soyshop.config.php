@@ -26,7 +26,7 @@ SOYShopPlugin::extension("soyshop.config","common_item_description","CommonItemD
 
 class CommonItemDescriptionConfigFormPage extends WebPage{
 
-	function CommonItemDescriptionConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

@@ -4,7 +4,7 @@ class RedirectPage extends CMSHTMLPageBase{
 
 	var $userId;
 
-	function RedirectPage(){
+	function __construct(){
 
 		//ログインIDの指定がなければただちにログイン画面へ
 		if(!isset($_GET["userId"]) || strlen($_GET["userId"])<1){

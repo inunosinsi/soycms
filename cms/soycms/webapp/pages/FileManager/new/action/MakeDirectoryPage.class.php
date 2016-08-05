@@ -18,7 +18,7 @@ class MakeDirectoryPage extends CMSWebPageBase{
 	}
 
 
-    function MakeDirectoryPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     }

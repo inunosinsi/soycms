@@ -25,7 +25,7 @@ SOYShopPlugin::extension("soyshop.config", "common_sitemap_xml", "CommonSitemapX
 
 class CommonSitemapXmlConfigFormPage extends WebPage{
 	
-	function CommonSitemapXmlConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

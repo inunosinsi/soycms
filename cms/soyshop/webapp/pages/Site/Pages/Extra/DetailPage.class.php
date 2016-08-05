@@ -32,7 +32,7 @@ class DetailPage extends WebPage{
 		}
 	}
 
-    function DetailPage($args) {
+    function __construct($args) {
     	$this->id = $args[0];
     	
     	WebPage::WebPage();

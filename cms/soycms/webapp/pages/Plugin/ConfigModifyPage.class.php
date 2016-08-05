@@ -24,7 +24,7 @@ class ConfigModifyPage extends CMSWebPageBase{
 		
 	}
 
-    function ConfigModifyPage() {
+    function __construct() {
     	WebPage::WebPage();
     	$this->jump("Plugin");
     }

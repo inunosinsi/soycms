@@ -129,7 +129,7 @@ class IndexPage extends WebPage{
 		SOY2PageController::jump("Item.CustomField?updated");
 	}
 
-	function IndexPage(){
+	function __construct(){
 		WebPage::WebPage();
 		
 		$this->addModel("updated", array(

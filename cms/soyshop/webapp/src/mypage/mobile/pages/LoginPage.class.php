@@ -25,7 +25,7 @@ class LoginPage extends MobileMyPagePageBase{
 
 	}
 
-	function LoginPage(){
+	function __construct(){
 
 
 		WebPage::WebPage();

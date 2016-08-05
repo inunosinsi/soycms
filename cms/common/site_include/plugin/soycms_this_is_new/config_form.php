@@ -3,8 +3,7 @@ class SOYCMS_ThisIsNew_Plugin_FormPage extends WebPage{
 
 	private $pluginObj;
 
-	function SOYCMS_ThisIsNew_Plugin_FormPage(){
-	}
+	function __construct(){}
 
 	function doPost(){
     	if(soy2_check_token()){

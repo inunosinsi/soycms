@@ -11,7 +11,7 @@ class CustomConfigFormPage extends WebPage{
 	private $lang;
 	private $options = array();
 	
-	function CustomConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
 		SOY2::import("util.SOYShopPluginUtil");
 		$this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");

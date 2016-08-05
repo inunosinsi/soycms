@@ -30,7 +30,7 @@ class ConfirmPage extends EditPage{
 		}
 	}
 
-	function ConfirmPage($args){
+	function __construct($args){
 
 		if(isset($args[0])){
 			$this->address_key = $args[0];

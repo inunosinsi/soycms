@@ -33,7 +33,7 @@ class IndexPage extends CMSWebPageBase{
 			
 	}
 	
-    function IndexPage() {
+    function __construct() {
     	exit;
     	WebPage::WebPage();
     	$dao = SOY2DAOFactory::create("asp.ASPUserDAO");

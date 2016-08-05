@@ -2,7 +2,7 @@
 
 class PutTrashPage extends CMSWebPageBase{
 
-	function PutTrashPage($args) {
+	function __construct($args) {
 		
     	if(soy2_check_token()){
 			$id = $args[0];

@@ -2,7 +2,7 @@
 
 class FunctionPage extends WebPage{
 
-	function FunctionPage($args) {
+	function __construct($args) {
 		
 		//ログインチェック	ログインしていなければ強制的に止める
 		if(!soyshop_admin_login()) exit;

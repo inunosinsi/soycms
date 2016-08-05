@@ -79,7 +79,7 @@ class UserPage extends WebPage{
 		}
 	}
 
-    function UserPage($args) {
+    function __construct($args) {
 		$this->cart = AdminCartLogic::getCart();
     	$this->session = SOY2ActionSession::getUserSession();
     	$this->dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");;

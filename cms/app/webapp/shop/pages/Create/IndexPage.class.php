@@ -89,7 +89,7 @@ class IndexPage extends SOYShopWebPage{
 		}
 	}
 
-	function IndexPage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$this->checkDirectory();

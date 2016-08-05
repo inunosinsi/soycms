@@ -24,7 +24,7 @@ class EditorPage extends WebPage{
 	private $iniFilePath;
 	private $value;
 
-	function EditorPage($args){
+	function __construct($args){
 		
 		SOY2::import("domain.site.SOYShop_Page");
 		

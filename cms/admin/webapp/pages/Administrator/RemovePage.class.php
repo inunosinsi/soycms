@@ -26,7 +26,7 @@ class RemovePage extends CMSUpdatePageBase{
     	$this->jump("Administrator");
     }
 
-    function RemovePage($arg){
+    function __construct($arg){
 		if(!UserInfoUtil::isDefaultUser() || count($arg) < 1){
     		SOY2PageController::jump("Administrator");
     	}

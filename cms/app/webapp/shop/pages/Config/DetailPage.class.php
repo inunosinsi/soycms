@@ -20,7 +20,7 @@ class DetailPage extends SOYShopWebPage{
 		}
 	}
 
-    function DetailPage($args) {
+    function __construct($args) {
     	$this->id = $args[0];
     	
     	$dao = SOY2DAOFactory::create("SOYShop_SiteDAO");

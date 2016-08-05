@@ -78,7 +78,7 @@ class ConfirmPage extends IndexPage{
 	}
 
 	
-	function ConfirmPage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$mypage = MyPageLogic::getMyPage();

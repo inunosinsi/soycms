@@ -2,7 +2,7 @@
 
 class TrackbackDetailPage extends CMSWebPageBase{
 
-    function TrackbackDetailPage($arg) {
+    function __construct($arg) {
     	$trackbackId = @$arg[0];
     	
     	$result = $this->run("EntryTrackback.TrackbackDetailAction",array("trackbackId"=>$trackbackId));

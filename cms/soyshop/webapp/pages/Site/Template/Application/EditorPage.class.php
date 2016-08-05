@@ -20,7 +20,7 @@ class EditorPage extends WebPage{
 		SOY2PageController::redirect($url . "?updated");
 	}
 	
-	function EditorPage($args){
+	function __construct($args){
 		$this->args = $args;
 		
 		$tmpLogic = SOY2Logic::createInstance("logic.site.template.TemplateLogic");

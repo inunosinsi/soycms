@@ -2,7 +2,7 @@
 
 class UtilMultiLanguageConfigFormPage extends WebPage{
 	
-	function UtilMultiLanguageConfigFormPage(){
+	function __construct(){
 		SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
 		SOY2::import("site_include.plugin.util_multi_language.config.LanguageListComponent");
 	}

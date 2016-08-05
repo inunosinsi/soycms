@@ -17,7 +17,7 @@ class EditControllerPage extends CMSUpdatePageBase {
 		}
 	}
 
-    function EditControllerPage($args) {
+    function __construct($args) {
     	if(!UserInfoUtil::isDefaultUser()){
     		$this->jump("Site");
     	}

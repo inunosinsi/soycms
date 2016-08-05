@@ -91,7 +91,7 @@ class IndexPage extends WebPage{
 		SOY2PageController::jump("Item.Category.Customfield?updated");
 	}
 
-    function IndexPage() {
+    function __construct() {
     	WebPage::WebPage();
 
     	$this->addModel("updated", array(

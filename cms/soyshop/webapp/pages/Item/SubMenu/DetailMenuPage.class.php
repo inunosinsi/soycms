@@ -8,7 +8,7 @@ class DetailMenuPage extends HTMLPage{
 
 	var $id;
 
-	function DetailMenuPage($arg = array()){
+	function __construct($arg = array()){
 		$this->id = (isset($arg[0])) ? (int)$arg[0] : null;
 		HTMLPage::HTMLPage();
 

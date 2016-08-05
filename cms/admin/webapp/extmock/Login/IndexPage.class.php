@@ -20,7 +20,7 @@ class IndexPage extends CMSHTMLPageBase{
 
 	}
 
-	function IndexPage(){
+	function __construct(){
 		//ログインしていたらルートに飛ばす
 		if(UserInfoUtil::isLoggined()){
 			SOY2PageController::jump("");

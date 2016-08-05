@@ -1,0 +1,48 @@
+<div style="padding:4px 20px;">
+
+<div class="functions">
+	<div class="function">
+		<a soy:link="calendar.Title">一覧</a>
+	</div><!-- class="function"の終了 -->
+	<div class="function">
+		<a soy:link="calendar.Title.Create">タイトルの追加</a>
+	</div><!-- class="function"の終了 -->
+	<br style="clear:both;" />
+</div><!-- class="functions"の終了 -->
+
+
+
+<h1>タイトルの変更</h1>
+
+<div class="table_container">
+<p class="error" soy:id="error">更新に失敗しました。</p>
+	
+<form soy:id="form">
+
+	<table class="form_table list">
+		<tr>
+			<th width="20%">タイトル</th>
+			<td><input type="text" soy:id="title" style="width:95%;" /></td>
+		</tr>
+		<tr>
+			<th>属性</th>
+			<td>
+				<input type="text" soy:id="attribute" style="width:20%;" />
+				&nbsp;出力されるHTMLのtable.tdタグにクラスを追加できます
+			</td>
+		</tr>
+	</table>
+		
+	<table class="button_table">
+		<tr class="button_table_row">
+			<td>
+				<input type="hidden" soy:id="create_date" />
+				<input type="submit" name="confirm" value="更新" onclick='return window.confirm("更新しますがよろしいですか？");' />
+			</td>
+		</tr>
+	</table>
+		
+</form soy:id="form">
+</div>
+
+</div>

@@ -13,7 +13,7 @@ class DownloadCommonLogic extends SOY2LogicBase{
 								".mp4" => "application/mp4"
 							);
 	
-	function DownloadCommonLogic(){
+	function __construct(){
 		if(!$this->attrDao) $this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 	}
 	

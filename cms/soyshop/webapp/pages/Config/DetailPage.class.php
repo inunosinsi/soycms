@@ -8,7 +8,7 @@ class DetailPage extends WebPage{
 
 	public $module;
 
-	function DetailPage(){
+	function __construct(){
 
 		if(!isset($_GET["plugin"])){
 			SOY2PageController::jump("Config");

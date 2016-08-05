@@ -6,7 +6,7 @@ class ItemListCategoryCustomfieldSelectFormPage extends WebPage{
 	private $moduleId;
 	private $pageId;
 	
-	function ItemListCategoryCustomfieldSelectFormPage(){
+	function __construct(){
 		SOY2::imports("module.plugins.item_list_category_customfield.util.*");
 	}
 	

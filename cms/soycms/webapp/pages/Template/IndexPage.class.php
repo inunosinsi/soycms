@@ -2,7 +2,7 @@
 SOY2DAOFactory::importEntity("cms.Page");
 class IndexPage extends CMSWebPageBase{
 	
-	function IndexPage(){
+	function __construct(){
 		WebPage::WebPage();
 		$result = SOY2ActionFactory::createInstance("Template.TemplateListAction")->run();
 		$list = $result->getAttribute("list");

@@ -9,7 +9,7 @@ class ItemListCategoryCustomfieldDetailFormPage extends WebPage{
 	
 	private $itemAttributeDao;
 	
-	function ItemListCategoryCustomfieldDetailFormPage(){
+	function __construct(){
 		SOY2::import("domain.shop.SOYShop_CategoryAttribute");
 		$this->configs = SOYShop_CategoryAttributeConfig::load();
 		$this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");

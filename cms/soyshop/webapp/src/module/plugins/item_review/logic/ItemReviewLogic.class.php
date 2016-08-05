@@ -7,7 +7,7 @@ class ItemReviewLogic extends SOY2LogicBase{
 	private $userDao;
 	private $reviewDao;
 	
-	function ItemReviewLogic(){
+	function __construct(){
 		$this->reviewDao = SOY2DAOFactory::create("SOYShop_ItemReviewDAO");
 		$this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 	}

@@ -9,7 +9,7 @@ class CreatePageLogic extends SOY2LogicBase{
 	private $pageLogic;
 	private $configs;
 	
-	function CreatePageLogic(){
+	function __construct(){
 		$this->pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 		$this->templateDir = SOYSHOP_SITE_DIRECTORY . ".template/";
 		$this->templateTypes = SOYShop_Page::getTypeTexts();

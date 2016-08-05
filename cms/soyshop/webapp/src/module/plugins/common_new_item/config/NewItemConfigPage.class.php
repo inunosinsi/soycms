@@ -4,7 +4,7 @@ class NewItemConfigPage extends WebPage{
 	
 	private $configObj;
 	
-	function NewItemConfigPage(){
+	function __construct(){
 		SOY2::import("module.plugins.common_new_item.util.NewItemUtil");
 	}
 	

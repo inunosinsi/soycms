@@ -4,7 +4,7 @@ class ImportPage extends WebPage{
 	var $dao;
 	var $categories;
 
-    function ImportPage() {
+    function __construct() {
     	WebPage::WebPage();
     	$this->buildForm();
 

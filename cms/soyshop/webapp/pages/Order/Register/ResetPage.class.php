@@ -3,7 +3,7 @@ include(dirname(__FILE__) . "/common.php");
 
 class ResetPage extends WebPage{
 
-	function ResetPage() {
+	function __construct() {
 
 		//カートをクリア
 		$cart = AdminCartLogic::getCart();

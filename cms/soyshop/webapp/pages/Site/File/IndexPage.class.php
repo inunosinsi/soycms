@@ -7,7 +7,7 @@ class IndexPage extends WebPage{
 	function doPost(){
 	}
 
-	function IndexPage(){
+	function __construct(){
 		WebPage::WebPage();
 		
 		$this->cmsElFinderPath = str_replace("/soyshop/", "/soycms/", SOY2PageController::createRelativeLink("./js/"));

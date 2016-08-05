@@ -1,7 +1,7 @@
 <?php
 class RemovePage extends CMSWebPageBase{
 
-	function RemovePage($arg) {
+	function __construct($arg) {
     	if(soy2_check_token()){
 	    	WebPage::WebPage();
 	    	$id = @$arg[0];

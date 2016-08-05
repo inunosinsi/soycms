@@ -4,7 +4,7 @@ SOY2HTMLFactory::importWebPage("_common.CommonPartsPage");
 class ImportPage extends CommonPartsPage{
 	private $dao;
 
-    function ImportPage() {
+    function __construct() {
     	WebPage::WebPage();
     	$this->redirectCheck();
     	$this->createTag();

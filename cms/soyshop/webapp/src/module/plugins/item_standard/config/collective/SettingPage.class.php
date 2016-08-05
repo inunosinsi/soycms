@@ -8,7 +8,7 @@ class SettingPage extends WebPage{
 	
 	private $categories = array();
 	
-	function SettingPage(){
+	function __construct(){
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");

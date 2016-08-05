@@ -25,7 +25,7 @@ class ImportItemInfoLogic extends ExImportLogicBase{
 	const PRI_S = 12;	//販売価格
 	const CAT = 13;		//カテゴリ
 	
-	function ImportItemInfoLogic(){
+	function __construct(){
 		$this->setCharset("Shift_JIS");
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}

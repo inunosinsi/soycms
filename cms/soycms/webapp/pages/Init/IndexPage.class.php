@@ -7,7 +7,7 @@
 
 class IndexPage extends CMSWebPageBase{
 
-	function IndexPage() {
+	function __construct() {
 
 		$initDetect = $this->run("Init.InitDetectAction");
 		if($initDetect->success() && $initDetect->getAttribute("detect")){

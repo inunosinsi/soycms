@@ -3,7 +3,7 @@ class CommonItemOptionConfigFormPage extends WebPage{
 
 	private $types = array("select" => "セレクトボックス", "radio" => "ラジオボタン");
 
-    function CommonItemOptionConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     }
     

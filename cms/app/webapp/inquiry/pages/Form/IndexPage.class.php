@@ -4,7 +4,7 @@ SOY2HTMLFactory::importWebPage("_common.FormList");
 
 class IndexPage extends WebPage{
 
-    function IndexPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	$formDAO = SOY2DAOFactory::create("SOYInquiry_FormDAO");

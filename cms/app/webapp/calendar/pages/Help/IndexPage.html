@@ -1,0 +1,52 @@
+<div style="padding:20px;">
+
+
+
+<h2>公開までの手順について</h2>
+
+	<div class="howto_container">
+		<span class="howto_step">STEP1</span>
+		<p class="howto_content">
+
+			SOY CMSにログインし、SOYAppページをつくります。
+		</p>	
+	</div>
+	<p class="howto_arrow">↓</p>
+	<div class="howto_container">
+		<span class="howto_step">STEP2</span>
+		<p class="howto_content">
+			作成したSOYAppページの設定画面で、SOY Calendarアプリケーションとの関連付けを行います。<br>
+
+			テンプレートには<a href="#template">記述例</a>を参考にして編集してください。
+		</p>	
+	</div>
+	<p class="howto_arrow">↓</p>
+	<div class="howto_container">
+		<span class="howto_step">STEP3</span>
+		<p class="howto_content">
+			ページを公開して「ページの確認」などからページにアクセスし表示を確認します。
+		</p>	
+	</div>
+
+	<a name="template"></a>
+	<h2>SOY Calendarの記述例</h2>
+
+	<div style="margin-left: 20px;">
+<pre style="width: 90%; font-size: 100%;">
+<strong>&lt;!-- app:id="soycalendar" --&gt;</strong>
+
+&lt;!-- cms:id="prev_calendar" 先月のカレンダーを表示 /--&gt;
+&lt;!-- cms:id="current_calendar" 今月のカレンダーを表示する /--&gt;
+&lt;!-- cms:id="next_calendar" 来月のカレンダーを表示する /--&gt;
+
+&lt;!-- cms:id="specify_calender_1" cms:specify="1" /--&gt;
+
+<strong>&lt;!-- /app:id="soycalendar" --&gt;</strong>
+</pre>
+<p>
+※specify_calendar_1はcms:specifyで指定した数字を足した月のカレンダーを表示します。<br />
+cms:specifyを指定しなければ表示されず、タグはcms:specify_calendar_10まで使用可能です。	
+</p>
+	</div>
+
+</div>

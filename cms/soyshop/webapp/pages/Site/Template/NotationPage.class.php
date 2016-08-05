@@ -4,7 +4,7 @@
  */
 class NotationPage extends WebPage{
 
-	function NotationPage(){
+	function __construct(){
 		WebPage::WebPage();
 	}
 	

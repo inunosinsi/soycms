@@ -13,7 +13,7 @@ class PreviewPage extends WebPage{
     	parent::prepare();
 	}
 
-    function PreviewPage($args) {
+    function __construct($args) {
 
     	if(count($args)<1)CMSApplication::jump("Form");
     	$this->id = $args[0];

@@ -15,7 +15,7 @@ class PasswordPage extends CMSUpdatePageBase{
 		}
 	}
 
-    function PasswordPage($arg) {
+    function __construct($arg) {
     	$adminId = (isset($arg[0])) ? $arg[0] : null;
 
     	if(strlen($adminId) < 1){

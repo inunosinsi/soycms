@@ -61,7 +61,7 @@ class DetailPage extends CMSEntryEditorPageBase{
 		$this->initLabelList = $initLabelList;
 	}
 
-    function DetailPage($arg) {
+    function __construct($arg) {
 
     	//$id == null ならば新規作成
     	$this->id = @$arg[0];

@@ -9,7 +9,7 @@ class IndexPage extends MainMyPagePageBase{
 	//表示件数
 	private $limit = 15;
 
-    function IndexPage($args) {
+    function __construct($args) {
     	
     	if(!class_exists("SOYShopPluginUtil")) SOY2::import("util.SOYShopPluginUtil");
     	

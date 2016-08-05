@@ -13,7 +13,7 @@ class IndexPage extends WebPage{
 		}
 	}
 	
-	function IndexPage($args){
+	function __construct($args){
 		$this->userId = (isset($args[0])) ? (int)$args[0] : null;
 		
 		WebPage::WebPage();

@@ -5,7 +5,7 @@ class PasswordPage extends WebPage{
 	var $id;
 	var $session;
 
-    function PasswordPage($args) {
+    function __construct($args) {
     	$id = (isset($args[0])) ? $args[0] : null;
     	$this->id = $id;
 

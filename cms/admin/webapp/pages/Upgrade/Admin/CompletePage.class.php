@@ -2,7 +2,7 @@
 
 class CompletePage extends CMSWebPageBase{
 
-	function CompletePage(){
+	function __construct(){
 
 		if(soy2_check_token()){
 			$logic = SOY2LogicContainer::get("logic.db.UpdateDBLogic", array(

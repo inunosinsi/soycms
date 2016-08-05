@@ -12,7 +12,7 @@ class PointBaseLogic extends SOY2LogicBase{
 	
 	const PLUGIN_ID = "common_point_base";
 		
-	function PointBaseLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.common_point_base.domain.*");
 		SOY2::imports("module.plugins.common_point_base.util.*");
 		if(!$this->config) $this->config = PointBaseUtil::getConfig();

@@ -31,7 +31,7 @@ class ChangePasswordPage extends CMSUpdatePageBase{
 		}
 	}
 	
-    function ChangePasswordPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	$this->addForm("changeform");

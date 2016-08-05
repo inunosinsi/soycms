@@ -21,7 +21,7 @@ class SaveCSSPage extends CMSWebPageBase {
 		exit;
 	}
 	
-    function SaveCSSPage($arg) {
+    function __construct($arg) {
     	WebPage::WebPage();
     }
 }

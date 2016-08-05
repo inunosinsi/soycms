@@ -4,7 +4,7 @@ class EntryImportConfigPage extends WebPage{
 	
 	private $config;
 	
-	function EntryImportConfigPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::import("module.plugins.parts_entry_import.util.EntryImportUtil");
 	}

@@ -20,7 +20,7 @@ class DetailPage extends CMSUpdatePageBase{
 		}
 	}
 
-    function DetailPage($arg) {
+    function __construct($arg) {
     	$adminID = (isset($arg[0])) ? $arg[0] : null;
     	if(!UserInfoUtil::isDefaultUser() || strlen($adminID) < 1) $adminID = UserInfoUtil::getUserId();
 

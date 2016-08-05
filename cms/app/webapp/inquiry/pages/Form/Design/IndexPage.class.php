@@ -20,7 +20,7 @@ class IndexPage extends WebPage{
     	parent::prepare();
 	}	
 	
-    function IndexPage($args) {
+    function __construct($args) {
     	if(count($args)<1)CMSApplication::jump("Form");
     	$this->id = $args[0];
     	

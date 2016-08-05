@@ -5,7 +5,7 @@ class DiscountLogic extends SOY2LogicBase{
 	private $itemAttributeDao;
 	const PLUGIN_ID = "discount_item_stock";
 	
-	function DiscountLogic(){
+	function __construct(){
 		if(!class_exists("DiscountItemStockUtil")) SOY2::import("module.plugins.discount_item_stock.util.DiscountItemStockUtil");
 		if(!$this->itemAttributeDao) $this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 	}

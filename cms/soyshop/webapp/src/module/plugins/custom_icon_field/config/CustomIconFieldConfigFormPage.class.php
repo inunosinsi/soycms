@@ -4,7 +4,7 @@ class CustomIconFieldConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function CustomIconFieldConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 

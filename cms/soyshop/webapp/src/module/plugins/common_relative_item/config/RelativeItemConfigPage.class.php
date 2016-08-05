@@ -4,7 +4,7 @@ class RelativeItemConfigPage extends WebPage{
 	
 	private $configObj;
 	
-	function RelativeItemConfigPage(){
+	function __construct(){
 		SOY2::import("module.plugins.common_relative_item.util.RelativeItemUtil");
 	}
 	

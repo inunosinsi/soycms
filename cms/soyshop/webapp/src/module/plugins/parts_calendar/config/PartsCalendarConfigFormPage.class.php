@@ -4,7 +4,7 @@ class PartsCalendarConfigFormPage extends WebPage{
 
 	private $config;
 
-	function PartsCalendarConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::imports("module.plugins.parts_calendar.common.*");
 	}

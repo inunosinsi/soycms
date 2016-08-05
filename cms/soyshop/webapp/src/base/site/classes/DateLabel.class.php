@@ -20,9 +20,10 @@ class DateLabel extends HTMLLabel{
 				$this->time = mktime(0,0,0,max(1,$this->month),max(1,$this->day),$this->year);
 			}
 		}
-
+		
 		//フォーマット
 		$format = $this->getAttribute("cms:format");
+		
 		if(strlen($format)==0){
 			if(is_null($this->defaultFormat) || strlen($this->defaultFormat) == 0){
 				$format = "Y-m-d H:i:s";

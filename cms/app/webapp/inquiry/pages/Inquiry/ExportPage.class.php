@@ -77,7 +77,7 @@ class ExportPage extends WebPage{
 	
 	private $charset;
 	
-    function ExportPage() {
+    function __construct() {
 		SOY2DAOFactory::importEntity("SOYInquiry_Inquiry");
     	WebPage::WebPage();
     	

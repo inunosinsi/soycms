@@ -3,7 +3,7 @@ SOY2::import("domain.admin.Administrator");
 
 class IndexPage extends CMSWebPageBase{
 
-	function IndexPage(){
+	function __construct(){
     	if(!UserInfoUtil::isDefaultUser()){
     		$this->jump("Administrator.Detail");
     	}

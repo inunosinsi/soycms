@@ -5,7 +5,7 @@ class DeliveryNormalCartPage extends WebPage{
 	private $cart;
 	private $configObj;
 	
-	function DeliveryNormalCartPage(){
+	function __construct(){
 		SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
 	}
 	

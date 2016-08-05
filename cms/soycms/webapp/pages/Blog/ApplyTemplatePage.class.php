@@ -26,7 +26,7 @@ class ApplyTemplatePage extends CMSWebPageBase{
 		exit;
 	}
 
-    function ApplyTemplatePage($arg) {
+    function __construct($arg) {
     	$id = @$arg[0];
     	$this->id = $id;
     	$this->mode = @$arg[1];

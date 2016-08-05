@@ -11,7 +11,7 @@ class IndexPage extends WebPage{
 		CMSApplication::jump("Log?clear");
 	}
 	
-    function IndexPage() {
+    function __construct() {
     	WebPage::WebPage();
 
 		$logs = $this->getLogs();

@@ -19,7 +19,7 @@ class IndexPage extends CMSWebPageBase {
 		}
 	}
 
-	function IndexPage($arg) {
+	function __construct($arg) {
 		if(isset($arg[0]))$this->entryId = $arg[0];
 		if(isset($arg[1]))$this->page    = $arg[1];
 

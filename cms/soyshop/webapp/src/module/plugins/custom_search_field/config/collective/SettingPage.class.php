@@ -10,7 +10,7 @@ class SettingPage extends WebPage{
 	
 	private $categories = array();
 	
-	function SettingPage(){
+	function __construct(){
 		$this->fieldId = (isset($_GET["field_id"])) ? $_GET["field_id"] : null;
 		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 		$this->config = CustomSearchFieldUtil::getConfig();

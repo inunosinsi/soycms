@@ -16,7 +16,7 @@ class SiteRootPage extends CMSUpdatePageBase{
 		exit;
 	}
 
-    function SiteRootPage($args) {
+    function __construct($args) {
 
     	//初期管理者のみ
     	if(!UserInfoUtil::isDefaultUser()){

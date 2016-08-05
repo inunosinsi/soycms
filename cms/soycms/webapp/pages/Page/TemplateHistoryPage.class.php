@@ -23,7 +23,7 @@ class TemplateHistoryPage extends CMSWebPageBase {
     	}
 	}
 
-    function TemplateHistoryPage($arg) {
+    function __construct($arg) {
     	$pageId = @$arg[0];
     	$this->pageId = $pageId;
     	

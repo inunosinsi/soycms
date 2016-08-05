@@ -32,7 +32,7 @@ class RegisterPage extends CommonPartsPage{
 	var $error = false;
 	var $user;
 	
-    function RegisterPage() {
+    function __construct() {
     	WebPage::WebPage();
     	$this->redirectCheck();
     	$this->createTag();

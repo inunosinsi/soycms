@@ -2,7 +2,7 @@
 include(dirname(dirname(__FILE__)) . "/common/common.php");
 class CommonAdditionOptionConfigFormPage extends WebPage{
 
-    function CommonAdditionOptionConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     }
     

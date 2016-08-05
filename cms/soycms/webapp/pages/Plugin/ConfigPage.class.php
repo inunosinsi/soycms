@@ -2,7 +2,7 @@
 
 class ConfigPage extends CMSWebPageBase{
 	
-    function ConfigPage() {
+    function __construct() {
     	$array = array_keys($_GET);
     	$this->id = array_shift($array);
 		$result = $this->run("Plugin.GetAction",array("pluginId"=>$this->id));

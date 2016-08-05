@@ -5,8 +5,7 @@
 class DeliveryChargeFreeCartFormPage extends WebPage{
 	private $cart;
 	
-	function DeliveryChargeFreeConfigFormPage(){
-	}
+	function __construct(){}
 	
 	function execute(){
 		WebPage::WebPage();

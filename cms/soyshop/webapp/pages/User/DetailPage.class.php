@@ -102,7 +102,7 @@ class DetailPage extends WebPage{
 		SOY2PageController::jump("User.Detail." . $this->id . "?updated");
 	}
 
-    function DetailPage($args) {
+    function __construct($args) {
     	$id = (isset($args[0])) ? $args[0] : null;
     	$this->id = $id;
     	

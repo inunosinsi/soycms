@@ -2,7 +2,7 @@
 
 class DeletePage extends CMSWebPageBase{
 
-    function DeletePage($arg) {
+    function __construct($arg) {
     	if(soy2_check_token()){
 	    	$pageId = @$arg[0];
 	    	$treeId = @$arg[1];

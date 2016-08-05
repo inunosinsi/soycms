@@ -35,7 +35,7 @@ class CreatePage extends WebPage{
 		}
 	}
 
-	function CreatePage($args){
+	function __construct($args){
 	
 		WebPage::WebPage();
 		

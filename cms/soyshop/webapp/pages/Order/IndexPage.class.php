@@ -28,7 +28,7 @@ class IndexPage extends WebPage{
 		exit;
 	}
 
-	function IndexPage($args){
+	function __construct($args){
 		WebPage::WebPage();
 
 		//検索条件のリセット

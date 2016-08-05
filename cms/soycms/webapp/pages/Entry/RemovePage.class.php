@@ -14,7 +14,7 @@ class RemovePage extends CMSEntryEditorPageBase{
 		$this->jump("Entry");
 	}
 
-    function RemovePage($args) {
+    function __construct($args) {
 		$this->id = @$args[0];
 		
 		WebPage::WebPage();

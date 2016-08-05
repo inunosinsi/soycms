@@ -16,7 +16,7 @@ class CategoryPage extends WebPage{
 		SOY2PageController::jump("Site.Config.Category");
 	}
 
-	function CategoryPage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		$this->addForm("update_form");

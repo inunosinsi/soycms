@@ -25,7 +25,7 @@ class ConfirmPage extends CMSUpdatePageBase{
 		}
 	}
 
-	function ConfirmPage(){
+	function __construct(){
 
 		//初期管理者のみ
 		if(!UserInfoUtil::isDefaultUser()){

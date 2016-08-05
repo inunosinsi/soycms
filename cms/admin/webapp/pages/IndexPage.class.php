@@ -46,7 +46,7 @@ class IndexPage extends CMSWebPageBase{
     	}
 	}
 
-	function IndexPage($arg){
+	function __construct($arg){
 		WebPage::WebPage();
 		
 		/*

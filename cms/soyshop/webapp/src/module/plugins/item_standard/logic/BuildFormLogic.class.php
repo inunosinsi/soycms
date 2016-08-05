@@ -13,7 +13,7 @@ class BuildFormLogic extends SOY2LogicBase{
 	
 	private $isFirst = false;
 	
-	function BuildFormLogic(){
+	function __construct(){
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
 		if(!$this->attrDao) $this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		$this->childLogic = SOY2Logic::createInstance("module.plugins.item_standard.logic.ChildItemLogic");

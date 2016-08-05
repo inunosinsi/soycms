@@ -47,7 +47,7 @@ class ConfirmPage extends IndexPage{
 		SOY2PageController::jump("Order.Register.Confirm");
 	}
 
-	function ConfirmPage() {
+	function __construct() {
 		$this->cart = AdminCartLogic::getCart();
 
 		WebPage::WebPage();

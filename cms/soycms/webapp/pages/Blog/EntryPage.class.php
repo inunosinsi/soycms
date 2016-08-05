@@ -39,7 +39,7 @@ class EntryPage extends CMSEntryEditorPageBase{
 		$this->jump("Blog.Entry.".$this->pageId.".".$this->id);
 	}
 
-    function EntryPage($arg) {
+    function __construct($arg) {
     	//$id == null ならば新規作成
     	$this->pageId = @$arg[0];
     	$this->id = @$arg[1];

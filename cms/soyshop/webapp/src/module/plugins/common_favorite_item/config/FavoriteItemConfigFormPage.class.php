@@ -4,9 +4,7 @@ class FavoriteItemConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function FavoriteItemConfigFormPage(){
-		
-	}
+	function __construct(){}
 	
 	function execute(){
 		WebPage::WebPage();

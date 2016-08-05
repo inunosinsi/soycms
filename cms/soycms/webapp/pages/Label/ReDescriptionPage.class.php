@@ -2,7 +2,7 @@
 
 class ReDescriptionPage extends CMSWebPageBase{
 
-    function ReDescriptionPage() {
+    function __construct() {
     	if(isset($_POST["description"]) && strlen($_POST["description"]) > 0){
     		if(soy2_check_token()){
 		    	$action = SOY2ActionFactory::createInstance("Label.ReDescriptionAction");

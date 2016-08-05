@@ -2,7 +2,7 @@
 
 class DisplayLogic extends SOY2LogicBase{
 	
-	function DisplayLogic(){
+	function __construct(){
 		SOY2::import("module.plugins.parts_calendar.common.PartsCalendarCommon");
 	}
 

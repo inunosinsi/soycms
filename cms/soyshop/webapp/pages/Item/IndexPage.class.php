@@ -33,7 +33,7 @@ class IndexPage extends WebPage{
 		}
 	}
 
-	function IndexPage($args){
+	function __construct($args){
 		//ダミー商品をたくさん追加
 		if(isset($_GET["create"]) && $_GET["create"] == "dummy"){
 			$itemLogic = SOY2Logic::createInstance("logic.shop.item.ItemLogic")->createDummyItems();

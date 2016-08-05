@@ -20,7 +20,7 @@ class DragAndDropPage extends CMSWebPageBase{
 		exit;
 	}
 	
-	function DragAndDropPage($args){
+	function __construct($args){
 		
 		$this->id = @$args[0];
 		

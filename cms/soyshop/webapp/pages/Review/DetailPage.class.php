@@ -38,7 +38,7 @@ class DetailPage extends WebPage{
 		}
 	}
 	
-    function DetailPage($args) {
+    function __construct($args) {
     	
     	//IDがない場合はトップに飛ばす
     	if(!isset($args[0])){

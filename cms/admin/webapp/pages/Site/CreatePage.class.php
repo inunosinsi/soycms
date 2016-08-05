@@ -17,7 +17,7 @@ class CreatePage extends CMSUpdatePageBase{
 		}
 	}
 
-    function CreatePage() {
+    function __construct() {
     	
     	if(!UserInfoUtil::isDefaultUser()){
     		//デフォルトユーザのみ作成可能

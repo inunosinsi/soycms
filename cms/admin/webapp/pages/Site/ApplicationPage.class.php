@@ -3,7 +3,7 @@ SOY2::import("domain.admin.Site");
 
 class ApplicationPage extends CMSWebPageBase{
 
-	function ApplicationPage(){
+	function __construct(){
 		
 		//appIdが存在していない場合はトップページに遷移させる
 		if(!isset($_GET["appId"])){

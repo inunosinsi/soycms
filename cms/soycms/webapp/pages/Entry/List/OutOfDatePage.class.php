@@ -4,7 +4,7 @@ include_once(dirname(dirname(__FILE__))."/ListPage.class.php");
 
 class OutOfDatePage extends ListPage{
 
- 	function OutOfDatePage($arg) {
+ 	function __construct($arg) {
     	parent::ListPage(array("OutOfDate"));
     	
     	DisplayPlugin::hide("no_label");

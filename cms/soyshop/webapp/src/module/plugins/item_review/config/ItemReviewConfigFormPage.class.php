@@ -2,7 +2,7 @@
 
 class ItemReviewConfigFormPage extends WebPage{
 
-    function ItemReviewConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     	SOY2::import("module.plugins.item_review.common.ItemReviewCommon");
     }

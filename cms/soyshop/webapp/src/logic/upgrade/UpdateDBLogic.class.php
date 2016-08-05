@@ -18,7 +18,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	/**
 	 * コンストラクタ
 	 */
-	public function UpdateDBLogic(){
+	public function __construct(){
 		$this->db = new SOY2DAO();
 		$this->checkVersionLogic = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic");
 		$this->setDirectory();
@@ -98,7 +98,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	 * バージョン番号を保存する
 	 * @param string version
 	 */
-	public static function registerVersion($version){
+	function registerVersion($version){
 		try{
 			SOYShop_DataSets::put(self::VERSION_KEY, $version);
 		}catch(Exception $e){

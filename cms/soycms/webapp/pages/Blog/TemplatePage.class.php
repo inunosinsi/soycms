@@ -24,7 +24,7 @@ class TemplatePage extends CMSWebPageBase{
 		$this->jump("Blog.Template.".$this->id.".".$this->mode);
 	}
 
-    function TemplatePage($args) {
+    function __construct($args) {
 
     	$this->id = $args[0];
     	$this->mode = @$args[1];

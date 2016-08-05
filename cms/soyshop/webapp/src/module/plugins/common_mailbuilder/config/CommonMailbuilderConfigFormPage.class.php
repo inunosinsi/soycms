@@ -1,7 +1,7 @@
 <?php
 class CommonMailbuilderConfigFormPage extends WebPage{
 
-	function CommonMailbuilderConfigFormPage() {
+	function __construct() {
 		SOY2::import("module.plugins.common_mailbuilder.common.CommonMailbuilderCommon");
 	}
 	

@@ -7,7 +7,7 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 	private $config;
 	private $dao;
 
-	function DiscountFreeCouponConfigFormPage() {
+	function __construct() {
 		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
 		SOY2::imports("module.plugins.discount_free_coupon.util.*");
 		SOY2::imports("module.plugins.discount_free_coupon.config.*");

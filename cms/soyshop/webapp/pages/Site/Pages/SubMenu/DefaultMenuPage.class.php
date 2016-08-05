@@ -2,7 +2,7 @@
 
 class DefaultMenuPage extends HTMLPage{
 
-	function DefaultMenuPage(){
+	function __construct(){
 		HTMLPage::HTMLPage();
 	}
 

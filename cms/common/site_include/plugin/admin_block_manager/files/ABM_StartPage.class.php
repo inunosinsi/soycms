@@ -35,7 +35,7 @@ class ABM_StartPage extends ABM_PageBase{
 		
 	}
 	
-    function ABM_StartPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	$session = $this->getSession();

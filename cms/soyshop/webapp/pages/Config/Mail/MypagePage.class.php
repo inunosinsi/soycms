@@ -27,7 +27,7 @@ class MypagePage extends WebPage{
 		SOY2PageController::jump("Config.Mail.Mypage?type=" . $type . "&updated");
 	}
 
-	function MypagePage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		//メール文面の初期化

@@ -15,7 +15,7 @@ class DeletePage extends CMSWebPageBase{
 	}
 
 
-    function DeletePage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     }

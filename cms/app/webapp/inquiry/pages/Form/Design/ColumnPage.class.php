@@ -17,7 +17,7 @@ class ColumnPage extends WebPage{
 		parent::prepare();
 	}	
 	
-	function ColumnPage($args) {
+	function __construct($args) {
 		if(count($args) < 1) CMSApplication::jump("Form");
 		$this->id = (int)$args[0];
 		

@@ -51,7 +51,7 @@ class CreatePage extends WebPage{
 	var $obj;
 	var $errors = array();
 
-    function CreatePage() {
+    function __construct() {
     	
     	$session = SOY2ActionSession::getUserSession();
 		$appLimit = $session->getAttribute("app_shop_auth_limit");

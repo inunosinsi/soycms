@@ -42,7 +42,7 @@ class ABM_ConfirmPage extends ABM_PageBase{
 		}
 	}
 
-    function ABM_ConfirmPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	//対象ページを出力

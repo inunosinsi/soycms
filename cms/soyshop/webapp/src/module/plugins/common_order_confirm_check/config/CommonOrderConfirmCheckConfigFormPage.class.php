@@ -2,7 +2,7 @@
 
 class CommonOrderConfirmCheckConfigFormPage extends WebPage{
 
-    function CommonOrderConfirmCheckConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     }
     

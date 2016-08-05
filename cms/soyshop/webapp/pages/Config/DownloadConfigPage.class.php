@@ -19,7 +19,7 @@ class DownloadConfigPage extends WebPage{
 		
 	}
 
-    function DownloadConfigPage(){
+    function __construct(){
     	    	
     	WebPage::WebPage();
     	

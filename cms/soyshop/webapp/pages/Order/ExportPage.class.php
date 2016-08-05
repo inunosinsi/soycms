@@ -2,7 +2,7 @@
 
 class ExportPage extends WebPage{
 
-    function ExportPage() {
+    function __construct() {
     	
     	//ログインチェック	ログインしていなければ強制的に止める
 		if(!soyshop_admin_login()){

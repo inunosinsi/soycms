@@ -8,7 +8,7 @@ class HeaderPage extends CMSWebPageBase{
 		$this->title = $title;
 	}
 
-    function HeaderPage() {
+    function __construct() {
 		WebPage::WebPage();    	
     }
     

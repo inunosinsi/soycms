@@ -15,7 +15,7 @@ class RenamePage extends CMSWebPageBase{
 	}
 
 
-    function RenamePage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     }

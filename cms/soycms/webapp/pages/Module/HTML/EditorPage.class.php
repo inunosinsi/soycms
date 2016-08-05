@@ -40,7 +40,7 @@ class EditorPage extends CMSWebPageBase{
 		$this->jump("Module.HTML.Editor?moduleId=" . $_GET["moduleId"]);
 	}
 	
-	function EditorPage(){
+	function __construct(){
 		$this->moduleId = (isset($_GET["moduleId"])) ? htmlspecialchars(str_replace("/", ".", $_GET["moduleId"])) : null;
 
 		$moduleDir = self::getModuleDirectory();

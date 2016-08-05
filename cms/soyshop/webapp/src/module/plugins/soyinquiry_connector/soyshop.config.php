@@ -26,7 +26,7 @@ class SOYInquiryConnectorConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function SOYInquiryConnectorConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		include_once(dirname(__FILE__) . "/common.php");
 	}

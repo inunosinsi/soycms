@@ -1,0 +1,39 @@
+<div style="padding:4px 20px;">
+
+<div class="functions">
+	<div class="function">
+		<a soy:link="calendar.Title">一覧</a>
+	</div><!-- class="function"の終了 -->
+	<div class="function">
+		<a soy:link="calendar.Title.Create">タイトルの追加</a>
+	</div><!-- class="function"の終了 -->
+	<br style="clear:both;" />
+</div><!-- class="functions"の終了 -->
+
+<div class="table_container">
+	<table class="list">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>タイトル</th>
+				<th>クラス</th>
+				<th class="short">&nbsp;</th>
+			</tr>	
+		</thead>
+		<tbody>
+			<!-- soy:id="title_list" -->
+			<tr>
+				<td soy:id="id">1</td>
+				<td soy:id="title">午前</td>
+				<td soy:id="attribute">closed</td>
+				<td style="text-align:center;">
+					<a soy:id="edit_link">編集</a>&nbsp;
+					<a soy:id="remove_link">削除</a>
+				</td>
+			</tr>
+			<!-- /soy:id="title_list" -->
+		</tbody>
+	</table>
+</div>
+
+</div>

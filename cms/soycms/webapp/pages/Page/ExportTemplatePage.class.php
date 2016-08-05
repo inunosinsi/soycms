@@ -4,7 +4,7 @@ class ExportTemplatePage extends CMSWebPageBase{
 
 	var $pageId;
 
-    function ExportTemplatePage($arg) {
+    function __construct($arg) {
     	$this->pageId = isset($arg[0])? $arg[0] : null;
     	if(is_null($this->pageId)){
     		header('Content-Disposition: attachment;filename=blank.html;');

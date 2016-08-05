@@ -37,7 +37,7 @@ class SearchPage extends WebPage{
 	var $id;
 	var $page;
 
-	function SearchPage($args){
+	function __construct($args){
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 
 		WebPage::WebPage();

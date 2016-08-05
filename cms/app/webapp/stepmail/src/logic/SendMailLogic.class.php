@@ -9,7 +9,7 @@ class SendMailLogic extends SOY2LogicBase{
 	
 	private $mails = array();	/** データベースから取り出したステップメールを入れておく array($key => array("title", "content"))**/
 	
-	function SendMailLogic(){
+	function __construct(){
 		$this->sendDao = SOY2DAOFactory::create("StepMail_NextSendDAO");
 		$this->stepDao = SOY2DAOFactory::create("StepMail_StepDAO");
 		$this->historyDao = SOY2DAOFactory::create("StepMail_SendHistoryDAO");

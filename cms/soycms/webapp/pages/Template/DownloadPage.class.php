@@ -2,7 +2,7 @@
 
 class DownloadPage extends CMSWebPageBase{
 
-    function DownloadPage($arg) {
+    function __construct($arg) {
 //    	if(soy2_check_token()){
 	    	WebPage::WebPage();
 	    	$id = @$arg[0];

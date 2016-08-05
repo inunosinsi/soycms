@@ -34,7 +34,7 @@ class MailPage extends WebPage{
 
 	}
 
-	function MailPage() {
+	function __construct() {
 		//初期管理者のみ
 		if(!UserInfoUtil::isDefaultUser()){
 			SOY2PageController::jump("");

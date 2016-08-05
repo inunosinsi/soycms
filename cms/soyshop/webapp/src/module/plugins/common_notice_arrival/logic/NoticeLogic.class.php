@@ -5,7 +5,7 @@ class NoticeLogic extends SOY2LogicBase{
 	private $noticeDao;
 	private $shopConfig;
 	
-	function NoticeLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.common_notice_arrival.domain.*");
 		$this->noticeDao = SOY2DAOFactory::create("SOYShop_NoticeArrivalDAO");
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");

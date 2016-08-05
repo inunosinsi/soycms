@@ -2,7 +2,7 @@
 
 class TestPage extends WebPage{
 
-    function TestPage() {
+    function __construct() {
     
     	$formDAO = SOY2DAOFactory::create("SOYInquiry_FormDAO");
     	$forms = $formDAO->get();

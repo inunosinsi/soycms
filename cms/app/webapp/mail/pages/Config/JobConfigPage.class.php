@@ -2,7 +2,7 @@
 
 class JobConfigPage extends WebPage{
 
-    function JobConfigPage() {
+    function __construct() {
     	
     	return null;
     	

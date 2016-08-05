@@ -26,7 +26,7 @@ class CommonPriceCheckConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function CommonPriceCheckConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::import("module.plugins.common_price_check.common.CommonPriceCheckCommon");
 	}

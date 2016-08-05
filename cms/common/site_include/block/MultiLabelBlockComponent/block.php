@@ -55,7 +55,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 	 * 表示用コンポーネント
 	 */
 	function getViewPage($page){
-
+				
 		//古いDSNのバックアップ
 		$oldDsn = null;
 
@@ -399,7 +399,7 @@ class MultiLabelBlockComponent_ViewPage extends HTMLList{
 	function populateItem($entity){
 		//entry title
 		$url = (isset($this->url[$entity->getId()])) ? $this->url[$entity->getId()] : "" ;
-
+		
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
 		$entryUrl = ( strlen($url) >0 ) ? $url.rawurlencode($entity->getAlias()) : "" ;
 

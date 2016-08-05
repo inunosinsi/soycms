@@ -4,7 +4,7 @@ class MailPage extends WebPage{
 
 	var $id;
 
-    function MailPage($args) {
+    function __construct($args) {
     	$id = @$args[0];
     	$this->id = $id;
 

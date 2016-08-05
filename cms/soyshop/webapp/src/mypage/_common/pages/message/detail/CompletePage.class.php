@@ -4,7 +4,7 @@ class CompletePage extends IndexPage{
 
 	private $id;
 
-	function CompletePage($args) {
+	function __construct($args) {
 		
 		$this->id = $args[0];
 		

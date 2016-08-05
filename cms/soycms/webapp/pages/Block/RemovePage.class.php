@@ -2,7 +2,7 @@
 
 class RemovePage extends CMSWebPageBase{
 
-    function RemovePage($arg) {
+    function __construct($arg) {
     	
 		$id = @$arg[0];
 

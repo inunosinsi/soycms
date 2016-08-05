@@ -9,7 +9,7 @@ class BlockListPage extends CMSWebPageBase{
 		$this->pageId = $id;
 	}
 	
-    function BlockListPage() {
+    function __construct() {
     	WebPage::WebPage();
     }
     

@@ -2,7 +2,7 @@
 
 class ListPage extends SOYShopWebPage{
 
-    function ListPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	$dao = SOY2DAOFactory::create("SOYShop_SiteDAO");

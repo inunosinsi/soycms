@@ -6,7 +6,7 @@ class PurchasedCheckLogic extends SOY2LogicBase{
 	private $orderDao;
 	private $isPaid;
 	
-	function PurchasedCheckLogic(){
+	function __construct(){
 		$this->orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		SOY2::import("module.plugins.common_purchase_check.util.PurchaseCheckUtil");
 		$config = PurchaseCheckUtil::getConfig();

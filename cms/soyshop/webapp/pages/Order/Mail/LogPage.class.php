@@ -4,7 +4,7 @@ class LogPage extends WebPage{
 	
 	private $logId;
 	
-	function LogPage($args){
+	function __construct($args){
 		$this->logId = (isset($args[0])) ? $args[0] : null;
 		
 		WebPage::WebPage();

@@ -2,7 +2,7 @@
 
 class RemovePage extends MainMyPagePageBase{
 
-    function RemovePage() {
+    function __construct() {
     	
     	if(soy2_check_token()){
     		$mypage = MyPageLogic::getMyPage();

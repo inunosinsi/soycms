@@ -27,7 +27,7 @@ class WithdrawPage extends CMSWebPageBase{
 	}
 	
 
-    function WithdrawPage() {
+    function __construct() {
     	$dao = SOY2DAOFactory::create("asp.ASPUserDAO");
     	$user = $dao->getById(UserInfoUtil::getUserId());
     	

@@ -4,7 +4,7 @@ class SortButtonConfigFormPage extends WebPage{
 	
 	private $obj;
 	
-	function SortButtonConfigFormPage(){
+	function __construct(){
 		
 	}
 	

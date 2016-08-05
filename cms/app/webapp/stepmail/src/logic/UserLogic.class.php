@@ -4,7 +4,7 @@ class UserLogic extends SOY2LogicBase{
 	
 	private $userDao;
 	
-	function UserLogic(){
+	function __construct(){
 		$this->userDao = SOY2DAOFactory::create("SOYShop_UserDAO");
 	}
 	

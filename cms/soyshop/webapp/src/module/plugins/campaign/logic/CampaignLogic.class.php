@@ -2,7 +2,7 @@
 
 class CampaignLogic extends SOY2LogicBase{
 	
-	function CampaignLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.campaign.domain.*");
 	}
 	

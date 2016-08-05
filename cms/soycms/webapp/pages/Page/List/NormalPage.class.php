@@ -2,7 +2,7 @@
 
 class NormalPage extends CMSWebPageBase{
 
-    function NormalPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	$offset = 0; $viewcount = 10; $vieworder = "udate";

@@ -48,7 +48,7 @@ class RolePage extends CMSUpdatePageBase{
 		}
 	}
 
-    function RolePage($arg) {
+    function __construct($arg) {
     	$this->appId = (isset($_GET["app_id"])) ? $_GET["app_id"] : "";
 		
     	if(is_null($this->appId)){

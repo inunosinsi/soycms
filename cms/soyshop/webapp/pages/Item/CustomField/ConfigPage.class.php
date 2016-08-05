@@ -26,7 +26,7 @@ class ConfigPage extends WebPage{
 		
 	}	
 	
-	function ConfigPage(){
+	function __construct(){
 		WebPage::WebPage();
 		
 		$this->addForm("import_form");

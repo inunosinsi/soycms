@@ -4,7 +4,7 @@ class IndexPage extends WebPage{
 	
 	private $itemId;
 	
-	function IndexPage($args){
+	function __construct($args){
 		
 		$this->itemId = (isset($args[0])) ? (int)$args[0] : null;
 		

@@ -2,7 +2,7 @@
 
 class FooterMenuPage extends CMSHTMLPageBase{
 	
-    function FooterMenuPage() {
+    function __construct() {
     	HTMLPage::HTMLPage();    	
     }
     

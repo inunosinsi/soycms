@@ -15,7 +15,7 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 	private $couponDao;
 	private $coupon;
 	
-	function DiscountFreeCouponLogic(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
 	}

@@ -25,7 +25,7 @@ SOYShopPlugin::extension("soyshop.config", "google_shopping_rss", "GoogleShoppin
 
 class GoogleShoppingRssConfigFormPage extends WebPage{
 	
-	function GoogleShoppingRssConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

@@ -2,7 +2,7 @@
 
 class IndexPage extends WebPage{
 	
-	function IndexPage(){
+	function __construct(){
 		
 		SOY2::import("domain.site.SOYShop_Page");
 		$tempLogic = SOY2Logic::createInstance("logic.site.template.TemplateLogic");

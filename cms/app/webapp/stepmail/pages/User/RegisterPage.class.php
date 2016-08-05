@@ -25,7 +25,7 @@ class RegisterPage extends WebPage{
 		}
 	}
 	
-	function RegisterPage(){
+	function __construct(){
 		$this->userLogic = SOY2Logic::createInstance("logic.UserLogic");
 		$this->registLogic = SOY2Logic::createInstance("logic.RegistLogic");
 		

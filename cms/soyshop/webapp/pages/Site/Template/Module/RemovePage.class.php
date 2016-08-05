@@ -2,7 +2,7 @@
 
 class RemovePage extends WebPage{
 
-    function RemovePage($args) {
+    function __construct($args) {
  
     	$moduleId = $_GET["moduleId"];
     	$modulePath = SOYSHOP_SITE_DIRECTORY . ".module/" . str_replace(".", "/", $moduleId) . ".php";

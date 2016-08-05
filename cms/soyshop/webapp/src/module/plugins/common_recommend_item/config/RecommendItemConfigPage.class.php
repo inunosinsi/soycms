@@ -4,7 +4,7 @@ class RecommendItemConfigPage extends WebPage{
 	
 	private $configObj;
 	
-	function RecommendItemConfigPage(){
+	function __construct(){
 		SOY2::import("module.plugins.common_recommend_item.util.RecommendItemUtil");
 	}
 	

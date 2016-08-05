@@ -27,7 +27,7 @@ class IndexPage extends MainMyPagePageBase{
 		}
 	}
 
-	function IndexPage($args){
+	function __construct($args){
 		$this->mypage = MyPageLogic::getMyPage();
 		$this->mypage->clearErrorMessage();
 		

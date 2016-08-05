@@ -3,7 +3,7 @@ SOY2::import("domain.admin.Site");
 
 class CompletePage extends CMSWebPageBase{
 
-	function CompletePage(){
+	function __construct(){
 		WebPage::WebPage();
 
 		//初期管理者のみ

@@ -50,7 +50,7 @@ class PaymentPage extends WebPage{
 
 	}
 
-    function PaymentPage() {
+    function __construct() {
 		SOYShopPlugin::active("soyshop.payment");
 		$this->cart = AdminCartLogic::getCart();
 

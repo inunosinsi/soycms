@@ -2,7 +2,7 @@
 
 class IndexPage extends WebPage{
 	
-	function IndexPage(){
+	function __construct(){
 		WebPage::WebPage();
 		
 		DisplayPlugin::toggle("successed", isset($_GET["successed"]));

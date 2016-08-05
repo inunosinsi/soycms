@@ -24,9 +24,7 @@ SOYShopPlugin::extension("soyshop.config","admin_shop_message_connector","AdminS
 
 class AdminShopMessageConnectorConfigFormPage extends WebPage{
 		
-	function AdminShopMessageConnectorConfigFormPage(){
-
-	}
+	function __construct(){}
 		
 	function execute(){
 		WebPage::WebPage();

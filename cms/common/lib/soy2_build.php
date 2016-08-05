@@ -359,7 +359,7 @@ class SOY2PageController implements SOY2_Controller{
 class SOY2_PathInfoPathBuilder implements SOY2_PathBuilder{
 	var $path;
 	var $arguments;
-	function SOY2_PathInfoPathBuilder(){
+	function __construct(){
 		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
 		if(preg_match('/^((\/[a-zA-Z]*)*)(\/-)?((\/[0-9a-zA-Z_\.]*)*)$/',$pathInfo,$tmp)){
 			$path = preg_replace('/^\/|\/$/',"",$tmp[1]);
@@ -774,7 +774,7 @@ class SOY2Mail_MailAddress{
 	private $address;
 	private $label;
 	private $encoding;
-	function SOY2Mail_MailAddress($address, $label = "", $encoding = ""){
+	function __construct($address, $label = "", $encoding = ""){
 		$this->address = $address;
 		$this->label = $label;
 		$this->encoding = $encoding;
@@ -879,7 +879,7 @@ class SOY2Mail_IMAPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	private $folder;
 	private $user;
 	private $pass;
-	function SOY2Mail_IMAPLogic($options) {
+	function __construct($options) {
 		if(!function_exists("imap_open")){//extension_loaded("imap")
 			throw new SOY2MailException("The extension 'imap' is necessary.");
 		}
@@ -1075,7 +1075,7 @@ class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 	private $folder;
 	private $user;
 	private $pass;
-	function SOY2Mail_POPLogic($options){
+	function __construct($options){
 		if(!isset($options["pop.host"])){
 			throw new SOY2MailException("[pop.host] is necessary.");
 		}
@@ -1255,7 +1255,7 @@ class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 	private $debug = false;
 	private $esmtpOptions = array();
 	private $isSecure = false;
-	function SOY2Mail_SMTPLogic($options){
+	function __construct($options){
 		if(!isset($options["smtp.host"])){
 			throw new SOY2MailException("[smtp.host] is necessary.");
 		}
@@ -1652,7 +1652,7 @@ class SOY2Mail_SMTPAuth_DigestMD5{
 }
 /* SOY2Mail/SOY2Mail_SendMailLogic.class.php */
 class SOY2Mail_SendMailLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
-    function SOY2Mail_SendMailLogic($options) {
+    function __construct($options) {
     }
     function open(){}
     function close(){}
@@ -2217,7 +2217,7 @@ class SOY2ActionResult{
  * @package SOY2.SOY2Action
  */
 class SOY2ActionConfig{
-	private function SOY2ActionConfig(){}
+	private function __construct(){}
 	private $actionPath = "actions/";
 	private static function &getInstance(){
 		static $_static;
@@ -2468,7 +2468,7 @@ class ActionFormError{
 	 * @param string $validator Validator名
 	 * @param string $error エラー種別
 	 */
-	function ActionFormError($class,$prop,$validator,$error,$message = null){
+	function __construct($class,$prop,$validator,$error,$message = null){
 		$this->className = $class;
 		$this->prop = $prop;
 		$this->validator = $validator;
@@ -2548,7 +2548,7 @@ abstract class SOY2ActionFormValidator{
 class SOY2ActionFormValidator_NumberValidator extends SOY2ActionFormValidator{
 	var $max;
 	var $min;
-	function SOY2ActionFormValidator_NumberValidator($obj){
+	function __construct($obj){
 		$this->max = @$obj->max;
 		$this->min = @$obj->min;
 	}
@@ -2578,7 +2578,7 @@ class SOY2ActionFormValidator_StringValidator extends SOY2ActionFormValidator{
 	var $max;
 	var $min;
 	var $regex;
-	function SOY2ActionFormValidator_StringValidator($obj){
+	function __construct($obj){
 		$this->max = @$obj->max;
 		$this->min = @$obj->min;
 		$this->regex = @$obj->regex;
@@ -2855,7 +2855,7 @@ class SOY2DAOConfig{
 	/**
 	 * Constructor
 	 */
-	private function SOY2DAOConfig(){}
+	private function __construct(){}
 	/**
 	 * @return SOY2DAOConfig
 	 */
@@ -3512,7 +3512,7 @@ class SOY2DAO{
 class SOY2DAOException extends Exception{
 	private $pdoException;
 	private $query;
-	function SOY2DAOException($msg, Exception $e = null){
+	function __construct($msg, Exception $e = null){
 		$this->pdoException = $e;
 		parent::__construct($msg);
 	}
@@ -7228,7 +7228,7 @@ class HTMLTemplatePage extends HTMLPage{
 	var $_id;
 	var $_html;
 	private $hash = "";
-	function HTMLTemplatePage($args){
+	function __construct($args){
 		$this->_id = $args[0];
 		$this->_html = $args[1];
 		$this->hash = md5($this->_html);
@@ -7283,7 +7283,7 @@ class HTMLPage_ChildElement{
 	protected $tag;
 	private $insert = array();
 	private $append = array();
-	function HTMLPage_ChildElement($tag){
+	function __construct($tag){
 		$this->tag = $tag;
 	}
 	function insertHTML($html){
@@ -7316,7 +7316,7 @@ class HTMLPage_ChildElement{
 class HTMLPage_HeadElement extends HTMLPage_ChildElement{
 	private $title;
 	private $metas = array();
-	function HTMLPage_HeadElement($tag = null){
+	function __construct($tag = null){
 		if($tag == null)$tag = "head";
 		parent::HTMLPage_ChildElement($tag);
 	}
@@ -8156,7 +8156,7 @@ class SOY2Logic{
  */
 class SOY2LogicContainer {
 	private $logics = array();
-	private function SOY2LogicContainer(){
+	private function __construct(){
 	}
 	public static function get($name,$array = array()){
 		static $instance;
@@ -8394,7 +8394,7 @@ class SOY2Logger_Base implements SOY2LoggerInterface{
  */
 class SOY2Logger_SimpleLogger extends SOY2Logger_Base{
 	private $format;
-	function SOY2Logger_SimpleLogger($options){
+	function __construct($options){
 		if(isset($options["format"])){
 			$this->format = $options["format"];
 		}
@@ -8408,7 +8408,7 @@ class SOY2Logger_SimpleLogger extends SOY2Logger_Base{
  */
 class SOY2Logger_FileLogger extends SOY2Logger_SimpleLogger{
 	private $filePath;
-	function SOY2Logger_FileLogger($options = array()){
+	function __construct($options = array()){
 		$this->setFilePath(@$options["path"]);
 		parent::__construct($options);
 	}
@@ -8434,7 +8434,7 @@ class SOY2Logger_FileLogger extends SOY2Logger_SimpleLogger{
 	}
 }
 class SOY2Logger_SOY2DebugLogger extends SOY2Logger_SimpleLogger{
-	function SOY2Logger_SOY2DebugLogger($option = array()){
+	function __construct($option = array()){
 		parent::__construct($option);
 	}
 	function log($str){
@@ -8448,7 +8448,7 @@ class SOY2Logger_RotationFileLogger extends SOY2Logger_FileLogger{
 	private $maxLineCount = 400;
 	private $maxFileCount = 10;
 	private $suffix = "";
-	function SOY2Logger_RotationFileLogger($options){
+	function __construct($options){
 		if(isset($options["line"]))$this->setMaxLineCount((int)$options["line"]);
 		if(isset($options["count"]))$this->setMaxFileCount((int)$options["count"]);
 		if(isset($options["suffix"]))$this->setSuffix((string)$options["suffix"]);
@@ -8765,7 +8765,7 @@ class SOY2SessionValue{
 	private $className;
 	private $classObject;
 	private $classValue;
-	function SOY2SessionValue($className){
+	function __construct($className){
 		$class = SOY2::import($className);
 		$this->className = $className;
 		$this->classObject = new $class;

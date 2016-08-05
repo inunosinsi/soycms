@@ -5,7 +5,7 @@ class SOYShopItemImportConfigFormPage extends WebPage{
 	private $pluginObj;
 	private $configLogic;
 	
-	function SOYShopItemImportConfigFormPage(){
+	function __construct(){
 		$this->configLogic = SOY2Logic::createInstance("site_include.plugin.soyshop_item_import.logic.ConfigLogic");
 	}
 	

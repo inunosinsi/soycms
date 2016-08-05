@@ -8,7 +8,7 @@ class DownloadRegisterLogic extends SOY2LogicBase{
 	
 	private $commonLogic;
 	
-	function DownloadRegisterLogic(){
+	function __construct(){
 		SOY2::imports("module.plugins.download_assistant.logic.*");
 		SOY2::imports("module.plugins.download_assistant.domain.*");
 		

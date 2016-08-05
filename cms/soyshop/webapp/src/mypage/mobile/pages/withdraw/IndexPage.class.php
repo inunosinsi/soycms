@@ -10,7 +10,7 @@ class IndexPage extends MobileMyPagePageBase{
 		
 	}
 
-    function IndexPage() {
+    function __construct() {
 
     	WebPage::WebPage();
     	

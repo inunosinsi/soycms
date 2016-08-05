@@ -2,7 +2,7 @@
 
 class RecoverPage extends CMSWebPageBase{
 
-    function RecoverPage($args) {
+    function __construct($args) {
 
     	if(soy2_check_token()){
 		

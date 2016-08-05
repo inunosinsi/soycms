@@ -65,7 +65,7 @@ class ComplexPage extends WebPage{
 	var $id;
 	var $page;
 
-	function ComplexPage($args){
+	function __construct($args){
 
 		$this->id = $args[0];
 

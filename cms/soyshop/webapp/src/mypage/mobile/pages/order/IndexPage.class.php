@@ -1,7 +1,7 @@
 <?php
 class IndexPage extends MobileMyPagePageBase{
 
-	function IndexPage($args){
+	function __construct($args){
 		WebPage::WebPage();
 
 		$mypage = MyPageLogic::getMyPage();

@@ -64,7 +64,7 @@ class IndexPage extends WebPage{
 		SOY2PageController::jump("Item.Category.Setting?failed");
 	}
 	
-	function IndexPage(){
+	function __construct(){
 		WebPage::WebPage();
 		
 		$this->addForm("form");

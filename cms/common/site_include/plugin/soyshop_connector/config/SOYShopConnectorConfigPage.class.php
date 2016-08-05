@@ -5,7 +5,7 @@ class SOYShopConnectorConfigPage extends WebPage{
 	private $pluginObj;
 	private $configLogic;
 	
-	function SOYShopConnectorConfigPage(){
+	function __construct(){
 		$this->configLogic = SOY2Logic::createInstance("site_include.plugin.soyshop_connector.logic.ConfigLogic");
 	}
 	

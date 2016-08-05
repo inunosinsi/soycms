@@ -7,7 +7,7 @@ class DetailPage extends MobileMyPagePageBase{
 	
 	private $id;
 	
-	function DetailPage($args){
+	function __construct($args){
 		WebPage::WebPage();
 		
 		$mypage = MyPageLogic::getMyPage();

@@ -35,7 +35,7 @@ class DetailPage extends CMSWebPageBase{
     	}
 	}
 
-    function DetailPage($arg){
+    function __construct($arg){
     	
     	
     	$this->id = @$arg[0];

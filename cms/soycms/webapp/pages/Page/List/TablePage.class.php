@@ -2,7 +2,7 @@
 
 class TablePage extends CMSWebPageBase{
 
-    function TablePage() {
+    function __construct() {
     	WebPage::WebPage();
 
     	$pages = $this->getPageList();

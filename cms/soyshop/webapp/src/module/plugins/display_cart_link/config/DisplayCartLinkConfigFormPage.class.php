@@ -4,7 +4,7 @@ class DisplayCartLinkConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function DisplayCartLinkConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.display_cart_link.util.DisplayCartLinkUtil");
 	}
 	

@@ -2,7 +2,7 @@
 
 class AddAfterPage extends CMSWebPageBase{
 
-    function AddAfterPage($arg) {
+    function __construct($arg) {
     	$pageId = @$arg[0];
     	$treeId = @$arg[1];
     	

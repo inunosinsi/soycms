@@ -91,7 +91,7 @@ class EntryListPage extends CMSWebPageBase{
 		}
 	}
 	
-	function EntryListPage($arg){
+	function __construct($arg){
 		
 		$offset = isset($_GET['offset'])? (int)$_GET['offset'] : 0 ;
 		$limit  = isset($_GET['limit'])? (int)$_GET['limit'] : ( isset($_COOKIE['Entry_List_Limit'])? (int)$_COOKIE['Entry_List_Limit'] : 10 );
@@ -380,7 +380,7 @@ class LabeledEntryList extends HTMLList{
 	function setLabelId($labelId){
 		$this->labelId = $labelId;
 	}
-	function setPage($page){
+	function __construct($page){
 		$this->page = $page;
 	}
 	

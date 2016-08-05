@@ -23,7 +23,7 @@ class ListPanelPage extends CMSUpdatePageBase{
 		exit;
 	}
 
-    function ListPanelPage($arg) {
+    function __construct($arg) {
     	$labels = array_map(create_function('$v','return (int)$v;'),$arg);
     	
     	WebPage::WebPage();

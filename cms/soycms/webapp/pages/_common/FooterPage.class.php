@@ -4,7 +4,7 @@ class FooterPage extends CMSHTMLPageBase{
 	
 	var $copyRight = ""; 
 	
-    function FooterPage() {
+    function __construct() {
     	HTMLPage::HTMLPage();
     	
     	$year = date("Y", SOYCMS_BUILD_TIME);

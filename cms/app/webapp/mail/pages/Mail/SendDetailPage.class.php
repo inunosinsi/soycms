@@ -4,7 +4,7 @@ class SendDetailPage extends WebPage{
 	
 	var $id;
 
-    function SendDetailPage($args) {
+    function __construct($args) {
     	CMSApplication::setMode("layer");
     	
     	$this->id = (isset($args[0])) ? $args[0] : null;

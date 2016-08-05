@@ -27,7 +27,7 @@ class TwitterProductCardsConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function TwitterProductCardsConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		include_once(dirname(__FILE__) . "/common.php");
 	}

@@ -1,7 +1,7 @@
 <?php
 class IndexPage extends WebPage{
 
-	function IndexPage($args) {
+	function __construct($args) {
 
 		WebPage::WebPage();
 

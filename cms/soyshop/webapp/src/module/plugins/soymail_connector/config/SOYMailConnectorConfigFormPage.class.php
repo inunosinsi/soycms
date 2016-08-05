@@ -4,7 +4,7 @@ class SOYMailConnectorConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function SOYMailConnectorConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.soymail_connector.util.SOYMailConnectorUtil");
 	}
 	

@@ -32,7 +32,7 @@ class ShopConfigPage extends WebPage{
 		SOY2PageController::jump("Config.ShopConfig?updated");
 	}
 
-	function ShopConfigPage() {
+	function __construct() {
 		$this->config = SOYShop_ShopConfig::load();
 		$this->pluginDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 

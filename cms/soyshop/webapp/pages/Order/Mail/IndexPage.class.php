@@ -67,7 +67,7 @@ class IndexPage extends WebPage{
 		}
 	}
 
-	function IndexPage($args){
+	function __construct($args){
 		
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 

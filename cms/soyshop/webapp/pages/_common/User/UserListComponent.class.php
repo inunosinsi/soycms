@@ -2,7 +2,16 @@
 
 class UserListComponent extends HTMLList{
 
+	private $appLimit;
+
 	protected function populateItem($bean){
+
+		$this->addInput("user_check", array(
+			"name" => "users[]",
+			"value" => $bean->getId(),
+			"onchange" => '$(\'#users_operation\').show();',
+			"visible" => $this->appLimit
+		));
 
 		$this->addLabel("id", array(
 			"text" => $bean->getId()
@@ -37,6 +46,10 @@ class UserListComponent extends HTMLList{
 			"link" => SOY2PageController::createLink("User.Remove") . "/" . $bean->getId(),
 			"onclick" => "return confirm('削除してよろしいですか？')"
 		));
+	}
+	
+	function setAppLimit($appLimit){
+		$this->appLimit = $appLimit;
 	}
 }
 ?>

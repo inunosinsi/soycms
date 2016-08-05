@@ -4,7 +4,7 @@ class TemplateCreateLogic extends SOY2LogicBase{
 	
 	private $dir;
 	
-	function TemplateCreateLogic(){
+	function __construct(){
 		$this->dir = SOYSHOP_SITE_DIRECTORY . ".template/";
 	}
 	

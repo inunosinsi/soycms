@@ -85,7 +85,7 @@ class TreePage extends CMSWebPageBase{
 	}
 
 
-    function TreePage() {
+    function __construct() {
     	$result = ($this->run("Page.PageListAction",array("buildtree"=>true)));
     	WebPage::WebPage();
 

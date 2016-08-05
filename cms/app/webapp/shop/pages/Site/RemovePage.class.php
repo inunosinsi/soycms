@@ -28,7 +28,7 @@ class RemovePage extends SOYShopWebPage{
 		CMSApplication::jump("Site.Remove." . $this->id . "?error");
 	}
 
-    function RemovePage($args) {
+    function __construct($args) {
     	$this->id = (isset($args[0])) ? (int)$args[0] : null;
     	
     	WebPage::WebPage();

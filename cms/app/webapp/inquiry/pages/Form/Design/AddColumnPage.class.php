@@ -27,7 +27,7 @@ class AddColumnPage extends WebPage{
     	parent::prepare();
 	}	
 	
-	function AddColumnPage($args) {
+	function __construct($args) {
     	$this->formId = $args[0];
     	WebPage::WebPage();
     	

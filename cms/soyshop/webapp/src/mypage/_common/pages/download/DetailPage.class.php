@@ -1,7 +1,7 @@
 <?php
 class DetailPage extends MainMyPagePageBase{
 
-    function DetailPage($args) {    	
+    function __construct($args) {    	
     	
     	//ダウンロードページの廃止
 		$this->jumpToTop();

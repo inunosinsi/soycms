@@ -44,7 +44,7 @@ class IndexPage extends WebPage{
 		}
 	}
 	
-	function IndexPage($args){
+	function __construct($args){
 		MessageManager::addMessagePath("admin");
 		
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");

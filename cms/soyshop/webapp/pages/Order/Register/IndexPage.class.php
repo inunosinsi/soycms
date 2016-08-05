@@ -79,7 +79,7 @@ class IndexPage extends WebPage{
 		}
 	}
 
-	function IndexPage() {
+	function __construct() {
 		$this->cart = AdminCartLogic::getCart();
 
 		WebPage::WebPage();

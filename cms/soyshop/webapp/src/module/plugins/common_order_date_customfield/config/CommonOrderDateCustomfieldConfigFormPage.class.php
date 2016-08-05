@@ -2,7 +2,7 @@
 
 class CommonOrderDateCustomfieldConfigFormPage extends WebPage{
 
-    function CommonOrderCustomfieldConfigFormPage() {
+    function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     }
     

@@ -59,7 +59,7 @@ class IndexPage extends CommonPartsPage{
 		
 	}
 	
-    function IndexPage($args) {
+    function __construct($args) {
     	$this->id = (isset($args[0])) ? $args[0] : null;
     	
     	WebPage::WebPage();

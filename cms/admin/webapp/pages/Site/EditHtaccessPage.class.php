@@ -18,7 +18,7 @@ class EditHtaccessPage extends CMSUpdatePageBase {
 		exit;
 	}
 
-    function EditHtaccessPage($args) {
+    function __construct($args) {
     	if(!UserInfoUtil::isDefaultUser()){
     		$this->jump("Site");
     	}

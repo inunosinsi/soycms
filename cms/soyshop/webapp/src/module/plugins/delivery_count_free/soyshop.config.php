@@ -30,7 +30,7 @@ class DeliveryCountFreeConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function DeliveryCountFreeConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

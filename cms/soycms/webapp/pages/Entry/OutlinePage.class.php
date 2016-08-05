@@ -2,7 +2,7 @@
 
 class OutlinePage extends CMSWebpageBase{
 
-    function OutlinePage($arg) {
+    function __construct($arg) {
     	$id = @$arg[0];
     	if(is_null($id)){
     		return;

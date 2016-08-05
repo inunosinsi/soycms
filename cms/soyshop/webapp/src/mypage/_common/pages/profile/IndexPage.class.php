@@ -4,7 +4,7 @@ class IndexPage extends MainMyPagePageBase{
 
 	private $userId;
 
-	function IndexPage($args){
+	function __construct($args){
 		
 		//このページはログイン関係なく閲覧できるので、ログインチェックは行わない
 		$mypage = MyPageLogic::getMyPage();

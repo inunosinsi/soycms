@@ -4,7 +4,7 @@ class PaymentFurikomiConfigFormPage extends WebPage{
 	
 	private $config;
 	
-	function PaymentFurikomiConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.payment_furikomi.util.PaymentFurikomiUtil");
 	}
 	

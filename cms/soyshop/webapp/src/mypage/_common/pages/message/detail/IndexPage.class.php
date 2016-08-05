@@ -19,7 +19,7 @@ class IndexPage extends MainMyPagePageBase{
 		}
 	}
 
-	function IndexPage($args) {
+	function __construct($args) {
 		
 		$this->id = $args[0];
 		

@@ -44,7 +44,7 @@ class ConfirmPage extends IndexPage{
 		
 	}
 
-	function ConfirmPage($args) {
+	function __construct($args) {
 		$this->id = $args[0];
 		
 		$mypage = MyPageLogic::getMyPage();

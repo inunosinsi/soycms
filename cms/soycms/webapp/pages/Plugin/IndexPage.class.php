@@ -2,7 +2,7 @@
 
 class IndexPage extends CMSWebPageBase{
 	
-	function IndexPage($arg){
+	function __construct($arg){
 		WebPage::WebPage();
 		
 		if(isset($_GET["non_active"])){

@@ -2,7 +2,7 @@
 
 class BuildHTMLLogic extends SOY2LogicBase{
 	
-	function BuildHTMLLogic(){
+	function __construct(){
 		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
 	}
 	

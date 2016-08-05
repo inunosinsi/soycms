@@ -35,7 +35,7 @@ class ChangeUserInfoPage extends CMSWebPageBase{
     	}
 	}
 	
-    function ChangeUserInfoPage() {
+    function __construct() {
     	$dao = SOY2DAOFactory::create("asp.ASPUserDAO");
 		$user = $dao->getById(UserInfoUtil::getUserId());
 		

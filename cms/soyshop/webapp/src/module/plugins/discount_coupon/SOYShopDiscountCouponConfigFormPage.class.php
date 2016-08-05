@@ -6,8 +6,7 @@ class SOYShopDiscountCouponConfigFormPage extends WebPage{
 	private $config;
 
 
-    function SOYShopDiscountCouponConfigFormPage() {
-    }
+    function __construct() {}
 
     function doPost(){
 		if(soy2_check_token()){

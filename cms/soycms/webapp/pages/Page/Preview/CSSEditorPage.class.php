@@ -45,7 +45,7 @@ class CSSEditorPage extends CMSWebPageBase {
 		}
 	}
 
-    function CSSEditorPage($arg) {
+    function __construct($arg) {
     	
     	WebPage::WebPage();
     	$this->createAdd("update_form","HTMLForm",array("name" => "update_form"));

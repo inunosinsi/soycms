@@ -5,7 +5,7 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 
 	private $scheduleDao;
 
-	function CommonConsumptionTaxConfigFormPage() {
+	function __construct() {
 		$this->scheduleDao = SOY2DAOFactory::create("SOYShop_ConsumptionTaxScheduleDAO");
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}

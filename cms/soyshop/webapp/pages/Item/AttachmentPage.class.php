@@ -50,7 +50,7 @@ class AttachmentPage extends DetailPage{
 
 	var $id;
 
-	function AttachmentPage($args){
+	function __construct($args){
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 
 		DetailPage::DetailPage($args);

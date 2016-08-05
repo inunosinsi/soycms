@@ -4,7 +4,7 @@ class PurchaseCheckConfigFormPage extends WebPage{
 	
 	private $configObj;
 	
-	function PurchaseCheckConfigFormPage(){
+	function __construct(){
 		SOY2::import("module.plugins.common_purchase_check.util.PurchaseCheckUtil");
 	}
 	

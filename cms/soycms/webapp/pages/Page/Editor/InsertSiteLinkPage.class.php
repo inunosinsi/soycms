@@ -2,7 +2,7 @@
 
 class InsertSiteLinkPage extends CMSWebPageBase{
 
-    function InsertSiteLinkPage() {
+    function __construct() {
 
     	//ASPでは使用不可
     	if(defined("SOYCMS_ASP_MODE")) exit;

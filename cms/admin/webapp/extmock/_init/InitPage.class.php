@@ -39,7 +39,7 @@ class InitPage extends CMSHTMLPageBase{
 		$this->_message["init"] = "[initialize] Failed to initialize cms";
 	}
 
-	function InitPage(){
+	function __construct(){
 		$loginable = $this->checkLoginable();
 
 		//初期管理者が作成済み

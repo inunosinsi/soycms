@@ -15,7 +15,7 @@ class UploadPage extends CMSWebPageBase{
 	}
 
 
-    function UploadPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     }

@@ -19,7 +19,7 @@ class ImportCategoryInfoLogic extends ExImportLogicBase{
 	//各カテゴリの親子関係を保持しておく array("oldId" => "level")の配列を想定 rootを0、下に行くほど+1
 	private $relatives = array(null);
 
-	function ImportCategoryInfoLogic(){
+	function __construct(){
 		$this->setCharset("Shift_JIS");
 		$this->categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 	}

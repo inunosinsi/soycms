@@ -22,7 +22,7 @@ class InstallPage extends CMSWebPageBase{
     	}
 	}
 	
-    function InstallPage($args) {
+    function __construct($args) {
     	$id = $args[0];
     	$this->id = $id;
     	

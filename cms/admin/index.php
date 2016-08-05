@@ -10,3 +10,4 @@ try{
 	$exception = $e;
 	include_once(SOY2::RootDir() . "error/admin.php");
 }
+

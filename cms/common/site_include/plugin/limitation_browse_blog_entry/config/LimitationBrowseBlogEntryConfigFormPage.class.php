@@ -4,9 +4,7 @@ class LimitationBrowseBlogEntryConfigFormPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function LimitationBrowseBlogEntryConfigFormPage(){
-		
-	}
+	function __construct(){}
 	
 	function execute(){
 		WebPage::WebPage();

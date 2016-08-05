@@ -1,7 +1,7 @@
 <?php 
 class LogoutPage extends MainMyPagePageBase{
 	
-	function LogoutPage(){
+	function __construct(){
 		WebPage::WebPage();
 		$mypage = MyPageLogic::getMyPage();
 		$mypage->logout();

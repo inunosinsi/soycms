@@ -4,7 +4,7 @@ class AsyncCartButtonConfigPage extends WebPage{
 	
 	private $configObj;
 	
-	function AsyncCartButtonConfigPage(){
+	function __construct(){
 		SOY2::import("module.plugins.async_cart_button.util.AsyncCartButtonUtil");
 	}
 	

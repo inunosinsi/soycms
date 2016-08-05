@@ -8,7 +8,7 @@ class SearchMenuPage extends HTMLPage{
 
 	var $id;
 
-	function SearchMenuPage($arg = array()){
+	function __construct($arg = array()){
 		$this->id = $arg[0];
 		HTMLPage::HTMLPage();
 

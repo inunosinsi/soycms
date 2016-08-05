@@ -30,7 +30,7 @@ class ChangePasswordPage extends CMSWebPageBase{
     	}
 	}
 	
-    function ChangePasswordPage() {
+    function __construct() {
     	$dao = SOY2DAOFactory::create("asp.ASPUserDAO");
 		$user = $dao->getById(UserInfoUtil::getUserId());
 		

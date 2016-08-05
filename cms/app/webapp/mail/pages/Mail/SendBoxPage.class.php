@@ -41,7 +41,7 @@ class SendBoxPage extends WebPage{
 
 	}
 
-    function SendBoxPage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	$this->createAdd("sended_message","HTMLModel",array(

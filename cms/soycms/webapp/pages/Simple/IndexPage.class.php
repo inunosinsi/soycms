@@ -4,7 +4,7 @@ class IndexPage extends CMSWebPageBase{
 
 	var $blogIds;
 
-	function IndexPage(){
+	function __construct(){
 
 		WebPage::WebPage();
 

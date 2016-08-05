@@ -6,7 +6,7 @@ class IndexPage extends MainMyPagePageBase{
 	//表示件数
 	private $limit = 15;
 
-	function IndexPage($args) {
+	function __construct($args) {
 		
 		//ポイント制導入プラグインがアクティブでない場合はトップページに飛ばす
 		SOY2::import("util.SOYShopPluginUtil");

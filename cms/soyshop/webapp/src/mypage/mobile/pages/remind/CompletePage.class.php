@@ -6,7 +6,7 @@ class CompletePage extends MobileMyPagePageBase{
 		
 	}
 
-    function CompletePage() {
+    function __construct() {
     	WebPage::WebPage();
     	
     	$this->createAdd("login_link","HTMLLink", array(

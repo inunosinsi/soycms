@@ -2,7 +2,7 @@
 SOY2HTMLFactory::importWebPage("message.IndexPage");
 class CompletePage extends IndexPage{
 
-    function CompletePage() {
+    function __construct() {
     	
     	$mypage = MyPageLogic::getMyPage();
 		if(!$mypage->getIsLoggedin())$this->jump("login");//ログインしていなかったら飛ばす

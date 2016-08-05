@@ -2,7 +2,7 @@
 
 class BlockHelpPage extends CMSWebPageBase{
 
-    function BlockHelpPage() {
+    function __construct() {
     	WebPage::WebPage();
     }
 }

@@ -5,7 +5,7 @@ class IndexPage extends CMSWebPageBase{
 	const TYPE_PHP = "php";
 	const TYPE_HTML = "html";
 
-	function IndexPage(){
+	function __construct(){
 		//ディレクトリの作成
 		if(!self::checkHasModuleDirectory()) {
 			self::createModuleDirectory();

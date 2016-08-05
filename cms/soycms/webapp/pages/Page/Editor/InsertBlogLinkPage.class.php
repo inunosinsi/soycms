@@ -4,7 +4,7 @@ class InsertBlogLinkPage extends CMSWebPageBase{
 
 	private $pageId;
 
-    function InsertBlogLinkPage($arg) {
+    function __construct($arg) {
     	
     	$this->pageId = @$arg[0];
     	if(isset($arg[1])){

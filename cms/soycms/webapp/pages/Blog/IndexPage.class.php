@@ -6,7 +6,7 @@ class IndexPage extends CMSWebPageBase{
 	var $page;
 	protected $labelIds;
 		
-	function IndexPage($arg){
+	function __construct($arg){
 		
 		//最初の値はブログページID
 		$id = @$arg[0];

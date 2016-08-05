@@ -1,7 +1,7 @@
 <?php 
 class CompletePage extends MainMyPagePageBase{
 		
-	function CompletePage(){
+	function __construct(){
 		
 		$register = false;
     	

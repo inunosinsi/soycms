@@ -2,7 +2,7 @@
 
 class TemplateHistoryDetailPage extends CMSWebPageBase {
 
-    function TemplateHistoryDetailPage($arg) {
+    function __construct($arg) {
     	$pageId = @$arg[0];
     	$historyId = @$arg[1];
     	$mode = @$arg[2];

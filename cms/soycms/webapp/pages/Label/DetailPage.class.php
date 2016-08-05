@@ -21,7 +21,7 @@ class DetailPage extends CMSWebPageBase{
     	}
 	}
 
-    function DetailPage($args) {
+    function __construct($args) {
     	$labelId = @$args[0];
     	$this->labelId = $labelId;
     	

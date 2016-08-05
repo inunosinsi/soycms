@@ -46,7 +46,7 @@ class DeliveryPage extends WebPage{
 		}
 	}
 
-    function DeliveryPage($args) {
+    function __construct($args) {
 		SOYShopPlugin::active("soyshop.delivery");
 		$this->cart = AdminCartLogic::getCart();
 

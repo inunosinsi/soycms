@@ -2,7 +2,7 @@
 
 class TreePage extends CMSWebPageBase{
 
-    function TreePage($args) {
+    function __construct($args) {
     	
     	$this->pageId = @$args[0];
     	

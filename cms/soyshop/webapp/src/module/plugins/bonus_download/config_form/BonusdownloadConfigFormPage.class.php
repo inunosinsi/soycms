@@ -133,7 +133,7 @@ class BonusdownloadConfigFormPage extends WebPage{
 	/**
 	 * コンストラクタ
 	 */
-	function BonusdownloadConfigFormPage(){
+	function __construct(){
 		$this->files =  BonusDownloadConfigUtil::getBonusFiles();
 	}
 	
