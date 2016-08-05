@@ -1,6 +1,6 @@
 class %class% extends %baseclass%{
 
-	function %class%($args = array()){
+	function __construct($args = array()){
 
 		$this->setPageObject($args["page"]);
 

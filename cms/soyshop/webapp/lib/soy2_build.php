@@ -7318,7 +7318,7 @@ class HTMLPage_HeadElement extends HTMLPage_ChildElement{
 	private $metas = array();
 	function __construct($tag = null){
 		if($tag == null)$tag = "head";
-		parent::HTMLPage_ChildElement($tag);
+		parent::__construct($tag);
 	}
 	function setTitle($title){
 		$this->title = $title;
