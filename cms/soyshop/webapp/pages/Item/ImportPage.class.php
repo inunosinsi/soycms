@@ -27,6 +27,11 @@ class ImportPage extends WebPage{
 		));
 		
 		//商品オプションリストを表示する
+		$this->createAdd("custom_search_field_list", "_common.Item.CustomSearchFieldImExportListComponent", array(
+			"list" => $this->getCustomSearchFieldList()
+		));
+		
+		//商品オプションリストを表示する
 		$this->createAdd("item_option_list", "_common.Item.ItemOptionImExportListComponent", array(
 			"list" => $this->getItemOptionList()
 		));
@@ -66,6 +71,7 @@ class ImportPage extends WebPage{
 		$logic->setCharset(@$format["charset"]);
 		$logic->setItems($item);
 		$logic->setCustomFields($this->getCustomFieldList(true));
+		$logic->setCustomSearchFields($this->getCustomSearchFieldList());
 		$logic->setItemOptions($this->getItemOptionList());
 
 		if(!$logic->checkUploadedFile($file)){
@@ -93,6 +99,9 @@ class ImportPage extends WebPage{
 		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		$config = SOYShop_ItemAttributeConfig::load(true);
 		$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+		
+		//カスタムサーチフィールド
+		$customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
 
 		//商品詳細ページの挿入の有無
 		$this->setDetailPage();
@@ -113,7 +122,7 @@ class ImportPage extends WebPage{
 		foreach($lines as $line){
 			if(empty($line)) continue;
 
-			list($obj,$attributes,$plugins) = $logic->import($line);
+			list($obj,$attributes,$plugins,$customSearchFields) = $logic->import($line);
 
 			$deleted = ($obj["id"] == "delete");
 
@@ -156,6 +165,11 @@ class ImportPage extends WebPage{
 					
 					foreach($plugins as $pluginId => $value){
 						$delegate->import($pluginId, $id, $value);
+					}
+					
+					//カスタムサーチフィールド
+					if(count($customSearchFields)){
+						$customSearchFieldDBLogic->save($item->getId(), $customSearchFields);
 					}
 					
 					//拡張の処理
@@ -270,10 +284,13 @@ class ImportPage extends WebPage{
 		return $config;
 	}
 	
+	function getCustomSearchFieldList(){
+		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+		return CustomSearchFieldUtil::getConfig();
+	}
+	
 	function getItemOptionList(){
-		$ItemOptionLogic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
-		$list = $ItemOptionLogic->getOptions();
-		return $list;
+		return SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
 	}
 
 		/**

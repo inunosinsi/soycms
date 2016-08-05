@@ -16,6 +16,11 @@ class ExportPage extends WebPage{
 			"list" => $this->getCustomFieldList()
 		));
 		
+		//カスタムサーチフィールドリストを表示する
+		$this->createAdd("custom_search_field_list", "_common.Item.CustomSearchFieldImExportListComponent", array(
+			"list" => $this->getCustomSearchFieldList()
+		));
+		
 		//商品オプションリストを表示する
 		$this->createAdd("item_option_list", "_common.Item.ItemOptionImExportListComponent", array(
 			"list" => $this->getItemOptionList()
@@ -74,10 +79,13 @@ class ExportPage extends WebPage{
 		return $config;
 	}
 	
+	function getCustomSearchFieldList(){
+		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+		return CustomSearchFieldUtil::getConfig();
+	}
+	
 	function getItemOptionList(){
-		$ItemOptionLogic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
-		$list = $ItemOptionLogic->getOptions();
-		return $list;
+		return SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
 	}
 
 	function doPost(){
@@ -109,6 +117,7 @@ class ExportPage extends WebPage{
 		$logic->setItems($item);
 		$logic->setLabels($this->getLabels());
 		$logic->setCustomFields($this->getCustomFieldList(true));
+		$logic->setCustomSearchFields($this->getCustomSearchFieldList());
 		$logic->setItemOptions($this->getItemOptionList());
 
 		//Plugin soyshop.item.csv

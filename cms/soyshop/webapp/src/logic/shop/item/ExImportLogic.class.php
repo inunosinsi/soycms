@@ -1,21 +1,24 @@
 <?php
 SOY2::import("logic.csv.ExImportLogicBase");
+SOY2::import("util.SOYShopPluginUtil");
 class ExImportLogic extends ExImportLogicBase{
 
 	private $customFields = array();
+	private $customSearchFields = array();
 	private $itemOptions = array();
 	private $modules = array();
 
 	//作業用
 	private $itemAttributeDAO;
+	private $customSearchFieldDBLogic;
 
 	/**
 	 * CSV,TSVに変換
 	 */
 	function export($object){
 		if(!$this->_func) $this->buildExFunc($this->getItems());
-		
-		$array = call_user_func($this->_func, $object, $this->getAttributes($object->getId()), $this->modules);
+				
+		$array = call_user_func($this->_func, $object, $this->getAttributes($object->getId()), $this->modules, $this->getCustomSearchFieldObject($object->getId()));
 
 		return $this->encodeTo($this->implodeToLine($array));
 	}
@@ -35,7 +38,7 @@ class ExImportLogic extends ExImportLogicBase{
 	 */
 	function buildImFunc($items){
 		$function = array();
-		$function[] = '$res = array();$attributes = array();$plugins=array();';
+		$function[] = '$res = array();$attributes = array();$plugins=array();$customSearchFields=array();';
 
 		$items = array_keys($items);
 		foreach($items as $key => $item){
@@ -46,6 +49,8 @@ class ExImportLogic extends ExImportLogicBase{
 
 			if(preg_match('/customfield\(([^\)]+)\)/', $item, $tmp)){
 				$function[] = '$attributes["' . $tmp[1] . '"] = $item;';
+			}else if(preg_match('/custom_search_field\(([^\)]+)\)/', $item, $tmp)){
+				$function[] = '$customSearchFields["' . $tmp[1] . '"] = $item;';
 			}else if(preg_match('/item_option\(([^\)]+)\)/', $item, $tmp)){
 				$function[] = '$attributes["item_option_' . $tmp[1] . '"] = $item;';
 			}else if(preg_match('/plugins\((.*)\)$/',$item,$tmp)){
@@ -58,7 +63,7 @@ class ExImportLogic extends ExImportLogicBase{
 			$function[] = '}';
 		}
 		
-		$function[] = 'return array($res,$attributes,$plugins);';
+		$function[] = 'return array($res,$attributes,$plugins,$customSearchFields);';
 		$this->_func = create_function('$items', implode("\n", $function));
 	}
 
@@ -88,6 +93,18 @@ class ExImportLogic extends ExImportLogicBase{
 				if(isset($this->customFields[$fieldId])){
 					$function[] = '$res[] = (isset($attributes["' . $fieldId . '"])) ? $attributes["' . $fieldId . '"]->getValue() : "";';
 					$label = $this->customFields[$tmp[1]]->getLabel();
+				}else{
+					$function[] = '$res[] = "";';
+					$label = "";
+				}
+				
+			}else if(preg_match('/custom_search_field\(([^\)]+)\)/', $key, $tmp)){
+
+				$fieldId = $tmp[1];
+
+				if(isset($this->customSearchFields[$fieldId])){
+					$function[] = '$res[] = (isset($customSearchFields["' . $fieldId . '"])) ? $customSearchFields["' . $fieldId . '"] : "";';
+					$label = $this->customSearchFields[$tmp[1]]["label"];
 				}else{
 					$function[] = '$res[] = "";';
 					$label = "";
@@ -126,7 +143,7 @@ class ExImportLogic extends ExImportLogicBase{
 
 		$function[] = 'return $res;';
 		
-		$this->_func = create_function('$obj,$attributes,$modules', implode("\n", $function));//array($obj,$attributes,$options,$modules)
+		$this->_func = create_function('$obj,$attributes,$modules,$customSearchFields', implode("\n", $function));//array($obj,$attributes,$options,$modules,$customSearchFields)
 		$this->setLabels($usedLabels);
 	}
 
@@ -135,11 +152,27 @@ class ExImportLogic extends ExImportLogicBase{
 		return $this->itemAttributeDAO->getByItemId($id);
 	}
 	
+	function getCustomSearchFieldObject($id){
+		$res = array();
+		if(SOYShopPluginUtil::checkIsActive("custom_search_field")){
+			if(!$this->customSearchFieldDBLogic) $this->customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
+			$res = $this->customSearchFieldDBLogic->getByItemId($id);
+		}
+		return $res;
+	}
+	
 	function getCustomFields() {
 		return $this->customFields;
 	}
 	function setCustomFields($customFields) {
 		$this->customFields = $customFields;
+	}
+	
+	function getCustomSearchFields() {
+		return $this->customSearchFields;
+	}
+	function setCustomSearchFields($customSearchFields) {
+		$this->customSearchFields = $customSearchFields;
 	}
 	
 	function getItemOptions(){
