@@ -110,11 +110,19 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		}
 	}
 
-	function getForm(SOYShop_Item $item){
-		//子商品の詳細は表示させない
-		if(is_numeric($item->getType())) SOY2PageController::jump("Item.Detail." . $item->getType());
+	function getForm(SOYShop_Item $item){	
 		
-		return SOY2Logic::createInstance("module.plugins.item_standard.logic.BuildFormLogic", array("parentId" => $item->getId()))->buildCustomFieldArea();
+		//規格用のフォームを表示
+		if(!is_numeric($item->getType())){
+			return SOY2Logic::createInstance("module.plugins.item_standard.logic.BuildFormLogic", array("parentId" => $item->getId()))->buildCustomFieldArea();
+		
+		//商品名と商品コードは変更させない様にする
+		}else{
+			$html = "<script>";
+			$html .= file_get_contents(dirname(__FILE__) . "/js/readonly.js");
+			$html .= "</script>";
+			return $html;
+		}
 	}
 
 	/**

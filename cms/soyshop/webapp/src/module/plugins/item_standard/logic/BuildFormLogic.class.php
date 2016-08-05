@@ -181,6 +181,10 @@ class BuildFormLogic extends SOY2LogicBase{
 		$html[] = "<td><input type=\"number\" name=\"Item[" . $key . "][salePrice]\" value=\"" . $salePrice . "\"></td>";
 		$html[] = "<td>";
 		$html[] = "<input type=\"submit\" value=\"更新\">";
+		//詳細ページへのリンク
+		if(!is_null($child->getId())){
+			$html[] = " <a href=\"" . SOY2PageController::createLink("Item.Detail.". $child->getId()) . "\">詳細</a>";
+		}
 		$html[] = "</td>";
 		return implode("\n", $html);
 	}
