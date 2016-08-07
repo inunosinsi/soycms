@@ -27,12 +27,12 @@ class DownloadAssitantOrderComplete extends SOYShopOrderComplete{
 					return false;
 				}
 		
+				$commonLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadCommonLogic");
 				foreach($orderItems as $orderItem){
 					$itemId = $orderItem->getItemId();
 					$item = $this->getItem($itemId);
-					$itemType = $item->getType();
-					
-					if($itemType == SOYShop_Item::TYPE_DOWNLOAD){
+										
+					if($commonLogic->checkItemType($item)){
 						$registerLogic->register($orderId, $item, $userId, $paymentStatus);
 					}
 				}

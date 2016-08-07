@@ -81,6 +81,7 @@ class DownloadRegisterLogic extends SOY2LogicBase{
 	 * @return array
 	 */
 	private function getDownloadArray($orderId, $itemId, $userId, $file){
+		
 		return array(
 				"orderId" => $orderId,
 				"itemId" => $itemId,
@@ -90,7 +91,7 @@ class DownloadRegisterLogic extends SOY2LogicBase{
 				"orderDate" => time(),
 				"receivedDate" => self::getReceivedDate(),
 				"timeLimit" => $this->commonLogic->getLimitDate($this->config["timeLimit"]),
-				"count" => (int)$this->config["count"]
+				"count" => (isset($this->config["count"]) && is_numeric($this->config["count"])) ? (int)$this->config["count"] : null
 		);
 	}
 	

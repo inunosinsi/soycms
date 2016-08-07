@@ -93,10 +93,9 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 
 	function getForm(SOYShop_Item $item){
 		
-		//商品タイプがダウンロードの時のみ表示
-		if($item->getType() == SOYShop_Item::TYPE_DOWNLOAD){
-			
-			$commonLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadCommonLogic");
+		//商品タイプがダウンロードの時もしくは親商品のタイプがダウンロードの時に表示
+		$commonLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadCommonLogic");
+		if($commonLogic->checkItemType($item)){
 			
 			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 			try{
@@ -179,6 +178,24 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 	function onDelete($id){
 		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		$attributeDAO->deleteByItemId($id);
+	}
+	
+	private function checkDisplayForm(SOYShop_Item $item){
+		
+		if($item->getType() == SOYShop_Item::TYPE_DOWNLOAD){
+			return true;
+		}else{
+			if(is_numeric($item->getType())){
+				try{
+					$parent = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($item->getType());
+					if($parent->getType() == SOYShop_Item::TYPE_DOWNLOAD) return true;
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+		
+		return false;
 	}
 }
 

@@ -17,6 +17,26 @@ class DownloadCommonLogic extends SOY2LogicBase{
 		if(!$this->attrDao) $this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 	}
 	
+	//商品のタイプを調べる。商品のタイプが小商品の場合は親商品のタイプを調べる
+	function checkItemType(SOYShop_Item $item){
+		
+		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		if($item->getType() == SOYShop_Item::TYPE_DOWNLOAD){
+			return true;
+		}else{
+			if(is_numeric($item->getType())){
+				try{
+					$parent = $itemDao->getById($item->getType());
+					if($parent->getType() == SOYShop_Item::TYPE_DOWNLOAD) return true;
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * 登録するファイルの拡張子をチェック
 	 * @param string
