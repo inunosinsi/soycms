@@ -4,7 +4,7 @@ class ChildItemLogic extends SOY2LogicBase{
 	
 	private $itemDao;
 	
-	function __construct(){
+	function ChildItemLogic(){
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
 	
@@ -19,6 +19,8 @@ class ChildItemLogic extends SOY2LogicBase{
 		$q = "";
 		foreach($keys as $key){
 			if(!strlen($key)) continue;
+			//POSTで+は許可されていないので、POST時に一度変換して、ここで再度戻す
+			if(strpos($key, "itm_std_plus")) $key = str_replace("itm_std_plus", "+", $key);
 			$q .= " " . $key;
 		}
 		
@@ -26,7 +28,7 @@ class ChildItemLogic extends SOY2LogicBase{
 		
 		$sql .= "ORDER BY id ASC ";
 		$sql .= "LIMIT 1";
-				
+		
 		try{
 			$res = $this->itemDao->executeQuery($sql, $binds);
 		}catch(Exception $e){
