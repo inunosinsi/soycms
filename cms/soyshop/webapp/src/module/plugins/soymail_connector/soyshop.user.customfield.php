@@ -14,7 +14,8 @@ class SOYMailUserCustomfieldModule extends SOYShopUserCustomfield{
 		if(get_class($app) !== "MyPageLogic") return;
 		
 		//ポイントプラグインがインストールされていなければここで停止
-		if(!class_exists("SOYShopPluginUtil") || !SOYShopPluginUtil::checkIsActive("common_point_base")) return;
+		SOY2::import("util.SOYShopPluginUtil");
+		if(!SOYShopPluginUtil::checkIsActive("common_point_base")) return;
 		
 		$user = $app->getUserInfo();
 		
