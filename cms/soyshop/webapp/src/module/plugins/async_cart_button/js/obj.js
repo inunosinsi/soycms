@@ -8,9 +8,14 @@ AsyncCartButton = {
 		AsyncCartButton.isInvalid = true;
 		
 		var cnt = 1;
-		var cntSelect = document.querySelector("#soyshop_async_count_" + itemId);
-		if(cntSelect){
-			cnt = parseInt(cntSelect.options[cntSelect.selectedIndex].value);
+		var cntObject = document.querySelector("#soyshop_async_count_" + itemId);
+		if(cntObject){
+			if(cntObject.type && cntObject.type == "number"){
+				cnt = parseInt(cntObject.value);
+			}else{
+				cnt = parseInt(cntObject.options[cntObject.selectedIndex].value);
+			}
+			
 			if (cnt === 0) cnt = 1;
 		}
 		
@@ -40,7 +45,10 @@ AsyncCartButton = {
 					key = key.replace("]", "");
 					if(parent.id == "item_standard_" + key + "_" + itemId){
 						if(param.length) param += "&";
-						param += parent.name + "=" + sels[i].innerHTML.trim();
+						val = sels[i].innerHTML.trim();
+						//POSTで+は許可されていないので、POST時に一度変換して、ここで再度戻す
+						if(val.indexOf("+")) val = val.replace("+", "itm_std_plus");
+						param += parent.name + "=" + val;
 					}
 				}
 			}
@@ -191,9 +199,12 @@ AsyncCartButton = {
 								xhr.send(param);
 				
 								xhr.addEventListener("load", function(){
-									var res = JSON.parse(xhr.response);
-									if(res.price >= 0){
-										priceHelper.value = res.price;
+									var resp = xhr.response;
+									if(resp){
+										var res = JSON.parse(resp);
+										if(res.price >= 0){
+											priceHelper.value = res.price;
+										}
 									}
 								});
 							});
