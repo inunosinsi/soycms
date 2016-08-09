@@ -6,7 +6,7 @@ class SearchLogic extends SOY2LogicBase{
 	private $binds = array();
 	private $itemDao;
 	
-	function __construct(){
+	function SearchLogic(){
 		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
@@ -68,6 +68,7 @@ class SearchLogic extends SOY2LogicBase{
 	private function buildWhere(){
 		$where = "WHERE i.open_period_start < :now ".
 				"AND i.open_period_end > :now ".
+				"AND i.item_type IN ('" . SOYShop_Item::TYPE_SINGLE . "', '" . SOYShop_Item::TYPE_GROUP ."', '" . SOYShop_Item::TYPE_DOWNLOAD . "') ".
 				"AND i.item_is_open = 1 ".
 				"AND i.is_disabled != 1 ";
 		foreach($this->where as $key => $w){
