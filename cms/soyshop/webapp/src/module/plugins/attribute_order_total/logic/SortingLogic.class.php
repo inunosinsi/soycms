@@ -15,18 +15,18 @@ class SortingLogic extends SOY2LogicBase{
 		if(!count($results)) return;
 		
 		//メモリの節約のため、ここではじめて読み込む
-		SOY2::import("module.plugins.attribute_order_count.util.AttributeOrderCountUtil");
-		$configs = AttributeOrderCountUtil::getConfig();
-		$attr = AttributeOrderCountUtil::getAttrConfig();
+		SOY2::import("module.plugins.attribute_order_count.util.AttributeOrderTotalUtil");
+		$configs = AttributeOrderTotalUtil::getConfig();
+		$attr = AttributeOrderTotalUtil::getAttrConfig();
 		
 		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		$sql = "SELECT COUNT(*) FROM soyshop_order " .
+		$sql = "SELECT SUM(price) FROM soyshop_order " .
 				"WHERE user_id = :userId ".
 				"AND order_status >= " . SOYShop_Order::ORDER_STATUS_REGISTERED . " ".
 				"AND order_status <= " . SOYShop_Order::ORDER_STATUS_SENDED . " ";
 		
 		//期間設定がある場合はそれも加味
-		$period = (int)AttributeOrderCountUtil::getPeriodConfig();
+		$period = (int)AttributeOrderTotalUtil::getPeriodConfig();
 		
 		if(isset($period) && $period > 0) {
 			$start = time() - ($period * 24 * 60 * 60);
@@ -41,9 +41,7 @@ class SortingLogic extends SOY2LogicBase{
 				continue;
 			}
 			
-			//取得出来なかった場合は次へ
-			if(!isset($res[0]["COUNT(*)"])) continue;
-			$cnt = (int)$res[0]["COUNT(*)"];
+			$total = (int)$res[0]["SUM(price)"];
 			
 			for($i = 0; $i < count($configs); $i++){
 								
@@ -56,24 +54,24 @@ class SortingLogic extends SOY2LogicBase{
 				}
 								
 				//ゼロ設定
-				if((int)$configs[$i]["count"] === 0){
-					//注文回数もゼロであるか調べる
-					if($cnt === 0) {
+				if((int)$configs[$i]["total"] === 0){
+					//購入金額もゼロであるか調べる
+					if($total === 0) {
 						$hit = true;
 					}
 					
 				//ゼロ設定以外
 				}else{
 					//ゼロ設定がない場合は購入0の会員は無視する
-					if($cnt === 0) continue;					
+					if($total === 0) continue;					
 					
-					if($configs[$i]["count"] == $cnt){
+					if($configs[$i]["total"] == $total){
 						$hit = true;
-					}else if(isset($configs[$i + 1]) && $configs[$i]["count"] < $cnt && $configs[$i + 1]["count"] > $cnt){
+					}else if(isset($configs[$i + 1]) && $configs[$i]["total"] < $total && $configs[$i + 1]["total"] > $total){
 						$i++;
 						$hit = true;
 					//ラスト
-					}else if($configs[$i]["count"] > $cnt){
+					}else if($configs[$i]["total"] > $total){
 						$hit = true;
 					}
 				}
