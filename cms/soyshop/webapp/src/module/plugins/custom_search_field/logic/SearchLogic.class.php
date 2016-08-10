@@ -90,8 +90,12 @@ class SearchLogic extends SOY2LogicBase{
 			
 			//カテゴリー
 			if(isset($_GET["c_search"]["item_category"]) && is_numeric($_GET["c_search"]["item_category"])){
-				$this->where["item_category"] = "i.item_category = :item_category";
-				$this->binds[":item_category"] = (int)trim($_GET["c_search"]["item_category"]);
+				//小カテゴリの商品も引っ張ってこれる様にする
+				$maps = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
+				$catId = (int)trim($_GET["c_search"]["item_category"]);
+				if(isset($maps[$catId])){
+					$this->where["item_category"] = "i.item_category IN (" . implode(",", $maps[$catId]) . ")";
+				}
 			}
 			
 			$pmin = "";$pmax = "";
