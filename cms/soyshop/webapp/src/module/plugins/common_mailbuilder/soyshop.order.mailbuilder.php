@@ -38,6 +38,7 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
 			
 		
 		/** ここからひたすら文字列の置換 **/
+		$content = str_replace("#ORDER_ID#", $order->getId(), $content);
 		$content = str_replace("#TRACKING_NUMBER#", $order->getTrackingNumber(), $content);
 		$content = str_replace("#ORDER_DATE#", date("Y-m-d (D) H:i:s", $order->getOrderDate()), $content);		
 		$content = str_replace("#ITEM_ORDER_LIST#", $itemContent, $content);
