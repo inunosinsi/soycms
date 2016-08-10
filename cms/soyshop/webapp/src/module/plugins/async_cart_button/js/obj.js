@@ -172,44 +172,44 @@ AsyncCartButton = {
 		}
 	}
 	
-	if(ids.length > 0){
+	
+	var sels = document.querySelectorAll('select');
+	if(sels.length && ids.length > 0){		
 		ids.forEach(function(id){
 			var priceHelper = document.querySelector("#standard_price_helper_" + id);
 			if(priceHelper){
-				var sels = document.querySelectorAll('select');
-				if(sels.length){
-					for (var j = 0; j < sels.length; j++){
-						if(sels[j].name.indexOf("Standard") === 0){
-							sels[j].addEventListener("change", function(){
-								
-								var param = "";
-								var chks = document.querySelectorAll('select option:checked');
-								if(chks.length){
-									for (var k = 0; k < chks.length; k++){
-										if(chks[k].parentElement.name.indexOf("Standard") === 0){
-											if(param.length) param += "&";
-											param += chks[k].parentElement.name + "=" + chks[k].innerHTML.trim();
-										}
+				for (var j = 0; j < sels.length; j++){
+					if(sels[j].id.search('item_standard_(.*)_' + id) === 0 && sels[j].name.indexOf("Standard") === 0){
+						sels[j].addEventListener("change", function(){
+							
+							var param = "";
+							var chks = document.querySelectorAll('select option:checked');
+							if(chks.length){
+								for (var k = 0; k < chks.length; k++){
+									//一応再度IDチェック
+									if(chks[k].parentElement.id.search('item_standard_(.*)_' + id) === 0 && chks[k].parentElement.name.indexOf("Standard") === 0){
+										if(param.length) param += "&";
+										param += chks[k].parentElement.name + "=" + chks[k].innerHTML.trim();
 									}
 								}
-								
-								xhr = new XMLHttpRequest();
-								xhr.open("POST",location.href + "?async_cart_button=" + id);
-								xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-								xhr.send(param);
-				
-								xhr.addEventListener("load", function(){
-									var resp = xhr.response;
-									if(resp){
-										var res = JSON.parse(resp);
-										if(res.price >= 0){
-											priceHelper.value = res.price;
-										}
+							}
+							
+							xhr = new XMLHttpRequest();
+							xhr.open("POST",location.href + "?async_cart_button=" + id);
+							xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+							xhr.send(param);
+			
+							xhr.addEventListener("load", function(){
+								var resp = xhr.response;
+								if(resp){
+									var res = JSON.parse(resp);
+									if(res.price >= 0){
+										priceHelper.value = res.price;
 									}
-								});
+								}
 							});
-						}		
-					}
+						});
+					}		
 				}
 			}
 		});
