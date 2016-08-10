@@ -44,7 +44,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 		}
 
         //total < current * limitの場合は404にリダイレクトする
-        if($total <= (int)$obj->getLimit() * ((int)$this->getCurrentPage() - 1)) {
+		if($total > 0 && $total <= (int)$obj->getLimit() * ((int)$this->getCurrentPage() - 1)) {
             SOY2PageController::redirect(soyshop_get_site_url(true) . SOYSHOP_404_PAGE_MARKER);
         }
        
