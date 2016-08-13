@@ -23,7 +23,7 @@ class SOYMailConverter {
 	const SOYMAIL_MAIL_SEND	=	"mail_send";
 
 
-    function SOYMailConverter() {}
+    function __construct() {}
 
     /**
      * 与えられた$valueを指定のフォーマットに変換して返す

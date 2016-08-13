@@ -13,7 +13,7 @@ class CMSApplicationPage extends CMSPage{
 
 		$this->pageUrl = SOY2PageController::createLink("") . $this->page->getUri();
 
-  		WebPage::WebPage($args);
+  		WebPage::__construct($args);
 
     }
 

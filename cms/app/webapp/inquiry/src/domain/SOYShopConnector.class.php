@@ -28,7 +28,7 @@ class SOYShopConnector {
 	private $connectLogic;
 	public $user;
 
-	function SOYShopConnector(){
+	function __construct(){
 		if(!$this->connectLogic){
 			$this->connectLogic = SOY2Logic::createInstance("logic.SOYShopConnectLogic");
 			$this->user = $this->connectLogic->getSOYShopUser();

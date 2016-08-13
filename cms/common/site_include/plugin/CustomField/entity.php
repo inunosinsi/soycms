@@ -51,7 +51,7 @@ class CustomField{
 	//追加属性値の値
 	private $extraValues;
 
-	function CustomField($array = array()){
+	function __construct($array = array()){
 		$obj = (object)$array;
 		SOY2::cast($this,$obj);
 	}

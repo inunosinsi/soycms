@@ -386,7 +386,7 @@ class CMSBlogPage extends CMSPage{
 		}
 
 
-		WebPage::WebPage($args);
+		WebPage::__construct($args);
 	}
 
 	function getCacheFilePath($extension = ".html.php"){

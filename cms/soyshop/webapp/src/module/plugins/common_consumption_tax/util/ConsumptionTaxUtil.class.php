@@ -6,7 +6,7 @@ class ConsumptionTaxUtil{
 	const METHOD_ROUND = 1;	//端数を四捨五入
 	const METHOD_CEIL = 2;	//端数を切り上げ
 	
-	function ConsumptionTaxUtil(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

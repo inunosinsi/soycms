@@ -10,7 +10,7 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 	private $config;
 	private $dao;
 	
-	function SOYShopDiscountFreeCouponModule(){
+	function __construct(){
 		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
 		SOY2::imports("module.plugins.discount_free_coupon.util.*");
 		$this->dao = SOY2DAOFactory::create("SOYShop_CouponDAO");

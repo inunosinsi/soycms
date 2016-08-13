@@ -9,7 +9,7 @@ class CMSTagManager{
 	private $iniDir;
 	private $tagDir;
 	
-	function CMSTagManager(){}
+	function __construct(){}
 	
 	static function &getInstance(){
 	 	static $_instance;

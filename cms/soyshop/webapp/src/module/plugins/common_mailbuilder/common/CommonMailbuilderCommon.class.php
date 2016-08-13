@@ -2,7 +2,7 @@
 
 class CommonMailbuilderCommon{
 	
-	function CommonMailbuilderCommon(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

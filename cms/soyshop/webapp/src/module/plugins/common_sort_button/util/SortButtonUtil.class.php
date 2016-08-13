@@ -2,9 +2,7 @@
 
 class SortButtonUtil{
 	
-	function SortButtonUtil(){
-		
-	}
+	function __construct(){}
 	
 	//ソートに使うキーリスト
 	public static function getColumnList(){		

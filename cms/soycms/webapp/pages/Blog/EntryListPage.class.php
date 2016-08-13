@@ -380,7 +380,7 @@ class LabeledEntryList extends HTMLList{
 	function setLabelId($labelId){
 		$this->labelId = $labelId;
 	}
-	function __construct($page){
+	function setPage($page){
 		$this->page = $page;
 	}
 	

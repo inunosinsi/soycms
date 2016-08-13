@@ -4,7 +4,7 @@ class ChildItemLogic extends SOY2LogicBase{
 	
 	private $itemDao;
 	
-	function ChildItemLogic(){
+	function __construct(){
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
 	
