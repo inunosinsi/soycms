@@ -35,7 +35,7 @@ class RemovePage extends CMSUpdatePageBase{
 
     	$this->id = (isset($args[0])) ? $args[0] : null;
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
 		$SiteLogic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
 		$site = $SiteLogic->getById($this->id);

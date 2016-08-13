@@ -8,7 +8,7 @@ class IndexPage extends CMSWebPageBase{
     		$this->jump("Administrator.Detail");
     	}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->outputMessage();
 

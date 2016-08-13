@@ -26,7 +26,7 @@ class CommentDetailPage extends CMSWebPageBase{
     		exit;
     	}
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$comment = $result->getAttribute("entity");
     	
     	$result = $this->run("Entry.EntryDetailAction",array("id"=>$comment->getEntryId()));

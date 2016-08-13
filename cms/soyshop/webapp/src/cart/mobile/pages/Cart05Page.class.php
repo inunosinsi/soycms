@@ -30,7 +30,7 @@ class Cart05Page extends MobileCartPageBase{
 	}
 
 	function Cart05Page(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//completeはCompletaPage.class.phpに移動
 		$cart = CartLogic::getCart();

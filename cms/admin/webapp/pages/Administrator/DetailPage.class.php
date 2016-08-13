@@ -28,7 +28,7 @@ class DetailPage extends CMSUpdatePageBase{
     	$admin = $result->getAttribute("admin");
     	$this->adminId = $adminID;
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
 		$showInputForm = UserInfoUtil::isDefaultUser() || $this->adminId == UserInfoUtil::getUserId();
 

@@ -76,7 +76,7 @@ class DeliveryCoolConfigFormPage extends WebPage{
 	}
 
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		include_once(dirname(__FILE__) . "/common.php");
 

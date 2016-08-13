@@ -37,7 +37,7 @@ class ResetPage extends MobileMyPagePageBase{
 	private $query;
 	private $mail;
 	
-    function ResetPage() {
+    function __construct() {
 		$this->mypage = MyPageLogic::getMyPage();
 		$this->mypage->clearErrorMessage();
 		
@@ -62,7 +62,7 @@ class ResetPage extends MobileMyPagePageBase{
 		}
 
 		
-    	WebPage::WebPage();
+    	WebPage::__construct();
 		
 		//display error message
 		DisplayPlugin::toggle("has_error",$this->mypage->hasError());

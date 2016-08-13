@@ -55,7 +55,7 @@ class DetailPage extends CMSWebPageBase {
     	$block = $this->getBlock($id);
     	$this->pageId = $block->getPageId();
   
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$component = $block->getBlockComponent();
     	//Block ID will be required in some cases.

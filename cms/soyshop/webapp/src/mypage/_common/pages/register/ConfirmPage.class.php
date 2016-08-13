@@ -92,7 +92,7 @@ class ConfirmPage extends IndexPage{
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//顧客情報フォーム
 		$this->buildForm($user, $mypage, UserComponent::MODE_CUSTOM_CONFIRM);

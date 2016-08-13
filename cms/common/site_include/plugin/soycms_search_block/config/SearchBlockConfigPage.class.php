@@ -8,7 +8,7 @@ class SearchBlockConfigPage extends WebPage{
 	function doPost(){}
 	
 	function execute(){
-		WebPage::WebPage();		
+		WebPage::__construct();		
 	}
 	
 	function getPluginObj() {

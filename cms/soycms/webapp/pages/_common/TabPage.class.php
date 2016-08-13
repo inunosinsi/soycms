@@ -24,7 +24,7 @@ class TabPage extends CMSHTMLPageBase {
 	private $activeTab;
 	
     function __construct() {
-    	HTMLPage::HTMLPage();
+    	HTMLPage::__construct();
     	    	
     	//リクエストされたパスからActiveなパスを取得
     	$requestPath = SOY2PageController::getRequestPath();

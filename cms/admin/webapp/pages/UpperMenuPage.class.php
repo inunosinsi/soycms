@@ -15,7 +15,7 @@ class UpperMenuPage extends CMSWebPageBase{
 	private $activeTab;
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	//リクエストされたパスからActiveなパスを取得
     	$requestPath = SOY2PageController::getRequestPath();

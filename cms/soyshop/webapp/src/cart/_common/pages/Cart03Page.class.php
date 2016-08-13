@@ -159,7 +159,7 @@ class Cart03Page extends MainCartPageBase{
 
 	}
 
-	function Cart03Page(){
+	function __construct(){
 		SOYShopPlugin::active("soyshop.payment");
 		SOYShopPlugin::active("soyshop.delivery");
 		SOYShopPlugin::active("soyshop.discount");
@@ -170,7 +170,7 @@ class Cart03Page extends MainCartPageBase{
 		$this->user = $cart->getCustomerInformation();
 		$this->send = $cart->getAddress();
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->addForm("order_form", array(
 			"action" => soyshop_get_cart_url(false)

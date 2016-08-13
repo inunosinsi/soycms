@@ -54,7 +54,7 @@ class SendAddressPage extends WebPage{
 	    	$address = $user->getEmptyAddressArray();
 		}
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	$this->addForm("address_form");
 

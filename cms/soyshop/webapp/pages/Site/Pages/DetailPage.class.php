@@ -42,7 +42,7 @@ class DetailPage extends WebPage{
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 		if(!$this->id) SOY2PageController::jump("Site.Pages");
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->addForm("update_form");
 

@@ -18,7 +18,7 @@ class AutoRankingConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$config = AutoRankingUtil::getConfig();
 		

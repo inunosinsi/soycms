@@ -27,7 +27,7 @@ class ConfigPage extends CMSWebPageBase{
     	$id = $args[0];
     	$this->id = $id;
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	//新規作成してから来たときのメッセージ表示
     	if(isset($_GET["msg"]) && $_GET["msg"] == "create"){

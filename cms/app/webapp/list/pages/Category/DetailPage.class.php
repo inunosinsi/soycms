@@ -30,7 +30,7 @@ class DetailPage extends WebPage{
     	$this->id = @$args[0];
     	$this->categoryDao = SOY2DAOFactory::create("SOYList_CategoryDAO");
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$category = $this->getCategory($this->id);
     	

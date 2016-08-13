@@ -13,7 +13,7 @@ class ChangeEmailPage extends CMSWebPageBase{
     	
     	//TODO メールアドレス変更の実装
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
 }
 ?>

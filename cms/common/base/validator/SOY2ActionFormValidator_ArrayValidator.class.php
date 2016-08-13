@@ -11,7 +11,7 @@ class SOY2ActionFormValidator_ArrayValidator extends SOY2ActionFormValidator {
 	var $max;
 	var $min;
 	
-	function SOY2ActionFormValidator_ArrayValidator($obj){
+	function __construct($obj){
 		$this->countMax = @$obj->countMax;
 		$this->countMin = @$obj->countMin;
 		$this->type = @$obj->type;

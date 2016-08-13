@@ -21,7 +21,7 @@ class PreviewPage extends WebPage{
     	//レイヤーモードで
     	CMSApplication::setMode("layer");
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	try{
     		$this->form = $this->dao->getById($this->id);

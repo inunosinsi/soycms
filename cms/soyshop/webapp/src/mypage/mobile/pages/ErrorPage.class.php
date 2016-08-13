@@ -10,8 +10,8 @@ class ErrorPage extends MobileMyPagePageBase{
 		$this->jumpToTop();
 	}
 	
-	function ErrorPage(){
-		WebPage::WebPage();
+	function __construct(){
+		WebPage::__construct();
 
 	}
 }

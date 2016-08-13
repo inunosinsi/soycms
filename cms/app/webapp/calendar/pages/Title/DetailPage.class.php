@@ -47,7 +47,7 @@ class DetailPage extends WebPage{
     		$title = new SOYCalendar_Title();
     	}
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("error","HTMLModel",array(
     		"visible" => $this->error == true

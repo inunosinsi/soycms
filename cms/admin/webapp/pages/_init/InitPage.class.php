@@ -49,7 +49,7 @@ class InitPage extends CMSHTMLPageBase{
     		SOY2PageController::redirect("./index.php");
 		}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->addForm("initform");
 		$this->addInput("userId", array(

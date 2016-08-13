@@ -13,7 +13,7 @@ class IndexPage extends WebPage{
     		$update = array_pop($list);
     	}
     	    	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("is_config","HTMLModel",array(
     		"visible" => (!is_null($list))

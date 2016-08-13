@@ -3,7 +3,7 @@
 class IndexPage extends SOYShopWebPage{
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$dao = SOY2DAOFactory::create("SOYShop_SiteDAO");
     	try{

@@ -16,7 +16,7 @@ class IndexPage extends CMSWebPageBase{
 			$this->jump("");
 		}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 
 	}

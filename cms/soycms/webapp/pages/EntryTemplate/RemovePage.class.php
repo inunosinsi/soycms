@@ -3,7 +3,7 @@ class RemovePage extends CMSWebPageBase{
 
 	function __construct($arg) {
     	if(soy2_check_token()){
-	    	WebPage::WebPage();
+	    	WebPage::__construct();
 	    	$id = @$arg[0];
 	    	if(is_null($id)){
 	    		$this->jump("EntryTemplate");

@@ -46,7 +46,7 @@ class IndexPage extends WebPage{
 
     function __construct($args) {
 		SOY2DAOFactory::importEntity("SOYInquiry_Inquiry");
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	/* 検索 */
 		$this->formId = (isset($_GET["formId"]) && strlen($_GET["formId"])>0) ? $_GET["formId"] : null;

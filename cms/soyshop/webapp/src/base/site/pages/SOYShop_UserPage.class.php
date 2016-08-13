@@ -5,11 +5,11 @@ class SOYShop_UserPage extends SOYShopPageBase{
 	private $myPageId;
 	private $args;
 
-	function SOYShop_UserPage($args){
+	function __construct($args){
 		$this->setMyPageId($args[0]);
 		$this->setArgs($args[1]);
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 	}
 

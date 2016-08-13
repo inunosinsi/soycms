@@ -27,7 +27,7 @@ class RegisterPage extends WebPage{
 	
 	function __construct(){
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->createAdd("form", "HTMLForm");
 		

@@ -47,7 +47,7 @@ class IndexPage extends CMSWebPageBase{
 	}
 
 	function __construct($arg){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		/*
 		 * 不正ログインのチェック

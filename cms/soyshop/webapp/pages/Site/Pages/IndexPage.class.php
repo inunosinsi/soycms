@@ -16,7 +16,7 @@ class IndexPage extends WebPage{
 			SOY2PageController::jump("Site.Pages?updated");
 		}
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//すべてのページを取得
 		$this->all = $this->getPages();

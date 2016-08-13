@@ -39,7 +39,7 @@ class WithdrawConfirmPage extends CMSWebPageBase{
     		$this->jump("Login.UserInfo");
     	}
     	    	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	if(!$this->check){
     		$this->jump("Login.UserInfo.Withdraw");
     		exit;

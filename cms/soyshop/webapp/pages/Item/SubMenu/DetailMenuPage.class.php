@@ -10,7 +10,7 @@ class DetailMenuPage extends HTMLPage{
 
 	function __construct($arg = array()){
 		$this->id = (isset($arg[0])) ? (int)$arg[0] : null;
-		HTMLPage::HTMLPage();
+		HTMLPage::__construct();
 
 		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$item = $itemDAO->getById($this->id);

@@ -10,7 +10,7 @@ class CommonPointPaymentMailModule extends SOYShopOrderMail{
 		
 		$mailLogic = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointMailLogic");
 		$histories = $mailLogic->getHistories($order->getUserId(), $order->getId());
-			
+		
 		//履歴がなかった場合は何もしない
 		if(count($histories) == 0) return;
 		

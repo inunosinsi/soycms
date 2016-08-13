@@ -4,7 +4,7 @@ class %class% extends %baseclass%{
 
 		$this->setPageObject($args["page"]);
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		/* write custom code here */
 	}

@@ -21,7 +21,7 @@ class DisplayCartLinkConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addModel("updated", array(
 			"visible" => (isset($_GET["updated"]))

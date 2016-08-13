@@ -44,7 +44,7 @@ class ChangeOrderPage extends WebPage{
 	function __construct($args) {
     	
     	$this->formId = $args[0];
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	//レイヤーモードで
     	CMSApplication::setMode("layer");

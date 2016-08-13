@@ -16,7 +16,7 @@ class TemplateHistoryDetailPage extends CMSWebPageBase {
     		$this->jump("Page.Detail.{$pageId}");
     	}
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$templateHistory = $result->getAttribute("TemplateHistory");
     	

@@ -32,7 +32,7 @@ class ABM_DetailPage extends ABM_PageBase{
 	}
 	
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$session = $this->getSession();
     	

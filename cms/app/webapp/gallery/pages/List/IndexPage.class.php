@@ -56,7 +56,7 @@ class IndexPage extends WebPage{
 		
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addModel("updated", array(
 			"visible" => (isset($_GET["upload"]))

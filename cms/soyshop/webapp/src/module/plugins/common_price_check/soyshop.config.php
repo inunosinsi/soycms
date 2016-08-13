@@ -46,7 +46,7 @@ class CommonPriceCheckConfigFormPage extends WebPage{
 		
 		$config = CommonPriceCheckCommon::getConfig();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->createAdd("updated","HTMLModel", array(
 			"visible" => (isset($_GET["updated"]))

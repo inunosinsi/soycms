@@ -6,7 +6,7 @@ class JobConfigPage extends WebPage{
     	
     	return null;
     	
-    	//WebPage::WebPage();
+    	//WebPage::__construct();
     	
     	$errorMailDAO = SOY2DAOFactory::create("ErrorMailDAO");
     	

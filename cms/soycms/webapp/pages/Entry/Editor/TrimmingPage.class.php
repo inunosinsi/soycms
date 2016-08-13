@@ -47,7 +47,7 @@ class TrimmingPage extends CMSWebPageBase {
 	}
 	
 	function __construct($arg) {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     			
 		$this->addModel("jcropcss", array(
 			"rel" => "stylesheet",

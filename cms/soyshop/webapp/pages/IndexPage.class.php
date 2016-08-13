@@ -94,7 +94,7 @@ class IndexPage extends WebPage{
 		$this->orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$this->itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		//データベースの更新を調べる
 		$checkVersionLogic = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic");

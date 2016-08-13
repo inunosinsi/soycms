@@ -6,7 +6,7 @@ class IndexPage extends WebPage{
 	
 		$logic = SOY2Logic::createInstance("logic.CalendarLogic");
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("current_calendar","HTMLLabel",array(
     		"html" => $logic->getCurrentCalendar(true)

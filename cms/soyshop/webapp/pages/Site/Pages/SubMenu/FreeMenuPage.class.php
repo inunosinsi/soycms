@@ -10,7 +10,7 @@ class FreeMenuPage extends HTMLPage{
 
 	function __construct($arg = array()){
 		$this->id = $arg[0];
-		HTMLPage::HTMLPage();
+		HTMLPage::__construct();
 		
 		$this->addLink("free_page_site_link", array(
 			"link" => soyshop_get_page_url($arg[1]->getUri())

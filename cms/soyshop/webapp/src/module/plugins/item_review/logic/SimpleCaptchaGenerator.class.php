@@ -36,7 +36,7 @@ class SimpleCaptchaGenerator{
 	/*
 	 * Singleton
 	 */
-	private function SimpleCaptchaGenerator(){}
+	private function __construct(){}
 
 	public static function getInstance(){
 		static $_inst;

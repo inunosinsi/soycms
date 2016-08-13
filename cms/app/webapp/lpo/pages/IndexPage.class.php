@@ -5,7 +5,7 @@ class IndexPage extends WebPage{
     function __construct() {
     	$limit = 10;
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$results = $this->getCount($limit);
     	

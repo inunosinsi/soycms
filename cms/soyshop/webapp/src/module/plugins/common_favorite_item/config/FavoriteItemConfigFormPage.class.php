@@ -7,7 +7,7 @@ class FavoriteItemConfigFormPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 	}
 	
 	function setConfigObj($configObj){

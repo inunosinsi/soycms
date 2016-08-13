@@ -31,7 +31,7 @@ class TemplatePage extends CMSWebPageBase{
 
     	if(!$this->mode)$this->mode = "top";
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	$result = $this->run("Blog.DetailAction",array("id"=>$this->id));
     	if(!$result->success()){

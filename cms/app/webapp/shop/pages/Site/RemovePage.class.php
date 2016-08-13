@@ -31,7 +31,7 @@ class RemovePage extends SOYShopWebPage{
     function __construct($args) {
     	$this->id = (isset($args[0])) ? (int)$args[0] : null;
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->buildMessageForm();
     	$this->buildForm();

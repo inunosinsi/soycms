@@ -12,7 +12,7 @@ class CommonSoymailConfigFormPage extends WebPage{
     }
     
     function execute(){
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
 
     function setConfigObj($obj) {

@@ -8,7 +8,7 @@ class ImportPage extends WebPage{
 	private $detailPage;
 
 	function __construct() {
-		WebPage::WebPage();
+		WebPage::__construct();
 		$this->buildForm();
 
 		$this->addModel("fail", array(

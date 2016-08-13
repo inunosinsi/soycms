@@ -61,7 +61,7 @@ class SettingStandardPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addLink("return_link", array(
 			"link" => SOY2PageController::createLink("Item.Detail.") . $this->itemId

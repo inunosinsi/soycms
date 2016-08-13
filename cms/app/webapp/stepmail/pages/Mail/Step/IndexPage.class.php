@@ -47,7 +47,7 @@ class IndexPage extends WebPage{
 		if(!isset($_GET["mail_id"])) CMSApplication::jump("Mail");
 		$this->stepId = (isset($args[0])) ? (int)$args[0] : null;
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 		DisplayPlugin::toggle("created", isset($_GET["created"]));

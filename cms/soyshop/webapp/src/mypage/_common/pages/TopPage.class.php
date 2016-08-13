@@ -2,7 +2,7 @@
 
 class TopPage extends MainMyPagePageBase{
 
-    function TopPage() {
+    function __construct() {
 
 		if(!class_exists("SOYShopPluginUtil")) SOY2::import("util.SOYShopPluginUtil");
 		$mypage = MyPageLogic::getMyPage();
@@ -12,7 +12,7 @@ class TopPage extends MainMyPagePageBase{
 			$this->jump("login");
 		}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$user = $this->getUser();
 		

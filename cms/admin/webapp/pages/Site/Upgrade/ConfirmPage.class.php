@@ -56,7 +56,7 @@ class ConfirmPage extends CMSUpdatePageBase{
 			SOY2PageController::jump("Site");
 		}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->createAdd("list", "SiteList", array(
 			"list" => $sites

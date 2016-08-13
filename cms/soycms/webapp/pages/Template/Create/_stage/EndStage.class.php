@@ -2,7 +2,7 @@
 class EndStage extends StageBase{
 
     function EndStage() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
     
     function execute(){

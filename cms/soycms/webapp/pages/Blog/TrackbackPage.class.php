@@ -54,7 +54,7 @@ class TrackbackPage extends CMSWebPageBase{
     	}
     	$this->pageId = @$arg[0];
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	$page = $this->run("Blog.DetailAction",array("id"=>$this->pageId))->getAttribute("Page");
     	

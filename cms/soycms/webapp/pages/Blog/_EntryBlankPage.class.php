@@ -7,7 +7,7 @@ class _EntryBlankPage extends CMSWebPageBase{
     private $pageId;
 	
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     }
     

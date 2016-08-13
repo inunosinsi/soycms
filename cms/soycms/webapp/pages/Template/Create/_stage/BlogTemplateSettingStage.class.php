@@ -2,7 +2,7 @@
 class BlogTemplateSettingStage extends StageBase{
 	
 	function BlogTemplateSettingStage() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
     
     //表示部分はここに書く

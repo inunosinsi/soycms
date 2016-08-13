@@ -36,7 +36,7 @@ class IndexPage extends WebPage{
 
 	function __construct(){
 		SOY2::import("domain.plugin.SOYShop_PluginConfig");
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addForm("form");
 		

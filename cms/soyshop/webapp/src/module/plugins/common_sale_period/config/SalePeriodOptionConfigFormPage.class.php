@@ -26,7 +26,7 @@ class SalePeriodOptionConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$config = SalePeriodUtil::getConfig();
 		

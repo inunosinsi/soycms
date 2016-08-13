@@ -67,7 +67,7 @@ class DetailPage extends WebPage{
     	MessageManager::addMessagePath("admin");
     	$this->id = (isset($args[0])) ? $args[0] : null;
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	$this->addModel("sended", array(
     		"visible" => (isset($_GET["sended"]))

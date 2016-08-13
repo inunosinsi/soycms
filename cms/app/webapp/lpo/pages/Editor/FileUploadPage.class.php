@@ -10,7 +10,7 @@ class FileUploadPage extends WebPage {
 		exit;
 	}
     function __construct($arg) {
-    	WebPage::WebPage();
+    	WebPage::__construct();
 		
 		$this->createAdd("popupScript","HTMLModel",array(
 			"type" => "text/JavaScript",

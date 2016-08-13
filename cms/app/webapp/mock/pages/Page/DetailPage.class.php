@@ -35,7 +35,7 @@ class DetailPage extends WebPage{
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 		$this->sampleDao = SOY2DAOFactory::create("Sample.SOYMock_SampleDAO");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		try{
 			$obj = $this->sampleDao->getById($this->id);

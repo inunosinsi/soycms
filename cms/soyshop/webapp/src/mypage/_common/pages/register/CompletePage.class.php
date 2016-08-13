@@ -17,7 +17,7 @@ class CompletePage extends MainMyPagePageBase{
 		$mypage->clearErrorMessage();
 		$mypage->save();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->addLink("login_link", array(
 			"link" => $loginUrl

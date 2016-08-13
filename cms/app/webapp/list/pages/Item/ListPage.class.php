@@ -13,7 +13,7 @@ class ListPage extends WebPage{
     		$category = new SOYList_Category();
     	}
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("category_name","HTMLLabel",array(
     		"text" => htmlspecialchars($category->getName())

@@ -81,7 +81,7 @@ class ComplexPage extends WebPage{
 
 		$this->page = $page;
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->createAdd("update_form","HTMLForm");
 		$this->createAdd("add_form","HTMLForm");

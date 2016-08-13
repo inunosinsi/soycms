@@ -20,7 +20,7 @@ class PurchaseCheckConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$config = PurchaseCheckUtil::getConfig();
 		

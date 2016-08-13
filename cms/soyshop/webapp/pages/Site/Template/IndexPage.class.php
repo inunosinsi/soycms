@@ -10,7 +10,7 @@ class IndexPage extends WebPage{
 	private $types;
 
 	function __construct(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->templateLogic = SOY2Logic::createInstance("logic.site.template.TemplateLogic");
 		$this->types = SOYShop_Page::getTypeTexts();

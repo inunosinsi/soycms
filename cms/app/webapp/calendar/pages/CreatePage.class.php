@@ -104,7 +104,7 @@ class CreatePage extends WebPage{
     		$day = $_GET["day"];
     	}
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	if($this->error == true){
     		$year = $_POST["item"]["year"];

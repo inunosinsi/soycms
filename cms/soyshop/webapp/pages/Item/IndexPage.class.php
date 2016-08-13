@@ -45,7 +45,7 @@ class IndexPage extends WebPage{
 		$session = SOY2ActionSession::getUserSession();
 		$appLimit = $session->getAttribute("app_shop_auth_limit");
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//管理制限の権限を取得し、権限がない場合は表示しない
 		$this->addModel("app_limit_function", array(

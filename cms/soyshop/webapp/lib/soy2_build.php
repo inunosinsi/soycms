@@ -3543,7 +3543,7 @@ class SOY2DAOException extends Exception{
  */
 class SOY2DAOContainer{
 	private $daos = array();
-	private function SOY2DAOContainer(){
+	private function __construct(){
 	}
 	public static function get($name,$arguments = array()){
 		static $instance;
@@ -4766,7 +4766,8 @@ class SOY2HTMLBase{
 				return;
 			}
 		}
-		if(!$this->functionExists($name)){
+		
+		if(!$this->functionExists($name) && $name != "HTMLPage" && $html != "WebPage"){
 			throw new SOY2HTMLException("Method not found: ".$name);
 		}
 		$func = $this->_soy2_functions[$name];
@@ -5450,7 +5451,7 @@ abstract class SOY2HTML extends SOY2HTMLBase{
  * @author Miyazawa
  */
 class SOY2HTMLConfig{
-	private function SOY2HTMLConfig(){}
+	private function __construct(){}
 	private $cacheDir = "cache/";
 	private $pageDir = "pages/";
 	private $templateDir = null;
@@ -5658,7 +5659,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 		$class[] = "class ".$tmpClassName." extends WebPage{";
 		$class[] = "	";
 		$class[] = '	function '.$tmpClassName.'(){';
-		$class[] = "		WebPage::WebPage();";
+		$class[] = "		WebPage::__construct();";
 		$soyIds = array();
 		$tmpSoyIds = array();
 		$templates = file($templatePath);
@@ -5913,7 +5914,7 @@ class SOY2HTMLElement extends SOY2HTML{
  */
 class SOY2HTMLStyle{
 	var $_styles = array();
-	function SOY2HTMLStyle($style = ""){
+	function __construct($style = ""){
 		$styles = explode(";",$style);
 		foreach($styles as $str){
 			if(!strstr($str,":"))continue;
@@ -6793,7 +6794,7 @@ class HTMLPage extends SOYBodyComponentBase{
 	protected $_soy2_page;
 	private $_soy2_body_element;
 	private $_soy2_head_element;
-	function HTMLPage(){
+	function __construct(){
 		$this->prepare();
 	}
 	/**
@@ -7232,7 +7233,7 @@ class HTMLTemplatePage extends HTMLPage{
 		$this->_id = $args[0];
 		$this->_html = $args[1];
 		$this->hash = md5($this->_html);
-		HTMLPage::HTMLPage();
+		HTMLPage::__construct();
 	}
 	function getTemplate(){
 		return $this->_html;
@@ -8056,7 +8057,7 @@ class SOY2HTML_ControllPlugin extends PluginBase{
  */
 class WebPage extends HTMLPage{
 	const SOY_TYPE = SOY2HTML::HTML_BODY;
-	function WebPage(){
+	function __construct(){
 		$this->init();
 		$this->prepare();
 	}

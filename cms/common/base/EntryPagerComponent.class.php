@@ -2,7 +2,7 @@
 
 class EntryPagerComponent extends SOYBodyComponentBase{
 	
-	function EntryPagerComponent($arguments){
+	function __construct($arguments){
 		
 		list($offset, $limit, $count, $currentLink) = $arguments;
 		

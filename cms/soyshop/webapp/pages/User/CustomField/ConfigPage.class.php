@@ -33,7 +33,7 @@ class ConfigPage extends WebPage{
     		SOY2PageController::jump("User");
     	}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->createAdd("import_form","HTMLForm");
 		

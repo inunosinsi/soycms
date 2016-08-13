@@ -102,7 +102,7 @@ class ListPage extends CMSUpdatePageBase{
 		
 		$this->updateCookie($labelIds);
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		//IDが0だった場合はIndexへ
 		if(count($this->labelIds)<1){

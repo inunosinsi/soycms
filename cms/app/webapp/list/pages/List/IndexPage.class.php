@@ -72,7 +72,7 @@ class IndexPage extends WebPage{
 		//配列で商品IDに関わるもの以外の値をすべて削除
 		$checked = $this->convertList($checked);
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$categoryDao = SOY2DAOFactory::create("SOYList_CategoryDAO");
 		  	

@@ -4,7 +4,7 @@ SOY2::import("domain.admin.Site");
 class IndexPage extends CMSWebPageBase{
 	
 	function __construct(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		if(!UserInfoUtil::isDefaultUser()){
 			DisplayPlugin::hide("only_default_user");

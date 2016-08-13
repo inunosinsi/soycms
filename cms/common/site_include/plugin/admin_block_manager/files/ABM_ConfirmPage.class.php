@@ -43,7 +43,7 @@ class ABM_ConfirmPage extends ABM_PageBase{
 	}
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	//対象ページを出力
     	$session = $this->getSession();

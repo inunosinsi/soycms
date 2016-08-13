@@ -48,7 +48,7 @@ class IndexPage extends CMSWebPageBase{
 	function __construct(){
 		if(UserInfoUtil::isDefaultUser() != 1) SOY2PageController::jump("");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addForm("form");
 				

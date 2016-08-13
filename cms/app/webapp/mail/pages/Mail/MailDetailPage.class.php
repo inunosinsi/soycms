@@ -49,7 +49,7 @@ class MailDetailPage extends WebPage{
     function __construct($args) {
     	$this->id = (isset($args[0])) ? $args[0] : null;
 
- 	  	WebPage::WebPage();
+ 	  	WebPage::__construct();
 
     	$this->createAdd("copy_message","HTMLModel",array(
     		"visible" => (isset($_GET["copy"]))

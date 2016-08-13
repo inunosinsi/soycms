@@ -138,7 +138,7 @@ class BonusdownloadConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		$config = BonusDownloadConfigUtil::getConfig();
 		
 		$this->addLabel("bonus_file_type_list_text", array(

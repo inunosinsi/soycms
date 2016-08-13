@@ -55,7 +55,7 @@ class TemplatePage extends CMSWebPageBase{
     	$this->pageId = $pageId;
     	$this->mode = $mode;    	
     	    	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	
     	$pageDAO = SOY2DAOFactory::create("cms.PageDAO");

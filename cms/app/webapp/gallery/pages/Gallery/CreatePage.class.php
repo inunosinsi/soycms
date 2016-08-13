@@ -65,7 +65,7 @@ class CreatePage extends WebPage{
 
     function __construct() {
     	   	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	   	
     	$dao = SOY2DAOFactory::create("SOYGallery_GalleryDAO");
     	

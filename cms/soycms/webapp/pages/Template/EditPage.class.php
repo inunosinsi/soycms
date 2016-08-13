@@ -41,7 +41,7 @@ class EditPage extends CMSWebPageBase{
     	
     	$array = $template_files[$file];
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("back_link","HTMLLink",array(
     		"link" => SOY2PageController::createLink("Template.Detail.".$this->id)

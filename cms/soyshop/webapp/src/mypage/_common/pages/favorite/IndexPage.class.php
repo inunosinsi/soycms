@@ -25,7 +25,7 @@ class IndexPage extends MainMyPagePageBase{
 		SOY2::imports("module.plugins.common_favorite_item.domain.*");
 		$this->favoriteDao = SOY2DAOFactory::create("SOYShop_FavoriteItemDAO");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$user = $this->getUser();
 		

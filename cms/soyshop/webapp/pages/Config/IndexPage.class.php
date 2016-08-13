@@ -4,7 +4,7 @@ SOY2::import("domain.config.SOYShop_ShopConfig");
 class IndexPage extends WebPage{
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	//商品カスタムフィールドのリンクの表示
     	$this->addModel("is_customfield", array(

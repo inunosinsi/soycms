@@ -46,7 +46,7 @@ class IndexPage extends CMSWebPageBase{
 			SOY2PageController::jump("Simple");
 		}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->addLabel("widgets", array(
 			"html" => $this->getWidgetsHTML()

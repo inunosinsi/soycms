@@ -3,7 +3,7 @@
 class NoticePage extends CMSWebPageBase{
 	
 	function __construct(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->createAdd("candidate_list", "CandidateList", array(
 			"list" => SOY2Logic::createInstance("logic.admin.Login.ErrorLogic")->getCandidates()

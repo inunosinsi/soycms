@@ -6,7 +6,7 @@ class ExportPage extends CommonPartsPage{
 	private $logic;
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->redirectCheck();
     	$this->createTag();
     	$this->buildForm();

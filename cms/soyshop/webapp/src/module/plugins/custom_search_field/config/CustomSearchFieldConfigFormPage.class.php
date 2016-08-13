@@ -85,7 +85,7 @@ class CustomSearchFieldConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();		
+		WebPage::__construct();		
 		
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 		DisplayPlugin::toggle("error", isset($_GET["error"]));

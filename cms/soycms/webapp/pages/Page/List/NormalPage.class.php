@@ -3,7 +3,7 @@
 class NormalPage extends CMSWebPageBase{
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$offset = 0; $viewcount = 10; $vieworder = "udate";
     	extract($this->getViewParam());//$offset, $viewcount, $vieworder

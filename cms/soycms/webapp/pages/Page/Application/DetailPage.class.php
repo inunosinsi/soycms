@@ -40,7 +40,7 @@ class DetailPage extends CMSWebPageBase{
     	
     	$this->id = @$arg[0];
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	//新規作成してから来たときのメッセージ表示
     	if(isset($_GET["msg"]) && $_GET["msg"] == "create"){

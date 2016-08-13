@@ -28,7 +28,7 @@ class LoginPage extends MobileMyPagePageBase{
 	function __construct(){
 
 
-		WebPage::WebPage();
+		WebPage::__construct();
 		//ログイン済み
 		$mypage = MyPageLogic::getMyPage();
 		if($mypage->getIsLoggedin())$this->jumpToTop();

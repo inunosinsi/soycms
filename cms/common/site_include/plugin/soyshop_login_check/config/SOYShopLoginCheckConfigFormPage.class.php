@@ -44,7 +44,7 @@ class SOYShopLoginCheckConfigFormPage extends WebPage{
 	
 	function execute(){
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 				
 		$this->addForm("form");
 		

@@ -14,7 +14,7 @@ class SOYCMSServerInfoConfigPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		include(SOY2::RootDir() . "error/error.func.php");
 		

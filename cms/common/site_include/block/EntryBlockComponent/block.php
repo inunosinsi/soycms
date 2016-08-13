@@ -93,7 +93,7 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 	private $entity;
 	
 	function EntryBlockComponent_FormPage(){
-		HTMLPage::HTMLPage();
+		HTMLPage::__construct();
 		
 	}
 	

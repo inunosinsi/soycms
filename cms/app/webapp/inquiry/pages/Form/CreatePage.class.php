@@ -53,7 +53,7 @@ class CreatePage extends WebPage{
 
     function __construct() {
     	    	 
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("form_name","HTMLInput",array(
     		"name" => "Form[name]",

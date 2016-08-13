@@ -34,7 +34,7 @@ class DetailPage extends CMSWebPageBase{
     	
     	$id = @$arg[0];
     	$this->id =$id;
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$result = SOY2ActionFactory::createInstance("EntryTemplate.TemplateDetailAction",array("id"=>$id))->run();
     	$template = $result->getAttribute("entity");

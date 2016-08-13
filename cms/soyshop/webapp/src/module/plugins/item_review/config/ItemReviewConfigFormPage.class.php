@@ -34,7 +34,7 @@ class ItemReviewConfigFormPage extends WebPage{
     function execute(){
     	$config = ItemReviewCommon::getConfig();
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->addModel("updated", array(
     		"visible" => (isset($_GET["updated"]))

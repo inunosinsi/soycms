@@ -7,7 +7,7 @@
 class IndexPage extends WebPage{
 
 	function __construct(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->createAdd("plugin_list", "_common.Site.Config.PluginListComponent", array(
 			"list" => $this->getPluginList(),

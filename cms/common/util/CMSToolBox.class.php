@@ -6,7 +6,7 @@ class CMSToolBox {
 	private $htmls = array();
 	private $filetree = false;
 	
-    function CMSToolBox() {}
+    function __construct() {}
     
     public static function &getInstance(){
     	static $_instance;

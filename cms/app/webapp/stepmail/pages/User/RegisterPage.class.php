@@ -29,7 +29,7 @@ class RegisterPage extends WebPage{
 		$this->userLogic = SOY2Logic::createInstance("logic.UserLogic");
 		$this->registLogic = SOY2Logic::createInstance("logic.RegistLogic");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		DisplayPlugin::toggle("failed", count($this->detail));
 		

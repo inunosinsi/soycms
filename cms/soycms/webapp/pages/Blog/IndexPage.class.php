@@ -14,7 +14,7 @@ class IndexPage extends CMSWebPageBase{
 		
 		if(!$id)$this->jump("Blog.List");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->createAdd("BlogMenu","Blog.BlogMenuPage",array(
 			"arguments" => array($this->id)

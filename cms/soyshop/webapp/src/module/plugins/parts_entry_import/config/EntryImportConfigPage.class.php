@@ -36,7 +36,7 @@ class EntryImportConfigPage extends WebPage{
 		
 		$config = EntryImportUtil::getConfig();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		DisplayPlugin::toggle("example", isset($config["blogId"]));
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));

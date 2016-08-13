@@ -61,7 +61,7 @@ class HTMLBlockComponent_FormPage extends HTMLPage{
 	private $html;
 	
 	function HTMLBlockComponent_FormPage(){
-		HTMLPage::HTMLPage();
+		HTMLPage::__construct();
 		
 	}
 	

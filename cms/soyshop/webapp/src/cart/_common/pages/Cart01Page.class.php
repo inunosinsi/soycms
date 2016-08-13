@@ -124,11 +124,11 @@ class Cart01Page extends MainCartPageBase{
 		soyshop_redirect_cart();
 	}
 
-	function Cart01Page(){
+	function __construct(){
 		
 		SOYShopPlugin::load("soyshop.cart");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$cart = CartLogic::getCart();
 		$items = $cart->getItems();

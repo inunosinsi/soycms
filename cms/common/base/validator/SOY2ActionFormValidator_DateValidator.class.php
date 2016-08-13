@@ -8,7 +8,7 @@ class SOY2ActionFormValidator_DateValidator extends SOY2ActionFormValidator{
 	var $max;
 	var $min;
 	
-	function SOY2ActionFormValidator_DateValidator($obj){
+	function __construct($obj){
 		if(!is_null(@$obj->max)){
 			$this->max = strtotime($obj->max);
 		}else{

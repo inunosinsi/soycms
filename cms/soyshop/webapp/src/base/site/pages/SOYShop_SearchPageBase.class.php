@@ -128,7 +128,7 @@ class SOYShop_SearchPagePager extends SOYShop_PagerBase{
 	private $page;
 	private $_pagerUrl;
 
-	function SOYShop_SearchPagePager(SOYShop_SearchPageBase $page){
+	function __construct(SOYShop_SearchPageBase $page){
 		$this->page = $page;
 	}
 

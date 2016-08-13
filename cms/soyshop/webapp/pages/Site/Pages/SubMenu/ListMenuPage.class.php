@@ -4,7 +4,7 @@ class ListMenuPage extends HTMLPage{
 
     function __construct($arg = array()){
 		$this->id = $arg[0];
-		HTMLPage::HTMLPage();
+		HTMLPage::__construct();
 
 	
 		$this->createAdd("list_page_site_link","HTMLLink", array(

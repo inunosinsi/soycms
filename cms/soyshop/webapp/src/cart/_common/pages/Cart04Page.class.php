@@ -132,11 +132,11 @@ class Cart04Page extends MainCartPageBase{
 		}
 	}
 
-	function Cart04Page(){
+	function __construct(){
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//商品リストの出力
 		$cart = CartLogic::getCart();

@@ -15,7 +15,7 @@ class IndexPage extends WebPage{
 		
 		$dao = SOY2DAOFactory::create("sample.SOYMock_SampleDAO");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		try{
 			$array = $dao->get();

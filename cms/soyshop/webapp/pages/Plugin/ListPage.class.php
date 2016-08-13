@@ -11,7 +11,7 @@ class ListPage extends WebPage{
 	function __construct(){
 		
 		SOY2::import("domain.plugin.SOYShop_PluginConfig");
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addActionLink("plugin_ini_button", array(
 			"link" => SOY2PageController::createLink("Plugin.List"),

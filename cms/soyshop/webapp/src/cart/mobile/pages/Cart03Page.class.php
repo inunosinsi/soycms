@@ -126,7 +126,7 @@ class Cart03Page extends MobileCartPageBase{
 		SOYShopPlugin::active("soyshop.discount");
 		SOYShopPlugin::active("soyshop.order.customfield");
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$url = soyshop_get_cart_url(false);
 		if(isset($_GET[session_name()])){

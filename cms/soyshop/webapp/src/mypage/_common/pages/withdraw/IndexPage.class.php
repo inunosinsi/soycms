@@ -11,7 +11,7 @@ class IndexPage extends MainMyPagePageBase{
 			$this->jump("login");
 		}
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->addModel("error", array(
     		"visible" => (isset($_GET["error"]))

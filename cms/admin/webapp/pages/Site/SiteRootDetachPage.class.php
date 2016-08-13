@@ -38,7 +38,7 @@ class SiteRootDetachPage extends CMSUpdatePageBase {
 	    	exit;
     	}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		try{
 			$site = SOY2DAOFactory::create("admin.SiteDAO")->getById($this->id);

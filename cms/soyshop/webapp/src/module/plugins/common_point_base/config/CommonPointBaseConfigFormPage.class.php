@@ -31,7 +31,7 @@ class CommonPointBaseConfigFormPage extends WebPage{
     }
     
     function execute(){
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$config = PointBaseUtil::getConfig();
     	

@@ -50,7 +50,7 @@ class EntryPage extends CMSEntryEditorPageBase{
     	$this->id = (isset($arg[0]) && is_numeric($arg[0])) ? $arg[0] : null;
     	$this->jumpTo = (isset($_GET["jumpTo"])) ? $_GET["jumpTo"] : null;
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	//フォーム設定
 		$this->setupForm();

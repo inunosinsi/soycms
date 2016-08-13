@@ -10,7 +10,7 @@ class DetailMenuPage extends HTMLPage{
 
 	function __construct($arg = array()){
 		$this->id = $arg[0];
-		HTMLPage::HTMLPage();
+		HTMLPage::__construct();
 
 		$this->createAdd("detail_page_detail_link","HTMLLink", array(
 			"link" => SOY2PageController::createLink("Site.Pages.Extra.Detail." . $this->id)

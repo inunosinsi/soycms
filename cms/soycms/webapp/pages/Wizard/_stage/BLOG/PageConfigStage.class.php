@@ -7,7 +7,7 @@ class PageConfigStage extends StageBase{
     
         
     function execute(){
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("name","HTMLInput",array(
     		"name"=>"name",

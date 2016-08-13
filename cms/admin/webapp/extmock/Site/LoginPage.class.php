@@ -4,7 +4,7 @@ class LoginPage extends CMSWebPageBase{
 
     function __construct($args) {
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	$id = (isset($args[0])) ? $args[0] : null;
 

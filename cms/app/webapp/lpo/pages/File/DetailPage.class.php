@@ -41,7 +41,7 @@ class DetailPage extends WebPage{
 		if(!$this->file)exit;
 		$parentPath = str_replace(SOY_LPO_IMAGE_UPLOAD_DIR,"",$this->dir);
 	
-    	WebPage::WebPage();
+    	WebPage::__construct();
 			
 		$this->buildInfo($this->file);
 				

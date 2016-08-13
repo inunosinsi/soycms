@@ -119,7 +119,7 @@ class DetailPage extends WebPage{
 		//多言語
 		MessageManager::addMessagePath("admin");
 		
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 

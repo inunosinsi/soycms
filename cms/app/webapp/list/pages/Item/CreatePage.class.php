@@ -38,7 +38,7 @@ class CreatePage extends WebPage{
     function __construct() {
     	$this->categoryDao = SOY2DAOFactory::create("SOYList_CategoryDAO");
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("form","HTMLForm",array(
     		"enctype" => "multipart/form-data"

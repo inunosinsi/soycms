@@ -22,7 +22,7 @@ class CreatePage extends CMSUpdatePageBase{
     	if(!UserInfoUtil::isDefaultUser()){
     		$this->jump("Administrator");
     	}
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->addForm("change_password_form");
     	
     	$this->addModel("error", array(

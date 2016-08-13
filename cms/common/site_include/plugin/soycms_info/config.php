@@ -20,7 +20,7 @@ class SOYCMSInfoConfigPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->createAdd("display_admin_level_panel","HTMLModel",array(
 			"visible"  => UserInfoUtil::isDefaultUser()

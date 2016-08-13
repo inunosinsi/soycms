@@ -13,8 +13,8 @@ class ErrorPage extends MainCartPageBase{
 		soyshop_redirect_cart();
 	}
 	
-	function ErrorPage(){
-		WebPage::WebPage();
+	function __construct(){
+		WebPage::__construct();
 
 	}
 }

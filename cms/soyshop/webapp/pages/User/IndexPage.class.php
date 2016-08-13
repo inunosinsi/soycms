@@ -3,7 +3,7 @@ class IndexPage extends WebPage{
 
 	function __construct($args) {
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
     	DisplayPlugin::toggle("registered", (isset($_GET["registered"])));
 

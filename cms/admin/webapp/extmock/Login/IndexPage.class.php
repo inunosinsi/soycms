@@ -26,7 +26,7 @@ class IndexPage extends CMSHTMLPageBase{
 			SOY2PageController::jump("");
 		}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//CSS読み込み
 		HTMLHead::addLink("login_style",array(

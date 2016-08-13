@@ -22,7 +22,7 @@ class BreadcrumbConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$config = BreadcrumbUtil::getConfig();
 		

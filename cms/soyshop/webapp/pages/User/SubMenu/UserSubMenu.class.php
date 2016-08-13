@@ -7,7 +7,7 @@
 class UserSubMenu extends WebPage{
 	
 	function UserSubMenu(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 	}
 }

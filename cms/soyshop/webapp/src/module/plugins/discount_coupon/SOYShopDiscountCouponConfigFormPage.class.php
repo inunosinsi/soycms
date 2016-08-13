@@ -59,7 +59,7 @@ class SOYShopDiscountCouponConfigFormPage extends WebPage{
 			$this->action = $_GET["action"];
 		}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 
 		if(isset($_GET["download_list"])){

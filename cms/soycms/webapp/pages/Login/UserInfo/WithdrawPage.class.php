@@ -36,7 +36,7 @@ class WithdrawPage extends CMSWebPageBase{
     		$this->jump("Login.UserInfo");
     	}
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("withdraw_form","HTMLForm");
     	

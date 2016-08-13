@@ -81,7 +81,7 @@ class DetailPage extends WebPage{
     	
     	$schedule = $this->getDateArray($item->getSchedule());
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("date","HTMLLabel",array(
     		"text" => $schedule["year"]."年".$schedule["month"]."月".$schedule["day"]."日"

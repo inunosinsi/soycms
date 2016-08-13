@@ -47,7 +47,7 @@ class ApplyTemplatePage extends CMSWebPageBase{
     	$page = $res->getAttribute("Page");
     	$this->page = $page;
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->createAdd("main_form","HTMLForm");
     	
     	$this->createAdd("normal_template_select","HTMLLabel",array(

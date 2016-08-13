@@ -24,7 +24,7 @@ class ColumnPage extends WebPage{
 		//レイヤーモードで
 		CMSApplication::setMode("layer");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 				
 		$this->createAdd("column_list", "ColumnList", array(
 			"list" => $this->getColumns($this->id),

@@ -11,7 +11,7 @@ class InsertSiteLinkPage extends CMSWebPageBase{
 
 		$logic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->createAdd("jqueryjs","HTMLModel",array(
 			"type" => "text/JavaScript",

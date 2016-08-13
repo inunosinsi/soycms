@@ -42,7 +42,7 @@ class MailPage extends WebPage{
 
 		$this->logic = SOY2LogicContainer::get("logic.mail.MailConfigLogic");
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->buildForm();
 		$this->buildTestSendForm();

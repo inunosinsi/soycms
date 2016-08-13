@@ -15,7 +15,7 @@ class IndexPage extends WebPage{
 	function __construct(){
 		SOY2::import("domain.StepMail_DataSets");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addForm("form");
 		

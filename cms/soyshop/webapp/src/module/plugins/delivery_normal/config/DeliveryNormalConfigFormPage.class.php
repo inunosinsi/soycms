@@ -46,7 +46,7 @@ class DeliveryNormalConfigFormPage extends WebPage{
 	}
 
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->buildTextForm();
 		$this->buildPriceForm();

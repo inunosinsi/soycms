@@ -24,7 +24,7 @@ class EditControllerPage extends CMSUpdatePageBase {
     	$id = (isset($args[0])) ? $args[0] : null;
     	$this->id = $id;
     	
-		WebPage::WebPage();
+		WebPage::__construct();
 
     	HTMLHead::addLink("site.edit.css",array(
 			"type" => "text/css",

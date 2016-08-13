@@ -75,7 +75,7 @@ class RolePage extends CMSUpdatePageBase{
     		SOY2PageController::redirect("../app/index.php/" . $application["customRoleUri"]);
     	}
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	//DAO
     	$userDAO = SOY2DAOFactory::create("admin.AdministratorDAO");

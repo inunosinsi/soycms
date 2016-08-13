@@ -57,7 +57,7 @@ class ConfirmPage extends IndexPage{
 		
 		$this->postDao = SOY2DAOFactory::create("SOYMessage_PostDAO");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addLabel("user_name", array(
 			"text" => $user->getName()

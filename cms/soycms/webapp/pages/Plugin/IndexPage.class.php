@@ -3,7 +3,7 @@
 class IndexPage extends CMSWebPageBase{
 	
 	function __construct($arg){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		if(isset($_GET["non_active"])){
 			$result = $this->run("Plugin.PluginListAction",array(

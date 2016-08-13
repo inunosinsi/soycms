@@ -87,7 +87,7 @@ class SqliteDatabaseBackupConfigPage extends WebPage{
 			mkdir($this->backupDir);
 		}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		// jQuery Cookie
 		HTMLHead::addScript("jquery.cookile.js",array(

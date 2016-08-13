@@ -103,7 +103,7 @@ class CustomSearchExImportPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		DisplayPlugin::toggle("successed", isset($_GET["successed"]));
 		DisplayPlugin::toggle("failed", isset($_GET["failed"]));

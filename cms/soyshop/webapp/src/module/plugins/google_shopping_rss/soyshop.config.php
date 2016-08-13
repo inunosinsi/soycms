@@ -49,7 +49,7 @@ class GoogleShoppingRssConfigFormPage extends WebPage{
 	function execute(){
 		$config = $this->getRssConfig();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		
 		$this->addModel("updated", array(

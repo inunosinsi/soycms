@@ -21,7 +21,7 @@ class IndexPage extends WebPage{
 
 	}
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	try{
 	    	$formDAO = SOY2DAOFactory::create("SOYInquiry_FormDAO");

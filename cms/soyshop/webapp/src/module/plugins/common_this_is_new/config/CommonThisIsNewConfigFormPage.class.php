@@ -19,7 +19,7 @@ class CommonThisIsNewConfigFormPage extends WebPage{
     }
     
     function execute(){
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$config = $this->getConfig();
     	

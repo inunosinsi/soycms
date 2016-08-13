@@ -5,7 +5,7 @@ SOY2::import("logic.PagerLogic");
 class IndexPage extends CommonPartsPage{
 
 	function __construct($args) {
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->createTag();
 

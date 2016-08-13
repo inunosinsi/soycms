@@ -125,7 +125,7 @@ class PluginBlockComponent_FormPage extends HTMLPage{
     private $pluginIds = array();
     
 	function PluginBlockComponent_FormPage(){
-		HTMLPage::HTMLPage();
+		HTMLPage::__construct();
         
 	}
     

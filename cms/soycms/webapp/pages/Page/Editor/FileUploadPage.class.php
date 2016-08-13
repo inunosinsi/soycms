@@ -10,7 +10,7 @@ class FileUploadPage extends CMSWebPageBase {
 		exit;
 	}
     function __construct($arg) {
-    	WebPage::WebPage();
+    	WebPage::__construct();
 		
 		$this->createAdd("jqueryjs","HTMLModel",array(
 			"type" => "text/JavaScript",

@@ -5,7 +5,7 @@ class StageBase extends CMSWebPageBase{
 	public $wizardObj;
 	
 	function StageBase() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
     
     //表示部分はここに書く

@@ -19,7 +19,7 @@ class URLShortenerPluginFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->createAdd("url_shortener_form","HTMLForm",array(
 		));

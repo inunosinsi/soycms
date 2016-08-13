@@ -27,7 +27,7 @@ class IndexPage extends CMSUpdatePageBase{
 	}
 	
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$userId = UserInfoUtil::getUserId();
     	

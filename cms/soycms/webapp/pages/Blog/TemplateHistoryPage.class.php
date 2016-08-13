@@ -29,7 +29,7 @@ class TemplateHistoryPage extends CMSWebPageBase {
     		$this->jump("Page");
     	}
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$list = $result->getAttribute("historyList");
     	

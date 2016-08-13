@@ -19,7 +19,7 @@ class NewItemConfigPage extends WebPage{
 	function execute(){
 		$config = NewItemUtil::getConfig();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addForm("form");
 		

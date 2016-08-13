@@ -9,7 +9,7 @@ class IndexPage extends WebPage{
 	function __construct($args){
 		MessageManager::addMessagePath("admin");
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		if(isset($_GET["reset"])){
 			$this->setParameter("page", 1);

@@ -19,7 +19,7 @@ class TemplateSettingStage extends StageBase{
     		$this->jump("Template.Create"."?id=".$_GET["id"]);
     	}    	
     	
-    	WebPage::WebPage();    	
+    	WebPage::__construct();    	
     	
     }
     

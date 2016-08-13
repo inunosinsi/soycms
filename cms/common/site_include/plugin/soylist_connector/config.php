@@ -10,7 +10,7 @@ class SOYListConnectorConfigPage extends WebPage{
 	}
 		
 	function execute(){				
-		WebPage::WebPage();
+		WebPage::__construct();
 	}
 	
 	function getTemplateFilePath(){

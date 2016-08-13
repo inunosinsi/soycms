@@ -41,7 +41,7 @@ class UtilMobileCheckConfigFormPage extends WebPage{
 			$this->config->redirect("created");
 		}
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		DisplayPlugin::toggle("update", (isset($_GET["updated"])));
 		DisplayPlugin::toggle("created", (isset($_GET["created"])));

@@ -25,7 +25,7 @@ class CreatePage extends CMSUpdatePageBase{
     		exit;
     	}
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	
     	if(false == $this->checkTargetDirectoryWritable()){

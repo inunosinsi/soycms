@@ -22,7 +22,7 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 	}
 
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$code = GoogleAnalyticsUtil::getConfig();
 		

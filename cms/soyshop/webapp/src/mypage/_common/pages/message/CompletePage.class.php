@@ -9,7 +9,7 @@ class CompletePage extends IndexPage{
     	
     	$this->clearPostToSession("front_message_post");
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->addLink("message_link", array(
     		"link" => SOYSHOP_SITE_URL.soyshop_get_mypage_uri() . "/message"

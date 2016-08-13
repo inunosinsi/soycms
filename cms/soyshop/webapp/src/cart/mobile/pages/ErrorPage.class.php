@@ -16,7 +16,7 @@ class ErrorPage extends MobileCartPageBase{
 	}
 	
 	function ErrorPage(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 	}
 }

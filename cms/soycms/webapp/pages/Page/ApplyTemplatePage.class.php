@@ -28,7 +28,7 @@ class ApplyTemplatePage extends CMSWebPageBase{
     		exit;
     	}
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->createAdd("main_form","HTMLForm");
     	
     	$res = $this->run("Template.TemplateListAction");

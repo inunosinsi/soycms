@@ -36,7 +36,7 @@ class EditPage extends WebPage{
   			exit;
   		}
   		
-  		WebPage::WebPage();
+  		WebPage::__construct();
   		
   		$path = $dir . $target;
   		

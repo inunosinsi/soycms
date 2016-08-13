@@ -17,7 +17,7 @@ class DetailPage extends CMSWebPageBase {
     		$this->jump("Entry.Detail.{$entryId}");
     	}
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	$history = $result->getAttribute("EntryHistory");
 

@@ -72,7 +72,7 @@ class InputPage extends MainMyPagePageBase{
 		}
 	}
 	
-    function InputPage() {
+    function __construct() {
 		$this->mypage = MyPageLogic::getMyPage();
     	
     	//ログイン済み
@@ -80,7 +80,7 @@ class InputPage extends MainMyPagePageBase{
 			$this->jumpToTop();
 		}
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 
     	$this->addForm("form");
     	

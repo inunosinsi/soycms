@@ -96,7 +96,7 @@ class ECCUBEDataImportConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		DisplayPlugin::toggle("saved", isset($_GET["saved"]));
 		DisplayPlugin::toggle("successed", isset($_GET["successed"]));

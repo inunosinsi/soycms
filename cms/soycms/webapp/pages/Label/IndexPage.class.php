@@ -34,7 +34,7 @@ class IndexPage extends CMSWebPageBase{
 	}
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	$labels = $this->getLabelLists();
     	$this->createAdd("label_lists","LabelLists",array(

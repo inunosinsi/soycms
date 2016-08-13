@@ -35,7 +35,7 @@ class AdminPage extends WebPage{
 	}
 
 	function __construct(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->addForm("form");
 

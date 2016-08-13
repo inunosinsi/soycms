@@ -22,7 +22,7 @@ class IndexPage extends WebPage{
 		}
     	
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("no_list","HTMLModel",array(
     		"visible" => (count($list)==0)

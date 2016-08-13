@@ -9,7 +9,7 @@ class CompletePage extends MainMyPagePageBase{
 		$mypage->clear();
 		$mypage->save();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//EditPage.htmlへのリンクを生成する
 		$this->addLink("edit_link", array(

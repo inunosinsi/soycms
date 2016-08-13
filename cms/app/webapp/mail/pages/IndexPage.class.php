@@ -43,7 +43,7 @@ class IndexPage extends WebPage{
 	}
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	//メール情報出力
     	$this->outputMailInfo();

@@ -7,7 +7,7 @@ class ListPage extends CMSWebPageBase{
     	
     	$list = $result->getAttribute("list");
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->createAdd("page_list","BlogPageList",array(
     		"list"=>$list

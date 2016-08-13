@@ -16,7 +16,7 @@ class ImportPage extends WebPage{
 			SOY2PageController::jump("User");
 		}
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->buildForm();
 
 		DisplayPlugin::toggle("fail", (isset($_GET["fail"])));

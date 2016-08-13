@@ -163,7 +163,7 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 
 	function execute(){
 
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addLink("register_link", array(
 			"link" => SOY2PageController::createLink("Config.Detail?plugin=discount_free_coupon#register")

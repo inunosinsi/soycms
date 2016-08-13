@@ -3,7 +3,7 @@
 class ConfirmStage extends StageBase{
 
     function ConfirmStage() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
     
     //表示部分はここに書く

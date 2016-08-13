@@ -7,7 +7,7 @@ class IndexPage extends MainMyPagePageBase{
 		$mypage->clearUserInfo();
 		$mypage->save();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addLink("login_link", array(
 			"link" => SOYSHOP_SITE_URL . soyshop_get_mypage_uri() . "/login"

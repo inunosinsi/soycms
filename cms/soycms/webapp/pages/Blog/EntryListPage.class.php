@@ -124,7 +124,7 @@ class EntryListPage extends CMSWebPageBase{
 			array_unshift($this->labelIds,$labelId);
 		}
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		//ラベル一覧を取得
 		$labelList = $this->getLabelList();

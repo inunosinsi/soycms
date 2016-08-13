@@ -11,7 +11,7 @@ class CampaignConfigPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->createAdd("campaign_list", "CampaignListComponent", array(
 			"list" => self::get()

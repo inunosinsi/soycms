@@ -21,7 +21,7 @@ class UploadPage extends CMSWebPageBase{
 	}
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->createAdd("upload_form","HTMLForm");
     	
     	if(CMSUtil::checkZipEnable(true)){

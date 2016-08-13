@@ -10,7 +10,7 @@ class AnalyticsPluginFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addCheckBox("type_month", array(
 			"name" => "AnalyticsPlugin[type]",

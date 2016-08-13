@@ -4,10 +4,10 @@ class SOYShop_CartPage extends SOYShopPageBase{
 
 	private $cartId;
 
-	function SOYShop_CartPage($args){
+	function __construct($args){
 		$this->setCartId($args[0]);
 
-		WebPage::WebPage();
+		WebPage::__construct();
 	}
 
 	function doOperation(){
@@ -16,7 +16,7 @@ class SOYShop_CartPage extends SOYShopPageBase{
 		SOYShopPlugin::invoke("soyshop.cart", array(
 			"mode" => "doOperation"
 		));
-		
+				
 		$this->checkSSL();
 
 		SOY2::import("base.cart.cart", ".php");

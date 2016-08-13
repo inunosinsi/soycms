@@ -26,7 +26,7 @@ class ListPanelPage extends CMSUpdatePageBase{
     function __construct($arg) {
     	$labels = array_map(create_function('$v','return (int)$v;'),$arg);
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$result = $this->run("Label.LabelListAction");
     	$this->createAdd("label_list","LabelList",array(

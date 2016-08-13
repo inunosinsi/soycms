@@ -103,7 +103,7 @@ class CMSPlugin {
 	
 	var $_customFieldFunctions = array();
 
-    private function CMSPlugin() {}
+    private function __construct() {}
     
 	/* internal functions */
     

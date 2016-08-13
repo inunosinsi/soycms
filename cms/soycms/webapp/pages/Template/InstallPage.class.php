@@ -26,7 +26,7 @@ class InstallPage extends CMSWebPageBase{
     	$id = $args[0];
     	$this->id = $id;
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	    	
     	$logic = SOY2Logic::createInstance("logic.site.Template.TemplateLogic");
     	

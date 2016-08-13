@@ -3,7 +3,7 @@
 class IndexPage extends WebPage{
 
 	function __construct() {
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$galleries = $this->getGalleries();
 		$this->addModel("no_gallery_list", array(

@@ -7,7 +7,7 @@ class SelectTopStage extends StageBase{
     }
     
     function execute(){
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->createAdd("page_type","HTMLSelect",array(
     		"options"=>array(
 	    					Page::PAGE_TYPE_NORMAL => "標準ページ",

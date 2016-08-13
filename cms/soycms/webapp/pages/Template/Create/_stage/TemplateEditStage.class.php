@@ -5,7 +5,7 @@ class TemplateEditStage extends StageBase{
 	protected $id;
 
     function TemplateEditStage() {
-    	WebPage::WebPage();	
+    	WebPage::__construct();	
     }
     
     function setWizardObj($obj){

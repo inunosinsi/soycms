@@ -7,7 +7,7 @@ class LogPage extends WebPage{
 	function __construct($args){
 		$this->logId = (isset($args[0])) ? $args[0] : null;
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$mailLogDao = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO");
 		try{

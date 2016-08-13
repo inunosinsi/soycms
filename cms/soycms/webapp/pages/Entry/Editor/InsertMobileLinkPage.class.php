@@ -29,7 +29,7 @@ class InsertMobileLinkPage extends CMSWebPageBase{
     		//$this->jump("Page");
     	}
     	$page = $result->getAttribute("Page");
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$tree = "<div style=\"margin-bottom:10px;\">".$this->buildTree($page->getVirtual_tree())."<br /></div>";
     	
     	$this->createAdd("page_tree","HTMLLabel",array(

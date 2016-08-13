@@ -43,7 +43,7 @@ class ChangeUserInfoPage extends CMSWebPageBase{
 			$this->jump("Login.UserInfo");
 		}
 		
-		WebPage::WebPage();
+		WebPage::__construct();
     	
     	if(!$this->account){
     		$this->account = new ChangeAccountActionForm();

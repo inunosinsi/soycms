@@ -28,7 +28,7 @@ class MypagePage extends WebPage{
 	}
 
 	function __construct(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//メール文面の初期化
 		if(isset($_GET["init"]))$this->initText();

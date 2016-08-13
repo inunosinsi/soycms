@@ -7,7 +7,7 @@ class ConfirmStage extends StageBase{
     }
         
     function execute(){
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$page = $this->run("Page.DetailAction",array("id"=>$this->wizardObj->pageId))->getAttribute("Page");
     	$this->createAdd("page_link","HTMLLink",array(
     		"link"=>UserInfoUtil::getSiteURL().$page->getUri(),

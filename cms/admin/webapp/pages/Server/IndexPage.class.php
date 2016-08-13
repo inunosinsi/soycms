@@ -3,7 +3,7 @@ class IndexPage extends CMSWebPageBase{
 	
 	
 	function __construct(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		if(!UserInfoUtil::isDefaultUser()){
     		$this->jump("");

@@ -8,7 +8,7 @@ class DeliveryChargeFreeCartFormPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->addLabel("description", array(
 			"html"  => nl2br(DeliveryChargeFreeConfigUtil::getDescription()),

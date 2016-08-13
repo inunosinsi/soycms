@@ -27,7 +27,7 @@ class IndexPage extends WebPage{
 		}
     	
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$categories = $this->getCategories();
     	

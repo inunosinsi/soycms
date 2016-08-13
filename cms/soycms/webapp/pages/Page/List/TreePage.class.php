@@ -87,7 +87,7 @@ class TreePage extends CMSWebPageBase{
 
     function __construct() {
     	$result = ($this->run("Page.PageListAction",array("buildtree"=>true)));
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     	$this->treeIcon = SOY2PageController::createRelativeLink("./image/tree/tree.gif");
 

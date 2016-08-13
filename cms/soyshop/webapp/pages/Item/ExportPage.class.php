@@ -4,7 +4,7 @@ class ExportPage extends WebPage{
 	var $logic;
 
 	function __construct() {
-		WebPage::WebPage();
+		WebPage::__construct();
 		$this->buildForm();
 	}
 

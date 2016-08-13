@@ -10,13 +10,13 @@ class MaintenancePage extends MainCartPageBase{
 	function doPost(){
 	}
 
-	function MaintenancePage(){
+	function __construct(){
 
 		//常にクリア
 		$cart = CartLogic::getCart();
 		$cart->clear();
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$config = SOYShop_ShopConfig::load();
 		$info = $config->getCompanyInformation();

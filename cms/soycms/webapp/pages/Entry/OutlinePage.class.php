@@ -8,7 +8,7 @@ class OutlinePage extends CMSWebpageBase{
     		return;
     	}
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$entry = $this->getEntryInformation($id);
     	

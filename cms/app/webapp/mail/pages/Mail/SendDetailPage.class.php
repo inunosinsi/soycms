@@ -9,7 +9,7 @@ class SendDetailPage extends WebPage{
     	
     	$this->id = (isset($args[0])) ? $args[0] : null;
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	try{
 	    	$dao = SOY2DAOFactory::create("MailDAO");

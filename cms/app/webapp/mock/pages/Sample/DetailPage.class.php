@@ -14,7 +14,7 @@ class DetailPage extends WebPage{
 	 */
 	function __construct($args){
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 
 //		$this->createAdd("form", "HTMLForm", array(

@@ -44,7 +44,7 @@ class EntryPage extends CMSEntryEditorPageBase{
     	$this->pageId = @$arg[0];
     	$this->id = @$arg[1];
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
 
     	$result = $this->run("Blog.DetailAction",array("id"=>$this->pageId));

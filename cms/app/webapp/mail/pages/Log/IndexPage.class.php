@@ -12,7 +12,7 @@ class IndexPage extends WebPage{
 	}
 	
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
 		$logs = $this->getLogs();
 		

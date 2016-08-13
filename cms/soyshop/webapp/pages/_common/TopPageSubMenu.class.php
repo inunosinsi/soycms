@@ -2,8 +2,8 @@
 
 class TopPageSubMenu extends HTMLPage{
 
-    function TopPageSubMenu() {
-		HTMLPage::HTMLPage();
+    function __construct() {
+		HTMLPage::__construct();
     }
 }
 ?>

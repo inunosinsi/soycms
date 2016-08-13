@@ -12,7 +12,7 @@ class RedirectPage extends CMSHTMLPageBase{
 		}
 
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->addLabel("user_id", array(
 			"text" => $_GET["userId"],

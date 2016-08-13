@@ -62,7 +62,7 @@ class CustomFieldPluginFormPage extends WebPage{
 	}
 
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//$this->pluginObj->importFields();
 		//$this->pluginObj->deleteAllFields();

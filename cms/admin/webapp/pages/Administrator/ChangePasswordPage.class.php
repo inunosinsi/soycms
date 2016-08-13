@@ -15,7 +15,7 @@ class ChangePasswordPage extends CMSUpdatePageBase{
 	}
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->addForm("change_password_form");
 
     	$this->addModel("error", array(

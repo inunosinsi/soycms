@@ -4,7 +4,7 @@ class ExportPage extends WebPage{
 	private $logic;
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->buildForm();
 
     	$this->createAdd("is_custom_plugin","HTMLModel", array(

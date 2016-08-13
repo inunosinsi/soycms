@@ -18,7 +18,7 @@ class InsertLinkPage extends CMSWebPageBase{
 			$this->restoreDsn($old);
     		$site = new Site();
     	}
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->createAdd("current_site","HTMLLabel",array(
     		"text"=>"(".$site->getSiteName().")",
     		"visible"=>isset($arg[0])

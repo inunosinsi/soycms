@@ -59,7 +59,7 @@ class DetailPage extends WebPage{
     	$this->itemDao = SOY2DAOFactory::create("SOYList_ItemDAO");
     	$this->categoryDao = SOY2DAOFactory::create("SOYList_CategoryDAO");
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$item = $this->getItem($this->id);
     	

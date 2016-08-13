@@ -5,7 +5,7 @@ class ImportPage extends WebPage{
 	var $categories;
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	$this->buildForm();
 
     	$this->createAdd("invalid","HTMLModel", array(

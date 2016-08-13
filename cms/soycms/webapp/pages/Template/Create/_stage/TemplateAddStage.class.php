@@ -3,7 +3,7 @@
 class TemplateAddStage extends StageBase{
 
     function TemplateAddStage() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
     
     function execute(){

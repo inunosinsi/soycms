@@ -50,7 +50,7 @@ class ConfirmPage extends IndexPage{
 	function __construct() {
 		$this->cart = AdminCartLogic::getCart();
 
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->itemInfo();
 		$this->moduleInfo();

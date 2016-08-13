@@ -29,7 +29,7 @@ class SitemapConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		//挿入するページの指定
 		SOY2::import('site_include.CMSPage');

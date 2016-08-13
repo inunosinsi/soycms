@@ -165,7 +165,7 @@ class SOYShop_DetailPagePager extends SOYShop_PagerBase{
 
 	private $page;
 
-	function SOYShop_DetailPagePager(SOYShop_DetailPageBase $page){
+	function __construct(SOYShop_DetailPageBase $page){
 		$this->page = $page;
 	}
 

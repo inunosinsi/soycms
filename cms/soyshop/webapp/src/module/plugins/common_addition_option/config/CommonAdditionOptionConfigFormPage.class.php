@@ -22,7 +22,7 @@ class CommonAdditionOptionConfigFormPage extends WebPage{
     	
     	$config = CommonAdditionCommon::getConfig();
     	
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$this->addForm("form");
     	

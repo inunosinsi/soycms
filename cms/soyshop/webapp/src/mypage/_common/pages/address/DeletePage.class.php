@@ -1,7 +1,7 @@
 <?php
 class DeletePage extends MainMyPagePageBase{
 
-	function DeletePage($args){
+	function __construct($args){
 
 		$mypage = MyPageLogic::getMyPage();
 		

@@ -50,7 +50,7 @@ class TwitterProductCardsConfigFormPage extends WebPage{
 		
 		$config = TwitterProductCardsCommon::getConfig();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addModel("updated", array(
 			"visible" => (isset($_GET["updated"]))

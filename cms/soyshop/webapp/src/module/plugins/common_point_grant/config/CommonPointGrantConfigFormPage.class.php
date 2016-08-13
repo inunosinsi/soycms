@@ -18,7 +18,7 @@ class CommonPointGrantConfigFormPage extends WebPage{
     }
     
     function execute(){
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$config = PointGrantUtil::getConfig();
     	

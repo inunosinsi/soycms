@@ -66,7 +66,7 @@ class DetailPage extends CMSEntryEditorPageBase{
     	//$id == null ならば新規作成
     	$this->id = @$arg[0];
 
-    	WebPage::WebPage();
+    	WebPage::__construct();
 
     }
 

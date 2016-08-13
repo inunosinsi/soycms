@@ -2,7 +2,7 @@
 class LogoutPage extends MobileMyPagePageBase{
 	
 	function __construct(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		$mypage = MyPageLogic::getMyPage();
 		$mypage->logout();
 

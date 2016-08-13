@@ -8,7 +8,7 @@ class DetailPage extends MobileMyPagePageBase{
 	private $id;
 	
 	function __construct($args){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$mypage = MyPageLogic::getMyPage();
 		if(!$mypage->getIsLoggedin())$this->jump("login");//ログインチェック

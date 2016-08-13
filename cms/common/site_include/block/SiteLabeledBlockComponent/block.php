@@ -237,7 +237,7 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 	private $blogPages = array();
 
 	function SiteLabeledBlockComponent_FormPage(){
-		HTMLPage::HTMLPage();
+		HTMLPage::__construct();
 
 	}
 

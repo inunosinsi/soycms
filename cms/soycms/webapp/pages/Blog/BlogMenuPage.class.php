@@ -18,7 +18,7 @@ class BlogMenuPage extends CMSHTMLPageBase{
     	
     	$id = $args[0];
     	
-    	HTMLPage::HTMLPage();
+    	HTMLPage::__construct();
     	
     	//リクエストされたパスからActiveなパスを取得
     	$requestPath = SOY2PageController::getRequestPath();

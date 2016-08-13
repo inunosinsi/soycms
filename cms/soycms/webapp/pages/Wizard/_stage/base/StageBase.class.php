@@ -7,7 +7,7 @@ class StageBase extends CMSWebPageBase{
 	
 
     function StageBase() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
     
     //表示部分はここに書く

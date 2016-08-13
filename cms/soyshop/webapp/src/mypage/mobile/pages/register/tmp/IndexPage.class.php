@@ -2,7 +2,7 @@
 class IndexPage extends MobileMyPagePageBase{
 	
 	function __construct(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$mypage = MyPageLogic::getMyPage();
 		$mypage->clearUserInfo();

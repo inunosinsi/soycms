@@ -54,7 +54,7 @@ class EditorPage extends WebPage{
 		$this->modulePath = $moduleDir . str_replace(".", "/", $this->moduleId) . ".php";
 		$this->iniPath =$moduleDir . str_replace(".", "/", $this->moduleId) . ".ini";
 
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$ini = @parse_ini_file($this->iniPath);
 

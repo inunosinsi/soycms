@@ -29,7 +29,7 @@ class SOYShopPaymentCustomConfigFormPage extends WebPage{
 
     function execute(){
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
     	$this->buildForm();
 

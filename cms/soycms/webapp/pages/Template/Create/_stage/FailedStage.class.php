@@ -3,7 +3,7 @@
 class FailedStage extends StageBase{
 	
 	function FailedStage(){
-		WebPage::WebPage();
+		WebPage::__construct();
 	}
 	
     function getNextString(){

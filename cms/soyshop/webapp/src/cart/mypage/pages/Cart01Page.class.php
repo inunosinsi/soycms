@@ -104,7 +104,7 @@ class Cart01Page extends MainCartPageBase{
 	}
 
 	function Cart01Page(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$cart = CartLogic::getCart();
 		$items = $cart->getItems();

@@ -50,7 +50,7 @@ class CreateSamplePage extends CMSWebPageBase{
 	}
 
     function __construct() {
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		HTMLHead::addLink("avav",array(
 			"rel" => "stylesheet",

@@ -35,7 +35,7 @@ class CreatePage extends CMSWebPageBase{
 	}
 
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	$parentPageList = $this->getParentPageList();
     	$this->createAdd("parent_page_select","HTMLSelect",array(

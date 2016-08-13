@@ -38,7 +38,7 @@ class IndexPage extends MainMyPagePageBase{
 		
 		$this->user = $this->getUser();
 		
-    	WebPage::WebPage();
+    	WebPage::__construct();
 		
 		//display error message
 		DisplayPlugin::toggle("has_error", $this->mypage->hasError());

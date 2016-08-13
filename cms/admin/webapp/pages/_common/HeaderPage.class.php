@@ -9,7 +9,7 @@ class HeaderPage extends CMSWebPageBase{
 	}
 
     function __construct() {
-		WebPage::WebPage();    
+		WebPage::__construct();    
 		
 		HTMLHead::addLink("globalpage.css", array(
 			"type" => "text/css",

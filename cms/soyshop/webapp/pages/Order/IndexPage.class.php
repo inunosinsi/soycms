@@ -29,7 +29,7 @@ class IndexPage extends WebPage{
 	}
 
 	function __construct($args){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//検索条件のリセット
 		if(isset($_GET["reset"])){

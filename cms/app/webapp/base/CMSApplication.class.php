@@ -223,7 +223,7 @@ class CMSApplication {
 	private $title = "";
 	private $properties = array();
 
-	private function CMSApplication(){}
+	private function __construct(){}
 
 	/**
 	 * singleton

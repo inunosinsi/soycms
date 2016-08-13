@@ -78,7 +78,7 @@ class ConfirmPage extends IndexPage{
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$user = $mypage->getUserInfo();
 		

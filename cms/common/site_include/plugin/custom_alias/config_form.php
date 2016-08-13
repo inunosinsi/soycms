@@ -20,7 +20,7 @@ class CustomAliasPluginFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->addForm("custom_alias_form");
 		

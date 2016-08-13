@@ -13,7 +13,7 @@ class ConfigPage extends CMSWebPageBase{
 			$plugin = $result->getAttribute("plugin");
 		}
 
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->createAdd("plugin_name","HTMLLabel",array(
 			"text" => $plugin->getName()

@@ -7,7 +7,7 @@ class IndexPage extends CMSUpdatePageBase{
 
 		$this->updateCookie();
 
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//記事テーブルのCSS
 		HTMLHead::addLink("entrytree",array(

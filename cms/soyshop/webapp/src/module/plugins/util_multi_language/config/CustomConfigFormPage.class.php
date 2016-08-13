@@ -84,7 +84,7 @@ class CustomConfigFormPage extends WebPage{
 		//日本語用のものだけ集める
 		self::setLangFieldList();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addLink("item_name_link", array(
 			"text" => $item->getName(),

@@ -120,7 +120,7 @@ class Cart01Page extends MobileCartPageBase{
 
 	function Cart01Page(){
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		$cart = CartLogic::getCart();
 		$items = $cart->getItems();
 

@@ -23,7 +23,7 @@ class InsertBlogLinkPage extends CMSWebPageBase{
     	}
     	
     		
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	list($page,$obj) = $this->getPageObject();
     	$labels = $this->getCategoryList();
     	$entries = $this->getEntryList();

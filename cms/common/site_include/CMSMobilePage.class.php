@@ -65,7 +65,7 @@ class CMSMobilePage extends CMSPage{
 		$pageFormat = preg_replace('/%PAGE%/',$this->page->getTitle(),$pageFormat);
 		$pageFormat = preg_replace('/%MINIPAGE_TITLE%/',$this->virtualTree->getTitle(),$pageFormat);
 		$this->title = $pageFormat;
-		WebPage::WebPage();
+		WebPage::__construct();
 	}
 	
 	function main(){

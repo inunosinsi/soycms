@@ -23,7 +23,7 @@ class config_form extends WebPage{
 	function config_form(){}
 	
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->buildBlogListForm();//一覧
 		

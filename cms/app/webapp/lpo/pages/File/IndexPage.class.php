@@ -35,7 +35,7 @@ class IndexPage extends WebPage{
 			$parentPath = str_replace(SOY_LPO_IMAGE_UPLOAD_DIR,"",soy2_realpath(dirname($this->dir)));
 		}
 	
-    	WebPage::WebPage();
+    	WebPage::__construct();
 		
 		$this->buildList();
 		

@@ -18,7 +18,7 @@ class SOYCMS_ThisIsNew_Plugin_FormPage extends WebPage{
 	}
 
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		$this->createAdd("cms_id","HTMLLabel",array(
 			"text" => SOYCMS_ThisIsNew_Plugin::CMS_ID

@@ -7,7 +7,7 @@ class RemovePage extends WebPage{
 		$id = (isset($args[0])) ? $args[0] : null;
 		
 		/**
-		 * HTMLを持たずに処理だけのページの場合はWebPage::WebPage();を書かない
+		 * HTMLを持たずに処理だけのページの場合はWebPage::__construct();を書かない
 		 */
 		
 		$dao = SOY2DAOFactory::create("Sample.SOYMock_SampleDAO");

@@ -18,7 +18,7 @@ class ChangeUserInfoPage extends CMSUpdatePageBase{
 	}
 	
     function __construct() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	
     	$result = $this->run("Administrator.DetailAction", array("adminId" => UserInfoUtil::getUserId()));

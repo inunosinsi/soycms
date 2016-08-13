@@ -86,7 +86,7 @@ class SearchPage extends CMSWebPageBase{
 		}
     	
     
-    	WebPage::WebPage();
+    	WebPage::__construct();
     	
     	//記事を取得
     	list($entries,$count,$from,$to,$limit,$form) = $this->getEntries();

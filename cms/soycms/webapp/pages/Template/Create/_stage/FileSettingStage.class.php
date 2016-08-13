@@ -3,7 +3,7 @@
 class FileSettingStage extends StageBase{
 
     function FileSettingStage() {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
     
     function execute(){

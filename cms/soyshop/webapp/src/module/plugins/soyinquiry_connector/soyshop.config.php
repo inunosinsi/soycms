@@ -44,7 +44,7 @@ class SOYInquiryConnectorConfigFormPage extends WebPage{
 		
 		$config = SOYInquiryConnectorCommon::getConfig();
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->addModel("updated", array(
 			"visible" => (isset($_GET["updated"]))

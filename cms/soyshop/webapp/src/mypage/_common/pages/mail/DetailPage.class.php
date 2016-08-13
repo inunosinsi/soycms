@@ -22,7 +22,7 @@ class DetailPage extends MainMyPagePageBase{
 			$this->jump("mail");
 		}
 		
-		WebPage::WebPage();
+		WebPage::__construct();
 		
 		$this->user = $this->getUser();
 		

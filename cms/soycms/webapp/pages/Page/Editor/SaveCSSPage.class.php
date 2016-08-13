@@ -22,7 +22,7 @@ class SaveCSSPage extends CMSWebPageBase {
 	}
 	
     function __construct($arg) {
-    	WebPage::WebPage();
+    	WebPage::__construct();
     }
 }
 ?>

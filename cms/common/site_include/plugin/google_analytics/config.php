@@ -33,7 +33,7 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 	}
 
 	function execute(){
-		WebPage::WebPage();
+		WebPage::__construct();
 
 		//1.2.7以上ではページ毎の設定が可能
 		$this->createAdd("config_per_page_panel","HTMLModel",array(
