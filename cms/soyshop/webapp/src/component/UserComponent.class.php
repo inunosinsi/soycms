@@ -20,7 +20,7 @@ class UserComponent {
 	/**
 	 * コンストラクタ
 	 */
-	public function UserComponent($args=null){
+	public function __construct($args=null){
 		$this->config = SOYShop_ShopConfig::load();
 	}
 	

@@ -84,11 +84,10 @@ class Analytics_MonthPage extends Analytics_CommonPage{
 	function executeSql($start, $end){
 		try{
 			$res = $this->orderDao->executeQuery($this->buildSql(), array(":start" => $start, ":end" => $end));
-			$total = (isset($res[0]["SUM(os.total_price)"])) ? (int)$res[0]["SUM(os.total_price)"] : 0;
+			return (isset($res[0]["SUM(os.total_price)"])) ? (int)$res[0]["SUM(os.total_price)"] : 0;
 		}catch(Exception $e){
-			$total = 0;
+			return 0;
 		}
-		return $total;
 	}
 	
 	function buildSql(){

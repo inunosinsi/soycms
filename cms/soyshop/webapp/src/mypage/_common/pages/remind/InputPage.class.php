@@ -98,7 +98,7 @@ class InputPage extends MainMyPagePageBase{
     		"visible" => ($this->send)
     	));
     	$this->addLink("top_link", array(
-    		"link" => SOYSHOP_SITE_URL
+    		"link" => soyshop_get_site_url()
     	));
     }
 }
