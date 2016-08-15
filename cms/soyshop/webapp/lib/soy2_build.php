@@ -5440,6 +5440,8 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 		 * html_entity_decodeは文字コードの指定が重要
 		 * http://jp2.php.net/manual/ja/function.html-entity-decode.php#function.html-entity-decode.notes
 		 */
+		//preタグ内にある&lt;と&gt;は予め除いておく
+		$html = str_replace(array("&lt;", "&gt;"), "", $html);
 		return html_entity_decode(strip_tags($html), ENT_QUOTES, $encoding);
 	}
 }
