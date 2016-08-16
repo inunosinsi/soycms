@@ -144,7 +144,6 @@ class SOYShop_GalleryComponent extends HTMLList{
 		
 		$this->addLink("url_link",array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => $entity->getUrl(),
 			"link" => $entity->getUrl()
 		));
 		

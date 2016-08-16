@@ -16,13 +16,19 @@ class OrderListComponent extends HTMLList{
 			"value" => $order->getId(),
 			"onchange" => '$(\'#orders_operation\').show();',
 		));
+		
+		$this->addLabel("id", array(
+			"text" => $order->getId(),
+		));
 
 		$this->addLabel("order_id", array(
 			"text" => $order->getTrackingNumber()
 		));
+		
+		$detailLink = $this->getOrderDetailLink($order->getId());
 		$this->addLink("order_id_link", array(
 			"text" => $order->getTrackingNumber(),
-			"link" => $this->getOrderDetailLink($order->getId())
+			"link" => $detailLink
 		));
 
 		$this->addLabel("order_date", array(
@@ -30,7 +36,7 @@ class OrderListComponent extends HTMLList{
 		));
 
 		$this->addLink("detail_link", array(
-			"link" => $this->getOrderDetailLink($order->getId())
+			"link" => $detailLink
 		));
 
 		$this->addLabel("order_status", array(
