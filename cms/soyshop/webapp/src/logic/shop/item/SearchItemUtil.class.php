@@ -16,7 +16,7 @@ class SearchItemUtil_SortImpl implements SearchItemUtil_Sort{
 
 	private $obj;
 
-	function SearchItemUtil_SortImpl($obj){
+	function __construct($obj){
 		$this->obj = $obj;
 	}
 
