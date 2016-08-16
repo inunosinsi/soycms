@@ -17,7 +17,7 @@ class CustomSearchFieldItemList extends SOYShopItemListBase{
 		self::prepare();
 		list($key, $value) = self::getKeyAndValue($pageObj->getPage()->getUri());
 		$current = self::getCurrent();
-		return $this->searchLogic->getItemList($key, $value, $current, $offset, (int)$limit);
+		return $this->searchLogic->getItemList($pageObj, $key, $value, $current, $offset, (int)$limit);
 	}
 	
 	/**

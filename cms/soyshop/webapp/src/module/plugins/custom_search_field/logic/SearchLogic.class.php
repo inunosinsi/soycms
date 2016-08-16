@@ -171,7 +171,8 @@ class SearchLogic extends SOY2LogicBase{
 	}
 	
 	/** 商品一覧ページ用 **/
-	function getItemList($key, $value, $current, $offset, $limit){
+	function getItemList($obj, $key, $value, $current, $offset, $limit){
+		
 		$confs = CustomSearchFieldUtil::getConfig();
 		if(!isset($confs[$key])) return array();
 		
@@ -191,6 +192,10 @@ class SearchLogic extends SOY2LogicBase{
 				$sql .= "AND s." . $key . " = :" . $key;
 				$binds[":" . $key] = trim($value);
 		}
+		
+		$sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
+		$sql .= " ORDER BY " . $sort . " ";
+		
 		$sql .= " LIMIT " . $limit;
 		
 		//OFFSET
