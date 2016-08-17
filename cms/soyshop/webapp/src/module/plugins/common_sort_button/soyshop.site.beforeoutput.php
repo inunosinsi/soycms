@@ -22,9 +22,41 @@ class SOYShopSortButtonBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				$pageUrl = soyshop_get_page_url($page->getPageObject()->getUri());
 			}
 			
-								
-			//検索ページで使う場合
-			$query = (isset($_GET["type"]) && isset($_GET["q"])) ? "&type=" . trim($_GET["type"]) . "&q=" . trim($_GET["q"]) : "";
+			$query = "";
+			
+			//商品一覧ページで使う場合
+			if($pageType == SOYShop_Page::TYPE_LIST){
+				$args = $page->getArguments();
+				for($i = 0; $i < count($args); $i++){
+					if(isset($args[$i]) && strlen($args[$i])){
+						$pageUrl .= "/" . htmlspecialChars($args[$i], ENT_QUOTES, "UTF-8");
+					}
+				}
+			}else{
+				SOY2::import("util.SOYShopPluginUtil");
+				if(SOYShopPluginUtil::checkIsActive("custom_search_field") && isset($_GET["c_search"]) && count($_GET["c_search"])){
+					foreach($_GET["c_search"] as $key => $val){
+						//配列の場合
+						if(is_array($val)){
+							foreach($val as $v){
+								if(strlen($v)){
+									$query .= "&c_search[" . $key . "][]=" . htmlspecialchars($v, ENT_QUOTES, "UTF-8");
+								}
+							}
+						//文字列の場合
+						}else{
+							if(strlen($val)){
+								$query .= "&c_search[" . $key . "]=" . htmlspecialchars($val, ENT_QUOTES, "UTF-8");
+							}
+						}
+					}
+				}else{
+					//検索ページで使う場合
+					$query = (isset($_GET["type"]) && isset($_GET["q"])) ? "&type=" . trim($_GET["type"]) . "&q=" . trim($_GET["q"]) : "";
+				}
+					
+			}
+			
 
 			SOY2::import("module.plugins.common_sort_button.util.SortButtonUtil");
 			foreach(SortButtonUtil::getColumnList() as $key => $column){

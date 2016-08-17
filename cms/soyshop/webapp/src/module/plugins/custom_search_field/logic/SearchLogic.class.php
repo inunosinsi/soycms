@@ -15,7 +15,7 @@ class SearchLogic extends SOY2LogicBase{
 	 * @params int current:現在のページ, int limit:一ページで表示する商品
 	 * @return array<SOYShop_Item>
 	 */
-	function search($current, $limit){
+	function search($obj, $current, $limit){
 		self::setCondition();
 		
 		$sql = "SELECT i.* " .
@@ -23,6 +23,9 @@ class SearchLogic extends SOY2LogicBase{
 				"INNER JOIN soyshop_custom_search s ".
 				"ON i.id = s.item_id ";
 		$sql .= self::buildWhere();	//カウントの時と共通の処理は切り分ける
+		
+		$sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
+		$sql .= " ORDER BY " . $sort . " ";
 		
 		//表示件数
 		$sql .= " LIMIT " . (int)$limit;
