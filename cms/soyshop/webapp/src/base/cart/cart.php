@@ -99,15 +99,7 @@ if(isset($_REQUEST["a"])) {
 	}
 	
 	//消費税の計算とモジュールの登録
-	if(SOYSHOP_CONSUMPTION_TAX_MODE){
-		//外税(プラグインによる処理)
-		$cart->setConsumptionTax();
-	}elseif(SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE){
-		//内税(標準実装)
-		$cart->setConsumptionTaxInclusivePricing();
-	}else{
-		//何もしない
-	}
+	$cart->calculateConsumptionTax();
 	
 	//カートのセッションに値を保持する前に動作する
 	SOYShopPlugin::load("soyshop.cart");

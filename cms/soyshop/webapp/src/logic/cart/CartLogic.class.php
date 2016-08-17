@@ -281,6 +281,18 @@ class CartLogic extends SOY2LogicBase{
 		return (isset($this->modules[$moduleId])) ? $this->modules[$moduleId] : null;
 	}
 
+	function calculateConsumptionTax(){
+		if(SOYSHOP_CONSUMPTION_TAX_MODE){
+			//外税(プラグインによる処理)
+			$this->setConsumptionTax();
+		}elseif(SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE){
+			//内税(標準実装)
+			$this->setConsumptionTaxInclusivePricing();
+		}else{
+			//何もしない
+		}
+	}
+
 	/**
 	 * 消費税をセットする
 	 * typeがtaxのプラグインで処理を行う
@@ -312,6 +324,8 @@ class CartLogic extends SOY2LogicBase{
 	 * 消費税の内税をセットする。内税表示モード
 	 */
 	function setConsumptionTaxInclusivePricing(){
+		$this->removeModule("consumption_tax");
+		
 		$items = $this->getItems();
 		if(count($items) === 0) return;
 
@@ -322,17 +336,24 @@ class CartLogic extends SOY2LogicBase{
 		}
 
 		if($totalPrice === 0) return;
-
+		
+		foreach($this->getModules() as $mod){
+			if((int)$mod->getPrice() > 0 && !$mod->getIsInclude()){
+				$totalPrice += (int)$mod->getPrice();
+			}
+		}
+		
 		$config = SOYShop_ShopConfig::load();
 		$taxRate = (int)$config->getConsumptionTaxInclusivePricingRate();	//内税率
 
 		if($taxRate === 0) return;
-
+		
 		$module = new SOYShop_ItemModule();
 		$module->setId("consumption_tax");
 		$module->setName("内税");
 		$module->setType(SOYShop_ItemModule::TYPE_TAX);	//typeを指定しておくといいことがある
-		$module->setPrice(floor($totalPrice * $taxRate / 100));
+		//内税の計算は8%の場合はtax = total / 1.08で計算する
+		$module->setPrice(floor($totalPrice - ($totalPrice / (1 + $taxRate / 100))));
 		$module->setIsInclude(true);	//合計に合算されない
 		$this->addModule($module);
 	}

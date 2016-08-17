@@ -3,6 +3,7 @@ SOY2::imports("module.plugins.common_consumption_tax.domain.*");
 class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 
 	function calculation(CartLogic $cart){
+		$cart->removeModule("consumption_tax");
 		
 		$items = $cart->getItems();
 		if(count($items) === 0) return;
@@ -28,6 +29,12 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 		}
 		
 		if($totalPrice === 0) return;
+		
+		foreach($cart->getModules() as $mod){
+			if((int)$mod->getPrice() > 0 && !$mod->getIsInclude()){
+				$totalPrice += (int)$mod->getPrice();
+			}
+		}
 		
 		SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");
 		$config = ConsumptionTaxUtil::getConfig();

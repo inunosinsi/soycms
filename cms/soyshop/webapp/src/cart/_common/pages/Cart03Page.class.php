@@ -129,6 +129,18 @@ class Cart03Page extends MainCartPageBase{
 				"mode" => "cart03post",
 				"cart" => $cart
 			));
+			
+			//すべて対応した上で再度消費税の計算
+			if(SOYSHOP_CONSUMPTION_TAX_MODE){
+				//外税(プラグインによる処理)
+				$cart->setConsumptionTax();
+			}elseif(SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE){
+				//内税(標準実装)
+				$cart->setConsumptionTaxInclusivePricing();
+			}else{
+				//何もしない
+			}
+			
 
 			//エラーがなければ次へ
 			if($cart->hasError()){
