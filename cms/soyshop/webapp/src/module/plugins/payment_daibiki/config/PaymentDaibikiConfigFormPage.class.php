@@ -56,7 +56,10 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 					$forbidden = array_merge(array_unique(array_diff(array_map("trim",$forbidden), array(""))), array());
 
 					SOYShop_DataSets::put("payment_daibiki.forbidden",$forbidden);
-
+					
+				//なんかの条件で空に出来ない時があるので、値が何も無ければ設定自体を空にする
+				}else{
+					SOYShop_DataSets::put("payment_daibiki.forbidden", array());
 				}
 
 				$this->config->redirect("updated");
