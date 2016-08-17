@@ -31,7 +31,8 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 		if($totalPrice === 0) return;
 		
 		foreach($cart->getModules() as $mod){
-			if((int)$mod->getPrice() > 0 && !$mod->getIsInclude()){
+			//値引き分も加味するので、isIncludeされていない値は0以上でなくても加算対象
+			if(!$mod->getIsInclude()){
 				$totalPrice += (int)$mod->getPrice();
 			}
 		}
