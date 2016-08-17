@@ -15,9 +15,15 @@ AsyncCartButton = {
 			}else{
 				cnt = parseInt(cntObject.options[cntObject.selectedIndex].value);
 			}
-			
-			if (cnt === 0) cnt = 1;
 		}
+		
+		//文字列を入れた場合は処理を止める
+		if(isNaN(cnt)) {
+			AsyncCartButton.isInvalid = false;
+			return false;
+		}
+		
+		if (cnt === 0) cnt = 1;
 		
 		var url = this.operationUrl + "?a=add&count=" + cnt + "&item=" + itemId;
 		
@@ -53,7 +59,6 @@ AsyncCartButton = {
 				}
 			}
 		}
-		
 		xhr = new XMLHttpRequest();
 		xhr.open("POST",url);
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

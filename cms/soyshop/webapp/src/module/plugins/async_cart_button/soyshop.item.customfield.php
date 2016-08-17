@@ -17,6 +17,14 @@ class AsyncCartButtonCustomField extends SOYShopItemCustomFieldBase{
 			"id" => "soyshop_async_count_" . $item->getId()
 		));
 		
+		$htmlObj->addInput("async_cart_input", array(
+			"type" => "number",
+			"name" => "count",
+			"value" => "",
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"id" => "soyshop_async_count_" . $item->getId()
+		));
+		
 		$htmlObj->addLink("async_cart_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"link" => "javascript:void(0);",
