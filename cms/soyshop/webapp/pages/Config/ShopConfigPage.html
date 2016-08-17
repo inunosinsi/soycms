@@ -79,24 +79,27 @@
 			<tr>
 				<th>消費税設定</th>
 				<td>
-					<!-- soy:id="consumptionTaxInclusivePricingModeOff" -->
+					<!-- soy:display="consumption_tax_inclusive_pricing_mode_off" -->
 					<input type="checkbox" soy:id="consumptionTax" />&nbsp;&nbsp;
-					<!-- soy:id="noTaxModuleList" -->
+					
+					<!-- soy:display="no_tax_module_list" -->
 					<a soy:link="Plugin.List">プラグインの管理を開く</a>
 					<br>※この設定はプラグインを利用します。税率系のプラグインをインストールしてください。
-					<!-- /soy:id="noTaxModuleList" -->
+					<!-- /soy:display="no_tax_module_list" -->
 					
-					<!-- soy:id="isTaxModuleList" -->
+					<!-- soy:display="is_tax_module_list" -->
 					<select soy:id="taxModuleList"></select>&nbsp;
 					<a soy:id="taxModuleLink">消費税別表示設定</a>
-					<!-- /soy:id="isTaxModuleList" -->
+					<!-- /soy:display="is_tax_module_list" -->
 					<br />
-					<!-- /soy:id="consumptionTaxInclusivePricingModeOff" -->
+					<!-- /soy:display="consumption_tax_inclusive_pricing_mode_off" -->
 					
-					<!-- soy:id="consumptionTaxModeOff" -->
-					<input type="checkbox" soy:id="consumptionTaxInclusivePricing" />&nbsp;&nbsp;
-					税率:<input type="text" class="text" soy:id="consumptionTaxInclusivePricingRate">%
-					<!-- /soy:id="consumptionTaxModeOff" -->
+					<!-- soy:display="consumption_tax_mode_off" -->
+					<input type="checkbox" soy:id="consumptionTaxInclusivePricing">&nbsp;&nbsp;
+					税率:<input type="text" class="text" soy:id="consumptionTaxInclusivePricingRate">%<br>
+					<!-- /soy:display="consumption_tax_mode_off" -->
+					
+					<input type="checkbox" soy:id="consumptionTaxInclusiveCommission">
 				</td>
 			</tr>
 			<tr>

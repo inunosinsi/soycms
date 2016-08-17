@@ -77,7 +77,7 @@ class CommonPointPayment extends SOYShopPointPaymentBase{
 	function getDescription($userId){
 		
 		$cart = $this->getCart();
-		$point = self::displayPoint($userId);				
+		$point = self::displayPoint($userId);
 		$value = $cart->getAttribute("point_payment");
 		
 		$html = array();

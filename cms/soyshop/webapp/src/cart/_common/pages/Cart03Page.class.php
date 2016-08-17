@@ -7,7 +7,6 @@
 class Cart03Page extends MainCartPageBase{
 
 	private $user;
-	private $userId;
 	private $send;
 
 	function doPost(){
@@ -130,17 +129,12 @@ class Cart03Page extends MainCartPageBase{
 				"cart" => $cart
 			));
 			
-			//すべて対応した上で再度消費税の計算
-			if(SOYSHOP_CONSUMPTION_TAX_MODE){
-				//外税(プラグインによる処理)
-				$cart->setConsumptionTax();
-			}elseif(SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE){
-				//内税(標準実装)
-				$cart->setConsumptionTaxInclusivePricing();
-			}else{
-				//何もしない
+			//消費税の計算
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$config = SOYShop_ShopConfig::load();
+			if($config->getConsumptionTaxInclusiveCommission()){
+				$cart->calculateConsumptionTax();
 			}
-			
 
 			//エラーがなければ次へ
 			if($cart->hasError()){
@@ -421,13 +415,12 @@ class Cart03Page extends MainCartPageBase{
 
     	//アクティブなプラグインをすべて読み込む
 		SOYShopPlugin::load("soyshop.point.payment");
-
 		$delegate = SOYShopPlugin::invoke("soyshop.point.payment", array(
 			"mode" => "list",
 			"cart" => $cart,
-			"userId" => $this->userId
+			"userId" => $this->user->getId()
 		));
-
+	
 		return $delegate->getList();
 	}
 
@@ -465,48 +458,10 @@ class Cart03Page extends MainCartPageBase{
 		if(!$cart->getAttribute("logined")) return false;
 
 		//ポイント設定プラグインがCMS内に配置されているか？
-		$pointPluginDir = dirname(dirname(dirname(dirname(__FILE__)))) . "/module/plugins/common_point_base";
-		if(is_dir($pointPluginDir) == false) return false;
-
-		$this->userId = $this->getUserIdByMailAddress($mailaddress);
-
-		try{
-			SOY2::import("module.plugins.common_point_base.domain.SOYShop_Point");
-			SOY2::import("module.plugins.common_point_base.domain.SOYShop_PointDAO");
-			$pointDao = SOY2DAOFactory::create("SOYShop_PointDAO");
-			$point = $pointDao->getByUserId($this->userId);
-		}catch(Exception $e){
-			return false;
-		}
-
-		$hasPoint = (int)$point->getPoint();
-
-		//有効期限が切れていないかどうか
-		if($hasPoint > 0){
-			$timeLimit = $point->getTimeLimit();
-			if(!is_null($timeLimit) && $timeLimit < time()){
-				return false;
-			}
-		}else{
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * メールアドレスからユーザIDを取得する
-	 * @param string mailaddress
-	 * @return int user_id
-	 */
-	function getUserIdByMailAddress($mailaddress){
-		$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		try{
-			$user = $userDao->getByMailAddress($mailaddress);
-		}catch(Exception $e){
-			$user = new SOYShop_User();
-		}
-
-		return (int)$user->getId();
+		SOY2::import("util.SOYShopPluginUtil");
+		if(!SOYShopPluginUtil::checkIsActive("common_point_base")) return false;
+		
+		return SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->hasPointByUserMailAddress($mailaddress);
 	}
 
 	/**

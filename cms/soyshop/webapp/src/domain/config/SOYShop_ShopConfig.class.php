@@ -18,6 +18,7 @@ class SOYShop_ShopConfig {
 	private $consumptionTaxModule;
 	private $consumptionTaxInclusivePricing = 0;
 	private $consumptionTaxInclusivePricingRate;
+	private $consumptionTaxInclusiveCommission = 1;
 	private $sslConfig = "http";
 	private $displayStock;
 	private $displayStockCount = 0;
@@ -286,6 +287,14 @@ class SOYShop_ShopConfig {
 	}
 	function setConsumptionTaxInclusivePricingRate($consumptionTaxInclusivePricingRate){
 		$this->consumptionTaxInclusivePricingRate = $consumptionTaxInclusivePricingRate;
+	}
+	
+	function getConsumptionTaxInclusiveCommission(){
+		return $this->consumptionTaxInclusiveCommission;
+	}
+
+	function setConsumptionTaxInclusiveCommission($consumptionTaxInclusiveCommission){
+		$this->consumptionTaxInclusiveCommission = $consumptionTaxInclusiveCommission;
 	}
 	
 	function getSSLConfig(){

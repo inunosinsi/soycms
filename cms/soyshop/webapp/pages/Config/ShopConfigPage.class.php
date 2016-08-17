@@ -10,6 +10,7 @@ class ShopConfigPage extends WebPage{
 		$config = $this->config;
 
 		$_POST["Config"]["consumptionTaxInclusivePricingRate"] = (isset($_POST["Config"]["consumptionTaxInclusivePricingRate"])) ? (int)$_POST["Config"]["consumptionTaxInclusivePricingRate"] : SOYShop_ShopConfig::CONSUMPTION_TAX_RATE;
+		$_POST["Config"]["consumptionTaxInclusiveCommission"] = (isset($_POST["Config"]["consumptionTaxInclusiveCommission"])) ? (int)$_POST["Config"]["consumptionTaxInclusiveCommission"] : 0;
 		$_POST["Config"]["displayStockCount"] = (isset($_POST["Config"]["displayStockCount"])) ? (int)$_POST["Config"]["displayStockCount"] : 0;
 		$_POST["Config"]["displayPageAfterLogout"] = (isset($_POST["Config"]["displayPageAfterLogout"])) ? (int)$_POST["Config"]["displayPageAfterLogout"] : 0;
 		$_POST["Config"]["displaySendInformationForm"] = (isset($_POST["Config"]["displaySendInformationForm"])) ? (int)$_POST["Config"]["displaySendInformationForm"] : 0;
@@ -77,9 +78,7 @@ class ShopConfigPage extends WebPage{
 		}
 
 		//消費税別表示モード
-		$this->addModel("consumptionTaxInclusivePricingModeOff", array(
-			"visible" => (!$config->getConsumptionTaxInclusivePricing())
-		));
+		DisplayPlugin::toggle("consumption_tax_inclusive_pricing_mode_off", (!$config->getConsumptionTaxInclusivePricing()));
 
 		$this->addCheckBox("consumptionTax", array(
 			"selected" => $config->getConsumptionTax(),
@@ -90,12 +89,9 @@ class ShopConfigPage extends WebPage{
 		));
 
 		$taxModuleList = self::getTaxModuleList();
-		$this->addModel("noTaxModuleList", array(
-			"visible" => (count($taxModuleList) === 0)
-		));
-		$this->addModel("isTaxModuleList", array(
-			"visible" => (count($taxModuleList) > 0)
-		));
+		DisplayPlugin::toggle("no_tax_module_list", (count($taxModuleList) === 0));
+		DisplayPlugin::toggle("is_tax_module_list", (count($taxModuleList) > 0));
+		
 		$this->addSelect("taxModuleList", array(
 			"name" => "Config[consumptionTaxModule]",
 			"options" => $taxModuleList,
@@ -108,9 +104,7 @@ class ShopConfigPage extends WebPage{
 			"visible" => (strlen($taxModuleLink) > 0)
 		));
 
-		$this->addModel("consumptionTaxModeOff", array(
-			"visible" => (!$config->getConsumptionTax())
-		));
+		DisplayPlugin::toggle("consumption_tax_mode_off", (!$config->getConsumptionTax()));
 
 		//内税
 		$this->addCheckBox("consumptionTaxInclusivePricing", array(
@@ -125,6 +119,13 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[consumptionTaxInclusivePricingRate]",
 			"value" => $config->getConsumptionTaxInclusivePricingRate(),
 			"style" => "width:5%;text-align:right;ime-mode:inactive;"
+		));
+		
+		$this->addCheckBox("consumptionTaxInclusiveCommission", array(
+			"name" => "Config[consumptionTaxInclusiveCommission]",
+			"value" => 1,
+			"selected" => $config->getConsumptionTaxInclusiveCommission(),
+			"label" => "送料や手数料も消費税の課税対象に含める",
 		));
 		
 		

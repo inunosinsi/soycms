@@ -375,6 +375,29 @@ class PointBaseLogic extends SOY2LogicBase{
 		return floor($totalPrice * $percentage / 100);
 	}
 	
+	//指定のメールアドレスのユーザがポイントを持っているかチェックする
+	function hasPointByUserMailAddress($mailaddress){
+		$userId = self::getUserIdByMailAddress($mailaddress);
+		
+		if(!$userId) return false;
+		
+		try{
+			$point = $this->pointDao->getByUserId($userId);
+		}catch(Exception $e){
+			return false;
+		}
+
+		$hasPoint = (int)$point->getPoint();
+
+		//有効期限が切れていないかどうか
+		if($hasPoint === 0) return false;
+
+		$timeLimit = $point->getTimeLimit();
+		if(!is_null($timeLimit) && $timeLimit < time()) return false;
+		
+		return true;
+	}
+	
 	function getUser($userId){
 		if(!$this->userDao) $this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
@@ -385,8 +408,16 @@ class PointBaseLogic extends SOY2LogicBase{
 		}
 	}
 	
+	private function getUserIdByMailAddress($mailaddress){
+		try{
+			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailaddress)->getId();
+		}catch(Exception $e){
+			return 0;
+		}
+	}
+	
 	function getPointByUserId($userId){
-				
+		
 		try{
 			return $this->pointDao->getByUserId($userId);
 		}catch(Exception $e){
