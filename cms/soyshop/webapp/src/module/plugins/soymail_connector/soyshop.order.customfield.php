@@ -92,7 +92,8 @@ class SOYMailConnectorOrderCustomfield extends SOYShopOrderCustomfield{
 		$obj["description"] = implode("\n", $html);
 		
 		//初回時ポイント設定：パスワードを登録していることが表示条件
-		if(class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("common_point_base")){
+		SOY2::import("util.SOYShopPluginUtil");
+		if(SOYShopPluginUtil::checkIsActive("common_point_base")){
 			if(is_null($cart->getCustomerInformation()->getId()) && isset($config["first_order_add_point"]) && $config["first_order_add_point"] > 0){
 				if(strlen($cart->getCustomerInformation()->getPassword()) > 0){
 					
