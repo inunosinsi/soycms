@@ -15,7 +15,7 @@ class DaibikiPaymentModule extends SOYShopPayment{
 		$module->setName("代金引換手数料");
 
 		//金額から手数料を取得
-		$module->setPrice($this->getPrice($cart->getTotalPrice()));
+		$module->setPrice($this->getPrice());
 
 		$cart->addModule($module);
 
@@ -51,7 +51,14 @@ class DaibikiPaymentModule extends SOYShopPayment{
 	 */
 	function getPrice(){
 		$price = $this->getCart()->getItemPrice();
-
+		
+		//割引系のプラグインがある場合は割引分を除く
+		foreach($this->getCart()->getModules() as $mod){
+			if(!$mod->getIsInclude() && $mod->getPrice() < 0){
+				$price += $mod->getPrice();
+			}
+		}
+		
 		$prices = SOYShop_DataSets::get("payment_daibiki.price", array());
 		$returnValue = 0;
 

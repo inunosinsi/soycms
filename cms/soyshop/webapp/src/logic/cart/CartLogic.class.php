@@ -339,7 +339,7 @@ class CartLogic extends SOY2LogicBase{
 		
 		foreach($this->getModules() as $mod){
 			//値引き分も加味するので、isIncludeされていない値は0以上でなくても加算対象
-			if((!$mod->getIsInclude()){
+			if(!$mod->getIsInclude()){
 				$totalPrice += (int)$mod->getPrice();
 			}
 		}

@@ -6,12 +6,23 @@ class NoticeArrivalUtil{
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	
+	public static function getConfig(){
+		return SOYShop_DataSets::get("common_notice_arrival.config", array(
+			"send_mail" => 1
+		));
+	}
+	
+	public static function saveConfig($values = array()){
+		$values["send_mail"] = (isset($values["send_mail"]) && $values["send_mail"]) ? 1 : 0;
+		SOYShop_DataSets::put("common_notice_arrival.config", $values);
+	}
+	
 	public static function getMailTitle(){
 		return SOYShop_DataSets::get("common_notice_arrival.title", "[#SHOP_NAME#] #ITEM_NAME#を入荷しました。");
 	}
 	
 	public static function saveMailTitle($title){
-		return SOYShop_DataSets::put("common_notice_arrival.title", $title);
+		SOYShop_DataSets::put("common_notice_arrival.title", $title);
 	}
 	
 	public static function getMailContent(){
@@ -23,7 +34,7 @@ class NoticeArrivalUtil{
 	}
 	
 	public static function saveMailContent($content){
-		return SOYShop_DataSets::put("common_notice_arrival.content", $content);
+		SOYShop_DataSets::put("common_notice_arrival.content", $content);
 	}
 }
 ?>

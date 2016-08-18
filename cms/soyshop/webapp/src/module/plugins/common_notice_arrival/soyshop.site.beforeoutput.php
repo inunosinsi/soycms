@@ -25,36 +25,42 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				case "add":
 					$noticeLogic->registerNotice($itemId, $userId);
 					
-					//MailLogicの呼び出し
-					SOY2::import("domain.config.SOYShop_ServerConfig");
-					$serverConfig = SOYShop_ServerConfig::load();
-					
-					$adminMailAddress = $serverConfig->getAdministratorMailAddress();
-					
-					if(strlen($adminMailAddress)){
-						$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
+					//管理側にメールを送信するか？
+					SOY2::import("module.plugins.common_notice_arrival.util.NoticeArrivalUtil");
+					$config = NoticeArrivalUtil::getConfig();
+					if(isset($config["send_mail"]) && $config["send_mail"]){
+
+						//MailLogicの呼び出し
+						SOY2::import("domain.config.SOYShop_ServerConfig");
+						$serverConfig = SOYShop_ServerConfig::load();
 						
-						$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-						try{
-							$item = $itemDao->getById($itemId);
-						}catch(Exception $e){
-							$item = new SOYShop_Item();
+						$adminMailAddress = $serverConfig->getAdministratorMailAddress();
+						
+						if(strlen($adminMailAddress)){
+							$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
+							
+							$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+							try{
+								$item = $itemDao->getById($itemId);
+							}catch(Exception $e){
+								$item = new SOYShop_Item();
+							}
+							
+							SOY2::import("domain.user.SOYShop_User");
+							$user = new SOYShop_User();
+							
+							/**
+							 * @ToDo 文面の設定
+							 */
+							$title = "[#SHOP_NAME#] #ITEM_NAME#の入荷通知登録がありました。";
+							$content = "#ITEM_NAME#の入荷通知登録がありました。";
+							$title = $noticeLogic->convertMailTitle($title, $item);
+							$body = $noticeLogic->convertMailContent($content, $user, $item);
+						
+							$mailLogic->sendMail($adminMailAddress, $title, $body);
+							
+							$this->redirect(array("notice" => "successed"));
 						}
-						
-						SOY2::import("domain.user.SOYShop_User");
-						$user = new SOYShop_User();
-						
-						/**
-						 * @ToDo 文面の設定
-						 */
-						$title = "[#SHOP_NAME#] #ITEM_NAME#の入荷通知登録がありました。";
-						$content = "#ITEM_NAME#の入荷通知登録がありました。";
-						$title = $noticeLogic->convertMailTitle($title, $item);
-						$body = $noticeLogic->convertMailContent($content, $user, $item);
-					
-						$mailLogic->sendMail($adminMailAddress, $title, $body);
-						
-						$this->redirect(array("notice" => "successed"));
 					}
 					
 					break;

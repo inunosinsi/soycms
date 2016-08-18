@@ -21,6 +21,9 @@ class ChildItemLogic extends SOY2LogicBase{
 			if(!strlen($key)) continue;
 			//POSTで+は許可されていないので、POST時に一度変換して、ここで再度戻す
 			if(strpos($key, "itm_std_plus")) $key = str_replace("itm_std_plus", "+", $key);
+			
+			//POSTで&は許可されていないので、POST時に一度変換して、ここで再度戻す
+			if(strpos($key, "itm_std_and")) $key = str_replace("itm_std_and", "&", $key);
 			$q .= " " . $key;
 		}
 		

@@ -54,6 +54,11 @@ AsyncCartButton = {
 						val = sels[i].innerHTML.trim();
 						//POSTで+は許可されていないので、POST時に一度変換して、ここで再度戻す
 						if(val.indexOf("+")) val = val.replace("+", "itm_std_plus");
+						
+						//POSTで&は許可されていないので、POST時に一度変換して、ここで再度戻す
+						if(val.indexOf("&amp;")) val = val.replace("&amp;", "itm_std_and");
+						if(val.indexOf("&")) val = val.replace("&", "itm_std_and");
+						
 						param += parent.name + "=" + val;
 					}
 				}

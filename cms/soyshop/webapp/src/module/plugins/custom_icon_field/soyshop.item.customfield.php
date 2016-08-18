@@ -166,7 +166,7 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 	}
 
 	function getIconPath(){
-		$shopPath = SOYSHOP_SITE_URL;
+		$shopPath = str_replace(array("https://", "http://"), "//", SOYSHOP_SITE_URL);
 		$iconPath = "files/custom-icons/";
 
 		return $shopPath . $iconPath;
