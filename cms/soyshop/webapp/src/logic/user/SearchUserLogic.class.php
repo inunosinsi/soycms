@@ -147,7 +147,21 @@ class SearchUserLogic extends SOY2LogicBase{
 						}
 						if(count($where_gender)) $where[] = " ( ".implode(" OR ", $where_gender). " ) ";
 						break;
-					/**case "birthday" :**/
+					case "birthday" :
+						//年
+						if(isset($value["year"]) && strlen($value["year"])){
+							$where[] = " " . $key . " LIKE :birthday_year ";
+							$binds[":birthday_year"] = (int)trim($value["year"]) . "-%";
+						}
+						if(isset($value["month"]) && strlen($value["month"])){
+							$where[] = " " . $key . " LIKE :birthday_month ";
+							$binds[":birthday_month"] = "%-" . (int)trim($value["month"]) . "-%";
+						}
+						if(isset($value["day"]) && strlen($value["day"])){
+							$where[] = " " . $key . " LIKE :birthday_day ";
+							$binds[":birthday_day"] = "%-" . (int)trim($value["day"]);
+						}
+						break;
 					case "register_date" :
 					case "update_date" :
 						if(strlen(@$value["start"]["month"]) && strlen(@$value["start"]["day"]) && strlen(@$value["start"]["year"])){

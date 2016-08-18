@@ -132,6 +132,22 @@ class SearchPage extends WebPage{
 			"elementId" => "checkbox_gender_other"
 		));
 **/
+		$this->addInput("advanced_search_birth_date_year", array(
+			"name" => "search[birthday][year]",
+			"value" => (isset($search["birthday"]["year"])) ? $search["birthday"]["year"] : "",
+			"size" => "5",
+		));
+		$this->addInput("advanced_search_birth_date_month", array(
+			"name" => "search[birthday][month]",
+			"value" => (isset($search["birthday"]["month"])) ? $search["birthday"]["month"] : "",
+			"size" => "3",
+		));
+		$this->addInput("advanced_search_birth_date_day", array(
+			"name" => "search[birthday][day]",
+			"value" => (isset($search["birthday"]["day"])) ? $search["birthday"]["day"] : "",
+			"size" => "3",
+		));
+/**
 		$this->addInput("advanced_search_birth_date_start_year", array(
 			"name" => "search[birthday][start][year]",
 			"value" => (isset($search["birthday"]["start"]["year"])) ? $search["birthday"]["start"]["year"] : "",
@@ -162,7 +178,7 @@ class SearchPage extends WebPage{
 			"value" => (isset($search["birthday"]["end"]["day"])) ? $search["birthday"]["end"]["day"] : "",
 			"size" => "3",
 		));
-
+**/
 		$this->addInput("advanced_search_post_number", array(
 			"name" => "search[zip_code]",
 			"value" => (isset($search["zip_code"])) ? $search["zip_code"] : "",
