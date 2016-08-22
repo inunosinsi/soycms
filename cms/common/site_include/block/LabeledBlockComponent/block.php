@@ -182,7 +182,7 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 	private $entity;
 	private $blogPages = array();
 
-	function LabeledBlockComponent_FormPage(){
+	function __construct(){
 		HTMLPage::__construct();
 
 	}

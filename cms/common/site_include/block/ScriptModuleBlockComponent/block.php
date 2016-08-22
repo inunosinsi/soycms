@@ -237,7 +237,7 @@ class ScriptModuleBlockComponent_FormPage extends HTMLPage{
 	private $sites;
 	private $blogPages = array();
     
-	function ScriptModuleBlockComponent_FormPage(){
+	function __construct(){
 		HTMLPage::__construct();
         
 	}

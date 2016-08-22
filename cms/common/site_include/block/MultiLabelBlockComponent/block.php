@@ -249,7 +249,7 @@ class MultiLabelBlockComponent_FormPage extends HTMLPage{
 	private $entity;
 	private $blogPages = array();
 
-	function MultiLabelBlockComponent_FormPage(){
+	function __construct(){
 		HTMLPage::__construct();
 
 	}

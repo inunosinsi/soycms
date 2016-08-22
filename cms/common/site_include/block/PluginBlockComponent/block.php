@@ -124,7 +124,7 @@ class PluginBlockComponent_FormPage extends HTMLPage{
 	private $blogPages = array();
     private $pluginIds = array();
     
-	function PluginBlockComponent_FormPage(){
+	function __construct(){
 		HTMLPage::__construct();
         
 	}
