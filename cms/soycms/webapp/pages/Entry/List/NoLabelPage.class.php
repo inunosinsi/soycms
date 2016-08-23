@@ -5,7 +5,7 @@ include_once(dirname(dirname(__FILE__))."/ListPage.class.php");
 class NoLabelPage extends ListPage{
 	
 	function __construct($arg) {
-    	parent::ListPage(array("NoLabel"));
+    	parent::__construct(array("NoLabel"));
     	
     	DisplayPlugin::hide("no_label");
     	$this->createAdd("label_state","HTMLLabel",array(

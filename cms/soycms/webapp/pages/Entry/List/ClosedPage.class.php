@@ -5,7 +5,7 @@ include_once(dirname(dirname(__FILE__))."/ListPage.class.php");
 class ClosedPage extends ListPage{
 	
 	function __construct($arg) {
-    	parent::ListPage(array("Closed"));
+    	parent::__construct(array("Closed"));
     	
     	DisplayPlugin::hide("no_label");
     	
