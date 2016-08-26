@@ -723,11 +723,11 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @index id
 	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
 	 * @distinct
-	 * @query EntryLabel.label_id in (<?php implode(',',:labelIds) ?>)
+	 * @query EntryLabel.label_id in (<?php implode(',',:labelids) ?>)
      * @group Entry.id
-     * @having count(Entry.id) = <?php count(:labelIds) ?>
+     * @having count(Entry.id) = <?php count(:labelids) ?>
 	 */
-	abstract function getByLabelIds($labelIds);
+	abstract function getByLabelIds($labelids);
 
 	/**
 	 * getByLabelIdsだと重すぎる場所があったので追加
@@ -737,10 +737,10 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
 	 * @distinct
      * @group Entry.id,EntryLabel.display_order
-     * @having count(Entry.id) = <?php count(:labelIds) ?>
-	 * @query EntryLabel.label_id in (<?php implode(',',:labelIds) ?>)
+     * @having count(Entry.id) = <?php count(:labelids) ?>
+	 * @query EntryLabel.label_id in (<?php implode(',',:labelids) ?>)
 	 */
-	function getByLabelIdsOnlyId($labelIds, $orderReverse = false){
+	function getByLabelIdsOnlyId($labelids, $orderReverse = false){
 		$query = $this->getQuery();
 		$binds = $this->getBinds();
 
