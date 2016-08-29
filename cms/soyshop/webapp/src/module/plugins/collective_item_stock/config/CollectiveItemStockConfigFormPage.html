@@ -6,7 +6,7 @@
 
 	<dl>
 		<dt class="search_btn_dt">
-			検索する //未実装です。
+			検索する
 		</dt>
 	</dl>
 	<div class="search_area_dd" soy:id="search_area">
@@ -31,10 +31,17 @@
 						<input type="checkbox" soy:id="search_item_no_open">
 					</td>
 				</tr>
+				<tr>
+					<th>表示件数</th>
+					<td><select soy:id="search_item_number"></select>件</td>
+					<th>小商品の表示</th>
+					<td><input type="checkbox" soy:id="search_item_type"></td>
+				</tr>
 			</table>
 			
 			<p class="pageBtn">
-				<input type="submit" name="search" value="検索">
+				<input type="submit" name="search" value="検索">&nbsp;&nbsp;
+				<input type="submit" name="reset" value="リセット">
 			</p>
 		</form>
 	</div>
@@ -89,9 +96,7 @@
 		text-decoration: underline;
 		cursor: pointer;
 	}
-	div.search_area_dd {
-		display:none;
-	}
+	div.search_area_dd {}
 	
 	#standard_form_area{
 		display:none;
@@ -114,11 +119,4 @@
 			});
 		});
 	})();
-	function changeCheckBoxAuto() {
-		$('#items_operation').show();
-		$('#standard_form_area').show();
-		$('.item_checkbox').each(function() {
-			$(this).prop("checked", $("#item_checkbox").prop("checked"));
-		});
-	}
 </script>

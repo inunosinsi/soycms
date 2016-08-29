@@ -42,17 +42,25 @@ class CollectiveItemStockConfigFormPage extends WebPage{
 					}
 				}
 				$this->itemDao->commit();
+				
+				$this->configObj->redirect("updated");
 			}
-			
-			$this->configObj->redirect("updated");
 		}
 		
 	}
 	
 	function execute(){
+		//リセット
+		if(isset($_POST["reset"])){
+			self::setParameter("search_condition", null);
+			$this->configObj->redirect();
+		}
+		
 		MessageManager::addMessagePath("admin");
 		
-		WebPage::WebPage();
+		WebPage::__construct();
+		
+		self::buildSearchForm();
 		
 		$this->addForm("form");
 				
@@ -68,18 +76,89 @@ class CollectiveItemStockConfigFormPage extends WebPage{
 		));
 	}
 	
-	private function getItems(){
-		try{
-			return $this->itemDao->get();
-		}catch(Exception $e){
-			return array();
+	private function buildSearchForm(){
+		
+		//POSTのリセット
+		if(isset($_POST["search_condition"])){
+			foreach($_POST["search_condition"] as $key => $value){
+				if(is_array($value)){
+					//
+				}else{
+					if(!strlen($value)){
+						unset($_POST["search_condition"][$key]);
+					}
+				}
+			}
 		}
-/**
+		
+		if(isset($_POST["search"]) && !isset($_POST["search_condition"])){
+			self::setParameter("search_condition", null);
+			$cnd = array();
+		}else{
+			$cnd = self::getParameter("search_condition");
+		}
+		//リセットここまで
+		
+		
+		$this->addModel("search_area", array(
+			"style" => (isset($cnd) && count($cnd)) ? "display:inline;" : "display:none;"
+		));
+		
+		$this->addForm("search_form");
+		
+		foreach(array("item_name", "item_code") as $t){
+			$this->addInput("search_" . $t, array(
+				"name" => "search_condition[" . $t . "]",
+				"value" => (isset($cnd[$t])) ? $cnd[$t] : ""
+			));
+		}
+		
+		$opts = array();
+		foreach($this->categories as $cat){
+			$opts[$cat->getId()] = $cat->getName();
+		}
+		$this->addSelect("search_item_category", array(
+			"name" => "search_condition[item_category]",
+			"options" => $opts,
+			"selected" => $cnd["item_category"]
+		));
+		
+		$this->addCheckBox("search_item_is_open", array(
+			"name" => "search_condition[item_is_open][]",
+			"value" => SOYShop_Item::IS_OPEN,
+			"selected" => (isset($cnd["item_is_open"]) && in_array(SOYShop_Item::IS_OPEN, $cnd["item_is_open"])),
+			"label" => "公開"
+		));
+		
+		$this->addCheckBox("search_item_no_open", array(
+			"name" => "search_condition[item_is_open][]",
+			"value" => SOYShop_Item::NO_OPEN,
+			"selected" => (isset($cnd["item_is_open"]) && in_array(SOYShop_Item::NO_OPEN, $cnd["item_is_open"])),
+			"label" => "非公開"
+		));
+		
+		//表示件数
+		$this->addSelect("search_item_number", array(
+			"name" => "search_number",
+			"options" => array(3, 15, 30, 50, 100),
+			"selected" => (isset($_POST["search_number"])) ? (int)$_POST["search_number"] : 15
+		));
+		
+		$this->addCheckBox("search_item_type", array(
+			"name" => "search_condition[item_type][child]",
+			"value" => 1,
+			"selected" => (isset($cnd["item_type"]["child"]) && $cnd["item_type"]["child"] == 1),
+			"label" => "商品一覧に小商品も表示する"
+		));
+	}
+	
+	private function getItems(){
+		$num = (isset($_POST["search_number"])) ? (int)$_POST["search_number"] : 15;
+		
 		$searchLogic = SOY2Logic::createInstance("module.plugins." . $this->configObj->getModuleId() . ".logic.SearchLogic");
-		$searchLogic->setLimit(50);	//仮
+		$searchLogic->setLimit($num);	//仮
 		$searchLogic->setCondition(self::getParameter("search_condition"));
 		return $searchLogic->get();
-**/
 	}
 	
 	private function getCategories(){
