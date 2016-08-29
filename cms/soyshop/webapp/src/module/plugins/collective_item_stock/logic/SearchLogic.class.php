@@ -70,7 +70,6 @@ class SearchLogic extends SOY2LogicBase{
 		}else{
 			$this->where[] = "item_type IN (\"" . SOYShop_Item::TYPE_SINGLE ."\",\"" . SOYShop_Item::TYPE_GROUP . "\",\"" . SOYShop_Item::TYPE_DOWNLOAD . "\")";
 		}
-		var_dump($this->where);
 	}
 	
 	function setLimit($limit){
