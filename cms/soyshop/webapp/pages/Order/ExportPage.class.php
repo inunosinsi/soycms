@@ -22,7 +22,12 @@ class ExportPage extends WebPage{
 		}			
 		$_POST["search"] = $search;
 
-		$orders = $this->getOrders();
+		//統計、集計プラグインの場合は、注文一覧の検索を無視する
+		if(isset($_POST["Aggregate"]) || isset($_POST["AnalyticsPlugin"])){
+			$orders = array();			
+		}else{
+			$orders = $this->getOrders();
+		}
 
 		$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
     	$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");

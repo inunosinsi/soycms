@@ -58,7 +58,7 @@ class CMSFileManager{
 		return $instance->allowedExtensions;
 	}
 
-	private function CMSFileManager(){
+	private function __construct(){
 		if(defined("SOYCMS_ALLOWED_EXTENSIONS")){
 			$exts = explode(",",SOYCMS_ALLOWED_EXTENSIONS);
 			foreach($exts as $ext){
