@@ -163,23 +163,54 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		));
 		
 		//小商品の価格の最小値
-		$min = self::getItemStandardPrice($item, "min");
+		list($sellingMin, $normalMin, $saleMin) = self::getItemStandardPrice($item, "min");
 		$htmlObj->addLabel("standard_price_min", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => number_format($min)
+			"text" => number_format($sellingMin)
+		));
+		
+		$htmlObj->addLabel("standard_normal_price_min", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => number_format($normalMin)
+		));
+		
+		$htmlObj->addLabel("standard_sale_price_min", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => number_format($saleMin)
 		));
 		
 		//小商品の価格の最大値
-		$max = self::getItemStandardPrice($item, "max");
+		list($sellingMax, $normalMax, $saleMax) = self::getItemStandardPrice($item, "max");
 		$htmlObj->addLabel("standard_price_max", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => ($max > $min) ? number_format($max) : ""
+			"text" => ($sellingMax > $sellingMin) ? number_format($sellingMax) : ""
+		));
+		
+		$htmlObj->addLabel("standard_normal_price_max", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => ($normalMax > $normalMin) ? number_format($normalMax) : ""
+		));
+		
+		$htmlObj->addLabel("standard_sale_price_max", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => ($saleMax > $saleMin) ? number_format($saleMax) : ""
 		));
 		
 		
+
 		$htmlObj->addModel("standart_price_not_same", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"visible" => ($max > $min)
+			"visible" => ($sellingMax > $sellingMin)
+		));
+		
+		$htmlObj->addModel("standart_normal_price_not_same", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"visible" => ($normalMax > $normalMin)
+		));
+		
+		$htmlObj->addModel("standart_sale_price_not_same", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"visible" => ($saleMax > $saleMin)
 		));
 		
 		$htmlObj->addLabel("standard_chain", array(
@@ -224,7 +255,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 	private function getItemStandardPrice(SOYShop_Item $item, $mode = "min"){
 		if($item->getType() != SOYShop_Item::TYPE_GROUP) return 0;
 		
-		$sql = "SELECT item_selling_price FROM soyshop_item ".
+		$sql = "SELECT item_price, item_sale_price, item_selling_price FROM soyshop_item ".
 				"WHERE item_type = :t ".
 				"AND item_is_open = " . SOYShop_Item::IS_OPEN . " ".
 				"AND is_disabled != " . SOYShop_Item::IS_DISABLED . " ".
@@ -234,27 +265,35 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		try{
 			$res = $this->attrDao->executeQuery($sql, array(":t" => $item->getId()));
 		}catch(Exception $e){
-			return 0;
+			return array(0, 0, 0);
 		}
 		
-		if(!count($res)) return 0;
+		if(!count($res)) return array(0, 0, 0);
 		
-		$price = null;
+		$sellingPrice = null;
+		$normalPrice = null;
+		$salePrice = null;
 		
 		foreach($res as $v){
 			if(!isset($v["item_selling_price"])) continue;
 			
 			//初回は必ずデータを入れる
-			if(is_null($price)) $price = (int)$v["item_selling_price"];
+			if(is_null($normalPrice)) $normalPrice = (int)$v["item_price"];
+			if(is_null($salePrice)) $salePrice = (int)$v["item_sale_price"];
+			if(is_null($sellingPrice)) $sellingPrice = (int)$v["item_selling_price"];
 			
 			if($mode == "min"){
-				if($v["item_selling_price"] < $price) $price = (int)$v["item_selling_price"];
+				if($v["item_price"] < $normalPrice) $normalPrice = (int)$v["item_price"];
+				if($v["item_sale_price"] < $salePrice) $salePrice = (int)$v["item_sale_price"];
+				if($v["item_selling_price"] < $sellingPrice) $sellingPrice = (int)$v["item_selling_price"];
 			}else{
-				if($v["item_selling_price"] > $price) $price = (int)$v["item_selling_price"];
+				if($v["item_price"] > $normalPrice) $normalPrice = (int)$v["item_price"];
+				if($v["item_sale_price"] > $salePrice) $salePrice = (int)$v["item_sale_price"];
+				if($v["item_selling_price"] > $sellingPrice) $sellingPrice = (int)$v["item_selling_price"];
 			}
 		}
 		
-		return $price;
+		return array($sellingPrice, $normalPrice, $salePrice);
 	}
 	
 	private function getStandartChain(SOYShop_Item $item){
