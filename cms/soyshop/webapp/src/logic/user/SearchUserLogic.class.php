@@ -154,12 +154,30 @@ class SearchUserLogic extends SOY2LogicBase{
 							$binds[":birthday_year"] = (int)trim($value["year"]) . "-%";
 						}
 						if(isset($value["month"]) && strlen($value["month"])){
-							$where[] = " " . $key . " LIKE :birthday_month ";
-							$binds[":birthday_month"] = "%-" . (int)trim($value["month"]) . "-%";
+							$m = trim($value["month"]);
+							if($m[0] == "0") $m = (int)substr($m, 1);
+							//1〜9までの場合
+							if(strlen($m) === 1){
+								$where[] = " (" . $key . " LIKE :birthday_month OR " . $key . " LIKE :birthday_month1 )";
+								$binds[":birthday_month1"] = "%-0" . $m . "-%";
+							//10〜12の場合
+							}else{
+								$where[] = " " . $key . " LIKE :birthday_month ";
+							}
+							$binds[":birthday_month"] = "%-" . $m . "-%";
 						}
 						if(isset($value["day"]) && strlen($value["day"])){
-							$where[] = " " . $key . " LIKE :birthday_day ";
-							$binds[":birthday_day"] = "%-" . (int)trim($value["day"]);
+							$d = trim($value["day"]);
+							if($d[0] == "0") $d = (int)substr($d, 1);
+							//1〜9までの場合
+							if(strlen($d) === 1){
+								$where[] = " (" . $key . " LIKE :birthday_day OR " . $key . " LIKE :birthday_day1 )";
+								$binds[":birthday_day1"] = "%-0" . $d;
+							//10〜31の場合
+							}else{
+								$where[] = " " . $key . " LIKE :birthday_day ";
+							}
+							$binds[":birthday_day"] = "%-" . $d;
 						}
 						break;
 					case "register_date" :
