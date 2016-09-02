@@ -194,6 +194,10 @@ AsyncCartButton = {
 	
 	var sels = document.querySelectorAll('select');
 	if(sels.length && ids.length > 0){		
+		
+		//IE 8はここで強制的に止める
+		if(!ids.forEach) return;
+		
 		ids.forEach(function(id){
 			var priceHelper = document.querySelector("#standard_price_helper_" + id);
 			if(priceHelper){
