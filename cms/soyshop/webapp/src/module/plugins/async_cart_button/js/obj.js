@@ -2,7 +2,12 @@ AsyncCartButton = {
 	operationUrl : "",
 	isInvalid : false,
 	addItem : function(ele, itemId, price){
-		if (AsyncCartButton.isInvalid) return false;
+		if (AsyncCartButton.isInvalid) {
+			setTimeout(function(){
+				AsyncCartButton.isInvalid = false;
+			}, 1000);
+			return false;
+		}
 	
 		//連打を禁止する
 		AsyncCartButton.isInvalid = true;
@@ -191,13 +196,11 @@ AsyncCartButton = {
 		}
 	}
 	
+	//IE 8はここで強制的に止める
+	if(!ids.forEach) return;
 	
 	var sels = document.querySelectorAll('select');
-	if(sels.length && ids.length > 0){		
-		
-		//IE 8はここで強制的に止める
-		if(!ids.forEach) return;
-		
+	if(sels.length && ids.length > 0){
 		ids.forEach(function(id){
 			var priceHelper = document.querySelector("#standard_price_helper_" + id);
 			if(priceHelper){
