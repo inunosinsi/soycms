@@ -29,24 +29,24 @@ class AggregateExport extends SOYShopOrderExportBase{
 	function export($orders){
 		
 		set_time_limit(0);
-		SOY2::import("module.plugins.aggregate.util.AggregateUtil");
+		SOY2::import("module.plugins.common_aggregate.util.AggregateUtil");
 
 		$mode = (isset($_POST["Aggregate"]["type"])) ? $_POST["Aggregate"]["type"] : "month";
 		
 		switch($mode){
 			case AggregateUtil::MODE_ITEMRATE:
 				$label = AggregateUtil::MODE_ITEMRATE;
-				$logic = SOY2Logic::createInstance("module.plugins.aggregate.logic.ItemRateLogic");
+				$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.ItemRateLogic");
 				$lines = $logic->calc();
 				break;
 			case AggregateUtil::MODE_MONTH:
 				$label = AggregateUtil::MODE_MONTH;
-				$logic = SOY2Logic::createInstance("module.plugins.aggregate.logic.MonthLogic");
+				$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.MonthLogic");
 				$lines = $logic->calc();
 				break;
 			case AggregateUtil::MODE_DAY:
 				$label = AggregateUtil::MODE_DAY;
-				$logic = SOY2Logic::createInstance("module.plugins.aggregate.logic.DayLogic");
+				$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.DayLogic");
 				$lines = $logic->calc();
 				break;
 		}
