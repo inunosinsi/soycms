@@ -8,27 +8,36 @@ AsyncCartButton = {
 		AsyncCartButton.isInvalid = true;
 		
 		var cnt = 1;
-		var cntObject = document.querySelector("#soyshop_async_count_" + itemId);
-		if(cntObject){
-			if(cntObject.type && cntObject.type == "number"){
-				cnt = parseInt(cntObject.value);
-			}else{
-				cnt = parseInt(cntObject.options[cntObject.selectedIndex].value);
+		if(document.querySelector){
+			var cntObject = document.querySelector("#soyshop_async_count_" + itemId);
+			if(cntObject){
+				if(cntObject.type && cntObject.type == "number"){
+					cnt = parseInt(cntObject.value);
+				}else{
+					cnt = parseInt(cntObject.options[cntObject.selectedIndex].value);
+				}
 			}
+			
+			//文字列を入れた場合は処理を止める
+			if(isNaN(cnt)) {
+				AsyncCartButton.isInvalid = false;
+				return false;
+			}
+			
+			if (cnt === 0) cnt = 1;
 		}
-		
-		//文字列を入れた場合は処理を止める
-		if(isNaN(cnt)) {
-			AsyncCartButton.isInvalid = false;
-			return false;
-		}
-		
-		if (cnt === 0) cnt = 1;
 		
 		var url = this.operationUrl + "?a=add&count=" + cnt + "&item=" + itemId;
 		
 		//XMLHttpRequestが使用できない環境の場合はリダイレクト
 		if(!window.XMLHttpRequest) {
+			location.href = url;
+		}
+		
+		xhr = new XMLHttpRequest();
+		
+		//addEventListenerが使用できない環境の場合はリダイレクト
+		if(!xhr.addEventListener) {
 			location.href = url;
 		}
 		
@@ -64,7 +73,7 @@ AsyncCartButton = {
 				}
 			}
 		}
-		xhr = new XMLHttpRequest();
+		
 		xhr.open("POST",url);
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		
@@ -190,6 +199,10 @@ AsyncCartButton = {
 			if(priceHelper){
 				for (var j = 0; j < sels.length; j++){
 					if(sels[j].id.search('item_standard_(.*)_' + id) === 0 && sels[j].name.indexOf("Standard") === 0){
+						
+						//処理を強制的に止める
+						if(!sels[j].addEventListener) return;
+						
 						sels[j].addEventListener("change", function(){
 							
 							var param = "";
@@ -205,6 +218,7 @@ AsyncCartButton = {
 							}
 							
 							xhr = new XMLHttpRequest();
+							
 							xhr.open("POST",location.href + "?async_cart_button=" + id);
 							xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 							xhr.send(param);
@@ -224,6 +238,4 @@ AsyncCartButton = {
 			}
 		});
 	}
-	
-			
 })();
