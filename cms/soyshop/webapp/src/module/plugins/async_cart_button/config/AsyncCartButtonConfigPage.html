@@ -27,9 +27,13 @@
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
 &lt;!-- block:id="item" --&gt;
 
+&lt;form cms:id="async_cart_form"&gt;&lt;!-- レガシーなブラウザ対策のために同期用のformタグも設置しておく --&gt;
+
 <strong>&lt;select cms:id="async_cart_select"&gt;&lt;/select&gt;</strong>
 <strong>&lt;a cms:id="async_cart_link"&gt;カートに入れる&lt;/a&gt;</strong>
 &lt;input cms:id="standard_price_helper"&gt;&lt;!-- 商品規格プラグインと併用するのであればこのタグは必須です --&gt;
+
+&lt;/form&gt;
 
 &lt;!-- /block:id="item" --&gt;
 </pre>
