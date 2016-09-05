@@ -49,6 +49,11 @@ class AggregateExport extends SOYShopOrderExportBase{
 				$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.DayLogic");
 				$lines = $logic->calc();
 				break;
+			case AggregateUtil::MODE_AGE:
+				$label = AggregateUtil::MODE_AGE;
+				$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.AgeLogic");
+				$lines = $logic->calc();
+				break;
 		}
 
 		$charset = (isset($_REQUEST["charset"])) ? $_REQUEST["charset"] : "Shift-JIS";

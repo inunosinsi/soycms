@@ -32,6 +32,13 @@ class AggregateFormPage extends WebPage{
 			"label" => AggregateUtil::TYPE_ITEMRATE
 		));
 		
+		$this->addCheckBox("type_age", array(
+			"name" => "Aggregate[type]",
+			"value" => AggregateUtil::MODE_AGE,
+			"selected" => false,
+			"label" => AggregateUtil::TYPE_AGE
+		));
+		
 		
 		$this->addLabel("aggregate_label_month", array(
 			"text" => AggregateUtil::TYPE_MONTH

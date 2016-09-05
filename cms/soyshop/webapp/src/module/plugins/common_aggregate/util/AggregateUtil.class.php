@@ -3,12 +3,14 @@
 class AggregateUtil{
 	
 	const MODE_MONTH = "month";
-	const MODE_ITEMRATE = "itemrate";
 	const MODE_DAY = "day";
+	const MODE_ITEMRATE = "itemrate";
+	const MODE_AGE = "age";
 	
 	const TYPE_MONTH 		= 	"月次売上集計";
 	const TYPE_DAY 			= 	"日次売上集計";
 	const TYPE_ITEMRATE 	= 	"商品毎の売上集計";
+	const TYPE_AGE			= 	"年齢別売上集計";
 	
 	/**
 	 * タイトルを取得する
@@ -22,6 +24,9 @@ class AggregateUtil{
 				break;
 			case self::MODE_DAY:
 				$title = self::TYPE_DAY;
+				break;
+			case self::MODE_AGE:
+				$title = self::TYPE_AGE;
 				break;
 			case self::MODE_MONTH:
 			default:
