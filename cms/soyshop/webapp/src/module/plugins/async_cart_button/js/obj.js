@@ -26,18 +26,23 @@ AsyncCartButton = {
 				if(document.querySelector){
 					var cntObject = document.querySelector("#soyshop_async_count_" + itemId);
 					if(cntObject){
-						if(cntObject.type && cntObject.type == "number"){
-							cnt = parseInt(cntObject.value);
-						}else{
-							cnt = parseInt(cntObject.options[cntObject.selectedIndex].value);
+						switch(cntObject.tagName){
+							case "INPUT":
+								//文字列を入れた場合は処理を止める
+								if(isNaN(cntObject.value) || cntObject.value == "") {
+									AsyncCartButton.isInvalid = false;
+									return false;
+								}else{
+									cnt = parseInt(cntObject.value);
+								}
+								break;
+							case "SELECT":
+								if(cntObject.options.length > 0 && cntObject.options[cntObject.selectedIndex]){
+									cnt = parseInt(cntObject.options[cntObject.selectedIndex].value);
+								}
+								break;
 						}
-					}
-					
-					//文字列を入れた場合は処理を止める
-					if(isNaN(cnt)) {
-						AsyncCartButton.isInvalid = false;
-						return false;
-					}
+					}		
 					
 					if (cnt === 0) cnt = 1;
 				}
