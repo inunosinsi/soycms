@@ -747,10 +747,10 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		if($orderReverse){
 			$query->setOrder(" EntryLabel.display_order, Entry.cdate asc, Entry.id asc ");
 		}
-
+		
         //MySQL5.7以降対策。groupingとhagingをnullにした
 		$result = $this->executeQuery($query,$binds);
-        
+		
 		$array = array();
 		foreach($result as $row){
 			$array[$row["id"]] = $this->getObject($row);
