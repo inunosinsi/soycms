@@ -6,8 +6,8 @@ class ChangeLabelIconAction extends SOY2Action{
 
     protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
 
-		//記事管理者は操作禁止
-		if(class_exists("UserInfoUtil") && !UserInfoUtil::hasSiteAdminRole()){
+		//記事管理者は操作禁止。但し、ブログのカテゴリからの場合はあり
+		if(class_exists("UserInfoUtil") && !UserInfoUtil::hasSiteAdminRole() && !strpos($_SERVER["PATH_INFO"], "Blog")){
 			return SOY2Action::FAILED;
 		}
 
