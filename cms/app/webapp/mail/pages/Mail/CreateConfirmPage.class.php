@@ -132,6 +132,12 @@ class CreateConfirmPage extends WebPage{
 		$extendLogic = SOY2Logic::createInstance("logic.user.ExtendUserDAO");
 		$dao = $extendLogic->getDAO();
 		$query = $dao->getQuery();
+		
+		//サーバによってはSQLの指定に"が入っておかしくなるので応急処置
+		if(strpos($query->sql, "\"") >= 0){
+			$query->sql = str_replace("\"", "`",$query->sql);
+		}
+		
 		list($query->where,$binds) = $this->mail->getSelectorObject()->generateConditions($only_disable_user);
 		
 		$checkSOYShop = $extendLogic->checkSOYShopConnect();
