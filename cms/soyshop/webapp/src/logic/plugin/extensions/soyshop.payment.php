@@ -78,11 +78,15 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 				}
 				break;
 			case "select"://選択された支払いの内部
-				$action->onSelect($this->getCart());
-
-				if($action->hasOptionPage()){
-					$this->getCart()->setAttribute("has_option", true);
+				//念の為、ここでも再度調べる
+				if($_POST["payment_module"] === $moduleId){
+					$action->onSelect($this->getCart());
+	
+					if($action->hasOptionPage()){
+						$this->getCart()->setAttribute("has_option", true);
+					}
 				}
+					
 
 				break;
 		}

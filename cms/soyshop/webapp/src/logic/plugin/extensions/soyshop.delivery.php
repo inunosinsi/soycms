@@ -52,12 +52,12 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 				}
 				break;
 			case "select":
-				$action->onSelect($this->getCart());
+				//念の為、ここでも再度調べる
+				if($_POST["delivery_module"] === $moduleId){
+					$action->onSelect($this->getCart());
+				}
 				break;
-
-
 		}
-
 	}
 
 
