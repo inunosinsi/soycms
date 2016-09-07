@@ -205,6 +205,10 @@ class EditPage extends WebPage{
 				}
 
 				$modules = $order->getModuleList();
+				
+				//モジュール分の加算
+				$modulePrice = 0;
+				
 				$moduleDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 				foreach($modules as $moduleId => $module){
 					
@@ -236,16 +240,17 @@ class EditPage extends WebPage{
 					}
 					
 					//モジュールを合算に含めるか調べてから足す
-					if(!$module->getIsInclude()) $price += $module->getPrice();
-				}
-								
+					if(!$module->getIsInclude()) $modulePrice += $module->getPrice();
+				}				
 				
 				/**
 				 * @ToDo 税金の再計算
 				 */
 				//税金の再計算
-				$module = self::calculateConsumptionTax($price);
+				$module = self::calculateConsumptionTax($price, $modulePrice);
 				if(isset($module)) $modules["consumption_tax"] = $module;
+
+				$price += $modulePrice;
 
 				$order->setModules($modules);
 				$order->setPrice($price);
@@ -300,29 +305,34 @@ class EditPage extends WebPage{
 	}
 
 	//税金の計算
-	private function calculateConsumptionTax($price){
+	private function calculateConsumptionTax($price, $modulePrice){
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$config = SOYShop_ShopConfig::load();
+		
+		$total = $price;
+		
+		//モジュール分の加算
 		if($config->getConsumptionTaxInclusiveCommission()){
-			
-			//$cart->calculateConsumptionTax();
-			if($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON){
-				//外税(プラグインによる処理)
-				return self::setConsumptionTax($config, $price);
-			}elseif($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON){
-				//内税(標準実装)
-				return self::setConsumptionTaxInclusivePricing($config, $price);
-				
-			}else{
-				//何もしない
-			}
-			
-			return null;
+			$total += $modulePrice;
 		}
+			
+		//$cart->calculateConsumptionTax();
+		if($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON){
+			//外税(プラグインによる処理)
+			return self::setConsumptionTax($config, $total);
+		}elseif($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON){
+			//内税(標準実装)
+			return self::setConsumptionTaxInclusivePricing($config, $total);
+			
+		}else{
+			//何もしない
+		}
+			
+		return null;
 	}
 	
 	//外税
-	private function setConsumptionTax($config, $price){
+	private function setConsumptionTax($config, $total){
 		$pluginId = $config->getConsumptionTaxModule();
 
 		if(!isset($pluginId)) return null;
@@ -340,12 +350,12 @@ class EditPage extends WebPage{
    		SOYShopPlugin::load("soyshop.tax.calculation", $plugin);
 		return SOYShopPlugin::invoke("soyshop.tax.calculation", array(
 			"mode" => "edit",
-			"total" => $price
+			"total" => $total
 		))->getModule();
 	}
 	
 	//内税
-	private function setConsumptionTaxInclusivePricing($config, $price){
+	private function setConsumptionTaxInclusivePricing($config, $total){
 		$taxRate = (int)$config->getConsumptionTaxInclusivePricingRate();	//内税率
 				
 		if($taxRate === 0) return null;
@@ -355,7 +365,7 @@ class EditPage extends WebPage{
 		$module->setName("内税");
 		$module->setType(SOYShop_ItemModule::TYPE_TAX);	//typeを指定しておくといいことがある
 		//内税の計算は8%の場合はtax = total / 1.08で計算する
-		$module->setPrice(floor($price - ($price / (1 + $taxRate / 100))));
+		$module->setPrice(floor($total - ($total / (1 + $taxRate / 100))));
 		$module->setIsInclude(true);	//合計に合算されない
 					
 		return $module;
