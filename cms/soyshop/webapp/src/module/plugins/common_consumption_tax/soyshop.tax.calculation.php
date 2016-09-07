@@ -8,21 +8,6 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 		$items = $cart->getItems();
 		if(count($items) === 0) return;
 		
-		$scheduleDao = SOY2DAOFactory::create("SOYShop_ConsumptionTaxScheduleDAO");
-		$scheduleDao->setLimit(1);
-		
-		try{
-			$schedules =$scheduleDao->getScheduleByDate(time());
-		}catch(Exception $e){
-			return;
-		}
-		
-		if(!isset($schedules[0])) return;
-
-		$taxRate = (int)$schedules[0]->getTaxRate();
-			
-		if($taxRate === 0) return;
-		
 		$totalPrice = 0;
 		foreach($items as $item){
 			$totalPrice += $item->getTotalPrice();
@@ -37,19 +22,48 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 			}
 		}
 		
+		$module = self::calcTax($totalPrice);
+		
+		if(!is_null($module)){
+			$cart->addModule($module);
+		}
+	}
+	
+	//管理画面での外税計算
+	function calculationOnEditPage($total){
+		return self::calcTax($total);
+	}
+	
+	//外税の計算
+	private function calcTax($total){
+		$scheduleDao = SOY2DAOFactory::create("SOYShop_ConsumptionTaxScheduleDAO");
+		$scheduleDao->setLimit(1);
+		
+		try{
+			$schedules =$scheduleDao->getScheduleByDate(time());
+		}catch(Exception $e){
+			return null;
+		}
+		
+		if(!isset($schedules[0])) return null;
+
+		$taxRate = (int)$schedules[0]->getTaxRate();
+			
+		if($taxRate === 0) return null;
+		
 		SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");
 		$config = ConsumptionTaxUtil::getConfig();
 		$m = (isset($config["method"])) ? $config["method"] : 0;
 		switch($m){
 			case ConsumptionTaxUtil::METHOD_ROUND:
-				$price = round($totalPrice * $taxRate / 100);
+				$price = round($total * $taxRate / 100);
 				break;
 			case ConsumptionTaxUtil::METHOD_CEIL:
-				$price = ceil($totalPrice * $taxRate / 100);
+				$price = ceil($total * $taxRate / 100);
 				break;
 			case ConsumptionTaxUtil::METHOD_FLOOR:
 			default:
-				$price = floor($totalPrice * $taxRate / 100);
+				$price = floor($total * $taxRate / 100);
 		}
 				
 		//消費税がある場合
@@ -59,7 +73,8 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 		$module->setName("消費税");
 		$module->setType(SOYShop_ItemModule::TYPE_TAX);	//typeを指定しておくといいことがある
 		$module->setPrice($price);
-		$cart->addModule($module);
+		
+		return $module;
 	}
 }
 SOYShopPlugin::extension("soyshop.tax.calculation", "common_consumption_tax", "CommonConsumptionTaxCalculation");
