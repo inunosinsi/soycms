@@ -15,7 +15,7 @@ class ItemOrderListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_name", array(
-			"text" => $itemOrder->getItemName()
+			"text" => (strlen($item->getCode())) ? $itemOrder->getItemName() : "---"
 		));
 
 		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
