@@ -67,7 +67,7 @@ class SOYCMS_OutputContents{
 	private $generate_time;
 
 
-	function SOYCMS_OutputContents(){
+	function __construct(){
 
 		//「キャッシュのクリア」で削除されるようにキャッシュディレクトリ以下に置く
 		$this->cacheDir = _SITE_ROOT_.self::CacheDir;
@@ -236,7 +236,7 @@ class SOYCMS_OutputContents{
 	 */
 	private function output($contents = null){
 		ob_start();
-			$ob = ob_start("ob_gzhandler");//ブラウザが受け入れてないならfalseが返る
+			$ob = @ob_start("ob_gzhandler");//ブラウザが受け入れてないならfalseが返る
 
 			if(is_null($contents)){
 				readfile($this->cache);

@@ -14,7 +14,7 @@
 				
 				<div style="margin-bottom:10px;">
 					<form soy:id="create_label" id="create_label">
-						<input id="create_label_caption" type="text" name="caption" size="60" placeholder="ラベル名 または 分類名/ラベル名" soy:id="create_label_caption">
+						<input id="create_label_caption" type="text" name="caption" size="60" placeholder="ラベル名" soy:id="create_label_caption">
 						<input type="submit" value="ラベルを追加" onclick="if(!this.form.caption.value)return false;">
 						
 						<img soy:message="HELP_LABEL_NAME_HINT"/>
@@ -37,7 +37,6 @@
 							<td class="name">ラベル名</td>
 							<td class="icon">アイコン</td>
 							<td class="memo">メモ</td>
-							<td class="order"><input type="submit" soy:id="update_display_order" name="update_display_order" value="表示順" /></td>
 							<td class="label_functions">操作</td>
 						</tr>
 					</thead>
@@ -50,9 +49,6 @@
 								<img soy:id="label_icon" style="cursor:pointer;width:64px;height:64px" />
 							</td>
 							<td class="memo"><span soy:id="description" style="color:red;">dd</span></td>
-							<td class="order" style="text-align:center;">
-								<input type="text" soy:id="display_order" size="4" />
-							</td>
 							<td class="label_functions">
 								<a soy:id="remove_link" style="text-decoration:none;" onclick="return confirm('削除してもよろしいですか？');">
 									削除

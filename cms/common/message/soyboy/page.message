@@ -49,3 +49,9 @@ PAGE_PREVIEW_FAILED		=		ページのプレビューに失敗しました。
 PAGE_DETAIL_GET_FAILED	=		ページ情報の取得に失敗しました。
 
 PAGE_LIST_GET_FAILED	=		ページリストの取得に失敗しました
+
+BLOG_CATEGORY_ADD_FAILED	=	カテゴリの追加に失敗しました
+BLOG_CATEGORY_ADD_SUCCESS	=	カテゴリを追加しました
+
+BLOG_CATEGORY_REMOVE_FAILED		=	カテゴリの削除に失敗しました
+BLOG_CATEGORY_REMOVE_SUCCESS	=	カテゴリを削除しました

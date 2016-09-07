@@ -122,155 +122,155 @@ class EntryLogic extends SOY2LogicBase{
 	 * エントリーを1件取得
 	 * 2008-10-29 内部使用のため、無限遠時刻の変換処理の追加
 	 */
-    function getById($id,$flag = true) {
-    	$dao = $this->getEntryDAO();
-    	$entry = $dao->getById($id);
+	function getById($id,$flag = true) {
+		$dao = $this->getEntryDAO();
+		$entry = $dao->getById($id);
 
-    	//無限遠時刻をnullになおす
-    	if($flag){
-	    	$entry->setOpenPeriodEnd(CMSUtil::decodeDate($entry->getOpenPeriodEnd()));
+		//無限遠時刻をnullになおす
+		if($flag){
+			$entry->setOpenPeriodEnd(CMSUtil::decodeDate($entry->getOpenPeriodEnd()));
 			$entry->setOpenPeriodStart(CMSUtil::decodeDate($entry->getOpenPeriodStart()));
-    	}
+		}
 
-    	$entry->setLabels($this->getLabelIdsByEntryId($entry->getId()));
+		$entry->setLabels($this->getLabelIdsByEntryId($entry->getId()));
 
-    	return $entry;
-    }
+		return $entry;
+	}
 
-    /**
-     * 全て返す
-     */
-    function get(){
-    	$dao = $this->getEntryDAO();
+	/**
+	 * 全て返す
+	 */
+	function get(){
+		$dao = $this->getEntryDAO();
 
-    	$dao->setLimit($this->limit);
-    	$dao->setOffset($this->offset);
-    	$array = $dao->get();
-    	$this->totalCount = $dao->getRowCount();
+		$dao->setLimit($this->limit);
+		$dao->setOffset($this->offset);
+		$array = $dao->get();
+		$this->totalCount = $dao->getRowCount();
 
-    	//ラベルを取得
-    	foreach($array as $key => $entry){
-    		$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
-    	}
+		//ラベルを取得
+		foreach($array as $key => $entry){
+			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
+		}
 
-    	return $array;
-    }
+		return $array;
+	}
 
-    /**
-     * ラベルの割り当てられたエントリーを全て返す
-     *
-     * 2007/12/21 getByLabelIdsのエイリアスとして定義
-     */
-    function getByLabelId($labelid){
-    	return $this->getByLabelIds(array($labelid));
-    }
+	/**
+	 * ラベルの割り当てられたエントリーを全て返す
+	 *
+	 * 2007/12/21 getByLabelIdsのエイリアスとして定義
+	 */
+	function getByLabelId($labelid){
+		return $this->getByLabelIds(array($labelid));
+	}
 
-    /**
-     * 非公開のエントリーを取得
-     */
-    function getClosedEntryList(){
-    	$dao = $this->getLabeledEntryDAO();
-    	$dao->setLimit($this->limit);
-    	$dao->setOffset($this->offset);
+	/**
+	 * 非公開のエントリーを取得
+	 */
+	function getClosedEntryList(){
+		$dao = $this->getLabeledEntryDAO();
+		$dao->setLimit($this->limit);
+		$dao->setOffset($this->offset);
 
-    	$array = $dao->getClosedEntries();
-    	$this->totalCount = $dao->getRowCount();
+		$array = $dao->getClosedEntries();
+		$this->totalCount = $dao->getRowCount();
 
-    	//ラベルを取得
-    	foreach($array as $key => $entry){
-    		$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
-    	}
+		//ラベルを取得
+		foreach($array as $key => $entry){
+			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
+		}
 
-    	return $array;
-    }
+		return $array;
+	}
 
-    /**
-     * 公開期間外のエントリー一覧を取得
-     */
-    function getOutOfDateEntryList(){
-    	$dao = $this->getLabeledEntryDAO();
-    	$dao->setLimit($this->limit);
-    	$dao->setOffset($this->offset);
+	/**
+	 * 公開期間外のエントリー一覧を取得
+	 */
+	function getOutOfDateEntryList(){
+		$dao = $this->getLabeledEntryDAO();
+		$dao->setLimit($this->limit);
+		$dao->setOffset($this->offset);
 
-    	$array = $dao->getOutOfDateEntries(time());
-    	$this->totalCount = $dao->getRowCount();
+		$array = $dao->getOutOfDateEntries(time());
+		$this->totalCount = $dao->getRowCount();
 
-    	//ラベルを取得
-    	foreach($array as $key => $entry){
-    		$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
-    	}
+		//ラベルを取得
+		foreach($array as $key => $entry){
+			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
+		}
 
-    	return $array;
-    }
+		return $array;
+	}
 
-    /**
-     * ラベルのついていないエントリー一覧を取得
-     */
-    function getNoLabelEntryList(){
-    	$dao = $this->getLabeledEntryDAO();
-    	$dao->setLimit($this->limit);
-    	$dao->setOffset($this->offset);
+	/**
+	 * ラベルのついていないエントリー一覧を取得
+	 */
+	function getNoLabelEntryList(){
+		$dao = $this->getLabeledEntryDAO();
+		$dao->setLimit($this->limit);
+		$dao->setOffset($this->offset);
 
-    	$array = $dao->getNoLabelEntries();
-    	$this->totalCount = $dao->getRowCount();
+		$array = $dao->getNoLabelEntries();
+		$this->totalCount = $dao->getRowCount();
 
-    	//ラベルを取得
-    	foreach($array as $key => $entry){
-    		$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
-    	}
+		//ラベルを取得
+		foreach($array as $key => $entry){
+			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
+		}
 
-    	return $array;
-    }
-
-
-    /**
-     * ラベルを複数指定してエントリーをすべて取得
-     */
-    function getByLabelIds($labelids,$flag = true, $start = null, $end = null){
-    	$dao = $this->getLabeledEntryDAO();
-    	$dao->setLimit($this->limit);
-    	$dao->setOffset($this->offset);
-
-    	$array = $dao->getByLabelIdsOnlyId($labelids, $this->reverse);
-    	$this->totalCount = $dao->getRowCount();
-
-    	//ラベルを取得
-    	foreach($array as $key => $entry){
-    		$array[$key] = $this->getById($key,false);
-    		$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
-    	}
+		return $array;
+	}
 
 
-    	return $array;
+	/**
+	 * ラベルを複数指定してエントリーをすべて取得
+	 */
+	function getByLabelIds($labelids,$flag = true, $start = null, $end = null){
+		$dao = $this->getLabeledEntryDAO();
+		$dao->setLimit($this->limit);
+		$dao->setOffset($this->offset);
 
-    }
+		$array = $dao->getByLabelIdsOnlyId($labelids, $this->reverse);
+		$this->totalCount = $dao->getRowCount();
 
-    /**
-     * エントリーに割り当てているラベルIDを全て取得
-     */
-    function getLabelIdsByEntryId($entryId){
-    	$dao = $this->getEntryLabelDAO();
+		//ラベルを取得
+		foreach($array as $key => $entry){
+			$array[$key] = $this->getById($key,false);
+			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
+		}
 
-    	$entryLabels = $dao->getByEntryId($entryId);
-    	$result = array();
-    	foreach($entryLabels as $obj){
-    		$result[] = $obj->getLabelId();
-    	}
 
-    	return $result;
-    }
+		return $array;
 
-    function getLabeledEntryByEntryId($entryId){
-    	$dao = $this->getEntryLabelDAO();
-    	return $dao->getByEntryId($entryId);
-    }
+	}
 
-    /**
-     * 合計件数を返す
-     */
-    function getTotalCount(){
-    	return $this->totalCount;
-    }
+	/**
+	 * エントリーに割り当てているラベルIDを全て取得
+	 */
+	function getLabelIdsByEntryId($entryId){
+		$dao = $this->getEntryLabelDAO();
+
+		$entryLabels = $dao->getByEntryId($entryId);
+		$result = array();
+		foreach($entryLabels as $obj){
+			$result[] = $obj->getLabelId();
+		}
+
+		return $result;
+	}
+
+	function getLabeledEntryByEntryId($entryId){
+		$dao = $this->getEntryLabelDAO();
+		return $dao->getByEntryId($entryId);
+	}
+
+	/**
+	 * 合計件数を返す
+	 */
+	function getTotalCount(){
+		return $this->totalCount;
+	}
 
 	/**
 	 * エントリーにラベルを割り当てる
@@ -323,35 +323,35 @@ class EntryLogic extends SOY2LogicBase{
 	 * 表示期間を含めたラベル付けされたエントリーを取得
 	 */
 	function getOpenEntryByLabelId($labelId){
-    	$dao = $this->getLabeledEntryDAO();
-    	$dao->setLimit($this->limit);
-    	$dao->setOffset($this->offset);
-    	$array = $dao->getOpenEntryByLabelId($labelId,time(),$this->reverse);
-    	$this->totalCount = $dao->getRowCount();
-    	return $array;
+		$dao = $this->getLabeledEntryDAO();
+		$dao->setLimit($this->limit);
+		$dao->setOffset($this->offset);
+		$array = $dao->getOpenEntryByLabelId($labelId,time(),$this->reverse);
+		$this->totalCount = $dao->getRowCount();
+		return $array;
 	}
 
 	/**
 	 * 表示期間を含めてラベル付けされたエントリーを取得（ラベルIDを複数指定）
 	 */
 	function getOpenEntryByLabelIds($labelIds,$isAnd = true, $start = null, $end = null){
-    	$dao = $this->getLabeledEntryDAO();
-    	$dao->setLimit($this->limit);
-    	$dao->setOffset($this->offset);
+		$dao = $this->getLabeledEntryDAO();
+		$dao->setLimit($this->limit);
+		$dao->setOffset($this->offset);
 
-    	if($isAnd){
-    		//$labelIdsのラベルがすべて設定されている記事のみ取得
-    		$array = $dao->getOpenEntryByLabelIds($labelIds,time(),$start,$end,$this->reverse);
-    	}else{
-    		//$labelIdsのラベルがどれか１つでも設定されている記事を取得
-    		$array = $dao->getOpenEntryByLabelIdsImplements($labelIds,time(),false,$start,$end,$this->reverse);
-    	}
-    	foreach($array as $key => $entry){
-    		$array[$key]->setCommentCount($this->getApprovedCommentCountByEntryId($entry->getId()));
-    		$array[$key]->setTrackbackCount($this->getCertificatedTrackbackCountByEntryId($entry->getId()));
-    	}
-    	$this->totalCount = $dao->getRowCount();
-    	return $array;
+		if($isAnd){
+			//$labelIdsのラベルがすべて設定されている記事のみ取得
+			$array = $dao->getOpenEntryByLabelIds($labelIds,time(),$start,$end,$this->reverse);
+		}else{
+			//$labelIdsのラベルがどれか１つでも設定されている記事を取得
+			$array = $dao->getOpenEntryByLabelIdsImplements($labelIds,time(),false,$start,$end,$this->reverse);
+		}
+		foreach($array as $key => $entry){
+			$array[$key]->setCommentCount($this->getApprovedCommentCountByEntryId($entry->getId()));
+			$array[$key]->setTrackbackCount($this->getCertificatedTrackbackCountByEntryId($entry->getId()));
+		}
+		$this->totalCount = $dao->getRowCount();
+		return $array;
 	}
 
 	/**
@@ -487,14 +487,14 @@ class EntryLogic extends SOY2LogicBase{
    		$dao = $this->getEntryDAO();
 
    		$dao->setLimit($this->limit);
-    	$dao->setOffset($this->offset);
-    	$array = $dao->getEntryByLabelIds($labelIds);
-    	$this->totalCount = $dao->getRowCount();
+		$dao->setOffset($this->offset);
+		$array = $dao->getEntryByLabelIds($labelIds);
+		$this->totalCount = $dao->getRowCount();
 
-    	//ラベルを取得
-    	foreach($array as $key => $entry){
-    		$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
-    	}
+		//ラベルを取得
+		foreach($array as $key => $entry){
+			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
+		}
 
 		return 	$array;
    	}
@@ -533,17 +533,17 @@ class EntryLogic extends SOY2LogicBase{
    	 */
    	function getRecentEntries(){
    		$dao = $this->getEntryDAO();
-    	$dao->setLimit($this->limit);
-    	$dao->setOffset($this->offset);
-    	$array = $dao->getRecentEntries();
-    	$this->totalCount = $dao->getRowCount();
+		$dao->setLimit($this->limit);
+		$dao->setOffset($this->offset);
+		$array = $dao->getRecentEntries();
+		$this->totalCount = $dao->getRowCount();
 
-    	//ラベルを取得
-    	foreach($array as $key => $entry){
-    		$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
-    	}
+		//ラベルを取得
+		foreach($array as $key => $entry){
+			$array[$key]->setLabels($this->getLabelIdsByEntryId($entry->getId()));
+		}
 
-    	return $array;
+		return $array;
    	}
 
    	/**
@@ -724,8 +724,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
 	 * @distinct
 	 * @query EntryLabel.label_id in (<?php implode(',',:labelids) ?>)
-     * @group Entry.id
-     * @having count(Entry.id) = <?php count(:labelids) ?>
+	 * @group Entry.id
+	 * @having count(Entry.id) = <?php count(:labelids) ?>
 	 */
 	abstract function getByLabelIds($labelids);
 
@@ -736,8 +736,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @columns Entry.id,EntryLabel.display_order,Entry.cdate
 	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
 	 * @distinct
-     * @group Entry.id,EntryLabel.display_order
-     * @having count(Entry.id) = <?php count(:labelids) ?>
+	 * @group Entry.id,EntryLabel.display_order
+	 * @having count(Entry.id) = <?php count(:labelids) ?>
 	 * @query EntryLabel.label_id in (<?php implode(',',:labelids) ?>)
 	 */
 	function getByLabelIdsOnlyId($labelids, $orderReverse = false){
@@ -748,7 +748,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			$query->setOrder(" EntryLabel.display_order, Entry.cdate asc, Entry.id asc ");
 		}
 		
-        //MySQL5.7以降対策。groupingとhagingをnullにした
+		//MySQL5.7以降対策。groupingとhagingをnullにした
 		$result = $this->executeQuery($query,$binds);
 		
 		$array = array();
@@ -798,8 +798,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @columns Entry.id,Entry.alias,Entry.title,Entry.content,Entry.more,Entry.cdate,Entry.udate,EntryLabel.display_order
 	 * @order EntryLabel.display_order asc,Entry.cdate desc,Entry.id desc
 	 * @distinct
-     * @group Entry.id,EntryLabel.display_order
-     * @having count(Entry.id) = <?php count(:labelIds) ?>
+	 * @group Entry.id,EntryLabel.display_order
+	 * @having count(Entry.id) = <?php count(:labelIds) ?>
 	 */
 	function getOpenEntryByLabelIdsImplements($labelIds, $now, $isAnd, $start = null, $end = null, $orderReverse = false){
 		$query = $this->getQuery();
@@ -812,7 +812,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			}
 			//数値のみ
 			$labelIds = array_map(create_function('$val','return (int)$val;'),$labelIds);
-            $query->where .= " EntryLabel.label_id in (" . implode(",",$labelIds) .") ";
+			$query->where .= " EntryLabel.label_id in (" . implode(",",$labelIds) .") ";
 		}else{
 			//保険（ラベル指定なし）
 			$query->where .= " true ";
@@ -860,12 +860,12 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @index id
 	 * @columns Entry.id
 	 * @distinct
-	 * @query EntryLabel.label_id in (<?php implode(',',:labelIds) ?>) AND Entry.isPublished = 1 AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)
-     * @group Entry.id
-     * @having count(Entry.id) = <?php count(:labelIds) ?>
+	 * @query EntryLabel.label_id in (<?php implode(',',:labelids) ?>) AND Entry.isPublished = 1 AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)
+	 * @group Entry.id
+	 * @having count(Entry.id) = <?php count(:labelids) ?>
 	 * @return array
 	 */
-	abstract function getOpenEntryCountByLabelIds($labelIds,$now);
+	abstract function getOpenEntryCountByLabelIds($labelids,$now);
 
 
 	/**
