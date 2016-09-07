@@ -97,10 +97,10 @@ class CalendarLogic extends SOY2LogicBase{
 		if(count($holidays) == 0) return false;
 		
 		$DOW = date("w", $time);
-		$day = date("d", $time);
+		$day = (int)date("d", $time);
 
-		$nth = $day / 7 + 1;
-		$nth = (integer)$nth;
+		$nth = ($day - 1) / 7 + 1;
+		$nth = (int)$nth;
 		
 		//週
 		if(array_key_exists($nth, $holidays)){

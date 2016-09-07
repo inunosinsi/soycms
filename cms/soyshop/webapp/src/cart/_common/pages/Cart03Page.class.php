@@ -83,7 +83,7 @@ class Cart03Page extends MainCartPageBase{
 					"cart" => $cart
 				));
 			}
-
+			
 			//割引
 			if(!$cart->hasError("discount") && isset($_POST["discount_module"])){
 				

@@ -19,7 +19,7 @@ class SOYShopPlugin extends SOY2Plugin{
 		}
 		
 		self::prepare();
-
+		
 		if(!$module){
 			$modulelist = self::getActiveModules();
 			

@@ -15,7 +15,7 @@ class ExportPage extends WebPage{
 			echo "invalid plugin id";
 			exit;
 		}
-
+		
 		$search = array();
 		if(isset($_POST["search"])){
 			parse_str($_POST["search"], $search);
@@ -28,6 +28,7 @@ class ExportPage extends WebPage{
 		}else{
 			$orders = $this->getOrders();
 		}
+		
 
 		$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
     	$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
