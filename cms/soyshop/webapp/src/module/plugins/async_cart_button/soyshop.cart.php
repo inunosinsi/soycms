@@ -4,7 +4,7 @@ class AsyncCartButtonCart extends SOYShopCartBase{
 
 	function doOperation(){
 		
-		if(isset($_REQUEST["item"])){
+		if(isset($_REQUEST["mode"]) && $_REQUEST["mode"] == "ajax" && isset($_REQUEST["item"])){
 			//在庫チェック
 			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 			
