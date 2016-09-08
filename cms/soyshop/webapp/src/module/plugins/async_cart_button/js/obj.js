@@ -92,7 +92,7 @@ AsyncCartButton = {
 					var text;
 					
 					//HTTPステータスが200でカートに商品が入ったことを確認
-					if(xhr.status == 200){
+					if(xhr.status == 200 && xhr.readyState == 4){
 						
 						//現在表示されているカートの商品合計を更新
 						var countSpan = document.querySelector("#soyshop_cart_item_count");
@@ -120,6 +120,9 @@ AsyncCartButton = {
 					//在庫数なし
 					} else if(xhr.status == 204){
 						text = "在庫切れ商品です。";
+					//カートに入れるエラー
+					} else {
+						text = "カートに入れる処理に失敗しました。";
 					}
 					
 					if(text){
