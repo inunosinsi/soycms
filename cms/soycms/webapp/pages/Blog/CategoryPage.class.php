@@ -214,7 +214,8 @@ class LabelList extends HTMLList{
 
 		$this->createAdd("label_name","HTMLLabel",array(
 			"text"=> $entity->getBranchName(),
-			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";background-color:#" . sprintf("%06X",$entity->getBackgroundColor()) . ";margin:5px"
+			"style"=> "cursor:pointer;color:#" . sprintf("%06X",$entity->getColor()).";background-color:#" . sprintf("%06X",$entity->getBackgroundColor()) . ";margin:5px",
+			"onclick"=>'postReName('.$entity->getId().',"'.addslashes($entity->getDescription()).'")'
 		));
 		
 		$this->createAdd("remove_link","HTMLActionLink",array(
