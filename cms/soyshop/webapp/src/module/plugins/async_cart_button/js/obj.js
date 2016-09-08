@@ -199,6 +199,10 @@ AsyncCartButton = {
 
 //商品規格プラグインと併用している時
 (function(){
+	
+	//querySelectorとXMLHttpRequestが使えない環境は強制的に止める
+	if(!document.querySelector || !window.XMLHttpRequest) return;
+	
 	var ids = [];
 	var hdns = document.querySelectorAll('input[type="hidden"]');
 	for (var i = 0; i< hdns.length; i++){
@@ -206,13 +210,11 @@ AsyncCartButton = {
 			ids.push(parseInt(hdns[i].id.replace("standard_price_helper_", "")));
 		}
 	}
-	
-	//IE 8はここで強制的に止める
-	if(!ids.forEach) return;
-	
+		
 	var sels = document.querySelectorAll('select');
 	if(sels.length && ids.length > 0){
-		ids.forEach(function(id){
+		for (i = 0; i < ids.length; i++){
+			var id = ids[i];
 			var priceHelper = document.querySelector("#standard_price_helper_" + id);
 			if(priceHelper){
 				for (var j = 0; j < sels.length; j++){
@@ -254,6 +256,6 @@ AsyncCartButton = {
 					}		
 				}
 			}
-		});
+		}
 	}
 })();
