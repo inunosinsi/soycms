@@ -55,7 +55,8 @@ class CategoryPage extends CMSWebPageBase{
 	}
 
 	function __construct($arg) {
-		if(is_null($arg[0])){
+		//記事管理者以外がこのページを開いた時
+		if(is_null($arg[0]) || UserInfoUtil::hasSiteAdminRole()){
 			$this->jump('Blog');//どっかに飛ばす
 		}
 		$this->pageId = (int)$arg[0];
