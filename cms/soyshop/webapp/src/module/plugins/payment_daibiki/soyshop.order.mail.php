@@ -8,10 +8,8 @@ class PaymentDaibikiMailModule extends SOYShopOrderMail{
 	 */
 	function getMailBody(SOYShop_Order $order){
 		if($this->isUse()){
-			$mail = SOYShop_DataSets::get("payment_daibiki.mail","支払方法：代金引換");
-
-			//料金を置換
-			//$mail = str_replace("#ACCOUNT#",@$array["account"], $mail);
+			SOY2::import("module.plugins.payment_daibiki.util.PaymentDaibikiUtil");
+			$mail = PaymentDaibikiUtil::getMailConfig();
 
 			return $mail;
 		}

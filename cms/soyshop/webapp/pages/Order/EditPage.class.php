@@ -230,7 +230,8 @@ class EditPage extends WebPage{
 						$delegate = SOYShopPlugin::invoke("soyshop.order.module", array(
 							"mode" => "edit",
 							"module" => $module,
-							"total" => $price
+							"total" => $price,
+							"itemOrders" => array_merge($itemOrders, $newItemOrders)
 						));
 						//プラグインを介した場合は配列を上書きする
 						if(!is_null($delegate->getModule())){

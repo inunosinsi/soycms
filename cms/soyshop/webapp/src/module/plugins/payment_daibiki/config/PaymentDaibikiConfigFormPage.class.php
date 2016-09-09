@@ -5,12 +5,19 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 	private $config;
 
 	function __construct() {
+		SOY2::import("module.plugins.payment_daibiki.util.PaymentDaibikiUtil");
 		SOY2::imports("module.plugins.payment_daibiki.component.*");
 	}
 
 	function doPost(){
 		if(soy2_check_token() && isset($_POST["payment_daibiki"])){
 			try{
+				
+				//設定
+				$config = (isset($_POST["Config"])) ? $_POST["Config"] : array();
+				$config["auto_calc"] = (isset($config["auto_calc"])) ? (int)$config["auto_calc"] : 0;
+
+				PaymentDaibikiUtil::saveConfig($config);
 
 				//代引き手数料
 				if(isset($_POST["payment_daibiki"]["price_table"])){
@@ -33,19 +40,17 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 
 					ksort($res);
 
-					SOYShop_DataSets::put("payment_daibiki.price",$res);
+					PaymentDaibikiUtil::savePricesConfig($res);
 				}
 
 				//説明文
 				if(isset($_POST["payment_daibiki"]["description"])){
-					$description = $_POST["payment_daibiki"]["description"];
-					SOYShop_DataSets::put("payment_daibiki.description",$description);
+					PaymentDaibikiUtil::saveDescriptionConfig($_POST["payment_daibiki"]["description"]);
 				}
 
 				//メール
 				if(isset($_POST["payment_daibiki"]["mail"])){
-					$mail = $_POST["payment_daibiki"]["mail"];
-					SOYShop_DataSets::put("payment_daibiki.mail",$mail);
+					PaymentDaibikiUtil::saveMailConfig($_POST["payment_daibiki"]["mail"]);
 				}
 
 				//代引き不可商品
@@ -55,12 +60,13 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 					//空と重複を削除
 					$forbidden = array_merge(array_unique(array_diff(array_map("trim",$forbidden), array(""))), array());
 
-					SOYShop_DataSets::put("payment_daibiki.forbidden",$forbidden);
 					
 				//なんかの条件で空に出来ない時があるので、値が何も無ければ設定自体を空にする
 				}else{
-					SOYShop_DataSets::put("payment_daibiki.forbidden", array());
+					$forbidden = array();
 				}
+				
+				PaymentDaibikiUtil::saveForbiddenConfig($forbidden);
 
 				$this->config->redirect("updated");
 			}catch(Exception $e){
@@ -75,34 +81,38 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 
 		$this->buildForm();
 
-		$this->addModel("updated", array(
-			"visible" => isset($_GET["updated"])
-		));
-		$this->addModel("error", array(
-			"visible" => isset($_GET["error"])
-		));
+		DisplayPlugin::toggle("error", isset($_GET["error"]));
 	}
 
 	function buildForm(){
 
-		$this->addForm("config_form", array(
-
-		));
+		$this->addForm("config_form");
 
 		$this->createAdd("price_list", "PaymentDaibikiPriceListComponent", array(
-			"list" => $this->config->getPrices(true)
+			"list" => PaymentDaibikiUtil::getPricesConfig(true)
 		));
 
 		$this->createAdd("item_list", "PaymentDaibikiForbiddenItemListComponent", array(
-			"list" => $this->config->getItems(true)
+			"list" => PaymentDaibikiUtil::getForbiddenConfig(true)
+		));
+		
+		$config = PaymentDaibikiUtil::getConfig();
+		
+		$this->addCheckBox("order_auto_calc", array(
+			"name" => "Config[auto_calc]",
+			"value" => 1,
+			"selected" => (isset($config["auto_calc"]) && $config["auto_calc"] == 1),
+			"label" => "注文の変更の際、自動で代引きの金額を算出して登録する"
 		));
 
 		$this->addTextArea("description", array(
-			"value" => $this->config->getDescription()
+			"name" => "payment_daibiki[description]",
+			"value" => PaymentDaibikiUtil::getDescriptionConfig()
 		));
 
 		$this->addTextArea("mail", array(
-			"value" => $this->config->getMailText()
+			"name" => "payment_daibiki[mail]",
+			"value" => PaymentDaibikiUtil::getMailConfig()
 		));
 	}
 

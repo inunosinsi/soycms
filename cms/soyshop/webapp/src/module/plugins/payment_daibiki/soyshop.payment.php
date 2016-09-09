@@ -1,10 +1,15 @@
 <?php
 SOY2DAOFactory::importEntity("SOYShop_DataSets");
+SOY2::import("module.plugins.payment_daibiki.util.PaymentDaibikiUtil");
 class DaibikiPaymentModule extends SOYShopPayment{
+
+	private $daibikiLogic;
 
 	function onSelect(CartLogic $cart){
 
-		if(!$this->checkCartItems()){
+		self::prepare();
+
+		if(!$this->daibikiLogic->checkCartItems()){
 			$cart->addErrorMessage("payment","この支払方法（代金引換）は選択できません");
 			return false;
 		}
@@ -24,11 +29,10 @@ class DaibikiPaymentModule extends SOYShopPayment{
 	}
 
 	function getName(){
-		$items = $this->getCart()->getItems();
-		$forbidden = SOYShop_DataSets::get("payment_daibiki.forbidden", array());
+		self::prepare();
 
 		//代引き不可商品があったらこのモジュール自体を表示しない
-		if($this->checkCartItems()){
+		if($this->daibikiLogic->checkCartItems()){
 			return "代金引換";
 		}else{
 			return "";
@@ -36,7 +40,7 @@ class DaibikiPaymentModule extends SOYShopPayment{
 	}
 
 	function getDescription(){
-		$res = SOYShop_DataSets::get("payment_daibiki.description","代金引換でのお支払いです。手数料は#PRICE#円です。");
+		$res = PaymentDaibikiUtil::getDescriptionConfig();
 
 		if(!$this->currentPrice) $this->currentPrice = $this->getPrice();
 		$res = str_replace("#PRICE#", $this->currentPrice,$res);
@@ -50,53 +54,13 @@ class DaibikiPaymentModule extends SOYShopPayment{
 	 * 料金の取得
 	 */
 	function getPrice(){
-		$price = $this->getCart()->getItemPrice();
-		
-		//割引系のプラグインがある場合は割引分を除く
-		foreach($this->getCart()->getModules() as $mod){
-			if(!$mod->getIsInclude() && $mod->getPrice() < 0){
-				$price += $mod->getPrice();
-			}
-		}
-		
-		$prices = SOYShop_DataSets::get("payment_daibiki.price", array());
-		$returnValue = 0;
-
-		foreach($prices as $key => $value){
-
-			if($key <= $price){
-				$returnValue = $value;
-			}else{
-				break;
-			}
-		}
-
-		$this->currentPrice = $returnValue;
-
-		return $returnValue;
+		self::prepare();
+		$this->currentPrice = $this->daibikiLogic->getDaibikiPrice();
+		return $this->currentPrice;
 	}
-
-	/**
-	 * 代引き不可商品が入っていないかチェック
-	 * @return Boolean
-	 */
-	function checkCartItems(){
-		$items = $this->getCart()->getItems();
-		$forbidden = SOYShop_DataSets::get("payment_daibiki.forbidden", array());
-
-		//代引き不可商品があったらこのモジュール自体を表示しない
-		if(count($forbidden) > 0){
-			foreach($items as $itemOrder){
-				$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-				$itemId = $itemOrder->getItemId();
-				$item = $itemDAO->getById($itemId);
-				if(in_array($item->getCode(),$forbidden)){
-					return false;
-				}
-
-			}
-		}
-		return true;
+	
+	private function prepare(){
+		if(!$this->daibikiLogic) $this->daibikiLogic = SOY2Logic::createInstance("module.plugins.payment_daibiki.logic.DaibikiLogic", array("cart" => $this->getCart()));
 	}
 
 }

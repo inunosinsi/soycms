@@ -2,6 +2,7 @@
 class SOYShopOrderModule implements SOY2PluginAction{
 	
 	private $total;
+	private $itemOrders;
 	
 	function edit($module){
 		
@@ -13,6 +14,13 @@ class SOYShopOrderModule implements SOY2PluginAction{
 	function setTotal($total){
 		$this->total = $total;
 	}
+	
+	function getItemOrders(){
+		return $this->itemOrders;
+	}
+	function setItemOrders($itemOrders){
+		$this->itemOrders = $itemOrders;
+	}
 }
 class SOYShopOrderModuleDelegateAction implements SOY2PluginDelegateAction{
 
@@ -20,12 +28,14 @@ class SOYShopOrderModuleDelegateAction implements SOY2PluginDelegateAction{
 	private $mode;
 	private $module;
 	private $total;
+	private $itemOrders = array();
 
 	function run($extentionId,$moduleId,SOY2PluginAction $action){
 		
 		if(!$action instanceof SOYShopOrderModule)return;
 		
 		$action->setTotal($this->total);
+		$action->setItemOrders($this->itemOrders);
 		
 		switch($this->mode){
 			case "edit":
@@ -47,6 +57,9 @@ class SOYShopOrderModuleDelegateAction implements SOY2PluginDelegateAction{
 	}
 	function setTotal($total){
 		$this->total = $total;
+	}
+	function setItemOrders($itemOrders){
+		$this->itemOrders = $itemOrders;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.module","SOYShopOrderModuleDelegateAction");

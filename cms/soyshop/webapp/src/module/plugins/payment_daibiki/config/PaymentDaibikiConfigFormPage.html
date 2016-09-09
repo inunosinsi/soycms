@@ -1,5 +1,5 @@
-<p class="notice" soy:id="updated">変更しました。</p>
-<p class="notice" soy:id="error">保存に失敗しました。</p>
+<p class="notice" soy:display="updated">変更しました。</p>
+<p class="notice" soy:display="error">保存に失敗しました。</p>
 
 <form method="post" soy:id="config_form">
 
@@ -96,18 +96,23 @@
 </table>
 </div>
 
+<h3>注文の編集の設定</h3>
+<dl>
+	<dd><input type="checkbox" soy:id="order_auto_calc"></dd>
+</dl>
+
 
 <h3>文言設定</h3>
 
 <dl>
 	<dt>支払い方法選択時の文言<span class="option">HTML可。改行は反映されます。#PRICE#が計算後の代引き手数料に置換されます。</span></dt>
 	<dd>
-		<textarea class="minieditor" name="payment_daibiki[description]"tabindex="300" soy:id="description"></textarea>
+		<textarea class="minieditor" tabindex="300" soy:id="description"></textarea>
 	</dd>
 
 	<dt>メールの文章</dt>
 	<dd>
-		<textarea class="minieditor" name="payment_daibiki[mail]"tabindex="300" soy:id="mail"></textarea>
+		<textarea class="minieditor" tabindex="300" soy:id="mail"></textarea>
 	</dd>
 </dl>
 
