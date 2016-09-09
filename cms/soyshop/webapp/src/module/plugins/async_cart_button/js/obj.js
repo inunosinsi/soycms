@@ -238,8 +238,8 @@ AsyncCartButton = {
 							}
 							
 							xhr = new XMLHttpRequest();
-							
-							xhr.open("POST",location.href + "?async_cart_button=" + id);
+														
+							xhr.open("POST",location.pathname + "?async_cart_button=" + id);
 							xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 							xhr.send(param);
 			
