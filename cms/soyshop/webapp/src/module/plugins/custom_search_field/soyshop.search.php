@@ -1,5 +1,5 @@
 <?php
-class CustomSearchFieldItemList extends SOYShopItemListBase{
+class CustomSearchFieldItemList extends SOYShopSearchModule{
 
 	const FIELD_ID = "custom_search_field";
 
