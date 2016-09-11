@@ -1,6 +1,6 @@
 <?php
 
-if(!defined(APPLICATION_ID)) define('APPLICATION_ID', "mail");
+if(!defined("APPLICATION_ID")) define('APPLICATION_ID', "mail");
 
 class SOYMailApplication{
 
