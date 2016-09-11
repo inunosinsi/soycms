@@ -434,7 +434,7 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 		//SOYShop連携
 		if(
 			is_null($this->value) &&
-			SOYINQUERY_SOYSHOP_CONNECT_SITE_ID &&
+			(defined("SOYINQUERY_SOYSHOP_CONNECT_SITE_ID") && SOYINQUERY_SOYSHOP_CONNECT_SITE_ID) &&
 			$this->SOYShopFrom != SOYShopConnector::SOYSHOP_NONE &&
 			SOYInquiryUtil::checkSOYShopInstall()
 		){
