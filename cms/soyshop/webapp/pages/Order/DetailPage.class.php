@@ -12,14 +12,16 @@ class DetailPage extends WebPage{
 			$historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
 			$historyContents = array();
 
+			$order = $dao->getById($this->id);
+
 			if (isset($_POST["Comment"])) {
 				$historyContents[] = $_POST["Comment"];
 			}
 
 			if (isset($_POST["State"])) {
 				$post = (object)$_POST["State"];
+				
 
-				$order = $dao->getById($this->id);
 				if (isset($_POST["State"]["orderStatus"]) && $order->getStatus() != $post->orderStatus) {
 					$order->setStatus($post->orderStatus);
 					$historyContents[] = "注文状態を<strong>「" . $order->getOrderStatusText() . "」</strong>に変更しました。";
@@ -34,13 +36,19 @@ class DetailPage extends WebPage{
 	    			"order" => $order,
 	    			"mode" => "status"
 	    		));
-			}
+			}			
+
+			SOYShopPlugin::load("soyshop.comment.form");
+			SOYShopPlugin::invoke("soyshop.comment.form", array(
+				"order" => $order
+			));
 
 			SOYShopPlugin::load("soyshop.operate.credit");
 			SOYShopPlugin::invoke("soyshop.operate.credit", array(
-				"order" => $dao->getById($this->id),
+				"order" => $order,
 				"mode" => "order_detail"
 			));
+			
 
 			if (count($historyContents)) {
 				$history = new SOYShop_OrderStateHistory();
@@ -51,8 +59,10 @@ class DetailPage extends WebPage{
 			}
 
 			try{
-				if (isset($order)) $dao->updateStatus($order);
-				if (isset($history)) $historyDAO->insert($history);
+				if (isset($history)) {
+					$dao->updateStatus($order);
+					$historyDAO->insert($history);
+				}
 
 				SOY2PageController::jump("Order.Detail." . $this->id . "?updated");
 				exit;
@@ -292,6 +302,11 @@ class DetailPage extends WebPage{
     		"name" => "Comment",
     		"size" => 70
     	));
+    	
+    	SOYShopPlugin::load("soyshop.comment.form");
+		$this->addLabel("extension_comment_form", array(
+			"html" => SOYShopPlugin::display("soyshop.comment.form", array("order" => $order))
+		));
 
     	/*** メール送信フォームの生成 ***/
     	$mailStatus = $order->getMailStatusList();

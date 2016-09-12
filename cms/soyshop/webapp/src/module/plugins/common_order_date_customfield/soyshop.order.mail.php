@@ -30,7 +30,7 @@ class CommonOrderDateCustomfieldMailModule extends SOYShopOrderMail{
 			
 		$array = array();
 		foreach($attributes as $obj){
-			if(strlen($obj->getValue1()) > 0){
+			if(isset($list[$obj->getFieldId()]["type"]) && strlen($obj->getValue1()) > 0){
 				$res = array();
 				$res[] = $list[$obj->getFieldId()]["label"];
 				

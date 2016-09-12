@@ -9,6 +9,9 @@ abstract class SOYShop_OrderAttributeDAO extends SOY2DAO{
 	 */
    	abstract function insert(SOYShop_OrderAttribute $bean);
    	
+   	/**
+     * @query #orderId# = :orderId AND #fieldId# = :fieldId
+     */
 	abstract function update(SOYShop_OrderAttribute $bean);
 	
 	/**
