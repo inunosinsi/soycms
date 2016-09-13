@@ -15,17 +15,16 @@ class LoggingSlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 	function getForm(CartLogic $cart){}
 	
 	function display($orderId){
-		$array = array();
 		
 		$attr = self::getLogic()->getAttribute($orderId);
 		if(!is_null($attr->getOrderId())){
-			$array[] = array(
+			return array(array(
 				"name" => "伝票番号",
 				"value" => htmlspecialchars($attr->getValue1(), ENT_QUOTES, "UTF-8")
-			);
+			));
 		}
 				
-		return $array;
+		return array();
 	}
 	
 	/**
@@ -33,18 +32,16 @@ class LoggingSlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 	 * @return array labelとformの連想配列を格納
 	 */
 	function edit($orderId){
-		
-		$array = array();
-		
+				
 		$attr = self::getLogic()->getAttribute($orderId);
 		if(!is_null($attr->getOrderId())){
-			$array[] = array(
+			return array(array(
 				"label" => "伝票番号",
 				"form" => "<input type=\"text\" class=\"text\" name=\"Customfield[LoggingSlipNumber]\" value=\"" . htmlspecialchars($attr->getValue1(), ENT_QUOTES, "UTF-8") . "\" style=\"width:95%;\">"
-			);
+			));
 		}
 				
-		return $array;
+		return array();
 	}
 	
 	/**
@@ -68,7 +65,7 @@ class LoggingSlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 	
 	private function getLogic(){
 		static $logic;
-		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.logging_slip_number.logic.LoggingLogic");
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.logging_slip_number.logic.SlipNumberLogic");
 		return $logic;
 	}
 }

@@ -215,6 +215,29 @@ class IndexPage extends WebPage{
     	$this->addLabel("office", array(
     		"text" => $user->getJobName(),
     	));
+    	
+    	$this->createAdd("user_customfield_list", "_common.User.CustomFieldValueListComponent", array(
+    		"list" => self::getCustomfield($user->getId())
+    	));
+    }
+    
+    private function getCustomfield($userId){
+    	SOYShopPlugin::load("soyshop.user.customfield");
+    	$delegate = SOYShopPlugin::invoke("soyshop.user.customfield", array(
+    		"mode" => "order",
+    		"userId" => $userId
+    	));
+
+    	$array = array();
+    	foreach($delegate->getList() as $obj){
+    		if(is_array($obj)){
+    			foreach($obj as $value){
+    				$array[] = $value;
+    			}
+    		}
+    	}
+
+    	return $array;
     }
 
     function addressInfo(){

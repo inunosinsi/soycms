@@ -8,7 +8,7 @@ class LoggingSlipNumberMail extends SOYShopOrderMail{
 	 */
 	function getMailBody(SOYShop_Order $order){
 		
-		$attr = SOY2Logic::createInstance("module.plugins.logging_slip_number.logic.LoggingLogic")->getAttribute($order->getId());
+		$attr = SOY2Logic::createInstance("module.plugins.logging_slip_number.logic.SlipNumberLogic")->getAttribute($order->getId());
 		if(strlen($attr->getValue1())){
 			SOY2::import("module.plugins.logging_slip_number.util.LoggingSlipNumberUtil");
 			$config = LoggingSlipNumberUtil::getConfig();

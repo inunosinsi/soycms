@@ -1,6 +1,6 @@
 <?php
 
-class LoggingLogic extends SOY2LogicBase{
+class SlipNumberLogic extends SOY2LogicBase{
 	
 	private $orderAttributeDao;
 	
@@ -18,7 +18,7 @@ class LoggingLogic extends SOY2LogicBase{
 	}
 	
 	function save($orderId, $value){
-		$attr = $this->getAttribute($orderId);
+		$attr = self::getAttribute($orderId);
 		$attr->setValue1(trim($value));
 			
 		//新規登録

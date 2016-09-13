@@ -22,7 +22,7 @@ class LoggingSlipNumberComment extends SOYShopCommentFormBase{
 	
 	private function getLogic(){
 		static $logic;
-		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.logging_slip_number.logic.LoggingLogic");
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.logging_slip_number.logic.SlipNumberLogic");
 		return $logic;
 	}
 }

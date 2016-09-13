@@ -41,6 +41,12 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	function confirm($app){}
 	
 	/**
+	 * 管理画面の注文の追加で表示できるエリア
+	* @return Array array(array("name" => "", "value" => "", "style" => "")) ※styleはなしで良い
+	 */
+	function order($userId){}
+	
+	/**
 	 * UserAttributeに登録する
 	 * @param MyPageLogic || CartLogic $mypage
 	 */
@@ -108,6 +114,10 @@ class SOYShopUserCustomfieldDelegateAction implements SOY2PluginDelegateAction{
 			
 			case "build_named_form"://各項目ごとに、createAdd()を行う
 				$action ->buildNamedForm($this->app, $this->pageObj, $this->userId);
+				break;
+			
+			case "order":
+				$this->_list[$moduleId] = $action->order($this->userId);
 				break;
 		}
 	}

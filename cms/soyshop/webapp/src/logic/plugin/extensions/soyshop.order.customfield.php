@@ -43,7 +43,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 * 管理画面で表示する値
 	 * ["name"]、["value"]を返す
 	 * @param Integer OrderId
-	 * @return Array array(array("name" => "", "value" => ""))
+	 * @return Array array(array("name" => "", "value" => "", "style" => "")) ※styleはなしで良い
 	 */
 	function display($orderId){
 		
