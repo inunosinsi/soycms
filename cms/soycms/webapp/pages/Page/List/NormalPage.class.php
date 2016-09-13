@@ -117,7 +117,7 @@ class NormalPage extends CMSWebPageBase{
     function updateCookie($cookieName, $hash){
 		$time = time() + 3*30*24*60*60;
 		foreach($hash as $name => $value){
-			setcookie("$cookieName[$name]",$value,$time);
+			@setcookie($cookieName[$name],$value,$time);
 		}
 	}
 	
