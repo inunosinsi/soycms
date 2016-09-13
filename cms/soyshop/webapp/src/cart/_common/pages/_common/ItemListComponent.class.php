@@ -114,7 +114,7 @@ class ItemListComponent extends HTMLList{
 
 		$this->addLabel("item_stock_error", array(
 			"visible" => ($itemCount > $openStock && !$this->ignoreStock),
-			"text" => MessageManager::get("STOCK_NOTICE", array("stock" => $openStock))
+			"text" => ($openStock > 0) ? MessageManager::get("STOCK_NOTICE", array("stock" => $openStock)) : MessageManager::get("NO_STOCK")
 		));
 		
 		$this->addLabel("item_order_error", array(

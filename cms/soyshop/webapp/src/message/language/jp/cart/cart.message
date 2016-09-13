@@ -14,4 +14,5 @@ CUSTOMFIELD_ERROR = エラーが発生しました。
 INPUT_NOTICE = 入力されていない項目があります。
 ORDER_REGISTER_FAIL = 注文の登録に失敗しました。
 STOCK_NOTICE = この商品は残り%stock%個です。
+NO_STOCK = この商品は在庫切れです。
 LABEL_POSTAGE = 送料

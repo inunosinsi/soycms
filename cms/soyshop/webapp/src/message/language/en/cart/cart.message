@@ -14,4 +14,5 @@ CUSTOMFIELD_ERROR = The error occured.
 INPUT_NOTICE = There is an item which is not inputted.
 ORDER_REGISTER_FAIL = Registration of the order went wrong.
 STOCK_NOTICE = This product is %stock% remaining.
+NO_STOCK = This product is out of stock.
 LABEL_POSTAGE = Postage
