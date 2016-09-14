@@ -95,7 +95,7 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 		$sql->table = "soyshop_item";
 		$sql->distinct = true;
 		$sql->order = $this->getSortQuery();//"update_date desc";
-		$sql->sql = "id";
+		$sql->sql = "id, item_name"; //MySQL5.7対策。ORDER BYでitem_nameを指定してるので、item_nameの値も取得しておく
 	
 		$where = array();
 		$queries = explode(" ", $name);
