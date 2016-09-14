@@ -34,6 +34,8 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 						$category = new SOYShop_Category();
 						$args = $page->getArguments();
 						$name = (isset($args[1])) ? trim($args[1]) : "";
+					}else{
+						$category = new SOYShop_Category();
 					}
 				}
 					
