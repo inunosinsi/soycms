@@ -75,12 +75,14 @@ class SOYShopPlugin extends SOY2Plugin{
 		static $modulelist;
 		
 		if(!$modulelist){
-			$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-			$modulelist = $dao->getActiveModules();
+			try{
+				$modulelist = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getActiveModules();
+			}catch(Exception $e){
+				$modulelist = array();
+			}
 		}
 		
 		return $modulelist;
 	}
-
 }
 ?>

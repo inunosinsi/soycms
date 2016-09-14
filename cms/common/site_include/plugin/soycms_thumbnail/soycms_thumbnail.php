@@ -136,6 +136,11 @@ class SOYCMSThumbnailPlugin{
 			$dir = str_replace("/" . UserInfoUtil::getSite()->getSiteId() . "/", "", UserInfoUtil::getSiteDirectory());
 			$path = $dir . $imageFilePath;
 			
+			//念の為、指定のパスに画像があるか調べる
+			if(!file_exists($path)) {
+				$path = $dir . "/" . UserInfoUtil::getSite()->getSiteId() . $imageFilePath;;
+			}
+			
 			$imageInfoArray = (getimagesize($path));
 			$w = (int)$imageInfoArray[0];
 			$h = (int)$imageInfoArray[1];
