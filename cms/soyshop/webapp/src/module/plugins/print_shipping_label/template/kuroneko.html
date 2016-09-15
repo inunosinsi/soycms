@@ -25,6 +25,16 @@
 	
 	<div class="shopname"><!-- soy:id="shopname" /--></div>
 	
+	
+	<!-- お届け日ここから -->
+	<div class="date m" soy:id="date_m"></div>
+	<div class="date d" soy:id="date_d"></div>
+	<!-- /お届け日ここまで -->
+	
+	<!-- 品名ここから -->
+	<div class="product" soy:id="product"></div>
+	<!-- /品名ここまで -->
+	
 	<!-- 配送時間ここから -->
 	<div class="time_on am" soy:id="delivery_time_am"></div>
 	<div class="time_on pm12" soy:id="delivery_time_12"></div>
@@ -32,8 +42,11 @@
 	<div class="time_on pm16" soy:id="delivery_time_16"></div>
 	<div class="time_on pm18" soy:id="delivery_time_18"></div>
 	<div class="time_on pm20" soy:id="delivery_time_20"></div>
-	
 	<!-- 配送時間ここまで -->
+	
+	<!-- 代金引換額ここから -->
+	<div class="order_price" soy:id="order_price"></div>
+	<!-- 代金引換額ここまで -->
 	
 </section>
 <!-- /soy:id="continuous_print" -->
@@ -43,7 +56,7 @@ section.label_area {
 	position:relative;
 	width:700px;
 	height:400px;
-	background-image:url("./img/label/kuroneko_connect_label.jpg");
+	background-image:url("./img/label/<!-- soy:id="label_company" /-->_<!-- soy:id="label_type" /-->_label.jpg");
 	page-break-inside: avoid;
 	page-break-after:always;
 }
@@ -123,6 +136,28 @@ section.label_area > div.shopname{
 	left:100px;
 }
 
+section.label_area > div.date{
+	position:absolute;
+	font-size:30px;
+	top:60px;
+}
+section.label_area > div.m{
+	left:530px;
+}
+section.label_area > div.d{
+	left:580px;
+}
+
+section.label_area > div.product{
+	position:absolute;
+	font-size:18px;
+	left:340px;
+	top:115px;
+	width:300px;
+	height:87px;
+	overflow-y:hidden;
+}
+
 section.label_area > div.time_on{
 	position:absolute;
 	border:3px solid #000000;
@@ -151,5 +186,15 @@ section.label_area > div.pm18{
 section.label_area > div.pm20{
 	top:180px;
 }
+section.label_area > div.order_price{
+	position:absolute;
+	font-size:22px;
+	left:583px;
+	top:307px;
+	width:110px;
+	text-align:right;
+	letter-spacing: 0.24em;
+}
+
 </style>
 </body>

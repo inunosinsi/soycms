@@ -6,6 +6,8 @@ class PrintLabelListComponent extends HTMLList{
 	
 	protected function populateItem($order){
 		
+		//前のページでPrintShippingLabelUtilを読み込んでいる
+		
 		//お届け先情報
 		$addrs = $order->getAddressArray();
 		
@@ -52,6 +54,20 @@ class PrintLabelListComponent extends HTMLList{
 			"text" => $this->shopname
 		));
 		
+		$dates = self::getDateArray();
+		
+		$this->addLabel("date_m", array(
+			"text" => (strlen($dates[1])) ? (int)$dates[1] : ""
+		));
+
+		$this->addLabel("date_d", array(
+			"text" => (strlen($dates[2])) ? (int)$dates[2] : ""
+		));
+		
+		$this->addLabel("product", array(
+			"html" => (isset($_POST["ShippingProduct"])) ? nl2br($_POST["ShippingProduct"]) : ""
+		));
+		
 		$selectedTime = self::getSelectedTime($order->getAttributeList());
 		
 		//配送時間でどこに○をするか？
@@ -61,6 +77,11 @@ class PrintLabelListComponent extends HTMLList{
 				"visible" => (($i + 1) === $selectedTime)
 			));
 		}
+		
+		//代金引換額
+		$this->addLabel("order_price", array(
+			"text" => self::getOrderPrice($order->getPrice())
+		));
 	}
 	
 	private function convertZipCode($zipcode){
@@ -124,6 +145,22 @@ class PrintLabelListComponent extends HTMLList{
 		}
 		
 		return $time;
+	}
+	
+	private function getDateArray(){
+		if(!isset($_POST["ShippingDate"]) || !strlen($_POST["ShippingDate"])) return array("", "", "");
+		return explode("-", $_POST["ShippingDate"]);
+	}
+	
+	private function getOrderPrice($price){
+		if(
+			SHIPPING_LABEL_COMPANY == PrintShippingLabelUtil::COMPANY_KURONEKO && 
+			SHIPPING_LABEL_TYPE == PrintShippingLabelUtil::TYPE_CONNECT
+		){
+			return $price;
+		}
+		
+		return "";
 	}
 	
 	function setCompany($company){

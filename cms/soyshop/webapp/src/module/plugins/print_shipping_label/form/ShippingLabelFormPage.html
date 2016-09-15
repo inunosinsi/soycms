@@ -1,0 +1,38 @@
+<div>注文結果に表示されている注文の印刷用配送伝票を一括で作成します。</div>
+
+<section>
+	<h3>クロネコヤマト</h3>
+	<div style="margin-left:20px;">
+		<input type="radio" soy:id="kuroneko_connect">
+		<input type="radio" soy:id="kuroneko_hatsubarai">
+		<input type="radio" soy:id="kuroneko_tyakubarai">
+	</div>
+	<h3>お届け日を入れる</h3>
+	<div style="margin-left:20px;">
+		<input type="text" id="shipping_label_date" class="date_picker_start" name="ShippingDate" readonly>&nbsp;
+		<input type="button" value="明日の日付" onclick="insertShippingLabelDateTomorrow();">&nbsp;
+		<input type="button" value="クリア" onclick="clearShippingLabelDate();"><br>
+		※空の場合は日付が挿入されません
+	</div>
+	<h3>品名を入れる</h3>
+	<div style="margin-left:20px;">
+		<textarea soy:id="product_name"></textarea>
+	</div>
+</section>
+
+<script>
+function insertShippingLabelDateTomorrow(){	
+	var date = new Date();
+	date.setDate(date.getDate() + 1);
+	
+	var m = String(date.getMonth() + 1);
+	if(m.length == 1) m = "0" + m;
+	var d = String(date.getDate());
+	if(d.length == 1) d = "0" + d;
+	document.querySelector("#shipping_label_date").value = date.getFullYear() + "-" + m + "-" + d;
+}
+
+function clearShippingLabelDate(){
+	document.querySelector("#shipping_label_date").value = "";
+}
+</script>

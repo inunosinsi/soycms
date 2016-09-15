@@ -14,20 +14,25 @@ class PrintShippingLabelExport extends SOYShopOrderExportBase{
 	 * 検索結果一覧に表示するメニューの説明
 	 */
 	function getMenuDescription(){
-		return "注文結果に表示されている注文の印刷用配送伝票を一括で作成します。";
+		SOY2::import("module.plugins.print_shipping_label.form.ShippingLabelFormPage");
+		$form = SOY2HTMLFactory::createInstance("ShippingLabelFormPage");
+		$form->setConfigObj($this);
+		$form->execute();
+		return $form->getObject();
 	}
 
 	/**
 	 * export エクスポート実行
 	 */
 	function export($orders){
-		SOY2::import("module.plugins.order_invoice.common.OrderInvoiceCommon");
-//		$template = OrderInvoiceCommon::getTemplateName();
-		$tmp = "kuroneko";
+		SOY2::import("module.plugins.print_shipping_label.util.PrintShippingLabelUtil");
+		
+		$tmp = key($_POST["ShippingLabel"]);
 		$html = file_get_contents(dirname(__FILE__) . "/template/" . $tmp . ".html");
 		
-//		SOY2DAOFactory::create("order.SOYShop_ItemModule");
-//		SOY2DAOFactory::create("config.SOYShop_ShopConfig");
+		//何の伝票を印刷するか？
+		define("SHIPPING_LABEL_COMPANY", $tmp);
+		define("SHIPPING_LABEL_TYPE", $_POST["ShippingLabel"][$tmp]);
 		
 		SOY2::import("module.plugins.print_shipping_label.page.ContinuousPage");
 		$page = SOY2HTMLFactory::createInstance("ContinuousPage", array(

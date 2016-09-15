@@ -10,7 +10,6 @@ class ContinuousPage extends HTMLTemplatePage{
 	}
 	
 	function build_print(){
-//		SOY2::import("module.plugins.order_invoice.common.OrderInvoiceCommon");
 		SOY2::imports("module.plugins.print_shipping_label.component.*");
 		
 		SOY2::import("domain.config.SOYShop_Area");
@@ -23,6 +22,15 @@ class ContinuousPage extends HTMLTemplatePage{
 //			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO"),
 			"company" => $config->getCompanyInformation(),
 			"shopname" => $config->getShopName()
+		));
+		
+		//背景画像の変更
+		$this->addLabel("label_company", array(
+			"text" => SHIPPING_LABEL_COMPANY
+		));
+		
+		$this->addLabel("label_type", array(
+			"text" => SHIPPING_LABEL_TYPE
 		));
 	}
 
