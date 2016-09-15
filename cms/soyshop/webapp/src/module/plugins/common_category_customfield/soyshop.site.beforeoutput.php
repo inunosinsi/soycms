@@ -34,6 +34,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 						$category = new SOYShop_Category();
 						$args = $page->getArguments();
 						$name = (isset($args[1])) ? trim($args[1]) : "";
+					//カスタムサーチフィールド以外は空のカテゴリオブジェクト
 					}else{
 						$category = new SOYShop_Category();
 					}

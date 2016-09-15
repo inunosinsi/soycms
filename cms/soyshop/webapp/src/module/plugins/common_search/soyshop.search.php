@@ -36,7 +36,7 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 					$this->count = $this->totalCountByName($query);
 					break;
 			}
-
+			
 			return $items;
 		}
 		
@@ -90,7 +90,6 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$sql = new SOY2DAO_Query();
 		$binds = array();
-
 		$sql->prefix = "select";
 		$sql->table = "soyshop_item";
 		$sql->distinct = true;
