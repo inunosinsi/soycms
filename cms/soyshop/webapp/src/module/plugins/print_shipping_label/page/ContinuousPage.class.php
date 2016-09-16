@@ -16,10 +16,12 @@ class ContinuousPage extends HTMLTemplatePage{
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$config = SOYShop_ShopConfig::load();
 		
+		$this->addModel("base", array(
+			"href" => SOYSHOP_BASE_URL
+		));
+				
 		$this->createAdd("continuous_print", "PrintLabelListComponent", array(
 			"list" => $this->orders,
-//			"itemOrderDao" => SOY2DAOFactory::create("shop.SOYShop_ItemOrderDAO"),
-//			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO"),
 			"company" => $config->getCompanyInformation(),
 			"shopname" => $config->getShopName()
 		));
