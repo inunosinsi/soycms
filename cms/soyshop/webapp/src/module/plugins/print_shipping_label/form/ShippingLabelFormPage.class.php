@@ -27,9 +27,19 @@ class ShippingLabelFormPage extends WebPage{
 			));
 		}
 		
+		$config = PrintShippingLabelUtil::getConfig();
+		
+		$this->addInput("shipping_date", array(
+			"name" => "ShippingDate",
+			"value" => (isset($config["shipping_date"]) && $config["shipping_date"] == 1) ? date("Y-m-d", strtotime("+1 day")) : "",
+			"class" => "date_picker_start",
+			"id" => "shipping_label_date",
+			"readonly" => true
+		));
+		
 		$this->addTextArea("product_name", array(
 			"name" => "ShippingProduct",
-			"value" => "",
+			"value" => (isset($config["product"])) ? $config["product"] : "",
 			"style" => "width:300px;height:80px;"
 		));
 	}

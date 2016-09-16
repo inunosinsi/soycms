@@ -12,6 +12,18 @@ class PrintShippingLabelUtil {
 	const MODE_HATSUBARAI = "発払";
 	const MODE_TYAKUBARAI = "着払";
 	
+	public static function getConfig(){
+		return SOYShop_DataSets::get("print_shipping_label.config", array(
+			"shipping_date" => 0,
+			"product" => ""
+		));
+	}
+	
+	public static function saveConfig($values){
+		$values["shipping_date"] = (isset($values["shipping_date"])) ? (int)$values["shipping_date"] : 0;
+		SOYShop_DataSets::put("print_shipping_label.config", $values);
+	}
+	
 	public static function getText($type){
 		switch($type){
 			case self::TYPE_CONNECT:
