@@ -237,16 +237,18 @@ class SOYShop_UserAttributeConfig{
 			case SOYShop_UserAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
 				$checkbox_value = (!defined("SOYSHOP_ADMIN_PAGE") && is_null($value) && strlen($this->getDefaultValue()) > 0) ? (explode(",", $this->getDefaultValue())) : explode(",", $value);
 				$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getOption()));
-				$body = "";
-				foreach($options as $key => $option){
-					$body .= '<input type="checkbox" class="custom_field_checkbox"'
-					       .' id="' . $h_formID . '_' . $key . '"'
-					       .' name="' . $h_formName . '[]"'
-					       .' value="' . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . '"'
-					       .( (in_array($option, $checkbox_value)) ? ' checked="checked"' : ""  )
-					       .' />';
-					$body .= '<label for="' . $h_formID . '_' . $key . '">' . $option . '</label>';
-					$body .= "\n";
+				if(count($options) && strlen($options[0])){
+					$body = "";
+					foreach($options as $key => $option){
+						$body .= '<input type="checkbox" class="custom_field_checkbox"'
+						       .' id="' . $h_formID . '_' . $key . '"'
+						       .' name="' . $h_formName . '[]"'
+						       .' value="' . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . '"'
+						       .( (in_array($option, $checkbox_value)) ? ' checked="checked"' : ""  )
+						       .' />';
+						$body .= '<label for="' . $h_formID . '_' . $key . '">' . $option . '</label>';
+						$body .= "\n";
+					}
 				}
 				break;
 			case SOYShop_UserAttribute::CUSTOMFIELD_TYPE_RADIO:
