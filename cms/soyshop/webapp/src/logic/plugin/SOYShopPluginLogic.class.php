@@ -4,13 +4,15 @@ class SOYShopPluginLogic extends SOY2LogicBase{
 
 	private $dao;
 
-	/**
-	 * prepare
-	 */
-	function prepare(){
+	function __construct(){
 		$this->dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-
 	}
+
+	/**
+	 * prepare コンストラクタに任せて、prepareでは何もしない
+	 */
+	function prepare(){}
+	
 	/**
 	 * type指定なしですべて
 	 *
