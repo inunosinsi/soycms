@@ -17,7 +17,6 @@ class DeliveryNormalMailModule extends SOYShopOrderMail{
 			$date = $this->order->getAttribute("delivery_normal.date");
 			if(isset($date)){
 				$res[] = $date["name"] . "：" . ( empty($date["value"]) ? "指定なし" : $date["value"] );
-				$res[] = "";
 			}
 			
 			//配達希望時間帯

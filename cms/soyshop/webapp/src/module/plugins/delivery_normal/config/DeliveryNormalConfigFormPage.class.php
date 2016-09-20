@@ -112,6 +112,13 @@ class DeliveryNormalConfigFormPage extends WebPage{
 			"label" => "お届け日の指定を表示する"
 		));
 		
+		$this->addCheckBox("use_delivery_date_unspecified", array(
+			"name" => "Date[use_delivery_date_unspecified]",
+			"value" => 1,
+			"selected" => (isset($config["use_delivery_date_unspecified"]) && $config["use_delivery_date_unspecified"] == 1),
+			"label" => "お届け日のセレクトボックスに指定なしを追加する"
+		));
+		
 		$this->addInput("delivery_shortest_date", array(
 			"name" => "Date[delivery_shortest_date]",
 			"value" => (isset($config["delivery_shortest_date"])) ? (int)$config["delivery_shortest_date"] : "",

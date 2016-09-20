@@ -25,6 +25,28 @@ class DeliveryNormalModule extends SOYShopDelivery{
 		//属性の登録
 		$cart->setOrderAttribute("delivery_normal", MessageManager::get("METHOD_DELIVERY"), $this->getName());
 
+		//お届け日の指定を利用するか？
+		$config = DeliveryNormalUtil::getDeliveryDateConfig();
+		if(isset($config["use_delivery_date"]) && $config["use_delivery_date"] == 1){
+			if(isset($_POST["delivery_date"]) && strlen($_POST["delivery_date"]) > 0){
+			
+				$date = $_POST["delivery_date"];
+				if(strlen($date) > 9){
+					$cart->setOrderAttribute("delivery_normal.date", "お届け日", $date);
+				}else{
+					$cart->setOrderAttribute("delivery_normal.date", "お届け日", "指定なし");
+				}
+				
+
+/**				
+				$dArray = explode("-", $date);
+				$dTimestamp = mktime(0, 0, 0, $dArray[1], $dArray[2], $dArray[0]);
+				$dateString = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic")->convertDateString($config["delivery_date_format"], $dTimestamp);
+				$cart->setOrderAttribute("delivery_normal.date", "お届け日", $dateString);
+**/
+			}
+		}
+
 		//配達時間帯の指定を利用するか？
 		$useDeliveryTime = DeliveryNormalUtil::getUseDeliveryTimeConfig();
 		if($useDeliveryTime["use"] == 1){
@@ -37,23 +59,6 @@ class DeliveryNormalModule extends SOYShopDelivery{
 				$cart->setOrderAttribute("delivery_normal.time", MessageManager::get("DELIVERY_TIME"), $time);
 			}else{
 				$cart->setOrderAttribute("delivery_normal.time", MessageManager::get("DELIVERY_TIME"), MessageManager::get("UNSPECIFIED"));
-			}
-		}
-		
-		//お届け日の指定を利用するか？
-		$config = DeliveryNormalUtil::getDeliveryDateConfig();
-		if(isset($config["use_delivery_date"]) && $config["use_delivery_date"] == 1){
-			if(isset($_POST["delivery_date"]) && strlen($_POST["delivery_date"]) > 0){
-			
-				$date = $_POST["delivery_date"];
-				$cart->setOrderAttribute("delivery_normal.date", "お届け日", $date);
-
-/**				
-				$dArray = explode("-", $date);
-				$dTimestamp = mktime(0, 0, 0, $dArray[1], $dArray[2], $dArray[0]);
-				$dateString = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic")->convertDateString($config["delivery_date_format"], $dTimestamp);
-				$cart->setOrderAttribute("delivery_normal.date", "お届け日", $dateString);
-**/
 			}
 		}
 	}

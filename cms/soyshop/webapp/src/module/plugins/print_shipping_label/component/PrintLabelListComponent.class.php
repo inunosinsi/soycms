@@ -176,8 +176,13 @@ class PrintLabelListComponent extends HTMLList{
 		$date = array("", "", "");
 		foreach($attrs as $key => $attr){
 			if(strpos($key, "delivery") !== false && strpos($key, ".date") !== false){
-				$date = explode("-", $attr["value"]);
-				break;
+				$val = str_replace(array("ー"), "-", $attr["value"]);
+				$val = mb_convert_kana($val, "a");
+				$array = explode("-", $val);
+				if(count($array) > 1) {
+					$date = $array;
+					break;
+				}
 			}
 		}
 		

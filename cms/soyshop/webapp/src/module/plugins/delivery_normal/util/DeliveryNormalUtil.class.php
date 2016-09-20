@@ -45,6 +45,7 @@ class DeliveryNormalUtil{
 	public static function getDeliveryDateConfig(){
 		return SOYShop_DataSets::get("delivery.default.delivery_date.config", array(
 			"use_delivery_date" => 0,
+			"use_delivery_date_unspecified" => 1,
 			"delivery_shortest_date" => 2,
 			"delivery_date_period" => 7,
 			"delivery_date_format" => "Y年m月d日(#w#)"
@@ -53,6 +54,7 @@ class DeliveryNormalUtil{
 	
 	public static function saveDeliveryDateConfig($values){
 		$values["use_delivery_date"] = (isset($values["use_delivery_date"])) ? (int)$values["use_delivery_date"] : 0;
+		$values["use_delivery_date_unspecified"] = (isset($values["use_delivery_date_unspecified"])) ? (int)$values["use_delivery_date_unspecified"] : 0;
 		SOYShop_DataSets::put("delivery.default.delivery_date.config", $values);
 	}
 

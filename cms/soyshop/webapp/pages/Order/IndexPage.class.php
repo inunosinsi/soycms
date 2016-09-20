@@ -257,7 +257,7 @@ class SearchForm extends SOYBodyComponentBase{
 			"name" => "search[noDelivery]",
 			"value" => 1,
 			"selected" => ($this->getNoDelivery() == 1),
-			"label" => "未配送の注文"
+			"label" => "未発送の注文"
 		));
 
 		$this->addSelect("payment_status_list", array(

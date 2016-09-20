@@ -48,6 +48,11 @@ class DeliveryNormalCartPage extends WebPage{
 		
 		$opts = array();
 		
+		//指定なしの項目を追加
+		if(isset($config["use_delivery_date_unspecified"]) && $config["use_delivery_date_unspecified"] == 1){
+			$opts[] = "指定なし";
+		}
+		
 		do{
 			$opts[date("Y-m-d", $shortest)] = $logic->convertDateString($config["delivery_date_format"], $shortest);
 			$shortest += 24 * 60 * 60;
