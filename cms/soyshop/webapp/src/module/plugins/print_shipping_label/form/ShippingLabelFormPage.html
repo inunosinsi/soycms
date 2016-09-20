@@ -1,0 +1,29 @@
+<div>注文結果に表示されている注文の印刷用配送伝票を一括で作成します。</div>
+
+<section>
+	<h3>配送業者</h3>
+	<div style="margin-left:20px;">
+		<input type="radio" soy:id="company_kuroneko">
+	</div>
+	<h3>品名を入れる</h3>
+	<div style="margin-left:20px;">
+		<textarea soy:id="product_name"></textarea>
+	</div>
+</section>
+
+<script>
+function insertShippingLabelDateTomorrow(){	
+	var date = new Date();
+	date.setDate(date.getDate() + 1);
+	
+	var m = String(date.getMonth() + 1);
+	if(m.length == 1) m = "0" + m;
+	var d = String(date.getDate());
+	if(d.length == 1) d = "0" + d;
+	document.querySelector("#shipping_label_date").value = date.getFullYear() + "-" + m + "-" + d;
+}
+
+function clearShippingLabelDate(){
+	document.querySelector("#shipping_label_date").value = "";
+}
+</script>
