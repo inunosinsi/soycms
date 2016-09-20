@@ -218,6 +218,9 @@ class SearchForm extends SOYBodyComponentBase{
 	private $userArea;
 	private $orderStatus;
 	private $paymentStatus;
+	
+	private $noDelivery;
+	private $noPayment;
 
 	private $orderDateStart;
 	private $orderDateEnd;
@@ -246,13 +249,28 @@ class SearchForm extends SOYBodyComponentBase{
 		$this->addSelect("status_list", array(
 			"name" => "search[orderStatus]",
 			"options" => SOYShop_Order::getOrderStatusList($checkPreOrder),
-			"selected" => $this->getSOYShop_OrderStatus()
+			"selected" => (is_null($this->getNoDelivery()) || $this->getNoDelivery() != 1) ? $this->getSOYShop_OrderStatus() : false
+		));
+				
+		
+		$this->addCheckBox("no_delivery", array(
+			"name" => "search[noDelivery]",
+			"value" => 1,
+			"selected" => ($this->getNoDelivery() == 1),
+			"label" => "未配送の注文"
 		));
 
 		$this->addSelect("payment_status_list", array(
 			"name" => "search[paymentStatus]",
 			"options" => SOYShop_Order::getPaymentStatusList(),
-			"selected" => $this->getPaymentStatus()
+			"selected" => (is_null($this->getNoPayment()) || $this->getNoPayment() != 1) ? $this->getPaymentStatus() : false
+		));
+		
+		$this->addCheckBox("no_payment", array(
+			"name" => "search[noPayment]",
+			"value" => 1,
+			"selected" => ($this->getNoPayment() == 1),
+			"label" => "未支払の注文"
 		));
 
 		$this->addInput("order_date_start", array(
@@ -307,6 +325,21 @@ class SearchForm extends SOYBodyComponentBase{
 	function setPaymentStatus($paymentStatus) {
 		$this->paymentStatus = $paymentStatus;
 	}
+	
+	function getNoDelivery(){
+		return $this->noDelivery;
+	}
+	function setNoDelivery($noDelivery){
+		$this->noDelivery = $noDelivery;
+	}
+	
+	function getNoPayment(){
+		return $this->noPayment;
+	}
+	function setNoPayment($noPayment){
+		$this->noPayment = $noPayment;
+	}
+	
 	function getItemList() {
 		return $this->itemList;
 	}

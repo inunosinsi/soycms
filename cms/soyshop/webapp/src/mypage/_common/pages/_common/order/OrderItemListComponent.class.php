@@ -12,7 +12,7 @@ class OrderItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_name", array(
-			"text" => $entity->getItemName()
+			"text" => (strlen($item->getCode())) ? $entity->getItemName() : "---"
 		));
 		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "display",

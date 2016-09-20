@@ -68,14 +68,18 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$binds[":user_area"] = @(int)$search["userArea"];
 		}
 
-		if(strlen(@$search["orderStatus"]) > 0){
+		if(isset($search["noDelivery"]) && $search["noDelivery"] == 1){
+			$where[] = "order_status in (".SOYShop_Order::ORDER_STATUS_REGISTERED.",".SOYShop_Order::ORDER_STATUS_RECEIVED.",".SOYShop_Order::ORDER_STATUS_STOCK_CONFIRM.")";
+		}else if(strlen(@$search["orderStatus"]) > 0){
 			$where[] = "order_status = :order_status";
 			$binds[":order_status"] = @$search["orderStatus"];
 		}else{
 			$where[] = "order_status not in (".SOYShop_Order::ORDER_STATUS_INTERIM.",".SOYShop_Order::ORDER_STATUS_CANCELED.")";
 		}
 
-		if(strlen(@$search["paymentStatus"]) > 0){
+		if(isset($search["noPayment"]) && $search["noPayment"] == 1){
+			$where[] = "payment_status in (".SOYShop_Order::PAYMENT_STATUS_WAIT.",".SOYShop_Order::PAYMENT_STATUS_ERROR.",".SOYShop_Order::PAYMENT_STATUS_DIRECT.")";
+		}else if(strlen(@$search["paymentStatus"]) > 0){
 			$where[] = "payment_status = :payment_status";
 			$binds[":payment_status"] = @$search["paymentStatus"];
 		}
