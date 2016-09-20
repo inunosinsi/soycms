@@ -93,6 +93,23 @@ class PrintLabelListComponent extends HTMLList{
 		$this->addLabel("order_price", array(
 			"text" => self::getOrderPrice($order->getPrice(), $t)
 		));
+		
+		
+		//検索
+		if(isset($_POST["search_delivery_date"]) && strlen($_POST["search_delivery_date"])){
+			$sDate = explode("-", $_POST["search_delivery_date"]);
+			
+			if(
+				(int)$dates[0] === (int)$sDate[0] && 
+				(int)$dates[1] === (int)$sDate[1] && 
+				(int)$dates[2] === (int)$sDate[2]
+			){
+				//表示する
+			}else{
+				//表示しない
+				return false;
+			}
+		}
 	}
 	
 	private function getDeliveryType($moduleList){
@@ -173,17 +190,23 @@ class PrintLabelListComponent extends HTMLList{
 	}
 	
 	private function getDateArray($attrs){
-		$date = array("", "", "");
+		$date = array(null, null, null);
 		foreach($attrs as $key => $attr){
 			if(strpos($key, "delivery") !== false && strpos($key, ".date") !== false){
-				$val = str_replace(array("ー"), "-", $attr["value"]);
+				$val = $attr["value"];
+				$val = str_replace(array("ー"), "-", $val);
 				$val = mb_convert_kana($val, "a");
 				$array = explode("-", $val);
-				if(count($array) > 1) {
+				if(count($array) > 2) {
 					$date = $array;
 					break;
 				}
 			}
+		}
+		
+		//指定日なしの処理
+		if(!is_numeric($date[0]) && strlen($_POST["insert_unspecified"])){
+			$date = explode("-", $_POST["insert_unspecified"]);
 		}
 		
 		return $date;
