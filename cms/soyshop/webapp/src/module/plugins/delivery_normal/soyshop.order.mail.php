@@ -10,13 +10,22 @@ class DeliveryNormalMailModule extends SOYShopOrderMail{
 		if($this->isUse()){
 			$res = array();
 			
-			//配達希望時間帯
-			$time = $this->order->getAttribute("delivery_normal.time");
-			
 			SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
 			$res[] = MessageManager::get("METHOD_DELIVERY") . "：" . DeliveryNormalUtil::getTitle();
-			$res[] = $time["name"] . "：" . ( empty($time["value"]) ? "指定なし" : $time["value"] );
-			$res[] = "";
+			
+			//お届け指定日
+			$date = $this->order->getAttribute("delivery_normal.date");
+			if(isset($date)){
+				$res[] = $date["name"] . "：" . ( empty($date["value"]) ? "指定なし" : $date["value"] );
+				$res[] = "";
+			}
+			
+			//配達希望時間帯
+			$time = $this->order->getAttribute("delivery_normal.time");
+			if(isset($time)){
+				$res[] = $time["name"] . "：" . ( empty($time["value"]) ? "指定なし" : $time["value"] );
+				$res[] = "";
+			}
 
 			return implode("\n", $res);
 		}

@@ -1,10 +1,12 @@
 <?php
 class DeliveryNormalConfigFormPage extends WebPage{
 
-	private $config;
+	private $configObj;
 
 	function __construct(){
 		SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
+		SOY2::import("module.plugins.delivery_normal.component.DeliveryPriceListComponent");
+		SOY2::import("module.plugins.delivery_normal.component.DeliveryTimeConfigListComponent");
 		SOY2DAOFactory::importEntity("config.SOYShop_Area");
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
@@ -14,52 +16,49 @@ class DeliveryNormalConfigFormPage extends WebPage{
 		if(soy2_check_token()){
 
 			if(isset($_POST["title"])){
-				SOYShop_DataSets::put("delivery.default.title", $_POST["title"]);
+				DeliveryNormalUtil::saveTitle($_POST["title"]);
 			}
 			if(isset($_POST["description"])){
-				SOYShop_DataSets::put("delivery.default.description", $_POST["description"]);
+				DeliveryNormalUtil::saveDescription($_POST["description"]);
 			}
 
 			if(isset($_POST["config"])){
-				$config = $_POST["config"];
-				$config["free"] = mb_convert_kana($config["free"], "a");
-				$config["free"] = (is_numeric($config["free"])) ? $config["free"] : null;
-				SOYShop_DataSets::put("delivery.default.free_price", $config);
-				$this->config->redirect("updated");
+				DeliveryNormalUtil::saveFreePrice($_POST["config"]);
 			}
 
 			if(isset($_POST["price"])){
-				SOYShop_DataSets::put("delivery.default.prices", $_POST["price"]);
-				$this->config->redirect("updated");
+				DeliveryNormalUtil::savePrice($_POST["price"]);
 			}
 
 			if(isset($_POST["delivery_time_config"])){
-				$time_config = array_diff($_POST["delivery_time_config"], array(""));
-				SOYShop_DataSets::put("delivery.default.delivery_time_config", $time_config);
+				DeliveryNormalUtil::saveDeliveryTimeConfig($_POST["delivery_time_config"]);
 
 				//配達時間帯を使用するかどうかの設定
 				$useDeliveryTime["use"] = (isset($_POST["use_delivery_time"]) && $_POST["use_delivery_time"] == 1) ? 1 : 0;
-				SOYShop_DataSets::put("delivery.default.use.time", $useDeliveryTime);
-				$this->config->redirect("updated");
+				DeliveryNormalUtil::saveUseDeliveryTimeConfig($useDeliveryTime);
 			}
+			
+			if(isset($_POST["Date"])){
+				DeliveryNormalUtil::saveDeliveryDateConfig($_POST["Date"]);
+			}
+			
+			$this->configObj->redirect("updated");
 		}
 	}
 
 	function execute(){
 		WebPage::__construct();
+		
+		$this->addForm("form");
 
-		$this->buildTextForm();
-		$this->buildPriceForm();
-		$this->buildTimeForm();
-
-		$this->addModel("updated", array(
-			"visible" => isset($_GET["updated"])
-		));
+		self::buildTextForm();
+		self::buildPriceForm();
+		self::buildTimeForm();
+		self::buildDateForm();
 	}
 
-	function buildTextForm(){
-		$this->addForm("text_form");
-		
+	private function buildTextForm(){
+
 		$this->addInput("title", array(
 			"value" => DeliveryNormalUtil::getTitle(),
 			"name"  => "title"
@@ -70,27 +69,21 @@ class DeliveryNormalConfigFormPage extends WebPage{
 		));
 	}
 
-	function buildPriceForm(){
+	private function buildPriceForm(){
 		$free = DeliveryNormalUtil::getFreePrice();
-
-		$this->addForm("free_form");
 
 		$this->addInput("price_free", array(
 			"name" => "config[free]",
 			"value" => (isset($free["free"])) ? $free["free"] : ""
 		));
 
-		$this->addForm("price_form");
-
-		$this->createAdd("prices", "DeliveryNormalPriceList", array(
+		$this->createAdd("prices", "DeliveryPriceListComponent", array(
 			"list"   => SOYShop_Area::getAreas(),
 			"prices" => DeliveryNormalUtil::getPrice()
 		));
 	}
 
-	function buildTimeForm(){
-		$this->addForm("time_form");
-
+	private function buildTimeForm(){
 		$time_config = DeliveryNormalUtil::getDeliveryTimeConfig();
 		while(count($time_config) < 6){
 			$time_config[] = "";
@@ -104,48 +97,41 @@ class DeliveryNormalConfigFormPage extends WebPage{
 			"elementId" => "use_delivery_time"
 		));
 
-		$this->createAdd("delivery_time_config", "DeliveryNormalTimeConfigList", array(
+		$this->createAdd("delivery_time_config", "DeliveryTimeConfigListComponent", array(
 			"list" => $time_config,
 		));
 	}
-
-	function setConfigObj($obj) {
-		$this->config = $obj;
-	}
-}
-
-class DeliveryNormalTimeConfigList extends HTMLList{
-
-	function populateItem($entity){
-		$this->addInput("delivery_time", array(
-			"value" => $entity,
-			"name"  => "delivery_time_config[]"
+	
+	private function buildDateForm(){
+		$config = DeliveryNormalUtil::getDeliveryDateConfig();
+		
+		$this->addCheckBox("use_delivery_date", array(
+			"name" => "Date[use_delivery_date]",
+			"value" => 1,
+			"selected" => (isset($config["use_delivery_date"]) && $config["use_delivery_date"] == 1),
+			"label" => "お届け日の指定を表示する"
 		));
-	}
-}
-
-class DeliveryNormalPriceList extends HTMLList{
-
-	var $prices;
-
-	function populateItem($entity, $key, $counter, $length){
-		$this->addModel("second_table", array(
-			"visible" => ($counter == 24),
+		
+		$this->addInput("delivery_shortest_date", array(
+			"name" => "Date[delivery_shortest_date]",
+			"value" => (isset($config["delivery_shortest_date"])) ? (int)$config["delivery_shortest_date"] : "",
+			"style" => "width:60px;text-align:right;"
 		));
-		$this->addCheckBox("area_check", array(
-			"label"    => $entity,
-			"elementId"  => "price_check_" . $key,
-			"targetId" => "price_input_" . $key,
+		
+		$this->addInput("delivery_date_period", array(
+			"name" => "Date[delivery_date_period]",
+			"value" => (isset($config["delivery_date_period"])) ? (int)$config["delivery_date_period"] : "",
+			"style" => "width:60px;text-align:right;"
 		));
-		$this->addInput("price", array(
-			"attr:id"  => "price_input_" . $key,
-			"value" => (isset($this->prices[$key])) ? $this->prices[$key] : "",
-			"name"  => "price[$key]"
+		
+		$this->addInput("delivery_date_format", array(
+			"name" => "Date[delivery_date_format]",
+			"value" => (isset($config["delivery_date_format"])) ? $config["delivery_date_format"] : "",
 		));
 	}
 
-	function setPrices($prices) {
-		$this->prices = $prices;
+	function setConfigObj($configObj) {
+		$this->configObj = $configObj;
 	}
 }
 ?>

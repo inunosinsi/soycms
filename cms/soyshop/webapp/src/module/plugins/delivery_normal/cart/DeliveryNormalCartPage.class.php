@@ -19,15 +19,42 @@ class DeliveryNormalCartPage extends WebPage{
 		$useDeliveryTime = DeliveryNormalUtil::getUseDeliveryTimeConfig();
 		
 		//配達時間帯の指定を利用するか？
-		$this->addModel("display_delivery_time_table", array(
-			"visible" => (isset($useDeliveryTime["use"]) && $useDeliveryTime["use"] == 1)
-		));
+		DisplayPlugin::toggle("display_delivery_time_table", (isset($useDeliveryTime["use"]) && $useDeliveryTime["use"] == 1));
 		
 		$this->addSelect("delivery_time", array(
 			"name" => "delivery_time",
 			"options" => DeliveryNormalUtil::getDeliveryTimeConfig(),
 			"selected" => $this->cart->getOrderAttribute("delivery_normal.time")
 		));
+		
+		//お届け日の指定を利用するか？
+		$config = DeliveryNormalUtil::getDeliveryDateConfig();
+		DisplayPlugin::toggle("display_delivery_date_table", (isset($config["use_delivery_date"]) && $config["use_delivery_date"] == 1));
+		
+		$this->addSelect("delivery_date", array(
+			"name" => "delivery_date",
+			"options" => self::getDeliveryDateOptions($config),
+			"selected" => $this->cart->getOrderAttribute("delivery_normal.date")
+		));
+	}
+	
+	private function getDeliveryDateOptions($config){
+		
+		//最短の日付を取得
+		$shortest = time() + (int)$config["delivery_shortest_date"] * 24 * 60 * 60;
+		$last = $shortest + (int)$config["delivery_date_period"] * 24 * 60 * 60;
+		
+		$logic = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic");
+		
+		$opts = array();
+		
+		do{
+			$opts[date("Y-m-d", $shortest)] = $logic->convertDateString($config["delivery_date_format"], $shortest);
+			$shortest += 24 * 60 * 60;
+		}while($shortest < $last);
+		
+		
+		return $opts;
 	}
 	
 	function setCart($cart){

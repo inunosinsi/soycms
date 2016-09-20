@@ -1,44 +1,43 @@
-<p class="notice" soy:id="updated">変更しました</p>
+<p class="notice" soy:display="updated">変更しました</p>
+
+<form soy:id="form">
 
 <h3>文言設定</h3>
-<form soy:id="text_form">
-	<table class="form_table" style="">
-		<tr>
-			<th>タイトル</th>
-		</tr>
-		<tr>
-			<td><input class="text" value="" soy:id="title" /></td>
-		</tr>
-		
-		<tr>
-			<th>注意書き（HTML可）</th>
-		</tr>
-		<tr>
-			<td><textarea class="minieditor" soy:id="description"></textarea></td>
-		</tr>
-	</table>
+
+<table class="form_table" style="">
+	<tr>
+		<th>タイトル</th>
+	</tr>
+	<tr>
+		<td><input class="text" value="" soy:id="title" /></td>
+	</tr>
 	
-	<p class="pageBtn" style="clear:both;">
-		<input type="submit" class="submit_button" value="変更" />
-	</p>
-</form soy:id="text_form">
+	<tr>
+		<th>注意書き（HTML可）</th>
+	</tr>
+	<tr>
+		<td><textarea class="minieditor" soy:id="description"></textarea></td>
+	</tr>
+</table>
+
+<p class="pageBtn" style="clear:both;">
+	<input type="submit" class="submit_button" value="変更" />
+</p>
 
 <h3>配送料無料設定</h3>
-<form soy:id="free_form">
-	<table class="form_table" style="">
-		<tr>
-			<th style="width:20%;">購入金額</th>
-			<td>
-				<input type="text" class="alR text" name="" soy:id="price_free" style="text-align:right;ime-mode:inactive;width:30%;"/>
-				&nbsp;円以上お買い上げの方は配送料無料
-			</td>
-		</tr>
-	</table>
-	
-	<p class="pageBtn" style="clear:both;">
-		<input type="submit" class="submit_button" value="変更" />
-	</p>
-</form soy:id="free_form">
+<table class="form_table" style="">
+	<tr>
+		<th style="width:20%;">購入金額</th>
+		<td>
+			<input type="text" class="alR text" name="" soy:id="price_free" style="text-align:right;ime-mode:inactive;width:30%;"/>
+			&nbsp;円以上お買い上げの方は配送料無料
+		</td>
+	</tr>
+</table>
+
+<p class="pageBtn" style="clear:both;">
+	<input type="submit" class="submit_button" value="変更" />
+</p>
 
 <h3>都道府県別料金</h3>
 <div class="table_container">
@@ -56,88 +55,112 @@
 		</tr>
 	</table>
 		
-	<form method="post" soy:id="price_form">
 
-		<table class="form_table" style="width:35%;float:left;margin-left:10%;">
-			<tr>
-				<th style="width:5em;">県名</th>
-				<th style="width:5em;">送料</th>
-			</tr>
-			<!--  soy:id="prices" -->
-			<tr>
-			<th class="alC">
-				<input type="checkbox" class="price_input_check" soy:id="area_check" />
-			</th>
-			<td>
-				<input class="alR text" style="width: 100px;" type="text" soy:id="price" /> 円
-			</td>
-			</tr>
+	<table class="form_table" style="width:35%;float:left;margin-left:10%;">
+		<tr>
+			<th style="width:5em;">県名</th>
+			<th style="width:5em;">送料</th>
+		</tr>
+		<!--  soy:id="prices" -->
+		<tr>
+		<th class="alC">
+			<input type="checkbox" class="price_input_check" soy:id="area_check" />
+		</th>
+		<td>
+			<input class="alR text" style="width: 100px;" type="text" soy:id="price" /> 円
+		</td>
+		</tr>
+
+	<!--  soy:id="second_table" -->
+	</table>
+	<table class="form_table" style="width:35%;float:left;margin-left:5%;" >
+		<tr>
+			<th style="width:5em;">県名</th>
+			<th style="width:5em;">送料</th>
+		</tr>
+	<!--  /soy:id="second_table" -->
+
+		<!--  /soy:id="prices" -->
+
+	</table>
 	
-		<!--  soy:id="second_table" -->
-		</table>
-		<table class="form_table" style="width:35%;float:left;margin-left:5%;" >
-			<tr>
-				<th style="width:5em;">県名</th>
-				<th style="width:5em;">送料</th>
-			</tr>
-		<!--  /soy:id="second_table" -->
-
-			<!--  /soy:id="prices" -->
-
-		</table>
-		
-		<p class="pageBtn" style="clear:both;">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
+	<p class="pageBtn" style="clear:both;">
+		<input type="submit" class="submit_button" value="変更" />
+	</p>
 	
-	</form soy:id="price_form">
 </div>
+
+<h3>お届け日の指定</h3>
+<dl>
+	<dt>表示設定</dt>
+	<dd>
+		<input type="checkbox" soy:id="use_delivery_date">
+	</dd>
+	
+	<dt>お届け日の最短日の設定</dt>
+	<dd>
+		<input type="number" soy:id="delivery_shortest_date">&nbsp;日後
+	</dd>
+	
+	<dt>お届け日の選択可能期間</dt>
+	<dd>
+		<input type="number" soy:id="delivery_date_period">&nbsp;日間
+	</dd>
+	
+	<dt>お届け日の表示のフォーマット</dt>
+	<dd>
+		<input type="text" soy:id="delivery_date_format"><br>
+		※#w#は曜日の漢字表記に変換します
+	</dd>
+</dl>
+<p class="pageBtn" style="clear:both;">
+	<input type="submit" class="submit_button" value="変更" />
+</p>
 
 <h3>配達時間帯</h3>
 <div class="table_container" style="width: 100%">
-	<form method="post" soy:id="time_form">
 		
-		<table class="form_table" style="">
-			<tr>
-				<th style="width:20%;">表示設定</th>
-				<td>
-					<input type="checkbox" soy:id="use_delivery_time" />
-					<label for="use_delivery_time">配達時間帯指定を表示する</label>
-				</td>
-			</tr>
-		</table>
+	<table class="form_table" style="">
+		<tr>
+			<th style="width:20%;">表示設定</th>
+			<td>
+				<input type="checkbox" soy:id="use_delivery_time" />
+				<label for="use_delivery_time">配達時間帯指定を表示する</label>
+			</td>
+		</tr>
+	</table>
+
+	<table class="form_table alC" style="width:480px;margin: 1ex auto;" id="delivery_time_config_table">
+	<thead>
+		<tr>
+			<th>配達時間帯希望の選択肢</th>
+		</tr>
+	</thead>
+	<tfoot>
+		<tr>
+			<td>
+				<a class="button" href="javascript:void(0);" onclick="add_time_form();">入力欄の追加</a>
+			</td>
+		</tr>
+	</tfoot>
+	<tbody>
+		<!-- soy:id="delivery_time_config" -->
+		<tr>
+			<td>
+				<input class="text" value="" soy:id="delivery_time" />
+				<a class="button" href="javascript:void(0);" onclick="delete_time_form(this);">削除</a>
+			</td>
+		</tr>
+		<!-- /soy:id="delivery_time_config" -->
+	</tbody>
+	</table>
 	
-		<table class="form_table alC" style="width:480px;margin: 1ex auto;" id="delivery_time_config_table">
-		<thead>
-			<tr>
-				<th>配達時間帯希望の選択肢</th>
-			</tr>
-		</thead>
-		<tfoot>
-			<tr>
-				<td>
-					<a class="button" href="javascript:void(0);" onclick="add_time_form();">入力欄の追加</a>
-				</td>
-			</tr>
-		</tfoot>
-		<tbody>
-			<!-- soy:id="delivery_time_config" -->
-			<tr>
-				<td>
-					<input class="text" value="" soy:id="delivery_time" />
-					<a class="button" href="javascript:void(0);" onclick="delete_time_form(this);">削除</a>
-				</td>
-			</tr>
-			<!-- /soy:id="delivery_time_config" -->
-		</tbody>
-		</table>
-		
-		<p class="pageBtn" style="clear:both;">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
-	
-	</form soy:id="time_form">
+	<p class="pageBtn" style="clear:both;">
+		<input type="submit" class="submit_button" value="変更" />
+	</p>
 </div>
+
+</form soy:id="form">
 
 <script type="text/javascript">
 function toggle_check(all){
