@@ -133,7 +133,15 @@ class DeliveryNormalConfigFormPage extends WebPage{
 			"label" => "注文日が定休日の場合、最短のお届け日を翌営業日から表示する"
 		));
 		
-		DisplayPlugin::toggle("notice_re_calc_shortest_date", !SOYShopPluginUtil::checkIsActive("parts_calendar"));
+		$installedCalender = SOYShopPluginUtil::checkIsActive("parts_calendar");
+		DisplayPlugin::toggle("notice_re_calc_shortest_date", !$installedCalender);
+		
+		DisplayPlugin::toggle("installed_calendar_plugin", $installedCalender);
+		
+		$this->addLink("calendar_config_link", array(
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=parts_calendar")
+		));
+		
 		
 		$this->addInput("delivery_date_period", array(
 			"name" => "Date[delivery_date_period]",
