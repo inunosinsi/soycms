@@ -47,6 +47,7 @@ class DeliveryNormalUtil{
 			"use_delivery_date" => 0,
 			"use_delivery_date_unspecified" => 1,
 			"delivery_shortest_date" => 2,
+			"use_re_calc_shortest_date" => 1,
 			"delivery_date_period" => 7,
 			"delivery_date_format" => "Y年m月d日(#w#)"
 		));

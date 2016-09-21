@@ -7,6 +7,7 @@ class DeliveryNormalCartPage extends WebPage{
 	
 	function __construct(){
 		SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
+		SOY2::import("util.SOYShopPluginUtil");
 	}
 	
 	function execute(){
@@ -41,7 +42,18 @@ class DeliveryNormalCartPage extends WebPage{
 	private function getDeliveryDateOptions($config){
 		
 		//最短の日付を取得
-		$shortest = time() + (int)$config["delivery_shortest_date"] * 24 * 60 * 60;
+		$time = time();
+		
+		//営業日を加味
+		if(
+			isset($config["use_re_calc_shortest_date"]) && 
+			$config["use_re_calc_shortest_date"] == 1 && 
+			SOYShopPluginUtil::checkIsActive("parts_calendar")
+		){
+			$time = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.BusinessDateLogic")->getNextBusinessDate();
+		}
+		
+		$shortest = $time + (int)$config["delivery_shortest_date"] * 24 * 60 * 60;
 		$last = $shortest + (int)$config["delivery_date_period"] * 24 * 60 * 60;
 		
 		$logic = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic");

@@ -9,6 +9,7 @@ class DeliveryNormalConfigFormPage extends WebPage{
 		SOY2::import("module.plugins.delivery_normal.component.DeliveryTimeConfigListComponent");
 		SOY2DAOFactory::importEntity("config.SOYShop_Area");
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
+		SOY2::import("util.SOYShopPluginUtil");
 	}
 
 	function doPost(){
@@ -124,6 +125,15 @@ class DeliveryNormalConfigFormPage extends WebPage{
 			"value" => (isset($config["delivery_shortest_date"])) ? (int)$config["delivery_shortest_date"] : "",
 			"style" => "width:60px;text-align:right;"
 		));
+		
+		$this->addCheckBox("use_re_calc_shortest_date", array(
+			"name" => "Date[use_re_calc_shortest_date]",
+			"value" => 1,
+			"selected" => (isset($config["use_re_calc_shortest_date"]) && $config["use_re_calc_shortest_date"] == 1),
+			"label" => "注文日が定休日の場合、最短のお届け日を翌営業日から表示する"
+		));
+		
+		DisplayPlugin::toggle("notice_re_calc_shortest_date", !SOYShopPluginUtil::checkIsActive("parts_calendar"));
 		
 		$this->addInput("delivery_date_period", array(
 			"name" => "Date[delivery_date_period]",
