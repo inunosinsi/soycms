@@ -46,7 +46,7 @@ class SitemapPlugin{
 	
 	function config_page(){
 
-		include_once(dirname(__FILE__) . "/config/SitemapConfigFormPage.class.php");
+		SOY2::import("site_include.plugin.sitemap.config.SitemapConfigFormPage");
 		$form = SOY2HTMLFactory::createInstance("SitemapConfigFormPage");
 		$form->setPluginObj($this);
 		$form->execute();
@@ -54,7 +54,7 @@ class SitemapPlugin{
 	}
 	
 	function onPageOutput($obj){
-		
+
 		$xml = array();
 		
 		//サイトマップ野時のみ
