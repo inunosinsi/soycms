@@ -35,8 +35,10 @@ class ShippingDateLogic extends SOY2LogicBase{
 		if($isRegularHoliday || $isBeforeOpeningTime || $isAfterClosingTime){		
 			$day = (int)$this->config["delivery"]["regular"]["day"];
 			
-			//開業時刻前のみ配送日設定の数字を一つ減らす
-			if($isBeforeOpeningTime) $day--;
+			//開業時刻前のみ配送日設定の数字を午前と同じにする
+			if($isBeforeOpeningTime) {
+				$day = (int)$this->config["delivery"]["am"]["day"];
+			}
 			
 			$description = $this->config["delivery"]["regular"]["description"];
 			
