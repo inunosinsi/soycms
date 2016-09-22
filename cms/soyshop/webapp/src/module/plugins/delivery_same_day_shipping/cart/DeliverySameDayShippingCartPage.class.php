@@ -25,17 +25,8 @@ class DeliverySameDayShippingCartPage extends WebPage{
 		$aArray = explode("-", date("Y-n-j", $values[1]));
 				
 		//説明文
-		$description = str_replace("#SHIPPING_YEAR#", $bArray[0], $values[2]);
-		$description = str_replace("#SHIPPING_MONTH#", $bArray[1], $description);
-		$description = str_replace("#SHIPPING_DAY#", $bArray[2], $description);
-		$description = str_replace("#ARRIVAL_YEAR#", $aArray[0], $description);
-		$description = str_replace("#ARRIVAL_MONTH#", $aArray[1], $description);
-		$description = str_replace("#ARRIVAL_DAY#", $aArray[2], $description);
-		
-		unset($values);
-		
 		$this->addLabel("content", array(
-			"text" => $description
+			"html" => nl2br($logic->convertDescription($values))
 		));
 		
 		//発送予定日
@@ -51,6 +42,8 @@ class DeliverySameDayShippingCartPage extends WebPage{
 			"name" => "DeliveryPlugin[arrivalDate]",
 			"value" => $aArray[0] . "-" . $aArray[1] . "-" . $aArray[2]
 		));
+		
+		unset($values);
 	}
 	
 	function setCart($cart){

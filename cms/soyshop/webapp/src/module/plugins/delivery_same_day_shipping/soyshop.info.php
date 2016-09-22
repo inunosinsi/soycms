@@ -5,7 +5,7 @@ class DeliverySameDayShippingInfo extends SOYShopInfoPageBase{
 
 	function getPage($active = false){
 		if($active){
-			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=delivery_same_day_shipping").'">即日出荷の設定</a>';
+			return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=delivery_same_day_shipping").'">即日発送表示の設定</a>';
 		}else{
 			return "";
 		}

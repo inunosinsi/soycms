@@ -16,13 +16,20 @@ class DeliverySameDayShippingBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
 		
 		SOY2::import("module.plugins.delivery_same_day_shipping.util.DeliverySameDayShippingUtil");
-		$values = SOY2Logic::createInstance("module.plugins.delivery_same_day_shipping.logic.ShippingDateLogic", array("config" => DeliverySameDayShippingUtil::getConfig()))->get();
+		$logic = SOY2Logic::createInstance("module.plugins.delivery_same_day_shipping.logic.ShippingDateLogic", array("config" => DeliverySameDayShippingUtil::getConfig()));
+		$values = $logic->get();
 		
 		//発送予定日の配列
 		$bArray = explode("-", date("Y-n-j", $values[0]));
 		
 		//到着予定日の配列
 		$aArray = explode("-", date("Y-n-j", $values[1]));
+		
+		//説明文
+		$page->addLabel("description", array(
+			"soy2prefix" => "dsd",
+			"html" => nl2br($logic->convertDescription($values))
+		));
 		
 		$page->addLabel("shipping_year", array(
 			"soy2prefix" => "dsd",
@@ -53,6 +60,8 @@ class DeliverySameDayShippingBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			"soy2prefix" => "dsd",
 			"text" => $aArray[2]
 		));
+		
+		unset($values);
 	}
 }
 SOYShopPlugin::extension("soyshop.site.beforeoutput", "delivery_same_day_shipping", "DeliverySameDayShippingBeforeOutput");

@@ -17,7 +17,7 @@ class DeliverySameDayShippingConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPageTitle(){
-		return "即日出荷設定";
+		return "即日発送設定";
 	}
 }
 SOYShopPlugin::extension("soyshop.config","delivery_same_day_shipping","DeliverySameDayShippingConfig");

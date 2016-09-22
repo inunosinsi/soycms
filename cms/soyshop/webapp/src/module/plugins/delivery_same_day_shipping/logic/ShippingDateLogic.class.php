@@ -90,6 +90,22 @@ class ShippingDateLogic extends SOY2LogicBase{
 		
 		return false;
 	}
+	
+	function convertDescription($values){
+		//発送予定日の配列
+		$bArray = explode("-", date("Y-n-j", $values[0]));
+		
+		//到着予定日の配列
+		$aArray = explode("-", date("Y-n-j", $values[1]));
+				
+		//説明文
+		$description = str_replace("#SHIPPING_YEAR#", $bArray[0], $values[2]);
+		$description = str_replace("#SHIPPING_MONTH#", $bArray[1], $description);
+		$description = str_replace("#SHIPPING_DAY#", $bArray[2], $description);
+		$description = str_replace("#ARRIVAL_YEAR#", $aArray[0], $description);
+		$description = str_replace("#ARRIVAL_MONTH#", $aArray[1], $description);
+		return str_replace("#ARRIVAL_DAY#", $aArray[2], $description);
+	}
 		
 	function setConfig($config){
 		$this->config = $config;
