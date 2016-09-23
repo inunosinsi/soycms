@@ -14,7 +14,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			return;
 		}
 
-		//sitemap.xml出ない場合は読み込まない
+		//sitemap.xmlでない場合は読み込まない
 		if(!preg_match('/sitemap.xml/', $pageObj->getUri())){
 			return;
 		}
@@ -32,8 +32,8 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
 
 		$url = soyshop_get_site_url(true);
-		
-		header("Content-Type: text/xml");
+
+		//header("Content-Type: text/xml");
 
 		$html = array();
 		$html[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -42,8 +42,13 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		foreach($pages as $obj){
 
 			$getUri = $obj->getUri();
+			
 			if($getUri==SOYSHOP_TOP_PAGE_MARKER){
 				$getUri = "";
+				
+			//404の場合はスルー
+			}else if($getUri == SOYSHOP_404_PAGE_MARKER){
+				continue;
 			}
 
 			switch($obj->getType()){
@@ -56,6 +61,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 							if(!is_null($pageObject->getDefaultCategory())){
 								$html[] = "	<url>";
 								$html[] = "		<loc>" . $url . $getUri . "/</loc>";
+								$html[] = "		<priority>0.8</priority>";
 								$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
 								$html[] = "	</url>";
 							}
@@ -69,6 +75,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 								}else{
 									$html[] = "		<loc>" . $url.$getUri."/" . $category->getAlias() . "/</loc>";
 								}
+								$html[] = "		<priority>0.5</priority>";
 								$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
 								$html[] = "	</url>";
 							}
@@ -82,6 +89,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 							}else{
 								$html[] = "		<loc>" . $url . $getUri . "/</loc>";
 							}
+							$html[] = "		<priority>0.5</priority>";
 							$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
 							$html[] = "	</url>";
 							break;
@@ -97,6 +105,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 						}else{
 							$html[] = "		<loc>" . $url . $getUri . "/" . $item->getAlias() . "</loc>";
 						}
+						$html[] = "		<priority>0.8</priority>";
 						$html[] = "		<lastmod>" . $this->getDate($item->getUpdateDate()) . "</lastmod>";
 						$html[] = "	</url>";
 					}
@@ -112,6 +121,14 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 						}
 						$html[] = "	<url>";
 						$html[] = "		<loc>" . $url . $getUri . "</loc>";
+						
+						//トップページ
+						if(!strlen($getUri)){
+							$html[] = "		<priority>1.0</priority>";
+						}else{
+							$html[] = "		<priority>0.5</priority>";
+						}
+						
 						$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
 						$html[] = "	</url>";
 					}
