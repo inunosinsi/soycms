@@ -16,6 +16,12 @@ class PrintPage extends HTMLTemplatePage{
 			"href" => SOYSHOP_BASE_URL
 		));
 		
+		//管理画面ので設定した品名を入れる
+		$pluginConfig = ShippingLabelUtil::getConfig();
+		if(isset($pluginConfig["product"]) && strlen(trim($pluginConfig["product"]))){
+			$_POST["ShippingProduct"] = $pluginConfig["product"];
+		}
+		
 		$this->createAdd("continuous_print", "PrintLabelListComponent", array(
 			"list" => array(self::getOrder()),
 			"company" => $config->getCompanyInformation(),
