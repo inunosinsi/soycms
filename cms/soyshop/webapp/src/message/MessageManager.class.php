@@ -17,8 +17,7 @@ class MessageManager{
 	
 	private $messageDir = null;
 	
-	function MassageManager(){
-	}
+	function __construct(){}
 	
 	static function &getInstance(){
 	 	static $_instance;

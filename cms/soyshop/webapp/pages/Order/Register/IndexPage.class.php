@@ -80,6 +80,7 @@ class IndexPage extends WebPage{
 	}
 
 	function __construct() {
+		MessageManager::addMessagePath("admin");
 		$this->cart = AdminCartLogic::getCart();
 
 		WebPage::__construct();
