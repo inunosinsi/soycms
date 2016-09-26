@@ -232,13 +232,15 @@ AsyncCartButton = {
 						if(!sels[j].addEventListener) return;
 						
 						sels[j].addEventListener("change", function(){
+							//親のIDを取得
+							var pId = parseInt(this.id.substr(this.id.lastIndexOf("_") + 1));
 							
 							var param = "";
 							var chks = document.querySelectorAll('select option:checked');
 							if(chks.length){
 								for (var k = 0; k < chks.length; k++){
 									//一応再度IDチェック
-									if(chks[k].parentElement.id.search('item_standard_(.*)_' + id) === 0 && chks[k].parentElement.name.indexOf("Standard") === 0){
+									if(chks[k].parentElement.id.search('item_standard_(.*)_' + pId) === 0 && chks[k].parentElement.name.indexOf("Standard") === 0){
 										if(param.length) param += "&";
 										param += chks[k].parentElement.name + "=" + chks[k].innerHTML.trim();
 									}
@@ -247,7 +249,7 @@ AsyncCartButton = {
 							
 							xhr = new XMLHttpRequest();
 														
-							xhr.open("POST",location.pathname + "?async_cart_button=" + id);
+							xhr.open("POST",location.pathname + "?async_cart_button=" + pId);
 							xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 							xhr.send(param);
 			
@@ -256,7 +258,8 @@ AsyncCartButton = {
 								if(resp){
 									var res = JSON.parse(resp);
 									if(res.price >= 0){
-										priceHelper.value = res.price;
+										//値段を取得した直後にprice_helperを再度取得する
+										document.querySelector("#standard_price_helper_" + pId).value = res.price;
 									}
 								}
 							});
