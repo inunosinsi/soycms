@@ -18,7 +18,7 @@ class MergeSitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"	
@@ -46,7 +46,8 @@ class MergeSitemapPlugin{
 		//URLの末尾に.xmlがあるページでは動作しない
 		if(strpos($_SERVER["REQUEST_URI"], ".xml")) return;
 		
-		$xmlPath = SOY2Logic::createInstance("site_include.plugin." . self::PLUGIN_ID . ".logic.MergeSitemapLogic")->getMergeXMLFilePath();
+		$logic = SOY2Logic::createInstance("site_include.plugin." . self::PLUGIN_ID . ".logic.MergeSitemapLogic");
+		$xmlPath = $logic->getMergeXMLFilePath();
 		
 		//xmlファイルを更新するか調べる
 		if(file_exists($xmlPath)){
@@ -59,29 +60,7 @@ class MergeSitemapPlugin{
 				
 		//merge.xmlがなければ作成する
 		if(!file_exists($xmlPath)){
-			$xml = array();
-			
-			$xml[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-			$xml[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
-			
-			foreach($this->urls as $url){
-				$x = @simplexml_load_string(file_get_contents(trim($url)));
-				if(is_null($x)) continue;
-				foreach($x->url as $obj){
-					$cols = array();
-					$cols[] = "<url>";
-					$cols[] = "	<loc>" . $obj->loc . "</loc>";
-					$cols[] = "	<priority>" . $obj->priority . "</priority>";
-					$cols[] = "	<lastmod>" . $obj->lastmod . "</lastmod>";
-					$cols[] = "</url>";
-					
-					$xml[] = implode("\n", $cols);
-				}
-			}
-			
-			$xml[] = "</urlset>";
-			
-			file_put_contents($xmlPath, implode("\n", $xml));
+			$logic->createMergeMap($this->urls);
 		}
 	}
 	
