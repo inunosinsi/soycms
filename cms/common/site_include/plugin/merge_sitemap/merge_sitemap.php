@@ -65,7 +65,8 @@ class MergeSitemapPlugin{
 			$xml[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
 			
 			foreach($this->urls as $url){
-				$x = simplexml_load_string(file_get_contents(trim($url)));
+				$x = @simplexml_load_string(file_get_contents(trim($url)));
+				if(is_null($x)) continue;
 				foreach($x->url as $obj){
 					$cols = array();
 					$cols[] = "<url>";
