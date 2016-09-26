@@ -50,7 +50,7 @@ class MergeSitemapPlugin{
 		
 		//xmlファイルを更新するか調べる
 		if(file_exists($xmlPath)){
-			$stat = (stat($xmlPath));
+			$stat = stat($xmlPath);
 			//更新時間を調べて、本日でない場合はファイルを削除する
 			if($stat["mtime"] < strtotime("-1 day", time())){
 				unlink($xmlPath);				

@@ -19,3 +19,4 @@ PAYMENT_CREDIT_CART = クレジットカード支払
 PAYMENT_CACH = 現金支払
 
 ITEM_OPTION = 商品オプション
+LABEL_POSTAGE = 送料
