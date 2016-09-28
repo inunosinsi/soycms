@@ -64,6 +64,9 @@ try{
 	$page->buildModules();
 	$page->display();
 }catch(Exception $e){
+	//管理者にカートでエラーが表示された旨を伝える
+	$cart->sendNoticeCartErrorMail($e);
+	
 	$cart->clearAttribute("page");
 	$page = SOY2HTMLFactory::createInstance("ErrorPage");
 	$page->display();

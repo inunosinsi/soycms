@@ -1125,6 +1125,21 @@ class CartLogic extends SOY2LogicBase{
 			$orderLogic->addHistory($this->getAttribute("order_id"), "設定により管理者宛の注文受付メールは送信されません。");
 		}
 	}
+	
+	/** 
+	 * カートのエラー状態に送信する通知メール 
+	 */
+	function sendNoticeCartErrorMail($exception){
+		SOY2::import("domain.config.SOYShop_ServerConfig");
+		$serverConfig = SOYShop_ServerConfig::load();
+		$adminMailAddress = $serverConfig->getAdministratorMailAddress();
+		$adminName = $serverConfig->getAdministratorName();
+		$title = "[SOY Shop]カート内でエラーが発生しました";
+		$body = "エラー内容は下記の通りです。\n\n";
+		//パスの隠蔽
+		$body .= str_replace(dirname(SOYSHOP_ROOT), "/*************", $exception);
+		SOY2Logic::createInstance("logic.mail.MailLogic")->sendMail($adminMailAddress, $title, $body, $adminName);
+	}
 
 	/**
 	 * エラーメッセージ
