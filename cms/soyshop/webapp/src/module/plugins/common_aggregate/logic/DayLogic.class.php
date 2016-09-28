@@ -6,9 +6,9 @@ class DayLogic extends SOY2LogicBase{
 	
 	function __construct(){
 		SOY2::import("module.plugins.common_aggregate.util.AggregateUtil");
-		SOY2::import("domain.order.SOYShop_Order");
 		SOY2::import("domain.order.SOYShop_User");
-		$this->dao = new SOY2DAO();
+		SOY2::import("domain.order.SOYShop_ItemModule");
+		$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 	}
 	
 	function calc(){
@@ -20,6 +20,7 @@ class DayLogic extends SOY2LogicBase{
 		
 		//結果を格納する配列
 		$results = array();
+		
 		
 		while($start < $end){
 			
@@ -46,8 +47,33 @@ class DayLogic extends SOY2LogicBase{
 							$userIds[$v["user_id"]] = 1;
 						}
 					}
+					$orderPrice = (int)$v["price"];
+					$modules = $this->dao->getObject($v)->getModuleList();
+
+					//消費税を除く
+					if(AGGREGATE_WITHOUT_TAX){
+						foreach($modules as $key => $module){
+							if(strpos($module->getType(), "tax") !== false){
+								//外税か内税かを調べる。falseの場合は外税
+								if(!$module->getIsInclude()){
+									$orderPrice -= (int)$module->getPrice();
+								}
+							}
+						}
+					}
+										
+					//手数料を除く
+					if(AGGREGATE_WITHOUT_COMMISSION){
+						foreach($modules as $key => $module){
+							if(strpos($module->getType(), "delivery_") !== false || strpos($module->getType(), "payment_") !== false){
+								if(!$module->getIsInclude()){
+									$orderPrice -= (int)$module->getPrice();
+								}
+							}
+						}
+					}
 					
-					$total += (int)$v["price"];
+					$total += $orderPrice;
 				}
 				
 				//取得した顧客ID毎に性別別の注文回数を調べる
@@ -89,7 +115,7 @@ class DayLogic extends SOY2LogicBase{
 	}
 	
 	private function buildSql(){
-		return "SELECT price, user_id FROM soyshop_order ".
+		return "SELECT price, user_id, modules FROM soyshop_order ".
 				"WHERE order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
 				"AND order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
 				"AND order_date > :start ".

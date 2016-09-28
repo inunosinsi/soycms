@@ -12,6 +12,12 @@ class AggregateUtil{
 	const TYPE_ITEMRATE 	= 	"商品毎の売上集計";
 	const TYPE_AGE			= 	"年齢別売上集計";
 	
+	const METHOD_MODE_TAX = "tax";
+	const METHOD_MODE_COMMISSION = "commission";
+	
+	const METHOD_INCLUDE_TAX = "消費税込み";
+	const METHOD_INCLUDE_COMMISSION = "手数料込み";
+	
 	/**
 	 * タイトルを取得する
 	 */

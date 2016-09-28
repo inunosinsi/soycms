@@ -3,12 +3,12 @@
 class MonthLogic extends SOY2LogicBase{
 	
 	private $dao;
-	
+		
 	function __construct(){
 		SOY2::import("module.plugins.common_aggregate.util.AggregateUtil");
 		SOY2::import("domain.user.SOYShop_User");
-		SOY2::import("domain.order.SOYShop_Order");
-		$this->dao = new SOY2DAO();
+		SOY2::import("domain.order.SOYShop_ItemModule");
+		$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 	}
 	
 	function calc(){
@@ -94,13 +94,11 @@ class MonthLogic extends SOY2LogicBase{
 	}
 	
 	private function buildSql(){
-		return "SELECT COUNT(os.id) AS COUNT, SUM(os.total_price) AS TOTAL FROM soyshop_order o ".
-				"INNER JOIN soyshop_orders os ".
-				"ON o.id = os.order_id ".
-				"WHERE o.order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
-				"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
-				"AND o.order_date >= :start ".
-				"AND o.order_date <= :end";
+		return "SELECT price, modules FROM soyshop_order ".
+				"WHERE order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
+				"AND order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
+				"AND order_date >= :start ".
+				"AND order_date <= :end";
 	}
 	
 	//sex 0:男性 1:女性
@@ -129,10 +127,41 @@ class MonthLogic extends SOY2LogicBase{
 						
 		$list = array();
 		$list["period"] = date("Y-m", $start);
-		$list["count"] = (isset($res[0]["COUNT"])) ? (int)$res[0]["COUNT"] : 0;
+		$list["count"] = count($res);
 		$list["male"] = (isset($maleCntRes[0]["COUNT"])) ? (int)$maleCntRes[0]["COUNT"] : 0;
 		$list["female"] = (isset($femaleCntRes[0]["COUNT"])) ? (int)$femaleCntRes[0]["COUNT"] : 0;
-		$list["total"] = (isset($res[0]["TOTAL"])) ? (int)$res[0]["TOTAL"] : 0;
+		
+		//金額の調整
+		$totalPrice = 0;
+		foreach($res as $v){
+			$totalPrice += (int)$v["price"];
+			$modules = $this->dao->getObject($v)->getModuleList();
+
+			//消費税を除く
+			if(AGGREGATE_WITHOUT_TAX){
+				foreach($modules as $key => $module){
+					if(strpos($module->getType(), "tax") !== false){
+						//外税か内税かを調べる。falseの場合は外税
+						if(!$module->getIsInclude()){
+							$totalPrice -= (int)$module->getPrice();
+						}
+					}
+				}
+			}
+
+			//手数料を除く
+			if(AGGREGATE_WITHOUT_COMMISSION){
+				foreach($modules as $key => $module){
+					if(strpos($module->getType(), "delivery_") !== false || strpos($module->getType(), "payment_") !== false){
+						if(!$module->getIsInclude()){
+							$totalPrice -= (int)$module->getPrice();
+						}
+					}
+				}
+			}
+		}
+		
+		$list["total"] = $totalPrice;
 		$list["average"] = ($list["total"] > 0 && $list["count"] > 0) ? floor($list["total"] / $list["count"]) : 0;
 		
 		return implode(",", $list);

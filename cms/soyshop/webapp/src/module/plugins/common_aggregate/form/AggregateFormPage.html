@@ -4,6 +4,10 @@
 	<input type="radio" soy:id="type_day">&nbsp;
 	<input type="radio" soy:id="type_itemrate">&nbsp;
 	<input type="radio" soy:id="type_age">
+	
+	<h4>集計方法(月次、日次売上集計で使用します)</h4>
+	<input type="checkbox" soy:id="method_include_tax">
+	<input type="checkbox" soy:id="method_include_commission">
 </div>
 
 <div>
@@ -11,7 +15,7 @@
 	<input type="text" class="date_picker_start aggregate_date_picker" soy:id="aggregate_period_start">&nbsp;～&nbsp;
 	<input type="text" class="date_picker_end aggregate_date_picker" soy:id="aggregate_period_end">&nbsp;
 	<input type="button" id="clear_button" value="クリア"><br>
-	※<strong soy:id="aggregate_label_month">売上</strong>と<strong soy:id="aggregate_label_newcustomer">新規注文</strong>の場合は日は考慮されません
+	※<strong soy:id="aggregate_label_month">売上</strong>と<strong soy:id="aggregate_label_day">新規注文</strong>の場合は日は考慮されません
 	
 	<h4>件数</h4>
 	<input type="number" soy:id="aggregate_limit"><br>

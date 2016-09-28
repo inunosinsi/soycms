@@ -39,9 +39,27 @@ class AggregateFormPage extends WebPage{
 			"label" => AggregateUtil::TYPE_AGE
 		));
 		
+		$this->addCheckBox("method_include_tax", array(
+			"name" => "Aggregate[method][]",
+			"value" => AggregateUtil::METHOD_MODE_TAX,
+			"selected" => true,
+			"label" => AggregateUtil::METHOD_INCLUDE_TAX
+		));
+		
+		$this->addCheckBox("method_include_commission", array(
+			"name" => "Aggregate[method][]",
+			"value" => AggregateUtil::METHOD_MODE_COMMISSION,
+			"selected" => true,
+			"label" => AggregateUtil::METHOD_INCLUDE_COMMISSION
+		));
+		
 		
 		$this->addLabel("aggregate_label_month", array(
 			"text" => AggregateUtil::TYPE_MONTH
+		));
+		
+		$this->addLabel("aggregate_label_day", array(
+			"text" => AggregateUtil::TYPE_DAY
 		));
 				
 		$this->addInput("aggregate_period_start", array(

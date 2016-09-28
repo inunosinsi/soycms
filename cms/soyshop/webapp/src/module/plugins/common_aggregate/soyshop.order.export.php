@@ -28,6 +28,17 @@ class AggregateExport extends SOYShopOrderExportBase{
 	 */
 	function export($orders){
 		
+		SOY2::import("module.plugins.common_aggregate.util.AggregateUtil");
+		
+		//集計方法
+		$methods = (isset($_POST["Aggregate"]["method"])) ? $_POST["Aggregate"]["method"] : array();
+		
+		//消費税を含めない
+		define("AGGREGATE_WITHOUT_TAX", !in_array(AggregateUtil::METHOD_MODE_TAX, $methods));
+		
+		//手数料を含めない
+		define("AGGREGATE_WITHOUT_COMMISSION", !in_array(AggregateUtil::METHOD_MODE_COMMISSION, $methods));
+		
 		set_time_limit(0);
 		SOY2::import("module.plugins.common_aggregate.util.AggregateUtil");
 
