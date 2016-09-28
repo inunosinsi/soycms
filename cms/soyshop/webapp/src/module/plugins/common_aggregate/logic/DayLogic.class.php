@@ -38,6 +38,7 @@ class DayLogic extends SOY2LogicBase{
 				$userIds = array();
 				$count = count($res);
 				$total = 0;
+				$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.AggregateLogic");
 				foreach($res as $v){
 					if(isset($v["user_id"])){
 						//keyのindexにuser_idでvalueに出現回数
@@ -47,33 +48,7 @@ class DayLogic extends SOY2LogicBase{
 							$userIds[$v["user_id"]] = 1;
 						}
 					}
-					$orderPrice = (int)$v["price"];
-					$modules = $this->dao->getObject($v)->getModuleList();
-
-					//消費税を除く
-					if(AGGREGATE_WITHOUT_TAX){
-						foreach($modules as $key => $module){
-							if(strpos($module->getType(), "tax") !== false){
-								//外税か内税かを調べる。falseの場合は外税
-								if(!$module->getIsInclude() && $module->getPrice() > 0){
-									$orderPrice -= (int)$module->getPrice();
-								}
-							}
-						}
-					}
-										
-					//手数料を除く
-					if(AGGREGATE_WITHOUT_COMMISSION){
-						foreach($modules as $key => $module){
-							if(strpos($module->getType(), "delivery_") !== false || strpos($module->getType(), "payment_") !== false){
-								if(!$module->getIsInclude() && $module->getPrice() > 0){
-									$orderPrice -= (int)$module->getPrice();
-								}
-							}
-						}
-					}
-					
-					$total += $orderPrice;
+					$total += $logic->calc($v);
 				}
 				
 				//取得した顧客ID毎に性別別の注文回数を調べる

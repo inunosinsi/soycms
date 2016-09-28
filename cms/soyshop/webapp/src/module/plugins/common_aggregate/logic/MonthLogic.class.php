@@ -133,32 +133,9 @@ class MonthLogic extends SOY2LogicBase{
 		
 		//金額の調整
 		$totalPrice = 0;
+		$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.AggregateLogic");
 		foreach($res as $v){
-			$totalPrice += (int)$v["price"];
-			$modules = $this->dao->getObject($v)->getModuleList();
-
-			//消費税を除く
-			if(AGGREGATE_WITHOUT_TAX){
-				foreach($modules as $key => $module){
-					if(strpos($module->getType(), "tax") !== false){
-						//外税か内税かを調べる。falseの場合は外税
-						if(!$module->getIsInclude() && $module->getPrice() > 0){
-							$totalPrice -= (int)$module->getPrice();
-						}
-					}
-				}
-			}
-
-			//手数料を除く
-			if(AGGREGATE_WITHOUT_COMMISSION){
-				foreach($modules as $key => $module){
-					if(strpos($module->getType(), "delivery_") !== false || strpos($module->getType(), "payment_") !== false){
-						if(!$module->getIsInclude() && $module->getPrice() > 0){
-							$totalPrice -= (int)$module->getPrice();
-						}
-					}
-				}
-			}
+			$totalPrice += $logic->calc($v);
 		}
 		
 		$list["total"] = $totalPrice;

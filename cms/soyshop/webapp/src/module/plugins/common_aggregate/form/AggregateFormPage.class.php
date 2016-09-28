@@ -53,6 +53,20 @@ class AggregateFormPage extends WebPage{
 			"label" => AggregateUtil::METHOD_INCLUDE_COMMISSION
 		));
 		
+		$this->addCheckBox("method_include_point", array(
+			"name" => "Aggregate[method][]",
+			"value" => AggregateUtil::METHOD_MODE_POINT,
+			"selected" => true,
+			"label" => AggregateUtil::METHOD_INCLUDE_POINT
+		));
+		
+		$this->addCheckBox("method_include_discount", array(
+			"name" => "Aggregate[method][]",
+			"value" => AggregateUtil::METHOD_MODE_DISCOUNT,
+			"selected" => true,
+			"label" => AggregateUtil::METHOD_INCLUDE_DISCOUNT
+		));
+		
 		
 		$this->addLabel("aggregate_label_month", array(
 			"text" => AggregateUtil::TYPE_MONTH

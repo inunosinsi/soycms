@@ -14,9 +14,13 @@ class AggregateUtil{
 	
 	const METHOD_MODE_TAX = "tax";
 	const METHOD_MODE_COMMISSION = "commission";
+	const METHOD_MODE_POINT = "point";
+	const METHOD_MODE_DISCOUNT = "discount";
 	
 	const METHOD_INCLUDE_TAX = "消費税込み";
 	const METHOD_INCLUDE_COMMISSION = "手数料込み";
+	const METHOD_INCLUDE_POINT = "ポイント値引き込み";
+	const METHOD_INCLUDE_DISCOUNT = "クーポン値引き等込み";
 	
 	/**
 	 * タイトルを取得する

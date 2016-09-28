@@ -13,7 +13,7 @@ class ItemRateLogic extends SOY2LogicBase{
 				
 		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		
-		$sql = $this->buildSql();
+		$sql = self::buildSql();
 		$lim = (isset($_POST["Aggregate"]["limit"]) && (int)$_POST["Aggregate"]["limit"] > 0) ? (int)$_POST["Aggregate"]["limit"] : 10;
 		$sql .= " LIMIT " . $lim;
 		
@@ -68,8 +68,8 @@ class ItemRateLogic extends SOY2LogicBase{
 				"ON o.id = os.order_id ".
 				"INNER JOIN soyshop_item item ".
 				"ON os.item_id= item.id ".
-				"WHERE os.cdate >= :start ".
-				"AND os.cdate <= :end " .
+				"WHERE o.order_date >= :start ".
+				"AND o.order_date <= :end " .
 				"AND o.order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
 				"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
 				"GROUP BY os.item_id ".
