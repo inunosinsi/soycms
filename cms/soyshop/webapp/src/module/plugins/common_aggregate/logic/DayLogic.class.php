@@ -55,7 +55,7 @@ class DayLogic extends SOY2LogicBase{
 						foreach($modules as $key => $module){
 							if(strpos($module->getType(), "tax") !== false){
 								//外税か内税かを調べる。falseの場合は外税
-								if(!$module->getIsInclude()){
+								if(!$module->getIsInclude() && $module->getPrice() > 0){
 									$orderPrice -= (int)$module->getPrice();
 								}
 							}
@@ -66,7 +66,7 @@ class DayLogic extends SOY2LogicBase{
 					if(AGGREGATE_WITHOUT_COMMISSION){
 						foreach($modules as $key => $module){
 							if(strpos($module->getType(), "delivery_") !== false || strpos($module->getType(), "payment_") !== false){
-								if(!$module->getIsInclude()){
+								if(!$module->getIsInclude() && $module->getPrice() > 0){
 									$orderPrice -= (int)$module->getPrice();
 								}
 							}

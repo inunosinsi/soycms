@@ -4,6 +4,7 @@ class ItemRateLogic extends SOY2LogicBase{
 	
 	function __construct(){
 		SOY2::import("module.plugins.common_aggregate.util.AggregateUtil");
+		SOY2::import("domain.order.SOYShop_Order");
 	}
 	
 	function calc(){
@@ -63,10 +64,14 @@ class ItemRateLogic extends SOY2LogicBase{
 	private function buildSql(){
 		return "SELECT os.item_id, SUM(os.item_count) AS COUNT, SUM(os.total_price) AS TOTAL, item.item_name, item.item_code ".
 				"FROM soyshop_orders os ".
+				"INNER JOIN soyshop_order o ".
+				"ON o.id = os.order_id ".
 				"INNER JOIN soyshop_item item ".
 				"ON os.item_id= item.id ".
 				"WHERE os.cdate >= :start ".
 				"AND os.cdate <= :end " .
+				"AND o.order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
+				"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
 				"GROUP BY os.item_id ".
 				"ORDER BY COUNT DESC";
 	}
