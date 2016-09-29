@@ -13,7 +13,6 @@ class MergeSitemapLogic extends SOY2LogicBase{
 			$xml[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">";
 			
 			foreach($urls as $u){
-				var_dump(file_get_contents(trim($u));exit;
 				$x = @simplexml_load_string(file_get_contents(trim($u)));
 				if(is_null($x)) continue;
 				foreach($x->url as $obj){
