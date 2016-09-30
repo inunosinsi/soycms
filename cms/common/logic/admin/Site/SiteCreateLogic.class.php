@@ -166,7 +166,8 @@ class SiteCreateLogic extends SOY2LogicBase{
 		$stmt = $pdo->prepare($sql);
 		$stmt->bindParam(":name",$siteName);
 		$stmt->bindParam(":encoding",$encoding);
-		$stmt->bindParam(":siteConfig",$siteConfig->getSiteConfig());
+		$conf = $siteConfig->getSiteConfig();
+		$stmt->bindParam(":siteConfig",$conf);
 
 		$stmt->execute();
 
@@ -213,7 +214,8 @@ class SiteCreateLogic extends SOY2LogicBase{
 		$stmt->bindParam(":title",$title);
 		$stmt->bindParam(":template",$template);
 		$stmt->bindParam(":pagetype",$pageType);
-		$stmt->bindParam(":udate",time());
+		$time = time();
+		$stmt->bindParam(":udate",$time);
 		$stmt->execute();
 
 	}
