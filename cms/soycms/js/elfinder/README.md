@@ -13,7 +13,7 @@ elFinder is an open-source file manager for web, written in JavaScript using
 jQuery UI. Creation is inspired by simplicity and convenience of Finder program
 used in Mac OS X operating system.
 
-[![Download now!](http://studio-42.github.io/elFinder/images/download-icon.png)](https://github.com/Studio-42/elFinder/releases)
+[![Download now!](http://studio-42.github.io/elFinder/images/download-icon.png)](https://github.com/Studio-42/elFinder/releases/latest)
 [![Packagist License](https://poser.pugx.org/studio-42/elfinder/license.png)](http://choosealicense.com/licenses/bsd-3-clause/)
 [![Latest Stable Version](https://poser.pugx.org/studio-42/elfinder/version.png)](https://packagist.org/packages/studio-42/elfinder)
 [![Total Downloads](https://poser.pugx.org/studio-42/elfinder/d/total.png)](https://packagist.org/packages/studio-42/elfinder)
@@ -90,6 +90,11 @@ Features
 
 Requirements
 ------------
+### jQuery / jQuery UI
+ * jQuery 1.8.0+
+ * jQuery UI 1.9.0+
+
+**However, we recommend newest version.**
 
 ### Client
  * Modern browser. elFinder was tested in Firefox 12, Internet Explorer 8+,
@@ -97,7 +102,7 @@ Requirements
 
 ### Server
  * Any web server
- * PHP 5.2+ (Recommend PHP 5.4 or higher) And for thumbnails - GD/Imagick module require
+ * PHP 5.2+ (Recommend PHP 5.4 or higher) And for thumbnails - GD / Imagick module / convert(imagemagick) require
 
 Installation
 ------------
@@ -122,8 +127,8 @@ Installation
 Downloads
 ------------
 **Stable releases** ([Changelog](https://github.com/Studio-42/elFinder/blob/master/Changelog))
- + [elFinder 2.1.11](https://github.com/Studio-42/elFinder/archive/2.1.11.zip)
- + [elFinder 2.0.6](https://github.com/Studio-42/elFinder/archive/2.0.6.zip)
+ + [elFinder 2.1.15](https://github.com/Studio-42/elFinder/archive/2.1.15.zip)
+ + [elFinder 2.0.7](https://github.com/Studio-42/elFinder/archive/2.0.7.zip)
 
 **Nightly builds**
  + [elFinder 2.1.x (Nightly)](https://github.com/Studio-42/elFinder/archive/2.1.zip)

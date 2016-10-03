@@ -207,7 +207,7 @@ class elFinderVolumeFlysystemGoogleDriveNetmount extends \Hypweb\elFinderFlysyst
             $file = $service->files->get($options['path']);
             $options['alias'] = sprintf($this->options['gdAlias'], $file->getName());
         } catch (Google_Service_Exception $e) {
-            $err = @json_decode($e->getMessage(), true);
+            $err = json_decode($e->getMessage(), true);
             if (isset($err['error']) && $err['error']['code'] == 404) {
                 return array('exit' => true, 'error' => [elFinder::ERROR_TRGDIR_NOT_FOUND, $options['path']]);
             } else {
@@ -302,6 +302,7 @@ class elFinderVolumeFlysystemGoogleDriveNetmount extends \Hypweb\elFinderFlysyst
 
         $opts['driver'] = 'FlysystemExt';
         $opts['filesystem'] = $filesystem;
+        $opts['separator'] = '/';
         $opts['checkSubfolders'] = true;
         if (! isset($opts['alias'])) {
             $opts['alias'] = 'GoogleDrive';
