@@ -178,6 +178,17 @@ class MailDetailPage extends WebPage{
 		$this->createAdd("selected_age","HTMLLabel",array(
     		"text" => $age
     	));
+    	
+    	//SOY Shopの時のみ誕生日検索
+    	DisplayPlugin::toggle("display_birthday_form", SOY2Logic::createInstance("logic.user.ExtendUserDAO")->checkSOYShopConnect());
+    	
+    	$birthday = (is_array($selector->getBirthday())) ? $selector->getBirthday() : array();
+    	$year = (isset($birthday["year"]) && strlen($birthday["year"])) ? $birthday["year"] : "Y";
+    	$month = (isset($birthday["month"]) && strlen($birthday["month"])) ? $birthday["month"] : "m";
+    	$day = (isset($birthday["day"]) && strlen($birthday["day"])) ? $birthday["year"] : "d";
+		$this->createAdd("selector_birthday", "HTMLLabel", array(
+			"text" => $year . "-" . $month . "-" . $day
+		));
 
     	$areas = Area::getAreas();
     	$area_text = "";

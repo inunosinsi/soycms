@@ -193,7 +193,29 @@ class IndexPage extends CommonPartsPage{
     		"name" => "Selector[areas][]",
 			"options" => Area::getAreas(),
 			"selected" => $selector->getAreas()
-    	));	
+    	));
+    	
+    	//SOY Shopの時のみ誕生日検索
+    	DisplayPlugin::toggle("display_birthday_form", SOY2Logic::createInstance("logic.user.ExtendUserDAO")->checkSOYShopConnect());
+    	
+    	$birthday = (is_array($selector->getBirthday())) ? $selector->getBirthday() : array();
+    	$this->createAdd("selector_birth_year","HTMLInput",array(
+    		"name" => "Selector[birthday][year]",
+    		"value" => (isset($birthday["year"])) ? $birthday["year"] : "",
+    		"size" => 5
+    	));
+    	
+    	$this->createAdd("selector_birth_month","HTMLInput",array(
+    		"name" => "Selector[birthday][month]",
+    		"value" => (isset($birthday["month"])) ? $birthday["month"] : "",
+    		"size" => 3
+    	));
+    	
+    	$this->createAdd("selector_birth_day","HTMLInput",array(
+    		"name" => "Selector[birthday][day]",
+    		"value" => (isset($birthday["day"])) ? $birthday["day"] : "",
+    		"size" => 3
+    	));
     	
     	$attribues = $selector->getAttributes();
     	$this->createAdd("selector_attribute1","HTMLInput",array(

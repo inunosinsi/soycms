@@ -218,6 +218,7 @@ class MailSelector{
 	);
 
 	private $areas = array();
+	private $birthday = array();
 
 	private $attributes = array("","","","");
 
@@ -247,6 +248,12 @@ class MailSelector{
 	}
 	function setAreas($areas) {
 		$this->areas = $areas;
+	}
+	function getBirthday(){
+		return $this->birthday;
+	}
+	function setBirthday($birthday){
+		$this->birthday = $birthday;
 	}
 	function getAttributes() {
 		return $this->attributes;
@@ -344,6 +351,40 @@ class MailSelector{
 		}else{
 			$where_array[] = "area in (".implode(",", $areas).")";
 		}
+		
+		/** SOY Shop連携の時は誕生日検索もあり **/
+		if(SOY2Logic::createInstance("logic.user.ExtendUserDAO")->checkSOYShopConnect() && is_array($this->getBirthday())){
+			$birthday = $this->getBirthday();
+			if(strlen($birthday["year"])){
+				$where_array[] = "birthday LIKE :birth_year";
+				$binds["birth_year"] = (int)$birthday["year"] . "-%";
+			}
+			
+			if(strlen($birthday["month"])){
+				$m = (int)$birthday["month"];
+				if(strlen($m) === 1){
+					$where_array[] = "(birthday LIKE :birth_month1 OR birthday LIKE :birth_month2)";
+					$binds[":birth_month1"] = "%-" . $m . "-%";
+					$binds[":birth_month2"] = "%-0" . $m . "-%";
+				}else{
+					$where_array[] = "birthday LIKE :birth_month";
+					$binds[":birth_month"] = "%-" . $m . "-%";
+				}
+			}
+			
+			if(strlen($birthday["day"])){
+				$d = (int)$birthday["day"];
+				if(strlen($d) === 1){
+					$where_array[] = "(birthday LIKE :birth_day1 OR birthday LIKE :birth_day2)";
+					$binds[":birth_day1"] = "%-" . $d;
+					$binds[":birth_day2"] = "%-0" . $d;
+				}else{
+					$where_array[] = "birthday LIKE :birth_day";
+					$binds[":birth_day"] = "%-" . $d;
+				}
+			}
+		}
+		
 
 		//ATTRIBUTES
 		$attributes = $this->getAttributes();
@@ -456,7 +497,7 @@ class MailSelector{
 		$where_array[] = "is_disabled != 1";
 
 		$where = implode(" AND ", $where_array);
-
+		
 		return array($where, $binds);
 	}
 

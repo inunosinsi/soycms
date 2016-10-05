@@ -89,21 +89,28 @@ class DetailPage extends CommonPartsPage{
 			"selected" => ($user->getGender() === 1 OR $user->getGender() === "1") ? true : false 
     	));
     	
+    	if(is_numeric($user->getBirthday())){
+    		$birthday = $user->getBirthday();
+    	//SOYShopの場合
+    	}else{
+    		$birthArray = explode("-", $user->getBirthday());
+    		$birthday = mktime(0,0,0,$birthArray[1], $birthArray[2], $birthArray[0]);
+    	}
     	$this->createAdd("birth_year","HTMLInput",array(
     		"name" => "Detail[birthday][year]",
-    		"value" => ($user->getBirthday()) ? date("Y",$user->getBirthday()) : "",
+    		"value" => ($birthday) ? date("Y",$birthday) : "",
     		"size" => 5
     	));
     	
     	$this->createAdd("birth_month","HTMLInput",array(
     		"name" => "Detail[birthday][month]",
-    		"value" => ($user->getBirthday()) ? date("m",$user->getBirthday()) : "",
+    		"value" => ($birthday) ? date("m",$birthday) : "",
     		"size" => 3
     	));
     	
     	$this->createAdd("birth_day","HTMLInput",array(
     		"name" => "Detail[birthday][day]",
-    		"value" => ($user->getBirthday()) ? date("d",$user->getBirthday()) : "",
+    		"value" => ($birthday) ? date("d",$birthday) : "",
     		"size" => 3
     	));
     	

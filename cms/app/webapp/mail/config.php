@@ -38,6 +38,10 @@ if(defined("SOYMAIL_USE_SITE_DB") && SOYMAIL_USE_SITE_DB){
 	if(SOYCMS_DB_TYPE == "sqlite"){
 		SOY2DAOConfig::Dsn("sqlite:" . SOYMAIL_DB_FILE);
 	}else{
+		//Execで送信する時、MySQLの設定が読み込まれていないらしい。
+		if(!defined("ADMIN_DB_DSN")){
+			if(file_exists(CMS_COMMON . "config/db/mysql.php")) include_once(CMS_COMMON . "config/db/mysql.php");
+		}
 		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
 		SOY2DAOConfig::user(ADMIN_DB_USER);
 		SOY2DAOConfig::pass(ADMIN_DB_PASS);
