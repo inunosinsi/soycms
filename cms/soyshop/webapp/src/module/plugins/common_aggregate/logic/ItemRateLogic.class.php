@@ -46,12 +46,12 @@ class ItemRateLogic extends SOY2LogicBase{
 		$array = array();
 		$rank = 1;
 		foreach($results as $res){
-			
 			$list = array();
 			
 			$list["rank"] = $rank++;
 			$list["item_code"] = $res["item_code"];
 			$list["item_name"] = $res["item_name"];
+			$list["item_price"] = $res["item_price"];
 			$list["count"] = $res["COUNT"];
 			$list["total"] = $res["TOTAL"];
 			
@@ -62,7 +62,7 @@ class ItemRateLogic extends SOY2LogicBase{
 	}
 	
 	private function buildSql(){
-		return "SELECT os.item_id, SUM(os.item_count) AS COUNT, SUM(os.total_price) AS TOTAL, item.item_name, item.item_code ".
+		return "SELECT os.item_id, SUM(os.item_count) AS COUNT, SUM(os.total_price) AS TOTAL, item.item_name, item.item_code, os.item_price ".
 				"FROM soyshop_orders os ".
 				"INNER JOIN soyshop_order o ".
 				"ON o.id = os.order_id ".
@@ -72,7 +72,7 @@ class ItemRateLogic extends SOY2LogicBase{
 				"AND o.order_date <= :end " .
 				"AND o.order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
 				"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
-				"GROUP BY os.item_id ".
+				"GROUP BY os.item_id, os.item_price ".
 				"ORDER BY COUNT DESC";
 	}
 	
@@ -81,9 +81,9 @@ class ItemRateLogic extends SOY2LogicBase{
 		$label[] = "順位";
 		$label[] = "商品番号";
 		$label[] = "商品名";
+		$label[] = "商品単価";
 		$label[] = "購入件数";
 //		$label[] = "点数";
-//		$label[] = "単価";
 		$label[] = "金額";
 		
 		return $label;
