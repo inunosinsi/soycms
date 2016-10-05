@@ -140,7 +140,7 @@ abstract class MailLogic extends SOY2LogicBase{
 	 * @param boolean $connect SOY Shopと連携しているか
 	 * @param SOYMailUserDAO $userDao
 	 */
-	function saveErrorLog($user, $connect, $userDao){
+	private static function saveErrorLog($user, $connect, $userDao){
 		
 		//ログを保管
 		self::saveLog($user->getMailAddress());
@@ -163,7 +163,7 @@ abstract class MailLogic extends SOY2LogicBase{
 		}
 	}
 	
-	function saveLog($text){
+	private static function saveLog($text){
 		$dir = SOYMAIL_BIN_DIR . "/log";
 		
 		if(!is_dir($dir)) mkdir($dir);
