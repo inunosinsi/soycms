@@ -25,8 +25,9 @@ class IndexPage extends CommonPartsPage{
 			$mail->setSelectorObject($selector);
 			$mail->setConfigureObject($config);
 		}
-				
+		
 		$mail->setMailCount($selector->countAddress());
+		
 		
 		if(isset($_POST["save_draft"]) || isset($_POST['send'])){
 			$mail->setStatus(Mail::STATUS_DRAFT);
@@ -270,7 +271,10 @@ class IndexPage extends CommonPartsPage{
     	$this->createAdd("selector_memo","HTMLInput",array(
     		"name" => "Selector[memo]",
     		"value" => $selector->getMemo() 
-    	));	
+    	));
+    	
+    	//下書きの自動保存のためのjavascriptのコードを表示するか？
+    	DisplayPlugin::toggle("display_auto_save_script", $serverConfig->getIsAutoSave());
     }
 }
 ?>

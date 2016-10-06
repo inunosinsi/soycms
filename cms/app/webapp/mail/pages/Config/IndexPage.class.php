@@ -295,6 +295,13 @@ class IndexPage extends WebPage{
     		"name" => "phpPath",
     		"value" => $serverConfig->getPhpPath()
     	));
+    	
+    	$this->addCheckBox("is_auto_save", array(
+    		"name" => "isAutoSave",
+    		"value" => 1,
+    		"selected" => $serverConfig->getIsAutoSave(),
+    		"label" => "下書きの自動保存を行う(30秒毎)"
+    	));
     }
 
     function testSend(){

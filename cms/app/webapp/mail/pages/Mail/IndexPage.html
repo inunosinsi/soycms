@@ -226,6 +226,7 @@
 			<tr>
 				<td>
 					<textarea id="mail_content" soy:id="mail_content" style="width:96%;padding:5px 2%"></textarea>
+					<span id="auto_save_message"></span>
 				</td>
 				<td class="mail_replace_word_panel">
 					<a href="javascript:void(0);" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
@@ -270,3 +271,53 @@
 		</form soy:id="send_form">
 	</div>
 </div>
+
+<!-- soy:display="display_auto_save_script" -->
+<script>
+var $form = $("form")[0];
+
+(function(){
+	setInterval(auto_save, 30000);
+})();
+
+
+function auto_save(){
+	var param = "save_draft";
+		
+	//自動バックアップを行うか調べる
+	if(!$('#mail_content').val().trim().length && !$('input[name="Mail[title]"]')[0].value.trim().length) return;
+	
+	$.each($form, function(key, obj){
+		if(obj.name.indexOf("Mail") === 0 && obj.value.length){
+			param += "&" + obj.name + "=" + obj.value;
+		}else if(obj.name.indexOf("Selector") === 0){
+			//チェックボックスの場合
+			if(obj.type == "checkbox" && obj.checked){
+				param += "&" + obj.name + "=" + obj.value;
+			}else{
+				param += "&" + obj.name + "=" + obj.value;
+			}
+		}
+	});
+		
+	$.ajax({
+		type: "POST",
+		url: $form.action,
+		data: param,
+		dataType: 'text',
+	}).done(function(data){
+		
+		//新規作成時の下書きの場合はformタグのアクションの書き直し。actionの末尾にmailIdを付与する
+		if(isNaN(parseInt($form.action.substr($form.action.lastIndexOf("/") + 1)))){
+			//雑だけど、HTMLからMail[id]周辺を切り取ってから正規表現で調べる
+			var match = data.substr(data.indexOf("Mail[id]") + 10, 30).match(/value="(.*)" t/);
+			
+			$form.action = $form.action + "/" + parseInt(match[1]);
+		}
+		
+		var date = new Date();
+		$("#auto_save_message").html(date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + " 下書きの自動保存を行いました。");
+	});
+}
+</script>
+<!-- /soy:display="display_auto_save_script" -->

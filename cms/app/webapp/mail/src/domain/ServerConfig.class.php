@@ -52,6 +52,9 @@ class ServerConfig {
     private $returnName = "";
 
     private $signature = "";
+    
+    //下書きの自動保存
+    private $isAutoSave = false;
 
 
     function getSendServerType() {
@@ -193,6 +196,13 @@ class ServerConfig {
     }
     function setSignature($signature) {
     	$this->signature = $signature;
+    }
+    
+    function getIsAutoSave(){
+    	return $this->isAutoSave;
+    }
+    function setIsAutoSave($isAutoSave){
+    	$this->isAutoSave = $isAutoSave;
     }
 
     /**#@+
