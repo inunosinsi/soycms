@@ -180,7 +180,7 @@ class PageList extends HTMlList{
 		));
 
 		$this->createAdd("client_view","HTMLLink",array(
-			"link"    => CMSUtil::getSiteUrl().$entity->getUri(),
+			"link"    => soy2_realurl(CMSUtil::getSiteUrl().$entity->getUri()),
 			"style"   => ( !$visible ? "" : "color:#fB9733;text-decoration:line-through;" )
 		));
 

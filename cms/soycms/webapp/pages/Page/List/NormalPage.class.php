@@ -228,13 +228,15 @@ class PageList extends HTMlList{
 		$this->createAdd("page_icon","HTMLModel",array(
 			"style" => "background-image:url('".$entity->getIconUrl()."')"
 		));
+
+		$detailLink = SOY2PageController::createLink("Page.Detail") ."/".$entity->getId();
 		$this->createAdd("page_icon_link","HTMLLink",array(
-			"link" => SOY2PageController::createLink("Page.Detail") ."/".$entity->getId(),
+			"link" => $detailLink,
 		));
 		
 		$this->createAdd("title","HTMLLink",array(
 			"text" => $entity->getTitle(),
-			"link" => SOY2PageController::createLink("Page.Detail") ."/".$entity->getId(),
+			"link" => $detailLink,
 			"title"=> $entity->getTitle(),
 			"width"=> 40
 		));
@@ -283,7 +285,7 @@ class PageList extends HTMlList{
 		));
 		
 		$this->createAdd("client_view","HTMLLink",array(
-			"link"=>CMSUtil::getSiteUrl().$entity->getUri(),
+			"link"=> soy2_realurl(CMSUtil::getSiteUrl().$entity->getUri()),
 			"html" => ($entity->isActive()>0) ? CMSMessageManager::get("SOYCMS_VIEW") : "<s>".CMSMessageManager::get("SOYCMS_VIEW")."</s>" 
 		));		
 		

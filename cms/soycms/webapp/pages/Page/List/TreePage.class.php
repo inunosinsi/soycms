@@ -152,9 +152,9 @@ class TreePage extends CMSWebPageBase{
 
 		    	$url = CMSUtil::getSiteUrl().$page->getUri();
 		    	if(!$visible){
-		     		$function[] = '<a href="'.htmlspecialchars($url, ENT_QUOTES, "UTF-8").'">'.$this->getMessage("SOYCMS_VIEW").'</a></span>';
+		     		$function[] = '<a href="'.htmlspecialchars(soy2_realurl($url), ENT_QUOTES, "UTF-8").'">'.$this->getMessage("SOYCMS_VIEW").'</a></span>';
 		    	}else{
-		     		$function[] = '<span style="color:#fB9733;text-decoration:line-through;"><a style="color:#fB9733;text-decoration:underline" href="'.htmlspecialchars($url, ENT_QUOTES, "UTF-8").'">'.$this->getMessage("SOYCMS_VIEW").'</a></span>';
+		     		$function[] = '<span style="color:#fB9733;text-decoration:line-through;"><a style="color:#fB9733;text-decoration:underline" href="'.htmlspecialchars(soy2_realurl($url), ENT_QUOTES, "UTF-8").'">'.$this->getMessage("SOYCMS_VIEW").'</a></span>';
 		    	}
 
 	     		if($page->getIsTrash()){
