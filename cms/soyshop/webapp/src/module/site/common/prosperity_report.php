@@ -40,7 +40,8 @@ function soyshop_prosperity_report($html, $htmlObj){
 		$obj->createAdd("prosperity_order_list", "ProsperityReportOrderListComponent", array(
 			"soy2prefix" => "block",
 			"list" => $orders,
-			"userDao" => SOY2DAOFactory::create("user.SOYShop_UserDAO")
+			"userDao" => SOY2DAOFactory::create("user.SOYShop_UserDAO"),
+			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO"),
 		));
 	}
 
@@ -57,6 +58,7 @@ function soyshop_prosperity_report($html, $htmlObj){
 class ProsperityReportOrderListComponent extends HTMLList{
 	
 	private $userDao;
+	private $itemDao;
 	
 	protected function populateItem($entity, $key, $int){
 		$user = self::getUserById($entity->getUserId());
@@ -66,6 +68,13 @@ class ProsperityReportOrderListComponent extends HTMLList{
 			"text" => $int
 		));
 		
+		$this->createAdd("report_order_date", "DateLabel", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,			
+			"text" => $entity->getOrderDate(),
+			"defaultFormat" => "Y.m.d"
+		));
+		
+				
 		$this->addLabel("customer_pref", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => SOYShop_Area::getAreaText($user->getArea())
@@ -85,6 +94,30 @@ class ProsperityReportOrderListComponent extends HTMLList{
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => number_format(self::getItemTotalPrice($entity->getId()))
 		));
+		
+		$values = self::getItemsByOrderId($entity->getId());
+		
+		//価格が一番高い商品
+		$this->addLink("price_max_item_link", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"link" => soyshop_get_item_detail_link($values["price"])
+		));
+		
+		$this->addLabel("price_max_item_name", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => $values["price"]->getName()
+		));
+		
+		//購入数が一番多い商品
+		$this->addLink("count_max_item_link", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"link" => soyshop_get_item_detail_link($values["count"])
+		));
+		
+		$this->addLabel("count_max_item_name", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => $values["count"]->getName()
+		));
 	}
 	
 	private function getUserById($userId){
@@ -93,6 +126,46 @@ class ProsperityReportOrderListComponent extends HTMLList{
 		}catch(Exception $e){
 			return new SOYShop_User();
 		}
+	}
+	
+	private function getItemsByOrderId($orderId){
+		$sql = "SELECT item.*, os.item_count AS COUNT, os.item_price AS PRICE FROM soyshop_item item ".
+				"INNER JOIN soyshop_orders os ".
+				"ON item.id = os.item_id ".
+				"WHERE os.order_id = :orderId ";
+				
+		try{
+			$res = $this->itemDao->executeQuery($sql, array(":orderId" => $orderId));
+		}catch(Exception $e){
+			$res = array();
+		}
+		
+		if(!count($res)) return array("price" => new SOYShop_Item(), "count" => new SOYShop_Item());
+		
+		$maxValue = 0;
+		$maxCnt = 0;
+		
+		//最高値の商品が格納される
+		$valueTop = 0;
+		$cntTop = 0;
+		
+		foreach($res as $key => $vals){
+			if((int)$vals["PRICE"] > $maxValue){
+				$maxValue = (int)$vals["PRICE"];
+				$valueTop = $key;
+			}
+			
+			if((int)$vals["COUNT"] > $maxCnt){
+				$maxCnt = (int)$vals["COUNT"];
+				$cntTop = $key;
+			}
+		}
+		
+		//SOYShop_Itemに変換
+		$array["price"] = $this->itemDao->getObject($res[$valueTop]);
+		$array["count"] = $this->itemDao->getObject($res[$cntTop]);
+		
+		return $array;
 	}
 	
 	private function getItemTotalPrice($orderId){
@@ -110,6 +183,10 @@ class ProsperityReportOrderListComponent extends HTMLList{
 	
 	function setUserDao($userDao){
 		$this->userDao = $userDao;
+	}
+	
+	function setItemDao($itemDao){
+		$this->itemDao = $itemDao;
 	}
 }
 ?>
