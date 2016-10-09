@@ -18,7 +18,7 @@ class PublisherPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 //		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 //			$this,"config_page"	
@@ -74,7 +74,7 @@ class PublisherPlugin{
 				
 				if(strpos($dir, ".html") || strpos($dir, ".php")) break;
 				$currentDir .= "/" . $dir;
-				if(!file_exists($currentDir)){
+				if(!file_exists($currentDir) && strlen($currentDir) <= 100){
 					mkdir($currentDir);
 				}
 			}
@@ -82,10 +82,12 @@ class PublisherPlugin{
 			//配列の最後の値がhtmlかどうかを確認する
 			$lastDir = end($dirs);
 			
-			if(strpos($lastDir, ".html")){
-				file_put_contents($currentDir . "/" . $lastDir, $html);
-			}else{
-				file_put_contents($currentDir . "/index.html", $html);
+			if(file_exists($currentDir)){
+				if(strpos($lastDir, ".html")){
+					file_put_contents($currentDir . "/" . $lastDir, $html);
+				}else{
+					file_put_contents($currentDir . "/index.html", $html);
+				}
 			}
 		}
 		
