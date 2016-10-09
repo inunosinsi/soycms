@@ -110,7 +110,7 @@ abstract class MailLogic extends SOY2LogicBase{
 	}
 	
 	//次の予約送信がある時は、予約テーブルに挿入する
-	function insertReservation($mailId, $selectorCount, $restrictionCount, $interval, $offset = 0){
+	private static function insertReservation($mailId, $selectorCount, $restrictionCount, $interval, $offset = 0){
 				
 		//予約送信時刻の設定
 		$nextReservationDate = time() + $interval * 60;
