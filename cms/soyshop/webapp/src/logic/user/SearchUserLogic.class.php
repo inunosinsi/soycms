@@ -180,6 +180,14 @@ class SearchUserLogic extends SOY2LogicBase{
 							$binds[":birthday_day"] = "%-" . $d;
 						}
 						break;
+					case "not_send":
+						foreach($value as $key_2 => $value_2){
+							if( is_string($value_2) && strlen($value_2) ){
+									$where_complex[] = " " . $key . " = " . $value_2 . " ";
+							}
+						}
+						if(count($where_complex)) $where[] = " ( ".implode(" OR ", $where_complex). " ) ";
+						break;
 					case "register_date" :
 					case "update_date" :
 						if(strlen(@$value["start"]["month"]) && strlen(@$value["start"]["day"]) && strlen(@$value["start"]["year"])){

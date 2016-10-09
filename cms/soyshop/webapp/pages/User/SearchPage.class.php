@@ -267,6 +267,20 @@ class SearchPage extends WebPage{
 			"name" => "search[attribute3]",
 			"value" => (isset($search["attribute3"])) ? $search["attribute3"] : "",
 		));
+		
+		$this->addCheckBox("advanced_search_is_send", array(
+			"name" => "search[not_send][]",
+			"value" => 0,
+			"selected" => (isset($search["not_send"]) && in_array("0", $search["not_send"])),
+			"label" => "配信する"
+		));
+		
+		$this->addCheckBox("advanced_search_not_send", array(
+			"name" => "search[not_send][]",
+			"value" => 1,
+			"selected" => (isset($search["not_send"]) && in_array("1", $search["not_send"])),
+			"label" => "配信しない"
+		));
 
 		$this->addCheckBox("advanced_search_shop_send_true", array(
 			"type" => "radio",
