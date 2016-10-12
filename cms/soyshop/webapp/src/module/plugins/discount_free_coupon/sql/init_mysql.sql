@@ -20,6 +20,6 @@ create table soyshop_coupon_history(
 	user_id integer not null,
 	coupon_id integer not null,
 	order_id integer not null,
-	private integer not null default 0,
+	price integer not null default 0,
 	create_date integer not null
 )ENGINE = InnoDB;
