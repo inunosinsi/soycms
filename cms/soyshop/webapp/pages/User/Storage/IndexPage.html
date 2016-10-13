@@ -6,9 +6,9 @@
 
 	<form soy:id="form">
 	<div class="block_body">
-		<p class="notice" soy:id="updated">写真のアップロードをしました。</p>
+		<p class="notice" soy:display="updated">写真のアップロードをしました。</p>
 		
-		<!-- soy:id="is_storage" -->
+		<!-- soy:display="is_storage" -->
 		<dl>
 			<dd>
 				<input type="file" name="storage[]" multiple="multiple">&nbsp;
@@ -16,7 +16,7 @@
 			</dd>
 		</dl>
 		
-		<!-- soy:id="has_storage" -->
+		<!-- soy:display="has_storage" -->
 		<table class="form_list">
 			<thead>
 				<tr>
@@ -40,7 +40,7 @@
 		</table>
 		
 		<!-- /soy:id="has_storage" -->		
-		<!-- /soy:id="is_storage" -->
+		<!-- /soy:display="is_storage" -->
 	</div>
 	</form>
 </div>

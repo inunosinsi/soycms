@@ -17,19 +17,12 @@ class IndexPage extends WebPage{
 		$this->userId = (isset($args[0])) ? (int)$args[0] : null;
 		
 		WebPage::__construct();
-		
-		$this->addModel("updated", array(
-			"visible" => (isset($_GET["updated"]))
-		));
-				
+						
 		$activedPointPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("store_user_folder")));
-		$this->addModel("is_storage", array(
-			"visible" => $activedPointPlugin
-		));
+		DisplayPlugin::toggle("is_storage", $activedPointPlugin);
 		
 		if($activedPointPlugin){
-			$storageLogic = SOY2Logic::createInstance("module.plugins.store_user_folder.logic.StorageLogic");
-			$files = $storageLogic->getFiles($this->userId);
+			$files = SOY2Logic::createInstance("module.plugins.store_user_folder.logic.StorageLogic")->getFiles($this->userId);
 			
 			SOY2::import("module.plugins.store_user_folder.util.StoreUserFolderUtil");
 			$downloadUrl = StoreUserFolderUtil::getDownloadUrl();
@@ -42,10 +35,7 @@ class IndexPage extends WebPage{
 			"enctype" => "multipart/form-data"
 		));
 		
-		$this->addModel("has_storage", array(
-			"visible" => (count($files))
-		));
-		
+		DisplayPlugin::toggle("has_storage", count($files));
 		
 		$this->createAdd("storage_list", "_common.User.StorageListComponent", array(
 			"list" => $files,

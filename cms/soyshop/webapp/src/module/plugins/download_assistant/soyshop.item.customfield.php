@@ -37,7 +37,7 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 					if(@move_uploaded_file($_FILES["file"]["tmp_name"], $dest_name) === false){
 						
 					}
-				}				
+				}
 			}
 		}
 		

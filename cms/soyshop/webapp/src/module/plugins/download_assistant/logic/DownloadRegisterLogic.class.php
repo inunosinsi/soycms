@@ -48,7 +48,7 @@ class DownloadRegisterLogic extends SOY2LogicBase{
 		foreach($files as $file){
 			//登録前にファイル名のチェック
 			if(preg_match("/^[0-9A-Za-z%&+\-\^_`{|}~.]+$/", $file)){
-				//登録する値を言えるための配列
+				//登録する値を入れるための配列
 				$values = self::getDownloadArray($orderId, $item->getId(), $userId, $file);
 				$download = SOY2::cast("SOYShop_Download",(object)$values);
 				try{
