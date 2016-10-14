@@ -483,12 +483,14 @@ class DetailPage extends WebPage{
 		$this->addInput("item_order_period_start", array(
 			"name" => "Item[orderPeriodStart]",
 			"value" => soyshop_convert_date_string($item->getOrderPeriodStart()),
-			"readonly" => true
+			"id" => "order_period_start",
+			"readonly" => true,
 		));
 		
 		$this->addInput("item_order_period_end", array(
 			"name" => "Item[orderPeriodEnd]",
 			"value" => soyshop_convert_date_string($item->getOrderPeriodEnd()),
+			"id" => "order_period_end",
 			"readonly" => true
 		));
 		
@@ -496,12 +498,14 @@ class DetailPage extends WebPage{
 		$this->addInput("item_open_period_start", array(
 			"name" => "Item[openPeriodStart]",
 			"value" => soyshop_convert_date_string($item->getOpenPeriodStart()),
+			"id" => "open_period_start",
 			"readonly" => true
 		));
 		
 		$this->addInput("item_open_period_end", array(
 			"name" => "Item[openPeriodEnd]",
 			"value" => soyshop_convert_date_string($item->getOpenPeriodEnd()),
+			"id" => "open_period_end",
 			"readonly" => true
 		));
 		

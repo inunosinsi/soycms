@@ -173,11 +173,13 @@
 			<dt>販売期限</dt>
 			<dd>
 				<input type="text" class="date_picker_start" soy:id="item_order_period_start" />～<input type="text" class="date_picker_end" soy:id="item_order_period_end" />
+				&nbsp;<a href="javascript:void(0)" id="order_period_clear_button" class="button">クリア</a>
 			</dd>
 			
 			<dt>公開期限</dt>
 			<dd>
 				<input type="text" class="date_picker_start" soy:id="item_open_period_start" />～<input type="text" class="date_picker_end" soy:id="item_open_period_end" />
+				&nbsp;<a href="javascript:void(0)" id="open_period_clear_button" class="button">クリア</a>
 			</dd>
 		</dl>
 
@@ -316,12 +318,22 @@ $(function(){
 		relative_urls : false,
 		entity_encoding : "named"
 	});
+	
+	//クリアボタン
+	var t = ["order", "open"];
+	for(var i = 0; i < t.length; i++){
+		$("#" + t[i] + "_period_clear_button").click(function(){
+			var typ = this.id.substr(0, this.id.indexOf("_"));
+			$("#" + typ + "_period_start").val("");
+			$("#" + typ + "_period_end").val("");
+		});
+	}
 });
 </script>
 <script type="text/javascript">
 function onClickLeaf(id,ele){
 	$("#item_category").val(id);
-	$("#item_category_text").text($(ele).text());
+	$("#item_category_text").text($(ele).text());t
 
 	$(".selected_category").removeClass("selected_category");
 	$(ele).addClass("selected_category");
@@ -418,6 +430,11 @@ function onPopup(){
 .image_select_preview{
 	display:block;
 	margin-top:3px;
+}
+
+.date_picker_start,
+.date_picker_end{
+	width:30%;
 }
 
 
