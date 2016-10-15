@@ -36,6 +36,9 @@ if(defined("SOYSHOP_SITE_DSN")){
 SOY2DAOConfig::DaoDir(SOYSHOP_WEBAPP . "src/domain/");
 SOY2DAOConfig::EntityDir(SOYSHOP_WEBAPP . "src/domain/");
 
+//ダミーのメールアドレス用のドメイン
+if(!defined("DUMMY_MAIL_ADDRESS_DOMAIN")) define("DUMMY_MAIL_ADDRESS_DOMAIN", "dummy.soyshop.net");
+
 //import
 SOY2::import("domain.config.SOYShop_DataSets");
 SOY2::import("base.SOYShopSiteController");

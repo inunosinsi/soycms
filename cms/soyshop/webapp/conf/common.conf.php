@@ -76,7 +76,6 @@ define("SOYSHOP_BASE_URL", SOY2PageController::createRelativeLink("", true));
 define("SOYCMS_ADMIN_URL", SOY2PageController::createRelativeLink("../admin/"));
 if(!defined("SOYCMS_PHP_CGI_MODE")) define("SOYCMS_PHP_CGI_MODE", function_exists("php_sapi_name") && stripos(php_sapi_name(), "cgi") !== false );
 
-
 //include
 SOY2::import("base.define", ".php");
 SOY2::import("base.func.common", ".php");

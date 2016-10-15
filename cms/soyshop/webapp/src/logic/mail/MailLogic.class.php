@@ -67,6 +67,9 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	function sendMail($sendTo, $title, $body, $sendToName = "", $order = null, $orderFlag = false){
 		
+		//ダミーのメールアドレスには送信しない
+		if(defined("DUMMY_MAIL_ADDRESS_DOMAIN") && strpos($sendTo, "@" . DUMMY_MAIL_ADDRESS_DOMAIN) !== false) return;
+		
 		if(is_null($this->send)){
 			$this->prepareSend();
 		}

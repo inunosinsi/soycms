@@ -17,6 +17,7 @@ class ShopConfigPage extends WebPage{
 		$_POST["Config"]["allowMailAddressLogin"] = (isset($_POST["Config"]["allowMailAddressLogin"])) ? (int)$_POST["Config"]["allowMailAddressLogin"] : 0;
 		$_POST["Config"]["allowLoginIdLogin"] = (isset($_POST["Config"]["allowLoginIdLogin"])) ? (int)$_POST["Config"]["allowLoginIdLogin"] : 0;
 		$_POST["Config"]["displayUsableTagList"] = (isset($_POST["Config"]["displayUsableTagList"])) ? (int)$_POST["Config"]["displayUsableTagList"] : 0;
+		$_POST["Config"]["insertDummyMailAddress"] = (isset($_POST["Config"]["insertDummyMailAddress"])) ? (int)$_POST["Config"]["insertDummyMailAddress"] : 0;
 		if(!isset($_POST["Config"]["consumptionTaxModule"])) $_POST["Config"]["consumptionTaxModule"] = null;
 
 		$consumptionTax = $_POST["Config"]["consumptionTax"]; //外税
@@ -237,6 +238,13 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getDisplayUsableTagList(),
 			"label" => "テンプレートの編集画面で使用できるタグを表示"
+		));
+		
+		$this->addCheckBox("insertDummyMailAddress", array(
+			"name" => "Config[insertDummyMailAddress]",
+			"value" => 1,
+			"selected" => $config->getInsertDummyMailAddress(),
+			"label" => "管理画面にログイン時、公開側のカートのメールアドレスにダミーのメールアドレスを挿入する"
 		));
 
 		//メンテナンスモード

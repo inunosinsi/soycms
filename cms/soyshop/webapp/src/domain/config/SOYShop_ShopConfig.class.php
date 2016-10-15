@@ -35,6 +35,7 @@ class SOYShop_ShopConfig {
 	private $allowMailAddressLogin = 1;
 	private $allowLoginIdLogin = 0;
 	private $displayUsableTagList = 0;
+	private $insertDummyMailAddress = 1;
 
 	private $companyInformation = array(
 		"name" => "",
@@ -394,6 +395,12 @@ class SOYShop_ShopConfig {
 	}
 	function setDisplayUsableTagList($displayUsableTagList){
 		$this->displayUsableTagList = $displayUsableTagList;
+	}
+	function getInsertDummyMailAddress(){
+		return $this->insertDummyMailAddress;
+	}
+	function setInsertDummyMailAddress($insertDummyMailAddress){
+		$this->insertDummyMailAddress = $insertDummyMailAddress;
 	}
 	
 	function getIsShowOnlyAdministrator(){

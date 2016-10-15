@@ -488,6 +488,27 @@ function soyshop_convert_file_path($path, SOYShop_Item $item){
 	return $path;
 }
 
+//ダミーのメールアドレスを取得する
+function soyshop_dummy_mail_address(){
+	$str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
+	$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+	
+	//ランダムなメールアドレスを取得する。一応重複チェックも行う
+	for(;;){
+		$r_str = null;
+		for ($i = 0; $i < 10; $i++) {
+			$r_str .= $str[rand(0, count($str) - 1)];
+		}
+		$mailAddress = $r_str . "@" . DUMMY_MAIL_ADDRESS_DOMAIN;
+		try{
+			$user = $userDao->getByMailAddress($mailAddress);
+		}catch(Exception $e){
+			break;
+		}
+	}
+	return $mailAddress;
+}
+
 /**
  * 携帯自動振り分けプラグインと多言語化プラグインでも詳細ページが開ける様にページIDを変更する
  * @param Object SOYShop_Item, Object SOYShop_Page
