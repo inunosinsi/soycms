@@ -129,7 +129,13 @@ function soyshop_breadcrumb_navigation($html, $page){
 					$categories = array();
 					
 					$uri = "";
-					$name = isset($_GET["q"]) ? $_GET["q"] : "";
+					$name = "";
+					if(isset($_GET["q"])){
+						$name = trim($_GET["q"]);
+					//カスタムサーチフィールド
+					}else if(isset($_GET["c_search"]["item_name"])){
+						$name = trim($_GET["c_search"]["item_name"]);
+					}
 					$alias = "";
 					break;
 				case SOYShop_Page::TYPE_FREE:

@@ -21,7 +21,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 			"value" => (isset($params["item_name"]) && strlen($params["item_name"])) ? $params["item_name"] : null
 		));
 		
-		//商品名
+		//商品コード
 		$obj->addInput("custom_search_item_code", array(
 			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 			"type" => "text",

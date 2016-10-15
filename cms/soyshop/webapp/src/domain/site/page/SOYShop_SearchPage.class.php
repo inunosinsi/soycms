@@ -79,10 +79,13 @@ class SOYShop_SearchPage extends SOYShop_PageBase{
     }
 
     function convertPageTitle($title){
+    	$q = "";
     	if(isset($_GET["q"])){
-    		return str_replace("%SEARCH_WORD%", htmlspecialchars($_GET["q"], ENT_QUOTES, "UTF-8"), $title);
+    		$q = htmlspecialchars($_GET["q"], ENT_QUOTES, "UTF-8");
+    	}else if(isset($_GET["c_search"]["item_name"])){
+    		$q = htmlspecialchars($_GET["c_search"]["item_name"], ENT_QUOTES, "UTF-8");
     	}
-    	return $title;
+    	return str_replace("%SEARCH_WORD%", $q, $title);
     }
 }
 ?>

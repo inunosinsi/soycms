@@ -103,7 +103,14 @@ class SOYShopPageBase extends WebPage{
     			$string = str_replace("%ITEM_NAME%", $current->getName(), $string);
     			break;
     		case "search":
-    			$q = (isset($_GET["q"])) ? htmlspecialchars($_GET["q"], ENT_QUOTES, "UTF-8") : "";
+    			$q = "";
+    			if(isset($_GET["q"])){
+    				$q = htmlspecialchars($_GET["q"], ENT_QUOTES, "UTF-8");
+    			//カスタムサーチフィールド
+    			}else if(isset($_GET["c_search"]["item_name"])){
+    				$q = htmlspecialchars($_GET["c_search"]["item_name"], ENT_QUOTES, "UTF-8");
+    			}
+    			
     			$string = str_replace("%SEARCH_WORD%", $q, $string);
     			break;
     		case "free":
