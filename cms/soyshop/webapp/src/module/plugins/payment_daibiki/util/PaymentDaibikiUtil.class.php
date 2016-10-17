@@ -4,7 +4,8 @@ class PaymentDaibikiUtil {
 	
 	public static function getConfig(){
 		return SOYShop_DataSets::get("payment_daibiki.config", array(
-			"auto_calc" => 1
+			"auto_calc" => 1,
+			"include_delivery_price" => 0
 		));
 	}
 	

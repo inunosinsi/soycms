@@ -11,6 +11,16 @@ class DaibikiLogic extends SOY2LogicBase{
 	function getDaibikiPrice(){
 		$price = $this->cart->getItemPrice();
 		
+		$config = PaymentDaibikiUtil::getConfig();
+		
+		//公開側で送料も加味する
+		if(
+			(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) && 
+			(isset($config["include_delivery_price"]) && (int)$config["include_delivery_price"] === 1)
+		){
+			/** @ToDo 送料分を加算したい **/
+		}
+		
 		//割引系のプラグインがある場合は割引分を除く
 		foreach($this->cart->getModules() as $mod){
 			if(!$mod->getIsInclude() && $mod->getPrice() < 0){

@@ -16,6 +16,7 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 				//設定
 				$config = (isset($_POST["Config"])) ? $_POST["Config"] : array();
 				$config["auto_calc"] = (isset($config["auto_calc"])) ? (int)$config["auto_calc"] : 0;
+				$config["include_delivery_price"] = (isset($config["include_delivery_price"])) ? (int)$config["include_delivery_price"] : 0;
 
 				PaymentDaibikiUtil::saveConfig($config);
 
@@ -97,6 +98,13 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 		));
 		
 		$config = PaymentDaibikiUtil::getConfig();
+		
+		$this->addCheckBox("include_delivery_price", array(
+			"name" => "Config[include_delivery_price]",
+			"value" => 1,
+			"selected" => (isset($config["include_delivery_price"]) && $config["include_delivery_price"] == 1),
+			"label" => "カートで代引き計算時に送料も加味する"
+		));
 		
 		$this->addCheckBox("order_auto_calc", array(
 			"name" => "Config[auto_calc]",

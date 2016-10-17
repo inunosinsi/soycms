@@ -48,6 +48,9 @@ class SOYShopSiteController extends SOY2PageController{
 		
 		//https → http
 		self::checkSSL($uri, $args);
+
+		//運営者の代理販売のためのログイン
+		self::purchaseProxy();
 				
 		try{
 			//URIからページを取得
@@ -472,6 +475,20 @@ class SOYShopSiteController extends SOY2PageController{
 			$args = implode($args,"/");
 			SOY2PageController::redirect(soyshop_get_site_url(true) . $args);
 			exit;
+		}
+	}
+	
+	/**
+	 * 運営者の代理購入用のログイン
+	 */
+	private function purchaseProxy(){
+		if(isset($_GET["purchase"]) && $_GET["purchase"] == "proxy" && isset($_GET["user_id"]) && is_numeric($_GET["user_id"])){
+			//管理画面にログインしているか調べる
+			$session = SOY2ActionSession::getUserSession();
+			if(!is_null($session->getAttribute("loginid"))){
+				$mypage = MyPageLogic::getMyPage();
+				$mypage->noPasswordLogin(trim($_GET["user_id"]));
+			}
 		}
 	}
 

@@ -181,6 +181,10 @@ class DetailPage extends WebPage{
 		$this->addLink("order_register_link", array(
 			"link" => SOY2PageController::createLink("Order.Register.User." . $shopUser->getId())
 		));
+		$this->addLink("order_cart_link", array(
+			"link" => soyshop_get_site_url(true) . "?purchase=proxy&user_id=" . $shopUser->getId(),
+			"target" => "_blank"
+		));
 		
 		DisplayPlugin::toggle("storage", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("store_user_folder"))));		
 		$this->addLabel("storage_url", array(

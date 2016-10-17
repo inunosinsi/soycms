@@ -439,6 +439,19 @@ class MyPageLogic extends SOY2LogicBase{
 		$this->save();
 		return true;
 	}
+	
+	function noPasswordLogin($userId){
+		/**
+		 * @ログイン周りのチェック
+		 */
+		
+		//セッションに追加
+		$this->setAttribute("loggedin", true);
+		$this->setAttribute("userId", $userId);
+
+		$this->save();
+		return true;
+	}
 
 	/* auto login */
 
