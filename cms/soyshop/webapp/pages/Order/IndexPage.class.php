@@ -226,6 +226,7 @@ class SearchForm extends SOYBodyComponentBase{
 	private $orderDateEnd;
 
 	private $trackingNumber;
+	private $orderId;
 	private $userName;
 	private $userReading;
 	private $itemCode;
@@ -281,6 +282,11 @@ class SearchForm extends SOYBodyComponentBase{
 		$this->addInput("order_date_end", array(
 			"name" => "search[orderDateEnd]",
 			"value" => $this->getOrderDateEnd(),
+		));
+
+		$this->addInput("order_id", array(
+			"name" => "search[orderId]",
+			"value" => $this->getOrderId()
 		));
 
 		$this->addInput("order_tracking_number", array(
@@ -383,6 +389,13 @@ class SearchForm extends SOYBodyComponentBase{
 	}
 	function setTrackingNumber($trackingNumber) {
 		$this->trackingNumber = mb_convert_kana($trackingNumber, "a");
+	}
+	
+	function getOrderId(){
+		return $this->orderId;
+	}
+	function setOrderId($orderId){
+		$this->orderId = $orderId;
 	}
 
 	function getOrderStatus() {

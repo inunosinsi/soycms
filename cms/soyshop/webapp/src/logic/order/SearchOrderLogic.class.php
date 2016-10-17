@@ -102,6 +102,10 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$where[] = "tracking_number LIKE :tracking_number";
 			$binds[":tracking_number"] = "%" . @$search["trackingNumber"] . "%";
 		}
+		if(strlen(@$search["orderId"]) > 0){
+			$where[] = "id LIKE :order_id";
+			$binds[":order_id"] = "%" . @$search["orderId"] . "%";
+		}
 
 		if(strlen(@$search["userName"]) > 0){
 			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");
