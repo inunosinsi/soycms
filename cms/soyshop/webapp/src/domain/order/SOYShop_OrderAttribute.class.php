@@ -15,6 +15,7 @@ class SOYShop_OrderAttribute {
 	const CUSTOMFIELD_TYPE_RADIO = "radio";			//ラジオ
 	const CUSTOMFIELD_TYPE_SELECT = "select";		//セレクトボックス
 	const CUSTOMFIELD_TYPE_RICHTEXT = "richtext";	//リッチテキスト
+	const CUSTOMFIELD_TYPE_FILE = "file";			//ファイル
 	
 	const CUSTOMFIELD_ATTRIBUTE_OTHER = 1;
 	
@@ -191,6 +192,7 @@ class SOYShop_OrderAttributeConfig{
 			"radio" => "ラジオボタン",
 			"select" => "セレクトボックス",
 //			"richtext" => "リッチテキスト",
+			"file" => "ファイル"
 		);
 	}
 
@@ -383,6 +385,19 @@ class SOYShop_OrderAttributeConfig{
 						.$h_value.'</textarea>';
 				break;
 				
+			case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
+				$body = '<input type="file" id="'.$h_formID.'_upload"'
+				       .' name="'.$h_formName.'"'
+				       .' value="" />';
+				if(strlen($value)){
+					$value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
+					$body .= '<br>' . $value;
+					$body .= '<input type="hidden"'
+						  .' name="'.$h_formName.'"'
+				          .' value="'. $value . '" />';
+				}
+				break;
+			
 			default:
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");

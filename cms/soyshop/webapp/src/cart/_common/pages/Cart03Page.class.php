@@ -179,7 +179,8 @@ class Cart03Page extends MainCartPageBase{
 		WebPage::__construct();
 
 		$this->addForm("order_form", array(
-			"action" => soyshop_get_cart_url(false)
+			"action" => soyshop_get_cart_url(false),
+			"enctype" => "multipart/form-data"
 		));
 
 		//商品リストの出力

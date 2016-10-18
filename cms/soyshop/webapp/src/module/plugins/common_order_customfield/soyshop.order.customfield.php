@@ -33,14 +33,38 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	function doPost($param){
 		
 		$this->prepare();
+		
+		//ファイル用
+		$new = array();
 				
 		//paramの再配列
 		$array = array();
 		foreach($this->list as $obj){
-			if($obj->getType() == SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX){
-				$value["value"] = (isset($param[$obj->getFieldId()]) && is_array($param[$obj->getFieldId()])) ? implode(",", $param[$obj->getFieldId()]) : "";
-			}else{
-				$value["value"] = (isset($param[$obj->getFieldId()])) ? $param[$obj->getFieldId()] : "";
+			switch($obj->getType()){
+				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
+					$value["value"] = (isset($param[$obj->getFieldId()]) && is_array($param[$obj->getFieldId()])) ? implode(",", $param[$obj->getFieldId()]) : "";
+					break;
+				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
+					$tmp = $_FILES["customfield_module"]["tmp_name"][$obj->getFieldId()];
+					
+					//とりあえずキャッシュにアップロードしておく
+					if(isset($tmp) && strlen($tmp)){
+						$filename = $_FILES["customfield_module"]["name"][$obj->getFieldId()];
+						$new[$obj->getFieldId()] = date("YmdHis") . "." . substr($filename, strrpos($filename, ".") + 1);
+						
+						if(move_uploaded_file($tmp, self::getCacheDir() . $new[$obj->getFieldId()])){
+							$value["value"] = $filename;
+						}else{
+							continue;	//ファイルアップロードに関する処理を止める
+						}
+					//今回はアップロードしないけど、すでにファイルをアップロードしている時
+					}else{
+						if(!isset($param[$obj->getFieldId()])) continue;
+						$value["value"] = $param[$obj->getFieldId()];
+					}
+					break;
+				default:
+					$value["value"] = (isset($param[$obj->getFieldId()])) ? $param[$obj->getFieldId()] : "";
 			}
 			
 			$value["label"] = $obj->getLabel();
@@ -58,7 +82,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		$param = $array;
 		
 		$cart = $this->getCart();
-
+		
 		foreach($param as $key => $obj){
 			$module = new SOYShop_ItemModule();
 			$module->setId("order_customfield_" . $key);
@@ -84,6 +108,12 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					 * radioの場合だけarray("value" => "", "other" => "")の形式にする
 					 */
 					$obj["value"] = array("value" => $obj["value"], "other" => $val);
+					break;
+				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
+					$value = $obj["value"];
+					if(isset($new[$key])){
+						$cart->setAttribute("order_customfield_" . $key . ".tmp", $new[$key]);
+					}
 					break;
 				default:
 					$value = $obj["value"];
@@ -116,6 +146,37 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
 					$obj->setValue1($value["value"]);
 					$obj->setValue2($value["other"]);
+					break;
+				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
+					$obj->setValue1($value);
+					
+					//ファイルを各顧客用のフォルダに移動
+					$tmp = $cart->getAttribute("order_customfield_" . $config->getFieldId() . ".tmp");
+					$tmpFile = self::getCacheDir() .$tmp;
+					
+					$userId = $cart->getCustomerInformation()->getId();
+					$new = self::getDirectoryByUserId($userId)  . $tmp;
+					if(copy($tmpFile, $new)){
+						//ファイルのアップロードに成功したら、仮のアップロードを削除する
+						unlink($tmpFile);
+						
+						//ストレージプラグインと併用する
+						SOY2::import("util.SOYShopPluginUtil");
+						if(SOYShopPluginUtil::checkIsActive("store_user_folder")){
+							SOY2::imports("module.plugins.store_user_folder.domain.*");
+							$storeDao = SOY2DAOFactory::create("SOYShop_UserStorageDAO");
+							$storeObj = new SOYShop_UserStorage();
+							$storeObj->setUserId($userId);
+							$storeObj->setFileName($tmp);
+							$storeObj->setToken(md5(time().$userId.$tmp.rand(0,65535)));
+					
+							try{
+								$storeDao->insert($storeObj);
+							}catch(Exception $e){
+								var_dump($e);
+							}
+						}
+					}
 					break;
 				default:
 					$obj->setValue1($value);
@@ -355,6 +416,9 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					}
 					$htmls[] = "</select>";
 					break;
+				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
+					//何もしない
+					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RICHTEXT:
 				default:
 					//未実装
@@ -421,6 +485,21 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 		
 		return $id;
+	}
+	
+	private function getCacheDir(){
+		$path = SOY2HTMLConfig::CacheDir() . "tmp/";
+		if(!file_exists($path)) mkdir($path);
+		return $path;
+	}
+	
+	private function getDirectoryByUserId($userId){
+		$dir = SOYSHOP_SITE_DIRECTORY . "files/user/";
+		if(!is_dir($dir)) mkdir($dir);
+
+		$dir .= $userId . "/";
+		if(!is_dir($dir)) mkdir($dir);
+		return $dir;
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "common_order_customfield", "CommonOrderCustomfieldModule");

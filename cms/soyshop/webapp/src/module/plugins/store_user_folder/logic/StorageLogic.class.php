@@ -119,10 +119,11 @@ class StorageLogic extends SOY2LogicBase{
 	}
 	
 	private function getDirectoryByUserId($userId){
-		$dir = SOYSHOP_SITE_DIRECTORY . "files/user/" . $userId;
-		if(!is_dir($dir)){
-			mkdir($dir);
-		}
+		$dir = SOYSHOP_SITE_DIRECTORY . "files/user/";
+		if(!is_dir($dir)) mkdir($dir);
+
+		$dir .= $userId;
+		if(!is_dir($dir)) mkdir($dir);
 		return $dir;
 	}
 }
