@@ -33,8 +33,9 @@ class CustomSearchFieldUtil{
 	}
 	
 	public static function saveSearchConfig($values){
-		$values["search"]["parent"] = (isset($values["search"]["parent"])) ? (int)$values["search"]["parent"] : 0;
-		$values["search"]["child"] = (isset($values["search"]["child"])) ? (int)$values["search"]["child"] : 0;
+		foreach(array("single", "parent", "child", "download") as $t){
+			$values["search"][$t] = (isset($values["search"][$t])) ? (int)$values["search"][$t] : 0;
+		}
 		return SOYShop_DataSets::put("custom_search.search_config", $values);
 	}
 	
