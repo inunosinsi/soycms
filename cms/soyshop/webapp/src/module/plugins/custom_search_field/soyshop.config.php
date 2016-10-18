@@ -13,6 +13,10 @@ class CustomSearchFieldConfig extends SOYShopConfigPageBase{
 		}elseif(isset($_GET["collective"])){
 			include_once(dirname(__FILE__) . "/config/collective/SettingPage.class.php");
 			$form = SOY2HTMLFactory::createInstance("SettingPage");
+		//検索の設定画面
+		}elseif(isset($_GET["config"])){
+			include_once(dirname(__FILE__) . "/config/search/CustomSearchConfigPage.class.php");
+			$form = SOY2HTMLFactory::createInstance("CustomSearchConfigPage");
 		}else{
 			include_once(dirname(__FILE__) . "/config/CustomSearchFieldConfigFormPage.class.php");
 			$form = SOY2HTMLFactory::createInstance("CustomSearchFieldConfigFormPage");

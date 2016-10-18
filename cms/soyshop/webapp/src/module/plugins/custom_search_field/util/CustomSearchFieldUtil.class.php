@@ -20,6 +20,23 @@ class CustomSearchFieldUtil{
 	public static function saveConfig($values){
 		return SOYShop_DataSets::put("custom_search.config", $values);
 	}
+
+	public static function getSearchConfig(){
+		return SOYShop_DataSets::get("custom_search.search_config", array(
+			"search" => array(
+				"single" => 1,
+				"parent" => 1,
+				"child" => 0,
+				"download" => 1
+			)
+		));
+	}
+	
+	public static function saveSearchConfig($values){
+		$values["search"]["parent"] = (isset($values["search"]["parent"])) ? (int)$values["search"]["parent"] : 0;
+		$values["search"]["child"] = (isset($values["search"]["child"])) ? (int)$values["search"]["child"] : 0;
+		return SOYShop_DataSets::put("custom_search.search_config", $values);
+	}
 	
 	public static function getTypeList(){
 		return array(

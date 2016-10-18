@@ -69,11 +69,39 @@ class SearchLogic extends SOY2LogicBase{
 	}
 	
 	private function buildWhere(){
+		$config = CustomSearchFieldUtil::getSearchConfig();
+		
 		$where = "WHERE i.open_period_start < :now ".
 				"AND i.open_period_end > :now ".
-				"AND i.item_type IN ('" . SOYShop_Item::TYPE_SINGLE . "', '" . SOYShop_Item::TYPE_GROUP ."', '" . SOYShop_Item::TYPE_DOWNLOAD . "') ".
 				"AND i.item_is_open = 1 ".
 				"AND i.is_disabled != 1 ";
+		
+		$item_where = array();
+		
+		//通常商品を表示
+		if(isset($config["search"]["single"]) && (int)$config["search"]["single"] === 1){
+			$item_where[] = "i.item_type = \"" . SOYShop_Item::TYPE_SINGLE . "\"";
+		}
+		
+		//親商品を表示
+		if(isset($config["search"]["parent"]) && (int)$config["search"]["parent"] === 1){
+			$item_where[] = "i.item_type = \"" . SOYShop_Item::TYPE_GROUP . "\"";
+		}
+		
+		//小商品を表示
+		if(isset($config["search"]["child"]) && (int)$config["search"]["child"] === 1){
+			$item_where[] = "i.item_type REGEXP '^[0-9]+$'";
+		}
+		
+		//ダウンロード商品を表示
+		if(isset($config["search"]["download"]) && (int)$config["search"]["download"] === 1){
+			$item_where[] = "i.item_type = \"" . SOYShop_Item::TYPE_DOWNLOAD . "\"";
+		}
+		
+		if(count($item_where)){
+			$where .= "AND (" .implode(" OR ", $item_where) .") ";
+		}
+		
 		foreach($this->where as $key => $w){
 			if(!strlen($w)) continue;
 			$where .= "AND " . $w . " ";
