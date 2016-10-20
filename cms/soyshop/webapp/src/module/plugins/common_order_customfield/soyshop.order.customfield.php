@@ -315,6 +315,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 						$msg .= ":" . $obj->getValue2();
 					}
 					$value["value"] = $msg;
+					$value["link"] = null;
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
 					$value["value"] = $obj->getValue2();
@@ -322,6 +323,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					break;
 				default:
 					$value["value"] = $obj->getValue1();
+					$value["link"] = null;
 					break;
 			}
 			
