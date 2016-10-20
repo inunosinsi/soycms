@@ -424,11 +424,11 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
 					//何もしない
-					return array();
+					continue;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RICHTEXT:
 				default:
 					//未実装
-					return array();
+					continue;
 			}
 			$attrObjects["form"] = implode("\n", $htmls);
 			$array[] = $attrObjects;
