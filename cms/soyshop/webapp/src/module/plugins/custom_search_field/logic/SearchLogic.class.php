@@ -86,6 +86,7 @@ class SearchLogic extends SOY2LogicBase{
 		
 		//小商品を表示
 		if(isset($config["search"]["child"]) && (int)$config["search"]["child"] === 1){
+			$item_where[] = "(item_type != \"" . SOYShop_Item::TYPE_SINGLE . "\" AND item_type != \"" . SOYShop_Item::TYPE_GROUP . "\" AND item_type != \"" . SOYShop_Item::TYPE_DOWNLOAD . "\") ";
 			$item_where[] = "item_type REGEXP '^[0-9]+$'";
 		}
 		
@@ -165,7 +166,7 @@ class SearchLogic extends SOY2LogicBase{
 						}
 						if(isset($_GET["c_search"][$key . "_end"]) && strlen($_GET["c_search"][$key . "_end"]) && is_numeric($_GET["c_search"][$key . "_end"])){
 							$we = $key .  " <= :" . $key . "_end";
-							$s_binds[":" . $key . "_end"] = (int)$_GET["c_search"][$key . "_end"];
+							$this->binds[":" . $key . "_end"] = (int)$_GET["c_search"][$key . "_end"];
 						}
 						if(strlen($ws) && strlen($we)){
 							$s_where[$key] = "(" . $ws . " AND " . $we . ")";
