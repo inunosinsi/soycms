@@ -148,11 +148,14 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					$obj->setValue2($value["other"]);
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
-					$obj->setValue1($value);
 					
 					//ファイルを各顧客用のフォルダに移動
 					$tmp = $cart->getAttribute("order_customfield_" . $config->getFieldId() . ".tmp");
 					$tmpFile = self::getCacheDir() .$tmp;
+					
+					//value1にアップロード時のファイル名、value2にはリネーム後のファイル名
+					$obj->setValue1($value);
+					$obj->setValue2($tmp);
 					
 					$userId = $cart->getCustomerInformation()->getId();
 					$new = self::getDirectoryByUserId($userId)  . $tmp;
@@ -300,7 +303,6 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		}catch(Exception $e){
 			$attributes = array();
 		}
-		
 		$array = array();
 		foreach($attributes as $obj){
 			if(!isset($list[$obj->getFieldId()])) continue;
@@ -313,6 +315,10 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 						$msg .= ":" . $obj->getValue2();
 					}
 					$value["value"] = $msg;
+					break;
+				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
+					$value["value"] = $obj->getValue2();
+					$value["link"] = self::getFilePathByUserId(self::getUserIdByOrderId($orderId)) . $value["value"];
 					break;
 				default:
 					$value["value"] = $obj->getValue1();
@@ -418,11 +424,11 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
 					//何もしない
-					break;
+					return array();
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RICHTEXT:
 				default:
 					//未実装
-					break;
+					return array();
 			}
 			$attrObjects["form"] = implode("\n", $htmls);
 			$array[] = $attrObjects;
@@ -500,6 +506,23 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		$dir .= $userId . "/";
 		if(!is_dir($dir)) mkdir($dir);
 		return $dir;
+	}
+	
+	private function getFilePathByUserId($userId){
+		return SOYSHOP_SITE_URL . "files/user/" . $userId . "/";
+	}
+	
+	private function getUserIdByOrderId($orderId){
+		static $userId;
+		if(is_null($userId)){
+			try{
+				$userId = SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getById($orderId)->getUserId();
+			}catch(Exception $e){
+				//
+			}
+		}
+		
+		return $userId;
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "common_order_customfield", "CommonOrderCustomfieldModule");

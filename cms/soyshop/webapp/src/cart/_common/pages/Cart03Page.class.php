@@ -112,7 +112,7 @@ class Cart03Page extends MainCartPageBase{
 			}
 
 			//カスタムフィールド
-			if(isset($_POST["customfield_module"])){
+			if(isset($_POST["customfield_module"]) || (isset($_FILES["customfield_module"]["tmp_name"]))){
 				//ロードしない？
 //				SOYShopPlugin::load("soyshop.order.customfield");
 				SOYShopPlugin::invoke("soyshop.order.customfield", array(

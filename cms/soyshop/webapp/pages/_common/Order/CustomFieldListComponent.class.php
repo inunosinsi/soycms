@@ -12,6 +12,10 @@ class CustomfieldListComponent extends HTMLList {
 		if(isset($item["style"])){
 			$val = "<span style=\"" . $item["style"] . "\">" . $val . "</span>";
 		}
+		
+		if(isset($item["link"])){
+			$val = "<a href=\"" . $item["link"] . "\" target=\"_blank\">" . $val . "</a>";
+		}
 
 		$this->addLabel("customfield_value", array(
 			"html" => $val
