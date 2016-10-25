@@ -157,6 +157,11 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"visible" => (strlen($imageSmall) > 0)
 	));
+	
+	$htmlObj->addLabel("item_small_image_url", array(
+		"text" => $imageSmall,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+	));
 
 	$imageLarge = soyshop_convert_file_path($item->getAttribute("image_large"), $item);
 	$htmlObj->addImage("item_large_image", array(
@@ -169,6 +174,11 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 		"link" => $imageLarge,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"visible" => (strlen($imageLarge) > 0)
+	));
+	
+	$htmlObj->addLabel("item_large_image_url", array(
+		"text" => $imageLarge,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 	));
 
 
