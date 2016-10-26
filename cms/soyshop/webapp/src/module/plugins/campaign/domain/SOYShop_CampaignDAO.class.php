@@ -78,7 +78,7 @@ abstract class SOYShop_CampaignDAO extends SOY2DAO {
 	 * @final
 	 */
 	function onInsert($query, $binds){
-		if(strlen($binds[":postPeriodStart"])) $binds[":postPeriodStart"] = 0;
+		if(!strlen($binds[":postPeriodStart"])) $binds[":postPeriodStart"] = 0;
 		if(!strlen($binds[":postPeriodEnd"])) $binds[":postPeriodEnd"] = 2147483647;
 		
 		$binds[":createDate"] = time();

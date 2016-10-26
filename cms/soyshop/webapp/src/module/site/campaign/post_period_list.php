@@ -11,13 +11,21 @@ function soyshop_post_period_list($html, $htmlObj){
 	SOY2::import("util.SOYShopPluginUtil");
 	if(SOYShopPluginUtil::checkIsActive("campaign")){
 		
-		/**
-		 * @ToDo 表示件数を取得したい
-		 */
+		//表示件数
+		$cnt = 0;
 		
+		if(strpos($html, "cms:count")){
+			$cntTag = trim(substr($html, strpos($html, "cms:count") + 11, 5));
+			$cnt = (int)trim(substr($cntTag, 0, strpos($cntTag, "\"")));
+		}
+		
+		if($cnt === 0) $cnt = 5;
+			
 		SOY2::imports("module.plugins.campaign.domain.*");
+		$dao = SOY2DAOFactory::create("SOYShop_CampaignDAO");
+		$dao->setLimit($cnt);
 		try{
-			$campaigns = SOY2DAOFactory::create("SOYShop_CampaignDAO")->getWithinPostPeriodEnd();
+			$campaigns = $dao->getWithinPostPeriodEnd();
 		}catch(Exception $e){
 			
 		}

@@ -115,14 +115,12 @@ class CampaignEntryPage extends WebPage{
 		
 		$this->addInput("post_period_start", array(
 			"name" => "Campaign[postPeriodStart]",
-			"value" => soyshop_convert_date_string($campaign->getPostPeriodStart()),
-			"readonly" => true
+			"value" => soyshop_convert_date_string($campaign->getPostPeriodStart())
 		));
 
 		$this->addInput("post_period_end", array(
 			"name" => "Campaign[postPeriodEnd]",
-			"value" => soyshop_convert_date_string($campaign->getPostPeriodEnd()),
-			"readonly" => true
+			"value" => soyshop_convert_date_string($campaign->getPostPeriodEnd())
 		));
 		
 		$this->addCheckBox("no_open", array(
