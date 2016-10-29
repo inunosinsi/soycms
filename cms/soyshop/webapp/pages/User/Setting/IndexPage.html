@@ -86,6 +86,26 @@
 							</div>
 						</td>
 					</tr>
+					<tr class="pager">
+						<td colspan="8">
+							<!-- 何故かうまく動かなかったのでコメントアウト div class="pager_item">
+								<form soy:id="pager_jump">
+									<select soy:id="pager_select"></select>
+									<noscript><input type="submit" value="移動"/></noscript>
+								</form>
+							</div-->
+							<div class="pager_item">
+								<a soy:id="prev_pager">&lt;</a>
+								<!-- soy:id="pager_list" -->
+								<a soy:id="target_link">1</a>
+								<!-- /soy:id="pager_list" -->
+								<a soy:id="next_pager">&gt;</a>
+							</div>
+							<div class="pager_item">
+								<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+							</div>
+						</td>
+					</tr>
 				</tfoot>
 				<tbody>
 					<!-- soy:id="user_list" -->

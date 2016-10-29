@@ -1,6 +1,8 @@
 <?php
 class IndexPage extends WebPage{
 
+	private $pageNumber;
+
 	function doPost(){
 		if(soy2_check_token()){
 			if(isset($_POST["search_btn"])){
@@ -39,7 +41,13 @@ class IndexPage extends WebPage{
 						}
 					}
 				}
-				SOY2PageController::jump("User.Setting?updated");
+				
+				if(isset($this->pageNumber)){
+					SOY2PageController::jump("User.Setting.".$this->pageNumber."?updated");
+				}else{
+					SOY2PageController::jump("User.Setting?updated");
+				}
+				
 			}
 		}
 		
@@ -50,6 +58,8 @@ class IndexPage extends WebPage{
 	}
 
 	function __construct($args) {
+		
+		$this->pageNumber = (isset($args[0])) ? (int)$args[0] : null;
 
 		WebPage::__construct();
 
@@ -57,7 +67,7 @@ class IndexPage extends WebPage{
 
 		/*引数など取得*/
 		//表示件数
-		$limit = 50;
+		$limit = 15;
 		$page = (isset($args[0])) ? (int)$args[0] : $this->getParameter("page");
 		if(array_key_exists("page", $_GET)) $page = $_GET["page"];
 		if(array_key_exists("sort", $_GET) || array_key_exists("search", $_GET)) $page = 1;
@@ -101,6 +111,21 @@ class IndexPage extends WebPage{
 			"appLimit" => $appLimit
 		));
 		DisplayPlugin::toggle("no_user", (count($users) < 1));
+		
+		//ページャー
+		$start = $offset + 1;
+		$end = $offset + count($users);
+		if($end > 0 && $start == 0) $start = 1;
+
+		$pager = SOY2Logic::createInstance("logic.pager.PagerLogic");
+		$pager->setPageURL("User.Setting");
+		$pager->setPage($page);
+		$pager->setStart($start);
+		$pager->setEnd($end);
+		$pager->setTotal($total);
+		$pager->setLimit($limit);
+
+		$this->buildPager($pager);
 		
 		self::buildInputForm();
 		self::buildRemoveForm();
@@ -189,6 +214,37 @@ class IndexPage extends WebPage{
 				"label" => "属性" . $key
 			));
 		}
+	}
+	
+	function buildPager(PagerLogic $pager){
+
+		//件数情報表示
+		$this->addLabel("count_start", array(
+			"text" => $pager->getStart()
+		));
+		$this->addLabel("count_end", array(
+			"text" => $pager->getEnd()
+		));
+		$this->addLabel("count_max", array(
+			"text" => $pager->getTotal()
+		));
+
+		//ページへのリンク
+		$this->addLink("next_pager", $pager->getNextParam());
+		$this->addLink("prev_pager", $pager->getPrevParam());
+		$this->createAdd("pager_list","SimplePager",$pager->getPagerParam());
+
+		//ページへジャンプ
+		$this->addForm("pager_jump", array(
+			"method" => "get",
+			"action" => $pager->getPageURL()
+		));
+		$this->addSelect("pager_select", array(
+			"name" => "page",
+			"options" => $pager->getSelectArray(),
+			"selected" => $pager->getPage(),
+			"onchange" => "location.href=this.parentNode.action+this.options[this.selectedIndex].value"
+		));
 	}
 }
 ?>
