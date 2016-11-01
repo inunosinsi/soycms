@@ -39,13 +39,36 @@ class AggregateFormPage extends WebPage{
 			"label" => AggregateUtil::TYPE_AGE
 		));
 		
+		$this->addCheckBox("type_customer", array(
+			"name" => "Aggregate[type]",
+			"value" => AggregateUtil::MODE_CUSTOMER,
+			"selected" => false,
+			"label" => AggregateUtil::TYPE_CUSTOMER
+		));
+		
+		/** 顧客別の売上集計で使用する表 **/
+		$this->addSelect("select_year", array(
+			"name" => "Customer[year]",
+			"options" => self::getYearList()
+		));
+		
+		$this->addSelect("select_month", array(
+			"name" => "Customer[month]",
+			"options" => range(1,12)
+		));
+		
+		$this->addSelect("select_day", array(
+			"name" => "Customer[day]",
+			"options" => range(1, 31)
+		));
+			
 		$this->addCheckBox("method_include_tax", array(
 			"name" => "Aggregate[method][]",
 			"value" => AggregateUtil::METHOD_MODE_TAX,
 			"selected" => true,
 			"label" => AggregateUtil::METHOD_INCLUDE_TAX
 		));
-		
+			
 		$this->addCheckBox("method_include_commission", array(
 			"name" => "Aggregate[method][]",
 			"value" => AggregateUtil::METHOD_MODE_COMMISSION,
@@ -92,6 +115,29 @@ class AggregateFormPage extends WebPage{
 			"name" => "Aggregate[limit]",
 			"value" => 50
 		));
+	}
+	
+	private function getYearList(){
+		$list = array();
+		
+		$dao = new SOY2DAO();
+		try{
+			$res = $dao->executeQuery("SELECT order_date FROM soyshop_order ORDER BY order_date ASC LIMIT 1");
+		}catch(Exception $e){
+			var_dump($e);
+			$res = array();
+		}
+		
+		if(!count($res) || !isset($res[0]["order_date"])) return $list[] = date("Y");
+		
+		$fyear = (int)date("Y", $res[0]["order_date"]);
+		$diff = date("Y") - $fyear + 1;
+		
+		for ($i = 0; $i < $diff; $i++){
+			$list[] = $fyear + $i;
+		}
+		
+		return $list;
 	}
 	
 	function setConfigObj($configObj){

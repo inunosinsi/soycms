@@ -2,25 +2,27 @@
 
 class AggregateUtil{
 	
-	const MODE_MONTH = "month";
-	const MODE_DAY = "day";
+	const MODE_MONTH 	= "month";
+	const MODE_DAY 		= "day";
 	const MODE_ITEMRATE = "itemrate";
-	const MODE_AGE = "age";
+	const MODE_AGE 		= "age";
+	const MODE_CUSTOMER 	= "customer";
 	
 	const TYPE_MONTH 		= 	"月次売上集計";
 	const TYPE_DAY 			= 	"日次売上集計";
 	const TYPE_ITEMRATE 	= 	"商品毎の売上集計";
 	const TYPE_AGE			= 	"年齢別売上集計";
+	const TYPE_CUSTOMER 	= "顧客ごと売上集計";
 	
-	const METHOD_MODE_TAX = "tax";
-	const METHOD_MODE_COMMISSION = "commission";
-	const METHOD_MODE_POINT = "point";
-	const METHOD_MODE_DISCOUNT = "discount";
+	const METHOD_MODE_TAX 			= "tax";
+	const METHOD_MODE_COMMISSION 	= "commission";
+	const METHOD_MODE_POINT 		= "point";
+	const METHOD_MODE_DISCOUNT 		= "discount";
 	
-	const METHOD_INCLUDE_TAX = "消費税込み";
+	const METHOD_INCLUDE_TAX 		= "消費税込み";
 	const METHOD_INCLUDE_COMMISSION = "手数料込み";
-	const METHOD_INCLUDE_POINT = "ポイント値引き込み";
-	const METHOD_INCLUDE_DISCOUNT = "クーポン値引き等込み";
+	const METHOD_INCLUDE_POINT 		= "ポイント値引き込み";
+	const METHOD_INCLUDE_DISCOUNT 	= "クーポン値引き等込み";
 	
 	/**
 	 * タイトルを取得する
@@ -37,6 +39,9 @@ class AggregateUtil{
 				break;
 			case self::MODE_AGE:
 				$title = self::TYPE_AGE;
+				break;
+			case self::MODE_CUSTOMER:
+				$title = self::TYPE_CUSTOMER;
 				break;
 			case self::MODE_MONTH:
 			default:
