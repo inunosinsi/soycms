@@ -26,6 +26,7 @@ class AggregateLogic extends SOY2LogicBase{
 		}
 		
 		$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");	
+		SOY2::import("domain.order.SOYShop_ItemModule");
 	}
 	
 	/**

@@ -22,13 +22,14 @@ class CustomerLogic extends SOY2LogicBase{
 		
 		//user_id => array(price, order_id => array())
 		$list = array();
+		$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.AggregateLogic");
 		foreach($res as $vals){
 			if(array_key_exists($vals["user_id"], $list)){
-				$list[$vals["user_id"]]["price"] += (int)$vals["price"];
+				$list[$vals["user_id"]]["price"] += $logic->calc($vals);
 				$list[$vals["user_id"]]["order_ids"][] = (int)$vals["id"];
 			}else{
 				$v = array();
-				$v["price"] = (int)$vals["price"];
+				$v["price"] = $logic->calc($vals);
 				$v["order_ids"][] = (int)$vals["id"];
 				$v["user_id"] = (int)$vals["user_id"];
 				$list[$vals["user_id"]] = $v;
@@ -67,7 +68,7 @@ class CustomerLogic extends SOY2LogicBase{
 	}
 	
 	private function buildSql(){
-		return "SELECT id, price, user_id FROM soyshop_order ".
+		return "SELECT id, price, user_id, modules FROM soyshop_order ".
 				"WHERE order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
 				"AND order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
 				"AND order_date >= :start ".

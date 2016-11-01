@@ -7,7 +7,6 @@ class MonthLogic extends SOY2LogicBase{
 	function __construct(){
 		SOY2::import("module.plugins.common_aggregate.util.AggregateUtil");
 		SOY2::import("domain.user.SOYShop_User");
-		SOY2::import("domain.order.SOYShop_ItemModule");
 		$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 	}
 	
