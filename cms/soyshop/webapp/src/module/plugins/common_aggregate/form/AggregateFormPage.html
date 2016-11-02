@@ -5,9 +5,6 @@
 	<input type="radio" soy:id="type_itemrate">&nbsp;
 	<input type="radio" soy:id="type_age"><br>
 	<input type="radio" soy:id="type_customer">
-	(<select soy:id="select_year"></select>年
-	<select soy:id="select_month"><option></option></select>月
-	<select soy:id="select_day"><option></option></select>日 ※顧客毎売上集計の時のみ利用)
 	
 	<h4>集計方法(月次、日次売上集計で使用します)</h4>
 	<input type="checkbox" soy:id="method_include_tax">
@@ -17,12 +14,25 @@
 </div>
 
 <div>
-	<h4>期間</h4>
-	<input type="text" class="date_picker_start aggregate_date_picker" soy:id="aggregate_period_start">&nbsp;～&nbsp;
-	<input type="text" class="date_picker_end aggregate_date_picker" soy:id="aggregate_period_end">&nbsp;
-	<input type="button" id="clear_button" value="クリア"><br>
-	※<strong soy:id="aggregate_label_month">売上</strong>と<strong soy:id="aggregate_label_day">新規注文</strong>の場合は日は考慮されません<br>
-	※顧客毎の売上集計では利用しません。
+	<div id="calendar_area">
+		<h4>期間</h4>
+		<input type="text" class="date_picker_start aggregate_date_picker" soy:id="aggregate_period_start">&nbsp;～&nbsp;
+		<input type="text" class="date_picker_end aggregate_date_picker" soy:id="aggregate_period_end">&nbsp;
+		<input type="button" id="clear_button" value="クリア"><br>
+		※<strong soy:id="aggregate_label_month">売上</strong>と<strong soy:id="aggregate_label_day">新規注文</strong>の場合は日は考慮されません<br>
+		※顧客毎の売上集計では利用しません。
+	</div>
+	
+	<div id="date_form_area">
+		<h4>期間</h4>
+		<select soy:id="select_start_year"></select>年
+		<select soy:id="select_start_month"><option></option></select>月
+		<select soy:id="select_start_day"><option></option></select>日〜
+		<select soy:id="select_end_year"></select>年
+		<select soy:id="select_end_month"><option></option></select>月
+		<select soy:id="select_end_day"><option></option></select>日
+	</div>
+		
 	
 	<h4>件数</h4>
 	<input type="number" soy:id="aggregate_limit"><br>
@@ -35,7 +45,7 @@
 </div>
 
 <script>
-window.onload = function(){
+(function(){
 	var clearBtn = document.querySelector("#clear_button");
 	clearBtn.addEventListener("click", function(){
 		var forms = document.querySelectorAll(".aggregate_date_picker");
@@ -43,5 +53,27 @@ window.onload = function(){
 			forms[i].value = "";
 		}
 	});
-};
+	
+	//date_formは最初は非表示にしておく
+	var calendar = document.querySelector("#calendar_area");
+	var date_form = document.querySelector("#date_form_area");
+	
+	date_form.style.display = "none";
+	
+	var cals = document.querySelectorAll(".use_calendar");
+	for (var i = 0; i < cals.length; i++) {
+		cals[i].addEventListener("change", function(){
+			calendar.style.display ="inline";
+			date_form.style.display = "none";
+		});
+	}
+	
+	var forms = document.querySelectorAll(".use_date_form");
+	for (var j = 0; j < forms.length; j++) {
+		forms[j].addEventListener("change", function(){
+			calendar.style.display ="none";
+			date_form.style.display = "inline";
+		});
+	}
+})();
 </script>

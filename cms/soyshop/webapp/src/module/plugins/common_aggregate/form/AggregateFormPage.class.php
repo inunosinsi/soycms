@@ -15,52 +15,60 @@ class AggregateFormPage extends WebPage{
 			"name" => "Aggregate[type]",
 			"value" => AggregateUtil::MODE_MONTH,
 			"selected" => true,
-			"label" => AggregateUtil::TYPE_MONTH
+			"label" => AggregateUtil::TYPE_MONTH,
+			"class" => "use_calendar"
 		));
 		
 		$this->addCheckBox("type_day", array(
 			"name" => "Aggregate[type]",
 			"value" => AggregateUtil::MODE_DAY,
 			"selected" => false,
-			"label" => AggregateUtil::TYPE_DAY
+			"label" => AggregateUtil::TYPE_DAY,
+			"class" => "use_calendar"
 		));
 				
 		$this->addCheckBox("type_itemrate", array(
 			"name" => "Aggregate[type]",
 			"value" => AggregateUtil::MODE_ITEMRATE,
 			"selected" => false,
-			"label" => AggregateUtil::TYPE_ITEMRATE
+			"label" => AggregateUtil::TYPE_ITEMRATE,
+			"class" => "use_calendar"
 		));
 		
 		$this->addCheckBox("type_age", array(
 			"name" => "Aggregate[type]",
 			"value" => AggregateUtil::MODE_AGE,
 			"selected" => false,
-			"label" => AggregateUtil::TYPE_AGE
+			"label" => AggregateUtil::TYPE_AGE,
+			"class" => "use_calendar"
 		));
 		
 		$this->addCheckBox("type_customer", array(
 			"name" => "Aggregate[type]",
 			"value" => AggregateUtil::MODE_CUSTOMER,
 			"selected" => false,
-			"label" => AggregateUtil::TYPE_CUSTOMER
+			"label" => AggregateUtil::TYPE_CUSTOMER,
+			"class" => "use_date_form"
 		));
 		
 		/** 顧客別の売上集計で使用する表 **/
-		$this->addSelect("select_year", array(
-			"name" => "Customer[year]",
-			"options" => self::getYearList()
-		));
-		
-		$this->addSelect("select_month", array(
-			"name" => "Customer[month]",
-			"options" => range(1,12)
-		));
-		
-		$this->addSelect("select_day", array(
-			"name" => "Customer[day]",
-			"options" => range(1, 31)
-		));
+		$syear = self::getYearList();
+		foreach(array("start", "end") as $t){
+			$this->addSelect("select_" . $t . "_year", array(
+				"name" => "Customer[" . $t . "][year]",
+				"options" => $syear
+			));
+			
+			$this->addSelect("select_" . $t . "_month", array(
+				"name" => "Customer[" . $t . "][month]",
+				"options" => range(1,12)
+			));
+			
+			$this->addSelect("select_" . $t . "_day", array(
+				"name" => "Customer[" . $t . "][day]",
+				"options" => range(1, 31)
+			));
+		}
 			
 		$this->addCheckBox("method_include_tax", array(
 			"name" => "Aggregate[method][]",
@@ -137,7 +145,7 @@ class AggregateFormPage extends WebPage{
 			$list[] = $fyear + $i;
 		}
 		
-		return $list;
+		return array_reverse($list);
 	}
 	
 	function setConfigObj($configObj){

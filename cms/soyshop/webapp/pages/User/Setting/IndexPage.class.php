@@ -67,7 +67,7 @@ class IndexPage extends WebPage{
 
 		/*引数など取得*/
 		//表示件数
-		$limit = 15;
+		$limit = 30;
 		$page = (isset($args[0])) ? (int)$args[0] : $this->getParameter("page");
 		if(array_key_exists("page", $_GET)) $page = $_GET["page"];
 		if(array_key_exists("sort", $_GET) || array_key_exists("search", $_GET)) $page = 1;
