@@ -119,6 +119,26 @@ class AggregateFormPage extends WebPage{
 			"readonly" => true
 		));
 		
+		$this->addInput("aggregate_filter_customer_name", array(
+			"name" => "Aggregate[filter][customer]",
+			"value" => ""
+		));
+		
+		$this->addInput("aggregate_filter_item_name", array(
+			"name" => "Aggregate[filter][item]",
+			"value" => ""
+		));
+		
+		$this->addInput("aggregate_filter_price_min", array(
+			"name" => "Aggregate[filter][price][min]",
+			"value" => ""
+		));
+
+		$this->addInput("aggregate_filter_price_max", array(
+			"name" => "Aggregate[filter][price][max]",
+			"value" => ""
+		));
+		
 		$this->addInput("aggregate_limit", array(
 			"name" => "Aggregate[limit]",
 			"value" => 50

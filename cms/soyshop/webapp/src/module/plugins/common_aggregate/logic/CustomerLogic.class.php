@@ -36,6 +36,36 @@ class CustomerLogic extends SOY2LogicBase{
 			}
 		}
 		
+		//商品名フィルターがある場合はここで合計金額を上書きする
+		if(isset($_POST["Aggregate"]["filter"]["item"]) && strlen($_POST["Aggregate"]["filter"]["item"])){
+			$array = array();
+			foreach($list as $k => $v){
+				$v["price"] = self::calcByItemFilter($v["order_ids"]);
+				$array[$k] = $v;
+			}
+			$list = $array;
+			unset($array);
+		}
+		
+		//価格帯フィルター　遅くなるけど、PHPで集計した後に調べる
+		$f_min = (isset($_POST["Aggregate"]["filter"]["price"]["min"]) && (int)$_POST["Aggregate"]["filter"]["price"]["min"] > 0) ? (int)$_POST["Aggregate"]["filter"]["price"]["min"] : null;
+		$f_max = (isset($_POST["Aggregate"]["filter"]["price"]["max"]) && (int)$_POST["Aggregate"]["filter"]["price"]["max"] > 0) ? (int)$_POST["Aggregate"]["filter"]["price"]["max"] : null;
+		if($f_min > 0 || $f_max > 0){
+			$array = array();
+			foreach($list as $k => $v){
+				
+				//最小フィルターの設定がある時
+				if($f_min > 0 && (int)$v["price"] < $f_min) continue;
+				
+				//最大フィルターの設定がある時
+				if($f_max > 0 && (int)$v["price"] > $f_max) continue;
+				
+				$array[$k] = $v;
+			}
+			$list = $array;
+			unset($array);
+		}
+		
 		//ソート用の配列
 		$sort_keys = array();
 		foreach($list as $key => $l){
@@ -68,11 +98,44 @@ class CustomerLogic extends SOY2LogicBase{
 	}
 	
 	private function buildSql(){
-		return "SELECT id, price, user_id, modules FROM soyshop_order ".
+		$sql = "SELECT id, price, user_id, modules FROM soyshop_order ".
 				"WHERE order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
 				"AND order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
 				"AND order_date >= :start ".
-				"AND order_date <= :end";
+				"AND order_date <= :end ";
+		
+		//顧客名フィルタがある場合
+		if(isset($_POST["Aggregate"]["filter"]["customer"]) && strlen($_POST["Aggregate"]["filter"]["customer"])){
+			$sql .= "AND user_id IN (" .
+						"SELECT id FROM soyshop_user " .
+						"WHERE name LIKE '%" . htmlspecialchars($_POST["Aggregate"]["filter"]["customer"], ENT_QUOTES, "UTF-8") . "%' ".
+						"OR reading LIKE '%" . htmlspecialchars($_POST["Aggregate"]["filter"]["customer"], ENT_QUOTES, "UTF-8") . "%'".
+					") ";
+		}
+		
+		//商品フィルターがある場合
+		if(isset($_POST["Aggregate"]["filter"]["item"]) && strlen($_POST["Aggregate"]["filter"]["item"])){
+			$sql .= "AND id IN (" .
+						"SELECT order_id FROM soyshop_orders " .
+						"WHERE item_name LIKE '%" . htmlspecialchars($_POST["Aggregate"]["filter"]["item"], ENT_QUOTES, "UTF-8") . "%' ".
+					") ";
+		}
+		
+		return $sql;
+	}
+	
+	private function calcByItemFilter($orderIds){
+		$sql = "SELECT SUM(total_price) AS TOTAL FROM soyshop_orders ".
+				"WHERE order_id IN (" . implode(",", $orderIds) . ") ".
+				"AND item_name LIKE '%" . htmlspecialchars($_POST["Aggregate"]["filter"]["item"], ENT_QUOTES, "UTF-8") . "%' ";
+				
+		try{
+			$res = $this->dao->executeQuery($sql);
+		}catch(Exception $e){
+			$res = array();
+		}
+		
+		return (isset($res[0]["TOTAL"])) ? (int)$res[0]["TOTAL"] : 0;
 	}
 	
 	private function getUserNameByUserId($userId){
@@ -89,6 +152,11 @@ class CustomerLogic extends SOY2LogicBase{
 		$sql = "SELECT DISTINCT item_name FROM soyshop_orders ".
 				"WHERE order_id IN (" . implode(",", $orderIds) . ") ";
 				
+		//商品名フィルターがある場合は関係ない商品を除く
+		if(isset($_POST["Aggregate"]["filter"]["item"]) && strlen($_POST["Aggregate"]["filter"]["item"])){
+			$sql .= "AND item_name LIKE '%" . htmlspecialchars($_POST["Aggregate"]["filter"]["item"], ENT_QUOTES, "UTF-8") . "%' ";
+		}
+		
 		try{
 			return $this->dao->executeQuery($sql);
 		}catch(Exception $e){
