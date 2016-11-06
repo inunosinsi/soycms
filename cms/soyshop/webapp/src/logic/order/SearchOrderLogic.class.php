@@ -121,6 +121,16 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$where[] = "id LIKE :order_id";
 			$binds[":order_id"] = "%" . @$search["orderId"] . "%";
 		}
+		
+		if(strlen(@$search["orderIdStart"]) > 0){
+			$where[] = "id >= :order_id_start";
+			$binds[":order_id_start"] = $search["orderIdStart"];
+		}
+		
+		if(strlen(@$search["orderIdEnd"]) > 0){
+			$where[] = "id >= :order_id_end";
+			$binds[":order_id_end"] = $search["orderIdEnd"];
+		}
 
 		if(strlen(@$search["userName"]) > 0){
 			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");

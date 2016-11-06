@@ -29,15 +29,22 @@
 			<col />
 
 			<tr>
+				<th>注文番号</th>
+				<td colspan="3">
+					<input type="text" soy:id="order_tracking_number" />
+
+					<a soy:id="reset_link" class="button fr" style="margin-top:3px;">検索条件のクリア</a>
+				</td>
+			</tr>
+			<tr>
 				<th>注文ID</th>
 				<td>
 					<input type="number" soy:id="order_id" />
 				</td>
-				<th>注文番号</th>
+				<th>注文ID範囲</th>
 				<td>
-					<input type="text" soy:id="order_tracking_number" />
-
-					<a soy:id="reset_link" class="button fr" style="margin-top:3px;">検索条件のクリア</a>
+					<input type="number" soy:id="order_id_start" />〜
+					<input type="number" soy:id="order_id_end" />
 				</td>
 			</tr>
 

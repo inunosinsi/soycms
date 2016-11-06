@@ -230,6 +230,8 @@ class SearchForm extends SOYBodyComponentBase{
 
 	private $trackingNumber;
 	private $orderId;
+	private $orderIdStart;
+	private $orderIdEnd;
 	private $userName;
 	private $userReading;
 	private $itemCode;
@@ -300,6 +302,18 @@ class SearchForm extends SOYBodyComponentBase{
 		$this->addInput("order_id", array(
 			"name" => "search[orderId]",
 			"value" => $this->getOrderId()
+		));
+		
+		$this->addInput("order_id_start", array(
+			"name" => "search[orderIdStart]",
+			"value" => $this->getOrderIdStart(),
+			"style" => "width:80px;"
+		));
+		
+		$this->addInput("order_id_end", array(
+			"name" => "search[orderIdEnd]",
+			"value" => $this->getOrderIdEnd(),
+			"style" => "width:80px;"
 		));
 
 		$this->addInput("order_tracking_number", array(
@@ -422,6 +436,20 @@ class SearchForm extends SOYBodyComponentBase{
 	}
 	function setOrderId($orderId){
 		$this->orderId = $orderId;
+	}
+	
+	function getOrderIdStart(){
+		return $this->orderIdStart;
+	}
+	function setOrderIdStart($orderIdStart){
+		$this->orderIdStart = $orderIdStart;
+	}
+	
+	function getOrderIdEnd(){
+		return $this->orderIdEnd;
+	}
+	function setOrderIdEnd($orderIdEnd){
+		$this->orderIdEnd = $orderIdEnd;
 	}
 
 	function getOrderStatus() {
