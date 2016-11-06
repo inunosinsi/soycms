@@ -224,6 +224,9 @@ class SearchForm extends SOYBodyComponentBase{
 
 	private $orderDateStart;
 	private $orderDateEnd;
+	
+	private $updateDateStart;
+	private $updateDateEnd;
 
 	private $trackingNumber;
 	private $orderId;
@@ -282,6 +285,16 @@ class SearchForm extends SOYBodyComponentBase{
 		$this->addInput("order_date_end", array(
 			"name" => "search[orderDateEnd]",
 			"value" => $this->getOrderDateEnd(),
+		));
+		
+		$this->addInput("update_date_start", array(
+			"name" => "search[updateDateStart]",
+			"value" => $this->getUpdateDateStart(),
+		));
+
+		$this->addInput("update_date_end", array(
+			"name" => "search[updateDateEnd]",
+			"value" => $this->getUpdateDateEnd(),
 		));
 
 		$this->addInput("order_id", array(
@@ -364,6 +377,19 @@ class SearchForm extends SOYBodyComponentBase{
 	function setSOYShop_OrderDateEnd($orderDateEnd) {
 		$this->orderDateEnd = $orderDateEnd;
 	}
+	
+	function getUpdateDateStart() {
+		return $this->updateDateStart;
+	}
+	function setSOYShop_UpdateDateStart($updateDateStart) {
+		$this->updateDateStart = $updateDateStart;
+	}
+	function getUpdateDateEnd() {
+		return $this->updateDateEnd;
+	}
+	function setSOYShop_UpdateDateEnd($updateDateEnd) {
+		$this->updateDateEnd = $updateDateEnd;
+	}
 
 	/**
 	 * 	商品の配列を取得
@@ -409,6 +435,12 @@ class SearchForm extends SOYBodyComponentBase{
 	}
 	function setOrderDateEnd($orderDateEnd) {
 		$this->orderDateEnd = $orderDateEnd;
+	}
+	function setUpdateDateStart($updateDateStart) {
+		$this->updateDateStart = $updateDateStart;
+	}
+	function setUpdateDateEnd($updateDateEnd) {
+		$this->updateDateEnd = $updateDateEnd;
 	}
 	function getUserName() {
 		return $this->userName;

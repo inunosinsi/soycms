@@ -97,6 +97,21 @@ class SearchOrderLogic extends SOY2LogicBase{
 			}
 			$binds[":order_date_end"] = $order_date_end_time;
 		}
+		
+		//更新日
+		if(strlen(@$search["updateDateStart"])>0 && strtotime($search["updateDateStart"])){
+			$where[] = "id IN (SELECT order_id FROM soyshop_order_state_history WHERE order_date >= :update_date_start)";
+			$binds[":update_date_start"] = strtotime($search["updateDateStart"]);
+		}
+
+		if(strlen(@$search["updateDateEnd"])>0 && strtotime($search["updateDateEnd"])){
+			$where[] = "id IN (SELECT order_id FROM soyshop_order_state_history WHERE order_date <= :update_date_end)";
+			$update_date_end_time = strtotime($search["updateDateEnd"]);
+			if(date("H:i:s", $update_date_end_time) === "00:00:00"){
+				$update_date_end_time = strtotime($search["updateDateEnd"]." 23:59:59");
+			}
+			$binds[":update_date_end"] = $update_date_end_time;
+		}
 
 		if(strlen(@$search["trackingNumber"]) > 0){
 			$where[] = "tracking_number LIKE :tracking_number";
@@ -185,7 +200,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 
 			return $result;
 		}catch(Exception $e){
-			//var_dump($e);
+			var_dump($e);
 			return array();
 		}
 
