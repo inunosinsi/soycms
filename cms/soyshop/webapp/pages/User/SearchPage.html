@@ -321,6 +321,24 @@
 				</p>
 
 		</form soy:id="advanced_search_form">
+		
+		<!-- soy:display="export_module_menu" -->
+		<h3>検索結果をエクスポートする</h3>
+		
+		<dl>
+			<!-- soy:id="module_list" -->
+			<form soy:id="export_form" target="_blank">
+			<dt soy:id="export_title*">エクスポートの種類を選択してください</dt>
+			<dd>
+				<input type="hidden" soy:id="query" />
+				<input type="submit" value="<!-- soy:id="export_title" /-->" class="submit" />
+				<input type="hidden" soy:id="module_id">
+				<div soy:id="export_description"></div>
+			</dd>
+			</form>
+			<!-- /soy:id="module_list" -->
+		</dl>
+		<!-- /soy:display="export_module_menu" -->
 
 
 	</div><!-- /block_body -->

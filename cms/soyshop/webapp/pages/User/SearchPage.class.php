@@ -81,6 +81,34 @@ class SearchPage extends WebPage{
 		$pager->setLimit($limit);
 
 		$this->buildPager($pager);
+		
+		/* 出力用 */
+		$moduleList = $this->getExportModuleList();
+		$this->createAdd("module_list", "ExportModuleList", array(
+			"list" => $moduleList
+		));
+
+		$this->addForm("export_form", array(
+			"action" => SOY2PageController::createLink("User.Plugin.Export")
+		));
+
+		$this->addInput("query", array(
+			"name" => "search",
+			"value" => (isset($search)) ? http_build_query($search) : ""
+		));
+	}
+	
+	function getExportModuleList(){
+		SOYShopPlugin::load("soyshop.user.export");
+
+		$delegate = SOYShopPlugin::invoke("soyshop.user.export", array(
+			"mode" => "list"
+		));
+		
+		$list = $delegate->getList();
+		DisplayPlugin::toggle("export_module_menu", (count($list) > 0));
+
+		return $list;
 	}
 
 	function buildAdvancedSearchForm($search){
@@ -428,5 +456,33 @@ class SearchPage extends WebPage{
 	}
 }
 
+class ExportModuleList extends HTMLList{
+
+	private $exportPageLink;
+
+	protected function populateItem($entity,$key){
+		$this->addInput("module_id", array(
+			/*"label" => "選択する",*/
+			"name" => "plugin",
+			"value" => $key,
+		));
+
+		$this->addLabel("export_title", array(
+			"text" => $entity["title"],
+		));
+
+		$this->addLabel("export_description", array(
+			"html" => $entity["description"],
+			"visible" => (strlen($entity["description"]) > 0)
+		));
+	}
+
+	function getExportPageLink() {
+		return $this->exportPageLink;
+	}
+	function setExportPageLink($exportPageLink) {
+		$this->exportPageLink = $exportPageLink;
+	}
+}
 
 ?>

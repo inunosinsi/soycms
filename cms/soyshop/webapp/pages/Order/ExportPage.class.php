@@ -26,7 +26,7 @@ class ExportPage extends WebPage{
 		if(strpos($plugin, "aggregate") !== false || strpos($plugin, "analytics") !== false ){
 			$orders = array();
 		}else{
-			$orders = $this->getOrders();
+			$orders = self::getOrders();
 		}
 		
 
@@ -50,7 +50,7 @@ class ExportPage extends WebPage{
 		exit;
     }
 
-    function getOrders(){
+    private function getOrders(){
 		//検索用のロジック作成
 		$searchLogic = SOY2Logic::createInstance("logic.order.SearchOrderLogic");
 
@@ -58,9 +58,7 @@ class ExportPage extends WebPage{
 
 		//検索条件の投入と検索実行
 		$searchLogic->setSearchCondition($search);
-		$orders = $searchLogic->getOrders();
-
-		return $orders;
+		return $searchLogic->getOrders();
     }
 }
 ?>
