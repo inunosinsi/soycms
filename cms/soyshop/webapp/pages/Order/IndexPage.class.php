@@ -221,6 +221,9 @@ class SearchForm extends SOYBodyComponentBase{
 	
 	private $noDelivery;
 	private $noPayment;
+	
+	private $totalPriceMin;
+	private $totalPriceMax;
 
 	private $orderDateStart;
 	private $orderDateEnd;
@@ -277,6 +280,16 @@ class SearchForm extends SOYBodyComponentBase{
 			"value" => 1,
 			"selected" => ($this->getNoPayment() == 1),
 			"label" => "未支払の注文"
+		));
+		
+		$this->addInput("total_price_min", array(
+			"name" => "search[totalPriceMin]",
+			"value" => $this->getTotalPriceMin()
+		));
+		
+		$this->addInput("total_price_max", array(
+			"name" => "search[totalPriceMax]",
+			"value" => $this->getTotalPriceMax()
 		));
 
 		$this->addInput("order_date_start", array(
@@ -379,6 +392,20 @@ class SearchForm extends SOYBodyComponentBase{
 	function setItemList($itemList) {
 		$this->itemList = $itemList;
 	}
+	
+	function getTotalPriceMin(){
+		return $this->totalPriceMin;
+	}
+	function setTotalPriceMin($totalPriceMin){
+		$this->totalPriceMin = $totalPriceMin;
+	}
+	function getTotalPriceMax(){
+		return $this->totalPriceMax;
+	}
+	function setTotalPriceMax($totalPriceMax){
+		$this->totalPriceMax = $totalPriceMax;
+	}
+	
 	function getOrderDateStart() {
 		return $this->orderDateStart;
 	}

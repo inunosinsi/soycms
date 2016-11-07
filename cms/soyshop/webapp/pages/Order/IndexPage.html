@@ -53,7 +53,7 @@
 				<td>
 					<input type="text" class="search_item_input" soy:id="order_user_name" />
 				</td>
-				<th>フリガナ（全角入力）</th>
+				<th nowrap>フリガナ（全角入力）</th>
 				<td>
 					<input type="text" class="search_item_input" soy:id="order_user_reading" />
 				</td>
@@ -86,6 +86,13 @@
 						<option value="">----</option>
 					</select>&nbsp;
 					<input type="checkbox" soy:id="no_payment">
+				</td>
+			</tr>
+			<tr>
+				<th>合計金額</th>
+				<td colspan="3">
+					<input type="number" soy:id="total_price_min">〜
+					<input type="number" soy:id="total_price_max">
 				</td>
 			</tr>
 			<tr>

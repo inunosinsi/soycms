@@ -83,6 +83,17 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$where[] = "payment_status = :payment_status";
 			$binds[":payment_status"] = @$search["paymentStatus"];
 		}
+		
+		//合計金額
+		if(isset($search["totalPriceMin"]) && (int)$search["totalPriceMin"] > 0){
+			$where[] = "price >= :total_price_min";
+			$binds[":total_price_min"] = (int)$search["totalPriceMin"];
+		}
+		
+		if(isset($search["totalPriceMax"]) && (int)$search["totalPriceMax"] > 0){
+			$where[] = "price <= :total_price_max";
+			$binds[":total_price_max"] = (int)$search["totalPriceMax"];
+		}
 
 		if(strlen(@$search["orderDateStart"])>0 && strtotime($search["orderDateStart"])){
 			$where[] = "order_date >= :order_date_start";
