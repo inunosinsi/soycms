@@ -86,11 +86,13 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 						$this->getCart()->setAttribute("has_option", true);
 					}
 				}
-					
-
+				break;
+			case "search":	//管理画面の検索フォーム
+				if(strlen($action->getName())){
+					$this->_list[$moduleId] = $action->getName();
+				}
 				break;
 		}
-
 	}
 
 

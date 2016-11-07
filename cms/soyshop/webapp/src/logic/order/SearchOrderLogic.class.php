@@ -166,8 +166,57 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$binds[":user_reading_C"] = "%" . $hiragana . "%";
 			$binds[":user_reading_k"] = "%" . mb_convert_kana($hiragana,"k") . "%";
 		}
+		
+		if(strlen(@$search["userMailAddress"]) > 0){
+			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");
+			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where mail_address LIKE :mail_address)";
+			$binds[":mail_address"] = "%" . @$search["userMailAddress"] . "%";
+		}
+		
+		if(isset($search["userGender"]) && count($search["userGender"])){
+			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");
+			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where gender IN (" . implode(",", $search["userGender"]) . "))";
+			var_dump($where);
+		}
+		
+		if(isset($search["userBirthday"]) && count($search["userBirthday"])){
+			$birthArray = $search["userBirthday"];
+			$birth_where = array();
+			//年
+			if(isset($birthArray[0]) && strlen($birthArray[0])){
+				$birth_where[] = " birthday LIKE :birthday_year ";
+				$binds[":birthday_year"] = (int)trim($birthArray[0]) . "-%";
+			}
+			if(isset($birthArray[1]) && strlen($birthArray[1])){
+				$m = trim($birthArray[1]);
+				if($m[0] == "0") $m = (int)substr($m, 1);
+				//1〜9までの場合
+				if(strlen($m) === 1){
+					$birth_where[] = " (birthday LIKE :birthday_month OR birthday LIKE :birthday_month1 )";
+					$binds[":birthday_month1"] = "%-0" . $m . "-%";
+				//10〜12の場合
+				}else{
+					$birth_where[] = " birthday LIKE :birthday_month ";
+				}
+				$binds[":birthday_month"] = "%-" . $m . "-%";
+			}
+			if(isset($birthArray[2]) && strlen($birthArray[2])){
+				$d = trim($birthArray[2]);
+				if($d[0] == "0") $d = (int)substr($d, 1);
+				//1〜9までの場合
+				if(strlen($d) === 1){
+					$birth_where[] = " (birthday LIKE :birthday_day OR birthday LIKE :birthday_day1 )";
+					$binds[":birthday_day1"] = "%-0" . $d;
+				//10〜31の場合
+				}else{
+					$birth_where[] = " birthday LIKE :birthday_day ";
+				}
+				$binds[":birthday_day"] = "%-" . $d;
+			}
+			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where " . implode(" AND ", $birth_where) . ")";
+		}
 
-		if(strlen(@$search["itemCode"]) > 0){
+		if(strlen(@$search["itemName"]) > 0 || strlen(@$search["itemCode"]) > 0){
 			SOY2DAOFactory::importEntity("shop.SOYShop_Item");
 
 			$table .= " inner join " . SOYShop_ItemOrder::getTableName();
@@ -175,8 +224,25 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$table .= " inner join " . SOYShop_Item::getTableName();
 			$table .= " on (".SOYShop_Item::getTableName() . ".id = ".SOYShop_ItemOrder::getTableName() . ".item_id)";
 
-			$binds[":item_id"] = "%" . $search["itemCode"] . "%";
-			$where[] = SOYShop_Item::getTableName() . ".item_code like :item_id";
+			
+			if(isset($search["itemName"]) && strlen($search["itemName"])){
+				$where[] = SOYShop_Item::getTableName() . ".item_name like :item_name";
+				$binds[":item_name"] = "%" . $search["itemName"] . "%";
+			}
+			
+			if(isset($search["itemCode"]) && strlen($search["itemCode"])){
+				$where[] = SOYShop_Item::getTableName() . ".item_code like :item_code";
+				$binds[":item_code"] = "%" . $search["itemCode"] . "%";
+			}
+		}
+		
+		//支払方法
+		if(isset($search["paymentMethod"]) && count($search["paymentMethod"])){
+			$attr_where = array();
+			foreach($search["paymentMethod"] as $p){
+				$attr_where[] = "attributes LIKE '%" . $p . "%'";
+			}
+			$where[] = implode(" OR ", $attr_where);
 		}
 
 		$this->where = $where;
@@ -221,7 +287,6 @@ class SearchOrderLogic extends SOY2LogicBase{
 
 			return $result;
 		}catch(Exception $e){
-			var_dump($e);
 			return array();
 		}
 

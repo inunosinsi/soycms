@@ -65,6 +65,29 @@
 						<option value="">----</option>
 					</select>
 				</td>
+				<th>顧客メールアドレス</th>
+				<td>
+					<input type="text" class="search_item_input" soy:id="order_user_mail_address">
+				</td>
+			</tr>
+			<tr>
+				<th>顧客性別</th>
+				<td>
+					<input type="checkbox" soy:id="order_user_gender_male">
+					<input type="checkbox" soy:id="order_user_gender_female">
+				</td>
+				<th>顧客誕生日</th>
+				<td>
+					<input soy:id="order_user_birth_date_year" type="text" value="" />/
+					<input soy:id="order_user_birth_date_month" type="text" value="" />/
+					<input soy:id="order_user_birth_date_day" type="text" value="" />
+				</td>
+			</tr>
+			<tr>
+				<th>商品名</th>
+				<td>
+					<input type="text" class="search_item_input" soy:id="order_item_name" />
+				</td>
 				<th>商品コード</th>
 				<td>
 					<input type="text" class="search_item_input" soy:id="order_item_code" />
@@ -86,6 +109,12 @@
 						<option value="">----</option>
 					</select>&nbsp;
 					<input type="checkbox" soy:id="no_payment">
+				</td>
+			</tr>
+			<tr>
+				<th>支払方法</th>
+				<td colspan="3">
+					<!-- soy:id="order_payment_checkboxes" /-->
 				</td>
 			</tr>
 			<tr>

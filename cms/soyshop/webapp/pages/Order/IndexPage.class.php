@@ -235,9 +235,17 @@ class SearchForm extends SOYBodyComponentBase{
 	private $orderId;
 	private $orderIdStart;
 	private $orderIdEnd;
+	
 	private $userName;
 	private $userReading;
+	private $userMailAddress;
+	private $userGender = array();
+	private $userBirthday = array();
+	
+	private $itemName;
 	private $itemCode;
+	
+	private $paymentMethod = array();
 
 	/**
 	 * フォームの作成
@@ -343,13 +351,85 @@ class SearchForm extends SOYBodyComponentBase{
 			"name" => "search[userReading]",
 			"value" => $this->getUserReading()
 		));
+		
+		$this->addInput("order_user_mail_address", array(
+			"name" => "search[userMailAddress]",
+			"value" => $this->getUserMailAddress()
+		));
+		
+		SOY2::import("domain.user.SOYShop_User");
+		$this->addCheckBox("order_user_gender_male", array(
+			"name" => "search[userGender][]",
+			"value" => SOYShop_User::USER_SEX_MALE,
+			"selected" => (array_search(SOYShop_User::USER_SEX_MALE, $this->getUserGender()) !== false),
+			"label" => "男性"
+		));
+		
+		$this->addCheckBox("order_user_gender_female", array(
+			"name" => "search[userGender][]",
+			"value" => SOYShop_User::USER_SEX_FEMALE,
+			"selected" => (array_search(SOYShop_User::USER_SEX_FEMALE, $this->getUserGender()) !== false),
+			"label" => "女性"
+		));
+		
+		$birthArray = $this->getUserBirthday();
+		$this->addInput("order_user_birth_date_year", array(
+			"name" => "search[userBirthday][]",
+			"value" => (isset($birthArray[0])) ? $birthArray[0] : "",
+			"size" => "5"
+		));
+		$this->addInput("order_user_birth_date_month", array(
+			"name" => "search[userBirthday][]",
+			"value" => (isset($birthArray[1])) ? $birthArray[1] : "",
+			"size" => "3",
+		));
+		$this->addInput("order_user_birth_date_day", array(
+			"name" => "search[userBirthday][]",
+			"value" => (isset($birthArray[2])) ? $birthArray[2] : "",
+			"size" => "3",
+		));
+
+		$this->addInput("order_item_name", array(
+			"name" => "search[itemName]",
+			"value" => $this->getItemName()
+		));
 
 		$this->addInput("order_item_code", array(
 			"name" => "search[itemCode]",
 			"value" => $this->getItemCode()
 		));
+		
+		//支払い方法のチェックボックス
+		$this->addLabel("order_payment_checkboxes", array(
+			"html" => self::getPaymentCheckboxesHTML()
+		));
 
 		parent::execute();
+	}
+	
+	private function getPaymentCheckboxesHTML(){
+		SOYShopPlugin::load("soyshop.payment");
+		SOY2::import("logic.cart.CartLogic");
+
+		//実行
+		$paymentList = SOYShopPlugin::invoke("soyshop.payment", array(
+			"mode" => "search",
+			"cart" => CartLogic::getCart()
+		))->getList();
+		
+		if(!count($paymentList)) return "";
+		
+		$html = array();
+		foreach($paymentList as $key => $p){
+			$checked = "";
+			if(array_search($key, $this->getPaymentMethod()) !== false){
+				$checked = " checked=\"checked\"";
+			}
+			
+			$html[] = "<label><input type=\"checkbox\" name=\"search[paymentMethod][]\" value=\"" . $key . "\" " . $checked . ">" . $p . "</label>";
+		}
+		
+		return implode("\n", $html);
 	}
 
 	function getUserArea(){
@@ -509,6 +589,34 @@ class SearchForm extends SOYBodyComponentBase{
 	function setUserReading($userReading){
 		$this->userReading = $userReading;
 	}
+	function getUserMailAddress(){
+		return $this->userMailAddress;
+	}
+	function setUserMailAddress($userMailAddress){
+		$this->userMailAddress = $userMailAddress;
+	}
+	function getUserGender(){
+		return $this->userGender;
+	}
+	function setUserGender($userGender){
+		$this->userGender = $userGender;
+	}
+	function getUserBirthday(){
+		return $this->userBirthday;
+	}
+	function setUserBirthday($userBirthday){
+		$this->userBirthday = $userBirthday;
+	}
+
+	function getItemName() {
+		if(empty($this->itemName) && isset($_GET["itemName"])){
+			return $_GET["itemName"];
+		}
+		return $this->itemName;
+	}
+	function setItemName($itemName) {
+		$this->itemName = $itemName;
+	}
 
 	function getItemCode() {
 		if(empty($this->itemCode) && isset($_GET["itemCode"])){
@@ -528,6 +636,13 @@ class SearchForm extends SOYBodyComponentBase{
 	}
 	function setUserId($userId) {
 		$this->userId = $userId;
+	}
+	
+	function getPaymentMethod(){
+		return $this->paymentMethod;
+	}
+	function setPaymentMethod($paymentMethod){
+		$this->paymentMethod = $paymentMethod;
 	}
 }
 
