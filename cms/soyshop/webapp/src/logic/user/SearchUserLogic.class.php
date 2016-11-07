@@ -209,6 +209,29 @@ class SearchUserLogic extends SOY2LogicBase{
 							$where[] = "(" . $k . " IS NULL or " . $k . " = '')";
 						}
 						break;
+					
+					//注文状況
+					case "order_price":
+						if(isset($value["min"]) && (int)$value["min"] > 0){
+							$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING SUM(price) >= :price_min)";
+							$binds[":price_min"] = (int)$value["min"];
+						}
+						if(isset($value["max"]) && (int)$value["max"] > 0){
+							$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING SUM(price) <= :price_max)";
+							$binds[":price_max"] = (int)$value["max"];
+						}
+						break;
+						
+					case "purchase_count":
+						if(isset($value["min"]) && (int)$value["min"] > 0){
+							$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING COUNT(id) >= :count_min)";
+							$binds[":count_min"] = (int)$value["min"];
+						}
+						if(isset($value["max"]) && (int)$value["max"] > 0){
+							$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING COUNT(id) <= :count_max)";
+							$binds[":count_max"] = (int)$value["max"];
+						}
+						break;
 				}
 			}
 		}

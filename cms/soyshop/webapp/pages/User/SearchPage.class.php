@@ -391,6 +391,23 @@ class SearchPage extends WebPage{
 			"value" => @$search["update_date"]["end"]["day"],
 			"size" => "3"
 		));
+		
+		$this->addInput("advanced_search_total_price_min", array(
+			"name" => "search[order_price][min]",
+			"value" => @$search["order_price"]["min"],
+		));
+		$this->addInput("advanced_search_total_price_max", array(
+			"name" => "search[order_price][max]",
+			"value" => @$search["order_price"]["max"],
+		));
+		$this->addInput("advanced_search_purchase_count_min", array(
+			"name" => "search[purchase_count][min]",
+			"value" => @$search["purchase_count"]["min"],
+		));
+		$this->addInput("advanced_search_purchase_count_max", array(
+			"name" => "search[purchase_count][max]",
+			"value" => @$search["purchase_count"]["max"],
+		));
 	}
 
 	function buildSortLink(SearchUserLogic $logic, $sort){
