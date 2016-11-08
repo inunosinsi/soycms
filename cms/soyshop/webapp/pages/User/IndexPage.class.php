@@ -204,7 +204,7 @@ class IndexPage extends WebPage{
 		//ページへジャンプ
 		$this->addForm("pager_jump", array(
 			"method" => "get",
-			"action" => $pager->getPageURL() . "/"
+			"action" => $pager->getPageURL()
 		));
 		$this->addSelect("pager_select", array(
 			"name" => "page",

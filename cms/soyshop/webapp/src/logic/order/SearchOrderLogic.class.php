@@ -213,14 +213,20 @@ class SearchOrderLogic extends SOY2LogicBase{
 				}
 				$binds[":birthday_day"] = "%-" . $d;
 			}
-			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where " . implode(" AND ", $birth_where) . ")";
+
+			if(count($birth_where)){
+				$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where " . implode(" AND ", $birth_where) . ")";
+			}
 		}
 
-		if(strlen(@$search["itemName"]) > 0 || strlen(@$search["itemCode"]) > 0){
+		if(
+			(isset($search["itemName"]) && strlen($search["itemName"])) > 0 || 
+			(isset($search["itemCode"]) && strlen($search["itemCode"]) > 0)
+		){
 			SOY2DAOFactory::importEntity("shop.SOYShop_Item");
 
 			$table .= " inner join " . SOYShop_ItemOrder::getTableName();
-			$table .= " on (".SOYShop_Order::getTableName() . ".id = ".SOYShop_ItemOrder::getTableName() . ".order_id)";
+			$table .= " on (".SOYShop_Order::getTableName() . ".id = ".SOYShop_ItemOrder::getTableName() . ".order_id) ";
 			$table .= " inner join " . SOYShop_Item::getTableName();
 			$table .= " on (".SOYShop_Item::getTableName() . ".id = ".SOYShop_ItemOrder::getTableName() . ".item_id)";
 
