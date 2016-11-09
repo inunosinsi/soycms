@@ -2,8 +2,6 @@
 
 class AttributeSetAfterUserSearchExport extends SOYShopOrderExportBase{
 	
-	private $csvLogic;
-
 	/**
 	 * 検索結果一覧に表示するメニューの表示文言
 	 */
