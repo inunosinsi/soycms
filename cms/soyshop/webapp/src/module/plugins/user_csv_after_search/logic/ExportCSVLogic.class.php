@@ -61,9 +61,9 @@ class ExportCSVLogic extends SOY2LogicBase{
 		$line[] = $user->getAddress1();
 		$line[] = $user->getAddress2();
 		
-		$line[] = "\"" . $user->getTelephoneNumber() . "\"";
-		$line[] = "\"" . $user->getFaxNumber() . "\"";
-		$line[] = "\"" . $user->getCellphoneNumber() . "\"";
+		$line[] = (!is_null($user->getTelephoneNumber()) && strlen($user->getTelephoneNumber())) ? "=\"" . $user->getTelephoneNumber() . "\"" : null;
+		$line[] = (!is_null($user->getFaxNumber()) && strlen($user->getFaxNumber())) ? "=\"" . $user->getFaxNumber() . "\"" : null;
+		$line[] = (!is_null($user->getCellphoneNumber()) && strlen($user->getCellphoneNumber())) ? "=\"" . $user->getCellphoneNumber() . "\"" : null;
 		$line[] = $user->getUrl();
 		
 		$line[] = $user->getJobName();
@@ -72,8 +72,8 @@ class ExportCSVLogic extends SOY2LogicBase{
 		$line[] = $user->getJobAddress1();
 		$line[] = $user->getJobAddress2();
 		
-		$line[] = "\"" . $user->getJobTelephoneNumber() . "\"";
-		$line[] = "\"" . $user->getJobFaxNumber() . "\"";
+		$line[] = (!is_null($user->getJobTelephoneNumber()) && strlen($user->getJobTelephoneNumber())) ? "=\"" . $user->getJobTelephoneNumber() . "\"" : null;
+		$line[] = (!is_null($user->getJobFaxNumber()) && strlen($user->getJobFaxNumber())) ? "=\"" . $user->getJobFaxNumber() . "\"" : null;
 		
 		$line[] = $user->getAttribute1();
 		$line[] = $user->getAttribute2();
