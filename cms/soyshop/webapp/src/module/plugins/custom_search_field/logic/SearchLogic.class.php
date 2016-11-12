@@ -266,7 +266,6 @@ class SearchLogic extends SOY2LogicBase{
 		try{
 			$res = $this->itemDao->executeQuery($sql, $binds);
 		}catch(Exception $e){
-			var_dump($e);
 			return array();
 		}
 		
@@ -332,7 +331,7 @@ class SearchLogic extends SOY2LogicBase{
 		if(isset($custom_search_sort)){
 			$suffix = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_suffix" . $pageId);
 			if(isset($_GET["r"])){
-				$suffix = ($_GET["r"] == 1) ? " desc" : "";
+				$suffix = ($_GET["r"] == 1) ? " DESC" : "ASC";
 				$session->setAttribute("soyshop_" . SOYSHOP_ID . "_suffix" . $pageId, $suffix);
 			}
 			
