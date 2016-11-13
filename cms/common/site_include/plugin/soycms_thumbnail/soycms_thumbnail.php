@@ -36,7 +36,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -118,6 +118,13 @@ class SOYCMSThumbnailPlugin{
 		$images[self::UPLOAD_IMAGE] = (isset($_POST["jcrop_upload_field"])) ? $_POST["jcrop_upload_field"] : null;
 		$images[self::TRIMMING_IMAGE] = (isset($_POST["jcrop_trimming_field"])) ? $_POST["jcrop_trimming_field"] : null;
 		
+		//http or httpsからはじまる場合はスラッシュからはじまる絶対パスに変換する
+		if(strpos($images[self::UPLOAD_IMAGE], "http") === 0){
+			$iPath = str_replace(array("http://", "https://"), "", $images[self::UPLOAD_IMAGE]);
+			$iPath = substr($iPath, strpos($iPath, "/"));
+			$images[self::UPLOAD_IMAGE] = $iPath;
+		}
+		
 		$resizeFlag = false;
 		$imageFilePath = null;
 		
@@ -128,7 +135,7 @@ class SOYCMSThumbnailPlugin{
 				$imageFilePath = trim($_POST["jcrop_trimming_field"]);
 			}else if(isset($_POST["jcrop_upload_field"]) && strlen($_POST["jcrop_upload_field"]) > 0){
 				$resizeFlag = true;
-				$imageFilePath = trim($_POST["jcrop_upload_field"]);
+				$imageFilePath = trim($images[self::UPLOAD_IMAGE]);
 			}
 		}
 		
@@ -138,7 +145,7 @@ class SOYCMSThumbnailPlugin{
 			
 			//念の為、指定のパスに画像があるか調べる
 			if(!file_exists($path)) {
-				$path = $dir . "/" . UserInfoUtil::getSite()->getSiteId() . $imageFilePath;;
+				$path = $dir . "/" . UserInfoUtil::getSite()->getSiteId() . $imageFilePath;
 			}
 			
 			$imageInfoArray = (getimagesize($path));
@@ -303,7 +310,12 @@ class SOYCMSThumbnailPlugin{
 		$htmls[] = "<tr>";
 		$htmls[] = "<th>トリミング</th>";
 		$htmls[] = "<td><input type=\"text\" style=\"width:70%;\" id=\"jcrop_trimming_field\" name=\"jcrop_trimming_field\" value=\"" . $objects["trimming"]->getValue() . "\" readonly=\"readonly\">";
-		$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_trimming($('#jcrop_trimming_field'));\" value=\"トリミング\">";
+		if(strlen($objects["trimming"]->getValue()) === 0){
+			$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_trimming($('#jcrop_trimming_field'));\" value=\"トリミング\">";
+		}
+		if(strlen($objects["trimming"]->getValue()) > 0){
+			$htmls[] = "<input type=\"button\" onclick=\"clearTrimmingForm();\" value=\"クリア\">";
+		}
 		if(strlen($objects["trimming"]->getValue()) > 0){
 			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_trimming_field'));\">Preview</a>";
 		}
@@ -394,6 +406,9 @@ class SOYCMSThumbnailPlugin{
 		$htmls[] = "	return false;";
 		$htmls[] = "}";
 		$htmls[] = "";
+		$htmls[] = "function clearTrimmingForm(){";
+		$htmls[] = "	\$(\"#jcrop_trimming_field\").val(\"\");";	
+		$htmls[] = "}";
 		$htmls[] = "function clearResizeForm(){";
 		$htmls[] = "	\$(\"#jcrop_resize_field\").val(\"\");";	
 		$htmls[] = "}";
