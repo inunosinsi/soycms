@@ -256,7 +256,7 @@ class SearchLogic extends SOY2LogicBase{
 				$binds[":" . $key] = trim($value);
 		}
 		
-		$sql .= self::buildOrderBySQL($obj->getPage()->getId());
+		$sql .= self::buildOrderBySQL($obj);
 		$sql .= " LIMIT " . $limit;
 		
 		//OFFSET
@@ -266,6 +266,7 @@ class SearchLogic extends SOY2LogicBase{
 		try{
 			$res = $this->itemDao->executeQuery($sql, $binds);
 		}catch(Exception $e){
+			var_dump($e);
 			return array();
 		}
 		
@@ -310,7 +311,9 @@ class SearchLogic extends SOY2LogicBase{
 		return (isset($res[0]["total"])) ? (int)$res[0]["total"] : 0;
 	}
 	
-	private function buildOrderBySQL($pageId){
+	private function buildOrderBySQL(SOYShop_ListPage $obj){
+		
+		$pageId = $obj->getPage()->getId();
 		
 		$session = SOY2ActionSession::getUserSession();
 		$custom_search_sort = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_custom_search" . $pageId);
@@ -331,13 +334,13 @@ class SearchLogic extends SOY2LogicBase{
 		if(isset($custom_search_sort)){
 			$suffix = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_suffix" . $pageId);
 			if(isset($_GET["r"])){
-				$suffix = ($_GET["r"] == 1) ? " DESC" : "ASC";
+				$suffix = ($_GET["r"] == 1) ? " DESC" : " ASC";
 				$session->setAttribute("soyshop_" . SOYSHOP_ID . "_suffix" . $pageId, $suffix);
 			}
 			
 			return " ORDER BY s." . $custom_search_sort . " IS NULL ASC, s." . $custom_search_sort . $suffix;
 		}else{
-			$sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil")->getSortQuery();
+			$sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
 			return " ORDER BY i." . $sort . " ";
 		}
 	}
