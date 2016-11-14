@@ -577,7 +577,7 @@ class CMSFileManager{
 			$file->setFileSize($size);
 
 		}else{
-			$file->setFileSize(filesize($target));
+			$file->setFileSize(@filesize($target));
 		}
 		
 		$dao->update($file);
