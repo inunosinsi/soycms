@@ -26,6 +26,10 @@ class CustomerLogic extends SOY2LogicBase{
 		$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.AggregateLogic");
 		foreach($res as $vals){
 			if(array_key_exists($vals["user_id"], $list)){
+				
+				//最高額フィルターがある場合では合計金額の加算は行わない
+				if(isset($_POST["Aggregate"]["filter"]["order"]["max"])) continue;
+
 				$list[$vals["user_id"]]["price"] += $logic->calc($vals);
 				$list[$vals["user_id"]]["order_ids"][] = (int)$vals["id"];
 			}else{
