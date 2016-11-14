@@ -104,5 +104,63 @@ class AggregateUtil{
 		
 		return $timestamp;
 	}
+	
+	/**
+	 * セレクトボックス型のカレンダーから日付のタイムスタンプを取得する
+	 */
+	public static function getDatePeriodBySelectBox(){
+		
+		if(!isset($_POST["Customer"])) return array(mktime(0,0,0,1,1,date("Y")), mktime(0,0,0,12,31,date("Y"))+24*60*60);
+		
+		$start_y = (int)$_POST["Customer"]["start"]["year"];
+		if(isset($_POST["Customer"]["end"]["year"]) && is_numeric($_POST["Customer"]["end"]["year"]) && $_POST["Customer"]["end"]["year"] > $start_y){
+			$end_y = (int)$_POST["Customer"]["end"]["year"];
+		}else{
+			$end_y = $start_y;
+		}
+		
+		//月の選択を行っていない時はここで処理を止める
+		if(!isset($_POST["Customer"]["start"]["month"]) || !strlen($_POST["Customer"]["start"]["month"])){
+			$start = mktime(0,0,0,1,1,$start_y);
+			$end = mktime(0,0,0,1,1,$end_y+1) - 1;
+			return array($start, $end);
+		}
+		
+		$start_m = (int)$_POST["Customer"]["start"]["month"];
+		
+		/** 諸々の条件を書ける様にはじめはnullにしておく **/
+		$end_m = null;
+		if(isset($_POST["Customer"]["end"]["month"]) && is_numeric($_POST["Customer"]["end"]["month"])){
+			$end_m = (int)$_POST["Customer"]["end"]["month"];
+		}
+
+		if(is_null($end_m)) $end_m = $start_m;
+			
+		//日の選択を行っていない時はここで処理を止める
+		if(!isset($_POST["Customer"]["start"]["day"]) || !strlen($_POST["Customer"]["start"]["day"])){
+			$start = mktime(0,0,0,$start_m,1,$start_y);
+			if($end_m === 12){
+				$end = mktime(0,0,0,1,1,$end_y+1) - 1;
+			}else{
+				$end = mktime(0,0,0,$end_m+1,1,$end_y) - 1;
+			}
+			
+			return array($start, $end);
+		}
+		
+		$start_d = (int)$_POST["Customer"]["start"]["day"];
+		$end_d = null;
+		if(isset($_POST["Customer"]["end"]["day"]) && is_numeric($_POST["Customer"]["end"]["day"])){
+			$end_d = (int)$_POST["Customer"]["end"]["day"];
+		}
+
+		/** 諸々の条件を書ける様にはじめはnullにしておく **/
+		if(is_null($end_d)) $end_d = $start_d;
+		
+		$start = mktime(0,0,0,$start_m,$start_d,$start_y);
+		$end = mktime(0,0,0,$end_m,$end_d+1,$end_y)-1;
+				
+		return array($start, $end);
+	}
 }
 ?>

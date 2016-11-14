@@ -139,6 +139,12 @@ class AggregateFormPage extends WebPage{
 			"value" => ""
 		));
 		
+		$this->addCheckBox("aggregate_filter_order_price_max", array(
+			"name" => "Aggregate[filter][order][max]",
+			"value" => 1,
+			"label" => "支払額が最高値のみ取得"
+		));
+		
 		$this->addInput("aggregate_limit", array(
 			"name" => "Aggregate[limit]",
 			"value" => 50

@@ -316,7 +316,11 @@ class SearchLogic extends SOY2LogicBase{
 		$pageId = $obj->getPage()->getId();
 		
 		$session = SOY2ActionSession::getUserSession();
-		$custom_search_sort = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_custom_search" . $pageId);
+		if(isset($_GET["sort"]) || isset($_GET["csort"])){
+			$custom_search_sort = null;
+		}else{
+			$custom_search_sort = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_custom_search" . $pageId);
+		}
 		
 		//カスタムソート
 		if(isset($_GET["custom_search_sort"])){
