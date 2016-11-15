@@ -44,7 +44,7 @@
 			</tr>
 			<tr class="last_row">
 				<td>
-					<textarea id="mail_header" soy:id="mail_header" class="editor"></textarea>
+					<textarea id="mail_header" soy:id="mail_header" class="editor" style="height:400px;"></textarea>
 				</td>
 				<td class="mail_replace_word_panel">
 					<a href="javascript:void(0);" class="button" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
@@ -66,6 +66,8 @@
 							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#COMPANY_MAILADDRESS#');">会社メールアドレス</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#ORDER_ID#');">注文番号</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#ORDER_RAWID#');">注文ID</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#ORDER_DATE#');">注文時刻</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#ORDER_TOTAL#');">合計金額</a></li>
 						</ul>
 					</div>
 				</td>
@@ -75,7 +77,7 @@
 			</tr>
 			<tr>
 				<td>
-					<textarea id="mail_footer" soy:id="mail_footer" class="editor"></textarea>
+					<textarea id="mail_footer" soy:id="mail_footer" class="editor" style="height:400px;"></textarea>
 				</td>
 				<td class="mail_replace_word_panel">
 					<a href="javascript:void(0);" class="button" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
@@ -97,6 +99,8 @@
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#COMPANY_MAILADDRESS#');">会社メールアドレス</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#ORDER_ID#');">注文番号</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#ORDER_RAWID#');">注文ID</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#ORDER_DATE#');">注文時刻</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#ORDER_PRICE#');">合計金額</a></li>
 						</ul>
 					</div>
 				</td>

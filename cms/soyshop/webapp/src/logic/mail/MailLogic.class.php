@@ -368,6 +368,9 @@ class MailLogic extends SOY2LogicBase{
 			$config = SOYShop_ShopConfig::load();
 			$this->setShopConfig($config);
 		}
+		
+		$content = str_replace("#ORDER_DATE#", date("Y-m-d H:i:s", $order->getOrderDate()), $content);
+		$content = str_replace("#ORDER_TOTAL#", number_format($order->getPrice()), $content);
 
 		$content = str_replace("#SHOP_NAME#", $config->getShopName(), $content);
 
