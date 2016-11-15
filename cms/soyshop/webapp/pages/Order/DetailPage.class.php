@@ -321,7 +321,7 @@ class DetailPage extends WebPage{
 	    	));
     	}
     	
-    	$this->createAdd("mail_plugin_list", "_common.Order.MailPluginListComponent", array(
+    	$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
     		"list" => self::getMailPluginList(),
     		"status" => $mailStatus,
     		"orderId" => $order->getId()

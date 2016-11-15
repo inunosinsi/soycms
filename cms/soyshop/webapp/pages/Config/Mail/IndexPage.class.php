@@ -9,7 +9,7 @@ class IndexPage extends WebPage{
 	function __construct(){
 		WebPage::__construct();
 		
-		$this->createAdd("mail_plugin_list", "_common.Order.MailPluginListComponent", array(
+		$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
     		"list" => self::getMailPluginList()
     	));
 

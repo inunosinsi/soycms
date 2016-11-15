@@ -9,7 +9,7 @@ class MailPluginListComponent extends HTMLList{
 		
 		$mailId = (isset($entity["id"])) ? $entity["id"] : "";
 		$this->addLink("mail_link", array(
-			"link" => SOY2PageController::createLink("Config.Mail.User?type=" . $mailId),
+			"link" => SOY2PageController::createLink("Config.Mail.User?type=" . $mailId . "&plugin"),
 			"text" => (isset($entity["title"])) ? $entity["title"] : ""
 		));
 		

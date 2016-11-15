@@ -20,7 +20,7 @@ class MailTypeListComponent extends HTMLList{
 		));
 		
 		$this->addLink("edit_link", array(
-			"link" => SOY2PageController::createLink("Config.Mail.User?type=" . $fieldId),
+			"link" => SOY2PageController::createLink("Config.Mail.User?type=" . $fieldId . "&plugin"),
 		));
 		
 		$this->addActionLink("remove_link", array(
