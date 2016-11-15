@@ -17,6 +17,7 @@ class UserPage extends WebPage{
 
 		if(isset($_POST["mail"])){
 			$mail = $_POST["mail"];
+			$mail["output"] = (isset($mail["output"])) ? 1 : 0;
 			$logic = SOY2Logic::createInstance("logic.mail.MailLogic");
 			$logic->setUserMailConfig($mail, $type);
 		}
@@ -85,20 +86,32 @@ class UserPage extends WebPage{
 		$this->addCheckBox("mail_active_yes", array(
 			"name" => "mail[active]",
 			"value" => "1",
-			"selected" => $this->getMailActive($type),
+			"selected" => $this->getMailActive(),
 			"label" => "送信する",
 		));
 
 		$this->addCheckBox("mail_active_no", array(
 			"name" => "mail[active]",
 			"value" => "0",
-			"selected" => ! $this->getMailActive($type),
+			"selected" => ! $this->getMailActive(),
 			"label" => "送信しない",
+		));
+		
+		//メール本文の出力の有無
+		$this->addCheckBox("is_mail_content_output", array(
+			"name" => "mail[output]",
+			"value" => 1,
+			"selected" => $this->getMailOutput(),
+			"label" => "システムから出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
 		));
 	}
 
 	function getMailActive(){
 		return $this->mail["active"];
+	}
+	
+	function getMailOutput(){
+		return $this->mail["output"];
 	}
 
 	function getMailTitle(){
@@ -121,6 +134,15 @@ class UserPage extends WebPage{
 			"other" => "その他のメール雛形設定"
 		);
 
-		return (isset($array[$type])) ? $array[$type] : "注文受付メール設定(自動送信)";
+		if(isset($array[$type])) return $array[$type];
+
+		//プラグインから出力したものを調べる
+		SOY2::import("util.SOYShopPluginUtil");
+		if(!SOYShopPluginUtil::checkIsActive("common_add_mail_type")) return "注文受付メール設定(自動送信)";
+		
+		SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
+		$configs = AddMailTypeUtil::getConfig();
+		
+		return (isset($configs[$type])) ? $configs[$type]["title"] . "雛形設定" : "注文受付メール設定(自動送信)";
 	}
 }

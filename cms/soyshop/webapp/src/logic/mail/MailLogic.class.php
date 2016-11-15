@@ -234,7 +234,8 @@ class MailLogic extends SOY2LogicBase{
 				"active" => SOYShop_DataSets::get("mail.user.$type.active", 1),
 				"title"  => SOYShop_DataSets::get("mail.user.$type.title", "soyshop"),
 		    	"header" => SOYShop_DataSets::get("mail.user.$type.header", ""),
-		    	"footer" => SOYShop_DataSets::get("mail.user.$type.footer", "")
+		    	"footer" => SOYShop_DataSets::get("mail.user.$type.footer", ""),
+		    	"output" => SOYShop_DataSets::get("mail.user.$type.output", 1)
 		    );
 		}
 	}
@@ -261,14 +262,16 @@ class MailLogic extends SOY2LogicBase{
 					"active" => SOYShop_DataSets::get("mail.admin.active", 1),
 					"title"  => SOYShop_DataSets::get("mail.admin.title", "[SOY Shop]"),
 					"header" => SOYShop_DataSets::get("mail.admin.header", ""),
-					"footer" => SOYShop_DataSets::get("mail.admin.footer", "")
+					"footer" => SOYShop_DataSets::get("mail.admin.footer", ""),
+					"output" => SOYShop_DataSets::get("mail.admin.output", 1)
 				);
 			}else{
 				return array(
 					"active" => SOYShop_DataSets::get("mail.admin.$type.active",SOYShop_DataSets::get("mail.admin.active",1)),
 					"title"  => SOYShop_DataSets::get("mail.admin.$type.title", SOYShop_DataSets::get("mail.admin.title","[SOY Shop]")),
 					"header" => SOYShop_DataSets::get("mail.admin.$type.header",SOYShop_DataSets::get("mail.admin.header","")),
-					"footer" => SOYShop_DataSets::get("mail.admin.$type.footer",SOYShop_DataSets::get("mail.admin.footer",""))
+					"footer" => SOYShop_DataSets::get("mail.admin.$type.footer",SOYShop_DataSets::get("mail.admin.footer","")),
+					"output" => SOYShop_DataSets::get("mail.admin.$type.output",SOYShop_DataSets::get("mail.admin.output",""))
 				);
 			}
 		}
@@ -294,7 +297,8 @@ class MailLogic extends SOY2LogicBase{
 				"active" => SOYShop_DataSets::get("mail.mypage.$type.active",1),
 				"title"  => SOYShop_DataSets::get("mail.mypage.$type.title", "[SOY Shop]"),
 				"header" => SOYShop_DataSets::get("mail.mypage.$type.header",""),
-				"footer" => SOYShop_DataSets::get("mail.mypage.$type.footer","")
+				"footer" => SOYShop_DataSets::get("mail.mypage.$type.footer",""),
+				"output" => SOYShop_DataSets::get("mail.mypage.$type.output",1)
 			);
 		}
 	}
@@ -309,6 +313,7 @@ class MailLogic extends SOY2LogicBase{
 		if(isset($mail["title"])) SOYShop_DataSets::put("mail.user.$type.title", $mail["title"]);
 		if(isset($mail["header"]))SOYShop_DataSets::put("mail.user.$type.header",$mail["header"]);
 	    if(isset($mail["footer"]))SOYShop_DataSets::put("mail.user.$type.footer",$mail["footer"]);
+	    if(isset($mail["output"]))SOYShop_DataSets::put("mail.user.$type.output",$mail["output"]);
 	}
 	/**
 	 * 管理者に送信するメール設定の保存
@@ -320,11 +325,13 @@ class MailLogic extends SOY2LogicBase{
 			if(isset($mail["title"])) SOYShop_DataSets::put("mail.admin.title", $mail["title"]);
 			if(isset($mail["header"]))SOYShop_DataSets::put("mail.admin.header",$mail["header"]);
 			if(isset($mail["footer"]))SOYShop_DataSets::put("mail.admin.footer",$mail["footer"]);
+			if(isset($mail["output"]))SOYShop_DataSets::put("mail.admin.output",$mail["output"]);
 		}else{
 			if(isset($mail["active"]))SOYShop_DataSets::put("mail.admin.$type.active",$mail["active"]);
 			if(isset($mail["title"])) SOYShop_DataSets::put("mail.admin.$type.title", $mail["title"]);
 			if(isset($mail["header"]))SOYShop_DataSets::put("mail.admin.$type.header",$mail["header"]);
 			if(isset($mail["footer"]))SOYShop_DataSets::put("mail.admin.$type.footer",$mail["footer"]);
+			if(isset($mail["output"]))SOYShop_DataSets::put("mail.admin.$type.footer",$mail["output"]);
 		}
 	}
 
@@ -337,6 +344,7 @@ class MailLogic extends SOY2LogicBase{
 		if(isset($mail["title"])) SOYShop_DataSets::put("mail.mypage.$type.title", $mail["title"]);
 		if(isset($mail["header"]))SOYShop_DataSets::put("mail.mypage.$type.header",$mail["header"]);
     	if(isset($mail["footer"]))SOYShop_DataSets::put("mail.mypage.$type.footer",$mail["footer"]);
+    	if(isset($mail["output"]))SOYShop_DataSets::put("mail.mypage.$type.output",$mail["output"]);
 	}
 	
 	/**

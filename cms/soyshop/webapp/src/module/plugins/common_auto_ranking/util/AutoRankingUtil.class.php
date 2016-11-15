@@ -2,7 +2,7 @@
 
 class AutoRankingUtil{
 	
-	function AutoRankingUtil(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	

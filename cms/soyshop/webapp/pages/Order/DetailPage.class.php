@@ -320,6 +320,12 @@ class DetailPage extends WebPage{
 	    		"link" => SOY2PageController::createLink("Order.Mail." . $order->getId() . "?type=" . $type)
 	    	));
     	}
+    	
+    	$this->createAdd("mail_plugin_list", "_common.Order.MailPluginListComponent", array(
+    		"list" => self::getMailPluginList(),
+    		"status" => $mailStatus,
+    		"orderId" => $order->getId()
+    	));
 
     	/*** Output Action　***/
     	$this->outputActions();
@@ -377,16 +383,33 @@ class DetailPage extends WebPage{
     		"orderId" => $this->id
     	));
 
-    	$array = array();
-    	foreach($delegate->getDisplay() as $obj){
-    		if(is_array($obj)){
-    			foreach($obj as $value){
-    				$array[] = $value;
-    			}
-    		}
+    	$list = array();
+    	foreach($delegate->getDisplay() as $values){
+    		if(!is_array($values)) continue;
+   			foreach($values as $value){
+   				$list[] = $value;
+   			}
     	}
 
-    	return $array;
+    	return $list;
+    }
+    
+    private function getMailPluginList(){
+    	SOYShopPlugin::load("soyshop.order.detail.mail");
+    	$delegate = SOYShopPlugin::invoke("soyshop.order.detail.mail", array(
+    	
+    	));
+    	
+    	if(!count($delegate->getList())) return array();
+    	
+    	$list = array();
+    	foreach($delegate->getList() as $values){
+    		if(!is_array($values)) continue;
+   			foreach($values as $value){
+   				$list[] = $value;
+   			}
+    	}
+    	return $list;
     }
     
     //ダウンロードファイルリストを取得

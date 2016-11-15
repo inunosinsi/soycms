@@ -90,7 +90,7 @@ class IndexPage extends WebPage{
 		$sendTo = $user->getMailAddress();
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
 		$mail = $mailLogic->getUserMailConfig($type);
-
+		
 		$this->addForm("form");
 
 		$this->addInput("send_to", array(
@@ -159,14 +159,29 @@ class IndexPage extends WebPage{
 			"other2" => "その他のメール"
 		);
 
-		return (isset($array[$type])) ? $array[$type] : "注文受付メール";
+		if(isset($array[$type])) return $array[$type];
+
+		//プラグインから出力したものを調べる
+		SOY2::import("util.SOYShopPluginUtil");
+		if(!SOYShopPluginUtil::checkIsActive("common_add_mail_type")) return "注文受付メール";
+		
+		SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
+		$configs = AddMailTypeUtil::getConfig();
+		
+		return (isset($configs[$type])) ? $configs[$type]["title"] : "注文受付メール";
 	}
 
 	function getMailContent($type, SOYShop_Order $order, $array, MailLogic $mailLogic, SOYShop_User $user){
-		$builder = SOY2Logic::createInstance("logic.mail.MailBuilder");
-
-    	//メール本文を取得
-    	$body = $builder->buildOrderMailBodyForUser($order, $user);
+		
+		//システムからの出力を行うか？
+		if(isset($array["output"]) && $array["output"] === 1){
+			//メール本文を取得
+			$builder = SOY2Logic::createInstance("logic.mail.MailBuilder");
+	    	$body = $builder->buildOrderMailBodyForUser($order, $user);
+		}else{
+			$body = "";
+		}
+			
 
     	//プラグインを実行してメール本文の取得
     	SOYShopPlugin::load("soyshop.order.mail");
