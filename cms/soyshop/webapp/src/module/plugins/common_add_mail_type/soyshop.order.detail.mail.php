@@ -2,7 +2,7 @@
 class CommonAddMailOrderDetailMail extends SOYShopOrderDetailMailBase{
 
 	
-	function list(){
+	function getMailType(){
 		SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
 		return AddMailTypeUtil::getConfig();
 	}
