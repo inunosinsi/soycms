@@ -50,6 +50,11 @@ class SearchLogic extends SOY2LogicBase{
 	function setCondition($conditions){
 		if(count($conditions)) foreach($conditions as $key => $value){
 			switch($key){
+				//カテゴリーの場合は数字を直接指定
+				case "item_category":
+					$this->where[] = $key . " = :" . $key;
+					$this->binds[":" . $key] = (int)$value;
+					break;
 				case "item_is_open":
 					if(count($value)){
 						$this->where[] = $key . " IN (" . implode(",", $value) . ") ";
