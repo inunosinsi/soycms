@@ -52,6 +52,9 @@ class UserPage extends WebPage{
 		$this->addLabel("mail_config_extension_html", array(
 			"html" => $html
 		));
+		
+		SOY2::import("util.SOYShopPluginUtil");
+		$this->addModel("slip_number_active", array("visible" => SOYShopPluginUtil::checkIsActive("slip_number")));
 	}
 
 	function buildForm($type){
