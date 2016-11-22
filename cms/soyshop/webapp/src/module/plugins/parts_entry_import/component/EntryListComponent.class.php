@@ -10,8 +10,10 @@ class EntryListComponent extends HTMLList{
 	private $blogUrl;
 	private $customField;
 	private $entryAttributeDao;
+	private $thisIsNewDate = 7;
 	
 	protected function populateItem($entity){
+
 		$link = $this->blogUrl . rawurlencode($entity->getAlias());
 		
 		$this->addLabel("entry_id", array(
@@ -20,7 +22,7 @@ class EntryListComponent extends HTMLList{
 		));
 		
 		$this->addLabel("title", array(
-			"html" => "<a href=\"$link\">".htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8")."</a>",
+			"html" => "<a href=\"" . $link . "\">".htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8")."</a>",
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 		
@@ -77,44 +79,61 @@ class EntryListComponent extends HTMLList{
 		));
 		
 		//カスタムフィールドを呼び出す
-		$array = (count($this->customField)) ? $this->entryAttributeDao->getByEntryId($entity->getId()) : array();
-		
-		foreach($this->customField as $fieldId => $obj){
-			if(isset($array[$fieldId])){
-				$value = $array[$fieldId]->getValue();
-			}else{
-				$value = "";
+		$array = array();
+		if(count($this->customField)){
+			try{
+				$array = $this->entryAttributeDao->getByEntryId($entity->getId());
+			}catch(Exception $e){
+				//
 			}
 			
-			$this->addModel($fieldId . "_visible", array(
-				"soy2prefix" => SOYSHOP_SITE_PREFIX,
-				"visible" => (strlen($value) > 0)
-			));
-			
-			$attr["soy2prefix"] = SOYSHOP_SITE_PREFIX;
-			switch($obj->getType()){
-				case "image":
-					$class = "HTMLImage";
-					$attr["src"] = $value;
-					break;
-				case "link":
-					$class = "HTMLLink";
-					$attr["link"] = $value;
-				default:
-				case "input":
-					$class = "HTMLLabel";
-					$attr["html"] = $value;
-					break;
+			foreach($this->customField as $fieldId => $obj){
+				if(isset($array[$fieldId])){
+					$value = $array[$fieldId]->getValue();
+				}else{
+					$value = "";
+				}
+				
+				$this->addModel($fieldId . "_visible", array(
+					"soy2prefix" => SOYSHOP_SITE_PREFIX,
+					"visible" => (strlen($value) > 0)
+				));
+				
+				$attr["soy2prefix"] = SOYSHOP_SITE_PREFIX;
+				switch($obj->getType()){
+					case "image":
+						$class = "HTMLImage";
+						$attr["src"] = $value;
+						break;
+					case "link":
+						$class = "HTMLLink";
+						$attr["link"] = $value;
+					default:
+					case "input":
+						$class = "HTMLLabel";
+						$attr["html"] = $value;
+						break;
+				}
+				
+				
+				$this->addLabel($fieldId, array(
+					"soy2prefix" => SOYSHOP_SITE_PREFIX,
+					"html" => $value
+				));
+				
+				$this->createAdd($fieldId, $class, $attr);
 			}
-			
-			
-			$this->addLabel($fieldId, array(
-				"soy2prefix" => SOYSHOP_SITE_PREFIX,
-				"html" => $value
-			));
-			
-			$this->createAdd($fieldId, $class, $attr);
 		}
+		
+		//this is new
+		$this->addModel("this_is_new", array(
+			"visible" => (isset($entity) && self::compareTime($entity) > time()),
+			"soy2prefix" => SOYSHOP_SITE_PREFIX
+		));
+	}
+	
+	private function compareTime($entry){
+		return $entry->getCdate() + $this->thisIsNewDate * 60*60*24;
 	}
 	
 	function setBlogUrl($blogUrl){
@@ -127,6 +146,10 @@ class EntryListComponent extends HTMLList{
 	
 	function setEntryAttributeDao($entryAttributeDao){
 		$this->entryAttributeDao = $entryAttributeDao;
+	}
+	
+	function setThisIsNewDate($thisIsNewDate){
+		$this->thisIsNewDate = $thisIsNewDate;
 	}
 }
 ?>

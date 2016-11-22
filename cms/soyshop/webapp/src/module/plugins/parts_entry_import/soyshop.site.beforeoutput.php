@@ -24,14 +24,15 @@ class EntryImportBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		
 		
 		$old = EntryImportUtil::switchSiteDsn($site->getDataSourceName());
-		
+				
 		/* サイト → ブログ → 記事一覧 */
 		$page->createAdd("entry_list","EntryListComponent", array(
 			"soy2prefix" => "block",
 			"list" => EntryImportUtil::getBlogEntiryList($config["blogId"], (int)$config["count"]),
 			"blogUrl" => EntryImportUtil::getBlogUrl($config["blogId"], $site->getUrl()),
 			"customField" => self::getCustomfieldConfig($config["siteId"]),
-			"entryAttributeDao" => SOY2DAOFactory::create("cms.EntryAttributeDAO")
+			"entryAttributeDao" => SOY2DAOFactory::create("cms.EntryAttributeDAO"),
+			"thisIsNewDate" => self::getSOYCMSThisIsNewConfig($config["siteId"])
 		));
 		
 		//元に戻す
@@ -40,14 +41,25 @@ class EntryImportBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	
 	private function getCustomfieldConfig($siteId){
 		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/CustomFieldAdvanced.config';
-		include_once(dirname(__FILE__) . "/class/CustomFieldPluginAdvanced.class.php");
-		include_once(dirname(__FILE__) . "/class/CustomField.class.php");
 		if(file_exists($fname)){
+			include_once(dirname(__FILE__) . "/class/CustomFieldPluginAdvanced.class.php");
+			include_once(dirname(__FILE__) . "/class/CustomField.class.php");
 			$obj = unserialize(file_get_contents($fname));
 			return $obj->customFields;
 		}else{
 			return array();
 		}
+	}
+	
+	private function getSOYCMSThisIsNewConfig($siteId){
+		$fname = $_SERVER["DOCUMENT_ROOT"] . $siteId . '/.plugin/SOYCMS_ThisIsNew.config';
+		if(file_exists($fname)){
+			preg_match('/"daysToBeNew";s:[0-9]:"(.*?)";/', file_get_contents($fname), $tmp);
+			if(isset($tmp[1]) && is_numeric($tmp[1])) return (int)$tmp[1];
+		}
+		
+		$thisIsNewConfig = SOYShop_DataSets::get("common_this_is_new", array("date" => 7));
+		return (int)$thisIsNewConfig["date"];
 	}
 }
 
