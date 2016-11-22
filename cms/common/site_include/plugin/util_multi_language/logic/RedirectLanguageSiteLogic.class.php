@@ -122,7 +122,7 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 			$path = str_replace("/" . SOYCMS_CARRIER_PREFIX, "", $path);
 		}
 		
-		foreach($config as $conf){
+		if(count($config)) foreach($config as $conf){
 			if(!isset($conf["prefix"])) continue;
 			if(preg_match('/\/' . $conf["prefix"] . '\//', $path) || $path == "/" . $conf["prefix"]){
 				$path = str_replace("/" . $conf["prefix"], "", $path);
