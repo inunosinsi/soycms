@@ -4767,7 +4767,7 @@ class SOY2HTMLBase{
 			}
 		}
 		
-		if(!$this->functionExists($name) && $name != "HTMLPage" && $html != "WebPage"){
+		if(!$this->functionExists($name) && $name != "HTMLPage" && $name != "WebPage"){
 			throw new SOY2HTMLException("Method not found: ".$name);
 		}
 		$func = $this->_soy2_functions[$name];
