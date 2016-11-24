@@ -51,5 +51,10 @@
 
 </section><!-- //wrapper.end -->
 
+<div id="account_form_el" class="popup" style="display:none;">
+	<iframe src="<?php echo SOYCMS_ADMIN_URL; ?>index.php/Account"></iframe>
+	<p class="close">☒</p>
+</div>
+
 </body>
 </html>

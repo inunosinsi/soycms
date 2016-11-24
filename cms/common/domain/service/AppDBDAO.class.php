@@ -23,6 +23,11 @@ abstract class AppDBDAO extends SOY2DAO{
 	 */
 	abstract function getByAccountId($accountId);
 	
+	/**
+	 * @return object
+	 */
+	abstract function getBySign($sign);
+	
 	abstract function deleteById($id);
 	
 	/**
