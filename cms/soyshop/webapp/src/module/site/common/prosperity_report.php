@@ -118,6 +118,8 @@ class ProsperityReportOrderListComponent extends HTMLList{
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => $values["count"]->getName()
 		));
+		
+		if(is_null($values["price"]->getId())) return false;
 	}
 	
 	private function getUserById($userId){
@@ -132,7 +134,11 @@ class ProsperityReportOrderListComponent extends HTMLList{
 		$sql = "SELECT item.*, os.item_count AS COUNT, os.item_price AS PRICE FROM soyshop_item item ".
 				"INNER JOIN soyshop_orders os ".
 				"ON item.id = os.item_id ".
-				"WHERE os.order_id = :orderId ";
+				"WHERE os.order_id = :orderId ".
+				"AND item.item_is_open != 0 ".
+				"AND item.is_disabled != 1 ".
+				"AND item.open_period_start < " . time() . " ".
+				"AND item.open_period_end > " . time();
 				
 		try{
 			$res = $this->itemDao->executeQuery($sql, array(":orderId" => $orderId));
