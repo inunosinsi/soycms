@@ -66,7 +66,7 @@ class YayoiCalendarPage extends WebPage{
 						$line = array();
 						
 						$adr1 = SOYShop_Area::getAreaText($claimed["area"]) . $claimed["address1"];
-						$line[] = "=\"" . $tel . "\"";		//得意先コード 電話番号ハイフンを取り除いたもの
+						$line[] = $tel;		//得意先コード 電話番号ハイフンを取り除いたもの
 						$line[] = $claimed["name"];		//得意先名称
 						$line[] = $claimed["reading"];		//得意先フリガナ 半角カナ
 						$line[] = $claimed["reading"];		//略称　半角カナ
@@ -77,7 +77,7 @@ class YayoiCalendarPage extends WebPage{
 						$line[] = "";		//役職名
 						$line[] = "";		//ご担当者
 						$line[] = "様";		//敬称
-						$line[] = "=\"" . $tel . "\"";		//TEL
+						$line[] = $tel;		//TEL
 						$line[] = "";		//FAX
 						$line[] = "0";		//分類1
 						$line[] = "0";		//分類2
@@ -91,7 +91,7 @@ class YayoiCalendarPage extends WebPage{
 						$line[] = "4";		//取引区分
 						$line[] = "1";		//単価区分
 						$line[] = "100";	//掛率
-						$line[] = "=\"" . $tel . "\"";		//請求先コード 電話番号ハイフンを取り除いたもの
+						$line[] = $tel;		//請求先コード 電話番号ハイフンを取り除いたもの
 						$line[] = "4";		//締グループ
 						$line[] = "1";		//税転嫁
 						$line[] = "201";	//回収方法
