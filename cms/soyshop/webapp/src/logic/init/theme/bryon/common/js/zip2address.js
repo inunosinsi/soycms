@@ -90,11 +90,16 @@ window.zip2address = zip2address;
 })(window);
 
 
-$(function(){
-	var input = $('.input-zip');
-	
+$(function(){	
 	$('.search-btn').click(function(e){	
-		zip2address(input.val(), function(address) {
+		var input = $('.input-zip');
+		var zip = input.val();
+		
+		if(!zip){
+			zip = $('.input-zip1').val()+$('.input-zip2').val();
+		}
+		
+		zip2address(zip, function(address) {
 			if (address) {
 				$('.input-pref').val(address.pref);
 				$('.input-city').val(address.city);
