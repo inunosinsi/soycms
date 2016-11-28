@@ -14,7 +14,7 @@ class DetailPage extends WebPage{
 
 			$order = $dao->getById($this->id);
 
-			if (isset($_POST["Comment"])) {
+			if (isset($_POST["Comment"]) && strlen($_POST["Comment"])) {
 				$historyContents[] = $_POST["Comment"];
 			}
 
@@ -39,9 +39,15 @@ class DetailPage extends WebPage{
 			}			
 
 			SOYShopPlugin::load("soyshop.comment.form");
-			SOYShopPlugin::invoke("soyshop.comment.form", array(
+			$delegate = SOYShopPlugin::invoke("soyshop.comment.form", array(
 				"order" => $order
 			));
+			
+			if(count($delegate->getHistories())) {
+				foreach($delegate->getHistories() as $historyContent){
+					if(strlen($historyContent)) $historyContents[] = $historyContent;
+				}
+			}
 
 			SOYShopPlugin::load("soyshop.operate.credit");
 			SOYShopPlugin::invoke("soyshop.operate.credit", array(
@@ -51,9 +57,13 @@ class DetailPage extends WebPage{
 			
 
 			if (count($historyContents)) {
+				//ログインしているアカウントを返すことにする
+				$session = SOY2ActionSession::getUserSession();
+				$author = (!is_null($session->getAttribute("loginid"))) ? $session->getAttribute("loginid") :  "管理人";
+				
 				$history = new SOYShop_OrderStateHistory();
 				$history->setOrderId($this->id);
-				$history->setAuthor("管理人");
+				$history->setAuthor($author);
 				$history->setContent(implode("\n" ,$historyContents));
 				$history->setDate(time());
 			}

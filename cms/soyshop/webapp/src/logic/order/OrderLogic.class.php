@@ -112,13 +112,14 @@ class OrderLogic extends SOY2LogicBase{
     /**
      * ヒストリーに追加
      */
-    function addHistory($id, $content, $more = null){
+    function addHistory($id, $content, $more = null, $author = null){
     	$historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
     	$history = new SOYShop_OrderStateHistory();
 
     	$history->setOrderId($id);
     	$history->setContent($content);
     	$history->setMore($more);
+    	$history->setAuthor($author);
 
     	if(class_exists("UserInfoUtil")){
     		$history->setAuthor(UserInfoUtil::getUserName());

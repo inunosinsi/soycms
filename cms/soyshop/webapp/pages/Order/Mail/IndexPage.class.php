@@ -52,8 +52,11 @@ class IndexPage extends WebPage{
 
 				$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 
+				$session = SOY2ActionSession::getUserSession();
+				$author = (!is_null($session->getAttribute("loginid"))) ? $session->getAttribute("loginid") :  null;
+
 				//ヒストリーに追加
-				$orderLogic->addHistory($this->id, $this->getMailText($this->type) . "を送信しました");
+				$orderLogic->addHistory($this->id, $this->getMailText($this->type) . "を送信しました", null, $author);
 
 				//ステータスに登録
 				$orderLogic->setMailStatus($this->id, $this->type, time());
