@@ -58,6 +58,11 @@ function soy_cms_blog_output_category_link($page){
 					"text"=>$entry->getBranchName(),
 					"soy2prefix"=>"cms"
 				));
+				
+				$this->createAdd("category_alias","CMSLabel",array(
+					"text"=>$entry->getAlias(),
+					"soy2prefix"=>"cms"
+				));
 
 				$this->createAdd("entry_count","CMSLabel",array(
 					"text"=>$this->entryCount[$entry->getid()],
