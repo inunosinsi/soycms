@@ -394,11 +394,9 @@ class EditPage extends WebPage{
 
 		$history = new SOYShop_OrderStateHistory();
 		$history->setOrderId($id);
-		if(class_exists("UserInfoUtil")){
-			$history->setAuthor(UserInfoUtil::getUserName());
-		}else{
-			$history->setAuthor("管理人");
-		}
+		$session = SOY2ActionSession::getUserSession();
+		$author = (!is_null($session->getAttribute("loginid"))) ? $session->getAttribute("loginid") :  "管理人";
+		$history->setAuthor($author);
 		$history->setContent($content);
 		$history->setMore($more);
 		$historyDAO->insert($history);
