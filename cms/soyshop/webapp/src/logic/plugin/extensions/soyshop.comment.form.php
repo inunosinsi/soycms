@@ -19,17 +19,21 @@ class SOYShopCommentFormBase implements SOY2PluginAction{
 class SOYShopCommentFormDeletageAction implements SOY2PluginDelegateAction{
 
 	private $order;
+	private $_histories = array();
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
 
 		if(strtolower($_SERVER['REQUEST_METHOD']) == "post"){
-			$action->doPost($this->order);
+			$this->_histrories[$moduleId] = $action->doPost($this->order);
 		}else{
 			echo $action->getForm($this->order);
 		}
 	}
 	function setOrder($order){
 		$this->order = $order;
+	}
+	function getHistories(){
+		return $this->_histrories;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.comment.form","SOYShopCommentFormDeletageAction");
