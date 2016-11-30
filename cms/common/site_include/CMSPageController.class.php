@@ -24,9 +24,9 @@ class CMSPageController extends SOY2PageController{
 		//パスからURIと引数に変換
 		$uri  = $pathBuilder->getPath();
 		$args = $pathBuilder->getArguments();
-		
+				
 		//トップページがブログページ対策　ルート設定していてブログページの場合、存在していないURLでも404NotFoundにならない問題がある
-		if(!strlen($uri) && count($args) === 1 && isset($args[0])) $uri = $args[0];
+		if(!strlen($uri) && count($args) === 1 && isset($args[0]) && strpos($args[0], "page-") !== 0 && strpos($args[0], "feed") !== 0) $uri = $args[0];
 
 		//保存
 		$this->args = $args;
@@ -115,7 +115,7 @@ class CMSPageController extends SOY2PageController{
 
 				$this->webPage = $webPage;
 				$webPage->main();
-
+				
 				//プラグインonLoadイベントの呼び出し
 				$onLoad = CMSPlugin::getEvent('onPageLoad');
 				foreach($onLoad as $plugin){

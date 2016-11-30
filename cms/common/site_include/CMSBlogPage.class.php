@@ -329,7 +329,7 @@ class CMSBlogPage extends CMSPage{
 				$html = ob_get_contents();
 				ob_end_clean();
 
-				WebPage::WebPage($args);
+				WebPage::__construct($args);
 
 				$this->createAdd("feed","HTMLLabel",array(
 					"html" => $html

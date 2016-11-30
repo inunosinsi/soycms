@@ -27,7 +27,7 @@ class CMSPage extends WebPage{
 		$pageDao = SOY2DAOFactory::create("cms.PageDAO");
 		$this->page = $pageDao->getById($id);
 		$this->id = $id;
-
+		
 		//サイトのURL
 		$this->siteUrl = $this->getSiteUrl();
 
