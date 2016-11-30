@@ -18,7 +18,7 @@ class PublisherPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.3"
 		));
 //		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 //			$this,"config_page"	
@@ -36,22 +36,30 @@ class PublisherPlugin{
 	}
 	
 	function onOutput($arg){
+		
+		//アプリケーションページと404ページの場合は静的化しない
+		if($arg["page"]->getPageType() == Page::PAGE_TYPE_APPLICATION || $arg["page"]->getPageType() == Page::PAGE_TYPE_ERROR) return $html;
+		
+		//GETがある場合は検索ページと見なして対象外とする
+		if(isset($_GET["q"])) return $html;
+		
+		//GETの値がある場合は対象外
+		if(isset($_SERVER["REDIRECT_QUERY_STRING"])) return $html;
+		
 		$html = &$arg["html"];
 		
-		//アプリケーションページの場合は静的化しない
-		if($arg["page"]->getPageType() == 150) return $html;
-		
 		//ブログページの場合はトップページのみ静的化の対象とする
-		if($arg["page"]->getPageType() == 200){
+		if($arg["page"]->getPageType() == Page::PAGE_TYPE_BLOG){
+			
+			/** @ToDo feedの場合 **/
+			if(strpos($_SERVER["REQUEST_URI"], $arg["page"]->getPageConfigObject()->rssPageUri)) return;
+			
 			//PATH_INFOがある場合はトップではないとみなす
 			/**
 			 * @ToDo もっときれいな書き方を検討する
 			 */
 			if(isset($_SERVER["PATH_INFO"])) return $html;
 		}
-		
-		//GETがある場合は検索ページと見なして対象外とする
-		if(isset($_GET["q"])) return $html;
 		
 		//トップページである
 		if(!strlen($arg["page"]->getUri())){
