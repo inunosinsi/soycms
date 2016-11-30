@@ -24,6 +24,9 @@ class CMSPageController extends SOY2PageController{
 		//パスからURIと引数に変換
 		$uri  = $pathBuilder->getPath();
 		$args = $pathBuilder->getArguments();
+		
+		//トップページがブログページ対策　ルート設定していてブログページの場合、存在していないURLでも404NotFoundにならない問題がある
+		if(!strlen($uri) && count($args) === 1 && isset($args[0])) $uri = $args[0];
 
 		//保存
 		$this->args = $args;
