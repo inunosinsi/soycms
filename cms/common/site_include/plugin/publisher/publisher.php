@@ -37,10 +37,10 @@ class PublisherPlugin{
 	
 	function onOutput($arg){
 		
+		$html = &$arg["html"];
+		
 		//アプリケーションページと404ページの場合は静的化しない
 		if($arg["page"]->getPageType() == Page::PAGE_TYPE_APPLICATION || $arg["page"]->getPageType() == Page::PAGE_TYPE_ERROR) return $html;
-		
-		$html = &$arg["html"];
 		
 		//GETがある場合は検索ページと見なして対象外とする
 		if(isset($_GET["q"])) return $html;
