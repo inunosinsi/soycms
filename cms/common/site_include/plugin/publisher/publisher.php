@@ -40,13 +40,13 @@ class PublisherPlugin{
 		//アプリケーションページと404ページの場合は静的化しない
 		if($arg["page"]->getPageType() == Page::PAGE_TYPE_APPLICATION || $arg["page"]->getPageType() == Page::PAGE_TYPE_ERROR) return $html;
 		
+		$html = &$arg["html"];
+		
 		//GETがある場合は検索ページと見なして対象外とする
 		if(isset($_GET["q"])) return $html;
 		
 		//GETの値がある場合は対象外
 		if(isset($_SERVER["REDIRECT_QUERY_STRING"])) return $html;
-		
-		$html = &$arg["html"];
 		
 		//ブログページの場合はトップページのみ静的化の対象とする
 		if($arg["page"]->getPageType() == Page::PAGE_TYPE_BLOG){
