@@ -105,7 +105,7 @@ class IndexPage extends WebPage{
 		
 		$this->action();
 
-
+		self::buildPluginArea();
 		self::buildOrderList();
 		self::buildCampaignList();
 		self::buildCouponHistoryList();
@@ -121,6 +121,18 @@ class IndexPage extends WebPage{
 
 		$this->addModel("init_link", array(
 			"visible" => DEBUG_MODE
+		));
+	}
+	
+	private function buildPluginArea(){
+		SOYShopPlugin::load("soyshop.admin.top");
+		$delegate = SOYShopPlugin::invoke("soyshop.admin.top");
+
+		$contents = $delegate->getContents();
+		DisplayPlugin::toggle("plugin_area", (count($contents) > 0));
+		
+		$this->createAdd("plugin_area_list", "_common.TopPagePluginAreaListComponent", array(
+			"list" => $contents
 		));
 	}
 

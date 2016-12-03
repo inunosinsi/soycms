@@ -145,6 +145,18 @@ class UserComponent {
 			"value" => $user->getZipCode()
 		));
 		
+		//郵便番号をバラして使う
+		$zip = explode("-", $user->getZipCode());
+		$page->addInput("zip_code1", array(
+			"name" => "Customer[zipCode1]",
+			"value" => (isset($zip[0])) ? $zip[0] : null
+		));
+		
+		$page->addInput("zip_code2", array(
+			"name" => "Customer[zipCode2]",
+			"value" => (isset($zip[1])) ? $zip[1] : null
+		));
+		
 		//都道府県
 		$page->addSelect("area", array(
 			"name" => "Customer[area]",
@@ -807,6 +819,13 @@ class UserComponent {
 		//フリガナ
 		if(isset($user["reading"])){
 			$user["reading"] = soyshop_trim($user["reading"]);
+		}
+		
+		//郵便番号を分割している場合
+		if(!isset($user["zipCode"]) && isset($user["zipCode1"])){
+			$zip = soyshop_trim($user["zipCode1"]);
+			if(isset($user["zipCode2"])) $zip .= "-" . soyshop_trim($user["zipCode2"]);
+			$user["zipCode"] = $zip;
 		}
 		
 		return $user;
