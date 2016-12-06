@@ -428,5 +428,15 @@ class PointBaseLogic extends SOY2LogicBase{
 	function getTimeLimit($timeLimit){
 		return (isset($timeLimit)) ? time() + $timeLimit * 60 * 60 * 24 : null;
 	}
+	
+	//個々の商品のポイント付与率の一括変更
+	function setPointCollective($percentage){
+		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+		try{
+			$dao->executeUpdateQuery("UPDATE soyshop_item_attribute SET item_value = :percentage WHERE item_field_id = :fieldId", array(":percentage" => $percentage, ":fieldId" => self::PLUGIN_ID));
+		}catch(Exception $e){
+			//var_dump($e);
+		}
+	}
 }
 ?>

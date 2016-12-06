@@ -284,15 +284,25 @@ class SOYShop_OrderAttributeConfig{
 		switch($this->getType()){
 			case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
 				//DefaultValueがあればそれを使う
-				$checkbox_value = (is_null($value) && strlen($this->getDefaultValue()) > 0) ? (explode(",", $this->getDefaultValue())) : explode(",", $value);
+				$ini = is_null($value);
+				$checkbox_value = ($ini && strlen($this->getDefaultValue()) > 0) ? (explode(",", $this->getDefaultValue())) : explode(",", $value);
 				$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getOption()));
 				$body = "";
+				
 				foreach($options as $key => $option){
+					$checked = (in_array($option, $checkbox_value)) ? ' checked="checked"' : "";
+					if(!strlen($checked)){
+						if($option[0] == "*"){
+							if($ini) $checked = ' checked="checked"';
+							$option = substr($option, 1);
+						}
+					}
+					
 					$body .= '<input type="checkbox" class="custom_field_checkbox"'
 					       .' id="' . $h_formID . '_' . $key . '"'
 					       .' name="' . $h_formName . '[]"'
 					       .' value="' . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . '"'
-					       .( (in_array($option, $checkbox_value)) ? ' checked="checked"' : ""  )
+					       .$checked
 					       .' />';
 					$body .= '<label for="' . $h_formID . '_' . $key . '">' . $option . '</label>';
 					$body .= "\n";
@@ -316,12 +326,20 @@ class SOYShop_OrderAttributeConfig{
 					if(strlen($option) > 0){
 						$h_option = htmlspecialchars($option, ENT_QUOTES, "UTF-8");
 						$id = 'custom_field_radio_' . $this->getFieldId() . '_' . $key;
-
+						
+						$checked = ($option == $value["value"]) ?  ' checked="checked"' : "";
+						if(!strlen($checked)){
+							if($h_option[0] == "*"){
+								$checked = ' checked="checked"';
+								$h_option = substr($h_option, 1);
+							}
+						}
+						
 						$body .= '<input type="radio" class="custom_field_radio"' .
 								 ' name="' . $h_formName . '"' .
 								 ' id="' . $id . '"'.
 								 ' value="' . $h_option . '"' .
-								 (($option == $value["value"]) ? ' checked="checked"' : "") .
+								$checked .
 								 ' />';
 						$body .= '<label for="' . $id.'">' . $h_option . '</label>';
 						$body .= "\n";

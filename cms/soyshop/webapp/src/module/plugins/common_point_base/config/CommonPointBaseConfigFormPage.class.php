@@ -26,6 +26,11 @@ class CommonPointBaseConfigFormPage extends WebPage{
 				PointBaseUtil::saveMailContent($_POST["Mail"]["content"]);
 			}
 			
+			//個々の商品のポイント付与率を一括変更
+			if(isset($_POST["all_change"])){
+				SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->setPointCollective((int)$config["percentage"]);
+			}
+			
 			$this->configObj->redirect("updated");
     	}
     }

@@ -10,22 +10,24 @@ class CommonPointBaseCustomField extends SOYShopItemCustomFieldBase{
 	function doPost(SOYShop_Item $item){
 		
 		if(isset($_POST[self::PLUGIN_ID])){
-			$price = soyshop_convert_number($_POST[self::PLUGIN_ID], 0);
+			$percentage = soyshop_convert_number($_POST[self::PLUGIN_ID], 0);
 
 			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			$array = $dao->getByItemId($item->getId());
-						
-			if(isset($array[self::PLUGIN_ID])){
-				$obj = $array[self::PLUGIN_ID];
-				$obj->setValue($price);
-				$dao->update($obj);
+			try{
+				$attr = $dao->get($item->getId(),self::PLUGIN_ID);
+			}catch(Exception $e){
+				$attr = new SOYShop_ItemAttribute();
+			}
+			
+			if(!is_null($attr->getItemId())){
+				$attr->setValue($percentage);
+				$dao->update($attr);
 			}else{
-				$obj = new SOYShop_ItemAttribute();
-				$obj->setItemId($item->getId());
-				$obj->setFieldId(self::PLUGIN_ID);
-				$obj->setValue($price);
+				$attr->setItemId($item->getId());
+				$attr->setFieldId(self::PLUGIN_ID);
+				$attr->setValue($percentage);
 	
-				$dao->insert($obj);
+				$dao->insert($attr);
 			}
 		}
 	}

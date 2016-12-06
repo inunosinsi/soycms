@@ -157,6 +157,12 @@ class DetailPage extends WebPage{
 					"item" => $item
 				));
 				
+				//会員特別価格の拡張ポイント
+				SOYShopPlugin::load("soyshop.add.price");
+				SOYShopPlugin::invoke("soyshop.add.price", array(
+					"item" => $item
+				));
+				
 				//商品の価格に特化した拡張ポイント
 				SOYShopPlugin::load("soyshop.price.option");
 				SOYShopPlugin::invoke("soyshop.price.option", array(
@@ -308,6 +314,11 @@ class DetailPage extends WebPage{
 			"name" => "Item[config][list_price]",
 			"value" => (int)$item->getAttribute("list_price"),
 			"readonly" => $readOnly
+		));
+		
+		SOYShopPlugin::load("soyshop.add.price");
+		$this->addLabel("extension_add_price_area", array(
+			"html" => SOYShopPlugin::display("soyshop.add.price", array("item" => $item))
 		));
 		
 		SOYShopPlugin::load("soyshop.price.option");
