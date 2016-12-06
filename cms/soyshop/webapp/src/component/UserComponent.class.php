@@ -52,7 +52,7 @@ class UserComponent {
 		//必須項目に関して
 		foreach($requiredConfig as $key => $boolean){
 			$page->addLabel($key . "_required", array(
-				"text" => ($boolean) ? "（必須）" : "",
+				"text" => ($boolean) ? $this->config->getRequireText() : "",
 				"attr:class" => ($boolean) ? "require" : ""
 			));
 		}
@@ -67,12 +67,24 @@ class UserComponent {
 			"name" => "Customer[mailAddress]",
 			"value" => $mailAddress,
 		));
-
 		
+		$page->addInput("mail_address_confirm", array(
+			"name" => "Customer[mailAddressConfirm]",
+			"value" => $app->getAttribute("mail_address_confirm")
+		));
+				
 		//パスワード
 		$page->addInput("password", array(
 			"name" => "Customer[password]",
 			"value" => $user->getPassword(),
+		));
+		
+		$passText = "";
+		for($i = 0; $i < strlen($user->getPassword()); $i++){
+			$passText .= "*";
+		}
+		$page->addLabel("password_text", array(
+			"text" => $passText
 		));
 		
 		//氏名
@@ -331,6 +343,22 @@ class UserComponent {
 			}else if(!soyshop_valid_email($user->getMailAddress())){
 				//メールアドレスの書式に誤りがある場合
 				$app->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_FALSE"));
+				$res = false;
+			}
+		}
+		
+		/* メールアドレス確認用 **/
+		if(isset($_POST["Customer"]["mailAddressConfirm"])){
+			$app->setAttribute("mail_address_confirm", $_POST["Customer"]["mailAddressConfirm"]);
+			
+			if(tstrlen($_POST["Customer"]["mailAddressConfirm"]) < 1){
+				//メールアドレスを入力していない場合
+				$app->addErrorMessage("mail_address_confirm", MessageManager::get("MAIL_ADDRESS_CONFIRM_EMPTY"));
+				$res = false;
+			}
+			
+			if($user->getMailAddress() != $_POST["Customer"]["mailAddressConfirm"]){
+				$app->addErrorMessage("mail_address_confirm", MessageManager::get("MAIL_ADDRESS_CONFIRM_FALSE"));
 				$res = false;
 			}
 		}
@@ -669,6 +697,10 @@ class UserComponent {
 		//メールアドレス
 		$page->createAdd("mail_address_error", "ErrorMessageLabel", array(
 			"text" => $app->getErrorMessage("mail_address")
+		));
+		
+		$page->createAdd("mail_address_confirm_error", "ErrorMessageLabel", array(
+			"text" => $app->getErrorMessage("mail_address_confirm")
 		));
 		
 		//ログインID
