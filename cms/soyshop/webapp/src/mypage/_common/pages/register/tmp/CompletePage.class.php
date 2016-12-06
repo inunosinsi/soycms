@@ -16,7 +16,7 @@ class CompletePage extends MainMyPagePageBase{
 			"visible" => ($register)
 		));
 
-		$loginUrl = SOYSHOP_SITE_URL.soyshop_get_mypage_uri() . "/login";
+		$loginUrl = soyshop_get_mypage_url() . "/login";
 		if(isset($_GET["r"])){
 			$loginUrl .= "?r=" . $_GET["r"];
 		}
@@ -31,7 +31,7 @@ class CompletePage extends MainMyPagePageBase{
 		));
 		
 		$this->addLink("register_link", array(
-			"link" => SOYSHOP_SITE_URL.soyshop_get_mypage_uri() . "/register"
+			"link" => soyshop_get_mypage_url() . "/register"
 		));
 	}
 	

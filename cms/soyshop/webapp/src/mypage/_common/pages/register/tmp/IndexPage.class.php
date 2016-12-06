@@ -10,11 +10,11 @@ class IndexPage extends MainMyPagePageBase{
 		WebPage::__construct();
 		
 		$this->addLink("login_link", array(
-			"link" => SOYSHOP_SITE_URL . soyshop_get_mypage_uri() . "/login"
+			"link" => soyshop_get_mypage_url() . "/login"
 		));
 
 		$this->addLink("top_link", array(
-			"link" => SOYSHOP_SITE_URL
+			"link" => soyshop_get_site_url()
 		));
 	}
 	
