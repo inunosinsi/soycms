@@ -157,16 +157,6 @@ class IndexPage extends MainMyPagePageBase{
 
 		//共通フォーム
 		$this->component->buildForm($this, $user, $mypage, $mode);
-		
-    	//各項目をcreateAdd
-		$delegate = SOYShopPlugin::invoke("soyshop.user.customfield", array(
-			"mode" => "build_named_form",
-			"mypage" => $mypage,
-			"pageObj" => $this,
-			"userId" => $user->getId()
-		));
-
-
 	}
 
 	/**
