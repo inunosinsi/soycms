@@ -459,6 +459,11 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"name" => "Config[CustomerInformationConfig][memo]"
 		));
+		
+		$this->addInput("require_text", array(
+			"name" => "Config[RequireText]",
+			"value" => $config->getRequireText()
+		));
 	}
 
 	private function getTaxModuleList(){

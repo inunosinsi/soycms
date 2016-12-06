@@ -85,6 +85,8 @@ class SOYShop_ShopConfig {
 		"memo"			=> false
 	);
 	
+	private $requireText = "(必須)";
+	
 	const DATASETS_KEY = "soyshop.ShopConfig";
 
 	public static function load(){
@@ -408,6 +410,13 @@ class SOYShop_ShopConfig {
 	}
 	function setIsShowOnlyAdministrator($isShowOnlyAdministrator){
 		$this->isShowOnlyAdministrator = $isShowOnlyAdministrator;
+	}
+	
+	function getRequireText(){
+		return $this->requireText;
+	}
+	function setRequireText($requireText){
+		$this->requireText = $requireText;
 	}
 
 	function getMultiCategory(){
