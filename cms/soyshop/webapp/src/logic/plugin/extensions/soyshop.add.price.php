@@ -34,5 +34,5 @@ class SOYShopAddPriceDeletageAction implements SOY2PluginDelegateAction{
 		$this->item = $item;
 	}
 }
-SOYShopPlugin::registerExtension("soyshop.add.mailaddress","SOYShopAddMailAddressDeletageAction");
+SOYShopPlugin::registerExtension("soyshop.add.price","SOYShopAddPriceDeletageAction");
 ?>
