@@ -70,7 +70,7 @@ class UserComponent {
 		
 		$page->addInput("mail_address_confirm", array(
 			"name" => "Customer[mailAddressConfirm]",
-			"value" => $app->getAttribute("mail_address_confirm")
+			"value" => (!is_null($app)) ? $app->getAttribute("mail_address_confirm") : null
 		));
 				
 		//パスワード
