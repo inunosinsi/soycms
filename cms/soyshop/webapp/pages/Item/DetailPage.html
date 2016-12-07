@@ -92,21 +92,21 @@
 			<dd>
 				<table>
 					<tr>
-						<th>定価</th>
+						<th class="small_text alC" nowrap style="width:140px;">定価</th>
 						<td>
-							<input type="text" class="text" soy:id="item_list_price" />
+							<input type="number" class="text" soy:id="item_list_price" />
 						</td>
 					</tr>
 					<tr>
-						<th>通常価格</th>
+						<th class="small_text alC" nowrap>通常価格</th>
 						<td>
-							<input type="text" class="text" soy:id="item_normal_price" />
+							<input type="number" class="text" soy:id="item_normal_price" />
 						</td>
 					</tr>
 					<tr>
-						<th style="vertical-align:top;padding-top:10px;">セール価格</th>
+						<th style="vertical-align:top;padding-top:10px;" class="small_text alC" nowrap>セール価格</th>
 						<td>
-							<input type="text" class="text" soy:id="item_sale_price" />
+							<input type="number" class="text" soy:id="item_sale_price" />
 							<!-- soy:id="app_limit_function*" -->
 							<h4>セール設定</h4>
 							<input type="checkbox" soy:id="item_is_sale" />
@@ -117,7 +117,7 @@
 					<!-- soy:id="extension_add_price_area" /-->
 					<!-- soy:id="extension_price_option_list" -->
 					<tr>
-						<th soy:id="title"></th>
+						<th soy:id="title" class="small_text alC" nowrap></th>
 						<td soy:id="form"></td>
 					</tr>
 					<!-- /soy:id="extension_price_option_list" -->
@@ -438,6 +438,9 @@ function onPopup(){
 	width:30%;
 }
 
+.small_text{
+	font-size:0.9em;
+}
 
 </style>
 
