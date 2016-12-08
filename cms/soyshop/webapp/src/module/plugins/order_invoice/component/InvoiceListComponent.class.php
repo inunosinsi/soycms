@@ -149,6 +149,19 @@ class InvoiceListComponent extends HTMLList{
 	protected function buildCompanyArea(){
 		$config = SOYShop_ShopConfig::load();
 		$company = $config->getCompanyInformation();
+		
+		/** 画像 **/
+		$fDir = OrderInvoiceCommon::getFileDirectory();
+		$fUrl = OrderInvoiceCommon::getFileUrl();
+		foreach(array("logo", "stamp") as $t){
+			$this->addModel("is_" . $t, array(
+				"visible" => (isset($this->config[$t]) && file_exists($fDir . $this->config[$t]))
+			));
+			
+			$this->addImage($t, array(
+				"src" => (isset($this->config[$t])) ? $fUrl . $this->config[$t] : null
+			));
+		}
 
 		$this->addLabel("shop_name", array(
 			"text" => $config->getShopName()

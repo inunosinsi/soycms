@@ -86,7 +86,10 @@ function onload(){
 <body onload="onload();">
 	<!-- soy:id="continuous_print" -->
 <div id="wrapper" contenteditable="true" style="page-break-inside: avoid;page-break-after:always;">
-	<div id="logo"><!-- soy:id="shop_name" -->おまめ商事種式会社のお店<!-- /soy:id="shop_name" --></div>
+	<div id="logo">
+		<div soy:id="is_logo"><img soy:id="logo"></div>
+		<!-- soy:id="shop_name" -->おまめ商事種式会社のお店<!-- /soy:id="shop_name" -->
+	</div>
 	<div id="content">
 		<!--
 			ここに入れる情報
@@ -159,7 +162,7 @@ function onload(){
 			<!-- /soy:id="item_detail" -->
 			<!-- total_price_space -->
 			<tr class="price_space">
-				<td>&nbsp;</4d>
+				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td>小計</td>
 				<td>&nbsp;</td>
@@ -213,7 +216,7 @@ function onload(){
 				</td>
 			</tr>
 		</table>
-		<!-- /soy:id="display_payment" -->
+		<!-- /soy:id="display_content" -->
 		
 		<!--
 			ヘッダ
@@ -224,9 +227,13 @@ function onload(){
 		<table class="footer">
 			<tr>
 				<td>
-					<!-- soy:id="company_name" -->おまめ商事種式会社<!-- /soy:id="company_name" -->&nbsp;
-					<!-- soy:id="company_area" -->京都府<!-- /soy:id="company_area" -->
-					<!-- soy:id="company_address" -->京都市おまめ区<!-- /soy:id="company_address" -->
+					<div style="float:left;">
+						<!-- soy:id="company_name" -->おまめ商事種式会社<!-- /soy:id="company_name" -->&nbsp;
+						<!-- soy:id="company_area" -->京都府<!-- /soy:id="company_area" -->
+						<!-- soy:id="company_address" -->京都市おまめ区<!-- /soy:id="company_address" -->
+					</div>
+					<div soy:id="is_stamp"><img soy:id="stamp"></div>
+					<br style="clear:left;">
 				</td>
 			</tr>	
 		</table>

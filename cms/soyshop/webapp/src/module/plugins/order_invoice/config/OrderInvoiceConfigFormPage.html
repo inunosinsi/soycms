@@ -6,6 +6,26 @@
 		<dl>
 			<dt>テンプレート </dt>
 			<dd><select soy:id="template"></select></dd>
+			
+			<dt>ロゴの登録</dt>
+			<dd>
+				<!-- soy:display="no_logo" --><input type="file" name="logo"><!-- /soy:display="no_logo" -->
+				<!-- soy:display="is_logo" -->
+				<img soy:id="logo">
+				<input type="hidden" soy:id="logo_hidden">
+				<input type="checkbox" soy:id="logo_delete">
+				<!-- /soy:display="is_logo" -->
+			</dd>
+			
+			<dt>社印の登録</dt>
+			<dd>
+				<!-- soy:display="no_stamp" --><input type="file" name="stamp"><!-- /soy:display="no_stamp" -->
+				<!-- soy:display="is_stamp" -->
+				<img soy:id="stamp">
+				<input type="hidden" soy:id="stamp_hidden">
+				<input type="checkbox" soy:id="stamp_delete">
+				<!-- /soy:display="is_stamp" -->
+			</dd>
 		
 			<dt>振込先</dt>
 			<dd><input type="checkbox" soy:id="payment"></dd>

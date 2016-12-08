@@ -12,8 +12,35 @@ class OrderInvoiceConfigFormPage extends WebPage{
 		
 		if(soy2_check_token()){
 			
+			$configs = $_POST["Config"];
+			
+			//画像の登録
+			foreach($_FILES as $key => $file){
+				if(strlen($file["type"]) > 0){
+					//ファイルの拡張子をチェックする
+					if(preg_match('/(jpg|jpeg|gif|png)$/', $file["name"])){
+						$fname = $file["name"];
+						
+						$dest_name = OrderInvoiceCommon::getFileDirectory() . $fname;
+						
+						if(@move_uploaded_file($file["tmp_name"], $dest_name)){
+							$configs[$key] = htmlspecialchars($fname, ENT_QUOTES, "UTF-8");
+						}
+					}
+				}
+			}
+			
+			//画像の削除
+			if(count($_POST["Delete"])){
+				foreach($_POST["Delete"] as $key => $v){
+					if($v == 1){
+						$configs[$key] = null;
+					}
+				}
+			}
+			
 			OrderInvoiceCommon::saveTemplateName($_POST["Template"]);
-			OrderInvoiceCommon::saveConfig($_POST["Config"]);
+			OrderInvoiceCommon::saveConfig($configs);
 			
 			$this->configObj->redirect("updated");
 		}
@@ -27,7 +54,32 @@ class OrderInvoiceConfigFormPage extends WebPage{
 			"visible" => (isset($_GET["updated"]))
 		));
 		
-		$this->addForm("form");
+		$this->addForm("form", array(
+			"enctype" => "multipart/form-data"
+		));
+		
+		$config = OrderInvoiceCommon::getConfig();
+		
+		/** 画像系 **/
+		foreach(array("logo", "stamp") as $t){
+			DisplayPlugin::toggle("no_" . $t, (!isset($config[$t]) || !strlen($config[$t])));
+			DisplayPlugin::toggle("is_" . $t, (isset($config[$t]) && strlen($config[$t])));
+			
+			$this->addImage($t, array(
+				"src" => (isset($config[$t]) && strlen($config[$t])) ? OrderInvoiceCommon::getFileUrl() . $config[$t] : ""
+			));
+			
+			$this->addInput($t . "_hidden", array(
+				"name" => "Config[" . $t . "]",
+				"value" => (isset($config[$t])) ? $config[$t] : null
+			));
+			
+			$this->addCheckBox($t . "_delete", array(
+				"name" => "Delete[" . $t . "]",
+				"value" => 1,
+				"label" => "削除する"
+			));
+		}
 		
 		$this->addSelect("template", array(
 			"name" => "Template",
@@ -35,7 +87,7 @@ class OrderInvoiceConfigFormPage extends WebPage{
 			"selected" => OrderInvoiceCommon::getTemplateName()
 		));
 		
-		$config = OrderInvoiceCommon::getConfig();
+		
 		
 		$this->addCheckBox("payment", array(
 			"name" => "Config[payment]",
