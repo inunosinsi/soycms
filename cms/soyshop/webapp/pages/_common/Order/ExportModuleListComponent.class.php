@@ -20,7 +20,7 @@ class ExportModuleListComponent extends HTMLList{
 			"visible" => (strlen($entity["description"]) > 0)
 		));
 		
-		$this->addLabel("display_button", array(
+		$this->addModel("display_button", array(
 			"visible" => (strlen($entity["title"]))
 		));
 	}
