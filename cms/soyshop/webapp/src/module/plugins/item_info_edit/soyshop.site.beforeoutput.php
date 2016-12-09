@@ -21,7 +21,13 @@ class ItemInfoEditBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			$session = SOY2ActionSession::getUserSession();
 			if(!is_null($session->getAttribute("loginid"))){
 				
-				$adminDir = dirname(dirname(dirname(dirname(dirname(str_replace(dirname(SOYSHOP_SITE_DIRECTORY), "", dirname(__FILE__)))))));
+				$adminDir = dirname(str_replace(dirname(SOYSHOP_SITE_DIRECTORY), "", SOYSHOP_WEBAPP));
+				
+				//チェック
+				if(strpos($adminDir, $_SERVER["DOCUMENT_ROOT"]) !== false){
+					$adminDir = "/" . str_replace($_SERVER["DOCUMENT_ROOT"], "", $adminDir);
+				}
+				
 				$link = "http://" . $_SERVER["HTTP_HOST"] . $adminDir . "/index.php/Item/Detail/" . $obj->getObject()->getCurrentItem()->getId();
 				$button = "<a href=\"" . $link . "\" target=\"_blank\"><button>商品編集</button></a>";
 				

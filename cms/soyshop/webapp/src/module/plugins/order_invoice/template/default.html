@@ -138,7 +138,7 @@ function onload(){
 				<td>
 					<div class="logo_area" soy:id="is_logo"><img soy:id="logo"></div>
 					<div class="company_name_area">
-						<div class="company_name"><!-- soy:id="shop_name" -->お豆商事種式会社のショップ<!-- /soy:id="shop_name" --></div>
+						<div class="company_name" soy:id="no_logo"><!-- soy:id="shop_name" -->お豆商事種式会社のショップ<!-- /soy:id="shop_name" --></div>
 						<div><!-- soy:id="shop_url" -->http://soyshop.app.soycms.net/<!-- /soy:id="shop_url" --></div>
 						<div><!-- soy:id="company_name" -->お豆商事種式会社<!-- /soy:id="company_name" --></div>
 						<div>〒<!-- soy:id="company_zip_code" -->606-8232<!-- /soy:id="company_zip_code" --></div>
@@ -147,11 +147,15 @@ function onload(){
 							<!-- soy:id="company_address" -->京都府京都市おまめ区<!-- /soy:id="company_address" -->
 						</div>
 						<div>
+							<!-- soy:id="is_campany_telephone" -->
 							TEL : <!-- soy:id="company_telephone" -->000-000-0000<!-- /soy:id="company_telephone" -->
 							&nbsp;&nbsp;&nbsp;
+							<!-- /soy:id="is_campany_telephone" -->
+							<!-- soy:id="is_campany_fax" -->
 							FAX : <!-- soy:id="company_fax" -->000-000-0000<!-- /soy:id="company_fax" -->
+							<!-- /soy:id="is_campany_fax" -->
 						</div>
-						<div>Email : <!-- soy:id="company_mailaddress" -->info@example.com<!-- /soy:id="company_mailaddress" --></div>
+						<div soy:id="is_campany_mailaddress">Email : <!-- soy:id="company_mailaddress" -->info@example.com<!-- /soy:id="company_mailaddress" --></div>
 					</div>
 					<div class="stamp_area" soy:id="is_stamp"><img soy:id="stamp"></div>
 					<br style="clear:both;" />

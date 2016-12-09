@@ -287,7 +287,7 @@ class SearchLogic extends SOY2LogicBase{
 		
 		$binds = array(":now" => time());
 		
-		$sql = "SELECT COUNT(i.id) " .
+		$sql = "SELECT COUNT(i.id) AS TOTAL " .
 				"FROM soyshop_item i ".
 				"INNER JOIN soyshop_custom_search s ".
 				"ON i.id = s.item_id ";
@@ -308,7 +308,7 @@ class SearchLogic extends SOY2LogicBase{
 			return 0;
 		}
 		
-		return (isset($res[0]["total"])) ? (int)$res[0]["total"] : 0;
+		return (isset($res[0]["TOTAL"])) ? (int)$res[0]["TOTAL"] : 0;
 	}
 	
 	private function buildOrderBySQL(SOYShop_ListPage $obj){

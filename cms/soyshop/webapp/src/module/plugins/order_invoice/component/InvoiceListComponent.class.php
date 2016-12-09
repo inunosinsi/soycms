@@ -24,8 +24,14 @@ class InvoiceListComponent extends HTMLList{
 		$this->buildClaimedArea($order);
 		
 		/*** 注文商品 ***/
+		$items = $this->getItemOrders($order->getItems(), $order->getId());
+		if(count($items) < 10){
+			for($i = count($items) + 1; $i <= 10; $i++){
+				$items[] = new SOYShop_ItemOrder();
+			}
+		}
 	   	$this->createAdd("item_detail", "InvoiceItemListComponent", array(
-			"list" => $this->getItemOrders($order->getItems(), $order->getId()),
+			"list" => $items,
 			"itemDao" => $this->itemDao
 		));
 		
@@ -158,6 +164,10 @@ class InvoiceListComponent extends HTMLList{
 				"visible" => (isset($this->config[$t]) && file_exists($fDir . $this->config[$t]))
 			));
 			
+			$this->addModel("no_" . $t, array(
+				"visible" => (!isset($this->config[$t]) || !file_exists($fDir . $this->config[$t]))
+			));
+			
 			$this->addImage($t, array(
 				"src" => (isset($this->config[$t])) ? $fUrl . $this->config[$t] : null
 			));
@@ -188,12 +198,24 @@ class InvoiceListComponent extends HTMLList{
 			"text" => (isset($company["address2"])) ? $company["address2"] : ""
 		));
 
+		$this->addModel("is_campany_telephone", array(
+			"visible" => (isset($company["telephone"]) && strlen($company["telephone"]))
+		));
+
 		$this->addLabel("company_telephone", array(
 			"text" => (isset($company["telephone"])) ? $company["telephone"] : ""
 		));
 
+		$this->addModel("is_campany_fax", array(
+			"visible" => (isset($company["fax"]) && strlen($company["fax"]))
+		));
+
 		$this->addLabel("company_fax", array(
 			"text" => (isset($company["fax"])) ? $company["fax"] : ""
+		));
+		
+		$this->addModel("is_campany_mailaddress", array(
+			"visible" => (isset($company["mailaddress"]) && strlen($company["mailaddress"]))
 		));
 
 		$this->addLabel("company_mailaddress", array(
