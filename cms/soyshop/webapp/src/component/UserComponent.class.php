@@ -68,9 +68,26 @@ class UserComponent {
 			"value" => $mailAddress,
 		));
 		
+		$confirmMailAddress = null;
+		if(is_object($app)){
+			$confirmMailAddress = $app->getAttribute("mail_address_confirm");
+			if(is_null($confirmMailAddress)){
+				switch(get_class($app)){
+					case "CartLogic":
+						$confirmMailAddress = $app->getCustomerInformation()->getMailAddress();
+						break;
+					case "MyPageLogic":
+						$confirmMailAddress = $app->getUser()->getMailAddress();
+						break;
+					default:
+						//何もしない
+				}
+			}
+		}
+		
 		$page->addInput("mail_address_confirm", array(
 			"name" => "Customer[mailAddressConfirm]",
-			"value" => (!is_null($app)) ? $app->getAttribute("mail_address_confirm") : null
+			"value" => $confirmMailAddress
 		));
 				
 		//パスワード
