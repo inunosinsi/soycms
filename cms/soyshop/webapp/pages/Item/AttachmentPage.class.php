@@ -53,7 +53,7 @@ class AttachmentPage extends DetailPage{
 	function __construct($args){
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 
-		DetailPage::DetailPage($args);
+		DetailPage::__construct($args);
 
 		$this->addLink("item_detail_link", array(
 			"link" => SOY2PageController::createLink("Item.Detail.". $this->id)
