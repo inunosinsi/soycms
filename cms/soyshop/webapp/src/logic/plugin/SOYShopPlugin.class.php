@@ -4,7 +4,7 @@ include(dirname(__FILE__) ."/SOY2Plugin.php");
 class SOYShopPlugin extends SOY2Plugin{
 
 	private static $active = array();
-
+	
 	public static function load($extensionId = null,$module = null){
 		static $loaded = array();
 		
@@ -36,9 +36,8 @@ class SOYShopPlugin extends SOY2Plugin{
 
 	public static function active($id){
 		SOYShopPlugin::$active[] = $id;
-
 	}
-
+	
 	public static function prepare(){
 		$actives = array_unique(SOYShopPlugin::$active);
 
