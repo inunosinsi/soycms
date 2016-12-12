@@ -18,7 +18,7 @@ class PublisherPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.3"
+			"version"=>"0.5"
 		));
 //		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 //			$this,"config_page"	
@@ -47,6 +47,9 @@ class PublisherPlugin{
 		
 		//GETの値がある場合は対象外
 		if(isset($_SERVER["REDIRECT_QUERY_STRING"])) return $html;
+		
+		//URIにsearchとresultがある場所は検索結果ページと見なして、静的化の対象外とする
+		if(strpos($arg["page"]->getUri(), "search") !== false || strpos($arg["page"]->getUri(), "result") !== false) return $html;
 		
 		//ブログページの場合はトップページのみ静的化の対象とする
 		if($arg["page"]->getPageType() == Page::PAGE_TYPE_BLOG){
@@ -103,6 +106,8 @@ class PublisherPlugin{
 	}
 	
 	function onPageUpdate($arg){
+		if(!isset($arg["new_page"])) return;
+		
 		$page = $arg["new_page"];
 		
 		$uri = $page->getUri();
