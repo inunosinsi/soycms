@@ -36,7 +36,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.9"
+			"version"=>"0.9.1"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){

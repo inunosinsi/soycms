@@ -75,6 +75,10 @@ class SOYCMSThumbnailConfigPage extends WebPage{
 		$this->addLabel("site_id", array(
 			"text" => UserInfoUtil::getSite()->getSiteId()
 		));
+		
+		$this->addLabel("upload_file_path", array(
+			"text" => SOY2PageController::createLink("Page.Editor.FileUpload")
+		));
 	}
 	
 	private function getLabels(){
