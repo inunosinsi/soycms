@@ -15,7 +15,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	function prepare(){
 		if(!$this->dao){
 			$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");		
-			$this->list = SOYShop_OrderAttributeConfig::load();
+			$this->list = SOYShop_OrderAttributeConfig::load(true);
 		}
 	}
 	
@@ -32,6 +32,8 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	
 	function doPost($param){
 		
+		$cart = $this->getCart();
+		
 		$this->prepare();
 		
 		//ファイル用
@@ -45,10 +47,15 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					$value["value"] = (isset($param[$obj->getFieldId()]) && is_array($param[$obj->getFieldId()])) ? implode(",", $param[$obj->getFieldId()]) : "";
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
+									
 					$tmp = $_FILES["customfield_module"]["tmp_name"][$obj->getFieldId()];
 					
 					//とりあえずキャッシュにアップロードしておく
 					if(isset($tmp) && strlen($tmp)){
+						
+						//拡張子を調べる。許可していない拡張子の場合は処理を止める
+						if(!self::checkUploadFileExtension($obj)) continue;
+						
 						$filename = $_FILES["customfield_module"]["name"][$obj->getFieldId()];
 						$new[$obj->getFieldId()] = date("YmdHis") . "." . substr($filename, strrpos($filename, ".") + 1);
 						
@@ -80,8 +87,6 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			$array[$obj->getFieldId()] = $value;
 		}
 		$param = $array;
-		
-		$cart = $this->getCart();
 		
 		foreach($param as $key => $obj){
 			$module = new SOYShop_ItemModule();
@@ -148,7 +153,6 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					$obj->setValue2($value["other"]);
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
-					
 					//ファイルを各顧客用のフォルダに移動
 					$tmp = $cart->getAttribute("order_customfield_" . $config->getFieldId() . ".tmp");
 					$tmpFile = self::getCacheDir() .$tmp;
@@ -215,6 +219,11 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		$res = false;
 		foreach($param as $key => $obj){
 			$error = "";
+			
+			//ファイルの場合は許可していない拡張子の時でも調べる
+			if($obj["type"] == SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE && !self::checkUploadFileExtension($this->list[$key])){
+				$error = "許可されていない拡張子です。";
+			}
 			
 			//必須項目の時のみ調べる
 			if($obj["isRequired"] == SOYShop_OrderAttribute::IS_REQUIRED){
@@ -475,6 +484,21 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 		
 		return $array;
+	}
+	
+	private function checkUploadFileExtension(SOYShop_OrderAttributeConfig $obj){
+		
+		if(!strlen($obj->getFileOption())) return true;
+
+
+		$fileName = $_FILES["customfield_module"]["name"][$obj->getFieldId()];
+		$extension = trim(mb_strtolower(substr($fileName, strrpos($fileName, ".") + 1)));
+		$res = false;
+		foreach(explode("\n", $obj->getFileOption()) as $allow){
+			if($extension === trim($allow)) $res = true;
+		}
+		
+		return $res;
 	}
 	
 	//最新の注文IDを取得する

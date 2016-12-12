@@ -139,7 +139,7 @@ class SOYShop_OrderAttributeConfig{
 		foreach($array as $config){
 			$map[$config->getFieldId()] = $config;
 		}
-
+		
 		return $map;
 	}
 
@@ -267,6 +267,16 @@ class SOYShop_OrderAttributeConfig{
 	}
 	function hasRadioOption(){
 		return (boolean)($this->getType() == SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO);
+	}
+	
+	function getFileOption() {
+		return (isset($this->config["fileOption"])) ? $this->config["fileOption"] : "";
+	}
+	function setFileOption($fileOption) {
+		$this->config["fileOption"] = $fileOption;
+	}
+	function hasFileOption(){
+		return (boolean)($this->getType() == SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE);
 	}
 
 	function getFormName(){

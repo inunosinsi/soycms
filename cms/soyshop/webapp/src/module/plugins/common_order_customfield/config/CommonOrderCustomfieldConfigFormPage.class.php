@@ -268,6 +268,15 @@ class FieldList extends HTMLList{
 			"value" => $entity->getAttributeOtherText()
 		));
 		
+		$this->addModel("with_file_options", array(
+			"visible" => $entity->hasFileOption()
+		));
+		
+		$this->addTextArea("file_option", array(
+			"name" => "config[fileOption]",
+			"value" => $entity->getFileOption()
+		));
+		
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
 			"onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'
