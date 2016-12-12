@@ -113,6 +113,7 @@ class PrintLabelListComponent extends HTMLList{
 	}
 	
 	private function getDeliveryType($moduleList){
+		if(defined("USE_LABEL_TYPE")) return USE_LABEL_TYPE;
 		switch(SHIPPING_LABEL_COMPANY){
 			case ShippingLabelUtil::COMPANY_KURONEKO:
 			default:

@@ -6,7 +6,7 @@ class PrintShippingLabelFunction extends SOYShopOrderFunction{
 	 * title text
 	 */
 	function getTitle(){
-		return "配送伝票生成";
+		return "配送伝票生成(コネクト)";
 		
 	}
 	
@@ -24,6 +24,9 @@ class PrintShippingLabelFunction extends SOYShopOrderFunction{
 		
 		//何の伝票を印刷するか？
 		define("SHIPPING_LABEL_COMPANY", $tmp);
+		
+		//強制的にコネクトにする
+		define("USE_LABEL_TYPE", ShippingLabelUtil::TYPE_CONNECT);
 		
 		SOY2::import("module.plugins.print_shipping_label.page.PrintPage");
 		$page = SOY2HTMLFactory::createInstance("PrintPage", array(
