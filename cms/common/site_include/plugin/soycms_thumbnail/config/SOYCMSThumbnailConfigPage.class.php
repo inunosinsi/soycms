@@ -79,6 +79,10 @@ class SOYCMSThumbnailConfigPage extends WebPage{
 		$this->addLabel("upload_file_path", array(
 			"text" => SOY2PageController::createLink("Page.Editor.FileUpload")
 		));
+		
+		$this->addLabel("im_resize_w", array(
+			"text" => $this->pluginObj->getResizeW()
+		));
 	}
 	
 	private function getLabels(){

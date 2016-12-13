@@ -64,6 +64,14 @@
 &lt;/ul&gt;
 </pre>
 
+<h4>特殊な使用法</h4>
+<p>※サムネイルプラグインで画像を圧縮した後、im.phpで更に圧縮したファイルを作成して表示を高速化する</p>
+<pre style="border: 1px solid gray; padding: 1ex 1.5ex;">
+&lt;!-- b_block:id="entry_list" --&gt;
+&lt;img src="/<!-- soy:id="site_id*" /-->/im.php?src=<strong>&lt;!-- cms:id="thumbnail_path_text" /--&gt;</strong>&width=<strong soy:id="im_resize_w"></strong>"&gt;
+&lt;!-- /b_block:id="entry_list" --&gt;
+</pre>
+
 <script>
 function open_plugin_image_filemanager($form){
 	common_to_layer('<!-- soy:id="upload_file_path" /-->?' + $form.selector.replace("#", ""));

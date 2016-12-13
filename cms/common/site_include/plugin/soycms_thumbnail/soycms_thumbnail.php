@@ -36,7 +36,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.9.1"
+			"version"=>"0.9.2"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -94,6 +94,11 @@ class SOYCMSThumbnailPlugin{
 			"src" => $thumbnailPath,
 			"alt" => $this->getAlt($entryId)
 		));
+		
+		$htmlObj->addLabel("thumbnail_path_text", array(
+			"soy2prefix" => "cms",
+			"text" =>$thumbnailPath
+		));
 	}
 	
 	/**
@@ -140,7 +145,7 @@ class SOYCMSThumbnailPlugin{
 		}
 		
 		if($resizeFlag && $imageFilePath){
-			$dir = str_replace("/" . UserInfoUtil::getSite()->getSiteId() . "/", "", UserInfoUtil::getSiteDirectory());
+			$dir = substr(UserInfoUtil::getSiteDirectory(), 0, strrpos(UserInfoUtil::getSiteDirectory(), "/" . UserInfoUtil::getSite()->getSiteId()));
 			$path = $dir . $imageFilePath;
 			
 			//念の為、指定のパスに画像があるか調べる
