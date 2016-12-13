@@ -25,16 +25,45 @@ class TrimmingPage extends CMSWebPageBase {
 			$jpeg_quality = 90;
 	
 			$src = $uploadFileDir . $imageFileName;
+			$filetype = $this->_get_extension($src);
 			
 			$targ_w = $_POST['w'];
 			$targ_h = $_POST['h'];
 			
-			$img_r = imagecreatefromjpeg($src);
+			$img_r = imagecreatefromstring(file_get_contents($src));
 			$dst_r = ImageCreateTrueColor( $targ_w, $targ_h );
+			
+			//PNGの場合で画像に透過が入っている場合、透過の箇所を黒にしない
+			if($filetype == "png"){
+				imagealphablending($dst_r, false);
+				imagesavealpha($dst_r, true);
+			}
 	
 			imagecopyresampled($dst_r, $img_r, 0, 0, $_POST['x'], $_POST['y'], $targ_w, $targ_h, $_POST['w'], $_POST['h']);
 			
-			imagejpeg($dst_r, $uploadThumbDir . "/" . $imageFileName, $jpeg_quality);
+			/* 保存 */
+			$savepath = $uploadThumbDir . "/" . $imageFileName;
+			$savetype = $this->_get_extension($savepath);
+			//保存先のファイル名に拡張子がなければ元と同じ種類にする
+			if(strlen($savetype)<1) $savetype = $filetype;
+			
+			switch($savetype){
+				case "jpg":
+				case "jpeg":
+					$res = imagejpeg($dst_r, $savepath, $jpeg_quality);
+					//ロスレス圧縮
+					if($res){
+						exec("jpegoptim -V", $out);
+						if(isset($out) && count($out)){
+							exec("jpegoptim --strip-all " . $savepath);
+						}
+					}
+				default:
+					$to = "image" . $savetype;
+					if(function_exists($to)){
+						$to($dst_r,$savepath);
+					}
+			}
 			
 			imagedestroy($dst_r);
 			
@@ -43,6 +72,18 @@ class TrimmingPage extends CMSWebPageBase {
 			$responseObject->result = true;
 			$responseObject->imagePath = $uploadImagePath . $imageFileName;
 			$this->responseObject = $responseObject;
+		}
+	}
+	
+	/**
+	 * ファイルの拡張子を取得する
+	 */
+	function _get_extension($file){
+		if(version_compare(PHP_VERSION,"5.2.1")>=0){
+			return strtolower(pathinfo($file, PATHINFO_EXTENSION));
+		}else{
+			$info = pathinfo($file);
+			return strtolower($info['extension']);
 		}
 	}
 	
