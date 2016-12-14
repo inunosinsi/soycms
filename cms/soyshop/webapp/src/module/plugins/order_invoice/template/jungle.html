@@ -121,7 +121,7 @@ function onload(){
 		<!-- 注文番号や日付を入れる -->
 		<table class="date_detail">
 			<tr>
-				<td>納品書</td><td>&nbsp;</td><td>&nbsp;</td>
+				<td soy:id="document_label">納品書</td><td>&nbsp;</td><td>&nbsp;</td>
 			</tr>
 			<tr>
 				<td>ご注文日&nbsp;<!-- soy:id="order_date" -->2010-01-15<!-- /soy:id="order_date" --></td>
@@ -155,9 +155,9 @@ function onload(){
 					<!-- soy:id="item_name" -->日本お豆図鑑<!-- /soy:id="item_name" --><br />
 					<!-- soy:id="item_option" /-->
 				</td>
-				<td class="price"><!-- soy:id="item_price" -->600<!-- /soy:id="item_price" --> 円</td>
-				<td class="price"><!-- soy:id="item_count" -->1<!-- /soy:id="item_count" --></td>
-				<td class="price"><!-- soy:id="item_total_price" -->600<!-- /soy:id="item_total_price" --> 円</td>
+				<td class="price"><!-- soy:id="is_item_price" --><!-- soy:id="item_price" -->600<!-- /soy:id="item_price" --> 円<!-- /soy:id="is_item_price" --></td>
+				<td class="price"><!-- soy:id="is_item_price*" --><!-- soy:id="item_count" -->1<!-- /soy:id="item_count" --><!-- /soy:id="is_item_price*" --></td>
+				<td class="price"><!-- soy:id="is_item_price*" --><!-- soy:id="item_total_price" -->600<!-- /soy:id="item_total_price" --> 円<!-- /soy:id="is_item_price*" --></td>
 			</tr>
 			<!-- /soy:id="item_detail" -->
 			<!-- total_price_space -->

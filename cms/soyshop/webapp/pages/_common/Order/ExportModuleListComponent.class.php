@@ -21,7 +21,7 @@ class ExportModuleListComponent extends HTMLList{
 		));
 		
 		$this->addModel("display_button", array(
-			"visible" => (strlen($entity["title"]))
+			"visible" => (strlen($entity["title"]) > 0)
 		));
 	}
 

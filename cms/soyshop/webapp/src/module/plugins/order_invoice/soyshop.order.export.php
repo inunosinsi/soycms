@@ -1,13 +1,13 @@
 <?php
-/*
- */
+
+
 class SOYShopMainInvoiceExport extends SOYShopOrderExportBase{
 
 	/**
 	 * 検索結果一覧に表示するメニューの表示文言
 	 */
 	function getMenuTitle(){
-		return "納品書一括作成";
+		return "納品書";
 	}
 
 	/**
@@ -21,20 +21,23 @@ class SOYShopMainInvoiceExport extends SOYShopOrderExportBase{
 	 * export エクスポート実行
 	 */
 	function export($orders){
+		if(!defined("ORDER_DOCUMENT_LABEL")) define("ORDER_DOCUMENT_LABEL", "納品書");
+		
 		SOY2::import("module.plugins.order_invoice.common.OrderInvoiceCommon");
-		$template = OrderInvoiceCommon::getTemplateName();
-		$html = file_get_contents(dirname(__FILE__) . "/template/" . $template . ".html");
+		
+		if(!defined("ORDER_TEMPLATE")) define("ORDER_TEMPLATE", OrderInvoiceCommon::getTemplateName());
+		$html = file_get_contents(dirname(__FILE__) . "/template/" . ORDER_TEMPLATE . ".html");
 		
 		SOY2DAOFactory::create("order.SOYShop_ItemModule");
 		SOY2DAOFactory::create("config.SOYShop_ShopConfig");
 		
-		include_once(dirname(__FILE__) . "/page/ContinuousPage.class.php");
+		SOY2::import("module.plugins.order_invoice.page.ContinuousPage");
 		$page = SOY2HTMLFactory::createInstance("ContinuousPage", array(
 			"arguments" => array("main_print", $html),
 			"orders" => $orders
 		));		
 		
-		$page->setTitle("納品書");
+		$page->setTitle(ORDER_DOCUMENT_LABEL);
 		$page->build_print();
 		
 		ob_start();

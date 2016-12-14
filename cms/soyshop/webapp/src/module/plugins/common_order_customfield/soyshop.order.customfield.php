@@ -47,7 +47,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					$value["value"] = (isset($param[$obj->getFieldId()]) && is_array($param[$obj->getFieldId()])) ? implode(",", $param[$obj->getFieldId()]) : "";
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
-									
+				
 					$tmp = $_FILES["customfield_module"]["tmp_name"][$obj->getFieldId()];
 					
 					//とりあえずキャッシュにアップロードしておく

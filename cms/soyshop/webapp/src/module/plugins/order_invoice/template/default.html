@@ -116,7 +116,7 @@ function onload(){
 		<!-- 住所を入れるテーブル -->
 		<table class="information">
 			<tr>
-				<th colspan="2">お買い上げ明細書(納品書)</th>
+				<th colspan="2">お買い上げ明細書(<!-- soy:id="document_label" -->納品書<!-- /soy:id="document_label" -->)</th>
 			</tr>
 			
 			<tr>
@@ -213,8 +213,8 @@ function onload(){
 					<!-- soy:id="item_option" /-->
 				</td> 
 				<td><!-- soy:id="item_count" -->2<!-- /soy:id="item_count" --></td>
-				<td><!-- soy:id="item_price" -->5000<!-- /soy:id="item_price" --> 円</td>
-				<td><!-- soy:id="item_total_price" -->10000<!-- /soy:id="item_total_price" --> 円</td>
+				<td><!-- soy:id="is_item_price" --><!-- soy:id="item_price" -->5000<!-- /soy:id="item_price" --> 円<!-- /soy:id="is_item_price" --></td>
+				<td><!-- soy:id="is_item_price*" --><!-- soy:id="item_total_price" -->10000<!-- /soy:id="item_total_price" --> 円<!-- /soy:id="is_item_price*" --></td>
 			</tr>
 			<!-- /soy:id="item_detail" -->
 

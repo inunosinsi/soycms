@@ -16,6 +16,10 @@ class InvoiceListComponent extends HTMLList{
 		$this->createAdd("module_list", "InvoiceModuleListComponent", array(
 			"list" => $order->getModuleList()
 		));
+		
+		$this->addLabel("document_label", array(
+			"text" => (defined("ORDER_DOCUMENT_LABEL")) ? ORDER_DOCUMENT_LABEL : "納品書"
+		));
 
 		/*** お届け先 ***/
 		$this->buildSendArea($order);
@@ -25,7 +29,7 @@ class InvoiceListComponent extends HTMLList{
 		
 		/*** 注文商品 ***/
 		$items = $this->getItemOrders($order->getItems(), $order->getId());
-		if(count($items) < 10){
+		if(ORDER_TEMPLATE !== "jungle" && count($items) < 10){
 			for($i = count($items) + 1; $i <= 10; $i++){
 				$items[] = new SOYShop_ItemOrder();
 			}

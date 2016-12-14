@@ -36,7 +36,7 @@ class InvoiceItemListComponent extends HTMLList {
 		));
 
 		$this->addModel("is_item_price", array(
-			"visible" => ((int)$itemOrder->getItemPrice())
+			"visible" => (!is_null($itemOrder->getItemPrice()) && (int)$itemOrder->getItemPrice() > 0)
 		));
 		$this->addLabel("item_price", array(
 			"text" => number_format($itemOrder->getItemPrice())

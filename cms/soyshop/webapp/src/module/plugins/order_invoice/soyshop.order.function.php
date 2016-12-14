@@ -13,20 +13,23 @@ class SOYShopMainInvoiceFunction extends SOYShopOrderFunction{
 	 * @return html
 	 */
 	function getPage(){
+		if(!defined("ORDER_DOCUMENT_LABEL")) define("ORDER_DOCUMENT_LABEL", "納品書");
+		
 		SOY2::import("module.plugins.order_invoice.common.OrderInvoiceCommon");
-		$template = OrderInvoiceCommon::getTemplateName();
-		$html = file_get_contents(dirname(__FILE__) . "/template/" . $template . ".html");
+		
+		if(!defined("ORDER_TEMPLATE")) define("ORDER_TEMPLATE", OrderInvoiceCommon::getTemplateName());
+		$html = file_get_contents(dirname(__FILE__) . "/template/" . ORDER_TEMPLATE . ".html");
 		
 		SOY2DAOFactory::create("order.SOYShop_ItemModule");
 		SOY2DAOFactory::create("config.SOYShop_ShopConfig");
 		
-		include_once(dirname(__FILE__) . "/page/InvoicePage.class.php");	
+		SOY2::import("module.plugins.order_invoice.page.InvoicePage");
 		$page = SOY2HTMLFactory::createInstance("InvoicePage", array(
 			"arguments" => array("main_invoice", $html),
 			"orderId" => $this->getOrderId()
 		));
 		
-		$page->setTitle("納品書");
+		$page->setTitle(ORDER_DOCUMENT_LABEL);
 		$page->build_invoice();
 		
 		ob_start();
