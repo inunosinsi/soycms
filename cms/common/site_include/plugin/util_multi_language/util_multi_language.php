@@ -22,7 +22,7 @@ class UtilMultiLanguagePlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.7.1"
+			"version"=>"0.7.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 			$this,"config_page"
@@ -169,8 +169,6 @@ class UtilMultiLanguagePlugin{
 
         //念の為
         if(!isset($languageConfig)) $languageConfig = "jp";
-
-        var_dump($languageConfig);
 
         return $languageConfig;
     }
