@@ -21,7 +21,7 @@ class CustomFieldPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.7.1"
+			"version"=>"1.7.2"
 		));
 
 		CMSPlugin::addPluginConfigPage(CustomFieldPlugin::PLUGIN_ID, array(
@@ -70,6 +70,22 @@ class CustomFieldPlugin{
 				//$attr["html"]に改めて値を入れ直す時に使用するフラグ
 				$resetFlag = true;
 
+				//値が設定されていないなら初期値を使う
+				if(is_null($field->getValue())){
+					$field->setValue($master->getDefaultValue());
+				}
+
+				//空の時の動作
+				if(strlen($field->getValue()) == 0 ){
+					if($master->getHideIfEmpty()){
+						//空の時は表示しない
+						$attr["visible"] = false;
+					}else{
+						//空の時の値
+						$field->setValue($master->getEmptyValue());
+					}
+				}
+				
 				//タイプがリンクの場合はここで上書き
 				if($master->getType() == "link"){
 					$class = "HTMLLink";
@@ -98,22 +114,6 @@ class CustomFieldPlugin{
 						"soy2prefix" => "cms",
 						"html" => nl2br($field->getValue())
 					));
-				}
-
-				//値が設定されていないなら初期値を使う
-				if(is_null($field->getValue())){
-					$field->setValue($master->getDefaultValue());
-				}
-
-				//空の時の動作
-				if(strlen($field->getValue()) == 0 ){
-					if($master->getHideIfEmpty()){
-						//空の時は表示しない
-						$attr["visible"] = false;
-					}else{
-						//空の時の値
-						$field->setValue($master->getEmptyValue());
-					}
 				}
 
 				//上で空の時の値が入るかも知れず、下でunsetされる可能性があるのでここで設定し直す。
