@@ -24,9 +24,6 @@ class CMSPageController extends SOY2PageController{
 		//パスからURIと引数に変換
 		$uri  = $pathBuilder->getPath();
 		$args = $pathBuilder->getArguments();
-				
-		//トップページがブログページ対策　ルート設定していてブログページの場合、存在していないURLでも404NotFoundにならない問題がある
-		if(!strlen($uri) && count($args) === 1 && isset($args[0]) && strpos($args[0], "page-") !== 0 && strpos($args[0], "feed") !== 0) $uri = $args[0];
 
 		//保存
 		$this->args = $args;
@@ -44,13 +41,25 @@ class CMSPageController extends SOY2PageController{
 		header("Content-Type: text/html; charset=" . $this->siteConfig->getCharsetText());
 		//多言語対応のために保留
 		//header("Content-Language: ja");
-		
+
 		try{
 			try{
 				$page = $dao->getActivePageByUri($uri);
-				if($page->isActive() < 0){
-					throw new Exception("out of date.");
+			}catch(Exception $e){
+				//ブログページのURLが空で各ページのどれかのURIも空の時対策
+				$uri = "";
+				try{
+					$page = $dao->getActivePageByUri($uri);
+				}catch(Exception $e){
+					$page = new Page();
 				}
+			}
+			
+			if($page->isActive() < 0){
+				throw new Exception("out of date.");
+			}
+			
+			try{
 
 				//閲覧制限チェック
 				if($this->siteConfig && $this->siteConfig->isShowOnlyAdministrator()){
@@ -81,7 +90,7 @@ class CMSPageController extends SOY2PageController{
 						));
 						//TODO 存在しないページへのアクセスで例外を投げる
 						break;
-						
+
 					case Page::PAGE_TYPE_MOBILE:
 						$webPage = &SOY2HTMLFactory::createInstance("CMSMobilePage", array(
 							"arguments" => array($page->getId(), $args, $siteConfig),
@@ -115,7 +124,7 @@ class CMSPageController extends SOY2PageController{
 
 				$this->webPage = $webPage;
 				$webPage->main();
-				
+
 				//プラグインonLoadイベントの呼び出し
 				$onLoad = CMSPlugin::getEvent('onPageLoad');
 				foreach($onLoad as $plugin){
@@ -223,7 +232,7 @@ class CMSPageController extends SOY2PageController{
 		
 		//404NotFoundが表示される直前で読み込まれる
 		CMSPlugin::callEventFunc('onSite404NotFound');
-		
+
 		header("HTTP/1.1 404 Not Found");
 		header("Content-Type: text/html; charset=" . $this->siteConfig->getCharsetText());
 		header("Content-Length: " . strlen($html));
@@ -300,7 +309,7 @@ class CMS_PathInfoBuilder extends SOY2_PathInfoPathBuilder{
 	var $path;
 	var $arguments;
 
-	function __construct(){
+	function CMS_PathInfoBuilder(){
 		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
 
 		//先頭の「/」と末尾の「/」は取り除く
