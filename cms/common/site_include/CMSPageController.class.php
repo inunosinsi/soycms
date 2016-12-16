@@ -309,7 +309,7 @@ class CMS_PathInfoBuilder extends SOY2_PathInfoPathBuilder{
 	var $path;
 	var $arguments;
 
-	function CMS_PathInfoBuilder(){
+	function __construct(){
 		$pathInfo = (isset($_SERVER['PATH_INFO'])) ? $_SERVER['PATH_INFO'] : "";
 
 		//先頭の「/」と末尾の「/」は取り除く
