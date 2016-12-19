@@ -156,31 +156,32 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					//ファイルを各顧客用のフォルダに移動
 					$tmp = $cart->getAttribute("order_customfield_" . $config->getFieldId() . ".tmp");
 					$tmpFile = self::getCacheDir() .$tmp;
-					
-					//value1にアップロード時のファイル名、value2にはリネーム後のファイル名
-					$obj->setValue1($value);
-					$obj->setValue2($tmp);
-					
-					$userId = $cart->getCustomerInformation()->getId();
-					$new = self::getDirectoryByUserId($userId)  . $tmp;
-					if(copy($tmpFile, $new)){
-						//ファイルのアップロードに成功したら、仮のアップロードを削除する
-						unlink($tmpFile);
+					if(file_exists($tmpFile) && !is_dir($tmpFile)){
+						//value1にアップロード時のファイル名、value2にはリネーム後のファイル名
+						$obj->setValue1($value);
+						$obj->setValue2($tmp);
 						
-						//ストレージプラグインと併用する
-						SOY2::import("util.SOYShopPluginUtil");
-						if(SOYShopPluginUtil::checkIsActive("store_user_folder")){
-							SOY2::imports("module.plugins.store_user_folder.domain.*");
-							$storeDao = SOY2DAOFactory::create("SOYShop_UserStorageDAO");
-							$storeObj = new SOYShop_UserStorage();
-							$storeObj->setUserId($userId);
-							$storeObj->setFileName($tmp);
-							$storeObj->setToken(md5(time().$userId.$tmp.rand(0,65535)));
-					
-							try{
-								$storeDao->insert($storeObj);
-							}catch(Exception $e){
-								var_dump($e);
+						$userId = $cart->getCustomerInformation()->getId();
+						$new = self::getDirectoryByUserId($userId)  . $tmp;
+						if(copy($tmpFile, $new)){
+							//ファイルのアップロードに成功したら、仮のアップロードを削除する
+							unlink($tmpFile);
+							
+							//ストレージプラグインと併用する
+							SOY2::import("util.SOYShopPluginUtil");
+							if(SOYShopPluginUtil::checkIsActive("store_user_folder")){
+								SOY2::imports("module.plugins.store_user_folder.domain.*");
+								$storeDao = SOY2DAOFactory::create("SOYShop_UserStorageDAO");
+								$storeObj = new SOYShop_UserStorage();
+								$storeObj->setUserId($userId);
+								$storeObj->setFileName($tmp);
+								$storeObj->setToken(md5(time().$userId.$tmp.rand(0,65535)));
+						
+								try{
+									$storeDao->insert($storeObj);
+								}catch(Exception $e){
+									var_dump($e);
+								}
 							}
 						}
 					}
