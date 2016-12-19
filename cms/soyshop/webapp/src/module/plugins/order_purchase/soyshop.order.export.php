@@ -7,7 +7,7 @@ class OrderPurchaseExport extends SOYShopOrderExportBase{
 	 * 検索結果一覧に表示するメニューの表示文言
 	 */
 	function getMenuTitle(){
-		return "発注書";
+		return "発注書一括作成";
 	}
 
 	/**

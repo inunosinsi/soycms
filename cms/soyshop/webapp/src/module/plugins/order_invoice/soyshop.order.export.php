@@ -7,7 +7,7 @@ class SOYShopMainInvoiceExport extends SOYShopOrderExportBase{
 	 * 検索結果一覧に表示するメニューの表示文言
 	 */
 	function getMenuTitle(){
-		return "納品書";
+		return "納品書一括作成";
 	}
 
 	/**
