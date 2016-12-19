@@ -133,6 +133,16 @@ class OrderLogic extends SOY2LogicBase{
      *
      */
     function getTrackingNumber(SOYShop_Order $order){
+    	
+    	SOYShopPlugin::load("soyshop.order.complete");
+		$delegate = SOYShopPlugin::invoke("soyshop.order.complete", array(
+			"mode" => "tracking_number",
+			"order" => $order
+		));
+		
+		if(!is_null($delegate->getTrackingNumber()) && is_string($delegate->getTrackingNumber())){
+			return $delegate->getTrackingNumber();
+		}
 
     	$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 
