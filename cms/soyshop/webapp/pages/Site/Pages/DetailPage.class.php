@@ -42,6 +42,8 @@ class DetailPage extends WebPage{
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 		if(!$this->id) SOY2PageController::jump("Site.Pages");
 
+		MessageManager::addMessagePath("admin");
+
 		WebPage::__construct();
 
 		$this->addForm("update_form");
@@ -150,7 +152,7 @@ class DetailPage extends WebPage{
 
 		$this->addInput("canonical_format", array(
 			"name" => "Page[config][canonical_format]",
-			"value" => $obj->getCanonicalFormat()
+			"value" => (strlen($obj->getCanonicalFormat())) ? $obj->getCanonicalFormat() : "%PERMALINK%"
 		));
 
 		$this->addLabel("canonical_format_description", array(
