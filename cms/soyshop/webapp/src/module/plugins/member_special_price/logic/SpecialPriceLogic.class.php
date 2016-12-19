@@ -18,6 +18,7 @@ class SpecialPriceLogic extends SOY2LogicBase{
 	
 	function getSpecialPrice(SOYShop_Item $item){
 		//ログインしている顧客の情報を取得する
+		SOY2::import("logic.mypage.MyPageLogic");
 		$mypage = MyPageLogic::getMyPage();
 		$userId = $mypage->getUserId();
 		if(is_null($userId)) return null;
