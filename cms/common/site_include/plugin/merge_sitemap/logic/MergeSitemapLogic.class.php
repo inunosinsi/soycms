@@ -14,7 +14,7 @@ class MergeSitemapLogic extends SOY2LogicBase{
 			
 			foreach($urls as $u){
 				$x = @simplexml_load_string(file_get_contents(trim($u)));
-				if(is_null($x)) continue;
+				if(is_null($x) || $x === false) continue;
 				foreach($x->url as $obj){
 					$cols = array();
 					$cols[] = "<url>";
