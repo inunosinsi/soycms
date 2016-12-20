@@ -11,22 +11,22 @@ class CartConfigPage extends WebPage{
 	function doPost(){
 		if(soy2_check_token()){
 
-			$cart_id = $this->checkCartId($_POST["cart_id"]);
-			$cart_url = $this->checkCartUrl($_POST["cart_url"]);
+			$cart_id = self::checkCartId($_POST["cart_id"]);
+			$cart_url = self::checkCartUrl($_POST["cart_url"]);
 			$cart_charset = $_POST["cart_charset"];
 
-			$mobile_cart_id = $this->checkCartId($_POST["mobile_cart_id"]);
-			$mobile_cart_url = $this->checkCartUrl($_POST["mobile_cart_url"]);
+			$mobile_cart_id = self::checkCartId($_POST["mobile_cart_id"]);
+			$mobile_cart_url = self::checkCartUrl($_POST["mobile_cart_url"]);
 			$mobile_cart_charset = $_POST["mobile_cart_charset"];
 
-			$smartphone_cart_id = $this->checkCartId($_POST["smartphone_cart_id"]);
-			$smartphone_cart_url = $this->checkCartUrl($_POST["smartphone_cart_url"]);
+			$smartphone_cart_id = self::checkCartId($_POST["smartphone_cart_id"]);
+			$smartphone_cart_url = self::checkCartUrl($_POST["smartphone_cart_url"]);
 			$smartphone_cart_charset = $_POST["smartphone_cart_charset"];
 
 			SOYShop_DataSets::put("config.cart.cart_title", $_POST["cart_title"]);
 
 			SOYShop_DataSets::put("config.cart.use_ssl", (int)$_POST["cart_ssl"]);
-			SOYShop_DataSets::put("config.cart.ssl_url", $this->checkSSLCartUrl($_POST["cart_ssl_url"]));
+			SOYShop_DataSets::put("config.cart.ssl_url", self::checkSSLCartUrl($_POST["cart_ssl_url"]));
 
 			SOYShop_DataSets::put("config.cart.cart_id", $cart_id);
 			SOYShop_DataSets::put("config.cart.cart_url", $cart_url);
@@ -204,29 +204,33 @@ class CartConfigPage extends WebPage{
 		return $res;
 	}
 
-	function checkCartId($value){
+	private function checkCartId($value){
 		//対応するテンプレートが存在しない場合はここで作成する
-		$this->makeTemplate($value);
+		self::makeTemplate($value);
 		
 		$values = $this->getCartApplications();
 		return (in_array($value, $values)) ? $value : $this->getCartApplicationId();
 	}
 	
-	function makeTemplate($value){
+	private function makeTemplate($value){
 		$dir = SOYSHOP_SITE_DIRECTORY . ".template/cart/";
 		$iniFile = $dir . $value . ".ini";
 		if(!file_exists($iniFile)){
 			file_put_contents($iniFile, "name= \"" . $value . "\"");
-			file_put_contents($dir . $value . ".html", "テンプレートの記述がありません。");
+			if($value == "none"){
+				file_put_contents($dir . $value . ".html", "<!-- shop:module=\"common.cart_application\" /-->");
+			}else{
+				file_put_contents($dir . $value . ".html", "テンプレートの記述がありません。");
+			}
 		}
 	}
 
-	function checkCartUrl($url){
+	private function checkCartUrl($url){
 		if(preg_match('/\/$/', $url)) $url = substr($url, 0, strlen($url) - 1);
 		if(strlen($url) < 1) return $this->getCartUrl();
 		return $url;
 	}
-	function checkSSLCartUrl($url){
+	private function checkSSLCartUrl($url){
 		if(strlen($url) < 1) return $this->getSSLCartUrl();
 		return $url;
 	}
