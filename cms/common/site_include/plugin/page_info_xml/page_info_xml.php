@@ -19,15 +19,20 @@ class PageInfoXmlPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"	
 		));
 		
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
-			CMSPlugin::setEvent("onSiteAccess",$this->getId(),array($this,"onSiteAccess"));
-		}	
+			CMSPlugin::setEvent("onSiteAccess", $this->getId(), array($this,"onSiteAccess"));
+			
+			//ページの作成、公開状況の変更、削除の場合はXMLファイルを再生成する
+			CMSPlugin::setEvent("onPageCreate", $this->getId(), array($this, "onPageCreate"));
+			CMSPlugin::setEvent("onPageUpdate", $this->getId(), array($this, "onPageUpdate"));
+			CMSPlugin::setEvent("onPageRemove", $this->getId(), array($this, "onPageRemove"));
+		}
 	}
 	
 	function config_page(){
@@ -48,22 +53,47 @@ class PageInfoXmlPlugin{
 		if(strpos($_SERVER["REQUEST_URI"], ".xml")) return;
 		
 		$logic = SOY2Logic::createInstance("site_include.plugin." . self::PLUGIN_ID . ".logic.CreatePageInfoLogic");
-		$xmlPath = $logic->getPageInfoXMLFilePath();
-		
-		//xmlファイルを更新するか調べる
-		if(file_exists($xmlPath)){
-			$stat = stat($xmlPath);
-			//更新時間を調べて、本日でない場合はファイルを削除する
-			if($stat["mtime"] < strtotime("-1 day", time())){
-				unlink($xmlPath);				
-			}
-		}
-				
-		//merge.xmlがなければ作成する
-		if(!file_exists($xmlPath)){
+
+		//pageinfo.xmlがなければ作成する
+		if(!file_exists($logic->getPageInfoXMLFilePath())){
 			$logic->createPageInfoXml($this->urls);
 		}
-
+	}
+	
+	function onPageCreate($arg){
+		if($arg["page"]->getIsPublished()){
+			self::regenerateXmlFile();
+		}
+	}
+	
+	function onPageUpdate($arg){
+		$new = $arg["new_page"];
+		
+		try{
+			$old = SOY2DAOFactory::create("cms.PageDAO")->getById($new->getId());
+		}catch(Exception $e){
+			return;
+		}
+		
+		//公開状態に変更があった時
+		if((int)$new->getIsPublished() !== (int)$old->getIsPublished()){
+			self::regenerateXmlFile();
+		}
+	}
+	
+	function onPageRemove($arg){
+		self::regenerateXmlFile();
+	}
+	
+	private function regenerateXmlFile(){
+		$logic = SOY2Logic::createInstance("site_include.plugin." . self::PLUGIN_ID . ".logic.CreatePageInfoLogic");
+		$xmlPath = $logic->getPageInfoXMLFilePath();
+		
+		//ページの削除時にxmlファイルを再生成する
+		if(file_exists($xmlPath)) {
+			unlink($xmlPath);
+			$logic->createPageInfoXml($this->urls);
+		}
 	}
 	
 	function getUrls(){
