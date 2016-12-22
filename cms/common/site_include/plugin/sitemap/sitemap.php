@@ -33,7 +33,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.6.1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"	
@@ -57,7 +57,7 @@ class SitemapPlugin{
 
 		$xml = array();
 		
-		//サイトマップ野時のみ
+		//サイトマップの時のみ
 		if(strpos($obj->page->getUri(), "sitemap.xml") !== false){
 			header("Content-Type: text/xml");
 			
@@ -77,6 +77,21 @@ class SitemapPlugin{
 				}
 				
 				$host = $_SERVER["HTTP_HOST"];
+				
+				//ルート設定があるか調べる
+				$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+				$old = CMSUtil::switchDsn();
+				try{
+					$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);
+				}catch(Exception $e){
+					$site = new Site();
+				}
+				CMSUtil::resetDsn($old);
+				
+				//ルート設定ではない場合は$hostにsiteIdを追加する
+				if(!$site->getIsDomainRoot()) $host .= "/" . $siteId;
+				$site = null;
+				
 				$dao = new SOY2DAO();
 				
 				$xml[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -217,6 +232,7 @@ class SitemapPlugin{
 							//サイトマップに掲載するページ
 							if(isset($this->config_per_page[$page->getId()]) && $this->config_per_page[$page->getId()]){
 								
+								
 								//httpsのページであるか？
 								$http = ($this->ssl_per_page[$page->getId()]) ? "https" : "http";
 								$url = $http . "://" . $host . "/" . $page->getUri();
@@ -230,7 +246,7 @@ class SitemapPlugin{
 				$xml[] = "</urlset>";
 			}
 		}
-		
+				
 		$obj->addLabel("sitemap", array(
 			"soy2prefix" => "cms",
 			"html" => implode("\n", $xml)
