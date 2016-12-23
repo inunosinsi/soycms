@@ -6,11 +6,11 @@ class ShippingLabelUtil {
 	
 	const LABEL_KURONEKO = "クロネコヤマト";
 	
-	const TYPE_CONNECT = "connect";
+	const TYPE_CORECT = "corect";
 	const TYPE_HATSUBARAI = "hatsubarai";
 	const TYPE_TYAKUBARAI = "tyakubarai";
 	
-	const MODE_CONNECT = "コネクトサービス";
+	const MODE_CORECT = "コレクトサービス";
 	const MODE_HATSUBARAI = "発払";
 	const MODE_TYAKUBARAI = "着払";
 	
@@ -27,8 +27,8 @@ class ShippingLabelUtil {
 		
 	public static function getText($type){
 		switch($type){
-			case self::TYPE_CONNECT:
-				return self::MODE_CONNECT;
+			case self::TYPE_CORECT:
+				return self::MODE_CORECT;
 			case self::TYPE_TYAKUBARAI:
 				return self::MODE_TYAKUBARAI;
 			default:

@@ -119,7 +119,7 @@ class PrintLabelListComponent extends HTMLList{
 			default:
 				foreach($moduleList as $moduleId => $module){
 					if(strpos($moduleId, "_daibiki")){
-						return ShippingLabelUtil::TYPE_CONNECT;
+						return ShippingLabelUtil::TYPE_CORECT;
 					}
 				}
 		}
@@ -216,7 +216,7 @@ class PrintLabelListComponent extends HTMLList{
 	private function getOrderPrice($price, $t){
 		if(
 			SHIPPING_LABEL_COMPANY == ShippingLabelUtil::COMPANY_KURONEKO && 
-			$t == ShippingLabelUtil::TYPE_CONNECT
+			$t == ShippingLabelUtil::TYPE_CORECT
 		){
 			return $price;
 		}

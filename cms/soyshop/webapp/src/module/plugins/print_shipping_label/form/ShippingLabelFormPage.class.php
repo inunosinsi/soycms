@@ -26,7 +26,7 @@ class ShippingLabelFormPage extends WebPage{
 		}
 /**		
 		$kuroneko = array(
-			ShippingLabelUtil::TYPE_CONNECT,
+			ShippingLabelUtil::TYPE_CORECT,
 			ShippingLabelUtil::TYPE_HATSUBARAI,
 			ShippingLabelUtil::TYPE_TYAKUBARAI
 		);
@@ -37,7 +37,7 @@ class ShippingLabelFormPage extends WebPage{
 				"name" => "ShippingLabel[kuroneko]",
 				"value" => $label,
 				"label" => ShippingLabelUtil::getText($label),
-				"selected" => ($label == ShippingLabelUtil::TYPE_CONNECT)
+				"selected" => ($label == ShippingLabelUtil::TYPE_CORECT)
 			));
 		}
 **/
