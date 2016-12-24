@@ -168,6 +168,22 @@ class ExImportLogic extends ExImportLogicBase{
 		$this->customFields = $customFields;
 	}
 	
+	function setSpecialPrices($specialPrices) {
+		if(count($specialPrices)){
+			foreach($specialPrices as $values){
+				if(!isset($values["hash"])) continue;
+				foreach(array("", "_sale") as $t){
+					$fieldId = "np_" . $values["hash"] . $t;
+					$obj = new SOYShop_ItemAttributeConfig();
+					$obj->setFieldId($fieldId);
+					$label = (!strlen($t)) ? $values["label"] . "価格" : $values["label"] . "価格(セール価格)";
+					$obj->setLabel($label);
+					$this->customFields[$fieldId] = $obj;
+				}
+			}
+		}
+	}
+	
 	function getCustomSearchFields() {
 		return $this->customSearchFields;
 	}

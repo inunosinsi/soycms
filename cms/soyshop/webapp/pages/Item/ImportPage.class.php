@@ -22,6 +22,11 @@ class ImportPage extends WebPage{
 			"visible" => (isset($_GET["updated"]))
 		));
 
+		//特別価格プラグイン周りの項目を表示する
+		$this->createAdd("special_price_list","_common.Item.SpecialPriceExportListComponent", array(
+			"list" => $this->getSpecialPriceList()
+		));
+
 		$this->createAdd("customfield_list", "_common.Item.CustomFieldImExportListComponent", array(
 			"list" => $this->getCustomFieldList()
 		));
@@ -71,6 +76,7 @@ class ImportPage extends WebPage{
 		$logic->setCharset(@$format["charset"]);
 		$logic->setItems($item);
 		$logic->setCustomFields($this->getCustomFieldList(true));
+		$logic->setSpecialPrices($this->getSpecialPriceList());
 		$logic->setCustomSearchFields($this->getCustomSearchFieldList());
 		$logic->setItemOptions($this->getItemOptionList());
 
@@ -276,6 +282,15 @@ class ImportPage extends WebPage{
 		}catch(Exception $e){
 
 		}
+	}
+	
+	function getSpecialPriceList(){
+		SOY2::import("util.SOYShopPluginUtil");
+		if(!SOYShopPluginUtil::checkIsActive("member_special_price")) return array();
+		
+		SOY2::import("module.plugins.member_special_price.util.MemberSpecialPriceUtil");
+		return MemberSpecialPriceUtil::getConfig();
+		
 	}
 
 	function getCustomFieldList($flag = false){

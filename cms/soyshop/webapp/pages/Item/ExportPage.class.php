@@ -11,6 +11,11 @@ class ExportPage extends WebPage{
 	function buildForm(){
 		$this->addForm("export_form");
 
+		//特別価格プラグイン周りの項目を表示する
+		$this->createAdd("special_price_list","_common.Item.SpecialPriceExportListComponent", array(
+			"list" => $this->getSpecialPriceList()
+		));
+
 		//カスタムフィールドリストを表示する
 		$this->createAdd("customfield_list","_common.Item.CustomFieldImExportListComponent", array(
 			"list" => $this->getCustomFieldList()
@@ -72,6 +77,15 @@ class ExportPage extends WebPage{
 			"openPeriodEnd" => "公開終了日",
 		);
 	}
+	
+	function getSpecialPriceList(){
+		SOY2::import("util.SOYShopPluginUtil");
+		if(!SOYShopPluginUtil::checkIsActive("member_special_price")) return array();
+		
+		SOY2::import("module.plugins.member_special_price.util.MemberSpecialPriceUtil");
+		return MemberSpecialPriceUtil::getConfig();
+		
+	}
 
 	function getCustomFieldList($flag = false){
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
@@ -117,6 +131,7 @@ class ExportPage extends WebPage{
 		$logic->setItems($item);
 		$logic->setLabels($this->getLabels());
 		$logic->setCustomFields($this->getCustomFieldList(true));
+		$logic->setSpecialPrices($this->getSpecialPriceList());
 		$logic->setCustomSearchFields($this->getCustomSearchFieldList());
 		$logic->setItemOptions($this->getItemOptionList());
 
