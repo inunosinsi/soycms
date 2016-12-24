@@ -96,7 +96,10 @@ class ImportPage extends WebPage{
 
 			//SOYShop_Userに変換
 			$user = $this->import($obj);
-
+			
+			//新規登録の場合は必ず本登録にしておく
+			if(is_null($user->getUserType())) $user->setUserType(SOYShop_User::USERTYPE_REGISTER);
+			
 			if($deleted){
 				//ユーザーデータ、ユーザーカスタムフィールドの削除
 				$this->delete($user, $attributes);
