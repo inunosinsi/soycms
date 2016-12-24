@@ -67,7 +67,7 @@ class PublisherPlugin{
 		//トップページである
 		if(!strlen($arg["page"]->getUri())){
 			//ルート直下
-			if(file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.php") && !file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.html")){
+			if(self::checkIsDomainRoot(trim($arg["webPage"]->siteRoot, "/")) && file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.php") && !file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.html")){
 				file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/index.html", $html);
 			}else{
 				if(!file_exists(_SITE_ROOT_ . "/index.html")){
@@ -103,6 +103,22 @@ class PublisherPlugin{
 		}
 		
 		return $html;
+	}
+	
+	private function checkIsDomainRoot($siteId){
+		//サイトIDがない場合はルート設定
+		if(!strlen($siteId)) return true;
+		
+		$old = CMSUtil::switchDsn();
+		$dao = new SOY2DAO();
+		try{
+			$res = $dao->executeQuery("SELECT isDomainRoot FROM Site WHERE site_id = :siteId", array(":siteId" => $siteId));
+		}catch(Exception $e){
+			return false;
+		}
+		CMSUtil::resetDsn($old);
+		
+		return (isset($res[0]["isDomainRoot"]) && (int)$res[0]["isDomainRoot"] === 1);
 	}
 	
 	function onPageUpdate($arg){
