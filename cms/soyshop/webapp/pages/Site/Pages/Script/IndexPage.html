@@ -56,7 +56,7 @@ if(!$mypage->getIsLoggedin()){
 			<caption>記述例:管理画面にログインしているアカウントを調べ、アカウントごとにページを表示するか決める</caption>
 			<tr>
 				<td>
-					<pre>//ログインしているアカウントのログインIDを取得する
+					<pre>//管理画面にログインしているアカウントのログインIDを取得する
 $session = SOY2ActionSession::getUserSession();
 $loginId = $session->getAttribute("loginid");
 
@@ -87,6 +87,25 @@ if(!in_array($ipAddress, $allows)){
   header("Location:/");
   exit;
 }</pre>
+				</td>
+			</tr>
+		</table>
+		
+		<table class="form_list">
+			<caption>記述例:顧客ごとに登録されている顧客属性の値でアクセス制限を設ける</caption>
+			<tr>
+				<td>
+					<pre>//ログインしている会員のデータを取得する
+$mypage = MyPageLogic::getMyPage();
+$user = $mypage->getUser();
+
+//ログインしている会員の属性1の値が「会員」以外はこのページを表示しない
+if ($user->getAttribute1() !== "会員") {
+  header("Location:/");
+  exit;
+}
+
+//属性2の値を調べたい時は$user->getAttribute2()にしてください。</pre>
 				</td>
 			</tr>
 		</table>
