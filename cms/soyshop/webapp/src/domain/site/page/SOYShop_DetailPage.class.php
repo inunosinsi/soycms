@@ -12,14 +12,18 @@ class SOYShop_DetailPage extends SOYShop_PageBase{
     	$html = array();
 
     	$html[] = "商品名:%ITEM_NAME%";
+    	$html[] = "商品コード:%ITEM_CODE%";
+    	$html[] = "カテゴリ名:%CATEGORY_NAME%";
 
-    	return implode("<br />", $html);
+    	return implode(" ", $html);
     }
     
     function getKeywordFormatDescription(){
     	$html = array();
     	$html[] = "ショップ名:%SHOP_NAME%";
     	$html[] = "商品名:%ITEM_NAME%";
+    	$html[] = "商品コード:%ITEM_CODE%";
+    	$html[] = "カテゴリ名:%CATEGORY_NAME%";
     	return implode("<br />", $html);
     }
     
@@ -27,12 +31,16 @@ class SOYShop_DetailPage extends SOYShop_PageBase{
     	$html = array();
     	$html[] = "ショップ名:%SHOP_NAME%";
     	$html[] = "商品名:%ITEM_NAME%";
+    	$html[] = "商品コード:%ITEM_CODE%";
+    	$html[] = "カテゴリ名:%CATEGORY_NAME%";
     	return implode("<br />", $html);
     }
 
     function convertPageTitle($title){
     	if($this->currentItem){
-    		return str_replace("%ITEM_NAME%", $this->currentItem->getName(), $title);
+    		$title = str_replace("%ITEM_NAME%", $this->currentItem->getName(), $title);
+    		$title = str_replace("%ITEM_CODE%", $this->currentItem->getCode(), $title);
+    		return str_replace("%CATEGORY_NAME%", soyshop_get_category_name($this->currentItem->getCategory()), $title);
     	}
     	return $title;
     }

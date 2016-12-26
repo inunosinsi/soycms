@@ -101,6 +101,8 @@ class SOYShopPageBase extends WebPage{
     		case "detail":
     			$current = $this->getPageObject()->getObject()->getCurrentItem();
     			$string = str_replace("%ITEM_NAME%", $current->getName(), $string);
+    			$string = str_replace("%ITEM_CODE%", $current->getCode(), $string);
+    			$string = str_replace("%CATEGORY_NAME%", soyshop_get_category_name($current->getCategory()), $string);
     			break;
     		case "search":
     			$q = "";

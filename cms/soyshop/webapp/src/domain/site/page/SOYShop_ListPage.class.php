@@ -122,7 +122,7 @@ class SOYShop_ListPage extends SOYShop_PageBase{
 
     	$html[] = "カテゴリー名:%CATEGORY_NAME%";
 
-    	return implode("<br />", $html);
+    	return implode(" ", $html);
     }
 
     function getKeywordFormatDescription(){

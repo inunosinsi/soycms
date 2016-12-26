@@ -46,7 +46,7 @@ class SOYShop_FreePage extends SOYShop_PageBase{
 
     	$html[] = "コンテンツのタイトル:%CONTENTS_TITLE%";
 
-    	return implode("<br />", $html);
+    	return implode(" ", $html);
     }
     
     function getKeywordFormatDescription(){

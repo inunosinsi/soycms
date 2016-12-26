@@ -116,6 +116,19 @@ function soyshop_get_item_detail_link(SOYShop_Item $item){
 }
 
 /**
+ * カテゴリIDからカテゴリ名を取得する
+ */
+function soyshop_get_category_name($categoryId){
+	static $dao;
+	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+	try{
+		return $dao->getById($categoryId)->getName();
+	}catch(Exception $e){
+    	return null;
+	}
+}
+
+/**
  * 金額を表示する
  */
 function soyshop_display_price($price){

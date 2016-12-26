@@ -61,7 +61,7 @@ class SOYShop_SearchPage extends SOYShop_PageBase{
 
     	$html[] = "検索ワード:%SEARCH_WORD%";
 
-    	return implode("<br />", $html);
+    	return implode(" ", $html);
     }
     
     function getKeywordFormatDescription(){
