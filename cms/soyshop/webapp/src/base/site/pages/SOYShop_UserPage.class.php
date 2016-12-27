@@ -117,11 +117,17 @@ class SOYShop_UserPage extends SOYShopPageBase{
     function createPagePath($indexPage = false){
     	$res = array();
     	$args = $this->getArgs();
+    	
+    	//argsの整理。最後が数字の場合は配列から除く
+    	for($i = 0; $i < count($args); $i++){
+    		if(is_numeric($args[$i])) unset($args[$i]);
+    	}
+    	
     	$count = count($args);
 
     	for($i=0;$i<$count;$i++){
 
-    		if(is_numeric($args[$i]))continue;//数字はスキップ
+    		if(is_numeric($args[$i]))continue;//念の為、数字はスキップ
 
     		if($i == ($count-1) && !$indexPage){
     			$res[] = ucfirst($args[$i]);
@@ -129,10 +135,10 @@ class SOYShop_UserPage extends SOYShopPageBase{
     			$res[] = strtolower($args[$i]);
     		}
     	}
-
+    	
     	//IndexPage
     	if($indexPage)$res[] = "Index";
-
+    	
     	return implode(".",$res);
     }
 
