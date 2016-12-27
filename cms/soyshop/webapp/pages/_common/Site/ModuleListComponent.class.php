@@ -40,9 +40,9 @@ class ModuleListComponent extends HTMLList{
 	function getRemoveLink(){
 		if(empty($this->removeLink)){
 			if($this->moduleType === "html"){
-				$this->removeLink = SOY2PageController::createLink("Site.Template.Module.Remove") . "?moduleId=";
-			}else{
 				$this->removeLink = SOY2PageController::createLink("Site.Template.Module.html.Remove") . "?moduleId=";
+			}else{
+				$this->removeLink = SOY2PageController::createLink("Site.Template.Module.Remove") . "?moduleId=";
 			}
 		}
 		
