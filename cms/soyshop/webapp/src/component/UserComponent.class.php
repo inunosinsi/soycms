@@ -59,9 +59,11 @@ class UserComponent {
 		
 		//メールアドレス
 		$mailAddress = $user->getMailAddress();
-		if(is_null($mailAddress) && $this->config->getInsertDummyMailAddress()) {
-			$session = SOY2ActionSession::getUserSession();
-			if(!is_null($session->getAttribute("loginid"))) $mailAddress = soyshop_dummy_mail_address();
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE){
+			if(is_null($mailAddress) && $this->config->getInsertDummyMailAddress()) {
+				$session = SOY2ActionSession::getUserSession();
+				if(!is_null($session->getAttribute("loginid"))) $mailAddress = soyshop_dummy_mail_address();
+			}
 		}
 		$page->addInput("mail_address", array(
 			"name" => "Customer[mailAddress]",
