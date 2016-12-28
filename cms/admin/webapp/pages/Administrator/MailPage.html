@@ -29,7 +29,7 @@
 					<table class="globalpage_input">
 
 						<tr class="no_example">
-							<th>送信方法</th>
+							<th nowrap>送信方法</th>
 							<td>
 								<input soy:id="send_server_type_sendmail" type="radio" name="server_type" />
 								<label for="send_server_type_sendmail">sendmail (PHPのmail関数)</label>
@@ -42,13 +42,13 @@
 							<th rowspan="3">SMTP</th>
 							<td>
 								<label for="send_server_address">サーバ</label>
-								<input soy:id="send_server_address" type="text" name="" value="" size="80" />
+								<input soy:id="send_server_address" type="text" name="" value="" size="50" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label for="send_server_port">ポート</label>
-								<input soy:id="send_server_port" type="text" name="" value="" size="80" />
+								<input soy:id="send_server_port" type="text" name="" value="" size="50" />
 							</td>
 						</tr>
 						<tr class="no_example">
@@ -71,13 +71,13 @@
 						<tr class="no_example">
 							<td>
 								<label>ユーザ名</label>
-								<input soy:id="send_server_user" type="text" value="" size="80" />
+								<input soy:id="send_server_user" type="text" value="" size="50" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label>パスワード</label>
-								<input soy:id="send_server_password" type="password" name="" value="" size="80" />
+								<input soy:id="send_server_password" type="password" name="" value="" size="50" />
 							</td>
 						</tr>
 						<tr class="no_example">
@@ -104,28 +104,28 @@
 						</tr>
 						
 						<tr class="no_example">
-							<th rowspan="5">サーバ設定</th>
+							<th rowspan="5" nowrap>サーバ設定</th>
 							<td>
 								<label>サーバ</label>
-								<input soy:id="receive_server_address" type="text" name="" value="" size="80" />
+								<input soy:id="receive_server_address" type="text" name="" value="" size="50" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label>ポート</label>
-								<input soy:id="receive_server_port" type="text" name="" value="" size="80" />
+								<input soy:id="receive_server_port" type="text" name="" value="" size="50" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label>ユーザ名</label>
-								<input soy:id="receive_server_user" type="text" value="" size="80" />
+								<input soy:id="receive_server_user" type="text" value="" size="50" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label>パスワード</label>
-								<input soy:id="receive_server_password" type="password" name="" value="" size="80" />
+								<input soy:id="receive_server_password" type="password" name="" value="" size="50" />
 							</td>
 						</tr>
 
@@ -143,30 +143,30 @@
 
 					<table class="globalpage_input">
 						<tr class="no_example">
-							<th>送信元アドレス（From）</th>
+							<th>送信元アドレス<br>（From）</th>
 							<td>
-								<input id="administrator_address" soy:id="from_address" type="text" value="" size="80" />
+								<input id="administrator_address" soy:id="from_address" type="text" value="" size="50" />
 							</td>
 						</tr>
 						
 						<tr class="no_example">
 							<th>送信元名称</th>
 							<td>
-								<input soy:id="from_name" type="text" value="" size="80" />
+								<input soy:id="from_name" type="text" value="" size="50" />
 							</td>
 						</tr>
 						
 						<tr class="no_example">
-							<th>返信先メールアドレス（Reply-To）</th>
+							<th nowrap>返信先メールアドレス<br>（Reply-To）</th>
 							<td>
-								<input soy:id="return_address" type="text" value="" size="80" />
+								<input soy:id="return_address" type="text" value="" size="50" />
 							</td>
 						</tr>
 						
 						<tr class="no_example">
 							<th>返信先名称</th>
 							<td>
-								<input soy:id="return_name" type="text" value="" size="80" />
+								<input soy:id="return_name" type="text" value="" size="50" />
 							</td>
 						</tr>
 
@@ -197,9 +197,9 @@
 				<form soy:id="test_form">
 					<table class="globalpage_input">
 						<tr class="no_example">
-							<th>テストメールの送信先</th>
+							<th nowrap>テストメールの送信先</th>
 							<td>
-								<input type="text" value="" id="test_mail_address" soy:id="test_mail_address" size="80" />
+								<input type="email" value="" id="test_mail_address" soy:id="test_mail_address" size="40" />
 							</td>
 						</tr>
 						<tr>

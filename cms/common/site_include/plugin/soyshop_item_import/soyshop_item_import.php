@@ -70,8 +70,8 @@ class SOYShopItemImportPlugin{
 		if(get_class($obj) == "CMSBlogPage" && property_exists($obj, "mode")){
 			
 			if($obj->mode == "_entry_" || $obj->mode == "_category_"){
-				if(!defined(SOYCMS_PUBLISH_LANGUAGE)) define("SOYCMS_PUBLISH_LANGUAGE", "jp");
-				if(!defined(SOYSHOP_PUBLISH_LANGUAGE)) define("SOYSHOP_PUBLISH_LANGUAGE", SOYCMS_PUBLISH_LANGUAGE);
+				if(!defined("SOYCMS_PUBLISH_LANGUAGE")) define("SOYCMS_PUBLISH_LANGUAGE", "jp");
+				if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", SOYCMS_PUBLISH_LANGUAGE);
 				
 				//詳細ページの場合はDNS切替をする前に商品情報を取得
 				if($obj->mode == "_entry_"){
