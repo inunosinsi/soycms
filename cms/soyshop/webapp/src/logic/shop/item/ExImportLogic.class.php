@@ -152,15 +152,6 @@ class ExImportLogic extends ExImportLogicBase{
 		return $this->itemAttributeDAO->getByItemId($id);
 	}
 	
-	function getCustomSearchFieldObject($id){
-		$res = array();
-		if(SOYShopPluginUtil::checkIsActive("custom_search_field")){
-			if(!$this->customSearchFieldDBLogic) $this->customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
-			$res = $this->customSearchFieldDBLogic->getByItemId($id);
-		}
-		return $res;
-	}
-	
 	function getCustomFields() {
 		return $this->customFields;
 	}
@@ -189,6 +180,15 @@ class ExImportLogic extends ExImportLogicBase{
 	}
 	function setCustomSearchFields($customSearchFields) {
 		$this->customSearchFields = $customSearchFields;
+	}
+	
+	function getCustomSearchFieldObject($id){
+		$res = array();
+		if(SOYShopPluginUtil::checkIsActive("custom_search_field")){
+			if(!$this->customSearchFieldDBLogic) $this->customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
+			$res = $this->customSearchFieldDBLogic->getByItemId($id);
+		}
+		return $res;
 	}
 	
 	function getItemOptions(){

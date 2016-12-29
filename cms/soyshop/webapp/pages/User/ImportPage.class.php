@@ -27,6 +27,10 @@ class ImportPage extends WebPage{
     		"list" => $this->getCustomFieldList()
     	));
 
+		//商品オプションリストを表示する
+		$this->createAdd("custom_search_field_list", "_common.Item.CustomSearchFieldImExportListComponent", array(
+			"list" => $this->getCustomSearchFieldList()
+		));
     }
 
     function buildForm(){
@@ -56,6 +60,7 @@ class ImportPage extends WebPage{
 		$logic->setCharset(@$format["charset"]);
 		$logic->setItems($item);
 		$logic->setCustomFields($this->getCustomFieldList(true));
+		$logic->setCustomSearchFields($this->getCustomSearchFieldList());
 
 		if(!$logic->checkUploadedFile($file)){
 			SOY2PageController::jump("User.Import?fail");
@@ -80,6 +85,9 @@ class ImportPage extends WebPage{
     	$this->dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
     	$this->attributeDAO = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
     	$config = SOYShop_UserAttributeConfig::load(true);
+    	
+    	//カスタムサーチフィールド
+		$customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.DataBaseLogic");
 
     	$this->dao->begin();
 
@@ -87,7 +95,7 @@ class ImportPage extends WebPage{
     	foreach($lines as $line){
     		if(empty($line)) continue;
 
-    		list($obj, $attributes, $point) = $logic->import($line);
+    		list($obj, $attributes, $point, $customSearchFields) = $logic->import($line);
 
     		$deleted = ($obj["id"] == "delete");
 
@@ -115,6 +123,11 @@ class ImportPage extends WebPage{
 					if($point != $oldPoint){
 						$this->pointLogic->updatePoint($point, $user->getId());
 					}
+				}
+				
+				//カスタムサーチフィールド
+				if(count($customSearchFields)){
+					$customSearchFieldDBLogic->save($user->getId(), $customSearchFields);
 				}
 			}
 
@@ -223,5 +236,10 @@ class ImportPage extends WebPage{
 		$config = SOYShop_UserAttributeConfig::load($flag);
 		return $config;
     }
+    
+    function getCustomSearchFieldList(){
+		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
+		return UserCustomSearchFieldUtil::getConfig();
+	}
 }
 ?>

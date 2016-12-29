@@ -29,6 +29,11 @@ class ExportPage extends WebPage{
 		$this->createAdd("customfield_list", "_common.User.CustomFieldListComponent", array(
 			"list" => $this->getCustomFieldList()
 		));
+		
+		//カスタムサーチフィールドリストを表示する
+		$this->createAdd("custom_search_field_list", "_common.User.UserCustomSearchFieldImExportListComponent", array(
+			"list" => $this->getCustomSearchFieldList()
+		));
 	}
 
 	function getLabels(){
@@ -77,6 +82,11 @@ class ExportPage extends WebPage{
 		$config = SOYShop_UserAttributeConfig::load($flag);
 		return $config;
 	}
+	
+	function getCustomSearchFieldList(){
+		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
+		return UserCustomSearchFieldUtil::getConfig();
+	}
 
 	function doPost(){
 		if(!soy2_check_token()){
@@ -103,6 +113,7 @@ class ExportPage extends WebPage{
 		$logic->setItems($item);
 		$logic->setLabels($this->getLabels());
 		$logic->setCustomFields($this->getCustomFieldList(true));
+		$logic->setCustomSearchFields($this->getCustomSearchFieldList());
 
 		//DAO: 2000件ずつデータを取得
 		$limit = 2000;
