@@ -24,7 +24,7 @@ class IndexPage extends MainMyPagePageBase{
 				$user = SOY2::cast("SOYShop_User", $postUser);
 				
 				//ユーザカスタムフィールドの値をセッションに入れる
-				if(isset($_POST["user_customfield"])){
+				if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
 					SOYShopPlugin::load("soyshop.user.customfield");
 					SOYShopPlugin::invoke("soyshop.user.customfield", array(
 						"mode" => "post",

@@ -82,7 +82,6 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 			$this->dbLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
 			SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 		}
-		
 	}
 }
 

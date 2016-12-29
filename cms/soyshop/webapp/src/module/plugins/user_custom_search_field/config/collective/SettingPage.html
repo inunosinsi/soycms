@@ -1,0 +1,159 @@
+<div class="alR">
+	<a class="button" soy:link="Config.Detail?plugin=user_custom_search_field">ユーザーカスタムサーチフィールド一覧</a>
+</div>
+
+<br>
+
+<div class="block_body clearfix">
+
+	<p class="notice" soy:display="updated">
+		更新しました
+	</p>
+
+	<dl>
+		<dt class="search_btn_dt">
+			検索する
+		</dt>
+		<div class="search_area_dd" soy:id="search_area">
+			<form soy:id="search_form">
+				<table class="form_table">
+					<tr>
+						<th nowrap><!-- soy:id="csf_label" /--></th>
+						<td colspan="3"><input type="checkbox" soy:id="nothing_check">
+						<!-- soy:id="csf_cnd_form" /--></td>
+					</tr>
+					<tr>
+						<th nowrap>顧客名</th>
+						<td><input type="search" soy:id="search_name"></td>
+						<th nowrap>顧客名フリガナ</th>
+						<td><input type="search" soy:id="search_reading"></td>
+					</tr>
+				</table>
+				<p class="pageBtn">
+					<input type="submit" name="search" value="検索">
+				</p>
+			</form>
+
+		</div>
+	</dl>
+
+	<form soy:id="form">
+
+		<dl>
+			<dt>
+				<!-- soy:id="field_label" /-->
+				(<!-- soy:id="prefix" /-->
+				:id="<!-- soy:id="field_id" /-->
+				")の一括設定
+			</dt>
+			<dd>
+				<!-- soy:id="csf_form" /-->
+				&nbsp;&nbsp;
+				<!--input type="submit" value="検索"-->
+			</dd>
+		</dl>
+
+		<table class="form_list">
+			<caption>
+				顧客一覧
+			</caption>
+			<thead>
+				<tr class="alC">
+					<th>
+					<input id="user_checkbox" class="user_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
+					</th>
+					<th class="short">ID</th>
+					<th class="middle">姓名</th>
+					<th class="middle nowrap">メールアドレス</th>
+					<th>属性１</th>
+					<th>属性２</th>
+					<th>属性３</th>
+					<th class="operation">
+						編集
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="user_list" -->
+				<tr>
+					<td>
+					<input soy:id="user_check" class="user_checkbox" type="checkbox" />
+					</td>
+					<td class="alC short"><span soy:id="id"></span></td>
+					<td class="middle"><a soy:id="edit_link"><span soy:id="name"></span></a></td>
+					<td class="middle"><span soy:id="mailaddress">メールアドレス</span></td>
+					<td class="middle"><span soy:id="attribute1">属性１</span></td>
+					<td class="middle"><span soy:id="attribute2">属性２</span></td>
+					<td class="middle"><span soy:id="attribute3">属性３</span></td>
+					<td class="operation" nowrap>
+						<a class="button" soy:id="edit_link*">編集</a>
+					</td>
+				</tr>
+				<!-- /soy:id="user_list" -->
+			</tbody>
+		</table>
+
+		<p class="pageBtn">
+			<input type="submit" name="set" value="設定する">
+		</p>
+
+	</form>
+</div>
+
+<style>
+	dt.search_btn_dt {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	dd.search_area_dd {
+	}
+</style>
+
+<script soy:src="../soycms/js/tinymce/tinymce.min.js"></script>
+<script type="text/javascript">
+	(function() {
+		document.querySelector(".search_btn_dt").addEventListener("click", function() {
+			sarea = document.querySelector(".search_area_dd");
+			if (sarea.style.display == "none") {
+				sarea.style.display = "inline";
+			} else {
+				sarea.style.display = "none";
+			}
+		});
+
+	})();
+	function changeCheckBoxAuto() {
+		$('#users_operation').show();
+		$('.user_checkbox').each(function() {
+			$(this).prop("checked", $("#user_checkbox").prop("checked"));
+		});
+	}
+
+	$(function() {
+		tinymce.init({
+			mode : "specific_textareas",
+			editor_selector : "mceEditor",
+			theme : "modern",
+			skin : "lightgray",
+			plugins : "save,pagebreak,table,hr,insertdatetime,searchreplace,contextmenu,code,textcolor,paste,directionality,fullscreen,noneditable,charmap,visualchars,nonbreaking,innerlink,insertimageshop,insertwidget,youTube",
+			tools : "inserttable",
+			language : "ja",
+			menubar : false,
+			toolbar1 : "save | cut copy paste pastetext | searchreplace | bold italic underline strikethrough | subscript superscript | forecolor backcolor | alignleft aligncenter alignright | formatselect fontselect fontsizeselect",
+			toolbar2 : "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | fullscreen preview | insertdate inserttime | insertwidget | table youTube",
+
+			init_instance_callback : function(editor) {
+				//			onInitTinymceEditor(editor.id);
+			},
+			oninit : function() {
+				//			onInitTinymce();
+			},
+
+			cleanup : true,
+			verify_html : false,
+			convert_urls : false,
+			relative_urls : false,
+			entity_encoding : "named"
+		});
+	}); 
+</script>
