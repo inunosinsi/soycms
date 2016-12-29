@@ -15,7 +15,3 @@
 <p class="btn">
 <a href="/">戻る</a>
 </p>
-
-</div>
-
-</section>
