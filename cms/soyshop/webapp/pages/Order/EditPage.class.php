@@ -252,7 +252,10 @@ class EditPage extends WebPage{
 				if(isset($module)) $modules["consumption_tax"] = $module;
 
 				$price += $modulePrice;
-
+				
+				//外税の場合は加算
+				if(isset($modules["consumption_tax"]) && !$modules["consumption_tax"]->getIsInclude()) $price += $modules["consumption_tax"]->getPrice();
+				
 				$order->setModules($modules);
 				$order->setPrice($price);
 
