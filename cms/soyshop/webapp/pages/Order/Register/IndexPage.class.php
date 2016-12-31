@@ -70,8 +70,18 @@ class IndexPage extends WebPage{
 			$cart->setOrderAttribute("memo", "備考", $_POST["memo"]);
 			$cart->save();
 		}
+		
+		//消費税の設定
+		$config = SOYShop_ShopConfig::load();
+		define("SOYSHOP_CONSUMPTION_TAX_MODE", ($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
+		define("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE", ($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
+		
+		
+		//消費税の計算とモジュールの登録
+		$cart->calculateConsumptionTax();
 
 		$cart->save();
+		
 		if($cart->hasError()){
 			SOY2PageController::jump("Order.Register");
 		}else{
