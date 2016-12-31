@@ -22,6 +22,5 @@ if(SOYCMS_DB_TYPE == "sqlite"){
 mb_internal_encoding("UTF-8");
 
 define("SOY_GALLERY_IMAGE_UPLOAD_DIR", soy2_realpath($_SERVER["DOCUMENT_ROOT"])."GalleryImage/");
-define("SOY_GALLERY_IMAGE_ACCESS_PATH", "/GalleryImage/");
 
 ?>

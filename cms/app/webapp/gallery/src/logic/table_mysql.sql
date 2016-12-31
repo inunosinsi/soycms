@@ -34,7 +34,8 @@ CREATE VIEW soygallery_image_view AS
 		i.update_date as update_date,
 		g.id as g_id,
 		g.gallery_id as gallery_id,
-		g.name as name
+		g.name as name,
+		g.config as config
 	FROM soygallery_image i 
 		LEFT JOIN soygallery_gallery g ON i.gallery_id = g.id
 ;

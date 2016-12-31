@@ -3,8 +3,13 @@ class NewImageListComponent extends HTMLList{
 	
 	protected function populateItem($entity){
 		
+		$imageDir = $entity->getConfigValue("uploadDir");
+		if(!isset($imageDir) || !strlen($imageDir)) $imageDir = SOY_GALLERY_IMAGE_UPLOAD_DIR . $entity->getGalleryId();
+		
+		$imagePath = str_replace($_SERVER["DOCUMENT_ROOT"], "", $imageDir);
+		
 		$this->addImage("image", array(
-			"src" => SOY_GALLERY_IMAGE_ACCESS_PATH . $entity->getGalleryId() . "/" . "t_".$entity->getFilename()
+			"src" => rtrim($imagePath, "/") . "/" . "t_".$entity->getFilename()
 		));
 		
 		$this->addLabel("memo", array(

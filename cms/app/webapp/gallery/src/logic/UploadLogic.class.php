@@ -60,9 +60,10 @@ class UploadLogic extends SOY2LogicBase{
 		
 		$gallery = $this->getGallery($galleryId);
 		$config = $gallery->getConfigArray();
+		$uploadDir = (isset($config["uploadDir"])) ? $config["uploadDir"] : SOY_GALLERY_IMAGE_UPLOAD_DIR . $gallery->getGalleryId();
 		
 		$file = $this->getUniqueFileName($file);
-		$path = SOY_GALLERY_IMAGE_UPLOAD_DIR . $gallery->getGalleryId() . "/" . $file;
+		$path = rtrim($uploadDir , "/") . "/" . $file;
 		
 		$result = move_uploaded_file($tmp, $path);
 		@chmod($path,0604);	
@@ -89,7 +90,7 @@ class UploadLogic extends SOY2LogicBase{
 			
 			//ここからサムネイルを作成
 			$thumbnail_file = "t_" . $file;
-			$thumbnail_path = SOY_GALLERY_IMAGE_UPLOAD_DIR . $gallery->getGalleryId() . "/" . $thumbnail_file;
+			$thumbnail_path = rtrim($uploadDir , "/") . "/" . $thumbnail_file;
 			$thumbnail_width = (isset($config["thumbnail"]["width"]) && (int)$config["thumbnail"]["width"] && $res["mode"] === "width") ? (int)$config["thumbnail"]["width"] : null;
 			$thumbnail_height = (isset($config["thumbnail"]["height"]) && (int)$config["thumbnail"]["height"] && $res["mode"] === "height") ? (int)$config["thumbnail"]["height"] : null;
 			soy2_resizeimage($path, $thumbnail_path, $thumbnail_width, $thumbnail_height);

@@ -42,6 +42,7 @@ class SOYGallery_ImageView{
 	 */
 	private $galleryId;
 	private $name;
+	private $config;
 	
 	/**#@+
 	 *
@@ -137,6 +138,18 @@ class SOYGallery_ImageView{
 		$attributes = soy2_unserialize($this->attributes);
 		if(!is_array($attributes))$attributes = array();
 		return $attributes;
+	}
+	
+	function getConfig(){
+		return $this->config;
+	}
+	function setConfig($config){
+		$this->config = $config;
+	}
+	
+	function getConfigValue($key){
+		$configs = soy2_unserialize($this->config);
+		return (isset($configs[$key])) ? $configs[$key] : "";
 	}
 }
 ?>

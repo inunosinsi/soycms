@@ -230,39 +230,44 @@ class GalleryComponent extends HTMLList{
 			"text" => "t_".$entity->getFilename()
 		));
 		
-		$path = SOY_GALLERY_IMAGE_ACCESS_PATH . $entity->getGalleryId() . "/";
+		$imageDir = $entity->getConfigValue("uploadDir");
+		if(!isset($imageDir) || !strlen($imageDir)) $imageDir = SOY_GALLERY_IMAGE_UPLOAD_DIR . $entity->getGalleryId();
+		
+		$imagePath = rtrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $imageDir) , "/") . "/";
+		$attributes = $entity->getAttributeArray();
 		
 		$this->addLink("image_link", array(
 			"soy2prefix" => $prefix,
-			"link" => $path . $entity->getFilename()
+			"link" => $imagePath . $entity->getFilename(),
+			"attr:title" => (isset($attributes["alt"])) ? $attributes["alt"] : ""
 		));
 		
-		$attributes = $entity->getAttributeArray();
 		$this->addImage("image", array(
 			"soy2prefix" => $prefix,
-			"src" => $path . $entity->getFilename(),
+			"src" => $imagePath . $entity->getFilename(),
 			"attr:alt" => (isset($attributes["alt"])) ? $attributes["alt"] : ""
 		));
 		
 		$this->addLabel("image_path", array(
 			"soy2prefix" => $prefix,
-			"text" => $path . "t_" . $entity->getFilename()
+			"text" => $imagePath . "t_" . $entity->getFilename()
 		));
 		
 		$this->addLink("thumbnail_link", array(
 			"soy2prefix" => $prefix,
-			"link" => $path . "t_" . $entity->getFilename()
+			"link" => $imagePath . "t_" . $entity->getFilename(),
+			"attr:title" => (isset($attributes["alt"])) ? $attributes["alt"] : ""
 		));
 		
 		$this->addImage("thumbnail", array(
 			"soy2prefix" => $prefix,
-			"src" => $path . "t_" . $entity->getFilename(),
+			"src" => $imagePath . "t_" . $entity->getFilename(),
 			"attr:alt" => (isset($attributes["alt"])) ? $attributes["alt"] : ""
 		));
 		
 		$this->addLabel("thumbnail_path", array(
 			"soy2prefix" => $prefix,
-			"text" => $path . "t_" . $entity->getFilename()
+			"text" => $imagePath . "t_" . $entity->getFilename()
 		));
 		
 		//サイズを調べて、縦横どちらが長いかを調べる。正方形の場合はwidth

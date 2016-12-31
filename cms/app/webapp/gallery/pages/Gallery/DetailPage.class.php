@@ -78,6 +78,19 @@ class DetailPage extends WebPage{
 		$count = mb_convert_kana($_POST["Count"], "a");
 		$config["count"] = (is_numeric($count)) ? $count : self::IMAGE_COUNT;
 		
+		$config["uploadDir"] = (isset($_POST["UploadDir"])) ? $_SERVER["DOCUMENT_ROOT"] . $_POST["UploadDir"] : "";
+		
+		//フォルダがあるか確認
+		$uploadDir = str_replace($_SERVER["DOCUMENT_ROOT"], "", $config["uploadDir"]);
+		$dirs = explode("/", trim($uploadDir, "/"));
+		$root = $_SERVER["DOCUMENT_ROOT"];
+		foreach($dirs as $dir){
+			$root .= "/" . $dir;
+			if(!file_exists($root) || !is_dir($root)){
+				mkdir($root);
+			}
+		}
+		
 		$gallery->setConfigArray($config);
 		
 		return $gallery;
@@ -151,6 +164,12 @@ class DetailPage extends WebPage{
     		"name" => "Count",
     		"value" => (isset($config["count"])) ? (int)$config["count"] : self::IMAGE_COUNT,
     		"style" => "text-align:right;ime-mode:inactive;"
+    	));
+    	   
+    	$uploadDir = (isset($config["uploadDir"])) ? $config["uploadDir"] : SOY_GALLERY_IMAGE_UPLOAD_DIR . $gallery->getGalleryId();
+    	$this->addInput("upload_dir", array(
+    		"name" => "UploadDir",
+    		"value" => str_replace($_SERVER["DOCUMENT_ROOT"], "", $uploadDir)
     	));
     	
     }

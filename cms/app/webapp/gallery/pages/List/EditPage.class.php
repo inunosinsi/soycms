@@ -200,8 +200,14 @@ class EditPage extends WebPage{
 		));
 		
 		$this->addForm("config_form");		
+		
+		$config = $gallery->getConfigArray();
+		$imageDir = (isset($config["uploadDir"])) ? $config["uploadDir"] : SOY_GALLERY_IMAGE_UPLOAD_DIR . $gallery->getGalleryId();
+		$imageDir .= "/";
+		
 		$this->createAdd("image_list", "_common.ImageListComponent", array(
-			"list" => $this->getImages($this->id)
+			"list" => $this->getImages($this->id),
+			"imagePath" => str_replace($_SERVER["DOCUMENT_ROOT"], "", $imageDir)
 		));
 	}
 	

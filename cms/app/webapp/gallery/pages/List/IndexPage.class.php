@@ -83,11 +83,16 @@ class IndexPage extends WebPage{
 		$this->addLink("edit_link", array(
 			"link" => SOY2PageController::createLink(APPLICATION_ID . ".List.Edit." . $this->id)
 		));
-				
+		
+		$config = $gallery->getConfigArray();
+		$imageDir = (isset($config["uploadDir"])) ? $config["uploadDir"] : SOY_GALLERY_IMAGE_UPLOAD_DIR . $gallery->getGalleryId();
+		$imageDir .= "/";
+		
 		SOY2::import("domain.SOYGallery_Image");
 		$this->createAdd("image_list", "_common.ImageListComponent", array(
 			"list" => $this->getImages($this->id),
-			"propaty" => "column_"
+			"propaty" => "column_",
+			"imagePath" => str_replace($_SERVER["DOCUMENT_ROOT"], "", $imageDir)
 		));
 		
 		

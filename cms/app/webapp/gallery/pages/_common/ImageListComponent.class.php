@@ -3,6 +3,7 @@
 class ImageListComponent extends HTMLList{
 	
 	private $propaty;
+	private $imagePath;
 	
 	protected function populateItem($entity){
 		
@@ -12,7 +13,7 @@ class ImageListComponent extends HTMLList{
 		));
 
 		$this->addImage("image", array(
-			"src" => SOY_GALLERY_IMAGE_ACCESS_PATH . $entity->getGalleryId() . "/" . "t_" . $entity->getFilename(),
+			"src" => rtrim($this->imagePath, "/") . "/" . "t_" . $entity->getFilename(),
 			"id" => (isset($this->propaty)) ? $this->propaty . $entity->getId() : ""
 		));
 		
@@ -46,6 +47,10 @@ class ImageListComponent extends HTMLList{
 	
 	function setPropaty($propaty){
 		$this->propaty = $propaty;
+	}
+	
+	function setImagePath($imagePath){
+		$this->imagePath = $imagePath;
 	}
 }
 ?>
