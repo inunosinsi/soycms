@@ -14,6 +14,7 @@ class SOYShop_PluginConfig {
 	const MODE_ALL = "all";
 	
 	//プラグイン一覧を見やすくするための定数、下で配列を生成
+	const PLUGIN_TYPE_ARRIVAL = "arrival";
 	const PLUGIN_TYPE_ADMIN = "admin";
 	const PLUGIN_TYPE_AFFILIATE = "affiliate";
 	const PLUGIN_TYPE_AFFICODE = "afficode";
@@ -235,6 +236,7 @@ class SOYShop_PluginConfig {
     
     public static function getPluginTypeList(){
     	return array(
+    		self::PLUGIN_TYPE_ARRIVAL => "新着",
     		self::PLUGIN_TYPE_ADMIN => "管理画面の拡張",
 			self::PLUGIN_TYPE_AFFILIATE => "アフィリエイト",
 			self::PLUGIN_TYPE_AFFICODE => "アフィコード",
