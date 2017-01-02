@@ -233,7 +233,7 @@ class GalleryComponent extends HTMLList{
 		$imageDir = $entity->getConfigValue("uploadDir");
 		if(!isset($imageDir) || !strlen($imageDir)) $imageDir = SOY_GALLERY_IMAGE_UPLOAD_DIR . $entity->getGalleryId();
 		
-		$imagePath = rtrim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $imageDir) , "/") . "/";
+		$imagePath = "/" . trim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $imageDir) , "/") . "/";
 		$attributes = $entity->getAttributeArray();
 		
 		$this->addLink("image_link", array(

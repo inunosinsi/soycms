@@ -39,9 +39,8 @@ class DetailPage extends WebPage{
 		$galleryId = $this->getGalleryId($image->getGalleryId());
 		$config = $this->gallery->getConfigArray();
 		$imageDir = (isset($config["uploadDir"])) ? $config["uploadDir"] : SOY_GALLERY_IMAGE_UPLOAD_DIR . $galleryId;
-		$imageDir .= "/";
 		
-		$path = str_replace($_SERVER["DOCUMENT_ROOT"], "", $imageDir);
+		$path = "/" . trim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $imageDir), "/") . "/";
 		
 		$filename = $image->getFilename();
 		$thumbnailFilename = "t_" . $filename;

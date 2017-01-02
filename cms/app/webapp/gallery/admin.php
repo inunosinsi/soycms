@@ -48,10 +48,6 @@ class SOYGalleryApplication{
 			$logic = SOY2Logic::createInstance("logic.UpgradeLogic");
 			$logic->execute();
 		}
-		
-		//画像の置き場を生成
-		$path = SOY_GALLERY_IMAGE_UPLOAD_DIR;
-		if(!is_dir($path)) mkdir($path, 0755);
 	}
 
 	function main(){

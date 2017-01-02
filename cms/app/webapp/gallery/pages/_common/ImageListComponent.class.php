@@ -13,7 +13,7 @@ class ImageListComponent extends HTMLList{
 		));
 
 		$this->addImage("image", array(
-			"src" => rtrim($this->imagePath, "/") . "/" . "t_" . $entity->getFilename(),
+			"src" => "/" . trim($this->imagePath, "/") . "/" . "t_" . $entity->getFilename(),
 			"id" => (isset($this->propaty)) ? $this->propaty . $entity->getId() : ""
 		));
 		
