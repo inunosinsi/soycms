@@ -15,8 +15,7 @@ class IndexPage extends WebPage{
 	private $orderDao;
 	private $itemOrderDao;
 	private $config;
-	private $appLimit;	//管理制限者の場合、false
-
+	
 	function doPost(){
 
 	}
@@ -78,10 +77,6 @@ class IndexPage extends WebPage{
 
 	function __construct(){
 		MessageManager::addMessagePath("admin");
-		
-		//管理制限の権限を取得
-		$session = SOY2ActionSession::getUserSession();
-		$this->appLimit = $session->getAttribute("app_shop_auth_limit");
 
 		WebPage::__construct();
 		
