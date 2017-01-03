@@ -164,21 +164,22 @@
 		<thead>
 			<tr class="alC">
 				<th><input id="order_checkbox" class="order_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" /></th>
-				<th>注文ID</th>
-				<th>注文番号</th>
-				<th style="width:9em"><nobr>注文時刻<a soy:id="sort_order_date">↓</a> <a soy:id="sort_order_date_desc">↑</a></nobr></th>
-				<th>顧客</th>
-				<th>合計金額</th>
-				<th>状態</th>
-				<th>支払い</th>
-				<th>確認メール</th>
-				<th>発送メール</th>
+				<th soy:id="orderId_show">注文ID</th>
+				<th soy:id="trackingNumber_show">注文番号</th>
+				<th soy:id="orderDate_show" style="width:9em"><nobr>注文時刻<a soy:id="sort_order_date">↓</a> <a soy:id="sort_order_date_desc">↑</a></nobr></th>
+				<th soy:id="customerName_show">顧客名</th>
+				<th soy:id="totalPrice_show">合計金額</th>
+				<th soy:id="status_show">状態</th>
+				<th soy:id="paymentStatus_show">支払い</th>
+				<th soy:id="confirmMail_show">注文確認メール</th>
+				<th soy:id="paymentMail_show">支払確認メール</th>
+				<th soy:id="deliveryMail_show">発送メール</th>
 				<th class="short">&nbsp;</th>
 			</tr>
 		</thead>
 		<tfoot>
 			<tr id="orders_operation" style="display:none;">
-				<td colspan="11">
+				<td soy:id="col_count_0" colspan="*">
 					<div class="mb">
 						<span class="option">注文状態：</span>
 						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(2).trigger('click');" class="button">新規受付</a>
@@ -198,7 +199,7 @@
 				</td>
 			</tr>
 			<tr class="pager">
-				<td colspan="11">
+				<td soy:id="col_count_1" colspan="*">
 					<div class="pager_item">
 						<form soy:id="pager_jump">
 							<select soy:id="pager_select"></select>
@@ -225,15 +226,16 @@
 				<!-- soy:id="order_list" -->
 				<tr>
 					<td class="alC"><input soy:id="order_check" class="order_checkbox" type="checkbox" /></td>
-					<td class="alC"><a soy:id="detail_link"><!-- soy:id="id" /--></a></td>
-					<td class="alC"><nobr><a soy:id="order_id_link">1</a></nobr></td>
-					<td class="alC"><nobr><span soy:id="order_date">2009-10-10 10:10:10</span></nobr></td>
-					<td class="alC"><a soy:id="customer_link">豆蔵</a></td>
-					<td class="alR"><span soy:id="order_price">1,500</span> 円</td>
-					<td class="alC" soy:id="order_status">ITEM_001</td>
-					<td class="alC" soy:id="payment_status">ITEM_001</td>
-					<td class="alC"><a soy:id="payment_mail_status">未送信</a></td>
-					<td class="alC"><a soy:id="delivery_mail_status">未送信</a></td>
+					<td class="alC" soy:id="orderId_form_show"><a soy:id="detail_link"><!-- soy:id="id" /--></a></td>
+					<td class="alC" soy:id="trackingNumber_form_show"><nobr><a soy:id="order_id_link">1</a></nobr></td>
+					<td class="alC" soy:id="orderDate_form_show"><nobr><span soy:id="order_date">2009-10-10 10:10:10</span></nobr></td>
+					<td class="alC" soy:id="customerName_form_show"><a soy:id="customer_link">豆蔵</a></td>
+					<td class="alR" soy:id="totalPrice_form_show"><span soy:id="order_price">1,500</span> 円</td>
+					<td class="alC" soy:id="status_form_show"><!-- soy:id="order_status" -->ITEM_001<!-- /soy:id="order_status" --></td>
+					<td class="alC" soy:id="paymentStatus_form_show"><!-- soy:id="payment_status" -->ITEM_001<!-- /soy:id="payment_status" --></td>
+					<td class="alC" soy:id="confirmMail_form_show"><a soy:id="confirm_mail_status">未送信</a></td>
+					<td class="alC" soy:id="paymentMail_form_show"><a soy:id="payment_mail_status">未送信</a></td>
+					<td class="alC" soy:id="deliveryMail_form_show"><a soy:id="delivery_mail_status">未送信</a></td>
 					<td class="operation">
 						<a soy:id="detail_link*" class="button">詳細</a>
 					</td>

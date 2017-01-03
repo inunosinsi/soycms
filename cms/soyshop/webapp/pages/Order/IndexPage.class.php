@@ -96,6 +96,27 @@ class IndexPage extends WebPage{
 		$this->addLink("order_link", array(
 			"link" => SOY2PageController::createLink("Order.Register")
 		));
+		
+		//項目の表示に関して
+		$items = SOYShop_ShopConfig::load()->getOrderItemConfig();
+		$itmCnt = 0;
+		foreach($items as $key => $b){
+			if($b) $itmCnt++;
+			
+			$this->addModel($key . "_show", array(
+				"visible" => $b
+			));
+			
+			$this->addModel($key . "_form_show", array(
+				"visible" => $b
+			));
+		}
+		
+		foreach(range(0,1) as $i){
+			$this->addModel("col_count_" . $i, array(
+				"attr:colspan" => $itmCnt + 2
+			));
+		}
 
 
 		//注文結果を出力

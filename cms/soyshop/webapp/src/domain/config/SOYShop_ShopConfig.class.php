@@ -85,7 +85,52 @@ class SOYShop_ShopConfig {
 		"memo"			=> false
 	);
 	
+	private $customerFormLabels = array(
+		"mailAddress"	=>	"メールアドレス",
+		"accountId"		=>	"ログインID(マイページのみ)",
+		"name"			=>	"名前",
+		"reading"		=>	"フリガナ",
+		"nickname" 		=>	"ニックネーム(マイページのみ)",
+		"zipCode"		=>	"郵便番号",
+		"address"		=>	"住所",
+		"telephoneNumber"	=> "電話番号",
+		"gender"		=> "性別",
+		"birthday"		=> "生年月日",
+		"faxNumber"		=> "FAX番号",
+		"cellphoneNumber"	=> "携帯番号",
+		"url"			=> "URL(マイページのみ)",
+		"jobName"		=> "職業",
+		"memo"			=> "備考"
+	);
+	
 	private $requireText = "(必須)";
+	
+	private $orderItemConfig = array();
+	public static $orderItemConfigDefault = array(
+		"orderId" => true,
+		"trackingNumber" => true,
+		"orderDate" => true,
+		"customerName" => true,
+		"totalPrice" => true,
+		"status" => true,
+		"paymentStatus" => true,
+		"confirmMail" => false,
+		"paymentMail" => true,
+		"deliveryMail" => true
+	);
+	
+	private $orderItemLabels = array(
+		"orderId" => "注文ID",
+		"trackingNumber" => "注文番号",
+		"orderDate" => "注文時刻",
+		"customerName" => "顧客名",
+		"totalPrice" => "合計金額",
+		"status" => "状態",
+		"paymentStatus" => "支払い状態",
+		"confirmMail" => "注文確認メール",
+		"paymentMail" => "支払確認メール",
+		"deliveryMail" => "発送メール"
+	);
 	
 	const DATASETS_KEY = "soyshop.ShopConfig";
 
@@ -214,6 +259,30 @@ class SOYShop_ShopConfig {
 		foreach($this->customerInformationConfig as $key => $value){
 			$this->customerInformationConfig[$key] = (boolean)@$array[$key];
 		}
+	}
+	
+	function getCustomerDisplayFormConfigList(){
+		return $this->customerFormLabels;
+	}
+	
+	function getOrderItemConfig(){
+		if(count($this->orderItemConfig)){
+			return $this->orderItemConfig;
+		}else{
+			return SOYShop_ShopConfig::$orderItemConfigDefault;
+		}
+	}
+	
+	function setOrderItemConfig($array){
+		$this->orderItemConfig = SOYShop_ShopConfig::$orderItemConfigDefault;
+		
+		foreach($this->orderItemConfig as $key => $value){
+			$this->orderItemConfig[$key] = (boolean)@$array[$key];
+		}
+	}
+	
+	function getOrderItemList(){
+		return $this->orderItemLabels;
 	}
 
 	function getShopName() {

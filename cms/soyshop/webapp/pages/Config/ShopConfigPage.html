@@ -194,81 +194,13 @@
 				<th>フォームを表示する</th>
 				<th>必須項目にする</th>
 			</tr>
+			<!-- soy:id="form_config_list" -->
 			<tr>
-				<th>メールアドレス</th>
-				<td><input type="checkbox" onclick="return false;" soy:id="mailAddress_form" /></td>
-				<td><input type="checkbox" onclick="return false;" soy:id="mailAddress" /></td>
+				<th soy:id="form_name">***</th>
+				<td><input type="checkbox" soy:id="display_form" /></td>
+				<td><input type="checkbox" soy:id="form_required" /></td>
 			</tr>
-			<tr>
-				<th>ログインID(マイページのみ)</th>
-				<td><input type="checkbox" soy:id="accountId_form" /></td>
-				<td><input type="checkbox" soy:id="accountId" /></td>
-			</tr>
-			<tr>
-				<th>名前</th>
-				<td><input type="checkbox" onclick="return false;" soy:id="name_form" /></td>
-				<td><input type="checkbox" onclick="return false;" soy:id="name" /></td>
-			</tr>
-			<tr>
-				<th>フリガナ</th>
-				<td><input type="checkbox" soy:id="reading_form" /></td>
-				<td><input type="checkbox" soy:id="reading" /></td>
-			</tr>
-			<tr>
-				<th>ニックネーム(マイページのみ)</th>
-				<td><input type="checkbox" soy:id="nickname_form" /></td>
-				<td><input type="checkbox" soy:id="nickname" /></td>
-			</tr>
-			<tr>
-				<th>郵便番号</th>
-				<td><input type="checkbox" soy:id="zipCode_form" /></td>
-				<td><input type="checkbox" soy:id="zipCode" /></td>
-			</tr>
-			<tr>
-				<th>住所</th>
-				<td><input type="checkbox" soy:id="address_form" /></td>
-				<td><input type="checkbox" soy:id="address" /></td>
-			</tr>
-			<tr>
-				<th>電話番号</th>
-				<td><input type="checkbox" soy:id="telephoneNumber_form" /></td>
-				<td><input type="checkbox" soy:id="telephoneNumber" /></td>
-			</tr>
-			<tr>
-				<th>性別</th>
-				<td><input type="checkbox" soy:id="gender_form" /></td>
-				<td><input type="checkbox" soy:id="gender" /></td>
-			</tr>
-			<tr>
-				<th>生年月日</th>
-				<td><input type="checkbox" soy:id="birthday_form" /></td>
-				<td><input type="checkbox" soy:id="birthday" /></td>
-			</tr>
-			<tr>
-				<th>FAX番号</th>
-				<td><input type="checkbox" soy:id="faxNumber_form" /></td>
-				<td><input type="checkbox" soy:id="faxNumber" /></td>
-			</tr>
-			<tr>
-				<th>携帯番号</th>
-				<td><input type="checkbox" soy:id="cellphoneNumber_form" /></td>
-				<td><input type="checkbox" soy:id="cellphoneNumber" /></td>
-			</tr>
-			<tr>
-				<th>URL(マイページのみ)</th>
-				<td><input type="checkbox" soy:id="url_form" /></td>
-				<td><input type="checkbox" soy:id="url" /></td>
-			</tr>
-			<tr>
-				<th>職業</th>
-				<td><input type="checkbox" soy:id="jobName_form" /></td>
-				<td><input type="checkbox" soy:id="jobName" /></td>
-			</tr>
-			<tr>
-				<th>備考</th>
-				<td><input type="checkbox" soy:id="memo_form" /></td>
-				<td><input type="checkbox" soy:id="memo" /></td>
-			</tr>
+			<!-- /soy:id="form_config_list" -->
 		</table>
 		
 		<table class="form_table customer_form">
@@ -278,6 +210,20 @@
 				<th>項目が必須の時の表記</th>
 				<td><input type="text" class="text" soy:id="require_text"></td>
 			</tr>
+		</table>
+
+		<table class="form_list" id="order_list_config">
+			<caption>管理画面の注文一覧で表示する項目の設定</caption>
+			<tr>
+				<th class="middle">項目名</th>
+				<th>項目を表示する</th>
+			</tr>
+			<!-- soy:id="order_item_list" -->
+			<tr>
+				<th soy:id="item_name">***</th>
+				<td><input type="checkbox" soy:id="display_item"></td>
+			</tr>
+			<!-- /soy:id="order_item_list" -->
 		</table>
 
 		<p class="pageBtn">
