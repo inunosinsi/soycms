@@ -109,7 +109,7 @@ class SOYShopPageController extends SOY2PageController{
 			$activeTab = (strlen($classPathBuilder->getClassPath($path)) > 0)
 			           ? strtolower(strtr($classPathBuilder->getClassPath($path), ".", "_"))
 			           : "news" ;
-			           
+			
 			$showLogoutLink = $this->isDirectLogin();
 			$isReview = SOYShopPluginUtil::checkIsActive("item_review");
 			
@@ -131,6 +131,9 @@ class SOYShopPageController extends SOY2PageController{
 			SOY2::import("domain.config.SOYShop_ShopConfig");
 			$shopConfig = SOYShop_ShopConfig::load();
 			$shopName = $shopConfig->getShopName();
+
+			$isOrder = $shopConfig->getDisplayOrderAdminPage();
+			$isItem = $shopConfig->getDisplayItemAdminPage();
 
 			ob_start();
 			$webPage->display();

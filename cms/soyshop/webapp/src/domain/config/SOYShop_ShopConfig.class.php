@@ -36,6 +36,9 @@ class SOYShop_ShopConfig {
 	private $allowLoginIdLogin = 0;
 	private $displayUsableTagList = 0;
 	private $insertDummyMailAddress = 1;
+	
+	private $displayOrderAdminPage = 1;
+	private $displayItemAdminPage = 1;
 
 	private $companyInformation = array(
 		"name" => "",
@@ -472,6 +475,20 @@ class SOYShop_ShopConfig {
 	}
 	function setInsertDummyMailAddress($insertDummyMailAddress){
 		$this->insertDummyMailAddress = $insertDummyMailAddress;
+	}
+	
+	function getDisplayOrderAdminPage(){
+		return $this->displayOrderAdminPage;
+	}
+	function setDisplayOrderAdminPage($displayOrderAdminPage){
+		$this->displayOrderAdminPage = $displayOrderAdminPage;
+	}
+	
+	function getDisplayItemAdminPage(){
+		return $this->displayItemAdminPage;
+	}
+	function setDisplayItemAdminPage($displayItemAdminPage){
+		$this->displayItemAdminPage = $displayItemAdminPage;
 	}
 	
 	function getIsShowOnlyAdministrator(){

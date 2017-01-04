@@ -18,6 +18,8 @@ class ShopConfigPage extends WebPage{
 		$_POST["Config"]["allowLoginIdLogin"] = (isset($_POST["Config"]["allowLoginIdLogin"])) ? (int)$_POST["Config"]["allowLoginIdLogin"] : 0;
 		$_POST["Config"]["displayUsableTagList"] = (isset($_POST["Config"]["displayUsableTagList"])) ? (int)$_POST["Config"]["displayUsableTagList"] : 0;
 		$_POST["Config"]["insertDummyMailAddress"] = (isset($_POST["Config"]["insertDummyMailAddress"])) ? (int)$_POST["Config"]["insertDummyMailAddress"] : 0;
+		$_POST["Config"]["displayOrderAdminPage"] = (isset($_POST["Config"]["displayOrderAdminPage"])) ? (int)$_POST["Config"]["displayOrderAdminPage"] : 0;
+		$_POST["Config"]["displayItemAdminPage"] = (isset($_POST["Config"]["displayItemAdminPage"])) ? (int)$_POST["Config"]["displayItemAdminPage"] : 0;
 		if(!isset($_POST["Config"]["consumptionTaxModule"])) $_POST["Config"]["consumptionTaxModule"] = null;
 
 		$consumptionTax = $_POST["Config"]["consumptionTax"]; //外税
@@ -245,6 +247,20 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getInsertDummyMailAddress(),
 			"label" => "管理画面にログイン時、公開側のカートのメールアドレスにダミーのメールアドレスを挿入する"
+		));
+		
+		$this->addCheckBox("displayOrderAdminPage", array(
+			"name" => "Config[displayOrderAdminPage]",
+			"value" => 1,
+			"selected" => $config->getDisplayOrderAdminPage(),
+			"label" => "管理画面で注文タブを表示する"
+		));
+		
+		$this->addCheckBox("displayItemAdminPage", array(
+			"name" => "Config[displayItemAdminPage]",
+			"value" => 1,
+			"selected" => $config->getDisplayItemAdminPage(),
+			"label" => "管理画面で商品タブを表示する"
 		));
 
 		//メンテナンスモード
