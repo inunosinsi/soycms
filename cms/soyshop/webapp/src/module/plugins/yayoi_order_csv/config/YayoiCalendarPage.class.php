@@ -35,12 +35,23 @@ class YayoiCalendarPage extends WebPage{
 			
 			$this->yayoiDao->begin();
 
-			$sql = "SELECT * FROM soyshop_order ".
-					"WHERE order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
-					"AND order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
-					"AND order_date > :start ".
-					"AND order_date < :end";
-					
+			//注文時刻で集める
+//			$sql = "SELECT * FROM soyshop_order ".
+//					"WHERE order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
+//					"AND order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
+//					"AND order_date > :start ".
+//					"AND order_date < :end";
+			
+			//発送時刻で調べる
+			$sql = "SELECT DISTINCT o.id, o.* FROM soyshop_order o ".
+					"INNER JOIN soyshop_order_state_history h ".
+					"ON o.id = h.order_id " .
+					"WHERE o.order_status > " . SOYShop_Order::ORDER_STATUS_RECEIVED . " ".
+					"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
+					"AND h.content LIKE '%「発送済み」%' ".
+					"AND h.order_date > :start ".
+					"AND h.order_date < :end";
+			
 			$slipNumLogic = SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic");
 
 			$lines = array();
@@ -56,6 +67,9 @@ class YayoiCalendarPage extends WebPage{
 				}
 				
 				foreach($res as $v){
+					
+					//前に発送済みにしていないか調べる
+					if(!self::checkBeforeChange($v["id"], $start)) continue;
 					
 					//どちらでも使用する項目
 					$claimed = soy2_unserialize($v["claimed_address"]);
@@ -217,6 +231,22 @@ class YayoiCalendarPage extends WebPage{
 			echo "このタブを閉じ、前の画面でF5を押して、ページを再読み込みしてください。";
 			exit;
 		}
+	}
+	
+	private function checkBeforeChange($orderId, $start){
+		$sql = "SELECT * FROM soyshop_order_state_history ".
+				"WHERE order_id = :orderId ".
+				"AND content LIKE '%「発送済み」%' ".
+				"AND order_date < :orderDate ";
+				
+		try{
+			$res = $this->yayoiDao->executeQuery($sql, array(":orderId" => $orderId, ":orderDate" => $start));
+		}catch(Exception $e){
+			return true;
+		}
+		
+		//一つでもあればfalse
+		return (count($res) === 0);
 	}
 	
 	function execute(){

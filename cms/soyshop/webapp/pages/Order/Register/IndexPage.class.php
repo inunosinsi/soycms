@@ -71,6 +71,14 @@ class IndexPage extends WebPage{
 			$cart->save();
 		}
 		
+		//在庫切れを再度確認してみる
+		try{
+			$cart->checkOrderable();
+			$cart->removeErrorMessage("stock");
+		}catch(Exception $e){
+			//
+		}
+		
 		//消費税の設定
 		$config = SOYShop_ShopConfig::load();
 		define("SOYSHOP_CONSUMPTION_TAX_MODE", ($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
@@ -94,7 +102,10 @@ class IndexPage extends WebPage{
 		$this->cart = AdminCartLogic::getCart();
 
 		WebPage::__construct();
-
+		
+		//在庫切れのエラー
+		DisplayPlugin::toggle("stock_error", !is_null($this->cart->getErrorMessage("stock")));
+		
 		$this->itemInfo();
 		$this->userInfo();
 		$this->addressInfo();
@@ -103,7 +114,7 @@ class IndexPage extends WebPage{
 		$this->paymentForm();
 		$this->deliveryForm();
 		$this->confirmForm();
-
+		
 		$items = $this->cart->getItems();
 		$user = $this->cart->getCustomerInformation();
 		$hasOrder = count($items) || strlen($user->getMailAddress());
