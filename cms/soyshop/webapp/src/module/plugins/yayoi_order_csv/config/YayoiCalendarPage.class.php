@@ -22,6 +22,7 @@ class YayoiCalendarPage extends WebPage{
 		$this->itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 		
 		SOY2::import("domain.config.SOYShop_Area");
+		SOY2::import("domain.order.SOYShop_ItemModule");
 	}
 	
 	function doPost(){
@@ -82,8 +83,8 @@ class YayoiCalendarPage extends WebPage{
 						$adr1 = SOYShop_Area::getAreaText($claimed["area"]) . $claimed["address1"];
 						$line[] = $tel;		//得意先コード 電話番号ハイフンを取り除いたもの
 						$line[] = $claimed["name"];		//得意先名称
-						$line[] = $claimed["reading"];		//得意先フリガナ 半角カナ
-						$line[] = $claimed["reading"];		//略称　半角カナ
+						$line[] = mb_convert_kana($claimed["reading"], "k");		//得意先フリガナ 半角カナ
+						$line[] = mb_convert_kana($claimed["reading"], "k");		//略称　半角カナ
 						$line[] = self::removeHyphen($claimed["zipcode"]);		//郵便番号
 						$line[] = $adr1;		//住所1
 						$line[] = $claimed["address2"];		//住所2
@@ -123,7 +124,7 @@ class YayoiCalendarPage extends WebPage{
 						$line[] = "1";		//参照表示
 						$line[] = "";		//請求書合算コード
 						$line[] = "";		//未使用
-						
+												
 						$lines[] = implode(",", $line);
 						
 					}else if($csvType == self::TYPE_URIAGE){
@@ -131,17 +132,46 @@ class YayoiCalendarPage extends WebPage{
 						$itemOrders = self::getItemOrdersByOrderId($v["id"]);
 						if(!count($itemOrders)) continue;
 						
-						$outputDate = date("Y/m/d");
-						$slipNumber = $slipNumLogic->getAttribute($v["id"])->getValue1();
+						//手数料を追加
+						$mods = soy2_unserialize($v["modules"]);
+						foreach($mods as $mod){
+							if((int)$mod->getPrice() === 0) continue;
+												
+							//税金を含めない
+							if(strpos($mod->getId(), "_tax") !== false) continue;
+										
+							$obj = new SOYShop_ItemOrder();
+							$obj->setItemName($mod->getName());
+							$obj->setItemCount(1);
+							$obj->setItemPrice($mod->getPrice());
+							$obj->setTotalPrice($obj->getItemPrice());
+							
+							$itemOrders[] = $obj;
+						}
 						
+						$outputDate = date("Y/m/d");
+						//$slipNumber = $slipNumLogic->getAttribute($v["id"])->getValue1();
+						
+						$n = 1;
 						foreach($itemOrders as $itemOrder){
+							
+							$itemCode = self::getItemCodeByItemId($itemOrder->getItemId());
+							if(is_null($itemCode) || !strlen($itemCode)){
+								/** @ToDo 特別な項目は管理画面で設定できるようにしたい **/
+								if(strpos($itemOrder->getItemName(), "代金") !== false){
+									$itemCode = 810;
+								}else if(strpos($obj->getItemName(), "送料") !== false){
+									$itemCode = 800;
+								}
+							}
 							
 							$line = array();
 							$line[] = "1";		//固定
 							$line[] = "1";		//固定
 							$line[] = "0";		//固定
 							$line[] = $outputDate;		//データ出力日
-							$line[] = $slipNumber;		//伝票番号
+							//$line[] = $slipNumber;		//伝票番号
+							$line[] = $v["tracking_number"];//注文番号らしい
 							$line[] = "24";		//固定
 							$line[] = "4";		//固定
 							$line[] = "1";		//固定
@@ -150,9 +180,9 @@ class YayoiCalendarPage extends WebPage{
 							$line[] = $tel;		//得意先コード（電話番号ハイフン除く）
 							$line[] = "";	
 							$line[] = "2";		//固定
-							$line[] = "";		//項目番号
+							$line[] = $n++;		//項目番号 連番
 							$line[] = "1";		//固定
-							$line[] = self::getItemCodeByItemId($itemOrder->getItemId());		//商品コード
+							$line[] = $itemCode;		//商品コード
 							$line[] = "";		
 							$line[] = $itemOrder->getItemName();		//商品名
 							$line[] = "12";		//固定
@@ -180,7 +210,6 @@ class YayoiCalendarPage extends WebPage{
 							
 							$lines[] = implode(",", $line);	
 						}
-						
 					}else{
 						//
 					}
@@ -201,7 +230,7 @@ class YayoiCalendarPage extends WebPage{
 			//ここからCSVの出力
 			if(count($lines)){
 				
-				$charset = (isset($_REQUEST["charset"])) ? $_REQUEST["charset"] : "UTF-8";
+				$charset = (isset($_REQUEST["charset"])) ? $_REQUEST["charset"] : "Shift_JIS";
 	
 				header("Cache-Control: public");
 				header("Pragma: public");
@@ -330,10 +359,10 @@ class YayoiCalendarPage extends WebPage{
 		try{
 			$res = $this->yayoiDao->executeQuery("SELECT item_code FROM soyshop_item WHERE id = :id", array(":id" => $itemId));
 		}catch(Exception $e){
-			return "";
+			return null;
 		}
 		
-		return (isset($res[0]["item_code"])) ? $res[0]["item_code"] : "";
+		return (isset($res[0]["item_code"])) ? $res[0]["item_code"] : null;
 	}
 	
 	private function removeHyphen($str){
