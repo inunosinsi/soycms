@@ -133,10 +133,13 @@ class DetailPage extends WebPage{
     	//ユーザの画像保存ディレクトリが無い場合は生成する
 		$dir = $shopUser->getAttachmentsPath();
 
+		DisplayPlugin::toggle("notice_tmp_register", ($shopUser->getUserType() != SOYShop_User::USERTYPE_REGISTER));
+
 		/* フォーム */
     	$this->buildForm($shopUser);		//共通など。
 		$this->buildJobForm($shopUser);		//法人
 		$this->buildProfileForm($shopUser);	//プロフィール
+		$this->buildMailLogForm($shopUser);	//メールログ
 		$this->buildPointForm($shopUser);	//ポイント
     	$this->buildAddressForm($shopUser);	//お届け先
 
@@ -348,6 +351,21 @@ class DetailPage extends WebPage{
 		$this->createAdd("address_list", "_common.User.AddressListComponent", array(
 			"list" => $user->getAddressListArray()
 		));
+	}
+	
+	function buildMailLogForm(SOYShop_User $user){
+		$mailLogDao = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO");
+		$mailLogDao->setLimit(10);
+		try{
+			$mailLogs = $mailLogDao->getByUserId($user->getId());
+		}catch(Exception $e){
+			$mailLogs = array();
+		}
+		
+		DisplayPlugin::toggle("display_mail_history", count($mailLogs));
+		$this->createAdd("mail_history_list", "_common.Order.MailHistoryListComponent", array(
+    		"list" => $mailLogs
+    	));
 	}
 	
 	/**

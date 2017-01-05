@@ -7,6 +7,7 @@
 
 
 <div class="block">
+	
 	<div class="block_title">
 		<h2>顧客情報詳細</h2>
 		
@@ -29,6 +30,7 @@
 	<div class="block_body">
 
 	<p class="notice" soy:display="update_message">更新しました</p>
+	<p class="error always" soy:display="notice_tmp_register">仮登録の顧客です。</p>
 
 	<form soy:id="detail_form">
 
@@ -340,6 +342,22 @@
 
 
 		</form soy:id="detail_form">
+		
+		<!-- soy:display="display_mail_history" -->
+		<h3>メールの送信履歴</h3>
+		<table class="form_table">
+			<tr>
+				<th>日時</th>
+				<th>タイトル</th>
+			</tr>
+			<!--  soy:id="mail_history_list" -->
+			<tr>
+				<td nowrap><!-- soy:id="send_date" /--></td>
+				<td><a soy:id="mail_title"></a></td>
+			</tr>
+			<!--  /soy:id="mail_history_list" -->
+		</table>
+		<!-- /soy:display="display_mail_history" -->
 		
 		<!-- soy:display="point2" -->
 		<!-- soy:display="point_history" -->

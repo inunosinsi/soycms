@@ -30,6 +30,12 @@ abstract class SOYShop_MailLogDAO extends SOY2DAO{
 	 * @order send_date DESC
 	 */
 	abstract function getByOrderId($orderId);
+	
+	/**
+	 * @return list
+	 * @order send_date DESC
+	 */
+	abstract function getByUserId($userId);
 
 	/**
 	 * @final

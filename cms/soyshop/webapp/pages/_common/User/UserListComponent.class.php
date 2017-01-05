@@ -12,13 +12,18 @@ class UserListComponent extends HTMLList{
 			"onchange" => '$(\'#users_operation\').show();',
 			"visible" => $this->appLimit
 		));
-
+		
 		$this->addLabel("id", array(
 			"text" => $bean->getId()
 		));
+		
+		$userName = $bean->getName();
+		if($bean->getUserType() != SOYShop_User::USERTYPE_REGISTER){
+			$userName .= "(仮登録)";
+		}
 
 		$this->addLabel("name", array(
-			"text" => $bean->getName()
+			"text" => $userName
 		));
 
 		$this->addLabel("mailaddress", array(
