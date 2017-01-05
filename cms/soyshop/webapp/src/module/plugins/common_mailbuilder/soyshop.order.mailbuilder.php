@@ -64,6 +64,11 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
 		//メールアドレス
 		$content = str_replace("#CLAIMED_MAILADDRESS#", $user->getMailAddress(), $content);
 		
+		//注文者属性
+		$content = str_replace("#USER_ATTRIBUTE_1#", $user->getAttribute1(), $content);
+		$content = str_replace("#USER_ATTRIBUTE_2#", $user->getAttribute2(), $content);
+		$content = str_replace("#USER_ATTRIBUTE_3#", $user->getAttribute3(), $content);
+		
 		//備考
 		$content = str_replace("#MEMO#", $this->buildMemo($order), $content);
 		
