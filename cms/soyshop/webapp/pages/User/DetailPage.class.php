@@ -74,6 +74,12 @@ class DetailPage extends WebPage{
 			$user->setImagePath($fileName);
 		}
 		
+		//管理画面から本登録にする
+		if($user->getUserType() != SOYShop_User::USERTYPE_REGISTER && isset($_POST["real_register"])){
+			$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
+			$user->setRealRegisterDate(time());
+		}
+		
 		try{
 			$dao->update($user);
 		}catch(Exception $e){
@@ -256,6 +262,14 @@ class DetailPage extends WebPage{
 		//本登録日時
     	$this->addLabel("real_register_date", array(
     		"text" => (is_null($user->getRealRegisterDate())) ? "" : date("Y-m-d H:i:s", $user->getRealRegisterDate()),
+    	));
+    	
+    	//管理画面から本登録できるようにする
+    	DisplayPlugin::toggle("display_real_register", ($user->getUserType() != SOYShop_User::USERTYPE_REGISTER));
+    	$this->addCheckBox("real_register_check", array(
+    		"name" => "real_register",
+    		"value" => 1,
+    		"label" => "本登録にする"
     	));
 
 		//更新日時
