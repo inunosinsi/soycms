@@ -85,7 +85,7 @@ class YayoiCalendarPage extends WebPage{
 						$line[] = $claimed["name"];		//得意先名称
 						$line[] = mb_convert_kana($claimed["reading"], "k");		//得意先フリガナ 半角カナ
 						$line[] = mb_convert_kana($claimed["reading"], "k");		//略称　半角カナ
-						$line[] = self::removeHyphen($claimed["zipcode"]);		//郵便番号
+						$line[] = self::removeHyphen($claimed["zipCode"]);		//郵便番号
 						$line[] = $adr1;		//住所1
 						$line[] = $claimed["address2"];		//住所2
 						$line[] = "";		//部署名
