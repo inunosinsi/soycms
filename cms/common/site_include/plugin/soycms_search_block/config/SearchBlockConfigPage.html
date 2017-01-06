@@ -16,3 +16,9 @@
     cms:countで検索結果を何件表示するか決めることができます。<br>
     ※cms:countの指定がなくても動作します。
 </p>
+
+<h4>他ページに設置する検索フォームの記述例</h4>
+<pre>&lt;form method="GET" action="<strong>{検索結果ページのURL}</strong>"&gt;
+&lt;input type="search" name="<strong>q</strong>"&gt;
+&lt;input type="submit" value="検索"&gt;
+&lt;/form&gt;</pre>
