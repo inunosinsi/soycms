@@ -21,7 +21,7 @@ class ModuleListComponent extends HTMLList{
 			"name" => "Plugin[" . $entity->getId() . "]",
 			"value" => ($entity->getDisplayOrder() < SOYShop_PluginConfig::DISPLAY_ORDER_MAX) ? $entity->getDisplayOrder() : null,
 			"style" => "width:60px;",
-			"disabled" => ($type == "util")
+//			"disabled" => ($type == "util")
 		));
 		$this->addLink("module_detail_link", array(
 			"link" => $detailLink
