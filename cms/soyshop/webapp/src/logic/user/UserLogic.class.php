@@ -69,11 +69,12 @@ class UserLogic extends SOY2LogicBase{
 	/** プロフィール **/
 	
 	/**
-	 * プロフィール用のアカウントを作成する。ユーザID + ランダムでユニークな数字
+	 * プロフィール用のアカウントを作成する。諸々の値のハッシュ
 	 * @return string profile_id 
 	 */
 	function createProfileId(SOYShop_User $user){
-		return $user->getId() . mt_rand();
+		$hash = $user->getId() . md5($user->getName(). $user->getMailAddress());
+		return substr($hash, 0, 20);
 	}
 	
 	/**

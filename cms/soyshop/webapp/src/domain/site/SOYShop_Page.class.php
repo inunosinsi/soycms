@@ -11,6 +11,7 @@ class SOYShop_Page {
 	const TYPE_DETAIL = "detail";
 	const TYPE_FREE = "free";
 	const TYPE_SEARCH = "search";
+	const TYPE_MEMBER = "member";
 	const TYPE_CART = "cart";
 	const TYPE_MYPAGE = "mypage";
 	
@@ -182,6 +183,7 @@ class SOYShop_Page {
 			self::TYPE_DETAIL => "SOYShop_DetailPage",
 			self::TYPE_FREE => "SOYShop_FreePage",
 			self::TYPE_SEARCH => "SOYShop_SearchPage",
+			self::TYPE_MEMBER => "SOYShop_MemberPage"
 		);
 
 		return $classes[$this->type];
@@ -326,7 +328,8 @@ class SOYShop_Page {
 			self::TYPE_LIST => "商品一覧ページ",
 			self::TYPE_DETAIL => "商品詳細ページ",
 			self::TYPE_FREE => "フリーページ",
-			self::TYPE_SEARCH => "検索結果ページ"
+			self::TYPE_SEARCH => "検索結果ページ",
+			self::TYPE_MEMBER => "会員詳細ページ"
 		);
 		return $texts;
 	}

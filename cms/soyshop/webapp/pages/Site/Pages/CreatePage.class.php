@@ -83,13 +83,19 @@ class CreatePage extends WebPage{
 	}
 
 	function getPageTypeList(){
-		return array(
+		$list = array(
 			SOYShop_Page::TYPE_LIST => "商品一覧ページ",
 			SOYShop_Page::TYPE_DETAIL => "商品詳細ページ",
 			SOYShop_Page::TYPE_FREE => "フリーページ",
 			SOYShop_Page::TYPE_COMPLEX => "ナビゲーションページ",
 			SOYShop_Page::TYPE_SEARCH => "検索結果ページ"
 		);
+		
+		if(soyshop_get_mypage_id() == "none"){
+			$list[SOYShop_Page::TYPE_MEMBER] = "会員詳細ページ";
+		}
+		
+		return $list;
 	}
 
 	function getNewPageObject(){

@@ -18,6 +18,7 @@ class CreatePage extends WebPage{
 		if(strlen($this->templateName) < 1) $this->templateName = $this->templateId;
 		
 		$templateDir = SOYSHOP_SITE_DIRECTORY . ".template/" . $this->selected."/";
+		if(!file_exists($templateDir)) mkdir($templateDir);
 		
 		$this->templatePath = $templateDir . $this->templateId . ".html";
 		$this->iniPath =$templateDir . $this->templateId . ".ini";
@@ -68,13 +69,19 @@ class CreatePage extends WebPage{
     }
 		
 	function getTemplateTypeList(){
-		return array(
+		$list = array(
 			SOYShop_Page::TYPE_LIST => "商品一覧ページ",
 			SOYShop_Page::TYPE_DETAIL => "商品詳細ページ",
 			SOYShop_Page::TYPE_FREE => "フリーページ",
 			SOYShop_Page::TYPE_COMPLEX => "ナビゲーションページ",
-			SOYShop_Page::TYPE_SEARCH => "検索結果ページ"
+			SOYShop_Page::TYPE_SEARCH => "検索結果ページ",
 		);
+		
+		if(soyshop_get_mypage_id() == "none"){
+			$list[SOYShop_Page::TYPE_MEMBER] = "会員詳細ページ";
+		}
+		
+		return $list;
 	}
 }
 ?>

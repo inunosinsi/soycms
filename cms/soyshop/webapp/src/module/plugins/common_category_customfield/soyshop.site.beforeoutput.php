@@ -15,9 +15,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 			return;
 		}
 
-		if($obj->getType() == SOYShop_Page::TYPE_COMPLEX || $obj->getType() == SOYShop_Page::TYPE_FREE || $obj->getType() == SOYShop_Page::TYPE_SEARCH){
-			return;
-		}
+		if($obj->getType() != SOYShop_Page::TYPE_LIST || $obj->getType() != SOYShop_Page::TYPE_DETAIL) return;
 		
 		//商品一覧ページ以外では動作しない
 		switch($obj->getType()){
