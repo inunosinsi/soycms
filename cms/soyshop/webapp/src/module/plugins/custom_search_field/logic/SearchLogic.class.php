@@ -150,6 +150,8 @@ class SearchLogic extends SOY2LogicBase{
 				switch($field["type"]){
 					//文字列の場合
 					case CustomSearchFieldUtil::TYPE_STRING:
+					case CustomSearchFieldUtil::TYPE_TEXTAREA:
+					case CustomSearchFieldUtil::TYPE_RICHTEXT:
 						if(isset($_GET["c_search"][$key]) && strlen($_GET["c_search"][$key])){
 							$s_where[$key] = $key . " LIKE :" . $key;
 							$this->binds[":" . $key] = "%" . trim($_GET["c_search"][$key]) . "%";
