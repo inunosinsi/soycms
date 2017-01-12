@@ -68,6 +68,11 @@ foreach($scripts as $script){
 			<li class="news">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>">新着</a>
 			</li>
+			<?php if(count($extConts)) foreach($extConts as $plgId => $cont){
+				echo "<li class=\"extention\">";
+				echo "<a href=\"" . SOYSHOP_ADMIN_URL . "/Extension/" . $plgId . "\">" . $cont["tab"] . "</a>";
+				echo "</li>";
+			}?>
 			<?php if($isOrder){?>
 			<li class="order">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Order">注文</a>

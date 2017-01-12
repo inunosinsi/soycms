@@ -134,6 +134,11 @@ class SOYShopPageController extends SOY2PageController{
 
 			$isOrder = $shopConfig->getDisplayOrderAdminPage();
 			$isItem = $shopConfig->getDisplayItemAdminPage();
+			
+			//拡張ページ
+			SOYShopPlugin::load("soyshop.admin.list");
+			$extConts = SOYShopPlugin::invoke("soyshop.admin.list")->getContents();
+			if(is_null($extConts)) $extConts = array();
 
 			ob_start();
 			$webPage->display();
