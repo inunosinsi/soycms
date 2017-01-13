@@ -457,9 +457,18 @@ function soyshop_add_get_value($url){
  * @return path 画像ファイルの絶対パス
  */
 function soyshop_convert_file_path($path, SOYShop_Item $item){
-	
+	static $isOwnDomain;
+	if(is_null($isOwnDomain)){
+		$siteUrl = trim(SOYSHOP_SITE_URL, "/") . "/";
+		//siteUrl内に/siteId/がなければ独自URLとみなす(ルート設定していないことも調べておく)
+		$isOwnDomain = (!SOYSHOP_IS_ROOT && strpos($siteUrl, "/" . SOYSHOP_ID . "/") === false);
+	}
+
 	//値が無ければそのまま返す
 	if(is_null($path) || strlen($path) === 0) return $path;
+	
+	//独自ドメイン + ルート設定してない場合は画像のURLをSITE_IDなしに変換する
+	if($isOwnDomain && strpos($path, "/" . SOYSHOP_ID . "/") !== false) $path = str_replace("/" . SOYSHOP_ID, "", $path);
 	
 	$tmp = $path;
 	

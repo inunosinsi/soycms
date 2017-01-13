@@ -79,12 +79,18 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 			switch($config->getType()){
 
 				case "image":
+					/**
+					 * 隠し機能:携帯自動振り分け、多言語化プラグイン用で画像の配置場所を別で用意する
+					 * @ToDo 管理画面でもいじれる様にしたい
+					 */
+					$value = soyshop_convert_file_path($value);
+					
 					if(strlen($config->getOutput()) > 0){
 						$page->addModel($config->getFieldId(), array(
 							"attr:" . htmlspecialchars($config->getOutput()) => $value,
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
-					}else{
+					}else{	
 						//imgタグにalt属性を追加するか？
 						if(isset($value2) && strlen($value2) > 0){
 							$page->addImage($config->getFieldId(), array(
