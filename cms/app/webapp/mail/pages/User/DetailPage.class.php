@@ -89,29 +89,33 @@ class DetailPage extends CommonPartsPage{
 			"selected" => ($user->getGender() === 1 OR $user->getGender() === "1") ? true : false 
     	));
     	
-    	if(is_numeric($user->getBirthday())){
+    	
+    	$birthday = null;
+   		if(is_numeric($user->getBirthday())){
     		$birthday = $user->getBirthday();
     	//SOYShopの場合
     	}else{
-    		$birthArray = explode("-", $user->getBirthday());
-    		$birthday = mktime(0,0,0,$birthArray[1], $birthArray[2], $birthArray[0]);
+    		if(!is_null($user->getBirthday())){
+    			$birthArray = explode("-", $user->getBirthday());
+	    		$birthday = mktime(0,0,0,$birthArray[1], $birthArray[2], $birthArray[0]);
+    		}
     	}
     	$this->createAdd("birth_year","HTMLInput",array(
     		"name" => "Detail[birthday][year]",
     		"value" => ($birthday) ? date("Y",$birthday) : "",
-    		"size" => 5
+    		"style" => "width:30% !important"
     	));
     	
     	$this->createAdd("birth_month","HTMLInput",array(
     		"name" => "Detail[birthday][month]",
     		"value" => ($birthday) ? date("m",$birthday) : "",
-    		"size" => 3
+    		"style" => "width:30% !important"
     	));
     	
     	$this->createAdd("birth_day","HTMLInput",array(
     		"name" => "Detail[birthday][day]",
     		"value" => ($birthday) ? date("d",$birthday) : "",
-    		"size" => 3
+    		"style" => "width:30% !important"
     	));
     	
     	$this->createAdd("post_number","HTMLInput",array(
