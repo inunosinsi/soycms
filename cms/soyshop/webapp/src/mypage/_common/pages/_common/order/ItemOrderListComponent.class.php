@@ -21,7 +21,7 @@ class ItemOrderListComponent extends HTMLList{
 		));
 		
 		$this->addImage("item_small_image", array(
-			"src" => $item->getAttribute("image_small")
+			"src" => soyshop_convert_file_path($item->getAttribute("image_small"), $item)
 		));
 
 		$this->addLabel("item_name", array(

@@ -52,11 +52,11 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addImage("item_small_image", array(
-			"src" => $item->getAttribute("image_small")
+			"src" => soyshop_convert_file_path($item->getAttribute("image_small"), $item)
 		));
 
 		$this->addImage("item_large_image", array(
-			"src" => $item->getAttribute("image_large")
+			"src" => soyshop_convert_file_path($item->getAttribute("image_large"), $item)
 		));
 
 		SOYShopPlugin::invoke("soyshop.item.customfield", array(
@@ -148,11 +148,11 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addImage("parent_small_image", array(
-			"src" => $parent->getAttribute("image_small")
+			"src" => soyshop_convert_file_path($parent->getAttribute("image_small"), $parent)
 		));
 
 		$this->addImage("item_large_image", array(
-			"src" => $parent->getAttribute("image_large")
+			"src" => soyshop_convert_file_path($parent->getAttribute("image_large"), $parent)
 		));
 	}
 
