@@ -15,7 +15,7 @@ class IndexPage extends WebPage{
 		WebPage::__construct();
 		
 		SOYShopPlugin::load("soyshop.admin.list", $plugin);
-		$exts = SOYShopPlugin::invoke("soyshop.admin.list")->getContents();
+		$exts = SOYShopPlugin::invoke("soyshop.admin.list", array("mode" => "list"))->getContents();
 		
 		if(!isset($exts[$pluginId])) SOY2PageController::jump("");
 		$ext = $exts[$pluginId];

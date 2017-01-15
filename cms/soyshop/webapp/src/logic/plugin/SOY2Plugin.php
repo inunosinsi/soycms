@@ -51,7 +51,7 @@ if(!class_exists("SOY2Plugin")){
 		 */
 		public static function invoke($extensionId, $arguments = array()){
 			$inst = self::getInstance();
-	
+			
 			$delegate = $inst->getDelegate($extensionId);
 	
 			if(!$delegate)return;
@@ -59,7 +59,7 @@ if(!class_exists("SOY2Plugin")){
 			SOY2::cast($delegate,(object)$arguments);
 	
 			$extensions = $inst->getExtensions($extensionId);
-	
+			
 			/*
 			 * delegateに処理を委譲
 			 */
