@@ -68,12 +68,37 @@ class CustomSearchFieldListComponent extends HTMLList{
 		$this->addLink("setting_link", array(
 			"link" => SOY2PageController::createLink("Config.Detail?plugin=custom_search_field&collective&field_id=".$key)
 		));
+		
+		$this->addModel("checkbox_tag_supple_area", array(
+			"visible" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX)
+		));
+		
+		$this->addLabel("checkbox_tag_supple", array(
+			"html" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX) ? self::buildCheckBoxSuppleTag($key, $entity["option"]) : ""
+		));
 
 		$this->addInput("update_advance_submit", array(
 			"name" => "update_advance",
 			"value" => $key,
 			"attr:id" => "update_advance_submit_" . $key
 		));
+	}
+	
+	private function buildCheckBoxSuppleTag($key, $option){
+		if(!strlen($option)) return "";
+		
+		$text = "";
+		
+		$opts = explode("\n", $option);
+		foreach($opts as $i => $opt){
+			$opt = trim($opt);
+			$text .= $opt . "のタグ<br>";
+			$text .= "&lt;!-- csf:id=\"" . $key . "_" . $i . "_visible\" --&gt;";
+			$text .= "&lt;!-- csf:id=\"" . $key . "_" . $i . "\" --&gt" . $opt . "&lt;!-- /csf:id=\"" . $key . "_" . $i . "\" --&gt";
+			$text .= "&lt;!-- /csf:id=\"" . $key . "_" . $i . "_visible\" --&gt;<br><br>";
+		}
+		
+		return $text;
 	}
 	
 	private function checkDisplayOptionsForm($type){

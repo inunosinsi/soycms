@@ -52,17 +52,34 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 		
 		foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 			
-			$htmlObj->addLabel($key . "_visible", array(
+			$htmlObj->addModel($key . "_visible", array(
 				"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 				"visible" => (strlen($values[$key]))
 			));
 			
+			$htmlObj->addLabel($key, array(
+				"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+				"html" => (isset($values[$key])) ? $values[$key] : null
+			));
+			
 			switch($field["type"]){
-				default:
-					$htmlObj->addLabel($key, array(
-						"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-						"html" => (isset($values[$key])) ? $values[$key] : null
-					));
+				case CustomSearchFieldUtil::TYPE_CHECKBOX:
+					if(strlen($field["option"])){
+						$vals = explode(",", $values[$key]);
+						$opts = explode("\n", $field["option"]);
+						foreach($opts as $i => $opt){
+							$opt = trim($opt);
+							$htmlObj->addModel($key . "_"  . $i . "_visible", array(
+								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+								"visible" => (in_array($opt, $vals))
+							));
+							
+							$htmlObj->addLabel($key . "_" . $i, array(
+								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+								"text" => $opt
+							));
+						}
+					}
 					break;
 			}
 		}
