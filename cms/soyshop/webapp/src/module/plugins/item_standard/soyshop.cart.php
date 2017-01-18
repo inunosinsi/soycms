@@ -8,7 +8,7 @@ class ItemStandardCart extends SOYShopCartBase{
 			$child = SOY2Logic::createInstance("module.plugins.item_standard.logic.ChildItemLogic")->getChildItem($_REQUEST["item"], $_POST["Standard"]);
 			if(!is_null($child->getId())) {
 				SOY2::import("util.SOYShopPluginUtil");
-				if(SOYShopPluginUtil::checkIsActive("async_cart_button") && isset($_REQUEST["mode"]) && $_REQUEST["mode"] == "ajax"){
+				if(SOYShopPluginUtil::checkIsActive("async_cart_button") && isset($_REQUEST["mode"]) && $_REQUEST["mode"] == "async"){
 					
 					//カートに入っている商品数も加味する
 					$cart = CartLogic::getCart();

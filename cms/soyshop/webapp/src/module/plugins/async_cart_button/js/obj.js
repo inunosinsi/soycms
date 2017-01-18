@@ -54,7 +54,7 @@ AsyncCartButton = {
 						if (cnt === 0) cnt = 1;
 					}
 					
-					var url = AsyncCartButton.operationUrl + "?a=add&count=" + cnt + "&item=" + itemId + "&mode=ajax";
+					var url = AsyncCartButton.operationUrl + "?a=add&count=" + cnt + "&item=" + itemId + "&mode=async";
 					
 					//helperに値があればそれを取得する
 					var helper = document.querySelector("#standard_price_helper_" + itemId);
