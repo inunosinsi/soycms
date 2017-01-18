@@ -88,7 +88,7 @@ class CartLogic extends SOY2LogicBase{
 			//$count = min($item->getOpenStock(),$count);
 
 			//商品オプションの値がポストされている場合
-			if(isset($_POST["item_option"]) && is_array($_POST["item_option"]) && count($_POST["item_option"])){
+			if(isset($_REQUEST["item_option"]) && is_array($_REQUEST["item_option"]) && count($_REQUEST["item_option"])){
 				$cart = $this->getCart();
 
 				//商品オプションの配列を比較する
@@ -108,7 +108,7 @@ class CartLogic extends SOY2LogicBase{
 					$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
 						"mode" => "compare",
 						"cart" => $cart,
-						"option" => $_POST["item_option"]
+						"option" => $_REQUEST["item_option"]
 					));
 
 					//すでにある商品と配列が一致したらtrueを返す
@@ -944,8 +944,8 @@ class CartLogic extends SOY2LogicBase{
 		$claimedAddress = $this->getClaimedAddress($this->customerInformation);
 		$order->setClaimedAddress($claimedAddress);
 
-		//念の為に登録したモジュールが消えてないか調べて、消えていればCart03に飛ばす
-		if(!count($this->getModules()) || !count($this->getOrderAttributes())){
+		//念の為に登録したモジュールが消えてないか調べて、消えていればCart03に飛ばす no_moduleモードの場合は確認しない
+		if(is_null($this->getAttribute("no_module")) && (!count($this->getModules()) || !count($this->getOrderAttributes()))){
 			$this->setAttribute("page", "Cart03");
 			$this->save();
 			soyshop_redirect_cart();
