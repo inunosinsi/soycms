@@ -108,7 +108,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 			}
 		}
 		
-		return implode("<br />", $html);	
+		return implode("<br />", $html);
 	}
 	
 	/**
