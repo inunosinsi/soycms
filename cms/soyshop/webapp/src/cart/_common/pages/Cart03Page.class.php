@@ -8,6 +8,8 @@ class Cart03Page extends MainCartPageBase{
 
 	private $user;
 	private $send;
+	
+	private $moduleCount = 0;
 
 	function doPost(){
 
@@ -220,6 +222,9 @@ class Cart03Page extends MainCartPageBase{
 		$this->appendErrors($cart);
 		
 		$cart->clearErrorMessage();
+		
+		//アクティブなモジュールが一つもない場合はこのページを飛ばしたい
+		if($this->moduleCount === 0) $this->jumpNextPage($cart);
 	}
 
 	function buildForm(CartLogic $cart){
@@ -227,8 +232,10 @@ class Cart03Page extends MainCartPageBase{
 		$user = $this->user;
 		
 		$paymentMethodList = $this->getPaymentMethod($cart);
+		$cnt = count($paymentMethodList);
+		$this->moduleCount += $cnt;
 		$this->addModel("has_payment_method", array(
-			"visible" => (count($paymentMethodList))
+			"visible" => ($cnt)
 		));
 
 		$this->createAdd("payment_method_list", "_common.PaymentMethodListComponent", array(
@@ -237,8 +244,10 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		$deliveryMethodList = $this->getDeliveryMethod($cart);
+		$cnt = count($deliveryMethodList);
+		$this->moduleCount += $cnt;
 		$this->addModel("has_delivery_method", array(
-			"visible" => (count($deliveryMethodList))
+			"visible" => ($cnt)
 		));
 		$this->createAdd("delivery_method_list", "_common.DeliveryMethodListComponent", array(
 			"list" => $deliveryMethodList,
@@ -246,8 +255,10 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		$discountModuleList = $this->getDiscountMethod($cart);
+		$cnt = count($discountModuleList);
+		$this->moduleCount += $cnt;
 		$this->addModel("has_discount_method", array(
-			"visible" => (count($discountModuleList) > 0),
+			"visible" => ($cnt > 0),
 		));
 		$this->createAdd("discount_method_list", "_common.DiscountMethodListComponent", array(
 			"list" => $discountModuleList,
@@ -256,16 +267,20 @@ class Cart03Page extends MainCartPageBase{
 		//入力したユーザがポイントを持っているか？
 		$hasPoint = $this->hasPointByUserMailAddress($cart, $user->getMailAddress());
 		$pointModuleList = $this->getPointMethod($cart);
+		$cnt = count($pointModuleList);
+		$this->moduleCount += $cnt;
 		$this->addModel("has_point_method", array(
-			"visible" => (count($pointModuleList) > 0 && $hasPoint),
+			"visible" => ($cnt > 0 && $hasPoint),
 		));
 		$this->createAdd("point_method_list", "_common.PointMethodListComponent", array(
 			"list" => $pointModuleList,
 		));
 
 		$customfieldModuleList = $this->getCustomfieldMethod($cart);
+		$cnt = count($customfieldModuleList);
+		$this->moduleCount += $cnt;
 		$this->addModel("has_customfield_method", array(
-			"visible" => (count($customfieldModuleList) > 0),
+			"visible" => ($cnt > 0),
 		));
 		$this->createAdd("customfield_method_list", "_common.CustomfieldMethodListComponent", array(
 			"list" => $customfieldModuleList,
@@ -568,6 +583,23 @@ class Cart03Page extends MainCartPageBase{
 		
 
 		return $res;
+	}
+	
+	function jumpNextPage(CartLogic $cart){
+		$prevPage = $cart->getAttribute("prev_page");
+		if(!is_null($prevPage)){
+			$p = (int)str_replace("Cart0", "", $prevPage);
+			$c = (int)str_replace("Cart0", "", $cart->getAttribute("page"));
+			if($c > $p) {
+				$c++;
+			}else{
+				$c--;
+			}
+			$cart->setAttribute("page", "Cart0" . $c);
+			$cart->setAttribute("no_module", 1);
+			$cart->save();
+			soyshop_redirect_cart();
+		}
 	}
 }
 ?>

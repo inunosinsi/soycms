@@ -42,7 +42,7 @@ class Cart04Page extends MainCartPageBase{
 							"cart" => $cart,
 						));
 					}
-
+					
 					//ポイントモジュール
 					{
 						SOYShopPlugin::load("soyshop.point.payment");
@@ -79,7 +79,7 @@ class Cart04Page extends MainCartPageBase{
 
 					//注文実行
 					$cart->order();
-					
+
 					//ユーザカスタムフィールド
 					{
 						SOYShopPlugin::load("soyshop.user.customfield");
@@ -125,6 +125,7 @@ class Cart04Page extends MainCartPageBase{
 			}
 
 			if(isset($_POST["prev"]) || isset($_POST["prev_x"])){
+				$cart->setAttribute("prev_page", "Cart04");
 				$cart->setAttribute("page", "Cart03");
 	
 				soyshop_redirect_cart();

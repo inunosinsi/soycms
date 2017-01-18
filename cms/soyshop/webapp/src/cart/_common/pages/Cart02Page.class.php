@@ -38,6 +38,7 @@ class Cart02Page extends MainCartPageBase{
 
 			//エラーがなければ次へ
 			if($validAddress && $this->checkError($cart)){
+				$cart->setAttribute("prev_page", "Cart02");
 				$cart->setAttribute("page", "Cart03");
 			}else{
 				$cart->setAttribute("page", "Cart02");
