@@ -22,7 +22,7 @@ class SearchLogic extends SOY2LogicBase{
 				"FROM soyshop_item ";
 		$sql .= self::buildWhere();	//カウントの時と共通の処理は切り分ける
 		$sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
-		$sql .= " ORDER BY " . $sort . " ";
+		if(isset($sort)) $sql .= " ORDER BY " . $sort . " ";
 		
 		//表示件数
 		$sql .= " LIMIT " . (int)$limit;
@@ -86,7 +86,11 @@ class SearchLogic extends SOY2LogicBase{
 		//小商品を表示
 		if(isset($config["search"]["child"]) && (int)$config["search"]["child"] === 1){
 			$item_where[] = "(item_type != \"" . SOYShop_Item::TYPE_SINGLE . "\" AND item_type != \"" . SOYShop_Item::TYPE_GROUP . "\" AND item_type != \"" . SOYShop_Item::TYPE_DOWNLOAD . "\") ";
-			$item_where[] = "item_type REGEXP '^[0-9]+$'";
+			
+			//SQLiteでREGEXPを使用できないサーバがあるみたい
+			if(SOY2DAOConfig::type() == "mysql"){
+				$item_where[] = "item_type REGEXP '^[0-9]+$'";
+			}
 		}
 		
 		//ダウンロード商品を表示

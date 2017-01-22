@@ -30,7 +30,7 @@ function soyshop_simple_calendar($html, $page){
 	$GLOBALS["reserved_schedules"] = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedSchedulesByPeriod($year, $month);
 	
 	//商品分だけタグを生成する
-	$itemIdList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->registerdItemIdsOnLabel();
+	$itemIdList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemIdsOnLabel();
 	
 	foreach($itemIdList as $itemId){
 
