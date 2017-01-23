@@ -22,7 +22,7 @@ class CommonCustomerCategoryVoiceBeforeOutput extends SOYShopSiteBeforeOutputAct
 			$obj->getType() == SOYShop_Page::TYPE_SEARCH
 		){
 			return;
-		}	
+		}
 		
 		//商品一覧ページ以外では動作しない
 		$class = new CustomerCategoryVoiceClass();

@@ -15,7 +15,13 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 			return;
 		}
 
-		if($obj->getType() != SOYShop_Page::TYPE_LIST || $obj->getType() != SOYShop_Page::TYPE_DETAIL) return;
+		if(
+			$obj->getType() == SOYShop_Page::TYPE_COMPLEX || 
+			$obj->getType() == SOYShop_Page::TYPE_FREE || 
+			$obj->getType() == SOYShop_Page::TYPE_SEARCH
+		){
+			return;
+		}
 		
 		//商品一覧ページ以外では動作しない
 		switch($obj->getType()){
@@ -65,6 +71,9 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 			return;
 		}
 
+		SOY2::import("domain.shop.SOYShop_Item");
+		$dummyItem = new SOYShop_Item();
+		
 		$list = SOYShop_CategoryAttributeConfig::load();
 
 		foreach($list as $config){
@@ -83,7 +92,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 					 * 隠し機能:携帯自動振り分け、多言語化プラグイン用で画像の配置場所を別で用意する
 					 * @ToDo 管理画面でもいじれる様にしたい
 					 */
-					$value = soyshop_convert_file_path($value);
+					$value = soyshop_convert_file_path($value, $dummyItem);
 					
 					if(strlen($config->getOutput()) > 0){
 						$page->addModel($config->getFieldId(), array(
