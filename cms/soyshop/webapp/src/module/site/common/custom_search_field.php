@@ -93,12 +93,19 @@ function soyshop_custom_search_field($html, $htmlObj){
 						foreach(explode("\n", $field["option"]) as $i => $o){
 							$o = trim($o);	//改行を除く
 							if(!strlen($o)) continue;
+							
+							if(isset($field["default"]) && $field["default"] == 1){
+								$selected = ((!isset($params[$key]) && $i === 0) || (isset($params[$key]) && $o === $params[$key]));
+							}else{
+								$selected = (isset($params[$key]) && $o === $params[$key]);
+							}
+							
 							$obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
 								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 								"type" => "radio",
 								"name" => "c_search[" . $key . "]",
 								"value" => $o,
-								"selected" => ((!isset($params[$key]) && $i === 0) || (isset($params[$key]) && $o === $params[$key])),
+								"selected" => $selected,
 								"label" => $o,
 								"elementId" => "custom_search_" . $key . "_" . $i
 							));

@@ -3,7 +3,6 @@
 class CustomSearchFieldListComponent extends HTMLList{
 	
 	protected function populateItem($entity, $key){
-		
 		$this->addLabel("key", array(
 			"text" => $key
 		));
@@ -63,6 +62,17 @@ class CustomSearchFieldListComponent extends HTMLList{
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
 			"onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'
+		));
+		
+		$this->addModel("radio_search_form_default_area", array(
+			"visible" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_RADIO)
+		));
+		
+		$this->addCheckBox("radio_search_form_default", array(
+			"name" => "config[default]",
+			"value" => 1,
+			"selected" => (isset($entity["default"]) && $entity["default"] == 1),
+			"label" => "公開側の検索フォームで未選択時に最初の値にチェックを入れておく"
 		));
 		
 		$this->addLink("setting_link", array(
