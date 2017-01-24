@@ -29,7 +29,8 @@ class ReserveCalendarConfig extends SOYShopConfigPageBase{
 
 		//設定
 		}else{
-			
+			SOY2::import("module.plugins.reserve_calendar.config.ReserveCalendarConfigFormPage");
+			$form = SOY2HTMLFactory::createInstance("ReserveCalendarConfigFormPage");
 		}
 		
 		$form->setConfigObj($this);
@@ -45,6 +46,8 @@ class ReserveCalendarConfig extends SOYShopConfigPageBase{
 			if(isset($_GET["calendar"])) return "予約カレンダーの設定";
 			if(isset($_GET["holiday"])) return "予約カレンダーの定休日設定";
 			if(isset($_GET["label"])) return "予約カレンダーのラベル設定";
+		}else{
+			return "予約カレンダーの設定方法";
 		}
 	}
 }

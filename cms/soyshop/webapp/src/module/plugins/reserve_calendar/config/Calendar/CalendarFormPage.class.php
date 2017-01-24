@@ -102,6 +102,12 @@ class CalendarFormPage extends WebPage{
 			"html" => SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Config.CalendarLogic", array("itemId" => $this->itemId))->build($this->y, $this->m)
 		));
 		
+		$this->addLink("holiday_link", array(
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&holiday&item_id=" . $this->itemId)
+		));
+		
+		DisplayPlugin::toggle("no_holiday_config", !ReserveCalendarUtil::checkIsDayOfWeekConfig($this->itemId));
+		
 		$this->addLink("label_link", array(
 			"link" => SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&label&item_id=" . $this->itemId)
 		));

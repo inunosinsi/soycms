@@ -45,6 +45,10 @@ class ReserveCalendarUtil{
 		return $week;
 		
 	}
+	
+	public static function checkIsDayOfWeekConfig($itemId){
+		return (!is_null(SOYShop_DataSets::get("reserve_calendar.day_of_week_" . $itemId, null)));
+	}
 
 	public static function getDayOfWeekConfig($itemId){
 

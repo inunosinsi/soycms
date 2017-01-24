@@ -6,9 +6,12 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $year;
 	private $month;
 	private $itemId;
+	private $sync;
 	
 	private $schList;
 	private $labelList;
+	
+	private $addedList;
 	
 	function build($y, $m, $dspOtherMD = false, $dspCaption = true, $dspRegHol = true){
 		$this->year = $y;
@@ -16,6 +19,16 @@ class CalendarLogic extends CalendarBaseComponent{
 		
 		$this->schList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic")->getScheduleList($this->itemId, $y, $m);
 		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($this->itemId);
+		
+		//カートに入っているスケジュールを取得する
+		$cart = CartLogic::getCart();
+		$items = $cart->getItems();
+		if(count($items)){
+			foreach($items as $idx => $item){
+				$schId = $cart->getAttribute("reserve_calendar_schedule_id_" . $idx . "_" . $item->getItemId());
+				if(isset($schId)) $this->addedList[] = $schId;
+			}
+		}
 		
 		return parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol);
 	}
@@ -49,7 +62,13 @@ class CalendarLogic extends CalendarBaseComponent{
 				
 				//残席があるか調べる
 				if(self::checkIsUnsoldSeat($i, $schId, $v["seat"])){
-					$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\"><button>" . self::getLabel($v["label_id"]) . "</button></a>";
+					if($this->sync){
+						$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\"><button>" . self::getLabel($v["label_id"]) . "</button></a>";
+					//非同期ボタン
+					}else{
+						$html[] = "<button id=\"reserve_calendar_async_button_" . $schId . "\" onclick=\"AsyncReserveCalendar.add(this," . $schId . ");\">" . self::getLabel($v["label_id"]) . "</button>";
+					}
+					
 
 				//残席がなければ、今のところ何もしない
 				}else{
@@ -65,6 +84,9 @@ class CalendarLogic extends CalendarBaseComponent{
 		//今日よりも前の日の場合は残席数は0になる
 		$schDate = mktime(0, 0, 0, $this->month, $d, $this->year) + 24 * 60 * 60 - 1;
 		if($schDate < time()) return false;
+		
+		//すでにカートに入れてないか？
+		if(in_array($schId, $this->addedList)) return false;
 		
 		//予約がなければ必ずtrue
 		if(!isset($GLOBALS["reserved_schedules"][$schId])) return true;
@@ -83,6 +105,9 @@ class CalendarLogic extends CalendarBaseComponent{
 	
 	function setItemId($itemId){
 		$this->itemId = $itemId;
+	}
+	function setSync($sync){
+		$this->sync = $sync;
 	}
 }
 ?>

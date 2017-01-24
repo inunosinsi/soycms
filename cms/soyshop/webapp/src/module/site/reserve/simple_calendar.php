@@ -31,14 +31,32 @@ function soyshop_simple_calendar($html, $page){
 	
 	//商品分だけタグを生成する
 	$itemIdList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemIdsOnLabel();
-	
 	foreach($itemIdList as $itemId){
-
+		
+		//ボタンの非同期設定 syncがtrueで同期 falseで非同期
+		$sync = true;
+		if(preg_match('/block:id=\"calendar_' . $itemId . '\".*cms:async=\"(.*?)\"/', $html, $tmp)){
+			if(isset($tmp[1]) && is_numeric($tmp[1]) && (int)$tmp[1] === 1) $sync = false;
+		}
+		
 		$obj->addLabel("calendar_" . $itemId, array(
 			"soy2prefix" => "block",
-			"html" => SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.View.CalendarLogic", array("itemId" => $itemId))->build($year, $month)
+			"html" => SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync))->build($year, $month)
 		));
 	}
+	
+	//非同期の場合のjsファイルの挿入
+	$obj->addLabel("async_js", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"html" => "\n" . file_get_contents(SOY2::RootDir() . "module/plugins/reserve_calendar/js/async.js")
+	));
+	
+	$obj->addInput("async_cart_url", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"type" => "hidden",
+		"value" => soyshop_get_cart_url(true),
+		"attr:id" => "reserve_calendar_cart_url"
+	));
 	
 	if(count($itemIdList)){
 		$obj->display();

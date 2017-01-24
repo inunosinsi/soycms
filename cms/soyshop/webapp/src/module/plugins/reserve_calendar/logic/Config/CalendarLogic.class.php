@@ -47,7 +47,7 @@ class CalendarLogic extends CalendarBaseComponent{
 		
 		//定休日に追加のチェックボックスを追加しない
 		if($da != "reg"){
-			$html[] = "<label><input type=\"checkbox\" name=\"column[" . $i . "]\" value=\"1\"> 追加</label>";
+			$html[] = "<label><input type=\"checkbox\" name=\"column[" . $i . "]\" value=\"1\"> <strong>追加</strong></label>";
 		}
 		return implode("<br>", $html);
 	}
