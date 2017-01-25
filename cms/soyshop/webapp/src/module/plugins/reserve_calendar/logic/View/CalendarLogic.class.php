@@ -11,7 +11,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $schList;
 	private $labelList;
 	
-	private $addedList;
+	private $addedList = array();
 	
 	function build($y, $m, $dspOtherMD = false, $dspCaption = true, $dspRegHol = true){
 		$this->year = $y;
