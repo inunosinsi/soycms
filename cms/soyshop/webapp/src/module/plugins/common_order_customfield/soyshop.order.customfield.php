@@ -493,6 +493,10 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 
 
 		$fileName = $_FILES["customfield_module"]["name"][$obj->getFieldId()];
+		
+		//ファイル名がない場合は調べない
+		if(!strlen($fileName)) return true;
+		
 		$extension = trim(mb_strtolower(substr($fileName, strrpos($fileName, ".") + 1)));
 		$res = false;
 		foreach(explode("\n", $obj->getFileOption()) as $allow){
