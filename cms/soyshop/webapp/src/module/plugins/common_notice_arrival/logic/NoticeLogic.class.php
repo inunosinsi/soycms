@@ -78,8 +78,9 @@ class NoticeLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			return false;
 		}
-		
-		return ((int)$item->getStock() === 0);
+				
+		//公開且つ在庫0の場合
+		return ($item->isPublished() && (int)$item->getStock() === 0);
 	}
 	
 	/**
