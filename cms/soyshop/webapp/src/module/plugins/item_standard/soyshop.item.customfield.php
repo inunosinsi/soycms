@@ -111,7 +111,11 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 					if(strpos($child->getName(), $cand)) $hit = true;
 				}
 				
-				if(!$hit) $child->setIsOpen(SOYShop_Item::NO_OPEN);
+				if($hit){
+					$child->setIsOpen(SOYShop_Item::IS_OPEN);
+				}else{
+					$child->setIsOpen(SOYShop_Item::NO_OPEN);
+				}
 				
 				try{
 					$itemDao->update($child);
