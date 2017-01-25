@@ -98,7 +98,7 @@ class BuildFormLogic extends SOY2LogicBase{
 		$html[] = "	<tbody>";
 		
 		//候補を作成する
-		if(count($list)) foreach(self::getCandidate($list) as $key =>  $candidate){
+		if(count($list)) foreach(self::_getCandidate($list) as $key =>  $candidate){
 			$html[] = "		<tr>";
 			$html[] = self::buildTd($candidate, $key);
 			$html[] = "		</tr>";
@@ -110,8 +110,26 @@ class BuildFormLogic extends SOY2LogicBase{
 		return implode("\n", $html);
 	}
 	
+	function getCandidate(){
+		$list = array();	//使用する規格を保持しておく配列
+		
+		foreach(ItemStandardUtil::getConfig() as $conf){
+			if(isset($conf["id"]) && self::checkFieldValue($conf["id"])){
+				$list[] = $conf["id"];		//使用する規格を保持しておく
+			}
+		}
+		
+		$cands = self::_getCandidate($list);
+		
+		$list = array();
+		foreach($cands as $cand){
+			$list[] = str_replace(";", " ", $cand);
+		}
+		
+		return $list;
+	}
 	
-	private function getCandidate($list){
+	private function _getCandidate($list){
 		$array = array();
 		$cmb = 1;	//組み合わせの数
 		$cnt = array();	//各々の要素数

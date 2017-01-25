@@ -67,7 +67,13 @@ class ChildItemLogic extends SOY2LogicBase{
 			try{
 				$this->itemDao->getByCode($pcode . "_" . $postfix);
 			}catch(Exception $e){
-				break;
+				//念の為にエイリアスがないことも確認
+				try{
+					$this->itemDao->getByAlias($pcode . "_" . $postfix . ".html");
+				}catch(Exception $e){
+					break;
+				}
+				
 			}
 			$postfix++;
 		}

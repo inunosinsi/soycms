@@ -24,7 +24,7 @@ class SettingStandardPage extends WebPage{
 			foreach($_POST["Item"] as $values){
 				$child = $logic->getChildItem($this->itemId, $values["key"]);
 				$child = $logic->setChildItemName($child, $this->parentItem, $values["key"]);
-
+				
 				//在庫数チェックの前に更新前の在庫数を取得しておく
 				$oldStock = $child->getStock();
 

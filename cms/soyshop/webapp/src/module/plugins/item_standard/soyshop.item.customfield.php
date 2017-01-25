@@ -91,16 +91,28 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 				}
 			}
 			
-			//セールの一括設定
+			//セールの一括設定と公開設定
 			try{
 				$children = $itemDao->getByType($item->getId());
 			}catch(Exception $e){
 				return;
 			}
 			
+			//名前の候補
+			$cands = SOY2Logic::createInstance("module.plugins.item_standard.logic.BuildFormLogic", array("parentId" => $item->getId()))->getCandidate();
+			
 			$saleFlag = (int)$item->getSaleFlag();
 			if(count($children)) foreach($children as $child){
 				$child->setSaleFlag($saleFlag);
+				
+				//非公開にするか調べる
+				$hit = false;
+				foreach($cands as $cand){
+					if(strpos($child->getName(), $cand)) $hit = true;
+				}
+				
+				if(!$hit) $child->setIsOpen(SOYShop_Item::NO_OPEN);
+				
 				try{
 					$itemDao->update($child);
 				}catch(Exception $e){
