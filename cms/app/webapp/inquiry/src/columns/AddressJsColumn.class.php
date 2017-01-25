@@ -76,7 +76,9 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<table cellspacing="0" cellpadding="5" border="0" '. implode(" ",$attributes) .'>';
 		$html[] = '<tbody><tr>';
 		$html[] = '<td width="70">郵便番号：<br/></td>';
-		$html[] = '<td><input class="input-zip" type="text" size="8" name="data['.$this->getColumnId().'][zip1]" value="'.htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8").'" style="ime-mode:inactive;"' . $required . '>';
+		$html[] = '<td>';
+		$html[] = '<input class="input-zip1" type="text" size="4" name="data['.$this->getColumnId().'][zip1]" value="'.htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8").'" style="ime-mode:inactive;"' . $required . '>-';
+		$html[] = '<input class="input-zip2" type="text" size="5" name="data['.$this->getColumnId().'][zip2]" value="'.htmlspecialchars($value["zip2"], ENT_QUOTES, "UTF-8").'" style="ime-mode:inactive;"' . $required . '>';
 		$html[] = '<span class="roll"><a href="javascript:void(0);" class="search-btn">住所検索</a></span>';
 		$html[] = '</td>';
 		$html[] = '</tr>';
@@ -85,10 +87,10 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<td><select class="input-pref" name="data['.$this->getColumnId().'][prefecture]"' . $required . '>';
 		$html[] = '<option value="">選択してください</option>';
 		foreach($this->prefecture as $id => $pref){
-			if($pref == $value["prefecture"]){
-				$html[] ="<option selected=\"selected\">".$pref."</option>";
+			if($pref == $value["prefecture"] || $id == $value["prefecture"]){
+				$html[] ="<option value=\"" . $id . "\" selected=\"selected\">".$pref."</option>";
 			}else{
-				$html[] ="<option>".$pref."</option>";
+				$html[] ="<option value=\"" . $id . "\">".$pref."</option>";
 			}
 		}
 		$html[] = '</select></td></tr>';
@@ -161,7 +163,8 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			$value["address2"] = $res["address2"];
 			
 			$this->setValue($value);			
-		}		
+		}
+		return true;	
 	}
 	
 	function getErrorMessage(){
@@ -178,7 +181,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		}
 		
 		$address = $value["zip1"]  ."-" . $value["zip2"] . "\n" .
-		           $value["prefecture"] . $value["address1"] . $value["address2"];
+		           $this->prefecture[$value["prefecture"]] . $value["address1"] . $value["address2"];
 		if(strlen($value["address3"])) $address.= "\n" . $value["address3"];
 		
 		$address = htmlspecialchars($address, ENT_QUOTES, "UTF-8");
