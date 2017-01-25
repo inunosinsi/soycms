@@ -77,12 +77,12 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<tbody><tr>';
 		$html[] = '<td width="70">郵便番号：<br/></td>';
 		$html[] = '<td><input class="input-zip" type="text" size="8" name="data['.$this->getColumnId().'][zip1]" value="'.htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8").'" style="ime-mode:inactive;"' . $required . '>';
-		$html[] = '<span class="roll"><img src="/js/img/btn_address-seach_01.gif" alt="住所検索" width="167" height="28" class="search-btn" /></span>';
+		$html[] = '<span class="roll"><a href="javascript:void(0);" class="search-btn">住所検索</a></span>';
 		$html[] = '</td>';
 		$html[] = '</tr>';
 		$html[] = '<tr>';
 		$html[] = '<td>都道府県：</td>';
-		$html[] = '<td><select class="select-pref" name="data['.$this->getColumnId().'][prefecture]"' . $required . '>';
+		$html[] = '<td><select class="input-pref" name="data['.$this->getColumnId().'][prefecture]"' . $required . '>';
 		$html[] = '<option value="">選択してください</option>';
 		foreach($this->prefecture as $id => $pref){
 			if($pref == $value["prefecture"]){
