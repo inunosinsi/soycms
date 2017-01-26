@@ -26,7 +26,7 @@
 			<col style="width:100px" />
 			<caption>SMTP設定</caption>
 			<tr>
-				<th>送信方法</th>
+				<th nowrap>送信方法</th>
 				<td>
 					<input soy:id="send_server_type_sendmail" type="radio" name="server_type" />
 					<label for="send_server_type_sendmail">sendmail (PHPのmail関数)</label>
@@ -40,12 +40,12 @@
 					<table class="inner_table">
 						<col style="width:100px;text-align:left;" />
 						<tr>
-							<th>サーバ</th>
-							<td><input soy:id="send_server_address" type="text" name="" value="" size="80" /></td>
+							<th nowrap>サーバ</th>
+							<td><input soy:id="send_server_address" type="text" name="" value="" size="60" /></td>
 						</tr>
 						<tr>
 							<th>ポート</th>
-							<td><input soy:id="send_server_port" type="text" name="" value="" size="80" /></td>
+							<td><input soy:id="send_server_port" type="text" name="" value="" size="60" /></td>
 						</tr>
 					</table>
 				</td>
@@ -69,12 +69,12 @@
 					<table class="inner_table">
 						<col style="width:100px;text-align:left;" />
 						<tr>
-							<th>ユーザ名</th>
-							<td><input soy:id="send_server_user" type="text" value="" size="80" /></td>
+							<th nowrap>ユーザ名</th>
+							<td><input soy:id="send_server_user" type="text" value="" size="60" /></td>
 						</tr>
 						<tr>
-							<th>パスワード</th>
-							<td><input soy:id="send_server_password" type="password" name="" value="" size="80" /></td>
+							<th nowrap>パスワード</th>
+							<td><input soy:id="send_server_password" type="password" name="" value="" size="60" /></td>
 						</tr>
 
 					</table>
@@ -94,7 +94,7 @@
 			<caption>POP/IMAP設定（POP/IMAP before SMTPの場合のみ）</caption>
 
 			<tr>
-				<th>受信方法</th>
+				<th nowrap>受信方法</th>
 				<td>
 					<input soy:id="receive_server_type_pop" type="radio" name="server_type" />
 					<label for="receive_server_type_pop">POP3</label>
@@ -106,25 +106,25 @@
 				</td>
 			</tr>
 			<tr>
-				<th rowspan="2">サーバ設定</th>
+				<th rowspan="2" nowrap>サーバ設定</th>
 				<td style="background-color:white;">
 					<table class="inner_table">
 						<col style="width:100px;text-align:left;" />
 						<tr>
-							<th>サーバ</th>
-							<td><input soy:id="receive_server_address" type="text" name="" value="" size="80" /></td>
+							<th nowrap>サーバ</th>
+							<td><input soy:id="receive_server_address" type="text" name="" value="" size="60" /></td>
 						</tr>
 						<tr>
-							<th>ポート</th>
-							<td><input soy:id="receive_server_port" type="text" name="" value="" size="80" /></td>
+							<th nowrap>ポート</th>
+							<td><input soy:id="receive_server_port" type="text" name="" value="" size="60" /></td>
 						</tr>
 						<tr>
-							<th>ユーザ名</th>
-							<td><input soy:id="receive_server_user" type="text" value="" size="80" /></td>
+							<th nowrap>ユーザ名</th>
+							<td><input soy:id="receive_server_user" type="text" value="" size="60" /></td>
 						</tr>
 						<tr>
-							<th>パスワード</th>
-							<td><input soy:id="receive_server_password" type="password" name="" value="" size="80" /></td>
+							<th nowrap>パスワード</th>
+							<td><input soy:id="receive_server_password" type="password" name="" value="" size="60" /></td>
 						</tr>
 					</table>
 				</td>
@@ -145,35 +145,35 @@
 			<col style="width:200px" />
 			<caption>管理者メールアドレス（送信元アドレス）設定</caption>
 			<tr>
-				<th>送信元アドレス（From）</th>
+				<th nowrap>送信元アドレス（From）</th>
 				<td>
-					<input id="administrator_address" soy:id="administrator_address" type="text" value="" size="80" />
+					<input id="administrator_address" soy:id="administrator_address" type="text" value="" size="60" />
 				</td>
 			</tr>
 			<tr>
 				<th>送信元名称</th>
 				<td>
-					<input soy:id="administrator_name" type="text" value="" size="80" />
+					<input soy:id="administrator_name" type="text" value="" size="60" />
 				</td>
 			</tr>
 			<!--
 			<tr>
-				<th>差出人メールアドレス</th>
+				<th nowrap>差出人メールアドレス</th>
 				<td>
-					<input soy:id="administrator_mail" type="text" value="" size="80" />
+					<input soy:id="administrator_mail" type="text" value="" size="60" />
 				</td>
 			</tr>
 			-->
 			<tr>
-				<th>返信先メールアドレス（Reply-To）</th>
+				<th>返信先メールアドレス<br>（Reply-To）</th>
 				<td>
-					<input soy:id="return_address" type="text" value="" size="80" />
+					<input soy:id="return_address" type="text" value="" size="60" />
 				</td>
 			</tr>
 			<tr>
 				<th>返信先名称</th>
 				<td>
-					<input soy:id="return_name" type="text" value="" size="80" />
+					<input soy:id="return_name" type="text" value="" size="60" />
 				</td>
 			</tr>
 			<tr>
@@ -235,9 +235,9 @@
 			<col style="width:200px" />
 			<caption>送信テスト</caption>
 			<tr>
-				<th>テストメールの送信先</th>
+				<th nowrap>テストメールの送信先</th>
 				<td>
-					<input type="text" value="" id="test_mail_address" soy:id="test_mail_address" size="80" />
+					<input type="text" value="" id="test_mail_address" soy:id="test_mail_address" size="60" />
 				</td>
 			</tr>
 		</table>
