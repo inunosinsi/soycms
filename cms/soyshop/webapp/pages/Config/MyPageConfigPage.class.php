@@ -51,7 +51,7 @@ class MyPageConfigPage extends WebPage{
 			SOYShop_DataSets::put("config.mypage.tmp_user_register", (int)$_POST["mypage_tmp_user_register"]);
 			
 			SOYShop_DataSets::put("config.mypage.profile_resize", $profile_resize);
-			SOYShop_DataSets::put("config.mypage.profile_resize_width", soyshop_convert_number($_POST["mypage_profile_resize_width"]), 0);
+			SOYShop_DataSets::put("config.mypage.profile_resize_width", soyshop_convert_number($_POST["mypage_profile_resize_width"], 0));
 			
 			//多言語化用の拡張ポイント
 			SOYShopPlugin::load("soyshop.application.name");

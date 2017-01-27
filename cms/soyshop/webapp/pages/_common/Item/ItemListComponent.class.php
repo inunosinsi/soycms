@@ -39,7 +39,7 @@ class ItemListComponent extends HTMLList{
 		
 		
 		$this->addImage("item_small_image", array(
-			"src" => $item->getAttribute("image_small"),
+			"src" => soyshop_convert_file_path_on_admin($item->getAttribute("image_small")),
 			"width" => 60
 		));
 		

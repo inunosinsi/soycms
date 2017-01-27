@@ -510,6 +510,18 @@ function soyshop_convert_file_path($path, SOYShop_Item $item){
 	return $path;
 }
 
+/**
+ * 独自ドメインで表示している場合、管理画面で画像のパスがずれることがあるのでパスを修正する
+ */
+function soyshop_convert_file_path_on_admin($path){
+	if(!strlen($path)) return $path;
+	
+	if(strpos(SOYSHOP_SITE_URL, $_SERVER["HTTP_HOST"]) === false && strpos(SOYSHOP_SITE_URL, "/" . SOYSHOP_ID) === false){
+		$path = "/" . SOYSHOP_ID . "/" . $path;
+	}
+	return $path;
+}
+
 //ダミーのメールアドレスを取得する
 function soyshop_dummy_mail_address(){
 	$str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));

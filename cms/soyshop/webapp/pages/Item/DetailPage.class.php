@@ -456,13 +456,13 @@ class DetailPage extends WebPage{
 		$this->createAdd("item_small_image","_common.Item.ImageSelectComponent", array(
 			"domId" => "item_small_image",
 			"name" => "Item[config][image_small]",
-			"value" => $item->getAttribute("image_small")
+			"value" => soyshop_convert_file_path_on_admin($item->getAttribute("image_small"))
 		));
 
 		$this->createAdd("item_large_image","_common.Item.ImageSelectComponent", array(
 			"domId" => "item_large_image",
 			"name" => "Item[config][image_large]",
-			"value" => $item->getAttribute("image_large")
+			"value" => soyshop_convert_file_path_on_admin($item->getAttribute("image_large"))
 		));
 
 		//error
