@@ -1,1 +1,0 @@
-ALTER TABLE soyshop_plugins ADD display_order INTEGER default 2147483647;
