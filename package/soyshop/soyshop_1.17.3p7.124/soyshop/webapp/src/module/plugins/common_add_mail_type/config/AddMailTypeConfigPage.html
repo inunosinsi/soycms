@@ -1,0 +1,61 @@
+<div class="notice" soy:display="created">追加しました</div>
+<div class="notice" soy:display="updated">更新しました</div>
+<div class="notice" soy:display="removed">削除しました</div>
+<div class="error" soy:display="failed">失敗しました</div>
+
+<div class="block_body clearfix">
+	
+	<div class="alR">
+		<a class="button" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
+	</div>
+	
+	<table class="form_list">
+		<caption>メール送信一覧</caption>
+		<thead>
+			<tr>
+				<th class="short">メールID</th>
+				<th class="long">メール名</th>
+				<th>表示順</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="mail_type_list" -->
+			<form method="POST">
+			<tr>
+				<td soy:id="mail_id"></td>
+				<td soy:id="mail_title"></td>
+				<td style="text-align:center;">
+					<input type="hidden" soy:id="field_id" />
+					<input type="submit" name="move_up" value="△" />
+					<input type="submit" name="move_down" value="▽" />
+				</td>
+				<td class="operation">
+					<a class="button" soy:id="edit_link">編集</a>
+					<a class="button" soy:id="remove_link">削除</a>
+				</td>
+			</tr>
+			</form>
+			<!-- /soy:id="mail_type_list" -->
+		</tbody>
+	</table>
+</div>
+
+<div id="append_form_el" class="popup" style="display:none;">
+	<form soy:id="create_form" id="create_form">
+		メール名
+		<div class="alL">
+			<input soy:id="mail_title" type="text" class="text validate">
+		</div>
+
+		メールID(半角英数字のみ)
+		<div class="alL">
+			<input soy:id="mail_id" type="text" class="text validate"><br>
+			※order,confirm,payment,deliver,otherは使用できません
+		</div>
+		<p class="alC">
+			<input type="submit" name="created" value="追加">
+		</p>
+		<p class="close"></p>
+	</form>
+</div>

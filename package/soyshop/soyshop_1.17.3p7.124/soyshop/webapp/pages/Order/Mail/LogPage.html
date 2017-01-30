@@ -1,0 +1,41 @@
+<h1>
+	送信メール詳細
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Order">注文管理</a> &gt; <a soy:id="order_detail_link">注文詳細</a> &gt; 送信メール詳細
+	</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>送信メール詳細</h2>
+	</div>
+
+	<div class="block_body">
+
+	<table class="form_table">
+		<tr>
+			<th style="width:200px;">送信日時</th>
+			<td soy:id="send_date"></td>
+		</tr>
+		<tr>
+			<th style="width:200px;">送信先</th>
+			<td soy:id="recipient"></td>
+		</tr>
+		<tr>
+			<th style="width:200px;">件名</th>
+			<td soy:id="title"></td>
+		</tr>
+	</table>
+
+	<table class="form_table">
+		<tr>
+			<th>本文</th>
+		</tr>
+		<tr class="last_row">
+			<td soy:id="content"></td>
+		</tr>
+	</table>
+
+	</div><!-- /block_body -->
+</div><!-- /block -->

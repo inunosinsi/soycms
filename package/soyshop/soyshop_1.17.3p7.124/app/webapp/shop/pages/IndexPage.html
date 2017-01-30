@@ -1,0 +1,46 @@
+<div style="padding:20px;">
+
+<h1>ようこそSOY Shopへ！</h1>
+
+<!-- soy:display="for_super_user" -->
+<p>SOY ShopはSOY CMSのサイトを使って簡単にECサイトを運営するためのアプリケーションです。
+</p>
+
+<p>SOY Shopを使うには、SOY Shop専用のサイトを作成する必要があります。</p>
+<!-- /soy:display="for_super_user" -->
+
+<h2>SOY Shopサイトの一覧</h2>
+
+<!-- soy:id="no_soyshop" -->
+<p style="margin-top:20px;margin-left:30px;">サイトがありません。 → <a soy:link="shop.Create">サイトの新規作成</a></p>
+<!-- /soy:id="no_soyshop" -->
+
+<!-- soy:id="display_soyshop_list" -->
+
+<div class="table_container">
+	<table class="nowrap list">
+		<thead>
+			<tr>
+				<th class="short">サイトID</th>
+				<th>サイト名</th>
+				<th class="short">データベース</th>
+				<th>URL</th>
+				<th class="short">&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="soyshop_list" -->
+			<tr>
+				<td><!-- soy:id="soyshop_site_id" /--></td>
+				<td><!-- soy:id="soyshop_site_name" /--></td>
+				<td><!-- soy:id="soyshop_site_db" /--></td>
+				<td><a soy:id="soyshop_site_url" >site url link</a></td>
+				<td><a soy:id="soyshop_site_login" >site url link</a></td>
+			</tr>
+			<!-- /soy:id="soyshop_list" -->
+		</tbody>
+	</table>
+</div>
+<!-- /soy:id="display_soyshop_list" -->
+
+</div>

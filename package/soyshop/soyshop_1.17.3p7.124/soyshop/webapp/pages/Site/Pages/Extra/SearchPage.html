@@ -1,0 +1,52 @@
+<h1>
+	ページ管理
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Pages">ページ管理</a> &gt; <a soy:id="detail_page_link">ページ設定</a> &gt; 検索ページ設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2><span soy:id="page_name"></span> | コンテンツ設定</h2>
+	</div>
+
+	<div class="block_body">
+		
+		<p class="notice" soy:display="updated">更新しました</p>
+		
+		<form soy:id="update_form">
+			
+			<dl>
+				<dt>検索モジュールの設定</dt>
+				<dd>
+					<select soy:id="search_module_select"><option value="">---</option></select>
+				</dd>
+				
+				<dt>表示件数の設定(モジュールによっては使用不可能)</dt>
+				<dd>
+					<input type="text" size="4" soy:id="display_count" />
+				</dd>
+			</dl>
+			
+			<dl>
+				<dt>ソート順の設定</dt>
+				<dd>
+					<!-- soy:id="sort_list" -->
+					<input type="radio" soy:id="sort_input" />
+					<!-- /soy:id="sort_list" -->
+
+					<br />
+					<input type="radio" soy:id="sort_custom" />
+					<select soy:id="sort_custom_field_list"><option value="">----</option></select>
+
+					<h4>昇順・降順</h4>
+					<input type="radio" soy:id="sort_normal" />
+					<input type="radio" soy:id="sort_reverse" />
+				</dd>
+			</dl>
+
+			<p class="pageBtn"><input type="submit" value="更新" /></p>
+
+		</form soy:id="update_form">
+	</div>
+</div>

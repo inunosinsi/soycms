@@ -1,0 +1,36 @@
+<h1>
+	HTMLモジュール追加
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Template#html_module_list">テンプレート管理</a> &gt; モジュール追加</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>HTMLモジュールの追加</h2>
+	</div>
+
+	<div class="block_body">
+
+		<p class="error" soy:display="failed">モジュールの追加に失敗しました。</p>
+
+		<form soy:id="create_form">
+		
+		<dl>
+			<dt>モジュールID <span class="option">半角英数字</span></dt>
+			<dd>
+				<input type="text" class="text" soy:id="module_id" />
+			</dd>
+			<dt>モジュール名</dt>
+			<dd>
+				<input type="text" class="title" soy:id="module_name" />
+			</dd>
+		</dl>
+
+		<p class="pageBtn">
+			<input type="submit" value="追加" />
+		</p>
+
+		</form soy:id="create_form">
+	</div>
+</div>

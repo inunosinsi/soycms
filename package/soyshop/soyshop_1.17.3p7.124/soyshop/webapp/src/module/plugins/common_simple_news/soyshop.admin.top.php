@@ -1,0 +1,25 @@
+<?php
+class SimpleNewsAdminTop extends SOYShopAdminTopBase{
+
+	function getLink(){
+		return SOY2PageController::createLink("Config.Detail?plugin=common_simple_new");
+	}
+	
+	function getLinkTitle(){
+		return "新着情報の編集";
+	}
+
+	function getTitle(){
+		return "新着情報";
+	}
+
+	function getContent(){
+		SOY2::import("module.plugins.common_simple_news.page.SimpleNewsAreaPage");
+		$form = SOY2HTMLFactory::createInstance("SimpleNewsAreaPage");
+		$form->setConfigObj($this);
+		$form->execute();
+		return $form->getObject();
+	}
+}
+SOYShopPlugin::extension("soyshop.admin.top", "common_simple_news", "SimpleNewsAdminTop");
+?>

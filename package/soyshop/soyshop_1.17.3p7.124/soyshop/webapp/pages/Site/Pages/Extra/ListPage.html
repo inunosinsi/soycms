@@ -1,0 +1,152 @@
+<h1>
+	ページ管理
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Pages">ページ管理</a> &gt; <a soy:id="detail_page_link">ページ設定</a> &gt; 商品一覧ページ設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2><span soy:id="page_name"></span> | 商品一覧ページの設定</h2>
+	</div>
+
+	<div class="block_body">
+		<form soy:id="update_form">
+
+			<dl>
+				<dt>商品一覧の種別</dt>
+				<dd>
+					<input type="radio" soy:id="radio_use_category" /><br />
+					<input type="radio" soy:id="radio_use_field" /><br />
+					<input type="radio" soy:id="radio_use_custom" />
+				</dd>
+				<dt>表示件数</dt>
+				<dd>
+					<select soy:id="limit"></select>
+				</dd>
+			</dl>
+
+			<dl soy:id="config_type_category" class="form center config">
+				<dt>
+					特定のカテゴリのみこの商品一覧ページを使用
+				</dt>
+				<dd>
+					<p class="mb" soy:id="categories_choice"></p>
+					<input type="hidden" soy:id="categories" />
+					<a class="button" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
+					<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
+				</dd>
+
+				<dt>
+					初期状態で表示するカテゴリ
+				</dt>
+				<dd>
+					<p class="mb" soy:id="default_categories_choice"></p>
+					<input type="hidden" soy:id="default_categories" />
+					<a class="button" href="javascript:void(0);" onclick="$(this).hide();$('#default_category_tree').show();">選択する</a>
+					<ul id="default_category_tree" class="category_tree" soy:id="default_category_tree" style="display:none;"></ul>
+				</dd>
+			</dl>
+
+			<dl soy:id="config_type_field" class="form center config clearfix">
+				<dt>
+					カスタムフィールドの選択
+				</dt>
+				<dd>
+					<table>
+					<tr>
+
+					<td>
+						<select soy:id="custom_field_list"></select>
+					</td>
+
+					<td style="vertical-align:middle;">
+						の値が
+					</td>
+
+					<td>
+						<input type="radio" soy:id="not_use_parameter">
+						<input type="text" soy:id="field_value" />の商品一覧<br />
+						<input type="radio" soy:id="use_parameter" />
+					</td>
+
+					</tr>
+					</table>
+				</dd>
+			</dl>
+
+			<dl soy:id="config_type_custom" class="form center config">
+				<dt>
+					モジュール名を選択してください
+				</dt>
+				<dd>
+					<select soy:id="module_name">
+						<option value="">選択してください</option>
+					</select><br>
+					<!-- soy:id="module_config" /-->
+				</dd>
+			</dl>
+						
+			<dl>
+				<dt>ソート順の設定</dt>
+				<dd>
+					<!-- soy:id="sort_list" -->
+					<input type="radio" soy:id="sort_input" />
+					<!-- /soy:id="sort_list" -->
+
+					<br />
+					<input type="radio" soy:id="sort_custom" />
+					<select soy:id="sort_custom_field_list"><option value="">----</option></select>
+
+					<h4>昇順・降順</h4>
+					<input type="radio" soy:id="sort_normal" />
+					<input type="radio" soy:id="sort_reverse" />
+				</dd>
+			</dl>
+
+			<p class="pageBtn"><input type="submit" value="更新" /></p>
+
+		</form soy:id="update_form">
+	</div><!-- /block_body -->
+</div>
+
+<script type="text/javascript">
+function onClickLeaf(id,ele){
+	if($(ele).hasClass("selected_category")){
+		$("#categories_input").val($("#categories_input").val().replace(id,""));
+		$("#categories_text").text($("#categories_text").text().replace($(ele).text(),""));
+
+		$(ele).removeClass("selected_category");
+	}else{
+		$("#categories_input").val($("#categories_input").val() + "," + id);
+		$("#categories_text").text($("#categories_text").text() + "," + $(ele).text());
+
+		$(ele).addClass("selected_category");
+	}
+}
+function onClickDefaultLeaf(id,ele){
+	if($(ele).hasClass("selected_category")){
+		$("#default_categories_input").val("");
+		$("#default_categories_text").text("");
+		
+		$(ele).removeClass("selected_category");
+	}else{
+		$("#default_categories_input").val(id);
+		$("#default_categories_text").text($(ele).text());
+	
+		$("#default_category_tree .selected_category").removeClass("selected_category");
+	
+		$(ele).addClass("selected_category");
+	}
+}
+var swap_config = function(value){
+	$(".config").hide();
+	$("#config_type_" + value).show();
+};
+</script>
+
+<style type="text/css">
+.selected_category{
+	background-color:yellow;
+}
+</style>

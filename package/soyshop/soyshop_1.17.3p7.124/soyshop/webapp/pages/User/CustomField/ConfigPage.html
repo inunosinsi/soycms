@@ -1,0 +1,42 @@
+<h1>
+	カスタム項目管理
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="User">顧客管理</a> &gt; <a soy:link="User.CustomField">ユーザカスタム項目管理</a> &gt; インポート・エクスポート</span>
+</h1>
+
+
+<div id="category" class="block">
+	<div class="block_title">
+		<h2>ユーザカスタム項目設定のインポート・エクスポート</h2>
+	</div>
+
+	<div class="block_body clearfix">
+	
+	
+		<p class="error" soy:display="failed">インポートに失敗しました</p>
+
+		<h3>設定のエクスポート(この設定項目をコピーしてインポート先に貼り付けてください)</h3>
+		
+		<dl>
+			<dd>
+				<textarea soy:id="export_value"></textarea>
+			</dd>
+		</dl>
+		
+		<h3>設定のインポート(ここに設定項目を張り付けてインポートを押してください)</h3>
+		<form soy:id="import_form">
+		
+		<dl>
+			<dd>
+				<p style="color:red;">すべての項目がインポートの設定に上書きされます。</p>
+				<textarea soy:id="import_value"></textarea>
+			</dd>
+		</dl>
+		
+		<p class="pageBtn">
+			<input type="submit" name="import" value="インポート" />
+		</p>
+		</form soy:id="import_form">
+
+	</div><!-- /block_body -->
+</div>

@@ -1,0 +1,40 @@
+<h1>
+	プラグイン管理
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Plugin">プラグイン管理</a> &gt; 全てのプラグイン</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>全てのプラグイン</h2>
+		<div class="block_title_right">
+			<a class="button" soy:link="Plugin">インストール済みプラグイン</a>
+			<a class="button" soy:id="plugin_ini_button">初期化</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+		<!-- soy:id="module_type_list" -->
+		<!-- soy:id="is_modules" -->
+		<h3 soy:id="module_type_name">モジュールタイプ</h3>
+
+		<table class="form_list">
+			<tr>
+				<th class="plugin_th_name" nowrap>プラグイン名</th><th class="long" nowrap>状態</th><th class="short">詳細</th>
+			</tr>
+			<!-- soy:id="module_list" -->
+			<tr>
+				<td><a soy:id="module_name"></a></td>
+				<td soy:id="module_is_active"></td>
+				<td><a soy:id="module_detail_link">詳細</a></td>
+			</tr>
+			<!-- /soy:id="module_list" -->
+		</table>
+		<!-- /soy:id="is_modules" -->
+		<!-- /soy:id="module_type_list" -->
+	</div>
+
+</div>
+

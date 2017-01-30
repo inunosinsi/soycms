@@ -1,0 +1,42 @@
+<h1>
+	ページ管理
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Pages">ページ管理</a> &gt; ページの作成</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>ページの作成</h2>
+	</div>
+
+	<div class="block_body">
+		<form soy:id="create_form">
+
+			<dl class="form center">
+				<dt>ページ名</dt>
+				<dd>
+					<input class="title" type="text" soy:id="name" />
+					<p class="require" soy:id="error_name"></p>
+				</dd>
+				<dt>
+					ページURL
+					<span class="option">(半角英数字または「.」「/」「_」「-」)</span>
+				</dt>
+				<dd>
+					<input class="title" type="text" soy:id="uri" />
+					<p class="require" soy:id="error_uri"></p>
+				</dd>
+				<dt>ページ種別を選択してください</dt>
+				<dd>
+					<!-- soy:id="page_type_list" -->
+					<input type="radio" soy:id="type" />
+					<!-- /soy:id="page_type_list" -->
+					<span class="require" soy:id="error_type"></span>
+				</dd>
+			</dl>
+			<p class="pageBtn"><input type="submit" value="作成" /></p>
+
+		</form soy:id="create_form">
+		</div>
+</div>

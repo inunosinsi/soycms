@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_item ADD COLUMN is_disabled INTEGER default 0;

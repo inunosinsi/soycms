@@ -1,0 +1,316 @@
+<h1>
+	注文管理
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; 注文管理</span>
+</h1>
+
+<div class="block">
+	<div class="block_title">
+		<h2>検索</h2>
+		
+		<div class="block_title_right">
+			<a soy:link="Order.Register" class="button">注文を追加する</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+		<!-- soy:id="no_result" -->
+		<p class="error always">該当の注文がありません</p>
+		<!-- /soy:id="no_result" -->
+
+		<form soy:id="search_form" method="get">
+
+		<table class="form_table order_search">
+			<caption>注文検索</caption>
+			<col style="width:130px;" />
+			<col />
+			<col style="width:130px;" />
+			<col />
+
+			<tr>
+				<th>注文番号</th>
+				<td colspan="3">
+					<input type="text" soy:id="order_tracking_number" />
+
+					<a soy:id="reset_link" class="button fr" style="margin-top:3px;">検索条件のクリア</a>
+				</td>
+			</tr>
+			<tr>
+				<th>注文ID</th>
+				<td>
+					<input type="number" soy:id="order_id" />
+				</td>
+				<th>注文ID範囲</th>
+				<td>
+					<input type="number" soy:id="order_id_start" />〜
+					<input type="number" soy:id="order_id_end" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>顧客名</th>
+				<td>
+					<input type="text" class="search_item_input" soy:id="order_user_name" />
+				</td>
+				<th nowrap>フリガナ（全角入力）</th>
+				<td>
+					<input type="text" class="search_item_input" soy:id="order_user_reading" />
+				</td>
+			</tr>
+			<tr>
+				<th>顧客住所</th>
+				<td>
+					<select soy:id="order_user_area">
+						<option value="">----</option>
+					</select>
+				</td>
+				<th>顧客メールアドレス</th>
+				<td>
+					<input type="text" class="search_item_input" soy:id="order_user_mail_address">
+				</td>
+			</tr>
+			<tr>
+				<th>顧客性別</th>
+				<td>
+					<input type="checkbox" soy:id="order_user_gender_male">
+					<input type="checkbox" soy:id="order_user_gender_female">
+				</td>
+				<th>顧客誕生日</th>
+				<td>
+					<input soy:id="order_user_birth_date_year" type="text" value="" />/
+					<input soy:id="order_user_birth_date_month" type="text" value="" />/
+					<input soy:id="order_user_birth_date_day" type="text" value="" />
+				</td>
+			</tr>
+			<tr>
+				<th>商品名</th>
+				<td>
+					<input type="text" class="search_item_input" soy:id="order_item_name" />
+				</td>
+				<th>商品コード</th>
+				<td>
+					<input type="text" class="search_item_input" soy:id="order_item_code" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>注文状況</th>
+				<td>
+					<select soy:id="status_list">
+						<option value="">----</option>
+					</select>&nbsp;
+					<input type="checkbox" soy:id="no_delivery">
+				</td>
+
+				<th>支払状況</th>
+				<td>
+					<select soy:id="payment_status_list">
+						<option value="">----</option>
+					</select>&nbsp;
+					<input type="checkbox" soy:id="no_payment">
+				</td>
+			</tr>
+			<tr>
+				<th>支払方法</th>
+				<td colspan="3">
+					<!-- soy:id="order_payment_checkboxes" /-->
+				</td>
+			</tr>
+			<tr>
+				<th>金額</th>
+				<td colspan="3">
+					<input type="number" soy:id="total_price_min">〜
+					<input type="number" soy:id="total_price_max">
+				</td>
+			</tr>
+			<tr>
+				<th>注文日</th>
+				<td colspan="3">
+					<input type="text" class="date_picker_start" soy:id="order_date_start" />～<input type="text" class="date_picker_end" soy:id="order_date_end" />
+				</td>
+			</tr>
+			<tr>
+				<th>更新日</th>
+				<td colspan="3">
+					<input type="text" class="date_picker_start" soy:id="update_date_start" />～<input type="text" class="date_picker_end" soy:id="update_date_end" />
+				</td>
+			</tr>
+		</table>
+
+		<p class="pageBtn">
+			<input type="submit" value="検索" />
+		</p>
+
+		</form soy:id="search_form">
+
+	</div><!-- /block_body -->
+</div><!-- /block -->
+
+
+<!-- soy:id="order_exists" -->
+<div class="block">
+	<div class="block_title">
+		<h2>検索結果</h2>
+
+	</div>
+
+	<div class="block_body">
+	<table class="form_list">
+		<caption>
+			注文一覧(<span soy:id="count_max*">100000</span>件)：
+				<span soy:id="count_start*">1</span> ～ <span soy:id="count_end*">20</span>
+		</caption>
+		<thead>
+			<tr class="alC">
+				<th><input id="order_checkbox" class="order_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" /></th>
+				<th soy:id="orderId_show">注文ID</th>
+				<th soy:id="trackingNumber_show">注文番号</th>
+				<th soy:id="orderDate_show" style="width:9em"><nobr>注文時刻<a soy:id="sort_order_date">↓</a> <a soy:id="sort_order_date_desc">↑</a></nobr></th>
+				<th soy:id="customerName_show">顧客名</th>
+				<th soy:id="totalPrice_show">合計金額</th>
+				<th soy:id="status_show">状態</th>
+				<th soy:id="paymentStatus_show">支払い</th>
+				<th soy:id="confirmMail_show">注文確認メール</th>
+				<th soy:id="paymentMail_show">支払確認メール</th>
+				<th soy:id="deliveryMail_show">発送メール</th>
+				<th class="short">&nbsp;</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr id="orders_operation" style="display:none;">
+				<td soy:id="col_count_0" colspan="*">
+					<div class="mb">
+						<span class="option">注文状態：</span>
+						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(2).trigger('click');" class="button">新規受付</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(3).trigger('click');" class="button">受付完了</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(6).trigger('click');" class="button">在庫確認中</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(4).trigger('click');" class="button">発送済み</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(7).trigger('click');" class="button">返品待ち</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(5).trigger('click');" class="button">キャンセル</a>
+					</div>
+					<div>
+						<span class="option">支払状態：</span>
+						<a href="javascript:void(0);" onclick="$('#do_change_payment_status_btn').val(1).trigger('click');" class="button">支払待ち</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_payment_status_btn').val(2).trigger('click');" class="button">支払確認済み</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_payment_status_btn').val(3).trigger('click');" class="button">入金エラー</a>
+						<a href="javascript:void(0);" onclick="$('#do_change_payment_status_btn').val(4).trigger('click');" class="button">直接支払</a>
+					</div>
+				</td>
+			</tr>
+			<tr class="pager">
+				<td soy:id="col_count_1" colspan="*">
+					<div class="pager_item">
+						<form soy:id="pager_jump">
+							<select soy:id="pager_select"></select>
+							<noscript><input type="submit" value="移動"/></noscript>
+						</form soy:id="pager_jump">
+					</div>
+					<div class="pager_item">
+						<a soy:id="prev_pager">&lt;</a>
+						<!-- soy:id="pager_list" -->
+						<a soy:id="target_link">1</a>
+						<!-- /soy:id="pager_list" -->
+						<a soy:id="next_pager">&gt;</a>
+					</div>
+					<div class="pager_item">
+						<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+					</div>
+				</td>
+			</tr>
+		</tfoot>
+
+		<tbody>
+			<form soy:id="order_form">
+				<!-- 注文の数だけ表示を繰り返すところ -->
+				<!-- soy:id="order_list" -->
+				<tr>
+					<td class="alC"><input soy:id="order_check" class="order_checkbox" type="checkbox" /></td>
+					<td class="alC" soy:id="orderId_form_show"><a soy:id="detail_link"><!-- soy:id="id" /--></a></td>
+					<td class="alC" soy:id="trackingNumber_form_show"><nobr><a soy:id="order_id_link">1</a></nobr></td>
+					<td class="alC" soy:id="orderDate_form_show"><nobr><span soy:id="order_date">2009-10-10 10:10:10</span></nobr></td>
+					<td class="alC" soy:id="customerName_form_show"><a soy:id="customer_link">豆蔵</a></td>
+					<td class="alR" soy:id="totalPrice_form_show"><span soy:id="order_price">1,500</span> 円</td>
+					<td class="alC" soy:id="status_form_show"><!-- soy:id="order_status" -->ITEM_001<!-- /soy:id="order_status" --></td>
+					<td class="alC" soy:id="paymentStatus_form_show"><!-- soy:id="payment_status" -->ITEM_001<!-- /soy:id="payment_status" --></td>
+					<td class="alC" soy:id="confirmMail_form_show"><a soy:id="confirm_mail_status">未送信</a></td>
+					<td class="alC" soy:id="paymentMail_form_show"><a soy:id="payment_mail_status">未送信</a></td>
+					<td class="alC" soy:id="deliveryMail_form_show"><a soy:id="delivery_mail_status">未送信</a></td>
+					<td class="operation">
+						<a soy:id="detail_link*" class="button">詳細</a>
+					</td>
+				</tr>
+				<!-- /soy:id="order_list" -->
+				<!-- 注文の数だけ表示を繰り返すところ、ここまで -->
+				
+				<input type="submit" id="do_change_order_status_btn" name="do_change_order_status" value="1" style="display:none;" />
+				<input type="submit" id="do_change_payment_status_btn" name="do_change_payment_status" value="1" style="display:none;" />
+			</form soy:id="order_form">
+		</tbody>
+
+	</table>
+
+	<!-- soy:display="export_module_menu" -->
+	<h3>検索結果をエクスポートする</h3>
+	
+	<dl>
+		<!-- soy:id="module_list" -->
+		<form soy:id="export_form" target="_blank">
+		<dt soy:id="export_title*">エクスポートの種類を選択してください</dt>
+		<dd>
+		
+			<!-- soy:id="display_button" -->
+			<input type="hidden" soy:id="query" />
+			<input type="submit" value="<!-- soy:id="export_title" /-->" class="submit" />
+			<input type="hidden" soy:id="module_id">
+			<!-- /soy:id="display_button" -->
+			<div soy:id="export_description"></div>
+		
+		</dd>
+		</form>
+		<!-- /soy:id="module_list" -->
+	</dl>
+	<!-- /soy:display="export_module_menu" -->
+
+	</div><!-- /block_body -->
+</div><!-- /block -->
+
+<!-- /soy:id="order_exists" -->
+
+<style type="text/css">
+.order_search .text{
+	width:400px;
+}
+.order_search .search_item_input{
+	width:180px;
+}
+input.has_value{
+	background-color:#FFF6BF;
+}
+</style>
+<script type="text/javascript">
+$(function(){
+	$(".order_search input").each(function(){
+		if($(this).val().length > 0){
+			$(this).addClass("has_value");
+		}
+
+		$(this).bind("focus",function(){
+			$(this).removeClass("has_value");
+		});
+
+		$(this).bind("blur",function(){
+			if($(this).val().length < 1){
+				$(this).removeClass("has_value");
+			}
+		});
+	});
+});
+
+function changeCheckBoxAuto(){
+	$('#orders_operation').show();
+	$('.order_checkbox').each(function(){
+		$(this).prop("checked", $("#order_checkbox").prop("checked"));
+	});
+}
+</script>

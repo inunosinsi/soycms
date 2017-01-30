@@ -1,0 +1,50 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="shop.Config">SOY Shopの権限</a>
+	</div>
+	<div class="function">
+		<a soy:link="shop.Config.List">サイトごとの権限</a>
+	</div>
+	
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0px 20px 20px;">
+
+	<h1>SOY Shopの権限設定</h1>
+	
+	<div>
+		<div class="notice" soy:id="updated">更新しました。</div>
+		<div class="notice" soy:id="error">失敗しました。</div>
+		
+		<form soy:id="form">
+		
+		<div class="table_container" style="width:420px">
+			<table class="nowrap list">
+				<thead>
+					<tr>
+						<th>ユーザID</th>
+						<th>権限設定</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- soy:id="account_list" -->
+					<tr>
+						<td soy:id="user_id">mamezo</td>
+						<td>
+							<!-- soy:id="is_default_user" -->初期管理者<!-- /soy:id="is_default_user" -->
+							<select soy:id="app_role"></select>
+						</td>
+					</tr>
+					<!-- /soy:id="account_list" -->
+				</tbody>
+			</table>
+			
+			<div style="text-align:center;">
+				<input type="submit" value="変更" />
+			</div>
+		</div>
+		
+		</form soy:id="form">
+	</div>
+</div>

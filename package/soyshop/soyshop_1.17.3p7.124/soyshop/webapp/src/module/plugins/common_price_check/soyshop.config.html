@@ -1,0 +1,24 @@
+<p class="notice" soy:id="updated">更新しました</p>
+
+<form soy:id="form">
+
+<dl>
+	<dt>購入最低金額設定</dt>
+	<dd>
+		<input type="text" class="text" soy:id="price" />&nbsp;円
+	</dd>
+	<dt>エラー文言</dt>
+	<dd>
+		<textarea soy:id="error_text"></textarea>
+		<p>
+			※##PRICE##は最低金額で設定した値に置換されます<br />
+			※##DIFFERENCE##は差額に置換されます
+		</p>
+	</dd>
+</dl>
+
+<p class="pageBtn" style="clear:both;">
+	<input type="submit" class="submit_button" value="変更" />
+</p>
+
+</form soy:id="form">

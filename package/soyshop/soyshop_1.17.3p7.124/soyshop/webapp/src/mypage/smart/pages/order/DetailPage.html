@@ -1,0 +1,167 @@
+<section id="cart_detail">
+	<h1 class="cart_txt"><!-- soy:id="user_name" -->ソイ太郎<!-- /soy:id="user_name" -->さんの購入履歴詳細</h1>
+	
+	<h1>ご注文内容</h1>
+	<div class="cart_detail_dl">
+		<div class="cart_li title">
+			<div class="cart_itemtitle">商品</div>
+			<ul>
+				<li class="cart_itemid">商品番号</li>
+				<li class="cart_itemprice">価格</li>
+				<li class="cart_itemnum">個数</li>
+				<li class="cart_itemsubsum">小計</li>
+			</ul>
+		</div>
+
+		<!-- soy:id="item_list" -->
+		<div class="cart_li">
+			<div class="cart_itemthumb"><img src="photos/detail2_2.jpg" width="80" height="60" alt="" soy:id="item_small_image"></div>
+			<div class="cart_itemdetail">
+				<h3 class="cart_itemtitle">
+					<a soy:id="item_link"><!-- soy:id="item_name" -->ナノブロック（フレンチブルドッグ）<!-- /soy:id="item_name" --></a><br>
+					<!-- soy:id="item_option" /-->
+				</h3>
+				<ul>
+					<li class="cart_itemid" soy:id="item_code_plain">123456</li>
+					<li class="cart_itemprice"><!-- soy:id="item_price" -->2,100<!-- /soy:id="item_price" -->円</li>
+					<li class="cart_itemnum" soy:id="item_count">1</li>
+					<li class="cart_itemsubsum"><!-- soy:id="item_total_price" -->2,100<!-- /soy:id="item_total_price" -->円</li>
+				</ul>
+			</div>		
+		</div>
+		<!-- /soy:id="item_list" -->
+
+		<!-- soy:id="is_subtotal" -->
+		<div class="sumelse">
+			<ul>
+				<li class="sumtitle">小計</li>
+				<li class="sumprice"><!-- soy:id="subtotal_price" -->4,200<!-- /soy:id="subtotal_price" -->円</li>
+			</ul>			
+		</div>
+		<!-- /soy:id="is_subtotal" -->
+
+		<!-- soy:id="module_list" -->
+		<div class="sumelse">
+			<ul>
+				<li class="sumtitle"><!-- soy:id="module_name" -->送料（国内）<!-- /soy:id="module_name" --></li>
+				<li class="sumprice"><!-- soy:id="module_price" -->0<!-- /soy:id="module_price" -->円</li>
+			</ul>
+				
+		</div>
+		<!-- /soy:id="module_list" -->
+		
+		
+		<div class="sumarea">
+			<ul>
+				<li class="sumtitle">合計</li>
+				<li class="sumprice"><!-- soy:id="order_total_price" -->4,200<!-- /soy:id="order_total_price" -->円</li>
+			</ul>
+		</div>
+	</div>
+	
+	<!-- soy:id="is_download_files" -->
+	<h1>ダウンロード</h1>
+	<div class="cart_detail_dl">
+		<div class="cart_li title">
+			<div class="cart_itemtitle">ファイル名</div>
+			<ul>
+				<li class="cart_itemid">ダウンロード期限</li>
+				<li class="cart_itemprice">ダウンロード回数</li>
+				<li class="cart_itemnum">&nbsp;</li>
+			</ul>
+		</div>
+		
+		<!-- soy:id="download_list" -->
+		<div class="cart_li">
+			<div class="cart_itemdetail">
+				<h3 class="cart_itemtitle">
+					<!-- soy:id="file_name" -->french_nanoblock.zip<!-- /soy:id="file_name" -->
+				</h3>
+				<ul>
+					<li class="cart_itemid"><!-- soy:id="time_limit" -->無期限<!-- /soy:id="time_limit" --></li>
+					<li class="cart_itemprice"><!-- soy:id="count" -->無制限<!-- /soy:id="count" --></li>
+					<li class="cart_itemnum">
+						<!-- soy:id="is_download" -->
+						<a soy:id="download_link" class="table_btn download detail">ダウンロード</a>
+						<!-- /soy:id="is_download" -->
+						<!-- soy:id="no_download" -->
+						ダウンロードできません<br>
+						<!-- soy:id="no_download_message" /-->
+						<!-- /soy:id="no_download" -->
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- /soy:id="download_list" -->
+	</div>
+	<!-- /soy:id="is_download_files" -->
+
+	<section>
+		<h1>ご注文時の情報</h1>
+		<div class="cart_detail_dl">
+			<dl>
+				<dt>ご注文番号</dt>
+				<dd soy:id="order_number">1-4225-2721</dd>
+
+				<dt>ご注文日時</dt>
+				<dd soy:id="order_date">2011年2月24日　12:02</dd>
+
+				<dt>合計金額</dt>
+				<dd><!-- soy:id="order_price" -->4,200<!-- /soy:id="order_price" -->円</dd>
+
+				<!-- soy:id="attribute_list" -->
+				<dt soy:id="attribute_title">備考</dt>
+				<dd soy:id="attribute_value">&nbsp;</dd>
+				<!-- /soy:id="attribute_list" -->
+
+				<dt>支払状況</dt>
+				<dd soy:id="payment_status">&nbsp;</dd>
+
+				<!-- soy:id="customfield_list" -->
+				<dt soy:id="customfield_title">フィールド</dt>
+				<dd soy:id="customfield_value">値</dd>
+				<!-- /soy:id="customfield_list" -->
+			</dl>
+		</div>
+	</section>
+
+	<section>
+		<h1>お届け先の情報</h1>
+		<div class="cart_detail_dl">
+			<dl>
+				<dt>お名前</dt>
+				<dd><!-- soy:id="user_name" -->齋藤　毅<!-- /soy:id="user_name" -->　様</dd>
+
+				<dt>郵便番号</dt>
+				<dd>〒<!-- soy:id="user_zipcode" -->606-8232<!-- /soy:id="user_zipcode" --></dd>
+
+				<dt>ご住所</dt>
+				<dd><!-- soy:id="user_area" /--><!-- soy:id="user_address1" /--><!-- soy:id="user_address2" /--></dd>
+
+				<dt>電話番号</dt>
+				<dd><!-- soy:id="user_tel" -->090-7425-4064<!-- /soy:id="user_tel" --></dd>
+			</dl>
+		</div>
+	</section>
+	
+	<section>
+		<h1>請求先の情報</h1>
+		<div class="cart_detail_dl">
+			<dl>
+				<dt>お名前</dt>
+				<dd><!-- soy:id="claimed_name" -->齋藤　毅<!-- /soy:id="claimed_name" -->　様</dd>
+
+				<dt>郵便番号</dt>
+				<dd>〒<!-- soy:id="claimed_zipcode" -->606-8232<!-- /soy:id="claimed_zipcode" --></dd>
+
+				<dt>ご住所</dt>
+				<dd><!-- soy:id="claimed_area" /--><!-- soy:id="claimed_address1" /--><!-- soy:id="claimed_address2" /--></dd>
+
+				<dt>電話番号</dt>
+				<dd><!-- soy:id="claimed_tel" -->090-7425-4064<!-- /soy:id="claimed_tel" --></dd>
+			</dl>
+		</div>
+	</section>
+</section>
+
+<p class="textcenter"><a href="#" soy:id="top_link">&lt;&lt; マイページトップへ戻る</a></p>

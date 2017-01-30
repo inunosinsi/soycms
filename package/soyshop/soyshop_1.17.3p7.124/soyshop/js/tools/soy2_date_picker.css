@@ -1,0 +1,80 @@
+.soy2_date_picker{
+	background-color:#ffffff !important;
+
+	border:solid 1px #dddddd !important;
+	padding:5px !important;
+	width:250px !important;
+	text-align:center !important;
+
+	position:absolute !important;
+
+	margin-top:5px;
+}
+.soy2_date_picker table{
+	border-collapse:collapse !important;
+	margin-left:auto !important;
+	margin-right:auto !important;
+
+	width:auto !important;
+}
+
+.soy2_date_picker select{
+	margin-right:8px;
+}
+
+/* reset */
+.soy2_date_picker th,.soy2_date_picker td{
+	margin:0 !important;
+	padding:0 !important;
+	border:none !important;
+	background-color:white !important;
+}
+
+/* next prev */
+.soy2_date_picker .next_prev td{
+	background-color:white;
+}
+.soy2_date_picker .next_prev .next_btn{
+	float:right !important;
+	width:33% !important;
+}
+
+.soy2_date_picker .next_prev .today_btn{
+	float:left !important;
+	width:33% !important;
+}
+.soy2_date_picker .next_prev .prev_btn{
+	float:left !important;
+	width:33% !important;
+}
+
+/* select */
+.soy2_date_picker .month_select th{
+	padding:5px 0 !important;
+	text-align:center !important;
+}
+
+.soy2_date_picker .day_row th,
+.soy2_date_picker tbody td,
+.soy2_date_picker tbody th{
+	border:solid 1px #bcbcbc !important;
+	width:25px !important;
+	overflow:hidden !important;
+	background-color:#efefef !important;
+	text-align:center !important;
+	padding:2px !important;
+
+}
+.soy2_date_picker th.holiday_cell{
+	background-color:#c9c9c9 !important;
+}
+.soy2_date_picker td.holiday_cell{
+	background-color:#dedede !important;
+}
+.soy2_date_picker .next_prev th{
+	font-size:small !important;
+	padding:5px !important;
+}
+.soy2_date_picker tbody td.selected{
+	background-color:yellow !important;
+}

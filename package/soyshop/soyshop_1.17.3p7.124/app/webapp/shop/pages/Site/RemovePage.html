@@ -1,0 +1,44 @@
+<div class="notice" soy:id="error">削除の許可がありません。</div>
+
+<div style="padding:0px 20px;">
+
+<h1>サイトの削除</h1>
+
+<div class="table_container">
+		
+	<form soy:id="form">
+	
+	<table class="form_table list">
+		<tr>
+			<th width="30%">サイトID</th>
+			<td soy:id="site_id">shop</td>
+		</tr>
+		<tr>
+			<th>サイト名</th>
+			<td soy:id="site_name"></td>
+		</tr>
+		<tr>
+			<th>データベース</th>
+			<td soy:id="site_db">MySQL</td>
+		</tr>
+		<tr>
+			<th>URL</th>
+			<td>
+				<a soy:id="site_url"></a>
+			</td>
+		</tr>
+		<tr>
+			<th>削除</th>
+			<td>
+				<input type="checkbox" soy:id="check_remove" />
+				<label for="check_remove">このサイトを本当に削除してもよろしいですか？</label>
+			</td>
+		</tr>
+	</table>
+	
+	<div style="text-align:center;">
+		<input type="submit" value="削除" />
+	</div>
+	
+	</form soy:id="form">
+</div>

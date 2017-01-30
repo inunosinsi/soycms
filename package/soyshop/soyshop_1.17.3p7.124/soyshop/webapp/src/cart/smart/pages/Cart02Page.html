@@ -1,0 +1,252 @@
+<form soy:id="order_form">
+	<section id="cart_detail">
+		<div class="pconly">
+			<ul class="flow">
+				<li class="active">お客様情報の入力</li><!--
+				--><li>お支払・配送方法の選択</li><!--
+				--><li>ご注文内容の確認</li><!--
+				--><li>ご注文確定</li>
+			</ul>
+		</div>
+		<h1 class="cart_txt">お客様情報の登録</h1>
+		
+		<!-- soy:display="has_error" -->
+		<div class="error narrow">
+			<p>正しく入力されていない項目があります。</p>
+		</div>
+		<!-- /soy:display="has_error" -->
+
+		<h2>基本情報</h2>		
+		<p>お客様の情報をご入力ください。</p>		
+		<div class="cart_detail_dl">
+			<dl>
+				<!-- soy:id="name_show" -->
+				<dt>お名前<span soy:id="name_required">（必須）</span></dt>
+				<dd>
+					<p class="error" soy:id="name_error">お名前が正しく入力されていません。</p>
+					<input name="" value="" type="text" id="" class="w300" soy:id="name">
+					<span class="note">【全角】</span>
+				</dd>
+				<!-- /soy:id="name_show" -->
+				
+				<!-- soy:id="reading_show" -->
+				<dt>お名前カナ<span soy:id="reading_required">（必須）</span></dt>
+				<dd>
+					<p class="error" soy:id="reading_error">お名前カナが正しく入力されていません。</p>
+					<input name="" value="" type="text" id="" class="w300" soy:id="reading">
+					<span class="note">【全角カナ】</span>
+				</dd>
+				<!-- /soy:id="reading_show" -->
+				
+				<!-- soy:id="jobName_show" -->
+				<dt>法人名（勤務先など）<span soy:id="jobName_required">（必須）</span></dt>
+				<dd>
+					<p class="error" soy:id="job_name_error">職種が正しく入力されていません。</p>
+					<input name="" value="" type="text" id="" class="w300" soy:id="job_name">
+				</dd>
+				<!-- /soy:id="jobName_show" -->
+				
+				<!-- soy:id="zipCode_show" -->
+				<dt id="zipcode1">郵便番号<span soy:id="zipCode_required">（必須）</span></dt>
+				<dd>
+					<p class="error" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
+					<input name="" type="text" id="" class="input-zip w300" soy:id="zip_code">
+					<span class="note">【半角数字】</span>
+					<span class="search-btn btn" style="cursor: pointer;"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
+				</dd>
+				<!-- /soy:id="zipCode_show" -->
+				
+				<!-- soy:id="address_show" -->
+				<dt>ご住所<span soy:id="address_required">（必須）</span></dt>
+				<dd>
+					<p class="error" soy:id="address_error">ご住所が正しく入力されていません。</p>
+					<select name="" id="" class="input-pref" soy:id="area">
+						<option value="">都道府県名</option>
+					</select>
+					<dl>
+						<dt>市区郡</dt>
+						<dd>
+							<input name="Customer[address1]" value="" type="text" id="" class="input-city w130" soy:id="address1"><br>
+							<span class="exmpl">（例）京都市左京区</span>
+						</dd>
+						<dt>町番地</dt>
+						<dd>
+							<input name="Customer[address2]" value="" type="text" id="" class="input-town w130" soy:id="address2"><br>
+							<span class="exmpl">（例）高野東開町8-5 SOYビル1F</span>
+						</dd>
+					</dl>
+				</dd>
+				<!-- /soy:id="address_show" -->
+				
+				<!-- soy:id="telephoneNumber_show" -->
+				<dt>電話番号<span soy:id="telephoneNumber_required">（必須）</span></dt>
+				<dd>
+					<p class="error" soy:id="tel_number_error">お電話番号が正しく入力されていません。</p>
+					<input name="Customer[telephoneNumber]" value="" type="tel" id="" class="w300" soy:id="telephone_number">
+					<span class="note">【半角数字】</span><br>
+					<span class="exmpl">（例）075-204-4823</span>
+				</dd>
+				<!-- /soy:id="telephoneNumber_show" -->
+				
+				<!-- soy:id="mailAddress_show" -->
+				<dt>メールアドレス<span soy:id="mailAddress_required">（必須）</span></dt>
+				<dd>
+					<p class="error" soy:id="mail_address_error">メールアドレスが正しく入力されていません。</p>
+					<input name="" value="" type="email" id="" class="w300" soy:id="mail_address">
+					<span class="note">【半角英数】</span><br>
+					<span class="exmpl">（例）info@n-i-agroinformatics.com</span>
+				</dd>
+				<!-- /soy:id="mailAddress_show" -->
+				
+				<!-- soy:id="password_input" -->
+				<dt>パスワード</dt>
+				<dd>
+					<p class="error" soy:id="password_invalid">パスワードが違います</p>
+					<input name="" value="" type="password" id="" class="w300" autocomplete="off" soy:id="password">
+					<span class="note">【半角英数・8文字以上】</span><br>
+					パスワードを入力することで、次回からの入力が簡単になります。
+				</dd>
+				<!-- /soy:id="password_input" -->
+				
+				<!-- soy:id="gender_show" -->
+				<dt>性別<span soy:id="gender_required">(必須)</span></dt>
+				<dd>
+					<p class="error" soy:id="gender_error">性別が選択されていません。</p>
+					<input type="radio" name="" id="radio_sex_male" soy:id="gender_male">
+					<label for="radio_sex_male">男性</label>
+					<input type="radio" name="" value="1" id="radio_sex_female" soy:id="gender_female">
+					<label for="radio_sex_female">女性</label>
+				</dd>
+				<!-- /soy:id="gender_show" -->
+				
+				<!-- soy:id="birthday_show" -->
+				<dt id="birthday">生年月日<span soy:id="birthday_required">(必須)</span></dt>
+				<dd>
+					<p class="error" soy:id="birthday_error">誕生日が正しく入力されていません。</p>
+					西暦<input name="" value="" type="text" id="" class="w50" soy:id="birth_year">年
+					<input name="" value="" type="text" id="" class="w50" soy:id="birth_month">月
+					<input name="" value="" type="text" id="" class="w50" soy:id="birth_day">日
+				</dd>
+				<!-- /soy:id="birthday_show" -->
+				
+				<!-- soy:id="faxNumber_show" -->
+				<dt>FAX番号<span soy:id="faxNumber_required">(必須)</span></dt>
+				<dd>
+					<p class="error" soy:id="fax_number_error">FAX番号が正しく入力されていません。</p>
+					<input name="" value="" type="tel" id="" class="w130" soy:id="fax_number">
+					<span class="note">【半角数字】</span><br>
+					<span class="exmpl">（例）075-204-4823</span>
+				</dd>
+				<!-- /soy:id="faxNumber_show" -->
+				
+				<!-- soy:id="cellphoneNumber_show" -->
+				<dt>携帯番号<span soy:id="cellphoneNumber_required">(必須)</span></dt>
+				<dd>
+					<p class="error" soy:id="cellphone_number_error">携帯番号が正しく入力されていません。</p>
+					<input name="" value="" type="tel" id="" class="w130" soy:id="cellphone_number">
+					<span class="note">【半角数字】</span><br>
+					<span class="exmpl">（例）080-1234-5678</span>
+				</dd>
+				<!-- /soy:id="cellphoneNumber_show" -->
+				
+				<!-- soy:id="has_user_customfield" -->
+				<!-- soy:id="user_customfield_list" -->
+				<dt><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></dt>
+				<dd>
+					<!-- soy:id="has_customfield_error" -->
+					<p class="error" soy:id="customfield_error"></p>
+					<!-- /soy:id="has_customfield_error" -->
+					<!-- soy:id="customfield_form" /-->
+				</dd>
+				
+				<!-- /soy:id="user_customfield_list" -->
+				<!-- /soy:id="has_user_customfield" -->
+				
+				<!-- soy:id="memo_show" -->
+				<dt>備考<span soy:id="memo_required">（必須)</span></dt>
+				<dd>
+					<p class="error" soy:id="memo_error">備考が入力されていません。</p>
+					<textarea name="" rows="6" class="w450" id="" soy:id="order_memo"></textarea><br>
+					何かありましたらご自由にお書きください。
+				</dd>
+				<!-- /soy:id="memo_show" -->
+			</dl>
+		</div>
+		<p class="textcenter"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_payment_off.png" alt="次へ（お支払・配送方法の選択）"></p>
+		<p class="textcenter"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
+	</section>
+	
+	<section soy:id="display_send_form">
+		<h1>お届け先情報</h1>
+		<p>
+			お届け先が基本情報にご記入の住所とは異なる場合に記入してください。<br>
+			<span class="require">※お届け先欄使用時には必須</span>
+		</p>
+
+		<!-- soy:id="has_send_address_error" -->
+		<div class="error narrow">
+			<p soy:id="send_address_error">正しく入力されていない項目があります。</p>
+		</div>
+		<!-- /soy:id="has_send_address_error" -->
+		
+		<div class="cart_detail_dl">
+			<dl>
+				<dt>お名前<span class="require">（必須）</span></dt>
+				<dd>
+					<input name="" type="text" id="" class="w130" soy:id="send_name">
+					<span class="note">【全角】</span>
+				</dd>
+		
+				<dt>お名前カナ<span class="require">（必須）</span></dt>
+				<dd>
+					<input name="" type="text" id="" class="w130" soy:id="send_furigana">
+					<span class="note">【全角カナ】</span>
+				</dd>
+				<dt>法人名（勤務先など）</dt>
+				<dd><input name="" type="text" id="" class="w300" soy:id="send_office"></dd>
+
+				<dt>郵便番号<span class="require">（必須）</span></dt>
+				<dd>
+					<input name="" type="text" id="" class="input-send-zip w80" soy:id="send_post_number">
+					<span class="note">【半角数字】</span>
+					<span class="send-search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
+				</dd>
+				<dt>ご住所<span class="require">（必須）</span></dt>
+				<dd>
+					<select name="" id="" class="input-send-pref" soy:id="send_area">
+						<option value="">都道府県名</option>
+					</select>
+					<dl>
+						<dt>市区郡：</dt>
+						<dd>
+							<input name="" type="text" id="" class="input-send-city w130" soy:id="send_address1">
+							<span class="exmpl">（例）京都市左京区</span>
+						</dd>
+						
+						<dt>町番地：</dt>
+						<dd>
+							<input name="" type="text" id="" class="input-send-town w300" soy:id="send_address2">
+							<span class="exmpl">（例）左京区高野東開町8-5 SOYビル1F</span>
+						</dd>
+					</dl>
+				</dd>
+				<dt>お電話番号<span class="require">（必須）</span></dt>
+				<dd>
+					<input name="" type="text" id="" class="w130" soy:id="send_tel_number">
+					<span class="note">【半角数字】</span><span class="exmpl">（例）075-204-4823</span>
+				</dd>
+			</dl>
+		</div>
+		<p class="textcenter"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_payment_off.png" alt="次へ（お支払・配送方法の選択）"></p>
+		<p class="textcenter"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
+	</section>
+</form soy:id="order_form">
+<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
+
+<!-- soy:id="has_cart_plugin" -->
+
+<!-- soy:id="cart_plugin_list" -->
+<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- /soy:id="cart_plugin_list" -->
+
+<!-- /soy:id="has_cart_plugin" -->

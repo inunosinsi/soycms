@@ -1,0 +1,1 @@
+ALTER TABLE soyshop_order ADD COLUMN claimed_address TEXT AFTER address;

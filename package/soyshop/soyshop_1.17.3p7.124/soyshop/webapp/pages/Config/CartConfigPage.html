@@ -1,0 +1,91 @@
+<h1>
+	カートの設定
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Config">設定</a> &gt; カートの設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>カートの設定</h2>
+	</div>
+
+	<div class="block_body">
+
+	<p class="notice" soy:display="updated">更新しました</p>
+
+
+	<form soy:id="update_form">
+
+		<dl>
+			<dt>カートのタイトル</dt>
+			<dd>
+				<input type="text" class="title" soy:id="cart_title" />
+			</dd>
+			
+			<!-- soy:id="extension_cart_name_input" /-->
+			
+			<dt>顧客情報のフォームの設定</dt>
+			<dd>
+				<a soy:link="Config.ShopConfig#customer_form_config">顧客情報のフォームの設定(基本設定)</a>
+			</dd>
+			<dt>SSLを使用する</dt>
+			<dd>
+				<input type="hidden" name="cart_ssl" value="0" />
+				<input type="checkbox" soy:id="cart_is_ssl" onclick="$('#cart_use_ssl').toggle(this.checked);" />
+
+				<div id="cart_use_ssl" soy:id="cart_ssl_url_input">
+					<h4>[SSL]サイトのURL</h4>
+					<input type="text" soy:id="cart_ssl_url" class="title" />
+				</div>
+			</dd>
+			<dt>カート設定(PC用)</dt>
+			<dd>
+				<h4>カートページのURI</h4>
+				<input type="text" soy:id="cart_url" />
+
+				<h4>カートの種類の選択</h4>
+				<select soy:id="cart_application"></select><br>
+				※カート機能を封じる場合は<strong>none</strong>を選択してください。
+				
+				<h4>文字コード</h4>
+				<select soy:id="cart_charset"></select>
+			</dd>
+
+			<dt>カート設定(mobile用)</dt>
+			<dd>
+				<h4>カートページのURI</h4>
+				<input type="text" soy:id="mobile_cart_url" />
+
+				<h4>カートの種類の選択</h4>
+				<select soy:id="mobile_cart_application"></select><br>
+				※カート機能を封じる場合は<strong>none</strong>を選択してください。
+				
+				<h4>文字コード</h4>
+				<select soy:id="mobile_cart_charset"></select>
+			</dd>
+			
+			<dt>カート設定(スマートフォン用)</dt>
+			<dd>
+				<h4>カートページのURI</h4>
+				<input type="text" soy:id="smartphone_cart_url" />
+
+				<h4>カートの種類の選択</h4>
+				<select soy:id="smartphone_cart_application"></select><br>
+				※カート機能を封じる場合は<strong>none</strong>を選択してください。
+				
+				<h4>文字コード</h4>
+				<select soy:id="smartphone_cart_charset"></select>
+			</dd>
+		</dl>
+
+		</table>
+
+		<p class="pageBtn">
+			<input type="submit" value="更新" />
+		</p>
+
+	</form soy:id="update_form">
+
+	</div><!-- /block_body -->
+</div><!-- /block -->

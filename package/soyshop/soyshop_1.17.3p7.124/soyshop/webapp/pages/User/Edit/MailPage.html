@@ -1,0 +1,80 @@
+<h1>
+	顧客情報詳細
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="User">顧客管理</a> &gt; <a soy:id="detail_link">顧客情報詳細</a> &gt; メールアドレス変更
+	</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>メールアドレス変更</h2>
+
+		<div class="block_title_right">
+			<a soy:id="detail_link*" class="button">戻る</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+	<p class="notice always" soy:display="updated">メールアドレスを変更しました。</p>
+	<p class="error always" soy:display="failed">メールアドレスの変更に失敗しました。</p>
+	<p class="error always" soy:display="wrong_email">メールアドレスを正しく入力してください。</p>
+	<p class="error always" soy:display="used_email">そのメールアドレスはすでに他のユーザーが使用しています。</p>
+
+	<form soy:id="detail_form">
+
+		<table class="form_table">
+			<tr>
+				<th>ID</th>
+				<td>
+					<!-- soy:id="id" /-->
+				</td>
+			</tr>
+
+			<tr>
+				<th>氏名</th>
+				<td>
+					<!-- soy:id="name" /-->
+				</td>
+			</tr>
+
+			<tr>
+				<th>登録年月日</th>
+				<td>
+					<span soy:id="register_date"></span>
+				</td>
+			</tr>
+
+			<tr>
+				<th>更新年月日</th>
+				<td>
+					<span soy:id="update_date"></span>
+				</td>
+			</tr>
+
+			<tr>
+				<th>現在のメールアドレス</th>
+				<td>
+					<!-- soy:id="mail_address" /-->
+				</td>
+			</tr>
+
+			<tr>
+				<th>新メールアドレス</th>
+				<td>
+					<input soy:id="new_mail_address" type="text" name="" value="" />
+				</td>
+			</tr>
+
+		</table>
+
+		<p class="pageBtn">
+			<input type="submit" name="conduct" value="変更" />
+		</p>
+
+
+		</form soy:id="detail_form">
+		
+		</div><!-- /block_body -->
+</div><!-- /block -->

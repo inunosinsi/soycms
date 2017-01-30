@@ -1,0 +1,185 @@
+<p class="notice" soy:id="updated">変更しました</p>
+
+<h1>営業日・定休日の設定</h1>
+<div class="table_container">
+	<form method="post" soy:id="calendar_form">
+
+		<table class="form_table" style="width:80%;">
+			<tr>
+				<th style="width:20%;">
+					毎週
+				</th>
+				<td style="text-align:center;">
+					<!-- soy:id="week_holiday_list" -->
+					<input type="checkbox" soy:id="dow" /><!-- soy:id="label" /-->
+					<!-- /soy:id="week_holiday_list" -->
+				</td>
+			</tr>
+			<!-- soy:id="day_of_week_list" -->
+			<tr>
+				<th style="width:20%;">
+					<!-- soy:id="day_label" /-->
+				</th>
+				<td style="text-align:center;">
+					<!-- soy:id="week_list" -->
+					<input type="checkbox" soy:id="day"/>
+					<!-- /soy:id="week_list" -->
+				</td>
+			</tr>
+			<!-- /soy:id="day_of_week_list" -->
+		</table>
+		<dl>
+			<dt>定休日設定：月日指定<span class="option">(一行ごとに08/01のように記述してください)</span></dt>
+			<dd>
+				<textarea soy:id="md" class="minieditor"></textarea>
+			</dd>
+			<dt>定休日設定：年月日指定<span class="option">(一行ごとに2010/08/01のように記述してください)</span></dt>
+			<dd>
+				<textarea soy:id="ymd" class="minieditor"></textarea>
+			</dd>
+			<dt>営業日設定<span class="option">(定休日設定より優先される営業日です。一行ごとに2010/08/01のように記述してください)</span></dt>
+			<dd>
+				<textarea soy:id="business_day" class="minieditor"></textarea>
+			</dd>
+			<dt>その他の設定<span class="option">(定休日設定より優先される営業日です。一行ごとに2010/08/01のように記述してください)</span></dt>
+			<dd>
+				<textarea soy:id="other_day" class="minieditor"></textarea>
+			</dd>
+		</dl>
+	
+		<p class="pageBtn">
+			<input type="submit" class="submit_button" value="変更" />
+		</p>
+		
+	</form soy:id="calendar_form">
+</div>
+
+<h1>テンプレートへの記述</h1>
+
+<h3><a href="javascript:void(0);" onclick="$('.script_example').toggle();">テンプレートへの記述例</a></h3>
+<pre style="display:none;border:1px solid #000000;padding:5px 20px;margin:0 35px;" class="script_example">
+&lt;!-- shop:module="common.calendar_display" --&gt;
+&lt;!-- cms&#58;id="current_calendar" --&gt;
+ここに今月のカレンダーが表示されます
+&lt;!-- /cms&#58;id="current_calendar" --&gt;
+
+&lt;!-- cms&#58;id="next_calendar" --&gt;
+ここに翌月のカレンダーが表示されます
+&lt;!-- /cms&#58;id="next_calendar" --&gt;
+&lt;!-- /shop:module="common.calendar_display" --&gt;
+</pre>
+
+<h3><a href="javascript:void(0);" onclick="$('.class_example').toggle();">クラス名一覧</a></h3>
+<table class="form_list class_example" style="display:none;">
+	<thead>
+		<tr>
+			<th>クラス名</th><th>箇所</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>sun</td><td>日曜日</td>
+		</tr>
+		<tr>
+			<td>sat</td><td>土曜日</td>
+		</tr>
+		<tr>
+			<td>today</td><td>本日</td>
+		</tr>
+		<tr>
+			<td>close</td><td>定休日</td>
+		</tr>
+		<tr>
+			<td>other</td><td>その他</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3><a href="javascript:void(0);" onclick="$('.template_example').toggle();">表示されるHTMLの例</a></h3>
+<textarea class="template_example" style="display:none;height:400px;">
+<table>
+<caption>8月の営業日</caption>
+<thead>
+	<tr>
+		<th class="sun">日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th class="sat">土</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td class="sun">1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td class="sat">7</td>
+	</tr>
+	<tr>
+		<td class="sun">8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td><td class="sat">14</td>
+	</tr>
+	<tr>
+		<td class="sun">15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td class="sat">21</td>
+	</tr>
+	<tr>
+		<td class="sun">22</td><td>23</td><td class="today">24</td><td>25</td><td>26</td><td>27</td><td class="sat">28</td>
+	</tr>
+	<tr>
+		<td class="sun">29</td><td>30</td><td>31</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+	</tr>
+</tbody>
+</table>
+</textarea>
+<style type="text/css">
+<!--
+/*_______ calendar _________*/
+
+
+table{
+	margin:0 auto 5px auto;
+	background-color:#FFFFFF;
+	border:1px solid #999999;
+	border-collapse:collapse;
+	}
+table th{
+	background-color:#EFEFEF;
+	border:1px solid #999999;
+	padding:0 6px;
+	text-align:center;
+	}
+
+table td{
+	border:1px solid #999999;
+	padding:0 6px;
+	text-align:center;
+	}
+
+/*= 土曜日の色=*/
+table th.sat,table td.sat{
+	color:#0000FF;
+	}
+
+/*= 日曜日の色=*/
+table th.sun,table td.sun{
+	color:#990000;
+	}
+	
+/*= 本日の色 =*/
+table td.today{
+	background-color:#FEFEFE;
+	}
+
+/*= 定休日の背景色=*/
+table th.close,table td.close{
+	background-color:#FFCCCC;
+	}
+	
+/*= その他の日の背景色 =*/
+table th.event,table td.other{
+	background-color:#BCBCBC;
+	}
+-->
+</style>
+<h3><a href="javascript:void(0);" onclick="$('.calendar_example').toggle();">現在のカレンダー</a></h3>
+<div style="display:none;border:1px solid #000000;padding:5px 20px;margin:0 35px;" class="calendar_example" >
+<!-- soy:id="current_calendar" -->
+ここに今月のカレンダーが表示されます
+<!-- /soy:id="current_calendar" -->
+
+<!-- soy:id="next_calendar" -->
+ここに翌月のカレンダーが表示されます
+<!-- /soy:id="next_calendar" -->
+</div>
