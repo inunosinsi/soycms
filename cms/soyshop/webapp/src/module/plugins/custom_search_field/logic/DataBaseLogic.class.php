@@ -73,8 +73,12 @@ class DataBaseLogic extends SOY2LogicBase{
 						$sets[$key] = trim($values[$key]);
 						
 					//値が一つの時はカンマがないので未加工で挿入する
-					}else{
+					}elseif(strlen($values[$key])){
 						$sets[$key] = trim($values[$key]);
+					
+					//その他の処理
+					}else{
+						$sets[$key] = null;
 					}
 					break;
 				default:
