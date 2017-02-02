@@ -44,9 +44,11 @@ class YayoiCalendarPage extends WebPage{
 //					"AND order_date < :end";
 			
 			//発送時刻で調べる
-			$sql = "SELECT DISTINCT o.id, o.* FROM soyshop_order o ".
+			$sql = "SELECT DISTINCT o.id, o.*, u.attribute1 FROM soyshop_order o ".
 					"INNER JOIN soyshop_order_state_history h ".
 					"ON o.id = h.order_id " .
+					"INNER JOIN soyshop_user u ".
+					"ON o.user_id = u.id ".
 					"WHERE o.order_status > " . SOYShop_Order::ORDER_STATUS_RECEIVED . " ".
 					"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
 					"AND h.content LIKE '%「発送済み」%' ".
@@ -76,6 +78,9 @@ class YayoiCalendarPage extends WebPage{
 					$claimed = soy2_unserialize($v["claimed_address"]);
 					$tel = self::removeHyphen($claimed["telephoneNumber"]);
 					
+					//卸
+					$isWhole = (isset($v["attribute1"]) && trim($v["attribute1"]) === "卸");
+					
 					//ここで分岐
 					if($csvType == self::TYPE_TOKUI){
 						$line = array();
@@ -94,8 +99,8 @@ class YayoiCalendarPage extends WebPage{
 						$line[] = "様";		//敬称
 						$line[] = $tel;		//TEL
 						$line[] = "";		//FAX
-						$line[] = "0";		//分類1
-						$line[] = "0";		//分類2
+						$line[] = ($isWhole) ? "0010" : "0000";		//分類1 卸の文字列で0000から0010へ
+						$line[] = ($isWhole) ? "0011" : "0000";		//分類2 卸の文字列で0000から0011へ
 						$line[] = "";		//分類3
 						$line[] = "";		//分類4
 						$line[] = "";		//分類5
@@ -117,7 +122,7 @@ class YayoiCalendarPage extends WebPage{
 						$line[] = "0";		//与信限度額
 						$line[] = "3";		//金額端数処理
 						$line[] = "3";		//税端数処理
-						$line[] = "1";		//担当者コード
+						$line[] = ($isWhole) ? "003" : "001";		//担当者コード 卸の文字列で001から003へ
 						$line[] = $adr1;		//メモ欄　都道府県 + 市区町村
 						$line[] = self::getMailAdressByUserId($v["user_id"]);		//メールアドレス
 						$line[] = "";		//ホームページ
