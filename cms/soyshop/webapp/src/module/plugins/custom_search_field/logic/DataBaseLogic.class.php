@@ -68,12 +68,13 @@ class DataBaseLogic extends SOY2LogicBase{
 					if(is_array($values[$key]) && count($values[$key])){
 						$sets[$key] = implode(",", $values[$key]);
 						
-					//一括更新の際は、そのまま値を入れなければならない
+					//一括更新の際は、そのまま値を入れなければならない 一応条件分岐は残しておく
 					}elseif(strpos($values[$key], ",")){
-						$sets[$key] = $values[$key];
+						$sets[$key] = trim($values[$key]);
 						
+					//値が一つの時はカンマがないので未加工で挿入する
 					}else{
-						$sets[$key] = null;
+						$sets[$key] = trim($values[$key]);
 					}
 					break;
 				default:
