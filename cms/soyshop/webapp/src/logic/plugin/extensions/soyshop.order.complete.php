@@ -32,7 +32,7 @@ class SOYShopOrderCompleteDeletageAction implements SOY2PluginDelegateAction{
 	private $order;
 	private $mode;
 	
-	private $_trackingNumber;
+	private $_trackingNumberList;
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 		if($action instanceof SOYShopOrderComplete){
@@ -41,7 +41,7 @@ class SOYShopOrderCompleteDeletageAction implements SOY2PluginDelegateAction{
 			
 			switch($this->mode){
 				case "tracking_number":
-					$this->_trackingNumber = $action->getTrackingNumber($order);	//拡張ポイントの重複はなし
+					$this->_trackingNumberList[$moduleId] = $action->getTrackingNumber($order);	//拡張ポイントの重複はなし
 					break;
 				default:
 					//注文時に選択されていればisUseフラグを立てる
@@ -57,8 +57,8 @@ class SOYShopOrderCompleteDeletageAction implements SOY2PluginDelegateAction{
 		}
 	}
 	
-	function getTrackingNumber(){
-		return $this->_trackingNumber;
+	function getTrackingNumberList(){
+		return $this->_trackingNumberList;
 	}
 	
 	function getOrder(){

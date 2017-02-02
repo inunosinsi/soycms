@@ -140,8 +140,11 @@ class OrderLogic extends SOY2LogicBase{
 			"order" => $order
 		));
 		
-		if(!is_null($delegate->getTrackingNumber()) && is_string($delegate->getTrackingNumber())){
-			return $delegate->getTrackingNumber();
+		if(!is_null($delegate->getTrackingNumberList()) && count($delegate->getTrackingNumberList())){
+			//最初に見つけた注文番号を返す
+			foreach($delegate->getTrackingNumberList() as $customTrackNum){
+				if(isset($customTrackNum)) return $customTrackNum; 
+			}
 		}
 
     	$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
