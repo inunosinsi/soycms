@@ -1,0 +1,30 @@
+<p>置換文字列を登録します。</p>
+<div>
+	<form soy:id="form">
+		置換文字列 : <input type="text" name="symbol" required="required">&nbsp;
+		変換する文字列 : <input type="text" name="string" required="required">&nbsp;
+		<input type="submit" name="add" value="登録">
+	</form>
+</div>
+
+<!-- soy:display="has_symbol_list" -->
+<h4>登録済み置換文字列</h4>
+<table>
+	<thead>
+		<tr>
+			<th>置換文字列</th>
+			<th>変換する文字列</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- soy:id="string_list" -->
+		<tr>
+			<td soy:id="symbol"></td>
+			<td soy:id="string"></td>
+			<td style="text-align:center;"><a soy:id="remove_link">削除する</a></td>
+		</tr>
+		<!-- /soy:id="string_list" -->
+	</tbody>
+</table>
+<!-- /soy:display="has_symbol_list" -->
