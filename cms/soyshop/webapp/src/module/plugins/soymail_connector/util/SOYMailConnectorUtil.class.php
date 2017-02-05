@@ -14,7 +14,7 @@ class SOYMailConnectorUtil{
 			"first_order_add_point" => 0,
 			"first_order_add_point_text" => "初回登録時にメルマガ登録で#POINT#ポイントプレゼント",
 			"label" => "メールマガジン",
-			"description" => "配送を希望する",
+			"description" => "配信を希望する",
 			"isInsertMail" => 1		//メール文面にメールマガジン配信の有無を入れるか？
 		));
 	}
