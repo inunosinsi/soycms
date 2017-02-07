@@ -13,13 +13,13 @@ class ReviewLogic extends SOY2LogicBase{
 		}
 		
 		//ポイントの加算を行うか調べる
-		if($obj->getIsApproved() == SOYShop_ItemReview::REVIEW_IS_APPROVED && (class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("common_point_base"))){
+		SOY2::import("util.SOYShopPluginUtil");
+		if($obj->getIsApproved() == SOYShop_ItemReview::REVIEW_IS_APPROVED && SOYShopPluginUtil::checkIsActive("common_point_base")){
 			SOY2::imports("module.plugins.item_review.domain.*");
 			$pDao = SOY2DAOFactory::create("SOYShop_ReviewPointDAO");
 			try{
 				$pObj = $pDao->getByReviewId($obj->getId());
 			}catch(Exception $e){
-				var_dump($e);
 				return;
 			}
 			
