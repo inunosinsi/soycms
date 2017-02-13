@@ -12,6 +12,11 @@ abstract class SOYShop_UserStorageDAO extends SOY2DAO{
 	abstract function insert(SOYShop_UserStorage $bean);
 	
 	/**
+	 * @return object
+	 */
+	abstract function getById($id);
+	
+	/**
 	 * @return list
 	 */
 	abstract function getByUserId($userId);
