@@ -428,7 +428,9 @@ class EditPage extends WebPage{
 	function buildForm(SOYShop_Order $order){
 		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
 
-		$this->addForm("update_form");
+		$this->addForm("update_form", array(
+			"enctype" => "multipart/form-data"
+		));
 
 		$this->addLabel("order_name_text", array(
 			"text" => $order->getTrackingNumber()
@@ -665,7 +667,7 @@ class EditPage extends WebPage{
 			if(isset($newAttributes[$key])){
 				$newValue = $newAttributes[$key];
 
-				if($newValue != $array["value"]){
+				if(isset($array["value"]) && $newValue != $array["value"]){
 					$change[]=$this->getHistoryText($array["name"], $array["value"], $newValue);
 					$attributes[$key]["value"] = $newValue;
 				}
