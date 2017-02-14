@@ -24,7 +24,7 @@ class EntryInfoPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.5.2"
+			"version"=>"0.6"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
 			$this,"config_page"
@@ -50,7 +50,6 @@ class EntryInfoPlugin{
 				
 				//公開側のページを表示させたときに、メタデータを表示する
 				CMSPlugin::setEvent('onPageOutput',$this->getId(),array($this,"onPageOutput"));
-				
 			}
 			
 		}else{
@@ -58,8 +57,6 @@ class EntryInfoPlugin{
 			//プラグイン有効直前で新しいテーブルを追加する 
 			CMSPlugin::setEvent('onActive',$this->getId(),array($this,"createTable"));
 		}
-		
-
 	}
 	
 
@@ -148,16 +145,11 @@ class EntryInfoPlugin{
 		try{
 			$result = $dao->executeQuery("select keyword,description from Entry where id = :id",
 				array(":id"=>$entryId));
-				
-			if(count($result)<1){
-				return array("","");
-			}
-			
-			return array($result[0]["keyword"],$result[0]["description"]);
-			
 		}catch(Exception $e){
 			return array("","");
 		}
+					
+		return (count($result)) ?  array($result[0]["keyword"],$result[0]["description"]) : array("","");
 	}
 	
 	
@@ -185,7 +177,7 @@ class EntryInfoPlugin{
 	/**
 	 * 概要に何も入力していないときにブログトップから概要を読み込む
 	 */	
-	function getDescription($getDescription){
+	function getDescription(){
 		
 		$getUrl = $_SERVER["REQUEST_URI"];
 		$getUrl = substr($getUrl, 0, strrpos($getUrl ,"/"));
@@ -208,49 +200,30 @@ class EntryInfoPlugin{
 	 */
 	function onPageOutput($obj){
 		
-		//ブログではない時は動作しません
-		if(false == ($obj instanceof CMSBlogPage)){
-			return;
-		}
-		
-		//エントリー表示画面以外では動作しません
-		if($obj->mode != CMSBlogPage::MODE_ENTRY){
-			return;
-		}
-		
-		
+		//ブログではない時は動作しません or エントリー表示画面以外では動作しません
+		if(false == ($obj instanceof CMSBlogPage) || $obj->mode != CMSBlogPage::MODE_ENTRY) return;
+				
 		$entry = $obj->entry;
-		if(is_null($entry))$entry = new Entry();
+		if(is_null($entry)) $entry = new Entry();
 		
 		//データ取得
 		list($keyword,$description) = $this->getEntryInfo($entry->getId());
 		
-		if(strlen($keyword) == "0"){
-			
-			$keyword = @$this->getKeyword();
-			
-		}
+		if(!strlen($keyword)) $keyword = $this->getKeyword();
+		if(!strlen($description)) $description = $this->getDescription();
 		
-		if(strlen($description) == "0"){
-			
-			$description = @$this->getDescription();
-			
-		}
-		
-		$obj->createAdd("entry_keyword","HTMLModel",array(
+		$obj->addModel("entry_keyword", array(
 			"soy2prefix" => "b_block",
 			"attr:name" => "keywords",
 			"attr:content" => $keyword
 		));
 		
-		$obj->createAdd("entry_description","HTMLModel",array(
+		$obj->addModel("entry_description", array(
 			"soy2prefix" => "b_block",
 			"attr:name" => "description",
 			"attr:content" => $description
 		));
-		
-		
-	} 
+	}
 	
 	/**
 	 * エントリーの複製時
@@ -259,9 +232,7 @@ class EntryInfoPlugin{
 		list($old,$new) = $args;	
 		
 		try{
-			
 			$dao = new SOY2DAO();
-			
 			$getKey = $dao->executeQuery("SELECT keyword FROM Entry WHERE Entry.id = :id", 
 											array(
 											":id" =>$old
@@ -287,10 +258,10 @@ class EntryInfoPlugin{
 		try{
 			$dao->executeUpdateQuery("alter table Entry add keyword text",array());
 		}catch(Exception $e){
+			//
 		}
 
 		return;
-		
 	}
 	
 	/**
