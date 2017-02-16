@@ -36,7 +36,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.9.2"
+			"version"=>"0.9.3"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -67,38 +67,40 @@ class SOYCMSThumbnailPlugin{
 		$entryId = $arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
 		
-		try{
-			$obj = $this->entryAttributeDao->get($entryId, self::RESIZE_IMAGE);
-		}catch(Exception $e){
-			$obj = new EntryAttribute();
+		foreach(array(self::UPLOAD_IMAGE, self::TRIMMING_IMAGE, self::RESIZE_IMAGE) as $imageType){
+			try{
+				$obj = $this->entryAttributeDao->get($entryId, $imageType);
+			}catch(Exception $e){
+				$obj = new EntryAttribute();
+			}
+			
+			$label = str_replace("soycms_thumbnail_plugin_", "", $imageType);
+			if($label == "resize") $label = "thumbnail";
+			
+			$imagePath = trim($obj->getValue());
+			if($label == "thumbnail" && !strlen($imagePath)) $imagePath = $this->no_thumbnail_path;
+			
+			$htmlObj->addModel("is_" . $label, array(
+				"soy2prefix" => "cms",
+				"visible" => (strlen($imagePath) > 0)
+			));
+			
+			$htmlObj->addModel("no_" . $label, array(
+				"soy2prefix" => "cms",
+				"visible" => (strlen($imagePath) === 0)
+			));
+			
+			$htmlObj->addImage($label, array(
+				"soy2prefix" => "cms",
+				"src" => $imagePath,
+				"alt" => $this->getAlt($entryId)
+			));
+			
+			$htmlObj->addLabel($label . "_path_text", array(
+				"soy2prefix" => "cms",
+				"text" => $imagePath
+			));
 		}
-		
-		if(strlen($obj->getValue()) > 0){
-			$thumbnailPath = $obj->getValue();
-		}else{
-			$thumbnailPath = $this->no_thumbnail_path;
-		}
-		
-		$htmlObj->addModel("is_thumbnail", array(
-			"soy2prefix" => "cms",
-			"visible" => (strlen($thumbnailPath) > 0)
-		));
-		
-		$htmlObj->addModel("no_thumbnail", array(
-			"soy2prefix" => "cms",
-			"visible" => (strlen($thumbnailPath) === 0)
-		));
-		
-		$htmlObj->addImage("thumbnail", array(
-			"soy2prefix" => "cms",
-			"src" => $thumbnailPath,
-			"alt" => $this->getAlt($entryId)
-		));
-		
-		$htmlObj->addLabel("thumbnail_path_text", array(
-			"soy2prefix" => "cms",
-			"text" =>$thumbnailPath
-		));
 	}
 	
 	/**
