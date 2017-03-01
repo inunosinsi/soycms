@@ -247,7 +247,7 @@ class InquiryLogic extends SOY2LogicBase{
      */
     function updateToSOYShop($keys, $alias, $data){
 
-		if(SOYINQUERY_SOYSHOP_CONNECT_SITE_ID){
+		if(defined("SOYINQUERY_SOYSHOP_CONNECT_SITE_ID") && strlen(SOYINQUERY_SOYSHOP_CONNECT_SITE_ID)){
 
 			$old = SOYInquiryUtil::switchConfig();
 
