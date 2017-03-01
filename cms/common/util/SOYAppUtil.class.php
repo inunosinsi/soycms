@@ -83,6 +83,11 @@ class SOYAppUtil {
 		$old["pass"] = SOY2DAOConfig::pass();
 
 		SOY2::RootDir(dirname(SOYCMS_COMMON_DIR) . "/webapp/" . $appId . "/src/");
+		
+		//上のコードでディレクトリ指定に誤りがある可能性が高いのでチェックする
+		if(strpos(SOY2::RootDir(), "/app/") === false){
+			SOY2::RootDir(dirname(SOYCMS_COMMON_DIR) . "/app/webapp/" . $appId . "/src/");
+		}
 		SOY2DAOConfig::DaoDir(SOY2::RootDir() . "domain/");
 		SOY2DAOConfig::EntityDir(SOY2::RootDir() . "domain/");
 		
@@ -90,7 +95,7 @@ class SOYAppUtil {
 			//SOYMailはdbファイル名がappIdと異なるから修正
 			if($appId == "mail") $appId = "soymail";
 			
-			SOY2DAOConfig::Dsn(SOYCMS_COMMON_DIR . "db/" . $appId . ".db");
+			SOY2DAOConfig::Dsn("sqlite:" . SOYCMS_COMMON_DIR . "db/" . $appId . ".db");
 		//MySQLの場合は管理側のDB
 		}else{
 			SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
