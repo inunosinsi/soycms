@@ -16,7 +16,7 @@ class CartLogic extends SOY2LogicBase{
 	 */
 	public static function getCart($cartId = null){
 
-		if(!$cartId)$cartId = SOYSHOP_CURRENT_CART_ID;
+		if(!$cartId) $cartId = (defined("SOYSHOP_CURRENT_CART_ID")) ? SOYSHOP_CURRENT_CART_ID : "bryon";
 		$userSession = SOY2ActionSession::getUserSession();
 		$cart = $userSession->getAttribute("soyshop_" . SOYSHOP_ID . $cartId);
 		if(is_string($cart) && strlen($cart)){
