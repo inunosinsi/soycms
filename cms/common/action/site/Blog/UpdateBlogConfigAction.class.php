@@ -23,10 +23,12 @@ class UpdateBlogConfigAction extends SOY2Action{
     		return SOY2Action::FAILED;
     	}
     	
-    	
     	$dao = SOY2DAOFactory::create("cms.BlogPageDAO");
     	$page = $dao->getById($this->id);
     	$page = SOY2::cast($page,$form);
+    	
+    	//カテゴリ未選択の場合は、pageオブジェクトも未選択にする
+    	if(is_null($form->getCategoryLabelList())) $page->setCategoryLabelList(null);    	
     	
     	$page->setId($this->id);
 

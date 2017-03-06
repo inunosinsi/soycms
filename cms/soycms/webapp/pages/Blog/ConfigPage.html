@@ -120,6 +120,7 @@
 							</label soy:id="label_label">
 						</div>
 						<!-- /soy:id="category_label_list" -->
+						&nbsp;<input type="button" value="チェックを全て外す" onclick="removeAllCheck();">
 						<br style="clear:both"/>
 					</div>
 				</div soy:id="label_exists2">				
@@ -363,6 +364,13 @@
 				error : function(){
 					alert("失敗");
 				}
+			});
+		}
+		
+		//使用するカテゴリでチェックしてあるカテゴリをすべて外す
+		function removeAllCheck(){
+			$("[name='categoryLabelList[]']").each(function(){
+				$(this).removeAttr('checked');
 			});
 		}
 		</script>

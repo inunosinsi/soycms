@@ -110,8 +110,7 @@ class BlogPage extends Page{
 		$this->entryPageUri = $entryPageUri;
 	}
 	function setCategoryLabelList($list){
-		if(!is_array($list))return;
-		$this->categoryLabelList = $list;
+		$this->categoryLabelList = (is_array($list)) ? $list : array();
 	}
 	function getCategoryLabelList(){
 		return $this->categoryLabelList;
