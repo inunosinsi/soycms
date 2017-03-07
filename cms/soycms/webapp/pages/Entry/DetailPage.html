@@ -80,6 +80,7 @@
 								</label soy:id="label_label">
 							</div>
 							<!-- /soy:id="labels" -->
+							&nbsp;<input type="button" value="チェックを全て外す" onclick="removeAllCheck();">
 							<br style="clear:both"/>
 						</div>
 					</div>				
@@ -168,7 +169,15 @@
 				<input type="hidden" name="style" id="style" soy:id="style" />
 			</div>
 		</form soy:id="detail_form">
-
+		
+		<script>
+		//使用するカテゴリでチェックしてあるカテゴリをすべて外す
+		function removeAllCheck(){
+			$("[name='label[]']").each(function(){
+				$(this).removeAttr('checked');
+			});
+		}
+		</script>
 		
 		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
 		<!-- content end -->
