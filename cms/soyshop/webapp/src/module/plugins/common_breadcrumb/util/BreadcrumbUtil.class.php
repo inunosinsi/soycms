@@ -2,7 +2,7 @@
 
 class BreadcrumbUtil{
 	
-	function BreadcrumbUtil(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 	
