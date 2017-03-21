@@ -394,6 +394,7 @@ class DetailPage extends WebPage{
     //注文状態の変更に伴い、在庫数の変更を行う
 	private function changeItemStock($orderId, $mode){
 		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		$itemOrderDao->begin();
 		try{
 			$itemOrders = $itemOrderDao->getByOrderId($orderId);
 		}catch(Exception $e){
@@ -426,6 +427,7 @@ class DetailPage extends WebPage{
 				var_dump($e);
 			}
 		}
+		$itemOrderDao->commit();
 	}
     
     function getPointHistories($orderId){
