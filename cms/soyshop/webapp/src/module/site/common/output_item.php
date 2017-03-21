@@ -6,7 +6,9 @@ SOYShopPlugin::load("soyshop.item.customfield");
  * テンプレートに記述しない
  */
 function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
-
+	static $itemDao;
+	if(is_null($itemDao)) $itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+	
 	$htmlObj->addLabel("id", array(
 		"text" => $item->getId(),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
@@ -32,6 +34,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 			"soy2prefix" => "block"
 		));
 	}
+	
 
 	//表示価格が0円以上の場合は表示する
 	$htmlObj->addModel("item_price_visible", array(
@@ -210,6 +213,36 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 		"name" => "count",
 		"options" => range(1,10),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+	
+	/** 子商品表示時の親商品のタグ **/
+	$parent = new SOYShop_Item();
+	if(is_numeric($item->getType())) {
+		try{
+			$parent = $itemDao->getById($item->getType());
+		}catch(Exception $e){
+			//
+		}
+	}
+	
+	$htmlObj->addLabel("parent_name", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"text" => $parent->getOpenItemName()
+	));
+	
+	$htmlObj->addLabel("parent_code", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"text" => $parent->getCode(),
+	));
+
+	$htmlObj->addImage("parent_small_image", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"src" => soyshop_convert_file_path($parent->getAttribute("image_small"), $parent)
+	));
+
+	$htmlObj->addImage("parent_large_image", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"src" => soyshop_convert_file_path($parent->getAttribute("image_large"), $parent)
 	));
 
 	/*

@@ -144,14 +144,14 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("parent_code", array(
-			"text" => $item->getCode(),
+			"text" => $parent->getCode(),
 		));
 
 		$this->addImage("parent_small_image", array(
 			"src" => soyshop_convert_file_path($parent->getAttribute("image_small"), $parent)
 		));
 
-		$this->addImage("item_large_image", array(
+		$this->addImage("parent_large_image", array(
 			"src" => soyshop_convert_file_path($parent->getAttribute("image_large"), $parent)
 		));
 	}
