@@ -27,13 +27,13 @@ class UserPage extends WebPage{
 					$next = true;
 				}else{
 					//NG
-					$this->session->setAttribute("order_register.error.user_id", "入力されたIDに該当するユーザーが見つかりません。");
-					$this->session->setAttribute("order_register.input.user_id", $_POST["search_by_id"]);
+					$this->session->setAttribute("order_register.error.id", "入力されたIDに該当するユーザーが見つかりません。");
+					$this->session->setAttribute("order_register.input.id", $_POST["search_by_id"]);
 				}
 			}else{
 				//NG
-				$this->session->setAttribute("order_register.error.user_id", "IDを入力してください。");
-				$this->session->setAttribute("order_register.input.user_id", $_POST["search_by_id"]);
+				$this->session->setAttribute("order_register.error.id", "IDを入力してください。");
+				$this->session->setAttribute("order_register.input.id", $_POST["search_by_id"]);
 			}
 		}elseif(isset($_POST["search_by_email"])){
 			if(strlen($_POST["search_by_email"])){
@@ -68,6 +68,40 @@ class UserPage extends WebPage{
 				//NG
 				$this->session->setAttribute("order_register.error.tell", "電話番号を入力してください。");
 				$this->session->setAttribute("order_register.input.tell", $_POST["search_by_tell"]);
+			}
+		}elseif(isset($_POST["search_by_name"])){
+			if(strlen($_POST["search_by_name"])){
+				$user = $this->getUserByName($_POST["search_by_name"]);
+				if(strlen($user->getId())){
+					//OK
+					$cart->setCustomerInformation($user);
+					$next = true;
+				}else{
+					//NG
+					$this->session->setAttribute("order_register.error.name", "入力された顧客名に該当するユーザーが見つかりません。");
+					$this->session->setAttribute("order_register.input.name", $_POST["search_by_name"]);
+				}
+			}else{
+				//NG
+				$this->session->setAttribute("order_register.error.name", "顧客名を入力してください。");
+				$this->session->setAttribute("order_register.input.name", $_POST["search_by_name"]);
+			}
+		}elseif(isset($_POST["search_by_reading"])){
+			if(strlen($_POST["search_by_reading"])){
+				$user = $this->getUserByReading($_POST["search_by_reading"]);
+				if(strlen($user->getId())){
+					//OK
+					$cart->setCustomerInformation($user);
+					$next = true;
+				}else{
+					//NG
+					$this->session->setAttribute("order_register.error.reading", "入力されたフリガナに該当するユーザーが見つかりません。");
+					$this->session->setAttribute("order_register.input.reading", $_POST["search_by_reading"]);
+				}
+			}else{
+				//NG
+				$this->session->setAttribute("order_register.error.reading", "フリガナを入力してください。");
+				$this->session->setAttribute("order_register.input.reading", $_POST["search_by_reading"]);
 			}
 		}elseif(isset($_POST["Customer"]) && is_array($_POST["Customer"])){
 			$user = SOY2::cast("SOYShop_User",(object)$_POST["Customer"]);
@@ -126,30 +160,25 @@ class UserPage extends WebPage{
 
 		WebPage::__construct();
 
-		$this->addForm("user_search_by_id_form");
-		$this->addForm("user_search_by_email_form");
-		$this->addForm("user_search_by_tell_form");
-		$this->addForm("user_create_form");
-
+		foreach(array("id", "email", "tell", "name", "reading") as $t){
+			$this->addForm("user_search_by_" . $t . "_form");
+			
+			//エラー文言
+			$error = $this->session->getAttribute("order_register.error." . $t);
+			$this->addLabel("search_by_" . $t . "_error", array(
+				"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
+				"visible" => isset($error) && strlen($error)
+			));
+			
+			//クリア
+			$this->session->setAttribute("order_register.input." . $t, null);
+			$this->session->setAttribute("order_register.error." . $t, null);
+		}
+		
 		$this->userForm($user);
 		$this->addressForm($user);
 
 		//エラー文言
-		$error = $this->session->getAttribute("order_register.error.email");
-		$this->addLabel("search_by_email_error", array(
-			"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
-			"visible" => isset($error) && strlen($error)
-		));
-		$error = $this->session->getAttribute("order_register.error.tell");
-		$this->addLabel("search_by_tell_error", array(
-			"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
-			"visible" => isset($error) && strlen($error)
-		));
-		$error = $this->session->getAttribute("order_register.error.user_id");
-		$this->addLabel("search_by_id_error", array(
-			"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
-			"visible" => isset($error) && strlen($error)
-		));
 		$error = $this->session->getAttribute("order_register.error.user");
 		$this->addLabel("register_user_error", array(
 			"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
@@ -159,12 +188,6 @@ class UserPage extends WebPage{
 		//クリア
 		$this->session->setAttribute("order_register.input.user", null);
 		$this->session->setAttribute("order_register.error.user", null);
-		$this->session->setAttribute("order_register.input.email", null);
-		$this->session->setAttribute("order_register.error.email", null);
-		$this->session->setAttribute("order_register.input.tell", null);
-		$this->session->setAttribute("order_register.error.tell", null);
-		$this->session->setAttribute("order_register.input.user_id", null);
-		$this->session->setAttribute("order_register.error.user_id", null);
    }
 
 	function getCSS(){
@@ -177,23 +200,12 @@ class UserPage extends WebPage{
 	//お客様情報入力画面
 	function userForm(SOYShop_User $user){
 
-		//IDで検索
-		$this->addInput("search_by_id", array(
-			"name" => "search_by_id",
-			"value" => $this->session->getAttribute("order_register.input.user_id"),
-		));
-
-		//メールアドレスで検索
-		$this->addInput("search_by_email", array(
-			"name" => "search_by_email",
-			"value" => $this->session->getAttribute("order_register.input.email"),
-		));
-		
-		//メールアドレスで検索
-		$this->addInput("search_by_tell", array(
-			"name" => "search_by_tell",
-			"value" => $this->session->getAttribute("order_register.input.tell"),
-		));
+		foreach(array("id", "email", "tell", "name", "reading") as $t){
+			$this->addInput("search_by_" . $t, array(
+				"name" => "search_by_" . $t,
+				"value" => $this->session->getAttribute("order_register.input." . $t),
+			));
+		}
 
 		//新規登録フォーム
 		$this->addInput("mail_address", array(
@@ -380,5 +392,69 @@ class UserPage extends WebPage{
 		}
 		
 		return new SOYShop_User();
+	}
+	
+	function getUserByName($name){
+		$strings = self::str2array($name);
+		if(!count($strings)) return new SOYShop_User();
+
+		$dao = $this->dao;
+		$sql = "SELECT id FROM soyshop_user " .
+				"WHERE is_disabled != " . SOYShop_User::USER_IS_DISABLED . " ";
+		foreach($strings as $str){
+			$sql .= "AND name LIKE '%" . htmlspecialchars($str, ENT_QUOTES, "UTF-8") . "%' ";
+		}
+		try{
+			$res = $dao->executeQuery($sql);
+		}catch(Exception $e){
+			$res = array();
+		}
+		
+		if(!count($res)) return new SOYShop_User();
+		foreach($res as $v){
+			try{
+				return $dao->getById($v["id"]);
+			}catch(Exception $e){
+				//
+			}
+		}
+		
+		return new SOYShop_User();
+	}
+	
+	function getUserByReading($reading){
+		$strings = self::str2array($reading);
+		
+		if(!count($strings)) return new SOYShop_User();
+
+		$dao = $this->dao;
+		$sql = "SELECT id FROM soyshop_user " .
+				"WHERE is_disabled != " . SOYShop_User::USER_IS_DISABLED . " ";
+		foreach($strings as $str){
+			$sql .= "AND reading LIKE '%" . htmlspecialchars($str, ENT_QUOTES, "UTF-8") . "%' ";
+		}
+		try{
+			$res = $dao->executeQuery($sql);
+		}catch(Exception $e){
+			$res = array();
+		}
+		
+		if(!count($res)) return new SOYShop_User();
+		foreach($res as $v){
+			try{
+				return $dao->getById($v["id"]);
+			}catch(Exception $e){
+				//
+			}
+		}
+		
+		return new SOYShop_User();
+	}
+	
+	private function str2array($str){
+		//全角スペースを半角スペースにする
+		$str = str_replace("　", " ", $str);
+		
+		return explode(" ", $str);
 	}
 }

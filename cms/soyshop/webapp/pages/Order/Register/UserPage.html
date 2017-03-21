@@ -28,7 +28,7 @@
 			<form soy:id="user_search_by_id_form">
 				<input type="text" soy:id="search_by_id" name="" value="" size="20" />
 				<input type="submit" value="決定">
-			</form soy:id="user_search_by_id_form">
+			</form>
 		</dd>		
 		<dt>メールアドレスで検索</dt>
 		<dd>
@@ -36,7 +36,7 @@
 			<form soy:id="user_search_by_email_form">
 				<input type="text" soy:id="search_by_email" name="" value="" size="60" />
 				<input type="submit" value="決定">
-			</form soy:id="user_search_by_email_form">
+			</form>
 		</dd>
 		<dt>電話番号で検索</dt>
 		<dd>
@@ -44,7 +44,25 @@
 			<form soy:id="user_search_by_tell_form">
 				<input type="text" soy:id="search_by_tell" name="" value="" size="60" />
 				<input type="submit" value="決定">
-			</form soy:id="user_search_by_tell_form">
+			</form>
+		</dd>
+		<dt>顧客名で検索</dt>
+		<dd>
+			<p soy:id="search_by_name_error" class="require">エラー</p>
+			<form soy:id="user_search_by_name_form">
+				<input type="text" soy:id="search_by_name" name="" value="" size="60" />
+				<input type="submit" value="決定"><br>
+				※苗字と名前の間に必ずスペースを入れてから検索してください。
+			</form>
+		</dd>
+		<dt>フリガナで検索</dt>
+		<dd>
+			<p soy:id="search_by_reading_error" class="require">エラー</p>
+			<form soy:id="user_search_by_reading_form">
+				<input type="text" soy:id="search_by_reading" name="" value="" size="60" />
+				<input type="submit" value="決定"><br>
+				※苗字と名前の間に必ずスペースを入れてから検索してください。
+			</form>
 		</dd>
 		<dt>新規登録</dt>
 		<dd>
