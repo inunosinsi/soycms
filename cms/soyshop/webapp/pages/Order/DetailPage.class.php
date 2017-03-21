@@ -3,6 +3,9 @@ SOY2::import("domain.order.SOYShop_ItemModule");
 SOYShopPlugin::load("soyshop.item.option");
 class DetailPage extends WebPage{
 
+	const CHANGE_STOCK_MODE_CANCEL = "cancel";	//キャンセルにした場合
+	const CHANGE_STOCK_MODE_RETURN = "return";	//キャンセルから他のステータスに戻した場合
+
 	private $id;
 	private $itemDao;
 
@@ -23,8 +26,20 @@ class DetailPage extends WebPage{
 				
 
 				if (isset($_POST["State"]["orderStatus"]) && $order->getStatus() != $post->orderStatus) {
+					$oldStatus = $order->getStatus();
+					
 					$order->setStatus($post->orderStatus);
 					$historyContents[] = "注文状態を<strong>「" . $order->getOrderStatusText() . "」</strong>に変更しました。";
+					
+					//キャンセルの場合は紐付いた商品分だけ在庫数を戻したい
+					if($_POST["State"]["orderStatus"] == SOYShop_Order::ORDER_STATUS_CANCELED && $oldStatus != SOYShop_Order::ORDER_STATUS_CANCELED){
+						self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
+					}
+					
+					//キャンセルから他のステータスに戻した場合は在庫数を減らしたい
+					if($oldStatus == SOYShop_Order::ORDER_STATUS_CANCELED && $_POST["State"]["orderStatus"] != SOYShop_Order::ORDER_STATUS_CANCELED){
+						self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_RETURN);
+					}
 				}
 				if (isset($_POST["State"]["paymentStatus"]) && $order->getPaymentStatus() != $post->paymentStatus) {
 					$order->setPaymentStatus($post->paymentStatus);
@@ -375,6 +390,43 @@ class DetailPage extends WebPage{
     		"visible" => (count($list) > 0)
     	));
     }
+    
+    //注文状態の変更に伴い、在庫数の変更を行う
+	private function changeItemStock($orderId, $mode){
+		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		try{
+			$itemOrders = $itemOrderDao->getByOrderId($orderId);
+		}catch(Exception $e){
+			return false;
+		}
+		
+		if(!count($itemOrders)) return false;
+		
+		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		foreach($itemOrders as $itemOrder){
+			try{
+				$item = $itemDao->getById($itemOrder->getItemId());
+			}catch(Exception $e){
+				continue;
+			}
+			
+			//在庫数を戻す
+			if($mode == self::CHANGE_STOCK_MODE_CANCEL){
+				$item->setStock((int)$item->getStock() + (int)$itemOrder->getItemCount());
+			//在庫数を減らす
+			}else if($mode == self::CHANGE_STOCK_MODE_RETURN){
+				$item->setStock((int)$item->getStock() - (int)$itemOrder->getItemCount());
+			}else{
+				//何もしない
+			}
+			
+			try{
+				$itemDao->update($item);
+			}catch(Exception $e){
+				var_dump($e);
+			}
+		}
+	}
     
     function getPointHistories($orderId){
     	$pointHistoryDao = SOY2DAOFactory::create("SOYShop_PointHistoryDAO");
