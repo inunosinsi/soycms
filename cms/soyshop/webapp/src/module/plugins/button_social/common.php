@@ -5,7 +5,7 @@ class ButtonSocialCommon {
 	private $page;
 	private $obj;
 	
-	function ButtonSocialCommon(){
+	function __construct(){
 		SOY2::import("module.plugins.button_social.util.ButtonSocialUtil");
 	}
 	
