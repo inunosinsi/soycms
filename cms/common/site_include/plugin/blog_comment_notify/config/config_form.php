@@ -20,7 +20,7 @@ class config_form extends WebPage{
     	
 	}
 	
-	function config_form(){}
+	function __construct(){}
 	
 	function execute(){
 		WebPage::__construct();
