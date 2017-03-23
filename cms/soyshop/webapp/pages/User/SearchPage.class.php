@@ -19,7 +19,7 @@ class SearchPage extends WebPage{
 		SOY2PageController::jump("User.Search");
 	}
 
-	function __construct(){
+	function __construct($args){
 		WebPage::__construct();
 
 		$this->addForm("advanced_search_form");
@@ -73,7 +73,7 @@ class SearchPage extends WebPage{
 		if($end > 0 && $start == 0)$start = 1;
 
 		$pager = SOY2Logic::createInstance("logic.pager.PagerLogic");
-		$pager->setPageURL("User");
+		$pager->setPageURL("User.Search");
 		$pager->setPage($page);
 		$pager->setStart($start);
 		$pager->setEnd($end);
@@ -112,17 +112,32 @@ class SearchPage extends WebPage{
 	}
 
 	function buildAdvancedSearchForm($search){
-
+		SOY2::import("domain.user.SOYShop_User");
 
 		$this->addInput("advanced_search_id", array(
 			"name" => "search[id]",
-			"value" => (isset($search["id"])) ? $search["id"] : "",
+			"value" => (isset($search["id"])) ? $search["id"] : ""
 		));
 
 		$this->addInput("advanced_search_mail_address", array(
 			"name" => "search[mail_address]",
 			"value" => (isset($search["mail_address"])) ? $search["mail_address"] : "",
 		));
+		
+		$this->addCheckBox("advanced_search_user_type_register", array(
+			"name" => "search[user_type][]",
+			"value" => SOYShop_User::USERTYPE_REGISTER,
+			"selected" => (!count($search) || (isset($search["user_type"]) && is_array($search["user_type"]) && in_array(SOYShop_User::USERTYPE_REGISTER, $search["user_type"]))),
+			"label" => "本登録"
+		));
+		
+		$this->addCheckBox("advanced_search_user_type_tmp", array(
+			"name" => "search[user_type][]",
+			"value" => SOYShop_User::USERTYPE_TMP,
+			"selected" => (!count($search) || (isset($search["user_type"]) && is_array($search["user_type"]) && in_array(SOYShop_User::USERTYPE_TMP, $search["user_type"]))),
+			"label" => "仮登録"
+		));
+		
 		$this->addCheckBox("advanced_search_mail_send_true", array(
 			"name" => "search[]",
 			"value" => 1,

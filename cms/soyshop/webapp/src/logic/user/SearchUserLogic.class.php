@@ -180,6 +180,9 @@ class SearchUserLogic extends SOY2LogicBase{
 							$binds[":birthday_day"] = "%-" . $d;
 						}
 						break;
+					case "user_type":
+						$where[] = " " . $key . " IN (" . implode(",", $value) . ") ";
+						break;
 					case "not_send":
 						foreach($value as $key_2 => $value_2){
 							if( is_string($value_2) && strlen($value_2) ){
