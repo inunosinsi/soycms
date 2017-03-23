@@ -64,3 +64,6 @@ define("SOYSHOP_IS_ROOT",$isRoot);
 if(!defined("SOYSHOP_ADMIN_PAGE")){
 	define("SOYSHOP_ADMIN_PAGE", true);
 }
+
+//ダミーのメールアドレス用のドメイン(管理画面用:一応、公開側と分けておく)
+if(!defined("DUMMY_MAIL_ADDRESS_DOMAIN")) define("DUMMY_MAIL_ADDRESS_DOMAIN", "dummy.soyshop.net");

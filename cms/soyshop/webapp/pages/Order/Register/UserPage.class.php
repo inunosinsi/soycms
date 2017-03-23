@@ -207,10 +207,19 @@ class UserPage extends WebPage{
 			));
 		}
 
+		$mailAddress = $user->getMailAddress();
+		if(!strlen($mailAddress)){
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			if(SOYShop_ShopConfig::load()->getInsertDummyMailAddressOnAdmin()){
+				$mailAddress = soyshop_dummy_mail_address();
+			}
+		}
+		
+
 		//新規登録フォーム
 		$this->addInput("mail_address", array(
 			"name" => "Customer[mailAddress]",
-			"value" => $user->getMailAddress(),
+			"value" => $mailAddress,
 		));
 
 //		$this->createAdd("password","HTMLInput", array(
@@ -223,7 +232,7 @@ class UserPage extends WebPage{
 			"value" => $user->getName(),
 		));
 
-		$this->addInput("furigana", array(
+		$this->addInput("reading", array(
 			"name" => "Customer[reading]",
 			"value" => $user->getReading(),
 		));
