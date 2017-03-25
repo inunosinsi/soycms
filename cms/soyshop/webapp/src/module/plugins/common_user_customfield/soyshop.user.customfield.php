@@ -255,6 +255,10 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 						"options" => $options,
 						"selected" => $h_value 
 					));
+					
+					$pageObj->addLabel($h_formID. "_text", array(
+						"text" => $h_value
+					));
 					break;
 				
 				case SOYShop_UserAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
