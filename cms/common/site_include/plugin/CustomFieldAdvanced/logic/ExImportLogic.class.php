@@ -4,7 +4,7 @@ class ExImportLogic extends ExImportLogicBase{
 	
 	private $pluginObj;
 	
-	function ExImportLogic(){
+	function __construct(){
 		
 	}
 	

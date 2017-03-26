@@ -2,7 +2,7 @@
 
 class DisplayLogic extends SOY2LogicBase{
 		
-	function DisplayLogic(){
+	function __construct(){
 		$this->entryLabelDao = SOY2DAOFactory::create("cms.EntryLabelDAO");
 	}
 	

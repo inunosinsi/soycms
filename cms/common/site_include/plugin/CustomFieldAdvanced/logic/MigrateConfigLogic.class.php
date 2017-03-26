@@ -4,7 +4,7 @@ class MigrateConfigLogic extends SOY2LogicBase{
 	
 	private $pluginObj;
 	
-	function MigrateConfigLogic(){
+	function __construct(){
 		
 	}
 	
