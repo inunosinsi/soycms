@@ -43,7 +43,7 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 		}
 		
 		$html = array();
-		$html[] = "<textarea " . implode(" ",$attributes) . ">".$this->policy."</textarea>";
+		$html[] = "<textarea " . implode(" ",$attributes) . " readonly=\"readonly\">".$this->policy."</textarea>";
 		
 		$html[] = "<br/>";
 		$html[] = "<input type=\"checkbox\" id=\"data_".$this->getColumnId() . "\" name=\"data[".$this->getColumnId()."]\" value=\"1\" />";
