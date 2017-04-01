@@ -32,7 +32,7 @@ class ImageListComponent extends HTMLList{
 		$this->addInput("sort", array(
 			"name" => "Sort[" . $entity->getId() . "]",
 			"value" => (!is_null($entity->getSort()) && $entity->getSort()<99999) ? (int)$entity->getSort() : null,
-			"style" => "text-align:right;ime-mode:inactive;"
+			"style" => "text-align:right;ime-mode:inactive;width:80%;"
 		));
 		
 		$this->addLink("detail_link", array(

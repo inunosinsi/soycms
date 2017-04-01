@@ -86,7 +86,7 @@ class IndexPage extends WebPage{
 		
 		$config = $gallery->getConfigArray();
 		$imageDir = (isset($config["uploadDir"])) ? $config["uploadDir"] : SOY_GALLERY_IMAGE_UPLOAD_DIR . $gallery->getGalleryId();
-		$imageDir .= "/";
+		if(strrpos($imageDir, "/") != strlen($imageDir) - 1) $imageDir .= "/";
 		
 		SOY2::import("domain.SOYGallery_Image");
 		$this->createAdd("image_list", "_common.ImageListComponent", array(
