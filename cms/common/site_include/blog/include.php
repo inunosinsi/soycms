@@ -80,7 +80,7 @@ function soy_cms_blog_output_category_link($page){
 				));
 				
 				
-				$arg = substr($_SERVER["REQUEST_URI"], strrpos($_SERVER["REQUEST_URI"], "/") + 1);
+				$arg = substr(rtrim($_SERVER["REQUEST_URI"], "/"), strrpos(rtrim($_SERVER["REQUEST_URI"], "/"), "/") + 1);
 				$alias = rawurlencode($entry->getAlias());
 				$this->createAdd("is_current_category", "HTMLModel", array(
 					"visible" => ($arg === $alias),
