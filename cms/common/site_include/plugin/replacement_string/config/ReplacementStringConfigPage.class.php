@@ -10,9 +10,10 @@ class ReplacementStringConfigPage extends WebPage{
 		
 		if(soy2_check_token()){
 			
+			$list = $this->pluginObj->getStringList();
+			
 			if(isset($_POST["add"])){
-				$list = $this->pluginObj->getStringList();
-				
+								
 				$values = array();
 				$values["symbol"] = trim(htmlspecialchars($_POST["symbol"], ENT_QUOTES, "UTF-8"));
 				$values["string"] = trim(htmlspecialchars($_POST["string"], ENT_QUOTES, "UTF-8"));
@@ -22,7 +23,24 @@ class ReplacementStringConfigPage extends WebPage{
 				
 				CMSPlugin::savePluginConfig($this->pluginObj->getId(), $this->pluginObj);
 				CMSPlugin::redirectConfigPage();
-			}	
+			}
+			
+			if(isset($_POST["change"])){
+				foreach($list as $key => $values){
+					var_dump($key);
+					
+					if(isset($_POST["string"][$key])){
+						$values["string"] = trim(htmlspecialchars($_POST["string"][$key], ENT_QUOTES, "UTF-8"));
+					}
+					
+					$list[$key] = $values;
+				}
+				
+				$this->pluginObj->setStringList($list);
+				
+				CMSPlugin::savePluginConfig($this->pluginObj->getId(), $this->pluginObj);
+				CMSPlugin::redirectConfigPage();
+			}
 		}
 	}
 	
@@ -42,6 +60,8 @@ class ReplacementStringConfigPage extends WebPage{
 		
 		$list = $this->pluginObj->getStringList();
 		DisplayPlugin::toggle("has_symbol_list", count($list));
+		
+		$this->addForm("change_form");
 		
 		SOY2::import("site_include.plugin.replacement_string.component.ReplacementStringListComponent");
 		$this->createAdd("string_list", "ReplacementStringListComponent", array(

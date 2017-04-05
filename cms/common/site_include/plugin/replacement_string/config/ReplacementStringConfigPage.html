@@ -8,23 +8,28 @@
 </div>
 
 <!-- soy:display="has_symbol_list" -->
+<form soy:id="change_form">
 <h4>登録済み置換文字列</h4>
-<table>
-	<thead>
-		<tr>
-			<th>置換文字列</th>
-			<th>変換する文字列</th>
-			<th>&nbsp;</th>
-		</tr>
-	</thead>
-	<tbody>
-		<!-- soy:id="string_list" -->
-		<tr>
-			<td soy:id="symbol"></td>
-			<td soy:id="string"></td>
-			<td style="text-align:center;"><a soy:id="remove_link">削除する</a></td>
-		</tr>
-		<!-- /soy:id="string_list" -->
-	</tbody>
-</table>
+	<table>
+		<thead>
+			<tr>
+				<th>置換文字列</th>
+				<th>変換する文字列</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="string_list" -->
+			<tr>
+				<td soy:id="symbol"></td>
+				<td>
+					<input type="text" soy:id="string_input">&nbsp;
+					<input type="submit" name="change" value="変更">
+				</td>
+				<td style="text-align:center;"><a soy:id="remove_link">削除する</a></td>
+			</tr>
+			<!-- /soy:id="string_list" -->
+		</tbody>
+	</table>
+</form>
 <!-- /soy:display="has_symbol_list" -->
