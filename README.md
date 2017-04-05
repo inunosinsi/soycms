@@ -11,10 +11,3 @@ packageディレクトリ内にパッケージ化したzipファイルがあり�
 
 配置しているパッケージよりも最新のSOY CMSを試したい場合は  
 Download ZIPでダウンロードしたファイル群をルートディレクトリに配置したら動作します。  
-
-そのまま配置した場合はSQLite版になりますが、  
-MySQL版をご利用したい場合は、  
-
-/cms/common/soycms.config.phpの2行目の  
-define("SOYCMS_DB_TYPE","sqlite"); → define("SOYCMS_DB_TYPE","mysql");  
-と修正してください。  
