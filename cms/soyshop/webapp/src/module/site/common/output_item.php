@@ -150,41 +150,31 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 	
-	$imageSmall = soyshop_convert_file_path($item->getAttribute("image_small"), $item);
-	$htmlObj->addImage("item_small_image", array(
-		"src" => $imageSmall,
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"visible" => (strlen($imageSmall) > 0)
-	));
-	$htmlObj->addLink("item_small_image_link", array(
-		"link" => $imageSmall,
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"visible" => (strlen($imageSmall) > 0)
-	));
-	
-	$htmlObj->addLabel("item_small_image_url", array(
-		"text" => $imageSmall,
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-	));
-
-	$imageLarge = soyshop_convert_file_path($item->getAttribute("image_large"), $item);
-	$htmlObj->addImage("item_large_image", array(
-		"src" => $imageLarge,
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"visible" => (strlen($imageLarge) > 0)
-	));
-
-	$htmlObj->addLink("item_large_image_link", array(
-		"link" => $imageLarge,
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"visible" => (strlen($imageLarge) > 0)
-	));
-	
-	$htmlObj->addLabel("item_large_image_url", array(
-		"text" => $imageLarge,
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-	));
-
+	//cms:id="item_small_image"とcms:id="item_large_image"
+	foreach(array("small", "large") as $tp){
+		$img = soyshop_convert_file_path($item->getAttribute("image_" . $tp), $item);
+		$key = "item_" . $tp . "_image";
+		$htmlObj->addImage($key, array(
+			"src" => $img,
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"visible" => (strlen($img) > 0)
+		));
+		$htmlObj->addLink($key . "_link", array(
+			"link" => $img,
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"visible" => (strlen($img) > 0)
+		));
+		
+		$htmlObj->addLabel($key . "_url", array(
+			"text" => $img,
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		));
+		
+		$htmlObj->addModel($key . "_show", array(
+			"visible" => (strlen($img) > 0),
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		));
+	}
 
 	$htmlObj->addLink("item_link", array(
 		"link" => soyshop_get_item_detail_link($item),
@@ -236,15 +226,20 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 		"text" => $parent->getCode(),
 	));
 
-	$htmlObj->addImage("parent_small_image", array(
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"src" => soyshop_convert_file_path($parent->getAttribute("image_small"), $parent)
-	));
-
-	$htmlObj->addImage("parent_large_image", array(
-		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"src" => soyshop_convert_file_path($parent->getAttribute("image_large"), $parent)
-	));
+	//cms:id="parent_small_image"とcms:id="parent_large_image"
+	foreach(array("small", "large") as $tp){
+		$img = soyshop_convert_file_path($parent->getAttribute("image_" . $tp), $parent);
+		$key = "parent_" . $tp . "_image";
+		$htmlObj->addImage($key, array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"src" => $img
+		));
+		
+		$htmlObj->addModel($key . "_show", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"visible" => (strlen($img) > 0)
+		));
+	}
 
 	/*
 	 * "sumbit"だけど互換性のために残しておく
