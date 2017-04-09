@@ -83,7 +83,7 @@ class SearchLogic extends SOY2LogicBase{
 			$item_where[] = "item_type = \"" . SOYShop_Item::TYPE_GROUP . "\"";
 		}
 		
-		//小商品を表示
+		//子商品を表示
 		if(isset($config["search"]["child"]) && (int)$config["search"]["child"] === 1){
 			$item_where[] = "(item_type != \"" . SOYShop_Item::TYPE_SINGLE . "\" AND item_type != \"" . SOYShop_Item::TYPE_GROUP . "\" AND item_type != \"" . SOYShop_Item::TYPE_DOWNLOAD . "\") ";
 			

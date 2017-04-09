@@ -52,20 +52,25 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 		
 		foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 			
+			/**
+			 * @ToDo 多言語化対応
+			 */
+			$csfValue = $values[$key];
+			
 			$htmlObj->addModel($key . "_visible", array(
 				"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-				"visible" => (strlen($values[$key]))
+				"visible" => (strlen($csfValue))
 			));
 			
 			$htmlObj->addLabel($key, array(
 				"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-				"html" => (isset($values[$key])) ? $values[$key] : null
+				"html" => (isset($csfValue)) ? $csfValue : null
 			));
 			
 			switch($field["type"]){
 				case CustomSearchFieldUtil::TYPE_CHECKBOX:
 					if(strlen($field["option"])){
-						$vals = explode(",", $values[$key]);
+						$vals = explode(",", $csfValue);
 						$opts = explode("\n", $field["option"]);
 						foreach($opts as $i => $opt){
 							$opt = trim($opt);

@@ -2,6 +2,7 @@
 class CustomSearchFieldItemList extends SOYShopItemListBase{
 
 	const FIELD_ID = "custom_search_field";
+	private $searchLogic;
 
 	/**
 	 * @return string
@@ -16,8 +17,7 @@ class CustomSearchFieldItemList extends SOYShopItemListBase{
 	function getItems($pageObj, $offset, $limit){
 		self::prepare();
 		list($key, $value) = self::getKeyAndValue($pageObj->getPage()->getUri());
-		$current = self::getCurrent();
-		return $this->searchLogic->getItemList($pageObj, $key, $value, $current, $offset, (int)$limit);
+		return $this->searchLogic->getItemList($pageObj, $key, $value, self::getCurrent(), $offset, (int)$limit);
 	}
 	
 	/**
@@ -46,7 +46,7 @@ class CustomSearchFieldItemList extends SOYShopItemListBase{
 	}
 	
 	private function prepare(){
-		if(!$this->searchLogic) $this->searchLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.SearchLogic");
+		if(!$this->searchLogic) $this->searchLogic = SOY2Logic::createInstance("module.plugins.custom_search_field_child_list.logic.ChildItemLogic");
 	}
 }
 
