@@ -23,14 +23,14 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 			return;
 		}
 		
-		//商品一覧ページ以外では動作しない
+		//商品一覧ページと詳細ページ以外では動作しない
 		switch($obj->getType()){
 			case SOYShop_Page::TYPE_LIST:
 				$current = $obj->getObject()->getCurrentCategory();
 				
 				if(!is_null($current)){
 					$category = $current;
-					$name = $category->getName();
+					$name = $category->getOpenCategoryName();
 				}else{
 					//カスタムサーチフィールドを調べる
 					SOY2::import("util.SOYShopPluginUtil");
@@ -54,7 +54,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 				}else{
 					$category = self::getCategory($current->getCategory());
 				}
-				$name = $category->getName();
+				$name = $category->getOpenCategoryName();
 				break;
 		}
 
