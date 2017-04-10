@@ -3,6 +3,7 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 
 	const FIELD_ID = "custom_search_field";
 	private $dbLogic;
+	private $prefix;	//多言語化のプレフィックスを保持
 
 	/**
 	 * 管理画面側で商品情報を更新する際に読み込まれる
@@ -52,10 +53,8 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 		
 		foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 			
-			/**
-			 * @ToDo 多言語化対応
-			 */
-			$csfValue = $values[$key];
+			//多言語化対応
+			$csfValue = self::getFieldValue($values, $key);
 			
 			$htmlObj->addModel($key . "_visible", array(
 				"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
@@ -104,6 +103,37 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 			$this->dbLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
 			SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 		}
+		
+		//多言語の方も念のため
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
+		
+		//多言語化のプレフィックスでも調べてみる
+		if(is_null($this->prefix) && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
+			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+			$config = UtilMultiLanguageUtil::getConfig();
+			$this->prefix = (isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])) ? trim($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) : SOYSHOP_PUBLISH_LANGUAGE;
+		}
+	}
+	
+	private function getFieldValue($values, $fieldId){
+		if(!isset($values) || !count($values)) return null;
+		
+		$val = null;
+			
+		//多言語化の値をとる
+		if(SOYSHOP_PUBLISH_LANGUAGE != "jp") {
+			$val = (isset($values[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE])) ? $values[$fieldId . "_" . SOYSHOP_PUBLISH_LANGUAGE] : null;
+			
+			//多言語化のプレフィックスの方でも値を取得してみる
+			if(is_null($val) && SOYSHOP_PUBLISH_LANGUAGE != $this->prefix){
+				$val = (isset($values[$fieldId . "_" . $this->prefix])) ? $values[$fieldId . "_" . $this->prefix] : null;
+			}
+		}
+		
+		//多言語の方で値を取得できなかったら通常設定の値をとる
+		if(is_null($val)) $val = (isset($values[$fieldId])) ? $values[$fieldId] : null;
+		
+		return $val;
 	}
 }
 
