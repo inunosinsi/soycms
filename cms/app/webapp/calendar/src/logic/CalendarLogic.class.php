@@ -28,11 +28,11 @@ class CalendarLogic extends SOY2LogicBase{
 		$this->nextMonthDate = $nextMonthDate;
 		$this->flag = false;
 		
-		$this->holiday = $this->getGoogleCalendarDataAPI($year,$month);
+		$this->holiday = self::getGoogleCalendarDataAPI($year,$month);
 		
 		$time = mktime(0,0,0,$month,1,$year);
 		
-		return $this->createCalendar($time);
+		return self::createCalendar($time);
 	}
 	
 	function getCurrentCalendar($manager=false,$nextMonthDate=false){
@@ -46,9 +46,9 @@ class CalendarLogic extends SOY2LogicBase{
 		//今日の日付を取得する 
 		$time = time();
 		
-		$this->holiday = $this->getGoogleCalendarDataAPI(date("Y",$time),date("m",$time));
+		$this->holiday = self::getGoogleCalendarDataAPI(date("Y",$time),date("m",$time));
 		
-		return $this->createCalendar($time);
+		return self::createCalendar($time);
 		
 	}
 	
@@ -73,9 +73,9 @@ class CalendarLogic extends SOY2LogicBase{
 		
 		$time = mktime(0,0,0,$month,1,$year);
 		
-		$this->holiday = $this->getGoogleCalendarDataAPI($year,$month);
+		$this->holiday = self::getGoogleCalendarDataAPI($year,$month);
 	
-		return $this->createCalendar($time);
+		return self::createCalendar($time);
 	}
 	
 	function getNextCalendar($manager=false,$nextMonthDate=false){
@@ -100,9 +100,9 @@ class CalendarLogic extends SOY2LogicBase{
 		
 		$time = mktime(0,0,0,$month,1,$year);
 		
-		$this->holiday = $this->getGoogleCalendarDataAPI($year,$month);
+		$this->holiday = self::getGoogleCalendarDataAPI($year,$month);
 	
-		return $this->createCalendar($time);
+		return self::createCalendar($time);
 
 	}
 	
@@ -129,25 +129,27 @@ class CalendarLogic extends SOY2LogicBase{
 		
 		$time = mktime(0,0,0,$month,1,$year);
 		
-		$this->holiday = $this->getGoogleCalendarDataAPI($year,$month);
+		$this->holiday = self::getGoogleCalendarDataAPI($year,$month);
 	
-		return $this->createCalendar($time);
+		return self::createCalendar($time);
 
 	}
 		
-	function getGoogleCalendarDataAPI($year,$month){
+	private function getGoogleCalendarDataAPI($year,$month){
+		if(!function_exists("simplexml_load_file")) return array();
+
 		$start = $year."-".$month."-01";
 		$end = $year."-".$month."-31";
-		
+			
 		$query =  "start-min=" . $start . "&start-max=" . $end . "&max-results=10";
 		$feed = "http://www.google.com/calendar/feeds/japanese@holiday.calendar.google.com/public/full" . "?" . $query;
-		
+			
 		$xml = @simplexml_load_file($feed);
-
-		return $this->getHoliday($xml);
+	
+		return self::getHoliday($xml);
 	}
 	
-	function getHoliday($xml){
+	private function getHoliday($xml){
 	    
 	    $array = array();
 
@@ -170,7 +172,7 @@ class CalendarLogic extends SOY2LogicBase{
 	}
 
 	
-	function createCalendar($time){
+	private function createCalendar($time){
 
 		$manager = $this->manager;
 		
@@ -213,9 +215,9 @@ class CalendarLogic extends SOY2LogicBase{
 				//初日まで（前月）
 				for($j=1;$j<=$getDay;$j++){
 					if($this->nextMonthDate==true){
-						$lastDate = date("j",$this->getPrevMonthLastDate($month,$year));
+						$lastDate = date("j",self::getPrevMonthLastDate($month,$year));
 						$int = $lastDate-$getDay+$j;
-						$html[] = $this->createDayColumn($int,0,0,0,true,$time);
+						$html[] = self::createDayColumn($int,0,0,0,true,$time);
 					}else{
 						$html[] = "<td>&nbsp;</td>";
 					}
@@ -223,7 +225,7 @@ class CalendarLogic extends SOY2LogicBase{
 					$counter++;
 				}
 				
-				$html[] = $this->createDayColumn($i,$getDay,$day,$num);
+				$html[] = self::createDayColumn($i,$getDay,$day,$num);
 				$counter++;
 				//土曜日の場合は</tr>で閉じる
 				if($getDay == 6){
@@ -234,7 +236,7 @@ class CalendarLogic extends SOY2LogicBase{
 				if($getDay == 0){
 					$html[] = "<tr>";
 				}
-				$html[] = $this->createDayColumn($i,$getDay,$day,$num);
+				$html[] = self::createDayColumn($i,$getDay,$day,$num);
 				$counter++;
 				
 				//末日以降（次の月）
@@ -242,7 +244,7 @@ class CalendarLogic extends SOY2LogicBase{
 					$count = 7 - $counter;
 					for($k=1;$k<=$count;$k++){
 						if($this->nextMonthDate == true){
-							$html[] = $this->createDayColumn($k,0,0,0,true,$time);
+							$html[] = self::createDayColumn($k,0,0,0,true,$time);
 						}else{
 							$html[] = "<td>&nbsp;</td>";
 						}
@@ -262,20 +264,20 @@ class CalendarLogic extends SOY2LogicBase{
 		
 	}
 	
-	function createDayColumn($i,$w,$day,$num,$nextMonth=false,$time=null){
+	private function createDayColumn($i,$w,$day,$num,$nextMonth=false,$time=null){
 
 		$flag = $this->flag;
 		$todayTime = $this->today;
 		$holiday = $this->holiday;
 		
 		//指定のクラス名
-		$attribute = ($nextMonth===false) ? $this->getTitleAttribute($todayTime) : null;
+		$attribute = ($nextMonth===false) ? self::getTitleAttribute($todayTime) : null;
 		
 		if($nextMonth==true){
 			if($i<7){
-				$todayTime = $this->getNextMonthDate($i,$time);
+				$todayTime = self::getNextMonthDate($i,$time);
 			}else{
-				$todayTime = $this->getPrevMonthDate($i,$time);
+				$todayTime = self::getPrevMonthDate($i,$time);
 			}
 			
 			$w = date("w",$todayTime);
@@ -350,7 +352,7 @@ class CalendarLogic extends SOY2LogicBase{
 		}
 		
 		$date[] = ">";	
-		$date[] = $this->displaySchedule($i,$todayTime,$nextMonth);
+		$date[] = self::displaySchedule($i,$todayTime,$nextMonth);
 		
 		return implode("",$date);
 	}
@@ -386,7 +388,7 @@ class CalendarLogic extends SOY2LogicBase{
 		for($i=0;$i<$count;$i++){
 			$obj = array();
 			$date = $today + $add1Day*$i;
-			$obj["content"] = $this->displaySchedule(date("d",$today),$date,false,true);
+			$obj["content"] = self::displaySchedule(date("d",$today),$date,false,true);
 			$array[] = $obj;
 		}
 		
@@ -399,7 +401,7 @@ class CalendarLogic extends SOY2LogicBase{
 		$manager = $this->manager;
 		
 		$Ynj = $this->getYnj($dateTime);
-		$schedules = $this->getSchedule($dateTime);
+		$schedules = self::getSchedule($dateTime);
 			
 		$html = array();
 		
@@ -438,7 +440,7 @@ class CalendarLogic extends SOY2LogicBase{
 				//まずはタイトルを取得
 				if($key>0)$html[] = "<br />";
 					
-				$titles = $this->getTitleArray();
+				$titles = self::getTitleArray();
 					
 				if($manager == true)$html[] = "<a href=\"".$_SERVER["SCRIPT_NAME"]."/calendar/Detail/".$schedule->getId()."\">";
 				$html[] = "<span class=\"title\">";
@@ -463,12 +465,12 @@ class CalendarLogic extends SOY2LogicBase{
 		return implode("",$html);
 	}
 	
-	function getPrevMonthLastDate($month,$year){
+	private function getPrevMonthLastDate($month,$year){
 		return mktime(0,0,0,$month,0,$year);
 	}
 	
 	//タイムスタンプから今日の日付を取得
-	function getTime($timestamp){
+	private function getTime($timestamp){
 		return date("Ymd",$timestamp);
 	}
 	
@@ -483,7 +485,7 @@ class CalendarLogic extends SOY2LogicBase{
 	);
 	
 	//タイムスタンプから年、月、日の値を取得する
-	function getYnj($timestamp){
+	private function getYnj($timestamp){
 		$array = array();
 		$array["year"] = date("Y",$timestamp);
 		$array["month"] = date("n",$timestamp);
@@ -493,11 +495,11 @@ class CalendarLogic extends SOY2LogicBase{
 		return $array;
 	}
 	
-	function getTitleAttribute($timestamp){
+	private function getTitleAttribute($timestamp){
 		
 		$attribute = null;
 		
-		$schedules = $this->getSchedule($timestamp);
+		$schedules = self::getSchedule($timestamp);
 		if(count($schedules)>0){
 			$counter = 0;
 			foreach($schedules as $schedule){
@@ -530,7 +532,7 @@ class CalendarLogic extends SOY2LogicBase{
 	}
 	
 	//タイムスタンプからその日のスケジュールを取得する
-	function getSchedule($timestamp){
+	private function getSchedule($timestamp){
 		if(!$this->itemDao)$this->itemDao = SOY2DAOFactory::create("SOYCalendar_ItemDAO");
 		$itemDao = $this->itemDao;
 		
@@ -544,7 +546,7 @@ class CalendarLogic extends SOY2LogicBase{
 		return $schedule;		
 	}
 	
-	function getTitleArray(){
+	private function getTitleArray(){
 		$dao = SOY2DAOFactory::create("SOYCalendar_TitleDAO");
 		$titles = $dao->get();
 		
@@ -555,7 +557,7 @@ class CalendarLogic extends SOY2LogicBase{
 		return $array;
 	}
 	
-	function getNextMonthDate($i,$time){
+	private function getNextMonthDate($i,$time){
 		$year = date("Y",$time);
 		$month = date("n",$time)+1;
 		
@@ -565,7 +567,7 @@ class CalendarLogic extends SOY2LogicBase{
 		}
 		return mktime(0,0,0,$month,$i,$year);
 	}
-	function getPrevMonthDate($i,$time){
+	private function getPrevMonthDate($i,$time){
 		$year = date("Y",$time);
 		$month = date("n",$time)-1;
 		
