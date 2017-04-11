@@ -89,7 +89,7 @@ function soyshop_breadcrumb_navigation($html, $page){
 						//パンくずに子商品まで表示させる
 						if(isset($config["displayChild"]) && $config["displayChild"] == 1){
 							$parentUrl = soyshop_get_site_url().$detailPage->getUri() . "/" . $parent->getAlias();
-							$itemName = "<a href=\"" . $parentUrl."\">" . $parent->getOpenItemName() . "</a>"."&nbsp;&gt;&nbsp;" .$item->getName();
+							$itemName = "<a href=\"" . $parentUrl."\">" . $parent->getOpenItemName() . "</a>"."&nbsp;&gt;&nbsp;" .$item->getOpenItemName();
 							
 						//パンくずに表示する商品を親商品までにする
 						}else{
