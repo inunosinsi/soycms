@@ -46,7 +46,7 @@ class CustomSearchFieldItemList extends SOYShopItemListBase{
 	}
 	
 	private function prepare(){
-		if(!$this->searchLogic) $this->searchLogic = SOY2Logic::createInstance("module.plugins.custom_search_field_child_list.logic.ChildItemLogic");
+		if(!$this->searchLogic) $this->searchLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.SearchLogic");
 	}
 }
 
