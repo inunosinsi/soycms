@@ -121,7 +121,7 @@ function soyshop_breadcrumb_navigation($html, $page){
 					
 					$categories = $dao->getAncestry($current, false);
 					
-					$name = $current->getName();
+					$name = $current->getOpenCategoryName();
 					$alias = $current->getAlias();
 					
 					break;
