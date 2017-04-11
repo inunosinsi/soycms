@@ -141,7 +141,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 	
 	//カテゴリの表示
 	$htmlObj->addLabel("category_name", array(
-		"text" => $categoryObj->getName(),
+		"text" => $categoryObj->getOpenCategoryName(),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 	
