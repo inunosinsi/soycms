@@ -31,7 +31,7 @@ class ButtonSocialPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.2"
+			"version"=>"1.3"
 		));
 
 		$logic = new ButtonSocialCommon();

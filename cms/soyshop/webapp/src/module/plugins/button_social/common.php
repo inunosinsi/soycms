@@ -52,11 +52,10 @@ class ButtonSocialCommon {
 		
 		$config = ButtonSocialUtil::getConfig();
 		
-		if(strlen($config["app_id"]) > 0 && strlen($config["admins"]) > 0){
-			$html[] = "<meta property=\"fb:app_id\" content=\"" . $config["app_id"] . "\" />";
-			$html[] = "<meta property=\"fb:admins\" content=\"" . $config["admins"] . "\" />";
-		}
-		return implode("\n", $html);
+		if(strlen($config["app_id"])) $html[] = "<meta property=\"fb:app_id\" content=\"" . $config["app_id"] . "\" />";
+		if(strlen($config["admins"])) $html[] = "<meta property=\"fb:admins\" content=\"" . $config["admins"] . "\" />";
+
+		return (count($html)) ? implode("\n", $html) : "";
 	}
 	
 	function getFbRoot(){
@@ -68,13 +67,12 @@ class ButtonSocialCommon {
 		if(strlen($config["app_id"]) > 0){
 			$html[] = "<div id=\"fb-root\"></div>";
 			$html[] = "<script>(function(d, s, id) {";
-			$html[] = "	var js, fjs = d.getElementsByTagName(s)[0];";
-			$html[] = "	if (d.getElementById(id)) return;";
-			$html[] = "		js = d.createElement(s); js.id = id;";
-			$html[] = "		js.src = \"//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=" . $config["app_id"] . "\";";
-			$html[] = "		fjs.parentNode.insertBefore(js, fjs);";
-			$html[] = "	}(document, 'script', 'facebook-jssdk'));";
-			$html[] = "</script>";
+			$html[] = "var js, fjs = d.getElementsByTagName(s)[0];";
+			$html[] = "if (d.getElementById(id)) return;";
+			$html[]	= "js = d.createElement(s); js.id = id;";
+			$html[] = "js.src = \"//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8&appId=" . $config["app_id"] . "\";";
+			$html[] = "fjs.parentNode.insertBefore(js, fjs);";
+			$html[] = "}(document, 'script', 'facebook-jssdk'));</script>";
 		}
 		
 		return implode("\n", $html);

@@ -40,10 +40,10 @@ class ButtonSocialCommon{
 	function getFbMeta($appId,$admins){
 		$html = array();
 
-		$html[] = "<meta property=\"fb:app_id\" content=\"".$appId."\" />";
-		$html[] = "<meta property=\"fb:admins\" content=\"".$admins."\" />";
+		if(strlen($appId)) $html[] = "<meta property=\"fb:app_id\" content=\"".$appId."\" />";
+		if(strlen($admins)) $html[] = "<meta property=\"fb:admins\" content=\"".$admins."\" />";
 
-		return implode("\n",$html);
+		return (count($html)) ? implode("\n",$html) : "";
 	}
 	
 	function getFbRoot($appId){
@@ -52,13 +52,12 @@ class ButtonSocialCommon{
 		if(strlen($appId) > 0){
 			$html[] = "<div id=\"fb-root\"></div>";
 			$html[] = "<script>(function(d, s, id) {";
-			$html[] = "	var js, fjs = d.getElementsByTagName(s)[0];";
-			$html[] = "	if (d.getElementById(id)) return;";
-			$html[] = "		js = d.createElement(s); js.id = id;";
-			$html[] = "		js.src = \"//connect.facebook.net/ja_JP/all.js#xfbml=1&appId=" . $appId . "\";";
-			$html[] = "		fjs.parentNode.insertBefore(js, fjs);";
-			$html[] = "	}(document, 'script', 'facebook-jssdk'));";
-			$html[] = "</script>";
+			$html[] = "var js, fjs = d.getElementsByTagName(s)[0];";
+			$html[] = "if (d.getElementById(id)) return;";
+			$html[]	= "js = d.createElement(s); js.id = id;";
+			$html[] = "js.src = \"//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8&appId=" . $appId . "\";";
+			$html[] = "fjs.parentNode.insertBefore(js, fjs);";
+			$html[] = "}(document, 'script', 'facebook-jssdk'));</script>";
 		}
 		
 		return implode("\n", $html);

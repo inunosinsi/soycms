@@ -31,7 +31,11 @@ class ButtonSocialConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		if(method_exists("WebPage", "WebPage")){
+			WebPage::WebPage();
+		}else{
+			WebPage::__construct();
+		}
 		
 		$this->addForm("form");
 		
