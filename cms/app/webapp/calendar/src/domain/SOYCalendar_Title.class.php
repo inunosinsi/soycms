@@ -10,10 +10,12 @@ class SOYCalendar_Title {
 	private $id;
 	private $title;
 	private $attribute;
+	
 	/**
 	 * @column create_date
 	 */
 	private $createDate;
+	
 	/**
 	 * @column update_date
 	 */

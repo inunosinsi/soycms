@@ -19,7 +19,7 @@ class CreatePage extends WebPage{
 			
 			$item = $_POST["item"];
 			
-//			if($this->check($item)){
+//			if(self::check($item)){
 				if($endDate < $startDate||!isset($_POST["repeat"]["confirm"])){
 					//当日のデータのみインサート
 					$lastDate = $logic->getLastDate($item["month"],$item["year"]);			
@@ -62,8 +62,8 @@ class CreatePage extends WebPage{
 		$this->error = true;
 	}
 	
-	function check($item){
-		return (strlen($item["start"])>0&&strlen($item["end"])>0)?true:false;
+	private function check($item){
+		return (strlen($item["start"])>0&&strlen($item["end"])>0);
 	}
 	
 	function getScheduleArray($array){

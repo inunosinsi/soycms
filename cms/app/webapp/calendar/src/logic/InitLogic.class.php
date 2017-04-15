@@ -26,9 +26,9 @@ class InitLogic extends SOY2LogicBase{
     
     function initInsert(){
 		$titles = array();
-		$titles[0] = array("title" => "午前","createDate" => time(), "updateDate" => time());
-		$titles[1] = array("title" => "午後","createDate" => time(), "updateDate" => time());
-		$titles[2] = array("title" => "夜間","createDate" => time(), "updateDate" => time());
+		$titles[] = array("title" => "午前");
+		$titles[] = array("title" => "午後");
+		$titles[] = array("title" => "夜間");
 		
 		$titleDao = SOY2DAOFactory::create("SOYCalendar_TitleDAO");
 		

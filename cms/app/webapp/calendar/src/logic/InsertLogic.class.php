@@ -43,8 +43,6 @@ class InsertLogic extends SOY2LogicBase{
 		
 		$item = SOY2::cast("SOYCalendar_Item",$item);
 		$item->setSchedule($schedule);
-		$item->setCreateDate(time());
-		$item->setUpdateDate(time());
 		
 		try{
 			$itemDao->insert($item);

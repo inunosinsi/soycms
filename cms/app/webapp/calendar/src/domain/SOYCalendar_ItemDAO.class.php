@@ -6,9 +6,13 @@ abstract class SOYCalendar_ItemDAO extends SOY2DAO{
 
 	/**
 	 * @return id
+	 * @trigger onInsert
 	 */
 	abstract function insert(SOYCalendar_Item $bean);
 	
+	/**
+	 * @trigger onUpdate
+	 */
 	abstract function update(SOYCalendar_Item $bean);
 	
 	/**
@@ -34,5 +38,24 @@ abstract class SOYCalendar_ItemDAO extends SOY2DAO{
 	 * @order title asc
 	 */
 	abstract function getBySchedule($schedule);
+	
+	/**
+	 * @final
+	 */
+	function onInsert($query, $binds){
+		$binds[":createDate"] = time();
+		$binds[":updateDate"] = time();
+		
+		return array($query, $binds);
+	}
+	
+	/**
+	 * @final
+	 */
+	function onUpdate($query, $binds){
+		$binds[":updateDate"] = time();
+		
+		return array($query, $binds);
+	}
 }
 ?>

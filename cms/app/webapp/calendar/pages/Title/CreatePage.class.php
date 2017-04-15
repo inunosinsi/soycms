@@ -8,12 +8,9 @@ class CreatePage extends WebPage{
 		
 		$title = $_POST["title"];
 		
-		if(soy2_check_token()&&$this->check($title)==true){
+		if(soy2_check_token() && self::check($title)){
 			
 			$title = SOY2::cast("domain.SOYCalendar_Title",$title);
-			
-			$title->setCreateDate(time());
-			$title->setUpdateDate(time());
 			
 			$dao = SOY2DAOFactory::create("SOYCalendar_TitleDAO");
 			try{
@@ -29,27 +26,27 @@ class CreatePage extends WebPage{
 		
 	}
 	
-	function check($title){
-		return (strlen($title["title"])>0)?true:false;
+	private function check($title){
+		return (strlen($title["title"])>0);
 	}
 
     function __construct() {
     	WebPage::__construct();
     	
-    	$this->createAdd("error","HTMLModel",array(
-    		"visible" => $this->error == true
+    	$this->addModel("error", array(
+    		"visible" => ($this->error == true)
     	));
     	
-    	$this->createAdd("form","HTMLForm");
+    	$this->addForm("form");
     	
-    	$this->createAdd("title","HTMLInput",array(
+    	$this->addInput("title", array(
     		"name" => "title[title]",
-    		"value" => @$_POST["title"]["title"]
+    		"value" => (isset($_POST["title"]["title"])) ? $_POST["title"]["title"] : ""
     	));
     	
-    	$this->createAdd("attribute","HTMLInput",array(
+    	$this->addInput("attribute", array(
     		"name" => "title[attribute]",
-    		"value" => @$_POST["title"]["attribute"]
+    		"value" => (isset($_POST["title"]["attribute"])) ? $_POST["title"]["attribute"] : ""
     	));
     }
 }

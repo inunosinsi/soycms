@@ -8,7 +8,7 @@ class DetailPage extends WebPage{
 	
 	function doPost(){
 		
-		if(soy2_check_token()&&$this->check($_POST["title"])==true){
+		if(soy2_check_token() && self::check($_POST["title"])){
 			
 			try{
 				$oldTitle = $this->dao->getById($this->id);
@@ -17,7 +17,6 @@ class DetailPage extends WebPage{
 			}
 			
 			$title = SOY2::cast($oldTitle,(object)$_POST["title"]);
-			$title->setUpdateDate(time());
 			
 			try{
 				$this->dao->update($title);
@@ -32,8 +31,8 @@ class DetailPage extends WebPage{
 		
 	}
 	
-	function check($title){
-		return (strlen($title["title"])>0)?true:false;
+	private function check($title){
+		return (strlen($title["title"])>0);
 	}
 
     function __construct($args) {
@@ -49,22 +48,22 @@ class DetailPage extends WebPage{
     	
     	WebPage::__construct();
     	
-    	$this->createAdd("error","HTMLModel",array(
-    		"visible" => $this->error == true
+    	$this->addModel("error", array(
+    		"visible" => ($this->error == true)
     	));
     	
-    	$this->createAdd("form","HTMLForm");
+    	$this->addForm("form");
     	
-    	$this->createAdd("title","HTMLInput",array(
+    	$this->addInput("title", array(
     		"name" => "title[title]",
     		"value" => $title->getTitle()
     	));
-    	$this->createAdd("attribute","HTMLInput",array(
+    	$this->addInput("attribute", array(
     		"name" => "title[attribute]",
     		"value" => $title->getAttribute()
     	));
     	
-    	$this->createAdd("create_date","HTMLInput",array(
+    	$this->addInput("create_date", array(
     		"name" => "title[createDate]",
     		"value" => $title->getCreateDate()
     	));
