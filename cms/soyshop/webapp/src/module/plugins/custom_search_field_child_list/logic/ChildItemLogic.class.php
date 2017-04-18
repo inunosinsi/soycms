@@ -82,7 +82,7 @@ class ChildItemLogic extends SOY2LogicBase{
 		}
 		
 		if(count($item_where)){
-			$where .= "AND (" .implode(" OR ", $item_where) .") ";
+			$where .= "AND (" .implode(" AND ", $item_where) .") ";
 		}
 		
 		foreach($this->where as $key => $w){
