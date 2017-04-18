@@ -88,7 +88,8 @@ if(isset($_GET["site_id"])){
 	$url = $site->getUrl();
 }else if(isset($_GET["shop_id"])){
 	//SOY Shopとの接続:サイトのパスを取得
-	$path = dirname(SOYCMS_COMMON_DIR) . "/soyshop/webapp/conf/shop/" . $_GET["shop_id"] . ".conf.php";
+	$shopId = strtr($_GET["shop_id"], array("." => "", "/" => "", "\\" => "", "\0" => ""));
+	$path = dirname(SOYCMS_COMMON_DIR) . "/soyshop/webapp/conf/shop/" . $shopId . ".conf.php";
 	if(!file_exists($path)) exit;
 	include_once($path);
 
