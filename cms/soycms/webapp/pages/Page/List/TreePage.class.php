@@ -191,7 +191,7 @@ class TreePage extends CMSWebPageBase{
     }
 
     function trimPageTitle($title){
-		$str = mb_strimwidth($title,0,100,"...");
+		$str = mb_strimwidth($title,0,100,"...", 'UTF-8');
 
 		return $str;
 	}

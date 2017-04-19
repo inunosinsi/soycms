@@ -235,10 +235,9 @@ class PageList extends HTMlList{
 		));
 		
 		$this->createAdd("title","HTMLLink",array(
-			"text" => $entity->getTitle(),
+			"text" => mb_strimwidth($entity->getTitle(),0,50,"...", 'UTF-8'),
 			"link" => $detailLink,
 			"title"=> $entity->getTitle(),
-			"width"=> 40
 		));
 		
 		$this->createAdd("uri","HTMLLink",array(
