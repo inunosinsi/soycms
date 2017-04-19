@@ -422,8 +422,8 @@ class EntryLabelMemoList extends HTMLList{
 
 	function populateItem($entity){
 
-		$text = "[".$entity->getDisplayCaption()."] ";
-		$description = $entity->getDisplayDescription();
+		$text = "[".$entity->getCaption()."] ";
+		$description = $entity->getDescription();
 		if(strlen($description)){
 			$text .= "(".$description.") ";
 		}else{

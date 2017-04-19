@@ -13,14 +13,13 @@
 		<div class="functions" soy:display="only_default_user">
 			<p><a soy:id="create_link">サイトの作成	</a></p>
 		</div>
-		
+
 		<p class="message" soy:id="message"></p>
 		<p class="notify" soy:id="error"></p>
-		
+
 		<div id="siteboxes">
 			<h3>サイト一覧</h3>
-			
-			<?php $counter = 0; ?>
+
 			<!-- soy:id="list" -->
 			<div class="sitebox_big">
 				<div class="sitebox_top">
@@ -37,17 +36,15 @@
 					<p><a soy:id="remove_link">削除</a></p>
 				</div>
 			</div>
-			<?php $counter++; ?>
-			<?php if(($counter % 2) == 0) echo "<br style=\"clear:both;\">"; ?>
 			<!-- /soy:id="list" -->
-			
+
 			<div soy:id="no_site" style="margin-left:10px;">
 				<p>現在サイトは作成されていません。<!-- soy:display="only_default_user" -->→<a soy:link="Site.Create">サイトの作成</a><!-- /soy:display="only_default_user" --></p>
 			</div>
-			
+
 			<div style="clear:both"><!----></div>
 		</div>
-		
+
 	</div>
 	<div soy:page="_common.FooterPage"></div>
 </div>

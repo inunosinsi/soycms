@@ -172,7 +172,7 @@ td a{
 	margin-left:5px;
 	margin-bottom:5px;
 	font-size:0.95em;
-	
+
 }
 
 #header img{
@@ -332,7 +332,7 @@ td a{
 #toolbox{
 	position:absolute;
 	right:0;
-	
+
 	margin-top:20px;
 	margin-right:15px;
 	_margin:0;
@@ -342,7 +342,7 @@ td a{
 #toolbox_in_blog{
 	position:absolute;
 	right:0;
-	
+
 	margin-right:10px;
 	_margin:0;
 	_margin-right:7px;
@@ -351,7 +351,7 @@ td a{
 #toolbox_in_blog_template{
 	position:absolute;
 	right:0;
-	
+
 	margin-right:10px;
 	_margin:0;
 	_margin-right:7px;
@@ -388,8 +388,6 @@ td a{
 }
 
 #content {
-	width:96%;
-
 	background-image:url("./img/main/content_bar_left.jpg");
 	background-repeat:repeat-y;
 	background-color:white;
@@ -487,7 +485,7 @@ td a{
 	width:70%;
 	padding-top:15px;
 	padding-left:5px;
-	padding-right:10px;	
+	padding-right:10px;
 	border-bottom:1px solid #c7c7c7;
 }
 

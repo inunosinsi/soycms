@@ -38,13 +38,13 @@
 </div>
 <?php } ?>
 
-<div id="tabs" class="span-20">
+<div id="tabs" class="content-wrapper">
 	<?php CMSApplication::printTabs(); ?>
 </div>
 
-<div id="content" class="span-20 last"><?php CMSApplication::printApplication(); ?></div>
+<div id="content" class="content-wrapper last"><?php CMSApplication::printApplication(); ?></div>
 
-<div class="span-20" style="text-align:center;margin-top:10px;">
+<div id="bottomMenu" class="content-wrapper" style="text-align:center;margin-top:10px;">
 <?php if(CMSApplication::isDirectLogin()){ ?>
 	<a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Login/Logout"); ?>">ログアウト</a>
 <?php }else{ ?>
@@ -60,7 +60,7 @@
 <?php } ?>
 </div>
 
-<div id="footer" class="span-20">
+<div id="footer" class="content-wrapper">
 	<div id="footer_left"></div>
 	<div id="footer_right"></div>
 	<div id="copyright">
@@ -73,4 +73,3 @@
 
 </body>
 </html>
-
