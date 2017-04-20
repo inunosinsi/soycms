@@ -73,6 +73,9 @@
 							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#DELIVERY_TIME#');">配達時間</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#POSTAGE#');">送料</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#DAIBIKI_FEE#');">代金引換手数料</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#SEND_MAIL_YEAR#');">メール送信時刻(年)</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#SEND_MAIL_MONTH#');">メール送信時刻(月)</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#SEND_MAIL_DATE#');">メール送信時刻(日)</a></li>
 							<li soy:id="slip_number_active"><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#SLIP_NUMBER#');">伝票番号</a></li>
 						</ul>
 					</div>
@@ -112,6 +115,9 @@
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#DELIVERY_TIME#');">配達時間</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#POSTAGE#');">送料</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#DAIBIKI_FEE#');">代金引換手数料</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#SEND_MAIL_YEAR#');">メール送信時刻(年)</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#SEND_MAIL_MONTH#');">メール送信時刻(月)</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#SEND_MAIL_DATE#');">メール送信時刻(日)</a></li>
 							<li soy:id="slip_number_active*"><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#SLIP_NUMBER#');">伝票番号</a></li>
 						</ul>
 					</div>
@@ -142,6 +148,6 @@
 }
 .actived .word_list{
 	display:block;
-	width:100px;
+	width:120px;
 }
 </style>

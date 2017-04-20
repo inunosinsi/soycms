@@ -124,6 +124,12 @@
 		<input type="text" soy:id="delivery_date_format"><br>
 		※#w#は曜日の漢字表記に変換します
 	</dd>
+	
+	<dt>メール文面にお届け日の挿入の設定(配送連絡メールのみ有効)</dt>
+	<dd>
+		指定なしを選んだ場合は、発送メールの送信日から<input type="number" soy:id="delivery_date_mail_insert_date">日後の日付を挿入する<br>
+		※1以上の日付を登録した時に有効になります
+	</dd>
 </dl>
 <p class="pageBtn" style="clear:both;">
 	<input type="submit" class="submit_button" value="変更" />

@@ -389,6 +389,10 @@ class MailLogic extends SOY2LogicBase{
 		//代引手数料
 		$content = str_replace("#DAIBIKI_FEE#", self::getDaibikiFee(), $content);
 		
+		/** メール送信日関連 **/
+		$content = str_replace("#SEND_MAIL_YEAR#", date("Y"), $content);	//年
+		$content = str_replace("#SEND_MAIL_MONTH#", date("m"), $content);	//月
+		$content = str_replace("#SEND_MAIL_DATE#", date("d"), $content);	//日
 		
 		/** プラグイン周り　**/
 		SOY2::import("util.SOYShopPluginUtil");
@@ -429,6 +433,17 @@ class MailLogic extends SOY2LogicBase{
 				 * @ToDo プラグイン毎に動く処理を書かなければならない
 				 */
 				if(strpos($attrId, "." . $mode) && isset($attr["value"])){
+					
+					//標準配送モジュールのお届け日周りの処理
+					if($mode == "date" && $moduleId == "delivery_normal" && $attr["value"] == "指定なし"){
+						if(isset($_GET["type"]) && $_GET["type"]){
+							SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
+							$conf = DeliveryNormalUtil::getDeliveryDateConfig();
+							if(isset($conf["delivery_date_mail_insert_date"]) && (int)$conf["delivery_date_mail_insert_date"] > 0){
+								return SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic")->convertDateString($conf["delivery_date_format"], time() + $conf["delivery_date_mail_insert_date"] * 24 * 60 * 60);
+							}
+						}
+					}
 					return $attr["value"];
 				}
 			}

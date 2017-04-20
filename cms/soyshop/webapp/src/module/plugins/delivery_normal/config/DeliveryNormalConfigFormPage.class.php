@@ -153,6 +153,12 @@ class DeliveryNormalConfigFormPage extends WebPage{
 			"name" => "Date[delivery_date_format]",
 			"value" => (isset($config["delivery_date_format"])) ? $config["delivery_date_format"] : "",
 		));
+		
+		$this->addInput("delivery_date_mail_insert_date", array(
+			"name" => "Date[delivery_date_mail_insert_date]",
+			"value" => (isset($config["delivery_date_mail_insert_date"])) ? (int)$config["delivery_date_mail_insert_date"] : 0,
+			"style" => "width:60px;text-align:right;"
+		));
 	}
 
 	function setConfigObj($configObj) {

@@ -64,8 +64,6 @@ class ChildItemLogic extends SOY2LogicBase{
 	}
 	
 	private function buildWhere(){
-		$config = CustomSearchFieldUtil::getSearchConfig();
-		
 		$where = "WHERE open_period_start < :now ".
 				"AND open_period_end > :now ".
 				"AND item_is_open = 1 ".
@@ -111,6 +109,9 @@ class ChildItemLogic extends SOY2LogicBase{
 					$this->where["item_category"] = "item_category IN (" . implode(",", $maps[$catId]) . ")";
 				}
 			}
+			
+			//サブクエリ内でも子商品のみの指定を行う
+			$this->where["item_type"] = "(item_type != \"" . SOYShop_Item::TYPE_SINGLE . "\" AND item_type != \"" . SOYShop_Item::TYPE_GROUP . "\" AND item_type != \"" . SOYShop_Item::TYPE_DOWNLOAD . "\")";
 			
 			$pmin = "";$pmax = "";
 			if(isset($_GET["c_search"]["item_price_min"]) && strlen($_GET["c_search"]["item_price_min"]) && is_numeric($_GET["c_search"]["item_price_min"])) {
