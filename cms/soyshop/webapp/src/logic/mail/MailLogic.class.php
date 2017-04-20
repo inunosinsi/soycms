@@ -440,7 +440,8 @@ class MailLogic extends SOY2LogicBase{
 							SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
 							$conf = DeliveryNormalUtil::getDeliveryDateConfig();
 							if(isset($conf["delivery_date_mail_insert_date"]) && (int)$conf["delivery_date_mail_insert_date"] > 0){
-								return SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic")->convertDateString($conf["delivery_date_format"], time() + $conf["delivery_date_mail_insert_date"] * 24 * 60 * 60);
+								//return SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic")->convertDateString($conf["delivery_date_format"], time() + $conf["delivery_date_mail_insert_date"] * 24 * 60 * 60);
+								return date("Y-m-d", time() + $conf["delivery_date_mail_insert_date"] * 24 * 60 * 60);
 							}
 						}
 					}
