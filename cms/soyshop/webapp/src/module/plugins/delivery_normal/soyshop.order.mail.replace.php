@@ -37,7 +37,11 @@ class DeliveryNormalMailReplace extends SOYShopOrderMailReplace{
 	private function getDeliveryDate($attr){
 		if(!isset($attr["value"])) return "";
 		
-		if($attr["value"] == "指定なし" && isset($_GET["type"]) && $_GET["type"] == "delivery"){
+		if($attr["value"] == "指定なし"){
+			
+			//発送メールとその他のメール以外は指定なしで送る
+			if(!isset($_GET["type"]) || $_GET["type"] == "order" || $_GET["type"] == "confirm" || $_GET["type"] == "payment") return $attr["value"];
+			
 			SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
 			$conf = DeliveryNormalUtil::getDeliveryDateConfig();
 			if(isset($conf["delivery_date_mail_insert_date"]) && (int)$conf["delivery_date_mail_insert_date"] > 0){
