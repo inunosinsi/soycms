@@ -48,13 +48,14 @@ class UserPage extends WebPage{
 			"target" => "user",
 			"type" => $type
 		));
-		$html = $delegate->getHtml();
 		$this->addLabel("mail_config_extension_html", array(
-			"html" => $html
+			"html" => $delegate->getHtml()
 		));
 		
-		SOY2::import("util.SOYShopPluginUtil");
-		$this->addModel("slip_number_active", array("visible" => SOYShopPluginUtil::checkIsActive("slip_number")));
+		//置換文字列の拡張
+		$this->createAdd("replace_string_list", "_common.Config.ReplaceStringListComponent", array(
+			"list" => self::getReplaceStringList()
+		));
 	}
 
 	function buildForm($type){
@@ -107,6 +108,23 @@ class UserPage extends WebPage{
 			"selected" => $this->getMailOutput(),
 			"label" => "システムから出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
 		));
+	}
+	
+	private function getReplaceStringList(){
+		SOYShopPlugin::load("soyshop.order.mail.replace");
+		$values = SOYShopPlugin::invoke("soyshop.order.mail.replace",array("mode" => "strings"))->getStrings();
+		if(!count($values)) return array();
+		
+		$list = array();
+		foreach($values as $strings){
+			if(!is_array($strings) || !count($strings)) continue;
+			foreach($strings as $replace => $v){
+				if(!strlen($replace) || !strlen($v)) continue;
+				$list[$replace] = $v;
+			}
+		}
+		
+		return $list;
 	}
 
 	function getMailActive(){

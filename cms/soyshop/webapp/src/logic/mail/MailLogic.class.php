@@ -354,8 +354,8 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	function convertMailContent($content, SOYShop_User $user, SOYShop_Order $order){
 		
-		$this->moduleList = $order->getModuleList();
-		$this->attributeList = $order->getAttributeList();
+//		$this->moduleList = $order->getModuleList();
+//		$this->attributeList = $order->getAttributeList();
 		
 		//ユーザー情報
 		$content = str_replace("#NAME#", $user->getName(), $content);
@@ -377,28 +377,19 @@ class MailLogic extends SOY2LogicBase{
 		
 		$content = str_replace("#ORDER_DATE#", date("Y-m-d H:i:s", $order->getOrderDate()), $content);
 		$content = str_replace("#ORDER_TOTAL#", number_format($order->getPrice()), $content);
-		
-		//配送周り
-		$content = str_replace("#DELIVERY_METHOD#", self::getDeliveryMethod(), $content);
-		$content = str_replace("#DELIVERY_DATE#", self::getDeliveryValue("date"), $content);
-		$content = str_replace("#DELIVERY_TIME#", self::getDeliveryValue("time"), $content);
-
-		//送料
-		$content = str_replace("#POSTAGE#", self::getPostage(), $content);
-		
-		//代引手数料
-		$content = str_replace("#DAIBIKI_FEE#", self::getDaibikiFee(), $content);
-		
+				
 		/** メール送信日関連 **/
 		$content = str_replace("#SEND_MAIL_YEAR#", date("Y"), $content);	//年
 		$content = str_replace("#SEND_MAIL_MONTH#", date("m"), $content);	//月
 		$content = str_replace("#SEND_MAIL_DATE#", date("d"), $content);	//日
-		
+				
 		/** プラグイン周り　**/
-		SOY2::import("util.SOYShopPluginUtil");
-		if(SOYShopPluginUtil::checkIsActive("slip_number")){
-			$content = str_replace("#SLIP_NUMBER#", SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic")->getAttribute($order->getId())->getValue1(), $content);
-		}
+		SOYShopPlugin::load("soyshop.order.mail.replace");
+		$content = SOYShopPlugin::invoke("soyshop.order.mail.replace",array(
+			"mode" => "replace",
+			"order" => $order,
+			"content" => $content
+		))->getContent();
 		
 		$content = str_replace("#SHOP_NAME#", $config->getShopName(), $content);
 
@@ -420,74 +411,6 @@ class MailLogic extends SOY2LogicBase{
 		return trim($content);
 	}
 	
-	private function getDeliveryMethod(){
-		$moduleId = self::getSelectedDeliveryModuleId();
-		return (isset($this->attributeList[$moduleId]["value"])) ? $this->attributeList[$moduleId]["value"] : "";
-	}
-	
-	private function getDeliveryValue($mode = "date"){
-		$moduleId = self::getSelectedDeliveryModuleId();
-		foreach($this->attributeList as $attrId => $attr){
-			if(strpos($attrId, $moduleId) === 0){
-				/**
-				 * @ToDo プラグイン毎に動く処理を書かなければならない
-				 */
-				if(strpos($attrId, "." . $mode) && isset($attr["value"])){
-					
-					//標準配送モジュールのお届け日周りの処理
-					if($mode == "date" && $moduleId == "delivery_normal" && $attr["value"] == "指定なし"){
-						if(isset($_GET["type"]) && $_GET["type"]){
-							SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
-							$conf = DeliveryNormalUtil::getDeliveryDateConfig();
-							if(isset($conf["delivery_date_mail_insert_date"]) && (int)$conf["delivery_date_mail_insert_date"] > 0){
-								//return SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic")->convertDateString($conf["delivery_date_format"], time() + $conf["delivery_date_mail_insert_date"] * 24 * 60 * 60);
-								return date("Y-m-d", time() + $conf["delivery_date_mail_insert_date"] * 24 * 60 * 60);
-							}
-						}
-					}
-					return $attr["value"];
-				}
-			}
-		}
-		return "";
-	}
-	
-	private function getPostage(){
-		$moduleId = self::getSelectedDeliveryModuleId();
-		return (isset($this->moduleList[$moduleId])) ? number_format($this->moduleList[$moduleId]->getPrice()) : 0;
-	}
-	
-	private function getDaibikiFee(){
-		$moduleId = self::getSelectedPaymentModuleId();
-		return (isset($this->moduleList[$moduleId])) ? number_format($this->moduleList[$moduleId]->getPrice()) : 0;
-	}
-	
-	private function getSelectedDeliveryModuleId(){
-		static $moduleId;
-		if(is_null($moduleId)){
-			foreach($this->moduleList as $modId => $mod){
-				if(strpos($modId, "delivery") === 0){
-					$moduleId = $modId;
-					break;
-				}
-			}
-		}
-		return $moduleId;
-	}
-	
-	private function getSelectedPaymentModuleId(){
-		static $moduleId;
-		if(is_null($moduleId)){
-			foreach($this->moduleList as $modId => $mod){
-				if(strpos($modId, "payment") === 0){
-					$moduleId = $modId;
-					break;
-				}
-			}
-		}
-		return $moduleId;
-	}
-
 	function getShopConfig() {
 		return $this->shopConfig;
 	}

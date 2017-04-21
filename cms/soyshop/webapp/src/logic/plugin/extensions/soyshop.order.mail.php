@@ -19,7 +19,7 @@ class SOYShopOrderMail implements SOY2PluginAction{
 	function getDisplayOrder(){
 		return 1;
 	}
-
+	
 	private $isUse = false;
 
 	function setIsUse($flag){
