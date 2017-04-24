@@ -1,0 +1,149 @@
+<div class="block">
+	
+	<div class="block_title">
+		<h2>在庫数一括変更と発送待ち件数</h2>
+		
+		<div class="block_title_right">
+		</div>
+	</div>
+
+	<div class="block_body clearfix">
+	
+		<p class="notice" soy:display="updated">
+			更新しました
+		</p>
+	
+		<dl>
+			<dt class="search_btn_dt">
+				検索する
+			</dt>
+		</dl>
+		<div class="search_area_dd" soy:id="search_area">
+			<form soy:id="search_form">
+				<table class="form_table">
+					<tr>
+						<th>商品名</th>
+						<td><input type="search" soy:id="search_item_name"></td>
+						<th>商品コード</th>
+						<td><input type="search" soy:id="search_item_code"></td>
+					</tr>
+					<tr>
+						<th>カテゴリ</th>
+						<td>
+							<select soy:id="search_item_category">
+								<option value=""></option>
+							</select>
+						</td>
+						<th>公開状態</th>
+						<td>
+							<input type="checkbox" soy:id="search_item_is_open">&nbsp;
+							<input type="checkbox" soy:id="search_item_no_open">
+						</td>
+					</tr>
+					<tr>
+						<th>表示件数</th>
+						<td><select soy:id="search_item_number"></select>件</td>
+						<th>子商品の表示</th>
+						<td><input type="checkbox" soy:id="search_item_type"></td>
+					</tr>
+				</table>
+				
+				<p class="pageBtn">
+					<input type="submit" name="search" value="検索">&nbsp;&nbsp;
+					<input type="submit" name="reset" value="リセット">
+				</p>
+			</form>
+		</div>
+	
+		<form soy:id="form">
+	
+			<table class="form_list">
+				<caption>
+					商品一覧
+				</caption>
+				<thead>
+					<tr class="alC">
+						<th nowrap><nobr>公開状態 </nobr></th>
+						<th nowrap><nobr>カテゴリ<a soy:id="sort_category">↓</a> <a soy:id="sort_category_desc">↑</a></nobr></th>
+						<th nowrap><nobr>商品名<a soy:id="sort_name">↓</a> <a soy:id="sort_name_desc">↑</a></nobr></th>
+						<th nowrap><nobr>商品コード商品コード<a soy:id="sort_code">↓</a> <a soy:id="sort_code_desc">↑</a></nobr></th>
+						<th nowrap><nobr>価格 / セール<a soy:id="sort_price">↓</a> <a soy:id="sort_price_desc">↑</a></nobr></th>
+						<th nowrap><nobr>在庫数 (発送待ち)<a soy:id="sort_stock">↓</a> <a soy:id="sort_stock_desc">↑</a></nobr></th>
+						<th>&nbsp;</th>
+					</tr>
+				</thead>
+	
+				<tbody>
+	
+					<!-- soy:id="item_list" -->
+					<tr>
+						<td class="alC"><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
+						<td class="alC" soy:id="item_category">１</td>
+						<td soy:id="item_name">大豆</td>
+						<td soy:id="item_code">ITEM_001</td>
+						<td class="alR"><span soy:id="item_price">1000</span> 円 <!-- soy:id="is_sale" --> / <span soy:id="sale_price">1000</span> 円<!-- /soy:id="is_sale" --></td>
+						<td class="alR"><input type="number" soy:id="item_stock_input"> (<span soy:id="ships_waiting_count">100</span>) </td>
+						<td class="operation"><a class="button" soy:id="detail_link">詳細</a></td>
+					</tr>
+					<!-- /soy:id="item_list" -->
+					
+					<tr class="pager">
+						<td colspan="7">
+							<div class="pager_item">
+								<form soy:id="pager_jump">
+									<select soy:id="pager_select"></select>
+									<noscript><input type="submit" value="移動"/></noscript>
+								</form soy:id="pager_jump">
+							</div>
+							<div class="pager_item">
+								<a soy:id="prev_pager">&lt;</a>
+								<!-- soy:id="pager_list" -->
+								<a soy:id="target_link">1</a>
+								<!-- /soy:id="pager_list" -->
+								<a soy:id="next_pager">&gt;</a>
+							</div>
+							<div class="pager_item">
+								<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<p class="pageBtn">
+				<input type="submit" name="set" value="設定する">
+			</p>
+	
+		</form>
+	</div>
+</div>
+
+<style>
+	dt.search_btn_dt {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	div.search_area_dd {}
+	
+	#standard_form_area{
+		display:none;
+	}
+</style>
+
+<script>
+	(function() {
+		document.querySelector(".search_btn_dt").addEventListener("click", function() {
+			sarea = document.querySelector(".search_area_dd");
+			if (sarea.style.display == "none") {
+				sarea.style.display = "inline";
+			} else {
+				sarea.style.display = "none";
+			}
+		});
+		$(".item_checkbox").each(function() {
+			$(this).click(function(){
+				$('#standard_form_area').show();
+			});
+		});
+	})();
+</script>
