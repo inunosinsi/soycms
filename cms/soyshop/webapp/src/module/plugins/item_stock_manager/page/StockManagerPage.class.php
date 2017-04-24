@@ -18,6 +18,8 @@ class StockManagerPage extends WebPage{
 			
 			if(isset($_POST["Stock"]) && count($_POST["Stock"])){
 				
+				SOYShopPlugin::load("soyshop.item.update");
+				
 				$this->itemDao->begin();
 				foreach($_POST["Stock"] as $itemId => $stock){
 					//念の為
@@ -33,6 +35,7 @@ class StockManagerPage extends WebPage{
 					//変更がない場合は次へ
 					if((int)$item->getStock() === (int)$stock) continue;
 					
+					$oldStock = (int)$item->getStock();
 					$item->setStock($stock);
 					
 					try{
@@ -40,6 +43,12 @@ class StockManagerPage extends WebPage{
 					}catch(Exception $e){
 						//
 					}
+					
+					//入荷通知プラグインと併用できるように拡張ポイントを追加			
+					SOYShopPlugin::invoke("soyshop.item.update", array(
+						"item" => $item,
+						"old" => $oldStock
+					));
 				}
 				$this->itemDao->commit();
 				
@@ -192,7 +201,7 @@ class StockManagerPage extends WebPage{
 			"name" => "search_condition[item_type][child]",
 			"value" => 1,
 			"selected" => (isset($cnd["item_type"]["child"]) && $cnd["item_type"]["child"] == 1),
-			"label" => "商品一覧に小商品も表示する"
+			"label" => "商品一覧に子商品も表示する"
 		));
 	}
 		

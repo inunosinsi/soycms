@@ -4,7 +4,7 @@ class ItemStockManagerUpdate extends SOYShopItemUpdateBase{
 
 	function addHistory(SOYShop_Item $item, $oldStock){
 		
-		$newStock = (int)$_POST["Item"]["stock"];
+		$newStock = (isset($_POST["Item"]["stock"])) ? (int)$_POST["Item"]["stock"] : (int)$item->getStock();
 		if($oldStock != $newStock){
 			$logMessage = "在庫数を" . $oldStock."から" . $newStock . "に変更しました";
 			
