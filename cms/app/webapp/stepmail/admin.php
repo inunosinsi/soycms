@@ -85,7 +85,10 @@ class StepMailApplication{
 		}
 		$path = implode(".", $classPath);
 		$classPath = $path;
-
+		
+		//ショップサイトとの連携が行われていない時は常にhomeを表示する
+		if(is_null(STEPMAIL_SHOP_ID) && strlen($classPath)) CMSApplication::jump("");
+		
 		if(strlen($classPath) < 1) $classPath = "Index";
 		$classPath .= 'Page';
 		

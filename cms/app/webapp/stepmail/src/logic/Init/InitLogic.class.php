@@ -38,6 +38,28 @@ class InitLogic extends SOY2LogicBase{
 		}
 	}
 	
+	function getSOYShopSiteList(){
+		CMSApplication::switchAdminMode();
+		
+		try{
+			$sites = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteType(Site::TYPE_SOY_SHOP);
+		}catch(Exception $e){
+			$sites = array();
+		}
+		
+		CMSApplication::switchAppMode();
+		
+		if(!count($sites)) return array();
+		
+		$list = array();
+		
+		foreach($sites as $site){
+			$list[$site->getSiteId()] = $site->getSiteName();
+		}
+		
+		return $list;
+	}
+		
 	private function prepare(){
 		$this->dao = new SOY2DAO();
 	}

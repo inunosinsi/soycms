@@ -28,12 +28,16 @@ SOY2DAOConfig::EntityDir(SOY2::RootDir() . "domain/");
 if(file_exists(dirname(__FILE__) . "/shop_id.php")){
 	include_once(dirname(__FILE__) . "/shop_id.php");	
 }else{
-	define("STEPMAIL_SHOP_ID", "shop");
+	define("STEPMAIL_SHOP_ID", null);
 }
-include_once(SOYSHOP_WEBAPP . "conf/shop/" . STEPMAIL_SHOP_ID . ".conf.php");
-SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
-SOY2DAOConfig::user(SOYSHOP_SITE_USER);
-SOY2DAOConfig::pass(SOYSHOP_SITE_PASS);
+
+//連携するショップが無い場合
+if(file_exists(SOYSHOP_WEBAPP . "conf/shop/" . STEPMAIL_SHOP_ID . ".conf.php")){
+	include_once(SOYSHOP_WEBAPP . "conf/shop/" . STEPMAIL_SHOP_ID . ".conf.php");
+	SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
+	SOY2DAOConfig::user(SOYSHOP_SITE_USER);
+	SOY2DAOConfig::pass(SOYSHOP_SITE_PASS);
+}
 
 include_once(SOY2::RootDir() . "base/common.php");
 

@@ -1,1 +1,14 @@
-何を載せるか決まってない
+<section soy:display="no_connected_shop_site">
+	<p class="error always">ショップサイトとの連携が行われていません</p>
+	<p class="error always" soy:display="no_shop_site">ショップサイトがありません</p>
+	
+	<!-- soy:display="has_shop_site" -->
+	<form soy:id="form">
+		<select soy:id="shop_list"></select>と<input type="submit" value="連携する">
+	</form>
+	<!-- /soy:display="has_shop_site" -->
+</section>
+
+<section soy:display="connected_shop_site">
+	@ToDo 何を表示するか決めていない。
+</section>
