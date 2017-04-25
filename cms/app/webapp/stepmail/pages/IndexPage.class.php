@@ -5,7 +5,8 @@ class IndexPage extends WebPage{
 	function doPost(){
 		
 		if(soy2_check_token() && is_null(STEPMAIL_SHOP_ID) && isset($_POST["Init"]["siteId"])){
-			$txt = "<?php\ndefine(STEPMAIL_SHOP_ID, \"" . $_POST["Init"]["siteId"] . "\");\n?>";
+			$shopId = strtr($_POST["Init"]["siteId"], array("." => "", "/" => "", "\\" => "", "\0" => ""));
+			$txt = "<?php\ndefine(STEPMAIL_SHOP_ID, \"" . trim(htmlspecialchars($shopId, ENT_QUOTES, "UTF-8")) . "\");\n?>";
 			file_put_contents(dirname(dirname(__FILE__)) . "/shop_id.php", $txt);
 			
 			CMSApplication::jump("");
