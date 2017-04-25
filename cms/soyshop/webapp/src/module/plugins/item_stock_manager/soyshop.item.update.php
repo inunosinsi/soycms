@@ -12,6 +12,7 @@ class ItemStockManagerUpdate extends SOYShopItemUpdateBase{
 			
 			$obj = new SOYShop_StockHistory();
 			$obj->setItemId($item->getId());
+			$obj->setUpdateStock($newStock - $oldStock);
 			$obj->setMemo($logMessage);
 			$obj->setCreateDate(time());
 			

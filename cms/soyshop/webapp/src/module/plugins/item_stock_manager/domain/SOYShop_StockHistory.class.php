@@ -9,6 +9,11 @@ class SOYShop_StockHistory {
      */
     private $itemId;
     
+    /**
+     * @column update_stock
+     */
+    private $updateStock = 0;
+    
 	private $memo;
 	
     /**
@@ -21,6 +26,13 @@ class SOYShop_StockHistory {
     }
     function setItemId($itemId){
     	$this->itemId = $itemId;
+    }
+    
+    function getUpdateStock(){
+    	return $this->updateStock;
+    }
+    function setUpdateStock($updateStock){
+    	$this->updateStock = $updateStock;
     }
     
     function getMemo(){
