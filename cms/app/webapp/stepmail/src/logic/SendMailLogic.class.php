@@ -76,7 +76,7 @@ class SendMailLogic extends SOY2LogicBase{
 			try{
 				$stepObj = $this->stepDao->getById($stepId);
 			}catch(Exception $e){
-				continue;
+				return;
 			}
 			
 			$this->mails[$stepObj->getId()] = array("title" => $stepObj->getTitle(), "content" => $stepObj->getContent());
@@ -140,6 +140,11 @@ class SendMailLogic extends SOY2LogicBase{
 			//フッターの情報を取得出来る様にしておく
 			SOY2::import("domain.StepMail_DataSets");
 		}
+	}
+	
+	/** 管理画面 **/
+	function getNoSendStepMailList($lim = 15){
+		return $this->sendDao->getNoSendStepMailList($lim);
 	}
 }
 ?>

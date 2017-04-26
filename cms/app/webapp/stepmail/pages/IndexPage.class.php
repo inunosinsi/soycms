@@ -17,8 +17,7 @@ class IndexPage extends WebPage{
 		WebPage::__construct();
 		
 		self::displayInitArea();
-		
-		DisplayPlugin::toggle("connected_shop_site", !is_null(STEPMAIL_SHOP_ID));
+		self::displayNewsArea();
 	}
 	
 	private function displayInitArea(){
@@ -32,13 +31,31 @@ class IndexPage extends WebPage{
 		}
 		
 		DisplayPlugin::toggle("no_shop_site", !count($shopList));
-		DisplayPlugin::toggle("has_shop_site", count($shopList));
+		DisplayPlugin::toggle("show_shop_site", count($shopList));
 		
 		$this->addForm("form");
 		
 		$this->addSelect("shop_list", array(
 			"name" => "Init[siteId]",
 			"options" => $shopList
+		));
+	}
+	
+	private function displayNewsArea(){
+		DisplayPlugin::toggle("connected_shop_site", !is_null(STEPMAIL_SHOP_ID));
+		
+		if(!is_null(STEPMAIL_SHOP_ID)){
+			$users = SOY2Logic::createInstance("logic.SendMailLogic")->getNoSendStepMailList();
+		}else{
+			$users = array();
+		}
+		
+		$cnt = count($users);
+		DisplayPlugin::toggle("no_reserved", !$cnt);
+		DisplayPlugin::toggle("show_reserved", $cnt);
+		
+		$this->createAdd("reserved_mail_list", "_common.ReservedMailListComponent", array(
+			"list" => $users
 		));
 	}
 }

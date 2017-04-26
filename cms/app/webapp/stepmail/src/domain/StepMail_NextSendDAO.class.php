@@ -35,6 +35,26 @@ abstract class StepMail_NextSendDAO extends SOY2DAO{
 	 */
 	abstract function getStepMailOfSendSchedule($end);
 	
+	function getNoSendStepMailList($lim = 15){
+		$sql = "SELECT user.name, user.mail_address, next.*, step.title AS step_title, mail.title AS mail_title FROM stepmail_next_send next " .
+				"INNER JOIN soyshop_user user ".
+				"ON next.user_id = user.id ".
+				"INNER JOIN stepmail_step step ".
+				"ON next.step_id = step.id ".
+				"INNER JOIN stepmail_mail mail ".
+				"ON next.mail_id = mail.id ".
+				"WHERE next.is_sended = " . StepMail_NextSend::NO_SENDED . " ".
+				"AND user.is_disabled != 1 ".
+				"ORDER BY next.next_send_date ASC ".
+				"LIMIT " . $lim;
+		
+		try{
+			return $this->executeQuery($sql, array());
+		}catch(Exception $e){
+			return array();
+		}
+	}
+	
 	/**
 	 * @final
 	 */
