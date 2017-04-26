@@ -175,7 +175,7 @@ class SearchLogic extends SOY2LogicBase{
 						}
 						if(strlen($ws) && strlen($we)){
 							$s_where[$key] = "(" . $ws . " AND " . $we . ")";
-						}else{
+						}else if(strlen($ws) || strlen($we)){
 							$s_where[$key] = $ws . $we;
 						}
 						break;
