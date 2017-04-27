@@ -38,7 +38,7 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 		//親商品のカテゴリの商品一覧ページへのリンクを調べる
 		$listPageUri = self::getParentListPageByItemId($parent->getId());
 		
-		$htmlObj->addLink("parent_item_detail_link", array(
+		$htmlObj->addLink("parent_item_link", array(
 			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 			"link" => soyshop_get_item_detail_link($parent)
 		));
