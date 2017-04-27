@@ -27,6 +27,7 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 		self::prepare();
 		$parentItemName = "";
 		$parentCategoryName = "";
+		$parentCategoryAlias = "";
 		
 		//親商品のカテゴリを取得したい
 		if(is_numeric($item->getType())){
@@ -36,6 +37,7 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 			if(!is_null($parent->getCategory())){
 				$parentCategory = (isset($this->categories[$parent->getCategory()])) ? $this->categories[$parent->getCategory()] : array();
 				$parentCategoryName = (isset($parentCategory["name"])) ? $parentCategory["name"] : "";
+				$parentCategoryAlias = (isset($parentCategory["alias"])) ? $parentCategory["alias"] : "";
 			}
 		}
 		
@@ -47,6 +49,11 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 		$htmlObj->addLabel("parent_category_name", array(
 			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 			"text" => $parentCategoryName
+		));
+		
+		$htmlObj->addLabel("parent_category_alias", array(
+			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+			"text" => $parentCategoryAlias
 		));
 	}
 
