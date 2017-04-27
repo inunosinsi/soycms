@@ -44,13 +44,14 @@ class DetailPage extends CMSWebPageBase{
     		"list" => $this->getLabelIconList()
     	));
 
-			// colorpickerプラグイン
-			HTMLHead::addScript("colorpicker", array(
-				"src" => SOY2PageController::createRelativeLink("./js/colorpicker/colorpicker.js"),
-			));
+		// colorpickerプラグイン
+		HTMLHead::addScript("colorpicker", array(
+			"src" => SOY2PageController::createRelativeLink("./js/colorpicker/colorpicker.js"),
+		));
+		
     	HTMLHead::addLink("colorpicker",array(
     		"rel" => "stylesheet",
-				"href" => SOY2PageController::createRelativeLink("./js/colorpicker/colorpicker.css"),
+			"href" => SOY2PageController::createRelativeLink("./js/colorpicker/colorpicker.css"),
     	));
     	
     	$this->createAdd("update_form","HTMLForm");

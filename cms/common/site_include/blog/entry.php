@@ -68,6 +68,16 @@ function soy_cms_blog_output_entry($page,$entry){
 					"visible" => ($arg !== $alias),
 					"soy2prefix" => "cms"
 				));
+				
+				$this->addLabel("color", array(
+					"text" => sprintf("%06X",$entry->getColor()),
+					"soy2prefix" => "cms"
+				));
+				
+				$this->addLabel("background_color", array(
+					"text" => sprintf("%06X",$entry->getBackGroundColor()),
+					"soy2prefix" => "cms"
+				));
 			}
 		}
 	}
