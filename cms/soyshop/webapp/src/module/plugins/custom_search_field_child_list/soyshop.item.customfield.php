@@ -2,7 +2,8 @@
 class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 
 	private $itemDao;
-	private $categories = array();
+	private $categoryDao;
+	private $breadDao;	//パンくず用のDAO
 
 	/**
 	 * 管理画面側で商品情報を更新する際に読み込まれる
@@ -25,21 +26,22 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 	function onOutput($htmlObj, SOYShop_Item $item){
 		
 		self::prepare();
-		$parentItemName = "";
-		$parentCategoryName = "";
-		$parentCategoryAlias = "";
 		
-		//親商品のカテゴリを取得したい
-		if(is_numeric($item->getType())){
-			$parent = self::getParentItem((int)$item->getType());
-			$parentItemName = $parent->getOpenItemName();
+		//親商品情報の出力タグ
+		$parent = self::getParentItem((int)$item->getType());
+		$parentItemName = $parent->getOpenItemName();
 			
-			if(!is_null($parent->getCategory())){
-				$parentCategory = (isset($this->categories[$parent->getCategory()])) ? $this->categories[$parent->getCategory()] : array();
-				$parentCategoryName = (isset($parentCategory["name"])) ? $parentCategory["name"] : "";
-				$parentCategoryAlias = (isset($parentCategory["alias"])) ? $parentCategory["alias"] : "";
-			}
-		}
+		$parentCategory = self::getParentCategory($parent->getCategory());
+		$parentCategoryName = $parentCategory->getOpenCategoryName();
+		$parentCategoryAlias = $parentCategory->getAlias();
+		
+		//親商品のカテゴリの商品一覧ページへのリンクを調べる
+		$listPageUri = self::getParentListPageByItemId($parent->getId());
+		
+		$htmlObj->addLink("parent_item_detail_link", array(
+			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+			"link" => soyshop_get_item_detail_link($parent)
+		));
 		
 		$htmlObj->addLabel("parent_item_name", array(
 			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
@@ -55,6 +57,11 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 			"text" => $parentCategoryAlias
 		));
+		
+		$htmlObj->addLink("parent_category_link", array(
+			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+			"link" => (isset($listPageUri)) ? soyshop_get_site_url() . $listPageUri . "/" . $parentCategoryAlias : null
+		));
 	}
 
 	/**
@@ -66,30 +73,58 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 	private function prepare(){
 		if(!$this->itemDao) {
 			$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+			$this->categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+			SOY2::imports("module.plugins.common_breadcrumb.domain.*");
+			$this->breadDao = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO");
 			SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-			
-			//カテゴリを取得しておく
-			try{
-				$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getByIsOpen(SOYShop_Category::IS_OPEN);
-			}catch(Exception $e){
-				$categories = array();
-			}
-			
-			if(count($categories)){
-				foreach($categories as $category){
-					$this->categories[$category->getId()] = array("name" => $category->getOpenCategoryName(), "alias" => $category->getAlias());
-				}
-			}
-			
-			$categories = array();
 		}
 	}
 	
 	private function getParentItem($parentId){
+		static $parents;
+		if(is_null($parents)) $parents = array();
+		
+		if(!is_numeric($parentId)) return new SOYShop_Item();
+		if(isset($parents[$parentId])) return $parents[$parentId];
+		
 		try{
-			return $this->itemDao->getById($parentId);
+			$parent = $this->itemDao->getById($parentId);
+			$parents[$parentId] = $parent;
+			return $parent;
 		}catch(Exception $e){
 			return new SOYShop_Item();
+		}
+	}
+	
+	private function getParentCategory($categoryId){
+		static $categories;
+		if(is_null($categories)) $categories = array();
+		
+		if(!is_numeric($categoryId)) return new SOYShop_Category();
+		if(isset($categories[$categoryId])) return $categories[$categoryId];
+		
+		try{
+			$category = $this->categoryDao->getById($categoryId);
+			$categories[$categoryId] = $category;
+			return $category;
+		}catch(Exception $e){
+			return new SOYShop_Category();
+		}
+	}
+	
+	private function getParentListPageByItemId($parentId){
+		static $results;
+		if(is_null($results)) $results = array();
+		
+		if(is_null($parentId)) return null;
+		if(isset($results[$parentId])) return $results[$parentId];
+				
+		try{
+			$uri = $this->breadDao->getPageUriByItemId($parentId);
+			$results[$parentId] = $uri;
+			return $uri;
+		}catch(Exception $e){
+			return null;
 		}
 	}
 }
