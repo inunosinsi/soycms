@@ -32,7 +32,7 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 		//親商品のカテゴリを取得したい
 		if(is_numeric($item->getType())){
 			$parent = self::getParentItem((int)$item->getType());
-			$parentItemName = $parent->getName();
+			$parentItemName = $parent->getOpenItemName();
 			
 			if(!is_null($parent->getCategory())){
 				$parentCategory = (isset($this->categories[$parent->getCategory()])) ? $this->categories[$parent->getCategory()] : array();
@@ -77,7 +77,7 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 			
 			if(count($categories)){
 				foreach($categories as $category){
-					$this->categories[$category->getId()] = array("name" => $category->getName(), "alias" => $category->getAlias());
+					$this->categories[$category->getId()] = array("name" => $category->getOpenCategoryName(), "alias" => $category->getAlias());
 				}
 			}
 			
