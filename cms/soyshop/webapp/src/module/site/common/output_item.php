@@ -216,6 +216,11 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 		}
 	}
 	
+	$htmlObj->addLink("parent_link", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"link" => soyshop_get_item_detail_link($parent)
+	));
+	
 	$htmlObj->addLabel("parent_name", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"text" => $parent->getOpenItemName()
