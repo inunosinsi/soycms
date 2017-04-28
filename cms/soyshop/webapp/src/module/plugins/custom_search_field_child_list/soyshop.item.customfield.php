@@ -4,6 +4,7 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 	private $itemDao;
 	private $categoryDao;
 	private $breadDao;	//パンくず用のDAO
+	private $installedBreadcrumbPlugin = false;
 
 	/**
 	 * 管理画面側で商品情報を更新する際に読み込まれる
@@ -70,16 +71,6 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 	 */
 	function onDelete($itemId){}
 	
-	private function prepare(){
-		if(!$this->itemDao) {
-			$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-			$this->categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-			SOY2::imports("module.plugins.common_breadcrumb.domain.*");
-			$this->breadDao = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO");
-			SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-		}
-	}
-	
 	private function getParentItem($parentId){
 		static $parents;
 		if(is_null($parents)) $parents = array();
@@ -116,7 +107,7 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 		static $results;
 		if(is_null($results)) $results = array();
 		
-		if(is_null($parentId)) return null;
+		if(!$this->installedBreadcrumbPlugin || is_null($parentId)) return null;
 		if(isset($results[$parentId])) return $results[$parentId];
 				
 		try{
@@ -125,6 +116,23 @@ class CustomSearchFieldChildListCustomField extends SOYShopItemCustomFieldBase{
 			return $uri;
 		}catch(Exception $e){
 			return null;
+		}
+	}
+	
+	private function prepare(){
+		if(!$this->itemDao) {
+			$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+			$this->categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+			
+			//パンくずモジュールをインストールしているか？
+			SOY2::import("util.SOYShopPluginUtil");
+			$this->installedBreadcrumbPlugin = SOYShopPluginUtil::checkIsActive("common_breadcrumb");
+			
+			if($this->installedBreadcrumbPlugin){
+				SOY2::imports("module.plugins.common_breadcrumb.domain.*");
+				$this->breadDao = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO");
+				SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+			}
 		}
 	}
 }
