@@ -250,7 +250,7 @@ class GalleryComponent extends HTMLList{
 		
 		$this->addLabel("image_path", array(
 			"soy2prefix" => $prefix,
-			"text" => $imagePath . "t_" . $entity->getFilename()
+			"text" => $imagePath . $entity->getFilename()
 		));
 		
 		$this->addLink("thumbnail_link", array(
