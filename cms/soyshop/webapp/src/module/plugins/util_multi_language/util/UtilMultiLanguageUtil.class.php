@@ -44,6 +44,21 @@ class UtilMultiLanguageUtil {
         ));
     }
 
+    public static function getLanguageId($lang=null){
+        if(is_null($lang)) $lang = self::LANGUAGE_JP;
+
+        $list = array(
+            self::LANGUAGE_JP,
+            self::LANGUAGE_EN,
+            self::LANGUAGE_ZH,
+            self::LANGUAGE_ZH_TW,
+            self::LANGUAGE_ES
+        );
+
+        $key = array_search($lang, $list);
+        return ($key !== false) ? $key : 0;
+    }
+
     public static function allowLanguages($all = false){
         $list = array(
             self::LANGUAGE_JP => "日本語",

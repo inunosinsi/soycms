@@ -1,99 +1,105 @@
 <form soy:id="form">
-	<p style="margin:5px 10px;">
-		<span style="float:left;">■&nbsp;日本語：<a soy:id="item_name_link"></a></span>
-		<span style="float:right;"><a soy:id="confirm_link" class="button">表示の確認</a></span>
-	</p>
-	
-	<br style="clear:both;line-height:2.5em;">
-	
-	<div class="block_body">
-		
-		<p class="notice" soy:display="updated">更新しました</p>
-		
-		<section>
-			<h1>カスタムフィールドの値</h1>
-			<dl class="form center">
-				<!-- soy:id="customfield" /-->
-			</dl>
-		</section>
-		
-		<section soy:display="option">
-			<h1>商品オプションの値</h1>
-			<dl class="form center">
-				<!-- soy:id="option" /-->
-			</dl>
-		</section>
-		
-		<p class="pageBtn">
-			<input type="submit" value="変更" style="width:180px;margin-right:50px;" />
-		</p>
-	</div>	
+    <p style="margin:5px 10px;">
+        <span style="float:left;">■&nbsp;日本語：<a soy:id="item_name_link"></a></span>
+        <span style="float:right;"><a soy:id="confirm_link" class="button">表示の確認</a></span>
+    </p>
+
+    <br style="clear:both;line-height:2.5em;">
+
+    <div class="block_body">
+
+        <p class="notice" soy:display="updated">更新しました</p>
+
+        <section soy:display="customfield">
+            <h1>カスタムフィールドの値</h1>
+            <dl class="form center">
+                <!-- soy:id="customfield" /-->
+            </dl>
+        </section>
+
+        <section soy:display="option">
+            <h1>商品オプションの値</h1>
+            <dl class="form center">
+                <!-- soy:id="option" /-->
+            </dl>
+        </section>
+
+        <section soy:display="customsearch">
+            <h1>カスタムサーチフィールドの値</h1>
+            <dl class="form center">
+                <!-- soy:id="customsearch" /-->
+            </dl>
+        </section>
+
+        <p class="pageBtn">
+            <input type="submit" value="変更" style="width:180px;margin-right:50px;" />
+        </p>
+    </div>
 </form>
 
 <!-- image_select -->
 <div id="upload_form_el" class="popup" style="display:none;">
-	<iframe name="upload_target_frame" src="about:blank;" frameborder="0" style="height:0;width:0;position:absolute;"></iframe>
-	<form soy:id="upload_form" id="upload_form" target="upload_target_frame" enctype="multipart/form-data">
-	<input type="hidden" name="upload" soy:id="upload_entry_id" />
-	<p>
-		<span>
-		<input id="upload_input" name="upload_file[]" type="file" multiple="true" />
-		</span>
-		<a class="button" href="javascript:void(0);" onclick="$('#upload_form').trigger('submit');">Upload</a>
-	</p>
-	<hr />
-	<div id="select_image_list" class="image_list">
-	<!-- soy:id="image_list" -->
-	<img soy:id="image" class="image_list_image" />
-	<!-- /soy:id="image_list" -->
-	</div>
+    <iframe name="upload_target_frame" src="about:blank;" frameborder="0" style="height:0;width:0;position:absolute;"></iframe>
+    <form soy:id="upload_form" id="upload_form" target="upload_target_frame" enctype="multipart/form-data">
+        <input type="hidden" name="upload" soy:id="upload_entry_id" />
+        <p>
+            <span>
+        <input id="upload_input" name="upload_file[]" type="file" multiple="true" />
+        </span>
+            <a class="button" href="javascript:void(0);" onclick="$('#upload_form').trigger('submit');">Upload</a>
+        </p>
+        <hr />
+        <div id="select_image_list" class="image_list">
+            <!-- soy:id="image_list" -->
+            <img soy:id="image" class="image_list_image" />
+            <!-- /soy:id="image_list" -->
+        </div>
 
-	<p class="close"></p>
-	</form soy:id="upload_form">
+        <p class="close"></p>
+    </form>
 </div>
 <!-- /image_select -->
 
 <script type="text/javascript" src="./js/ImageSelect.js" charset="utf-8"></script>
 <style type="text/css">
-#upload_form_el .image_list img.image_used{
-	border:solid 3px #ffd700;
-}
-#upload_form_el .image_list{
-	width:640px;
-	height:400px;
-	overflow:auto;
-}
+    #upload_form_el .image_list img.image_used {
+        border: solid 3px #ffd700;
+    }
 
-#upload_form_el .image_list img{
-	margin:5px;
-	border:solid 3px #666;
-	cursor:pointer;
-	vertical-align:top;
-}
+    #upload_form_el .image_list {
+        width: 640px;
+        height: 400px;
+        overflow: auto;
+    }
 
-#upload_form_el .image_list img.append_new{
-	border:solid 3px #ffff00;
-}
+    #upload_form_el .image_list img {
+        margin: 5px;
+        border: solid 3px #666;
+        cursor: pointer;
+        vertical-align: top;
+    }
 
-#select_image_info{
-	position:absolute;
-	border:solid 1px #eee;
-	background-color:white;
-	text-align:left;
+    #upload_form_el .image_list img.append_new {
+        border: solid 3px #ffff00;
+    }
 
-	box-shadow: 2px 2px 3px #999;
-	-webkit-box-shadow: 2px 2px 3px #999;
-	-moz-box-shadow: 2px 2px 3px #999;
-}
+    #select_image_info {
+        position: absolute;
+        border: solid 1px #eee;
+        background-color: white;
+        text-align: left;
+        box-shadow: 2px 2px 3px #999;
+        -webkit-box-shadow: 2px 2px 3px #999;
+        -moz-box-shadow: 2px 2px 3px #999;
+    }
 
-.image_select{
-	width:20%;
-}
+    .image_select {
+        width: 20%;
+    }
 
-.image_select_preview{
-	display:block;
-	margin-top:3px;
-}
-
+    .image_select_preview {
+        display: block;
+        margin-top: 3px;
+    }
 
 </style>
