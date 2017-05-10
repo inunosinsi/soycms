@@ -89,12 +89,17 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
     }
 
     function getReservedSchedulesByPeriod($year, $month){
+        SOY2::import("domain.order.SOYShop_Order");
+
         $sql = "SELECT res.schedule_id, COUNT(res.schedule_id) AS COUNT " .
                 "FROM soyshop_reserve_calendar_reserve res ".
                 "INNER JOIN soyshop_reserve_calendar_schedule sch ".
                 "ON res.schedule_id = sch.id ".
+                "INNER JOIN soyshop_order o ".
+                "ON res.order_id = o.id ".
                 "WHERE sch.year = :y ".
                 "AND sch.month = :m ".
+                "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ".
                 "GROUP BY res.schedule_id";
 
         try{
