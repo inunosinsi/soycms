@@ -122,9 +122,9 @@ class SOYShop_Category {
 
     function getNameWithStatus(){
         if($this->getIsOpen() == self::IS_OPEN){
-            return $this->getName();
+            return $this->getOpenCategoryName();
         }else{
-            return $this->getName() . "(非公開)";
+            return $this->getOpenCategoryName() . "(非公開)";
         }
     }
 

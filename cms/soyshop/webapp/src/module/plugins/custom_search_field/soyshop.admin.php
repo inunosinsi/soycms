@@ -7,7 +7,7 @@ class CustomSearchFieldAdmin extends SOYShopAdminBase{
         if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
             $langs = UtilMultiLanguageUtil::allowLanguages();
         }else{
-            $langs = array(self::LANGUAGE_JP => "日本語");
+            $langs = array(UtilMultiLanguageUtil::LANGUAGE_JP => "日本語");
         }
 
         $dao = new SOY2DAO();

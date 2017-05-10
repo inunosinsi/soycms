@@ -17,11 +17,24 @@ class SettingPage extends WebPage{
         $this->dbLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
         $this->categories = self::getCategories();
         SOY2::import("domain.shop.SOYShop_Item");
+
+        //言語設定
+        if(!defined("SOYSHOP_PUBLISH_LANGUAGE")){
+            $lang = self::getParameter("language_condition");
+            if(is_null($lang)) $lang = "jp";
+            define("SOYSHOP_PUBLISH_LANGUAGE", $lang);
+        }
     }
 
     function doPost(){
 
         if(soy2_check_token()){
+
+            //言語切り替え
+            if(isset($_POST["language"])){
+                self::setParameter("language_condition", $_POST["language"]);
+                $this->configObj->redirect("collective&field_id=" . $this->fieldId);
+            }
 
             if(isset($_POST["set"])){
 
@@ -32,7 +45,7 @@ class SettingPage extends WebPage{
                         foreach($values as $key => $v){
                             $customs[$key] = $v;
                         }
-                        $this->dbLogic->save($itemId, $customs);
+                        $this->dbLogic->save($itemId, $customs, SOYSHOP_PUBLISH_LANGUAGE);
                     }
                 }
 
@@ -50,6 +63,7 @@ class SettingPage extends WebPage{
 
         DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 
+        self::buildLanguageForm();
         self::buildSearchForm();
 
         $this->addForm("form");
@@ -83,6 +97,25 @@ class SettingPage extends WebPage{
         ));
     }
 
+    private function buildLanguageForm(){
+        $this->addForm("lang_form");
+
+        $this->addSelect("language", array(
+            "name" => "language",
+            "options" => self::getLanguageList(),
+            "selected" => SOYSHOP_PUBLISH_LANGUAGE
+        ));
+    }
+
+    private function getLanguageList(){
+        SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+        if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
+            return UtilMultiLanguageUtil::allowLanguages();
+        }else{
+            return array(UtilMultiLanguageUtil::LANGUAGE_JP => "日本語");
+        }
+    }
+
     private function buildSearchForm(){
 
         //リセット
@@ -105,7 +138,6 @@ class SettingPage extends WebPage{
             $cnd = self::getParameter("search_condition");
         }
         //リセットここまで
-
 
         $this->addModel("search_area", array(
             "style" => (isset($cnd) && count($cnd)) ? "display:inline;" : "display:none;"

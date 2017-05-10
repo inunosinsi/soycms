@@ -14,6 +14,7 @@ class SearchLogic extends SOY2LogicBase{
         SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
         $this->config = CustomSearchFieldUtil::getConfig();
         $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+        SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
     }
 
     function get(){
@@ -83,11 +84,9 @@ class SearchLogic extends SOY2LogicBase{
             }
         }
 
-        /**
-         * @Todo 多言語設定を入れる。とりあえずは日本語サイトのみ
-         */
+        //多言語設定を入れる。とりあえずは日本語サイトのみ
         $this->where[] = "s.lang = :lang";
-        $this->binds[":lang"] = 0;
+        $this->binds[":lang"] = UtilMultiLanguageUtil::getLanguageId(SOYSHOP_PUBLISH_LANGUAGE);
 
     }
 
