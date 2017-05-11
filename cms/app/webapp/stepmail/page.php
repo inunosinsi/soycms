@@ -150,4 +150,4 @@ class StepMail_InterfaceComponent extends SOYBodyComponentBase{
 
 $app = new StepMail_PageApplication();
 $app->init();
-?>
+
