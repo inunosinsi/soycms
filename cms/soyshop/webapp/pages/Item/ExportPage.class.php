@@ -13,7 +13,7 @@ class ExportPage extends WebPage{
 
         //多言語化
         $this->createAdd("multi_language_item_name_list", "_common.Item.MultiLanguageItemNameListComponent", array(
-            "list" => self::getLanguageItemNameList()
+            "list" => self::getLanguageList()
         ));
 
         //特別価格プラグイン周りの項目を表示する
@@ -83,7 +83,7 @@ class ExportPage extends WebPage{
         );
     }
 
-    private function getLanguageItemNameList(){
+    private function getLanguageList(){
         if(!SOYShopPluginUtil::checkIsActive("util_multi_language")) return array();
         SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
         return UtilMultiLanguageUtil::allowLanguages();
@@ -140,7 +140,7 @@ class ExportPage extends WebPage{
         $logic->setItems($item);
         $logic->setLabels($this->getLabels());
         $logic->setCustomFields(self::getCustomFieldList(true));
-        $logic->setLanguageItems(self::getLanguageItemNameList());
+        $logic->setLanguageItems(self::getLanguageList());
         $logic->setSpecialPrices(self::getSpecialPriceList());
         $logic->setCustomSearchFields(self::getCustomSearchFieldList());
         $logic->setItemOptions(self::getItemOptionList());
@@ -177,7 +177,7 @@ class ExportPage extends WebPage{
             }
 
             //CSV(TSV)に変換
-            $lines = $this->itemToCSV($items);
+            $lines = self::itemToCSV($items);
 
             //出力
             self::outputFile($lines, $displayLabel);
@@ -191,7 +191,7 @@ class ExportPage extends WebPage{
      * 商品データをCSVに変換する
      * カテゴリーは">"でつないだ文字列にする。
      */
-    function itemToCSV($items){
+    private function itemToCSV($items){
         static $categories;
 
         if(!$categories){

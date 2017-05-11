@@ -2,126 +2,122 @@
 
 class IndexPage extends WebPage{
 
-	function doPost(){
+    function doPost(){
 
-		if(isset($_POST["create"])){
-			$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-			$configs = SOYShop_CategoryAttributeConfig::load();
+        if(isset($_POST["create"])){
+            $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+            $configs = SOYShop_CategoryAttributeConfig::load();
 
-			$custom_id = $_POST["custom_id"];
+            $custom_id = $_POST["custom_id"];
 
-			//多言語化プラグインとバッティングしない様に
-			if(!preg_match('/^category_name_(.*)/', $custom_id)){
-				$config = new SOYShop_CategoryAttributeConfig();
-				$config->setLabel($_POST["custom_new_name"]);
-				$config->setFieldId($custom_id);
-				$config->setType($_POST["custom_type"]);
-	
-				$configs[] = $config;
-	
-				SOYShop_CategoryAttributeConfig::save($configs);
-				SOY2PageController::jump("Item.Category.Customfield?updated=created");
-			}
-		}
+            //多言語化プラグインとバッティングしない様に
+            if(!preg_match('/^category_name_(.*)/', $custom_id)){
+                $config = new SOYShop_CategoryAttributeConfig();
+                $config->setLabel($_POST["custom_new_name"]);
+                $config->setFieldId($custom_id);
+                $config->setType($_POST["custom_type"]);
 
-		//update
-		if(isset($_POST["update_submit"])){
-			$fieldId = $_POST["update_submit"];
+                $configs[] = $config;
 
-			$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-			$configs = SOYShop_CategoryAttributeConfig::load(true);
+                SOYShop_CategoryAttributeConfig::save($configs);
+                SOY2PageController::jump("Item.Category.Customfield?updated=created");
+            }
+        }
 
-			$config = $configs[$fieldId];
-			SOY2::cast($config, (object)$_POST["obj"]);
+        //update
+        if(isset($_POST["update_submit"])){
+            $fieldId = $_POST["update_submit"];
 
-			SOYShop_CategoryAttributeConfig::save($configs);
-		}
+            $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+            $configs = SOYShop_CategoryAttributeConfig::load(true);
 
-		//advanced config
-		if(isset($_POST["update_advance"])){
-			$fieldId = $_POST["update_advance"];
+            $config = $configs[$fieldId];
+            SOY2::cast($config, (object)$_POST["obj"]);
 
-			$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-			$configs = SOYShop_CategoryAttributeConfig::load(true);
+            SOYShop_CategoryAttributeConfig::save($configs);
+        }
 
-			$config = $configs[$fieldId];
-			$config->setConfig($_POST["config"]);
+        //advanced config
+        if(isset($_POST["update_advance"])){
+            $fieldId = $_POST["update_advance"];
 
-			SOYShop_CategoryAttributeConfig::save($configs);
-		}
+            $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+            $configs = SOYShop_CategoryAttributeConfig::load(true);
 
-		//delete
-		if(isset($_POST["delete_submit"])){
-			$fieldId = $_POST["delete_submit"];
+            $config = $configs[$fieldId];
+            $config->setConfig($_POST["config"]);
 
-			$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-			$configs = SOYShop_CategoryAttributeConfig::load(true);
+            SOYShop_CategoryAttributeConfig::save($configs);
+        }
 
-			unset($configs[$fieldId]);
+        //delete
+        if(isset($_POST["delete_submit"])){
+            $fieldId = $_POST["delete_submit"];
 
-			SOYShop_CategoryAttributeConfig::save($configs);
-		}
+            $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+            $configs = SOYShop_CategoryAttributeConfig::load(true);
 
-		//move
-		if(isset($_POST["move_up"]) || isset($_POST["move_down"])){
-			$fieldId = $_POST["field_id"];
+            unset($configs[$fieldId]);
 
-			$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-			$configs = SOYShop_CategoryAttributeConfig::load(true);
+            SOYShop_CategoryAttributeConfig::save($configs);
+        }
 
-			$keys = array_keys($configs);
-			$currentKey = array_search($fieldId, $keys);
-			$swap = (isset($_POST["move_up"])) ? $currentKey - 1 : $currentKey + 1;
+        //move
+        if(isset($_POST["move_up"]) || isset($_POST["move_down"])){
+            $fieldId = $_POST["field_id"];
 
-			if($swap >= 0 && $swap < count($keys)){
-				$tmp = $keys[$currentKey];
-				$keys[$currentKey] = $keys[$swap];
-				$keys[$swap] = $tmp;
+            $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+            $configs = SOYShop_CategoryAttributeConfig::load(true);
 
-				$tmpArray = array();
-				foreach($keys as $index => $value){
-					$field = $configs[$value];
-					$tmpArray[$field->getFieldId()] = $field;
-				}
+            $keys = array_keys($configs);
+            $currentKey = array_search($fieldId, $keys);
+            $swap = (isset($_POST["move_up"])) ? $currentKey - 1 : $currentKey + 1;
 
-				SOYShop_CategoryAttributeConfig::save($tmpArray);
-			}
-		}
+            if($swap >= 0 && $swap < count($keys)){
+                $tmp = $keys[$currentKey];
+                $keys[$currentKey] = $keys[$swap];
+                $keys[$swap] = $tmp;
 
-		SOY2PageController::jump("Item.Category.Customfield?updated");
-	}
+                $tmpArray = array();
+                foreach($keys as $index => $value){
+                    $field = $configs[$value];
+                    $tmpArray[$field->getFieldId()] = $field;
+                }
+
+                SOYShop_CategoryAttributeConfig::save($tmpArray);
+            }
+        }
+
+        SOY2PageController::jump("Item.Category.Customfield?updated");
+    }
 
     function __construct() {
-    	WebPage::__construct();
+        WebPage::__construct();
 
-    	$this->addModel("updated", array(
-			"visible" => (isset($_GET["updated"]))
-		));
+        $this->addModel("updated", array(
+            "visible" => (isset($_GET["updated"]))
+        ));
 
-		$this->addModel("error", array(
-			"visible" => (isset($_GET["error"]))
-		));
+        $this->addModel("error", array(
+            "visible" => (isset($_GET["error"]))
+        ));
 
-		$this->addForm("create_form");
+        $this->addForm("create_form");
 
-    	$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-		$config = SOYShop_CategoryAttributeConfig::load();
+        $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+        $config = SOYShop_CategoryAttributeConfig::load();
 
-    	$types = SOYShop_CategoryAttributeConfig::getTypes();
-		$this->addSelect("custom_type_select", array(
-			"options" => $types,
-			"name" => "custom_type"
-		));
+        $types = SOYShop_CategoryAttributeConfig::getTypes();
+        $this->addSelect("custom_type_select", array(
+            "options" => $types,
+            "name" => "custom_type"
+        ));
 
-    	$this->createAdd("field_list", "_common.Category.FieldListComponent", array(
-			"list" => $config,
-			"types" => $types
-		));
+        $this->createAdd("field_list", "_common.Category.FieldListComponent", array(
+            "list" => $config,
+            "types" => $types
+        ));
 
-
-    	$this->addModel("is_custom_plugin", array(
-			"visible" => class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_category_customfield"))
-		));
+        DisplayPlugin::toggle("custom_plugin", SOYShopPluginUtil::checkIsActive("common_category_customfield"));
     }
 }
-?>

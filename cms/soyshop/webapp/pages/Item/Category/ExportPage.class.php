@@ -1,136 +1,140 @@
 <?php
 class ExportPage extends WebPage{
 
-	private $logic;
+    private $logic;
 
     function __construct() {
-    	WebPage::__construct();
-    	$this->buildForm();
+        WebPage::__construct();
 
-    	$this->createAdd("is_custom_plugin","HTMLModel", array(
-			"visible" => class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_category_customfield"))
-		));
+        DisplayPlugin::toggle("custom_plugin", SOYShopPluginUtil::checkIsActive("common_category_customfield"));
+        DisplayPlugin::toggle("retry", isset($_GET["retry"]));
 
-		$this->createAdd("retry","HTMLModel", array("visible" => (isset($_GET["retry"]))));
+        self::buildForm();
     }
 
-    function buildForm(){
-    	$this->createAdd("export_form", "HTMLForm");
+    private function buildForm(){
+        $this->addForm("export_form");
+
+        //多言語化
+        $this->createAdd("multi_language_category_name_list", "_common.Category.MultiLanguageCategoryNameListComponent", array(
+            "list" => self::getLanguageList()
+        ));
+
+        //カスタムフィールドリストを表示する
+        $this->createAdd("customfield_list","_common.Item.CustomFieldImExportListComponent", array(
+            "list" => self::getCustomFieldList()
+        ));
     }
 
     function getLabels(){
-    	return array(
-    		"id" => "id",
+        return array(
+            "id" => "id",
 
-			"name" => "カテゴリ名",
-			"alias" => "カテゴリID",
+            "name" => "カテゴリ名",
+            "alias" => "カテゴリID",
 
-			"order" => "表示順",
+            "order" => "表示順",
 
-    	);
+        );
+    }
+
+    private function getLanguageList(){
+        if(!SOYShopPluginUtil::checkIsActive("util_multi_language")) return array();
+        SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+        return UtilMultiLanguageUtil::allowLanguages();
     }
 
     function getCustomFieldList($flag = false){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$config = SOYShop_ItemAttributeConfig::load($flag);
-		return $config;
+        $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+        return SOYShop_CategoryAttributeConfig::load($flag);
     }
 
     function doPost(){
-    	if(!soy2_check_token()){
-    		SOY2PageController::jump("Item.Category.Export?retry");
-			exit;
-    	}
+        if(!soy2_check_token()){
+            SOY2PageController::jump("Item.Category.Export?retry");
+            exit;
+        }
 
-    	set_time_limit(0);
+        set_time_limit(0);
 
-    	$this->logic = SOY2Logic::createInstance("logic.csv.ExImportLogicBase");
-    	$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+        $logic = SOY2Logic::createInstance("logic.shop.category.ExImportLogic");
+        $this->logic = $logic;
 
-    	$format = $_POST["format"];
-    	$item = $_POST["item"];
+        $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 
-		$displayLabel = @$format["label"];
-		$this->logic->setSeparator(@$format["separator"]);
-		$this->logic->setQuote(@$format["quote"]);
-		$this->logic->setCharset(@$format["charset"]);
+        $format = $_POST["format"];
+        $item = $_POST["item"];
 
-		//出力する項目にセット
-		$this->logic->setItems($item);
-		$this->logic->setLabels($this->getLabels());
+        $displayLabel = @$format["label"];
+        $logic->setSeparator(@$format["separator"]);
+        $logic->setQuote(@$format["quote"]);
+        $logic->setCharset(@$format["charset"]);
 
-		//DAO: 2000ずつ取得
-		$limit = 2000;//16MB弱を消費（商品データの場合）
-		$step = 0;
-		$dao->setLimit($limit);
+        //出力する項目にセット
+        $logic->setItems($item);
+        $logic->setLabels($this->getLabels());
+        $logic->setCustomFields(self::getCustomFieldList(true));
+        $logic->setLanguageItems(self::getLanguageList());
 
-		do{
-			if(connection_aborted())exit;
+        //DAO: 2000ずつ取得
+        $limit = 2000;//16MB弱を消費（商品データの場合）
+        $step = 0;
+        $dao->setLimit($limit);
 
-			$dao->setOffset($step * $limit);
-			$step++;
+        do{
+            if(connection_aborted())exit;
 
-			//データ取得
-			try{
-		    	$categories = $dao->get();
-			}catch(Exception $e){
-				$categories = array();
-			}
+            $dao->setOffset($step * $limit);
+            $step++;
 
-			foreach($categories as $category){
-				//CSVにはカテゴリは文字列で出力
-				$category->setName($category->getCategoryChain());
+            //データ取得
+            try{
+                $categories = $dao->get();
+            }catch(Exception $e){
+                $categories = array();
+            }
 
-				//CSV(TSV)に変換
-				$text = $this->logic->export($category);
-				$lines[] = $text;
-			}
+            foreach($categories as $category){
+                //CSV(TSV)に変換
+                $lines[] = $logic->export($category);
+            }
 
-			//出力
-			$this->outputFile($lines, $displayLabel);
+            //出力
+            self::outputFile($lines, $displayLabel);
 
-		}while(count($categories) >= $limit);
+        }while(count($categories) >= $limit);
 
-		exit;
+        exit;
+    }
 
+    /**
+     * ファイル出力：改行コードはCRLF
+     */
+    private function outputFile($lines, $displayLabel){
+        static $headerSent = false;
+        if(!$headerSent){
+            $headerSent = true;
+            header("Cache-Control: no-cache");
+            header("Pragma: no-cache");
+            header("Content-Disposition: attachment; filename=soyshop_categories-".date("Ymd").".csv");
+            header("Content-Type: text/csv; charset=" . $this->logic->getCharset() . ";");
 
-	}
+            //ラベル：logic->export()の後で呼び出さないとカスタムフィールドのタイトルが入らない
+            if($displayLabel){
+                echo $this->logic->getHeader();
+                echo "\r\n";
+            }
+        }
+        self::outputData($lines);
+    }
 
-	/**
-	 * ファイル出力：改行コードはCRLF
-	 */
-	function outputFile($lines, $displayLabel){
-		static $headerSent = false;
-		if(!$headerSent){
-			$headerSent = true;
-			header("Cache-Control: no-cache");
-			header("Pragma: no-cache");
-			header("Content-Disposition: attachment; filename=soyshop_categories-".date("Ymd").".csv");
-			header("Content-Type: text/csv; charset=" . $this->logic->getCharset() . ";");
-
-			//ラベル：logic->export()の後で呼び出さないとカスタムフィールドのタイトルが入らない
-			if($displayLabel){
-				echo $this->logic->getHeader();
-				echo "\r\n";
-			}
-		}
-		$this->outputData($lines);
-	}
-
-	/**
-	 * データ出力：改行コードはCRLF
-	 */
-	function outputData($lines){
-		if(count($lines) > 0){
-			echo implode("\r\n", $lines);
-			echo "\r\n";
-		}
-	}
-
-
-
+    /**
+     * データ出力：改行コードはCRLF
+     */
+    private function outputData($lines){
+        if(count($lines) > 0){
+            echo implode("\r\n", $lines);
+            echo "\r\n";
+        }
+    }
 }
-
-
-
-?>

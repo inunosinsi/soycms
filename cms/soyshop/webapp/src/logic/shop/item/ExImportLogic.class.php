@@ -159,9 +159,9 @@ class ExImportLogic extends ExImportLogicBase{
         $this->customFields = $customFields;
     }
 
-    function setLanguageItems($languageItemNames){
-        if(count($languageItemNames)){
-            foreach($languageItemNames as $key => $v){
+    function setLanguageItems($languages){
+        if(count($languages)){
+            foreach($languages as $key => $v){
                 if($key == UtilMultiLanguageUtil::LANGUAGE_JP) continue;
                 $fieldId = "item_name_" . $key;
                 $obj = new SOYShop_ItemAttributeConfig();

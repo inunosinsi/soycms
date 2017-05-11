@@ -17,26 +17,26 @@ class ImportPage extends WebPage{
 
         //多言語化
         $this->createAdd("multi_language_item_name_list", "_common.Item.MultiLanguageItemNameListComponent", array(
-            "list" => self::getLanguageItemNameList()
+            "list" => self::getLanguageList()
         ));
 
         //特別価格プラグイン周りの項目を表示する
         $this->createAdd("special_price_list","_common.Item.SpecialPriceExportListComponent", array(
-            "list" => $this->getSpecialPriceList()
+            "list" => self::getSpecialPriceList()
         ));
 
         $this->createAdd("customfield_list", "_common.Item.CustomFieldImExportListComponent", array(
-            "list" => $this->getCustomFieldList()
+            "list" => self::getCustomFieldList()
         ));
 
         //商品オプションリストを表示する
         $this->createAdd("custom_search_field_list", "_common.Item.CustomSearchFieldImExportListComponent", array(
-            "list" => $this->getCustomSearchFieldList()
+            "list" => self::getCustomSearchFieldList()
         ));
 
         //商品オプションリストを表示する
         $this->createAdd("item_option_list", "_common.Item.ItemOptionImExportListComponent", array(
-            "list" => $this->getItemOptionList()
+            "list" => self::getItemOptionList()
         ));
 
         SOYShopPlugin::load("soyshop.item.csv");
@@ -74,7 +74,7 @@ class ImportPage extends WebPage{
         $logic->setCharset(@$format["charset"]);
         $logic->setItems($item);
         $logic->setCustomFields($this->getCustomFieldList(true));
-        $logic->setLanguageItems(self::getLanguageItemNameList());
+        $logic->setLanguageItems(self::getLanguageList());
         $logic->setSpecialPrices($this->getSpecialPriceList());
         $logic->setCustomSearchFields($this->getCustomSearchFieldList());
         $logic->setItemOptions($this->getItemOptionList());
@@ -283,13 +283,13 @@ class ImportPage extends WebPage{
         }
     }
 
-    private function getLanguageItemNameList(){
+    private function getLanguageList(){
         if(!SOYShopPluginUtil::checkIsActive("util_multi_language")) return array();
         SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
         return UtilMultiLanguageUtil::allowLanguages();
     }
 
-    function getSpecialPriceList(){
+    private function getSpecialPriceList(){
         SOY2::import("util.SOYShopPluginUtil");
         if(!SOYShopPluginUtil::checkIsActive("member_special_price")) return array();
 
@@ -297,18 +297,18 @@ class ImportPage extends WebPage{
         return MemberSpecialPriceUtil::getConfig();
     }
 
-    function getCustomFieldList($flag = false){
+    private function getCustomFieldList($flag = false){
         $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
         $config = SOYShop_ItemAttributeConfig::load($flag);
         return $config;
     }
 
-    function getCustomSearchFieldList(){
+    private function getCustomSearchFieldList(){
         SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
         return CustomSearchFieldUtil::getConfig();
     }
 
-    function getItemOptionList(){
+    private function getItemOptionList(){
         return SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
     }
 
