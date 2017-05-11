@@ -1,254 +1,263 @@
 <?php
 class ExportPage extends WebPage{
 
-	var $logic;
+    var $logic;
 
-	function __construct() {
-		WebPage::__construct();
-		$this->buildForm();
-	}
+    function __construct() {
+        WebPage::__construct();
+        $this->buildForm();
+    }
 
-	function buildForm(){
-		$this->addForm("export_form");
+    function buildForm(){
+        $this->addForm("export_form");
 
-		//特別価格プラグイン周りの項目を表示する
-		$this->createAdd("special_price_list","_common.Item.SpecialPriceExportListComponent", array(
-			"list" => $this->getSpecialPriceList()
-		));
+        //多言語化
+        $this->createAdd("multi_language_item_name_list", "_common.Item.MultiLanguageItemNameListComponent", array(
+            "list" => self::getLanguageItemNameList()
+        ));
 
-		//カスタムフィールドリストを表示する
-		$this->createAdd("customfield_list","_common.Item.CustomFieldImExportListComponent", array(
-			"list" => $this->getCustomFieldList()
-		));
-		
-		//カスタムサーチフィールドリストを表示する
-		$this->createAdd("custom_search_field_list", "_common.Item.CustomSearchFieldImExportListComponent", array(
-			"list" => $this->getCustomSearchFieldList()
-		));
-		
-		//商品オプションリストを表示する
-		$this->createAdd("item_option_list", "_common.Item.ItemOptionImExportListComponent", array(
-			"list" => $this->getItemOptionList()
-		));
+        //特別価格プラグイン周りの項目を表示する
+        $this->createAdd("special_price_list","_common.Item.SpecialPriceExportListComponent", array(
+            "list" => self::getSpecialPriceList()
+        ));
 
-		SOYShopPlugin::load("soyshop.item.csv");
-		$delegate = SOYShopPlugin::invoke("soyshop.item.csv");
+        //カスタムフィールドリストを表示する
+        $this->createAdd("customfield_list","_common.Item.CustomFieldImExportListComponent", array(
+            "list" => self::getCustomFieldList()
+        ));
 
-		$this->createAdd("plugin_list", "_common.Item.PluginCSVListComponent", array(
-			"list" => $delegate->getModules()
-		));
+        //カスタムサーチフィールドリストを表示する
+        $this->createAdd("custom_search_field_list", "_common.Item.CustomSearchFieldImExportListComponent", array(
+            "list" => self::getCustomSearchFieldList()
+        ));
 
-		//カテゴリ
-		$this->createAdd("category_tree", "_base.MyTreeComponent", array(
-			"list" => SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get(),
-		));
+        //商品オプションリストを表示する
+        $this->createAdd("item_option_list", "_common.Item.ItemOptionImExportListComponent", array(
+            "list" => self::getItemOptionList()
+        ));
 
-		$this->addModel("retry", array("visible" => (isset($_GET["retry"]))));
+        SOYShopPlugin::load("soyshop.item.csv");
+        $delegate = SOYShopPlugin::invoke("soyshop.item.csv");
 
-	}
+        $this->createAdd("plugin_list", "_common.Item.PluginCSVListComponent", array(
+            "list" => $delegate->getModules()
+        ));
 
-	function getLabels(){
-		return array(
-			"id" => "id",
+        //カテゴリ
+        $this->createAdd("category_tree", "_base.MyTreeComponent", array(
+            "list" => SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get(),
+        ));
 
-			"isOpen" => "公開状態",
+        $this->addModel("retry", array("visible" => (isset($_GET["retry"]))));
 
-			"name" => "商品名",
-			"alias" => "URL",
-			"code" => "商品コード",
+    }
 
-			"config[list_price]" => "定価",
-			"price" => "通常価格",
-			"salePrice" => "セール価格",
-			"saleFlag" => "セール中",
+    function getLabels(){
+        return array(
+            "id" => "id",
 
-			"stock" => "在庫",
-			"category" => "カテゴリ",
-			"type" => "商品タイプ",
-			"detailPageId" => "商品詳細ページID",
-			"config[keywords]" => "キーワード",
-			"config[description]" => "説明",
-			"config[image_small]" => "商品画像（小）",
-			"config[image_large]" => "商品画像（大）",
-			
-			"orderPeriodStart" => "販売開始日",
-			"orderPeriodEnd" => "販売終了日",
-			"openPeriodStart" => "公開開始日",
-			"openPeriodEnd" => "公開終了日",
-		);
-	}
-	
-	function getSpecialPriceList(){
-		SOY2::import("util.SOYShopPluginUtil");
-		if(!SOYShopPluginUtil::checkIsActive("member_special_price")) return array();
-		
-		SOY2::import("module.plugins.member_special_price.util.MemberSpecialPriceUtil");
-		return MemberSpecialPriceUtil::getConfig();
-		
-	}
+            "isOpen" => "公開状態",
 
-	function getCustomFieldList($flag = false){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$config = SOYShop_ItemAttributeConfig::load($flag);
-		return $config;
-	}
-	
-	function getCustomSearchFieldList(){
-		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-		return CustomSearchFieldUtil::getConfig();
-	}
-	
-	function getItemOptionList(){
-		return SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
-	}
+            "name" => "商品名",
+            "alias" => "URL",
+            "code" => "商品コード",
 
-	function doPost(){
-    	if(!soy2_check_token()){
-    		SOY2PageController::jump("Item.Export?retry");
-			exit;
-    	}
+            "config[list_price]" => "定価",
+            "price" => "通常価格",
+            "salePrice" => "セール価格",
+            "saleFlag" => "セール中",
 
-		set_time_limit(0);
+            "stock" => "在庫",
+            "category" => "カテゴリ",
+            "type" => "商品タイプ",
+            "detailPageId" => "商品詳細ページID",
+            "config[keywords]" => "キーワード",
+            "config[description]" => "説明",
+            "config[image_small]" => "商品画像（小）",
+            "config[image_large]" => "商品画像（大）",
 
-		//準備
-		$logic = SOY2Logic::createInstance("logic.shop.item.ExImportLogic");
-		$this->logic = $logic;
+            "orderPeriodStart" => "販売開始日",
+            "orderPeriodEnd" => "販売終了日",
+            "openPeriodStart" => "公開開始日",
+            "openPeriodEnd" => "公開終了日",
+        );
+    }
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+    private function getLanguageItemNameList(){
+        if(!SOYShopPluginUtil::checkIsActive("util_multi_language")) return array();
+        SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+        return UtilMultiLanguageUtil::allowLanguages();
+    }
 
-		//パラメータ
-		$category_id = $_POST["category"];
+    private function getSpecialPriceList(){
+        SOY2::import("util.SOYShopPluginUtil");
+        if(!SOYShopPluginUtil::checkIsActive("member_special_price")) return array();
 
-		$format = $_POST["format"];
-		$item = $_POST["item"];
+        SOY2::import("module.plugins.member_special_price.util.MemberSpecialPriceUtil");
+        return MemberSpecialPriceUtil::getConfig();
+    }
 
-		$displayLabel = @$format["label"];
-		$logic->setSeparator(@$format["separator"]);
-		$logic->setQuote(@$format["quote"]);
-		$logic->setCharset(@$format["charset"]);
+    private function getCustomFieldList($flag = false){
+        $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+        return SOYShop_ItemAttributeConfig::load($flag);
+    }
 
-		//出力する項目にセット
-		$logic->setItems($item);
-		$logic->setLabels($this->getLabels());
-		$logic->setCustomFields($this->getCustomFieldList(true));
-		$logic->setSpecialPrices($this->getSpecialPriceList());
-		$logic->setCustomSearchFields($this->getCustomSearchFieldList());
-		$logic->setItemOptions($this->getItemOptionList());
+    private function getCustomSearchFieldList(){
+        SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+        return CustomSearchFieldUtil::getConfig();
+    }
 
-		//Plugin soyshop.item.csv
-		SOYShopPlugin::load("soyshop.item.csv");
-		$delegate = SOYShopPlugin::invoke("soyshop.item.csv", array("mode" => "export"));
-		$logic->setModules($delegate->getModules());
+    private function getItemOptionList(){
+        return SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
+    }
 
-		//カテゴリの親子取得
-		$categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		$mappings = $categoryDao->getMapping();
+    function doPost(){
+        if(!soy2_check_token()){
+            SOY2PageController::jump("Item.Export?retry");
+            exit;
+        }
 
-		//DAO: 2000ずつ取得
-		$limit = 2000;//16MB弱を消費
-		$step = 0;
-		$dao->setLimit($limit);
+        set_time_limit(0);
 
-		do{
-			if(connection_aborted())exit;
+        //準備
+        $logic = SOY2Logic::createInstance("logic.shop.item.ExImportLogic");
+        $this->logic = $logic;
 
-			$dao->setOffset($step * $limit);
-			$step++;
+        $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 
-			//データ取得
-			try{
-				if(strlen($category_id) > 0 && isset($mappings[$category_id])){
-					$items = $dao->getByCategories($mappings[$category_id]);
-				}else{
-					$items = $dao->get();
-				}
-			}catch(Exception $e){
-				$items = array();
-			}
+        //パラメータ
+        $category_id = $_POST["category"];
 
-			//CSV(TSV)に変換
-			$lines = $this->itemToCSV($items);
+        $format = $_POST["format"];
+        $item = $_POST["item"];
 
-			//出力
-			$this->outputFile($lines, $displayLabel);			
+        $displayLabel = @$format["label"];
+        $logic->setSeparator(@$format["separator"]);
+        $logic->setQuote(@$format["quote"]);
+        $logic->setCharset(@$format["charset"]);
 
-		}while(count($items) >= $limit);
+        //出力する項目にセット
+        $logic->setItems($item);
+        $logic->setLabels($this->getLabels());
+        $logic->setCustomFields(self::getCustomFieldList(true));
+        $logic->setLanguageItems(self::getLanguageItemNameList());
+        $logic->setSpecialPrices(self::getSpecialPriceList());
+        $logic->setCustomSearchFields(self::getCustomSearchFieldList());
+        $logic->setItemOptions(self::getItemOptionList());
 
-		exit;
-	}
+        //Plugin soyshop.item.csv
+        SOYShopPlugin::load("soyshop.item.csv");
+        $delegate = SOYShopPlugin::invoke("soyshop.item.csv", array("mode" => "export"));
+        $logic->setModules($delegate->getModules());
 
-	/**
-	 * 商品データをCSVに変換する
-	 * カテゴリーは">"でつないだ文字列にする。
-	 */
-	function itemToCSV($items){
-		static $categories;
+        //カテゴリの親子取得
+        $categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+        $mappings = $categoryDao->getMapping();
 
-		if(!$categories){
-			//カテゴリ全部取得
-			$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-			$categories = $categoryDAO->get();
-		}
+        //DAO: 2000ずつ取得
+        $limit = 2000;//16MB弱を消費
+        $step = 0;
+        $dao->setLimit($limit);
 
-		$lines = array();
-		foreach($items as $item){
-			//CSVにはカテゴリは文字列で出力
-			$category = $item->getCategory();
-			
-			if(strlen($category) > 0){
-				$categoryChain = (isset($categories[$category])) ? $categories[$category]->getCategoryChain() : "";
-				$item->setCategory($categoryChain);
-			}
-			
-			//販売日の変換
-			$item->setOrderPeriodStart(soyshop_convert_date_string($item->getOrderPeriodStart()));
-			$item->setOrderPeriodEnd(soyshop_convert_date_string($item->getOrderPeriodEnd()));
-			
-			//公開日
-			$item->setOpenPeriodStart(soyshop_convert_date_string($item->getOpenPeriodStart()));
-			$item->setOpenPeriodEnd(soyshop_convert_date_string($item->getOpenPeriodEnd()));
+        do{
+            if(connection_aborted())exit;
 
-			//CSVに変換
-			$lines[] = $this->logic->export($item);
-		}
+            $dao->setOffset($step * $limit);
+            $step++;
 
-		return $lines;
-	}
+            //データ取得
+            try{
+                if(strlen($category_id) > 0 && isset($mappings[$category_id])){
+                    $items = $dao->getByCategories($mappings[$category_id]);
+                }else{
+                    $items = $dao->get();
+                }
+            }catch(Exception $e){
+                $items = array();
+            }
 
-	/**
-	 * ファイル出力：改行コードはCRLF
-	 */
-	function outputFile($lines, $displayLabel){
-		static $headerSent = false;
-		if(!$headerSent){
-			$headerSent = true;
-			header("Cache-Control: no-cache");
-			header("Pragma: no-cache");
-			header("Content-Disposition: attachment; filename=soyshop_items-".date("Ymd").".csv");
-			header("Content-Type: text/csv; charset=" . $this->logic->getCharset() . ";");
+            //CSV(TSV)に変換
+            $lines = $this->itemToCSV($items);
 
-			//ラベル：logic->export()の後で呼び出さないとカスタムフィールドのタイトルが入らない
-			if($displayLabel){
-				echo $this->logic->getHeader() . "\r\n";
-			}
-		}
+            //出力
+            self::outputFile($lines, $displayLabel);
 
-		echo implode("\r\n", $lines) . "\r\n";
-	}
+        }while(count($items) >= $limit);
 
-	function getScripts(){
-		$root = SOY2PageController::createRelativeLink("./js/");
-		return array(
-			$root . "jquery/treeview/jquery.treeview.pack.js",
-		);
-	}
+        exit;
+    }
 
-	function getCSS(){
-		$root = SOY2PageController::createRelativeLink("./js/");
-		return array(
-			$root . "jquery/treeview/jquery.treeview.css",
-			$root . "tree.css",
-		);
-	}
+    /**
+     * 商品データをCSVに変換する
+     * カテゴリーは">"でつないだ文字列にする。
+     */
+    function itemToCSV($items){
+        static $categories;
+
+        if(!$categories){
+            //カテゴリ全部取得
+            $categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+            $categories = $categoryDAO->get();
+        }
+
+        $lines = array();
+        foreach($items as $item){
+            //CSVにはカテゴリは文字列で出力
+            $category = $item->getCategory();
+
+            if(strlen($category) > 0){
+                $categoryChain = (isset($categories[$category])) ? $categories[$category]->getCategoryChain() : "";
+                $item->setCategory($categoryChain);
+            }
+
+            //販売日の変換
+            $item->setOrderPeriodStart(soyshop_convert_date_string($item->getOrderPeriodStart()));
+            $item->setOrderPeriodEnd(soyshop_convert_date_string($item->getOrderPeriodEnd()));
+
+            //公開日
+            $item->setOpenPeriodStart(soyshop_convert_date_string($item->getOpenPeriodStart()));
+            $item->setOpenPeriodEnd(soyshop_convert_date_string($item->getOpenPeriodEnd()));
+
+            //CSVに変換
+            $lines[] = $this->logic->export($item);
+        }
+
+        return $lines;
+    }
+
+    /**
+     * ファイル出力：改行コードはCRLF
+     */
+    private function outputFile($lines, $displayLabel){
+        static $headerSent = false;
+        if(!$headerSent){
+            $headerSent = true;
+            header("Cache-Control: no-cache");
+            header("Pragma: no-cache");
+            header("Content-Disposition: attachment; filename=soyshop_items-".date("Ymd").".csv");
+            header("Content-Type: text/csv; charset=" . $this->logic->getCharset() . ";");
+
+            //ラベル：logic->export()の後で呼び出さないとカスタムフィールドのタイトルが入らない
+            if($displayLabel){
+                echo $this->logic->getHeader() . "\r\n";
+            }
+        }
+
+        echo implode("\r\n", $lines) . "\r\n";
+    }
+
+    function getScripts(){
+        $root = SOY2PageController::createRelativeLink("./js/");
+        return array(
+            $root . "jquery/treeview/jquery.treeview.pack.js",
+        );
+    }
+
+    function getCSS(){
+        $root = SOY2PageController::createRelativeLink("./js/");
+        return array(
+            $root . "jquery/treeview/jquery.treeview.css",
+            $root . "tree.css",
+        );
+    }
 }
-?>
