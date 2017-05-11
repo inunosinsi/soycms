@@ -243,7 +243,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 
     $htmlObj->addLabel("parent_category_name", array(
         "soy2prefix" => SOYSHOP_SITE_PREFIX,
-        "text" => $parentCategory->getName(),
+        "text" => $parentCategory->getOpenCategoryName(),
     ));
 
     $htmlObj->addLabel("parent_category_alias", array(
