@@ -30,8 +30,10 @@ class ImportPage extends WebPage{
         ));
 
         //商品オプションリストを表示する
+        if(!defined("ITEM_CSV_IMEXPORT_MODE")) define("ITEM_CSV_IMEXPORT_MODE", "import");
         $this->createAdd("custom_search_field_list", "_common.Item.CustomSearchFieldImExportListComponent", array(
-            "list" => self::getCustomSearchFieldList()
+            "list" => self::getCustomSearchFieldList(),
+            "languages" => self::getLanguageList()
         ));
 
         //商品オプションリストを表示する
@@ -172,9 +174,11 @@ class ImportPage extends WebPage{
                         $delegate->import($pluginId, $id, $value);
                     }
 
-                    //カスタムサーチフィールド
-                    if(count($customSearchFields)){
-                        $customSearchFieldDBLogic->save($item->getId(), $customSearchFields);
+                    //カスタムサーチフィールド 日本語の値で確認しておく
+                    if(count($customSearchFields[UtilMultiLanguageUtil::LANGUAGE_JP])){
+                        foreach($customSearchFields as $lang => $csfValues){
+                            $customSearchFieldDBLogic->save($item->getId(), $csfValues, $lang);
+                        }
                     }
 
                     //拡張の処理
@@ -283,10 +287,19 @@ class ImportPage extends WebPage{
         }
     }
 
-    private function getLanguageList(){
-        if(!SOYShopPluginUtil::checkIsActive("util_multi_language")) return array();
-        SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-        return UtilMultiLanguageUtil::allowLanguages();
+     private function getLanguageList(){
+        static $list;
+
+        if(is_null($list)){
+            SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+            if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
+                $list = UtilMultiLanguageUtil::allowLanguages();
+            }else{
+                $list[UtilMultiLanguageUtil::LANGUAGE_JP] = "日本語";
+            }
+        }
+
+        return $list;
     }
 
     private function getSpecialPriceList(){

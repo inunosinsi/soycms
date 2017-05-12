@@ -1,6 +1,7 @@
 <?php
 SOY2::import("logic.csv.ExImportLogicBase");
 SOY2::import("util.SOYShopPluginUtil");
+SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
 class ExImportLogic extends ExImportLogicBase{
 
     private $customFields = array();
@@ -11,7 +12,7 @@ class ExImportLogic extends ExImportLogicBase{
     //作業用
     private $itemAttributeDAO;
     private $customSearchFieldDBLogic;
-
+    private $languages = array();
     /**
      * CSV,TSVに変換
      */
@@ -50,7 +51,8 @@ class ExImportLogic extends ExImportLogicBase{
             if(preg_match('/customfield\(([^\)]+)\)/', $item, $tmp)){
                 $function[] = '$attributes["' . $tmp[1] . '"] = $item;';
             }else if(preg_match('/custom_search_field\(([^\)]+)\)/', $item, $tmp)){
-                $function[] = '$customSearchFields["' . $tmp[1] . '"] = $item;';
+                $lang = str_replace(array("(", ")"), "", trim(substr($item, strrpos($item, "("))));
+                $function[] = '$customSearchFields["' . $lang . '"]["' . $tmp[1] . '"] = $item;';
             }else if(preg_match('/item_option\(([^\)]+)\)/', $item, $tmp)){
                 $function[] = '$attributes["item_option_' . $tmp[1] . '"] = $item;';
             }else if(preg_match('/plugins\((.*)\)$/',$item,$tmp)){
@@ -99,17 +101,20 @@ class ExImportLogic extends ExImportLogicBase{
                 }
 
             }else if(preg_match('/custom_search_field\(([^\)]+)\)/', $key, $tmp)){
-
                 $fieldId = $tmp[1];
+                foreach($item as $lang => $v){
+                    if(!$v) continue;
 
-                if(isset($this->customSearchFields[$fieldId])){
-                    $function[] = '$res[] = (isset($customSearchFields["' . $fieldId . '"])) ? $customSearchFields["' . $fieldId . '"] : "";';
-                    $label = $this->customSearchFields[$tmp[1]]["label"];
-                }else{
-                    $function[] = '$res[] = "";';
-                    $label = "";
+                    if(isset($this->customSearchFields[$fieldId])){
+                        $function[] = '$res[] = (isset($customSearchFields["' . $lang . '"]["' . $fieldId . '"])) ? $customSearchFields["' . $lang . '"]["' . $fieldId . '"] : "";';
+                        $label = $this->customSearchFields[$tmp[1]]["label"];
+                        $usedLabels[] = ($lang == UtilMultiLanguageUtil::LANGUAGE_JP) ? $label : $label . "(" . $lang . ")";
+                    }else{
+                        $function[] = '$res[] = "";';
+                        $usedLabels[] = "";
+                    }
                 }
-
+                continue;
             }else if(preg_match('/item_option\(([^\)]+)\)/', $key, $tmp)){
                 $optionId = $tmp[1];
 
@@ -160,6 +165,9 @@ class ExImportLogic extends ExImportLogicBase{
     }
 
     function setLanguageItems($languages){
+        //他の箇所でも使用できるようにプロパティに入れておく
+        $this->languages = $languages;
+
         if(count($languages)){
             foreach($languages as $key => $v){
                 if($key == UtilMultiLanguageUtil::LANGUAGE_JP) continue;
@@ -199,7 +207,10 @@ class ExImportLogic extends ExImportLogicBase{
         $res = array();
         if(SOYShopPluginUtil::checkIsActive("custom_search_field")){
             if(!$this->customSearchFieldDBLogic) $this->customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
-            $res = $this->customSearchFieldDBLogic->getByItemId($id);
+
+            foreach($this->languages as $lang => $v){
+                $res[$lang] = $this->customSearchFieldDBLogic->getByItemId($id, $lang);
+            }
         }
         return $res;
     }

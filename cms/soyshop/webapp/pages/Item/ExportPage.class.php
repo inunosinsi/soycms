@@ -27,8 +27,10 @@ class ExportPage extends WebPage{
         ));
 
         //カスタムサーチフィールドリストを表示する
+        if(!defined("ITEM_CSV_IMEXPORT_MODE")) define("ITEM_CSV_IMEXPORT_MODE", "export");
         $this->createAdd("custom_search_field_list", "_common.Item.CustomSearchFieldImExportListComponent", array(
-            "list" => self::getCustomSearchFieldList()
+            "list" => self::getCustomSearchFieldList(),
+            "languages" => self::getLanguageList()
         ));
 
         //商品オプションリストを表示する
@@ -84,9 +86,18 @@ class ExportPage extends WebPage{
     }
 
     private function getLanguageList(){
-        if(!SOYShopPluginUtil::checkIsActive("util_multi_language")) return array();
-        SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-        return UtilMultiLanguageUtil::allowLanguages();
+        static $list;
+
+        if(is_null($list)){
+            SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+            if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
+                $list = UtilMultiLanguageUtil::allowLanguages();
+            }else{
+                $list[UtilMultiLanguageUtil::LANGUAGE_JP] = "日本語";
+            }
+        }
+
+        return $list;
     }
 
     private function getSpecialPriceList(){
