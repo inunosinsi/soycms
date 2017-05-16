@@ -62,16 +62,25 @@ function soyshop_get_site_path(){
 
 /** カテゴリIDからカテゴリオブジェクトを取得する **/
 function soyshop_get_category_object($categoryId){
-    static $dao;
-    if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+    static $results, $dao;
 
     if(is_null($categoryId)) return new SOYShop_Category();
 
-    try{
-        return $dao->getById($categoryId);
-    }catch(Exception $e){
-        return new SOYShop_Category();
+    if(is_null($results)){
+        $results = array();
+        $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
     }
+
+    if(isset($results[$categoryId])) return $results[$categoryId];
+
+    try{
+        $category = $dao->getById($categoryId);
+    }catch(Exception $e){
+        $category = new SOYShop_Category();
+    }
+
+    $results[$categoryId] = $category;
+    return $category;
 }
 
 /**
@@ -128,34 +137,37 @@ function soyshop_get_item_list_link(SOYShop_Item $item, SOYShop_Category $catego
  * 商品詳細のURLを取得する
  */
 function soyshop_get_item_detail_link(SOYShop_Item $item){
+    static $results, $urls;
+
     if(is_null($item->getAlias())) return null;
 
-    $urls = SOYShop_DataSets::get("site.url_mapping", array());
-    $url = "";
-    if(isset($urls[$item->getDetailPageId()])){
-        $url = $urls[$item->getDetailPageId()]["uri"];
-    }else{
-        foreach($urls as $array){
-            if($array["type"] == "detail"){
-                $url = $array["uri"];
-                break;
+    $url = (isset($results[$item->getDetailPageId()])) ? $results[$item->getDetailPageId()] : null;
+
+    if(is_null($url)){
+        if(is_null($urls)) $urls = SOYShop_DataSets::get("site.url_mapping", array());
+
+        if(isset($urls[$item->getDetailPageId()])){
+            $url = $urls[$item->getDetailPageId()]["uri"];
+            $results[$item->getDetailPageId()] = $url;
+        }else{
+            foreach($urls as $array){
+                if($array["type"] == "detail"){
+                    $url = $array["uri"];
+                    $results[$item->getDetailPageId()] = $url;
+                    break;
+                }
             }
         }
     }
-    return soyshop_get_page_url($url, $item->getAlias());
+
+    return (isset($url)) ? soyshop_get_page_url($url, $item->getAlias()) : null;
 }
 
 /**
  * カテゴリIDからカテゴリ名を取得する
  */
 function soyshop_get_category_name($categoryId){
-    static $dao;
-    if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-    try{
-        return $dao->getById($categoryId)->getOpenCategoryName();
-    }catch(Exception $e){
-        return null;
-    }
+    return soyshop_get_category_object($categoryId)->getOpenCategoryName();
 }
 
 /**
