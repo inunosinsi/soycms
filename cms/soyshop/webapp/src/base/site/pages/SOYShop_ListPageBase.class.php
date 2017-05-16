@@ -238,6 +238,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
 
         //keywordsの挿入
+/** SOYShopPageBase.class.phpで同じことをしていたので、コメントアウトにする
         $keywords = array();
         //カテゴリツリーでの設定
         if(isset($config[$categoryId]["keyword"])){
@@ -246,11 +247,11 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
         //カテゴリ名を挿入
         $ancestry = $categoryDAO->getAncestry($category);
         foreach($ancestry as $parent){
-            $keywords[] = $parent->getName();
+            $keywords[] = $parent->getOpenCategoryName();
         }
         $keywords = implode(",", $keywords);
         if(strlen($keywords)) $this->getHeadElement()->insertMeta("keywords", $keywords . ",");
-
+**/
 
         //descriptionの挿入
         if(isset($config[$categoryId]["description"])){
