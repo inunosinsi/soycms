@@ -77,23 +77,53 @@ function soyshop_get_category_object($categoryId){
 /**
  * 商品一覧のURLを取得する
  */
-function soyshop_get_item_list_link(SOYShop_Category $category){
-    static $url;
-    if(is_null($url)){
-        /** @ToDo 商品一覧ページが複数個あった場合の対応 **/
-        $urls = SOYShop_DataSets::get("site.url_mapping", array());
-        foreach($urls as $array){
-            if($array["type"] == "list"){
-                $url = $array["uri"];
-                break;
-            }
+function soyshop_get_item_list_link(SOYShop_Item $item, SOYShop_Category $category){
+    static $results, $isInstalled, $dao, $listUrl;
+
+    //カテゴリが存在していない場合は処理を続行しない
+    if(is_null($category->getAlias())) return null;
+
+    if(is_null($results)) {
+        $results = array();
+
+        SOY2::import("util.SOYShopPluginUtil");
+        $isInstalled = SOYShopPluginUtil::checkIsActive("common_breadcrumb");
+
+        if($isInstalled){
+            SOY2::imports("module.plugins.common_breadcrumb.domain.*");
+            $dao = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO");
         }
     }
 
-    if(is_null($category->getAlias())) return null;
+    $uri = (isset($results[$item->getId()])) ? $results[$item->getId()] : null;
 
-    return soyshop_get_page_url($url, $category->getAlias());
+    if(!isset($uri)){
+        if($isInstalled){
+            try{
+                $uri = $dao->getPageUriByItemId($item->getId());
+                $results[$item->getId()] = $uri;
+            }catch(Exception $e){
+                //
+            }
+        //サイトマップから適当に探す
+        }else{
+            if(is_null($listUri)){
+                $values = SOYShop_DataSets::get("site.url_mapping", array());
+                foreach($values as $pageId => $v){
+                    if($v["type"] == SOYShop_Page::TYPE_LIST){
+                        $listUri = $v["uri"];
+                        $results[$item->getId()] = $listUri;
+                        break;
+                    }
+                }
+            }
+            $uri = $listUri;
+        }
+    }
+
+    return (isset($uri)) ? soyshop_get_page_url($uri, $category->getAlias()) : null;
 }
+
 /**
  * 商品詳細のURLを取得する
  */
@@ -566,4 +596,3 @@ if(!function_exists("_empty")){
         return empty($arg);
     }
 }
-?>

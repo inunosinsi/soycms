@@ -147,7 +147,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
     ));
 
     $htmlObj->addLink("category_link", array(
-        "link" => soyshop_get_item_list_link($categoryObj),
+        "link" => soyshop_get_item_list_link($item, $categoryObj),
         "soy2prefix" => SOYSHOP_SITE_PREFIX
     ));
 
@@ -249,6 +249,11 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
     $htmlObj->addLabel("parent_category_alias", array(
         "soy2prefix" => SOYSHOP_SITE_PREFIX,
         "text" => $parentCategory->getAlias(),
+    ));
+
+    $htmlObj->addLink("parent_category_link", array(
+        "soy2prefix" => SOYSHOP_SITE_PREFIX,
+        "link" => soyshop_get_item_list_link($parent, $parentCategory),
     ));
 
     //cms:id="parent_small_image"とcms:id="parent_large_image"
