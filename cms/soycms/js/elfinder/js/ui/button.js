@@ -19,9 +19,9 @@ $.fn.elfinderbutton = function(cmd) {
 			button   = $(this).addClass('ui-state-default elfinder-button')
 				.attr('title', cmd.title)
 				.append('<span class="elfinder-button-icon elfinder-button-icon-'+cmd.name+'"/>')
-				.hover(function(e) { !button.hasClass(disabled) && button[e.type == 'mouseleave' ? 'removeClass' : 'addClass'](hover) /**button.toggleClass(hover);*/ })
+				.hover(function(e) { !button.is('.'+disabled) && button[e.type == 'mouseleave' ? 'removeClass' : 'addClass'](hover) /**button.toggleClass(hover);*/ })
 				.click(function(e) { 
-					if (!button.hasClass(disabled)) {
+					if (!button.is('.'+disabled)) {
 						if (menu && cmd.variants.length > 1) {
 							// close other menus
 							menu.is(':hidden') && cmd.fm.getUI().click();
@@ -41,15 +41,15 @@ $.fn.elfinderbutton = function(cmd) {
 		if ($.isArray(cmd.variants)) {
 			button.addClass('elfinder-menubutton');
 			
-			menu = $('<div class="ui-front ui-widget ui-widget-content elfinder-button-menu ui-corner-all"/>')
+			menu = $('<div class="ui-widget ui-widget-content elfinder-button-menu ui-corner-all"/>')
 				.hide()
 				.appendTo(button)
-				.on('mouseenter mouseleave', '.'+item, function() { $(this).toggleClass(hover) })
-				.on('click', '.'+item, function(e) {
+				.zIndex(12+button.zIndex())
+				.delegate('.'+item, 'mouseenter mouseleave', function() { $(this).toggleClass(hover) })
+				.delegate('.'+item, 'click', function(e) {
 					e.preventDefault();
 					e.stopPropagation();
 					button.removeClass(hover);
-					menu.hide();
 					cmd.exec(cmd.fm.selected(), $(this).data('value'));
 				});
 
@@ -73,4 +73,4 @@ $.fn.elfinderbutton = function(cmd) {
 		})
 		.change();
 	});
-};
+}

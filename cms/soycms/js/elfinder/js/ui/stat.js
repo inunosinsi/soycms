@@ -8,14 +8,9 @@
 $.fn.elfinderstat = function(fm) {
 	return this.each(function() {
 		var size       = $(this).addClass('elfinder-stat-size'),
-			sel        = $('<div class="elfinder-stat-selected"/>')
-				.on('click', 'a', function(e) {
-					var hash = $(this).data('hash');
-					e.preventDefault();
-					fm.exec('opendir', [ hash ]);
-				}),
-			titlesize  = fm.i18n('size'),
-			titleitems = fm.i18n('items'),
+			sel        = $('<div class="elfinder-stat-selected"/>'),
+			titlesize  = fm.i18n('size').toLowerCase(),
+			titleitems = fm.i18n('items').toLowerCase(),
 			titlesel   = fm.i18n('selected'),
 			setstat    = function(files, cwd) {
 				var c = 0, 
@@ -28,37 +23,25 @@ $.fn.elfinderstat = function(fm) {
 					}
 				})
 				size.html(titleitems+': '+c+', '+titlesize+': '+fm.formatSize(s));
-			},
-			search = false;
+			};
 
 		fm.getUI('statusbar').prepend(size).append(sel).show();
 		
 		fm
 		.bind('open reload add remove change searchend', function() {
-			setstat(fm.files(), fm.cwd().hash);
-		})
-		.bind('searchend', function() {
-			search = false;
+			setstat(fm.files(), fm.cwd().hash)
 		})
 		.search(function(e) {
-			search = true;
 			setstat(e.data.files);
 		})
 		.select(function() {
 			var s = 0,
 				c = 0,
-				files = fm.selectedFiles(),
-				dirs = [],
-				file;
+				files = fm.selectedFiles();
 
 			if (files.length == 1) {
-				file = files[0];
-				s = file.size;
-				if (search) {
-					dirs.push('<a href="#elf_'+file.phash+'" data-hash="'+file.hash+'">'+(file.path? file.path.replace(/\/[^\/]*$/, '') : '..')+'</a>');
-				}
-				dirs.push(fm.escape(file.name));
-				sel.html(dirs.join('/') + (s > 0 ? ', '+fm.formatSize(s) : ''));
+				s = files[0].size;
+				sel.html(fm.escape(files[0].name)+(s > 0 ? ', '+fm.formatSize(s) : ''));
 				
 				return;
 			}
@@ -73,4 +56,4 @@ $.fn.elfinderstat = function(fm) {
 
 		;
 	})
-};
+}

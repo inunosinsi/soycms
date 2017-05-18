@@ -7,7 +7,7 @@
 $.fn.elfinderuploadbutton = function(cmd) {
 	return this.each(function() {
 		var button = $(this).elfinderbutton(cmd)
-				.off('click'), 
+				.unbind('click'), 
 			form = $('<form/>').appendTo(button),
 			input = $('<input type="file" multiple="true" title="'+cmd.fm.i18n('selectForUpload')+'"/>')
 				.change(function() {
@@ -16,9 +16,6 @@ $.fn.elfinderuploadbutton = function(cmd) {
 						cmd.exec({input : _input.remove()[0]});
 						input.clone(true).appendTo(form);
 					} 
-				})
-				.on('dragover', function(e) {
-					e.originalEvent.dataTransfer.dropEffect = 'copy';
 				});
 
 		form.append(input.clone(true));
@@ -28,4 +25,4 @@ $.fn.elfinderuploadbutton = function(cmd) {
 		})
 		.change();
 	});
-};
+}

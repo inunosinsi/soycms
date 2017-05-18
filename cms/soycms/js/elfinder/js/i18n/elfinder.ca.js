@@ -1,15 +1,13 @@
 /**
  * Catalan translation
  * @author Sergio Jovani <lesergi@gmail.com>
- * @version 2014-12-19
+ * @version 2011-11-13
  */
 if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object') {
 	elFinder.prototype.i18.ca = {
 		translator : 'Sergio Jovani &lt;lesergi@gmail.com&gt;',
 		language   : 'Català',
 		direction  : 'ltr',
-		dateFormat : 'M d, Y h:i A', // Mar 13, 2012 05:27 PM
-		fancyDateFormat : '$1 h:i A', // will produce smth like: Today 12:25 PM
 		messages   : {
 			
 			/********************************** errors **********************************/
@@ -50,21 +48,18 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'errRename'            : 'No s\'ha pogut canviar el nom de "$1".',
 			'errCopyFrom'          : 'No està permès copiar fitxers des del volum "$1".',
 			'errCopyTo'            : 'No està permès copiar fitxers al volum "$1".',
-			'errUpload'            : 'S\'ha produït un error en la càrrega.',
-			'errUploadFile'        : 'No s\'ha pogut carregar "$1".',
+			'errUploadCommon'      : 'S\'ha produït un error en la càrrega.',
+			'errUpload'            : 'No s\'ha pogut carregar "$1".',
 			'errUploadNoFiles'     : 'No s\'han trobat fitxers per carregar.',
-			'errUploadTotalSize'   : 'Les dades excedeixen la mida màxima permesa.',
-			'errUploadFileSize'    : 'El fitxer excedeix la mida màxima permesa.',
+			'errMaxSize'           : 'Les dades excedeixen la mida màxima permesa.',
+			'errFileMaxSize'       : 'El fitxer excedeix la mida màxima permesa.',
 			'errUploadMime'        : 'El tipus de fitxer no està permès.',
 			'errUploadTransfer'    : 'S\'ha produït un error en transferir "$1".', 
-			'errNotReplace'        : 'Object "$1" already exists at this location and can not be replaced by object with another type.',
-			'errReplace'           : 'Unable to replace "$1".',
 			'errSave'              : 'No s\'ha pogut desar "$1".',
 			'errCopy'              : 'No s\'ha pogut copiar "$1".',
 			'errMove'              : 'No s\'ha pogut moure "$1".',
 			'errCopyInItself'      : 'No s\'ha pogut copiar "$1" a si mateix.',
 			'errRm'                : 'No s\'ha pogut suprimir "$1".',
-			'errRmSrc'             : 'Unable remove source file(s).',
 			'errExtract'           : 'No s\'han pogut extreure els fitxers de "$1".',
 			'errArchive'           : 'No s\'ha pogut crear l\'arxiu.',
 			'errArcType'           : 'El tipus d\'arxiu no està suportat.',
@@ -74,23 +69,7 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'errArcSymlinks'       : 'Per raons de seguretat, no es permet extreure arxius que contenen enllaços simbòlics.',
 			'errArcMaxSize'        : 'Els fitxers de l\'arxiu excedeixen la mida màxima permesa.',
 			'errResize'            : 'No s\'ha pogut redimensionar "$1".',
-			'errResizeDegree' : 'Invalid rotate degree.',
-			'errResizeRotate' : 'Unable to rotate image.',
-			'errResizeSize' : 'Invalid image size.',
-			'errResizeNoChange' : 'Image size not changed.',
 			'errUsupportType'      : 'El tipus de fitxer no està suportat.',
-			'errNotUTF8Content' : 'File "$1" is not in UTF-8 and cannot be edited.',
-			'errNetMount' : 'Unable to mount "$1".',
-			'errNetMountNoDriver' : 'Unsupported protocol.',
-			'errNetMountFailed' : 'Mount failed.',
-			'errNetMountHostReq' : 'Host required.',
-			'errSessionExpires' : 'Your session has expired due to inactivity.',
-			'errCreatingTempDir' : 'Unable to create temporary directory: "$1"',
-			'errFtpDownloadFile' : 'Unable to download file from FTP: "$1"',
-			'errFtpUploadFile' : 'Unable to upload file to FTP: "$1"',
-			'errFtpMkdir' : 'Unable to create remote directory on FTP: "$1"',
-			'errArchiveExec' : 'Error while archiving files: "$1"',
-			'errExtractExec' : 'Error while extracting files: "$1"',
 			
 			/******************************* commands names ********************************/
 			'cmdarchive'   : 'Crea arxiu',
@@ -120,7 +99,6 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'cmdview'      : 'Visualitza',
 			'cmdresize'    : 'Redimensiona la imatge',
 			'cmdsort'      : 'Ordena',
-			'cmdnetmount'  : 'Mount network volume',
 			
 			/*********************************** buttons ***********************************/ 
 			'btnClose'  : 'Tanca',
@@ -130,7 +108,6 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'btnCancel' : 'Cancel·la',
 			'btnNo'     : 'No',
 			'btnYes'    : 'Sí',
-			'btnMount'  : 'Mount',
 			
 			/******************************** notifications ********************************/
 			'ntfopen'     : 'S\'està obrint la carpeta',
@@ -149,61 +126,35 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'ntfarchive'  : 'S\'està creant l\'arxiu',
 			'ntfextract'  : 'S\'estan extreient els fitxers de l\'arxiu',
 			'ntfsearch'   : 'S\'estan cercant els fitxers',
-			'ntfresize'   : 'Resizing images',
 			'ntfsmth'     : 'S\'estan realitzant operacions',
-			'ntfloadimg'  : 'S\'està carregant la imatge',
-			'ntfnetmount' : 'Mounting network volume',
-			'ntfdim'      : 'Acquiring image dimension',
+      'ntfloadimg'  : 'S\'està carregant la imatge',
 			
 			/************************************ dates **********************************/
 			'dateUnknown' : 'desconegut',
 			'Today'       : 'Avui',
 			'Yesterday'   : 'Ahir',
-			'msJan'       : 'gen.',
-			'msFeb'       : 'febr.',
-			'msMar'       : 'març',
-			'msApr'       : 'abr.',
-			'msMay'       : 'maig',
-			'msJun'       : 'juny',
-			'msJul'       : 'jul.',
-			'msAug'       : 'ag.',
-			'msSep'       : 'set.',
-			'msOct'       : 'oct.',
-			'msNov'       : 'nov.',
-			'msDec'       : 'des.',
-			'January'     : 'January',
-			'February'    : 'February',
-			'March'       : 'March',
-			'April'       : 'April',
-			'May'         : 'May',
-			'June'        : 'June',
-			'July'        : 'July',
-			'August'      : 'August',
-			'September'   : 'September',
-			'October'     : 'October',
-			'November'    : 'November',
-			'December'    : 'December',
-			'Sunday'      : 'Sunday',
-			'Monday'      : 'Monday',
-			'Tuesday'     : 'Tuesday',
-			'Wednesday'   : 'Wednesday',
-			'Thursday'    : 'Thursday',
-			'Friday'      : 'Friday',
-			'Saturday'    : 'Saturday',
-			'Sun'         : 'Sun', 
-			'Mon'         : 'Mon', 
-			'Tue'         : 'Tue', 
-			'Wed'         : 'Wed', 
-			'Thu'         : 'Thu', 
-			'Fri'         : 'Fri', 
-			'Sat'         : 'Sat',
+			'Jan'         : 'gen.',
+			'Feb'         : 'febr.',
+			'Mar'         : 'març',
+			'Apr'         : 'abr.',
+			'May'         : 'maig',
+			'Jun'         : 'juny',
+			'Jul'         : 'jul.',
+			'Aug'         : 'ag.',
+			'Sep'         : 'set.',
+			'Oct'         : 'oct.',
+			'Nov'         : 'nov.',
+			'Dec'         : 'des.',
 			
 			/******************************** sort variants ********************************/
+			'sortnameDirsFirst' : 'per nom (carpetes primer)', 
+			'sortkindDirsFirst' : 'per tipus (carpetes primer)', 
+			'sortsizeDirsFirst' : 'per mida (carpetes primer)', 
+			'sortdateDirsFirst' : 'per data (carpetes primer)', 
 			'sortname'          : 'per nom', 
 			'sortkind'          : 'per tipus', 
 			'sortsize'          : 'per mida',
 			'sortdate'          : 'per data',
-			'sortFoldersFirst' : 'Folders first',
 			
 			/********************************** messages **********************************/
 			'confirmReq'      : 'Es necessita confirmació',
@@ -266,22 +217,15 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'moveFiles'       : 'Mou els fitxers',
 			'copyFiles'       : 'Copia els fitxers',
 			'rmFromPlaces'    : 'Suprimeix dels llocs',
+			'untitled folder' : 'carpeta sense nom',
+			'untitled file.txt' : 'fitxer sense nom.txt',
 			'aspectRatio'     : 'Relació d\'aspecte',
 			'scale'           : 'Escala',
 			'width'           : 'Amplada',
 			'height'          : 'Alçada',
-			'resize'          : 'Redimensiona',
-			'crop'            : 'Retalla',
-			'rotate'          : 'Rotate',
-			'rotate-cw'       : 'Rotate 90 degrees CW',
-			'rotate-ccw'      : 'Rotate 90 degrees CCW',
-			'degree'          : '°',
-			'netMountDialogTitle' : 'Mount network volume',
-			'protocol'        : 'Protocol',
-			'host'            : 'Host',
-			'port'            : 'Port',
-			'user'            : 'User',
-			'pass'            : 'Password',
+      'mode'            : 'Mode',
+      'resize'          : 'Redimensiona',
+      'crop'            : 'Retalla',
 			
 			/********************************** mimetypes **********************************/
 			'kindUnknown'     : 'Desconegut',
@@ -303,7 +247,6 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'kindTAR'         : 'Arxiu TAR',
 			'kindGZIP'        : 'Arxiu GZIP',
 			'kindBZIP'        : 'Arxiu BZIP',
-			'kindXZ'          : 'Arxiu XZ',
 			'kindZIP'         : 'Arxiu ZIP',
 			'kindRAR'         : 'Arxiu RAR',
 			'kindJAR'         : 'Fitxer JAR de Java',
@@ -362,6 +305,6 @@ if (elFinder && elFinder.prototype && typeof(elFinder.prototype.i18) == 'object'
 			'kindVideoMKV'    : 'Fitxer de vídeo Matroska',
 			'kindVideoOGG'    : 'Fitxer de vídeo Ogg'
 		}
-	};
+	}
 }
 

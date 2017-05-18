@@ -9,10 +9,7 @@ elFinder.prototype.commands.edit = function() {
 	var self  = this,
 		fm    = this.fm,
 		mimes = fm.res('mimes', 'text') || [],
-		rtrim = function(str){
-			return str.replace(/\s+$/, '');
-		},
-	
+		
 		/**
 		 * Return files acceptable to edit
 		 *
@@ -40,114 +37,30 @@ elFinder.prototype.commands.edit = function() {
 
 			var dfrd = $.Deferred(),
 				ta   = $('<textarea class="elfinder-file-edit" rows="20" id="'+id+'-ta">'+fm.escape(content)+'</textarea>'),
-				old  = ta.val(),
 				save = function() {
 					ta.editor && ta.editor.save(ta[0], ta.editor.instance);
-					old = ta.val();
-					dfrd.notifyWith(ta);
+					dfrd.resolve(ta.getContent());
+					ta.elfinderdialog('close');
 				},
 				cancel = function() {
-					var close = function(){
-						dfrd.reject();
-						ta.elfinderdialog('close');
-					};
-					ta.editor && ta.editor.save(ta[0], ta.editor.instance);
-					if (rtrim(old) !== rtrim(ta.val())) {
-						old = ta.val();
-						fm.confirm({
-							title  : self.title,
-							text   : 'confirmNotSave',
-							accept : {
-								label    : 'btnSaveClose',
-								callback : function() {
-									save();
-									close();
-								}
-							},
-							cancel : {
-								label    : 'btnClose',
-								callback : close
-							}
-						});
-					} else {
-						close();
-					}
-				},
-				savecl = function() {
-					save();
-					cancel();
+					dfrd.reject();
+					ta.elfinderdialog('close');
 				},
 				opts = {
-					title   : fm.escape(file.name),
+					title   : file.name,
 					width   : self.options.dialogWidth || 450,
 					buttons : {},
-					btnHoverFocus : false,
-					closeOnEscape : false,
 					close   : function() { 
-						var $this = $(this),
-						close = function(){
-							ta.editor && ta.editor.close(ta[0], ta.editor.instance);
-							$this.elfinderdialog('destroy');
-						};
-						ta.editor && ta.editor.save(ta[0], ta.editor.instance);
-						if (rtrim(old) !== rtrim(ta.val())) {
-							fm.confirm({
-								title  : self.title,
-								text   : 'confirmNotSave',
-								accept : {
-									label    : 'btnSaveClose',
-									callback : function() {
-										save();
-										close();
-									}
-								},
-								cancel : {
-									label    : 'btnClose',
-									callback : close
-								}
-							});
-						} else {
-							close();
-						}
+						ta.editor && ta.editor.close(ta[0], ta.editor.instance);
+						$(this).elfinderdialog('destroy'); 
 					},
 					open    : function() { 
 						fm.disable();
 						ta.focus(); 
 						ta[0].setSelectionRange && ta[0].setSelectionRange(0, 0);
-						if (ta.editor) {
-							ta.editor.instance = ta.editor.load(ta[0]) || null;
-							ta.editor.focus(ta[0], ta.editor.instance);
-						}
+						ta.editor && ta.editor.load(ta[0]);
 					}
 					
-				},
-				mimeMatch = function(fileMime, editorMimes){
-					editorMimes = editorMimes || mimes.concat('text/');
-					if ($.inArray(fileMime, editorMimes) !== -1 ) {
-						return true;
-					}
-					var i, l;
-					l = editorMimes.length;
-					for (i = 0; i < l; i++) {
-						if (fileMime.indexOf(editorMimes[i]) === 0) {
-							return true;
-						}
-					}
-					return false;
-				},
-				extMatch = function(fileName, editorExts){
-					if (!editorExts || !editorExts.length) {
-						return true;
-					}
-					var ext = fileName.replace(/^.+\.([^.]+)|(.+)$/, '$1$2').toLowerCase(),
-					i, l;
-					l = editorExts.length;
-					for (i = 0; i < l; i++) {
-						if (ext === editorExts[i].toLowerCase()) {
-							return true;
-						}
-					}
-					return false;
 				};
 				
 				ta.getContent = function() {
@@ -155,20 +68,14 @@ elFinder.prototype.commands.edit = function() {
 				};
 				
 				$.each(self.options.editors || [], function(i, editor) {
-					if (mimeMatch(file.mime, editor.mimes || null)
-					&& extMatch(file.name, editor.exts || null)
+					if ($.inArray(file.mime, editor.mimes || []) !== -1 
 					&& typeof editor.load == 'function'
 					&& typeof editor.save == 'function') {
 						ta.editor = {
 							load     : editor.load,
 							save     : editor.save,
 							close    : typeof editor.close == 'function' ? editor.close : function() {},
-							focus    : typeof editor.focus == 'function' ? editor.focus : function() {},
-							instance : null,
-							doSave   : save,
-							doCancel : cancel,
-							doClose  : savecl,
-							file     : file
+							instance : null
 						};
 						
 						return false;
@@ -205,18 +112,13 @@ elFinder.prototype.commands.edit = function() {
 							}
 						}
 						
-					}).on('mouseenter', function(){this.focus();});
+					});
 				}
 				
-				opts.buttons[fm.i18n('btnSave')]      = save;
-				opts.buttons[fm.i18n('btnSaveClose')] = savecl;
-				opts.buttons[fm.i18n('btnCancel')]    = cancel;
+				opts.buttons[fm.i18n('Save')]   = save;
+				opts.buttons[fm.i18n('Cancel')] = cancel;
 				
-				fm.dialog(ta, opts)
-					.attr('id', id)
-					.on('keydown keyup keypress', function(e) {
-						e.stopPropagation();
-					});
+				fm.dialog(ta, opts).attr('id', id);
 				return dfrd.promise();
 		},
 		
@@ -251,7 +153,7 @@ elFinder.prototype.commands.edit = function() {
 			
 			fm.request({
 				data   : {cmd : 'get', target  : hash, conv : conv},
-				notify : {type : 'file', cnt : 1},
+				notify : {type : 'openfile', cnt : 1},
 				syncOnFail : true
 			})
 			.done(function(data) {
@@ -272,14 +174,13 @@ elFinder.prototype.commands.edit = function() {
 					});
 				} else {
 					dialog(id, file, data.content)
-						.progress(function() {
-							var ta = this;
+						.done(function(content) {
 							fm.request({
 								options : {type : 'post'},
 								data : {
 									cmd     : 'put',
 									target  : hash,
-									content : ta.getContent()
+									content : content
 								},
 								notify : {type : 'save', cnt : 1},
 								syncOnFail : true
@@ -290,10 +191,6 @@ elFinder.prototype.commands.edit = function() {
 							.done(function(data) {
 								data.changed && data.changed.length && fm.change(data);
 								dfrd.resolve(data);
-								setTimeout(function(){
-									ta.focus();
-									ta.editor && ta.editor.focus(ta[0], ta.editor.instance);
-								}, 50);
 							});
 						});
 				}

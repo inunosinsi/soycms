@@ -23,130 +23,75 @@ elFinder.prototype.commands.upload = function() {
 	 *
 	 * @return Number
 	 **/
-	this.getstate = function(sel) {
-		var fm = this.fm, f,
-		sel = fm.directUploadTarget? [fm.directUploadTarget] : (sel || [fm.cwd().hash]);
-		if (!this._disabled && sel.length == 1) {
-			f = fm.file(sel[0]);
-		}
-		return (f && f.mime == 'directory' && f.write)? 0 : -1;
+	this.getstate = function() {
+		return !this._disabled && this.fm.cwd().write ? 0 : -1;
 	};
 	
 	
 	this.exec = function(data) {
 		var fm = this.fm,
-			targets = data && (data instanceof Array)? data : null,
-			check  = !targets && data && data.target? [ data.target ] : targets,
-			fmUpload = function(data) {
+			upload = function(data) {
+				dialog.elfinderdialog('close');
 				fm.upload(data)
 					.fail(function(error) {
 						dfrd.reject(error);
 					})
 					.done(function(data) {
-						var cwd = fm.getUI('cwd');
 						dfrd.resolve(data);
-						if (data && data.added && data.added[0]) {
-							var newItem = cwd.find('#'+fm.cwdHash2Id(data.added[0].hash));
-							if (newItem.length) {
-								newItem.trigger('scrolltoview');
-							}
-						}
 					});
 			},
-			upload = function(data) {
-				dialog.elfinderdialog('close');
-				if (targets) {
-					data.target = targets[0];
-				}
-				fmUpload(data);
-			},
-			dfrd = $.Deferred().always(function() {
-				//setTimeout(function() {
-				//	fm.autoSync();
-				//}, 1000);
-			}),
-			dialog, input, button, dropbox, pastebox, dropUpload, paste;
+			dfrd, dialog, input, button, dropbox, pastebox, dropUpload, paste;
 		
-		//fm.autoSync('stop');
-		if (this.getstate(check) < 0) {
-			return dfrd.reject();
+		if (this.disabled()) {
+			return $.Deferred().reject();
 		}
 		
 		dropUpload = function(e) {
 			e.stopPropagation();
-			e.preventDefault();
-			var file = false,
-				type = '',
-				elfFrom = null,
-				mycwd = '',
-				data = null,
-				target = e._target || null,
-				trf = e.dataTransfer || null,
-				kind = (trf.items && trf.items.length && trf.items[0].kind)? trf.items[0].kind : '';
-			
-			if (trf) {
-				try {
-					elfFrom = trf.getData('elfinderfrom');
-					if (elfFrom) {
-						mycwd = window.location.href + fm.cwd().hash;
-						if ((!target && elfFrom === mycwd) || target === mycwd) {
-							dfrd.reject();
-							return;
-						}
-					}
-				} catch(e) {}
-				
-				if (kind === 'file' && (trf.items[0].getAsEntry || trf.items[0].webkitGetAsEntry)) {
-					file = trf;
-					type = 'data';
-				} else if (kind !== 'string' && trf.files && trf.files.length && $.inArray('Text', trf.types) === -1) {
-					file = trf.files;
-					type = 'files';
-				} else {
-					try {
-						if ((data = trf.getData('text/html')) && data.match(/<(?:img|a)/i)) {
-							file = [ data ];
-							type = 'html';
-						}
-					} catch(e) {}
-					if (! file && (data = trf.getData('text'))) {
-						file = [ data ];
-						type = 'text';
-					}
-				}
+		  	e.preventDefault();
+			var file = false;
+			var type = '';
+			var data = null;
+			try{
+				data = e.dataTransfer.getData('text/html');
+			} catch(e) {}
+			if (data) {
+				file = [ data ];
+				type = 'html';
+			} else if (e.dataTransfer && e.dataTransfer.items &&  e.dataTransfer.items.length) {
+				file = e.dataTransfer;
+				type = 'data';
+			} else if (e.dataTransfer && e.dataTransfer.files &&  e.dataTransfer.files.length) {
+				file = e.dataTransfer.files;
+				type = 'files';
+			} else if (data = e.dataTransfer.getData('text')) {
+				file = [ data ];
+				type = 'text';
 			}
-			if (file) {
-				fmUpload({files : file, type : type, target : target});
-			} else {
-				dfrd.reject();
-			}
+			return file? fm.upload({files : file, type : type}) : false;
 		};
 		
-		if (!targets && data) {
+		if (data) {
 			if (data.input || data.files) {
 				data.type = 'files';
-				fmUpload(data);
+				return fm.upload(data);
 			} else if (data.dropEvt) {
-				dropUpload(data.dropEvt);
+				return dropUpload(data.dropEvt);
 			}
-			return dfrd;
 		}
+		
+		dfrd = $.Deferred();
 		
 		paste = function(e) {
 			var e = e.originalEvent || e;
-			var files = [], items = [];
+			var files = [];
 			var file;
-			if (e.clipboardData) {
-				if (e.clipboardData.items && e.clipboardData.items.length){
-					items = e.clipboardData.items;
-					for (var i=0; i < items.length; i++) {
-						if (e.clipboardData.items[i].kind == 'file') {
-							file = e.clipboardData.items[i].getAsFile();
-							files.push(file);
-						}
+			if (e.clipboardData && e.clipboardData.items && e.clipboardData.items.length){
+				for (var i=0; i < e.clipboardData.items.length; i++) {
+					if (e.clipboardData.items[i].kind == 'file') {
+						file = e.clipboardData.items[i].getAsFile();
+						files.push(file);
 					}
-				} else if (e.clipboardData.files && e.clipboardData.files.length) {
-					files = e.clipboardData.files;
 				}
 				if (files.length) {
 					upload({files : files, type : 'files'});
@@ -156,14 +101,6 @@ elFinder.prototype.commands.upload = function() {
 			var my = e.target || e.srcElement;
 			setTimeout(function () {
 				if (my.innerHTML) {
-					$(my).find('img').each(function(i, v){
-						if (v.src.match(/^webkit-fake-url:\/\//)) {
-							// For Safari's bug.
-							// ref. https://bugs.webkit.org/show_bug.cgi?id=49141
-							//      https://dev.ckeditor.com/ticket/13029
-							$(v).remove();
-						}
-					});
 					var src = my.innerHTML.replace(/<br[^>]*>/gi, ' ');
 					var type = src.match(/<[^>]+>/)? 'html' : 'text';
 					my.innerHTML = '';
@@ -174,10 +111,7 @@ elFinder.prototype.commands.upload = function() {
 		
 		input = $('<input type="file" multiple="true"/>')
 			.change(function() {
-				upload({input : input[0], type : 'files'});
-			})
-			.on('dragover', function(e) {
-				e.originalEvent.dataTransfer.dropEffect = 'copy';
+				upload({input : input[0]});
 			});
 
 		button = $('<div class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text">'+fm.i18n('selectForUpload')+'</span></div>')
@@ -196,8 +130,13 @@ elFinder.prototype.commands.upload = function() {
 			.on('mousedown click', function(){
 				$(this).focus();
 			})
-			.on('focus', function(){
-				this.innerHTML = '';
+			.on('focus', function(e){
+				e = e.originalEvent || e;
+				(e.target || e.srcElement).innerHTML = '';
+			})
+			.on('blur', function(e){
+				e = e.originalEvent || e;
+				(e.target || e.srcElement).innerHTML = fm.i18n('dropFilesBrowser');
 			})
 			.on('dragenter mouseover', function(){
 				pastebox.addClass(hover);
@@ -214,8 +153,11 @@ elFinder.prototype.commands.upload = function() {
 				.on('mousedown click', function(){
 					$(this).focus();
 				})
-				.on('focus', function(){
-					this.innerHTML = '';
+				.on('focus', function(e){
+					(e.originalEvent || e).target.innerHTML = '';
+				})
+				.on('blur', function(e){
+					(e.originalEvent || e).target.innerHTML = fm.i18n('dropPasteFiles');
 				})
 				.on('mouseover', function(){
 					$(this).addClass(hover);
@@ -241,13 +183,11 @@ elFinder.prototype.commands.upload = function() {
 			dropbox.addEventListener('dragover', function(e) {
 				e.stopPropagation();
 			  	e.preventDefault();
-				e.dataTransfer.dropEffect = 'copy';
 			  	$(dropbox).addClass(hover);
 			}, false);
 
 			dropbox.addEventListener('drop', function(e) {
 				dialog.elfinderdialog('close');
-				targets && (e._target = targets[0]);
 				dropUpload(e);
 			}, false);
 			
@@ -259,7 +199,7 @@ elFinder.prototype.commands.upload = function() {
 		}
 		
 		fm.dialog(dialog, {
-			title          : this.title + (targets? ' - ' + fm.escape(fm.file(targets[0]).name) : ''),
+			title          : this.title,
 			modal          : true,
 			resizable      : false,
 			destroyOnClose : true

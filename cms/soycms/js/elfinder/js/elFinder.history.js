@@ -88,7 +88,7 @@ elFinder.prototype.history = function(fm) {
 	}
 	
 	// bind to elfinder events
-	fm.open(function() {
+	fm.open(function(e) {
 		var l = history.length,
 			cwd = fm.cwd().hash;
 
@@ -107,6 +107,6 @@ elFinder.prototype.history = function(fm) {
 			}
 		}
 	})
-	.reload(fm.options.reloadClearHistory && reset);
+	.reload(reset);
 	
-};
+}

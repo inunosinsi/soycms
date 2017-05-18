@@ -23,18 +23,15 @@ $.fn.elfindernavbar = function(fm, opts) {
 					minWidth : opts.minWidth || 150,
 					maxWidth : opts.maxWidth || 500
 				})
-				.on('resize scroll', function() {
-					clearTimeout($(this).data('posinit'));
-					$(this).data('posinit', setTimeout(function() {
-						var offset = (fm.UA.Opera && nav.scrollLeft())? 20 : 2;
-						handle.css({
-							top  : parseInt(nav.scrollTop())+'px',
-							left : ltr ? 'auto' : parseInt(nav.scrollLeft() + offset),
-							right: ltr ? parseInt(nav.scrollLeft() - offset) * -1 : 'auto'
-						});
-					}, 50));
+				.bind('resize scroll', function() {
+					var offset = (fm.UA.Opera && nav.scrollLeft())? 20 : 2;
+					handle.css({
+						top  : parseInt(nav.scrollTop())+'px',
+						left : ltr ? 'auto' : parseInt(nav.scrollLeft() + offset),
+						right: ltr ? parseInt(nav.scrollLeft() - offset) * -1 : 'auto'
+					});
 				})
-				.find('.ui-resizable-handle').addClass('ui-front');
+				.find('.ui-resizable-handle').zIndex(nav.zIndex() + 10);
 
 			if (fm.UA.Touch) {
 				var toggle = function(){
@@ -48,22 +45,22 @@ $.fn.elfindernavbar = function(fm, opts) {
 					handle.data({startX: null, endX: null});
 				};
 				handle.data({closed: false, width: nav.width()})
-				.on('touchstart', function(e){
+				.bind('touchstart', function(e){
 					handle.data('startX', e.originalEvent.touches[0].pageX);
 				})
-				.on('touchmove', function(e){
+				.bind('touchmove', function(e){
 					var x = e.originalEvent.touches[0].pageX;
 					var sx = handle.data('startX');
 					var open = ltr? (sx && sx < x) : (sx > x);
 					var close = ltr? (sx > x) : (sx && sx < x);
 					(open || close) && toggle();
 				})
-				.on('touchend', function(e){
+				.bind('touchend', function(e){
 					handle.data('startX') && toggle();
 				});
 				if (fm.UA.Mobile) {
 					handle.data('defWidth', nav.width());
-					$(window).on('resize', function(e){
+					$(window).bind('resize', function(e){
 						var hw = nav.parent().width() / 2;
 						if (handle.data('defWidth') > hw) {
 							nav.width(hw);

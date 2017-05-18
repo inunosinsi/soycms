@@ -19,19 +19,20 @@ $.fn.elfindersortbutton = function(cmd) {
 			button   = $(this).addClass('ui-state-default elfinder-button elfinder-menubutton elfiner-button-'+name)
 				.attr('title', cmd.title)
 				.append('<span class="elfinder-button-icon elfinder-button-icon-'+name+'"/>')
-				.hover(function(e) { !button.hasClass(disabled) && button.toggleClass(hover); })
+				.hover(function(e) { !button.is('.'+disabled) && button.toggleClass(hover); })
 				.click(function(e) {
-					if (!button.hasClass(disabled)) {
+					if (!button.is('.'+disabled)) {
 						e.stopPropagation();
 						menu.is(':hidden') && cmd.fm.getUI().click();
 						menu.slideToggle(100);
 					}
 				}),
-			menu = $('<div class="ui-front ui-widget ui-widget-content elfinder-button-menu ui-corner-all"/>')
+			menu = $('<div class="ui-widget ui-widget-content elfinder-button-menu ui-corner-all"/>')
 				.hide()
 				.appendTo(button)
-				.on('mouseenter mouseleave', '.'+item, function() { $(this).toggleClass(hover) })
-				.on('click', '.'+item, function(e) {
+				.zIndex(12+button.zIndex())
+				.delegate('.'+item, 'mouseenter mouseleave', function() { $(this).toggleClass(hover) })
+				.delegate('.'+item, 'click', function(e) {
 					e.preventDefault();
 					e.stopPropagation();
 					hide();
@@ -58,7 +59,7 @@ $.fn.elfindersortbutton = function(cmd) {
 				order : type == fm.sortType ? fm.sortOrder == 'asc' ? 'desc' : 'asc' : fm.sortOrder, 
 				stick : fm.sortStickFolders
 			});
-		});
+		})
 		
 		$('<div class="'+item+' '+item+'-separated"><span class="ui-icon ui-icon-check"/>'+fm.i18n('sortFoldersFirst')+'</div>')
 			.appendTo(menu)
@@ -83,4 +84,6 @@ $.fn.elfindersortbutton = function(cmd) {
 
 	});
 	
-};
+}
+
+

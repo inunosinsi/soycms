@@ -16,17 +16,11 @@ elFinder.prototype.commands.extract = function() {
 			})
 		};
 	
-	this.variants = [];
 	this.disableOnSearch = true;
 	
 	// Update mimes list on open/reload
 	fm.bind('open reload', function() {
 		mimes = fm.option('archivers')['extract'] || [];
-		if (fm.api > 2) {
-			self.variants = [['makedir', fm.i18n('cmdmkdir')], ['intohere', fm.i18n('btnCwd')]];
-		} else {
-			self.variants = [['intohere', fm.i18n('btnCwd')]];
-		}
 		self.change();
 	});
 	
@@ -37,17 +31,15 @@ elFinder.prototype.commands.extract = function() {
 		return !this._disabled && cnt && this.fm.cwd().write && filter(sel).length == cnt ? 0 : -1;
 	}
 	
-	this.exec = function(hashes, extractTo) {
+	this.exec = function(hashes) {
 		var files    = this.files(hashes),
 			dfrd     = $.Deferred(),
-			cnt      = files.length,
-			makedir  = (extractTo == 'makedir')? 1 : 0,
+			cnt      = files.length, 
 			i, error,
 			decision;
 
 		var overwriteAll = false;
 		var omitAll = false;
-		var mkdirAll = 0;
 
 		var names = $.map(fm.files(hashes), function(file) { return file.name; });
 		var map = {};
@@ -75,7 +67,7 @@ elFinder.prototype.commands.extract = function() {
 				dfrd.reject(error);
 			} else {
 				fm.request({
-					data:{cmd:'extract', target:file.hash, makedir:makedir},
+					data:{cmd:'extract', target:file.hash},
 					notify:{type:'extract', cnt:1},
 					syncOnFail:true
 				})
@@ -90,21 +82,14 @@ elFinder.prototype.commands.extract = function() {
 		};
 		
 		var confirm = function(files, index) {
-			var file = files[index],
-			name = file.name.replace(/\.((tar\.(gz|bz|bz2|z|lzo))|cpio\.gz|ps\.gz|xcf\.(gz|bz2)|[a-z0-9]{1,4})$/ig, ''),
-			existed = ($.inArray(name, names) >= 0),
-			next = function(){
-				if((index+1) < cnt) {
-					confirm(files, index+1);
-				} else {
-					dfrd.resolve();
-				}
-			};
-			if (!makedir && existed && map[name].mime != 'directory') {
+			var file = files[index];
+			var name = file.name.replace(/\.((tar\.(gz|bz|bz2|z|lzo))|cpio\.gz|ps\.gz|xcf\.(gz|bz2)|[a-z0-9]{1,4})$/ig, '');
+			var existed = ($.inArray(name, names) >= 0);
+			if(existed && map[name].mime != 'directory') {
 				fm.confirm(
 					{
 						title : fm.i18n('ntfextract'),
-						text  : ['errExists', name, 'confirmRepl'],
+						text  : fm.i18n(['errExists', name, 'confirmRepl']),
 						accept:{
 							label : 'btnYes',
 							callback:function (all) {
@@ -120,7 +105,7 @@ elFinder.prototype.commands.extract = function() {
 										dfrd.resolve();
 									}
 								} else if(overwriteAll) {
-									for (i = index; i < cnt; i++) {
+									for (i = 0; i < cnt; i++) {
 										unpack(files[i]);
 									}
 									dfrd.resolve();
@@ -145,44 +130,16 @@ elFinder.prototype.commands.extract = function() {
 								dfrd.resolve();
 							}
 						},
-						all : ((index+1) < cnt)
+						all : (cnt > 1)
 					}
 				);
-			} else if (!makedir) {
-				if (mkdirAll == 0) {
-					fm.confirm({
-						title : fm.i18n('cmdextract'),
-						text  : [fm.i18n('cmdextract')+' "'+file.name+'"', 'confirmRepl'],
-						accept:{
-							label : 'btnYes',
-							callback:function (all) {
-								all && (mkdirAll = 1);
-								unpack(file);
-								next();
-							}
-						},
-						reject : {
-							label : 'btnNo',
-							callback:function (all) {
-								all && (mkdirAll = -1);
-								next();
-							}
-						},
-						cancel : {
-							label : 'btnCancel',
-							callback:function () {
-								dfrd.resolve();
-							}
-						},
-						all : ((index+1) < cnt)
-					});
-				} else {
-					(mkdirAll > 0) && unpack(file);
-					next();
-				}
 			} else {
 				unpack(file);
-				next();
+				if((index+1) < cnt) {
+					confirm(files, index+1);
+				} else {
+					dfrd.resolve();
+				}
 			}
 		};
 		
@@ -197,4 +154,4 @@ elFinder.prototype.commands.extract = function() {
 		return dfrd;
 	}
 
-};
+}

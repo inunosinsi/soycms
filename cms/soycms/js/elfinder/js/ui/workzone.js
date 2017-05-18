@@ -11,13 +11,13 @@ $.fn.elfinderworkzone = function(fm) {
 			wdelta = wz.outerHeight(true) - wz.height(),
 			parent = wz.parent();
 			
-		parent.add(window).on('resize', function() {
+		parent.add(window).bind('resize', function() {
 				var height = parent.height();
 
 				parent.children(':visible:not(.'+cl+')').each(function() {
 					var ch = $(this);
 
-					if (ch.css('position') != 'absolute' && ch.css('position') != 'fixed') {
+					if (ch.css('position') != 'absolute') {
 						height -= ch.outerHeight(true);
 					}
 				});
@@ -26,4 +26,6 @@ $.fn.elfinderworkzone = function(fm) {
 			});
 	});
 	return this;
-};
+}
+
+

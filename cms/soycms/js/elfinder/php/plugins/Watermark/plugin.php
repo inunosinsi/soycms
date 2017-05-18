@@ -1,55 +1,5 @@
 <?php
-/**
- * elFinder Plugin Watermark
- *
- * Print watermark on file upload.
- *
- * ex. binding, configure on connector options
- *	$opts = array(
- *		'bind' => array(
- *			'upload.presave' => array(
- *				'Plugin.Watermark.onUpLoadPreSave'
- *			)
- *		),
- *		// global configure (optional)
- *		'plugin' => array(
- *			'Watermark' => array(
- *				'enable'         => true,       // For control by volume driver
- *				'source'         => 'logo.png', // Path to Water mark image
- *				'marginRight'    => 5,          // Margin right pixel
- *				'marginBottom'   => 5,          // Margin bottom pixel
- *				'quality'        => 95,         // JPEG image save quality
- *				'transparency'   => 70,         // Water mark image transparency ( other than PNG )
- *				'targetType'     => IMG_GIF|IMG_JPG|IMG_PNG|IMG_WBMP, // Target image formats ( bit-field )
- *				'targetMinPixel' => 200         // Target image minimum pixel size
- *			)
- *		),
- *		// each volume configure (optional)
- *		'roots' => array(
- *			array(
- *				'driver' => 'LocalFileSystem',
- *				'path'   => '/path/to/files/',
- *				'URL'    => 'http://localhost/to/files/'
- *				'plugin' => array(
- *					'Watermark' => array(
- *			 			'enable'         => true,       // For control by volume driver
- *						'source'         => 'logo.png', // Path to Water mark image
- *						'marginRight'    => 5,          // Margin right pixel
- *						'marginBottom'   => 5,          // Margin bottom pixel
- *						'quality'        => 95,         // JPEG image save quality
- *						'transparency'   => 70,         // Water mark image transparency ( other than PNG )
- *						'targetType'     => IMG_GIF|IMG_JPG|IMG_PNG|IMG_WBMP, // Target image formats ( bit-field )
- *						'targetMinPixel' => 200         // Target image minimum pixel size
- *					)
- *				)
- *			)
- *		)
- *	);
- *
- * @package elfinder
- * @author Naoki Sawada
- * @license New BSD
- */
+
 class elFinderPluginWatermark {
 
 	private $opts = array();
@@ -83,13 +33,8 @@ class elFinderPluginWatermark {
 			return false;
 		}
 		
-		$srcImgInfo = getimagesize($src);
+		$srcImgInfo = @getimagesize($src);
 		if ($srcImgInfo === false) {
-			return false;
-		}
-		
-		// check Animation Gif
-		if (elFinder::isAnimationGif($src)) {
 			return false;
 		}
 		
@@ -98,7 +43,7 @@ class elFinderPluginWatermark {
 			$opts['source'] = dirname(__FILE__) . "/" . $opts['source'];
 		}
 		if (is_readable($opts['source'])) {
-			$watermarkImgInfo = getimagesize($opts['source']);
+			$watermarkImgInfo = @getimagesize($opts['source']);
 			if (! $watermarkImgInfo) {
 				return false;
 			}
@@ -114,13 +59,12 @@ class elFinderPluginWatermark {
 
 		// check target image type
 		$imgTypes = array(
-			IMAGETYPE_GIF  => IMG_GIF,
+			IMAGETYPE_GIF => IMG_GIF,
 			IMAGETYPE_JPEG => IMG_JPEG,
-			IMAGETYPE_PNG  => IMG_PNG,
-			IMAGETYPE_BMP  => IMG_WBMP,
-			IMAGETYPE_WBMP => IMG_WBMP
+			IMAGETYPE_PNG => IMG_PNG,
+			IMAGETYPE_WBMP => IMG_WBMP,
 		);
-		if (! isset($imgTypes[$srcImgInfo[2]]) || ! ($opts['targetType'] & $imgTypes[$srcImgInfo[2]])) {
+		if (! ($opts['targetType'] & $imgTypes[$srcImgInfo[2]])) {
 			return false;
 		}
 		
@@ -134,7 +78,7 @@ class elFinderPluginWatermark {
 		$dest_x = $srcImgInfo[0] - $watermark_width - $marginLeft;
 		$dest_y = $srcImgInfo[1] - $watermark_height - $marginBottom;
 		
-		if (class_exists('Imagick', false)) {
+		if (class_exists('Imagick')) {
 			return $this->watermarkPrint_imagick($src, $watermark, $dest_x, $dest_y, $quality, $transparency, $watermarkImgInfo);
 		} else {
 			return $this->watermarkPrint_gd($src, $watermark, $dest_x, $dest_y, $quality, $transparency, $watermarkImgInfo, $srcImgInfo);
@@ -185,29 +129,29 @@ class elFinderPluginWatermark {
 		$ermsg = '';
 		switch ($watermarkImgInfo['mime']) {
 			case 'image/gif':
-				if (imagetypes() & IMG_GIF) {
-					$oWatermarkImg = imagecreatefromgif($watermark);
+				if (@imagetypes() & IMG_GIF) {
+					$oWatermarkImg = @imagecreatefromgif($watermark);
 				} else {
 					$ermsg = 'GIF images are not supported';
 				}
 				break;
 			case 'image/jpeg':
-				if (imagetypes() & IMG_JPG) {
-					$oWatermarkImg = imagecreatefromjpeg($watermark) ;
+				if (@imagetypes() & IMG_JPG) {
+					$oWatermarkImg = @imagecreatefromjpeg($watermark) ;
 				} else {
 					$ermsg = 'JPEG images are not supported';
 				}
 				break;
 			case 'image/png':
-				if (imagetypes() & IMG_PNG) {
-					$oWatermarkImg = imagecreatefrompng($watermark) ;
+				if (@imagetypes() & IMG_PNG) {
+					$oWatermarkImg = @imagecreatefrompng($watermark) ;
 				} else {
 					$ermsg = 'PNG images are not supported';
 				}
 				break;
 			case 'image/wbmp':
-				if (imagetypes() & IMG_WBMP) {
-					$oWatermarkImg = imagecreatefromwbmp($watermark);
+				if (@imagetypes() & IMG_WBMP) {
+					$oWatermarkImg = @imagecreatefromwbmp($watermark);
 				} else {
 					$ermsg = 'WBMP images are not supported';
 				}
@@ -221,29 +165,29 @@ class elFinderPluginWatermark {
 		if (! $ermsg) {
 			switch ($srcImgInfo['mime']) {
 				case 'image/gif':
-					if (imagetypes() & IMG_GIF) {
-						$oSrcImg = imagecreatefromgif($src);
+					if (@imagetypes() & IMG_GIF) {
+						$oSrcImg = @imagecreatefromgif($src);
 					} else {
 						$ermsg = 'GIF images are not supported';
 					}
 					break;
 				case 'image/jpeg':
-					if (imagetypes() & IMG_JPG) {
-						$oSrcImg = imagecreatefromjpeg($src) ;
+					if (@imagetypes() & IMG_JPG) {
+						$oSrcImg = @imagecreatefromjpeg($src) ;
 					} else {
 						$ermsg = 'JPEG images are not supported';
 					}
 					break;
 				case 'image/png':
-					if (imagetypes() & IMG_PNG) {
-						$oSrcImg = imagecreatefrompng($src) ;
+					if (@imagetypes() & IMG_PNG) {
+						$oSrcImg = @imagecreatefrompng($src) ;
 					} else {
 						$ermsg = 'PNG images are not supported';
 					}
 					break;
 				case 'image/wbmp':
-					if (imagetypes() & IMG_WBMP) {
-						$oSrcImg = imagecreatefromwbmp($src);
+					if (@imagetypes() & IMG_WBMP) {
+						$oSrcImg = @imagecreatefromwbmp($src);
 					} else {
 						$ermsg = 'WBMP images are not supported';
 					}

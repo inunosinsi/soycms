@@ -129,35 +129,22 @@ elFinder.prototype.commands.quicklook = function() {
 		 * @type jQuery
 		 **/
 		cwd, 
-		navdrag = false,
-		navmove = false,
-		navtm   = null,
-		coverEv = 'mousemove touchstart ' + ('onwheel' in document? 'wheel' : 'onmousewheel' in document? 'mousewheel' : 'DOMMouseScroll'),
 		title   = $('<div class="elfinder-quicklook-title"/>'),
 		icon    = $('<div/>'),
 		info    = $('<div class="elfinder-quicklook-info"/>'),//.hide(),
-		cover   = $('<div class="ui-front elfinder-quicklook-cover"/>'),
 		fsicon  = $('<div class="'+navicon+' '+navicon+'-fullscreen"/>')
-			.on('click touchstart', function(e) {
-				if (navmove) {
-					return;
-				}
-				
+			.mousedown(function(e) {
 				var win     = self.window,
-					full    = win.hasClass(fullscreen),
+					full    = win.is('.'+fullscreen),
 					scroll  = 'scroll.'+fm.namespace,
 					$window = $(window);
 					
 				e.stopPropagation();
-				e.preventDefault();
 				
 				if (full) {
-					win.css(win.data('position'));
-					$window.off(scroll).trigger(self.resize).off(self.resize);
-					navbar.off('mouseenter mouseleave');
-					cover.off(coverEv);
-					navStyle = '';
-					navShow();
+					win.css(win.data('position')).unbind('mousemove');
+					$window.unbind(scroll).trigger(self.resize).unbind(self.resize);
+					navbar.unbind('mouseenter').unbind('mousemove');
 				} else {
 					win.data('position', {
 						left   : win.css('left'), 
@@ -170,100 +157,44 @@ elFinder.prototype.commands.quicklook = function() {
 						height : '100%'
 					});
 
-					$(window).on(scroll, function() {
+					$(window).bind(scroll, function() {
 						win.css({
 							left   : parseInt($(window).scrollLeft())+'px',
 							top    : parseInt($(window).scrollTop()) +'px'
 						})
 					})
-					.on(self.resize, function(e) {
+					.bind(self.resize, function(e) {
 						self.preview.trigger('changesize');
 					})
 					.trigger(scroll)
 					.trigger(self.resize);
-
-					cover.on(coverEv, function(e) {
-						if (! navdrag) {
-							if (e.type === 'mousemove' || e.type === 'touchstart') {
-								navShow();
-								navtm = setTimeout(function() {
-									if (fm.UA.Mobile || navbar.parent().find('.elfinder-quicklook-navbar:hover').length < 1) {
-										navbar.fadeOut('slow', function() {
-											cover.show();
-										});
-									}
-								}, 3000);
-							}
-							if (cover.is(':visible')) {
-								coverHide();
-								cover.data('tm', setTimeout(function() {
-									cover.show();
-								}, 3000));
-							}
-						}
-					}).show().trigger('mousemove');
 					
-					navbar.on('mouseenter mouseleave', function(e) {
-						if (! navdrag) {
-							if (e.type === 'mouseenter') {
-								navShow();
-							} else {
-								cover.trigger('mousemove');
-							}
-						}
+					win.bind('mousemove', function(e) {
+						navbar.stop(true, true).show().delay(3000).fadeOut('slow');
+					})
+					.mousemove();
+					
+					navbar.mouseenter(function() {
+						navbar.stop(true, true).show();
+					})
+					.mousemove(function(e) {
+						e.stopPropagation();
 					});
 				}
-				if (fm.UA.Mobile) {
-					navbar.attr('style', navStyle);
-				} else {
-					navbar.attr('style', navStyle).draggable(full ? 'destroy' : {
-						start: function() {
-							navdrag = true;
-							navmove = true;
-							cover.show();
-							navShow();
-						},
-						stop: function() {
-							navdrag = false;
-							navStyle = self.navbar.attr('style');
-							setTimeout(function() {
-								navmove = false;
-							}, 20);
-						}
-					});
-				}
+				navbar.attr('style', '').draggable(full ? 'destroy' : {});
 				win.toggleClass(fullscreen);
 				$(this).toggleClass(navicon+'-fullscreen-off');
-				var collection = win;
-				if(parent.is('.ui-resizable')) {
-					collection = collection.add(parent);
-				};
-				$.fn.resizable && !fm.UA.Touch && collection.resizable(full ? 'enable' : 'disable').removeClass('ui-state-disabled');
-
-				win.trigger('viewchange');
+				$.fn.resizable && parent.add(win).resizable(full ? 'enable' : 'disable').removeClass('ui-state-disabled');
 			}),
-		
-		navShow = function() {
-			navtm && clearTimeout(navtm);
-			navbar.stop(true, true).show();
-			coverHide();
-		},
-		
-		coverHide = function() {
-			cover.data('tm') && clearTimeout(cover.data('tm'));
-			cover.hide();
-		},
 			
 		navbar  = $('<div class="elfinder-quicklook-navbar"/>')
-			.append($('<div class="'+navicon+' '+navicon+'-prev"/>').on('click touchstart', function(e) { ! navmove && navtrigger(37); return false; }))
+			.append($('<div class="'+navicon+' '+navicon+'-prev"/>').mousedown(function() { navtrigger(37); }))
 			.append(fsicon)
-			.append($('<div class="'+navicon+' '+navicon+'-next"/>').on('click touchstart', function(e) { ! navmove && navtrigger(39); return false; }))
+			.append($('<div class="'+navicon+' '+navicon+'-next"/>').mousedown(function() { navtrigger(39); }))
 			.append('<div class="elfinder-quicklook-navbar-separator"/>')
-			.append($('<div class="'+navicon+' '+navicon+'-close"/>').on('click touchstart', function(e) { ! navmove && self.window.trigger('close'); return false; }))
-		,
-		navStyle = '';
+			.append($('<div class="'+navicon+' '+navicon+'-close"/>').mousedown(function() { self.window.trigger('close'); }))
+		;
 
-	(this.navbar = navbar)._show = navShow;
 	this.resize = 'resize.'+fm.namespace;
 	this.info = $('<div class="elfinder-quicklook-info-wrapper"/>')
 		.append(icon)
@@ -271,16 +202,14 @@ elFinder.prototype.commands.quicklook = function() {
 		
 	this.preview = $('<div class="elfinder-quicklook-preview ui-helper-clearfix"/>')
 		// clean info/icon
-		.on('change', function(e) {
-			navShow();
-			navbar.attr('style', navStyle);
-			self.preview.attr('style', '')
+		.bind('change', function(e) {
 			self.info.attr('style', '').hide();
 			icon.removeAttr('class').attr('style', '');
 			info.html('');
+
 		})
 		// update info/icon
-		.on('update', function(e) {
+		.bind('update', function(e) {
 			var fm      = self.fm,
 				preview = self.preview,
 				file    = e.file,
@@ -290,31 +219,28 @@ elFinder.prototype.commands.quicklook = function() {
 			if (file) {
 				!file.read && e.stopImmediatePropagation();
 				self.window.data('hash', file.hash);
-				self.preview.off('changesize').trigger('change').children().remove();
+				self.preview.unbind('changesize').trigger('change').children().remove();
 				title.html(fm.escape(file.name));
 				
 				info.html(
-						tpl.replace(/\{value\}/, fm.escape(file.name))
+						tpl.replace(/\{value\}/, file.name)
 						+ tpl.replace(/\{value\}/, fm.mime2kind(file))
 						+ (file.mime == 'directory' ? '' : tpl.replace(/\{value\}/, fm.formatSize(file.size)))
 						+ tpl.replace(/\{value\}/, fm.i18n('modify')+': '+ fm.formatDate(file))
 					)
 				icon.addClass('elfinder-cwd-icon ui-corner-all '+fm.mime2class(file.mime));
 
-				if (tmb = fm.tmb(file)) {
+				if (file.tmb) {
 					$('<img/>')
 						.hide()
 						.appendTo(self.preview)
 						.load(function() {
-							icon.addClass(tmb.class).css('background-image', "url('"+tmb.url+"')");
+							icon.css('background', 'url("'+tmb+'") center center no-repeat');
 							$(this).remove();
 						})
-						.attr('src', tmb.url);
+						.attr('src', (tmb = fm.tmb(file.hash)));
 				}
 				self.info.delay(100).fadeIn(10);
-				if (self.window.hasClass(fullscreen)) {
-					cover.trigger('mousemove');
-				}
 			} else { 
 				e.stopImmediatePropagation();
 			}
@@ -323,47 +249,41 @@ elFinder.prototype.commands.quicklook = function() {
 
 	
 
-	this.window = $('<div class="ui-front ui-helper-reset ui-widget elfinder-quicklook" style="position:absolute"/>')
+	this.window = $('<div class="ui-helper-reset ui-widget elfinder-quicklook" style="position:absolute"/>')
 		.click(function(e) { e.stopPropagation();  })
 		.append(
 			$('<div class="elfinder-quicklook-titlebar"/>')
-			.append(
-				title,
-				$('<span class="ui-icon ui-icon-circle-close"/>').mousedown(function(e) {
+				.append(title)
+				.append($('<span class="ui-icon ui-icon-circle-close"/>').mousedown(function(e) {
 					e.stopPropagation();
 					self.window.trigger('close');
-				})),
-				this.preview,
-				self.info.hide(),
-				cover.hide(),
-				navbar
-			)
+				}))
+		)
+		.append(this.preview.add(navbar))
+		.append(self.info.hide())
 		.draggable({handle : 'div.elfinder-quicklook-titlebar'})
-		.on('open', function(e) {
+		.bind('open', function(e) {
 			var win  = self.window, 
 				file = self.value,
 				node;
 
-			if (self.closed() && file && (node = $('#'+fm.cwdHash2Id(file.hash))).length) {
-				navStyle = '';
+			if (self.closed() && file && (node = cwd.find('#'+file.hash)).length) {
 				navbar.attr('style', '');
 				state = animated;
 				node.trigger('scrolltoview');
-				coverHide();
 				win.css(closedCss(node))
 					.show()
 					.animate(openedCss(), 550, function() {
 						state = opened;
 						self.update(1, self.value);
-						navShow();
 					});
 			}
 		})
-		.on('close', function(e) {
+		.bind('close', function(e) {
 			var win     = self.window,
 				preview = self.preview.trigger('change'),
 				file    = self.value,
-				node    = cwd.find('#'+fm.cwdHash2Id(win.data('hash'))),
+				node    = cwd.find('#'+win.data('hash')),
 				close   = function() {
 					state = closed;
 					win.hide();
@@ -374,7 +294,7 @@ elFinder.prototype.commands.quicklook = function() {
 				
 			if (self.opened()) {
 				state = animated;
-				win.hasClass(fullscreen) && fsicon.click();
+				win.is('.'+fullscreen) && fsicon.mousedown()
 				node.length
 					? win.animate(closedCss(node), 500, close)
 					: close();
@@ -400,7 +320,7 @@ elFinder.prototype.commands.quicklook = function() {
 		select : function() { this.update(void(0), this.fm.selectedFiles()[0]); },
 		error  : function() { self.window.is(':visible') && self.window.data('hash', '').trigger('close'); },
 		'searchshow searchhide' : function() { this.opened() && this.window.trigger('close'); }
-	};
+	}
 	
 	this.shortcuts = [{
 		pattern     : 'space'
@@ -411,14 +331,15 @@ elFinder.prototype.commands.quicklook = function() {
 			ogg : support('audio/ogg; codecs="vorbis"'),
 			mp3 : support('audio/mpeg;'),
 			wav : support('audio/wav; codecs="1"'),
-			m4a : support('audio/mp4;') || support('audio/x-m4a;') || support('audio/aac;')
+			m4a : support('audio/x-m4a;') || support('audio/aac;')
 		},
 		video : {
 			ogg  : support('video/ogg; codecs="theora"'),
 			webm : support('video/webm; codecs="vp8, vorbis"'),
 			mp4  : support('video/mp4; codecs="avc1.42E01E"') || support('video/mp4; codecs="avc1.42E01E, mp4a.40.2"') 
 		}
-	};
+	}
+	
 	
 	/**
 	 * Return true if quickLoock window is visible and not animated
@@ -427,7 +348,7 @@ elFinder.prototype.commands.quicklook = function() {
 	 **/
 	this.closed = function() {
 		return state == closed;
-	};
+	}
 	
 	/**
 	 * Return true if quickLoock window is hidden
@@ -436,7 +357,7 @@ elFinder.prototype.commands.quicklook = function() {
 	 **/
 	this.opened = function() {
 		return state == opened;
-	};
+	}
 	
 	/**
 	 * Init command.
@@ -457,11 +378,7 @@ elFinder.prototype.commands.quicklook = function() {
 			parent = fm.getUI();
 			cwd    = fm.getUI('cwd');
 
-			if (fm.zIndex) {
-				win.css('z-index', fm.zIndex + 1);
-			}
-			
-			win.appendTo('body');
+			win.appendTo('body').zIndex(100 + parent.zIndex());
 			
 			// close window on escape
 			$(document).keydown(function(e) {
@@ -493,34 +410,24 @@ elFinder.prototype.commands.quicklook = function() {
 				}
 			});
 			
-			preview.on('update', function() {
+			preview.bind('update', function() {
 				self.info.show();
 			});
 		});
 		
-		fm.bind('open',function() {
-			// set current volume dispInlineRegex
-			try {
-				self.dispInlineRegex = new RegExp(fm.option('dispInlineRegex'));
-			} catch(e) {
-				self.dispInlineRegex = /.*/;
-			}
-		});
-	};
+	}
 	
 	this.getstate = function() {
-		var fm  = this.fm,
-			sel = fm.selected(),
-			chk = sel.length === 1 && $('#'+fm.cwdHash2Id(sel[0])).length;
-		return chk? state == opened ? 1 : 0 : -1;
-	};
+		return this.fm.selected().length == 1 ? state == opened ? 1 : 0 : -1;
+	}
 	
 	this.exec = function() {
 		this.enabled() && this.window.trigger(this.opened() ? 'close' : 'open');
-	};
+	}
 
 	this.hideinfo = function() {
-		this.info.stop(true, true).hide();
-	};
+		this.info.stop(true).hide();
+	}
 
-};
+}
+
