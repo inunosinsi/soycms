@@ -273,20 +273,7 @@ class CMSBlogPage extends CMSPage{
 				$time = mktime(0,0,0,max(1,$this->month),max(1,$this->day),$this->year);
 
 				//条件付きフォーマット
-				if(version_compare(PHP_VERSION, "5.3.0", ">=")){
-					//preg_replaceのeオプションは5.5.0で非推奨になった
-					//preg_replace_callbackは4.0.5から使えるが無名関数は5.3.0以降
-					$year = $this->year; $month = $this->month; $day = $this->day;
-					$pageFormat = preg_replace_callback("/%DATE:([^%]*)%/u",function($m) use ($time) {return date($m[1],$time);},$pageFormat);
-					$pageFormat = preg_replace_callback('/%Y:([^%]*)%/u',function($m) use ($time, $year)  {return strlen($year)  ? date($m[1],$time) : '';},$pageFormat);
-					$pageFormat = preg_replace_callback('/%M:([^%]*)%/u',function($m) use ($time, $month) {return strlen($month) ? date($m[1],$time) : '';},$pageFormat);
-					$pageFormat = preg_replace_callback('/%D:([^%]*)%/u',function($m) use ($time, $day)   {return strlen($day)   ? date($m[1],$time) : '';},$pageFormat);
-				}else{
-					$pageFormat = preg_replace("/%DATE:([^%]*)%/e","date('\\1',\$time)",$pageFormat);
-					$pageFormat = preg_replace('/%Y:([^%]*)%/e',"strlen(\$this->year)  ? date('\\1',\$time) : ''",$pageFormat);
-					$pageFormat = preg_replace('/%M:([^%]*)%/e',"strlen(\$this->month) ? date('\\1',\$time) : ''",$pageFormat);
-					$pageFormat = preg_replace('/%D:([^%]*)%/e',"strlen(\$this->day)    ? date('\\1',\$time) : ''",$pageFormat);
-				}
+				$pageFormat = DateLabel::ParseConditionalDateFormat($pageFormat, $time, $this->year, $this->month, $this->day);
 
 
 				$this->title = $pageFormat;
@@ -965,4 +952,4 @@ class CMSBlogPage extends CMSPage{
 	}
 
 }
-?>
+

@@ -32,22 +32,7 @@ class DateLabel extends HTMLLabel{
 		}
 
 		//条件付きフォーマット
-		if(version_compare(PHP_VERSION, "5.3.0", ">=")){
-			//preg_replaceのeオプションは5.5.0で非推奨になった
-			//preg_replace_callbackは4.0.5から使えるが無名関数は5.3.0以降
-			$time = $this->time; $year = $this->year; $month = $this->month; $day = $this->day;
-			$format = preg_replace_callback("/%DATE:([^%]*)%/u",function($m) use ($time) {return date($m[1],$time);},$format);
-			$format = preg_replace_callback('/%Y:([^%]*)%/u',function($m) use ($time, $year)  {return strlen($year)  ? date($m[1],$time) : '';},$format);
-			$format = preg_replace_callback('/%M:([^%]*)%/u',function($m) use ($time, $month) {return strlen($month) ? date($m[1],$time) : '';},$format);
-			$format = preg_replace_callback('/%D:([^%]*)%/u',function($m) use ($time, $day)   {return strlen($day)   ? date($m[1],$time) : '';},$format);
-		}else{
-			$format = preg_replace("/%DATE:([^%]*)%/e","date('\\1',\$this->time)",$format);
-			$format = preg_replace('/%Y:([^%]*)%/e',"strlen(\$this->year)  ? date('\\1',\$this->time) : ''",$format);
-			$format = preg_replace('/%M:([^%]*)%/e',"strlen(\$this->month) ? date('\\1',\$this->time) : ''",$format);
-			$format = preg_replace('/%D:([^%]*)%/e',"strlen(\$this->day)    ? date('\\1',\$this->time) : ''",$format);
-		}
-
-
+		$format = self::ParseConditionalDateFormat($format, $this->time, $this->year, $this->month, $this->day);
 
 		$this->setText(date($format,$this->time));
 
@@ -70,5 +55,33 @@ class DateLabel extends HTMLLabel{
 	function setDay($v){
 		$this->day = $v;
 	}
+
+	/**
+	 * 条件付きフォーマットを解釈・置換する
+	 */
+	public static function ParseConditionalDateFormat($format, $time, $year, $month, $day){
+		//preg_replaceのe修飾子は5.5.0で非推奨になり、7以降は非対応
+		//preg_replace_callbackは4.0.5から使えるが無名関数は5.3.0以降
+		//と言うわけで、5.2系でも7以降でも問題なく動作するためには、preg_replace＋e修飾子もpreg_replace_callback＋無名関数も使えない
+		$matches = array();
+
+		if(preg_match("/%DATE:([^%]*)%/u",$format,$matches) && strlen($matches[0])){
+			$format = strtr($format, array($matches[0] => date($matches[1], $time)));
+		}
+
+		if(preg_match("/%Y:([^%]*)%/u",$format,$matches) && strlen($matches[0])){
+			$format = strtr($format, array($matches[0] => strlen( $year)  ? date($matches[1], $time) : ""));
+		}
+
+		if(preg_match("/%M:([^%]*)%/u",$format,$matches) && strlen($matches[0])){
+			$format = strtr($format, array($matches[0] => strlen( $month) ? date($matches[1], $time) : ""));
+		}
+
+		if(preg_match("/%D:([^%]*)%/u",$format,$matches) && strlen($matches[0])){
+			$format = strtr($format, array($matches[0] => strlen( $day)   ? date($matches[1], $time) : ""));
+		}
+
+		return $format;
+	}
 }
-?>
+
