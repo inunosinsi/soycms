@@ -290,6 +290,7 @@ class SOYShop_Item {
     //多言語化プラグインを考慮した商品名の取得
     function getOpenItemName(){
         static $attrDao;
+        if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
         if(!defined("SOYSHOP_MAIL_LANGUAGE")) define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
 
         if(SOYSHOP_MAIL_LANGUAGE != "jp"){
