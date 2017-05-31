@@ -20,24 +20,27 @@ class CustomConfigFormPage extends WebPage{
 
     function doPost(){
 
-        if(isset($_POST["LanguageConfig"]) && soy2_check_token()){
-            $indexes = array("LanguageConfig", "custom_field");
-            foreach($indexes as $index){
-                foreach($_POST[$index] as $key => $value) {
+        if(soy2_check_token()){
+            //カスタムフィールド、カスタムオプション
+            if(isset($_POST["LanguageConfig"])){
+                $indexes = array("LanguageConfig", "custom_field");
+                foreach($indexes as $index){
+                    foreach($_POST[$index] as $key => $value) {
 
-                    if(strlen($value)){
-                        $attr = new SOYShop_ItemAttribute();
-                        $attr->setItemId($this->itemId);
-                        $attr->setFieldId($key);
-                        $attr->setValue($value);
+                        if(strlen($value)){
+                            $attr = new SOYShop_ItemAttribute();
+                            $attr->setItemId($this->itemId);
+                            $attr->setFieldId($key);
+                            $attr->setValue($value);
 
-                        try{
-                            $this->attrDao->insert($attr);
-                        }catch(Exception $e){
                             try{
-                                $this->attrDao->update($attr);
+                                $this->attrDao->insert($attr);
                             }catch(Exception $e){
-                                //
+                                try{
+                                    $this->attrDao->update($attr);
+                                }catch(Exception $e){
+                                    //
+                                }
                             }
                         }
                     }
@@ -303,7 +306,7 @@ class CustomConfigFormPage extends WebPage{
                 $html[] = "<dd>";
 
                 $value = (isset($values[$key])) ? $values[$key] : null;
-                $html[] = FieldFormComponent::buildForm($key, $field, $value);
+                $html[] = FieldFormComponent::buildForm($key, $field, $value, $this->lang);
                 $html[] = "</dd>";
             }
         }

@@ -129,6 +129,9 @@ class SettingPage extends WebPage{
                     }
                 }
             }
+        } else if(isset($_GET["reset"])) {
+            self::setParameter("search_condition", null);
+            $cnd = array();
         }
 
         if(isset($_POST["search"]) && !isset($_POST["search_condition"])){
@@ -169,12 +172,12 @@ class SettingPage extends WebPage{
 
         $opts = array();
         foreach($this->categories as $cat){
-            $opts[$cat->getId()] = $cat->getName();
+            $opts[$cat->getId()] = $cat->getOpenCategoryName();
         }
         $this->addSelect("search_item_category", array(
             "name" => "search_condition[item_category]",
             "options" => $opts,
-            "selected" => $cnd["item_category"]
+            "selected" => (isset($cnd["item_category"])) ? $cnd["item_category"] : null
         ));
 
         $this->addCheckBox("search_item_is_open", array(
@@ -195,14 +198,14 @@ class SettingPage extends WebPage{
     private function buildForm($field){
         SOY2::import("module.plugins." . $this->configObj->getModuleId() . ".component.FieldFormComponent");
         $h = array();
-        $h[] = FieldFormComponent::buildForm($this->fieldId, $field);
+        $h[] = FieldFormComponent::buildForm($this->fieldId, $field, null, SOYSHOP_PUBLISH_LANGUAGE);
         return implode("\n", $h);
     }
 
     private function buildSearchConditionForm($field, $cnd){
         SOY2::import("module.plugins." . $this->configObj->getModuleId() . ".component.FieldFormComponent");
         $h = array();
-        $h[] = FieldFormComponent::buildSearchConditionForm($this->fieldId, $field, $cnd);
+        $h[] = FieldFormComponent::buildSearchConditionForm($this->fieldId, $field, $cnd, SOYSHOP_PUBLISH_LANGUAGE);
         return implode("\n", $h);
     }
 

@@ -3,7 +3,6 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 
     const FIELD_ID = "custom_search_field";
     private $dbLogic;
-    private $prefix;    //多言語化のプレフィックスを保持
 
     /**
      * 管理画面側で商品情報を更新する際に読み込まれる
@@ -68,9 +67,9 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 
             switch($field["type"]){
                 case CustomSearchFieldUtil::TYPE_CHECKBOX:
-                    if(strlen($field["option"])){
+                    if(strlen($field["option"][SOYSHOP_PUBLISH_LANGUAGE])){
                         $vals = explode(",", $csfValue);
-                        $opts = explode("\n", $field["option"]);
+                        $opts = explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]);
                         foreach($opts as $i => $opt){
                             $opt = trim($opt);
                             $htmlObj->addModel($key . "_"  . $i . "_visible", array(
@@ -106,13 +105,6 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 
         //多言語の方も念のため
         if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
-
-        //多言語化のプレフィックスでも調べてみる
-        if(is_null($this->prefix) && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-            SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-            $config = UtilMultiLanguageUtil::getConfig();
-            $this->prefix = (isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])) ? trim($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) : SOYSHOP_PUBLISH_LANGUAGE;
-        }
     }
 }
 

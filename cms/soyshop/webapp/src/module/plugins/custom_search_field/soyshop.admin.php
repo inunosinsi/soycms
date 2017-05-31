@@ -40,6 +40,22 @@ class CustomSearchFieldAdmin extends SOYShopAdminBase{
                 }
             }
         }
+
+        //ラジオ、チェックボックス、セレクトボックスの項目の多言語化
+        SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+        $configs = CustomSearchFieldUtil::getConfig();
+        $doUpdate = false;
+        foreach($configs as $fieldId => $conf){
+            if(isset($conf["option"]) && is_array($conf["option"])) break;
+
+            if(isset($conf["option"]) && !is_array($conf["option"])){
+                $opt = array(UtilMultiLanguageUtil::LANGUAGE_JP => $conf["option"]);
+                $conf["option"] = $opt;
+                $configs[$fieldId] = $conf;
+                $doUpdate = true;
+            }
+        }
+        if($doUpdate) CustomSearchFieldUtil::saveConfig($configs);
     }
 }
 SOYShopPlugin::extension("soyshop.admin", "custom_search_field", "CustomSearchFieldAdmin");

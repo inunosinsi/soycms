@@ -3,10 +3,17 @@
 class CustomSearchFieldConfigFormPage extends WebPage{
 
     private $configObj;
+    private $languages;
 
     function __construct(){
         SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
         SOY2::import("module.plugins.custom_search_field.component.CustomSearchFieldListComponent");
+        SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+        if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
+            $this->languages = UtilMultiLanguageUtil::allowLanguages();
+        }else{
+            $this->languages = array(UtilMultiLanguageUtil::LANGUAGE_JP => "日本語");
+        }
     }
 
     function doPost(){
@@ -93,7 +100,8 @@ class CustomSearchFieldConfigFormPage extends WebPage{
         DisplayPlugin::toggle("deleted", isset($_GET["deleted"]));
 
         $this->createAdd("field_list", "CustomSearchFieldListComponent", array(
-            "list" => CustomSearchFieldUtil::getConfig()
+            "list" => CustomSearchFieldUtil::getConfig(),
+            "languages" => $this->languages
         ));
 
         self::buildCreateForm();
@@ -127,16 +135,20 @@ class CustomSearchFieldConfigFormPage extends WebPage{
                     $html[] = "<input type=\"number\" csf:id=\"custom_search_" . $key . "_end\">\n\n";
                     break;
                 case CustomSearchFieldUtil::TYPE_CHECKBOX:
-                    if(isset($field["option"])) foreach(explode("\n", $field["option"]) as $i => $o){
-                        $o = trim($o);
-                        $html[] = "\t<input type=\"checkbox\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+                    if(isset($field["option"][UtilMultiLanguageUtil::LANGUAGE_JP])) {
+                        foreach(explode("\n", $field["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) as $i => $o){
+                            $o = trim($o);
+                            $html[] = "\t<input type=\"checkbox\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+                        }
                     }
                     $html[] = "\n";
                     break;
                 case CustomSearchFieldUtil::TYPE_RADIO:
-                    if(isset($field["option"])) foreach(explode("\n", $field["option"]) as $i => $o){
-                        $o = trim($o);
-                        $html[] = "\t<input type=\"radio\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+                    if(isset($field["option"][UtilMultiLanguageUtil::LANGUAGE_JP])) {
+                        foreach(explode("\n", $field["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) as $i => $o){
+                            $o = trim($o);
+                            $html[] = "\t<input type=\"radio\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+                        }
                     }
                     $html[] = "\n";
                     break;
