@@ -78,7 +78,7 @@ class FieldFormComponent {
         }
     }
 
-    private function getFieldOption($options, $lang){
+    private static function getFieldOption($options, $lang){
         if(isset($options[$lang]) && strlen($options[$lang])) return trim($options[$lang]);
 
         //日本語カラムを取得
