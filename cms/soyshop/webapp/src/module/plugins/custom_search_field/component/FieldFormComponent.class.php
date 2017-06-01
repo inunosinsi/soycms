@@ -108,7 +108,7 @@ class FieldFormComponent {
                 $fs = array();
                 foreach($forms as $f){
                     preg_match('/value="(.*)"/', $f, $tmp);
-                    if(is_array($cnd[$fieldId]) && in_array($tmp[1], $cnd[$fieldId])){
+                    if(isset($cnd[$fieldId]) && is_array($cnd[$fieldId]) && in_array($tmp[1], $cnd[$fieldId])){
                         $f = str_replace("value=\"" . $tmp[1] . "\"", "value=\"" . $tmp[1] . "\" checked=\"checked\"", $f);
                         $fs[] = $f;
                     }else{
@@ -123,7 +123,7 @@ class FieldFormComponent {
                 $fs = array();
                 foreach($forms as $f){
                     preg_match('/value="(.*)"/', $f, $tmp);
-                    if(isset($tmp[1]) && $tmp[1] ==  $cnd[$fieldId]){
+                    if(isset($tmp[1]) && isset($cnd[$fieldId]) && $tmp[1] ==  $cnd[$fieldId]){
                         $f = str_replace("value=\"" . $tmp[1] . "\"", "value=\"" . $tmp[1] . "\" checked=\"checked\"", $f);
                         $fs[] = $f;
                     }else{
@@ -137,7 +137,7 @@ class FieldFormComponent {
                 $fs = array();
                 foreach($forms as $f){
                     preg_match('/value="(.*)"/', $f, $tmp);
-                    if(isset($tmp[1]) && $tmp[1] ==  $cnd[$fieldId]){
+                    if(isset($tmp[1]) && isset($cnd[$fieldId]) && $tmp[1] ==  $cnd[$fieldId]){
                         $f = str_replace("value=\"" . $tmp[1] . "\"", "value=\"" . $tmp[1] . "\" selected=\"selected\"", $f);
                         $fs[] = $f;
                     }else{

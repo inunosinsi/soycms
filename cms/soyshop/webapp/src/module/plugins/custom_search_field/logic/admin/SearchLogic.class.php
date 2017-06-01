@@ -54,33 +54,41 @@ class SearchLogic extends SOY2LogicBase{
     }
 
     function setCondition($conditions){
-        if(count($conditions)) foreach($conditions as $key => $value){
-            switch($key){
-                case $this->fieldId:
-                    switch($this->config[$this->fieldId]["type"]){
-                        case CustomSearchFieldUtil::TYPE_CHECKBOX:
-                            foreach($value as $i => $v){
-                                $this->where[] = "s." . $this->fieldId . " LIKE :" . $this->fieldId . $i;
-                                $this->binds[":" . $this->fieldId . $i] = "%" . trim($v) . "%";
-                            }
+        if(count($conditions)) {
+            foreach($conditions as $key => $value){
+                switch($key){
+                    case $this->fieldId:
+                        switch($this->config[$this->fieldId]["type"]){
+                            case CustomSearchFieldUtil::TYPE_CHECKBOX:
+                                foreach($value as $i => $v){
+                                    $this->where[] = "s." . $this->fieldId . " LIKE :" . $this->fieldId . $i;
+                                    $this->binds[":" . $this->fieldId . $i] = "%" . trim($v) . "%";
+                                }
 
-                            break;
-                        default:
-                            $this->where[] = "s." . $this->fieldId . " LIKE :" . $this->fieldId;
-                            $this->binds[":" . $this->fieldId] = "%" . trim($value) . "%";
-                    }
-                    break;
-                case "nothing":
-                    $this->where[] = "s." . $this->fieldId . " IS NULL";
-                    break;
-                case "item_is_open":
-                    if(count($value)){
-                        $this->where[] = $key . " IN (" . implode(",", $value) . ") ";
-                    }
-                    break;
-                default:
-                    $this->where[] = "i." . $key . " LIKE :" . $key;
-                    $this->binds[":" . $key] = "%" . trim($value) . "%";
+                                break;
+                            default:
+                                $this->where[] = "s." . $this->fieldId . " LIKE :" . $this->fieldId;
+                                $this->binds[":" . $this->fieldId] = "%" . trim($value) . "%";
+                        }
+                        break;
+                    case "nothing":
+                        $this->where[] = "s." . $this->fieldId . " IS NULL";
+                        break;
+                    case "item_is_open":
+                        if(count($value)){
+                            $this->where[] = $key . " IN (" . implode(",", $value) . ") ";
+                        }
+                        break;
+                    case "item_category":
+                        if(isset($value) && is_numeric($value)){
+                            $this->where[] = "i." . $key . " = :" . $key;
+                            $this->binds[":" . $key] = trim($value);
+                        }
+                        break;
+                    default:
+                        $this->where[] = "i." . $key . " LIKE :" . $key;
+                        $this->binds[":" . $key] = "%" . trim($value) . "%";
+                }
             }
         }
 
