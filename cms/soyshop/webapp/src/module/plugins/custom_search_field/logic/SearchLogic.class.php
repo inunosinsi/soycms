@@ -19,11 +19,13 @@ class SearchLogic extends SOY2LogicBase{
     function search($obj, $current, $limit){
         self::setCondition();
 
-        $sql = "SELECT * " .
-                "FROM soyshop_item ";
+        $sql = "SELECT DISTINCT s.item_id, s.*, i.* " .
+                "FROM soyshop_item i ".
+                "INNER JOIN soyshop_custom_search s ".
+                "ON i.id = s.item_id ";
         $sql .= self::buildWhere();    //カウントの時と共通の処理は切り分ける
-        $sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
-        if(isset($sort)) $sql .= " ORDER BY " . $sort . " ";
+        $sort = self::buildOrderBySQLOnSearchPage($obj->getPageObject());
+        if(isset($sort)) $sql .= $sort;
 
         //表示件数
         $sql .= " LIMIT " . (int)$limit;
@@ -52,7 +54,9 @@ class SearchLogic extends SOY2LogicBase{
         self::setCondition();
 
         $sql = "SELECT COUNT(id) AS total " .
-                "FROM soyshop_item ";
+                "FROM soyshop_item i ".
+                "INNER JOIN soyshop_custom_search s ".
+                "ON i.id = s.item_id ";
         $sql .= self::buildWhere();    //カウントの時と共通の処理は切り分ける
 
         try{
@@ -67,36 +71,36 @@ class SearchLogic extends SOY2LogicBase{
     private function buildWhere(){
         $config = CustomSearchFieldUtil::getSearchConfig();
 
-        $where = "WHERE open_period_start < :now ".
-                "AND open_period_end > :now ".
-                "AND item_is_open = 1 ".
-                "AND is_disabled != 1 ";
+        $where = "WHERE i.open_period_start < :now ".
+                "AND i.open_period_end > :now ".
+                "AND i.item_is_open = 1 ".
+                "AND i.is_disabled != 1 ";
 
         $item_where = array();
 
         //通常商品を表示
         if(isset($config["search"]["single"]) && (int)$config["search"]["single"] === 1){
-            $item_where[] = "item_type = \"" . SOYShop_Item::TYPE_SINGLE . "\"";
+            $item_where[] = "i.item_type = \"" . SOYShop_Item::TYPE_SINGLE . "\"";
         }
 
         //親商品を表示
         if(isset($config["search"]["parent"]) && (int)$config["search"]["parent"] === 1){
-            $item_where[] = "item_type = \"" . SOYShop_Item::TYPE_GROUP . "\"";
+            $item_where[] = "i.item_type = \"" . SOYShop_Item::TYPE_GROUP . "\"";
         }
 
         //子商品を表示
         if(isset($config["search"]["child"]) && (int)$config["search"]["child"] === 1){
-            $item_where[] = "(item_type != \"" . SOYShop_Item::TYPE_SINGLE . "\" AND item_type != \"" . SOYShop_Item::TYPE_GROUP . "\" AND item_type != \"" . SOYShop_Item::TYPE_DOWNLOAD . "\") ";
+            $item_where[] = "(i.item_type != \"" . SOYShop_Item::TYPE_SINGLE . "\" AND i.item_type != \"" . SOYShop_Item::TYPE_GROUP . "\" AND i.item_type != \"" . SOYShop_Item::TYPE_DOWNLOAD . "\") ";
 
             //SQLiteでREGEXPを使用できないサーバがあるみたい
             if(SOY2DAOConfig::type() == "mysql"){
-                $item_where[] = "item_type REGEXP '^[0-9]+$'";
+                $item_where[] = "i.item_type REGEXP '^[0-9]+$'";
             }
         }
 
         //ダウンロード商品を表示
         if(isset($config["search"]["download"]) && (int)$config["search"]["download"] === 1){
-            $item_where[] = "item_type = \"" . SOYShop_Item::TYPE_DOWNLOAD . "\"";
+            $item_where[] = "i.item_type = \"" . SOYShop_Item::TYPE_DOWNLOAD . "\"";
         }
 
         if(count($item_where)){
@@ -116,7 +120,7 @@ class SearchLogic extends SOY2LogicBase{
             if(isset($_GET["c_search"]["item_name"]) && strlen($_GET["c_search"]["item_name"])) {
                 //日本語検索
                 if(SOYSHOP_PUBLISH_LANGUAGE == "jp"){
-                    $this->where["item_name"] = "item_name LIKE :item_name";
+                    $this->where["item_name"] = "i.item_name LIKE :item_name";
                     $this->binds[":item_name"] = "%" . trim($_GET["c_search"]["item_name"]) . "%";
                 //多言語検索
                 }else{
@@ -126,7 +130,7 @@ class SearchLogic extends SOY2LogicBase{
             }
 
             if(isset($_GET["c_search"]["item_code"]) && strlen($_GET["c_search"]["item_code"])) {
-                $this->where["item_code"] = "item_code LIKE :item_code";
+                $this->where["item_code"] = "i.item_code LIKE :item_code";
                 $this->binds[":item_code"] = "%" . trim($_GET["c_search"]["item_code"]) . "%";
             }
 
@@ -136,18 +140,18 @@ class SearchLogic extends SOY2LogicBase{
                 $maps = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
                 $catId = (int)trim($_GET["c_search"]["item_category"]);
                 if(isset($maps[$catId])){
-                    $this->where["item_category"] = "item_category IN (" . implode(",", $maps[$catId]) . ")";
+                    $this->where["item_category"] = "i.item_category IN (" . implode(",", $maps[$catId]) . ")";
                 }
             }
 
             $pmin = "";$pmax = "";
             if(isset($_GET["c_search"]["item_price_min"]) && strlen($_GET["c_search"]["item_price_min"]) && is_numeric($_GET["c_search"]["item_price_min"])) {
-                $pmin = "item_price >= :item_price_min";
+                $pmin = "i.item_price >= :item_price_min";
                 $this->binds[":item_price_min"] = (int)$_GET["c_search"]["item_price_min"];
             }
 
             if(isset($_GET["c_search"]["item_price_max"]) && strlen($_GET["c_search"]["item_price_max"]) && is_numeric($_GET["c_search"]["item_price_max"])) {
-                $pmax = "item_price <= :item_price_max";
+                $pmax = "i.item_price <= :item_price_max";
                 $this->binds[":item_price_max"] = (int)$_GET["c_search"]["item_price_max"];
             }
 
@@ -156,8 +160,6 @@ class SearchLogic extends SOY2LogicBase{
             }else{
                 $this->where["item_price"] = $pmin . $pmax;
             }
-
-            $s_where = array();
 
             foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 
@@ -168,7 +170,7 @@ class SearchLogic extends SOY2LogicBase{
                     case CustomSearchFieldUtil::TYPE_TEXTAREA:
                     case CustomSearchFieldUtil::TYPE_RICHTEXT:
                         if(isset($_GET["c_search"][$key]) && strlen($_GET["c_search"][$key])){
-                            $s_where[$key] = $key . " LIKE :" . $key;
+                            $this->where[$key] = "s." . $key . " LIKE :" . $key;
                             $this->binds[":" . $key] = "%" . trim($_GET["c_search"][$key]) . "%";
                         }
                         break;
@@ -177,17 +179,17 @@ class SearchLogic extends SOY2LogicBase{
                     case CustomSearchFieldUtil::TYPE_RANGE:
                         $ws = "";$we = "";    //whereのスタートとエンド
                         if(isset($_GET["c_search"][$key . "_start"]) && strlen($_GET["c_search"][$key . "_start"]) && is_numeric($_GET["c_search"][$key . "_start"])){
-                            $ws = $key . " >= :" . $key . "_start";
+                            $ws = "s." . $key . " >= :" . $key . "_start";
                             $this->binds[":" . $key . "_start"] = (int)$_GET["c_search"][$key . "_start"];
                         }
                         if(isset($_GET["c_search"][$key . "_end"]) && strlen($_GET["c_search"][$key . "_end"]) && is_numeric($_GET["c_search"][$key . "_end"])){
-                            $we = $key .  " <= :" . $key . "_end";
+                            $we = "s." . $key .  " <= :" . $key . "_end";
                             $this->binds[":" . $key . "_end"] = (int)$_GET["c_search"][$key . "_end"];
                         }
                         if(strlen($ws) && strlen($we)){
-                            $s_where[$key] = "(" . $ws . " AND " . $we . ")";
+                            $this->where[$key] = "(" . $ws . " AND " . $we . ")";
                         }else if(strlen($ws) || strlen($we)){
-                            $s_where[$key] = $ws . $we;
+                            $this->where[$key] = $ws . $we;
                         }
                         break;
 
@@ -197,49 +199,26 @@ class SearchLogic extends SOY2LogicBase{
                             $w = array();
                             foreach($_GET["c_search"][$key] as $i => $v){
                                 if(!strlen($v)) continue;
-                                $w[] = $key . " LIKE :" . $key . $i;
+                                $w[] = "s." . $key . " LIKE :" . $key . $i;
                                 $this->binds[":" . $key . $i] = "%" . trim($v) . "%";
                             }
-                            if(count($w)) $s_where[$key] = "(" . implode(" OR ", $w) . ")";
+                            if(count($w)) $this->where[$key] = "(" . implode(" OR ", $w) . ")";
                         }
                         break;
 
                     //数字、ラジオボタン、セレクトボックス
                     default:
                         if(isset($_GET["c_search"][$key]) && strlen($_GET["c_search"][$key])){
-                            $s_where[$key] = $key . " = :" . $key;
+                            $this->where[$key] = "s." . $key . " = :" . $key;
                             $this->binds[":" . $key] = $_GET["c_search"][$key];
                         }
                 }
             }
+
+            //多言語化
+            $this->where["lang"] = "s.lang = " . UtilMultiLanguageUtil::getLanguageId(SOYSHOP_PUBLISH_LANGUAGE);
+
             $this->binds[":now"] = time();
-
-            if(count($s_where)){
-                $subquery = "(" .
-                        "SELECT item_id FROM soyshop_custom_search WHERE ";
-                $f = 0;
-                foreach($s_where as $sw){
-                    if(!strlen($sw)) continue;
-                    if($f == 0){
-                        $subquery .= $sw . " ";
-                    }else{
-                        $subquery .= "AND " . $sw . " ";
-                    }
-
-                    $f++;
-                }
-                //多言語化
-                $subquery .= "AND lang = " . UtilMultiLanguageUtil::getLanguageId(SOYSHOP_PUBLISH_LANGUAGE) . " ";
-                $subquery .= ")";
-                $config = CustomSearchFieldUtil::getSearchConfig();
-                $w = "(id IN " . $subquery;
-                if(isset($config["search"]["child"]) && (int)$config["search"]["child"] === 1){
-                    $w .= " OR item_type IN " . $subquery;
-                }
-                $w .= ")";
-
-                $this->where["custom"] = $w;
-            }
         }
     }
 
@@ -276,7 +255,7 @@ class SearchLogic extends SOY2LogicBase{
                 $binds[":" . $key] = trim($value);
         }
 
-        $sql .= self::buildOrderBySQL($obj);
+        $sql .= self::buildOrderBySQLOnListPage($obj);
         $sql .= " LIMIT " . $limit;
 
         //OFFSET
@@ -331,10 +310,20 @@ class SearchLogic extends SOY2LogicBase{
         return (isset($res[0]["TOTAL"])) ? (int)$res[0]["TOTAL"] : 0;
     }
 
-    private function buildOrderBySQL(SOYShop_ListPage $obj){
+    private function buildOrderBySQLOnSearchPage(SOYShop_SearchPage $obj){
+        return self::buildOrderBySQLCommon($obj->getPage()->getId());
+    }
 
-        $pageId = $obj->getPage()->getId();
+    private function buildOrderBySQLOnListPage(SOYShop_ListPage $obj){
+        $orderSql = self::buildOrderBySQLCommon($obj->getPage()->getId());
+        if(is_null($orderSql)){
+            $sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
+            $orderSql = " ORDER BY i." . $sort . " ";
+        }
+        return $orderSql;
+    }
 
+    private function buildOrderBySQLCommon($pageId){
         $session = SOY2ActionSession::getUserSession();
         if(isset($_GET["sort"]) || isset($_GET["csort"])){
             $custom_search_sort = null;
@@ -363,9 +352,8 @@ class SearchLogic extends SOY2LogicBase{
             }
 
             return " ORDER BY s." . $custom_search_sort . " IS NULL ASC, s." . $custom_search_sort . $suffix;
-        }else{
-            $sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
-            return " ORDER BY i." . $sort . " ";
         }
+
+        return null;
     }
 }
