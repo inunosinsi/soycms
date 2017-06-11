@@ -87,7 +87,7 @@ function soyshop_get_category_object($categoryId){
  * 商品一覧のURLを取得する
  */
 function soyshop_get_item_list_link(SOYShop_Item $item, SOYShop_Category $category){
-    static $results, $isInstalled, $dao, $listUrl;
+    static $results, $isInstalled, $dao, $listUri;
 
     //カテゴリが存在していない場合は処理を続行しない
     if(is_null($category->getAlias())) return null;
