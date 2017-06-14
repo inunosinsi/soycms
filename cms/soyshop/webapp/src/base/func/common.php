@@ -118,6 +118,7 @@ function soyshop_get_item_list_link(SOYShop_Item $item, SOYShop_Category $catego
         }else{
             if(is_null($listUri)){
                 $values = SOYShop_DataSets::get("site.url_mapping", array());
+                SOY2::import("domain.site.SOYShop_Page");
                 foreach($values as $pageId => $v){
                     if($v["type"] == SOYShop_Page::TYPE_LIST){
                         $listUri = $v["uri"];
