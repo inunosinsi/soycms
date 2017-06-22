@@ -10,17 +10,6 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
     if(is_null($itemDao)) $itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
     if(is_null($categoryDao)) $categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 
-    $htmlObj->addLabel("id", array(
-        "text" => $item->getId(),
-        "soy2prefix" => SOYSHOP_SITE_PREFIX
-    ));
-
-    //商品名
-    $htmlObj->addLabel("item_name", array(
-        "text" => $item->getOpenItemName(),
-        "soy2prefix" => SOYSHOP_SITE_PREFIX
-    ));
-
     //グループの場合の処理
     $childItems = array();
     if($item->getType() == SOYShop_Item::TYPE_GROUP){
@@ -36,6 +25,17 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
             "soy2prefix" => "block"
         ));
     }
+
+    $htmlObj->addLabel("id", array(
+        "text" => $item->getId(),
+        "soy2prefix" => SOYSHOP_SITE_PREFIX
+    ));
+
+    //商品名
+    $htmlObj->addLabel("item_name", array(
+        "text" => $item->getOpenItemName(),
+        "soy2prefix" => SOYSHOP_SITE_PREFIX
+    ));
 
 
     //表示価格が0円以上の場合は表示する
