@@ -133,7 +133,7 @@ class CustomSearchFieldListComponent extends HTMLList{
 
     private function checkDisplaySiteMapOptionsForm($type){
       if(!SOYShopPluginUtil::checkIsActive("common_sitemap_xml")) return false;
-      return ($type === CustomSearchFieldUtil::TYPE_CHECKBOX || $type === CustomSearchFieldUtil::TYPE_SELECT);
+      return self::checkDisplayOptionsForm($type);
     }
 
     function setLanguages($languages){
