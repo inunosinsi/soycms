@@ -80,5 +80,26 @@ class CustomSearchFieldUtil{
 
         return $list;
     }
+
+    public static function getCustomSearchItemListPages(){
+      static $list;
+      if(is_null($list)){
+        $list = array();
+        try{
+          $pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByType(SOYShop_Page::TYPE_LIST);
+        }catch(Exception $e){
+          return $list;
+        }
+        if(!count($pages)) return $list;
+
+        foreach($pages as $page){
+          $moduleId = $page->getPageObject()->getModuleId();
+          if(isset($moduleId) && strpos($moduleId, "custom_search_field") === 0){
+            $list[$page->getId()] = $page->getName();
+          }
+        }
+      }
+      return $list;
+    }
 }
 ?>

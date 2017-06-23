@@ -42,10 +42,10 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		foreach($pages as $obj){
 
 			$getUri = $obj->getUri();
-			
+
 			if($getUri==SOYSHOP_TOP_PAGE_MARKER){
 				$getUri = "";
-				
+
 			//404の場合はスルー
 			}else if($getUri == SOYSHOP_404_PAGE_MARKER){
 				continue;
@@ -81,7 +81,6 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 							}
 							break;
 						case SOYShop_ListPage::TYPE_FIELD:
-						case SOYShop_ListPage::TYPE_CUSTOM:
 							$value = array();
 							$html[] = "	<url>";
 							if(strlen($getUri) == 0){
@@ -92,6 +91,35 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 							$html[] = "		<priority>0.5</priority>";
 							$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
 							$html[] = "	</url>";
+							break;
+						case SOYShop_ListPage::TYPE_CUSTOM:
+							$moduleId = $pageObject->getModuleId();
+							if(isset($moduleId)){
+								//カスタムサーチフィールド
+								if(strpos($moduleId, "custom_search_field") === 0){
+									SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+									$configs = CustomSearchFieldUtil::getConfig();
+									if(!count($configs)) continue;
+									foreach($configs as $fieldId => $config){
+										if(!isset($config["sitemap"]) || !is_numeric($config["sitemap"])) continue;
+
+										/**
+										 * @ToDo 多言語化
+										 */
+										if(!strlen($config["option"]["jp"])) continue;
+										$opts = explode("\n", $config["option"]["jp"]);
+										foreach($opts as $opt){
+											$opt = trim($opt);
+											if(!strlen($opt)) continue;
+											$html[] = "	<url>";
+											$html[] = "		<loc>" . $url . $getUri . "/" . $fieldId . "/" . $opt . "</loc>";
+	 										$html[] = "		<priority>0.5</priority>";
+	 										$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
+	 										$html[] = "	</url>";
+										}
+									}
+								}
+							}
 							break;
 					}
 					break;
@@ -121,14 +149,14 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 						}
 						$html[] = "	<url>";
 						$html[] = "		<loc>" . $url . $getUri . "</loc>";
-						
+
 						//トップページ
 						if(!strlen($getUri)){
 							$html[] = "		<priority>1.0</priority>";
 						}else{
 							$html[] = "		<priority>0.5</priority>";
 						}
-						
+
 						$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
 						$html[] = "	</url>";
 					}
@@ -140,10 +168,10 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$html[] = "</urlset>";
 
 		$page->addLabel("sitemap.xml", array(
+			//"html" => "",
 			"html" => implode("\n", $html),
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
-
 	}
 
 	function getDate($time){
@@ -192,4 +220,3 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 }
 
 SOYShopPlugin::extension("soyshop.site.beforeoutput", "common_sitemap_xml", "CommonSitemapXmlBeforeOutput");
-?>

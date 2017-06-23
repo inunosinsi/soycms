@@ -44,6 +44,7 @@ class CustomSearchFieldConfigFormPage extends WebPage{
             $config = CustomSearchFieldUtil::getConfig();
             $config[$key]["option"] = $_POST["config"]["option"];
             $config[$key]["default"] = (isset($_POST["config"]["default"])) ? $_POST["config"]["default"] : null;
+            $config[$key]["sitemap"] = (isset($_POST["config"]["sitemap"])) ? $_POST["config"]["sitemap"] : null;
 
             CustomSearchFieldUtil::saveConfig($config);
             $this->configObj->redirect("updated");
@@ -95,9 +96,9 @@ class CustomSearchFieldConfigFormPage extends WebPage{
     function execute(){
         WebPage::__construct();
 
-        DisplayPlugin::toggle("updated", isset($_GET["updated"]));
-        DisplayPlugin::toggle("error", isset($_GET["error"]));
-        DisplayPlugin::toggle("deleted", isset($_GET["deleted"]));
+        foreach(array("updated", "error", "deleted") as $t){
+            DisplayPlugin::toggle($t, isset($_GET[$t]));
+        }
 
         $this->createAdd("field_list", "CustomSearchFieldListComponent", array(
             "list" => CustomSearchFieldUtil::getConfig(),

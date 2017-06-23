@@ -56,6 +56,16 @@ class CustomSearchFieldListComponent extends HTMLList{
             "visible" => (isset($entity["type"])) ? self::checkDisplayOptionsForm($entity["type"]) : false
         ));
 
+        $this->addModel("sitemap_option_area", array(
+            "visible" => (isset($entity["type"])) ? self::checkDisplaySiteMapOptionsForm($entity["type"]) : false
+        ));
+
+        $this->addSelect("custom_search_item_list_page", array(
+          "name" => "config[sitemap]",
+          "options" => CustomSearchFieldUtil::getCustomSearchItemListPages(),
+          "selected" => (isset($entity["sitemap"])) ? (int)$entity["sitemap"] : false
+        ));
+
         //言語ごとのオプション
         $this->createAdd("multi_lang_list", "MultiLanguageOptionListComponent", array(
             "list" => $this->languages,
@@ -119,6 +129,11 @@ class CustomSearchFieldListComponent extends HTMLList{
 
     private function checkDisplayOptionsForm($type){
         return ($type === CustomSearchFieldUtil::TYPE_RADIO || $type === CustomSearchFieldUtil::TYPE_CHECKBOX || $type === CustomSearchFieldUtil::TYPE_SELECT);
+    }
+
+    private function checkDisplaySiteMapOptionsForm($type){
+      if(!SOYShopPluginUtil::checkIsActive("common_sitemap_xml")) return false;
+      return ($type === CustomSearchFieldUtil::TYPE_CHECKBOX || $type === CustomSearchFieldUtil::TYPE_SELECT);
     }
 
     function setLanguages($languages){
