@@ -25,7 +25,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			return;
 		}
 
-		$pages = $this->getPages();
+		$pages = self::getPages();
 
 		if(count($pages) == 0){
 			return;
@@ -62,13 +62,13 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 								$html[] = "	<url>";
 								$html[] = "		<loc>" . $url . $getUri . "/</loc>";
 								$html[] = "		<priority>0.8</priority>";
-								$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
+								$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
 								$html[] = "	</url>";
 							}
 
 							$categoryIds = $pageObject->getCategories();
 							foreach($categoryIds as $categoryId){
-								$category = $this->getCategory($categoryId);
+								$category = self::getCategory($categoryId);
 								$html[] = "	<url>";
 								if(strlen($getUri) == 0){
 									$html[] = "		<loc>" . $url.$category->getAlias() . "/</loc>";
@@ -76,7 +76,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 									$html[] = "		<loc>" . $url.$getUri."/" . $category->getAlias() . "/</loc>";
 								}
 								$html[] = "		<priority>0.5</priority>";
-								$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
+								$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
 								$html[] = "	</url>";
 							}
 							break;
@@ -89,7 +89,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 								$html[] = "		<loc>" . $url . $getUri . "/</loc>";
 							}
 							$html[] = "		<priority>0.5</priority>";
-							$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
+							$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
 							$html[] = "	</url>";
 							break;
 						case SOYShop_ListPage::TYPE_CUSTOM:
@@ -114,7 +114,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 											$html[] = "	<url>";
 											$html[] = "		<loc>" . $url . $getUri . "/" . $fieldId . "/" . $opt . "</loc>";
 	 										$html[] = "		<priority>0.5</priority>";
-	 										$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
+	 										$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
 	 										$html[] = "	</url>";
 										}
 									}
@@ -125,7 +125,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 					break;
 				case SOYShop_Page::TYPE_DETAIL:
 					$value = array();
-					$items = $this->getItems($obj->getId());
+					$items = self::getItems($obj->getId());
 					foreach($items as $item){
 						$html[] = "	<url>";
 						if(strlen($getUri) == 0){
@@ -134,7 +134,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 							$html[] = "		<loc>" . $url . $getUri . "/" . $item->getAlias() . "</loc>";
 						}
 						$html[] = "		<priority>0.8</priority>";
-						$html[] = "		<lastmod>" . $this->getDate($item->getUpdateDate()) . "</lastmod>";
+						$html[] = "		<lastmod>" . self::getDate($item->getUpdateDate()) . "</lastmod>";
 						$html[] = "	</url>";
 					}
 					break;
@@ -157,12 +157,26 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 							$html[] = "		<priority>0.5</priority>";
 						}
 
-						$html[] = "		<lastmod>" . $this->getDate($obj->getUpdateDate()) . "</lastmod>";
+						$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
 						$html[] = "	</url>";
 					}
 					break;
 			}
+		}
 
+		//管理画面で手動で追加したURL分
+		SOY2::import("module.plugins.common_sitemap_xml.util.SitemapXMLUtil");
+		$configs = SitemapXMLUtil::getConfig();
+		if(count($configs)){
+			foreach($configs as $config){
+				if(isset($config["url"]) && strlen($config["url"]) && strpos($config["url"], "http") === 0){
+					$html[] = "	<url>";
+					$html[] = "		<loc>" . htmlspecialchars($config["url"], ENT_QUOTES, "UTF-8") . "</loc>";
+					$html[] = "		<priority>0.5</priority>";
+					$html[] = "		<lastmod>" . self::getDate($config["lastmod"]) . "</lastmod>";
+					$html[] = "	</url>";
+				}
+			}
 		}
 
 		$html[] = "</urlset>";
@@ -174,11 +188,11 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		));
 	}
 
-	function getDate($time){
+	private function getDate($time){
 		return date("Y", $time) . "-" . date("m", $time) . "-" . date("d", $time) . "T" . date("H", $time) . ":" . date("i", $time) . ":" . date("s", $time) . "+09:00";
 	}
 
-	function getPages(){
+	private function getPages(){
 		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 		try{
 			$pages = $dao->get();
@@ -190,7 +204,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	private $itemDao;
 
-	function getItems($pageId){
+	private function getItems($pageId){
 		if(!$this->itemDao){
 			$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		}
@@ -205,7 +219,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	private $categoryDao;
 
-	function getCategory($categoryId){
+	private function getCategory($categoryId){
 		if(!$this->categoryDao){
 			$this->categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 		}

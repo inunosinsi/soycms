@@ -5,8 +5,8 @@ class CommonSitemapXmlConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-		
-		$form = SOY2HTMLFactory::createInstance("CommonSitemapXmlConfigFormPage");
+		SOY2::import("module.plugins.common_sitemap_xml.config.SitemapXMLConfigPage");
+		$form = SOY2HTMLFactory::createInstance("SitemapXMLConfigPage");
 		$form->setConfigObj($this);
 		$form->execute();
 		return $form->getObject();
@@ -22,26 +22,3 @@ class CommonSitemapXmlConfig extends SOYShopConfigPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.config", "common_sitemap_xml", "CommonSitemapXmlConfig");
-
-class CommonSitemapXmlConfigFormPage extends WebPage{
-	
-	function __construct(){
-		SOY2DAOFactory::importEntity("SOYShop_DataSets");
-	}
-	
-	function doPost(){
-	}
-	
-	function execute(){
-		WebPage::__construct();	
-	}
-	
-	function getTemplateFilePath(){
-		return dirname(__FILE__) . "/soyshop.config.html";
-	}
-
-	function setConfigObj($obj) {
-		$this->config = $obj;
-	}
-}
-?>
