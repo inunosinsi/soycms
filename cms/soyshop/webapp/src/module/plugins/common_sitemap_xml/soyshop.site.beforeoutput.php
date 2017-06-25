@@ -6,6 +6,8 @@
 
 class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
+	private $csfConfigs;
+
 	function beforeOutput($page){
 		$pageObj = $page->getPageObject();
 
@@ -39,9 +41,25 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$html[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 		$html[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:image=\"http://www.sitemaps.org/schemas/sitemap-image/1.1\" xmlns:video=\"http://www.sitemaps.org/schemas/sitemap-video/1.1\">";
 
+		//多言語プラグイン
+		SOY2::import("util.SOYShopPluginUtil");
+		if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
+			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+			$langs = array_keys(UtilMultiLanguageUtil::allowLanguages());
+		}
+
 		foreach($pages as $obj){
 
 			$getUri = $obj->getUri();
+
+			//多言語化プラグインで無視するurl
+			if(count($langs)){
+				$isStop = false;
+				foreach($langs as $lang){
+					if(strpos($getUri, $lang . "/") === 0 || $lang == $getUri) $isStop = true;
+				}
+				if($isStop) continue;
+			}
 
 			if($getUri==SOYSHOP_TOP_PAGE_MARKER){
 				$getUri = "";
@@ -97,10 +115,13 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 							if(isset($moduleId)){
 								//カスタムサーチフィールド
 								if(strpos($moduleId, "custom_search_field") === 0){
-									SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-									$configs = CustomSearchFieldUtil::getConfig();
-									if(!count($configs)) continue;
-									foreach($configs as $fieldId => $config){
+									if(is_null($this->csfConfigs)){
+											SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+											$this->csfConfigs = CustomSearchFieldUtil::getConfig();
+									}
+
+									if(!count($this->csfConfigs)) continue;
+									foreach($this->csfConfigs as $fieldId => $config){
 										if(!isset($config["sitemap"]) || !is_numeric($config["sitemap"])) continue;
 
 										/**
