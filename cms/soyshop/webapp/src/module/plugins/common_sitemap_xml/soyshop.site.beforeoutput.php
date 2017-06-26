@@ -7,6 +7,7 @@
 class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	private $csfConfigs;
+	private $languages = array();
 
 	function beforeOutput($page){
 		$pageObj = $page->getPageObject();
@@ -33,39 +34,44 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			return;
 		}
 
+		//多言語プラグイン
+		SOY2::import("util.SOYShopPluginUtil");
+		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+		if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
+			$this->languages = array_keys(UtilMultiLanguageUtil::allowLanguages());
+		}
+
 		$url = soyshop_get_site_url(true);
 
 		header("Content-Type: text/xml");
 
 		$html = array();
 		$html[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-		$html[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:image=\"http://www.sitemaps.org/schemas/sitemap-image/1.1\" xmlns:video=\"http://www.sitemaps.org/schemas/sitemap-video/1.1\">";
-
-		//多言語プラグイン
-		SOY2::import("util.SOYShopPluginUtil");
-		if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
-			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-			$langs = array_keys(UtilMultiLanguageUtil::allowLanguages());
+		if(count($this->languages)){
+			$html[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:xhtml=\"http://www.w3.org/1999/xhtml\">";
+		}else{
+			$html[] = "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\" xmlns:image=\"http://www.sitemaps.org/schemas/sitemap-image/1.1\" xmlns:video=\"http://www.sitemaps.org/schemas/sitemap-video/1.1\">";
 		}
+
 
 		foreach($pages as $obj){
 
-			$getUri = $obj->getUri();
+			$uri = $obj->getUri();
 
 			//多言語化プラグインで無視するurl
-			if(count($langs)){
+			if(count($this->languages)){
 				$isStop = false;
-				foreach($langs as $lang){
-					if(strpos($getUri, $lang . "/") === 0 || $lang == $getUri) $isStop = true;
+				foreach($this->languages as $lang){
+					if(strpos($uri, $lang . "/") === 0 || $lang == $uri) $isStop = true;
 				}
 				if($isStop) continue;
 			}
 
-			if($getUri==SOYSHOP_TOP_PAGE_MARKER){
-				$getUri = "";
+			if($uri==SOYSHOP_TOP_PAGE_MARKER){
+				$uri = "";
 
 			//404の場合はスルー
-			}else if($getUri == SOYSHOP_404_PAGE_MARKER){
+			}else if($uri == SOYSHOP_404_PAGE_MARKER){
 				continue;
 			}
 
@@ -77,38 +83,20 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 						case SOYShop_ListPage::TYPE_CATEGORY:
 							//ディフォルトカテゴリがある場合
 							if(!is_null($pageObject->getDefaultCategory())){
-								$html[] = "	<url>";
-								$html[] = "		<loc>" . $url . $getUri . "/</loc>";
-								$html[] = "		<priority>0.8</priority>";
-								$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
-								$html[] = "	</url>";
+								$html[] = self::buildUrlTag($url, $uri . "/", "", 0.8, $obj->getUpdateDate());
 							}
 
 							$categoryIds = $pageObject->getCategories();
 							foreach($categoryIds as $categoryId){
 								$category = self::getCategory($categoryId);
-								$html[] = "	<url>";
-								if(strlen($getUri) == 0){
-									$html[] = "		<loc>" . $url.$category->getAlias() . "/</loc>";
-								}else{
-									$html[] = "		<loc>" . $url.$getUri."/" . $category->getAlias() . "/</loc>";
-								}
-								$html[] = "		<priority>0.5</priority>";
-								$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
-								$html[] = "	</url>";
+								$html[] = self::buildUrlTag($url, $uri, $category->getAlias(), 0.5, $obj->getUpdateDate());
 							}
 							break;
 						case SOYShop_ListPage::TYPE_FIELD:
-							$value = array();
-							$html[] = "	<url>";
-							if(strlen($getUri) == 0){
-								$html[] = "		<loc>" . $url . "</loc>";
-							}else{
-								$html[] = "		<loc>" . $url . $getUri . "/</loc>";
-							}
-							$html[] = "		<priority>0.5</priority>";
-							$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
-							$html[] = "	</url>";
+							/**
+							 * @ToDo 引数の設定の方は未着手
+							 */
+							$html[] = self::buildUrlTag($url, $uri . "/", "", 0.5, $obj->getUpdateDate());
 							break;
 						case SOYShop_ListPage::TYPE_CUSTOM:
 							$moduleId = $pageObject->getModuleId();
@@ -123,17 +111,24 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 									if(!count($this->csfConfigs)) continue;
 									foreach($this->csfConfigs as $fieldId => $config){
 										if(!isset($config["sitemap"]) || !is_numeric($config["sitemap"])) continue;
+										if(!isset($config["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) || !strlen($config["option"][UtilMultiLanguageUtil::LANGUAGE_JP])) continue;
 
-										/**
-										 * @ToDo 多言語化
-										 */
-										if(!strlen($config["option"]["jp"])) continue;
-										$opts = explode("\n", $config["option"]["jp"]);
-										foreach($opts as $opt){
+										foreach(explode("\n", $config["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) as $index => $opt){
 											$opt = trim($opt);
 											if(!strlen($opt)) continue;
 											$html[] = "	<url>";
-											$html[] = "		<loc>" . $url . $getUri . "/" . $fieldId . "/" . $opt . "</loc>";
+											$html[] = "		<loc>" . $url . $uri . "/" . $fieldId . "/" . $opt . "</loc>";
+											//多言語化
+											if(count($this->languages)){
+												foreach($this->languages as $lang){
+													if($lang == UtilMultiLanguageUtil::LANGUAGE_JP || !isset($config["option"][$lang]) || !strlen($config["option"][$lang])) continue;
+													$multiOpts = explode("\n", $config["option"][$lang]);
+													if(!isset($multiOpts[$index])) continue;
+													$multiOpt = trim($multiOpts[$index]);
+													if(!strlen($multiOpt)) continue;
+													$html[] = self::buildMultiLangagePageUrl($url, $uri . "/" . $fieldId . "/" . $multiOpt, $lang);
+												}
+											}
 	 										$html[] = "		<priority>0.5</priority>";
 	 										$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
 	 										$html[] = "	</url>";
@@ -147,16 +142,10 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				case SOYShop_Page::TYPE_DETAIL:
 					$value = array();
 					$items = self::getItems($obj->getId());
-					foreach($items as $item){
-						$html[] = "	<url>";
-						if(strlen($getUri) == 0){
-							$html[] = "		<loc>" . $url . $item->getAlias() . "</loc>";
-						}else{
-							$html[] = "		<loc>" . $url . $getUri . "/" . $item->getAlias() . "</loc>";
+					if(count($items)){
+						foreach($items as $item){
+							$html[] = self::buildUrlTag($url, $uri, $item->getAlias(), 0.8, $item->getUpdateDate());
 						}
-						$html[] = "		<priority>0.8</priority>";
-						$html[] = "		<lastmod>" . self::getDate($item->getUpdateDate()) . "</lastmod>";
-						$html[] = "	</url>";
 					}
 					break;
 
@@ -164,23 +153,12 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				case SOYShop_Page::TYPE_FREE:
 				case SOYShop_Page::TYPE_SEARCH:
 				default:
-					if(strpos($getUri, ".xml") == false){
-						if(strpos($getUri, ".html") == false && strlen($getUri) > 1){
-							$getUri = $getUri . "/";
-						}
-						$html[] = "	<url>";
-						$html[] = "		<loc>" . $url . $getUri . "</loc>";
-
-						//トップページ
-						if(!strlen($getUri)){
-							$html[] = "		<priority>1.0</priority>";
-						}else{
-							$html[] = "		<priority>0.5</priority>";
-						}
-
-						$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
-						$html[] = "	</url>";
+					if(strpos($uri, ".xml") !== false) continue;
+					if(strpos($uri, ".html") == false && strlen($uri) > 1){
+						$uri = $uri . "/";
 					}
+					$priority = (!strlen($uri)) ? "1.0" : "0.8";
+					$html[] = self::buildUrlTag($url, $uri, "", $priority, $obj->getUpdateDate());
 					break;
 			}
 		}
@@ -209,48 +187,71 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		));
 	}
 
+	private function buildUrlTag($url, $uri, $alias, $priority = 0.8, $updateDate){
+		if(strlen($alias)) $alias = "/" . $alias;
+		$uriConcatedAlias = $uri . $alias;
+		if(strpos($uriConcatedAlias, "//")) $uriConcatedAlias = str_replace("//", "/", $uriConcatedAlias);
+
+		$html = array();
+		$html[] = "	<url>";
+		$html[] = "		<loc>" . $url . $uriConcatedAlias . "</loc>";
+		//多言語化
+		if(count($this->languages)){
+			foreach($this->languages as $lang){
+				if(self::isMultiLanguagePage($uri, $lang)){
+					$html[] = self::buildMultiLangagePageUrl($url, $uriConcatedAlias, $lang);
+				}
+			}
+		}
+		$html[] = "		<priority>" . $priority . "</priority>";
+		$html[] = "		<lastmod>" . self::getDate($updateDate) . "</lastmod>";
+		$html[] = "	</url>";
+		return implode("\n", $html);
+	}
+
+	private function isMultiLanguagePage($uri, $lang){
+		if(!count($this->languages) || !array_search($lang, $this->languages)) return false;
+		$filename = $lang . "_" . str_replace(array("/", "."), "_", $uri) . "_page.php";
+		$filename = str_replace("__", "_", $filename);
+		return file_exists(SOYSHOP_SITE_DIRECTORY . ".page/" . $filename);
+	}
+
+	private function buildMultiLangagePageUrl($url, $uri, $lang){
+		return '		<xhtml:link rel="alternate" hreflang="' . $lang . '" href="' . $url . $lang . "/" . $uri . '" />';
+	}
+
 	private function getDate($time){
 		return date("Y", $time) . "-" . date("m", $time) . "-" . date("d", $time) . "T" . date("H", $time) . ":" . date("i", $time) . ":" . date("s", $time) . "+09:00";
 	}
 
 	private function getPages(){
-		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 		try{
-			$pages = $dao->get();
+			return SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
 		}catch(Exception $e){
-			$pages = new SOYShop_Page();
+			return array();
 		}
-		return $pages;
 	}
-
-	private $itemDao;
 
 	private function getItems($pageId){
-		if(!$this->itemDao){
-			$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		}
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 
 		try{
-			$items = $this->itemDao->getByDetailPageIdIsOpen($pageId);
+			return $dao->getByDetailPageIdIsOpen($pageId);
 		}catch(Exception $e){
-			$items = array();
+			return array();
 		}
-		return $items;
 	}
 
-	private $categoryDao;
-
 	private function getCategory($categoryId){
-		if(!$this->categoryDao){
-			$this->categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		}
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 
 		try{
-			$category = $this->categoryDao->getById($categoryId);
+			return $dao->getById($categoryId);
 		}catch(Exception $e){
-			$category = new SOYShop_Category();
+			return new SOYShop_Category();
 		}
-		return $category;
 	}
 }
 
