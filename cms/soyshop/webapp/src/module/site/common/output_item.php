@@ -96,6 +96,12 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
         "visible" => (!$item->getSaleFlag())
     ));
 
+    //通常価格とセール価格が異なる時のみ表示する
+    $htmlObj->addModel("is_normal_price_diff_from_sale_price", array(
+      "soy2prefix" => SOYSHOP_SITE_PREFIX,
+      "visible" => ((int)$item->getPrice() !== (int)$item->getSalePrice())
+    ));
+
     //定価から表示価格の割引率
     $htmlObj->addLabel("item_discount_percentage", array(
         "text" => ($item->getSellingPrice() > 0 && $item->getAttribute("list_price") > 0) ? soyshop_display_price(100 - ($item->getSellingPrice() / $item->getAttribute("list_price") * 100)) : 0,
