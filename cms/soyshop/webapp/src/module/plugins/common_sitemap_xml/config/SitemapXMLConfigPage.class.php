@@ -6,11 +6,15 @@ class SitemapXMLConfigPage extends WebPage{
 
   function __construct(){
 		SOY2::import("module.plugins.common_sitemap_xml.util.SitemapXMLUtil");
-    SOY2::import("module.plugins.common_sitemap_xml.component.UrlListComponent");
+    SOY2::imports("module.plugins.common_sitemap_xml.component.*");
+
+    SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
 	}
 
 	function doPost(){
     if(soy2_check_token()){
+      $configs = SitemapXMLUtil::getConfig();
+
       if(isset($_POST["add"]) && strlen($_POST["new"])){
         $configs = SitemapXMLUtil::getConfig();
         $newUrl = htmlspecialchars($_POST["new"], ENT_QUOTES, "UTF-8");
@@ -33,6 +37,19 @@ class SitemapXMLConfigPage extends WebPage{
           SitemapXMLUtil::saveConfig($configs);
           $this->configObj->redirect("updated");
         }
+      }
+
+      if(isset($_POST["update"]) && isset($_POST["config"]) && count($_POST["config"])){
+        foreach($_POST["config"] as $index => $langValues){
+          if(!isset($configs[$index])) continue;
+          $values = $configs[$index];
+          foreach($langValues as $lang => $langValue){
+            $values[$lang] = trim($langValue);
+          }
+          $configs[$index] = $values;
+        }
+        SitemapXMLUtil::saveConfig($configs);
+        $this->configObj->redirect("updated");
       }
     }
 
@@ -65,8 +82,17 @@ class SitemapXMLConfigPage extends WebPage{
     $this->addForm("form");
 
     $this->createAdd("url_list", "UrlListComponent", array(
-      "list" => SitemapXMLUtil::getConfig()
+      "list" => SitemapXMLUtil::getConfig(),
+      "languages" => self::getAllowLanguages()
     ));
+  }
+
+  private function getAllowLanguages(){
+    SOY2::import("util.SOYShopPluginUtil");
+    if(SOYShopPluginUtil::checkIsActive("util_multi_language")){
+      return UtilMultiLanguageUtil::allowLanguages();
+    }
+    return array();
   }
 
 	function setConfigObj($configObj) {

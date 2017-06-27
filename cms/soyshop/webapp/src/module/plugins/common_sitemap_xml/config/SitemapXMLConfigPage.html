@@ -3,13 +3,20 @@
 
 <form soy:id="form">
 	<dl>
-		<dt>URLを追加する</dt>
+		<dt>サイトマップで出力するURLを追加する</dt>
 		<dd>
 			<ul>
 				<!-- soy:id="url_list" -->
-				<li><a soy:id="url"></a>&nbsp;<a soy:id="remove_link" class="button">削除</a></li>
+				<li class="urllist">
+					<a soy:id="url"></a>&nbsp;<a soy:id="remove_link" class="button">削除</a>
+					<ul class="language">
+						<!-- soy:id="language_list" -->
+						<li><!-- soy:id="lang" /-->: <input type="url" class="urlform" soy:id="lang_url">&nbsp;<input type="submit" name="update" value="更新"></li>
+						<!-- /soy:id="language_list" -->
+					</ul>
+				</li>
 				<!-- /soy:id="url_list" -->
-				<li><input type="url" name="new">&nbsp;<input type="submit" name="add" value="追加"></li>
+				<li><input type="url" name="new" class="urlform">&nbsp;<input type="submit" name="add" value="追加"></li>
 			</ul>
 		</dd>
 	</dl>
@@ -24,3 +31,15 @@
 	<dt>サイトマップXML表示用のページを作成する</dt>
 	<dd>上記で作成したテンプレートを元に、サイトマップXML表示用のページを追加する。この時、URLには必ず<strong>sitemap.xml</strong>を入れてください。</dd>
 </dl>
+
+<style>
+li.urllist{
+	margin-top:5px;
+}
+ul.language {
+	text-indent:10px;
+}
+.urlform{
+	width:70%;
+}
+</style>

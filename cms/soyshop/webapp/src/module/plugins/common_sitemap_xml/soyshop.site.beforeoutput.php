@@ -171,6 +171,17 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				if(isset($config["url"]) && strlen($config["url"]) && strpos($config["url"], "http") === 0){
 					$html[] = "	<url>";
 					$html[] = "		<loc>" . htmlspecialchars($config["url"], ENT_QUOTES, "UTF-8") . "</loc>";
+
+					//多言語
+					if(count($this->languages)){
+						foreach($this->languages as $lang){
+							if(isset($config[$lang]) && strlen($config[$lang])){
+								$langUrl = trim(htmlspecialchars($config[$lang], ENT_QUOTES, "UTF-8"));
+								$html[] = '		<xhtml:link rel="alternate" hreflang="' . $lang . '" href="' . $langUrl . '" />';
+							}
+						}
+					}
+
 					$html[] = "		<priority>0.5</priority>";
 					$html[] = "		<lastmod>" . self::getDate($config["lastmod"]) . "</lastmod>";
 					$html[] = "	</url>";
