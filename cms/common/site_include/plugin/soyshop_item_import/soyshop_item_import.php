@@ -28,7 +28,7 @@ class SOYShopItemImportPlugin{
 			"mail"=>"info@n-i-agroinformatics.com",
 			"label" => "",
 			"entry" => "",
-			"version"=>"0.9.2"
+			"version"=>"0.9.3"
 		));
 
 		//二回目以降の動作
@@ -126,6 +126,7 @@ class SOYShopItemImportPlugin{
 					$values = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic")->getByItemId($item->getId());
 
 					foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
+						if(!isset($values[$key])) continue;
 						$csfValue = $values[$key];
 						$obj->addModel($key . "_visible", array(
               "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
