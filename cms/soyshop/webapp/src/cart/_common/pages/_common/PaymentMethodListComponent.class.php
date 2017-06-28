@@ -37,4 +37,3 @@ class PaymentMethodListComponent extends HTMLList{
 		}
 	}
 }
-?>

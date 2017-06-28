@@ -8,7 +8,7 @@ class Cart03Page extends MainCartPageBase{
 
 	private $user;
 	private $send;
-	
+
 	private $moduleCount = 0;
 
 	function doPost(){
@@ -85,17 +85,17 @@ class Cart03Page extends MainCartPageBase{
 					"cart" => $cart
 				));
 			}
-			
+
 			//割引
 			if(!$cart->hasError("discount") && isset($_POST["discount_module"])){
-				
+
 				//全部ロードする
 				SOYShopPlugin::load("soyshop.discount");
 				SOYShopPlugin::invoke("soyshop.discount", array(
 					"mode" => "select",
 					"cart" => $cart,
 					"param" => $_POST["discount_module"]
-				));				
+				));
 			}
 
 			/**
@@ -123,14 +123,14 @@ class Cart03Page extends MainCartPageBase{
 					"param" => $_POST["customfield_module"]
 				));
 			}
-			
+
 			//上記の処理以外で行いたいことがあればここで行う
 			SOYShopPlugin::load("soyshop.order.process");
 			SOYShopPlugin::invoke("soyshop.order.process", array(
 				"mode" => "cart03post",
 				"cart" => $cart
 			));
-			
+
 			//消費税の計算
 			SOY2::import("domain.config.SOYShop_ShopConfig");
 			$config = SOYShop_ShopConfig::load();
@@ -191,13 +191,13 @@ class Cart03Page extends MainCartPageBase{
 		$this->createAdd("item_list", "_common.ItemListComponent", array(
 			"list" => $items
 		));
-		
+
 		$this->createAdd("module_list", "_common.ModuleListComponent", array(
 			"list" => $cart->getModules()
 		));
 
 		$this->buildForm($cart);
-		
+
 		$this->addModel("is_subtotal", array(
 			"visible" => (SOYSHOP_CART_IS_TAX_MODULE)
 		));
@@ -212,7 +212,7 @@ class Cart03Page extends MainCartPageBase{
 
 		//ユーザ情報の出力
 		$this->outputUser($cart);
-		
+
 		$this->addExtensions($cart);
 
 		//エラー周り
@@ -220,18 +220,18 @@ class Cart03Page extends MainCartPageBase{
 			DisplayPlugin::hide("has_error");
 		}
 		$this->appendErrors($cart);
-		
+
 		$cart->clearErrorMessage();
-		
+
 		//アクティブなモジュールが一つもない場合はこのページを飛ばしたい
 		if($this->moduleCount === 0) $this->jumpNextPage($cart);
 	}
 
 	function buildForm(CartLogic $cart){
-		
+
 		$user = $this->user;
-		
-		$paymentMethodList = $this->getPaymentMethod($cart);
+
+		$paymentMethodList = self::getPaymentMethod($cart);
 		$cnt = count($paymentMethodList);
 		$this->moduleCount += $cnt;
 		$this->addModel("has_payment_method", array(
@@ -243,7 +243,7 @@ class Cart03Page extends MainCartPageBase{
 			"selected" => $cart->getAttribute("payment_module")
 		));
 
-		$deliveryMethodList = $this->getDeliveryMethod($cart);
+		$deliveryMethodList = self::getDeliveryMethod($cart);
 		$cnt = count($deliveryMethodList);
 		$this->moduleCount += $cnt;
 		$this->addModel("has_delivery_method", array(
@@ -254,7 +254,7 @@ class Cart03Page extends MainCartPageBase{
 			"selected" => $cart->getAttribute("delivery_module")
 		));
 
-		$discountModuleList = $this->getDiscountMethod($cart);
+		$discountModuleList = self::getDiscountMethod($cart);
 		$cnt = count($discountModuleList);
 		$this->moduleCount += $cnt;
 		$this->addModel("has_discount_method", array(
@@ -266,7 +266,7 @@ class Cart03Page extends MainCartPageBase{
 
 		//入力したユーザがポイントを持っているか？
 		$hasPoint = $this->hasPointByUserMailAddress($cart, $user->getMailAddress());
-		$pointModuleList = $this->getPointMethod($cart);
+		$pointModuleList = self::getPointMethod($cart);
 		$cnt = count($pointModuleList);
 		$this->moduleCount += $cnt;
 		$this->addModel("has_point_method", array(
@@ -276,7 +276,7 @@ class Cart03Page extends MainCartPageBase{
 			"list" => $pointModuleList,
 		));
 
-		$customfieldModuleList = $this->getCustomfieldMethod($cart);
+		$customfieldModuleList = self::getCustomfieldMethod($cart);
 		$cnt = count($customfieldModuleList);
 		$this->moduleCount += $cnt;
 		$this->addModel("has_customfield_method", array(
@@ -345,7 +345,7 @@ class Cart03Page extends MainCartPageBase{
 			)
 		));
 	}
-	
+
 	/**
 	 * 表示用拡張ポイント
 	 */
@@ -358,7 +358,7 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		$html = $delegate->getHtml();
-		
+
 		//カートプラグイン 表示/非表示
 		$this->addModel("has_cart_plugin", array(
 			"visible" => (count($html) > 0)
@@ -380,14 +380,14 @@ class Cart03Page extends MainCartPageBase{
 		$this->addModel("has_bonus_plugin", array(
 			"visible" => $delegate->getHasBonus()
 		));
-		
+
 		//ボーナスプラグイン おまけ内容HTML
 		$this->createAdd("bonus_plugin_list", "_common.BonusPluginListComponent", array(
 			"list" => $bonuses
 		));
 	}
-	
-	function getPaymentMethod(CartLogic $cart){
+
+	private function getPaymentMethod(CartLogic $cart){
 
     	//アクティブなプラグインをすべて読み込む
     	SOYShopPlugin::load("soyshop.payment");
@@ -401,7 +401,7 @@ class Cart03Page extends MainCartPageBase{
 		return $delegate->getList();
 	}
 
-	function getDeliveryMethod(CartLogic $cart){
+	private function getDeliveryMethod(CartLogic $cart){
 
     	//アクティブなプラグインをすべて読み込む
 		SOYShopPlugin::load("soyshop.delivery");
@@ -414,7 +414,7 @@ class Cart03Page extends MainCartPageBase{
 		return $delegate->getList();
 	}
 
-	function getDiscountMethod(CartLogic $cart){
+	private function getDiscountMethod(CartLogic $cart){
 
     	//アクティブなプラグインをすべて読み込む
 		SOYShopPlugin::load("soyshop.discount");
@@ -427,7 +427,7 @@ class Cart03Page extends MainCartPageBase{
 		return $delegate->getList();
 	}
 
-	function getPointMethod(CartLogic $cart){
+	private function getPointMethod(CartLogic $cart){
 
     	//アクティブなプラグインをすべて読み込む
 		SOYShopPlugin::load("soyshop.point.payment");
@@ -436,11 +436,11 @@ class Cart03Page extends MainCartPageBase{
 			"cart" => $cart,
 			"userId" => $this->user->getId()
 		));
-	
+
 		return $delegate->getList();
 	}
 
-	function getCustomfieldMethod(CartLogic $cart){
+	private function getCustomfieldMethod(CartLogic $cart){
 
     	//アクティブなプラグインをすべて読み込む
 		SOYShopPlugin::load("soyshop.order.customfield");
@@ -476,7 +476,7 @@ class Cart03Page extends MainCartPageBase{
 		//ポイント設定プラグインがCMS内に配置されているか？
 		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("common_point_base")) return false;
-		
+
 		return SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->hasPointByUserMailAddress($mailaddress);
 	}
 
@@ -496,7 +496,7 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		if(strlen($cart->getErrorMessage("delivery")) < 1) DisplayPlugin::hide("has_delivery_error");
-		
+
 		$this->createAdd("point_error", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("point")
 		));
@@ -530,7 +530,7 @@ class Cart03Page extends MainCartPageBase{
 				$cart->removeErrorMessage("delivery");
 			}
 		}
-			
+
 
 		//Discount Module
 		if(isset($_POST["discount_module"])){
@@ -580,11 +580,11 @@ class Cart03Page extends MainCartPageBase{
 		}else{
 			$cart->removeErrorMessage("customfield");
 		}
-		
+
 
 		return $res;
 	}
-	
+
 	function jumpNextPage(CartLogic $cart){
 		$prevPage = $cart->getAttribute("prev_page");
 		if(!is_null($prevPage)){
@@ -602,4 +602,3 @@ class Cart03Page extends MainCartPageBase{
 		}
 	}
 }
-?>
