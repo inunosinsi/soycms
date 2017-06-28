@@ -23,6 +23,10 @@ class DeliveryEachProductFormPage extends WebPage{
             "name" => "EachProduct[" . DeliveryEachProductUtil::MODE_EMAIL . "]",
             "value" => DeliveryEachProductUtil::get($this->itemId, DeliveryEachProductUtil::MODE_EMAIL)
         ));
+
+        $this->addLabel("toggle_js", array(
+          "html" => "\n" . file_get_contents(dirname(dirname(__FILE__)) . "/js/toggle.js")
+        ));
     }
 
     private function getPrices(){

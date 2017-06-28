@@ -35,7 +35,7 @@ abstract class SOYShop_PluginConfigDAO extends SOY2DAO{
      * @order display_order ASC, id ASC
      */
     abstract function getActiveModules();
-    
+
 	/**
 	 * @return object
 	 */
@@ -46,18 +46,22 @@ abstract class SOYShop_PluginConfigDAO extends SOY2DAO{
 	 */
 	abstract function getByPluginId($pluginId);
 
+	/**
+	 * @order display_order ASC, id ASC
+	 */
+	abstract function getByType($type);
+
+	/**
+	 * @query plugin_type = :type AND is_active = :isActive
+	 */
+	abstract function getByTypeAndIsActive($type, $isActive);
 
 	/**
 	 *
 	 * @return id
 	 */
-    abstract function insert(SOYShop_PluginConfig $soyshopmodule);
+  abstract function insert(SOYShop_PluginConfig $soyshopmodule);
 
-	/**
-	 * @order display_order ASC, id ASC
-	 */
-	abstract function getByType($type);
 	abstract function update(SOYShop_PluginConfig $soyshopmodule);
 
 }
-?>

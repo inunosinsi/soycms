@@ -6,7 +6,11 @@ class DeliveryEachProductConfig extends SOYShopConfigPageBase{
      * @return string
      */
     function getConfigPage(){
-        return "<p class=\"error always\">他の配送モジュールと併用することはできません。</p>";
+      SOY2::import("module.plugins.delivery_each_product.config.DeliveryEachProductConfigPage");
+      $form = SOY2HTMLFactory::createInstance("DeliveryEachProductConfigPage");
+      $form->setConfigObj($this);
+      $form->execute();
+      return $form->getObject();
     }
 
     /**
