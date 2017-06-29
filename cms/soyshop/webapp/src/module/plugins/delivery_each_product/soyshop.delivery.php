@@ -16,8 +16,12 @@ class DeliveryEachProductModule extends SOYShopDelivery{
     }
 
     function getDescription(){
-        /** @ToDo どの商品がどれくらいの送料か？は載せたい **/
-
+        SOY2::import("module.plugins.delivery_normal.cart.DeliveryNormalCartPage");
+        $form = SOY2HTMLFactory::createInstance("DeliveryNormalCartPage");
+    		$form->setConfigObj($this);
+    		$form->setCart($this->getCart());
+    		$form->execute();
+    		return $form->getObject();
     }
 
     function getPrice(){
