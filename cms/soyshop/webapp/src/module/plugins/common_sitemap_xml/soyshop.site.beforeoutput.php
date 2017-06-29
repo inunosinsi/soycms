@@ -43,7 +43,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 		$url = soyshop_get_site_url(true);
 
-		header("Content-Type: text/xml");
+//		header("Content-Type: text/xml");
 
 		$html = array();
 		$html[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -110,7 +110,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 									if(!count($this->csfConfigs)) continue;
 									foreach($this->csfConfigs as $fieldId => $config){
-										if(!isset($config["sitemap"]) || !is_numeric($config["sitemap"])) continue;
+										if(!isset($config["sitemap"]) || !is_numeric($config["sitemap"]) || (int)$config["sitemap"] !== (int)$obj->getId()) continue;
 										if(!isset($config["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) || !strlen($config["option"][UtilMultiLanguageUtil::LANGUAGE_JP])) continue;
 
 										foreach(explode("\n", $config["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) as $index => $opt){
@@ -121,6 +121,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 											//多言語化
 											if(count($this->languages)){
 												foreach($this->languages as $lang){
+													if(!self::isMultiLanguagePage($uri, $lang)) continue;
 													if($lang == UtilMultiLanguageUtil::LANGUAGE_JP || !isset($config["option"][$lang]) || !strlen($config["option"][$lang])) continue;
 													$multiOpts = explode("\n", $config["option"][$lang]);
 													if(!isset($multiOpts[$index])) continue;
