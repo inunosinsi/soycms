@@ -1,18 +1,18 @@
 <?php
 
 class BuildHTMLLogic extends SOY2LogicBase{
-	
+
 	function __construct(){
 		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
 	}
-	
-	function buildHTML($target, $type, $lang){
+
+	function buildHTML($target, $type, $lang, $languageName){
 		$config = UtilMultiLanguageUtil::getMailConfig($target, $type, $lang);
-		
+
 		$htmls = array();
-		
-		$htmls[] = "<h1>英語版用</h1>";
-		
+
+		$htmls[] = "<h1>" . $languageName . "版用</h1>";
+
 		$htmls[] = "<dl>";
 		$htmls[] = "<dt>自動送信設定</dt>";
 		$htmls[] = "<dd>";
@@ -23,49 +23,49 @@ class BuildHTMLLogic extends SOY2LogicBase{
 			$htmls[] = "<input name=\"Config[" . $lang . "][active]\" value=\"1\" type=\"radio\" id=\"active_is_" . $lang . "\"><label for=\"active_is_" . $lang . "\">送信する</label>";
 			$htmls[] = "<input name=\"Config[" . $lang . "][active]\" value=\"0\" type=\"radio\" id=\"active_no_" . $lang . "\" checked=\"checked\"><label for=\"active_no_" . $lang . "\">送信しない</label>";
 		}
-		
+
 		$title = (isset($config["title"])) ? $config["title"] : "";
-		
+
 		$htmls[] = "</dd>";
 		$htmls[] = "<dt>件名</dt>";
 		$htmls[] = "<dd>";
-		$htmls[] = "<input name=\"Config[" . $lang . "][title]\" value=\"" . $title . "\" class=\"title\">";
+		$htmls[] = "<input name=\"Config[" . $lang . "][title]\" value=\"" . htmlspecialchars($title,ENT_QUOTES,"UTF-8") . "\" class=\"title\">";
 		$htmls[] = "</dd>";
 		$htmls[] = "</dl>";
 
 		$htmls[] = "<table class=\"form_table\" style=\"table-layout:auto;\">";
 		$htmls[] = "<caption>本文</caption>";
-		
+
 		$array = array("header" => "ヘッダー", "footer" => "フッター");
 		foreach($array as $pos => $value){
 			$content = (isset($config[$pos])) ? $config[$pos] : "";
-			
+
 			$htmls[] = "<tr>";
 			$htmls[] = "<th colspan=\"2\">" . $value . "</th>";
 			$htmls[] = "</tr>";
 			$htmls[] = "<tr class=\"last_row\">";
 			$htmls[] = "<td>";
-			$htmls[] = "<textarea name=\"Config[" . $lang . "][" . $pos . "]\" id=\"" . $lang . "_" . $pos . "\" class=\"editor\">" . $content . "</textarea>";
+			$htmls[] = "<textarea name=\"Config[" . $lang . "][" . $pos . "]\" id=\"" . $lang . "_" . $pos . "\" class=\"editor\">" . htmlspecialchars($content,ENT_QUOTES,"UTF-8") . "</textarea>";
 			$htmls[] = "</td>";
 			$htmls[] = "<td class=\"mail_replace_word_panel\">";
-			
+
 			$htmls[] = self::convertListHTML($lang, $pos);
-			
+
 			$htmls[] = "</td>";
 			$htmls[] = "</tr>";
 		}
 		$htmls[] = "</table>";
-		
+
 		return implode("\n", $htmls);
 	}
-	
+
 	private function convertListHTML($lang, $pos){
 		$htmls = array();
 		$htmls[] = "<a href=\"javascript:void(0);\" class=\"button\" onclick=\"$(this).parent().addClass('actived');$(this).hide();\">&lt;&lt;</a>";
 		$htmls[] = "<div class=\"word_list\">";
 		$htmls[] = "<h5>置換文字列</h5>";
 		$htmls[] = "<ul>";
-		
+
 		$convertList = array(
 							"NAME" => "氏名",
 							"READING" => "フリガナ",
@@ -86,11 +86,11 @@ class BuildHTMLLogic extends SOY2LogicBase{
 		foreach($convertList as $key => $value){
 			$htmls[] = "<li><a href=\"javascript:void(0);\" onclick=\"$('#" . $lang . "_" . $pos . "').textarea().insertHTML('#" . $key . "#');\">" . $value . "</a></li>";
 		}
-		
+
 		$htmls[] = "</ul>";
 		$htmls[] = "</div>";
-		
-		return implode("\n", $htmls);					
+
+		return implode("\n", $htmls);
 	}
 }
 ?>

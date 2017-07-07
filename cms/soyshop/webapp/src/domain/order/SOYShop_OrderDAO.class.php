@@ -98,13 +98,13 @@ abstract class SOYShop_OrderDAO extends SOY2DAO{
 		$itemOrderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 		$itemOrderDAO->updateIsSended(
 			$order->getId(),
-			(int)($order->getStatus() >= SOYShop_Order::ORDER_STATUS_SENDED)
+			(int)($order->getStatus() == SOYShop_Order::ORDER_STATUS_SENDED)
 		);
 
 
 		$this->update($order);
 	}
-	
+
 	/**
 	 * 特定の時刻間の注文をすべて取得する
 	 * @return list

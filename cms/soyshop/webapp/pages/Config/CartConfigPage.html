@@ -22,9 +22,9 @@
 			<dd>
 				<input type="text" class="title" soy:id="cart_title" />
 			</dd>
-			
+
 			<!-- soy:id="extension_cart_name_input" /-->
-			
+
 			<dt>顧客情報のフォームの設定</dt>
 			<dd>
 				<a soy:link="Config.ShopConfig#customer_form_config">顧客情報のフォームの設定(基本設定)</a>
@@ -39,7 +39,7 @@
 					<input type="text" soy:id="cart_ssl_url" class="title" />
 				</div>
 			</dd>
-			<dt>カート設定(PC用)</dt>
+			<dt>カート設定<!-- soy:id="is_enabled_util_mobile_check*" -->（PC用）<!-- /soy:id="is_enabled_util_mobile_check*" --></dt>
 			<dd>
 				<h4>カートページのURI</h4>
 				<input type="text" soy:id="cart_url" />
@@ -47,12 +47,13 @@
 				<h4>カートの種類の選択</h4>
 				<select soy:id="cart_application"></select><br>
 				※カート機能を封じる場合は<strong>none</strong>を選択してください。
-				
+
 				<h4>文字コード</h4>
 				<select soy:id="cart_charset"></select>
 			</dd>
 
-			<dt>カート設定(mobile用)</dt>
+			<!-- soy:id="is_enabled_util_mobile_check" -->
+			<dt>カート設定（mobile用）</dt>
 			<dd>
 				<h4>カートページのURI</h4>
 				<input type="text" soy:id="mobile_cart_url" />
@@ -60,11 +61,11 @@
 				<h4>カートの種類の選択</h4>
 				<select soy:id="mobile_cart_application"></select><br>
 				※カート機能を封じる場合は<strong>none</strong>を選択してください。
-				
+
 				<h4>文字コード</h4>
 				<select soy:id="mobile_cart_charset"></select>
 			</dd>
-			
+
 			<dt>カート設定(スマートフォン用)</dt>
 			<dd>
 				<h4>カートページのURI</h4>
@@ -73,10 +74,11 @@
 				<h4>カートの種類の選択</h4>
 				<select soy:id="smartphone_cart_application"></select><br>
 				※カート機能を封じる場合は<strong>none</strong>を選択してください。
-				
+
 				<h4>文字コード</h4>
 				<select soy:id="smartphone_cart_charset"></select>
 			</dd>
+			<!-- /soy:id="is_enabled_util_mobile_check" -->
 		</dl>
 
 		</table>
@@ -85,7 +87,11 @@
 			<input type="submit" value="更新" />
 		</p>
 
-	</form soy:id="update_form">
+	</form>
+
+	<!-- soy:id="is_not_enabled_util_mobile_check" -->
+	<p>※携帯電話やスマートフォンで使用するカートを分けたい場合は、<a soy:link="Plugin.List">プラグイン管理</a>で「携帯自動振り分けプラグイン」をインストールしてください。</p>
+	<!-- /soy:id="is_not_enabled_util_mobile_check" -->
 
 	</div><!-- /block_body -->
 </div><!-- /block -->

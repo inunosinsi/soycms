@@ -11,7 +11,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 	const REDIRECT_MB = 2;//ケータイサイト転送
 
 	private $config;
-	
+
 	private $carrier;
 
 	/**
@@ -91,16 +91,16 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 				$redirect = self::REDIRECT_PC;
 			}
 		}
-		
+
 		//ここで一旦定義を行う
 		if(!defined("SOYSHOP_IS_MOBILE")){
 			define("SOYSHOP_IS_MOBILE", $isMobile);
 		}
-		
+
 		if(!defined("SOYSHOP_IS_SMARTPHONE")){
 			define("SOYSHOP_IS_SMARTPHONE", $isSmartPhone);
 		}
-		
+
 		//別キャリアを見ている場合は一旦PCにとばす。
 		if(SOYSHOP_IS_MOBILE || SOYSHOP_IS_SMARTPHONE){
 			//モバイルとスマホで同じプレフィックスを設定するとリダイレクトループになるので、別の端末でも同じ端末として解釈
@@ -109,7 +109,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 				self::checkCarrier($redirectPrefix);
 			}
 		}
-		
+
 		//PCの場合以外のリダイレクト処理
 		if($redirect != self::REDIRECT_PC){
 			//prefixの決定
@@ -132,7 +132,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 			//リダイレクト先の絶対パス
 			$path = self::getRedirectPath($prefix);
-			
+
 			if($path){
 				//if do not work Location header
 				ob_start();
@@ -143,16 +143,16 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 				exit;
 			}
-						
+
 		//PCの場合、念の為、別キャリアのページを見ていないか調べる
 		}else{
 			self::checkCarrier($this->config["prefix"]);
 			self::checkCarrier($this->config["prefix_i"]);
-			
+
 			//PC版の場合はprefixはなし
 			$prefix = null;
 		}
-		
+
 		//リダイレクトをしなかった場合、prefixを定数に入れておく
 		if(!defined("SOYSHOP_CARRIER_PREFIX")) define("SOYSHOP_CARRIER_PREFIX", $prefix);
 	}
@@ -169,17 +169,17 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 		return $isMobile;
 	}
-	
+
 	/**
 	 * iPadからのアクセスかどうか
 	 */
 	private function isTablet(){
-		$isTablet = self::checkAccessFromTablet();		
-		
+		$isTablet = self::checkAccessFromTablet();
+
 		if(!defined("SOYSHOP_IS_TABLET")){
 			define("SOYSHOP_IS_TABLET", $isTablet);
 		}
-		
+
 		//iPadだった場合、スマホの設定を見ないことにする
 		if($isTablet){
 			if($this->config["redirect_ipad"] == self::CONFIG_SP_REDIRECT_SP){
@@ -187,12 +187,12 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 			}else{
 				$isSmartPhone = false;
 			}
-			
+
 			if(!defined("SOYSHOP_IS_SMARTPHONE")){
 				define("SOYSHOP_IS_SMARTPHONE", $isSmartPhone);
-			}	
+			}
 		}
-		
+
 		return $isTablet;
 	}
 
@@ -203,16 +203,16 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 		$isSmartPhone = false;
 
 		if(
-			$this->config["redirect_iphone"] == self::CONFIG_SP_REDIRECT_SP || 
+			$this->config["redirect_iphone"] == self::CONFIG_SP_REDIRECT_SP ||
 			$this->config["redirect_iphone"] == self::CONFIG_SP_REDIRECT_MB
 		){
-	
+
 			$isSmartPhone = self::checkAccessFromSmartphone();
-		}	
-		
+		}
+
 		return $isSmartPhone;
 	}
-	
+
 	//モバイルからのアクセスであるか
 	private function checkAccessFromMobile(){
 		$agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : "";
@@ -247,14 +247,14 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 			$isMobile = false;
 			$this->carrier = "PC";
 		}
-		
+
 		return $isMobile;
 	}
-	
+
 	//Tabletからであるかチェック
 	private function checkAccessFromTablet(){
 		$agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? mb_strtolower($_SERVER['HTTP_USER_AGENT']) : "";
-		
+
 		if(strpos($agent, "ipad") !== false){
 			return true;
 		}elseif(strpos($agent, "windows") !== false && strpos($agent, "touch") !== false){
@@ -271,11 +271,11 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 			return false;
 		}
 	}
-	
+
 	//スマホからであるかチェック
 	private function checkAccessFromSmartphone(){
 		$agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? mb_strtolower($_SERVER['HTTP_USER_AGENT']) : "";
-		
+
 		if(strpos($agent, "iphone") !== false){
 			return true;
 		}elseif(strpos($agent, "ipod") !== false){
@@ -300,7 +300,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 	private function checkCarrier($prefix){
 		//PATH_INFO
 		$pathInfo = self::getPathInfo();
-		
+
 		if($pathInfo === "/" . $prefix || strpos($pathInfo, "/" . $prefix . "/") === 0){
 			$path = self::getRedirectPcPath($prefix);
 			SOY2PageController::redirect($path);
@@ -318,7 +318,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 		if(strpos($requestUri, "?") !== false){
 			$requestUri = substr($requestUri, 0, strpos($requestUri, "?"));
 		}
-		
+
 		//スマホのプレフィックスと多言語のプレフィックスが付与されている場合はfalseを返す
 		if(self::checkMultiLanguage($requestUri)){
 			return false;
@@ -326,12 +326,12 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 		//PATH_INFO
 		$pathInfo = self::getPathInfo();
-		
+
 		//先頭はスラッシュ
 		if(strlen($pathInfo) && $pathInfo[0] !== "/"){
 			$pathInfo = "/" . $pathInfo;
 		}
-		
+
 		//無限ループになるときはfalseを返す
 		if(self::checkLoop($pathInfo, $prefix)){
 			return false;
@@ -339,11 +339,13 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 		//サイトID：最初と最後に/を付けておく
 		$siteDir = strlen($pathInfo) ? strtr($requestUri, array($pathInfo => "")) : $requestUri ;//strtrのキーは空文字列であってはいけない
-		if($siteDir[0] !== "/"){
-			$siteDir = "/" . $siteDir;
-		}
-		if(substr($siteDir, -1) !== "/"){
-			$siteDir = $siteDir . "/";
+		if(strlen($siteDir)){
+			if($siteDir[0] !== "/"){
+				$siteDir = "/" . $siteDir;
+			}
+			if(substr($siteDir, -1) !== "/"){
+				$siteDir = $siteDir . "/";
+			}
 		}
 
 		//prefixを付ける
@@ -351,7 +353,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 		return self::addQueryString($path);
 	}
-	
+
 	//多言語化プラグインがすでに実行されているか調べる
 	private function checkMultiLanguage($path){
 		$reg = "/" . $this->config["prefix_i"] . "/";
@@ -362,10 +364,10 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 			if(!isset($conf["prefix"]) || strlen($conf["prefix"]) === 0) continue;
 			if(strpos($path, $reg . $conf["prefix"]) === 0) return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	private function checkLoop($path, $prefix){
 		return ( $path === "/" . $prefix || strpos($path, "/" . $prefix . "/") === 0 );
 	}
@@ -384,12 +386,12 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 		//PATH_INFO
 		$pathInfo = self::getPathInfo();
-		
+
 		//先頭はスラッシュ
 		if(strlen($pathInfo) && $pathInfo[0] !== "/"){
 			$pathInfo = "/" . $pathInfo;
 		}
-		
+
 		//サイトID：最初と最後に/を付けておく
 		$path = $requestUri;
 		if($path[0] !== "/"){
@@ -408,7 +410,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 		return self::addQueryString($path);
 	}
-	
+
 	/**
 	 * PATH_INFOを取得する
 	 * PATH_INFOをGETで渡す環境があるらしい
@@ -423,7 +425,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 		}
 		return $pathInfo;
 	}
-	
+
 	private function addQueryString($path){
 		//絶対パスにQuery Stringを追加する
 		if(isset($_SERVER["QUERY_STRING"]) && strlen($_SERVER["QUERY_STRING"]) > 0){
@@ -440,35 +442,35 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 				}
 				$queries[$key] = $value;
 			}
-			
+
 			//pathinfoの値はここで除く
 			if(array_key_exists("pathinfo", $queries)) unset($queries["pathinfo"]);
-			
+
 			if(count($queries) > 0){
 				$querystring = "?";
 				$counter = 0;
 				foreach($queries as $key => $value){
 					if($counter > 0) $querystring .= "&";
-					
+
 					if(isset($value) && strlen($value) > 0){
 						$querystring .= $key . "=" . $value;
 					}else{
 						$querystring .= $key;
 					}
-					
+
 					$counter++;
 				}
-				
+
 				if(strpos($querystring, session_name() . "=") !== false){
 					$querystring = preg_replace("/" . session_name() . "=[A-Za-z0-9]*/", session_name() . "=" . session_id(), $querystring);
 				}else{
 					$querystring = $querystring;
 				}
-				
+
 				$path .= $querystring;
 			}
 		}
-		
+
 		return $path;
 	}
 }

@@ -11,6 +11,36 @@ SOY2::import("domain.config.SOYShop_ShopConfig");
  */
 class CartLogic extends SOY2LogicBase{
 
+	protected $id;
+	protected $items = array();	//商品情報
+	protected $customerInformation;//顧客情報
+	protected $order;//仮登録後、注文情報が入る
+
+	/**
+	 * CartLogic->attributesとCartLogic->orderAttributesについて
+	 *
+	 * CartLogic->attributes
+	 * カートの動作のために一時的に保存する場所。永続化（DB保存）はされない。
+	 *
+	 * CartLogic->orderAttributes
+	 * SOYShop_Order->attributesに変換され永続化される。
+	 * 確認画面で表示される。非表示の設定は現状できないができるべき。
+	 *
+	 * CartLogic->modules
+	 * SOYShop_Order->modulesにそのまま永続化される。
+	 * 確認画面で商品一覧の下に表示される。（非表示の設定も可能）
+	 * 値はSOYShop_ItemModuleを使う。値で検索することや並び替えることができる。
+	 * SOYShop_ItemModuleは金額の設定が可能。送料、代引き手数料、値引き、クーポンなどに使う。
+	 * 同じtypeのSOYShop_ItemModuleを設定できないという特徴がある。
+	 *
+	 */
+	protected $modules = array();
+	protected $attributes = array();
+	protected $orderAttributes = array();
+
+	protected $errorMessage = array();
+	protected $noticeMessage = array();
+
 	/**
 	 * カートを取得
 	 */
@@ -55,17 +85,6 @@ class CartLogic extends SOY2LogicBase{
 	function __construct($cartId = null){
 		$this->id = $cartId;
 	}
-
-	protected $id;
-	protected $items = array();	//商品情報
-	protected $customerInformation;
-	protected $order;
-	protected $modules = array();
-	protected $attributes = array();
-	protected $orderAttributes = array();
-
-	protected $errorMessage = array();
-	protected $noticeMessage = array();
 
 	/**
 	 * カートに商品を追加
@@ -325,7 +344,7 @@ class CartLogic extends SOY2LogicBase{
 	 */
 	function setConsumptionTaxInclusivePricing(){
 		$this->removeModule("consumption_tax");
-		
+
 		$items = $this->getItems();
 		if(count($items) === 0) return;
 
@@ -336,19 +355,19 @@ class CartLogic extends SOY2LogicBase{
 		}
 
 		if($totalPrice === 0) return;
-		
+
 		foreach($this->getModules() as $mod){
 			//値引き分も加味するので、isIncludeされていない値は0以上でなくても加算対象
 			if(!$mod->getIsInclude()){
 				$totalPrice += (int)$mod->getPrice();
 			}
 		}
-		
+
 		$config = SOYShop_ShopConfig::load();
 		$taxRate = (int)$config->getConsumptionTaxInclusivePricingRate();	//内税率
 
 		if($taxRate === 0) return;
-		
+
 		$module = new SOYShop_ItemModule();
 		$module->setId("consumption_tax");
 		$module->setName("内税");
@@ -429,12 +448,13 @@ class CartLogic extends SOY2LogicBase{
 		$this->orderAttributes = $orderAttributes;
 	}
 
-	function setOrderAttribute($id, $name, $value, $hidden = false){
+	function setOrderAttribute($id, $name, $value, $hidden = false, $readonly = false){
 		if(!is_array($this->orderAttributes)) $this->orderAttributes = array();
 		$this->orderAttributes[$id] = array(
 			"name" => $name,
 			"value" => $value,
-			"hidden" => $hidden
+			"hidden" => $hidden,
+			"readonly" => $readonly,
 		);
 		$this->save();
 	}
@@ -544,34 +564,76 @@ class CartLogic extends SOY2LogicBase{
 	 * 注文実行
 	 */
 	function order(){
-		//注文可能かチェック
-		$this->checkOrderable();
+
+		//念の為に登録したモジュールが消えてないか調べて、消えていればCart03に飛ばす
+		if(!count($this->getModules()) || !count($this->getOrderAttributes())){
+			$this->setAttribute("page", "Cart03");
+			$this->save();
+			soyshop_redirect_cart();
+		}
 
 		//ユーザーエージェント
 		if(isset($_SERVER['HTTP_USER_AGENT'])){
-			$this->setOrderAttribute("order_check_carrier", "ユーザーエージェント", $_SERVER['HTTP_USER_AGENT'], true);
+			$this->setOrderAttribute("order_check_carrier", "ユーザーエージェント", $_SERVER['HTTP_USER_AGENT'], true, true);
 		}
 
 		//IPアドレス
 		if(isset($_SERVER['REMOTE_ADDR'])){
-			$this->setOrderAttribute("order_ip_address", "IPアドレス", $_SERVER['REMOTE_ADDR'], true);
-		}		
+			$this->setOrderAttribute("order_ip_address", "IPアドレス", $_SERVER['REMOTE_ADDR'], true, true);
+		}
 
-		//顧客情報の登録
-		$this->registerCustomerInformation();
+		//$_SERVER
+		//$this->setOrderAttribute("order_server", "\$_SERVER", var_export($_SERVER,true), true, true);
 
 		//初回購入であるか調べる
 		if($this->checkFirstOrder()){
-			$this->setOrderAttribute("order_first_order", "初回購入", "初回購入", true);
+			$this->setOrderAttribute("order_first_order", "初回購入", "初回購入", true, true);
 		}
 
-		//注文情報の登録
-		$this->orderItems();
+		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 
-		//記録
-		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
+		try{
+			//transaction start
+			$orderDAO->begin();
 
-		$orderLogic->addHistory($this->getAttribute("order_id"), "注文を受け付けました");
+			//注文可能かチェック
+			$this->checkOrderable();
+
+			//顧客情報の登録
+			$this->registerCustomerInformation();
+
+			//注文情報の登録
+			$this->orderItems();
+
+			//注文カスタムフィールド
+			SOYShopPlugin::load("soyshop.order.customfield");
+			$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
+				"mode" => "order",
+				"cart" => $this,
+			));
+
+			//ユーザカスタムフィールド
+			SOYShopPlugin::load("soyshop.user.customfield");
+			SOYShopPlugin::invoke("soyshop.user.customfield",array(
+				"mode" => "register",
+				"app" => $this,
+				"userId" => $this->getCustomerInformation()->getId()
+			));
+
+			//記録
+			$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
+			$orderLogic->addHistory($this->getAttribute("order_id"), "注文を受け付けました");
+
+			$orderDAO->commit();
+		}catch(Exception $e){
+			error_log("---------- Exception in CartLogic->order() ----------");
+			error_log($e);
+			error_log(var_export($this,true));
+			error_log(var_export($e,true));
+			error_log("--------------------");
+			$orderDAO->rollback();
+			throw $e;
+		}
 	}
 
 	/**
@@ -623,7 +685,7 @@ class CartLogic extends SOY2LogicBase{
 				return false;
 			}
 		}
-		
+
 		//注文確定時に関するプラグインを実行する
 		SOYShopPlugin::load("soyshop.order.complete");
 		SOYShopPlugin::invoke("soyshop.order.complete", array(
@@ -717,7 +779,7 @@ class CartLogic extends SOY2LogicBase{
 		$ignoreStock = $config->getIgnoreStock();
 
 		//transaction start
-		$itemDAO->begin();
+		//$itemDAO->begin();
 
 		$items = $this->getItems();
 
@@ -757,7 +819,7 @@ class CartLogic extends SOY2LogicBase{
 			if($openStock < $itemCount){
 				throw new SOYShop_OverStockException("");
 			}
-			
+
 			//販売期間
 			if($item->getOrderPeriodStart() > time() || $item->getOrderPeriodEnd() < time()){
 				throw new SOYShop_AcceptOrderException("");
@@ -835,11 +897,6 @@ class CartLogic extends SOY2LogicBase{
 			$tmpUser = null;
 		}
 
-
-		//本登録カラムに値を今の時間を入れる
-		$user->setRealRegisterDate(time());
-		$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
-
 		//二回目以降のユーザ
 		if($tmpUser instanceof SOYShop_User){
 
@@ -852,6 +909,10 @@ class CartLogic extends SOY2LogicBase{
 				if( strlen($newPassword) ){
 					//もし新しいパスワードが入力されていたらパスワードを上書きする
 					$user->setPassword($user->hashPassword($newPassword));
+
+					//本登録にする
+					$user->setRealRegisterDate(time());
+					$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 				}else{
 					//それ以外はパスワードを残す
 					$tmpUser = $userDAO->getById($id);
@@ -894,6 +955,10 @@ class CartLogic extends SOY2LogicBase{
 			if(strlen($user->getPassword()) < 1){
 				$user = clone($user);
 				$user->setAddressList(serialize(null));
+			}else{
+				//本登録にする
+				$user->setRealRegisterDate(time());
+				$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 			}
 
 			//insert: パスワードのハッシュ化はonInsertで行う
@@ -902,7 +967,7 @@ class CartLogic extends SOY2LogicBase{
 
 		$this->customerInformation->setId($id);
 	}
-	
+
 	/**
 	 * 初回購入であるか調べる
 	 */
@@ -914,7 +979,7 @@ class CartLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			$orders = array();
 		}
-		
+
 		return (!count($orders));
 	}
 
@@ -944,14 +1009,6 @@ class CartLogic extends SOY2LogicBase{
 		$claimedAddress = $this->getClaimedAddress($this->customerInformation);
 		$order->setClaimedAddress($claimedAddress);
 
-		//念の為に登録したモジュールが消えてないか調べて、消えていればCart03に飛ばす no_moduleモードの場合は確認しない
-		if(is_null($this->getAttribute("no_module")) && (!count($this->getModules()) || !count($this->getOrderAttributes()))){
-			$this->setAttribute("page", "Cart03");
-			$this->save();
-			soyshop_redirect_cart();
-			exit;		//リダイレクト中に遷移を防ぐため
-		}
-
 		$id = $orderDAO->insert($order);
 		$order->setId($id);
 		$this->setAttribute("order_id", $id);
@@ -971,17 +1028,11 @@ class CartLogic extends SOY2LogicBase{
 			//子商品の在庫管理設定をオン(子商品購入時に親商品の在庫も減らす)
 			$childItemStock = $config->getChildItemStock();
 			if($childItemStock){
-				try{
-					//SOYShop_Itemオブジェクトの値を入れた変数
-					$itemObj = $itemDAO->getById($item->getItemId());
-					if(is_numeric($itemObj->getType())){
-						try{
-							$parent = $itemDAO->getById($itemObj->getType());
-							$itemDAO->orderItem($parent->getId(), $item->getItemCount());
-						}catch(Exceptoin $e){
-						}
-					}
-				}catch(Exception $e){
+				//SOYShop_Item
+				$itemObj = $itemDAO->getById($item->getItemId());
+				if(is_numeric($itemObj->getType())){
+					$parent = $itemDAO->getById($itemObj->getType());
+					$itemDAO->orderItem($parent->getId(), $item->getItemCount());
 				}
 			}
 
@@ -1013,7 +1064,7 @@ class CartLogic extends SOY2LogicBase{
 
 
 		//begin
-		$orderDAO->commit();
+		//$orderDAO->commit();
 
 		$this->order = $order;
 
@@ -1073,10 +1124,10 @@ class CartLogic extends SOY2LogicBase{
 			$orderLogic->setMailStatus($this->getAttribute("order_id"), "order", time());
 
 			//ログ
-			$orderLogic->addHistory($this->getAttribute("order_id"), "注文者宛の注文受付メールを送信しました。");
+			$orderLogic->addHistory($this->getAttribute("order_id"), "注文者宛の".$logic->getMailTypeName($type, false)."を送信しました。");
 		}else{
 			//ログ
-			$orderLogic->addHistory($this->getAttribute("order_id"), "設定により注文者宛の注文受付メールは送信されません。");
+			$orderLogic->addHistory($this->getAttribute("order_id"), "設定により注文者宛の".$logic->getMailTypeName($type, false)."は送信されません。");
 		}
 
 		/**
@@ -1119,15 +1170,15 @@ class CartLogic extends SOY2LogicBase{
 			$logic->sendMail($adminMailAddress, $title, $mailBody, $adminName, $this->order, true);
 
 			//ログ
-			$orderLogic->addHistory($this->getAttribute("order_id"), "管理者宛の注文受付メールを送信しました。");
+			$orderLogic->addHistory($this->getAttribute("order_id"), "管理者宛の".$logic->getMailTypeName($type, true)."を送信しました。");
 		}else{
 			//ログ
-			$orderLogic->addHistory($this->getAttribute("order_id"), "設定により管理者宛の注文受付メールは送信されません。");
+			$orderLogic->addHistory($this->getAttribute("order_id"), "設定により管理者宛の".$logic->getMailTypeName($type, true)."は送信されません。");
 		}
 	}
-	
-	/** 
-	 * カートのエラー状態に送信する通知メール 
+
+	/**
+	 * カートのエラー状態に送信する通知メール
 	 */
 	function sendNoticeCartErrorMail($exception){
 		SOY2::import("domain.config.SOYShop_ServerConfig");

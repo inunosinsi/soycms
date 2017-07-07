@@ -15,9 +15,9 @@ class Cart04Page extends MainCartPageBase{
 
 			$cart = CartLogic::getCart();
 			$cart->removeErrorMessage("order_confirm_error");
-			
+
 			if(isset($_POST["next"]) || isset($_POST["next_x"])){
-				
+
 				//入力内容に間違いがないか？最終チェックのプラグイン
 				if(isset($_POST["order_confirm_module"])){
 					SOYShopPlugin::load("soyshop.order.confirm");
@@ -25,7 +25,7 @@ class Cart04Page extends MainCartPageBase{
 						"mode" => "checkError",
 						"param" => $_POST["order_confirm_module"]
 					));
-		
+
 					if($delegate->hasError()){
 						$cart->addErrorMessage("order_confirm_error", MessageManager::get("INPUT_NOTICE"));
 						$cart->save();
@@ -34,15 +34,6 @@ class Cart04Page extends MainCartPageBase{
 				}
 
 				try{
-					//カスタムフィールド
-					{
-						SOYShopPlugin::load("soyshop.order.customfield");
-						$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
-							"mode" => "order",
-							"cart" => $cart,
-						));
-					}
-					
 					//ポイントモジュール
 					{
 						SOYShopPlugin::load("soyshop.point.payment");
@@ -69,7 +60,7 @@ class Cart04Page extends MainCartPageBase{
 							"cart" => $cart,
 						));
 					}
-					
+
 					//プラグインでのカートチェック
 					SOYShopPlugin::load("soyshop.cart.check");
 					SOYShopPlugin::invoke("soyshop.cart.check", array(
@@ -79,17 +70,6 @@ class Cart04Page extends MainCartPageBase{
 
 					//注文実行
 					$cart->order();
-
-					//ユーザカスタムフィールド
-					{
-						SOYShopPlugin::load("soyshop.user.customfield");
-						SOYShopPlugin::invoke("soyshop.user.customfield",array(
-							"mode" => "register",
-							"app" => $cart,
-							"userId" => $cart->getCustomerInformation()->getId()
-						));
-					}
-
 
 					//pluginで次の画面があるかどうかチェック
 					$hasOption = $cart->getAttribute("has_option");
@@ -127,7 +107,7 @@ class Cart04Page extends MainCartPageBase{
 			if(isset($_POST["prev"]) || isset($_POST["prev_x"])){
 				$cart->setAttribute("prev_page", "Cart04");
 				$cart->setAttribute("page", "Cart03");
-	
+
 				soyshop_redirect_cart();
 			}
 		}
@@ -142,11 +122,11 @@ class Cart04Page extends MainCartPageBase{
 		//商品リストの出力
 		$cart = CartLogic::getCart();
 		$items = $cart->getItems();
-		
+
 		$this->addModel("no_confirm_error", array(
 			"visible" => (is_null($cart->getErrorMessage("order_confirm_error")))
 		));
-		
+
 		$this->addModel("is_confirm_error", array(
 			"visible" => (!is_null($cart->getErrorMessage("order_confirm_error")))
 		));
@@ -173,10 +153,10 @@ class Cart04Page extends MainCartPageBase{
 		$this->createAdd("total_price", "NumberFormatLabel", array(
 			"text" => $cart->getTotalPrice()
 		));
-		
+
 		//顧客情報 テキスト
 		$this->buildForm($cart);
-		
+
 		$this->addExtensions($cart);
 
 		//error
@@ -336,14 +316,14 @@ class Cart04Page extends MainCartPageBase{
 	 * 表示用拡張ポイント
 	 */
 	function addExtensions($cart){
-		
+
 		/* 購入確認 soyshop.order.confirm */
 		SOYShopPlugin::load("soyshop.order.confirm");
 		$delegate = SOYShopPlugin::invoke("soyshop.order.confirm", array(
 			"mode" => "display",
 			"error" => (!is_null($cart->getErrorMessage("order_confirm_error")))
 		));
-		
+
 		$displayHtmls = $delegate->getHtml();
 
 		//入力内容確認のチェックボックス
@@ -354,14 +334,14 @@ class Cart04Page extends MainCartPageBase{
 		$this->createAdd("confirm_plugin_list", "_common.CartPluginListComponent", array(
 			"list" => $displayHtmls
 		));
-		
+
 		/* カート soyshop.cart */
 		SOYShopPlugin::load("soyshop.cart");
 		$delegate = SOYShopPlugin::invoke("soyshop.cart", array(
 			"mode" => "page04",
 			"cart" => $cart
 		));
-		
+
 		$htmls = $delegate->getHtml();
 
 		$this->addModel("has_cart_plugin", array(
@@ -384,7 +364,7 @@ class Cart04Page extends MainCartPageBase{
 		$this->addModel("has_bonus_plugin", array(
 			"visible" => $delegate->getHasBonus()
 		));
-		
+
 		//ボーナスプラグイン おまけ内容HTML
 		$this->createAdd("bonus_plugin_list", "_common.BonusPluginListComponent", array(
 			"list" => $bonuses

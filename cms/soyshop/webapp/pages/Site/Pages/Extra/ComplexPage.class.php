@@ -110,7 +110,15 @@ class ComplexPage extends WebPage{
 			DisplayPlugin::hide("has_blocks");
 		}
 
-		$selectedBlock = (isset($_GET["blockId"])) ? $_GET["blockId"] : array_shift(array_keys($blocks));
+		$selectedBlock = null;
+		if(isset($_GET["blockId"])){
+			$selectedBlock = $_GET["blockId"];
+		}else{
+			if(count($blocks)){
+				$keys = array_keys($blocks);
+				$selectedBlock = $keys[0];
+			}
+		}
 
 		$this->createAdd("block_list","HTMLSelect", array(
 			"name" => "",
@@ -362,6 +370,4 @@ class CustomFieldCordinationList extends HTMLList{
 	function setBlockId($blockId) {
 		$this->blockId = $blockId;
 	}
-
 }
-?>

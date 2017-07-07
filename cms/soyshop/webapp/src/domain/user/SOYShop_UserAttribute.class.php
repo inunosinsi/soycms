@@ -7,13 +7,13 @@ class SOYShop_UserAttribute {
 	public static function getTableName(){
 		return "soyshop_user_attribute";
 	}
-	
+
 	const CUSTOMFIELD_TYPE_INPUT = "input";			//一行テキスト
 	const CUSTOMFIELD_TYPE_TEXTAREA = "textarea";	//複数行テキスト
 	const CUSTOMFIELD_TYPE_CHECKBOX = "checkbox";	//チェックボックス
 	const CUSTOMFIELD_TYPE_RADIO = "radio";			//ラジオ
 	const CUSTOMFIELD_TYPE_SELECT = "select";		//セレクトボックス
-	
+
 	//必須項目
 	const IS_REQUIRED = 1;
 	const NO_REQUIRED = 0;
@@ -146,14 +146,14 @@ class SOYShop_UserAttributeConfig{
 	private $fieldId;
 	private $label;
 	private $type;
-	
+
 	private $attributeDescription;
 	private $attributeOther;
 	private $attributeOtherText;
-	
+
 	private $defaultValue;
 	private $emptyValue;
-	
+
 	//必須項目であるか
 	private $isRequired;
 	private $config;
@@ -226,7 +226,7 @@ class SOYShop_UserAttributeConfig{
 	}
 
 	function getForm($value){
-		
+
 		//おまじない
 		$readOnly = false;
 
@@ -260,7 +260,7 @@ class SOYShop_UserAttributeConfig{
 					$value["value"] = (strlen($this->getDefaultValue())) ? $this->getDefaultValue() : null;
 					$value["other"] = null;
 				}
-				
+
 				$body = "";
 				foreach($options as $key => $option){
 					$option = trim($option);
@@ -279,7 +279,7 @@ class SOYShop_UserAttributeConfig{
 					}
 				}
 				break;
-				
+
 			case SOYShop_UserAttribute::CUSTOMFIELD_TYPE_SELECT:
 				$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getOption()));
 				$value = (!defined("SOYSHOP_ADMIN_PAGE") && is_null($value) && strlen($this->getDefaultValue()) > 0) ? $this->getDefaultValue() : $value ;
@@ -326,15 +326,15 @@ class SOYShop_UserAttributeConfig{
 
 		return $body;
 	}
-	
+
 	function getDefaultValue() {
-		return $this->config["defaultValue"];
+		return (isset($this->config["defaultValue"])) ? $this->config["defaultValue"] : "";
 	}
 	function setDefaultValue($defaultValue) {
 		$this->config["defaultValue"] = $defaultValue;
 	}
 	function getEmptyValue() {
-		return $this->config["emptyValue"];
+		return (isset($this->config["emptyValue"])) ? $this->config["emptyValue"] : "";
 	}
 	function setEmptyValue($emptyValue) {
 		$this->config["emptyValue"] = $emptyValue;
@@ -346,4 +346,3 @@ class SOYShop_UserAttributeConfig{
 		$this->config["isRequired"] = $isRequired;
 	}
 }
-?>

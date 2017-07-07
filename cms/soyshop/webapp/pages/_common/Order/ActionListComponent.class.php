@@ -25,4 +25,3 @@ class ActionListComponent extends HTMLList{
 		$this->orderId = $orderId;
 	}
 }
-?>

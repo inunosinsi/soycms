@@ -15,7 +15,7 @@
 	html5doctor.com Reset Stylesheet
 	v1.6.1
 	Last Updated: 2010-09-17
-	Author: Richard Clark - http://richclarkdesign.com 
+	Author: Richard Clark - http://richclarkdesign.com
 	Twitter: @rich_clark
 ======================================================*/
 
@@ -28,7 +28,7 @@ b, i,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, figcaption, figure, 
+article, aside, canvas, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section, summary,
 time, mark, audio, video {
     margin:0;
@@ -47,7 +47,7 @@ body{
 	color:#333;
 }
 article,aside,details,figcaption,figure,
-footer,header,hgroup,menu,nav,section { 
+footer,header,hgroup,menu,nav,section {
     display:block;
 }
 nav ul {
@@ -77,7 +77,7 @@ ins {
 /* change colours to suit your needs */
 mark {
     background-color:#ff9;
-    color:#000; 
+    color:#000;
     font-style:italic;
     font-weight:bold;
 }
@@ -96,7 +96,7 @@ table {
 hr {
     display:block;
     height:1px;
-    border:0;   
+    border:0;
     border-top:1px solid #cccccc;
     margin:1em 0;
     padding:0;
@@ -110,7 +110,7 @@ input, select {
 ======================================================*/
 
 html{
-/**background: url(../img/bg.jpg) repeat;**/
+	background: url(../img/bg.jpg) repeat;
 }
 body {
 	font-family: Myriad Pro, Arial, Helvetica,"ヒラギノ角ゴ W3", "Hiragino Kaku Gothic Pro","メイリオ", Meiryo,  "MS P Gothic","ＭＳ Ｐゴシック",sans-serif;
@@ -150,31 +150,11 @@ footer{
 .textcenter{
 	text-align: center;
 }
-.mt{
-	margin-top:10px;
-}
-.mb{
-	margin-bottom:10px;
-}
-
 .clearfix:after{
 	content: "";
 	clear: both;
 	height: 0;
 	display: block;
-}
-a.anchor_btn{
-	font-size:1.5em;
-	color:#FFFFFF;
-	text-decoration:none;
-	padding:7px;
-	border-radius: 5px;
-}
-a.back{
-	background-color:#FF5510;
-}
-a.back:hover{
-	background-color:#ED4604;
 }
 
 /*-----------------------------------------------
@@ -198,7 +178,7 @@ p.btn a{
 	text-decoration: none;
 	font-size: 1rem;
 	margin: 0.5em 0;
-	border-radius: 30px;	
+	border-radius: 30px;
 }
 p.btn a:hover{
 	background: #ffbf00;
@@ -214,15 +194,6 @@ p.btn a:hover{
 
 .clear{
 	clear: both;
-}
-
-a.pdf_dl{
-	background: url(../images/icon_pdf.png) no-repeat;
-	text-decoration:none;
-	padding-left:20px;
-}
-a.pdf_dl:hover{
-	color:#03F;
 }
 
 /*___ #main common _____________________*/
@@ -273,7 +244,7 @@ a.pdf_dl:hover{
 	background: rgba(255,255,255,0.6);
 	font-size: 0.8em;
 	margin-bottom: 20px;
-	margin-right: 10px;		
+	margin-right: 10px;
 	position: relative;
 }
 #main .itemList li:hover{
@@ -440,14 +411,14 @@ header nav{
 	position:relative;
 	background:#FFF url(../images/subnav_bg.png) repeat-x 0px;
 }
-header nav ul:after {  
-	content: ".";  
-	display: block;  
-	visibility: hidden;  
-	height: 0.1px;  
-	font-size: 0.1em;  
-	line-height: 0;  
-	clear: both;  
+header nav ul:after {
+	content: ".";
+	display: block;
+	visibility: hidden;
+	height: 0.1px;
+	font-size: 0.1em;
+	line-height: 0;
+	clear: both;
 	}
 header nav ul{
     display:inline-block;
@@ -548,7 +519,7 @@ header nav p{
 	background: #fff;
 	padding: 10px;
 	font-size: 0.8em;
-	margin-bottom: 20px;	
+	margin-bottom: 20px;
 }
 
 #map_canvas {
@@ -608,7 +579,7 @@ header nav p{
 }
 .lead .detail_info p.cart_que a {
 	font-size:0.8em;
-    background: url("../images/icon_mail.png") no-repeat scroll 0 3px transparent;
+    background: url("../img/icon_mail.png") no-repeat scroll 0 3px transparent;
     padding-left: 20px;
     float:right;
 }
@@ -619,7 +590,7 @@ header nav p{
 	background: #fff;
 	background: rgba(255,255,255,0.6);
 	border: 1px solid #9a8b78;
-	border-collapse: collapse;	
+	border-collapse: collapse;
 	margin-bottom: 1em;
 	width: 100%;
 }
@@ -634,10 +605,6 @@ header nav p{
 	border: 1px solid #9a8b78;
 	vertical-align: middle;
 }
-.detail_info_column{
-	padding: 4px 0;
-}
-
 #check_sns li{
 	display: inline-block;
 }
@@ -678,7 +645,7 @@ header nav p{
 	background: #fff;
 	background: rgba(255,255,255,0.6);
 	border: 1px solid #9a8b78;
-	border-collapse: collapse;	
+	border-collapse: collapse;
 }
 #main .detail table th{
 	background: #e5dcd1;
@@ -724,24 +691,6 @@ header nav p{
 	text-align: right;
 }
 
-#main section.column ul{
-	margin-left:20px;
-	list-style-type:disc !important;
-}
-
-#main section.column ul li{
-	list-style:disc !important;
-	padding:3px 0;
-}
-
-
-#main section.column ul li a{
-	font-size:1.3em;
-}
-#main section.column ul li a:hover{
-	color:#03F;
-}
-
 /*-----------------------------------------------
 	footer
 -----------------------------------------------*/
@@ -751,14 +700,14 @@ footer{
 	font-size: 0.9em;
 }
 footer .footernav{
-/**background: url(../img/subfooter_bg.png) repeat;**/
+	background: url(../img/subfooter_bg.png) repeat;
 }
 footer .footernav li{
 	display: inline-block;
 	padding: 1em;
 }
 footer .footernav a{
-	color: #432805;	
+	color: #432805;
 }
 
 footer p.copyright{
@@ -899,7 +848,7 @@ ul.flow li.active{
 	background: -o-linear-gradient(top,  rgba(132,171,189,1) 0%,rgba(47,115,143,1) 100%);
 	background: -ms-linear-gradient(top,  rgba(132,171,189,1) 0%,rgba(47,115,143,1) 100%);
 	background: linear-gradient(to bottom,  rgba(132,171,189,1) 0%,rgba(47,115,143,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#84abbd', endColorstr='#2f738f',GradientType=0 );	
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#84abbd', endColorstr='#2f738f',GradientType=0 );
 	color: #fff;
 	text-shadow: -1px -1px 1px rgba(0,0,0,0.6);
 }
@@ -1059,7 +1008,7 @@ ul.flow li.active{
 	margin-bottom: 0.3em;
 }
 #main .detail .cart_detail_dl dd p.remarks{
-	font-size: 0.9rem;	
+	font-size: 0.9rem;
 }
 #main .detail .cart_detail_dl dd p.price{
 	color: #c00;
@@ -1180,12 +1129,6 @@ header nav#gnav p.navcart.btn a{
 	margin-left: 0.5em;
 }
 
-.lead div.detail_info{
-	width:90%;
-	margin: 0 auto;
-	float:none;
-}
-
 .lead p.detail_img{
 	width:100%;
 }
@@ -1205,7 +1148,7 @@ footer .footernav li{
 /*___ Override cart.css _____________________*/
 
 #cart #side{
-/**display: none;**/
+	display: none;
 }
 
 .pconly{

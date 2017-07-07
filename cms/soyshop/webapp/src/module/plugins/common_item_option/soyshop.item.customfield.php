@@ -11,26 +11,26 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 * @param object SOYShop_Item
 	 */
 	function doPost(SOYShop_Item $item){
-		
+
 		if(isset($_POST["item_option"])){
 			$itemId = $item->getId();
-			
+
 			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			
+
 			$options = $_POST["item_option"];
 			foreach($options as $key => $value){
-				
+
 				try{
 					$dao->delete($itemId, "item_option_" . $key);
 				}catch(Exception $e){
 					//
 				}
-				
+
 				$obj = new SOYShop_ItemAttribute();
 				$obj->setItemId($itemId);
 				$obj->setFieldId("item_option_" . $key);
 				$obj->setValue($value);
-				
+
 				try{
 					$dao->insert($obj);
 				}catch(Exception $e){
@@ -49,46 +49,50 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 		self::prepare();
 		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
 		$types = $logic->getTypes();
-		
+
 		$html = array();
-		
+
 		$html[] = "<h1>商品オプションの設定</h1>";
 		$html[] = "<dd>";
-		$html[] = "<p>商品のオプション項目のセレクトボックスを作成します。<br />";
+		$html[] = "<p>商品のオプション項目のセレクトボックスまたはラジオボタンを作成します。<br />";
 		$html[] = "表示したいオプション項目を改行で区切って入力してください。</p>";
 		$html[] = "</dd>";
-		
+
 		foreach($this->optionList as $key => $value){
 			$html[] = $this->buildTextArea($key, $value, $item->getId(), $types);
 		}
-		
+
 		return implode("\n", $html);
 	}
-	
+
 	/**
 	 * プラグイン詳細で設定したオプションのフォームを出力する
 	 * @param string key, string value, integer itemId
 	 * @retrun string html
 	 */
 	function buildTextArea($key, $value, $itemId, $types){
-		
+
 		$obj = $this->getFieldValue($key, $itemId);
-		
+
 		//古いバージョンから使用していて、typeの値がない場合はselectにする
 		$type = (isset($value["type"])) ? $value["type"] : "select";
-		
+
 		$html = array();
-		
+
 		$html[] = "<dt>";
 		$html[] = "<label for=\"item_option_" . $key . "\">オプション名：" . $value["name"] . "&nbsp;タイプ：" . $types[$type] . "</label>";
 		$html[] = "</dt>";
 		$html[] = "<dd>";
-		$html[] = "<textarea name=\"item_option[" . $key . "]\">" . $obj->getValue() . "</textarea>";
+		if($type == "text"){
+			$html[] = "<input type=\"hidden\" name=\"item_option[" . $key . "]\" value=\"0\"><input type=\"checkbox\" name=\"item_option[" . $key . "]\" id=\"item_option_" . $key ."\" value=\"1\"".( $obj->getValue() ? " checked" : "" )."><label for=\"item_option_" . $key ."\">使う</label>";
+		}else{
+			$html[] = "<textarea name=\"item_option[" . $key . "]\">" . $obj->getValue() . "</textarea>";
+		}
 		$html[] = "</dd>";
-		
+
 		return implode("\n", $html);
 	}
-	
+
 	/**
 	 * 公開側のblock:id="item"で囲まれた箇所にフォームを出力する
 	 * @param object htmlObj, object SOYShop_Item
@@ -96,23 +100,29 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	function onOutput($htmlObj, SOYShop_Item $item){
 		self::prepare();
 		$cart = CartLogic::getCart();
-		
+
 		foreach($this->optionList as $key => $value){
-			
+
 			$html = array();
-			
+
 			$name = "item_option[" . $key . "]";
-			
+
 			//古いバージョンから使用していて、typeの値がない場合はselectにする
 			$type = (isset($value["type"])) ? $value["type"] : "select";
 			$obj = $this->getFieldValue($key, $item->getId());
-			
+
 			if(strlen($obj->getValue()) > 0){
-				
+
 				$options = explode("\n", trim($obj->getValue()));
-				
+
 				//選択したタイプによって、HTMLの出力を変える
 				switch($type){
+					case "text":
+						if($obj->getValue()){
+							$html[] = "<input type=\"text\" name=\"" . $name . "\" value=\"\" >";
+						}
+						break;
+
 					case "radio":
 						$first = true;
 						foreach($options as $option){
@@ -122,27 +132,27 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 							}else{
 								$html[] = "<label><input type=\"radio\" name=\"" . $name . "\" value=\"" . $option . "\">" . $option . "</label><br>";
 							}
-							
+
 						}
 						break;
-						
+
 					case "select":
 					default:
-					
+
 						$html[] = "<select name=\"" . $name . "\">";
-					
+
 						foreach($options as $option){
 							$option = str_replace(array("\r", "\n"), "", $option);
 							$html[] = "<option>" . $option . "</option>";
 						}
-					
+
 						$html[] = "</select>";
 						break;
 				}
 			}else{
 				$html[] = "";
 			}
-									
+
 			$htmlObj->addModel($key . "_visible", array(
 				"soy2prefix" => SOYSHOP_SITE_PREFIX,
 				"visible" => (strlen($obj->getValue()) > 0)
@@ -156,6 +166,74 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	}
 
 	/**
+	 * 管理画面でフォームを出力する
+	 * @param object htmlObj, object SOYShop_Item
+	 */
+	function outputFormForAdmin($htmlObj, SOYShop_Item $item, $nameBase, $itemIndex){
+		self::prepare();
+
+		$html = array();
+		foreach($this->optionList as $key => $config){
+			$name = $nameBase . "[" . $key . "]";
+
+			$cart = CartLogic::getCart();
+			$value = trim($cart->getAttribute("item_option_{$key}_{$itemIndex}_{$item->getId()}"));
+
+			//古いバージョンから使用していて、typeの値がない場合はselectにする
+			$type = (isset($config["type"])) ? $config["type"] : "select";
+			$obj = $this->getFieldValue($key, $item->getId());
+
+			if(strlen(trim($obj->getValue())) > 0){//テキストの場合は使う設定、他は選択肢が必要
+
+				$html[] = htmlspecialchars($config["name"], ENT_QUOTES, "UTF-8") . ": ";
+
+				//選択したタイプによって、HTMLの出力を変える
+				switch($type){
+					case "text":
+						$html[] = "<input type=\"text\" name=\"" . htmlspecialchars($name, ENT_QUOTES, "UTF-8") . "\" value=\"" . htmlspecialchars($value, ENT_QUOTES, "UTF-8") . "\">";
+						break;
+
+					case "radio":
+						$options = explode("\n", trim($obj->getValue()));
+						$first = true;
+						foreach($options as $option){
+							$option = trim($option);
+							if($first){
+								$first = false;
+								$checked = strlen($value) ? "" : " checked=\"checked\"" ;
+							}else{
+								$checked = "";
+							}
+							if($option == $value) $checked = " checked=\"checked\"";
+
+							$html[] = "<label><input type=\"radio\" name=\"" . htmlspecialchars($name, ENT_QUOTES, "UTF-8") . "\" value=\"" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "\"".$checked.">" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "</label>&nbsp;";
+						}
+						break;
+
+					case "select":
+					default:
+						$html[] = "<select name=\"" . htmlspecialchars($name, ENT_QUOTES, "UTF-8") . "\">";
+
+						$options = explode("\n", trim($obj->getValue()));
+						foreach($options as $option){
+							$option = trim($option);
+							$selected = ($option == $value) ? " selected=\"selected\"" : "";
+							$html[] = "<option{$selected}>" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "</option>";
+						}
+
+						$html[] = "</select>";
+						break;
+				}
+				$html[] = "<br>";
+			}
+
+		}
+
+		echo implode("", $html);
+
+	}
+
+	/**
 	 * 管理画面側で商品情報を削除した時にオプション設定も一緒に削除する
 	 * @param integer id
 	 */
@@ -163,7 +241,7 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		$attributeDAO->deleteByItemId($id);
 	}
-	
+
 	/**
 	 * 値を取得するメソッド
 	 * @param string key, integer itemId
@@ -171,24 +249,24 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 */
 	function getFieldValue($key, $itemId){
 		$key = "item_option_" . $key;
-		
+
 		if(SOYSHOP_PUBLISH_LANGUAGE != "jp"){
 			$obj = self::get($itemId, $key . "_" . SOYSHOP_PUBLISH_LANGUAGE);
-			
+
 			if(is_null($obj) && SOYSHOP_PUBLISH_LANGUAGE != $this->prefix){
 				$obj = self::get($itemId, $key . "_" . $this->prefix);
 			}
 		}
-		
+
 		//多言語化の方の値を取得できなかった場合
 		if(!isset($obj) || is_null($obj)) $obj = self::get($itemId, $key);
-		
+
 		//取得できなければ、空のオブジェクトを返す
 		if(is_null($obj)) $obj = new SOYShop_ItemAttribute;
-		
+
 		return $obj;
 	}
-	
+
 	private function get($itemId, $key){
 		try{
 			$obj = $this->itemAttributeDAO->get($itemId, $key);
@@ -197,19 +275,19 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 		}
 		return $obj;
 	}
-	
+
 	private function prepare(){
 		if(!$this->itemAttributeDAO){
 			$this->itemAttributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		}
-		
+
 		if(!$this->optionList){
 			$this->optionList = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
 		}
-		
+
 		//多言語の方も念のため
 		if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
-		
+
 		//多言語化のプレフィックスでも調べてみる
 		if(is_null($this->prefix) && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
 			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
@@ -220,4 +298,3 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "common_item_option", "CommonItemOptionCustomField");
-?>

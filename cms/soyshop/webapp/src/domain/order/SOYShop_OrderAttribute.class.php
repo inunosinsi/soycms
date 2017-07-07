@@ -8,7 +8,7 @@ class SOYShop_OrderAttribute {
 	public static function getTableName(){
 		return "soyshop_order_attribute";
 	}
-		
+
 	const CUSTOMFIELD_TYPE_INPUT = "input";			//一行テキスト
 	const CUSTOMFIELD_TYPE_TEXTAREA = "textarea";	//複数行テキスト
 	const CUSTOMFIELD_TYPE_CHECKBOX = "checkbox";	//チェックボックス
@@ -16,9 +16,9 @@ class SOYShop_OrderAttribute {
 	const CUSTOMFIELD_TYPE_SELECT = "select";		//セレクトボックス
 	const CUSTOMFIELD_TYPE_RICHTEXT = "richtext";	//リッチテキスト
 	const CUSTOMFIELD_TYPE_FILE = "file";			//ファイル
-	
+
 	const CUSTOMFIELD_ATTRIBUTE_OTHER = 1;
-	
+
 	//必須項目
 	const IS_REQUIRED = 1;
 	const NO_REQUIRED = 0;
@@ -42,7 +42,7 @@ class SOYShop_OrderAttribute {
 	 * @column order_value2
 	 */
 	private $value2;
-	
+
 	/**
 	 * @column order_extra_values
 	 */
@@ -78,7 +78,7 @@ class SOYShop_OrderAttribute {
 	function setExtraValues($extraValues){
 		$this->extraValues = $extraValues;
 	}
-	
+
 	function getExtraValuesArray() {
 		$res = soy2_unserialize($this->extraValues);
 		if(is_array($res)){
@@ -139,7 +139,7 @@ class SOYShop_OrderAttributeConfig{
 		foreach($array as $config){
 			$map[$config->getFieldId()] = $config;
 		}
-		
+
 		return $map;
 	}
 
@@ -199,14 +199,14 @@ class SOYShop_OrderAttributeConfig{
 	private $fieldId;
 	private $label;
 	private $type;
-	
+
 	private $attributeDescription;
 	private $attributeOther;
 	private $attributeOtherText;
 
 	private $defaultValue;
 	private $emptyValue;
-	
+
 	//必須項目であるか
 	private $isRequired;
 	private $config;
@@ -268,7 +268,7 @@ class SOYShop_OrderAttributeConfig{
 	function hasRadioOption(){
 		return (boolean)($this->getType() == SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO);
 	}
-	
+
 	function getFileOption() {
 		return (isset($this->config["fileOption"])) ? $this->config["fileOption"] : "";
 	}
@@ -298,7 +298,7 @@ class SOYShop_OrderAttributeConfig{
 				$checkbox_value = ($ini && strlen($this->getDefaultValue()) > 0) ? (explode(",", $this->getDefaultValue())) : explode(",", $value);
 				$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getOption()));
 				$body = "";
-				
+
 				foreach($options as $key => $option){
 					$checked = (in_array($option, $checkbox_value)) ? ' checked="checked"' : "";
 					if(!strlen($checked)){
@@ -307,7 +307,7 @@ class SOYShop_OrderAttributeConfig{
 							$option = substr($option, 1);
 						}
 					}
-					
+
 					$body .= '<input type="checkbox" class="custom_field_checkbox"'
 					       .' id="' . $h_formID . '_' . $key . '"'
 					       .' name="' . $h_formName . '[]"'
@@ -319,7 +319,7 @@ class SOYShop_OrderAttributeConfig{
 				}
 
 				break;
-				
+
 			case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
 				$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getOption()));
 				if(is_null($value)){
@@ -336,7 +336,7 @@ class SOYShop_OrderAttributeConfig{
 					if(strlen($option) > 0){
 						$h_option = htmlspecialchars($option, ENT_QUOTES, "UTF-8");
 						$id = 'custom_field_radio_' . $this->getFieldId() . '_' . $key;
-						
+
 						$checked = ($option == $value["value"]) ?  ' checked="checked"' : "";
 						if(!strlen($checked)){
 							if($h_option[0] == "*"){
@@ -344,7 +344,7 @@ class SOYShop_OrderAttributeConfig{
 								$h_option = substr($h_option, 1);
 							}
 						}
-						
+
 						$body .= '<input type="radio" class="custom_field_radio"' .
 								 ' name="' . $h_formName . '"' .
 								 ' id="' . $id . '"'.
@@ -355,10 +355,10 @@ class SOYShop_OrderAttributeConfig{
 						$body .= "\n";
 					}
 				}
-				
+
 				$other = $this->getAttributeOther();
 				$otherText = $this->getAttributeOtherText();
-				
+
 				if(isset($other) && $other == 1){
 					$body .= '<input type="radio" class="custom_field_radio"' .
 							 ' name="' . $h_formName . '"' .
@@ -373,7 +373,7 @@ class SOYShop_OrderAttributeConfig{
 				}
 
 				break;
-				
+
 			case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
 				$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getOption()));
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
@@ -392,7 +392,7 @@ class SOYShop_OrderAttributeConfig{
 				$body .= '</select>';
 
 				break;
-				
+
 			case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
@@ -402,7 +402,7 @@ class SOYShop_OrderAttributeConfig{
 				        .'>'
 						.$h_value.'</textarea>';
 				break;
-				
+
 			case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RICHTEXT:
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
@@ -412,7 +412,7 @@ class SOYShop_OrderAttributeConfig{
 				        .'>'
 						.$h_value.'</textarea>';
 				break;
-				
+
 			case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
 				$body = '<input type="file" id="'.$h_formID.'_upload"'
 				       .' name="'.$h_formName.'"'
@@ -425,7 +425,7 @@ class SOYShop_OrderAttributeConfig{
 				          .' value="'. $value . '" />';
 				}
 				break;
-			
+
 			default:
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
@@ -441,7 +441,7 @@ class SOYShop_OrderAttributeConfig{
 
 		return $return;
 	}
-	
+
 	function getDefaultValue() {
 		return $this->config["defaultValue"];
 	}
@@ -461,4 +461,3 @@ class SOYShop_OrderAttributeConfig{
 		$this->config["isRequired"] = $isRequired;
 	}
 }
-?>

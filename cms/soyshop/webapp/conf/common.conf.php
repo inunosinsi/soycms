@@ -17,10 +17,14 @@ define("SOY2_NOW", time());	//現在時刻
 define("SOYSHOP_BUILD_TIME",1434600689);//ビルド日時：ビルド時に置換される
 define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
 
-//PHP mb
-mb_language('Japanese');
-mb_internal_encoding('UTF-8');
-mb_regex_encoding(mb_internal_encoding());
+//SOY CMSのphp.config.phpを読み込む
+if(file_exists(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php")){
+	include_once(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php");
+}else{
+	mb_language('Japanese');
+	mb_internal_encoding('UTF-8');
+	mb_regex_encoding(mb_internal_encoding());
+}
 
 //include SOY2
 if(!class_exists("SOY2")) include_once(SOYSHOP_WEBAPP . "lib/soy2_build.php");
@@ -57,7 +61,7 @@ SOY2DAOConfig::setOption("connection_failure", "throw");
 if(SOYSHOP_VERSION != "SOYSHOP_VERSION") SOY2DAOConfig::setOption("cache_prefix", SOYSHOP_VERSION . "_");
 
 //etc
-SOY2::import("message.Message");
+SOY2::import("message.MessageManager");
 SOY2::import("domain.config.SOYShop_DataSets");
 SOY2::import("logic.plugin.SOYShopPlugin");
 
@@ -112,4 +116,3 @@ function soyshop_load_db_config(){
 		define("SOYSHOP_DB_TYPE", SOY2DAOConfig::type());
 	}
 }
-?>

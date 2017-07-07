@@ -11,9 +11,14 @@ define("SOYSHOP_WEBAPP",SOYSHOP_ROOT . "webapp/");
 define("SOYSHOP_SITE_PREFIX","cms");
 define("SOY2_NOW",time());	//現在時刻
 
-mb_language('Japanese');
-mb_internal_encoding('UTF-8');
-mb_regex_encoding(mb_internal_encoding());
+//SOY CMSのphp.config.phpを読み込む
+if(file_exists(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php")){
+	include_once(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php");
+}else{
+	mb_language('Japanese');
+	mb_internal_encoding('UTF-8');
+	mb_regex_encoding(mb_internal_encoding());
+}
 
 //include SOY2
 include(SOYSHOP_WEBAPP . "lib/soy2_build.php");
@@ -93,4 +98,3 @@ if(defined("SOYCMS_ALLOW_PHP_SCRIPT")){
 }else{
 	define("SOY2HTML_ALLOW_PHP_SCRIPT",false);
 }
-?>

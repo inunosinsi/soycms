@@ -11,6 +11,8 @@ class AttributeListComponent extends HTMLList {
 		$this->addLabel("attribute_value", array(
 			"html" => (isset($item["value"])) ? nl2br(htmlspecialchars($item["value"], ENT_QUOTES, "UTF-8")) : ""
 		));
+
+		//オーダーカスタムフィールドの値は表示しない
+		if(strpos($key, "order_customfield") === 0 || strpos($key, "order_date_customfield") === 0) return false;
 	}
 }
-?>

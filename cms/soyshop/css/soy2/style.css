@@ -64,6 +64,7 @@ img{
 	width:100px;
 	line-height:50px;
 	font-size:large;
+	pointer: cursor;
 /*	border-style:solid;*/
 }
 a:link, a:visited, a:hover, a:active, h1, h2, h3 { color: #333333; }
@@ -590,6 +591,7 @@ textarea.editor{
 .block a.button:hover{
 	background:url(./img/btn_bg_on.jpg) repeat-x;
 	color:#FFFFFF;
+	cursor: pointer;
 	}
 
 .block input[type="text"] + a.button{

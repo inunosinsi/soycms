@@ -7,39 +7,42 @@
 class CartConfigPage extends WebPage{
 
 	private $charsets = array("UTF-8", "Shift_JIS", "EUC-JP");
-	
+
 	function doPost(){
 		if(soy2_check_token()){
 
-			$cart_id = self::checkCartId($_POST["cart_id"]);
-			$cart_url = self::checkCartUrl($_POST["cart_url"]);
+			$cart_id = $this->checkCartId($_POST["cart_id"]);
+			$cart_url = $this->checkCartUrl($_POST["cart_url"]);
 			$cart_charset = $_POST["cart_charset"];
-
-			$mobile_cart_id = self::checkCartId($_POST["mobile_cart_id"]);
-			$mobile_cart_url = self::checkCartUrl($_POST["mobile_cart_url"]);
-			$mobile_cart_charset = $_POST["mobile_cart_charset"];
-
-			$smartphone_cart_id = self::checkCartId($_POST["smartphone_cart_id"]);
-			$smartphone_cart_url = self::checkCartUrl($_POST["smartphone_cart_url"]);
-			$smartphone_cart_charset = $_POST["smartphone_cart_charset"];
 
 			SOYShop_DataSets::put("config.cart.cart_title", $_POST["cart_title"]);
 
 			SOYShop_DataSets::put("config.cart.use_ssl", (int)$_POST["cart_ssl"]);
-			SOYShop_DataSets::put("config.cart.ssl_url", self::checkSSLCartUrl($_POST["cart_ssl_url"]));
+			SOYShop_DataSets::put("config.cart.ssl_url", $this->checkSSLCartUrl($_POST["cart_ssl_url"]));
 
 			SOYShop_DataSets::put("config.cart.cart_id", $cart_id);
 			SOYShop_DataSets::put("config.cart.cart_url", $cart_url);
 			SOYShop_DataSets::put("config.cart.cart_charset", $cart_charset);
 
-			SOYShop_DataSets::put("config.cart.mobile_cart_id", $mobile_cart_id);
-			SOYShop_DataSets::put("config.cart.mobile_cart_url", $mobile_cart_url);
-			SOYShop_DataSets::put("config.cart.mobile_cart_charset", $mobile_cart_charset);
-			
-			SOYShop_DataSets::put("config.cart.smartphone_cart_id", $smartphone_cart_id);
-			SOYShop_DataSets::put("config.cart.smartphone_cart_url", $smartphone_cart_url);
-			SOYShop_DataSets::put("config.cart.smartphone_cart_charset", $smartphone_cart_charset);
-			
+			//携帯自動振り分けプラグインが有効な時だけ設定を保存する
+			if( class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("util_mobile_check")) ){
+				$mobile_cart_id = $this->checkCartId($_POST["mobile_cart_id"]);
+				$mobile_cart_url = $this->checkCartUrl($_POST["mobile_cart_url"]);
+				$mobile_cart_charset = $_POST["mobile_cart_charset"];
+
+				$smartphone_cart_id = $this->checkCartId($_POST["smartphone_cart_id"]);
+				$smartphone_cart_url = $this->checkCartUrl($_POST["smartphone_cart_url"]);
+				$smartphone_cart_charset = $_POST["smartphone_cart_charset"];
+
+				SOYShop_DataSets::put("config.cart.mobile_cart_id", $mobile_cart_id);
+				SOYShop_DataSets::put("config.cart.mobile_cart_url", $mobile_cart_url);
+				SOYShop_DataSets::put("config.cart.mobile_cart_charset", $mobile_cart_charset);
+
+				SOYShop_DataSets::put("config.cart.smartphone_cart_id", $smartphone_cart_id);
+				SOYShop_DataSets::put("config.cart.smartphone_cart_url", $smartphone_cart_url);
+				SOYShop_DataSets::put("config.cart.smartphone_cart_charset", $smartphone_cart_charset);
+			}
+
 			//多言語化用の拡張ポイント
 			SOYShopPlugin::load("soyshop.application.name");
 			SOYShopPlugin::invoke("soyshop.application.name", array(
@@ -59,13 +62,22 @@ class CartConfigPage extends WebPage{
 			"name" => "cart_title",
 			"value" => $this->getCartTitle()
 		));
-		
+
 		//多言語化用の拡張ポイント
 		SOYShopPlugin::load("soyshop.application.name");
 		$nameForm = SOYShopPlugin::display("soyshop.application.name", array(
 			"mode" => "cart"
 		));
-		
+
+		//携帯自動振り分けプラグインが有効かどうか
+		$isEnabledUtilMobileCheck = class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("util_mobile_check"));
+		$this->addModel("is_enabled_util_mobile_check", array(
+				"visible" => $isEnabledUtilMobileCheck,
+		));
+		$this->addModel("is_not_enabled_util_mobile_check", array(
+				"visible" => ! $isEnabledUtilMobileCheck,
+		));
+
 		$this->addLabel("extension_cart_name_input", array(
 			"html" => $nameForm
 		));
@@ -80,7 +92,7 @@ class CartConfigPage extends WebPage{
 			"selected" => $this->getCartApplicationId(),
 			"options" => $this->getCartApplications()
 		));
-		
+
 		$this->addSelect("cart_charset", array(
 			"name" => "cart_charset",
 			"selected" => $this->getCartCharset(),
@@ -97,13 +109,13 @@ class CartConfigPage extends WebPage{
 			"selected" => $this->getMobileCartApplicationId(),
 			"options" => $this->getCartApplications()
 		));
-		
+
 		$this->addSelect("mobile_cart_charset", array(
 			"name" => "mobile_cart_charset",
 			"selected" => $this->getMobileCartCharset(),
 			"options" => $this->charsets
 		));
-		
+
 		$this->addInput("smartphone_cart_url", array(
 			"name" => "smartphone_cart_url",
 			"value" => $this->getSmartphoneCartUrl()
@@ -114,7 +126,7 @@ class CartConfigPage extends WebPage{
 			"selected" => $this->getSmartphoneCartApplicationId(),
 			"options" => $this->getCartApplications()
 		));
-		
+
 		$this->addSelect("smartphone_cart_charset", array(
 			"name" => "smartphone_cart_charset",
 			"selected" => $this->getSmartphoneCartCharset(),
@@ -147,7 +159,7 @@ class CartConfigPage extends WebPage{
 	function getMobileCartUrl(){
 		return SOYShop_DataSets::get("config.cart.mobile_cart_url", "mb/cart");
 	}
-	
+
 	function getSmartphoneCartUrl(){
 		return SOYShop_DataSets::get("config.cart.smartphone_cart_url", "i/cart");
 	}
@@ -164,7 +176,7 @@ class CartConfigPage extends WebPage{
 	function getCartApplicationId(){
 		return SOYShop_DataSets::get("config.cart.cart_id", "bryon");
 	}
-	
+
 	function getCartCharset(){
 		return SOYShop_DataSets::get("config.cart.cart_charset", "UTF-8");
 	}
@@ -172,15 +184,15 @@ class CartConfigPage extends WebPage{
 	function getMobileCartApplicationId(){
 		return SOYShop_DataSets::get("config.cart.mobile_cart_id", "mobile");
 	}
-	
+
 	function getMobileCartCharset(){
 		return SOYShop_DataSets::get("config.cart.mobile_cart_charset", "Shift_JIS");
 	}
-	
+
 	function getSmartphoneCartApplicationId(){
 		return SOYShop_DataSets::get("config.cart.smartphone_cart_id", "smart");
 	}
-	
+
 	function getSmartphoneCartCharset(){
 		return SOYShop_DataSets::get("config.cart.smartphone_cart_charset", "UTF-8");
 	}
@@ -207,11 +219,11 @@ class CartConfigPage extends WebPage{
 	private function checkCartId($value){
 		//対応するテンプレートが存在しない場合はここで作成する
 		self::makeTemplate($value);
-		
+
 		$values = $this->getCartApplications();
 		return (in_array($value, $values)) ? $value : $this->getCartApplicationId();
 	}
-	
+
 	private function makeTemplate($value){
 		$dir = SOYSHOP_SITE_DIRECTORY . ".template/cart/";
 		$iniFile = $dir . $value . ".ini";
@@ -235,4 +247,3 @@ class CartConfigPage extends WebPage{
 		return $url;
 	}
 }
-?>
