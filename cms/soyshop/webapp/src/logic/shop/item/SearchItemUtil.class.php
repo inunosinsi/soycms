@@ -46,7 +46,7 @@ class SearchItemUtil_SortImpl implements SearchItemUtil_Sort{
 
 		return null;
 	}
-	
+
 	function getObject(){
 		return $this->obj;
 	}
@@ -89,7 +89,7 @@ class SearchItemUtil extends SOY2LogicBase{
 	 *
 	 */
 	function getSortQuery(){
-		
+
 		$session = SOY2ActionSession::getUserSession();
 		if(method_exists($this, "getObject")){
 			$pageId = $this->getSort()->getObject()->getPage()->getId();
@@ -97,11 +97,11 @@ class SearchItemUtil extends SOY2LogicBase{
 		}else{
 			$pageId = null;
 		}
-		
+
 		$sort = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_sort" . $pageId);
 		$csort = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_csort" . $pageId);
 		$suffix = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_suffix" . $pageId);
-		
+
 		if(isset($_GET["sort"])){
 			$sort = ($_GET["sort"] != "reset") ? $_GET["sort"] : null;
 			$session->setAttribute("soyshop_" . SOYSHOP_ID . "_sort" . $pageId, $sort);
@@ -111,12 +111,12 @@ class SearchItemUtil extends SOY2LogicBase{
 			$csort = ($_GET["csort"] != "reset") ? $_GET["csort"] : null;
 			$session->setAttribute("soyshop_" . SOYSHOP_ID . "_csort" . $pageId, $csort);
 		}
-		
+
 		if(isset($_GET["r"])){
 			$suffix = ($_GET["r"] == 1) ? " desc" : "";
 			$session->setAttribute("soyshop_" . SOYSHOP_ID . "_suffix" . $pageId, $suffix);
 		}
-		
+
 		//default
 		if(!$sort && !$csort && $this->getSort()){
 			$obj = $this->getSort();
@@ -125,7 +125,7 @@ class SearchItemUtil extends SOY2LogicBase{
 			if($defaultSort != "custom") $sort = $defaultSort;
 			$csort = $obj->getCustomSort();
 		}
-		
+
 		if($sort){
 			switch($sort){
 				case "id":
@@ -148,11 +148,17 @@ class SearchItemUtil extends SOY2LogicBase{
 				//カスタムフィールドによるソート
 				default:
 					//ソート用のカラムがあるか調べる
-					try{
-						$res = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->executeQuery("SHOW COLUMNS FROM soyshop_item LIKE :pattern", array(":pattern" => $sort));
-						if(count($res)) return $sort . $suffix;
-					}catch(Exception $e){
-						//
+					//ソート用のカラムがあるか調べる
+					if(SOY2DAOConfig::type() == "mysql"){
+						try{
+							$res = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->executeQuery("SHOW COLUMNS FROM soyshop_item LIKE :pattern", array(":pattern" => $sort));
+							if(count($res)) return $sort . $suffix;
+						}catch(Exception $e){
+							//
+						}
+					//SQLiteの場合はカラムがあるかチェックせずに返す
+					}else{
+						return $sort . $suffix;
 					}
 			}
 		}
@@ -300,13 +306,13 @@ class SearchItemUtil extends SOY2LogicBase{
 
     	//append where(categories)
     	if(count($categories) > 0) $query->where = "item_category in (" . implode(",", $categories) . ")";
-    	
+
     	//append where(params)
     	if(count($params)){
     		if(count($categories) > 0) $query->where .= " AND ";
     		foreach($params as $column => $value){
     			if(isset($query->where) && strlen($query->where) > 0 && strlen($query->where) - 4 !== strrpos($query->where, "AND ")) $query->where .= " AND ";
-    			
+
     			switch($column){
     				//フラグ系
     				case "item_sale_flag":
@@ -343,17 +349,17 @@ class SearchItemUtil extends SOY2LogicBase{
     					$binds[":" . $column] = "%" . $value . "%";
     					break;
     			}
-    			
-    			
+
+
     		}
     	}
-    	
+
     	//append where(customfield)
     	$where = array();
     	$counter = 0;
     	foreach($customFieldCordination as $key => $array){
     		if((int)$key < 0 && (!isset($array["fieldId"]) || (int)$array["fieldId"] < 1)) continue;
-    		
+
     		$operation = (isset($array["type"])) ? $array["type"] : "=";
     		if(!in_array($operation, array("=", "<>", "LIKE", "NOT LIKE"))) $operation = "=";
 
@@ -424,7 +430,7 @@ class SearchItemUtil extends SOY2LogicBase{
     	}catch(Exception $e){
     		return array(array(), 0);
     	}
-    	
+
     	$items = array();
     	foreach($res as $row){
     		try{
@@ -432,10 +438,10 @@ class SearchItemUtil extends SOY2LogicBase{
     		}catch(Exception $e){
     			continue;
     		}
-    		
+
     		$items[$item->getId()] = $item;
     	}
-    	
+
     	//count
     	$itemDAO->setLimit(null);
 	   	$itemDAO->setOffset(null);
@@ -444,7 +450,7 @@ class SearchItemUtil extends SOY2LogicBase{
 	   	}catch(Exception $e){
 	   		return array(array(), 0);
 	   	}
-    	
+
     	$total = ($isAnd) ? count($res) : $res[0]["row_count"];
 
     	return array($items, $total);
