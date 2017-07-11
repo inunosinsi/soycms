@@ -28,7 +28,7 @@ class SOYShopItemImportPlugin{
 			"mail"=>"info@n-i-agroinformatics.com",
 			"label" => "",
 			"entry" => "",
-			"version"=>"0.9.3"
+			"version"=>"0.9.4"
 		));
 
 		//二回目以降の動作
@@ -139,24 +139,25 @@ class SOYShopItemImportPlugin{
             ));
 
             switch($field["type"]){
-                case CustomSearchFieldUtil::TYPE_CHECKBOX:
-                    if(strlen($field["option"])){
-                        $vals = explode(",", $csfValue);
-                        $opts = explode("\n", $field["option"]);
-                        foreach($opts as $i => $opt){
-                            $opt = trim($opt);
-                            $obj->addModel($key . "_"  . $i . "_visible", array(
-                                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                                "visible" => (in_array($opt, $vals))
-                            ));
+              case CustomSearchFieldUtil::TYPE_CHECKBOX:
+								//多言語対応
+                if(isset($field["option"]) && count($field["option"])){
+									  $vals = explode(",", $csfValue);
+                    $opts = explode("\n", $field["option"][SOYCMS_PUBLISH_LANGUAGE]);
+                    foreach($opts as $i => $opt){
+                        $opt = trim($opt);
+                        $obj->addModel($key . "_"  . $i . "_visible", array(
+                            "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+                            "visible" => (in_array($opt, $vals))
+                        ));
 
-                            $obj->addLabel($key . "_" . $i, array(
-                                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                                "text" => $opt
-                            ));
-                        }
+                        $obj->addLabel($key . "_" . $i, array(
+                            "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+                            "text" => $opt
+                        ));
                     }
-                    break;
+                }
+                break;
             }
 					}
         }
