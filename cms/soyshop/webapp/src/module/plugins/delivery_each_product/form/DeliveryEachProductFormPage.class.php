@@ -7,16 +7,21 @@ class DeliveryEachProductFormPage extends WebPage{
 
     function __construct(){
         SOY2::import("module.plugins.delivery_each_product.util.DeliveryEachProductUtil");
+        SOY2::imports("module.plugins.delivery_each_product.component.*");
         SOY2DAOFactory::importEntity("config.SOYShop_Area");
     }
 
     function execute(){
         WebPage::__construct();
 
-        SOY2::import("module.plugins.delivery_each_product.component.DeliveryEachProductPriceListComponent");
         $this->createAdd("prices", "DeliveryEachProductPriceListComponent", array(
             "list"   => SOYShop_Area::getAreas(),
             "prices" => self::getPrices()
+        ));
+
+        SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
+        $this->createAdd("default_prices", "DefaultPriceListComponent", array(
+          "list" => DeliveryNormalUtil::getPrice()
         ));
 
         $this->addInput("delivery_email", array(
@@ -26,6 +31,10 @@ class DeliveryEachProductFormPage extends WebPage{
 
         $this->addLabel("toggle_js", array(
           "html" => "\n" . file_get_contents(dirname(dirname(__FILE__)) . "/js/toggle.js")
+        ));
+
+        $this->addLabel("default_js", array(
+          "html" => "\n" . file_get_contents(dirname(dirname(__FILE__)) . "/js/default.js")
         ));
     }
 
