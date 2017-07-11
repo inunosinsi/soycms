@@ -23,6 +23,7 @@ class CMSLabel extends HTMLLabel{
         $length = $this->getAttribute("cms:length");
         if(!is_null($length) && is_numeric($length)){
             $text = trim(SOY2HTML::ToText($this->text));
+            mb_internal_encoding("UTF-8");
             $shortText = mb_substr($text,0,(int)$length);
 
             $suffix = "";
@@ -82,5 +83,4 @@ class CMSLabel extends HTMLLabel{
     public function setDefaultSuffix($defaultSuffix) {
         $this->defaultSuffix = $defaultSuffix;
     }
-
 }
