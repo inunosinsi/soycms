@@ -364,13 +364,22 @@ class EntryLogic extends SOY2LogicBase{
 
 			if(defined("CMS_PREVIEW_ALL")){
 				if(is_numeric($entryId)){
-					$entry = $dao->getById($entryId);
+					try{
+						$entry = $dao->getById($entryId);
+					}catch(Exception $e){
+						$entry = $dao->getByAlias($entryId);
+					}
 				}else{
 					$entry = $dao->getByAlias($entryId);
 				}
 			}else{
 				if(is_numeric($entryId)){
-					$entry = $dao->getOpenEntryById($entryId,time());
+					try{
+						$entry = $dao->getOpenEntryById($entryId,time());
+					}catch(Exception $e){
+						//記事IDで取得できなければ、エイリアスの方でも取得を試みる
+						$entry = $dao->getOpenEntryByAlias($entryId,time());
+					}
 				}else{
 					$entry = $dao->getOpenEntryByAlias($entryId,time());
 				}
@@ -747,10 +756,10 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		if($orderReverse){
 			$query->setOrder(" EntryLabel.display_order, Entry.cdate asc, Entry.id asc ");
 		}
-		
+
 		//MySQL5.7以降対策。groupingとhagingをnullにした
 		$result = $this->executeQuery($query,$binds);
-		
+
 		$array = array();
 		foreach($result as $row){
 			$array[$row["id"]] = $this->getObject($row);
@@ -1056,8 +1065,4 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @distinct
 	 */
 	abstract function getRecentEntriesByLabelId($labelId);
-
-
-
 }
-?>
