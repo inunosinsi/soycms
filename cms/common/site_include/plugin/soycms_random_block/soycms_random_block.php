@@ -2,19 +2,19 @@
 SOYCMS_Random_Block_Plugin::registerPlugin();
 
 class SOYCMS_Random_Block_Plugin{
-	
+
 	const PLUGIN_ID = "soycms_random_block";
-	
-	
+
+
 	function getId(){
-		return SOYCMS_Random_Block_Plugin::PLUGIN_ID;
+		return self::PLUGIN_ID;
 	}
-	
+
 	/**
 	 * 初期化
 	 */
 	function init(){
-		
+
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY CMS記事ランダム表示ブロックプラグイン",
 			"description"=>"プラグインブロックで記事をランダムに表示します",
@@ -35,47 +35,14 @@ class SOYCMS_Random_Block_Plugin{
 	}
 
     function onLoad(){
+				//検索結果ブロックプラグインのUTILクラスを利用する
+				SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+
         $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
+        $template = PluginBlockUtil::getTemplateByPageId($pageId);
+        if(!strlen($template)) return array();
 
-        //ブログページか調べる
-        $template = "";
-        try{
-            $blog = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($pageId);
-            $uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $_SERVER["PATH_INFO"]);
-
-            //トップページ
-            if($uri === (string)$blog->getTopPageUri()){
-                $template = $blog->getTopTemplate();
-                //アーカイブページ		
-            }else if(strpos($uri, $blog->getCategoryPageUri()) === 0 || strpos($uri, $blog->getMonthPageUri()) === 0){
-                $template = $blog->getArchiveTemplate();
-                //記事ごとページ
-            }else{
-                $template = $blog->getEntryTemplate();
-            }
-        }catch(Exception $e){
-            try{
-                $template = SOY2DAOFactory::create("cms.PageDAO")->getById($pageId)->getTemplate();
-            }catch(Exception $e){
-                return array();
-            }
-        }
-
-        try{
-            $blocks = SOY2DAOFactory::create("cms.BlockDAO")->getByPageId($pageId);
-        }catch(Exception $e){
-            return array();
-        }
-
-        if(!count($blocks)) return array();
-
-        $block = null;
-        foreach($blocks as $obj){
-            if($obj->getClass() == "PluginBlockComponent"){
-                $block = $obj;
-            }
-        }
-
+				$block = PluginBlockUtil::getBlockByPageId($pageId);
         if(is_null($block)) return array();
 
         //ラベルIDを取得とデータベースから記事の取得件数指定
@@ -100,7 +67,7 @@ class SOYCMS_Random_Block_Plugin{
              "AND ent.openPeriodEnd >= " .time() . " ".
              "AND ent.isPublished = " . Entry::ENTRY_ACTIVE . " ";
         $binds = array();
-	
+
         //ラベルIDを指定する場合
         if(isset($labelId)){
             $sql .= "AND lab.label_id = :labelId ";
@@ -118,7 +85,7 @@ class SOYCMS_Random_Block_Plugin{
         if(isset($count) && $count > 0) {
             $sql .= "Limit " . $count;
         }
-		
+
         try{
             $res = $entryDao->executeQuery($sql, $binds);
         }catch(Exception $e){
@@ -138,8 +105,8 @@ class SOYCMS_Random_Block_Plugin{
     function returnPluginId(){
         return self::PLUGIN_ID;
     }
-	
-	
+
+
 	/**
 	 * 設定画面の表示
 	 */
@@ -150,17 +117,16 @@ class SOYCMS_Random_Block_Plugin{
         $form->execute();
         return $form->getObject();
 	}
-	
+
 	/**
 	 * プラグインの登録
 	 */
 	public static function registerPlugin(){
-				
-		$obj = CMSPlugin::loadPluginConfig(SOYCMS_Random_Block_Plugin::PLUGIN_ID);
+
+		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		if(is_null($obj)){
 			$obj = new SOYCMS_Random_Block_Plugin();
 		}
-		CMSPlugin::addPlugin(SOYCMS_Random_Block_Plugin::PLUGIN_ID,array($obj,"init"));
+		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }
-?>

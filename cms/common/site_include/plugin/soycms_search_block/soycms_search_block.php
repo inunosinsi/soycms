@@ -2,19 +2,19 @@
 SOYCMS_Search_Block_Plugin::registerPlugin();
 
 class SOYCMS_Search_Block_Plugin{
-	
+
 	const PLUGIN_ID = "soycms_search_block";
-	
-	
+
+
 	function getId(){
-		return SOYCMS_Search_Block_Plugin::PLUGIN_ID;
+		return self::PLUGIN_ID;
 	}
-	
+
 	/**
 	 * 初期化
 	 */
 	function init(){
-		
+
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY CMS検索結果ブロックプラグイン",
 			"description"=>"プラグインブロックでブログ記事の検索結果を表示します",
@@ -39,48 +39,15 @@ class SOYCMS_Search_Block_Plugin{
         //検索クエリが空文字の場合は検索をやめる
         if(!isset($_GET["q"]) || strlen(trim($_GET["q"])) === 0) return array();
         $query = htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8");
-        
+
+				//検索結果ブロックプラグインのUTILクラスを利用する
+				SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+
         $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
+        $template = PluginBlockUtil::getTemplateByPageId($pageId);
+        if(!strlen($template)) return array();
 
-        //ブログページか調べる
-        $template = "";
-        try{
-            $blog = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($pageId);
-            $uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $_SERVER["PATH_INFO"]);
-
-            //トップページ
-            if($uri === (string)$blog->getTopPageUri()){
-                $template = $blog->getTopTemplate();
-                //アーカイブページ		
-            }else if(strpos($uri, $blog->getCategoryPageUri()) === 0 || strpos($uri, $blog->getMonthPageUri()) === 0){
-                $template = $blog->getArchiveTemplate();
-                //記事ごとページ
-            }else{
-                $template = $blog->getEntryTemplate();
-            }
-        }catch(Exception $e){
-            try{
-                $template = SOY2DAOFactory::create("cms.PageDAO")->getById($pageId)->getTemplate();
-            }catch(Exception $e){
-                return array();
-            }
-        }
-
-        try{
-            $blocks = SOY2DAOFactory::create("cms.BlockDAO")->getByPageId($pageId);
-        }catch(Exception $e){
-            return array();
-        }
-
-        if(!count($blocks)) return array();
-
-        $block = null;
-        foreach($blocks as $obj){
-            if($obj->getClass() == "PluginBlockComponent"){
-                $block = $obj;
-            }
-        }
-
+				$block = PluginBlockUtil::getBlockByPageId($pageId);
         if(is_null($block)) return array();
 
         //ラベルIDを取得とデータベースから記事の取得件数指定
@@ -99,7 +66,7 @@ class SOYCMS_Search_Block_Plugin{
 
         //ラベルIDの指定がない場合は空の配列を返す
         if(is_null($labelId)) return array();
-	
+
         $sql = "SELECT * FROM Entry entry ".
              "INNER JOIN EntryLabel label ".
              "ON entry.id = label.entry_id ".
@@ -113,36 +80,38 @@ class SOYCMS_Search_Block_Plugin{
         if(isset($count) && $count > 0){
             $sql .= "LIMIT " . $count;
         }
-			
+
         $binds = array(
 			":label_id" => $labelId,
 			":query" => "%" . $query . "%",
 			":now" => time()
         );
-		
+
         $dao = SOY2DAOFactory::create("cms.EntryDAO");
-	
+
         try{
             $results = $dao->executeQuery($sql, $binds);
         }catch(Exception $e){
             return array();
         }
-	
+
+				if(!count($results)) return array();
+
         $soycms_search_result = array();
         foreach($results as $key => $row){
             if(isset($row["id"]) && (int)$row["id"]){
                 $soycms_search_result[$row["id"]] = $dao->getObject($row);
             }
         }
-	
+
         return $soycms_search_result;
     }
 
     function returnPluginId(){
         return self::PLUGIN_ID;
     }
-	
-	
+
+
 	/**
 	 * 設定画面の表示
 	 */
@@ -153,17 +122,16 @@ class SOYCMS_Search_Block_Plugin{
         $form->execute();
         return $form->getObject();
 	}
-	
+
 	/**
 	 * プラグインの登録
 	 */
 	public static function registerPlugin(){
-				
-		$obj = CMSPlugin::loadPluginConfig(SOYCMS_Search_Block_Plugin::PLUGIN_ID);
+
+		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		if(is_null($obj)){
 			$obj = new SOYCMS_Search_Block_Plugin();
 		}
-		CMSPlugin::addPlugin(SOYCMS_Search_Block_Plugin::PLUGIN_ID,array($obj,"init"));
+		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }
-?>
