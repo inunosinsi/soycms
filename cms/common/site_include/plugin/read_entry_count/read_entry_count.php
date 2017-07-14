@@ -18,7 +18,7 @@ class ReadEntryCountPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -102,9 +102,7 @@ class ReadEntryCountPlugin{
 		}
 		if(!count($pages)) return array();
 
-		SOY2::import("util.UserInfoUtil");
-		SOY2::import("domain.admin.Site");
-		$url = UserInfoUtil::getSitePublishURL();
+		$url = self::getUrl();
 
 		$list = array();
 		foreach($pages as $pageId => $page){
@@ -117,6 +115,20 @@ class ReadEntryCountPlugin{
 		}
 
 		return $list;
+	}
+
+	private function getUrl(){
+		$old = CMSUtil::switchDsn();
+		try{
+			$site = SOY2DAOFactory::create("admin.SiteDAO")->getById($_SERVER["SOYCMS_PAGE_ID"]);
+		}catch(Exception $e){
+			$site = new Site();
+		}
+		CMSUtil::resetDsn($old);
+		$url = "/";
+		if(!$site->getIsDomainRoot()) $url .= $site->getSiteId() . "/";
+
+		return $url;
 	}
 
   function createTable(){
