@@ -47,97 +47,112 @@ function soyshop_custom_search_field($html, $htmlObj){
             "selected" => (isset($params["item_category"])) ? (int)$params["item_category"] : false
         ));
 
-        foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
-            switch($field["type"]){
-                case CustomSearchFieldUtil::TYPE_RANGE:
-                    foreach(array("start", "end") as $t){
-                        $obj->addInput("custom_search_" . $key . "_" . $t, array(
-                            "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                            "type" => "number",
-                            "name" => "c_search[" . $key . "_" . $t . "]",
-                            "value" => (isset($params[$key . "_" . $t]) && strlen($params[$key . "_" . $t])) ? (int)$params[$key . "_" . $t] : null
-                        ));
-                    }
-                    break;
-                case CustomSearchFieldUtil::TYPE_CHECKBOX:
-                    if(!isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE])) continue;
-
-                    if(strlen($field["option"][SOYSHOP_PUBLISH_LANGUAGE])){
-                        $opt = array();
-                        foreach(explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]) as $i => $o){
-                            $o = trim($o);    //改行を除く
-                            if(!strlen($o)) continue;
-                            $opt[] = $o;
-                            $obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
-                                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                                "type" => "checkbox",
-                                "name" => "c_search[" . $key . "][]",
-                                "value" => $o,
-                                "selected" => (isset($params[$key]) && is_array($params[$key]) && in_array($o, $params[$key])),
-                                "label" => $o,
-                                "elementId" => "custom_search_" . $key . "_" . $i
+        //カスタムサーチフィールドとカテゴリカスタムフィールドの検索用フォームを出力
+        foreach(array("item", "category") as $mode){
+          switch($mode){
+            case "category":
+              $configs = CustomSearchFieldUtil::getCategoryConfig();
+              $prefix = CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX;
+              $name = "";
+              break;
+            default:
+              $configs = CustomSearchFieldUtil::getConfig();
+              $prefix = CustomSearchFieldUtil::PLUGIN_PREFIX;
+              $name = "c_search";
+          }
+          if(count($configs)){
+            foreach($configs as $key => $field){
+                switch($field["type"]){
+                    case CustomSearchFieldUtil::TYPE_RANGE:
+                        foreach(array("start", "end") as $t){
+                            $obj->addInput("custom_search_" . $key . "_" . $t, array(
+                                "soy2prefix" => $prefix,
+                                "type" => "number",
+                                "name" => $name . "[" . $key . "_" . $t . "]",
+                                "value" => (isset($params[$key . "_" . $t]) && strlen($params[$key . "_" . $t])) ? (int)$params[$key . "_" . $t] : null
                             ));
                         }
+                        break;
+                    case CustomSearchFieldUtil::TYPE_CHECKBOX:
+                        if(!isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE])) continue;
 
-                        /**
-                         * セレクトボックスバージョン
-                         */
-                        $obj->addSelect("custom_search_" . $key . "_select", array(
-                            "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                            "name" => "c_search[" . $key . "][]",
-                            "options" => $opt,
-                            "selected" => (isset($params[$key][0])) ? $params[$key][0] : null
-                        ));
-                    }
-                    break;
-                case CustomSearchFieldUtil::TYPE_RADIO:
-                    if(!isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE])) continue;
-
-                    if(strlen($field["option"][SOYSHOP_PUBLISH_LANGUAGE])){
-                        foreach(explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]) as $i => $o){
-                            $o = trim($o);    //改行を除く
-                            if(!strlen($o)) continue;
-
-                            if(isset($field["default"]) && $field["default"] == 1){
-                                $selected = ((!isset($params[$key]) && $i === 0) || (isset($params[$key]) && $o === $params[$key]));
-                            }else{
-                                $selected = (isset($params[$key]) && $o === $params[$key]);
+                        if(strlen($field["option"][SOYSHOP_PUBLISH_LANGUAGE])){
+                            $opt = array();
+                            foreach(explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]) as $i => $o){
+                                $o = trim($o);    //改行を除く
+                                if(!strlen($o)) continue;
+                                $opt[] = $o;
+                                $obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
+                                    "soy2prefix" => $prefix,
+                                    "type" => "checkbox",
+                                    "name" => $name . "[" . $key . "][]",
+                                    "value" => $o,
+                                    "selected" => (isset($params[$key]) && is_array($params[$key]) && in_array($o, $params[$key])),
+                                    "label" => $o,
+                                    "elementId" => "custom_search_" . $key . "_" . $i
+                                ));
                             }
 
-                            $obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
-                                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                                "type" => "radio",
-                                "name" => "c_search[" . $key . "]",
-                                "value" => $o,
-                                "selected" => $selected,
-                                "label" => $o,
-                                "elementId" => "custom_search_" . $key . "_" . $i
+                            /**
+                             * セレクトボックスバージョン
+                             */
+                            $obj->addSelect("custom_search_" . $key . "_select", array(
+                                "soy2prefix" => $prefix,
+                                "name" => $name . "[" . $key . "][]",
+                                "options" => $opt,
+                                "selected" => (isset($params[$key][0])) ? $params[$key][0] : null
                             ));
                         }
-                    }
-                    break;
-                case CustomSearchFieldUtil::TYPE_SELECT:
-                    if(!isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE])) continue;
+                        break;
+                    case CustomSearchFieldUtil::TYPE_RADIO:
+                        if(!isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE])) continue;
 
-                    $options = array();
-                    foreach(explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]) as $o){
-                        $options[trim($o)] = trim($o);
-                    }
-                    $obj->addSelect("custom_search_" . $key, array(
-                        "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                        "name" => "c_search[" . $key . "]",
-                        "options" => $options,
-                        "selected" => (isset($params[$key])) ? $params[$key] : false
-                    ));
-                    break;
-                default:
-                    $obj->addInput("custom_search_" . $key, array(
-                        "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                        "name" => "c_search[" . $key . "]",
-                        "value" => (isset($params[$key])) ? $params[$key] : null
-                    ));
+                        if(strlen($field["option"][SOYSHOP_PUBLISH_LANGUAGE])){
+                            foreach(explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]) as $i => $o){
+                                $o = trim($o);    //改行を除く
+                                if(!strlen($o)) continue;
+
+                                if(isset($field["default"]) && $field["default"] == 1){
+                                    $selected = ((!isset($params[$key]) && $i === 0) || (isset($params[$key]) && $o === $params[$key]));
+                                }else{
+                                    $selected = (isset($params[$key]) && $o === $params[$key]);
+                                }
+
+                                $obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
+                                    "soy2prefix" => $prefix,
+                                    "type" => "radio",
+                                    "name" => $name . "[" . $key . "]",
+                                    "value" => $o,
+                                    "selected" => $selected,
+                                    "label" => $o,
+                                    "elementId" => "custom_search_" . $key . "_" . $i
+                                ));
+                            }
+                        }
+                        break;
+                    case CustomSearchFieldUtil::TYPE_SELECT:
+                        if(!isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE])) continue;
+
+                        $options = array();
+                        foreach(explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]) as $o){
+                            $options[trim($o)] = trim($o);
+                        }
+                        $obj->addSelect("custom_search_" . $key, array(
+                            "soy2prefix" => $prefix,
+                            "name" => $name . "[" . $key . "]",
+                            "options" => $options,
+                            "selected" => (isset($params[$key])) ? $params[$key] : false
+                        ));
+                        break;
+                    default:
+                        $obj->addInput("custom_search_" . $key, array(
+                            "soy2prefix" => $prefix,
+                            "name" => $name . "[" . $key . "]",
+                            "value" => (isset($params[$key])) ? $params[$key] : null
+                        ));
+                }
             }
-
+          }
         }
     }
 

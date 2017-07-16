@@ -24,16 +24,16 @@ class CustomSearchFieldConfigFormPage extends WebPage{
                 $key = trim($_POST["custom_key"]);
 
                 //DBへカラムを追加する
-                if(SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic")->addColumn($key, $_POST["custom_type"])){
-                    $config = CustomSearchFieldUtil::getConfig();
+                if(SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic", array("mode" => "category"))->addColumn($key, $_POST["custom_type"])){
+                    $config = CustomSearchFieldUtil::getCategoryConfig();
 
                     $config[$key] = array(
                         "label" => trim($_POST["custom_label"]),
                         "type" => $_POST["custom_type"]
                     );
 
-                    CustomSearchFieldUtil::saveConfig($config);
-                    $this->configObj->redirect("updated");
+                    CustomSearchFieldUtil::saveCategoryConfig($config);
+                    $this->configObj->redirect("category&updated");
                 }
             }
         }
@@ -41,13 +41,13 @@ class CustomSearchFieldConfigFormPage extends WebPage{
         //advanced config
         if(isset($_POST["update_advance"])){
             $key = $_POST["update_advance"];
-            $config = CustomSearchFieldUtil::getConfig();
+            $config = CustomSearchFieldUtil::getCategoryConfig();
             $config[$key]["option"] = $_POST["config"]["option"];
             $config[$key]["default"] = (isset($_POST["config"]["default"])) ? $_POST["config"]["default"] : null;
             $config[$key]["sitemap"] = (isset($_POST["config"]["sitemap"])) ? $_POST["config"]["sitemap"] : null;
 
-            CustomSearchFieldUtil::saveConfig($config);
-            $this->configObj->redirect("updated");
+            CustomSearchFieldUtil::saveCategoryConfig($config);
+            $this->configObj->redirect("category&updated");
         }
 
         //delete
@@ -55,20 +55,20 @@ class CustomSearchFieldConfigFormPage extends WebPage{
             $key = $_POST["delete_submit"];
 
             //カラムの削除を試みる:SQLiteではカラムを削除できない
-            SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic")->deleteColumn($key);
+            SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic", array("mode" => "category"))->deleteColumn($key);
 
-            $config = CustomSearchFieldUtil::getConfig();
+            $config = CustomSearchFieldUtil::getCategoryConfig();
             unset($config[$key]);
 
-            CustomSearchFieldUtil::saveConfig($config);
-            $this->configObj->redirect("deleted");
+            CustomSearchFieldUtil::saveCategoryConfig($config);
+            $this->configObj->redirect("category&deleted");
         }
 
         //move
         if(isset($_POST["move_up"]) || isset($_POST["move_down"])){
             $fieldId = $_POST["field_id"];
 
-            $configs = CustomSearchFieldUtil::getConfig();
+            $configs = CustomSearchFieldUtil::getCategoryConfig();
 
             $keys = array_keys($configs);
             $currentKey = array_search($fieldId, $keys);
@@ -85,12 +85,12 @@ class CustomSearchFieldConfigFormPage extends WebPage{
                     $tmpArray[$value] = $field;
                 }
 
-                CustomSearchFieldUtil::saveConfig($tmpArray);
-                $this->configObj->redirect();
+                CustomSearchFieldUtil::saveCategoryConfig($tmpArray);
+                $this->configObj->redirect("category");
             }
         }
 
-        $this->configObj->redirect("error");
+        $this->configObj->redirect("category&error");
     }
 
     function execute(){
@@ -101,8 +101,9 @@ class CustomSearchFieldConfigFormPage extends WebPage{
         }
 
         $this->createAdd("field_list", "CustomSearchFieldListComponent", array(
-            "list" => CustomSearchFieldUtil::getConfig(),
-            "languages" => $this->languages
+            "list" => CustomSearchFieldUtil::getCategoryConfig(),
+            "languages" => $this->languages,
+            "mode" => "category"
         ));
 
         self::buildCreateForm();
@@ -124,22 +125,22 @@ class CustomSearchFieldConfigFormPage extends WebPage{
     private function buildExampleTags(){
         $html = array();
 
-        foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
+        foreach(CustomSearchFieldUtil::getCategoryConfig() as $key => $field){
             $html[] = "\t" . $field["label"] . ":\n";
 
             switch($field["type"]){
                 case CustomSearchFieldUtil::TYPE_INTEGER:
-                    $html[] = "\t<input type=\"number\" csf:id=\"custom_search_" . $key . "\">\n\n";
+                    $html[] = "\t<input type=\"number\" c_csf:id=\"custom_search_" . $key . "\">\n\n";
                     break;
                 case CustomSearchFieldUtil::TYPE_RANGE:
-                    $html[] = "\t<input type=\"number\" csf:id=\"custom_search_" . $key . "_start\">～";
-                    $html[] = "<input type=\"number\" csf:id=\"custom_search_" . $key . "_end\">\n\n";
+                    $html[] = "\t<input type=\"number\" c_csf:id=\"custom_search_" . $key . "_start\">～";
+                    $html[] = "<input type=\"number\" c_csf:id=\"custom_search_" . $key . "_end\">\n\n";
                     break;
                 case CustomSearchFieldUtil::TYPE_CHECKBOX:
                     if(isset($field["option"][UtilMultiLanguageUtil::LANGUAGE_JP])) {
                         foreach(explode("\n", $field["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) as $i => $o){
                             $o = trim($o);
-                            $html[] = "\t<input type=\"checkbox\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+                            $html[] = "\t<input type=\"checkbox\" c_csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
                         }
                     }
                     $html[] = "\n";
@@ -148,21 +149,21 @@ class CustomSearchFieldConfigFormPage extends WebPage{
                     if(isset($field["option"][UtilMultiLanguageUtil::LANGUAGE_JP])) {
                         foreach(explode("\n", $field["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) as $i => $o){
                             $o = trim($o);
-                            $html[] = "\t<input type=\"radio\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+                            $html[] = "\t<input type=\"radio\" c_csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
                         }
                     }
                     $html[] = "\n";
                     break;
                 case CustomSearchFieldUtil::TYPE_SELECT:
-                    $html[] = "\t<select csf:id=\"custom_search_" . $key . "\"><option value=\"\"></option></select>\n\n";
+                    $html[] = "\t<select c_csf:id=\"custom_search_" . $key . "\"><option value=\"\"></option></select>\n\n";
                     break;
                 default:
-                    $html[] = "\t<input type=\"text\" csf:id=\"custom_search_" . $key . "\">\n\n";
+                    $html[] = "\t<input type=\"text\" c_csf:id=\"custom_search_" . $key . "\">\n\n";
             }
 
             if($field["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX){
                 $html[] = "\t" . $field["label"] . "(セレクトボックス):\n";
-                $html[] = "\t<select csf:id=\"custom_search_" . $key . "_select\"><option value=\"\"></option></select>\n\n";
+                $html[] = "\t<select c_csf:id=\"custom_search_" . $key . "_select\"><option value=\"\"></option></select>\n\n";
             }
         }
 

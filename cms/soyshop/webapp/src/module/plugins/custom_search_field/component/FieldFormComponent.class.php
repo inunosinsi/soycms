@@ -37,6 +37,8 @@ class FieldFormComponent {
                 return implode("\n", $html);
 
             case CustomSearchFieldUtil :: TYPE_RADIO :
+              if(!isset($field["option"])) return "";
+
                 $html = array();
 
                 $opt = self::getFieldOption($field["option"], $lang);
@@ -55,8 +57,9 @@ class FieldFormComponent {
                 return implode("\n", $html);
 
             case CustomSearchFieldUtil :: TYPE_SELECT :
-                $html = array();
+                if(!isset($field["option"])) return "";
 
+                $html = array();
                 $opt = self::getFieldOption($field["option"], $lang);
                 if (strlen($opt) > 0) {
                     $options = explode("\n", $opt);

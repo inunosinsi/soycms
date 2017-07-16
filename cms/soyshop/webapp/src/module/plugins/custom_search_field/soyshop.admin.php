@@ -26,12 +26,39 @@ class CustomSearchFieldAdmin extends SOYShopAdminBase{
             try{
                 $res = $dao->executeQuery("SELECT id FROM soyshop_item WHERE id > :itemId", array(":itemId" => $lastItemId));
             }catch(Exception $e){
-                return;
+                $res = array();
             }
 
             if(count($res)){
                 foreach($res as $v){
                     $sql = "INSERT INTO soyshop_custom_search (item_id, lang) VALUES (" . $v["id"] . "," . $langId . ")";
+                    try{
+                        $dao->executeQuery($sql);
+                    }catch(Exception $e){
+                        //
+                    }
+                }
+            }
+
+            /** カテゴリカスタムフィールドの方 **/
+            try{
+                $res = $dao->executeQuery("SELECT category_id FROM soyshop_category_custom_search WHERE lang = :lang ORDER BY category_id DESC LIMIT 1;", array(":lang" => $langId));
+            }catch(Exception $e){
+                $res = array();
+            }
+
+            $lastCategoryId = (isset($res[0]["category_id"])) ? (int)$res[0]["category_id"] : 0;
+
+            //最新のカテゴリIDよりも上のIDがあるか調べる
+            try{
+                $res = $dao->executeQuery("SELECT id FROM soyshop_category WHERE id > :categoryId", array(":categoryId" => $lastCategoryId));
+            }catch(Exception $e){
+                $res = array();
+            }
+
+            if(count($res)){
+                foreach($res as $v){
+                    $sql = "INSERT INTO soyshop_category_custom_search (category_id, lang) VALUES (" . $v["id"] . "," . $langId . ")";
                     try{
                         $dao->executeQuery($sql);
                     }catch(Exception $e){

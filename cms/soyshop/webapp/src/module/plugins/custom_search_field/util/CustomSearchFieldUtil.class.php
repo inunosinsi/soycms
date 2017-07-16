@@ -3,6 +3,7 @@
 class CustomSearchFieldUtil{
 
     const PLUGIN_PREFIX = "csf";    //csf:id="***"
+    const PLUGIN_CATEGORY_PREFIX = "c_csf"; //c_csf:id="***"
 
     const TYPE_STRING = "string";
     const TYPE_TEXTAREA = "textarea";
@@ -19,6 +20,14 @@ class CustomSearchFieldUtil{
 
     public static function saveConfig($values){
         return SOYShop_DataSets::put("custom_search.config", $values);
+    }
+
+    public static function getCategoryConfig(){
+        return SOYShop_DataSets::get("custom_search.category", array());
+    }
+
+    public static function saveCategoryConfig($values){
+        return SOYShop_DataSets::put("custom_search.category", $values);
     }
 
     public static function getSearchConfig(){
@@ -102,4 +111,3 @@ class CustomSearchFieldUtil{
       return $list;
     }
 }
-?>

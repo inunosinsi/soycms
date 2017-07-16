@@ -2,6 +2,7 @@
 class CustomSearchFieldListComponent extends HTMLList{
 
     private $languages;
+    private $mode = "item";
 
     protected function populateItem($entity, $key){
 
@@ -18,7 +19,7 @@ class CustomSearchFieldListComponent extends HTMLList{
         ));
 
         $this->addLabel("display", array(
-            "text" => "csf:id=\"" . $key . "\""
+            "text" => self::getPrefix() . ":id=\"" . $key . "\""
         ));
 
         /* 高度な設定 */
@@ -107,20 +108,29 @@ class CustomSearchFieldListComponent extends HTMLList{
         ));
     }
 
+    private function getPrefix(){
+      switch($this->mode){
+        case "category":
+          return CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX;
+        default:
+          return CustomSearchFieldUtil::PLUGIN_PREFIX;
+      }
+    }
+
     private function buildCheckBoxSuppleTag($key, $options){
 //        if(!strlen($options)) return "";
+        $prefix = self::getPrefix();
 
         $text = "";
-
         foreach($options as $lang => $option){
             if(!strlen($option)) continue;
             $opts = explode("\n", $option);
             foreach($opts as $i => $opt){
                 $opt = trim($opt);
                 $text .= $opt . "のタグ<br>";
-                $text .= "&lt;!-- csf:id=\"" . $key . "_" . $i . "_visible\" --&gt;";
-                $text .= "&lt;!-- csf:id=\"" . $key . "_" . $i . "\" --&gt" . $opt . "&lt;!-- /csf:id=\"" . $key . "_" . $i . "\" --&gt";
-                $text .= "&lt;!-- /csf:id=\"" . $key . "_" . $i . "_visible\" --&gt;<br><br>";
+                $text .= "&lt;!-- " . $prefix . ":id=\"" . $key . "_" . $i . "_visible\" --&gt;";
+                $text .= "&lt;!-- " . $prefix . ":id=\"" . $key . "_" . $i . "\" --&gt" . $opt . "&lt;!-- /" . $prefix . ":id=\"" . $key . "_" . $i . "\" --&gt";
+                $text .= "&lt;!-- /" . $prefix . ":id=\"" . $key . "_" . $i . "_visible\" --&gt;<br><br>";
             }
         }
 
@@ -138,6 +148,9 @@ class CustomSearchFieldListComponent extends HTMLList{
 
     function setLanguages($languages){
         $this->languages = $languages;
+    }
+    function setMode($mode){
+      $this->mode = $mode;
     }
 }
 

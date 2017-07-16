@@ -2,15 +2,31 @@
 
 class DataBaseLogic extends SOY2LogicBase{
 
+    const MODE_ITEM = "item";
+    const MODE_CATEGORY = "category";
+
+    //モードは必ず指定
+    private $mode = self::MODE_ITEM;
+    const TABLE_NAME = "soyshop_custom_search";
+
     function __construct(){
         SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
         SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
     }
 
+    function getTableName(){
+      switch($this->getMode()){
+        case self::MODE_CATEGORY:
+          return "soyshop_category_custom_search";
+        default:
+          return "soyshop_custom_search";
+      }
+    }
+
     function addColumn($key, $type){
         if(!preg_match("/^[[0-9a-zA-Z-_]+$/", $key)) return false;
 
-        $sql = "ALTER TABLE soyshop_custom_search ADD COLUMN " . $key . " ";
+        $sql = "ALTER TABLE " . $this->getTableName() . " ADD COLUMN " . $key . " ";
 
         switch($type){
             case CustomSearchFieldUtil::TYPE_INTEGER:
@@ -41,7 +57,7 @@ class DataBaseLogic extends SOY2LogicBase{
 
         $dao = new SOY2DAO();
         try{
-            $dao->executeUpdateQuery("ALTER TABLE soyshop_custom_search DROP COLUMN " . $key, array());
+            $dao->executeUpdateQuery("ALTER TABLE " . $this->getTableName() . " DROP COLUMN " . $key, array());
         }catch(Exception $e){
             //SQLiteではカラムを削除できない
         }
@@ -50,13 +66,22 @@ class DataBaseLogic extends SOY2LogicBase{
     /**
      * @params itemId integer, values array(array("field_id" => string))
      */
-    function save($itemId, $values, $lang = null){
+    function save($id, $values, $lang = null){
 
         $sets = array();
         if(is_null($lang)) $lang = SOYSHOP_PUBLISH_LANGUAGE;
         $langId = UtilMultiLanguageUtil::getLanguageId($lang);
 
-        foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
+        switch($this->getMode()){
+          case self::MODE_CATEGORY:
+            $configs = CustomSearchFieldUtil::getCategoryConfig();
+            break;
+          default:
+            $configs = CustomSearchFieldUtil::getConfig();
+        }
+
+
+        foreach($configs as $key => $field){
             if(!isset($values[$key])) {
                 $sets[$key] = null;
                 continue;
@@ -88,17 +113,23 @@ class DataBaseLogic extends SOY2LogicBase{
                     $sets[$key] = (strlen($values[$key])) ? $values[$key] : null;
             }
         }
-        $this->insert($itemId, $sets, $langId);
+        $this->insert($id, $sets, $langId);
     }
 
-    function insert($itemId, $sets, $langId){
+    function insert($id, $sets, $langId){
         $columns = array();
         $values = array();
         $binds = array();
 
-        $columns[] = "item_id";
-        $values[] = (int)$itemId;
+        switch($this->getMode()){
+          case self::MODE_CATEGORY:
+            $columns[] = "category_id";
+            break;
+          default:
+            $columns[] = "item_id";
+        }
 
+        $values[] = (int)$id;
         $columns[] = "lang";
         $values[] = (int)$langId;
 
@@ -108,7 +139,7 @@ class DataBaseLogic extends SOY2LogicBase{
             $binds[":" . $key] = $value;
         }
 
-        $sql = "INSERT INTO soyshop_custom_search ".
+        $sql = "INSERT INTO " . $this->getTableName() . " ".
                 "(" . implode(",", $columns) . ") ".
                 "VALUES (" . implode(",", $values) . ")";
 
@@ -117,20 +148,26 @@ class DataBaseLogic extends SOY2LogicBase{
         try{
             $dao->executeQuery($sql, $binds);
         }catch(Exception $e){
-            $this->update($itemId, $columns, $values, $binds, $langId);
+            $this->update($id, $columns, $values, $binds, $langId);
         }
     }
 
-    function update($itemId, $columns, $values, $binds, $langId){
-        $sql = "UPDATE soyshop_custom_search SET ";
+    function update($id, $columns, $values, $binds, $langId){
+        $sql = "UPDATE " . $this->getTableName() . " SET ";
         $first = true;
         foreach($columns as $i => $column){
-            if($column == "item_id") continue;
+            if($column == "item_id" || $column == "category_id") continue;
             if(!$first) $sql .= ", ";
             $first = false;
             $sql .= $column . " = " . $values[$i];
         }
-        $sql .= " WHERE item_id = " . $itemId;
+        switch($this->getMode()){
+          case self::MODE_CATEGORY:
+            $sql .= " WHERE category_id = " . $id;
+            break;
+          default:
+            $sql .= " WHERE item_id = " . $id;
+        }
         $sql .= " AND lang = " . $langId;
         $dao = new SOY2DAO();
         try{
@@ -140,16 +177,28 @@ class DataBaseLogic extends SOY2LogicBase{
         }
     }
 
-    function delete($itemId){
+    function delete($id){
         $dao = new SOY2DAO();
+
+        $sql = "DELETE FROM " . $this->getTableName();
+        switch($this->getMode()){
+          case self::MODE_CATEGORY:
+            $sql .= " WHERE item_id = :id";
+            break;
+          default:
+            $sql .= " WHERE category_id = :id";
+        }
+
         try{
-            $dao->executeQuery("DELETE FROM soyshop_custom_search WHERE item_id = :item_id", array(":item_id" => $itemId));
+            $dao->executeQuery($sql, array(":id" => $id));
         }catch(Exception $e){
             //
         }
     }
 
-
+    /**
+     * @ToDo カテゴリカスタムサーチフィールド対応
+     */
     function migrate(){
         $dao = new SOY2DAO();
 
@@ -213,11 +262,33 @@ class DataBaseLogic extends SOY2LogicBase{
         if(is_null($lang)) $lang = SOYSHOP_PUBLISH_LANGUAGE;
 
         try{
-            $res = $dao->executeQuery("SELECT * FROM soyshop_custom_search WHERE item_id = :item_id AND lang = :lang LIMIT 1", array(":item_id" => $itemId, ":lang" => UtilMultiLanguageUtil::getLanguageId($lang)));
+            $res = $dao->executeQuery("SELECT * FROM " . $this->getTableName() . " WHERE item_id = :item_id AND lang = :lang LIMIT 1", array(":item_id" => $itemId, ":lang" => UtilMultiLanguageUtil::getLanguageId($lang)));
         }catch(Exception $e){
             return array();
         }
 
         return (isset($res[0])) ? $res[0] : array();
+    }
+
+    function getByCategoryId($categoryId, $lang=null){
+        $dao = new SOY2DAO();
+
+        if(is_null($lang)) $lang = SOYSHOP_PUBLISH_LANGUAGE;
+
+        try{
+            $res = $dao->executeQuery("SELECT * FROM " . $this->getTableName() . " WHERE category_id = :category_id AND lang = :lang LIMIT 1", array(":category_id" => $categoryId, ":lang" => UtilMultiLanguageUtil::getLanguageId($lang)));
+        }catch(Exception $e){
+            return array();
+        }
+
+        return (isset($res[0])) ? $res[0] : array();
+    }
+
+    function getMode(){
+      return $this->mode;
+    }
+
+    function setMode($mode){
+      $this->mode = $mode;
     }
 }
