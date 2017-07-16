@@ -21,13 +21,13 @@ class IndexPage extends WebPage{
 		if(isset($_REQUEST["search"])){
 			$this->setParameter("search", true);
 		}
-		
+
 		$this->addForm("search_form");
 		$searchItems = $this->buildForm();
-		
+
 		//リセットしている時もしくはGETの値が何もない時は強制的に検索を止める
 		if(isset($_GET["reset"]) || count($_GET) === 0) $searchItems = null;
-		
+
 		/*引数など取得*/
 		//表示件数
 		$limit = 15;
@@ -161,11 +161,11 @@ class IndexPage extends WebPage{
 			"name" => "SearchForm[code]",
 			"value" => (isset($form["code"])) ? $form["code"] : ""
 		));
-		
+
 		$this->addCheckBox("is_child", array(
 			"name" => "SearchForm[is_child]",
 			"value" => 1,
-			"label" => "小商品も表示する",
+			"label" => "子商品も表示する",
 			"selected" => (isset($form["is_child"]))
 		));
 
@@ -239,4 +239,3 @@ class IndexPage extends WebPage{
 		);
 	}
 }
-?>
