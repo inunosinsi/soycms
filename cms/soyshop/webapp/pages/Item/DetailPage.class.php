@@ -3,36 +3,45 @@ SOY2::import("domain.config.SOYShop_ShopConfig");
 class DetailPage extends WebPage{
 
 	function doPost(){
-		
+
 		if(!empty($_FILES) && empty($_POST)){
 			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 			$attrDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 			$item = $dao->getById($this->id);
-			
+
 			$res = array();
 			foreach($_FILES["custom_field"]["name"] as $key => $filename){
 				$filename = strtolower(str_replace("%","",rawurlencode($filename)));
 				$tmpname = $_FILES["custom_field"]["tmp_name"][$key];
 				$pathinfo = pathinfo($filename);
-				
+
 				//get unique file name
 				$counter = 0;
 				$filepath = "";
-				$name = "";
-				while(true){
-					$name = ($counter > 0) ? $pathinfo["filename"] . "_" . $counter . "." . $pathinfo["extension"] : $pathinfo["filename"] . "." . $pathinfo["extension"];
-					$filepath = $item->getAttachmentsPath() . $name;
-		
-					if(!file_exists($filepath)){
-						break;
+
+				SOYShopPlugin::load("soyshop.upload.image");
+				$name = SOYShopPlugin::invoke("soyshop.upload.image", array(
+					"mode" => "name",
+					"item" => $item,
+					"pathinfo" => $pathinfo
+				))->getName();
+
+				if(is_null($name) || !strlen($name)){
+					$counter = 0;
+					while(true){
+						$name = ($counter > 0) ? $pathinfo["filename"] . "_" . $counter . "." . $pathinfo["extension"] : $pathinfo["filename"] . "." . $pathinfo["extension"];
+						if(!file_exists($item->getAttachmentsPath() . $name)) break;
+						$counter++;
 					}
-					$counter++;
 				}
-				
+
+				//get unique file name
+				$filepath = $item->getAttachmentsPath() . $name;
+
 				//一回でも失敗した場合はfalseを返して終了（rollbackは無し）
 				$result = move_uploaded_file($tmpname,$filepath);
 				@chmod($filepath,0604);
-				
+
 				if(!$result){
 					$res = array(
 						"result" => -1,
@@ -40,13 +49,13 @@ class DetailPage extends WebPage{
 					);
 					break;
 				}
-				
+
 				$res = array(
 					"result" => filesize($filepath),
 					"url" => $item->getAttachmentsUrl() . $name,
 					"message" => "アップロードしました\nURL=" . $item->getAttachmentsUrl() . $name.""
 				);
-				
+
 				try{
 					$field = $attrDAO->get($this->id,$key);
 					$field->setValue($item->getAttachmentsUrl() . $name);
@@ -59,14 +68,14 @@ class DetailPage extends WebPage{
 					$attrDAO->insert($field);
 				}
 			}
-			
+
 			echo json_encode($res);
-			
+
 			exit;
 		}
 
 		if(isset($_POST["Item"]) && soy2_check_token()){
-			
+
 			//マルチカテゴリモードの時、カテゴリ配列から一番最初の値を取得しておく
 			if(isset($_POST["Item"]["multi"])){
 				$categories = explode(",", $_POST["Item"]["multi"]["categories"]);
@@ -84,30 +93,30 @@ class DetailPage extends WebPage{
 			$logic = SOY2Logic::createInstance("logic.shop.item.ItemLogic");
 
 			$newItem = $_POST["Item"];
-			
+
 			//販売期間(注文受付期間)をタイムスタンプに変換
 			if(isset($newItem["orderPeriodStart"]) && strlen($newItem["orderPeriodStart"]) > 0){
 				$newItem["orderPeriodStart"] = soyshop_convert_timestamp($newItem["orderPeriodStart"], "start");
 			}
-			
+
 			if(isset($newItem["orderPeriodEnd"]) && strlen($newItem["orderPeriodEnd"]) > 0){
 				$newItem["orderPeriodEnd"] = soyshop_convert_timestamp($newItem["orderPeriodEnd"], "end");
 			}
-			
+
 			//公開期限をタイムスタンプに変換
 			if(isset($newItem["openPeriodStart"]) && strlen($newItem["openPeriodStart"]) > 0){
 				$newItem["openPeriodStart"] = soyshop_convert_timestamp($newItem["openPeriodStart"], "start");
 			}
-			
+
 			if(isset($newItem["openPeriodEnd"]) && strlen($newItem["openPeriodEnd"]) > 0){
 				$newItem["openPeriodEnd"] = soyshop_convert_timestamp($newItem["openPeriodEnd"], "end");
 			}
 
 			$item = $dao->getById($this->id);
-			
+
 			//在庫のチェック
 			$oldStock = $item->getStock();
-			
+
 			$obj = (object)$newItem;
 
 			SOY2::cast($item, $obj);
@@ -139,30 +148,30 @@ class DetailPage extends WebPage{
 				SOYShopPlugin::invoke("soyshop.item.customfield", array(
 					"item" => $item
 				));
-				
+
 				//マルチカテゴリモード
 				if(isset($categories) && is_array($categories)){
 					$logic->updateCategories($categories, $id);
 				}
-				
+
 				SOYShopPlugin::load("soyshop.item.update");
 				SOYShopPlugin::invoke("soyshop.item.update", array(
 					"item" => $item,
 					"old" => $oldStock
 				));
-				
+
 				//商品名だけに特化した拡張ポイント
 				SOYShopPlugin::load("soyshop.item.name");
 				SOYShopPlugin::invoke("soyshop.item.name", array(
 					"item" => $item
 				));
-				
+
 				//会員特別価格の拡張ポイント
 				SOYShopPlugin::load("soyshop.add.price");
 				SOYShopPlugin::invoke("soyshop.add.price", array(
 					"item" => $item
 				));
-				
+
 				//商品の価格に特化した拡張ポイント
 				SOYShopPlugin::load("soyshop.price.option");
 				SOYShopPlugin::invoke("soyshop.price.option", array(
@@ -203,7 +212,7 @@ class DetailPage extends WebPage{
 
 	function __construct($args) {
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
-		
+
 		$this->config = SOYShop_ShopConfig::load();
 		MessageManager::addMessagePath("admin");
 
@@ -221,13 +230,13 @@ class DetailPage extends WebPage{
 	}
 
 	function buildForm($id){
-		
+
 		$session = SOY2ActionSession::getUserSession();
 		$appLimit = $session->getAttribute("app_shop_auth_limit");
-		
+
 		//appLimitがfalseの場合は、在庫以外の項目をreadOnlyにする
 		$readOnly = (!$appLimit) ? true : false;
-		
+
 		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		try{
 			$item = ($this->obj) ? $this->obj : $itemDAO->getById($id);
@@ -235,7 +244,7 @@ class DetailPage extends WebPage{
 			SOY2PageController::jump("Item");
 			exit;
 		}
-		
+
 		//削除フラグのチェック
 		if($item->getIsDisabled() == SOYShop_Item::IS_DISABLED){
 			SOY2PageController::jump("Item");
@@ -265,7 +274,7 @@ class DetailPage extends WebPage{
 			"value" => $item->getName(),
 			"readonly" => $readOnly
 		));
-		
+
 		SOYShopPlugin::load("soyshop.item.name");
 		$this->addLabel("extension_item_name_input", array(
 			"html" => SOYShopPlugin::display("soyshop.item.name", array("item" => $item))
@@ -315,12 +324,12 @@ class DetailPage extends WebPage{
 			"value" => (int)$item->getAttribute("list_price"),
 			"readonly" => $readOnly
 		));
-		
+
 		SOYShopPlugin::load("soyshop.add.price");
 		$this->addLabel("extension_add_price_area", array(
 			"html" => SOYShopPlugin::display("soyshop.add.price", array("item" => $item))
 		));
-		
+
 		SOYShopPlugin::load("soyshop.price.option");
 		$this->createAdd("extension_price_option_list", "_common.Item.PriceOptionListComponent", array(
 			"list" => SOYShopPlugin::invoke("soyshop.price.option", array("item" => $item))->getContents()
@@ -377,19 +386,19 @@ class DetailPage extends WebPage{
 			"name" => "Item[category]",
 			"value" =>$item->getCategory(),
 			"attr:id" => "item_category"
-		));		
-		
+		));
+
 		$category = (isset($array[$item->getCategory()]))? $array[$item->getCategory()] : null;
 		$this->addLabel("item_category_choice", array(
 			"text" => $this->getCategoryRelation($dao, $category),
 			"attr:id" => "item_category_text"
 		));
-		
+
 		$config = SOYShop_ShopConfig::load();
 		$this->addModel("item_category_area", array(
 			"visible" => (!$item->isChild() && $config->getMultiCategory() != 1)
 		));
-		
+
 		$this->addModel("multi_category_area", array(
 			"visible" => (!$item->isChild() && $config->getMultiCategory() != 0)
 		));
@@ -398,7 +407,7 @@ class DetailPage extends WebPage{
 			"value" => implode(",",$this->getCategoryIds()),
 			"attr:id" => "multi_category"
 		));
-		
+
 		$this->addLabel("multi_category_text", array(
 			"text" => $this->getCategoriesName($array),
 			"attr:id" => "multi_category_text"
@@ -409,7 +418,7 @@ class DetailPage extends WebPage{
 			"selected" => $this->getCategoryIds(),
 			"func" => "onMultiClickLeaf"
 		));
-		
+
 		/* parent item */
 		$this->addModel("item_parent_area", array(
 			"visible" => ($item->isChild())
@@ -423,7 +432,7 @@ class DetailPage extends WebPage{
 			"link" => SOY2PageController::createLink("Item.Detail." . $item->getType()),
 			"text" => ($parentItem) ? $parentItem->getName() : "[この商品グループは削除されています]"
 		));
-		
+
 		/* child item */
 		$childItems = $itemDAO->getByTypeNoDisabled($item->getId());
 		$this->addModel("child_item_list_area", array(
@@ -484,12 +493,12 @@ class DetailPage extends WebPage{
 		$this->createAdd("image_list","_common.Item.ItemImageListComponent", array(
 			"list" => $this->getAttachments($item)
 		));
-		
+
 		//管理制限の権限を取得し、権限がない場合は表示しない
 		$this->addModel("app_limit_function", array(
 			"visible" => $appLimit
 		));
-		
+
 		//注文受付期間(終売品向け機能)
 		$this->addInput("item_order_period_start", array(
 			"name" => "Item[orderPeriodStart]",
@@ -497,14 +506,14 @@ class DetailPage extends WebPage{
 			"id" => "order_period_start",
 			"readonly" => true,
 		));
-		
+
 		$this->addInput("item_order_period_end", array(
 			"name" => "Item[orderPeriodEnd]",
 			"value" => soyshop_convert_date_string($item->getOrderPeriodEnd()),
 			"id" => "order_period_end",
 			"readonly" => true
 		));
-		
+
 		//公開期間
 		$this->addInput("item_open_period_start", array(
 			"name" => "Item[openPeriodStart]",
@@ -512,54 +521,54 @@ class DetailPage extends WebPage{
 			"id" => "open_period_start",
 			"readonly" => true
 		));
-		
+
 		$this->addInput("item_open_period_end", array(
 			"name" => "Item[openPeriodEnd]",
 			"value" => soyshop_convert_date_string($item->getOpenPeriodEnd()),
 			"id" => "open_period_end",
 			"readonly" => true
 		));
-		
+
 		$histories = $this->getHistories($item);
 		$this->addModel("is_change_history", array(
 			"visible" => (count($histories) > 0)
 		));
-		
+
 		$this->createAdd("history_list", "_common.Item.ChangeHistoryListComponent", array(
 			"list" => $histories
 		));
 	}
-	
+
 	//入荷通知周り
 	function buildNoticeButton(){
-		
+
 		$isNoticeArrival = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_notice_arrival")));
-		
+
 		//プラグインがアクティブでないと、顧客数を取得しにいかない
 		if($isNoticeArrival){
 			$noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
 			$users = $noticeLogic->getUsersByItemId($this->id, SOYShop_NoticeArrival::NOT_SENDED, SOYShop_NoticeArrival::NOT_CHECKED);
 			$isNoticeArrival = (count($users));
 		}
-		
+
 		//プラグインがアクティブになっていること、顧客数が一人以上いる場合に表示する
 		$this->addModel("is_notice_arrival", array(
 			"visible" => ($isNoticeArrival)
 		));
 	}
-	
+
 	//入荷通知周り
 	function buildFavoriteButton(){
-		
+
 		$isFavorite = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_favorite_item")));
-		
+
 		//プラグインがアクティブでないと、顧客数を取得しにいかない
 		if($isFavorite){
 			$favoriteLogic = SOY2Logic::createInstance("module.plugins.common_favorite_item.logic.FavoriteLogic");
 			$users = $favoriteLogic->getUsersByFavoriteItemId($this->id);
 			$isFavorite = (count($users));
 		}
-		
+
 		//プラグインがアクティブになっていること、顧客数が一人以上いる場合に表示する
 		$this->addModel("is_favorite", array(
 			"visible" => ($isFavorite)
@@ -574,35 +583,35 @@ class DetailPage extends WebPage{
 	}
 
 	function getOrderConunt($item){
-		
+
 		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		$childItemStock = $this->config->getChildItemStock();
-		
+
 		//子商品の在庫管理設定をオン(子商品の注文数合計を取得する)
 		if($childItemStock){
 			//子商品のIDを取得する
 			$ids = $this->getChildItemIds($item->getId());
 			$count = 0;
 			if(count($ids) > 0){
-				
+
 				foreach($ids as $id){
 					try{
 						$count = $count + $logic->getOrderCountByItemId($id);
 					}catch(Exception $e){
-						
+
 					}
 				}
-				return $count;	
+				return $count;
 			}
 		}
-		
+
 		return $logic->getOrderCountByItemId($item->getId());
 	}
-	
+
 	function getChildItemIds($itemId){
-		
+
 		$ids = array();
-		
+
 		$dao = new SOY2DAO();
 		$sql = "select id from soyshop_item where item_type = :id";
 		$binds = array(":id" => $itemId);
@@ -615,17 +624,17 @@ class DetailPage extends WebPage{
 		foreach($result as $value){
 			$ids[] = $value["id"];
 		}
-		
+
 		return $ids;
 	}
-	
+
 	//拡張ポイントのsoyshop.item.update関連の処理
 	function getHistories(SOYShop_Item $item){
 		SOYShopPlugin::load("soyshop.item.update");
 		$delegate = SOYShopPlugin::invoke("soyshop.item.update", array(
 			"item" => $item
 		));
-		
+
 		$histories = array();
 		if(count($delegate->getList()) > 0){
 			foreach($delegate->getList() as $key => $values){
@@ -637,7 +646,7 @@ class DetailPage extends WebPage{
 				}
 			}
 		}
-		
+
 		return $histories;
 	}
 
@@ -672,7 +681,7 @@ class DetailPage extends WebPage{
 			$root . "tools/soy2_date_picker.css"
 		);
 	}
-	
+
 	/**
 	 * 画像のアップロード
 	 *
@@ -682,47 +691,53 @@ class DetailPage extends WebPage{
 	function uploadImage(){
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$item = $dao->getById($this->id);
-		
+
 		$urls = array();
-		
+
 		foreach($_FILES as $upload){
 			foreach($upload["name"] as $key => $value){
 				//replace invalid filename
 				$upload["name"][$key] = strtolower(str_replace("%","",rawurlencode($upload["name"][$key])));
-		
+
 				$pathinfo = pathinfo($upload["name"][$key]);
 				if(!isset($pathinfo["filename"]))$pathinfo["filename"] = str_replace("." . $pathinfo["extension"], $pathinfo["basename"]);
-		
-				//get unique file name
-				$counter = 0;
-				$filepath = "";
-				$name = "";
-				while(true){
-					$name = ($counter > 0) ? $pathinfo["filename"] . "_" . $counter . "." . $pathinfo["extension"] : $pathinfo["filename"] . "." . $pathinfo["extension"];
-					$filepath = $item->getAttachmentsPath() . $name;
-		
-					if(!file_exists($filepath)){
-						break;
+
+				//この拡張ポイントはプラグインは一つのみ使用可能
+				SOYShopPlugin::load("soyshop.upload.image");
+				$name = SOYShopPlugin::invoke("soyshop.upload.image", array(
+					"mode" => "name",
+					"item" => $item,
+					"pathinfo" => $pathinfo
+				))->getName();
+
+				if(is_null($name) || !strlen($name)){
+					$counter = 0;
+					while(true){
+						$name = ($counter > 0) ? $pathinfo["filename"] . "_" . $counter . "." . $pathinfo["extension"] : $pathinfo["filename"] . "." . $pathinfo["extension"];
+						if(!file_exists($item->getAttachmentsPath() . $name)) break;
+						$counter++;
 					}
-					$counter++;
 				}
-				
+
+				//get unique file name
+				$filepath = $item->getAttachmentsPath() . $name;
+
 				//一回でも失敗した場合はfalseを返して終了（rollbackは無し）
 				$result = move_uploaded_file($upload["tmp_name"][$key], $filepath);
 				@chmod($filepath,0604);
-	
+
 				if($result){
 					$url = $item->getAttachmentsUrl() . $name;
 					$urls[] = $url;
 				}else{
 					return false;
-				}	
+				}
 			}
 		}
-		
+
 		return $urls;
 	}
-	
+
 	function getCategoryIds(){
 		$categoriesDao = SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO");
 		try{
@@ -730,29 +745,29 @@ class DetailPage extends WebPage{
 		}catch(Exception $e){
 			$categories = array();
 		}
-		
+
 		$array = array();
 		foreach($categories as $category){
 			$array[] = $category->getCategoryId();
 		}
-		
+
 		return $array;
 	}
-	
+
 	function getCategoriesName($obj){
 		$categoryIds =$this->getCategoryIds($this->id);
-		
+
 		$array = array();
 		foreach($categoryIds as $categoryId){
 			$array[] = $obj[$categoryId]->getNameWithStatus();
 		}
-		
-		return implode(",",$array);	
+
+		return implode(",",$array);
 	}
-	
+
 	function getCategoryRelation($dao, $category){
 		$array = array();
-		
+
 		try{
 			if(isset($category)){
 				$array[] = $category->getNameWithStatus();
@@ -761,21 +776,20 @@ class DetailPage extends WebPage{
 					$array[] = $parent->getNameWithStatus();
 					if(!is_null($parent->getParent())){
 						$grandParent = $dao->getById($parent->getParent());
-						$array[] = $grandParent->getNameWithStatus(); 
+						$array[] = $grandParent->getNameWithStatus();
 					}
 				}
 			}
 		}catch(Exception $e){
 			//do nothing
 		}
-		
+
 		if(array_key_exists(0, $array)){
 			$text = implode(" > ",array_reverse($array));
 		}else{
 			$text = "選択してください";
 		}
-		
+
 		return $text;
 	}
 }
-?>
