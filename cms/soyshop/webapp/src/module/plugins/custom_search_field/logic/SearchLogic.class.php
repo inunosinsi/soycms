@@ -272,7 +272,7 @@ class SearchLogic extends SOY2LogicBase{
               }
 
               if(count($catWhere)){
-                $this->where["category_custom_search"] = "i.item_category IN (SELECT category_id FROM soyshop_category_custom_search WHERE " . implode(" AND ", $catWhere) . ")";
+                $this->where["category_custom_search"] = "i.item_category IN (SELECT category_id FROM soyshop_category_custom_search WHERE " . implode(" AND ", $catWhere) . " AND lang = " . UtilMultiLanguageUtil::getLanguageId(SOYSHOP_PUBLISH_LANGUAGE) . ")";
               }
             }
 
