@@ -12,6 +12,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 
         //GETの値を変数に入れておく。そのうちページャ対応を行わなければならないため
         $params = (isset($_GET["c_search"])) ? $_GET["c_search"] : array();
+        $catParams = (isset($_GET["cat_search"])) ? $_GET["cat_search"] : array();
 
         //商品名
         $obj->addInput("custom_search_item_name", array(
@@ -53,12 +54,14 @@ function soyshop_custom_search_field($html, $htmlObj){
             case "category":
               $configs = CustomSearchFieldUtil::getCategoryConfig();
               $prefix = CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX;
-              $name = "";
+              $name = "cat_search";
+              $params = $catParams;
               break;
             default:
               $configs = CustomSearchFieldUtil::getConfig();
               $prefix = CustomSearchFieldUtil::PLUGIN_PREFIX;
               $name = "c_search";
+              //paramはそのまま
           }
           if(count($configs)){
             foreach($configs as $key => $field){

@@ -140,7 +140,7 @@ class SearchLogic extends SOY2LogicBase{
                 $maps = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
                 $catId = (int)trim($_GET["c_search"]["item_category"]);
                 if(isset($maps[$catId])){
-                    $this->where["item_category"] = "i.item_category IN (" . implode(",", $maps[$catId]) . ")";
+                    $this->where["item_category"] = " i.item_category IN (" . implode(",", $maps[$catId]) . ")";
                 }
             }
 
@@ -213,6 +213,67 @@ class SearchLogic extends SOY2LogicBase{
                             $this->binds[":" . $key] = $_GET["c_search"][$key];
                         }
                 }
+            }
+
+            //カテゴリカスタムフィールド
+            if(isset($_GET["cat_search"]) && count($_GET["cat_search"])){
+              $catWhere = array();
+              foreach(CustomSearchFieldUtil::getCategoryConfig() as $key => $field){
+                //まずは各タイプのfield SQLでkeyを指定する場合、s.を付けること。soyshop_custom_searchのaliasがs
+                switch($field["type"]){
+                    //文字列の場合
+                    case CustomSearchFieldUtil::TYPE_STRING:
+                    case CustomSearchFieldUtil::TYPE_TEXTAREA:
+                    case CustomSearchFieldUtil::TYPE_RICHTEXT:
+                        if(isset($_GET["cat_search"][$key]) && strlen($_GET["cat_search"][$key])){
+                            $catWhere["c_" . $key] = $key . " LIKE :c_" . $key;
+                            $this->binds[":c_" . $key] = "%" . trim($_GET["cat_search"][$key]) . "%";
+                        }
+                        break;
+
+                    //範囲の場合
+                    case CustomSearchFieldUtil::TYPE_RANGE:
+                        $ws = "";$we = "";    //whereのスタートとエンド
+                        if(isset($_GET["cat_search"][$key . "_start"]) && strlen($_GET["cat_search"][$key . "_start"]) && is_numeric($_GET["cat_search"][$key . "_start"])){
+                            $ws = $key . " >= :c_" . $key . "_start";
+                            $this->binds[":c_" . $key . "_start"] = (int)$_GET["cat_search"][$key . "_start"];
+                        }
+                        if(isset($_GET["cat_search"][$key . "_end"]) && strlen($_GET["cat_search"][$key . "_end"]) && is_numeric($_GET["cat_search"][$key . "_end"])){
+                            $we = $key .  " <= :c_" . $key . "_end";
+                            $this->binds[":c_" . $key . "_end"] = (int)$_GET["cat_search"][$key . "_end"];
+                        }
+                        if(strlen($ws) && strlen($we)){
+                            $catWhere[$key] = "(" . $ws . " AND " . $we . ")";
+                        }else if(strlen($ws) || strlen($we)){
+                            $catWhere[$key] = $ws . $we;
+                        }
+                        break;
+
+                    //チェックボックスの場合
+                    case CustomSearchFieldUtil::TYPE_CHECKBOX:
+                        if(isset($_GET["cat_search"][$key]) && count($_GET["cat_search"][$key])){
+                            $w = array();
+                            foreach($_GET["cat_search"][$key] as $i => $v){
+                                if(!strlen($v)) continue;
+                                $w[] = $key . " LIKE :c_" . $key . $i;
+                                $this->binds[":c_" . $key . $i] = "%" . trim($v) . "%";
+                            }
+                            if(count($w)) $catWhere[$key] = "(" . implode(" OR ", $w) . ")";
+                        }
+                        break;
+
+                    //数字、ラジオボタン、セレクトボックス
+                    default:
+                        if(isset($_GET["cat_search"][$key]) && strlen($_GET["cat_search"][$key])){
+                            $catWhere[$key] = "s." . $key . " = :c_" . $key;
+                            $this->binds[":c_" . $key] = $_GET["cat_search"][$key];
+                        }
+                }
+              }
+
+              if(count($catWhere)){
+                $this->where["category_custom_search"] = "i.item_category IN (SELECT category_id FROM soyshop_category_custom_search WHERE " . implode(" AND ", $catWhere) . ")";
+              }
             }
 
             //多言語化

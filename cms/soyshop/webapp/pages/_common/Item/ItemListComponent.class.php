@@ -37,10 +37,8 @@ class ItemListComponent extends HTMLList{
             "text" => $item->getPublishText()// . ($item->isOnSale() ? MessageManager::get("ITEM_ON_SALE") : "")
         ));
 
-
         $this->addImage("item_small_image", array(
-            "src" => soyshop_convert_file_path_on_admin($item->getAttribute("image_small")),
-            "width" => 60
+            "src" => SOYSHOP_SITE_URL . "im.php?src=" . soyshop_convert_file_path_on_admin($item->getAttribute("image_small")) . "&width=60",
         ));
 
         $this->addLabel("sale_text", array(
