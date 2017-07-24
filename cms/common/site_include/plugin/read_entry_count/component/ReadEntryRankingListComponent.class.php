@@ -23,6 +23,15 @@ class ReadEntryRankingListComponent extends HTMLList {
       "text" => (isset($entity["count"])) ? (int)$entity["count"] : 0
     ));
 
+    if(isset($entity["id"]) && is_numeric($entity["id"])){
+      $entry = $this->entryDao->getObject($entity);
+    }else{
+      $entry = new Entry();
+    }
+
+    //カスタムフィールドを使用できるように
+    CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entry));
+
     if(!isset($entity["labels"]) || !count($entity["labels"]) || !strlen($url)) return false;
   }
 
@@ -36,5 +45,9 @@ class ReadEntryRankingListComponent extends HTMLList {
 
   function setBlogs($blogs){
     $this->blogs = $blogs;
+  }
+
+  function setEntryDao($entryDao){
+    $this->entryDao = $entryDao;
   }
 }
