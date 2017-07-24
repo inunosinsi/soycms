@@ -5,9 +5,9 @@ class PluginBlockUtil {
   public static function getTemplateByPageId($pageId){
     $template = "";
     $blog = self::getBlogPageById($pageId);
-
+    
     //ブログページを取得できた場合
-    if(!is_null($blog)){
+    if(!is_null($blog) && !is_null($blog->getId())){
       $uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $_SERVER["PATH_INFO"]);
       //トップページ
       if($uri === (string)$blog->getTopPageUri()){

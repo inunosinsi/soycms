@@ -152,6 +152,26 @@ class GravatarPlugin {
     $account = SOY2Logic::createInstance("site_include.plugin.gravatar.logic.GravatarLogic")->getGravatarByAlias($alias);
     if(!strlen($account->getMailAddress())) return array();
 
+    //検索結果ブロックプラグインのUTILクラスを利用する
+    SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+
+    $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
+    $template = PluginBlockUtil::getTemplateByPageId($pageId);
+    if(!strlen($template)) return array();
+
+    $block = PluginBlockUtil::getBlockByPageId($pageId);
+    if(is_null($block)) return array();
+
+    //ラベルIDを取得とデータベースから記事の取得件数指定
+    $count = null;
+    if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
+        if(preg_match('/cms:count=\"(.*?)\"/', $tmp[1], $ctmp)){
+            if(isset($ctmp[1]) && is_numeric($ctmp[1])) $count = (int)$ctmp[1];
+        }
+    }else{
+        return array();
+    }
+
     //gravatarのメールアドレスに紐付いた記事を取得
     $entryDao = SOY2DAOFactory::create("cms.EntryDAO");
     $sql = "SELECT ent.* FROM Entry ent ".
@@ -162,7 +182,20 @@ class GravatarPlugin {
             "AND ent.openPeriodStart < :now ".
             "AND ent.openPeriodEnd > :now ".
             "AND ent.isPublished > " . Entry::ENTRY_NOTPUBLIC . " ".
-            "ORDER BY ent.cdate DESC";
+            "ORDER BY ent.cdate DESC ";
+
+    if(isset($count) && $count > 0){
+      $sql .= "LIMIT " . $count;
+
+      //ページャ
+      if(isset($args[1]) && strpos($args[1], "page-") === 0){
+        $pageNumber = (int)str_replace("page-", "", $args[1]);
+        if($pageNumber > 0){
+          $offset = $count * $pageNumber;
+          $sql .= " OFFSET " . $offset;
+        }
+      }
+    }
 
     try{
       $res = $entryDao->executeQuery($sql, array(":pluginId" => self::PLUGIN_ID, ":email" => $account->getMailAddress(), ":now" => time()));

@@ -24,7 +24,7 @@ class CMSPageController extends SOY2PageController{
 		//パスからURIと引数に変換
 		$uri  = $pathBuilder->getPath();
 		$args = $pathBuilder->getArguments();
-
+		
 		//保存
 		$this->args = $args;
 		$this->siteConfig = $siteConfig;
@@ -54,11 +54,11 @@ class CMSPageController extends SOY2PageController{
 					$page = new Page();
 				}
 			}
-			
+
 			if($page->isActive() < 0){
 				throw new Exception("out of date.");
 			}
-			
+
 			try{
 
 				//閲覧制限チェック
@@ -229,7 +229,7 @@ class CMSPageController extends SOY2PageController{
 		}
 		//文字コード変換
 		$html = $this->convertCharset($html, $webPage);
-		
+
 		//404NotFoundが表示される直前で読み込まれる
 		CMSPlugin::callEventFunc('onSite404NotFound');
 
