@@ -104,23 +104,12 @@ class GravatarLogic extends SOY2LogicBase{
 
   private function getSiteDirectory(){
 		if(defined("_SITE_ROOT_")){
-			$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
-			$siteRoot = _SITE_ROOT_ . "/";
+			return _SITE_ROOT_ . "/";
 		}else{
-			$siteRoot = UserInfoUtil::getSiteDirectory();
-			$siteId = UserInfoUtil::getSite()->getSiteId();
+			return UserInfoUtil::getSiteDirectory();
 		}
-
-		$old = CMSUtil::switchDsn();
-		try{
-			$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);
-		}catch(Exception $e){
-			$site = new Site();
-		}
-		CMSUtil::resetDsn($old);
-
-    return $siteRoot;
 	}
+
 
   private function dao(){
     static $dao;

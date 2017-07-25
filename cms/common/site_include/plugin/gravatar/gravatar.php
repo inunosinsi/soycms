@@ -41,10 +41,8 @@ class GravatarPlugin {
         CMSPlugin::setEvent('onPageOutput', self::PLUGIN_ID, array($this, "onPageOutput"));
         CMSPlugin::setEvent('onEntryOutput', self::PLUGIN_ID, array($this, "onEntryOutput"));
       }
-
-      CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
       CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
-
+      CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
 		}else{
       CMSPlugin::setEvent('onActive', $this->getId(), array($this, "createTable"));
     }
@@ -65,30 +63,56 @@ class GravatarPlugin {
     if($logic->isCacheFile()){
       $list = $logic->readCacheFile();
     }else{
-  		$accounts = $logic->getGravatars();
-      $list = array();
-      $error = false;
-      if(count($accounts)){
-        foreach($accounts as $account){
-          $values = $logic->getGravatarValuesByAccount($account);
-          if(count($values)){
-            $list[] = $values;
-          }else{
-            $error = true;
-          }
-        }
+  	   $accounts = $logic->getGravatars();
+       $list = array();
+       $error = false;
+       if(count($accounts)){
+         foreach($accounts as $account){
+           $values = $logic->getGravatarValuesByAccount($account);
+           if(count($values)){
+             $list[] = $values;
+           }else{
+             $error = true;
+           }
+         }
       }
 
       //キャッシュ
       if(!$error) $logic->generateCacheFile($list);
     }
     SOY2::import("site_include.plugin.gravatar.component.public.GravatarProfileListComponent");
-
     $obj->createAdd("gravatar_list", "GravatarProfileListComponent", array(
       "soy2prefix" => "p_block",
       "list" => $list,
       "thumbnailSize" => $this->thumbnail_size,
       "url" => SOY2Logic::createInstance("site_include.plugin.gravatar.logic.PageLogic")->getPageUrl($this->gravatarListPageId)
+    ));
+
+    //ページャ
+    SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
+    $entryLogic = SOY2Logic::createInstance("site_include.plugin.gravatar.logic.EntryLogic");
+    $entries = $entryLogic->getEachAuthorEntries();
+
+    $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
+    $limit = PluginBlockUtil::getLimitByPageId($pageId);
+    if(is_null($limit)) $limit = 100;
+    $current = 0;
+    $last_page_number = 0;
+
+    $args = $entryLogic->getArgs();
+    if(isset($args[0])){
+      $url = SOY2Logic::createInstance("site_include.plugin.gravatar.logic.PageLogic")->getSiteUrl() . $_SERVER["SOYCMS_PAGE_URI"] . "/" . $args[0] . "/";
+    }else{
+      $url = null;
+    }
+
+
+    $obj->createAdd("pager", "BlockPluginPagerComponent", array(
+      "list" => array(),
+      "current" => $current,
+      "last"   => $last_page_number,
+      "url"    => $url,
+      "soy2prefix" => "p_block"
     ));
 	}
 
@@ -145,79 +169,7 @@ class GravatarPlugin {
   }
 
   function onLoad(){
-    $args = self::getArgs();
-    if(!isset($args[0])) return array();
-
-    $alias = trim(htmlspecialchars($args[0], ENT_QUOTES, "UTF-8"));
-    $account = SOY2Logic::createInstance("site_include.plugin.gravatar.logic.GravatarLogic")->getGravatarByAlias($alias);
-    if(!strlen($account->getMailAddress())) return array();
-
-    //検索結果ブロックプラグインのUTILクラスを利用する
-    SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
-
-    $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
-    $template = PluginBlockUtil::getTemplateByPageId($pageId);
-    if(!strlen($template)) return array();
-
-    $block = PluginBlockUtil::getBlockByPageId($pageId);
-    if(is_null($block)) return array();
-
-    //ラベルIDを取得とデータベースから記事の取得件数指定
-    $count = null;
-    if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
-        if(preg_match('/cms:count=\"(.*?)\"/', $tmp[1], $ctmp)){
-            if(isset($ctmp[1]) && is_numeric($ctmp[1])) $count = (int)$ctmp[1];
-        }
-    }else{
-        return array();
-    }
-
-    //gravatarのメールアドレスに紐付いた記事を取得
-    $entryDao = SOY2DAOFactory::create("cms.EntryDAO");
-    $sql = "SELECT ent.* FROM Entry ent ".
-            "INNER JOIN EntryAttribute attr ".
-            "ON ent.id = attr.entry_id ".
-            "WHERE attr.entry_field_id = :pluginId ".
-            "AND attr.entry_value = :email ".
-            "AND ent.openPeriodStart < :now ".
-            "AND ent.openPeriodEnd > :now ".
-            "AND ent.isPublished > " . Entry::ENTRY_NOTPUBLIC . " ".
-            "ORDER BY ent.cdate DESC ";
-
-    if(isset($count) && $count > 0){
-      $sql .= "LIMIT " . $count;
-
-      //ページャ
-      if(isset($args[1]) && strpos($args[1], "page-") === 0){
-        $pageNumber = (int)str_replace("page-", "", $args[1]);
-        if($pageNumber > 0){
-          $offset = $count * $pageNumber;
-          $sql .= " OFFSET " . $offset;
-        }
-      }
-    }
-
-    try{
-      $res = $entryDao->executeQuery($sql, array(":pluginId" => self::PLUGIN_ID, ":email" => $account->getMailAddress(), ":now" => time()));
-    }catch(Exception $e){
-      return array();
-    }
-
-    if(!count($res)) return array();
-
-    $entries = array();
-    foreach($res as $v){
-      $entries[] = $entryDao->getObject($v);
-    }
-
-
-    return $entries;
-  }
-
-  private function getArgs(){
-    if(!isset($_SERVER["PATH_INFO"])) return array();
-    $argsRaw = rtrim(str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $_SERVER["PATH_INFO"]), "/");
-    return explode("/", $argsRaw);
+    return SOY2Logic::createInstance("site_include.plugin.gravatar.logic.EntryLogic")->getEachAuthorEntries();
   }
 
   function returnPluginId(){

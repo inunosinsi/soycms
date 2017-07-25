@@ -24,7 +24,7 @@ class CMSPageController extends SOY2PageController{
 		//パスからURIと引数に変換
 		$uri  = $pathBuilder->getPath();
 		$args = $pathBuilder->getArguments();
-		
+
 		//保存
 		$this->args = $args;
 		$this->siteConfig = $siteConfig;
@@ -417,4 +417,3 @@ class CMS_PathInfoBuilder extends SOY2_PathInfoPathBuilder{
 		}
 	}
 }
-?>

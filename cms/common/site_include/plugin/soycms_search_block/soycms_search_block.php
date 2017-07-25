@@ -21,7 +21,7 @@ class SOYCMS_Search_Block_Plugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
         if(CMSPlugin::activeCheck($this->getId())){
@@ -42,27 +42,12 @@ class SOYCMS_Search_Block_Plugin{
 
 				//検索結果ブロックプラグインのUTILクラスを利用する
 				SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
-
         $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
-        $template = PluginBlockUtil::getTemplateByPageId($pageId);
-        if(!strlen($template)) return array();
-
-				$block = PluginBlockUtil::getBlockByPageId($pageId);
-        if(is_null($block)) return array();
 
         //ラベルIDを取得とデータベースから記事の取得件数指定
-        $labelId = null;
-        $count = null;
-        if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
-            if(preg_match('/cms:label=\"(.*?)\"/', $tmp[1], $ltmp)){
-                if(isset($ltmp[1]) && is_numeric($ltmp[1])) $labelId = (int)$ltmp[1];
-            }
-            if(preg_match('/cms:count=\"(.*?)\"/', $tmp[1], $ctmp)){
-                if(isset($ctmp[1]) && is_numeric($ctmp[1])) $count = (int)$ctmp[1];
-            }
-        }else{
-            return array();
-        }
+        $labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
+				var_dump($labelId);
+        $count = PluginBlockUtil::getLimitByPageId($pageId);
 
         //ラベルIDの指定がない場合は空の配列を返す
         if(is_null($labelId)) return array();

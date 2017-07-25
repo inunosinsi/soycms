@@ -3,44 +3,58 @@
 class PluginBlockUtil {
 
   public static function getTemplateByPageId($pageId){
-    $template = "";
-    $blog = self::getBlogPageById($pageId);
-    
-    //ブログページを取得できた場合
-    if(!is_null($blog) && !is_null($blog->getId())){
-      $uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $_SERVER["PATH_INFO"]);
-      //トップページ
-      if($uri === (string)$blog->getTopPageUri()){
-          $template = $blog->getTopTemplate();
-          //アーカイブページ
-      }else if(strpos($uri, $blog->getCategoryPageUri()) === 0 || strpos($uri, $blog->getMonthPageUri()) === 0){
-          $template = $blog->getArchiveTemplate();
-          //記事ごとページ
+    return self::__getTemplateByPageId($pageId);
+  }
+
+  private function __getTemplateByPageId($pageId=null){
+    static $template;
+    if(is_null($template)){
+      $template = "";
+      $blog = self::getBlogPageById($pageId);
+
+      //ブログページを取得できた場合
+      if(!is_null($blog) && !is_null($blog->getId())){
+        $uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $_SERVER["PATH_INFO"]);
+        //トップページ
+        if($uri === (string)$blog->getTopPageUri()){
+            $template = $blog->getTopTemplate();
+            //アーカイブページ
+        }else if(strpos($uri, $blog->getCategoryPageUri()) === 0 || strpos($uri, $blog->getMonthPageUri()) === 0){
+            $template = $blog->getArchiveTemplate();
+            //記事ごとページ
+        }else{
+            $template = $blog->getEntryTemplate();
+        }
+      //ブログページ以外
       }else{
-          $template = $blog->getEntryTemplate();
+        $template = self::getPageById($pageId)->getTemplate();
       }
-    //ブログページ以外
-    }else{
-      $template = self::getPageById($pageId)->getTemplate();
     }
 
     return $template;
   }
 
   public static function getBlockByPageId($pageId){
-    try{
-        $blocks = SOY2DAOFactory::create("cms.BlockDAO")->getByPageId($pageId);
-    }catch(Exception $e){
-        return null;
-    }
+    return self::__getBlockByPageId($pageId);
+  }
 
-    if(!count($blocks)) return null;
+  private function __getBlockByPageId($pageId){
+    static $block;
+    if(is_null($block)){
+      try{
+          $blocks = SOY2DAOFactory::create("cms.BlockDAO")->getByPageId($pageId);
+      }catch(Exception $e){
+          return null;
+      }
 
-    $block = null;
-    foreach($blocks as $obj){
-        if($obj->getClass() == "PluginBlockComponent"){
-            $block = $obj;
-        }
+      if(!count($blocks)) return null;
+
+      $block = null;
+      foreach($blocks as $obj){
+          if($obj->getClass() == "PluginBlockComponent"){
+              $block = $obj;
+          }
+      }
     }
 
     return $block;
@@ -48,6 +62,32 @@ class PluginBlockUtil {
 
   public static function getBlogPageByPageId($pageId){
     return self::getBlogPageById($pageId);
+  }
+
+  public static function getLimitByPageId($pageId){
+    $template = self::__getTemplateByPageId($pageId);
+    $block = self::__getBlockByPageId($pageId);
+
+    if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
+      if(preg_match('/cms:count=\"(.*?)\"/', $tmp[1], $ctmp)){
+        if(isset($ctmp[1]) && is_numeric($ctmp[1])) return (int)$ctmp[1];
+      }
+    }
+
+    return null;
+  }
+
+  public static function getLabelIdByPageId($pageId){
+    $template = self::__getTemplateByPageId($pageId);
+    $block = self::__getBlockByPageId($pageId);
+
+    if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
+      if(preg_match('/cms:label=\"(.*?)\"/', $tmp[1], $ctmp)){
+        if(isset($ctmp[1]) && is_numeric($ctmp[1])) return (int)$ctmp[1];
+      }
+    }
+
+    return null;
   }
 
   private function getBlogPageById($pageId){

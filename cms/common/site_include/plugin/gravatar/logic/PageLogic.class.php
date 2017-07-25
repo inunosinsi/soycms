@@ -7,7 +7,7 @@ class PageLogic extends SOY2LogicBase {
   function getPageUrl($pageId){
     static $url;
     if(is_null($url)){
-      $url = self::getSiteUrl();
+      $url = self::__getSiteUrl();
       try{
         $url .= SOY2DAOFactory::create("cms.PageDAO")->getById($pageId)->getUri() . "/";
       }catch(Exception $e){
@@ -18,7 +18,11 @@ class PageLogic extends SOY2LogicBase {
     return $url;
   }
 
-  private function getSiteUrl(){
+  function getSiteUrl(){
+    return self::__getSiteUrl();
+  }
+
+  private function __getSiteUrl(){
     static $url;
     if(is_null($url)){
       $siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");

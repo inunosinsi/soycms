@@ -20,7 +20,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 
     if(CMSPlugin::activeCheck($this->getId())){
@@ -43,25 +43,12 @@ class SOYCMSSameCategoryBlockPlugin{
 		//詳細ページでない場合は空の配列を返す
 		if(!self::checkIsBlogEntryPage($pageId)) return array();
 
-    $template = PluginBlockUtil::getTemplateByPageId($pageId);
-		if(!strlen($template)) return array();
-
-		$block = PluginBlockUtil::getBlockByPageId($pageId);
-    if(is_null($block)) return array();
-
 		//記事詳細からカテゴリの設定を習得する
 		$labelIds = self::getLabelIds($pageId);
 		if(is_null($labelIds)) return array();
 
     //ラベルIDを取得とデータベースから記事の取得件数指定
-    $count = null;
-    if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
-        if(preg_match('/cms:count=\"(.*?)\"/', $tmp[1], $ctmp)){
-            if(isset($ctmp[1]) && is_numeric($ctmp[1])) $count = (int)$ctmp[1];
-        }
-    }else{
-        return array();
-    }
+		$count = PluginBlockUtil::getLimitByPageId($pageId);
 
     $sql = "SELECT ent.* FROM Entry ent ".
          "INNER JOIN EntryLabel lab ".
