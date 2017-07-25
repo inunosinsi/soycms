@@ -6,7 +6,7 @@ class PluginBlockUtil {
     return self::__getTemplateByPageId($pageId);
   }
 
-  private function __getTemplateByPageId($pageId=null){
+  private static function __getTemplateByPageId($pageId=null){
     static $template;
     if(is_null($template)){
       $template = "";
@@ -38,7 +38,7 @@ class PluginBlockUtil {
     return self::__getBlockByPageId($pageId);
   }
 
-  private function __getBlockByPageId($pageId){
+  private static function __getBlockByPageId($pageId){
     static $block;
     if(is_null($block)){
       try{
@@ -96,7 +96,7 @@ class PluginBlockUtil {
     return null;
   }
 
-  private function getBlogPageById($pageId){
+  private static function getBlogPageById($pageId){
     static $page;
     if(is_null($page)){
       try{
