@@ -91,14 +91,6 @@ class GravatarPlugin {
     //ページャ
     SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
     $entryLogic = SOY2Logic::createInstance("site_include.plugin.gravatar.logic.GravatarEntryLogic");
-    $entries = $entryLogic->getEachAuthorEntries();
-
-    SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
-    $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
-    $limit = PluginBlockUtil::getLimitByPageId($pageId);
-    if(is_null($limit)) $limit = 100;
-    $current = 0;
-    $last_page_number = 0;
 
     $args = $entryLogic->getArgs();
     if(isset($args[0])){
@@ -107,6 +99,12 @@ class GravatarPlugin {
       $url = null;
     }
 
+    SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+    $limit = PluginBlockUtil::getLimitByPageId((int)$_SERVER["SOYCMS_PAGE_ID"]);
+    if(is_null($limit)) $limit = 100;
+
+    $current = (isset($args[1]) && strpos($args[1], "page-") === 0) ? (int)str_replace("page-", "", $args[1]) : 0;
+    $last_page_number = (int)ceil($entryLogic->getTotalEachAuthorEntries() / $limit);
 
     $obj->createAdd("pager", "BlockPluginPagerComponent", array(
       "list" => array(),
@@ -114,6 +112,35 @@ class GravatarPlugin {
       "last"   => $last_page_number,
       "url"    => $url,
       "soy2prefix" => "p_block"
+    ));
+
+    $obj->addModel("has_pager", array(
+        "soy2prefix" => "p_block",
+        "visible" => ($last_page_number >1)
+    ));
+    $obj->addModel("no_pager", array(
+        "soy2prefix" => "p_block",
+        "visible" => ($last_page_number <2)
+    ));
+
+    $obj->addLink("first_page", array(
+        "soy2prefix" => "p_block",
+        "link" => $url,
+    ));
+
+    $obj->addLink("last_page", array(
+        "soy2prefix" => "p_block",
+        "link" => $url . "page-" . ($last_page_number - 1),
+    ));
+
+    $obj->addLabel("current_page", array(
+        "soy2prefix" => "p_block",
+        "text" => max(1, $current + 1),
+    ));
+
+    $obj->addLabel("pages", array(
+        "soy2prefix" => "p_block",
+        "text" => $last_page_number,
     ));
 	}
 

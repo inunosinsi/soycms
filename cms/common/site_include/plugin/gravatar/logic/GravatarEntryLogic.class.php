@@ -66,6 +66,34 @@ class GravatarEntryLogic extends SOY2LogicBase {
     return $entries;
   }
 
+  function getTotalEachAuthorEntries(){
+    $args = self::__getArgs();
+    if(!isset($args[0])) return 0;
+
+    $alias = trim(htmlspecialchars($args[0], ENT_QUOTES, "UTF-8"));
+    $account = SOY2Logic::createInstance("site_include.plugin.gravatar.logic.GravatarLogic")->getGravatarByAlias($alias);
+    if(!strlen($account->getMailAddress())) return 0;
+
+    $dao = new SOY2DAO();
+    $sql = "SELECT COUNT(*) AS TOTAL FROM Entry ent ".
+            "INNER JOIN EntryAttribute attr ".
+            "ON ent.id = attr.entry_id ".
+            "WHERE attr.entry_field_id = :pluginId ".
+            "AND attr.entry_value = :email ".
+            "AND ent.openPeriodStart < :now ".
+            "AND ent.openPeriodEnd > :now ".
+            "AND ent.isPublished > " . Entry::ENTRY_NOTPUBLIC . " ".
+            "ORDER BY ent.cdate DESC ";
+
+    try{
+      $res = $dao->executeQuery($sql, array(":pluginId" => self::PLUGIN_ID, ":email" => $account->getMailAddress(), ":now" => time()));
+    }catch(Exception $e){
+      return 0;
+    }
+
+    return (isset($res[0]["TOTAL"])) ? (int)$res[0]["TOTAL"] : 0;
+  }
+
   function getArgs(){
     return self::__getArgs();
   }
