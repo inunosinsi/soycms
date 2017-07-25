@@ -90,9 +90,10 @@ class GravatarPlugin {
 
     //ページャ
     SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
-    $entryLogic = SOY2Logic::createInstance("site_include.plugin.gravatar.logic.EntryLogic");
+    $entryLogic = SOY2Logic::createInstance("site_include.plugin.gravatar.logic.GravatarEntryLogic");
     $entries = $entryLogic->getEachAuthorEntries();
 
+    SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
     $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
     $limit = PluginBlockUtil::getLimitByPageId($pageId);
     if(is_null($limit)) $limit = 100;
@@ -169,7 +170,7 @@ class GravatarPlugin {
   }
 
   function onLoad(){
-    return SOY2Logic::createInstance("site_include.plugin.gravatar.logic.EntryLogic")->getEachAuthorEntries();
+    return SOY2Logic::createInstance("site_include.plugin.gravatar.logic.GravatarEntryLogic")->getEachAuthorEntries();
   }
 
   function returnPluginId(){

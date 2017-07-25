@@ -18,7 +18,7 @@ class ReadEntryCountPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.4"
+			"version"=>"0.5"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(

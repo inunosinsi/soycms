@@ -1,6 +1,6 @@
 <?php
 
-class EntryLogic extends SOY2LogicBase {
+class GravatarEntryLogic extends SOY2LogicBase {
 
   const PLUGIN_ID = "gravatar";
 

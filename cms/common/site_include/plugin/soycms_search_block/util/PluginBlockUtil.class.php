@@ -66,7 +66,10 @@ class PluginBlockUtil {
 
   public static function getLimitByPageId($pageId){
     $template = self::__getTemplateByPageId($pageId);
+    if(is_null($template)) return null;
+
     $block = self::__getBlockByPageId($pageId);
+    if(is_null($block)) return null;
 
     if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
       if(preg_match('/cms:count=\"(.*?)\"/', $tmp[1], $ctmp)){
@@ -79,7 +82,10 @@ class PluginBlockUtil {
 
   public static function getLabelIdByPageId($pageId){
     $template = self::__getTemplateByPageId($pageId);
+    if(is_null($template)) return null;
+
     $block = self::__getBlockByPageId($pageId);
+    if(is_null($block)) return null;
 
     if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
       if(preg_match('/cms:label=\"(.*?)\"/', $tmp[1], $ctmp)){
