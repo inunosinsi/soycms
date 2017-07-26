@@ -6,7 +6,7 @@ class GravatarProfileListComponent extends HTMLList {
   private $url;
 
   protected function populateItem($entity){
-    $this->addImage("thumbnail", array(
+    $this->addImage("gravatar_thumbnail", array(
       "soy2prefix" => "gra",
       "src" => (isset($entity["thumbnailUrl"])) ? $entity["thumbnailUrl"] . ".jpg?s=" . $this->thumbnailSize : ""
     ));

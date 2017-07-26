@@ -20,7 +20,7 @@ class GravatarPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.3"
 		));
 
     CMSPlugin::addPluginConfigPage($this->getId(),array(
@@ -155,7 +155,13 @@ class GravatarPlugin {
 
     $url = SOY2Logic::createInstance("site_include.plugin.gravatar.logic.PageLogic")->getPageUrl($this->gravatarListPageId);
 
-    $htmlObj->addImage("thumbnail", array(
+    $htmlObj->addImage("gravatar_thumbnail", array(
+      "soy2prefix" => "gra",
+      "src" => (isset($values["thumbnailUrl"])) ? $values["thumbnailUrl"] . ".jpg?s=" . $this->detail_size : ""
+    ));
+
+    //gra:id="thumbnail"が使用できなかったので、gra:id="thumbnail_src"を作成
+    $htmlObj->addImage("thumbnail_src", array(
       "soy2prefix" => "gra",
       "src" => (isset($values["thumbnailUrl"])) ? $values["thumbnailUrl"] . ".jpg?s=" . $this->detail_size : ""
     ));
