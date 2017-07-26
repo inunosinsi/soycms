@@ -18,7 +18,7 @@ class ReadEntryCountPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -66,6 +66,7 @@ class ReadEntryCountPlugin{
 
 		if(($obj instanceof CMSBlogPage) && ($obj->mode == CMSBlogPage::MODE_ENTRY || $obj->mode == CMSBlogPage::MODE_CATEGORY_ARCHIVE || $obj->mode == CMSBlogPage::MODE_MONTH_ARCHIVE)){
 			$labelIds = array();
+			$blogPageId = null;
 			switch($obj->mode){
 				case CMSBlogPage::MODE_ENTRY:
 					$labels = $obj->entry->getLabels();
@@ -73,17 +74,19 @@ class ReadEntryCountPlugin{
 						foreach($labels as $label){
 								$labelIds[] = $label->getId();
 						}
+						$blogPageId = $obj->page->getBlogLabelId();
 					}
 					break;
 				case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
-					$labelIds[] = $obj->page->getCategoryLabelList();
+					$labelIds = $obj->page->getCategoryLabelList();
+					$blogPageId = $obj->page->getBlogLabelId();
 					break;
 				default:
 			}
 
 			$obj->createAdd("read_entry_ranking_list_same_category", "ReadEntryRankingListComponent", array(
 				"soy2prefix" => "p_block",
-				"list" => self::getByLabelIds($labelIds),
+				"list" => self::getByLabelIds($labelIds, $blogPageId),
 				"blogs" => self::getBlogPageList(),
 				"entryDao" => SOY2DAOFactory::create("cms.EntryDAO")
 			));
@@ -120,10 +123,10 @@ class ReadEntryCountPlugin{
 		}
 	}
 
-	private function getByLabelIds($labelIds){
+	private function getByLabelIds($labelIds, $blogPageId){
 		if(!count($labelIds)) return self::get();
 		try{
-			return array();
+			return self::dao()->getRankingByLabelIds($labelIds, $blogPageId, $this->limit);
 		}catch(Exception $e){
 			return array();
 		}

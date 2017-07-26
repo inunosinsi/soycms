@@ -53,6 +53,29 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
     return $results;
   }
 
+  function getRankingByLabelIds($labelIds, $blogPageId, $limit = 5){
+    $sql = "SELECT ent.*, cnt.count FROM ReadEntryCount cnt ".
+            "INNER JOIN Entry ent ".
+            "ON cnt.entry_id = ent.id ".
+            "INNER JOIN EntryLabel lab ".
+            "ON ent.id = lab.entry_id ".
+            "WHERE lab.label_id IN (" . implode(",", $labelIds) . ") ".
+            "ORDER BY cnt.count DESC ".
+            "LIMIT " . $limit;
+    try{
+      $results = $this->executeQuery($sql);
+    }catch(Exception $e){
+      return array();
+    }
+
+    foreach($results as $key => $result){
+      $labelIds[] = $blogPageId;
+      $results[$key]["labels"] = $labelIds;
+    }
+
+    return $results;
+  }
+
   /**
    * @return object
    */
