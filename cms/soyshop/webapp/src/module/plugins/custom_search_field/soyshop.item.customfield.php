@@ -53,7 +53,7 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
         foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 
             //多言語化対応はデータベースから値を取得した時点で行っている
-            $csfValue = $values[$key];
+            $csfValue = (isset($values[$key])) ? $values[$key] : null;
 
             $htmlObj->addModel($key . "_visible", array(
                 "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
