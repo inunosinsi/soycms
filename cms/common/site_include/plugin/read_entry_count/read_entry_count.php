@@ -63,6 +63,31 @@ class ReadEntryCountPlugin{
 			"blogs" => self::getBlogPageList(),
 			"entryDao" => SOY2DAOFactory::create("cms.EntryDAO")
 		));
+
+		if(($obj instanceof CMSBlogPage) && ($obj->mode == CMSBlogPage::MODE_ENTRY || $obj->mode == CMSBlogPage::MODE_CATEGORY_ARCHIVE || $obj->mode == CMSBlogPage::MODE_MONTH_ARCHIVE)){
+			$labelIds = array();
+			switch($obj->mode){
+				case CMSBlogPage::MODE_ENTRY:
+					$labels = $obj->entry->getLabels();
+					if(count($labels)){
+						foreach($labels as $label){
+								$labelIds[] = $label->getId();
+						}
+					}
+					break;
+				case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
+					$labelIds[] = $obj->page->getCategoryLabelList();
+					break;
+				default:
+			}
+
+			$obj->createAdd("read_entry_ranking_list_same_category", "ReadEntryRankingListComponent", array(
+				"soy2prefix" => "p_block",
+				"list" => self::getByLabelIds($labelIds),
+				"blogs" => self::getBlogPageList(),
+				"entryDao" => SOY2DAOFactory::create("cms.EntryDAO")
+			));
+		}
   }
 
   private function getReadEntryCountObject($entryId){
@@ -95,23 +120,36 @@ class ReadEntryCountPlugin{
 		}
 	}
 
-	private function getBlogPageList(){
+	private function getByLabelIds($labelIds){
+		if(!count($labelIds)) return self::get();
 		try{
-			$pages = SOY2DAOFactory::create("cms.BlogPageDAO")->get();
+			return array();
 		}catch(Exception $e){
 			return array();
 		}
-		if(!count($pages)) return array();
+	}
 
-		$url = self::getUrl();
+	private function getBlogPageList(){
+		static $list;
+		if(is_null($list)){
+			$list = array();
+			try{
+				$pages = SOY2DAOFactory::create("cms.BlogPageDAO")->get();
+			}catch(Exception $e){
+				return array();
+			}
+			if(!count($pages)) return array();
 
-		$list = array();
-		foreach($pages as $pageId => $page){
-			if(strlen($page->getUri())){
-				$list[$page->getBlogLabelId()] = $url . $page->getUri() . "/" . $page->getEntryPageUri() . "/";
-			//ページのURLが空文字の場合
-			}else{
-				$list[$page->getBlogLabelId()] = $url . $page->getEntryPageUri() . "/";
+			$url = self::getUrl();
+
+			$list = array();
+			foreach($pages as $pageId => $page){
+				if(strlen($page->getUri())){
+					$list[$page->getBlogLabelId()] = $url . $page->getUri() . "/" . $page->getEntryPageUri() . "/";
+				//ページのURLが空文字の場合
+				}else{
+					$list[$page->getBlogLabelId()] = $url . $page->getEntryPageUri() . "/";
+				}
 			}
 		}
 
