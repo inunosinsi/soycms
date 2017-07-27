@@ -25,7 +25,12 @@ class PageLogic extends SOY2LogicBase {
   private function __getSiteUrl(){
     static $url;
     if(is_null($url)){
-      $siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+      if(defined("_SITE_ROOT_")){
+        $siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+      }else{
+        $siteId = UserInfoUtil::getSite()->getSiteId();
+      }
+
       $old = CMSUtil::switchDsn();
   		try{
   			$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);

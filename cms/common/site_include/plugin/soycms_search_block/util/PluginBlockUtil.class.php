@@ -108,7 +108,7 @@ class PluginBlockUtil {
     return $page;
   }
 
-  private function getPageById($pageId){
+  private static function getPageById($pageId){
     static $page;
     if(is_null($page)){
       try{

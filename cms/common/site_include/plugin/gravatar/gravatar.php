@@ -20,7 +20,7 @@ class GravatarPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.4"
+			"version"=>"0.4.1"
 		));
 
     CMSPlugin::addPluginConfigPage($this->getId(),array(

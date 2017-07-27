@@ -79,6 +79,12 @@ class GravatarConfigPage extends WebPage{
     $this->createAdd("gravatar_list", "GravatarAccountListComponent", array(
       "list" => $this->logic->getGravatars()
     ));
+
+    //Gravatarごとの記事一覧ページのURLの例
+    DisplayPlugin::toggle("url_sample", $this->pluginObj->getGravatarListPageId());
+    $this->addLabel("url_text", array(
+      "text" => "http://" . $_SERVER["HTTP_HOST"] . SOY2Logic::createInstance("site_include.plugin.gravatar.logic.PageLogic")->getPageUrl($this->pluginObj->getGravatarListPageId()) . "{Gravatarアバターの名前}"
+    ));
   }
 
   private function remove(){
@@ -133,7 +139,7 @@ class GravatarConfigPage extends WebPage{
 
   private function getPageList(){
     try{
-      $pages = SOY2DAOFactory::create("cms.PageDAO")->getByPageType(Page::PAGE_TYPE_NORMAL);
+      $pages = self::pageDao()->getByPageType(Page::PAGE_TYPE_NORMAL);
     }catch(Exception $e){
       return array();
     }
@@ -150,5 +156,11 @@ class GravatarConfigPage extends WebPage{
 
   function setPluginObj($pluginObj){
     $this->pluginObj = $pluginObj;
+  }
+
+  private function pageDao(){
+    static $dao;
+    if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.PageDAO");
+    return $dao;
   }
 }
