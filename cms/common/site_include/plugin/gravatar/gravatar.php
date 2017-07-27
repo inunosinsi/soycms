@@ -20,7 +20,7 @@ class GravatarPlugin {
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.3"
+			"version"=>"0.4"
 		));
 
     CMSPlugin::addPluginConfigPage($this->getId(),array(
@@ -214,13 +214,11 @@ class GravatarPlugin {
 		$entry = $arg["entry"];
 
 		$arg = SOY2PageController::getArguments();
-		$entryId = @$arg[0];
-
     $mailAddress = (isset($_POST["gravatar"])) ? $_POST["gravatar"] : null;
 
     $dao = self::dao();
     $obj = new EntryAttribute();
-    $obj->setEntryId($entryId);
+    $obj->setEntryId($entry->getId());
     $obj->setFieldId(self::PLUGIN_ID);
     $obj->setValue($mailAddress);
 
