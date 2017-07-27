@@ -24,7 +24,7 @@ function soycms_blogparts($html, $page){
 
   $blogPageId = null;
   if(preg_match('/(<[^>]*[^\/]cms:module=\"common.sidenav\"[^>]*>)/', $template, $tmp)){
-    if(preg_match('/cms:label=\"(.*?)\"/', $tmp[1], $ctmp)){
+    if(preg_match('/cms:blog=\"(.*?)\"/', $tmp[1], $ctmp)){
       if(isset($ctmp[1]) && is_numeric($ctmp[1])) $blogPageId = (int)$ctmp[1];
     }
   }
