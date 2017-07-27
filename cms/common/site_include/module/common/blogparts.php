@@ -74,7 +74,7 @@ function soycms_blogparts($html, $page){
 	$obj->createAdd("category", "ModuleBlog_CategoryList", array(
 		"list" => $categoryLabel,
 		"entryCount" => $entryCount,
-		"categoryUrl" => $blog->getCategoryPageURL(true),
+		"categoryUrl" => convertUrlOnModuleBlogParts($blog->getCategoryPageURL(true)),
 		"soy2prefix" => "b_block"
 	));
 
@@ -92,7 +92,7 @@ function soycms_blogparts($html, $page){
 
 	$obj->createAdd("archive","ModuleBlogPage_MonthArciveList",array(
 		"list" => $month_list,
-		"monthPageUri" => $blog->getMonthPageURL(true),
+		"monthPageUri" => convertUrlOnModuleBlogParts($blog->getMonthPageURL(true)),
 		"soy2prefix" => "b_block"
 	));
 
@@ -102,7 +102,7 @@ function soycms_blogparts($html, $page){
 
 	$obj->createAdd("recent_entry_list","ModuleBlog_RecentEntryList",array(
 		"list" => $logic->getOpenEntryByLabelIds(array($blogLabelId)),
-		"entryPageUri"=> $blog->getEntryPageURL(true),
+		"entryPageUri"=> convertUrlOnModuleBlogParts($blog->getEntryPageURL(true)),
 		"soy2prefix" => "b_block"
 	));
 
@@ -115,7 +115,7 @@ function soycms_blogparts($html, $page){
 
 	$obj->createAdd("recent_comment_list","ModuleBlog_RecentCommentList",array(
 		"list" => $comments,
-		"entryPageUri" => $blog->getEntryPageURL(true),
+		"entryPageUri" => convertUrlOnModuleBlogParts($blog->getEntryPageURL(true)),
 		"soy2prefix" => "b_block"
 	));
 
@@ -127,11 +127,33 @@ function soycms_blogparts($html, $page){
 
 	$obj->createAdd("recent_trackback_list","ModuleBlog_RecentTrackBackList",array(
 		"list" => $trackbacks,
-		"entryPageUri" => $blog->getEntryPageURL(true),
+		"entryPageUri" => convertUrlOnModuleBlogParts($blog->getEntryPageURL(true)),
 		"soy2prefix" => "b_block"
 	));
 
 	$obj->display();
+}
+
+function convertUrlOnModuleBlogParts($url){
+	static $siteUrl;
+	if(is_null($siteUrl)){
+		if(defined("_SITE_ROOT_")){
+			$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+		}else{
+			$siteId = UserInfoUtil::getSite()->getSiteId();
+		}
+
+		$old = CMSUtil::switchDsn();
+		try{
+			$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);
+		}catch(Exception $e){
+			$site = new Site();
+		}
+		CMSUtil::resetDsn($old);
+		$siteUrl = "/";
+		if(!$site->getIsDomainRoot()) $siteUrl .= $site->getSiteId() . "/";
+	}
+	return $siteUrl . $url;
 }
 
 class ModuleBlog_CategoryList extends HTMLList{
