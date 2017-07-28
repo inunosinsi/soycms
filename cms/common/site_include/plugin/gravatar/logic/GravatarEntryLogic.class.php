@@ -82,8 +82,7 @@ class GravatarEntryLogic extends SOY2LogicBase {
             "AND attr.entry_value = :email ".
             "AND ent.openPeriodStart < :now ".
             "AND ent.openPeriodEnd > :now ".
-            "AND ent.isPublished > " . Entry::ENTRY_NOTPUBLIC . " ".
-            "ORDER BY ent.cdate DESC ";
+            "AND ent.isPublished = " . Entry::ENTRY_ACTIVE . "";
 
     try{
       $res = $dao->executeQuery($sql, array(":pluginId" => self::PLUGIN_ID, ":email" => $account->getMailAddress(), ":now" => time()));
@@ -100,7 +99,12 @@ class GravatarEntryLogic extends SOY2LogicBase {
 
   private function __getArgs(){
     if(!isset($_SERVER["PATH_INFO"])) return array();
-    $argsRaw = rtrim(str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $_SERVER["PATH_INFO"]), "/");
+    //末尾にスラッシュがない場合はスラッシュを付ける
+    $pathInfo = $_SERVER["PATH_INFO"];
+    if(strrpos($pathInfo, "/") !== strlen($pathInfo) - 1){
+      $pathInfo .= "/";
+    }
+    $argsRaw = rtrim(str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $pathInfo), "/");
     return explode("/", $argsRaw);
   }
 }

@@ -101,44 +101,44 @@ class GravatarPlugin {
 
     SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
     $limit = PluginBlockUtil::getLimitByPageId((int)$_SERVER["SOYCMS_PAGE_ID"]);
-    if(is_null($limit)) $limit = 100;
+    if(is_null($limit)) $limit = 100000;
 
     $current = (isset($args[1]) && strpos($args[1], "page-") === 0) ? (int)str_replace("page-", "", $args[1]) : 0;
     $last_page_number = (int)ceil($entryLogic->getTotalEachAuthorEntries() / $limit);
 
-    $obj->createAdd("pager", "BlockPluginPagerComponent", array(
+    $obj->createAdd("g_pager", "BlockPluginPagerComponent", array(
       "list" => array(),
       "current" => $current,
       "last"   => $last_page_number,
       "url"    => $url,
-      "soy2prefix" => "p_block"
+      "soy2prefix" => "p_block",
     ));
 
-    $obj->addModel("has_pager", array(
+    $obj->addModel("g_has_pager", array(
         "soy2prefix" => "p_block",
         "visible" => ($last_page_number >1)
     ));
-    $obj->addModel("no_pager", array(
+    $obj->addModel("g_no_pager", array(
         "soy2prefix" => "p_block",
         "visible" => ($last_page_number <2)
     ));
 
-    $obj->addLink("first_page", array(
+    $obj->addLink("g_first_page", array(
         "soy2prefix" => "p_block",
         "link" => $url,
     ));
 
-    $obj->addLink("last_page", array(
+    $obj->addLink("g_last_page", array(
         "soy2prefix" => "p_block",
         "link" => $url . "page-" . ($last_page_number - 1),
     ));
 
-    $obj->addLabel("current_page", array(
+    $obj->addLabel("g_current_page", array(
         "soy2prefix" => "p_block",
         "text" => max(1, $current + 1),
     ));
 
-    $obj->addLabel("pages", array(
+    $obj->addLabel("g_pages", array(
         "soy2prefix" => "p_block",
         "text" => $last_page_number,
     ));

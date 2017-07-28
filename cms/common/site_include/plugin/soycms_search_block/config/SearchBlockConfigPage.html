@@ -22,3 +22,15 @@
 &lt;input type="search" name="<strong>q</strong>"&gt;
 &lt;input type="submit" value="検索"&gt;
 &lt;/form&gt;</pre>
+
+<h4>ページャの設置</h4>
+<p>下記のコードをプラグインブロックの外に記述します。</p>
+<pre style="border:1px solid #000000;padding:3px;">&lt;a p_block:id="s_first_page"&gt;最初のページへ&lt;/a&gt;
+
+&lt;!-- p_block:id="s_pager" cms:pager_num="10" --&gt;
+&lt;span class="pager_item" cms:id="pager_item"&gt;&lt;a href="#"&gt;1&lt;/a&gt;&lt;/span&gt;
+&lt;!-- /p_block:id="s_pager" --&gt;
+
+&lt;a p_block:id="s_last_page"&gt;最後のページへ&lt;/a&gt;
+
+&lt;!-- p_block:id="s_pages" /--&gt;ページ中&lt;!-- p_block:id="s_current_page" /--&gt;ページ目</pre>

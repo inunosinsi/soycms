@@ -9,6 +9,8 @@ class BlockPluginPagerComponent extends HTMLList{
   //ベースURL=最初のページのURL
   private $url;
 
+  private $queries;
+
   /**
    * cms:pager_numのためにオーバーライド
    */
@@ -28,6 +30,10 @@ class BlockPluginPagerComponent extends HTMLList{
       if($page_num > 1){
           $url .= (strlen($url) ==0 OR $url[strlen($url)-1] != "/") ? "/" : "" ;
           $url .= "page-" . ($page_num -1);
+      }
+
+      if(count($this->queries)){
+        $url .= "?" . http_build_query($this->queries);
       }
 
       $this->list[] = array(
@@ -85,5 +91,8 @@ class BlockPluginPagerComponent extends HTMLList{
   }
   function setUrl($url){
       $this->url = $url;
+  }
+  function setQueries($queries){
+    $this->queries = $queries;
   }
 }
