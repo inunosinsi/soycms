@@ -21,7 +21,7 @@ class SOYCMS_Search_Block_Plugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 
         if(CMSPlugin::activeCheck($this->getId())){
@@ -44,7 +44,7 @@ class SOYCMS_Search_Block_Plugin{
 		SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
 		$logic = SOY2Logic::createInstance("site_include.plugin.soycms_search_block.logic.SearchBlockEntryLogic");
 
-		$url = $_SERVER["REDIRECT_URL"];
+		$url = (isset($_SERVER["REDIRECT_URL"])) ? $_SERVER["REDIRECT_URL"] : "";
 		if(strpos($url, "page-")){
 			$url = substr($url, 0, strpos($url, "/page-")) . "/";
 		}
