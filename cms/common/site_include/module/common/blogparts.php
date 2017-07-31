@@ -5,22 +5,29 @@ function soycms_blogparts($html, $page){
 		"arguments" => array("blogparts", $html)
 	));
 
-  switch($page->page->getPageType()){
-    case Page::PAGE_TYPE_BLOG:
-      switch($page->mode){
-        case "_top_":
-          $template = $page->page->getTopTemplate();
-          break;
-        case "_entry_":
-          $template = $page->page->getEntryTemplate();
-          break;
-        default:
-          $template = $page->page->getArchiveTemplate();
-      }
-      break;
-    default:
-      $template = $page->page->getTemplate();
-  }
+	if(property_exists($page, "page")){
+		switch($page->page->getPageType()){
+	    case Page::PAGE_TYPE_BLOG:
+	      switch($page->mode){
+	        case "_top_":
+	          $template = $page->page->getTopTemplate();
+	          break;
+	        case "_entry_":
+	          $template = $page->page->getEntryTemplate();
+	          break;
+	        default:
+	          $template = $page->page->getArchiveTemplate();
+	      }
+	      break;
+	    default:
+	      $template = $page->page->getTemplate();
+	  }
+	//SOY Shopの場合
+	}else{
+		$pageObject = $page->getPageObject();
+		$template = file_get_contents(SOYSHOP_SITE_URL . ".template/" . $pageObject->getType() . "/" . $pageObject->getTemplate());
+	}
+
 
   $blogPageId = null;
   if(preg_match('/(<[^>]*[^\/]cms:module=\"common.sidenav\"[^>]*>)/', $template, $tmp)){
@@ -28,6 +35,7 @@ function soycms_blogparts($html, $page){
       if(isset($ctmp[1]) && is_numeric($ctmp[1])) $blogPageId = (int)$ctmp[1];
     }
   }
+
   if(is_null($blogPageId)){
     //最初に作成されたブログのラベルIDを取得する
     $dao = new SOY2DAO();
@@ -137,10 +145,15 @@ function soycms_blogparts($html, $page){
 function convertUrlOnModuleBlogParts($url){
 	static $siteUrl;
 	if(is_null($siteUrl)){
-		if(defined("_SITE_ROOT_")){
-			$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+		if(defined("SOYCMS_SITE_ID")){
+			$siteId = SOYCMS_SITE_ID;
 		}else{
-			$siteId = UserInfoUtil::getSite()->getSiteId();
+			//SOY CMSの場合
+			if(defined("_SITE_ROOT_")){
+				$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+			}else{
+				$siteId = UserInfoUtil::getSite()->getSiteId();
+			}
 		}
 
 		$old = CMSUtil::switchDsn();
