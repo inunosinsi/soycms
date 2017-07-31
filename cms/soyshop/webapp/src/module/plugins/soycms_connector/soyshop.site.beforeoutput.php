@@ -30,4 +30,4 @@ class SOYCMSConnectorBeforeOutput extends SOYShopSiteBeforeOutputAction{
     }
 }
 
-SOYShopPlugin::extension("soyshop.site.beforeoutput", "util_multi_languag", "SOYCMSConnectorBeforeOutput");
+SOYShopPlugin::extension("soyshop.site.beforeoutput", "soycms_connector", "SOYCMSConnectorBeforeOutput");
