@@ -153,6 +153,30 @@ class SOYShopPageBase extends WebPage{
         }
     }
 
+    function executePlugin($id,$soyValue,$plugin){
+
+  		while(true){
+  			list($tag,$line,$innerHTML,$outerHTML,$value,$suffix,$skipendtag) =
+  				$plugin->parse($id,$soyValue,$this->_soy2_content);
+
+  			if(!strlen($tag))break;
+
+  			$plugin->_attribute = array();
+
+  			$plugin->setTag($tag);
+  			$plugin->parseAttributes($line);
+  			$plugin->setInnerHTML($innerHTML);
+  			$plugin->setOuterHTML($outerHTML);
+  			$plugin->setParent($this);
+  			$plugin->setSkipEndTag($skipendtag);
+  			$plugin->setSoyValue($value);
+  			$plugin->execute();
+
+  			$this->_soy2_content = $this->getContent($plugin,$this->_soy2_content);
+  		}
+
+  	}
+
     //cms:ignoreを使えるようにする
     function parseComment($html){
 
