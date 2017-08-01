@@ -19,7 +19,6 @@ class SOYShop_SOYCMSPageModulePlugin extends PluginBase{
 
 		$siteId = $config["siteId"];
 
-
 		$old_dao_dir = SOY2DAOConfig::DaoDir();
 		$old_entity_dir = SOY2DAOConfig::EntityDir();
 		$old_dsn = SOY2DAOConfig::Dsn();
@@ -60,7 +59,6 @@ class SOYShop_SOYCMSPageModulePlugin extends PluginBase{
 
 		SOY2DAOConfig::Dsn($site->getDataSourceName());
 
-
 		$config["db_old"] = array(
 			"dao_dir" => $old_dao_dir,
 			"entity_dir" => $old_entity_dir,
@@ -68,10 +66,6 @@ class SOYShop_SOYCMSPageModulePlugin extends PluginBase{
 			"user" => $old_user,
 			"pass" => $old_pass
 		);
-
-		//rootdir
-		$config["old_rootdir"] = SOY2::RootDir();
-		SOY2::RootDir($config["rootDir"]);
 
 		if(!defined("_SITE_ROOT_")) define("_SITE_ROOT_", $site->getPath());
 
