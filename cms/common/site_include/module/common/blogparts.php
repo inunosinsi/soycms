@@ -24,8 +24,17 @@ function soycms_blogparts($html, $page){
 	  }
 	//SOY Shopの場合
 	}else{
-		$pageObject = $page->getPageObject();
-		$template = file_get_contents(SOYSHOP_SITE_URL . ".template/" . $pageObject->getType() . "/" . $pageObject->getTemplate());
+		switch(get_class($page)){
+			case "SOYShop_UserPage":
+				$template = file_get_contents(SOYSHOP_SITE_URL . ".template/mypage/" . $page->getMyPageId() . ".html");
+				break;
+			case "SOYShop_CartPage":
+				$template = file_get_contents(SOYSHOP_SITE_URL . ".template/cart/" . $page->getCartId() . ".html");
+				break;
+			default:
+				$pageObject = $page->getPageObject();
+				$template = file_get_contents(SOYSHOP_SITE_URL . ".template/" . $pageObject->getType() . "/" . $pageObject->getTemplate());
+		}
 	}
 
 
