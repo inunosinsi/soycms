@@ -16,7 +16,7 @@ class InvoiceListComponent extends HTMLList{
 
 		/*** 支払い配送情報 ***/
 		$this->createAdd("module_list", "InvoiceModuleListComponent", array(
-		 	"list" => $order->getModuleList()
+		 	"list" => self::insertDaibikiModule($order->getModuleList())
 		));
 
 		$this->addLabel("document_label", array(
@@ -241,6 +241,20 @@ class InvoiceListComponent extends HTMLList{
 		}
 
 		return $customer;
+	}
+
+	private function insertDaibikiModule($modules){
+		//代引き支払がない場合は最初の値に追加
+		if(!array_key_exists("payment_daibiki", $modules)){
+			$module = new SOYShop_ItemModule();
+			$module->setId("payment_daibiki");
+			$module->setName("代金引換手数料");
+			$module->setPrice(0);
+			$module->setIsVisible(true);
+			array_unshift($modules, $module);
+		}
+
+		return $modules;
 	}
 
 	/**

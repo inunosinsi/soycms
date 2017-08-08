@@ -32,11 +32,77 @@ class DeliveryNormalCartPage extends WebPage{
 		$config = DeliveryNormalUtil::getDeliveryDateConfig();
 		DisplayPlugin::toggle("display_delivery_date_table", (isset($config["use_delivery_date"]) && $config["use_delivery_date"] == 1));
 
+		//カレンダー形式
+		DisplayPlugin::toggle("display_format_calendar", (isset($config["use_format_calendar"]) && $config["use_format_calendar"] == 1));
+
+		$dateStr = (isset($this->cart->getOrderAttribute("delivery_normal.date")["value"])) ? $this->cart->getOrderAttribute("delivery_normal.date")["value"] : null;
+		if(strpos($dateStr, "指定") !== false) $dateStr = null;
+
+		$this->addInput("delivery_date_calendar", array(
+			"name" => "delivery_date",
+			"value" => $dateStr,
+			"id" => "jquery-ui-calendar",
+			"style" => "width:120px",
+			"readonly" => true
+		));
+
+		//CSSファイルの読み込み
+		$this->addModel("jquery_ui_css", array(
+			"attr:href" => soyshop_get_site_url() . "themes/common/css/jquery-ui.min.css"
+		));
+
+		//JSファイルの読み込み
+		$this->addModel("jquery_ui_js", array(
+			"attr:src" => soyshop_get_site_url() . "themes/common/js/jquery-ui.min.js"
+		));
+
+		//日本語化ファイル
+		$this->addModel("datepicker_ja", array(
+			"attr:src" => soyshop_get_site_url() . "themes/common/js/datepicker-ja.js"
+		));
+
+		$this->addLabel("jquery_ui_script", array(
+			"html" => self::buildCalendarScript($config)
+		));
+
+		//セレクトボックス形式
+		DisplayPlugin::toggle("display_format_select", (!isset($config["use_format_calendar"]) || $config["use_format_calendar"] != 1));
 		$this->addSelect("delivery_date", array(
 			"name" => "delivery_date",
 			"options" => self::getDeliveryDateOptions($config),
 			"selected" => $this->cart->getOrderAttribute("delivery_normal.date")
 		));
+	}
+
+	private function buildCalendarScript($config){
+		$script = array();
+		$script[] = "$(function(){";
+
+		//
+		$script[] = "	if($(\"#jquery-ui-calendar\").val().length > 0){";
+		$script[] = "		$(\"#date_remove\").css(\"display\", \"inline\");";
+		$script[] = "	} else {";
+		$script[] = "		$(\"#date_remove\").css(\"display\", \"none\");";
+		$script[] = "	}";
+
+		$script[] = "	$(\"#jquery-ui-calendar\").datepicker({";
+		$script[] = "		minDate: '+" . ($config["delivery_shortest_date"] + 1) . "d',";
+		$script[] = "		maxDate: '+" . ($config["delivery_shortest_date"] + 1 + $config["delivery_date_period"]) . "d',";
+		$script[] = "		dateFormat: '" . self::getDateLogic()->getDateFormat() . "'";
+		$script[] = "	});";
+
+		$script[] = "	$(\"#jquery-ui-calendar\").change(function(){";
+		$script[] = "		$(\"#date_remove\").css(\"display\", \"inline\");";
+		$script[] = "	})";
+
+		$script[] = "	$(\"#date_remove\").click(function(){";
+		$script[] = "		$(\"#jquery-ui-calendar\").val(\"\");";
+		$script[] = "		$(this).css(\"display\", \"none\");";
+		$script[] = "	});";
+
+		$script[] = "});";
+
+		return implode("\n", $script);
 	}
 
 	private function getDeliveryDateOptions($config){
@@ -56,8 +122,6 @@ class DeliveryNormalCartPage extends WebPage{
 		$shortest = $time + (int)$config["delivery_shortest_date"] * 24 * 60 * 60;
 		$last = $shortest + (int)$config["delivery_date_period"] * 24 * 60 * 60;
 
-		$logic = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic");
-
 		$opts = array();
 
 		//指定なしの項目を追加
@@ -66,12 +130,18 @@ class DeliveryNormalCartPage extends WebPage{
 		}
 
 		do{
-			$opts[date("Y-m-d", $shortest)] = $logic->convertDateString($config["delivery_date_format"], $shortest);
+			$opts[date("Y-m-d", $shortest)] = self::getDateLogic()->convertDateString($config["delivery_date_format"], $shortest);
 			$shortest += 24 * 60 * 60;
 		}while($shortest < $last);
 
 
 		return $opts;
+	}
+
+	private function getDateLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic");
+		return $logic;
 	}
 
 	function setCart($cart){

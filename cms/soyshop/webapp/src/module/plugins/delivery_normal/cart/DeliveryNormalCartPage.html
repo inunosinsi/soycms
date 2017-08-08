@@ -4,7 +4,19 @@
 	<tr>
 		<th>お届け日の指定</th>
 		<td>
+			<!-- soy:display="display_format_calendar" -->
+			<input type="text" soy:id="delivery_date_calendar">&nbsp;
+			<input type="button" id="date_remove" value="取消">
+			<link soy:id="jquery_ui_css" rel="stylesheet" type="text/css">
+			<script soy:id="jquery_ui_js"></script>
+			<script soy:id="datepicker_ja"></script>
+			<script soy:id="jquery_ui_script"></script>
+			<style>#date_remove{display:none;}</style>
+			<!-- /soy:display="display_format_calendar" -->
+
+			<!-- soy:display="display_format_select" -->
 			<select soy:id="delivery_date"></select>
+			<!-- /soy:display="display_format_select" -->
 		</td>
 	</tr>
 </table>

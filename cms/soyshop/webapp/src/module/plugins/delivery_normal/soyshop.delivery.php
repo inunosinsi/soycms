@@ -29,21 +29,18 @@ class DeliveryNormalModule extends SOYShopDelivery{
 		$config = DeliveryNormalUtil::getDeliveryDateConfig();
 		if(isset($config["use_delivery_date"]) && $config["use_delivery_date"] == 1){
 			if(isset($_POST["delivery_date"]) && strlen($_POST["delivery_date"]) > 0){
-			
+
 				$date = $_POST["delivery_date"];
 				if(strlen($date) > 9){
 					$cart->setOrderAttribute("delivery_normal.date", "お届け日", $date);
 				}else{
 					$cart->setOrderAttribute("delivery_normal.date", "お届け日", "指定なし");
 				}
-				
-
-/**				
-				$dArray = explode("-", $date);
-				$dTimestamp = mktime(0, 0, 0, $dArray[1], $dArray[2], $dArray[0]);
-				$dateString = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic")->convertDateString($config["delivery_date_format"], $dTimestamp);
-				$cart->setOrderAttribute("delivery_normal.date", "お届け日", $dateString);
-**/
+			} else {
+				//カレンダーモードの場合は空文字の場合は指定なしにする
+				if(isset($config["use_format_calendar"]) && $config["use_format_calendar"] == 1){
+					$cart->setOrderAttribute("delivery_normal.date", "お届け日", "指定なし");
+				}
 			}
 		}
 
@@ -79,7 +76,7 @@ class DeliveryNormalModule extends SOYShopDelivery{
 
 	function getPrice(){
 		$this->prepare();
-		
+
 		$prices = DeliveryNormalUtil::getPrice();
 
 		$cart = $this->getCart();

@@ -38,24 +38,49 @@ class DeliveryNormalConfigFormPage extends WebPage{
 				$useDeliveryTime["use"] = (isset($_POST["use_delivery_time"]) && $_POST["use_delivery_time"] == 1) ? 1 : 0;
 				DeliveryNormalUtil::saveUseDeliveryTimeConfig($useDeliveryTime);
 			}
-			
+
 			if(isset($_POST["Date"])){
+				//jQuryUIのファイルをコピーする
+				self::copyFiles();
 				DeliveryNormalUtil::saveDeliveryDateConfig($_POST["Date"]);
 			}
-			
+
 			$this->configObj->redirect("updated");
 		}
 	}
 
 	function execute(){
 		WebPage::__construct();
-		
+
 		$this->addForm("form");
 
 		self::buildTextForm();
 		self::buildPriceForm();
 		self::buildTimeForm();
 		self::buildDateForm();
+	}
+
+	private function copyFiles(){
+		$filesDir = dirname(dirname(__FILE__)) . "/files/";
+		$commonDir = SOYSHOP_SITE_DIRECTORY . "themes/common/";
+
+		//JSファイルへのコピー 常に上書きする
+		$jsDir = $commonDir . "js/";
+		foreach(array("jquery-ui.min", "datepicker-ja") as $fileName){
+			copy($filesDir . $fileName . ".js", $jsDir . $fileName . ".js");
+		}
+
+		//CSSファイルのコピー
+		copy($filesDir . "jquery-ui.min.css", $commonDir . "css/jquery-ui.min.css");
+
+		//CSSのイメージファイル
+		$imageFiles = scandir($filesDir . "images/");
+		$imageDir = $commonDir . "css/images/";
+		if(!file_exists($imageDir)) mkdir($imageDir);
+		foreach($imageFiles as $imgFile){
+			if(strpos($imgFile, ".") === 0) continue;
+			copy($filesDir . "images/" . $imgFile, $imageDir . $imgFile);
+		}
 	}
 
 	private function buildTextForm(){
@@ -102,58 +127,65 @@ class DeliveryNormalConfigFormPage extends WebPage{
 			"list" => $time_config,
 		));
 	}
-	
+
 	private function buildDateForm(){
 		$config = DeliveryNormalUtil::getDeliveryDateConfig();
-		
+
 		$this->addCheckBox("use_delivery_date", array(
 			"name" => "Date[use_delivery_date]",
 			"value" => 1,
 			"selected" => (isset($config["use_delivery_date"]) && $config["use_delivery_date"] == 1),
 			"label" => "お届け日の指定を表示する"
 		));
-		
+
+		$this->addCheckBox("use_format_calendar", array(
+			"name" => "Date[use_format_calendar]",
+			"value" => 1,
+			"selected" => (isset($config["use_format_calendar"]) && $config["use_format_calendar"] == 1),
+			"label" => "カレンダー形式の表示に切り替える(β版)"
+		));
+
 		$this->addCheckBox("use_delivery_date_unspecified", array(
 			"name" => "Date[use_delivery_date_unspecified]",
 			"value" => 1,
 			"selected" => (isset($config["use_delivery_date_unspecified"]) && $config["use_delivery_date_unspecified"] == 1),
 			"label" => "お届け日のセレクトボックスに指定なしを追加する"
 		));
-		
+
 		$this->addInput("delivery_shortest_date", array(
 			"name" => "Date[delivery_shortest_date]",
 			"value" => (isset($config["delivery_shortest_date"])) ? (int)$config["delivery_shortest_date"] : "",
 			"style" => "width:60px;text-align:right;"
 		));
-		
+
 		$this->addCheckBox("use_re_calc_shortest_date", array(
 			"name" => "Date[use_re_calc_shortest_date]",
 			"value" => 1,
 			"selected" => (isset($config["use_re_calc_shortest_date"]) && $config["use_re_calc_shortest_date"] == 1),
 			"label" => "注文日が定休日の場合、最短のお届け日を翌営業日から表示する"
 		));
-		
+
 		$installedCalender = SOYShopPluginUtil::checkIsActive("parts_calendar");
 		DisplayPlugin::toggle("notice_re_calc_shortest_date", !$installedCalender);
-		
+
 		DisplayPlugin::toggle("installed_calendar_plugin", $installedCalender);
-		
+
 		$this->addLink("calendar_config_link", array(
 			"link" => SOY2PageController::createLink("Config.Detail?plugin=parts_calendar")
 		));
-		
-		
+
+
 		$this->addInput("delivery_date_period", array(
 			"name" => "Date[delivery_date_period]",
 			"value" => (isset($config["delivery_date_period"])) ? (int)$config["delivery_date_period"] : "",
 			"style" => "width:60px;text-align:right;"
 		));
-		
+
 		$this->addInput("delivery_date_format", array(
 			"name" => "Date[delivery_date_format]",
 			"value" => (isset($config["delivery_date_format"])) ? $config["delivery_date_format"] : "",
 		));
-		
+
 		$this->addInput("delivery_date_mail_insert_date", array(
 			"name" => "Date[delivery_date_mail_insert_date]",
 			"value" => (isset($config["delivery_date_mail_insert_date"])) ? (int)$config["delivery_date_mail_insert_date"] : 0,

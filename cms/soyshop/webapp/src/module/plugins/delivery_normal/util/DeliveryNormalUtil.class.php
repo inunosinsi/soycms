@@ -56,6 +56,7 @@ class DeliveryNormalUtil{
 
 	public static function saveDeliveryDateConfig($values){
 		$values["use_delivery_date"] = (isset($values["use_delivery_date"])) ? (int)$values["use_delivery_date"] : 0;
+		$values["use_format_calendar"] = (isset($values["use_format_calendar"])) ? (int)$values["use_format_calendar"] : 0;
 		$values["use_delivery_date_unspecified"] = (isset($values["use_delivery_date_unspecified"])) ? (int)$values["use_delivery_date_unspecified"] : 0;
 		SOYShop_DataSets::put("delivery.default.delivery_date.config", $values);
 	}
