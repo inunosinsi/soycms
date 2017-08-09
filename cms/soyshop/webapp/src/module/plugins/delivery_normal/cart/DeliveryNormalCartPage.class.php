@@ -46,25 +46,6 @@ class DeliveryNormalCartPage extends WebPage{
 			"readonly" => true
 		));
 
-		//CSSファイルの読み込み
-		$this->addModel("jquery_ui_css", array(
-			"attr:href" => soyshop_get_site_url() . "themes/common/css/jquery-ui.min.css"
-		));
-
-		//JSファイルの読み込み
-		$this->addModel("jquery_ui_js", array(
-			"attr:src" => soyshop_get_site_url() . "themes/common/js/jquery-ui.min.js"
-		));
-
-		//日本語化ファイル
-		$this->addModel("datepicker_ja", array(
-			"attr:src" => soyshop_get_site_url() . "themes/common/js/datepicker-ja.js"
-		));
-
-		$this->addLabel("jquery_ui_script", array(
-			"html" => self::buildCalendarScript($config)
-		));
-
 		//セレクトボックス形式
 		DisplayPlugin::toggle("display_format_select", (!isset($config["use_format_calendar"]) || $config["use_format_calendar"] != 1));
 		$this->addSelect("delivery_date", array(
@@ -72,37 +53,6 @@ class DeliveryNormalCartPage extends WebPage{
 			"options" => self::getDeliveryDateOptions($config),
 			"selected" => $this->cart->getOrderAttribute("delivery_normal.date")
 		));
-	}
-
-	private function buildCalendarScript($config){
-		$script = array();
-		$script[] = "$(function(){";
-
-		//
-		$script[] = "	if($(\"#jquery-ui-calendar\").val().length > 0){";
-		$script[] = "		$(\"#date_remove\").css(\"display\", \"inline\");";
-		$script[] = "	} else {";
-		$script[] = "		$(\"#date_remove\").css(\"display\", \"none\");";
-		$script[] = "	}";
-
-		$script[] = "	$(\"#jquery-ui-calendar\").datepicker({";
-		$script[] = "		minDate: '+" . ($config["delivery_shortest_date"] + 1) . "d',";
-		$script[] = "		maxDate: '+" . ($config["delivery_shortest_date"] + 1 + $config["delivery_date_period"]) . "d',";
-		$script[] = "		dateFormat: '" . self::getDateLogic()->getDateFormat() . "'";
-		$script[] = "	});";
-
-		$script[] = "	$(\"#jquery-ui-calendar\").change(function(){";
-		$script[] = "		$(\"#date_remove\").css(\"display\", \"inline\");";
-		$script[] = "	})";
-
-		$script[] = "	$(\"#date_remove\").click(function(){";
-		$script[] = "		$(\"#jquery-ui-calendar\").val(\"\");";
-		$script[] = "		$(this).css(\"display\", \"none\");";
-		$script[] = "	});";
-
-		$script[] = "});";
-
-		return implode("\n", $script);
 	}
 
 	private function getDeliveryDateOptions($config){
