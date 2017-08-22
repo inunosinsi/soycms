@@ -64,7 +64,9 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
         //カテゴリカスタムサーチフィールド
         switch($page->getPageObject()->getType()){
           case SOYShop_Page::TYPE_LIST:
-            $categoryId = $page->getPageObject()->getObject()->getCurrentCategory()->getId();
+            $currentCategory = $page->getPageObject()->getObject()->getCurrentCategory();
+            if(is_null($currentCategory)) $currentCategory = new SOYShop_Category();
+            $categoryId = $currentCategory->getId();
             break;
           case SOYShop_Page::TYPE_DETAIL:
             $item = $page->getPageObject()->getObject()->getCurrentItem();
