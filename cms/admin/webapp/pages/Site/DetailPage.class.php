@@ -77,7 +77,7 @@ class DetailPage extends CMSUpdatePageBase{
     	
     	$this->id = (isset($args[0])) ? $args[0] : null;
     	
-    	WebPage::__construct();
+    	parent::__construct();
 		
 		$this->addForm("update_site_form");
 		

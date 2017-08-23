@@ -36,7 +36,7 @@ class IndexPage extends CMSWebPageBase{
 	}
 
 	function __construct(){
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->createAdd("index_form","HTMLForm",array(
 			"action"=>SOY2PageController::createLink("SiteConfig")

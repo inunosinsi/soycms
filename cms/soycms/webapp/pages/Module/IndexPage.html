@@ -1,100 +1,140 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
+
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
-</head>
+</head soy:page="_common.HeaderPage">
+
 <body>
-<div class="container">
-	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
-	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>			
-	
-		<!-- content start -->
-		<div id="content" class="span-24 last">
 
-			<!-- soy:display="allow_php_module" -->
-			<div id="entry_functions" class="span-22 last">
-				<h2>モジュール</h2>
-				<div class="prepend-1 span-6 colborder" style="_width:271px;">
-					
-					<div class="span-4 icon">
-						<a soy:link="Module.Create">
-							<img soy:src="./image/simplemode/new.gif" />
-							<h6>モジュールの新規作成</h6>
-						</a>
-					</div>
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header"><small><a soy:link="Page">ページ</a> &gt;</small> モジュール管理</h1>
 				</div>
+				<!-- /.col-lg-12 -->
 			</div>
 
-			<div class="span-23 last" style="margin-top:20px;" soy:id="is_module_list">
-				<table class="span-22 list last">
-					<thead>
-						<tr>
-							
-							<td class="title">モジュール名</td>
-							<td>モジュールID</td>
-							<td class="status">操作</td>
-						</tr>
-					</thead>
-					<tbody class="entry_list">
-						<!-- soy:id="module_list" -->
-						<tr>
-							<td>
-								<a soy:id="module_name">タイトル...</a>
-							</td>
-							<td soy:id="module_id">parts.module</td>
-							<td>
-								<a style="text-decoration:none;" soy:id="module_link">詳細</a>
-							</td>
-						</tr>
-						<!-- /soy:id="module_list" -->
-					</tbody>
-				</table>
-			</div>
-			<!-- /soy:display="allow_php_module" -->
-			
-			<div id="entry_functions" class="span-22 last">
-				<h2>HTMLモジュール</h2>
-				<div class="prepend-1 span-6 colborder" style="_width:271px;">
-					
-					<div class="span-4 icon">
-						<a soy:link="Module.HTML.Create">
-							<img soy:src="./image/simplemode/new.gif" />
-							<h6>HTMLモジュールの新規作成</h6>
-						</a>
+			<div soy:page="_common.MessagePanel" isOverWrite="true"></div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<a class="btn btn-default" soy:link="Page.Create" onclick="return common_click_to_layer(this,{height:540});">ページ新規作成</a>
+							<a class="btn btn-default" soy:link="Blog">ブログ一覧</a>
+							<!-- soy:display="is_page_template_enabled" --><a class="btn btn-default" soy:link="Template">ページ雛型管理</a><!-- /soy:display="is_page_template_enabled" -->
+							<div class="btn-group">
+								<a class="btn btn-default active" soy:link="Module">モジュール管理</a>
+								<button type="button" class="btn btn-default dropdown-toggle active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span class="caret"></span>
+									<span class="sr-only">Toggle Dropdown</span>
+								</button>
+								<ul class="dropdown-menu">
+									<li soy:id="allow_php_module"><a soy:link="Module.Create">モジュールの新規作成</a></li>
+									<li><a soy:link="Module.HTML.Create">HTMLモジュールの新規作成</a></li>
+								</ul>
+							</div>
+						</div>
 					</div>
 				</div>
+				<!-- /.col-lg-12 -->
 			</div>
-			
-			<div class="span-23 last" style="margin-top:20px;" soy:id="is_html_module_list">
-				<table class="span-22 list last">
-					<thead>
-						<tr>
-							
-							<td class="title">モジュール名</td>
-							<td>モジュールID</td>
-							<td class="status">操作</td>
-						</tr>
-					</thead>
-					<tbody class="entry_list">
-						<!-- soy:id="html_module_list" -->
-						<tr>
-							<td>
-								<a soy:id="module_name">タイトル...</a>
-							</td>
-							<td soy:id="module_id">module</td>
-							<td>
-								<a style="text-decoration:none;" soy:id="module_link">詳細</a>
-							</td>
-						</tr>
-						<!-- /soy:id="html_module_list" -->
-					</tbody>
-				</table>
+
+			<div class="row">
+				<div class="col-lg-6">
+					<!-- soy:id="allow_php_module*" -->
+					<div class="panel panel-green">
+						<div class="panel-heading">
+							モジュール一覧
+							<div class="pull-right">
+								<a class="btn btn-default btn-xs" soy:link="Module.Create">新規作成</a>
+							</div>
+						</div>
+
+						<div class="panel-body" soy:id="no_module">
+							モジュールがありません。
+						</div>
+
+						<div class="table-responsive" soy:id="has_module">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>モジュールID</th>
+										<th class="title">モジュール名</th>
+										<th class="status">操作</th>
+									</tr>
+								</thead>
+								<tbody class="entry_list">
+									<!-- soy:id="module_list" -->
+									<tr>
+										<td soy:id="module_id">parts.module</td>
+										<td>
+											<a soy:id="module_name">タイトル...</a>
+										</td>
+										<td>
+											<a class="btn btn-default" soy:id="module_link">編集</a>
+										</td>
+									</tr>
+									<!-- /soy:id="module_list" -->
+								</tbody>
+							</table>
+						</div soy:id="has_module">
+					 </div>
+				</div>
+				<!-- /soy:id="allow_php_module*" -->
+				<!-- /.col-lg-12 -->
+
+				<div class="col-lg-6">
+					<div class="panel panel-green">
+						<div class="panel-heading">
+							HTMLモジュール一覧
+							<div class="pull-right">
+								<a class="btn btn-default btn-xs" soy:link="Module.HTML.Create">新規作成</a>
+							</div>
+						 </div>
+
+						<div class="panel-body" soy:id="no_html_module">
+							HTMLモジュールがありません。
+						</div>
+
+						<div class="table-responsive" soy:id="has_html_module">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>モジュールID</th>
+										<th class="title">モジュール名</th>
+										<th class="status">操作</th>
+									</tr>
+								</thead>
+								<tbody class="entry_list">
+									<!-- soy:id="html_module_list" -->
+									<tr>
+										<td soy:id="module_id">module</td>
+										<td>
+											<a soy:id="module_name">タイトル...</a>
+										</td>
+										<td>
+											<a class="btn btn-default" soy:id="module_link">編集</a>
+										</td>
+									</tr>
+									<!-- /soy:id="html_module_list" -->
+								</tbody>
+							</table>
+						</div soy:id="has_html_module">
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
 			</div>
-			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+			<!-- /.row -->
 		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
 
-	
-	<div soy:page="_common.FooterPage"></div>
-
-</div>
 </body>
+
 </html>

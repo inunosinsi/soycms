@@ -1,36 +1,23 @@
-<h3>ページ雛形の新規作成(1/5)</h3>
 <p>作成するページ雛形のID、名前、種類を設定して下さい。</p>
 
-<div class="section">
-<p class="sub">ID
-	<img soy:message="TEMPLATE_ID">
-</p>
-<input type="text" soy:id="template_id">
+<div class="form-group">
+	<label>ID</label><span soy:message="TEMPLATE_ID"></span>
+	<input class="form-control" type="text" soy:id="template_id">
 </div>
 
-<div class="section">
-<p class="sub">ページ雛形名
-	<img soy:message="TEMPLATE_NAME">
-</p>
-<input type="text" soy:id="template_name">
+<div class="form-group">
+	<label>ページ雛形名</label><span soy:message="TEMPLATE_NAME"></span>
+	<input class="form-control" type="text" soy:id="template_name">
 </div>
 
-<div class="section">
-<p class="sub">ページ雛形の種類
-	<img soy:message="TEMPLATE_TYPE">
-</p>
-
-<input type="checkbox" soy:id="template_type_normal">
-<input type="checkbox" soy:id="template_type_blog">
+<div class="form-group">
+	<label>ページ雛形の種類</label><span soy:message="TEMPLATE_TYPE"></span>
+	<input type="checkbox" soy:id="template_type_normal">
+	<input type="checkbox" soy:id="template_type_blog">
 </div>
 
-<div class="section">
-<p class="sub">説明
-	<img soy:message="TEMPLATE_DESCRIPTION">
-</p>
-<textarea soy:id="template_description" cols="60" rows="8"></textarea>
+<div class="form-group">
+	<label>説明</label><span soy:message="TEMPLATE_DESCRIPTION"></span>
+	<textarea soy:id="template_description" cols="60" rows="8" class="form-control"></textarea>
 </div>
-
-
-
 

@@ -1,26 +1,26 @@
-<h3>ページ雛形の新規作成(2/5)</h3>
-<p>ページ雛形を新規に作成する場合は、「新規に作成」を、ページからインポートする場合は「ページからインポート」を選択し、インポートするページを選択してて下さい。</p>
+<p>ページ雛形を新規に作成する場合は「新規に作成」を、既存のページから作成する場合は「既存のページから作成」を選択し、元となるページを選択してて下さい。</p>
 
-<div class="section">
-<p class="sub">名前
-	<img soy:message="TEMPLATE_FILE_NAME">	
-</p>
-<input soy:id="name" />
+<div class="form-group">
+	<label>テンプレート名</label><span soy:message="TEMPLATE_FILE_NAME"></span>
+	<input soy:id="name" class="form-control">
 </div>
 
-<div class="section">
+<div class="form-group">
+	<label>テンプレートの作成方法</label>
 
-<div class="inline">
-	<input soy:id="import" /><img soy:message="TEMPLATE_FILE_IMPORT"/>
-	<select soy:id="page_list" style="margin-left:15px;">
-		<option value="">------</option>
-	</select soy:id="page_list">
-</div>
+	<div class="">
+		<input soy:id="create" class="">
+		<span soy:message="TEMPLATE_FILE_CREATE"></span>
+	</div>
 
-<div>
-	<input soy:id="create" /><img soy:message="TEMPLATE_FILE_CREATE"/>
-</div>
+	<div class="form-group">
+		<input soy:id="import">
+		<span soy:message="TEMPLATE_FILE_IMPORT"></span>
 
+		<select soy:id="page_list" class="form-control">
+			<option value="">ページを選んでください</option>
+		</select soy:id="page_list">
+	</div>
 </div>
 
 

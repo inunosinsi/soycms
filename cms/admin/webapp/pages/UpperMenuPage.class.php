@@ -14,82 +14,99 @@ class UpperMenuPage extends CMSWebPageBase{
 
 	private $activeTab;
 
-    function __construct() {
-    	WebPage::__construct();
+	function __construct() {
+		parent::__construct();
 
-    	//リクエストされたパスからActiveなパスを取得
-    	$requestPath = SOY2PageController::getRequestPath();
+		//リクエストされたパスからActiveなパスを取得
+		$requestPath = SOY2PageController::getRequestPath();
 
-    	foreach($this->activeTabRules as $rule => $tab){
-    		if(preg_match("/" . $rule . "/", $requestPath)){
-    			$this->activeTab = $tab;
-    			break;
-    		}
-    	}
-    }
+		foreach($this->activeTabRules as $rule => $tab){
+			if(preg_match("/" . $rule . "/", $requestPath)){
+				$this->activeTab = $tab;
+				break;
+			}
+		}
+	}
 
-    function execute(){
+	function execute(){
 		$this->addLink("update_link", array(
 			"link" => SOY2PageController::createLink("Administrator.Detail." . UserInfoUtil::getUserId())
 		));
 
-    	$this->addLabel("adminname", array(
+		$this->addLabel("adminname", array(
 			"text" => UserInfoUtil::getUserName(),
 			"width" => 30,
 			"title" => UserInfoUtil::getUserName(),
 		));
 
-    	$this->addModel("biglogo", array(
-    		"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
-    	));
+		$this->addModel("biglogo", array(
+			"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
+		));
 
-    	/* タブの状態を設定 */
-    	$this->createAdd("top", "HTMLTab", array(
-    		"class" => $this->getMenuStatus("top")
-    	));
+		/* タブの状態を設定 */
+		$this->createAdd("top", "HTMLModel", array(
+			"class" => $this->getMenuStatus("top")
+		));
 
-    	$this->createAdd("site", "HTMLTab", array(
-    		"class" => $this->getMenuStatus("site")
-    	));
+		$this->createAdd("site", "HTMLModel", array(
+			"class" => $this->getMenuStatus("site")
+		));
 
-    	$this->createAdd("administrator", "HTMLTab", array(
-    		"class" => $this->getMenuStatus("administrator")
-    	));
+		$this->createAdd("administrator", "HTMLModel", array(
+			"class" => $this->getMenuStatus("administrator")
+		));
 
-    	$this->createAdd("application", "HTMLTab", array(
-    		"class" => $this->getMenuStatus("application")
-    	));
+		$this->createAdd("application", "HTMLModel", array(
+			"class" => $this->getMenuStatus("application")
+		));
 
-    	/* アプリケーションタブの表示 */
-    	$logic = SOY2Logic::createInstance("logic.admin.Application.ApplicationLogic");
-    	$this->addModel("is_application_installed", array(
-    		"visible" => $logic->checkIsInstalledApplication()
-    	));
-    }
-
-    /**
-     * メニューの状態を設定
-     */
-    function getMenuStatus($tabName){
-
-    	if($tabName == $this->activeTab){
-    		return "tab_active";
-    	}else{
-    		return "tab_inactive";
-    	}
-    }
-}
-
-class HTMLTab extends SOY2HTML{
-
-	const SOY_TYPE = SOY2HTML::HTML_BODY;
-
-	function execute(){
-		//do nothing
+		/* タブの表示 */
+		$this->addModel("show_site", array(
+				"visible" => $this->hasLoginableSite(),
+		));
+		$this->addModel("show_app", array(
+				"visible" => $this->hasLoginiableApplication(),
+		));
+		$this->addModel("show_admin", array(
+				"visible" => UserInfoUtil::isDefaultUser(),
+		));
 	}
 
-	function getObject(){
-		return "";
+	/**
+	 * メニューの状態を設定
+	 */
+	private function getMenuStatus($tabName){
+
+		if($tabName == $this->activeTab){
+			return "tab_active";
+		}else{
+			return "tab_inactive";
+		}
 	}
+
+	/**
+	 * 現在のユーザIDからログイン可能なサイトオブジェクトのリストを取得する
+	 */
+	private function hasLoginableSite(){
+		if(UserInfoUtil::isDefaultUser()){
+			return true;
+		}else{
+			$SiteLogic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
+			return count($SiteLogic->getSiteByUserId(UserInfoUtil::getUserId()));
+		}
+	}
+
+	/**
+	 * ログイン可能なアプリケーションを読み込む
+	 */
+	private function hasLoginiableApplication(){
+		if(UserInfoUtil::isDefaultUser()){
+			return true;
+		}else{
+			$appLogic = SOY2Logic::createInstance("logic.admin.Application.ApplicationLogic");
+			return count($appLogic->getLoginableApplications(UserInfoUtil::getUserId()));
+		}
+	}
+
 }
-?>
+

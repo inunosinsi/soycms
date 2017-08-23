@@ -1,0 +1,142 @@
+@charset "utf-8";
+
+/*
+ * 全体
+ */
+#wrapper {
+  min-width: initial;
+}
+
+/*
+ * ヘッダー・サイドメニュー
+ */
+
+/* logo */
+.navbar-brand {
+  float: left;
+  height: 80px;
+  padding: 15px 15px;
+  font-size: 18px;
+  line-height: 20px;
+}
+
+/* スマホのハンバーガーアイコン */
+.navbar-header{
+  float: right;
+  margin-top: 15px;
+}
+
+/* サイドメニュー */
+.sidebar{
+  clear: both;/* スマホで必要 */
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+  z-index: 1;
+  position: absolute;
+  width: 250px;
+  margin-top: 81px;
+  }
+}
+
+/* 右上のメニュー */
+#top_menu{
+  padding-top:0;
+  float: right;
+}
+#top_menu li{
+	padding: 0;
+}
+#top_menu li p, #top_menu li a{
+	padding: 0 15px;
+	margin: 0;
+	height: 80px;/* ロゴに合わせる */
+	line-height: 80px;
+}
+
+/*
+ * メイン
+ */
+
+/* ページタイトル（パン屑リストを兼ねる） */
+.page-header {
+  padding-bottom: 9px;
+  margin-top: 20px;
+  border-bottom: 1px solid #eee;
+}
+h1{
+  font-size:2em;
+}
+
+/* 廃止予定 */
+.notify{
+  font-weight:bold;
+  color:red;
+  background-color:red;
+}
+
+/*
+ * パネル
+ */
+
+/* 枠のないパネル（パネルにしなくていいような気がする） */
+.panel-message {
+  border-style: none;
+}
+
+/* 濃い緑のパネル */
+.panel-soygreen {
+  border-color: #7c953a;
+}
+.panel-soygreen > .panel-heading {
+  border-color: #7c953a;
+  color: white;
+  background-color: #7c953a;
+}
+.panel-soygreen > a {
+  color: #7c953a;
+}
+.panel-soygreen > a:hover {
+  color: #3d8b3d;
+}
+
+/* 薄い赤のパネル（App用） */
+.panel-pink {
+  border-color: #ed798c;
+}
+.panel-pink > .panel-heading {
+  border-color: #ed798c;
+  color: white;
+  background-color: #ed798c;
+}
+.panel-pink > a {
+  color: #ed798c;
+}
+.panel-pink > a:hover {
+  color: #b52b27;
+/*  color: #3d8b3d;*/
+}
+
+/* パネルに収まらない文字列の処理 */
+.panel-body p{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* パネルの高さを揃える */
+.row-eq-height {
+  display:flex;
+  flex-wrap:wrap;
+}
+
+/* ??? */
+.table td a{
+  padding-right:0.8em;
+}
+
+/*ポップアップ*/
+
+#layer_content{
+ padding:2em;
+}

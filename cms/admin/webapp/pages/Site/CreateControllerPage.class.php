@@ -2,7 +2,7 @@
 
 class CreateControllerPage extends CMSWebPageBase{
 
-    function __construct($args) {
+    function CreateControllerPage($args) {
   
       	if(!UserInfoUtil::isDefaultUser() || count($args) < 1){
     		//デフォルトユーザのみ作成可能

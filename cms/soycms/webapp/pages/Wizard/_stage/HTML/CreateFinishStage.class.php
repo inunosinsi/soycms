@@ -6,7 +6,7 @@ class CreateFinishStage extends StageBase{
     }
         
     function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->createAdd("preview_link","HTMLLink",array(
 			"link"=>SOY2PageController::createLink("Page.Preview.".$this->wizardObj->pageId)

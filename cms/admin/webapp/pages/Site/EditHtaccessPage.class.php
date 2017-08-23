@@ -25,7 +25,7 @@ class EditHtaccessPage extends CMSUpdatePageBase {
     	$id = (isset($args[0])) ? $args[0] : null;
     	$this->id = $id;
     	
-		WebPage::__construct();
+		parent::__construct();
 		
     	HTMLHead::addLink("site.edit.css", array(
 			"type" => "text/css",

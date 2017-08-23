@@ -1,4 +1,6 @@
-var $custom_field_input = $();
+window.onload = function(){
+	var $custom_field_input = $();
+};
 
 function open_customfield_filemanager($form){
 		$custom_field_input = $form;
@@ -17,7 +19,7 @@ function preview_customfield($form){
 		}else{
 				url = siteURL + href;
 		}
-		
+
 		var temp = new Image();
 		temp.src = url;
 		temp.onload = function(e){

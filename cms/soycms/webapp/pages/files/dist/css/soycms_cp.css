@@ -1,0 +1,401 @@
+@charset "utf-8";
+
+/*
+ * 全体
+ */
+body{
+  background:#eee;
+}
+
+/* click_to_layerで呼び出されたフレーム内のHTML */
+body.sub{
+  background:white;
+}
+
+#wrapper {
+  min-width: initial;
+}
+
+#layer_content {
+	padding: 10px;
+}
+
+/*
+ * ヘッダー・サイドメニュー
+ */
+
+/* logo */
+.navbar-brand {
+  float: left;
+  height: 80px;
+  padding: 15px 15px;
+  font-size: 18px;
+  line-height: 20px;
+}
+
+/* サイト名・サイトID */
+#top_menu_site{
+  font-size:2em;
+}
+
+/* サイト名～右上のメニュー */
+.navbar-top-links{
+  padding-top:0;
+  float: right;
+}
+.navbar-top-links li{
+	padding: 0;
+}
+.navbar-top-links li p, .navbar-top-links li a{
+	padding: 0 15px;
+	margin: 0;
+	height: 80px;/* ロゴに合わせる */
+	line-height: 80px;
+}
+
+/* スマホのハンバーガーアイコン */
+.navbar-header{
+  float: right;
+  margin-top: 15px;
+}
+
+/* 上部メニュー全体 */
+.navbar-static-top{
+  background:linear-gradient(#ffcc33,#ffdd88);
+}
+.navbar{
+  background:linear-gradient(-90deg,#ffcc33,#ffffff);
+}
+
+/* サイドメニュー */
+.sidebar{
+  clear: both;/* スマホで必要 */
+  /* background:linear-gradient(#ffe494, #ffeeaa); 実質使われていない */
+}
+
+.sidebar i{
+  padding-right:10px;
+}
+.sidebar li{
+  font-size:1.2em;
+}
+.sidebar ul#side-menu li{
+  background:linear-gradient(30deg,#aacc66, #b0d080);
+}
+.sidebar ul#side-menu li:hover{
+  background:linear-gradient(#ffe494, #ffeeaa);
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    z-index: 1;
+    position: absolute;
+    width: 250px;
+    margin-top: 81px;
+  }
+}
+
+@media (max-width: 767px){
+  .sidebar li{
+    font-size:1em;
+  }
+  .sidebar ul#side-menu li{
+    background:transparent;
+  }
+  .sidebar ul#side-menu li:hover{
+    background:transparent;
+  }
+}
+
+/*
+ * メイン
+ */
+
+/* ページタイトル（パン屑リストを兼ねる） */
+.page-header {
+  padding-bottom: 9px;
+  margin-top: 20px;
+  border-bottom: 1px solid #eee;
+}
+h1{
+  font-size:2em;
+}
+
+/* 廃止予定 */
+.notify{
+ font-weight:bold;
+ color:red;
+ background-color:red;
+}
+
+/*
+ * ヘルプのアイコン
+ */
+.help i.fa{
+  vertical-align: top;
+}
+
+/*
+ * ラベル
+ */
+.label-soy{
+	border: 1px #adadad solid;
+	padding: .3em .6em;
+}
+
+.label-soy-lg{
+	font-size: initial;
+}
+
+/* ブロック設定画面用 */
+#labels_wrapper div.label_wrapper label{
+	vertical-align:initial;
+}
+#labels_wrapper div.label_wrapper label img{
+	margin-top: -7px;
+}
+#labels_wrapper div.label_wrapper label span{
+	vertical-align: unset;
+}
+
+/* 記事一覧画面用 */
+#list_panel_wrapper .label_list_item label{
+	vertical-align:initial;
+}
+#list_panel_wrapper .label_list_item label img{
+	margin-top: -7px;
+}
+#list_panel_wrapper .label_list_item label span{
+	vertical-align: unset;
+}
+
+/*
+ * パネル
+ */
+
+/* 枠のないパネル（パネルにしなくていいような気がする）：使わない */
+.panel-message {
+  border-style: none;
+}
+
+/* 濃い緑のパネル */
+.panel-soygreen {
+  border-color: #7c953a;
+}
+.panel-soygreen > .panel-heading {
+  border-color: #7c953a;
+  color: white;
+  background-color: #7c953a;
+}
+.panel-soygreen > a {
+  color: #7c953a;
+}
+.panel-soygreen > a:hover {
+  color: #3d8b3d;
+}
+
+/* 薄い赤のパネル（App用） */
+.panel-pink {
+  border-color: #ed798c;
+}
+.panel-pink > .panel-heading {
+  border-color: #ed798c;
+  color: white;
+  background-color: #ed798c;
+}
+.panel-pink > a {
+  color: #ed798c;
+}
+.panel-pink > a:hover {
+  color: #b52b27;
+/*  color: #3d8b3d;*/
+}
+
+/* パネルに収まらない文字列の処理 */
+.panel-body p{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* パネルの高さを揃える */
+.row-eq-height {
+  display:flex;
+  flex-wrap:wrap;
+}
+
+/* ??? */
+.table td a{
+  padding-right:0.8em;
+}
+
+/* 記事詳細のラベル？ */
+.icon_box{
+ width:160px;
+ float:left;
+}
+.icon_box .icon_v{
+   float:left;
+   width:50%;
+}
+.icon_v{
+ width:96px;
+ text-align:center;
+ padding:0 5px 0 5px;
+ position: relative;
+}
+.icon_v span{
+ font-size:0.9em;
+ float:left;
+ overflow: hidden;
+ max-width: 100%;
+ margin-top: 5px;
+}
+.icon_v .badge{
+ position:absolute;
+ top:0;
+ right:0;
+}
+.icon_box .icon_link{
+ float:right;
+ width:48%;
+}
+
+.label_icon{
+  float:left;
+}
+.label_icon img{
+  width: 64px;
+  height: 64px;
+  cursor: pointer;
+}
+
+.entry_list_functions{
+  width:400px;
+}
+
+.checkbox input[type=checkbox]{
+ margin-left:0;
+}
+
+.checkbox_functions{
+ display:block;
+ float:left
+}
+
+.pager {
+  height:1.2em;
+  width:400px;
+  float:right;
+  margin-top:4px;
+}
+
+.top-pager{
+ display:block;
+ float:left;
+}
+.displays{
+ float:right;
+}
+
+.table th.checkbox{
+ text-align:center;
+ border:none;
+}
+
+
+.panel-toolbox{
+  padding-top:15px;
+  font-size:0.8em;
+}
+
+/*
+ * Page
+ */
+.soycms-page-tree{
+	margin-top: -10px;
+	margin-left: -15px;
+}
+.soycms-page-tree li{
+	margin-left:15px;
+	margin-top:10px;
+	clear:both;
+}
+.soycms-page-tree li.soycms-page-tree-lower-page{
+	margin-left:35px;
+}
+.soycms-page-tree .soycms-page-tree-branch{
+	height:40px;
+	float:left;
+	line-height:40px;
+}
+.soycms-page-tree img.soycms-page-icon{
+	float:left;
+	margin-right:5px;
+	width: 40px;
+	height: 40px;
+}
+.soycms-page-tree img.soycms-page-icon-subicon{
+	margin-left:-20px;
+	width: 16px;
+	height: 16px;
+}
+.soycms-page-tree img.soycms-page-icon-blog{
+	margin-left:-30px;
+}
+.soycms-page-tree .soycms-page-title{
+	font-weight: bold;
+}
+.soycms-page-tree a.disabled{
+	cursor:not-allowed;
+	filter:alpha(opacity=65);
+	-webkit-box-shadow:none;
+	box-shadow:none;
+	opacity:.65;
+	pointer-events:none;
+}
+
+#template_editor_wrapper{
+	width: 100%;
+	height: 100%;
+}
+
+/*
+ * Plugin
+ */
+.plugin_box{
+width:160px;
+height:160px;
+margin-top:10px;
+padding:10px;
+float:left;
+}
+
+.plugin_box p{
+  text-align:center;
+}
+
+.popup{
+ padding:25px;
+ background-color:#fff;
+}
+
+.popup #labels_wrapper div.label_wrapper label{
+ padding:2px;
+}
+
+.popup #labels_wrapper span.label_caption{
+ padding-top:5px;
+}
+
+.popup fieldset{
+ margin-bottom:12px;
+}
+
+.plugin_config fieldset{
+ margin-bottom:15px;
+}
+
+
+.entry_custom div.section{
+  margin-bottom:10px;
+}

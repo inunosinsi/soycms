@@ -1,124 +1,119 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<script soy:id="jqueryjs"></script>
-	<script soy:id="jqueryuijs"></script>
-	<script soy:id="commonjs"></script>
-	<script soy:id="parameters"></script>
 </head>
 <body>
-<?php /* コンテンツ部分 */ ?>
-<div>
-<div id="controlle_panel">
-	<fieldset>
-		<legend>1. 方法を選ぶ</legend>
-		<ul style="list-style: none; padding: 0; margin: 0;">
-			<li><input type="radio" name="select_method" id="select_method_1" onclick="toggle_method_panel(1)" style="border-style:none; background-color:transparent;" checked="checked"><label for="select_method_1">ファイルをアップロードする</label></li>
-			<li><input type="radio" name="select_method" id="select_method_2" onclick="toggle_method_panel(2)" style="border-style:none; background-color:transparent;"><label for="select_method_2">既存のファイルから選ぶ</label></li>
-			<li><input type="radio" name="select_method" id="select_method_3" onclick="toggle_method_panel(3)" style="border-style:none; background-color:transparent;"><label for="select_method_3">URLを直接指定する</label></li>
-		</ul>
-	</fieldset>
-	
-	<fieldset id="method_1">
-		<legend>2. ファイルをアップロードする</legend>
-		
-		<form soy:id="uploadForm" method="post" enctype="multipart/form-data" target="targetIframe" onsubmit="return onPrepare()" id="upload_form" style="margin:0 0 2px;">
-		    <input type="file" name="file" id="file" size="16"/>
-		    <input type="hidden" id="beforepath" name="beforepath"/>
-		    <input type="hidden" name="alter_name" id="alter_name"/>
-		    <input type="submit" class="soycms_custom_button" value="アップロード" onclick="set_upload_mode();"/>
-		</form soy:id="uploadForm">
-	</fieldset>
-	
-	<fieldset id="method_2" style="display:none;">
-		<legend>2. 既存のファイルから選ぶ</legend>
-		<button class="soycms_custom_button" onclick="toggle_Filemanager();return false;" type="button">ファイルマネージャー起動</button>（アップロードも可能です）
-	</fieldset>
-	
-	<fieldset id="method_3" style="display:none;">
-		<legend>2. URLを直接指定する</legend>
-		<input type="text" id="outer_link" soy:id="outer_link"/>
-		<button class="soycms_custom_button" id="outer_link_button" onclick="select_outer_link($('#outer_link').val());return false;">指定</button>
-	</fieldset>
-	
-	
-	<form soy:id="cancelForm" method="post" onsubmit="return cancelUpload()" id="cancelForm" target="targetIframe" style="margin: 0;">
 
-	<fieldset>
-		<legend>3. 決定</legend>
-		<div id="preview_block" style="position:relative;">
-			<input type="hidden" name="serverpath" id="serverpath"/>
-			<img src="" id="image_thumb" style="display:none;float:left;top:0px;margin-right:1ex;border:1px solid #999999;padding: 2px;"/>
-			<a href="#" id="display_link" style="display:none">bbbbb</a>
-		</div>
-		<div class="mceActionPanel">
-			<input type="submit" class="soycms_custom_button" id="insert" onclick="return apply()" value="決定" style="display:none;">
-			<input type="button" class="soycms_custom_button" id="cancel" onclick="tinymce_window_manager.close();" value="キャンセル">
-		</div>
-	</fieldset>
-
-	<div id="onlyImage" style="display:none;">
+	<div id="controlle_panel">
 		<fieldset>
-			<legend>画像オプション</legend>
-			<table id="image_table" style="text-align:left">
-				<tr>
-					<td colspan="2">
-						alt<input type="text" id="image_alt" />
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<input type="checkbox" id="wrap_ancher" /><label for="wrap_ancher">画像にリンクを張る</label><br />
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<input type="checkbox" id="output_image_size" checked="checked" />
-						<label for="output_image_size">widthとheightを指定する</label>
-					</td>
-				</tr>
-				<tr>
-					<td class="input_block">&nbsp;&nbsp;</td>
-					<td class="input_block">
-						幅<input type="text" id="image_width" name="imageWidth" size="5">×高さ<input type="text" id="image_height" name="imageHeight" size="5"><br/>
-						（<input type="checkbox" id="keep_aspect_ratio" checked="checked" /><label for="keep_aspect_ratio">アスペクト比を維持</label>）
-						<input type="submit" class="soycms_custom_button" onclick="return restoreSize()" value="元に戻す"> <br />
-					</td>
-				</tr>
-			</table>
-			<img id="preview_image" src="" alt="" style="border:1px solid #999999;display:block;margin:0 auto;padding:2px;" />
+			<legend>1. 方法を選ぶ</legend>
+			<ul style="list-style: none; padding: 0; margin: 0;">
+				<li><input type="radio" name="select_method" id="select_method_1" onclick="toggle_method_panel(1)" style="border-style:none; background-color:transparent;" checked="checked"><label for="select_method_1">ファイルをアップロードする</label></li>
+				<li><input type="radio" name="select_method" id="select_method_2" onclick="toggle_method_panel(2)" style="border-style:none; background-color:transparent;"><label for="select_method_2">既存のファイルから選ぶ</label></li>
+				<li><input type="radio" name="select_method" id="select_method_3" onclick="toggle_method_panel(3)" style="border-style:none; background-color:transparent;"><label for="select_method_3">URLを直接指定する</label></li>
+			</ul>
 		</fieldset>
+
+		<fieldset id="method_1">
+			<legend>2. ファイルをアップロードする</legend>
+
+			<form soy:id="uploadForm" method="post" enctype="multipart/form-data" target="targetIframe" onsubmit="return onPrepare()" id="upload_form" style="margin:0 0 2px;">
+			    <input type="file" name="file" id="file" size="16"/>
+			    <input type="hidden" id="beforepath" name="beforepath"/>
+			    <input type="hidden" name="alter_name" id="alter_name"/>
+			    <input type="submit" class="soycms_custom_button" value="アップロード" onclick="set_upload_mode();"/>
+			</form soy:id="uploadForm">
+		</fieldset>
+
+		<fieldset id="method_2" style="display:none;">
+			<legend>2. 既存のファイルから選ぶ</legend>
+			<button class="soycms_custom_button" onclick="toggle_Filemanager();return false;" type="button">ファイルマネージャー起動</button>（アップロードも可能です）
+		</fieldset>
+
+		<fieldset id="method_3" style="display:none;">
+			<legend>2. URLを直接指定する</legend>
+			<input type="text" id="outer_link" soy:id="outer_link"/>
+			<button class="soycms_custom_button" id="outer_link_button" onclick="select_outer_link($('#outer_link').val());return false;">指定</button>
+		</fieldset>
+
+
+		<form soy:id="cancelForm" method="post" onsubmit="return cancelUpload()" id="cancelForm" target="targetIframe" style="margin: 0;">
+
+		<fieldset>
+			<legend>3. 決定</legend>
+			<div id="preview_block" style="position:relative;">
+				<input type="hidden" name="serverpath" id="serverpath"/>
+				<img src="" id="image_thumb" style="display:none;float:left;top:0px;margin-right:1ex;border:1px solid #999999;padding: 2px;"/>
+				<a href="#" id="display_link" style="display:none">bbbbb</a>
+			</div>
+			<div class="mceActionPanel">
+				<input type="submit" class="soycms_custom_button" id="insert" onclick="return apply()" value="決定" style="display:none;">
+				<input type="button" class="soycms_custom_button" id="cancel" onclick="tinymce_window_manager.close();" value="キャンセル">
+			</div>
+		</fieldset>
+
+		<div id="onlyImage" style="display:none;">
+			<fieldset>
+				<legend>画像オプション</legend>
+				<table id="image_table" style="text-align:left">
+					<tr>
+						<td colspan="2">
+							alt属性 <input type="text" id="image_alt" size="80" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<input type="checkbox" id="wrap_ancher" /><label for="wrap_ancher">画像に画像へのリンクを張る</label><br />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<input type="checkbox" id="output_image_size"/>
+							<label for="output_image_size">幅（width）と高さ（height）を指定する</label>
+							幅<input type="text" id="image_width" name="imageWidth" size="5">×高さ<input type="text" id="image_height" name="imageHeight" size="5">
+							（<input type="checkbox" id="keep_aspect_ratio" checked="checked" /><label for="keep_aspect_ratio">アスペクト比を維持</label>）
+							<input type="submit" class="soycms_custom_button" onclick="return restoreSize()" value="元に戻す"> <br />
+						</td>
+					</tr>
+				</table>
+				<img id="preview_image" src="" alt="" style="border:1px solid #999999;display:block;margin:0 auto;padding:2px;" />
+			</fieldset>
+		</div>
+
+		</form soy:id="cancelForm">
 	</div>
 
-	</form soy:id="cancelForm">
-</div>
-<div id="filemanager" style="display:none" soy:id="file_manager_iframe">
-	<button id="close_filemanager_button" onclick="toggle_Filemanager();return false;" style="display:none;">ファイルマネージャ終了</button>
-	<iframe id="file_manager_iframe" style="width:780px;height:560px;border:none;"></iframe>
-</div>
+	<div id="filemanager" style="display:none" soy:id="file_manager_iframe">
+		<button id="close_filemanager_button" onclick="toggle_Filemanager();return false;" style="display:none;">ファイルマネージャ終了</button>
+		挿入したい画像をダブルクリックしてください
+		<iframe id="file_manager_iframe" style="width:780px;height:560px;border:none;"></iframe>
+	</div>
+
+<script soy:id="jqueryjs"></script>
+<script soy:id="parameters"></script>
 
 <script type="text/javascript">
 	var defaultWidth,defaultHeight;
 	var originalWidth,originalHeight;
-	
+
 	var mode = "upload";
 	var tinymce = top.tinymce || parent.tinymce;
 	var tinymce_window_manager = tinymce.activeEditor.windowManager;
 
 	defaultWidth = tinymce_window_manager.getParams().width;
 	defaultHeight= tinymce_window_manager.getParams().height;
-		
+
 	$("#image_width").attr("onkeypress", validateNumber());
 	$("#image_height").attr("onkeypress", validateNumber());
-		
+
 	$("#image_width").bind('keyup',function(){
 		onChangeSize("width");
 	});
-		
+
 	$("#image_height").bind("keyup",function(){
 		onChangeSize("height");
 	});
-		
+
 	$("#file").bind("change",function(){
 		onChangeUploadFileName()
 	});
@@ -133,10 +128,10 @@
 		if(((keyCode<48)||(keyCode>57)) && keyCode != 8 && keyCode != 0){
 			return false;
 		}
-		
-		
+
+
 	}
-	
+
 	function onChangeUploadFileName(){
 		var alter_name_value = $("#alter_name").val();
 		if(alter_name_value.length != 0){
@@ -146,53 +141,52 @@
 			var file = fname.substring(fname.lastIndexOf('\\',fname.length)+1,fname.length);
 			var url = remotoURI +'/'+ file;
 		}
-		
+
 		$("#alter_name").val("");
 	}
-	
+
 	function onChangeSize(type){
-		
-		if(type && $("#keep_aspect_ratio:checked").val() == "on"){
-			if(type == "width"){
-				$("#image_height").val(Math.floor(originalHeight * ($("#image_width").val() / originalWidth)));
-			}else{
-				$("#image_width").val(Math.floor(originalWidth * ($("#image_height").val() / originalHeight)));
-			}
-		}
-		
+
 		var w = $("#image_width").val();
 		var h = $("#image_height").val();
-		
+
+		w = w.replace(/[^0-9]/,"");
+		h = h.replace(/[^0-9]/,"");
+		$("#image_height").val(h);
+		$("#image_width").val(w);
+
+		if(type && $("#keep_aspect_ratio:checked").val() == "on"){
+			if(type == "width"){
+				h = Math.floor(originalHeight * (w / originalWidth));
+				$("#image_height").val(h);
+			}else{
+				w = Math.floor(originalWidth * (h / originalHeight));
+				$("#image_width").val(w);
+			}
+		}
+
 		$("#preview_image").width(w);
 		$("#preview_image").height(h);
 
-		resizeWindow(w,h);
+		resizeWindow(Math.max(w,700) + 60, Math.max(h,400) + 300);
 	}
-	
+
 	function _resizeWindow(w,h){
 		tinymce_window_manager.getParams().resize(w, h);
 	}
-	
+
 	function resizeWindow(w,h){
 		//クライアントサイズ→ウィンドウサイズ
-		
-		w = parseInt(w,10)+ 30;
-		h = parseInt(h,10)+ 85;
-		
-		if(w < defaultWidth){
-			w = defaultWidth;
-		}
-		
-		if(w > 700 ){
-			w = 700;
-		}
-		
-		if(h < defaultHeight){
-			h = defaultHeight;
-		}
-		_resizeWindow(w,h);
+
+		var maxWidth  = Math.min(1200, window.parent.screen.width -160);
+		var maxHeight = window.parent.screen.height -160;
+
+		_resizeWindow(
+			Math.min(Math.max(w, defaultWidth), maxWidth),
+			Math.min(Math.max(h, defaultHeight),maxHeight)
+		);
 	}
-	
+
 	function prepare(resObj){
 		if(!resObj.result){
 			switch(resObj.errorCode){
@@ -217,11 +211,11 @@
 					return select_outer_link($("#image_link").attr("href"));
 				}
 				break;
-				
+
 				case 2://fatial error
 					alert('致命的なエラーが発生しました');
 				break;
-				
+
 				default:
 					alert(resObj.message);
 			}
@@ -230,18 +224,18 @@
 		}else{
 			$("#insert").show();
 		}
-		
+
 		$("#serverpath").val(resObj.serverpath);
 
 		display(resObj.filepath);
 	}
-	
+
 	function cancel(resObj){
 		if(!resObj.result){
 			alert(resObj.message);
 			return;
 		}
-		
+
 		$("#serverpath").val("");
 		$("#preview_image").src("");
 		$("#onlyImage").hide();
@@ -250,50 +244,38 @@
 		$("#display_link").css("display","none");
 		resizeWindow(defaultWidth,defaultHeight);
 	}
-	
+
 	function apply(){
 
 		//ed = tinyMCEPopup.editor, dom = ed.dom;
 
-		var $img_src = $("#preview_image").attr("src");
-		if($img_src.indexOf(location.host) >= 0){
-			if($img_src.indexOf("https://") >= 0) $img_src = $img_src.replace("https://", "");
-			if($img_src.indexOf("http://") >= 0) $img_src = $img_src.replace("http://", "");
-			
-			//hostを除く
-			if($img_src.indexOf(location.host) >= 0) $img_src = $img_src.replace(location.host, "");
-			
-			//www.が残っていればwww.も削除
-			if($img_src.indexOf("www.") >= 0) $img_src = $img_src.replace("www.", "");
-		}
-		
 		if($("#output_image_size:checked").val() == "on"){
-			var html = '<img src="'+$img_src+'" width="'+$("#image_width").val()+'" height="'+$('#image_height').val()+'" alt="'+$('#image_alt').val()+'" />';
+			var html = '<img src="'+$("#preview_image").attr("src")+'" width="'+$("#image_width").val()+'" height="'+$('#image_height').val()+'" alt="'+$('#image_alt').val()+'" />';
 		}else{
-			var html = '<img src="'+$img_src+'" alt="'+$('#image_alt').val()+'" />';
+			var html = '<img src="'+$("#preview_image").attr("src")+'" alt="'+$('#image_alt').val()+'" />';
 		}
-		
+
 		if($("#wrap_ancher:checked").val() == "on"){
-			html = '<a href="'+$img_src+'" target="_blank">' + html + '</a>';
+			html = '<a href="'+$("#preview_image").attr("src")+'" target="_blank">' + html + '</a>';
 		}
 
 		tinymce.execCommand('mceInsertRawHTML', false,	html);
-		
+
 		//おまじない
 		iframe = null;
-		
+
 		tinymce_window_manager.close();
-		
+
 		return false;
 	}
-	
+
 	function iframeOnLoad(response){
-		
+
 		if(!response){
 			$("#insert").hide();
 			return;
 		}
-		
+
 		var resObj = eval('('+response+')');
 		switch(resObj.mode){
 			case "prepare":
@@ -306,11 +288,11 @@
 				break;
 		}
 	}
-	
-	
-	
+
+
+
 	function cancelUpload(){
-		
+
 		if(mode == "upload"){
 			return confirm("ファイルの挿入をキャンセルしてもよろしいでしょうか");
 		}else{
@@ -325,7 +307,7 @@
 			return false;
 		}
 	}
-	
+
 	function onPrepare(){
 		if($("#serverpath").val() == ""){
 			return true;
@@ -334,26 +316,26 @@
 		//前のファイルを削除するためにパスを用意
 		$("#beforepath").val($("#serverpath").val());
 		return true;
-		
+
 	}
-	
+
 	function restoreSize(){
 		$("#preview_image").width(originalWidth);
 		$("#preview_image").height(originalHeight);
-		
+
 		$("#image_width").val(originalWidth);
 		$("#image_height").val(originalHeight);
-		
+
 		onChangeSize();
-		
+
 		return false;
-	
+
 	}
 
 	function set_upload_mode(){
 		mode = "upload";
 	}
-	
+
 	function toggle_Filemanager(){
 		if(mode !== "filemanager"){
 			$("#controlle_panel").hide();
@@ -364,28 +346,29 @@
 				},500);
 			}
 			_resizeWindow(800,640);
-			$("#filemanager").show();			
+			$("#filemanager").show();
 			mode = "filemanager";
 		}else{
 			$("#controlle_panel").show();
 			$("#filemanager").hide();
 			mode = "filemanager_closed";
+			if($("#image_thumb").attr("src").length){
+				onChangeSize();
+			}else{
+				tinymce_window_manager.getParams().reset();
+			}
 		}
 	}
-	
+
 	function filemanager_ondblclick(url){
 		toggle_Filemanager();
-
-		mode = "filemanager";
 		$("#serverpath").val(url);
-
 		display(url);
 	}
-	
+
 	function select_outer_link(url){
 		mode = "outer_link";
 		$("#serverpath").val(url);
-		
 		display(url);
 	}
 
@@ -410,9 +393,10 @@
 			$("#image_thumb").hide();
 		}
 		image.src = url;
-		
+
 		display_url(image.src);
 
+		onChangeSize();
 	}
 
 	function display_url(url){
@@ -420,35 +404,35 @@
 		$("#display_link").attr("href",url);
 		$("#display_link").show();
 	}
-	
+
 	function display_preview(image){
 		if(is_image(image.src)){
-	
+
 			$("#preview_image").attr("src",image.src);
 			$("#preview_image").width(image.width);
 			$("#preview_image").height(image.height);
-			
+
 			$("#image_width").val(image.width);
 			$("#image_height").val(image.height);
-			
+
 			originalWidth  = image.width;
 			originalHeight = image.height;
 
 			$("#onlyImage").show();
-			
+
 		}else{
 			$("#onlyImage").hide();
 		}
 	}
-	
+
 	function display_thumbnail(image){
 		if(is_image(image.src)){
 			$("#image_thumb").attr("src",image.src);
-			
+
 			var max_length = Math.max(image.width, image.height);
 			var thumb_width  = image.width  / max_length * 64 ;
 			var thumb_height = image.height / max_length * 64 ;
-			
+
 			if(image.width > thumb_width || image.height > thumb_height){
 				$("#image_thumb").width(thumb_width);
 				$("#image_thumb").height(thumb_height);
@@ -456,17 +440,17 @@
 				$("#image_thumb").width(image.width);
 				$("#image_thumb").height(image.height);
 			}
-			
+
 			$("#image_thumb").show();
 		}else{
 			$("#image_thumb").hide();
 		}
 	}
-	
+
 	function is_image(url){
 		return url.match(/\.(jpe?g|gif|png|bmp|ico)(\?.*)?(#.*)?$/i);
 	}
-				
+
 	function toggle_method_panel(method_num){
 		for(var i=1;i<=3;i++){
 			if(i == method_num){
@@ -476,21 +460,18 @@
 			}
 		}
 	}
-	
+
 	function targetIframeOnload(){
 		var iframe=$("#targetIframe");
 		var response = iframe.contents().find("body").html();
 		if(response){
 			iframe.contents().find("body").html("");
 			iframeOnLoad(response);
-		}			
+		}
 	}
 
-	common_init_custom_button();
-		
 </script>
 
 <iframe style="display:none;width:0px;height:0px;" name="targetIframe" id="targetIframe" onload="targetIframeOnload();"></iframe>
-<?php /* コンテンツ部分終わり */ ?>
 </body>
 </html>

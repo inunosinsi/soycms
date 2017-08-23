@@ -20,9 +20,9 @@ class RecordDeadLinkPlugin{
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"リンク切れページURL記録プラグイン",
 			"description"=>"リンク切れページを開いた時の参照元を記録するプラグイン",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com",
-			"mail"=>"info@n-i-agroinformatics.com",
+			"author"=>"株式会社Brassica",
+			"url"=>"http://brassica.jp/",
+			"mail"=>"info@brassica.jp",
 			"version"=>"0.1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(

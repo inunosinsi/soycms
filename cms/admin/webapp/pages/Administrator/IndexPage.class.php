@@ -8,7 +8,7 @@ class IndexPage extends CMSWebPageBase{
     		$this->jump("Administrator.Detail");
     	}
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->outputMessage();
 
@@ -36,9 +36,12 @@ class IndexPage extends CMSWebPageBase{
 			"link"=>SOY2PageController::createLink("Administrator.Create"),
 			"visible"=>UserInfoUtil::isDefaultUser()
 		));
+
+		//自分のパスワード変更
 		$this->addLink("changepassword", array(
 			"link" => SOY2PageController::createLink("Administrator.ChangePassword")
 		));
+
 		$this->addLink("reminderconfig", array(
 			"link" => SOY2PageController::createLink("Administrator.Mail"),
 			"visible" => UserInfoUtil::isDefaultUser(),
@@ -139,9 +142,17 @@ class AdministratorList extends HTMLList{
 			"text"=>(UserInfoUtil::isDefaultUser() || $entity->getId() == UserInfoUtil::getUserId()) ? CMSMessageManager::get("ADMIN_DETAIL_EDIT") : CMSMessageManager::get("ADMIN_DISPLAY_DETAILS")
 		));
 
+		//パスワード変更（初期管理者限定）
+		//遷移先では現在のパスワードがなくても変更できてしまうので、自身のパスワード変更は行えないようにしておく
 		$this->addLink("update_password_link", array(
-			"link" => SOY2PageController::createLink("Administrator.Password.".$entity->getId()),
-			"visible"=> UserInfoUtil::isDefaultUser() && $entity->getId() != UserInfoUtil::getUserId(),
+				"link" => SOY2PageController::createLink("Administrator.Password.".$entity->getId()),
+				"visible"=> UserInfoUtil::isDefaultUser() && $entity->getId() != UserInfoUtil::getUserId(),
+		));
+
+		//自身のパスワード変更
+		$this->addLink("update_password_link_for_current_user", array(
+				"link" => SOY2PageController::createLink("Administrator.ChangePassword"),
+				"visible"=> $entity->getId() == UserInfoUtil::getUserId(),
 		));
 
 		$this->addLink("remove_link", array(

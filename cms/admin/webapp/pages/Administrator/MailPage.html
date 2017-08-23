@@ -1,35 +1,74 @@
-<html>
-	<head soy:page="_common.HeaderPage" isOverWrite="true"></head>
-	<body>
-		<div id="wrapper">
-			<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
-			<div id="content">
-				<h2>パスワードリマインダーの設定</h2>
+<!DOCTYPE html>
+<html lang="ja">
 
-				<div class="functions">
-					<p><a soy:link="Administrator">管理者一覧に戻る</a></p>
-				</div>
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
 
-				<p class="notify" soy:display="failed">更新に失敗しました。</p>
-				<p class="notify" soy:display="failed_to_send">送信に失敗しました。サーバの設定を確認して下さい。</p>
-				<p class="message" soy:display="sended">メールを送信しました。</p>
-				<p class="message" soy:display="updated">更新しました。</p>
+<body>
 
-				<h3>状態</h3>
-				<p class="notify" soy:display="no_mail_config">メールの設定が完了していません。</p>
-				<p class="notify" soy:display="no_mail_address">管理者のメールアドレスが設定されていません。</p>
-				<p class="message" soy:display="valid">パスワードリマインダーが有効になっています。</p>
-				
-				<h3>SMTP設定</h3>
-					
-				<form soy:id="form">
-					<input type="hidden" soy:id="is_ssl_enabled" id="is_ssl_enabled" value="0" />
-					<input type="hidden" soy:id="is_imap_enabled" id="is_imap_enabled" value="0" />
-
-					<table class="globalpage_input">
+    <div id="wrapper">
+		<!-- Navigation -->
+        <nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="UpperMenuPage"><!-- --></nav>
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">パスワードリマインダーの設定</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default panel-message">
+                  		<div class="panel-heading" soy:display="failed">更新に失敗しました。</div>
+						<div class="panel-heading" soy:display="failed_to_send">送信に失敗しました。サーバの設定を確認して下さい。</div>
+						<div class="panel-heading" soy:display="sended">メールを送信しました。</div>
+						<div class="panel-heading" soy:display="updated">更新しました。</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default panel-message">
+                  		<div class="panel-heading notify" soy:display="no_mail_config">メールの設定が完了していません。</div>
+						<div class="panel-heading notify" soy:display="no_mail_address">管理者のメールアドレスが設定されていません。</div>
+						<div class="panel-heading"  soy:display="valid">パスワードリマインダーが有効になっています。</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <ul class="nav nav-pills">
+                                <li><a soy:link="Administrator">管理者一覧に戻る</a></li>
+                           </ul>
+                        </div>
+                     </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            
+        <form soy:id="form">
+		<input type="hidden" soy:id="is_ssl_enabled" id="is_ssl_enabled" value="0" />
+		<input type="hidden" soy:id="is_imap_enabled" id="is_imap_enabled" value="0" />
+            
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                          	 設定
+                        </div>
+                        <div class="panel-body">
+                        <div class="alert alert-info">
+                                SMTP設定
+                            </div>
+                        	<div class="table-responsive">
+                        							<table class="table table-striped">
 
 						<tr class="no_example">
-							<th nowrap>送信方法</th>
+							<th>送信方法</th>
 							<td>
 								<input soy:id="send_server_type_sendmail" type="radio" name="server_type" />
 								<label for="send_server_type_sendmail">sendmail (PHPのmail関数)</label>
@@ -42,13 +81,13 @@
 							<th rowspan="3">SMTP</th>
 							<td>
 								<label for="send_server_address">サーバ</label>
-								<input soy:id="send_server_address" type="text" name="" value="" size="50" />
+								<input soy:id="send_server_address" type="text" name="" value="" size="80" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label for="send_server_port">ポート</label>
-								<input soy:id="send_server_port" type="text" name="" value="" size="50" />
+								<input soy:id="send_server_port" type="text" name="" value="" size="80" />
 							</td>
 						</tr>
 						<tr class="no_example">
@@ -71,13 +110,13 @@
 						<tr class="no_example">
 							<td>
 								<label>ユーザ名</label>
-								<input soy:id="send_server_user" type="text" value="" size="50" />
+								<input soy:id="send_server_user" type="text" value="" size="80" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label>パスワード</label>
-								<input soy:id="send_server_password" type="password" name="" value="" size="50" />
+								<input soy:id="send_server_password" type="password" name="" value="" size="80" />
 							</td>
 						</tr>
 						<tr class="no_example">
@@ -88,10 +127,12 @@
 							</td>
 						</tr>
 					</table>
-
-					<h3>POP/IMAP設定（POP/IMAP before SMTPの場合のみ）</h3>
-
-					<table class="globalpage_input">
+							</div>
+                            <div class="alert alert-info">
+                                POP/IMAP設定（POP/IMAP before SMTPの場合のみ）
+                            </div>
+                        	<div class="table-responsive">
+                        							<table class="table table-striped">
 						<tr class="no_example">
 							<th>受信方法</th>
 							<td>
@@ -104,28 +145,28 @@
 						</tr>
 						
 						<tr class="no_example">
-							<th rowspan="5" nowrap>サーバ設定</th>
+							<th rowspan="5">サーバ設定</th>
 							<td>
 								<label>サーバ</label>
-								<input soy:id="receive_server_address" type="text" name="" value="" size="50" />
+								<input soy:id="receive_server_address" type="text" name="" value="" size="80" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label>ポート</label>
-								<input soy:id="receive_server_port" type="text" name="" value="" size="50" />
+								<input soy:id="receive_server_port" type="text" name="" value="" size="80" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label>ユーザ名</label>
-								<input soy:id="receive_server_user" type="text" value="" size="50" />
+								<input soy:id="receive_server_user" type="text" value="" size="80" />
 							</td>
 						</tr>
 						<tr class="no_example">
 							<td>
 								<label>パスワード</label>
-								<input soy:id="receive_server_password" type="password" name="" value="" size="50" />
+								<input soy:id="receive_server_password" type="password" name="" value="" size="80" />
 							</td>
 						</tr>
 
@@ -138,35 +179,37 @@
 							</td>
 						</tr>
 					</table>
-
-					<h3>管理者メールアドレス（送信元アドレス）設定</h3>
-
-					<table class="globalpage_input">
+							</div>
+                        	<div class="alert alert-info">
+                   			            管理者メールアドレス（送信元アドレス）設定
+                            </div>
+                        	<div class="table-responsive">
+                        							<table class="table table-striped">
 						<tr class="no_example">
-							<th>送信元アドレス<br>（From）</th>
+							<th>送信元アドレス（From）</th>
 							<td>
-								<input id="administrator_address" soy:id="from_address" type="text" value="" size="50" />
+								<input id="administrator_address" soy:id="from_address" type="text" value="" size="80" />
 							</td>
 						</tr>
 						
 						<tr class="no_example">
 							<th>送信元名称</th>
 							<td>
-								<input soy:id="from_name" type="text" value="" size="50" />
+								<input soy:id="from_name" type="text" value="" size="80" />
 							</td>
 						</tr>
 						
 						<tr class="no_example">
-							<th nowrap>返信先メールアドレス<br>（Reply-To）</th>
+							<th>返信先メールアドレス（Reply-To）</th>
 							<td>
-								<input soy:id="return_address" type="text" value="" size="50" />
+								<input soy:id="return_address" type="text" value="" size="80" />
 							</td>
 						</tr>
 						
 						<tr class="no_example">
 							<th>返信先名称</th>
 							<td>
-								<input soy:id="return_name" type="text" value="" size="50" />
+								<input soy:id="return_name" type="text" value="" size="80" />
 							</td>
 						</tr>
 
@@ -181,25 +224,31 @@
 							</td>
 						</tr>
 						
-						<tr>
-							<td>&nbsp;</td>
-							<td class="button">
-								<input id="update_button" type="submit" value="更新" />
-							</td>
-						</tr>
 					</table>
 
-				</form soy:id="form">
-
-
-				<h3>送信テスト</h3>
-
-				<form soy:id="test_form">
-					<table class="globalpage_input">
+							</div>
+							<input id="update_button" class="btn btn-primary btn-lg btn-block" type="submit" value="更新" />
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+               </form soy:id="form">
+                
+            </div>
+			 <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                          	テスト送信
+                        </div>
+                        <div class="panel-body">
+                        	<div class="table-responsive">
+                        							<form soy:id="test_form">
+					<table class="table table-striped">
 						<tr class="no_example">
-							<th nowrap>テストメールの送信先</th>
+							<th>テストメールの送信先</th>
 							<td>
-								<input type="email" value="" id="test_mail_address" soy:id="test_mail_address" size="40" />
+								<input type="text" value="" id="test_mail_address" soy:id="test_mail_address" size="80" />
 							</td>
 						</tr>
 						<tr>
@@ -210,12 +259,20 @@
 						</tr>
 					</table>
 				</form soy:id="test_form">
+							</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            
+        </div>
+        <!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+    </div>
+    <!-- /#wrapper -->
 
-			</div>
-			<div soy:page="_common.FooterPage"></div>
-		</div>
-	</body>
-
+</body>
 <script type="text/javascript">
 function changeSendPort(){
 	var port = 25;

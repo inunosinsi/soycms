@@ -34,7 +34,7 @@ class MailPage extends WebPage{
 
 	}
 
-	function __construct() {
+	function __construct(){
 		//初期管理者のみ
 		if(!UserInfoUtil::isDefaultUser()){
 			SOY2PageController::jump("");
@@ -42,7 +42,7 @@ class MailPage extends WebPage{
 
 		$this->logic = SOY2LogicContainer::get("logic.mail.MailConfigLogic");
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->buildForm();
 		$this->buildTestSendForm();

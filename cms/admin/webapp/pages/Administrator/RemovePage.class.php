@@ -42,7 +42,7 @@ class RemovePage extends CMSUpdatePageBase{
 			$this->jump("Administrator");
 		}
 
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$this->outputMessage();
 

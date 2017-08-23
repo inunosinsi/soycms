@@ -8,7 +8,7 @@ class WYSIWYGBasePage extends CMSWebPageBase{
     	
     	@$this->id = $args[0];
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$cssLists = $this->getCSSList();
     	

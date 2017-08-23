@@ -51,6 +51,4 @@ class CMSAdminPageController extends SOY2PageController{
 		return false;
 
 	}
-
 }
-?>

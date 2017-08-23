@@ -1,10 +1,6 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<script soy:id="jqueryjs"></script>
-	<script soy:id="jqueryuijs"></script>
-	<script soy:id="commonjs"></script>
-	<script soy:id="otherdata"></script>
 	<style type="text/css">
 		h4{
 			margin-bottom: 3px;
@@ -20,9 +16,8 @@
 		}
 	</style>
 </head>
+
 <body>
-<?php /* コンテンツ部分 */ ?>
-<div>
 	<h4>ブログページのリンク設定</h4>
 	<h5>選択されているページ</h5>
 	<div class="sub">
@@ -57,19 +52,18 @@
 		<input type="text" value="" soy:id="month_today" id="month_input" class="sub">
 	</div>
 	<!-- /soy:display="show_archive" -->
-	
+
 	<div>
-		<input type="button" class="soycms_custom_button" value="リンク追加" onclick="return checkURL();">
+		<input type="button" class="soycms_custom_button" value="リンク挿入" onclick="return checkURL();">
 		<input type="button" class="soycms_custom_button" value="戻る"       onclick="location.href=back_link;">
 	</div>
-</div>
-<?php /* コンテンツ部分終わり */ ?>
 
-
+<script soy:id="jqueryjs"></script>
+<script soy:id="otherdata"></script>
 <script type="text/javascript">
 
-  var tinymce = top.tinymce || parent.tinymce;
-  var tinymce_window_manager = tinymce.activeEditor.windowManager;
+	var tinymce = top.tinymce || parent.tinymce;
+	var tinymce_window_manager = tinymce.activeEditor.windowManager;
 
 	$(function(){
 		if($("#link_style").val() != "null"){
@@ -89,17 +83,17 @@
 
 	function checkURL(){
 		var href = 'href="'+page[1]+'"';
-		
+
 		var ed = tinymce.activeEditor, dom = ed.dom;
-		
+
 		var innerHTML = ed.selection.getContent().replace(/<\/?body>/ig,'');
-		
+
 		var cmslink = 'cms:link="'+page[0]+'"';
 		var extAttrib = "";
 		if(siteId.length != 0){
 			extAttrib = ' site="'+siteId+'" ';
 		}
-		
+
 		switch($("#link_style").val()){
 			case "null":
 				alert("リンクの種類を選択してください");
@@ -123,11 +117,11 @@
 			default:
 				return false;
 		}
-		
+
 		if(innerHTML == ""){
 			innerHTML = tmpHTML;
 		}
-		
+
 		tinymce.execCommand('mceInsertRawHTML', false,
 			'<a '
 			+href
@@ -136,16 +130,11 @@
 			+'">'
 			+innerHTML+'</a>'
 		);
-		
+
 		tinymce_window_manager.close();
 		return false;
-	
-		
 	}
-
-	
-	common_init_custom_button();
-	
 </script>
+
 </body>
 </html>

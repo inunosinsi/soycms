@@ -15,13 +15,13 @@ class ButtonSocialPlugin{
 	private $admins;
 	private $description;
 	private $image;
-	
+
 	//fb_rootの表示設定
 	//Array<ページID => 0 | 1> fb_rootを表示するは1
 	public $config_per_page = array();
 	//Array<ページID => Array<ページタイプ => 0 | 1>> fb_rootを表示するは1
 	public $config_per_blog = array();
-	
+
 	private $entryAttributeDao;
 
 	function init(){
@@ -48,7 +48,7 @@ class ButtonSocialPlugin{
 			//公開画面側
 			if(defined("_SITE_ROOT_")){
 				CMSPlugin::setEvent('onEntryOutput',$this->getId(),array($this,"display"));
-	
+
 				//公開側のページを表示させたときに、メタデータを表示する
 				CMSPlugin::setEvent('onPageOutput',$this->getId(),array($this,"onPageOutput"));
 				CMSPlugin::setEvent('onOutput',$this->getId(),array($this,"onOutput"));
@@ -57,7 +57,7 @@ class ButtonSocialPlugin{
 				CMSPlugin::setEvent('onEntryCreate', $this->getId(), array($this, "onEntryUpdate"));
 				CMSPlugin::setEvent('onEntryCopy', $this->getId(), array($this, "onEntryCopy"));
 				CMSPlugin::setEvent('onEntryRemove', $this->getId(), array($this, "onEntryRemove"));
-	
+
 				CMSPlugin::addCustomFieldFunction($this->getId(), "Entry.Detail", array($this, "onCallCustomField"));
 				CMSPlugin::addCustomFieldFunction($this->getId(), "Blog.Entry", array($this, "onCallCustomField_inBlog"));
 			}
@@ -125,12 +125,12 @@ class ButtonSocialPlugin{
 			"soy2prefix" => "cms",
 			"html" => $logic->getMixiLikeButtonMobile($url, $title, $this->mixi_like_key)
 		));
-		
+
 		$htmlObj->addLabel("google_plus_button", array(
 			"soy2prefix" => "cms",
 			"html" => $logic->getGooglePlusButton()
 		));
-		
+
 		$htmlObj->addLabel("pocket_button", array(
 			"soy2prefix" => "cms",
 			"html" => $logic->getPocketButton()
@@ -139,7 +139,7 @@ class ButtonSocialPlugin{
 
 	function onPageOutput($obj){
 		$entryId = (get_class($obj) == "CMSBlogPage" && isset($obj->entry) && !is_null($obj->entry->getId())) ? (int)$obj->entry->getId() : null;
-		
+
 		$logic = $this->logic;
 
 		$obj->addLabel("og_meta", array(
@@ -171,12 +171,12 @@ class ButtonSocialPlugin{
 			"soy2prefix" => "sns",
 			"html" => $logic->getHatenaButton()
 		));
-		
+
 		$obj->addLabel("google_plus_button", array(
 			"soy2prefix" => "sns",
 			"html" => $logic->getGooglePlusButton()
 		));
-		
+
 		$obj->addLabel("pocket_button", array(
 			"soy2prefix" => "sns",
 			"html" => $logic->getPocketButton()
@@ -206,34 +206,34 @@ class ButtonSocialPlugin{
 			"html" => $logic->getHatenaButton()
 		));
 	}
-	
+
 	function onOutput($arg){
 		$html = &$arg["html"];
-		
+
 		//ダイナミック編集では挿入しない
 		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
 			return $html;
 		}
-		
+
 		//app_idが入力されていない場合は表示しない
 		if(is_null($this->app_id) || strlen($this->app_id) === 0){
 			return $html;
 		}
-		
+
 		//ページの時のチェック
 		if(isset($this->config_per_page[$arg["page"]->getId()]) && $this->config_per_page[$arg["page"]->getId()] != 1){
 			return $html;
 		}
-		
+
 		//ブログページの時のチェック
 		if($arg["page"]->getPageType() == Page::PAGE_TYPE_BLOG){
 			if(isset($this->config_per_blog[$arg["page"]->getId()][$arg["webPage"]->mode]) && $this->config_per_blog[$arg["page"]->getId()][$arg["webPage"]->mode] != 1){
 				return $html;
 			}
 		}
-		
+
 		$logic = $this->logic;
-			
+
 		if(stripos($html,'<body>') !== false){
 			$html = str_ireplace('<body>', '<body>' . "\n" . $logic->getFbRoot($this->app_id), $html);
 		}elseif(preg_match('/<body\\s[^>]+>/',$html)){
@@ -241,38 +241,38 @@ class ButtonSocialPlugin{
 		}else{
 			//何もしない
 		}
-		
+
 		return $html;
 	}
-	
+
 	function onEntryUpdate($arg){
-		
+
 		if(isset($_POST[self::PLUGIN_KEY]) && strlen($_POST[self::PLUGIN_KEY]) > 0){
 			$entry = $arg["entry"];
-			
+
 			try{
 				$this->entryAttributeDao->delete($entry->getId(), self::PLUGIN_KEY);
 			}catch(Exception $e){
-				
+
 			}
-			
+
 			$obj = new EntryAttribute();
 			$obj->setEntryId($entry->getId());
 			$obj->setFieldId(self::PLUGIN_KEY);
 			$obj->setValue($_POST[self::PLUGIN_KEY]);
-			
+
 			try{
 				$this->entryAttributeDao->insert($obj);
 			}catch(Exception $e){
-				
+
 			}
 		}
 	}
-	
+
 	function onEntryCopy($args){
 		list($old, $new) = $args;
 		$custom = $this->getOgImageObject($old);
-		
+
 		try{
 			$obj = new EntryAttribute();
 			$obj->setEntryId($new);
@@ -281,12 +281,12 @@ class ButtonSocialPlugin{
 			$obj->setExtraValuesArray($custom->getExtraValues());
 			$this->entryAttributeDao->insert($obj);
 		}catch(Exception $e){
-				
+
 		}
 
 		return true;
 	}
-	
+
 	function onEntryRemove($args){
 		foreach($args as $entryId){
 			try{
@@ -298,22 +298,22 @@ class ButtonSocialPlugin{
 
 		return true;
 	}
-	
+
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
 		return $this->buildForm($entryId);
 	}
-	
+
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
 		return $this->buildForm($entryId);
 	}
-	
+
 	function buildForm($entryId){
 		$obj = $this->getOgImageObject($entryId);
-				
+
 		$html = array();
 		$html[] = "<div class=\"section custom_field\">";
 		$html[] = "<p class=\"sub\">";
@@ -324,7 +324,9 @@ class ButtonSocialPlugin{
 		$html[] = "<button type=\"button\" onclick=\"open_ogimage_filemanager($('#ogimage_field'));\" style=\"margin-right:10px;\">ファイルを指定する</button>";
 		$html[] = "</div>";
 		$html[] = "<script type=\"text/javascript\">";
-		$html[] = "var \$custom_field_input = \$();";
+		$html[] = "window.onload = function(){";
+		$html[] = "	var \$custom_field_input = \$();";
+		$html[] = "}";
 		$html[] = "function open_ogimage_filemanager(\$form){";
 		$html[] = "	\$custom_field_input = \$form;";
 		$html[] = "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload?ogimage_field") . "\");";
@@ -333,7 +335,7 @@ class ButtonSocialPlugin{
 		$html[] = "</div>";
 		return implode("\n", $html);
 	}
-	
+
 	function getOgImageObject($entryId){
 		try{
 			$obj = $this->entryAttributeDao->get($entryId, self::PLUGIN_KEY);
@@ -350,49 +352,49 @@ class ButtonSocialPlugin{
 		$form->execute();
 		return $form->getObject();
 	}
-		
+
 	function getAppId(){
 		return $this->app_id;
 	}
 	function setAppId($app_id){
 		$this->app_id = $app_id;
 	}
-	
+
 	function getMixiCheckKey(){
 		return $this->mixi_check_key;
 	}
 	function setMixiCheckKey($mixi_check_key){
 		$this->mixi_check_key = $mixi_check_key;
 	}
-	
+
 	function getMixiLikeKey(){
 		return $this->mixi_like_key;
 	}
 	function setMixiLikeKey($mixi_like_key){
 		$this->mixi_like_key = $mixi_like_key;
 	}
-	
+
 	function getAdmins(){
 		return $this->admins;
 	}
 	function setAdmins($admins){
 		$this->admins = $admins;
 	}
-	
+
 	function getDescription(){
 		return $this->description;
 	}
 	function setDescription($description){
 		$this->description = $description;
 	}
-	
+
 	function getImage(){
 		return $this->image;
 	}
 	function setImage($image){
 		$this->image = $image;
 	}
-	
+
 
 	public static function register(){
 

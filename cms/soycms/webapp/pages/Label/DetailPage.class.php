@@ -25,7 +25,7 @@ class DetailPage extends CMSWebPageBase{
     	$labelId = @$args[0];
     	$this->labelId = $labelId;
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$res = $this->run("Label.LabelDetailAction",array(
     		"id" => $labelId

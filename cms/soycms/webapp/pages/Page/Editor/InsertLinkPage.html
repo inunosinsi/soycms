@@ -1,10 +1,6 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<script soy:id="jqueryjs"></script>
-	<script soy:id="jqueryuijs"></script>
-	<script soy:id="commonjs"></script>
-	<script soy:id="otherdata"></script>
 	<style type="text/css">
 		h4{
 			margin-bottom: 6px;
@@ -19,55 +15,68 @@
 		}
 	</style>
 </head>
-<body>
-<?php /* コンテンツ部分 */ ?>
-<div>
-<h4>リンクを挿入<span soy:id="current_site"></span></h4>
-<div id="controlle_panel">
-	
-	<div class="sub">
-		<select soy:id="insert_link" id="insert_link" style="width:90%"></select>
-	</div>
 
-	<div id="foreign_input" style="display:none">
-		<h4>外部リンクのURLを入力してください</h4>
+<body>
+	<h4>リンクを挿入<span soy:id="current_site"></span></h4>
+	<div id="controlle_panel">
+
 		<div class="sub">
-			<input type="text" size="60" name="foreignLink" id="foreignLink">
-			<button type="button" onclick="toggle_Filemanager();return false;">ファイルマネージャ起動</button>
+			<select soy:id="insert_link" id="insert_link" style="width:90%"></select>
+		</div>
+
+		<div id="foreign_input" style="display:none" class="sub">
+			<h4>外部リンクのURLを入力してください</h4>
+			<div>
+				<input type="text" size="60" name="foreignLink" id="foreignLink">
+				<button type="button" onclick="toggle_Filemanager();return false;">ファイルマネージャ起動</button>
+			</div>
+		</div>
+		<div>
+			<input type="button" value="リンク追加" class="soycms_custom_button" id="execute_button" onclick="return checkURL();">
 		</div>
 	</div>
-	<div>
-		<input type="button" value="リンク追加" class="soycms_custom_button" onclick="return checkURL();">
+	<div id="filemanager" style="display:none" soy:id="file_manager_iframe">
+		<button id="close_filemanager_button" onclick="toggle_Filemanager();return false;" style="display:none;">ファイルマネージャ終了</button>
+		<iframe id="file_manager_iframe" style="width:750px;height:480px;border:none;"></iframe>
 	</div>
-</div>
-<div id="filemanager" style="display:none" soy:id="file_manager_iframe">
-	<button id="close_filemanager_button" onclick="toggle_Filemanager();return false;" style="display:none;">ファイルマネージャ終了</button>
-	<iframe id="file_manager_iframe" style="width:750px;height:480px;border:none;"></iframe>
-</div>
-<?php /* コンテンツ部分終わり */ ?>
+
+<script soy:id="jqueryjs"></script>
+<script soy:id="otherdata"></script>
 
 <script lang="text/javascript">
-	window.onload = function(){
+	$(function(){
 		var show_foreign_input = function(){
 			var selectedItem = $("#insert_link").val();
-			
+
 			if(selectedItem == "foreign_address"){
 				$("#foreign_input").css("display","");
 			}else{
 				$("#foreign_input").css("display","none");
 			}
+
+			if(selectedItem == "foreign_site"){
+				//他サイトリンク
+				$("#execute_button").val('次へ');
+			}else if(typeof page_list[selectedItem] != 'undefined' && ( page_list[selectedItem].pageType == 200 || page_list[selectedItem].pageType == 100 ) ){
+				//ブログページ
+				//Mobileページ
+				$("#execute_button").val('次へ');
+			}else{
+				$("#execute_button").val('リンク挿入');
+			}
 		};
+
 		show_foreign_input();
 		$("#insert_link").change(function(){
-			//checkURL();
 			show_foreign_input();
 		});
-	};
-	
+	});
+
+
 	function _resizeWindow(w,h){
 		window.parent.common_resize_layer({width:w,height:h},window.parent);
 	}
-	
+
 	function checkURL(){
 		var selectedItem = $("#insert_link").val();
 		var addr = $("#foreignLink").val();
@@ -83,7 +92,7 @@
 				if(innerHTML == ""){
 					innerHTML = addr;
 				}
-				
+
 				if(addr.search(siteURL,"") == 0) addr = '/' + addr.replace(siteURL,"")
 				parent.insertHTML('<a href="'+ addr +'">'+innerHTML+'</a>');
 				window.parent.common_close_layer(window.parent);
@@ -118,12 +127,12 @@
 						+'">'
 						+innerHTML+'</a>'
 					);
-				
+
 				}
 				window.parent.common_close_layer(window.parent);
 				return false;
 			}
-		
+
 		}
 		return false;
 	}
@@ -138,7 +147,7 @@
 				},500);
 			}
 			_resizeWindow(800,600);
-			$("#filemanager").show();			
+			$("#filemanager").show();
 			mode = "filemanager";
 		}else{
 			$("#controlle_panel").show();
@@ -146,16 +155,14 @@
 			mode = "upload";
 		}
 	}
-	
+
 	function filemanager_ondblclick(url){
-		
+
 		toggle_Filemanager();
 		var image = new Image;
 		image.src = url;
 		$('#foreignLink').val(image.src);
 	}
-	
-	common_init_custom_button();
 
 </script>
 </body>

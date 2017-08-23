@@ -2,7 +2,7 @@
 class StartStage extends StageBase{
 
     function StartStage() {
-    	WebPage::__construct();
+    	parent::__construct();
     }
     
     function execute(){

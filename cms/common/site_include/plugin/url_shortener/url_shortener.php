@@ -13,8 +13,8 @@ class UrlShortenerPlugin{
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"短縮URLプラグイン",
 			"description"=>"ページやブログの記事ページの短縮URLを設定することが出来ます。<br>SOY CMS 1.3.1以上で動作します。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"0.2"
 		));
@@ -23,11 +23,11 @@ class UrlShortenerPlugin{
 		));
 
 		//active or non active
+		//そもそもsetEventはonActive以外activeじゃないと無視されるのでactiveCheckは不要
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 
 			CMSPlugin::setEvent("onEntryCreate",$this->getId(),array($this,"onEntryUpdate"));
 			CMSPlugin::setEvent("onEntryUpdate",$this->getId(),array($this,"onEntryUpdate"));
-			CMSPlugin::setEvent("onPageEdit",$this->getId(),array($this,"onPageEdit"));
 			CMSPlugin::setEvent("onPageUpdate",$this->getId(),array($this,"onPageUpdate"));
 
 			//@TODO 削除時
@@ -37,6 +37,9 @@ class UrlShortenerPlugin{
 //			CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID,"Entry.Detail",array($this,"onCallCustomField"));
 			CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID,"Blog.Entry",array($this,"onCallCustomField_inBlog"));
 		}
+
+		//常に実行
+		CMSPlugin::setEvent("onPageEdit",$this->getId(),array($this,"onPageEdit"),null,true);
 
 	}
 
@@ -271,12 +274,17 @@ class UrlShortenerPlugin{
 	 * 編集画面が呼び出されたとき
 	 */
 	function onPageEdit($arg){
-		$object = $arg["page"];
-		$from = $this->getPageURLShortener($object->id);
+		$page = $arg["page"];
 
-		$object->createAdd("url_shortener_input","HTMLInput",array(
+		//短縮URLの表示
+		$page->addModel("url_shortener_display", array(
+				"visible" => CMSPlugin::activeCheck(self::PLUGIN_ID),
+		));
+
+		//入力欄
+		$page->addInput("url_shortener_input", array(
 			"name" => "urlShortener",
-			"value" => $from
+			"value" => $this->getPageURLShortener($page->id),
 		));
 
 		return true;

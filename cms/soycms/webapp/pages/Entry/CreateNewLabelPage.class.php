@@ -2,7 +2,7 @@
 
 class CreateNewLabelPage extends CMSWebPageBase {
 
-    function __construct() {
+    function CreateNewLabelPage() {
     	$result = $this->run("Label.LabelCreateAction");
     	
     	if($result->success()){

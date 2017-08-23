@@ -2,11 +2,12 @@
 class UtilMobileCheckPluginConfigFormPage extends WebPage{
 	private $pluginObj;
 
-	function __construct(){}
+	function __construct(){
+	}
 
-	function doPost(){
+	public function doPost(){
 
-    	if(soy2_check_token()){
+		if(soy2_check_token()){
 			if(isset($_POST["config"])){
 				if(isset($_POST["config"]["smartPrefix"]))$this->pluginObj->setSmartPrefix($_POST["config"]["smartPrefix"]);
 				if(isset($_POST["config"]["prefix"]))$this->pluginObj->setPrefix($_POST["config"]["prefix"]);
@@ -17,13 +18,13 @@ class UtilMobileCheckPluginConfigFormPage extends WebPage{
 				CMSPlugin::savePluginConfig($this->pluginObj->getId(),$this->pluginObj);
 			}
 			CMSPlugin::redirectConfigPage();
-    	}
+		}
 
 	}
 
-	function execute(){
+	public function execute(){
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addForm("form");
 
@@ -87,13 +88,13 @@ class UtilMobileCheckPluginConfigFormPage extends WebPage{
 
 	}
 
-	function setPluginObj($pluginObj) {
+	public function setPluginObj($pluginObj) {
 		$this->pluginObj = $pluginObj;
 	}
 
-	function getTemplateFilePath(){
+	public function getTemplateFilePath(){
 		return dirname(__FILE__)."/config.html";
 	}
 
 }
-?>
+

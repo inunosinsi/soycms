@@ -1,6 +1,6 @@
 <p><a href="http://www.google.co.jp/analytics/" target="_blank">Google Analytics</a>のためのプラグインです。</p>
 
-
+<div class="plugin_config">
 <form method="post">
 	<fieldset>
 		<legend>トラッキングコード</legend>
@@ -8,35 +8,29 @@
 		<div>Google Analyticsのトラッキングコードをそのまま入力してください（&lt;script type="text/javascript"&gt;から&lt;/script&gt;まで）。<br>
 		<a href="http://support.google.com/analytics/bin/answer.py?answer=1012283" target="_blank">従来のコード</a>でも<a href="http://support.google.com/googleanalytics/bin/answer.py?answer=174090" target="_blank">非同期トラッキング コード</a>でも利用可能です。</div>
 		<div>「携帯自動振り分けプラグイン」が有効な場合はモバイルとスマートフォン向けの設定が可能です。</div>
+		<div class="table-responsive">
+			<table class="list table" style="margin-left:0;">
+				<tr>
+					<th>PC</th>
+					<td>
+						<textarea soy:id="google_analytics_track_code" name="google_analytics_track_code"></textarea>
+					</td>
+				</tr>
 
-		<table class="list" style="margin-left:0;">
-			<tr>
-				<th>PC</th>
-				<td>
-					<textarea soy:id="google_analytics_track_code" name="google_analytics_track_code"></textarea>
-				</td>
-			</tr>
-	
-			<!-- soy:id="has_util_mobile_check" -->
-			<tr>
-				<th>モバイル</th>
-				<td>
-					<input type="text" soy:id="google_analytics_track_code_mobile" /><br />
-					※モバイルの場合はUAから始まるプロファイル IDのみ入力してください（例：UA-99999-1）。自動的に測定用のimgタグを生成しページ末尾に挿入します。
-				</td>
-			</tr>
-			<tr>
-				<th>スマートフォン</th>
-				<td>
-					<textarea soy:id="google_analytics_track_code_smartphone" name="google_analytics_track_code_smartphone"></textarea>
-				</td>
-			</tr>
-			<!-- /soy:id="has_util_mobile_check" -->
-			
-			<tr><td colspan="2">
-				<input type="submit" style="padding:10px 20px;display:block;margin:auto;" value="保存"/>
-			</td></tr>
-		</table>
+				<!-- soy:id="has_util_mobile_check" -->
+				<tr>
+					<th>スマートフォン</th>
+					<td>
+						<textarea soy:id="google_analytics_track_code_smartphone" name="google_analytics_track_code_smartphone"></textarea>
+					</td>
+				</tr>
+				<!-- /soy:id="has_util_mobile_check" -->
+
+				<tr><td colspan="2">
+					<input type="submit" style="padding:10px 20px;display:block;margin:auto;" value="保存"/>
+				</td></tr>
+			</table>
+		</div>
 	</fieldset>
 </form>
 
@@ -78,7 +72,7 @@
 		<input type="submit" style="padding:10px 20px;" value="保存" />
 	</fieldset>
 </form>
-
+</div>
 <script type="text/javascript">
 	function update_blog_pages(selfId){
 		if($("#"+selfId).prop("checked")){
@@ -94,7 +88,9 @@
 		}
 	}
 	
-	$.each($(".blog"), function(){
-		update_blog_pages(this.id);
-	});
+	window.onload = function(){
+		$.each($(".blog"), function(){
+			update_blog_pages(this.id);
+		});
+	};
 </script>

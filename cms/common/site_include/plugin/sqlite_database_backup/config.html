@@ -6,7 +6,7 @@
 		<input type="submit" name="release" value="バックアップ" /><br />
 		※データベースファイルのバックアップ時にデータベースロックの解除も行います。
 	</form>
-	
+
 	<h4>バックアップ</h4>
 	<table class="list_table">
 		<tr>
@@ -14,9 +14,10 @@
 			<td soy:id="backup_dir"></td>
 		</tr>
 	</table>
-	
+
 	<h4>バックアップファイル</h4>
-	<table class="list_table">
+	<div class="table-responsive">
+	<table class="table">
 		<tr>
 			<th>バックアップファイル</th>
 			<th>作成日時</th>
@@ -32,17 +33,18 @@
 			<td><form soy:id="delete_form" method="get"><input type="submit" name="delete" value="削除"><input type="hidden" soy:id="target"></form></td>
 		</tr>
 	</table>
+	</div>
 </div>
 
 </div>
 
 <div id="test"></div>
 <script>
-	$(function(){
+	window.onload = function(){
 		$("#download_frame").load(function(e){
 			//location.reload();
 		});
-		
+
 		var hoge = function (){
 			if($.cookie("downloaded") == "yes"){
 				location.reload();
@@ -50,8 +52,8 @@
 			setTimeout(hoge, 1500);
 		};
 		hoge();
-	});
-	
+	};
+
 
 </script>
 <iframe name="download_frame" id="download_frame" style="width:0;height:0;bottom:-100;left:-100;"></iframe>

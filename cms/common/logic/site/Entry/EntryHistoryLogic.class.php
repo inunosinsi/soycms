@@ -3,8 +3,9 @@ SOY2::import("domain.cms.Entry");
 class EntryHistoryLogic extends SOY2LogicBase{
 
 	private $dao;
+	private $entryDao;
 
-	public function __construct(){
+	public function EntryHistoryLogic(){
 		$this->dao = SOY2DAOFactory::create("cms.EntryHistoryDAO");
 		$this->entryDao = SOY2DAOFactory::create("cms.EntryDAO");
 	}
@@ -92,9 +93,9 @@ class EntryHistoryLogic extends SOY2LogicBase{
 	 */
 	public function onRemove($entryId){
 		$bean = $this->getLastHistory($entryId);
-		
+
 		$id = null;
-		
+
 		if(!is_null($bean)){
 			$bean->setActionType(EntryHistory::ACTION_REMOVE);
 			$bean->setActionTarget(0);
@@ -103,14 +104,14 @@ class EntryHistoryLogic extends SOY2LogicBase{
 			$bean->setChangeMore(0);
 			$bean->setChangeAdditional(0);
 			$bean->setChangeIsPublished(0);
-			
+
 			try{
 				$id = $this->dao->insert($bean);
 			}catch(Exception $e){
 				//
 			}
 		}
-		
+
 		return $id;
 	}
 
@@ -123,7 +124,7 @@ class EntryHistoryLogic extends SOY2LogicBase{
 	public function onCopy(Entry $to, $fromId){
 
 		$bean = $this->createEntryHistory($to);
-		
+
 		//更新
 		$bean->setActionType(EntryHistory::ACTION_COPY);
 		//コピー元のIDを入れておく
@@ -201,10 +202,9 @@ class EntryHistoryLogic extends SOY2LogicBase{
 	 * @param boolean 公開設定
 	 */
 	private function _onPublish($ids,$publish){
-    	$entryDao = SOY2DAOFactory::create("cms.EntryDAO");;
 		foreach($ids as $id){
 			try{
-		    	$entry = $entryDao->getById($id);
+		    	$entry = $this->entryDao->getById($id);
 				$this->onUpdate($entry);
 			}catch(Exception $e){
 				//
@@ -308,7 +308,7 @@ class EntryHistoryLogic extends SOY2LogicBase{
 		try{
 			return $this->dao->getLatestByEntryId($entryId);
 		}catch(Exception $e){
-			error_log(var_export($e,true));
+			//error_log(var_export($e,true));
 			return null;
 		}
 	}

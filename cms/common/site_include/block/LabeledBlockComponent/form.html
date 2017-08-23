@@ -15,7 +15,7 @@
 	</fieldset>
 
 	<fieldset class="inline">
-		<legend>表示件数<img soy:message="HELP_BLOCK_DISPLAY_NUMBER"/></legend>
+		<legend>表示件数<span soy:message="HELP_BLOCK_DISPLAY_NUMBER"></span></legend>
 		表示件数: <input type="text" soy:id="display_number_start" size="2">件目～<input type="text" soy:id="display_number_end" size="2">件目
 	</fieldset>
 
@@ -27,7 +27,7 @@
 	</fieldset>
 
 	<!-- soy:display="blog_link" -->
-	<fieldset><legend>ブログへのリンク<img soy:message="HELP_BLOCK_BLOG_LINK"/></legend>
+	<fieldset><legend>ブログへのリンク<span soy:message="HELP_BLOCK_BLOG_LINK"/></span></legend>
 		<input soy:id="no_stick_url" type="hidden" name="object[blogPageId]" value="0"/>
 		<input soy:id="stick_url" type="checkbox" onclick="common_toggle('blog_page_list');common_toggle('blog_page_list_label');"><br/>
 		<span id="blog_page_list_label" soy:id="blog_page_list_label">ブログを指定してください: </span><select id="blog_page_list" soy:id="blog_page_list"></select><br/>

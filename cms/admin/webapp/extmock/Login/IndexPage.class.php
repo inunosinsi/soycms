@@ -20,13 +20,13 @@ class IndexPage extends CMSHTMLPageBase{
 
 	}
 
-	function __construct(){
+	function IndexPage(){
 		//ログインしていたらルートに飛ばす
 		if(UserInfoUtil::isLoggined()){
 			SOY2PageController::jump("");
 		}
 
-		WebPage::__construct();
+		WebPage::WebPage();
 
 		//CSS読み込み
 		HTMLHead::addLink("login_style",array(

@@ -29,8 +29,8 @@ class SyncEntryPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"記事同期プラグイン",
 			"description"=>'記事を実ファイルと同期させます。<br />SOY CMSに格納されている記事をファイルに書き出したり、<br />書き出したファイルをSOY CMSに格納したりすることが可能です。',
-			"author"=>"株式会社日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"0.0.2"
 		));

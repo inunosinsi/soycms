@@ -37,8 +37,8 @@ class BreadPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"パン屑リスト出力プラグイン",
 			"description"=>"パン屑リストを出力することが出来ます。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.2"
 		));

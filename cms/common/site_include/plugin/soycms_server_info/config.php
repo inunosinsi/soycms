@@ -3,7 +3,9 @@ class SOYCMSServerInfoConfigPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function __construct(){}
+	function __construct(){
+		
+	}
 	
 	function doPost(){
 		
@@ -14,7 +16,7 @@ class SOYCMSServerInfoConfigPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		include(SOY2::RootDir() . "error/error.func.php");
 		

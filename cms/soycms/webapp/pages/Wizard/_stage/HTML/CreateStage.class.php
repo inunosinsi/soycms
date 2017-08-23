@@ -7,7 +7,7 @@ class CreateStage extends StageBase{
     }
         
     function execute(){
-		WebPage::__construct();		
+		parent::__construct();		
 		
 		$this->createAdd("page_type","HTMLLabel",array(
 			"text"=> ($this->wizardObj->pageType == Page::PAGE_TYPE_NORMAL) ? "標準ページ" : "携帯用ページ"

@@ -21,8 +21,8 @@ class SOYListConnectorPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY List連携プラグイン",
 			"description"=>"SOY Listでカテゴリ分け表示を行えるようにする",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"0.5"
 		));	

@@ -1,30 +1,40 @@
 <html>
 <head soy:page="_common.HeaderPage" isOverWrite="true">
 </head>
-<body>
-<div id="layer_content" style="text-align:left;">
+<body class="sub">
 
-<h3>登録情報の変更</h3>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h1>
+				登録情報の変更
+			</h1>
+		</div>
 
-<form soy:id="changeform">
+		<div class="panel-body">
+			<form soy:id="changeform">
 
-<div class="section">
-	<p class="sub">名前（255文字まで）</p>
-	<input type="text" soy:id="name" size="60">
-</div>
-<div class="section">
-	<p class="sub">メールアドレス（255文字まで）</p>
-	<input type="text" soy:id="email" size="60">
-</div>
+			<div class="form-group">
+				<label>姓名</label>
+				<input type="text" soy:id="name" size="60" class="form-control">
+				<span soy:id="name" class="form-control-static"></span>
+				<span class="help-block">255文字まで</span>
+			</div>
+			<div class="form-group">
+				<label>メールアドレス</label>
+				<input type="text" soy:id="email" type="email" size="60" class="form-control">
+				<span class="help-block">255文字まで</span>
+			</div>
 
-<div class="section">
-	<input type="hidden" soy:id="user_id">
-	<input type="submit" name="changeuser" value="登録情報を変更する" />
-</div>
-<a soy:link="Account">&lt;&lt;戻る</a>
-</form soy:id="changeform">
+			<div class="section">
+				<a soy:link="Account" class="btn btn-default">戻る</a>
+				<input type="hidden" soy:id="user_id">
+				<input type="submit" name="changeuser" value="変更" class="btn btn-primary pull-right">
+			</div>
 
+			</form soy:id="changeform">
 
-</div>
+		</div>
+	</div>
+
 </body>
 </html>

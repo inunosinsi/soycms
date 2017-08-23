@@ -9,14 +9,14 @@ class SOYCMS_ThisIsNew_Plugin{
 	public $daysToBeNew = 0;
 	public $ignoreFutureEntry = 1;
 
-	function init(){
+	public function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"新着マーク表示プラグイン",
 			"description"=>"記事を表示するときに作成日時から一定期間の間だけ表示される部分を指定することができるようになります。新着画像の表示などに便利です。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -103,4 +103,3 @@ class SOYCMS_ThisIsNew_Plugin{
 	}
 
 }
-?>

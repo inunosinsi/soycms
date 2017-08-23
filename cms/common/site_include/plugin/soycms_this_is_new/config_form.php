@@ -3,22 +3,23 @@ class SOYCMS_ThisIsNew_Plugin_FormPage extends WebPage{
 
 	private $pluginObj;
 
-	function __construct(){}
+	function __construct(){
+	}
 
 	function doPost(){
-    	if(soy2_check_token()){
+		if(soy2_check_token()){
 			if(isset($_POST["days_to_be_new"])){
 				$this->pluginObj->daysToBeNew = $_POST["days_to_be_new"];
 				$this->pluginObj->ignoreFutureEntry = $_POST["ignore_future_entry"];
 				CMSPlugin::savePluginConfig($this->pluginObj->getId(),$this->pluginObj);
 			}
 			CMSPlugin::redirectConfigPage();
-    	}
+		}
 
 	}
 
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->createAdd("cms_id","HTMLLabel",array(
 			"text" => SOYCMS_ThisIsNew_Plugin::CMS_ID
@@ -51,5 +52,3 @@ class SOYCMS_ThisIsNew_Plugin_FormPage extends WebPage{
 		return dirname(__FILE__)."/config_form.html";
 	}
 }
-
-?>

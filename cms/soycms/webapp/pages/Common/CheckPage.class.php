@@ -2,7 +2,7 @@
 
 class CheckPage extends CMSWebPageBase{
 
-    function __construct() {
+    function CheckPage() {
     
     	$site = UserInfoUtil::getSite();
     	

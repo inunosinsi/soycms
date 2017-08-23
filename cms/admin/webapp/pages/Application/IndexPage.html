@@ -1,42 +1,66 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 
 <head soy:page="_common.HeaderPage" isOverWrite="true">
 </head soy:page="_common.HeaderPage">
 
 <body>
 
-<div id="wrapper">
-	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
-	<div id="content">
-		<h2>アプリケーション</h2>
-		<div soy:id="message"></div>
-		
-		<div id="siteboxes">
-			<h3>アプリケーション一覧</h3>
-			
-			<div soy:id="application_list" class="sitebox_big">
-				<div class="sitebox_top">
-					<h4 soy:id="name" class="sitename">日本情報化農業研究所</h4>
-					<p class="login_button"><a soy:id="login_link" href="javascript:void(0);">ログイン</a></p>
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">アプリケーション</h1>
 				</div>
-				<div style="clear:both"><!----></div>
-				
-				<p class="description" soy:id="description"></p>
-				<p class="version" soy:id="version"></p>
-				
-				<div class="sitebox_functions" soy:display="only_default_user">
-					<p><a soy:id="auth_link">権限設定</a></p>
-				</div>
-			</div soy:id="application_list">
-			
-			<div soy:id="no_application" style="margin-left:10px;">
-				<p>インストールされているアプリケーションはありません。</p>
+				<!-- /.col-lg-12 -->
 			</div>
-			
-			<div style="clear:both"><!----></div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-green">
+						<div class="panel-heading">
+							アプリケーション一覧
+						</div>
+						<div class="panel-body">
+							<div class="row">
+
+											<div class="col-lg-3" soy:id="application_list">
+											<div class="panel panel-default">
+												<div class="panel-heading"  soy:id="name">
+													Green Panel
+												</div>
+												<div  class="panel-body">
+													<p class="uri"><a soy:id="site_link" href="javascript:void(0);"></a></p>
+													<div class="sitebox_functions" soy:display="only_default_user">
+														<p class="description" soy:id="description"></p>
+														<p class="version" soy:id="version"></p>
+													</div>
+												</div>
+												<div class="panel-footer">
+													<a class="btn btn-default" soy:id="auth_link">権限設定</a>
+													<a class="btn btn-info pull-right" soy:id="login_link" href="javascript:void(0);">ログイン</a>
+												</div>
+											</div>
+										</div soy:id="application_list">
+
+
+									</div>
+						</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+
+
 		</div>
-		
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
 	</div>
-	<div soy:page="_common.FooterPage"></div>
-</div>
+	<!-- /#wrapper -->
+
+
+</body>
+
 </html>

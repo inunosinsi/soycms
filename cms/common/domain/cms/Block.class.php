@@ -5,7 +5,7 @@
 class Block {
 
 	//表示順も兼ねます。
-	const BLOCK_LIST = "EntryBlockComponent,LabeledBlockComponent,SiteLabeledBlockComponent,MultiLabelBlockComponent,PluginBlockComponent";
+	const BLOCK_LIST = "EntryBlockComponent,LabeledBlockComponent,SiteLabeledBlockComponent,MultiLabelBlockComponent";
 
 	/**
 	 * @id

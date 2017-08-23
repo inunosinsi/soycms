@@ -4,7 +4,7 @@ class CreatePage extends CMSWebPageBase{
 	
 	var $labels;
 
-    function __construct($arg) {
+    function CreatePage($arg) {
     	
     	$this->labels = $arg;
     	

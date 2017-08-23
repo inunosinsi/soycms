@@ -9,7 +9,7 @@ class IndexPage extends CMSWebPageBase {
 	var $siteConfig;
 	var $showAllEntry;
 
-    function __construct($arg) {
+    function IndexPage($arg) {
 
     	$this->showAllEntry = (!isset($_GET["show_all"]) or $_GET["show_all"] == 1);
 
@@ -107,20 +107,20 @@ class IndexPage extends CMSWebPageBase {
 
     	//For stronger role than normal user
     	if(UserInfoUtil::hasSiteAdminRole()){
-	    	//CSS edit button
-	    	$insertHTML[] = '<div id="soy_cms_operation_edit_css_form_wrapper" style="display:none;">';
-    		$insertHTML[] = '<form id="soy_cms_operation_edit_css_form" method="POST">';
-	    	$insertHTML[] = '<select id="soy_cms_operation_edit_css_select" name="cssName" style="border:normal;"></select><br>';
-	    	$insertHTML[] = '<input type="submit" value="'.CMSMessageManager::get("SOYCMS_PREVIEW_EDIT_CSS").'">';
-	    	$insertHTML[] = '</form>';
-	    	$insertHTML[] = '</div>';
+//	    	//CSS edit button
+//	    	$insertHTML[] = '<div id="soy_cms_operation_edit_css_form_wrapper" style="display:none;">';
+//    		$insertHTML[] = '<form id="soy_cms_operation_edit_css_form" method="POST">';
+//	    	$insertHTML[] = '<select id="soy_cms_operation_edit_css_select" name="cssName" style="border:normal;"></select><br>';
+//	    	$insertHTML[] = '<input type="submit" value="'.CMSMessageManager::get("SOYCMS_PREVIEW_EDIT_CSS").'">';
+//	    	$insertHTML[] = '</form>';
+//	    	$insertHTML[] = '</div>';
 
-	    	//Template edit button
-	    	$insertHTML[] = '<div id="soy_cms_operation_edit_template_form_wrapper">';
-			$insertHTML[] = '<form id="soy_cms_operation_edit_template_form" method="GET">';
-	    	$insertHTML[] = '<input type="submit" value="'.CMSMessageManager::get("SOYCMS_PREVIEW_EDIT_WEBPAGE_TEMPLATE").'">';
-	    	$insertHTML[] = '</form>';
-	    	$insertHTML[] = '</div>';
+//	    	//Template edit button
+//	    	$insertHTML[] = '<div id="soy_cms_operation_edit_template_form_wrapper">';
+//			$insertHTML[] = '<form id="soy_cms_operation_edit_template_form" method="GET">';
+//	    	$insertHTML[] = '<input type="submit" value="'.CMSMessageManager::get("SOYCMS_PREVIEW_EDIT_WEBPAGE_TEMPLATE").'">';
+//	    	$insertHTML[] = '</form>';
+//	    	$insertHTML[] = '</div>';
     	}
 
     	//Move to other webpage button

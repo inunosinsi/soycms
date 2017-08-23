@@ -31,7 +31,7 @@ class SiteRolePage extends CMSUpdatePageBase{
     		SOY2PageController::jump("Site");
     	}
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$action = SOY2ActionFactory::createInstance("SiteRole.ListAction", array(
     		"siteId" => $siteId

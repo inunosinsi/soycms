@@ -17,12 +17,11 @@ class SOYCMS_SwitchEditor{
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"エディタ切り替えプラグイン",
-			"description"=>"ラベル毎にエディタを切り替えます。<br />選択できるWYSIWYGエディタは<ul>" .
+			"description"=>"ラベル毎にWYSIWYGエディタを使用するかどうか切り替えます。<br />選択できるWYSIWYGエディタは<ul>" .
 					"<li>tinyMCE</li>" .
-					"<li>CKEditor</li>" .
 					"</ul>",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"2.0"
 		));
@@ -180,7 +179,7 @@ class LabelConfigList extends HTMLList{
 		if(array_key_exists($entity->getId(), $this->config)){
 			$conf = $this->config[$entity->getId()];
 		}else{
-			$conf = 1;//デフォルト
+			$conf = 0;//デフォルト
 		}
 		
 		//セレクトボックス
@@ -194,8 +193,8 @@ class LabelConfigList extends HTMLList{
 	
 	public static function getConfig(){
 		return array(
-			"0" => "有効にする",
-			"1" => "無効にする"
+			"0" => "有効",
+			"1" => "無効"
 		);
 	}
 	

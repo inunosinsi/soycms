@@ -1,12 +1,12 @@
 <p>SOY CMSの更新情報と、フォーラムの更新情報をダッシュボードに表示するプラグインです。</p>
 
-
+<!-- soy:display="is_simple_xml_enabled" -->
 <form method="post">
 	<fieldset>
 		<legend>キャッシュ</legend>
 		<div>更新情報のキャッシュを削除する場合は、キャッシュのクリアを押してください。<br/>
 		RSSの再読込を行います。</div>
-		<input type="submit" style="padding:10px 20px;" name="cache_clear_button" value="キャッシュのクリア" />
+		<input type="submit" style="padding:10px 20px;" name="cache_clear_button" value="キャッシュのクリア" class="btn btn-large btn-info">
 	</fieldset>
 </form>
 
@@ -21,6 +21,11 @@
 			<input type="checkbox" soy:id="limited_admin" />
 		</div>
 
-		<input type="submit" style="padding:10px 20px;" value="設定保存" />
+		<input type="submit" style="padding:10px 20px;" value="設定保存" class="btn btn-large btn-success" >
 	</fieldset>
 </form>
+<!-- /soy:display="is_simple_xml_enabled" -->
+
+<!-- soy:display="no_simple_xml_enabled" -->
+<p>このプラグインを使用するにはPHPのSimpleXMLモジュールが必要です。現在ご利用中の環境ではSimpleXMLモジュールが有効になっておりません。</p>
+<!-- /soy:display="no_simple_xml_enabled" -->

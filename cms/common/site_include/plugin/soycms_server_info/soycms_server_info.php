@@ -20,8 +20,8 @@ class SOYCMS_Server_Info_Plugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"サーバー情報表示プラグイン",
 			"description"=>"SOY CMSのインストールされているサーバーの情報を表示します。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.0"
 		));	

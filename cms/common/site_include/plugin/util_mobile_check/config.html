@@ -1,48 +1,49 @@
 
 <form soy:id="form">
-
-	<dl>
-		<dt>自動転送機能</dt>
-		<dd>
+<div class="table-responsive">
+	<table class="table">
+		<tr><th>自動転送機能</th>
+		<td>
 			<input type="checkbox" soy:id="auto_redirect" />
 			<label for="auto_redirect">有効にする</label>
-		</dd>
+		</td></tr>
 		
-		<dt>携帯電話機用プリフィックス</dt>
-		<dd>
+		<tr><th>携帯電話機用プリフィックス</th>
+		<td>
 			<input type="text" soy:id="prefix" />
-		</dd>
+		</td></tr>
 		
-		<dt>スマートフォン用プリフィックス</dt>
-		<dd>
+		<tr><th>スマートフォン用プリフィックス</th>
+		<td>
 			<input type="text" soy:id="smart_prefix" />
-		</dd>
+		</td></tr>
 
-		<dt>タブレットでの転送先</dt>
-		<dd>
+		<tr><th>タブレットでの転送先</th>
+		<td>
 			<input type="radio" soy:id="do_not_redirect_ipad" />
 			<label for="do_not_redirect_ipad">PC用ページを表示する</label>
 			<input type="radio" soy:id="redirect_ipad_smartphone" />
 			<label for="redirect_ipad_smartphone">スマートフォン用ページを表示する</label>
-		</dd>
+		</td></tr>
 
-		<dt>スマートフォンでの転送先</dt>
-		<dd>
+		<tr><th>スマートフォンでの転送先</th>
+		<td>
 			<input type="radio" soy:id="do_not_redirect" />
 			<label for="do_not_redirect">PC用ページを表示する</label>
 			<input type="radio" soy:id="redirect_smartphone" />
 			<label for="redirect_smartphone">スマートフォン用ページを表示する</label>
 			<input type="radio" soy:id="redirect_mobile" />
 			<label for="redirect_mobile">モバイル用ページを表示する</label>
-		</dd>
+		</td></tr>
 
-		<dt>転送文言の設定（リダイレクト）</dt>
-		<dd>
+		<tr><th>転送文言の設定（リダイレクト）</th>
+		<td>
 			<textarea soy:id="message" style="height:4em;"></textarea>
-		</dd>
+		</td></tr>
 		
 
-	</dl>
+	</table>
+	</div>
 
 <p class="pageBtn">
 	<input type="submit" class="submit_button" value="変更" />

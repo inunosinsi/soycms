@@ -18,8 +18,8 @@ class SOYCMS_PageInfoEditPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ページ情報編集プラグイン",
 			"description"=>"一括でページ情報を編集します。KeywordとDescriptionの設定もできます。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.1"
 		));

@@ -8,7 +8,7 @@ class RandomBlockConfigPage extends WebPage{
 	function doPost(){}
 	
 	function execute(){
-		WebPage::__construct();		
+		parent::__construct();		
 	}
 	
 	function getPluginObj() {

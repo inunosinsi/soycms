@@ -1,65 +1,105 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
+
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
-</head>
+</head soy:page="_common.HeaderPage">
+
 <body>
-<div class="container">
-	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
-	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
 
-			
-	
-		<!-- content start -->
-		<div id="content" class="span-24 last">			
-			<div class="span-23 last">
-				<h2><a soy:link="Page">ページ一覧</a>&gt;ブログ一覧</h2>
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header"><small><a soy:link="Page">ページ</a> &gt;</small><a soy:link="Blog.List">ブログページ一覧</a></h1>
+				</div>
+				<!-- /.col-lg-12 -->
 			</div>
-			<div id="page_panels" soy:id="exists_blog_page" class="prepend-1 span-22 last">
-				<!-- soy:id="page_list" -->
-				<div class="page_panel span-22 last">
-					<div soy:id="page_icon" class="page_image_box">				
-						<img soy:id="is_deleted" class="page_image_deleted" />
+
+			<div soy:page="_common.MessagePanel" isOverWrite="true"></div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<a class="btn btn-default" soy:link="Page.Create" onclick="return common_click_to_layer(this,{height:540});">ページ新規作成</a>
+							<a class="btn btn-default active" soy:link="Blog">ブログ一覧</a>
+							<!-- soy:display="is_page_template_enabled" --><a class="btn btn-default" soy:link="Template">ページ雛型管理</a><!-- /soy:display="is_page_template_enabled" -->
+							<a class="btn btn-default" soy:link="Module">モジュール管理</a>
+						</div>
 					</div>
-					<div class="page_panel_info">
-						<p class="page_name">
-							<a soy:id="title">会社概要</a>
-						</p>
-						<p class="page_url"><a soy:id="page_url"></a></p>
-					</div>
-					<div class="page_panel_functions">
-				        <a soy:id="edit_link" href="#">新着情報</a>
-				        <a soy:id="entry_link" href="#">記事一覧</a>
-				        <a soy:id="post_entry_link" href="#">投稿</a>
-				        <a soy:id="template_link" href="#">テンプレート</a>
-				        <a soy:id="trackback_link" href="#">トラックバック</a>
-				        <a soy:id="comment_link" href="#">コメント</a>
-				        <a soy:id="category_link" href="#">カテゴリ</a>
-				        <a soy:id="config_link" href="#">設定</a>
-				        <a soy:id="delete_link" href="#">削除</a>
-				     	<a soy:id="recover_link" href="#">復元</a>
-				     	<a href="#" target="_blank" soy:id="client_view">確認</a>
-					</div>
-					<div class="page_panel_update_date">更新日 <span  soy:id="update_date">2007/12/25</span></div>
 				</div>
-				<!--/soy:id="page_list" -->
-			</div soy:id="exists_blog_page">
-			<div soy:id="no_blog_message"  class="span-22 prepend-1 last">
-				<div class="blank">
-					現在ブログページは作成されておりません。<br>
-					<span soy:id="link_to_create_blog">ブログページの新規追加はページの新規追加より行えます。→<a soy:link="Page.Create" onclick="return common_click_to_layer(this);">ページ新規追加</a></span soy:id="link_to_create_blog">
+				<!-- /.col-lg-12 -->
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-soygreen">
+						<div class="panel-heading">ブログページ一覧</div>
+
+						<div id="page_panels" soy:id="exists_blog_page" class="panel-body">
+							<ul class="chat">
+							<!-- soy:id="page_list" -->
+							<li class="left">
+								<span class="chat-img pull-left soycms_page_image_box">
+									<img soy:id="page_icon" class="" />
+									<img soy:id="is_deleted" class="soycms_page_image_deleted" />
+								</span>
+								<div class="chat-body clearfix">
+									<div class="header">
+										<strong class="primary-font">
+											<a soy:id="title" class="soycms_blog_title">会社概要</a>
+										</strong>
+										<a soy:id="page_url"></a>
+										<small class="pull-right text-muted"><i class="fa fa-clock-o fa-fw"></i>更新日 <span  soy:id="update_date">2007/12/25</span></small>
+									</div>
+									<div class="btn-group">
+										<a class="btn btn-default btn-s" soy:id="edit_link" href="#">新着情報</a>
+										<a class="btn btn-default btn-s" soy:id="entry_link" href="#">記事一覧</a>
+										<a class="btn btn-default btn-s" soy:id="post_entry_link" href="#">投稿</a>
+										<a class="btn btn-default btn-s" soy:id="template_link" href="#">テンプレート</a>
+										<a class="btn btn-default btn-s" soy:id="comment_link" href="#">コメント</a>
+										<a class="btn btn-default btn-s" soy:id="config_link" href="#">設定</a>
+									 	<a class="btn btn-default btn-s" href="#" target="_blank" soy:id="client_view">確認 <i class="fa fa-external-link "></i></a>
+									</div>
+									<div class="btn-group pull-right">
+										<a class="btn btn-default btn-s" soy:id="recover_link" href="#">復元</a>
+										<a class="btn btn-danger btn-s" soy:id="delete_link" href="#">削除</a>
+									</div>
+								</div>
+							</li>
+							<!--/soy:id="page_list" -->
+							</ul>
+						</div soy:id="exists_blog_page">
+
+						<div soy:id="no_blog_message"  class="panel-body">
+							<div class="blank">
+								現在ブログページは作成されておりません。<br>
+								<span soy:id="link_to_create_blog">ブログページの新規追加はページの新規追加より行えます。→<a soy:link="Page.Create" onclick="return common_click_to_layer(this);">ページ新規追加</a></span soy:id="link_to_create_blog">
+							</div>
+						</div soy:id="no_blog_message">
+
+					</div>
 				</div>
-			</div soy:id="no_blog_message">
-			
-			<div style="clear:both;"><!-- --></div>
-			
-				<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+				<!-- /.col-lg-12 -->
+			</div>
 		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
 
-
-	
-	<div soy:page="_common.FooterPage"></div>
-
-</div soy:id="wrapper" >
+	<script soy:id="cssurl"></script>
+	<script soy:id="cssmenu"></script>
+	<script soy:id="PanelManager.js"></script>
+	<script soy:id="TemplateEditor"></script>
+	<script soy:id="mceSOYCMSEmojiURL"></script>
+	<script>
+		$('#template_editor_frame').on("load",function(e){
+			init_template_editor();
+		});
+	</script>
 
 </body>
 </html>

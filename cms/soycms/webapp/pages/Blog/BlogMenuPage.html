@@ -1,16 +1,25 @@
-<div class="span-16 last">
-	<h2 soy:id="blog_name"></h2>
+<?php /*　パンクズリスト */ ?>
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header"><small><a soy:link="Page">ページ</a> &gt;<a soy:link="Blog.List">ブログページ一覧</a> &gt;</small> <a soy:id="blog_name_link" href="" >ブログ名</a></h1>
+	</div>
+	<!-- /.col-lg-12 -->
 </div>
 
+<?php /* 各種メッセージ */ ?>
+<div soy:page="_common.MessagePanel" isOverWrite="true"></div>
+
 <?php /*　ブログメニュー */ ?>
-<div class="span-16 last soy-push-1">
-	<a soy:id="blog_entry_list_link">記事一覧</a>
-	<a soy:id="blog_entry_link">投稿</a>
-	<a soy:id="blog_template_link">テンプレート</a>
-	<a soy:id="blog_trackback_link">トラックバック</a>
-	<a soy:id="blog_comment_link">コメント</a>
-	<a soy:id="blog_category_link">カテゴリ</a>
-	<a soy:id="blog_confirm" target="_blank;">ブログの確認</a>
-	<a soy:id="blog_config_link">設定</a>
+<div class="row">
+	<div class="col-lg-12">
+		<ul class="nav nav-tabs" style="margin-bottom:15px;">
+			<li soy:id="blog_entry_list_link_wrapper"><a soy:id="blog_entry_list_link">記事一覧</a></li>
+			<li soy:id="blog_entry_link_wrapper"><a soy:id="blog_entry_link">投稿</a></li>
+			<li soy:id="blog_template_link_wrapper"><a soy:id="blog_template_link">テンプレート</a></li>
+			<li soy:id="blog_comment_link_wrapper"><a soy:id="blog_comment_link">コメント</a></li>
+			<li><a soy:id="blog_confirm" target="_blank;">ブログの確認</a></li>
+			<li soy:id="blog_config_link_wrapper"><a soy:id="blog_config_link">設定</a></li>
+		</ul>
+	</div>
 </div>
 <?php /*　ブログメニュー終わり */ ?>

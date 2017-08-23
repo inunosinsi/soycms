@@ -1,0 +1,121 @@
+<form soy:id="sites_form">
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<label>サイトを選択して下さい。</label>
+			<div class="input-group">
+				<select soy:id="site" class="form-control"></select>
+				<span class="input-group-btn">
+					<button class="btn btn-info">サイトを変更する</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" value="reload" name="after_submit">
+</form soy:id="sites_form">
+
+<form soy:id="main_form">
+	<input type="hidden" soy:id="old_site_id" value="" />
+
+	<div class="form-group">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<label>ラベルとブログの選択</label>
+				<div class="input-group">
+					<span class="input-group-addon">表示するラベル</span>
+					<select id="selected_label" soy:id="label_select" class="form-control">
+						<option value="">選択</option>
+					</select>
+
+					<span class="input-group-addon">リンク先ブログ</span>
+					<select id="selected_blog" soy:id="blog_select" class="form-control">
+						<option value="">選択</option>
+					</select>
+
+					<span class="input-group-btn"><input type="submit" name="add" value="追加" onclick="add_reload_input(this);return add_item(this);" class="btn btn-info"></span>
+				</div>
+			</div>
+
+			<!-- soy:id="has_label_list" -->
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>ラベル</th>
+						<th>ブログ</th>
+						<th>&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+				<!-- soy:id="label_list" -->
+				<tr>
+					<td soy:id="label"></td>
+					<td soy:id="title"></td>
+					<td>
+						<input type="hidden" soy:id="mapping" />
+						<input type="submit" name="delete" soy:id="delete_button" class="btn btn-danger btn-sm">
+					</td>
+				</tr>
+				<!-- /soy:id="label_list" -->
+				</tbody>
+			</table>
+			<!-- /soy:id="has_label_list" -->
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<div class="form-group" style="max-width: 20em;">
+				<label>表示件数<span soy:message="HELP_BLOCK_DISPLAY_NUMBER"></span></label>
+				<span class="input-group">
+					<input type="text" soy:id="display_number_start" class="form-control">
+					<span class="input-group-addon">件目～</span>
+					<input type="text" soy:id="display_number_end" class="form-control">
+					<span class="input-group-addon">件目</span>
+				</span>
+			</div>
+			<label>表示順</label>
+			<input type="text" soy:id="display_order_desc"><label for="display_order_desc">作成日の降順</label>
+			<input type="text" soy:id="display_order_asc"><label for="display_order_asc">作成日の昇順</label>
+			<span style="color:#737373">表示順の指定されていない記事にのみ有効です。</span>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<input class="btn btn-success btn-lg pull-right" type="submit" value="設定の保存" name="update">
+		<input class="btn btn-default" type="button" value="キャンセル" onclick="common_close_layer(window.parent);return false;">
+	</div>
+
+</form soy:id="main_form">
+
+<script type="text/javascript">
+function add_item(ele){
+	if($("#selected_label").val().length <1 || $("#selected_blog").val().length <1){
+		return false;
+	}
+
+	var input = $("<input/>");
+	input.attr("name","object[mapping][" + $("#selected_label").val() + "]");
+	input.val($("#selected_blog").val());
+	input.attr("type","hidden");
+	$(ele).after(input);
+
+	return true;
+}
+function add_reload_input(ele){
+	var input = $("<input/>");
+	input.attr("name","after_submit");
+	input.val("reload");
+	input.attr("type","hidden");
+	$(ele).after(input);
+
+}
+function delete_mapping(ele){
+	$(ele).attr("name","");
+	if($(".input.mapping_input").length <= 1){
+		var input = $("<input/>");
+		input.attr("name","object[mapping][]");
+		input.val("");
+		input.attr("type","hidden");
+		$(ele).after(input);
+	}
+}
+</script>

@@ -19,8 +19,8 @@ class SOYGalleryConnectorPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY Gallery連携プラグイン",
 			"description"=>"SOY Galleryと連携するために使用します。<br /><br />どのページでもギャラリーを呼び出せるようになります",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.0"
 		));

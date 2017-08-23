@@ -4,7 +4,7 @@ class RedirectPage extends CMSHTMLPageBase{
 
 	var $userId;
 
-	function __construct(){
+	function RedirectPage(){
 
 		//ログインIDの指定がなければただちにログイン画面へ
 		if(!isset($_GET["userId"]) || strlen($_GET["userId"])<1){
@@ -12,7 +12,7 @@ class RedirectPage extends CMSHTMLPageBase{
 		}
 
 
-		WebPage::__construct();
+		WebPage::WebPage();
 
 		$this->addLabel("user_id", array(
 			"text" => $_GET["userId"],

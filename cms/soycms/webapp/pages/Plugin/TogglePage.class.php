@@ -2,7 +2,7 @@
 
 class TogglePage extends CMSWebPageBase{
 
-    function __construct() {
+    function TogglePage() {
     	if(soy2_check_token()){
     	
 	    	$this->id = implode("",array_keys($_GET));

@@ -3,9 +3,9 @@
 class SaveCSSPage extends CMSWebPageBase {
 
 	function doPost(){
-		
+
 		$result = $this->run("Page.SaveCSSAction");
-		
+
 		if($result->success()){
 			echo json_encode(array(
 				"result" => CMSMessageManager::get("PAGE_CSS_SAVE_SUCCESS"),
@@ -17,12 +17,8 @@ class SaveCSSPage extends CMSWebPageBase {
 				"soy2_token" => soy2_get_token()
 			));
 		}
-		
+
 		exit;
 	}
-	
-    function __construct($arg) {
-    	WebPage::__construct();
-    }
+
 }
-?>

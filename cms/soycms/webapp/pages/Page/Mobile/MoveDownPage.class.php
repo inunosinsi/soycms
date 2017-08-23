@@ -2,7 +2,7 @@
 
 class MoveDownPage extends CMSWebPageBase{
 
-    function __construct($arg) {
+    function MoveDownPage($arg) {
     	if(soy2_check_token()){
 	    	$pageId = @$arg[0];
 	    	$treeId = @$arg[1];

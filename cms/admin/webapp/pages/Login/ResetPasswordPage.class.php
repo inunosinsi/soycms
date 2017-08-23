@@ -19,7 +19,7 @@ class ResetPasswordPage extends WebPage{
 	
 	function __construct() {
 		
-		WebPage::__construct();
+		parent::__construct();
 
 		$flashSession = SOY2ActionSession::getFlashSession();
 		$isCompleted = is_null($flashSession->getAttribute("isCompleted")) ? false : $flashSession->getAttribute("isCompleted");

@@ -18,7 +18,7 @@ class CompletePage extends CMSWebPageBase{
 			SOY2PageController::redirect("");
 		}
 
-		WebPage::__construct();
+		parent::__construct();
 	}
 }
 ?>

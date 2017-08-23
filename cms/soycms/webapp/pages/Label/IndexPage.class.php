@@ -6,7 +6,7 @@ class IndexPage extends CMSWebPageBase{
 
 		define("SOY2ACTION_AUTO_GENERATE",true);
 
-    	if(soy2_check_token()){
+		if(soy2_check_token()){
 
 			if(isset($_POST["update_display_order"])){
 
@@ -29,56 +29,56 @@ class IndexPage extends CMSWebPageBase{
 				}
 
 			}
-    	}
+		}
 
 	}
 
-    function __construct() {
-    	WebPage::__construct();
+	function __construct() {
+		WebPage::__construct();
 
-    	$labels = $this->getLabelLists();
-    	$this->createAdd("label_lists","LabelLists",array(
-    		"list" => $labels,
-    	));
+		$labels = $this->getLabelLists();
+		$this->createAdd("label_lists","LabelLists",array(
+			"list" => $labels,
+		));
 
-    	$this->createAdd("update_display_order","HTMLInput",array(
-    		"type" => "submit",
-    		"name" => "update_display_order",
-    		"value" => CMSMessageManager::get("SOYCMS_DISPLAYORDER"),
-    		"tabindex" => LabelList::$tabIndex++
-    	));
+		$this->createAdd("update_display_order","HTMLInput",array(
+			"type" => "submit",
+			"name" => "update_display_order",
+			"value" => CMSMessageManager::get("SOYCMS_DISPLAYORDER"),
+			"tabindex" => LabelList::$tabIndex++
+		));
 
-    	$this->createAdd("no_label_message","Label._LabelBlankPage",array(
-    		"visible" => (count($labels)<1)
-    	));
+		if( !count($labels) ){
+			$this->addMessage("SOYCMS_NO_LABEL");
+		}
 
-    	if(count($labels)<1){
-    		DisplayPlugin::hide("must_exist_label");
-    	}
+		if(count($labels)<1){
+			DisplayPlugin::hide("must_exist_label");
+		}
 
-    	$this->createAdd("create_label","HTMLForm");
-    	$this->addModel("create_label_caption",array(
-    		"placeholder" => UserInfoUtil::getSiteConfig("useLabelCategory") ? $this->getMessage("SOYCMS_LABEL_CREATE_PLACEHOLDER_WITH_GROUP")//ラベル名 または 分類名/ラベル名
-    		                                                                 : $this->getMessage("SOYCMS_LABEL_CREATE_PLACEHOLDER"),//ラベル名 または 分類名/ラベル名
-    	));
+		$this->createAdd("create_label","HTMLForm");
+		$this->addModel("create_label_caption",array(
+			"placeholder" => UserInfoUtil::getSiteConfig("useLabelCategory") ? $this->getMessage("SOYCMS_LABEL_CREATE_PLACEHOLDER_WITH_GROUP")//ラベル名 または 分類名/ラベル名
+																			 : $this->getMessage("SOYCMS_LABEL_CREATE_PLACEHOLDER"),//ラベル名 または 分類名/ラベル名
+		));
 
 
-    	$this->createAdd("reNameForm","HTMLForm",array(
-    		"action"=>SOY2PageController::createLink("Label.Rename")
-    	));
-    	HTMLHead::addScript("root",array(
-    		"script"=>'var reNameLink = "'.SOY2PageController::createLink("Label.Rename").'";' .
-    				'var reDesciptionLink = "'.SOY2PageController::createLink("Label.ReDescription").'";' .
+		$this->createAdd("reNameForm","HTMLForm",array(
+			"action"=>SOY2PageController::createLink("Label.Rename")
+		));
+		$this->addScript("js_param_for_label",array(
+			"script"=>'var reNameLink = "'.SOY2PageController::createLink("Label.Rename").'";' .
+					'var reDesciptionLink = "'.SOY2PageController::createLink("Label.ReDescription").'";' .
 					'var ChangeLabelIconLink = "'.SOY2PageController::createLink("Label.ChangeLabelIcon").'";'
-    	));
+		));
 
-    	//アイコンリスト
-    	$this->createAdd("image_list","LabelIconList",array(
-    		"list" => $this->getLabelIconList()
-    	));
+		//アイコンリスト
+		$this->createAdd("image_list","LabelIconList",array(
+			"list" => $this->getLabelIconList()
+		));
 
-    	//表示順更新フォーム
-    	$this->createAdd("update_display_order_form","HTMLForm");
+		//表示順更新フォーム
+		$this->createAdd("update_display_order_form","HTMLForm");
 
 		//CSS
 		HTMLHead::addLink("labelcss",array(
@@ -87,49 +87,49 @@ class IndexPage extends CMSWebPageBase{
 			"href" => SOY2PageController::createRelativeLink("./css/label/label.css")
 		));
 
-    }
+	}
 
 
-    /**
-     *  ラベルオブジェクトのリストのリストを返す
-     * @param Boolean $classified ラベルを分けるかどうか
-     */
-    function getLabelLists($classified = true){
-    	$action = SOY2ActionFactory::createInstance("Label.CategorizedLabelListAction");
-    	$result = $action->run();
+	/**
+	 *  ラベルオブジェクトのリストのリストを返す
+	 * @param Boolean $classified ラベルを分けるかどうか
+	 */
+	function getLabelLists($classified = true){
+		$action = SOY2ActionFactory::createInstance("Label.CategorizedLabelListAction");
+		$result = $action->run();
 
-    	if($result->success()){
-   			return $result->getAttribute("list");
-    	}else{
-    		return array();
-    	}
-    }
+		if($result->success()){
+			return $result->getAttribute("list");
+		}else{
+			return array();
+		}
+	}
 
-    /**
-     * ラベルに使えるアイコンの一覧を返す
-     */
-    function getLabelIconList(){
+	/**
+	 * ラベルに使えるアイコンの一覧を返す
+	 */
+	function getLabelIconList(){
 
-    	$dir = CMS_LABEL_ICON_DIRECTORY;
+		$dir = CMS_LABEL_ICON_DIRECTORY;
 
-    	$files = scandir($dir);
+		$files = scandir($dir);
 
-    	$return = array();
+		$return = array();
 
-    	foreach($files as $file){
-    		if($file[0] == ".")continue;
-    		if(!preg_match('/jpe?g|gif|png$/i',$file))continue;
-    		if($file == "default.gif")continue;
+		foreach($files as $file){
+			if($file[0] == ".")continue;
+			if(!preg_match('/jpe?g|gif|png$/i',$file))continue;
+			if($file == "default.gif")continue;
 
-    		$return[] = (object)array(
-    			"filename" => $file,
-    			"url" => CMS_LABEL_ICON_DIRECTORY_URL . $file,
-    		);
-    	}
+			$return[] = (object)array(
+				"filename" => $file,
+				"url" => CMS_LABEL_ICON_DIRECTORY_URL . $file,
+			);
+		}
 
 
-    	return $return;
-    }
+		return $return;
+	}
 }
 
 class LabelLists extends HTMLList{
@@ -159,12 +159,12 @@ class LabelList extends HTMLList{
 
 		$this->createAdd("label_name","HTMLLabel",array(
 			"text"=> $entity->getBranchName(),
-			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";background-color:#" . sprintf("%06X",$entity->getBackgroundColor()) . ";margin:5px"
+			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";background-color:#" . sprintf("%06X",$entity->getBackgroundColor()) . ";;font-size:initial;"
 		));
 
 		$this->createAdd("display_order","HTMLInput",array(
-			"name"     => "display_order[".$entity->getId()."]",
-			"value"    => $entity->getDisplayOrder(),
+			"name"	 => "display_order[".$entity->getId()."]",
+			"value"	=> $entity->getDisplayOrder(),
 			"tabindex" => self::$tabIndex++
 		));
 
@@ -203,4 +203,3 @@ class LabelIconList extends HTMLList{
 	}
 
 }
-?>

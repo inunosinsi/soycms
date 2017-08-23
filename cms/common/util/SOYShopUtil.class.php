@@ -324,9 +324,6 @@ class SOYShopUtil {
 		
 		$session->setAttribute("app_shop_auth_level", $level);
 		$url = SOY2PageController::createRelativeLink("../soyshop", true) . "?site_id=" . $siteId;
-		
-		//httpsで管理画面を開いている場合は末尾にhttpsフラグを追加しておく
-		if(isset($_GET["https"])) $url .= "&https=on";
 		header("Location:" . $url);
 		exit;
 	}

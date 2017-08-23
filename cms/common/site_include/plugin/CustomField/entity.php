@@ -51,7 +51,7 @@ class CustomField{
 	//追加属性値の値
 	private $extraValues;
 
-	function __construct($array = array()){
+	function CustomField($array = array()){
 		$obj = (object)$array;
 		SOY2::cast($this,$obj);
 	}
@@ -185,7 +185,7 @@ class CustomField{
 				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->option));
 				$value = (is_null($fieldValue)) ? $this->getDefaultValue() : $fieldValue ;
 
-				$body = '<select class="cstom_field_select" name="'.$h_formName.'" id="'.$h_formID.'">';
+				$body = '<select class="cstom_field_select form-control" name="'.$h_formName.'" id="'.$h_formID.'">';
 				$body .= '<option value="">----</option>';
 				foreach($options as $option){
 					$option = trim($option);
@@ -201,7 +201,7 @@ class CustomField{
 				break;
 			case "textarea":
 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<textarea class="custom_field_textarea" style="width:100%;"'
+				$body = '<textarea class="custom_field_textarea form-control" style="width:100%;"'
 				        .' id="'.$h_formID.'"'
 				        .' name="'.$h_formName.'"'
 				        .'>'
@@ -218,7 +218,7 @@ class CustomField{
 			case "image":
 			case "file":
 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<input type="text" class="custom_field_input" style="width:50%"'
+				$body = '<input type="text" class="custom_field_input form-control" style="width:50%"'
 				       .' id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'"'
@@ -245,7 +245,7 @@ class CustomField{
 						$extraValue = is_array($extraValues) && isset($extraValues[$h_extraOutput]) ? $extraValues[$h_extraOutput] : "";
 						$h_extraValue = htmlspecialchars($extraValue, ENT_QUOTES, "UTF-8");
 
-						$body .= '<br />' . $h_extraOutput . '&nbsp;<input type="text" class="custom_field_input" style="width:50%"' .
+						$body .= '<br />' . $h_extraOutput . '&nbsp;<input type="text" class="custom_field_input form-control" style="width:50%"' .
 							' id="'.$h_extraformID.'"'.
 							' name="'.$h_extraformName.'"' .
 							' value="'.$h_extraValue.'"' .
@@ -256,7 +256,7 @@ class CustomField{
 				break;
 			case "link":
 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<input type="text" class="custom_field_input" style="width:70%"'
+				$body = '<input type="text" class="custom_field_input form-control" style="width:70%"'
 				       .' id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'"'
@@ -268,7 +268,7 @@ class CustomField{
 			case "input":
 			default:
 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<input type="text" class="custom_field_input" style="width:100%"'
+				$body = '<input type="text" class="custom_field_input form-control" style="width:100%"'
 				       .' id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'"'
@@ -286,10 +286,10 @@ class CustomField{
 			case "textarea":
 			case "input":
 			default:
-				$return = '<p class="sub">'
+				$return = '<div class="form-group"><p class="sub"><label>'
 				       .$title
-				       .'</p>'
-				       .'<div style="margin:-0.5ex 0px 0.5ex 1em;">'.$body.'</div>';
+				       .'</label></p>'
+				       .'<div style="margin:-0.5ex 0px 0.5ex 1em;">'.$body.'</div></div>';
 				break;
 		}
 
@@ -339,4 +339,3 @@ class CustomField{
 		$this->extraValues = $extraValues;
 	}
 }
-?>

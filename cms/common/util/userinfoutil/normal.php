@@ -217,7 +217,7 @@ class UserInfoUtil implements IUserInfoUtil{
      * サイトがルート設定されているかどうか
      */
     public static function getSiteIsDomainRoot(){
-			return self::getSite()->getIsDomainRoot();
+		return self::getSite()->getIsDomainRoot();
     }
 
     /**
@@ -292,3 +292,4 @@ class UserInfoUtil implements IUserInfoUtil{
     	return SOY2ActionSession::getUserSession()->getAttribute("app_auth");
     }
 }
+?>

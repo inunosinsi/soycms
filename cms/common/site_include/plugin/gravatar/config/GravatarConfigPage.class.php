@@ -65,7 +65,7 @@ class GravatarConfigPage extends WebPage{
 		if(method_exists("WebPage", "WebPage")){
 			WebPage::WebPage();
 		}else{
-			WebPage::__construct();
+			parent::__construct();
 		}
 
     DisplayPlugin::toggle("error", $this->error);

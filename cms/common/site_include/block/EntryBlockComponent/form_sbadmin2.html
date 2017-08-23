@@ -1,0 +1,41 @@
+
+<form soy:id="update_form"></form soy:id="update_form">
+
+<div style="height:290px;width:100%;position:relative;">
+
+	<div style="width:100%;height:280px;margin-top:25px;text-align:center;position:absolute;">
+		<input type="button" class="btn btn-success btn-sm" id="move_button" value="追加" style="width:120px;margin-top:10px;"><br>
+		<input type="button" class="btn btn-default btn-sm" id="up_button" disabled="disabled" value="上へ" style="width:120px;margin-top:10px;"><br>
+		<input type="button" class="btn btn-default btn-sm" id="down_button" disabled="disabled" value="下へ" style="width:120px;margin-top:10px;"><br>
+		<input type="button" class="btn btn-default btn-sm" id="move_entry_form" value="記事作成" style="width:120px;margin-top:20px;">
+	</div>
+
+	<div style="width:40%;height:280px;margin: 0px;position:absolute;left:0px;">
+		<label id="selected_entry_title">選択されている記事</label>
+		<select id="selected_entry_list" style="width:100%;height:255px;" size="14"></select>
+	</div>
+
+	<div style="width:40%;height:280px;margin: 0px;position:absolute;right:0px;">
+		<label id="all_entry_title">記事一覧</label>
+		<select soy:id="labelList" id="labelList" onchange="labelFilter(this.value)" class="form-control"><option value="##NO_FILTER##">すべて表示</option></select>
+		<select id="all_entry_list" style="width:100%;height:221px;" size="12"></select>
+	</div>
+</div>
+
+<div class="form-group">
+	<input class="btn btn-success pull-right" type="button" value="設定の保存" id="update">
+	<input class="btn btn-default" type="button" value="キャンセル" onclick="common_close_layer(window.parent);return false;"/>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">記事詳細
+			<input type="button" class="btn btn-info btn-xs pull-right" id="display_outline" value="選択中の記事を表示">
+	</div>
+		<iframe id="outlineFrame" style="border-style:none;width:100%;height:90%;"></iframe>
+</div>
+
+
+<script soy:id="entry_list"></script>
+<script soy:id="selector_js"></script>
+<script soy:id="entry_form"></script>
+

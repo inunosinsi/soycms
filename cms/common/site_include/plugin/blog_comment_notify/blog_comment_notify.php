@@ -30,8 +30,8 @@ class SOYCMS_BlogCommnetNotifyPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ブログコメント メール通知プラグイン",
 			"description"=>"ブログのコメント投稿時にメール送信",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"dev"
 		));

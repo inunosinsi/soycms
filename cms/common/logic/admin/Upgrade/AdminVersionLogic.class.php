@@ -25,7 +25,7 @@ class AdminVersionLogic extends SOY2LogicBase{
 	/**
 	 * コンストラクタ
 	 */
-	public function __construct(){
+	public function AdminVersionLogic(){
 		SOY2DAOFactory::importEntity("admin.AdminDataSets");
 		$this->dir = SOY2::RootDir() . "admin/update/";
 	}

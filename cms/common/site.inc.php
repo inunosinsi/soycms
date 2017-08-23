@@ -34,6 +34,7 @@ SOY2DAOConfig::setOption("connection_failure","throw");
 //SOY2DAOConfig::DaoCacheDir(dirname(dirname(__FILE__))."/cache_dao/");
 
 //SOY2HTMLの設定
+SOY2HTMLConfig::setOption("output_html", true);
 SOY2HTMLPlugin::addPlugin("page","PagePlugin");
 SOY2HTMLPlugin::addPlugin("link","LinkPlugin");
 SOY2HTMLPlugin::addPlugin("src","SrcPlugin");

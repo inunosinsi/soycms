@@ -17,7 +17,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 	 * @return SOY2HTML
 	 * 設定画面用のHTMLPageComponent
 	 */
-	function getFormPage(){
+	public function getFormPage(){
 
 		//DSNを切り替える
 		if(is_null($this->siteId)){
@@ -54,8 +54,8 @@ class MultiLabelBlockComponent implements BlockComponent{
 	 * @return SOY2HTML
 	 * 表示用コンポーネント
 	 */
-	function getViewPage($page){
-				
+	public function getViewPage($page){
+
 		//古いDSNのバックアップ
 		$oldDsn = null;
 
@@ -74,13 +74,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 			SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
 			$siteDAO = SOY2DAOFactory::create("admin.SiteDAO");
 
-			//サイトのIDがnullの場合でもサイトの情報を取得できるようにした
-			if(is_null($this->siteId)){
-				$siteId = substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/") + 1);
-				$site = $siteDAO->getBySiteId($siteId);
-			}else{
-				$site = $siteDAO->getById($this->siteId);
-			}
+			$site = $siteDAO->getById($this->siteId);
 			SOY2DAOConfig::Dsn($site->getDataSourceName());
 
 			$dsn = $site->getDataSourceName();
@@ -170,7 +164,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 	 * @return string
 	 * 一覧表示に出力する文字列
 	 */
-	function getInfoPage(){
+	public function getInfoPage(){
 
 		try{
 			$res = count($this->mapping) . CMSMessageManager::get("SOYCMS_NUMBER_OF_SET_LABELS");
@@ -185,59 +179,59 @@ class MultiLabelBlockComponent implements BlockComponent{
 	/**
 	 * @return string コンポーネント名
 	 */
-	function getComponentName(){
+	public function getComponentName(){
 		return CMSMessageManager::get("SOYCMS_BLOG_LINK_BLOCK");
 	}
 
-	function getComponentDescription(){
+	public function getComponentDescription(){
 		return CMSMessageManager::get("SOYCMS_BLOG_LINK_BLOCK_DESCRIPTION");
 	}
 
 
-	function getSiteId() {
+	public function getSiteId() {
 		return $this->siteId;
 	}
-	function setSiteId($siteId) {
+	public function setSiteId($siteId) {
 		$this->siteId = $siteId;
 	}
-	function getMapping() {
+	public function getMapping() {
 		if(!empty($this->mapping) && strlen(implode("",array_values($this->mapping))) == 0)$this->mapping = array();
 		return $this->mapping;
 	}
-	function setMapping($mapping) {
+	public function setMapping($mapping) {
 		$this->mapping = $mapping;
 	}
-	function getLabelIds() {
+	public function getLabelIds() {
 		if(empty($this->labelIds) || !empty($this->mapping))$this->labelIds = array_keys($this->mapping);
 		return $this->labelIds;
 	}
-	function setLabelIds($labelIds) {
+	public function setLabelIds($labelIds) {
 		$this->labelIds = $labelIds;
 	}
-	function getDisplayCountFrom() {
+	public function getDisplayCountFrom() {
 		return $this->displayCountFrom;
 	}
-	function setDisplayCountFrom($displayCountFrom) {
+	public function setDisplayCountFrom($displayCountFrom) {
 		$this->displayCountFrom = $displayCountFrom;
 	}
-	function getDisplayCountTo() {
+	public function getDisplayCountTo() {
 		return $this->displayCountTo;
 	}
-	function setDisplayCountTo($displayCountTo) {
+	public function setDisplayCountTo($displayCountTo) {
 		$this->displayCountTo = $displayCountTo;
 	}
 
-	function getOldSiteId() {
+	public function getOldSiteId() {
 		return $this->oldSiteId;
 	}
-	function setOldSiteId($oldSiteId) {
+	public function setOldSiteId($oldSiteId) {
 		$this->oldSiteId = $oldSiteId;
 	}
 
-	function getOrder(){
+	public function getOrder(){
 		return $this->order;
 	}
-	function setOrder($order){
+	public function setOrder($order){
 		$this->order = $order;
 	}
 }
@@ -249,12 +243,8 @@ class MultiLabelBlockComponent_FormPage extends HTMLPage{
 	private $entity;
 	private $blogPages = array();
 
-	function __construct(){
-		HTMLPage::__construct();
 
-	}
-
-	function execute(){
+	public function execute(){
 
 		//サイト変更機能
 		$this->createAdd("sites_form","HTMLForm");
@@ -287,26 +277,31 @@ class MultiLabelBlockComponent_FormPage extends HTMLPage{
 		));
 
 		$this->createAdd("display_order_asc","HTMLCheckBox",array(
-			"type"      => "radio",
-			"name"      => "object[order]",
-			"value"     => BlockComponent::ORDER_ASC,
+			"type"	  => "radio",
+			"name"	  => "object[order]",
+			"value"	 => BlockComponent::ORDER_ASC,
 			"selected"  => $this->entity->getOrder() == BlockComponent::ORDER_ASC,
 			"elementId" => "display_order_asc",
 		));
 		$this->createAdd("display_order_desc","HTMLCheckBox",array(
-			"type"      => "radio",
-			"name"      => "object[order]",
-			"value"     => BlockComponent::ORDER_DESC,
+			"type"	  => "radio",
+			"name"	  => "object[order]",
+			"value"	 => BlockComponent::ORDER_DESC,
 			"selected"  => $this->entity->getOrder() == BlockComponent::ORDER_DESC,
 			"elementId" => "display_order_desc",
 		));
 
+		$labelList = $this->entity->getMapping();
 		$this->createAdd("label_list","MultiLabelList_LabelList",array(
-			"labels"=>$this->getLabelList(),
+			"labels" => $this->getLabelList(),
 			"blogs" => $this->blogPages,
-			"list" => $this->entity->getMapping()
+			"list" =>$labelList,
+		));
+		$this->addModel("has_label_list",array(
+			"visible" => count($labelList),
 		));
 
+		//現在保存されているサイトID
 		$this->createAdd("old_site_id","HTMLInput",array(
 			"name" => "object[oldSiteId]",
 			"value" => $this->siteId
@@ -319,7 +314,7 @@ class MultiLabelBlockComponent_FormPage extends HTMLPage{
 	/**
 	 * ラベル表示コンポーネントの実装を行う
 	 */
-	function setEntity(MultiLabelBlockComponent $block){
+	public function setEntity(MultiLabelBlockComponent $block){
 		$this->entity = $block;
 	}
 
@@ -328,32 +323,37 @@ class MultiLabelBlockComponent_FormPage extends HTMLPage{
 	 *
 	 * array(ページID => )
 	 */
-	function setBlogPages($pages){
+	public function setBlogPages($pages){
 		$this->blogPages = $pages;
 	}
 
-   /**
-     *  ラベルオブジェクトのリストを返す
-     *  NOTE:個数に考慮していない。ラベルの量が多くなるとpagerの実装が必要？
-     */
-    function getLabelList(){
-    	$dao = SOY2DAOFactory::create("cms.LabelDAO");
-    	return $dao->get();
-    }
+	/**
+	 *  ラベルオブジェクトのリストを返す
+	 *  NOTE:個数に考慮していない。ラベルの量が多くなるとpagerの実装が必要？
+	 */
+	private function getLabelList(){
+		$dao = SOY2DAOFactory::create("cms.LabelDAO");
+		return $dao->get();
+	}
 
-	function getTemplateFilePath(){
-		if(!defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja"||!file_exists(CMS_BLOCK_DIRECTORY . "MultiLabelBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html")){
-		   return CMS_BLOCK_DIRECTORY . "MultiLabelBlockComponent" . "/form.html";
+	public function getTemplateFilePath(){
+		//ext-modeでbootstrap対応画面作成中
+		if(defined("EXT_MODE_BOOTSTRAP") && file_exists(CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_sbadmin2.html")){
+			return CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_sbadmin2.html";
+		}
+
+		if(!defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja"||!file_exists(CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_".SOYCMS_LANGUAGE.".html")){
+			return CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form.html";
 		}else{
-			return CMS_BLOCK_DIRECTORY . "MultiLabelBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html";
+			return CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_".SOYCMS_LANGUAGE.".html";
 		}
 	}
 
-	function setSites($sites){
+	public function setSites($sites){
 		$this->sites = $sites;
 	}
 
-	function setSiteId($id){
+	public function setSiteId($id){
 		$this->siteId = $id;
 	}
 
@@ -362,24 +362,25 @@ class MultiLabelBlockComponent_FormPage extends HTMLPage{
 
 class MultiLabelBlockComponent_ViewPage extends HTMLList{
 
-	var $url = array();
-	var $blogTitle = array();
-	var $blogUrl = array();
+	private $url = array();
+	private $blogTitle = array();
+	private $blogUrl = array();
 
 	private $dsn;
 
-	function setUrl($url){
+	public function setUrl($url){
 		$this->url = $url;
 	}
 
-	function setBlogTitle($blogTitle){
+	public function setBlogTitle($blogTitle){
 		$this->blogTitle = $blogTitle;
 	}
 
-	function setBlogUrl($blogUrl){
+	public function setBlogUrl($blogUrl){
 		$this->blogUrl = $blogUrl;
 	}
-	function getStartTag(){
+
+	public function getStartTag(){
 
 		return parent::getStartTag();
 	}
@@ -387,7 +388,7 @@ class MultiLabelBlockComponent_ViewPage extends HTMLList{
 	/**
 	 * 実行前後にDSNの書き換えを実行
 	 */
-	function execute(){
+	public function execute(){
 
 		if($this->dsn)$old = SOY2DAOConfig::Dsn($this->dsn);
 
@@ -396,10 +397,10 @@ class MultiLabelBlockComponent_ViewPage extends HTMLList{
 		if($this->dsn)SOY2DAOConfig::Dsn($old);
 	}
 
-	function populateItem($entity){
+	protected function populateItem($entity){
 		//entry title
 		$url = (isset($this->url[$entity->getId()])) ? $this->url[$entity->getId()] : "" ;
-		
+
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
 		$entryUrl = ( strlen($url) >0 ) ? $url.rawurlencode($entity->getAlias()) : "" ;
 
@@ -464,7 +465,7 @@ class MultiLabelBlockComponent_ViewPage extends HTMLList{
 			"link" => $entryUrl ."#more",
 			"visible"=>(strlen($entity->getMore()) != 0)
 		));
-		
+
 		$this->createAdd("more_link_no_anchor", "HTMLLink", array(
 			"soy2prefix"=>"cms",
 			"link" => $entryUrl,
@@ -511,10 +512,10 @@ class MultiLabelBlockComponent_ViewPage extends HTMLList{
 	}
 
 
-	function getDsn() {
+	public function getDsn() {
 		return $this->dsn;
 	}
-	function setDsn($dsn) {
+	public function setDsn($dsn) {
 		$this->dsn = $dsn;
 	}
 }
@@ -524,7 +525,7 @@ class MultiLabelList_LabelList extends HTMLList{
 	private $labels = array();
 	private $blogs = array();
 
-	function populateItem($entity,$key){
+	protected function populateItem($entity,$key){
 
 		$labelId = $key;
 		$blogId = $entity;
@@ -554,17 +555,16 @@ class MultiLabelList_LabelList extends HTMLList{
 	}
 
 
-	function getLabels() {
+	public function getLabels() {
 		return $this->labels;
 	}
-	function setLabels($labels) {
+	public function setLabels($labels) {
 		$this->labels = $labels;
 	}
-	function getBlogs() {
+	public function getBlogs() {
 		return $this->blogs;
 	}
-	function setBlogs($blogs) {
+	public function setBlogs($blogs) {
 		$this->blogs = $blogs;
 	}
 }
-?>

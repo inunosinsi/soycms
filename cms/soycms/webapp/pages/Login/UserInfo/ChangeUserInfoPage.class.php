@@ -35,7 +35,7 @@ class ChangeUserInfoPage extends CMSWebPageBase{
     	}
 	}
 	
-    function __construct() {
+    function __construct(){
     	$dao = SOY2DAOFactory::create("asp.ASPUserDAO");
 		$user = $dao->getById(UserInfoUtil::getUserId());
 		
@@ -43,7 +43,7 @@ class ChangeUserInfoPage extends CMSWebPageBase{
 			$this->jump("Login.UserInfo");
 		}
 		
-		WebPage::__construct();
+		parent::__construct();
     	
     	if(!$this->account){
     		$this->account = new ChangeAccountActionForm();

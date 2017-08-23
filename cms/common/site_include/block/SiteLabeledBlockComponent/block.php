@@ -16,7 +16,7 @@ class SiteLabeledBlockComponent implements BlockComponent{
 	 * @return SOY2HTML
 	 * 設定画面用のHTMLPageComponent
 	 */
-	function getFormPage(){
+	public function getFormPage(){
 
 		//ASPでは使用不可
 		if(defined("SOYCMS_ASP_MODE")) return false;
@@ -52,7 +52,7 @@ class SiteLabeledBlockComponent implements BlockComponent{
 	 * @return SOY2HTML
 	 * 表示用コンポーネント
 	 */
-	function getViewPage($page){
+	public function getViewPage($page){
 
 		//ASPでは使用不可
 		if(defined("SOYCMS_ASP_MODE")) return false;
@@ -139,7 +139,7 @@ class SiteLabeledBlockComponent implements BlockComponent{
 	 * @return string
 	 * 一覧表示に出力する文字列
 	 */
-	function getInfoPage(){
+	public function getInfoPage(){
 
 		//DSNを切り替える
 		if(is_null($this->siteId)){ $this->siteId = UserInfoUtil::getSite()->getId(); }
@@ -170,61 +170,61 @@ class SiteLabeledBlockComponent implements BlockComponent{
 	/**
 	 * @return string コンポーネント名
 	 */
-	function getComponentName(){
+	public function getComponentName(){
 		return CMSMessageManager::get("SOYCMS_ANOTHER_SOYCMSSITE_LABELED_ENTRY_BLOCK");
 	}
 
-	function getComponentDescription(){
+	public function getComponentDescription(){
 		return CMSMessageManager::get("SOYCMS_ANOTHER_SOYCMSSITE_LABELED_ENTRY_BLOCK_DESCRIPTION");
 	}
 
 
-	function getLabelId() {
+	public function getLabelId() {
 		return $this->labelId;
 	}
-	function setLabelId($labelId) {
+	public function setLabelId($labelId) {
 		$this->labelId = $labelId;
 	}
 
-	function getDisplayCountFrom() {
+	public function getDisplayCountFrom() {
 		return $this->displayCountFrom;
 	}
-	function setDisplayCountFrom($displayCountFrom) {
+	public function setDisplayCountFrom($displayCountFrom) {
 		$this->displayCountFrom = $displayCountFrom;
 	}
 
-	function getDisplayCountTo() {
+	public function getDisplayCountTo() {
 		return $this->displayCountTo;
 	}
-	function setDisplayCountTo($displayCountTo) {
+	public function setDisplayCountTo($displayCountTo) {
 		$this->displayCountTo = $displayCountTo;
 	}
 
-	function getBlogPageId() {
+	public function getBlogPageId() {
 		return $this->blogPageId;
 	}
-	function setBlogPageId($blogPageId) {
+	public function setBlogPageId($blogPageId) {
 		$this->blogPageId = $blogPageId;
 	}
 
-	function getIsStickUrl() {
+	public function getIsStickUrl() {
 		return $this->isStickUrl;
 	}
-	function setIsStickUrl($isStickUrl) {
+	public function setIsStickUrl($isStickUrl) {
 		$this->isStickUrl = $isStickUrl;
 	}
 
-	function getSiteId() {
+	public function getSiteId() {
 		return $this->siteId;
 	}
-	function setSiteId($siteId) {
+	public function setSiteId($siteId) {
 		$this->siteId = $siteId;
 	}
 
-	function getOrder(){
+	public function getOrder(){
 		return $this->order;
 	}
-	function setOrder($order){
+	public function setOrder($order){
 		$this->order = $order;
 	}
 }
@@ -236,12 +236,7 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 	private $entity;
 	private $blogPages = array();
 
-	function __construct(){
-		HTMLPage::__construct();
-
-	}
-
-	function execute(){
+	public function execute(){
 
 		//ラベル一覧表示用
 		HTMLHead::addLink("editor_css",array(
@@ -265,16 +260,16 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 		));
 
 		$this->createAdd("display_order_asc","HTMLCheckBox",array(
-			"type"      => "radio",
-			"name"      => "object[order]",
-			"value"     => BlockComponent::ORDER_ASC,
+			"type"	  => "radio",
+			"name"	  => "object[order]",
+			"value"	 => BlockComponent::ORDER_ASC,
 			"selected"  => $this->entity->getOrder() == BlockComponent::ORDER_ASC,
 			"elementId" => "display_order_asc",
 		));
 		$this->createAdd("display_order_desc","HTMLCheckBox",array(
-			"type"      => "radio",
-			"name"      => "object[order]",
-			"value"     => BlockComponent::ORDER_DESC,
+			"type"	  => "radio",
+			"name"	  => "object[order]",
+			"value"	 => BlockComponent::ORDER_DESC,
 			"selected"  => $this->entity->getOrder() == BlockComponent::ORDER_DESC,
 			"elementId" => "display_order_desc",
 		));
@@ -332,7 +327,7 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 	/**
 	 * ラベル表示コンポーネントの実装を行う
 	 */
-	function setEntity(SiteLabeledBlockComponent $block){
+	public function setEntity(SiteLabeledBlockComponent $block){
 		$this->entity = $block;
 	}
 
@@ -341,33 +336,38 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 	 *
 	 * array(ページID => )
 	 */
-	function setBlogPages($pages){
+	public function setBlogPages($pages){
 		$this->blogPages = $pages;
 	}
 
-   /**
-     *  ラベルオブジェクトのリストを返す
-     *  NOTE:個数に考慮していない。ラベルの量が多くなるとpagerの実装が必要？
-     */
-    function getLabelList(){
-    	$dao = SOY2DAOFactory::create("cms.LabelDAO");
-    	return $dao->get();
-    }
+	/**
+	 *  ラベルオブジェクトのリストを返す
+	 *  NOTE:個数に考慮していない。ラベルの量が多くなるとpagerの実装が必要？
+	 */
+	private function getLabelList(){
+		$dao = SOY2DAOFactory::create("cms.LabelDAO");
+		return $dao->get();
+	}
 
-	function getTemplateFilePath(){
+	public function getTemplateFilePath(){
 
-		if(!defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja"||!file_exists(CMS_BLOCK_DIRECTORY . "SiteLabeledBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html")){
-		   return CMS_BLOCK_DIRECTORY . "SiteLabeledBlockComponent" . "/form.html";
+		//ext-modeでbootstrap対応画面作成中
+		if(defined("EXT_MODE_BOOTSTRAP") && file_exists(CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_sbadmin2.html")){
+			return CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_sbadmin2.html";
+		}
+
+		if(!defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja"||!file_exists(CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_".SOYCMS_LANGUAGE.".html")){
+			return CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form.html";
 		}else{
-			return CMS_BLOCK_DIRECTORY . "SiteLabeledBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html";
+			return CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_".SOYCMS_LANGUAGE.".html";
 		}
 	}
 
-	function setSites($sites){
+	public function setSites($sites){
 		$this->sites = $sites;
 	}
 
-	function setSiteId($id){
+	public function setSiteId($id){
 		$this->siteId = $id;
 	}
 
@@ -381,19 +381,19 @@ class SiteLabeledBlockComponent_ViewPage extends HTMLList{
 	var $blogPageId;
 	private $dsn = false;
 
-	function setIsStickUrl($flag){
+	public function setIsStickUrl($flag){
 		$this->isStickUrl = $flag;
 	}
 
-	function setArticlePageUrl($articlePageUrl){
+	public function setArticlePageUrl($articlePageUrl){
 		$this->articlePageUrl = $articlePageUrl;
 	}
 
-	function setBlogPageId($id){
+	public function setBlogPageId($id){
 		$this->blogPageId = $id;
 	}
 
-	function getStartTag(){
+	public function getStartTag(){
 
 		return parent::getStartTag();
 	}
@@ -401,7 +401,7 @@ class SiteLabeledBlockComponent_ViewPage extends HTMLList{
 	/**
 	 * 実行前後にDSNの書き換えを実行
 	 */
-	function execute(){
+	public function execute(){
 
 		if($this->dsn)$old = SOY2DAOConfig::Dsn($this->dsn);
 
@@ -412,7 +412,7 @@ class SiteLabeledBlockComponent_ViewPage extends HTMLList{
 
 
 
-	function populateItem($entity){
+	protected function populateItem($entity){
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
 		$entryUrl = $this->articlePageUrl.rawurlencode($entity->getAlias());
@@ -467,7 +467,7 @@ class SiteLabeledBlockComponent_ViewPage extends HTMLList{
 			"link" => $entryUrl ."#more",
 			"visible"=>(strlen($entity->getMore()) != 0)
 		));
-		
+
 		$this->createAdd("more_link_no_anchor", "HTMLLink", array(
 			"soy2prefix"=>"cms",
 			"link" => $entryUrl,
@@ -495,10 +495,10 @@ class SiteLabeledBlockComponent_ViewPage extends HTMLList{
 	}
 
 
-	function getDsn() {
+	public function getDsn() {
 		return $this->dsn;
 	}
-	function setDsn($dsn) {
+	public function setDsn($dsn) {
 		$this->dsn = $dsn;
 	}
 }
@@ -506,12 +506,12 @@ class SiteLabeledBlockComponent_ViewPage extends HTMLList{
 class SiteLabelList extends HTMLList{
 	private $currentLabel;
 
-	function populateItem($entity){
+	protected function populateItem($entity){
 
 		$elementID = "label_".$entity->getId();
 
 		$this->createAdd("radio","HTMLCheckBox",array(
-			"value"     => $entity->getId(),
+			"value"	 => $entity->getId(),
 			"selected"  => ((string)$this->currentLabel == (string)$entity->getId()),
 			"elementId" => $elementID
 		));
@@ -520,6 +520,8 @@ class SiteLabelList extends HTMLList{
 		));
 		$this->createAdd("label_text","HTMLLabel",array(
 			"text" => $entity->getCaption(),
+			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";"
+			         ."background-color:#" . sprintf("%06X",$entity->getBackgroundColor()).";",
 		));
 
 		$this->createAdd("label_icon","HTMLImage",array(
@@ -528,11 +530,10 @@ class SiteLabelList extends HTMLList{
 
 	}
 
-	function getCurrentLabel() {
+	public function getCurrentLabel() {
 		return $this->currentLabel;
 	}
-	function setCurrentLabel($currentLabel) {
+	public function setCurrentLabel($currentLabel) {
 		$this->currentLabel = $currentLabel;
 	}
 }
-?>

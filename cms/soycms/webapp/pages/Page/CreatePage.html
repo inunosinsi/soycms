@@ -1,11 +1,61 @@
 <html>
 <head soy:page="_common.HeaderPage" isOverWrite="true">
 </head>
-<body>
-<?php /* コンテンツ部分 */ ?>
-<div id="layer_content">
-<h3>ページの新規作成</h3>
-<script lang="text/javascript">
+<body class="sub">
+	<div id="page-wrapper" style="min-height: initial;padding:20px;">
+
+		<form soy:id="create_label" onsubmit="return checkURL();">
+
+			<div class="form-group">
+				<label>タイトル<span soy:message="HELP_PAGE_TITLE" /></label>
+				<input soy:id="title" class="form-control">
+			</div>
+
+			<div class="form-group">
+				<label>URI<span soy:message="HELP_PAGE_URI" /></label>
+				<span class="input-group">
+					<span id="uri_prefix" soy:id="uri_prefix" class="input-group-addon"></span><input soy:id="uri" id="uri" onblur="return checkURL();" class="form-control">
+				</span>
+				<div id="uri_exists_error" style="display:none;background-color:red;">×このURIは既に使われています。</div>
+				<div id="uri_cannot_end_slash" style="display:none;background-color:red;">×URLを「/」（スラッシュ）で終わることはできません</div>
+			</div>
+
+			<div class="form-group" id="select_page_type">
+				<label>ページの種類を選択<span soy:message="HELP_PAGE_TYPE" /></label>
+					<input soy:id="page_type_default" type="radio" checked="checked">
+					<input soy:id="page_type_blog" type="radio">
+					<input soy:id="page_type_mobile" type="radio">
+					<input soy:id="page_type_application" type="radio">
+				<span class="help-block">後から変更することは出来ません</span>
+			</div>
+
+			<div class="form-group">
+				<label>ページ雛形を選択<span soy:message="HELP_PAGE_TEMPLATE" /></label>
+				<select id="normal_template_select" soy:id="normal_template_select" class="form-control"></select>
+				<select id="blog_template_select" soy:id="blog_template_select" class="form-control" style="display:none"></select>
+			</div>
+
+			<div class="form-group">
+				<label>親ページ<span soy:message="HELP_PAGE_OWNER_PAGE" /></label>
+				<select soy:id="parent_page_select" class="form-control"><option value="">選択</option></select>
+			</div>
+
+			<div class="form-group">
+				<label>公開設定<span soy:message="HELP_PAGE_DRAFT"></span></label>
+				<input type="radio" soy:id="state_draft">
+				<input type="radio" soy:id="state_public">
+			</div>
+
+			<div class="form-group">
+				<input type="submit" value="ページを作成" class="btn btn-primary btn-block">
+			</div>
+		</form soy:id="create_label">
+	</div>
+
+<!-- soy:page="_common.BottomJSPage" /-->
+
+<script soy:id="pageConfirm"></script>
+<script type="text/javascript">
 	function checkURL(){
 		var url = $('#uri').val();
 		if(pageList.indexOf(url) != -1){
@@ -20,84 +70,19 @@
 			$('#uri_exists_error').css("display", "none");
 		}
 		return true;
-	
 	}
+	$(function(){
+		$("#select_page_type input[type=radio]").click(function(event){
+			if($('#page_type_blog').prop("checked")){
+				$('#blog_template_select').prop('name', 'template').show();
+				$('#normal_template_select').prop('name', '_normal').hide();
+			}else{
+				$('#blog_template_select').prop('name', '_normal').hide();
+				$('#normal_template_select').prop('name', 'template').show();
+			}
+		});
+	});
 </script>
-<form soy:id="create_label" onsubmit="return checkURL();">
-<table class="globalpage_input" cellpadding="0" cellspacing="0">
-	<tbody>
-		<tr class="no_example">
-			<td  class="item_name">タイトル<img soy:message="HELP_PAGE_TITLE" /></td>
-			<td><input soy:id="title" style="width:332px" /></td>
-		</tr>
-		<tr class="no_example">
-			<td class="item_name">URI<img soy:message="HELP_PAGE_URI" /></td>
-			<td>
-				<span id="uri_prefix" soy:id="uri_prefix"></span><input soy:id="uri" id="uri" onblur="return checkURL();">
-				<div id="uri_exists_error" style="display:none;background-color:red;">×このURIは既に使われています。</div>
-				<div id="uri_cannot_end_slash" style="display:none;background-color:red;">×URLを「/」（スラッシュ）で終わることはできません</div>
-			</td>
-		</tr>
-		<tr>
-			<td class="item_name">ページの種類を選択<img soy:message="HELP_PAGE_TYPE" /></td>
-			<td>
-				<div>
-					<input soy:id="page_type_default" type="radio" checked="checked" onchange="$('#blog_template_select').attr('name', '_normal');$('#normal_template_select').attr('name', 'template');$('#normal_template_list').show();$('#blog_template_list').hide();">
-				</div>
-				<div>
-					<input soy:id="page_type_blog" type="radio" onchange="$('#blog_template_select').attr('name', 'template');$('#normal_template_select').attr('name', '_normal');$('#normal_template_list').hide();$('#blog_template_list').show();">
-				</div>
-				<div>
-					<input soy:id="page_type_mobile" type="radio" onchange="$('#blog_template_select').attr('name', '_normal');$('#normal_template_select').attr('name', 'template');$('#normal_template_list').show();$('#blog_template_list').hide();">
-				</div>
-				<div>
-					<input soy:id="page_type_application" type="radio" checked="checked" onchange="$('#blog_template_select').attr('name', '_normal');$('#normal_template_select').attr('name', 'template');$('#normal_template_list').show();$('#blog_template_list').hide();">
-				</div>
-			</td>
-		</tr>
-		<tr class="example">
-			<td></td>
-			<td>後から変更することは出来ません</td>
-		</tr>
-		
-		<tr class="no_example" id="normal_template_list">
-			<td class="item_name">ページ雛形を選択<img soy:message="HELP_PAGE_TEMPLATE" /></td>
-			<td><select id="normal_template_select" soy:id="normal_template_select" style="width:222px"></select>
-			</td>
-		</tr>
-		
-		<tr class="no_example" id="blog_template_list" style="display:none;">
-			<td class="item_name">ページ雛形を選択<img soy:message="HELP_PAGE_TEMPLATE" /></td>
-			<td><select id="blog_template_select" soy:id="blog_template_select" style="width:222px"></select>
-			</td>
-		</tr>
-		
-		<tr class="no_example">
-			<td class="item_name">親ページ<img soy:message="HELP_PAGE_OWNER_PAGE" /></td>
-			<td>
-				<select soy:id="parent_page_select" style="width:222px"><option value="">選択</option></select>
-			</td>
-		</tr>
 
-		<tr class="no_example">
-			<td class="item_name">公開設定<img soy:message="HELP_PAGE_DRAFT"/></td>
-			<td>
-				<input type="radio" soy:id="state_draft">
-				<input type="radio" soy:id="state_public">
-			</td>
-		</tr>
-
-		<tr>
-			<td></td>
-			<td class="button">
-				<input type="submit" value="ページを追加">
-			</td>
-		</tr>
-	</tbody>
-</table>
-
-</form soy:id="create_label">
-</div>
-<?php /* コンテンツ部分終わり */ ?>
 </body>
 </html>

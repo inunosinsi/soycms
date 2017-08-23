@@ -45,8 +45,8 @@ class IndexPage extends CMSWebPageBase{
     	}
 	}
 
-	function __construct($arg){
-		WebPage::__construct();
+	function IndexPage($arg){
+		WebPage::WebPage();
 
 		/*
 		 * データベースのバージョンチェック

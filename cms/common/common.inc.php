@@ -9,6 +9,9 @@ if(isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
  * 共通の設定を記述
  */
 
+//現在時刻
+define("SOYCMS_NOW",time());
+
 //PHPの設定
 include_once(dirname(__FILE__) . "/config/php.config.php");
 
@@ -44,6 +47,7 @@ define("CMS_SQL_DIRECTORY", str_replace("\\", "/", dirname(__FILE__) . "/sql/"))
 
 //SOY2HTMLの設定
 if(defined("SOYCMS_VERSION")) SOY2HTMLConfig::setOption("cache_prefix", SOYCMS_VERSION . "_");
+SOY2HTMLConfig::setOption("output_html", true);
 SOY2HTMLPlugin::addPlugin("page", "PagePlugin");
 SOY2HTMLPlugin::addPlugin("link", "LinkPlugin");
 SOY2HTMLPlugin::addPlugin("src", "SrcPlugin");

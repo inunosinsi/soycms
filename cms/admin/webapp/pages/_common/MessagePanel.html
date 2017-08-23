@@ -1,0 +1,13 @@
+			<div class="row" soy:id="hasMessage">
+				<div class="col-lg-12">
+				<?php // 他のpanelと左右を合わせるためにcol-lg-12を入れ子にしている   ?>
+					<div class="col-lg-12 alert alert-danger alert-dismissable" soy:id="error_message_list">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						<i class="fa fa-warning fa-fw"></i><!-- soy:id="message" /-->
+					</div>
+					<div class="col-lg-12 alert alert-success alert-dismissable" soy:id="success_message_list">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+						<i class="fa fa-bell fa-fw"></i><!-- soy:id="message" /-->
+					</div>
+				</div>
+			</div soy:id="hasMessage">

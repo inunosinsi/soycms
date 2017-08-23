@@ -7,6 +7,8 @@ class LabeledBlockComponent implements BlockComponent{
 	private $labelId;
 	private $displayCountFrom;
 	private $displayCountTo;
+	private $enablePaging = false;
+	private $pagingParameter = "";
 	private $isStickUrl = false;
 	private $blogPageId;
 	private $order = self::ORDER_DESC;//記事の並び順
@@ -15,7 +17,7 @@ class LabeledBlockComponent implements BlockComponent{
 	 * @return SOY2HTML
 	 * 設定画面用のHTMLPageComponent
 	 */
-	function getFormPage(){
+	public function getFormPage(){
 
 		$logic = SOY2Logic::createInstance("logic.site.Page.BlogPageLogic");
 		$blogPages = $logic->getBlogPageList();
@@ -30,24 +32,55 @@ class LabeledBlockComponent implements BlockComponent{
 	 * @return SOY2HTML
 	 * 表示用コンポーネント
 	 */
-	function getViewPage($page){
+	public function getViewPage($page){
 		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 
 		$this->displayCountFrom = max($this->displayCountFrom,1);//0件目は認めない→１件目に変更
 
 		if(is_numeric($this->displayCountTo)){
-			$logic->limit = $this->getDisplayCountTo()- (int)$this->getDisplayCountFrom()+1;//n件目～m件目はm-n+1個のエントリ
+			$limit = $this->getDisplayCountTo()- (int)$this->getDisplayCountFrom()+1;//n件目～m件目はm-n+1個のエントリ
 		}
 
 		if(is_numeric($this->displayCountFrom)){
-			$logic->offset = $this->displayCountFrom-1;//offsetは0スタートなので、n件目=offset:n-1
+			$offset = $this->displayCountFrom-1;//offsetは0スタートなので、n件目=offset:n-1
 		}
+
+		$pageNumber = 1;
+		//2ページ目以降の場合
+		if(  $this->enablePaging && strlen($this->pagingParameter)
+		  && isset($_GET[$this->pagingParameter]) && is_numeric($_GET[$this->pagingParameter]) && $_GET[$this->pagingParameter] >= 2
+		  && $limit > 0 && isset($offset)
+		){
+			$pageNumber = (int)$_GET[$this->pagingParameter];
+			$offset += ($pageNumber -1) * $limit;
+		}
+
 
 		if($this->order == self::ORDER_ASC){
 			$logic->setReverse(true);
 		}
 
+		//制限なしで数を数える：ページ分けする場合のみ必要
+		$total = 0;
+		$logic->limit = null;
+		$logic->offset = null;
+		if($this->enablePaging){
+			try{
+				if(defined("CMS_PREVIEW_ALL")){
+					$array = $logic->getByLabelId($this->labelId);
+				}else{
+					$array = $logic->getOpenEntryByLabelId($this->labelId);
+				}
+				$total = count($array);
+			}catch(Exception $e){
+				//
+			}
+		}
+
+		//制限をかけてデータ取得
 		$array = array();
+		if(isset($limit)) $logic->limit = $limit;
+		if(isset($offset)) $logic->offset = $offset;
 		try{
 			if(defined("CMS_PREVIEW_ALL")){
 				$array = $logic->getByLabelId($this->labelId);
@@ -71,7 +104,7 @@ class LabeledBlockComponent implements BlockComponent{
 				}
 			}
 		}
-		
+
 		$articlePageUrl = "";
 		if($this->isStickUrl){
 			try{
@@ -81,10 +114,20 @@ class LabeledBlockComponent implements BlockComponent{
 				if(defined("CMS_PREVIEW_MODE")){
 					$articlePageUrl = SOY2PageController::createLink("Page.Preview") ."/". $blogPage->getId() . "?uri=". $blogPage->getEntryPageURL();
 				}else{
-					$articlePageUrl = $page->getSiteRootUrl() . $blogPage->getEntryPageURL();
+					$articlePageUrl = $page->siteRoot . $blogPage->getEntryPageURL();
 				}
 			}catch(Exception $e){
 				$this->isStickUrl = false;
+			}
+		}
+
+		//ページャー
+		if($this->enablePaging){
+			try{
+				LabeledBlockPagerComponent::buildPager($page, $page->getPageUrl(), count($array), $total, $logic->offset, $pageNumber, $logic->limit, $this->pagingParameter);
+			}catch(Exception $e){
+				error_log("Pager");
+				error_log($e);
 			}
 		}
 
@@ -104,7 +147,7 @@ class LabeledBlockComponent implements BlockComponent{
 	 * @return string
 	 * 一覧表示に出力する文字列
 	 */
-	function getInfoPage(){
+	public function getInfoPage(){
 		$dao = SOY2DAOFactory::create("cms.LabelDAO");
 
 		try{
@@ -120,58 +163,72 @@ class LabeledBlockComponent implements BlockComponent{
 	/**
 	 * @return string コンポーネント名
 	 */
-	function getComponentName(){
+	public function getComponentName(){
 		return CMSMessageManager::get("SOYCMS_LABELED_ENTRY_BLOCK");
 	}
 
-	function getComponentDescription(){
+	public function getComponentDescription(){
 		return  CMSMessageManager::get("SOYCMS_LABELED_ENTRY_BLOCK_DESCRIPTION");
 	}
 
 
-	function getLabelId() {
+	public function getLabelId() {
 		return $this->labelId;
 	}
-	function setLabelId($labelId) {
+	public function setLabelId($labelId) {
 		$this->labelId = $labelId;
 	}
 
-	function getDisplayCountFrom() {
+	public function getDisplayCountFrom() {
 		return $this->displayCountFrom;
 	}
-	function setDisplayCountFrom($displayCountFrom) {
+	public function setDisplayCountFrom($displayCountFrom) {
 		if(is_numeric($displayCountFrom)){
 			$this->displayCountFrom = (int)$displayCountFrom;
 		}
 	}
 
-	function getDisplayCountTo() {
+	public function getDisplayCountTo() {
 		return $this->displayCountTo;
 	}
-	function setDisplayCountTo($displayCountTo) {
+	public function setDisplayCountTo($displayCountTo) {
 		if(is_numeric($displayCountTo)){
 			$this->displayCountTo = (int)$displayCountTo;
 		}
 	}
 
-	function getBlogPageId() {
+	public function getEnablePaging(){
+		return $this->enablePaging;
+	}
+	public function setEnablePaging($enablePaging){
+		$this->enablePaging = $enablePaging;
+	}
+
+	public function getPagingParameter(){
+		return $this->pagingParameter;
+	}
+	public function setPagingParameter($pagingParameter){
+		$this->pagingParameter = $pagingParameter;
+	}
+
+	public function getBlogPageId() {
 		return $this->blogPageId;
 	}
-	function setBlogPageId($blogPageId) {
+	public function setBlogPageId($blogPageId) {
 		$this->blogPageId = $blogPageId;
 	}
 
-	function getIsStickUrl() {
+	public function getIsStickUrl() {
 		return $this->isStickUrl;
 	}
-	function setIsStickUrl($isStickUrl) {
+	public function setIsStickUrl($isStickUrl) {
 		$this->isStickUrl = $isStickUrl;
 	}
 
-	function getOrder(){
+	public function getOrder(){
 		return $this->order;
 	}
-	function setOrder($order){
+	public function setOrder($order){
 		$this->order = $order;
 	}
 }
@@ -182,12 +239,8 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 	private $entity;
 	private $blogPages = array();
 
-	function __construct(){
-		HTMLPage::__construct();
 
-	}
-
-	function execute(){
+	public function execute(){
 
 		HTMLHead::addLink("editor_css",array(
 			"rel" => "stylesheet",
@@ -210,17 +263,32 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 			"name"=>"object[displayCountTo]"
 		));
 
+		//ページ分割設定
+		$this->addCheckBox("enable_paging",array(
+			"name" => "object[enablePaging]",
+			"value" => 1,
+			"isBoolean" => true,
+			"elementId" => "enable_paging",
+			"selected" => $this->entity->getEnablePaging(),
+		));
+
+		//ページ番号に使うパラメーター（GET変数名）
+		$this->addInput("paging_parameter",array(
+			"name" => "object[pagingParameter]",
+			"value" => $this->entity->getPagingParameter(),
+		));
+
 		$this->createAdd("display_order_asc","HTMLCheckBox",array(
-			"type"      => "radio",
-			"name"      => "object[order]",
-			"value"     => BlockComponent::ORDER_ASC,
+			"type"	  => "radio",
+			"name"	  => "object[order]",
+			"value"	 => BlockComponent::ORDER_ASC,
 			"selected"  => $this->entity->getOrder() == BlockComponent::ORDER_ASC,
 			"elementId" => "display_order_asc",
 		));
 		$this->createAdd("display_order_desc","HTMLCheckBox",array(
-			"type"      => "radio",
-			"name"      => "object[order]",
-			"value"     => BlockComponent::ORDER_DESC,
+			"type"	  => "radio",
+			"name"	  => "object[order]",
+			"value"	 => BlockComponent::ORDER_DESC,
 			"selected"  => $this->entity->getOrder() == BlockComponent::ORDER_DESC,
 			"elementId" => "display_order_desc",
 		));
@@ -265,7 +333,7 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 	/**
 	 * ラベル表示コンポーネントの実装を行う
 	 */
-	function setEntity(LabeledBlockComponent $block){
+	public function setEntity(LabeledBlockComponent $block){
 		$this->entity = $block;
 	}
 
@@ -274,25 +342,30 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 	 *
 	 * array(ページID => )
 	 */
-	function setBlogPages($pages){
+	public function setBlogPages($pages){
 		$this->blogPages = $pages;
 	}
 
-   /**
-     *  ラベルオブジェクトのリストを返す
-     *  NOTE:個数に考慮していない。ラベルの量が多くなるとpagerの実装が必要？
-     */
-    function getLabelList(){
-    	$dao = SOY2DAOFactory::create("cms.LabelDAO");
-    	return $dao->get();
-    }
+	/**
+	 *  ラベルオブジェクトのリストを返す
+	 *  NOTE:個数に考慮していない。ラベルの量が多くなるとpagerの実装が必要？
+	 */
+	private function getLabelList(){
+		$dao = SOY2DAOFactory::create("cms.LabelDAO");
+		return $dao->get();
+	}
 
-	function getTemplateFilePath(){
+	public function getTemplateFilePath(){
+		//ext-modeでbootstrap対応画面作成中
+		if(defined("EXT_MODE_BOOTSTRAP") && file_exists(CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_sbadmin2.html")){
+			return CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_sbadmin2.html";
+		}
 
-		if(!defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja"||!file_exists(CMS_BLOCK_DIRECTORY . "LabeledBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html")){
-		   return CMS_BLOCK_DIRECTORY . "LabeledBlockComponent" . "/form.html";
+
+		if(!defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja"||!file_exists(CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_".SOYCMS_LANGUAGE.".html")){
+			return CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form.html";
 		}else{
-			return CMS_BLOCK_DIRECTORY . "LabeledBlockComponent" . "/form_".SOYCMS_LANGUAGE.".html";
+			return CMS_BLOCK_DIRECTORY . basename(dirname(__FILE__)). "/form_".SOYCMS_LANGUAGE.".html";
 		}
 	}
 
@@ -301,33 +374,33 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 
 class LabeledBlockComponent_ViewPage extends HTMLList{
 
-	var $isStickUrl;
-	var $articlePageUrl;
-	var $blogPageId;
-	var $editable = true;
-	var $labelId;
+	private $isStickUrl;
+	private $articlePageUrl;
+	private $blogPageId;
+	private $editable = true;
+	private $labelId;
 
-	function setIsStickUrl($flag){
+	public function setIsStickUrl($flag){
 		$this->isStickUrl = $flag;
 	}
 
-	function setArticlePageUrl($articlePageUrl){
+	public function setArticlePageUrl($articlePageUrl){
 		$this->articlePageUrl = $articlePageUrl;
 	}
 
-	function setBlogPageId($id){
+	public function setBlogPageId($id){
 		$this->blogPageId = $id;
 	}
 
-	function setEditable($flag){
+	public function setEditable($flag){
 		$this->editable = $flag;
 	}
 
-	function setLabelId($labelId){
+	public function setLabelId($labelId){
 		$this->labelId = $labelId;
 	}
 
-	function getStartTag(){
+	public function getStartTag(){
 
 		if(defined("CMS_PREVIEW_MODE") && $this->editable){
 			return parent::getStartTag() . CMSUtil::getEntryHiddenInputHTML('<?php echo $'.$this->getId().'["entry_id"]; ?>','<?php echo strip_tags($'.$this->getId().'["title"]); ?>');
@@ -336,7 +409,7 @@ class LabeledBlockComponent_ViewPage extends HTMLList{
 		}
 	}
 
-	function getEndTag(){
+	public function getEndTag(){
 
 		if(defined("CMS_PREVIEW_MODE") && $this->editable){
 			return parent::getEndTag().'<?php echo "<button type=\"button\" class=\"cms_hidden_entry_id\" blocklabelid=\"'.$this->labelId.'\" style=\"display:none;\">ここに記事を追加する</button>"; ?>';
@@ -345,10 +418,10 @@ class LabeledBlockComponent_ViewPage extends HTMLList{
 		}
 	}
 
-	function populateItem($entity){
+	protected function populateItem($entity){
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
-		$entryUrl = $this->articlePageUrl.rawurlencode($entity->getAlias());
+		$entryUrl = $this->articlePageUrl.($entity->getAlias());
 
 		if($this->isStickUrl){
 			$hTitle = "<a href=\"".htmlspecialchars($entryUrl, ENT_QUOTES, "UTF-8")."\">".$hTitle."</a>";
@@ -401,7 +474,7 @@ class LabeledBlockComponent_ViewPage extends HTMLList{
 			"link" => $entryUrl ."#more",
 			"visible"=>(strlen($entity->getMore()) != 0)
 		));
-		
+
 		$this->createAdd("more_link_no_anchor", "HTMLLink", array(
 			"soy2prefix"=>"cms",
 			"link" => $entryUrl,
@@ -433,12 +506,12 @@ class LabeledBlockComponent_ViewPage extends HTMLList{
 class LabeledBlock_LabelList extends HTMLList{
 	private $currentLabel;
 
-	function populateItem($entity){
+	protected function populateItem($entity){
 
 		$elementID = "label_".$entity->getId();
 
 		$this->createAdd("radio","HTMLCheckBox",array(
-			"value"     => $entity->getId(),
+			"value"	 => $entity->getId(),
 			"selected"  => ((string)$this->currentLabel == (string)$entity->getId()),
 			"elementId" => $elementID
 		));
@@ -447,6 +520,8 @@ class LabeledBlock_LabelList extends HTMLList{
 		));
 		$this->createAdd("label_text","HTMLLabel",array(
 			"text" => $entity->getCaption(),
+			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";"
+			         ."background-color:#" . sprintf("%06X",$entity->getBackgroundColor()).";",
 		));
 
 		$this->createAdd("label_icon","HTMLImage",array(
@@ -454,11 +529,288 @@ class LabeledBlock_LabelList extends HTMLList{
 		));
 	}
 
-	function getCurrentLabel() {
+	public function getCurrentLabel() {
 		return $this->currentLabel;
 	}
-	function setCurrentLabel($currentLabel) {
+	public function setCurrentLabel($currentLabel) {
 		$this->currentLabel = $currentLabel;
 	}
 }
-?>
+
+
+class LabeledBlockPagerComponent{
+
+	static public function buildPager($appComponent, $pageUrl, $count, $total, $offset, $page, $limit, $pagerParamKey){
+		$start = $offset;
+		$end = $start + $count;
+		if($end > 0 && $start == 0) $start = 1;
+
+		$pager = new LabeledBlockPagerLogic();
+		$pager->setPageUrl($pageUrl);
+		$pager->setPage($page);
+		$pager->setStart($start);
+		$pager->setEnd($end);
+		$pager->setTotal($total);
+		$pager->setLimit($limit);
+		$pager->setPagerParamKey($pagerParamKey);
+
+		$query = $_GET;
+		if(isset($query[$pagerParamKey]))unset($query[$pagerParamKey]);
+		$pager->setQuery($query);
+
+		//件数情報表示
+		$appComponent->addLabel("count_start", array(
+			"soy2prefix" => "cms",
+			"text" => $pager->getStart()
+		));
+		$appComponent->addLabel("count_end", array(
+			"soy2prefix" => "cms",
+			"text" => $pager->getEnd()
+		));
+		$appComponent->addLabel("count_max", array(
+			"soy2prefix" => "cms",
+			"text" => $pager->getTotal()
+		));
+
+		//ページへのリンク
+		$appComponent->addModel("has_next_prev_pager", $pager->getHasNextOrPrevParam());
+		$appComponent->addModel("has_next_pager", $pager->getHasNextParam());
+		$appComponent->addModel("has_prev_pager", $pager->getHasPrevParam());
+		$appComponent->addLink("next_pager", $pager->getNextParam());
+		$appComponent->addLink("prev_pager", $pager->getPrevParam());
+		$appComponent->createAdd("pager_list", "LabeledBlockSimplePager", $pager->getPagerParam());
+
+		//ページへジャンプ
+		$appComponent->addForm("pager_jump", array(
+			"soy2prefix" => "cms",
+			"method" => "get",
+			"action" => $pager->getPageURL()."/"
+		));
+		$appComponent->addSelect("pager_select", array(
+			"soy2prefix" => "cms",
+			"name" => "page",
+			"options" => $pager->getSelectArray(),
+			"selected" => $pager->getPage(),
+			"onchange" => "location.href=this.parentNode.action+this.options[this.selectedIndex].value"
+		));
+	}
+}
+
+class LabeledBlockPagerLogic {
+	private $pageURL;
+	private $query;
+	private $queryString;
+
+	private $page = 1;
+	private $start;
+	private $end;
+	private $total;
+	private $limit = 15;
+	private $pagerParamKey = "page";
+
+	public function setPageURL($value){
+		if(strpos($value,"/")!==false){
+			$this->pageURL = SOY2PageController::createRelativeLink($value);
+		}else{
+			$this->pageURL = SOY2PageController::createLink($value);
+		}
+	}
+	public function getQuery() {
+		return $this->query;
+	}
+	public function setQuery($query) {
+		$this->query = $query;
+		$this->queryString = (count($query) > 0) ? "?".http_build_query($query) : "" ;
+	}
+	public function getQueryString() {
+		return $this->queryString;
+	}
+	public function setPage($value){
+		$this->page = $value;
+	}
+	public function setStart($value){
+		$this->start = $value;
+	}
+	public function setEnd($value){
+		$this->end = $value;
+	}
+	public function setTotal($value){
+		$this->total = $value;
+	}
+	public function setLimit($value){
+		$this->limit = $value;
+	}
+	public function setPagerParamKey($pagerParamKey){
+		$this->pagerParamKey = $pagerParamKey;
+	}
+
+	public function getCurrentPageURL(){
+		return $this->pageURL."/".$this->page;
+	}
+	public function getPageURL(){
+		return $this->pageURL;
+	}
+	public function getPage(){
+		return $this->page;
+	}
+	public function getStart(){
+		return $this->start;
+	}
+	public function getEnd(){
+		return $this->end;
+	}
+	public function getTotal(){
+		return $this->total;
+	}
+	public function getLimit(){
+		return $this->limit;
+	}
+	public function getOffset(){
+		return ($this->page - 1) * $this->limit;;
+	}
+
+	public function getHasNextOrPrevParam(){
+		return array(
+			"soy2prefix" => "cms",
+			"visible" => ($this->total > $this->end || $this->page > 1),
+		);
+	}
+	public function getHasNextParam(){
+		return array(
+			"soy2prefix" => "cms",
+			"visible" => ($this->total > $this->end),
+		);
+	}
+	public function getHasPrevParam(){
+		return array(
+			"soy2prefix" => "cms",
+			"visible" => ($this->page > 1),
+		);
+	}
+	public function getNextParam(){
+		$query = $this->queryString;
+		if($this->total > $this->end){
+			if(strlen($query)){
+				$query .= "&".$this->pagerParamKey."=".($this->page + 1);
+			}else{
+				$query  = "?".$this->pagerParamKey."=".($this->page + 1);
+			}
+		}
+		return array(
+			"soy2prefix" => "cms",
+			"link"	=> $this->pageURL . $query,
+			"class"   => ($this->total <= $this->end) ? "pager_disable" : "",
+			"visible" => ($this->total >  $this->end),
+		);
+	}
+	public function getPrevParam(){
+		$query = $this->queryString;
+		if($this->page > 2){
+			if(strlen($query)){
+				$query .= "&".$this->pagerParamKey."=".($this->page - 1);
+			}else{
+				$query  = "?".$this->pagerParamKey."=".($this->page - 1);
+			}
+		}
+		return array(
+			"soy2prefix" => "cms",
+			"link"	=> $this->pageURL . $query,
+			"class"   => ($this->page <= 1) ? "pager_disable" : "",
+			"visible" => ($this->page > 1),
+		);
+	}
+	public function getPagerParam(){
+		$pagers = $this->limit ? range(
+			max(1, $this->page - 4),
+			max(1, min(ceil($this->total / $this->limit), max(1, $this->page - 4) +9))
+		) : array() ;
+
+		return array(
+			"soy2prefix" => "cms",
+			"url" => $this->pageURL,
+			"queryString" => $this->queryString,
+			"current" => $this->page,
+			"list" => $pagers,
+			"pagerParamKey" => $this->pagerParamKey,
+		);
+	}
+	public function getSelectArray(){
+		$pagers = $this->limit ? range(
+			1,
+			(int)($this->total / $this->limit) + 1
+		) : array() ;
+
+		$array = array();
+		foreach($pagers as $page){
+//			$array[ $this->pageURL."/".$page . $this->queryString ] = $page;
+			$array[ $page ] = $page;
+		}
+
+		return $array;
+	}
+}
+
+class LabeledBlockSimplePager extends HTMLList{
+
+	private $url;
+	private $queryString;
+	private $current;
+	private $pagerParamKey;
+
+	protected function populateItem($bean){
+
+		$this->createAdd("target_link","HTMLLink",array(
+			"soy2prefix" => "cms",
+			"html" => "$bean",
+			"link" => $this->url . ( $bean > 1 ? "/" . $bean : "" ) . $this->queryString,
+			"class" => ($this->current == $bean) ? "pager_current" : ""
+		));
+		$this->addModel("target_wrapper",array(
+			"soy2prefix" => "cms",
+			"class" => ($this->current == $bean) ? "act" : ""
+		));
+
+		$query = $this->queryString;
+		if($bean > 1){
+			if(strlen($query)){
+				$query .= "&".$this->pagerParamKey."=".$bean;
+			}else{
+				$query  = "?".$this->pagerParamKey."=".$bean;
+			}
+		}
+		$this->createAdd("target_get_link","HTMLLink",array(
+			"soy2prefix" => "cms",
+			"html" => "$bean",
+			"link" => $this->url.$query,
+			"class" => ($this->current == $bean) ? "pager_current" : ""
+		));
+
+//		$areaId = $_GET["area"][0];
+//		$this->createAdd("target_mobile_link","HTMLLink",array(
+//			"html" => "$bean",
+//			"link" => $this->url. "/r?area[]=".$areaId."&page=" . $bean,
+//			"class" => ($this->current == $bean) ? "pager_current" : ""
+//		));
+
+	}
+
+	public function getUrl() {
+		return $this->url;
+	}
+	public function setUrl($url) {
+		$this->url = $url;
+	}
+	public function getCurrent() {
+		return $this->current;
+	}
+	public function setCurrent($cuttent) {
+		$this->current = $cuttent;
+	}
+	public function setQueryString($queryString) {
+		$this->queryString = $queryString;
+	}
+	public function setPagerParamKey($pagerParamKey){
+		$this->pagerParamKey = $pagerParamKey;
+	}
+}
+

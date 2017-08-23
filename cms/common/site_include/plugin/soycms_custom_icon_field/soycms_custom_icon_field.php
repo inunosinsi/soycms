@@ -15,8 +15,8 @@ class CustomIconFieldPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"アイコンフィールド追加プラグイン",
 			"description"=>"エントリー編集画面にアイコン編集フィールドを追加します。",
-			"author"=>"日本情報化研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.2"
 		));	

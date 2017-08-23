@@ -1,59 +1,48 @@
-<?php /* 通常はこっちだけ表示 */ ?>
-<div soy:id="not_simple_mode" id="tab" class="span-24 last">
-		<a soy:link="Index">
-			<div soy:id="dashboard" id="tab_left" class="menu_active">
-				<p>ホーム</p>
-			</div>
-		</a>
-		<a soy:link="Entry">
-			<div soy:id="entry" class="menu_inactive span-3">
-				<p>記事</p>
-			</div>
-		</a>
-		<a soy:link="Label">
-			<div soy:id="label" class="menu_inactive span-3">
-				<p>ラベル</p>
-			</div>
-		</a>
-		<a soy:link="Page">
-			<div soy:id="page" class="menu_inactive span-3">
-				<p>ページ</p>
-			</div>
-		</a>
-		
-		<a soy:link="Plugin">
-			<div soy:id="plugin" class="menu_inactive span-3">
-				<p>プラグイン</p>
-			</div>
-		</a>
-</div soy:id="not_simple_mode">
+<!-- soy:id="not_simple_mode" -->
+					<ul class="nav" id="side-menu">
+						<li>
+							<a soy:id="dashboard"><i class="fa fa-home fa-fw"></i>ダッシュボード</a>
+						</li>
+						<li>
+							<a soy:id="entry"><i class="fa fa-file-text-o fa-fw"></i>記事</a>
+						</li>
+						<li>
+							<a soy:id="label"><i class="glyphicon glyphicon-tags glyphicon-fw"></i>ラベル</a>
+						</li>
+						<li>
+							<a soy:id="page"><i class="fa fa-sitemap fa-fw"></i>ページ</a>
+						</li>
+						<li>
+							<a soy:id="plugin"><i class="fa fa-arrows-alt fa-fw"></i>プラグイン</a>
+						</li>
+						<li>
+							<a soy:id="file"><i class="fa fa-folder-open fa-fw"></i>ファイルマネージャー</a>
+						</li>
 
-<?php /* Simpleモードはこっちだけ表示 */ ?>
-<div soy:id="simple_mode" id="tab" class="span-24 last">
-	<a soy:link="Simple"><div soy:id="simple_dashboard" class="menu_active"><p>新着一覧</p></div></a>
-	<a soy:link="Entry"><div soy:id="simple_entry" class="menu_inactive"><p>記事の管理</p></div></a>
-	<a soy:link="Blog.List"><div soy:id="simple_blog" class="menu_inactive"><p>ブログ</p></div></a>
-	<a soy:link="Page.Preview" target="_blank"><div soy:id="simple_preview" class="menu_inactive" style="font-size:0.85em"><p>ダイナミック編集</p></div></a>
+						<li soy:id="display_inquiry_link"><a soy:id="inquiry_link">お問い合わせフォーム</a></li>
+						<li soy:id="display_mail_link"><a soy:id="mail_link">メールマガジン</a></li>
 
-	<div style="clear:both;"></div>
-</div soy:id="simple_mode">
+						<li class="visible-xs"><a soy:link="SiteConfig"><i class="fa fa-gear fa-fw"></i>サイト設定</a></li>
+					</ul>
+<!-- /soy:id="not_simple_mode" -->
+<!-- soy:id="simple_mode" -->
+					<ul class="nav" id="side-menu">
+						<li>
+							<a soy:id="simple_dashboard"><i class="fa fa-home fa-fw"></i>ダッシュボード</a>
+						</li>
+						<li>
+							<a soy:id="simple_entry"><i class="fa fa-file-text-o fa-fw"></i>記事</a>
+						</li>
+						<li>
+							<a soy:id="simple_blog"><i class="glyphicon glyphicon-book glyphicon-fw"></i>ブログ</a>
+						</li>
+						<li>
+							<a soy:id="simple_preview" target="_blank"><i class="fa fa-arrows-alt fa-fw"></i>ダイナミック編集<i class="fa fa-external-link fa-fw"></i></a>
+						</li>
+					</ul>
+<!-- /soy:id="simple_mode" -->
 
-<script type="text/javascript">
-
-$(".menu_inactive").each(function(){
-	$(this).mouseover(function(e){
-		$(this).attr("class","menu_inactive_hover span-3");
-		$(this).attr("className","menu_inactive_hover span-3");
-	});
-	
-	$(this).mouseout(function(e){
-		$(this).attr("class","menu_inactive span-3");
-		$(this).attr("className","menu_inactive span-3");
-	});
-	
-	/*$(this).mousedown(function(e){
-		$(this).attr("class","menu_inactive_active span-3");
-		$(this).attr("className","menu_inactive_active span-3");
-	});*/
-});
-</script>
+					<ul class="nav">
+						<li class="visible-xs"><a soy:id="account_link"  onclick="return common_click_to_layer(this,{header:'アカウント情報'});" href="/admin/index.php/Account"><i class="fa fa-user fa-fw"></i>管理者情報（<!-- soy:id="adminname" /-->）</a></li>
+						<li class="visible-xs"><a soy:link="Login.Logout" onclick="return confirm('ログアウトしますか？');"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
+					</ul>

@@ -1,5 +1,5 @@
 var entryAlertFlag = 0;
-(function() {
+window.onload = function(){
 	$(window).on("beforeunload", function(e) {
 		if (entryAlertFlag)
 			return "Do you want to move this page ?";
@@ -17,4 +17,4 @@ var entryAlertFlag = 0;
 	$("form").on('submit', function() {
 		$(window).off('beforeunload');
 	});
-})();
+};

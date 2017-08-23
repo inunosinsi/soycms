@@ -6,7 +6,7 @@
 		</select>&nbsp;
 		<input type="submit" value="選択">
 	</p>
-	
+
 	<h4>コメントフォーム設定</h4>
 	<p>
 		<input type="checkbox" soy:id="is_insert_comment_form">
@@ -35,29 +35,29 @@
 				</ul soy:id="for_blog_page">
 			</li soy:id="page_list">
 		</ul>
-	
+
 		<input type="submit" style="padding:10px 20px;" value="保存" />
 	</fieldset>
-	
+
 	<h4>ログイン後のページ遷移設定</h4>
 	<p>
 		<input type="hidden" soy:id="do_redirect_after_login_hidden">
 		<input type="checkbox" soy:id="do_redirect_after_login">&nbsp;
 		<input type="submit" value="保存">
 	</p>
-	
+
 	<h4>ログアウト後のページ遷移設定</h4>
 	<p>
 		SOY Shopの設定にあるログアウト後に表示するページの設定と共有
 	</p>
-	
+
 	<h4>パスワードリマインド設定</h4>
 	<p>
 		<input type="hidden" soy:id="do_redirect_after_remind_hidden">
 		<input type="checkbox" soy:id="do_redirect_after_remind">&nbsp;
 		<input type="submit" value="保存">
 	</p>
-	
+
 	<h4>記事詳細の閲覧制限(SOY Shopの商品と紐づける)</h4>
 	<p>
 		<input type="checkbox" soy:id="allow_browse_entry_by_purchased">&nbsp;
@@ -151,8 +151,11 @@
 			$("#"+selfId+"-entry").attr("disabled",true);
 		}
 	}
-	
-	$.each($(".blog"), function(){
-		update_blog_pages(this.id);
-	});
+
+	window.onload = function(){
+		$.each($(".blog"), function(){
+			update_blog_pages(this.id);
+		});
+	};
+
 </script>

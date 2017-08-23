@@ -1,0 +1,47 @@
+<form soy:id="sites_form">
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<label>サイトの変更</label>
+			<div class="input-group">
+				<select soy:id="site" class="form-control"></select>
+				<span class="input-group-btn">
+					<button class="btn btn-info">サイトを変更する</button>
+				</span>
+			</div>
+			<input type="hidden" value="reload" name="after_submit" />
+		</div>
+	</div>
+</form soy:id="sites_form">
+
+<form soy:id="main_form">
+	<input type="hidden" soy:id="site_hidden" />
+
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<div class="form-group"><label>スクリプトの設置場所</label>
+				<input type="text" class="form-control" soy:id="script_path" >
+				<span style="color:red" soy:id="script_path_error" />
+			</div>
+
+			<label>呼び出す関数名</label>
+			<input type="text" class="form-control" soy:id="function_name" />
+			<span style="color:red" soy:id="function_name_error" />
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<label>ブログへのリンク</label>
+			<input soy:id="no_stick_url" type="hidden" name="object[blogPageId]" value="0"/>
+			<input soy:id="stick_url" type="checkbox" onclick="common_toggle('blog_page_list');common_toggle('blog_page_list_label');"><br/>
+			<span id="blog_page_list_label" soy:id="blog_page_list_label">ブログのラベルを指定してください: </span><select id="blog_page_list" soy:id="blog_page_list" class="form-control"></select>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<input class="btn btn-success btn-lg pull-right" type="submit" value="設定の保存">
+		<input class="btn btn-default" type="button" value="キャンセル" onclick="common_close_layer(window.parent);return false;">
+	</div>
+
+</form soy:id="main_form">
+

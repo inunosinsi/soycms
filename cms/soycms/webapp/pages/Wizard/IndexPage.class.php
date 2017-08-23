@@ -33,7 +33,7 @@ class IndexPage extends CMSWebPageBase{
 
     function __construct() {
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$contentPage = $this->getContentPage();
 		

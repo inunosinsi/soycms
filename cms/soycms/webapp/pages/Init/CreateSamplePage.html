@@ -1,22 +1,25 @@
 <html>
 <head soy:page="_common.HeaderPage" isOverWrite="true">
 </head>
-<body>
-<?php /* コンテンツ部分 */ ?>
-<div id="layer_content">
+<body style="background-color: white;">
+	<div class="container">
 
-			<h3>サンプルデータ入りでサイトを新規作成</h3>
-			
-				<p>サンプルデータ（トップページ、記事、ラベル）が入力された状態でサイトを作成します。<br/>
-				注意：既存のデータが存在する場合、すべて削除されます。
-				</p>
-				
-				<form soy:id="create_sample_form" id="create_sample_form">
-					<input type="submit" class="submit_button" value="サンプルデータ入りで作成" />
-				</form soy:id="create_sample_form">
+		<h1>サンプルデータを使う</h1>
 
-</div>
-<?php /* コンテンツ部分終わり */ ?>
+		<p>現在のサイトにサンプルデータ（トップページ、記事、ラベル）を読み込みます。</p>
+
+		<div class="col-lg-12 alert alert-danger">
+			<i class="fa fa-warning fa-fw"></i>注意：既存のデータが存在する場合、すべて削除されます。
+		</div>
+
+
+		<form soy:id="create_sample_form" >
+			<div class="form-group">
+				<input type="submit" class="btn btn-primary btn-lg btn-block" value="サンプルデータを読み込む" />
+			</div>
+		</form soy:id="create_sample_form">
+
+	</div>
 </body>
 </html>
 

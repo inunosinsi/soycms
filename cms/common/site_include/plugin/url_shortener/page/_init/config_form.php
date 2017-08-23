@@ -4,7 +4,7 @@ class URLShortenerPluginInitFormPage extends WebPage{
 	private $pluginObj;
 	private $version;
 	
-	function __construct(){}
+	function URLShortenerPluginInitFormPage(){}
 	
 	function doPost(){
     	if(soy2_check_token() && isset($_POST["init"])){
@@ -14,7 +14,7 @@ class URLShortenerPluginInitFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addForm("url_shortener_form",array());
 

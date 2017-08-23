@@ -18,8 +18,8 @@ class PasswordRemindPage extends WebPage{
 		}
 	}
 	
-	function __construct() {
-		WebPage::__construct();
+	function __construct(){
+		parent::__construct();
 
 		$isSended = SOY2ActionSession::getFlashSession()->getAttribute("isSended");
 		$errorMessage = SOY2ActionSession::getFlashSession()->getAttribute("errorMessage");

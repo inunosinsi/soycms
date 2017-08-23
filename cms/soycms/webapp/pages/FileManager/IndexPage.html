@@ -1,25 +1,41 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
+
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
-</head>
+</head soy:page="_common.HeaderPage">
+
 <body>
-<div class="container">
-	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
-	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
 
-	<!-- content start -->
-	<div id="content" class="span-24 last">
-		<div class="span-22 prepend-1">
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">ファイルマネージャー</h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<div soy:page="_common.MessagePanel" isOverWrite="true"></div>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-green">
+						<div class="panel-body">
+							<iframe id="filemanager_filepage" soy:src="FileManager.FilePage" style="width:100%;height:564px;border:none;" frameborder="no"></iframe>
+						</div>
+					</div>
 
-			<h3>ファイルマネージャー</h3>
-			
-			<iframe id="filemanager_filepage" soy:src="FileManager.FilePage" style="width:870px;height:564px;border:none;" frameborder="no"></iframe>
-		
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.row -->
+
 		</div>
-
-		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
 	</div>
-	<div soy:page="_common.FooterPage"></div>
-</div>
+	<!-- /#wrapper -->
+
 </body>
+
 </html>

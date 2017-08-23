@@ -1,11 +1,6 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<script soy:id="jqueryjs"></script>
-	<script soy:id="jqueryuijs"></script>
-	<script soy:id="commonjs"></script>
-	<script soy:id="parameters"></script>
-	<script soy:id="otherdata"></script>
 	<style type="text/css">
 		h4{
 			margin-bottom: 3px;
@@ -20,60 +15,75 @@
 		}
 	</style>
 </head>
+
 <body>
-<?php /* コンテンツ部分 */ ?>
-<div>
-<h4>リンクを挿入<span soy:id="current_site"></span></h4>
-<div id="controlle_panel">
-	<select soy:id="insert_link" id="insert_link" style="width:280px" class="sub"></select>
-	<div id="foreign_input" style="display:block;">
-		<h5>外部リンクのURLを入力してください</h5>
-		<input type="text" size="56" style="width:280px" name="foreignLink" id="foreignLink" class="sub">
-		<br>
-		
-		<input class="soycms_custom_button" type="checkbox" name="targeType" id="targetType">別ウィンドウで開く
+	<div id="controlle_panel">
+		<h4>リンクを挿入<span soy:id="current_site"></span></h4>
+		<select soy:id="insert_link" id="insert_link" style="width:280px" class="sub"></select>
+		<div id="foreign_input" style="display:block;">
+			<h5>URLを入力してください</h5>
+			<input type="text" size="56" style="width:280px" name="foreignLink" id="foreignLink" class="sub">
+			<br>
+			<input class="soycms_custom_button sub" type="checkbox" name="targeType" id="targetType">別ウィンドウで開く
+			<br>
+			<button class="soycms_custom_button sub" onclick="toggle_Filemanager();return false;" type="button">ファイルマネージャで選ぶ</button>
+		</div>
+		<div style="padding-top: 15px;">
+			<input type="button" class="soycms_custom_button" id="execute_button" value="リンク挿入" onclick="return checkURL();">
+		</div>
 	</div>
-	<div style="padding-top: 15px;">
-		<input type="button" class="soycms_custom_button" value="リンク追加" class="soycms_custom_button" onclick="return checkURL();">&nbsp;&nbsp;
-		<button class="soycms_custom_button" onclick="toggle_Filemanager();return false;" type="button">ファイルマネージャー起動</button>
+
+	<div id="filemanager" style="display:none" soy:id="file_manager_iframe">
+		<button id="close_filemanager_button" onclick="toggle_Filemanager();return false;" style="display:none;">ファイルマネージャ終了</button>
+		リンクしたいファイルをダブルクリックしてください。
+		<iframe id="file_manager_iframe" style="width:750px;height:480px;border:none;"></iframe>
 	</div>
-</div>
-<div id="filemanager" style="display:none" soy:id="file_manager_iframe">
-	<button id="close_filemanager_button" onclick="toggle_Filemanager();return false;" style="display:none;">ファイルマネージャ終了</button>
-	<iframe id="file_manager_iframe" style="width:750px;height:480px;border:none;"></iframe>
-</div>
-<?php /* コンテンツ部分終わり */ ?>
+
+<script soy:id="jqueryjs"></script>
+<script soy:id="parameters"></script>
+<script soy:id="otherdata"></script>
 
 <script type="text/javascript">
 
 	var mode = "upload";
-	
+
 	var tinymce = top.tinymce || parent.tinymce;
 	var tinymce_window_manager = tinymce.activeEditor.windowManager;
-	
-	common_init_custom_button();
 
-  $(function(){
+	$(function(){
 		var selected = $("#insert_link").val();
-			
+
 		if(selected == "foreign_address"){
 			//初めは何もしない
 //			$("#foreign_input").css("display", "");
 		}else{
 			$("#foreign_input").css("display", "none");
 		}
-			
+
 		$("#insert_link").change(function(){
 			var selectedItem = $("#insert_link").val();
-			
+
 			if(selectedItem == "foreign_address"){
 				$("#foreign_input").css("display","");
 			}else{
 				$("#foreign_input").css("display","none");
 			}
+
+			if(selectedItem == "foreign_site"){
+				//他サイトリンク
+				$("#execute_button").val('次へ');
+			}else if(typeof page_list[selectedItem] != 'undefined' && ( page_list[selectedItem].pageType == 200 || page_list[selectedItem].pageType == 100 ) ){
+				//ブログページ
+				//Mobileページ
+				$("#execute_button").val('次へ');
+			}else{
+				$("#execute_button").val('リンク挿入');
+			}
+
+
 		});
 	});
-	
+
 	function checkURL(){
 		var selectedItem = $("#insert_link").val();
 		if($("#targetType:checked").val() == "on"){
@@ -84,9 +94,9 @@
 		var addr = $("#foreignLink").val();
 		var ed = tinymce.activeEditor, dom = ed.dom;
 		var innerHTML = ed.selection.getContent().replace(/<\/?body>/ig,'');
-			
+
 		if(selectedItem == "null_insert_link"){
-			
+
 			alert("リンク先を選択してください");
 			return false;
 		}else if(selectedItem == "foreign_address"){
@@ -95,27 +105,27 @@
 				return false;
 			}else{
 				if(innerHTML == ""){
-					innerHTML = addr;			
+					innerHTML = addr;
 				}
-				
+
 				if(targetType == true){
 					tinymce.execCommand('mceInsertContent', false, dom.createHTML('a', {
 						href : addr , target : "_blank"
 					},innerHTML));
-				}else{	
+				}else{
 					tinymce.execCommand('mceInsertContent', false, dom.createHTML('a', {
 						href : addr
 					},innerHTML));
 				}
 
-				
+
 				tinymce_window_manager.close();
 				return false;
 			}
 		}else if(selectedItem == "foreign_site"){
 			location.href = foreignLinkAddress;
 		}else{
-			
+
 			if(page_list[selectedItem].pageType == 200){
 				//blogPageの時の処理
 				location.href = blogLinkAddress+'/'+selectedItem + '/' + siteId;
@@ -148,15 +158,15 @@
 				tinymce_window_manager.close();
 				return false;
 			}
-		
+
 		}
 		return false;
 	}
-	
+
 	function _resizeWindow(w,h){
 		tinymce_window_manager.getParams().resize(w, h);
 	}
-	
+
 	function toggle_Filemanager(){
 		if(mode == "upload"){
 			$("#controlle_panel").hide();
@@ -167,22 +177,23 @@
 				},500);
 			}
 			_resizeWindow(800,600);
-			$("#filemanager").show();			
+			$("#filemanager").show();
 			mode = "filemanager";
 		}else{
 			$("#controlle_panel").show();
 			$("#filemanager").hide();
 			mode = "upload";
+			tinymce_window_manager.getParams().reset();
 		}
 	}
-	
+
 	function filemanager_ondblclick(url){
 		toggle_Filemanager();
 		var image = new Image;
 		image.src = url;
 		$('#foreignLink').val(image.src);
 	}
-		
+
 </script>
 </body>
 </html>

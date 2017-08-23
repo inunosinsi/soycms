@@ -1,0 +1,13 @@
+.soycms_page_image_box{
+	position:relative;
+}
+
+.soycms_page_image_deleted{
+	position:absolute;
+	top:-7px;
+	right:0px;
+}
+
+.soycms_blog_title{
+	font-size: 150%;
+}

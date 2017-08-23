@@ -7,7 +7,7 @@ class IndexPage extends CMSUpdatePageBase{
 
 		$this->updateCookie();
 
-		WebPage::__construct();
+		parent::__construct();
 
 		//記事テーブルのCSS
 		HTMLHead::addLink("entrytree",array(
@@ -23,6 +23,11 @@ class IndexPage extends CMSUpdatePageBase{
 			"list" => $this->getCategorizedLabelList(),
 		));
 
+		//ラベル一覧の表示・非表示をCookieの値で切り替える
+		$this->addModel("entries-by-label",array(
+			"class" => "panel-collapse collapse".(isset($_COOKIE['label-panel-status']) && $_COOKIE['label-panel-status'] == 'closed' ? '' : ' in'),
+		));
+
 		$list = $this->run("Label.RecentLabelListAction")->getAttribute("list");
 		$recent = array();
 		foreach($list as $key => $value){
@@ -33,28 +38,30 @@ class IndexPage extends CMSUpdatePageBase{
 			"list"=>$recent
 		));
 
+		//公開状態別の表示・非表示をCookieの値で切り替える
+		$this->addModel("entries-by-status",array(
+			"class" => "panel-collapse collapse".(isset($_COOKIE['status-panel-status']) && $_COOKIE['status-panel-status'] == 'closed' ? '' : ' in'),
+		));
+
 		$result = $this->run("Entry.ClosedEntryListAction",array(
 			"offset"=>0,"limit"=>0
 		));
-
-		$this->createAdd("closedTitle","HTMLLabel",array(
-			"text"=>sprintf(CMSMessageManager::get("SOYCMS_NOT_PUBLISHED")." (%d)",$result->getAttribute("total"))
+		$this->addLabel("entries_count_unpublished",array(
+			"text" => ( (int)$result->getAttribute("total")),
 		));
 
 		$result = $this->run("Entry.OutOfDateEntryListActoin",array(
 			"offset"=>0,"limit"=>0
 		));
-
-		$this->createAdd("outofdateTitle","HTMLLabel",array(
-			"text"=>sprintf(CMSMessageManager::get("SOYCMS_OUTOFDATE")." (%d)",$result->getAttribute("total"))
+		$this->addLabel("entries_count_outofdate",array(
+				"text" => ( (int)$result->getAttribute("total")),
 		));
 
 		$result = $this->run("Entry.NoLabelEntryListAction",array(
 			"offset"=>0,"limit"=>0
 		));
-
-		$this->createAdd("noLabelTitle","HTMLLabel",array(
-			"text"=>sprintf(CMSMessageManager::get("SOYCMS_NO_LABELED")." (%d)",$result->getAttribute("total"))
+		$this->addLabel("entries_count_without_label",array(
+				"text" => ( (int)$result->getAttribute("total")),
 		));
 
 		//記事一覧を出力
@@ -63,6 +70,8 @@ class IndexPage extends CMSUpdatePageBase{
 		if(!UserInfoUtil::hasSiteAdminRole()){
 			DisplayPlugin::hide("all_entries");
 		}
+
+		//これがコメントアウトされているのはなぜなのか
 //		if(!UserInfoUtil::hasEntryPublisherRole()){
 //			DisplayPlugin::hide("publish");
 //		}
@@ -96,13 +105,13 @@ class IndexPage extends CMSUpdatePageBase{
 	 */
 	function getLabelList(){
 		$action = SOY2ActionFactory::createInstance("Label.LabelListAction");
-    	$result = $action->run();
+		$result = $action->run();
 
-    	if($result->success()){
-    		return $result->getAttribute("list");
-    	}else{
-    		return array();
-    	}
+		if($result->success()){
+			return $result->getAttribute("list");
+		}else{
+			return array();
+		}
 	}
 
 	/**
@@ -110,13 +119,13 @@ class IndexPage extends CMSUpdatePageBase{
 	 */
 	function getCategorizedLabelList(){
 		$action = SOY2ActionFactory::createInstance("Label.CategorizedLabelListAction");
-    	$result = $action->run();
+		$result = $action->run();
 
-    	if($result->success()){
-    		return $result->getAttribute("list");
-    	}else{
-    		return array();
-    	}
+		if($result->success()){
+			return $result->getAttribute("list");
+		}else{
+			return array();
+		}
 	}
 
 	/**
@@ -161,13 +170,6 @@ class IndexPage extends CMSUpdatePageBase{
 			"arguments"=> array($offset, $limit, $count, $currentLink)
 		));
 
-		//記事テーブルのCSS
-		HTMLHead::addLink("entrytree",array(
-			"rel" => "stylesheet",
-			"type" => "text/css",
-			"href" => SOY2PageController::createRelativeLink("./css/entry/entry.css")
-		));
-
 		//表示件数
 		$this->createAdd("showCount10" ,"HTMLLink",array("link"=> $currentLink ."?limit=10"."#entry_list"));
 		$this->createAdd("showCount20" ,"HTMLLink",array("link"=> $currentLink ."?limit=20"."#entry_list"));
@@ -179,20 +181,17 @@ class IndexPage extends CMSUpdatePageBase{
 			"action" => $listLink."?offset=".$offset."&limit=".$limit
 		));
 
-		HTMLHead::addScript("parameters",array(
-			"lang"=>"text/JavaScript",
+		$this->addScript("parameters",array(
 			"script"=>'var listPanelURI = "'.SOY2PageController::createLink("Entry.ListPanel").'"'
 		));
 
 		//操作用のJavaScript
-//		HTMLHead::addScript("entry_list",array(
-//			"type" => "text/javascript",
-//			"script"=> file_get_contents(dirname(__FILE__)."/script/entry_list.js")
-//		));
-
-		HTMLHead::addScript("entry_list",array(
-			"type" => "text/javascript",
+		$this->addScript("entry_list",array(
 			"script"=> file_get_contents(dirname(__FILE__)."/script/entry_list.js")
+		));
+
+		$this->addScript("jquery-cookie",array(
+			"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js") . "?" . SOYCMS_BUILD_TIME
 		));
 
 		//表示順は隠す
@@ -228,12 +227,12 @@ class LabelCategoryList extends HTMLList{
 
 		$toggleId = "label-".$index;
 		$this->addModel("toggle_opened",array(
-			"attr:id"      => "toggle_".$toggleId."_opened",
-			"attr:onclick" => "return toggle_label_list(this, '".$toggleId."');"
+			"attr:id"	  => "toggle_".$toggleId."_opened",
+			//"attr:onclick" => "return toggle_label_list(this, '".$toggleId."');"
 		));
 		$this->addModel("toggle_closed",array(
 			"attr:id" => "toggle_".$toggleId."_closed",
-			"attr:onclick" => "return toggle_label_list(this, '".$toggleId."');"
+			//"attr:onclick" => "return toggle_label_list(this, '".$toggleId."');"
 		));
 		$this->addModel("toggle_target",array(
 			"attr:id" => $toggleId,
@@ -250,13 +249,20 @@ class LabelList extends HTMLList{
 	function populateItem($entity){
 
 		$this->createAdd("label_name","HTMLLabel",array(
-			//"html"  => $entity->getDisplayCaption() ." <nobr> (".(int)$entity->getEntryCount().")</nobr>",
-			"html"  =>  htmlspecialchars($entity->getBranchName(),ENT_QUOTES,"UTF-8")
-			          ." <nobr> (".(int)$entity->getEntryCount().")</nobr>",
+			"text"  =>  $entity->getBranchName(),
+// 			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";"
+// 					  ."background-color:#" . sprintf("%06X",$entity->getBackgroundColor()).";",
+			"title" => $entity->getBranchName(),
+		));
+
+		$this->addLabel("label_entries_count",array(
+			"text" => ( (int)$entity->getEntryCount())
 		));
 
 		$this->createAdd("label_icon","HTMLImage",array(
-			"src" => $entity->getIconUrl()
+			"src" => $entity->getIconUrl(),
+			"title" => $entity->getBranchName(),
+			"alt" => "",
 		));
 
 		$this->createAdd("label_description","HTMLLabel",array(
@@ -296,17 +302,23 @@ class LabelList extends HTMLList{
 
 class RecentLabelList extends HTMLList{
 
-	function populateItem($entity){
+	public function populateItem($entity){
 
 		$this->createAdd("label_icon","HTMLImage",array(
 			"src"=>$entity->getIconUrl(),
+			"title" => $entity->getBranchName(),
+			"alt" => "",
 		));
 		$this->createAdd("label_link","HTMLLink",array(
 			"link"  => SOY2PageController::createLink("Entry.List.".$entity->getId()),
-			"title" => $entity->getCaption() ." (".$entity->getEntryCount().")",
+			"title" => $entity->getCaption(),
 		));
-		$this->createAdd("label_title","HTMLLabel",array(
-			"html" => $entity->getDisplayCaption() ." <nobr>(".$entity->getEntryCount().")</nobr>",
+		$this->createAdd("label_name","HTMLLabel",array(
+			"text" => $entity->getCaption(),
+			"title" => $entity->getBranchName(),
+		));
+		$this->addLabel("label_entries_count",array(
+			"text" => ( (int)$entity->getEntryCount())
 		));
 
 	}
@@ -318,15 +330,15 @@ class LabeledEntryList extends HTMLList{
 	private $labelIds;
 	private $labelList;
 
-	function setLabelIds($labelIds){
+	public function setLabelIds($labelIds){
 		$this->labelIds = $labelIds;
 	}
 
-	function setLabelList($list){
+	public function setLabelList($list){
 		$this->labelList = $list;
 	}
 
-	function populateItem($entity){
+	public function populateItem($entity){
 		$this->createAdd("entry_check","HTMLInput",array(
 			"type"=>"checkbox",
 			"name"=>"entry[]",
@@ -385,9 +397,9 @@ class LabeledEntryList extends HTMLList{
 
 class EntryLabelList extends HTMLList{
 
-	var $entryLabelIds = array();
+	private $entryLabelIds = array();
 
-	function setEntryLabelIds($list){
+	public function setEntryLabelIds($list){
 		if(is_array($list)){
 			$this->entryLabelIds = $list;
 		}
@@ -396,11 +408,10 @@ class EntryLabelList extends HTMLList{
 	protected function populateItem($label){
 		$this->createAdd("entry_list_link","HTMLLink",array(
 			"link" => SOY2PageController::createLink("Entry.List.".$label->getId()),
-			"text" => "[".$label->getCaption()."]",
-			"visible" => in_array($label->getId(), $this->entryLabelIds)
-
+			"text" => $label->getCaption(),
+			"visible" => in_array($label->getId(), $this->entryLabelIds),
+			"style"=> "color:#" . sprintf("%06X",$label->getColor()).";"
+					 ."background-color:#" . sprintf("%06X",$label->getBackgroundColor()).";",
 		));
 	}
 }
-
-?>

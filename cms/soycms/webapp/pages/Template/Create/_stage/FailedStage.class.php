@@ -1,18 +1,16 @@
 <?php
 
 class FailedStage extends StageBase{
-	
-	function FailedStage(){
-		WebPage::__construct();
-	}
-	
-    function getNextString(){
-    	return "";
-    }
-    
-    function getBackString(){
-    	return "";
-    }
-}
 
-?>
+	public function getStageTitle(){
+		return "エラー";
+	}
+
+	public function getNextString(){
+		return "";
+	}
+
+	public function getBackString(){
+		return "";
+	}
+}

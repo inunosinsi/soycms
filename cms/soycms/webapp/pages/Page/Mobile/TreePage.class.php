@@ -16,7 +16,7 @@ class TreePage extends CMSWebPageBase{
     		$this->jump("Page");
     	}
     	$page = $result->getAttribute("Page");
-    	WebPage::__construct();
+    	parent::__construct();
     	$tree = $this->buildTree($page->getVirtual_tree());
     	
     	$this->createAdd("page_tree","HTMLLabel",array(

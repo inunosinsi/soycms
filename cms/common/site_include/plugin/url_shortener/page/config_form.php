@@ -1,29 +1,30 @@
 <?php
 class URLShortenerPluginFormPage extends WebPage{
-	
+
 	private $pluginObj;
 	private $lastUpdate;
-	
-	function __construct(){}
-	
+
+	function __construct(){
+	}
+
 	function doPost(){
 
-    	if(soy2_check_token()){
+		if(soy2_check_token()){
 			if(isset($_POST["url_shortener_form"])){
 //				$this->pluginObj->setUseId($_POST["custom_alias_use_id"]);
 				CMSPlugin::savePluginConfig($this->pluginObj->getId(),$this->pluginObj);
 			}
 			CMSPlugin::redirectConfigPage();
-    	}	
-    	
+		}
+
 	}
-	
+
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->createAdd("url_shortener_form","HTMLForm",array(
 		));
-/*		
+/*
 		$this->createAdd("custom_alias_prefix","HTMLInput",array(
 			"name" => "custom_alias_prefix",
 			"value" => $this->pluginObj->prefix,
@@ -53,4 +54,3 @@ class URLShortenerPluginFormPage extends WebPage{
 
 }
 
-?>

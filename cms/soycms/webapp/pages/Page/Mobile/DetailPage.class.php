@@ -26,7 +26,7 @@ class DetailPage extends CMSWebPageBase{
     	
     	$this->id = @$arg[0];
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	//新規作成してから来たときのメッセージ表示
     	if(isset($_GET["msg"]) && $_GET["msg"] == "create"){
@@ -102,10 +102,9 @@ class DetailPage extends CMSWebPageBase{
     		"name"=>"template"
     	));
     	
-    	$this->createAdd("template_editor","HTMLModel",array(
-    		"_src"=>SOY2PageController::createRelativeLink("./js/editor/template_editor.html"),
-    		"onload" => "init_template_editor();"
-    	));   	
+		$this->addModel("TemplateEditor",array(
+			"src" => SOY2PageController::createRelativeLink("./js/editor/template_editor.js") 
+		));  	
     	
     	$this->createAdd("state_draft","HTMLCheckBox",array(
     		"selected"=>!$page->getIsPublished(),
@@ -137,11 +136,11 @@ class DetailPage extends CMSWebPageBase{
     	$this->createAdd("open_period_show","HTMLLabel",array(
     		"html" => CMSUtil::getOpenPeriodMessage($start, $end)
     	));    	
-    	HTMLHead::addScript("PanelManager.js",array(
+    	$this->addModel("PanelManager.js",array(
 			"src" => SOY2PageController::createRelativeLink("./js/cms/PanelManager.js")
 		));
 		
-		HTMLHead::addScript("TemplateEditor",array(
+		$this->addModel("TemplateEditor",array(
 			"src" => SOY2PageController::createRelativeLink("./js/editor/template_editor.js") 
 		));
 		
@@ -183,13 +182,13 @@ class DetailPage extends CMSWebPageBase{
 		
     	//見出しに現在編集しているページ名を表示
     	$this->createAdd("page_name","HTMLLabel",array("text"=>$page->getTitle()));
-    	HTMLHead::addScript("cssmenu",array(
+    	$this->addModel("cssmenu",array(
 				"type" => "text/JavaScript",
 				"src" => SOY2PageController::createRelativeLink("js/editor/cssMenu.js")
 			));
 			
 		//CSS保存先URLをJavaScriptに埋め込みます
-		HTMLHead::addScript("cssurl",array(
+		$this->addModel("cssurl",array(
 			"type"=>"text/JavaScript",
 			"script"=>'var cssURL = "'.SOY2PageController::createLink("Page.Editor").'";' .
 					  'var siteId="'.UserInfoUtil::getSite()->getSiteId().'";' .
@@ -199,7 +198,7 @@ class DetailPage extends CMSWebPageBase{
 		
 		//絵文字入力用
 		if(SOYCMSEmojiUtil::isInstalled()){
-			HTMLHead::addScript("mceSOYCMSEmojiURL",array(
+			$this->addModel("mceSOYCMSEmojiURL",array(
 				"script" => 'var mceSOYCMSEmojiURL = "'.SOYCMSEmojiUtil::getEmojiInputPageUrl().'";'
 			));
 		}
@@ -211,7 +210,7 @@ class DetailPage extends CMSWebPageBase{
     	
     	//絵文字入力用
 		if(SOYCMSEmojiUtil::isInstalled()){
-			HTMLHead::addScript("mceSOYCMSEmojiURL",array(
+			$this->addModel("mceSOYCMSEmojiURL",array(
 				"script" => 'var mceSOYCMSEmojiURL = "'.SOYCMSEmojiUtil::getEmojiInputPageUrl().'";'
 			));
 		}

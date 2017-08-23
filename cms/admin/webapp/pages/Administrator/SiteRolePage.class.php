@@ -29,7 +29,7 @@ class SiteRolePage extends CMSUpdatePageBase{
     	if(!UserInfoUtil::isDefaultUser() || strlen($userId) < 1) $userId = UserInfoUtil::getUserId();
     	$this->userId = $userId;
 
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$this->outputMessage();
 

@@ -1,44 +1,63 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
+
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
-</head>
+</head soy:page="_common.HeaderPage">
 
 <body>
-<div class="container">
-	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
-	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
-	<div><div id="toolbox" class="span-24 last" soy:page="_common.ToolBoxPage"></div></div>
 
-	<!-- content start -->
-	<div id="content" class="span-24 last">
-		
-		<div class="span-16 last">
-			<h2><a soy:link="Module">モジュール一覧</a> &gt; モジュールの作成</h2>
-		</div>			
-		
-		<form soy:id="form">
-			<div class="prepend-1 span-22 last">
-				<div class="section_top">
-					<p class="sub">モジュールID&nbsp;ドット区切りの半角英数字（例：parts.sample）</p>
-					<input type="text" soy:id="module_id">
-					<p class="sub">モジュール名</p>
-					<input type="text" soy:id="module_name">
-					
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header"><small><a soy:link="Page">ページ</a> &gt; <a soy:link="Module">モジュール管理</a></small> &gt; </small>モジュールの作成</h1>
 				</div>
-				
-				<div id="buttons" style="margin:20px 0 0 10px;height:10%;">
-					<input id="update_button" soy:id="update_button" type="submit" value="更新" />
-				</div>
+				<!-- /.col-lg-12 -->
 			</div>
-		</form>
 
-		
-		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
-		<!-- content end -->
+			<div soy:page="_common.MessagePanel" isOverWrite="true"></div>
+
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="panel panel-green">
+						<div class="panel-heading">
+							モジュールの作成
+						</div>
+						<div class="panel-body">
+							<form soy:id="form">
+								<div class="form-group">
+									<label>モジュールID</label>
+									<input type="text" soy:id="module_id" class="form-control">
+									<p class="help-block">ドット区切りの半角英数字（例：parts.sample）</p>
+								</div>
+
+								<div class="form-group">
+									<label>モジュール名</label>
+									<input type="text" soy:id="module_name" class="form-control">
+								</div>
+
+								<input class="btn btn-default btn-lg btn-block" soy:id="update_button" type="submit" value="作成" />
+							</form>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-6 -->
+			</div>
+
+		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
 	</div>
-	
-	<div soy:page="_common.FooterPage"></div>
+	<!-- /#wrapper -->
 
-</div>
+
+	<div id="image_list" style="width:100%;height:100%;display:none;">
+		<span soy:id="image_list" class="label_icon">
+			<img soy:id="image_list_icon">
+		</span soy:id="image_list">
+	</div>
+
 </body>
 </html>

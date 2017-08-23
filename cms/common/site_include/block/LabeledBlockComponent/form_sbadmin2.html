@@ -1,0 +1,57 @@
+<form soy:id="main_form">
+
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<label>ラベルの選択</label>
+			<span style="color:#737373">表示するラベルを選択してください</span>
+
+			<div id="labels_wrapper" style="_width: 643px;">
+				<div class="label_wrapper" soy:id="label_loop">
+					<input type="radio" soy:id="radio" name="object[labelId]"/>
+					<label soy:id="label">
+						<img soy:id="label_icon" class="label_icon" />
+						<span soy:id="label_text" class="label label-default label-soy">ラベル１</span>
+					</label soy:id="label">
+				</div soy:id="label_loop">
+			</div>
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<div class="form-group" style="max-width: 20em;">
+				<label>表示件数<span soy:message="HELP_BLOCK_DISPLAY_NUMBER"></span></label>
+				<span class="input-group">
+					<input type="text" soy:id="display_number_start" class="form-control">
+					<span class="input-group-addon">件目～</span>
+					<input type="text" soy:id="display_number_end" class="form-control">
+					<span class="input-group-addon">件目</span>
+				</span>
+			</div>
+			<label>表示順</label>
+			<input type="text" soy:id="display_order_desc"><label for="display_order_desc">作成日の降順</label>
+			<input type="text" soy:id="display_order_asc"><label for="display_order_asc">作成日の昇順</label>
+			<span style="color:#737373">表示順の指定されていない記事にのみ有効です。</span>
+		</div>
+	</div>
+
+	<!-- soy:display="blog_link" -->
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<label>ブログへのリンク<span soy:message="HELP_BLOCK_BLOG_LINK"/></span></label>
+			<input soy:id="no_stick_url" type="hidden" name="object[blogPageId]" value="0"/>
+			<input soy:id="stick_url" type="checkbox" onclick="common_toggle('blog_page_list');common_toggle('blog_page_list_label');"><br/>
+			<span class="input-group">
+				<span id="blog_page_list_label" class="input-group-addon" soy:id="blog_page_list_label">ブログを指定してください: </span>
+				<select id="blog_page_list" soy:id="blog_page_list" class="form-control"></select>
+			</span>
+		</div>
+	</div>
+	<!-- /soy:display="blog_link" -->
+
+	<div class="form-group">
+		<input class="btn btn-success btn-lg pull-right" type="submit" value="設定の保存">
+		<input class="btn btn-default" type="button" value="キャンセル" onclick="common_close_layer(window.parent);return false;">
+	</div>
+
+</form soy:id="main_form">

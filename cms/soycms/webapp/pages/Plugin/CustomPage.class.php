@@ -5,7 +5,7 @@ class CustomPage extends CMSWebPageBase{
 	private $html;
 
     function __construct() {
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	
     	$result = SOY2ActionFactory::createInstance("Plugin.CustomPageAction")->run();

@@ -67,7 +67,7 @@ class SOYCMS_OutputContents{
 	private $generate_time;
 
 
-	function __construct(){
+	function SOYCMS_OutputContents(){
 
 		//「キャッシュのクリア」で削除されるようにキャッシュディレクトリ以下に置く
 		$this->cacheDir = _SITE_ROOT_.self::CacheDir;
@@ -96,7 +96,6 @@ class SOYCMS_OutputContents{
 		SOY2DAOConfig::Dsn(_SITE_DSN_);
 		if(defined("_SITE_DB_USER_")) SOY2DAOConfig::user(_SITE_DB_USER_);
 		if(defined("_SITE_DB_PASSWORD_")) SOY2DAOConfig::pass(_SITE_DB_PASSWORD_);
-		SOY2HTMLConfig::CacheDir(_SITE_ROOT_."/.cache/");
 		$CMSPageController = SOY2PageController::init("CMSPageController");
 		SOY2PageController::run();
 
@@ -166,6 +165,14 @@ class SOYCMS_OutputContents{
 				|| !defined("SOYCMS_USE_CACHE") || !SOYCMS_USE_CACHE
 			){
 				return;
+			}else{
+				//エラー発生時
+				$headers = headers_list();
+				foreach( $headers as $header){
+					if(strpos($header, "X-Error") !== false){
+						return;
+					}
+				}
 			}
 
 			//生成中のマーク
@@ -233,10 +240,13 @@ class SOYCMS_OutputContents{
 
 	/**
 	 * キャッシュファイルまたは文字列を出力
+	 * @param String $contents 出力するHTML、これが指定されなければキャッシュを出力する
+	 * HTTPヘッダーでContent-Lengthも出力する
+	 * 可能であればgzip圧縮を使う
 	 */
 	private function output($contents = null){
 		ob_start();
-			$ob = @ob_start("ob_gzhandler");//ブラウザが受け入れてないならfalseが返る
+			$ob = ob_start("ob_gzhandler");//ブラウザが受け入れてないならfalseが返る
 
 			if(is_null($contents)){
 				readfile($this->cache);
@@ -272,6 +282,7 @@ class SOYCMS_OutputContents{
 	 */
 	private function saveHeaders($CMSPageController){
 		//404とContent-TypeをHTTPヘッダー出力用ファイルに保存する
+		//headers_list()ではHTTP Statusは取得できない
 		$headers = headers_list();
 		$h = array();
 		foreach($headers as $header){

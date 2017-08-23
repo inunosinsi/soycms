@@ -1,10 +1,6 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<script soy:id="jqueryjs"></script>
-	<script soy:id="jqueryuijs"></script>
-	<script soy:id="commonjs"></script>
-	<script soy:id="otherdata"></script>
 	<style type="text/css">
 		h4{
 			margin-bottom: 6px;
@@ -19,9 +15,8 @@
 		}
 	</style>
 </head>
+
 <body>
-<?php /* コンテンツ部分 */ ?>
-<div>
 	<h4>ブログページのリンク設定</h4>
 	<h5>選択されているページ</h5>
 	<div class="sub">
@@ -56,44 +51,45 @@
 		<input type="text" value="" soy:id="month_today" id="month_input" class="sub">
 	</div>
 	<!-- /soy:display="show_archive" -->
-	
+
 	<div>
 		<input type="button" value="リンク追加" class="soycms_custom_button" onclick="return checkURL();">
 		<input type="button" value="戻る"       class="soycms_custom_button" onclick="location.href=back_link;">
 	</div>
-</div>
-<?php /* コンテンツ部分終わり */ ?>
+
+<script soy:id="jqueryjs"></script>
+<script soy:id="otherdata"></script>
 
 <script type="text/javascript">
 	window.onload = function(){
 		if($("#link_style").val() != "null"){
 			$("#" + $("#link_style").val() + "_view").css("display","");
 		}
-		
+
 		$("#link_style").change(function(){
 			if($("#category_view"))$("#category_view").css("display","none");
 			if($("#entry_view"))$("#entry_view").css("display","none");
 			if($("#month_view"))$("#month_view").css("display","none");
-			
+
 			if($("#link_style").val() != "null"){
 				$("#" + $("#link_style").val() + "_view").css("display","");
 			}
 		});
 	};
-	
+
 
 	function checkURL(){
 		var href = 'href="'+page[1]+'"';
-		
+
 		var innerHTML = "";
-		
+
 		var cmslink = 'cms:link="'+page[0]+'"';
 		var extAttrib = "";
-		
+
 		if(siteId.length != 0){
 			extAttrib = ' site="'+siteId+'" ';
 		}
-		
+
 		switch($("#link_style").val()){
 			case "null":
 				alert("リンクの種類を選択してください");
@@ -117,13 +113,13 @@
 			default:
 				return false;
 		}
-		
+
 		if(innerHTML == ""){
 			innerHTML = tmpHTML;
 		}
-		
+
 		if(extAttrib.length > 0)extAttrib = " " + extAttrib;
-		
+
 		window.parent.insertHTML(
 			'<a '
 			+href+" "
@@ -132,14 +128,12 @@
 			+'>'
 			+innerHTML+'</a>'
 		);
-		
+
 		window.parent.common_close_layer(window.parent);
 		return false;
-	
-		
-	}
 
-	common_init_custom_button();
+
+	}
 
 </script>
 </body>

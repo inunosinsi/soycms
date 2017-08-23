@@ -1,10 +1,6 @@
 <html>
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<script soy:id="jqueryjs"></script>
-	<script soy:id="jqueryuijs"></script>
-	<script soy:id="commonjs"></script>
-	<script soy:id="urls"></script>
 	<style type="text/css">
 		h4{
 			margin-bottom: 6px;
@@ -19,24 +15,28 @@
 		}
 	</style>
 </head>
+
 <body>
-<h4>サイトの選択</h4>
-<div id="controlle_panel">
-	
-	<div class="sub">
-	<select soy:id="site_list" id="site_list" style="width:90%"></select>
+	<h4>サイトの選択</h4>
+	<div id="controlle_panel">
+
+		<div class="sub">
+		<select soy:id="site_list" id="site_list" style="width:90%"></select>
+		</div>
+		<div>
+		<input type="button" value="サイトを決定" class="soycms_custom_button" onclick="return relocation();">
+		</div>
 	</div>
-	<div>
-	<input type="button" value="リンクを追加" class="soycms_custom_button" onclick="return relocation();">
-	</div>
-</div>
+
+<script soy:id="jqueryjs"></script>
+<script soy:id="urls"></script>
+
 <script type="text/javascript">
 	function relocation(){
 		window.location.href = link_url+"/"+$("#site_list").val();
-		
+
 		return false;
 	}
-	common_init_custom_button();
 </script>
 </body>
 </html>

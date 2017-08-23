@@ -17,7 +17,7 @@ class LabelUpdateAction extends SOY2Action{
 	 * Actionの実行を行います。
 	 */
 	protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form, SOY2ActionResponse &$response){
-		
+
 		//記事管理者は操作禁止
 		if(class_exists("UserInfoUtil") && !UserInfoUtil::hasSiteAdminRole()){
 			return SOY2Action::FAILED;
@@ -30,7 +30,7 @@ class LabelUpdateAction extends SOY2Action{
 			}
 			return SOY2Action::FAILED;
 		}
-		
+
 		if(isset($form->alias) && is_numeric($form->alias)){
 			$this->setErrorMessage("failed","URLで数字は使用できません");
 			return SOY2Action::FAILED;
@@ -39,7 +39,7 @@ class LabelUpdateAction extends SOY2Action{
 		$logic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
 		$label = $logic->getById($this->id);
 		$label = SOY2::cast($label,$form);
-		
+
 		//すでに存在するラベル名と同名のラベルを作成できなくする
 		if(!$logic->checkDuplicateCaption($label->getCaption(), $label->getId())){
 			$this->setErrorMessage("failed","重複する名称が存在します");
@@ -72,7 +72,7 @@ class LabelUpdateActionForm extends SOY2ActionForm{
 	function setCaption($caption){
 		$this->caption = $caption;
 	}
-	
+
 	/**
 	 * @validator string {}
 	 */
@@ -112,6 +112,4 @@ class LabelUpdateActionForm extends SOY2ActionForm{
 	function setBackgroundColor($backgroundColor){
 		$this->backgroundColor = hexdec($backgroundColor);
 	}
-
 }
-?>

@@ -15,7 +15,7 @@ class CMSMessageManager {
 	 */
 	private $messageArray = null;
 	
-    function __construct() {}
+    function CMSMessageManager() {}
     
     static function &getInstance(){
     	static $_instance;

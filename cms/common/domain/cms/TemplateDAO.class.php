@@ -51,47 +51,45 @@ abstract class TemplateDAO extends SOY2DAO{
 			throw new Exception($filename." does not exists");
 		}
 		
+		@$xml = simplexml_load_file($filename);
+		if(!$xml){
+			throw new Exception($filename." does not xml file");
+		}
+		
 		$template = new Template();
-		if(function_exists("simplexml_load_file")){
-			@$xml = simplexml_load_file($filename);
-			if(!$xml){
-				throw new Exception($filename." does not xml file");
+		$template->setId(str_replace('.xml','',$relative_fname));
+		$template->setName((string)$xml->name);
+		$template->setDescription((string)$xml->description);
+		$template->setPageType((string)$xml->type);
+		$template->setArchieveFileName($this->getTemplateDirectory().'/' . (string)$xml->id . ".zip");
+		$template->setTemplatesDirectory($this->getTemplateDirectory().'/' . $template->getId() . "/");
+				
+		if($withDetail){
+			$templates = array();		
+			foreach($xml->templates->template as $tmp){
+				$templates[(string)$tmp->id] = array(
+					"id" => (string)@$tmp->id,
+					"name" => (string)@$tmp->name,
+					"type" => (string)@$tmp->type,
+					"description" => (string)@$tmp->description
+				);
+			}
+			$template->setTemplate($templates);
+			
+			$files = array();
+			foreach($xml->files->file as $tmp){
+				$files[(string)@$tmp->name] = array(
+					"name" => (string)@$tmp->name,
+					"path" => (string)@$tmp->path,
+					"description" => (string)@$tmp->description
+				);				
 			}
 			
-			$template->setId(str_replace('.xml','',$relative_fname));
-			$template->setName((string)$xml->name);
-			$template->setDescription((string)$xml->description);
-			$template->setPageType((string)$xml->type);
-			$template->setArchieveFileName($this->getTemplateDirectory().'/' . (string)$xml->id . ".zip");
-			$template->setTemplatesDirectory($this->getTemplateDirectory().'/' . $template->getId() . "/");
-					
-			if($withDetail){
-				$templates = array();		
-				foreach($xml->templates->template as $tmp){
-					$templates[(string)$tmp->id] = array(
-						"id" => (string)@$tmp->id,
-						"name" => (string)@$tmp->name,
-						"type" => (string)@$tmp->type,
-						"description" => (string)@$tmp->description
-					);
-				}
-				$template->setTemplate($templates);
-				
-				$files = array();
-				foreach($xml->files->file as $tmp){
-					$files[(string)@$tmp->name] = array(
-						"name" => (string)@$tmp->name,
-						"path" => (string)@$tmp->path,
-						"description" => (string)@$tmp->description
-					);				
-				}
-				
-				$template->setFileList($files);
-			}
-			
-			if(@$xml->active == 1){
-				$template->setActive(1);
-			}
+			$template->setFileList($files);
+		}
+		
+		if(@$xml->active == 1){
+			$template->setActive(1);
 		}
 				
 		return $template;

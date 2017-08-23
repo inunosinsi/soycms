@@ -18,7 +18,7 @@ class TemplateHistoryDetailPage extends CMSWebPageBase {
     		$this->close();
     	}
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$templateHistory = $result->getAttribute("TemplateHistory");
     	

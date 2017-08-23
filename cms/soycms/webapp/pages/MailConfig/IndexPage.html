@@ -1,175 +1,194 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
+
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
-</head>
+</head soy:page="_common.HeaderPage">
+
 <body>
-<div class="container">
-	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
-	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
 
-<style type="text/css">
-#siteconfig_form table td.caption{
-	vertical-align:middle;
-}
-</style>
-	
-		<!-- content start -->
-		<div id="content" class="span-24 last">
-			
-			<div class="span-22 prepend-1 last">
-				<h3>メール設定</h3>
-			</div>
-
-			<div class="prepend-1 span-22 last functions">
-				<a soy:link="SiteConfig">サイト設定</a>
-				<span style="color: #111111;">メール設定</span>
-			</div>
-			
-			<form soy:id="config_form">			
-			<div class="span-22 prepend-1 last">
-				<h4>SMTP設定</h4>
-			</div>
-			
-			<div class="span-22"  style="padding-bottom:20px;">
-				<table class="list">
-					
-					<tr class="no_example">
-						<th>送信方法</th>
-						<td>
-							<input soy:id="send_server_type_sendmail" type="radio" name="server_type" />
-							<label for="send_server_type_sendmail">sendmail (PHPのmail関数)</label>
-							<input soy:id="send_server_type_smtp" type="radio" name="server_type" />
-							<label for="send_server_type_smtp">SMTP</label>
-						</td>
-					</tr>
-					
-					<tr class="no_example">
-						<th rowspan="3">SMTP</th>
-						<td>
-							<label for="send_server_address">サーバ</label>
-							<input soy:id="send_server_address" type="text" name="" value="" size="80" />
-						</td>
-					</tr>
-					<tr class="no_example">
-						<td>
-							<label for="send_server_port">ポート</label>
-							<input soy:id="send_server_port" type="text" name="" value="" size="80" />
-						</td>
-					</tr>
-					<tr class="no_example">
-						<td>
-							<input type="hidden" name="isUseSSLSendServer" value="0" />
-							<input soy:id="is_use_ssl_send_server" type="checkbox" name="" />
-							<label for="is_use_ssl_send_server">SSL(暗号化)を使用する</label>
-							<p class="error always" soy:id="ssl_disabled">SSLが使えないサーバーです。</p>
-						</td>
-					</tr>
-					
-					<tr class="no_example">
-						<th rowspan="4">認証</th>
-						<td>
-							<input name="isUseSMTPAuth" type="hidden" value="0" />
-							<input soy:id="is_use_smtp_auth" type="checkbox" id="is_use_smtp_auth" />
-							<label for="is_use_smtp_auth">SMTP認証(SMTP-AUTH)を使用する</label>
-						</td>
-					</tr>
-					<tr class="no_example">
-						<td>
-							<label>ユーザ名</label>
-							<input soy:id="send_server_user" type="text" value="" size="80" />
-						</td>
-					</tr>
-					<tr class="no_example">
-						<td>
-							<label>パスワード</label>
-							<input soy:id="send_server_password" type="password" name="" value="" size="80" />
-						</td>
-					</tr>
-					<tr class="no_example">
-						<td>
-							<input name="isUsePopBeforeSMTP" type="hidden" value="0" />
-							<input soy:id="is_use_pop_before_smtp" type="checkbox" name="" />
-							<label for="is_use_pop_before_smtp">「POP/IMAP before SMTP」を使用する</label>
-						</td>
-					</tr>
-				</table>
-			</div>
-			
-			<div class="span-22 prepend-1 last">
-				<h4>管理者メールアドレス（送信元アドレス）設定</h4>
-			</div>
-
-			<div class="span-22" style="padding-bottom:50px;">
-				<table class="list">
-					<tr class="no_example">
-						<th>送信元アドレス（From）</th>
-						<td>
-							<input id="administrator_address" soy:id="from_address" type="text" value="" size="80" />
-						</td>
-					</tr>
-					
-					<tr class="no_example">
-						<th>送信元名称</th>
-						<td>
-							<input soy:id="from_name" type="text" value="" size="80" />
-						</td>
-					</tr>
-					
-					<tr class="no_example">
-						<th>返信先メールアドレス（Reply-To）</th>
-						<td>
-							<input soy:id="return_address" type="text" value="" size="80" />
-						</td>
-					</tr>
-					
-					<tr class="no_example">
-						<th>返信先名称</th>
-						<td>
-							<input soy:id="return_name" type="text" value="" size="80" />
-						</td>
-					</tr>
-	
-					<tr class="no_example">
-						<th>文字コード設定&nbsp;標準文字コード</th>
-						<td>
-							<select soy:id="encoding_select"></select>
-						</td>
-					</tr>
-				</table>
-				<div style="float:right;padding-right:40%;">
-					<input id="update_button" type="submit" name="update" value="更新" />
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">メール設定</h1>
 				</div>
-				
+				<!-- /.col-lg-12 -->
 			</div>
+
+			<div soy:page="_common.MessagePanel" isOverWrite="true"></div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<a class="btn btn-default" soy:link="SiteConfig">サイト設定</a>
+							<a class="btn btn-default active" soy:link="MailConfig">メール設定</a>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+
+			<div class="row">
+			<form soy:id="config_form">
+				<div class="col-lg-12">
+					<div class="panel panel-green">
+						<div class="panel-heading">
+							メール設定
+						</div>
+						<div class="panel-body">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									SMTP設定
+								</div>
+								<div class="table-responsive">
+									<table class="table">
+										<tr>
+											<th>送信方法</th>
+											<td>
+												<input soy:id="send_server_type_sendmail" type="radio" name="server_type" />
+												<label for="send_server_type_sendmail">sendmail (PHPのmail関数)</label>
+												<input soy:id="send_server_type_smtp" type="radio" name="server_type" />
+												<label for="send_server_type_smtp">SMTP</label>
+											</td>
+										</tr>
+
+										<tr>
+											<th rowspan="3">SMTP</th>
+											<td>
+												<label for="send_server_address">サーバ</label>
+												<input class="form-control" soy:id="send_server_address" type="text" name="" value="" size="80" />
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label for="send_server_port">ポート</label>
+												<input class="form-control" soy:id="send_server_port" type="text" name="" value="" size="80" />
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<input type="hidden" name="isUseSSLSendServer" value="0" />
+												<input soy:id="is_use_ssl_send_server" type="checkbox" name="" />
+												<label for="is_use_ssl_send_server">SSL(暗号化)を使用する</label>
+												<p class="help-block" soy:id="ssl_disabled">SSLが使えないサーバーです。</p>
+											</td>
+										</tr>
+
+										<tr>
+											<th rowspan="4">認証</th>
+											<td>
+												<input name="isUseSMTPAuth" type="hidden" value="0" />
+												<input soy:id="is_use_smtp_auth" type="checkbox" id="is_use_smtp_auth" />
+												<label for="is_use_smtp_auth">SMTP認証(SMTP-AUTH)を使用する</label>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label>ユーザ名</label>
+												<input class="form-control" soy:id="send_server_user" type="text" value="" size="80" />
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label>パスワード</label>
+												<input class="form-control" soy:id="send_server_password" type="password" name="" value="" size="80" />
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									管理者メールアドレス（送信元アドレス）設定
+								</div>
+								<div class="table-responsive">
+									<table class="table">
+										<tr>
+											<th>送信元アドレス（From）</th>
+											<td>
+												<input class="form-control" id="administrator_address" soy:id="from_address" type="text" value="" size="80" />
+											</td>
+										</tr>
+
+										<tr>
+											<th>送信元名称</th>
+											<td>
+												<input class="form-control" soy:id="from_name" type="text" value="" size="80" />
+											</td>
+										</tr>
+
+										<tr>
+											<th>返信先メールアドレス（Reply-To）</th>
+											<td>
+												<input class="form-control" soy:id="return_address" type="text" value="" size="80" />
+											</td>
+										</tr>
+
+										<tr>
+											<th>返信先名称</th>
+											<td>
+												<input class="form-control" soy:id="return_name" type="text" value="" size="80" />
+											</td>
+										</tr>
+
+										<tr>
+											<th>文字コード設定</th>
+											<td>
+												<select class="form-control" soy:id="encoding_select"></select>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<input name="isUsePopBeforeSMTP" type="hidden" value="0" />
+								<input class="btn btn-primary btn-lg btn-block" type="submit" name="update" value="更新" />
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+				<!-- /.col-lg-12 -->
 			</form>
-			
+
 			<form soy:id="test_form">
-			<div class="span-22 prepend-1 last">
-				<h3>管理者メールアドレス（送信元アドレス）設定</h3>
-			</div>
-			
-			<div class="span-22" style="padding-bottom:50px;">
-				<table class="list">
-					<tr class="no_example">
-						<th>テストメールの送信先</th>
-						<td>
-							<input type="text" value="" id="test_mail_address" soy:id="test_mail_address" size="80" />
-						</td>
-					</tr>
-				</table>
-				<div style="float:right;padding-right:40%;">
-					<input id="update_button" type="submit" name="test" value="テスト送信" onclick="return confirm_test_send();" />
+				<div class="col-lg-12">
+					<div class="panel panel-green">
+						<div class="panel-heading">
+							管理者メールアドレス（送信元アドレス）設定
+						</div>
+						<div class="panel-body">
+							<div class="form-group col-lg-6">
+								<label>テストメールの送信先</label>
+								<span class="input-group">
+									<input type="email" placeholder="tester@example.com" value="" class="form-control" id="test_mail_address" soy:id="test_mail_address">
+									<span class="input-group-btn">
+										<input class="btn btn-success btn-block" type="submit" name="test" value="テスト送信" onclick="return confirm_test_send();" />
+									</span>
+								</span>
+							</div>
+						</div>
+					</div>
 				</div>
-			</div>
 			</form>
-			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+			<!-- /.col-lg-12 -->
+
+			</div>
+			<!-- /.row -->
+
 		</div>
-		
-	<div soy:page="_common.FooterPage"></div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
 
-</div>
 </body>
-
 <script type="text/javascript">
 function changeSendPort(){
 	var port = 25;
@@ -272,13 +291,11 @@ function confirm_test_send(){
 	};
 
 	return confirm(
-			"現在保存されている設定内容でテストメールを送信します。\n" + 
+			"現在保存されている設定内容でテストメールを送信します。\n" +
 			"送信先: " + $("#test_mail_address").val() + "\n\n"
 			+ "よろしければ「OK」を押してください。\n"
 			+ "中止する場合は「キャンセル」を押してください。"
 	);
 }
 </script>
-
-
 </html>

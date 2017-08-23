@@ -1,63 +1,66 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
+
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
-</head>
+</head soy:page="_common.HeaderPage">
 
 <body>
-<div class="container">
-	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
-	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
-	<div><div id="toolbox" class="span-24 last" soy:page="_common.ToolBoxPage"></div></div>
 
-	<!-- content start -->
-	<div id="content" class="span-24 last">
-		
-		<div class="span-16 last">
-			<h2><a soy:link="Module">モジュール一覧</a> &gt; 詳細</h2>
-		</div>			
-		
-		<form soy:id="form">
-			<div class="prepend-1 span-22 last">
-				<div class="section_top">
-					<p class="sub">モジュール名</p>
-					<input type="text" soy:id="module_name">
-					<p class="sub">モジュールID</p>
-					<!-- soy:id="module_id" /-->
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header"><small><a soy:link="Page">ページ</a> &gt; <a soy:link="Module">モジュール管理</a></small> &gt; </small>HTMLモジュールの編集</h1>
 				</div>
-								
-				<div class="section" id="entry_editor">
-										
-					<div id="entry_content_wrapper">
-						<textarea id="entry_content" soy:id="module_content" class="editor"></textarea>
+				<!-- /.col-lg-12 -->
+			</div>
+
+			<div soy:page="_common.MessagePanel" isOverWrite="true"></div>
+
+			<div class="row">
+				<div class="col-lg-9">
+					<div class="panel panel-green">
+						<div class="panel-body">
+							<form soy:id="form">
+								<div class="form-group">
+									<label>モジュールID</label>
+									<input type="text" soy:id="module_id" class="form-control">
+								</div>
+
+								<div class="form-group">
+									<label>モジュール名</label>
+									<input type="text" soy:id="module_name" class="form-control">
+								</div>
+
+								<div class="form-group">
+									<label>HTMLモジュールの内容</label>
+									<textarea soy:id="module_content" class="form-control" rows="20"></textarea>
+								</div>
+
+								<input type="submit" value="保存" class="btn btn-default btn-lg btn-block">
+							</form>
+						</div>
+					</div>
+
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="">
+								<label>テンプレート記述例</label>
+								<textarea soy:id="module_example" class="form-control" rows="4" readonly></textarea>
+							</div>
+						</div>
 					</div>
 				</div>
-								
-				<div id="buttons" style="height:10%;">
-					<input id="update_button" type="submit" value="更新" />
-				</div>
+				<!-- /.col-lg-12 -->
 			</div>
-			
-		</form>
-		
-		<div class="prepend-1 span-22 last" style="margin-top:20px;">
-			<table>
-				<caption style="cursor:pointer;" onclick="$('#example').toggle();">▶&nbsp;テンプレート記述例を表示</caption>
-				<tr id="example" style="display:none;">
-					<td>
-						<textarea id="module_example" soy:id="module_example"></textarea>
-					</td>
-				</tr>
-			</table>
-		</div>
-		
-		<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
-		<!-- content end -->
-	</div>
-	
-	<div soy:page="_common.FooterPage"></div>
 
-</div>
-<script soy:src="./js/tools/advanced_textarea.js" type="text/javascript" charset="utf-8"></script>
-<script soy:src="./js/tools/insert_tab.js" type="text/javascript" charset="utf-8"></script>
+		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
+
 </body>
 </html>

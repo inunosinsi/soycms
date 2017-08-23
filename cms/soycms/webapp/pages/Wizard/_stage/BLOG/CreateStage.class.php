@@ -6,7 +6,7 @@ class CreateStage extends StageBase{
     }
         
     function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->createAdd("page_name","HTMLLabel",array(
 			"text"=>(strlen($this->wizardObj->name))? $this->wizardObj->name : "[無題]"

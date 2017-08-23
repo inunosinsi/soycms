@@ -1,17 +1,16 @@
-<h3>ページ雛形の新規作成 - テンプレートの編集(2/5)</h3>
 
-<div class="section">
-<p class="sub">テンプレート名</p>
-<span soy:id="name"></span>
+<div class="form-group">
+	<label>テンプレート名</label>
+	<input soy:id="name" class="form-control"></span>
 </div>
 
-<div class="section">
-<p class="sub">概要<img soy:message="TEMPLATE_FILE_DESCRIPTION"/></p>
-<textarea soy:id="description" cols="60" rows="8"></textarea>
+<div class="form-group">
+	<label>概要</label><span soy:message="TEMPLATE_FILE_DESCRIPTION"></span>
+	<textarea soy:id="description" cols="60" rows="4" class="form-control"></textarea>
 </div>
 
-<div class="section">
-<p class="sub">テンプレート<img soy:message="TEMPLATE_FILE_CONTENT"/></p>
+<div class="form-group">
+<label>テンプレート</label><span soy:message="TEMPLATE_FILE_CONTENT"></span>
 <div>
 	<div>
 		<div id="template_toolbox">
@@ -21,7 +20,7 @@
 			<button type="button" onclick="showCSSEditor();" id="cssButton">CSS</button>
 			<button type="button" onclick="toggle_editor();">エディタの切り替え</button>
 		</div>
-		
+
 		<div id="template_wrapper" style="position:relative;border:solid 1px #666666;width:100%;">
 			<div id="template_editor_wrapper">
 				<textarea soy:id="template" id="template_content" rows="40" cols="80" wrap="off" style="width:100%;border:none;margin:0;padding:0;line-height:12px;font-size:12px;"></textarea>
@@ -46,5 +45,11 @@
 		<input type="hidden" soy:id="filepath" name="filePath">
 		<span soy:id="filePath"></span>
 	</div>
-</div>		
 </div>
+</div>
+
+<script>
+	$('#template_editor_frame').on("load",function(e){
+		init_template_editor();
+	});
+</script>

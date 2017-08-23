@@ -2,7 +2,7 @@
 
 class MoveUpPage extends CMSWebPageBase{
 
-    function __construct($arg) {
+    function MoveUpPage($arg) {
     	if(soy2_check_token()){
 	    	$pageId = @$arg[0];
 	    	$treeId = @$arg[1];

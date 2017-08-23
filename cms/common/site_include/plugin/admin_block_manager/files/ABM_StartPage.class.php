@@ -35,8 +35,8 @@ class ABM_StartPage extends ABM_PageBase{
 		
 	}
 	
-    function __construct() {
-    	WebPage::__construct();
+    function __construct(){
+    	parent::__construct();
     	
     	$session = $this->getSession();
 		$pageList = (isset($session["page_list"])) ? $session["page_list"] : array();

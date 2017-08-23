@@ -1,42 +1,40 @@
-<img soy:id="biglogo" src="./../css/img/logo_big.gif" alt="logo" />
-<div id="administrator">
-	<p>管理者 <span id="adminname" soy:id="adminname">ryan5500</span></p>
-	<a soy:id="update_link" href="javascript:void(0);">アカウント設定</a>
-	<a soy:link="Login.Logout" onclick="return confirm('ログアウトしますか？');">ログアウト</a>
-</div>
-<div id="tabs">
-	<a soy:link=""><div class="tab_active" soy:id="top">トップ</div></a>
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			 </div>
+			<!-- /.navbar-header -->
+			<a soy:link=""><img class="navbar-brand" soy:id="biglogo" src="./../css/img/logo_big.gif" alt="logo" ></a>
 
-	<!-- soy:display="for_default_user" -->
-	<a soy:link="Site"><div class="tab_inactive" soy:id="site">サイト一覧</div></a>
-	<a soy:link="Administrator"><div class="tab_inactive" soy:id="administrator">管理者一覧</div></a>
-	<!-- soy:id="is_application_installed" -->
-	<a soy:link="Application"><div class="tab_inactive" soy:id="application">アプリケーション</div></a>
-	<!-- /soy:id="is_application_installed" -->
-	<!-- /soy:display="for_default_user" -->
+			<ul id="top_menu" class="nav navbar-top-links navbar-right">
+				<!-- soy:display="ext_mode_link" --><li><a href="?ext_mode"><i class="fa fa-exchange fa-fw"></i>画面切替</a></li><!-- /soy:display="ext_mode_link" -->
+				<li><a soy:id="update_link" href="javascript:void(0);"><i class="fa fa-user fa-fw"></i>管理者情報（<span id="adminname" soy:id="adminname">soycms</span>）</a></li>
+				<li><a soy:link="Login.Logout" onclick="return confirm('ログアウトしますか？');"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
+			</ul>
+			<!-- /.navbar-top-links -->
 
-	<!-- soy:display="for_not_default_user" -->
-	<a soy:link="Administrator"><div class="tab_inactive" soy:id="update_link*">アカウント設定</div></a>
-	<!-- /soy:display="for_not_default_user" -->
+			<div class="navbar-default sidebar" role="navigation">
+				<div class="sidebar-nav navbar-collapse">
+					<ul class="nav" id="side-menu">
+						<li>
+							<a soy:link=""><i class="fa fa-home fa-fw"></i>ダッシュボード</a>
+						</li>
+						<li soy:id="show_site">
+							<a soy:link="Site"><i class="fa fa-sitemap fa-fw"></i><span soy:id="site">サイト一覧</span></a>
+						</li>
+						<li soy:id="show_app">
+							<a soy:link="Application"><i class="fa fa-arrows-alt fa-fw"></i><span soy:id="application">アプリケーション</span></a>
+						</li>
+						<li soy:id="show_admin">
+							<a soy:link="Administrator"><i class="fa fa-users fa-fw"></i><span soy:id="administrator">管理者一覧</span></a>
+						</li>
 
-</div>
-<div style="clear:both;"></div>
+					</ul>
+				</div>
+				<!-- /.sidebar-collapse -->
+			</div>
+			<!-- /.navbar-static-side -->
 
-<script type="text/javascript">
-$(".div.tab_inactive").each(function(){
-	$(this).mouseover(function(e){
-		$(this).attr("class","tab_inactive_hover");
-		$(this).attr("className","tab_inactive_hover");
-	});
-	
-	$(this).mouseout(function(e){
-		$(this).attr("class","tab_inactive");
-		$(this).attr("className","tab_inactive");
-	});
-	
-	$(this).mousedown(function(e){
-		$(this).attr("class","tab_inactive_active");
-		$(this).attr("className","tab_inactive_active");
-	});
-});
-</script>

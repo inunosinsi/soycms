@@ -17,25 +17,25 @@
 	if(!empty($modifiedFiles)){
 		if($this->ignoreTimestamp){
 			echo "以下の".count($modifiedFiles)."ファイルから読み込むファイルを選んでください。";
-			echo '<input type="submit" name="NotIgnoreTimestamp" value="編集されたファイルのみ表示する" />';
+			echo '<input type="submit" name="NotIgnoreTimestamp" value="編集されたファイルのみ表示する"><br>';
 		}else{
 			echo "以下の".count($modifiedFiles)."ファイルが書き出し後に編集されています。";
-			echo '<input type="submit" name="ignoreTimestamp" value="編集されていないファイルも表示する" />';
+			echo '<input type="submit" name="ignoreTimestamp" value="編集されていないファイルも表示する"><br>';
 		}
 
 		echo '<input type="checkbox" name="__check_all__" id="toggle_checked" onclick="toggle_file_checks(this.checked);" '.($this->ignoreTimestamp?'':'checked="checked"').' />';
-		echo '<label for="toggle_checked">チェック切替え</label><br/>';
+		echo '<label for="toggle_checked">チェック切替え</label><br>';
 
 		foreach($modifiedFiles as $key => $file){
 			if(strpos($file,".txt")!==false || strpos($file,".xls")!==false)continue;
 			echo '<input type="checkbox" name="imports[]" class="file_check" id="import_file_' . $key .'" value="'.htmlspecialchars($file).'" '.($this->ignoreTimestamp?'':'checked="checked"').' />';
-			echo '<label for="import_file_' . $key .'">'.htmlspecialchars($file).'</label><br/>';
+			echo '<label for="import_file_' . $key .'">'.htmlspecialchars($file).'</label><br>';
 		}
 	}else{
 		echo "編集されたファイルはありません。";
 		if($this->ignoreTimestamp){
 		}else{
-			echo '<input type="submit" name="ignoreTimestamp" value="編集されていないファイルも表示する" /><br/>';
+			echo '<input type="submit" name="ignoreTimestamp" value="編集されていないファイルも表示する"><br>';
 		}
 	}
 ?>

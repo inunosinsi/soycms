@@ -20,7 +20,7 @@ class ModifyPopupPage extends CMSWebPageBase{
     	$this->pageId = $pageId;
     	$this->treeId = $treeId;
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->createAdd("main_form","HTMLForm");
     	
@@ -126,7 +126,7 @@ class MobileEntrySelectComponent extends CMSHTMLPageBase{
 	private $entries;
 	
 	function MobileEntrySelectComponent(){
-		HTMLPage::__construct();
+		HTMLPage::HTMLPage();
 		
 	}
 	
@@ -247,7 +247,7 @@ class MobileLabelSelectComponent extends CMSHTMLPageBase{
 	private $labelId;
 	
 	function LabeledBlockComponent_FormPage(){
-		HTMLPage::__construct();
+		HTMLPage::HTMLPage();
 		
 	}
 	

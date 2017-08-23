@@ -52,7 +52,7 @@ class CreatePage extends CMSWebPageBase {
     	$this->pageId = $pageId;
     	$soyId = $args[1];
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$action = SOY2ActionFactory::createInstance("Block.SelectAction");
     	$result = $action->run();

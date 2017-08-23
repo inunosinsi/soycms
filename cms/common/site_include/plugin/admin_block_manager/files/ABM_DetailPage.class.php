@@ -31,8 +31,8 @@ class ABM_DetailPage extends ABM_PageBase{
 				
 	}
 	
-    function __construct() {
-    	WebPage::__construct();
+    function __construct(){
+    	parent::__construct();
     	
     	$session = $this->getSession();
     	

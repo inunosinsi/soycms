@@ -40,7 +40,7 @@ class SiteRootPage extends CMSUpdatePageBase{
 
     	//htaccessがすでに存在する場合は編集画面を表示する
 
-		WebPage::__construct();
+		parent::__construct();
 
 		try{
 			$site = SOY2DAOFactory::create("admin.SiteDAO")->getById($this->id);

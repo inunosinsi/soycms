@@ -41,9 +41,9 @@ class GoogleAnalytics{
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"Google Analytics導入プラグイン",
 			"description"=>"Google Analyticsを簡単に導入できます。<br>このプラグインを有効にすると全ページもしくは指定したページの指定した箇所にGoogle Analyticsトラックコードを埋め込むことができます。",
-			"author"=>"日本情報化研究所",
+			"author"=>"株式会社Brassica",
 			"modifier"=>"Jun Okada",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.9"
 		));

@@ -2,8 +2,8 @@
 
 class _LabelBlankPage extends CMSWebPageBase{
 
-    function __construct() {
-    	WebPage::__construct();
+    function __construct(){
+    	parent::__construct();
     }
 }
 ?>

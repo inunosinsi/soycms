@@ -2,7 +2,7 @@
 
 class ChangeEmailPage extends CMSWebPageBase{
 
-    function __construct() {
+    function __construct(){
     	$dao = SOY2DAOFactory::create("asp.ASPUserDAO");
     	$user = $dao->getById(UserInfoUtil::getUserId());
     	
@@ -13,7 +13,7 @@ class ChangeEmailPage extends CMSWebPageBase{
     	
     	//TODO メールアドレス変更の実装
     	
-    	WebPage::__construct();
+    	parent::__construct();
     }
 }
 ?>

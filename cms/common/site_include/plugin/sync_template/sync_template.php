@@ -39,9 +39,9 @@ class SyncTemplatePlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"テンプレート同期プラグイン",
 			"description"=>'ページ（ブログ）テンプレートを実ファイルと同期させます。<br />SOY CMSに格納されているテンプレートをファイルに書き出したり、<br />書き出したファイルをSOY CMSに格納したりすることが可能です。',
-			"author"=>"株式会社日本情報化農業研究所",
+			"author"=>"株式会社株式会社Brassica",
 			"modifier"=>"Jun Okada",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.4"
 		));

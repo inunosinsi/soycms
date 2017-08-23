@@ -1,42 +1,71 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-</head>
+</head soy:page="_common.HeaderPage">
 
 <body>
 
-<div id="wrapper">
-	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
-	<div id="content">
-		<h2>index.phpの編集 - <span soy:id="site_name" /></h2>
-		
-		<div class="functions" soy:display="only_default_user">
-			<p><a soy:id="detail_link">サイト詳細に戻る</a></p>
-		</div>
-		
-		<p class="message" soy:id="message"></p>
-		<p class="notify" soy:id="error"></p>
-		
-		<h3>index.phpの編集</h3>
-		
-			<form soy:id="update_site_form">
-				<table class="globalpage_input">
-					<input soy:id="site_id" />
-					<tr>
-						<td style="width:100%;">
-						<textarea soy:id="contents"></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td class="button">
-							<input type="submit" value="保存" soy:id="button">
-						</td>
-					</tr>
-				</table>
-			</form soy:id="update_site_form">
-		</div>
-	<div soy:page="_common.FooterPage"></div>
-</div>
+    <div id="wrapper">
+		<!-- Navigation -->
+        <nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="UpperMenuPage"><!-- --></nav>
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">index.phpの編集 - <span soy:id="site_name" /></h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+    	    <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default panel-message">
+                    	<div  class="panel-heading" soy:id="message">メッセージ</div>
+						<div  class="panel-heading" soy:id="error">エラー</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" soy:display="only_default_user">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <ul class="nav nav-pills">
+                                <li><a soy:id="detail_link">サイト詳細に戻る</a></li>
+                            </ul>
+                        </div>
+                     </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                          	index.phpの編集
+                        </div>
+                        <div class="panel-body">
+      						<form soy:id="update_site_form">
+							<input soy:id="site_id" />
+								<textarea  style="width:100%;" soy:id="contents" class="form-control" rows="15"></textarea>
+								<input type="submit" value="保存" soy:id="button">
+							</form soy:id="update_site_form">	
+                        </div>
+                      
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+           
+            
+        </div>
+        <!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+    </div>
+    <!-- /#wrapper -->
+
+
 
 </body>
+
 </html>

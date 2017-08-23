@@ -34,7 +34,7 @@ class IndexPage extends CMSWebPageBase{
 			SOY2PageController::jump("Site");
 		}
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->createAdd("list", "SiteList", array(
 			"list" => $sites

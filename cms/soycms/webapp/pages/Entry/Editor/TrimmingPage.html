@@ -1,26 +1,22 @@
 <html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<link soy:id="jcropcss"/>
-<script soy:id="jqueryjs"></script>
-<script soy:id="jqueryuijs"></script>
-<script soy:id="commonjs"></script>
-<script soy:id="jcropjs"></script>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link soy:id="jcropcss">
 </head>
 <body>
 <div>
 <div id="controll_panel">
 	<!-- soy:id="display_jcrop_image" -->
 	<img soy:id="jcrop_image">
-	
+
 	<form soy:id="form" id="submit_form">
-		<input type="hidden" id="x" name="x" />
-		<input type="hidden" id="y" name="y" />
-		<input type="hidden" id="w" name="w" />
-		<input type="hidden" id="h" name="h" />
+		<input type="hidden" id="x" name="x">
+		<input type="hidden" id="y" name="y">
+		<input type="hidden" id="w" name="w">
+		<input type="hidden" id="h" name="h">
 	</form>
 	<!-- /soy:id="display_jcrop_image" -->
-	
+
 	<!-- soy:id="display_jcrop_thumbnail" -->
 	<div>
 		<img soy:id="jcrop_thumbnail">
@@ -32,6 +28,10 @@
 	</div>
 	<!-- /soy:id="display_jcrop_thumbnail" -->
 </div>
+
+<script soy:id="jqueryjs"></script>
+<script soy:id="jcropjs"></script>
+
 <script>
 var applyButton = $("#apply");
 var cancelButton = $("#cancel");
@@ -50,7 +50,7 @@ queries.forEach(function(q){
 });
 
 jQuery(function($){
-	
+
 	if($("#target")[0]){
 		$('#target').Jcrop({
 			aspectRatio : ratio_w / ratio_h,
@@ -59,13 +59,13 @@ jQuery(function($){
 			onRelease : resetCoords
 		});
 	}
-	
+
 	if($("#apply")[0]){
 		$("#apply").on("click", function(event){
 			apply();
 		});
 	}
-	
+
 	if($("#cancel")[0]){
 		$("#cancel").on("click", function(event){
 			cancel();
@@ -76,7 +76,7 @@ jQuery(function($){
 function confirmCoords(e){
 	if($('#x').val().length > 0){
 		var res = confirm("トリミング？");
-		
+
 		//Yesを選択した場合
 		if(res){
 			$("#submit_form").submit();
@@ -103,20 +103,20 @@ function resetCoords(){
 
 function apply(){
 	var src = $("#thumbnail_path").val();
-	
+
 	window.parent.$("#" + queries[0]).val(src);
 	window.parent.$("#" + queries[0].replace("_trimming_", "_resize_")).val("");
-	
+
 	//おまじない
 	iframe = null;
-	
+
 	window.parent.common_close_layer(window.parent);
 }
 
 function cancel(){
 	//おまじない
 	iframe = null;
-		
+
 	window.parent.common_close_layer(window.parent);
 }
 </script>

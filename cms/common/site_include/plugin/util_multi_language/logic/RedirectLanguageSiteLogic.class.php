@@ -2,7 +2,7 @@
 
 class RedirectLanguageSiteLogic extends SOY2LogicBase{
 	
-	function __construct(){
+	function RedirectLanguageSiteLogic(){
 		SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
 	}
 	
@@ -122,7 +122,7 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 			$path = str_replace("/" . SOYCMS_CARRIER_PREFIX, "", $path);
 		}
 		
-		if(count($config)) foreach($config as $conf){
+		foreach($config as $conf){
 			if(!isset($conf["prefix"])) continue;
 			if(preg_match('/\/' . $conf["prefix"] . '\//', $path) || $path == "/" . $conf["prefix"]){
 				$path = str_replace("/" . $conf["prefix"], "", $path);

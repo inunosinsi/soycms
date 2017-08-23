@@ -12,7 +12,7 @@ class TrackbackDetailPage extends CMSWebPageBase{
     		exit;
     	}
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	$trackback = $result->getAttribute("entity");
     	
     	$result = $this->run("Entry.EntryDetailAction",array("id"=>$trackback->getEntryId()));

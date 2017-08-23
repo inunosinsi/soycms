@@ -2,7 +2,7 @@
 
 class PHPInfoPage  extends CMSWebPageBase{
 
-   function __construct() {
+    function PHPInfoPage() {
 		if(!UserInfoUtil::isDefaultUser()){
     		$this->jump("");
 		}

@@ -1,34 +1,47 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 
 <head soy:page="_common.HeaderPage" isOverWrite="true">
 </head soy:page="_common.HeaderPage">
 
 <body>
 
-<div id="wrapper">
-	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
-	<div id="content">
-		
-		<h2>サーバー情報</h2>
-		
-		<div class="functions" soy:display="only_default_user">
-			<div style="float:left;margin-left:1ex;"><a href="#soycms"  id="soycms_info_link" onclick="$('#server_info').show();$('#php_info').hide();$('#server_info_link').css('color','#CB9766');$(this).css('color','#CB6703');">SOY CMS情報</a></div>
-			<div style="float:left;margin-left:1ex;"><a href="#phpinfo" id="server_info_link" onclick="$('#php_info').show();$('#server_info').hide();$('#soycms_info_link').css('color','#CB9766');$(this).css('color','#CB6703');" style="color:#CB9766;">PHP Info</a></div>
-		</div>
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">サーバー情報</h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<div class="row" soy:display="only_default_user">
+				<div class="col-lg-12">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#soycms"  id="soycms_info_link" data-toggle="tab">SOY CMS情報</a></li>
+						<li><a href="#phpinfo" id="server_info_link" data-toggle="tab">PHP Info</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active fade in" id="soycms">
+							<textarea soy:id="server_info" style="border-style:none;"></textarea>
+						</div>
+						<div class="tab-pane fade" id="phpinfo">
+							<iframe soy:id="php_info" ></iframe>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
 
-		<div id="server_info">
-			<h3>SOY CMS情報</h3>
-			<textarea soy:id="server_info"></textarea>
+
 		</div>
-		
-		<div id="php_info" style="display:none;">
-			<h3>PHP Info</h3>
-			<iframe soy:id="php_info" ></iframe>			
-		</div>
-		
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
 	</div>
+	<!-- /#wrapper -->
 
-	<div soy:page="_common.FooterPage"></div>
-</div>
+
 </body>
+
 </html>

@@ -17,7 +17,7 @@ class CMSFileManager{
 
 		"js",
 		"css",
-		
+
 		"pdf",
 		"zip"
 	);
@@ -52,13 +52,13 @@ class CMSFileManager{
 
 		return $file->getParentFileId();
 	}
-	
+
 	public static function getAllowedExtensions(){
 		$instance = self::getInstance();
 		return $instance->allowedExtensions;
 	}
 
-	private function __construct(){
+	private function CMSFileManager(){
 		if(defined("SOYCMS_ALLOWED_EXTENSIONS")){
 			$exts = explode(",",SOYCMS_ALLOWED_EXTENSIONS);
 			foreach($exts as $ext){
@@ -100,13 +100,13 @@ class CMSFileManager{
 		try{
 			$dao = self::_getDao();
 			$dao->begin();
-			
+
 			//$targetが$root以下のファイルであることを確認
 			$file = self::get($root, $target, false);
 			$parent = ($file->getParentFileId()) ? self::get($root, $file->getParentFileId()) : null ;
-			
+
 			$filepath = $file->getPath();
-			
+
 			//削除
 			$dao->deleteChildren($file);
 
@@ -129,7 +129,7 @@ class CMSFileManager{
 			$dao->rollback();
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -248,7 +248,7 @@ class CMSFileManager{
 		return $file;
 
 	}
-	
+
 	public static function get($root,$target,$withChild = false){
 		if(is_numeric($target)){
 			$dao = self::_getDao();
@@ -300,7 +300,7 @@ class CMSFileManager{
 
 	public static function printJson($root,$target){
 		$self = self::getInstance();
-		
+
 		$file = self::get($root,$target);
 
 		$obj = new stdClass;
@@ -419,7 +419,7 @@ class CMSFileManager{
 		}
 
 		$where = implode(" AND ",$where);
-		
+
 		$where .= " AND path like :path";
 		$namebinds[":path"] = UserInfoUtil::getSiteDirectory() . "%";
 
@@ -438,11 +438,11 @@ class CMSFileManager{
 	public static function debug(){
 		$dao = self::_getDao();
 	}
-	
+
 	/**
 	 * SiteのURLとパスを設定
 	 * URLの生成に使う
-	 * 
+	 *
 	 * @param $siteId
 	 * @param $siteUrl
 	 * @param $sitePath
@@ -463,7 +463,7 @@ class CMSFileManager{
 		if(!$obj){
 			$obj = new CMSFileManager();
 			$obj->setRoot($root);
-			
+
 			$site = UserInfoUtil::getSite();
 			if($site){
 				self::setSiteInformation($site->getId(), $site->getUrl(), $site->getPath());
@@ -486,7 +486,7 @@ class CMSFileManager{
 	/* 以下、内部使用のメソッド */
 
 	private $root;
-	
+
 	private $siteId;
 	private $siteUrl;
 	private $siteRoot;
@@ -502,14 +502,14 @@ class CMSFileManager{
 
 		$root = str_replace("\\","/",realpath($root));
 		$target = str_replace("\\","/",realpath($target));
-		
+
 		try{
 			$file = $dao->getByPath($target);
 			return 0;
 		}catch(Exception $e){
 			$file = new CMSFile();
 		}
-		
+
 		$pathinfo = pathinfo($target);
 		$file->setName($pathinfo['basename']);
 		$file->setPath($target);
@@ -525,7 +525,7 @@ class CMSFileManager{
 			$file->setUrl($url);
 
 		}else{
-			
+
 			if($this->getSiteUrl()){
 				$siteUrl = $this->getSiteUrl();
 				$url = str_replace($this->getSiteRoot(),"",$target);
@@ -533,9 +533,9 @@ class CMSFileManager{
 				$url = $siteUrl . $url;
 			}else{
 				$url = str_replace("\\","/",str_replace($root,"",$target));
-				if(isset($url[0]) && $url[0] != "/")$url = "/".$url;
+				if($url[0] != "/")$url = "/".$url;
 			}
-						
+
 			$file->setUrl($url);
 			if($root == $target){
 				$file->setUrl("/");
@@ -562,7 +562,7 @@ class CMSFileManager{
 
 		$file->setCreateDate(@filectime($target));
 		$file->setUpdateDate(@filemtime($target));
-		
+
 		$id = $dao->insert($file);
 		$file->setId($id);
 
@@ -577,9 +577,9 @@ class CMSFileManager{
 			$file->setFileSize($size);
 
 		}else{
-			$file->setFileSize(@filesize($target));
+			$file->setFileSize(filesize($target));
 		}
-		
+
 		$dao->update($file);
 
 		return $file->getFileSize();
@@ -779,7 +779,7 @@ abstract class CMSFileDAO extends SOY2DAO{
 	/**
 	 * @final
 	 */
-	public static function &_getDataSource($dsn = NULL, $user = NULL, $pass = NULL){
+	public static function &_getDataSource($__dsn = null,$__user = null, $__pass = null){
 		static $pdo;
 
 		if(is_null($pdo)){

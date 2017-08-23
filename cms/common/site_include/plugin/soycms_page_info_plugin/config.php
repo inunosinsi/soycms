@@ -61,7 +61,7 @@ $closeIcon = SOY2PageController::createRelativeLink("./css/pagelist/images/draft
 
 echo "<form method=\"post\">";
 
-echo "<table>";
+echo '<div class="table-responsive"><table class="table">';
 
 echo "<tr><th class=\"op\"><a href=\"javascript:void(0);\" onclick=\"toggle_all(".implode(",",array_keys($pages)).");\">[*]</a></th><th colspan=\"2\">ページ情報</th></tr>";
 
@@ -108,7 +108,7 @@ foreach($pages as $key => $page){
 	echo '<input type="text" class="text" name="format['.$page->getId().'][uri]" value="'.$page->getUri().'" />';
 	echo '</div>';
 	
-	echo '<div class="section"><p class="sub">タイトルフォーマット</p>';
+	echo '<div class="section><p class="sub">タイトルフォーマット</p>';
 	if($page->getPageType() == Page::PAGE_TYPE_BLOG){
 		
 		$page = $blogPageDAO->getById($page->getId());
@@ -120,7 +120,7 @@ foreach($pages as $key => $page){
 		$value2 = htmlspecialchars($page->getTopPageUri(),ENT_QUOTES);
 		$sortValue = htmlspecialChars($page->getTopEntrySort(), ENT_QUOTES);
 		
-		echo '<table>';
+		echo '<div class="table-responsive"><table class="table">';
 		echo '<col style="width:3em" />';
 		echo '<col style="width:1em" />';
 		
@@ -190,7 +190,7 @@ foreach($pages as $key => $page){
 		echo "<td>feed</td><td>:</td><td><input class=\"text\" name=\"format[".$page->getId()."][feedTitleFormat]\" value=\"$value\"/>";
 		echo '</td><td>'."<input class=\"text\" name=\"format[".$page->getId()."][rssPageUri]\" value=\"$value2\"/>";
 		echo '</td></tr>';
-		echo '</table>';
+		echo '</table></div>';
 		
 	}else{
 	
@@ -224,34 +224,36 @@ foreach($pages as $key => $page){
 		<p class="sub">公開期間</p>
 		<span id="open_period_show_'.$id.'">'.$show.'</span>
 		<button id="open_period_show_button_'.$id.'" type="button" onclick="$(\'#open_period_show_button'.$id.'\').hide();$(\'#open_period_input_'.$id.'\').show();$(\'#open_period_show_button_'.$id.'\').hide();">公開期間を設定する</button>
-		<div id="open_period_input_'.$id.'" style="display:none;">
-			<table style="width: 28em">
-				<tr>
-					<td style="vertical-align:top;">
-						<input type="text" name="format['.$id.'][openPeriodStart]" value="'.$startText.'" id="start_date_'.$id.'" size="25" maxlength="19" style="width:100%">
-						
-						<div style="font-size:10px;margin-top:5px;margin-left:5px;">
-							<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,0,0,0,0),true,false));return false;">今日</a><br/>
-							<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,1,0,0,0),true,false));return false;">明日</a><br/>
-							<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,7,0,0,0),true,false));return false;">来週</a><br/>
-							<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,1,0,0,0,0),true,false));return false;">来月</a><br/>
-							<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,0,0,0,0),false,false));return false;">現在の時刻</a><br/>
-							<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(\'\');return false;">日時のクリア</a>
-						</div>
-					</td>
-					<td style="vertical-align:top;text-align:center;width:4em;">から</td>
-					<td style="vertical-align:top;">
-						<input type="text" name="format['.$id.'][openPeriodEnd]" value="'.$endText.'" id="end_date_'.$id.'" size="25" maxlength="19" style="width:100%">
-						<div style="font-size:10px;">
-							<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,1,0,0,0),true,true));return false;">明日</a><br/>
-							<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,7,0,0,0),true,true));return false;">来週</a><br/>
-							<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(buildDateString(movedate(new Date,0,1,0,0,0,0),true,true));return false;">来月</a><br/>
-							<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,0,0,0,0),false,true));return false;">現在の時刻</a><br/>
-							<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(\'\');return false;">日時のクリア</a>
-						</div>
-					</td>
-				</tr>
-			</table>
+		<div id="open_period_input_'.$id.'" style="display:none;">' .
+				'<div class="table-responsive">
+				<table class="table" style="width: 28em">
+					<tr>
+						<td style="vertical-align:top;">
+							<input type="text" name="format['.$id.'][openPeriodStart]" value="'.$startText.'" id="start_date_'.$id.'" size="25" maxlength="19" style="width:100%">
+							
+							<div style="font-size:10px;margin-top:5px;margin-left:5px;">
+								<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,0,0,0,0),true,false));return false;">今日</a><br/>
+								<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,1,0,0,0),true,false));return false;">明日</a><br/>
+								<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,7,0,0,0),true,false));return false;">来週</a><br/>
+								<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,1,0,0,0,0),true,false));return false;">来月</a><br/>
+								<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,0,0,0,0),false,false));return false;">現在の時刻</a><br/>
+								<a href="javascript:void(0);" onclick="$(\'#start_date_'.$id.'\').val(\'\');return false;">日時のクリア</a>
+							</div>
+						</td>
+						<td style="vertical-align:top;text-align:center;width:4em;">から</td>
+						<td style="vertical-align:top;">
+							<input type="text" name="format['.$id.'][openPeriodEnd]" value="'.$endText.'" id="end_date_'.$id.'" size="25" maxlength="19" style="width:100%">
+							<div style="font-size:10px;">
+								<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,1,0,0,0),true,true));return false;">明日</a><br/>
+								<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,7,0,0,0),true,true));return false;">来週</a><br/>
+								<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(buildDateString(movedate(new Date,0,1,0,0,0,0),true,true));return false;">来月</a><br/>
+								<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(buildDateString(movedate(new Date,0,0,0,0,0,0),false,true));return false;">現在の時刻</a><br/>
+								<a href="javascript:void(0);" onclick="$(\'#end_date_'.$id.'\').val(\'\');return false;">日時のクリア</a>
+							</div>
+						</td>
+					</tr>
+				</table>' .
+			'</div>
 		</div>
 	</div>';
 	
@@ -274,7 +276,7 @@ foreach($pages as $key => $page){
 	
 }
 
-echo "</table>";
+echo "</table></div>";
 
 echo "<input type=\"submit\" value=\"保存\" />";
 

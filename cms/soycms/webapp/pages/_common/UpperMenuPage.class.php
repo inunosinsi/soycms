@@ -2,68 +2,43 @@
 
 class UpperMenuPage extends CMSHTMLPageBase{
 
-    function __construct() {
-    	HTMLPage::__construct();
-    }
-    
-    function execute(){
-    	
-    	//sitePath
+	function execute(){
+
+		//sitePath
 		$this->addLink("sitepath", array(
-			"text" => "/" . UserInfoUtil::getSite()->getSiteId(),
-			"link" => CMSUtil::getSiteUrl(),
-			"style" => "text-decoration:none;color:black;"
+				"text" => "/" . UserInfoUtil::getSite()->getSiteId(),
+				"link" => CMSUtil::getSiteUrl(),
+				"style" => "text-decoration:none;color:black;"
 		));
-		
+
+		$this->addLink("sitepath_link", array(
+				"link" => CMSUtil::getSiteUrl(),
+				"style" => "text-decoration:none;color:black;"
+		));
+		$this->addLabel("sitepath_text", array(
+				"text" => "/" . UserInfoUtil::getSite()->getSiteId(),
+		));
+
 		$this->addLabel("sitename", array(
 			"text" => UserInfoUtil::getSite()->getSiteName()
 		));
-		
+
+		$this->addModel("biglogo", array(
+			"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
+		));
+
 		//管理者名
 		$this->addLabel("adminname", array(
 			"text" => UserInfoUtil::getUserName(),
 			"width" => 18,
 			"title" => UserInfoUtil::getUserName(),
 		));
-		
-		//popup
-		$messages = CMSMessageManager::getMessages();
-		$error  = CMSMessageManager::getErrorMessages();
-				
-		$this->addLabel("message", array(
-			"html" => implode("", $error) . implode("", $messages)
+
+		//記事管理者には表示しないもの
+		$this->addModel("only_for_site_admin", array(
+			"visible" => UserInfoUtil::hasSiteAdminRole(),
 		));
-		
-		$this->addModel("popup", array(
-			"style" => (count($error) > 0 || count($messages) > 0) ? "" : "display:none;"
-		));
-		
-		//SOY InquiryかSOY Mailのデータベースがサイト側に存在している場合、新しいinlineを表示する
-		$inquiryUseSiteDb = SOYAppUtil::checkAppAuth("inquiry");
-		$mailUseSiteDb = SOYAppUtil::checkAppAuth("mail");
-		
-		$this->addModel("display_app_link", array(
-			"visible" => ($inquiryUseSiteDb || $mailUseSiteDb)
-		));
-		
-		$this->addModel("display_inquiry_link", array(
-			"visible" => ($inquiryUseSiteDb)
-		));
-		
-		$this->addModel("display_mail_link", array(
-			"visible" => ($mailUseSiteDb)
-		));
-		
-		//SOY Inquiryのデータベースがサイト側に存在する場合に表示するリンク
-		$this->addLink("inquiry_link", array(
-			"link" => SOYAppUtil::createAppLink("inquiry")
-		));
-		
-		//SOY Mailのデータベースがサイト側に存在する場合に表示するリンク
-		$this->addLink("mail_link", array(
-			"link" => SOYAppUtil::createAppLink("mail")
-		));
-		
+
 		//エクストラモード周り 権限まわりの二重チェック config.ext.phpでも行っている
 		$extMode = false;
 		$extConfigFilePath = dirname(SOY2HTMLConfig::PageDir()) . "/config.ext.php";
@@ -78,12 +53,14 @@ class UpperMenuPage extends CMSHTMLPageBase{
 		$this->addModel("display_ext_link", array(
 			"visible" => ($extMode)
 		));
-		
+		$this->addLink("ext_link", array(
+				"link" => SOY2PageController::createLink(SOY2PageController::getRequestPath().".".implode(".",SOY2PageController::getArguments()))."?ext_mode",
+		));
+
 		$this->addLink("account_link", array(
-			"link" => (defined("SOYCMS_ASP_MODE")) ? 
+			"link" => (defined("SOYCMS_ASP_MODE")) ?
 						 SOY2PageController::createLink("Login.UserInfo")
 						:SOY2PageController::createRelativeLink("../admin/index.php/Account")
 		));
-    }
+	}
 }
-?>

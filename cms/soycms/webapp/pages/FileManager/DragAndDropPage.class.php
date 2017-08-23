@@ -24,7 +24,7 @@ class DragAndDropPage extends CMSWebPageBase{
 		
 		$this->id = @$args[0];
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$script = array();
 		

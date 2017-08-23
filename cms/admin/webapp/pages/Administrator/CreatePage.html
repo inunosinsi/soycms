@@ -1,28 +1,54 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-</head>
+</head soy:page="_common.HeaderPage">
 
 <body>
 
-<div id="wrapper">
-	<div id="upperMenu" soy:page="UpperMenuPage"><!-- --></div>
-	<div id="content">
-		<h2>管理者の追加</h2>
-		
-		<div class="functions">
-			<p><a soy:link="Administrator">管理者一覧に戻る</a></p>
-		</div>
-		
-		<div soy:id="error">
-			<p class="notify">管理者の作成に失敗しました。</p>
-		</div>
-
-		<form soy:id="change_password_form">
-		<table class="globalpage_input">
+    <div id="wrapper">
+		<!-- Navigation -->
+        <nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="UpperMenuPage"><!-- --></nav>
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">管理者の追加</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default panel-message">
+                    	<div  class="panel-heading" soy:id="error">エラー</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <ul class="nav nav-pills">
+                                <li><a soy:link="Administrator">管理者一覧に戻る</a></li>
+                            </ul>
+                        </div>
+                     </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">
+                          	 管理者の情報
+                        </div>
+                        <div class="panel-body">
+                        	<div class="table-responsive">
+                        			<form soy:id="change_password_form">
+		<table class="table table-striped">
 			<tr>
-				<th nowrap>管理者ID（ログインID）</th>
-				<td><input name="userid" type="text" size="30" autocomplete="off"></td>
+				<th>管理者ID（ログインID）</th>
+				<td><input name="userid" type="text" size="60" autocomplete="off"></td>
 			</tr>
 			<tr class="example">
 				<td>&nbsp;</td>
@@ -32,7 +58,7 @@
 			<tr>
 				<th>パスワード</th>
 				<td>
-					<input id="password" name="password" type="password" size="30" autocomplete="off">
+					<input id="password" name="password" type="password" size="60" autocomplete="off">
 					<a href="javascript:void(0);" onclick="common_toggle_password('password');" style="font-size:small;">パスワードを表示する</a>
 				</td>
 			</tr>
@@ -44,7 +70,7 @@
 			<tr>
 				<th>名前</th>
 				<td>
-					<input name="name" type="text" size="30" autocomplete="off">
+					<input name="name" type="text" size="60" autocomplete="off">
 				</td>
 			</tr>
 			<tr class="example">
@@ -55,7 +81,7 @@
 			<tr>
 				<th>e-mail</th>
 				<td>
-					<input name="email" type="email" size="30" autocomplete="off">
+					<input name="email" type="text" size="60" autocomplete="off">
 				</td>
 			</tr>
 			<tr class="example">
@@ -71,9 +97,20 @@
 			</tr>
 		</table>
 		</form soy:id="change_password_form">
-	</div>
-	<div soy:page="_common.FooterPage"></div>
-</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+
+            
+        </div>
+        <!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+    </div>
+    <!-- /#wrapper -->
 
 </body>
+
 </html>

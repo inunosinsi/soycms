@@ -6,7 +6,7 @@ class IndexPage extends CMSWebPageBase{
 
 	function __construct(){
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->createAdd("widgets","HTMLLabel",array(
 			"html" => $this->getWidgetsHTML()
@@ -192,18 +192,18 @@ class IndexPage extends CMSWebPageBase{
 	 */
 	function getLabelList(){
 		$action = SOY2ActionFactory::createInstance("Label.LabelListAction");
-    	$result = $action->run();
+		$result = $action->run();
 
-    	if($result->success()){
-    		return $result->getAttribute("list");
-    	}else{
-    		return array();
-    	}
+		if($result->success()){
+			return $result->getAttribute("list");
+		}else{
+			return array();
+		}
 	}
 }
 class RecentCommentList extends HTMLList{
 
-	function populateItem($entity){
+	protected function populateItem($entity){
 		$blog = @$entity->info["blog"];
 		$entry = @$entity->info["entry"];
 
@@ -211,7 +211,7 @@ class RecentCommentList extends HTMLList{
 		if(is_null($entry)) $entry = new Entry();
 
 		$title = ((strlen($entity->getTitle())==0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle());
-		$title .= strlen($entity->getAuthor()) == 0  ? "" : "(".$entity->getAuthor().")";
+		$title .= strlen($entity->getAuthor()) == 0  ? "" : " (".$entity->getAuthor().")";
 
 		$this->createAdd("title","HTMLLink",array(
 			"link"=>SOY2PageController::createLink("Blog.Comment.".$blog->getId()),
@@ -220,7 +220,7 @@ class RecentCommentList extends HTMLList{
 		));
 
 		$this->createAdd("content","HTMLLabel",array(
-			"text"=>$entry->getTitle() . "(".$blog->getTitle().")"
+			"text"=>$entry->getTitle() . " (".$blog->getTitle().") "
 		));
 		$this->createAdd("udate","HTMLLabel",array(
 			"text"=>CMSUtil::getRecentDateTimeText($entity->getSubmitDate()),
@@ -231,7 +231,7 @@ class RecentCommentList extends HTMLList{
 
 class RecentTrackbackList extends HTMLList{
 
-	function populateItem($entity){
+	protected function populateItem($entity){
 		$blog = @$entity->info["blog"];
 		$entry = @$entity->info["entry"];
 
@@ -240,14 +240,14 @@ class RecentTrackbackList extends HTMLList{
 
 
 		$title = ((strlen($entity->getTitle())==0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle());
-		$title .= strlen($entity->getBlogName()) == 0  ? "" : "(".$entity->getBlogName().")";
+		$title .= strlen($entity->getBlogName()) == 0  ? "" : " (".$entity->getBlogName().")";
 
 		$this->createAdd("title","HTMLLink",array(
 			"link"=>SOY2PageController::createLink("Blog.Trackback.".$blog->getId()),
 			"text"=>$title
 		));
 		$this->createAdd("content","HTMLLabel",array(
-			"text"=>$entry->getTitle() . "(" . $blog->getTitle() . ")"
+			"text"=>$entry->getTitle() . " (" . $blog->getTitle() . ")"
 		));
 		$this->createAdd("udate","HTMLLabel",array(
 			"text"=>CMSUtil::getRecentDateTimeText($entity->getSubmitDate()),
@@ -259,29 +259,21 @@ class RecentTrackbackList extends HTMLList{
 
 class RecentEntryList extends HTMLList{
 
-	var $labels = array();
+	private $labels = array();
 
-	function setLabels($array){
+	public function setLabels($array){
 		if(is_array($array)){
 			$this->labels = $array;
 		}
 	}
 
-	function populateItem($entity){
+	protected function populateItem($entity){
 
 		$this->createAdd("title","HTMLLink",array(
 			"link" => SOY2PageController::createLink("Entry.Detail")."/".$entity->getId(),
 			"text" => (strlen($entity->getTitle())==0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle(),
-			"onmouseover" => "if($('#popup_entry_comment_". $entity->getId() . "').size() > 0){ $('#popup_entry_comment_". $entity->getId() . "').show()}",
-			"onmouseout" => "if($('#popup_entry_comment_". $entity->getId() . "').size() > 0){ $('#popup_entry_comment_". $entity->getId() . "').hide()}",
 		));
 
-		$popupText = ($entity->getDescription()) ? CMSUtil::getText("[メモ]") . $entity->getDescription() : "";
-		$this->createAdd("popup","HTMLLabel",array(
-			"id" => "popup_entry_comment_".$entity->getId(),
-			"text" => $popupText,
-			"visible" => strlen($popupText)
-		));
 
 		//ラベルは３つまで表示
 		$selectedList = $entity->getLabels();
@@ -296,13 +288,10 @@ class RecentEntryList extends HTMLList{
 				break;
 			}
 
-			$onMouseOver = "if($('#popup_label_comment_". $entity->getId() . "_" . $label->getId(). "').size() > 0){ $('#popup_label_comment_". $entity->getId() . "_" . $label->getId(). "').show()}";
-			$onMouseOut = "if($('#popup_label_comment_". $entity->getId() . "_" . $label->getId() . "').size() > 0){ $('#popup_label_comment_". $entity->getId() . "_" . $label->getId(). "').hide()}";
-			
 			$attr = array();
-			$attr[] = 'href="'.SOY2PageController::createLink("Entry.List")."/".$label->getId().'"';
-			$attr[] = 'onmouseover="' . $onMouseOver . '"';
-			$attr[] = 'onmouseout="' . $onMouseOut . '"';
+			$attr[] = 'href="'.htmlspecialchars(SOY2PageController::createLink("Entry.List")."/".$label->getId(),ENT_QUOTES,'UTF-8').'"';
+			$attr[] = 'class="label label-default label-soy"';
+			$attr[] = 'style="color:#' . sprintf("%06X",$label->getColor()).'; background-color:#' . sprintf("%06X",$label->getBackgroundColor()).'; margin-left:4px;"';
 
 			//ある文字数越えたら追加しない
 			if(($strlen+strlen($label->getCaption())) > 300){
@@ -310,11 +299,7 @@ class RecentEntryList extends HTMLList{
 			}
 
 			$strlen .= strlen($label->getCaption()) + 2;
-			$labelText .= '<a '.implode(" ",$attr).'>['.$label->getDisplayCaption().']</a>';
-
-			if($label->getDescription()){
-				$labelText .= '<div class="label_popup" id="popup_label_comment_'.$entity->getId().'_'.$label->getId().'" style="display:none;">'.$this->foldingDescription($label->getDescription()).'</div>';
-			}
+			$labelText .= '<a '.implode(" ",$attr).'>'.$label->getDisplayCaption().'</a>';
 
 			$counter++;
 		}
@@ -358,7 +343,7 @@ class RecentEntryList extends HTMLList{
  */
 class RecentLabelList extends HTMLList{
 
-	function populateItem($entity){
+	protected function populateItem($entity){
 
 		$this->createAdd("label_icon","HTMLImage",array(
 			"src"=>$entity->getIconUrl(),
@@ -372,5 +357,3 @@ class RecentLabelList extends HTMLList{
 
 	}
 }
-
-?>

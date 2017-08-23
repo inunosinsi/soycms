@@ -19,8 +19,8 @@ class AdminBlockManagerPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ブロック一括管理プラグイン",
 			"description"=>"複数ページに対して、ブロックの追加や変更が出来ます。",
-			"author"=>"日本情報化研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.0"
 		));	

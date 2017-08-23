@@ -2,7 +2,7 @@
 
 class LogoutPage extends WebPage{
 
-    function __construct() {
+    function LogoutPage() {
 		$action = SOY2ActionFactory::createInstance('LogoutAction');
 		$action->run();
 		if(!defined("SOYCMS_ASP_MODE")){

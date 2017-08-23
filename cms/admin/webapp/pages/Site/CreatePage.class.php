@@ -17,7 +17,7 @@ class CreatePage extends CMSUpdatePageBase{
 		}
 	}
 
-    function __construct() {
+    function __construct(){
     	
     	if(!UserInfoUtil::isDefaultUser()){
     		//デフォルトユーザのみ作成可能
@@ -25,7 +25,7 @@ class CreatePage extends CMSUpdatePageBase{
     		exit;
     	}
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	
     	if(false == $this->checkTargetDirectoryWritable()){

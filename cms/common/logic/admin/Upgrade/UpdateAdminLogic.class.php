@@ -25,7 +25,7 @@ class UpdateAdminLogic extends SOY2LogicBase{
 	/**
 	 * コンストラクタ
 	 */
-	public function __construct(){
+	public function UpdateAdminLogic(){
 		SOY2DAOFactory::importEntity("admin.AdminDataSets");
 		$this->dir = SOY2::RootDir() . "admin/update/";
 	}

@@ -4,9 +4,15 @@
 
 <form method="post" soy:id="this_is_new_form">
 <fieldset><legend>設定</legend>
-	新着期間: <input soy:id="days_to_be_new" style="text-align:right" />日<br />
-	<input soy:id="ignore_future_entry" id="ignore_future_entry" value="1" /><br />
-	<input type="submit" name="save" value="設定" />
+	<div class="form-group col-lg-6">
+		<label>新着期間</label>
+		<div class="input-group">
+			<input soy:id="days_to_be_new" style="text-align:right" class="form-control" type="number">
+			<span class="input-group-addon">日</span>
+		</div>
+		<input soy:id="ignore_future_entry" id="ignore_future_entry" value="1"><br />
+	<input type="submit" name="save" value="設定" class="btn btn-primary btn-block" >
+	</div>
 </fieldset>
 </form soy:id="this_is_new_form">
 

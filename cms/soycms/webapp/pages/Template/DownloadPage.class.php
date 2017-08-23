@@ -4,7 +4,7 @@ class DownloadPage extends CMSWebPageBase{
 
     function __construct($arg) {
 //    	if(soy2_check_token()){
-	    	WebPage::__construct();
+	    	parent::__construct();
 	    	$id = @$arg[0];
 	    	if(is_null($id)){
 	    		$this->jump("Template");

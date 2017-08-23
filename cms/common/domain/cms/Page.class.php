@@ -352,9 +352,8 @@ class Page {
    	}
    	function setPageTitleFormat($pageTitleFormat) {
    		$pageConfig = $this->getPageConfigObject();
-   		if(is_null($pageConfig)) $pageConfig = new StdClass;
    		$pageConfig->PageTitleFormat = $pageTitleFormat;
-	   	$this->setPageConfig($pageConfig);
+   		$this->setPageConfig($pageConfig);
    	}
 
    	function getIcon() {

@@ -7,7 +7,8 @@
  */
 ?>
 <form method="post">
-<table class="list" style="width:80%;">
+<div class="table-responsive">
+<table class="table" style="width:80%;">
 	<tr>
 		<th>文字列認証</th>
 		<td>
@@ -41,6 +42,7 @@
 	</tr>
 
 </table>
+</div>
 </form>
 
 <h3>使い方</h3>

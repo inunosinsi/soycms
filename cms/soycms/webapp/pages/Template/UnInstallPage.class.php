@@ -26,7 +26,7 @@ class UnInstallPage extends CMSWebPageBase{
     	$id = $args[0];
     	$this->id = $id;
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	    	
     	$logic = SOY2Logic::createInstance("logic.site.Template.TemplateLogic");
     	

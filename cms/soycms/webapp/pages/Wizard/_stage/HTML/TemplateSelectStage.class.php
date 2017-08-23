@@ -2,7 +2,7 @@
 class TemplateSelectStage extends StageBase{
 
     function TemplateSelectStage() {
-    	WebPage::__construct();
+    	parent::__construct();
     }
     
     function execute(){

@@ -151,7 +151,7 @@ class LabelLogic extends SOY2LogicBase{
 		if(is_null($bean->getAlias()) || !strlen($bean->getAlias())){
 			$bean->setAlias(self::getUniqueAlias($bean->getCaption(), $bean->getId()));
 		}
-		
+
     	$dao = self::getLabelDAO();
     	$dao->update($bean);
     }
@@ -231,4 +231,3 @@ class LabelLogic extends SOY2LogicBase{
 	}
 
 }
-?>

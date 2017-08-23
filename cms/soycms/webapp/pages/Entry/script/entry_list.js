@@ -42,7 +42,7 @@ function copyEntry(){
 }
 
 function onOpenListPanel(){
-	common_to_layer(listPanelURI);
+	common_to_layer(listPanelURI,{header:"ラベル操作"});
 }
 
 function toggleAllEntryCheck(value){

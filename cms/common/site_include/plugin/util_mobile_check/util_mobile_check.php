@@ -32,9 +32,8 @@ class UtilMobileCheckPlugin{
 	public $redirectIpad = self::CONFIG_SP_REDIRECT_SP;//iPadでの転送先
 
 	private $config;
-	
+
 	private $carrier;
-	private $queryString;
 
 
 	function getId(){
@@ -45,10 +44,10 @@ class UtilMobileCheckPlugin{
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"携帯自動振り分けプラグイン",
 			"description"=>"携帯電話やスマートフォンでのアクセス時に対応したページに転送します。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.9.3"
+			"version"=>"0.9.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 			$this, "config_page"
@@ -99,10 +98,7 @@ class UtilMobileCheckPlugin{
 	function redirect(){
 		$config = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		$this->config = $config;
-		
-		//$_SERVER["QUERY_STRING"]にpathインフォがある場合は除いておく
-		$this->queryString = self::checkQueryString($_SERVER["QUERY_STRING"]);
-		
+
 		$redirect = self::REDIRECT_PC;
 		$isMobile = false;
 		$isSmartPhone = false;
@@ -147,7 +143,7 @@ class UtilMobileCheckPlugin{
 		if(!defined("SOYCMS_IS_SMARTPHONE")){
 			define("SOYCMS_IS_SMARTPHONE", $isSmartPhone);
 		}
-		
+
 		//別キャリアを見ている場合は一旦PCにとばす。
 		if(SOYCMS_IS_MOBILE || SOYCMS_IS_SMARTPHONE){
 			//モバイルとスマホで同じプレフィックスを設定するとリダイレクトループになるので、別の端末でも同じ端末として解釈
@@ -183,31 +179,18 @@ class UtilMobileCheckPlugin{
 				}
 				exit;
 			}
-			
+
 		//PCの場合、念の為、別キャリアのページを見ていないか調べる
 		}else{
 			self::checkCarrier($config->prefix);
 			self::checkCarrier($config->smartPrefix);
-			
+
 			//PC版の場合はprefixはなし
 			$prefix = null;
 		}
-		
+
 		//リダイレクトをしなかった場合、prefixを定数に入れておく
 		if(!defined("SOYCMS_CARRIER_PREFIX")) define("SOYCMS_CARRIER_PREFIX", $prefix);
-	}
-	
-	//query_stringからpathinfo分を除いておく
-	private function checkQueryString($queryString){
-		if(strpos($queryString, "pathinfo=") !== false){
-			//２つ以上値がある場合
-			if(strpos($queryString, "&") !== false){
-				$queryString = preg_replace('/pathinfo=(.*?)&/', "", $queryString);
-			}else{
-				$queryString = "";
-			}
-		}
-		return $queryString;
 	}
 
 	/**
@@ -229,10 +212,10 @@ class UtilMobileCheckPlugin{
 	 * ケータイからのアクセスかどうか
 	 */
 	private function isMobile(){
-		
+
 		$isMobile = self::checkAccessFromMobile();
 		$carrier = $this->carrier;
-		
+
 		if(!defined("SOYCMS_MOBILE_CARRIER")){
 			define("SOYCMS_MOBILE_CARRIER", $carrier);
 		}
@@ -257,7 +240,7 @@ class UtilMobileCheckPlugin{
 			}else{
 				$isSmartPhone = false;
 			}
-			
+
 			if(!defined("SOYSHOP_IS_SMARTPHONE")){
 				define("SOYSHOP_IS_SMARTPHONE", $isSmartPhone);
 			}
@@ -273,7 +256,7 @@ class UtilMobileCheckPlugin{
 		$isSmartPhone = false;
 
 		if(
-			$this->config->redirectIphone == self::CONFIG_SP_REDIRECT_SP || 
+			$this->config->redirectIphone == self::CONFIG_SP_REDIRECT_SP ||
 			$this->config->redirectIphone == self::CONFIG_SP_REDIRECT_MB
 		){
 			$isSmartPhone = self::checkAccessFromSmartphone();
@@ -281,7 +264,7 @@ class UtilMobileCheckPlugin{
 
 		return $isSmartPhone;
 	}
-	
+
 	//モバイルからのアクセスであるか
 	private function checkAccessFromMobile(){
 		$agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : "";
@@ -316,14 +299,14 @@ class UtilMobileCheckPlugin{
 			$isMobile = false;
 			$this->carrier = "PC";
 		}
-		
+
 		return $isMobile;
 	}
-	
+
 	//iPadからであるかチェック
 	private function checkAccessFromTablet(){
 		$agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? mb_strtolower($_SERVER['HTTP_USER_AGENT']) : "";
-		
+
 		if(strpos($agent, "ipad") !== false){
 			return true;
 		}elseif(strpos($agent, "windows") !== false && strpos($agent, "touch") !== false){
@@ -340,11 +323,11 @@ class UtilMobileCheckPlugin{
 			return false;
 		}
 	}
-	
+
 	//スマホからであるかチェック
 	private function checkAccessFromSmartphone(){
 		$agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? mb_strtolower($_SERVER['HTTP_USER_AGENT']) : "";
-		
+
 		if(strpos($agent, "iphone") !== false){
 			return true;
 		}elseif(strpos($agent, "ipod") !== false){
@@ -361,7 +344,7 @@ class UtilMobileCheckPlugin{
 			return false;
 		}
 	}
-	
+
 	//多言語化プラグインがすでに実行されているか調べる
 	private function checkMultiLanguage($path){
 		$reg = "/" . $this->smartPrefix . "/";
@@ -376,7 +359,7 @@ class UtilMobileCheckPlugin{
 			if(!isset($conf["prefix"]) || strlen($conf["prefix"]) === 0) continue;
 			if(strpos($path, $reg . $conf["prefix"]) === 0) return true;
 		}
-		
+
 		return false;
 	}
 
@@ -387,7 +370,7 @@ class UtilMobileCheckPlugin{
 	private function checkCarrier($prefix){
 		//PATH_INFO
 		$pathInfo = self::getPathInfo();
-		
+
 		if($pathInfo === "/" . $prefix || strpos($pathInfo, "/" . $prefix . "/") === 0){
 			$path = self::getRedirectPcPath($prefix);
 			SOY2PageController::redirect($path);
@@ -405,7 +388,7 @@ class UtilMobileCheckPlugin{
 		if(strpos($requestUri,"?") !== false){
 			$requestUri = substr($requestUri, 0, strpos($requestUri, "?"));
 		}
-		
+
 		//スマホのプレフィックスと多言語のプレフィックスが付与されている場合はfalseを返す
 		if(self::checkMultiLanguage($requestUri)){
 			return false;
@@ -413,7 +396,7 @@ class UtilMobileCheckPlugin{
 
 		//PATH_INFO
 		$pathInfo = self::getPathInfo();
-		
+
 		//先頭はスラッシュ
 		if(strlen($pathInfo) && $pathInfo[0] !== "/"){
 			$pathInfo = "/" . $pathInfo;
@@ -441,11 +424,11 @@ class UtilMobileCheckPlugin{
 		$path = $siteDir. $prefix. $pathInfo;
 
 		//絶対パスにQuery Stringを追加する
-		if(isset($this->queryString) && strlen($this->queryString) > 0){
+		if(isset($_SERVER["QUERY_STRING"]) && strlen($_SERVER["QUERY_STRING"]) > 0){
 
 			//セッションIDが入っている場合にregenerateされている可能性があるので
-			if(strpos($this->queryString, session_name()) !== false){
-				$queries = explode("&", $this->queryString);
+			if(strpos($_SERVER["QUERY_STRING"], session_name()) !== false){
+				$queries = explode("&", $_SERVER["QUERY_STRING"]);
 				foreach($queries as $id => $item){
 					if(strpos($item, session_name()) === 0){
 						$queries[$id] = session_name() . "=" . session_id();
@@ -454,11 +437,11 @@ class UtilMobileCheckPlugin{
 				}
 				$querystring = implode("&", $queries);
 			}else{
-				$querystring = $this->queryString;
+				$querystring = $_SERVER["QUERY_STRING"];
 			}
 
 
-			$path .= "?" . $querystring;
+			$path .= "?" . $_SERVER["QUERY_STRING"];
 		}
 
 		return $path;
@@ -503,16 +486,16 @@ class UtilMobileCheckPlugin{
 
 		return self::addQueryString($path);;
 	}
-	
+
 	private function checkLoop($path, $prefix){
 		return ( $path === "/" . $prefix || strpos($path, "/" . $prefix . "/") === 0 );
 	}
-	
+
 	private function addQueryString($path){
 		//絶対パスにQuery Stringを追加する
-		if(isset($this->queryString) && strlen($this->queryString) > 0){
+		if(isset($_SERVER["QUERY_STRING"]) && strlen($_SERVER["QUERY_STRING"]) > 0){
 			$path = rtrim($path, "/");
-			$array = explode("&", $this->queryString);
+			$array = explode("&", $_SERVER["QUERY_STRING"]);
 			$queries = array();
 			foreach($array as $query){
 				if(strpos($query, "=")){
@@ -524,38 +507,38 @@ class UtilMobileCheckPlugin{
 				}
 				$queries[$key] = $value;
 			}
-			
-			//pathinfoの値はここで除く→他の箇所でも影響があったため、ここの処理は除く
-//			if(array_key_exists("pathinfo", $queries)) unset($queries["pathinfo"]);
-			
+
+			//pathinfoの値はここで除く
+			if(array_key_exists("pathinfo", $queries)) unset($queries["pathinfo"]);
+
 			if(count($queries) > 0){
 				$querystring = "?";
 				$counter = 0;
 				foreach($queries as $key => $value){
 					if($counter > 0) $querystring .= "&";
-					
+
 					if(isset($value) && strlen($value) > 0){
 						$querystring .= $key . "=" . $value;
 					}else{
 						$querystring .= $key;
 					}
-					
+
 					$counter++;
 				}
-				
+
 				if(strpos($querystring, session_name() . "=") !== false){
 					$querystring = preg_replace("/" . session_name() . "=[A-Za-z0-9]*/", session_name() . "=" . session_id(), $querystring);
 				}else{
 					$querystring = $querystring;
 				}
-				
+
 				$path .= $querystring;
 			}
 		}
-		
+
 		return $path;
 	}
-	
+
 	/**
 	 * PATH_INFOを取得する
 	 * PATH_INFOをGETで渡す環境があるらしい
@@ -570,7 +553,7 @@ class UtilMobileCheckPlugin{
 		}
 		return $pathInfo;
 	}
-	
+
 	function getSmartPrefix(){
 		return $this->smartPrefix;
 	}
@@ -592,7 +575,7 @@ class UtilMobileCheckPlugin{
 	function setRedirectIpad($redirectIpad){
 		$this->redirectIpad = $redirectIpad;
 	}
-	
+
 	public static function register(){
 		include_once(dirname(__FILE__) . "/config.php");
 
@@ -604,4 +587,3 @@ class UtilMobileCheckPlugin{
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj, "init"));
 	}
 }
-?>

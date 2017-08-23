@@ -42,7 +42,8 @@
 <br />
 <div>
 <form method="post" enctype="multipart/form-data">
-<table class="icon_table">
+<div class="table-responsive">
+<table class="table">
 	<tr>
 		<th class="icon_table_td">アイコンディレクトリ</th>
 		<td class="icon_table_td"><?php echo UserInfoUtil::getSiteDirectory().$this->iconDirecotry; ?></td>
@@ -61,6 +62,7 @@
 		?>&nbsp;</td>
 	</tr>
 </table>
+</div>
 		<p><span>チェックを入れたものを削除する</span><input type="submit" name="delete" onclick="return confirm('削除してもよろしいですか？');" value="削除"/></p><br />
 <h4>アイコンの追加 <?php if(isset($message)){echo "<font color =\"#ff0000\">" .$message . "</font>";} ?></h4>
 <p style="padding: 0 0 0 20px;">

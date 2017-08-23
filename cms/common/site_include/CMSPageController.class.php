@@ -166,6 +166,13 @@ class CMSPageController extends SOY2PageController{
 				$this->onNotFound();
 			}
 		}catch(Exception $e){
+			error_log($e);
+			$html = '<html><head><title>Error</title></head><body>500 Internal Server Error<body></html>';
+			header("HTTP/1.1 500 Internal Server Error");
+			header("Content-Type: text/html; charset=UTF-8");
+			header("Content-Length: ".strlen($html));
+			header("X-Error: 500 Internal Server Error");
+			echo $html;
 		}
 	}
 

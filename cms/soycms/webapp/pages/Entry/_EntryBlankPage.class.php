@@ -9,7 +9,7 @@ class _EntryBlankPage extends CMSWebPageBase{
 	}
 
 	function __construct() {
-    	WebPage::__construct();
+    	parent::__construct();
     }
     
     function execute(){

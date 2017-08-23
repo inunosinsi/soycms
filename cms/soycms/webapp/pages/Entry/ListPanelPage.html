@@ -1,9 +1,41 @@
 <html>
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
-	<link rel="stylesheet" href="./../../../../css/entry/listPanel.css" type="text/css">
-	<link rel="stylesheet" href="./../../../../css/label/labelList.css" type="text/css">
 </head>
+<body class="sub">
+<div id="layer_content">
+
+	<div class="list_panel_buttons">
+		<input type="submit" class="btn btn-sm" id="list_panel_remove_label" value="はずす" onclick='prepare(); $("#op_code").val("unstick");   $("#main_form").submit();'>
+		<input type="submit" class="btn btn-sm" id="list_panel_add_label" value="つける" onclick='prepare(); $("#op_code").val("stick");     $("#main_form").submit();'>
+		<input type="submit" class="btn btn-sm" id="list_panel_update_label" value="上書き" onclick='prepare(); $("#op_code").val("overwrite"); $("#main_form").submit();'>
+
+		<input type="submit" class="btn btn-sm pull-right" value="キャンセル" onclick="common_close_layer(window.parent);return false;">
+	</div>
+
+	<div id="list_panel_wrapper">
+		<form method="post" id="main_form" soy:id="main_form">
+			<!-- soy:id="label_list" -->
+			<div class="label_list_item">
+				<nobr>
+					<input type="checkbox" soy:id="label_check">
+					<label soy:id="label_label">
+						<img  class="label_icon"    soy:id="label_icon"/>
+						<span class="label label-default label-soy" soy:id="label_caption"></span>
+					</label soy:id="label_label">
+				</nobr>
+			</div>
+			<!-- /soy:id="label_list" -->
+			<input type="hidden" name="op_code" id="op_code">
+		</form soy:id="main_form">
+	</div>
+
+	<div class="list_panel_buttons">
+	</div>
+
+</div>
+
+<!-- soy:page="_common.BottomJSPage" /-->
+
 <script type="text/javascript">
 	function prepare(){
 		var entries = window.parent.document.getElementsByName("entry[]");
@@ -16,40 +48,9 @@
 				$("#main_form").append(check);
 			}
 		}
-	
+
 	}
-
 </script>
-<body>
-<div id="layer_content">
 
-	<div class="list_panel_buttons">
-		<input type="submit" id="list_panel_remove_label" value="はずす" onclick='prepare(); $("#op_code").val("unstick");   $("#main_form").submit();'>
-		<input type="submit" id="list_panel_add_label" value="つける" onclick='prepare(); $("#op_code").val("stick");     $("#main_form").submit();'>
-		<input type="submit" id="list_panel_update_label" value="上書き" onclick='prepare(); $("#op_code").val("overwrite"); $("#main_form").submit();'>
-	</div>
-
-	<div id="list_panel_wrapper">
-		<form method="post" id="main_form" soy:id="main_form">
-			<!-- soy:id="label_list" -->
-			<div class="label_list_item">
-				<nobr>
-					<input type="checkbox" soy:id="label_check">
-					<label soy:id="label_label">
-						<img  class="label_icon"    soy:id="label_icon"/>
-						<span class="label_caption" soy:id="label_caption"></span>
-					</label soy:id="label_label">
-				</nobr>
-			</div>
-			<!-- /soy:id="label_list" -->
-			<input type="hidden" name="op_code" id="op_code">
-		</form soy:id="main_form">
-	</div>
-	
-	<div class="list_panel_buttons">
-		<input type="button" value="キャンセル" onclick='common_close_layer(window.parent);return false;'>
-	</div>
-
-</div>
 </body>
 </html>

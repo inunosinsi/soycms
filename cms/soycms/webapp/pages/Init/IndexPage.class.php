@@ -18,9 +18,13 @@ class IndexPage extends CMSWebPageBase{
 
 		WebPage::__construct();
 
+		$this->addModel("has_zip_archive",array(
+				"visible" => CMSUtil::checkZipEnable(true),
+		));
+		$this->addModel("no_zip_archive",array(
+				"visible" => !CMSUtil::checkZipEnable(true),
+		));
 
 	}
 
-
 }
-?>

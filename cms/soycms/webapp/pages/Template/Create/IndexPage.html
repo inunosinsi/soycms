@@ -1,39 +1,91 @@
-<html>
-<head soy:page="_common.HeaderPage" isOverWrite="true">
-	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
-</head>
-<body>
-<div class="container">
-	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
-	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
-	
-	<style type="text/css">
-	table.list{ margin:20px 0; }
-	</style>
-	
-		<!-- content start -->
-		<div id="content" class="span-24 last">	
-			<div class="prepend-1 span-22">
-			<form soy:id="main_form" id="main_form">
-				<div soy:id="content" class="span-22 last"></div>
-				
-				<input type="submit" style="display:none" id="main_form_submit_button" />
-			</form soy:id="main_form">
-			</div>
-			
-			<div class="prepend-1 span-20" style="margin-top:20px">
-				<a soy:id="prev_link">&lt;&lt;前へ</a>
-				<a soy:id="next_link">次へ&gt;&gt;</a>
-			</div>
-			<div class="span-2" style="margin-top:20px">
-				<a soy:id="end_link">キャンセル</a>
-			</div>
-			<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
-		</div>
-	
-	<div soy:page="_common.FooterPage"></div>
+<!DOCTYPE html>
+<html lang="ja">
 
-</div soy:id="wrapper" >
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
+
+<body>
+
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header"><small><a soy:link="Page">ページ</a> &gt; <a soy:link="Template">ページ雛形管理</a>  &gt;</small> ページ雛形の新規作成</h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-green">
+						<div class="panel-heading" soy:id="stage_title"></div>
+
+						<div class="panel-body">
+							<form soy:id="main_form" id="main_form">
+								<!-- soy:id="content" /-->
+
+								<input type="submit" style="display:none" id="main_form_submit_button" />
+							</form soy:id="main_form">
+						</div>
+
+						<div class="panel-footer" soy:id="display_footer">
+							<a class="btn btn-default" soy:id="prev_link">&lt;&lt;前へ</a>
+							<a class="btn btn-success pull-right" soy:id="next_link">次へ&gt;&gt;</a>
+							<a class="btn btn-default" soy:id="end_link">キャンセル</a>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+
+		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
+
+	<!-- js for editor -->
+	<script soy:id="cssurl"></script>
+	<script soy:id="cssmenu"></script>
+	<script soy:id="PanelManager.js"></script>
+	<script soy:id="TemplateEditor"></script>
+
+	<!-- js for filemanager -->
+	<script soy:id="add_file_list_url" type="text/javascript"></script>
+	<script type="text/javascript" soy:id="filemanager">
+		function filemanager_ondblclick(url){
+			add_file_list(url, window.btoa(url).replace(/=/,""));
+		};
+
+		function add_file_list(url, id){
+			$("#add_file_table").show();
+
+			var path = url;
+
+			if($("#add_file_list_" + id).length > 0 || id < 0){
+				return false;
+			}
+
+			var $tr = $("<tr>", {id:"add_file_list_"+id});
+			$("#add_file_list").append($tr);
+
+			var $td = $("<td>");
+			$td.html('<a href="' + url + '" target="_blank">' + path + '</a>'
+					+ "<input type=\"hidden\" value=\""+path+"\" name=\"add_file_list["+id+"]\">"
+					+ "<input type=\"hidden\" value=\""+url+"\" name=\"add_file_list_url["+id+"]\">");
+			$tr.append($td);
+
+			var $td = $("<td>");
+			$td.html("<input type=\"text\" value=\"\" name=\"descriptions["+id+"]\"  class=\"form-control\">");
+			$tr.append($td);
+
+			var $td = $("<td>");
+			$td.html("<a href=\"javascript:void(0);\" onclick=\"$(this).closest('tr').remove();\" class=\"btn btn-danger btn-sm\">削除</a>");
+			$tr.append($td);
+		}
+	</script>
 
 </body>
 </html>

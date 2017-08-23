@@ -16,8 +16,8 @@ class IconManagerPlugin{
 		CMSPlugin::addPluginMenu(ICON_MANAGER_PLUGIN,array(
 			"name"=>"アイコン管理プラグイン",
 			"description"=>"ページアイコン、ブログアイコン、ラベルアイコンの管理を行います。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.1"
 		));

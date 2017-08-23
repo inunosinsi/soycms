@@ -2,8 +2,8 @@
 
 class IndexPage extends WebPage{
 	
-	function __construct(){
-		WebPage::__construct();
+	function IndexPage(){
+		WebPage::WebPage();
 	}
 	
 }

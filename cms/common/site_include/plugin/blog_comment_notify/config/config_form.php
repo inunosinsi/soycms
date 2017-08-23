@@ -20,10 +20,10 @@ class config_form extends WebPage{
     	
 	}
 	
-	function __construct(){}
+	function config_form(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->buildBlogListForm();//一覧
 		

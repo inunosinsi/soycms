@@ -10,7 +10,7 @@ class ApplicationPage extends CMSWebPageBase{
 			SOY2PageController::jump();
 		}
 		
-		WebPage::__construct();
+		parent::__construct();
 
 		$loginableSiteList = $this->getLoginableSiteList();
 		

@@ -1,8 +1,8 @@
 <?php
 class BlogTemplateSettingStage extends StageBase{
 	
-	function BlogTemplateSettingStage() {
-    	WebPage::__construct();
+	function __construct() {
+    	parent::__construct();
     }
     
     //表示部分はここに書く

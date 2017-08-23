@@ -3,14 +3,16 @@ class SOYListConnectorConfigPage extends WebPage{
 	
 	private $pluginObj;
 	
-	function __construct(){}
+	function __construct(){
+		
+	}
 	
 	function doPost(){
 
 	}
 		
 	function execute(){				
-		WebPage::__construct();
+		parent::__construct();
 	}
 	
 	function getTemplateFilePath(){

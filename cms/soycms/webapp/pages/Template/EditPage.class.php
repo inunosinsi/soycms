@@ -41,7 +41,7 @@ class EditPage extends CMSWebPageBase{
     	
     	$array = $template_files[$file];
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->createAdd("back_link","HTMLLink",array(
     		"link" => SOY2PageController::createLink("Template.Detail.".$this->id)
@@ -65,11 +65,11 @@ class EditPage extends CMSWebPageBase{
     		"onload" => "init_template_editor();"
     	));
     	
-    	HTMLHead::addScript("PanelManager.js",array(
+    	$this->addModel("PanelManager.js",array(
 			"src" => SOY2PageController::createRelativeLink("./js/cms/PanelManager.js")
 		));
 		
-		HTMLHead::addScript("TemplateEditor",array(
+		$this->addModel("TemplateEditor",array(
 			"src" => SOY2PageController::createRelativeLink("./js/editor/template_editor.js") 
 		));
 		
@@ -92,7 +92,7 @@ class EditPage extends CMSWebPageBase{
 		));
 		
 		//CSS保存先URLをJavaScriptに埋め込みます
-		HTMLHead::addScript("cssurl",array(
+		$this->addModel("cssurl",array(
 			"type"=>"text/JavaScript",
 			"script"=>'var cssURL = "'.SOY2PageController::createLink("Page.Editor").'";' .
 					  'var siteId="'.UserInfoUtil::getSite()->getSiteId().'";' .
@@ -100,7 +100,7 @@ class EditPage extends CMSWebPageBase{
 					  'var siteURL = "'.UserInfoUtil::getSiteUrl().'";'
 		));
 		
-		HTMLHead::addScript("cssmenu",array(
+		$this->addModel("cssmenu",array(
 			"type" => "text/JavaScript",
 			"src" => SOY2PageController::createRelativeLink("js/editor/cssMenu.js")
 		));

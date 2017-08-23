@@ -114,9 +114,6 @@ class Site {
 				$param = array();//リセット
 				$param["site_id"] = $this->getSiteId();
 				$link = SOY2PageController::createLink("Site.Login.0").( count($param) ? "?".http_build_query($param) : "" );
-				
-				//SOY Shopの管理画面でもhttpsで開ける様にパラメータを渡しておく
-				if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") $link .= "&https=on";
 				break;
 			case self::TYPE_SOY_CMS:
 			default:

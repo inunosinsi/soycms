@@ -23,7 +23,7 @@ class IndexPage extends CMSWebPageBase {
 		if(isset($arg[0]))$this->entryId = $arg[0];
 		if(isset($arg[1]))$this->page    = $arg[1];
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$result = $this->run("Entry.History.HistoryListAction",array(
 			"entryId" => $this->entryId,

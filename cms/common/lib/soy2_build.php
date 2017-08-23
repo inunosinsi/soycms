@@ -1,4 +1,4 @@
-<?php /* soy2_build 2015-06-01 15:49:07 */ 
+<?php /* soy2_build 2015-06-01 15:49:07 */
 /* SOY2/SOY2.php */
 class SOY2{
 	private $_rootDir = "webapp/";
@@ -780,7 +780,13 @@ class SOY2Mail_MailAddress{
 		$this->encoding = $encoding;
 	}
 	function getAddress() {
-		return $this->address;
+		if(strpos($this->address, '"') === false && ( strpos($this->address, "..") !== false || strpos($this->address, ".@") !== false )){
+			list($local, $domain) = explode("@", $this->address);
+			$quoted = '"'.$local.'"@'.$domain;
+			return $quoted;
+		}else{
+			return $this->address;
+		}
 	}
 	function setAddress($address) {
 		$this->address = $address;
@@ -4766,7 +4772,7 @@ class SOY2HTMLBase{
 				return;
 			}
 		}
-		
+
 		if(!$this->functionExists($name) && $name != "HTMLPage" && $name != "WebPage"){
 			throw new SOY2HTMLException("Method not found: ".$name);
 		}
@@ -5661,7 +5667,7 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 		$class[] = "class ".$tmpClassName." extends WebPage{";
 		$class[] = "	";
 		$class[] = '	function '.$tmpClassName.'(){';
-		$class[] = "		WebPage::__construct();";
+		$class[] = "		parent::__construct();";
 		$soyIds = array();
 		$tmpSoyIds = array();
 		$templates = file($templatePath);
@@ -7235,7 +7241,7 @@ class HTMLTemplatePage extends HTMLPage{
 		$this->_id = $args[0];
 		$this->_html = $args[1];
 		$this->hash = md5($this->_html);
-		HTMLPage::__construct();
+		parent::__construct();
 	}
 	function getTemplate(){
 		return $this->_html;
@@ -9122,4 +9128,3 @@ function soy2_check_token(){
 function soy2_generate_token(){
 	return md5(mt_rand());
 }
-?>

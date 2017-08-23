@@ -311,4 +311,35 @@ class CMSUtil {
 		SOY2DAOConfig::Pass($old["pass"]);
 	}
 
+	/**
+	 * 記事のエイリアスをURLとして出力するためにエンコードする
+	 */
+	public static function urlencodeForEntryAlias($alias){
+		return rawurlencode($alias);
+	}
+
+	/**
+	 * 記事雛形が利用可能かどうか
+	 * @return boolean
+	 */
+	public static function isEntryTemplateEnabled(){
+		return self::_isSimpleXmlEnabled();
+	}
+
+	/**
+	 * ページ雛形が利用可能かどうか
+	 * @return boolean
+	 */
+	public static function isPageTemplateEnabled(){
+		return self::checkZipEnable();
+	}
+
+	/**
+	 * simplexml_load_fileが利用可能かどうか
+	 * @return boolean
+	 */
+	private static function _isSimpleXmlEnabled(){
+		return function_exists("simplexml_load_file");
+	}
+
 }

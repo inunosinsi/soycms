@@ -6,24 +6,6 @@ class IndexPage extends CMSWebPageBase{
 
     	if(soy2_check_token()){
 
-			if(isset($_POST["file_db_update"])){
-
-				SOY2::import("util.CMSFileManager");
-
-				CMSFileManager::deleteAll();
-
-				set_time_limit(0);
-
-				$sites = $this->getSiteList();
-				foreach($sites as $site){
-					CMSFileManager::setSiteInformation($site->getId(), $site->getUrl(), $site->getPath());
-					CMSFileManager::insertAll($site->getPath());
-				}
-				$this->jump("?file_db_updated");
-				exit;
-
-			}
-
 			if(isset($_POST["cache_clear"])){
 				set_time_limit(0);
 
@@ -38,6 +20,8 @@ class IndexPage extends CMSWebPageBase{
 					CMSUtil::unlinkAllIn($site->getPath() . ".cache/", true);
 				}
 
+				$this->addMessage("ADMIN_DELETE_CACHE");
+
 				$this->jump("?cache_cleared");
 				exit;
 			}
@@ -47,8 +31,8 @@ class IndexPage extends CMSWebPageBase{
 	}
 
 	function __construct($arg){
-		WebPage::__construct();
-		
+		parent::__construct();
+
 		/*
 		 * 不正ログインのチェック
 		 */
@@ -61,18 +45,9 @@ class IndexPage extends CMSWebPageBase{
 		 */
 		$this->run("Database.CheckVersionAction");
 		$this->run("Administrator.CheckAdminVersionAction");
-		
+
 		//ユーザに割り当てられたサイト/Appが１つのときは、そのサイトにログイン(redirect)するようにする。
 		$this->run("SiteRole.DefaultLoginAction");
-
-		$this->addModel("file_db_massage", array(
-			"visible" => (isset($_GET["file_db_updated"]))
-		));
-
-		$this->addModel("cache_clear_massage", array(
-			"visible" => (isset($_GET["cache_cleared"]))
-		));
-
 
 		//ファイルDB更新、キャッシュの削除
 		$this->addForm("file_form");
@@ -95,7 +70,7 @@ class IndexPage extends CMSWebPageBase{
 		$this->addLink("create_link", array(
 			"link"=>SOY2PageController::createLink("Site.Create")
 		));
-		
+
 		$this->addLink("addAdministrator",
 			array("link"=>SOY2PageController::createLink("Administrator.Create")
 		));
@@ -185,7 +160,7 @@ class SiteList extends HTMLList{
 			"link" => $entity->getLoginLink($param),
 			"id" => ($entity->getSiteType() == Site::TYPE_SOY_CMS) ? "site_id_" . $entity->getSiteId() : "shop_id_" . $entity->getSiteId()
 		));
-		
+
 		$this->addLink("site_link", array(
 			"link" => $entity->getUrl(),
 			"text" => $this->replaceTooLongHost($entity->getUrl()),

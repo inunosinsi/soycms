@@ -1,27 +1,31 @@
-<h3>ページ雛形の新規作成 - 作成内容の確認(4/5)</h3>
-<h4 class="notify">以下の内容で作成します。</h4>
 
-<div class="section">
-	<p class="sub">ページ雛形ID</p>
-	<div soy:id="template_id"></div>
+<div class="alert alert-success">
+	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+	<i class="fa fa-bell fa-fw"></i>以下の内容で作成します。
 </div>
 
-<div class="section">
-	<p class="sub">ページ雛形名称</p>
-	<div soy:id="template_name"></div>
+
+<div class="form-group">
+	<label>ページ雛形ID</label>
+	<input class="form-control" soy:id="template_id">
 </div>
 
-<div class="section">
-	<p class="sub">説明</p>
-	<div soy:id="template_description"></div>
+<div class="form-group">
+	<label>ページ雛形名称</label>
+	<input class="form-control" soy:id="template_name">
 </div>
 
-<div class="section">
-	<p class="sub">追加テンプレート</p>
-	<div>
-		<table class="list">
+<div class="form-group">
+	<label>説明</label>
+	<textarea class="form-control" soy:id="template_description"></textarea>
+</div>
+
+<div class="form-group">
+	<label>追加テンプレート</label>
+	<div class="table-responsive">
+		<table class="table">
 			<thead>
-			<tr class="section">
+			<tr class="form-group">
 				<td>名前</td>
 				<td>説明</td>
 			</tr>
@@ -34,11 +38,20 @@
 	</div>
 </div>
 
-<div class="section">
-	<p class="sub">追加ファイル</p>
-	<div style="margin-left:20px;">
-		<ul soy:id="add_file_list">
-			<li><a soy:id="add_file"></a></li>
-		</ul soy:id="add_file_list">
+<div class="form-group">
+	<label>追加ファイル</label>
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+			<tr class="form-group">
+				<td>ファイル名</td>
+				<td>説明</td>
+			</tr>
+			</thead>
+			<tr soy:id="add_file_list">
+				<td><a soy:id="add_file_url"></a></td>
+				<td soy:id="add_file_description"></td>
+			</tr soy:id="add_file_list">
+		</table>
 	</div>
 </div>

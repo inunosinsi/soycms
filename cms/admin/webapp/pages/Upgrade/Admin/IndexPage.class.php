@@ -16,7 +16,7 @@ class IndexPage extends CMSWebPageBase{
 		//更新が不要なら戻る
 		if(!$logic->hasUpdate()) SOY2PageController::jump("");
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addActionLink("update_link", array(
 			"link" => SOY2PageController::createLink("Upgrade.Admin.Complete")

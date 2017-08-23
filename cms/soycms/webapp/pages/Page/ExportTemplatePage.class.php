@@ -10,7 +10,7 @@ class ExportTemplatePage extends CMSWebPageBase{
     		header('Content-Disposition: attachment;filename=blank.html;');
     		echo "";
     	}else{
-    		WebPage::__construct();
+    		parent::__construct();
     		$page = $this->getPageObject($this->pageId);
     		
     		if($page->getPageType() == Page::PAGE_TYPE_BLOG){

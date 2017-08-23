@@ -61,7 +61,7 @@ class CategoryPage extends CMSWebPageBase{
 		}
 		$this->pageId = (int)$arg[0];
 
-		WebPage::__construct();
+		parent::__construct();
 		
 		$labels = $this->getLabelLists();
 		$this->createAdd("label_lists","LabelLists",array(

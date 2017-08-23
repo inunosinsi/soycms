@@ -28,8 +28,8 @@ class SOYCMS_SpamBlockerPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"コメントスパム対策プラグイン",
 			"description"=>"ブログのコメントのスパムを対策します",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.0.1"
 		));	

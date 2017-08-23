@@ -11,7 +11,6 @@ class EntryAdministratorFilterLogic extends SOY2LogicBase{
 		"^Page.Preview",
 		"^Login",
 		"^FileManager",
-		"^SiteConfig",
 		"^Plugin.CustomPage",
 		"^Page.Editor.FileUpload",
 	);

@@ -39,8 +39,8 @@ class PingSendPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"更新Ping送信プラグイン",
 			"description"=>"更新Pingを送信することが出来ます。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.1"
 		));	

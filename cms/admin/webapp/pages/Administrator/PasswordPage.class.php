@@ -27,13 +27,18 @@ class PasswordPage extends CMSUpdatePageBase{
     		$this->jump("Administrator");
     	}
 
+    	//自身のパスワード変更は不可（現在のパスワードを知らなくても変更できてしまう）
+    	if($adminId == UserInfoUtil::getUserId()){
+    		$this->jump("Administrator.ChangePassword");
+    	}
+
     	//管理者情報
     	$this->admin = $this->getAdministratorById($adminId);
     	if(!$this->admin){
     		$this->jump("Administrator");
     	}
 
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$this->addForm("change_password_form");
 

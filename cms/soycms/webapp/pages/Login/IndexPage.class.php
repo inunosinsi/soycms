@@ -22,7 +22,7 @@ class IndexPage extends WebPage{
 	}
 	
 	function __construct(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		if(defined("SOYCMS_ASP_MODE")){
 			$register = str_replace("admin","register",SOY2PageController::createLink("", true));

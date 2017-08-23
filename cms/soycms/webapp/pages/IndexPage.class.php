@@ -18,25 +18,20 @@ class IndexPage extends CMSWebPageBase{
 
 		$this->jump("Index");
 	}
-	
+
 	var $blogIds;
 
 	function __construct(){
-		
+
 		//記事管理者以上の時
 		if(UserInfoUtil::hasSiteAdminRole()){
-    	
-    		$initDetect = $this->run("Init.InitDetectAction");
+
+			$initDetect = $this->run("Init.InitDetectAction");
 			if($initDetect->success()){
-				
+
 				if($initDetect->getAttribute("detect")){
 					// 初めてサイトにアクセスする場合は２択ページに飛ぶ
-					if(CMSUtil::checkZipEnable(true)){
-						$this->jump("Init");
-					}else{
-						//ただしzipが解凍できない場合は以前のウィザード
-						$this->jump("Wizard"); 
-					}
+					$this->jump("Init");
 					exit;
 				}
 			}
@@ -46,7 +41,7 @@ class IndexPage extends CMSWebPageBase{
 			SOY2PageController::jump("Simple");
 		}
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addLabel("widgets", array(
 			"html" => $this->getWidgetsHTML()
@@ -78,6 +73,13 @@ class IndexPage extends CMSWebPageBase{
 			"onchange"=>"location.href='" . SOY2PageController::createLink("Page.Detail.") . "'+this.value;"
 		));
 
+		$this->addModel("is_entry_template_enabled",array(
+				"visible" => CMSUtil::isEntryTemplateEnabled(),
+		));
+		$this->addModel("is_page_template_enabled",array(
+				"visible" => CMSUtil::isPageTemplateEnabled(),
+		));
+
 		//最近のコメントを出力
 		SOY2::import("domain.cms.BlogPage");
 		$this->outputCommentList();
@@ -94,7 +96,7 @@ class IndexPage extends CMSWebPageBase{
 		foreach($list as $plugin){
 			if(!$plugin->getCustom()) continue;
 			if(!$plugin->isActive()) continue;
-			
+
 			$customs = $plugin->getCustom();
 
 			$id = $plugin->getId();
@@ -112,13 +114,13 @@ class IndexPage extends CMSWebPageBase{
 
 			$html.= "</div>";
 			$html.= "<div class=\"widget_bottom\"></div>";
-			
+
 			$box[$counter][] = $html;
-			
+
 			$counter++;
 			if($counter > 2) $counter = 0;
 		}
-		
+
 		$widgets = "<table><tr>";
 		foreach($box as $key => $htmls){
 			$widgets .= "<td id=\"widigets_$key\" style=\"width:245px;vertical-align:top;\">";
@@ -152,10 +154,10 @@ class IndexPage extends CMSWebPageBase{
 	}
 
 	function outputTrackbackList(){
-		
+
 		$blogArray = $this->getBlogIds();
 		$blogIds = array_keys($blogArray);
-		
+
 		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryTrackbackLogic");
 
 		$trackbacks = $logic->getByLabelIds($blogIds, 3, 0);
@@ -167,12 +169,12 @@ class IndexPage extends CMSWebPageBase{
 		foreach($trackbacks as $key => $trackback){
 			$trackbacks[$key]->info = $this->getBlogId($trackback->getEntryId());
 		}
-		
+
 		$this->createAdd("recentTrackback", "RecentTrackbackList", array(
 			"list"=>$trackbacks
 		));
 	}
-	
+
 	function getBlogIds(){
 		if(is_null($this->blogIds)){
 			$blogs = $this->run("Blog.BlogListAction")->getAttribute("list");
@@ -184,14 +186,14 @@ class IndexPage extends CMSWebPageBase{
 				}
 			}
 		}
-		
+
 		return $this->blogIds;
 	}
 
 	function getBlogId($entryId){
 
 		$blogIds = $this->getBlogIds();
-		
+
 		$entryLogic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 		$entry = $entryLogic->getById($entryId);
 
@@ -285,7 +287,7 @@ class RecentEntryList extends HTMLList{
 			"text" => $popupText,
 			"visible" => strlen($popupText)
 		));
-		
+
 		$this->addLabel("content", array(
 			"text"  => SOY2HTML::ToText($entity->getContent()),
 			"width" => 60,
@@ -301,9 +303,9 @@ class RecentEntryList extends HTMLList{
 }
 
 class RecentPageList extends HTMLList{
-	
+
 	function populateItem($entity){
-		
+
 		$this->addLink("title", array(
 			"text"=>(strlen($entity->getTitle()) == 0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle(),
 			"link"=>SOY2PageController::createLink("Page.Detail.") . $entity->getId()
@@ -313,11 +315,10 @@ class RecentPageList extends HTMLList{
 			"text" => "/" . $entity->getUri(),
 			"link" => CMSUtil::getSiteUrl() . $entity->getUri()
 		));
-		
+
 		$this->addLabel("udate", array(
 			"text"=>CMSUtil::getRecentDateTimeText($entity->getUdate()),
 			"title" => date("Y-m-d H:i:s", $entity->getUdate())
 		));
-	}	
+	}
 }
-?>

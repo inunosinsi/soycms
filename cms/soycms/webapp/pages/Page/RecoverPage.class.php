@@ -2,33 +2,30 @@
 
 class RecoverPage extends CMSWebPageBase{
 
-    function __construct($args) {
+	protected $pageToGoBack = "Page";
 
-    	if(soy2_check_token()){
-		
-			$id = $args[0];
-			
-			$result = $this->run("Page.DetailAction",array("id"=>$id));
-			
-			if(!$result->success()){
-				$this->addErrorMessage("PAGE_RECOVER_FAILED");
-				$this->jump("Page");
-			}
-			
-			$page = $result->getAttribute("Page");
-			
-			
-			if($page->getPageType() != Page::PAGE_TYPE_ERROR){		
-				$action = SOY2ActionFactory::createInstance("Page.RecoverAction",array("id"=>$id));
-				$result = $action->run();
-			}		
-	
+	function __construct($args) {
+		$id = $args[0];
+
+		if(soy2_check_token() && $this->revocer($id)){
 			$this->addMessage("PAGE_RECOVER_SUCCESS");
-    	}else{
+		}else{
 			$this->addErrorMessage("PAGE_RECOVER_FAILED");
-    	}
-    	
-		$this->jump("Page");
+		}
+
+		$this->jump($this->pageToGoBack);
+	}
+
+	private function revocer($id){
+
+		$action = SOY2ActionFactory::createInstance("Page.RecoverAction",array("id"=>$id));
+		$result = $action->run();
+
+		if($result->success()){
+			return true;
+		}else{
+			return false;
+		}
+
 	}
 }
-?>

@@ -13,10 +13,10 @@ class CustomAliasPlugin{
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"カスタムエイリアス",
 			"description"=>"ブログの記事ページのURLの記事毎に変わる部分（エイリアス）を指定できるようにします。<br>SOY CMS 1.2.4以上で動作します。",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com/",
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.2"
+			"version"=>"1.1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
