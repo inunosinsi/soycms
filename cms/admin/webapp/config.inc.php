@@ -60,39 +60,6 @@ if(!UserInfoUtil::isLoggined()){
 	DisplayPlugin::toggle("for_not_default_user", !UserInfoUtil::isDefaultUser());
 }
 
-//スクリプト、CSSの読み込み
-
-//共通のCSS
-HTMLHead::addLink("common", array(
-	"type" => "text/css",
-	"rel" => "stylesheet",
-	"href" => SOY2PageController::createRelativeLink("css/style.css") . "?" . SOYCMS_BUILD_TIME
-));
-
-HTMLHead::addLink("form", array(
-	"type" => "text/css",
-	"rel" => "stylesheet",
-	"href" => SOY2PageController::createRelativeLink("css/form.css") . "?" . SOYCMS_BUILD_TIME
-));
-
-
-HTMLHead::addLink("table", array(
-	"type" => "text/css",
-	"rel" => "stylesheet",
-	"href" => SOY2PageController::createRelativeLink("css/table.css") . "?" . SOYCMS_BUILD_TIME
-));
-
-//共通スクリプト
-HTMLHead::addScript("jquery.js", array(
-	"src" => SOY2PageController::createRelativeLink("js/jquery.js") . "?" . SOYCMS_BUILD_TIME
-));
-HTMLHead::addScript("jquery-ui.js",array(
-	"src" => SOY2PageController::createRelativeLink("js/jquery-ui.min.js") . "?" . SOYCMS_BUILD_TIME
-));
-HTMLHead::addScript("common",array(
-	"src" => SOY2PageController::createRelativeLink("js/common.js") . "?" . SOYCMS_BUILD_TIME
-));
-
 //お知らせ配信のFeedのURL
 define("SOYCMS_INFO_FEED", "http://www.soycms.net/info/feed/");
 
