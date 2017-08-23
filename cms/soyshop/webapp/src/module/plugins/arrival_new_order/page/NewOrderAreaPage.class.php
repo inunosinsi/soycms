@@ -7,7 +7,7 @@ class NewOrderAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$orderDao->setLimit(16);

@@ -47,7 +47,7 @@ class DetailPage extends WebPage{
     	$this->id = (isset($args[0])) ? $args[0] : null;
     	$id = $this->id;
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->addForm("detail_form");    	    	
     	$this->buildForm($this->getReview($id));

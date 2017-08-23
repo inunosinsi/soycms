@@ -9,7 +9,7 @@ class SubMenuPage extends WebPage{
 		$this->id = $args[0];
 		$this->page = $args[1];
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addLink("page_detail_link", array(
 			"link" => SOY2PageController::createLink("Site.Pages.Detail." . $this->id)

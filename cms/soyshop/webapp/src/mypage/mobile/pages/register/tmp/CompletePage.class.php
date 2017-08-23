@@ -4,7 +4,7 @@ class CompletePage extends MobileMyPagePageBase{
 	function __construct(){
 
 
-		WebPage::__construct();
+		parent::__construct();
 		
 		$register = false;
     	

@@ -39,7 +39,7 @@ class ReplacementStringConfigPage extends WebPage {
   }
 
   function execute(){
-    WebPage::__construct();
+    parent::__construct();
 
     if(isset($_GET["remove"])){
 			self::remove();

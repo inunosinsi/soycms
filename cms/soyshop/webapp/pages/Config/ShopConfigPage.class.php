@@ -41,7 +41,7 @@ class ShopConfigPage extends WebPage{
 		$this->config = SOYShop_ShopConfig::load();
 		$this->pluginDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 
-		WebPage::__construct();
+		parent::__construct();
 
 		error_reporting(E_ALL ^ E_NOTICE);
 		$this->buildForm();

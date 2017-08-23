@@ -33,7 +33,7 @@ class AddItemConfigPage extends WebPage{
 			self::remove();
 		}
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		DisplayPlugin::toggle("removed", isset($_GET["removed"]));
 		

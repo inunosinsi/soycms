@@ -11,7 +11,7 @@ class SetItemConfigPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->createAdd("special_price_list", "SpecialPriceListComponent", array(
 			"list" => MemberSpecialPriceUtil::getConfig(),

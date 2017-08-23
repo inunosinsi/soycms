@@ -14,7 +14,7 @@ class ExportPage extends WebPage{
 			SOY2PageController::jump("User");
 		}
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->buildForm();
 

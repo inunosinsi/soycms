@@ -61,7 +61,7 @@ class CreatePage extends WebPage{
 			SOY2PageController::jump("Item");
 		}
     	
-    	WebPage::__construct();
+    	parent::__construct();
 
 		$this->createAdd("create_form","HTMLForm");
 

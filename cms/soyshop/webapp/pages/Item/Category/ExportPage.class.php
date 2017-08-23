@@ -4,7 +4,7 @@ class ExportPage extends WebPage{
     private $logic;
 
     function __construct() {
-        WebPage::__construct();
+        parent::__construct();
 
         DisplayPlugin::toggle("custom_plugin", SOYShopPluginUtil::checkIsActive("common_category_customfield"));
         DisplayPlugin::toggle("retry", isset($_GET["retry"]));

@@ -7,7 +7,7 @@ class ItemStockAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$shopConfig = SOYShop_ShopConfig::load();
 		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");

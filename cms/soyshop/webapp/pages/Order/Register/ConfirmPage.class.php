@@ -50,7 +50,7 @@ class ConfirmPage extends IndexPage{
 	function __construct() {
 		$this->cart = AdminCartLogic::getCart();
 
-		WebPage::__construct();
+		parent::__construct();
 		
 		//在庫切れのエラー
 		DisplayPlugin::toggle("stock_error", !is_null($this->cart->getErrorMessage("stock")));

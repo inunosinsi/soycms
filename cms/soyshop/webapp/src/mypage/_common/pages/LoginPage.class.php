@@ -50,7 +50,7 @@ class LoginPage extends MainMyPagePageBase{
 
 	function __construct(){
 		
-		WebPage::__construct();
+		parent::__construct();
 
 		$mypage = MyPageLogic::getMyPage();
 		//ログインチェック

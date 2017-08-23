@@ -12,7 +12,7 @@ class DeliveryEachProductFormPage extends WebPage{
     }
 
     function execute(){
-        WebPage::__construct();
+        parent::__construct();
 
         $this->createAdd("prices", "DeliveryEachProductPriceListComponent", array(
             "list"   => SOYShop_Area::getAreas(),

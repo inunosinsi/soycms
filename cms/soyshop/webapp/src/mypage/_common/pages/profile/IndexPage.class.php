@@ -19,7 +19,7 @@ class IndexPage extends MainMyPagePageBase{
 
 		$this->userId = $user->getId();
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->addLabel("profile_name", array(
 			"text" => $user->getDisplayName()

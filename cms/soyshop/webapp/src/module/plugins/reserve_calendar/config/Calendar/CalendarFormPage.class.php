@@ -66,7 +66,7 @@ class CalendarFormPage extends WebPage{
 	
 	function execute(){
 				
-		WebPage::__construct();
+		parent::__construct();
 		
 		DisplayPlugin::toggle("removed", (isset($_GET["removed"])));
 		DisplayPlugin::toggle("error", (isset($_GET["error"])));

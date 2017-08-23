@@ -10,7 +10,7 @@ if(is_dir(SOYSHOP_SITE_DIRECTORY . ".page")){
 			
 			//コンストラクタ名を修正
 			$c = str_replace("function " . $filename . "(", "function __construct(", $c);
-			$c = str_replace("WebPage::WebPage();", "WebPage::__construct();", $c);
+			$c = str_replace("WebPage::WebPage();", "parent::__construct();", $c);
 			
 			file_put_contents(SOYSHOP_SITE_DIRECTORY . ".page/" . $file, $c);
 		}

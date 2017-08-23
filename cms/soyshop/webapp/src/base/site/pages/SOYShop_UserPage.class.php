@@ -9,7 +9,7 @@ class SOYShop_UserPage extends SOYShopPageBase{
 		$this->setMyPageId($args[0]);
 		$this->setArgs($args[1]);
 
-		WebPage::__construct();
+		parent::__construct();
 
 	}
 

@@ -7,7 +7,7 @@ class ItemReviewAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		SOY2::imports("module.plugins.item_review.domain.*");
 		SOY2::imports("module.plugins.item_review.logic.*");

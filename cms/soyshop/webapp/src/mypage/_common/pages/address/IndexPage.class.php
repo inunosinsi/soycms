@@ -13,7 +13,7 @@ class IndexPage extends MainMyPagePageBase{
 		//編集中のセッションが残っている可能性があるので消しておく
 		$mypage->clearAttribute("address");
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$user = $this->getUser();
 

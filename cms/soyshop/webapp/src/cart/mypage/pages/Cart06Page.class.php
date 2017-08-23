@@ -26,7 +26,7 @@ class Cart06Page extends MainCartPageBase{
 	}
 
 	function Cart06Page(){
-		WebPage::__construct();
+		parent::__construct();
 
 		//completeはCompletaPage.class.phpに移動
 		$cart = CartLogic::getCart();

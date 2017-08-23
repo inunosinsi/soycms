@@ -7,7 +7,7 @@ class CompletePage extends MobileMyPagePageBase{
 	}
 
     function __construct() {
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->createAdd("login_link","HTMLLink", array(
     		"link" => soyshop_get_mypage_url() . "/login"

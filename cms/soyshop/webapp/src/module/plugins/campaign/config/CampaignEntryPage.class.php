@@ -53,7 +53,7 @@ class CampaignEntryPage extends WebPage{
 	
 	function execute(){
 		$this->id = (isset($_GET["id"])) ? $_GET["id"] : null;
-		WebPage::__construct();
+		parent::__construct();
 		
 		self::buildForm();
 		

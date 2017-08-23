@@ -178,7 +178,7 @@ class Cart03Page extends MainCartPageBase{
 		$this->user = $cart->getCustomerInformation();
 		$this->send = $cart->getAddress();
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addForm("order_form", array(
 			"action" => soyshop_get_cart_url(false),

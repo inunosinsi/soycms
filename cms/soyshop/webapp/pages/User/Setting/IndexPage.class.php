@@ -61,7 +61,7 @@ class IndexPage extends WebPage{
 		
 		$this->pageNumber = (isset($args[0])) ? (int)$args[0] : null;
 
-		WebPage::__construct();
+		parent::__construct();
 
     	DisplayPlugin::toggle("registered", (isset($_GET["registered"])));
 

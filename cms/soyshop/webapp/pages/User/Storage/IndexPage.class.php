@@ -16,7 +16,7 @@ class IndexPage extends WebPage{
 	function __construct($args){
 		$this->userId = (isset($args[0])) ? (int)$args[0] : null;
 		
-		WebPage::__construct();
+		parent::__construct();
 						
 		$activedPointPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("store_user_folder")));
 		DisplayPlugin::toggle("is_storage", $activedPointPlugin);

@@ -80,7 +80,7 @@ class DeliveryCountFreeConfigFormPage extends WebPage{
     }
 
     function execute(){
-        WebPage::__construct();
+        parent::__construct();
 
         $this->addForm("form");
 

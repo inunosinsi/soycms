@@ -83,7 +83,7 @@ class Cart05Page extends MainCartPageBase{
 			soyshop_redirect_cart();
 		}
 		
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->createAdd("order_form","HTMLForm", array(
 			"action" => soyshop_get_cart_url(false)

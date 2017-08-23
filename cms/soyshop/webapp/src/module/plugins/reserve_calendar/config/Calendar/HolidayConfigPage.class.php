@@ -60,7 +60,7 @@ class HolidayConfigPage extends WebPage{
 
 	function execute(){
 
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->addLink("back_link", array(
 			"link" => SOY2PageController::createLink("Item.Detail." . $this->itemId),

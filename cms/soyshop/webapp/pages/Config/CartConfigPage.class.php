@@ -54,7 +54,7 @@ class CartConfigPage extends WebPage{
 	}
 
 	function __construct(){
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addForm("update_form");
 

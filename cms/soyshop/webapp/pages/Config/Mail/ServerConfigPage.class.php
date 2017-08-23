@@ -32,7 +32,7 @@ class ServerConfigPage extends WebPage{
 	}
 
     function __construct() {
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$this->buildForm();
     	$this->buildTestSendForm();

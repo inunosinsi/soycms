@@ -146,7 +146,7 @@ class SettingPage extends WebPage{
 	function execute(){
 		MessageManager::addMessagePath("admin");
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		self::buildSearchForm();
 		

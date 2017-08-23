@@ -57,7 +57,7 @@ class ResetPage extends MainMyPagePageBase{
 			$this->user = new SOYShop_User();
 		}
 		
-    	WebPage::__construct();
+    	parent::__construct();
 		
 		//display error message
 		DisplayPlugin::toggle("has_error", $this->mypage->hasError());

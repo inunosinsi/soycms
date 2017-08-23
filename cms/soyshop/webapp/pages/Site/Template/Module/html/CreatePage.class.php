@@ -37,7 +37,7 @@ class CreatePage extends WebPage{
 
 	function __construct($args){
 	
-		WebPage::__construct();
+		parent::__construct();
 		
 		if($this->moduleId) DisplayPlugin::visible("failed");
 		

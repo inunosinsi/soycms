@@ -10,7 +10,7 @@ class MemberMenuPage extends HTMLPage{
 
 	function __construct($arg = array()){
 		$this->id = $arg[0];
-		HTMLPage::__construct();
+		parent::__construct();
 	}
 }
 ?>

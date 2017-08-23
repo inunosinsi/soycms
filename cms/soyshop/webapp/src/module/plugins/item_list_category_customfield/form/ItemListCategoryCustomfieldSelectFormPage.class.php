@@ -11,7 +11,7 @@ class ItemListCategoryCustomfieldSelectFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$config = ItemListCategoryCustomfieldUtil::getPageConfig($this->moduleId, $this->pageId);
 		

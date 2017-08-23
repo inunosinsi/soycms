@@ -86,7 +86,7 @@ class IndexPage extends MainMyPagePageBase{
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 
-		WebPage::__construct();
+		parent::__construct();
 
 
 		//顧客情報フォーム

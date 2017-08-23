@@ -7,7 +7,7 @@ class RecommendItemAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$itemIds = SOYShop_DataSets::get("item.recommend_items", array());
 		

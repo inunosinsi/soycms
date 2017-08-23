@@ -10,7 +10,7 @@ class EditButtonSetPage extends WebPage{
 		if(method_exists("WebPage", "WebPage")){
 			WebPage::WebPage();
 		}else{
-			WebPage::__construct();
+			parent::__construct();
 		}
 	}
 	

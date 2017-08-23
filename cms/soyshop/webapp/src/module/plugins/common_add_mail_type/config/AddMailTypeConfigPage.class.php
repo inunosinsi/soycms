@@ -53,7 +53,7 @@ class AddMailTypeConfigPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		DisplayPlugin::toggle("created", isset($_GET["created"]));
 		DisplayPlugin::toggle("removed", isset($_GET["removed"]));

@@ -32,7 +32,7 @@ class DetailPage extends WebPage{
     		SOY2PageController::jump("Plugin");
     	}
 
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$this->addForm("toggle_form");
 

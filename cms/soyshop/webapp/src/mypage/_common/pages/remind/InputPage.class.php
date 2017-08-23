@@ -80,7 +80,7 @@ class InputPage extends MainMyPagePageBase{
 			$this->jumpToTop();
 		}
 		
-		WebPage::__construct();
+		parent::__construct();
 
     	$this->addForm("form");
     	

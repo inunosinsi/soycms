@@ -7,7 +7,7 @@ class AttributeSettingPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$selectBefore = (int)SOYShop_DataSets::get("attribute_set_selected_before", 1);
 		

@@ -7,7 +7,7 @@ class ShopInfoAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$shopConfig = SOYShop_ShopConfig::load();
 		

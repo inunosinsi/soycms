@@ -19,7 +19,7 @@ class CommonNoticeStockConfigFormPage extends WebPage{
     }
     
     function execute(){
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$config = CommonNoticeStockCommon::getConfig();
   	

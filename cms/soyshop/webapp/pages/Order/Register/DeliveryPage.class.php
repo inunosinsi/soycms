@@ -50,7 +50,7 @@ class DeliveryPage extends WebPage{
 		SOYShopPlugin::active("soyshop.delivery");
 		$this->cart = AdminCartLogic::getCart();
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addForm("form");
 		$this->createAdd("delivery_method_list", "Delivery_methodList", array(

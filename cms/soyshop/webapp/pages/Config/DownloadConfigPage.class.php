@@ -21,7 +21,7 @@ class DownloadConfigPage extends WebPage{
 
     function __construct(){
     	    	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$config = DownloadAssistantCommon::getConfig();
     	$commonLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadCommonLogic");

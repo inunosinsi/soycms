@@ -8,7 +8,7 @@ class IndexPage extends SOYShopWebPage{
 
 
 	function __construct(){
-		WebPage::__construct();
+		parent::__construct();
 
 		//soyshop site list
 		$sites = $this->getSites();

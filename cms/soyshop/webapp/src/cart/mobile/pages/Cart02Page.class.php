@@ -216,7 +216,7 @@ class Cart02Page extends MobileCartPageBase{
 	}
 
 	function Cart02Page(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$url = soyshop_get_cart_url(false);
 		if(isset($_GET[session_name()])){

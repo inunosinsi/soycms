@@ -89,7 +89,7 @@ class Cart04Page extends MobileCartPageBase{
 	}
 
 	function Cart04Page(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$url = soyshop_get_cart_url(false);
 		if(isset($_GET[session_name()])){

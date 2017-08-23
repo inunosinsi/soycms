@@ -9,7 +9,7 @@ class ShippingLabelFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 
 
 		$companies = array(

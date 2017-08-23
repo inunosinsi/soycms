@@ -14,7 +14,7 @@ class IndexPage extends MainMyPagePageBase{
 			$this->jump("login");
 		}
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$user = $this->getUser();
 		

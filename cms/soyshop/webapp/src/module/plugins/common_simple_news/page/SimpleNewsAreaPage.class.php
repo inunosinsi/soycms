@@ -7,7 +7,7 @@ class SimpleNewsAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$news = SOYShop_DataSets::get("plugin.simple_news", array());
 

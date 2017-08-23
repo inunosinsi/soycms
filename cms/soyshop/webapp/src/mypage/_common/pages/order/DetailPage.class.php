@@ -25,7 +25,7 @@ class DetailPage extends MainMyPagePageBase{
             $this->jump("order");
         }
 
-        WebPage::__construct();
+        parent::__construct();
 
         $user = $this->getUser();
 

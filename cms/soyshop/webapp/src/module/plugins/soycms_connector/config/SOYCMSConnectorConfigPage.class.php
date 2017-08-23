@@ -18,7 +18,7 @@ class SOYCMSConnectorConfigPage extends WebPage{
   }
 
   function execute(){
-    WebPage::__construct();
+    parent::__construct();
 
     $config = SOYCMSConnectorUtil::getConfig();
     

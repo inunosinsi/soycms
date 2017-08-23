@@ -216,7 +216,7 @@ class DetailPage extends WebPage{
 		$this->config = SOYShop_ShopConfig::load();
 		MessageManager::addMessagePath("admin");
 
-		WebPage::__construct();
+		parent::__construct();
 
 		DisplayPlugin::toggle("copy", (isset($_GET["copy"])));
 		DisplayPlugin::toggle("error", (isset($_GET["error"])));

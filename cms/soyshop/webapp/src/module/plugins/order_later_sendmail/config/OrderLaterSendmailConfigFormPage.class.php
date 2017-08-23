@@ -24,7 +24,7 @@ class OrderLaterSendmailConfigFormPage extends WebPage{
     function execute(){
     	$config = OrderLaterSendmailUtil::getConfig();
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->addModel("updated", array(
     		"visible" => (isset($_GET["updated"]))

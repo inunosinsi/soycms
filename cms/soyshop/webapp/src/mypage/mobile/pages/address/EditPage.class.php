@@ -63,7 +63,7 @@ class EditPage extends MobileMyPagePageBase{
 		$mypage = MyPageLogic::getMyPage();
 		if(!$mypage->getIsLoggedin())$this->jump("login");//ログインしていなかったら飛ばす
 
-		WebPage::__construct();
+		parent::__construct();
 
 		//セッションの値があればそれを使う
 		$address = $mypage->getAttribute("address");

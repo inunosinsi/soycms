@@ -11,7 +11,7 @@ class ErrorPage extends MainMyPagePageBase{
 	}
 	
 	function __construct(){
-		WebPage::__construct();
+		parent::__construct();
 
 	}
 }

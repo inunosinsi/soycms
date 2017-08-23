@@ -32,7 +32,7 @@ class DetailPage extends SOYShopWebPage{
     	
     	$this->siteId = $site->getSiteId();
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->addLabel("site_name", array(
     		"text" => $site->getName()

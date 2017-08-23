@@ -44,7 +44,7 @@ class DetailPage extends WebPage{
 
         MessageManager::addMessagePath("admin");
 
-        WebPage::__construct();
+        parent::__construct();
 
         $this->addForm("update_form");
 

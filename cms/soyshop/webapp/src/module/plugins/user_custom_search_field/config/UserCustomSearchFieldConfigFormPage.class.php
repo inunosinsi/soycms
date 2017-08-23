@@ -85,7 +85,7 @@ class UserCustomSearchFieldConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();		
+		parent::__construct();		
 		
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 		DisplayPlugin::toggle("error", isset($_GET["error"]));

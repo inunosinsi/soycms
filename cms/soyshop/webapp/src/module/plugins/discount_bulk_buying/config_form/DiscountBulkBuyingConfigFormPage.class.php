@@ -92,7 +92,7 @@ class DiscountBulkBuyingConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		$discount = DiscountBulkBuyingConfigUtil::getDiscount();
 		$this->buildDiscountForm($discount);//内容
 		

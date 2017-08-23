@@ -67,7 +67,7 @@ class EditPage extends MainMyPagePageBase{
 			$this->jump("login");
 		}
 
-		WebPage::__construct();
+		parent::__construct();
 
 		//セッションの値があればそれを使う
 		$address = $mypage->getAttribute("address");

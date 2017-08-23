@@ -7,7 +7,7 @@ class UpdatePageAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$pageDAO = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 		$pageDAO->setLimit(5);

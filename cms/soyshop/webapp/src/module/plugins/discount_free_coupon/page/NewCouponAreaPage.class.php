@@ -7,7 +7,7 @@ class NewCouponAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
 		SOY2::imports("module.plugins.discount_free_coupon.logic.*");

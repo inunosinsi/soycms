@@ -50,7 +50,7 @@ class IndexPage extends WebPage{
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$this->categories = self::getCategories();
 		
-		WebPage::__construct();
+		parent::__construct();
 
 		if(isset($_REQUEST["search"])){
 			$this->setParameter("search", true);

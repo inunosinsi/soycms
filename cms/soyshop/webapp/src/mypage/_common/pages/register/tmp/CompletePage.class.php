@@ -9,7 +9,7 @@ class CompletePage extends MainMyPagePageBase{
     		$register = $this->executeRegister($_GET["q"]);
     	}
     	
-    	WebPage::__construct();
+    	parent::__construct();
 		
 		//success
 		$this->addModel("register_success", array(

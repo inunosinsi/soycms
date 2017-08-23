@@ -62,7 +62,7 @@ class ResetPage extends MobileMyPagePageBase{
 		}
 
 		
-    	WebPage::__construct();
+    	parent::__construct();
 		
 		//display error message
 		DisplayPlugin::toggle("has_error",$this->mypage->hasError());

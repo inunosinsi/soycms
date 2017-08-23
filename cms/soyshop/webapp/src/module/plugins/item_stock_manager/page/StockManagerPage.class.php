@@ -69,7 +69,7 @@ class StockManagerPage extends WebPage{
 		
 		MessageManager::addMessagePath("admin");
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		self::buildSearchForm();
 		

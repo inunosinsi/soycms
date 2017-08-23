@@ -27,7 +27,7 @@ class CommonItemOptionExImportPage extends WebPage{
 		$configs = SOYShop_DataSets::get("item_option", null);
 		if(is_null($configs)) SOY2PageController::jump("Config.Detail?plugin=common_item_option");
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->addForm("form");		
 		$value = base64_encode(soy2_serialize($configs));		

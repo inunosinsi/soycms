@@ -128,7 +128,7 @@ class Cart01Page extends MainCartPageBase{
 		
 		SOYShopPlugin::load("soyshop.cart");
 		
-		WebPage::__construct();
+		parent::__construct();
 
 		$cart = CartLogic::getCart();
 		$items = $cart->getItems();

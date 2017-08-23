@@ -12,7 +12,7 @@ class CompletePage extends MobileCartPageBase{
 	}
 
 	function __construct(){
-		WebPage::__construct();
+		parent::__construct();
 
 		$cart = CartLogic::getCart();
 

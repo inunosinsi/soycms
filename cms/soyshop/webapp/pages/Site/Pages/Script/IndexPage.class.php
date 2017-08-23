@@ -22,7 +22,7 @@ class IndexPage extends WebPage{
 		$this->pageId = (isset($args[0])) ? (int)$args[0] : null;
 		$this->page = $this->getPageObj();
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->addForm("form");
 		

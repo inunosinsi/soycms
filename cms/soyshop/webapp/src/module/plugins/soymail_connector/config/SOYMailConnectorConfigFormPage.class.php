@@ -17,7 +17,7 @@ class SOYMailConnectorConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$config = SOYMailConnectorUtil::getConfig();
 		

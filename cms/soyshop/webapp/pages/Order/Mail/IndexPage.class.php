@@ -87,7 +87,7 @@ class IndexPage extends WebPage{
 		$type = (isset($_GET["type"])) ? $_GET["type"] : SOYShop_Order::SENDMAIL_TYPE_ORDER;
 		$this->type = $type;
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
 		$sendTo = $user->getMailAddress();

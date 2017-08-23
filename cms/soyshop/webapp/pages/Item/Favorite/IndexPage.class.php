@@ -11,7 +11,7 @@ class IndexPage extends WebPage{
 		$favoriteLogic = SOY2Logic::createInstance("module.plugins.common_favorite_item.logic.FavoriteLogic");
 		$users = $favoriteLogic->getUsersByFavoriteItemId($this->itemId);
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->createAdd("user_list", "_common.User.UserListComponent", array(
 			"list" => $users

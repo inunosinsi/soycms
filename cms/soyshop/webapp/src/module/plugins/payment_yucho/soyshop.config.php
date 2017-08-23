@@ -45,7 +45,7 @@ class PaymentYuchoConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 
 		$configText = PaymentYuchoCommon::getConfigText();
 

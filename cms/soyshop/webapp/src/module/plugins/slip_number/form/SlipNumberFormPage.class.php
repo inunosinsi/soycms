@@ -7,7 +7,7 @@ class SlipNumberFormPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 	}
 	
 	function setPluginObj($pluginObj){

@@ -78,7 +78,7 @@ class IndexPage extends WebPage{
 	function __construct(){
 		MessageManager::addMessagePath("admin");
 
-		WebPage::__construct();
+		parent::__construct();
 		
 		//データベースの更新を調べる
 		$checkVersionLogic = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic");

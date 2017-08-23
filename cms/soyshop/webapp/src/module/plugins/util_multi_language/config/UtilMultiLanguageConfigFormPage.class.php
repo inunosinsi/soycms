@@ -102,7 +102,7 @@ class UtilMultiLanguageConfigFormPage extends WebPage{
 			$this->config->redirect("created");
 		}
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		DisplayPlugin::toggle("update", (isset($_GET["updated"])));
 		DisplayPlugin::toggle("created", (isset($_GET["created"])));

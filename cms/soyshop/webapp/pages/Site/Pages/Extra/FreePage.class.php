@@ -41,7 +41,7 @@ class FreePage extends WebPage{
 	function __construct($args){
 		$this->id = $args[0];
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->createAdd("detail_page_link","HTMLLink", array(
 			"link" => SOY2PageController::createLink("Site.Pages.Detail." . $this->id)

@@ -36,7 +36,7 @@ class DeliverySameDayShippingConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		//営業日カレンダー周りのタグ
 		self::buildNoticeArea();

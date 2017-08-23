@@ -8,7 +8,7 @@ class MailPage extends WebPage{
     	$id = @$args[0];
     	$this->id = $id;
 
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 

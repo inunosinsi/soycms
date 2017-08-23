@@ -111,7 +111,7 @@ class Cart02Page extends MainCartPageBase{
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 		
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addForm("order_form", array(
 			"action" => soyshop_get_cart_url(false)

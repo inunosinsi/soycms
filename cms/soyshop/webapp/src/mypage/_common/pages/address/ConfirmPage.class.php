@@ -48,7 +48,7 @@ class ConfirmPage extends EditPage{
 			$this->jump("login");
 		}
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$address = $mypage->getAttribute("address");
 

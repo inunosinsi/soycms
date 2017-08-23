@@ -17,7 +17,7 @@ class CommonOrderConfirmCheckConfigFormPage extends WebPage{
     function execute(){
     	include_once(dirname(dirname(__FILE__)) . "/class/common.php");
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$config = CommonOrderConfirmCheckCommon::getConfig();
     	

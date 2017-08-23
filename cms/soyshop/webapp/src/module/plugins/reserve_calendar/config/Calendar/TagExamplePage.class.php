@@ -9,7 +9,7 @@ class TagExamplePage extends WebPage{
 	function doPost(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 				
 		$this->addLink("back_link", array(
 			"link" => SOY2PageController::createLink("Item.Detail." . $this->itemId),

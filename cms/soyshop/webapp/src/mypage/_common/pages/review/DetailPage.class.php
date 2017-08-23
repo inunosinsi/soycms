@@ -61,7 +61,7 @@ class DetailPage extends MainMyPagePageBase{
 		$this->user = $this->getUser();
 		$this->reviewDao = SOY2DAOFactory::create("SOYShop_ItemReviewDAO");
 
-		WebPage::__construct();
+		parent::__construct();
 		
 		try{
 			$review = $this->reviewDao->getByIdAndUserId($this->id, $this->user->getId());

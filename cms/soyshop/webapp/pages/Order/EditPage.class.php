@@ -408,7 +408,7 @@ class EditPage extends WebPage{
 	function __construct($args) {
 		MessageManager::addMessagePath("admin");
 		$this->id = (isset($args[0])) ? (int)$args[0] : "";
-		WebPage::__construct();
+		parent::__construct();
 
 		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		try{

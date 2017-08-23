@@ -4,7 +4,7 @@ class ComplexMenuPage extends HTMLPage{
 
     function __construct($arg = array()){
 		$this->id = $arg[0];
-		HTMLPage::__construct();
+		parent::__construct();
 
 		$this->createAdd("complex_page_site_link","HTMLLink", array(
 			"link" => soyshop_get_page_url($arg[1]->getUri())

@@ -5,7 +5,7 @@ class ImportPage extends WebPage{
     var $categories;
 
     function __construct() {
-        WebPage::__construct();
+        parent::__construct();
 
         DisplayPlugin::toggle("fail", isset($_GET["fail"]));
         DisplayPlugin::toggle("invalid", isset($_GET["invalid"]));

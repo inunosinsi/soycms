@@ -99,7 +99,7 @@ class ItemPage extends WebPage{
 */
 	function __construct($args) {
 		$this->cart = AdminCartLogic::getCart();
-		WebPage::__construct();
+		parent::__construct();
 
 		//パラメータから商品IDを取得
 		$userId = (isset($args[0]))?$args[0]:null;

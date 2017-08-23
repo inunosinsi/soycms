@@ -94,7 +94,7 @@ class CustomSearchFieldConfigFormPage extends WebPage{
     }
 
     function execute(){
-        WebPage::__construct();
+        parent::__construct();
 
         foreach(array("error", "deleted") as $t){
             DisplayPlugin::toggle($t, isset($_GET[$t]));

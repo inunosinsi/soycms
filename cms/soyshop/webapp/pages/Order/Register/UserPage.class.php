@@ -158,7 +158,7 @@ class UserPage extends WebPage{
 			$user = new SOYShop_User();
 		}
 
-		WebPage::__construct();
+		parent::__construct();
 
 		foreach(array("id", "email", "tell", "name", "reading") as $t){
 			$this->addForm("user_search_by_" . $t . "_form");

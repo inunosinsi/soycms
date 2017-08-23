@@ -11,7 +11,7 @@ class ErrorPage extends MainCartPageBase{
 	}
 	
 	function ErrorPage(){
-		WebPage::__construct();
+		parent::__construct();
 
 	}
 }

@@ -19,7 +19,7 @@ class RelativeItemConfigPage extends WebPage{
 	function execute(){
 		$config = RelativeItemUtil::getConfig();
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->addForm("form");
 		

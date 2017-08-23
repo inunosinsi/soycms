@@ -29,7 +29,7 @@ class EditorPage extends WebPage{
 		//ファイルが取得できなければ、アプリケーションテンプレート一覧に戻る
 		if(is_null($this->filepath)) SOY2PageController::jump("Site.Template.Application");
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->addForm("form");
 		

@@ -7,7 +7,7 @@ class SOYShop_CartPage extends SOYShopPageBase{
 	function __construct($args){
 		$this->setCartId($args[0]);
 
-		WebPage::__construct();
+		parent::__construct();
 	}
 
 	function doOperation(){

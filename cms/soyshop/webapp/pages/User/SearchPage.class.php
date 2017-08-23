@@ -20,7 +20,7 @@ class SearchPage extends WebPage{
 	}
 
 	function __construct($args){
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addForm("advanced_search_form");
 		$this->addForm("reset_form");

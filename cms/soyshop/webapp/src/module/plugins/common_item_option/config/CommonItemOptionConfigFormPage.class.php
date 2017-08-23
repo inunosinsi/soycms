@@ -90,7 +90,7 @@ class CommonItemOptionConfigFormPage extends WebPage{
     }
 
     function execute(){
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$this->addForm("create_form");
 

@@ -16,7 +16,7 @@ class ItemListCategoryCustomfieldDetailFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->addSelect("category_customfield_list", array(
 			"name" => "ItemListCategoryCustomfield",

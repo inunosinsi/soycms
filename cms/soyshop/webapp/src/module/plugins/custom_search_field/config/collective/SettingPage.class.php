@@ -59,7 +59,7 @@ class SettingPage extends WebPage{
 
         MessageManager::addMessagePath("admin");
 
-        WebPage::__construct();
+        parent::__construct();
 
         DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 

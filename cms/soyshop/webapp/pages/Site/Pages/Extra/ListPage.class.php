@@ -41,7 +41,7 @@ class ListPage extends WebPage{
 	function __construct($args){
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addLink("detail_page_link", array(
 			"link" => SOY2PageController::createLink("Site.Pages.Detail." . $this->id)

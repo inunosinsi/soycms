@@ -37,7 +37,7 @@ class IndexPage extends WebPage{
     		SOY2PageController::jump("");
     	}
 
-    	WebPage::__construct();
+    	parent::__construct();
 
     	if(isset($_GET["reset"])){
 			$this->setParameter("page", 1);

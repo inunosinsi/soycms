@@ -7,7 +7,7 @@ class UpdateItemAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$itemDao->setLimit(5);

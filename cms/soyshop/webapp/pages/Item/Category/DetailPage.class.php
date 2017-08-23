@@ -104,7 +104,7 @@ class DetailPage extends WebPage{
     	$this->id = (int)$args[0];
     	$id = $this->id;
 
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$this->addForm("create_form");
 

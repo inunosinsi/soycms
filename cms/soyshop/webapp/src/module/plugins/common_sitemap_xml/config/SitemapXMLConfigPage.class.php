@@ -57,7 +57,7 @@ class SitemapXMLConfigPage extends WebPage{
 	}
 
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 
     if(isset($_GET["remove"]) && is_numeric($_GET["remove"]) && soy2_check_token()){
       self::remove($_GET["remove"]);

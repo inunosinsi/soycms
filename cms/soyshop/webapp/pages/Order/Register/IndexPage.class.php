@@ -101,7 +101,7 @@ class IndexPage extends WebPage{
 		MessageManager::addMessagePath("admin");
 		$this->cart = AdminCartLogic::getCart();
 
-		WebPage::__construct();
+		parent::__construct();
 		
 		//在庫切れのエラー
 		DisplayPlugin::toggle("stock_error", !is_null($this->cart->getErrorMessage("stock")));

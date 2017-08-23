@@ -19,7 +19,7 @@ class RecommendItemConfigPage extends WebPage{
 	function execute(){
 		$config = RecommendItemUtil::getConfig();
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->addForm("form");
 		

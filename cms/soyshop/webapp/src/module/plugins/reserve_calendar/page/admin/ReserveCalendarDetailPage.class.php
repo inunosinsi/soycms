@@ -136,7 +136,7 @@ class ReserveCalendarDetailPage extends WebPage{
 		$this->reservedList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedListByScheduleId($this->schId);
 		$this->reservedCount = count($this->reservedList);
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		//キャンセル
 		if(isset($_GET["cancel"]) && is_numeric($_GET["cancel"])){

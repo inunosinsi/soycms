@@ -64,7 +64,7 @@ class CommonItemDescriptionConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->createAdd("updated","HTMLModel", array(
 			"visible" => (isset($_GET["updated"]))

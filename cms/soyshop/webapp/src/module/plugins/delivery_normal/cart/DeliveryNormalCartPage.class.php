@@ -11,7 +11,7 @@ class DeliveryNormalCartPage extends WebPage{
 	}
 
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addLabel("module_description", array(
 			"html" => DeliveryNormalUtil::getDescription()

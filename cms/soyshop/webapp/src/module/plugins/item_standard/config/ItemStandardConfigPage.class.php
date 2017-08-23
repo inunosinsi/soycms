@@ -38,7 +38,7 @@ class ItemStandardConfigPage extends WebPage{
 	function execute(){
 		if(isset($_GET["remove"])) self::remove();
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		DisplayPlugin::toggle("created", isset($_GET["created"]));
 		DisplayPlugin::toggle("removed", isset($_GET["removed"]));

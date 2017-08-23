@@ -43,7 +43,7 @@ class IndexPage extends MainMyPagePageBase{
 		
 		$this->postDao = SOY2DAOFactory::create("SOYMessage_PostDAO");
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->addLabel("user_name", array(
 			"text" => $user->getName()

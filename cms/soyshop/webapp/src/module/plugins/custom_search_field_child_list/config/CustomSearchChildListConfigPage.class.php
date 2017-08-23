@@ -11,7 +11,7 @@ class CustomSearchChildListConfigPage extends WebPage{
     }
 
     function execute(){
-        WebPage::__construct();
+        parent::__construct();
 
         DisplayPlugin::toggle("no_installed_custom_search", !CustomSearchChildListUtil::checkInstalledCustomSearchField());
         DisplayPlugin::toggle("no_display_child_item", !CustomSearchChildListUtil::checkDisplayChildItemConfig());

@@ -18,7 +18,7 @@ class IndexPage extends MainMyPagePageBase{
 			$this->jump("login");
 		}
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		SOY2::imports("module.plugins.common_notice_arrival.domain.*");
 		$this->noticeDao = SOY2DAOFactory::create("SOYShop_NoticeArrivalDAO");

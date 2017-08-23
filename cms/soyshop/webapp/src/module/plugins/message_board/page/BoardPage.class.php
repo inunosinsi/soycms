@@ -47,7 +47,7 @@ class BoardPage extends WebPage{
 	
 	function execute(){
 				
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->createAdd("message_list", "MessageListComponent", array(
 			"list" => self::get(),

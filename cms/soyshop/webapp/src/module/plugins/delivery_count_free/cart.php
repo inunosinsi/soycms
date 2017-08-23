@@ -8,7 +8,7 @@ class DeliveryCountFreeCartFormPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->createAdd("description","HTMLLabel", array(
 			"html"  => nl2br(DeliveryCountFreeConfigUtil::getDescription()),

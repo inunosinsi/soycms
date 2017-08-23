@@ -7,7 +7,7 @@ class CampaignAreaPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		SOY2::imports("module.plugins.campaign.domain.*");
 		$campaigns = SOY2DAOFactory::create("SOYShop_CampaignDAO")->getBeforePostPeriodEnd(6);

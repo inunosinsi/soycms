@@ -11,7 +11,7 @@ class PasswordPage extends WebPage{
 
     	$this->session = SOY2ActionSession::getUserSession();
 
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 

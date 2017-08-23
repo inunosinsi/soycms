@@ -54,7 +54,7 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 			$this->remove();
 		}
 		
-		WebPage::__construct();
+		parent::__construct();
 				
 		$this->addModel("updated", array(
 			"visible" => (isset($_GET["updated"]))

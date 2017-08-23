@@ -10,7 +10,7 @@ class BlackCustomerListConfigPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$users = SOY2Logic::createInstance("module.plugins.black_customer_list.logic.BlackListLogic")->getBlackList();
 		$cnt = count($users);

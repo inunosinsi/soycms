@@ -10,7 +10,7 @@ class DeliverySameDayShippingCartPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$logic = SOY2Logic::createInstance("module.plugins.delivery_same_day_shipping.logic.ShippingDateLogic", array("config" => $this->pluginConfig));
 		$values = $logic->get();

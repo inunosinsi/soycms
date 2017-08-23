@@ -16,7 +16,7 @@ class MaintenancePage extends MainCartPageBase{
 		$cart = CartLogic::getCart();
 		$cart->clear();
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$config = SOYShop_ShopConfig::load();
 		$info = $config->getCompanyInformation();

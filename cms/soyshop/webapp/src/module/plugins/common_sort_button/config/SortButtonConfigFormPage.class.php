@@ -13,7 +13,7 @@ class SortButtonConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		SOY2::import("module.plugins.common_sort_button.util.SortButtonUtil");
 		$list = SortButtonUtil::getColumnList();

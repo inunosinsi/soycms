@@ -38,7 +38,7 @@ class CreatePage extends WebPage{
     	
     	$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	if(isset($_GET["type"])) $this->selected = $_GET["type"];
     	if($this->templateId) DisplayPlugin::visible("failed");

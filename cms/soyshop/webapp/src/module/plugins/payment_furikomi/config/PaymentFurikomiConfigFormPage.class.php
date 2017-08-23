@@ -16,7 +16,7 @@ class PaymentFurikomiConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$configText = PaymentFurikomiUtil::getConfigText();
 

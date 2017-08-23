@@ -63,7 +63,7 @@ class InputPage extends MobileMyPagePageBase{
     function __construct() {
 		$this->mypage = MyPageLogic::getMyPage();
 
-    	WebPage::__construct();
+    	parent::__construct();
 		if($this->mypage->getIsLoggedin())$this->jumpToTop();//ログイン済み
 
     	$this->addForm("form");

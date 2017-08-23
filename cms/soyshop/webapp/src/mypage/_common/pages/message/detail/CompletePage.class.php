@@ -11,11 +11,11 @@ class CompletePage extends IndexPage{
 		$mypage = MyPageLogic::getMyPage();
 		if(!$mypage->getIsLoggedin())$this->jump("login");//ログインしていなかったら飛ばす
 		
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->clearPostToSession("front_message_post");
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->addLink("message_link", array(
     		"link" => SOYSHOP_SITE_URL.soyshop_get_mypage_uri() . "/message/detail/" . $this->id

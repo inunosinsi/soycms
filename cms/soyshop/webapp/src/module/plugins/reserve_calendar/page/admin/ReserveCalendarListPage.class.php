@@ -14,7 +14,7 @@ class ReserveCalendarListPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		//再予約モード
 		if(soy2_check_token() && isset($_GET["re_reserve"]) && is_numeric($_GET["re_reserve"])){

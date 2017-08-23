@@ -7,7 +7,7 @@ class ItemListCategoryCustomfieldConfigFormPage extends WebPage{
 	function __construct(){}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 	}
 	
 	function setConfigObj($configObj){

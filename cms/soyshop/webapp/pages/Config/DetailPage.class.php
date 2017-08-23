@@ -26,7 +26,7 @@ class DetailPage extends WebPage{
 			SOY2PageController::jump("Config");
 		}
 
-		WebPage::__construct();
+		parent::__construct();
 
 		SOYShopPlugin::load("soyshop.config",$this->module);
 		$delegate = SOYShopPlugin::invoke("soyshop.config", array(

@@ -4,7 +4,7 @@
 class IndexPage extends MainMyPagePageBase{
 
     function __construct(){
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$mypage = MyPageLogic::getMyPage();
 		if($mypage->getIsLoggedin()){

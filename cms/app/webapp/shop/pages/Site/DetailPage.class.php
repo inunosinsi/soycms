@@ -32,7 +32,7 @@ class DetailPage extends SOYShopWebPage{
     function __construct($args) {
     	$this->id = (isset($args[0])) ? (int)$args[0] : null;
    
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->buildMessageForm();
     	$this->buildForm();

@@ -49,7 +49,7 @@ class EditorPage extends WebPage{
 		$this->filepath = $filepath;
 		$this->iniFilepath = $iniFilepath;
 
-		WebPage::__construct();
+		parent::__construct();
 		
 		DisplayPlugin::toggle("success", (isset($_GET["success"])));
 

@@ -24,7 +24,7 @@ class ShippingLabelConfigPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		//このプラグインを動かすために必要なプラグインがインストールされているか？
 		DisplayPlugin::toggle("notice_no_installed_payment_daibiki", !SOYShopPluginUtil::checkIsActive("payment_daibiki"));

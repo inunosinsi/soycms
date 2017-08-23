@@ -54,7 +54,7 @@ class PaymentPage extends WebPage{
 		SOYShopPlugin::active("soyshop.payment");
 		$this->cart = AdminCartLogic::getCart();
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->addForm("form");
 		$this->createAdd("payment_method_list", "Payment_methodList", array(

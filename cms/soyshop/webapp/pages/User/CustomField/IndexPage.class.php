@@ -97,7 +97,7 @@ class IndexPage extends WebPage{
     	}
     	
     	
-    	WebPage::__construct();
+    	parent::__construct();
 
     	$this->addModel("updated", array(
 			"visible" => (isset($_GET["updated"]))

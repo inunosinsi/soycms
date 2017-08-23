@@ -9,7 +9,7 @@ class RecordDeadLinkConfigFormPage extends WebPage{
 	}
 	
 	function execute(){
-		WebPage::__construct();
+		parent::__construct();
 		
 		$dao = SOY2DAOFactory::create("SOYShop_RecordDeadLinkDAO");
 		$dao->setLimit(5);

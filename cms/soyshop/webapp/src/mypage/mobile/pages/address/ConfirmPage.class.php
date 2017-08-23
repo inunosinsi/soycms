@@ -41,7 +41,7 @@ class ConfirmPage extends EditPage{
 		$mypage = MyPageLogic::getMyPage();
 		if(!$mypage->getIsLoggedin())$this->jump("login");//ログインしていなかったら飛ばす
 
-		WebPage::__construct();
+		parent::__construct();
 
 		$address = $mypage->getAttribute("address");
 
