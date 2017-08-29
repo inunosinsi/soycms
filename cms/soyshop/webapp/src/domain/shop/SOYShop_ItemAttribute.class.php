@@ -22,7 +22,7 @@ class SOYShop_ItemAttribute {
 	 * @column item_value
 	 */
 	private $value;
-	
+
 	/**
 	 * @column item_extra_values
 	 */
@@ -46,14 +46,14 @@ class SOYShop_ItemAttribute {
 	function setValue($value) {
 		$this->value = $value;
 	}
-	
+
 	function getExtraValues() {
 		return $this->extraValues;
 	}
 	function setExtraValues($extraValues) {
 		$this->extraValues = $extraValues;
 	}
-	
+
 	function getExtraValuesArray() {
 		$res = soy2_unserialize($this->extraValues);
 		if(is_array($res)){
@@ -287,10 +287,10 @@ class SOYShop_ItemAttributeConfig{
 	}
 
 	function getForm($value, $extraValues = null){
-		
+
 		$session = SOY2ActionSession::getUserSession();
 		$appLimit = $session->getAttribute("app_shop_auth_limit");
-		
+
 		//appLimitがfalseの場合は、在庫以外の項目をreadOnlyにする
 		$readOnly = (!$appLimit) ? true : false;
 
@@ -301,8 +301,9 @@ class SOYShop_ItemAttributeConfig{
 		         .''
 		         .htmlspecialchars($this->getLabel(), ENT_QUOTES, "UTF-8")
 		         //.' ('.htmlspecialchars($this->getFieldId(), ENT_QUOTES, "UTF-8").')'
+						 .' (cms:id="' . htmlspecialchars($this->getFieldId(), ENT_QUOTES, "UTF-8") . '")'
 		         .'</label>';
-		         
+
 		$title .= (strlen($this->getDescription())) ? "<span class=\"option\">(" . $this->getDescription() . ")</span><br>" : "";
 		$title .= '</dt>';
 
@@ -382,12 +383,12 @@ class SOYShop_ItemAttributeConfig{
 				break;
 			case "file":
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
-				
+
 				$html[] = '<div><input type="file" id="'.$h_formID.'_upload"'
 				       .' name="'.$h_formName.'"'
 				       .' value="" /></div>';
 				$html[] = '<p><a class="button" href="javascript:void(0);" onclick="return doFileUpload(\''.$h_formID.'_upload\',\''.$h_formID.'\');">Upload</a></p>';
-				
+
 				$html[] = '<p>';
 				$html[] = '<input type="text" id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
@@ -397,7 +398,7 @@ class SOYShop_ItemAttributeConfig{
 					$html[] = ' <a class="button" href="javascript:void(0);" onclick="$(\'#'.$h_formID.'\').val(\'\');">Clear</a>';
 				}
 				$html[] = '</p>';
-				
+
 				$body = implode("",$html);
 				break;
 			case "image":
@@ -423,9 +424,9 @@ class SOYShop_ItemAttributeConfig{
 				$html[] = '<input type="hidden" id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'" />';
-				       
+
 				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getExtraOutputs()));
-				
+
 				foreach($extraOutputs as $key => $extraOutput){
 					$extraOutput = trim($extraOutput);
 					if(strlen($extraOutput) > 0){
