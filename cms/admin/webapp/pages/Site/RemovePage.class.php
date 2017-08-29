@@ -67,7 +67,8 @@ class RemovePage extends CMSUpdatePageBase{
 			"label" => CMSMessageManager::get("ADMIN_CONFIRM_DELETE_SITE"),
 			"name"  => "confirm",
 			"value" => 1,
-			"style" => "margin-right:1ex;"
+			"style" => "margin-right:1ex;",
+			"elementId" => "confirm_checkbox",
 		));
 
 		$this->addCheckBox("checkbox_delete_dir", array(
@@ -76,7 +77,7 @@ class RemovePage extends CMSUpdatePageBase{
 			"value" => 1,
 			"style" => "margin-right:1ex;"
 		));
-		
+
 		$this->addCheckBox("checkbox_delete_db", array(
 			"label" => CMSMessageManager::get("ADMIN_DELETE_SITE_DB"),
 			"name"  => "deleteDatabase",

@@ -35,8 +35,14 @@
 
 			<div class="row">
 				<div class="col-lg-12">
-					<div class="panel panel-soygreen">
-						<div class="panel-heading">ページ一覧</div>
+					<div class="panel panel-green" id="page-list">
+						<div class="panel-heading">ページ一覧
+
+							<small class="pull-right">
+							<label><input class="form-input-check" type="checkbox" id="hide-draft" soy:id="hide-draft">下書きを隠す</label>
+							<label><input class="form-input-check" type="checkbox" id="hide-out-of-publishing-period" soy:id="hide-out-of-publishing-period">公開期間外を隠す</label>
+							</small>
+						</div>
 						<div class="panel-body">
 							<div class="soycms-page-tree">
 							<!-- soy:id="page_list" -->
@@ -49,7 +55,7 @@
 					</div>
 
 					<!-- soy:display="not_empty_trash" -->
-					<div class="panel panel-soygreen">
+					<div class="panel panel-default" id="deleted-page-list">
 						<div class="panel-heading">
 							<i class="fa fa-trash-o fa-fw"></i>ごみ箱
 						</div>
@@ -73,6 +79,21 @@
 	</div>
 	<!-- /#wrapper -->
 
-</body>
+<script soy:id="jquery-cookie"></script>
+<script>
+	$(function(){
+		$('#hide-out-of-publishing-period').click(function(){
+			//$('#page-list .out_of_open_period').toggle(!$('#hide-out-of-publishing-period').prop('checked'))
+			$('#page-list .out_of_open_period').collapse('toggle')
+			$.cookie('page-index-hide-out-of-publishing-period', $('#hide-out-of-publishing-period').prop('checked'));
+		})
+		$('#hide-draft').click(function(){
+			//$('#page-list .draft').toggle(!$('#hide-draft').prop('checked'))
+			$('#page-list .draft').collapse('toggle')
+			$.cookie('page-index-hide-draft', $('#hide-draft').prop('checked'));
+		})
+	})
+</script>
 
+</body>
 </html>

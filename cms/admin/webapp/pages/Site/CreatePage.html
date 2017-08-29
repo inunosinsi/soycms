@@ -16,13 +16,14 @@
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
-			<div class="row">
+			<div class="row" soy:id="has_message_or_error">
 				<div class="col-lg-12">
 					<div class="panel panel-default panel-message">
-						<div  class="panel-heading" soy:id="error">エラー</div>
+						<div class="panel-heading" soy:id="message">メッセージ</div>
+						<div class="panel-heading" soy:id="error">エラー</div>
 					</div>
 				</div>
-			</div>
+			</div soy:id="has_message_or_error">
 			<!-- /.row -->
 
 			<form soy:id="create_site_form">
@@ -36,17 +37,17 @@
 						<div class="panel-body">
 							<div class="form-group">
 								<label>サイトID</label>
-									<input name="siteId" type="text" class="form-control">
+									<input name="siteId" type="text" class="form-control" required>
 									<span class="help-block">サイトのURLに使用されます。URLは後で変更できますがサイトIDは変更できません。　例）　http://＜ドメイン＞/＜サイトID＞</span>
 							</div>
 							<div class="form-group">
 								<label>サイト名</label>
-									<input name="siteName" type="text" class="form-control">
+									<input name="siteName" type="text" class="form-control" required>
 									<span class="help-block">ページのタイトルなどで使用することができます。</span>
 							</div>
 							<div class="form-group">
 								<label>文字コード</label>
-									<select soy:id="encoding" class="form-control" style="min-width: 50%"></select>
+									<select soy:id="encoding" class="form-control" required></select>
 									<span class="help-block">UTF-8を推奨します</span>
 							</div>
 							<!-- soy:display="only_first_site" -->

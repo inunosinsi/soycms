@@ -1,14 +1,14 @@
 <?php
 
 class ChangePasswordPage extends CMSUpdatePageBase{
-	
+
 	private $failed = false;
 
 	function doPost(){
-		
+
 		if(soy2_check_token() && $this->updatePassword()){
 			$this->addMessage("CHANGE_PASSWORD_SUCCESS");
-			$this->jump("Administrator");	
+			$this->jump("Administrator");
 		}else{
 			$this->failed = true;
 		}
@@ -23,7 +23,7 @@ class ChangePasswordPage extends CMSUpdatePageBase{
     	));
 
     }
-    
+
     /**
      * 現在の管理者のパスワードを変更します
      * Administrator
@@ -32,7 +32,7 @@ class ChangePasswordPage extends CMSUpdatePageBase{
     function updatePassword(){
     	$action = SOY2ActionFactory::createInstance("Administrator.ChangePasswordAction");
     	$result = $action->run();
-    	
+
     	return $result->success();
     }
 }

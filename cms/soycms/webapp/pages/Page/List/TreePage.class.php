@@ -49,7 +49,9 @@ class TreePage extends CMSWebPageBase{
 	private function getSubIconPath($page){
 		$src = "";
 
-		if($page->getIsTrash()){
+		if($page->getPageType() == Page::PAGE_TYPE_ERROR){
+			$src = "";
+		}elseif($page->getIsTrash()){
 			$src = $this->getDeletedIcon();
 		}else{
 			switch($page->isActive(true)){
@@ -106,6 +108,20 @@ class TreePage extends CMSWebPageBase{
 
 		//ページテンプレート管理
 		DisplayPlugin::toggle("is_page_template_enabled", CMSUtil::isPageTemplateEnabled());
+
+		$this->addCheckBox("hide-draft",array(
+			"selected" => isset($_COOKIE['page-index-hide-draft']) && $_COOKIE['page-index-hide-draft'] == 'true',
+			"elementId" => 'hide-draft',
+		));
+		$this->addCheckBox("hide-out-of-publishing-period",array(
+			"selected" => isset($_COOKIE['page-index-hide-out-of-publishing-period']) && $_COOKIE['page-index-hide-out-of-publishing-period'] == 'true',
+			"elementId" => 'hide-out-of-publishing-period',
+		));
+
+		//Cookie操作用
+		$this->addScript("jquery-cookie",array(
+				"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js") . "?" . SOYCMS_BUILD_TIME
+		));
 	}
 
 	function getTreeHTML($pages,$depth = 0){
@@ -114,17 +130,52 @@ class TreePage extends CMSWebPageBase{
 
 		foreach($pages as $key => $page){
 
-			$html = array();
+			$class_for_branch = array();
+			if($depth > 1){
+				$class_for_branch[] = "soycms-page-tree-lower-page";
+			}
 
+			$class_for_leaf = array();
+			if($page->isBlog()){
+				$class_for_leaf[] = "blog_page";
+			}
+			if($page->isMobile()){
+				$class_for_leaf[] = "mobile_page";
+			}
+			if($page->getIsTrash()){
+				$class_for_leaf[] = "in_trash";
+			}
+
+			if($page->isActive() == Page::PAGE_NOTPUBLIC){
+				$class_for_leaf[] = "draft";
+				if(isset($_COOKIE['page-index-hide-draft']) && $_COOKIE['page-index-hide-draft'] == 'true'){
+					$class_for_leaf[] = "collapse";
+				}else{
+					$class_for_leaf[] = "collapse in";
+				}
+			}else{
+				if($page->isActive() == Page::PAGE_OUTOFDATE){
+					$class_for_leaf[] = "out_of_open_period";
+					if(isset($_COOKIE['page-index-hide-out-of-publishing-period']) && $_COOKIE['page-index-hide-out-of-publishing-period'] == 'true'){
+						$class_for_leaf[] = "collapse";
+					}else{
+						$class_for_leaf[] = "collapse in";
+					}
+				}else{
+					$class_for_leaf[] = "currently_published";
+				}
+			}
+
+			$html = array();
+			$html[] = '<li class="'.htmlspecialchars(implode(" ", $class_for_branch), ENT_QUOTES, SOY2HTML::ENCODING).'">' ;
+			$html[] = '<div class="'.htmlspecialchars(implode(" ", $class_for_leaf), ENT_QUOTES, SOY2HTML::ENCODING).'">';
 			$html[] = $this->buildPageIcon($page, $depth);
-			//$html[]='<div style="margin-left:68px">';
 			$html[] = $this->buildPageTitle($page);
-			//$html[] = '<br>';
 			$url = CMSUtil::getSiteUrl().$page->getUri();
 			$html[] = '<a href="'.htmlspecialchars($url, ENT_QUOTES, SOY2HTML::ENCODING).'" target="_blank">'.htmlspecialchars($page->getUri(), ENT_QUOTES, SOY2HTML::ENCODING).'<i class="fa fa-external-link fa-fw" style="font-size:smaller"></i></a>';
 			$html[] = '<br>';
 			$html[] = $this->buildPageMenu($page);
-			//$html[]='</div>';
+			$html[] = '</div>';
 			if(count($page->getChildPages()) != 0){
 				$html[] = $this->getTreeHTML($page->getChildPages(),$depth+1);
 			}
@@ -142,16 +193,10 @@ class TreePage extends CMSWebPageBase{
 	 * @param unknown $depth
 	 * @return unknown
 	 */
-	private function buildPageIcon($page,  $depth){
+	private function buildPageIcon($page, $depth){
 		$html = array();
 
-		if($depth>1){
-			$html[] = '<li class="soycms-page-tree-lower-page">';
-		}else{
-			$html[] = '<li>';
-		}
 		if($depth>0){
-			//$html[] = '<div class="soycms-page-tree-branch"><img src="'.$this->treeIcon.'"></div>';
 			$html[] = '<img class="soycms-page-tree-branch" src="'.htmlspecialchars($this->treeIcon, ENT_QUOTES, SOY2HTML::ENCODING).'">';
 		}
 
@@ -159,14 +204,15 @@ class TreePage extends CMSWebPageBase{
 		$html[] = '<img class="soycms-page-icon" src="' . htmlspecialchars($page->getIconUrl(), ENT_QUOTES, SOY2HTML::ENCODING). '"  alt="">';
 		$html[] = '</a>';
 
+		if($page->isBlog()){
+			$html[] = '<img class="soycms-page-icon-blog" src="' . htmlspecialchars(SOY2PageController::createRelativeLink("./css/pagelist/images/blog.png"), ENT_QUOTES, SOY2HTML::ENCODING) . '">';
+		}
+
 		$statusIconPath = $this->getSubIconPath($page);
 		if(strlen($statusIconPath)){
 			$html[] = '<img class="soycms-page-icon-subicon" style="" src="' . htmlspecialchars($statusIconPath, ENT_QUOTES, SOY2HTML::ENCODING) . '">';
 		}
 
-		if($page->isBlog()){
-			$html[] = '<img class="soycms-page-icon-blog" src="' . htmlspecialchars(SOY2PageController::createRelativeLink("./css/pagelist/images/blog.png"), ENT_QUOTES, SOY2HTML::ENCODING) . '">';
-		}
 
 		return implode("", $html);
 	}

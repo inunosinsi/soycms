@@ -19,7 +19,7 @@ class IconManagerPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 		CMSPlugin::addPluginConfigPage(ICON_MANAGER_PLUGIN,array(
 			$this,"config_page"
@@ -156,7 +156,7 @@ class IconManagerPlugin{
 				if(!preg_match('/\.(jpg|jpeg|gif|png)$/i',$fname)){
 					CMSPlugin::redirectConfigPage("ファイル形式が不正です。");
 				}
-				
+
 				if(strpos($fname,'default')!==false){
 					CMSPlugin::redirectConfigPage("<b>default</b>の文字列を含むファイルはアップロードできません。");
 				}
@@ -170,21 +170,21 @@ class IconManagerPlugin{
 				}else{
 					CMSPlugin::redirectConfigPage("フォームデータが壊れています。再度お願いします。");
 				}
-				
+
 				if(file_exists($dest_name)){
 					CMSPlugin::redirectConfigPage("ファイルがすでに存在するためアップロードすることができません。");
 				}
-					
+
 				if(@move_uploaded_file($_FILES["file"]["tmp_name"],$dest_name) === false){
-					CMSPlugin::redirectConfigPage("ファイルの移動に失敗しました。");	
+					CMSPlugin::redirectConfigPage("ファイルの移動に失敗しました。");
 				}
-				
+
 				if(extension_loaded('gd')){
 					//gdがあったらリサイズ
 					list($width, $height) = getimagesize($dest_name);
 					$mime = $_FILES["file"]["type"];
-					
-					
+
+
 					if(preg_match('/(jpeg|jpg)/i',$mime)){
 						//JPEG
 						$src = imagecreatefromjpeg($dest_name);
@@ -201,19 +201,19 @@ class IconManagerPlugin{
 						//do nothing
 						CMSPlugin::redirectConfigPage("ファイル形式が不正です。");
 					}
-					
-					
+
+
 					$new_image = imagecreatetruecolor(64,64);
 					imagecopyresampled($new_image,$src, 0, 0, 0, 0,64, 64, $width, $height);
-					
+
 					@unlink($dest_name);
-					
+
 					switch($type){
 						case "jpeg":
 							imagejpeg($new_image,$dest_name);
 						break;
 						case "gif":
-							imagegif($new_image,$dest_name);	
+							imagegif($new_image,$dest_name);
 						break;
 						case "png":
 							imagepng($new_image,$dest_name);
@@ -222,9 +222,9 @@ class IconManagerPlugin{
 							//error
 					}
 				}else{
-					
+
 				}
-				
+
 				CMSPlugin::redirectConfigPage("ファイルのアップロードに成功しました。");
 
 			}else if(isset($_POST["delete"])){
@@ -283,7 +283,7 @@ class IconManagerPlugin{
 			$html .= '<span style="color:red">'.$arg.'</span>';
 		}
 		$html .= '<form method="POST">';
-		$html .= '<h4>ラベル一覧</h4>';
+		$html .= '<h3>ラベル一覧</h3>';
 
 		$labelicons =$this->getLabelIcons();
 		foreach($labelicons as $file){
@@ -300,7 +300,7 @@ class IconManagerPlugin{
 
 
 		$html .= '<br style="clear:both;"/>';
-		$html .= '<h4>ページアイコン一覧</h4>';
+		$html .= '<h3>ページアイコン一覧</h3>';
 
 		$pageicons = $this->getPageIcons();
 		foreach($pageicons as $page){
@@ -314,7 +314,7 @@ class IconManagerPlugin{
 		}
 
 		$html .= '<br style="clear:both;"/>';
-		$html .= '<h4>ブログアイコン一覧</h4>';
+		$html .= '<h3>ブログアイコン一覧</h3>';
 
 		$blogicons = $this->getBlogIcons();
 		foreach($blogicons as $page){
@@ -328,16 +328,16 @@ class IconManagerPlugin{
 		}
 
 		$html .= '<br style="clear:both;"/>';
-		$html .= '<h5>アイコンの削除</h5>';
+		$html .= '<h3>アイコンの削除</h3>';
 		$html .= '<span>チェックを入れたものを削除する</span>';
 		$html .= '<input type="submit" name="delete" onclick="return confirm(\'削除してもよろしいですか？\');" value="削除"/>';
 		$html .= '</form>';
 		$html .= file_get_contents($this->getPluginDirectory()."/form.html");
-		
+
 		if(extension_loaded("gd")){
-			$html = str_replace('@@@@_GD_MESSAGE_@@@@',"自動でリサイズされます",$html);
+			$html = str_replace('@@@@_GD_MESSAGE_@@@@',"注意) 正方形の画像をアップロードしてください。自動でリサイズされます",$html);
 		}else{
-			$html = str_replace('@@@@_GD_MESSAGE_@@@@',"アップロードされた画像の大きさのまま使用されます。",$html);
+			$html = str_replace('@@@@_GD_MESSAGE_@@@@',"注意) 画像は64×64のサイズでアップロードしてください。<br>アップロードされた画像の大きさのまま使用されます。",$html);
 		}
 
 		return $html;

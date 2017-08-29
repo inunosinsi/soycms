@@ -6,33 +6,57 @@ class IndexPage extends CMSWebPageBase{
 	function __construct(){
 		parent::__construct();
 
-		if(!UserInfoUtil::isDefaultUser()){
-			DisplayPlugin::hide("only_default_user");
-		}
-
-		$this->addLink("create_link", array(
-			"link" => SOY2PageController::createLink("Site.Create")
-		));
+		$this->buildSubMenu();
 
 		$loginableSiteList = $this->getLoginableSiteList();
 		$this->createAdd("list", "SiteList", array(
 			"list" => $loginableSiteList
 		));
 
+		$this->addModel("has_site", array(
+				"visible" => count($loginableSiteList)
+		));
 		$this->addModel("no_site", array(
-			"visible" => (count($loginableSiteList) < 1)
+				"visible" => ! count($loginableSiteList)
 		));
 
 		$messages = CMSMessageManager::getMessages();
-		$errores = CMSMessageManager::getErrorMessages();
-    	$this->addLabel("message", array(
+		$errors = CMSMessageManager::getErrorMessages();
+		$this->addLabel("message", array(
 			"text" => implode($messages),
 			"visible" => (count($messages) > 0)
 		));
 		$this->addLabel("error", array(
-			"text" => implode($errores),
-			"visible" => (count($errores) > 0)
+			"text" => implode($errors),
+			"visible" => (count($errors) > 0)
 		));
+
+		$this->addModel("has_message_or_error", array(
+			"visible" => count($messages) || count($errors),
+		));
+	}
+
+	private function buildSubMenu(){
+		$this->addLink("create_link", array(
+			"link" => SOY2PageController::createLink("Site.Create")
+		));
+
+		$logic = SOY2Logic::createInstance("logic.admin.Site.DomainRootSiteLogic");
+
+		$this->addLink("edit_indexphp", array(
+			"link"    => SOY2PageController::createLink("Site.EditControllerForRoot"),
+		));
+		$this->addModel("can_edit_indexphp", array(
+			"visible" => UserInfoUtil::isDefaultUser() && file_exists($logic->getPathOfController()),
+		));
+
+		$this->addLink("edit_htaccess", array(
+			"link"    => SOY2PageController::createLink("Site.EditHtaccessForRoot"),
+		));
+		$this->addModel("can_edit_htaccess", array(
+			"visible" => UserInfoUtil::isDefaultUser() && file_exists($logic->getPathOfHtaccess()),
+		));
+
 	}
 
 	/**
@@ -40,37 +64,30 @@ class IndexPage extends CMSWebPageBase{
 	 */
 	function getLoginableSiteList(){
 		$SiteLogic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
-		return $SiteLogic->getSiteByUserId(UserInfoUtil::getUserId());
+		$list = $SiteLogic->getSiteByUserId(UserInfoUtil::getUserId());
+
+		//ルート設定されたサイトを先頭にする
+		foreach($list as $id => $site){
+			if($site->getIsDomainRoot()){
+				unset($list[$id]);
+				array_unshift($list, $site);
+			}
+		}
+
+		return $list;
 	}
 
 }
 
 class SiteList extends HTMLList{
 
-	var $domainRootSiteLogic;
+	private $domainRootSiteLogic;
 
-	function getDomainRootSiteLogic(){
+	private function getDomainRootSiteLogic(){
 		if(!$this->domainRootSiteLogic){
 			$this->domainRootSiteLogic = SOY2Logic::createInstance("logic.admin.Site.DomainRootSiteLogic");
 		}
 		return $this->domainRootSiteLogic;
-	}
-
-	function replaceTooLongHost($url){
-
-		$array = parse_url($url);
-
-		$host = $array["host"];
-		if(isset($array["port"]))$host .=   ":" . $array["port"];
-
-		if(strlen($host) > 30){
-			$host = mb_strimwidth($host, 0, 30, "...");
-		}
-
-		$url = $array["scheme"] . "://" . $host . $array["path"];
-
-		return $url;
-
 	}
 
 	protected function populateItem($entity){
@@ -89,17 +106,16 @@ class SiteList extends HTMLList{
 			"id" => ($entity->getSiteType() == Site::TYPE_SOY_CMS) ? "site_id_" . $entity->getSiteId() : "shop_id_" . $entity->getSiteId()
 		));
 
-		$siteLink = (isset($_SERVER["HTTPS"]) ? "https://" : "http://") . $_SERVER['HTTP_HOST'] . '/' . $entity->getSiteId();
 		$this->addLink("site_link", array(
 			"link" => $entity->getUrl(),
-			"text" => $this->replaceTooLongHost($entity->getUrl()),
+			"text" => $entity->getUrl(),
 			"visible" => (!$entity->getIsDomainRoot())
 		));
 
 		$rootLink = UserInfoUtil::getSiteURLBySiteId("");
 		$this->addLink("domain_root_site_url", array(
 			"link" => $rootLink,
-			"text" => $this->replaceTooLongHost($rootLink),
+			"text" => $rootLink,
 			"visible" => $entity->getIsDomainRoot()
 		));
 
@@ -108,33 +124,33 @@ class SiteList extends HTMLList{
 			"visible" => ($entity->getSiteType() != Site::TYPE_SOY_SHOP)
 		));
 
-		$onclick = 'return confirm("' . CMSMessageManager::get("ADMIN_CONFIRM_DOMAIN_ROOT_SETTING") . '");';
-		if(file_exists(SOYCMS_TARGET_DIRECTORY . "/index.php")){
-    		if(true != $this->getDomainRootSiteLogic()->checkCreatedController(SOYCMS_TARGET_DIRECTORY . "/index.php")){
-    			$onclick = 'return confirm("' . CMSMessageManager::get("ADMIN_CONFIRM_INDEXPHP") . '");';
-    		}
-    	}else if(file_exists(SOYCMS_TARGET_DIRECTORY . "/.htaccess")){
-    		if(true != $this->getDomainRootSiteLogic()->checkCreatedController(SOYCMS_TARGET_DIRECTORY . "/.htaccess")){
-    			$onclick = 'return confirm("' . CMSMessageManager::get("ADMIN_CONFIRM_HTACCESS") . '");';
-    		}
-    	}
-
-    	if($entity->getIsDomainRoot()){
-    		$this->addActionLink("root_site_link", array(
+		if($entity->getIsDomainRoot()){
+			$this->addActionLink("root_site_link", array(
 				"link" => SOY2PageController::createLink("Site.SiteRootDetach." . $entity->getId()),
 				"text"=>CMSMessageManager::get("ADMIN_ROOT_SETTING_OFF"),
 				"onclick"=> 'return confirm("' . CMSMessageManager::get("ADMIN_CONFIRM_ROOT_SETTING_OFF") . '");',
 				"id" => "root_site_link_" . $entity->getSiteId(),
 			));
 
-    	}else{
-	    	$this->addActionLink("root_site_link", array(
+		}else{
+			$onclick = 'return confirm("' . CMSMessageManager::get("ADMIN_CONFIRM_DOMAIN_ROOT_SETTING") . '");';
+			if(file_exists(SOYCMS_TARGET_DIRECTORY . "/index.php")){
+				if(true != $this->getDomainRootSiteLogic()->checkCreatedController(SOYCMS_TARGET_DIRECTORY . "/index.php")){
+					$onclick = 'return confirm("' . CMSMessageManager::get("ADMIN_CONFIRM_INDEXPHP") . '");';
+				}
+			}else if(file_exists(SOYCMS_TARGET_DIRECTORY . "/.htaccess")){
+				if(true != $this->getDomainRootSiteLogic()->checkCreatedController(SOYCMS_TARGET_DIRECTORY . "/.htaccess")){
+					$onclick = 'return confirm("' . CMSMessageManager::get("ADMIN_CONFIRM_HTACCESS") . '");';
+				}
+			}
+
+			$this->addActionLink("root_site_link", array(
 				"link" => SOY2PageController::createLink("Site.SiteRoot." . $entity->getId()),
 				"text"=>CMSMessageManager::get("ADMIN_ROOT_SETTING"),
 				"onclick"=> $onclick,
 				"id" => "root_site_link_" . $entity->getSiteId(),
 			));
-    	}
+		}
 
 		$this->addLink("site_detail_link", array(
 			"link" => SOY2PageController::createLink("Site.Detail." . $entity->getId()),
@@ -142,10 +158,9 @@ class SiteList extends HTMLList{
 		));
 
 		$this->addLink("remove_link", array(
-			"link"    => SOY2PageController::createLink("Site.Remove." . $entity->getId()),
+			"link"	=> SOY2PageController::createLink("Site.Remove." . $entity->getId()),
 			"onclick" => $entity->getIsDomainRoot() ? 'alert("' . CMSMessageManager::get("ADMIN_DETACH_ROOT_SETTING_BEFORE_DELETE_SITE") . '");return false;' : "",
-			"visible" => ($entity->getSiteType() != Site::TYPE_SOY_SHOP)
+			"visible" => ($entity->getSiteType() != Site::TYPE_SOY_SHOP),
 		));
 	}
 }
-?>

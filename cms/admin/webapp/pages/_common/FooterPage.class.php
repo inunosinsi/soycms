@@ -24,6 +24,11 @@ class FooterPage extends CMSWebPageBase{
     		"html" => $this->copyRight
     	));
 
+    	//バージョン番号
+    	$this->addLabel("version",array(
+    			"text" => SOYCMS_VERSION,
+    	));
+
     	$this->addLabel("jQuery", array(
     		"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery/jquery.min.js") . "?" . SOYCMS_BUILD_TIME
     	));

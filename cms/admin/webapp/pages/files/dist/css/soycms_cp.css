@@ -119,7 +119,8 @@ h1{
 }
 
 /* パネルに収まらない文字列の処理 */
-.panel-body p{
+.text-nowrap .panel-heading,
+.text-nowrap .panel-body p {
   overflow: hidden;
   text-overflow: ellipsis;
 }

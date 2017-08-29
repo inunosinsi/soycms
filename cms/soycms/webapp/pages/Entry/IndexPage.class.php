@@ -25,7 +25,7 @@ class IndexPage extends CMSUpdatePageBase{
 
 		//ラベル一覧の表示・非表示をCookieの値で切り替える
 		$this->addModel("entries-by-label",array(
-			"class" => "panel-collapse collapse".(isset($_COOKIE['label-panel-status']) && $_COOKIE['label-panel-status'] == 'closed' ? '' : ' in'),
+			"class" => "panel-collapse collapse".(isset($_COOKIE['entry-index-label-panel-status']) && $_COOKIE['entry-index-label-panel-status'] == 'closed' ? '' : ' in'),
 		));
 
 		$list = $this->run("Label.RecentLabelListAction")->getAttribute("list");
@@ -40,7 +40,7 @@ class IndexPage extends CMSUpdatePageBase{
 
 		//公開状態別の表示・非表示をCookieの値で切り替える
 		$this->addModel("entries-by-status",array(
-			"class" => "panel-collapse collapse".(isset($_COOKIE['status-panel-status']) && $_COOKIE['status-panel-status'] == 'closed' ? '' : ' in'),
+			"class" => "panel-collapse collapse".(isset($_COOKIE['entry-index-status-panel-status']) && $_COOKIE['entry-index-status-panel-status'] == 'closed' ? '' : ' in'),
 		));
 
 		$result = $this->run("Entry.ClosedEntryListAction",array(

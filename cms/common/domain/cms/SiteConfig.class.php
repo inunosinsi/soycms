@@ -196,6 +196,14 @@ class SiteConfig {
     	$this->setConfigValue("upload_directory", $this->getDefaultUploadDirectory());
     }
 
+		function getDefaultUploadResizeWidth(){
+    	return $this->getConfigValue("resize_width");
+    }
+
+    function setDefaultUploadResizeWidth($w){
+    	$this->setConfigValue("resize_width", $w);
+    }
+
     /**
      * 文字コード変換
      * (UTF-8→サイトの文字コード)

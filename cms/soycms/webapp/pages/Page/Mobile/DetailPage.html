@@ -12,7 +12,7 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
-					<h1 class="page-header"><small><a soy:link="Page">ページ一覧</a> &gt;</small> ページ詳細</h1>
+					<h1 class="page-header"><small><a soy:link="Page">ページ一覧</a> &gt;</small> ページ詳細（携帯ページ）</h1>
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
@@ -44,8 +44,10 @@
 
 					<div class="form-group" soy:id="url_shortener_display">
 						<label>ページの短縮URL<span soy:message="HELP_PAGE_URL_SHORTENER"></span></label>
-						<span id="uri_prefix" soy:id="uri_prefix*"></span><input type="text" id="uri" soy:id="url_shortener_input" class="form-control">
+						<div class=" input-group">
+							<span class="input-group-addon" soy:id="uri_prefix*"></span><input type="text" soy:id="url_shortener_input" class="form-control">
 					</div>
+					</div soy:id="url_shortener_display">
 
 					<div class="form-group">
 						<label>タイトルフォーマット<span soy:message="HELP_PAGE_TITLE_FORMAT"></span></label>
@@ -54,7 +56,7 @@
 
 					<div class="form-group">
 						<label>親ページ<span soy:message="HELP_PAGE_OWNER_PAGE"></span></label>
-						<select soy:id="parent_page" style="width:220px;" class="form-control">
+						<select soy:id="parent_page" class="form-control" style="max-width: 400px;">
 							<option value="">----------</option>
 						</select>
 					</div>
@@ -77,7 +79,7 @@
 								<a class="btn btn-default btn-sm" soy:id="fileUpload" href="" onclick="return common_click_to_layer(this);">画像を挿入</a>
 								<button type="button" class="btn btn-default btn-sm" onclick="showCSSEditor();" id="cssButton">CSS</button>
 								<button type="button" class="btn btn-default btn-sm" onclick="toggle_editor();">エディタの切り替え</button>
-								<button type="button" class="btn btn-default btn-sm" onclick="common_to_layer(mceSOYCMSEmojiURL,{height:510});" id="emojiButton" soy:id="is_emoji_enabled">絵文字の挿入</button>
+								<button type="button" class="btn btn-default btn-sm" onclick="common_to_layer(mceSOYCMSEmojiURL,{height:530,header:'絵文字の挿入'});" id="emojiButton" soy:id="is_emoji_enabled">絵文字の挿入</button>
 								<button type="button" class="btn btn-default btn-sm" soy:id="save_template_button">テンプレート保存</button>
 							</div>
 
@@ -116,11 +118,15 @@
 								</span soy:id="image_list">
 							</div>
 
+							<!-- ページの仮想ツリー -->
+							<iframe id="virtual_tree" soy:id="virtual_tree" style="border:none;width:100%;height:100%;display:none;"></iframe soy:id="virtual_tree">
+							<!-- /ページの仮想ツリー -->
+
 						</div>
 					</div>
 
 					<!-- soy:custom="Mobile.Detail" --><!-- /soy:custom="Mobile.Detail" -->
-			
+
 					<div soy:display="openperiod_section">
 						<div class="form-group">
 							<label>公開期間<span soy:message="HELP_PAGE_OPEN_PERIOD"></span></label>

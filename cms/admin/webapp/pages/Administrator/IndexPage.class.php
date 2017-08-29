@@ -4,9 +4,9 @@ SOY2::import("domain.admin.Administrator");
 class IndexPage extends CMSWebPageBase{
 
 	function __construct(){
-    	if(!UserInfoUtil::isDefaultUser()){
-    		$this->jump("Administrator.Detail");
-    	}
+		if(!UserInfoUtil::isDefaultUser()){
+			$this->jump("Administrator.Detail");
+		}
 
 		parent::__construct();
 
@@ -23,7 +23,7 @@ class IndexPage extends CMSWebPageBase{
 			"visible"=>(count($entities) > 0)
 		));
 		$this->createAdd("list", "AdministratorList", array(
-			"list"    => $entities,
+			"list"	=> $entities,
 			"sites"   => $this->getSiteLists(),
 			"visible" => (count($entities) > 0)
 		));
@@ -105,16 +105,19 @@ class IndexPage extends CMSWebPageBase{
 		}
 	}
 
-    /**
-     * メッセージ出力
-     */
-    function outputMessage(){
-    	$messages = CMSMessageManager::getMessages();
-    	$this->addLabel("message", array(
-    		"text" => implode("\n",$messages),
-    		"visible" => !empty($messages)
-    	));
-    }
+	/**
+	 * メッセージ出力
+	 */
+	function outputMessage(){
+		$messages = CMSMessageManager::getMessages();
+		$this->addLabel("message", array(
+			"text" => implode("\n",$messages),
+			"visible" => !empty($messages)
+		));
+		$this->addModel("has_message", array(
+				"visible" => count($messages),
+		));
+	}
 }
 
 class AdministratorList extends HTMLList{
@@ -168,7 +171,7 @@ class AdministratorList extends HTMLList{
 			foreach($entity->sites as $managed){
 				if(isset($this->sites[$managed->getSiteId()])){
 					$siteName[] = htmlspecialchars($this->sites[$managed->getSiteId()]->getSiteName(), ENT_QUOTES, "UTF-8");
-					            //."<br/>". htmlspecialchars(" => ".$managed->getSiteRoleText(),ENT_QUOTES);
+								//."<br/>". htmlspecialchars(" => ".$managed->getSiteRoleText(),ENT_QUOTES);
 				}
 			}
 		}
@@ -187,4 +190,3 @@ class AdministratorList extends HTMLList{
 		$text = $list[(int)$siteRole];
 	}
 }
-?>

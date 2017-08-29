@@ -6,66 +6,106 @@
 
 <body>
 
-    <div id="wrapper">
+	<div id="wrapper">
 		<!-- Navigation -->
-        <nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="UpperMenuPage"><!-- --></nav>
-        <div id="page-wrapper">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">index.phpの編集 - <span soy:id="site_name" /></h1>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
-    	    <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel panel-default panel-message">
-                    	<div  class="panel-heading" soy:id="message">メッセージ</div>
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">index.phpの編集 - <span soy:id="site_name" /></h1>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<div class="row" soy:id="has_message_or_error">
+				<div class="col-lg-12">
+					<div class="panel panel-default panel-message">
+						<div  class="panel-heading" soy:id="message">メッセージ</div>
 						<div  class="panel-heading" soy:id="error">エラー</div>
-                    </div>
-                </div>
-            </div>
-            <div class="row" soy:display="only_default_user">
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <ul class="nav nav-pills">
-                                <li><a soy:id="detail_link">サイト詳細に戻る</a></li>
-                            </ul>
-                        </div>
-                     </div>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
-            <!-- /.row -->
+					</div>
+				</div>
+			</div soy:id="has_message_or_error">
+			<div class="row" soy:display="for_default_user">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<ul class="nav nav-pills">
+								<li><a soy:id="detail_link">サイト詳細に戻る</a></li>
+							</ul>
+						</div>
+					 </div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div soy:display="for_default_user">
+			<!-- /.row -->
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                          	index.phpの編集
-                        </div>
-                        <div class="panel-body">
-      						<form soy:id="update_site_form">
-							<input soy:id="site_id" />
-								<textarea  style="width:100%;" soy:id="contents" class="form-control" rows="15"></textarea>
-								<input type="submit" value="保存" soy:id="button">
-							</form soy:id="update_site_form">	
-                        </div>
-                      
-                    </div>
-                </div>
-                <!-- /.col-lg-12 -->
-            </div>
-           
-            
-        </div>
-        <!-- /#page-wrapper -->
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-green">
+						<div class="panel-heading">
+							index.phpの編集
+						</div>
+						<div class="panel-body">
+							<form soy:id="update_site_form">
+							<input soy:id="site_id" type="hidden">
+								<div class="form-group">
+									<textarea  style="width:100%;" soy:id="contents" class="form-control" rows="15"></textarea>
+								</div>
+								<input type="submit" value="保存" soy:id="button" class="btn btn-primary btn-lg">
+							</form soy:id="update_site_form">
+						</div>
+
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							デフォルトの内容
+						</div>
+						<div class="panel-body">
+							<textarea style="width:100%;" soy:id="default_contents" class="form-control" rows="4" readonly></textarea>
+						</div>
+
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+
+			<div class="row" soy:id="has_backup">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							バックアップファイル
+						</div>
+						<div class="panel-body">
+							<div id="accordion" class="panel-group" role="tablist" aria-multiselectable="true">
+								<div class="panel panel-default" soy:id="backup_file_list">
+									<div class="panel-heading" role="tab" id="heading_" soy:id="heading">
+										<a data-toggle="collapse" data-parent="#accordion" href="#collapse_" soy:id="collapse-link">
+											<!-- soy:id="filename" /-->
+										</a>
+										（バックアップ作成日時：<!-- soy:id="filemtime" /-->）
+									</div>
+									<div id="collapse_" class="panel-collapse collapse _in_" role="tabpanel" aria-labelledby="heading_" soy:id="collapse-body">
+										<textarea soy:id="contents" class="form-control" rows="4" readonly></textarea>
+									</div>
+								</div soy:id="backup_file_list">
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div soy:id="has_backup">
+
+		</div>
+		<!-- /#page-wrapper -->
 		<!-- soy:page="_common.FooterPage" /-->
-    </div>
-    <!-- /#wrapper -->
-
-
+	</div>
+	<!-- /#wrapper -->
 
 </body>
-
 </html>

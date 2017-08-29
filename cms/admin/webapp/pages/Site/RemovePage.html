@@ -24,55 +24,55 @@
 							サイトの削除
 						</div>
 
-						<div class="panel-body">
-							<form soy:id="delete_site_form">
-							<div class="table-responsive">
-								<table class="table table-striped">
-									<col style="width:120px;" />
-									<tr>
-										<th nowrap="nowrap">サイトID</th>
-										<td><span soy:id="site_id" /></td>
-									</tr>
-									<tr>
-										<th nowrap="nowrap">サイト名称</th>
-										<td><span soy:id="site_name" /></td>
-									</tr>
-									<tr>
-										<th nowrap="nowrap">サイトURL</td>
-										<td><a soy:id="site_url">http://localhost/path/to</a></td>
-									</tr>
+						<form soy:id="delete_site_form">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<col style="width:120px;" />
+								<tr>
+									<th nowrap="nowrap">サイトID</th>
+									<td><span soy:id="site_id" /></td>
+								</tr>
+								<tr>
+									<th nowrap="nowrap">サイト名称</th>
+									<td><span soy:id="site_name" /></td>
+								</tr>
+								<tr>
+									<th nowrap="nowrap">サイトURL</td>
+									<td><a soy:id="site_url">http://localhost/path/to</a></td>
+								</tr>
 
-									<tr>
-										<th nowrap="nowrap">確認</th>
-										<td>
-											<input type="checkbox" soy:id="checkbox"/>
-										</td>
-									</tr>
+								<tr>
+									<th nowrap="nowrap">オプション</th>
+									<td>
+										<input type="checkbox" soy:id="checkbox_delete_dir"/><br/>
+										<input type="checkbox" soy:id="checkbox_delete_db"/>
+									</td>
+								</tr>
 
-									<tr>
-										<th nowrap="nowrap">オプション</th>
-										<td>
-											<input type="checkbox" soy:id="checkbox_delete_dir"/><br/>
-											<input type="checkbox" soy:id="checkbox_delete_db"/>
-										</td>
-									</tr>
-
-									<tr>
-										<td>&nbsp;</td>
-										<td class="button">
-											<input class="btn btn-danger btn-lg" id="update_button" type="submit" value="削除" soy:id="button">
-										</td>
-									</tr>
-								</table>
-							</div>
-							</form soy:id="delete_site_form">
+								<tr>
+									<td>&nbsp;</td>
+									<td class="button">
+										<input class="btn btn-danger btn-lg disabled" id="update_button" type="submit" value="削除" soy:id="button">
+										<input type="checkbox" soy:id="checkbox" id="confirm_checkbox">
+									</td>
+								</tr>
+							</table>
 						</div>
+						</form soy:id="delete_site_form">
 					</div>
 				</div>
 			</div>
 		</div>
 	<div soy:page="_common.FooterPage"></div>
 </div>
+
+<script type="text/javascript">
+	$(function(){
+		$('#confirm_checkbox').click(function(){
+			$('#update_button').toggleClass('disabled', ! $('#confirm_checkbox').prop('checked'));
+		})
+	});
+</script>
 
 </body>
 </html>

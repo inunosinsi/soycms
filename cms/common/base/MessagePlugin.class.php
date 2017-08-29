@@ -17,7 +17,7 @@ class MessagePlugin extends PluginBase{
 				break;
 			case "span":
 				$helpMessage = SOY2HTML::ToText($helpMessage);
-				$this->setInnerHTML('<i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="top" title="'.htmlspecialchars($helpMessage, ENT_QUOTES, SOY2HTML::ENCODING).'"></i>');
+				$this->setInnerHTML('<i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right" title="'.htmlspecialchars($helpMessage, ENT_QUOTES, SOY2HTML::ENCODING).'"></i>');
 			default:
 				;
 		}

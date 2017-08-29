@@ -1,20 +1,15 @@
 
-<h5>アイコンの追加</h5>
+<h3>アイコンの追加</h3>
 
-<div style="color:red;">
-注意)アイコンサイズは64×64のサイズでアップロードしてください。<br>
-    @@@@_GD_MESSAGE_@@@@
-</div>
+<div style="color:red;">@@@@_GD_MESSAGE_@@@@</div>
 
-<form method="post" enctype="multipart/form-data">
-	<select name="type">
+<form method="post" enctype="multipart/form-data" class="form-inline">
+	<select name="type" class="form-control mr-1">
 		<option value="label">ラベルアイコン</option>
 		<option value="page">ページアイコン</option>
 		<option value="blog">ブログアイコン</option>
 	</select>
-	として
-	<input type="file" name="file" id="file">
-	を
-	<input type="submit" value="アップロード" />
+	<input type="file" name="file" id="file" class="form-control-file" style="display: inline-block;">
+	<input type="submit" value="アップロード" class="btn btn-primary">
 </form>
 

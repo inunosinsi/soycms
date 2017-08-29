@@ -6,7 +6,7 @@
 }
 
 .icon_table{
-	
+
 }
 .icon_table tr th{
 	padding: 10px;
@@ -54,19 +54,24 @@
 				$files = @scandir(UserInfoUtil::getSiteDirectory().$this->iconDirecotry);
 				$getUrl = UserInfoUtil::getSiteURL();
 				if(!$files)$files=array();
+				$hasFiles = false;
 				foreach($files as $file){
 					if($file[0] == ".")continue;
-					echo '<label for="'. $file .'"><img src="'.htmlspecialchars(substr($getUrl, 0, strrpos($getUrl, "/"))."/".$this->iconDirecotry."/".$file,ENT_QUOTES).'" />';
-					echo '<input id="'. $file .'" type="checkbox" name="deletes[]" value="'. $file. '" />';
+					$hasFiles = true;
+					echo '<label for="'. md5($file) .'"><img src="'.htmlspecialchars(substr($getUrl, 0, strrpos($getUrl, "/"))."/".$this->iconDirecotry."/".$file,ENT_QUOTES,'UTF-8').'" />';
+					echo '<input id="'. md5($file) .'" type="checkbox" name="deletes[]" value="'. htmlspecialchars($file,ENT_QUOTES,'UTF-8'). '" />';
 				}
 		?>&nbsp;</td>
 	</tr>
 </table>
 </div>
-		<p><span>チェックを入れたものを削除する</span><input type="submit" name="delete" onclick="return confirm('削除してもよろしいですか？');" value="削除"/></p><br />
+<?php if($hasFiles){ ?>
+<p><span>チェックを入れたものを削除する</span><input type="submit" name="delete" onclick="return confirm('削除してもよろしいですか？');" value="削除"/></p><br />
+<?php } ?>
+
 <h4>アイコンの追加 <?php if(isset($message)){echo "<font color =\"#ff0000\">" .$message . "</font>";} ?></h4>
-<p style="padding: 0 0 0 20px;">
-	<input type="file" name="file" id="file">を<input type="submit" value="アップロード" />
-</p>
+<div style="padding: 0 0 0 20px;">
+	<input type="file" name="file" id="file" style="display:inline-block"> <input type="submit" value="アップロード" class="btn btn-primary">
+</div>
 </form>
 </div>

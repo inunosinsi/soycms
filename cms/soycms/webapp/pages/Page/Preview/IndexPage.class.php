@@ -200,6 +200,8 @@ class IndexPage extends CMSWebPageBase {
 			$pageWithBlock[$block->getPageId()] = true;
 		}
 
+		$pages = $result->getAttribute("PageArray");
+
 		$options = "";
 		foreach($result->getAttribute("PageTree") as $key => $value){
 
@@ -208,6 +210,14 @@ class IndexPage extends CMSWebPageBase {
 				continue;
 			}
 
+			//ブログページでトップページが非表示なら選択肢から除外する
+			if($pages[$key]->isBlog()){
+				$blogDao = SOY2DAOFactory::create("cms.BlogPageDAO");
+				$blog = $blogDao->cast($pages[$key]);
+				if(!$blog->getRawGenerateTopFlag()){
+					continue;
+				}
+			}
 
 			$option = SOY2HTMLElement::createElement("option");
 			$option->setAttribute("value",$key);

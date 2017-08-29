@@ -249,14 +249,26 @@
 
 		//ed = tinyMCEPopup.editor, dom = ed.dom;
 
+		var $img_src = $("#preview_image").attr("src");
+		if($img_src.indexOf(location.host) >= 0){
+			if($img_src.indexOf("https://") >= 0) $img_src = $img_src.replace("https://", "");
+			if($img_src.indexOf("http://") >= 0) $img_src = $img_src.replace("http://", "");
+
+			//hostを除く
+			if($img_src.indexOf(location.host) >= 0) $img_src = $img_src.replace(location.host, "");
+
+			//www.が残っていればwww.も削除
+			if($img_src.indexOf("www.") >= 0) $img_src = $img_src.replace("www.", "");
+		}
+
 		if($("#output_image_size:checked").val() == "on"){
-			var html = '<img src="'+$("#preview_image").attr("src")+'" width="'+$("#image_width").val()+'" height="'+$('#image_height').val()+'" alt="'+$('#image_alt').val()+'" />';
+			var html = '<img src="'+$img_src+'" width="'+$("#image_width").val()+'" height="'+$('#image_height').val()+'" alt="'+$('#image_alt').val()+'" />';
 		}else{
-			var html = '<img src="'+$("#preview_image").attr("src")+'" alt="'+$('#image_alt').val()+'" />';
+			var html = '<img src="'+$img_src+'" alt="'+$('#image_alt').val()+'" />';
 		}
 
 		if($("#wrap_ancher:checked").val() == "on"){
-			html = '<a href="'+$("#preview_image").attr("src")+'" target="_blank">' + html + '</a>';
+			html = '<a href="'+$img_src+'" target="_blank">' + html + '</a>';
 		}
 
 		tinymce.execCommand('mceInsertRawHTML', false,	html);
@@ -355,7 +367,7 @@
 			if($("#image_thumb").attr("src").length){
 				onChangeSize();
 			}else{
-				tinymce_window_manager.getParams().reset();
+				//tinymce_window_manager.getParams().reset();
 			}
 		}
 	}

@@ -70,15 +70,14 @@ class IndexPage extends CMSWebPageBase{
 		$files = soy2_scanfiles($moduleDir);
 
 		foreach($files as $file){
-			$moduleId  = str_replace($moduleDir, "", $file);
 			if(!preg_match('/\.php$/', $file)) continue;
+			$moduleId = preg_replace('/^.*\.module\//', "", $file);
 
 			if($t == self::TYPE_PHP){
 				if(!self::checkModuleDir($moduleId)) continue;
 			}else{
 				if(self::checkModuleDir($moduleId)) continue;
 			}
-
 
 			//一個目の/より前はカテゴリ
 			$moduleId = preg_replace('/\.php$/', "", $moduleId);

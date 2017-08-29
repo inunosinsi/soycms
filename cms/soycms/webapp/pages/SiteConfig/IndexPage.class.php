@@ -52,7 +52,7 @@ class IndexPage extends CMSWebPageBase{
 			"selected"=>$entity->getCharset(),
 			"options"=>SiteConfig::getCharsetLists()
 		));
-		
+
 		//hidden
 		$this->createAdd("url", "HTMLInput", array(
 			"name" => "url",
@@ -71,7 +71,7 @@ class IndexPage extends CMSWebPageBase{
 			"name"=>"defaultUploadDirectory",
 			"value"=>$entity->getDefaultUploadDirectory(),
 		));
-		
+
 		$this->createAdd("resizewidth","HTMLInput",array(
 			"name"=>"defaultUploadResizeWidth",
 			"value"=>$entity->getDefaultUploadResizeWidth(),

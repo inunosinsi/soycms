@@ -2,26 +2,22 @@
 SOY2::import("domain.admin.Site");
 
 class IndexPage extends CMSWebPageBase{
-	
+
 	function __construct(){
 		parent::__construct();
-		
-		if(!UserInfoUtil::isDefaultUser()){
-			DisplayPlugin::hide("only_default_user");
-		}
-		
+
 		//アプリケーション
 		$applications = $this->getLoginiableApplicationLists();
 		$this->createAdd("application_list", "ApplicationList", array(
 			"list" => $applications
 		));
-		
+
 		$this->addModel("no_application", array(
 			"visible" => (count($applications) < 1)
 		));
-		
+
 	}
-		
+
 	/**
 	 * 2008-07-24 ログイン可能なアプリケーションを読み込む
 	 */
@@ -40,7 +36,7 @@ class ApplicationList extends HTMLList{
 		$this->addLabel("name", array(
 			"text" => $entity["title"]
 		));
-		
+
 		$this->addLink("login_link", array(
 			"link" => SOY2PageController::createRelativeLink("../app/index.php/" . $key)
 		));
@@ -48,7 +44,7 @@ class ApplicationList extends HTMLList{
 			"text" => $entity["description"]
 		));
 		$this->addLabel("version", array(
-			"text" => (isset($entity["version"])) ? "ver. " . $entity["version"] : "",
+			"text" => $entity["version"],
 			"visible" => (isset($entity["version"])),
 		));
 		$this->addLink("auth_link", array(

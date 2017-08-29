@@ -2,9 +2,9 @@
 
 class RecentListAction extends SOY2Action{
 
-	var $limit = 3;
+	private $limit = 3;
 
-	function setLimit($limit){
+	public function setLimit($limit){
 		$this->limit = $limit;
 	}
 
@@ -14,7 +14,7 @@ class RecentListAction extends SOY2Action{
 		$labelLogic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
 
     	//最新エントリーを3件取得
-    	$logic->setLimit(3);
+    	$logic->setLimit($this->limit);
     	$array = $logic->getRecentEntries();
 
 		//記事管理者の場合

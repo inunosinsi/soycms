@@ -5,100 +5,100 @@ SOY2::import("domain.cms.Page");
  * @table BlogPage
  */
 class BlogPage extends Page{
-	
+
 	const TEMPLATE_ARCHIVE = "archive";
 	const TEMPLATE_TOP = "top";
 	const TEMPLATE_ENTRY = "entry";
 	const TEMPLATE_POPUP = "popup";
-	
+
 	const ENTRY_SORT_DESC = "desc";
 	const ENTRY_SORT_ASC = "asc";
-	
+
 	//トップページのURL
 	private $topPageUri = "";
-	
-    //単体ページのURL
+
+	//単体ページのURL
 	private $entryPageUri = "article";
-	
+
 	//月別ページのURL
 	private $monthPageUri = "month";
-	
+
 	//カテゴリ別ページのURL
 	private $categoryPageUri = "category";
-	
+
 	//RSSページのURL
 	private $rssPageUri = "feed";
-	
+
 	//トップページの表示件数
 	private $topDisplayCount = 10;
-	
+
 	//月別ページの表示件数
 	private $monthDisplayCount = 10;
-	
+
 	//カテゴリ別ページの表示件数
 	private $categoryDisplayCount = 10;
-	
+
 	//トップページの表示順
 	private $topEntrySort = "desc";
-	
+
 	//月別ページの表示順
 	private $monthEntrySort = "desc";
-	
+
 	//カテゴリ別ページの表示順
 	private $categoryEntrySort = "desc";
-	
+
 	//RSSの表示件数
 	private $rssDisplayCount = 10;
-	
+
 	//単体ページの生成フラグ
 	private $generateEntryFlag = true;
-	
+
 	//トップページの生成フラグ
 	private $generateTopFlag = true;
-	
+
 	//月別ページの生成フラグ
 	private $generateMonthFlag = true;
-	
+
 	//カテゴリ別ページの生成フラグ
 	private $generateCategoryFlag = true;
-	
+
 	//RSSの生成フラグ
 	private $generateRssFlag = true;
-	
+
 	//トップページのタイトルフォーマット
 	private $topTitleFormat = "%BLOG%";
-	
+
 	//月別ページのタイトルフォーマット
 	private $monthTitleFormat = "%BLOG%";
-	
+
 	//カテゴリー別ページのタイトルフォーマット
 	private $categoryTitleFormat = "%BLOG%";
-	
+
 	//単体ページのタイトルフォーマット
 	private $entryTitleFormat = "%BLOG%";
-	
+
 	//フィードのタイトルフォーマット
 	private $feedTitleFormat = "%BLOG%";
-	
-	
+
+
 	//使用するラベル一覧
 	private $blogLabelId;
-	
+
 	//カテゴリ分けに使うラベル一覧
 	private $categoryLabelList = array();
-	
+
 	private $description;
-	
+
 	private $author;
-	
+
 	//コメントのデフォルト承認
 	private $defaultAcceptComment;
-	
+
 	private $defaultAcceptTrackback;
-	
+
 	/**
-	 * @param startWithSlash /で始まるかどうか
-	 */
+	* @param startWithSlash /で始まるかどうか
+	*/
 	function getEntryPageUri($startWithSlash = false) {
 		if($startWithSlash && strlen($this->entryPageUri)>0){
 			return "/" . $this->entryPageUri;
@@ -116,10 +116,10 @@ class BlogPage extends Page{
 	function getCategoryLabelList(){
 		return $this->categoryLabelList;
 	}
-	
+
 	/**
-	 * トップページのURL
-	 */
+	* トップページのURL
+	*/
 	function getTopPageURL($withPageUri = true){
 		if($withPageUri && strlen($this->getUri()) >0){
 			if(strlen($this->getTopPageUri()) >0){
@@ -132,10 +132,10 @@ class BlogPage extends Page{
 		}
 	}
 	/**
-	 * エントリーページのURLを取得（末尾はスラッシュ付き）
-	 * 
-	 * @param withPageUri ページのUriを追加するかどうか
-	 */
+	* エントリーページのURLを取得（末尾はスラッシュ付き）
+	*
+	* @param withPageUri ページのUriを追加するかどうか
+	*/
 	function getEntryPageURL($withPageUri = true){
 		$url = "";
 		if($withPageUri && strlen($this->getUri()) >0){
@@ -147,8 +147,8 @@ class BlogPage extends Page{
 		return $url;
 	}
 	/**
-	 * カテゴリーアーカイブのURL（末尾はスラッシュ付き）
-	 */
+	* カテゴリーアーカイブのURL（末尾はスラッシュ付き）
+	*/
 	function getCategoryPageURL($withPageUri = true){
 		$url = "";
 		if($withPageUri && strlen($this->getUri()) >0){
@@ -160,8 +160,8 @@ class BlogPage extends Page{
 		return $url;
 	}
 	/**
-	 * 月別アーカイブのURL（末尾はスラッシュ付き）
-	 */
+	* 月別アーカイブのURL（末尾はスラッシュ付き）
+	*/
 	function getMonthPageURL($withPageUri = true){
 		$url = "";
 		if($withPageUri && strlen($this->getUri()) >0){
@@ -173,8 +173,8 @@ class BlogPage extends Page{
 		return $url;
 	}
 	/**
-	 * RSSページのURL
-	 */
+	* RSSページのURL
+	*/
 	function getRssPageURL($withPageUri = true){
 		if($withPageUri && strlen($this->getUri()) >0){
 			return $this->getUri() . "/" . $this->getRssPageUri();
@@ -184,290 +184,292 @@ class BlogPage extends Page{
 	}
 
 	/**
-	 * 保存用のstdObjectを返します。
-	 */
+	* 保存用のstdObjectを返します。
+	*/
 	function getConfigObj(){
-		
+
 		$obj = new stdClass();
-		
+
 		$obj->topPageUri = $this->topPageUri;
 		$obj->entryPageUri = $this->entryPageUri;
 		$obj->monthPageUri = $this->monthPageUri;
 		$obj->categoryPageUri = $this->categoryPageUri;
-		$obj->rssPageUri = $this->rssPageUri; 
-		
+		$obj->rssPageUri = $this->rssPageUri;
+
 		$obj->blogLabelId = $this->blogLabelId;
 		$obj->categoryLabelList = $this->categoryLabelList;
-		
+
 		$obj->topDisplayCount = $this->topDisplayCount;
 		$obj->monthDisplayCount = $this->monthDisplayCount;
 		$obj->categoryDisplayCount = $this->categoryDisplayCount;
 		$obj->rssDisplayCount = $this->rssDisplayCount;
-		
+
 		$obj->topEntrySort = $this->topEntrySort;
 		$obj->monthEntrySort = $this->monthEntrySort;
 		$obj->categoryEntrySort = $this->categoryEntrySort;
-		
+
 		$obj->generateTopFlag = $this->generateTopFlag;
 		$obj->generateMonthFlag = $this->generateMonthFlag;
 		$obj->generateCategoryFlag = $this->generateCategoryFlag;
 		$obj->generateRssFlag = $this->generateRssFlag;
 		$obj->generateEntryFlag = $this->generateEntryFlag;
-		
+
 		$obj->topTitleFormat = @$this->topTitleFormat;
 		$obj->monthTitleFormat = @$this->monthTitleFormat;
 		$obj->categoryTitleFormat = @$this->categoryTitleFormat;
 		$obj->entryTitleFormat = @$this->entryTitleFormat;
 		$obj->feedTitleFormat = @$this->feedTitleFormat;
-		
+
 		$obj->description = @$this->description;
 		$obj->author = @$this->author;
-		
+
 		$obj->defaultAcceptComment = @$this->defaultAcceptComment;
 		$obj->defaultAcceptTrackback = @$this->defaultAcceptTrackback;
-		
+
 		return $obj;
 	}
-	
+
 	function _getTemplate(){
-		
+
 		$array = @unserialize($this->getTemplate());
-		
+
 		if(!is_array($array)){
 			$array = array(
 				BlogPage::TEMPLATE_ARCHIVE => "",
 				BlogPage::TEMPLATE_TOP => "",
 				BlogPage::TEMPLATE_ENTRY => "",
-				BlogPage::TEMPLATE_POPUP => "",			
+				BlogPage::TEMPLATE_POPUP => "",
 			);
 		}
-		
+
 		return $array;
 	}
-	
+
 	/**
-     * アーカイブテンプレート
-     */
-    function getArchiveTemplate(){
-    	$template = $this->_getTemplate();
-    	return $template[BlogPage::TEMPLATE_ARCHIVE];
-    }
-	
+	* アーカイブテンプレート
+	*/
+	function getArchiveTemplate(){
+		$template = $this->_getTemplate();
+		return $template[BlogPage::TEMPLATE_ARCHIVE];
+	}
+
 	/**
-	 * ブログトップページ
-	 */
+	* ブログトップページ
+	*/
 	function getTopTemplate(){
 		$template = $this->_getTemplate();
-    	return $template[BlogPage::TEMPLATE_TOP];
+		return $template[BlogPage::TEMPLATE_TOP];
 	}
-   
-    /**
-     * エントリーテンプレート
-     */
+
+	/**
+	* エントリーテンプレート
+	*/
 	function getEntryTemplate(){
 		$template = $this->_getTemplate();
-    	return $template[BlogPage::TEMPLATE_ENTRY];
+		return $template[BlogPage::TEMPLATE_ENTRY];
 	}
-    	
-    /**
-     * ポップアップコメントテンプレート
-     */
-     function getPopUpTemplate(){
-     	$template = $this->_getTemplate();
-    	return $template[BlogPage::TEMPLATE_POPUP];
-     }
 
-	 function getMonthPageUri() {
-     	return $this->monthPageUri;
-     }
-     function setMonthPageUri($monthPageUri) {
-     	$this->monthPageUri = $monthPageUri;
-     }
-     function getCategoryPageUri() {
-     	return $this->categoryPageUri;
-     }
-     function setCategoryPageUri($categoryPageUri) {
-     	$this->categoryPageUri = $categoryPageUri;
-     }
-     function getRssPageUri() {
-     	return $this->rssPageUri;
-     }
-     function setRssPageUri($rssPageUri) {
-     	$this->rssPageUri = $rssPageUri;
-     }
-     function getTopDisplayCount() {
-     	return $this->topDisplayCount;
-     }
-     function setTopDisplayCount($topDisplayCount) {
-     	$this->topDisplayCount = (int)$topDisplayCount;
-     }
-     function getMonthDisplayCount() {
-     	return $this->monthDisplayCount;
-     }
-     function setMonthDisplayCount($monthDisplayCount) {
-     	$this->monthDisplayCount = (int)$monthDisplayCount;
-     }
-     function getCategoryDisplayCount() {
-     	return $this->categoryDisplayCount;
-     }
-     function setCategoryDisplayCount($categoryDisplayCount) {
-     	$this->categoryDisplayCount = (int)$categoryDisplayCount;
-     }
-     function getRssDisplayCount() {
-     	return $this->rssDisplayCount;
-     }
-     function setRssDisplayCount($rssDisplayCount) {
-     	$this->rssDisplayCount = (int)$rssDisplayCount;
-     }
-     
-     function getTopEntrySort(){
-     	return $this->topEntrySort;
-     }
-     function setTopEntrySort($topEntrySort){
-     	$this->topEntrySort = $topEntrySort;
-     }
-     function getMonthEntrySort(){
-     	return $this->monthEntrySort;
-     }
-     function setMonthEntrySort($monthEntrySort){
-     	$this->monthEntrySort = $monthEntrySort;
-     }
-     function getCategoryEntrySort(){
-     	return $this->categoryEntrySort;
-     }
-     function setCategoryEntrySort($categoryEntrySort){
-     	$this->categoryEntrySort = $categoryEntrySort;
-     }
+	/**
+	* ポップアップコメントテンプレート
+	*/
+	function getPopUpTemplate(){
+		$template = $this->_getTemplate();
+		return $template[BlogPage::TEMPLATE_POPUP];
+	}
 
-     function getGenerateTopFlag() {
-     	if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
-     		return true;
-     	}else{
-     		return $this->generateTopFlag;
-     	}
-     }
-     function setGenerateTopFlag($generateTopFlag) {
-     	$this->generateTopFlag = $generateTopFlag;
-     }
+	function getMonthPageUri() {
+		return $this->monthPageUri;
+	}
+	function setMonthPageUri($monthPageUri) {
+		$this->monthPageUri = $monthPageUri;
+	}
+	function getCategoryPageUri() {
+		return $this->categoryPageUri;
+	}
+	function setCategoryPageUri($categoryPageUri) {
+		$this->categoryPageUri = $categoryPageUri;
+	}
+	function getRssPageUri() {
+		return $this->rssPageUri;
+	}
+	function setRssPageUri($rssPageUri) {
+		$this->rssPageUri = $rssPageUri;
+	}
+	function getTopDisplayCount() {
+		return $this->topDisplayCount;
+	}
+	function setTopDisplayCount($topDisplayCount) {
+		$this->topDisplayCount = (int)$topDisplayCount;
+	}
+	function getMonthDisplayCount() {
+		return $this->monthDisplayCount;
+	}
+	function setMonthDisplayCount($monthDisplayCount) {
+		$this->monthDisplayCount = (int)$monthDisplayCount;
+	}
+	function getCategoryDisplayCount() {
+		return $this->categoryDisplayCount;
+	}
+	function setCategoryDisplayCount($categoryDisplayCount) {
+		$this->categoryDisplayCount = (int)$categoryDisplayCount;
+	}
+	function getRssDisplayCount() {
+		return $this->rssDisplayCount;
+	}
+	function setRssDisplayCount($rssDisplayCount) {
+		$this->rssDisplayCount = (int)$rssDisplayCount;
+	}
 
-     function getGenerateMonthFlag() {
-     	if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
-     		return true;
-     	}else{
-     		return $this->generateMonthFlag;
-     	}
-     }
-     function setGenerateMonthFlag($generateMonthFlag) {
-     	$this->generateMonthFlag = $generateMonthFlag;
-     }
+	function getTopEntrySort(){
+		return $this->topEntrySort;
+	}
+	function setTopEntrySort($topEntrySort){
+		$this->topEntrySort = $topEntrySort;
+	}
+	function getMonthEntrySort(){
+		return $this->monthEntrySort;
+	}
+	function setMonthEntrySort($monthEntrySort){
+		$this->monthEntrySort = $monthEntrySort;
+	}
+	function getCategoryEntrySort(){
+		return $this->categoryEntrySort;
+	}
+	function setCategoryEntrySort($categoryEntrySort){
+		$this->categoryEntrySort = $categoryEntrySort;
+	}
 
-     function getGenerateCategoryFlag() {
-     	if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
-     		return true;
-     	}else{
-     		return $this->generateCategoryFlag;
-     	}
-     }
-     function setGenerateCategoryFlag($generateCategoryFlag) {
-     	$this->generateCategoryFlag = $generateCategoryFlag;
-     }
+	function getGenerateTopFlag() {
+		if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
+			return true;
+		}else{
+			return $this->generateTopFlag;
+		}
+	}
+	function getRawGenerateTopFlag() {
+		return $this->generateTopFlag;
+	}
+	function setGenerateTopFlag($generateTopFlag) {
+		$this->generateTopFlag = $generateTopFlag;
+	}
 
-     function getGenerateRssFlag() {
-     	if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
-     		return true;
-     	}else{
-     		return $this->generateRssFlag;
-     	}
-     }
-     function setGenerateRssFlag($generateRssFlag) {
-     	$this->generateRssFlag = $generateRssFlag;
-     }
+	function getGenerateMonthFlag() {
+		if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
+			return true;
+		}else{
+			return $this->generateMonthFlag;
+		}
+	}
+	function setGenerateMonthFlag($generateMonthFlag) {
+		$this->generateMonthFlag = $generateMonthFlag;
+	}
 
-     function getGenerateEntryFlag() {
-     	if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
-     		return true;
-     	}else{
-     		return $this->generateEntryFlag;
-     	}
-     }
-     function setGenerateEntryFlag($generateEntryFlag) {
-     	$this->generateEntryFlag = $generateEntryFlag;
-     }
+	function getGenerateCategoryFlag() {
+		if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
+			return true;
+		}else{
+			return $this->generateCategoryFlag;
+		}
+	}
+	function setGenerateCategoryFlag($generateCategoryFlag) {
+		$this->generateCategoryFlag = $generateCategoryFlag;
+	}
 
-     function getTopTitleFormat() {
-     	return $this->topTitleFormat;
-     }
-     function setTopTitleFormat($topTitleFormat) {
-     	$this->topTitleFormat = $topTitleFormat;
-     }
+	function getGenerateRssFlag() {
+		if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
+			return true;
+		}else{
+			return $this->generateRssFlag;
+		}
+	}
+	function setGenerateRssFlag($generateRssFlag) {
+		$this->generateRssFlag = $generateRssFlag;
+	}
 
-     function getMonthTitleFormat() {
-     	return $this->monthTitleFormat;
-     }
-     function setMonthTitleFormat($MonthTitleFormat) {
-     	$this->monthTitleFormat = $MonthTitleFormat;
-     }
+	function getGenerateEntryFlag() {
+		if(defined('CMS_PREVIEW_MODE') && CMS_PREVIEW_MODE){
+			return true;
+		}else{
+			return $this->generateEntryFlag;
+		}
+	}
+	function setGenerateEntryFlag($generateEntryFlag) {
+		$this->generateEntryFlag = $generateEntryFlag;
+	}
 
-     function getCategoryTitleFormat() {
-     	return $this->categoryTitleFormat;
-     }
-     function setCategoryTitleFormat($CategoryTitleFormat) {
-     	$this->categoryTitleFormat = $CategoryTitleFormat;
-     }
+	function getTopTitleFormat() {
+		return $this->topTitleFormat;
+	}
+	function setTopTitleFormat($topTitleFormat) {
+		$this->topTitleFormat = $topTitleFormat;
+	}
 
-     function getEntryTitleFormat() {
-     	return $this->entryTitleFormat;
-     }
-     function setEntryTitleFormat($EntryTitleFormat) {
-     	$this->entryTitleFormat = $EntryTitleFormat;
-     }
+	function getMonthTitleFormat() {
+		return $this->monthTitleFormat;
+	}
+	function setMonthTitleFormat($MonthTitleFormat) {
+		$this->monthTitleFormat = $MonthTitleFormat;
+	}
 
-     function getBlogLabelId() {
-     	return $this->blogLabelId;
-     }
-     function setBlogLabelId($blogLabelId) {
-     	$this->blogLabelId = $blogLabelId;
-     }
+	function getCategoryTitleFormat() {
+		return $this->categoryTitleFormat;
+	}
+	function setCategoryTitleFormat($CategoryTitleFormat) {
+		$this->categoryTitleFormat = $CategoryTitleFormat;
+	}
 
-     function getDescription() {
-     	return $this->description;
-     }
-     function setDescription($description) {
-     	$this->description = $description;
-     }
-     function getAuthor() {
-     	return $this->author;
-     }
-     function setAuthor($author) {
-     	$this->author = $author;
-     }     
+	function getEntryTitleFormat() {
+		return $this->entryTitleFormat;
+	}
+	function setEntryTitleFormat($EntryTitleFormat) {
+		$this->entryTitleFormat = $EntryTitleFormat;
+	}
 
-     function getDefaultAcceptComment() {
-     	return $this->defaultAcceptComment;
-     }
-     function setDefaultAcceptComment($defaultAcceptComment) {
-     	$this->defaultAcceptComment = $defaultAcceptComment;
-     }
+	function getBlogLabelId() {
+		return $this->blogLabelId;
+	}
+	function setBlogLabelId($blogLabelId) {
+		$this->blogLabelId = $blogLabelId;
+	}
 
-     function getDefaultAcceptTrackback() {
-     	return $this->defaultAcceptTrackback;
-     }
-     function setDefaultAcceptTrackback($defaultAcceptTrackback) {
-     	$this->defaultAcceptTrackback = $defaultAcceptTrackback;
-     }
+	function getDescription() {
+		return $this->description;
+	}
+	function setDescription($description) {
+		$this->description = $description;
+	}
+	function getAuthor() {
+		return $this->author;
+	}
+	function setAuthor($author) {
+		$this->author = $author;
+	}
 
-     function getFeedTitleFormat() {
-     	return $this->feedTitleFormat;
-     }
-     function setFeedTitleFormat($feedTitleFormat) {
-     	$this->feedTitleFormat = $feedTitleFormat;
-     }
+	function getDefaultAcceptComment() {
+		return $this->defaultAcceptComment;
+	}
+	function setDefaultAcceptComment($defaultAcceptComment) {
+		$this->defaultAcceptComment = $defaultAcceptComment;
+	}
 
-     function getTopPageUri() {
-     	return $this->topPageUri;
-     }
-     function setTopPageUri($topPageUri) {
-     	$this->topPageUri = $topPageUri;
-     }
+	function getDefaultAcceptTrackback() {
+		return $this->defaultAcceptTrackback;
+	}
+	function setDefaultAcceptTrackback($defaultAcceptTrackback) {
+		$this->defaultAcceptTrackback = $defaultAcceptTrackback;
+	}
+
+	function getFeedTitleFormat() {
+		return $this->feedTitleFormat;
+	}
+	function setFeedTitleFormat($feedTitleFormat) {
+		$this->feedTitleFormat = $feedTitleFormat;
+	}
+
+	function getTopPageUri() {
+		return $this->topPageUri;
+	}
+	function setTopPageUri($topPageUri) {
+		$this->topPageUri = $topPageUri;
+	}
 }
-?>

@@ -52,8 +52,8 @@
 								<table id="label_list" class="table" cellpadding="0" cellspacing="0">
 									<thead>
 										<tr>
-											<td class="name">ラベル名</td>
 											<td class="icon">アイコン</td>
+											<td class="name">ラベル名</td>
 											<td class="memo">メモ</td>
 											<td class="order"><input class="btn btn-default btn-sm" type="submit" soy:id="update_display_order" name="update_display_order" value="表示順" /></td>
 											<td class="label_functions">操作</td>
@@ -61,20 +61,20 @@
 									</thead>
 									<tbody>
 										<tr class="label_list_item" soy:id="list">
+											<td class="icon">
+												<img soy:id="label_icon">
+											</td>
 											<td class="name">
 												<a soy:id="detail_link"><span soy:id="label_name" class="label label-default label-soy label-soy-lg">dd</span></a>
 											</td>
-											<td class="icon" style="text-align:center;">
-												<img soy:id="label_icon" style="cursor:pointer;width:64px;height:64px" />
-											</td>
-											<td class="memo"><span soy:id="description" style="cursor:pointer;color:red;">dd</span></td>
+											<td class="memo"><span soy:id="description">dd</span></td>
 											<td class="order">
 												<input type="text" soy:id="display_order" class="form-control" style="width:5em">
 											</td>
 											<td class="label_functions">
-												<a class="btn btn-default" soy:id="detail_link*" style="text-decoration:none;">詳細</a>
-												<a class="btn btn-default"  soy:id="label_link" style="text-decoration:none;">記事一覧</a>
-												<a class="btn btn-danger"  soy:id="remove_link" style="text-decoration:none;" onclick="return confirm('削除してもよろしいですか？');">
+												<a class="btn btn-default" soy:id="detail_link*">詳細</a>
+												<a class="btn btn-default" soy:id="label_link">記事一覧</a>
+												<a class="btn btn-danger"  soy:id="remove_link" onclick="return confirm('削除してもよろしいですか？');">
 													削除
 												</a>
 											</td>

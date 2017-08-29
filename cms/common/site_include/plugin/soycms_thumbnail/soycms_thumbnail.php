@@ -354,26 +354,24 @@ class SOYCMSThumbnailPlugin{
 		$htmls[] = "<script type=\"text/javascript\">";
 
 		if(count($this->label_thumbail_paths)){
-			$htmls[] = "window.onload = function(){";
 			$htmls[] = "	var list = [];";
 			$keys = array();
 			foreach($this->label_thumbail_paths as $labelId => $path){
-				$htmls[] = "	list[" . $labelId . "] = \"" . $path . "\";";
+				$htmls[] = "list[" . $labelId . "] = \"" . $path . "\";";
 				$keys[] = $labelId;
 			}
-			$htmls[] = "	keys = [".implode(",", $keys) ."];";
-			$htmls[] = "	for (var i = 0; i < keys.length; i++) {";
-			$htmls[] = "		$('#label_' + keys[i]).change(function(){";
-			$htmls[] = "			if($(this).is(':checked')){";
-			$htmls[] = "				var idx = $(this).prop('id').replace('label_', '');";
-			$htmls[] = "				if(list[idx]){";
-			$htmls[] = "					$('#jcrop_upload_field').val(list[idx])";
-			$htmls[] = "				}";
+			$htmls[] = "keys = [".implode(",", $keys) ."];";
+			$htmls[] = "for (var i = 0; i < keys.length; i++) {";
+			$htmls[] = "	$('#label_' + keys[i]).change(function(){";
+			$htmls[] = "		if($(this).is(':checked')){";
+			$htmls[] = "			var idx = $(this).prop('id').replace('label_', '');";
+			$htmls[] = "			if(list[idx]){";
+			$htmls[] = "				$('#jcrop_upload_field').val(list[idx])";
 			$htmls[] = "			}";
-			$htmls[] = "		});";
-			$htmls[] = "	}";
-			$htmls[] = "};";
+			$htmls[] = "		}";
+			$htmls[] = "	});";
 		}
+			$htmls[] = "}";
 
 		$htmls[] = "function open_jcrop_filemanager(\$form){";
 		$htmls[] = "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload?jcrop_upload_field") . "\");";

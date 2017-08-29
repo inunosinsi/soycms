@@ -4,9 +4,6 @@ class BottomJSPage extends CMSHTMLPageBase{
 
 	public function execute(){
 
-		$this->addLabel("jQuery", array(
-				"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery/jquery.min.js") . "?" . SOYCMS_BUILD_TIME
-		));
 		$this->addLabel("bootstrap", array(
 				"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/bootstrap/js/bootstrap.min.js") . "?" . SOYCMS_BUILD_TIME
 		));
@@ -21,11 +18,6 @@ class BottomJSPage extends CMSHTMLPageBase{
 		));
 		$this->addLabel("sbAdmin", array(
 				"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/dist/js/sb-admin-2.min.js") . "?" . SOYCMS_BUILD_TIME
-		));
-		$this->addLabel("jQuery-ui", array(
-				//"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery-ui/jquery-ui.min.js") . "?" . SOYCMS_BUILD_TIME,
-				"src" => SOY2PageController::createRelativeLink("./js/jquery-ui.min.js") . "?" . SOYCMS_BUILD_TIME,
-				"visible" => true,
 		));
 		$this->addLabel("soyCommon", array(
 				"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/dist/js/soycms-common.js") . "?" . SOYCMS_BUILD_TIME

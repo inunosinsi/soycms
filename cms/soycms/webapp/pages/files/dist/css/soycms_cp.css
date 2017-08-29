@@ -64,13 +64,18 @@ body.sub{
   background:linear-gradient(#ffcc33,#ffdd88);
 }
 .navbar{
+  background:linear-gradient(-90deg,#fff9e9,#ffffff);
+/*
   background:linear-gradient(-90deg,#ffcc33,#ffffff);
+  background:linear-gradient(-90deg,#fff9e9,#ffffff);
+  background:linear-gradient(-90deg,#ffe9a9,#ffffff);
+  background:linear-gradient(-90deg,#fff0c1,#ffffff);
+*/
 }
 
 /* サイドメニュー */
 .sidebar{
   clear: both;/* スマホで必要 */
-  /* background:linear-gradient(#ffe494, #ffeeaa); 実質使われていない */
 }
 
 .sidebar i{
@@ -78,12 +83,6 @@ body.sub{
 }
 .sidebar li{
   font-size:1.2em;
-}
-.sidebar ul#side-menu li{
-  background:linear-gradient(30deg,#aacc66, #b0d080);
-}
-.sidebar ul#side-menu li:hover{
-  background:linear-gradient(#ffe494, #ffeeaa);
 }
 
 @media (min-width: 768px) {
@@ -105,6 +104,11 @@ body.sub{
   .sidebar ul#side-menu li:hover{
     background:transparent;
   }
+}
+
+/* フッター */
+footer{
+	color: gray;
 }
 
 /*
@@ -145,6 +149,27 @@ h1{
 
 .label-soy-lg{
 	font-size: initial;
+}
+
+/* ラベル管理 */
+.label_list_item td.icon{
+	padding: 8px;
+	width:80px;
+}
+.label_list_item td.icon img{
+	cursor:pointer
+	width: 64px;
+	height: 64px;
+}
+.label_list_item td.name{
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: middle;
+}
+.label_list_item td.memo span{
+	cursor:pointer;
+	color:red;
 }
 
 /* ブロック設定画面用 */
@@ -319,6 +344,7 @@ h1{
 	margin-left:15px;
 	margin-top:10px;
 	clear:both;
+	position: relative;
 }
 .soycms-page-tree li.soycms-page-tree-lower-page{
 	margin-left:35px;
@@ -334,14 +360,21 @@ h1{
 	width: 40px;
 	height: 40px;
 }
-.soycms-page-tree img.soycms-page-icon-subicon{
+.soycms-page-tree li img.soycms-page-icon-subicon{
+	position: absolute;
 	margin-left:-20px;
 	width: 16px;
 	height: 16px;
 }
-.soycms-page-tree img.soycms-page-icon-blog{
-	margin-left:-30px;
+.soycms-page-tree li img.soycms-page-icon-blog{
+	position: absolute;
+	left: 11px;
+	bottom: -2px;
 }
+.soycms-page-tree li.soycms-page-tree-lower-page img.soycms-page-icon-blog{
+	left: 34px;
+}
+
 .soycms-page-tree .soycms-page-title{
 	font-weight: bold;
 }

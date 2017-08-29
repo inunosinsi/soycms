@@ -154,6 +154,28 @@ class CMSUtil {
 	}
 
 	/**
+	 * バックアップファイルのリスト
+	 */
+	public static function getBackupList($original){
+		$list = array();
+
+		$backup_filename_base = "{$original}.old";
+
+		if(file_exists($backup_filename_base)){
+			$list[] = $backup_filename_base;
+		}
+
+		for($i=1;$i<100;$i++){
+			$backup = sprintf("{$backup_filename_base}.%02d",$i);
+			if(file_exists($backup)){
+				$list[] = $backup;
+			}
+		}
+
+		return $list;
+	}
+
+	/**
 	 * 12時間以内なら 時:分 を、半年以内なら 月/日 を、他は 年-月-日 を返す
 	 */
 	public static function getRecentDateTimeText($unixtime){

@@ -24,12 +24,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="row" soy:display="only_default_user">
+			<div class="row" soy:display="for_default_user">
 				<div class="col-lg-12">
 					<div class="panel panel-default">
 						<div class="panel-body">
 							<ul class="nav nav-pills">
-								<li><a soy:link="Site">サイト一覧に戻る	</a></li>
+								<li><a soy:link="Site">サイト一覧に戻る</a></li>
+								<li><a soy:id="clear_cache">キャッシュのクリア</a></li>
 								<li><a soy:id="regenerate_link">フロントコントローラーの再生成</a></li>
 								<li><a soy:id="edit_indexphp">index.phpの編集</a></li>
 								<li><a soy:id="edit_htaccess">.htaccessの編集</a></li>
@@ -38,7 +39,7 @@
 					 </div>
 				</div>
 				<!-- /.col-lg-12 -->
-			</div>
+			</div soy:display="for_default_user">
 			<!-- /.row -->
 
 			<div class="row">
@@ -47,47 +48,45 @@
 						<div class="panel-heading">
 							サイトURLの変更
 						</div>
-						<div class="panel-body">
-											<form soy:id="update_site_form">
-												<table class="globalpage_input">
-													<col style="width:120px;" />
-													<tr>
-														<th nowrap="nowrap">サイトID</th>
-														<td><span soy:id="site_id" class="form-control-static"></span></td>
-													</tr>
-													<tr>
-														<th nowrap="nowrap">サイト名称</th>
-														<td><span soy:id="site_name" class="form-control-static"></span></td>
-													</tr>
-													<tr>
-														<th nowrap="nowrap" valign="top">サイトURL<span soy:message="HELP_ADMIN_SITE_DETAIL_SITEURL" /></td>
-														<td>
-															<!-- soy:id="display_soycms" -->
-															<input id="site_url" type="text" soy:id="site_url_soycms" class="form-control">
-															<span class="help-block">
-																元のURL (<span id="default_url" soy:id="default_url" ></span>) に<a href="javascript:void(0);" onclick="$('#site_url').val($('#default_url').html());return false;">戻す</a><br />
-																<span style="color:red;">※設定したURLでアクセス出来ることを確認してください。</span> →<a href="javascript:void(0);" onclick="$(this).attr('href',$('#site_url').val());return common_click_to_layer(this);">確認する</a><br />
-																※mod_rewriteなどでURLを変更した場合に、SOY CMS内部で出力している絶対URLを変更内容に対応させるための設定項目です。
-															</span>
-															<!-- /soy:id="display_soycms" -->
-															<!-- soy:id="display_soyshop" -->
-															<input id="site_url" type="text" soy:id="site_url_shop" class="form-control">
-															<br />
-															<span style="color:red;">※設定したURLでアクセス出来ることを確認してください。</span> →<a href="javascript:void(0);" onclick="$(this).attr('href',$('#site_url').val());return common_click_to_layer(this);">確認する</a><br />
-															<!-- /soy:id="display_soyshop" -->
-														</td>
-													</tr>
-													<!-- soy:id="display_soycms*" -->
-													<tr>
-														<td></td>
-														<td class="button">
-															<input class="btn btn-primary btn-large" id="update_button" type="submit" value="変更">
-														</td>
-													</tr>
-													<!-- /soy:id="display_soycms*" -->
-												</table>
-											</form soy:id="update_site_form">
-						</div>
+						<form soy:id="update_site_form">
+							<table class="table table-striped">
+								<col style="width:120px;" />
+								<tr>
+									<th nowrap="nowrap">サイトID</th>
+									<td><span soy:id="site_id" class="form-control-static"></span></td>
+								</tr>
+								<tr>
+									<th nowrap="nowrap">サイト名称</th>
+									<td><span soy:id="site_name" class="form-control-static"></span></td>
+								</tr>
+								<tr>
+									<th nowrap="nowrap" valign="top">サイトURL<span soy:message="HELP_ADMIN_SITE_DETAIL_SITEURL" /></td>
+									<td>
+										<!-- soy:id="display_soycms" -->
+										<input id="site_url" type="text" soy:id="site_url_soycms" class="form-control">
+										<span class="help-block">
+											元のURL (<span id="default_url" soy:id="default_url" ></span>) に<a href="javascript:void(0);" onclick="$('#site_url').val($('#default_url').html());return false;">戻す</a><br />
+											<span style="color:red;">※設定したURLでアクセス出来ることを確認してください。</span> →<a href="#" onclick="$(this).prop('href',$('#site_url').val());" target="_blank">確認する</a><br />
+											※mod_rewriteなどでURLを変更した場合に、SOY CMS内部で出力している絶対URLを変更内容に対応させるための設定項目です。
+										</span>
+										<!-- /soy:id="display_soycms" -->
+										<!-- soy:id="display_soyshop" -->
+										<input id="site_url" type="text" soy:id="site_url_shop" class="form-control">
+										<br />
+										<span style="color:red;">※設定したURLでアクセス出来ることを確認してください。</span> →<a href="#" onclick="$(this).prop('href',$('#site_url').val());" target="_blank">確認する</a><br />
+										<!-- /soy:id="display_soyshop" -->
+									</td>
+								</tr>
+								<!-- soy:id="display_soycms*" -->
+								<tr>
+									<td></td>
+									<td class="button">
+										<input class="btn btn-primary btn-lg" id="update_button" type="submit" value="変更">
+									</td>
+								</tr>
+								<!-- /soy:id="display_soycms*" -->
+							</table>
+						</form soy:id="update_site_form">
 
 					</div>
 				</div>

@@ -10,5 +10,10 @@ class FooterPage extends CMSHTMLPageBase{
 		$this->createAdd("copyright","HTMLLabel",array(
 			"html" => $copyright
 		));
+
+		//バージョン番号
+		$this->addLabel("version",array(
+				"text" => SOYCMS_VERSION,
+		));
 	}
 }

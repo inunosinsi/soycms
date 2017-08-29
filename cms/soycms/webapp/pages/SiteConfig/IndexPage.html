@@ -1,105 +1,96 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
+
 <head soy:page="_common.HeaderPage" isOverWrite="true">
-	<link rel="stylesheet" href="./../../../../css/style.css" type="text/css">
-</head>
+</head soy:page="_common.HeaderPage">
+
 <body>
-<div class="container">
-	<div id="header" class="span-24 last" soy:page="_common.UpperMenuPage"></div>
-	<div id="menu" class="span-24 last" soy:page="_common.TabPage"></div>
 
-<style type="text/css">
-#siteconfig_form table td.caption{
-	vertical-align:middle;
-}
-</style>
-	
-		<!-- content start -->
-		<div id="content" class="span-24 last">
-			
-			<div class="span-22 prepend-1 last">
-				<h3>サイト設定</h3>
+	<div id="wrapper">
+		<!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+					<h1 class="page-header">サイト設定</h1>
+				</div>
+				<!-- /.col-lg-12 -->
 			</div>
 
-			<div class="prepend-1 span-22 last functions">
-				<span style="margin-right:12px;color: #111111;">サイト設定</span>
-				<a soy:link="MailConfig">メール設定</a>
+			<div soy:page="_common.MessagePanel" isOverWrite="true"></div>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<a class="btn btn-default active" soy:link="SiteConfig">サイト設定</a>
+							<a class="btn btn-default" soy:link="MailConfig">メール設定</a>
+						</div>
+					</div>
+				</div>
+				<!-- /.col-lg-12 -->
 			</div>
 
-			<form soy:id="index_form" id="siteconfig_form">
-			<div class="span-22 last">
-				<table>
-					<tr>			
-						<td class="caption">サイト名称</td>
-						<td>
-							<input type="text" name="name" soy:id="name" class="siteconfig_text" value="ほげ">
-						</td>					
-					</tr>
-					<tr>			
-						<td class="caption">サイトの説明</td>
-						<td>
-							<textarea type="text" soy:id="description" soy:id="description">ああああああ</textarea>
-						</td>					
-					</tr>
-					<tr>			
-						<td class="caption">文字コード</td>
-						<td>
-							<select name="charset" soy:id="charset"></select>
-						</td>
-					</tr>
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="panel panel-green">
+						<div class="panel-body">
+								<form soy:id="index_form" id="siteconfig_form">
+									<div class="form-group">
+										<label>サイト名称</label>
+										<input class="form-control" type="text" name="name" soy:id="name" value="SiteName">
+									</div>
+									<div class="form-group">
+										<label>サイトの説明</label>
+										<textarea class="form-control" type="text" soy:id="description" soy:id="description">説明が入ります。</textarea>
+									</div>
+									<div class="form-group">
+										<label>文字コード</label>
+										<select class="form-control" name="charset" soy:id="charset"></select>
+									</div>
+									<div class="form-group">
+										<label>ラベル</label>
+										<input class="form-control" type="hidden" name="useLabelCategory" value="0" >
+										<input class="" soy:id="useLabelCategory" >
+										<span soy:message="HELP_USE_LABEL_CATEGORY"></span>
+									</div>
+									<div class="form-group">
+										<label>ファイルアップロード先パス設定</label>
+										<input class="form-control" type="text" soy:id="uploadpath" >
+										<input type="hidden" name="createUploadDirectoryByDate" value="0" >
+										<input class="" soy:id="create_by_date" >
+									</div>
 
-					<tr>
-						<td class="caption">ラベル</td>
-						<td>
-							<input type="hidden" name="useLabelCategory" value="0" />
-							<input soy:id="useLabelCategory" />
-							<img soy:message="HELP_USE_LABEL_CATEGORY"/>
-						</td>
-					</tr>
+									<div class="form-group">
+										<label>ファイルアップロード<br>リサイズ設定(width)</label>
+										<input class="form-control" type="text" soy:id="resizewidth">px
+									</div>
 
-					<tr>			
-						<td class="caption">ファイルアップロード先<br />パス設定</td>
-						<td>
-							<input type="text"  class="siteconfig_text" soy:id="uploadpath" />
-							<div>
-								<input type="hidden" name="createUploadDirectoryByDate" value="0" />
-								<input soy:id="create_by_date" />
-							</div>
-						</td>
-					</tr>
-					
-					<tr>			
-						<td class="caption">ファイルアップロード<br>リサイズ設定(width)</td>
-						<td>
-							<input type="text" class="siteconfig_text" soy:id="resizewidth" />px
-						</td>
-					</tr>
+									<div class="form-group">
+										<label>閲覧制限</label>
+										<input type="hidden" name="isShowOnlyAdministrator" value="0" >
+										<input class="" soy:id="isShowOnlyAdministrator" >
+									</div>
 
-					<tr>
-						<td class="caption">閲覧制限</td>
-						<td>
-							<input type="hidden" name="isShowOnlyAdministrator" value="0" />
-							<input soy:id="isShowOnlyAdministrator" />
-						</td>
-					</tr>
-					
-					<tr>
-						<td>&nbsp;</td>
-						<td>
-							<input type="hidden" soy:id="url">
-							<input type="submit" class="submit_button" value="変更" />
-						</td>
-					</tr>
-				</table>
-			</div>			
-			</form soy:id="index_form">
+									<div class="form-group">
+										<input class="form-control" type="hidden" soy:id="url">
+										<input class="btn btn-primary btn-lg btn-block" type="submit" class="submit_button" value="変更" >
+									</div>
+								</form soy:id="index_form">
+						</div>
+					</div>
 
-				<div id="subFunctions" class="span-24 last" soy:page="_common.FooterMenuPage"></div>
+				</div>
+				<!-- /.col-lg-12 -->
+			</div>
+			<!-- /.row -->
+
 		</div>
+		<!-- /#page-wrapper -->
+		<!-- soy:page="_common.FooterPage" /-->
+	</div>
+	<!-- /#wrapper -->
 
-
-	
-	<div soy:page="_common.FooterPage"></div>
-
-</div>
 </body>
+
 </html>

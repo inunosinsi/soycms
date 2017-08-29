@@ -16,14 +16,14 @@
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
-			<div class="row">
+			<div class="row" soy:id="has_message">
 				<div class="col-lg-12">
 					<div class="panel panel-default panel-message">
 						<div  class="panel-heading" soy:id="message">メッセージ</div>
 					</div>
 				</div>
-			</div>
-			<div class="row" soy:display="only_default_user">
+			</div soy:id="has_message">
+			<div class="row" soy:display="for_default_user">
 				<div class="col-lg-12">
 					<div class="panel panel-default">
 						<div class="panel-body">
@@ -36,44 +36,40 @@
 					 </div>
 				</div>
 				<!-- /.col-lg-12 -->
-			</div>
+			</div soy:display="for_default_user">
 			<!-- /.row -->
 			<div class="row">
 				<div class="col-lg-12">
-					<div class="panel panel-green">
+					<div class="panel panel-yellow">
 						<div class="panel-heading">
-						  	 管理者一覧
+							管理者一覧
 						</div>
-						<div class="panel-body">
-							<div class="table-responsive">
-							<table  class="table table-striped" cellpadding="0" cellspacing="0">
-									<thead>
-										<tr>
-											<th>管理者ID</th>
-											<th>管理者名</th>
-											<th>管理サイト</th>
-											<th>操作</th>
-										</tr>
-									</thead>
+						<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>管理者ID</th>
+										<th>管理者名</th>
+										<th>管理サイト</th>
+										<th>操作</th>
+									</tr>
+								</thead>
 
-									<tbody>
-										<tr soy:id="list">
-											<td><span soy:id="userId"></span></td>
-											<td><span soy:id="userName"></span></td>
-											<td><span soy:id="managingSite"></span></td>
-											<td>
-												<a class="btn btn-info" soy:id="update_link">詳細設定</a>
-												<a class="btn btn-default" soy:id="update_password_link">パスワード変更</a>
-												<a class="btn btn-default" soy:id="update_password_link_for_current_user">パスワード変更</a>
-												<a class="btn btn-default" soy:id="detail_link">権限設定</a>
-												<a class="btn btn-danger" soy:id="remove_link">削除</a>
-											</td>
-											<form soy:id="remove_form" method="post"></form>
-										</tr soy:id="list">
-									</tbody>
-							</table>
-							</div>
-						</div>
+								<tbody>
+									<tr soy:id="list">
+										<td><span soy:id="userId"></span></td>
+										<td><span soy:id="userName"></span></td>
+										<td><span soy:id="managingSite"></span></td>
+										<td>
+											<a class="btn btn-info" soy:id="update_link">詳細設定</a>
+											<a class="btn btn-default" soy:id="update_password_link">パスワード変更</a>
+											<a class="btn btn-default" soy:id="update_password_link_for_current_user">パスワード変更</a>
+											<a class="btn btn-default" soy:id="detail_link">権限設定</a>
+											<a class="btn btn-danger btn-outline pull-right" soy:id="remove_link">削除</a>
+										</td>
+										<form soy:id="remove_form" method="post"></form>
+									</tr soy:id="list">
+								</tbody>
+						</table>
 					</div>
 				</div>
 				<!-- /.col-lg-12 -->

@@ -5,19 +5,19 @@ class RolePage extends CMSUpdatePageBase{
 	private $appId;
 
 	function doPost(){
-		
+
 		if(soy2_check_token()){
 			$role = $_POST["AppRole"];
-	
+
 			$appRoleDAO = SOY2DAOFactory::create("admin.AppRoleDAO");
-	
+
 			try{
 				$appRoleDAO->begin();
 				foreach($role as $userId => $value){
-	
+
 					try{
 						$appRole = $appRoleDAO->getRole($this->appId, $userId);
-	
+
 						if($value > 0){
 							$appRole->setAppRole($value);
 							$appRoleDAO->update($appRole);
@@ -25,7 +25,7 @@ class RolePage extends CMSUpdatePageBase{
 							//権限なしの場合は削除
 							$appRoleDAO->delete($appRole);
 						}
-	
+
 					}catch(Exception $e){
 						if($value == 0) continue;
 						$appRole = new AppRole();
@@ -35,86 +35,87 @@ class RolePage extends CMSUpdatePageBase{
 						$appRoleDAO->insert($appRole);
 					}
 				}
-	
+
 				$appRoleDAO->commit();
 				$this->addMessage("UPDATE_SUCCESS");
-	
+
 			}catch(Exception $e){
 				$appRoleDAO->rollback();
 				$this->addMessage("UPDATE_FAILED");
 			}
-	
+
 			$this->jump("Application.Role" . "?app_id=" . $this->appId );
 		}
 	}
 
-    function __construct($arg) {
-    	$this->appId = (isset($_GET["app_id"])) ? $_GET["app_id"] : "";
-		
-    	if(is_null($this->appId)){
-    		SOY2PageController::jump("Application");
-    	}
+	function __construct($arg) {
+		$this->appId = (isset($_GET["app_id"])) ? $_GET["app_id"] : "";
 
-    	if(!UserInfoUtil::isDefaultUser()){
-    		SOY2PageController::jump("Application");
-    	}
-
-    	//アプリの情報を取得
-    	$appLogic = SOY2Logic::createInstance("logic.admin.Application.ApplicationLogic");
-    	$application = null;
-    	try{
-    		$application = $appLogic->getApplication($this->appId);
-    	}catch(Exception $e){
+		if(is_null($this->appId)){
 			SOY2PageController::jump("Application");
-    	}
+		}
 
-    	/**
-    	 * SOY Shopなどアプリ内で権限設定を持つ場合
-    	 */
-    	if(strlen($application["customRoleUri"])){
-    		SOY2PageController::redirect("../app/index.php/" . $application["customRoleUri"]);
-    	}
+		//初期管理者のみ
+		if(!UserInfoUtil::isDefaultUser()){
+			SOY2PageController::jump("Application");
+		}
 
-    	parent::__construct();
+		//アプリの情報を取得
+		$appLogic = SOY2Logic::createInstance("logic.admin.Application.ApplicationLogic");
+		$application = null;
+		try{
+			$application = $appLogic->getApplication($this->appId);
+		}catch(Exception $e){
+			SOY2PageController::jump("Application");
+		}
 
-    	//DAO
-    	$userDAO = SOY2DAOFactory::create("admin.AdministratorDAO");
-    	$appRoleDAO = SOY2DAOFactory::create("admin.AppRoleDAO");
+		/**
+		 * SOY Shopなどアプリ内で権限設定を持つ場合
+		 */
+		if(strlen($application["customRoleUri"])){
+			SOY2PageController::redirect("../app/index.php/" . $application["customRoleUri"]);
+		}
 
-    	$users = $userDAO->get();
-    	$roles = $appRoleDAO->getByAppId($this->appId);
+		parent::__construct();
 
-    	$this->createAdd("role_list", "RoleList", array(
-    		"list" => $users,
-    		"roles" => $roles,
-    		"application" => $application
-    	));
+		//DAO
+		$userDAO = SOY2DAOFactory::create("admin.AdministratorDAO");
+		$appRoleDAO = SOY2DAOFactory::create("admin.AppRoleDAO");
 
-    	$this->addForm("form", array(
-    		"action" => SOY2PageController::createLink("Application.Role") . "?app_id=" . $this->appId
-    	));
+		$users = $userDAO->get();
+		$roles = $appRoleDAO->getByAppId($this->appId);
 
-    	$this->addInput("modify_button", array(
-    		"type" => "submit",
-    		"value" => CMSMessageManager::get("ADMIN_CHANGE"),
-    		"visible" => (count($users) > 1)
-    	));
+		$this->createAdd("role_list", "RoleList", array(
+			"list" => $users,
+			"roles" => $roles,
+			"application" => $application
+		));
 
-    	$this->addLabel("app_name", array(
-    		"text" => $application["title"]
-    	));
+		$this->addForm("form", array(
+			"action" => SOY2PageController::createLink("Application.Role") . "?app_id=" . $this->appId
+		));
 
-    	$messages = CMSMessageManager::getMessages();
-		$errores = CMSMessageManager::getErrorMessages();
-    	$this->addLabel("message", array(
+		$this->addInput("modify_button", array(
+			"type" => "submit",
+			"value" => CMSMessageManager::get("ADMIN_CHANGE"),
+			"visible" => (count($users) > 1)
+		));
+
+		$this->addLabel("app_name", array(
+			"text" => $application["title"]
+		));
+
+		$messages = CMSMessageManager::getMessages();
+		$errors = CMSMessageManager::getErrorMessages();
+		$this->addLabel("message", array(
 			"text" => implode($messages),
 			"visible" => (count($messages) > 0)
 		));
 		$this->addLabel("error", array(
-			"text" => implode($errores),
-			"visible" => (count($errores) > 0)
+			"text" => implode($errors),
+			"visible" => (count($errors) > 0)
 		));
-    }
+	}
 }
 
 class RoleList extends HTMLList{
@@ -160,4 +161,3 @@ class RoleList extends HTMLList{
 		$this->application = $application;
 	}
 }
-?>

@@ -133,117 +133,117 @@
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
- 			<div class="row">
-				<div class="col-lg-12">
-					<div class="panel panel-green">
-						<div class="panel-heading">
-						  	 全ての記事
+
+			<form soy:id="index_form" id="index_form">
+				<input type="hidden" name="op_code" id="op_code">
+				<input type="hidden" name="label_select" id="label_select">
+	 			<div class="row">
+					<div class="col-lg-12">
+						<div class="panel panel-green">
+							<div class="panel-heading">
+								全ての記事
+							</div>
+
+							<div class="panel-body">
+								<div soy:panel="checkbox_functions" class="checkbox_functions">
+									<div class="checkbox_functions_left"><!----></div>
+									<div soy:display="publish" class="checkbox_functions_content">
+										<p>チェックのついた記事を..</p>
+										<p><a href="javascript:void(0);" onclick="javascript:onTogglePublic(false);return false;">非公開にする</a></p>
+										<p><a href="javascript:void(0);" onclick="javascript:onTogglePublic(true);return false;">公開にする</a></p>
+										<p><a href="javascript:void(0);" onclick="javascript:onOpenListPanel()";>ラベル操作</a></p>
+										<p><a href="javascript:void(0);" onclick="javascript:copyEntry();return false;">複製する</a></p>
+										<p><a href="javascript:void(0);" onclick="javascript:deleteEntry();return false;">削除する</a></p>
+									</div soy:display="publish">
+									<div class="checkbox_functions_right"><!----></div>
+								</div soy:panel="checkbox_functions">
+
+								<div soy:panel="pager" class="pager">
+									<div class="top-pager" soy:id="topPager">
+										<a soy:id="prevAnchor" href="#">&nbsp;&laquo;前&nbsp;</a>
+										<span soy:id="contentPage">5件中 1-5件目</span>
+										<a soy:id="nextAnchor" href="#">&nbsp;次&raquo;&nbsp;</a>
+									</div soy:id="topPager">
+									<div class="displays">
+										<p>表示件数</p>
+										<p><a href="#" soy:id="showCount10" >10件</a></p>
+										<p><a href="#" soy:id="showCount50" >50件</a></p>
+										<p><a href="#" soy:id="showCount100">100件</a></p>
+										<p><a href="#" soy:id="showCount500">500件</a></p>
+									</div>
+								</div soy:panel="pager">
+
+								<div style="clear:both"><!----></div>
+
+								<div soy:id="no_entry_message"></div soy:id="no_entry_message">
+
+							</div>
+
+							<div class="table-responsive" soy:display="must_exist_entry">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<td soy:display="publish">
+												<script type="text/javascript">
+													function toggle_all_entry_check(value){
+														$(".entry_check").each(function(){
+															$(this).prop("checked",value);
+														});
+													}
+												</script>
+												<input type="checkbox" onclick="toggle_all_entry_check(this.checked);">
+											</td>
+											<td class="title">タイトル</td>
+											<td class="status">状態</td>
+											<td>本文</td>
+											<td>ラベル</td>
+											<td nowrap>作成日</td>
+											<td soy:display="no_label">
+												<input type="button" soy:id="display_order_submit" value="表示順更新" onclick="document.getElementById('op_code').value='update_display';return confirm('表示順の更新を行います');">
+											</td>
+										</tr>
+									</thead>
+									<tbody class="entry_list">
+										<tr soy:id="list">
+											<td soy:display="publish">
+												<input soy:id="entry_check" class="entry_check">
+											</td>
+											<td class="title">
+												<a soy:id="title" href="#" >タイトル...</a>
+											</td>
+											<td class="status">
+												<nobr soy:id="status"></nobr>
+											</td>
+											<td class="content">
+												<div soy:id="content"></div>
+											</td>
+											<td class="labels">
+												<span soy:id="label">
+													<a soy:id="entry_list_link" class="label label-default label-soy">ラベル１...</a>
+												</span soy:id="label">
+											</td>
+											<td class="create_date" style="text-align:center;">
+												<span soy:id="create_date" />
+											</td>
+											<td class="order" soy:display="no_label" style="text-align:center;">
+												<input soy:id="order" size="5">
+											</td>
+										</tr soy:id="list">
+									</tbody>
+								</table>
+							</div soy:display="must_exist_entry">
+
+							<div class="panel-body">
+								<div soy:panel="checkbox_functions" class="checkbox_functions"></div soy:panel="checkbox_functions">
+								<div soy:panel="pager" class="pager"></div soy:panel="pager">
+							</div>
+
 						</div>
-						<div class="panel-body">
-				<!-- copy from ListPage.html -->
-				<div class="soy-push-1">
-				<form soy:id="index_form" id="index_form">
-					<input type="hidden" name="op_code" id="op_code">
-					<input type="hidden" name="label_select" id="label_select">
-
-					<div soy:panel="checkbox_functions" class="checkbox_functions">
-						<div class="checkbox_functions_left"><!----></div>
-						<div soy:display="publish" class="checkbox_functions_content">
-							<p>チェックのついた記事を..</p>
-							<p><a href="javascript:void(0);" onclick="javascript:onTogglePublic(false);return false;">非公開にする</a></p>
-							<p><a href="javascript:void(0);" onclick="javascript:onTogglePublic(true);return false;">公開にする</a></p>
-							<p><a href="javascript:void(0);" onclick="javascript:onOpenListPanel()";>ラベル操作</a></p>
-							<p><a href="javascript:void(0);" onclick="javascript:copyEntry();return false;">複製する</a></p>
-							<p><a href="javascript:void(0);" onclick="javascript:deleteEntry();return false;">削除する</a></p>
-						</div soy:display="publish">
-						<div class="checkbox_functions_right"><!----></div>
-					</div soy:panel="checkbox_functions">
-
-					<div soy:panel="pager" class="pager">
-						<div class="top-pager" soy:id="topPager">
-							<a soy:id="prevAnchor" href="#">&nbsp;&laquo;前&nbsp;</a>
-							<span soy:id="contentPage">5件中 1-5件目</span>
-							<a soy:id="nextAnchor" href="#">&nbsp;次&raquo;&nbsp;</a>
-						</div soy:id="topPager">
-						<div class="displays">
-							<p>表示件数</p>
-							<p><a href="#" soy:id="showCount10" >10件</a></p>
-							<p><a href="#" soy:id="showCount50" >50件</a></p>
-							<p><a href="#" soy:id="showCount100">100件</a></p>
-							<p><a href="#" soy:id="showCount500">500件</a></p>
-						</div>
-					</div soy:panel="pager">
-
-					<div style="clear:both"><!----></div>
-
-					<div soy:id="no_entry_message"></div soy:id="no_entry_message">
-
-					<div class="" soy:display="must_exist_entry">
-						<div class="table-responsive">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<td soy:display="publish">
-										<script type="text/javascript">
-											function toggle_all_entry_check(value){
-												$(".entry_check").each(function(){
-													$(this).prop("checked",value);
-												});
-											}
-										</script>
-										<input type="checkbox" onclick="toggle_all_entry_check(this.checked);">
-									</td>
-									<td class="title">タイトル</td>
-									<td class="status">状態</td>
-									<td>本文</td>
-									<td>ラベル</td>
-									<td>作成日</td>
-									<td soy:display="no_label">
-										<input type="button" soy:id="display_order_submit" value="表示順更新" onclick="document.getElementById('op_code').value='update_display';return confirm('表示順の更新を行います');">
-									</td>
-								</tr>
-							</thead>
-							<tbody class="entry_list">
-								<tr soy:id="list">
-									<td soy:display="publish">
-										<input soy:id="entry_check" class="entry_check">
-									</td>
-									<td class="title">
-										<a soy:id="title" href="#" >タイトル...</a>
-									</td>
-									<td class="status">
-										<nobr soy:id="status"></nobr>
-									</td>
-									<td class="content">
-										<div soy:id="content"></div>
-									</td>
-									<td class="labels">
-										<span soy:id="label">
-											<a soy:id="entry_list_link" class="label label-default label-soy">ラベル１...</a>
-										</span soy:id="label">
-									</td>
-									<td class="create_date" style="text-align:center;">
-										<span soy:id="create_date" />
-									</td>
-									<td class="order" soy:display="no_label" style="text-align:center;">
-										<input soy:id="order" size="5">
-									</td>
-								</tr soy:id="list">
-							</tbody>
-						</table>
-						</div>
-						</div soy:display="must_exist_entry">
-					<div soy:panel="checkbox_functions" class="checkbox_functions"></div soy:panel="checkbox_functions">
-					<div soy:panel="pager" class="pager"></div soy:panel="pager">
-
-				</form soy:id="index_form">
-				</div>
-				<!-- end of copy from ListPage.html -->
-				   		</div>
 					</div>
+					<!-- /.col-lg-12 -->
 				</div>
-				<!-- /.col-lg-12 -->
-			</div>
+			</form soy:id="index_form">
+
 		</div>
 		<!-- /#page-wrapper -->
 		<!-- soy:page="_common.FooterPage" /-->
@@ -257,31 +257,31 @@
 <?php // collapseのshow/hideをCookieで永続化する ?>
 <script type="text/javascript">
 	$(function(){
-		if($.cookie('label-panel-status') == 'closed') {
+		if($.cookie('entry-index-label-panel-status') == 'closed') {
 		//	$("#entries-by-label").removeClass('in');
 		}
-		if($.cookie('status-panel-status') == 'closed') {
+		if($.cookie('entry-index-status-panel-status') == 'closed') {
 		//	$("#entries-by-status").removeClass('in');
 		}
 	});
 
 	$("#entries-by-label")
 	.bind('show.bs.collapse', function(){
-		$.cookie('label-panel-status', 'open');
+		$.cookie('entry-index-label-panel-status', 'open');
 		$(this).parent().find(".panel-heading i").removeClass('fa-chevron-down').addClass('fa-chevron-up');
 	})
 	.bind('hidden.bs.collapse', function(){
-		$.cookie('label-panel-status', 'closed')
+		$.cookie('entry-index-label-panel-status', 'closed')
 		$(this).parent().find(".panel-heading i").removeClass('fa-chevron-up').addClass('fa-chevron-down');
 	});
 
 	$("#entries-by-status")
 	.bind('shown.bs.collapse', function() {
-		$.cookie('status-panel-status', 'open')
+		$.cookie('entry-index-status-panel-status', 'open')
 		$(this).parent().find(".panel-heading i").removeClass('fa-chevron-down').addClass('fa-chevron-up');
 	})
 	.bind('hidden.bs.collapse', function(){
-		$.cookie('status-panel-status', 'closed')
+		$.cookie('entry-index-status-panel-status', 'closed')
 		$(this).parent().find(".panel-heading i").removeClass('fa-chevron-up').addClass('fa-chevron-down');
 	});
 </script>

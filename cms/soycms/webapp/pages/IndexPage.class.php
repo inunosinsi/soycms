@@ -2,6 +2,8 @@
 
 class IndexPage extends CMSWebPageBase{
 
+	const NUMBER_OF_ENTRIES = 5;
+
 	function doPost(){
 
 		$dir = UserInfoUtil::getSiteDirectory() . "/.cache/";
@@ -53,7 +55,7 @@ class IndexPage extends CMSWebPageBase{
 			"href" => SOY2PageController::createRelativeLink("./css/dashboard.css")."?".SOYCMS_BUILD_TIME
 		));
 
-		$result = $this->run("Entry.RecentListAction");
+		$result = $this->run("Entry.RecentListAction", array("limit" => self::NUMBER_OF_ENTRIES));
 
 		$this->createAdd("recentEntries", "RecentEntryList", array(
 			"list"=>$result->getAttribute("list"),
@@ -61,7 +63,7 @@ class IndexPage extends CMSWebPageBase{
 		));
 
 		$this->createAdd("recentPage", "RecentPageList", array(
-			"list" => $this->run("Page.RecentPageListAction")->getAttribute("list")
+				"list" => $this->run("Page.RecentPageListAction", array("limit" => self::NUMBER_OF_ENTRIES))->getAttribute("list")
 		));
 
 		$result = $this->run("Page.PageListAction", array("buildTree" => true));

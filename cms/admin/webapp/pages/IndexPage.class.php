@@ -4,7 +4,7 @@ class IndexPage extends CMSWebPageBase{
 
 	function doPost(){
 
-    	if(soy2_check_token()){
+		if(soy2_check_token()){
 
 			if(isset($_POST["cache_clear"])){
 				set_time_limit(0);
@@ -27,7 +27,7 @@ class IndexPage extends CMSWebPageBase{
 			}
 
 			$this->jump("");
-    	}
+		}
 	}
 
 	function __construct($arg){
@@ -53,6 +53,11 @@ class IndexPage extends CMSWebPageBase{
 		$this->addForm("file_form");
 		$this->addForm("cache_form");
 
+		//バージョン番号
+		$this->addLabel("version",array(
+				"text" => "version: ".SOYCMS_VERSION,
+		));
+
 		//現在のユーザーがログイン可能なサイトのみを表示する
 		$loginableSiteList = $this->getLoginableSiteList();
 		$this->createAdd("list", "SiteList", array(
@@ -62,10 +67,6 @@ class IndexPage extends CMSWebPageBase{
 		$this->addModel("no_site",array(
 			"visible" => (count($loginableSiteList) < 1)
 		));
-
-		if(!UserInfoUtil::isDefaultUser()){
-			DisplayPlugin::hide("only_default_user");
-		}
 
 		$this->addLink("create_link", array(
 			"link"=>SOY2PageController::createLink("Site.Create")
@@ -103,7 +104,17 @@ class IndexPage extends CMSWebPageBase{
 	 */
 	function getLoginableSiteList(){
 		$SiteLogic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
-		return $SiteLogic->getSiteByUserId(UserInfoUtil::getUserId());
+		$list = $SiteLogic->getSiteByUserId(UserInfoUtil::getUserId());
+
+		//ルート設定されたサイトを先頭にする
+		foreach($list as $id => $site){
+			if($site->getIsDomainRoot()){
+				unset($list[$id]);
+				array_unshift($list, $site);
+			}
+		}
+
+		return $list;
 	}
 
 	/**
@@ -120,25 +131,6 @@ class IndexPage extends CMSWebPageBase{
 }
 
 class SiteList extends HTMLList{
-
-	function replaceTooLongHost($url){
-
-
-		$array = parse_url($url);
-
-
-		$host = $array["host"];
-		if(isset($array["port"]))$host .=   ":" . $array["port"];
-
-		if(strlen($host) > 30){
-			$host = mb_strimwidth($host, 0, 30, "...");
-		}
-
-		$url = $array["scheme"] . "://" . $host . $array["path"];
-
-		return $url;
-
-	}
 
 	protected function populateItem($entity){
 
@@ -163,14 +155,14 @@ class SiteList extends HTMLList{
 
 		$this->addLink("site_link", array(
 			"link" => $entity->getUrl(),
-			"text" => $this->replaceTooLongHost($entity->getUrl()),
+			"text" => $entity->getUrl(),
 			"visible" => (!$entity->getIsDomainRoot())
 		));
 
 		$rootLink = UserInfoUtil::getSiteURLBySiteId("");
 		$this->addLink("domain_root_site_url", array(
 			"link" => $rootLink,
-			"text" => $this->replaceTooLongHost($rootLink),
+			"text" => $rootLink,
 			"visible" => $entity->getIsDomainRoot()
 		));
 
@@ -212,9 +204,8 @@ class ApplicationList extends HTMLList{
 		));
 
 		$this->addLabel("version", array(
-			"text" => (isset($entity["version"])) ? "ver. " . $entity["version"] : "",
+			"text" => $entity["version"],
 			"visible" => (isset($entity["version"]))
 		));
 	}
 }
-?>

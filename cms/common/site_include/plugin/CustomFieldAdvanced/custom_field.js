@@ -1,6 +1,4 @@
-window.onload = function(){
-	var $custom_field_input = $();
-};
+var $custom_field_input = $();
 
 function open_customfield_filemanager($form){
 		$custom_field_input = $form;

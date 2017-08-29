@@ -1,12 +1,10 @@
-window.onload = function(){
-	$("#restore_from_backup").click(function(){
-		AutoSaveEntry.restore();
-	});
+$("#restore_from_backup").click(function(){
+	AutoSaveEntry.restore();
+});
 
-	setInterval(function(){
-		AutoSaveEntry.save();
-	}, parseInt($("#save_period_seconds").val()) * 1000);
-};
+setInterval(function(){
+	AutoSaveEntry.save();
+}, parseInt($("#save_period_seconds").val()) * 1000);
 
 var AutoSaveEntry = {
 	save : function(){

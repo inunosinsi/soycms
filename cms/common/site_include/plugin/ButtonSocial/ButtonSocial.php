@@ -324,9 +324,7 @@ class ButtonSocialPlugin{
 		$html[] = "<button type=\"button\" onclick=\"open_ogimage_filemanager($('#ogimage_field'));\" style=\"margin-right:10px;\">ファイルを指定する</button>";
 		$html[] = "</div>";
 		$html[] = "<script type=\"text/javascript\">";
-		$html[] = "window.onload = function(){";
-		$html[] = "	var \$custom_field_input = \$();";
-		$html[] = "}";
+		$html[] = "var \$custom_field_input = \$();";
 		$html[] = "function open_ogimage_filemanager(\$form){";
 		$html[] = "	\$custom_field_input = \$form;";
 		$html[] = "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload?ogimage_field") . "\");";
