@@ -102,16 +102,7 @@ class IndexPage extends CMSWebPageBase{
 
 	//モジュール群からcommonディレクトリにあるモジュールを除く
 	private function checkModuleDir($dir){
-		$res = true;
-
-		if(preg_match("/^common./", $dir)){
-			$res = false;
-		}
-		if(preg_match("/^html./", $dir)){
-			$res = false;
-		}
-
-		return $res;
+		return (preg_match("/^common./", $dir) || preg_match("/^html./", $dir)) ? false : true;
 	}
 
 	private function getModuleDirectory($t = self::TYPE_PHP){

@@ -3,55 +3,55 @@
  * @table Page
  */
 class Page {
-	
+
 	const PAGE_TYPE_NORMAL	=	0;			//標準ページ
 	const PAGE_TYPE_MOBILE	=	100;		//携帯用ページ
 	const PAGE_TYPE_APPLICATION = 150;		//アプリケーションページ
 	const PAGE_TYPE_BLOG	= 		200;	//ブログページ
 	const PAGE_TYPE_ERROR	=		300;	//エラーページ
-	
+
 	const PAGE_ACTIVE = 1;
 	const PAGE_OUTOFDATE = -1;
 	const PAGE_NOTPUBLIC = -2;
-	
+
 	const PAGE_OUTOFDATE_BEFORE = -3;
 	const PAGE_OUTOFDATE_PAST   = -4;
-	
+
 	const PAGE_ACTIVE_CLOSE_FUTURE = 2;
 	const PAGE_ACTIVE_CLOSE_BEFORE = 3;
-	
+
 	/**
 	 * @id
-	 */	
+	 */
     private $id;
     private $uri;
-    
+
     private $title;
     private $template;
-    
+
     private $isTrash;
-    
+
     /**
      * @column page_type
      */
     private $pageType;
-    
+
     /**
      * @column page_config
      */
     private $pageConfig;
-    
+
     /**
      * @no_persistent
      */
     private $_pageConfig;
-    
+
     private $openPeriodStart;
     private $openPeriodEnd;
-    
+
     private $isPublished;
     private $udate;
-    
+
     /**
      * @column parent_page_id
      */
@@ -62,17 +62,17 @@ class Page {
 	 * @no_persistent
 	 */
 	private $childPages = array();
-	
+
 	/**
 	 * @no_persistent
 	 */
 	private $parentPage;
-	
+
 	/**
 	 * @no_persistent
 	 */
 	private $pageTitleFormat;
-	
+
 	private $icon;
 
     function getId() {
@@ -99,30 +99,30 @@ class Page {
     function setPageType($pageType) {
     	$this->pageType = $pageType;
     }
-    
+
     function getPageConfig() {
     	return $this->pageConfig;
     }
-    
+
     function setPageConfig($pageConfig) {
-    	
+
     	if(is_object($pageConfig)){
-    		
+
     		$this->pageConfig = serialize($pageConfig);
     		$this->_pageConfig = $pageConfig;
-    		
+
     	}else{
-    		
+
     		$this->pageConfig = $pageConfig;
     		$this->_pageConfig = @unserialize($pageConfig);
-    		
+
     	}
     }
-    
+
     function getPageConfigObject(){
     	return $this->_pageConfig;
     }
-    
+
     function getOpenPeriodStart() {
     	return CMSUtil::decodeDate($this->openPeriodStart);
     }
@@ -139,9 +139,9 @@ class Page {
     	if(is_null($this->isPublished)){
     		return 0;
     	}else{
-    		return $this->isPublished;	
+    		return $this->isPublished;
     	}
-    	
+
     }
     function setIsPublished($isPublished) {
     	if(is_null($isPublished)){
@@ -164,8 +164,8 @@ class Page {
     function setTitle($title){
     	$this->title = $title;
     }
-    
-    
+
+
     /**
      * 子ページを返す
      */
@@ -179,12 +179,12 @@ class Page {
     	$this->childPages[$page->getId()] = $page;
     	$page->setParentPage($this);
     }
-    
+
     /**
      * @param $childId
      */
     function getNodePathCount($step = null){
-    	
+
     	if($step === null){
     		$count = count($this->childPages);
     	}else{
@@ -192,18 +192,18 @@ class Page {
     	}
     	$counter = 0;
 
-    	foreach($this->childPages as $key => $childPage){ 		
+    	foreach($this->childPages as $key => $childPage){
     		if(!is_null($step) && $counter > $step){
     			break;
-    		}  		
-   		
+    		}
+
     		$tmp = $childPage->getNodePathCount();
     		$count += max($tmp-1,0);
     		$counter++;
     	}
     	return $count;
     }
-    
+
     /**
      * 親ページを返す
      */
@@ -234,7 +234,7 @@ class Page {
     		$this->isTrash = $isTrash;
     	}
     }
-    
+
     /**
      * 削除できるかどうか
      * @return boolean
@@ -250,7 +250,7 @@ class Page {
     		return true;
     	}
     }
-    
+
     /**
      * 複製できるかどうか
      * @return boolean
@@ -262,13 +262,13 @@ class Page {
     		return true;
     	}
     }
-    
+
     /**
    	 * 現在このページの状態を返します
    	 * @return PAGE_ACTIVE 公開状態
    	 * @return PAGE_OUTOFDATE 期間外
    	 * @return PAGE_NOTPUBLIC 未公開状態
-   	 * 
+   	 *
    	 * if(isActive() > 0){
    	 	 //公開状態のときの処理
    	 } else{
@@ -282,9 +282,9 @@ class Page {
    		$now = time();
    		$start = CMSUtil::encodeDate($this->openPeriodStart,true);
    		$end   = CMSUtil::encodeDate($this->openPeriodEnd,false);
-   		
-   		
-   		
+
+
+
    		if($start < $now && $end > $now){
    			if($with_before_after){
 	   			if($end != CMSUtil::encodeDate(null,false)){
@@ -309,9 +309,9 @@ class Page {
    			}
    		}
    	}
-   	
-   	
-   	
+
+
+
    	/**
    	 * ブログかどうかを返す
    	 */
@@ -322,7 +322,7 @@ class Page {
    			return false;
    		}
    	}
-   	
+
    	/**
    	 * 携帯ページかどうか
    	 */
@@ -333,7 +333,7 @@ class Page {
    			return false;
    		}
    	}
-   	
+
    	function getStateMessage(){
    		switch($this->isActive()){
    			case self::PAGE_ACTIVE:
@@ -352,8 +352,9 @@ class Page {
    	}
    	function setPageTitleFormat($pageTitleFormat) {
    		$pageConfig = $this->getPageConfigObject();
-   		$pageConfig->PageTitleFormat = $pageTitleFormat;
-   		$this->setPageConfig($pageConfig);
+			if(is_null($pageConfig)) $pageConfig = new stdClass;
+			$pageConfig->PageTitleFormat = $pageTitleFormat;
+			$this->setPageConfig($pageConfig);
    	}
 
    	function getIcon() {
@@ -362,18 +363,18 @@ class Page {
    	function setIcon($icon) {
    		$this->icon = $icon;
    	}
-   	
+
    	function getIconUrl(){
-		
+
 		$icon = $this->getIcon();
-		
+
 		if($this->getPageType() == Page::PAGE_TYPE_ERROR)$icon = "notfound.gif";
 		if(!$icon && $this->getPageType() == Page::PAGE_TYPE_BLOG)$icon = "blog_default.gif";
 		if(!$icon)$icon = "page_default.gif";
 		//if($this->getIsTrash())$icon = "deleted.gif";
-		
+
 		return CMS_PAGE_ICON_DIRECTORY_URL . $icon;
-		
+
 	}
 }
 ?>
