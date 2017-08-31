@@ -41,11 +41,17 @@ do{
 $path = MyPageLogic::convertPath($path);
 define("SOYSHOP_MYPAGE_PATH", $path);
 
-try{
-    $page = SOY2HTMLFactory::createInstance($path, array("arguments" => $args));
-}catch(Exception $e){
-    $page = SOY2HTMLFactory::createInstance("ErrorPage", array("arguments" => $args));
+if(file_exists(SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . str_replace(".", "/", SOYSHOP_MYPAGE_PATH) . ".html")){
+  try{
+      $page = SOY2HTMLFactory::createInstance($path, array("arguments" => $args));
+  }catch(Exception $e){
+      $page = SOY2HTMLFactory::createInstance("ErrorPage", array("arguments" => $args));
+  }
+//HTMLファイルがなければ必ずエラー
+}else{
+  $page = SOY2HTMLFactory::createInstance("ErrorPage", array("arguments" => $args));
 }
+
 
 $page->buildModules();
 $page->display();
