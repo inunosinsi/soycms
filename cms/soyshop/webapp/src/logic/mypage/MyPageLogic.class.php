@@ -10,7 +10,7 @@ SOY2::import("domain.user.SOYShop_UserToken");
  * セッションを使ってユーザ情報を保存
  */
 class MyPageLogic extends SOY2LogicBase{
-	
+
 	const REGISTER_REDIRECT_KEY = "register_redirect";
 
 	/**
@@ -264,6 +264,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @return titleFormat
 	 */
 	function getTitleFormat($args){
+		if(!isset($args[0])) return SOYShop_DataSets::get("config.mypage.title", "マイページ");
 		if($args[0] === "profile"){
 			if(isset($args[1]) && strlen($args[1]) > 0){
 				$user = $this->getProfileUser($args[1]);
@@ -387,7 +388,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * #error login_error
 	 */
 	function login($loginId, $password){
-		
+
 		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		$hasRegister = true;
 
@@ -439,12 +440,12 @@ class MyPageLogic extends SOY2LogicBase{
 		$this->save();
 		return true;
 	}
-	
+
 	function noPasswordLogin($userId){
 		/**
 		 * @ログイン周りのチェック
 		 */
-		
+
 		//セッションに追加
 		$this->setAttribute("loggedin", true);
 		$this->setAttribute("userId", $userId);
