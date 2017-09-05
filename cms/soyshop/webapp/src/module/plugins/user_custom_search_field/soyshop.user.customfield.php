@@ -9,10 +9,10 @@
 class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 
 	private $dbLogic;
-	
+
 	function clear($app){
 		self::prepare();
-		
+
 		foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
 			$attributeKey = self::getAttributeKey($key);
 			$app->clearAttribute($attributeKey);
@@ -23,11 +23,11 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 * @param array $param 中身は$_POST["user_customfield"]
 	 */
 	function doPost($param){
-		
+
 		if(isset($_POST["user_custom_search"])){
 			self::prepare();
 			$app = $this->getApp();
-			
+
 			foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
 				$attributeKey = self::getAttributeKey($key);
 				$v = (isset($_POST["user_custom_search"][$key])) ? $_POST["user_custom_search"][$key] : null;
@@ -41,28 +41,28 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 * @param MyPageLogic || CartLogic $app
 	 * @param integer $userId
 	 * @return array(["name"], ["description"], ["error"])
-	 * 
+	 *
 	 */
 	function getForm($app, $userId){
 		self::prepare();
-		
+
 		$values = $this->dbLogic->getByUserId($userId);
-		
+
 		//出力する内容を格納する
 		$array = array();
 
 		SOY2::import("module.plugins.user_custom_search_field.component.FieldFormComponent");
 		foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
-			
+
 			$obj = array();
-			$name = $field["label"];
-			
+			$name = htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8");
+
 			if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
 				$obj["name"] = $name . " (" . UserCustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")";
 			}else{
 				$obj["name"] = $name;
 			}
-			
+
 			$value = (isset($values[$key])) ? $values[$key] : null;
 			if(is_null($value)){
 				$app = $this->getApp();
@@ -74,10 +74,10 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 			$obj["form"] = FieldFormComponent::buildForm($key, $field, $value);
 			$array["ucsf_" .$key] = $obj;
 		}
-		
+
 		return $array;
 	}
-	
+
 	/**
 	 * 各項目ごとに、createAdd()を行う。
 	 * @param MyPageLogic || CartLogic $app
@@ -85,11 +85,11 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 * @param integer $userId
 	 */
 	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){}
-	
+
 	function hasError($param){
 		/** @ToDo 必須の設定をそのうち追加したいところ **/
 	}
-	
+
 	/**
 	 * @param MyPageLogic || CartLogic $app
 	 */
@@ -114,17 +114,17 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 		return $array;
 
 	}
-	
+
 	/**
 	 * @param MyPageLogic || CartLogic $app
 	 * @param integer $userId
 	 */
 	function register($app, $userId){
 		self::prepare();
-		
+
 		//登録用の配列
 		$values = array();
-		
+
 		//管理画面側での登録処理
 		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
 			if(isset($_POST["user_custom_search"])){
@@ -137,10 +137,10 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 				$values[$key] = $app->getAttribute($attributeKey);
 			}
 		}
-		
+
 		$this->dbLogic->save($userId, $values);
 	}
-	
+
 	/**
 	 * @param string $fieldId
 	 * @return string MyPage/Cart の attributeのKey
@@ -148,7 +148,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	private function getAttributeKey($fieldId){
 		return "user_custom_search_field_" . SOYSHOP_ID . "_" . $fieldId . ".value";
 	}
-	
+
 	private function prepare(){
 		if(!$this->dbLogic){
 			$this->dbLogic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.DataBaseLogic");
@@ -157,4 +157,3 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	}
 }
 SOYShopPlugin::extension("soyshop.user.customfield","user_custom_search_field","UserCustomSearchFieldModule");
-?>

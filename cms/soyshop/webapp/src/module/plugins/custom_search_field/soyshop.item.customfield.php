@@ -31,7 +31,7 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 
         SOY2::import("module.plugins." . self::FIELD_ID . ".component.FieldFormComponent");
         foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
-            $html[] = "<dt>" . $field["label"] . " (" . CustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")</dt>";
+            $html[] = "<dt>" . htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8") . " (" . CustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")</dt>";
             $html[] = "<dd>";
 
             $value = (isset($values[$key])) ? $values[$key] : null;

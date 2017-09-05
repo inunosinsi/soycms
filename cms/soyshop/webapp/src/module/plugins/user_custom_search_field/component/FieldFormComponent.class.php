@@ -1,23 +1,33 @@
 <?php
 class FieldFormComponent {
 
-	public static function buildForm($fieldId, $field, $value = null) {
-		
+	public static function buildForm($fieldId, $field, $value = null, $isMyPage = false, $hasStyle = true) {
+
 		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
+		$nameProperty = ($isMyPage) ? "u_search[" . $fieldId . "]" : "user_custom_search[" . $fieldId . "]";
 
 		switch ($field["type"]) {
 			case UserCustomSearchFieldUtil :: TYPE_STRING :
-				return "<input type=\"text\" name=\"user_custom_search[" . $fieldId . "]\" value=\"" . $value . "\" style=\"width:100%;\">";
+				if($hasStyle){
+					return "<input type=\"text\" name=\"" . $nameProperty . "\" value=\"" . $value . "\" style=\"width:100%;\">";
+				}else{
+					return "<input type=\"text\" name=\"" . $nameProperty . "\" value=\"" . $value . "\">";
+				}
+
 
 			case UserCustomSearchFieldUtil :: TYPE_TEXTAREA :
-				return "<textarea name=\"user_custom_search[" . $fieldId . "]\" style=\"width:100%;\">" . $value . "</textarea>";
+				if($hasStyle){
+					return "<textarea name=\"" . $nameProperty . "\" style=\"width:100%;\">" . $value . "</textarea>";
+				}else {
+					return "<textarea name=\"" . $nameProperty . "\">" . $value . "</textarea>";
+				}
 
 			case UserCustomSearchFieldUtil :: TYPE_RICHTEXT :
-				return "<textarea class=\"custom_field_textarea mceEditor\" name=\"user_custom_search[" . $fieldId . "]\">" . $value . "</textarea>";
+				return "<textarea class=\"custom_field_textarea mceEditor\" name=\"" . $nameProperty . "\">" . $value . "</textarea>";
 
 			case UserCustomSearchFieldUtil :: TYPE_INTEGER :
 			case UserCustomSearchFieldUtil :: TYPE_RANGE :
-				return "<input type=\"number\" name=\"user_custom_search[" . $fieldId . "]\" value=\"" . $value . "\">";
+				return "<input type=\"number\" name=\"" . $nameProperty  ."\" value=\"" . $value . "\">";
 
 			case UserCustomSearchFieldUtil :: TYPE_CHECKBOX :
 				$html = array();
@@ -30,9 +40,9 @@ class FieldFormComponent {
 					foreach ($options as $option) {
 						$oVal = trim($option);
 						if (in_array($oVal, $chks)) {
-							$html[] = "<label><input type=\"checkbox\" name=\"user_custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
+							$html[] = "<label><input type=\"checkbox\" name=\"" . $nameProperty . "[]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
 						} else {
-							$html[] = "<label><input type=\"checkbox\" name=\"user_custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
+							$html[] = "<label><input type=\"checkbox\" name=\"" . $nameProperty . "[]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
 						}
 					}
 				}
@@ -45,20 +55,20 @@ class FieldFormComponent {
 					foreach ($options as $option) {
 						$oVal = trim($option);
 						if (isset($value) && $oVal === $value) {
-							$html[] = "<label><input type=\"radio\" name=\"user_custom_search[" . $fieldId . "]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
+							$html[] = "<label><input type=\"radio\" name=\"" . $nameProperty . "\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
 						} else {
-							$html[] = "<label><input type=\"radio\" name=\"user_custom_search[" . $fieldId . "]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
+							$html[] = "<label><input type=\"radio\" name=\"" . $nameProperty . "\" value=\"" . $oVal . "\">" . $oVal . "</label>";
 						}
 					}
 				}
-				
+
 				return implode("\n", $html);
 
 			case UserCustomSearchFieldUtil :: TYPE_SELECT :
 				$html = array();
 				if (isset ($field["option"]) && strlen(trim($field["option"])) > 0) {
 					$options = explode("\n", $field["option"]);
-					$html[] = "<select name=\"user_custom_search[" . $fieldId . "]\">";
+					$html[] = "<select name=\"" . $nameProperty . "\">";
 					$html[] = "<option value=\"\"></option>";
 					foreach ($options as $option) {
 						$oVal = trim($option);
@@ -71,15 +81,15 @@ class FieldFormComponent {
 					$html[] = "</select>";
 
 				}
-				
+
 				return implode("\n", $html);
 		}
 	}
-	
+
 	public static function buildSearchConditionForm($fieldId, $field, $cnd) {
 		$form = self::buildForm($fieldId, $field);
 		$form = str_replace("user_custom_search", "search_condition", $form);
-		
+
 		switch($field["type"]){
 			case UserCustomSearchFieldUtil :: TYPE_TEXTAREA :
 			case UserCustomSearchFieldUtil :: TYPE_RICHTEXT :
@@ -87,10 +97,10 @@ class FieldFormComponent {
 					$form = str_replace(" mceEditor", "", $form);
 				}
 				if(isset($cnd[$fieldId]) && strlen($cnd[$fieldId])){
-					$form = str_replace("</textarea>", $cnd[$fieldId] . "</textarea>", $form);	
+					$form = str_replace("</textarea>", $cnd[$fieldId] . "</textarea>", $form);
 				}
 				break;
-			
+
 			case UserCustomSearchFieldUtil :: TYPE_CHECKBOX:
 				$forms = explode("\n", $form);
 				if(!count($forms)) break;
@@ -140,8 +150,7 @@ class FieldFormComponent {
 					$form = str_replace("value=\"\"", "value=\"" . htmlspecialchars($cnd[$fieldId], ENT_QUOTES, "UTF-8") . "\"", $form);
 				}
 		}
-		
+
 		return $form;
 	}
 }
-?>

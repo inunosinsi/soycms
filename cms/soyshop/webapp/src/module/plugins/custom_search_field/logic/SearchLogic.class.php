@@ -43,8 +43,8 @@ class SearchLogic extends SOY2LogicBase{
         if(!count($res)) return array();
 
         $items = array();
-        foreach($res as $obj){
-            $items[] = $this->itemDao->getObject($obj);
+        foreach($res as $v){
+            $items[] = $this->itemDao->getObject($v);
         }
 
         return $items;

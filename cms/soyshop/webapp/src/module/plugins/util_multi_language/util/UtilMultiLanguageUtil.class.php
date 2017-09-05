@@ -40,7 +40,7 @@ class UtilMultiLanguageUtil {
                             "is_use" => self::NO_USE
                         ),
             "check_browser_language_config" => 0,
-            "check_first_access" => 0
+            "check_first_access_config" => 0
         ));
     }
 
