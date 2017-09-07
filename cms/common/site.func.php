@@ -67,7 +67,7 @@ class SOYCMS_OutputContents{
 	private $generate_time;
 
 
-	function SOYCMS_OutputContents(){
+	function __construct(){
 
 		//「キャッシュのクリア」で削除されるようにキャッシュディレクトリ以下に置く
 		$this->cacheDir = _SITE_ROOT_.self::CacheDir;
