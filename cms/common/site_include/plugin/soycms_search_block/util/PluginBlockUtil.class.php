@@ -8,14 +8,15 @@ class PluginBlockUtil {
 
   private static function __getTemplateByPageId($pageId=null){
     static $template;
-    if(is_null($template)){
+	if(is_null($template)){
       $template = "";
       $blog = self::getBlogPageById($pageId);
 
       //ブログページを取得できた場合
       if(!is_null($blog) && !is_null($blog->getId())){
-        $uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $_SERVER["PATH_INFO"]);
-        //トップページ
+		$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
+        $uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $pathInfo);
+		//トップページ
         if($uri === (string)$blog->getTopPageUri()){
             $template = $blog->getTopTemplate();
             //アーカイブページ
