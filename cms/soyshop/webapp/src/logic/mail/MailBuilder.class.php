@@ -161,13 +161,16 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 	private function buildUserInfoMailBody($order,$user){
 
 		$mail = array();
-		
+
 		$address = $order->getClaimedAddressArray();
-		
+
 		$mail[] = "ご注文者";
 		$mail[] = "-----------------------------------------";
 		$mail[] = $this->printColumn("お名前","left",20) . $address["name"] ." 様";
 		if(isset($address["reading"])&&strlen($address["reading"]))$mail[] = $this->printColumn("フリガナ","left",20) . $address["reading"];
+		$mail[] = $this->printColumn("郵便番号","left",10) . $address["zipCode"];
+		$mail[] = $this->printColumn("住所","left",10) . SOYShop_Area::getAreaText($address["area"]).$address["address1"];
+		$mail[] = $this->printColumn("","left",10) . $address["address2"];
 		$mail[] = $this->printColumn("メールアドレス","left",20) . $user->getMailAddress();
 		$mail[] = $this->printColumn("電話番号","left",20) . $address["telephoneNumber"];
 		$mail[] = "";
@@ -226,4 +229,3 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 		return $str;
 	}
 }
-?>

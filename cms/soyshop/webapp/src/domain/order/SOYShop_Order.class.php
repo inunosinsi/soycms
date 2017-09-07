@@ -12,7 +12,7 @@ class SOYShop_Order {
 	const ORDER_STATUS_RECEIVED = 3; //受付完了
 	const ORDER_STATUS_SENDED = 4; //発送済み
 	const ORDER_STATUS_CANCELED = 5; //キャンセル
-	
+
 	const ORDER_STATUS_STOCK_CONFIRM = 6;	//在庫確認中
 	const ORDER_STATUS_RETURNED = 7;		//返品待ち
 
@@ -21,7 +21,7 @@ class SOYShop_Order {
 	const PAYMENT_STATUS_CONFIRMED = 2;	//支払確認済み
 	const PAYMENT_STATUS_ERROR = 3;	//入金エラー
 	const PAYMENT_STATUS_DIRECT = 4; //直接支払
-	
+
 	//メール送信のタイプ
 	const SENDMAIL_TYPE_ORDER = "order";		//注文受付メール
 	const SENDMAIL_TYPE_CONFIRM = "confirm"; 	//注文確定メール
@@ -264,7 +264,7 @@ class SOYShop_Order {
     	$this->setAttributes($attributes);
     }
     function setMailStatus($status){
-    	if(is_array($status)) $status = serialize($status);
+		if(is_array($status)) $status = soy2_serialize($status);
     	$this->mailStatus = $status;
     }
     function getMailStatus(){
@@ -331,7 +331,7 @@ class SOYShop_Order {
 
 		return ( $order && $payment ) ;
     }
-    
+
     public static function getMailTypes(){
     	return array(
     		self::SENDMAIL_TYPE_ORDER,
@@ -342,4 +342,3 @@ class SOYShop_Order {
     	);
     }
 }
-?>
