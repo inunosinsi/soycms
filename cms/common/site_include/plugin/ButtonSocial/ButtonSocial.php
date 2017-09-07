@@ -15,6 +15,7 @@ class ButtonSocialPlugin{
 	private $admins;
 	private $description;
 	private $image;
+	private $fb_app_ver = "v2.10";
 
 	//fb_rootの表示設定
 	//Array<ページID => 0 | 1> fb_rootを表示するは1
@@ -28,10 +29,10 @@ class ButtonSocialPlugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ソーシャルボタン設置プラグイン",
 			"description"=>"ページにソーシャルボタンを設置します。",
-			"author"=>"齋藤毅",
-			"url"=>"https://saitodev.co/",
-			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.3"
+			"author"=>"株式会社Brassica",
+			"url"=>"https://brassica.jp/",
+			"mail"=>"soycms@soycms.net",
+			"version"=>"1.1"
 		));
 
 		$logic = new ButtonSocialCommon();
@@ -88,6 +89,9 @@ class ButtonSocialPlugin{
 			"html" => $logic->getTwitterButton($url)
 		));
 
+		/*
+		 * サポート停止：念のため残しておく
+		 */
 		$htmlObj->addLink("twitter_button_mobile", array(
 			"soy2prefix" => "cms",
 			"link" => $logic->getTwitterButtonMobile($url, $title)
@@ -111,6 +115,9 @@ class ButtonSocialPlugin{
 			"html" => $logic->getMixiCheckScript()
 		));
 
+		/*
+		 * サポート停止：念のため残しておく
+		 */
 		$htmlObj->addLabel("mixi_check_button_mobile", array(
 			"soy2prefix" => "cms",
 			"html" => $logic->getMixiCheckButtonMobile($url, $this->mixi_check_key, $title)
@@ -121,6 +128,9 @@ class ButtonSocialPlugin{
 			"html" => $logic->getMixiLikeButton($this->mixi_like_key)
 		));
 
+		/*
+		 * サポート停止：念のため残しておく
+		 */
 		$htmlObj->addLabel("mixi_like_button_mobile", array(
 			"soy2prefix" => "cms",
 			"html" => $logic->getMixiLikeButtonMobile($url, $title, $this->mixi_like_key)
@@ -274,9 +284,11 @@ class ButtonSocialPlugin{
 		$custom = $this->getOgImageObject($old);
 
 		try{
+			$this->entryAttributeDao->delete($new, self::PLUGIN_KEY);
+
 			$obj = new EntryAttribute();
 			$obj->setEntryId($new);
-			$obj->setFieldId($custom->getFieldId());
+			$obj->setFieldId(self::PLUGIN_KEY);
 			$obj->setValue($custom->getValue());
 			$obj->setExtraValuesArray($custom->getExtraValues());
 			$this->entryAttributeDao->insert($obj);
@@ -320,7 +332,7 @@ class ButtonSocialPlugin{
 		$html[] = "<label for=\"custom_field_img\">og:image ※必ず画像をアップロードしてください</label>";
 		$html[] = "</p>";
 		$html[] = "<div style=\"margin:-0.5ex 0px 0.5ex 1em;\">";
-		$html[] = "<input type=\"text\" class=\"ogimage_field_input\" style=\"width:50%\" id=\"ogimage_field\" name=\"" . self::PLUGIN_KEY . "\" value=\"". $obj->getValue() . "\" />";
+		$html[] = "<input type=\"text\" class=\"ogimage_field_input\" style=\"width:50%\" id=\"ogimage_field\" name=\"" . self::PLUGIN_KEY . "\" value=\"". $obj->getValue() . "\" >";
 		$html[] = "<button type=\"button\" onclick=\"open_ogimage_filemanager($('#ogimage_field'));\" style=\"margin-right:10px;\">ファイルを指定する</button>";
 		$html[] = "</div>";
 		$html[] = "<script type=\"text/javascript\">";
@@ -393,6 +405,13 @@ class ButtonSocialPlugin{
 		$this->image = $image;
 	}
 
+	function getFbAppVer(){
+		return $this->fb_app_ver;
+	}
+	function setFbAppVer($v){
+		$this->fb_app_ver = $v;
+	}
+
 
 	public static function register(){
 
@@ -406,4 +425,4 @@ class ButtonSocialPlugin{
 	}
 }
 ButtonSocialPlugin::register();
-?>
+

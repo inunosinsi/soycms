@@ -86,13 +86,18 @@ class CreatePage extends CMSWebPageBase{
 		));
 
 		//テンプレート
+		$pageTemplateList = $this->buildTemplateList();
+		$blogTemplateList = $this->buildBlogTemplateList();
 		$this->createAdd("normal_template_select","HTMLLabel",array(
-			"html" => $this->buildTemplateList(),
+			"html" => strlen($pageTemplateList) ? $pageTemplateList : '<option value="">'.$this->getMessage("SOYCMS_NO_TEMPLATEPACK_AVAILABLE").'</option>',
 			"name" => "template",
 		));
 		$this->createAdd("blog_template_select","HTMLLabel",array(
-			"html" => $this->buildBlogTemplateList(),
+			"html" => strlen($blogTemplateList) ? $blogTemplateList: '<option value="">'.$this->getMessage("SOYCMS_NO_TEMPLATEPACK_AVAILABLE").'</option>',
 			"name" => "_template",
+		));
+		$this->addModel("has_template",array(
+			"visible" => strlen($pageTemplateList) || strlen($blogTemplateList),
 		));
 
 		//公開設定
@@ -143,18 +148,21 @@ class CreatePage extends CMSWebPageBase{
 	function buildTemplateList(){
 		$logic = SOY2Logic::createInstance("logic.site.Template.TemplateLogic");
 		$templates = $logic->getByPageType(Page::PAGE_TYPE_NORMAL);
+
 		$html = array();
-		$html[] = '<option value="">'.$this->getMessage("SOYCMS_ASK_TO_CHOOSE_PAGE_TEMPLATE_PACK").'</option>';
-		foreach($templates as $template){
-			if(!$template->isActive())continue;
+		if(is_array($templates) && count($templates)){
+			$html[] = '<option value="">'.$this->getMessage("SOYCMS_ASK_TO_CHOOSE_PAGE_TEMPLATE_PACK").'</option>';
+			foreach($templates as $template){
+				if(!$template->isActive())continue;
 
-			$html[] = '<optgroup label="'.$template->getName().'">';
+				$html[] = '<optgroup label="'.$template->getName().'">';
 
-			foreach($template->getTemplate() as $id => $array){
-				$html[] = '<option value="'.$template->getId()."/". $id .'">' . $array["name"] . '</option>';
+				foreach($template->getTemplate() as $id => $array){
+					$html[] = '<option value="'.$template->getId()."/". $id .'">' . $array["name"] . '</option>';
+				}
+
+				$html[] = "</optgroup>";
 			}
-
-			$html[] = "</optgroup>";
 		}
 
 		return implode("\n",$html);
@@ -166,11 +174,14 @@ class CreatePage extends CMSWebPageBase{
 	function buildBlogTemplateList(){
 		$logic = SOY2Logic::createInstance("logic.site.Template.TemplateLogic");
 		$templates = $logic->getByPageType(Page::PAGE_TYPE_BLOG);
+
 		$html = array();
-		$html[] = '<option value="">'.$this->getMessage("SOYCMS_ASK_TO_CHOOSE_PAGE_TEMPLATE_PACK").'</option>';
-		foreach($templates as $template){
-			if(!$template->isActive())continue;
-			$html[] = '<option value="'.$template->getId().'">' . $template->getName() . '</option>';
+		if(is_array($templates) && count($templates)){
+			$html[] = '<option value="">'.$this->getMessage("SOYCMS_ASK_TO_CHOOSE_PAGE_TEMPLATE_PACK").'</option>';
+			foreach($templates as $template){
+				if(!$template->isActive())continue;
+				$html[] = '<option value="'.$template->getId().'">' . $template->getName() . '</option>';
+			}
 		}
 
 		return implode("\n",$html);

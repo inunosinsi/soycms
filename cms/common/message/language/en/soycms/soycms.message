@@ -62,6 +62,7 @@ SOYCMS_BLOG_TOPPAGE=Blog top page
 SOYCMS_BLOG_ARCHIVEPAGE=Monthly archive page
 SOYCMS_DOWNLOAD_TEMPLATE=Download webpage template
 SOYCMS_APPLY_WEBPAGE_TEMPLATEPACK=Apply webpage template pack
+SOYCMS_NO_TEMPLATEPACK_AVAILABLE=No template pack available
 SOYCMS_TEMPLATE_HISTORY = Template history
 SOYCMS_WORD_ALLOW =Allow
 SOYCMS_WORD_DENY =Deny

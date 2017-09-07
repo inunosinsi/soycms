@@ -34,7 +34,7 @@ class EntryLogic extends SOY2LogicBase{
 
 		//数値以外（空文字列を含む）がcdateに入っていれば現在時刻を作成日時にする
 		if(!is_numeric($bean->getCdate())){
-			$bean->setCdate(time());
+			$bean->setCdate(SOYCMS_NOW);
 		}
 
 		if(UserInfoUtil::hasEntryPublisherRole() != true){
@@ -64,7 +64,7 @@ class EntryLogic extends SOY2LogicBase{
 
 		//数値以外（空文字列を含む）がcdateに入っていれば現在時刻を作成日時にする
 		if(!is_numeric($bean->getCdate())){
-			$bean->setCdate(time());
+			$bean->setCdate(SOYCMS_NOW);
 		}
 
 		if($bean->isEmptyAlias()){
@@ -192,7 +192,7 @@ class EntryLogic extends SOY2LogicBase{
 		$dao->setLimit($this->limit);
 		$dao->setOffset($this->offset);
 
-		$array = $dao->getOutOfDateEntries(time());
+		$array = $dao->getOutOfDateEntries(SOYCMS_NOW);
 		$this->totalCount = $dao->getRowCount();
 
 		//ラベルを取得
@@ -326,7 +326,7 @@ class EntryLogic extends SOY2LogicBase{
 		$dao = $this->getLabeledEntryDAO();
 		$dao->setLimit($this->limit);
 		$dao->setOffset($this->offset);
-		$array = $dao->getOpenEntryByLabelId($labelId,time(),$this->reverse);
+		$array = $dao->getOpenEntryByLabelId($labelId,SOYCMS_NOW,$this->reverse);
 		$this->totalCount = $dao->getRowCount();
 		return $array;
 	}
@@ -341,10 +341,10 @@ class EntryLogic extends SOY2LogicBase{
 
 		if($isAnd){
 			//$labelIdsのラベルがすべて設定されている記事のみ取得
-			$array = $dao->getOpenEntryByLabelIds($labelIds,time(),$start,$end,$this->reverse);
+			$array = $dao->getOpenEntryByLabelIds($labelIds,SOYCMS_NOW,$start,$end,$this->reverse);
 		}else{
 			//$labelIdsのラベルがどれか１つでも設定されている記事を取得
-			$array = $dao->getOpenEntryByLabelIdsImplements($labelIds,time(),false,$start,$end,$this->reverse);
+			$array = $dao->getOpenEntryByLabelIdsImplements($labelIds,SOYCMS_NOW,false,$start,$end,$this->reverse);
 		}
 		foreach($array as $key => $entry){
 			$array[$key]->setCommentCount($this->getApprovedCommentCountByEntryId($entry->getId()));
@@ -375,13 +375,13 @@ class EntryLogic extends SOY2LogicBase{
 			}else{
 				if(is_numeric($entryId)){
 					try{
-						$entry = $dao->getOpenEntryById($entryId,time());
+						$entry = $dao->getOpenEntryById($entryId,SOYCMS_NOW);
 					}catch(Exception $e){
 						//記事IDで取得できなければ、エイリアスの方でも取得を試みる
-						$entry = $dao->getOpenEntryByAlias($entryId,time());
+						$entry = $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
 					}
 				}else{
-					$entry = $dao->getOpenEntryByAlias($entryId,time());
+					$entry = $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
 				}
 			}
 
@@ -409,7 +409,7 @@ class EntryLogic extends SOY2LogicBase{
 		$dao->setLimit(1);
 
 		try{
-			$next = $dao->getNextOpenEntry($blogLabelId,$entry,time());
+			$next = $dao->getNextOpenEntry($blogLabelId,$entry,SOYCMS_NOW);
 
 		}catch(Exception $e){
 			return new LabeledEntry();
@@ -426,7 +426,7 @@ class EntryLogic extends SOY2LogicBase{
 		$dao->setLimit(1);
 
 		try{
-			$prev = $dao->getPrevOpenEntry($blogLabelId,$entry,time());
+			$prev = $dao->getPrevOpenEntry($blogLabelId,$entry,SOYCMS_NOW);
 		}catch(Exception $e){
 			return new LabeledEntry();
 		}
@@ -484,7 +484,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getOpenEntryCountByLabelIds($labelIds){
 		$dao = $this->getLabeledEntryDAO();
-		$dao->getOpenEntryCountByLabelIds($labelIds,time());
+		$dao->getOpenEntryCountByLabelIds($labelIds,SOYCMS_NOW);
 		$count = $dao->getRowCount();
 		return $count;
 	}
@@ -926,7 +926,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		$labelIds = array_map(create_function('$val','return (int)$val;'),$labelIds);
 
-		$binds = array(":now"=>time());
+		$binds = array(":now"=>SOYCMS_NOW);
 
 
 		$spanSQL = 'SELECT max(cdate) as max, min(cdate) as min ' .
@@ -966,7 +966,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				$result = $this->executeQuery($countSQL,array(
 					":begin"=>$begin,
 					":end"=>$end,
-					":now"=>time()
+					":now"=>SOYCMS_NOW
 				));
 
 				$ret_val[mktime (1, 1, 1, $m, 1, $y)] = $result[0]['total'];
@@ -987,7 +987,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		$labelIds = array_map(create_function('$val','return (int)$val;'),$labelIds);
 
-		$binds = array(":now"=>time());
+		$binds = array(":now"=>SOYCMS_NOW);
 
 
 		$spanSQL = 'SELECT max(cdate) as max, min(cdate) as min ' .
@@ -1020,7 +1020,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			$result = $this->executeQuery($countSQL,array(
 				":begin"=>$begin,
 				":end"=>$end,
-				":now"=>time()
+				":now"=>SOYCMS_NOW
 			));
 
 			$ret_val[mktime (1, 1, 1, 1, 1, $y)] = $result[0]['total'];

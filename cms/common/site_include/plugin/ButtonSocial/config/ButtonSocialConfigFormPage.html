@@ -1,16 +1,15 @@
 <form soy:id="form">
 	<div class="table-responsive">
-		<table class="list" style="width:80%;">
+		<table class="table" style="width:80%;">
 			<tr>
 				<th>Facebookのapp_idとadminsの設定</th>
 			</tr>
 			<tr>
 				<td>
-					app_id：<input type="text" soy:id="app_id"> admins：
-					<input type="text" soy:id="admins"><br /> descripions：
-					<input type="text" soy:id="description"><br /> サムネイルのパス：
-					<input type="text" soy:id="image"><br /> ※サムネイル(og:image)を設定しなければ、og:imageタグは出力されません。
-					<br /> ※値を空にしてテンプレートにog:imageを直接記述することもできます。
+					app_id：<input type="text" soy:id="app_id" class="form-control"><br> admins：
+					<input type="text" soy:id="admins" class="form-control"><br> APIバージョン：
+					<small><a href="https://developers.facebook.com/docs/apps/changelog?locale=ja_JP" target="_blank">Facebookプラットフォーム更新履歴</a></small> <input type="text" soy:id="app_ver" class="form-control" placeholder="v2.10"><br> descripions：
+					<input type="text" soy:id="description" class="form-control"><br> サムネイル (og:image)のパス：<input type="text" soy:id="image" class="form-control"><br> ※サムネイル(og:image)を設定しなければ、og:imageタグは出力されません。ここで設定せずにテンプレートにog:imageを直接記述することもできます。
 				</td>
 			</tr>
 			<tr>
@@ -18,7 +17,7 @@
 			</tr>
 			<tr>
 				<td>
-					key：<input type="text" soy:id="mixi_like_key">
+					key：<input type="text" soy:id="mixi_like_key" class="form-control">
 				</td>
 			</tr>
 			<tr>
@@ -26,22 +25,22 @@
 			</tr>
 			<tr>
 				<td>
-					key：<input type="text" soy:id="mixi_check_key">
+					key：<input type="text" soy:id="mixi_check_key" class="form-control">
 				</td>
 			</tr>
 			<tr>
-				<th>fb_rootの挿入設定</th>
+				<th>fb_rootの挿入設定<small><!-- sns:id="facebook_like_button" /-->を記述するページにチェックを入れてください。</small></th>
 			</tr>
 			<tr>
 				<td>
 					<ul>
 						<li soy:id="page_list" style="list-style:none">
-							<input type="hidden" soy:id="page_item_hidden" /><input type="checkbox" soy:id="page_item" />
+							<input type="hidden" soy:id="page_item_hidden"><input type="checkbox" soy:id="page_item">
 							<ul soy:id="for_blog_page" style="list-style:none">
-								<li><input type="hidden" soy:id="blog_top_hidden" /><input type="checkbox" soy:id="blog_top" /></li>
-								<li><input type="hidden" soy:id="blog_month_hidden" /><input type="checkbox" soy:id="blog_month" /></li>
-								<li><input type="hidden" soy:id="blog_category_hidden" /><input type="checkbox" soy:id="blog_category" /></li>
-								<li><input type="hidden" soy:id="blog_entry_hidden" /><input type="checkbox" soy:id="blog_entry" /></li>
+								<li><input type="hidden" soy:id="blog_top_hidden"><input type="checkbox" soy:id="blog_top"></li>
+								<li><input type="hidden" soy:id="blog_month_hidden"><input type="checkbox" soy:id="blog_month"></li>
+								<li><input type="hidden" soy:id="blog_category_hidden"><input type="checkbox" soy:id="blog_category"></li>
+								<li><input type="hidden" soy:id="blog_entry_hidden"><input type="checkbox" soy:id="blog_entry"></li>
 							</ul soy:id="for_blog_page">
 						</li soy:id="page_list">
 					</ul>
@@ -49,7 +48,7 @@
 			</tr>
 			<tr>
 				<td>
-					<input type="submit" name="save" value="保存" />
+					<input type="submit" name="save" value="保存" class="btn btn-primary btn-lg">
 				</td>
 			</tr>
 		</table>
@@ -57,34 +56,44 @@
 </form>
 
 <h3>テンプレートへの記述例</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;;">
 &lt;!-- ヘッダ内 --&gt;
 <strong>&lt;!-- sns:id="og_meta" /--&gt;</strong>
 <strong>&lt;!-- sns:id="facebook_meta" /--&gt;</strong>
+</pre>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;;">
 &lt;!-- ページに対するボタンの設置 --&gt;
 <strong>&lt;!-- sns:id="facebook_like_button" /--&gt;</strong>
 <strong>&lt;!-- sns:id="twitter_button" /--&gt;</strong>
 <strong>&lt;!-- sns:id="hatena_button" /--&gt;</strong>
 <strong>&lt;!-- sns:id="google_plus_button" /--&gt;</strong>
 <strong>&lt;!-- sns:id="pocket_button" /--&gt;</strong>
-&lt;!-- 詳細ページに対するボタンの設置 b_block:id="entry_list"内 --&gt;
+</pre>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- 詳細ページに対するボタンの設置（b_block:id="entry_list"内で使用してください）--&gt;
 <strong>&lt;!-- cms:id="facebook_like_button" /--&gt;</strong>
 <strong>&lt;!-- cms:id="twitter_button" /--&gt;</strong>
 <strong>&lt;!-- cms:id="hatena_button" /--&gt;</strong>
 <strong>&lt;!-- cms:id="google_plus_button" /--&gt;</strong>
+<strong>&lt;!-- cms:id="mixi_check_button" /--&gt;</strong>
+<strong>&lt;!-- cms:id="mixi_like_button" /--&gt;</strong>
 <strong>&lt;!-- cms:id="pocket_button" /--&gt;</strong>
 </pre>
 
 <h3>出力されるメタタグ</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
-&lt;meta property="og:title" content="**************" /&gt;
-&lt;meta property="og:site_name" content="**************" /&gt;
-&lt;meta property="og:url" content="**************" /&gt;
-&lt;meta property="og:type" content="****" /&gt;
-&lt;meta property="og:image" content="**************" /&gt;
-&lt;meta property="og:description" content="**************" /&gt;
-&lt;meta property="fb:app_id" content="**************" /&gt;
-&lt;meta property="fb:admins" content="**************" /&gt;
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;;">
+&lt;!-- sns:id="og_meta" /--&gt;で出力されるもの
+&lt;meta property="og:title" content="**************" &gt;
+&lt;meta property="og:site_name" content="**************" &gt;
+&lt;meta property="og:url" content="**************" &gt;
+&lt;meta property="og:type" content="****" &gt;
+&lt;meta property="og:image" content="**************" &gt;
+&lt;meta property="og:description" content="**************" &gt;
+</pre>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;;">
+&lt;!-- sns:id="og_meta" /--&gt;で出力されるもの
+&lt;meta property="fb:app_id" content="**************" &gt;
+&lt;meta property="fb:admins" content="**************" &gt;
 </pre>
 <p style="padding:3px 40px">※****の部分には自動で値が入ります</p>
 

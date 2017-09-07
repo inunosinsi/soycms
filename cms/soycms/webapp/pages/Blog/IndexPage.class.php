@@ -3,11 +3,17 @@
 class IndexPage extends CMSWebPageBase{
 
 	function __construct($arg){
-
 		//最初の値はブログページID
-		$id = @$arg[0];
+		if(!is_array($arg) || !count($arg) || !strlen($arg[0])){
+			$this->jump('Blog.List');
+		}
 
-		if(!$id)$this->jump("Blog.List");
+		$id = $arg[0];
+
+		//公開権限がない場合は記事一覧へ
+		if(!UserInfoUtil::hasEntryPublisherRole()){
+			$this->jump("Blog.EntryList.".$id);
+		}
 
 		parent::__construct();
 
@@ -54,10 +60,6 @@ class IndexPage extends CMSWebPageBase{
 		/**
 		 * ToolBox
 		 */
-		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_DYNAMIC_EDIT"),SOY2PageController::createLink("Page.Preview.".$id),false,"this.target = '_blank'");
-		if($page->isActive() == Page::PAGE_ACTIVE && $page->getGenerateTopFlag()){
-			CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_SHOW_BLOGPAGE"),UserInfoUtil::getSiteUrl() . $page->getTopPageURL(),false,"this.target = '_blank'");
-		}
 		CMSToolBox::addPageJumpBox();
 
 	}

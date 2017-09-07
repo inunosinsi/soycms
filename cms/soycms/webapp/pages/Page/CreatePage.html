@@ -26,14 +26,14 @@
 					<input soy:id="page_type_blog" type="radio">
 					<input soy:id="page_type_mobile" type="radio">
 					<input soy:id="page_type_application" type="radio">
-				<span class="help-block">後から変更することは出来ません</span>
+				<span class="help-block">ページの種類は作成後に変更することはできません</span>
 			</div>
 
-			<div class="form-group">
+			<div class="form-group" soy:id="has_template">
 				<label>ページ雛形を選択<span soy:message="HELP_PAGE_TEMPLATE" /></label>
 				<select id="normal_template_select" soy:id="normal_template_select" class="form-control"></select>
 				<select id="blog_template_select" soy:id="blog_template_select" class="form-control" style="display:none"></select>
-			</div>
+			</div soy:id="has_template">
 
 			<div class="form-group">
 				<label>親ページ<span soy:message="HELP_PAGE_OWNER_PAGE" /></label>

@@ -87,7 +87,9 @@ class EntryPage extends CMSEntryEditorPageBase{
 		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_ENTRY_HISTORY"),SOY2PageController::createLink("Entry.History.".$this->id),true);
 
 		//ラベル管理へのリンク(内部で書き換え可能にする)
-		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_LABEL_MANAGER"),SOY2PageController::createLink("Label"));
+		if(UserInfoUtil::hasSiteAdminRole()){
+			CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_LABEL_MANAGER"),SOY2PageController::createLink("Label"));
+		}
 
 		//雛形へのリンク
 		if(CMSUtil::isEntryTemplateEnabled()){
@@ -110,7 +112,9 @@ class EntryPage extends CMSEntryEditorPageBase{
 		CMSToolBox::addHTML($toolBoxForSelectTemplte);
 
 		//ページジャンプ
-		CMSToolBox::addPageJumpBox();
+		if(UserInfoUtil::hasEntryPublisherRole()){
+			CMSToolBox::addPageJumpBox();
+		}
 
 		//WYSIWYG設定 CMSEntryEditorPageBase#setupWYSIWYG
 		$this->setupWYSIWYG($this->id, $this->detail->getBlogLabelId(),false);

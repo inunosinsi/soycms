@@ -16,7 +16,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -33,12 +33,12 @@ class CustomAliasPlugin{
 
 	public static function register(){
 		include_once(dirname(__FILE__)."/config_form.php");
-		
+
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		if(is_null($obj)){
 			$obj = new CustomAliasPlugin();
 		}
-		
+
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 
@@ -52,11 +52,11 @@ class CustomAliasPlugin{
 		$form->execute();
 		return $form->getObject();
 	}
-	
+
 	function onEntryCopy($ids){
 		$oldId = $ids[0];
 		$newId = $ids[1];
-		
+
 		if($this->useId){
 			$entry = $this->getEntry($newId);
 			if($entry){
@@ -68,7 +68,7 @@ class CustomAliasPlugin{
 			}
 		}
 	}
-	
+
 	function onEntryUpdate($arg){
 		$entry = $arg["entry"];
 		if($this->useId){
@@ -79,7 +79,7 @@ class CustomAliasPlugin{
 			}
 		}
 	}
-	
+
 	function onCallCustomField(){
 		if($this->useId){
 			$html = "";
@@ -103,15 +103,15 @@ class CustomAliasPlugin{
 			$arg = SOY2PageController::getArguments();
 			$pageId = @$arg[0];
 			$entryId = @$arg[1];
-	
+
 			$page = $this->getBlogPage($pageId);
 			$alias = $this->getAlias($entryId);
-			
+
 			$html = "";
 			if($page){
 				$entryPageUri = CMSUtil::getSiteUrl().$page->getEntryPageURL();
 				$entryUri = $entryPageUri.rawurlencode($alias);
-	
+
 				$html .= "<div class=\"section custom_alias\">";
 				$html .= "<p class=\"sub\"><label for=\"custom_alias_input\">カスタムエイリアス（ブログのエントリーページのURL）</label></p>";
 				$html .= $entryPageUri;
@@ -122,7 +122,7 @@ class CustomAliasPlugin{
 		}
 		return $html;
 	}
-	
+
 	function getEntry($entryId){
 		try{
 			$dao = SOY2DAOFactory::create("cms.EntryDAO");
@@ -132,7 +132,7 @@ class CustomAliasPlugin{
 		}
 		return $entry;
 	}
-	
+
 	function getAlias($entryId){
 		$entry = $this->getEntry($entryId);
 		if($entry){
@@ -141,7 +141,7 @@ class CustomAliasPlugin{
 			return $entryId;
 		}
 	}
-	
+
 	function getBlogPage($pageId){
     	$dao = SOY2DAOFactory::create("cms.BlogPageDAO");
     	try{
@@ -151,7 +151,7 @@ class CustomAliasPlugin{
     	}
     	return $page;
 	}
-	
+
 	function setUseId($useId){
 		$this->useId = $useId;
 	}

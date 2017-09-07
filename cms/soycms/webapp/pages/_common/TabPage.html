@@ -44,5 +44,7 @@
 
 					<ul class="nav">
 						<li class="visible-xs"><a soy:id="account_link"  onclick="return common_click_to_layer(this,{header:'アカウント情報'});" href="/admin/index.php/Account"><i class="fa fa-user fa-fw"></i>管理者情報（<!-- soy:id="adminname" /-->）</a></li>
+						<li class="visible-xs" soy:display="for_default_user"><a href="#" soy:id="delete_cache_link"><i class="fa fa-refresh fa-fw"></i>キャッシュ削除</a></li>
+						<li class="visible-xs" soy:id="show_admin_link"><a soy:id="admin_link"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>
 						<li class="visible-xs"><a soy:link="Login.Logout" onclick="return confirm('ログアウトしますか？');"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
 					</ul>

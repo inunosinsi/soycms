@@ -13,25 +13,15 @@ class ListPage extends CMSWebPageBase{
 			"list"=>$list
 		));
 
-		if(count($list)>0){
-			//do nothing
-			$this->createAdd("exists_blog_page","HTMLModel",array(
-				"visible"=>true
-			));
-			$this->createAdd("no_blog_message","HTMLModel",array(
-				"visible"=>false
-			));
-		}else{
-			$this->createAdd("exists_blog_page","HTMLModel",array(
-				"visible"=>false
-			));
-			$this->createAdd("no_blog_message","HTMLModel",array(
-				"visible"=>true
-			));
-			$this->createAdd("link_to_create_blog","HTMLModel",array(
-				"visible"=>UserInfoUtil::hasSiteAdminRole()
-			));
-		}
+		$this->createAdd("exists_blog_page","HTMLModel",array(
+				"visible"=> count($list)
+		));
+		$this->createAdd("no_blog_message","HTMLModel",array(
+				"visible"=> !count($list)
+		));
+		$this->createAdd("link_to_create_blog","HTMLModel",array(
+				"visible"=> !count($list) && UserInfoUtil::hasSiteAdminRole()
+		));
 
 		HTMLHead::addLink("page_list",array(
 			"type" => "text/css",
@@ -146,7 +136,8 @@ class BlogPageList extends HTMLList{
 		$this->createAdd("uri","HTMLLabel",array("text"=>$entity->getUri()));
 		$this->createAdd("update_date","HTMLLabel",array("text"=>date('Y-m-d',$entity->getUdate())));
 		$this->createAdd("edit_link","HTMLLink",array(
-			"link" => SOY2PageController::createLink("Blog") ."/".$entity->getId()
+			"link" => SOY2PageController::createLink("Blog") ."/".$entity->getId(),
+			"visible" => (UserInfoUtil::hasEntryPublisherRole()),
 		));
 		$this->createAdd("entry_link","HTMLLink",array(
 			"link" => SOY2PageController::createLink("Blog.EntryList") ."/".$entity->getId()
@@ -158,7 +149,7 @@ class BlogPageList extends HTMLList{
 
 		$this->createAdd("config_link","HTMLLink",array(
 			"link" => SOY2PageController::createLink("Blog.Config") ."/".$entity->getId(),
-			 "visible" => UserInfoUtil::hasSiteAdminRole()
+			"visible" => UserInfoUtil::hasSiteAdminRole()
 		));
 		$this->createAdd("template_link","HTMLLink",array(
 			"link" => SOY2PageController::createLink("Blog.Template") ."/".$entity->getId(),
@@ -166,10 +157,12 @@ class BlogPageList extends HTMLList{
 		));
 
 		$this->createAdd("trackback_link","HTMLLink",array(
-			"link" => SOY2PageController::createLink("Blog.Trackback") ."/".$entity->getId()
+			"link" => SOY2PageController::createLink("Blog.Trackback") ."/".$entity->getId(),
+			"visible" => UserInfoUtil::hasEntryPublisherRole(),//記事公開権限のある場合のみ
 		));
 		$this->createAdd("comment_link","HTMLLink",array(
-			"link" => SOY2PageController::createLink("Blog.Comment") ."/".$entity->getId()
+			"link" => SOY2PageController::createLink("Blog.Comment") ."/".$entity->getId(),
+			"visible" => UserInfoUtil::hasEntryPublisherRole(),//記事公開権限のある場合のみ
 		));
 
 		$trashLink = "";

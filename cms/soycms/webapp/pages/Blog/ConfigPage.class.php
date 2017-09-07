@@ -300,11 +300,9 @@ class ConfigPage extends CMSWebPageBase{
 		));
 
 		//ラベルの追加
-		if(count($labels) != 0){
-			CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_ADD_NEW_LABEL"),"javascript:void(0);",false,"create_label();");
-		}else{
-			DisplayPlugin::hide("only_exists_label");
-		}
+// 		if(count($labels) != 0){
+// 			CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_ADD_NEW_LABEL"),"javascript:void(0);",false,"create_label();");
+// 		}
 
 		//ラベルリストのCSS
 		HTMLHead::addLink("editor.css",array(
@@ -321,7 +319,6 @@ class ConfigPage extends CMSWebPageBase{
 		));
 
 		//ツールボックス
-		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_DYNAMIC_EDIT"),SOY2PageController::createLink("Page.Preview.".$this->id),false,"this.target = '_blank'");
 		if($page->isActive() == Page::PAGE_ACTIVE){
 			$pageUrl = CMSUtil::getSiteUrl() . ( (strlen($page->getUri()) >0) ? $page->getUri() ."/" : "" ) ;
 

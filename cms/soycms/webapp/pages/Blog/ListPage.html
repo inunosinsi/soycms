@@ -12,13 +12,19 @@
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
+					<!-- soy:display="for_site_administrator" -->
 					<h1 class="page-header"><small><a soy:link="Page">ページ</a> &gt;</small><a soy:link="Blog.List">ブログページ一覧</a></h1>
+					<!-- /soy:display="for_site_administrator" -->
+					<!-- soy:display="for_not_site_administrator" -->
+					<h1 class="page-header"><a soy:link="Blog.List">ブログ</a></h1>
+					<!-- /soy:display="for_not_site_administrator" -->
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
 
 			<div soy:page="_common.MessagePanel" isOverWrite="true"></div>
 
+			<!-- soy:display="for_site_administrator" -->
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="panel panel-default">
@@ -32,6 +38,7 @@
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
+			<!-- /soy:display="for_site_administrator" -->
 
 			<div class="row">
 				<div class="col-lg-12">

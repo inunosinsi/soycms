@@ -104,22 +104,24 @@ class Page {
     	return $this->pageConfig;
     }
 
-    function setPageConfig($pageConfig) {
+	function setPageConfig($pageConfig) {
 
     	if(is_object($pageConfig)){
-
     		$this->pageConfig = serialize($pageConfig);
     		$this->_pageConfig = $pageConfig;
-
     	}else{
-
     		$this->pageConfig = $pageConfig;
-    		$this->_pageConfig = @unserialize($pageConfig);
-
+    		if( strlen($pageConfig) && strpos($pageConfig, 'O:8:"stdClass"') === 0){
+    			$this->_pageConfig = unserialize($pageConfig);
+    		}
     	}
     }
 
     function getPageConfigObject(){
+    	if(is_null($this->_pageConfig)){
+    		$this->_pageConfig = new stdClass();
+    		$this->pageConfig = serialize($this->_pageConfig);
+    	}
     	return $this->_pageConfig;
     }
 
@@ -347,14 +349,17 @@ class Page {
    		}
    	}
 
-   	function getPageTitleFormat() {
-   		return @$this->getPageConfigObject()->PageTitleFormat;
+	function getPageTitleFormat() {
+   		$config = $this->getPageConfigObject();
+   		if(!property_exists($config, "PageTitleFormat")){
+   			$config->PageTitleFormat = "";
+   		}
+   		return $config->PageTitleFormat;
    	}
    	function setPageTitleFormat($pageTitleFormat) {
    		$pageConfig = $this->getPageConfigObject();
-			if(is_null($pageConfig)) $pageConfig = new stdClass;
-			$pageConfig->PageTitleFormat = $pageTitleFormat;
-			$this->setPageConfig($pageConfig);
+   		$pageConfig->PageTitleFormat = $pageTitleFormat;
+   		$this->setPageConfig($pageConfig);
    	}
 
    	function getIcon() {
@@ -377,4 +382,3 @@ class Page {
 
 	}
 }
-?>

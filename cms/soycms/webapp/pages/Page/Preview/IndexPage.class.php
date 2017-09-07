@@ -202,6 +202,7 @@ class IndexPage extends CMSWebPageBase {
 
 		$pages = $result->getAttribute("PageArray");
 
+		$blogDao = SOY2DAOFactory::create("cms.BlogPageDAO");
 		$options = "";
 		foreach($result->getAttribute("PageTree") as $key => $value){
 
@@ -212,7 +213,6 @@ class IndexPage extends CMSWebPageBase {
 
 			//ブログページでトップページが非表示なら選択肢から除外する
 			if($pages[$key]->isBlog()){
-				$blogDao = SOY2DAOFactory::create("cms.BlogPageDAO");
 				$blog = $blogDao->cast($pages[$key]);
 				if(!$blog->getRawGenerateTopFlag()){
 					continue;

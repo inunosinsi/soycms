@@ -1,9 +1,12 @@
 <?php
 //クライアント側からの設定ファイル
 
-/* こっからcommon.inc.php のコピー */
+/* ここからcommon.inc.php のコピー */
 //PHPの設定
 include_once(dirname(__FILE__)."/config/php.config.php");
+
+//現在時刻
+define("SOYCMS_NOW",time());
 
 //SOY2のinclude
 include_once("lib/soy2_build.php");

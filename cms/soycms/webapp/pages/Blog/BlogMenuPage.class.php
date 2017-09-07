@@ -36,10 +36,14 @@ class BlogMenuPage extends CMSHTMLPageBase{
 		/* ブログメニュー */
 
 		//上部メニューのリンク
-		/*$this->createAdd("blog_top_link","HTMLLink",array(
-			"link" => SOY2PageController::createLink("Blog.".$id),
-			"class" => $this->getMenuStatus("blog_top_link")
-		));*/
+		$this->createAdd("blog_top_link","HTMLLink",array(
+				"link" => SOY2PageController::createLink("Blog.".$id),
+				"class" => $this->getMenuStatus("blog_top_link")
+		));
+		$this->addModel("blog_top_link_wrapper",array(
+				"class" => $this->getMenuStatus("blog_top_link"),
+				"visible" => (UserInfoUtil::hasEntryPublisherRole())
+		));
 
 		$this->createAdd("blog_entry_list_link","HTMLLink",array(
 				"link" => SOY2PageController::createLink("Blog.EntryList.".$id),
@@ -72,7 +76,8 @@ class BlogMenuPage extends CMSHTMLPageBase{
 				"class" => $this->getMenuStatus("blog_trackback_link")
 		));
 		$this->addModel("blog_trackback_link_wrapper",array(
-				"class" => $this->getMenuStatus("blog_trackback_link")
+				"class" => $this->getMenuStatus("blog_trackback_link"),
+				"visible" => UserInfoUtil::hasEntryPublisherRole(),//記事公開権限のある場合のみ
 		));
 
 		$this->createAdd("blog_comment_link","HTMLLink",array(
@@ -80,7 +85,8 @@ class BlogMenuPage extends CMSHTMLPageBase{
 				"class" => $this->getMenuStatus("blog_comment_link")
 		));
 		$this->addModel("blog_comment_link_wrapper",array(
-				"class" => $this->getMenuStatus("blog_comment_link")
+				"class" => $this->getMenuStatus("blog_comment_link"),
+				"visible" => UserInfoUtil::hasEntryPublisherRole(),//記事公開権限のある場合のみ
 		));
 
 		$this->createAdd("blog_template_link","HTMLLink",array(

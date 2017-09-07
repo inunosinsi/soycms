@@ -32,7 +32,7 @@
 							<div class="panel-body">
 								<a class="btn btn-primary" soy:id="create_link">サイトの作成</a>
 								<a class="btn btn-primary" soy:id="addAdministrator">管理者の追加</a>
-								<a class="btn btn-primary" href="javascript:void(0);" onclick="$('#cache_form').submit();">キャッシュのクリア</a>
+								<a class="btn btn-primary" href="javascript:void(0);" onclick="$('#cache_form').submit();">キャッシュの削除</a>
 									<form soy:id="cache_form" id="cache_form" method="post" style="display:none;">
 									<input type="hidden" name="cache_clear" value="1" />
 									</form soy:id="cache_form">
@@ -55,6 +55,9 @@
 						</div>
 						<div class="panel-collapse collapse in" id="siteList">
 							<div class="panel-body row-eq-height">
+								<!-- soy:id="no_site" -->
+									サイトが作成されていないか、ログインできるサイトがありません。
+								<!-- /soy:id="no_site" -->
 								<div class="col-md-3" soy:id="list">
 									<div class="panel panel-default text-nowrap">
 										<div class="panel-heading"  soy:id="site_name">

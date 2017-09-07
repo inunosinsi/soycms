@@ -81,7 +81,7 @@ class CMSToolBox {
 		$page = SOY2PageController::getRequestPath();
 		if($page == "Page.Detail" || $page == "Page.Mobile.Detail" || $page == "Page.Application.Detail" || strpos($page, "Blog") === 0){
 			$args = SOY2PageController::getArguments();
-			$currentPageId = (isset($args[0])) ? (int)$args[0] : 0;
+			$currentPageId = (is_array($args) && count($args)) ? array_shift($args) : null;
 			$_tmp = (isset($args[1])) ? $args[1] : null;
 		}
 

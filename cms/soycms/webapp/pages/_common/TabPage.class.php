@@ -7,7 +7,7 @@ class TabPage extends CMSHTMLPageBase {
 	 */
 	//シンプルモードのタブ
 	private $activeTabRulesForSimpleMode = array(
-			'Blog.List' => 'simple_blog',
+			'Blog' => 'simple_blog',
 			'Simple.Index' => 'simple_dashboard',
 			'Simple.Entry'=> 'simple_entry',
 			'Simple' => 'simple_dashboard',
@@ -37,7 +37,7 @@ class TabPage extends CMSHTMLPageBase {
 		$requestPath = SOY2PageController::getRequestPath();
 
 		if($this->isSimpleMode){
-			foreach($this->activeTabRulesForSimpleModeas as $uri => $tabId){
+			foreach($this->activeTabRulesForSimpleMode as $uri => $tabId){
 				if(strpos($requestPath, $uri) === 0){
 					$this->activeTab = $tabId;
 					break;
@@ -133,7 +133,23 @@ class TabPage extends CMSHTMLPageBase {
 				:SOY2PageController::createRelativeLink("../admin/index.php/Account")
 		));
 
+		//CMS管理へのリンク
+		$this->createAdd("admin_link","HTMLLink",array(
+				"link" => SOY2PageController::createRelativeLink("../admin/"),
+		));
+		$this->addModel("show_admin_link","HTMLLink",array(
+				"visible" => !defined("SOYCMS_ASP_MODE") && !UserInfoUtil::hasOnlyOneRole()
+		));
 
+		//キャッシュ削除（処理はUpperMenuPage）
+		$site = UserInfoUtil::getSite();
+		$param = UpperMenuPage::PARAM_KEY_CLEAR_CACHE . "&". UpperMenuPage::PARAM_KEY_TARGET_SITE ."=" . $site->getSiteId() . ( strlen($_SERVER['QUERY_STRING']) ? "&".$_SERVER['QUERY_STRING'] : "");
+		$this->addActionLink("delete_cache_link",array(
+				"link" => "?".$param,
+		));
+
+
+		//AppのDBをサイト内に置く場合のメニュー
 		$this->displayAppLink();
 
 	}

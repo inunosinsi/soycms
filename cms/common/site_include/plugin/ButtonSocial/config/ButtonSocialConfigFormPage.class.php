@@ -1,90 +1,92 @@
 <?php
 
 class ButtonSocialConfigFormPage extends WebPage{
-	
+
 	private $pluginObj;
-	
-	function __construct(){}
-	
+
+	function __construct(){
+
+	}
+
 	function doPost(){
-		
+
 		if(soy2_check_token() && isset($_POST["Config"])){
-			
+
 			$this->pluginObj->setAppId($_POST["Config"]["app_id"]);
 			$this->pluginObj->setAdmins($_POST["Config"]["admins"]);
 			$this->pluginObj->setDescription($_POST["Config"]["description"]);
 			$this->pluginObj->setImage($_POST["Config"]["image"]);
 			$this->pluginObj->setMixiCheckKey($_POST["Config"]["mixi_check_key"]);
 			$this->pluginObj->setMixiLikeKey($_POST["Config"]["mixi_like_key"]);
-			
+
 			if(isset($_POST["config_per_page"])){
 				$this->pluginObj->config_per_page = $_POST["config_per_page"];
 			}
 			if(isset($_POST["config_per_blog"])){
 				$this->pluginObj->config_per_blog = $_POST["config_per_blog"];
 			}
-			
+
 			CMSPlugin::savePluginConfig($this->pluginObj->getId(), $this->pluginObj);
 			CMSPlugin::redirectConfigPage();
 		}
-		
+
 	}
-	
+
 	function execute(){
-		if(method_exists("WebPage", "WebPage")){
-			WebPage::WebPage();
-		}else{
-			parent::__construct();
-		}
-		
+		parent::__construct();
+
 		$this->addForm("form");
-		
+
 		$this->addInput("app_id", array(
 			"name" => "Config[app_id]",
 			"value" => $this->pluginObj->getAppId(),
 			"style" => "ime-mode:inactive;"
 		));
-		
+
 		$this->addInput("admins", array(
 			"name" => "Config[admins]",
 			"value" => $this->pluginObj->getAdmins(),
 			"style" => "ime-mode:inactive;"
 		));
-		
+
+		$this->addInput("app_ver", array(
+				"name" => "Config[app_ver]",
+				"value" => strlen($this->pluginObj->getFbAppVer()) ? $this->pluginObj->getFbAppVer() : "v2.10",
+				"style" => "ime-mode:inactive;"
+		));
+
 		$this->addInput("description", array(
 			"name" => "Config[description]",
 			"value" => $this->pluginObj->getDescription(),
-			"style" => "width:80%"
 		));
-		
+
 		$this->addInput("image", array(
 			"name" => "Config[image]",
 			"value" => $this->pluginObj->getImage(),
-			"style" => "width:50%;"
 		));
-		
+
 		$this->addInput("mixi_like_key", array(
 			"name" => "Config[mixi_like_key]",
 			"value" => $this->pluginObj->getMixiLikeKey(),
 			"style" => "ime-mode:inactive;"
 		));
-		
+
 		$this->addInput("mixi_check_key", array(
 			"name" => "Config[mixi_check_key]",
 			"value" => $this->pluginObj->getMixiCheckKey(),
 			"style" => "ime-mode:inactive;"
 		));
-		
+
 		//挿入するページの指定
 		SOY2::import('site_include.CMSPage');
 		SOY2::import('site_include.CMSBlogPage');
-		
+
 		$this->createAdd("page_list", "PageList", array(
 			"list"  => $this->getPages(),
 			"pluginObj" => $this->pluginObj
 		));
 	}
-	
+
 	function getPages(){
     	$result = SOY2ActionFactory::createInstance("Page.PageListAction", array(
     		"offset" => 0,
@@ -96,7 +98,7 @@ class ButtonSocialConfigFormPage extends WebPage{
 
     	return $list;
 	}
-	
+
 	function setPluginObj($pluginObj){
 		$this->pluginObj = $pluginObj;
 	}

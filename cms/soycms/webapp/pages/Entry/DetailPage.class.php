@@ -102,7 +102,9 @@ class DetailPage extends CMSEntryEditorPageBase{
 		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_ENTRY_HISTORY"),SOY2PageController::createLink("Entry.History.".$this->id),true);
 
 		//ラベル管理へのリンク(内部で書き換え可能にする)
-		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_LABEL_MANAGER"),SOY2PageController::createLink("Label"));
+		if(UserInfoUtil::hasSiteAdminRole()){
+			CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_LABEL_MANAGER"),SOY2PageController::createLink("Label"));
+		}
 
 		//ラベルの追加
 		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_ADD_NEW_LABEL"),"javascript:void(0);",false,"create_label();");
@@ -245,14 +247,16 @@ class DetailPage extends CMSEntryEditorPageBase{
 		$this->createAdd("content","HTMLTextArea",array(
 			"value"=>$entry->getContent(),
 			"name"=>"content",
-			"class"=>self::getEditorClass()
+			"class"=>self::getEditorClass(),
+			"rows" => max(3,count(explode("\n",$entry->getContent())))
 		));
 
 
 		$this->createAdd("more","HTMLTextArea",array(
 			"value"=>$entry->getMore(),
 			"name"=>"more",
-			"class"=>self::getEditorClass()
+			"class"=>self::getEditorClass(),
+			"rows" => max(3,count(explode("\n",$entry->getContent()))),
 		));
 
 		$this->createAdd("style","HTMLInput",array(

@@ -19,6 +19,12 @@ class CommentDetailPage extends CMSWebPageBase{
 		$commentId = @$arg[0];
 		$this->id = $commentId;
 
+		//記事公開管理者権限が必要
+		if(!UserInfoUtil::hasEntryPublisherRole()){
+			echo CMSMessageManager::get("SOYCMS_ERROR");
+			exit;
+		}
+
 		$result = $this->run("EntryComment.CommentDetailAction",array("commentId"=>$commentId));
 
 		if(!$result->success()){

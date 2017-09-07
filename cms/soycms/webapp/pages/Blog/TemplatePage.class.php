@@ -180,7 +180,9 @@ class TemplatePage extends CMSWebPageBase{
 		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_TEMPLATE_HISTORY"),SOY2PageController::createLink("Blog.TemplateHistory.".$this->id.".".$this->mode),true);
 		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_DYNAMIC_EDIT"),SOY2PageController::createLink("Page.Preview.".$this->id),false,"this.target = '_blank'");
 		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_DOWNLOAD_TEMPLATE"),SOY2PageController::createLink("Blog.ExportTemplate.".$this->id.".".$this->mode),false);
-		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_APPLY_WEBPAGE_TEMPLATEPACK"),SOY2PageController::createLink("Blog.ApplyTemplate.".$page->getId().".".$this->mode),true);
+		if(CMSUtil::isPageTemplateEnabled()){
+			CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_APPLY_WEBPAGE_TEMPLATEPACK"),SOY2PageController::createLink("Blog.ApplyTemplate.".$page->getId().".".$this->mode),true);
+		}
 		CMSToolBox::addPageJumpBox();
 	}
 }

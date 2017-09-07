@@ -2,7 +2,12 @@
 
 class UpperMenuPage extends CMSHTMLPageBase{
 
+	const PARAM_KEY_CLEAR_CACHE = "clear_cache";
+	const PARAM_KEY_TARGET_SITE = "site";
+
 	function execute(){
+
+		$this->clearCache();
 
 		//sitePath
 		$this->addLink("sitepath", array(
@@ -39,28 +44,52 @@ class UpperMenuPage extends CMSHTMLPageBase{
 			"visible" => UserInfoUtil::hasSiteAdminRole(),
 		));
 
-		//エクストラモード周り 権限まわりの二重チェック config.ext.phpでも行っている
-		$extMode = false;
-		$extConfigFilePath = dirname(SOY2HTMLConfig::PageDir()) . "/config.ext.php";
-		if(file_exists($extConfigFilePath) && defined("EXT_MODE_DERECTORY_NAME")){
-			$extDir = dirname(SOY2HTMLConfig::PageDir()) . "/" . EXT_MODE_DERECTORY_NAME;
-			if(file_exists($extDir)){
-				$extMode = true;
-			}
-		}
-
 		//config.ext.phpがあり、extモード用のディレクトリがあることを確認してからリンクを表示する
 		$this->addModel("display_ext_link", array(
-			"visible" => ($extMode)
+			"visible" => file_exists(dirname(SOY2HTMLConfig::PageDir()) . "/config.ext.php") && defined("EXT_MODE_DERECTORY_NAME") && file_exists(dirname(SOY2HTMLConfig::PageDir()) . "/" . EXT_MODE_DERECTORY_NAME),
 		));
 		$this->addLink("ext_link", array(
-				"link" => SOY2PageController::createLink(SOY2PageController::getRequestPath().".".implode(".",SOY2PageController::getArguments()))."?ext_mode",
+			"link" => SOY2PageController::createLink(SOY2PageController::getRequestPath().".".implode(".",SOY2PageController::getArguments()))."?ext_mode",
 		));
 
+		//アカウント情報
 		$this->addLink("account_link", array(
 			"link" => (defined("SOYCMS_ASP_MODE")) ?
 						 SOY2PageController::createLink("Login.UserInfo")
 						:SOY2PageController::createRelativeLink("../admin/index.php/Account")
 		));
+
+		//キャッシュ削除
+		$site = UserInfoUtil::getSite();
+		$param = self::PARAM_KEY_CLEAR_CACHE . "&". self::PARAM_KEY_TARGET_SITE ."=" . $site->getSiteId() . ( strlen($_SERVER['QUERY_STRING']) ? "&".$_SERVER['QUERY_STRING'] : "");
+		$this->addActionLink("delete_cache_link",array(
+				"link" => "?".$param,
+		));
+
+		//CMS管理へのリンク
+		$this->createAdd("admin_link","HTMLLink",array(
+				"link" => SOY2PageController::createRelativeLink("../admin/"),
+		));
+		$this->addModel("show_admin_link","HTMLLink",array(
+				"visible" => !defined("SOYCMS_ASP_MODE") && !UserInfoUtil::hasOnlyOneRole()
+		));
+
+	}
+
+	private function clearCache(){
+		if(isset($_GET[self::PARAM_KEY_CLEAR_CACHE]) && isset($_GET[self::PARAM_KEY_TARGET_SITE]) && soy2_check_token()){
+			$site = UserInfoUtil::getSite();
+			if($_GET[self::PARAM_KEY_TARGET_SITE] == $site->getSiteId()){
+				CMSUtil::unlinkAllIn($site->getPath() . ".cache/", true);
+			}
+
+			unset($_GET[self::PARAM_KEY_CLEAR_CACHE]);
+			unset($_GET[self::PARAM_KEY_TARGET_SITE]);
+			unset($_GET["soy2_token"]);
+			$current = SOY2PageController::getRequestPath().".".implode(".",SOY2PageController::getArguments());
+			$param = ( count($_GET) ? "?".http_build_query($_GET) : "");
+			SOY2PageController::jump($current.$param);
+		}
+
 	}
 }

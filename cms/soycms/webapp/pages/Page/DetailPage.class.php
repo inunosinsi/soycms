@@ -240,7 +240,9 @@ class DetailPage extends CMSWebPageBase{
 			CMSToolBox::addLink($this->getMessage("SOYCMS_SHOW_WEBPAGE"),CMSUtil::getSiteUrl().$page->getUri(),false,"this.target = '_blank'");
 		}
 		CMSToolBox::addLink($this->getMessage("SOYCMS_DOWNLOAD_TEMPLATE"),SOY2PageController::createLink("Page.ExportTemplate.".$this->id),false);
-		CMSToolBox::addLink($this->getMessage("SOYCMS_APPLY_WEBPAGE_TEMPLATEPACK"),SOY2PageController::createLink("Page.ApplyTemplate.".$page->getId()),true);
+		if(CMSUtil::isPageTemplateEnabled()){
+			CMSToolBox::addLink($this->getMessage("SOYCMS_APPLY_WEBPAGE_TEMPLATEPACK"),SOY2PageController::createLink("Page.ApplyTemplate.".$page->getId()),true);
+		}
 		CMSToolBox::addPageJumpBox();
 
 

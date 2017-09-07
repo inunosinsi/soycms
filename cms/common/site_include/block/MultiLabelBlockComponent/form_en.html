@@ -1,13 +1,104 @@
+<form soy:id="sites_form">
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<label>Select a website</label>
+			<div class="input-group">
+				<select soy:id="site" class="form-control"></select>
+				<span class="input-group-btn">
+					<button class="btn btn-info">Change website</button>
+				</span>
+			</div>
+		</div>
+	</div>
+	<input type="hidden" value="reload" name="after_submit">
+</form soy:id="sites_form">
+
+<form soy:id="main_form">
+	<input type="hidden" soy:id="old_site_id" value="" />
+
+	<div class="form-group">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<label>Select labels and blogpages</label>
+				<div class="input-group">
+					<span class="input-group-addon">Label to display: </span>
+					<select id="selected_label" soy:id="label_select" class="form-control">
+						<option value="">Select</option>
+					</select>
+
+					<span class="input-group-addon">Blogpage to link: </span>
+					<select id="selected_blog" soy:id="blog_select" class="form-control">
+						<option value="">Select</option>
+					</select>
+
+					<span class="input-group-btn"><input type="submit" name="add" value="Add" onclick="add_reload_input(this);return add_item(this);" class="btn btn-info"></span>
+				</div>
+			</div>
+
+			<!-- soy:id="has_label_list" -->
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Label</th>
+						<th>Blogpage</th>
+						<th>&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+				<!-- soy:id="label_list" -->
+				<tr>
+					<td soy:id="label"></td>
+					<td soy:id="title"></td>
+					<td>
+						<input type="hidden" soy:id="mapping" />
+						<input type="submit" name="delete" soy:id="delete_button" class="btn btn-danger btn-sm">
+					</td>
+				</tr>
+				<!-- /soy:id="label_list" -->
+				</tbody>
+			</table>
+			<!-- /soy:id="has_label_list" -->
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<div class="form-group" style="max-width: 20em;">
+				<label>Number of items to display<span soy:message="HELP_BLOCK_DISPLAY_NUMBER"></span></label>
+				<span class="input-group">
+					<span class="input-group-addon">Number of Items</span>
+					<input type="text" soy:id="display_number_start" class="form-control">
+					<span class="input-group-addon">-</span>
+					<input type="text" soy:id="display_number_end" class="form-control">
+				</span>
+			</div>
+			<label>Display order</label>
+			<input type="text" soy:id="display_order_desc"><label for="display_order_desc">Descending</label>
+			<input type="text" soy:id="display_order_asc"><label for="display_order_asc">Ascending</label>
+			By Created Date.
+			<span style="color:#737373">This setting will be applied when the individual Display Order for an entry is not specified.</span>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<input class="btn btn-success btn-lg pull-right" type="submit" value="Save" name="update">
+		<input class="btn btn-default" type="button" value="Cancel" onclick="common_close_layer(window.parent);return false;">
+	</div>
+
+</form soy:id="main_form">
+
 <script type="text/javascript">
 function add_item(ele){
-	if(!$("#selected_label").val() || !$("#selected_blog").val())return;
-	
+	if($("#selected_label").val().length <1 || $("#selected_blog").val().length <1){
+		return false;
+	}
+
 	var input = $("<input/>");
 	input.attr("name","object[mapping][" + $("#selected_label").val() + "]");
 	input.val($("#selected_blog").val());
 	input.attr("type","hidden");
 	$(ele).after(input);
-	
+
 	return true;
 }
 function add_reload_input(ele){
@@ -16,7 +107,7 @@ function add_reload_input(ele){
 	input.val("reload");
 	input.attr("type","hidden");
 	$(ele).after(input);
-	
+
 }
 function delete_mapping(ele){
 	$(ele).attr("name","");
@@ -29,71 +120,3 @@ function delete_mapping(ele){
 	}
 }
 </script>
-
-<form soy:id="sites_form">
-	
-	<fieldset class="inline"><legend>Select a website</legend>
-		Website ID: <select style="width:180px;" soy:id="site"></select>
-		<input type="submit" value="Change website" />
-		<input type="hidden" value="reload" name="after_submit" />
-	</fieldset>
-</form soy:id="sites_form">
-
-<form soy:id="main_form">
-	<fieldset>
-		<legend>Select labels and blogpages</legend>
-
-		<span>Label to display : </span>
-		<select id="selected_label" soy:id="label_select">
-			<option value="">Select</option>
-		</select><br/>
-		<span>Blogpage to link : </span>
-		<select id="selected_blog" soy:id="blog_select">
-			<option value="">Select</option>
-		</select>
-		
-		<input type="submit" name="add" value="Add" onclick="add_reload_input(this);add_item(this);" />
-
-		<input type="hidden" soy:id="old_site_id" value="" />
-		<input type="hidden" id="delete_hidden_input" value="" />
-
-		<table class="list" style="margin-left:0;">
-			<thead>
-				<tr>
-					<th>Label title</th>
-					<th>Blogpage title</th>
-					<th>&nbsp;</th>
-				</tr>
-			</thead>
-			<!-- soy:id="label_list" -->
-			<tr>
-				<td soy:id="label"></td>
-				<td soy:id="title"></td>
-				<td>
-					<input type="hidden" soy:id="mapping" />
-					<input type="submit" name="delete" soy:id="delete_button" />
-				</td>
-			</tr>
-			<!-- /soy:id="label_list" -->
-		</table>
-	</fieldset>
-	
-	<fieldset>
-		<legend>Number of items<img soy:message="HELP_BLOCK_DISPLAY_NUMBER"/></legend>
-		Number of items : <input type="text" soy:id="display_number_start" name="object[displayCountFrom]" size="2"> ~ <input type="text" soy:id="display_number_end" size="2" object[displayCountTo]>
-	</fieldset>
-	
-	<fieldset class="inline">
-		<legend>Display Order</legend>
-		<input type="text" soy:id="display_order_desc"><label for="display_order_desc">Ascending</label>
-		<input type="text" soy:id="display_order_asc"><label for="display_order_asc">Descending</label>
-		By Created Date.
-		<br />(This setting will be applied when the individual Display Order for an entry is not specified .)
-	</fieldset>
-
-	<div style="margin:10px;text-align:center;">
-		<input class="submit_button" type="submit" value="Save" name="update" />
-		<input class="submit_button" type="button" value="Cancel" onclick="common_close_layer(window.parent);return false;" style="margin-left:20px;">
-	</div>
-	
-</form soy:id="main_form">

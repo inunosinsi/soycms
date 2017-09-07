@@ -353,7 +353,7 @@ class CMSUtil {
 	 * @return boolean
 	 */
 	public static function isPageTemplateEnabled(){
-		return self::checkZipEnable();
+		return self::checkZipEnable() && self::_isSimpleXmlEnabled();
 	}
 
 	/**

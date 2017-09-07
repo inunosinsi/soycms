@@ -38,6 +38,9 @@ CMSMessageManager::addMessageDirectoryPath(CMS_SOYBOY_MESSAGE_DIR);
 CMSMessageManager::addMessageDirectoryPath(CMS_HELP_MESSAGE_DIR);
 CMSMessageManager::addMessageDirectoryPath(CMS_CONTROLPANEL_MESSAGE_DIR);
 
+//言語別テンプレートディレクトリ
+define("SOYCMS_LANGUAGE_DIR",dirname(__FILE__) . "/language/");
+
 //ログインチェック
 if(!UserInfoUtil::isLoggined()){
 	if(defined("SOYCMS_ASP_MODE")){
@@ -60,32 +63,39 @@ if(!UserInfoUtil::isLoggined()){
 	SOY2HTMLConfig::PageDir(dirname(__FILE__)."/pages/");
 
 	switch(SOYCMS_DB_TYPE){
-
 		case "mysql":
 			SOY2DAOConfig::Dsn(UserInfoUtil::getSite()->getDataSourceName());
 			SOY2DAOConfig::user(ADMIN_DB_USER);
 			SOY2DAOConfig::pass(ADMIN_DB_PASS);
 			break;
-
 		case "sqlite":
 		default:
 			SOY2DAOConfig::Dsn("sqlite:".UserInfoUtil::getSiteDirectory().".db/sqlite.db");
-
 			break;
 	}
-}
 
-//エントリー管理者がアクセスしていいパスのチェック
-if(! UserInfoUtil::hasSiteAdminRole()){
-	if(defined("SOYCMS_ASP_MODE")){
-	}else{
-		if(! SOY2Logic::createInstance("logic.site.Filter.EntryAdministratorFilterLogic")->checkAvaiable()){
-			SOY2PageController::jump("Simple");	//トップページに移動
+	//初期管理者とそれ以外で表示を変える
+	DisplayPlugin::toggle("for_default_user", UserInfoUtil::isDefaultUser());
+	DisplayPlugin::toggle("for_not_default_user", !UserInfoUtil::isDefaultUser());
+
+	//一般管理者権限の有無で表示を変える
+	DisplayPlugin::toggle("for_site_administrator", UserInfoUtil::hasSiteAdminRole());
+	DisplayPlugin::toggle("for_not_site_administrator", !UserInfoUtil::hasSiteAdminRole());
+
+	//記事公開権限の有無で表示を変える
+	DisplayPlugin::toggle("for_entry_publisher", UserInfoUtil::hasEntryPublisherRole());
+	DisplayPlugin::toggle("for_entry_writer", !UserInfoUtil::hasEntryPublisherRole());
+
+	//記事管理者がアクセスしていいパスのチェック
+	if(! UserInfoUtil::hasSiteAdminRole()){
+		if(defined("SOYCMS_ASP_MODE")){
+		}else{
+			if(! SOY2Logic::createInstance("logic.site.Filter.EntryAdministratorFilterLogic")->checkAvaiable()){
+				SOY2PageController::jump("Simple");	//トップページに移動
+			}
 		}
 	}
 }
-
-define("SOYCMS_LANGUAGE_DIR",dirname(__FILE__) . "/language/");
 
 //update event
 SOY2DAOConfig::setUpdateQueryEvent(create_function('$sql,$binds','touch("'.UserInfoUtil::getSiteDirectory().'.db/'.SOYCMS_DB_TYPE.'.db");'));

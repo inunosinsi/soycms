@@ -248,11 +248,8 @@ class EntryListPage extends CMSWebPageBase{
 		/**
 		 * ツールボックス
 		 */
-		CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_DYNAMIC_EDIT"),SOY2PageController::createLink("Page.Preview.".$this->id),false,"this.target = '_blank'");
 		if($page->isActive() == Page::PAGE_ACTIVE){
 			$pageUrl = CMSUtil::getSiteUrl() . ( (strlen($page->getUri()) >0) ? $page->getUri() ."/" : "" ) ;
-
-			CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_SHOW_BLOGPAGE"),$pageUrl,false,"this.target = '_blank'");
 
 			//カテゴリー別アーカイブページへのリンク
 			$category = @$labelList[array_pop($this->labelIds)];

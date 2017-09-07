@@ -7,32 +7,31 @@
  */
  SOY2::import("util.UserInfoUtil");
 class ButtonSocialCommon{
-	
+
 	private $pluginObj;
 	private $fieldObj;
-	
+
 	function getOgMeta($obj, $description = null, $image = null, $entryId = null){
 		$siteConfig = $obj->siteConfig;
 
 		if(!$this->fieldObj){
 			$this->fieldObj = (isset($entryId)) ? $this->pluginObj->getOgImageObject($entryId) : new EntryAttribute();
 		}
-		
+
 		if(isset($this->fieldObj) && strlen($this->fieldObj->getValue()) > 0){
-			$http = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http";
-			$image = $http . "://" . $_SERVER ["HTTP_HOST"]. "/" . $this->fieldObj->getValue();
+			$image = "//" . $_SERVER ["HTTP_HOST"]. "/" . $this->fieldObj->getValue();
 		}
-		
+
 		$html = array();
 
-		$html[] = "<meta property=\"og:title\" content=\"".$this->getTitle($obj)."\" />";
-		$html[] = "<meta property=\"og:site_name\" content=\"".$siteConfig->getName()."\" />";
-		$html[] = "<meta property=\"og:url\" content=\"".$this->getPageUrl()."\" />";
-		$html[] = "<meta property=\"og:type\" content=\"".$this->getOgType($obj)."\" />";
+		$html[] = "<meta property=\"og:title\" content=\"".htmlspecialchars($this->getTitle($obj),ENT_QUOTES,"UTF-8")."\">";
+		$html[] = "<meta property=\"og:site_name\" content=\"".htmlspecialchars($siteConfig->getName(),ENT_QUOTES,"UTF-8")."\">";
+		$html[] = "<meta property=\"og:url\" content=\"".htmlspecialchars($this->getPageUrl(),ENT_QUOTES,"UTF-8")."\">";
+		$html[] = "<meta property=\"og:type\" content=\"".htmlspecialchars($this->getOgType($obj),ENT_QUOTES,"UTF-8")."\">";
 		if(isset($image) && strlen($image) > 0){
-			$html[] = "<meta property=\"og:image\" content=\"".$image."\" />";
+			$html[] = "<meta property=\"og:image\" content=\"".htmlspecialchars($image,ENT_QUOTES,"UTF-8")."\">";
 		}
-		$html[] = "<meta property=\"og:description\" content=\"".$description."\" />";
+		$html[] = "<meta property=\"og:description\" content=\"".htmlspecialchars($description,ENT_QUOTES,"UTF-8")."\">";
 
 		return implode("\n",$html);
 	}
@@ -40,122 +39,109 @@ class ButtonSocialCommon{
 	function getFbMeta($appId,$admins){
 		$html = array();
 
-		if(strlen($appId)) $html[] = "<meta property=\"fb:app_id\" content=\"".$appId."\" />";
-		if(strlen($admins)) $html[] = "<meta property=\"fb:admins\" content=\"".$admins."\" />";
+		$html[] = strlen($appId)  ? "<meta property=\"fb:app_id\" content=\"".htmlspecialchars($appId, ENT_QUOTES,"UTF-8")."\">" : "";
+		$html[] = strlen($admins) ? "<meta property=\"fb:admins\" content=\"".htmlspecialchars($admins,ENT_QUOTES,"UTF-8")."\">" : "";
 
-		return (count($html)) ? implode("\n",$html) : "";
+		return implode("\n",$html);
 	}
-	
-	function getFbRoot($appId){
+
+	function getFbRoot($appId, $version = ""){
 		$html = array();
-		
+
+		if(!strlen($version)){
+			$version = "v2.10";
+		}
+
 		if(strlen($appId) > 0){
 			$html[] = "<div id=\"fb-root\"></div>";
 			$html[] = "<script>(function(d, s, id) {";
-			$html[] = "var js, fjs = d.getElementsByTagName(s)[0];";
-			$html[] = "if (d.getElementById(id)) return;";
-			$html[]	= "js = d.createElement(s); js.id = id;";
-			$html[] = "js.src = \"//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.8&appId=" . $appId . "\";";
-			$html[] = "fjs.parentNode.insertBefore(js, fjs);";
-			$html[] = "}(document, 'script', 'facebook-jssdk'));</script>";
+			$html[] = "	var js, fjs = d.getElementsByTagName(s)[0];";
+			$html[] = "	if (d.getElementById(id)) return;";
+			$html[] = "		js = d.createElement(s); js.id = id;";
+			$html[] = "		js.src = \"//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version={$version}&appId={$appId}\";";
+			$html[] = "		fjs.parentNode.insertBefore(js, fjs);";
+			$html[] = "	}(document, 'script', 'facebook-jssdk'));";
+			$html[] = "</script>";
 		}
-		
+
 		return implode("\n", $html);
 	}
 
 	function getFbButton($appId,$entryLink=null){
-		static $b;
-		if(is_null($b)){
-			if(isset($entryLink)){
-				$url = $entryLink;
-			}else{
-				$url = $this->getPageUrl();
-			}
-			
-			$b = "<div class=\"fb-like fb-like-comment\" data-href=\"" . $url . "\" data-send=\"false\" data-layout=\"button_count\" data-width=\"450\" data-show-faces=\"false\"></div>";
-		}	
-		
-		return $b;
+
+		if(isset($entryLink)){
+			$url = $entryLink;
+		}else{
+			$url = $this->getPageUrl();
+		}
+
+		return "<div class=\"fb-like fb-like-comment\" data-href=\"" . htmlspecialchars($url,ENT_QUOTES,"UTF-8") . "\" data-send=\"false\" data-layout=\"button_count\" data-width=\"450\" data-show-faces=\"false\"></div>";
 	}
 
 	function getTwitterButton($entryLink=null){
-		static $b;
-		if(is_null($b)){
-			if(isset($entryLink)){
-				$url = $entryLink;
-			}else{
-				$url = $this->getPageUrl();
-			}
-			
-			$b = "<a href=\"https://twitter.com/share\" " .
+
+		if(isset($entryLink)){
+			$url = $entryLink;
+		}else{
+			$url = $this->getPageUrl();
+		}
+
+		return "<a href=\"https://twitter.com/share\" " .
 				"class=\"twitter-share-button\" " .
-				"data-url=\"".$url."\" " .
+				"data-url=\"".htmlspecialchars($url,ENT_QUOTES,"UTF-8")."\" " .
 				"data-count=\"horizontal\">Tweet</a>" .
 				"<script type=\"text/javascript\" " .
-				"src=\"https://platform.twitter.com/widgets.js\"></script>";	
-		}
-
-		return $b;
+				"src=\"https://platform.twitter.com/widgets.js\"></script>";
 	}
 
+	/**
+	 * twtr.jpは廃止されたが念のため残しておく
+	 * @param unknown $entryLink
+	 * @param string $title
+	 * @return string
+	 */
 	function getTwitterButtonMobile($entryLink=null,$title="記事タイトル"){
-		static $b;
-		if(is_null($b)){
-			if(isset($entryLink)){
-				$url = $entryLink;
-			}else{
-				$url = $this->getPageUrl();
-			}
-			$url = rawurlencode($url);
-	
-			$title = rawurlencode(mb_convert_encoding($title,"SJIS-win","UTF-8"));
-			
-			$b = "http://twtr.jp/share?url=".$url."&text=".$title;
+		if(isset($entryLink)){
+			$url = $entryLink;
+		}else{
+			$url = $this->getPageUrl();
 		}
-		
-		return $b;
+		$url = rawurlencode($url);
+
+		$title = rawurlencode(mb_convert_encoding($title,"SJIS-win","UTF-8"));
+
+		return "http://twtr.jp/share?url=".$url."&text=".$title;
 	}
 
 	function getHatenaButton($entryLink=null){
-		static $b;
-		if(is_null($b)){
-			if(isset($entryLink)){
-				$url = $entryLink;
-			}else{
-				$url = $this->getPageUrl();
-			}
-	
-			$b = "<a href=\"https://b.hatena.ne.jp/entry/" . $url . "\" " .
-					"class=\"hatena-bookmark-button\" " .
-					"data-hatena-bookmark-layout=\"standard\" " .
-					"title=\"このエントリーをはてなブックマークに追加\">" .
-					"<img src=\"//b.st-hatena.com/images/entry-button/button-only.gif\" " .
-					"alt=\"このエントリーをはてなブックマークに追加\" " .
-					"width=\"20\" height=\"20\" style=\"border: none;\" /></a>" .
-					"<script type=\"text/javascript\" " .
-					"src=\"//b.st-hatena.com/js/bookmark_button.js\" charset=\"utf-8\" async=\"async\"></script>";
+
+		if(isset($entryLink)){
+			$url = $entryLink;
+		}else{
+			$url = $this->getPageUrl();
 		}
 
-		return $b;
-	}
-	
-	function getPocketButton(){
-		return "<a data-pocket-label=\"pocket\" data-pocket-count=\"horizontal\" class=\"pocket-btn\" data-lang=\"en\"></a>".
-				"<script type=\"text/javascript\">" .
-				"!function(d,i){if(!d.getElementById(i)){var j=d.createElement(\"script\");j.id=i;j.src=\"https://widgets.getpocket.com/v1/j/btn.js?v=1\";var w=d.getElementById(i);d.body.appendChild(j);}}(document,\"pocket-btn-js\");" .
-				"</script>";
+		return "<a href=\"https://b.hatena.ne.jp/entry/" . htmlspecialchars($url,ENT_QUOTES,"UTF-8"). "\" " .
+				"class=\"hatena-bookmark-button\" " .
+				"data-hatena-bookmark-layout=\"standard\" " .
+				"title=\"このエントリーをはてなブックマークに追加\">" .
+				"<img src=\"https://b.st-hatena.com/images/entry-button/button-only.gif\" " .
+				"alt=\"このエントリーをはてなブックマークに追加\" " .
+				"width=\"20\" height=\"20\" style=\"border: none;\"></a>" .
+				"<script type=\"text/javascript\" " .
+				"src=\"https://b.st-hatena.com/js/bookmark_button.js\" charset=\"utf-8\" async=\"async\"></script>";
 	}
 
 	function getMixiCheckScript(){
 		return "<script type=\"text/javascript\" src=\"https://static.mixi.jp/js/share.js\"></script>";
 	}
 
-	function getMixiCheckButtonMobile($url, $key,$title){
+	function getMixiCheckButtonMobile($url,$key,$title){
 		return "<form action=\"http://m.mixi.jp/share.pl?guid=ON\" method=\"POST\" >".
-        		"<input type=\"hidden\" name=\"check_key\" value=\"".$key."\" />".
-        		"<input type=\"hidden\" name=\"title\" value=\"".$title."\" />".
-        		"<input type=\"hidden\" name=\"primary_url\" value=\"".$url."\" />".
-        		"<input type=\"submit\" value=\"mixiチェック\" />".
+        		"<input type=\"hidden\" name=\"check_key\" value=\"".$key."\">".
+        		"<input type=\"hidden\" name=\"title\" value=\"".$title."\">".
+        		"<input type=\"hidden\" name=\"primary_url\" value=\"".$url."\">".
+        		"<input type=\"submit\" value=\"mixiチェック\">".
     			"</form>";
 	}
 
@@ -166,14 +152,14 @@ class ButtonSocialCommon{
 
 	function getMixiLikeButtonMobile($url,$title,$key){
 		return "<form action=\"http://m.mixi.jp/create_favorite.pl?guid=ON\" method=\"POST\" >".
-		        "<input type=\"hidden\" name=\"service_key\" value=\"".$key."\" />".
-        		"<input type=\"hidden\" name=\"title\" value=\"".$title."\" />".
-				"<input type=\"hidden\" name=\"primary_url\" value=\"".$url."\" />".
-				"<input type=\"hidden\" name=\"mobile_url\" value=\"".$url."\" />".
-				"<input type=\"submit\" value=\"ｲｲﾈ!\" />".
+		        "<input type=\"hidden\" name=\"service_key\" value=\"".$key."\">".
+        		"<input type=\"hidden\" name=\"title\" value=\"".$title."\">".
+				"<input type=\"hidden\" name=\"primary_url\" value=\"".$url."\">".
+				"<input type=\"hidden\" name=\"mobile_url\" value=\"".$url."\">".
+				"<input type=\"submit\" value=\"ｲｲﾈ!\">".
 				"</form>";
 	}
-	
+
 	function getGooglePlusButton(){
 		return "<div class=\"g-plusone\"></div>\n".
 				"<script type=\"text/javascript\">\n".
@@ -184,6 +170,13 @@ class ButtonSocialCommon{
 				"    po.src = 'https://apis.google.com/js/plusone.js';\n".
 				"    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);\n".
 				"  })();\n".
+				"</script>";
+	}
+
+	function getPocketButton(){
+		return "<a data-pocket-label=\"pocket\" data-pocket-count=\"horizontal\" class=\"pocket-btn\" data-lang=\"en\"></a>".
+				"<script type=\"text/javascript\">" .
+				"!function(d,i){if(!d.getElementById(i)){var j=d.createElement(\"script\");j.id=i;j.src=\"https://widgets.getpocket.com/v1/j/btn.js?v=1\";var w=d.getElementById(i);d.body.appendChild(j);}}(document,\"pocket-btn-js\");" .
 				"</script>";
 	}
 
@@ -318,19 +311,10 @@ class ButtonSocialCommon{
 		}elseif(property_exists($obj, "entryPageUrl")){
 			$uri = ltrim($obj->entryPageUrl,"/");
 		}
-		
-		//uriにドメインが混じっている場合はドメインまでを削除
-		if(strpos($uri, $_SERVER["HTTP_HOST"])){
-			$pos = strpos($uri, $_SERVER["HTTP_HOST"]);
-			$len = strlen($_SERVER["HTTP_HOST"]);
-			$uri = substr($uri, $pos + $len);
-			//念の為、最初のスラッシュの後から取得
-			$uri = substr($uri, strpos($uri, "/") + 1);
-		}
 
 		$rootLink = UserInfoUtil::getSiteURLBySiteId("");
 		$url = $rootLink.$uri;
-		
+
 		$entry = $this->getEntry($entryId);
 		$url .= rawurlencode($entry->getAlias());
 
@@ -362,7 +346,7 @@ class ButtonSocialCommon{
 		return $entry;
 
 	}
-	
+
 	function setPluginObj($pluginObj){
 		$this->pluginObj = $pluginObj;
 	}

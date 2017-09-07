@@ -49,10 +49,15 @@ class TrackbackPage extends CMSWebPageBase{
 	}
 
 	function __construct($arg) {
-		if(is_null($arg[0])){
-			$this->jump('Blog');//どっかに飛ばす
+		if(!is_array($arg) || !count($arg) || !strlen($arg[0])){
+			$this->jump('Blog');
 		}
-		$this->pageId = @$arg[0];
+		$this->pageId = $arg[0];
+
+		//記事公開管理者権限が必要
+		if(!UserInfoUtil::hasEntryPublisherRole()){
+			$this->jump('Blog.'.$this->pageId);
+		}
 
 		parent::__construct();
 
@@ -144,10 +149,6 @@ class TrackbackPage extends CMSWebPageBase{
 		/**
 		 * ツールボックス
 		 */
-		if($page->isActive() == Page::PAGE_ACTIVE){
-			$pageUrl = CMSUtil::getSiteUrl() . ( (strlen($page->getUri()) >0) ? $page->getUri() ."/" : "" ) ;
-			CMSToolBox::addLink(CMSMessageManager::get("SOYCMS_SHOW_BLOGPAGE"),$pageUrl,false,"this.target = '_blank'");
-		}
 		CMSToolBox::addPageJumpBox();
 
 		/**
