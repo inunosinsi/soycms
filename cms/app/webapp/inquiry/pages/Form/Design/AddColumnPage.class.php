@@ -29,7 +29,7 @@ class AddColumnPage extends WebPage{
 	
 	function __construct($args) {
     	$this->formId = $args[0];
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	//レイヤーモードで
     	CMSApplication::setMode("layer");

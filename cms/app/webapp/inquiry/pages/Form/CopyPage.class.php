@@ -61,7 +61,7 @@ class CopyPage extends WebPage{
 
     function __construct() {
     	    	 
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->createAdd("form_list","HTMLSelect",array(
     		"options" => $this->getFormList(),

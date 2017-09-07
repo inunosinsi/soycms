@@ -4,7 +4,7 @@ class SOYInquiry_ServerConfig {
 
 	const SERVER_TYPE_SMTP = 0;
 	const SERVER_TYPE_SENDMAIL = 2;
-	
+
 	const RECEIVE_SERVER_TYPE_POP  = 0;
 	const RECEIVE_SERVER_TYPE_IMAP = 1;
 
@@ -17,7 +17,7 @@ class SOYInquiry_ServerConfig {
     private $sendServerUser = "";
     private $sendServerPassword = "";
     private $isUseSSLSendServer = false;
-    
+
     //受信設定
     private $receiveServerType = SOYInquiry_ServerConfig::RECEIVE_SERVER_TYPE_POP;
     private $receiveServerAddress = "localhost";
@@ -25,22 +25,22 @@ class SOYInquiry_ServerConfig {
     private $receiveServerUser = "";
     private $receiveServerPassword = "";
     private $isUseSSLReceiveServer = false;
-    
+
     //管理者設定
     private $administratorName = "";
     private $administratorMailAddress = "";
     private $returnMailAddress =  "";
     private $returnName = "";
-    
+
     private $encoding = "ISO-2022-JP";
 
     private $signature = "";
-    
+
     //ファイル設定
     private $uploadDir;
-    
+
     private $adminUrl;
-    
+
     function getSendServerType() {
     	return $this->sendServerType;
     }
@@ -161,18 +161,18 @@ class SOYInquiry_ServerConfig {
     public function setEncoding($encoding) {
     	$this->encoding = $encoding;
     }
-    
+
     /**
      * 設定からSOY2Mailオブジェクトを生成する
      */
     function createReceiveServerObject(){
-    	
+
     	switch($this->receiveServerType){
     		case SOYInquiry_ServerConfig::RECEIVE_SERVER_TYPE_IMAP:
-    			
+
     			$flag = null;
     			if($this->getIsUseSSLReceiveServer())$flag = "ssl";
-    			
+
     			return SOY2Mail::create("imap",array(
     				"imap.host" => $this->getReceiveServerAddress(),
     				"imap.port" => $this->getReceiveServerPort(),
@@ -184,10 +184,10 @@ class SOYInquiry_ServerConfig {
 
     		case SOYInquiry_ServerConfig::RECEIVE_SERVER_TYPE_POP:
     		default:
-    			
+
     			$host = $this->getReceiveServerAddress();
-    			if($this->getIsUseSSLReceiveServer())$host =  "ssl://" . $host;  
-    			
+    			if($this->getIsUseSSLReceiveServer())$host =  "ssl://" . $host;
+
     			return SOY2Mail::create("pop",array(
     				"pop.host" => $host,
     				"pop.port" => $this->getReceiveServerPort(),
@@ -196,25 +196,25 @@ class SOYInquiry_ServerConfig {
     			));
     			break;
     	}
-    	
+
     }
-    
+
     /**
      * 設定からSOY2Mailオブジェクトを生成する
      */
     function createSendServerObject(){
-    	
+
     	switch($this->sendServerType){
     		case SOYInquiry_ServerConfig::SERVER_TYPE_SMTP:
     			$host = $this->getSendServerAddress();
     			if($this->getIsUseSSLSendServer())$host =  "ssl://" . $host;
-    		
+
     			return SOY2Mail::create("smtp",array(
     				"smtp.host" => $host,
     				"smtp.port" => $this->getSendServerPort(),
     				"smtp.user" => $this->getSendServerUser(),
     				"smtp.pass" => $this->getSendServerPassword(),
-    				"smtp.auth" => ($this->getIsUseSMTPAuth()) ? "PLAIN" : false
+    				"smtp.auth" => ($this->getIsUseSMTPAuth()) ? true : false
     			));
     			break;
     		case SOYInquiry_ServerConfig::SERVER_TYPE_SENDMAIL:
@@ -222,20 +222,20 @@ class SOYInquiry_ServerConfig {
     			return SOY2Mail::create("sendmail",array());
     			break;
     	}
-    	
+
     }
 
     function getUploadDir() {
-    	
+
     	if(strlen($this->uploadDir)<1){
     		$this->uploadDir = "/";
     	}
-    	
+
     	return $this->uploadDir;
     }
     function setUploadDir($uploadDir) {
     	if(strlen($uploadDir)>0){
-    		
+
     		//ルートと結合 ルートの末尾には/なし
     		if($uploadDir[0] != "/")$uploadDir = "/" . $uploadDir;
     		$uploadDir = SOY_INQUIRY_UPLOAD_ROOT_DIR . $uploadDir;

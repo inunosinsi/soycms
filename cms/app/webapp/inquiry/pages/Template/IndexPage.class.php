@@ -3,7 +3,7 @@
 class IndexPage extends WebPage{
 
     function __construct($args) {
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$dir = SOY2::RootDir() . "template/";
     	$files = scandir($dir);

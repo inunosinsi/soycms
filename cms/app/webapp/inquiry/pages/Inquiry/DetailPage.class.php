@@ -109,7 +109,7 @@ class DetailPage extends WebPage{
 
         $this->form = $form;
 
-        WebPage::__construct();
+        parent::__construct();
 
         try{
             //未読の場合

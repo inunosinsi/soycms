@@ -6,7 +6,7 @@ class TemplatePage extends WebPage{
     	if(count($args)<1)CMSApplication::jump("Form");
     	$this->id = $args[0];
 
-    	WebPage::__construct();
+    	parent::__construct();
 
     	try{
 			$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");

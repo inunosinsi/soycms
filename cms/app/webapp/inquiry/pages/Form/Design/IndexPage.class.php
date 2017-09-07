@@ -24,7 +24,7 @@ class IndexPage extends WebPage{
     	if(count($args)<1)CMSApplication::jump("Form");
     	$this->id = $args[0];
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	try{
     		$this->form = $this->dao->getById($this->id);

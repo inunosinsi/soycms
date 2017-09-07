@@ -79,7 +79,7 @@ class ExportPage extends WebPage{
 	
     function __construct() {
 		SOY2DAOFactory::importEntity("SOYInquiry_Inquiry");
-    	WebPage::__construct();
+    	parent::__construct();
     	
 		$formId = (isset($_GET["formId"]) && strlen($_GET["formId"])>0) ? $_GET["formId"] : null;
 		$start = (isset($_GET["start"]) && $_GET["start"] != "投稿日時（始）") ? $_GET["start"] : null;
