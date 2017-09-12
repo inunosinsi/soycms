@@ -47,17 +47,22 @@ function soy_cms_blog_output_entry($page,$entry){
 					"text"=>$entry->getBranchName(),
 					"soy2prefix"=>"cms"
 				));
-				
+
+				$this->createAdd("label_id","CMSLabel",array(
+                    "text"=>$entry->getId(),
+                    "soy2prefix"=>"cms"
+                ));
+
 				$this->createAdd("category_alias", "CMSLabel", array(
 					"text" => $entry->getAlias(),
 					"soy2prefix" => "cms"
 				));
-				
+
 				$this->createAdd("category_description", "CMSLabel", array(
 					"text" => $entry->getDescription(),
 					"soy2prefix" => "cms"
 				));
-				
+
 				$arg = substr(rtrim($_SERVER["REQUEST_URI"], "/"), strrpos(rtrim($_SERVER["REQUEST_URI"], "/"), "/") + 1);
 				$alias = rawurlencode($entry->getAlias());
 				$this->createAdd("is_current_category", "HTMLModel", array(
@@ -68,12 +73,12 @@ function soy_cms_blog_output_entry($page,$entry){
 					"visible" => ($arg !== $alias),
 					"soy2prefix" => "cms"
 				));
-				
+
 				$this->addLabel("color", array(
 					"text" => sprintf("%06X",$entry->getColor()),
 					"soy2prefix" => "cms"
 				));
-				
+
 				$this->addLabel("background_color", array(
 					"text" => sprintf("%06X",$entry->getBackGroundColor()),
 					"soy2prefix" => "cms"
@@ -259,7 +264,7 @@ function soy_cms_blog_output_entry_navi($page,$next,$prev){
 					"text" => $entry->getTitle(),
 					"soy2prefix" => "cms"
 				));
-				
+
 				//同じ意味だけど、他のブロックと合わせてtitle_plainを追加しておく
 				$this->createAdd("title_plain","CMSLabel",array(
 					"text" => $entry->getTitle(),
@@ -582,4 +587,3 @@ function soy_cms_blog_output_trackback_link($page,$entry){
 		"type"=>"text"
 	));
 }
-
