@@ -1,19 +1,33 @@
 <form soy:id="main_form">
 
-    <fieldset><legend>プラグイン</legend>
-	<select soy:id="plugin_id_list"></select>
-    </fieldset>
-    
-    <fieldset><legend>ブログへのリンク</legend>
-	<input soy:id="no_stick_url" type="hidden" name="object[blogPageId]" value="0"/>
-	<input soy:id="stick_url" type="checkbox" onclick="common_toggle('blog_page_list');common_toggle('blog_page_list_label');"><br/>
-	<span id="blog_page_list_label" soy:id="blog_page_list_label">ブログのラベルを指定してください: </span><select id="blog_page_list" soy:id="blog_page_list"></select>
-    </fieldset>
-    
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<label>プラグインの選択</label>
 
-    <div style="margin:10px;text-align:center;">
-	<input class="submit_button" type="submit" value="設定の保存">
-	<input class="submit_button" type="button" value="キャンセル" style="margin-left:20px;" onclick="common_close_layer(window.parent);return false;">
-    </div>
-    
+			<div id="labels_wrapper" style="_width: 643px;">
+				<select soy:id="plugin_id_list"></select>
+			</div>
+		</div>
+	</div>
+
+	<!-- soy:display="blog_link" -->
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<label>ブログへのリンク<span soy:message="HELP_BLOCK_BLOG_LINK"/></span></label>
+			<input soy:id="no_stick_url" type="hidden" name="object[blogPageId]" value="0"/>
+			<input soy:id="stick_url" type="checkbox" onclick="common_toggle('blog_page_list');common_toggle('blog_page_list_label');"><br/>
+			<span class="input-group">
+				<span id="blog_page_list_label" class="input-group-addon" soy:id="blog_page_list_label">ブログを指定してください: </span>
+				<select id="blog_page_list" soy:id="blog_page_list" class="form-control"></select>
+			</span>
+		</div>
+	</div>
+	<!-- /soy:display="blog_link" -->
+
+
+	<div class="form-group">
+		<input class="btn btn-success btn-lg pull-right" type="submit" value="設定の保存">
+		<input class="btn btn-default" type="button" value="キャンセル" onclick="common_close_layer(window.parent);return false;">
+	</div>
+
 </form soy:id="main_form">
