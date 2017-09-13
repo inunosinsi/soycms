@@ -102,7 +102,7 @@ class IndexPage extends CMSWebPageBase{
 			$customs = $plugin->getCustom();
 
 			$id = $plugin->getId();
-			$html = "<div class=\"widget_top\">" . $plugin->getName() . "</div>";
+			$html = "<div class=\"panel-heading\">" . $plugin->getName() . "</div>";
 			$html .= "<div class=\"widget_middle\">";
 
 			foreach($customs as $mkey => $custom){

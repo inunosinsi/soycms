@@ -25,36 +25,36 @@ class ReadEntryCountPlugin{
 			$this,"config_page"
 		));
 
-    //プラグイン アクティブ
-    if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
+		//プラグイン アクティブ
+		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 
-      //管理側
-      if(!defined("_SITE_ROOT_")){
-        //
-      //公開側
-      }else{
-        //公開側のページを表示させたときに、メタデータを表示する
+			//管理側
+			if(!defined("_SITE_ROOT_")){
+				//
+			//公開側
+			}else{
+				//公開側のページを表示させたときに、メタデータを表示する
 				CMSPlugin::setEvent('onPageOutput',$this->getId(),array($this,"onPageOutput"));
-      }
+			}
 
-    }else{
-      CMSPlugin::setEvent('onActive', self::PLUGIN_ID, array($this, "createTable"));
-    }
+		}else{
+			CMSPlugin::setEvent('onActive', self::PLUGIN_ID, array($this, "createTable"));
+		}
 	}
 
-  /**
+	/**
 	 * 公開側の出力
 	 */
 	function onPageOutput($obj){
 
 		//ブログの記事ページを開いた時のみ集計
 		if(($obj instanceof CMSBlogPage) && $obj->mode == CMSBlogPage::MODE_ENTRY && !is_null($obj->entry->getId())){
-      $cntObj = self::getReadEntryCountObject($obj->entry->getId());
-      $cnt = (int)$cntObj->getCount();
-      $cnt++;
-      $cntObj->setCount($cnt);
-      self::save($cntObj);
-    }
+			$cntObj = self::getReadEntryCountObject($obj->entry->getId());
+			$cnt = (int)$cntObj->getCount();
+			$cnt++;
+			$cntObj->setCount($cnt);
+			self::save($cntObj);
+		}
 
 		SOY2::imports("site_include.plugin.read_entry_count.component.*");
 		$obj->createAdd("read_entry_ranking_list", "ReadEntryRankingListComponent", array(
@@ -91,29 +91,29 @@ class ReadEntryCountPlugin{
 				"entryDao" => SOY2DAOFactory::create("cms.EntryDAO")
 			));
 		}
-  }
+	}
 
-  private function getReadEntryCountObject($entryId){
-    try{
-      return self::dao()->getByEntryId($entryId);
-    }catch(Exception $e){
-      $obj = new ReadEntryCount();
-      $obj->setEntryId($entryId);
-      return $obj;
-    }
-  }
+	private function getReadEntryCountObject($entryId){
+		try{
+			return self::dao()->getByEntryId($entryId);
+		}catch(Exception $e){
+			$obj = new ReadEntryCount();
+			$obj->setEntryId($entryId);
+			return $obj;
+		}
+	}
 
-  private function save(ReadEntryCount $obj){
-    try{
-      self::dao()->insert($obj);
-    }catch(Exception $e){
-      try{
-        self::dao()->update($obj);
-      }catch(Exception $e){
-        var_dump($e);
-      }
-    }
-  }
+	private function save(ReadEntryCount $obj){
+		try{
+			self::dao()->insert($obj);
+		}catch(Exception $e){
+			try{
+				self::dao()->update($obj);
+			}catch(Exception $e){
+				var_dump($e);
+			}
+		}
+	}
 
 	private function get(){
 		try{
@@ -174,8 +174,8 @@ class ReadEntryCountPlugin{
 		return $url;
 	}
 
-  function createTable(){
-    $dao = new SOY2DAO();
+	function createTable(){
+		$dao = new SOY2DAO();
 
 		try{
 			$exist = $dao->executeQuery("SELECT * FROM ReadEntryCount", array());
@@ -197,16 +197,16 @@ class ReadEntryCountPlugin{
 		}
 
 		return;
-  }
+	}
 
-  private function dao(){
-    static $dao;
-    if(is_null($dao)) {
-      SOY2::imports("site_include.plugin.read_entry_count.domain.*");
-      $dao = SOY2DAOFactory::create("ReadEntryCountDAO");
-    }
-    return $dao;
-  }
+	private function dao(){
+		static $dao;
+		if(is_null($dao)) {
+			SOY2::imports("site_include.plugin.read_entry_count.domain.*");
+			$dao = SOY2DAOFactory::create("ReadEntryCountDAO");
+		}
+		return $dao;
+	}
 
 	function config_page(){
 
