@@ -1,0 +1,41 @@
+<div style="padding:5px 20px;"><a soy:link="Extension.user_group" class="button">戻る</a></div>
+
+<table class="form_list">
+	<caption><!-- soy:id="group_name" /-->の顧客一覧</caption>
+	<thead>
+		<tr class="alC">
+			<th class="short">ID</th>
+			<th class="middle">姓名</th>
+			<th class="middle nowrap">メールアドレス</th>
+			<th>属性１</th>
+			<th>属性２</th>
+			<th>属性３</th>
+			<th class="operation">
+				編集
+				<a class="button fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- soy:id="user_list" -->
+		<tr>
+			<td class="alC short"><span soy:id="id"></span></td>
+			<td class="middle"><a soy:id="edit_link"><span soy:id="name"></span></a></td>
+			<td class="middle"><span soy:id="mailaddress">メールアドレス</span></td>
+			<td class="middle"><span soy:id="attribute1">属性１</span></td>
+			<td class="middle"><span soy:id="attribute2">属性２</span></td>
+			<td class="middle"><span soy:id="attribute3">属性３</span></td>
+			<td class="operation">
+				<a class="button" soy:id="edit_link*">編集</a>
+				<a soy:id="remove_link" href="#" class="button fr delete_btn" onclick="return confirm('削除してもよろしいですか？')">削除</a>
+			</td>
+		</tr>
+		<!-- /soy:id="user_list" -->
+	</tbody>
+</table>
+
+<style type="text/css">
+.delete_btn{
+	visibility:hidden;
+}
+</style>

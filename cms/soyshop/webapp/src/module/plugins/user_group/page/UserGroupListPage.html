@@ -1,0 +1,45 @@
+<div class="block">
+	<div class="block_title">
+		<h2>グループ一覧</h2>
+
+		<div class="block_title_right">
+			<a soy:link="Extension.Detail.user_group" class="button">グループの登録</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+		<p class="notice" soy:display="removed">削除しました</p>
+
+		<table class="form_list">
+			<caption>
+				<span class="fl">グループ一覧</span>
+				<span class="fr"></span>
+			</caption>
+			<thead>
+				<tr class="alC">
+					<th>グループ名</th>
+					<th>人数</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="group_list" -->
+				<tr>
+					<td>
+						<a soy:id="detail_link">
+							<!-- soy:id="name" /-->
+						</a>
+					</td>
+					<td class="alC">
+						<a soy:id="group_detail_link"><!-- soy:id="count_user" /--></a>&nbsp;人
+					</td>
+					<td class="operation">
+						<a soy:id="detail_link*" class="button">詳細</a>&nbsp;
+						<a soy:id="remove_link" class="button">削除</a>
+					</td>
+				</tr>
+				<!-- /soy:id="group_list" -->
+			</tbody>
+		</table>
+	</div>
+</div>

@@ -52,27 +52,30 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 		$array = array();
 
 		SOY2::import("module.plugins.user_custom_search_field.component.FieldFormComponent");
-		foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
+		$configs = UserCustomSearchFieldUtil::getConfig();
+		if(count($configs)){
+			foreach($configs as $key => $field){
 
-			$obj = array();
-			$name = htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8");
+				$obj = array();
+				$name = htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8");
 
-			if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
-				$obj["name"] = $name . " (" . UserCustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")";
-			}else{
-				$obj["name"] = $name;
-			}
-
-			$value = (isset($values[$key])) ? $values[$key] : null;
-			if(is_null($value)){
-				$app = $this->getApp();
-				if(!is_null($app)){
-					$attributeKey = self::getAttributeKey($key);
-					$value = $app->getAttribute($attributeKey);
+				if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+					$obj["name"] = $name . " (" . UserCustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")";
+				}else{
+					$obj["name"] = $name;
 				}
+
+				$value = (isset($values[$key])) ? $values[$key] : null;
+				if(is_null($value)){
+					$app = $this->getApp();
+					if(!is_null($app)){
+						$attributeKey = self::getAttributeKey($key);
+						$value = $app->getAttribute($attributeKey);
+					}
+				}
+				$obj["form"] = FieldFormComponent::buildForm($key, $field, $value);
+				$array["ucsf_" .$key] = $obj;
 			}
-			$obj["form"] = FieldFormComponent::buildForm($key, $field, $value);
-			$array["ucsf_" .$key] = $obj;
 		}
 
 		return $array;
