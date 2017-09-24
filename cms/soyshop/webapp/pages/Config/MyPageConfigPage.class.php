@@ -15,19 +15,19 @@ class MyPageConfigPage extends WebPage{
 			$mypage_url = self::checkMyPageUrl($_POST["mypage_url"]);
 			$mypage_top = self::checkMyPageUrl($_POST["mypage_top"]);
 			$mypage_charset = $_POST["mypage_charset"];
-			
+
 			$mobile_mypage_id = self::checkMyPageId($_POST["mobile_mypage_id"]);
 			$mobile_mypage_url = self::checkMyPageUrl($_POST["mobile_mypage_url"]);
 			$mobile_mypage_top = self::checkMyPageUrl($_POST["mobile_mypage_top"]);
 			$mobile_mypage_charset = $_POST["mobile_mypage_charset"];
-			
+
 			$smartphone_mypage_id = self::checkMyPageId($_POST["smartphone_mypage_id"]);
 			$smartphone_mypage_url = self::checkMyPageUrl($_POST["smartphone_mypage_url"]);
 			$smartphone_mypage_top = self::checkMyPageUrl($_POST["smartphone_mypage_top"]);
 			$smartphone_mypage_charset = $_POST["smartphone_mypage_charset"];
-			
+
 			$profile_resize = (isset($_POST["mypage_profile_resize"])) ? 1 : 0;
-			
+
 			SOYShop_DataSets::put("config.mypage.title", $_POST["mypage_title"]);
 
 			SOYShop_DataSets::put("config.mypage.use_ssl", (int)$_POST["mypage_ssl"]);
@@ -38,21 +38,24 @@ class MyPageConfigPage extends WebPage{
 			SOYShop_DataSets::put("config.mypage.top", $mypage_top);
 			SOYShop_DataSets::put("config.mypage.charset", $mypage_charset);
 
-			SOYShop_DataSets::put("config.mypage.mobile.id", $mobile_mypage_id);
-			SOYShop_DataSets::put("config.mypage.mobile.url", $mobile_mypage_url);
-			SOYShop_DataSets::put("config.mypage.mobile.top", $mobile_mypage_top);
-			SOYShop_DataSets::put("config.mypage.mobile.charset", $mobile_mypage_charset);
-			
-			SOYShop_DataSets::put("config.mypage.smartphone.id", $smartphone_mypage_id);
-			SOYShop_DataSets::put("config.mypage.smartphone.url", $smartphone_mypage_url);
-			SOYShop_DataSets::put("config.mypage.smartphone.top", $smartphone_mypage_top);
-			SOYShop_DataSets::put("config.mypage.smartphone.charset", $smartphone_mypage_charset);
-			
+			//携帯自動振り分けプラグインが有効な時だけ設定を保存する
+			if( class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("util_mobile_check")) ){
+				SOYShop_DataSets::put("config.mypage.mobile.id", $mobile_mypage_id);
+				SOYShop_DataSets::put("config.mypage.mobile.url", $mobile_mypage_url);
+				SOYShop_DataSets::put("config.mypage.mobile.top", $mobile_mypage_top);
+				SOYShop_DataSets::put("config.mypage.mobile.charset", $mobile_mypage_charset);
+
+				SOYShop_DataSets::put("config.mypage.smartphone.id", $smartphone_mypage_id);
+				SOYShop_DataSets::put("config.mypage.smartphone.url", $smartphone_mypage_url);
+				SOYShop_DataSets::put("config.mypage.smartphone.top", $smartphone_mypage_top);
+				SOYShop_DataSets::put("config.mypage.smartphone.charset", $smartphone_mypage_charset);
+			}
+
 			SOYShop_DataSets::put("config.mypage.tmp_user_register", (int)$_POST["mypage_tmp_user_register"]);
-			
+
 			SOYShop_DataSets::put("config.mypage.profile_resize", $profile_resize);
 			SOYShop_DataSets::put("config.mypage.profile_resize_width", soyshop_convert_number($_POST["mypage_profile_resize_width"], 0));
-			
+
 			//多言語化用の拡張ポイント
 			SOYShopPlugin::load("soyshop.application.name");
 			SOYShopPlugin::invoke("soyshop.application.name", array(
@@ -72,15 +75,24 @@ class MyPageConfigPage extends WebPage{
 			"name" => "mypage_title",
 			"value" => $this->getMyPageTitle()
 		));
-		
+
 		//多言語化用の拡張ポイント
 		SOYShopPlugin::load("soyshop.application.name");
 		$nameForm = SOYShopPlugin::display("soyshop.application.name", array(
 			"mode" => "mypage"
 		));
-		
+
 		$this->addLabel("extension_mypage_name_input", array(
 			"html" => $nameForm
+		));
+
+		//携帯自動振り分けプラグインが有効かどうか
+		$isEnabledUtilMobileCheck = class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("util_mobile_check"));
+		$this->addModel("is_enabled_util_mobile_check", array(
+				"visible" => $isEnabledUtilMobileCheck,
+		));
+		$this->addModel("is_not_enabled_util_mobile_check", array(
+				"visible" => ! $isEnabledUtilMobileCheck,
 		));
 
 		$this->addInput("mypage_url", array(
@@ -93,13 +105,13 @@ class MyPageConfigPage extends WebPage{
 			"selected" => $this->getMyPageApplicationId(),
 			"options" => self::getMyPageApplications()
 		));
-		
+
 		//toppage after loggedin
 		$this->addInput("mypage_top", array(
 			"name" => "mypage_top",
 			"value" => $this->getMyPageTop()
 		));
-		
+
 		$this->addSelect("mypage_charset", array(
 			"name" => "mypage_charset",
 			"selected" => $this->getMyPageCharset(),
@@ -116,19 +128,19 @@ class MyPageConfigPage extends WebPage{
 			"selected" => $this->getMobileMyPageApplicationId(),
 			"options" => self::getMyPageApplications()
 		));
-		
+
 		//toppage after loggedin
 		$this->addInput("mobile_mypage_top", array(
 			"name" => "mobile_mypage_top",
 			"value" => $this->getMobileMyPageTop()
 		));
-		
+
 		$this->addSelect("mobile_mypage_charset", array(
 			"name" => "mobile_mypage_charset",
 			"selected" => $this->getMobileMyPageCharset(),
 			"options" => $this->charsets
 		));
-		
+
 		$this->addInput("smartphone_mypage_url", array(
 			"name" => "smartphone_mypage_url",
 			"value" => $this->getSmartphoneMyPageUrl()
@@ -139,13 +151,13 @@ class MyPageConfigPage extends WebPage{
 			"selected" => $this->getSmartphoneMyPageApplicationId(),
 			"options" => self::getMyPageApplications()
 		));
-		
+
 		//toppage after loggedin
 		$this->addInput("smartphone_mypage_top", array(
 			"name" => "smartphone_mypage_top",
 			"value" => $this->getSmartphoneMyPageTop()
 		));
-		
+
 		$this->addSelect("smartphone_mypage_charset", array(
 			"name" => "smartphone_mypage_charset",
 			"selected" => $this->getSmartphoneMyPageCharset(),
@@ -168,8 +180,8 @@ class MyPageConfigPage extends WebPage{
 		$this->addModel("mypage_ssl_url_input", array(
 			"style" => ($use_ssl) ? "" : "display:none;"
 		));
-		
-		
+
+
 		//tmp user register
 		$this->addCheckBox("mypage_tmp_user_register", array(
 			"name" => "mypage_tmp_user_register",
@@ -177,14 +189,14 @@ class MyPageConfigPage extends WebPage{
 			"selected" => $this->getTmpUserRegister(),
 			"label" => "仮登録処理を行う"
 		));
-		
+
 		$this->addCheckBox("mypage_user_register", array(
 			"name" => "mypage_tmp_user_register",
 			"value" => 0,
 			"selected" => (!$this->getTmpUserRegister()),
 			"label" => "仮登録処理を行わない"
 		));
-		
+
 		//resize
 		$this->addCheckBox("mypage_profile_resize", array(
 			"name" => "mypage_profile_resize",
@@ -192,7 +204,7 @@ class MyPageConfigPage extends WebPage{
 			"selected" => ($this->getProfileResize() == 1),
 			"label" => "リサイズを行う"
 		));
-		
+
 		$this->addInput("mypage_profile_resize_width", array(
 			"name" => "mypage_profile_resize_width",
 			"value" => $this->getProfileResizeWidth()
@@ -206,7 +218,7 @@ class MyPageConfigPage extends WebPage{
 	function getMobileMyPageUrl(){
 		return SOYShop_DataSets::get("config.mypage.mobile.url", "mb/user");
 	}
-	
+
 	function getSmartphoneMyPageUrl(){
 		return SOYShop_DataSets::get("config.mypage.smartphone.url", "i/user");
 	}
@@ -223,7 +235,7 @@ class MyPageConfigPage extends WebPage{
 	function getMyPageApplicationId(){
 		return SOYShop_DataSets::get("config.mypage.id", "bryon");
 	}
-	
+
 	function getMyPageCharset(){
 		return SOYShop_DataSets::get("config.mypage.charset", "UTF-8");
 	}
@@ -231,15 +243,15 @@ class MyPageConfigPage extends WebPage{
 	function getMobileMyPageApplicationId(){
 		return SOYShop_DataSets::get("config.mypage.mobile.id", "mobile");
 	}
-	
+
 	function getMobileMyPageCharset(){
 		return SOYShop_DataSets::get("config.mypage.mobile.charset", "Shift_JIS");
 	}
-	
+
 	function getSmartphoneMyPageApplicationId(){
 		return SOYShop_DataSets::get("config.mypage.smartphone.id", "smart");
 	}
-	
+
 	function getSmartphoneMyPageCharset(){
 		return SOYShop_DataSets::get("config.mypage.smartphone.charset", "UTF-8");
 	}
@@ -266,23 +278,23 @@ class MyPageConfigPage extends WebPage{
 	function getMyPageTop(){
 		return SOYShop_DataSets::get("config.mypage.top", "top");
 	}
-	
+
 	function getMobileMyPageTop(){
 		return SOYShop_DataSets::get("config.mypage.mobile.top", "mb/top");
 	}
-	
+
 	function getSmartphoneMyPageTop(){
 		return SOYShop_DataSets::get("config.mypage.smartphone.top","i/top");
 	}
-	
+
 	private function checkMyPageId($value){
 		//対応するテンプレートが存在しない場合はここで作成する
 		self::makeTemplate($value);
-		
+
 		$values = self::getMyPageApplications();
 		return (in_array($value, $values)) ? $value : self::getMyPageApplications();
 	}
-	
+
 	private function makeTemplate($value){
 		$dir = SOYSHOP_SITE_DIRECTORY . ".template/mypage/";
 		$iniFile = $dir . $value . ".ini";
@@ -305,11 +317,11 @@ class MyPageConfigPage extends WebPage{
 		if(strlen($url) < 1) return $this->getSSLMyPageUrl();
 		return $url;
 	}
-	
+
 	function getTmpUserRegister(){
 		return SOYShop_DataSets::get("config.mypage.tmp_user_register", 1);
 	}
-	
+
 	function getProfileResize(){
 		return SOYShop_DataSets::get("config.mypage.profile_resize", 0);
 	}
@@ -317,4 +329,3 @@ class MyPageConfigPage extends WebPage{
 		return SOYShop_DataSets::get("config.mypage.profile_resize_width", 120);
 	}
 }
-?>

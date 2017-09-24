@@ -22,9 +22,9 @@
 			<dd>
 				<input type="text" class="title" soy:id="mypage_title" />
 			</dd>
-			
+
 			<!-- soy:id="extension_mypage_name_input" /-->
-			
+
 			<dt>顧客情報のフォームの設定</dt>
 			<dd>
 				<a soy:link="Config.ShopConfig#customer_form_config">顧客情報のフォームの設定(基本設定)</a>
@@ -50,7 +50,7 @@
 				<input type="checkbox" soy:id="mypage_profile_resize" />&nbsp;
 				幅&nbsp;<input type="input" soy:id="mypage_profile_resize_width" size="4" style="text-align:right;ime-mode:inactive;" />&nbsp;px
 			</dd>
-			<dt>マイページ設定(PC用)</dt>
+			<dt>マイページ設定<!-- soy:id="is_enabled_util_mobile_check" -->(PC用)<!-- /soy:id="is_enabled_util_mobile_check" --></dt>
 			<dd>
 				<h4>マイページのURI</h4>
 				<input type="text" soy:id="mypage_url" />
@@ -61,11 +61,12 @@
 
 				<h4>ログイン後のトップページのURL</h4>
 				<input type="text" soy:id="mypage_top" />
-				
+
 				<h4>文字コード</h4>
 				<select soy:id="mypage_charset"></select>
 			</dd>
 
+			<!-- soy:id="is_enabled_util_mobile_check*" -->
 			<dt>マイページ設定(mobile用)</dt>
 			<dd>
 				<h4>マイページページのURI</h4>
@@ -74,14 +75,14 @@
 				<h4>マイページの種類の選択</h4>
 				<select soy:id="mobile_mypage_application"></select><br>
 				※マイページ機能を封じる場合は<strong>none</strong>を選択してください。
-				
+
 				<h4>ログイン後のトップページのURL</h4>
 				<input type="text" soy:id="mobile_mypage_top" />
-				
+
 				<h4>文字コード</h4>
 				<select soy:id="mobile_mypage_charset"></select>
 			</dd>
-			
+
 			<dt>マイページ設定(スマートフォン用)</dt>
 			<dd>
 				<h4>マイページページのURI</h4>
@@ -90,21 +91,26 @@
 				<h4>マイページの種類の選択</h4>
 				<select soy:id="smartphone_mypage_application"></select><br>
 				※マイページ機能を封じる場合は<strong>none</strong>を選択してください。
-				
+
 				<h4>ログイン後のトップページのURL</h4>
 				<input type="text" soy:id="smartphone_mypage_top" />
-				
+
 				<h4>文字コード</h4>
 				<select soy:id="smartphone_mypage_charset"></select>
 			</dd>
+			<!-- /soy:id="is_enabled_util_mobile_check*" -->
 
 		</dl>
-		
+
 		<p class="pageBtn">
 			<input type="submit" value="更新" />
 		</p>
 
-	</form soy:id="update_form">
+	</form>
+
+	<!-- soy:id="is_not_enabled_util_mobile_check" -->
+	<p>※携帯電話やスマートフォンで使用するマイページを分けたい場合は、<a soy:link="Plugin.List">プラグイン管理</a>で「携帯自動振り分けプラグイン」をインストールしてください。</p>
+	<!-- /soy:id="is_not_enabled_util_mobile_check" -->
 
 	</div><!-- /block_body -->
 </div><!-- /block -->

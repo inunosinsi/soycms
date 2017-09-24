@@ -69,6 +69,10 @@ class CartConfigPage extends WebPage{
 			"mode" => "cart"
 		));
 
+		$this->addLabel("extension_cart_name_input", array(
+			"html" => $nameForm
+		));
+
 		//携帯自動振り分けプラグインが有効かどうか
 		$isEnabledUtilMobileCheck = class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("util_mobile_check"));
 		$this->addModel("is_enabled_util_mobile_check", array(
@@ -76,10 +80,6 @@ class CartConfigPage extends WebPage{
 		));
 		$this->addModel("is_not_enabled_util_mobile_check", array(
 				"visible" => ! $isEnabledUtilMobileCheck,
-		));
-
-		$this->addLabel("extension_cart_name_input", array(
-			"html" => $nameForm
 		));
 
 		$this->addInput("cart_url", array(
