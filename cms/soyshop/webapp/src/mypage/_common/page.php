@@ -27,14 +27,27 @@ do{
         //Hoge.IndexPage
         $path = $htmlObj->createPagePath(true) . "Page";
     }else{
-        //HogePage
+		//HogePage
         $path = $htmlObj->createPagePath() . "Page";
 
         //MYPAGE_IDの方で無かったので、_commonの方を調べるように設定変更
         if(!SOY2HTMLFactory::pageExists($path)) {
-            SOY2HTMLConfig::PageDir(dirname(__FILE__).  "/pages/");
-            continue;
-        }
+			//alias付きであることを疑ってみる
+			$values = explode(".", $htmlObj->createPagePath());
+			$args[] = strtolower(array_pop($values));
+
+			$values[] = ucfirst(array_pop($values));
+			$path = implode(".", $values);
+			if(!SOY2HTMLFactory::pageExists($path . "Page")){
+				$path = strtolower($path) . ".Index";
+				if(!SOY2HTMLFactory::pageExists($path . "Page")){
+					SOY2HTMLConfig::PageDir(dirname(__FILE__).  "/pages/");
+					continue;
+				}
+			}
+			$path .= "Page";
+			break;
+		}
     }
 }while($i++ < 1);
 
@@ -42,14 +55,14 @@ $path = MyPageLogic::convertPath($path);
 define("SOYSHOP_MYPAGE_PATH", $path);
 
 if(file_exists(SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . str_replace(".", "/", SOYSHOP_MYPAGE_PATH) . ".html")){
-  try{
-      $page = SOY2HTMLFactory::createInstance($path, array("arguments" => $args));
-  }catch(Exception $e){
-      $page = SOY2HTMLFactory::createInstance("ErrorPage", array("arguments" => $args));
-  }
+	try{
+		$page = SOY2HTMLFactory::createInstance($path, array("arguments" => $args));
+	}catch(Exception $e){
+		$page = SOY2HTMLFactory::createInstance("ErrorPage", array("arguments" => $args));
+	}
 //HTMLファイルがなければ必ずエラー
 }else{
-  $page = SOY2HTMLFactory::createInstance("ErrorPage", array("arguments" => $args));
+	$page = SOY2HTMLFactory::createInstance("ErrorPage", array("arguments" => $args));
 }
 
 
