@@ -34,7 +34,7 @@ function preview_customfield($form){
 
 function insertHTML(html, src, alt, width, height){
 		var id = $custom_field_input.attr("id");
-		if($custom_field_input.size() > 0){
+		if(src.length > 2){ //これで/#を省ける
 				$custom_field_input.val(src);
 				$("#"+id+"_extra_alt").val(alt);
 				$("#"+id+"_extra_width").val(width+"px");

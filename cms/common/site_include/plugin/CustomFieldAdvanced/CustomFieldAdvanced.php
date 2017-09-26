@@ -38,7 +38,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.2.3"
+			"version"=>"1.2.4"
 		));
 
 		//プラグイン アクティブ
@@ -102,7 +102,7 @@ class CustomFieldPluginAdvanced{
 
 			//カスタムフィールドの設定が取れるときの動作（たとえば同じサイト内の場合）
 			if($master){
-				
+
 				//$attr["html"]に改めて値を入れ直す時に使用するフラグ
 				$resetFlag = true;
 
@@ -121,14 +121,14 @@ class CustomFieldPluginAdvanced{
 						$field->setValue($master->getEmptyValue());
 					}
 				}
-				
+
 				//タイプがリンクの場合はここで上書き
 				if($master->getType() == "link"){
 					$class = "HTMLLink";
 					$attr["link"] = (strlen($field->getValue()) > 0) ? $field->getValue() : null;
 					unset($attr["html"]);
 					$resetFlag = false;
-					
+
 				//画像の場合
 				}else if($master->getType() == "image"){
 					$class = "HTMLImage";
@@ -136,7 +136,7 @@ class CustomFieldPluginAdvanced{
 					unset($attr["html"]);
 					$resetFlag = false;
 				}
-				
+
 				//リンク、もしくは画像の場合、パスを表示するためのcms:id
 				if($master->getType() == "link" || $master->getType() == "image"){
 					$htmlObj->addLabel($field->getId() . "_text", array(
@@ -144,7 +144,7 @@ class CustomFieldPluginAdvanced{
 						"text" => $field->getValue()
 					));
 				}
-				
+
 				//複数行テキストの場合は\n\rを<br>に変換するタグを追加
 				if($master->getType() == "textarea"){
 					$htmlObj->addLabel($field->getId() . "_br_mode", array(
@@ -185,7 +185,7 @@ class CustomFieldPluginAdvanced{
 					*/
 					unset($attr["html"]);//HTMLModelなのでunsetしなくても出力されないはず
 				}
-				
+
 				//追加属性を出力
 				if(strlen($master->getExtraOutputs()) > 0){
 					$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $master->getExtraOutputs()));
@@ -194,7 +194,7 @@ class CustomFieldPluginAdvanced{
 						$extraOutput = trim($extraOutput);
 						$attr[$extraOutput] = is_array($extraValues) && isset($extraValues[$extraOutput]) ? $extraValues[$extraOutput] : "";
 					}
-					
+
 					unset($attr["html"]);//HTMLModelなのでunsetしなくても出力されないはず
 				}
 			}

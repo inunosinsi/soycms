@@ -230,7 +230,7 @@ class CustomField{
 						$body .= '<a href="#" onclick="return preview_customfield($(\'#'.$h_formID.'\'));">Preview</a>';
 					}
 					if($this->getType() == "file"){
-						$body .= '<a href="'.$h_value.'">'.basename($h_value).'</a>';
+						$body .= '<a href="'.$h_value.'" target="_blank">'.basename($h_value).'</a>';
 					}
 				}
 

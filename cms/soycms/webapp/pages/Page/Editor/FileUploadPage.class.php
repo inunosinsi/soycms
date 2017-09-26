@@ -45,6 +45,10 @@ class FileUploadPage extends CMSWebPageBase {
 			"onfocus" => "outerLinkOnFocus(this, '" . $sample . "')",
 			"onblur"  => "outerLinkOnBlur(this, '" . $sample . "')",
 		));
+
+		$this->addLabel("soyCommon", array(
+			"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/dist/js/soycms-common.js") . "?" . SOYCMS_BUILD_TIME
+		));
 	}
 
 	function getDefaultUpload(){
