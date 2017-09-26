@@ -1,0 +1,29 @@
+<div>
+	<a class="button" soy:link="Extension.user_group">グループ一覧</a>
+</div>
+
+<br>
+
+<div class="block_body clearfix">
+	<h3>CSV出力</h3>
+	<form soy:id="csv_form" id="export_form">
+		<dl>
+			<dt>顧客グループのエクスポート</dt>
+			<dd>
+				現在登録されている顧客グループのCSVを出力します。<br>
+				<label><input type="radio" name="charset" value="UTF-8" checked="checked">UTF-8</label>
+				<label><input type="radio" name="charset" value="Shift-JIS">Shift-JIS</label>&nbsp;
+				<input type="submit" name="export" class="submit_button" value="CSV出力">
+			</dd>
+		</dl>
+	</form>
+</div>
+
+<script type="text/javascript">
+$(function(){
+	$("#export_form").attr("target","download_frame");
+	$("#export_form").submit(function(){
+		setTimeout(function(){location.reload();},1000);
+	});
+});
+</script>

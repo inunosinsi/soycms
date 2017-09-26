@@ -28,7 +28,7 @@ class ImportPage extends WebPage{
     	));
 
 		//商品オプションリストを表示する
-		$this->createAdd("custom_search_field_list", "_common.Item.CustomSearchFieldImExportListComponent", array(
+		$this->createAdd("custom_search_field_list", "_common.User.UserCustomSearchFieldImExportListComponent", array(
 			"list" => $this->getCustomSearchFieldList()
 		));
     }
@@ -85,7 +85,7 @@ class ImportPage extends WebPage{
     	$this->dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
     	$this->attributeDAO = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
     	$config = SOYShop_UserAttributeConfig::load(true);
-    	
+
     	//カスタムサーチフィールド
 		$customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.DataBaseLogic");
 
@@ -104,10 +104,10 @@ class ImportPage extends WebPage{
 
 			//SOYShop_Userに変換
 			$user = $this->import($obj);
-			
+
 			//新規登録の場合は必ず本登録にしておく
 			if(is_null($user->getUserType())) $user->setUserType(SOYShop_User::USERTYPE_REGISTER);
-			
+
 			if($deleted){
 				//ユーザーデータ、ユーザーカスタムフィールドの削除
 				$this->delete($user, $attributes);
@@ -124,7 +124,7 @@ class ImportPage extends WebPage{
 						$this->pointLogic->updatePoint($point, $user->getId());
 					}
 				}
-				
+
 				//カスタムサーチフィールド
 				if(count($customSearchFields)){
 					$customSearchFieldDBLogic->save($user->getId(), $customSearchFields);
@@ -236,10 +236,9 @@ class ImportPage extends WebPage{
 		$config = SOYShop_UserAttributeConfig::load($flag);
 		return $config;
     }
-    
+
     function getCustomSearchFieldList(){
 		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
 		return UserCustomSearchFieldUtil::getConfig();
 	}
 }
-?>
