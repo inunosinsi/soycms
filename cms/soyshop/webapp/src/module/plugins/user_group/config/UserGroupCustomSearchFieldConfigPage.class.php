@@ -18,14 +18,14 @@ class UserGroupCustomSearchFieldConfigPage extends WebPage{
 
 				//DBへカラムを追加する
 				if(SOY2Logic::createInstance("module.plugins.user_group.logic.DataBaseLogic")->addColumn($key, $_POST["custom_type"])){
-					$config = UserGroupCustomSearchFieldUtil::getConfig();
+					$configs = UserGroupCustomSearchFieldUtil::getConfig();
 
-					$config[$key] = array(
+					$configs[$key] = array(
 						"label" => trim($_POST["custom_label"]),
 						"type" => $_POST["custom_type"]
 					);
 
-					UserGroupCustomSearchFieldUtil::saveConfig($config);
+					UserGroupCustomSearchFieldUtil::saveConfig($configs);
 					$this->configObj->redirect("updated");
 				}
 			}
@@ -34,10 +34,10 @@ class UserGroupCustomSearchFieldConfigPage extends WebPage{
 		//advanced config
 		if(isset($_POST["update_advance"])){
 			$key = $_POST["update_advance"];
-			$config = UserGroupCustomSearchFieldUtil::getConfig();
-			$config[$key]["option"] = $_POST["config"]["option"];
+			$configs = UserGroupCustomSearchFieldUtil::getConfig();
+			$configs[$key]["option"] = $_POST["config"]["option"];
 
-			UserGroupCustomSearchFieldUtil::saveConfig($config);
+			UserGroupCustomSearchFieldUtil::saveConfig($configs);
 			$this->configObj->redirect("updated");
 		}
 

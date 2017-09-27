@@ -5,5 +5,20 @@
 <br>
 
 <div class="block_body clearfix">
-	※未実装
+
+	<p class="error" soy:display="failed">ファイルのアップロードに失敗しました。</p>
+	<p class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
+
+	<h3>CSVインポート</h3>
+	<form soy:id="import_form">
+		<dl>
+			<dt>顧客グループのインポート</dt>
+			<dd>
+				<label><input type="radio" name="charset" value="UTF-8" checked="checked">UTF-8</label>
+				<label><input type="radio" name="charset" value="Shift-JIS">Shift-JIS</label>&nbsp;
+				<input type="file" name="import">&nbsp;
+				<input type="submit" class="submit_button" value="アップロード">
+			</dd>
+		</dl>
+	</form>
 </div>

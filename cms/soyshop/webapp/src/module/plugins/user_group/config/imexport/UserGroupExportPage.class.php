@@ -4,7 +4,9 @@ class UserGroupExportPage extends WebPage{
 
 	private $configObj;
 
-	function __construct(){
+	function __construct(){}
+
+	function doPost(){
 		if(soy2_check_token()){
 			$logic = SOY2Logic::createInstance("module.plugins.user_group.logic.UserGroupCSVLogic");
 			$lines = $logic->getLines();
