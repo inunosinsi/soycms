@@ -2,37 +2,35 @@
 
 class SOYShop_ComplexPageBase extends SOYShopPageBase{
 
-
 	private $logic;
 
 	function build($args){
+		$obj = $this->getPageObject()->getPageObject();
 
-		$page = $this->getPageObject();
-		$obj = $page->getPageObject();
+		//条件によってはComplexページでなくても、このファイルを読み込む可能性があるため、別ページの場合の対策
+		if(method_exists($obj, "getBlocks")){
+			//SearchItemUtilの作成。ソート順作成のためlistPageオブジェクトを渡す
+			$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil");
+			$this->logic = $logic;
 
-		//SearchItemUtilの作成。ソート順作成のためlistPageオブジェクトを渡す
-		$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil");
-		$this->logic = $logic;
+			$blocks = $obj->getBlocks();
+			foreach($blocks as $blockId => $block){
+				//念のために、クラス名を調べておく
+				if(get_class($block) != "SOYShop_ComplexPageBlock") continue;
 
-		$blocks = $obj->getBlocks();
-
-		foreach($blocks as $blockId => $block){
-
-			$items = $this->getItems($block);
-
-			//item_list
-			$this->createAdd($blockId,"SOYShop_ItemListComponent", array(
-				"list" => $items,
-				"soy2prefix" => "block"
-			));
-
+				//item_list
+				$this->createAdd($blockId, "SOYShop_ItemListComponent", array(
+					"list" => self::getItems($block),
+					"soy2prefix" => "block"
+				));
+			}
 		}
 	}
 
-	function getItems($block){
-		
+	private function getItems(SOYShop_ComplexPageBlock $block){
+
 		$isAnd = $block->isAndCustomFieldCordination();
-		
+
 		//表示件数が無記入だった場合、1～10件を表示する
 		if(strlen($block->getCountStart()) === 0 && strlen($block->getCountEnd()) === 0){
 			$countStart = 1;
@@ -45,7 +43,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 		//設定は1～。送信するデータは0開始
 		$offset = (strlen($countStart) > 0) ? (int)($countStart-1) : null;
 		$limit = ($countEnd) ? $countEnd - $countStart + 1 : null;
-		
+
 		$customFields = array();
 		$customFieldCordinations = $block->getCustomFields();
 
@@ -73,7 +71,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 			$limit,
 			$isAnd
 		);
-		
+
 		//商品ブロックの条件に子商品がある場合は除く
 		$result = array();
 		foreach($items as $item){
@@ -81,9 +79,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 				$result[] = $item;
 			}
 		}
-		
+
 		return $result;
 	}
-
 }
-?>

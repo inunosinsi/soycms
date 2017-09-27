@@ -10,12 +10,12 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 	private $totalItemCount = 0;
 
 	function build($args){
-		
+
 		$page = $this->getPageObject();
 		$obj = $page->getPageObject();
 
 		$alias = implode("/", $args);
-		
+
 		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		try{
 			$item = $itemDAO->getByAlias($alias);
@@ -24,9 +24,9 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 			echo "error";
 			exit;
 		}
-		
+
 		$forAdminOnly = self::getForAdminOnly($item);
-		
+
 		//非公開(非公開プレビューモードは除く) && 削除フラグのチェック
 		if((!$forAdminOnly && $item->getIsOpen() != SOYShop_Item::IS_OPEN)  || $item->getIsDisabled() == SOYShop_Item::IS_DISABLED){
 			//header("HTTP/1.1 410 Gone");
@@ -49,9 +49,9 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 
 		//現在の商品を保存
 		$obj->setCurrentItem($item);
-		
+
 		soyshop_convert_item_detail_page_id($item, $page);
-		
+
 		if(strlen($item->getDetailPageId()) > 0 && $item->getDetailPageId() != $page->getId()){
 			header("HTTP/1.0 404 Not Found");
 			echo "error";
@@ -106,14 +106,14 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 			"forAdminOnly" => $forAdminOnly //商品詳細ページ確認モード
 		));
 	}
-	
+
 	/**
 	 * 商品が非公開で商品詳細ページ確認モードのフラグが立っている場合はページを表示するか調べる
 	 * @param object SOYShop_Item
 	 * @return booleanもしくはnull
 	 */
 	function getForAdminOnly($item){
-		
+
 		if(!$item->isPublished() && isset($_GET["foradminonly"])){
 			$session = SOY2ActionSession::getUserSession();
 			$forAdminOnly = (!is_null($session->getAttribute("loginid")));
@@ -236,4 +236,3 @@ class SOYShop_DetailPagePager extends SOYShop_PagerBase{
 		return ($this->page->getPrevItem()) ? true : false;
 	}
 }
-?>
