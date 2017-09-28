@@ -13,6 +13,7 @@ class SOYShop_UserGroup{
 	 */
 	private $id;
 	private $name;
+	private $code;
 
 	private $lat;
 	private $lng;
@@ -39,6 +40,13 @@ class SOYShop_UserGroup{
 	}
 	function setName($name){
 		$this->name = $name;
+	}
+
+	function getCode(){
+		return $this->code;
+	}
+	function setCode($code){
+		$this->code = $code;
 	}
 
 	function getLat(){

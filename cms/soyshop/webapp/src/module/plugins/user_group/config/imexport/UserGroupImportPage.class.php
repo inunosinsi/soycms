@@ -47,7 +47,8 @@ class UserGroupImportPage extends WebPage{
 				if(count($values) < 2) continue;
 				$groupId = array_shift($values);
 				$groupName = array_shift($values);
-				$groupId = self::import($groupId, $groupName);
+				$groupCode = array_shift($values);
+				$groupId = self::import($groupId, $groupName, $groupCode);
 
 				if(isset($groupId) && is_numeric($groupId)){
 					$counter = 0;	//何個目のカラムにチェックボックスがあるか？
@@ -79,13 +80,14 @@ class UserGroupImportPage extends WebPage{
 		return $list;
 	}
 
-	private function import($groupId, $groupName){
+	private function import($groupId, $groupName, $groupCode){
 		try{
 			$group = self::dao()->getById($groupId);
 		}catch(Exception $e){
 			$group = new SOYShop_UserGroup();
 		}
 		$group->setName($groupName);
+		$group->setCode($groupCode);
 
 		//新規
 		if(is_null($group->getId())){

@@ -66,6 +66,11 @@ class UserGroupDetailPage extends WebPage{
 			"value" => $group->getName()
 		));
 
+		$this->addInput("code", array(
+			"name" => "Group[code]",
+			"value" => $group->getCode()
+		));
+
 		//カスタムサーチフィールド
 		$html = array();
 		SOY2::import("module.plugins.user_group.component.GroupFieldFormComponent");

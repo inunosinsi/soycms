@@ -10,6 +10,10 @@ class GroupListComponent extends HTMLList{
 			"text" => $entity->getName()
 		));
 
+		$this->addLabel("code", array(
+			"text" => $entity->getCode()
+		));
+
 		$total = self::countUser($entity->getId());
 		$this->addLabel("count_user", array(
 			"text" => $total

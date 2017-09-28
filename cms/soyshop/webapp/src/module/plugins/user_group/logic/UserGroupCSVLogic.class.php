@@ -11,6 +11,7 @@ class UserGroupCSVLogic extends ExImportLogicBase {
 		$list = array();
 		$list[] = "id";
 		$list[] = "グループ名";
+		$list[] = "グループコード";
 
 		$configs = UserGroupCustomSearchFieldUtil::getConfig();
 		if(count($configs)){
@@ -43,6 +44,7 @@ class UserGroupCSVLogic extends ExImportLogicBase {
 			$line = array();
 			$line[] = $group->getId();
 			$line[] = $group->getName();
+			$line[] = $group->getCode();
 
 			if(count($values)) {
 				foreach($values as $fieldId => $v){
