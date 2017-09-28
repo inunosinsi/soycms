@@ -7,10 +7,10 @@
 
 
 <div class="block">
-	
+
 	<div class="block_title">
 		<h2>顧客情報詳細</h2>
-		
+
 		<div class="block_title_right">
 			<a soy:id="order_list_link" class="button">この顧客の注文 (<!-- soy:id="order_count" /-->)</a>
 		</div>
@@ -71,14 +71,14 @@
 					<input soy:id="furigana" type="text" style="width:95%;" />
 				</td>
 			</tr>
-			
+
 			<tr>
 				<th>ニックネーム</th>
 				<td>
 					<input soy:id="nickname" type="text" style="width:95%;" />
 				</td>
 			</tr>
-			
+
 			<tr>
 				<th>プロフィール画像</th>
 				<td>
@@ -88,7 +88,7 @@
 					<input type="file" name="image" />
 				</td>
 			</tr>
-			
+
 			<tr>
 				<th>性別</th>
 				<td>
@@ -120,11 +120,12 @@
 			<tr>
 				<th>住所</th>
 				<td>
-					<select soy:id="area">
+					<select soy:id="area" id="area">
 						<option value="">▼選択</option>
 					</select>
-					<input soy:id="address1" type="text" size="40" /><br>
-					<input soy:id="address2" type="text" style="width:95%;" />
+					<input soy:id="address1" type="text" size="40" id="address1" /><br>
+					<input soy:id="address2" type="text" style="width:95%;" id="address2" /><br>
+					<!-- soy:id="advenced_address_list" --><!-- soy:id="form" /--><!-- /soy:id="advenced_address_list" -->
 				</td>
 			</tr>
 
@@ -232,7 +233,7 @@
 				</td>
 			</tr>
 		</table>
-		
+
 		<table class="form_table">
 			<tr>
 				<th>プロフィールページ</th>
@@ -322,7 +323,7 @@
 			</tr>
 		</table>
 		<!-- /soy:id="address_list" -->
-		
+
 		<!-- soy:display="point" -->
 		<h3>ポイント</h3>
 		<table class="form_table">
@@ -345,7 +346,7 @@
 
 
 		</form soy:id="detail_form">
-		
+
 		<!-- soy:display="display_mail_history" -->
 		<h3>メールの送信履歴</h3>
 		<table class="form_table">
@@ -361,7 +362,7 @@
 			<!--  /soy:id="mail_history_list" -->
 		</table>
 		<!-- /soy:display="display_mail_history" -->
-		
+
 		<!-- soy:display="point2" -->
 		<!-- soy:display="point_history" -->
 		<h3>ポイント履歴(新着10件)</h3>
@@ -379,7 +380,7 @@
 		</table>
 		<!-- /soy:display="point_history" -->
 		<!-- /soy:display="point2" -->
-		
+
 		</div><!-- /block_body -->
 </div><!-- /block -->
 

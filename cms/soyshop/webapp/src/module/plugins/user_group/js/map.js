@@ -1,3 +1,5 @@
+
+
 var map, marker, resultMarker, latForm, lngForm, geocoder;
 
 function initMap() {
@@ -37,7 +39,18 @@ if (document.querySelector("#search_by_address")) {
 }
 
 function geocodeAddress(geocoder, resultsMap) {
-    var address = document.querySelector("#address").value;
+	var address = "";
+	if(document.querySelector("#address") != null){
+		address = document.querySelector("#address").value;
+	}else{
+		var areaSelectBox = document.querySelector("#area");
+		var area = areaSelectBox.selectedIndex;
+		if(area > 0){
+			address += areaSelectBox[area].text;
+		}
+		address += document.querySelector("#address1").value;
+	}
+	
     geocoder.geocode({
         'address': address
     }, function(results, status) {
