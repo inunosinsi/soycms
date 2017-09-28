@@ -12,6 +12,7 @@ class UserGroupCustomSearchFieldUtil{
 	const TYPE_CHECKBOX = "checkbox";
 	const TYPE_RADIO = "radio";
 	const TYPE_SELECT = "select";
+	const TYPE_MAP = "map";	//グーグルマップと連動した住所
 
 	public static function getConfig(){
 		return SOYShop_DataSets::get("user_group.config", array());
@@ -40,7 +41,8 @@ class UserGroupCustomSearchFieldUtil{
 			self::TYPE_RANGE => "数字(範囲)",
 			self::TYPE_CHECKBOX => "チェックボックス",
 			self::TYPE_RADIO => "ラジオボタン",
-			self::TYPE_SELECT => "セレクトボックス"
+			self::TYPE_SELECT => "セレクトボックス",
+			self::TYPE_MAP => "地図付き住所"
 		);
 	}
 

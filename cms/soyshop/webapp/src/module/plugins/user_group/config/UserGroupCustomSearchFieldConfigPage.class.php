@@ -35,7 +35,8 @@ class UserGroupCustomSearchFieldConfigPage extends WebPage{
 		if(isset($_POST["update_advance"])){
 			$key = $_POST["update_advance"];
 			$configs = UserGroupCustomSearchFieldUtil::getConfig();
-			$configs[$key]["option"] = $_POST["config"]["option"];
+			$configs[$key]["option"] = (isset($_POST["config"]["option"])) ? $_POST["config"]["option"] : null;
+			$configs[$key]["mapKey"] = (isset($_POST["config"]["mapKey"])) ? $_POST["config"]["mapKey"] : null;
 
 			UserGroupCustomSearchFieldUtil::saveConfig($configs);
 			$this->configObj->redirect("updated");

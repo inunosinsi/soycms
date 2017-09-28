@@ -25,7 +25,10 @@ class UserGroupCustomSearchFieldListComponent extends HTMLList{
 			"link" => "javascript:void(0)",
 			"text" => "詳細設定",
 			"onclick" => '$(\'#field_config_' . $key . '\').toggle();',
-			"style" => (isset($entity["option"]) && strlen($entity["option"])) ? "background-color:yellow;" : ""
+			"style" => (
+				(isset($entity["option"]) && strlen($entity["option"])) ||
+				(isset($entity["mapKey"]) && strlen($entity["mapKey"]))
+			) ? "background-color:yellow;" : ""
 		));
 
 		/* 順番変更用 */
@@ -58,6 +61,15 @@ class UserGroupCustomSearchFieldListComponent extends HTMLList{
 		$this->addTextArea("option", array(
 			"name" => "config[option]",
 			"value" => (isset($entity["option"])) ? $entity["option"] : null
+		));
+
+		$this->addModel("with_map_key", array(
+			"visible" => (isset($entity["type"]) && $entity["type"] == UserGroupCustomSearchFieldUtil::TYPE_MAP)
+		));
+
+		$this->addInput("map_key", array(
+			"name" => "config[mapKey]",
+			"value" => (isset($entity["mapKey"])) ? $entity["mapKey"] : null
 		));
 
 		$this->addInput("update_advance", array(

@@ -1,7 +1,7 @@
 <?php
 class GroupFieldFormComponent {
 
-	public static function buildForm($fieldId, $field, $value = null, $isMyPage = false, $hasStyle = false) {
+	public static function buildForm($fieldId, $field, $value = null, $isMyPage = false, $hasStyle = false, $lat = null, $lng = null) {
 
 		SOY2::import("module.plugins.user_group.util.UserGroupCustomSearchFieldUtil");
 		$nameProperty = "user_group_custom[" . $fieldId . "]";
@@ -80,6 +80,16 @@ class GroupFieldFormComponent {
 					$html[] = "</select>";
 
 				}
+
+				return implode("\n", $html);
+
+			case UserGroupCustomSearchFieldUtil :: TYPE_MAP :
+				$html = array();
+				$html[] = "<input type=\"text\" id=\"address\"  name=\"" . $nameProperty . "\" value=\"" . $value . "\" style=\"width:80%;\"><br>";
+				$html[] = "<a href=\"javascript:void(0)\" id=\"search_by_address\">住所から地図検索</a>";
+				$html[] = "<input type=\"hidden\" id=\"lat\" name=\"map_lat\" value=\"" . $lat . "\">";
+				$html[] = "<input type=\"hidden\" id=\"lng\" name=\"map_lng\" value=\"" . $lng . "\">";
+				$html[] = "<div id=\"map\"></div>";
 
 				return implode("\n", $html);
 		}

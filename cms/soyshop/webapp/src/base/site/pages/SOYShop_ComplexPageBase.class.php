@@ -10,8 +10,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 		//条件によってはComplexページでなくても、このファイルを読み込む可能性があるため、別ページの場合の対策
 		if(method_exists($obj, "getBlocks")){
 			//SearchItemUtilの作成。ソート順作成のためlistPageオブジェクトを渡す
-			$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil");
-			$this->logic = $logic;
+			$this->logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil");
 
 			$blocks = $obj->getBlocks();
 			foreach($blocks as $blockId => $block){

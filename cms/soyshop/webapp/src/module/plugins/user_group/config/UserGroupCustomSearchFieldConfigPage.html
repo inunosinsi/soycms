@@ -57,6 +57,13 @@
 						</dd>
 						<!-- /soy:id="with_options" -->
 
+						<!-- soy:id="with_map_key" -->
+						<dt>Google Maps APIのKEY</dt>
+						<dd>
+							<input type="text" soy:id="map_key">
+						</dd>
+						<!-- /soy:id="with_map_key" -->
+
 						<!--dt>一括設定</dt>
 						<dd>
 							<a href="" soy:id="setting_link">一括設定ページを開く</a>
@@ -74,6 +81,8 @@
 		</tr>
 		<!-- /soy:id="field_list" -->
 	</table>
+	<span style="margin:0 0 0 20px;">※地図付き住所を使用する場合、フィールドの作成は一つまでです。</span><br>
+	<span style="margin:0 0 0 20px;">※フィールド作成後は詳細設定でGoogle Maps API Keyを登録することで使用できるようになります。</span>
 
 	<div id="append_form_el" class="popup" style="display:none;">
 		<form soy:id="create_form" id="create_form">

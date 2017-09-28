@@ -14,6 +14,9 @@ class SOYShop_UserGroup{
 	private $id;
 	private $name;
 
+	private $lat;
+	private $lng;
+
 	/**
      * @column group_order
      */
@@ -36,6 +39,20 @@ class SOYShop_UserGroup{
 	}
 	function setName($name){
 		$this->name = $name;
+	}
+
+	function getLat(){
+		return $this->lat;
+	}
+	function setLat($lat){
+		$this->lat = $lat;
+	}
+
+	function getLng(){
+		return $this->lng;
+	}
+	function setLng($lng){
+		$this->lng = $lng;
 	}
 
 	function getOrder() {

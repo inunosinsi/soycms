@@ -15,6 +15,12 @@ class UserGroupDetailPage extends WebPage{
 			$old = self::getGroupById($this->detailId);
 			$group = SOY2::cast($old, $_POST["Group"]);
 
+			//緯度経度のカラムがある場合
+			if(isset($_POST["map_lat"]) && strlen($_POST["map_lat"])){
+				$group->setLat($_POST["map_lat"]);
+				$group->setLng($_POST["map_lng"]);
+			}
+
 			//新規登録
 			if(is_null($group->getId())){
 				try{
@@ -65,19 +71,38 @@ class UserGroupDetailPage extends WebPage{
 		SOY2::import("module.plugins.user_group.component.GroupFieldFormComponent");
 		$configs = UserGroupCustomSearchFieldUtil::getConfig();
 		if(count($configs)){
-			$values = SOY2Logic::createInstance("module.plugins.user_group.logic.DataBaseLogic")->getByGroupId($this->detailId);
+			$isMap = "false";	//地図付き住所のカラムがあるか？
+			$mapApiKey = null;
 
+			$values = SOY2Logic::createInstance("module.plugins.user_group.logic.DataBaseLogic")->getByGroupId($this->detailId);
 			foreach($configs as $key => $field){
 				if(!isset($field["label"]) || !strlen($field["label"])) continue;
+
+				//地図付き住所のカラムがあるか？
+				if($field["type"] === UserGroupCustomSearchFieldUtil :: TYPE_MAP){
+					$isMap = true;
+					if(isset($field["mapKey"])) $mapApiKey = trim($field["mapKey"]);
+				}
+
 				$value = (isset($values[$key])) ? $values[$key] : null;
 
 				$html[] = "<dt>" . htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8") . "</dt>\n" .
-							"<dd>" . GroupFieldFormComponent::buildForm($key, $field, $value) . "</dd>";
+							"<dd>" . GroupFieldFormComponent::buildForm($key, $field, $value, false, false, $group->getLat(), $group->getLng()) . "</dd>";
 			}
 		}
 
 		$this->addLabel("build_form", array(
 			"html" => implode("\n", $html)
+		));
+
+		//地図付き住所の場合
+		DisplayPlugin::toggle("map_script", $isMap);
+		$this->addModel("google_map_src", array(
+			"src" => "https://maps.googleapis.com/maps/api/js?key=" . $mapApiKey . "&callback=initMap"
+		));
+
+		$this->addLabel("map_js", array(
+			"html" => file_get_contents(dirname(dirname(__FILE__)) . "/js/map.js")
 		));
 	}
 
