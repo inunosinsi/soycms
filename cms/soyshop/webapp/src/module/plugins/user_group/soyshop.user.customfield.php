@@ -41,15 +41,17 @@ class UserGroupCustomField extends SOYShopUserCustomfield{
 		if(!count($list)) return "";
 
 		$html = array();
-		foreach($list as $groupId => $name){
+		foreach($list as $groupId => $v){
+			$label = $v["name"];
+			if(strlen($v["code"])) $label .= "(" . $v["code"] . ")";
 			if(array_search($groupId, self::getGroupIdListByUserId($userId)) !== false){
-				$html[] = '<label><input type="checkbox" name="user_group_plugin[]" value="'. $groupId .'" checked="checked">' . $name . '</label>';
+				$html[] = '<label><input type="checkbox" name="user_group_plugin[]" value="'. $groupId .'" checked="checked">' . $label . '</label>';
 			}else{
-				$html[] = '<label><input type="checkbox" name="user_group_plugin[]" value="'. $groupId .'">' . $name . '</label>';
+				$html[] = '<label><input type="checkbox" name="user_group_plugin[]" value="'. $groupId .'">' . $label . '</label>';
 			}
 		}
 
-		return implode("\n", $html);
+		return implode("<br>\n", $html);
 	}
 
 	private function getGroupList(){
@@ -64,7 +66,7 @@ class UserGroupCustomField extends SOYShopUserCustomfield{
 		$list = array();
 		foreach($groups as $group){
 			if(strlen($group->getName())){
-				$list[$group->getId()] = $group->getName();
+				$list[$group->getId()] = array("name" => $group->getName(), "code" => $group->getCode());
 			}
 		}
 		return $list;
