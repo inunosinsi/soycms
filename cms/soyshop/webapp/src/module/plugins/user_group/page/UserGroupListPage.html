@@ -19,7 +19,9 @@
 				<tr class="alC">
 					<th>グループ名</th>
 					<th>人数</th>
-					<th>&nbsp;</th>
+					<th>
+						<a class="button" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -35,7 +37,7 @@
 					</td>
 					<td class="operation">
 						<a soy:id="detail_link*" class="button">詳細</a>&nbsp;
-						<a soy:id="remove_link" class="button">削除</a>
+						<a soy:id="remove_link" class="button fr delete_btn">削除</a>
 					</td>
 				</tr>
 				<!-- /soy:id="group_list" -->
@@ -64,3 +66,10 @@
 
 	</div><!-- /block_body -->
 </div>
+
+
+<style type="text/css">
+.delete_btn{
+	visibility:hidden;
+}
+</style>
