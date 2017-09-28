@@ -266,21 +266,52 @@ class ListPage extends CMSUpdatePageBase{
 	 * @return (entry_array,記事の数,大きすぎた場合最終オフセット)
 	 */
 	private function getEntries($offset,$limit,$labelIds){
-		//ラベルIDに数字以外が含まれていたらアウト
-		foreach($labelIds as $labelId){
-			if(!is_numeric($labelId))return array(array(),0,0);
+		if(strpos($_SERVER["PATH_INFO"], "/Closed")){
+			$result = $this->run("Entry.ClosedEntryListAction",array(
+	    		"offset"=>$offset,
+	    		"limit"=>$limit
+	    	));
+
+	    	$entities = $result->getAttribute("Entities");
+	    	$totalCount = $result->getAttribute("total");
+
+	    	return array($entities,$totalCount,min($offset,$totalCount));
+		}else if(strpos($_SERVER["PATH_INFO"], "/OutOfDate")){
+			$result = $this->run("Entry.OutOfDateEntryListActoin",array(
+	    		"offset"=>$offset,
+	    		"limit"=>$limit
+	    	));
+
+	    	$entities = $result->getAttribute("Entities");
+	    	$totalCount = $result->getAttribute("total");
+
+	    	return array($entities,$totalCount,min($offset,$totalCount));
+		}else if(strpos($_SERVER["PATH_INFO"], "/NoLabel")){
+			$result = $this->run("Entry.NoLabelEntryListAction",array(
+	    		"offset"=>$offset,
+	    		"limit"=>$limit
+	    	));
+
+	    	$entities = $result->getAttribute("Entities");
+	    	$totalCount = $result->getAttribute("total");
+	    	return array($entities,$totalCount,min($offset,$totalCount));
+		}else{
+			//ラベルIDに数字以外が含まれていたらアウト
+			foreach($labelIds as $labelId){
+				if(!is_numeric($labelId))return array(array(),0,0);
+			}
+
+			$action = SOY2ActionFactory::createInstance("Entry.EntryListAction",array(
+				"ids"=>$labelIds,
+				"offset"=>$offset,
+				"limit"=>$limit
+			));
+			$result = $action->run();
+			$entities = $result->getAttribute("Entities");
+			$totalCount = $result->getAttribute("total");
+
+			return array($entities,$totalCount,min($offset,$totalCount));
 		}
-
-		$action = SOY2ActionFactory::createInstance("Entry.EntryListAction",array(
-			"ids"=>$labelIds,
-			"offset"=>$offset,
-			"limit"=>$limit
-		));
-		$result = $action->run();
-		$entities = $result->getAttribute("Entities");
-		$totalCount = $result->getAttribute("total");
-
-		return array($entities,$totalCount,min($offset,$totalCount));
 	}
 
 
