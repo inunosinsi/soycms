@@ -2,7 +2,7 @@
 
 class UserGroupCustomSearchFieldUtil{
 
-	const PLUGIN_PREFIX = "usf";	//usf:id="***"
+	const PLUGIN_PREFIX = "gsf";	//gsf:id="***"
 
 	const TYPE_STRING = "string";
 	const TYPE_TEXTAREA = "textarea";
