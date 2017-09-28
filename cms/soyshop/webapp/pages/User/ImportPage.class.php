@@ -97,6 +97,11 @@ class ImportPage extends WebPage{
 
     		list($obj, $attributes, $point, $customSearchFields) = $logic->import($line);
 
+			//ダミーのメールアドレスで登録するか？
+			if(!strlen($obj["mailAddress"]) && isset($format["dummy"]) && $format["dummy"] == 1){
+				$obj["mailAddress"] = soyshop_dummy_mail_address();
+			}
+			
     		$deleted = ($obj["id"] == "delete");
 
 			//メールアドレスが無ければcontinue;
