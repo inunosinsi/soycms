@@ -446,9 +446,18 @@ class DetailPage extends WebPage{
 		return $histories;
 	}
 
-	function getCSS(){
-		return array("./css/admin/user_detail.css");
+	function getScripts(){
+		$root = SOY2PageController::createRelativeLink("./js/");
+		return array(
+			$root . "tools/soy2_date_picker.pack.js"
+		);
 	}
 
+	function getCSS(){
+		$root = SOY2PageController::createRelativeLink("./js/");
+		return array(
+			"./css/admin/user_detail.css",
+			$root . "tools/soy2_date_picker.css"
+		);
+	}
 }
-?>

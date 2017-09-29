@@ -21,7 +21,7 @@ class UserGroupExportPage extends WebPage{
 
 			header("Cache-Control: public");
 			header("Pragma: public");
-			header("Content-Disposition: attachment; filename=user_group_" . date("YmdHis", time()) . ".csv");
+			header("Content-Disposition: attachment; filename=soyshop_user_group_" . date("YmdHis", time()) . ".csv");
 			header("Content-Type: text/csv; charset=" . htmlspecialchars($charset).";");
 
 			ob_start();

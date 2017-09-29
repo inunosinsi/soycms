@@ -12,6 +12,7 @@ class UserGroupCustomSearchFieldUtil{
 	const TYPE_CHECKBOX = "checkbox";
 	const TYPE_RADIO = "radio";
 	const TYPE_SELECT = "select";
+	const TYPE_DATE = "date";
 	const TYPE_MAP = "map";	//グーグルマップと連動した住所
 
 	public static function getConfig(){
@@ -42,6 +43,7 @@ class UserGroupCustomSearchFieldUtil{
 			self::TYPE_CHECKBOX => "チェックボックス",
 			self::TYPE_RADIO => "ラジオボタン",
 			self::TYPE_SELECT => "セレクトボックス",
+			self::TYPE_DATE => "日付",
 			self::TYPE_MAP => "地図付き住所"
 		);
 	}

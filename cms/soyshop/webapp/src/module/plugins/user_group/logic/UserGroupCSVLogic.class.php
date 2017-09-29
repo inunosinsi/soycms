@@ -49,8 +49,17 @@ class UserGroupCSVLogic extends ExImportLogicBase {
 			if(count($values)) {
 				foreach($values as $fieldId => $v){
 					if($fieldId == "group_id") continue;
-					if($configs[$fieldId]["type"] == UserGroupCustomSearchFieldUtil::TYPE_CHECKBOX){
-						$v = "\"" . str_replace(",", "\n", $v) . "\"";
+					switch($configs[$fieldId]["type"]){
+						case UserGroupCustomSearchFieldUtil::TYPE_CHECKBOX:
+							$v = "\"" . str_replace(",", "\n", $v) . "\"";
+							break;
+						case UserGroupCustomSearchFieldUtil::TYPE_DATE:
+							if(strlen($v)){
+								$v = date("Y-m-d", $v);
+							}
+							break;
+						default:
+							//何もしない
 					}
 					$line[] = $v;
 				}

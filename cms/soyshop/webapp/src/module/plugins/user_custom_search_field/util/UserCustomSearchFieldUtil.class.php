@@ -12,6 +12,7 @@ class UserCustomSearchFieldUtil{
 	const TYPE_CHECKBOX = "checkbox";
 	const TYPE_RADIO = "radio";
 	const TYPE_SELECT = "select";
+	const TYPE_DATE = "date";
 
 	public static function getConfig(){
 		return SOYShop_DataSets::get("user_custom_search.config", array());
@@ -40,7 +41,8 @@ class UserCustomSearchFieldUtil{
 			self::TYPE_RANGE => "数字(範囲)",
 			self::TYPE_CHECKBOX => "チェックボックス",
 			self::TYPE_RADIO => "ラジオボタン",
-			self::TYPE_SELECT => "セレクトボックス"
+			self::TYPE_SELECT => "セレクトボックス",
+			self::TYPE_DATE => "日付"
 		);
 	}
 

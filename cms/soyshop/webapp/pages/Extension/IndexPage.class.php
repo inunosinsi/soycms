@@ -15,7 +15,7 @@ class IndexPage extends WebPage{
 		parent::__construct();
 
 		SOYShopPlugin::load("soyshop.admin.list", $plugin);
-		$exts = SOYShopPlugin::invoke("soyshop.admin.list", array("mode" => "list"))->getContents();
+		$exts = self::delegate()->getContents();
 
 		if(!isset($exts[$pluginId])) SOY2PageController::jump("");
 		$ext = $exts[$pluginId];
@@ -27,5 +27,23 @@ class IndexPage extends WebPage{
 		$this->addLabel("page_content", array(
 			"html" => (isset($ext["content"])) ? $ext["content"] : null
 		));
+	}
+
+	function getScripts(){
+		$scripts = self::delegate()->getScripts();
+		return (isset($scripts) && is_array($scripts)) ? $scripts : array();
+	}
+
+	function getCSS(){
+		$css = self::delegate()->getCSS();
+		return (isset($css) && is_array($css)) ? $css : array();
+	}
+
+	private function delegate(){
+		static $delegate;
+		if(is_null($delegate)){
+			$delegate = SOYShopPlugin::invoke("soyshop.admin.list", array("mode" => "list"));
+		}
+		return $delegate;
 	}
 }

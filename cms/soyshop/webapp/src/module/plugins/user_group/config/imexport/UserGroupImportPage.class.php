@@ -65,7 +65,13 @@ class UserGroupImportPage extends WebPage{
 					$dbLogic->save($groupId, $posts);
 				}
 			}
+
+			SOY2PageController::jump("Config.Detail?plugin=user_group&import&updated");
+			exit;
 		}
+
+		SOY2PageController::jump("Config.Detail?plugin=user_group&import&failed");
+		exit;
 	}
 
 	private function getFieldList(){

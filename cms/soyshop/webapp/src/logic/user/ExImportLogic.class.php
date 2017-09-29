@@ -5,7 +5,7 @@ class ExImportLogic extends ExImportLogicBase{
 	private $func;
 	private $customFields = array();
 	private $customSearchFields = array();
-	
+
 	//作業用
 	private $userAttributeDAO;
 	private $customSearchFieldDBLogic;
@@ -89,7 +89,11 @@ class ExImportLogic extends ExImportLogicBase{
 				$fieldId = $tmp[1];
 
 				if(isset($this->customSearchFields[$fieldId])){
-					$function[] = '$res[] = (isset($customSearchFields["' . $fieldId . '"])) ? $customSearchFields["' . $fieldId . '"] : "";';
+					if($this->customSearchFields[$fieldId]["type"] == UserCustomSearchFieldUtil::TYPE_DATE){
+						$function[] = '$res[] = (isset($customSearchFields["' . $fieldId . '"])) ? date("Y-m-d", $customSearchFields["' . $fieldId . '"]) : "";';
+					}else{
+						$function[] = '$res[] = (isset($customSearchFields["' . $fieldId . '"])) ? $customSearchFields["' . $fieldId . '"] : "";';
+					}
 					$label = $this->customSearchFields[$tmp[1]]["label"];
 				}else{
 					$function[] = '$res[] = "";';
@@ -137,7 +141,7 @@ class ExImportLogic extends ExImportLogicBase{
 	function setCustomSearchFields($customSearchFields) {
 		$this->customSearchFields = $customSearchFields;
 	}
-	
+
 	function getCustomSearchFieldObject($id){
 		$res = array();
 		if(SOYShopPluginUtil::checkIsActive("user_custom_search_field")){
@@ -147,4 +151,3 @@ class ExImportLogic extends ExImportLogicBase{
 		return $res;
 	}
 }
-?>

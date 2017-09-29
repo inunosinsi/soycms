@@ -14,6 +14,7 @@ class DataBaseLogic extends SOY2LogicBase{
 		switch($type){
 			case UserGroupCustomSearchFieldUtil::TYPE_INTEGER:
 			case UserGroupCustomSearchFieldUtil::TYPE_RANGE:
+			case UserGroupCustomSearchFieldUtil::TYPE_DATE:
 				$sql .= "INTEGER";
 				break;
 			case UserGroupCustomSearchFieldUtil::TYPE_TEXTAREA:
@@ -76,6 +77,14 @@ class DataBaseLogic extends SOY2LogicBase{
 						$sets[$key] = null;
 					}
 					break;
+					case UserGroupCustomSearchFieldUtil::TYPE_DATE:
+						if(strlen($values[$key])){
+							$dateArray = explode("-", $values[$key]);
+							$sets[$key] = mktime(0, 0, 0, $dateArray[1], $dateArray[2], $dateArray[0]);
+						}else{
+							$sets[$key] = null;
+						}
+						break;
 				default:
 					$sets[$key] = (strlen($values[$key])) ? $values[$key] : null;
 			}

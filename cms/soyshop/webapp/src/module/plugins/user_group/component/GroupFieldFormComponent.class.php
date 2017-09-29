@@ -83,6 +83,10 @@ class GroupFieldFormComponent {
 
 				return implode("\n", $html);
 
+			case UserGroupCustomSearchFieldUtil :: TYPE_DATE :
+				$value = (strlen($value)) ? date("Y-m-d", $value) : null;
+				return "<input type=\"text\" class=\"date_picker_start\" name=\"" . $nameProperty . "\" value=\"" . $value . "\" readonly=\"readonly\">";
+
 			case UserGroupCustomSearchFieldUtil :: TYPE_MAP :
 				$html = array();
 				$html[] = "<input type=\"text\" id=\"address\"  name=\"" . $nameProperty . "\" value=\"" . $value . "\" style=\"width:80%;\"><br>";
