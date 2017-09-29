@@ -87,7 +87,47 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 * @param SOYBodyComponentBase $pageObj
 	 * @param integer $userId
 	 */
-	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){}
+	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){
+		self::prepare();
+		$values = $this->dbLogic->getByUserId($userId);
+
+		foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
+
+            //多言語化対応はデータベースから値を取得した時点で行っている
+            $usfValue = (isset($values[$key])) ? $values[$key] : null;
+
+            $pageObj->addModel($key . "_visible", array(
+                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+                "visible" => (strlen($usfValue))
+            ));
+
+            $pageObj->addLabel($key, array(
+                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+                "html" => (isset($usfValue)) ? $usfValue : null
+            ));
+
+            switch($field["type"]){
+                case UserCustomSearchFieldUtil::TYPE_CHECKBOX:
+                    if(strlen($field["option"])){
+                        $vals = explode(",", $usfValue);
+                        $opts = explode("\n", $field["option"]);
+                        foreach($opts as $i => $opt){
+                            $opt = trim($opt);
+                            $pageObj->addModel($key . "_"  . $i . "_visible", array(
+                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+                                "visible" => (in_array($opt, $vals))
+                            ));
+
+                            $pageObj->addLabel($key . "_" . $i, array(
+                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+                                "text" => $opt
+                            ));
+                        }
+                    }
+                    break;
+            }
+        }
+	}
 
 	function hasError($param){
 		/** @ToDo 必須の設定をそのうち追加したいところ **/

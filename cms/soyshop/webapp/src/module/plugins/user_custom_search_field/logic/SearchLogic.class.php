@@ -15,7 +15,7 @@ class SearchLogic extends SOY2LogicBase{
      * @params int current:現在のページ, int limit:一ページで表示する商品
      * @return array<SOYShop_User>
      */
-    function search($mypageId, $current, $limit){
+    function search($mypageId=null, $current, $limit){
         self::setCondition();
 
         $sql = "SELECT DISTINCT s.user_id, s.*, u.* " .
@@ -23,7 +23,7 @@ class SearchLogic extends SOY2LogicBase{
                 "INNER JOIN soyshop_user_custom_search s ".
                 "ON u.id = s.user_id ";
         $sql .= self::buildWhere();    //カウントの時と共通の処理は切り分ける
-        $sort = self::buildOrderBySQLOnSearchPage($mypageId);
+        //$sort = self::buildOrderBySQLOnSearchPage($mypageId);
         if(isset($sort)) $sql .= $sort;
 
         //表示件数
@@ -36,7 +36,7 @@ class SearchLogic extends SOY2LogicBase{
         try{
             $res = $this->userDao->executeQuery($sql, $this->binds);
         }catch(Exception $e){
-            return array();
+			return array();
         }
 
         if(!count($res)) return array();
@@ -83,6 +83,19 @@ class SearchLogic extends SOY2LogicBase{
         if(!count($this->where)){
             /** @ToDo 年齢検索 **/
 
+			//顧客の基本情報周り
+			foreach(array("name", "reading", "mail_address") as $key){
+				if(isset($_GET["u_search"][$key]) && strlen($_GET["u_search"][$key])) {
+	                $this->where[$key] = "u." . $key . " LIKE :" . $key . " ";
+	                $this->binds[":" . $key] = "%" . trim($_GET["u_search"][$key]) . "%";
+
+					//メールアドレス検索の時、ダミーのメールアドレスを登録している顧客は除く
+					if($key == "mail_address"){
+						$this->where["dummy"] = "u.mail_address NOT LIKE '%" . DUMMY_MAIL_ADDRESS_DOMAIN . "' ";
+					}
+	            }
+			}
+
             foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
 
                 //まずは各タイプのfield SQLでkeyを指定する場合、s.を付けること。soyshop_user_custom_searchのaliasがs
@@ -91,7 +104,7 @@ class SearchLogic extends SOY2LogicBase{
                     case UserCustomSearchFieldUtil::TYPE_STRING:
                     case UserCustomSearchFieldUtil::TYPE_TEXTAREA:
                     case UserCustomSearchFieldUtil::TYPE_RICHTEXT:
-                        if(isset($_GET["u_search"][$key]) && strlen($_GET["u_search"][$key])){
+					    if(isset($_GET["u_search"][$key]) && strlen($_GET["u_search"][$key])){
                             $this->where[$key] = "s." . $key . " LIKE :" . $key;
                             $this->binds[":" . $key] = "%" . trim($_GET["u_search"][$key]) . "%";
                         }

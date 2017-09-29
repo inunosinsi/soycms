@@ -16,7 +16,7 @@ function soyshop_pager_navigation($html, $page){
 
 	$hasNext = $pager->hasNext();
 	$hasPrev = $pager->hasPrev();
-	
+
 	$url = $pager->getPagerUrl();	//always end not slash
 
 	$total_page = $pager->getTotalPage();
@@ -32,7 +32,7 @@ function soyshop_pager_navigation($html, $page){
 
 	$next_link = $pager->getNextPageUrl();
 	$prev_link = $pager->getPrevPageUrl();
-	
+
 	$pager->execute();
 
 	$obj->addModel("no_next", array(
@@ -203,4 +203,3 @@ class PagingList extends HTMLList{
 		$this->current = $current;
 	}
 }
-?>

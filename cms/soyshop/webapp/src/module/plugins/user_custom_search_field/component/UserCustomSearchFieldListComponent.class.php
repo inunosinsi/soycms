@@ -1,25 +1,25 @@
 <?php
 
 class UserCustomSearchFieldListComponent extends HTMLList{
-	
+
 	protected function populateItem($entity, $key){
-		
+
 		$this->addLabel("key", array(
 			"text" => $key
 		));
-		
+
 		$this->addLabel("label", array(
 			"text" => (isset($entity["label"])) ? $entity["label"] : ""
 		));
-		
+
 		$this->addLabel("type", array(
 			"text" => (isset($entity["type"])) ? UserCustomSearchFieldUtil::getTypeText($entity["type"]) : ""
 		));
-		
+
 		$this->addLabel("display", array(
-			"text" => "csf:id=\"" . $key . "\""
+			"text" => "usf:id=\"" . $key . "\""
 		));
-		
+
 		/* 高度な設定 */
 		$this->addLink("toggle_config", array(
 			"link" => "javascript:void(0)",
@@ -27,17 +27,17 @@ class UserCustomSearchFieldListComponent extends HTMLList{
 			"onclick" => '$(\'#field_config_' . $key . '\').toggle();',
 			"style" => (isset($entity["option"]) && strlen($entity["option"])) ? "background-color:yellow;" : ""
 		));
-		
+
 		/* 順番変更用 */
 		$this->addInput("field_id", array(
 			"name" => "field_id",
 			"value" => $key,
 		));
-		
+
 		$this->addModel("field_config", array(
 			"attr:id" => "field_config_" . $key
 		));
-		
+
 		/* 削除用 */
 		$this->addInput("delete_submit", array(
 			"name" => "delete_submit",
@@ -50,21 +50,21 @@ class UserCustomSearchFieldListComponent extends HTMLList{
 			"link"=>"javascript:void(0);",
 			"onclick"=>'if(confirm("delete \"' . $entity["label"] . '\"?")){$(\'#delete_submit_' . $key . '\').click();}return false;'
 		));
-		
+
 		$this->addModel("with_options", array(
 			"visible" => (isset($entity["type"])) ? self::checkDisplayOptionsForm($entity["type"]) : false
 		));
-		
+
 		$this->addTextArea("option", array(
 			"name" => "config[option]",
 			"value" => (isset($entity["option"])) ? $entity["option"] : null
 		));
-		
+
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
 			"onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'
 		));
-		
+
 		$this->addLink("setting_link", array(
 			"link" => SOY2PageController::createLink("Config.Detail?plugin=user_custom_search_field&collective&field_id=".$key)
 		));
@@ -75,7 +75,7 @@ class UserCustomSearchFieldListComponent extends HTMLList{
 			"attr:id" => "update_advance_submit_" . $key
 		));
 	}
-	
+
 	private function checkDisplayOptionsForm($type){
 		return ($type === UserCustomSearchFieldUtil::TYPE_RADIO || $type === UserCustomSearchFieldUtil::TYPE_CHECKBOX || $type === UserCustomSearchFieldUtil::TYPE_SELECT);
 	}

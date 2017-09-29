@@ -119,36 +119,36 @@ class UserCustomSearchFieldConfigFormPage extends WebPage{
 
 			switch($field["type"]){
 				case UserCustomSearchFieldUtil::TYPE_INTEGER:
-					$html[] = "\t<input type=\"number\" csf:id=\"custom_search_" . $key . "\">\n\n";
+					$html[] = "\t<input type=\"number\" usf:id=\"custom_search_" . $key . "\">\n\n";
 					break;
 				case UserCustomSearchFieldUtil::TYPE_RANGE:
-					$html[] = "\t<input type=\"number\" csf:id=\"custom_search_" . $key . "_start\">～";
-					$html[] = "<input type=\"number\" csf:id=\"custom_search_" . $key . "_end\">\n\n";
+					$html[] = "\t<input type=\"number\" usf:id=\"custom_search_" . $key . "_start\">～";
+					$html[] = "<input type=\"number\" usf:id=\"custom_search_" . $key . "_end\">\n\n";
 					break;
 				case UserCustomSearchFieldUtil::TYPE_CHECKBOX:
 					if(isset($field["option"])) foreach(explode("\n", $field["option"]) as $i => $o){
 						$o = trim($o);
-						$html[] = "\t<input type=\"checkbox\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+						$html[] = "\t<input type=\"checkbox\" usf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
 					}
 					$html[] = "\n";
 					break;
 				case UserCustomSearchFieldUtil::TYPE_RADIO:
 					if(isset($field["option"])) foreach(explode("\n", $field["option"]) as $i => $o){
 						$o = trim($o);
-						$html[] = "\t<input type=\"radio\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+						$html[] = "\t<input type=\"radio\" usf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
 					}
 					$html[] = "\n";
 					break;
 				case UserCustomSearchFieldUtil::TYPE_SELECT:
-					$html[] = "\t<select csf:id=\"custom_search_" . $key . "\"><option value=\"\"></option></select>\n\n";
+					$html[] = "\t<select usf:id=\"custom_search_" . $key . "\"><option value=\"\"></option></select>\n\n";
 					break;
 				default:
-					$html[] = "\t<input type=\"text\" csf:id=\"custom_search_" . $key . "\">\n\n";
+					$html[] = "\t<input type=\"text\" usf:id=\"custom_search_" . $key . "\">\n\n";
 			}
 
 			if($field["type"] == UserCustomSearchFieldUtil::TYPE_CHECKBOX){
 				$html[] = "\t" . $field["label"] . "(セレクトボックス):\n";
-				$html[] = "\t<select csf:id=\"custom_search_" . $key . "_select\"><option value=\"\"></option></select>\n\n";
+				$html[] = "\t<select usf:id=\"custom_search_" . $key . "_select\"><option value=\"\"></option></select>\n\n";
 			}
 		}
 
