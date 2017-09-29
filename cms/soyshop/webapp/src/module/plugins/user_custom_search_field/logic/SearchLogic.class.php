@@ -32,7 +32,7 @@ class SearchLogic extends SOY2LogicBase{
         //OFFSET
         $offset = $limit * ($current - 1);
         if($offset > 0) $sql .= " OFFSET " . $offset;
-		
+
         try{
             $res = $this->userDao->executeQuery($sql, $this->binds);
         }catch(Exception $e){
@@ -162,10 +162,66 @@ class SearchLogic extends SOY2LogicBase{
 					}
 				}
 
+				foreach(UserGroupCustomSearchFieldUtil::getConfig() as $key => $field){
+
+	                //まずは各タイプのfield SQLでkeyを指定する場合、s.を付けること。soyshop_user_custom_searchのaliasがs
+	                switch($field["type"]){
+	                    //文字列の場合
+	                    case UserGroupCustomSearchFieldUtil::TYPE_STRING:
+	                    case UserGroupCustomSearchFieldUtil::TYPE_TEXTAREA:
+	                    case UserGroupCustomSearchFieldUtil::TYPE_RICHTEXT:
+						    if(isset($_GET["g_search"][$key]) && strlen($_GET["g_search"][$key])){
+	                            $gwhere[$key] = "gs." . $key . " LIKE :g" . $key;
+	                            $this->binds[":g" . $key] = "%" . trim($_GET["g_search"][$key]) . "%";
+	                        }
+	                        break;
+
+	                    //範囲の場合
+	                    case UserGroupCustomSearchFieldUtil::TYPE_RANGE:
+	                        $ws = "";$we = "";    //whereのスタートとエンド
+	                        if(isset($_GET["g_search"][$key . "_start"]) && strlen($_GET["g_search"][$key . "_start"]) && is_numeric($_GET["g_search"][$key . "_start"])){
+	                            $ws = "gs." . $key . " >= :g" . $key . "_start";
+	                            $this->binds[":g" . $key . "_start"] = (int)$_GET["g_search"][$key . "_start"];
+	                        }
+	                        if(isset($_GET["g_search"][$key . "_end"]) && strlen($_GET["g_search"][$key . "_end"]) && is_numeric($_GET["g_search"][$key . "_end"])){
+	                            $we = "gs." . $key .  " <= :g" . $key . "_end";
+	                            $this->binds[":g" . $key . "_end"] = (int)$_GET["g_search"][$key . "_end"];
+	                        }
+	                        if(strlen($ws) && strlen($we)){
+	                            $gwhere[$key] = "(" . $ws . " AND " . $we . ")";
+	                        }else if(strlen($ws) || strlen($we)){
+	                            $gwhere[$key] = $ws . $we;
+	                        }
+	                        break;
+
+	                    //チェックボックスの場合
+	                    case UserGroupCustomSearchFieldUtil::TYPE_CHECKBOX:
+	                        if(isset($_GET["g_search"][$key]) && count($_GET["g_search"][$key])){
+	                            $w = array();
+	                            foreach($_GET["g_search"][$key] as $i => $v){
+	                                if(!strlen($v)) continue;
+	                                $w[] = "gs." . $key . " LIKE :g" . $key . $i;
+	                                $this->binds[":g" . $key . $i] = "%" . trim($v) . "%";
+	                            }
+	                            if(count($w)) $gwhere[$key] = "(" . implode(" OR ", $w) . ")";
+	                        }
+	                        break;
+
+	                    //数字、ラジオボタン、セレクトボックス
+	                    default:
+	                        if(isset($_GET["g_search"][$key]) && strlen($_GET["g_search"][$key])){
+	                            $gwhere[$key] = "gs." . $key . " = :g" . $key;
+	                            $this->binds[":g" . $key] = $_GET["g_search"][$key];
+	                        }
+	                }
+	            }
+
 				if(count($gwhere)){
 					$gSubquery = "select gi.user_id from soyshop_user_grouping gi ".
 									"INNER JOIN soyshop_user_group g ".
 									"ON gi.group_id = g.id ".
+									"INNER JOIN soyshop_user_group_custom_search gs ".
+									"ON g.id = gs.group_id ".
 									"WHERE " . implode(" AND ", $gwhere);
 					$this->where["gsubquery"] = "u.id IN (" . $gSubquery .")";
 				}

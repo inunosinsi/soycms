@@ -88,6 +88,9 @@ class UserGroupCustomSearchFieldConfigPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
+		SOY2::import("util.SOYShopPluginUtil");
+		DisplayPlugin::toggle("no_install_user_custom_field", !SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
+
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 		DisplayPlugin::toggle("error", isset($_GET["error"]));
 		DisplayPlugin::toggle("deleted", isset($_GET["deleted"]));
@@ -120,36 +123,36 @@ class UserGroupCustomSearchFieldConfigPage extends WebPage{
 
 			switch($field["type"]){
 				case UserGroupCustomSearchFieldUtil::TYPE_INTEGER:
-					$html[] = "\t<input type=\"number\" csf:id=\"custom_search_" . $key . "\">\n\n";
+					$html[] = "\t<input type=\"number\" gsf:id=\"custom_search_" . $key . "\">\n\n";
 					break;
 				case UserGroupCustomSearchFieldUtil::TYPE_RANGE:
-					$html[] = "\t<input type=\"number\" csf:id=\"custom_search_" . $key . "_start\">～";
-					$html[] = "<input type=\"number\" csf:id=\"custom_search_" . $key . "_end\">\n\n";
+					$html[] = "\t<input type=\"number\" gsf:id=\"custom_search_" . $key . "_start\">～";
+					$html[] = "<input type=\"number\" gsf:id=\"custom_search_" . $key . "_end\">\n\n";
 					break;
 				case UserGroupCustomSearchFieldUtil::TYPE_CHECKBOX:
 					if(isset($field["option"])) foreach(explode("\n", $field["option"]) as $i => $o){
 						$o = trim($o);
-						$html[] = "\t<input type=\"checkbox\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+						$html[] = "\t<input type=\"checkbox\" gsf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
 					}
 					$html[] = "\n";
 					break;
 				case UserGroupCustomSearchFieldUtil::TYPE_RADIO:
 					if(isset($field["option"])) foreach(explode("\n", $field["option"]) as $i => $o){
 						$o = trim($o);
-						$html[] = "\t<input type=\"radio\" csf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
+						$html[] = "\t<input type=\"radio\" gsf:id=\"custom_search_" . $key . "_" . $i . "\">\n";
 					}
 					$html[] = "\n";
 					break;
 				case UserGroupCustomSearchFieldUtil::TYPE_SELECT:
-					$html[] = "\t<select csf:id=\"custom_search_" . $key . "\"><option value=\"\"></option></select>\n\n";
+					$html[] = "\t<select gsf:id=\"custom_search_" . $key . "\"><option value=\"\"></option></select>\n\n";
 					break;
 				default:
-					$html[] = "\t<input type=\"text\" csf:id=\"custom_search_" . $key . "\">\n\n";
+					$html[] = "\t<input type=\"text\" gsf:id=\"custom_search_" . $key . "\">\n\n";
 			}
 
 			if($field["type"] == UserGroupCustomSearchFieldUtil::TYPE_CHECKBOX){
 				$html[] = "\t" . $field["label"] . "(セレクトボックス):\n";
-				$html[] = "\t<select csf:id=\"custom_search_" . $key . "_select\"><option value=\"\"></option></select>\n\n";
+				$html[] = "\t<select gsf:id=\"custom_search_" . $key . "_select\"><option value=\"\"></option></select>\n\n";
 			}
 		}
 
