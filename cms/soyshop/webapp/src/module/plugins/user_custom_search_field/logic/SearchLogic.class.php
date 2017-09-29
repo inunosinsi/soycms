@@ -32,7 +32,7 @@ class SearchLogic extends SOY2LogicBase{
         //OFFSET
         $offset = $limit * ($current - 1);
         if($offset > 0) $sql .= " OFFSET " . $offset;
-
+		
         try{
             $res = $this->userDao->executeQuery($sql, $this->binds);
         }catch(Exception $e){
@@ -149,6 +149,27 @@ class SearchLogic extends SOY2LogicBase{
                         }
                 }
             }
+
+			//ここからはグループ
+			SOY2::import("util.SOYShopPluginUtil");
+		    if(SOYShopPluginUtil::checkIsActive("user_group")){
+				$gwhere = array();
+
+				foreach(array("name", "code") as $key){
+					if(isset($_GET["g_search"][$key]) && strlen($_GET["g_search"][$key])){
+						$gwhere["g" . $key] = "g." . $key . " LIKE :g" . $key;
+						$this->binds[":g" . $key] = "%" . trim($_GET["g_search"][$key]) . "%";
+					}
+				}
+
+				if(count($gwhere)){
+					$gSubquery = "select gi.user_id from soyshop_user_grouping gi ".
+									"INNER JOIN soyshop_user_group g ".
+									"ON gi.group_id = g.id ".
+									"WHERE " . implode(" AND ", $gwhere);
+					$this->where["gsubquery"] = "u.id IN (" . $gSubquery .")";
+				}
+			}
         }
     }
 

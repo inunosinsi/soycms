@@ -17,7 +17,7 @@ class UserGroupCustomSearchFieldListComponent extends HTMLList{
 		));
 
 		$this->addLabel("display", array(
-			"text" => "csf:id=\"" . $key . "\""
+			"text" => "gsf:id=\"" . $key . "\""
 		));
 
 		/* 高度な設定 */

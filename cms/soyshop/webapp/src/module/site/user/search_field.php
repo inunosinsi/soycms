@@ -44,7 +44,7 @@ function soyshop_search_field($html, $htmlObj){
 			$obj->addInput("custom_search_group_name", array(
 	                        "soy2prefix" => UserGroupCustomSearchFieldUtil::PLUGIN_PREFIX,
 	                        "type" => "text",
-	                        "name" => "g_search[user_name]",
+	                        "name" => "g_search[name]",
 	                        "value" => (isset($gParams["name"]) && strlen($gParams["name"])) ? $gParams["name"] : null
 	                ));
 
@@ -52,7 +52,7 @@ function soyshop_search_field($html, $htmlObj){
 			$obj->addInput("custom_search_group_code", array(
 	                        "soy2prefix" => UserGroupCustomSearchFieldUtil::PLUGIN_PREFIX,
 	                        "type" => "text",
-	                        "name" => "g_search[user_code]",
+	                        "name" => "g_search[code]",
 	                        "value" => (isset($gParams["code"]) && strlen($gParams["code"])) ? $gParams["code"] : null
 	                ));
 		}
