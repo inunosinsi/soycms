@@ -142,22 +142,12 @@ class DetailPage extends WebPage{
 		DisplayPlugin::toggle("notice_tmp_register", ($shopUser->getUserType() != SOYShop_User::USERTYPE_REGISTER));
 
 		/* フォーム */
-    	$this->buildForm($shopUser);		//共通など。
-		$this->buildJobForm($shopUser);		//法人
-		$this->buildProfileForm($shopUser);	//プロフィール
-		$this->buildMailLogForm($shopUser);	//メールログ
-		$this->buildPointForm($shopUser);	//ポイント
-    	$this->buildAddressForm($shopUser);	//お届け先
-
-		//住所の下に拡張フォーム
-		SOYShopPlugin::load("soyshop.user.address");
-		$forms = SOYShopPlugin::invoke("soyshop.user.address", array(
-			"userId" => $id
-		))->getForm();
-
-		$this->createAdd("advenced_address_list", "_common.User.AdvancedAddressListComponent", array(
-			"list" => $forms
-		));
+    	self::buildForm($shopUser);		//共通など。
+		self::buildJobForm($shopUser);		//法人
+		self::buildProfileForm($shopUser);	//プロフィール
+		self::buildMailLogForm($shopUser);	//メールログ
+		self::buildPointForm($shopUser);	//ポイント
+    	self::buildAddressForm($shopUser);	//お届け先
 
     	/**
     	 * ユーザカスタムフィールド
@@ -215,7 +205,7 @@ class DetailPage extends WebPage{
 	 * フォーム
 	 * @param SOYShop_User $user
 	 */
-   function buildForm(SOYShop_User $user){
+   private function buildForm(SOYShop_User $user){
 		//共通コンポーネントに移し替え  soyshop/component/UserComponent.class.php buildFrom()
 
 		//以前のフォーム 後方互換
@@ -286,14 +276,26 @@ class DetailPage extends WebPage{
     	$this->addLabel("update_date", array(
     		"text" => (is_null($user->getUpdateDate())) ? "" : date("Y-m-d H:i:s", $user->getUpdateDate()),
     	));
+
+		//住所の下に拡張フォーム
+		SOYShopPlugin::load("soyshop.user.address");
+		$forms = SOYShopPlugin::invoke("soyshop.user.address", array(
+			"userId" => $user->getId()
+		))->getForm();
+
+		$this->createAdd("advenced_address_list", "_common.User.AdvancedAddressListComponent", array(
+			"list" => $forms
+		));
     }
 
 	/**
 	 * 法人関連フォーム
 	 * @param SOYShop_User $user
 	 */
-	function buildJobForm(SOYShop_User $user){
+	private function buildJobForm(SOYShop_User $user){
 		/* 勤務先 */
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		DisplayPlugin::toggle("office_items", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
 
 		//法人名(勤務先など)
     	$this->addInput("office", array(
@@ -362,7 +364,7 @@ class DetailPage extends WebPage{
 	 * プロフィール関連フォーム
 	 * @param SOYShop_User $user
 	 */
-	function buildProfileForm(SOYShop_User $user){
+	private function buildProfileForm(SOYShop_User $user){
 
 	}
 
@@ -370,14 +372,14 @@ class DetailPage extends WebPage{
 	 * お届け先フォーム
 	 * @param SOYShop_User $user
 	 */
-	function buildAddressForm(SOYShop_User $user){
+	private function buildAddressForm(SOYShop_User $user){
 
 		$this->createAdd("address_list", "_common.User.AddressListComponent", array(
 			"list" => $user->getAddressListArray()
 		));
 	}
 
-	function buildMailLogForm(SOYShop_User $user){
+	private function buildMailLogForm(SOYShop_User $user){
 		$mailLogDao = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO");
 		$mailLogDao->setLimit(10);
 		try{
@@ -396,7 +398,7 @@ class DetailPage extends WebPage{
 	 * ポイントフォーム
 	 * @param SOYShop_User $user
 	 */
-	function buildPointForm(SOYShop_User $user){
+	private function buildPointForm(SOYShop_User $user){
 
 		//ポイント
     	$activedPointPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_point_base")));
@@ -414,12 +416,12 @@ class DetailPage extends WebPage{
     		"style" => "ime-mode:inactive;"
     	));
 
-    	$timeLimit = $this->getTimeLimit($user->getId());
+    	$timeLimit = self::getTimeLimit($user->getId());
     	$this->addLabel("time_limit", array(
     		"text" => (isset($timeLimit)) ? date("Y-m-d H:i:s", $timeLimit) : "無期限"
     	));
 
-    	$histories = $this->getPointHistories($user->getId());
+    	$histories = self::getPointHistories($user->getId());
 
     	DisplayPlugin::toggle("point_history", (count($histories) > 0));
 
@@ -428,14 +430,14 @@ class DetailPage extends WebPage{
     	));
 	}
 
-	function getTimeLimit($userId){
+	private function getTimeLimit($userId){
 		$delegate = SOYShopPlugin::invoke("soyshop.point", array(
 			"userId" => $userId
 		));
 		return $delegate->getTimeLimit();
 	}
 
-	function getPointHistories($userId){
+	private function getPointHistories($userId){
 		$historyDao = SOY2DAOFactory::create("SOYShop_PointHistoryDAO");
 		$historyDao->setLimit(10);	//上位10件
 		try{

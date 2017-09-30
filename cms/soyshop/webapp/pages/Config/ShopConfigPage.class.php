@@ -21,6 +21,7 @@ class ShopConfigPage extends WebPage{
 		$_POST["Config"]["insertDummyMailAddressOnAdmin"] = (isset($_POST["Config"]["insertDummyMailAddressOnAdmin"])) ? (int)$_POST["Config"]["insertDummyMailAddressOnAdmin"] : 0;
 		$_POST["Config"]["displayOrderAdminPage"] = (isset($_POST["Config"]["displayOrderAdminPage"])) ? (int)$_POST["Config"]["displayOrderAdminPage"] : 0;
 		$_POST["Config"]["displayItemAdminPage"] = (isset($_POST["Config"]["displayItemAdminPage"])) ? (int)$_POST["Config"]["displayItemAdminPage"] : 0;
+		$_POST["Config"]["displayUserOfficeItems"] = (isset($_POST["Config"]["displayUserOfficeItems"])) ? (int)$_POST["Config"]["displayUserOfficeItems"] : 0;
 		if(!isset($_POST["Config"]["consumptionTaxModule"])) $_POST["Config"]["consumptionTaxModule"] = null;
 
 		$consumptionTax = $_POST["Config"]["consumptionTax"]; //外税
@@ -33,7 +34,7 @@ class ShopConfigPage extends WebPage{
 
 		SOY2::cast($config, (object)$_POST["Config"]);
 		SOYShop_ShopConfig::save($config);
-		
+
 		SOY2PageController::jump("Config.ShopConfig?updated");
 	}
 
@@ -66,12 +67,12 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[shopName]",
 			"value" => $config->getShopName()
 		));
-		
+
 		$this->addInput("site_url", array(
 			"name" => "Config[siteUrl]",
 			"value" => $config->getSiteUrl()
 		));
-		
+
 		$company = $config->getCompanyInformation();
 
 		foreach($company as $key => $value){
@@ -95,7 +96,7 @@ class ShopConfigPage extends WebPage{
 		$taxModuleList = self::getTaxModuleList();
 		DisplayPlugin::toggle("no_tax_module_list", (count($taxModuleList) === 0));
 		DisplayPlugin::toggle("is_tax_module_list", (count($taxModuleList) > 0));
-		
+
 		$this->addSelect("taxModuleList", array(
 			"name" => "Config[consumptionTaxModule]",
 			"options" => $taxModuleList,
@@ -124,15 +125,15 @@ class ShopConfigPage extends WebPage{
 			"value" => $config->getConsumptionTaxInclusivePricingRate(),
 			"style" => "width:5%;text-align:right;ime-mode:inactive;"
 		));
-		
+
 		$this->addCheckBox("consumptionTaxInclusiveCommission", array(
 			"name" => "Config[consumptionTaxInclusiveCommission]",
 			"value" => 1,
 			"selected" => $config->getConsumptionTaxInclusiveCommission(),
 			"label" => "送料や手数料も消費税の課税対象に含める",
 		));
-		
-		
+
+
 		//SSL設定
 		$this->addSelect("sslConfig", array(
 			"name" => "Config[sslConfig]",
@@ -152,7 +153,7 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[displayStockCount]",
 			"value" => $config->getDisplayStockCount()
 		));
-		
+
 		//マイページログイン
 		$this->addCheckBox("allowMailAddressLogin", array(
 			"name" => "Config[allowMailAddressLogin]",
@@ -218,7 +219,7 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[cartPageTimeLimit]",
 			"value" => $config->getCartPageTimeLimit()
 		));
-		
+
 		//ログアウト後に表示するページ
 		$this->addCheckBox("displayPageAfterLogout", array(
 			"name" => "Config[displayPageAfterLogout]",
@@ -226,7 +227,7 @@ class ShopConfigPage extends WebPage{
 			"selected" => $config->getDisplayPageAfterLogout(),
 			"label" => "ログアウト後はログアウト前に開いていたページを表示する"
 		));
-		
+
 		//お届け先情報の表示
 		$this->addCheckBox("displaySendInformationForm", array(
 			"name" => "Config[displaySendInformationForm]",
@@ -234,7 +235,7 @@ class ShopConfigPage extends WebPage{
 			"selected" => $config->getDisplaySendInformationForm(),
 			"label" => "カートでお届け先情報の入力欄を表示する"
 		));
-		
+
 		//テンプレート編集画面に使用できるタグ一覧の表示
 		$this->addCheckBox("displayUsableTagList", array(
 			"name" => "Config[displayUsableTagList]",
@@ -242,33 +243,40 @@ class ShopConfigPage extends WebPage{
 			"selected" => $config->getDisplayUsableTagList(),
 			"label" => "テンプレートの編集画面で使用できるタグを表示"
 		));
-		
+
 		$this->addCheckBox("insertDummyMailAddress", array(
 			"name" => "Config[insertDummyMailAddress]",
 			"value" => 1,
 			"selected" => $config->getInsertDummyMailAddress(),
 			"label" => "管理画面にログイン時、公開側のカートのメールアドレスにダミーのメールアドレスを挿入する"
 		));
-		
+
 		$this->addCheckBox("insertDummyMailAddressOnAdmin", array(
 			"name" => "Config[insertDummyMailAddressOnAdmin]",
 			"value" => 1,
 			"selected" => $config->getInsertDummyMailAddressOnAdmin(),
 			"label" => "管理画面からの注文時、顧客のメールアドレスにダミーのメールアドレスを挿入する"
 		));
-		
+
 		$this->addCheckBox("displayOrderAdminPage", array(
 			"name" => "Config[displayOrderAdminPage]",
 			"value" => 1,
 			"selected" => $config->getDisplayOrderAdminPage(),
 			"label" => "管理画面で注文タブを表示する"
 		));
-		
+
 		$this->addCheckBox("displayItemAdminPage", array(
 			"name" => "Config[displayItemAdminPage]",
 			"value" => 1,
 			"selected" => $config->getDisplayItemAdminPage(),
 			"label" => "管理画面で商品タブを表示する"
+		));
+
+		$this->addCheckBox("displayUserOfficeItems", array(
+			"name" => "Config[displayUserOfficeItems]",
+			"value" => 1,
+			"selected" => $config->getDisplayUserOfficeItems(),
+			"label" => "顧客詳細の編集画面で勤務先関連の項目を表示する"
 		));
 
 		//メンテナンスモード
@@ -302,7 +310,7 @@ class ShopConfigPage extends WebPage{
 			"formConfig" => $config->getCustomerDisplayFormConfig(),
 			"customerConfig" => $config->getCustomerInformationConfig()
 		));
-		
+
 		/** 管理画面の注文一覧の設定 **/
 		$this->createAdd("order_item_list", "_common.Config.OrderItemListComponent", array(
 			"list" => $config->getOrderItemList(),
@@ -340,7 +348,7 @@ class ShopConfigPage extends WebPage{
 
 		return SOY2PageController::createLink("Config.Detail?plugin=" . $pluginId);
 	}
-	
+
 	/**
 	 * @boolean
 	 */

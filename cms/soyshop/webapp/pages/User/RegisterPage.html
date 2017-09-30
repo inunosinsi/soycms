@@ -77,11 +77,12 @@
 			<tr>
 				<th>住所</th>
 				<td>
-					<select soy:id="area">
+					<select soy:id="area" id="area">
 						<option value="">▼選択</option>
 					</select>
-					<input soy:id="address1" type="text" name="" value=""　style="width:60%;" /><br>
-					<input soy:id="address2" type="text" name="" value=""　style="width:60%;" />
+					<input soy:id="address1" type="text" name="" value=""　style="width:60%;" id="address1" /><br>
+					<input soy:id="address2" type="text" name="" value=""　style="width:60%;" id="address2" /><br>
+					<!-- soy:id="advenced_address_list" --><!-- soy:id="form" /--><!-- /soy:id="advenced_address_list" -->
 				</td>
 			</tr>
 
@@ -107,7 +108,7 @@
 			</tr>
 		</table>
 
-		<table class="form_table">
+		<table class="form_table" soy:display="office_items">
 			<tr>
 				<th>法人名（勤務先など）</th>
 				<td>

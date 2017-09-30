@@ -14,11 +14,11 @@ class RegisterPage extends WebPage{
 		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		$customer = (object)$_POST["Customer"];
 		$user = SOY2::cast("SOYShop_User",$customer);
-		
+
 		$notSend = (isset($_POST["Customer"]["notSend"]) && $_POST["Customer"]["notSend"] > 0) ? 1 : 0;
 		$user->setNotSend($notSend);
 		$this->user = $user;
-		
+
 		//管理画面からの登録の場合は本登録にする
 		$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 
@@ -50,16 +50,16 @@ class RegisterPage extends WebPage{
 		}catch(Exception $e){
 			$this->errorType = "failed";
 		}
-		
+
 		//ユーザカスタムフィールドの値をセッションに入れる
 		SOYShopPlugin::load("soyshop.user.customfield");
 		SOYShopPlugin::invoke("soyshop.user.customfield", array(
 			"mode" => "register",
 			"userId" => $userId
 		));
-		
+
 		if(!$this->errorType){
-			SOY2PageController::jump("User?registered");	
+			SOY2PageController::jump("User?registered");
 		}
 	}
 
@@ -70,20 +70,20 @@ class RegisterPage extends WebPage{
     	SOY2::import("component.backward.BackwardUserComponent");
     	SOY2::import("logic.cart.CartLogic");
     	SOY2::import("logic.mypage.MyPageLogic");
-    	
+
     	$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
-    	
+
     	parent::__construct();
-    	
+
     	$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-    	
+
     	if(!$this->user){
 	    	$this->user = new SOYShop_User();
     	}
-	    	
-    	$this->buildForm($this->user);
-    	$this->buildJobForm($this->user);		//法人
+
+    	self::buildForm($this->user);
+    	self::buildJobForm($this->user);		//法人
 
     	DisplayPlugin::toggle("wrong_email",($this->errorType == "wrong_email"));
     	DisplayPlugin::toggle("used_email",($this->errorType == "used_email"));
@@ -93,7 +93,7 @@ class RegisterPage extends WebPage{
 		return array("./css/admin/user_detail.css");
 	}
 
-   function buildForm($user){
+   private function buildForm(SOYShop_User $user){
    		//以前のフォーム 後方互換
 		$this->backward->backwardAdminBuildForm($this, $user);
 
@@ -101,16 +101,28 @@ class RegisterPage extends WebPage{
 		$this->component->buildForm($this, $user, null, UserComponent::MODE_CUSTOM_FORM);
 
     	$this->addForm("register_form");
+
+		//住所の下に拡張フォーム
+		SOYShopPlugin::load("soyshop.user.address");
+		$forms = SOYShopPlugin::invoke("soyshop.user.address", array(
+			"userId" => $user->getId()
+		))->getForm();
+
+		$this->createAdd("advenced_address_list", "_common.User.AdvancedAddressListComponent", array(
+			"list" => $forms
+		));
     }
-    
-    	
+
+
 	/**
 	 * 法人関連フォーム
 	 * @param SOYShop_User $user
 	 */
-	function buildJobForm(SOYShop_User $user){
+	private function buildJobForm(SOYShop_User $user){
 		/* 勤務先 */
-		
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		DisplayPlugin::toggle("office_items", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
+
 		//法人名(勤務先など)
     	$this->addInput("office", array(
     		"name" => "Customer[jobName]",
@@ -161,4 +173,3 @@ class RegisterPage extends WebPage{
     	));
 	}
 }
-?>

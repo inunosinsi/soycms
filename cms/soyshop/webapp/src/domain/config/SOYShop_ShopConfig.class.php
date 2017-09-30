@@ -37,9 +37,11 @@ class SOYShop_ShopConfig {
 	private $displayUsableTagList = 0;
 	private $insertDummyMailAddress = 1;
 	private $insertDummyMailAddressOnAdmin = 0;
-	
+
 	private $displayOrderAdminPage = 1;
 	private $displayItemAdminPage = 1;
+
+	private $displayUserOfficeItems = 1;
 
 	private $companyInformation = array(
 		"name" => "",
@@ -69,7 +71,7 @@ class SOYShop_ShopConfig {
 		"jobName"		=> true,
 		"memo"			=> true
 	);
-	
+
 	private $customerInformationConfig = array();
 	public static $customerConfigDefault = array(
 		"mailAddress"	=>	true,
@@ -88,7 +90,7 @@ class SOYShop_ShopConfig {
 		"jobName"		=> false,
 		"memo"			=> false
 	);
-	
+
 	private $customerFormLabels = array(
 		"mailAddress"	=>	"メールアドレス",
 		"accountId"		=>	"ログインID(マイページのみ)",
@@ -106,9 +108,9 @@ class SOYShop_ShopConfig {
 		"jobName"		=> "職業",
 		"memo"			=> "備考"
 	);
-	
+
 	private $requireText = "(必須)";
-	
+
 	private $orderItemConfig = array();
 	public static $orderItemConfigDefault = array(
 		"orderId" => true,
@@ -122,7 +124,7 @@ class SOYShop_ShopConfig {
 		"paymentMail" => true,
 		"deliveryMail" => true
 	);
-	
+
 	private $orderItemLabels = array(
 		"orderId" => "注文ID",
 		"trackingNumber" => "注文番号",
@@ -135,7 +137,7 @@ class SOYShop_ShopConfig {
 		"paymentMail" => "支払確認メール",
 		"deliveryMail" => "発送メール"
 	);
-	
+
 	const DATASETS_KEY = "soyshop.ShopConfig";
 
 	public static function load(){
@@ -146,20 +148,20 @@ class SOYShop_ShopConfig {
 	public static function save(SOYShop_ShopConfig $obj, $siteUrl = null){
 		$obj->setAdminUrl(SOY2PageController::createRelativeLink(SOYSHOP_ADMIN_URL, true));
 		SOYShop_DataSets::put(self::DATASETS_KEY, $obj);
-		
+
 		if(!class_exists("SOYAppUtil")) SOY2::import("util.SOYAppUtil");
-		
+
 		/**
 		 * shop.db site_nameとurlの変更
 		 */
 		self::saveShopDbSiteConfig($obj->getShopName(), $siteUrl);
-		
+
 		/**
 		 * cms.db site_nameとurlの変更
 		 */
 		self::saveCmsDbSiteConfig($obj->getShopName(), $siteUrl);
 	}
-	
+
 	public static function getSSLConfigList(){
 		return array(
 			self::SSL_CONFIG_HTTP => "常にhttpで表示する",
@@ -167,7 +169,7 @@ class SOYShop_ShopConfig {
 			self::SSL_CONFIG_LOGIN => "ログイン時のみhttpsで表示する",
 		);
 	}
-	
+
 	private static function saveShopDbSiteConfig($shopName, $publishUrl){
 		$old = SOYAppUtil::switchAppMode("shop");
 		$shopSiteDao = SOY2DAOFactory::create("SOYShop_SiteDAO");
@@ -176,14 +178,14 @@ class SOYShop_ShopConfig {
 		}catch(Exception $e){
 			$site = new SOYShop_Site();
 		}
-		
+
 		if(!is_null($site->getId())){
 			$site->setName($shopName);
-			
+
 			if(isset($publishUrl) && strlen($publishUrl)){
 				$site->setUrl($publishUrl);
 			}
-			
+
 			try{
 				$shopSiteDao->update($site);
 			}catch(Exception $e){
@@ -192,7 +194,7 @@ class SOYShop_ShopConfig {
 		}
 		SOYAppUtil::resetAppMode($old);
 	}
-	
+
 	private static function saveCmsDbSiteConfig($shopName, $publishUrl){
 		$old = SOYAppUtil::switchAdminDsn();
 		$siteDao = SOY2DAOFactory::create("admin.SiteDAO");
@@ -201,25 +203,25 @@ class SOYShop_ShopConfig {
 		}catch(Exception $e){
 			$site = new Site();
 		}
-		
-		
+
+
 		if(!is_null($site->getId())){
 			$site->setSiteName($shopName);
-			
+
 			if(isset($publishUrl) && strlen($publishUrl)){
 				$site->setUrl($publishUrl);
 			}
-			
+
 			try{
 				$siteDao->update($site);
 			}catch(Exception $e){
 				//
 			}
 		}
-		
+
 		SOYAppUtil::resetAdminDsn($old);
 	}
-	
+
 	function getCustomerDisplayFormConfig(){
 		if(count($this->customerDisplayFormConfig)){
 			return $this->customerDisplayFormConfig;
@@ -227,7 +229,7 @@ class SOYShop_ShopConfig {
 			return SOYShop_ShopConfig::$customerDisplayConfigDefault;
 		}
 	}
-	
+
 	function setCustomerDisplayFormConfig($array){
 		$this->customerDisplayFormConfig = SOYShop_ShopConfig::$customerDisplayConfigDefault;
 
@@ -241,14 +243,14 @@ class SOYShop_ShopConfig {
 			$this->customerDisplayFormConfig[$key] = (boolean)@$array[$key];
 		}
 	}
-	
+
 	function getCustomerInformationConfig() {
 		if(count($this->customerInformationConfig)){
 			return $this->customerInformationConfig;
 		}else{
 			return SOYShop_ShopConfig::$customerConfigDefault;
 		}
-		
+
 	}
 	function setCustomerInformationConfig($array) {
 
@@ -264,11 +266,11 @@ class SOYShop_ShopConfig {
 			$this->customerInformationConfig[$key] = (boolean)@$array[$key];
 		}
 	}
-	
+
 	function getCustomerDisplayFormConfigList(){
 		return $this->customerFormLabels;
 	}
-	
+
 	function getOrderItemConfig(){
 		if(count($this->orderItemConfig)){
 			return $this->orderItemConfig;
@@ -276,15 +278,15 @@ class SOYShop_ShopConfig {
 			return SOYShop_ShopConfig::$orderItemConfigDefault;
 		}
 	}
-	
+
 	function setOrderItemConfig($array){
 		$this->orderItemConfig = SOYShop_ShopConfig::$orderItemConfigDefault;
-		
+
 		foreach($this->orderItemConfig as $key => $value){
 			$this->orderItemConfig[$key] = (boolean)@$array[$key];
 		}
 	}
-	
+
 	function getOrderItemList(){
 		return $this->orderItemLabels;
 	}
@@ -296,14 +298,14 @@ class SOYShop_ShopConfig {
 	function setShopName($shopName) {
 		$this->shopName = $shopName;
 	}
-	
+
 	function getSiteUrl(){
 		if(is_null($this->siteUrl)){
 			$this->siteUrl = soyshop_get_site_url(true);
 		}
 		return $this->siteUrl;
 	}
-	
+
 	function setSiteUrl($siteUrl){
 		$this->siteUrl = $siteUrl;
 	}
@@ -364,7 +366,7 @@ class SOYShop_ShopConfig {
 	function setConsumptionTaxInclusivePricingRate($consumptionTaxInclusivePricingRate){
 		$this->consumptionTaxInclusivePricingRate = $consumptionTaxInclusivePricingRate;
 	}
-	
+
 	function getConsumptionTaxInclusiveCommission(){
 		return $this->consumptionTaxInclusiveCommission;
 	}
@@ -372,11 +374,11 @@ class SOYShop_ShopConfig {
 	function setConsumptionTaxInclusiveCommission($consumptionTaxInclusiveCommission){
 		$this->consumptionTaxInclusiveCommission = $consumptionTaxInclusiveCommission;
 	}
-	
+
 	function getSSLConfig(){
 		return $this->sslConfig;
 	}
-	
+
 	function setSSLConfig($sslConfig){
 		$this->sslConfig = $sslConfig;
 	}
@@ -436,35 +438,35 @@ class SOYShop_ShopConfig {
 	function setCartPageTimeLimit($cartPageTimeLimit){
 		$this->cartPageTimeLimit = $cartPageTimeLimit;
 	}
-	
+
 	function getDisplayPageAfterLogout(){
 		return $this->displayPageAfterLogout;
 	}
 	function setDisplayPageAfterLogout($displayPageAfterLogout){
 		$this->displayPageAfterLogout = $displayPageAfterLogout;
 	}
-	
+
 	function getDisplaySendInformationForm(){
 		return $this->displaySendInformationForm;
 	}
 	function setDisplaySendInformationForm($displaySendInformationForm){
 		$this->displaySendInformationForm = $displaySendInformationForm;
 	}
-	
+
 	function getAllowMailAddressLogin(){
 		return $this->allowMailAddressLogin;
 	}
 	function setAllowMailAddressLogin($allowMailAddressLogin){
 		$this->allowMailAddressLogin = $allowMailAddressLogin;
 	}
-	
+
 	function getAllowLoginIdLogin(){
 		return $this->allowLoginIdLogin;
 	}
 	function setAllowLoginIdLogin($allowLoginIdLogin){
 		$this->allowLoginIdLogin = $allowLoginIdLogin;
 	}
-	
+
 	function getDisplayUsableTagList(){
 		return $this->displayUsableTagList;
 	}
@@ -477,35 +479,42 @@ class SOYShop_ShopConfig {
 	function setInsertDummyMailAddress($insertDummyMailAddress){
 		$this->insertDummyMailAddress = $insertDummyMailAddress;
 	}
-	
+
 	function getInsertDummyMailAddressOnAdmin(){
 		return $this->insertDummyMailAddressOnAdmin;
 	}
 	function setInsertDummyMailAddressOnAdmin($insertDummyMailAddressOnAdmin){
 		$this->insertDummyMailAddressOnAdmin = $insertDummyMailAddressOnAdmin;
 	}
-	
+
 	function getDisplayOrderAdminPage(){
 		return $this->displayOrderAdminPage;
 	}
 	function setDisplayOrderAdminPage($displayOrderAdminPage){
 		$this->displayOrderAdminPage = $displayOrderAdminPage;
 	}
-	
+
 	function getDisplayItemAdminPage(){
 		return $this->displayItemAdminPage;
 	}
 	function setDisplayItemAdminPage($displayItemAdminPage){
 		$this->displayItemAdminPage = $displayItemAdminPage;
 	}
-	
+
+	function getDisplayUserOfficeItems(){
+		return $this->displayUserOfficeItems;
+	}
+	function setDisplayUserOfficeItems($displayUserOfficeItems){
+		$this->displayUserOfficeItems = $displayUserOfficeItems;
+	}
+
 	function getIsShowOnlyAdministrator(){
 		return $this->isShowOnlyAdministrator;
 	}
 	function setIsShowOnlyAdministrator($isShowOnlyAdministrator){
 		$this->isShowOnlyAdministrator = $isShowOnlyAdministrator;
 	}
-	
+
 	function getRequireText(){
 		return $this->requireText;
 	}
