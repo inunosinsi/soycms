@@ -26,7 +26,7 @@ class UserLogic extends SOY2LogicBase{
 					$res = true;
 				}
 			}while(!$res);
-			
+
 			$accountId = $user->getAccountId();
 			if(!is_null($accountId)){
 				$i = 0;
@@ -67,16 +67,16 @@ class UserLogic extends SOY2LogicBase{
     }
 
 	/** プロフィール **/
-	
+
 	/**
 	 * プロフィール用のアカウントを作成する。諸々の値のハッシュ
-	 * @return string profile_id 
+	 * @return string profile_id
 	 */
 	function createProfileId(SOYShop_User $user){
 		$hash = $user->getId() . md5($user->getName(). $user->getMailAddress());
 		return substr($hash, 0, 20);
 	}
-	
+
 	/**
 	 * プロフィールページに表示するための画像サイズ
 	 * @param object SOYShop_User
@@ -92,14 +92,24 @@ class UserLogic extends SOY2LogicBase{
     	}
     	return $width;
 	}
-	
+
     function uploadFile($file, $tmp, $userId, $isResize, $resizeWidth, $resizeHeight = null){
-    	$new = $this->getUniqueFileName($file);
+
+		SOYShopPlugin::load("soyshop.upload.image");
+		$new = SOYShopPlugin::invoke("soyshop.upload.image", array(
+			"mode" => "profile",
+			"pathinfo" => pathinfo($file)
+		))->getName();
+
+		if(is_null($new)){
+			$new = $this->getUniqueFileName($file);
+		}
+
 		$path = $this->makeDirectory($userId) . $new;
 		@move_uploaded_file($tmp, $path);
 
 		$res = $this->checkSizeBeforeResize(getimagesize($path), $resizeWidth);
-		
+
 		//リサイズ
 		if($isResize && $res){
 			soy2_resizeimage($path, $path, $resizeWidth);

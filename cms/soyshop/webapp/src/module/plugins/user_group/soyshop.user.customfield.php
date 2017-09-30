@@ -96,7 +96,11 @@ class UserGroupCustomField extends SOYShopUserCustomfield{
 	 * @param SOYBodyComponentBase $pageObj
 	 * @param integer $userId
 	 */
-	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){}
+	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){
+		$groups = self::groupDao()->getGroupsByUserId($userId);
+	}
+
+
 	function hasError($param){}
 
 	/**

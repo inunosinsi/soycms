@@ -21,7 +21,7 @@ class DetailPage extends WebPage{
 
 				SOYShopPlugin::load("soyshop.upload.image");
 				$name = SOYShopPlugin::invoke("soyshop.upload.image", array(
-					"mode" => "name",
+					"mode" => "item",
 					"item" => $item,
 					"pathinfo" => $pathinfo
 				))->getName();
@@ -705,7 +705,7 @@ class DetailPage extends WebPage{
 				//この拡張ポイントはプラグインは一つのみ使用可能
 				SOYShopPlugin::load("soyshop.upload.image");
 				$name = SOYShopPlugin::invoke("soyshop.upload.image", array(
-					"mode" => "name",
+					"mode" => "customfield",
 					"item" => $item,
 					"pathinfo" => $pathinfo
 				))->getName();

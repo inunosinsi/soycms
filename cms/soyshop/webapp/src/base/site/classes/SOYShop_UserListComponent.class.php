@@ -39,6 +39,7 @@ class SOYShop_UserListComponent extends HTMLList{
 	 * @return boolean
 	 */
 	function getIsDisplay($entity){
+		if($entity->getIsDisabled() == SOYShop_User::USER_IS_DISABLED) return false;
 		return true;
 	}
 

@@ -1,7 +1,7 @@
 <?php
 
 class StorageLogic extends SOY2LogicBase{
-	
+
 	//登録可能な拡張子 txtや画像は一旦なし
 	private $allowExtensions = array(
 								".zip" => "application/zip",
@@ -10,33 +10,33 @@ class StorageLogic extends SOY2LogicBase{
 								".mp3" => "audio/mpeg",
 								".mp4" => "application/mp4"
 							);
-	
+
 	private $storageDao;
-	
+
 	function __construct(){
 		SOY2::imports("module.plugins.store_user_folder.domain.*");
 		$this->storageDao = SOY2DAOFactory::create("SOYShop_UserStorageDAO");
 	}
-	
+
 	function getFiles($userId){
 		try{
 			$files = $this->storageDao->getByUserId($userId);
 		}catch(Exception $e){
 			return array();
 		}
-		
+
 		$dir = self::getDirectoryByUserId($userId);
-		
+
 		$list = array();
 		foreach($files as $file){
 			if(file_exists($dir . "/" . $file->getFileName())){
 				$list[] = $file;
 			}
 		}
-		
+
 		return $list;
 	}
-	
+
 	function getFileByToken($token){
 		try{
 			return $this->storageDao->getByToken($token);
@@ -44,33 +44,41 @@ class StorageLogic extends SOY2LogicBase{
 			return null;
 		}
 	}
-	
+
 	function upload($files, $userId){
 		$dir = self::getDirectoryByUserId($userId);
-		
+
+		SOYShopPlugin::load("soyshop.upload.image");
 		for($i = 0; $i < count($files["type"]); $i++){
 			if(!$files["error"][$i] && in_array($files["type"][$i], $this->allowExtensions)){
 				/** @ToDo ファイル名のチェック **/
 				$fname = $files["name"][$i];
-				
+
+				$new = SOYShopPlugin::invoke("soyshop.upload.image", array(
+					"mode" => "storage",
+					"pathinfo" => pathinfo($fname)
+				))->getName();
+
+				if(isset($new)) $fname = $new;
+
 				//半角英数字かチェックする
 //				if (preg_match("/^[0-9A-Za-z%&+\-\^_`{|}~.]+$/", $fname)){
 					$dest_name = $dir . "/" . $fname;
-							
-					//iconsディレクトリの中にすでにファイルがないかチェックする				
+
+					//iconsディレクトリの中にすでにファイルがないかチェックする
 					if(!file_exists($dest_name)){
 						//ファイルの移動が失敗していないかどうかをチェック
 						if(@move_uploaded_file($files["tmp_name"][$i], $dest_name) === false){
 							continue;
 						}
 					}
-					
+
 					//データベースに登録する
 					$obj = new SOYShop_UserStorage();
 					$obj->setUserId($userId);
 					$obj->setFileName($fname);
 					$obj->setToken(md5(time().$userId.$files["tmp_name"][$i].rand(0,65535)));
-					
+
 					try{
 						$this->storageDao->insert($obj);
 					}catch(Exception $e){
@@ -80,7 +88,7 @@ class StorageLogic extends SOY2LogicBase{
 			}
 		}
 	}
-		
+
 	/**
 	 * ファイルをダウンロードする
 	 * @param object SOYShop_UserStorage file, string filepath
@@ -88,7 +96,7 @@ class StorageLogic extends SOY2LogicBase{
 	function downloadFile(SOYShop_UserStorage $file){
 		$filePath = self::getDirectoryByUserId($file->getUserId()) . "/" . $file->getFileName();
 		$contentType = self::getContentType($file->getFileName());
-		
+
 		header("Cache-Control: public");
 		header("Pragma: public");
 		header("Content-Type: " . $contentType . ";");
@@ -107,7 +115,7 @@ class StorageLogic extends SOY2LogicBase{
 		}
 		fclose($handle);
 	}
-	
+
 	/**
 	 * ダウンロードするファイルのcontent-typeを取得する
 	 * @param string filename
@@ -117,7 +125,7 @@ class StorageLogic extends SOY2LogicBase{
 		$extension = strtolower(substr($fileName, strrpos($fileName, ".")));
 		return (isset($this->allowExtensions[$extension])) ? $this->allowExtensions[$extension] : "application/octet-stream";
 	}
-	
+
 	private function getDirectoryByUserId($userId){
 		$dir = SOYSHOP_SITE_DIRECTORY . "files/user/";
 		if(!is_dir($dir)) mkdir($dir);
