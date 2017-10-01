@@ -9,19 +9,26 @@ class ShopConfigPage extends WebPage{
 	function doPost(){
 		$config = $this->config;
 
-		$_POST["Config"]["consumptionTaxInclusivePricingRate"] = (isset($_POST["Config"]["consumptionTaxInclusivePricingRate"])) ? (int)$_POST["Config"]["consumptionTaxInclusivePricingRate"] : SOYShop_ShopConfig::CONSUMPTION_TAX_RATE;
-		$_POST["Config"]["consumptionTaxInclusiveCommission"] = (isset($_POST["Config"]["consumptionTaxInclusiveCommission"])) ? (int)$_POST["Config"]["consumptionTaxInclusiveCommission"] : 0;
-		$_POST["Config"]["displayStockCount"] = (isset($_POST["Config"]["displayStockCount"])) ? (int)$_POST["Config"]["displayStockCount"] : 0;
-		$_POST["Config"]["displayPageAfterLogout"] = (isset($_POST["Config"]["displayPageAfterLogout"])) ? (int)$_POST["Config"]["displayPageAfterLogout"] : 0;
-		$_POST["Config"]["displaySendInformationForm"] = (isset($_POST["Config"]["displaySendInformationForm"])) ? (int)$_POST["Config"]["displaySendInformationForm"] : 0;
-		$_POST["Config"]["allowMailAddressLogin"] = (isset($_POST["Config"]["allowMailAddressLogin"])) ? (int)$_POST["Config"]["allowMailAddressLogin"] : 0;
-		$_POST["Config"]["allowLoginIdLogin"] = (isset($_POST["Config"]["allowLoginIdLogin"])) ? (int)$_POST["Config"]["allowLoginIdLogin"] : 0;
-		$_POST["Config"]["displayUsableTagList"] = (isset($_POST["Config"]["displayUsableTagList"])) ? (int)$_POST["Config"]["displayUsableTagList"] : 0;
-		$_POST["Config"]["insertDummyMailAddress"] = (isset($_POST["Config"]["insertDummyMailAddress"])) ? (int)$_POST["Config"]["insertDummyMailAddress"] : 0;
-		$_POST["Config"]["insertDummyMailAddressOnAdmin"] = (isset($_POST["Config"]["insertDummyMailAddressOnAdmin"])) ? (int)$_POST["Config"]["insertDummyMailAddressOnAdmin"] : 0;
-		$_POST["Config"]["displayOrderAdminPage"] = (isset($_POST["Config"]["displayOrderAdminPage"])) ? (int)$_POST["Config"]["displayOrderAdminPage"] : 0;
-		$_POST["Config"]["displayItemAdminPage"] = (isset($_POST["Config"]["displayItemAdminPage"])) ? (int)$_POST["Config"]["displayItemAdminPage"] : 0;
-		$_POST["Config"]["displayUserOfficeItems"] = (isset($_POST["Config"]["displayUserOfficeItems"])) ? (int)$_POST["Config"]["displayUserOfficeItems"] : 0;
+		foreach(array(
+			"consumptionTaxInclusivePricingRate" => SOYShop_ShopConfig::CONSUMPTION_TAX_RATE,
+			"consumptionTaxInclusiveCommission" => 0,
+			"displayStockCount" => 0,
+			"displayPageAfterLogout" => 0,
+			"displaySendInformationForm" => 0,
+			"allowMailAddressLogin" => 0,
+			"allowLoginIdLogin" => 0,
+			"displayUsableTagList" => 0,
+			"insertDummyMailAddress" => 0,
+			"insertDummyMailAddressOnAdmin" => 0,
+			"displayOrderAdminPage" => 0,
+			"displayItemAdminPage" => 0,
+			"defalutArea" => 0,
+			"displayUserOfficeItems" => 0,
+			"displayUserProfileItems" => 0,
+		) as $key => $null){
+			$_POST["Config"][$key] = (isset($_POST["Config"][$key])) ? (int)$_POST["Config"][$key] : $null;
+		}
+
 		if(!isset($_POST["Config"]["consumptionTaxModule"])) $_POST["Config"]["consumptionTaxModule"] = null;
 
 		$consumptionTax = $_POST["Config"]["consumptionTax"]; //外税
@@ -272,11 +279,25 @@ class ShopConfigPage extends WebPage{
 			"label" => "管理画面で商品タブを表示する"
 		));
 
+		SOY2::import("domain.config.SOYShop_Area");
+		$this->addSelect("defaultArea", array(
+			"name" => "Config[defaultArea]",
+			"options" => SOYShop_Area::getAreas(),
+			"selected" => $config->getDefaultArea()
+		));
+
 		$this->addCheckBox("displayUserOfficeItems", array(
 			"name" => "Config[displayUserOfficeItems]",
 			"value" => 1,
 			"selected" => $config->getDisplayUserOfficeItems(),
 			"label" => "顧客詳細の編集画面で勤務先関連の項目を表示する"
+		));
+
+		$this->addCheckBox("displayUserProfileItems", array(
+			"name" => "Config[displayUserProfileItems]",
+			"value" => 1,
+			"selected" => $config->getDisplayUserProfileItems(),
+			"label" => "顧客詳細の編集画面でプロフィール関連の項目を表示する"
 		));
 
 		//メンテナンスモード

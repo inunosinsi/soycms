@@ -34,7 +34,7 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
      * @return object
      */
     abstract function getById($id);
-    
+
     /**
      * @return object
      */
@@ -53,29 +53,29 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
      * @query mail_address = :email
      */
     abstract function getIdByEmail($email);
-    
+
     /**
      * @return id
      */
     abstract function getIdByMailAddress($mailAddress);
-    
+
     /**
      * @return list
      * @query is_disabled = 0
      */
     abstract function getByNotDisabled();
-    
+
     /**
 	 * @return object
 	 */
 	abstract function getByAccountId($accountId);
-	
+
 	/**
 	 * @return object
 	 * @query account_id = :accountId AND id != :id
 	 */
 	abstract function getByAccountIdAndNotId($accountId, $id);
-		
+
 	/**
 	 * @return object
 	 */
@@ -94,14 +94,14 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
      * @query user_type = 1
      */
     abstract function getRegisterUserByEmail($email);
-    
+
     /**
      * @return list
 	 * @query register_date > :startDate AND register_date <= :endDate
 	 * @order id ASC
      */
     abstract function getByBetweenRegisterDate($startDate, $endDate = 2147483647);
-    
+
     /**
      * @return list
 	 * @query update_date > :startDate AND update_date <= :endDate
@@ -123,23 +123,30 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 		if((int)$binds[":area"] === 0){
 			$binds[":area"] = null;
 		}
-		
+
 		if(strlen($binds[":accountId"]) === 0){
 			$binds[":accountId"] = null;
 		}
-		
+
 		if(strlen($binds[":profileId"]) === 0){
 			$binds[":profileId"] = null;
 		}
-		
+
 		//別システムからのインポートを考慮して必ずチェック
 		if(strlen($binds[":registerDate"]) === 0){
 			$binds[":registerDate"] = time();
 		}
-    	
+
     	if(strlen($binds[":updateDate"]) === 0){
 	    	$binds[":updateDate"] = time();
     	}
+
+		// SOY Mail連携プラグインを有効にしていない場合はメルマガのチェックは必ずなし
+		SOY2::import("util.SOYShopPluginUtil");
+		if(!SOYShopPluginUtil::checkIsActive("soymail_connector")){
+			$binds[":notSend"] = SOYShop_User::USER_NOT_SEND;
+		}
+
     	return array($query, $binds);
 	}
 
@@ -150,17 +157,23 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 		if((int)$binds[":area"] === 0){
 			$binds[":area"] = null;
 		}
-		
+
 		if(strlen($binds[":accountId"]) === 0){
 			$binds[":accountId"] = null;
 		}
-		
+
 		if(strlen($binds[":profileId"]) === 0){
 			$binds[":profileId"] = null;
 		}
-		
+
     	$binds[":updateDate"] = time();
+
+		// SOY Mail連携プラグインを有効にしていない場合はメルマガのチェックは必ずなし
+		SOY2::import("util.SOYShopPluginUtil");
+		if(!SOYShopPluginUtil::checkIsActive("soymail_connector")){
+			$binds[":notSend"] = SOYShop_User::USER_NOT_SEND;
+		}
+
     	return array($query, $binds);
 	}
 }
-?>

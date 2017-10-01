@@ -4,7 +4,7 @@
  * カート・マイページ ユーザ項目 後方互換性確保
  */
 class BackwardUserComponent {
-	
+
 	/**
 	 * 後方互換性 カートのユーザ登録
 	 * @param MainCartPageBase $page ページクラス
@@ -19,7 +19,7 @@ class BackwardUserComponent {
 
 		$cart = CartLogic::getCart();
 		$mypage = MyPageLogic::getMyPage();
-		
+
     	$page->addModel("password_input", array(
     		"visible" => (!$cart->getAttribute("logined") && !$mypage->getIsLoggedin()),
     	));
@@ -27,25 +27,25 @@ class BackwardUserComponent {
     	$page->addModel("new_password", array(
     		"visible" => ($cart->getAttribute("logined") || $mypage->getIsLoggedin()),
     	));
-		
+
 		//パスワード
     	$page->addInput("password", array(
     		"name" => "Customer[password]",
     		"value" => $user->getPassword(),
     	));
-		
+
 		//氏名
     	$page->addInput("name", array(
     		"name" => "Customer[name]",
     		"value" => $user->getName(),
     	));
-		
+
 		//フリガナ
     	$page->addInput("furigana", array(
     		"name" => "Customer[reading]",
     		"value" => $user->getReading(),
     	));
-		
+
 		//性別 男
     	$page->addCheckBox("gender_male", array(
     		"type" => "radio",
@@ -54,7 +54,7 @@ class BackwardUserComponent {
 			"elementId" => "radio_sex_male",
 			"selected" => ($user->getGender() === 0 || $user->getGender() === "0")
     	));
-		
+
 		//性別 女
     	$page->addCheckBox("gender_female", array(
     		"type" => "radio",
@@ -69,68 +69,68 @@ class BackwardUserComponent {
     		"name" => "Customer[birthday][]",
     		"value" => $user->getBirthdayYear(),
     	));
-		
+
 		//生年月日 月
     	$page->addInput("birth_month", array(
     		"name" => "Customer[birthday][]",
     		"value" => $user->getBirthdayMonth(),
     	));
-		
+
 		//生年月日 日
     	$page->addInput("birth_day", array(
     		"name" => "Customer[birthday][]",
     		"value" => $user->getBirthdayDay(),
     	));
-		
+
 		//郵便番号
     	$page->addInput("post_number", array(
     		"name" => "Customer[zipCode]",
     		"value" => $user->getZipCode()
     	));
-		
+
 		//都道府県
     	$page->addSelect("area", array(
     		"name" => "Customer[area]",
     		"options" => SOYShop_Area::getAreas(),
-    		"value" => $user->getArea()
+    		"selected" => (!is_null($user->getArea())) ? $user->getArea() : SOYShop_ShopConfig::load()->getDefaultArea()
     	));
-		
+
 		//住所入力1
     	$page->addInput("address1", array(
     		"name" => "Customer[address1]",
     		"value" => $user->getAddress1(),
     	));
-		
+
 		//住所入力2
     	$page->addInput("address2", array(
     		"name" => "Customer[address2]",
     		"value" => $user->getAddress2(),
     	));
-		
+
 		//電話番号
     	$page->addInput("tel_number", array(
     		"name" => "Customer[telephoneNumber]",
     		"value" => $user->getTelephoneNumber(),
     	));
-		
+
 		//FAX番号
     	$page->addInput("fax_number", array(
     		"name" => "Customer[faxNumber]",
     		"value" => $user->getFaxNumber(),
     	));
-		
+
 		//携帯電話番号
     	$page->addInput("ketai_number", array(
     		"name" => "Customer[cellphoneNumber]",
     		"value" => $user->getCellphoneNumber(),
     	));
-		
+
 		//勤務先名称・職種
     	$page->addInput("office", array(
     		"name" => "Customer[jobName]",
     		"value" => $user->getJobName(),
     	));
-		
+
 	}
 
 	/**
@@ -139,73 +139,73 @@ class BackwardUserComponent {
 	 * @param SOYShop_User $user
 	 */
 	public function backwardCartConfirm(MainCartPageBase $page, SOYShop_User $user){
-		
+
 	}
-	
+
 	/**
 	 * 後方互換性 カート 登録 エラーメッセージ
 	 * @param MainCartPageBase $page
-	 * @param CartLogic $cart 
+	 * @param CartLogic $cart
 	 */
 	public function backwardCartAppendErrors(MainCartPageBase $page, CartLogic $cart){
 		//メールアドレス
 		$page->createAdd("mail_address_error", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("mail_address")
 		));
-		
+
 		//名前
 		$page->createAdd("name_error", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("name")
 		));
-		
+
 		//フリガナ
 		$page->createAdd("reading_error", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("reading")
 		));
-		
+
 		//郵便番号
 		$page->createAdd("zip_code_error", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("zip_code")
 		));
-		
+
 		//住所
 		$page->createAdd("address_error", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("address")
 		));
-		
+
 		//電話番号
 		$page->createAdd("tel_number_error", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("tel_number")
 		));
-		
+
 		//送り先
 		$page->createAdd("send_address_error", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("send_address")
 		));
-		
+
 		//送り先 表示
 		$page->createAdd("has_send_address_error","HTMLModel", array(
 			"visible" => (strlen($cart->getErrorMessage("send_address")) > 0)
 		));
-		
+
 		//パスワード
 		$page->createAdd("password_error", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("password_error")
 		));
-		
+
 		//パスワード 間違え
 		$page->createAdd("password_invalid", "ErrorMessageLabel", array(
 			"text" => $cart->getErrorMessage("password_error")
 		));
-		
+
 	}
-	
+
 	/**
 	 * 後方互換性 カートのユーザ登録 エラーチェック
 	 * エラーがなければtrue
 	 * @param SOYShop_User $user
 	 * @param CartLogic $cart
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public function backwardCartRegisterCheck(SOYShop_User $user, CartLogic $cart){
 		$res = true;
@@ -289,8 +289,8 @@ class BackwardUserComponent {
 		}
 
 		return $res;
-	} 
-	
+	}
+
 	/**
 	 * 後方互換性 マイページのユーザ登録
 	 * @param MainMyPagePageBase $page
@@ -298,63 +298,63 @@ class BackwardUserComponent {
 	 */
 	public function backwardMyPageRegister(MainMyPagePageBase $page, SOYShop_User $user){
 		/* buildForm */
-		
+
 		$page->addForm("form");
-		
+
 		//メールアドレス
 		$page->addInput("user_mail_address", array(
     		"name" => "Customer[mailAddress]",
     		"value" => $user->getMailAddress(),
     	));
-    	
+
     	//ログインID
     	$page->addInput("user_account_id", array(
     		"name" => "Customer[accountId]",
     		"value" => $user->getAccountId(),
     		"style" => "ime-mode:inactive;"
     	));
-		
+
 		//パスワード
     	$page->addInput("password", array(
     		"name" => "Customer[password]",
     		"value" => $user->getPassword(),
     	));
-    	
+
     	//パスワードのテキスト
     	$page->addLabel("password_text", array(
     		"text" => tstrlen($user->getPassword()) ? str_repeat("*", tstrlen($user->getPassword())) . MessageManager::get("NO_DISPLAY_PASSWORD_CHANGE") : MessageManager::get("NO_CHANGE"),
     	));
-    	
+
 		//氏名
     	$page->addInput("user_name", array(
     		"name" => "Customer[name]",
     		"value" => $user->getName(),
     	));
-		
+
 		//フリガナ
     	$page->addInput("user_furigana", array(
     		"name" => "Customer[reading]",
     		"value" => $user->getReading(),
     	));
-    	
+
     	//フリガナ
     	$page->addInput("user_reading", array(
     		"name" => "Customer[reading]",
     		"value" => $user->getReading(),
     	));
-    	
+
     	//ニックネーム
     	$page->addInput("user_nickname", array(
     		"name" => "Customer[nickname]",
     		"value" => $user->getNickname(),
     	));
-    	
+
     	//URL
     	$page->addInput("user_url", array(
     		"name" => "Customer[url]",
     		"value" => $user->getUrl(),
     	));
-		
+
 		//性別　男
     	$page->addCheckBox("gender_male", array(
     		/**"type" => "radio",**/
@@ -363,7 +363,7 @@ class BackwardUserComponent {
 			"elementId" => "radio_sex_male",
 			"selected" => ($user->getGender() === 0 || $user->getGender() === "0"),//nullはfalse
     	));
-		
+
 		//性別　女
     	$page->addCheckBox("gender_female", array(
     		/**"type" => "radio",**/
@@ -372,7 +372,7 @@ class BackwardUserComponent {
 			"elementId" => "radio_sex_female",
 			"selected" => ($user->getGender() === 1 || $user->getGender() === "1"),
     	));
-    	
+
     	//性別 テキスト
     	$page->addLabel("gender_text", array(
 			"text" => ($user->getGender() === 0 || $user->getGender() === "0") ? MessageManager::get("SEX_MALE") :
@@ -384,47 +384,47 @@ class BackwardUserComponent {
     		"name" => "Customer[birthday][]",
     		"value" => $user->getBirthdayYear(),
     	));
-		
+
 		//生年月日　月
     	$page->addInput("birth_month", array(
     		"name" => "Customer[birthday][]",
     		"value" => $user->getBirthdayMonth(),
     	));
-		
+
 		//生年月日　日
     	$page->addInput("birth_day", array(
     		"name" => "Customer[birthday][]",
     		"value" => $user->getBirthdayDay(),
     	));
-		
+
 		//郵便番号
     	$page->addInput("user_post_number", array(
     		"name" => "Customer[zipCode]",
     		"value" => $user->getZipCode(),
     	));
-    	
+
     	$page->addInput("user_zip_code", array(
     		"name" => "Customer[zipCode]",
     		"value" => $user->getZipCode(),
     	));
-		
+
 		//都道府県
     	$page->addSelect("user_area", array(
     		"name" => "Customer[area]",
     		"options" => SOYShop_Area::getAreas(),
-    		"value" => $user->getArea(),
+    		"selected" => (!is_null($user->getArea())) ? $user->getArea() : SOYShop_ShopConfig::load()->getDefaultArea(),
     	));
-    	
+
     	$page->addLabel("user_area_text", array(
 			"text" => $user->getAreaText()
 		));
-		
+
 		//住所入力1
     	$page->addInput("user_address1", array(
     		"name" => "Customer[address1]",
     		"value" => $user->getAddress1(),
     	));
-		
+
 		//住所入力2
     	$page->addInput("user_address2", array(
     		"name" => "Customer[address2]",
@@ -440,13 +440,13 @@ class BackwardUserComponent {
     		"name" => "Customer[telephoneNumber]",
     		"value" => $user->getTelephoneNumber(),
     	));
-		
+
 		//FAX番号
     	$page->addInput("user_fax_number", array(
     		"name" => "Customer[faxNumber]",
     		"value" => $user->getFaxNumber(),
     	));
-		
+
 		//携帯電話番号
     	$page->addInput("user_keitai_number", array(
     		"name" => "Customer[cellphoneNumber]",
@@ -456,27 +456,27 @@ class BackwardUserComponent {
     		"name" => "Customer[cellphoneNumber]",
     		"value" => $user->getCellphoneNumber(),
     	));
-		
+
 		//勤務先名称・職種
     	$page->addInput("user_office", array(
     		"name" => "Customer[jobName]",
     		"value" => $user->getJobName(),
     	));
-    	
+
     	//勤務先名称・職種
     	$page->addInput("user_job_name", array(
     		"name" => "Customer[jobName]",
     		"value" => $user->getJobName(),
     	));
-    	
+
     	//備考
     	$page->addTextarea("order_memo", array(
     		"name" => "Customer[memo]",
     		"value" => $user->getMemo()
     	));
-		
+
 	}
-	
+
 	/**
 	 * 後方互換性 マイページのユーザ情報編集
 	 * @param MainMyPagePageBase $page
@@ -484,7 +484,7 @@ class BackwardUserComponent {
 	 */
 	public function backwardMyPageEdit(MainMyPagePageBase $page, SOYShop_User $user){
 		$mypage = MyPageLogic::getMyPage();
-		
+
 		$page->addForm("form", array(
 			"enctype" => "multipart/form-data"
 		));
@@ -494,7 +494,7 @@ class BackwardUserComponent {
     		"name" => "Customer[mailAddress]",
     		"value" => $user->getMailAddress(),
     	));
-    	
+
     	//メールアドレス
 		$page->addInput("user_account_id", array(
     		"name" => "Customer[accountId]",
@@ -522,7 +522,7 @@ class BackwardUserComponent {
     		"name" => "Customer[nickname]",
     		"value" => $user->getNickname()
     	));
-    	
+
     	//プロフィール
     	$page->addCheckBox("profile_display", array(
     		"name" => "Customer[isProfileDisplay]",
@@ -530,7 +530,7 @@ class BackwardUserComponent {
     		"selected" => ($user->getIsProfileDisplay() == SOYShop_User::PROFILE_IS_DISPLAY),
     		"label" => MessageManager::get("DISPLAY_PROFILE_PAGE")
     	));
-    	
+
     	$page->addLabel("profile_display_text", array(
     		"text" => ($user->getIsProfileDisplay() == SOYShop_User::PROFILE_IS_DISPLAY) ? MessageManager::get("DISPLAY_PROFILE_PAGE") : MessageManager::get("NO_DISPLAY_PROFILE_PAGE")
     	));
@@ -560,7 +560,7 @@ class BackwardUserComponent {
     		"selected" => (isset($isDeleteImage) && $isDeleteImage === true),
     		"label" => MessageManager::get("DELETE_PROFILE_IMAGE")
     	));
-    	    	
+
     	$page->addModel("confirm_detele_image", array(
     		"visible" => (isset($isDeleteImage) && $isDeleteImage === true)
     	));
@@ -628,7 +628,7 @@ class BackwardUserComponent {
     		"options" => SOYShop_Area::getAreas(),
     		"value" => $user->getArea()
     	));
-		
+
 		//都道府県
     	$page->addSelect("array_area", array(
     		"name" => "Customer[area]",
@@ -694,19 +694,19 @@ class BackwardUserComponent {
     		"name" => "Customer[memo]",
     		"value" => $user->getMemo()
     	));
-		
+
 	}
-	
+
 	/**
 	 * 後方互換性 マイページ ユーザ登録 エラーチェック
 	 * エラーがなければtrue
 	 * @param SOYShop_User $user
 	 * @param MyPageLogic $mypage
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public function backwardMyPageRegisterCheck(SOYShop_User $user, MyPageLogic $mypage){
 		$res = true;
-		
+
 		//メールアドレス
 		if(tstrlen($user->getMailAddress()) < 1){
 			$mypage->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_EMPTY"));
@@ -715,38 +715,38 @@ class BackwardUserComponent {
 			$mypage->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_FALSE"));
 			$res = false;
 		}
-		
+
 		//名前
 		if(tstrlen($user->getName()) < 1){
 			$mypage->addErrorMessage("name", MessageManager::get("USER_NAME_EMPTY"));
 			$res = false;
 		}
-		
+
 		//フリガナ 入力
 		$reading = str_replace(array(" ", "　"), "", $user->getReading());
 		if(tstrlen($reading) < 1){
 			$mypage->addErrorMessage("reading", MessageManager::get("USER_READING_EMPTY"));
 			$res = false;
 		}
-		
+
 		//フリガナ フォーマット
 		if(strlen(mb_ereg_replace("([-_a-zA-Z0-9ァ-ー０-９])","",$reading)) !== 0){
 			$mypage->addErrorMessage("reading", MessageManager::get("USER_READING_FALSE"));
 			$res = false;
 		}
-		
+
 		//郵便番号
 		if(tstrlen($user->getZipCode()) < 1){
 			$mypage->addErrorMessage("zip_code", MessageManager::get("ZIP_CODE_EMPTY"));
 			$res = false;
 		}
-		
+
 		//住所
 		if(tstrlen($user->getArea()) < 1 || tstrlen($user->getAddress1()) < 1){
 			$mypage->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
 			$res = false;
 		}
-		
+
 		//電話番号
 		if(tstrlen($user->getTelephoneNumber()) < 1){
 			$mypage->addErrorMessage("tel_number", MessageManager::get("TELEPHONE_NUMBER_EMPTY"));
@@ -763,15 +763,15 @@ class BackwardUserComponent {
 		}elseif(!preg_match("/^[a-zA-Z0-9]+$/",$user->getPassword())){
     		$mypage->addErrorMessage("password", MessageManager::get("PASSWORD_FALSE"));
     	}
-		
-		
-		
+
+
+
 		//メールアドレスの重複チェック
 		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		try{
 			$oldUser = $dao->getByMailAddress($user->getMailAddress());
 			$tmpUser = SOYShop_DataSets::get("config.mypage.tmp_user_register", 1);
-			
+
 			//仮登録ユーザだった場合は上書き
 			if($tmpUser){
 				//仮登録処理を行う
@@ -779,32 +779,32 @@ class BackwardUserComponent {
 					$mypage->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_REGISTERED_ALREADY"));
 					$res = false;
 				}
-				
+
 			}else{
 				//仮登録処理を行わない
 				$mypage->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_REGISTERED_ALREADY"));
 				$res = false;
 			}
-			
+
 		}catch(Exception $e){
-			
+
 		}
-		
+
 		$mypage->save();
-		
+
 		return $res;
 	}
-	
+
 	/**
 	 * 後方互換性 カートのユーザ編集 エラーチェック
 	 * エラーがなければtrue
 	 * @param SOYShop_User $user
 	 * @param MyPageLogic $mypage
-	 * @return boolean 
+	 * @return boolean
 	 */
 	public function backwardMyPageEditCheck(SOYShop_User $user, MyPageLogic $mypage){
 		$res = true;
-		
+
 		/* メールアドレス */
 		if(tstrlen($user->getMailAddress()) < 1){
 			$mypage->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_EMPTY"));
@@ -813,13 +813,13 @@ class BackwardUserComponent {
 			$mypage->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_FALSE"));
 			$res = false;
 		}
-		
+
 		/* 名前 */
 		if(tstrlen($user->getName()) < 1){
 			$mypage->addErrorMessage("name", MessageManager::get("USER_NAME_EMPTY"));
 			$res = false;
 		}
-		
+
 		/* フリガナ */
 		$reading = str_replace(array(" ","　"), "", $user->getReading());
 		if(tstrlen($reading) < 1){
@@ -831,19 +831,19 @@ class BackwardUserComponent {
 			$mypage->addErrorMessage("reading", MessageManager::get("USER_READING_FALSE"));
 			$res = false;
 		}
-		
+
 		/* 郵便番号 */
 		if(tstrlen($user->getZipCode()) < 1){
 			$mypage->addErrorMessage("zip_code", MessageManager::get("ZIP_CODE_EMPTY"));
 			$res = false;
 		}
-		
+
 		/* 住所 */
 		if(tstrlen($user->getArea()) < 1 || tstrlen($user->getAddress1()) < 1){
 			$mypage->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
 			$res = false;
 		}
-		
+
 		/* 電話番号 */
 		if(tstrlen($user->getTelephoneNumber()) < 1){
 			$mypage->addErrorMessage("tel_number", MessageManager::get("TELEPHONE_NUMBER_EMPTY"));
@@ -869,7 +869,7 @@ class BackwardUserComponent {
 				//問題なし
 			}
 		}
-		
+
 		/* ユーザカスタムフィールド */
 		//各項目をチェック
 		SOYShopPlugin::load("soyshop.user.customfield");
@@ -879,7 +879,7 @@ class BackwardUserComponent {
 			"param" => $_POST["user_customfield"],
 			"user" => $user
 		));
-		
+
 		if($delegate->hasError()){
 			$mypage->addErrorMessage("customfield", MessageManager::get("CUSTOMFIELD_ERROR"));
 			$res = true;
@@ -888,9 +888,9 @@ class BackwardUserComponent {
 		}
 
 		return $res;
-		
+
 	}
-	
+
 	/**
 	 * 後方互換性 マイページ 登録 エラーメッセージ
 	 * @param MainMyPagePageBase $page
@@ -901,47 +901,47 @@ class BackwardUserComponent {
 		$page->createAdd("mail_address_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("mail_address")
 		));
-		
+
 		//名前
 		$page->createAdd("name_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("name")
 		));
-		
+
 		//フリガナ
 		$page->createAdd("reading_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("reading")
 		));
-		
+
 		//郵便番号
 		$page->createAdd("zip_code_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("zip_code")
 		));
-		
+
 		//住所
 		$page->createAdd("address_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("address")
 		));
-		
+
 		//電話番号
 		$page->createAdd("tel_number_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("tel_number")
 		));
-		
+
 		//送り先
 		$page->createAdd("send_address_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("send_address")
 		));
-		
+
 		//送り先 表示
 		$page->createAdd("has_send_address_error","HTMLModel", array(
 			"visible" => (strlen($mypage->getErrorMessage("send_address")) > 0)
 		));
-		
+
 		//パスワード
 		$page->createAdd("password_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("password")
 		));
-		
+
 	}
 
 	/**
@@ -955,43 +955,43 @@ class BackwardUserComponent {
 		$page->createAdd("mail_address_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("mail_address")
 		));
-		
+
 		//名前
 		$page->createAdd("name_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("name")
 		));
-		
+
 		//フリガナ
 		$page->createAdd("reading_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("reading")
 		));
-		
+
 		//郵便番号
 		$page->createAdd("zip_code_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("zip_code")
 		));
-		
+
 		//都道府県
 		$page->createAdd("pref_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("pref")
 		));
-		
+
 		//住所
 		$page->createAdd("address_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("address")
 		));
-		
+
 		//電話番号
 		$page->createAdd("tel_number_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("tel_number")
 		));
-		
+
 		//パスワード
 		$page->createAdd("password_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("password_error")
 		));
 	}
-	
+
 	/**
 	 * 後方互換性 管理画面
 	 * @param WebPage $page
@@ -1004,20 +1004,20 @@ class BackwardUserComponent {
     		"name" => "Customer[name]",
     		"value" => $user->getName(),
     	));
-		
+
 		//フリガナ
     	$page->addInput("furigana", array(
     		"name" => "Customer[reading]",
     		"value" => $user->getReading(),
     	));
-		
-		
+
+
 		//ニックネーム
     	$page->addInput("nickname", array(
     		"name" => "Customer[nickname]",
     		"value" => $user->getNickname(),
     	));
-		
+
 		/* 画像関係 */
 		$width = 0;
     	$path = $user->getAttachmentsPath() . $user->getImagePath();
@@ -1026,7 +1026,7 @@ class BackwardUserComponent {
 			$image_size = getimagesize($path);
 			$width = ($image_size[0] > 480) ? 480 : $image_size[0];
     	}
-		
+
 		//画像
 		$dir = str_replace(SOYSHOP_SITE_DIRECTORY, "", $user->getAttachmentsPath());
     	$page->addImage("image", array(
@@ -1041,20 +1041,20 @@ class BackwardUserComponent {
     		"value" => $user->getImagePath(),
     		"visible" => $imageExists
     	));
-		
+
 		//画像 表示
     	$page->addModel("is_image", array(
     		"visible" => $imageExists
     	));
-		
+
 		//画像削除チェックボックス
     	$page->addCheckBox("delete_image", array(
     		"name" => "Delete",
     		"value" => 1,
     		"label" => MessageManager::get("DELETE_PROFILE_IMAGE")
     	));
-		
-		
+
+
 		//性別 男性
     	$page->addCheckBox("gender_male", array(
     		"type" => "radio",
@@ -1063,8 +1063,8 @@ class BackwardUserComponent {
 			"elementId" => "radio_sex_male",
 			"selected" => ($user->getGender() === 0 || $user->getGender() === "0")
     	));
-		
-		//性別 女性 
+
+		//性別 女性
     	$page->addCheckBox("gender_female", array(
     		"type" => "radio",
     		"name" => "Customer[gender]",
@@ -1072,7 +1072,7 @@ class BackwardUserComponent {
 			"elementId" => "radio_sex_female",
 			"selected" => ($user->getGender() === 1 || $user->getGender() === "1")
     	));
-		
+
 		//生年月日 年
 		$page->addInput("birth_year", array(
     		"name" => "Customer[birthday][0]",
@@ -1133,7 +1133,7 @@ class BackwardUserComponent {
     		"name" => "Customer[cellphoneNumber]",
     		"value" => $user->getCellphoneNumber(),
     	));
-    	
+
     	//ログインID
     	$page->addInput("account_id", array(
     		"name" => "Customer[accountId]",
@@ -1145,7 +1145,7 @@ class BackwardUserComponent {
     		"name" => "Customer[url]",
     		"value" => $user->getUrl(),
     	));
-		
+
 
 		//備考
     	$page->addTextArea("memo", array(
@@ -1170,7 +1170,7 @@ class BackwardUserComponent {
     		"name" => "Customer[attribute3]",
     		"value" => $user->getAttribute3(),
     	));
-    	
+
 		//メール配信をしない
     	$page->addCheckBox("not_send", array(
     		"name" => "Customer[notSend]",
@@ -1193,7 +1193,7 @@ class BackwardUserComponent {
 			"name" => "Customer[isDisabled]",
     		"value" => 0,
     	));
-    	
+
     	/** プロフィール **/
     	$page->addCheckBox("is_profile_display", array(
     		"name" => "Customer[isProfileDisplay]",
@@ -1201,7 +1201,7 @@ class BackwardUserComponent {
     		"selected" => ($user->getIsProfileDisplay() == SOYShop_User::PROFILE_IS_DISPLAY),
     		"label" => MessageManager::get("PUBLISH_PROFILE_PAGE")
     	));
-    	
+
     	//今はまだreadonly
     	$page->addInput("profile_id", array(
     		"name" => "Customer[profileId]",
@@ -1209,8 +1209,8 @@ class BackwardUserComponent {
     		"style" => "ime-mode:inactive;",
     		"readonly" => true
     	));
-		
+
 	}
-	
+
 }
 ?>

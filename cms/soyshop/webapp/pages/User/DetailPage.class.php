@@ -199,6 +199,10 @@ class DetailPage extends WebPage{
 		$this->addLabel("storage_url", array(
 			"text" => SOY2PageController::createLink("User.Storage." . $shopUser->getId())
 		));
+
+		$this->addModel("zip2address_js", array(
+			"src" => soyshop_get_site_url() . "themes/common/js/zip2address.js"
+		));
    }
 
 	/**
@@ -365,7 +369,8 @@ class DetailPage extends WebPage{
 	 * @param SOYShop_User $user
 	 */
 	private function buildProfileForm(SOYShop_User $user){
-
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		DisplayPlugin::toggle("profile_items", SOYShop_ShopConfig::load()->getDisplayUserProfileItems());
 	}
 
 	/**

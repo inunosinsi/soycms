@@ -61,27 +61,28 @@
 			<tr>
 				<th>生年月日</th>
 				<td>
-					<input soy:id="birth_year" type="text" name="" value="" />年
-					<input soy:id="birth_month" type="text" name="" value="" />月
-					<input soy:id="birth_day" type="text" name="" value="" />日
+					<input soy:id="birth_year" type="text" name="" value="" size="5" />年
+					<input soy:id="birth_month" type="text" name="" value="" size="3" />月
+					<input soy:id="birth_day" type="text" name="" value="" size="3" />日
 				</td>
 			</tr>
 
 			<tr>
 				<th>郵便番号</th>
 				<td>
-					<input soy:id="post_number" type="text" name="" value="" />
+					<input soy:id="post_number" type="text" name="" value="" class="input-zip" />&nbsp;
+					<a href="javascript:void(0);" class="search-btn button">検索</a>
 				</td>
 			</tr>
 
 			<tr>
 				<th>住所</th>
 				<td>
-					<select soy:id="area" id="area">
+					<select soy:id="area" id="area" class="input-pref">
 						<option value="">▼選択</option>
 					</select>
-					<input soy:id="address1" type="text" name="" value=""　style="width:60%;" id="address1" /><br>
-					<input soy:id="address2" type="text" name="" value=""　style="width:60%;" id="address2" /><br>
+					<input soy:id="address1" type="text" name="" value=""　style="width:60%;" id="address1" class="input-city" /><br>
+					<input soy:id="address2" type="text" name="" value=""　style="width:60%;" id="address2" class="input-town" /><br>
 					<!-- soy:id="advenced_address_list" --><!-- soy:id="form" /--><!-- /soy:id="advenced_address_list" -->
 				</td>
 			</tr>
@@ -180,7 +181,7 @@
 			</tr>
 			<!-- /soy:id="user_customfield_list" -->
 			<!-- /soy:id="has_user_customfield" -->
-			<tr>
+			<tr soy:display="active_soymail_connector">
 				<th>メール配信(SOY Mail)</th>
 				<td>
 					<input type="checkbox" soy:id="not_send" />
@@ -203,3 +204,5 @@
 
 	</div><!-- /block_body -->
 </div><!-- /block -->
+
+<script type="text/javascript" soy:id="zip2address_js"></script><!--住所検索-->

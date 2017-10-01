@@ -41,7 +41,9 @@ class SOYShop_ShopConfig {
 	private $displayOrderAdminPage = 1;
 	private $displayItemAdminPage = 1;
 
+	private $defaultArea = 0;
 	private $displayUserOfficeItems = 1;
+	private $displayUserProfileItems = 1;
 
 	private $companyInformation = array(
 		"name" => "",
@@ -501,11 +503,25 @@ class SOYShop_ShopConfig {
 		$this->displayItemAdminPage = $displayItemAdminPage;
 	}
 
+	function getDefaultArea(){
+		return $this->defaultArea;
+	}
+	function setDefaultArea($defaultArea){
+		$this->defaultArea = $defaultArea;
+	}
+
 	function getDisplayUserOfficeItems(){
 		return $this->displayUserOfficeItems;
 	}
 	function setDisplayUserOfficeItems($displayUserOfficeItems){
 		$this->displayUserOfficeItems = $displayUserOfficeItems;
+	}
+
+	function getDisplayUserProfileItems(){
+		return $this->displayUserProfileItems;
+	}
+	function setDisplayUserProfileItems($displayUserProfileItems){
+		$this->displayUserProfileItems = $displayUserProfileItems;
 	}
 
 	function getIsShowOnlyAdministrator(){

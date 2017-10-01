@@ -113,18 +113,19 @@
 			<tr>
 				<th>郵便番号</th>
 				<td>
-					<input soy:id="post_number" type="text" size="20" />
+					<input soy:id="post_number" type="text" size="20" class="input-zip" />&nbsp;
+					<a href="javascript:void(0);" class="search-btn button">検索</a>
 				</td>
 			</tr>
 
 			<tr>
 				<th>住所</th>
 				<td>
-					<select soy:id="area" id="area">
+					<select soy:id="area" id="area" class="input-pref">
 						<option value="">▼選択</option>
 					</select>
-					<input soy:id="address1" type="text" size="40" id="address1" /><br>
-					<input soy:id="address2" type="text" style="width:95%;" id="address2" /><br>
+					<input soy:id="address1" type="text" size="40" id="address1" class="input-city" /><br>
+					<input soy:id="address2" type="text" style="width:95%;" id="address2" class="input-town" /><br>
 					<!-- soy:id="advenced_address_list" --><!-- soy:id="form" /--><!-- /soy:id="advenced_address_list" -->
 				</td>
 			</tr>
@@ -219,7 +220,7 @@
 				</tr>
 				<!-- /soy:id="user_customfield_list" -->
 			<!-- /soy:display="has_user_customfield" -->
-			<tr>
+			<tr soy:display="active_soymail_connector">
 				<th>メール配信(SOY Mail)</th>
 				<td>
 					<input type="checkbox" soy:id="not_send" />
@@ -234,7 +235,7 @@
 			</tr>
 		</table>
 
-		<table class="form_table">
+		<table class="form_table" soy:display="profile_items">
 			<tr>
 				<th>プロフィールページ</th>
 				<td>
@@ -401,3 +402,5 @@
 	<iframe src="<!-- soy:id="storage_url" /-->"></iframe>
 	<p class="close"></p>
 </div>
+
+<script type="text/javascript" soy:id="zip2address_js"></script><!--住所検索-->
