@@ -87,7 +87,7 @@ class ImportPage extends WebPage{
     	$config = SOYShop_UserAttributeConfig::load(true);
 
     	//カスタムサーチフィールド
-		$customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.DataBaseLogic");
+		$customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic");
 
     	$this->dao->begin();
 
@@ -101,7 +101,7 @@ class ImportPage extends WebPage{
 			if(!strlen($obj["mailAddress"]) && isset($format["dummy"]) && $format["dummy"] == 1){
 				$obj["mailAddress"] = soyshop_dummy_mail_address();
 			}
-			
+
     		$deleted = ($obj["id"] == "delete");
 
 			//メールアドレスが無ければcontinue;
