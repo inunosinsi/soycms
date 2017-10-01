@@ -194,7 +194,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 
 	private function prepare(){
 		if(!$this->dbLogic){
-			$this->dbLogic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.DataBaseLogic");
+			$this->dbLogic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic");
 			SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
 		}
 	}

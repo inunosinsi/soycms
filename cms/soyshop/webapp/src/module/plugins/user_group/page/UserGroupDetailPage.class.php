@@ -39,7 +39,7 @@ class UserGroupDetailPage extends WebPage{
 
 			//カスタムサーチフィールド
 			if(isset($_POST["user_group_custom"]) && count($_POST["user_group_custom"])){
-				SOY2Logic::createInstance("module.plugins.user_group.logic.DataBaseLogic")->save($this->detailId, $_POST["user_group_custom"]);
+				SOY2Logic::createInstance("module.plugins.user_group.logic.UserGroupDataBaseLogic")->save($this->detailId, $_POST["user_group_custom"]);
 			}
 
 			SOY2PageController::jump("Extension.Detail.user_group." . $this->detailId . "?updated");
@@ -79,7 +79,7 @@ class UserGroupDetailPage extends WebPage{
 			$isMap = "false";	//地図付き住所のカラムがあるか？
 			$mapApiKey = null;
 
-			$values = SOY2Logic::createInstance("module.plugins.user_group.logic.DataBaseLogic")->getByGroupId($this->detailId);
+			$values = SOY2Logic::createInstance("module.plugins.user_group.logic.UserGroupDataBaseLogic")->getByGroupId($this->detailId);
 			foreach($configs as $key => $field){
 				if(!isset($field["label"]) || !strlen($field["label"])) continue;
 

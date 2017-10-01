@@ -40,7 +40,7 @@ class UserGroupImportPage extends WebPage{
         $lines = $logic->GET_CSV_LINES($fileContent);    //fix multiple lines
 		array_shift($lines);
 		if(count($lines)){
-			$dbLogic = SOY2Logic::createInstance("module.plugins.user_group.logic.DataBaseLogic");
+			$dbLogic = SOY2Logic::createInstance("module.plugins.user_group.logic.UserGroupDataBaseLogic");
 			$fieldList = self::getFieldList();
 			foreach($lines as $line){
 				$values = explode(",", $logic->encodeFrom($line));

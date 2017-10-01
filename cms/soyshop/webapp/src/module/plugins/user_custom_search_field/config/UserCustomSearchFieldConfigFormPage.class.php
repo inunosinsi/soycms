@@ -17,7 +17,7 @@ class UserCustomSearchFieldConfigFormPage extends WebPage{
 				$key = trim($_POST["custom_key"]);
 
 				//DBへカラムを追加する
-				if(SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.DataBaseLogic")->addColumn($key, $_POST["custom_type"])){
+				if(SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic")->addColumn($key, $_POST["custom_type"])){
 					$config = UserCustomSearchFieldUtil::getConfig();
 
 					$config[$key] = array(
@@ -46,7 +46,7 @@ class UserCustomSearchFieldConfigFormPage extends WebPage{
 			$key = $_POST["delete_submit"];
 
 			//カラムの削除を試みる:SQLiteではカラムを削除できない
-			SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.DataBaseLogic")->deleteColumn($key);
+			SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic")->deleteColumn($key);
 
 			$config = UserCustomSearchFieldUtil::getConfig();
 			unset($config[$key]);

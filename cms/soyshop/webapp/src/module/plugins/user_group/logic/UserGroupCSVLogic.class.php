@@ -36,7 +36,7 @@ class UserGroupCSVLogic extends ExImportLogicBase {
 
 		$lines = array();
 
-		$dbLogic = SOY2Logic::createInstance("module.plugins.user_group.logic.DataBaseLogic");
+		$dbLogic = SOY2Logic::createInstance("module.plugins.user_group.logic.UserGroupDataBaseLogic");
 		SOY2::import("module.plugins.user_group.util.UserGroupCustomSearchFieldUtil");
 		$configs = UserGroupCustomSearchFieldUtil::getConfig();
 		foreach($groups as $group){
