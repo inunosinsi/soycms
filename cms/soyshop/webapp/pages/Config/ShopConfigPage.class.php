@@ -20,6 +20,7 @@ class ShopConfigPage extends WebPage{
 			"displayUsableTagList" => 0,
 			"insertDummyMailAddress" => 0,
 			"insertDummyMailAddressOnAdmin" => 0,
+			"insertDummyMailAddressOnAdminRegister" => 0,
 			"displayOrderAdminPage" => 0,
 			"displayItemAdminPage" => 0,
 			"defalutArea" => 0,
@@ -62,12 +63,7 @@ class ShopConfigPage extends WebPage{
 	function buildForm(){
 		$config = $this->config;
 
-		$this->addModel("is_updated", array(
-			"visible" => (isset($_GET["updated"]))
-		));
-
 		$this->addForm("update_form");
-
 
 		/*** ショップの設定 ***/
 		$this->addInput("shop_name", array(
@@ -263,6 +259,13 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getInsertDummyMailAddressOnAdmin(),
 			"label" => "管理画面からの注文時、顧客のメールアドレスにダミーのメールアドレスを挿入する"
+		));
+
+		$this->addCheckBox("insertDummyMailAddressOnAdminRegister", array(
+			"name" => "Config[insertDummyMailAddressOnAdminRegister]",
+			"value" => 1,
+			"selected" => $config->getInsertDummyMailAddressOnAdminRegister(),
+			"label" => "管理画面からの顧客登録時、メールアドレスにダミーのメールアドレスを挿入する"
 		));
 
 		$this->addCheckBox("displayOrderAdminPage", array(

@@ -37,6 +37,7 @@ class SOYShop_ShopConfig {
 	private $displayUsableTagList = 0;
 	private $insertDummyMailAddress = 1;
 	private $insertDummyMailAddressOnAdmin = 0;
+	private $insertDummyMailAddressOnAdminRegister = 0;
 
 	private $displayOrderAdminPage = 1;
 	private $displayItemAdminPage = 1;
@@ -487,6 +488,13 @@ class SOYShop_ShopConfig {
 	}
 	function setInsertDummyMailAddressOnAdmin($insertDummyMailAddressOnAdmin){
 		$this->insertDummyMailAddressOnAdmin = $insertDummyMailAddressOnAdmin;
+	}
+
+	function getInsertDummyMailAddressOnAdminRegister(){
+		return $this->insertDummyMailAddressOnAdminRegister;
+	}
+	function setInsertDummyMailAddressOnAdminRegister($insertDummyMailAddressOnAdminRegister){
+		$this->insertDummyMailAddressOnAdminRegister = $insertDummyMailAddressOnAdminRegister;
 	}
 
 	function getDisplayOrderAdminPage(){

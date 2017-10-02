@@ -11,7 +11,7 @@
 
 	<div class="block_body">
 
-	<p class="notice" soy:id="is_updated">更新しました</p>
+	<p class="notice" soy:display="updated">更新しました</p>
 
 		<form soy:id="update_form">
 
@@ -171,9 +171,15 @@
 				</td>
 			</tr>
 			<tr>
-				<th>ダミーのメールアドレス(管理画面)</th>
+				<th>ダミーのメールアドレス<br>(管理画面：注文登録)</th>
 				<td>
 					<input type="checkbox" soy:id="insertDummyMailAddressOnAdmin">
+				</td>
+			</tr>
+			<tr>
+				<th>ダミーのメールアドレス<br>(管理画面：顧客追加)</th>
+				<td>
+					<input type="checkbox" soy:id="insertDummyMailAddressOnAdminRegister">
 				</td>
 			</tr>
 			<tr>
@@ -241,7 +247,7 @@
 			</tr>
 		</table>
 
-		<table class="form_list" id="order_list_config">
+		<table class="form_table" id="order_list_config">
 			<caption>管理画面の注文一覧で表示する項目の設定</caption>
 			<tr>
 				<th class="middle">項目名</th>
