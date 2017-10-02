@@ -91,7 +91,7 @@
 				<!-- reset btn -->
 				<input id="advanced_search_form_reset" type="submit" name="reset" style="display:none;" />
 		</form soy:id="reset_form">
-		
+
 		<form id="advanced_search_form" soy:id="advanced_search_form">
 
 				<table class="form_table form_search">
@@ -169,7 +169,7 @@
 							<input soy:id="advanced_search_birth_date_year" type="text" value="" />/
 							<input soy:id="advanced_search_birth_date_month" type="text" value="" />/
 							<input soy:id="advanced_search_birth_date_day" type="text" value="" />
-							
+
 							<!--
 							<input soy:id="advanced_search_birth_date_start_year" type="text" value="" />/
 							<input soy:id="advanced_search_birth_date_start_month" type="text" value="" />/
@@ -229,7 +229,7 @@
 					</tr>
 				</table>
 
-				<table class="form_table form_search">
+				<table class="form_table form_search" soy:display="office_items">
 					<caption>勤務先</caption>
 					<tr>
 						<th>勤務先名称・職種</th>
@@ -322,7 +322,7 @@
 					</tr>
 
 				</table>
-				
+
 				<table class="form_table form_search">
 					<caption>注文</caption>
 					<tr>
@@ -346,10 +346,10 @@
 				</p>
 
 		</form soy:id="advanced_search_form">
-		
+
 		<!-- soy:display="export_module_menu" -->
 		<h3>検索結果をエクスポートする</h3>
-		
+
 		<dl>
 			<!-- soy:id="module_list" -->
 			<form soy:id="export_form" target="_blank">

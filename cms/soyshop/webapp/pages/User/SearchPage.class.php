@@ -81,7 +81,7 @@ class SearchPage extends WebPage{
 		$pager->setLimit($limit);
 
 		$this->buildPager($pager);
-		
+
 		/* 出力用 */
 		$moduleList = $this->getExportModuleList();
 		$this->createAdd("module_list", "ExportModuleList", array(
@@ -97,14 +97,14 @@ class SearchPage extends WebPage{
 			"value" => (isset($search)) ? http_build_query($search) : ""
 		));
 	}
-	
+
 	function getExportModuleList(){
 		SOYShopPlugin::load("soyshop.user.export");
 
 		$delegate = SOYShopPlugin::invoke("soyshop.user.export", array(
 			"mode" => "list"
 		));
-		
+
 		$list = $delegate->getList();
 		DisplayPlugin::toggle("export_module_menu", (count($list) > 0));
 
@@ -123,21 +123,21 @@ class SearchPage extends WebPage{
 			"name" => "search[mail_address]",
 			"value" => (isset($search["mail_address"])) ? $search["mail_address"] : "",
 		));
-		
+
 		$this->addCheckBox("advanced_search_user_type_register", array(
 			"name" => "search[user_type][]",
 			"value" => SOYShop_User::USERTYPE_REGISTER,
 			"selected" => (!count($search) || (isset($search["user_type"]) && is_array($search["user_type"]) && in_array(SOYShop_User::USERTYPE_REGISTER, $search["user_type"]))),
 			"label" => "本登録"
 		));
-		
+
 		$this->addCheckBox("advanced_search_user_type_tmp", array(
 			"name" => "search[user_type][]",
 			"value" => SOYShop_User::USERTYPE_TMP,
 			"selected" => (!count($search) || (isset($search["user_type"]) && is_array($search["user_type"]) && in_array(SOYShop_User::USERTYPE_TMP, $search["user_type"]))),
 			"label" => "仮登録"
 		));
-		
+
 		$this->addCheckBox("advanced_search_mail_send_true", array(
 			"name" => "search[]",
 			"value" => 1,
@@ -258,6 +258,10 @@ class SearchPage extends WebPage{
 			"value" => (isset($search["cellphone_number"])) ? $search["cellphone_number"] : "",
 		));
 
+		/** 勤務先 **/
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		DisplayPlugin::toggle("office_items", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
+
 		$this->addInput("advanced_search_office", array(
 			"name" => "search[job_name]",
 			"value" => (isset($search["job_name"])) ? $search["job_name"] : "",
@@ -310,14 +314,14 @@ class SearchPage extends WebPage{
 			"name" => "search[attribute3]",
 			"value" => (isset($search["attribute3"])) ? $search["attribute3"] : "",
 		));
-		
+
 		$this->addCheckBox("advanced_search_is_send", array(
 			"name" => "search[not_send][]",
 			"value" => 0,
 			"selected" => (isset($search["not_send"]) && in_array("0", $search["not_send"])),
 			"label" => "配信する"
 		));
-		
+
 		$this->addCheckBox("advanced_search_not_send", array(
 			"name" => "search[not_send][]",
 			"value" => 1,
@@ -406,7 +410,7 @@ class SearchPage extends WebPage{
 			"value" => @$search["update_date"]["end"]["day"],
 			"size" => "3"
 		));
-		
+
 		$this->addInput("advanced_search_total_price_min", array(
 			"name" => "search[order_price][min]",
 			"value" => @$search["order_price"]["min"],
@@ -516,5 +520,3 @@ class ExportModuleList extends HTMLList{
 		$this->exportPageLink = $exportPageLink;
 	}
 }
-
-?>
