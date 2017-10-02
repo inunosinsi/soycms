@@ -157,7 +157,7 @@ CREATE TABLE soyshop_user (
 	not_send INTEGER default 0,
 	is_error INTEGER default 0,
 	is_disabled INTEGER default 0,
-	is_publish　INTEGER default 1,
+	is_publish INTEGER default 1,
 	is_profile_display INTEGER default 0,
 	register_date INTEGER,
 	update_date INTEGER,
