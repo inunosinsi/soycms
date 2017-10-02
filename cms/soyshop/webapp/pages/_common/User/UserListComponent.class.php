@@ -12,11 +12,11 @@ class UserListComponent extends HTMLList{
 			"onchange" => '$(\'#users_operation\').show();',
 			"visible" => $this->appLimit
 		));
-		
+
 		$this->addLabel("id", array(
 			"text" => $bean->getId()
 		));
-		
+
 		$userName = $bean->getName();
 		if($bean->getUserType() != SOYShop_User::USERTYPE_REGISTER){
 			$userName .= "(仮登録)";
@@ -28,7 +28,8 @@ class UserListComponent extends HTMLList{
 
 		$this->addLabel("mailaddress", array(
 			"text" => $bean->getMailAddress(),
-			"title" => $bean->getMailAddress()
+			"title" => $bean->getMailAddress(),
+			"style" => (strpos($bean->getMailAddress(), DUMMY_MAIL_ADDRESS_DOMAIN) !== false) ? "color:#ABABAB !important" : null
 		));
 
 		$this->addLabel("attribute1", array(
@@ -52,9 +53,8 @@ class UserListComponent extends HTMLList{
 			"onclick" => "return confirm('削除してよろしいですか？')"
 		));
 	}
-	
+
 	function setAppLimit($appLimit){
 		$this->appLimit = $appLimit;
 	}
 }
-?>
