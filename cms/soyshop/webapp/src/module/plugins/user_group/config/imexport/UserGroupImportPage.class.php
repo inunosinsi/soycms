@@ -27,10 +27,10 @@ class UserGroupImportPage extends WebPage{
             SOY2PageController::jump("Config.Detail?plugin=user_group&import&failed");
             exit;
         }
-        if(!$logic->checkFileContent($file)){
-			SOY2PageController::jump("Config.Detail?plugin=user_group&import&invalid");
-            exit;
-        }
+        // if(!$logic->checkFileContent($file)){
+		// 	SOY2PageController::jump("Config.Detail?plugin=user_group&import&invalid");
+        //     exit;
+        // }
 
         //ファイル読み込み・削除
         $fileContent = file_get_contents($file["tmp_name"]);

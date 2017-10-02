@@ -20,11 +20,11 @@
 		<div class="block_title_right">
 			<a soy:id="order_cart_link" class="button">公開側で注文する</a>
 		</div>
-		<!-- soy:display="storage" -->
+		<!-- soy:id="user_title_button_list" -->
 		<div class="block_title_right">
-			<a href="javascript:void(0);" onclick="return OptionWindow.popup();" class="button">ストレージ</a>
+			<!-- soy:id="button_html" /-->
 		</div>
-		<!-- /soy:display="storage" -->
+		<!-- /soy:id="user_title_button_list" -->
 	</div>
 
 	<div class="block_body">
@@ -406,7 +406,7 @@
 </div>
 <!-- /soy:display="operate_credit_menu" -->
 
-<div id="option_window_el" class="popup" style="display:none;">
+<div id="option_window_el" class="popup" style="display:none;" soy:display="storage">
 	<iframe src="<!-- soy:id="storage_url" /-->"></iframe>
 	<p class="close"></p>
 </div>

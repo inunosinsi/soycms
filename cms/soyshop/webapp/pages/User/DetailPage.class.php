@@ -142,6 +142,16 @@ class DetailPage extends WebPage{
 		DisplayPlugin::toggle("notice_tmp_register", ($shopUser->getUserType() != SOYShop_User::USERTYPE_REGISTER));
 		DisplayPlugin::toggle("notice_no_publish", ($shopUser->getIsPublish() != SOYShop_User::USER_IS_PUBLISH));
 
+		//タイトルの箇所にあるボタン
+		SOYShopPlugin::load("soyshop.user.button");
+		$buttons = SOYShopPlugin::invoke("soyshop.user.button", array(
+			"userId" => $id
+		))->getButtons();
+
+		$this->createAdd("user_title_button_list", "_common.User.TitleButtonListComponent", array(
+			"list" => $buttons
+		));
+
 		/* フォーム */
     	self::buildForm($shopUser);		//共通など。
 		self::buildJobForm($shopUser);		//法人

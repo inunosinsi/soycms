@@ -5,7 +5,7 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	private $userId;
 
 	function clear($app){}
-	
+
 	/**
 	 * @param array $param 中身は$_POST["custom_field"]
 	 */
@@ -18,7 +18,7 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	 * @return array(["name"], ["description"], ["error"])
 	 */
 	function getForm($app, $userId){}
-	
+
 	/**
 	 * 各項目ごとに、createAdd()を行う。
 	 * @param MyPageLogic || CartLogic $mypage
@@ -26,7 +26,7 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	 * @param integer $userId
 	 */
 	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId = null){}
-	
+
 	/**
 	 * エラーチェック
 	 * @return Boolean
@@ -34,18 +34,18 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	function hasError($param){
 		return false;
 	}
-	
+
 	/**
 	 * 登録確認で表示する
 	 */
 	function confirm($app){}
-	
+
 	/**
 	 * 管理画面の注文の追加で表示できるエリア
 	* @return Array array(array("name" => "", "value" => "", "style" => "")) ※styleはなしで良い
 	 */
 	function order($userId){}
-	
+
 	/**
 	 * UserAttributeに登録する
 	 * @param MyPageLogic || CartLogic $mypage
@@ -58,7 +58,7 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	function setApp($app) {
 		$this->app = $app;
 	}
-	
+
 	function getUserId(){
 		return $this->userId;
 	}
@@ -73,29 +73,29 @@ class SOYShopUserCustomfieldDelegateAction implements SOY2PluginDelegateAction{
 	private $param;//$_POST["custom_field"][key]
 	private $userId;
 	private $pageObj;
-	
+
 	private $_list = array();
 	private $_confirm = array();
 	private $hasError = false;
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
-		
+
 		$action->setApp($this->getApp());
 		$action->setUserId($this->getUserId());
-		
+
 		switch($this->mode){
 			case "form";//_listプロパティに、input生成用配列を詰める。要$delegate->getList();
 				$this->_list[$moduleId] = $action->getForm($this->app, $this->userId);
 				break;
-			
+
 			case "clear":
 				$action->clear($this->app);
 				break;
-			
+
 			case "post":
 				$action->doPost($this->param);
 				break;
-				
+
 			case "checkError":
 				if($action->hasError($this->param)){
 					$this->hasError = true;
@@ -103,25 +103,25 @@ class SOYShopUserCustomfieldDelegateAction implements SOY2PluginDelegateAction{
 					//do nothing
 				}
 				break;
-			
+
 			case "confirm"://_confirmプロパティに、確認画面の表示用は列を詰める。要$delegate->getConfirm();
 				$this->_confirm[$moduleId] = $action->confirm($this->app);
 				break;
-			
+
 			case "register":
 				$action ->register($this->app, $this->userId);
 				break;
-			
+
 			case "build_named_form"://各項目ごとに、createAdd()を行う
 				$action ->buildNamedForm($this->app, $this->pageObj, $this->userId);
 				break;
-			
+
 			case "order":
 				$this->_list[$moduleId] = $action->order($this->userId);
 				break;
 		}
 	}
-	
+
 	function getList(){
 		return $this->_list;
 	}
@@ -164,4 +164,3 @@ class SOYShopUserCustomfieldDelegateAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.user.customfield","SOYShopUserCustomfieldDelegateAction");
-?>
