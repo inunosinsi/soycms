@@ -25,7 +25,10 @@
 					<th class="middle">属性１</th>
 					<th class="middle">属性２</th>
 					<th class="middle">属性３</th>
-					<th class="operation">編集</th>
+					<th class="operation">
+						編集
+						<a class="button fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+					</th>
 				</tr>
 			</thead>
 			<tfoot>
@@ -61,7 +64,7 @@
 					<td class="middle"><span soy:id="attribute3">属性３</span></td>
 					<td class="operation">
 						<a class="button" soy:id="edit_link">編集</a>
-						<a class="button" soy:id="remove_link">削除</a>
+						<a class="button fr delete_btn" soy:id="remove_link">削除</a>
 					</td>
 				</tr>
 				<!-- /soy:id="user_list" -->
@@ -375,3 +378,9 @@
 
 	</div><!-- /block_body -->
 </div><!-- /block -->
+
+<style type="text/css">
+.delete_btn{
+	visibility:hidden;
+}
+</style>
