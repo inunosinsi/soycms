@@ -140,6 +140,7 @@ class DetailPage extends WebPage{
 		$dir = $shopUser->getAttachmentsPath();
 
 		DisplayPlugin::toggle("notice_tmp_register", ($shopUser->getUserType() != SOYShop_User::USERTYPE_REGISTER));
+		DisplayPlugin::toggle("notice_no_publish", ($shopUser->getIsPublish() != SOYShop_User::USER_IS_PUBLISH));
 
 		/* フォーム */
     	self::buildForm($shopUser);		//共通など。
@@ -290,6 +291,9 @@ class DetailPage extends WebPage{
 		$this->createAdd("advenced_address_list", "_common.User.AdvancedAddressListComponent", array(
 			"list" => $forms
 		));
+
+		SOY2::import("util.SOYShopPluginUtil");
+		DisplayPlugin::toggle("user_custom_search_field", SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
     }
 
 	/**

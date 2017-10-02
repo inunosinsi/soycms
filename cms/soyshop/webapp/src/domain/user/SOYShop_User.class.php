@@ -16,6 +16,9 @@ class SOYShop_User {
 	const USER_SEND = 0;
 	const USER_NOT_SEND = 1;		//送信しないユーザ(SOY Mail)
 
+	const USER_NO_PUBLISH = 0;		//カスタムサーチフィールド利用時で検索対象にするか？
+    const USER_IS_PUBLISH = 1;
+
 	/* 削除フラグ */
 	const USER_NOT_DISABLED = 0;	//アクティブユーザ
 	const USER_IS_DISABLED = 1;		//削除されたユーザ
@@ -142,6 +145,11 @@ class SOYShop_User {
 	 * @column is_error
 	 */
 	private $isError = 0;
+
+	/**
+     * @column is_publish
+     */
+    private $isPublish = 1;
 
 	/**
 	 * 削除フラグ
@@ -434,6 +442,12 @@ class SOYShop_User {
 	}
 	function setIsError($isError){
 		$this->isError = $isError;
+	}
+	function getIsPublish(){
+		return $this->isPublish;
+	}
+	function setIsPublish($isPublish){
+		$this->isPublish = $isPublish;
 	}
 	function getIsDisabled() {
 		return $this->isDisabled;
@@ -748,7 +762,7 @@ class SOYShop_User {
 		if(count($array) == 3){
 			list($algo, $salt, $hash) = $array;
 			return ( $stored == self::hashString($input, $salt, $algo) );
-		
+
 		//EC CUBEで使われている暗号化の仕組みでパスワードのチェックを行う
 		}else{
 			$hash = self::hashStringEcCube($input);
@@ -796,14 +810,14 @@ class SOYShop_User {
 
 		return "$algo/$salt/$hash";
 	}
-	
+
 	private function hashStringEcCube($input){
-		
+
 		//ec cubeから移行した会員のパスワードをそのまま使用するためのチェック
 //		if(strpos($input, ":") !== false){
-		
+
 			/** @Todo 暗号化の仕組みを調べる **/
-		
+
 		//ec cube 2.11より前のバージョン saltを利用していない　:での区切りがない
 //		}else{
 			if(file_exists(SOY2::rootDir() . "module/plugins/eccube_data_import/util/EccubeDataImportUtil.class.php")){

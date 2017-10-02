@@ -294,6 +294,21 @@ class UserComponent {
 			"userId" => $user->getId()
 		));
 
+		//公開状態
+		$page->addCheckBox("is_publish", array(
+			"name" => "Customer[isPublish]",
+			"value" => SOYShop_User::USER_IS_PUBLISH,
+			"selected" => (is_null($user->getIsPublish()) || $user->getIsPublish() == SOYShop_User::USER_IS_PUBLISH),
+			"label" => "公開"
+		));
+
+		$page->addCheckBox("no_publish", array(
+			"name" => "Customer[isPublish]",
+			"value" => SOYShop_User::USER_NO_PUBLISH,
+			"selected" => ($user->getIsPublish() == SOYShop_User::USER_NO_PUBLISH),
+			"label" => "非公開"
+		));
+
 		switch($mode){
 
 			case self::MODE_CUSTOM_FORM;//入力画面

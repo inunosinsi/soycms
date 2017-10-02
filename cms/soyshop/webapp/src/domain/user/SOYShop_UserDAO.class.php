@@ -147,6 +147,11 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 			$binds[":notSend"] = SOYShop_User::USER_NOT_SEND;
 		}
 
+		//ユーザーカスタムサーチフィールが有効ではない場合は、常に公開
+		if(!SOYShopPluginUtil::checkIsActive("user_custom_search_field")){
+			$binds[":isPublish"] = SOYShop_User::USER_IS_PUBLISH;
+		}
+
     	return array($query, $binds);
 	}
 
@@ -172,6 +177,11 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("soymail_connector")){
 			$binds[":notSend"] = SOYShop_User::USER_NOT_SEND;
+		}
+
+		//ユーザーカスタムサーチフィールが有効ではない場合は、常に公開
+		if(!SOYShopPluginUtil::checkIsActive("user_custom_search_field")){
+			$binds[":isPublish"] = SOYShop_User::USER_IS_PUBLISH;
 		}
 
     	return array($query, $binds);

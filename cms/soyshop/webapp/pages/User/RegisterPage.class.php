@@ -10,7 +10,6 @@ class RegisterPage extends WebPage{
 			SOY2PageController::jump("User.Register");
 		}
 
-
 		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		$customer = (object)$_POST["Customer"];
 		$user = SOY2::cast("SOYShop_User",$customer);
@@ -115,6 +114,9 @@ class RegisterPage extends WebPage{
 		$this->createAdd("advenced_address_list", "_common.User.AdvancedAddressListComponent", array(
 			"list" => $forms
 		));
+
+		SOY2::import("util.SOYShopPluginUtil");
+		DisplayPlugin::toggle("user_custom_search_field", SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
     }
 
 

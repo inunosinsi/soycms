@@ -18,9 +18,8 @@ class UserListComponent extends HTMLList{
 		));
 
 		$userName = $bean->getName();
-		if($bean->getUserType() != SOYShop_User::USERTYPE_REGISTER){
-			$userName .= "(仮登録)";
-		}
+		if($bean->getUserType() != SOYShop_User::USERTYPE_REGISTER) $userName .= "(仮登録)";
+		if($bean->getIsPublish() != SOYShop_User::USER_IS_PUBLISH) $userName .= "(非公開)";
 
 		$this->addLabel("name", array(
 			"text" => $userName

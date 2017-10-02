@@ -156,6 +156,7 @@ CREATE TABLE soyshop_user (
 	mail_error_count INTEGER default 0,
 	not_send TINYINT default 0,
 	is_error TINYINT default 0,
+	is_publish　TINYINT default 1,
 	is_disabled TINYINT default 0,
 	is_profile_display TINYINT default 0,
 	register_date INTEGER,

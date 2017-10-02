@@ -17,7 +17,7 @@ class SearchUserLogic extends SOY2LogicBase{
 	const SORT_READING_DESC	  = "reading_desc";
 	const SORT_MAIL_ADDRESS	  = "mail_address";
 	const SORT_MAIL_ADDRESS_DESC = "mail_address_desc";
-	
+
 	private $sorts = array(
 
 		"id" =>  "id",
@@ -82,13 +82,13 @@ class SearchUserLogic extends SOY2LogicBase{
 		}
 		$this->order = $order;
 	}
-	
+
 	function getSorts(){
 		return $this->sorts;
 	}
-	
+
 	function setSearchCondition($search){
-		
+
 		$where = array();
 		$binds = array();
 		foreach($search as $key => $value){
@@ -181,6 +181,7 @@ class SearchUserLogic extends SOY2LogicBase{
 						}
 						break;
 					case "user_type":
+					case "is_publish":
 						$where[] = " " . $key . " IN (" . implode(",", $value) . ") ";
 						break;
 					case "not_send":
@@ -212,7 +213,7 @@ class SearchUserLogic extends SOY2LogicBase{
 							$where[] = "(" . $k . " IS NULL or " . $k . " = '')";
 						}
 						break;
-					
+
 					//注文状況
 					case "order_price":
 						if(isset($value["min"]) && (int)$value["min"] > 0){
@@ -224,7 +225,7 @@ class SearchUserLogic extends SOY2LogicBase{
 							$binds[":price_max"] = (int)$value["max"];
 						}
 						break;
-						
+
 					case "purchase_count":
 						if(isset($value["min"]) && (int)$value["min"] > 0){
 							$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING COUNT(id) >= :count_min)";
@@ -249,7 +250,7 @@ class SearchUserLogic extends SOY2LogicBase{
 			$countSql .= implode(" and ", $this->where) . " and ";
 		}
 		$countSql .= "is_disabled = 0";
-		
+
 		return $countSql;
 	}
 
@@ -259,7 +260,7 @@ class SearchUserLogic extends SOY2LogicBase{
 			$sql .= implode(" and ", $this->where) . " and ";
 		}
 		$sql .= "is_disabled = 0";
-		
+
 		if(strlen($this->order)) $sql .= $this->order;
 		return $sql;
 	}
@@ -294,4 +295,3 @@ class SearchUserLogic extends SOY2LogicBase{
 		return $users;
 	}
 }
-?>

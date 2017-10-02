@@ -138,6 +138,23 @@ class SearchPage extends WebPage{
 			"label" => "仮登録"
 		));
 
+		SOY2::import("util.SOYShopPluginUtil");
+		DisplayPlugin::toggle("user_custom_search_field", SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
+
+		$this->addCheckBox("advanced_search_is_publish", array(
+			"name" => "search[is_publish][]",
+			"value" => SOYShop_User::USER_IS_PUBLISH,
+			"selected" => (!count($search) || (isset($search["is_publish"]) && is_array($search["is_publish"]) && in_array(SOYShop_User::USER_IS_PUBLISH, $search["is_publish"]))),
+			"label" => "公開"
+		));
+
+		$this->addCheckBox("advanced_search_no_publish", array(
+			"name" => "search[is_publish][]",
+			"value" => SOYShop_User::USER_NO_PUBLISH,
+			"selected" => (isset($search["is_publish"]) && is_array($search["is_publish"]) && in_array(SOYShop_User::USER_NO_PUBLISH, $search["is_publish"])),
+			"label" => "非公開"
+		));
+
 		$this->addCheckBox("advanced_search_mail_send_true", array(
 			"name" => "search[]",
 			"value" => 1,
