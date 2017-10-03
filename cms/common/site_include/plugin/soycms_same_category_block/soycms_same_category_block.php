@@ -20,17 +20,17 @@ class SOYCMSSameCategoryBlockPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.3"
 		));
 
-    if(CMSPlugin::activeCheck($this->getId())){
-      CMSPlugin::addPluginConfigPage($this->getId(),array(
-      	$this,"config_page"
-      ));
+	    if(CMSPlugin::activeCheck($this->getId())){
+			CMSPlugin::addPluginConfigPage($this->getId(),array(
+				$this,"config_page"
+			));
 
-      CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
-      CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
-    }
+			CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
+			CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
+	    }
 	}
 
   function onLoad(){
@@ -47,10 +47,10 @@ class SOYCMSSameCategoryBlockPlugin{
 		$labelIds = self::getLabelIds($pageId);
 		if(is_null($labelIds)) return array();
 
-    //ラベルIDを取得とデータベースから記事の取得件数指定
+    	//ラベルIDを取得とデータベースから記事の取得件数指定
 		$count = PluginBlockUtil::getLimitByPageId($pageId);
 
-    $sql = "SELECT ent.* FROM Entry ent ".
+    	$sql = "SELECT ent.* FROM Entry ent ".
          "INNER JOIN EntryLabel lab ".
          "ON ent.id = lab.entry_id ".
          "WHERE lab.label_id IN (" . implode(",", $labelIds) . ") ".
@@ -59,36 +59,40 @@ class SOYCMSSameCategoryBlockPlugin{
          "AND ent.openPeriodStart < :now ".
          "ORDER BY ent.cdate desc ";
 
-    if(isset($count) && $count > 0){
-        $sql .= "LIMIT " . $count;
-    }
+		 if(isset($count) && $count > 0){
+			 $sql .= "LIMIT " . $count;
+		 }
 
-    $dao = SOY2DAOFactory::create("cms.EntryDAO");
+		 $dao = SOY2DAOFactory::create("cms.EntryDAO");
 
-    try{
-        $results = $dao->executeQuery($sql, array(":now" => time()));
-    }catch(Exception $e){
-        return array();
-    }
+	    try{
+	        $results = $dao->executeQuery($sql, array(":now" => time()));
+	    }catch(Exception $e){
+	        return array();
+	    }
 
 		if(!count($results)) return array();
 
-    $soycms_search_result = array();
-    foreach($results as $key => $row){
-        if(isset($row["id"]) && (int)$row["id"]){
-            $soycms_search_result[$row["id"]] = $dao->getObject($row);
-        }
-    }
-
-    return $soycms_search_result;
-  }
+		$soycms_search_result = array();
+		foreach($results as $key => $row){
+			if(isset($row["id"]) && (int)$row["id"]){
+				$soycms_search_result[$row["id"]] = $dao->getObject($row);
+			}
+    	}
+		return $soycms_search_result;
+	}
 
 	//詳細ページを開いているか？
 	private function checkIsBlogEntryPage($pageId){
 		$page = PluginBlockUtil::getBlogPageByPageId($pageId);
 		if(is_null($page->getId())) return false;
 
-		return (strpos($_SERVER["PATH_INFO"], "/" . $page->getUri() . "/" . $page->getEntryPageUri() . "/") !== false);
+		if(strlen($page->getUri())){
+			$uri = "/" . $page->getUri();
+		}else{
+			$uri = "";
+		}
+		return (strpos($_SERVER["PATH_INFO"], $uri . "/" . $page->getEntryPageUri() . "/") !== false);
 	}
 
 	private function getLabelIds($pageId){
@@ -121,19 +125,19 @@ class SOYCMSSameCategoryBlockPlugin{
 		return $list;
 	}
 
-  function returnPluginId(){
-      return self::PLUGIN_ID;
-  }
+	function returnPluginId(){
+		return self::PLUGIN_ID;
+	}
 
 	/**
 	 * 設定画面の表示
 	 */
 	function config_page($message){
-    SOY2::import("site_include.plugin.soycms_same_category_block.config.SameCategoryBlockConfigPage");
-    $form = SOY2HTMLFactory::createInstance("SameCategoryBlockConfigPage");
-    $form->setPluginObj($this);
-    $form->execute();
-    return $form->getObject();
+    	SOY2::import("site_include.plugin.soycms_same_category_block.config.SameCategoryBlockConfigPage");
+    	$form = SOY2HTMLFactory::createInstance("SameCategoryBlockConfigPage");
+    	$form->setPluginObj($this);
+    	$form->execute();
+    	return $form->getObject();
 	}
 
 	/**
