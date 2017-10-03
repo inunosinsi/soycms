@@ -68,13 +68,13 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 
 	//住所入力1
 	$htmlObj->addLabel("address1", array(
-		"name" => "Customer[address1]",
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"text" =>  $user->getAddress1(),
 	));
 
 	//住所入力2
 	$htmlObj->addLabel("address2", array(
-		"name" => "Customer[address2]",
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"text" =>  $user->getAddress2(),
 	));
 
@@ -97,6 +97,10 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 	));
 
 	//URL
+	$htmlObj->addModel("url_visible", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"text" =>  (strlen($user->getUrl()) > 0),
+	));
 	$htmlObj->addLabel("url", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"text" =>  $user->getUrl(),
@@ -106,6 +110,17 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 	$htmlObj->addLabel("job_name", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"text" =>  $user->getJobName(),
+	));
+
+	$htmlObj->addLabel("memo", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"html" =>  nl2br($user->getMemo()),
+	));
+
+	$htmlObj->addImage("image", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"src"     => $user->getAttachmentsUrl() . $user->getImagePath(),
+		"visible" => (strlen($user->getImagePath()) > 0),
 	));
 
 	SOYShopPlugin::load("soyshop.user.customfield");
