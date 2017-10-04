@@ -31,9 +31,14 @@ function soy_cms_blog_output_entry($page,$entry){
 	if(!class_exists("BlogPage_Entry_CategoryList")){
 		class BlogPage_Entry_CategoryList extends HTMLList{
 			var $categoryPageUri;
+			var $entryCount;
 
 			function setCategoryPageUri($uri){
 				$this->categoryPageUri = $uri;
+			}
+
+			function setEntryCount($entryCount){
+				$this->entryCount = $entryCount;
 			}
 
 			protected function populateItem($entry){
@@ -83,6 +88,11 @@ function soy_cms_blog_output_entry($page,$entry){
 					"text" => sprintf("%06X",$entry->getBackGroundColor()),
 					"soy2prefix" => "cms"
 				));
+
+				$this->addLabel("entry_count", array(
+					"text" => (isset($this->entryCount[$entry->getId()])) ? $this->entryCount[$entry->getId()] : 0,
+					"soy2prefix" => "cms"
+				));
 			}
 		}
 	}
@@ -97,6 +107,8 @@ function soy_cms_blog_output_entry($page,$entry){
 			var $categoryPageUri;
 			var $blogLabelId;
 			var $categoryLabelList;
+			var $labels;
+			var $entryLogic;
 
 			function setCategoryPageUri($uri){
 				$this->categoryPageUri = $uri;
@@ -112,6 +124,13 @@ function soy_cms_blog_output_entry($page,$entry){
 
 			function setCategoryLabelList($categoryLabelList){
 				$this->categoryLabelList = $categoryLabelList;
+			}
+
+			function setLabels($labels){
+				$this->labels = $labels;
+			}
+			function setEntryLogic($entryLogic){
+				$this->entryLogic = $entryLogic;
 			}
 
 			function setEntry($entry){
@@ -192,9 +211,26 @@ function soy_cms_blog_output_entry($page,$entry){
 					"text" => $entry->getCommentCount()
 				));
 
+				$categoryLabel = array();
+				$entryCount = array();
+				foreach($this->labels as $labelId => $label){
+					if(in_array($labelId, $this->categoryLabelList)){
+						$categoryLabel[] =  $label;
+						try{
+							//記事の数を数える。
+							$counts = $this->entryLogic->getOpenEntryCountByLabelIds(array_unique(array($this->blogLabelId,$labelId)));
+						}catch(Exception $e){
+							$counts= 0;
+						}
+						$entryCount[$labelId] = $counts;
+					}
+				}
+
+				//カテゴリリンク
 				$this->createAdd("category_list","BlogPage_Entry_CategoryList",array(
 					"list" => $entry->getLabels(),
 					"categoryPageUri" => $this->categoryPageUri,
+					"entryCount" => $entryCount,
 					"soy2prefix" => "cms"
 				));
 
@@ -231,6 +267,8 @@ function soy_cms_blog_output_entry($page,$entry){
 		"categoryPageUri" => $page->getCategoryPageURL(true),
 		"blogLabelId" => $page->page->getBlogLabelId(),
 		"categoryLabelList" => $page->page->getCategoryLabelList(),
+		"labels" => SOY2DAOFactory::create("cms.LabelDAO")->get(),
+		"entryLogic" => SOY2Logic::createInstance("logic.site.Entry.EntryLogic"),
 		"visible" => ($entry->getId()),
 		"entry" => $entry
 	));

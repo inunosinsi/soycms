@@ -68,10 +68,18 @@ function soy_cms_blog_output_entry_list($page,$entries){
 
     if(!class_exists("BlogPage_EntryList_CategoryList")){
         class BlogPage_EntryList_CategoryList extends HTMLList{
-            var $categoryPageUrl;
-            function setCategoryPageUrl($categoryPageUrl){
+
+			var $categoryPageUrl;
+			var $entryCount;
+
+			function setCategoryPageUrl($categoryPageUrl){
                 $this->categoryPageUrl = $categoryPageUrl;
             }
+
+			function setEntryCount($entryCount){
+				$this->entryCount = $entryCount;
+			}
+
             protected function populateItem($entry){
                 $this->createAdd("category_link","HTMLLink",array(
                     "link"=>$this->categoryPageUrl . rawurlencode($entry->getAlias()),
@@ -116,6 +124,11 @@ function soy_cms_blog_output_entry_list($page,$entries){
                     "text" => sprintf("%06X",$entry->getBackGroundColor()),
                     "soy2prefix" => "cms"
                 ));
+
+				$this->addLabel("entry_count", array(
+					"text" => (isset($this->entryCount[$entry->getId()])) ? $this->entryCount[$entry->getId()] : 0,
+					"soy2prefix" => "cms"
+				));
             }
         }
     }
@@ -136,6 +149,7 @@ function soy_cms_blog_output_entry_list($page,$entries){
             var $blogLabelId;
 
             var $categoryLabelList;
+			var $entryCount;
 
             var $_commentDAO;
             var $_trackbackDAO;
@@ -168,6 +182,9 @@ function soy_cms_blog_output_entry_list($page,$entries){
             function setCategoryLabelList($categoryLabelList){
                 $this->categoryLabelList = $categoryLabelList;
             }
+			function setEntryCount($entryCount){
+				$this->entryCount = $entryCount;
+			}
 
             protected function populateItem($entry){
 
@@ -247,6 +264,7 @@ function soy_cms_blog_output_entry_list($page,$entries){
                 $this->createAdd("category_list","BlogPage_EntryList_CategoryList",array(
                     "list" => $entry->getLabels(),
                     "categoryPageUrl" => $this->categoryPageUrl,
+					"entryCount" => $this->entryCount,
                     "soy2prefix" => "cms"
                 ));
 
@@ -276,12 +294,31 @@ function soy_cms_blog_output_entry_list($page,$entries){
         }
     }
 
+	$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
+	$entryLogic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+
+	$categoryLabel = array();
+	$entryCount = array();
+	foreach($labels as $labelId => $label){
+		if(in_array($labelId, $page->page->getCategoryLabelList())){
+			$categoryLabel[] =  $label;
+			try{
+				//記事の数を数える。
+				$counts = $entryLogic->getOpenEntryCountByLabelIds(array_unique(array((int)$page->page->getBlogLabelId(),$labelId)));
+			}catch(Exception $e){
+				$counts= 0;
+			}
+			$entryCount[$labelId] = $counts;
+		}
+	}
+
     $page->createAdd("entry_list","BlogPage_EntryList",array(
         "list" => $entries,
         "entryPageUrl" => $page->getEntryPageURL(true),
         "categoryPageUrl" => $page->getCategoryPageURL(true),
         "blogLabelId" => (int)$page->page->getBlogLabelId(),
         "categoryLabelList" => $page->page->getCategoryLabelList(),
+		"entryCount" => $entryCount,
         "soy2prefix" => "b_block"
     ));
 }
