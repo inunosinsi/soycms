@@ -78,6 +78,13 @@ class SettingPage extends WebPage{
 //			"config" => SOYShop_ShopConfig::load(),
 			"appLimit" => true
 		));
+
+		$this->addModel("datapicker_css", array(
+			"href" => SOY2PageController::createRelativeLink("./js/") . "tools/soy2_date_picker.css"
+		));
+		$this->addModel("datapicker_js", array(
+			"src" => SOY2PageController::createRelativeLink("./js/") . "tools/soy2_date_picker.pack.js"
+		));
 	}
 
 	private function buildSearchForm(){

@@ -99,7 +99,7 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 	//URL
 	$htmlObj->addModel("url_visible", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"text" =>  (strlen($user->getUrl()) > 0),
+		"visible" =>  (strlen($user->getUrl()) > 0),
 	));
 	$htmlObj->addLabel("url", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -117,6 +117,10 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 		"html" =>  nl2br($user->getMemo()),
 	));
 
+	$htmlObj->addModel("image_visilbe", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"visible" => (strlen($user->getImagePath()) > 0),
+	));
 	$htmlObj->addImage("image", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"src"     => $user->getAttachmentsUrl() . $user->getImagePath(),

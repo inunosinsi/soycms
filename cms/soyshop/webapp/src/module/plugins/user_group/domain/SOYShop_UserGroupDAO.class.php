@@ -34,7 +34,7 @@ abstract class SOYShop_UserGroupDAO extends SOY2DAO {
 				"INNER JOIN soyshop_user_grouping gi ".
 				"ON g.id = gi.group_id ".
 				"WHERE gi.user_id = :userId ".
-				"AND is_disabled != " . SOYShop_UserGroup::IS_DISABLED;
+				"AND g.is_disabled != " . SOYShop_UserGroup::IS_DISABLED;
 		try{
 			$results = $this->executeQuery($sql, array(":userId" => $userId));
 		}catch(Exception $e){

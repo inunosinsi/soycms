@@ -85,7 +85,7 @@ class FieldFormComponent {
 				return implode("\n", $html);
 			case UserCustomSearchFieldUtil :: TYPE_DATE :
 				$value = (strlen($value)) ? date("Y-m-d", $value) : null;
-				return "<input type=\"text\" class=\"date_picker_start\" name=\"" . $nameProperty . "\" value=\"" . $value . "\" readonly=\"readonly\">";
+				return "<input type=\"text\" class=\"date_picker_start\" name=\"" . $nameProperty . "\" value=\"" . $value . "\">";
 		}
 	}
 
