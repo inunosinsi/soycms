@@ -6,9 +6,19 @@ class GroupListComponent extends HTMLList{
 
 	function populateItem($entity, $i){
 
+		$this->addModel("name_visible", array(
+			"soy2prefix" => UserGroupCustomSearchFieldUtil::PLUGIN_PREFIX,
+			"visible" => strlen($entity->getName())
+		));
+
 		$this->addLabel("name", array(
 			"soy2prefix" => UserGroupCustomSearchFieldUtil::PLUGIN_PREFIX,
 			"text" => $entity->getName()
+		));
+
+		$this->addModel("code_visible", array(
+			"soy2prefix" => UserGroupCustomSearchFieldUtil::PLUGIN_PREFIX,
+			"visible" => strlen($entity->getCode())
 		));
 
 		$this->addLabel("code", array(

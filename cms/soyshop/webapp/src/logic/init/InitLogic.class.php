@@ -73,6 +73,16 @@ class InitLogic extends SOY2LogicBase{
 		fwrite($fp,implode("\n", $controller));
 		fclose($fp);
 
+		$im = array();
+		$im[] = "<?php ";
+		$im[] = "\$site_root = dirname(__FILE__);";
+		$im[] = "include_once(\"" . dirname(SOYSHOP_ROOT) . "/common/im.inc.php\");";
+		$im[]  = "?>";
+
+		$fp = fopen($dir."im.php","w");
+		fwrite($fp,implode("\n", $im));
+		fclose($fp);
+
 
 		/*
 		 * create htaccess
@@ -262,7 +272,7 @@ class InitLogic extends SOY2LogicBase{
 		$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
 	    $logic->prepare();
 	    $logic->searchModules();
-	    
+
 	    //初期化時にインストールするモジュールの管理は/soyshop/src/init/plugin/plugin.default.iniで管理
 	    $list = $logic->readModuleFile();
 	    foreach($list as $moduleId){
