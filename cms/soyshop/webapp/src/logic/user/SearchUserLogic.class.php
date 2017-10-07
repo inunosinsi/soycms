@@ -87,7 +87,7 @@ class SearchUserLogic extends SOY2LogicBase{
 		return $this->sorts;
 	}
 
-	function setSearchCondition($search){
+	function setSearchCondition($search, $custom = array()){
 
 		$where = array();
 		$binds = array();
@@ -237,6 +237,27 @@ class SearchUserLogic extends SOY2LogicBase{
 						}
 						break;
 				}
+			}
+		}
+
+		/** カスタムサーチフィールド **/
+		if(isset($custom) && is_array($custom) && count($custom)){
+			$customWhere = array();
+
+			foreach($custom as $key => $value){
+				if((is_string($value) && !strlen($value)) || (is_array($value) && !count($value))) continue;
+
+				if(is_string($value)){
+					$customWhere[$key] = $key . " LIKE :" . $key;
+					$binds[":" . $key] = "%" . trim(htmlspecialchars($value, ENT_QUOTES, "UTF-8")) . "%";
+				}else if(is_array($value)){
+					$customWhere[$key] = $key . " IN (\"" . implode("\",\"", $value) . "\")";
+				}
+			}
+
+			if(count($customWhere)){
+				$subquery = "(SELECT user_id FROM soyshop_user_custom_search WHERE " . implode(" AND ", $customWhere) .")";
+				$where["custom"] = "id IN " . $subquery;
 			}
 		}
 

@@ -13,6 +13,10 @@ class SearchPage extends WebPage{
 			$value = $_POST["search"];
 			SOY2ActionSession::getUserSession()->setAttribute("User.Search:search", $value);
 		}
+		if(array_key_exists("u_search", $_POST)){
+			$value = $_POST["u_search"];
+			SOY2ActionSession::getUserSession()->setAttribute("User.Search:u_search", $value);
+		}
 		if(array_key_exists("reset", $_POST)){
 			SOY2ActionSession::getUserSession()->setAttribute("User.Search:search", array());
 		}
@@ -36,20 +40,25 @@ class SearchPage extends WebPage{
 		$offset = ($page - 1) * $limit;
 
 		//表示順
-		$sort = $this->getParameter("sort");
+		$sort = self::getParameter("sort");
 		//検索
-		$search = $this->getParameter("search");
+		$search = self::getParameter("search");
 		if(!$search)$search = array();
 
+		//カスタムサーチフィールド
+		$customSearch = self::getParameter("u_search");
+		if(!$customSearch) $customSearch = array();
+
 		SOY2::import("domain.config.SOYShop_Area");
-		$this->buildAdvancedSearchForm($search);
+		self::buildAdvancedSearchForm($search);
+		self::buildCustomSearchForm($customSearch);
 
 		/*データ*/
 		$searchLogic = SOY2Logic::createInstance("logic.user.SearchUserLogic");
 		$searchLogic->setLimit($limit);
 		$searchLogic->setOffset($offset);
 		$searchLogic->setOrder($sort);
-		$searchLogic->setSearchCondition($search);
+		$searchLogic->setSearchCondition($search, $customSearch);
 
 		//データ取得
 		$total = $searchLogic->getTotalCount();
@@ -58,7 +67,7 @@ class SearchPage extends WebPage{
 		/*表示*/
 
 		//表示順リンク
-		$this->buildSortLink($searchLogic, $sort);
+		self::buildSortLink($searchLogic, $sort);
 
 		//ユーザ一覧
 		$this->createAdd("user_list","_common.User.UserListComponent", array(
@@ -80,11 +89,11 @@ class SearchPage extends WebPage{
 		$pager->setTotal($total);
 		$pager->setLimit($limit);
 
-		$this->buildPager($pager);
+		self::buildPager($pager);
 
 		/* 出力用 */
-		$moduleList = $this->getExportModuleList();
-		$this->createAdd("module_list", "ExportModuleList", array(
+		$moduleList = self::getExportModuleList();
+		$this->createAdd("module_list", "_common.User.ExportModuleList", array(
 			"list" => $moduleList
 		));
 
@@ -98,7 +107,7 @@ class SearchPage extends WebPage{
 		));
 	}
 
-	function getExportModuleList(){
+	private function getExportModuleList(){
 		SOYShopPlugin::load("soyshop.user.export");
 
 		$delegate = SOYShopPlugin::invoke("soyshop.user.export", array(
@@ -111,7 +120,7 @@ class SearchPage extends WebPage{
 		return $list;
 	}
 
-	function buildAdvancedSearchForm($search){
+	private function buildAdvancedSearchForm($search){
 		SOY2::import("domain.user.SOYShop_User");
 
 		$this->addInput("advanced_search_id", array(
@@ -424,35 +433,58 @@ class SearchPage extends WebPage{
 		));
 		$this->addInput("advanced_search_update_date_end_day", array(
 			"name" => "search[update_date][end][day]",
-			"value" => @$search["update_date"]["end"]["day"],
+			"value" => (isset($search["update_date"]["end"]["day"])) ? $search["update_date"]["end"]["day"] : "",
 			"size" => "3"
 		));
 
 		$this->addInput("advanced_search_total_price_min", array(
 			"name" => "search[order_price][min]",
-			"value" => @$search["order_price"]["min"],
+			"value" => (isset($search["order_price"]["min"])) ? $search["order_price"]["min"] : "",
 		));
 		$this->addInput("advanced_search_total_price_max", array(
 			"name" => "search[order_price][max]",
-			"value" => @$search["order_price"]["max"],
+			"value" => (isset($search["order_price"]["max"])) ? $search["order_price"]["max"] : "",
 		));
 		$this->addInput("advanced_search_purchase_count_min", array(
 			"name" => "search[purchase_count][min]",
-			"value" => @$search["purchase_count"]["min"],
+			"value" => (isset($search["purchase_count"]["min"])) ? $search["purchase_count"]["min"] : "",
 		));
 		$this->addInput("advanced_search_purchase_count_max", array(
 			"name" => "search[purchase_count][max]",
-			"value" => @$search["purchase_count"]["max"],
+			"value" => (isset($search["purchase_count"]["max"])) ? $search["purchase_count"]["max"] : "",
 		));
 	}
 
-	function buildSortLink(SearchUserLogic $logic, $sort){
+	private function buildCustomSearchForm($custom){
+		$installedUserCustomSearch = SOYShopPluginUtil::checkIsActive("user_custom_search_field");
+		DisplayPlugin::toggle("installed_user_custom_search_field", $installedUserCustomSearch);
+
+		$html = array();
+
+		if($installedUserCustomSearch){
+			SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
+			$configs = UserCustomSearchFieldUtil::getConfig();
+			if(count($configs)){
+				SOY2::import("module.plugins.user_custom_search_field.component.FieldFormComponent");
+				foreach($configs as $key => $field){
+					$html[] = "<tr>";
+					$html[] = "<th>" . htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8") . "</th>";
+					$html[] = "<td>" . FieldFormComponent::buildSearchConditionForm($key, $field, $custom) . "</td>";
+					$html[] = "</tr>";
+				}
+			}
+		}
+
+		$this->addLabel("user_custom_search_field_form_area", array(
+			"html" => implode("\n", $html)
+		));
+	}
+
+	private function buildSortLink(SearchUserLogic $logic, $sort){
 
 		$link = SOY2PageController::createLink("User.Search");
 
-		$sorts = $logic->getSorts();
-
-		foreach($sorts as $key => $value){
+		foreach($logic->getSorts() as $key => $value){
 
 			$text = (!strpos($key,"_desc")) ? "▲" : "▼";
 			$title = (!strpos($key,"_desc")) ? "昇順" : "降順";
@@ -466,7 +498,7 @@ class SearchPage extends WebPage{
 		}
 	}
 
-	function buildPager(PagerLogic $pager){
+	private function buildPager(PagerLogic $pager){
 
 		//件数情報表示
 		$this->addLabel("count_start", array(
@@ -498,7 +530,7 @@ class SearchPage extends WebPage{
 
 	}
 
-	function getParameter($key){
+	private function getParameter($key){
 		if(array_key_exists($key, $_GET)){
 			$value = $_GET[$key];
 			SOY2ActionSession::getUserSession()->setAttribute("User.Search:" . $key, $value);
@@ -506,34 +538,5 @@ class SearchPage extends WebPage{
 			$value = SOY2ActionSession::getUserSession()->getAttribute("User.Search:" . $key);
 		}
 		return $value;
-	}
-}
-
-class ExportModuleList extends HTMLList{
-
-	private $exportPageLink;
-
-	protected function populateItem($entity,$key){
-		$this->addInput("module_id", array(
-			/*"label" => "選択する",*/
-			"name" => "plugin",
-			"value" => $key,
-		));
-
-		$this->addLabel("export_title", array(
-			"text" => $entity["title"],
-		));
-
-		$this->addLabel("export_description", array(
-			"html" => $entity["description"],
-			"visible" => (strlen($entity["description"]) > 0)
-		));
-	}
-
-	function getExportPageLink() {
-		return $this->exportPageLink;
-	}
-	function setExportPageLink($exportPageLink) {
-		$this->exportPageLink = $exportPageLink;
 	}
 }

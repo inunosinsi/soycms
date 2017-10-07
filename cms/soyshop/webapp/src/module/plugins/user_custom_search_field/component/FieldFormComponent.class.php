@@ -91,7 +91,7 @@ class FieldFormComponent {
 
 	public static function buildSearchConditionForm($fieldId, $field, $cnd) {
 		$form = self::buildForm($fieldId, $field);
-		$form = str_replace("user_custom_search", "search_condition", $form);
+		$form = str_replace("user_custom_search", "u_search", $form);
 
 		switch($field["type"]){
 			case UserCustomSearchFieldUtil :: TYPE_TEXTAREA :
@@ -110,7 +110,7 @@ class FieldFormComponent {
 				$fs = array();
 				foreach($forms as $f){
 					preg_match('/value="(.*)"/', $f, $tmp);
-					if(is_array($cnd[$fieldId]) && in_array($tmp[1], $cnd[$fieldId])){
+					if(isset($cnd[$fieldId]) && is_array($cnd[$fieldId]) && in_array($tmp[1], $cnd[$fieldId])){
 						$f = str_replace("value=\"" . $tmp[1] . "\"", "value=\"" . $tmp[1] . "\" checked=\"checked\"", $f);
 						$fs[] = $f;
 					}else{

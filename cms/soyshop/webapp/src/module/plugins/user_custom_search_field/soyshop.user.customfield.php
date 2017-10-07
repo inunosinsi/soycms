@@ -51,9 +51,9 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 		//出力する内容を格納する
 		$array = array();
 
-		SOY2::import("module.plugins.user_custom_search_field.component.FieldFormComponent");
 		$configs = UserCustomSearchFieldUtil::getConfig();
 		if(count($configs)){
+			SOY2::import("module.plugins.user_custom_search_field.component.FieldFormComponent");
 			foreach($configs as $key => $field){
 
 				$obj = array();
