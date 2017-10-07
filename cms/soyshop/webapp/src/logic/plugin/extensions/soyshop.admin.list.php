@@ -22,7 +22,6 @@ class SOYShopAdminListDeletageAction implements SOY2PluginDelegateAction{
 				$array["tab"] = $action->getTabName();
 				break;
 			case "list":
-			default:
 				$array["title"] = $action->getTitle();
 				$array["content"] = $action->getContent();
 				$this->_scripts = $action->getScripts();
