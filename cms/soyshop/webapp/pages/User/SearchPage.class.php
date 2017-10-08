@@ -19,6 +19,7 @@ class SearchPage extends WebPage{
 		}
 		if(array_key_exists("reset", $_POST)){
 			SOY2ActionSession::getUserSession()->setAttribute("User.Search:search", array());
+			SOY2ActionSession::getUserSession()->setAttribute("User.Search:u_search", array());
 		}
 		SOY2PageController::jump("User.Search");
 	}
@@ -538,5 +539,20 @@ class SearchPage extends WebPage{
 			$value = SOY2ActionSession::getUserSession()->getAttribute("User.Search:" . $key);
 		}
 		return $value;
+	}
+
+	function getScripts(){
+		$root = SOY2PageController::createRelativeLink("./js/");
+		return array(
+			$root . "tools/soy2_date_picker.pack.js"
+		);
+	}
+
+	function getCSS(){
+		$root = SOY2PageController::createRelativeLink("./js/");
+		return array(
+			"./css/admin/user_detail.css",
+			$root . "tools/soy2_date_picker.css"
+		);
 	}
 }

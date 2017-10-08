@@ -93,7 +93,19 @@ class FieldFormComponent {
 		$form = self::buildForm($fieldId, $field);
 		$form = str_replace("user_custom_search", "u_search", $form);
 
+		//ネームプロパティ
+		//$nameProperty = (isset($_GET["collective"])) ? "search_condition" : "u_search";
+
 		switch($field["type"]){
+			case UserCustomSearchFieldUtil :: TYPE_RANGE:
+				$start = (isset($cnd[$fieldId]["start"]) && is_numeric($cnd[$fieldId]["start"])) ? $cnd[$fieldId]["start"] : "";
+				$end = (isset($cnd[$fieldId]["end"]) && is_numeric($cnd[$fieldId]["end"])) ? $cnd[$fieldId]["end"] : "";
+				$fs = array();
+				$fs[] = "<input type=\"number\" name=\"u_search[" . $fieldId . "][start]\" value=\"" . $start . "\">";
+				$fs[] = "〜";
+				$fs[] = "<input type=\"number\" name=\"u_search[" . $fieldId . "][end]\" value=\"" . $end . "\">";
+				$form = implode(" " , $fs);
+				break;
 			case UserCustomSearchFieldUtil :: TYPE_TEXTAREA :
 			case UserCustomSearchFieldUtil :: TYPE_RICHTEXT :
 				if(strpos($form, "mceEditor")){
@@ -139,7 +151,7 @@ class FieldFormComponent {
 				$fs = array();
 				foreach($forms as $f){
 					preg_match('/value="(.*)"/', $f, $tmp);
-					if(isset($cnd[$fieldId]) && $tmp[1] == $cnd[$fieldId]){
+					if(isset($cnd[$fieldId]) && isset($tim[1]) && $tmp[1] == $cnd[$fieldId]){
 						$f = str_replace("value=\"" . $tmp[1] . "\"", "value=\"" . $tmp[1] . "\" selected=\"selected\"", $f);
 						$fs[] = $f;
 					}else{
@@ -147,6 +159,15 @@ class FieldFormComponent {
 					}
 				}
 				$form = implode("\n", $fs);
+				break;
+			case UserCustomSearchFieldUtil :: TYPE_DATE:
+				$start = (isset($cnd[$fieldId]["start"])) ? $cnd[$fieldId]["start"] : "";
+				$end = (isset($cnd[$fieldId]["end"])) ? $cnd[$fieldId]["end"] : "";
+				$fs = array();
+				$fs[] = "<input type=\"text\" class=\"date_picker_start\" name=\"u_search[" . $fieldId . "][start]\" value=\"" . $start . "\">";
+				$fs[] = "〜";
+				$fs[] = "<input type=\"text\" class=\"date_picker_end\" name=\"u_search[" . $fieldId . "][end]\" value=\"" . $end . "\">";
+				$form = implode(" " , $fs);
 				break;
 			default:
 				if(isset($cnd[$fieldId]) && strlen($cnd[$fieldId])){

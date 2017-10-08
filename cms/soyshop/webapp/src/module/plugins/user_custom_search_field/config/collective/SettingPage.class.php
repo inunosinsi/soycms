@@ -90,23 +90,23 @@ class SettingPage extends WebPage{
 	private function buildSearchForm(){
 
 		//リセット
-		if(isset($_POST["search_condition"])){
-			foreach($_POST["search_condition"] as $key => $value){
+		if(isset($_POST["u_search"])){
+			foreach($_POST["u_search"] as $key => $value){
 				if(is_array($value)){
 					//
 				}else{
 					if(!strlen($value)){
-						unset($_POST["search_condition"][$key]);
+						unset($_POST["u_search"][$key]);
 					}
 				}
 			}
 		}
 
-		if(isset($_POST["search"]) && !isset($_POST["search_condition"])){
-			self::setParameter("search_condition", null);
+		if(isset($_POST["search"]) && !isset($_POST["u_search"])){
+			self::setParameter("u_search", null);
 			$cnd = array();
 		}else{
-			$cnd = self::getParameter("search_condition");
+			$cnd = self::getParameter("u_search");
 		}
 		//リセットここまで
 

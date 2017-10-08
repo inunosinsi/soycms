@@ -6,7 +6,7 @@ class SearchLogic extends SOY2LogicBase{
 	private $config;
 	private $limit;
 	private $userDao;
-	
+
 	private $where = array();
 	private $binds = array();
 
@@ -18,41 +18,41 @@ class SearchLogic extends SOY2LogicBase{
 
 	function get(){
 		self::register();
-		
+
 		$sql = self::buildQuery();
-		
+
 		try{
 			$res = $this->userDao->executeQuery($sql, $this->binds);
 		}catch(Exception $e){
 			var_dump($e);
 			$res = array();
 		}
-		
+
 		if(!count($res)) return array();
-		
+
 		$users = array();
 		foreach($res as $v){
 			$users[] = $this->userDao->getObject($v);
 		}
-		
+
 		return $users;
 	}
-	
+
 	private function buildQuery(){
 		$sql = "SELECT u.* from soyshop_user u ".
 				"INNER JOIN soyshop_user_custom_search s ".
 				"ON u.id = s.user_id ".
 				"WHERE u.is_disabled != " . SOYShop_User::USER_IS_DISABLED . " ";
-				
+
 		foreach($this->where as $where){
 			$sql .= " AND " . $where;
 		}
-		
+
 		$sql .= " Limit " . $this->limit;
-				
+
 		return $sql;
 	}
-	
+
 	function setCondition($conditions){
 		if(count($conditions)) foreach($conditions as $key => $value){
 			switch($key){
@@ -63,7 +63,7 @@ class SearchLogic extends SOY2LogicBase{
 								$this->where[] = "s." . $this->fieldId . " LIKE :" . $this->fieldId . $i;
 								$this->binds[":" . $this->fieldId . $i] = "%" . trim($v) . "%";
 							}
-							
+
 							break;
 						default:
 							$this->where[] = "s." . $this->fieldId . " LIKE :" . $this->fieldId;
@@ -79,26 +79,26 @@ class SearchLogic extends SOY2LogicBase{
 			}
 		}
 	}
-	
+
 	private function register(){
 		try{
 			$res = $this->userDao->executeQuery("SELECT user_id FROM soyshop_user_custom_search ORDER BY user_id DESC LIMIT 1;", array());
 		}catch(Exception $e){
 			return;
 		}
-		
+
 		if(!isset($res[0]["item_id"])) return;
-		
+
 		$lastId = (int)$res[0]["item_id"];
-		
+
 		try{
 			$res = $this->userDao->executeQuery("SELECT id FROM soyshop_user WHERE id > :id;", array(":id" => $lastId));
 		}catch(Exception $e){
 			return;
 		}
-		
+
 		if(!count($res)) return;
-		
+
 		foreach($res as $v){
 			try{
 				$this->userDao->executeQuery("INSERT INTO soyshop_user_custom_search (user_id) VALUES (:id)", array(":id" => $v["id"]));
@@ -107,11 +107,11 @@ class SearchLogic extends SOY2LogicBase{
 			}
 		}
 	}
-	
+
 	function setFieldId($fieldId){
 		$this->fieldId = $fieldId;
 	}
-	
+
 	function setLimit($limit){
 		$this->limit = $limit;
 	}

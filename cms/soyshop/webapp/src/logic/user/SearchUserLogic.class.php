@@ -242,8 +242,10 @@ class SearchUserLogic extends SOY2LogicBase{
 
 		/** カスタムサーチフィールド **/
 		if(isset($custom) && is_array($custom) && count($custom)){
-			$customWhere = array();
+			SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
+			$configs = UserCustomSearchFieldUtil::getConfig();
 
+			$customWhere = array();
 			foreach($custom as $key => $value){
 				if((is_string($value) && !strlen($value)) || (is_array($value) && !count($value))) continue;
 
@@ -251,7 +253,39 @@ class SearchUserLogic extends SOY2LogicBase{
 					$customWhere[$key] = $key . " LIKE :" . $key;
 					$binds[":" . $key] = "%" . trim(htmlspecialchars($value, ENT_QUOTES, "UTF-8")) . "%";
 				}else if(is_array($value)){
-					$customWhere[$key] = $key . " IN (\"" . implode("\",\"", $value) . "\")";
+					if(!isset($configs[$key])) continue;
+					switch($configs[$key]["type"]){
+						case UserCustomSearchFieldUtil :: TYPE_RANGE:
+							$ws = array();
+							if(isset($value["start"]) && is_numeric($value["start"])){
+								$ws[] = $key . " >= :" . $key . "_start";
+								$binds[":" . $key . "_start"] = (int)$value["start"];
+							}
+							if(isset($value["end"]) && is_numeric($value["end"])){
+								$ws[] = $key . " <= :" . $key . "_end";
+								$binds[":" . $key . "_end"] = (int)$value["end"];
+							}
+							if(count($ws)){
+								$customWhere[$key] = "(" . implode(" AND ", $ws) . ")";
+							}
+							break;
+						case UserCustomSearchFieldUtil :: TYPE_DATE:
+							$ws = array();
+							if(isset($value["start"]) && strlen($value["start"])){
+								$ws[] = $key . " >= :" . $key . "_start";
+								$binds[":" . $key . "_start"] = self::convertTimestamp($value["start"], "start");
+							}
+							if(isset($value["end"]) && strlen($value["end"])){
+								$ws[] = $key . " <= :" . $key . "_end";
+								$binds[":" . $key . "_end"] = self::convertTimestamp($value["end"], "end");
+							}
+							if(count($ws)){
+								$customWhere[$key] = "(" . implode(" AND ", $ws) . ")";
+							}
+							break;
+						default:
+							$customWhere[$key] = $key . " IN (\"" . implode("\",\"", $value) . "\")";
+					}
 				}
 			}
 
@@ -263,6 +297,15 @@ class SearchUserLogic extends SOY2LogicBase{
 
 		$this->where = $where;
 		$this->binds = $binds;
+	}
+
+	private function convertTimestamp($dateString, $mode="start"){
+		$dateArray = explode("-", $dateString);
+		if($mode == "start"){
+			return mktime(0, 0, 0, $dateArray[1], $dateArray[2], $dateArray[0]);
+		}else{
+			return mktime(0, 0, 0, $dateArray[1], $dateArray[2], $dateArray[0]) + 23 * 59 * 59;
+		}
 	}
 
 	protected function getCountSQL(){
