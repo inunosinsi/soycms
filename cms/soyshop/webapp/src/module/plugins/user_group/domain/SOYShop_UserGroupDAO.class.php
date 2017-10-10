@@ -18,6 +18,7 @@ abstract class SOYShop_UserGroupDAO extends SOY2DAO {
 
 	/**
 	 * @query is_disabled != 1
+	 * @order group_order ASC, code IS NULL ASC
 	 */
 	abstract function get();
 
@@ -54,8 +55,8 @@ abstract class SOYShop_UserGroupDAO extends SOY2DAO {
 	 * @final
 	 */
 	function onUpdate($query, $binds){
-		if(!isset($binds[":order"]) || !is_numeric($binds[":order"])) $binds[":order"] = 0;
-		if(is_null($binds[":isDisabled"])) $binds[":isDisabled"] = 0;
+		if(!isset($binds[":order"]) || !is_numeric($binds[":order"])) $binds[":order"] = SOYShop_UserGroup::DISPLAY_ORDER_MAX;
+		if(is_null($binds[":isDisabled"])) $binds[":isDisabled"] = SOYShop_UserGroup::NO_DISABLED;
 
 		return array($query, $binds);
 	}

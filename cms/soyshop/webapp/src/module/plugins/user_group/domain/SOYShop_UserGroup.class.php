@@ -8,6 +8,9 @@ class SOYShop_UserGroup{
 	const NO_DISABLED = 0;
     const IS_DISABLED = 1;
 
+	const DISPLAY_ORDER_MAX = 2147483647;
+	const DISPLAY_ORDER_MIN = 0;
+
 	/**
 	 * @id
 	 */
@@ -21,7 +24,7 @@ class SOYShop_UserGroup{
 	/**
      * @column group_order
      */
-    private $order = 0;
+    private $order = 2147483647;
 
 	/**
      * @column is_disabled

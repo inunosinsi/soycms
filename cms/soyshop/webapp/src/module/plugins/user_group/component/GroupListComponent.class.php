@@ -23,6 +23,12 @@ class GroupListComponent extends HTMLList{
 			"link" => ($total > 0) ? SOY2PageController::createLink("Config.Detail?plugin=user_group&group_id=" . $entity->getId()) : null
 		));
 
+		$this->addInput("display_order", array(
+			"name" => "Group[" . $entity->getId() . "]",
+			"value" => ($entity->getOrder() < SOYShop_UserGroup::DISPLAY_ORDER_MAX && (int)$entity->getOrder() > 0) ? $entity->getOrder() : null,
+			"style" => "width:60px;"
+		));
+
 		$this->addLink("detail_link", array(
 			"link" => SOY2PageController::createLink("Extension.Detail.user_group." . $entity->getId())
 		));
