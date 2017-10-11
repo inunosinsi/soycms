@@ -2,6 +2,8 @@
 
 class PayJpOperateCredit extends SOYShopOperateCreditBase{
 
+	private $payJpLogic;
+
 	function doPostOnOrderDetailPage(SOYShop_Order $order){
 
 		if(isset($_POST["capture"]) || isset($_POST["cancel"])){
@@ -65,7 +67,7 @@ class PayJpOperateCredit extends SOYShopOperateCreditBase{
 			//ここで支払状況を調べる
 			$attr = $order->getAttribute("payment_pay_jp.id");
 			$token = (isset($attr["value"])) ? $attr["value"] : null;
-
+			
 			if(isset($token)){
 				try{
 					$res = \Payjp\Charge::retrieve($token);
@@ -134,25 +136,8 @@ class PayJpOperateCredit extends SOYShopOperateCreditBase{
 	}
 
 	private function prepare(){
-		$config = self::getConfig();
-
-		//PAY.JPのlibを読み込む
-		require_once(dirname(__FILE__) . "/payjp/init.php");
-		\Payjp\Payjp::setApiKey($config["key"]);
-	}
-
-	private function getConfig(){
-		static $config;
-		if(is_null($config)){
-			SOY2::import("module.plugins.payment_pay_jp.util.PayJpUtil");
-			$conf = PayJpUtil::getConfig();
-			if(isset($conf["sandbox"]) && $conf["sandbox"] == 1){
-				$config = $conf["test"];
-			}else{
-				$config = $conf["public"];
-			}
-		}
-		return $config;
+		$this->payJpLogic = SOY2Logic::createInstance("module.plugins.payment_pay_jp.logic.PayJpLogic");
+		$this->payJpLogic->initPayJp();
 	}
 }
 

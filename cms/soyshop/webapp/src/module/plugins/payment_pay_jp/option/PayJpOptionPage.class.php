@@ -44,7 +44,7 @@ class PayJpOptionPage extends WebPage {
 		$this->addSelect("year", array(
 			"name" => "year",
 			"options" => self::getYearRange(),
-			"selected" => (isset($values["exp_year"])) ? $values["exp_year"] : ""
+			"selected" => (isset($values["exp_year"])) ? substr($values["exp_year"], 2) : ""
 		));
 
 		$this->addInput("cvc", array(

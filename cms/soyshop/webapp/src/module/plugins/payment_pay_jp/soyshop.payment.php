@@ -3,6 +3,8 @@
 SOY2::import("module.plugins.payment_pay_jp.util.PayJpUtil");
 class PayJpPayment extends SOYShopPayment{
 
+	private $payJpLogic;
+
 	function onSelect(CartLogic $cart){
 		$module = new SOYShop_ItemModule();
 		$module->setId("payment_pay_jp");
@@ -38,30 +40,24 @@ class PayJpPayment extends SOYShopPayment{
 		$html = array();
 		$html[] = SOYShop_DataSets::get("payment_pay_jp.description", "クレジットカードで支払います。");
 
+		self::prepare();
+
 		//カートを表示している顧客の情報で、カードのトークンが登録されているか？調べる(メールアドレスから顧客情報をたどる)
 		$mailAddress = $this->getCart()->getCustomerInformation()->getMailAddress();
-		try{
-			$userId = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId();
-		}catch(Exception $e){
-			$userId = null;
-		}
+		$token = $this->payJpLogic->getCustomerTokenByMailAddress($mailAddress);
 
-		if(isset($userId)){
-			$token = self::getTokenAttributeByUserId($userId)->getValue();
-			if(isset($token) && strlen($token)){
-				$config = PayJpUtil::getConfig();
-				if(isset($config["select"]) && $config["select"] == 1){
-					$isRepeatCharge = $this->getCart()->getAttribute("payment_pay_jp_repeat_charge");
-					if(is_null($isRepeatCharge)) $isRepeatCharge = 1;
+		if(isset($token) && strlen($token)){
+			$config = PayJpUtil::getConfig();
+			if(isset($config["select"]) && $config["select"] == 1){
+				$isRepeatCharge = $this->getCart()->getAttribute("payment_pay_jp_repeat_charge");
+				if(is_null($isRepeatCharge)) $isRepeatCharge = 1;
 
-					$html[] = "<input type=\"hidden\" name=\"payment_pay_jp_repeat_charge\" value=\"0\">";
+				$html[] = "<input type=\"hidden\" name=\"payment_pay_jp_repeat_charge\" value=\"0\">";
 
-					if($isRepeatCharge){
-						$html[] = "<br><label><input type=\"checkbox\" name=\"payment_pay_jp_repeat_charge\" value=\"1\" checked=\"checked\">登録されているカード情報で支払する</label>";
-					}else{
-						$html[] = "<br><label><input type=\"checkbox\" name=\"payment_pay_jp_repeat_charge\" value=\"1\">登録されているカード情報で支払する</label>";
-					}
-
+				if($isRepeatCharge){
+					$html[] = "<br><label><input type=\"checkbox\" name=\"payment_pay_jp_repeat_charge\" value=\"1\" checked=\"checked\">登録されているカード情報で支払する</label>";
+				}else{
+					$html[] = "<br><label><input type=\"checkbox\" name=\"payment_pay_jp_repeat_charge\" value=\"1\">登録されているカード情報で支払する</label>";
 				}
 			}
 		}
@@ -84,14 +80,15 @@ class PayJpPayment extends SOYShopPayment{
 		}
 
 		//秘密鍵の登録がなければエラー
-		$config = self::getConfig();
+		self::prepare();
+		$config = $this->payJpLogic->getPayJpConfig();
 		if(!strlen($config["key"])){
 			throw new Exception("秘密鍵が設定されていません。");
 		}
 
 		// トークンを保持していれば、ここで注文を終わらせてしまう
 		$userId = $cart->getCustomerInformation()->getId();
-		$token = self::getTokenAttributeByUserId($userId)->getValue();
+		$token = $this->payJpLogic->getCustomerTokenByUserId($userId);
 
 		if(isset($token)){
 			//二回目の購入のチェックがあるか？
@@ -106,24 +103,16 @@ class PayJpPayment extends SOYShopPayment{
 					"capture" => PayJpUtil::isCapture()
 				);
 
-				try{
-					$charge = \Payjp\Charge::create($myCard);
-					//エラーがなければ注文確定
-					self::orderComplete($charge->id);
+				list($res, $err) = $this->payJpLogic->charge($myCard);
+				if(is_null($err)){
+					//エラーがなければ注文完了
+					self::orderComplete($res->id);
 					soyshop_redirect_cart();
 					exit;
-				} catch (Exception $e) {
-					//何もしない
-				} finally {
-					//何もしない
 				}
 
-				//使用できなかったから、tokenを削除する
-				try{
-					self::userAttrDao()->delete($userId, "payment_pay_jp_token");
-				}catch(Exception $e){
-					//
-				}
+				//削除
+				$this->payJpLogic->deleteCustomerTokenByUserId($userId);
 			}
 		}
 
@@ -173,23 +162,8 @@ class PayJpPayment extends SOYShopPayment{
 			}
 
 			//カード番号のトークンを作成
-			try{
-				$res = \Payjp\Token::create(array("card" => $myCard));
-			} catch (Error\Card $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (Error\InvalidRequest $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (Error\Authentication $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (Error\Api $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (\Payjp\Error\Base $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (Exception $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} finally {
-				//何もしない
-			}
+			list($res, $err) = $this->payJpLogic->createToken(array("card" => $myCard));
+			if(is_null($res)) self::redirectCartOnError($err);
 
 			$token = $res->id;
 			$cart = $this->getCart();
@@ -203,26 +177,11 @@ class PayJpPayment extends SOYShopPayment{
 			);
 
 			//作成したカード番号のトークンで購入
-			try{
-				$charge = \Payjp\Charge::create($chargeCard);
-			} catch (Error\Card $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (Error\InvalidRequest $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (Error\Authentication $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (Error\Api $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (\Payjp\Error\Base $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} catch (Exception $e) {
-				self::redirectCartOnError($e->getJsonBody());
-			} finally {
-				//何もしない
-			}
+			list($res, $err) = $this->payJpLogic->charge($chargeCard);
+			if(is_null($res)) self::redirectCartOnError($err);
 
 			//tokenを更新して注文完了
-			self::orderComplete($charge->id);
+			self::orderComplete($res->id);
 		}
 	}
 
@@ -261,24 +220,8 @@ class PayJpPayment extends SOYShopPayment{
 	}
 
 	private function prepare(){
-		$config = self::getConfig();
-
-		//PAY.JPのlibを読み込む
-		require_once(dirname(__FILE__) . "/payjp/init.php");
-		\Payjp\Payjp::setApiKey($config["key"]);
-	}
-
-	private function getConfig(){
-		static $config;
-		if(is_null($config)){
-			$conf = PayJpUtil::getConfig();
-			if(isset($conf["sandbox"]) && $conf["sandbox"] == 1){
-				$config = $conf["test"];
-			}else{
-				$config = $conf["public"];
-			}
-		}
-		return $config;
+		$this->payJpLogic = SOY2Logic::createInstance("module.plugins.payment_pay_jp.logic.PayJpLogic");
+		$this->payJpLogic->initPayJp();
 	}
 
 	private function redirectCartOnError($body=null){
@@ -290,8 +233,9 @@ class PayJpPayment extends SOYShopPayment{
 		}
 
 		$err = $body["error"];
+		$code = (isset($err["code"])) ? $err["code"] : null;
 
-		PayJpUtil::save("errorCode", $err["code"]);
+		PayJpUtil::save("errorCode", $code);
 		soyshop_redirect_cart("error");
 		exit;
 	}
@@ -312,59 +256,19 @@ class PayJpPayment extends SOYShopPayment{
 		$customer["card"]["name"] = PayJpUtil::get("name");
 		$customer["email"] = $user->getMailAddress();
 
-		$token = null;
-		try{
-			$res = \Payjp\Customer::create($customer);
-			$token = $res->id;
-			//エラーがなければ注文確定
-		} catch (Exception $e) {
-			//何もしない
-		} finally {
-			//何もしない
-		}
+		list($res, $err) = $this->payJpLogic->registCustomer($customer);
+		$token = (!is_null($res)) ? $res->id : null;
 
 		if(isset($token)){
-			$attr = self::getTokenAttributeByUserId($user->getId());
-			$attr->setValue($token);
-
-			try{
-				self::userAttrDao()->insert($attr);
-			}catch(Exception $e){
-				try{
-					self::userAttrDao()->update($attr);
-				}catch(Exception $e){
-					var_dump($e);
-				}
-			}
+			$this->payJpLogic->saveCustomerTokenByUserId($token, $user->getId());
 		}else{
-			try{
-				self::userAttrDao()->delete($user->getId(), "payment_pay_jp_token");
-			}catch(Exception $e){
-				//
-			}
-		}
-	}
-
-	private function getTokenAttributeByUserId($userId){
-		try{
-			return self::userAttrDao()->get($userId, "payment_pay_jp_token");
-		}catch(Exception $e){
-			$attr = new SOYShop_UserAttribute();
-			$attr->setUserId($userId);
-			$attr->setFieldId("payment_pay_jp_token");
-			return $attr;
+			$this->payJpLogic->deleteCustomerTokenByUserId($user->getId());
 		}
 	}
 
 	private function orderDao(){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		return $dao;
-	}
-
-	private function userAttrDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
 		return $dao;
 	}
 }

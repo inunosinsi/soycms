@@ -6,13 +6,13 @@ function soyshop_parts_mypage_login($html, $page){
 	$obj = $page->create("soyshop_parts_mypage_login", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_mypage_login", $html)
 	));
-	
+
 	if(!defined("SOYSHOP_CURRENT_MYPAGE_ID")){
 		define("SOYSHOP_CURRENT_MYPAGE_ID", soyshop_get_mypage_id());
 	}
-	
+
 	$mypage = MyPageLogic::getMyPage();
-	
+
 	//ログインチェック
 	$isLoggedIn = $mypage->getIsLoggedin();
 
@@ -21,37 +21,37 @@ function soyshop_parts_mypage_login($html, $page){
 		"visible" => $isLoggedIn,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	//display area on isn't loggedin
 	$obj->addModel("not_loggedin", array(
 		"visible" => !$isLoggedIn,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addForm("login_form", array(
 		"method" => "POST",
 		"action" =>  soyshop_get_mypage_url() . "/login",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addInput("mail", array(
 		"name" => "loginId",
 		"value" => "",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addInput("login_id", array(
 		"name" => "loginId",
 		"value" => "",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addInput("password", array(
 		"name" => "password",
 		"value" => "",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addCheckBox("auto_login", array(
 		"name" => "login_memory",
 		"elementId" => "login_memory",
@@ -65,37 +65,37 @@ function soyshop_parts_mypage_login($html, $page){
 		"visible" => ($isLoggedIn),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addLabel("point", array(
 		"text" => $user->getPoint(),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$timeLimit = null;
 	if($isLoggedIn && SOYShopPluginUtil::checkIsActive("common_point_base")){
 		$timeLimit = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->getPointByUserId($user->getId())->getTimeLimit();
 	}
-	
+
 	$obj->addModel("is_point_time_limit", array(
 		"visible" => (isset($timeLimit)),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addLabel("point_time_limit", array(
 		"text" => (isset($timeLimit)) ? date("Y-m-d", $timeLimit) : "",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addModel("is_profile_display", array(
 		"visible" => ($user->getIsProfileDisplay() == SOYShop_User::PROFILE_IS_DISPLAY && strlen($user->getProfileId()) > 0),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addLink("profile_link", array(
 		"link" => soyshop_get_mypage_url() . "/profile/" . $user->getProfileId(),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->addLink("register_link", array(
 		"link" => soyshop_get_mypage_url() . "/register",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
@@ -104,7 +104,7 @@ function soyshop_parts_mypage_login($html, $page){
 		"link" => soyshop_get_mypage_url() . "/login",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	//ログイン時に表示するリンク
 	$obj->addLink("top_link", array(
 		"link" => soyshop_get_mypage_top_url(),
@@ -149,7 +149,7 @@ function soyshop_parts_mypage_login($html, $page){
 	$obj->addLink("mail_log_link", array(
 		"link" => soyshop_get_mypage_url() . "/mail",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
-	));	
+	));
 	$obj->addModel("is_review", array(
 		"visible" => (SOYShopPluginUtil::checkIsActive("item_review")),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
@@ -166,22 +166,30 @@ function soyshop_parts_mypage_login($html, $page){
 		"link" => soyshop_get_mypage_url() . "/point",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
+	$obj->addModel("is_pay_jp", array(
+		"visible" => (SOYShopPluginUtil::checkIsActive("payment_pay_jp")),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+	$obj->addLink("pay_jp_link", array(
+		"link" => soyshop_get_mypage_url() . "/credit/payJp",
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
 	$obj->addLink("withdraw_link", array(
 		"link" => soyshop_get_mypage_url() . "/withdraw",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$config = SOYShop_ShopConfig::load();
 	$logoutLink = soyshop_get_mypage_url() . "/logout";
 	if($config->getDisplayPageAfterLogout() == 1){
 		$logoutLink .= "?r=" . soyshop_remove_get_value(rawurldecode($_SERVER["REQUEST_URI"]));
 	}
-	
+
 	$obj->addLink("logout_link", array(
 		"link" => $logoutLink,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$obj->display();
 }
 ?>

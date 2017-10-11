@@ -9,7 +9,7 @@ class CreditMemberPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		$token = self::getTokenByUserId($this->user->getId());
+		$token = SOY2Logic::createInstance("module.plugins.payment_pay_jp.logic.PayJpLogic")->getCustomerTokenByUserId($this->user->getId());
 
 		DisplayPlugin::toggle("register_token", isset($token));
 		DisplayPlugin::toggle("no_register_token", !isset($token));
@@ -17,16 +17,6 @@ class CreditMemberPage extends WebPage{
 		$this->addLabel("token", array(
 			"text" => $token
 		));
-	}
-
-	private function getTokenByUserId($userId){
-		try{
-			$attrs = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO")->getByUserId($userId);
-			if(!isset($attrs["payment_pay_jp_token"])) return null;
-			return $attrs["payment_pay_jp_token"]->getValue();
-		}catch(Exxception $e){
-			return null;
-		}
 	}
 
 	function setUser($user){
