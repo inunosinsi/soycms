@@ -83,6 +83,12 @@ class PayJpPayment extends SOYShopPayment{
 			exit;
 		}
 
+		//秘密鍵の登録がなければエラー
+		$config = self::getConfig();
+		if(!strlen($config["key"])){
+			throw new Exception("秘密鍵が設定されていません。");
+		}
+
 		// トークンを保持していれば、ここで注文を終わらせてしまう
 		$userId = $cart->getCustomerInformation()->getId();
 		$token = self::getTokenAttributeByUserId($userId)->getValue();
