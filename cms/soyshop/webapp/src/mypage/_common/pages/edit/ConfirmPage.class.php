@@ -11,13 +11,11 @@ class ConfirmPage extends IndexPage{
 
 			if(isset($_POST["register"]) || isset($_POST["register_x"])){
 
-				$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-
 				//セッションから取得（ただしIDが空）
 				$user = $mypage->getUserInfo();
-				
+
 				$imagePath = "";
-				
+
 				//削除フラグがある場合はimagePathをnullにして更新した後、画像を削除する
 				$isImageDelete = $mypage->getAttribute("user.edit.delete_image");
 				if($isImageDelete === true){
@@ -26,7 +24,7 @@ class ConfirmPage extends IndexPage{
 				}
 
 				try{
-					$userDAO->update($user);
+					SOY2DAOFactory::create("user.SOYShop_UserDAO")->update($user);
 				}catch(Exception $e){
 					$mypage->addErrorMessage("update", "更新に失敗しました。");
 					$this->jump("edit");
@@ -39,14 +37,14 @@ class ConfirmPage extends IndexPage{
 					"app" => $mypage,
 					"userId" => $user->getId()
 				));
-				
+
 				//新しい画像を登録するとき、古い画像を削除する
 				$oldImagePath = $mypage->getAttribute("user.edit.old_image_path");
 				if(isset($oldImagePath) && strlen($oldImagePath) > 0){
 					$imagePath = $oldImagePath;
 					$isImageDelete = true;
 				}
-				
+
 				//画像を削除する
 				if($isImageDelete === true && strlen($imagePath) > 0){
 					$userLogic = SOY2Logic::createInstance("logic.user.UserLogic");
@@ -68,20 +66,21 @@ class ConfirmPage extends IndexPage{
 
 	function __construct(){
 
+		WebPage::__construct();
+
 		$mypage = MyPageLogic::getMyPage();
-		
+
 		//すでにログインしていなかったら飛ばす
 		if(!$mypage->getIsLoggedin()){
 			$this->jump("login");
 		}
 
+
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 
-		parent::__construct();
-
 		$user = $mypage->getUserInfo();
-		
+
 		//直接URLを入力された場合は、入力フォームに戻す
 		if(is_null($user)){
 			$this->jump("edit");
@@ -125,8 +124,6 @@ class ConfirmPage extends IndexPage{
 			"pageObj" => $this,
 			"userId" => $user->getId()
 		));
-
-
 	}
 }
 

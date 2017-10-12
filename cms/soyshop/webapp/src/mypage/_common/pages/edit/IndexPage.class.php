@@ -11,7 +11,7 @@ class IndexPage extends MainMyPagePageBase{
 		$mypage = MyPageLogic::getMyPage();
 
 		//ユーザカスタムフィールドの値をセッションに入れる
-		if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){	
+		if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
 			SOYShopPlugin::load("soyshop.user.customfield");
 			SOYShopPlugin::invoke("soyshop.user.customfield", array(
 				"mode" => "post",
@@ -51,7 +51,7 @@ class IndexPage extends MainMyPagePageBase{
 
 				$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 				$user = $this->getUser();
-				
+
 				//POSTデータ
 				//名前関連のデータの文字列変換
 				$customer = $_POST["Customer"];
@@ -59,12 +59,12 @@ class IndexPage extends MainMyPagePageBase{
 
 				$postUser = (object)$customer;
 				$user = SOY2::cast($user, $postUser);
-				
+
 				$isProfileDisplay = (isset($_POST["Customer"]["isProfileDisplay"]) && (int)$_POST["Customer"]["isProfileDisplay"] > 0);
 				$user->setIsProfileDisplay($isProfileDisplay);
 
 				$userLogic = SOY2Logic::createInstance("logic.user.UserLogic");
-		
+
 				//プロフィールページ用のアカウントを作成
 				if($isProfileDisplay && strlen($user->getProfileId()) === 0){
 					$profileId = $userLogic->createProfileId($user);
@@ -80,23 +80,23 @@ class IndexPage extends MainMyPagePageBase{
 
 				//画像のアップロード
 				if(isset($_FILES["image"]["name"]) && preg_match('/(jpg|jpeg|gif|png)$/', $_FILES["image"]["name"])){
-						
+
 					//既に画像を登録してある場合は、新しい画像を登録後に古い画像を削除する
 					if(!is_null($user->getImagePath()) && strlen($user->getImagePath()) > 0){
 						$mypage->setAttribute("user.edit.old_image_path", $user->getImagePath());
 					}
-					
+
 					$isResize = SOYShop_DataSets::get("config.mypage.profile_resize", 0);
 					$resizeWidth = SOYShop_DataSets::get("config.mypage.profile_resize_width", 120);
 					$fileName = $userLogic->uploadFile($_FILES["image"]["name"], $_FILES["image"]["tmp_name"], $this->id, $isResize, $resizeWidth);
 					$user->setImagePath($fileName);
 				}
-				
+
 				//ユーザIDの変更を不許可
 				$user->setId($this->id);
 				$mypage->setUserInfo($user);
 				$mypage->setAttribute("user.edit.use_session_user_info", true);
-				
+
 				if( $this->checkError($mypage) ){
 					$this->jump("edit/confirm");
 				}else{
@@ -110,7 +110,7 @@ class IndexPage extends MainMyPagePageBase{
 	function __construct(){
 
 		$mypage = MyPageLogic::getMyPage();
-		
+
 		//ログインしていなかったら飛ばす
 		if(!$mypage->getIsLoggedin()){
 			$this->jump("login");
@@ -150,7 +150,7 @@ class IndexPage extends MainMyPagePageBase{
 	function buildForm(SOYShop_User $user, MyPageLogic $mypage, $mode=UserComponent::MODE_CUSTOM_FORM){
 
 		//共通コンポーネントに移し替え  soyshop/component/UserComponent.class.php buildFrom()
-		//後方互換性確保は soyshop/component/backward/BackwardUserComponent 
+		//後方互換性確保は soyshop/component/backward/BackwardUserComponent
 
 		//以前のフォーム 後方互換
 		$this->backward->backwardMyPageEdit($this, $user);
@@ -175,7 +175,7 @@ class IndexPage extends MainMyPagePageBase{
 		$user = $mypage->getUserInfo();
 		$mypage->clearErrorMessage();
 		$res = true;
-		
+
 		//共通エラーチェック
 		$res = $this->component->checkError($user, $mypage, UserComponent::MODE_MYPAGE_EDIT);
 

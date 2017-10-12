@@ -314,6 +314,7 @@ class SOYShopSiteController extends SOY2PageController{
                 self::executeDownloadAction($_GET["soyshop_download"]);
                 exit;
             }
+
             self::executeUserApplication($args);
             return true;
         }

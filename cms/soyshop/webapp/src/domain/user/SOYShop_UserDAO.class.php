@@ -132,6 +132,10 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 			$binds[":profileId"] = null;
 		}
 
+		if(!isset($binds[":isProfileDisplay"]) || !is_numeric($binds[":isProfileDisplay"])){
+			$binds[":isProfileDisplay"] = SOYShop_User::PROFILE_NO_DISPLAY;
+		}
+
 		//別システムからのインポートを考慮して必ずチェック
 		if(strlen($binds[":registerDate"]) === 0){
 			$binds[":registerDate"] = time();
@@ -169,6 +173,10 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 
 		if(strlen($binds[":profileId"]) === 0){
 			$binds[":profileId"] = null;
+		}
+
+		if(!isset($binds[":isProfileDisplay"]) || !is_numeric($binds[":isProfileDisplay"])){
+			$binds[":isProfileDisplay"] = SOYShop_User::PROFILE_NO_DISPLAY;
 		}
 
     	$binds[":updateDate"] = time();

@@ -490,9 +490,13 @@ class BackwardUserComponent {
 		));
 
 		//メールアドレス
+		$mailAddress = $user->getMailAddress();
+		if(strpos($_SERVER["REQUEST_URI"], soyshop_get_mypage_url() . "/edit") === 0){
+			if(strpos($mailAddress, "@" . DUMMY_MAIL_ADDRESS_DOMAIN) > 0) $mailAddress = "";
+		}
 		$page->addInput("user_mail_address", array(
     		"name" => "Customer[mailAddress]",
-    		"value" => $user->getMailAddress(),
+    		"value" => $mailAddress,
     	));
 
     	//メールアドレス

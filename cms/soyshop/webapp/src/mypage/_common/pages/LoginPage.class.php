@@ -6,15 +6,15 @@ class LoginPage extends MainMyPagePageBase{
 		if(soy2_check_token()){
 			if(isset($_POST["login"]) || isset($_POST["login_x"])){
 				if((isset($_POST["loginId"]) || isset($_POST["mail"])) && isset($_POST["password"])){
-					
+
 					//後方互換分も含み、ログインに使うIDを取得する
 					$loginId = (isset($_POST["loginId"])) ? trim($_POST["loginId"]) : null;
 					if(is_null($loginId)) $loginId = (isset($_POST["mail"])) ? trim($_POST["mail"]) : null;
-	
+
 					if($this->login($loginId, trim($_POST["password"]))){
 						//auto login
 						if(isset($_POST["login_memory"])) $this->autoLogin();
-						
+
 						//リダイレクト
 						if(isset($_GET["r"]) && strlen($_GET["r"])){
 							$r = $_GET["r"];
@@ -25,16 +25,16 @@ class LoginPage extends MainMyPagePageBase{
 								$mypage->clearAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
 							}
 						}
-						
+
 						//jump
 						if(isset($r)){
 							$param = soyshop_remove_get_value($r);
 							soyshop_redirect_designated_page($param, "login=complete");
 							exit;
 						}
-	
+
 						$this->jumpToTop();
-					
+
 					//ログインできなかった時
 					}else{
 						if(isset($_GET["r"]) && strlen($_GET["r"])){
@@ -49,7 +49,6 @@ class LoginPage extends MainMyPagePageBase{
 	}
 
 	function __construct(){
-		
 		parent::__construct();
 
 		$mypage = MyPageLogic::getMyPage();
@@ -57,7 +56,7 @@ class LoginPage extends MainMyPagePageBase{
 		if($mypage->getIsLoggedin()){
 			$this->jumpToTop();
 		}
-		
+
 		//リダイレクト指定で遷移してきた場合はURIを保存する
 		if(isset($_GET["r"])){
 			$mypage->setAttribute(MyPageLogic::REGISTER_REDIRECT_KEY, $_GET["r"]);
@@ -70,7 +69,7 @@ class LoginPage extends MainMyPagePageBase{
 			"name" => "loginId",
 			"value" => (isset($_POST["loginId"])) ? $_POST["loginId"] : ""
 		));
-		
+
 		//後方互換
 		$this->addInput("login_mail", array(
 			"name" => "loginId",
@@ -97,7 +96,7 @@ class LoginPage extends MainMyPagePageBase{
 
 		//エラー周り
 		DisplayPlugin::toggle("has_error", strlen($mypage->getErrorMessage("login_error")));
-		
+
 		//エラーメッセージ
 		$this->createAdd("login_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("login_error")
@@ -106,6 +105,15 @@ class LoginPage extends MainMyPagePageBase{
 		$mypage->clearErrorMessage();
 		$mypage->save();
 
+		//ソーシャルログイン
+		SOYShopPlugin::load("soyshop.social.login");
+		$buttons = SOYShopPlugin::invoke("soyshop.social.login", array(
+			"mode" => "mypage_login"
+		))->getButtons();
+
+		$this->createAdd("social_login_list", "_common.login.SocialLoginListComponent", array(
+			"list" => $buttons
+		));
 	}
 
 	/**

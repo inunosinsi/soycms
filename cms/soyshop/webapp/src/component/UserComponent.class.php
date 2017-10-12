@@ -71,6 +71,12 @@ class UserComponent {
 			}
 		}
 
+		//マイページの会員情報の編集画面のみ
+		if(get_class($app) == "MyPageLogic" && strpos($_SERVER["REQUEST_URI"], soyshop_get_mypage_url() . "/edit") === 0){
+			//ダミーメールアドレスの場合はメールアドレスを空にする
+			if(strpos($mailAddress, "@" . DUMMY_MAIL_ADDRESS_DOMAIN) > 0) $mailAddress = "";
+		}
+
 		$page->addInput("mail_address", array(
 			"name" => "Customer[mailAddress]",
 			"value" => $mailAddress,

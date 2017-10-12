@@ -35,7 +35,10 @@
 				</tr>
 				<tr>
 					<th nowrap scope="row">プロフィールページ</th>
-					<td><input type="checkbox" soy:id="profile_display"></td>
+					<td>
+						<input type="hidden" name="Customer[isProfileDisplay]" value="0">
+						<input type="checkbox" soy:id="profile_display">
+					</td>
 				</tr>
 				<tr>
 					<th nowrap scope="row">プロフィール画像</th>
@@ -58,7 +61,7 @@
 					<td>
 						<p class="error" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
 						<input name="" type="text" id="" class="input-zip w80" soy:id="user_zip_code">
-						<span class="note">【半角数字】</span> 
+						<span class="note">【半角数字】</span>
 						<span class="search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
 					</td>
 				</tr>
@@ -98,7 +101,7 @@
 						<input name="" type="text" id="" class="w130" soy:id="user_telephone_number">
 						<span class="note">【半角数字】</span><span class="exmpl">（例）075-204-4823</span>
 					</td>
-				</tr>			
+				</tr>
 				<tr soy:id="mailAddress_show">
 					<th nowrap scope="row">メールアドレス<span soy:id="mailAddress_required">（必須）</span></th>
 					<td>
@@ -170,7 +173,7 @@
 						<input name="" type="checkbox" id="" soy:id="mail_magazine">
 					</td>
 				</tr>
-				
+
 				<!-- soy:id="has_user_customfield" -->
 				<!-- soy:id="user_customfield_list" -->
 				<tr>
@@ -199,5 +202,5 @@
 		</section>
 	</form soy:id="form">
 </section>
-		
+
 <script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
