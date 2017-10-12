@@ -1,6 +1,7 @@
 NEXT
 	- PHP7対応
 	- 個人情報保護方針から出力されるtextareaにreadonly属性を追加
+	- 日付(日なし)カラムを追加
 1.1.7 2014-12-08
 	修正
 	-SOY InquiryのSOY Shop連携の際にapplication.iniがない場合にエラーになっていた件を修正(動作はしていた)

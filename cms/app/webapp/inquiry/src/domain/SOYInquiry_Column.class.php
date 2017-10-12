@@ -57,6 +57,7 @@ class SOYInquiry_Column{
 		"CheckBox" => "チェックボックス",
 		"SelectBox" => "セレクトボックス",
 		"Date" => "日付",
+		"DateWithoutDay" => "日付(日なし)",
 		"Prefecture" => "都道府県",
 		"Address" => "住所",
 //		"AddressJs" => "住所(JS版)",
@@ -390,7 +391,7 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 		$this->SOYShopFrom = isset($config["SOYShopFrom"]) ? $config["SOYShopFrom"] : null;
 		$this->replacement = isset($config["replacement"])? $config["replacement"] : null;
 		$this->annotation = isset($config["annotation"])? $config["annotation"] : null;
-		
+
 		if(!defined("SOYINQUIRY_FORM_DESIGN_PAGE")){
 			define("SOYINQUIRY_FORM_DESIGN_PAGE", (isset($_SERVER["PATH_INFO"]) && strpos($_SERVER["PATH_INFO"], "/" . APPLICATION_ID . "/Form/Design/") !== false));
 		}
