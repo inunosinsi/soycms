@@ -16,9 +16,9 @@ class ConvertImageUrlPlugin{
 			"author"=> "齋藤毅",
 			"url"=> "https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
-		
+
 		if(CMSPlugin::activeCheck($this->getId())){
 
 			CMSPlugin::addPluginConfigPage($this->getId(),array(
