@@ -44,41 +44,43 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 *
 	 */
 	function getForm($app, $userId){
-		self::prepare();
+		// 現時点では管理画面のみ
+		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+			self::prepare();
 
-		$values = $this->dbLogic->getByUserId($userId);
+			$values = $this->dbLogic->getByUserId($userId);
 
-		//出力する内容を格納する
-		$array = array();
+			//出力する内容を格納する
+			$array = array();
 
-		$configs = UserCustomSearchFieldUtil::getConfig();
-		if(count($configs)){
-			SOY2::import("module.plugins.user_custom_search_field.component.FieldFormComponent");
-			foreach($configs as $key => $field){
+			$configs = UserCustomSearchFieldUtil::getConfig();
+			if(count($configs)){
+				SOY2::import("module.plugins.user_custom_search_field.component.FieldFormComponent");
+				foreach($configs as $key => $field){
 
-				$obj = array();
-				$name = htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8");
+					$obj = array();
+					$name = htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8");
 
-				if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
-					$obj["name"] = $name . " (" . UserCustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")";
-				}else{
-					$obj["name"] = $name;
-				}
-
-				$value = (isset($values[$key])) ? $values[$key] : null;
-				if(is_null($value)){
-					$app = $this->getApp();
-					if(!is_null($app)){
-						$attributeKey = self::getAttributeKey($key);
-						$value = $app->getAttribute($attributeKey);
+					if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+						$obj["name"] = $name . " (" . UserCustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")";
+					}else{
+						$obj["name"] = $name;
 					}
-				}
-				$obj["form"] = FieldFormComponent::buildForm($key, $field, $value);
-				$array["ucsf_" .$key] = $obj;
-			}
-		}
 
-		return $array;
+					$value = (isset($values[$key])) ? $values[$key] : null;
+					if(is_null($value)){
+						$app = $this->getApp();
+						if(!is_null($app)){
+							$attributeKey = self::getAttributeKey($key);
+							$value = $app->getAttribute($attributeKey);
+						}
+					}
+					$obj["form"] = FieldFormComponent::buildForm($key, $field, $value);
+					$array["ucsf_" .$key] = $obj;
+				}
+			}
+			return $array;
+		}
 	}
 
 	/**

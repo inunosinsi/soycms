@@ -161,4 +161,12 @@ class LINELoginLogic extends SOY2LogicBase {
 
 		return (isset($res[0]["user_id"])) ? (int)$res[0]["user_id"] : null;
 	}
+
+	function getLINEIdByUserId($userId){
+		try{
+			return SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO")->get($userId, self::FIELD_ID)->getValue();
+		}catch(Exception $e){
+			return null;
+		}
+	}
 }
