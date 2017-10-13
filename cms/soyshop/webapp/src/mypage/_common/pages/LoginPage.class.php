@@ -111,6 +111,7 @@ class LoginPage extends MainMyPagePageBase{
 			"mode" => "mypage_login"
 		))->getButtons();
 
+		DisplayPlugin::toggle("social_login", count($buttons));
 		$this->createAdd("social_login_list", "_common.login.SocialLoginListComponent", array(
 			"list" => $buttons
 		));
@@ -132,4 +133,3 @@ class LoginPage extends MainMyPagePageBase{
 		$mypage->autoLogin();
 	}
 }
-?>

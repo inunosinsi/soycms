@@ -489,10 +489,12 @@ class BackwardUserComponent {
 			"enctype" => "multipart/form-data"
 		));
 
-		//メールアドレス
+		//LINE Loginで生成したダミーの場合はメールアドレスを空にする
 		$mailAddress = $user->getMailAddress();
-		if(strpos($_SERVER["REQUEST_URI"], soyshop_get_mypage_url() . "/edit") === 0){
-			if(strpos($mailAddress, "@" . DUMMY_MAIL_ADDRESS_DOMAIN) > 0) $mailAddress = "";
+		if(preg_match('/^line_.*@' . DUMMY_MAIL_ADDRESS_DOMAIN . '$/', $mailAddress, $tmp)){
+			if(isset($tmp[0]) && strlen($tmp[0]) && strpos($tmp[0], "@")){
+				$mailAddress = "";
+			}
 		}
 		$page->addInput("user_mail_address", array(
     		"name" => "Customer[mailAddress]",

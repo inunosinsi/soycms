@@ -151,4 +151,3 @@ class IndexPage extends WebPage{
 		return (preg_match("/^common./", $dir) || preg_match("/^html./", $dir)) ? false : true;
 	}
 }
-?>
