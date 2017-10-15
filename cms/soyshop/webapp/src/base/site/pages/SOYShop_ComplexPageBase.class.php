@@ -35,8 +35,8 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 			$countStart = 1;
 			$countEnd = 10;
 		}else{
-			$countStart = $block->getCountStart();
-			$countEnd = $block->getCountEnd();
+			$countStart = (is_numeric($block->getCountStart())) ? (int)$block->getCountStart() : 1;
+			$countEnd = (is_numeric($block->getCountEnd())) ? (int)$block->getCountEnd() : 10;
 		}
 
 		//設定は1～。送信するデータは0開始
