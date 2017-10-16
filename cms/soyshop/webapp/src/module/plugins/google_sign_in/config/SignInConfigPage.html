@@ -1,0 +1,32 @@
+<p class="notice" soy:display="updated">更新しました</p>
+
+<form soy:id="form">
+	<dl>
+		<dt>クライアントID</dt>
+		<dd>
+			<input type="text" class="text" soy:id="client_id" style="width:90%;" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com">
+		</dd>
+	</dl>
+
+	<p class="pageBtn">
+		<input type="submit" class="submit_button" value="変更" />
+	</p>
+</form>
+
+<h3>Google Sign-In For Websiteプラグインの使用方法</h3>
+<dl>
+	<dt>Google Cloud Platformにログイン</dt>
+	<dd><a href="https://console.cloud.google.com" target="_blank">Google Cloud Platform</a>を開き、サイドバーにあるAPIとサービスのリンクをクリックします。</dd>
+	<dt>OAuth 2.0 クライアント IDを作成</dt>
+	<dd>
+		サイドバーにある認証情報のリンクをクリックし、認証情報の作成ボタンからOAuth 2.0クライアント IDを登録します。<br>
+		承認済みの JavaScript 生成元では<strong soy:id="create_js_url_sample"></strong><br>
+		承認済みのリダイレクト URIでは<strong soy:id="redirect_url_sample"></strong>を登録します。
+	</dd>
+	<dt>OAuth 同意画面でサイトの情報を登録</dt>
+	<dd>OAuth 同意画面を開き、画面の指示に従い、サイトの情報を入力します。</dd>
+	<dt>クライアントIDを取得</dt>
+	<dd>クライアントIDが生成されたら、<br>このページ上部にあるフォームに入力し保存します。</dd>
+	<dt>ログインボタンの動作確認</dt>
+	<dd><a soy:id="mypage_login_link" target="_blank">url</a>を開き、Googleのログインボタンが表示されていることを確認しましょう</dd>
+</dl>
