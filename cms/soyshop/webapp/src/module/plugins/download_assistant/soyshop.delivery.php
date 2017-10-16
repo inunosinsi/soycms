@@ -21,11 +21,9 @@ class DownloadAssistantDeliveryModule extends SOYShopDelivery{
 	}
 
 	function getDescription(){
-
 		$html = array();
 		$html[] = "ダウンロード販売";
 		return implode("", $html);
 	}
 }
 SOYShopPlugin::extension("soyshop.delivery", "download_assistant", "DownloadAssistantDeliveryModule");
-?>

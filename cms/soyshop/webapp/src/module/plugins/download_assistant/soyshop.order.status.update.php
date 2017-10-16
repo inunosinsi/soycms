@@ -25,4 +25,3 @@ class DownloadAssitantOrderStatusUpdate extends SOYShopOrderStatusUpdate{
 }
 
 SOYShopPlugin::extension("soyshop.order.status.update", "download_assistant", "DownloadAssitantOrderStatusUpdate");
-?>

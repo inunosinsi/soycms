@@ -12,6 +12,5 @@ class DownloadAssistantCommon{
 			"allow" => 1,
 			"mail" => "※ダウンロード\nダウンロードは下記のURLから行えます。\n##DOWNLOAD_URL##\n\n\n"
 		));
-    }	
+    }
 }
-?>

@@ -223,13 +223,13 @@ class DetailPage extends WebPage{
 
 		$this->addForm("update_form");
 
-		$this->buildForm($this->id);
+		self::buildForm($this->id);
 		//入荷通知周り
-		$this->buildNoticeButton();
-		$this->buildFavoriteButton();
+		self::buildNoticeButton();
+		self::buildFavoriteButton();
 	}
 
-	function buildForm($id){
+	private function buildForm($id){
 
 		$session = SOY2ActionSession::getUserSession();
 		$appLimit = $session->getAttribute("app_shop_auth_limit");
@@ -257,13 +257,8 @@ class DetailPage extends WebPage{
 			"visible" => ($item->getIsOpen() < SOYShop_Item::IS_OPEN)
 		));
 
-		$this->addModel("is_sale", array(
-			"visible" => ($item->isOnSale())
-		));
-
-		$this->addModel("item_name_wrap", array(
-			"visible" => ($item->getIsOpen() < SOYShop_Item::IS_OPEN) || ($item->isOnSale())
-		));
+		DisplayPlugin::toggle("sale", $item->isOnSale());
+		DisplayPlugin::toggle("item_name_wrap", ($item->getIsOpen() < SOYShop_Item::IS_OPEN) || ($item->isOnSale()));
 
 		$this->addLabel("item_name_text", array(
 			"text" => $item->getName()
@@ -351,10 +346,7 @@ class DetailPage extends WebPage{
 			"html" => $url
 		));
 
-		$this->addModel("item_alias_edit", array(
-			"visible" => $editable
-		));
-
+		DisplayPlugin::toggle("item_alias_edit", $editable);
 		$this->addInput("item_alias", array(
 			"name" => "custom_alias",
 			"value" => (isset($_POST["custom_alias"])) ? $_POST["custom_alias"] : $item->getAlias(),
@@ -395,13 +387,9 @@ class DetailPage extends WebPage{
 		));
 
 		$config = SOYShop_ShopConfig::load();
-		$this->addModel("item_category_area", array(
-			"visible" => (!$item->isChild() && $config->getMultiCategory() != 1)
-		));
+		DisplayPlugin::toggle("item_category_area", (!$item->isChild() && $config->getMultiCategory() != 1));
+		DisplayPlugin::toggle("multi_category_area", (!$item->isChild() && $config->getMultiCategory() != 0));
 
-		$this->addModel("multi_category_area", array(
-			"visible" => (!$item->isChild() && $config->getMultiCategory() != 0)
-		));
 		$this->addInput("multi_category", array(
 			"name" => "Item[multi][categories]",
 			"value" => implode(",",$this->getCategoryIds()),
@@ -420,9 +408,7 @@ class DetailPage extends WebPage{
 		));
 
 		/* parent item */
-		$this->addModel("item_parent_area", array(
-			"visible" => ($item->isChild())
-		));
+		DisplayPlugin::toggle("item_parent_area", $item->isChild());
 		try{
 			$parentItem = $itemDAO->getById($item->getType());
 		}catch(Exception $e){
@@ -435,11 +421,11 @@ class DetailPage extends WebPage{
 
 		/* child item */
 		$childItems = $itemDAO->getByTypeNoDisabled($item->getId());
-		$this->addModel("child_item_list_area", array(
-			"visible" => ($item->getType() == "group")
-		));
+		DisplayPlugin::toggle("child_item_list_area", ($item->getType() == SOYShop_Item::TYPE_GROUP || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD_GROUP));
+
+		$getParam = ($item->getType() == SOYShop_Item::TYPE_GROUP) ? "parent" : "dlparent";
 		$this->addLink("add_child_item", array(
-			"link" => SOY2PageController::createLink("Item.Create") . "?parent=" . $item->getId()
+			"link" => SOY2PageController::createLink("Item.Create") . "?" . $getParam . "=" . $item->getId()
 		));
 		$this->createAdd("child_item_list","HTMLList", array(
 			"list" => $childItems,
@@ -495,9 +481,7 @@ class DetailPage extends WebPage{
 		));
 
 		//管理制限の権限を取得し、権限がない場合は表示しない
-		$this->addModel("app_limit_function", array(
-			"visible" => $appLimit
-		));
+		DisplayPlugin::toggle("app_limit_function", $appLimit);
 
 		//注文受付期間(終売品向け機能)
 		$this->addInput("item_order_period_start", array(
@@ -530,9 +514,7 @@ class DetailPage extends WebPage{
 		));
 
 		$histories = $this->getHistories($item);
-		$this->addModel("is_change_history", array(
-			"visible" => (count($histories) > 0)
-		));
+		DisplayPlugin::toggle("change_history", count($histories));
 
 		$this->createAdd("history_list", "_common.Item.ChangeHistoryListComponent", array(
 			"list" => $histories
@@ -540,7 +522,7 @@ class DetailPage extends WebPage{
 	}
 
 	//入荷通知周り
-	function buildNoticeButton(){
+	private function buildNoticeButton(){
 
 		$isNoticeArrival = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_notice_arrival")));
 
@@ -552,13 +534,11 @@ class DetailPage extends WebPage{
 		}
 
 		//プラグインがアクティブになっていること、顧客数が一人以上いる場合に表示する
-		$this->addModel("is_notice_arrival", array(
-			"visible" => ($isNoticeArrival)
-		));
+		DisplayPlugin::toggle("notice_arrival", $isNoticeArrival);
 	}
 
 	//入荷通知周り
-	function buildFavoriteButton(){
+	private function buildFavoriteButton(){
 
 		$isFavorite = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_favorite_item")));
 
@@ -570,9 +550,7 @@ class DetailPage extends WebPage{
 		}
 
 		//プラグインがアクティブになっていること、顧客数が一人以上いる場合に表示する
-		$this->addModel("is_favorite", array(
-			"visible" => ($isFavorite)
-		));
+		DisplayPlugin::toggle("favorite", $isFavorite);
 	}
 
 	/**
@@ -582,7 +560,7 @@ class DetailPage extends WebPage{
 		return $item->getAttachments();
 	}
 
-	function getOrderConunt($item){
+	function getOrderConunt(SOYShop_Item $item){
 
 		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		$childItemStock = $this->config->getChildItemStock();

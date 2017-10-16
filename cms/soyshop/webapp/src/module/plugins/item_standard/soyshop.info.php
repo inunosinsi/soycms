@@ -13,4 +13,3 @@ class ItemStandardInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "item_standard", "ItemStandardInfo");
-?>

@@ -14,25 +14,31 @@ class CreatePage extends WebPage{
 			$item->setType($_POST["ItemType"]);
 
 			//
-			if($item->getType() == "child"){
+			if($item->getType() == SOYShop_Item::TYPE_CHILD){
 				if(isset($_POST["group_item_id"]))$item->setType($_POST["group_item_id"]);
 			}
 
-			if($item->getType() == "download"){
+			if($item->getType() == SOYShop_Item::TYPE_DOWNLOAD){
 				$dir = SOYSHOP_SITE_DIRECTORY . "download/" . $item->getCode() . "/";
-				mkdir($dir, 0777, true);
+				if(!file_exists($dir)){
+					mkdir($dir, 0777, true);
 
-				//.htaccessを作成する
-				file_put_contents($dir.".htaccess","deny from all");
-				//index.html
-				file_put_contents($dir."index.html","<!-- empty -->");
+					//.htaccessを作成する
+					file_put_contents($dir.".htaccess","deny from all");
+					//index.html
+					file_put_contents($dir."index.html","<!-- empty -->");
+				}
+			}
+
+			if($item->getType() == SOYShop_Item::TYPE_DOWNLOAD_CHILD){
+				if(isset($_POST["dlgroup_item_id"]))$item->setType($_POST["dlgroup_item_id"]);
 			}
 
 			if($logic->validate($item)){
 
 				$id = $logic->create($item);
 				$item->setId($id);
-				
+
 				SOYShopPlugin::load("soyshop.item.name");
 				SOYShopPlugin::invoke("soyshop.item.name", array(
 					"item" => $item
@@ -52,23 +58,23 @@ class CreatePage extends WebPage{
 	var $errors = array();
 
     function __construct() {
-    	
+
     	$session = SOY2ActionSession::getUserSession();
 		$appLimit = $session->getAttribute("app_shop_auth_limit");
-    	
+
     	//管理制限者で商品の追加を開こうとしたとき、商品一覧にリダイレクト
 		if($appLimit == false){
 			SOY2PageController::jump("Item");
 		}
-    	
+
     	parent::__construct();
 
-		$this->createAdd("create_form","HTMLForm");
+		$this->addForm("create_form");
 
-    	$this->buildForm();
+    	self::buildForm();
     }
 
-    function buildForm(){
+    private function buildForm(){
 
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$obj = ($this->obj) ? $this->obj : new SOYShop_Item();
@@ -77,16 +83,20 @@ class CreatePage extends WebPage{
 			$obj->setType($_GET["parent"]);
 		}
 
+		if(isset($_GET["dlparent"])){
+			$obj->setType($_GET["dlparent"]);
+		}
+
 		$this->addInput("item_name", array(
     		"name" => "Item[name]",
     		"value" => $obj->getName()
     	));
-    	
+
     	SOYShopPlugin::load("soyshop.item.name");
 		$nameForm = SOYShopPlugin::display("soyshop.item.name", array(
 			"item" => $obj
 		));
-		
+
 		$this->addLabel("extension_item_name_input", array(
 			"html" => $nameForm
 		));
@@ -109,7 +119,7 @@ class CreatePage extends WebPage{
 		$config = $obj->getConfigObject();
     	$this->addTextArea("item_description", array(
     		"name" => "Item[config][description]",
-    		"value" => @$config["description"]
+    		"value" => (isset($config["description"])) ? $config["description"] : ""
     	));
 
     	$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
@@ -134,7 +144,11 @@ class CreatePage extends WebPage{
 		/*
 		 * グループ周り
 		 */
-		$itemType = (is_numeric($obj->getType())) ? SOYShop_Item::TYPE_CHILD : $obj->getType();
+		if(is_numeric($obj->getType())){
+			$itemType = (isset($_GET["parent"])) ? SOYShop_Item::TYPE_CHILD : SOYShop_Item::TYPE_DOWNLOAD_CHILD;
+		}else{
+			$itemType = $obj->getType();
+		}
 		$this->addInput("item_type_hidden", array(
 			"name" => "ItemType",
 			"value" => $itemType
@@ -142,55 +156,76 @@ class CreatePage extends WebPage{
 		$this->addCheckBox("radio_type_normal", array(
 			"elementId" => "radio_type_normal",
 			"name" => "item_type",
-			"value" => "single",
+			"value" => SOYShop_Item::TYPE_SINGLE,
 			"selected" => ($obj->getType() == SOYShop_Item::TYPE_SINGLE),
-			"onclick" => '$(\'#item_type_hidden\').val("single");'
+			"onclick" => '$(\'#item_type_hidden\').val("' . SOYShop_Item::TYPE_SINGLE . '");'
 		));
 		$this->addCheckBox("radio_type_group", array(
 			"elementId" => "radio_type_group",
 			"name" => "item_type",
-			"value" => "group",
+			"value" => SOYShop_Item::TYPE_GROUP,
 			"selected" => ($obj->getType() == SOYShop_Item::TYPE_GROUP),
-			"onclick" => '$(\'#item_type_hidden\').val("group");'
+			"onclick" => '$(\'#item_type_hidden\').val("' . SOYShop_Item::TYPE_GROUP . '");'
 		));
 		$this->addCheckBox("radio_type_child", array(
 			"elementId" => "radio_type_child",
 			"name" => "item_type",
-			"value" => "child",
+			"value" => SOYShop_Item::TYPE_CHILD,
 			"selected" => ($itemType == SOYShop_Item::TYPE_CHILD),
-			"onclick" => '$(\'#item_type_hidden\').val("child");$(\'#group_item_div\').show();'
+			"onclick" => '$(\'#item_type_hidden\').val("' . SOYShop_Item::TYPE_CHILD . '");$(\'#group_item_div\').show();'
 		));
 		$this->addCheckBox("radio_type_download", array(
 			"elementId" => "radio_type_download",
 			"name" => "item_type",
-			"value" => "download",
+			"value" => SOYShop_Item::TYPE_DOWNLOAD,
 			"selected" => ($itemType == SOYShop_Item::TYPE_DOWNLOAD),
-			"onclick" => '$(\'#item_type_hidden\').val("download");'
+			"onclick" => '$(\'#item_type_hidden\').val("' . SOYShop_Item::TYPE_DOWNLOAD . '");'
+		));
+		$this->addCheckBox("radio_type_dlgroup", array(
+			"elementId" => "radio_type_dlgroup",
+			"name" => "item_type",
+			"value" => SOYShop_Item::TYPE_DOWNLOAD_GROUP,
+			"selected" => ($itemType == SOYShop_Item::TYPE_DOWNLOAD_GROUP),
+			"onclick" => '$(\'#item_type_hidden\').val("' . SOYShop_Item::TYPE_DOWNLOAD_GROUP . '");'
+		));
+		$this->addCheckBox("radio_type_dlgroup_child", array(
+			"elementId" => "radio_type_dlgroup_child",
+			"name" => "item_type",
+			"value" => SOYShop_Item::TYPE_DOWNLOAD_CHILD,
+			"selected" => ($itemType == SOYShop_Item::TYPE_DOWNLOAD_CHILD),
+			"onclick" => '$(\'#item_type_hidden\').val("' . SOYShop_Item::TYPE_DOWNLOAD_CHILD . '");$(\'#dlgroup_item_div\').show();'
 		));
 
 		$groupItems = $dao->getByType(SOYShop_Item::TYPE_GROUP);
 
-		$this->createAdd("group_item_select","HTMLSelect", array(
+		$this->addSelect("group_item_select", array(
 			"name" => "group_item_id",
 			"options" => $groupItems,
 			"property" => "name",
 			"selected" => $obj->getType()
 		));
 
-		$this->createAdd("group_item_exists","HTMLModel", array(
-			"visible" => (count($groupItems) > 0)
-		));
+		DisplayPlugin::toggle("group_item_exists", (count($groupItems) > 0));
 
 		//ダウンロード販売プラグインがアクティブの時に表示
-		$this->createAdd("download_exists","HTMLModel", array(
-			"visible" => class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("download_assistant"))
+		DisplayPlugin::toggle("download_exists", SOYShopPluginUtil::checkIsActive("download_assistant"));
+
+		$dlgroupItems = $dao->getByType(SOYShop_Item::TYPE_DOWNLOAD_GROUP);
+
+		$this->addSelect("dlgroup_item_select", array(
+			"name" => "dlgroup_item_id",
+			"options" => $dlgroupItems,
+			"property" => "name",
+			"selected" => $obj->getType()
 		));
+
+		DisplayPlugin::toggle("dlgroup_item_exists", (count($dlgroupItems) > 0));
 
     	//error
 		foreach(array("name","code") as $key){
-			$this->createAdd("error_$key","HTMLLabel", array(
-				"text" => @$this->errors[$key],
-				"visible" => (strlen(@$this->errors[$key]))
+			$this->addLabel("error_$key", array(
+				"text" => (isset($this->errors[$key])) ? $this->errors[$key] : "",
+				"visible" => (isset($this->errors[$key]) && strlen($this->errors[$key]))
 			));
 		}
     }
@@ -210,4 +245,3 @@ class CreatePage extends WebPage{
 		);
 	}
 }
-?>

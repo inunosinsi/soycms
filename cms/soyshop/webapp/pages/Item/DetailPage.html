@@ -8,11 +8,11 @@
 <div class="block">
 	<div class="block_title">
 		<h2>商品の詳細 - <!-- soy:id="item_name_text"  /--></h2>
-		
-		<div class="block_title_right" soy:id="is_notice_arrival">
+
+		<div class="block_title_right" soy:display="notice_arrival">
 			<a href="javascript:void(0);" onclick="return OptionWindow.popup('Arrival');" class="button">入荷通知希望顧客</a>
 		</div>
-		<div class="block_title_right" soy:id="is_favorite">
+		<div class="block_title_right" soy:display="favorite">
 			<a href="javascript:void(0);" onclick="return OptionWindow.popup('Favorite');" class="button">お気に入り登録</a>
 		</div>
 	</div>
@@ -29,12 +29,12 @@
 			<dt>商品名</dt>
 			<dd>
 				<span class="option" soy:id="open_text" />
-				<span class="option" soy:id="is_sale">[セール中]</span>
-				<br soy:id="item_name_wrap"/>
+				<span class="option" soy:display="sale">[セール中]</span>
+				<br soy:display="item_name_wrap">
 				<input type="text" style="width:100%" class="text" soy:id="item_name" />
 				<p class="require" soy:id="error_name"></p>
 			</dd>
-			
+
 			<!-- soy:id="extension_item_name_input" /-->
 
 			<dt>商品コード</dt>
@@ -42,8 +42,8 @@
 				<input type="text" class="text" soy:id="item_code" />
 				<p class="require" soy:id="error_code"></p>
 			</dd>
-			
-			<!-- soy:id="item_category_area" -->
+
+			<!-- soy:display="item_category_area" -->
 			<dt>商品カテゴリ</dt>
 			<dd>
 				<p class="mb" soy:id="item_category_choice"></p>
@@ -53,9 +53,9 @@
 				<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
 				<!-- /soy:id="app_limit_function" -->
 			</dd>
-			<!-- /soy:id="item_category_area" -->
-			
-			<!-- soy:id="multi_category_area" -->
+			<!-- /soy:display="item_category_area" -->
+
+			<!-- soy:display="multi_category_area" -->
 			<dt>商品カテゴリ(複数選択可)</dt>
 			<dd>
 				<p class="mb" soy:id="multi_category_text"></p>
@@ -63,16 +63,16 @@
 				<a class="button" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
 				<ul id="category_tree" soy:id="multi_category_tree" style="display:none;"></ul>
 			</dd>
-			<!-- /soy:id="multi_category_area" -->
-			
-			<!-- soy:id="item_parent_area" -->
+			<!-- /soy:display="multi_category_area" -->
+
+			<!-- soy:display="item_parent_area" -->
 			<dt>親商品</dt>
 			<dd>
 				<a soy:id="parent_item_link">親商品</a>
 			</dd>
-			<!-- /soy:id="item_parent_area" -->
-			
-			<!-- soy:id="child_item_list_area" -->
+			<!-- /soy:display="item_parent_area" -->
+
+			<!-- soy:display="child_item_list_area" -->
 			<dt class="child_item">子商品</dt>
 			<dd class="child_item">
 				<ul>
@@ -82,11 +82,11 @@
 					</li>
 					<!-- /soy:id="child_item_list" -->
 				</ul>
-				
+
 				<hr />
 				<a class="button" soy:id="add_child_item">子商品の追加</a>
 			</dd>
-			<!-- /soy:id="child_item_list_area" -->
+			<!-- /soy:display="child_item_list_area" -->
 
 			<dt>価格</dt>
 			<dd>
@@ -107,11 +107,11 @@
 						<th style="vertical-align:top;padding-top:10px;" class="small_text alC" nowrap>セール価格</th>
 						<td>
 							<input type="number" class="text" soy:id="item_sale_price" />
-							<!-- soy:id="app_limit_function*" -->
+							<!-- soy:display="app_limit_function*" -->
 							<h4>セール設定</h4>
 							<input type="checkbox" soy:id="item_is_sale" />
 							<label for="item_is_sale">セール中に設定する</label>
-							<!-- /soy:id="app_limit_function*" -->
+							<!-- /soy:display="app_limit_function*" -->
 						</td>
 					</tr>
 					<!-- soy:id="extension_add_price_area" /-->
@@ -123,8 +123,8 @@
 					<!-- /soy:id="extension_price_option_list" -->
 				</table>
 			</dd>
-			
-			
+
+
 
 			<dt>在庫数(注文数)</dt>
 			<dd>
@@ -135,9 +135,9 @@
 			<dt>商品URL</dt>
 			<dd>
 				<!-- soy:id="item_url_text" /-->
-				<!-- soy:id="item_alias_edit" -->
+				<!-- soy:display="item_alias_edit" -->
 				<a href="javascript:void(0);" class="button" onclick="$(this).hide();$('#custom_alias_input').show();">編集する</a>
-				<!-- /soy:id="item_alias_edit" -->
+				<!-- /soy:display="item_alias_edit" -->
 				<hr />
 				詳細ページ:<select soy:id="detail_page_list"></select>
 				<p class="require" soy:id="error_detail_page_id"></p>
@@ -169,23 +169,23 @@
 				<input type="text" id="item_large_image"  soy:id="item_large_image" />
 			</dd>
 		</dl>
-		
+
 		<p class="pageBtn">
 			<input type="submit" name="do_open" value="変更(公開)" style="width:180px;margin-right:50px;" />
 			<!-- soy:id="app_limit_function*" -->
 			<input type="submit" name="do_close" value="変更(非公開)" style="width:180px;" />
 			<!-- /soy:id="app_limit_function*" -->
 		</p>
-		
+
 		<dl>
 			<!-- soy:id="custom_field" --><!-- /soy:id="custom_field" -->
-			
+
 			<dt>販売期限</dt>
 			<dd>
 				<input type="text" class="date_picker_start" soy:id="item_order_period_start" />～<input type="text" class="date_picker_end" soy:id="item_order_period_end" />
 				&nbsp;<a href="javascript:void(0)" id="order_period_clear_button" class="button">クリア</a>
 			</dd>
-			
+
 			<dt>公開期限</dt>
 			<dd>
 				<input type="text" class="date_picker_start" soy:id="item_open_period_start" />～<input type="text" class="date_picker_end" soy:id="item_open_period_end" />
@@ -272,7 +272,7 @@
 	</div><!-- /block_body -->
 </div>
 
-<!-- soy:id="is_change_history" -->
+<!-- soy:display="change_history" -->
 <div class="block">
 	<div class="block_title">
 		<h2>在庫数の変更履歴</h2>
@@ -298,7 +298,7 @@
 		</table>
 	</div>
 </div>
-<!-- /soy:id="is_change_history" -->
+<!-- /soy:display="change_history" -->
 
 <script type="text/javascript" soy:src="../soycms/js/tinymce/tinymce.min.js"></script>
 <script type="text/javascript">
@@ -310,25 +310,25 @@ $(function(){
 		skin : "lightgray",
 		plugins : "save,pagebreak,table,hr,insertdatetime,searchreplace,contextmenu,code,textcolor,paste,directionality,fullscreen,noneditable,charmap,visualchars,nonbreaking,innerlink,insertimage,insertwidget,youTube",
 		tools : "inserttable",
-		language : "ja",	
+		language : "ja",
 		menubar : false,
 		toolbar1 : "save | cut copy paste pastetext | searchreplace | bold italic underline strikethrough | subscript superscript | forecolor backcolor | alignleft aligncenter alignright | formatselect fontselect fontsizeselect",
 		toolbar2 : "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | fullscreen preview | insertdate inserttime | insertwidget | table youTube",
-	
+
 		init_instance_callback : function(editor) {
 //			onInitTinymceEditor(editor.id);
 		},
 		oninit : function(){
 //			onInitTinymce();
 		},
-	
+
 		cleanup : true,
 		verify_html : false,
 		convert_urls : false,
 		relative_urls : false,
 		entity_encoding : "named"
 	});
-	
+
 	//クリアボタン
 	var t = ["order", "open"];
 	for(var i = 0; i < t.length; i++){
@@ -352,7 +352,7 @@ function onMultiClickLeaf(id,ele){
 	if ($(ele).hasClass("selected_category")) {
 		$("#multi_category").val($("#multi_category").val().replace(id,""));
 		$("#multi_category_text").text($("#multi_category_text").text().replace($(ele).text(),""));
-		
+
 		$(ele).removeClass("selected_category");
 	}else{
 		$("#multi_category").val($("#multi_category").val() + "," + id);
@@ -364,7 +364,7 @@ function onMultiClickLeaf(id,ele){
 /**
 	$(".selected_category").removeClass("selected_category");
 	$(ele).addClass("selected_category");
-	
+
 	if($(ele).hasClass("selected_category")){
 		$("#multi_category").val($("#multi_category").val().replace(id,""));
 		$("#categories_text").text($("#categories_text").text().replace($(ele).text(),""));

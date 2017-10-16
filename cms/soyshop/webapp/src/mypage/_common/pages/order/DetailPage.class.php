@@ -36,10 +36,10 @@ class DetailPage extends MainMyPagePageBase{
         $this->orderId = $args[0];
         $this->userId = $user->getId();
 
-        $this->buildOrder();
+        self::buildOrder();
     }
 
-    function buildOrder(){
+    private function buildOrder(){
 
         $orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
         try{
@@ -80,7 +80,7 @@ class DetailPage extends MainMyPagePageBase{
 
         //オーダーカスタムフィールド
         $this->createAdd("customfield_list", "_common.order.OrderCustomfieldListComponent", array(
-            "list" => $this->getCustomfield()
+            "list" => self::getCustomfield()
         ));
 
         //備考
@@ -89,8 +89,8 @@ class DetailPage extends MainMyPagePageBase{
         ));
 
         //送付先と請求先のsoy:idを生成する
-        $this->getAddressList($order, "send");
-        $this->getAddressList($order, "claimed");
+        self::getAddressList($order, "send");
+        self::getAddressList($order, "claimed");
 
         //注文の内訳
         try{
@@ -109,7 +109,7 @@ class DetailPage extends MainMyPagePageBase{
         //ダウンロード商品関連
         $activedDownloadPlugin = (class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("download_assistant"));
         if($activedDownloadPlugin){
-            $files = $this->getDownloadFiles($itemOrders);
+            $files = self::getDownloadFiles($itemOrders);
         }else{
             $files = array();
         }
@@ -117,7 +117,7 @@ class DetailPage extends MainMyPagePageBase{
         //ボーナス
         $activeBonusPlugin = (class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("bonus_download"));
         if($activeBonusPlugin){
-            $bonuses = $this->getBonusFiles($order);
+            $bonuses = self::getBonusFiles($order);
         }else{
             $bonuses = array();
         }
@@ -136,15 +136,15 @@ class DetailPage extends MainMyPagePageBase{
         ));
 
         $this->addModel("is_subtotal", array(
-            "visible" => $this->checkTaxModule($order->getModuleList())
+            "visible" => self::checkTaxModule($order->getModuleList())
         ));
 
         $this->addLabel("subtotal_item_count", array(
-            "text" => $this->getSubtotalItemCount($itemOrders)
+            "text" => self::getSubtotalItemCount($itemOrders)
         ));
 
         $this->addLabel("subtotal_price", array(
-            "text" => $this->getSubtotalPrice($itemOrders)
+            "text" => self::getSubtotalPrice($itemOrders)
         ));
 
         $this->createAdd("module_list", "_common.order.ModuleListComponent", array(
@@ -160,17 +160,15 @@ class DetailPage extends MainMyPagePageBase{
             "link" => soyshop_get_mypage_top_url()
         ));
 
-
         SOYShopPlugin::load("soyshop.order.createadd");
         $delegate = SOYShopPlugin::invoke("soyshop.order.createadd", array(
             "order" => $order,
             "orders" => $itemOrders,
             "page" => $this
         ));
-
     }
 
-    function getAddressList(SOYShop_Order $order, $mode = "send"){
+    private function getAddressList(SOYShop_Order $order, $mode = "send"){
 
         //送付先の場合
         if($mode == "send"){
@@ -203,7 +201,7 @@ class DetailPage extends MainMyPagePageBase{
     }
 
     //taxモジュールが登録されているか？をチェックする
-    function checkTaxModule($modules){
+    private function checkTaxModule($modules){
 
         if(count($modules) === 0) return false;
 
@@ -219,7 +217,7 @@ class DetailPage extends MainMyPagePageBase{
     }
 
     //小計時のアイテムの総個数
-    function getSubtotalItemCount($itemOrders){
+    private function getSubtotalItemCount($itemOrders){
         $total = 0;
 
         if(count($itemOrders) === 0) return $total;
@@ -231,7 +229,7 @@ class DetailPage extends MainMyPagePageBase{
         return $total;
     }
 
-    function getSubtotalPrice($itemOrders){
+    private function getSubtotalPrice($itemOrders){
         $total = 0;
 
         if(count($itemOrders) === 0) return $total;
@@ -243,7 +241,7 @@ class DetailPage extends MainMyPagePageBase{
         return $total;
     }
 
-    function getCustomfield(){
+    private function getCustomfield(){
         SOYShopPlugin::load("soyshop.order.customfield");
         $delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
             "mode" => "admin",
@@ -262,9 +260,10 @@ class DetailPage extends MainMyPagePageBase{
         return $array;
     }
 
-    function getDownloadFiles($itemOrders){
+    private function getDownloadFiles($itemOrders){
         $files = array();
         $items = array();
+		$commonLogic = SOY2Logic::createInstance("module.plugins.download_assistant.logic.DownloadCommonLogic");
         foreach($itemOrders as $itemOrder){
             try{
                 $item = $this->itemDao->getById($itemOrder->getItemId());
@@ -272,9 +271,7 @@ class DetailPage extends MainMyPagePageBase{
                 continue;
             }
 
-            if($item->getType() === SOYShop_Item::TYPE_DOWNLOAD){
-                $items[] = $item;
-            }
+            if($commonLogic->checkItemType($item)) $items[] = $item;
         }
 
         if(count($items) > 0){
@@ -302,7 +299,7 @@ class DetailPage extends MainMyPagePageBase{
      * @param object SOYShop_Order
      * @return array
      */
-    function getBonusFiles(SOYShop_Order $order){
+    private function getBonusFiles(SOYShop_Order $order){
         $paymentFlag = (int)$order->getPaymentStatus();
 
         $attributes = $order->getAttributeList();

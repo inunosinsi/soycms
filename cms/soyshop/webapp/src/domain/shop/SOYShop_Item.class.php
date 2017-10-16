@@ -8,13 +8,16 @@ class SOYShop_Item {
     const TYPE_GROUP = "group";
     const TYPE_CHILD = "child";
     const TYPE_DOWNLOAD = "download";
+	const TYPE_DOWNLOAD_GROUP = "dlgroup";	//ダウンロードグループ
+	const TYPE_DOWNLOAD_CHILD = "dlchild";	//ダウンロードグループ
 
 
     static public function getItemTypes(){
         return array(
             self::TYPE_SINGLE,
             self::TYPE_GROUP,
-            self::TYPE_DOWNLOAD
+            self::TYPE_DOWNLOAD,
+			self::TYPE_DOWNLOAD_GROUP
         );
     }
 
@@ -436,11 +439,10 @@ class SOYShop_Item {
      * 追加可能か
      */
     function isOrderable(){
-        if($this->getType() == self::TYPE_GROUP){
+        if($this->getType() == self::TYPE_GROUP || $this->getType() == self::TYPE_DOWNLOAD_GROUP){
             return false;
         }
 
         return true;
     }
 }
-?>

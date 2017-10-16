@@ -20,7 +20,7 @@
 				<input type="text" class="text" soy:id="item_name" />
 				<p class="require" soy:id="error_name"></p>
 			</dd>
-			
+
 			<!-- soy:id="extension_item_name_input" /-->
 
 			<dt>商品コード</dt>
@@ -28,7 +28,7 @@
 				<input type="text" class="text" soy:id="item_code" />
 				<p class="require" soy:id="error_code"></p>
 			</dd>
-		
+
 			<?php /*
 			<dt>商品カテゴリ</dt>
 			<dd>
@@ -38,7 +38,7 @@
 				<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
 			</dd>
 			*/ ?>
-			
+
 			<dt>価格</dt>
 			<dd>
 				<input type="text" class="text" soy:id="item_price" />
@@ -53,35 +53,47 @@
 			<dd>
 				<textarea soy:id="item_description"></textarea>
 			</dd>
-			
+
 			<dt>商品グループ</dt>
 			<dd>
 				<input type="hidden" id="item_type_hidden" soy:id="item_type_hidden" /><br />
 				<input type="radio" id="radio_type_normal" soy:id="radio_type_normal" />
 				<label for="radio_type_normal">通常商品</label><br />
-				
+
 				<input type="radio" id="radio_type_group" soy:id="radio_type_group" />
 				<label for="radio_type_group">商品グループとして追加</label><br />
-				
-				<!-- soy:id="group_item_exists" -->
+
+				<!-- soy:display="group_item_exists" -->
 				<input type="radio" id="radio_type_child" soy:id="radio_type_child" />
 				<label for="radio_type_child">グループの子として追加</label><br />
 
 				<div id="group_item_div" style="display:none;">
 					<select soy:id="group_item_select"></select>
 				</div>
-				<!-- /soy:id="group_item_exists" -->
-				
-				<!-- soy:id="download_exists" -->
+				<!-- /soy:display="group_item_exists" -->
+
+				<!-- soy:display="download_exists" -->
 				<input type="radio" id="radio_type_download" soy:id="radio_type_download" />
-				<label for="radio_type_download">ダウンロード販売商品</label>
-				<!-- /soy:id="download_exists" -->
+				<label for="radio_type_download">ダウンロード販売商品</label><br>
+
+				<input type="radio" id="radio_type_dlgroup" soy:id="radio_type_dlgroup" />
+				<label for="radio_type_dlgroup">ダウンロード商品グループ</label><br>
+				<!-- /soy:display="download_exists" -->
+
+				<!-- soy:display="dlgroup_item_exists" -->
+				<input type="radio" id="radio_type_dlgroup_child" soy:id="radio_type_dlgroup_child" />
+				<label for="radio_type_dlgroup_child">ダウンロード商品グループの子として追加</label><br />
+
+				<div id="dlgroup_item_div" style="display:none;">
+					<select soy:id="dlgroup_item_select"></select>
+				</div>
+				<!-- /soy:display="dlgroup_item_exists" -->
 			</dd>
 		</dl>
 
 			<p class="pageBtn"><input type="submit" value="追加" /></p>
 
-		</form soy:id="create_form">
+		</form>
 	</div><!-- /block_body -->
 
 </div>

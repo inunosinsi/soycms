@@ -9,7 +9,7 @@ class ItemStandardCart extends SOYShopCartBase{
 			if(!is_null($child->getId())) {
 				SOY2::import("util.SOYShopPluginUtil");
 				if(SOYShopPluginUtil::checkIsActive("async_cart_button") && isset($_REQUEST["mode"]) && $_REQUEST["mode"] == "async"){
-					
+
 					//カートに入っている商品数も加味する
 					$cart = CartLogic::getCart();
 					$inCnt = 0;
@@ -19,20 +19,19 @@ class ItemStandardCart extends SOYShopCartBase{
 							$inCnt += (int)$item->getItemCount();
 						}
 					}
-				
+
 					$cnt = (isset($_GET["count"]) && is_numeric($_GET["count"]) && (int)$_GET["count"] > 0) ? (int)$_GET["count"] : 1;
-				
+
 					//非同期カートプラグインで在庫数が0の場合は別のステータスコードを返す
 					if($cnt > ((int)$child->getStock() - $inCnt)){
 						header("HTTP/1.1 204 No Content");
 						exit;
 					}
 				}
-					
+
 				$_REQUEST["item"] = $child->getId();
 			}
 		}
 	}
 }
 SOYShopPlugin::extension("soyshop.cart", "item_standard", "ItemStandardCart");
-?>
