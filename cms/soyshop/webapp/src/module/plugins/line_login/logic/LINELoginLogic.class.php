@@ -120,7 +120,6 @@ class LINELoginLogic extends SOY2LogicBase {
 		try{
 			$userId = $userDao->insert($user);
 		}catch(Exception $e){
-			var_dump($e);
 			return null;
 		}
 
@@ -133,7 +132,6 @@ class LINELoginLogic extends SOY2LogicBase {
 		try{
 			$userAttrDao->insert($attr);
 		}catch(Exception $e){
-			var_dump($e);
 			return null;
 		}
 
