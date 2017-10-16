@@ -7,9 +7,7 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 	function doPost(SOYShop_Item $item){
 
 		$dir = SOYSHOP_SITE_DIRECTORY . "download/" . $item->getCode();
-		if(!is_dir($dir)){
-			mkdir($dir);
-		}
+		if(!file_exists($dir)) mkdir($dir);
 
 		//削除
 		if(isset($_POST["download_assistant_delete"])){
@@ -116,6 +114,7 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 			}
 
 			$dir = SOYSHOP_SITE_DIRECTORY . "download/" . $item->getCode() . "/";
+			if(!file_exists($dir)) mkdir($dir);
 
 			$style = "style=\"text-align:right;ime-mode:inactive;\" size=\"4\"";
 
