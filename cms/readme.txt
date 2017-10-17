@@ -28,6 +28,7 @@ NEXT
 	 - ショップサイト作成時にim.phpを作成
 	 - PAY.JPクレジットカード支払いモジュール
 	 - LINE Loginプラグイン
+	 - Facebookログインプラグイン
 	 - Google Sign-In for Websitesプラグイン
 	 - ダウンロード商品グループ
 	 - 商品規格プラグインでダウンロード商品を扱えるようにした

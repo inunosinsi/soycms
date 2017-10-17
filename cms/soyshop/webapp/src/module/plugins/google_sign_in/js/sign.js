@@ -39,7 +39,6 @@ function onSignIn(googleUser) {
 			var resp = xhr.response;
 			if(resp){
 				var res = JSON.parse(resp);
-				console.log(res);
 				if(res.result == 1){
 					location.href = location.pathname;
 				}
