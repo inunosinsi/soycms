@@ -533,7 +533,7 @@ class CMSFileManager{
 				$url = $siteUrl . $url;
 			}else{
 				$url = str_replace("\\","/",str_replace($root,"",$target));
-				if($url[0] != "/")$url = "/".$url;
+				if(strlen($url) > 0 && $url[0] != "/")$url = "/".$url;
 			}
 
 			$file->setUrl($url);

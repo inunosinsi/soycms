@@ -161,12 +161,14 @@ class SiteCreateLogic extends SOY2LogicBase{
 		$siteConfig->setUseLabelCategory(true);
 		$siteConfig->getSiteConfig();
 
+		$conf = $siteConfig->getSiteConfig();
+
 		$pdo = $this->getSitePDO();
 		$sql = "insert into SiteConfig(name,charset,siteConfig) values (:name,:encoding,:siteConfig)";
 		$stmt = $pdo->prepare($sql);
 		$stmt->bindParam(":name",$siteName);
 		$stmt->bindParam(":encoding",$encoding);
-		$stmt->bindParam(":siteConfig",$siteConfig->getSiteConfig());
+		$stmt->bindParam(":siteConfig",$conf);
 
 		$stmt->execute();
 
@@ -209,11 +211,13 @@ class SiteCreateLogic extends SOY2LogicBase{
 		$template = str_replace("@@SITE_LINK;",$siteUrl,$template);
 		$pageType = Page::PAGE_TYPE_ERROR;
 
+		$time = time();
+
 		$stmt->bindParam(":uri",$uri);
 		$stmt->bindParam(":title",$title);
 		$stmt->bindParam(":template",$template);
 		$stmt->bindParam(":pagetype",$pageType);
-		$stmt->bindParam(":udate",time());
+		$stmt->bindParam(":udate",$time);
 		$stmt->execute();
 
 	}
@@ -589,4 +593,3 @@ class SiteCreateLogic extends SOY2LogicBase{
 	}
 
 }
-
