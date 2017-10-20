@@ -136,6 +136,10 @@ class DetailPage extends WebPage{
     		exit;
     	}
 
+		//管理画面から注文ボタン
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		DisplayPlugin::toggle("orderable_button", SOYShop_ShopConfig::load()->getDisplayOrderButtonOnUserAdminPage());
+
     	//ユーザの画像保存ディレクトリが無い場合は生成する
 		$dir = $shopUser->getAttachmentsPath();
 

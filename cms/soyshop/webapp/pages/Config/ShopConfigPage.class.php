@@ -23,6 +23,7 @@ class ShopConfigPage extends WebPage{
 			"insertDummyMailAddressOnAdminRegister" => 0,
 			"displayOrderAdminPage" => 0,
 			"displayItemAdminPage" => 0,
+			"displayOrderButtonOnUserAdminPage" => 0,
 			"defalutArea" => 0,
 			"displayUserOfficeItems" => 0,
 			"displayUserProfileItems" => 0,
@@ -280,6 +281,13 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getDisplayItemAdminPage(),
 			"label" => "管理画面で商品タブを表示する"
+		));
+
+		$this->addCheckBox("displayOrderButtonOnUserAdminPage", array(
+			"name" => "Config[displayOrderButtonOnUserAdminPage]",
+			"value" => 1,
+			"selected" => $config->getDisplayOrderButtonOnUserAdminPage(),
+			"label" => "管理画面の顧客詳細で注文関連のボタンを表示する"
 		));
 
 		SOY2::import("domain.config.SOYShop_Area");

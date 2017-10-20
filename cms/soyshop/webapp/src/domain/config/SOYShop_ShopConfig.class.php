@@ -41,6 +41,7 @@ class SOYShop_ShopConfig {
 
 	private $displayOrderAdminPage = 1;
 	private $displayItemAdminPage = 1;
+	private $displayOrderButtonOnUserAdminPage = 1;
 
 	private $defaultArea = 0;
 	private $displayUserOfficeItems = 1;
@@ -502,6 +503,13 @@ class SOYShop_ShopConfig {
 	}
 	function setDisplayOrderAdminPage($displayOrderAdminPage){
 		$this->displayOrderAdminPage = $displayOrderAdminPage;
+	}
+
+	function getDisplayOrderButtonOnUserAdminPage(){
+		return $this->displayOrderButtonOnUserAdminPage;
+	}
+	function setDisplayOrderButtonOnUserAdminPage($displayOrderButtonOnUserAdminPage){
+		$this->displayOrderButtonOnUserAdminPage = $displayOrderButtonOnUserAdminPage;
 	}
 
 	function getDisplayItemAdminPage(){
