@@ -39,6 +39,8 @@ class UserGroupCSVLogic extends ExImportLogicBase {
 		$dbLogic = SOY2Logic::createInstance("module.plugins.user_group.logic.UserGroupDataBaseLogic");
 		SOY2::import("module.plugins.user_group.util.UserGroupCustomSearchFieldUtil");
 		$configs = UserGroupCustomSearchFieldUtil::getConfig();
+		$fieldIdList = self::buildFieldIdList($configs);
+
 		foreach($groups as $group){
 			$values = $dbLogic->getByGroupId($group->getId());
 			$line = array();
@@ -47,8 +49,9 @@ class UserGroupCSVLogic extends ExImportLogicBase {
 			$line[] = $group->getCode();
 
 			if(count($values)) {
-				foreach($values as $fieldId => $v){
-					if($fieldId == "group_id") continue;
+				//バリューの整列が必要
+				foreach($fieldIdList as $fieldId){
+					$v = (isset($values[$fieldId])) ? $values[$fieldId] : "";
 					switch($configs[$fieldId]["type"]){
 						case UserGroupCustomSearchFieldUtil::TYPE_CHECKBOX:
 							$v = "\"" . str_replace(",", "\n", $v) . "\"";
@@ -69,5 +72,13 @@ class UserGroupCSVLogic extends ExImportLogicBase {
 		}
 
 		return $lines;
+	}
+
+	private function buildFieldIdList($configs){
+		$list = array();
+		foreach($configs as $fieldId => $conf){
+			$list[] = $fieldId;
+		}
+		return $list;
 	}
 }
