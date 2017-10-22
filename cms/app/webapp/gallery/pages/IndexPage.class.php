@@ -3,8 +3,8 @@
 class IndexPage extends WebPage{
 
 	function __construct() {
-		WebPage::__construct();
-		
+		parent::__construct();
+
 		$galleries = $this->getGalleries();
 		$this->addModel("no_gallery_list", array(
 			"visible" => (count($galleries) === 0)
@@ -13,9 +13,9 @@ class IndexPage extends WebPage{
 		$this->createAdd("gallery_list", "_common.GalleryListComponent", array(
 			"list" => $galleries
 		));
-		
-		$images = $this->getImages();	
-		
+
+		$images = $this->getImages();
+
 		$this->addModel("no_image_list", array(
 			"visible" => (count($images) === 0)
 		));
@@ -24,10 +24,10 @@ class IndexPage extends WebPage{
 			"list" => $images
 		));
 	}
-	
+
 	function getGalleries(){
 		$limit = 5;
-			
+
 		$dao = SOY2DAOFactory::create("SOYGallery_GalleryDAO");
 		$dao->setLimit($limit);
 		$dao->setOrder("create_date DESC");
@@ -38,10 +38,10 @@ class IndexPage extends WebPage{
 		}
 		return $galleries;
 	}
-	
+
 	function getImages(){
 		$limit = 15;
-			
+
 		$dao = SOY2DAOFactory::create("SOYGallery_ImageViewDAO");
 		$dao->setLimit($limit);
 		$dao->setOrder("create_date DESC");
@@ -53,4 +53,3 @@ class IndexPage extends WebPage{
 		return $images;
 	}
 }
-?>

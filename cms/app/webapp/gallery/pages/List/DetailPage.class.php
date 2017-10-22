@@ -32,7 +32,7 @@ class DetailPage extends WebPage{
     function __construct($args) {
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 		
-		WebPage::__construct();
+		parent::__construct();
 				
 		$image = $this->getImage($this->id);
 		

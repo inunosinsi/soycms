@@ -100,7 +100,7 @@ class DetailPage extends WebPage{
     	
     	$this->id = (isset($args[0])) ? (int)$args[0] : null;
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$id = $this->id;
     	

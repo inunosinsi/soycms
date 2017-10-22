@@ -152,7 +152,7 @@ class EditPage extends WebPage{
 		$this->imageDao = SOY2DAOFactory::create("SOYGallery_ImageDAO");
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 	
-    	WebPage::__construct();
+    	parent::__construct();
     				
 		$this->addModel("error", array(
 			"visible" => (isset($_GET["error"]))
