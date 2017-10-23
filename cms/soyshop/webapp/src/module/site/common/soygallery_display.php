@@ -20,8 +20,9 @@ function soyshop_soygallery_display($html, $page){
 	$gallery = getGalleryBySOYGallery($galleryId);
 	$config = $gallery->getConfigArray();
 
+	// ギャラリー毎に持っているアップロードディレクトリがあればそちらを使う
 	if(isset($config["uploadDir"]) && strlen($config["uploadDir"])){
-		$dir = $config["uploadDir"];
+		$dir = str_replace("//", "/", $config["uploadDir"] . "/");	//末尾にスラッシュを付ける
 	}else{
 		$dir = soy2_realpath($_SERVER["DOCUMENT_ROOT"])."GalleryImage/" . $gallery->getGalleryId() . "/";
 	}
@@ -78,6 +79,16 @@ class SOYShop_GalleryComponent extends HTMLList{
 
 	protected function populateItem($entity, $index){
 
+		//　画像毎に持っているアップロードディレクトリの情報があれば、そちらを使う
+		$imageDir = $entity->getConfigValue("uploadDir");
+		if(isset($imageDir) && strlen($imageDir)){
+			$imageDir = str_replace("//", "/", $imageDir . "/");	//末尾にスラッシュを付ける
+			$imagePath = "/" . trim(str_replace($_SERVER["DOCUMENT_ROOT"], "", $imageDir) , "/") . "/";
+		}else{
+			$imageDir = SOY_GALLERY_IMAGE_UPLOAD_DIR;
+			$imagePath = SOY_GALLERY_IMAGE_ACCESS_PATH;
+		}
+
 		$this->addLabel("id", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => $entity->getId()
@@ -95,39 +106,39 @@ class SOYShop_GalleryComponent extends HTMLList{
 
 		$this->addLink("image_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"link" => SOY_GALLERY_IMAGE_ACCESS_PATH . $entity->getFilename()
+			"link" => $imagePath . $entity->getFilename()
 		));
 
 		$attributes = $entity->getAttributeArray();
 		$this->addImage("image", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"src" => SOY_GALLERY_IMAGE_ACCESS_PATH . $entity->getFilename(),
+			"src" => $imagePath . $entity->getFilename(),
 			"attr:alt" => (isset($attributes["alt"])) ? $attributes["alt"] : ""
 		));
 
 		$this->addLabel("image_path", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => SOY_GALLERY_IMAGE_ACCESS_PATH . "t_" . $entity->getFilename()
+			"text" => $imagePath . "t_" . $entity->getFilename()
 		));
 
 		$this->addLink("thumbnail_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"link" => SOY_GALLERY_IMAGE_ACCESS_PATH . "t_" . $entity->getFilename()
+			"link" => $imagePath . "t_" . $entity->getFilename()
 		));
 
 		$this->addImage("thumbnail", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"src" => SOY_GALLERY_IMAGE_ACCESS_PATH . "t_" . $entity->getFilename(),
+			"src" => $imagePath . "t_" . $entity->getFilename(),
 			"attr:alt" => (isset($attributes["alt"])) ? $attributes["alt"] : ""
 		));
 
 		$this->addLabel("thumbnail_path", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => SOY_GALLERY_IMAGE_ACCESS_PATH . "t_" . $entity->getFilename()
+			"text" => $imagePath . "t_" . $entity->getFilename()
 		));
 
 		//サイズを調べて、縦横どちらが長いかを調べる。正方形の場合はwidth
-		$imageInfo = getimagesize(SOY_GALLERY_IMAGE_UPLOAD_DIR.$entity->getFilename());
+		$imageInfo = getimagesize($imageDir . $entity->getFilename());
 		$imageType = ($imageInfo[1] > $imageInfo[0]) ? "height" : "width";
 
 		$this->addLabel("image_type",array(
