@@ -29,7 +29,7 @@ class ExportPage extends WebPage{
 		$this->createAdd("customfield_list", "_common.User.CustomFieldListComponent", array(
 			"list" => $this->getCustomFieldList()
 		));
-		
+
 		//カスタムサーチフィールドリストを表示する
 		$this->createAdd("custom_search_field_list", "_common.User.UserCustomSearchFieldImExportListComponent", array(
 			"list" => $this->getCustomSearchFieldList()
@@ -44,6 +44,7 @@ class ExportPage extends WebPage{
 			"name" => "名前",
 			"reading" => "フリガナ",
 			"nickname" => "ニックネーム",
+			"isPublish" => "公開状態",
 			"genderText" => "性別",
 			"birthdayText" => "生年月日",
 
@@ -69,11 +70,11 @@ class ExportPage extends WebPage{
 			"attribute3" => "属性３",
 			"memo" => "備考",
 		);
-		
+
 		if(SOYShopPluginUtil::checkIsActive("common_point_base")){
 			$labels["point"] = "ポイント";
 		}
-		
+
 		return $labels;
 	}
 
@@ -82,7 +83,7 @@ class ExportPage extends WebPage{
 		$config = SOYShop_UserAttributeConfig::load($flag);
 		return $config;
 	}
-	
+
 	function getCustomSearchFieldList(){
 		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
 		return UserCustomSearchFieldUtil::getConfig();

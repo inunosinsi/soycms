@@ -93,7 +93,7 @@ class ImportPage extends WebPage{
 
 		//データ更新
     	foreach($lines as $line){
-    		if(empty($line)) continue;
+			if(empty($line)) continue;
 
     		list($obj, $attributes, $point, $customSearchFields) = $logic->import($line);
 
