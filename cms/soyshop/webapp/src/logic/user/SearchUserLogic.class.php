@@ -17,6 +17,12 @@ class SearchUserLogic extends SOY2LogicBase{
 	const SORT_READING_DESC	  = "reading_desc";
 	const SORT_MAIL_ADDRESS	  = "mail_address";
 	const SORT_MAIL_ADDRESS_DESC = "mail_address_desc";
+	const SORT_ATTRIBUTE_1 = "attribute1";
+	const SORT_ATTRIBUTE_1_DESC = "attribute1_desc";
+	const SORT_ATTRIBUTE_2 = "attribute2";
+	const SORT_ATTRIBUTE_2_DESC = "attribute2_desc";
+	const SORT_ATTRIBUTE_3 = "attribute3";
+	const SORT_ATTRIBUTE_3_DESC = "attribute3_desc";
 
 	private $sorts = array(
 
@@ -31,6 +37,15 @@ class SearchUserLogic extends SOY2LogicBase{
 
 		"mail_address" =>  "mail_address",
 		"mail_address_desc" =>  "mail_address desc",
+
+		"attribute1" => "attribute1",
+		"attribute1_desc" => "attribute1 desc",
+
+		"attribute2" => "attribute2",
+		"attribute2_desc" => "attribute2 desc",
+
+		"attribute3" => "attribute3",
+		"attribute3_desc" => "attribute3 desc",
 	);
 
 	const TABLE_NAME = "soyshop_user";
@@ -76,6 +91,24 @@ class SearchUserLogic extends SOY2LogicBase{
 				break;
 			case self::SORT_MAIL_ADDRESS_DESC :
 				$order = " order by mail_address desc ";
+				break;
+			case self::SORT_ATTRIBUTE_1 :
+				$order = " order by attribute1 ";
+				break;
+			case self::SORT_ATTRIBUTE_1_DESC :
+				$order = " order by attribute1 desc ";
+				break;
+			case self::SORT_ATTRIBUTE_2 :
+				$order = " order by attribute2 ";
+				break;
+			case self::SORT_ATTRIBUTE_2_DESC :
+				$order = " order by attribute2 desc ";
+				break;
+			case self::SORT_ATTRIBUTE_3 :
+				$order = " order by attribute3 ";
+				break;
+			case self::SORT_ATTRIBUTE_3_DESC :
+				$order = " order by attribute3 desc ";
 				break;
 			default:
 				$order = " order by id desc";

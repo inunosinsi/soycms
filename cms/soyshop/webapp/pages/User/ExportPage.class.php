@@ -24,7 +24,8 @@ class ExportPage extends WebPage{
 	function buildForm(){
 		$this->addForm("export_form");
 
-		DisplayPlugin::toggle("display_point_checkbox", SOYShopPluginUtil::checkIsActive("common_point_base"));
+		DisplayPlugin::toggle("user_custom_search_field", SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
+		DisplayPlugin::toggle("point", SOYShopPluginUtil::checkIsActive("common_point_base"));
 
 		$this->createAdd("customfield_list", "_common.User.CustomFieldListComponent", array(
 			"list" => $this->getCustomFieldList()
@@ -173,4 +174,3 @@ class ExportPage extends WebPage{
 		}
 	}
 }
-?>
