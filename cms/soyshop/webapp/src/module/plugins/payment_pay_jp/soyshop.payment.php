@@ -94,8 +94,6 @@ class PayJpPayment extends SOYShopPayment{
 			//二回目の購入のチェックがあるか？
 			$isRepeatCharge = $cart->getAttribute("payment_pay_jp_repeat_charge");
 			if($isRepeatCharge){
-				self::prepare();
-
 				$myCard = array(
 					'customer' => $token,
 					'amount' => $cart->getTotalPrice(),

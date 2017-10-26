@@ -33,7 +33,7 @@ if(isset($_REQUEST["a"])) {
 			$_index[] = $_REQUEST["index"];
 		}
 	}
-	
+
 	//カートに入っている商品に変更がある場合は、選択されているモジュールをクリアする
 	$cart->clearModules();
 
@@ -43,7 +43,7 @@ if(isset($_REQUEST["a"])) {
 				$count = isset($_count[$key]) ? $_count[$key] : 1 ;
 				//個数は-1以上の整数
 				$count = max(-1, (int)$count);
-				
+
 				$res = $cart->addItem($item, $count);
 				if($res){
 					SOYShopPlugin::invoke("soyshop.item.option", array(
@@ -54,7 +54,7 @@ if(isset($_REQUEST["a"])) {
 				}
 			}
 			break;
-		
+
 		case "remove":
 			foreach($_index as $key => $index){
 				$cart->removeItem($index);
@@ -65,7 +65,7 @@ if(isset($_REQUEST["a"])) {
 				));
 			}
 			break;
-		
+
 		case "update":
 			foreach($_index as $key => $index){
 				$count = isset($_count[$key]) ? $_count[$key] : 1 ;
@@ -74,7 +74,7 @@ if(isset($_REQUEST["a"])) {
 				$cart->updateItem($index, $count);
 			}
 			break;
-		
+
 		case "shoooot";//カートを一つの商品で満たす
 			//追加
 			foreach($_item as $key => $item){
@@ -88,19 +88,19 @@ if(isset($_REQUEST["a"])) {
 					));
 				}
 			}
-			
-			//全て個数は1			
+
+			//全て個数は1
 			$items = $cart->getItems();
 			foreach($items as $index => $item){
 				$cart->updateItem($index, 1);
 			}
-			
+
 			break;
 	}
-	
+
 	//消費税の計算とモジュールの登録
 	$cart->calculateConsumptionTax();
-	
+
 	//カートのセッションに値を保持する前に動作する
 	SOYShopPlugin::load("soyshop.cart");
 	SOYShopPlugin::invoke("soyshop.cart", array(
@@ -114,4 +114,3 @@ if(isset($_REQUEST["a"])) {
 //use cart id
 $cartId = soyshop_get_cart_id();
 include(SOY2::RootDir() . "cart/" . $cartId . "/cart.php");
-?>
