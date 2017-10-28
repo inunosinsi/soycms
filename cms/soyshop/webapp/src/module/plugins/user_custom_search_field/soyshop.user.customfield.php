@@ -103,10 +103,18 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
                 "visible" => (strlen($usfValue))
             ));
 
-            $pageObj->addLabel($key, array(
+			$pageObj->addLabel($key, array(
                 "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
                 "html" => (isset($usfValue)) ? $usfValue : null
             ));
+
+			//隠しモード
+			if($field["type"] == UserCustomSearchFieldUtil::TYPE_DATE){
+				$pageObj->addLabel($key . "_wareki", array(
+	                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+	                "html" => (isset($usfValue)) ? date("Y年m月d日", $usfValue) : null
+	            ));
+			}
 
             switch($field["type"]){
                 case UserCustomSearchFieldUtil::TYPE_CHECKBOX:

@@ -83,11 +83,12 @@ class UserDataBaseLogic extends SOY2LogicBase{
 					}
 					break;
 				case UserCustomSearchFieldUtil::TYPE_DATE:
+					$sets[$key] = null;
 					if(strlen($values[$key])){
 						$dateArray = explode("-", $values[$key]);
-						$sets[$key] = mktime(0, 0, 0, $dateArray[1], $dateArray[2], $dateArray[0]);
-					}else{
-						$sets[$key] = null;
+						if(count($dateArray) > 2){
+							$sets[$key] = mktime(0, 0, 0, $dateArray[1], $dateArray[2], $dateArray[0]);
+						}
 					}
 					break;
 				default:
