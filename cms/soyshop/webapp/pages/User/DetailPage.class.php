@@ -12,92 +12,95 @@ class DetailPage extends WebPage{
 			SOY2PageController::jump("User.Detail." . $this->id);
 		}
 
-		$detail = $_POST["Customer"];
-		$detail = $this->component->adjustUser($detail);
-//		$custom = $detail["custom"];
-		$detail = (object)$detail;
-		if(isset($_POST["Address"])){
-			$address = $_POST["Address"];
-		}else{
-			$address = array();
-		}
-
 		//メール
 		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
 		//元のデータを読み込む：readonlyな値をからの値で上書きしないように
 		$user = $dao->getById($this->id);
 
-		//ログインIDの重複チェック
-		if(strlen($_POST["Customer"]["accountId"])){
-			//重複している場合は元の値を上書き
+		if(isset($_POST["Customer"])){
+			$detail = $_POST["Customer"];
+			$detail = $this->component->adjustUser($detail);
+	//		$custom = $detail["custom"];
+			$detail = (object)$detail;
+			if(isset($_POST["Address"])){
+				$address = $_POST["Address"];
+			}else{
+				$address = array();
+			}
+
+			//ログインIDの重複チェック
+			if(strlen($_POST["Customer"]["accountId"])){
+				//重複している場合は元の値を上書き
+				try{
+					$oldUser = $dao->getByAccountIdAndNotId($_POST["Customer"]["accountId"], $this->id);
+					$detail->accountId = $user->getAccountId();
+				}catch(Exception $e){
+					//
+				}
+			}
+
+			SOY2::cast($user, $detail);
+			$user->setAddressList($address);
+	//		$user->setAttributes($custom);
+
+
+			//メール配信をしないチェックボックス 値を反転
+			$notSend = (isset($_POST["Customer"]["notSend"]) && (int)$_POST["Customer"]["notSend"] > 0) ? 1 : 0;
+			$user->setNotSend($notSend);
+
+			//プロフィールページを公開するチェックボックス
+			$isProfileDisplay = (isset($_POST["Customer"]["isProfileDisplay"]) && (int)$_POST["Customer"]["isProfileDisplay"] > 0) ? 1 : 0;
+			$user->setIsProfileDisplay($isProfileDisplay);
+
+			$userLogic = SOY2Logic::createInstance("logic.user.UserLogic");
+
+			//プロフィールページ用のアカウントを作成
+			if($isProfileDisplay == SOYShop_User::PROFILE_IS_DISPLAY && strlen($user->getProfileId()) === 0){
+				$profileId = $userLogic->createProfileId($user);
+				$user->setProfileId($profileId);
+			}
+
+			//画像の削除
+			if(isset($_POST["Delete"]) && $_POST["Delete"] == 1){
+				$userLogic->deleteFile($user->getImagePath(), $user->getId());
+				$user->setImagePath(null);
+			}
+
+			//画像のアップロード
+			if(isset($_FILES["image"]["name"]) && preg_match('/(jpg|jpeg|gif|png)$/', $_FILES["image"]["name"])){
+				$isResize = SOYShop_DataSets::get("config.mypage.profile_resize", 0);
+				$resizeWidth = SOYShop_DataSets::get("config.mypage.profile_resize_width", 120);
+				$fileName = $userLogic->uploadFile($_FILES["image"]["name"], $_FILES["image"]["tmp_name"], $this->id, $isResize, $resizeWidth);
+				$user->setImagePath($fileName);
+			}
+
+			//管理画面から本登録にする
+			if($user->getUserType() != SOYShop_User::USERTYPE_REGISTER && isset($_POST["real_register"])){
+				$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
+				$user->setRealRegisterDate(time());
+			}
+
 			try{
-				$oldUser = $dao->getByAccountIdAndNotId($_POST["Customer"]["accountId"], $this->id);
-				$detail->accountId = $user->getAccountId();
+				$dao->update($user);
 			}catch(Exception $e){
 				//
 			}
-		}
 
-		SOY2::cast($user, $detail);
-		$user->setAddressList($address);
-//		$user->setAttributes($custom);
-
-
-		//メール配信をしないチェックボックス 値を反転
-		$notSend = (isset($_POST["Customer"]["notSend"]) && (int)$_POST["Customer"]["notSend"] > 0) ? 1 : 0;
-		$user->setNotSend($notSend);
-
-		//プロフィールページを公開するチェックボックス
-		$isProfileDisplay = (isset($_POST["Customer"]["isProfileDisplay"]) && (int)$_POST["Customer"]["isProfileDisplay"] > 0) ? 1 : 0;
-		$user->setIsProfileDisplay($isProfileDisplay);
-
-		$userLogic = SOY2Logic::createInstance("logic.user.UserLogic");
-
-		//プロフィールページ用のアカウントを作成
-		if($isProfileDisplay == SOYShop_User::PROFILE_IS_DISPLAY && strlen($user->getProfileId()) === 0){
-			$profileId = $userLogic->createProfileId($user);
-			$user->setProfileId($profileId);
-		}
-
-		//画像の削除
-		if(isset($_POST["Delete"]) && $_POST["Delete"] == 1){
-			$userLogic->deleteFile($user->getImagePath(), $user->getId());
-			$user->setImagePath(null);
-		}
-
-		//画像のアップロード
-		if(isset($_FILES["image"]["name"]) && preg_match('/(jpg|jpeg|gif|png)$/', $_FILES["image"]["name"])){
-			$isResize = SOYShop_DataSets::get("config.mypage.profile_resize", 0);
-			$resizeWidth = SOYShop_DataSets::get("config.mypage.profile_resize_width", 120);
-			$fileName = $userLogic->uploadFile($_FILES["image"]["name"], $_FILES["image"]["tmp_name"], $this->id, $isResize, $resizeWidth);
-			$user->setImagePath($fileName);
-		}
-
-		//管理画面から本登録にする
-		if($user->getUserType() != SOYShop_User::USERTYPE_REGISTER && isset($_POST["real_register"])){
-			$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
-			$user->setRealRegisterDate(time());
-		}
-
-		try{
-			$dao->update($user);
-		}catch(Exception $e){
-			//
-		}
-
-		//ユーザカスタムフィールドの値をセッションに入れる
-		SOYShopPlugin::load("soyshop.user.customfield");
-		SOYShopPlugin::invoke("soyshop.user.customfield", array(
-			"mode" => "register",
-			"userId" => $user->getId()
-		));
-
-		if(isset($_POST["Point"])){
-			SOYShopPlugin::invoke("soyshop.point", array(
-				"userId" => $this->id
+			//ユーザカスタムフィールドの値をセッションに入れる
+			SOYShopPlugin::load("soyshop.user.customfield");
+			SOYShopPlugin::invoke("soyshop.user.customfield", array(
+				"mode" => "register",
+				"userId" => $user->getId()
 			));
+
+			if(isset($_POST["Point"])){
+				SOYShopPlugin::invoke("soyshop.point", array(
+					"userId" => $this->id
+				));
+			}
 		}
+
 
 		SOYShopPlugin::load("soyshop.operate.credit");
 		SOYShopPlugin::invoke("soyshop.operate.credit", array(
