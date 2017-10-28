@@ -1,1 +1,35 @@
-現在登録しているプラン名やプランの変更フォームを設置予定
+<!-- soy:display="subscribe" -->
+<form soy:id="form">
+	<table class="form_table">
+		<col style="width:200px;" />
+		<tbody>
+			<tr>
+				<th>定期課金のトークン</th>
+				<td soy:id="subscribe_token"></td>
+			</tr>
+			<tr>
+				<th>カードのトークン</th>
+				<td soy:id="customer_token"></td>
+			</tr>
+			<tr>
+				<th>登録中の定期課金プラン</th>
+				<td>
+					<!-- soy:id="plan_name" /-->&nbsp;
+					<input type="submit" name="recurring_cancel" value="キャンセル" onclick="return confirm('定期課金をキャンセルしますか？');">
+					<input type="hidden" soy:id="subscribe_token_hidden">
+					<input type="hidden" soy:id="order_id_hidden">
+				</td>
+			</tr>
+			<tr>
+				<th>プランの変更</th>
+				<td>
+					<select soy:id="plan"></select>&nbsp;
+					<input type="submit" name="recurring_change" value="変更する">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
+<!-- /soy:display="subscribe" -->
+
+<p class="notice always" soy:display="no_subscribe">登録済みの定期課金はありません</p>

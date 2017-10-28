@@ -27,6 +27,7 @@ NEXT
 	 - 顧客ごとに公開状態のフラグを追加(ユーザーカスタムサーチフィールドを有効時のみ)
 	 - ショップサイト作成時にim.phpを作成
 	 - PAY.JPクレジットカード支払いモジュール
+	 - PAY.JP定期課金モジュール
 	 - LINE Loginプラグイン
 	 - Facebookログインプラグイン
 	 - Google Sign-In for Websitesプラグイン

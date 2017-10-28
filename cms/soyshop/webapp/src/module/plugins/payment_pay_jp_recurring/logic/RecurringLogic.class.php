@@ -101,12 +101,12 @@ class RecurringLogic extends SOY2LogicBase {
 		return array($res, $err);
 	}
 
-	function retrieveCustomer($token){
-		if(is_null($token)) return array(null, null);
+	function cancel($subscribeId){
 		$res = null;
 		$err = null;
 		try{
-			$res = \Payjp\Customer::retrieve($token);
+			$su = \Payjp\Subscription::retrieve($subscribeId);
+			$res = $su->cancel();
 		} catch (Error\Card $e) {
 			$err = $e->getJsonBody();
 		} catch (Error\InvalidRequest $e) {
@@ -124,6 +124,77 @@ class RecurringLogic extends SOY2LogicBase {
 		}
 
 		return array($res, $err);
+	}
+
+	function retrievePlan($token){
+		if(is_null($token)) return array(null, null);
+		$res = null;
+		$err = null;
+		try{
+			$res = \Payjp\Subscription::retrieve($token);
+		} catch (Error\Card $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\InvalidRequest $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Authentication $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Api $e) {
+			$err = $e->getJsonBody();
+		} catch (\Payjp\Error\Base $e) {
+			$err = $e->getJsonBody();
+		} catch (Exception $e) {
+			$err = $e->getJsonBody();
+		} finally {
+			//何もしない
+		}
+
+		return array($res, $err);
+	}
+
+	function getPlanList(){
+		//キャッシュファイル形式で対応
+		$cacheFilePath = self::getCacheFilePath();
+		if(file_exists($cacheFilePath)){
+			return soy2_unserialize(file_get_contents($cacheFilePath));
+		}
+
+		$list = array();
+		try{
+			$res = \Payjp\Plan::all(array("limit" => 100));
+		} catch (Error\Card $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\InvalidRequest $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Authentication $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Api $e) {
+			$err = $e->getJsonBody();
+		} catch (\Payjp\Error\Base $e) {
+			$err = $e->getJsonBody();
+		} catch (Exception $e) {
+			$err = $e->getJsonBody();
+		} finally {
+			//何もしない
+		}
+
+		if(isset($res)){
+			$data = $res->data;
+			if(count($data)){
+				foreach($data as $v){
+					$values = array();
+					$planToken = $v->id;
+					if(self::checkIsExistsPlanByToken($planToken)){
+						$interval = ($v->interval == "month") ? "月" : "?";
+						$list[$v->id] = $v->name . "(￥" .$v->amount  ."/" . $interval .")";
+					}
+				}
+			}
+		}
+
+		//キャッシュとして保存
+		file_put_contents($cacheFilePath, soy2_serialize($list));
+
+		return $list;
 	}
 
 	function getCustomerTokenByMailAddress($mailAddress){
@@ -174,9 +245,8 @@ class RecurringLogic extends SOY2LogicBase {
 	}
 
 	function getPlanTokenByItemId($itemId){
-		$itemAttrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		try{
-			$token = $itemAttrDao->get($itemId, self::FIELD_KEY)->getValue();
+			$token = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->get($itemId, self::FIELD_KEY)->getValue();
 		}catch(Exception $e){
 			$token = null;
 		}
@@ -218,15 +288,49 @@ class RecurringLogic extends SOY2LogicBase {
 				}
 			}
 
+			//キャッシュファイルの削除
+			$cacheFilePath = self::getCacheFilePath();
+			if(file_exists($cacheFilePath)) unlink($cacheFilePath);
+
 			return $attr->getValue();
 		}
 
 		return null;
 	}
 
-	function getSubscribeIdByUserId($userId){
+	private function checkIsExistsPlanByToken($token){
+		static $attrs;
+		if(is_null($attrs)){
+			$attrs = array();
+			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+			$sql = "SELECT item_id, item_value FROM soyshop_item_attribute ".
+					"WHERE item_field_id = :fieldId";
+			try{
+				$results = $dao->executeQuery($sql, array(":fieldId" => self::FIELD_KEY));
+			}catch(Exception $e){
+				$results = array();
+			}
+
+			if(count($results)){
+				foreach($results as $result){
+					if(!isset($result["item_id"])) continue;
+					$attrs[(int)$result["item_id"]] = $result["item_value"];
+				}
+			}
+		}
+
+		return (array_search($token, $attrs) !== false);
+	}
+
+	private function getCacheFilePath(){
+		$cacheDir = SOYSHOP_SITE_DIRECTORY . ".cache/pay/";
+		if(!file_exists($cacheDir)) mkdir($cacheDir);
+		return $cacheDir . "plan.txt";
+	}
+
+	function getSubscribeIdAndOrderIdByUserId($userId){
 		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		$sql = "SELECT * FROM soyshop_order ".
+		$sql = "SELECT id, attributes FROM soyshop_order ".
 				"WHERE user_id = :userId ".
 				"AND payment_status = " . SOYShop_Order::PAYMENT_STATUS_CONFIRMED . " ".
 				"AND order_status > " . SOYShop_Order::ORDER_STATUS_INTERIM . " ".
@@ -248,7 +352,7 @@ class RecurringLogic extends SOY2LogicBase {
 			for(;;){
 				try{
 					$res = $orderDao->executeQuery($sql . $i, array(":userId" => $userId));
-					if(count($res[0])) break;
+					if(count($res)) break;
 				}catch(Exception $e){
 					//
 				}
@@ -262,7 +366,9 @@ class RecurringLogic extends SOY2LogicBase {
 		$order = $orderDao->getObject($res[0]);
 
 		$attr = $order->getAttribute("payment_pay_jp_recurring.id");
-		return (isset($attr["value"])) ? $attr["value"] : null;
+		$subscribeId = (isset($attr["value"])) ? $attr["value"] : null;
+
+		return array($subscribeId, $order->getId());
 	}
 
 	private function userAttrDao(){
