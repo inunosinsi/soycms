@@ -151,6 +151,32 @@ class RecurringLogic extends SOY2LogicBase {
 		return array($res, $err);
 	}
 
+	function changePlan($subscribeToken, $planToken){
+		$res = null;
+		$err = null;
+		try{
+			$su = \Payjp\Subscription::retrieve($subscribeToken);
+			$su->plan = $planToken;
+			$res = $su->save();
+		} catch (Error\Card $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\InvalidRequest $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Authentication $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Api $e) {
+			$err = $e->getJsonBody();
+		} catch (\Payjp\Error\Base $e) {
+			$err = $e->getJsonBody();
+		} catch (Exception $e) {
+			$err = $e->getJsonBody();
+		} finally {
+			//何もしない
+		}
+
+		return array($res, $err);
+	}
+
 	function getPlanList(){
 		//キャッシュファイル形式で対応
 		$cacheFilePath = self::getCacheFilePath();

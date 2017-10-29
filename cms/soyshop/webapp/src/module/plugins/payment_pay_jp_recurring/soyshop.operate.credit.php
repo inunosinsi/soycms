@@ -8,9 +8,10 @@ class PayJpRecurringOperateCredit extends SOYShopOperateCreditBase{
 
 	function doPostOnUserDetailPage(SOYShop_User $user){
 
+		self::prepare();
+
 		//キャンセル
 		if(isset($_POST["recurring_cancel"])){
-			self::prepare();
 			list($res, $err) = $this->recurringLogic->cancel($_POST["Subscribe"]);
 			if(isset($res) && $res->canceled_at > 0){
 				//SOY Shopの方の注文もキャンセルにする
@@ -24,6 +25,15 @@ class PayJpRecurringOperateCredit extends SOYShopOperateCreditBase{
 				$orderDao->updateStatus($order);
 			}
 		}
+
+		//プランの変更
+		if(isset($_POST["recurring_change"])){
+			list($res, $err) = $this->recurringLogic->changePlan($_POST["Subscribe"], $_POST["Plan"]);
+			if(isset($err["error"]["message"])){
+				//エラーメッセージを表示
+				PayJpRecurringUtil::save("change_plan_error", $err["error"]["message"]);
+			}
+		}
 	}
 
 	function getFormOnOrderDetailPageTitle(SOYShop_Order $order){}
@@ -34,15 +44,17 @@ class PayJpRecurringOperateCredit extends SOYShopOperateCreditBase{
 	}
 
 	function getFormOnUserDetailPageContent(SOYShop_User $user){
+		self::prepare();
+
 		SOY2::import("module.plugins.payment_pay_jp_recurring.form.user.RecurringMemberPage");
 		$form = SOY2HTMLFactory::createInstance("RecurringMemberPage");
 		$form->setUser($user);
-		//$form->setParams($params);
 		$form->execute();
 		return $form->getObject();
 	}
 
 	private function prepare(){
+
 		$this->recurringLogic = SOY2Logic::createInstance("module.plugins.payment_pay_jp_recurring.logic.RecurringLogic");
 		$this->recurringLogic->initPayJp();
 	}

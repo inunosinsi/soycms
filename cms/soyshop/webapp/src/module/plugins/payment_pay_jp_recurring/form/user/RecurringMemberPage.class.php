@@ -7,7 +7,14 @@ class RecurringMemberPage extends WebPage{
 	function __construct(){}
 
 	function execute(){
+
 		parent::__construct();
+
+		$error = PayJpRecurringUtil::get("change_plan_error");
+		DisplayPlugin::toggle("error", isset($error));
+		$this->addLabel("error_message", array(
+			"text" => $error
+		));
 
 		$logic = SOY2Logic::createInstance("module.plugins.payment_pay_jp_recurring.logic.RecurringLogic");
 		$logic->initPayJp();
@@ -65,6 +72,8 @@ class RecurringMemberPage extends WebPage{
 			"options" => $planList,
 			//"selected" => $planId
 		));
+
+		PayJpRecurringUtil::clear("change_plan_error");
 	}
 
 	function setUser($user){

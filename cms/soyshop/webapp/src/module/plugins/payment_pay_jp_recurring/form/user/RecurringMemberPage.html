@@ -1,3 +1,5 @@
+<p class="error always" soy:display="error"><!-- soy:id="error_message" /--></p>
+
 <!-- soy:display="subscribe" -->
 <form soy:id="form">
 	<table class="form_table">
@@ -24,7 +26,7 @@
 				<th>プランの変更</th>
 				<td>
 					<select soy:id="plan"></select>&nbsp;
-					<input type="submit" name="recurring_change" value="変更する">
+					<input type="submit" name="recurring_change" value="変更する" onclick="return confirm('定期課金のプランを変更しますか？');">
 				</td>
 			</tr>
 		</tbody>
