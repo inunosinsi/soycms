@@ -21,14 +21,14 @@ class UserPage extends WebPage{
 			$logic = SOY2Logic::createInstance("logic.mail.MailLogic");
 			$logic->setUserMailConfig($mail, $type);
 		}
-		
+
 		SOYShopPlugin::load("soyshop.mail.config");
 		$delegate = SOYShopPlugin::invoke("soyshop.mail.config",array(
 			"mode" => "update",
 			"target" => "user",
 			"type" => $type
 		));
-		
+
 		SOY2PageController::jump("Config.Mail.User?updated&type=" . $type);
 	}
 
@@ -41,7 +41,7 @@ class UserPage extends WebPage{
 
 		$type = (isset($_GET["type"])) ? $_GET["type"] : "order";
 		$this->buildForm($type);
-		
+
 		SOYShopPlugin::load("soyshop.mail.config");
 		$delegate = SOYShopPlugin::invoke("soyshop.mail.config",array(
 			"mode" => "edit",
@@ -51,7 +51,7 @@ class UserPage extends WebPage{
 		$this->addLabel("mail_config_extension_html", array(
 			"html" => $delegate->getHtml()
 		));
-		
+
 		//置換文字列の拡張
 		$this->createAdd("replace_string_list", "_common.Config.ReplaceStringListComponent", array(
 			"list" => self::getReplaceStringList()
@@ -65,7 +65,7 @@ class UserPage extends WebPage{
 		));
 
 		$this->mail = SOY2Logic::createInstance("logic.mail.MailLogic")->getUserMailConfig($type);
-
+		
 		$this->addInput("mail_title", array(
 			"name" => "mail[title]",
 			"value" => $this->getMailTitle(),
@@ -100,7 +100,7 @@ class UserPage extends WebPage{
 			"selected" => ! $this->getMailActive(),
 			"label" => "送信しない",
 		));
-		
+
 		//メール本文の出力の有無
 		$this->addCheckBox("is_mail_content_output", array(
 			"name" => "mail[output]",
@@ -109,12 +109,12 @@ class UserPage extends WebPage{
 			"label" => "システムから出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
 		));
 	}
-	
+
 	private function getReplaceStringList(){
 		SOYShopPlugin::load("soyshop.order.mail.replace");
 		$values = SOYShopPlugin::invoke("soyshop.order.mail.replace",array("mode" => "strings"))->getStrings();
 		if(!count($values)) return array();
-		
+
 		$list = array();
 		foreach($values as $strings){
 			if(!is_array($strings) || !count($strings)) continue;
@@ -123,16 +123,16 @@ class UserPage extends WebPage{
 				$list[$replace] = $v;
 			}
 		}
-		
+
 		return $list;
 	}
 
 	function getMailActive(){
 		return $this->mail["active"];
 	}
-	
+
 	function getMailOutput(){
-		return $this->mail["output"];
+		return (isset($this->mail["output"])) ? $this->mail["output"] : 0;
 	}
 
 	function getMailTitle(){
@@ -160,10 +160,10 @@ class UserPage extends WebPage{
 		//プラグインから出力したものを調べる
 		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("common_add_mail_type")) return "注文受付メール設定(自動送信)";
-		
+
 		SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
 		$configs = AddMailTypeUtil::getConfig();
-		
+
 		return (isset($configs[$type])) ? $configs[$type]["title"] . "雛形設定" : "注文受付メール設定(自動送信)";
 	}
 }

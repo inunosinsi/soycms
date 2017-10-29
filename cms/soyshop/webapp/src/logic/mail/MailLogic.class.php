@@ -289,6 +289,7 @@ class MailLogic extends SOY2LogicBase{
 		}else{
 			return array(
 				"active" => SOYShop_DataSets::get("mail.user.$type.active", 1),
+				"output" => SOYShop_DataSets::get("mail.user.$type.output", 1),
 				"title"  => SOYShop_DataSets::get("mail.user.$type.title", "[SOY Shop]"),
 		    	"header" => SOYShop_DataSets::get("mail.user.$type.header", ""),
 		    	"footer" => SOYShop_DataSets::get("mail.user.$type.footer", "")
@@ -363,6 +364,7 @@ class MailLogic extends SOY2LogicBase{
 	function setUserMailConfig($mail, $type = null){
 		if(is_null($type) || strlen($type) < 1) $type = "order";
 		if(isset($mail["active"]))SOYShop_DataSets::put("mail.user.$type.active",$mail["active"]);
+		if(isset($mail["output"]))SOYShop_DataSets::put("mail.user.$type.output",$mail["output"]);
 		if(isset($mail["title"])) SOYShop_DataSets::put("mail.user.$type.title", $mail["title"]);
 		if(isset($mail["header"]))SOYShop_DataSets::put("mail.user.$type.header",$mail["header"]);
 	    if(isset($mail["footer"]))SOYShop_DataSets::put("mail.user.$type.footer",$mail["footer"]);
