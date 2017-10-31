@@ -29,7 +29,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 	private function getItems(SOYShop_ComplexPageBlock $block){
 
 		$isAnd = $block->isAndCustomFieldCordination();
-
+		
 		//表示件数が無記入だった場合、1～10件を表示する
 		if(strlen($block->getCountStart()) === 0 && strlen($block->getCountEnd()) === 0){
 			$countStart = 1;
@@ -46,17 +46,19 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 		$customFields = array();
 		$customFieldCordinations = $block->getCustomFields();
 
-		foreach($customFieldCordinations as $array){
-			$value = $array["value"];
-			if(false !== strpos($array["type"],"LIKE")){
-				$value = "%" . $value . "%";
-			}
+		if(count($customFieldCordinations)){
+			foreach($customFieldCordinations as $array){
+				$value = $array["value"];
+				if(false !== strpos($array["type"],"LIKE")){
+					$value = "%" . $value . "%";
+				}
 
-			$customFields[] = array(
-				"fieldId" => $array["fieldId"],
-				"value" => $value,
-				"type" => $array["type"]
-			);
+				$customFields[] = array(
+					"fieldId" => $array["fieldId"],
+					"value" => $value,
+					"type" => $array["type"]
+				);
+			}
 		}
 
 		//ソート情報用にSOYShop_ComplexPageBlockを渡す

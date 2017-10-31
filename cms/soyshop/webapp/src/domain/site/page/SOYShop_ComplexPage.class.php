@@ -58,14 +58,14 @@ class SOYShop_ComplexPage extends SOYShop_PageBase{
 	function setComplexPageBlocks($blocks) {
 		$this->complexPageBlocks = $blocks;
 	}
-	
+
 	function getKeywordFormatDescription(){
     	$html = array();
     	$html[] = "ショップ名:%SHOP_NAME%";
     	$html[] = "ページ名:%PAGE_NAME%";
     	return implode("<br />", $html);
     }
-    
+
     function getDescriptionFormatDescription(){
     	$html = array();
     	$html[] = "ショップ名:%SHOP_NAME%";
@@ -167,5 +167,3 @@ class SOYShop_ComplexPageBlock{
 		$this->isReverse = $isReverse;
 	}
 }
-
-?>
