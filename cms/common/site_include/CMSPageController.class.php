@@ -45,18 +45,24 @@ class CMSPageController extends SOY2PageController{
 		try{
 			try{
 				$page = $dao->getActivePageByUri($uri);
+				if($page->isActive() < 0){
+					throw new Exception("out of date.");
+				}
 			}catch(Exception $e){
 				//ブログページのURLが空で各ページのどれかのURIも空の時対策
-				$uri = "";
 				try{
-					$page = $dao->getActivePageByUri($uri);
+					$tmp = $dao->getActivePageByUri("");
 				}catch(Exception $e){
+					$tmp = new Page();
+				}
+
+				//仮で取得したページがブログページでなかった場合は、空のPageオブジェクトを返す
+				if($tmp->getPageType() == Page::PAGE_TYPE_BLOG){
+					$page = $tmp;
+					$uri = "";	//以後の処理は$uriが空の状態で進める
+				}else{
 					$page = new Page();
 				}
-			}
-
-			if($page->isActive() < 0){
-				throw new Exception("out of date.");
 			}
 
 			try{

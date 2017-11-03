@@ -278,7 +278,7 @@ class Page {
    	 }
    	 */
    	function isActive($with_before_after = false){
-   		if(!$this->isPublished){
+		if(!$this->isPublished){
    			return self::PAGE_NOTPUBLIC;
    		}
    		$now = time();
