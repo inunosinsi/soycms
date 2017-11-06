@@ -1,40 +1,53 @@
 <?php
 
 class DaibikiLogic extends SOY2LogicBase{
-	
+
 	private $cart;
-	
+
 	function __construct(){
 		SOY2::import("module.plugins.payment_daibiki.util.PaymentDaibikiUtil");
 	}
-	
+
 	function getDaibikiPrice(){
 		$price = $this->cart->getItemPrice();
-		
+
 		$config = PaymentDaibikiUtil::getConfig();
-		
+
 		//公開側で送料も加味する
 		if(
-			(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) && 
+			(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) &&
 			(isset($config["include_delivery_price"]) && (int)$config["include_delivery_price"] === 1)
 		){
 			/** @ToDo 送料分を加算したい **/
 		}
-		
+
 		//割引系のプラグインがある場合は割引分を除く
 		foreach($this->cart->getModules() as $mod){
 			if(!$mod->getIsInclude() && $mod->getPrice() < 0){
 				$price += $mod->getPrice();
 			}
 		}
-		
+
 		return self::calcReturnValue($price);
 	}
-	
+
 	function calcReturnValue($total){
+		$prices = array();
+
+		//地域ごとの代引き手数料が設定されているか調べる
+		$area = $this->cart->getCustomerInformation()->getArea();
+		if(isset($area)){
+			$byRegionConfigs = PaymentDaibikiUtil::getPricesByRegionConfig();
+			if(isset($byRegionConfigs[$area])){
+				$prices = $byRegionConfigs[$area];
+			}
+		}
+
+		if(!count($prices)) $prices = PaymentDaibikiUtil::getPricesConfig();
+
 		$returnValue = 0;
 
-		foreach(PaymentDaibikiUtil::getPricesConfig() as $key => $value){
+		foreach($prices as $key => $value){
 
 			if($key <= $total){
 				$returnValue = $value;
@@ -42,10 +55,10 @@ class DaibikiLogic extends SOY2LogicBase{
 				break;
 			}
 		}
-		
+
 		return $returnValue;
 	}
-	
+
 	function checkCartItems(){
 		return self::checkNoFobiddenItem($this->cart->getItems());
 	}
@@ -67,9 +80,8 @@ class DaibikiLogic extends SOY2LogicBase{
 		}
 		return true;
 	}
-	
+
 	function setCart($cart){
 		$this->cart = $cart;
 	}
 }
-?>

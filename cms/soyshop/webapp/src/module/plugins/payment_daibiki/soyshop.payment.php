@@ -21,7 +21,6 @@ class DaibikiPaymentModule extends SOYShopPayment{
 
 		//金額から手数料を取得
 		$module->setPrice($this->getPrice());
-
 		$cart->addModule($module);
 
 		//属性の登録
@@ -58,7 +57,7 @@ class DaibikiPaymentModule extends SOYShopPayment{
 		$this->currentPrice = $this->daibikiLogic->getDaibikiPrice();
 		return $this->currentPrice;
 	}
-	
+
 	private function prepare(){
 		if(!$this->daibikiLogic) $this->daibikiLogic = SOY2Logic::createInstance("module.plugins.payment_daibiki.logic.DaibikiLogic", array("cart" => $this->getCart()));
 	}
