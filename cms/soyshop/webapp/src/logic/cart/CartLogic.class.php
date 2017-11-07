@@ -955,11 +955,11 @@ class CartLogic extends SOY2LogicBase{
 			if(strlen($user->getPassword()) < 1){
 				$user = clone($user);
 				$user->setAddressList(serialize(null));
-			}else{
-				//本登録にする
-				$user->setRealRegisterDate(time());
-				$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 			}
+
+			//本登録にする
+			$user->setRealRegisterDate(time());
+			$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 
 			//insert: パスワードのハッシュ化はonInsertで行う
 			$id = $userDAO->insert($user);
@@ -1287,5 +1287,3 @@ class SOYShop_OverStockException extends SOYShop_StockException{}
 class SOYShop_CartException extends Exception{}
 class SOYShop_EmptyCartException extends SOYShop_CartException{}
 class SOYShop_AcceptOrderException extends SOYShop_CartException{}
-
-?>
