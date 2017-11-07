@@ -65,8 +65,8 @@ class CMSPlugin {
 		"onBlockRemove"=>array(),		//*ブロックが削除される直前(blockId)
 
 		//プラグインブロック
-    "onPluginBlockLoad"=>array(),   //*プラグインブロックが呼び出される直前 array()
-    "onPluginBlockAdminReturnPluginId"=>array(),  //*プラグインブロックの管理画面が表示される直前 array()
+		"onPluginBlockLoad"=>array(),   //*プラグインブロックが呼び出される直前 array()
+		"onPluginBlockAdminReturnPluginId"=>array(),  //*プラグインブロックの管理画面が表示される直前 array()
 
 		//その他
 		"onActive"=>array(),			//プラグインが有効になる直前

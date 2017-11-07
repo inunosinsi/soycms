@@ -4,71 +4,71 @@ class CMSMessageManager {
 
 	private $errorMessage = array();
 	private $message = array();
-	
+
 	/**
 	 * メッセージパス
 	 */
 	private $messagePath = array();
-	
+
 	/**
 	 * メッセージデータ
 	 */
 	private $messageArray = null;
-	
-    function CMSMessageManager() {}
-    
+
+    function __construct() {}
+
     static function &getInstance(){
     	static $_instance;
-    	
+
     	if(!$_instance){
     		$messages = SOY2ActionSession::getFlashSession()->getAttribute("messages");
     		$errors = SOY2ActionSession::getFlashSession()->getAttribute("errorMessages");
-    		
+
     		$_instance = new CMSMessageManager();
-    		
+
     		if($messages)$_instance->addMessage($messages);
     		if($errors)$_instance->addErrorMessage($errors);
     	}
-    	
+
     	return $_instance;
     }
-    
+
     public static function save(){
     	$instance = &self::getInstance();
     	SOY2ActionSession::getFlashSession()->setAttribute("messages",$instance->message);
     	SOY2ActionSession::getFlashSession()->setAttribute("errorMessages",$instance->errorMessage);
     }
-    
+
     public static function addMessage($str){
     	$instance = &self::getInstance();
-    	
+
     	if(is_array($str)){
-			$instance->message += $str;    		
+			$instance->message += $str;
     	}else{
     		$instance->message[] = $str;
     	}
     }
-    
+
     public static function addErrorMessage($str){
     	$instance = &self::getInstance();
-    	
+
     	if(is_array($str)){
-			$instance->errorMessage += $str;    		
+			$instance->errorMessage += $str;
     	}else{
     		$instance->errorMessage[] = $str;
     	}
     }
-    
+
     public static function getMessages(){
     	$instance = &self::getInstance();
     	return $instance->message;
     }
-    
+
     public static function getErrorMessages(){
     	$instance = &self::getInstance();
     	return $instance->errorMessage;
     }
-    
+
     /**
      * メッセージファイルの追加
      * @param filepath ファイルは存在しなくてはいけません
@@ -84,7 +84,7 @@ class CMSMessageManager {
     		return false;
     	}
     }
-    
+
     /**
      * メッセージディレクトリの追加
      * @param directoryPath メッセージファイルの詰まったディレクトリ　存在しないとダメです
@@ -101,7 +101,7 @@ class CMSMessageManager {
 			closedir($cd);
 		}
 	}
-    
+
     /**
      * メッセージの取得
      * @param key メッセージのキーです
@@ -110,7 +110,7 @@ class CMSMessageManager {
      */
     static function get($key,$replace = array()){
     	$instance = &self::getInstance();
-    	
+
     	if(is_null($instance->messageArray)){
     		$instance->messageArray = self::parse();
     	}
@@ -126,12 +126,12 @@ class CMSMessageManager {
     		if(defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja"){
     			return '[ERROR] "'.$key.'"  に対応するメッセージがありません';
     		}else{
-    			return '[ERROR] Message for "'.$key.'" is not found';    			
+    			return '[ERROR] Message for "'.$key.'" is not found';
     		}
-    	
+
     	}
     }
-    
+
     /**
      * メッセージファイルのパースを行います
      */
@@ -143,12 +143,12 @@ class CMSMessageManager {
     		while($line = fgets($hFile,1024)){
     			//コメントの除去
     			$line = preg_replace('/(\/\/.*)$/i','',$line);
-    			
+
     			//空白行ならばスキップ
     			if(trim($line) == ""){
     				continue;
     			}
-    			
+
     			//とりあえずpreg_matchで、遅いようなら考えよう
     			$match = array();
     			if(preg_match('/^([^=]+)=(.+)$/i',$line,$match)){

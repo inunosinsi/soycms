@@ -27,7 +27,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	/**
 	 * コンストラクタ
 	 */
-	public function UpdateDBLogic(){
+	public function __construct(){
 		$this->db = new SOY2DAO();
 	}
 
@@ -213,5 +213,4 @@ class UpdateDBLogic extends SOY2LogicBase{
 				break;
 		}
 	}
-
 }
