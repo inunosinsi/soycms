@@ -1,28 +1,28 @@
-<?php 
+<?php
 class IndexPage extends MainMyPagePageBase{
 
 	public $component;
 	public $backward;
-	
+
 	function doPost(){
-		
+
 		//保存
 		if(soy2_check_token()){
-		
+
 			if(isset($_POST["confirm"]) || isset($_POST["confirm_x"])){
-		
+
 				$mypage = MyPageLogic::getMyPage();
 				$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 				$user = new SOYShop_User();
-				
+
 				//名前関連のデータの文字列変換
 				$customer = $_POST["Customer"];
 				$customer = $this->component->adjustUser($customer);
-				
+
 				//POSTデータ
 				$postUser = (object)$customer;
 				$user = SOY2::cast("SOYShop_User", $postUser);
-				
+
 				//ユーザカスタムフィールドの値をセッションに入れる
 				if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
 					SOYShopPlugin::load("soyshop.user.customfield");
@@ -32,9 +32,9 @@ class IndexPage extends MainMyPagePageBase{
 						"param" => $_POST["user_customfield"]
 					));
 				}
-				
+
 				$mypage->setUserInfo($user);
-				
+
 				if( $this->checkError($mypage) ){
 					$this->jump("register/confirm");
 				}else{
@@ -42,38 +42,38 @@ class IndexPage extends MainMyPagePageBase{
 				}
 			}
 		}
-		
+
 		//郵便番号での住所検索
 		if(isset($_POST["user_zip_search"]) || isset($_POST["user_zip_search_x"])){
 			$logic = SOY2Logic::createInstance("logic.cart.AddressSearchLogic");
 			$mypage = MyPageLogic::getMyPage();
 
 			$postUser = (object)$_POST["Customer"];
-			$user = SOY2::cast("SOYShop_User",$postUser);			
+			$user = SOY2::cast("SOYShop_User",$postUser);
 
 			$code = soyshop_cart_address_validate($user->getZipcode());
 			$res = $logic->search($code);
 			$user->setArea(SOYShop_Area::getAreaByText($res["prefecture"]));
 			$user->setAddress1($res["address1"]);
 			$user->setAddress2($res["address2"]);
-			$anchor = "zipcode1";	
+			$anchor = "zipcode1";
 
 			$mypage->setUserInfo($user);
 			$mypage->save();
-			
+
 			$this->jump("register#" . $anchor);
 		}
 	}
-	
+
 	function __construct(){
 
 		$mypage = MyPageLogic::getMyPage();
-		
+
 		//すでにログインしていたら飛ばす
 		if($mypage->getIsLoggedin()){
 			$this->jumpToTop();
 		}
-		
+
 		//リダイレクト指定で遷移してきた場合はURIを保存する
 		if(isset($_GET["r"])){
 			$mypage->setAttribute(MyPageLogic::REGISTER_REDIRECT_KEY, $_GET["r"]);
@@ -88,15 +88,18 @@ class IndexPage extends MainMyPagePageBase{
 
 		parent::__construct();
 
+		$this->addLink("password_link", array(
+			"link" => soyshop_get_mypage_url() . "/remind/input",
+		));
 
 		//顧客情報フォーム
 		$this->buildForm($user, $mypage);
-		
+
 		//エラー周り
 		DisplayPlugin::toggle("has_error", $mypage->hasError());
 		$this->appendErrors($mypage);
 	}
-	
+
 	/**
 	 * @param SOYShop_User $user
 	 * @param MyPageLogic $mypage
@@ -104,7 +107,7 @@ class IndexPage extends MainMyPagePageBase{
 	 */
 	function buildForm(SOYShop_User $user, MyPageLogic $mypage, $mode=UserComponent::MODE_CUSTOM_FORM){
 		//共通コンポーネントに移し替え  soyshop/component/UserComponent.class.php buildFrom()
-		//後方互換性確保は soyshop/component/backward/BackwardUserComponent 
+		//後方互換性確保は soyshop/component/backward/BackwardUserComponent
 
 		//以前のフォーム 後方互換
 		$this->backward->backwardMyPageRegister($this, $user);
@@ -112,7 +115,7 @@ class IndexPage extends MainMyPagePageBase{
 		//共通フォーム
 		$this->component->buildForm($this, $user, $mypage, $mode);
 	}
-	
+
 	/**
 	 * エラー周りを設定
 	 */
@@ -129,10 +132,10 @@ class IndexPage extends MainMyPagePageBase{
 		$user = $mypage->getUserInfo();
 		$mypage->clearErrorMessage();
 		$res = true;
-		
+
 		//共通エラーチェック
 		$res = $this->component->checkError($user, $mypage, UserComponent::MODE_MYPAGE_REGISTER);
-		
+
 		$mypage->save();
 		return $res;
 	}

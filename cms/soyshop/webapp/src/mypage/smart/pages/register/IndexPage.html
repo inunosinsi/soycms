@@ -1,11 +1,15 @@
 <form soy:id="form">
-	<section id="cart_procedure">	
+	<section id="cart_procedure">
 		<h1 class="cart_txt">会員登録</h1>
 		<!-- soy:display="has_error" -->
 		<div class="error narrow">
 			<p>正しく入力されていない項目があります。</p>
 		</div>
 		<!-- /soy:display="has_error" -->
+
+		<aside class="note">
+			<p>当ショップで商品購入時にパスワードを入力せずに注文された方は<a soy:id="password_link">パスワードの再設定</a>をご利用下さい。</p>
+		</aside>
 
 		<div class="cart_detail_dl">
 			<dl>
@@ -49,7 +53,7 @@
 				<dd>
 					<p class="error" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
 					<input name="" type="text" id="" class="input-zip w80" soy:id="user_zip_code">
-					<span class="note">【半角数字】</span> 
+					<span class="note">【半角数字】</span>
 					<span class="search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
 				</dd>
 				<!-- /soy:id="zipCode_show" -->
@@ -95,7 +99,7 @@
 					<span class="exmpl">（例）info＠n-i-agroinformatics.com</span>
 				</dd>
 				<!-- /soy:id="mailAddress_show" -->
-				
+
 				<!-- soy:id="accountId_show" -->
 				<dt>ログインID<span soy:id="accountId_required">（必須）</span></dt>
 				<dd>
@@ -164,7 +168,7 @@
 					<span class="exmpl">（例）http://www.soyshop.net/</span>
 				</dd>
 				<!-- /soy:id="url_show" -->
-				
+
 				<!-- soy:id="has_user_customfield" -->
 				<!-- soy:id="user_customfield_list" -->
 				<dt><!-- soy:id="customfield_name" /--></dt>
@@ -187,11 +191,11 @@
 				</dd>
 				<!-- /soy:id="memo_show" -->
 			</dl>
-			
+
 		</div>
 		<p class="textcenter"><input type="image" name="confirm" soy:src="themes/common/images/mypage/btn_confirm_off.jpg" alt="確認する"></p>
 		<p class="textcenter"><a onclick="history.back();">&lt;&lt; 戻る</a></p>
 	</section>
 </form soy:id="form">
-	
+
 <script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->

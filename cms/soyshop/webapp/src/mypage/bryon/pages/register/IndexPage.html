@@ -7,6 +7,10 @@
 		</div>
 		<!-- /soy:display="has_error" -->
 
+		<aside class="note">
+			<p>当ショップで商品購入時にパスワードを入力せずに注文された方は<a soy:id="password_link">パスワードの再設定</a>をご利用下さい。</p>
+		</aside>
+
 		<section class="soycart_narrow">
 			<table class="soycart_form">
 				<tr soy:id="name_show">
@@ -45,7 +49,7 @@
 					<td>
 						<p class="error" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
 						<input name="" type="text" id="" class="input-zip w80" soy:id="user_zip_code">
-						<span class="note">【半角数字】</span> 
+						<span class="note">【半角数字】</span>
 						<span class="search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
 					</td>
 				</tr>
@@ -77,7 +81,7 @@
 					</td>
 				</tr>
 				<!-- /soy:id="address_show" -->
-				
+
 				<tr soy:id="telephoneNumber_show">
 					<th nowrap scope="row">電話番号<span soy:id="telephoneNumber_required">（必須）</span></th>
 					<td>
@@ -159,7 +163,7 @@
 						<span class="exmpl">（例）http://www.soyshop.net/</span>
 					</td>
 				</tr>
-				
+
 				<tr soy:display="active_soymail_connector">
 					<th nowrap scope="row">メールマガジン</th>
 					<td>
@@ -168,7 +172,7 @@
 						<!-- soy:id="mail_magazine_description" /-->
 					</td>
 				</tr>
-				
+
 				<!-- soy:id="has_user_customfield" -->
 				<!-- soy:id="user_customfield_list" -->
 				<tr>
@@ -191,12 +195,12 @@
 						<span class="exmpl">何かありましたらご自由にお書きください。</span>
 					</td>
 				</tr>
-				
+
 			</table>
 			<p class="btn"><input type="image" name="confirm" soy:src="themes/common/images/mypage/btn_confirm_off.jpg" alt="確認する"></p>
 			<p class="alC"><a onclick="history.back();">&lt;&lt; 戻る</a></p>
 		</section>
 	</form soy:id="form">
 </section>
-	
+
 <script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
