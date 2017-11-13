@@ -61,8 +61,7 @@
 						</div>
 						<div id="entries-by-label" soy:id="entries-by-label" class="panel-collapse collapse in">
 							<div class="panel-body">
-								<!-- soy:id="label_categories" -->
-								<div class="panel panel-default">
+								<div class="panel panel-default" soy:id="label_categories">
 									<div class="panel-heading" soy:id="toggle_opened"><!-- soy:id="label_category_name" /--></div>
 									<div class="panel-body">
 										<div soy:id="toggle_target">
@@ -83,15 +82,13 @@
 											<!-- /soy:id="label_list" -->
 										</div soy:id="toggle_target">
 									</div>
-								</div>
-								<!-- /soy:id="label_categories" -->
+								</div soy:id="label_categories">
 							</div>
 						</div soy:id="entries-by-label">
 					</div>
 				</div>
 				<!-- /.col-lg-12 -->
-			</div>
-			<div class="row">
+
 				<div class="col-lg-12">
 					<div class="panel panel-green">
 						<div class="panel-heading">
@@ -252,7 +249,6 @@
 
 <script soy:id="parameters"></script>
 <script soy:id="entry_list"></script>
-<script soy:id="jquery-cookie"></script>
 
 <?php // collapseのshow/hideをCookieで永続化する ?>
 <script type="text/javascript">
@@ -269,20 +265,24 @@
 	.bind('show.bs.collapse', function(){
 		$.cookie('entry-index-label-panel-status', 'open');
 		$(this).parent().find(".panel-heading i").removeClass('fa-chevron-down').addClass('fa-chevron-up');
+		//$(this).parent().parent().removeClass('col-lg-3').addClass('col-lg-12');
 	})
 	.bind('hidden.bs.collapse', function(){
 		$.cookie('entry-index-label-panel-status', 'closed')
 		$(this).parent().find(".panel-heading i").removeClass('fa-chevron-up').addClass('fa-chevron-down');
+		//$(this).parent().parent().removeClass('col-lg-12').addClass('col-lg-3');
 	});
 
 	$("#entries-by-status")
 	.bind('shown.bs.collapse', function() {
 		$.cookie('entry-index-status-panel-status', 'open')
 		$(this).parent().find(".panel-heading i").removeClass('fa-chevron-down').addClass('fa-chevron-up');
+		//$(this).parent().parent().removeClass('col-lg-3').addClass('col-lg-12');
 	})
 	.bind('hidden.bs.collapse', function(){
 		$.cookie('entry-index-status-panel-status', 'closed')
 		$(this).parent().find(".panel-heading i").removeClass('fa-chevron-up').addClass('fa-chevron-down');
+		//$(this).parent().parent().removeClass('col-lg-12').addClass('col-lg-3');
 	});
 </script>
 

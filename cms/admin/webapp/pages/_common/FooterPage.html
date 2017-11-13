@@ -1,5 +1,5 @@
 <footer>
-	<div class="pull-right"id="copyright">SOY CMS <!-- soy:id="version" /-->. <!-- soy:id="copyright" -->CopyRight &copy; Brassica, Inc. All right reserved.<!-- /soy:id="copyright" --></div>
+	<div class="pull-right"id="copyright">SOY CMS <!-- soy:id="version" /--> on <a href="https://secure.php.net/" target="_blank" rel="noreferrer">PHP</a> <!-- soy:id="php-version" /-->. <!-- soy:id="copyright" -->CopyRight &copy; Brassica, Inc. All right reserved.<!-- /soy:id="copyright" --></div>
 	</div>
 </footer>
 <!-- jQuery -->
@@ -19,3 +19,27 @@
 <script soy:id="sbAdmin" src="/admin/webapp/pages/files/dist/js/sb-admin-2.js"></script>
 <script soy:id="jQuery-ui" src="/js/jquery-ui.js"></script>
 <script soy:id="soyCommon" src="/js/common.js"></script>
+
+<script soy:id="jquery-cookie"></script>
+
+<script type="text/javascript">
+$(function(){
+	$("#toggle-side-menu").click(function(){
+		if($("#side-menu li a span").is(":hidden")){
+			$("#page-wrapper").css({'margin-left': '250px'});
+			$("#side-menu li a span").show();
+			$(".sidebar").css({'width': '250px'});
+			$("#toggle-side-menu i").removeClass("fa-angle-right").addClass("fa-angle-left");
+			$("#toggle-side-menu").removeClass("active").blur();
+			$.cookie('admin-hide-side-menu', false);
+		}else{
+			$("#page-wrapper").css({'margin-left': '50px'});
+			$("#side-menu li a span").hide();
+			$(".sidebar").css({'width': '50px'});
+			$("#toggle-side-menu i").removeClass("fa-angle-left").addClass("fa-angle-right");
+			$("#toggle-side-menu").removeClass("active").blur();
+			$.cookie('admin-hide-side-menu', true);
+		}
+	});
+});
+</script>

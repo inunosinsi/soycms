@@ -46,17 +46,15 @@ class SOYCMS_Info_Plugin{
 			$this,"config_page"
 		));
 
-		if(function_exists("simplexml_load_string")){
-			if(
-				   $this->display_config_for_admin[self::DEFAULT_ADMIN] && UserInfoUtil::isDefaultUser()
-				|| $this->display_config_for_admin[self::SITE_ADMIN] && UserInfoUtil::hasSiteAdminRole() && ! UserInfoUtil::isDefaultUser()
-				|| $this->display_config_for_admin[self::ENTRY_ADMIN] && UserInfoUtil::hasEntryPublisherRole() && ! UserInfoUtil::hasSiteAdminRole() && ! UserInfoUtil::isDefaultUser()
-				|| $this->display_config_for_admin[self::DRAFT_ENTRY_ADMIN] && ! UserInfoUtil::hasEntryPublisherRole() && ! UserInfoUtil::hasSiteAdminRole() && ! UserInfoUtil::isDefaultUser()
-			){
-				CMSPlugin::addWidget($this->getId(),array(
-					$this,"widget"
-				));
-			}
+		if(
+			   $this->display_config_for_admin[self::DEFAULT_ADMIN] && UserInfoUtil::isDefaultUser()
+			|| $this->display_config_for_admin[self::SITE_ADMIN] && UserInfoUtil::hasSiteAdminRole() && ! UserInfoUtil::isDefaultUser()
+			|| $this->display_config_for_admin[self::ENTRY_ADMIN] && UserInfoUtil::hasEntryPublisherRole() && ! UserInfoUtil::hasSiteAdminRole() && ! UserInfoUtil::isDefaultUser()
+			|| $this->display_config_for_admin[self::DRAFT_ENTRY_ADMIN] && ! UserInfoUtil::hasEntryPublisherRole() && ! UserInfoUtil::hasSiteAdminRole() && ! UserInfoUtil::isDefaultUser()
+		){
+			CMSPlugin::addWidget($this->getId(),array(
+				$this,"widget"
+			));
 		}
 	}
 
@@ -72,8 +70,16 @@ class SOYCMS_Info_Plugin{
 			if(!$rss && !$forum){
 				$html = "<p>RSSの取得に失敗しました。</p>";
 			}
-		}else{
+		}elseif(!function_exists("simplexml_load_string")){
+			$html = "<p class='warning'>SimpleXMLが必要です。</p>";
+
+			$html .= '<p><small><a target="_top" href="'.htmlspecialchars(SOY2PageController::createLink("Plugin.Config")."?soycms_info",ENT_QUOTES,'UTF-8').'">プラグインの設定画面へ</a></small></p>';
+
+
+		}elseif(!ini_get("allow_url_fopen")){
 			$html = "allow_url_fopen=0の環境では情報が取得できません。";
+		}else{
+			$html = "";
 		}
 
 		return $html;
@@ -202,8 +208,9 @@ class SOYCMS_Info_Plugin{
 			$obj = new SOYCMS_Info_Plugin();
 
 			//この時プラグインを強制的に有効にする
+			//ただし動作条件を満たさない場合は有効にしない
 			$filepath = CMSPlugin::getSiteDirectory().'/.plugin/'. SOYCMS_Info_Plugin::PLUGIN_ID;
-			if(!file_exists($filepath . ".inited") && ini_get("allow_url_fopen")){
+			if(!file_exists($filepath . ".inited") && ini_get("allow_url_fopen") && function_exists("simplexml_load_string")){
 				@file_put_contents($filepath .".active","active");
 				@file_put_contents($filepath .".inited","inited");
 			}
@@ -212,5 +219,3 @@ class SOYCMS_Info_Plugin{
 	}
 
 }
-
-?>

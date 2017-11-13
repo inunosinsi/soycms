@@ -85,6 +85,14 @@ body.sub{
   font-size:1.2em;
 }
 
+.sidebar li #toggle-side-menu i{
+	margin-right: -6px;
+	padding-left: 14px;
+}
+.sidebar li #toggle-side-menu i.fa-angle-right{
+	padding-left: 0px;
+}
+
 @media (min-width: 768px) {
   .sidebar {
     z-index: 1;
@@ -92,12 +100,18 @@ body.sub{
     width: 250px;
     margin-top: 81px;
   }
-}
 
-@media (max-width: 767px){
+  .sidebar-narrow {
+    width: 50px;
+  }
+  .sidebar-narrow #side-menu li a span{
+    display: none;
+  }
+/*
   .sidebar li{
     font-size:1em;
   }
+  */
   .sidebar ul#side-menu li{
     background:transparent;
   }
@@ -192,6 +206,11 @@ h1{
 }
 #list_panel_wrapper .label_list_item label span{
 	vertical-align: unset;
+}
+
+#entries-by-label > .panel-body > .panel{
+	display: inline-block;
+	margin-right: 15px;
 }
 
 /*

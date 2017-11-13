@@ -31,5 +31,9 @@ class BottomJSPage extends CMSHTMLPageBase{
 				"visible" => !defined("SOYCMS_ASP_MODE"),
 		));
 
+		//Cookie操作用
+		$this->addScript("jquery-cookie",array(
+				"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js") . "?" . SOYCMS_BUILD_TIME
+		));
 	}
 }

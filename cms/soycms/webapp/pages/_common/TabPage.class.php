@@ -119,6 +119,11 @@ class TabPage extends CMSHTMLPageBase {
 				"visible" => ! $this->isSimpleMode
 		));
 
+		/* サイドバーの表示・非表示 */
+		$hideSideMenu = ( isset($_COOKIE["soycms-hide-side-menu"]) && $_COOKIE["soycms-hide-side-menu"] == "true" );
+		$this->addModel("toggle-arrow", array(
+				"class" => $hideSideMenu ? "fa fa-fw fa-angle-right" : "fa fa-fw fa-angle-left",
+		));
 
 		/* スマホ用のUpperMenu同等 */
 		$this->addLabel("adminname", array(

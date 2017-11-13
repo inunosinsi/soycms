@@ -8,7 +8,7 @@ class HeaderPage extends CMSWebPageBase{
 		$this->title = $title;
 	}
 
-    function __construct(){
+	function __construct(){
 		parent::__construct();
 
 		HTMLHead::addLink("bootstrap.min.css", array(
@@ -42,13 +42,17 @@ class HeaderPage extends CMSWebPageBase{
 			"href" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/font-awesome/css/font-awesome.min.css") . "?" . SOYCMS_BUILD_TIME
 		));
 
-    }
+	}
 
-    function execute(){
-    	$this->createAdd("header", "HTMLHead", array(
+	function execute(){
+		$this->createAdd("header", "HTMLHead", array(
 			"title" => $this->title,
 			"isEraseHead" => false
 		));
-    }
+
+		//サイドバーの表示・非表示に伴うメインコンテンツ領域の幅を変える
+		$this->addModel("for-narrow-sidebar",array(
+				"visible" => ( isset($_COOKIE["admin-hide-side-menu"]) && $_COOKIE["admin-hide-side-menu"] == "true" ),
+		));
+	}
 }
-?>

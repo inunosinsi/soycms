@@ -38,12 +38,26 @@
   font-size:1.2em;
 }
 
+.sidebar li #toggle-side-menu i{
+	margin-right: -6px;
+	padding-left: 14px;
+}
+.sidebar li #toggle-side-menu i.fa-angle-right{
+	padding-left: 0px;
+}
+
 @media (min-width: 768px) {
   .sidebar {
   z-index: 1;
   position: absolute;
   width: 250px;
   margin-top: 81px;
+  }
+  .sidebar-narrow {
+    width: 50px;
+  }
+  .sidebar-narrow #side-menu li a span{
+    display: none;
   }
 }
 

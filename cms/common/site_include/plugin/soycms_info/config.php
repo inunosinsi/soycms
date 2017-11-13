@@ -64,6 +64,9 @@ class SOYCMSInfoConfigPage extends WebPage{
 		DisplayPlugin::toggle("is_simple_xml_enabled", function_exists("simplexml_load_string"));
 		DisplayPlugin::toggle("no_simple_xml_enabled", ! function_exists("simplexml_load_string"));
 
+		DisplayPlugin::toggle( "is_allow_url_fopen_enabled", ini_get("allow_url_fopen"));
+		DisplayPlugin::toggle("not_allow_url_fopen_enabled", ! ini_get("allow_url_fopen"));
+
 	}
 
 	function getTemplateFilePath(){

@@ -190,10 +190,6 @@ class IndexPage extends CMSUpdatePageBase{
 			"script"=> file_get_contents(dirname(__FILE__)."/script/entry_list.js")
 		));
 
-		$this->addScript("jquery-cookie",array(
-			"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js") . "?" . SOYCMS_BUILD_TIME
-		));
-
 		//表示順は隠す
 		DisplayPlugin::hide("no_label");
 	}

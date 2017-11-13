@@ -118,10 +118,6 @@ class TreePage extends CMSWebPageBase{
 			"elementId" => 'hide-out-of-publishing-period',
 		));
 
-		//Cookie操作用
-		$this->addScript("jquery-cookie",array(
-				"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js") . "?" . SOYCMS_BUILD_TIME
-		));
 	}
 
 	function getTreeHTML($pages,$depth = 0){
@@ -268,4 +264,3 @@ class TreeListComponent extends HTMLList{
 
 	function populateItem($entity){}
 }
-?>

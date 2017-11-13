@@ -60,6 +60,9 @@ if(!UserInfoUtil::isLoggined()){
 	DisplayPlugin::toggle("for_not_default_user", !UserInfoUtil::isDefaultUser());
 }
 
+//デフォルトでは切り替えのリンクは隠しておく（必要に応じてconfig.ext.phpで表示を切り替える）
+DisplayPlugin::hide("ext_mode_link");
+
 //お知らせ配信のFeedのURL
 define("SOYCMS_INFO_FEED", "http://www.soycms.net/info/feed/");
 

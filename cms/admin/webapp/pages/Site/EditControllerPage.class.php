@@ -38,7 +38,7 @@ class EditControllerPage extends CMSUpdatePageBase {
 
 		$this->buildSubMenu();
 		$this->buildForm($site);
-		$this->showDefault();
+		$this->showDefault($site);
 		$this->showMessage();
 		$this->showBackupFiles($site->getPath() . self::FILENAME);
 	}
@@ -77,12 +77,12 @@ class EditControllerPage extends CMSUpdatePageBase {
 		));
 	}
 
-	private function showDefault(){
+	private function showDefault($site){
 		$logic = SOY2Logic::createInstance("logic.admin.Site.SiteCreateLogic");
 
 		$this->addTextArea("default_contents", array(
 				"name"  => "default_contents",
-				"value" => $logic->getController(),
+				"value" => $logic->getController($site->getSiteId()),
 				"readonly" => true,
 		));
 	}

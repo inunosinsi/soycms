@@ -40,4 +40,3 @@ class NoLabelPage extends ListPage{
 		return array();
 	}
 }
-?>

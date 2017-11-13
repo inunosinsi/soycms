@@ -437,8 +437,8 @@ function soy_cms_blog_output_entry_list_pager($page,$offset,$limit,$total){
                 $html .= "</a>";
 
                 $this->createAdd("pager_item_link", "HTMLLink", array(
-                    "link" => htmlspecialchars($pager_list["url"], ENT_QUOTES, "UTF-8"),
-                    "text" => htmlspecialchars($pager_list["display_number"], ENT_QUOTES, "UTF-8"),
+                    "link" => $pager_list["url"],
+                    "text" => $pager_list["display_number"],
                     "soy2prefix" => "cms"
                 ));
                 $this->createAdd("pager_item","HTMLLabel",array(
@@ -459,6 +459,12 @@ function soy_cms_blog_output_entry_list_pager($page,$offset,$limit,$total){
                     "visible" => ($pager_list["display_number"] == $this->current),
                     "soy2prefix" => "cms"
                 ));
+
+				//3.0.1-
+				$this->createAdd("is_middle","HTMLModel",array(
+						"visible" => ($pager_list["display_number"] > 1 && $pager_list["display_number"] < $this->last),
+						"soy2prefix" => "cms"
+				));
             }
 
         }

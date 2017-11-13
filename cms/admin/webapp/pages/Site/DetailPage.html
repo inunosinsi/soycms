@@ -8,7 +8,7 @@
 
 	<div id="wrapper">
 		<!-- Navigation -->
-		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="UpperMenuPage"><!-- --></nav>
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
@@ -16,14 +16,14 @@
 				</div>
 				<!-- /.col-lg-12 -->
 			</div>
-			<div class="row">
+			<div class="row" soy:id="has_message_or_error">
 				<div class="col-lg-12">
 					<div class="panel panel-default panel-message">
 						<div  class="panel-heading" soy:id="message">メッセージ</div>
 						<div  class="panel-heading" soy:id="error">エラー</div>
 					</div>
 				</div>
-			</div>
+			</div soy:id="has_message_or_error">
 			<div class="row" soy:display="for_default_user">
 				<div class="col-lg-12">
 					<div class="panel panel-default">

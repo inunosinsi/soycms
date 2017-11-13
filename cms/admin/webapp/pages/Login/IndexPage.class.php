@@ -12,9 +12,6 @@ class IndexPage extends CMSHTMLPageBase{
 		if($result->success()){
 			SOY2PageController::redirect("");
 		}else{
-			//力づく攻撃の対応　攻撃を受けている可能性のあるIPアドレスを記録する
-			SOY2Logic::createInstance("logic.admin.Login.ErrorLogic")->save();
-
 			//失敗したときは2秒待たせる
 			sleep(2);
 		}
@@ -44,7 +41,7 @@ class IndexPage extends CMSHTMLPageBase{
 
 		//フォームの作成
 		$this->addForm("AuthForm");
-
+		
 		$this->addInput("username", array(
 			"name" => "Auth[name]",
 			"value" => $this->username
@@ -53,7 +50,7 @@ class IndexPage extends CMSHTMLPageBase{
 			"name" => "Auth[password]",
 			"value" => ""
 		));
-
+		
 		$this->addLabel("message", array(
 			"html" => $this->message,
 			"visible" => strlen($this->message)
@@ -64,7 +61,7 @@ class IndexPage extends CMSHTMLPageBase{
 			"visible" => SOY2Logic::createInstance("logic.admin.Administrator.AdministratorLogic")->hasMailAddress() &&
 			!is_null(SOY2Logic::createInstance("logic.mail.MailConfigLogic")->get()),
 		));
-
+		
 		$this->addModel("biglogo", array(
     		"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
     	));

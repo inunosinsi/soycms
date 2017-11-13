@@ -50,7 +50,7 @@ class SiteCreateLogic extends SOY2LogicBase{
 
 		//ファイルを作る（既存のファイルはバックアップを取った上で上書き、）
 		$this->createHtaccess($siteId, false);//新規サイトはルートサイトではない
-		$this->createController();
+		$this->createController($siteId);
 		$this->copy_im_php();
 
 		//デフォルトのアップロード先を作る
@@ -141,7 +141,7 @@ class SiteCreateLogic extends SOY2LogicBase{
 
 		if($site->getSiteType() == Site::TYPE_SOY_CMS){
 			$this->createHtaccess($siteId, $site->getIsDomainRoot());
-			$this->createController();
+			$this->createController($siteId);
 			$this->copy_im_php();
 		}else{
 			$this->createSOYShopController();
@@ -161,14 +161,12 @@ class SiteCreateLogic extends SOY2LogicBase{
 		$siteConfig->setUseLabelCategory(true);
 		$siteConfig->getSiteConfig();
 
-		$conf = $siteConfig->getSiteConfig();
-
 		$pdo = $this->getSitePDO();
 		$sql = "insert into SiteConfig(name,charset,siteConfig) values (:name,:encoding,:siteConfig)";
 		$stmt = $pdo->prepare($sql);
 		$stmt->bindParam(":name",$siteName);
 		$stmt->bindParam(":encoding",$encoding);
-		$stmt->bindParam(":siteConfig",$conf);
+		$stmt->bindParam(":siteConfig",$siteConfig->getSiteConfig());
 
 		$stmt->execute();
 
@@ -211,13 +209,11 @@ class SiteCreateLogic extends SOY2LogicBase{
 		$template = str_replace("@@SITE_LINK;",$siteUrl,$template);
 		$pageType = Page::PAGE_TYPE_ERROR;
 
-		$time = time();
-
 		$stmt->bindParam(":uri",$uri);
 		$stmt->bindParam(":title",$title);
 		$stmt->bindParam(":template",$template);
 		$stmt->bindParam(":pagetype",$pageType);
-		$stmt->bindParam(":udate",$time);
+		$stmt->bindParam(":udate",time());
 		$stmt->execute();
 
 	}
@@ -378,13 +374,13 @@ class SiteCreateLogic extends SOY2LogicBase{
 		}
 	}
 
-	private function createController(){
+	private function createController($siteId){
 		$this->log("Create the front controller");
 
 		$filename = $this->siteDirPath.self::CONTROLLER_FILENAME;
 
 		CMSUtil::createBackup($filename);
-		file_put_contents($filename, $this->getController());
+		file_put_contents($filename, $this->getController($siteId));
 
 		$this->makeExecutableForCGI($filename);
 	}
@@ -392,12 +388,37 @@ class SiteCreateLogic extends SOY2LogicBase{
 	/**
 	 * @return String
 	 */
-	public function getController(){
+	public function getController($siteId){
 
 		//DB情報が必要
 		if(strlen($this->dsn) == 0){
-			$this->setDefaultDBInfo();
+			//$this->dsn = $site->getDataSourceName()
+			$this->setDefaultDBInfo($siteId);
 		}
+
+		return $this->__getController($this->dsn, $this->user, $this->pass);
+	}
+
+	/**
+	 * @return String
+	 */
+	public function getControllerForRenew($site){
+
+		//DB情報が必要
+		if(strlen($this->dsn) == 0){
+			//DSNは現在保存されているものを使う
+			$this->dsn = $site->getDataSourceName();
+			//User, Password
+			$this->setDefaultDBInfo($site->getSiteId());
+		}
+
+		return $this->__getController($this->dsn, $this->user, $this->pass);
+	}
+
+	/**
+	 * @return String
+	 */
+	private function __getController($dsn, $dbUser, $dbPassword){
 
 		$controller = array();
 		$controller[] = "<?php ";
@@ -411,10 +432,10 @@ class SiteCreateLogic extends SOY2LogicBase{
 		}
 
 		$controller[] = 'define("_SITE_ROOT_",dirname(__FILE__));';
-		$controller[] = 'define("_SITE_DSN_","'.$this->dsn.'");';
+		$controller[] = 'define("_SITE_DSN_","'.$dsn.'");';
 		$controller[] = 'define("_SITE_DB_FILE_",_SITE_ROOT_."/.db/'.SOYCMS_DB_TYPE.'.db");';
-		if($this->user)$controller[] = 'define("_SITE_DB_USER_",    "'.$this->user.'");';
-		if($this->pass)$controller[] = 'define("_SITE_DB_PASSWORD_","'.$this->pass.'");';
+		if(strlen($dbUser))$controller[] = 'define("_SITE_DB_USER_",    "'.$dbUser.'");';
+		if(strlen($dbPassword))$controller[] = 'define("_SITE_DB_PASSWORD_","'.$dbPassword.'");';
 		$controller[] = 'define("_CMS_COMMON_DIR_", "'.dirname(CMS_SITE_INCLUDE).'");';
 		$controller[] = 'include(_CMS_COMMON_DIR_."/site.func.php");';
 		$controller[] = 'execute_site();';

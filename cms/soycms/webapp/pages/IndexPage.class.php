@@ -45,6 +45,11 @@ class IndexPage extends CMSWebPageBase{
 
 		parent::__construct();
 
+		$siteConfig = $this->getSiteConfig();
+		if($siteConfig->isShowOnlyAdministrator()){
+			$this->addMessage("SOYCMS_CONFIG_SHOW_ONLY_ADMINISTRATOR");
+		}
+
 		$this->addLabel("widgets", array(
 			"html" => $this->getWidgetsHTML()
 		));
@@ -206,6 +211,11 @@ class IndexPage extends CMSWebPageBase{
 				return array("blog"=>$blogIds[$blogId], "entry" => $entry);
 			}
 		}
+	}
+
+	private function getSiteConfig(){
+		$result = SOY2ActionFactory::createInstance("SiteConfig.DetailAction")->run();
+		return $result->getAttribute("entity");
 	}
 }
 

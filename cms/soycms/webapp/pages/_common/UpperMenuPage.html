@@ -1,31 +1,30 @@
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-			 </div>
-			<!-- /.navbar-header -->
-			<a soy:link=""><img class="navbar-brand" soy:id="biglogo" src="./../css/img/logo_big.gif" alt="logo" ></a>
+<div class="navbar-header">
+	<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="sr-only">Toggle navigation</span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+	</button>
+ </div>
+<!-- /.navbar-header -->
+<a soy:link=""><img class="navbar-brand" soy:id="biglogo" src="./../css/img/logo_big.gif" alt="logo" ></a>
 
-			<ul id="top_menu_site" class="nav navbar-top-links navbar-left">
-				<li><p soy:id="sitename"></p></li><!--
-				--><li><a soy:id="sitepath_link" target="_blank"><!-- soy:id="sitepath_text" /-->&nbsp;<i class="fa fa-external-link fa-fw" style="font-size:smaller"></i></a></li>
-			</ul>
+<ul id="top_menu_site" class="nav navbar-top-links navbar-left">
+	<li><p soy:id="sitename"></p></li><!--
+	--><li><a soy:id="sitepath_link" target="_blank"><!-- soy:id="sitepath_text" /-->&nbsp;<i class="fa fa-external-link fa-fw" style="font-size:smaller"></i></a></li>
+</ul>
 
-			<ul id="top_menu" class="nav navbar-top-links navbar-right hidden-xs">
-				<li soy:id="display_ext_link"><a href="?ext_mode" soy:id="ext_link"><i class="fa fa-exchange fa-fw"></i>画面切替</a></li>
-				<li soy:display="for_default_user"><a href="#" soy:id="delete_cache_link"><i class="fa fa-refresh fa-fw"></i>キャッシュ削除</a></li>
+<ul id="top_menu" class="nav navbar-top-links navbar-right hidden-xs">
+	<li soy:id="display_ext_link"><a href="?ext_mode" soy:id="ext_link"><i class="fa fa-exchange fa-fw"></i>画面切替</a></li>
+	<li soy:display="for_default_user"><a href="#" soy:id="delete_cache_link"><i class="fa fa-refresh fa-fw"></i>キャッシュ削除</a></li>
 
-				<li><a soy:id="account_link"  onclick="return common_click_to_layer(this,{header:'アカウント情報'});" href="/admin/index.php/Account"><i class="fa fa-user fa-fw"></i>管理者情報（<!-- soy:id="adminname" /-->）</a></li>
-				<li soy:id="only_for_site_admin"><a soy:link="SiteConfig"><i class="fa fa-gear fa-fw"></i>サイト設定</a></li>
-				<li soy:id="show_admin_link"><a soy:id="admin_link"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>
-				<li><a soy:link="Login.Logout" onclick="return confirm('ログアウトしますか？');"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
-			</ul>
-			<!-- /.navbar-top-links -->
+	<li><a soy:id="account_link"  onclick="return common_click_to_layer(this,{header:'アカウント情報'});" href="/admin/index.php/Account"><i class="fa fa-user fa-fw"></i>管理者情報（<!-- soy:id="adminname" /-->）</a></li>
+	<li soy:id="only_for_site_admin"><a soy:link="SiteConfig"><i class="fa fa-gear fa-fw"></i>サイト設定</a></li>
+	<li soy:id="show_admin_link"><a soy:id="admin_link"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>
+	<li><a soy:link="Login.Logout" onclick="return confirm('ログアウトしますか？');"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
+</ul>
+<!-- /.navbar-top-links -->
 
-			<div class="navbar-default sidebar" role="navigation">
-				<div class="sidebar-nav navbar-collapse collapse" soy:page="_common.TabPage"></div>
-			</div>
-
+<div class="navbar-default sidebar" role="navigation" soy:id="sidebar">
+	<div class="sidebar-nav navbar-collapse collapse" soy:page="_common.TabPage"></div>
+</div>

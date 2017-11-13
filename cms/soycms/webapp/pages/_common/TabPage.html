@@ -1,50 +1,54 @@
-<!-- soy:id="not_simple_mode" -->
-					<ul class="nav" id="side-menu">
-						<li>
-							<a soy:id="dashboard"><i class="fa fa-home fa-fw"></i>ダッシュボード</a>
-						</li>
-						<li>
-							<a soy:id="entry"><i class="fa fa-file-text-o fa-fw"></i>記事</a>
-						</li>
-						<li>
-							<a soy:id="label"><i class="glyphicon glyphicon-tags glyphicon-fw"></i>ラベル</a>
-						</li>
-						<li>
-							<a soy:id="page"><i class="fa fa-sitemap fa-fw"></i>ページ</a>
-						</li>
-						<li>
-							<a soy:id="plugin"><i class="fa fa-arrows-alt fa-fw"></i>プラグイン</a>
-						</li>
-						<li>
-							<a soy:id="file"><i class="fa fa-folder-open fa-fw"></i>ファイルマネージャー</a>
-						</li>
+<ul class="nav" id="side-menu">
 
-						<li soy:id="display_inquiry_link"><a soy:id="inquiry_link">お問い合わせフォーム</a></li>
-						<li soy:id="display_mail_link"><a soy:id="mail_link">メールマガジン</a></li>
+	<!-- soy:id="not_simple_mode" -->
+	<li>
+		<a soy:id="dashboard"><i class="fa fa-home fa-fw"></i><span>ダッシュボード</span></a>
+	</li>
+	<li>
+		<a soy:id="entry"><i class="fa fa-file-text-o fa-fw"></i><span>記事</span></a>
+	</li>
+	<li>
+		<a soy:id="label"><i class="glyphicon glyphicon-tags glyphicon-fw"></i><span>ラベル</span></a>
+	</li>
+	<li>
+		<a soy:id="page"><i class="fa fa-sitemap fa-fw"></i><span>ページ</span></a>
+	</li>
+	<li>
+		<a soy:id="plugin"><i class="fa fa-puzzle-piece fa-fw"></i><span>プラグイン</span></a>
+	</li>
+	<li>
+		<a soy:id="file"><i class="fa fa-folder-open fa-fw"></i><span>ファイルマネージャー</span></a>
+	</li>
 
-						<li class="visible-xs"><a soy:link="SiteConfig"><i class="fa fa-gear fa-fw"></i>サイト設定</a></li>
-					</ul>
-<!-- /soy:id="not_simple_mode" -->
-<!-- soy:id="simple_mode" -->
-					<ul class="nav" id="side-menu">
-						<li>
-							<a soy:id="simple_dashboard"><i class="fa fa-home fa-fw"></i>ダッシュボード</a>
-						</li>
-						<li>
-							<a soy:id="simple_entry"><i class="fa fa-file-text-o fa-fw"></i>記事</a>
-						</li>
-						<li>
-							<a soy:id="simple_blog"><i class="glyphicon glyphicon-book glyphicon-fw"></i>ブログ</a>
-						</li>
-						<li>
-							<a soy:id="simple_preview" target="_blank"><i class="fa fa-arrows-alt fa-fw"></i>ダイナミック編集<i class="fa fa-external-link fa-fw"></i></a>
-						</li>
-					</ul>
-<!-- /soy:id="simple_mode" -->
+	<li soy:id="display_inquiry_link"><a soy:id="inquiry_link">お問い合わせフォーム</a></li>
+	<li soy:id="display_mail_link"><a soy:id="mail_link">メールマガジン</a></li>
 
-					<ul class="nav">
-						<li class="visible-xs"><a soy:id="account_link"  onclick="return common_click_to_layer(this,{header:'アカウント情報'});" href="/admin/index.php/Account"><i class="fa fa-user fa-fw"></i>管理者情報（<!-- soy:id="adminname" /-->）</a></li>
-						<li class="visible-xs" soy:display="for_default_user"><a href="#" soy:id="delete_cache_link"><i class="fa fa-refresh fa-fw"></i>キャッシュ削除</a></li>
-						<li class="visible-xs" soy:id="show_admin_link"><a soy:id="admin_link"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>
-						<li class="visible-xs"><a soy:link="Login.Logout" onclick="return confirm('ログアウトしますか？');"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
-					</ul>
+	<li class="visible-xs"><a soy:link="SiteConfig"><i class="fa fa-gear fa-fw"></i><span>サイト設定</span></a></li>
+	<!-- /soy:id="not_simple_mode" -->
+
+	<!-- soy:id="simple_mode" -->
+	<li>
+		<a soy:id="simple_dashboard"><i class="fa fa-home fa-fw"></i><span>ダッシュボード</span></a>
+	</li>
+	<li>
+		<a soy:id="simple_entry"><i class="fa fa-file-text-o fa-fw"></i><span>記事</span></a>
+	</li>
+	<li>
+		<a soy:id="simple_blog"><i class="glyphicon glyphicon-book glyphicon-fw"></i><span>ブログ</span></a>
+	</li>
+	<li>
+		<a soy:id="simple_preview" target="_blank"><i class="fa fa-arrows-alt fa-fw"></i>ダイナミック編集<i class="fa fa-external-link fa-fw"></i></a>
+	</li>
+	<!-- /soy:id="simple_mode" -->
+
+	<li class="hidden-xs">
+		<a href="#" id="toggle-side-menu" class="text-right"><i class="fa fa-fw fa-angle-left" soy:id="toggle-arrow"></i><span>&nbsp;</span></a>
+	</li>
+</ul>
+
+<ul class="nav">
+	<li class="visible-xs"><a soy:id="account_link"  onclick="return common_click_to_layer(this,{header:'アカウント情報'});" href="/admin/index.php/Account"><i class="fa fa-user fa-fw"></i>管理者情報（<!-- soy:id="adminname" /-->）</a></li>
+	<li class="visible-xs" soy:display="for_default_user"><a href="#" soy:id="delete_cache_link"><i class="fa fa-refresh fa-fw"></i><span>キャッシュ削除</span></a></li>
+	<li class="visible-xs" soy:id="show_admin_link"><a soy:id="admin_link"><i class="fa fa-home fa-fw"></i><span>CMS管理</span></a></li>
+	<li class="visible-xs"><a soy:link="Login.Logout" onclick="return confirm('ログアウトしますか？');"><i class="fa fa-sign-out fa-fw"></i><span>ログアウト</span></a></li>
+</ul>

@@ -151,8 +151,11 @@ function soy_cms_blog_output_entry($page,$entry){
 					"soy2prefix"=>"cms"
 				));
 
+				//本文
+				$content = $entry->getContent();
+
 				$this->createAdd("content","CMSLabel",array(
-					"html"=>$entry->getContent(),
+					"html"=> $content,
 					"soy2prefix"=>"cms"
 				));
 
@@ -162,6 +165,121 @@ function soy_cms_blog_output_entry($page,$entry){
 					"html"=> '<a name="more"></a>'.$more,
 					"soy2prefix"=>"cms",
 				));
+
+				// 2015-07-09追加 1.8.13以降
+				$this->addLabel("more_only",array(
+					"html"=> $more,
+					"soy2prefix"=>"cms",
+				));
+				$this->addModel("has_more",array(
+					"visible"=> strlen(trim($more)),
+					"soy2prefix"=>"cms",
+				));
+
+				//ページ分割 3.0.1-
+				$currentPage = isset($_GET["p"]) && is_numeric($_GET["p"]) && $_GET["p"] > 0 ? $_GET["p"] : 1 ;
+				$numberOfPages = 1;
+
+				$contentIsPaginated = ( strpos($content, '<!--nextpage-->') !== false );
+				if($contentIsPaginated){
+					$paginatedContents = explode('<!--nextpage-->', $content);
+					$numberOfPages = count($paginatedContents);
+				}else{
+					$paginatedContents = array($content);
+				}
+
+				$moreIsPaginated = ( strpos($more, '<!--nextpage-->') !== false );
+				if($moreIsPaginated){
+					$paginatedMores = explode('<!--nextpage-->', $more);
+					$numberOfPages = max($numberOfPages, count($paginatedContents));
+				}else{
+					$paginatedMores = array($more);
+				}
+
+				$this->addModel("content_is_paginated",array(
+						"visible"=>$contentIsPaginated,
+						"soy2prefix"=>"cms"
+				));
+				$this->addModel("content_is_not_paginated",array(
+						"visible"=>!$contentIsPaginated,
+						"soy2prefix"=>"cms"
+				));
+				$this->addLabel("paginated_content",array(
+						"html"=>isset($paginatedContents[$currentPage -1]) ? $paginatedContents[$currentPage -1] : "",
+						"soy2prefix"=>"cms"
+				));
+
+				$this->addModel("more_is_paginated",array(
+						"visible"=>$moreIsPaginated,
+						"soy2prefix"=>"cms",
+				));
+				$this->addModel("more_is_not_paginated",array(
+						"visible"=>!$moreIsPaginated,
+						"soy2prefix"=>"cms",
+				));
+				$this->addLabel("paginated_more",array(
+						"html"=>isset($paginatedMores[$currentPage -1]) ? $paginatedMores[$currentPage -1] : "",
+						"soy2prefix"=>"cms"
+				));
+
+				$this->addModel("entry_is_paginated",array(
+						"visible"=>$contentIsPaginated || $moreIsPaginated,
+						"soy2prefix"=>"cms"
+				));
+				$this->addModel("entry_is_not_paginated",array(
+						"visible"=>!( $contentIsPaginated || $moreIsPaginated ),
+						"soy2prefix"=>"cms"
+				));
+				$this->addLabel("current_page",array(
+						"text"=> $currentPage,
+						"soy2prefix"=>"cms"
+				));
+				$this->addLabel("pages",array(
+						"text"=> $numberOfPages,
+						"soy2prefix"=>"cms"
+				));
+				$this->addLabel("total_pages",array(
+						"text"=> $numberOfPages,
+						"soy2prefix"=>"cms"
+				));
+				$this->addModel("is_first_page",array(
+						"visible"=> $currentPage == 1,
+						"soy2prefix"=>"cms"
+				));
+				$this->addModel("is_middle_page",array(
+						"visible"=> 1 < $currentPage && $currentPage < $numberOfPages,
+						"soy2prefix"=>"cms"
+				));
+				$this->addModel("is_last_page",array(
+						"visible"=> $currentPage == $numberOfPages,
+						"soy2prefix"=>"cms"
+				));
+
+				$this->addLink("next_page_link",array(
+					"link"=> ( $currentPage < $numberOfPages ? $link."?p=".($currentPage +1) : ""),
+					"soy2prefix"=>"cms"
+				));
+				$this->addModel("has_next_page",array(
+					"visible"=> ($currentPage < $numberOfPages),
+					"soy2prefix"=>"cms"
+				));
+
+				$this->addLink("prev_page_link",array(
+					"link"=> ( $currentPage > 1 ? $link."?p=".($currentPage -1) : ""),
+					"soy2prefix"=>"cms"
+				));
+				$this->addModel("has_prev_page",array(
+					"visible"=> ($currentPage > 1),
+					"soy2prefix"=>"cms"
+				));
+
+				$this->createAdd("page_list","BlogPage_PagerList",array(
+					"list"=> range(1,$numberOfPages),
+					"current" => $currentPage,
+					"url" => $link,
+					"soy2prefix"=>"cms"
+				));
+
 
 				$this->createAdd("create_date","DateLabel",array(
 					"text"=>$entry->getCdate(),
@@ -624,4 +742,78 @@ function soy_cms_blog_output_trackback_link($page,$entry){
 		"soy2prefix" => "b_block",
 		"type"=>"text"
 	));
+}
+
+class BlogPage_PagerList extends HTMLList{
+
+	//今のページ番号
+	var $current;
+	//最大ページ数
+	var $last;
+	//ベースURL=最初のページのURL
+	var $url;
+	function setCurrent($current){
+		$this->current = $current;
+	}
+	function setUrl($url){
+		$this->url = $url;
+	}
+
+	protected function populateItem($page_num){
+
+		$this->last = count($this->list);
+
+		$url = $this->url;
+		if($page_num >1){
+			$url = $url."?p=".$page_num;
+		}
+		if($page_num == $this->current){
+			$url = "";
+		}
+
+		$class = array();
+		if($page_num == $this->current) $class[] = "current_page_number";
+		if($page_num == 1) $class[] = "first_page_number";
+		if($page_num == $this->last) $class[] = "last_page_number";
+
+		$html = "";
+		if(strlen($url)){
+			$html .= "<a href=\"".htmlspecialchars($url, ENT_QUOTES, "UTF-8")."\"";
+			if(count($class)) $html .= " class=\"".implode(" ",$class)."\"";
+			$html .= ">";
+		}
+		$html .= htmlspecialchars($page_num, ENT_QUOTES, "UTF-8");
+		if(strlen($url)) $html .= "</a>";
+
+		$this->createAdd("pager_item","HTMLLabel",array(
+				"html" => $html,
+				"soy2prefix" => "cms"
+		));
+		$this->createAdd("pager_item_link", "HTMLLink", array(
+				"link" => $url,
+				"soy2prefix" => "cms"
+		));
+		$this->createAdd("pager_item_number", "HTMLLabel", array(
+				"text" => $page_num,
+				"soy2prefix" => "cms"
+		));
+
+		$this->createAdd("is_first","HTMLModel",array(
+				"visible" => ($page_num == 1),
+				"soy2prefix" => "cms"
+		));
+		$this->createAdd("is_last","HTMLModel",array(
+				"visible" => ($page_num == $this->last),
+				"soy2prefix" => "cms"
+		));
+		$this->createAdd("is_middle","HTMLModel",array(
+				"visible" => ($page_num > 1 && $page_num < $this->last),
+				"soy2prefix" => "cms"
+		));
+		$this->createAdd("is_current","HTMLModel",array(
+				"visible" => ($page_num == $this->current),
+				"soy2prefix" => "cms"
+		));
+	}
+
 }

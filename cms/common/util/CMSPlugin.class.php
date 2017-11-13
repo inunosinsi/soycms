@@ -136,9 +136,7 @@ class CMSPlugin {
 
 		foreach($files as $file){
 			if($file[0] == ".")continue;
-			if(!is_dir($dir . $file)){
-				include_once($dir . $file);
-			}else{
+			if(is_dir($dir . $file) && is_readable($dir . $file ."/".$file.".php")){
 				include_once($dir . $file ."/".$file.".php");
 			}
 		}

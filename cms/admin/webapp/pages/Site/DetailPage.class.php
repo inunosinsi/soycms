@@ -142,6 +142,9 @@ class DetailPage extends CMSUpdatePageBase{
 			"text" => implode($errors),
 			"visible" => (count($errors) > 0)
 		));
+		$this->addModel("has_message_or_error", array(
+				"visible" => count($messages) || count($errors),
+		));
 
 
 		//サブメニュー

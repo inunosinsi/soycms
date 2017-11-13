@@ -34,11 +34,6 @@ class IndexPage extends CMSWebPageBase{
 		parent::__construct();
 
 		/*
-		 * 不正ログインのチェック
-		 */
-		$this->run("Login.ErrorAction");
-
-		/*
 		 * データベースのバージョンチェック
 		 * ここまででDataSetsを呼び出していないこと ← そのうち破綻する気がする
 		 * @TODO 初期管理者以外ではバージョンアップを促す文言を出すとか

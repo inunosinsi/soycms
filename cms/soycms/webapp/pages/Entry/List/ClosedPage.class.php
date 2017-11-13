@@ -26,7 +26,7 @@ class ClosedPage extends ListPage{
     var $_entities = array();
 
     function getEntries($offset,$limit,$labelIds){
-		$result = $this->run("Entry.ClosedEntryListAction",array(
+    	$result = $this->run("Entry.ClosedEntryListAction",array(
     		"offset"=>$offset,
     		"limit"=>$limit
     	));
@@ -48,4 +48,3 @@ class ClosedPage extends ListPage{
 		}
 	}
 }
-?>

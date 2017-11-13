@@ -74,6 +74,13 @@ class UpperMenuPage extends CMSHTMLPageBase{
 				"visible" => !defined("SOYCMS_ASP_MODE") && !UserInfoUtil::hasOnlyOneRole()
 		));
 
+		/* サイドバーの表示・非表示 */
+		$hideSideMenu = ( isset($_COOKIE["soycms-hide-side-menu"]) && $_COOKIE["soycms-hide-side-menu"] == "true" );
+		$this->addModel("sidebar", array(
+				"class" => $hideSideMenu ? "navbar-default sidebar sidebar-narrow" : "navbar-default sidebar",
+		));
+
+
 	}
 
 	private function clearCache(){

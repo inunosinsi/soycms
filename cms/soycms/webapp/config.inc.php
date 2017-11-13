@@ -59,6 +59,10 @@ if(!UserInfoUtil::isLoggined()){
 		SOY2PageController::redirect("../admin/?r=".rawurlencode(SOY2PageController::createRelativeLink($_SERVER["REQUEST_URI"])));
 	}
 
+	if(UserInfoUtil::getSite()->getSiteType() == Site::TYPE_SOY_SHOP){
+		SOY2PageController::redirect("../admin/index.php/Site/Login/0?site_id=".UserInfoUtil::getSite()->getSiteId());
+	}
+
 	SOY2ActionConfig::ActionDir(SOY2ActionConfig::ActionDir()."/site/");
 	SOY2HTMLConfig::PageDir(dirname(__FILE__)."/pages/");
 

@@ -1,5 +1,6 @@
 <p>SOY CMSの更新情報と、フォーラムの更新情報をダッシュボードに表示するプラグインです。</p>
 
+<!-- soy:display="is_allow_url_fopen_enabled" -->
 <!-- soy:display="is_simple_xml_enabled" -->
 <form method="post">
 	<fieldset>
@@ -25,7 +26,12 @@
 	</fieldset>
 </form>
 <!-- /soy:display="is_simple_xml_enabled" -->
+<!-- /soy:display="is_allow_url_fopen_enabled" -->
 
 <!-- soy:display="no_simple_xml_enabled" -->
 <p>このプラグインを使用するにはPHPのSimpleXMLモジュールが必要です。現在ご利用中の環境ではSimpleXMLモジュールが有効になっておりません。</p>
 <!-- /soy:display="no_simple_xml_enabled" -->
+
+<!-- soy:display="not_allow_url_fopen_enabled" -->
+<p>このプラグインを使用するにはPHPの設定でallow_url_fopen=1となっている必要があります。現在ご利用中の環境ではallow_url_fopen=0となっております。</p>
+<!-- /soy:display="not_allow_url_fopen_enabled" -->
