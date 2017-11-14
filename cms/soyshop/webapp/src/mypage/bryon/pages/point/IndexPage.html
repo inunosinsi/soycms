@@ -1,42 +1,45 @@
 <section>
 	<h1 class="cart_txt"><!-- soy:id="user_name" -->曽井　太郎<!-- /soy:id="user_name" -->さんのポイント履歴</h1>
-	
+
 	<section class="soycart_narrow">
 		<table cellpadding="0" cellspacing="0" class="cart_detail_table">
 			<thead>
-				
+
 			</thead>
 			<tbody>
 				<tr>
 					<th class="w200" nowrap>現在のポイント</th>
-					<td><!-- soy:id="point" /--></td>
+					<td><!-- soy:id="point" /-->&nbsp;ポイント</td>
 				</tr>
-				<!-- soy:display="is_time_limit" -->
-				<tr>
-					<th class="w200" nowrap>ポイントの期限</th>
-					<td soy:id="time_limit"></td>
+				<tr soy:id="point_has_limit">
+					<th class="w200" nowrap>ポイントの有効期限</th>
+					<td><!-- soy:id="point_limit" /--></td>
 				</tr>
-				<!-- /soy:display="is_time_limit" -->
+				<tr soy:id="point_is_expired">
+					<th class="w200" nowrap>期限切れのポイント</th>
+					<td><!-- soy:id="point_expired" /-->（<!-- soy:id="point_limit*" /-->）</td>
+				</tr>
+
 			</tbody>
 		</table>
 	</section>
-	
+
 	<section>
 		<!-- soy:id="no_history" -->
 		<aside class="note">
 		<p class="alC">ポイント履歴がありません。</p>
 		</aside>
 		<!-- /soy:id="no_history" -->
-		
+
 		<!-- soy:id="has_history" -->
 		<table class="cart_detail_table">
 			<thead>
 				<tr>
-					<th class="w200" nowrap>時刻</th>
+					<th class="w200" nowrap>日時</th>
 					<th>タイトル</th>
 				</tr>
 			</thead>
-	
+
 			<tbody>
 				<!-- soy:id="point_history_list" -->
 				<tr>
@@ -46,7 +49,7 @@
 				<!-- /soy:id="point_history_list" -->
 			</tbody>
 		</table>
-		
+
 		<!-- soy:id="has_multi_page" -->
 		<div class="item_pager clearfix">
 			<ul>
@@ -58,7 +61,7 @@
 				<!-- /soy:id="has_next" -->
 				<li><!-- soy:id="current_page" /-->/<!-- soy:id="last_page" /--></li>
 			</ul>
-		</div>  
+		</div>
 		<!-- /soy:id="has_multi_page" -->
 		<!-- /soy:id="has_history" -->
 	</section>

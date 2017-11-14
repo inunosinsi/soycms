@@ -6,7 +6,7 @@ class SOYShopOperateCreditBase implements SOY2PluginAction{
 	 * @return string
 	 */
 	function getFormOnOrderDetailPageTitle(SOYShop_Order $order){
-		
+
 	}
 
 	/**
@@ -26,8 +26,8 @@ class SOYShopOperateCreditBase implements SOY2PluginAction{
 	/**
 	 * @return string
 	 */
-	function getFormOnUserDetailPageTitle(){
-		
+	function getFormOnUserDetailPageTitle(SOYShop_User $user){
+
 	}
 
 	/**
@@ -49,7 +49,7 @@ class SOYShopOperateCreditDeletageAction implements SOY2PluginDelegateAction{
 	private $mode = "order_detail";
 	private $orderId;
 	private $userId;
-	
+
 	private $_list;
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
@@ -58,7 +58,7 @@ class SOYShopOperateCreditDeletageAction implements SOY2PluginDelegateAction{
 			if(strtolower($_SERVER['REQUEST_METHOD']) == "post"){
 				$action->doPostOnUserDetailPage($this->user);
 			}else{
-				$title = $action->getFormOnUserDetailPageTitle();
+				$title = $action->getFormOnUserDetailPageTitle($this->user);
 				if(strlen($title)){
 					$this->_list[$moduleId]["title"] = $title;
 					$this->_list[$moduleId]["content"] = $action->getFormOnUserDetailPageContent($this->user);
@@ -73,17 +73,17 @@ class SOYShopOperateCreditDeletageAction implements SOY2PluginDelegateAction{
 				$title = $action->getFormOnOrderDetailPageTitle($this->order);
 				if(strlen($title)){
 					$this->_list[$moduleId]["title"] = $title;
-					$this->_list[$moduleId]["content"] = $action->getFormOnOrderDetailPageContent($this->order);				
+					$this->_list[$moduleId]["content"] = $action->getFormOnOrderDetailPageContent($this->order);
 				}
 			}
 			break;
 		}
 	}
-	
+
 	function getList(){
 		return $this->_list;
 	}
-	
+
 	function getMode() {
 		return $this->mode;
 	}

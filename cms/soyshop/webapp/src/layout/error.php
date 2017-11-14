@@ -10,13 +10,13 @@
 <script type="text/javascript" src="./js/jquery.js?<?php echo SOYSHOP_BUILD_TIME; ?>" charset="utf-8"></script>
 <script type="text/javascript" src="./js/jquery-ui.min.js?<?php echo SOYSHOP_BUILD_TIME; ?>" charset="utf-8"></script>
 <script type="text/javascript" src="./js/main.pack.js?<?php echo SOYSHOP_BUILD_TIME; ?>" charset="utf-8"></script>
-<title><?php echo $title; ?></title>
+<title><?php echo htmlspecialchars($title,ENT_QUOTES,"UTF-8"); ?></title>
 </head>
 <body class="layout_full">
 <div id="wrapper" class="w950 _w750">
 
 	<div id="header">
-		<a href="<?php echo SOYSHOP_ADMIN_URL; ?>">
+		<a href="<?php echo htmlspecialchars(SOYSHOP_ADMIN_URL,ENT_QUOTES,"UTF-8"); ?>">
 			<img src="./img/logo.png" />
 		</a>
 		<h1>SOY Shop</h1>
@@ -71,7 +71,7 @@
 
 		<br class="footer_bottom" />
 	</div>
-	
+
 	<div id="account_form_el" class="popup" style="display:none;">
 		<iframe src="<?php echo SOYCMS_ADMIN_URL; ?>/index.php/Account"></iframe>
 		<p class="close"></p>

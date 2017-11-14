@@ -8,7 +8,7 @@
 <div class="block">
 	<div class="block_title">
 		<h2>注文詳細 - <!-- soy:id="order_name_text" /--></h2>
-		
+
 		<div class="block_title_right">
 			<a soy:id="edit_link" class="button">注文の編集</a>
 		</div>
@@ -63,7 +63,7 @@
 			<!-- /soy:id="attribute_list" -->
 			<!-- soy:id="point_history_list" -->
 			<tr>
-				<th>&nbsp;</th>
+				<th>ポイント (<!-- soy:id="index" /-->)</th>
 				<td soy:id="point_history_value">値</td>
 			</tr>
 			<!-- /soy:id="point_history_list" -->
@@ -85,7 +85,7 @@
 					<!--  soy:id="order_customerinfo" /-->
 				</td>
 			</tr>
-			
+
 			<!-- soy:id="has_action" -->
 			<tr>
 				<td colspan="2" class="alR">
@@ -140,7 +140,7 @@
 			</tr>
 		</tbody>
 	</table>
-	
+
 	<!-- soy:id="actived_download_plugin" -->
 	<h3>ダウンロード詳細</h3>
 	<table class="form_table">
@@ -181,7 +181,7 @@
 			}
 		//-->
 		</script>
-	
+
 		<form soy:id="update_form">
 			<table class="form_table">
 				<col style="width:130px;" />
@@ -193,7 +193,7 @@
 						 	 	<input type="radio" soy:id="button" />
 						  	<!-- /soy:id="order_status_radio_list" -->
 						</td>
-		
+
 						<td<!-- soy:id="app_limit_function" --> rowspan="2"<!-- /soy:id="app_limit_function" --> style="text-align:center;vertical-align:middle;">
 							<input type="submit" class="submit_button" value="変更" onclick="return confirm_update_state();" />
 						</td>
@@ -211,7 +211,7 @@
 				</tbody>
 			</table>
 		</form soy:id="update_form">
-	
+
 		<h3>コメント</h3>
 		<form soy:id="comment_form">
 			<table class="form_table">
@@ -250,7 +250,7 @@
 						<a soy:id="order_mail_link">送信（編集）</a>
 					</td>
 	  			</tr>
-	
+
 	  			<tr>
 					<th>注文確定メール</th>
 					<td><!-- soy:id="confirm_mail_status" /--></td>
@@ -258,7 +258,7 @@
 						<a soy:id="confirm_mail_link">送信（編集）</a>
 					</td>
 	  			</tr>
-	
+
 	  			<tr>
 					<th>支払確認メール</th>
 					<td><!-- soy:id="payment_mail_status" /--></td>
@@ -266,7 +266,7 @@
 						<a soy:id="payment_mail_link">送信（編集）</a>
 					</td>
 	  			</tr>
-	
+
 	  			<tr>
 					<th>配送確認メール</th>
 					<td><!-- soy:id="delivery_mail_status" /--></td>
@@ -274,7 +274,7 @@
 						<a soy:id="delivery_mail_link">送信（編集）</a>
 					</td>
 	  			</tr>
-				
+
 				<tr>
 					<th>その他のメール</th>
 					<td><!-- soy:id="other_mail_status" /--></td>

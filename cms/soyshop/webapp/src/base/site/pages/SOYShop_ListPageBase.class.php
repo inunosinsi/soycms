@@ -320,4 +320,3 @@ class SOYShop_ListPagePager extends SOYShop_PagerBase{
     function hasNext(){ return $this->getTotalPage() >= ($this->getCurrentPage() + 1); }
     function hasPrev(){ return ($this->getCurrentPage() - 1) > 0; }
 }
-?>

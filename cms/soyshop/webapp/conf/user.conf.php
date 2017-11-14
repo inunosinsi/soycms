@@ -58,14 +58,16 @@ SOY2::imports("base.site.classes.*");
 SOY2PageController::init("SOYShopSiteController");
 
 //debug switch
-define("SOYSHOP_"."DEVELOPING_MODE", true);
+define("SOYSHOP_"."DEVELOPING_MODE", false);
 define("DEBUG_MODE", false);
 define("SOY2HTML_AUTO_GENERATE", false);
 
 if(DEBUG_MODE){
 	ini_set("display_errors", "On");
 	error_reporting(E_ALL);
-	define("SOY2HTML_CACHE_FORCE", true);
+	if(!defined("SOY2HTML_CACHE_FORCE")) define("SOY2HTML_CACHE_FORCE", true);
+}else{
+	if(!defined("SOY2HTML_CACHE_FORCE")) define("SOY2HTML_CACHE_FORCE", false);
 }
 
 //document rootの末尾は/で終わるのを期待

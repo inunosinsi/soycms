@@ -120,13 +120,16 @@ class CommonItemOptionConfigFormPage extends WebPage{
 		));
     }
 
-    private function getLanguageConfig(){
-    	SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-		$conf = UtilMultiLanguageUtil::allowLanguages();
-		unset($conf[UtilMultiLanguageUtil::LANGUAGE_JP]);
-
-		return $conf;
-    }
+	private function getLanguageConfig(){
+		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+		if(class_exists("UtilMultiLanguageUtil")){
+			$conf = UtilMultiLanguageUtil::allowLanguages();
+			unset($conf[UtilMultiLanguageUtil::LANGUAGE_JP]);
+			return $conf;
+		}else{
+			return array();
+		}
+	}
 
     function setConfigObj($obj) {
 		$this->config = $obj;

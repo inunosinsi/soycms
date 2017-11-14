@@ -727,6 +727,10 @@ class SOYShop_User {
 		return $display;
 	}
 
+	/**
+	 * ポイント
+	 * @return number
+	 */
 	function getPoint(){
 		$dao = new SOY2DAO();
 		$sql = "SELECT point FROM soyshop_point WHERE user_id = :userId;";
@@ -737,6 +741,19 @@ class SOYShop_User {
 			$point = 0;
 		}
 		return $point;
+	}
+
+	/**
+	 * ポイントの有効期限
+	 * @return number
+	 */
+	function getPointTimeLimit(){
+		SOYShopPlugin::load("soyshop.point");
+
+		$delegate = SOYShopPlugin::invoke("soyshop.point", array(
+				"userId" => $this->id,
+		));
+		return $delegate->getTimeLimit();
 	}
 
 	/**
@@ -833,6 +850,4 @@ class SOYShop_User {
 	public static function getTableName(){
 		return "soyshop_user";
 	}
-
 }
-?>

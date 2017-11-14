@@ -1,6 +1,12 @@
 <p><img soy:src="themes/common/images/cart/step_2.png" alt="STEP2.お支払・配送方法の選択"></p>
 
 <form soy:id="order_form">
+	<!-- soy:display="has_error" -->
+	<aside>
+		<p class="error">エラーがあります。</p>
+	</aside>
+	<!-- /soy:id="has_error" -->
+
     <section id="cart_detail">
         <h1 class="cart_txt">カートに入っている商品</h1>
 
@@ -120,6 +126,11 @@
         <!-- soy:id="has_discount_method" -->
         <section class="soycart_narrow">
             <h1>クーポン</h1>
+			<!-- soy:display="has_payment_error" -->
+			<div class="error">
+				<p soy:id="payment_error">お支払い方法が入力されていません。</p>
+			</div>
+			<!-- /soy:display="has_payment_error" -->
 
             <table class="soycart_form">
                 <!-- soy:id="discount_method_list" -->

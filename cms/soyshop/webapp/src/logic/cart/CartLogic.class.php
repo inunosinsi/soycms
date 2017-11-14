@@ -25,6 +25,7 @@ class CartLogic extends SOY2LogicBase{
 	 * CartLogic->orderAttributes
 	 * SOYShop_Order->attributesに変換され永続化される。
 	 * 確認画面で表示される。非表示の設定は現状できないができるべき。
+	 * clearOrderAttribute("aaa")は"aaa"だけではなく"aaa.*"も消去される
 	 *
 	 * CartLogic->modules
 	 * SOYShop_Order->modulesにそのまま永続化される。
@@ -566,9 +567,12 @@ class CartLogic extends SOY2LogicBase{
 	function order(){
 
 		//念の為に登録したモジュールが消えてないか調べて、消えていればCart03に飛ばす
+		//有効な注文にはモジュールかOrderAttributeかどちらかが最低１つ必要
 		if(!count($this->getModules()) || !count($this->getOrderAttributes())){
 			$this->setAttribute("page", "Cart03");
 			$this->save();
+			$this->log("No module and no order_attribute. At least one module or one order_attribute should be specified.");
+
 			soyshop_redirect_cart();
 		}
 
@@ -625,14 +629,20 @@ class CartLogic extends SOY2LogicBase{
 			$orderLogic->addHistory($this->getAttribute("order_id"), "注文を受け付けました");
 
 			$orderDAO->commit();
-		}catch(Exception $e){
-			error_log("---------- Exception in CartLogic->order() ----------");
-			error_log($e);
-			error_log(var_export($this,true));
-			error_log(var_export($e,true));
-			error_log("--------------------");
-			$orderDAO->rollback();
+		}catch(SOYShop_EmptyStockException $e){
+			$this->log($e);
 			throw $e;
+		}catch(SOYShop_OverStockException $e){
+			$this->log($e);
+			throw $e;
+		}catch(Exception $e){
+			$this->log("---------- Exception in CartLogic->order() ----------");
+			$this->log($e);
+			$this->log(var_export($this,true));
+			$this->log(var_export($e,true));
+			$this->log("---------- /Exception ----------");
+			$orderDAO->rollback();
+			throw new Exception("注文実行時にエラーが発生しました。");
 		}
 	}
 
@@ -786,19 +796,24 @@ class CartLogic extends SOY2LogicBase{
 		foreach($items as $itemOrder){
 			$itemId = $itemOrder->getItemId();
 
+			//管理画面から購入時の未登録商品の購入
+			if($itemId < 1){
+				continue;
+			}
+
 			$item = $itemDAO->getById($itemId);
 
 			//非公開
 			if(false == $item->isPublished()){
-				throw new SOYShop_EmptyStockException("");
+				throw new SOYShop_EmptyStockException($item->getName()." (".$item->getId().") is not published.");
 			}
 
 			//在庫無視モード
-			if($ignoreStock)continue;
+			if($ignoreStock) continue;
 
 			//在庫0
 			if($item->getOpenStock() < 1){
-				throw new SOYShop_EmptyStockException("");
+				throw new SOYShop_EmptyStockException($item->getName()." (".$item->getId().") is empty (stock is 0).");
 			}
 
 			$openStock = $item->getOpenStock();
@@ -817,7 +832,7 @@ class CartLogic extends SOY2LogicBase{
 
 			//在庫オーバー
 			if($openStock < $itemCount){
-				throw new SOYShop_OverStockException("");
+				throw new SOYShop_OverStockException($item->getName()." (".$item->getId().") is fewer (".$openStock.") than order (".$itemCount.").");
 			}
 
 			//販売期間
@@ -1002,6 +1017,14 @@ class CartLogic extends SOY2LogicBase{
 		//注文のStatusは仮登録
 		$order->setStatus(SOYShop_Order::ORDER_STATUS_INTERIM);
 
+		//支払状況
+		if($order->getPrice() > 0){
+			$order->setPaymentStatus(SOYShop_Order::PAYMENT_STATUS_WAIT);
+		}else{
+			//0円なら支払い済みにする
+			$order->setPaymentStatus(SOYShop_Order::PAYMENT_STATUS_CONFIRMED);
+		}
+
 		//送信先
 		$address = $this->getAddress();
 		$order->setAddress(serialize($address));
@@ -1019,20 +1042,25 @@ class CartLogic extends SOY2LogicBase{
 		foreach($items as $key => $item){
 			$config = SOYShop_ShopConfig::load();
 
-			//子商品の在庫管理設定をオン(子商品購入時に在庫を減らさない)
-			$noChildItemStock = $config->getNoChildItemStock();
-			if(!$noChildItemStock){
-				$itemDAO->orderItem($item->getItemId(), $item->getItemCount());
-			}
+			//子商品かどうかの判定が必要
 
-			//子商品の在庫管理設定をオン(子商品購入時に親商品の在庫も減らす)
-			$childItemStock = $config->getChildItemStock();
-			if($childItemStock){
-				//SOYShop_Item
-				$itemObj = $itemDAO->getById($item->getItemId());
-				if(is_numeric($itemObj->getType())){
-					$parent = $itemDAO->getById($itemObj->getType());
-					$itemDAO->orderItem($parent->getId(), $item->getItemCount());
+			//在庫を減らす（管理画面から未登録商品を追加したときはスキップ）
+			if($item->getItemId() > 0){
+				//子商品の在庫管理設定をオン(子商品購入時に在庫を減らさない)
+				$noChildItemStock = $config->getNoChildItemStock();
+				if(!$noChildItemStock){
+					$itemDAO->orderItem($item->getItemId(), $item->getItemCount());
+				}
+
+				//子商品の在庫管理設定をオン(子商品購入時に親商品の在庫も減らす)
+				$childItemStock = $config->getChildItemStock();
+				if($childItemStock){
+					//SOYShop_Item
+					$itemObj = $itemDAO->getById($item->getItemId());
+					if(is_numeric($itemObj->getType())){
+						$parent = $itemDAO->getById($itemObj->getType());
+						$itemDAO->orderItem($parent->getId(), $item->getItemCount());
+					}
 				}
 			}
 
@@ -1196,6 +1224,7 @@ class CartLogic extends SOY2LogicBase{
 	 * エラーメッセージ
 	 */
 	function addErrorMessage($id, $str){
+		if(DEBUG_MODE)$this->log($id." ".$str);
 		$this->errorMessage[$id] = $str;
 	}
 
@@ -1223,6 +1252,12 @@ class CartLogic extends SOY2LogicBase{
 		if(isset($id) && strlen($id) > 0){
 			return isset($this->errorMessage[$id]) && (strlen($this->errorMessage[$id]) > 0);
 		}else{
+			if(DEBUG_MODE){
+				$this->log("number of errors: ".count($this->errorMessage));
+				if(count($this->errorMessage)){
+					$this->log("errors: ".var_export($this->errorMessage,true));
+				}
+			}
 			return (count($this->errorMessage) > 0);
 		}
 	}
@@ -1276,6 +1311,10 @@ class CartLogic extends SOY2LogicBase{
 	 */
 	function clearNoticeMessage(){
 		$this->noticeMessage = array();
+	}
+
+	public function log($text){
+		error_log("[".$this->getAttribute("page")."] ".$text);
 	}
 }
 

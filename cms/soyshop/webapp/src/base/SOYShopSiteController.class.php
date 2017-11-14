@@ -200,26 +200,28 @@ class SOYShopSiteController extends SOY2PageController{
             if($uri == soyshop_get_cart_uri()){
                 $isApp = true;
                 $isCart = true;
-            }elseif($uri == soyshop_get_mypage_uri()){
+            }else if($uri == soyshop_get_mypage_uri()){
                 $isApp = true;
                 $isMypage = true;
             }
 
         //多言語サイトプラグインをアクティブにしていて、多言語サイトを見ている時
-        }elseif(defined("SOYSHOP_PUBLISH_LANGUAGE")){
+        }else if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
             SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-            $config = UtilMultiLanguageUtil::getConfig();
-            if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
-                $cartUri = SOYShop_DataSets::get("config.cart.cart_url", "cart");
-                $mypageUri = SOYShop_DataSets::get("config.mypage.url", "user");
-                if($uri == $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $cartUri){
-                    $isApp = true;
-                    $isCart = true;
-                }elseif($uri == $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $mypageUri){
-                    $isApp = true;
-                    $isMypage = true;
-                }
-            }
+			if(class_exists("UtilMultiLanguageUtil")){
+				$config = UtilMultiLanguageUtil::getConfig();
+				if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
+					$cartUri = SOYShop_DataSets::get("config.cart.cart_url", "cart");
+					$mypageUri = SOYShop_DataSets::get("config.mypage.url", "user");
+					if($uri == $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $cartUri){
+						$isApp = true;
+						$isCart = true;
+					}elseif($uri == $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $mypageUri){
+						$isApp = true;
+						$isMypage = true;
+					}
+				}
+			}
         }
 
         define("SOYSHOP_APPLICATION_MODE", $isApp);

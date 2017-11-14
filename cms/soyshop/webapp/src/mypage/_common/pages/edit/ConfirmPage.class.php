@@ -11,6 +11,8 @@ class ConfirmPage extends IndexPage{
 
 			if(isset($_POST["register"]) || isset($_POST["register_x"])){
 
+				$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+
 				//セッションから取得（ただしIDが空）
 				$user = $mypage->getUserInfo();
 
@@ -24,7 +26,7 @@ class ConfirmPage extends IndexPage{
 				}
 
 				try{
-					SOY2DAOFactory::create("user.SOYShop_UserDAO")->update($user);
+					$userDAO->update($user);
 				}catch(Exception $e){
 					$mypage->addErrorMessage("update", "更新に失敗しました。");
 					$this->jump("edit");
@@ -66,8 +68,6 @@ class ConfirmPage extends IndexPage{
 
 	function __construct(){
 
-		WebPage::__construct();
-
 		$mypage = MyPageLogic::getMyPage();
 
 		//すでにログインしていなかったら飛ばす
@@ -75,9 +75,10 @@ class ConfirmPage extends IndexPage{
 			$this->jump("login");
 		}
 
-
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
+
+		parent::__construct();
 
 		$user = $mypage->getUserInfo();
 
@@ -124,6 +125,8 @@ class ConfirmPage extends IndexPage{
 			"pageObj" => $this,
 			"userId" => $user->getId()
 		));
+
+		$mypage->save();//ConfirmPageのMyPageLogicで上書き
 	}
 }
 
@@ -140,4 +143,3 @@ class UserEditCustomfieldConfirm extends HTMLList{
 		));
 	}
 }
-?>

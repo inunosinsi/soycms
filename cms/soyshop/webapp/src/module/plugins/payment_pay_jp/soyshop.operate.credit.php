@@ -67,7 +67,7 @@ class PayJpOperateCredit extends SOYShopOperateCreditBase{
 			//ここで支払状況を調べる
 			$attr = $order->getAttribute("payment_pay_jp.id");
 			$token = (isset($attr["value"])) ? $attr["value"] : null;
-			
+
 			if(isset($token)){
 				try{
 					$res = \Payjp\Charge::retrieve($token);
@@ -98,7 +98,7 @@ class PayJpOperateCredit extends SOYShopOperateCreditBase{
 		}
 	}
 
-	function getFormOnUserDetailPageTitle(){
+	function getFormOnUserDetailPageTitle(SOYShop_User $user){
 		return "クレジットカード会員詳細";
 	}
 

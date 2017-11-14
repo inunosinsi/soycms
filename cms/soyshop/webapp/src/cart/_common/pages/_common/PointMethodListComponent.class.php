@@ -18,6 +18,7 @@ class PointMethodListComponent extends HTMLList{
 		$this->addLabel("point_error", array(
 			"text" => $entity["error"]
 		));
+
+		return (strlen($entity["name"]) > 0);
 	}
 }
-?>

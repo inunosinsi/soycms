@@ -119,6 +119,7 @@ class ItemPage extends WebPage{
 
 		$this->createAdd("item_list", "ItemList", array(
 			"list" => $this->cart->getItems(),
+			"cart" => $this->cart
 		));
 
 		$this->createAdd("total_item_price","HTMLLabel", array(
@@ -135,4 +136,3 @@ class ItemPage extends WebPage{
     }
 
 }
-

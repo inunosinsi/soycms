@@ -93,6 +93,7 @@ class Cart04Page extends MainCartPageBase{
 					$cart->setAttribute("page", "Cart01");
 					$cart->save();
 				}catch(Exception $e){
+					$cart->log($e);
 					if(DEBUG_MODE){
 						$cart->addErrorMessage("order_error", MessageManager::get("ORDER_REGISTER_FAIL") . "<pre>" . var_export($e,true) . "</pre>");
 					}else{

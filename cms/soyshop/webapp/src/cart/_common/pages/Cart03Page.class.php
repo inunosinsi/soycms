@@ -222,6 +222,7 @@ class Cart03Page extends MainCartPageBase{
 		$this->appendErrors($cart);
 
 		$cart->clearErrorMessage();
+		$cart->save();
 
 		//アクティブなモジュールが一つもない場合はこのページを飛ばしたい
 		if($this->moduleCount === 0) $this->jumpNextPage($cart);
@@ -231,6 +232,7 @@ class Cart03Page extends MainCartPageBase{
 
 		$user = $this->user;
 
+		//支払いモジュール
 		$paymentMethodList = self::getPaymentMethod($cart);
 		$cnt = count($paymentMethodList);
 		$this->moduleCount += $cnt;
@@ -243,6 +245,7 @@ class Cart03Page extends MainCartPageBase{
 			"selected" => $cart->getAttribute("payment_module")
 		));
 
+		//配送モジュール
 		$deliveryMethodList = self::getDeliveryMethod($cart);
 		$cnt = count($deliveryMethodList);
 		$this->moduleCount += $cnt;
@@ -254,6 +257,7 @@ class Cart03Page extends MainCartPageBase{
 			"selected" => $cart->getAttribute("delivery_module")
 		));
 
+		//割引モジュール
 		$discountModuleList = self::getDiscountMethod($cart);
 		$cnt = count($discountModuleList);
 		$this->moduleCount += $cnt;
@@ -264,18 +268,16 @@ class Cart03Page extends MainCartPageBase{
 			"list" => $discountModuleList,
 		));
 
-		//入力したユーザがポイントを持っているか？
-		$hasPoint = $this->hasPointByUserMailAddress($cart, $user->getMailAddress());
+		//ポイントモジュール
 		$pointModuleList = self::getPointMethod($cart);
-		$cnt = count($pointModuleList);
-		$this->moduleCount += $cnt;
 		$this->addModel("has_point_method", array(
-			"visible" => ($cnt > 0 && $hasPoint),
+			"visible" => (count($pointModuleList) > 0),
 		));
 		$this->createAdd("point_method_list", "_common.PointMethodListComponent", array(
 			"list" => $pointModuleList,
 		));
 
+		//注文カスタムフィールド
 		$customfieldModuleList = self::getCustomfieldMethod($cart);
 		$cnt = count($customfieldModuleList);
 		$this->moduleCount += $cnt;
@@ -285,7 +287,6 @@ class Cart03Page extends MainCartPageBase{
 		$this->createAdd("customfield_method_list", "_common.CustomfieldMethodListComponent", array(
 			"list" => $customfieldModuleList,
 		));
-
 
 		$this->addLabel("myMessage", array(
 			"text" => "",
@@ -461,23 +462,6 @@ class Cart03Page extends MainCartPageBase{
 			}
 		}
 		return (count($obj) > 0) ? $obj : array();
-	}
-
-	/**
-	 * ポイントを持っているかチェックする
-	 * @param string mailaddress
-	 * @return boolean
-	 */
-	function hasPointByUserMailAddress(CartLogic $cart, $mailaddress){
-
-		//ログインしているかも確認する
-		if(!$cart->getAttribute("logined")) return false;
-
-		//ポイント設定プラグインがCMS内に配置されているか？
-		SOY2::import("util.SOYShopPluginUtil");
-		if(!SOYShopPluginUtil::checkIsActive("common_point_base")) return false;
-
-		return SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->hasPointByUserMailAddress($mailaddress);
 	}
 
 	/**

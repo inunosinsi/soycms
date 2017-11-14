@@ -291,8 +291,10 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 		//多言語化のプレフィックスでも調べてみる
 		if(is_null($this->prefix) && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
 			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-			$config = UtilMultiLanguageUtil::getConfig();
-			$this->prefix = (isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])) ? trim($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) : SOYSHOP_PUBLISH_LANGUAGE;
+			if(class_exists("UtilMultiLanguageUtil")){
+				$config = UtilMultiLanguageUtil::getConfig();
+				$this->prefix = (isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])) ? trim($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) : SOYSHOP_PUBLISH_LANGUAGE;
+			}
 		}
 	}
 }

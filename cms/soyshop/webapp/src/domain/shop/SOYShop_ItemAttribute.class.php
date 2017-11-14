@@ -24,6 +24,7 @@ class SOYShop_ItemAttribute {
 	private $value;
 
 	/**
+	 * 画像<img>でのみ使われる追加の属性に設定された値
 	 * @column item_extra_values
 	 */
 	private $extraValues;
@@ -179,11 +180,16 @@ class SOYShop_ItemAttributeConfig{
 
 	private $type;
 
+	//初期値
 	private $defaultValue;
 
+	//空の時の値
 	private $emptyValue;
 
+	//追加の属性（<img>でのみ有効）
 	private $extraOutputs;
+
+	//間違って追加されたのでは？
 	private $extraValues;
 
 	private $config;
@@ -382,6 +388,7 @@ class SOYShop_ItemAttributeConfig{
 						.$h_value.'</textarea>';
 				break;
 			case "file":
+				$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 
 				$html[] = '<div><input type="file" id="'.$h_formID.'_upload"'
@@ -402,6 +409,7 @@ class SOYShop_ItemAttributeConfig{
 				$body = implode("",$html);
 				break;
 			case "image":
+				$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
 				$h_value = soyshop_convert_file_path_on_admin(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
 
 				$style = (strlen($h_value) > 0) ? "" : "display:none;";

@@ -225,18 +225,20 @@ function soyshop_get_cart_uri(){
             $cartUri = SOYShop_DataSets::get("config.cart.cart_url", "cart");
         }
 
-        //多言語化対応
-        if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
-            SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-            $config = UtilMultiLanguageUtil::getConfig();
-            if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) && strlen($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
-                if(strpos($cartUri, "/")){
-                    $cartUri = str_replace("/", "/" . $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/", $cartUri);
-                }else{
-                    $cartUri = $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $cartUri;
-                }
-            }
-        }
+		//多言語化対応
+		if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
+			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+			if(class_exists("UtilMultiLanguageUtil")){
+				$config = UtilMultiLanguageUtil::getConfig();
+				if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) && strlen($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
+					if(strpos($cartUri, "/")){
+						$cartUri = str_replace("/", "/" . $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/", $cartUri);
+					}else{
+						$cartUri = $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $cartUri;
+					}
+				}
+			}
+		}
 
         define("SOYSHOP_CART_URI", $cartUri);
     }
@@ -248,11 +250,11 @@ function soyshop_get_cart_uri(){
  * カートページのページタイトルを取得
  */
 function soyshop_get_cart_page_title(){
-    if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-        return UtilMultiLanguageUtil::getPageTitle("cart", SOYSHOP_PUBLISH_LANGUAGE);
-    }else{
-        return SOYShop_DataSets::get("config.cart.cart_title", "ショッピングカート");
-    }
+	if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp" && class_exists("UtilMultiLanguageUtil")){
+		return UtilMultiLanguageUtil::getPageTitle("cart", SOYSHOP_PUBLISH_LANGUAGE);
+	}else{
+		return SOYShop_DataSets::get("config.cart.cart_title", "ショッピングカート");
+	}
 }
 
 /**
@@ -351,18 +353,20 @@ function soyshop_get_mypage_uri(){
             $mypageUri = SOYShop_DataSets::get("config.mypage.url", "user");
         }
 
-        //多言語化対応
-        if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
-            SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-            $config = UtilMultiLanguageUtil::getConfig();
-            if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) && strlen($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
-                if(strpos($mypageUri, "/")){
-                    $mypageUri = str_replace("/", "/" . $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/", $mypageUri);
-                }else{
-                    $mypageUri = $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $mypageUri;
-                }
-            }
-        }
+		//多言語化対応
+		if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
+			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+			if(class_exists("UtilMultiLanguageUtil")){
+				$config = UtilMultiLanguageUtil::getConfig();
+				if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) && strlen($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
+					if(strpos($mypageUri, "/")){
+						$mypageUri = str_replace("/", "/" . $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/", $mypageUri);
+					}else{
+						$mypageUri = $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $mypageUri;
+					}
+				}
+			}
+		}
 
         define("SOYSHOP_MYPAGE_URI", $mypageUri);
     }
@@ -410,11 +414,11 @@ function soyshop_get_mypage_top_url($isAbsolute = false){
  * マイページのページタイトルを取得
  */
 function soyshop_get_mypage_page_title($args){
-    if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-        return UtilMultiLanguageUtil::getPageTitle("mypage", SOYSHOP_PUBLISH_LANGUAGE);
-    }else{
-        return MyPageLogic::getMyPage()->getTitleFormat($args);
-    }
+	if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp" && class_exists("UtilMultiLanguageUtil")){
+		return UtilMultiLanguageUtil::getPageTitle("mypage", SOYSHOP_PUBLISH_LANGUAGE);
+	}else{
+		return MyPageLogic::getMyPage()->getTitleFormat($args);
+	}
 }
 
 /**

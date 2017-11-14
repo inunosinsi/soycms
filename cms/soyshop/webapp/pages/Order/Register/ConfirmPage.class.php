@@ -7,7 +7,6 @@ class ConfirmPage extends IndexPage{
 	//protected $cart;
 
 	function doPost(){
-		//あえてsoy2_check_tokenなし
 
 		if(soy2_check_token()){
 			//注文実行
@@ -15,11 +14,23 @@ class ConfirmPage extends IndexPage{
 			$cart = $this->cart;
 
 			try{
-				//@TODO カスタムフィールド、ポイントモジュール、割引モジュール
+				//@TODO カスタムフィールド、割引モジュール
+
+				//ポイントモジュール
+				{
+					SOYShopPlugin::load("soyshop.point.payment");
+					$delegate = SOYShopPlugin::invoke("soyshop.point.payment", array(
+						"mode" => "order",
+						"cart" => $cart,
+					));
+				}
 
 				//注文実行
 				$cart->order();
 				$cart->orderCompleteWithoutMail();
+
+				//注文日時変更
+				$cart->changeOrderDate();
 
 				$orderId = $cart->getAttribute("order_id");
 
@@ -34,6 +45,7 @@ class ConfirmPage extends IndexPage{
 			}catch(SOYShop_OverStockException $e){
 				$cart->addErrorMessage("stock", "在庫切れの商品があります。");
 			}catch(Exception $e){
+				$cart->log($e);
 				if(DEBUG_MODE){
 					$cart->addErrorMessage("order_error","注文の登録に失敗しました。<pre>" . var_export($e,true) . "</pre>");
 				}else{
@@ -44,24 +56,22 @@ class ConfirmPage extends IndexPage{
 			$cart->save();
 		}
 
-		SOY2PageController::jump("Order.Register.Confirm");
+		SOY2PageController::jump("Order.Register");
 	}
 
 	function __construct() {
 		$this->cart = AdminCartLogic::getCart();
+		$this->cart->setAttribute("page", "confirm");
 
-		parent::__construct();
-		
-		//在庫切れのエラー
-		DisplayPlugin::toggle("stock_error", !is_null($this->cart->getErrorMessage("stock")));
-		
+		WebPage::__construct();
+
 		$this->itemInfo();
-		$this->moduleInfo();
+		$this->dateInfo();
 		$this->userInfo();
 		$this->addressInfo();
 		$this->attributeInfo();
 		$this->memoInfo();
-		
+
 		$this->orderForm();
 	}
 
@@ -70,16 +80,6 @@ class ConfirmPage extends IndexPage{
 			"./css/admin/user_detail.css",
 			"./css/admin/order_register.css"
 		);
-	}
-
-	/**
-	 * モジュール料金
-	 */
-	function moduleInfo(){
-		$modules = $this->cart->getModules();
-		$this->createAdd("module_list", "ModuleList", array(
-			"list" => $modules
-		));
 	}
 
 	/**

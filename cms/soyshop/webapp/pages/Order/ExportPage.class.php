@@ -2,8 +2,10 @@
 
 class ExportPage extends WebPage{
 
+	const LIMIT = 1000;
+
     function __construct() {
-    	
+
     	//ログインチェック	ログインしていなければ強制的に止める
 		if(!soyshop_admin_login()){
 			echo "invalid plugin id";
@@ -15,11 +17,11 @@ class ExportPage extends WebPage{
 			echo "invalid plugin id";
 			exit;
 		}
-		
+
 		$search = array();
 		if(isset($_POST["search"])){
 			parse_str($_POST["search"], $search);
-		}			
+		}
 		$_POST["search"] = $search;
 
 		//統計、集計プラグインの場合は、注文一覧の検索を無視する
@@ -28,7 +30,7 @@ class ExportPage extends WebPage{
 		}else{
 			$orders = self::getOrders();
 		}
-		
+
 
 		$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
     	$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
@@ -58,7 +60,8 @@ class ExportPage extends WebPage{
 
 		//検索条件の投入と検索実行
 		$searchLogic->setSearchCondition($search);
+		$searchLogic->setLimit(self::LIMIT);
+		$searchLogic->setOrder("order_date_desc");
 		return $searchLogic->getOrders();
     }
 }
-?>

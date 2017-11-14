@@ -1,6 +1,11 @@
 <form soy:id="form">
 	<section id="cart_detail">
 		<h1 class="cart_txt">登録情報の変更</h1>
+
+		<div class="notice narrow" soy:id="is_editing">
+			<p>編集中です。</p>
+		</div>
+		
 		<!-- soy:display="has_error" -->
 		<div class="error narrow">
 			<p>正しく入力されていない項目があります。</p>
@@ -60,7 +65,7 @@
 				<dd>
 					<p class="error" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
 					<input name="" type="text" id="" class="input-zip w80" soy:id="user_zip_code">
-					<span class="note">【半角数字】</span> 
+					<span class="note">【半角数字】</span>
 					<span class="search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
 				</dd>
 				<!-- /soy:id="zipCode_show" -->
@@ -106,7 +111,7 @@
 					<span class="exmpl">（例）info＠n-i-agroinformatics.com</span>
 				</dd>
 				<!-- /soy:id="mailAddress_show" -->
-				
+
 				<!-- soy:id="accountId_show" -->
 				<dt>ログインID<span soy:id="accountId_required">（必須）</span></dt>
 				<dd>
@@ -196,5 +201,5 @@
 		<p class="textcenter"><a onclick="history.back();">&lt;&lt; 戻る</a></p>
 	</section>
 </form soy:id="form">
-		
+
 <script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->

@@ -12,17 +12,17 @@
 <script type="text/javascript" src="./js/main.pack.js?<?php echo SOYSHOP_BUILD_TIME; ?>" charset="utf-8"></script>
 <?php
 foreach($css as $link){
-	echo '<link rel="stylesheet" href="' . $link . '?' . SOYSHOP_BUILD_TIME . '" charset="utf-8">';
+	echo '<link rel="stylesheet" href="' . htmlspecialchars($link,ENT_QUOTES,"UTF-8"). '?' . SOYSHOP_BUILD_TIME . '" charset="utf-8">';
 	echo "\n";
 }
 foreach($scripts as $script){
 	$script = str_replace(".pack","",$script);
-	echo '<script type="text/javascript" src="' . $script . '?' . SOYSHOP_BUILD_TIME . '" charset="utf-8"></script>';
+	echo '<script type="text/javascript" src="' . htmlspecialchars($script,ENT_QUOTES,"UTF-8"). '?' . SOYSHOP_BUILD_TIME . '" charset="utf-8"></script>';
 	echo "\n";
 }
 
 ?>
-<title><?php echo $title; ?></title>
+<title><?php echo htmlspecialchars($title,ENT_QUOTES,"UTF-8"); ?></title>
 </head>
 <body class="<?php echo "$layout $pageClass"; ?>" id="<?php echo $activeTab;?>">
 <div id="wrapper" class="w950 _w750">
@@ -31,7 +31,7 @@ foreach($scripts as $script){
 		<a href="<?php echo SOYSHOP_ADMIN_URL; ?>">
 			<img src="./img/logo.png" />
 		</a>
-		<h1><a href="<?php echo soyshop_get_site_url(true); ?>" target="_blank">SOY Shop - <?php echo $shopName; ?></a></h1>
+		<h1><a href="<?php echo soyshop_get_site_url(true); ?>" target="_blank">SOY Shop - <?php echo htmlspecialchars($shopName,ENT_QUOTES,"UTF-8"); ?></a></h1>
 
 		<div id="header_menu">
 			<ul>
@@ -118,11 +118,11 @@ foreach($scripts as $script){
 	<div id="footer" class="clearfix">
 		<br class="footer_bottom" />
 	</div>
-	
+
 	<div id="account_form_el" class="popup" style="display:none;">
 		<iframe src="<?php echo SOYCMS_ADMIN_URL; ?>index.php/Account"></iframe>
 		<p class="close"></p>
 	</div>
-	
+
 </div>
 </body>

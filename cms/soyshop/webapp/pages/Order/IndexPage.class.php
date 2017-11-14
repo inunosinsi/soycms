@@ -96,22 +96,22 @@ class IndexPage extends WebPage{
 		$this->addLink("order_link", array(
 			"link" => SOY2PageController::createLink("Order.Register")
 		));
-		
+
 		//項目の表示に関して
 		$items = SOYShop_ShopConfig::load()->getOrderItemConfig();
 		$itmCnt = 0;
 		foreach($items as $key => $b){
 			if($b) $itmCnt++;
-			
+
 			$this->addModel($key . "_show", array(
 				"visible" => $b
 			));
-			
+
 			$this->addModel($key . "_form_show", array(
 				"visible" => $b
 			));
 		}
-		
+
 		foreach(range(0,1) as $i){
 			$this->addModel("col_count_" . $i, array(
 				"attr:colspan" => $itmCnt + 2
@@ -239,16 +239,16 @@ class SearchForm extends SOYBodyComponentBase{
 	private $userArea;
 	private $orderStatus;
 	private $paymentStatus;
-	
+
 	private $noDelivery;
 	private $noPayment;
-	
+
 	private $totalPriceMin;
 	private $totalPriceMax;
 
 	private $orderDateStart;
 	private $orderDateEnd;
-	
+
 	private $updateDateStart;
 	private $updateDateEnd;
 
@@ -256,16 +256,16 @@ class SearchForm extends SOYBodyComponentBase{
 	private $orderId;
 	private $orderIdStart;
 	private $orderIdEnd;
-	
+
 	private $userName;
 	private $userReading;
 	private $userMailAddress;
 	private $userGender = array();
 	private $userBirthday = array();
-	
+
 	private $itemName;
 	private $itemCode;
-	
+
 	private $paymentMethod = array();
 
 	/**
@@ -289,8 +289,8 @@ class SearchForm extends SOYBodyComponentBase{
 			"options" => SOYShop_Order::getOrderStatusList($checkPreOrder),
 			"selected" => (is_null($this->getNoDelivery()) || $this->getNoDelivery() != 1) ? $this->getSOYShop_OrderStatus() : false
 		));
-				
-		
+
+
 		$this->addCheckBox("no_delivery", array(
 			"name" => "search[noDelivery]",
 			"value" => 1,
@@ -303,19 +303,19 @@ class SearchForm extends SOYBodyComponentBase{
 			"options" => SOYShop_Order::getPaymentStatusList(),
 			"selected" => (is_null($this->getNoPayment()) || $this->getNoPayment() != 1) ? $this->getPaymentStatus() : false
 		));
-		
+
 		$this->addCheckBox("no_payment", array(
 			"name" => "search[noPayment]",
 			"value" => 1,
 			"selected" => ($this->getNoPayment() == 1),
 			"label" => "未支払の注文"
 		));
-		
+
 		$this->addInput("total_price_min", array(
 			"name" => "search[totalPriceMin]",
 			"value" => $this->getTotalPriceMin()
 		));
-		
+
 		$this->addInput("total_price_max", array(
 			"name" => "search[totalPriceMax]",
 			"value" => $this->getTotalPriceMax()
@@ -330,7 +330,7 @@ class SearchForm extends SOYBodyComponentBase{
 			"name" => "search[orderDateEnd]",
 			"value" => $this->getOrderDateEnd(),
 		));
-		
+
 		$this->addInput("update_date_start", array(
 			"name" => "search[updateDateStart]",
 			"value" => $this->getUpdateDateStart(),
@@ -345,13 +345,13 @@ class SearchForm extends SOYBodyComponentBase{
 			"name" => "search[orderId]",
 			"value" => $this->getOrderId()
 		));
-		
+
 		$this->addInput("order_id_start", array(
 			"name" => "search[orderIdStart]",
 			"value" => $this->getOrderIdStart(),
 			"style" => "width:80px;"
 		));
-		
+
 		$this->addInput("order_id_end", array(
 			"name" => "search[orderIdEnd]",
 			"value" => $this->getOrderIdEnd(),
@@ -372,12 +372,12 @@ class SearchForm extends SOYBodyComponentBase{
 			"name" => "search[userReading]",
 			"value" => $this->getUserReading()
 		));
-		
+
 		$this->addInput("order_user_mail_address", array(
 			"name" => "search[userMailAddress]",
 			"value" => $this->getUserMailAddress()
 		));
-		
+
 		SOY2::import("domain.user.SOYShop_User");
 		$this->addCheckBox("order_user_gender_male", array(
 			"name" => "search[userGender][]",
@@ -385,14 +385,14 @@ class SearchForm extends SOYBodyComponentBase{
 			"selected" => (array_search(SOYShop_User::USER_SEX_MALE, $this->getUserGender()) !== false),
 			"label" => "男性"
 		));
-		
+
 		$this->addCheckBox("order_user_gender_female", array(
 			"name" => "search[userGender][]",
 			"value" => SOYShop_User::USER_SEX_FEMALE,
 			"selected" => (array_search(SOYShop_User::USER_SEX_FEMALE, $this->getUserGender()) !== false),
 			"label" => "女性"
 		));
-		
+
 		$birthArray = $this->getUserBirthday();
 		$this->addInput("order_user_birth_date_year", array(
 			"name" => "search[userBirthday][]",
@@ -419,7 +419,7 @@ class SearchForm extends SOYBodyComponentBase{
 			"name" => "search[itemCode]",
 			"value" => $this->getItemCode()
 		));
-		
+
 		//支払い方法のチェックボックス
 		$this->addLabel("order_payment_checkboxes", array(
 			"html" => self::getPaymentCheckboxesHTML()
@@ -427,7 +427,7 @@ class SearchForm extends SOYBodyComponentBase{
 
 		parent::execute();
 	}
-	
+
 	private function getPaymentCheckboxesHTML(){
 		SOYShopPlugin::load("soyshop.payment");
 		SOY2::import("logic.cart.CartLogic");
@@ -437,19 +437,19 @@ class SearchForm extends SOYBodyComponentBase{
 			"mode" => "search",
 			"cart" => CartLogic::getCart()
 		))->getList();
-		
+
 		if(!count($paymentList)) return "";
-		
+
 		$html = array();
 		foreach($paymentList as $key => $p){
 			$checked = "";
 			if(array_search($key, $this->getPaymentMethod()) !== false){
 				$checked = " checked=\"checked\"";
 			}
-			
+
 			$html[] = "<label><input type=\"checkbox\" name=\"search[paymentMethod][]\" value=\"" . $key . "\" " . $checked . ">" . $p . "</label>";
 		}
-		
+
 		return implode("\n", $html);
 	}
 
@@ -472,28 +472,28 @@ class SearchForm extends SOYBodyComponentBase{
 	function setPaymentStatus($paymentStatus) {
 		$this->paymentStatus = $paymentStatus;
 	}
-	
+
 	function getNoDelivery(){
 		return $this->noDelivery;
 	}
 	function setNoDelivery($noDelivery){
 		$this->noDelivery = $noDelivery;
 	}
-	
+
 	function getNoPayment(){
 		return $this->noPayment;
 	}
 	function setNoPayment($noPayment){
 		$this->noPayment = $noPayment;
 	}
-	
+
 	function getItemList() {
 		return $this->itemList;
 	}
 	function setItemList($itemList) {
 		$this->itemList = $itemList;
 	}
-	
+
 	function getTotalPriceMin(){
 		return $this->totalPriceMin;
 	}
@@ -506,7 +506,7 @@ class SearchForm extends SOYBodyComponentBase{
 	function setTotalPriceMax($totalPriceMax){
 		$this->totalPriceMax = $totalPriceMax;
 	}
-	
+
 	function getOrderDateStart() {
 		return $this->orderDateStart;
 	}
@@ -519,7 +519,7 @@ class SearchForm extends SOYBodyComponentBase{
 	function setSOYShop_OrderDateEnd($orderDateEnd) {
 		$this->orderDateEnd = $orderDateEnd;
 	}
-	
+
 	function getUpdateDateStart() {
 		return $this->updateDateStart;
 	}
@@ -558,21 +558,21 @@ class SearchForm extends SOYBodyComponentBase{
 	function setTrackingNumber($trackingNumber) {
 		$this->trackingNumber = mb_convert_kana($trackingNumber, "a");
 	}
-	
+
 	function getOrderId(){
 		return $this->orderId;
 	}
 	function setOrderId($orderId){
 		$this->orderId = $orderId;
 	}
-	
+
 	function getOrderIdStart(){
 		return $this->orderIdStart;
 	}
 	function setOrderIdStart($orderIdStart){
 		$this->orderIdStart = $orderIdStart;
 	}
-	
+
 	function getOrderIdEnd(){
 		return $this->orderIdEnd;
 	}
@@ -658,7 +658,7 @@ class SearchForm extends SOYBodyComponentBase{
 	function setUserId($userId) {
 		$this->userId = $userId;
 	}
-	
+
 	function getPaymentMethod(){
 		return $this->paymentMethod;
 	}
@@ -666,4 +666,3 @@ class SearchForm extends SOYBodyComponentBase{
 		$this->paymentMethod = $paymentMethod;
 	}
 }
-?>

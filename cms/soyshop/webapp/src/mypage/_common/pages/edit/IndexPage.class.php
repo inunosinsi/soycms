@@ -11,7 +11,7 @@ class IndexPage extends MainMyPagePageBase{
 		$mypage = MyPageLogic::getMyPage();
 
 		//ユーザカスタムフィールドの値をセッションに入れる
-		if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
+		if(isset($_POST["user_customfield"])){
 			SOYShopPlugin::load("soyshop.user.customfield");
 			SOYShopPlugin::invoke("soyshop.user.customfield", array(
 				"mode" => "post",
@@ -119,6 +119,9 @@ class IndexPage extends MainMyPagePageBase{
 		$user = $mypage->getUserInfo();
 		if(is_null($user) || !$mypage->getAttribute("user.edit.use_session_user_info")){
 			$user = $this->getUser();
+			$isEditingData = false;
+		}else{
+			$isEditingData = true;
 		}
 
 		$this->id = $this->getUserId();
@@ -131,6 +134,11 @@ class IndexPage extends MainMyPagePageBase{
 		//顧客情報フォーム
 		$this->buildForm($user, $mypage);
 
+		//編集中の注意
+		$this->addModel("is_editing",array(
+				"visible" => $isEditingData,
+		));
+
 		//エラー周り
 		DisplayPlugin::toggle("has_error", $mypage->hasError());
 		$this->appendErrors($mypage);
@@ -139,7 +147,20 @@ class IndexPage extends MainMyPagePageBase{
 		$mypage->clearUserInfo();
 		$mypage->clearErrorMessage();
 		$mypage->setAttribute("user.edit.use_session_user_info", null);
+		$this->clearCustomFieldValue($mypage);
 		$mypage->save();
+	}
+
+	/**
+	 * カスタムフィールドの編集中の値を削除する
+	 * @param unknown $mypage
+	 */
+	protected function clearCustomFieldValue($mypage){
+		$delegate = SOYShopPlugin::invoke("soyshop.user.customfield", array(
+				"mode" => "clear",
+				"app" => $mypage,
+				"userId" => $this->id,
+		));
 	}
 
 	/**
@@ -157,6 +178,14 @@ class IndexPage extends MainMyPagePageBase{
 
 		//共通フォーム
 		$this->component->buildForm($this, $user, $mypage, $mode);
+
+		//各項目をcreateAdd
+		$delegate = SOYShopPlugin::invoke("soyshop.user.customfield", array(
+			"mode" => "build_named_form",
+			"app" => $mypage,
+			"pageObj" => $this,
+			"userId" => $user->getId()
+		));
 	}
 
 	/**
@@ -183,4 +212,3 @@ class IndexPage extends MainMyPagePageBase{
 		return $res;
 	}
 }
-?>

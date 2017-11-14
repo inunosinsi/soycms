@@ -39,7 +39,7 @@ class PayJpRecurringOperateCredit extends SOYShopOperateCreditBase{
 	function getFormOnOrderDetailPageTitle(SOYShop_Order $order){}
 	function getFormOnOrderDetailPageContent(SOYShop_Order $order){}
 
-	function getFormOnUserDetailPageTitle(){
+	function getFormOnUserDetailPageTitle(SOYShop_User $user){
 		return "定期課金プラン詳細";
 	}
 

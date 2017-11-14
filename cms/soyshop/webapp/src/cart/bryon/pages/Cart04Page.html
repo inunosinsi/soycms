@@ -13,6 +13,12 @@
 	</aside>
 	<!-- /soy:id="is_confirm_error" -->
 
+	<!-- soy:display="has_order_error" -->
+	<div class="error narrow">
+		<p soy:id="order_error">正しく入力されていない項目があります。</p>
+	</div>
+	<!-- /soy:display="has_order_error" -->
+
 	<section id="cart_detail">
 		<h1 class="cart_txt">ご注文の商品</h1>
 		<table cellpadding="0" cellspacing="0" class="cart_detail_table">
@@ -56,15 +62,15 @@
 				<!-- /soy:id="module_list" -->
 			</tbody>
 		</table>
-		
+
 		<!-- soy:id="has_bonus_plugin" -->
 		<!-- soy:id="bonus_plugin_list" -->
 		<!-- soy:id="content" /-->
 		<!-- /soy:id="bonus_plugin_list" -->
 		<!-- /soy:id="has_bonus_plugin" -->
-		
+
 	</section>
-			
+
 	<section>
 		<h1 class="cart_txt">お客様情報</h1>
 		<section class="soycart_narrow">
@@ -135,7 +141,7 @@
 				<tr soy:id="memo_show">
 					<th nowrap scope="row">備考・その他</th>
 					<td soy:id="memo">&nbsp;</td>
-				</tr>	
+				</tr>
 			</table>
 			<!--p class="link"><a href="#">基本情報を変更する</a></p-->
 		</section>
@@ -175,7 +181,7 @@
 			</table>
 			<!--p class="link"><a href="#">お支払方法を変更する</a></p-->
 		</section>
-			
+
 		<!--section class="soycart_narrow">
 			<h1>配送方法の選択</h1>
 			<table class="cart_detail_table">
@@ -191,7 +197,7 @@
 				<p>この内容でご注文を確定します。よろしければ下の「ご注文確定」ボタンを押してください。</p>
 			</aside>
 		</section-->
-		
+
 		<!-- soy:id="no_confirm_plugin" -->
 		<aside class="note">
 			<p>
@@ -201,7 +207,7 @@
 			</p>
 		</aside>
 		<!-- /soy:id="no_confirm_plugin" -->
-		
+
 		<!-- soy:id="confirm_plugin_list" -->
 		<p soy:id="error" class="error"></p>
 		<aside class="note">
@@ -213,7 +219,7 @@
 		<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_ok_off.png" alt="ご注文確定"></a></p>
 		<p class="alC"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
 	</section>
-	
+
 </form soy:id="order_form">
 
 <!-- soy:id="has_cart_plugin" -->

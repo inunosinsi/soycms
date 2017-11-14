@@ -199,11 +199,23 @@ class DetailPage extends WebPage{
 		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$count = $orderDao->countByUserIdIsRegistered($id);
 
+		//1つしかなければそこにリンクする
+		if($count == 1){
+			try{
+				$orders = $orderDao->getByUserId($id);
+				$order = $orders[0];
+			}catch(Exception $e){
+				//
+			}
+		}
+
 		$this->addLabel("order_count", array(
 			"text" => $count,
 		));
 		$this->addLink("order_list_link", array(
-			"link" => SOY2PageController::createLink("Order?userId=" . $shopUser->getId())
+				"link" => ( count($count) == 1 && isset($order) )
+				? SOY2PageController::createLink("Order.Detail.".$order->getId())
+				: SOY2PageController::createLink("Order?search[userId]=" . $shopUser->getId()),
 		));
 		$this->addLink("order_register_link", array(
 			"link" => SOY2PageController::createLink("Order.Register.User." . $shopUser->getId())
@@ -465,7 +477,7 @@ class DetailPage extends WebPage{
 
 	private function getPointHistories($userId){
 		$historyDao = SOY2DAOFactory::create("SOYShop_PointHistoryDAO");
-		$historyDao->setLimit(10);	//上位10件
+
 		try{
 			$histories = $historyDao->getByUserId($userId);
 		}catch(Exception $e){

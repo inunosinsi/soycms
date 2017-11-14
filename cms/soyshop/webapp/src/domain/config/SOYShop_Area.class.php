@@ -1,4 +1,7 @@
 <?php
+if(!class_exists("SOYShopPlugin")){
+	SOY2::import("logic.plugin.SOYShopPlugin");
+}
 
 class SOYShop_Area {
 
@@ -55,7 +58,7 @@ class SOYShop_Area {
 			"47" => "沖縄県",
 			"48" => "その他・海外",
 	);
-	
+
 	/**
 	 * @return array("num" => "pref_name")
 	 */
@@ -72,7 +75,7 @@ class SOYShop_Area {
 			return self::$areas;
 		}
 	}
-	
+
 	/**
 	 * @return array("pref_name");
 	 */
@@ -98,11 +101,10 @@ class SOYShop_Area {
 			return $areas[$code];
 		}
 	}
-	
+
 	public static function getAreaByText($text){
 		$areas = self::getAreas();
 		$res = array_search($text, $areas);
-		return $res;	
+		return $res;
 	}
 }
-?>

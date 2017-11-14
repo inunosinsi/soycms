@@ -1,57 +1,65 @@
 <?php
 class SOYShopPointPaymentBase implements SOY2PluginAction{
-	
+
 	private $cart;
 
 	/**
-	 * ポイント支払金額の計算とモジュールの登録
+	 * パラメータの消去
+	 * Cart03で選択肢を表示する前に呼び出される
 	 */
-	function doPost($param, $userId){
-
-	}
-	
 	function clear(){
-		
-	}
-	
-	/**
-	 * 注文確定時に動作する
-	 */
-	function order(){
-		
-	}
-	
-	/**
-	 * エラーチェック
-	 * @return Boolean
-	 */
-	function hasError($param){
-		return false;
-	}
-	
-	/*
-	 * エラーメッセージ
-	 * @return string
-	 */
-	function getError(){
-		return "";
+
 	}
 
 	/*
-	 * カートで表示するモジュール名
+	 * Cart03で表示するモジュール名
 	 * （空にするとそのモジュールは丸ごと表示されない）
 	 */
-	function getName(){
+	function getName($userId){
 		return "";
 	}
 
 	/*
-	 * カートで表示するフォーム
+	 * Cart03で表示するフォーム
 	 * name="discount_module[***]"
 	 */
 	function getDescription($userId){
 		return "";
 	}
+
+	/*
+	 * Cart03の選択時に表示するエラーメッセージ
+	 * @return string
+	 */
+	function getError($userId){
+		return "";
+	}
+
+	/**
+	 * エラーチェック
+	 * Cart03->doPostで最初に実行される
+	 * あまり意味はなさそう
+	 * @return Boolean
+	 */
+	function hasError($param){
+		return false;
+	}
+
+	/**
+	 * ポイント支払金額の計算とモジュールの登録
+	 * Cart03->doPostで選択されたときに実行される
+	 */
+	function doPost($param, $userId){
+
+	}
+
+	/**
+	 * Cart04->doPostの注文確定時に動作する
+	 */
+	function order(){
+
+	}
+
 
 	function getCart() {
 		return $this->cart;
@@ -66,7 +74,7 @@ class SOYShopPointPaymentDeletageAction implements SOY2PluginDelegateAction{
 	private $mode = "list";
 	private $cart;
 	private $param;//$_POST["point_module"]
-	
+
 	private $_list = array();
 	private $hasError = false;
 	private $userId;
@@ -82,34 +90,35 @@ class SOYShopPointPaymentDeletageAction implements SOY2PluginDelegateAction{
 
 		switch($this->mode){
 			case "list":
-				if(strlen($action->getName())){
+				$name = $action->getName($this->userId);
+				if(strlen($name)){
 					$this->_list[$moduleId] = array(
-						"name"        => $action->getName(),
+						"name"        => $name,
 						"description" => $action->getDescription($this->userId),
-						"error"       => $action->getError(),
+						"error"       => $action->getError($this->userId),//getDescriptionより後に呼び出す必要がある
 					);
 				}
 				break;
-			
+
 			//ページのdoPost内で
 			case "checkError":
-				
+
 				if($action->hasError(@$this->param[$moduleId])){
 					$this->hasError = true;
 				}else{
 					//do nothing
 				}
 				break;
-			
+
 			//ページのdoPost内でエラーのないとき
 			case "select":
 				$action->doPost(@$this->param[$moduleId], $this->userId);
 				break;
-				
+
 			case "clear":
 				$action->clear();
 				break;
-			
+
 			//注文処理後
 			case "order":
 				$action->order();
@@ -147,7 +156,6 @@ class SOYShopPointPaymentDeletageAction implements SOY2PluginDelegateAction{
 	function hasError(){
 		return $this->hasError;
 	}
-	
+
 }
 SOYShopPlugin::registerExtension("soyshop.point.payment", "SOYShopPointPaymentDeletageAction");
-?>

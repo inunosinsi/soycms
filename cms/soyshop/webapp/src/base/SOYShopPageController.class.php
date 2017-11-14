@@ -109,6 +109,10 @@ class SOYShopPageController extends SOY2PageController{
 		));
 
 		try{
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$shopConfig = SOYShop_ShopConfig::load();
+			$shopName = $shopConfig->getShopName();
+
 			$subMenu = (method_exists($webPage,"getSubMenu")) ? $webPage->getSubMenu() : null;
 			$layout = ($subMenu) ? "layout_right" : "layout_full";
 
@@ -125,17 +129,13 @@ class SOYShopPageController extends SOY2PageController{
 
 			$createAppLink = SOYAppUtil::createAppLink();
 
-			$title = (method_exists($webPage,"getTitle")) ? $webPage->getTitle() . " | SOY Shop" : "SOY Shop";
+			$title = (method_exists($webPage,"getTitle")) ? $webPage->getTitle() . " | SOY Shop" : "SOY Shop" . " | ".$shopName;
 			$css= (method_exists($webPage,"getCSS")) ? $webPage->getCSS() : array();
 			$scripts= (method_exists($webPage,"getScripts")) ? $webPage->getScripts() : array();
 
 			if(method_exists($webPage,"isLayer") && $webPage->isLayer()){
 				$template = "layer";
 			}
-
-			SOY2::import("domain.config.SOYShop_ShopConfig");
-			$shopConfig = SOYShop_ShopConfig::load();
-			$shopName = $shopConfig->getShopName();
 
 			$isOrder = $shopConfig->getDisplayOrderAdminPage();
 			$isItem = $shopConfig->getDisplayItemAdminPage();

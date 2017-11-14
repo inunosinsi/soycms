@@ -1,29 +1,37 @@
 <section id="cart_detail">
 	<h1 class="cart_txt"><!-- soy:id="user_name" -->曽井　太郎<!-- /soy:id="user_name" -->さんのポイント履歴</h1>
-	
+
 	<section>
 		<div class="cart_detail_dl">
 			<dl>
 				<dt>現在のポイント</dt>
 				<dd><!-- soy:id="point" /-->&nbsp;ポイント</dd>
+				<!-- soy:id="point_has_limit" -->
+				<dt>ポイントの有効期限</dt>
+				<dd><!-- soy:id="point_limit" /--></dd>
+				<!-- /soy:id="point_has_limit" -->
+				<!-- soy:id="point_is_expired" -->
+				<dt>期限切れのポイント</dt>
+				<dd><!-- soy:id="point_expired" /-->（<!-- soy:id="point_limit*" /-->）</dd>
+				<!-- /soy:id="point_is_expired" -->
 			</dl>
 		</div>
 	</section>
-	
+
 	<section>
 		<!-- soy:id="no_history" -->
 		<aside class="note">
 			<p class="alC">ポイント履歴がありません。</p>
 		</aside>
 		<!-- /soy:id="no_history" -->
-		
+
 		<!-- soy:id="has_history" -->
 		<div class="cart_detail_dl">
 			<div class="cart_li title">
-				<div class="cart_itemthumb">時刻</div>
+				<div class="cart_itemthumb">日時</div>
 				<div class="cart_itemtitle">タイトル</div>
 			</div>
-	
+
 			<!-- soy:id="point_history_list" -->
 			<div class="cart_li">
 				<div class="cart_itemthumb" soy:id="create_date">2011年2月24日　12:02</div>
@@ -35,7 +43,7 @@
 			</div>
 			<!-- /soy:id="point_history_list" -->
 		</div>
-		
+
 		<!-- soy:id="has_multi_page" -->
 		<div class="item_pager clearfix">
 			<ul>
@@ -47,7 +55,7 @@
 				<!-- /soy:id="has_next" -->
 				<li><!-- soy:id="current_page" /-->/<!-- soy:id="last_page" /--></li>
 			</ul>
-		</div>  
+		</div>
 		<!-- /soy:id="has_multi_page" -->
 		<!-- /soy:id="has_history" -->
 	</section>
