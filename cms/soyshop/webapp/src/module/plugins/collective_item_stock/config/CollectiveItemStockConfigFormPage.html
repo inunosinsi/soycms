@@ -34,11 +34,15 @@
 				<tr>
 					<th>表示件数</th>
 					<td><select soy:id="search_item_number"></select>件</td>
-					<th>小商品の表示</th>
-					<td><input type="checkbox" soy:id="search_item_type"></td>
+					<th>子商品の表示</th>
+					<td>
+						<input type="hidden" soy:id="search_item_type_parent_hidden">
+						<input type="checkbox" soy:id="search_item_type_parent">
+						<input type="checkbox" soy:id="search_item_type_child">
+					</td>
 				</tr>
 			</table>
-			
+
 			<p class="pageBtn">
 				<input type="submit" name="search" value="検索">&nbsp;&nbsp;
 				<input type="submit" name="reset" value="リセット">
@@ -79,7 +83,7 @@
 				<!-- /soy:id="item_list" -->
 			</tbody>
 		</table>
-		
+
 		<section id="standard_form_area">
 			<!-- soy:id="standard_form_area" /-->
 		</section>
@@ -97,7 +101,7 @@
 		cursor: pointer;
 	}
 	div.search_area_dd {}
-	
+
 	#standard_form_area{
 		display:none;
 	}

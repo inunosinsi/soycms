@@ -12,4 +12,3 @@ class CollectiveItemStockInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "collective_item_stock", "CollectiveItemStockInfo");
-?>

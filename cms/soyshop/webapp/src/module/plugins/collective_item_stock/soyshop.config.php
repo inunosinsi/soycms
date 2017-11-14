@@ -5,7 +5,7 @@ class CollectiveItemStockConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-		
+
 		include_once(dirname(__FILE__). "/config/CollectiveItemStockConfigFormPage.class.php");
 		$form = SOY2HTMLFactory::createInstance("CollectiveItemStockConfigFormPage");
 		$form->setConfigObj($this);
@@ -18,9 +18,8 @@ class CollectiveItemStockConfig extends SOYShopConfigPageBase{
 	 * 拡張設定に表示されたモジュールのタイトルを表示する
 	 */
 	function getConfigPageTitle(){
-		return "在庫一括設定";
+		return "在庫数一括設定";
 	}
 
 }
 SOYShopPlugin::extension("soyshop.config", "collective_item_stock", "CollectiveItemStockConfig");
-?>
