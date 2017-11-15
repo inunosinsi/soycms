@@ -138,10 +138,10 @@ class CollectiveItemStockConfigFormPage extends WebPage{
 		));
 
 		//表示件数
-		$this->addSelect("search_item_number", array(
+		$this->addInput("search_item_number", array(
 			"name" => "search_number",
-			"options" => array(3, 15, 30, 50, 100),
-			"selected" => (isset($_POST["search_number"])) ? (int)$_POST["search_number"] : 15
+			"value" => (isset($_POST["search_number"])) ? (int)$_POST["search_number"] : 15,
+			"style" => "width: 80px;"
 		));
 
 		$this->addCheckBox("search_item_type_parent", array(
@@ -164,7 +164,7 @@ class CollectiveItemStockConfigFormPage extends WebPage{
 	}
 
 	private function getItems(){
-		$num = (isset($_POST["search_number"])) ? (int)$_POST["search_number"] : 15;
+		$num = (isset($_POST["search_number"]) && is_numeric($_POST["search_number"])) ? (int)$_POST["search_number"] : 15;
 
 		$searchLogic = SOY2Logic::createInstance("module.plugins." . $this->configObj->getModuleId() . ".logic.SearchLogic");
 		$searchLogic->setLimit($num);	//仮
