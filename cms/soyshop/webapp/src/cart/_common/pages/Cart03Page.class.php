@@ -124,6 +124,12 @@ class Cart03Page extends MainCartPageBase{
 				));
 			}
 
+			//備考 旧カートで使用していたことがあるため残しておく
+			if(isset($_POST["Attributes"]) && isset($_POST["Attributes"]["memo"])){
+				$cart->setOrderAttribute("memo", MessageManager::get("NOTE"), $_POST["Attributes"]["memo"]);
+			}
+
+
 			//上記の処理以外で行いたいことがあればここで行う
 			SOYShopPlugin::load("soyshop.order.process");
 			SOYShopPlugin::invoke("soyshop.order.process", array(
@@ -212,6 +218,14 @@ class Cart03Page extends MainCartPageBase{
 
 		//ユーザ情報の出力
 		$this->outputUser($cart);
+
+		//備考 旧カートで使用していたことがあるため、残しておく
+		$memo = $cart->getOrderAttribute("memo");
+		if(is_null($memo)) $memo = array("name" => MessageManager::get("NOTE"), "value" => "");
+		$this->addTextArea("order_memo", array(
+			"name" => "Attributes[memo]",
+			"value" => (isset($memo["value"])) ? $memo["value"] : ""
+		));
 
 		$this->addExtensions($cart);
 

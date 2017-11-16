@@ -5,6 +5,7 @@ create table soyshop_coupon(
 	name varchar(255) not null,
 	discount integer not null,
 	discount_percent tinyint not null default 0,
+	is_free_delivery tinyint not null default 0,
 	price_limit_min integer,
 	price_limit_max integer,
 	time_limit_start integer not null,
@@ -21,5 +22,6 @@ create table soyshop_coupon_history(
 	coupon_id integer not null,
 	order_id integer not null,
 	price integer not null default 0,
+	is_free_delivery tinyint not null default 0,
 	create_date integer not null
 )ENGINE = InnoDB;

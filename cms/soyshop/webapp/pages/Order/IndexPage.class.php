@@ -437,7 +437,7 @@ class SearchForm extends SOYBodyComponentBase{
 			"mode" => "search",
 			"cart" => CartLogic::getCart()
 		))->getList();
-
+		
 		if(!count($paymentList)) return "";
 
 		$html = array();

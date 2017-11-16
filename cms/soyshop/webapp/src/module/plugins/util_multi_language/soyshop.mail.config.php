@@ -6,6 +6,7 @@ class UtilMultiLanguageMailConfig extends SOYShopMailConfig{
 	 * @return Array("active", "header", "content", "footer")
 	 */
 	function getConfig(){
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
 		if(!defined("SOYSHOP_MAIL_LANGUAGE")) define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
 
 		if(SOYSHOP_MAIL_LANGUAGE != "jp"){

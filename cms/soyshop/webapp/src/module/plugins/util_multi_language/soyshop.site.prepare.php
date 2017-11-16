@@ -2,80 +2,68 @@
 
 class UtilMultiLanguagePrepareAction extends SOYShopSitePrepareAction{
 
-    function prepare(){
-        //既に設定している場合は処理を止める
-        if(defined("SOYSHOP_PUBLISH_LANGUAGE")) return;
+	function prepare(){
 
-        SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-        $config = UtilMultiLanguageUtil::getConfig();
+		//既に設定している場合は処理を止める
+		if(defined("SOYSHOP_PUBLISH_LANGUAGE")) return;
 
-        $redirectLogic = SOY2Logic::createInstance("module.plugins.util_multi_language.logic.RedirectLanguageSiteLogic");
+		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+		$config = UtilMultiLanguageUtil::getConfig();
 
-        //ブラウザの言語設定を確認するモード
-        if($config["check_browser_language_config"]){
-            $languageConfig = self::getAcceptLanguage();
+		$redirectLogic = SOY2Logic::createInstance("module.plugins.util_multi_language.logic.RedirectLanguageSiteLogic");
 
-            //言語切替ボタンを使うモード
-        }else{
-            $userSession = SOY2ActionSession::getUserSession();
+		//ブラウザの言語設定を確認するモード
+		if($config["check_browser_language_config"]){
+			$language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
 
-            //言語切替ボタンを押したとき
-            if(isset($_GET["language"])){
-                //切替設定があるか調べる
-                $languageConfig = $redirectLogic->getLanguageArterCheck($config);
-                $userSession->setAttribute("soyshop_publish_language", $languageConfig);
-                $userSession->setAttribute("soycms_publish_language", $languageConfig);
-                //押してないとき
-            }else{
-                $languageConfig = $userSession->getAttribute("soyshop_publish_language");
-                if(is_null($languageConfig)){
-                    //SOY CMSの方の言語設定も確認する
-                    $languageConfig = $userSession->getAttribute("soycms_publish_language");
+			foreach(UtilMultiLanguageUtil::allowLanguages() as $lang => $title){
+				if(preg_match('/^' . $lang . '/i', $language)) {
+					$languageConfig = $lang;
+					break;
+				}
+			}
 
-                    if(is_null($languageConfig)){
+			//念の為
+			if(!isset($languageConfig)) $languageConfig = "jp";
 
-                        //初回アクセスのみブラウザの言語設定をみる
-                        if($config["check_first_access_config"]){
-                            $languageConfig = self::getAcceptLanguage();
-                        }else{
-                            $languageConfig = "jp";
-                        }
-                        $userSession->setAttribute("soyshop_publish_language", $languageConfig);
-                    }
-                }
-            }
-        }
+		//言語切替ボタンを使うモード
+		}else{
+			$userSession = SOY2ActionSession::getUserSession();
 
-        if(!defined("SOYSHOP_PUBLISH_LANGUAGE")){
-            define("SOYCMS_PUBLISH_LANGUAGE", $languageConfig);
-            define("SOYSHOP_PUBLISH_LANGUAGE", $languageConfig);
-        }
+			//言語切替ボタンを押したとき
+			if(isset($_GET["language"])){
+				//切替設定があるか調べる
+				$languageConfig = $redirectLogic->getLanguageArterCheck($config);
+				$userSession->setAttribute("soyshop_publish_language", $languageConfig);
+				$userSession->setAttribute("soycms_publish_language", $languageConfig);
+			//押してないとき
+			}else{
+				$languageConfig = $userSession->getAttribute("soyshop_publish_language");
+				if(is_null($languageConfig)){
+					//SOY CMSの方の言語設定も確認する
+					$languageConfig = $userSession->getAttribute("soycms_publish_language");
 
-        $redirectLogic->defineApplicationId($config);
+					if(is_null($languageConfig)){
+						$languageConfig = "jp";
+						$userSession->setAttribute("soyshop_publish_language", $languageConfig);
+					}
+				}
+			}
+		}
 
-        $redirectPath = $redirectLogic->getRedirectPath($config);
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE")){
+			define("SOYCMS_PUBLISH_LANGUAGE", $languageConfig);
+			define("SOYSHOP_PUBLISH_LANGUAGE", $languageConfig);
+		}
 
-        if($redirectLogic->checkRedirectPath($redirectPath)){
-            SOY2PageController::redirect($redirectPath);
-            exit;
-        }
-    }
+		$redirectLogic->defineApplicationId($config);
 
-    private function getAcceptLanguage(){
-        $language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
+		$redirectPath = $redirectLogic->getRedirectPath($config);
 
-        $languageConfig = null;
-        foreach(UtilMultiLanguageUtil::allowLanguages() as $lang => $title){
-            if(preg_match('/^' . $lang . '/i', $language)) {
-                $languageConfig = $lang;
-                break;
-            }
-        }
-
-        //念の為
-        if(!isset($languageConfig)) $languageConfig = "jp";
-
-        return $languageConfig;
-    }
+		if($redirectLogic->checkRedirectPath($redirectPath)){
+			SOY2PageController::redirect($redirectPath);
+			exit;
+		}
+	}
 }
-SOYShopPlugin::extension("soyshop.site.prepare", "util_multi_language", "UtilMultiLanguagePrepareAction");
+SOYShopPlugin::extension("soyshop.site.prepare", "util_multi_languare", "UtilMultiLanguagePrepareAction");

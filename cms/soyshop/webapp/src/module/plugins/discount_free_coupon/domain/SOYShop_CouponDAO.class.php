@@ -76,4 +76,3 @@ abstract class SOYShop_CouponDAO extends SOY2DAO{
 		return array($query, $binds);
 	}
 }
-?>
