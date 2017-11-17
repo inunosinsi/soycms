@@ -279,6 +279,9 @@ class InitLogic extends SOY2LogicBase{
 	    	$logic->installModule(trim($moduleId));
 	    }
 
+		//プラグインの並べ替え
+		include_once(SOY2::RootDir() . "logic/upgrade/extend/extendUpdate-27.php");
+
 		return true;
 	}
 

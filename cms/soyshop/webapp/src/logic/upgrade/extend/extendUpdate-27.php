@@ -12,7 +12,7 @@ $pluginDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 for($i = 0; $i < count($plIds); $i++){
 	$pluginId = "arrival_" . $plIds[$i];
 	$logic->installModule($pluginId);
-	
+
 	//順番の登録
 	try{
 		$plugin = $pluginDao->getByPluginId($pluginId);
@@ -20,14 +20,13 @@ for($i = 0; $i < count($plIds); $i++){
 		var_dump($e);
 		continue;
 	}
-	
+
 	$displayOrder = ($i === 0) ? 1 : 10 + $i;
 	$plugin->setDisplayOrder($displayOrder);
-	
+
 	try{
 		$pluginDao->update($plugin);
 	}catch(Exception $e){
 		var_dump($e);
 	}
 }
-?>

@@ -128,7 +128,7 @@ class UtilMultiLanguageUtil {
         static $_translateWords;
         if(!$_translateWords){
             $array = self::translateWords();
-            $_translateWords = $array[SOYSHOP_MAIL_LANGUAGE];
+            $_translateWords = (isset($array[SOYSHOP_MAIL_LANGUAGE])) ? $array[SOYSHOP_MAIL_LANGUAGE] : null;
         }
         return (isset($_translateWords[$key])) ? $_translateWords[$key] : "";
     }

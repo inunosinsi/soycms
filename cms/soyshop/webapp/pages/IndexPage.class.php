@@ -15,13 +15,12 @@ class IndexPage extends WebPage{
 	private $orderDao;
 	private $itemOrderDao;
 	private $config;
-	
+
 	function doPost(){
 
 	}
 
 	function action(){
-		
 		if(DEBUG_MODE && isset($_GET["init_db"])){
 
 			SOY2Logic::createInstance("logic.init.InitLogic")->initDB();
@@ -69,7 +68,7 @@ class IndexPage extends WebPage{
 
 			SOY2PageController::jump("");
 		}
-		
+
 		//何でもできる拡張ポイント
 		SOYShopPlugin::load("soyshop.admin");
 		SOYShopPlugin::invoke("soyshop.admin");
@@ -79,39 +78,39 @@ class IndexPage extends WebPage{
 		MessageManager::addMessagePath("admin");
 
 		parent::__construct();
-		
+
 		//データベースの更新を調べる
 		$checkVersionLogic = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic");
 		$hasCheckVer = $checkVersionLogic->checkVersion();
 		DisplayPlugin::toggle("has_db_update", $hasCheckVer);
-		
+
 		//データベースの更新終了時に表示する
 		$doUpdated = (isset($_GET["update"]) && $_GET["update"] == "finish");
 		DisplayPlugin::toggle("do_db_update", $doUpdated);
-		
+
 		DisplayPlugin::toggle("display_db_update_area", ($hasCheckVer || $doUpdated));
-		
+
 		$this->action();
 
 		self::buildPluginArea();
-		
+
 		$this->addModel("init_link", array(
 			"visible" => DEBUG_MODE
 		));
 	}
-	
+
 	private function buildPluginArea(){
 		SOYShopPlugin::load("soyshop.admin.top");
 		$delegate = SOYShopPlugin::invoke("soyshop.admin.top");
 
 		$contents = $delegate->getContents();
 		DisplayPlugin::toggle("plugin_area", (count($contents) > 0));
-		
+
 		$this->createAdd("plugin_area_list", "_common.TopPagePluginAreaListComponent", array(
 			"list" => $contents
 		));
 	}
-	
+
 	function getSubMenu(){
 		$key = "_common.TopPageSubMenu";
 
