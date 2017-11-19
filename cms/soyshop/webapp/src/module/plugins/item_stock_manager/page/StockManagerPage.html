@@ -1,18 +1,18 @@
 <div class="block">
-	
+
 	<div class="block_title">
 		<h2>在庫数一括変更と発送待ち件数</h2>
-		
+
 		<div class="block_title_right">
 		</div>
 	</div>
 
 	<div class="block_body clearfix">
-	
+
 		<p class="notice" soy:display="updated">
 			更新しました
 		</p>
-	
+
 		<dl>
 			<dt class="search_btn_dt">
 				検索する
@@ -42,21 +42,25 @@
 					</tr>
 					<tr>
 						<th>表示件数</th>
-						<td><select soy:id="search_item_number"></select>件</td>
+						<td><input type="number" soy:id="search_item_number">件</td>
 						<th>子商品の表示</th>
-						<td><input type="checkbox" soy:id="search_item_type"></td>
+						<td>
+							<input type="hidden" soy:id="search_item_type_parent_hidden">
+							<input type="checkbox" soy:id="search_item_type_parent">
+							<input type="checkbox" soy:id="search_item_type_child">
+						</td>
 					</tr>
 				</table>
-				
+
 				<p class="pageBtn">
 					<input type="submit" name="search" value="検索">&nbsp;&nbsp;
 					<input type="submit" name="reset" value="リセット">
 				</p>
 			</form>
 		</div>
-	
+
 		<form soy:id="form">
-	
+
 			<table class="form_list">
 				<caption>
 					商品一覧
@@ -72,9 +76,9 @@
 						<th>&nbsp;</th>
 					</tr>
 				</thead>
-	
+
 				<tbody>
-	
+
 					<!-- soy:id="item_list" -->
 					<tr>
 						<td class="alC"><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
@@ -86,7 +90,7 @@
 						<td class="operation"><a class="button" soy:id="detail_link">詳細</a></td>
 					</tr>
 					<!-- /soy:id="item_list" -->
-					
+
 					<tr class="pager">
 						<td colspan="7">
 							<div class="pager_item">
@@ -109,11 +113,11 @@
 					</tr>
 				</tbody>
 			</table>
-			
+
 			<p class="pageBtn">
 				<input type="submit" name="set" value="設定する">
 			</p>
-	
+
 		</form>
 	</div>
 </div>
@@ -124,7 +128,7 @@
 		cursor: pointer;
 	}
 	div.search_area_dd {}
-	
+
 	#standard_form_area{
 		display:none;
 	}
