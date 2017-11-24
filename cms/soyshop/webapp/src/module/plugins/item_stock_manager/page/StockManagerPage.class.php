@@ -7,14 +7,47 @@ class StockManagerPage extends WebPage{
 
 	private $categories = array();
 
+	private $limit = 15;
+
 	function __construct(){
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$this->categories = self::getCategories();
+		if(isset($_POST["search_number"])) $this->limit = (int)$_POST["search_number"];
 	}
 
 	function doPost(){
 
 		if(soy2_check_token()){
+
+			// CSVの出力
+			if(isset($_POST["CSV"])){
+				$logic = SOY2Logic::createInstance("module.plugins.item_stock_manager.logic.CSVLogic");
+				$logic->setLimit($this->limit);
+				$logic->setParams(self::getParameter("search_condition"));
+
+				$labels = $logic->getLabels();
+				$lines = $logic->getLines();
+				$charset = (isset($_POST["coupon"]["charset"])) ? $_POST["coupon"]["charset"] : "Shift-JIS";
+
+				if(count($lines) == 0) return;
+
+				set_time_limit(0);
+
+				header("Cache-Control: public");
+				header("Pragma: public");
+				header("Content-Disposition: attachment; filename=item_stock_manager_" .date("YmdHis", time()) . ".csv");
+				header("Content-Type: text/csv; charset=" . htmlspecialchars($charset).";");
+
+				ob_start();
+				echo implode(",", $labels);
+				echo "\n";
+				echo implode("\n", $lines);
+				$csv = ob_get_contents();
+				ob_end_clean();
+
+				echo mb_convert_encoding($csv, $charset, "UTF-8");
+				exit;
+			}
 
 			if(isset($_POST["Stock"]) && count($_POST["Stock"])){
 
@@ -55,7 +88,6 @@ class StockManagerPage extends WebPage{
 				SOY2PageController::jump("Extension.item_stock_manager?updated");
 			}
 		}
-
 	}
 
 	function execute(){
@@ -73,8 +105,6 @@ class StockManagerPage extends WebPage{
 
 		self::buildSearchForm();
 
-		$limit = (isset($_POST["search_number"])) ? (int)$_POST["search_number"] : 15;
-
 		//argsを作る
 		$v = trim(substr($_SERVER["REQUEST_URI"], strrpos($_SERVER["REQUEST_URI"], "/")), "/");
 		$args[] = (is_numeric($v)) ? (int)$v : null;
@@ -84,14 +114,14 @@ class StockManagerPage extends WebPage{
 		if(array_key_exists("sort", $_GET) || array_key_exists("search", $_GET)) $page = 1;
 		$page = max(1, $page);
 
-		$offset = ($page - 1) * $limit;
+		$offset = ($page - 1) * $this->limit;
 
 		//表示順
 		$sort = self::getGetParameter("sort");
 		self::setParameter("page", $page);
 
 		$searchLogic = SOY2Logic::createInstance("module.plugins.item_stock_manager.logic.SearchLogic");
-		$searchLogic->setLimit($limit);	//仮
+		$searchLogic->setLimit($this->limit);	//仮
 		$searchLogic->setOffset($offset);
 		$searchLogic->setOrder($sort);
 		$searchLogic->setCondition(self::getParameter("search_condition"));
@@ -124,7 +154,7 @@ class StockManagerPage extends WebPage{
 		$pager->setStart($start);
 		$pager->setEnd($end);
 		$pager->setTotal($total);
-		$pager->setLimit($limit);
+		$pager->setLimit($this->limit);
 
 		$pager->buildPager($this);
 	}
@@ -271,4 +301,3 @@ class StockManagerPage extends WebPage{
 		$this->configObj = $configObj;
 	}
 }
-?>

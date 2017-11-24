@@ -45,12 +45,13 @@ class SearchLogic extends SOY2LogicBase{
 
 		if(strlen($this->order)) $sql .= " " . $this->order;
 
-		$sql .= " LIMIT " . $this->limit;
-		$sql .= " OFFSET " . $this->offset;
+		if(isset($this->limit) && (int)$this->limit > 0) $sql .= " LIMIT " . $this->limit;
+		if(isset($this->offset) && is_numeric($this->offset)) $sql .= " OFFSET " . $this->offset;
 
 		try{
 			$res = $this->itemDao->executeQuery($sql, $this->binds);
 		}catch(Exception $e){
+			var_dump($e);
 			$res = array();
 		}
 

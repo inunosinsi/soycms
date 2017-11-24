@@ -33,8 +33,8 @@ class ShopConfigPage extends WebPage{
 
 		if(!isset($_POST["Config"]["consumptionTaxModule"])) $_POST["Config"]["consumptionTaxModule"] = null;
 
-		$consumptionTax = $_POST["Config"]["consumptionTax"]; //外税
-		$taxInclusive = $_POST["Config"]["consumptionTaxInclusivePricing"]; //内税
+		$consumptionTax = (isset($_POST["Config"]["consumptionTax"])) ? $_POST["Config"]["consumptionTax"] : null; //外税
+		$taxInclusive = (isset($_POST["Config"]["consumptionTaxInclusivePricing"])) ? $_POST["Config"]["consumptionTaxInclusivePricing"] : null; //内税
 
 		//外税と内税に同時にチェックが入っていた場合は内税を非表示にする
 		if($consumptionTax && $taxInclusive){

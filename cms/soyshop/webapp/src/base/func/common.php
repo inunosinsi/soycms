@@ -17,7 +17,7 @@ function soyshop_get_page_url($uri, $suffix = null){
  * サイトのURLを取得する
  */
 function soyshop_get_site_url($isAbsolute = false){
-    $url = SOYSHOP_SITE_URL;
+	$url = SOYSHOP_SITE_URL;
 
     if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" && strpos($url, "http:") >= 0) $url = str_replace("http:", "https:", $url);
 
@@ -31,7 +31,7 @@ function soyshop_get_site_url($isAbsolute = false){
     }
 
     if($isAbsolute){
-        return $url;
+		return $url;
     }else{
         return preg_replace('/^h[a-z]+:\/\/[^\/]+/', '', $url);
     }
@@ -48,8 +48,14 @@ function soyshop_get_ssl_site_url(){
  * httpから始まる画像のフルパスを取得する
  */
 function soyshop_get_image_full_path($imagePath){
-    $url = str_replace("/" . SOYSHOP_ID . "/", "", SOYSHOP_SITE_URL);
-    return $url . $imagePath;
+	static $url;
+	if(is_null($url)){
+		$url = soyshop_get_site_url(true);
+		if(strpos($url, "/" . SOYSHOP_ID . "/") !== false){
+			$url = str_replace("/" . SOYSHOP_ID . "/", "", $url);
+		}
+	}
+	return $url . $imagePath;
 }
 
 /**
