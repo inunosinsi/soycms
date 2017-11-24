@@ -35,15 +35,15 @@ class SOYCMS_Random_Block_Plugin{
 	}
 
     function onLoad(){
-				//検索結果ブロックプラグインのUTILクラスを利用する
-				SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+		//検索結果ブロックプラグインのUTILクラスを利用する
+		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 
         $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
 
         //ラベルIDを取得とデータベースから記事の取得件数指定
-				$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);;
+		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);;
         $count = PluginBlockUtil::getLimitByPageId($pageId);
-
+		
         $entryDao = SOY2DAOFactory::create("cms.EntryDAO");
         $sql = "SELECT ent.* FROM Entry ent ".
              "JOIN EntryLabel lab ".
