@@ -19,7 +19,8 @@ class ButtonSocialCommon{
 		}
 
 		if(isset($this->fieldObj) && strlen($this->fieldObj->getValue()) > 0){
-			$image = "//" . $_SERVER ["HTTP_HOST"]. "/" . $this->fieldObj->getValue();
+			$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
+			$image = $http . "://" . str_replace("//", "/", $_SERVER["HTTP_HOST"]. "/" . $this->fieldObj->getValue());
 		}
 
 		$html = array();

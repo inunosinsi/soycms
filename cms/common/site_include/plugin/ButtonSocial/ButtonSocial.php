@@ -32,7 +32,7 @@ class ButtonSocialPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 
 		$logic = new ButtonSocialCommon();
@@ -425,4 +425,3 @@ class ButtonSocialPlugin{
 	}
 }
 ButtonSocialPlugin::register();
-
