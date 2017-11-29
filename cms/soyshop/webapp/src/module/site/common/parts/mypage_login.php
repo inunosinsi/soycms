@@ -128,6 +128,7 @@ function soyshop_parts_mypage_login($html, $page){
 	));
 	$obj->addLink("order_link", array(
 		"link" => soyshop_get_mypage_url() . "/order",
+		"attr:id" => "mypage_link",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 	$obj->addLink("edit_link", array(

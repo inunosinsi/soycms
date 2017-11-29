@@ -5,14 +5,14 @@ class IndexPage extends MainMyPagePageBase{
     function __construct() {
 
     	$mypage = MyPageLogic::getMyPage();
-		
+
 		//ログインしていなかったら飛ばす
 		if(!$mypage->getIsLoggedin()){
 			$this->jump("login");
 		}
 
     	parent::__construct();
-    	
+
     	$this->addModel("error", array(
     		"visible" => (isset($_GET["error"]))
     	));
@@ -22,4 +22,3 @@ class IndexPage extends MainMyPagePageBase{
     	));
     }
 }
-?>
