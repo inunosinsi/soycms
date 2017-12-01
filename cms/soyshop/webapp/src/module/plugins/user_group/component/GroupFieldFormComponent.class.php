@@ -1,7 +1,7 @@
 <?php
 class GroupFieldFormComponent {
 
-	public static function buildForm($fieldId, $field, $value = null, $isMyPage = false, $hasStyle = false, $lat = null, $lng = null) {
+	public static function buildForm($fieldId, $field, $groupId, $value = null, $isMyPage = false, $hasStyle = false, $lat = null, $lng = null) {
 
 		SOY2::import("module.plugins.user_group.util.UserGroupCustomSearchFieldUtil");
 		$nameProperty = "user_group_custom[" . $fieldId . "]";
@@ -96,6 +96,16 @@ class GroupFieldFormComponent {
 				$html[] = "<div id=\"map\"></div>";
 
 				return implode("\n", $html);
+
+			case UserGroupCustomSearchFieldUtil :: TYPE_IMAGE :
+				$html = array();
+				if(strlen($value)){
+					$path = UserGroupCustomSearchFieldUtil::getFilePath($groupId, $value);
+					$html[] = "<a href=\"" . $path . "\" target=\"_blank\"><img src=\"" . SOYSHOP_SITE_URL . "im.php?src=" . $path . "&width=150" . "\"></a><br>";
+					$html[] = "<input type=\"hidden\" name=\"" . $nameProperty . "\" value=\"" . $value . "\">";
+				}
+				$html[] = "<input type=\"file\" name=\"" . $nameProperty . "\">";
+				return implode("\n", $html);
 		}
 	}
 
@@ -104,8 +114,8 @@ class GroupFieldFormComponent {
 		$form = str_replace("user_custom_search", "search_condition", $form);
 
 		switch($field["type"]){
-			case UserCustomSearchFieldUtil :: TYPE_TEXTAREA :
-			case UserCustomSearchFieldUtil :: TYPE_RICHTEXT :
+			case UserGroupCustomSearchFieldUtil :: TYPE_TEXTAREA :
+			case UserGroupCustomSearchFieldUtil :: TYPE_RICHTEXT :
 				if(strpos($form, "mceEditor")){
 					$form = str_replace(" mceEditor", "", $form);
 				}
@@ -114,7 +124,7 @@ class GroupFieldFormComponent {
 				}
 				break;
 
-			case UserCustomSearchFieldUtil :: TYPE_CHECKBOX:
+			case UserGroupCustomSearchFieldUtil :: TYPE_CHECKBOX:
 				$forms = explode("\n", $form);
 				if(!count($forms)) break;
 				$fs = array();
@@ -129,7 +139,7 @@ class GroupFieldFormComponent {
 				}
 				$form = implode("\n", $fs);
 				break;
-			case UserCustomSearchFieldUtil :: TYPE_RADIO:
+			case UserGroupCustomSearchFieldUtil :: TYPE_RADIO:
 				$forms = explode("\n", $form);
 				if(!count($forms)) break;
 				$fs = array();
@@ -143,7 +153,7 @@ class GroupFieldFormComponent {
 					}
 				}
 				$form = implode("\n", $fs);
-			case UserCustomSearchFieldUtil :: TYPE_SELECT:
+			case UserGroupCustomSearchFieldUtil :: TYPE_SELECT:
 				$forms = explode("\n", $form);
 				if(!count($forms)) break;
 				$fs = array();
@@ -157,6 +167,9 @@ class GroupFieldFormComponent {
 					}
 				}
 				$form = implode("\n", $fs);
+				break;
+			case UserGroupCustomSearchFieldUtil :: TYPE_IMAGE:
+				//検索対象外
 				break;
 			default:
 				if(isset($cnd[$fieldId]) && strlen($cnd[$fieldId])){

@@ -14,6 +14,7 @@ class UserGroupCustomSearchFieldUtil{
 	const TYPE_SELECT = "select";
 	const TYPE_DATE = "date";
 	const TYPE_MAP = "map";	//グーグルマップと連動した住所
+	const TYPE_IMAGE = "image";
 
 	public static function getConfig(){
 		return SOYShop_DataSets::get("user_group.config", array());
@@ -44,7 +45,8 @@ class UserGroupCustomSearchFieldUtil{
 			self::TYPE_RADIO => "ラジオボタン",
 			self::TYPE_SELECT => "セレクトボックス",
 			self::TYPE_DATE => "日付",
-			self::TYPE_MAP => "地図付き住所"
+			self::TYPE_MAP => "地図付き住所",
+			self::TYPE_IMAGE => "画像"
 		);
 	}
 
@@ -56,5 +58,33 @@ class UserGroupCustomSearchFieldUtil{
 	public static function checkIsType($type){
 		$list = self::getTypeList();
 		return (isset($list[$type]));
+	}
+
+	public static function getImageFieldKeys(){
+		$configs = SOYShop_DataSets::get("user_group.config", array());
+		if(!count($configs)) return array();
+
+		$keys = array();
+		foreach($configs as $key => $conf){
+			if($conf["type"] == self :: TYPE_IMAGE){
+				$keys[] = $key;
+			}
+		}
+		return $keys;
+	}
+
+	public static function getUploadFileDir($groupId){
+		static $dir;
+		if(is_null($dir)){
+			$dir = SOYSHOP_SITE_DIRECTORY . "files/group/";
+			if(!file_exists($dir)) mkdir($dir);
+			$dir .= $groupId . "/";
+			if(!file_exists($dir)) mkdir($dir);
+		}
+		return $dir;
+	}
+
+	public static function getFilePath($groupId, $file){
+		return "/" . SOYSHOP_ID . "/files/group/" . $groupId . "/" . $file;
 	}
 }

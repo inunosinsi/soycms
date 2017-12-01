@@ -37,6 +37,24 @@ class UserGroupDetailPage extends WebPage{
 				}
 			}
 
+			//画像
+			if(count($_FILES)){
+				//画像のフィールドのキーを取得
+				$keys = UserGroupCustomSearchFieldUtil::getImageFieldKeys();
+				if(count($keys)){
+					$groupLogic = SOY2Logic::createInstance("module.plugins.user_group.logic.GroupImageLogic");
+					foreach($keys as $key){
+						//画像のアップロード
+						if($_FILES["user_group_custom"]["size"][$key] > 0 && preg_match('/(jpg|jpeg|gif|png)$/i', $_FILES["user_group_custom"]["name"][$key])){
+							$groupLogic->uploadFile($_FILES["user_group_custom"]["name"][$key], $_FILES["user_group_custom"]["tmp_name"][$key], $this->detailId);
+							$_POST["user_group_custom"][$key] = $_FILES["user_group_custom"]["name"][$key];	//ファイルのパスを保持
+						}
+					}
+				}
+			}
+
+			// @ToDo 画像の削除の方法
+
 			//カスタムサーチフィールド
 			if(isset($_POST["user_group_custom"]) && count($_POST["user_group_custom"])){
 				SOY2Logic::createInstance("module.plugins.user_group.logic.UserGroupDataBaseLogic")->save($this->detailId, $_POST["user_group_custom"]);
@@ -59,7 +77,9 @@ class UserGroupDetailPage extends WebPage{
 
 		$group = self::getGroupById($this->detailId);
 
-		$this->addForm("form");
+		$this->addForm("form", array(
+			"enctype" => "multipart/form-data"
+		));
 
 		$this->addInput("name", array(
 			"name" => "Group[name]",
@@ -92,7 +112,7 @@ class UserGroupDetailPage extends WebPage{
 				$value = (isset($values[$key])) ? $values[$key] : null;
 
 				$html[] = "<dt>" . htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8") . "</dt>\n" .
-							"<dd>" . GroupFieldFormComponent::buildForm($key, $field, $value, false, false, $group->getLat(), $group->getLng()) . "</dd>";
+							"<dd>" . GroupFieldFormComponent::buildForm($key, $field, $this->detailId, $value, false, false, $group->getLat(), $group->getLng()) . "</dd>";
 			}
 		}
 

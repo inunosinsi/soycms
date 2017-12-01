@@ -146,6 +146,9 @@ class UserGroupCustomSearchFieldConfigPage extends WebPage{
 				case UserGroupCustomSearchFieldUtil::TYPE_SELECT:
 					$html[] = "\t<select gsf:id=\"custom_search_" . $key . "\"><option value=\"\"></option></select>\n\n";
 					break;
+				case UserGroupCustomSearchFieldUtil::TYPE_IMAGE:
+					$html[] = "\t画像のフィールドは検索対象外のため、フォームはなし";
+					break;
 				default:
 					$html[] = "\t<input type=\"text\" gsf:id=\"custom_search_" . $key . "\">\n\n";
 			}
