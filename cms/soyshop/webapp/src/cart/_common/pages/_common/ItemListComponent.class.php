@@ -11,7 +11,7 @@ class ItemListComponent extends HTMLList{
 	private $ignoreStock;
 
 	protected function populateItem($entity, $key){
-		
+
 		try{
 			$item = $this->getDAO()->getById($entity->getItemId());
 		}catch(Exception $e){
@@ -94,34 +94,33 @@ class ItemListComponent extends HTMLList{
 
 		$itemCount = $entity->getItemCount();
 		$openStock = $item->getOpenStock();
-		
+
 		//子商品
 		if(is_numeric($item->getType())){
-			$parent = $this->getParentItem($item->getType());
-			
+			$parent = self::getParentItem($item->getType());
+
 			//子商品の在庫管理設定をオン(子商品購入時に親商品の在庫数で購入できるか判断する)
-			$config = SOYShop_ShopConfig::load();
-			if($config->getChildItemStock()){
+			if(self::getShopConfig()->getChildItemStock()){
 				//親商品の残り在庫数を取得
 				$openStock = $parent->getStock();
-	
+
 				//子商品の注文数の合算を取得
-				$itemCount = $this->getChildItemOrders($parent->getId());
+				$itemCount = self::getChildItemOrders($parent->getId());
 			}
 		}else{
 			$parent = new SOYShop_Item();
 		}
-
+		
 		$this->addLabel("item_stock_error", array(
 			"visible" => ($itemCount > $openStock && !$this->ignoreStock),
 			"text" => ($openStock > 0) ? MessageManager::get("STOCK_NOTICE", array("stock" => $openStock)) : MessageManager::get("NO_STOCK")
 		));
-		
+
 		$this->addLabel("item_order_error", array(
 			"visible" => (!$item->checkAcceptOrder()),
 			"text" => ($item->getOrderPeriodStart() > time()) ? MessageManager::get("ORDER_NO_ACCEPT_START") : MessageManager::get("ORDER_NO_ACCEPT_END")
 		));
-		
+
 		//item++
 		$this->addLink("add_item_link", array(
 			"link" => soyshop_get_cart_url(true) . "?a=add&item=" . $item->getId() ."&count=1",
@@ -133,7 +132,7 @@ class ItemListComponent extends HTMLList{
 			"link" => soyshop_get_cart_url(true) . "?a=add&item=" . $item->getId() . "&count=-1",
 			"visible" => ($itemCount > 1)
 		));
-		
+
 		/** 親商品関連のタグ **/
 		$this->addLink("parent_name", array(
 			"text" => $parent->getOpenItemName(),
@@ -156,7 +155,7 @@ class ItemListComponent extends HTMLList{
 		));
 	}
 
-	function getChildItemOrders($itemId){
+	private function getChildItemOrders($itemId){
 		$cart = CartLogic::getCart();
 
 		$itemCount = 0;
@@ -185,14 +184,18 @@ class ItemListComponent extends HTMLList{
 
 		return $itemCount;
 	}
-	function getParentItem($itemId){
+	private function getParentItem($itemId){
 		try{
-			$parent = $this->getDAO()->getById($itemId);
+			return $this->getDAO()->getById($itemId);
 		}catch(Exception $e){
-			$parent = new SOYShop_Item();
+			return new SOYShop_Item();
 		}
+	}
 
-		return $parent;
+	private function getShopConfig(){
+		static $config;
+		if(is_null($config)) $config = SOYShop_ShopConfig::load();
+		return $config;
 	}
 
 	function getDAO() {
@@ -218,4 +221,3 @@ class ItemListComponent extends HTMLList{
 		return $this->ignoreStock;
 	}
 }
-?>
