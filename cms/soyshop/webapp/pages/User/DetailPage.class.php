@@ -68,7 +68,7 @@ class DetailPage extends WebPage{
 			}
 
 			//画像のアップロード
-			if(isset($_FILES["image"]["name"]) && preg_match('/(jpg|jpeg|gif|png)$/', $_FILES["image"]["name"])){
+			if(isset($_FILES["image"]["name"]) && preg_match('/(jpg|jpeg|gif|png)$/i', $_FILES["image"]["name"])){
 				$isResize = SOYShop_DataSets::get("config.mypage.profile_resize", 0);
 				$resizeWidth = SOYShop_DataSets::get("config.mypage.profile_resize_width", 120);
 				$fileName = $userLogic->uploadFile($_FILES["image"]["name"], $_FILES["image"]["tmp_name"], $this->id, $isResize, $resizeWidth);
