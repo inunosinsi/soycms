@@ -213,7 +213,7 @@ class DetailPage extends WebPage{
 			"text" => $count,
 		));
 		$this->addLink("order_list_link", array(
-				"link" => ( count($count) == 1 && isset($order) )
+				"link" => ( is_numeric($count) && isset($order) )
 				? SOY2PageController::createLink("Order.Detail.".$order->getId())
 				: SOY2PageController::createLink("Order?search[userId]=" . $shopUser->getId()),
 		));
@@ -390,7 +390,7 @@ class DetailPage extends WebPage{
 			"mode" => "user_detail",
 		));
 		$list = $delegate->getList();
-		DisplayPlugin::toggle("operate_credit_menu", count($list) > 0);
+		DisplayPlugin::toggle("operate_credit_menu", (is_array($list) && count($list) > 0));
 
 		$this->createAdd("operate_list", "_common.User.OperateListComponent", array(
 			"list" => $list

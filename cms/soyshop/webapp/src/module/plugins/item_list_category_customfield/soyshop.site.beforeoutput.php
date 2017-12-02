@@ -13,25 +13,21 @@ class ItemListCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputAct
 		$obj = $page->getPageObject();
 
 		//カートページとマイページでは読み込まない
-		if(get_class($obj) != "SOYShop_Page"){
-			return;
-		}
+		if(!is_object($obj) || get_class($obj) != "SOYShop_Page") return;
 
 		//商品一覧ページ以外では動作しない
-		if($obj->getType() == SOYShop_Page::TYPE_COMPLEX || $obj->getType() == SOYShop_Page::TYPE_FREE || $obj->getType() == SOYShop_Page::TYPE_SEARCH){
-			return;
-		}
+		if($obj->getType() == SOYShop_Page::TYPE_COMPLEX || $obj->getType() == SOYShop_Page::TYPE_FREE || $obj->getType() == SOYShop_Page::TYPE_SEARCH) return;
 
 		$fieldId = "";
 
 		switch($obj->getType()){
 			case SOYShop_Page::TYPE_LIST:
 				$pageId = $obj->getId();
-			
+
 				if(isset($pageId)){
 					SOY2::imports("module.plugins.item_list_category_customfield.util.*");
 					$pageConfig = ItemListCategoryCustomfieldUtil::getPageConfig(self::MODULE_ID, $pageId);
-		
+
 					$fieldId = (isset($pageConfig["fieldId"])) ? $pageConfig["fieldId"] : null;
 				}
 				break;
@@ -45,7 +41,7 @@ class ItemListCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputAct
 				$fieldId = $attrObj->getValue();
 				break;
 		}
-		
+
 		$fieldLabel = "";
 		if($fieldId){
 			$attributeDao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
@@ -57,11 +53,11 @@ class ItemListCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputAct
 				}
 			}
 		}
-		
+
 		/**
 		 * @ToDo パンくずのリンクの出力
 		 */
-		
+
 		$page->addLabel("current_category_customfield_label", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => $fieldLabel

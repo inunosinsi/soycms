@@ -8,6 +8,9 @@ class GroupImageLogic extends SOY2LogicBase {
 
 	function uploadFile($file, $tmp, $groupId){
 		$dir = UserGroupCustomSearchFieldUtil::getUploadFileDir($groupId);
-		@move_uploaded_file($tmp, $dir . $file);
+		$extension = substr($file, strrpos($file, "."));
+		$filename = md5(time() . $file) . $extension;
+		@move_uploaded_file($tmp, $dir . $filename);
+		return $filename;
 	}
 }

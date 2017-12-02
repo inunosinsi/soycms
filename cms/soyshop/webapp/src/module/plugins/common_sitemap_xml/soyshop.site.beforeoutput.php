@@ -13,26 +13,17 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$pageObj = $page->getPageObject();
 
 		//カートページとマイページでは読み込まない
-		if(get_class($pageObj) != "SOYShop_Page"){
-			return;
-		}
+		if(!is_object($pageObj) || get_class($pageObj) != "SOYShop_Page") return;
 
 		//sitemap.xmlでない場合は読み込まない
-		if(!preg_match('/sitemap.xml/', $pageObj->getUri())){
-			return;
-		}
+		if(!preg_match('/sitemap.xml/', $pageObj->getUri())) return;
 
 		//フリーページ以外では読み込まない
 		$pageType = $pageObj->getType();
-		if($pageType != SOYShop_Page::TYPE_FREE){
-			return;
-		}
+		if($pageType != SOYShop_Page::TYPE_FREE) return;
 
 		$pages = self::getPages();
-
-		if(count($pages) == 0){
-			return;
-		}
+		if(count($pages) == 0) return;
 
 		//多言語プラグイン
 		SOY2::import("util.SOYShopPluginUtil");

@@ -8,16 +8,14 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	private $userDao;
 	private $itemDao;
 
-	private $review;
+	private $review = array();
 
 	function doPost($page){
 
 		$obj = $page->getPageObject();
 
 		//詳細ページ以外では読み込まない
-		if(get_class($obj) != "SOYShop_Page" || $obj->getType() != SOYShop_Page::TYPE_DETAIL){
-			return;
-		}
+		if(!is_object($obj) || get_class($obj) != "SOYShop_Page" || $obj->getType() != SOYShop_Page::TYPE_DETAIL) return;
 
 		if(soy2_check_token()){
 
@@ -53,7 +51,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			$res = $this->reviewLogic->registerReview($this->review);
 			if($res){
 				//入力内容をクリアする
-				$this->review = null;
+				$this->review = array();
 			}
 		}
 	}
@@ -63,9 +61,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$pageObj = $page->getPageObject();
 
 		//カートページとマイページでは読み込まない
-		if(get_class($pageObj) != "SOYShop_Page" || $pageObj->getType() != SOYShop_Page::TYPE_DETAIL){
-			return;
-		}
+		if(!is_object($pageObj) || get_class($pageObj) != "SOYShop_Page" || $pageObj->getType() != SOYShop_Page::TYPE_DETAIL) return;
 
 		$this->prepare();
 
@@ -146,7 +142,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 		$page->addModel("review_error", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"visible" => (count($this->review))
+			"visible" => (!isset($this->review["title"]))
 		));
 
 		$page->addInput("nickname", array(

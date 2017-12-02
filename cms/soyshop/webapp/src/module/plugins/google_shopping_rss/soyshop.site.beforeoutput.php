@@ -7,32 +7,30 @@
 class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	function beforeOutput($page){
-		
+
 		$obj = $page->getPageObject();
-		
+
 		//カートページとマイページでは読み込まない
-		if(get_class($obj) != "SOYShop_Page"){
-			return;
-		}
-		
+		if(!is_object($obj) || get_class($obj) != "SOYShop_Page") return;
+
 		$title = $obj->getConvertedTitle();
-				
+
 		//SHOP_NAME
 		$shopConfig = SOYShop_ShopConfig::load();
 		$title = str_replace("%SHOP_NAME%", $shopConfig->getShopName(), $title);
 		$title = str_replace("%PAGE_NAME%", $obj->getName(), $title);
-		
+
 		if($obj->getType() == SOYShop_Page::TYPE_LIST){
 
 			if(strpos($_SERVER["REQUEST_URI"], "feed.xml")){
-				
+
 				$charset = (!is_null($obj->getCharset())) ? $obj->getCharset() : "UTF-8";
-				
+
 				$listPageObj = $obj->getPageObject();
 				$pageType = $listPageObj->getType();
-					
+
 				switch($pageType){
-					
+
 					case SOYShop_ListPage::TYPE_CATEGORY:
 						$items = $this->getItemsByCategory($listPageObj);
 						break;
@@ -48,7 +46,7 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				}
 
 				header("Content-Type: application/rss+xml " . "charset=" . $charset);
-					
+
 				echo $this->soy_shop_item_list_output_rss($obj, $items, $title);
 				exit;
 			}
@@ -56,7 +54,7 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			$url = soyshop_get_site_url() . $obj->getUri();
 			if(strrpos($url, "/") != strlen($url) - 1) $url = $url . "/";
 			$url = $url . "feed.xml";
-			
+
 			$page->addModel("meta_google_rss", array(
 				"soy2prefix" => SOYSHOP_SITE_PREFIX,
 				"attr:rel" => "alternate",
@@ -64,17 +62,17 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				"attr:title" => $title,
 				"attr:href" => $url
 			));
-		}		
+		}
 	}
-	
+
 	function getItemsByCategory($page){
 		$categories = $page->getCategories();
 		if(count($categories) == 0) $categories[] = $page->getDefaultCategory();
-		
+
 		$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array(
 			"sort" => $page
 		));
-		
+
 		$config = $this->getRssConfig();
 		$limit = $config["count"];
 
@@ -87,7 +85,7 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 		return $items;
 	}
-	
+
 	function getItemsByField($page){
 		$res = array();
 
@@ -106,37 +104,37 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 		return $res;
 	}
-	
+
 	function getItemsByCustom($obj){
 		$res = array();
-		
+
 		try{
 			$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 			$module = $dao->getByPluginId($obj->getModuleId());
-			
+
 			SOYShopPlugin::load("soyshop.item.list", $module);
 			$delegetor = SOYShopPlugin::invoke("soyshop.item.list", array(
 				"mode" => "search"
 			));
-			
+
 			$config = $this->getRssConfig();
 			$limit = $config["count"];
-			
+
 			$res = $delegetor->getItems($obj, 0, $limit);
 		}catch(Exception $e){
 			//
 		}
-		
+
 		return $res;
 	}
-	
+
 	function getRssConfig(){
 
 		return SOYShop_DataSets::get("google_shopping_rss.config", array(
 			"count" => "10"
 		));
 	}
-		
+
 	/**
 	 * RSS2.0を出力
 	 */
@@ -151,11 +149,11 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			$cdata = "<![CDATA[" . str_replace("]]>", "]]]]><![CDATA[>", $text) ."]]>";
 			return $cdata;
 		}
-		
+
 		if(is_null($title)) $title = $page->getName();
-	
+
 		$xml = array();
-	
+
 		$xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
 		$xml[] = '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">';
 		$xml[] = '<channel>';
@@ -163,11 +161,11 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$xml[] = '<link>' . soyshop_get_site_url(true) . $page->getUri() . "/" . '</link>';
 		$xml[] = '<description>'.soy_shop_item_list_output_rss_h($page->getDescription()) . '</description>';
 //		$xml[] = '<generator>'.'SOY SHOP '.SOYSHOP_VERSION.'</generator>';
-	
+
 		foreach($items as $item){
-			
+
 			$itemConfig = $item->getConfigObject();
-			
+
 			$urls = SOYShop_DataSets::get("site.url_mapping", array());
 			$url = "";
 			if(isset($urls[$item->getDetailPageId()])){
@@ -180,10 +178,10 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 					}
 				}
 			}
-			
+
 			$description = (isset($itemConfig["description"])) ? $itemConfig["description"] : "";
 			$smallImagePath = (isset($itemConfig["image_small"])) ? "http://" . $_SERVER["SERVER_NAME"] . $itemConfig["image_small"] : "";
-	
+
 			$xml[] = '<item>';
 			$xml[] = '<g:id>' . $item->getId() . '</g:id>';
 			$xml[] = '<title>' . soy_shop_item_list_output_rss_h($item->getName()) . '</title>';
@@ -192,12 +190,12 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			$xml[] = '<description>' . soy_shop_item_list_output_rss_cdata($description) . '</description>';
 			$xml[] = '<g:image_link>' . $smallImagePath . '</g:image_link>';
 			$xml[] = '<g:condition>' . "new" . '</g:condition>';
-			$xml[] = '</item>';	
+			$xml[] = '</item>';
 		}
-	
+
 		$xml[] = '</channel>';
 		$xml[] = '</rss>';
-	
+
 		return implode("\n", $xml);
 	}
 }

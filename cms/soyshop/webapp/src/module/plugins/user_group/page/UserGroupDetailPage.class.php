@@ -46,14 +46,19 @@ class UserGroupDetailPage extends WebPage{
 					foreach($keys as $key){
 						//画像のアップロード
 						if($_FILES["user_group_custom"]["size"][$key] > 0 && preg_match('/(jpg|jpeg|gif|png)$/i', $_FILES["user_group_custom"]["name"][$key])){
-							$groupLogic->uploadFile($_FILES["user_group_custom"]["name"][$key], $_FILES["user_group_custom"]["tmp_name"][$key], $this->detailId);
-							$_POST["user_group_custom"][$key] = $_FILES["user_group_custom"]["name"][$key];	//ファイルのパスを保持
+							$file = $groupLogic->uploadFile($_FILES["user_group_custom"]["name"][$key], $_FILES["user_group_custom"]["tmp_name"][$key], $this->detailId);
+							$_POST["user_group_custom"][$key] = $file;	//ファイルのパスを保持
 						}
 					}
 				}
 			}
 
-			// @ToDo 画像の削除の方法
+			//画像の削除の方法
+			if(isset($_POST["image_delete"])){
+				foreach($_POST["image_delete"] as $key => $checked){
+					$_POST["user_group_custom"][$key] = null;	//画像は消さない
+				}
+			}
 
 			//カスタムサーチフィールド
 			if(isset($_POST["user_group_custom"]) && count($_POST["user_group_custom"])){

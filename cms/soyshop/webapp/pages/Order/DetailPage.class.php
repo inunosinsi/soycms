@@ -362,7 +362,7 @@ class DetailPage extends WebPage{
 			"mode" => "order_detail",
 		));
 		$list = $delegate->getList();
-		DisplayPlugin::toggle("operate_credit_menu", count($list) > 0);
+		DisplayPlugin::toggle("operate_credit_menu", (is_array($list) && count($list) > 0));
 
 		$this->createAdd("operate_list", "_common.Order.OperateListComponent", array(
 			"list" => $list
@@ -516,4 +516,3 @@ class DetailPage extends WebPage{
 		));
     }
 }
-?>

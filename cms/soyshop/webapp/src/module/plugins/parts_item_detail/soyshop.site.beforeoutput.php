@@ -10,33 +10,29 @@ class ItemDetailBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	function beforeOutput($page){
 		$pageObj = $page->getPageObject();
-		
+
 		//カートページとマイページでは読み込まない
-		if(get_class($pageObj) != "SOYShop_Page"){
-			return;
-		}
-		
+		if(!is_object($pageObject) || get_class($pageObj) != "SOYShop_Page") return;
+
 		$pageType = $pageObj->getType();
-		if($pageType == SOYShop_Page::TYPE_LIST || $pageType == SOYShop_Page::TYPE_DETAIL){
-			return;
-		}
-		
+		if($pageType == SOYShop_Page::TYPE_LIST || $pageType == SOYShop_Page::TYPE_DETAIL) return;
+
 		$args = $page->getArguments();
 		if(count($args) == 0) return;
-			
+
 		$alias = $args[0];
-		
+
 //		if(strpos($alias,".html")==false){
 //			$alias = $alias.".html";
 //		}
-			
+
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		try{
 			$item = $dao->getByAlias($alias);
 		}catch(Exception $e){
 			return;
 		}
-			
+
 		//item
 		$page->createAdd("item_by_alias", "SOYShop_ItemListComponent", array(
 			"list" => array($item),

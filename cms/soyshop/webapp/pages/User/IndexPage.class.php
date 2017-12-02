@@ -2,7 +2,6 @@
 class IndexPage extends WebPage{
 
 	function __construct($args) {
-
 		parent::__construct();
 
     	DisplayPlugin::toggle("registered", (isset($_GET["registered"])));
@@ -77,12 +76,12 @@ class IndexPage extends WebPage{
 		$this->createAdd("function_list", "_common.User.FunctionListComponent", array(
 			"list" => $this->getFunctionList()
 		));
-		
+
 		//user.info
 		$this->createAdd("info_list", "_common.User.InfoListComponent", array(
 			"list" => $this->getInfoList()
 		));
-		
+
 	}
 
 	function getFunctionList(){
@@ -93,7 +92,7 @@ class IndexPage extends WebPage{
 
 		return $delegate->getList();
 	}
-	
+
 	function getInfoList(){
 		SOYShopPlugin::load("soyshop.user.info");
 		$delegate = SOYShopPlugin::invoke("soyshop.user.info");

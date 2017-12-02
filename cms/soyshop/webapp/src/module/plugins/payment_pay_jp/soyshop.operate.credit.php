@@ -35,8 +35,6 @@ class PayJpOperateCredit extends SOYShopOperateCreditBase{
 
 				//履歴に登録
 				self::insertHistory($order->getId(), $content);
-
-				SOY2PageController::jump("Order.Detail." . $order->getId() . "?updated");
 			} catch (Exception $e) {
 				//何もしない
 			} finally {
@@ -44,7 +42,7 @@ class PayJpOperateCredit extends SOYShopOperateCreditBase{
 			}
 		}
 
-		SOY2PageController::jump("Order.Detail." . $order->getId() . "?error");
+		//注文詳細の他の機能が停止するのでジャンプしない
 	}
 
 	function doPostOnUserDetailPage(SOYShop_User $user){}

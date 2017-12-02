@@ -11,23 +11,19 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 		$obj = $page->getPageObject();
 
 		//カートページとマイページでは読み込まない
-		if(get_class($obj) != "SOYShop_Page"){
-			return;
-		}
+		if(!is_object($obj) || get_class($obj) != "SOYShop_Page") return;
 
 		if(
-			$obj->getType() == SOYShop_Page::TYPE_COMPLEX || 
-			$obj->getType() == SOYShop_Page::TYPE_FREE || 
+			$obj->getType() == SOYShop_Page::TYPE_COMPLEX ||
+			$obj->getType() == SOYShop_Page::TYPE_FREE ||
 			$obj->getType() == SOYShop_Page::TYPE_SEARCH
-		){
-			return;
-		}
-		
+		) return;
+
 		//商品一覧ページ以外では動作しない
 		switch($obj->getType()){
 			case SOYShop_Page::TYPE_LIST:
 				$current = $obj->getObject()->getCurrentCategory();
-				
+
 				if(!is_null($current)){
 					$category = $current;
 					$name = $category->getOpenCategoryName();
@@ -43,7 +39,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 						$category = new SOYShop_Category();
 					}
 				}
-					
+
 				break;
 			case SOYShop_Page::TYPE_DETAIL:
 				$current = $obj->getObject()->getCurrentItem();
@@ -73,7 +69,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 
 		SOY2::import("domain.shop.SOYShop_Item");
 		$dummyItem = new SOYShop_Item();
-		
+
 		$list = SOYShop_CategoryAttributeConfig::load();
 
 		foreach($list as $config){
@@ -93,13 +89,13 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 					 * @ToDo 管理画面でもいじれる様にしたい
 					 */
 					$value = soyshop_convert_file_path($value, $dummyItem);
-					
+
 					if(strlen($config->getOutput()) > 0){
 						$page->addModel($config->getFieldId(), array(
 							"attr:" . htmlspecialchars($config->getOutput()) => $value,
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
-					}else{	
+					}else{
 						//imgタグにalt属性を追加するか？
 						if(isset($value2) && strlen($value2) > 0){
 							$page->addImage($config->getFieldId(), array(
@@ -120,13 +116,13 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 						"link" => $value,
 						"soy2prefix" => SOYSHOP_SITE_PREFIX
 					));
-					
+
 					$page->addLabel($config->getFieldId() . "_text", array(
 						"text" => $value,
 						"soy2prefix" => SOYSHOP_SITE_PREFIX
 					));
 					break;
-					
+
 				case "textarea":
 					if(strlen($config->getOutput()) > 0){
 						$page->addModel($config->getFieldId(), array(
@@ -140,7 +136,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 						));
 					}
 					break;
-				
+
 				case "link":
 					if(strlen($config->getOutput()) > 0){
 						$page->addModel($config->getFieldId(), array(
@@ -153,7 +149,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}
-					
+
 					$page->addLabel($config->getFieldId() . "_text", array(
 						"text" => $value,
 						"soy2prefix" => SOYSHOP_SITE_PREFIX
