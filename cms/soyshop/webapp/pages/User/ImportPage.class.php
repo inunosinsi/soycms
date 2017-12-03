@@ -98,6 +98,9 @@ class ImportPage extends WebPage{
 
     		list($obj, $attributes, $point, $customSearchFields) = $logic->import($line);
 
+			//すでに削除された顧客の場合 //メールアドレスに_delete_数字がある
+			if(preg_match('/_delete_[0-9]*$/', trim($obj["mailAddress"]), $tmp)) continue;
+
 			//ダミーのメールアドレスで登録するか？
 			if(!strlen($obj["mailAddress"]) && isset($format["dummy"]) && $format["dummy"] == 1){
 				$obj["mailAddress"] = soyshop_dummy_mail_address();

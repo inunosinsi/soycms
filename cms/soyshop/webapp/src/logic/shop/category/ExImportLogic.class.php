@@ -52,7 +52,7 @@ class ExImportLogic extends ExImportLogicBase{
         }
 
         $function[] = 'return array($res,$attributes);';
-        $this->_func = create_function('$items', implode("\n", $function));
+		$this->_func = function($items) use ($function) { return eval(implode("\n", $function)); };
     }
 
     /**
@@ -90,7 +90,7 @@ class ExImportLogic extends ExImportLogicBase{
 
         $function[] = 'return $res;';
 
-        $this->_func = create_function('$obj,$attributes', implode("\n", $function));//array($obj,$attributes)
+        $this->_func = function($obj,$attributes) use ($function) { return eval(implode("\n", $function)); };
         $this->setLabels($usedLabels);
     }
 
