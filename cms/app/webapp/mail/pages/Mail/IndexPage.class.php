@@ -63,7 +63,7 @@ class IndexPage extends CommonPartsPage{
     function __construct($args) {
     	$this->id = (isset($args[0])) ? $args[0] : null;
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->createTag();
     	

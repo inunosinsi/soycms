@@ -3,7 +3,7 @@ SOY2::import("logic.csv.ExImportLogicBase");
 class ExImportLogic extends ExImportLogicBase{
 
 	private $func;
-	
+
 	/**
 	 * CSV,TSVに変換
 	 */
@@ -41,7 +41,7 @@ class ExImportLogic extends ExImportLogicBase{
 		}
 
 		$function[] = 'return $res;';
-		$this->_func = create_function('$items',implode("\n", $function));
+		$this->_func = function($items) use ($function) { return eval(implode("\n", $function)); };
 	}
 
 	/**
@@ -64,8 +64,8 @@ class ExImportLogic extends ExImportLogicBase{
 			$usedLabels[] = $label;
 		}
 		$function[] = 'return $res;';
-		
-		$this->_func = create_function('$obj',implode("\n", $function));//array($obj,$attributes,$modules)
+
+		$this->_func = function($obj) use ($function) { return eval(implode("\n", $function)); };
 		$this->setLabels($usedLabels);
 	}
 }

@@ -5,7 +5,7 @@ class ImportPage extends CommonPartsPage{
 	private $dao;
 
     function __construct() {
-    	WebPage::__construct();
+    	parent::__construct();
     	$this->redirectCheck();
     	$this->createTag();
     	$this->buildForm();

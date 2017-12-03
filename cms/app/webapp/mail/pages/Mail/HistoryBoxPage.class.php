@@ -3,7 +3,7 @@
 class HistoryBoxPage extends WebPage{
 
     function __construct($args) {
-    	WebPage::__construct();
+    	parent::__construct();
 
     	//メール表示件数
     	$limit = 15;

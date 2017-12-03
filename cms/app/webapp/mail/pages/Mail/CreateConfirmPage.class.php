@@ -44,7 +44,7 @@ class CreateConfirmPage extends WebPage{
     	$this->id = (isset($args[0])) ? $args[0] : null;
     	$dao = SOY2DAOFactory::create("MailDAO");
 	    $this->mail = $dao->getById($this->id);
-		WebPage::__construct();
+		parent::__construct();
 		
 		$this->createAdd("error", "HTMLModel", array(
 			"visible" => (isset($_GET["error"]))

@@ -12,7 +12,7 @@ class ExImportLogicBase extends SOY2LogicBase{
 
 	private $items = array();
 	private $labels = array();
-	
+
 	protected $_func;
 
 	/**
@@ -52,7 +52,7 @@ class ExImportLogicBase extends SOY2LogicBase{
 		}
 
 		$function[] = 'return $res;';
-		$this->_func = create_function('$items',implode("\n", $function));
+		$this->_func = function($items) use ($function) { return eval(implode("\n", $function)); };
 	}
 
 	/**
@@ -76,7 +76,7 @@ class ExImportLogicBase extends SOY2LogicBase{
 
 		$function[] = 'return $res;';
 
-		$this->_func = create_function('$obj',implode("\n", $function));
+		$this->_func = function($obj) use ($function) { return eval(implode("\n", $function)); };
 		$this->setLabels($used_labels);
 	}
 

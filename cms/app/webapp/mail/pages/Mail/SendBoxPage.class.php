@@ -42,7 +42,7 @@ class SendBoxPage extends WebPage{
 	}
 
     function __construct() {
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->createAdd("sended_message","HTMLModel",array(
 			"visible" => (isset($_GET["sended"]))
