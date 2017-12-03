@@ -102,4 +102,4 @@ if(!UserInfoUtil::isLoggined()){
 }
 
 //update event
-SOY2DAOConfig::setUpdateQueryEvent(function($sql,$binds) { touch("'.UserInfoUtil::getSiteDirectory().'.db/'.SOYCMS_DB_TYPE.'.db"); });
+SOY2DAOConfig::setUpdateQueryEvent(function($sql,$binds) { touch(UserInfoUtil::getSiteDirectory().".db/".SOYCMS_DB_TYPE.".db"); });
