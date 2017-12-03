@@ -56,7 +56,7 @@ class OverwriteLabelAction extends SOY2Action{
     function getLabelIds(){
     	$dao = SOY2DAOFactory::create("cms.LabelDAO");
     	$labels = $dao->get();
-    	$labelIds = array_map(create_function('$v','return $v->getId();'),$labels);
+    	$labelIds = array_map(function($v) { return $v->getId(); }, $labels);
     	return $labelIds;
     }
 }

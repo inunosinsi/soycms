@@ -106,7 +106,7 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 
 
 		$allEntry = $this->getAllEntry();
-		$allEntryIds = array_map(create_function('$v','return $v["id"];'),$allEntry);
+		$allEntryIds = array_map(function($v) { return $v["id"]; }, $allEntry);
 
 
 		$entryIds = array();//array_map(create_function('$v','return (int)$v;'),$this->entity->getEntryId());
@@ -314,4 +314,3 @@ class EntryList extends HTMLList{
 		$this->currentEntry = $currentEntry;
 	}
 }
-

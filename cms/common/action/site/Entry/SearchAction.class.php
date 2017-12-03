@@ -100,7 +100,7 @@ class SearchAction extends SOY2Action{
 		//ラベル絞込みを作成
 		if(count($label["labels"])){
 			//int化
-			$label["labels"] = array_map(create_function('$v','return (int)$v;'),$label["labels"]);
+			$label["labels"] = array_map(function($v) {return (int)$v;} ,$label["labels"]);
 
 			$labelQuery = new SOY2DAO_Query();
 			$labelQuery->prefix = "select";

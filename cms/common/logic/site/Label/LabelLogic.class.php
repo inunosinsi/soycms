@@ -192,7 +192,7 @@ class LabelLogic extends SOY2LogicBase{
     	}
 
     	//並べ替え
-    	uasort($ret_val,create_function('$a,$b','return $b->compare($a);'));
+    	uasort($ret_val,function($a,$b) { return $b->compare($a); });
 
     	return $ret_val;
     }

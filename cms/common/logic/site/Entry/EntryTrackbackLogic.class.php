@@ -176,7 +176,7 @@ abstract class EntryTrackbackLogicDAO extends SOY2DAO{
 	 */
 	function getByLabelIds($labelIds){
 		$query = $this->getQuery();
-		$labelIds = array_map(create_function('$val','return (int)$val;'),$labelIds);
+		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
 
 		if(count($labelIds)){
 			$query->where = " EntryLabel.label_id in (" . implode(",",$labelIds) .") ";
@@ -194,7 +194,7 @@ abstract class EntryTrackbackLogicDAO extends SOY2DAO{
 	 */
 	function getOpenCertificatedTrackbackByLabelIds($labelIds,$time){
 		$query = $this->getQuery();
-		$labelIds = array_map(create_function('$val','return (int)$val;'),$labelIds);
+		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
 		$query->where = " EntryLabel.label_id in (" . implode(",",$labelIds) .") ";
 		$query->where .= "AND Entry.isPublished = 1 ";
 		$query->where .= "AND (openPeriodEnd > :now AND openPeriodStart < :now)";

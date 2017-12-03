@@ -820,7 +820,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				$labelIds = array_diff($labelIds,array(null));
 			}
 			//数値のみ
-			$labelIds = array_map(create_function('$val','return (int)$val;'),$labelIds);
+			$labelIds = array_map(function($val) {return (int)$val; }, $labelIds);
 			$query->where .= " EntryLabel.label_id in (" . implode(",",$labelIds) .") ";
 		}else{
 			//保険（ラベル指定なし）
@@ -924,7 +924,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 */
 	function getCountMonth($labelIds){
 
-		$labelIds = array_map(create_function('$val','return (int)$val;'),$labelIds);
+		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
 
 		$binds = array(":now"=>SOYCMS_NOW);
 
@@ -985,7 +985,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 */
 	function getCountYear($labelIds){
 
-		$labelIds = array_map(create_function('$val','return (int)$val;'),$labelIds);
+		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
 
 		$binds = array(":now"=>SOYCMS_NOW);
 

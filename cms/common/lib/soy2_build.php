@@ -3780,8 +3780,9 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 		if($final || $method->isFinal() || $method->isPrivate()){
 			return;
 		}
-		$replacePropertyNameFunction = create_function('$key',
-    					'$entityInfo = "'.str_replace('"','\"',serialize($entityInfo)).'";return unserialize($entityInfo)->getColumn($key[1])->getName();');
+		$replacePropertyNameFunction = function($key) use ($entityInfo){
+			return $entityInfo->getColumn($key[1])->getName();
+		};
 		$queryAnnotation = preg_replace_callback('/#+([a-zA-Z0-9_]*)#+/',$replacePropertyNameFunction,$queryAnnotation);
 		$group = preg_replace_callback('/#+([a-zA-Z0-9_]*)#+/',$replacePropertyNameFunction,$group);
 		$having = preg_replace_callback('/#+([a-zA-Z0-9_]*)#+/',$replacePropertyNameFunction,$having);
@@ -5939,11 +5940,13 @@ class SOY2HTMLStyle{
 		return $style;
 	}
 	function __set($key, $value){
-		$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
+		//$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
+		$key = preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); });
 		$this->_styles[$key] = $value;
 	}
 	function __get($key){
-		$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
+		//$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
+		preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); });
 		return $this->_styles[$key];
 	}
 }
