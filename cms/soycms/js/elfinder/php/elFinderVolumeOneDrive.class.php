@@ -323,7 +323,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
      */
     protected function _od_createCurl($path, $contents = false)
     {
-        elfinder::extendTimeLimit();
+        elFinder::checkAborted();
         $curl = $this->_od_prepareCurl($path);
 
         if ($contents) {
@@ -436,6 +436,8 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
                 if ($raw->thumbnails[0]->small->url) {
                     $stat['tmb'] = substr($raw->thumbnails[0]->small->url, 8); // remove "https://"
                 }
+            } elseif (!empty($raw->file->processingMetadata)) {
+                $stat['tmb'] = '1';
             }
         }
 
@@ -686,6 +688,21 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
         return true;
     }
 
+    /**
+     * Return debug info for client.
+     *
+     * @return array
+     **/
+    public function debug()
+    {
+        $res = parent::debug();
+        if (!empty($this->options['accessToken'])) {
+            $res['accessToken'] = $this->options['accessToken'];
+        }
+
+        return $res;
+    }
+
     /*********************************************************************/
     /*                        INIT AND CONFIGURE                         */
     /*********************************************************************/
@@ -747,9 +764,6 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
             }
         }
 
-        if (!$this->tmp && is_writable($this->options['tmbPath'])) {
-            $this->tmp = $this->options['tmbPath'];
-        }
         if (!$this->tmp && ($tmp = elFinder::getStaticVar('commonTempPath'))) {
             $this->tmp = $tmp;
         }
@@ -768,6 +782,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
 
         if ($this->options['useApiThumbnail']) {
             $this->options['tmbURL'] = 'https://';
+            $this->options['tmbPath'] = '';
             $this->queryOptions['query']['expand'] = 'thumbnails(select=small)';
         }
 
@@ -782,6 +797,11 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
     protected function configure()
     {
         parent::configure();
+
+        // fallback of $this->tmp
+        if (!$this->tmp && $this->tmbPathWritable) {
+            $this->tmp = $this->tmbPath;
+        }
 
         $this->disabled[] = 'archive';
         $this->disabled[] = 'extract';
@@ -929,6 +949,27 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
      **/
     protected function createTmb($path, $stat)
     {
+        if ($this->options['useApiThumbnail']) {
+            if (func_num_args() > 2) {
+                list(, , $count) = func_get_args();
+            } else {
+                $count = 0;
+            }
+            if ($count < 10) {
+                if (isset($stat['tmb']) && $stat['tmb'] != '1') {
+                    return $stat['tmb'];
+                } else {
+                    sleep(2);
+                    elFinder::extendTimeLimit();
+                    $this->clearcache();
+                    $stat = $this->stat($path);
+
+                    return $this->createTmb($path, $stat, ++$count);
+                }
+            }
+
+            return false;
+        }
         if (!$stat || !$this->canCreateTmb($path, $stat)) {
             return false;
         }
@@ -1010,6 +1051,13 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
      **/
     public function getContentUrl($hash, $options = array())
     {
+        if (!empty($options['temporary'])) {
+            // try make temporary file
+            $url = parent::getContentUrl($hash, $options);
+            if ($url) {
+                return $url;
+            }
+        }
         $res = '';
         if (($file = $this->file($hash)) == false || !$file['url'] || $file['url'] == 1) {
             $path = $this->decode($hash);
@@ -1243,11 +1291,45 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
             return '';
         }
 
-        $cache = $this->_od_getFileRaw($path);
+        //$cache = $this->_od_getFileRaw($path);
+        if (func_num_args() > 2) {
+            $args = func_get_arg(2);
+        } else {
+            $args = array();
+        }
+        if (!empty($args['substitute'])) {
+            $tmbSize = intval($args['substitute']);
+        } else {
+            $tmbSize = null;
+        }
+        list(, $itemId) = $this->_od_splitPath($path);
+        $options = array(
+            'query' => array(
+                'select' => 'id,image',
+            ),
+        );
+        if ($tmbSize) {
+            $tmb = 'c'.$tmbSize.'x'.$tmbSize;
+            $options['query']['expand'] = 'thumbnails(select='.$tmb.')';
+        }
+        $raw = $this->_od_query($itemId, true, false, $options);
 
-        if ($cache && $img = $cache->image) {
+        if ($raw && $img = $raw->image) {
             if (isset($img->width) && isset($img->height)) {
-                return $img->width.'x'.$img->height;
+                $ret = array('dim' => $img->width.'x'.$img->height);
+                if ($tmbSize) {
+                    $srcSize = explode('x', $ret['dim']);
+                    if (min(($tmbSize / $srcSize[0]), ($tmbSize / $srcSize[1])) < 1) {
+                        if (!empty($raw->thumbnails)) {
+                            $tmbArr = (array) $raw->thumbnails[0];
+                            if (!empty($tmbArr[$tmb]->url)) {
+                                $ret['url'] = $tmbArr[$tmb]->url;
+                            }
+                        }
+                    }
+                }
+
+                return $ret;
             }
         }
 
@@ -1382,7 +1464,7 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
      **/
     protected function _mkfile($path, $name)
     {
-        return $this->_save(tmpfile(), $path, $name, array());
+        return $this->_save($this->tmpfile(), $path, $name, array());
     }
 
     /**
@@ -1445,31 +1527,28 @@ class elFinderVolumeOneDrive extends elFinderVolumeDriver
             $result = curl_exec($curl);
             curl_close($curl);
 
-            $res = false;
+            $res = new stdClass();
             if (preg_match('/Location: (.+)/', $result, $m)) {
                 $monUrl = trim($m[1]);
-                while (!$res) {
+                while ($res) {
                     usleep(200000);
                     $curl = $this->_od_prepareCurl($monUrl);
-                    $state = json_decode(curl_exec($curl));
+                    $res = json_decode(curl_exec($curl));
                     curl_close($curl);
-                    if (isset($state->status)) {
-                        if ($state->status === 'failed') {
+                    if (isset($res->status)) {
+                        if ($res->status === 'completed' || $res->status === 'failed') {
                             break;
-                        } else {
-                            continue;
                         }
                     }
-                    $res = $state;
                 }
             }
 
-            if ($res && isset($res->id)) {
+            if ($res && isset($res->resourceId)) {
                 if (isset($res->folder) && isset($this->sessionCache['subdirs'])) {
                     $this->sessionCache['subdirs'][$targetDir] = true;
                 }
 
-                return $this->_joinPath($targetDir, $res->id);
+                return $this->_joinPath($targetDir, $res->resourceId);
             }
 
             return false;

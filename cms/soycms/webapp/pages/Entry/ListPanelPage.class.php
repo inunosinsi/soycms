@@ -24,7 +24,7 @@ class ListPanelPage extends CMSUpdatePageBase{
 	}
 
 	function __construct($arg) {
-		$labels = array_map(create_function('$v','return (int)$v;'),$arg);
+		$labels = array_map(function($v){ return (int)$v; }, $arg);
 
 		parent::__construct();
 

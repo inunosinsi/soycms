@@ -48,8 +48,9 @@ class UpperMenuPage extends CMSHTMLPageBase{
 		$this->addModel("display_ext_link", array(
 			"visible" => file_exists(dirname(SOY2HTMLConfig::PageDir()) . "/config.ext.php") && defined("EXT_MODE_DERECTORY_NAME") && file_exists(dirname(SOY2HTMLConfig::PageDir()) . "/" . EXT_MODE_DERECTORY_NAME),
 		));
+		$args = SOY2PageController::getArguments();
 		$this->addLink("ext_link", array(
-			"link" => SOY2PageController::createLink(SOY2PageController::getRequestPath().".".implode(".",SOY2PageController::getArguments()))."?ext_mode",
+			"link" => (count($args)) ? SOY2PageController::createLink(SOY2PageController::getRequestPath().".".implode(".", $args))."?ext_mode" : null,
 		));
 
 		//アカウント情報

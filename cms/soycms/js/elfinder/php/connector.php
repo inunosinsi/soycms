@@ -1,7 +1,6 @@
 <?php
 
-//set_time_limit(0); // just in case it too long, not recommended for production
-//error_reporting(E_ALL | E_STRICT); // Set E_ALL for debuging
+error_reporting(0); // Set E_ALL for debuging
 
 //ログインしていなければelfinderを実行させない
 include_once("../../../../common/common.inc.php");
@@ -9,143 +8,98 @@ SOY2::import("util.UserInfoUtil");
 
 if(!UserInfoUtil::isLoggined()) exit;
 
-ini_set('max_file_uploads', 50);   // allow uploading up to 50 files at once
+// load composer autoload before load elFinder autoload If you need composer
+//require './vendor/autoload.php';
 
-// needed for case insensitive search to work, due to broken UTF-8 support in PHP
-ini_set('mbstring.internal_encoding', 'UTF-8');
-ini_set('mbstring.func_overload', 2);
+// elFinder autoload
+require './autoload.php';
+// ===============================================
 
-if (function_exists('date_default_timezone_set')) {
-	date_default_timezone_set('Asia/Tokyo');
-}
+// Enable FTP connector netmount
+elFinder::$netDrivers['ftp'] = 'FTP';
+// ===============================================
 
-include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderConnector.class.php';
-include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinder.class.php';
-include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeDriver.class.php';
-include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeLocalFileSystem.class.php';
-//include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeMySQL.class.php';
-//include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeFTP.class.php';
+// // Required for Dropbox network mount
+// // Installation by composer
+// // `composer require kunalvarma05/dropbox-php-sdk`
+// // Enable network mount
+// elFinder::$netDrivers['dropbox2'] = 'Dropbox2';
+// // Dropbox2 Netmount driver need next two settings. You can get at https://www.dropbox.com/developers/apps
+// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=dropbox2&host=1"
+// define('ELFINDER_DROPBOX_APPKEY',    '');
+// define('ELFINDER_DROPBOX_APPSECRET', '');
+// ===============================================
 
-function debug($o) {
-	echo '<pre>';
-	print_r($o);
-}
+// // Required for Google Drive network mount
+// // Installation by composer
+// // `composer require google/apiclient:^2.0`
+// // Enable network mount
+// elFinder::$netDrivers['googledrive'] = 'GoogleDrive';
+// // GoogleDrive Netmount driver need next two settings. You can get at https://console.developers.google.com
+// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=googledrive&host=1"
+// define('ELFINDER_GOOGLEDRIVE_CLIENTID',     '');
+// define('ELFINDER_GOOGLEDRIVE_CLIENTSECRET', '');
+// // Required case of without composer
+// define('ELFINDER_GOOGLEDRIVE_GOOGLEAPICLIENT', '/path/to/google-api-php-client/vendor/autoload.php');
+// ===============================================
 
-/**
- * Simple logger function.
- * Demonstrate how to work with elFinder event api.
- *
- * @package elFinder
- * @author Dmitry (dio) Levashov
- **/
-class elFinderSimpleLogger {
+// // Required for Google Drive network mount with Flysystem
+// // Installation by composer
+// // `composer require nao-pon/flysystem-google-drive:~1.1 nao-pon/elfinder-flysystem-driver-ext`
+// // Enable network mount
+// elFinder::$netDrivers['googledrive'] = 'FlysystemGoogleDriveNetmount';
+// // GoogleDrive Netmount driver need next two settings. You can get at https://console.developers.google.com
+// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=googledrive&host=1"
+// define('ELFINDER_GOOGLEDRIVE_CLIENTID',     '');
+// define('ELFINDER_GOOGLEDRIVE_CLIENTSECRET', '');
+// ===============================================
 
-	/**
-	 * Log file path
-	 *
-	 * @var string
-	 **/
-	protected $file = '';
+// // Required for One Drive network mount
+// //  * cURL PHP extension required
+// //  * HTTP server PATH_INFO supports required
+// // Enable network mount
+// elFinder::$netDrivers['onedrive'] = 'OneDrive';
+// // GoogleDrive Netmount driver need next two settings. You can get at https://dev.onedrive.com
+// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL/netmount/onedrive/1"
+// define('ELFINDER_ONEDRIVE_CLIENTID',     '');
+// define('ELFINDER_ONEDRIVE_CLIENTSECRET', '');
+// ===============================================
 
-	/**
-	 * constructor
-	 *
-	 * @return void
-	 * @author Dmitry (dio) Levashov
-	 **/
-	public function __construct($path) {
-		$this->file = $path;
-		$dir = dirname($path);
-		if (!is_dir($dir)) {
-			mkdir($dir);
-		}
-	}
-
-	/**
-	 * Create log record
-	 *
-	 * @param  string   $cmd       command name
-	 * @param  array    $result    command result
-	 * @param  array    $args      command arguments from client
-	 * @param  elFinder $elfinder  elFinder instance
-	 * @return void|true
-	 * @author Dmitry (dio) Levashov
-	 **/
-	public function log($cmd, $result, $args, $elfinder) {
-		$log = '['.date('Y-m-d H:i:s')."] ".$cmd;
-		if(class_exists("UserInfoUtil")) $log .= " by ".UserInfoUtil::getLoginId() . " (".UserInfoUtil::getUserId().")";
-		$log .= "\n";
-
-		if (!empty($result['error'])) {
-			$log .= "\tERROR: ".implode(' ', $result['error'])."\n";
-		}
-
-		if (!empty($result['warning'])) {
-			$log .= "\tWARNING: ".implode(' ', $result['warning'])."\n";
-		}
-
-		if (!empty($result['removed'])) {
-			foreach ($result['removed'] as $file) {
-				// removed file contain additional field "realpath"
-				$log .= "\tREMOVED: ".$file['realpath']."\n";
-			}
-		}
-
-		if (!empty($result['added'])) {
-			foreach ($result['added'] as $file) {
-				$log .= "\tADDED: ".$elfinder->realpath($file['hash'])."\n";
-			}
-		}
-
-		if (!empty($result['changed'])) {
-			foreach ($result['changed'] as $file) {
-				$log .= "\tCHANGED: ".$elfinder->realpath($file['hash'])."\n";
-			}
-		}
-
-		$this->write($log);
-	}
-
-	/**
-	 * Write log into file
-	 *
-	 * @param  string  $log  log record
-	 * @return void
-	 * @author Dmitry (dio) Levashov
-	 **/
-	protected function write($log) {
-
-		if (($fp = @fopen($this->file, 'a'))) {
-			fwrite($fp, $log);
-			fclose($fp);
-		}
-	}
+// // Required for Box network mount
+// //  * cURL PHP extension required
+// // Enable network mount
+// elFinder::$netDrivers['box'] = 'Box';
+// // Box Netmount driver need next two settings. You can get at https://developer.box.com
+// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL"
+// define('ELFINDER_BOX_CLIENTID',     '');
+// define('ELFINDER_BOX_CLIENTSECRET', '');
+// ===============================================
 
 
-} // END class
-
+// // Zoho Office Editor APIKey
+// // https://www.zoho.com/docs/help/office-apis.html
+// define('ELFINDER_ZOHO_OFFICE_APIKEY', '');
+// ===============================================
 
 /**
  * Simple function to demonstrate how to control file access using "accessControl" callback.
- * This method will disable accessing files/folders starting from  '.' (dot)
+ * This method will disable accessing files/folders starting from '.' (dot)
  *
- * @param  string    $attr   attribute name (read|write|locked|hidden)
- * @param  string    $path   file path relative to volume root directory started with directory separator
- * @param  object    $volume elFinder volume driver object
- * @param  bool|null $isDir  path is directory (true: directory, false: file, null: unknown)
+ * @param  string    $attr    attribute name (read|write|locked|hidden)
+ * @param  string    $path    absolute file path
+ * @param  string    $data    value of volume option `accessControlData`
+ * @param  object    $volume  elFinder volume driver object
+ * @param  bool|null $isDir   path is directory (true: directory, false: file, null: unknown)
+ * @param  string    $relpath file path relative to volume root directory started with directory separator
  * @return bool|null
  **/
-function access($attr, $path, $data, $volume, $isDir) {
-	return strpos(basename($path), '.') === 0       // if file/folder begins with '.' (dot)
-		? !($attr == 'read' || $attr == 'write')    // set read+write to false, other (locked+hidden) set to true
-		:  null;                                    // else elFinder decide it itself
+function access($attr, $path, $data, $volume, $isDir, $relpath) {
+	$basename = basename($path);
+	return $basename[0] === '.'                  // if file/folder begins with '.' (dot)
+			 && strlen($relpath) !== 1           // but with out volume root
+		? !($attr == 'read' || $attr == 'write') // set read+write to false, other (locked+hidden) set to true
+		:  null;                                 // else elFinder decide it itself
 }
-
-//function validName($name) {
-//	return strpos($name, '.') !== 0;
-//}
-
-$logger = new elFinderSimpleLogger('../files/temp/log.txt');
 
 if(isset($_GET["site_id"])){
 	//SOY CMSとの接続:サイトのパスを取得
@@ -168,7 +122,7 @@ if(isset($_GET["site_id"])){
 }else if(isset($_GET["shop_id"])){
 	//SOY Shopとの接続:サイトのパスを取得
 	$shopId = strtr($_GET["shop_id"], array("." => "", "/" => "", "\\" => "", "\0" => ""));//余計な文字列は削除
-	$shopConfigFilePath = str_replace("soycms", "soyshop", dirname(dirname(dirname(dirname(__FILE__)))) . "/webapp/conf/shop/" . $shopId . ".conf.php");
+	$shopConfigFilePath = preg_replace('/\/soycms$/', "/soyshop", dirname(dirname(dirname(dirname(__FILE__))))) . "/webapp/conf/shop/" . $shopId . ".conf.php";
 	if(!file_exists($shopConfigFilePath)) exit;
 	if(!file_exists(dirname(dirname(dirname(dirname($shopConfigFilePath))))."/SOYCMS_SYSTEM_DIRECTORY")) exit;//soyshop/webapp/conf/shop/shopid.conf.phpでなければ終了
 
@@ -178,51 +132,27 @@ if(isset($_GET["site_id"])){
 	$url = SOYSHOP_SITE_URL;
 }
 
+
+// Documentation for connector options:
+// https://github.com/Studio-42/elFinder/wiki/Connector-configuration-options
 $opts = array(
-	'locale' => 'ja_JP.UTF-8',
-	'bind' => array(
-		// '*' => 'logger',
-		'mkdir mkfile rename duplicate upload rm paste' => array($logger, "log")
-	),
-	'debug' => true,
-	'netVolumesSessionKey' => 'netVolumes',
+	// 'debug' => true,
 	'roots' => array(
+		// Items volume
 		array(
-			'driver'     => 'LocalFileSystem',
-			'path'       => $path,
-			//'startPath'  => $site->getPath(),
-			'URL'        => $url,
-			// 'treeDeep'   => 3,
-			// 'alias'      => 'File system',
-			'mimeDetect' => 'internal',
-			'tmbPath'    => '.tmb',
-			'utf8fix'    => true,
-			'tmbCrop'    => false,
-			'tmbBgColor' => 'transparent',
-			'accessControl' => 'access',
-			'acceptedName'    => '/^[^\.].*$/',
-			// 'disabled' => array('extract', 'archive'),
-			// 'tmbSize' => 128,
-			'attributes' => array(
-				//フロントコントローラー
-				array(
-					'pattern' => '/(index|im)\\.php(\\.old(\\.[0-9][0-9])?)?$/',
-					'read' => false,
-					'write' => false,
-					'locked' => true,
-					'hidden' => true,
-				),
-			)
-			// 'uploadDeny' => array('application', 'text/xml')
+			'driver'        => 'LocalFileSystem',           // driver for accessing file system (REQUIRED)
+			'path'          => $path, 		                // path to files (REQUIRED)
+			'URL'           => $url, 						// URL to files (REQUIRED)
+			'trashHash'     => 't1_Lw',                     // elFinder's hash of trash folder
+			'winHashFix'    => DIRECTORY_SEPARATOR !== '/', // to make hash same to Linux one on windows too
+			'uploadDeny'    => array('all'),                // All Mimetypes not allowed to upload
+			'uploadAllow'   => array('image', 'text/plain'),// Mimetype `image` and `text/plain` allowed to upload
+			'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
+			'accessControl' => 'access'                     // disable and hide dot starting files (OPTIONAL)
 		),
 	)
-
 );
 
-
-
-// sleep(3);
-header('Access-Control-Allow-Origin: *');
-$connector = new elFinderConnector(new elFinder($opts), true);
+// run elFinder
+$connector = new elFinderConnector(new elFinder($opts));
 $connector->run();
-

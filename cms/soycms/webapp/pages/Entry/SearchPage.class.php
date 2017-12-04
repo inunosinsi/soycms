@@ -69,7 +69,7 @@ class SearchPage extends CMSWebPageBase{
 
 	function __construct($arg) {
 
-		$this->labelIds = array_map(create_function('$v','return (int)$v;'),$arg);
+		$this->labelIds = array_map(function($v) { return (int)$v; }, $arg);
 		$labelIds = $this->labelIds;
 
 		if(isset($_GET['limit'])){
@@ -381,4 +381,3 @@ class LabeledEntryList extends HTMLList{
 
 	}
 }
-

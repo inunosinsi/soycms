@@ -231,6 +231,40 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
         return rtrim($dir, '/').'/'.$displayName;
     }
 
+    /**
+     * Get OAuth2 access token form OAuth1 tokens.
+     *
+     * @param string $app_key
+     * @param string $app_secret
+     * @param string $oauth1_token
+     * @param string $oauth1_secret
+     *
+     * @return string|false
+     */
+    public static function getTokenFromOauth1($app_key, $app_secret, $oauth1_token, $oauth1_secret)
+    {
+        $data = [
+                'oauth1_token' => $oauth1_token,
+                'oauth1_token_secret' => $oauth1_secret,
+        ];
+        $auth = base64_encode($app_key.':'.$app_secret);
+
+        $ch = curl_init('https://api.dropboxapi.com/2/auth/token/from_oauth1');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Authorization: Basic '.$auth,
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $res = $result ? json_decode($result, true) : [];
+
+        return isset($res['oauth2_token']) ? $res['oauth2_token'] : false;
+    }
+
     /*********************************************************************/
     /*                        EXTENDED FUNCTIONS                         */
     /*********************************************************************/
@@ -501,9 +535,6 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
             }
         }
 
-        if (!$this->tmp && is_writable($this->options['tmbPath'])) {
-            $this->tmp = $this->options['tmbPath'];
-        }
         if (!$this->tmp && ($tmp = elFinder::getStaticVar('commonTempPath'))) {
             $this->tmp = $tmp;
         }
@@ -525,6 +556,11 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
     protected function configure()
     {
         parent::configure();
+
+        // fallback of $this->tmp
+        if (!$this->tmp && $this->tmbPathWritable) {
+            $this->tmp = $this->tmbPath;
+        }
 
         $this->disabled[] = 'archive';
         $this->disabled[] = 'extract';
@@ -799,6 +835,13 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
      */
     public function getContentUrl($hash, $options = [])
     {
+        if (!empty($options['temporary'])) {
+            // try make temporary file
+            $url = parent::getContentUrl($hash, $options);
+            if ($url) {
+                return $url;
+            }
+        }
         $file = $this->file($hash);
         if (($file = $this->file($hash)) !== false && (!$file['url'] || $file['url'] == 1)) {
             $path = $this->decode($hash);
@@ -1066,7 +1109,11 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
             file_put_contents($tmp, $data);
             $size = getimagesize($tmp);
             if ($size) {
-                return $size[0].'x'.$size[1];
+                $ret = array('dim' => $size[0].'x'.$size[1]);
+                $srcfp = fopen($tmp, 'rb');
+                if ($subImgLink = $this->getSubstituteImgLink(elFinder::$currentArgs['target'], $size, $srcfp)) {
+                	$ret['url'] = $subImgLink;
+                }
             }
         }
 
@@ -1167,7 +1214,7 @@ class elFinderVolumeDropbox2 extends elFinderVolumeDriver
      **/
     protected function _mkfile($path, $name)
     {
-        return $this->_save(tmpfile(), $path, $name, []);
+        return $this->_save($this->tmpfile(), $path, $name, []);
     }
 
     /**

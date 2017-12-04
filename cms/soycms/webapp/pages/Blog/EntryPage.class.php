@@ -170,7 +170,7 @@ class EntryPage extends CMSEntryEditorPageBase{
 			$list = $result->getAttribute("list");
 
 			//リストの整形
-			$list = array_map(create_function('$v','return array("id"=>$v->getId(),"filePath"=>$v->getFilePath());'),$list);
+			$list = array_map(function($v) { return array( "id "=> $v->getId(),"filePath" => $v->getFilePath()); }, $list);
 
 			return $list;
 		}
