@@ -1,8 +1,8 @@
 <h1>
 	注文を追加する
 	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt; 
-		<a soy:link="Order">注文管理</a> &gt; 
+		<a soy:link="">ショップ管理</a> &gt;
+		<a soy:link="Order">注文管理</a> &gt;
 		<a soy:link="Order.Register">注文を追加する</a> &gt;
 		確認
 	</span>
@@ -17,11 +17,11 @@
 			<a class="button" soy:link="Order.Register">戻る</a>
 		</div>
 	</div>
-	
+
 
 	<div class="block_body">
 
-		<p class="error always" soy:display="stock_error">在庫切れ商品があります</p>
+		<p class="error always" soy:id="stock_error">在庫切れ商品があります</p>
 
 		<dl>
 			<dt>商品
@@ -79,7 +79,7 @@
 				</table>
 				<!-- /soy:id="item_info" -->
 			</dd>
-			
+
 			<dt>注文者
 				<!-- soy:id="user_info*" -->
 				<a class="button" soy:link="Order.Register.User">変更</a>
@@ -187,7 +187,7 @@
 					</tr>
 				</table>
 			</dd>
-			
+
 			<dt>支払方法・配送方法・備考など
 				<a class="button" soy:link="Order.Register">変更</a>
 				<!--
@@ -205,7 +205,7 @@
 					<!-- /soy:id="order_attribute_list" -->
 				</table>
 			</dd>
-			
+
 		</dl>
 
 		<form soy:id="order_form">
@@ -214,7 +214,6 @@
 			<p class="caution">メールは送信されません。</p>
 		</div>
 		</form soy:id="order_form">
-		
+
 	</div>
 </div>
-
