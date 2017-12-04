@@ -15,7 +15,7 @@ abstract class SOYShop_CategoryDAO extends SOY2DAO{
 	 * @order category_order,id
 	 */
     abstract function get();
-    
+
     /**
      * @return list
      * @index id
@@ -46,25 +46,33 @@ abstract class SOYShop_CategoryDAO extends SOY2DAO{
 	/**
 	 * @final
 	 */
-	function onInsert($query, $bind){
+	function onInsert($query, $binds){
 
-		if(strlen($bind[":name"]) < 1){
+		if(strlen($binds[":name"]) < 1){
 			$mapping = $this->getMapping();
-			$bind[":name"] = "new_category_" . count($mapping);
+			$binds[":name"] = "new_category_" . count($mapping);
 		}
 
-		if(strlen($bind[":alias"]) < 1){
-			$bind[":alias"] = rawurldecode($bind[":name"]);
+		if(strlen($binds[":alias"]) < 1){
+			$binds[":alias"] = rawurldecode($binds[":name"]);
 		}
 
-		return array($query, $bind);
+		if(!isset($binds[":order"]) || !is_numeric($binds[":order"])){
+			$binds[":order"] = 0;
+		}
+
+		return array($query, $binds);
 	}
 
 	/**
 	 * @final
 	 */
-	function onUpdate($query, $bind){
-		return array($query, $bind);
+	function onUpdate($query, $binds){
+		if(!isset($binds[":order"]) || !is_numeric($binds[":order"])){
+			$binds[":order"] = 0;
+		}
+
+		return array($query, $binds);
 	}
 
 	/**
@@ -241,4 +249,3 @@ abstract class SOYShop_CategoryDAO extends SOY2DAO{
 		return $root;
 	}
 }
-?>

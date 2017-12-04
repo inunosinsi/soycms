@@ -101,9 +101,7 @@ class UserLogic extends SOY2LogicBase{
 			"pathinfo" => pathinfo($file)
 		))->getName();
 
-		if(is_null($new)){
-			$new = $this->getUniqueFileName($file);
-		}
+		if(is_null($new)) $new = self::getUniqueFileName($file);
 
 		$path = $this->makeDirectory($userId) . $new;
 		@move_uploaded_file($tmp, $path);
@@ -119,7 +117,7 @@ class UserLogic extends SOY2LogicBase{
 	}
 
 	function uploadTmpFile($file, $tmp, $userId, $isResize, $resizeWidth, $resizeHeight = null){
-    	$new = $this->getUniqueFileName($file);
+    	$new = self::getUniqueFileName($file);
 		$path = $this->makeTmpDirectory() . $new;
 		@move_uploaded_file($tmp, $path);
 
@@ -133,9 +131,9 @@ class UserLogic extends SOY2LogicBase{
 		return $new;
 	}
 
-	function getUniqueFileName($file){
+	private function getUniqueFileName($file){
 		$fileType = substr($file, strrpos($file, "."));
-		return rand(10000, 90000) . "_" . rand(10000, 90000) . "_" . rand(10000, 90000) . $fileType;
+		return md5($file . time()) . $fileType;
 	}
 
 	function checkSizeBeforeResize($image, $resize_width){

@@ -11,8 +11,6 @@ class BonusDownloadInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 
 SOYShopPlugin::extension("soyshop.info", "bonus_download", "BonusDownloadInfo");
-?>

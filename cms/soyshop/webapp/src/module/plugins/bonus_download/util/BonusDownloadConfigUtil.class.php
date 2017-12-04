@@ -5,14 +5,14 @@ class BonusDownloadConfigUtil {
 	/* 購入特典タイプ */
 	const TYPE_FILE = 1;//ダウンロードファイル管理
 	const TYPE_TEXT = 2;//URL
-	
+
 	/* 購入特典ファイル */
 	const UPLOAD_DIR = "download/_bonus_download";
 
 	/* 公開状態 */
 	const STATUS_INACTIVE = 0;//非公開、無効
 	const STATUS_ACTIVE = 1;//公開、有効
-	
+
 	/**
 	 * @return array() 購入特典の設定各種
 	 */
@@ -31,7 +31,7 @@ class BonusDownloadConfigUtil {
 
 		return $config;
 	}
-	
+
 	/**
 	 * 購入特典内容の設定
 	 * @param array $config
@@ -46,29 +46,29 @@ class BonusDownloadConfigUtil {
 		SOYShop_DataSets::put("bonus_download.download_files.time_limit", $config["download_files.time_limit"]);
 		SOYShop_DataSets::put("bonus_download.status", $config["status"]);
 	}
-	
+
 	/**
 	 * @param SOYShop_Order $order
 	 * @return array(1つの場合"ダウンロードURL"、複数の場合には"ファイル名")
 	 */
 	public static function getDownloadUrls($order){
-		
+
 	}
-	
-	
+
+
 	/**
 	 * @param SOYShop_Order $order
 	 * @return array(1つの場合"ダウンロードURL"、複数の場合には"ファイル名")
 	 */
 	public static function generateDownloadUrls(SOYShop_Order $order=null){
-		
+
 		$config = BonusDownloadConfigUtil::getConfig();
-		
+
 		//URLの場合
 		if($config["type"] == BonusDownloadConfigUtil::TYPE_TEXT){
 			return array($config["download_url"]);
 		}
-		
+
 		//アップロードファイルの場合
 		if($config["type"] == BonusDownloadConfigUtil::TYPE_FILE && $order instanceof SOYShop_Order){
 			$attr = $order->getAttribute("bonus_download.list");
@@ -79,12 +79,12 @@ class BonusDownloadConfigUtil {
 			foreach($tokens as $token){
 				$list[] = BonusDownloadConfigUtil::getDownloadUrl($order, trim($token));
 			}
-			
+
 			return $list;
 		}
-		
+
 	}
-	
+
 	/**
 	 * @param SOYShop_Order $order
 	 * @param string $token
@@ -100,7 +100,7 @@ class BonusDownloadConfigUtil {
 	function getMypagePath(){
 		return SOYSHOP_SITE_URL.soyshop_get_mypage_uri() . "?soyshop_download=download_assistant&token=";
 	}
-	
+
 	/**
 	 * アップロードのディレクトリパス
 	 */
@@ -109,10 +109,10 @@ class BonusDownloadConfigUtil {
 		if(!is_dir($dir)){
 			@mkdir($dir, 0755);
 		}
-		
+
 		return $dir;
 	}
-	
+
 	/**
 	 * アップロードしたファイル
 	 * @param array $selected 選択された場合
@@ -120,17 +120,17 @@ class BonusDownloadConfigUtil {
 	 */
 	public static function getBonusFiles($selected = null){
 		$list = array();
-		
+
 		$dir = BonusDownloadConfigUtil::getUploadDir();
-		
+
 		if(!file_exists($dir))return $list;
 		$files = opendir($dir);
-		
+
 		if(!is_resource($files))return $list;
 
 		while($file = readdir($files)){
 			if(BonusDownloadConfigUtil::checkFileType($file)){
-				
+
 				//選択されたファイルのみの場合
 				if(is_null($selected) || (is_array($selected) && in_array($file, $selected))){
 					$info = array();
@@ -139,12 +139,12 @@ class BonusDownloadConfigUtil {
 					$list[] = $info;
 				}
 			}
-			
+
 		}
-		
+
 		return $list;
 	}
-	
+
 	//登録可能な拡張子
 	public static function getAllowExtension(){
 		$allow = array();
@@ -153,7 +153,7 @@ class BonusDownloadConfigUtil {
 		$allow[".pdf"] = "application/pdf";
 		$allow[".mp3"] = "audio/mpeg";
 		$allow[".mp4"] = "application/mp4";
-		
+
 		return $allow;
 	}
 	/**
@@ -181,14 +181,14 @@ class BonusDownloadConfigUtil {
 	public static function getFileSize($size){
 		$sizes = array('Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB');
 		 $ext = $sizes[0];
-    				
+
     	for ($i=1; (($i <count($sizes)) && ($size>= 1024)); $i++) {
     	   	$size = $size / 1024;
         	$ext = $sizes[$i];
     	}
     	return round($size, 2) . $ext;
 	}
-	
+
 	/**
 	 * @param integer $userId ユーザID
 	 * @param integer $i 何個目か
@@ -197,22 +197,22 @@ class BonusDownloadConfigUtil {
 	public static function generateToken($orderId, $userId, $i){
 		return md5(time(). $orderId. $userId. $i. rand(0, 65535));
 	}
-	
+
 	/**
 	 * 有効期限のタイムスタンプ取得
 	 * @param array $config
-	 * @return integer || null 
+	 * @return integer || null
 	 */
 	public static function getTimelimit($config){
 		$limit = null;
-		
+
 		if(isset($config["download_files.time_limit"]) && !is_null($config["download_files.time_limit"]) && is_numeric($config["download_files.time_limit"])){
 			$limit = time() + $config["download_files.time_limit"] * 60 * 60 * 24;
 		}
-		
+
 		return $limit;
 	}
-	
+
 	/**
 	 * 購入特典が付いている注文を取得
 	 * @param integer $id 注文ID
@@ -221,26 +221,26 @@ class BonusDownloadConfigUtil {
 	 */
 	public static function getBonusOrder($id=null, $trackingNumber=null){
 		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		
+
 		try{
-			
+
 			//注文IDで取得
 			if(!is_null($id)){
 				$order = $orderDao->getById($id);
 			}
-			
+
 			//トラッキングナンバーで取得
 			if(!is_null($trackingNumber)){
 				$order = $orderDao->getByTrackingNumber($trackingNumber);
 			}
-			
+
 		}catch(Exception $e){
 			$order = new SOYShop_Order();
 		}
-		
+
 		return $order;
 	}
-	
+
 	/**
 	 * @param SOYShop_Order $order
 	 * @param integer $id orderAttributeのid
@@ -250,17 +250,17 @@ class BonusDownloadConfigUtil {
 	 * @return SOYShop_Order
 	 */
 	public static function setOrderAttribute($order, $id, $name, $value, $hidden=false){
-		
+
 		$attr = array(
 			"name" => $name,
 			"value" => $value,
 			"hidden" => $hidden,
 		);
-		
+
 		$order->setAttribute($id, $attr);
 		return $order;
 	}
-	
+
 	/**
 	 * @param SOYShop_Order $order
 	 * @param string $key orderAttributeのkey
@@ -270,7 +270,7 @@ class BonusDownloadConfigUtil {
 		$attr = $order->getAttribute($key);
 		return isset($attr["value"]) ? $attr["value"] : null;
 	}
-	
+
 	/**
 	 * @param SOYShop_Order $order
 	 * @param string $key orderAttributeのkey
@@ -288,6 +288,5 @@ class BonusDownloadConfigUtil {
 
 		return $list;
 	}
-	
+
 }
-?>

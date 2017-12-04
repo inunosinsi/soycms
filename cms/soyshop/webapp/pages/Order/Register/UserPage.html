@@ -1,8 +1,8 @@
 <h1>
 	注文を追加する
 	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt; 
-		<a soy:link="Order">注文管理</a> &gt; 
+		<a soy:link="">ショップ管理</a> &gt;
+		<a soy:link="Order">注文管理</a> &gt;
 		<a soy:link="Order.Register">注文を追加する</a> &gt;
 		注文者を指定する
 	</span>
@@ -17,7 +17,7 @@
 			<a class="button" soy:link="Order.Register">戻る</a>
 		</div>
 	</div>
-	
+
 
 	<div class="block_body">
 		<h3>1. 注文者</h3>
@@ -27,15 +27,15 @@
 			<p soy:id="search_by_id_error" class="require">エラー</p>
 			<form soy:id="user_search_by_id_form">
 				<input type="text" soy:id="search_by_id" name="" value="" size="20" />
-				<input type="submit" value="決定">
+				<input type="submit" id="search_by_id_button" value="決定">
 			</form>
-		</dd>		
+		</dd>
 		<dt>メールアドレスで検索</dt>
 		<dd>
 			<p soy:id="search_by_email_error" class="require">エラー</p>
 			<form soy:id="user_search_by_email_form">
 				<input type="text" soy:id="search_by_email" name="" value="" size="60" />
-				<input type="submit" value="決定">
+				<input type="submit" id="search_by_email_button" value="決定">
 			</form>
 		</dd>
 		<dt>電話番号で検索</dt>
@@ -43,7 +43,7 @@
 			<p soy:id="search_by_tell_error" class="require">エラー</p>
 			<form soy:id="user_search_by_tell_form">
 				<input type="text" soy:id="search_by_tell" name="" value="" size="60" />
-				<input type="submit" value="決定">
+				<input type="submit" id="search_by_tell_button" value="決定">
 			</form>
 		</dd>
 		<dt>顧客名で検索</dt>
@@ -51,7 +51,7 @@
 			<p soy:id="search_by_name_error" class="require">エラー</p>
 			<form soy:id="user_search_by_name_form">
 				<input type="text" soy:id="search_by_name" name="" value="" size="60" />
-				<input type="submit" value="決定"><br>
+				<input type="submit" id="search_by_name_button" value="決定"><br>
 				※苗字と名前の間に必ずスペースを入れてから検索してください。
 			</form>
 		</dd>
@@ -60,7 +60,7 @@
 			<p soy:id="search_by_reading_error" class="require">エラー</p>
 			<form soy:id="user_search_by_reading_form">
 				<input type="text" soy:id="search_by_reading" name="" value="" size="60" />
-				<input type="submit" value="決定"><br>
+				<input type="submit" id="search_by_reading_button" value="決定"><br>
 				※苗字と名前の間に必ずスペースを入れてから検索してください。
 			</form>
 		</dd>
