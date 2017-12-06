@@ -18,14 +18,14 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 			$this->list = SOYShop_UserAttributeConfig::load();
 		}
 	}
-	
+
 	function clear($app){
 		$this->prepare();
-		
+
 		foreach($this->list as $field){
 			$key = self::getAttributeKey($field->getFieldId());
 			$app->clearAttribute($key);
-			
+
 		}
 	}
 
@@ -92,7 +92,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	 * @param MyPageLogic || CartLogic $app
 	 * @param integer $userId
 	 * @return array(["name"], ["description"], ["error"])
-	 * 
+	 *
 	 * <テンプレート記述例>
 	 * <!-- soy:id="has_user_customfield" -->
 			<!-- soy:id="user_customfield_list" -->
@@ -104,8 +104,8 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 			</tr>
 			<!-- /soy:id="user_customfield_list" -->
 			<!-- /soy:id="has_user_customfield" -->
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	function getForm($app, $userId){
 		//出力する内容を格納する
@@ -122,7 +122,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 				$key = self::getAttributeKey($field->getFieldId());
 				$value = $app->getAttribute($key);
 			}
-			
+
 			//マイページ、カートでの編集
 			if(is_null($value) && isset($userId)){
 				try{
@@ -130,7 +130,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 				}catch(Exception $e){
 					$attribute = new SOYShop_UserAttribute();
 				}
-				
+
 				//Typeがradioの場合
 				if($field->getType() == SOYShop_UserAttribute::CUSTOMFIELD_TYPE_RADIO){
 					$values = explode(":", $attribute->getValue());
@@ -143,9 +143,9 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 			}
 
 			$obj = array();
-			$obj["name"] = $field->getLabel();			
+			$obj["name"] = $field->getLabel();
 			$obj["form"] = $field->getForm($value);
-			
+
 			$config = $field->getConfig();
 			$obj["isRequired"] = (isset($config["isRequired"])) ? (int)$config["isRequired"] : 0;
 			$error = (isset($app)) ? $app->getAttribute("user_customfield_" . SOYSHOP_ID . "_" . $field->getFieldId() . ".error") : null;
@@ -160,7 +160,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 
 		return $array;
 	}
-	
+
 	/**
 	 * 各項目ごとに、createAdd()を行う。
 	 * @param MyPageLogic || CartLogic $app
@@ -176,13 +176,13 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 
 			//マイページ、カートでの編集
 			if(is_null($value) && isset($userId)){
-				
+
 				try{
 					$attribute = $this->dao->get($userId, $config->getFieldId());
 				}catch(Exception $e){
 					$attribute = new SOYShop_UserAttribute();
 				}
-				
+
 				//Typeがradioの場合
 				if($config->getType() == SOYShop_UserAttribute::CUSTOMFIELD_TYPE_RADIO){
 					$values = explode(":", $attribute->getValue());
@@ -211,13 +211,13 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 						"value" => $h_checkbox_value,
 						"selected" => ($h_checkbox_value == $value)
 					));
-					
+
 					$pageObj->addLabel($h_formID. "_text", array(
 						"text" => $h_checkbox_value
 					));
-										
+
 					break;
-				
+
 				case SOYShop_UserAttribute::CUSTOMFIELD_TYPE_RADIO:
 					$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $config->getOption()));
 
@@ -225,7 +225,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 					$pageObj->addLabel($labelId. "_text", array(
 						"text" => $value["value"]
 					));
-					
+
 					$radioId = 'user_customfield_radio_'. $config->getFieldId();
 					foreach($options as $key => $option){
 						$option = trim($option);
@@ -247,45 +247,44 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 					$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $config->getOption()));
 					$options = array_combine($options, $options);
 					$options = array_merge(array("" => "----"), $options);
-					
+
 					$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 					$pageObj->addSelect($h_formID, array(
 						"id" => $h_formID,
 						"name" => $h_formName,
 						"options" => $options,
-						"selected" => $h_value 
+						"selected" => $h_value
 					));
-					
+
 					$pageObj->addLabel($h_formID. "_text", array(
 						"text" => $h_value
 					));
 					break;
-				
+
 				case SOYShop_UserAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
 					$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 					$pageObj->addTextarea($h_formID, array(
 						"id" => $h_formID,
 						"name" => $h_formName,
-						"value" => $h_value 
+						"value" => $h_value
 					));
 					break;
-				
+
 				default://テキスト
 					$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 					$pageObj->addInput($h_formID, array(
 						"id" => $h_formID,
 						"name" => $h_formName,
-						"value" => $h_value 
+						"value" => $h_value
 					));
-					break;
 			}
 		}
 	}
-	
+
 	function hasError($param){
 		$this->prepare();
 		$app = $this->getApp();
-		
+
 		//paramの再配列
 		$array = array();
 		foreach($this->list as $obj){
@@ -293,15 +292,15 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 			$value["label"] = $obj->getLabel();
 			$value["type"] = $obj->getType();
 			$value["isRequired"] = (int)$obj->getIsRequired();
-			
+
 			$array[$obj->getFieldId()] = $value;
 		}
 		$param = $array;
-		
+
 		$res = false;
 		foreach($param as $key => $obj){
 			$error = "";
-			
+
 			//必須項目の時のみ調べる
 			if($obj["isRequired"] == SOYShop_UserAttribute::IS_REQUIRED){
 				//エラーメッセージ用
@@ -330,10 +329,10 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 				$app->clearAttribute("user_customfield_" . SOYSHOP_ID . "_" . $key . ".error");
 			}
 		}
-		
-		return ($res) ? true : false;	
+
+		return ($res) ? true : false;
 	}
-	
+
 	/**
 	 * @param MyPageLogic || CartLogic $app
 	 */
@@ -362,13 +361,13 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 					$obj["confirm"] = $value;
 					break;
 			}
-			
+
 			$array[$field->getFieldId()] = $obj;
 		}
 
 		return $array;
 	}
-	
+
 	/**
 	 * UserAttributeに登録する
 	 * @param MyPageLogic || CartLogic $app
@@ -388,7 +387,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 				}else if($obj->getType() == SOYShop_UserAttribute::CUSTOMFIELD_TYPE_CHECKBOX){
 					$value = (is_array($value)) ? implode(",", $value) : "";
 				}
-				
+
 			//マイページ、カートでの更新
 			}else{
 				$key = self::getAttributeKey($obj->getFieldId());
@@ -441,7 +440,7 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 
 		return $values;
 	}
-	
+
 	/**
 	 * @param string $fieldId
 	 * @return string MyPage/Cart の attributeのKey
@@ -456,13 +455,13 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	 * @return string MyPage/Cart の attributeのKey
 	 */
 	private function getFormId($fieldId, $isRadio = false){
-		
+
 		if($isRadio){
 			$id = "user_customfield_radio_". htmlspecialchars($fieldId, ENT_QUOTES, "UTF-8");
 		}else{
 			$id = "user_customfield_". htmlspecialchars($fieldId, ENT_QUOTES, "UTF-8");
 		}
-		
+
 		return $id;
 	}
 
@@ -475,4 +474,3 @@ class CommonUserCustomfieldModule extends SOYShopUserCustomfield{
 	}
 }
 SOYShopPlugin::extension("soyshop.user.customfield","common_user_customfield","CommonUserCustomfieldModule");
-?>
