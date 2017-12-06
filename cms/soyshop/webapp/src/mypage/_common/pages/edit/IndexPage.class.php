@@ -94,6 +94,17 @@ class IndexPage extends MainMyPagePageBase{
 
 				//ユーザIDの変更を不許可
 				$user->setId($this->id);
+
+				//ユーザカスタムフィールドの値をセッションに入れる
+				if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
+					SOYShopPlugin::load("soyshop.user.customfield");
+					SOYShopPlugin::invoke("soyshop.user.customfield", array(
+						"mode" => "post",
+						"app" => $mypage,
+						"param" => $_POST["user_customfield"]
+					));
+				}
+
 				$mypage->setUserInfo($user);
 				$mypage->setAttribute("user.edit.use_session_user_info", true);
 
