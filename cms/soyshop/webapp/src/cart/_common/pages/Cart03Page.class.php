@@ -509,8 +509,8 @@ class Cart03Page extends MainCartPageBase{
 
 		$res = false;
 
-		$deliveryMethodList = $this->getDeliveryMethod($cart);
-		if(count($deliveryMethodList) > 0){
+		$paymentMethodList = self::getPaymentMethod($cart);
+		if(count($paymentMethodList) > 0){
 			if(!isset($_POST["payment_module"]) || strlen($_POST["payment_module"]) < 1){
 				$cart->addErrorMessage("payment", MessageManager::get("PAYMENT_NO_SELECT"));
 				$res = true;
@@ -519,7 +519,7 @@ class Cart03Page extends MainCartPageBase{
 			}
 		}
 
-		$deliveryMethodList = $this->getDeliveryMethod($cart);
+		$deliveryMethodList = self::getDeliveryMethod($cart);
 		if(count($deliveryMethodList) > 0){
 			if(!isset($_POST["delivery_module"]) || strlen($_POST["delivery_module"]) < 1){
 				$cart->addErrorMessage("delivery", MessageManager::get("DELIVERY_NO_SELECT"));

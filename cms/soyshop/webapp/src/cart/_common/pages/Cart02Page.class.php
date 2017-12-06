@@ -5,15 +5,22 @@
  * @author SOY2HTMLFactory
  */
 class Cart02Page extends MainCartPageBase{
-	
+
 	public $component;
 	public $backward;
-	
+
 	function doPost(){
 
 		$cart = CartLogic::getCart();
 
 		if(isset($_POST["next"]) || isset($_POST["next_x"])){
+
+			// 隠しモード クーポン
+			SOYShopPlugin::load("soyshop.discount");
+			SOYShopPlugin::invoke("soyshop.discount", array(
+				"mode" => "clear",
+				"cart" => $cart,
+			));
 
 			//ユーザー情報
 			$this->setCustomerInformation($cart);
@@ -36,6 +43,18 @@ class Cart02Page extends MainCartPageBase{
 				$cart->setOrderAttribute("memo", MessageManager::get("NOTE"), $_POST["Attributes"]["memo"]);
 			}
 
+			//割引 Cart02でもクーポンを使用できるようにする　Cart02でクーポンを使用したい場合はCart03でhiddenで渡す
+			if(!$cart->hasError("discount") && isset($_POST["discount_module"])){
+
+				//全部ロードする
+				SOYShopPlugin::load("soyshop.discount");
+				SOYShopPlugin::invoke("soyshop.discount", array(
+					"mode" => "select",
+					"cart" => $cart,
+					"param" => $_POST["discount_module"]
+				));
+			}
+
 			//エラーがなければ次へ
 			if($validAddress && $this->checkError($cart)){
 				$cart->setAttribute("prev_page", "Cart02");
@@ -49,7 +68,8 @@ class Cart02Page extends MainCartPageBase{
 
 			$address = (isset($_POST["Address"])) ? $_POST["Address"] : array();
 			$user->setAddressList(array($address));
-			
+
+
 			$cart->save();
 			soyshop_redirect_cart();
 		}
@@ -59,7 +79,7 @@ class Cart02Page extends MainCartPageBase{
 				"mode" => "afterOperation",
 				"cart" => $cart
 			));
-			
+
 			$cart->setAttribute("page", "Cart01");
 			soyshop_redirect_cart();
 		}
@@ -107,16 +127,16 @@ class Cart02Page extends MainCartPageBase{
 
 	function __construct(){
 		SOYShopPlugin::load("soyshop.cart");
-		
+
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
-		
+
 		parent::__construct();
 
 		$this->addForm("order_form", array(
 			"action" => soyshop_get_cart_url(false)
 		));
-		
+
 		//カスタマイズ用で予備のフォームタグを用意する
 		$this->addForm("custom_order_form", array(
 			"action" => soyshop_get_cart_url(false)
@@ -128,11 +148,11 @@ class Cart02Page extends MainCartPageBase{
 		$this->createAdd("item_list", "_common.ItemListComponent", array(
 			"list" => $items
 		));
-		
+
 		$this->addModel("is_subtotal", array(
 			"visible" => (SOYSHOP_CART_IS_TAX_MODULE)
 		));
-		
+
 		$this->createAdd("total_item_price", "NumberFormatLabel", array(
 			"text" => $cart->getItemPrice()
 		));
@@ -178,25 +198,34 @@ class Cart02Page extends MainCartPageBase{
 	 */
 	function buildForm(CartLogic $cart, SOYShop_User $user, $mode=UserComponent::MODE_CUSTOM_FORM){
 		//共通コンポーネントに移し替え  soyshop/component/UserComponent.class.php buildFrom()
-		//後方互換性確保は soyshop/component/backward/BackwardUserComponent 
+		//後方互換性確保は soyshop/component/backward/BackwardUserComponent
 
 		//以前のフォーム 後方互換
 		$this->backward->backwardCartRegister($this, $user);
 
 		//共通フォーム
 		$this->component->buildForm($this, $user, $cart, $mode);
+
+		//割引モジュール 隠しモード
+		$discountModuleList = self::getDiscountMethod($cart);
+		$this->addModel("has_discount_method", array(
+			"visible" => (count($discountModuleList) > 0),
+		));
+		$this->createAdd("discount_method_list", "_common.DiscountMethodListComponent", array(
+			"list" => $discountModuleList,
+		));
 	}
-	
+
 	/**
 	 * お届け先フォーム
 	 */
 	function buildSendForm(CartLogic $cart, SOYShop_User $customer){
-		
+
 		//お届け先情報のフォームを表示するか？
 		$this->addModel("display_send_form", array(
 			"visible" => (SOYShop_ShopConfig::load()->getDisplaySendInformationForm())
 		));
-		
+
 		$address = ($cart->isUseCutomerAddress()) ? $cart->getAddress() : $cart->getCustomerInformation()->getEmptyAddressArray();
 
 		$this->addInput("send_name", array(
@@ -248,6 +277,19 @@ class Cart02Page extends MainCartPageBase{
     	));
 	}
 
+	private function getDiscountMethod(CartLogic $cart){
+
+    	//アクティブなプラグインをすべて読み込む
+		SOYShopPlugin::load("soyshop.discount");
+
+		$delegate = SOYShopPlugin::invoke("soyshop.discount", array(
+			"mode" => "list",
+			"cart" => $cart
+		));
+
+		return $delegate->getList();
+	}
+
 	/**
 	 * エラー周りを設定
 	 */
@@ -263,13 +305,30 @@ class Cart02Page extends MainCartPageBase{
 	 */
 	function checkError(CartLogic $cart){
 		$user = $cart->getCustomerInformation();
-		
+
 		$res = true;
 		$cart->clearErrorMessage();
-		
+
 		//共通エラーチェック
 		$res = $this->component->checkError($user, $cart, UserComponent::MODE_CART_REGISTER);
-		
+
+		//隠しモード Discount Module
+		if(isset($_POST["discount_module"])){
+			SOYShopPlugin::load("soyshop.discount");
+			$delegate = SOYShopPlugin::invoke("soyshop.discount", array(
+				"mode" => "checkError",
+				"cart" => $cart,
+				"param" => $_POST["discount_module"]
+			));
+
+			if($delegate->hasError()){
+				$cart->addErrorMessage("discount", MessageManager::get("DISCOUNT_ERROR"));
+				$res = false;
+			}else{
+				$cart->removeErrorMessage("discount");
+			}
+		}
+
 		return $res;
 	}
 
@@ -335,9 +394,9 @@ class Cart02Page extends MainCartPageBase{
 		}else{
 			$res = -1;
 			$validAddress = true;	//無条件でtrue
-			
+
 		}
-			
+
 
 		if($res < 0){
 			//宛先が入力されていないので顧客の連絡先を使う
@@ -357,4 +416,3 @@ class Cart02Page extends MainCartPageBase{
 		return $validAddress;
 	}
 }
-?>
