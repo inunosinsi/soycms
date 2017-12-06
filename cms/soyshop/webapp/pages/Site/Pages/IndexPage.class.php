@@ -33,7 +33,7 @@ class IndexPage extends WebPage{
 		));
 
 		$this->addModel("no_page", array(
-			"visible" => (count($pageCount) == 0)
+			"visible" => ($pageCount === 0)
 		));
 	}
 

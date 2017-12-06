@@ -104,6 +104,7 @@ class IndexPage extends WebPage{
 		$delegate = SOYShopPlugin::invoke("soyshop.admin.top");
 
 		$contents = $delegate->getContents();
+		if(is_null($contents)) $contents = array();
 		DisplayPlugin::toggle("plugin_area", (count($contents) > 0));
 
 		$this->createAdd("plugin_area_list", "_common.TopPagePluginAreaListComponent", array(
