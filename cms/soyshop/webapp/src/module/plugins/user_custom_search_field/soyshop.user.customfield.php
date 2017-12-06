@@ -84,7 +84,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	}
 
 	/**
-	 * 各項目ごとに、createAdd()を行う。
+	 * 各項目ごとに、createAdd()を行う。 soy:id="usf_{field_id}"にする
 	 * @param MyPageLogic || CartLogic $app
 	 * @param SOYBodyComponentBase $pageObj
 	 * @param integer $userId
@@ -93,29 +93,89 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 		self::prepare();
 		$values = $this->dbLogic->getByUserId($userId);
 
-		foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
+		//マイページとカートで動作
+		if(!is_null($app) && (get_class($app) == "CartLogic" || get_class($app) == "MyPageLogic")) {
 
-            //多言語化対応はデータベースから値を取得した時点で行っている
-            $usfValue = (isset($values[$key])) ? $values[$key] : null;
+			foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
 
-            $pageObj->addModel($key . "_visible", array(
-                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-                "visible" => (strlen($usfValue))
-            ));
+				$attributeKey = self::getAttributeKey($key);
+				$usfValue = $app->getAttribute($attributeKey);
+				if(is_null($usfValue) && isset($values[$key])) $usfValue = $values[$key];
 
-			$pageObj->addLabel($key, array(
-                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-                "html" => (isset($usfValue)) ? $usfValue : null
-            ));
+				$nameProperty = "user_custom_search[" . htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "]";
 
-			//隠しモード
-			if($field["type"] == UserCustomSearchFieldUtil::TYPE_DATE){
-				$pageObj->addLabel($key . "_wareki", array(
-	                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-	                "html" => (isset($usfValue)) ? date("Y年m月d日", $usfValue) : null
-	            ));
+				switch($field["type"]){
+					case UserCustomSearchFieldUtil::TYPE_TEXTAREA:
+						$pageObj->addTextArea("usf_" . $key, array(
+							"name" => $nameProperty,
+							"value" => $usfValue
+						));
+						break;
+					case UserCustomSearchFieldUtil::TYPE_CHECKBOX:
+						if (isset ($field["option"]) && strlen(trim($field["option"])) > 0) {
+							$options = explode("\n", $field["option"]);
+							for($i = 0; $i < count($options); $i++){
+								$opt = htmlspecialchars(trim($options[$i]), ENT_QUOTES, "UTF-8");
+								$pageObj->addCheckBox("usf_" . $key . "_" . $i, array(
+									"name" => $nameProperty . "[]",
+									"value" => $opt,
+									"selected" => (isset($usfValue) && is_array($usfValue) && count($usfValue) && array_search($opt, $usfValue) !== false),
+									"label" => $opt
+								));
+							}
+						}
+						$pageObj->addLabel("usf_" . $key . "_text", array(
+							"text" => (isset($usfValue) && is_array($usfValue)) ? implode(",", $usfValue) : ""
+						));
+						break;
+					case UserCustomSearchFieldUtil::TYPE_RADIO:
+						if (isset ($field["option"]) && strlen(trim($field["option"])) > 0) {
+							$options = explode("\n", $field["option"]);
+							for($i = 0; $i < count($options); $i++){
+								$opt = htmlspecialchars(trim($options[$i]), ENT_QUOTES, "UTF-8");
+								$pageObj->addCheckBox("usf_" . $key . "_" . $i, array(
+									"name" => $nameProperty,
+									"value" => $opt,
+									"selected" => ($opt == $usfValue),
+									"label" => $opt
+								));
+							}
+						}
+
+						$pageObj->addLabel("usf_" . $key . "_text", array(
+							"text" => $usfValue
+						));
+						break;
+					case UserCustomSearchFieldUtil::TYPE_SELECT:
+						$opts = array();
+						if (isset ($field["option"]) && strlen(trim($field["option"])) > 0) {
+							$options = explode("\n", $field["option"]);
+							for($i = 0; $i < count($options); $i++){
+								$opts[] = htmlspecialchars(trim($options[$i]), ENT_QUOTES, "UTF-8");
+							}
+						}
+						$pageObj->addSelect("usf_" . $key, array(
+							"name" => $nameProperty,
+							"options" => $opts,
+							"selected" => $usfValue
+						));
+						$pageObj->addLabel("usf_" . $key . "_text", array(
+							"text" => $usfValue
+						));
+						break;
+					case UserCustomSearchFieldUtil::TYPE_RICHTEXT:
+					case UserCustomSearchFieldUtil::TYPE_DATE:
+						//公開側で使用不可
+						break;
+					default:
+						$pageObj->addInput("usf_" . $key, array(
+							"name" => $nameProperty,
+							"value" => $usfValue
+						));
+				}
 			}
-
+		//入力画面以外
+		} else {
             switch($field["type"]){
                 case UserCustomSearchFieldUtil::TYPE_CHECKBOX:
                     if(strlen($field["option"])){
@@ -135,8 +195,26 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
                         }
                     }
                     break;
+				default:
+					$pageObj->addModel($key . "_visible", array(
+						"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+						"visible" => (strlen($usfValue))
+					));
+
+					$pageObj->addLabel($key, array(
+						"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+						"html" => (isset($usfValue)) ? $usfValue : null
+					));
+
+					//隠しモード
+					if($field["type"] == UserCustomSearchFieldUtil::TYPE_DATE){
+						$pageObj->addLabel($key . "_wareki", array(
+							"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+							"html" => (isset($usfValue)) ? date("Y年m月d日", $usfValue) : null
+						));
+					}
             }
-        }
+		}
 	}
 
 	function hasError($param){
@@ -188,6 +266,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 			foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
 				$attributeKey = self::getAttributeKey($key);
 				$values[$key] = $app->getAttribute($attributeKey);
+				$app->clearAttribute($attributeKey);
 			}
 		}
 
