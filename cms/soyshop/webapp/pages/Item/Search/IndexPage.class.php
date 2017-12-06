@@ -49,7 +49,7 @@ class IndexPage extends WebPage{
 
 		//データ取得
 		$total = $searchLogic->getTotalCount();
-		$items = (count($searchItems)) ? $searchLogic->getItems() : array();
+		$items = (is_array($searchItems) && count($searchItems)) ? $searchLogic->getItems() : array();
 
 		/*表示*/
 

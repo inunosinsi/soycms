@@ -17,7 +17,7 @@ class UserGroupCustomSearchFieldListComponent extends HTMLList{
 		));
 
 		$this->addLabel("display", array(
-			"text" => "gsf:id=\"" . $key . "\""
+			"text" => UserGroupCustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\""
 		));
 
 		/* 高度な設定 */

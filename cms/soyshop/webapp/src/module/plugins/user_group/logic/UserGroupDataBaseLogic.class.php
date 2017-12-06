@@ -145,7 +145,7 @@ class UserGroupDataBaseLogic extends SOY2LogicBase{
 	function delete($groupId){
 		$dao = new SOY2DAO();
 		try{
-			$dao->executeQuery("DELETE FROM soyshop_user_custom_search WHERE group_id = :group_id", array(":group_id" => $groupId));
+			$dao->executeQuery("DELETE FROM soyshop_user_group_custom_search WHERE group_id = :group_id", array(":group_id" => $groupId));
 		}catch(Exception $e){
 			//
 		}

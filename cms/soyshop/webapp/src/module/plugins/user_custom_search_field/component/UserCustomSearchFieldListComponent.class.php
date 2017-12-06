@@ -17,7 +17,7 @@ class UserCustomSearchFieldListComponent extends HTMLList{
 		));
 
 		$this->addLabel("display", array(
-			"text" => "usf:id=\"" . $key . "\""
+			"text" => UserCustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\""
 		));
 
 		/* 高度な設定 */

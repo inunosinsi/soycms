@@ -93,13 +93,19 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 		self::prepare();
 		$values = $this->dbLogic->getByUserId($userId);
 
-		//マイページとカートで動作
-		if(!is_null($app) && (get_class($app) == "CartLogic" || get_class($app) == "MyPageLogic")) {
-
+		//マイページとカートで動作 URLで判断
+		if(
+			strpos($_SERVER["REDIRECT_URL"], soyshop_get_cart_uri()) != false ||
+			strpos($_SERVER["REDIRECT_URL"], soyshop_get_mypage_uri()) !== false && (strpos($_SERVER["REDIRECT_URL"], "/register") || strpos($_SERVER["REDIRECT_URL"], "/edit"))
+		) {
 			foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
 
-				$attributeKey = self::getAttributeKey($key);
-				$usfValue = $app->getAttribute($attributeKey);
+				$usfValue = null;
+				if(!is_null($app)){
+					$attributeKey = self::getAttributeKey($key);
+					$usfValue = $app->getAttribute($attributeKey);
+				}
+
 				if(is_null($usfValue) && isset($values[$key])) $usfValue = $values[$key];
 
 				$nameProperty = "user_custom_search[" . htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "]";
@@ -176,44 +182,46 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 			}
 		//入力画面以外
 		} else {
-            switch($field["type"]){
-                case UserCustomSearchFieldUtil::TYPE_CHECKBOX:
-                    if(strlen($field["option"])){
-                        $vals = explode(",", $usfValue);
-                        $opts = explode("\n", $field["option"]);
-                        foreach($opts as $i => $opt){
-                            $opt = trim($opt);
-                            $pageObj->addModel($key . "_"  . $i . "_visible", array(
-                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-                                "visible" => (in_array($opt, $vals))
-                            ));
+			foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
+	            switch($field["type"]){
+	                case UserCustomSearchFieldUtil::TYPE_CHECKBOX:
+	                    if(strlen($field["option"])){
+	                        $vals = explode(",", $usfValue);
+	                        $opts = explode("\n", $field["option"]);
+	                        foreach($opts as $i => $opt){
+	                            $opt = trim($opt);
+	                            $pageObj->addModel($key . "_"  . $i . "_visible", array(
+	                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+	                                "visible" => (in_array($opt, $vals))
+	                            ));
 
-                            $pageObj->addLabel($key . "_" . $i, array(
-                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-                                "text" => $opt
-                            ));
-                        }
-                    }
-                    break;
-				default:
-					$pageObj->addModel($key . "_visible", array(
-						"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-						"visible" => (strlen($usfValue))
-					));
-
-					$pageObj->addLabel($key, array(
-						"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-						"html" => (isset($usfValue)) ? $usfValue : null
-					));
-
-					//隠しモード
-					if($field["type"] == UserCustomSearchFieldUtil::TYPE_DATE){
-						$pageObj->addLabel($key . "_wareki", array(
+	                            $pageObj->addLabel($key . "_" . $i, array(
+	                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+	                                "text" => $opt
+	                            ));
+	                        }
+	                    }
+	                    break;
+					default:
+						$pageObj->addModel($key . "_visible", array(
 							"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-							"html" => (isset($usfValue)) ? date("Y年m月d日", $usfValue) : null
+							"visible" => (strlen($usfValue))
 						));
-					}
-            }
+
+						$pageObj->addLabel($key, array(
+							"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+							"html" => (isset($usfValue)) ? $usfValue : null
+						));
+
+						//隠しモード
+						if($field["type"] == UserCustomSearchFieldUtil::TYPE_DATE){
+							$pageObj->addLabel($key . "_wareki", array(
+								"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+								"html" => (isset($usfValue)) ? date("Y年m月d日", $usfValue) : null
+							));
+						}
+	            }
+			}
 		}
 	}
 
