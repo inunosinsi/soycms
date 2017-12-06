@@ -35,7 +35,7 @@ class UserPage extends WebPage{
 				$this->session->setAttribute("order_register.error.id", "IDを入力してください。");
 				$this->session->setAttribute("order_register.input.id", $_POST["search_by_id"]);
 			}
-		}elseif(isset($_POST["search_by_email"])){
+		}else if(isset($_POST["search_by_email"])){
 			if(strlen($_POST["search_by_email"])){
 				$user = $this->getUserByEmail($_POST["search_by_email"]);
 				if(strlen($user->getId())){
@@ -52,7 +52,7 @@ class UserPage extends WebPage{
 				$this->session->setAttribute("order_register.error.email", "メールアドレスを入力してください。");
 				$this->session->setAttribute("order_register.input.email", $_POST["search_by_email"]);
 			}
-		}elseif(isset($_POST["search_by_tell"])){
+		}else if(isset($_POST["search_by_tell"])){
 			if(strlen($_POST["search_by_tell"])){
 				$user = $this->getUserByTell($_POST["search_by_tell"]);
 				if(strlen($user->getId())){
@@ -69,7 +69,7 @@ class UserPage extends WebPage{
 				$this->session->setAttribute("order_register.error.tell", "電話番号を入力してください。");
 				$this->session->setAttribute("order_register.input.tell", $_POST["search_by_tell"]);
 			}
-		}elseif(isset($_POST["search_by_name"])){
+		}else if(isset($_POST["search_by_name"])){
 			if(strlen($_POST["search_by_name"])){
 				$user = $this->getUserByName($_POST["search_by_name"]);
 				if(strlen($user->getId())){
@@ -86,7 +86,7 @@ class UserPage extends WebPage{
 				$this->session->setAttribute("order_register.error.name", "顧客名を入力してください。");
 				$this->session->setAttribute("order_register.input.name", $_POST["search_by_name"]);
 			}
-		}elseif(isset($_POST["search_by_reading"])){
+		}else if(isset($_POST["search_by_reading"])){
 			if(strlen($_POST["search_by_reading"])){
 				$user = $this->getUserByReading($_POST["search_by_reading"]);
 				if(strlen($user->getId())){
@@ -103,7 +103,7 @@ class UserPage extends WebPage{
 				$this->session->setAttribute("order_register.error.reading", "フリガナを入力してください。");
 				$this->session->setAttribute("order_register.input.reading", $_POST["search_by_reading"]);
 			}
-		}elseif(isset($_POST["Customer"]) && is_array($_POST["Customer"])){
+		}else if(isset($_POST["Customer"]) && is_array($_POST["Customer"])){
 			$user = SOY2::cast("SOYShop_User",(object)$_POST["Customer"]);
 
 			$error = array();
@@ -162,21 +162,21 @@ class UserPage extends WebPage{
 
 		foreach(array("id", "email", "tell", "name", "reading") as $t){
 			$this->addForm("user_search_by_" . $t . "_form");
-			
+
 			//エラー文言
 			$error = $this->session->getAttribute("order_register.error." . $t);
 			$this->addLabel("search_by_" . $t . "_error", array(
 				"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
 				"visible" => isset($error) && strlen($error)
 			));
-			
+
 			//クリア
 			$this->session->setAttribute("order_register.input." . $t, null);
 			$this->session->setAttribute("order_register.error." . $t, null);
 		}
-		
-		$this->userForm($user);
-		$this->addressForm($user);
+
+		self::userForm($user);
+		self::addressForm($user);
 
 		//エラー文言
 		$error = $this->session->getAttribute("order_register.error.user");
@@ -198,7 +198,7 @@ class UserPage extends WebPage{
 	}
 
 	//お客様情報入力画面
-	function userForm(SOYShop_User $user){
+	private function userForm(SOYShop_User $user){
 
 		foreach(array("id", "email", "tell", "name", "reading") as $t){
 			$this->addInput("search_by_" . $t, array(
@@ -214,7 +214,8 @@ class UserPage extends WebPage{
 				$mailAddress = soyshop_dummy_mail_address();
 			}
 		}
-		
+
+		$this->addForm("user_create_form");
 
 		//新規登録フォーム
 		$this->addInput("mail_address", array(
@@ -310,7 +311,7 @@ class UserPage extends WebPage{
 		));
 	}
 
-	function addressForm(SOYShop_User $user){
+	private function addressForm(SOYShop_User $user){
 		$address = $user->getEmptyAddressArray();
 
 		$this->addInput("send_name", array(
@@ -376,21 +377,21 @@ class UserPage extends WebPage{
 	}
 	function getUserByTell($tell){
 		$tell = str_replace(array("-", "ー", "−"), "", $tell);
-		
+
 		$dao = $this->dao;
 		//すべての顧客IDと電話番号を取得
-		$sql = "SELECT id, telephone_number FROM soyshop_user WHERE is_disabled != " . SOYShop_User::USER_IS_DISABLED . " AND telephone_number IS NOT NULL AND telephone_number != ''";	
+		$sql = "SELECT id, telephone_number FROM soyshop_user WHERE is_disabled != " . SOYShop_User::USER_IS_DISABLED . " AND telephone_number IS NOT NULL AND telephone_number != ''";
 		try{
 			$res = $dao->executeQuery($sql);
 		}catch(Exception $e){
 			$res = array();
 		}
-		
+
 		if(!count($res)) return new SOYShop_User();
-		
+
 		foreach($res as $v){
 			$t = str_replace(array("-", "ー", "−"), "", $v["telephone_number"]);
-			
+
 			if($tell == $t){
 				try{
 					return $dao->getById($v["id"]);
@@ -399,10 +400,10 @@ class UserPage extends WebPage{
 				}
 			}
 		}
-		
+
 		return new SOYShop_User();
 	}
-	
+
 	function getUserByName($name){
 		$strings = self::str2array($name);
 		if(!count($strings)) return new SOYShop_User();
@@ -418,7 +419,7 @@ class UserPage extends WebPage{
 		}catch(Exception $e){
 			$res = array();
 		}
-		
+
 		if(!count($res)) return new SOYShop_User();
 		foreach($res as $v){
 			try{
@@ -427,13 +428,13 @@ class UserPage extends WebPage{
 				//
 			}
 		}
-		
+
 		return new SOYShop_User();
 	}
-	
+
 	function getUserByReading($reading){
 		$strings = self::str2array($reading);
-		
+
 		if(!count($strings)) return new SOYShop_User();
 
 		$dao = $this->dao;
@@ -447,7 +448,7 @@ class UserPage extends WebPage{
 		}catch(Exception $e){
 			$res = array();
 		}
-		
+
 		if(!count($res)) return new SOYShop_User();
 		foreach($res as $v){
 			try{
@@ -456,14 +457,14 @@ class UserPage extends WebPage{
 				//
 			}
 		}
-		
+
 		return new SOYShop_User();
 	}
-	
+
 	private function str2array($str){
 		//全角スペースを半角スペースにする
 		$str = str_replace("　", " ", $str);
-		
+
 		return explode(" ", $str);
 	}
 }
