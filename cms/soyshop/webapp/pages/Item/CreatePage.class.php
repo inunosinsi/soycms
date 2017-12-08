@@ -67,6 +67,8 @@ class CreatePage extends WebPage{
 			SOY2PageController::jump("Item");
 		}
 
+		MessageManager::addMessagePath("admin");
+
     	parent::__construct();
 
 		$this->addForm("create_form");
