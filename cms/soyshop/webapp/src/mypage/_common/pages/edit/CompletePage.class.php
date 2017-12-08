@@ -8,7 +8,7 @@ class CompletePage extends MainMyPagePageBase{
 		$mypage->clearErrorMessage();
 		$mypage->clear();
 		$mypage->save();
-		
+
 		parent::__construct();
 
 		//EditPage.htmlへのリンクを生成する
@@ -17,4 +17,3 @@ class CompletePage extends MainMyPagePageBase{
 		));
 	}
 }
-?>
