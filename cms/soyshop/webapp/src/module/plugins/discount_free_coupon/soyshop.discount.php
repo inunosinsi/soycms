@@ -9,7 +9,7 @@
 class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 	private $config;
 	private $dao;
-	
+
 	function __construct(){
 		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
 		SOY2::imports("module.plugins.discount_free_coupon.util.*");
@@ -17,10 +17,10 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 		$util = new DiscountFreeCouponUtil();
 		$this->config = $util->getConfig();
 	}
-	
+
 	function clear(){
 		$cart = $this->getCart();
-		
+
 		$cart->removeModule("discount_free_coupon");
 		$cart->clearAttribute("discount_free_coupon.code");
 		$cart->clearOrderAttribute("discount_free_coupon.code");
@@ -28,23 +28,23 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 
 	function doPost($param){
 		$cart = $this->getCart();
-		$code = trim($param["coupon_codes"][0]);		
-		
+		$code = trim($param["coupon_codes"][0]);
+
 		if(isset($code)){
 			try{
 				$coupon = $this->dao->getByCouponCodeAndNoDelete($code);
 			}catch(Exception $e){
 				$coupon = new SOYShop_Coupon();
 			}
-			
+
 			$couponId = $coupon->getId();
-			
+
 			if(isset($couponId)){
 				$module = new SOYShop_ItemModule();
 				$module->setId("discount_free_coupon");
 				$module->setName(MessageManager::get("MODULE_NAME_COUPON"));
 				$module->setType("discount_module");	//typeを指定すると同じtypeのモジュールは同時使用できなくなる
-				
+
 				//クーポンのタイプにより、割引額を変える
 				$couponType = $coupon->getCouponType();
 				//値引き額
@@ -52,11 +52,11 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 					$discount = $coupon->getDiscount();
 					//割引金額：商品合計より大きくはならない。
 					$discount = min($discount, $cart->getItemPrice());
-					
+
 				//値引き率
 				}elseif($couponType == SOYShop_Coupon::TYPE_PERCENT){
 					$discount = $cart->getItemPrice() * $coupon->getDiscountPercent() / 100;
-				
+
 				//送料無料
 				}elseif($couponType == SOYShop_Coupon::TYPE_DELIVERY){
 					foreach($cart->getModules() as $moduleId => $obj){
@@ -68,21 +68,21 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 				}else{
 					$discount = 0;
 				}
-				
+
 				$module->setPrice(0 - $discount);//負の値
-				
+
 				if($discount > 0){
 					$cart->addModule($module);
-					
+
 					//属性の登録
 					$cart->setAttribute("discount_free_coupon.code", $code);
 					$cart->setOrderAttribute("discount_free_coupon.code", MessageManager::get("MODULE_NAME_COUPON"), $code);
-				
+
 				}
-			}	
+			}
 		}
 	}
-	
+
 	function order(){
 		//処理はorder.completeで行う
 	}
@@ -91,23 +91,21 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 	 * クーポンが使用可能か？調べる
 	 */
 	function hasError($param){
-		
+
 		$cart = $this->getCart();
 		$error = "";
-		
+
 		//クーポンが入力されなかった場合は何もしない
 		if(isset($param["coupon_codes"][0]) && strlen($param["coupon_codes"][0]) > 0){
 			$code = trim($param["coupon_codes"][0]);
-			$userId = $cart->getAttribute("logined_userid");
-			
+
 			//ユーザIDが取得できなかった場合、念の為、ユーザテーブルからオブジェクトを取得
-			if(is_null($userId)){
-				$userId = $this->getUserId($cart);
-			}
+			$userId = $cart->getAttribute("logined_userid");
+			if(is_null($userId)) $userId = self::getUserIdByMailAddress($cart->getCustomerInformation()->getMailAddress());
 
 			if(!isset($param["coupon_codes"]) || !is_array($param["coupon_codes"]) || count($param["coupon_codes"]) === 0){
 				//$error = "クーポンコードを入力してください。";
-			}elseif(!$this->checkItemPrice()){
+			}elseif(!self::checkItemPrice()){
 				$error = MessageManager::get("NOT_USE_COUPON_CODE_OUT_OF_TERM");
 			}else{
 				$logic = SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.DiscountFreeCouponLogic");
@@ -119,10 +117,10 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 					//
 				}
 			}
-			
+
 			$cart->setAttribute("discount_free_coupon.code", $code);
 		}
-		
+
 		if(strlen($error) > 0){
 			$cart->setAttribute("discount_free_coupon.error", $error);
 			return true;
@@ -131,76 +129,51 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 			return false;
 		}
 	}
-	
+
 	function getError(){
-		$cart = $this->getCart();
-		return $cart->getAttribute("discount_free_coupon.error");
+		return $this->getCart()->getAttribute("discount_free_coupon.error");
 	}
 
 	function getName(){
-		if($this->checkItemPrice()){
+		if(self::checkItemPrice()){
 			return MessageManager::get("MODULE_NAME_COUPON");
 		}else{
 			//使用可能金額の範囲外ならこのモジュールは表示しない
 			return "";
 		}
 	}
-	
-	function getUserId($cart){
-		$user = $cart->getCustomerInformation();	//userIdが存在していない状態
-			
-		$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+
+	private function getUserIdByMailAddress($mailAddress){
 		//userIdを取得する
 		try{
-			$user = $userDao->getByMailAddress($user->getMailAddress());
+			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId();
 		}catch(Exception $e){
-			$user = new SOYShop_User();
+			return null;
 		}
-			
-		return $user->getId();
 	}
-	
+
 	/**
 	 * 使用可能金額の範囲内におさまっているかどうかを返す
 	 * @return Boolean
 	 */
-	function checkItemPrice(){
-		$cart = $this->getCart();
-		
-		$config = $this->config;
+	 private function checkItemPrice(){
+  		$min = (isset($this->config["min"]) && strlen($this->config["min"]) && is_numeric($this->config["min"])) ? (int)$this->config["min"] : 0;
+ 		$max = (isset($this->config["max"]) && strlen($this->config["max"]) && is_numeric($this->config["max"])) ? (int)$this->config["max"] : 1000000000; //$maxが空だった場合、限りなく大きな数字を代入しておく
 
-		$min = $config["min"];
-		$max = $config["max"];
-		
-		//$maxが空だった場合、限りなく大きな数字を代入しておく
-		if(strlen($max) === 0) $max = 1000000000;
-		
-		$itemPrice = $cart->getItemPrice();
-		
-		if(
-			strlen($min) > 0 && is_numeric($min) && $itemPrice < $min
-			||
-			strlen($max) > 0 && is_numeric($max) && $max < $itemPrice
-		){
-			return false;
-		}else{
-			return true;
-		}
-	}
+  		$total = $this->getCart()->getItemPrice();
+  		return ($total > $min || $total < $max);
+  	}
 
 	function getDescription(){
-		$cart = $this->getCart();
-		
-		$code  = $cart->getAttribute("discount_free_coupon.code");
+		$code  = $this->getCart()->getAttribute("discount_free_coupon.code");
+
 		$html = array();
-		
 		$html[] = "<table><tr><th>" . MessageManager::get("INPUT_COUPON_CODE") . "</th><td>";
 		$html[] = '<input type="text" size="40" name="discount_module[discount_free_coupon][coupon_codes][]" value="'.htmlspecialchars($code, ENT_QUOTES, "UTF-8").'" />';
 		$html[]='<br/>';
 		$html[] = '</td></table>';
 
-		return implode("",$html);
+		return implode("", $html);
 	}
 }
 SOYShopPlugin::extension("soyshop.discount", "discount_free_coupon", "SOYShopDiscountFreeCouponModule");
-?>

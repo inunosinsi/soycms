@@ -95,8 +95,8 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 
 		//マイページとカートで動作 URLで判断
 		if(
-			strpos($_SERVER["REDIRECT_URL"], soyshop_get_cart_uri()) != false ||
-			strpos($_SERVER["REDIRECT_URL"], soyshop_get_mypage_uri()) !== false && (strpos($_SERVER["REDIRECT_URL"], "/register") || strpos($_SERVER["REDIRECT_URL"], "/edit"))
+			strpos($_SERVER["REQUEST_URI"], soyshop_get_cart_uri()) != false ||
+			strpos($_SERVER["REQUEST_URI"], soyshop_get_mypage_uri()) !== false && (strpos($_SERVER["REQUEST_URI"], "/register") || strpos($_SERVER["REQUEST_URI"], "/edit"))
 		) {
 			foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
 
@@ -183,6 +183,8 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 		//入力画面以外
 		} else {
 			foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
+				$usfValue = (isset($values[$key])) ? $values[$key] : null;
+
 	            switch($field["type"]){
 	                case UserCustomSearchFieldUtil::TYPE_CHECKBOX:
 	                    if(strlen($field["option"])){

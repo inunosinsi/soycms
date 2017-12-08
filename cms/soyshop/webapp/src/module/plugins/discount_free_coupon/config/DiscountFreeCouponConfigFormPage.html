@@ -36,7 +36,7 @@
 			</dd>
 		</dl>
 	</form soy:id="csv_form">
-	
+
 	<h1>登録済みクーポン</h1>
 	<h3>クーポン一覧</h3>
 	<table class="form_table">
@@ -76,46 +76,46 @@
 								<input type="text" soy:id="input_name" />
 								<input type="hidden" soy:id="input_id" />
 							</dd>
-							
+
 							<dt>クーポンの種類</dt>
 							<dd>
 								<input type="radio" soy:id="radio_coupon_type_price" />
 								<input type="radio" soy:id="radio_coupon_type_percent" />
 								<input type="radio" soy:id="radio_coupon_type_delivery">
 							</dd>
-							
+
 							<dt>使用回数</dt>
 							<dd>
 								<input type="text" soy:id="input_count" size="5" style="text-align:right;ime-mode:inactive;" />&nbsp;回
 							</dd>
-							
+
 							<dt>値引き額&nbsp;クーポンの種類で値引き額に設定した場合に使われます</dt>
 							<dd>
 								<input type="text" soy:id="input_discount" size="20" style="text-align:right;ime-mode:inactive;" />&nbsp;円
 							</dd>
-							
+
 							<dt>値引き率&nbsp;クーポンの種類で値引き率に設定した場合に使われます</dt>
 							<dd>
 								<input type="text" soy:id="input_discout_percent" size="3" style="ime-mode:inactive;text-align:right;" />&nbsp;％
 							</dd>
-							
+
 							<dt>備考</dt>
 							<dd><input type="text" soy:id="input_memo" value="" size="40" /></dd>
-							
+
 							<dt>利用可能金額&nbsp;<span class="option">このクーポンが使える商品金額合計(半角数字)</span></dt>
 							<dd>
 								<input type="text" soy:id="input_price_limit_min" size="10" style="ime-mode:inactive;text-align:right;" />&nbsp;円&nbsp;～&nbsp;
 								<input type="text" soy:id="input_price_limit_max" size="10" style="ime-mode:inactive;text-align:right;" />&nbsp;円
 							</dd>
-							
+
 							<dt>有効期限</dt>
 							<dd>
 								<input type="text" class="date_picker_start" soy:id="input_time_limit_start" value="" />&nbsp;～
 								<input type="text" class="date_picker_end" soy:id="input_time_limit_end" value="" />
 							</dd>
-							
+
 						</dl>
-							
+
 						<p class="pageBtn">
 							<input type="submit" class="submit_button" name="edit_save" value="変更">&nbsp;
 							<input type="submit" class="submit_button" name="remove" value="削除する" onclick="return confirm('削除してもよろしいですか？');" />
@@ -133,7 +133,7 @@
 <form soy:id="form">
 
 	<h1>クーポンの新規登録</h1>
-	
+
 	<div class="edit_form">
 		<dl id="coupon_detail">
 			<dt>クーポンコード&nbsp;<span class="option">必須、半角英数字で<!-- soy:id="coupon_conde_annotation_disits_min" /-->～<!-- soy:id="coupon_conde_annotation_disits_max" /-->文字</span></dt>
@@ -142,41 +142,41 @@
 				<p class="error_mes" soy:id="coupon_length_error"><!-- soy:id="coupon_conde_annotation_disits_min*" /-->～<!-- soy:id="coupon_conde_annotation_disits_max*" /-->文字で入力してください</p>
 				<p class="error_mes" soy:id="coupon_reg_error">半角英数字で入力してください</p>
 			</dd>
-			
+
 			<dt>クーポンの種類</dt>
 			<dd>
 				<input type="radio" soy:id="coupon_type_price" />
 				<input type="radio" soy:id="coupon_type_percent" />
 				<input type="radio" soy:id="coupon_type_delivery">
 			</dd>
-			
+
 			<dt>クーポン名&nbsp;<span class="option">必須、例）2011年10月入会キャンペーン</span></dt>
 			<dd>
 				<input type="text" soy:id="name" size="60" />
 				<p class="error_mes" soy:id="name_error">クーポン名が入力されていません</p>
 			</dd>
-			
+
 			<dt>お客様一人あたりの使用回数&nbsp;<span class="option">空の場合、無制限</span></dt>
 			<dd>
 				<input type="text" soy:id="count" size="5" style="ime-mode:inactive;text-align:right;" />&nbsp;回
 				<p class="error_mes" soy:id="count_error">数字を入力してください。</p>
 			</dd>
-			
+
 			<dt>値引き額&nbsp;<span class="option">例）1000[円]</span>&nbsp;クーポンの種類で値引き額を選択した場合に設定してください</dt>
 			<dd>
 				<input type="text" soy:id="discount" size="20" style="ime-mode:inactive;text-align:right;" />&nbsp;円
 				<p class="error_mes" soy:id="discount_error">数字を入力してください。</p>
 			</dd>
-			
+
 			<dt>値引き率&nbsp;<span class="option">例）1000[円]</span>&nbsp;クーポンの種類で値引き率を選択した場合に設定してください</dt>
 			<dd>
 				<input type="text" soy:id="discout_percent" size="3" style="ime-mode:inactive;text-align:right;" />&nbsp;％
 				<p class="error_mes" soy:id="discount_percent_error">数字を入力してください。</p>
 			</dd>
-			
+
 			<dt>備考&nbsp;<span class="option">例）自由入力</span></dt>
 			<dd><input type="text" soy:id="memo" size="60" /></dd>
-			
+
 			<dt>利用可能金額&nbsp;<span class="option">このクーポンが使える商品金額合計(半角数字)</span></dt>
 			<dd>
 				<input type="text" soy:id="price_limit_min" size="10" style="ime-mode:inactive;text-align:right;" />&nbsp;円&nbsp;～&nbsp;
@@ -186,7 +186,7 @@
 				<p class="error_mes" soy:id="price_limit_error">数字を入力してください</p>
 				<p class="error_mes" soy:id="price_limit_compare_error">上限は下限よりも高い金額で設定してください</p>
 			</dd>
-			
+
 			<dt>有効期限&nbsp;<span class="option">空の場合は有効期限なし</span></dt>
 			<dd>
 				<input type="text" class="date_picker_start" soy:id="time_limit_start" size="12" />&nbsp;～&nbsp;
@@ -195,12 +195,12 @@
 				<p class="error_mes" soy:id="time_limit_compare_error">終了日は開始日の後に設定してください</p>
 			</dd>
 		</dl>
-	
+
 		<p class="pageBtn">
 			<input type="submit" class="submit_button" value="新規登録" />
 		</p>
 	</div>
-	
+
 
 
 </form soy:id="form">
@@ -208,7 +208,7 @@
 <form soy:id="config_form">
 	<div class = "config_form">
 		<h1>クーポンの設定</h1>
-		
+
 		<dl id="coupon_config">
 			<dt>利用可能金額&nbsp;<span class="option">クーポンが使える商品金額合計(半角数字)</span></dt>
 			<dd>
@@ -216,13 +216,13 @@
 				&nbsp;～&nbsp;
 				<input type="text" soy:id="config_enable_amount_max" style="text-align:right;ime-mode:inactive;" />&nbsp;円(空欄の場合、無制限)
 			</dd>
-			
+
 			<dt>クーポンコード登録時の文字数</dt>
 			<dd>
-				下限:<input type="number" soy:id="config_code_digits_min" value="">&nbsp;上限:<input type="number" soy:id="config_code_digits_max" value="">
+				下限:<input type="number" soy:id="config_code_disits_min" value="">&nbsp;上限:<input type="number" soy:id="config_code_disits_max" value="">
 			</dd>
 		</dl>
-	
+
 		<p class="pageBtn">
 			<input type="submit" class="submit_button" value="設定変更" />
 		</p>
