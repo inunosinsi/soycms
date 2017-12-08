@@ -248,10 +248,10 @@ class Cart04Page extends MainCartPageBase{
     	$send = $cart->getAddress();
 
 		$this->addLabel("send_office", array(
-			"text" => $send["office"]
+			"text" => (isset($send["office"])) ? $send["office"] : ""
 		));
 		$this->addModel("if_send_office", array(
-			"visible" => strlen($send["office"])
+			"visible" => (isset($send["office"]) && strlen($send["office"]))
 		));
 
 		$this->addLabel("send_name", array(

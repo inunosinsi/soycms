@@ -256,7 +256,8 @@ class Cart03Page extends MainCartPageBase{
 
 		$this->createAdd("payment_method_list", "_common.PaymentMethodListComponent", array(
 			"list" => $paymentMethodList,
-			"selected" => $cart->getAttribute("payment_module")
+			"selected" => $cart->getAttribute("payment_module"),
+			"cart" => $cart
 		));
 
 		//配送モジュール
