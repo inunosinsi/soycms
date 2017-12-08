@@ -1,14 +1,16 @@
 <?php
 SOYShopPlugin::load("soyshop.item.customfield");
+SOY2::import("domain.config.SOYShop_ShopConfig");
 
 /**
  * 商品情報を出力
  * テンプレートに記述しない
  */
 function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
-    static $itemDao, $categoryDao;
+    static $itemDao, $categoryDao, $shopConfig;
     if(is_null($itemDao)) $itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
     if(is_null($categoryDao)) $categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+	if(is_null($shopConfig)) $shopConfig = SOYShop_ShopConfig::load();
 
     //グループの場合の処理
     $childItems = array();
@@ -129,8 +131,8 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
         "soy2prefix" => SOYSHOP_SITE_PREFIX
     ));
 
-    $htmlObj->addModel("is_stock", array(
-        "visible" => ($item->getStock() > 0),
+	$htmlObj->addModel("is_stock", array(
+        "visible" => ($shopConfig->getIgnoreStock() == 1 || $item->getStock() > 0),
         "soy2prefix" => SOYSHOP_SITE_PREFIX
     ));
 
