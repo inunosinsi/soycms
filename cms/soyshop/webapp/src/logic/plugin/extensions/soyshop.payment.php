@@ -17,6 +17,10 @@ class SOYShopPayment implements SOY2PluginAction{
 		return "";
 	}
 
+	function getMethod(CartLogic $cart, $moduleId){
+		return true;
+	}
+
 	function getCart() {
 		return $this->cart;
 	}
@@ -43,8 +47,10 @@ class SOYShopPayment implements SOY2PluginAction{
 class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 
 	private $_list = array();
+	private $_method = true;
 	private $mode = "list";
 	private $cart;
+	private $moduleId;
 
 	function run($extentionId,$moduleId,SOY2PluginAction $action){
 
@@ -77,11 +83,14 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 					);
 				}
 				break;
+			case "method":	//支払い方法のリストの表示のルールを決める
+				$this->_method = $action->getMethod($this->getCart(), $this->getModuleId());
+				break;
 			case "select"://選択された支払いの内部
 				//念の為、ここでも再度調べる
 				if($_POST["payment_module"] === $moduleId){
 					$action->onSelect($this->getCart());
-	
+
 					if($action->hasOptionPage()){
 						$this->getCart()->setAttribute("has_option", true);
 					}
@@ -99,6 +108,9 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 	function getList(){
 		return $this->_list;
 	}
+	function getMethod(){
+		return $this->_method;
+	}
 	function getMode() {
 		return $this->mode;
 	}
@@ -111,7 +123,12 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 	function setCart($cart) {
 		$this->cart = $cart;
 	}
+	function getModuleId(){
+		return $this->moduleId;
+	}
+	function setModuleId($moduleId){
+		$this->moduleId = $moduleId;
+	}
 }
 SOYShopPlugin::registerExtension("soyshop.payment","SOYShopPaymentDeletageAction");
 SOYShopPlugin::registerExtension("soyshop.payment.option","SOYShopPaymentDeletageAction");
-?>
