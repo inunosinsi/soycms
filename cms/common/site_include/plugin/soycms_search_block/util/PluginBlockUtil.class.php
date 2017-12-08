@@ -17,15 +17,24 @@ class PluginBlockUtil {
 				$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
 				$uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $pathInfo);
 				//トップページ
-				if($uri === (string)$blog->getTopPageUri() || is_null($blog->getTopPageUri())){
+				if(strlen($blog->getTopPageUri()) && $uri === (string)$blog->getTopPageUri()){
 					$template = $blog->getTopTemplate();
 					//アーカイブページ
-				}else if(strpos($uri, $blog->getCategoryPageUri()) === 0 || strpos($uri, $blog->getMonthPageUri()) === 0){
+				}else if(
+					(strlen($blog->getCategoryPageUri()) && strpos($uri, $blog->getCategoryPageUri()) === 0) ||
+					(strlen($blog->getMonthPageUri()) && strpos($uri, $blog->getMonthPageUri()) === 0)
+				){
 					$template = $blog->getArchiveTemplate();
 					//記事ごとページ
-				}else{
+				}else if(strlen($blog->getEntryPageUri()) && strpos($uri, $blog->getEntryPageUri()) === 0){
 					$template = $blog->getEntryTemplate();
 				}
+
+				//テンプレートがまだ空の場合 トップページのURIを調べて、空の場合はトップページのテンプレートを登録する
+				if(!strlen($template) && !strlen($blog->getTopPageUri())){
+					$template = $blog->getTopTemplate();
+				}
+
 			//ブログページ以外
 			}else{
 				$template = self::getPageById($pageId)->getTemplate();
