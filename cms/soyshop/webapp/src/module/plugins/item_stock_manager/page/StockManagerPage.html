@@ -67,6 +67,7 @@
 				</caption>
 				<thead>
 					<tr class="alC">
+						<th>&nbsp;</th>
 						<th nowrap><nobr>公開状態 </nobr></th>
 						<th nowrap><nobr>カテゴリ<a soy:id="sort_category">↓</a> <a soy:id="sort_category_desc">↑</a></nobr></th>
 						<th nowrap><nobr>商品名<a soy:id="sort_name">↓</a> <a soy:id="sort_name_desc">↑</a></nobr></th>
@@ -81,6 +82,7 @@
 
 					<!-- soy:id="item_list" -->
 					<tr>
+						<td><img soy:id="item_small_image"></td>
 						<td class="alC"><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
 						<td class="alC" soy:id="item_category">１</td>
 						<td soy:id="item_name">大豆</td>
@@ -92,7 +94,7 @@
 					<!-- /soy:id="item_list" -->
 
 					<tr class="pager">
-						<td colspan="7">
+						<td colspan="8">
 							<div class="pager_item">
 								<form soy:id="pager_jump">
 									<select soy:id="pager_select"></select>
