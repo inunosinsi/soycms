@@ -197,4 +197,3 @@ class ItemListComponent extends HTMLList{
         $this->appLimit = $appLimit;
     }
 }
-?>

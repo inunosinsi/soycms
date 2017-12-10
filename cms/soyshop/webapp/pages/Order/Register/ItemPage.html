@@ -20,82 +20,87 @@
 
 	<div class="block_body">
 
-	<form soy:id="form">
+		<form soy:id="form">
 
-	<h3>商品</h3>
-	<table class="form_table" id="order_content">
-		<thead>
-			<tr class="alC">
-				<th>削除</th>
-				<th>商品コード</th>
-				<th>商品名</th>
-				<th>単価</th>
-				<th>注文数</th>
-				<th>代金小計</th>
-			</tr>
-		</thead>
+			<h3>商品</h3>
+			<table class="form_table" id="order_content">
+				<thead>
+					<tr class="alC">
+						<th>削除</th>
+						<th>商品コード</th>
+						<th>商品名</th>
+						<th>単価</th>
+						<th>注文数</th>
+						<th>代金小計</th>
+					</tr>
+				</thead>
 
-		<tbody>
-			<!--  soy:id="item_list" -->
-			<tr>
-				<td class="alC"><input soy:id="item_delete" type="checkbox" /></td>
-				<td class="alC"><a soy:id="item_id">11</a></td>
-				<td>
-					<p soy:id="item_name_text">商品名</p>
-					<!-- soy:id="item_option_list" -->
-					<p><!-- soy:id="label" /-->:<input type="text" soy:id="option" /></p>
-					<!-- /soy:id="item_option_list" -->
-				</td>
-				<td class="alR"><!-- soy:id="item_price_text" /--> 円</td>
-				<td class="alR"><input type="text" soy:id="item_count" style="width:40px;" class="alR" /> 点</td>
-				<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
-			</tr>
-			<!--  /soy:id="item_list" -->
+				<tbody>
+					<!--  soy:id="item_list" -->
+					<tr>
+						<td class="alC"><input soy:id="item_delete" type="checkbox" /></td>
+						<td class="alC"><a soy:id="item_id">11</a></td>
+						<td>
+							<p soy:id="item_name_text">商品名</p>
+							<!-- soy:id="item_option_list" -->
+							<p><!-- soy:id="label" /-->:<input type="text" soy:id="option" /></p>
+							<!-- /soy:id="item_option_list" -->
+						</td>
+						<td class="alR"><!-- soy:id="item_price_text" /--> 円</td>
+						<td class="alR"><input type="text" soy:id="item_count" style="width:40px;" class="alR" /> 点</td>
+						<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
+					</tr>
+					<!--  /soy:id="item_list" -->
 
-			<tr id="add_item_by_code_template" style="display:none">
-				<td class="alC">&nbsp;</td>
-				<td class="alC"><input name="AddItemByCode[code][]" type="text" /></td>
-				<td class="alC">&nbsp;</td>
-				<td class="alR"></td>
-				<td class="alR"><input name="AddItemByCode[count][]" type="text" style="width:40px;" class="alR" /> 点</td>
-				<td class="alR">&nbsp;</td>
-			</tr>
+					<tr id="add_item_by_code_template" style="display:none;">
+						<td class="alC">&nbsp;</td>
+						<td class="alC"><input name="AddItemByCode[code][]" type="text" /></td>
+						<td class="alC">&nbsp;</td>
+						<td class="alR"></td>
+						<td class="alR"><input name="AddItemByCode[count][]" type="text" style="width:40px;" class="alR" /> 点</td>
+						<td class="alR">&nbsp;</td>
+					</tr>
 
-			<tr id="add_item_by_name_template" style="display:none">
-				<td class="alC">&nbsp;</td>
-				<td class="alC">&nbsp;</td>
-				<td class="alC"><input name="AddItemByName[name][]" type="text" style="width:320px;" /></td>
-				<td class="alR"><input name="AddItemByName[price][]" type="text" style="width:60px;" /> 円</td>
-				<td class="alR"><input name="AddItemByName[count][]" type="text" style="width:40px;" class="alR" /> 点</td>
-				<td class="alR">&nbsp;</td>
-			</tr>
+					<tr id="add_item_by_name_template" style="display:none">
+						<td class="alC">&nbsp;</td>
+						<td class="alC">&nbsp;</td>
+						<td class="alC"><input name="AddItemByName[name][]" type="text" style="width:320px;" /></td>
+						<td class="alR"><input name="AddItemByName[price][]" type="text" style="width:60px;" /> 円</td>
+						<td class="alR"><input name="AddItemByName[count][]" type="text" style="width:40px;" class="alR" /> 点</td>
+						<td class="alR">&nbsp;</td>
+					</tr>
 
-			<tr>
-				<td class="alC">&nbsp;</td>
-				<td colspan="4" class="alC">
-					<a class="button" id="add_item_by_code_button">登録済み商品から選ぶ</a>
-					<a class="button" id="add_item_by_name_button">未登録商品を指定する</a>
-				</td>
-				<td>&nbsp;</td>
-			</tr>
+					<tr>
+						<td class="alC">&nbsp;</td>
+						<td colspan="4" class="alC">
+							<a class="button" href="javascript:void(0);" onclick="return OptionWindow.popup();">商品検索して選ぶ</a>
+							<a class="button" id="add_item_by_code_button">登録済み商品から選ぶ</a>
+							<a class="button" id="add_item_by_name_button">未登録商品を指定する</a>
+						</td>
+						<td>&nbsp;</td>
+					</tr>
 
-			<tr>
-				<th colspan="5" class="alR" style="font-weight:bold;padding-right:1em;">代金合計</th>
-				<td class="alR">
-					<!-- soy:id="total_item_price" /--> 円
-				</td>
-			</tr>
+					<tr>
+						<th colspan="5" class="alR" style="font-weight:bold;padding-right:1em;">代金合計</th>
+						<td class="alR">
+							<!-- soy:id="total_item_price" /--> 円
+						</td>
+					</tr>
 
-		</tbody>
-	</table>
+				</tbody>
+			</table>
 
-	<p class="pageBtn">
-		<input type="submit" name="do_open" value="変更" style="width:180px;margin-right:50px;" />
+			<p class="pageBtn">
+				<input type="submit" name="do_open" value="変更" style="width:180px;margin-right:50px;" />
+			</p>
+		</form>
 	</div>
-
-	</form soy:id="form">
 </div>
 
+<div id="option_window_el" class="popup" style="display:none;">
+	<iframe id="item_search_window" soy:src="Order.Register.Item.Search"></iframe>
+	<p class="close"></p>
+</div>
 
 <script type="text/javascript">
 $('#add_item_by_code_button').click(function(){
