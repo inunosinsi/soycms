@@ -35,11 +35,13 @@ class DaibikiLogic extends SOY2LogicBase{
 		$prices = array();
 
 		//地域ごとの代引き手数料が設定されているか調べる
-		$area = $this->cart->getCustomerInformation()->getArea();
-		if(isset($area)){
-			$byRegionConfigs = PaymentDaibikiUtil::getPricesByRegionConfig();
-			if(isset($byRegionConfigs[$area])){
-				$prices = $byRegionConfigs[$area];
+		if(isset($this->cart)){
+			$area = $this->cart->getCustomerInformation()->getArea();
+			if(isset($area)){
+				$byRegionConfigs = PaymentDaibikiUtil::getPricesByRegionConfig();
+				if(isset($byRegionConfigs[$area])){
+					$prices = $byRegionConfigs[$area];
+				}
 			}
 		}
 
