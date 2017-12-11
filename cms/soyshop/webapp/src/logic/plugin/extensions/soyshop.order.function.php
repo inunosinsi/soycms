@@ -7,7 +7,9 @@ class SOYShopOrderFunction implements SOY2PluginAction{
 	 * title text
 	 */
 	function getTitle(){}
-	
+
+	function getDialogMessage(){}
+
 	/**
 	 * @return html
 	 */
@@ -28,9 +30,9 @@ class SOYShopOrderFunctionDelegateAction implements SOY2PluginDelegateAction{
 	private $orderId;
 
 	function run($extentionId,$moduleId,SOY2PluginAction $action){
-		
+
 		if(!$action instanceof SOYShopOrderFunction)return;
-		
+
 		$action->setOrderId($this->orderId);
 
 		switch($this->mode){
@@ -38,6 +40,7 @@ class SOYShopOrderFunctionDelegateAction implements SOY2PluginDelegateAction{
 				$this->_list[$moduleId] = array(
 					"moduleId" => $moduleId,
 					"name" => $action->getTitle(),
+					"dialog" => $action->getDialogMessage()
 				);
 				break;
 			case "select":
@@ -66,4 +69,3 @@ class SOYShopOrderFunctionDelegateAction implements SOY2PluginDelegateAction{
 
 }
 SOYShopPlugin::registerExtension("soyshop.order.function","SOYShopOrderFunctionDelegateAction");
-?>

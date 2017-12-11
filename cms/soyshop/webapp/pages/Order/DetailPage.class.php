@@ -104,9 +104,8 @@ class DetailPage extends WebPage{
 
     	parent::__construct();
 
-    	$this->addModel("sended", array(
-    		"visible" => (isset($_GET["sended"]))
-    	));
+		DisplayPlugin::toggle("sended", isset($_GET["sended"]));
+		DisplayPlugin::toggle("copy", isset($_GET["copy"]));
 
 		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		$order = $logic->getById($this->id);
