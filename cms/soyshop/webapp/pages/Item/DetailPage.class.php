@@ -614,7 +614,7 @@ class DetailPage extends WebPage{
 		));
 
 		$histories = array();
-		if(count($delegate->getList()) > 0){
+		if(is_array($delegate->getList()) && count($delegate->getList()) > 0){
 			foreach($delegate->getList() as $key => $values){
 				if(isset($values)){
 					foreach($values as $value){

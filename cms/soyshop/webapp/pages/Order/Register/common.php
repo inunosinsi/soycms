@@ -292,44 +292,43 @@ class ItemList extends HTMLList {
 			"text" => number_format($entity->getTotalPrice())
 		));
 
-		//管理画面で追加する商品オプション
-		//管理画面専用の全商品自動適用のテキストの商品オプションがデフォルトで追加されればこれは不要だろう
-		$this->addInput("item_option_value", array(
-				"name" => "Item[$id][itemAttribute]",
-				"value" => $this->cart->getAttribute("item_option_admin_{$id}_{$itemId}"),//この形式が大事 CommonItemOption->getCartAttributeId("admin", $id, $itemId)
-		));
-		$this->addLabel("item_option_value_text", array(
-				"text" => $this->cart->getAttribute("item_option_admin_{$id}_{$itemId}"),
-		));
-		$this->addModel("has_item_option_value", array(
-				"visible" => strlen($this->cart->getAttribute("item_option_admin_{$id}_{$itemId}")),
-		));
-
-		//商品オプションはもう少し仕様を考える
-		$html = SOYShopPlugin::display("soyshop.item.customfield", array(
-				"mode" => "outputFormForAdmin",
-				"item" => $item,
-				"htmlObj" => $this,
-				"nameBase" => "Item[" . $id."][attributes]",
-				"itemIndex" => $id,
-		));
-		$this->addLabel("item_option_form", array(
-				"html" => $html,
-				"visible" => true,//もう少し仕様を詰める
-		));
-
-		//商品オプションの表示
-		SOYShopPlugin::load("soyshop.item.option");
-		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
-			"mode" => "item",
-			"index" => $id,
-			"htmlObj" => $this
+		$opts = (get_class($entity) == "SOYShop_ItemOrder") ? self::getOptionList($entity) : array();
+		$this->createAdd("item_option_list", "OptionList", array(
+			"list" => $opts,
+			"orderId" => $id,
 		));
 
 		$this->addLabel("item_option", array(
-			"html" => $delegate->getHtmls()
+			"html" => (count($opts)) ? self::buildOptionList($opts) : null
 		));
+	}
 
+	private function getOptionList(SOYShop_ItemOrder $itemOrder){
+		if(!SOYShopPluginUtil::checkIsActive("common_item_option")) return array();
+		if(count($itemOrder->getAttributeList()) > 0) return $itemOrder->getAttributeList();
+
+		$list = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
+		if(!count($list)) return array();
+
+		$array = array();
+		foreach($list as $index => $value){
+			$array[$index] = "";
+		}
+
+		return $array;
+	}
+
+	private function buildOptionList($opts){
+		$list = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
+		if(!count($list)) return null;
+
+		$html = array();
+		foreach($opts as $optionId => $opt){
+			if(!isset($list[$optionId])) continue;
+			$html[] = $list[$optionId]["name"] . ":" . $opt;
+		}
+		
+		return implode("<br>", $html);
 	}
 
 	public function setCart($cart){
@@ -384,7 +383,6 @@ class OrderAttributeList extends HTMLList{
 class OptionList extends HTMLList{
 
 	private $orderId;
-	private $item;
 
 	function __construct(){
 		SOYShopPlugin::load("soyshop.item.option");
@@ -394,12 +392,22 @@ class OptionList extends HTMLList{
 
 		$id = $this->orderId;
 
+		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
+			"mode" => "edit",
+			"key" => $key
+		));
+
+		$this->addLabel("label", array(
+			"text" => $delegate->getLabel()
+		));
+
+		$this->addInput("option", array(
+			"name" => "Item[" . $id."][attributes][" . $key."]",
+			"value" => $entity
+		));
 	}
 
 	function setOrderId($orderId){
 		$this->orderId = $orderId;
-	}
-	function setItem($item){
-		$this->item = $item;
 	}
 }

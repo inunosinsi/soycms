@@ -25,16 +25,18 @@ class ItemPage extends WebPage{
 							continue;
 						}
 
-//						//商品オプションの配列はシリアライズしておく
-//						$newAttributes = (isset($newItems[$id]["attributes"])) ? $newItems[$id]["attributes"] : array();
-//						if(count($newAttributes) > 0){
-//							$newItems[$id]["attributes"] = @soy2_serialize($newItems[$id]["attributes"]);
-//						}
-
+						//商品オプションの配列はシリアライズしておく
+						$newAttributes = (isset($newItems[$id]["attributes"])) ? $newItems[$id]["attributes"] : array();
+						if(count($newAttributes) > 0){
+							$opt = (isset($newItems[$id]["attributes"]) && is_array($newItems[$id]["attributes"])) ? soy2_serialize($newItems[$id]["attributes"]) : null;
+							$items[$id]->setAttributes($opt);
+						}
 						$this->cart->updateItem($id, $count);
-						$this->cart->save();
 					}
 				}
+				//商品オプションの登録
+				$this->cart->setItems($items);
+				$this->cart->save();
 			}
 
 			if(
@@ -84,19 +86,6 @@ class ItemPage extends WebPage{
 		}
 	}
 
-/*
-	function getOptionIndex(){
-		$logic = new ItemOptionLogic();
-		$list = $logic->getOptions();
-		$empty = array();
-
-		foreach($list as $index => $value){
-			$empty[$index] = "";
-		}
-
-		return $empty;
-	}
-*/
 	function __construct($args) {
 		$this->cart = AdminCartLogic::getCart();
 		parent::__construct();
