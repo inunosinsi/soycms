@@ -30,7 +30,7 @@ class EditPage extends WebPage{
 				$_change = $this->updateOrderAttribute($order, $_POST["Attribute"]);
 				$change = array_merge($change, $_change);
 			}
-			
+
 			if(isset($_POST["Customfield"])){
 				$_change = $this->updateOrderCustomfield($order, $_POST["Customfield"]);
 				$change = array_merge($change, $_change);
@@ -173,7 +173,7 @@ class EditPage extends WebPage{
 						}else{
 							continue;
 						}
-						
+
 						$itemOrder = new SOYShop_ItemOrder();
 						$itemOrder->setOrderId($this->id);
 						$itemOrder->setItemId($item->getId());
@@ -181,7 +181,7 @@ class EditPage extends WebPage{
 						$itemOrder->setItemPrice($item->getSellingPrice());
 						$itemOrder->setTotalPrice($item->getSellingPrice() * $count);
 						$itemOrder->setItemName($item->getName());
-	
+
 						$newItemOrders[] = $itemOrder;
 						$itemChange[] = $itemOrder->getItemName() . "（" . $item->getCode() . " " . $itemOrder->getItemPrice() . "円×" . $itemOrder->getItemCount() . "点）を追加しました。";
 					}
@@ -190,9 +190,9 @@ class EditPage extends WebPage{
 
 			//変更実行
 			if(count($change) > 0 || count($itemChange) > 0){
-				
+
 				/*
-				 * 
+				 *
 				 * * 料金を再計算
 				 */
 				$price = 0;
@@ -205,26 +205,26 @@ class EditPage extends WebPage{
 				}
 
 				$modules = $order->getModuleList();
-				
+
 				//モジュール分の加算
 				$modulePrice = 0;
-				
+
 				$moduleDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 				foreach($modules as $moduleId => $module){
-					
+
 					//税金関係の場合はモジュールから削除して、後で再計算して登録
 					if($moduleId === "consumption_tax") {
 						unset($modules[$moduleId]);
 						continue;
 					}
-					
+
 					//モジュールの再計算のための拡張ポイントを利用する
 					try{
 						$moduleObj = $moduleDao->getByPluginId($moduleId);
 					}catch(Exception $e){
 						$moduleObj = null;
 					}
-					
+
 					if(isset($moduleObj)){
 						SOYShopPlugin::load("soyshop.order.module", $moduleObj);
 						$delegate = SOYShopPlugin::invoke("soyshop.order.module", array(
@@ -239,11 +239,11 @@ class EditPage extends WebPage{
 							$modules[$moduleId] = $module;
 						}
 					}
-					
+
 					//モジュールを合算に含めるか調べてから足す
 					if(!$module->getIsInclude()) $modulePrice += $module->getPrice();
-				}				
-				
+				}
+
 				/**
 				 * @ToDo 税金の再計算
 				 */
@@ -252,10 +252,10 @@ class EditPage extends WebPage{
 				if(isset($module)) $modules["consumption_tax"] = $module;
 
 				$price += $modulePrice;
-				
+
 				//外税の場合は加算
 				if(isset($modules["consumption_tax"]) && !$modules["consumption_tax"]->getIsInclude()) $price += $modules["consumption_tax"]->getPrice();
-				
+
 				$order->setModules($modules);
 				$order->setPrice($price);
 
@@ -300,11 +300,13 @@ class EditPage extends WebPage{
 					SOY2PageController::jump("Order.Edit." . $this->id . "?failed");
 				}
 
-				SOY2PageController::jump("Order.Detail." . $this->id . "?updated");
+				//SOY2PageController::jump("Order.Detail." . $this->id . "?updated");
+				SOY2PageController::jump("Order.Edit." . $this->id . "?updated");
 			}
 
 			//変更なし
-			SOY2PageController::jump("Order.Detail." . $this->id);
+			//SOY2PageController::jump("Order.Detail." . $this->id);
+			SOY2PageController::jump("Order.Edit." . $this->id);
 		}
 	}
 
@@ -312,14 +314,14 @@ class EditPage extends WebPage{
 	private function calculateConsumptionTax($price, $modulePrice){
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$config = SOYShop_ShopConfig::load();
-		
+
 		$total = $price;
-		
+
 		//モジュール分の加算
 		if($config->getConsumptionTaxInclusiveCommission()){
 			$total += $modulePrice;
 		}
-			
+
 		//$cart->calculateConsumptionTax();
 		if($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON){
 			//外税(プラグインによる処理)
@@ -327,14 +329,14 @@ class EditPage extends WebPage{
 		}elseif($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON){
 			//内税(標準実装)
 			return self::setConsumptionTaxInclusivePricing($config, $total);
-			
+
 		}else{
 			//何もしない
 		}
-			
+
 		return null;
 	}
-	
+
 	//外税
 	private function setConsumptionTax($config, $total){
 		$pluginId = $config->getConsumptionTaxModule();
@@ -357,11 +359,11 @@ class EditPage extends WebPage{
 			"total" => $total
 		))->getModule();
 	}
-	
+
 	//内税
 	private function setConsumptionTaxInclusivePricing($config, $total){
 		$taxRate = (int)$config->getConsumptionTaxInclusivePricingRate();	//内税率
-				
+
 		if($taxRate === 0) return null;
 
 		$module = new SOYShop_ItemModule();
@@ -371,7 +373,7 @@ class EditPage extends WebPage{
 		//内税の計算は8%の場合はtax = total / 1.08で計算する
 		$module->setPrice(floor($total - ($total / (1 + $taxRate / 100))));
 		$module->setIsInclude(true);	//合計に合算されない
-					
+
 		return $module;
 	}
 
@@ -644,7 +646,7 @@ class EditPage extends WebPage{
 		$change = array();
 
 		$address = $order->getAddressArray();
-		
+
 		if($address["office"] != $newAddress["office"])		$change[]=$this->getHistoryText("宛先",$address["office"],$newAddress["office"]);
 		if($address["name"] != $newAddress["name"])			$change[]=$this->getHistoryText("宛先",$address["name"],$newAddress["name"]);
 		if($address["reading"] != $newAddress["reading"])	$change[]=$this->getHistoryText("宛先",$address["reading"],$newAddress["reading"]);
@@ -684,12 +686,12 @@ class EditPage extends WebPage{
 	 */
 	function updateOrderCustomfield(SOYShop_Order $order, $newCustomfields){
 		$change = array();
-		
+
 		$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
 			"mode" => "config",
 			"orderId" => $order->getId()
 		));
-		
+
 		$list = (is_array($delegate->getList())) ? $delegate->getList() : array();
 		//扱いやすい配列に変える
 		$array = array();
@@ -700,13 +702,13 @@ class EditPage extends WebPage{
 				}
 			}
 		}
-		
+
 		$dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
 		$dateDao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
 	   	foreach($array as $key => $obj){
 	   		$newValue1 = null;
 			$newValue2 = null;
-	   		
+
 			switch($obj["type"]){
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_INPUT:
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
@@ -718,7 +720,7 @@ class EditPage extends WebPage{
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
 					$newValue1 = (isset($newCustomfields[$key])) ? $newCustomfields[$key] : null;
-					
+
 					//その他を選んだとき
 					if(isset($obj["value1"]) && $newCustomfields[$key] == trim($obj["value1"])){
 						$newValue2 = (isset($newCustomfields[$key . "_other_text"])) ? $newCustomfields[$key . "_other_text"] : null;
@@ -844,7 +846,7 @@ class EditPage extends WebPage{
 			"mode" => "edit",
 			"orderId" => $orderId
 		));
-		
+
 		$array = array();
 		foreach($delegate->getLabel() as $obj){
 			if(is_array($obj)){
