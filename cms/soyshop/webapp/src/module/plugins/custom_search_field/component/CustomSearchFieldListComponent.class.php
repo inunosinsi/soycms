@@ -98,7 +98,7 @@ class CustomSearchFieldListComponent extends HTMLList{
         ));
 
         $this->addLabel("checkbox_tag_supple", array(
-            "html" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX) ? self::buildCheckBoxSuppleTag($key, $entity["option"]) : ""
+            "html" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX && isset($entity["option"])) ? self::buildCheckBoxSuppleTag($key, $entity["option"]) : ""
         ));
 
         $this->addInput("update_advance_submit", array(
