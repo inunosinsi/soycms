@@ -224,12 +224,13 @@ class EditPage extends WebPage{
 					}catch(Exception $e){
 						$moduleObj = null;
 					}
-
+					
 					if(isset($moduleObj)){
 						SOYShopPlugin::load("soyshop.order.module", $moduleObj);
 						$delegate = SOYShopPlugin::invoke("soyshop.order.module", array(
 							"mode" => "edit",
 							"module" => $module,
+							"orderId" => $this->id,
 							"total" => $price,
 							"itemOrders" => array_merge($itemOrders, $newItemOrders)
 						));

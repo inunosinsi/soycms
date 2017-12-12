@@ -730,7 +730,7 @@ class UserComponent {
 		}else{
 			$app->removeErrorMessage("customfield");
 		}
-
+		
 		return $res;
 	}
 

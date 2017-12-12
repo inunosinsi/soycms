@@ -84,18 +84,18 @@
 				<tr>
 					<th>郵便番号</th>
 					<td>
-						<input type="text" soy:id="post_number" name="" value="" size="20" />
-						<!--input type="submit" name="user_zip_search" value="検索" /-->
+						<input type="text" soy:id="post_number" name="" value="" size="20" class="input-zip">
+						<a href="javascript:void(0);" class="search-btn button">検索</a>
 					</td>
 				</tr>
 				<tr>
 					<th>住所</th>
 					<td>
-						<select soy:id="area">
+						<select soy:id="area" class="input-pref">
 							<option value="">▼選択</option>
 						</select>
-						<input type="text" name="" value="" soy:id="address1" size="40" /><br />
-						<input type="text" name="" value="" soy:id="address2" size="60" />
+						<input type="text" name="" value="" soy:id="address1" size="40" class="input-city"><br>
+						<input type="text" name="" value="" soy:id="address2" size="60" class="input-town">
 					</td>
 				</tr>
 				<tr>
@@ -124,3 +124,5 @@
 
 	</div>
 </div>
+
+<script type="text/javascript" soy:id="zip2address_js"></script><!--住所検索-->

@@ -188,6 +188,10 @@ class UserPage extends WebPage{
 		//クリア
 		$this->session->setAttribute("order_register.input.user", null);
 		$this->session->setAttribute("order_register.error.user", null);
+
+		$this->addModel("zip2address_js", array(
+			"src" => soyshop_get_site_url() . "themes/common/js/zip2address.js"
+		));
    }
 
 	function getCSS(){

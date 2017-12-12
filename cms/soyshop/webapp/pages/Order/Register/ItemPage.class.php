@@ -15,12 +15,13 @@ class ItemPage extends WebPage{
 				$items = $this->cart->getItems();
 
 				$newItems = $_POST["Item"];
+				$counts = array();
 				foreach($items as $id => $itemOrder){
 					if(isset($newItems[$id]) && is_array($newItems[$id])){
 						if( isset($newItems[$id]["itemDelete"]) && $newItems[$id]["itemDelete"] ){
-							$count = 0;
+							$counts[$id] = 0;
 						}elseif(isset($newItems[$id]["itemCount"]) && is_numeric($newItems[$id]["itemCount"]) && $newItems[$id]["itemCount"] > 0){
-							$count = $newItems[$id]["itemCount"];
+							$counts[$id] = $newItems[$id]["itemCount"];
 						}else{
 							continue;
 						}
@@ -31,12 +32,17 @@ class ItemPage extends WebPage{
 							$opt = (isset($newItems[$id]["attributes"]) && is_array($newItems[$id]["attributes"])) ? soy2_serialize($newItems[$id]["attributes"]) : null;
 							$items[$id]->setAttributes($opt);
 						}
-						$this->cart->updateItem($id, $count);
+						//$items[$id]->setItemCount($count);
 					}
 				}
 				//商品オプションの登録
 				$this->cart->setItems($items);
-				$this->cart->save();
+
+				//個数変更や削除
+				foreach($items as $id => $itemOrder){
+					$this->cart->updateItem($id, $counts[$id]);
+					$this->cart->save();
+				}
 			}
 
 			if(
