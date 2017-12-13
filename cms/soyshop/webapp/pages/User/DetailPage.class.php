@@ -404,6 +404,12 @@ class DetailPage extends WebPage{
 	private function buildProfileForm(SOYShop_User $user){
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		DisplayPlugin::toggle("profile_items", SOYShop_ShopConfig::load()->getDisplayUserProfileItems());
+
+		DisplayPlugin::toggle("profile_confirm", $user->getIsProfileDisplay() == SOYShop_User::PROFILE_IS_DISPLAY);
+		$this->addLink("profile_confirm_link", array(
+			"link" => soyshop_get_mypage_url() . "/profile/" . $user->getProfileId(),
+			"target" => "_blank"
+		));
 	}
 
 	/**

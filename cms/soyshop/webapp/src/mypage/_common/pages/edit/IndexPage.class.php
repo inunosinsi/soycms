@@ -60,15 +60,14 @@ class IndexPage extends MainMyPagePageBase{
 				$postUser = (object)$customer;
 				$user = SOY2::cast($user, $postUser);
 
-				$isProfileDisplay = (isset($_POST["Customer"]["isProfileDisplay"]) && (int)$_POST["Customer"]["isProfileDisplay"] > 0);
+				$isProfileDisplay = (isset($_POST["Customer"]["isProfileDisplay"]) && (int)$_POST["Customer"]["isProfileDisplay"] > 0) ? 1 : 0;
 				$user->setIsProfileDisplay($isProfileDisplay);
 
 				$userLogic = SOY2Logic::createInstance("logic.user.UserLogic");
 
 				//プロフィールページ用のアカウントを作成
 				if($isProfileDisplay && strlen($user->getProfileId()) === 0){
-					$profileId = $userLogic->createProfileId($user);
-					$user->setProfileId($profileId);
+					$user->setProfileId($userLogic->createProfileId($user));
 				}
 
 				//画像の削除

@@ -18,12 +18,16 @@ class ItemPage extends WebPage{
 				$counts = array();
 				foreach($items as $id => $itemOrder){
 					if(isset($newItems[$id]) && is_array($newItems[$id])){
+						//商品の金額
+						if(isset($newItems[$id]["itemPrice"]) && is_numeric($newItems[$id]["itemPrice"])){
+							$items[$id]->setItemPrice((int)$newItems[$id]["itemPrice"]);
+						}
+
+						//商品個数
 						if( isset($newItems[$id]["itemDelete"]) && $newItems[$id]["itemDelete"] ){
 							$counts[$id] = 0;
-						}elseif(isset($newItems[$id]["itemCount"]) && is_numeric($newItems[$id]["itemCount"]) && $newItems[$id]["itemCount"] > 0){
+						}else if(isset($newItems[$id]["itemCount"]) && is_numeric($newItems[$id]["itemCount"]) && $newItems[$id]["itemCount"] > 0){
 							$counts[$id] = $newItems[$id]["itemCount"];
-						}else{
-							continue;
 						}
 
 						//商品オプションの配列はシリアライズしておく

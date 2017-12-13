@@ -15,7 +15,7 @@ class ConfirmPage extends IndexPage{
 
 				//セッションから取得（ただしIDが空）
 				$user = $mypage->getUserInfo();
-
+				
 				$imagePath = "";
 
 				//削除フラグがある場合はimagePathをnullにして更新した後、画像を削除する

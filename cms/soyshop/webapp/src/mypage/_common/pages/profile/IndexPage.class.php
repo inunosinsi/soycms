@@ -2,83 +2,83 @@
 
 class IndexPage extends MainMyPagePageBase{
 
-	private $userId;
+	private $displayUserId;
 
 	function __construct($args){
 		//このページはログイン関係なく閲覧できるので、ログインチェックは行わない
 		$mypage = MyPageLogic::getMyPage();
 
 		$profileId = (isset($args[0])) ? $args[0] : null;
-		$user = $mypage->getProfileUser($profileId);
+		$displayUser = $mypage->getProfileUser($profileId);
 
 		//ユーザがプロフィールページの閲覧を許可していない場合は前のページかトップページに飛ばす
-		if($user->getIsProfileDisplay() != SOYShop_User::PROFILE_IS_DISPLAY){
+		if($displayUser->getIsProfileDisplay() != SOYShop_User::PROFILE_IS_DISPLAY){
 			soyshop_redirect_from_profile();
 		}
 
-		$this->userId = $user->getId();
+		$this->userId = $displayUser->getId();
 
 		parent::__construct();
 
 		$this->addLabel("profile_name", array(
-			"text" => $user->getDisplayName()
+			"text" => $displayUser->getDisplayName()
 		));
 
-		self::buildProfile($user);
+		self::buildProfile($displayUser);
 	}
 
-	private function buildProfile(SOYShop_User $user){
+	private function buildProfile(SOYShop_User $displayUser){
 
-		DisplayPlugin::toggle("nickname", (strlen($user->getNickname()) > 0));
+		DisplayPlugin::toggle("nickname", (strlen($displayUser->getNickname()) > 0));
 		$this->addModel("is_nickname", array(
-			"visible" => (strlen($user->getNickname()) > 0)
+			"visible" => (strlen($displayUser->getNickname()) > 0)
 		));
 
 		$this->addLabel("nickname", array(
-			"text" => $user->getNickname()
+			"text" => $displayUser->getNickname()
 		));
 
-		DisplayPlugin::toggle("image", (strlen($user->getImagePath()) > 0));
+		DisplayPlugin::toggle("image", (strlen($displayUser->getImagePath()) > 0));
 		$this->addModel("is_image", array(
-			"visible" => (strlen($user->getImagePath()))
+			"visible" => (strlen($displayUser->getImagePath()))
 		));
 
-		$userLogic = SOY2Logic::createInstance("logic.user.UserLogic");
-		$width = $userLogic->getDisplayImage($user);
+		$displayUserLogic = SOY2Logic::createInstance("logic.user.UserLogic");
+		$width = $displayUserLogic->getDisplayImage($displayUser);
 		$this->addImage("image", array(
-			"src"     => $user->getAttachmentsUrl() . $user->getImagePath(),
-    		"visible" => (strlen($user->getImagePath()) > 0),
+			"src"     => $displayUser->getAttachmentsUrl() . $displayUser->getImagePath(),
+    		"visible" => (strlen($displayUser->getImagePath()) > 0),
     		"style"   => "width:" . $width . "px;"
 		));
 
-		DisplayPlugin::toggle("gender", (!is_null($user->getGender())));
+		DisplayPlugin::toggle("gender", (!is_null($displayUser->getGender())));
 		$this->addModel("is_gender", array(
-			"visible" => (!is_null($user->getGender()))
+			"visible" => (!is_null($displayUser->getGender()))
 		));
 
 		$this->addLabel("gender", array(
-			"text" => ((int)$user->getGender() === SOYShop_User::USER_SEX_MALE) ? MessageManager::get("SEX_MALE") :
-			        ( ((int)$user->getGender() === SOYShop_User::USER_SEX_FEMALE) ? MessageManager::get("SEX_FEMALE") : "" )
+			"text" => ((int)$displayUser->getGender() === SOYShop_User::USER_SEX_MALE) ? MessageManager::get("SEX_MALE") :
+			        ( ((int)$displayUser->getGender() === SOYShop_User::USER_SEX_FEMALE) ? MessageManager::get("SEX_FEMALE") : "" )
 		));
 
-		DisplayPlugin::toggle("url", (strlen($user->getUrl()) > 0));
+		DisplayPlugin::toggle("url", (strlen($displayUser->getUrl()) > 0));
 		$this->addModel("is_url", array(
-			"visible" => (strlen($user->getUrl()) > 0)
+			"visible" => (strlen($displayUser->getUrl()) > 0)
 		));
 
 		$this->addLink("url", array(
-			"link" => $user->getUrl(),
-			"text" => $user->getUrl(),
+			"link" => $displayUser->getUrl(),
+			"text" => $displayUser->getUrl(),
 			"target" => "_blank"
 		));
 
-		DisplayPlugin::toggle("memo", (strlen($user->getMemo()) > 0));
+		DisplayPlugin::toggle("memo", (strlen($displayUser->getMemo()) > 0));
 		$this->addModel("is_memo", array(
-			"visible" => (strlen($user->getMemo()) > 0)
+			"visible" => (strlen($displayUser->getMemo()) > 0)
 		));
 
 		$this->addLabel("memo", array(
-			"html" => nl2br($user->getMemo())
+			"html" => nl2br($displayUser->getMemo())
 		));
 	}
 }
