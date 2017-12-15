@@ -4,36 +4,36 @@ SOY2HTMLFactory::importWebPage("message.IndexPage");
 class ConfirmPage extends IndexPage{
 
 	function doPost(){
-		
+
 		if(soy2_check_token()){
-			
+
 			if(isset($_POST["post"])){
 				$mypage = MyPageLogic::getMyPage();
 				$user = $this->getUser();
-				
+
 				$post = $this->getPost("front_message_post");
-				
+
 				$post->setUserId($user->getId());
-				
+
 				//念の為にownerNameをnullにしておく
 				$post->setOwnerName(null);
-				
+
 				$postDao = $this->postDao;
 				try{
 					$postDao->insert($post);
 					SOY2::import("domain.config.SOYShop_ServerConfig");
 					$serverConf = SOYShop_ServerConfig::load();
 					$administratorMail = $serverConf->getAdministratorMailAddress();
-					
+
 					$this->send($administratorMail,$post);
-					
+
 					$this->jump("message/complete");
 				}catch(Exception $e){
 					var_dump($e);
 				}
 			}
-			
-			
+
+
 			if(isset($_POST["back"])){
 				$this->jump("message");
 			}
@@ -41,37 +41,35 @@ class ConfirmPage extends IndexPage{
 	}
 
 	function __construct() {
-		
-		$mypage = MyPageLogic::getMyPage();
-		if(!$mypage->getIsLoggedin())$this->jump("login");//ログインしていなかったら飛ばす
-		$user = $this->getUser();
-		
+		$this->checkIsLoggedIn(); //ログインチェック
+
 		$oldDaoDir = SOY2DAOConfig::DaoDir();
 		$oldEntityDir = SOY2DAOConfig::EntityDir();
-		
+
 		$daoDir = str_replace("/soyshop/","/app/",$oldDaoDir);
 		$daoDir = str_replace("src/domain","message/src/domain",$daoDir);
-		
+
 		SOY2DAOConfig::DaoDir($daoDir);
 		SOY2DAOConfig::EntityDir($daoDir);
-		
+
 		$this->postDao = SOY2DAOFactory::create("SOYMessage_PostDAO");
-		
+
 		parent::__construct();
-		
+
+		$user = $this->getUser();
 		$this->addLabel("user_name", array(
 			"text" => $user->getName()
 		));
-		
+
 		$this->addForm("form");
-		
+
 		$this->buildForm();
-		
+
 		SOY2DAOConfig::DaoDir($oldDaoDir);
 		SOY2DAOConfig::EntityDir($oldEntityDir);
-		
+
 	}
-	
+
 	function send($to,$post){
 
 		//管理者向け
@@ -84,7 +82,7 @@ class ConfirmPage extends IndexPage{
 
     	$serverConfig = SOYShop_ServerConfig::load();
 		$mailLogic->sendMail($to,$title,$content,"テストメール送信先");
-		
+
 		//利用者向け
 		$title = "ご質問を登録しました";
     	$content = $user->getName() . "様 " .

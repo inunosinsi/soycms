@@ -34,28 +34,17 @@ class ConfirmPage extends EditPage{
 	}
 
 	function __construct($args){
+		$this->checkIsLoggedIn(); //ログインチェック
+		if(!isset($args[0])) $this->jump("address");
 
-		if(isset($args[0])){
-			$this->address_key = $args[0];
-		}else{
-			$this->jump("address");
-		}
-
-		$mypage = MyPageLogic::getMyPage();
-
-		//ログインしていなかったら飛ばす
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
+		$this->address_key = $args[0];
 
 		parent::__construct();
 
-		$address = $mypage->getAttribute("address");
+		$address = MyPageLogic::getMyPage()->getAttribute("address");
 
 		//送付先フォーム
 		$this->buildSendForm($address);
-
 		$this->addForm("form");
 	}
 }
-?>

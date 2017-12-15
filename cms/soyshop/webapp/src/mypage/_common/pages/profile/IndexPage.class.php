@@ -6,10 +6,9 @@ class IndexPage extends MainMyPagePageBase{
 
 	function __construct($args){
 		//このページはログイン関係なく閲覧できるので、ログインチェックは行わない
-		$mypage = MyPageLogic::getMyPage();
 
 		$profileId = (isset($args[0])) ? $args[0] : null;
-		$displayUser = $mypage->getProfileUser($profileId);
+		$displayUser = MyPageLogic::getMyPage()->getUserByProfileId($profileId);
 
 		//ユーザがプロフィールページの閲覧を許可していない場合は前のページかトップページに飛ばす
 		if($displayUser->getIsProfileDisplay() != SOYShop_User::PROFILE_IS_DISPLAY){

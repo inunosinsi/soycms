@@ -3,14 +3,8 @@
 class TopPage extends MainMyPagePageBase{
 
     function __construct() {
-
+		$this->checkIsLoggedIn(); //ログインチェック
 		if(!class_exists("SOYShopPluginUtil")) SOY2::import("util.SOYShopPluginUtil");
-		$mypage = MyPageLogic::getMyPage();
-
-		//ログインチェック
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
 
 		parent::__construct();
 
@@ -91,4 +85,3 @@ class TopPage extends MainMyPagePageBase{
     	));
     }
 }
-?>

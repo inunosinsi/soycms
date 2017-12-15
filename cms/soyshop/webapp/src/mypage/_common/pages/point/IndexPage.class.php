@@ -7,18 +7,10 @@ class IndexPage extends MainMyPagePageBase{
 	private $limit = 15;
 
 	function __construct($args) {
+		$this->checkIsLoggedIn(); //ログインチェック
 
 		//ポイント制導入プラグインがアクティブでない場合はトップページに飛ばす
-		if(!SOYShopPluginUtil::checkIsActive("common_point_base")){
-			$this->jumpToTop();
-		}
-
-		$mypage = MyPageLogic::getMyPage();
-
-		//ログインしていない場合はログイン画面に飛ばす
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
+		if(!SOYShopPluginUtil::checkIsActive("common_point_base")) $this->jumpToTop();
 
 		parent::__construct();
 

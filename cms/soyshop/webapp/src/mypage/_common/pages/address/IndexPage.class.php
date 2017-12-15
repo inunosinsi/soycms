@@ -2,16 +2,10 @@
 class IndexPage extends MainMyPagePageBase{
 
 	function __construct(){
-
-		$mypage = MyPageLogic::getMyPage();
-		
-		//ログインしていなかったら飛ばす
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
+		$this->checkIsLoggedIn(); //ログインチェック
 
 		//編集中のセッションが残っている可能性があるので消しておく
-		$mypage->clearAttribute("address");
+		MyPageLogic::getMyPage()->clearAttribute("address");
 
 		parent::__construct();
 

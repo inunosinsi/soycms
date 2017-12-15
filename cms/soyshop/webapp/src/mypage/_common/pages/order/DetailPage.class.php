@@ -12,18 +12,10 @@ class DetailPage extends MainMyPagePageBase{
     }
 
     function __construct($args){
-
-        $mypage = MyPageLogic::getMyPage();
-
-        //ログインチェック
-        if(!$mypage->getIsLoggedin()){
-            $this->jump("login");
-        }
+		$this->checkIsLoggedIn(); //ログインチェック
 
         //orderIdがない場合はorderトップへ戻す
-        if(!isset($args[0])){
-            $this->jump("order");
-        }
+        if(!isset($args[0])) $this->jump("order");
 
         parent::__construct();
 

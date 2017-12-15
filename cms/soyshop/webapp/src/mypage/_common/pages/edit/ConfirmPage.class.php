@@ -15,7 +15,7 @@ class ConfirmPage extends IndexPage{
 
 				//セッションから取得（ただしIDが空）
 				$user = $mypage->getUserInfo();
-				
+
 				$imagePath = "";
 
 				//削除フラグがある場合はimagePathをnullにして更新した後、画像を削除する
@@ -67,19 +67,14 @@ class ConfirmPage extends IndexPage{
 	}
 
 	function __construct(){
-
-		$mypage = MyPageLogic::getMyPage();
-
-		//すでにログインしていなかったら飛ばす
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
+		$this->checkIsLoggedIn(); //ログインチェック
 
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 
 		parent::__construct();
 
+		$mypage = MyPageLogic::getMyPage();
 		$user = $mypage->getUserInfo();
 
 		//直接URLを入力された場合は、入力フォームに戻す

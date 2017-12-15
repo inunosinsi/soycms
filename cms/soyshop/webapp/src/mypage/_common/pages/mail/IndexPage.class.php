@@ -1,27 +1,21 @@
 <?php
 
 class IndexPage extends MainMyPagePageBase{
-	
+
 	//表示件数
 	private $limit = 15;
 
 	function __construct($args){
-		
-		$mypage = MyPageLogic::getMyPage();
-		
-		//ログインチェック
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
-		
+		$this->checkIsLoggedIn(); //ログインチェック
+
 		parent::__construct();
-		
+
 		$user = $this->getUser();
-		
+
 		$this->addLabel("user_name", array(
 			"text" => $user->getName()
 		));
-		
+
 		/*引数など取得*/
 		//表示件数
 		$limit = $this->limit;
@@ -30,7 +24,7 @@ class IndexPage extends MainMyPagePageBase{
 			$page = $_GET["page"];
 		}
 		$page = max(1, $page);
-		
+
 		$offset = ($page - 1) * $limit;
 
 		$searchLogic = SOY2Logic::createInstance("logic.mail.SearchMailLogLogic");
@@ -42,7 +36,7 @@ class IndexPage extends MainMyPagePageBase{
 		$searchLogic->setSearchConditionForMyPage($user->getId());
 		$total = $searchLogic->getTotalCount();
 		$logs = $searchLogic->getLogs();
-		
+
 		//ページャーの作成
 		$start = $offset + 1;
 		$end = $offset + count($logs);
@@ -57,14 +51,14 @@ class IndexPage extends MainMyPagePageBase{
 		//$pager->setQuery(array("search" => $search));
 
 		$pager->buildPager($this);
-		
+
 		$this->addModel("has_log", array(
 			"visible" => (boolean)$total
 		));
 		$this->addModel("no_log", array(
 			"visible" => !( (boolean)$total )
 		));
-		
+
 		$this->createAdd("mail_log_list", "_common.mail.MailLogListComponent", array(
 			"list" => $logs
 		));
@@ -74,4 +68,3 @@ class IndexPage extends MainMyPagePageBase{
 		));
 	}
 }
-?>

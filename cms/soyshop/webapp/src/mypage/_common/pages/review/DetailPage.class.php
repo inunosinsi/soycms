@@ -11,7 +11,7 @@ class DetailPage extends MainMyPagePageBase{
 	function doPost(){
 
 		if(soy2_check_token() && isset($_POST["Review"])){
-			
+
 			try{
 				$oldReview = $this->reviewDao->getByIdAndUserId($this->id, $this->user->getId());
 			}catch(Exception $e){
@@ -22,10 +22,10 @@ class DetailPage extends MainMyPagePageBase{
 			if($oldReview->getUserId() != $this->getUserId()){
 				return false;
 			}
-			
+
 			$postReview = (object)$_POST["Review"];
 			$review = SOY2::cast($oldReview, $postReview);
-			
+
 			//ユーザIDの変更を不許可
 			$review->setUserId($this->user->getId());
 			try{
@@ -38,51 +38,41 @@ class DetailPage extends MainMyPagePageBase{
 	}
 
     function __construct($args) {
-
-    	$mypage = MyPageLogic::getMyPage();
-    	
-    	//ログインチェック
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
+		$this->checkIsLoggedIn(); //ログインチェック
 
 		//レビュープラグインがアクティブでない場合はマイページトップへ飛ばす
-		if(!SOYShopPluginUtil::checkIsActive("item_review")){
-			$this->jumpToTop();
-		}
+		if(!SOYShopPluginUtil::checkIsActive("item_review")) $this->jumpToTop();
 
 		//IDが存在していない場合は、レビュー一覧に飛ばす
-		if(!isset($args[0])){
-			$this->jump("review");
-		}
-		
+		if(!isset($args[0])) $this->jump("review");
+
 		$this->id = (int)$args[0];
-		
+
 		$this->user = $this->getUser();
 		$this->reviewDao = SOY2DAOFactory::create("SOYShop_ItemReviewDAO");
 
 		parent::__construct();
-		
+
 		try{
 			$review = $this->reviewDao->getByIdAndUserId($this->id, $this->user->getId());
 		}catch(Exception $e){
 			$review = new SOYShop_ItemReview();
 		}
-		
+
 		//ユーザIDがnullの場合はレビュートップに飛ばす
 		if(is_null($review->getUserId())){
 			$this->jump("review");
 		}
-		
+
 		//レビューの投稿者とログインユーザが一致しない場合もレビュートップに飛ばす
 		if($review->getUserId() != $this->user->getId()){
 			$this->jump("review");
 		}
-		
+
 		$this->addModel("update", array(
 			"visible" => (isset($_GET["update"]))
 		));
-		
+
 		$this->addModel("failed", array(
 			"visible" => (isset($_GET["failed"]))
 		));
@@ -117,7 +107,7 @@ class DetailPage extends MainMyPagePageBase{
 			"name" => "Review[title]",
 			"value" => $review->getTitle()
 		));
-		
+
     	$this->addTextArea("content", array(
     		"name" => "Review[content]",
     		"value" => $review->getContent()
@@ -132,11 +122,11 @@ class DetailPage extends MainMyPagePageBase{
     	$this->addLabel("is_approved", array(
     		"text" => ($review->getIsApproved()) ? MessageManager::get("STATUS_ALLOW") : MessageManager::get("STATUS_REFUSE")
     	));
-    	
+
     	$this->addLabel("create_date", array(
 			"text" => date("Y年n月j日 H:i", $review->getCreateDate())
 		));
-		
+
 		$this->addLabel("update_date", array(
 			"text" => date("Y年n月j日 H:i", $review->getUpdateDate())
 		));
@@ -156,4 +146,3 @@ class DetailPage extends MainMyPagePageBase{
 		return $item;
 	}
 }
-?>

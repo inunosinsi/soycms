@@ -57,20 +57,13 @@ class EditPage extends MainMyPagePageBase{
 	}
 
 	function __construct($args){
+		$this->checkIsLoggedIn(); //ログインチェック
 
 		$this->address_key = isset($args[0]) ? $args[0] : 0 ;
-
-		$mypage = MyPageLogic::getMyPage();
-		
-		//ログインしていなかったら飛ばす
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
-
 		parent::__construct();
 
 		//セッションの値があればそれを使う
-		$address = $mypage->getAttribute("address");
+		$address = MyPageLogic::getMyPage()->getAttribute("address");
 		if(!$address){
 			//保存されている値
 			//keyがなければ自動的に新規アドレスになる
@@ -78,7 +71,7 @@ class EditPage extends MainMyPagePageBase{
 		}
 
 		$this->buildSendForm($address);
-		
+
 		DisplayPlugin::toggle("has_error", $mypage->hasError());
 		$this->appendErrors($mypage);
 
@@ -210,9 +203,9 @@ class EditPage extends MainMyPagePageBase{
 			$mypage->addErrorMessage("tel_number", MessageManager::get("TELEPHONE_NUMBER_EMPTY"));
 			$res = true;
 		}
-		
+
 		$mypage->save();
-		
+
 		return $res;
 	}
 }

@@ -7,8 +7,7 @@ class RemovePage extends MainMyPagePageBase{
     	if(soy2_check_token()){
     		$mypage = MyPageLogic::getMyPage();
 
-	    	$logic = SOY2Logic::createInstance("logic.user.UserLogic");
-	    	if($logic->remove($mypage->getUserId())){
+	    	if(SOY2Logic::createInstance("logic.user.UserLogic")->remove($mypage->getUserId())){
 	    		$mypage->logout();
 
 				$this->jump("withdraw/complete");

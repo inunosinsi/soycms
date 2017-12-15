@@ -2,38 +2,24 @@
 class DeletePage extends MainMyPagePageBase{
 
 	function __construct($args){
+		$this->checkIsLoggedIn(); //ログインチェック
+		if(!isset($args[0]) || !soy2_check_token()) $this->jump("address");
 
-		$mypage = MyPageLogic::getMyPage();
-		
-		//ログインしていなかったら飛ばす
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
+		$address_key = $args[0];
+		$user = $this->getUser();
+		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
-		if(isset($args[0])){
-			$address_key = $args[0];
-		}else{
-			$this->jump("address");
-		}
+		//削除
+		$list = $user->getAddressListArray();
+		unset($list[$address_key]);
+		$user->setAddressList($list);
 
-		if(soy2_check_token() && isset($address_key)){
-			$user = $this->getUser();
-			$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-
-			//削除
-			$list = $user->getAddressListArray();
-			unset($list[$address_key]);
-			$user->setAddressList($list);
-
-			try{
-				$userDAO->update($user);
-				$this->jump("address");
-			}catch(Exception $e){
-
-			}
+		try{
+			$userDAO->update($user);
+		}catch(Exception $e){
+			//
 		}
 
 		$this->jump("address");
 	}
 }
-?>

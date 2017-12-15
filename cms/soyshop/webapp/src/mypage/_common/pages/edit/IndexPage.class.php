@@ -118,14 +118,9 @@ class IndexPage extends MainMyPagePageBase{
 	}
 
 	function __construct(){
+		$this->checkIsLoggedIn(); //ログインチェック
 
 		$mypage = MyPageLogic::getMyPage();
-
-		//ログインしていなかったら飛ばす
-		if(!$mypage->getIsLoggedin()){
-			$this->jump("login");
-		}
-
 		$user = $mypage->getUserInfo();
 		if(is_null($user) || !$mypage->getAttribute("user.edit.use_session_user_info")){
 			$user = $this->getUser();
@@ -145,9 +140,7 @@ class IndexPage extends MainMyPagePageBase{
 		$this->buildForm($user, $mypage);
 
 		//編集中の注意
-		$this->addModel("is_editing",array(
-				"visible" => $isEditingData,
-		));
+		DisplayPlugin::toggle("is_editing", $isEditingData);
 
 		//エラー周り
 		DisplayPlugin::toggle("has_error", $mypage->hasError());
@@ -159,6 +152,10 @@ class IndexPage extends MainMyPagePageBase{
 		$mypage->setAttribute("user.edit.use_session_user_info", null);
 		$this->clearCustomFieldValue($mypage);
 		$mypage->save();
+
+		$this->addLink("top_link", array(
+			"link" => soyshop_get_mypage_top_url()
+		));
 	}
 
 	/**

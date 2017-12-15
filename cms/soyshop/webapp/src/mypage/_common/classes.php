@@ -74,9 +74,13 @@ class MainMyPagePageBase extends WebPage{
    		$this->createAdd($id, "HTMLForm", $arguments);
    	}
 
+	//ログインを確認して、ログインしていなければloginへジャンプする
+	function checkIsLoggedIn(){
+		if(!self::getIsLoggedIn()) self::jump("login");
+	}
+
 	function getIsLoggedIn(){
-		$mypage = MyPageLogic::getMyPage();
-		return $mypage->getIsLoggedin();
+		return MyPageLogic::getMyPage()->getIsLoggedin();
 	}
 
 	function getUserId(){
@@ -106,6 +110,10 @@ class MainMyPagePageBase extends WebPage{
 		return $mypage->getUser();
 	}
 
+	function getUserByProfileId($profileId){
+		return MyPageLogic::getMyPage()->getProfileUser($profileId);
+	}
+
 	/**
 	 * @TODO 実装箇所の見直し
 	 */
@@ -130,7 +138,7 @@ class MainMyPagePageBase extends WebPage{
 						"text" => $arguments["text"]
 					));
 				}
-				
+
 				return;
 			}
 		}
@@ -156,7 +164,7 @@ class MainMyPagePageBase extends WebPage{
 	function setErrors($errors){
 		$this->errors = $errors;
 	}
-	
+
 	function buildModules(){
 		$plugin = new SOYShopPageModulePlugin();
 
@@ -191,4 +199,3 @@ class MainMyPageErrorList extends HTMLList{
 		));
 	}
 }
-?>

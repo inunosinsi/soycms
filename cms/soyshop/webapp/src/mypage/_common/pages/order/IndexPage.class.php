@@ -6,13 +6,7 @@ class IndexPage extends MainMyPagePageBase{
     private $limit = 15;
 
     function __construct($args){
-
-        $mypage = MyPageLogic::getMyPage();
-
-        //ログインチェック
-        if(!$mypage->getIsLoggedin()){
-            $this->jump("login");
-        }
+        $this->checkIsLoggedIn(); //ログインチェック
 
         parent::__construct();
 
