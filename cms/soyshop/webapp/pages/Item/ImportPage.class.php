@@ -175,7 +175,8 @@ class ImportPage extends WebPage{
                     }
 
                     //カスタムサーチフィールド 日本語の値で確認しておく
-                    if(count($customSearchFields[UtilMultiLanguageUtil::LANGUAGE_JP])){
+					$csfJpValues = (isset($customSearchFields[UtilMultiLanguageUtil::LANGUAGE_JP])) ? $customSearchFields[UtilMultiLanguageUtil::LANGUAGE_JP] : array();
+                    if(is_array($csfJpValues) && count($csfJpValues)){
                         foreach($customSearchFields as $lang => $csfValues){
                             $customSearchFieldDBLogic->save($item->getId(), $csfValues, $lang);
                         }
