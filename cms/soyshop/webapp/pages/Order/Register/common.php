@@ -104,7 +104,12 @@ class AdminCartLogic extends CartLogic{
 	public function setOrderDate($date){
 		if(strlen($date)){
 			if(!is_numeric($date)){
-				$date = strtotime($date);
+				//注文日の指定が本日の場合は時間の登録
+				if($date == date("Y-m-d")){
+					$date = time();
+				}else{
+					$date = strtotime($date);
+				}
 			}
 			$this->orderDate = $date;
 		}
@@ -327,7 +332,7 @@ class ItemList extends HTMLList {
 			if(!isset($list[$optionId])) continue;
 			$html[] = $list[$optionId]["name"] . ":" . $opt;
 		}
-		
+
 		return implode("<br>", $html);
 	}
 
