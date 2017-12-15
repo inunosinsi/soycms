@@ -25,6 +25,18 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 		"text" => $user->getNickname(),
 	));
 
+	//プロフィールID
+	$htmlObj->addLabel("profile_id", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"text" => $user->getProfileId(),
+	));
+
+	//マイページのプロフィールページへのリンク
+	$htmlObj->addLink("profile_page_link", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"link" => soyshop_get_mypage_url() . "/profile/" . $user->getProfileId()
+	));
+
 	$htmlObj->addLabel("gender", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"text" => ($user->getGender() == SOYShop_User::USER_SEX_MALE) ? MessageManager::get("SEX_MALE") :

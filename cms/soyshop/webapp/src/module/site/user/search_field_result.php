@@ -8,8 +8,9 @@ function soyshop_search_field_result($html, $htmlObj){
 	$users = array();
 
     SOY2::import("util.SOYShopPluginUtil");
-    if(SOYShopPluginUtil::checkIsActive("user_custom_search_field")){
+    if(SOYShopPluginUtil::checkIsActive("user_custom_search_field") && isset($_GET["u_search"])){
 		$logic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.SearchLogic");
+		$logic->setIsProfileDisplay(true);
 		$users = $logic->search(null, 1, 15);
     }
 

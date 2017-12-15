@@ -45,7 +45,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 */
 	function getForm($app, $userId){
 		// 現時点では管理画面のみ
-		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+		//if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
 			self::prepare();
 
 			$values = $this->dbLogic->getByUserId($userId);
@@ -80,7 +80,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 				}
 			}
 			return $array;
-		}
+		//}
 	}
 
 	/**

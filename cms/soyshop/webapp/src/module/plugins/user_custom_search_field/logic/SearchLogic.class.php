@@ -6,6 +6,8 @@ class SearchLogic extends SOY2LogicBase{
     private $binds = array();
     private $usereDao;
 
+	private $isProfileDisplay = false;	//プロフィールを表示するユーザのみに絞るか？
+
     function __construct(){
         SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
         $this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
@@ -95,6 +97,12 @@ class SearchLogic extends SOY2LogicBase{
 					}
 	            }
 			}
+
+			//プロフィールIDがあるか？
+			if($this->isProfileDisplay){
+				$this->where["is_profile_id"] = "u.is_profile_display = 1 ";
+			}
+
 
             foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
 
@@ -266,4 +274,8 @@ class SearchLogic extends SOY2LogicBase{
 
         return null;
     }
+
+	function setIsProfileDisplay($boolean){
+		$this->isProfileDisplay = $boolean;
+	}
 }
