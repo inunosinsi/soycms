@@ -101,7 +101,9 @@ class PayJpUtil {
 		return SOYShop_DataSets::get("payment_pay_jp.config", array(
 			"sandbox" => 1,
 			"capture" => 1,
-			"repeat" => 0
+			"repeat" => 0,
+			"test" => array(),
+			"public" => array()
 		));
 	}
 
