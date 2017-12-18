@@ -16,7 +16,7 @@ class Cart01Page extends MainCartPageBase{
 		$cart->clearNoticeMessage();
 		$cart->clearAttribute("logined");
 		$cart->clearAttribute("logined_userid");
-		
+
 		//数量変更
 		if(isset($_POST["ItemCount"])){
 			$this->updateItemCount($cart, $_POST["ItemCount"]);
@@ -26,32 +26,32 @@ class Cart01Page extends MainCartPageBase{
 
 		//数量変更のみ
 		if(isset($_POST["modify"]) || isset($_POST["modify_x"])){
-			
+
 			SOYShopPlugin::invoke("soyshop.cart", array(
 				"mode" => "afterOperation",
 				"cart" => $cart
 			));
-			
+
 			$cart->save();
 			soyshop_redirect_cart();
 		}
 
 		//ログインして次へ
 		if(isset($_POST["login"]) || isset($_POST["login_x"])){
-	
+
 			//ログイン
 			if( $user = $this->cartLogin($userArray) ){//代入
 				//ログイン情報
 				$cart->setCustomerInformation($user);
 				$cart->setAttribute("logined", true);
 				$cart->setAttribute("logined_userid", $user->getId());
-		
+
 				//マイページでもログイン
 				$mypage = MyPageLogic::getMyPage();
 				$mypage->setAttribute("loggedin", true);
 		    	$mypage->setAttribute("userId", $user->getId());
 			}else{
-				//ログイン失敗または登録なし			
+				//ログイン失敗または登録なし
 				$user = new SOYShop_User();
 				$user->setMailAddress($userArray["mailAddress"]);
 				$cart->setCustomerInformation($user);
@@ -61,7 +61,7 @@ class Cart01Page extends MainCartPageBase{
 				$cart->save();
 				soyshop_redirect_cart();
 			}
-			
+
 			//プラグインでのカートチェック
 			SOYShopPlugin::load("soyshop.cart.check");
 			SOYShopPlugin::invoke("soyshop.cart.check", array(
@@ -89,7 +89,7 @@ class Cart01Page extends MainCartPageBase{
 
 		//ログインしないで次へ
 		if(isset($_POST["next"]) || isset($_POST["next_x"])){
-			
+
 			//すでにマイページでログインしているならログインする
 			if( $user = $this->checkMyPageLoggedIn() ){//代入
 				//ログイン情報
@@ -97,7 +97,7 @@ class Cart01Page extends MainCartPageBase{
 				$cart->setAttribute("logined", true);
 				$cart->setAttribute("logined_userid", $user->getId());
 			}
-			
+
 			//プラグインでのカートチェック
 			SOYShopPlugin::load("soyshop.cart.check");
 			SOYShopPlugin::invoke("soyshop.cart.check", array(
@@ -115,7 +115,7 @@ class Cart01Page extends MainCartPageBase{
 			}catch(Exception $e){
 				//DB error?
 			}
-			
+
 			$cart->save();
 			soyshop_redirect_cart();
 			exit;
@@ -125,9 +125,9 @@ class Cart01Page extends MainCartPageBase{
 	}
 
 	function __construct(){
-		
+
 		SOYShopPlugin::load("soyshop.cart");
-		
+
 		parent::__construct();
 
 		$cart = CartLogic::getCart();
@@ -158,12 +158,12 @@ class Cart01Page extends MainCartPageBase{
 		$this->addForm("order_form", array(
 			"action" => soyshop_get_cart_url(false)
 		));
-		
+
 		//カスタマイズ用で予備のフォームタグを用意する
 		$this->addForm("custom_order_form", array(
 			"action" => soyshop_get_cart_url(false)
 		));
-		
+
 		//ログインしている場合はログインフォームを表示させない
 		$mypage = MyPageLogic::getMyPage();
 		$this->addModel("is_loggedin", array(
@@ -172,7 +172,7 @@ class Cart01Page extends MainCartPageBase{
 		$this->addModel("not_loggedin", array(
 			"visible" => ($mypage->getIsLoggedin() === false)
 		));
-		
+
 		$this->addForm("login_form", array(
 			"action" => soyshop_get_cart_url(false)
 		));
@@ -181,15 +181,15 @@ class Cart01Page extends MainCartPageBase{
 			"list" => $items,
 			"ignoreStock" => $shopConfig->getIgnoreStock()
 		));
-		
+
 		$this->addModel("is_subtotal", array(
 			"visible" => (SOYSHOP_CART_IS_TAX_MODULE)
 		));
-		
+
 		$this->createAdd("module_list", "_common.ModuleListComponent", array(
 			"list" => $cart->getModules()
 		));
-		
+
 		$this->createAdd("total_item_price", "NumberFormatLabel", array(
 			"text" => $cart->getItemPrice()
 		));
@@ -206,7 +206,7 @@ class Cart01Page extends MainCartPageBase{
 		$this->addLabel("stock_error", array(
 			"text" => $cart->getErrorMessage("stock")
 		));
-		
+
 		DisplayPlugin::toggle("has_accept_error", (strlen($cart->getErrorMessage("accept")) > 0));
 		$this->addLabel("accept_error", array(
 			"text" => $cart->getErrorMessage("accept")
@@ -216,17 +216,17 @@ class Cart01Page extends MainCartPageBase{
 		$this->addLabel("login_error", array(
 			"text" => $cart->getErrorMessage("login_error")
 		));
-		
+
 		DisplayPlugin::toggle("has_plugin_error", (strlen($cart->getErrorMessage("plugin_error")) > 0));
 		$this->addLabel("plugin_error", array(
 			"html" => nl2br($cart->getErrorMessage("plugin_error"))
 		));
-		
+
 		DisplayPlugin::toggle("has_plugin_notice", (strlen($cart->getNoticeMessage("plugin_notice")) > 0));
 		$this->addLabel("plugin_notice", array(
 			"html" => nl2br($cart->getNoticeMessage("plugin_notice"))
 		));
-		
+
 		//マイページ関連のリンク
 		$this->addLink("remind_link", array(
 			"link" => soyshop_get_mypage_url() . "/remind/input"
@@ -234,7 +234,7 @@ class Cart01Page extends MainCartPageBase{
 
 		$this->addLink("register_link", array(
 			"link" => soyshop_get_mypage_url() . "/register"
-		));	
+		));
 
 		$user = $cart->getCustomerInformation();
 
@@ -242,15 +242,15 @@ class Cart01Page extends MainCartPageBase{
 			"name" => "User[mailAddress]",
 			"value" => ($user) ? $user->getMailAddress() : ""
 		));
-		
-		
-		
-		$this->addExtensions($cart);		
-		
+
+
+
+		$this->addExtensions($cart);
+
 		$cart->clearErrorMessage();
 		$cart->clearNoticeMessage();
 	}
-	
+
 	/**
 	 * 表示用拡張ポイント
 	 */
@@ -262,7 +262,7 @@ class Cart01Page extends MainCartPageBase{
 		));
 
 		$html = $delegate->getHtml();
-		
+
 		//カートプラグイン 表示/非表示
 		$this->addModel("has_cart_plugin", array(
 			"visible" => (count($html) > 0)
@@ -284,23 +284,23 @@ class Cart01Page extends MainCartPageBase{
 		$this->addModel("has_bonus_plugin", array(
 			"visible" => $delegate->getHasBonus()
 		));
-		
+
 		//ボーナスプラグイン おまけ内容HTML
 		$this->createAdd("bonus_plugin_list", "_common.BonusPluginListComponent", array(
 			"list" => $bonuses
 		));
-		
+
 	}
-	
-	
+
+
 	/**
 	 * カート内商品の数量を変更する
 	 */
 	private function updateItemCount(CartLogic $cart, $itemCount){
-		
+
 		//カートに入っている商品に変更がある場合は、選択されているモジュールをクリアする
 		$cart->clearModules();
-		
+
 		//数量の値は自然数のみ
 		$count = array();
 		foreach($itemCount as $key => $value){
@@ -311,7 +311,7 @@ class Cart01Page extends MainCartPageBase{
 		foreach($count as $index => $value){
 			$cart->updateItem($index, $value);
 		}
-		
+
 		//消費税の計算とモジュールの登録
 		if(SOYSHOP_CONSUMPTION_TAX_MODE){
 			$cart->setConsumptionTax();
@@ -321,27 +321,27 @@ class Cart01Page extends MainCartPageBase{
 			//何もしない
 		}
 	}
-	
+
 	/**
 	 * メールアドレスとパスワードでログイン
 	 * @return SOYShop_User
 	 */
 	private function cartLogin($userArray){
 		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		
+
 		try{
 			$user = $userDAO->getByMailAddress($userArray["mailAddress"]);
 
 			if($user->checkPassword($userArray["password"])){
 				//ログイン成功
-		    	return $user;		
+		    	return $user;
 			}
 		}catch(Exception $e){
 			//登録なし
 		}
 		return null;
 	}
-	
+
 	/**
 	 * マイページでログイン済みかどうか
 	 * @return SOYShop_User
@@ -349,11 +349,11 @@ class Cart01Page extends MainCartPageBase{
 	private function checkMyPageLoggedIn(){
 		$mypage = MyPageLogic::getMyPage();
 		if($mypage->getIsLoggedin()){
-			$userId = $mypage->getAttribute("userId");			
+			$userId = $mypage->getAttribute("userId");
 			try{
 				$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 				$user = $dao->getById($userId);
-				
+
 				return $user;
 			}catch(Exception $e){
 				//do nothing
@@ -363,5 +363,3 @@ class Cart01Page extends MainCartPageBase{
 		return null;
 	}
 }
-
-?>

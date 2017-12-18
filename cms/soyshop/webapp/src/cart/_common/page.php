@@ -71,4 +71,3 @@ try{
 	$page = SOY2HTMLFactory::createInstance("ErrorPage");
 	$page->display();
 }
-?>

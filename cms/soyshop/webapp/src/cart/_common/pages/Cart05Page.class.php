@@ -9,14 +9,12 @@ class Cart05Page extends MainCartPageBase{
 	function doPost(){
 
 		$cart = CartLogic::getCart();
-		$paymentModule = $cart->getAttribute("payment_module");
+		$paymentModuleId = $cart->getAttribute("payment_module");
 
-		$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-		$paymentModule = $moduleDAO->getByPluginId($paymentModule);
-
+		$paymentModule = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId($paymentModuleId);
 		SOYShopPlugin::load("soyshop.payment", $paymentModule);
 
-		 SOYShopPlugin::invoke("soyshop.payment.option", array(
+		SOYShopPlugin::invoke("soyshop.payment.option", array(
 			"cart" => $cart,
 			"mode" => "post"
 		));
@@ -42,7 +40,7 @@ class Cart05Page extends MainCartPageBase{
 				"cart" => $cart
 			))
 		));
-		
+
 		SOYShopPlugin::load("soyshop.cart");
 		$delegate = SOYShopPlugin::invoke("soyshop.cart", array(
 			"mode" => "page05",
@@ -50,14 +48,13 @@ class Cart05Page extends MainCartPageBase{
 		));
 
 		$html = $delegate->getHtml();
-		
+
 		$this->addModel("has_cart_plugin", array(
 			"visible" => (count($html) > 0)
 		));
-		
+
 		$this->createAdd("cart_plugin_list", "_common.CartPluginListComponent", array(
 			"list" => $html
 		));
 	}
 }
-?>

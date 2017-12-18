@@ -18,17 +18,17 @@ if(strlen($siteId) > 0){
 	//target dir
 	$target = soy2_realpath(SOYCMS_TARGET_DIRECTORY);
 	if(!$target) return false;//dir not exist
-	
-	
+
+
 	if(!defined("SOYCMS_TARGET_URL")){
 		define("SOYCMS_TARGET_URL", SOY2PageController::createRelativeLink("/", true));
 	}
 	$url = SOYCMS_TARGET_URL;
-	
+
 
 	if($url[strlen($url)-1] != "/") $url .= "/";
 	$url .= $siteId . "/";
-	
+
 	//config.phpの作成
 	$dir = dirname(__FILE__) . "/webapp/conf/shop/";
 	$name = $siteId . ".conf.php";
@@ -53,8 +53,8 @@ if(strlen($siteId) > 0){
 	$config[] = '?>';
 
 	file_put_contents($dir . $name, implode("\n", $config));
-	
-	
+
+
 	//admin.config.phpの作成
 	$name = $siteId . ".admin.conf.php";
 	$config = array();
@@ -290,4 +290,3 @@ refreshing to <a href="<?php echo SOY2PageController::createRelativeLink("index.
 <?php
 return true;
 }/* init_soyshop_end */
-?>
