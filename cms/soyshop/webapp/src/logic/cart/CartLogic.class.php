@@ -1039,6 +1039,10 @@ class CartLogic extends SOY2LogicBase{
 		$itemOrderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 		$items = $this->getItems();
 
+		//foreach内で読み込む拡張ポイントはここでロードしておく
+		SOYShopPlugin::load("soyshop.item.option");
+		SOYShopPlugin::load("soyshop.item.order");
+
 		foreach($items as $key => $item){
 			$config = SOYShop_ShopConfig::load();
 
@@ -1066,8 +1070,6 @@ class CartLogic extends SOY2LogicBase{
 
 			$item->setOrderId($id);
 
-			SOYShopPlugin::load("soyshop.item.option");
-
 			//商品オプションがある場合は、attributeに値を挿入
 			$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
 				"mode" => "order",
@@ -1082,13 +1084,25 @@ class CartLogic extends SOY2LogicBase{
 			));
 			$item->setIsAddition($delegate->getAddition());
 
-			$itemOrderDAO->insert($item);
+			$itemOrderId = $itemOrderDAO->insert($item);
+
+			// SOYShop_ItemOrderに関することなら何でもできる
+
+			SOYShopPlugin::invoke("soyshop.item.order", array(
+				"mode" => "order",
+				"itemOrderId" => $itemOrderId
+			));
 		}
 
 		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		$trackingNumber = $orderLogic->getTrackingNumber($order);
 		$order->setTrackingNumber($trackingNumber);
 		$orderDAO->update($order);
+
+		SOYShopPlugin::invoke("soyshop.item.order", array(
+			"mode" => "complete",
+			"orderId" => $order->getId()
+		));
 
 
 		//begin

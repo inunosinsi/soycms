@@ -3,15 +3,15 @@
 class SOYShopItemOptionBase implements SOY2PluginAction{
 
 	function clear($index, CartLogic $cart){
-		
+
 	}
-	
+
 	function compare($index, CartLogic $cart){
-		
+
 	}
-	
+
 	function doPost($index, CartLogic $cart){
-		
+
 	}
 
 	/**
@@ -20,21 +20,21 @@ class SOYShopItemOptionBase implements SOY2PluginAction{
 	function onOutput($htmlObj, $index){
 
 	}
-	
+
 	function order($index){
-		
+
 	}
-	
+
 	function display($item){
-		
+
 	}
-	
+
 	function edit($key){
-		
+
 	}
-	
+
 	function addition($index){
-		
+
 	}
 }
 class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
@@ -106,10 +106,10 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 	}
 	function setIndex($index){
 		$this->index = $index;
-	}	
+	}
 	function setKey($key){
 		$this->key = $key;
-	}	
+	}
 	function setItem($item){
 		$this->item = $item;
 	}
@@ -121,4 +121,3 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.item.option","SOYShopItemOptionDeletageAction");
-?>

@@ -1,8 +1,8 @@
 <?php
 class SOYShop_ItemModule {
-	
+
 	const TYPE_TAX = "tax";
-	
+
     private $id;
 
     private $name;
@@ -78,4 +78,3 @@ class SOYShop_ItemModule {
     	return $this->getIsVisible();
     }
 }
-?>

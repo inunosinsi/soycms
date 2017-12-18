@@ -104,6 +104,13 @@ class SearchPage extends WebPage{
 				"attr:required" => "required"
 			));
 		}
+
+		//定価
+		$this->addInput("register_item_list_price", array(
+			"type" => "number",
+			"name" => "Item[config][list_price]",
+			"value" => 0,
+		));
 	}
 
 	private function getParameter($key){

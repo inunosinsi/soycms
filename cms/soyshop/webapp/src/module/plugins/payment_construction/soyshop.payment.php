@@ -12,10 +12,30 @@ class PaymentConstructionModule extends SOYShopPayment{
 					$module = new SOYShop_ItemModule();
 					$module->setId($moduleId);
 					$module->setType("payment_module_" . $key);//typeを指定しておくといいことがある
-					$module->setName($item);
+					$module->setName(trim($item));
 					$module->setPrice((int)$_POST["commission_fee"][$key]);
+					$module->setIsInclude(false);
 					$cart->addModule($module);
 				}else if((int)$_POST["commission_fee"][$key] === 0){
+					$cart->removeModule($moduleId);
+				}
+			}
+		}
+
+		//合算に含めない項目
+		$items = PaymentConstructionUtil::getIncludeItemList();
+		if(count($items)){
+			foreach($items as $key => $item){
+				$moduleId = "payment_commission_include_" . $key;
+				if(isset($_POST["include"][$key]) && (int)$_POST["include"][$key] > 0){
+					$module = new SOYShop_ItemModule();
+					$module->setId($moduleId);
+					$module->setType("payment_module_include" . $key);//typeを指定しておくといいことがある
+					$module->setName("(" . trim($item) . ")");
+					$module->setPrice((int)$_POST["include"][$key]);
+					$module->setIsInclude(true);
+					$cart->addModule($module);
+				}else if((int)$_POST["include"][$key] === 0){
 					$cart->removeModule($moduleId);
 				}
 			}

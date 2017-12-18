@@ -224,7 +224,7 @@ class EditPage extends WebPage{
 					}catch(Exception $e){
 						$moduleObj = null;
 					}
-					
+
 					if(isset($moduleObj)){
 						SOYShopPlugin::load("soyshop.order.module", $moduleObj);
 						$delegate = SOYShopPlugin::invoke("soyshop.order.module", array(
@@ -281,11 +281,21 @@ class EditPage extends WebPage{
 							}
 						}
 						//追加商品
+						SOYShopPlugin::load("soyshop.item.order");
 						foreach($newItemOrders as $itemOrder){
 							if($itemOrder->getItemCount() > 0){
-								$itemOrderDAO->insert($itemOrder);
+								$itemOrderId = $itemOrderDAO->insert($itemOrder);
+								SOYShopPlugin::invoke("soyshop.item.order", array(
+									"mode" => "order",
+									"itemOrderId" => $itemOrderId
+								));
 							}
 						}
+
+						SOYShopPlugin::invoke("soyshop.item.order", array(
+							"mode" => "complete",
+							"orderId" => $order->getId()
+						));
 
 						$this->insertHistory($this->id, implode("\n", $itemChange));
 					}

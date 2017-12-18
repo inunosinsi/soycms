@@ -15,9 +15,20 @@ class CommissionPage extends WebPage{
 
 		$this->createAdd("commission_list", "CommissionListComponent", array(
 			"list" => PaymentConstructionUtil::getCommissionItemList(),
-			"modules" => $this->cart->getModules()
+			"modules" => $this->cart->getModules(),
+			"include" => false
 		));
 
+		$items = PaymentConstructionUtil::getIncludeItemList();
+		$this->createAdd("include_list", "CommissionListComponent", array(
+			"list" => $items,
+			"modules" => $this->cart->getModules(),
+			"include" => true
+		));
+
+		DisplayPlugin::toggle("has_include_item", ($items) > 0);
+
+		DisplayPlugin::toggle("construction_item", PaymentConstructionUtil::hasConstructionItem());
 		$attrs = $this->cart->getAttributes();
 		$this->addInput("construction_fee", array(
 			"name" => "construction_fee",

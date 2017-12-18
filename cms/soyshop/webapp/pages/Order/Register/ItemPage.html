@@ -39,7 +39,7 @@
 					<!--  soy:id="item_list" -->
 					<tr>
 						<td class="alC"><input soy:id="item_delete" type="checkbox" /></td>
-						<td class="alC"><a soy:id="item_id">11</a></td>
+						<td class="alC"><a soy:id="item_id" target="_blank">11</a></td>
 						<td>
 							<p soy:id="item_name_text">商品名</p>
 							<!-- soy:id="item_option_list" -->
@@ -47,7 +47,10 @@
 							<!-- /soy:id="item_option_list" -->
 						</td>
 						<td class="alR"><input type="text" soy:id="item_price" style="width:70px;" class="alR"> 円</td>
-						<td class="alR"><input type="text" soy:id="item_count" style="width:40px;" class="alR"> 点</td>
+						<td class="alR">
+							<p class="error always alC" soy:id="out_of_stock">在庫切れ</p>
+							<input type="text" soy:id="item_count" style="width:40px;" class="alR"> 点
+						</td>
 						<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
 					</tr>
 					<!--  /soy:id="item_list" -->

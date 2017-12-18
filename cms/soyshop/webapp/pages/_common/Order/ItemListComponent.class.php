@@ -40,6 +40,8 @@ class ItemListComponent extends HTMLList{
         $this->addLink("detail_link", array(
             "link" => $detailLink
         ));
+
+		//在庫切れ
     }
 
 

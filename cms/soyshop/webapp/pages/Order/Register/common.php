@@ -306,6 +306,11 @@ class ItemList extends HTMLList {
 		$this->addLabel("item_option", array(
 			"html" => (count($opts)) ? self::buildOptionList($opts) : null
 		));
+
+		//在庫切れかどうか？
+		$this->addModel("out_of_stock", array(
+			"visible" => ($entity->getItemCount() > $item->getStock())
+		));
 	}
 
 	private function getOptionList(SOYShop_ItemOrder $itemOrder){

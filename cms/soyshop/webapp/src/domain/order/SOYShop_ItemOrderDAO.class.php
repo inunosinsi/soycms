@@ -11,7 +11,7 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
 	abstract function insert(SOYShop_ItemOrder $itemOrder);
 	abstract function update(SOYShop_ItemOrder $itemOrder);
 	abstract function delete(SOYShop_ItemOrder $itemOrder);
-	
+
 	/**
 	 * @final
 	 */
@@ -21,6 +21,11 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
 		}
 		return array($query, $binds);
 	}
+
+	/**
+	 * @return object
+	 */
+	abstract function getById($id);
 
  	/**
  	 * @index id
@@ -32,6 +37,7 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
      * @return list
      * @order update_date desc
      */
+
     abstract function get();
 
  	/**
@@ -39,7 +45,7 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
  	 * @query #itemId# = :itemId
  	 */
  	abstract function getByItemId($itemId);
- 	
+
  	/**
  	 * @return object
  	 * @query order_id = :orderId AND item_id = :itemId

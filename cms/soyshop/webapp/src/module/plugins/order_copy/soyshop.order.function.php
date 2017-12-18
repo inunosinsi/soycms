@@ -39,13 +39,20 @@ class OrderCopyFunction extends SOYShopOrderFunction{
 			return;	//エラー
 		}
 
+		SOYShopPlugin::load("soyshop.item.order");
 		foreach($itemOrders as $itemOrder){
 			$itemOrder->setOrderId($newOrderId);
 			try{
-				self::itemOrderDao()->insert($itemOrder);
+				$itemOrderId = self::itemOrderDao()->insert($itemOrder);
 			}catch(Exception $e){
 				var_dump($e);
 			}
+
+			//soyshop.item.orderの拡張ポイント
+			SOYShopPlugin::invoke("soyshop.item.order", array(
+				"mode" => "order",
+				"itemOrderId" => $itemOrderId
+			));
 		}
 
 		SOY2PageController::jump("Order.Detail." . $newOrderId . "?copy");
