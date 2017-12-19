@@ -20,4 +20,3 @@ class CommonPointBaseConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "common_point_base", "CommonPointBaseConfig");
-?>

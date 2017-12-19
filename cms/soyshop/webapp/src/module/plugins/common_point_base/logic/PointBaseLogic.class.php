@@ -29,44 +29,29 @@ class PointBaseLogic extends SOY2LogicBase{
 	 * @param int point 追加したいポイント, string history, int userId
 	 */
 	function insert($point, $history, $userId){
-
-		$config = $this->config;
-		$dao = $this->pointDao;
-
-		try{
-			$obj = $dao->getByUserId($userId);
-		}catch(Exception $e){
-			$obj = new SOYShop_Point();
-		}
-
 		$res = true;
 
+		$obj = self::getPointByUserId($userId);
+		$obj->setTimeLimit($this->getTimeLimit($this->config["limit"]));
+
 		//すでに指定したユーザにポイントがあった場合
-		$id = $obj->getUserId();
-		if(isset($id)){
-			$oldPoint = $obj->getPoint();
-			$obj->setPoint($oldPoint + $point);
-			$obj->setTimeLimit($this->getTimeLimit($config["limit"]));
-			$obj->setUpdateDate(time());
+		if(!is_null(($obj->getUserId()))) {
+			$obj->setPoint((int)$obj->getPoint() + $point);
 
 			try{
-				$dao->deleteByUserId($userId);
-				$dao->insert($obj);
+				$this->pointDao->update($obj);
 			}catch(Exception $e){
 				error_log($e);
 				$res = false;
 			}
 
 		//初回のポイント加算の場合
-		}else{
+		} else {
 			$obj->setUserId($userId);
 			$obj->setPoint($point);
-			$obj->setTimeLimit($this->getTimeLimit($config["limit"]));
-			$obj->setCreateDate(time());
-			$obj->setUpdateDate(time());
 
 			try{
-				$dao->insert($obj);
+				$this->pointDao->insert($obj);
 			}catch(Exception $e){
 				error_log($e);
 				$res = false;
@@ -74,23 +59,8 @@ class PointBaseLogic extends SOY2LogicBase{
 		}
 
 		//次に履歴に挿入する
-		$dao = $this->pointHistoryDao;
-
 		$content = ($res) ? $history : "ポイント追加を失敗しました";
-
-		$obj = new SOYShop_PointHistory();
-
-		$obj->setUserId($userId);
-		$obj->setPoint($point);
-		$obj->setContent($content);
-		$obj->setCreateDate(time());
-
-		try{
-			$dao->insert($obj);
-		}catch(Exception $e){
-			error_log($e);
-			return false;
-		}
+		self::__insertHistory($userId, null, $point, $content);
 
 		//一応boolean値を返しておく
 		return true;
@@ -102,9 +72,6 @@ class PointBaseLogic extends SOY2LogicBase{
 	function insertPoint(SOYShop_Order $order, $point){
 
 		$this->point = $point;
-
-		$config = $this->config;
-
 		$userId = $order->getUserId();
 
 		//ポイント加算処理のフラグ
@@ -117,10 +84,8 @@ class PointBaseLogic extends SOY2LogicBase{
 		}
 
 		if($flag){
-
-			$dao = $this->pointDao;
-
 			$obj = self::getPointByUserId($userId);
+			$obj->setTimeLimit($this->getTimeLimit($this->config["limit"]));
 
 			$res = true;
 
@@ -128,12 +93,9 @@ class PointBaseLogic extends SOY2LogicBase{
 			if(is_null($obj->getUserId())){
 				$obj->setUserId($userId);
 				$obj->setPoint($point);
-				$obj->setTimeLimit($this->getTimeLimit($config["limit"]));
-				$obj->setCreateDate(time());
-				$obj->setUpdateDate(time());
 
 				try{
-					$dao->insert($obj);
+					$this->pointDao->insert($obj);
 				}catch(Exception $e){
 					error_log($e);
 					$res = false;
@@ -141,19 +103,16 @@ class PointBaseLogic extends SOY2LogicBase{
 
 			//二度目以降の購入
 			}else{
-				$oldPoint = $obj->getPoint();
+				$oldPoint = (int)$obj->getPoint();
 				//有効期限切れだった場合は、ポイントを0にリセットしてから加算する
 				if(!is_null($obj->getTimeLimit()) && $obj->getTimeLimit() < time()){
 					$oldPoint = 0;
 					self::insertHistory($order->getId(), $userId, $res, false, true);
 				}
 				$obj->setPoint($oldPoint + $point);
-				$obj->setTimeLimit($this->getTimeLimit($config["limit"]));
-				$obj->setUpdateDate(time());
 
 				try{
-					$dao->deleteByUserId($userId);
-					$dao->insert($obj);
+					$this->pointDao->update($obj);
 				}catch(Exception $e){
 					error_log($e);
 					$res = false;
@@ -171,19 +130,15 @@ class PointBaseLogic extends SOY2LogicBase{
 		$this->point = $point;
 
 		$obj = self::getPointByUserId($userId);
-		$config = $this->config;
 
 		$res = false;
 
 		//念の為、オブジェクトの中に値があるかチェックする
 		if(is_numeric($obj->getUserId())){
-
 			$obj->setPoint($point);
-			$obj->setUpdateDate(time());
 
 			try{
-				$this->pointDao->deleteByUserId($userId);
-				$this->pointDao->insert($obj);
+				$this->pointDao->update($obj);
 				$res = true;
 			}catch(Exception $e){
 				error_log($e);
@@ -193,9 +148,7 @@ class PointBaseLogic extends SOY2LogicBase{
 		}else{
 			$obj->setUserId($userId);
 			$obj->setPoint($point);
-			$obj->setTimeLimit($this->getTimeLimit($config["limit"]));
-			$obj->setCreateDate(time());
-			$obj->setUpdateDate(time());
+			$obj->setTimeLimit($this->getTimeLimit($this->config["limit"]));
 
 			try{
 				$this->pointDao->insert($obj);
@@ -205,14 +158,10 @@ class PointBaseLogic extends SOY2LogicBase{
 			}
 		}
 
-		if($res){
-			self::insertHistory(null, $userId, true, true);
-		}
+		if($res) self::insertHistory(null, $userId, true, true);
 	}
 
 	function insertHistory($orderId, $userId, $result, $update=false, $timeLimit=false){
-
-		$config = $this->config;
 
 		//要リファクタリング
 		if($update){
@@ -222,11 +171,9 @@ class PointBaseLogic extends SOY2LogicBase{
 		}
 
 		//timeLimitフラグがある場合は、強制的に$contentを書き換える
-		if($timeLimit){
-			$content = "有効期限切れのため、ポイントをリセット";
-		}
+		if($timeLimit) $content = "有効期限切れのため、ポイントをリセット";
 
-		$this->__insertHistory($userId, $orderId, $this->point, $content);
+		self::__insertHistory($userId, $orderId, $this->point, $content);
 	}
 
 	/**
@@ -243,7 +190,6 @@ class PointBaseLogic extends SOY2LogicBase{
 		$obj->setOrderId($orderId);
 		$obj->setPoint($point);
 		$obj->setContent($content);
-		$obj->setCreateDate(time());
 
 		try{
 			$this->pointHistoryDao->insert($obj);
@@ -272,13 +218,12 @@ class PointBaseLogic extends SOY2LogicBase{
 				$newPoint = $hasPoint - $paymentPoint;
 
 				$obj->setPoint($newPoint);
-				$obj->setUpdateDate(time());
 
 				try{
-					$this->pointDao->deleteByUserId($userId);
-					$this->pointDao->insert($obj);
+					$this->pointDao->update($obj);
 					$res = true;
 				}catch(Exception $e){
+					//
 				}
 			}
 		}
@@ -368,7 +313,7 @@ class PointBaseLogic extends SOY2LogicBase{
 		//ポイントを使う場合
 		if(strlen($pointToUse) && is_numeric($pointToUse) && $pointToUse > 0){
 			$user = $cart->getCustomerInformation();
-			$pointObj = $this->getPointByUserId($user->getId());
+			$pointObj = self::getPointByUserId($user->getId());
 			$ownedPoint = $pointObj->getPoint();
 
 			//有効期限チェック

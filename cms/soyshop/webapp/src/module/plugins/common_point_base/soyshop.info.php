@@ -12,4 +12,3 @@ class CommonPointBaseInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "common_point_base", "CommonPointBaseInfo");
-?>
