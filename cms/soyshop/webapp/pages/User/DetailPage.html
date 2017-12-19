@@ -352,6 +352,18 @@
 		</table>
 		<!-- /soy:display="point" -->
 
+		<!-- soy:display="ticket" -->
+		<h3>チケット</h3>
+		<table class="form_table">
+			<tr>
+				<th>チケット</th>
+				<td>
+					<input soy:id="ticket_count" type="text">&nbsp;枚
+				</td>
+			</tr>
+		</table>
+		<!-- /soy:display="ticket" -->
+
 		<p class="pageBtn">
 			<input type="submit" name="conduct" value="更新" />
 		</p>
@@ -375,7 +387,6 @@
 		</table>
 		<!-- /soy:display="display_mail_history" -->
 
-		<!-- soy:display="point2" -->
 		<!-- soy:display="point_history" -->
 		<h3>ポイント履歴</h3>
 		<table class="form_table">
@@ -391,8 +402,23 @@
 			<!-- /soy:id="point_history_list" -->
 		</table>
 		<!-- /soy:display="point_history" -->
-		<!-- /soy:display="point2" -->
 
+		<!-- soy:display="ticket_history" -->
+		<h3>チケット履歴</h3>
+		<table class="form_table">
+			<tr>
+				<th>日時</th>
+				<th>内容</th>
+			</tr>
+			<!-- soy:id="ticket_history_list" -->
+			<tr>
+				<td class="alC" soy:id="create_date">2013/1/1</td>
+				<td><a soy:id="order_link"><!-- soy:id="content" /--></a></td>
+			</tr>
+			<!-- /soy:id="ticket_history_list" -->
+		</table>
+		<!-- /soy:display="ticket_history" -->
+		
 		</div><!-- /block_body -->
 </div><!-- /block -->
 

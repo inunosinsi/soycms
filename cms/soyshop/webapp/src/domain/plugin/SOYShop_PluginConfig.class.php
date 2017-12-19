@@ -3,16 +3,16 @@
  * @table soyshop_plugins
  */
 class SOYShop_PluginConfig {
-	
+
 	const PLUGIN_ACTIVE = 1;
 	const PLUGIN_INACTIVE = 0;
-	
+
 	const DISPLAY_ORDER_MAX = 2147483647;
 	const DISPLAY_ORDER_MIN = 0;
-	
+
 	const MODE_INSTALLED = "installed";
 	const MODE_ALL = "all";
-	
+
 	//プラグイン一覧を見やすくするための定数、下で配列を生成
 	const PLUGIN_TYPE_ARRIVAL = "arrival";
 	const PLUGIN_TYPE_ADMIN = "admin";
@@ -38,11 +38,12 @@ class SOYShop_PluginConfig {
 	const PLUGIN_TYPE_POINT = "point";
 	const PLUGIN_TYPE_SEARCH = "search";
 	const PLUGIN_TYPE_TAX = "tax";
+	const PLUGIN_TYPE_TICKET = "ticket";
 	const PLUGIN_TYPE_USER = "user";
 	const PLUGIN_TYPE_UTIL = "util";
 	const PLUGIN_TYPE_XML = "xml";
 	const PLUGIN_TYPE_DEV = "dev";
-	
+
 
 	/**
 	 * @id
@@ -63,7 +64,7 @@ class SOYShop_PluginConfig {
 	 * @column config
 	 */
 	private $config;
-	
+
 	/**
 	 * @column display_order
 	 */
@@ -83,17 +84,17 @@ class SOYShop_PluginConfig {
      * @no_persistent
      */
     private $name;
-    
+
     /**
      * @no_persistent
      */
 	private $version;
-	
+
 	/**
 	 * @no_persistent
 	 */
 	private $link;
-	
+
 	/**
 	 * @no_persistent
 	 */
@@ -156,7 +157,7 @@ class SOYShop_PluginConfig {
      */
     function loadFromIniFile() {
     	$inifile = SOYSHOP_MODULE_DIR . "features/" . $this->pluginId . "/module.ini";
-    	
+
     	//ファイル見つからないときはfalseを返す
     	if(is_readable($inifile)){
 	    	$data = parse_ini_file($inifile);
@@ -182,14 +183,14 @@ class SOYShop_PluginConfig {
      */
     function load($extensionId = null){
     	if(!$extensionId) $extensionId = $this->pluginId;
-    	
+
     	//拡張も可能
     	$ext_script = SOYSHOP_SITE_DIRECTORY . ".pluigins/" . $this->pluginId . "/" . $extensionId . ".php";
     	if(file_exists($ext_script)){
     		include_once($ext_script);
     		return;
     	}
-    	
+
     	if(defined("SOYSHOP_MODULE_DIR")){
     		$script = SOYSHOP_MODULE_DIR . "plugins/" . $this->pluginId."/" . $extensionId . ".php";
 	    	if(file_exists($script)){
@@ -206,7 +207,7 @@ class SOYShop_PluginConfig {
     function setName($name) {
     	$this->name = $name;
     }
-    
+
     function getVersion(){
     	if($this->version == "")
     		$this->loadFromIniFile();
@@ -215,7 +216,7 @@ class SOYShop_PluginConfig {
     function setVersion($version){
     	$this->version = $version;
     }
-    
+
     function getLink(){
     	if($this->link == "")
     		$this->loadFromIniFile();
@@ -224,7 +225,7 @@ class SOYShop_PluginConfig {
     function setLink($link){
     	$this->link = $link;
     }
-    
+
     function getLabel(){
     	if($this->label == "")
     		$this->loadFromIniFile();
@@ -233,7 +234,7 @@ class SOYShop_PluginConfig {
     function setLabel($label){
     	$this->label = $label;
     }
-    
+
     public static function getPluginTypeList(){
     	return array(
     		self::PLUGIN_TYPE_ARRIVAL => "新着",
@@ -260,11 +261,11 @@ class SOYShop_PluginConfig {
 			self::PLUGIN_TYPE_POINT => "ポイント",
 			self::PLUGIN_TYPE_SEARCH => "検索モジュール",
 			self::PLUGIN_TYPE_TAX => "消費税",
+			self::PLUGIN_TYPE_TICKET => "チケット",
 			self::PLUGIN_TYPE_UTIL => "ユーティリティー",
 			self::PLUGIN_TYPE_USER => "顧客管理",
 			self::PLUGIN_TYPE_XML => "XML",
 			self::PLUGIN_TYPE_DEV => "開発"
-    	);    	
+    	);
     }
 }
-?>

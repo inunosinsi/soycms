@@ -1,6 +1,6 @@
 <?php
 
-class PointHistoryListComponent extends HTMLList{
+class TicketHistoryListComponent extends HTMLList{
 
 	protected function populateItem($entity){
 

@@ -94,7 +94,7 @@ class DetailPage extends WebPage{
 				"userId" => $user->getId()
 			));
 
-			if(isset($_POST["Point"])){
+			if(isset($_POST["Point"]) || isset($_POST["Ticket"])){
 				SOYShopPlugin::invoke("soyshop.point", array(
 					"userId" => $this->id
 				));
@@ -165,6 +165,7 @@ class DetailPage extends WebPage{
 		self::buildProfileForm($shopUser);	//プロフィール
 		self::buildMailLogForm($shopUser);	//メールログ
 		self::buildPointForm($shopUser);	//ポイント
+		self::buildTicketForm($shopUser);	//チケット
     	self::buildAddressForm($shopUser);	//お届け先
 
     	/**
@@ -447,49 +448,96 @@ class DetailPage extends WebPage{
 		//ポイント
     	$activedPointPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_point_base")));
     	DisplayPlugin::toggle("point", $activedPointPlugin);
-    	DisplayPlugin::toggle("point2", $activedPointPlugin);
 
-		//ポイントプラグインを無効にしていても下記の処理は行う
+		$point = 0;
+		$timeLimit = null;
+		$histories = array();
 
 		/* ここ以下はポイント有効時 */
-		SOY2::imports("module.plugins.common_point_base.domain.*");
+		if($activedPointPlugin){
+			SOY2::imports("module.plugins.common_point_base.domain.*");
+			$point = $user->getPoint();
 
+	    	$timeLimit = self::getTimeLimit($user->getId());
+	    	$histories = self::getPointHistories($user->getId());
+		}
+
+		//ポイントプラグインを無効にしていても下記の処理は行う
 		$this->addInput("point", array(
-    		"name" => "Point",
-    		"value" => $user->getPoint(),
+			"name" => "Point",
+			"value" => $point,
+			"style" => "ime-mode:inactive;"
+		));
+
+		$this->addLabel("time_limit", array(
+			"text" => (isset($timeLimit)) ? date("Y-m-d H:i:s", $timeLimit) : "無期限"
+		));
+
+		DisplayPlugin::toggle("point_history", (count($histories) > 0));
+		$this->createAdd("point_history_list", "_common.User.PointHistoryListComponent", array(
+			"list" => $histories
+		));
+	}
+
+	private function getTimeLimit($userId){
+		return SOYShopPlugin::invoke("soyshop.point", array("userId" => $userId))->getTimeLimit();
+	}
+
+	private function getPointHistories($userId){
+		try{
+			return SOY2DAOFactory::create("SOYShop_PointHistoryDAO")->getByUserId($userId);
+		}catch(Exception $e){
+			return array();
+		}
+	}
+
+	/**
+	 * チケットフォーム
+	 * @param SOYShop_User $user
+	 */
+	private function buildTicketForm(SOYShop_User $user){
+
+		//チケット
+    	$activedTicketPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_ticket_base")));
+    	DisplayPlugin::toggle("ticket", $activedTicketPlugin);
+
+		$count = 0;
+		$histories = array();
+
+		/* ここ以下はチケット有効時 */
+		if($activedTicketPlugin){
+			SOY2::imports("module.plugins.common_ticket_base.domain.*");
+			$count = self::getTicketCountByUserId($user->getId());
+			$histories = self::getTicketHistories($user->getId());
+		}
+
+		//チケットプラグインを無効にしていても下記の処理は行う
+		$this->addInput("ticket_count", array(
+    		"name" => "Ticket",
+    		"value" => $count,
     		"style" => "ime-mode:inactive;"
     	));
 
-    	$timeLimit = self::getTimeLimit($user->getId());
-    	$this->addLabel("time_limit", array(
-    		"text" => (isset($timeLimit)) ? date("Y-m-d H:i:s", $timeLimit) : "無期限"
-    	));
-
-    	$histories = self::getPointHistories($user->getId());
-
-    	DisplayPlugin::toggle("point_history", (count($histories) > 0));
-
-    	$this->createAdd("point_history_list", "_common.User.PointHistoryListComponent", array(
+    	DisplayPlugin::toggle("ticket_history", (count($histories) > 0));
+    	$this->createAdd("ticket_history_list", "_common.User.TicketHistoryListComponent", array(
     		"list" => $histories
     	));
 	}
 
-	private function getTimeLimit($userId){
-		$delegate = SOYShopPlugin::invoke("soyshop.point", array(
-			"userId" => $userId
-		));
-		return $delegate->getTimeLimit();
+	private function getTicketCountByUserId($userId){
+		try{
+			return SOY2DAOFactory::create("SOYShop_TicketDAO")->getByUserId($userId)->getCount();
+		}catch(Exception $e){
+			return 0;
+		}
 	}
 
-	private function getPointHistories($userId){
-		$historyDao = SOY2DAOFactory::create("SOYShop_PointHistoryDAO");
-
+	private function getTicketHistories($userId){
 		try{
-			$histories = $historyDao->getByUserId($userId);
+			return SOY2DAOFactory::create("SOYShop_TicketHistoryDAO")->getByUserId($userId);
 		}catch(Exception $e){
-			$histories = array();
+			return array();
 		}
-		return $histories;
 	}
 
 	function getScripts(){
