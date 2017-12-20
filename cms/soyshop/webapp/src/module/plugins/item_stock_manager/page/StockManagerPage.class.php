@@ -91,6 +91,7 @@ class StockManagerPage extends WebPage{
 	}
 
 	function execute(){
+
 		//リセット
 		if(isset($_POST["reset"])){
 			self::setParameter("search_condition", null);
@@ -102,6 +103,11 @@ class StockManagerPage extends WebPage{
 		MessageManager::addMessagePath("admin");
 
 		parent::__construct();
+
+		$this->addLink("create_link", array(
+			"link" => SOY2PageController::createLink("Item.Create"),
+			"visible" => SOY2ActionSession::getUserSession()->getAttribute("app_shop_auth_limit")
+		));
 
 		self::buildSearchForm();
 
