@@ -110,7 +110,12 @@ class CMSEntryEditorPageBase extends CMSUpdatePageBase{
 		foreach($scriptFiles as $path){
 			$script[] = '<script type="text/javascript" src="'.htmlspecialchars(SOY2PageController::createRelativeLink($path)."?".SOYCMS_BUILD_TIME,ENT_QUOTES,"UTF-8").'"></script>';
 		}
-
+		//ラベルのチェック状況を調べる
+		$script[] = '<script type="text/javascript">';
+		$script[] = "$('input[name=\"label[]\"]').each(function(ele){";
+		$script[] = "	toggle_labelmemo(\$(this).val(), \$(this).is(\":checked\"));";
+		$script[] = "});";
+		$script[] = '</script>'."\n";
 
 		$this->addLabel("entry_editor_javascripts", array(
 			"html" => implode("\n", $script),
