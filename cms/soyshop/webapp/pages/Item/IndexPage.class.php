@@ -39,11 +39,10 @@ class IndexPage extends WebPage{
 			$itemLogic = SOY2Logic::createInstance("logic.shop.item.ItemLogic")->createDummyItems();
 			SOY2PageController::jump("Item?dummy");
 		}
-		
+
 		MessageManager::addMessagePath("admin");
 
-		$session = SOY2ActionSession::getUserSession();
-		$appLimit = $session->getAttribute("app_shop_auth_limit");
+		$appLimit = SOY2ActionSession::getUserSession()->getAttribute("app_shop_auth_limit");
 
 		parent::__construct();
 
@@ -156,7 +155,7 @@ class IndexPage extends WebPage{
 		$link = SOY2PageController::createLink("Item");
 
 		$sorts = $logic->getSorts();
-		
+
 		foreach($sorts as $key => $value){
 
 			$text = (!strpos($key,"_desc")) ? "▲" : "▼";
@@ -171,4 +170,3 @@ class IndexPage extends WebPage{
 		}
 	}
 }
-?>
