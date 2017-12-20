@@ -12,6 +12,10 @@
 					<th>商品名</th>
 					<td><input type="text" soy:id="name"></td>
 				</tr>
+				<tr>
+					<th>カテゴリ</th>
+					<td><select soy:id="category"><option></option></select></td>
+				</tr>
 			</table>
 
 			<p class="alC" style="margin-botton:10px;">
@@ -27,6 +31,7 @@
 			<tr>
 				<th>商品名</th>
 				<th>商品コード</th>
+				<th>カテゴリ</th>
 				<th>価格</th>
 				<th>在庫</th>
 				<th>&nbsp;</th>
@@ -34,6 +39,7 @@
 			<tr soy:id="item_list">
 				<td soy:id="item_name">ダイズ</td>
 				<td soy:id="item_code">omame-001</td>
+				<td><!-- soy:id="item_category" /--></td>
 				<td><!-- soy:id="item_price" -->1000<!-- /soy:id="item_price" -->&nbsp;円</td>
 				<td soy:id="item_stock"></td>
 				<td class="operation">
@@ -55,6 +61,10 @@
 				<tr>
 					<th>商品コード</th>
 					<td><input soy:id="register_item_code"></td>
+				</tr>
+				<tr>
+					<th>カテゴリ</th>
+					<td><select soy:id="register_item_category"><option></option></select></td>
 				</tr>
 				<tr>
 					<th>定価</th>

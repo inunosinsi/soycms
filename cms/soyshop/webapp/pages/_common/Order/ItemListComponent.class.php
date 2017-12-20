@@ -2,6 +2,7 @@
 
 class ItemListComponent extends HTMLList{
 
+	private $categories = array();
     private $detailLink;
 
     protected function populateItem($item, $key) {
@@ -24,6 +25,10 @@ class ItemListComponent extends HTMLList{
             "text" => $item->getCode()
         ));
 
+		$this->addLabel("item_category", array(
+            "text" => (isset($this->categories[$item->getCategory()])) ? $this->categories[$item->getCategory()] : "-"
+        ));
+
         $this->addLabel("item_price", array(
             "text" => number_format((int)$item->getPrice())
         ));
@@ -43,6 +48,10 @@ class ItemListComponent extends HTMLList{
 
 		//在庫切れ
     }
+
+	function setCategories($categories){
+		$this->categories = $categories;
+	}
 
 
     function getDetailLink() {

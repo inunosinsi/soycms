@@ -19,6 +19,7 @@ class SearchPage extends WebPage{
 
 				try{
 					$itemDao->insert($item);
+					self::setParameter("search_condition", array("name" => $item->getName(), "category" => $item->getCategory())); //条件を入れる
 					SOY2PageController::jump("Order.Register.Item.Search");
 				}catch(Exceptino $e){
 					SOY2PageController::jump("Order.Register.Item.Search?failed");
@@ -49,6 +50,12 @@ class SearchPage extends WebPage{
 			"name" => "search_condition[name]",
 			"value" => (isset($cnds["name"])) ? $cnds["name"] : null
 		));
+
+		$this->addSelect("category", array(
+			"name" => "search_condition[category]",
+			"options" => self::getCategoryList(),
+			"selected" => (isset($cnds["category"])) ? $cnds["category"] : null
+		));
 	}
 
 	private function buildSearchResult(){
@@ -57,7 +64,7 @@ class SearchPage extends WebPage{
 
 		//検索結果は5件
 		if(count($cnds)){
-			$limit = 5;
+			$limit = 15;
 			$searchLogic = SOY2Logic::createInstance("logic.shop.item.SearchItemLogic");
 			$searchLogic->setLimit($limit);
 			$searchLogic->setSearchCondition($cnds);
@@ -79,6 +86,7 @@ class SearchPage extends WebPage{
 		//商品一覧
 		$this->createAdd("item_list", "_common.Order.ItemListComponent", array(
 			"list" => $items,
+			"categories" => self::getCategoryList(),
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
 		));
 	}
@@ -105,12 +113,37 @@ class SearchPage extends WebPage{
 			));
 		}
 
+		$this->addSelect("register_item_category", array(
+			"name" => "Item[category]",
+			"options" => self::getCategoryList(),
+			"selected" => (isset($cnds["category"])) ? $cnds["category"] : false
+		));
+
 		//定価
 		$this->addInput("register_item_list_price", array(
 			"type" => "number",
 			"name" => "Item[config][list_price]",
 			"value" => 0,
 		));
+	}
+
+	private function getCategoryList(){
+		static $list;
+		if(is_null($list)){
+			$list = array();
+			try{
+				$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
+			}catch(Exception $e){
+				return $list;
+			}
+			if(!count($categories)) return $list;
+
+			foreach($categories as $category){
+				$list[$category->getId()] = $category->getName();
+			}
+		}
+
+		return $list;
 	}
 
 	private function getParameter($key){

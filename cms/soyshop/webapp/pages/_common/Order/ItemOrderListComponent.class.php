@@ -14,8 +14,9 @@ class ItemOrderListComponent extends HTMLList {
 			"link" => $itemExists ? SOY2PageController::createLink("Item.Detail." . $itemOrder->getItemId()) : "",
 		));
 
+		//item_idが0の場合は名前を表示する
 		$this->addLabel("item_name", array(
-			"text" => (strlen($item->getCode())) ? $itemOrder->getItemName() : "---"
+			"text" => ((int)$itemOrder->getItemId() === 0 || strpos($item->getCode(), "_delete_") === false) ? $itemOrder->getItemName() : "---"
 		));
 
 		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
@@ -52,7 +53,7 @@ class ItemOrderListComponent extends HTMLList {
 		}
 		return $item;
 	}
-	
+
 	function setItemDao($itemDao){
 		$this->itemDao = $itemDao;
 	}
