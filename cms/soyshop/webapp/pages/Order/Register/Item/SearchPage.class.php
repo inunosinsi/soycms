@@ -2,6 +2,8 @@
 
 class SearchPage extends WebPage{
 
+	private $item;
+
 	function doPost(){
 		if(soy2_check_token()){
 			if(isset($_POST["Reset"])){
@@ -18,11 +20,11 @@ class SearchPage extends WebPage{
 				$item->setIsOpen(SOYShop_Item::IS_OPEN);
 
 				try{
-					$itemDao->insert($item);
-					self::setParameter("search_condition", array("name" => $item->getName(), "category" => $item->getCategory())); //条件を入れる
+					$id = $itemDao->insert($item);
+					self::setParameter("search_condition", array("name" => $item->getName(), "code" => $item->getCode(), "category" => $item->getCategory())); //条件を入れる
 					SOY2PageController::jump("Order.Register.Item.Search");
-				}catch(Exceptino $e){
-					SOY2PageController::jump("Order.Register.Item.Search?failed");
+				}catch(Exception $e){
+					$this->item = $item;
 				}
 			}
 		}
@@ -49,6 +51,11 @@ class SearchPage extends WebPage{
 		$this->addInput("name", array(
 			"name" => "search_condition[name]",
 			"value" => (isset($cnds["name"])) ? $cnds["name"] : null
+		));
+
+		$this->addInput("code", array(
+			"name" => "search_condition[code]",
+			"value" => (isset($cnds["code"])) ? $cnds["code"] : null
 		));
 
 		$this->addSelect("category", array(
@@ -96,8 +103,20 @@ class SearchPage extends WebPage{
 		$cnds = self::getParameter("search_condition");
 
 		$this->addLabel("error", array(
-			"text" => (isset($_GET["failed"])) ? "商品登録に失敗しました" : "登録されている商品がありません"
+			"text" => (isset($this->item)) ? "商品登録に失敗しました" : "登録されている商品がありません"
 		));
+		DisplayPlugin::toggle("error_code", (isset($this->item)));
+
+		if(isset($this->item)){
+			$cnds = array(
+				"name" => $this->item->getName(),
+				"code" => $this->item->getCode(),
+				"price" => $this->item->getPrice(),
+				"stock" => $this->item->getStock(),
+				"category" => $this->item->getCategory(),
+				"list_price" => $this->item->getAttribute("list_price")
+			);
+		}
 
 		$this->addForm("register_form");
 
@@ -123,7 +142,7 @@ class SearchPage extends WebPage{
 		$this->addInput("register_item_list_price", array(
 			"type" => "number",
 			"name" => "Item[config][list_price]",
-			"value" => 0,
+			"value" => (isset($cnds["list_price"])) ? $cnds["list_price"] : 0,
 		));
 	}
 

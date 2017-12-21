@@ -13,6 +13,10 @@
 					<td><input type="text" soy:id="name"></td>
 				</tr>
 				<tr>
+					<th>商品コード</th>
+					<td><input type="text" soy:id="code"></td>
+				</tr>
+				<tr>
 					<th>カテゴリ</th>
 					<td><select soy:id="category"><option></option></select></td>
 				</tr>
@@ -60,7 +64,10 @@
 				</tr>
 				<tr>
 					<th>商品コード</th>
-					<td><input soy:id="register_item_code"></td>
+					<td>
+						<p class="error always" soy:display="error_code">入力した商品コードはすでに登録されています</p>
+						<input soy:id="register_item_code">
+					</td>
 				</tr>
 				<tr>
 					<th>カテゴリ</th>
