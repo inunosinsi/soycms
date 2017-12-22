@@ -361,6 +361,16 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			return array();
 		}
 
+		//値が登録されていなければフィールドを追加
+		foreach($attrList as $fieldId => $attrConf){
+			if(!isset($attributes[$fieldId])){
+				$attrObj = new SOYShop_OrderAttribute();
+				$attrObj->setFieldId($fieldId);
+				$attrObj->setOrderId($orderId);
+				$attributes[$fieldId] = $attrObj;
+			}
+		}
+
 		$array = array();
 		foreach($attributes as $attribute){
 			if(!isset($attrList[$attribute->getFieldId()])) continue;
@@ -467,6 +477,16 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			$attributes = $this->dao->getByOrderId($orderId);
 		}catch(Exception $e){
 			$attributes = array();
+		}
+
+		//値が登録されていなければフィールドを追加
+		foreach($list as $fieldId => $attrConf){
+			if(!isset($attributes[$fieldId])){
+				$attrObj = new SOYShop_OrderAttribute();
+				$attrObj->setFieldId($fieldId);
+				$attrObj->setOrderId($orderId);
+				$attributes[$fieldId] = $attrObj;
+			}
 		}
 
 		$array = array();

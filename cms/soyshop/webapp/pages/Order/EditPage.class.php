@@ -783,33 +783,35 @@ class EditPage extends WebPage{
 					//value2に値がない場合 dateとか
 					if(is_null($newValue2)){
 						if($newValue1 != $obj["value1"]){
-							$change[]=$this->getHistoryText($obj["label"], $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1));
+							$change[] = $this->getHistoryText($obj["label"], $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1));
 						}
 
 					//value2に値がある場合 periodとか
 					}else{
 						if($newValue1 != $obj["value1"] || $newValue2 != $obj["value2"]){
-							$change[]=$this->getHistoryText($obj["label"], $this->convertDateText($obj["value1"]) . " ～ " . $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1) . " ～ " . $this->convertDateText($newValue2));
+							$change[] = $this->getHistoryText($obj["label"], $this->convertDateText($obj["value1"]) . " ～ " . $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1) . " ～ " . $this->convertDateText($newValue2));
 						}
 					}
 
-					//ここで配列を入れてしまう。
 					try{
-						$dateDao->delete($order->getId(), $key);
+						$orderDateAttr = $dateDao->get($order->getId(), $key);
 					}catch(Exception $e){
-						//
+						$orderDateAttr = new SOYShop_OrderDateAttribute();
+						$orderDateAttr->setOrderId($order->getId());
+						$orderDateAttr->setFieldId($key);
 					}
 
-					$orderDateAttr = new SOYShop_OrderDateAttribute();
-					$orderDateAttr->setOrderId($order->getId());
-					$orderDateAttr->setFieldId($key);
 					$orderDateAttr->setValue1($newValue1);
 					$orderDateAttr->setValue2($newValue2);
 
 					try{
 						$dateDao->insert($orderDateAttr);
 					}catch(Exception $e){
-						//
+						try{
+							$dateDao->update($orderDateAttr);
+						}catch(Exception $e){
+							//
+						}
 					}
 
 					break;
@@ -878,4 +880,3 @@ class EditPage extends WebPage{
 		return date("Y", $time) . "-" . date("m", $time) . "-" . date("d", $time);
 	}
 }
-?>

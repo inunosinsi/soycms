@@ -247,6 +247,16 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 			return array();
 		}
 
+		//値が登録されていなければフィールドを追加
+		foreach($attrList as $fieldId => $attrConf){
+			if(!isset($attributes[$fieldId])){
+				$attrObj = new SOYShop_OrderDateAttribute();
+				$attrObj->setFieldId($fieldId);
+				$attrObj->setOrderId($orderId);
+				$attributes[$fieldId] = $attrObj;
+			}
+		}
+
 		$array = array();
 		foreach($attributes as $attribute){
 			if(!isset($attrList[$attribute->getFieldId()])) continue;
@@ -257,9 +267,8 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 			$name = "Customfield[" . $attribute->getFieldId() . "]";
 			switch($attrList[$attribute->getFieldId()]["type"]){
 				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
-					if(is_null($attribute->getValue1())) continue;
 					$name = $name . "[date]";
-					$value1 = date("Y-m-d", $attribute->getValue1());
+					$value1 = (!is_null($attribute->getValue1())) ? date("Y-m-d", $attribute->getValue1()) : "--";
 					$dateArray = explode("-", $value1);
 					$htmls[] = $this->buildSelectBox($dateArray[0], $name, "year") . "年";
 					$htmls[] = $this->buildSelectBox($dateArray[1], $name, "month") . "月";
@@ -267,10 +276,9 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 
 					break;
 				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
-					if(is_null($attribute->getValue1()) || is_null($attribute->getValue2())) continue;
 					{
 						$startName = $name . "[start]";
-						$value1 = date("Y-m-d", $attribute->getValue1());
+						$value1 = (!is_null($attribute->getValue1())) ? date("Y-m-d", $attribute->getValue1()) : "--";
 						$dateArray = explode("-", $value1);
 						$htmls[] = $this->buildSelectBox($dateArray[0], $startName, "year") . "年";
 						$htmls[] = $this->buildSelectBox($dateArray[1], $startName, "month") . "月";
@@ -279,7 +287,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 					}
 					{
 						$endName = $name . "[end]";
-						$value2 = date("Y-m-d", $attribute->getValue2());
+						$value2 = (!is_null($attribute->getValue2())) ? date("Y-m-d", $attribute->getValue2()) : "--";
 						$dateArray = explode("-", $value2);
 						$htmls[] = $this->buildSelectBox($dateArray[0], $endName, "year") . "年";
 						$htmls[] = $this->buildSelectBox($dateArray[1], $endName, "month") . "月";
@@ -292,7 +300,6 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 
 		return $array;
-
 	}
 
 	/**
@@ -317,6 +324,16 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 			$attributes = $this->dao->getByOrderId($orderId);
 		}catch(Exception $e){
 			$attributes = array();
+		}
+
+		//値が登録されていなければフィールドを追加
+		foreach($list as $fieldId => $attrConf){
+			if(!isset($attributes[$fieldId])){
+				$attrObj = new SOYShop_OrderDateAttribute();
+				$attrObj->setFieldId($fieldId);
+				$attrObj->setOrderId($orderId);
+				$attributes[$fieldId] = $attrObj;
+			}
 		}
 
 		$array = array();
@@ -385,4 +402,3 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "common_order_date_customfield", "CommonOrderDateCustomfieldModule");
-?>
