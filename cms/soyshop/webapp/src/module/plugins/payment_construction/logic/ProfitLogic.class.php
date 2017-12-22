@@ -20,7 +20,6 @@ class ProfitLogic extends SOY2LogicBase {
 		try{
 			$dao->insert($obj);
 		}catch(Exception $e){
-			var_dump($e);
 			return false;
 		}
 
