@@ -32,6 +32,7 @@ class SearchPage extends WebPage{
 
 	function __construct(){
 
+		SOY2::import("domain.shop.SOYShop_Item");
 		parent::__construct();
 
 		self::buildSearchForm();
@@ -113,6 +114,7 @@ class SearchPage extends WebPage{
 				"code" => $this->item->getCode(),
 				"price" => $this->item->getPrice(),
 				"stock" => $this->item->getStock(),
+				"unit" => $this->item->getUnit(),
 				"category" => $this->item->getCategory(),
 				"list_price" => $this->item->getAttribute("list_price")
 			);
@@ -120,8 +122,9 @@ class SearchPage extends WebPage{
 
 		$this->addForm("register_form");
 
-		foreach(array("name", "code", "price", "stock") as $t){
+		foreach(array("name", "code", "price", "stock", "unit") as $t){
 			$v = (isset($cnds[$t])) ? $cnds[$t] : null;
+			if($t == "unit" && is_null($v)) $v = SOYShop_Item::UNIT;
 			if(is_null($v) && $t == "stock") $v = 100;
 			$typeProp = ($t == "price" || $t == "stock") ? "number" : "text";
 			$this->addInput("register_item_" . $t, array(
