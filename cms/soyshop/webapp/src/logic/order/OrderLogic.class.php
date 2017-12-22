@@ -20,7 +20,7 @@ class OrderLogic extends SOY2LogicBase{
 
     	return $order;
     }
-	
+
 	/**
 	 * 商品情報を詳細つきで取得
 	 * @param integer $id
@@ -33,7 +33,7 @@ class OrderLogic extends SOY2LogicBase{
 
     	return $order;
 	}
-	
+
     function getTotalPrice($orderId) {
     	try{
     		return SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getTotalPriceByOrderId($orderId);
@@ -49,7 +49,7 @@ class OrderLogic extends SOY2LogicBase{
     		return array();
     	}
     }
-	
+
 	/**
 	 * @param integer $itemId
 	 * @return integer 商品の個数
@@ -74,7 +74,7 @@ class OrderLogic extends SOY2LogicBase{
     		return 0;
     	}
     }
-    
+
 	/**
 	 * @param integer $orderId
 	 * @return integer 商品の個数
@@ -133,17 +133,17 @@ class OrderLogic extends SOY2LogicBase{
      *
      */
     function getTrackingNumber(SOYShop_Order $order){
-    	
+
     	SOYShopPlugin::load("soyshop.order.complete");
 		$delegate = SOYShopPlugin::invoke("soyshop.order.complete", array(
 			"mode" => "tracking_number",
 			"order" => $order
 		));
-		
+
 		if(!is_null($delegate->getTrackingNumberList()) && count($delegate->getTrackingNumberList())){
 			//最初に見つけた注文番号を返す
 			foreach($delegate->getTrackingNumberList() as $customTrackNum){
-				if(isset($customTrackNum)) return $customTrackNum; 
+				if(isset($customTrackNum)) return $customTrackNum;
 			}
 		}
 
@@ -169,7 +169,7 @@ class OrderLogic extends SOY2LogicBase{
 
 	    return $trackingnum;
     }
-    
+
     /**
 	 * 注文状態を変更する
 	 */
@@ -186,7 +186,7 @@ class OrderLogic extends SOY2LogicBase{
     		}catch(Exception $e){
     			continue;
     		}
-    		
+
     		$order->setStatus($status);
     		$historyContent = "注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。";
     		try{
@@ -199,7 +199,7 @@ class OrderLogic extends SOY2LogicBase{
 
     	$dao->commit();
     }
-    
+
     /**
 	 * 支払状態を変更する
 	 */
@@ -216,7 +216,7 @@ class OrderLogic extends SOY2LogicBase{
     		}catch(Exception $e){
     			continue;
     		}
-    		
+
     		$order->setPaymentStatus($status);
     		$historyContent = "支払い状態を<strong>「" . $order->getPaymentStatusText() ."」</strong>に変更しました。";
     		try{
@@ -230,4 +230,3 @@ class OrderLogic extends SOY2LogicBase{
     	$dao->commit();
     }
 }
-?>

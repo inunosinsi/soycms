@@ -603,26 +603,26 @@ class CartLogic extends SOY2LogicBase{
 			//注文可能かチェック
 			$this->checkOrderable();
 
-			//顧客情報の登録
-			$this->registerCustomerInformation();
-
-			//注文情報の登録
-			$this->orderItems();
-
-			//注文カスタムフィールド
+			//注文カスタムフィールド　顧客情報の変更を必要とするものもあるため、先に実行しておく
 			SOYShopPlugin::load("soyshop.order.customfield");
 			$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
 				"mode" => "order",
 				"cart" => $this,
 			));
 
-			//ユーザカスタムフィールド
+			//顧客情報の登録
+			$this->registerCustomerInformation();
+
+			//ユーザカスタムフィールド　顧客IDが決まってからでないと実行できないものがあるため、顧客登録の後に実行
 			SOYShopPlugin::load("soyshop.user.customfield");
 			SOYShopPlugin::invoke("soyshop.user.customfield",array(
 				"mode" => "register",
 				"app" => $this,
 				"userId" => $this->getCustomerInformation()->getId()
 			));
+
+			//注文情報の登録
+			$this->orderItems();
 
 			//記録
 			$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
