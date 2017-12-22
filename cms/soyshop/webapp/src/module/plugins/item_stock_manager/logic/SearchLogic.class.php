@@ -51,7 +51,6 @@ class SearchLogic extends SOY2LogicBase{
 		try{
 			$res = $this->itemDao->executeQuery($sql, $this->binds);
 		}catch(Exception $e){
-			var_dump($e);
 			$res = array();
 		}
 
@@ -112,8 +111,13 @@ class SearchLogic extends SOY2LogicBase{
 						//何もしない
 						break;
 					default:
-						$this->where[] = $key . " LIKE :" . $key;
-						$this->binds[":" . $key] = "%" . trim($value) . "%";
+						$values = explode(" ", str_replace("　", " ", $value));
+						$subWhere = array();
+						foreach($values as $idx => $v){
+							$subWhere[] = $key . " LIKE :" . $key . "_" . $idx;
+							$this->binds[":" . $key . "_" . $idx] = "%" . trim($v) . "%";
+						}
+						if(count($subWhere)) $this->where[] = "(" . implode(" OR ", $subWhere) . ")";
 				}
 			}
 		}

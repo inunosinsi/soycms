@@ -58,6 +58,7 @@ if(file_exists(SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . str_replace(".", "/", SOYSHOP_
 	try{
 		$page = SOY2HTMLFactory::createInstance($path, array("arguments" => $args));
 	}catch(Exception $e){
+		var_dump($e);
 		$page = SOY2HTMLFactory::createInstance("ErrorPage", array("arguments" => $args));
 	}
 //HTMLファイルがなければ必ずエラー

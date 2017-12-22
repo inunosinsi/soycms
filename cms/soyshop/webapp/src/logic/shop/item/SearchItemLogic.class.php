@@ -82,14 +82,14 @@ class SearchItemLogic extends SOY2LogicBase{
 
 			switch($key){
 				case "name":
-					$where[] = "item_name LIKE :item_name";
-					$values = explode(" ", str_replace("　", " ", $value));
-					/** @ToDo **/
-					$binds[":item_name"] = "%" . $value . "%";
-					break;
 				case "code":
-					$where[] = "item_code LIKE :item_code";
-					$binds[":item_code"] = "%" . $value . "%";
+					$values = explode(" ", str_replace("　", " ", $value));
+					$subWhere = array();
+					foreach($values as $idx => $v){
+						$subWhere[] = "item_" . $key . " LIKE :item_" . $key . "_" . $idx;
+						$binds[":item_" . $key . "_" . $idx] = "%" . $v . "%";
+					}
+					if(count($subWhere)) $where[] = "(" . implode(" OR ", $subWhere) . ")";
 					break;
 				case "categories":
 					$values = explode(" ", $value);
@@ -202,7 +202,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		return $countResult[0]["count"];
 	}
 
-	//ユーザー取得
+	//商品取得
 	function getItems(){
 		$this->getQuery()->setLimit($this->limit);
 		$this->getQuery()->setOffset($this->offset);
@@ -211,16 +211,14 @@ class SearchItemLogic extends SOY2LogicBase{
 		try{
 			$result = $this->getQuery()->executeQuery($sql, $this->binds);
 		}catch(Exception $e){
-			$result = array();
+			return array();
 		}
 
-		$users = array();
+		$items = array();
 		foreach($result as $raw){
-			$users[] = $this->getQuery()->getObject($raw);
+			$items[] = $this->getQuery()->getObject($raw);
 		}
 
-		return $users;
+		return $items;
 	}
-
 }
-?>
