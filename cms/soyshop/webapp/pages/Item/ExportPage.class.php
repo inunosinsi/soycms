@@ -70,6 +70,7 @@ class ExportPage extends WebPage{
             "saleFlag" => "セール中",
 
             "stock" => "在庫",
+			"unit" => "単位",
             "category" => "カテゴリ",
             "type" => "商品タイプ",
             "detailPageId" => "商品詳細ページID",
