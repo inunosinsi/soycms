@@ -286,6 +286,12 @@ class DetailPage extends WebPage{
 			"value" => $item->getStock()
 		));
 
+		$this->addInput("item_unit", array(
+			"name" => "Item[unit]",
+			"value" => (!is_null($item->getUnit())) ? $item->getUnit() : SOYShop_Item::UNIT,
+			"style" => "width:80px"
+		));
+
 		//注文数
 		$this->addLabel("item_order_count", array(
 			"text" => $this->getOrderConunt($item)

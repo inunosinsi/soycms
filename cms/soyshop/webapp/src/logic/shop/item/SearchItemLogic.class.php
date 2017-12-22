@@ -29,10 +29,10 @@ class SearchItemLogic extends SOY2LogicBase{
 
 		"stock" =>  "item_stock",
 		"stock_desc" =>  "item_stock desc",
-		
+
 		"create_date" => "create_date",
 		"create_date_desc" => "create_date desc",
-		
+
 		"update_date" => "update_date",
 		"update_date_desc" => "update_date desc"
 
@@ -74,15 +74,17 @@ class SearchItemLogic extends SOY2LogicBase{
 	function setSearchCondition($search){
 		$where = array();
 		$binds = array();
-		
+
 		//配列がない場合は何もしない
 		if(!is_array($search) || count($search) === 0) return;
-		
+
 		foreach($search as $key => $value){
 
 			switch($key){
 				case "name":
 					$where[] = "item_name LIKE :item_name";
+					$values = explode(" ", str_replace("　", " ", $value));
+					/** @ToDo **/
 					$binds[":item_name"] = "%" . $value . "%";
 					break;
 				case "code":
@@ -106,7 +108,7 @@ class SearchItemLogic extends SOY2LogicBase{
 				//カテゴリ単体で調べたい時に使う
 				case "category":
 					if(strlen($value)){
-						
+
 						if($value < 0){
 							$where[] = "item_category IS NULL";
 						}else{
@@ -141,13 +143,13 @@ class SearchItemLogic extends SOY2LogicBase{
 		if(count($openConditions) > 0){
 			$where[] = "(" . implode(" OR ", $openConditions) .")";
 		}
-		
+
 		//小商品の表示
 		if(!isset($search["is_child"])){
 			$where[] = " item_type in (" . $this->getItemType() . ")";
 		}
-				
-		
+
+
 		$this->where = $where;
 		$this->binds = $binds;
 	}
@@ -159,7 +161,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		}else{
 			$countSql .= " where item_type in (" . $this->getItemType() . ") ";
 		}
-		
+
 		//削除フラグ
 		$countSql .= "and is_disabled != 1 ";
 		return $countSql;
@@ -173,13 +175,13 @@ class SearchItemLogic extends SOY2LogicBase{
 		}else{
 			$sql .= " where item_type in (" . $this->getItemType() . ") ";
 		}
-		
+
 		//削除フラグ
 		$sql .= "and is_disabled != 1 ";
 		if(strlen($this->order)) $sql .= " " . $this->order;
 		return $sql;
 	}
-	
+
 	function getItemType(){
 		$array = SOYShop_Item::getItemTypes();
 		$obj = array();
@@ -205,7 +207,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		$this->getQuery()->setLimit($this->limit);
 		$this->getQuery()->setOffset($this->offset);
 		$sql = $this->getItemsSQL();
-		
+
 		try{
 			$result = $this->getQuery()->executeQuery($sql, $this->binds);
 		}catch(Exception $e){

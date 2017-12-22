@@ -11,6 +11,8 @@ class SOYShop_Item {
 	const TYPE_DOWNLOAD_GROUP = "dlgroup";	//ダウンロードグループ
 	const TYPE_DOWNLOAD_CHILD = "dlchild";	//ダウンロードグループ
 
+	const UNIT = "個";	//単位
+
 
     static public function getItemTypes(){
         return array(
@@ -84,6 +86,11 @@ class SOYShop_Item {
      * @column item_stock
      */
     private $stock = 100;
+
+	/**
+	 * @column item_unit
+	 */
+	private $unit = self::UNIT;
 
     /**
      * @column item_config
@@ -180,6 +187,12 @@ class SOYShop_Item {
     function setStock($stock) {
         $this->stock = $stock;
     }
+	function getUnit(){
+		return $this->unit;
+	}
+	function setUnit($unit){
+		$this->unit = $unit;
+	}
     function getConfig() {
         return $this->config;
     }

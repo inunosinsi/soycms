@@ -21,6 +21,7 @@ create table soyshop_item(
 	item_selling_price integer,
 	item_sale_flag integer default 0,
 	item_stock integer default 0,
+	item_unit varchar,
 	item_config varchar,
 	item_type varchar,
 	item_category integer,
