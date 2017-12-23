@@ -107,7 +107,7 @@ class IndexPage extends MainMyPagePageBase{
 				$mypage->setUserInfo($user);
 				$mypage->setAttribute("user.edit.use_session_user_info", true);
 
-				if( $this->checkError($mypage) ){
+				if( self::checkError($mypage) ){
 					$this->jump("edit/confirm");
 				}else{
 					$this->jump("edit");
@@ -207,7 +207,7 @@ class IndexPage extends MainMyPagePageBase{
 	 * 入力された値のチェック。エラーがなければtrueを返す
 	 * @return boolean
 	 */
-	function checkError(MyPageLogic $mypage){
+	private function checkError(MyPageLogic $mypage){
 		$user = $mypage->getUserInfo();
 		$mypage->clearErrorMessage();
 		$res = true;

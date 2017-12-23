@@ -67,14 +67,14 @@ class ConfirmPage extends IndexPage{
 	}
 
 	function __construct(){
-		$this->checkIsLoggedIn(); //ログインチェック
+		$mypage = MyPageLogic::getMyPage();
+		if(!$mypage->getIsLoggedIn()) $this->jump("login");
 
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 
 		parent::__construct();
 
-		$mypage = MyPageLogic::getMyPage();
 		$user = $mypage->getUserInfo();
 
 		//直接URLを入力された場合は、入力フォームに戻す
