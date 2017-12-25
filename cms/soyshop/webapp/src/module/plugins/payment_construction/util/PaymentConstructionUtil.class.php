@@ -29,4 +29,9 @@ class PaymentConstructionUtil {
 		$config = SOYShop_DataSets::get("payment_construction.config", array());
 		return (!isset($config["display_construction_item"]) || (int)$config["display_construction_item"] === 1);
 	}
+
+	public static function isItemStockAutoInsert(){
+		$config = SOYShop_DataSets::get("payment_construction.config", array());
+		return (isset($config["item_stock_auto_insert"]) && (int)$config["item_stock_auto_insert"] === 1);
+	}
 }

@@ -217,6 +217,12 @@ class CartLogic extends SOY2LogicBase{
 				$item = $this->items[$index];
 				$item->setItemCount($count);
 				$item->setTotalPrice($item->getItemPrice() * $count);
+
+				SOYShopPlugin::load("soyshop.item.order");
+				SOYShopPlugin::invoke("soyshop.item.order", array(
+					"mode" => "update",
+					"itemOrder" => $item
+				));
 			}
 		}else{
 			$this->removeItem($index);

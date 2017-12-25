@@ -18,7 +18,7 @@ class ConstructionConfigPage extends WebPage{
 	function execute(){
 		parent::__construct();
 		$config = PaymentConstructionUtil::getConfig();
-		
+
 		$this->addForm("form");
 
 		$this->addCheckBox("display_construction_item", array(
@@ -36,6 +36,13 @@ class ConstructionConfigPage extends WebPage{
 		$this->addTextArea("items_include", array(
 			"name" => "Config[items_include]",
 			"value" => (isset($config["items_include"])) ? $config["items_include"] : null
+		));
+
+		$this->addCheckBox("item_stock_auto_insert", array(
+			"name" => "Config[item_stock_auto_insert]",
+			"value" => 1,
+			"selected" => PaymentConstructionUtil::isItemStockAutoInsert(),
+			"label" => "在庫切れの場合、自動で在庫を追加する"
 		));
 	}
 

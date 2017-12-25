@@ -2,6 +2,7 @@
 SOY2::import("domain.order.SOYShop_ItemModule");
 SOY2::import("module.plugins.common_item_option.logic.ItemOptionLogic");
 SOYShopPlugin::load("soyshop.item.option");
+SOYShopPlugin::load("soyshop.item.order");
 SOYShopPlugin::load("soyshop.order.customfield");
 class EditPage extends WebPage{
 
@@ -86,17 +87,22 @@ class EditPage extends WebPage{
 
 						//注文数が0個の場合や商品名が空の場合も削除として扱う
 						$delete = $delete || $newCount == 0 || strlen($newName) == 0;
+						$updateCount = 0;	//商品個数の変更 マイナスの数字も含む
 
+						$item = $this->getItem($itemOrder->getItemId());
 						if($delete){
-							$item = $this->getItem($itemOrder->getItemId());
 							$itemCode = (strlen($item->getCode()) > 0) ? $item->getCode() : $itemOrder->getItemId();
 
 							$itemChange[] = $itemOrder->getItemName() . "（" . $itemCode." " . $itemOrder->getItemPrice() . "円×" . $itemOrder->getItemCount() . "点）を削除しました。";
 							$newItems[$key]["itemCount"] = 0;
+							$updateCount = 0 - (int)$itemOrder->getItemCount();
 						}else{
 							if($newName != $itemOrder->getItemName()) $itemChange[] = $this->getHistoryText($itemOrder->getItemName(), $itemOrder->getItemName(), $newName);
 							if($newPrice != $itemOrder->getItemPrice()) $itemChange[] = $this->getHistoryText($itemOrder->getItemName() . "の単価", $itemOrder->getItemPrice(), $newPrice);
-							if($newCount != $itemOrder->getItemCount()) $itemChange[] = $this->getHistoryText($itemOrder->getItemName() . "の個数", $itemOrder->getItemCount(), $newCount);
+							if($newCount != $itemOrder->getItemCount()) {
+								$itemChange[] = $this->getHistoryText($itemOrder->getItemName() . "の個数", $itemOrder->getItemCount(), $newCount);
+								$updateCount = (int)$newCount - (int)$itemOrder->getItemCount();
+							}
 
 							$orderAttributes = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : $this->getOptionIndex();
 
@@ -113,6 +119,9 @@ class EditPage extends WebPage{
 						SOY2::cast($itemOrder, (object)$newItems[$key]);
 						$itemOrder->setTotalPrice($itemOrder->getItemPrice() * $itemOrder->getItemCount());
 						$itemOrders[$id] = $itemOrder;
+
+						//在庫の変更 0でない場合　マイナスも含む
+						if($updateCount !== 0) $this->changeStock($itemOrder, $updateCount);
 					}
 				}
 			}
@@ -143,6 +152,9 @@ class EditPage extends WebPage{
 
 						$newItemOrders[] = $itemOrder;
 						$itemChange[] = $itemOrder->getItemName() . "（" . $itemOrder->getItemPrice() . "円×" . $itemOrder->getItemCount() . "点）を追加しました。";
+
+						//在庫数の変更
+						$this->changeStock($itemOrder, $count);
 					}
 				}
 			}
@@ -184,6 +196,9 @@ class EditPage extends WebPage{
 
 						$newItemOrders[] = $itemOrder;
 						$itemChange[] = $itemOrder->getItemName() . "（" . $item->getCode() . " " . $itemOrder->getItemPrice() . "円×" . $itemOrder->getItemCount() . "点）を追加しました。";
+
+						//在庫数の変更
+						$this->changeStock($itemOrder, $count);
 					}
 				}
 			}
@@ -608,6 +623,17 @@ class EditPage extends WebPage{
 		));
 	}
 
+	function changeStock(SOYShop_ItemOrder $itemOrder, $stock){
+		$item = self::getItem($itemOrder->getItemId());
+		$item->setStock($item->getStock() - $stock);
+		$this->updateItem($item);
+
+		SOYShopPlugin::invoke("soyshop.item.order", array(
+			"mode" => "edit",
+			"itemOrder" => $itemOrder
+		));
+	}
+
 	/**
 	 * @return object#SOYShop_Item
 	 * @param itemId
@@ -626,6 +652,16 @@ class EditPage extends WebPage{
 		}
 
 		return $items[$itemId];
+	}
+
+	function updateItem(SOYShop_Item $item){
+		static $itemDAO;
+		if(!$itemDAO)$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		try{
+			$itemDAO->update($item);
+		}catch(Exception $e){
+			var_dump($e);
+		}
 	}
 
 	/**
