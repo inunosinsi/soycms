@@ -113,6 +113,12 @@ class CreatePage extends WebPage{
     		"value" => $obj->getStock()
     	));
 
+		$this->addInput("item_unit", array(
+			"name" => "Item[unit]",
+			"value" => (!is_null($obj->getUnit())) ? $obj->getUnit() : SOYShop_Item::UNIT,
+			"style" => "width:80px"
+		));
+
     	$this->addInput("item_price", array(
     		"name" => "Item[price]",
     		"value" => $obj->getPrice()

@@ -1,18 +1,18 @@
 <?php
 
 class OrderInvoiceCommon{
-	
+
 	public static function getFileDirectory(){
 		$dir = SOYSHOP_SITE_DIRECTORY . "files/invoice/";
 		if(!is_dir($dir)) mkdir($dir);
 
 		return $dir;
 	}
-	
+
 	public static function getFileUrl(){
 		return SOYSHOP_SITE_URL . "files/invoice/";
 	}
-	
+
 	public static function getConfig(){
 		return SOYShop_DataSets::get("order_invoice.config", array(
 			"logo" => "",		//ロゴ画像名
@@ -23,19 +23,19 @@ class OrderInvoiceCommon{
 			"firstOrder" => 1	//初回購入であることの表示
 		));
 	}
-	
+
 	public static function saveConfig($values){
 		SOYShop_DataSets::put("order_invoice.config", $values);
 	}
-	
+
 	public static function getTemplateName(){
 		return SOYShop_DataSets::get("order_invoice.template", "default");
 	}
-	
+
 	public static function saveTemplateName($template){
 		SOYShop_DataSets::put("order_invoice.template", $template);
 	}
-	
+
 	public static function getTemplateList(){
 		$files = array();
 		if ($dir = opendir(dirname(dirname(__FILE__)) . "/template")) {
@@ -43,11 +43,10 @@ class OrderInvoiceCommon{
 				if($file != "." && $file != ".." && strpos($file, ".html") > 0){
 					$files[] = str_replace(".html", "", $file);
 				}
-			} 
+			}
 			closedir($dir);
 		}
-		
+
 		return $files;
 	}
 }
-?>

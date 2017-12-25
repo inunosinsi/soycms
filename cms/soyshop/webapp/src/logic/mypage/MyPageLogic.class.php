@@ -316,15 +316,11 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @return Object SOYShop_User
 	 */
 	function getUser(){
-
-		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-
 		try{
-			$user = $dao->getById($this->getUserId());
+			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($this->getUserId());
 		}catch(Exception $e){
-			$user = new SOYShop_User();
+			return new SOYShop_User();
 		}
-		return $user;
 	}
 
 	//ダミーの値を表示したりといろいろできる
@@ -591,4 +587,3 @@ class MyPageLogic extends SOY2LogicBase{
 		SOYShop_DataSets::put("mail.mypage.remind.footer", $mail["footer"]);
 	}
 }
-?>
