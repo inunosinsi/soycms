@@ -94,7 +94,7 @@ class ProfitLogic extends SOY2LogicBase {
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		try{
-			return (int)$dao->getById($itemId)->getAttribute("list_price");
+			return $dao->getById($itemId)->getAttribute("list_price"); //実数もありにする
 		}catch(Exception $e){
 			return 0;
 		}

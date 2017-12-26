@@ -184,11 +184,14 @@ function soyshop_display_price($price){
 	if(is_int($price)){
 		return number_format((int)$price);
 	} else if(is_numeric($price)){
-		return number_format($price, 1);
+		if((int)$price == $price){
+			return number_format((int)$price);
+		}else{
+			return number_format($price, 1);
+		}
 	} else {
 		return 0;
 	}
-
 }
 
 /**
