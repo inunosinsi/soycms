@@ -5941,12 +5941,12 @@ class SOY2HTMLStyle{
 	}
 	function __set($key, $value){
 		//$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
-		$key = preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); });
+		$key = preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); }, $key);
 		$this->_styles[$key] = $value;
 	}
 	function __get($key){
 		//$key = preg_replace_callback('/[A-Z]/',create_function('$word','return \'-\'.strtolower($word[0]);'),$key);
-		preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); });
+		$key = preg_replace_callback('/[A-Z]/', function($word) use ($key) { return '-'.strtolower($word[0]); }, $key);
 		return $this->_styles[$key];
 	}
 }
