@@ -628,9 +628,9 @@ function soycms_check_site(id, url){
 	},300000);	//5 minute
 }
 
-
-$('.help').tooltip({
-	selector: "[data-toggle=tooltip]",
-	container: "body"
-})
-
+if($('.help').tooltip && typeof $('.help').tooltip() == "function"){
+	$('.help').tooltip({
+		selector: "[data-toggle=tooltip]",
+		container: "body"
+	});
+}
