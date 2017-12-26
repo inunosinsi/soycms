@@ -177,21 +177,17 @@ function soyshop_get_category_name($categoryId){
     return soyshop_get_category_object($categoryId)->getOpenCategoryName();
 }
 
+function soyshop_check_price_string($price){
+	if(!is_numeric($price)) return 0;
+	return (is_int($price)) ? (int)$price : (float)$price;
+}
+
 /**
  * 金額を表示する
  */
 function soyshop_display_price($price){
-	if(is_int($price)){
-		return number_format((int)$price);
-	} else if(is_numeric($price)){
-		if((int)$price == $price){
-			return number_format((int)$price);
-		}else{
-			return number_format($price, 1);
-		}
-	} else {
-		return 0;
-	}
+	if(!is_numeric($price)) return 0;
+	return (is_int($price)) ? number_format((int)$price) : number_format($price, 1);
 }
 
 /**
