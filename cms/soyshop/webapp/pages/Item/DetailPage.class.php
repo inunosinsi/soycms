@@ -322,7 +322,7 @@ class DetailPage extends WebPage{
 		//定価
 		$this->addInput("item_list_price", array(
 			"name" => "Item[config][list_price]",
-			"value" => (int)$item->getAttribute("list_price"),
+			"value" => soyshop_display_price($item->getAttribute("list_price")),
 			"readonly" => $readOnly
 		));
 

@@ -181,7 +181,14 @@ function soyshop_get_category_name($categoryId){
  * 金額を表示する
  */
 function soyshop_display_price($price){
-    return number_format((int)$price);
+	if(is_int($price)){
+		return number_format((int)$price);
+	} else if(is_numeric($price)){
+		return number_format($price, 1);
+	} else {
+		return 0;
+	}
+
 }
 
 /**

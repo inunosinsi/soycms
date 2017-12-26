@@ -143,7 +143,7 @@ class SearchPage extends WebPage{
 
 		//定価
 		$this->addInput("register_item_list_price", array(
-			"type" => "number",
+			"type" => "text",
 			"name" => "Item[config][list_price]",
 			"value" => (isset($cnds["list_price"])) ? $cnds["list_price"] : 0,
 		));

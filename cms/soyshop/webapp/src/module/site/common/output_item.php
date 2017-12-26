@@ -81,7 +81,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
     ));
 
     //定価
-    $htmlObj->addLabel("item_list_price", array(
+	$htmlObj->addLabel("item_list_price", array(
         "text" => soyshop_display_price($item->getAttribute("list_price")),
         "soy2prefix" => SOYSHOP_SITE_PREFIX
     ));
