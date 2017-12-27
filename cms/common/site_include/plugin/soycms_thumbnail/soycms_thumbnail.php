@@ -36,7 +36,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.9.3"
+			"version"=>"0.9.4"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -370,8 +370,8 @@ class SOYCMSThumbnailPlugin{
 			$htmls[] = "			}";
 			$htmls[] = "		}";
 			$htmls[] = "	});";
-		}
 			$htmls[] = "}";
+		}
 
 		$htmls[] = "function open_jcrop_filemanager(\$form){";
 		$htmls[] = "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload?jcrop_upload_field") . "\");";

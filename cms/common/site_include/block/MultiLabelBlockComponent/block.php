@@ -56,6 +56,9 @@ class MultiLabelBlockComponent implements BlockComponent{
 	 */
 	public function getViewPage($page){
 
+		//$siteIdプロパティがnullの場合がある
+		if(is_null($this->siteId) && defined("_SITE_ID_")) $this->siteId = _SITE_ID_;
+
 		//古いDSNのバックアップ
 		$oldDsn = null;
 
@@ -74,7 +77,12 @@ class MultiLabelBlockComponent implements BlockComponent{
 			SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
 			$siteDAO = SOY2DAOFactory::create("admin.SiteDAO");
 
-			$site = $siteDAO->getById($this->siteId);
+			if(is_numeric($this->siteId)){
+				$site = $siteDAO->getById($this->siteId);
+			}else{
+				$site = $siteDAO->getBySiteId($this->siteId);
+			}
+		
 			SOY2DAOConfig::Dsn($site->getDataSourceName());
 
 			$dsn = $site->getDataSourceName();
