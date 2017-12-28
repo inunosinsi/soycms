@@ -8,7 +8,7 @@ class SearchPage extends WebPage{
 		if(soy2_check_token()){
 			if(isset($_POST["Reset"])){
 				self::setParameter("search_condition", null);
-				SOY2PageController::jump("Order.Register.Item.Search");
+				SOY2PageController::jump("Order.Register.Item.Search" . self::q());
 			}
 
 			//商品を登録する
@@ -22,12 +22,18 @@ class SearchPage extends WebPage{
 				try{
 					$id = $itemDao->insert($item);
 					self::setParameter("search_condition", array("name" => $item->getName(), "code" => $item->getCode(), "category" => $item->getCategory())); //条件を入れる
-					SOY2PageController::jump("Order.Register.Item.Search");
+					SOY2PageController::jump("Order.Register.Item.Search" . self::q());
 				}catch(Exception $e){
 					$this->item = $item;
 				}
 			}
 		}
+	}
+
+	private function q(){
+		if(!strpos($_SERVER["REQUEST_URI"], "?change=")) return "";
+		preg_match('/\?change=\d/', $_SERVER["REQUEST_URI"], $res);
+		return (isset($res[0])) ? $res[0] : "";
 	}
 
 	function __construct(){

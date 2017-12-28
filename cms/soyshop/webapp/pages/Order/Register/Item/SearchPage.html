@@ -46,7 +46,8 @@
 				<td><!-- soy:id="item_price" -->1000<!-- /soy:id="item_price" -->&nbsp;円</td>
 				<td soy:id="item_stock"></td>
 				<td class="operation">
-					<a href="javascript:void(0);" class="button" onclick="addItem('<!-- soy:id="item_code*" /-->');">追加</a>
+					<span class="add_button"><a href="javascript:void(0);" class="button" onclick="addItem('<!-- soy:id="item_code*" /-->');">追加</a></span>
+					<span class="change_button"><a href="javascript:void(0);" class="button" onclick="changeItem(<!-- soy:id="iframe_index" /-->, '<!-- soy:id="item_code*" /-->');">変更</a></span>
 				</td>
 			</tr>
 		</table>
@@ -122,8 +123,37 @@ function addItem(code){
 	parent.document.forms[0].submit();
 }
 
+function changeItem(idx, code){
+	$('#change_item_index', parent.document).val(idx);
+	$('#change_item_code', parent.document).val(code);
+
+	//親ウィンドウの更新(soy2_check_tokenを更新してから)
+	var token = $('input[name=soy2_token]').val();
+	$('input[name=soy2_token]', parent.document).val(token);
+	parent.document.forms[0].submit();
+}
+
 //親ウィンドウのsoy2_tokenを常に更新することで、子ウィンドウを閉じた時もボタンを押せるようにしている
 $(function(){
+	console.log(location.search);
+	var isQuery = (location.search.length > 0 && location.search.indexOf("change="));
+	//追加と変更ボタン、どちらを表示するか？
+	$(".add_button").each(function(){
+		if(isQuery){
+			$(this).css("display", "none");
+		}else{
+			$(this).css("display", "inline");
+		}
+	});
+
+	$(".change_button").each(function(){
+		if(isQuery){
+			$(this).css("display", "inline");
+		}else{
+			$(this).css("display", "none");
+		}
+	});
+
 	setInterval(function(){
 		var token = $('input[name=soy2_token]').val();
 		$('input[name=soy2_token]', parent.document).val(token);

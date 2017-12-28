@@ -277,6 +277,12 @@ class ItemList extends HTMLList {
 			"text" => $entity->getItemName(),
 		));
 
+		$this->addLink("change_link", array(
+			"link" => "javascript:void(0);",
+			"onclick" => "open_window_with_change(" . $id . ")",
+			"attr:id" => "change_item_" . $id
+		));
+
 		$this->addInput("item_price", array(
 			"name" => "Item[$id][itemPrice]",
 			"value" => $entity->getItemPrice(),

@@ -10,9 +10,42 @@ class ItemPage extends WebPage{
 	function doPost(){
 		if(soy2_check_token()){
 
-			if(isset($_POST["Item"])){
+			$items = $this->cart->getItems();
 
-				$items = $this->cart->getItems();
+			//商品の差し替え
+			if(isset($_POST["Change"]) && strlen($_POST["Change"]["index"]) && strlen($_POST["Change"]["code"])){
+				if(isset($items[$_POST["Change"]["index"]])){
+					$itemObj = self::getItemByCode($_POST["Change"]["code"]);
+					if(!is_null($itemObj->getId())){
+						//itemId, itemPrice, itemNameを入れ替える
+						$idx = $_POST["Change"]["index"];
+						$items[$idx]->setItemId($itemObj->getId());
+						$items[$idx]->setItemPrice($itemObj->getPrice());
+						$items[$idx]->setTotalPrice($items[$idx]->getItemPrice() * $items[$idx]->getItemCount());
+						$items[$idx]->setItemName($itemObj->getName());
+
+						/** @ToDo 商品が重複する場合は統合したい。削除できるから不要かも **/
+
+						$this->cart->setItems($items);
+						$this->cart->save();
+						SOY2PageController::jump("Order.Register.Item");
+					}
+				}
+			}
+
+			//並べ替え
+			if(isset($_POST["Sort"]) && $_POST["Sort"] == 1){
+				$newItems = array();	//並べ替え後の商品情報を入れる配列
+				foreach($_POST["Item"] as $idx => $itemOrder){
+					$newItems[] = $items[$idx];
+				}
+
+				$this->cart->setItems($newItems);
+				$this->cart->save();
+				SOY2PageController::jump("Order.Register.Item");
+			}
+
+			if(isset($_POST["Item"])){
 
 				$newItems = $_POST["Item"];
 				$counts = array();
@@ -124,6 +157,14 @@ class ItemPage extends WebPage{
 		$this->createAdd("total_item_price","HTMLLabel", array(
 			"text" => number_format($this->cart->getItemPrice())
 		));
+	}
+
+	private function getItemByCode($code){
+		try{
+			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByCode($code);
+		}catch(Exception $e){
+			return new SOYShop_Item();
+		}
 	}
 
     function convertDate($date){

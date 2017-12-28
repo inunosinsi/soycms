@@ -47,6 +47,11 @@ class ItemListComponent extends HTMLList{
         ));
 
 		//在庫切れ
+
+		//iframeのchangeにあるindexを出力
+		$this->addLabel("iframe_index", array(
+			"text" => (isset($_GET["change"]) && is_numeric($_GET["change"])) ? $_GET["change"] : 0
+		));
     }
 
 	function setCategories($categories){

@@ -35,13 +35,16 @@
 					</tr>
 				</thead>
 
-				<tbody>
+				<tbody id="sortdata">
 					<!--  soy:id="item_list" -->
 					<tr>
 						<td class="alC"><input soy:id="item_delete" type="checkbox" /></td>
 						<td class="alC"><a soy:id="item_id" target="_blank">11</a></td>
 						<td>
-							<p soy:id="item_name_text">商品名</p>
+							<p>
+								<!-- soy:id="item_name_text" -->商品名<!-- /soy:id="item_name_text" -->&nbsp;
+								<a class="button" soy:id="change_link">変更</a>
+							</p>
 							<!-- soy:id="item_option_list" -->
 							<p><!-- soy:id="label" /-->:<input type="text" soy:id="option" /></p>
 							<!-- /soy:id="item_option_list" -->
@@ -76,7 +79,7 @@
 					<tr>
 						<td class="alC">&nbsp;</td>
 						<td colspan="4" class="alC">
-							<a class="button" href="javascript:void(0);" onclick="return OptionWindow.popup();">商品検索して選ぶ</a>
+							<a class="button" href="javascript:void(0);" onclick="open_window_with_add();">商品検索して選ぶ</a>
 							<a class="button" id="add_item_by_code_button">登録済み商品から選ぶ</a>
 							<a class="button" id="add_item_by_name_button">未登録商品を指定する</a>
 						</td>
@@ -89,11 +92,13 @@
 							<!-- soy:id="total_item_price" /--> 円
 						</td>
 					</tr>
-
 				</tbody>
 			</table>
 
 			<p class="pageBtn">
+				<input type="hidden" id="change_item_index" name="Change[index]" value="">
+				<input type="hidden" id="change_item_code" name="Change[code]" value="">
+				<input type="hidden" id="sort" name="Sort" value="0">
 				<input type="submit" name="do_open" value="変更" style="width:180px;margin-right:50px;" />
 			</p>
 		</form>
@@ -130,6 +135,50 @@ $('#add_module_button').click(function(){
 	});
 	return false;
 });
+function open_window_with_add(){
+	var $searchWindow = $("#item_search_window");
+	var $src = $searchWindow.prop("src");
+	if($src.indexOf("?change") > 0){
+		$src = $src.substr(0, $src.indexOf("?change"));
+	}
+	$searchWindow.prop("src", $src);
+	OptionWindow.popup();
+}
+function open_window_with_change(idx){
+	var $searchWindow = $("#item_search_window");
+	var $src = $searchWindow.prop("src") + "?change=" + idx;
+	$searchWindow.prop("src", $src);
+	OptionWindow.popup();
+}
+
+$(function(){
+	$('#sortdata').sortable();
+	$('#sortdata').bind('sortstop',function(){
+		// @ToDo 並び順を変更する
+		var doSort = false;
+		if($(this)[0]){
+			var results = $(this)[0].innerHTML.match(/Item\[([0-9]*)\]\[itemCount\]/g);
+			if(results.length){
+				for (var i = 0; i < results.length; i++){
+					var r = results[i].match(/\[([0-9]*)\]/);
+
+					//r[1]とiの値がずれた箇所がソートした箇所となる
+					var idx = parseInt(r[1]);
+					if(idx !== i){
+						doSort = true;
+						break;
+					}
+				}
+			}
+		}
+
+		//ソートが実行された
+		if(doSort) {
+			$("#sort").val(1);
+			document.forms[0].submit();
+		}
+	});
+});
 </script>
 
 <style>
@@ -138,5 +187,8 @@ $('#add_module_button').click(function(){
 }
 #option_window_el iframe{
 	width:98% !important;
+}
+td {
+	background-color: #FFFFFF;
 }
 </style>
