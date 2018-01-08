@@ -213,7 +213,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 		$this->uploadsize  = (isset($config["uploadsize"]) && is_numeric($config["uploadsize"])) ? (int)$config["uploadsize"] : 500;
 		$this->extensions = (isset($config["extensions"]) && strlen($config["extensions"])) ? $config["extensions"] : "jpg,gif,png";
 	}
-	
+
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["uploadsize"] = $this->uploadsize;
@@ -227,4 +227,3 @@ class FileColumn extends SOYInquiry_ColumnBase{
 		);
 	}
 }
-?>

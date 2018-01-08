@@ -52,7 +52,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 			"47" => "沖縄県",
 			"48" => "その他・海外",
 	);
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
@@ -111,7 +111,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		return implode("\n",$html);
 
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
@@ -198,7 +198,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		$address = $this->getView(false);
 		return $address;
 	}
-	
+
 	/**
 	 * 設定画面で表示する用のフォーム
 	 */
@@ -208,10 +208,10 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 			$html .= ' checked';
 		}
 		$html .= '>required属性を利用する</label>';
-		
+
 		return $html;
 	}
-	
+
 	/**
 	 * 保存された設定値を渡す
 	 */
@@ -219,7 +219,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
 	}
-	
+
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["requiredProp"] = $this->requiredProp;
@@ -255,4 +255,3 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		return (strlen($this->replacement) == 0) ? "#ADDRESS#" : $this->replacement;
 	}
 }
-?>

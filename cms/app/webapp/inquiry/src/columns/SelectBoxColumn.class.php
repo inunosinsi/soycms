@@ -17,7 +17,7 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 
 	//フォームに自由に挿入する属性
 	private $attribute;
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
@@ -86,7 +86,7 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 
 		return $attributes;
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
@@ -118,7 +118,7 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 		$html .= '<label for="Column[config][attribute]'.$this->getColumnId().'">属性:</label>';
 		$html .= '<input  id="Column[config][attribute]'.$this->getColumnId().'" name="Column[config][attribute]" type="text" value="'.$attribute.'" style="width:90%;" /><br />';
 		$html .= "※記述例：class=\"sample\" title=\"サンプル\"<br>";
-		
+
 		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
 		if($this->requiredProp){
 			$html .= ' checked';
@@ -182,4 +182,3 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 		return new CheckConverter();
 	}
 }
-?>

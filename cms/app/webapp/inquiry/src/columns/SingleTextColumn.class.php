@@ -29,7 +29,7 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 
 	//フォームに自由に挿入する属性
 	private $attribute;
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
@@ -40,7 +40,7 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 
 		$attributes = $this->getAttributes();
 		$required = $this->getRequiredProp();
-		
+
 		foreach($attr as $key => $value){
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
@@ -74,7 +74,7 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 
 		return $attributes;
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
@@ -117,13 +117,13 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 		$html .= '<label for="Column[config][mobile_ime_mode]'.$this->getColumnId().'">携帯電話で入力モードを指定する</label>';
 
 		$html .= "<br/>";
-		
+
 		$inputType = (isset($this->inputType) && strlen($this->inputType) > 0) ? htmlspecialchars($this->inputType,ENT_QUOTES,"UTF-8") : "text";
-		
+
 		$html .= '<label for="Column[config][inputType]'.$this->getColumnId().'">type:</label>';
 		$html .= '<input id="Column[config][inputType]'.$this->getColumnId().'" name="Column[config][inputType]" type="text" value="'.$inputType.'" style="width:10%;" /><br />';
 		$html .= "※入力例:text,email,tel等。属性と組み合わせて使用してください。";
-		
+
 		$html .= "<br/>";
 
 		if(is_null($this->attribute) && isset($this->style)){
@@ -135,7 +135,7 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 		$html .= '<label for="Column[config][attribute]'.$this->getColumnId().'">属性:</label>';
 		$html .= '<input id="Column[config][attribute]'.$this->getColumnId().'" name="Column[config][attribute]" type="text" value="'.$attribute.'" style="width:90%;" /><br />';
 		$html .= "※記述例：class=\"sample\" title=\"サンプル\" placeholder=\"\" pattern=\"\"<br>";
-		
+
 		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
 		if($this->requiredProp){
 			$html .= ' checked';
@@ -150,7 +150,7 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure($config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-		
+
 		$this->maxLength = (isset($config["maxLength"]) && is_numeric($config["maxLength"])) ? (int)$config["maxLength"] : null;
 		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : null;
 		$this->type = (isset($config["type"]) && is_numeric($config["type"])) ? (int)$config["type"] : null;
@@ -377,7 +377,7 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 			SOYMailConverter::SOYMAIL_MEMO  	=> "備考"
 		);
 	}
-	
+
 	function getLinkagesSOYShopFrom() {
 		return array(
 			SOYShopConnector::SOYSHOP_NONE  	=> "連携しない",
@@ -398,4 +398,3 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 		);
 	}
 }
-?>

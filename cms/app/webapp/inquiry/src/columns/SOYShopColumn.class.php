@@ -15,9 +15,9 @@ class SOYShopColumn extends SOYInquiry_ColumnBase{
 			if(SOYINQUERY_SOYSHOP_CONNECT_SITE_ID){
 				$shopId = SOYInquiryUtil::getSOYShopSiteId();
 				$old = SOYInquiryUtil::switchSOYShopConfig($shopId);
-				
+
 				$itemName = $this->getItemName($itemId);
-				
+
 				SOYInquiryUtil::resetConfig($old);
 			}
 		}
@@ -62,4 +62,3 @@ class SOYShopColumn extends SOYInquiry_ColumnBase{
 	function validate(){
 	}
 }
-?>

@@ -64,6 +64,4 @@ class PlainTextColumn extends SOYInquiry_ColumnBase{
 	function getView(){
 		return $this->label;
 	}
-
 }
-?>

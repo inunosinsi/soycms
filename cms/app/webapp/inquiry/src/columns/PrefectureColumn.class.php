@@ -1,7 +1,7 @@
 <?php
 
 class PrefectureColumn extends SOYInquiry_ColumnBase{
-	
+
 	private $prefecture = array(
 			"1" => "北海道",
 			"2" => "青森県",
@@ -52,33 +52,33 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 			"47" => "沖縄県",
 			"48" => "その他・海外",
 	);
-	
+
 	private $size;
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
-		
+
     /**
 	 * ユーザに表示するようのフォーム
 	 */
 	function getForm($attr = array()){
-		
+
 		$attributes = array();
 		if($this->size)$attributes[] = "size=\"".$this->size."\"";
-		
+
 		$required = $this->getRequiredProp();
-		
+
 		foreach($attr as $key => $value){
 			$attributes[] = htmlspecialchars($key) . "=\"".htmlspecialchars($value)."\"";
 		}
-		
+
 		$html = array();
 		$html[] = "<select name=\"data[".$this->getColumnId()."]\" " . implode(" ",$attributes) . "" . $required . ">";
 		$html[] ="<option value=\"\">----</option>";
-		
+
 		$my_value = $this->getValue();
-		
+
 		foreach($this->prefecture as $id => $value){
 			if($value == $my_value){
 				$html[] ="<option selected=\"selected\">".$value."</option>";
@@ -86,16 +86,16 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 				$html[] ="<option>".$value."</option>";
 			}
 		}
-		
+
 		$html[] = "</select>";
 
 		return implode("\n",$html);
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
-	
+
 	/**
 	 * 設定画面で表示する用のフォーム
 	 */
@@ -105,10 +105,10 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 			$html .= ' checked';
 		}
 		$html .= '>required属性を利用する</label>';
-		
+
 		return $html;
 	}
-	
+
 	/**
 	 * 保存された設定値を渡す
 	 */
@@ -117,26 +117,26 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : null;
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
 	}
-	
+
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["size"] = $this->size;
 		$config["requiredProp"] = $this->requiredProp;
 		return $config;
 	}
-	
+
 	function validate(){
 		if($this->getIsRequire() && !strlen($this->getValue())){
 			$this->setErrorMessage($this->getLabel()."を選んでください。");
-			return false;    		
+			return false;
 		}
 		return true;
 	}
-	
+
 	function factoryConnector(){
 		return new AddressConnector();
 	}
-	
+
 	function getLinkagesSOYMailTo() {
 		return array(
 			SOYMailConverter::SOYMAIL_NONE  => "連携しない",
@@ -147,7 +147,7 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 			SOYMailConverter::SOYMAIL_MEMO  => "備考"
 		);
 	}
-	
+
 	function getLinkagesSOYShopFrom() {
 		return array(
 			SOYShopConnector::SOYSHOP_NONE  	=> "連携しない",
@@ -159,6 +159,4 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 	function getReplacement() {
 		return (strlen($this->replacement) == 0) ? "#PREFECTURE#" : $this->replacement;
 	}
-
 }
-?>

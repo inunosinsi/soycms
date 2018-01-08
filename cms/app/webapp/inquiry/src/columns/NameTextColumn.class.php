@@ -24,7 +24,7 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 	private $ime_mode = 0;
 	//携帯の入力モード指定
 	private $mobile_ime_mode = 0;
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
@@ -65,7 +65,7 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 
 		return $attributes;
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
@@ -124,9 +124,9 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 		$html .= '<label for="Column[config][attribute2]'.$this->getColumnId().'">属性2:</label>';
 		$html .= '<input  id="Column[config][attribute2]'.$this->getColumnId().'" name="Column[config][attribute2]" type="text" value="'.$this->attribute2.'" style="width:90%;" /><br />';
 		$html .= "※記述例：class=\"sample\" title=\"サンプル\" placeholder=\"まめくらまめぞう\" pattern=\"\"";
-		
+
 		$html .= "<br>";
-		
+
 		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
 		if($this->requiredProp){
 			$html .= ' checked';
@@ -354,4 +354,3 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 		);
 	}
 }
-?>

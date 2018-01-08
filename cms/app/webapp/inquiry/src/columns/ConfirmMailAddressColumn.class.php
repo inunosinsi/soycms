@@ -17,7 +17,7 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 
 	//フォームに自由に挿入する属性
 	private $attribute;
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
@@ -64,7 +64,7 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 
 		return $attributes;
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
@@ -230,6 +230,4 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 	function getReplacement() {
 		return (strlen($this->replacement) == 0) ? "#EMAIL#" : $this->replacement;
 	}
-
 }
-?>

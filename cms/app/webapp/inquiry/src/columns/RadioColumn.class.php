@@ -27,12 +27,12 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 			$attributes = $__attributes;
 
 			$item = trim($item);
-			if(strlen($item)<1)continue;
+			if(strlen($item) < 1) continue;
 
 			$checked = "";
 
 			if($item[0] == "*"){
-				$item = substr($item,1);
+				$item = substr($item, 1);
 				if(!$value){
 					$checked = 'checked="checked"';
 				}
@@ -128,4 +128,3 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 		return new RadioConverter();
 	}
 }
-?>

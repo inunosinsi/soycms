@@ -98,4 +98,3 @@ class SOYCMSBlogEntryPageColumn extends SOYInquiry_ColumnBase{
 		return $values;
 	}
 }
-?>

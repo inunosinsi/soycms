@@ -17,7 +17,7 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 
 	//フォームに自由に挿入する属性
 	private $attribute;
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
@@ -61,7 +61,7 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 
 		return $attributes;
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
@@ -205,7 +205,7 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 			SOYMailConverter::SOYMAIL_MEMO  => "備考"
 		);
 	}
-	
+
 	function getLinkagesSOYShopFrom() {
 		return array(
 			SOYShopConnector::SOYSHOP_NONE  => "連携しない",
@@ -216,6 +216,4 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 	function getReplacement() {
 		return (strlen($this->replacement) == 0) ? "#EMAIL#" : $this->replacement;
 	}
-
 }
-?>

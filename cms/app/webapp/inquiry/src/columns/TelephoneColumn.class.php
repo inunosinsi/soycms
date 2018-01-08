@@ -9,7 +9,7 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	private $attribute1;
 	private $attribute2;
 	private $attribute3;
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
@@ -45,7 +45,7 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 
 		return $value;
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
@@ -75,7 +75,7 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 		$html .= '<label for="Column[config][attribute3]'.$this->getColumnId().'">属性3:</label>';
 		$html .= '<input  id="Column[config][attribute3]'.$this->getColumnId().'" name="Column[config][attribute3]" type="text" value="'.$this->attribute3.'" style="width:90%;" /><br />';
 		$html .= "※記述例：class=\"sample\" title=\"サンプル\" pattern=\"\"<br>";
-		
+
 		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
 		if($this->requiredProp){
 			$html .= ' checked';
@@ -153,6 +153,4 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	function getReplacement() {
 		return (strlen($this->replacement) == 0) ? "#TELEPHONE#" : $this->replacement;
 	}
-
 }
-?>

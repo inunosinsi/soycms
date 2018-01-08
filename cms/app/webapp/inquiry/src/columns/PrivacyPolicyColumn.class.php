@@ -1,15 +1,15 @@
 <?php
 
 class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
-	
+
 	private $policy;
 	const POLICYDEFAULT = "個人情報保護方針を入力して下さい。";
-	
+
 	private $checkLabel;
 	const CHECK_LABEL_DEFAULT = "同意する";
 	private $noCheckMessage;
 	const NO_CHECK_MESSAGE_DEFAULT = "個人情報保護方針への同意をお願いします。";
-    
+
     private $cols;
     private $rows;
 
@@ -28,31 +28,31 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	function setRows($rows){
 		$this->rows = $rows;
 	}
-    
+
     /**
 	 * ユーザに表示するようのフォーム
 	 */
 	function getForm($attr = array()){
-		
+
 		$attributes = array();
 		$attributes[] = ($this->cols) ? "cols=\"".$this->cols."\"" : 'style="width:90%;"';
 		if($this->rows)$attributes[] = "rows=\"".$this->rows."\"";
-		
+
 		foreach($attr as $key => $value){
 			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value,ENT_QUOTES,"UTF-8")."\"";
 		}
-		
+
 		$html = array();
 		$html[] = "<textarea " . implode(" ",$attributes) . " readonly=\"readonly\">".$this->policy."</textarea>";
-		
+
 		$html[] = "<br/>";
 		$html[] = "<input type=\"checkbox\" id=\"data_".$this->getColumnId() . "\" name=\"data[".$this->getColumnId()."]\" value=\"1\" />";
 		$html[] = "<label for=\"data_".$this->getColumnId() . "\">".htmlspecialchars($this->checkLabel,ENT_QUOTES,"UTF-8")."</label>";
 
 		return implode("\n",$html);
-		
-	}    
-    
+
+	}
+
     /**
 	 * 設定画面で表示する用のフォーム
 	 */
@@ -71,10 +71,10 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 		$html.= "<br/>";
 		$html .= '幅:<input type="text" name="Column[config][cols]" value="'.$this->cols.'" size="3"/>&nbsp;';
 		$html .= '高さ:<input type="text" name="Column[config][rows]" value="'.$this->rows.'" size="3" />';
-				
+
 		return $html;
 	}
-	
+
 	/**
 	 * 保存された設定値を渡す
 	 */
@@ -98,19 +98,19 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	function getLabel(){
 		return "";
 	}
-	
+
 	function getContent(){
 		return "";
 	}
-	
+
 	function validate(){
-		
+
 		if($this->getIsRequire() && $this->getValue() != 1){
 			$this->setErrorMessage($this->noCheckMessage);
-			return false;    		
+			return false;
 		}
     }
-    
+
     /**
      * 強制的に必須にする
      */
@@ -118,4 +118,3 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
     	return true;
     }
 }
-?>

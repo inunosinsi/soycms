@@ -1,7 +1,7 @@
 <?php
 
 class AddressJsColumn extends SOYInquiry_ColumnBase{
-	
+
 	private $prefecture = array(
 			"1" => "北海道",
 			"2" => "青森県",
@@ -52,27 +52,27 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			"47" => "沖縄県",
 			"48" => "その他・海外",
 	);
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
-		
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 */
 	function getForm($attr = array()){
-		
+
 		$attributes = array();
 		foreach($attr as $key => $value){
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 		$required = $this->getRequiredProp();
-		
+
 		$html = array();
-		
+
 		$value = $this->getValue();
-				
+
 		$html[] = "郵便番号を入力して「住所検索」ボタンをクリックすると住所が表示されます。";
-		
+
 		$html[] = '<table cellspacing="0" cellpadding="5" border="0" '. implode(" ",$attributes) .'>';
 		$html[] = '<tbody><tr>';
 		$html[] = '<td width="70">郵便番号：<br/></td>';
@@ -94,7 +94,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			}
 		}
 		$html[] = '</select></td></tr>';
-		
+
 		$html[] = '<tr>
 					<td>市区町村：</td>
 					<td><input class="input-city" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.htmlspecialchars($value["address1"], ENT_QUOTES, "UTF-8").'"' . $required . '></td>
@@ -108,17 +108,17 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 					<input type="text" size="37" name="data['.$this->getColumnId().'][address3]" value="'.htmlspecialchars($value["address3"], ENT_QUOTES, "UTF-8").'" /></td>
 				</tr>';
 		$html[] = '</tbody></table>';
-		
-		return implode("\n",$html);	
+
+		return implode("\n",$html);
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
-	
+
 	function validate(){
 		$value = $this->getValue();
-		
+
 		if(!isset($_POST["test"]) && $this->getIsRequire()){
 			if(
 				   empty($value)
@@ -132,7 +132,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 				return false;
 			}
 		}
-		
+
 		if(empty($value)){
 			$value["zip1"] = "";
 			$value["zip2"] = "";
@@ -143,34 +143,34 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			$this->setValue($value);
 			return true;
 		}
-		
+
 		if(!empty($value["zip2"]) && !is_numeric($value["zip1"])){
 			$this->errorMessage = "郵便番号の書式が不正です。";
 			return false;
 		}
-		
+
 		if(!empty($value["zip2"]) && !is_numeric($value["zip2"])){
 			$this->errorMessage = "郵便番号の書式が不正です。";
 			return false;
 		}
 		if(isset($_POST["test"])){
-			
+
 			$logic = SOY2Logic::createInstance("logic.AddressSearchLogic");
 			$res = $logic->search($value["zip1"],$value["zip2"]);
-						
+
 			$value["prefecture"] = $res["prefecture"];
 			$value["address1"] = $res["address1"];
 			$value["address2"] = $res["address2"];
-			
-			$this->setValue($value);			
+
+			$this->setValue($value);
 		}
-		return true;	
+		return true;
 	}
-	
+
 	function getErrorMessage(){
 		return $this->errorMessage;
 	}
-	
+
 	/**
 	 * 確認画面で呼び出す
 	 */
@@ -179,27 +179,27 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		if(empty($value)){
 			return "";
 		}
-		
+
 		$address = $value["zip1"]  ."-" . $value["zip2"] . "\n" .
 		           $this->prefecture[$value["prefecture"]] . $value["address1"] . $value["address2"];
 		if(strlen($value["address3"])) $address.= "\n" . $value["address3"];
-		
+
 		$address = htmlspecialchars($address, ENT_QUOTES, "UTF-8");
-		
+
 		if($html) $address = nl2br($address);
-		
+
 		return $address;
 	}
 
 	/**
 	 * データ投入用
-	 * 
+	 *
 	 */
 	function getContent(){
 		$address = $this->getView(false);
 		return $address;
 	}
-	
+
 	/**
 	 * 設定画面で表示する用のフォーム
 	 */
@@ -209,10 +209,10 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			$html .= ' checked';
 		}
 		$html .= '>required属性を利用する</label>';
-		
+
 		return $html;
 	}
-	
+
 	/**
 	 * 保存された設定値を渡す
 	 */
@@ -220,13 +220,13 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
 	}
-	
+
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["requiredProp"] = $this->requiredProp;
 		return $config;
 	}
-	
+
 	function factoryConnector(){
 		return new AddressConnector();
 	}
@@ -239,7 +239,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			SOYMailConverter::SOYMAIL_MEMO 			=> "備考"
 		);
 	}
-	
+
 	function getLinkagesSOYShopFrom() {
 		return array(
 			SOYShopConnector::SOYSHOP_NONE  		=> "連携しない",
@@ -247,7 +247,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 			SOYShopConnector::SOYSHOP_JOBADDRESS	=> "勤務先住所"
 		);
 	}
-	
+
 	function factoryConverter() {
 		return new AddressConverter();
 	}
@@ -256,4 +256,3 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		return (strlen($this->replacement) == 0) ? "#ADDRESS#" : $this->replacement;
 	}
 }
-?>

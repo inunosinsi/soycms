@@ -24,10 +24,10 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 	private $ime_mode = 0;
 	//携帯の入力モード指定
 	private $mobile_ime_mode = 0;
-	
+
 	//フォームに自由に挿入する属性
 	private $attribute;
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
@@ -65,7 +65,7 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 		$attributes = array();
 		if($this->maxLength) $attributes[] = "maxlength=\"{$this->maxLength}\"";
 		if($this->size)      $attributes[] = "size=\"{$this->size}\"";
-		
+
 		//設定したattributeを挿入
 		if(isset($this->attribute) && strlen($this->attribute) > 0){
 			$attribute = str_replace("&quot;","\"",$this->attribute);	//"が消えてしまうから、htmlspecialcharsができない
@@ -75,7 +75,7 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 		return $attributes;
 
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
@@ -123,19 +123,19 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 		$html .= '<label for="Column[config][inputType]'.$this->getColumnId().'">type:</label>';
 		$html .= '<input id="Column[config][inputType]'.$this->getColumnId().'" name="Column[config][inputType]" type="text" value="'.$inputType.'" style="width:10%;" /><br />';
 		$html .= "※入力例: text, email, tel, number等。";
-		
+
 		$html .= "<br>";
-		
+
 		if(is_null($this->attribute) && isset($this->style)){
 			$attribute = "class=&quot;".htmlspecialchars($this->style,ENT_QUOTES,"UTF-8")."&quot;";
 		}else{
 			$attribute = trim($this->attribute);
 		}
-				
+
 		$html .= '<label for="Column[config][attribute]'.$this->getColumnId().'">属性:</label>';
 		$html .= '<input  id="Column[config][attribute]'.$this->getColumnId().'" name="Column[config][attribute]" type="text" value="'.$attribute.'" style="width:90%;" /><br />';
 		$html .= "※記述例：class=\"sample\" title=\"サンプル\" placeholder=\"\" pattern=\"\"<br>";
-		
+
 		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
 		if($this->requiredProp){
 			$html .= ' checked';
@@ -374,4 +374,3 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 		);
 	}
 }
-?>

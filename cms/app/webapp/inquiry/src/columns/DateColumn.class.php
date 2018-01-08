@@ -1,37 +1,37 @@
 <?php
 
 class DateColumn extends SOYInquiry_ColumnBase{
-	
+
 	//年のセレクトボックスに表示する年の設定
 	private $startYear;
 	private $endYear;
-	
+
 	private $hasToday;
-	
+
 	private $attribute;
-	
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
-	
+
     /**
 	 * ユーザに表示するようのフォーム
 	 */
 	function getForm($attributes = array()){
 
-		$config = $this->getDateConfig();	
+		$config = $this->getDateConfig();
 		$startYear = $config["startYear"];
 		$endYear = $config["endYear"];
-		
+
 		$attributes = $this->getAttributes();
 		$required = $this->getRequiredProp();
-	
+
 		$value = $this->getValue();
-		
+
 		if(!$value){
 			$hasToday = $this->hasToday;
-			
+
 			$value = array();
-		
+
 			//ディフォルトで今日を表示する
 			if(isset($hasToday)){
 				//設定した表示年数に今日があるかチェックする
@@ -41,8 +41,8 @@ class DateColumn extends SOYInquiry_ColumnBase{
 			}else{
 				$value = array("year" => "", "month" => "", "day" => "");
 			}
-		}	
-			
+		}
+
 		$html = array();
 		$html[] = "<select name=\"data[".$this->getColumnId()."][year]\" ".implode(" ",$attributes)."" . $required . ">";
 		$html[] ="<option value=\"\">----</option>";
@@ -55,7 +55,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 			}
 		}
 		$html[] = "</select>";
-		
+
 		$html[] = "<select name=\"data[".$this->getColumnId()."][month]\" ".implode(" ",$attributes)."" . $required . ">";
 		$html[] ="<option value=\"\">--</option>";
 		for($i = 1; $i <= 12; $i++){
@@ -64,10 +64,10 @@ class DateColumn extends SOYInquiry_ColumnBase{
 			}else{
 				$html[] = "<option>" . sprintf("%0d",$i) . "</option>";
 			}
-			
+
 		}
 		$html[] = "</select>";
-		
+
 		$html[] = "<select name=\"data[".$this->getColumnId()."][day]\" ".implode(" ",$attributes)."" . $required . ">";
 		$html[] ="<option value=\"\">--</option>";
 		for($i = 1; $i <= 31; $i++){
@@ -78,26 +78,26 @@ class DateColumn extends SOYInquiry_ColumnBase{
 			}
 		}
 		$html[] = "</select>";
-				
+
 		return implode("\n",$html);
 	}
-	
+
 	function getAttributes(){
 		$attributes = array();
-		
+
 		//設定したattributeを挿入
 		if(isset($this->attribute) && strlen($this->attribute) > 0){
 			$attribute = str_replace("&quot;","\"",$this->attribute);	//"が消えてしまうから、htmlspecialcharsができない
 			$attributes[] = trim($attribute);
 		}
-		
+
 		return $attributes;
 	}
-	
+
 	function getRequiredProp(){
 		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
-	
+
 	/**
 	 * 確認画面で呼び出す
 	 */
@@ -108,20 +108,20 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		}else{
 			$value = $value["year"] . "/" . $value["month"] . "/" . $value["day"];
 			return htmlspecialchars($value, ENT_QUOTES, "UTF-8");
-		}			
+		}
 	}
-	
+
 	/**
 	 * 設定画面で表示する用のフォーム
 	 */
 	function getConfigForm(){
 		$hasToday = $this->hasToday;
-		
+
 		$html  = "表示年数:";
 		$html .= '<input type="text" name="Column[config][startYear]" value="'.$this->startYear.'" size="4" />';
 		$html .= "から";
 		$html .= '<input type="text" name="Column[config][endYear]" value="'.$this->endYear.'" size="4" />まで<br>';
-		
+
 		if(isset($hasToday)){
 			$html .= '<input type="checkbox" name="Column[config][hasToday]" value="1" checked="checked" />';
 		}else{
@@ -129,41 +129,41 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		}
 
 		$html .= "今日の日付にselected属性を付ける";
-		
+
 		$html .= "<br />";
-		
+
 		if(is_null($this->attribute) && isset($this->style)){
 			$attribute = "class=&quot;".htmlspecialchars($this->style,ENT_QUOTES,"UTF-8")."&quot;";
 		}else{
 			$attribute = trim($this->attribute);
 		}
-				
+
 		$html .= '<label for="Column[config][style]'.$this->getColumnId().'">属性:</label>';
 		$html .= '<input id="Column[config][style]'.$this->getColumnId().'" name="Column[config][attribute]" type="text" value="'.$attribute.'" style="width:90%;" /><br />';
 		$html .= "※記述例：class=\"sample\" title=\"サンプル\"<br>";
-		
+
 		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
 		if($this->requiredProp){
 			$html .= ' checked';
 		}
 		$html .= '>required属性を利用する</label>';
-		
+
 		return $html;
 	}
-	
+
 	/**
 	 * 保存された設定値を渡す
 	 */
 	function setConfigure($config){
 		SOYInquiry_ColumnBase::setConfigure($config);
-				
+
 		$this->startYear = (isset($config["startYear"]) && is_numeric($config["startYear"])) ? (int)$config["startYear"] : null;
 		$this->endYear = (isset($config["endYear"]) && is_numeric($config["endYear"])) ? (int)$config["endYear"] : null;
 		$this->hasToday = isset($config["hasToday"]) ? 1 : null;
 		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
 	}
-	
+
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["startYear"] = $this->startYear;
@@ -173,10 +173,10 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$config["requiredProp"] = $this->requiredProp;
 		return $config;
 	}
-	
+
 	function validate(){
 		$value = $this->getValue();
-		
+
 		if($this->getIsRequire()){
 			if(
 				empty($value)
@@ -185,10 +185,10 @@ class DateColumn extends SOYInquiry_ColumnBase{
 				|| !strlen(@$value["day"])
 			){
 				$this->setErrorMessage($this->getLabel()."を入力してください。");
-				return false;    		
+				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -203,38 +203,38 @@ class DateColumn extends SOYInquiry_ColumnBase{
 			SOYMailConverter::SOYMAIL_MEMO  => "備考"
 		);
 	}
-	
+
 	function getLinkagesSOYShopFrom() {
 		return array(
 			SOYShopConnector::SOYSHOP_NONE  => "連携しない",
 			SOYShopConnector::SOYSHOP_BIRTHDAY => "生年月日",
 		);
 	}
-	
+
 	function factoryConverter() {
 		return new DateConverter();
 	}
-	
+
 	function factoryConnector(){
 		return new DateConnector();
 	}
-	
+
 	/**
 	 * 日付表示の設定を取得する
 	 */
 	function getDateConfig(){
-		
+
 		$startYear = $this->startYear;
 		$endYear = $this->endYear;
-		
+
 		if(!is_null($startYear) && !$endYear){
 			$endYear = date("Y");
 		}
-		
+
 		if(!$startYear && !is_null($endYear)){
 			$startYear = date("Y");
 		}
-		
+
 		//終りの年が正しいかチェックする
 		if($startYear >= $endYear){
 			$startYear = null;
@@ -244,12 +244,11 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		//管理画面でフォームに未入力の場合
 		if(!$startYear) $startYear = "1900";
 		if(!$endYear) $endYear = date("Y");
-		
+
 		$dateConfig = array();
 		$dateConfig["startYear"] = $startYear;
 		$dateConfig["endYear"] = $endYear;
-		
-		return $dateConfig;	
+
+		return $dateConfig;
 	}
 }
-?>

@@ -93,4 +93,3 @@ class QuestionColumn extends SOYInquiry_ColumnBase{
 		);
 	}
 }
-?>
