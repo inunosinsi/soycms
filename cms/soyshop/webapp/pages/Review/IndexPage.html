@@ -9,7 +9,7 @@
 		<h2>レビュー一覧</h2>
 
 		<div class="block_title_right">
-			
+
 		</div>
 	</div>
 
@@ -17,7 +17,7 @@
 
 		<p class="notice" soy:display="deleted">削除しました</p>
 		<p class="notice" soy:display="updated">更新しました</p>
-		
+
 		<table class="form_list">
 			<caption>
 				レビュー一覧 (<span soy:id="count_max*">100000</span>件)：
@@ -26,7 +26,7 @@
 			<thead>
 				<tr class="alC">
 					<th>
-						<input class="review_checkbox" type="checkbox" onclick="$('#reviews_operation').show();$('.review_checkbox').attr('checked',$(this).attr('checked'));" />
+						<input class="review_checkbox" id="review_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
 					</th>
 					<th><nobr>承認</nobr></th>
 					<th><nobr>商品名</nobr></th>
@@ -36,7 +36,7 @@
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
-			
+
 			<tfoot>
 				<tr id="reviews_operation" style="display:none;">
 					<td colspan="7">
@@ -81,7 +81,7 @@
 					</td>
 				</tr>
 			</tfoot>
-			
+
 			<tbody>
 				<form soy:id="review_form">
 				<!-- soy:id="review_list" -->
@@ -106,7 +106,7 @@
 
 				</form soy:id="review_form">
 			</tbody>
-			
+
 		</table>
 	</div><!-- /block_body -->
 </div>
@@ -126,3 +126,12 @@
 
 	</div><!-- /block_body -->
 </div>
+
+<script type="text/javascript">
+function changeCheckBoxAuto(){
+	$('#reviews_operation').show();
+	$('.review_checkbox').each(function(){
+		$(this).prop("checked", $("#review_checkbox").prop("checked"));
+	});
+}
+</script>
