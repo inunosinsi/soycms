@@ -16,21 +16,21 @@
 			<tfoot>
 				<tr>
 					<td colspan="3" class="alC">
-						<a class="button" href="javascript:void(0);" onclick="add_price();" tabindex="99">入力欄の追加</a>
+						<a class="button" href="javascript:void(0);" id="add_fee_item" onclick="add_price();" tabindex="99">入力欄の追加</a>
 					</td>
 				</tr>
 			</tfoot>
 			<tbody>
 				<!-- soy:id="price_list" -->
 				<tr>
-					<td>
+					<td nowrap>
 						<input class="price_key alR" name="payment_daibiki[price_table][key][]" soy:id="item_price" /> 円以上
 					</td>
-					<td>
+					<td nowrap>
 						<input class="alR" name="payment_daibiki[price_table][price][]" soy:id="daibiki_fee" /> 円
 					</td>
-					<td>
-						<a class="button alC" href="javascript:void(0);" onclick="$(this).parent().parent().remove();">削除</a>
+					<td nowrap>
+						<a class="button alC" soy:id="delete_button">削除</a>
 					</td>
 				</tr>
 				<!-- /soy:id="price_list" -->
@@ -177,7 +177,7 @@
 	</dl>
 
 	<p class="pageBtn">
-		<input type="submit" class="submit_button" value="変更" tabindex="400" />
+		<input type="submit" name="Change" class="submit_button" value="変更" tabindex="400" />
 	</p>
 
 </form soy:id="config_form">

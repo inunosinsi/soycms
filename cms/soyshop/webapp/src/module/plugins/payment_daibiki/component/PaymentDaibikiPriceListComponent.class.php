@@ -13,5 +13,11 @@ class PaymentDaibikiPriceListComponent extends HTMLList{
 			"value" => strlen($value) ? number_format($value) : "",
 			"attr:tabindex" => $counter + 100
 		));
+
+		$this->addLink("delete_button", array(
+			"link" => "javascript:void(0);",
+			"onclick" => "$(this).parent().parent().remove();",
+			"attr:id" => "delete_button_" . $counter
+		));
 	}
 }
