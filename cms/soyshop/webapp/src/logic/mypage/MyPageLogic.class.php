@@ -316,11 +316,15 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @return Object SOYShop_User
 	 */
 	function getUser(){
-		try{
-			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($this->getUserId());
-		}catch(Exception $e){
-			return new SOYShop_User();
+		static $user;
+		if(is_null($user)){
+			try{
+				$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($this->getUserId());
+			}catch(Exception $e){
+				$user = new SOYShop_User();
+			}
 		}
+		return $user;
 	}
 
 	//ダミーの値を表示したりといろいろできる
