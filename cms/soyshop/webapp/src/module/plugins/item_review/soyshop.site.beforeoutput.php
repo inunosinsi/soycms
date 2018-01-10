@@ -4,7 +4,6 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	private $reviewLogic;
 	private $config;
-	private $user;
 	private $userDao;
 	private $itemDao;
 
@@ -19,7 +18,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 		if(soy2_check_token()){
 
-			$this->prepare();
+			self::prepare();
 
 			$this->review = $_POST["Review"];
 
@@ -63,7 +62,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		//カートページとマイページでは読み込まない
 		if(!is_object($pageObj) || get_class($pageObj) != "SOYShop_Page" || $pageObj->getType() != SOYShop_Page::TYPE_DETAIL) return;
 
-		$this->prepare();
+		self::prepare();
 
 		$obj = $pageObj->getObject();
 		$current = $obj->getCurrentItem();
@@ -74,18 +73,17 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		));
 
 		$this->reviewLogic->setPage($page);
-
-		$isLoginnedin = $this->reviewLogic->isLoggedin();
+		$isLoggedIn = self::isLoggedIn();
 
 		//ログイン時に表示する箇所
 		$page->addModel("is_logged_in", array(
-			"visible" => ($isLoginnedin == true),
+			"visible" => ($isLoggedIn),
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
 		//ログアウト時に表示する箇所
 		$page->addModel("no_logged_in", array(
-			"visible" => ($isLoginnedin == false),
+			"visible" => ($isLoggedIn == false),
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
@@ -116,9 +114,15 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			"config" => $this->config
 		));
 
-		$this->user = $this->reviewLogic->getUser();
+		self::buildForm($page);
+	}
 
-		$this->buildForm($page);
+	private function isLoggedIn(){
+		if(!isset($this->config["login"]) || $this->config["login"] != 1){
+			return true;
+		}else{
+			return $this->reviewLogic->isLoggedIn();
+		}
 	}
 
 	/**
@@ -126,19 +130,14 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	 * 投稿されたレビュー一覧
 	 * ログインモード
 	 */
-	function buildForm($page){
+	private function buildForm($page){
 
-		$user = $this->user;
+		$user = $this->reviewLogic->getUser();
+		$nickname = (!is_null($user->getNickname())) ? $user->getNickname() : $user->getName();
 
 		$page->addForm("review_form", array(
 			"soy2prefix" => "block"
 		));
-
-		if($this->config["login"] == 1){
-			$nickname = (!is_null($user->getNickname())) ? $user->getNickname() : $user->getName();
-		}else{
-			$nickname = "";
-		}
 
 		$page->addModel("review_error", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,

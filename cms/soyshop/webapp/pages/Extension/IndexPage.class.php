@@ -7,10 +7,10 @@ class IndexPage extends WebPage{
 	function __construct($args){
 		$pluginId = (isset($args[0])) ? $args[0] : null;
 		try{
-   		$plugin = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId($pluginId);
-   	}catch(Exception $e){
+   			$plugin = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId($pluginId);
+   		}catch(Exception $e){
 			SOY2PageController::jump("");
-   	}
+   		}
 
 		parent::__construct();
 

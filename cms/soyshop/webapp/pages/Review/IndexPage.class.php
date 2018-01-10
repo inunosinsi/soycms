@@ -33,9 +33,7 @@ class IndexPage extends WebPage{
 	}
 
     function __construct($args) {
-    	if(!$this->isReview()){
-    		SOY2PageController::jump("");
-    	}
+    	if(!self::isReview()) SOY2PageController::jump("");
 
     	parent::__construct();
 
@@ -138,8 +136,7 @@ class IndexPage extends WebPage{
     /**
      * レビュープラグインがアクティブかどうか
      */
-    function isReview(){
+    private function isReview(){
     	return (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("item_review")));
     }
 }
-?>

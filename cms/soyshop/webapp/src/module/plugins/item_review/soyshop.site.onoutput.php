@@ -1,6 +1,6 @@
 <?php
 class ItemReviewOnOutput extends SOYShopSiteOnOutputAction{
-	
+
 	function onOutput($html){
 		if(isset($_GET["captcha"])){
 
@@ -13,4 +13,3 @@ class ItemReviewOnOutput extends SOYShopSiteOnOutputAction{
 	}
 }
 SOYShopPlugin::extension("soyshop.site.onoutput", "item_review", "ItemReviewOnOutput");
-?>

@@ -4,7 +4,7 @@ class ItemReviewAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		return SOY2PageController::createLink("Review");
 	}
-	
+
 	function getLinkTitle(){
 		return "レビュー一覧";
 	}
@@ -22,4 +22,3 @@ class ItemReviewAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "item_review", "ItemReviewAdminTop");
-?>
