@@ -10,23 +10,18 @@ class IndexPage extends WebPage{
 
 		if(!soy2_check_token()) SOY2PageController::jump("Review");
 
+		$reviews = $_POST["reviews"];
+
 		if(isset($_POST["do_change_publish"])){
 			$publish = $_POST["do_change_publish"];
-			$reviews = $_POST["reviews"];
-
-			$logic = SOY2Logic::createInstance("logic.review.ReviewLogic");
-			$logic->changeOpen($reviews, $publish);
+			SOY2Logic::createInstance("logic.review.ReviewLogic")->changeOpen($reviews, $publish);
 
 			SOY2PageController::jump("Review?updated");
 			exit;
 		}
 
 		if(isset($_POST["do_remove"])){
-			$reviews = $_POST["reviews"];
-
-			$logic = SOY2Logic::createInstance("logic.review.ReviewLogic");
-			$logic->delete($reviews);
-
+			SOY2Logic::createInstance("logic.review.ReviewLogic")->delete($reviews);
 			SOY2PageController::jump("Review?deleted");
 			exit;
 		}

@@ -1,58 +1,60 @@
 <?php
-SOY2::imports("module.plugins.item_review.domain.*");
+
 class ReviewLogic extends SOY2LogicBase{
 
 	private $errors = array();
+	private $reviewDao;
+	private $reviewPointDao;
+	private $pointLogic;
+
+	function __construct(){
+		SOY2::imports("module.plugins.item_review.domain.*");
+		$this->reviewDao = SOY2DAOFactory::create("SOYShop_ItemReviewDAO");
+		$this->reviewPointDao = SOY2DAOFactory::create("SOYShop_ReviewPointDAO");
+		$this->pointLogic = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic");
+	}
 
     function update(SOYShop_ItemReview $obj){
-		$dao = SOY2DAOFactory::create("SOYShop_ItemReviewDAO");
 		try{
-			$dao->update($obj);
+			$this->reviewDao->update($obj);
 		}catch(Exception $e){
 			return;
 		}
-		
+
 		//ポイントの加算を行うか調べる
 		SOY2::import("util.SOYShopPluginUtil");
 		if($obj->getIsApproved() == SOYShop_ItemReview::REVIEW_IS_APPROVED && SOYShopPluginUtil::checkIsActive("common_point_base")){
-			SOY2::imports("module.plugins.item_review.domain.*");
-			$pDao = SOY2DAOFactory::create("SOYShop_ReviewPointDAO");
 			try{
-				$pObj = $pDao->getByReviewId($obj->getId());
+				$pObj = $this->reviewPointDao->getByReviewId($obj->getId());
 			}catch(Exception $e){
 				return;
 			}
-			
+
 			$history = "レビュー投稿で" . $pObj->getPoint() . "ポイント追加";
-			SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->insert($pObj->getPoint(), $history, $obj->getUserId());
-			
+			$this->pointLogic->insert($pObj->getPoint(), $history, $obj->getUserId());
+
 			try{
-				$pDao->deleteByReviewId($obj->getId());
+				$this->reviewPointDao->deleteByReviewId($obj->getId());
 			}catch(Exception $e){
 				//
 			}
 		}
-		
+
     }
 
     function delete($ids){
     	if(!is_array($ids))$ids = array($ids);
 
-    	$dao = SOY2DAOFactory::create("SOYShop_ItemReviewDAO");
-
-    	$dao->begin();
+    	$this->reviewDao->begin();
     	foreach($ids as $id){
-    		$dao->delete($id);
+    		$this->reviewDao->delete($id);
     	}
-    	$dao->commit();
+    	$this->reviewDao->commit();
     }
 
     function create(SOYShop_ItemReview $obj){
-		$dao = SOY2DAOFactory::create("SOYShop_ItemReviewDAO");
-
-		$siteUrl = soyshop_get_site_url();
-
-		return $dao->insert($obj);
+//		$siteUrl = soyshop_get_site_url();
+		return $this->reviewDao->insert($obj);
     }
 
     function getErrors() {
@@ -69,13 +71,18 @@ class ReviewLogic extends SOY2LogicBase{
     	if(!is_array($reviewIds)) $reviewIds = array($reviewIds);
     	$status = (int)(boolean)$status;	//0 or 1
 
-    	$dao = SOY2DAOFactory::create("SOYShop_ItemReviewDAO");
-    	$dao->begin();
+    	$this->reviewDao->begin();
 
     	foreach($reviewIds as $id){
-			$dao->updateIsApproved($id, (int)$status);
+			try{
+				//$dao->updateIsApproved($id, (int)$status);
+				$review = $this->reviewDao->getById($id);
+				$review->setIsApproved($status);
+				self::update($review);
+			}catch(Exception $e){
+				continue;
+			}
     	}
-    	$dao->commit();
+    	$this->reviewDao->commit();
     }
 }
-?>

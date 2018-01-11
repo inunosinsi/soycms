@@ -43,6 +43,11 @@ class DetailPage extends MainMyPagePageBase{
 		//レビュープラグインがアクティブでない場合はマイページトップへ飛ばす
 		if(!SOYShopPluginUtil::checkIsActive("item_review")) $this->jumpToTop();
 
+		//設定を確認
+		SOY2::import("module.plugins.item_review.common.ItemReviewCommon");
+		$config = ItemReviewCommon::getConfig();
+		if(!isset($config["edit"]) || (int)$config["edit"] === 0) $this->jump("review");
+
 		//IDが存在していない場合は、レビュー一覧に飛ばす
 		if(!isset($args[0])) $this->jump("review");
 

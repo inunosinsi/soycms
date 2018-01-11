@@ -47,11 +47,9 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			}
 
 			$this->reviewLogic->setPage($page);
-			$res = $this->reviewLogic->registerReview($this->review);
-			if($res){
-				//入力内容をクリアする
-				$this->review = array();
-			}
+
+			//入力内容をクリアする
+			if($this->reviewLogic->registerReview($this->review)) $this->review = array();
 		}
 	}
 
@@ -118,11 +116,9 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	}
 
 	private function isLoggedIn(){
-		if(!isset($this->config["login"]) || $this->config["login"] != 1){
-			return true;
-		}else{
-			return $this->reviewLogic->isLoggedIn();
-		}
+		//ログイン不要の設定の場合は無条件でtrue
+		if(!isset($this->config["login"]) || $this->config["login"] != 1) return true;
+		return $this->reviewLogic->isLoggedIn();
 	}
 
 	/**
