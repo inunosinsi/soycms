@@ -8,10 +8,10 @@ function soyshop_admin_login(){
 	//root user
 	$root = $session->getAttribute("isdefault");
 	if($root)return true;
-	
+
 	//auth level
 	$level = soyshop_admin_auth_level();
-	
+
 	return ($level > 0);
 }
 
@@ -21,7 +21,7 @@ function soyshop_admin_login(){
 function soyshop_admin_auth_level(){
 	$session = SOY2ActionSession::getUserSession();
 	$level = $session->getAttribute("app_shop_auth_level");
-	
+
 	if(is_null($level)){
 		return 0;
 	}else{
@@ -56,11 +56,11 @@ function soyshop_convert_number($arg, $value){
  * @return String
  */
 function soyshop_remove_close_slash($str){
-	
+
 	if(strrpos($str, "/") === strlen($str) - 1){
 		$str = rtrim($str, "/");
 	}
-	
+
 	return $str;
 }
 
@@ -73,7 +73,7 @@ function soyshop_convert_timestamp($str, $mode = "start"){
 	$array = explode("-", $str);
 
 	if(
-		(!isset($array[0]) || !isset($array[1]) || !isset($array[2])) || 
+		(!isset($array[0]) || !isset($array[1]) || !isset($array[2])) ||
 		(!is_numeric($array[0]) || !is_numeric($array[1]) || !is_numeric($array[2]))
 	) {
 		return ($mode == "start") ? 0 : 2147483647;
@@ -95,4 +95,18 @@ function soyshop_convert_date_string($timestamp){
 	return ($timestamp == 0 || $timestamp == 2147483647) ? "" : date("Y-m-d", $timestamp);
 }
 
-?>
+function soyshop_get_user_by_id($userId){
+	static $users, $dao;
+	if(is_null($users)) $users = array();
+	if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+	if(is_null($userId) || !is_numeric($userId)) return new SOYShop_User();
+	if(isset($users[$userId])) return $users[$userId];
+
+	try{
+		$users[$userId] = $dao->getById($userId);
+	}catch(Exception $e){
+		$users[$userId] = new SOYShop_User();
+	}
+
+	return $users[$userId];
+}

@@ -7,7 +7,7 @@ class SOYShopPlugin extends SOY2Plugin{
 
     public static function load($extensionId = null,$module = null){
         static $loaded = array();
-
+		
         if(in_array(array($extensionId, $module), $loaded)){
             return;
         }else{

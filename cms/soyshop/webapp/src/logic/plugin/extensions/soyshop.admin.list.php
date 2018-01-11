@@ -10,7 +10,7 @@ class SOYShopAdminListBase implements SOY2PluginAction{
 
 class SOYShopAdminListDeletageAction implements SOY2PluginDelegateAction{
 
-	private $_contents;
+	private $_contents = array();
 	private $_scripts;
 	private $_css;
 	private $mode;
@@ -27,8 +27,9 @@ class SOYShopAdminListDeletageAction implements SOY2PluginDelegateAction{
 				$this->_scripts = $action->getScripts();
 				$this->_css = $action->getCSS();
 				break;
+			default:
+				$array["title"] = $action->getTitle();
 		}
-
 		$this->_contents[$moduleId] = $array;
 	}
 
