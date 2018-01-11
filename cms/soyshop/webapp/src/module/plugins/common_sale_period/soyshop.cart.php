@@ -14,11 +14,11 @@ class SalePeriodCart extends SOYShopCartBase{
 		//今回カートに入れた商品
 		$item = self::getItemById($items[$last]->getItemId());
 		$price = self::getPriceLogic()->getDisplayPrice($item);
-		
+
 		$items[$last]->setItemPrice($price);
 		$items[$last]->setTotalPrice($price * $items[$last]->getItemCount());
 	}
-	
+
 	private function getItemById($itemId){
 		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		try{
@@ -29,11 +29,10 @@ class SalePeriodCart extends SOYShopCartBase{
 	}
 
 	private $logic;
-	
+
 	private function getPriceLogic(){
 		if(!$this->logic) $this->logic = SOY2Logic::createInstance("module.plugins.". self::PLUGIN_ID . ".logic.PriceLogic");
 		return $this->logic;
 	}
 }
 SOYShopPlugin::extension("soyshop.cart", "common_sale_period", "SalePeriodCart");
-?>

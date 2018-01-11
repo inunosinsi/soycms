@@ -12,4 +12,3 @@ class SalePeriodInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "common_sale_period", "SalePeriodInfo");
-?>

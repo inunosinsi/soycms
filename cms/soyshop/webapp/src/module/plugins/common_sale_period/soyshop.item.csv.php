@@ -29,38 +29,38 @@ class SalePeriodCSV extends SOYShopItemCSVBase{
 	 */
 	function import($itemId, $value){
 		self::prepare();
-		
+
 		if(!strpos($value, ",") || strlen($value) === 0) $value . ",";
 		$array = explode(",", $value);
-		
+
 		try{
 			$this->saleDao->deleteByItemId($itemId);
 		}catch(Exception $e){
 			//
 		}
-		
+
 		$start = soyshop_convert_timestamp($array[0], "start");
 		$end = soyshop_convert_timestamp($array[1], "end");
-		
+
 		$obj = new SOYShop_SalePeriod();
 		$obj->setItemId($itemId);
 		$obj->setSalePeriodStart($start);
 		$obj->setSalePeriodEnd($end);
-		
+
 		try{
 			$this->saleDao->insert($obj);
 		}catch(Exception $e){
 			//
 		}
 	}
-	
+
 	private $logic;
-	
+
 	private function getPriceLogic(){
 		if(!$this->logic) $this->logic = SOY2Logic::createInstance("module.plugins.". self::PLUGIN_ID . ".logic.PriceLogic");
 		return $this->logic;
 	}
-	
+
 	private function prepare(){
 		if(!$this->saleDao) {
 			SOY2::imports("module.plugins." . self::PLUGIN_ID . ".domain.*");

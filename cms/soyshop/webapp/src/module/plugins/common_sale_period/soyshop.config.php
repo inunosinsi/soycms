@@ -21,4 +21,3 @@ class SalePeriodOptionConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "common_sale_period", "SalePeriodOptionConfig");
-?>
