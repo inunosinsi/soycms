@@ -160,4 +160,3 @@ class SearchLogic extends SOY2LogicBase{
 		return $this->sorts;
 	}
 }
-?>

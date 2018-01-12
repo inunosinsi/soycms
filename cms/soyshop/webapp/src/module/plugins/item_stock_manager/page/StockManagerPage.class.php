@@ -115,7 +115,7 @@ class StockManagerPage extends WebPage{
 		$v = trim(substr($_SERVER["REQUEST_URI"], strrpos($_SERVER["REQUEST_URI"], "/")), "/");
 		$args[] = (is_numeric($v)) ? (int)$v : null;
 
-		$page = (isset($args[0])) ? (int)$args[0] : self::getGetParameter("page");
+		$page = (isset($args[0])) ? (int)$args[0] : self::getParameter("page");
 		if(array_key_exists("page", $_GET)) $page = $_GET["page"];
 		if(array_key_exists("sort", $_GET) || array_key_exists("search", $_GET)) $page = 1;
 		$page = max(1, $page);
@@ -123,7 +123,7 @@ class StockManagerPage extends WebPage{
 		$offset = ($page - 1) * $this->limit;
 
 		//表示順
-		$sort = self::getGetParameter("sort");
+		$sort = self::getParameter("sort");
 		self::setParameter("page", $page);
 
 		$searchLogic = SOY2Logic::createInstance("module.plugins.item_stock_manager.logic.SearchLogic");
@@ -273,20 +273,9 @@ class StockManagerPage extends WebPage{
 		SOY2ActionSession::getUserSession()->setAttribute("Plugin.Collective.Stock:" . $key, $value);
 	}
 
-	private function getGetParameter($key){
-		if(array_key_exists($key, $_GET)){
-			$value = $_GET[$key];
-			self::setParameter($key,$value);
-		}else{
-			$value = SOY2ActionSession::getUserSession()->getAttribute("Plugin.Collective.Stock:" . $key);
-		}
-		return $value;
-	}
-
 	function buildSortLink(SearchLogic $logic,$sort){
 
 		$link = SOY2PageController::createLink("Extension.item_stock_manager");
-
 		$sorts = $logic->getSorts();
 
 		foreach($sorts as $key => $value){
