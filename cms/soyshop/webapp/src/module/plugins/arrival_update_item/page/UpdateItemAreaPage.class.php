@@ -45,4 +45,3 @@ class UpdateItemAreaPage extends WebPage{
 		$this->configObj = $configObj;
 	}
 }
-?>

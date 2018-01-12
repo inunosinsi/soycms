@@ -4,7 +4,7 @@ class ArrivalUpdateItemAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		return SOY2PageController::createLink("Item");
 	}
-	
+
 	function getLinkTitle(){
 		return "商品";
 	}
@@ -22,4 +22,3 @@ class ArrivalUpdateItemAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "arrival_update_item", "ArrivalUpdateItemAdminTop");
-?>

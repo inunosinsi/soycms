@@ -1,14 +1,14 @@
 <?php
 
 class UpdatePageAreaPage extends WebPage{
-	
+
 	private $configObj;
-	
+
 	function __construct(){}
-	
+
 	function execute(){
 		parent::__construct();
-		
+
 		$pageDAO = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 		$pageDAO->setLimit(5);
 
@@ -22,9 +22,8 @@ class UpdatePageAreaPage extends WebPage{
 			"list" => $pages
 		));
 	}
-	
+
 	function setConfigObj($configObj){
 		$this->configObj = $configObj;
 	}
 }
-?>

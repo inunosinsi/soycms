@@ -1,18 +1,18 @@
 <?php
 
 class ItemStockAreaPage extends WebPage{
-	
+
 	private $configObj;
-	
+
 	function __construct(){}
-	
+
 	function execute(){
 		parent::__construct();
-		
+
 		$shopConfig = SOYShop_ShopConfig::load();
 		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$itemDao->setLimit(6);
-		
+
 		if($shopConfig->getIgnoreStock()){
 			$items = array();
 		}else{
@@ -22,25 +22,21 @@ class ItemStockAreaPage extends WebPage{
 				$items = array();
 			}
 		}
-		
-			
 
-		DisplayPlugin::toggle("more_stock", (count($items) > 5));
-		DisplayPlugin::toggle("has_stock", (count($items) > 0));
-		DisplayPlugin::toggle("no_stock", (count($items) === 0));
-		
-		$items = array_slice($items, 0, 5);
+		$cnt = count($items);
+		DisplayPlugin::toggle("more_stock", $cnt > 5);
+		DisplayPlugin::toggle("has_stock", $cnt > 0);
+		DisplayPlugin::toggle("no_stock", $cnt === 0);
 
 		$this->createAdd("stock_list", "_common.Item.ItemListComponent", array(
-			"list" => $items,
+			"list" => array_slice($items, 0, 5),
 			"config" => $shopConfig,
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
 			"itemOrderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")
 		));
 	}
-	
+
 	function setConfigObj($configObj){
 		$this->configObj = $configObj;
 	}
 }
-?>

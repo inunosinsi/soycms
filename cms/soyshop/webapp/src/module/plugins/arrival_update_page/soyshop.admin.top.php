@@ -9,7 +9,7 @@ class ArrivalUpdatePageAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		return SOY2PageController::createLink("Site.Pages");
 	}
-	
+
 	function getLinkTitle(){
 		return "ページ管理";
 	}
@@ -27,4 +27,3 @@ class ArrivalUpdatePageAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "arrival_update_page", "ArrivalUpdatePageAdminTop");
-?>

@@ -4,7 +4,7 @@ class ArrivalNewOrderAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		return SOY2PageController::createLink("Order");
 	}
-	
+
 	function getLinkTitle(){
 		return "注文一覧";
 	}
@@ -22,4 +22,3 @@ class ArrivalNewOrderAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "arrival_new_order", "ArrivalNewOrderAdminTop");
-?>

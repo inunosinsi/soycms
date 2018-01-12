@@ -4,7 +4,7 @@ class ArrivalItemStockAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		return SOY2PageController::createLink("Config.ShopConfig");
 	}
-	
+
 	function getLinkTitle(){
 		return "ショップ設定";
 	}
@@ -22,4 +22,3 @@ class ArrivalItemStockAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "arrival_item_stock", "ArrivalItemStockAdminTop");
-?>

@@ -1,14 +1,14 @@
 <?php
 
 class NewOrderAreaPage extends WebPage{
-	
+
 	private $configObj;
-	
+
 	function __construct(){}
-	
+
 	function execute(){
 		parent::__construct();
-		
+
 		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$orderDao->setLimit(16);
 		try{
@@ -17,19 +17,17 @@ class NewOrderAreaPage extends WebPage{
 			$orders = array();
 		}
 
-		DisplayPlugin::toggle("more_order", (count($orders) > 15));
-		DisplayPlugin::toggle("has_order", (count($orders) > 0));
-		DisplayPlugin::toggle("no_order", (count($orders) === 0));
-
-		$orders = array_slice($orders, 0, 15);
+		$cnt = count($orders);
+		DisplayPlugin::toggle("more_order", $cnt > 15);
+		DisplayPlugin::toggle("has_order", $cnt > 0);
+		DisplayPlugin::toggle("no_order", $cnt === 0);
 
 		$this->createAdd("order_list", "_common.Order.OrderListComponent", array(
-			"list" => $orders
+			"list" => array_slice($orders, 0, 15)
 		));
 	}
-	
+
 	function setConfigObj($configObj){
 		$this->configObj = $configObj;
 	}
 }
-?>
