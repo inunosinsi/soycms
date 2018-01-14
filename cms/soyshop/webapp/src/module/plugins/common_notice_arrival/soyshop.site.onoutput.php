@@ -26,4 +26,3 @@ class CommonNoticeArrivalOnOutput extends SOYShopSiteOnOutputAction{
 }
 
 SOYShopPlugin::extension("soyshop.site.onoutput", "common_notice_arrival", "CommonNoticeArrivalOnOutput");
-?>
