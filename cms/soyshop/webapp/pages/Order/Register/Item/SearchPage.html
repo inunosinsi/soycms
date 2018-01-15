@@ -24,13 +24,15 @@
 			<p class="alC" style="margin-botton:10px;">
 				<input type="hidden" name="search_condition[is_open]" value="1">
 				<input type="submit" name="Search" value="検索">&nbsp;
-				<input type="submit" name="Reset" value="リセット">
+				<input type="submit" name="Reset" value="リセット">&nbsp;
 			</p>
 		</form>
-
+<script>
+console.log(location);
+</script>
 		<!-- soy:display="search_result" -->
 		<table class="form_table order_search">
-			<caption>検索結果</caption>
+			<caption>検索結果&nbsp;<a href="javascript:void(0);" onclick='location.href=location.origin + location.pathname + "#regist_item";' class="button">商品登録</a></caption>
 			<tr>
 				<th>商品名</th>
 				<th>商品コード</th>
@@ -53,10 +55,12 @@
 		</table>
 		<!-- /soy:display="search_result" -->
 
-		<!-- soy:display="search_no_result" -->
-		<p class="error always" soy:id="error" style="margin-top:10px;">登録されている商品がありません</p>
+		<p class="error always" soy:display="search_no_result" style="margin-top:10px;">登録されている商品がありません</p>
+		<p class="error always" soy:display="error" style="margin-top:10px;">商品登録に失敗しました</p>
+
+		<!-- soy:display="regist_item" -->
 		<form soy:id="register_form">
-			<table class="form_table">
+			<table class="form_table" id="regist_item">
 				<caption>商品を登録する</caption>
 				<tr>
 					<th>商品名</th>
@@ -95,7 +99,7 @@
 				<input type="submit" name="Register" value="登録する">
 			</p>
 		</form>
-		<!-- /soy:display="search_no_result" -->
+		<!-- /soy:display="regist_item" -->
 	</div>
 </div>
 

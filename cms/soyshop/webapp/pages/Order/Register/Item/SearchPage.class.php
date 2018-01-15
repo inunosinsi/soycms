@@ -93,9 +93,10 @@ class SearchPage extends WebPage{
 
 		//検索結果がある場合
 		DisplayPlugin::toggle("search_result", $cnt > 0);
-
-		//検索を行っｔ上で検索結果がない場合　buildItemRegisterFormメソッドの表示用
 		DisplayPlugin::toggle("search_no_result", ($doSearch && $cnt === 0));
+
+		//商品登録画面は必ず表示
+		DisplayPlugin::toggle("regist_item", $doSearch);
 
 		//商品一覧
 		$this->createAdd("item_list", "_common.Order.ItemListComponent", array(
@@ -109,9 +110,7 @@ class SearchPage extends WebPage{
 
 		$cnds = self::getParameter("search_condition");
 
-		$this->addLabel("error", array(
-			"text" => (isset($this->item)) ? "商品登録に失敗しました" : "登録されている商品がありません"
-		));
+		DisplayPlugin::toggle("error", (isset($this->item)));
 		DisplayPlugin::toggle("error_code", (isset($this->item)));
 
 		if(isset($this->item)){
