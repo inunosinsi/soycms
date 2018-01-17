@@ -561,4 +561,3 @@ class SOYShop_ShopConfig {
 		$this->multiCategory = $multiCategory;
 	}
 }
-?>

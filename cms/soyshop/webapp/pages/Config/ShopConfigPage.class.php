@@ -343,6 +343,11 @@ class ShopConfigPage extends WebPage{
 			"customerConfig" => $config->getCustomerInformationConfig()
 		));
 
+		$this->addInput("require_text", array(
+			"name" => "Config[requireText]",
+			"value" => $config->getRequireText()
+		));
+
 		/** 管理画面の注文一覧の設定 **/
 		$this->createAdd("order_item_list", "_common.Config.OrderItemListComponent", array(
 			"list" => $config->getOrderItemList(),
@@ -438,4 +443,3 @@ class RadioButtonList extends HTMlList{
 	}
 	/**#@-*/
 }
-?>
