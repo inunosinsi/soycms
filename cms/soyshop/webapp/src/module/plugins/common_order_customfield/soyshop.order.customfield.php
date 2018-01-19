@@ -87,7 +87,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			$array[$obj->getFieldId()] = $value;
 		}
 		$param = $array;
-
+		
 		foreach($param as $key => $obj){
 			$module = new SOYShop_ItemModule();
 			$module->setId("order_customfield_" . $key);
@@ -132,14 +132,14 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 	}
 
-	function order(CartLogic $cart){
+	function complete(CartLogic $cart){
 
 		$orderId = $cart->getAttribute("order_id");
 		if(!strlen($orderId)){
 			throw new Exception("No order.id designated for this order custom field.");
 		}
 
-		$this->prepare();
+		self::prepare();
 
 		foreach($this->list as $config){
 
@@ -573,4 +573,3 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "common_order_customfield", "CommonOrderCustomfieldModule");
-?>

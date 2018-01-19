@@ -6,7 +6,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	/**
 	 * セッションの削除
 	 */
-	function clear(CartLogic $cart){		
+	function clear(CartLogic $cart){
 	}
 
 	/**
@@ -14,14 +14,21 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 */
 	function doPost($param){
 	}
-	
+
 	/**
-	 * 注文完了時に何らかの処理を行う
+	 * 注文前に何らかの処理を行う
 	 * @param CartLogic $cart
 	 */
 	function order(CartLogic $cart){
 	}
-	
+
+	/**
+	 * 注文後に何らかの処理を行う
+	 * @param CartLogic $cart
+	 */
+	function complete(CartLogic $cart){
+	}
+
 	/**
 	 * エラーチェック
 	 * @return Boolean
@@ -38,7 +45,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 */
 	function getForm(CartLogic $cart){
 	}
-	
+
 	/**
 	 * 管理画面で表示する値
 	 * ["name"]、["value"]を返す
@@ -46,22 +53,22 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 * @return Array array(array("name" => "", "value" => "", "style" => "")) ※styleはなしで良い
 	 */
 	function display($orderId){
-		
+
 	}
-	
+
 	/**
 	 * @param int $orderID
 	 * @return Array labelとformの連想配列を格納 array(array("label" => "", "form" => ""))
 	 */
 	function edit($orderId){
-		
+
 	}
-	
+
 	/**
 	 * saveする際のconfigを取得して返す
 	 */
 	function config($orderId){
-		
+
 	}
 
 	function getCart() {
@@ -77,21 +84,21 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 	private $cart;
 	private $param;//$_POST["customfield_module"]
 	private $orderId;
-	
+
 	private $_list = array();
 	private $_display = array();
 	private $_label = array();
 	private $hasError = false;
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
-		
+
 		//カートは必要
 //		if(!$this->getCart()){
 //			throw new Exception("soyshop.order.customfield needs cart information.");
 //		}
 
 		$action->setCart($this->getCart());
-		
+
 		switch($this->mode){
 			case "list":
 				$this->_list[$moduleId] = $action->getForm($this->cart);
@@ -112,6 +119,9 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 			case "order":
 				$action->order($this->cart);
 				break;
+			case "complete":
+				$action->complete($this->cart);
+				break;
 			case "admin":
 				$this->_display[$moduleId] = $action->display($this->orderId);
 				break;
@@ -122,9 +132,9 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 				$this->_list[$moduleId] = $action->config($this->orderId);
 				break;
 		}
-		
+
 	}
-	
+
 	function getList(){
 		return $this->_list;
 	}

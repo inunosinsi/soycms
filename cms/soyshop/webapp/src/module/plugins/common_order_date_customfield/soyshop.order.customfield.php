@@ -71,7 +71,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 	}
 
-	function order(CartLogic $cart){
+	function complete(CartLogic $cart){
 
 		$orderId = $cart->getAttribute("order_id");
 		if(!strlen($orderId)){

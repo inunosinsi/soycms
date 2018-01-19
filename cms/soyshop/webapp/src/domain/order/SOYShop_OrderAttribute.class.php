@@ -306,6 +306,8 @@ class SOYShop_OrderAttributeConfig{
 							if($ini) $checked = ' checked="checked"';
 							$option = substr($option, 1);
 						}
+						//もう一度確認してみる
+						$checked = (in_array($option, $checkbox_value)) ? ' checked="checked"' : "";
 					}
 
 					$body .= '<input type="checkbox" class="custom_field_checkbox"'
@@ -316,6 +318,7 @@ class SOYShop_OrderAttributeConfig{
 					       .' />';
 					$body .= '<label for="' . $h_formID . '_' . $key . '">' . $option . '</label>';
 					$body .= "\n";
+					$body .= "<input type='hidden' name='customfield_module[order_customfield_dummy]' value='1'>";	//何も選択していない時でも確認画面に値が表示されるように
 				}
 
 				break;
@@ -337,12 +340,14 @@ class SOYShop_OrderAttributeConfig{
 						$h_option = htmlspecialchars($option, ENT_QUOTES, "UTF-8");
 						$id = 'custom_field_radio_' . $this->getFieldId() . '_' . $key;
 
-						$checked = ($option == $value["value"]) ?  ' checked="checked"' : "";
+						$checked = ($h_option == $value["value"]) ?  ' checked="checked"' : "";
 						if(!strlen($checked)){
 							if($h_option[0] == "*"){
 								$checked = ' checked="checked"';
 								$h_option = substr($h_option, 1);
 							}
+							//再度調べる
+							$checked = ($h_option == $value["value"]) ?  ' checked="checked"' : "";
 						}
 
 						$body .= '<input type="radio" class="custom_field_radio"' .
