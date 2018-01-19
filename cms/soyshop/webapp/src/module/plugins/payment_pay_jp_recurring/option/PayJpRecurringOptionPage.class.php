@@ -30,7 +30,7 @@ class PayJpRecurringOptionPage extends WebPage {
 
 		for ($i = 0; $i < 4; $i++) {
 			$this->addInput("card_" . ($i + 1), array(
-				"name" => "card[$i]",
+				"name" => "card[" . $i . "]",
 				"value" => (isset($values["number"])) ? substr($values["number"], (4*$i), 4) : "",
 				"attr:required" => true
 			));

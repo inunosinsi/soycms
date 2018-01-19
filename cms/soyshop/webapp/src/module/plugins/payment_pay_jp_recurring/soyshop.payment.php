@@ -183,7 +183,7 @@ class PayJpRecurringPayment extends SOYShopPayment{
 		if(isset($token)){
 			$this->recurringLogic->saveCustomerTokenByUserId($token, $user->getId());
 		}else{
-			$this->recurrignLogic->deleteCustomerTokenByUserId($user->getId());
+			$this->recurringLogic->deleteCustomerTokenByUserId($user->getId());
 		}
 
 		return $token;
