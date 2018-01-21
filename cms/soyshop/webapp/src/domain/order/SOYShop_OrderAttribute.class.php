@@ -298,7 +298,7 @@ class SOYShop_OrderAttributeConfig{
 				$checkbox_value = ($ini && strlen($this->getDefaultValue()) > 0) ? (explode(",", $this->getDefaultValue())) : explode(",", $value);
 				$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getOption()));
 				$body = "";
-
+				
 				foreach($options as $key => $option){
 					$checked = (in_array($option, $checkbox_value)) ? ' checked="checked"' : "";
 					if(!strlen($checked)){
@@ -307,7 +307,7 @@ class SOYShop_OrderAttributeConfig{
 							$option = substr($option, 1);
 						}
 						//もう一度確認してみる
-						$checked = (in_array($option, $checkbox_value)) ? ' checked="checked"' : "";
+						if(!$ini) $checked = (in_array($option, $checkbox_value)) ? ' checked="checked"' : "";
 					}
 
 					$body .= '<input type="checkbox" class="custom_field_checkbox"'

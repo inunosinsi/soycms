@@ -87,7 +87,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			$array[$obj->getFieldId()] = $value;
 		}
 		$param = $array;
-		
+
 		foreach($param as $key => $obj){
 			$module = new SOYShop_ItemModule();
 			$module->setId("order_customfield_" . $key);
@@ -389,6 +389,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					$options = explode("\n", $attrList[$attribute->getFieldId()]["config"]["option"]);
 					$values = explode(",", $attribute->getValue1());
 					foreach($options as $option){
+						if(strpos($option, "*") === 0) $option = substr($option, 1);
 						$htmls[] = "<label>";
 						if(in_array(trim($option), $values)){
 							$htmls[] = "<input type=\"checkbox\" name=\"" . $name . "[]\" value=\"" . trim($option) . "\" checked=\"checked\">";
@@ -403,6 +404,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					$options = explode("\n", $attrList[$attribute->getFieldId()]["config"]["option"]);
 					if(count($options) === 0) continue;
 					foreach($options as $option){
+						if(strpos($option, "*") === 0) $option = substr($option, 1);
 						$htmls[] = "<label>";
 						if($attribute->getValue1() == trim($option)){
 							$htmls[] = "<input type=\"radio\" name=\"" . $name . "\" value=\"" . trim($option) . "\" checked=\"checked\">";
@@ -432,6 +434,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					if(count($options) === 0) continue;
 					$htmls[] = "<select name=\"" . $name . "\">";
 					foreach($options as $option){
+						if(strpos($option, "*") === 0) $option = substr($option, 1);
 						if($attribute->getValue1() == trim($option)){
 							$htmls[] = "<option selected>" . trim($option) . "</option>";
 						}else{
