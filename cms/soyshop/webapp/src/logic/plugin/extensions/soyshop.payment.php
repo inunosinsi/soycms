@@ -48,6 +48,7 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 
 	private $_list = array();
 	private $_method = true;
+	private $_hasOption = false;
 	private $mode = "list";
 	private $cart;
 	private $moduleId;
@@ -93,6 +94,9 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 
 					if($action->hasOptionPage()){
 						$this->getCart()->setAttribute("has_option", true);
+
+						//環境によってセッションが引き継がれないことがあるから、パラメータに入れておく
+						$this->_hasOption = true;
 					}
 				}
 				break;
@@ -110,6 +114,9 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 	}
 	function getMethod(){
 		return $this->_method;
+	}
+	function getHasOption(){
+		return $this->_hasOption;
 	}
 	function getMode() {
 		return $this->mode;
