@@ -5,10 +5,10 @@
 <br />
 
 <div class="block_body clearfix">
-		
+
 	<p class="notice" soy:id="updated">更新しました</p>
 	<p class="notice" soy:id="error">入力したIDは使用できません</p>
-		
+
 	<table class="form_list">
 		<caption>カスタム項目</caption>
 		<tr>
@@ -69,20 +69,20 @@
 							<br>※カンマ区切りで指定してください。
 							<!-- /soy:id="display_description_type_checkbox" -->
 						</dd>
-						
+
 						<dt>カートに表示する説明文</dt>
 						<dd>
 							<textarea soy:id="attribute_description"></textarea>
 						</dd>
-						
+
 						<!-- soy:id="with_options" -->
 						<dt>選択項目<span class="option">(項目を改行で区切ってください)</span></dt>
 						<dd>
-							<textarea soy:id="option"></textarea><br>
-							初期値として選択される項目がある場合、項目の前に[*]を入力して下さい。
+							<textarea soy:id="option"></textarea>
+							<!-- soy:id="display_option_type_checkbox" --><br>初期値として選択される項目がある場合、項目の前に[*]を入力して下さい。<!-- /soy:id="display_option_type_checkbox" -->
 						</dd>
 						<!-- /soy:id="with_options" -->
-						
+
 						<!-- soy:id="with_radio_options" -->
 						<dt>その他項目の追加</dt>
 						<dd>
@@ -94,7 +94,7 @@
 							<input type="text" class="text" soy:id="attribute_other_text" />
 						</dd>
 						<!-- /soy:id="with_radio_options" -->
-						
+
 						<!-- soy:id="with_file_options" -->
 						<dt>ファイルのアップロードの拡張子<br><span class="option">(項目を改行で区切ってください。拡張子の指定はドットなしで登録します。例:zip)</span></dt>
 						<dd>

@@ -5,14 +5,14 @@ class CommonOrderCustomfieldConfigFormPage extends WebPage{
     function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
     }
-    
+
     function doPost(){
-    	
+
     	$dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
-    	
+
     	if(isset($_POST["create"])){
-			
-			$configs = SOYShop_OrderAttributeConfig::load();	
+
+			$configs = SOYShop_OrderAttributeConfig::load();
 			$custom_id = $_POST["custom_id"];
 
 			$config = new SOYShop_OrderAttributeConfig();
@@ -24,7 +24,7 @@ class CommonOrderCustomfieldConfigFormPage extends WebPage{
 
 			SOYShop_OrderAttributeConfig::save($configs);
 			SOY2PageController::jump("Config.Detail?plugin=common_order_customfield&updated=created");
-			
+
 		}
 
 		//update
@@ -34,7 +34,7 @@ class CommonOrderCustomfieldConfigFormPage extends WebPage{
 			$configs = SOYShop_OrderAttributeConfig::load(true);
 			$config = $configs[$fieldId];
 			SOY2::cast($config, (object)$_POST["obj"]);
-			
+
 			SOYShop_OrderAttributeConfig::save($configs);
 		}
 
@@ -87,19 +87,19 @@ class CommonOrderCustomfieldConfigFormPage extends WebPage{
 
 		SOY2PageController::jump("Config.Detail?plugin=common_order_customfield&updated");
     }
-    
+
     function checkValidate($value){
     	$value["attributeOther"] = (isset($value["attributeOther"])) ? 1 : 0;
     	return $value;
     }
-    
+
     function execute(){
     	parent::__construct();
-    	
+
     	$this->addModel("updated", array(
 			"visible" => (isset($_GET["updated"]))
 		));
-		
+
 		$this->addModel("error", array(
 			"visible" => (isset($_GET["error"]))
 		));
@@ -220,7 +220,7 @@ class FieldList extends HTMLList{
 		$this->addModel("field_config", array(
 			"attr:id" => "field_config_" . $key
 		));
-		
+
 		//必須項目
 		$this->addCheckBox("is_required", array(
 			"name" => "config[isRequired]",
@@ -228,17 +228,17 @@ class FieldList extends HTMLList{
 			"selected" => ($entity->getIsRequired() == SOYShop_OrderAttribute::IS_REQUIRED),
 			"label" => "このカスタムフィールドを必須項目にする"
 		));
-		
+
 		//初期値
 		$this->addInput("default_value", array(
 			"name" => "config[defaultValue]",
 			"value" => $entity->getDefaultValue()
 		));
-		
+
 		$this->addModel("display_description_type_checkbox", array(
 			"visible" => ($entity->getType() == SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX)
 		));
-		
+
 		$this->addTextArea("attribute_description", array(
 			"name" => "config[attributeDescription]",
 			"value" => $entity->getAttributeDescription()
@@ -252,9 +252,13 @@ class FieldList extends HTMLList{
 		$this->addModel("with_options", array(
 			"visible" => $entity->hasOption()
 		));
-		
+
+		$this->addModel("display_option_type_checkbox", array(
+			"visible" => ($entity->getType() == SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX)
+		));
+
 		$this->addModel("with_radio_options", array(
-			"visible" => $entity->hasRadioOption()		
+			"visible" => $entity->hasRadioOption()
 		));
 
 		$this->addCheckBox("attribute_other", array(
@@ -267,16 +271,16 @@ class FieldList extends HTMLList{
 			"name" => "config[attributeOtherText]",
 			"value" => $entity->getAttributeOtherText()
 		));
-		
+
 		$this->addModel("with_file_options", array(
 			"visible" => $entity->hasFileOption()
 		));
-		
+
 		$this->addTextArea("file_option", array(
 			"name" => "config[fileOption]",
 			"value" => $entity->getFileOption()
 		));
-		
+
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
 			"onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'

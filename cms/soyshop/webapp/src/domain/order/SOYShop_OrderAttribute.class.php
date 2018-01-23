@@ -298,7 +298,7 @@ class SOYShop_OrderAttributeConfig{
 				$checkbox_value = ($ini && strlen($this->getDefaultValue()) > 0) ? (explode(",", $this->getDefaultValue())) : explode(",", $value);
 				$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getOption()));
 				$body = "";
-				
+
 				foreach($options as $key => $option){
 					$checked = (in_array($option, $checkbox_value)) ? ' checked="checked"' : "";
 					if(!strlen($checked)){
