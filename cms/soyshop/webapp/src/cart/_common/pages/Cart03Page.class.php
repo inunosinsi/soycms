@@ -65,10 +65,15 @@ class Cart03Page extends MainCartPageBase{
 				SOYShopPlugin::load("soyshop.payment", $paymentModule);
 
 				//実行
-				SOYShopPlugin::invoke("soyshop.payment", array(
+				$delegate = SOYShopPlugin::invoke("soyshop.payment", array(
 					"mode" => "select",
 					"cart" => $cart
 				));
+
+				//Cart05が必要かどうか引き継がれない時は再度調べる
+				if(is_null($cart->getAttribute("has_option"))){
+					$cart->setAttribute("has_option", $delegate->getHasOption());
+				}
 			}
 
 			//配送

@@ -372,4 +372,3 @@ class Cart04Page extends MainCartPageBase{
 		));
 	}
 }
-?>
