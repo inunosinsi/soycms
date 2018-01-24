@@ -131,9 +131,7 @@ class CustomField{
 	function getForm($pluginObj, $fieldValue, $extraValues=null){
 
 		//表示しないとき
-		if(!$this->showInput){
-			return "";
-		}
+		if(!$this->showInput) return "";
 
 		$h_formName = htmlspecialchars($this->getFormName(),ENT_QUOTES,"UTF-8");
 		$h_formID = htmlspecialchars($this->getFormId(),ENT_QUOTES,"UTF-8");
@@ -149,7 +147,14 @@ class CustomField{
 		switch($this->getType()){
 			case "checkbox":
 				//DefaultValueがあればそれを使う
-				$checkbox_value = (strlen($this->getDefaultValue()) >0) ? $this->getDefaultValue() : $this->getLabel() ;
+				if(strlen($this->getDefaultValue()) > 0){
+					$checkbox_value = $this->getDefaultValue();
+					//NULLであれば初期状態 0文字の文字列であれば一度記事を投稿したことになる
+					if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
+				}else{
+					$checkbox_value = $this->getLabel() ;
+				}
+
 				$h_checkbox_value = htmlspecialchars($checkbox_value,ENT_QUOTES,"UTF-8");
 				$body = '<input type="checkbox" class="custom_field_checkbox"'
 				       .' id="'.$h_formID.'"'

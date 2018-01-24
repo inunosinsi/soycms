@@ -21,7 +21,7 @@ class CustomFieldPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.7.3"
+			"version"=>"1.7.4"
 		));
 
 		CMSPlugin::addPluginConfigPage(CustomFieldPlugin::PLUGIN_ID, array(
@@ -539,4 +539,3 @@ class CustomFieldPlugin{
 class ConfigFieldPlugin extends CustomFieldPlugin{}
 
 CustomFieldPlugin::register();
-?>
