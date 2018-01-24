@@ -17,7 +17,7 @@ class SearchLogic extends SOY2LogicBase{
      * @params int current:現在のページ, int limit:一ページで表示する商品
      * @return array<SOYShop_User>
      */
-    function search($mypageId=null, $current, $limit){
+    function search($mypageId=null, $current, $limit, $loggedInUserId=null){
         self::setCondition();
 
         $sql = "SELECT DISTINCT s.user_id, s.*, u.* " .
@@ -25,6 +25,12 @@ class SearchLogic extends SOY2LogicBase{
                 "INNER JOIN soyshop_user_custom_search s ".
                 "ON u.id = s.user_id ";
         $sql .= self::buildWhere();    //カウントの時と共通の処理は切り分ける
+
+		//ログインしている場合は検索結果から自身を除く
+		if($loggedInUserId){
+			$sql .= " AND u.id != " . $loggedInUserId . " ";
+		}
+
         //$sort = self::buildOrderBySQLOnSearchPage($mypageId);
         if(isset($sort)) $sql .= $sort;
 
