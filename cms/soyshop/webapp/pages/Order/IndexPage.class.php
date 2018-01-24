@@ -76,7 +76,7 @@ class IndexPage extends WebPage{
 		//ページャーの作成
 		$start = $offset + 1;
 		$end = $offset + count($orders);
-		if($end > 0 && $start == 0)$start = 1;
+		if($end > 0 && $start == 0) $start = 1;
 
 		$pager = SOY2Logic::createInstance("logic.pager.PagerLogic");
 		$pager->setPageURL("Order");
@@ -124,12 +124,13 @@ class IndexPage extends WebPage{
 			"list" => $orders
 		));
 
+		$orderCnt = count($orders);
 		$this->addModel("order_exists", array(
-			"visible" => (count($orders) > 0)
+			"visible" => ($orderCnt > 0)
 		));
 
 		$this->addModel("no_result", array(
-			"visible" => (count($orders) < 1 && !empty($search))
+			"visible" => ($orderCnt === 0 && !empty($search))
 		));
 
 		$this->addLink("reset_link", array(
@@ -437,7 +438,7 @@ class SearchForm extends SOYBodyComponentBase{
 			"mode" => "search",
 			"cart" => CartLogic::getCart()
 		))->getList();
-		
+
 		if(!count($paymentList)) return "";
 
 		$html = array();
