@@ -11,7 +11,12 @@ function soyshop_search_field_result($html, $htmlObj){
     if(SOYShopPluginUtil::checkIsActive("user_custom_search_field") && isset($_GET["u_search"])){
 		$logic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.SearchLogic");
 		$logic->setIsProfileDisplay(true);
-		$users = $logic->search(null, 1, 15);
+
+		//ログインしているか？ログインしていればユーザIDを返す
+		$mypage = MyPageLogic::getMyPage();
+		$userId = ($mypage->getIsLoggedin()) ? (int)$mypage->getUserId() : null;
+
+		$users = $logic->search(null, 1, 15, $userId);
     }
 
 	SOY2::import("base.site.classes.SOYShop_UserListComponent");
