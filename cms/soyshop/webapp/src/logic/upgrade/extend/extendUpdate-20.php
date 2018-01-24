@@ -5,4 +5,3 @@ if(SOYShopPluginUtil::checkIsActive("common_point_base") && !SOYShopPluginUtil::
 	$logic->prepare();
 	$logic->installModule("common_point_grant");
 }
-?>
