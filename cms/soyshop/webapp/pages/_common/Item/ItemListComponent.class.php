@@ -101,7 +101,7 @@ class ItemListComponent extends HTMLList{
         ));
 
         $this->addLabel("order_count", array(
-            "text" => number_format($this->getOrderCount($item))
+            "text" => (!$this->config->getIgnoreStock() && get_class($item) === "SOYShop_Item") ? number_format(self::getOrderCount($item)) : null
         ));
     }
 
@@ -134,13 +134,13 @@ class ItemListComponent extends HTMLList{
         $this->categoriesDAO = $categoriesDAO;
     }
 
-    function getOrderCount($item){
+    private function getOrderCount(SOYShop_Item $item){
 
         $childItemStock = $this->config->getChildItemStock();
         //子商品の在庫管理設定をオン(子商品の注文数合計を取得する)
         if($childItemStock){
             //子商品のIDを取得する
-            $ids = $this->getChildItemIds($item->getId());
+            $ids = self::getChildItemIds($item->getId());
             $count = 0;
             if(count($ids) > 0){
 
@@ -162,21 +162,21 @@ class ItemListComponent extends HTMLList{
         }
     }
 
-    function getChildItemIds($itemId){
+    private function getChildItemIds($itemId){
+		static $dao;
+		if(is_null($dao)) $dao = new SOY2DAO();
 
-        $ids = array();
-
-        $dao = new SOY2DAO();
-        $sql = "select id from soyshop_item where item_type = :id";
-        $binds = array(":id" => $itemId);
         try{
-            $result = $dao->executeQuery($sql,$binds);
+            $result = $dao->executeQuery("select id from soyshop_item where item_type = :id", array(":id" => $itemId));
         }catch(Exception $e){
             return 0;
         }
+		if(!count($result)) return 0;
+
         $ids = array();
-        foreach($result as $value){
-            $ids[] = $value["id"];
+        foreach($result as $v){
+			if(!isset($v["id"])) continue;
+            $ids[] = (int)$v["id"];
         }
 
         return $ids;

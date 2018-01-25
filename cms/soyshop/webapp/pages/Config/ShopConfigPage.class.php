@@ -12,6 +12,7 @@ class ShopConfigPage extends WebPage{
 		foreach(array(
 			"consumptionTaxInclusivePricingRate" => SOYShop_ShopConfig::CONSUMPTION_TAX_RATE,
 			"consumptionTaxInclusiveCommission" => 0,
+			"isOrderListOneYearsWonth" => 0,
 			"displayStockCount" => 0,
 			"displayPageAfterLogout" => 0,
 			"displaySendInformationForm" => 0,
@@ -143,6 +144,13 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[sslConfig]",
 			"options" => SOYShop_ShopConfig::getSSLConfigList(),
 			"selected" => $config->getSSLConfig()
+		));
+
+		$this->addCheckBox("isOrderListOneYearsWonth", array(
+			"name" => "Config[isOrderListOneYearsWonth]",
+			"value" => 1,
+			"selected" => $config->getIsOrderListOneYearsWonth(),
+			"label" => "注文一覧の標準表示範囲を一年にする"
 		));
 
 		//在庫商品通知モード

@@ -31,6 +31,8 @@ class IndexPage extends WebPage{
 	function __construct($args){
 		parent::__construct();
 
+		$config = SOYShop_ShopConfig::load();
+
 		//検索条件のリセット
 		if(isset($_GET["reset"])){
 			$this->setParameter("page", 1);
@@ -59,9 +61,14 @@ class IndexPage extends WebPage{
 		$searchLogic = SOY2Logic::createInstance("logic.order.SearchOrderLogic");
 
 		//フォームの作成
-		$form = $this->buildSearchForm($search);
+		$form = self::buildSearchForm($search);
 		$form = (array)SOY2::cast("object",$form);//再変換をかける
 
+		//注文一覧は標準設定で過去一年分にする
+		if(empty($search) && $config->getIsOrderListOneYearsWonth()){
+			$form["orderDateStart"] = date("Y-m-d", time() - 365 * 24 * 60 * 60);
+		}
+		
 		//検索条件の投入と検索実行
 		$searchLogic->setSearchCondition($form);
 		$searchLogic->setLimit($limit);
@@ -98,9 +105,8 @@ class IndexPage extends WebPage{
 		));
 
 		//項目の表示に関して
-		$items = SOYShop_ShopConfig::load()->getOrderItemConfig();
 		$itmCnt = 0;
-		foreach($items as $key => $b){
+		foreach($config->getOrderItemConfig() as $key => $b){
 			if($b) $itmCnt++;
 
 			$this->addModel($key . "_show", array(
@@ -157,7 +163,7 @@ class IndexPage extends WebPage{
 	/**
 	 * 検索フォームを作成する
 	 */
-	function buildSearchForm($search){
+	private function buildSearchForm($search){
 
 		$obj = (object)$search;
 

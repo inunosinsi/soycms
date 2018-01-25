@@ -20,6 +20,7 @@ class SOYShop_ShopConfig {
 	private $consumptionTaxInclusivePricingRate;
 	private $consumptionTaxInclusiveCommission = 1;
 	private $sslConfig = "http";
+	private $isOrderListOneYearsWonth = 1;	//注文一覧の標準表示件数を一年分にする
 	private $displayStock;
 	private $displayStockCount = 0;
 	private $ignoreStock;
@@ -385,6 +386,13 @@ class SOYShop_ShopConfig {
 
 	function setSSLConfig($sslConfig){
 		$this->sslConfig = $sslConfig;
+	}
+
+	function getIsOrderListOneYearsWonth(){
+		return $this->isOrderListOneYearsWonth;
+	}
+	function setIsOrderListOneYearsWonth($isOrderListOneYearsWonth){
+		$this->isOrderListOneYearsWonth = $isOrderListOneYearsWonth;
 	}
 
 	function getDisplayStock() {
