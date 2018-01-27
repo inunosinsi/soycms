@@ -149,7 +149,14 @@ class CustomField{
 		switch($this->getType()){
 			case "checkbox":
 				//DefaultValueがあればそれを使う
-				$checkbox_value = (strlen($this->getDefaultValue()) >0) ? $this->getDefaultValue() : $this->getLabel() ;
+				if(strlen($this->getDefaultValue()) > 0){
+					$checkbox_value = $this->getDefaultValue();
+					//NULLであれば初期状態 0文字の文字列であれば一度記事を投稿したことになる
+					if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
+				}else{
+					$checkbox_value = $this->getLabel() ;
+				}
+
 				$h_checkbox_value = htmlspecialchars($checkbox_value,ENT_QUOTES,"UTF-8");
 				$body = '<input type="checkbox" class="custom_field_checkbox"'
 				       .' id="'.$h_formID.'"'

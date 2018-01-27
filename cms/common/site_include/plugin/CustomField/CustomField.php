@@ -21,7 +21,7 @@ class CustomFieldPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.7.4"
+			"version"=>"1.7.5"
 		));
 
 		CMSPlugin::addPluginConfigPage(CustomFieldPlugin::PLUGIN_ID, array(
@@ -470,7 +470,7 @@ class CustomFieldPlugin{
 				//IDと初期値だけ入れておく
 				$added = new CustomField();
 				$added->setId($filedId);
-				$added->setValue($fieldValue->getDefaultValue());
+				if($fieldValue->getType() != "checkbox") $added->setValue($fieldValue->getDefaultValue()); //checkboxのみ初期値を入れない
 				$db_arr[] = $added;
 			}
 		}
