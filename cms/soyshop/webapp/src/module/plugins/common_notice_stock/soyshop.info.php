@@ -13,4 +13,3 @@ class CommonNoticeStockInfo extends SOYShopInfoPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.info","common_notice_stock","CommonNoticeStockInfo");
-?>

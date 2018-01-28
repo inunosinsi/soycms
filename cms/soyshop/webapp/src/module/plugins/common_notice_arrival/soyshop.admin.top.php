@@ -4,7 +4,7 @@ class NoticeArrivalAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		return;
 	}
-	
+
 	function getLinkTitle(){
 		return;
 	}
@@ -22,4 +22,3 @@ class NoticeArrivalAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "common_notice_arrival", "NoticeArrivalAdminTop");
-?>

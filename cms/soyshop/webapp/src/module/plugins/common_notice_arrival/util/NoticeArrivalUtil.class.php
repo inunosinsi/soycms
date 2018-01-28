@@ -37,4 +37,3 @@ class NoticeArrivalUtil{
 		SOYShop_DataSets::put("common_notice_arrival.content", $content);
 	}
 }
-?>

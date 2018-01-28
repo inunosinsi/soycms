@@ -20,4 +20,3 @@ class CommonNoticeStockConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config","common_notice_stock","CommonNoticeStockConfig");
-?>

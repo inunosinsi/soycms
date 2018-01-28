@@ -13,13 +13,13 @@ class CommonNoticeStock extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-		
+
 		$visible = false;
-		
+
 		SOY2::import("module.plugins.common_notice_stock.common.CommonNoticeStockCommon");
 		$config = CommonNoticeStockCommon::getConfig();
 		$stock = $item->getStock();
-		
+
 		//在庫数残りわずか
 		if($stock < $config["stock"] && $stock> 0){
 			$visible = true;
@@ -32,13 +32,13 @@ class CommonNoticeStock extends SOYShopItemCustomFieldBase{
 		}else{
 			$text = $text = nl2br(str_replace("##COUNT##", $stock, $config["has_stock"]));
 		}
-		
-				
+
+
 		$htmlObj->addModel("notice_stock", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"visible" => $visible
 		));
-		
+
 		$htmlObj->addLabel("notice_stock_text", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"html" => $text
@@ -50,4 +50,3 @@ class CommonNoticeStock extends SOYShopItemCustomFieldBase{
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield","common_notice_stock","CommonNoticeStock");
-?>

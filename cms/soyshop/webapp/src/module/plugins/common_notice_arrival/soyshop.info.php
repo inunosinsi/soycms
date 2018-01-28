@@ -12,4 +12,3 @@ class CommonNoticeArrivalInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "common_notice_arrival", "CommonNoticeArrivalInfo");
-?>
