@@ -255,7 +255,7 @@ class MyPageLogic extends SOY2LogicBase{
 
 	function getIsLoggedin(){
 		$res = $this->getAttribute("loggedin");
-		return isset($res) && $res;
+		return (isset($res) && $res);
 	}
 
 	/**

@@ -2,6 +2,8 @@
 	<h1 class="cart_txt"><!-- soy:id="user_name" -->ソイ太郎<!-- /soy:id="user_name" -->さんの購入履歴詳細</h1>
 	<section>
 		<h1>ご注文内容</h1>
+		<div class="notice narrow" soy:display="updated"><p>注文内容を変更しました。</p></div>
+
 		<table cellpadding="0" cellspacing="0" class="cart_detail_table">
 			<thead>
 				<tr>
@@ -13,7 +15,7 @@
 					<th nowrap scope="col">小計</th>
 				</tr>
 			</thead>
-	
+
 			<tfoot>
 				<tr>
 					<th colspan="3">合計</th>
@@ -36,14 +38,14 @@
 					<td class="price subsum"><span soy:id="item_total_price">2,100</span>円</td>
 				</tr>
 				<!-- /soy:id="item_list" -->
-	
-				<!-- soy:id="is_subtotal" -->
+
+				<!-- soy:display="subtotal" -->
 				<tr>
 					<th colspan="3">小計</th>
 					<td class="alC" soy:id="subtotal_item_count">2</td>
 					<td colspan="2" class="price subsum"><span soy:id="subtotal_price">4,200</span>円</td>
 				</tr>
-				<!-- /soy:id="is_subtotal" -->
+				<!-- /soy:display="subtotal" -->
 				<!-- soy:id="module_list" -->
 				<tr>
 					<th colspan="3"><!-- soy:id="module_name" -->送料（国内）<!-- /soy:id="module_name" --></th>
@@ -52,8 +54,10 @@
 				<!-- /soy:id="module_list" -->
 			</tbody>
 		</table>
+
+		<p class="alC" soy:display="order_edit"><a soy:id="edit_link" class="table_btn">注文詳細の編集</a></p>
 	</section>
-	
+
 	<!-- soy:id="is_download_files" -->
 	<section class="soycart_narrow">
 		<h1>ダウンロード</h1>
@@ -68,7 +72,7 @@
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
-			
+
 			<tbody>
 				<!-- soy:id="download_list" -->
 				<tr>
@@ -155,14 +159,14 @@
 			<tr>
 				<th>ご住所</th>
 				<td><!-- soy:id="user_area" /--><!-- soy:id="user_address1" /--><!-- soy:id="user_address2" /--></td>
-			</tr>	
+			</tr>
 			<tr>
 				<th>電話番号</th>
 				<td><!-- soy:id="user_tel" -->090-7425-4064<!-- /soy:id="user_tel" --></td>
 			</tr>
 		</table>
 	</section>
-	
+
 	<section class="soycart_narrow">
 		<h1>請求先の情報</h1>
 		<table cellpadding="0" cellspacing="0" class="cart_detail_table">
@@ -177,7 +181,7 @@
 			<tr>
 				<th>ご住所</th>
 				<td><!-- soy:id="claimed_area" /--><!-- soy:id="claimed_address1" /--><!-- soy:id="claimed_address2" /--></td>
-			</tr>	
+			</tr>
 			<tr>
 				<th>電話番号</th>
 				<td><!-- soy:id="claimed_tel" -->090-7425-4064<!-- /soy:id="claimed_tel" --></td>

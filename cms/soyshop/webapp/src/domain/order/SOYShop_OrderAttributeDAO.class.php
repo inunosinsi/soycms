@@ -39,4 +39,3 @@ abstract class SOYShop_OrderAttributeDAO extends SOY2DAO{
     abstract function delete($orderId, $fieldId);
 
 }
-?>

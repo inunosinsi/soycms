@@ -17,7 +17,18 @@ class DetailPage extends MainMyPagePageBase{
         //orderIdがない場合はorderトップへ戻す
         if(!isset($args[0])) $this->jump("order");
 
+		//編集中の情報を削除
+		if(isset($_GET["edit"]) && $_GET["edit"] == "reset"){
+			$mypage = MyPageLogic::getMyPage();
+			$mypage->clearAttribute("order_edit_item_orders");
+			$mypage->clearAttribute("order_edit_on_mypage");	//編集モードを念のために解除しておく
+			$mypage->clearAttribute("order_edit_is_edit");	//編集モードを念のために解除しておく
+			$mypage->save();
+		}
+
         parent::__construct();
+
+		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 
         $user = $this->getUser();
 
@@ -25,24 +36,15 @@ class DetailPage extends MainMyPagePageBase{
             "text" => $user->getName()
         ));
 
-        $this->orderId = $args[0];
+        $this->orderId = (int)$args[0];
         $this->userId = $user->getId();
 
         self::buildOrder();
     }
 
     private function buildOrder(){
-
-        $orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-        try{
-            $order = $orderDAO->getForOrderDisplay($this->orderId, $this->userId);
-            $logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-
-            if(!$order->isOrderDisplay())throw new Exception;
-
-        }catch(Exception $e){
-            $this->jump("order");
-        }
+		$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
+        if(!$order->isOrderDisplay()) $this->jump("order");
 
         //注文番号
         $this->addLabel("order_number", array(
@@ -85,34 +87,18 @@ class DetailPage extends MainMyPagePageBase{
         self::getAddressList($order, "claimed");
 
         //注文の内訳
-        try{
-            $itemOrders = $logic->getItemsByOrderId($this->orderId);
-        }catch(Exception $e){
-            $itemOrders = array();
-        }
-
+        $itemOrders = $this->getItemOrdersByOrderId($order->getId());
         $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-
         $this->createAdd("item_list", "_common.order.ItemOrderListComponent", array(
             "list" => $itemOrders,
             "itemDao" => $this->itemDao
         ));
 
         //ダウンロード商品関連
-        $activedDownloadPlugin = (class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("download_assistant"));
-        if($activedDownloadPlugin){
-            $files = self::getDownloadFiles($itemOrders);
-        }else{
-            $files = array();
-        }
+        $files = (SOYShopPluginUtil::checkIsActive("download_assistant")) ? self::getDownloadFiles($itemOrders) : array();
 
         //ボーナス
-        $activeBonusPlugin = (class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("bonus_download"));
-        if($activeBonusPlugin){
-            $bonuses = self::getBonusFiles($order);
-        }else{
-            $bonuses = array();
-        }
+        $bonuses = (SOYShopPluginUtil::checkIsActive("bonus_download")) ? self::getBonusFiles($order) : array();
 
         $this->addModel("is_download_files", array(
             "visible" => (count($files) > 0 || count($bonuses))
@@ -127,10 +113,7 @@ class DetailPage extends MainMyPagePageBase{
             "list" => $bonuses
         ));
 
-        $this->addModel("is_subtotal", array(
-            "visible" => self::checkTaxModule($order->getModuleList())
-        ));
-
+		DisplayPlugin::toggle("subtotal", self::checkTaxModule($order->getModuleList()));
         $this->addLabel("subtotal_item_count", array(
             "text" => self::getSubtotalItemCount($itemOrders)
         ));
@@ -158,6 +141,12 @@ class DetailPage extends MainMyPagePageBase{
             "orders" => $itemOrders,
             "page" => $this
         ));
+
+		//注文詳細を変更するボタンを表示する
+		DisplayPlugin::toggle("order_edit", SOYShopPluginUtil::checkIsActive("order_edit_on_mypage") && $this->checkUnDeliveried($this->orderId, $this->userId));
+		$this->addLink("edit_link", array(
+			"link" => soyshop_get_mypage_url() . "/order/edit/item/" . $this->orderId
+		));
     }
 
     private function getAddressList(SOYShop_Order $order, $mode = "send"){

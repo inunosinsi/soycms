@@ -81,4 +81,3 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
     abstract function getTotalItemCountByOrderId($orderId);
 
 }
-?>

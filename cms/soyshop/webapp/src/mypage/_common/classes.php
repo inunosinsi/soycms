@@ -144,6 +144,57 @@ class MainMyPagePageBase extends WebPage{
 		}
 	}
 
+	function getOrderByIdAndUserId($orderId, $userId){
+		static $order;
+		if(is_null($order)){
+			try{
+				$order = SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getForOrderDisplay($orderId, $userId);
+			}catch(Exception $e){
+				$order = new SOYShop_Order();
+			}
+		}
+		return $order;
+	}
+
+	function getItemOrdersByOrderId($orderId){
+		static $itemOrders;
+		if(is_null($itemOrders)){
+			try{
+	            $itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($orderId);
+	        }catch(Exception $e){
+	            $itemOrders = array();
+	        }
+		}
+		return $itemOrders;
+	}
+
+	function getItemById($itemId){
+		static $items, $dao;
+		if(is_null($items)) $items = array();
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		if(isset($items[$itemId])) return $items[$itemId];
+		try{
+			$items[$itemId] = $dao->getById($itemId);
+		}catch(Exception $e){
+			$items[$itemId] = new SOYShop_Item();
+		}
+		return $items[$itemId];
+	}
+
+	function getItemCodeByItemId($itemId){
+		return self::getItemById($itemId)->getCode();
+	}
+
+	/* check */
+	function checkUnDeliveried($orderId, $userId){
+		$order = self::getOrderByIdAndUserId($orderId, $userId);
+        if(!$order->isOrderDisplay()) return false;
+
+		//新規受付2、受付完了3、在庫確認中6のみtrue
+		$status = (int)$order->getStatus();
+		return ($status === SOYShop_Order::ORDER_STATUS_REGISTERED || $status === SOYShop_Order::ORDER_STATUS_RECEIVED || $status === SOYShop_Order::ORDER_STATUS_STOCK_CONFIRM);
+	}
+
 	/* convert */
 
 	function _trim($str){

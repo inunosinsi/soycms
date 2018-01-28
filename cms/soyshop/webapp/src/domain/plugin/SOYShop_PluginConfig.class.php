@@ -23,6 +23,7 @@ class SOYShop_PluginConfig {
 	const PLUGIN_TYPE_BONUS = "bonus";
 	const PLUGIN_TYPE_BUTTON = "button";
 	const PLUGIN_TYPE_CART = "cart";
+	const PLUGIN_TYPE_MYPAGE = "mypage";
 	const PLUGIN_TYPE_CONNECTOR = "connector";
 	const PLUGIN_TYPE_CSV = "csv";
 	const PLUGIN_TYPE_DELIVERY = "delivery";
@@ -246,6 +247,7 @@ class SOYShop_PluginConfig {
 			self::PLUGIN_TYPE_BONUS => "購入特典",
 			self::PLUGIN_TYPE_BUTTON => "SNS",
 			self::PLUGIN_TYPE_CART => "カート周り",
+			self::PLUGIN_TYPE_MYPAGE => "マイページ周り",
 			self::PLUGIN_TYPE_CONNECTOR => "SOY App連携",
 			self::PLUGIN_TYPE_CSV => "CSV",
 			self::PLUGIN_TYPE_DELIVERY => "配送モジュール",

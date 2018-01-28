@@ -1,5 +1,6 @@
 <?php
 
+SOYShopPlugin::load("soyshop.item.option");
 class ItemOrderListComponent extends HTMLList{
 
 	private $itemDao;

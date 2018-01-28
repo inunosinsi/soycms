@@ -63,4 +63,3 @@ class SOYShop_OrderStateHistory {
     	$this->more = $more;
     }
 }
-?>
