@@ -4,7 +4,7 @@ class SearchLogic extends SOY2LogicBase{
 
     private $where = array();
     private $binds = array();
-    private $usereDao;
+    private $userDao;
 
 	private $isProfileDisplay = false;	//プロフィールを表示するユーザのみに絞るか？
 
