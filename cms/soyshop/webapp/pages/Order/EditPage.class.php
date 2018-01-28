@@ -97,10 +97,10 @@ class EditPage extends WebPage{
 							$newItems[$key]["itemCount"] = 0;
 							$updateCount = 0 - (int)$itemOrder->getItemCount();
 						}else{
-							if($newName != $itemOrder->getItemName()) $itemChange[] = $this->getHistoryText($itemOrder->getItemName(), $itemOrder->getItemName(), $newName);
-							if($newPrice != $itemOrder->getItemPrice()) $itemChange[] = $this->getHistoryText($itemOrder->getItemName() . "の単価", $itemOrder->getItemPrice(), $newPrice);
+							if($newName != $itemOrder->getItemName()) $itemChange[] = self::getHistoryText($itemOrder->getItemName(), $itemOrder->getItemName(), $newName);
+							if($newPrice != $itemOrder->getItemPrice()) $itemChange[] = self::getHistoryText($itemOrder->getItemName() . "の単価", $itemOrder->getItemPrice(), $newPrice);
 							if($newCount != $itemOrder->getItemCount()) {
-								$itemChange[] = $this->getHistoryText($itemOrder->getItemName() . "の個数", $itemOrder->getItemCount(), $newCount);
+								$itemChange[] = self::getHistoryText($itemOrder->getItemName() . "の個数", $itemOrder->getItemCount(), $newCount);
 								$updateCount = (int)$newCount - (int)$itemOrder->getItemCount();
 							}
 
@@ -112,7 +112,7 @@ class EditPage extends WebPage{
 									"mode" => "edit",
 									"key" => $index
 								));
-								if($attribute != $orderAttributes[$index]) $itemChange[] = $this->getHistoryText($itemOrder->getItemName() . "の『" . $delegate->getLabel() . "』", $orderAttributes[$index] , $attribute);
+								if($attribute != $orderAttributes[$index]) $itemChange[] = self::getHistoryText($itemOrder->getItemName() . "の『" . $delegate->getLabel() . "』", $orderAttributes[$index] , $attribute);
 							}
 						}
 
@@ -312,12 +312,12 @@ class EditPage extends WebPage{
 							"orderId" => $order->getId()
 						));
 
-						$this->insertHistory($this->id, implode("\n", $itemChange));
+						self::insertHistory($this->id, implode("\n", $itemChange));
 					}
 
 					//history
 					if(count($change) > 0){
-						$this->insertHistory($this->id, implode("\n", $change));
+						self::insertHistory($this->id, implode("\n", $change));
 					}
 
 					$dao->commit();
@@ -415,11 +415,11 @@ class EditPage extends WebPage{
 		return $empty;
 	}
 
-	function getHistoryText($label, $old, $new){
+	private function getHistoryText($label, $old, $new){
 		return $label . "を『" . $old . "』から『" . $new . "』に変更しました";
 	}
 
-	function insertHistory($id, $content, $more = null){
+	private function insertHistory($id, $content, $more = null){
 		static $historyDAO;
 		if(!$historyDAO) $historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
 
@@ -672,14 +672,14 @@ class EditPage extends WebPage{
 
 		$address = $order->getClaimedAddressArray();
 
-		if($address["office"] != $newAddress["office"])		$change[]=$this->getHistoryText("請求先",$address["office"],$newAddress["office"]);
-		if($address["name"] != $newAddress["name"])			$change[]=$this->getHistoryText("請求先",$address["name"],$newAddress["name"]);
-		if($address["reading"] != $newAddress["reading"])	$change[]=$this->getHistoryText("請求先",$address["reading"],$newAddress["reading"]);
-		if($address["zipCode"] != $newAddress["zipCode"])	$change[]=$this->getHistoryText("請求先",$address["zipCode"],$newAddress["zipCode"]);
-		if($address["area"] != $newAddress["area"])			$change[]=$this->getHistoryText("請求先",SOYShop_Area::getAreaText($address["area"]) ,SOYShop_Area::getAreaText($newAddress["area"]));
-		if($address["address1"] != $newAddress["address1"])$change[]=$this->getHistoryText("請求先",$address["address1"] ,$newAddress["address1"]);
-		if($address["address2"] != $newAddress["address2"])$change[]=$this->getHistoryText("請求先",$address["address2"] ,$newAddress["address2"]);
-		if($address["telephoneNumber"] != $newAddress["telephoneNumber"])$change[]=$this->getHistoryText("請求先",$address["telephoneNumber"] ,$newAddress["telephoneNumber"]);
+		if($address["office"] != $newAddress["office"])		$change[]=self::getHistoryText("請求先",$address["office"],$newAddress["office"]);
+		if($address["name"] != $newAddress["name"])			$change[]=self::getHistoryText("請求先",$address["name"],$newAddress["name"]);
+		if($address["reading"] != $newAddress["reading"])	$change[]=self::getHistoryText("請求先",$address["reading"],$newAddress["reading"]);
+		if($address["zipCode"] != $newAddress["zipCode"])	$change[]=self::getHistoryText("請求先",$address["zipCode"],$newAddress["zipCode"]);
+		if($address["area"] != $newAddress["area"])			$change[]=self::getHistoryText("請求先",SOYShop_Area::getAreaText($address["area"]) ,SOYShop_Area::getAreaText($newAddress["area"]));
+		if($address["address1"] != $newAddress["address1"])$change[]=self::getHistoryText("請求先",$address["address1"] ,$newAddress["address1"]);
+		if($address["address2"] != $newAddress["address2"])$change[]=self::getHistoryText("請求先",$address["address2"] ,$newAddress["address2"]);
+		if($address["telephoneNumber"] != $newAddress["telephoneNumber"])$change[]=self::getHistoryText("請求先",$address["telephoneNumber"] ,$newAddress["telephoneNumber"]);
 
 		$order->setClaimedAddress($newAddress);
 
@@ -694,14 +694,14 @@ class EditPage extends WebPage{
 
 		$address = $order->getAddressArray();
 
-		if($address["office"] != $newAddress["office"])		$change[]=$this->getHistoryText("宛先",$address["office"],$newAddress["office"]);
-		if($address["name"] != $newAddress["name"])			$change[]=$this->getHistoryText("宛先",$address["name"],$newAddress["name"]);
-		if($address["reading"] != $newAddress["reading"])	$change[]=$this->getHistoryText("宛先",$address["reading"],$newAddress["reading"]);
-		if($address["zipCode"] != $newAddress["zipCode"])	$change[]=$this->getHistoryText("宛先",$address["zipCode"],$newAddress["zipCode"]);
-		if($address["area"] != $newAddress["area"])			$change[]=$this->getHistoryText("宛先",SOYShop_Area::getAreaText($address["area"]) ,SOYShop_Area::getAreaText($newAddress["area"]));
-		if($address["address1"] != $newAddress["address1"])$change[]=$this->getHistoryText("宛先",$address["address1"] ,$newAddress["address1"]);
-		if($address["address2"] != $newAddress["address2"])$change[]=$this->getHistoryText("宛先",$address["address2"] ,$newAddress["address2"]);
-		if($address["telephoneNumber"] != $newAddress["telephoneNumber"])$change[]=$this->getHistoryText("宛先",$address["telephoneNumber"] ,$newAddress["telephoneNumber"]);
+		if($address["office"] != $newAddress["office"])		$change[]=self::getHistoryText("宛先",$address["office"],$newAddress["office"]);
+		if($address["name"] != $newAddress["name"])			$change[]=self::getHistoryText("宛先",$address["name"],$newAddress["name"]);
+		if($address["reading"] != $newAddress["reading"])	$change[]=self::getHistoryText("宛先",$address["reading"],$newAddress["reading"]);
+		if($address["zipCode"] != $newAddress["zipCode"])	$change[]=self::getHistoryText("宛先",$address["zipCode"],$newAddress["zipCode"]);
+		if($address["area"] != $newAddress["area"])			$change[]=self::getHistoryText("宛先",SOYShop_Area::getAreaText($address["area"]) ,SOYShop_Area::getAreaText($newAddress["area"]));
+		if($address["address1"] != $newAddress["address1"])$change[]=self::getHistoryText("宛先",$address["address1"] ,$newAddress["address1"]);
+		if($address["address2"] != $newAddress["address2"])$change[]=self::getHistoryText("宛先",$address["address2"] ,$newAddress["address2"]);
+		if($address["telephoneNumber"] != $newAddress["telephoneNumber"])$change[]=self::getHistoryText("宛先",$address["telephoneNumber"] ,$newAddress["telephoneNumber"]);
 
 		$order->setAddress($newAddress);
 
@@ -717,7 +717,7 @@ class EditPage extends WebPage{
 				$newValue = $newAttributes[$key];
 
 				if(isset($array["value"]) && $newValue != $array["value"]){
-					$change[]=$this->getHistoryText($array["name"], $array["value"], $newValue);
+					$change[]=self::getHistoryText($array["name"], $array["value"], $newValue);
 					$attributes[$key]["value"] = $newValue;
 				}
 			}
@@ -790,10 +790,10 @@ class EditPage extends WebPage{
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
 					if($newValue1 != $obj["value1"]){
-						$change[]=$this->getHistoryText($obj["label"], $obj["value1"], $newValue1);
+						$change[]=self::getHistoryText($obj["label"], $obj["value1"], $newValue1);
 					}
 					if(isset($newValue2) && $newValue2 != $obj["value2"]){
-						$change[]=$this->getHistoryText($obj["label"], $obj["value2"], $newValue2);
+						$change[]=self::getHistoryText($obj["label"], $obj["value2"], $newValue2);
 					}
 					//ここで配列を入れてしまう。
 					try{
@@ -819,13 +819,13 @@ class EditPage extends WebPage{
 					//value2に値がない場合 dateとか
 					if(is_null($newValue2)){
 						if($newValue1 != $obj["value1"]){
-							$change[] = $this->getHistoryText($obj["label"], $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1));
+							$change[] = self::getHistoryText($obj["label"], $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1));
 						}
 
 					//value2に値がある場合 periodとか
 					}else{
 						if($newValue1 != $obj["value1"] || $newValue2 != $obj["value2"]){
-							$change[] = $this->getHistoryText($obj["label"], $this->convertDateText($obj["value1"]) . " ～ " . $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1) . " ～ " . $this->convertDateText($newValue2));
+							$change[] = self::getHistoryText($obj["label"], $this->convertDateText($obj["value1"]) . " ～ " . $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1) . " ～ " . $this->convertDateText($newValue2));
 						}
 					}
 
@@ -873,8 +873,8 @@ class EditPage extends WebPage{
 					$change[] = $module->getName() . "（" . $module->getPrice() . "円）を削除しました。";
 					unset($modules[$key]);
 				}else{
-					if($newValue != $module->getPrice()) $change[] = $this->getHistoryText($module->getName(), $module->getPrice(), $newValue);
-					if($newName != $module->getName()) $change[] = $this->getHistoryText($module->getName(), $module->getName(), $newName);
+					if($newValue != $module->getPrice()) $change[] = self::getHistoryText($module->getName(), $module->getPrice(), $newValue);
+					if($newName != $module->getName()) $change[] = self::getHistoryText($module->getName(), $module->getName(), $newName);
 
 					$modules[$key]->setName($newName);
 					$modules[$key]->setPrice($newValue);
