@@ -86,7 +86,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
    	 * @index id
    	 */
    	abstract function getByType($type);
-   	
+
    	/**
    	 * @index id
    	 * @query item_type = :type AND is_disabled = 0
@@ -108,7 +108,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 	 * @order update_date desc
 	 */
 	abstract function getByDetailPageIdIsOpen($detailPageId);
-	
+
 	/**
 	 * @query detail_page_id = :detailPageId AND is_disabled != 1
 	 * @order update_date desc
@@ -137,7 +137,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		if(isset($binds[":createDate"])){
 			$binds[":createDate"] = time();
 		}
-		
+
 		if(isset($binds[":updateDate"])){
 			$binds[":updateDate"] = time();
 		}
@@ -155,15 +155,15 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		if(!isset($binds[":openPeriodEnd"]) || strlen($binds[":openPeriodEnd"]) < 1){
 			$binds[":openPeriodEnd"] = SOYSHOP_DATA_MAX;
 		}
-		
+
 		if(!isset($binds[":isOpen"])){
 			$binds[":isOpen"] = 0;
 		}
-		
+
 		if(!isset($binds[":isDisabled"])){
 			$binds[":isDisabled"] = 0;
 		}
-		
+
    		return array($query, $binds);
    	}
 
@@ -179,14 +179,14 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		if(!isset($binds[":category"]) || strlen($binds[":category"]) < 1){
 			$binds[":category"] = null;
 		}
-		
+
 		if(!isset($binds[":orderPeriodStart"]) || strlen($binds[":orderPeriodStart"]) < 1){
 			$binds[":orderPeriodStart"] = SOYSHOP_DATA_MIN;
 		}
 		if(!isset($binds[":openPeriodEnd"]) || strlen($binds[":orderPeriodEnd"]) < 1){
 			$binds[":orderPeriodEnd"] = SOYSHOP_DATA_MAX;
 		}
-		
+
 		if(!isset($binds[":openPeriodStart"]) || strlen($binds[":openPeriodStart"]) < 1){
 			$binds[":openPeriodStart"] = SOYSHOP_DATA_MIN;
 		}
@@ -382,11 +382,11 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		}else if(empty($value)){
 			$value = "__________________"; //適当な値
 		}
-		
+
 		$this->executeUpdateQuery($query, array(
 			":id" => $id,
 			":sort_column" => $value
-		));			
+		));
 	 }
 
 
@@ -443,4 +443,3 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		$this->updateStock($item);
 	}
 }
-?>

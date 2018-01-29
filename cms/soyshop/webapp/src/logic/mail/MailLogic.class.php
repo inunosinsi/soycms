@@ -164,11 +164,11 @@ class MailLogic extends SOY2LogicBase{
 		}
 
 		//メールの送信状況を記録する
-		$this->saveLog($isSuccess, $isAdmin, $additionalEmails, $title, $body, $order);
+		return self::saveLog($isSuccess, $isAdmin, $additionalEmails, $title, $body, $order);
 	}
 
 	//メールの送信状況を記録する
-	function saveLog($isSuccess, $isAdmin, $mails, $title, $body, $order = null){
+	private function saveLog($isSuccess, $isAdmin, $mails, $title, $body, $order = null){
 
 		$logDao = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO");
 
@@ -180,11 +180,10 @@ class MailLogic extends SOY2LogicBase{
 		if(is_null($orderId) && is_null($userId)){
 			$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 			try{
-				$user = $userDao->getByMailAddress($mails[0]);
+				$userId = $userDao->getByMailAddress($mails[0])->getId();
 			}catch(Exception $e){
-				$user = new SOYShop_User();
+				//
 			}
-			$userId = $user->getId();
 		}
 
 		if(count($mails) > 0){
@@ -197,9 +196,9 @@ class MailLogic extends SOY2LogicBase{
 			$log->setSendDate(time());
 
 			try{
-				$logDao->insert($log);
+				return $logDao->insert($log);
 			}catch(Exception $e){
-				//
+				return null;
 			}
 		}
 	}

@@ -4,9 +4,9 @@ SOYShopPlugin::load("soyshop.item.option");
 class ItemOrderListComponent extends HTMLList{
 
 	private $itemDao;
+	private $itemCount;
 
-	protected function populateItem($itemOrder) {
-
+	protected function populateItem($itemOrder, $key, $counter) {
 		$item = self::getItem($itemOrder->getItemId());
 
 		$this->addLink("item_link", array(
@@ -44,6 +44,13 @@ class ItemOrderListComponent extends HTMLList{
 
 		$this->addLabel("item_count", array(
 			"text" => number_format($itemOrder->getItemCount())
+		));
+
+		//商品が２つ以上でボタンを押せるようにする
+		$this->addActionLink("item_delete", array(
+			"text" => ($this->itemCount > 1) ? "削除" : "",
+			"link" => ($this->itemCount > 1) ? soyshop_get_mypage_url() . "/order/edit/item/" . $itemOrder->getOrderId() . "?index=" . $key : null,
+			"attr:id" => "item_delete_" . $counter
 		));
 
 		$this->addLabel("item_total_price", array(
@@ -101,5 +108,9 @@ class ItemOrderListComponent extends HTMLList{
 
 	function setItemDao($itemDao){
 		$this->itemDao = $itemDao;
+	}
+
+	function setItemCount($itemCount){
+		$this->itemCount = $itemCount;
 	}
 }
