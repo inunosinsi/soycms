@@ -190,7 +190,7 @@ class SearchItemUtil extends SOY2LogicBase{
 		if($withChild && $categoryId){
 			$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 			$mapping = $categoryDAO->getMapping();
-			$ids = $mapping[$categoryId];
+			$ids = (isset($mapping[$categoryId])) ? $mapping[$categoryId] : array();
 		}else{
 			$ids = array($categoryId);
 		}

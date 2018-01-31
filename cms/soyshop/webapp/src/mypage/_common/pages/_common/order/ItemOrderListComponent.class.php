@@ -46,6 +46,12 @@ class ItemOrderListComponent extends HTMLList{
 			"text" => number_format($itemOrder->getItemCount())
 		));
 
+		$this->addInput("item_count_input", array(
+			"name" => "item_count[" . $key . "]",
+			"value" => $itemOrder->getItemCount(),
+			"attr:id" => "item_count_" . $counter
+		));
+
 		//商品が２つ以上でボタンを押せるようにする
 		$this->addActionLink("item_delete", array(
 			"text" => ($this->itemCount > 1) ? "削除" : "",

@@ -46,18 +46,18 @@ class SOYShop_ItemOrder {
      * @column is_sended
      */
     private $isSended = 0;
-    
+
     private $attributes;
-    
+
     /**
      * @column is_addition
      */
     private $isAddition;
-    
-    /**
-	 * @no_persistent
+
+	/**
+	 * @column display_order
 	 */
-	private $itemAttributeDao;
+	private $displayOrder = 0;
 
     function getId() {
     	return $this->id;
@@ -119,7 +119,7 @@ class SOYShop_ItemOrder {
     function isSended(){
     	return (boolean)$this->isSended;
     }
-    
+
     function getAttributes() {
     	return $this->attributes;
     }
@@ -144,23 +144,31 @@ class SOYShop_ItemOrder {
     	$attributes[$key] = $value;
     	$this->setAttributes($attributes);
     }
-    
+
+	function getDisplayOrder(){
+		return $this->displayOrder;
+	}
+	function setDisplayOrder($displayOrder){
+		$this->displayOrder = $displayOrder;
+	}
+
     function getIsAddition(){
     	return $this->isAddition;
     }
     function setIsAddition($isAddition){
     	$this->isAddition = $isAddition;
     }
-    
+
     /** 便利なメソッド **/
     //多言語化プラグインを考慮した商品名の取得
 	function getOpenItemName(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		if(!defined("SOYSHOP_MAIL_LANGUAGE"))　define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
-		
+
 		if(SOYSHOP_MAIL_LANGUAGE != "jp"){
-			if(!$this->itemAttributeDao) $this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 			try{
-				return $this->itemAttributeDao->get($this->itemId, "item_name_" . SOYSHOP_MAIL_LANGUAGE)->getValue();
+				return $dao->get($this->itemId, "item_name_" . SOYSHOP_MAIL_LANGUAGE)->getValue();
 			}catch(Exception $e){
 				return null;
 			}
@@ -176,4 +184,3 @@ class SOYShop_ItemOrder {
     	return "soyshop_orders";
     }
 }
-?>

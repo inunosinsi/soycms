@@ -31,35 +31,40 @@ class SOYShop_OrderStateHistory {
     function setId($id) {
     	$this->id = $id;
     }
+
     function getOrderId() {
     	return $this->orderId;
     }
     function setOrderId($orderId) {
     	$this->orderId = $orderId;
     }
+
     function getAuthor() {
     	return $this->author;
     }
     function setAuthor($author) {
     	$this->author = $author;
     }
+
     function getContent() {
     	return $this->content;
     }
     function setContent($content) {
     	$this->content = $content;
     }
+
+	function getMore() {
+    	return $this->more;
+    }
+    function setMore($more) {
+    	$this->more = $more;
+    }
+
     function getDate() {
     	if(!$this->date) return time();
     	return $this->date;
     }
     function setDate($date) {
     	$this->date = $date;
-    }
-    function getMore() {
-    	return $this->more;
-    }
-    function setMore($more) {
-    	$this->more = $more;
     }
 }

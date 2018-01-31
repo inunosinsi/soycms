@@ -93,7 +93,8 @@ create table soyshop_orders(
 	cdate integer not null,
 	is_sended integer default 0,
 	attributes TEXT,
-	is_addition integer default 0
+	is_addition integer default 0,
+	display_order tinyint not null default 0
 ) ENGINE=InnoDB;
 
 drop table soyshop_plugins;

@@ -242,6 +242,11 @@ class DetailPage extends WebPage{
     		"html" => nl2br(htmlspecialchars($customerHTML, ENT_QUOTES, "UTF-8"))
     	));
 
+		$this->addLink("order_link", array(
+			"link" => SOY2PageController::createLink("Order.Order." . $order->getId()),
+			"style" => "font-weight:normal !important;"
+		));
+
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$itemOrders = $logic->getItemsByOrderId($this->id);
 

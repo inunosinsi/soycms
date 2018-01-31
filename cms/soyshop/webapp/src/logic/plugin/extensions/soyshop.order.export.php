@@ -67,5 +67,3 @@ class SOYShopOrderExportDeletageAction implements SOY2PluginDelegateAction{
 }
 
 SOYShopPlugin::registerExtension("soyshop.order.export","SOYShopOrderExportDeletageAction");
-
-?>

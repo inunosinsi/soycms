@@ -16,9 +16,8 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
 	 * @final
 	 */
 	function onInsert($query, $binds){
-		if(!isset($binds[":isAddition"]) || strlen($binds[":isAddition"]) < 1){
-			$binds[":isAddition"] = 0;
-		}
+		if(!isset($binds[":displayOrder"])) $binds[":displayOrder"] = 0;
+		if(!isset($binds[":isAddition"]) || strlen($binds[":isAddition"]) < 1) $binds[":isAddition"] = 0;
 		return array($query, $binds);
 	}
 
@@ -30,6 +29,7 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
  	/**
  	 * @index id
  	 * @query #orderId# = :orderId
+	 * @order display_order ASC, id ASC
  	 */
 	abstract function getByOrderId($orderId);
 

@@ -608,6 +608,11 @@ class EditPage extends WebPage{
 			"value" => $address["telephoneNumber"]
 		));
 
+		$this->addLink("order_link", array(
+			"link" => SOY2PageController::createLink("Order.Order." . $order->getId()),
+			"style" => "font-weight:normal !important;"
+		));
+
 		/*** 注文商品 ***/
 		$this->createAdd("item_list", "_common.Order.ItemOrderFormListComponent", array(
 			"list" => $logic->getItemsByOrderId($this->id),

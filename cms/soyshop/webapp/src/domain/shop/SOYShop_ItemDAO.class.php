@@ -257,7 +257,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 	function getOpenItemByCategories($categories){
 
 		//カテゴリの選択をしていない場合は空の配列を返す
-		if(count($categories) === 0) return array();
+		if(is_array($categories) && count($categories) === 0) return array();
 
 		$query = $this->getQuery();
 		$binds = $this->getBinds();
@@ -282,7 +282,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 	 */
 	function getOpenItemByMultiCategories($itemIds){
 
-		if(count($itemIds) === 0) return array();
+		if(is_array($itemIds) && count($itemIds) === 0) return array();
 
 		$query = $this->getQuery();
 		$binds = $this->getBinds();

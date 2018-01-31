@@ -942,8 +942,11 @@ class CartLogic extends SOY2LogicBase{
 					$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 				}else{
 					//それ以外はパスワードを残す
-					$tmpUser = $userDAO->getById($id);
-					$user->setPassword($tmpUser->getPassword());
+					try{
+						$user->setPassword($userDAO->getById($id)->getPassword());
+					}catch(Exception $e){
+						//
+					}
 				}
 
 				//update

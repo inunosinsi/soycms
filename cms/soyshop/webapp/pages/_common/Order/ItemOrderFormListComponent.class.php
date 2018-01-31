@@ -8,7 +8,7 @@ class ItemOrderFormListComponent extends HTMLList {
 
 		$id = $itemOrder->getId();
 		$item = $this->htmlObj->getItem($itemOrder->getItemId());
-
+		
 		$this->addInput("item_delete", array(
 			"name" => "Item[$id][itemDelete]",
 			"value" => 1
@@ -67,6 +67,4 @@ class ItemOrderFormListComponent extends HTMLList {
 	function setHtmlObj($obj){
 		$this->htmlObj = $obj;
 	}
-
 }
-?>
