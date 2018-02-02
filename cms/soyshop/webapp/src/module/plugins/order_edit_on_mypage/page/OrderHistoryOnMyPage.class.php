@@ -16,7 +16,7 @@ class OrderHistoryOnMyPage extends WebPage{
 	private function getHistories(){
 		$historyDao = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
 		try{
-			$results = $historyDao->executeQuery("SELECT * FROM soyshop_order_state_history WHERE author LIKE '顧客:%' AND content LIKE '注文合計%' ORDER BY order_date DESC LIMIT 15");
+			$results = $historyDao->executeQuery("SELECT * FROM soyshop_order_state_history WHERE author LIKE '顧客:%' AND (content LIKE '注文合計%' OR content LIKE '注文番号%') ORDER BY order_date DESC LIMIT 15");
 		}catch(Exception $e){
 			var_dump($e);
 			return array();
