@@ -18,7 +18,7 @@ class EditPage extends WebPage{
 			$change = array();
 
 			if(isset($_POST["ClaimedAddress"])){
-				$_change = $this->updateClaimedAddress($order, $_POST["ClaimedAddress"]);
+				$_change = self::updateClaimedAddress($order, $_POST["ClaimedAddress"]);
 				$change = array_merge($change, $_change);
 			}
 
@@ -672,7 +672,7 @@ class EditPage extends WebPage{
 	/**
 	 * 請求データ更新関連処理
 	 */
-	function updateClaimedAddress(SOYShop_Order $order, $newAddress){
+	private function updateClaimedAddress(SOYShop_Order $order, $newAddress){
 		$change = array();
 
 		$address = $order->getClaimedAddressArray();
@@ -694,7 +694,7 @@ class EditPage extends WebPage{
 	/**
 	 * 注文データ更新関連処理
 	 */
-	function updateOrderAddress(SOYShop_Order $order, $newAddress){
+	private function updateOrderAddress(SOYShop_Order $order, $newAddress){
 		$change = array();
 
 		$address = $order->getAddressArray();
