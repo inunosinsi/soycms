@@ -7,7 +7,7 @@ class ConfirmPage extends IndexPage{
 		//保存
 		if(soy2_check_token()){
 
-			$mypage = MyPageLogic::getMyPage();
+			$mypage = $this->getMyPage();
 
 			if(isset($_POST["register"]) || isset($_POST["register_x"])){
 
@@ -67,20 +67,16 @@ class ConfirmPage extends IndexPage{
 	}
 
 	function __construct(){
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 		if(!$mypage->getIsLoggedIn()) $this->jump("login");
 
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
 
-		parent::__construct();
-
 		$user = $mypage->getUserInfo();
+		if(is_null($user)) $this->jump("edit"); //直接URLを入力された場合は、入力フォームに戻す
 
-		//直接URLを入力された場合は、入力フォームに戻す
-		if(is_null($user)){
-			$this->jump("edit");
-		}
+		parent::__construct();
 
 		//顧客情報フォーム
 		$this->buildForm($user, $mypage, UserComponent::MODE_CUSTOM_CONFIRM);

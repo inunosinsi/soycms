@@ -24,7 +24,7 @@ class IndexPage extends MainMyPagePageBase{
 
 		$this->id = $args[0];
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 		$user = $this->getUser();
 
 		$oldRootDir = SOY2::RootDir();
@@ -121,7 +121,7 @@ class IndexPage extends MainMyPagePageBase{
 
 	function checkError($post){
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 
 		$res = false;
 		$mypage->clearErrorMessage();
@@ -148,18 +148,14 @@ class IndexPage extends MainMyPagePageBase{
 	}
 
 	function getPostToSession($key){
-		$userSession = SOY2ActionSession::getUserSession();
-		return $userSession->getAttribute($key);
+		return SOY2ActionSession::getUserSession()->getAttribute($key);
 	}
 
 	function setPostToSession($key,$value){
-		$userSession = SOY2ActionSession::getUserSession();
-		$userSession->setAttribute($key,$value);
+		SOY2ActionSession::getUserSession()->setAttribute($key,$value);
 	}
 
 	function clearPostToSession($key){
-		$userSession = SOY2ActionSession::getUserSession();
-		$userSession->setAttribute($key,null);
+		SOY2ActionSession::getUserSession()->setAttribute($key,null);
 	}
 }
-?>

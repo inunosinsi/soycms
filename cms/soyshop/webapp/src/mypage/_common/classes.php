@@ -74,18 +74,24 @@ class MainMyPagePageBase extends WebPage{
    		$this->createAdd($id, "HTMLForm", $arguments);
    	}
 
+	//常に同じマイページロジックを取得できるように
+	function getMyPage(){
+		static $mypage;
+		if(is_null($mypage)) $mypage = MyPageLogic::getMyPage();
+		return $mypage;
+	}
+
 	//ログインを確認して、ログインしていなければloginへジャンプする
 	function checkIsLoggedIn(){
 		if(!self::getIsLoggedIn()) self::jump("login");
 	}
 
 	function getIsLoggedIn(){
-		return MyPageLogic::getMyPage()->getIsLoggedin();
+		return self::getMyPage()->getIsLoggedin();
 	}
 
 	function getUserId(){
-		$mypage = MyPageLogic::getMyPage();
-		return $mypage->getUserId();
+		return self::getMyPage()->getUserId();
 	}
 
 	function jump($addr){
@@ -106,12 +112,11 @@ class MainMyPagePageBase extends WebPage{
 	}
 
 	function getUser(){
-		$mypage = MyPageLogic::getMyPage();
-		return $mypage->getUser();
+		return self::getMyPage()->getUser();
 	}
 
 	function getUserByProfileId($profileId){
-		return MyPageLogic::getMyPage()->getProfileUser($profileId);
+		return self::getMyPage()->getProfileUser($profileId);
 	}
 
 	/**

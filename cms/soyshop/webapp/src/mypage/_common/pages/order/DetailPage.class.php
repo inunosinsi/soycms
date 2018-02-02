@@ -3,13 +3,16 @@ SOY2::imports("module.plugins.download_assistant.domain.*");
 SOYShopPlugin::load("soyshop.item.option");
 class DetailPage extends MainMyPagePageBase{
 
+	const CHANGE_STOCK_MODE_CANCEL = "cancel";	//キャンセルにした場合
+	const CHANGE_STOCK_MODE_RETURN = "return";	//キャンセルから他のステータスに戻した場合
+
     private $orderId;
     private $userId;
     private $itemDao;
 
     function doPost(){
-
-    }
+		if(isset($_POST["cancel"])) self::cancel();
+	}
 
     function __construct($args){
 		$this->checkIsLoggedIn(); //ログインチェック
@@ -19,25 +22,22 @@ class DetailPage extends MainMyPagePageBase{
 
 		//編集中の情報を削除
 		if(isset($_GET["edit"]) && $_GET["edit"] == "reset"){
-			$mypage = MyPageLogic::getMyPage();
+			$mypage = $this->getMyPage();
 			$mypage->clearAttribute("order_edit_item_orders");
 			$mypage->clearAttribute("order_edit_on_mypage");	//編集モードを念のために解除しておく
 			$mypage->clearAttribute("order_edit_is_edit");	//編集モードを念のために解除しておく
 			$mypage->save();
 		}
 
+		$this->orderId = (int)$args[0];
+        $this->userId = (int)$this->getUser()->getId();
+
+		//キャンセル
+		if(isset($_GET["cancel"])) self::cancel();
+
         parent::__construct();
 
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
-
-        $user = $this->getUser();
-
-        $this->addLabel("user_name", array(
-            "text" => $user->getName()
-        ));
-
-        $this->orderId = (int)$args[0];
-        $this->userId = $user->getId();
 
         self::buildOrder();
     }
@@ -143,9 +143,29 @@ class DetailPage extends MainMyPagePageBase{
         ));
 
 		//注文詳細を変更するボタンを表示する
-		DisplayPlugin::toggle("order_edit", SOYShopPluginUtil::checkIsActive("order_edit_on_mypage") && $this->checkUnDeliveried($this->orderId, $this->userId));
+		$isEditPlugin = (SOYShopPluginUtil::checkIsActive("order_edit_on_mypage") && $this->checkUnDeliveried($this->orderId, $this->userId));
+		DisplayPlugin::toggle("order_edit", $isEditPlugin);
 		$this->addLink("edit_link", array(
 			"link" => soyshop_get_mypage_url() . "/order/edit/item/" . $this->orderId
+		));
+
+		//お届け先情報の編集
+		DisplayPlugin::toggle("order_send_address", $isEditPlugin);
+		$this->addLink("send_address_link", array(
+			"link" => soyshop_get_mypage_url() . "/order/edit/address/send/" . $this->orderId
+		));
+
+		//請求先情報の編集
+		DisplayPlugin::toggle("order_claimed_address", $isEditPlugin);
+		$this->addLink("claimed_address_link", array(
+			"link" => soyshop_get_mypage_url() . "/order/edit/address/claimed/" . $this->orderId
+		));
+
+		//注文をキャンセル
+		DisplayPlugin::toggle("order_cancel", $isEditPlugin);
+		$this->addActionLink("cancel_link", array(
+			"link" => soyshop_get_mypage_url() . "/order/detail/" . $this->orderId . "?cancel",
+			"onclick" => "return confirm('注文をキャンセルしますか？');"
 		));
     }
 
@@ -153,32 +173,36 @@ class DetailPage extends MainMyPagePageBase{
 
         //送付先の場合
         if($mode == "send"){
-            $prefix = "user_";
+            $prefix = "user";
             $address = $order->getAddressArray();
         //請求先の場合
         }else{
-            $prefix = "claimed_";
+            $prefix = "claimed";
             $address = $order->getClaimedAddressArray();
         }
 
-        $this->addLabel($prefix . "name", array(
-            "text" => (isset($address["name"])) ? $address["name"] : ""
-        ));
-        $this->addLabel($prefix . "zipcode", array(
-            "text" => (isset($address["zipCode"])) ? $address["zipCode"] : ""
-        ));
-        $this->addLabel($prefix . "area", array(
-            "text" => (isset($address["area"])) ? SOYShop_Area::getAreaText($address["area"]) : ""
-        ));
-        $this->addLabel($prefix . "address1", array(
-            "text" => (isset($address["address1"])) ? $address["address1"] : ""
-        ));
-        $this->addLabel($prefix . "address2", array(
-            "text" => (isset($address["address2"])) ? $address["address2"] : ""
-        ));
-        $this->addLabel($prefix . "tel", array(
-            "text" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : ""
-        ));
+		foreach(array("name", "reading", "office", "zipCode", "area", "address1", "address2", "tel", "telephoneNumber") as $t){
+			$this->addModel($prefix . "_" . strtolower($t) . "_show", array(
+				"visible" => (isset($address[$t]) && strlen($address[$t]))
+			));
+
+			switch($t){
+				case "area":
+					$this->addLabel($prefix . "_" . $t, array(
+			            "text" => (isset($address[$t])) ? SOYShop_Area::getAreaText($address[$t]) : ""
+			        ));
+					break;
+				case "tel":
+					$this->addLabel($prefix . "_" . $t, array(
+						"text" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : ""
+					));
+					break;
+				default:
+					$this->addLabel($prefix . "_" . strtolower($t), array(
+						"text" => (isset($address[$t])) ? $address[$t] : ""
+					));
+			}
+		}
     }
 
     //taxモジュールが登録されているか？をチェックする
@@ -315,4 +339,80 @@ class DetailPage extends MainMyPagePageBase{
 
         return $list;
     }
+
+	private function cancel(){
+		if(!soy2_check_token()) $this->jump("order");
+		$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
+		$order->setStatus(SOYShop_Order::ORDER_STATUS_CANCELED);
+
+		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+		$orderDao->begin();
+
+		try{
+			$orderDao->update($order);
+			self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
+		}catch(Exception $e){
+			var_dump($e);
+		}
+
+		//メールを送信する
+		$change = "注文番号『" . $order->getTrackingNumber() . "』の注文をキャンセルしました。";
+		self::insertHistory($change);
+
+		//変更履歴のメールを送信する
+		$mailLogic = SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.NoticeSendMailLogic", array("order" => $order, "user" => $this->getUser()));
+		$mailLogic->send($change);
+
+		$orderDao->commit();
+		$this->jump("order?canceled");
+	}
+
+	private function changeItemStock($orderId, $mode){
+		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		try{
+			$itemOrders = $itemOrderDao->getByOrderId($orderId);
+		}catch(Exception $e){
+			return false;
+		}
+
+		if(!count($itemOrders)) return false;
+
+		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		foreach($itemOrders as $itemOrder){
+			try{
+				$item = $itemDao->getById($itemOrder->getItemId());
+			}catch(Exception $e){
+				var_dump($e);
+				continue;
+			}
+
+			//在庫数を戻す
+			if($mode == self::CHANGE_STOCK_MODE_CANCEL){
+				$item->setStock((int)$item->getStock() + (int)$itemOrder->getItemCount());
+			//在庫数を減らす
+			}else if($mode == self::CHANGE_STOCK_MODE_RETURN){
+				$item->setStock((int)$item->getStock() - (int)$itemOrder->getItemCount());
+			}else{
+				//何もしない
+			}
+
+			try{
+				$itemDao->update($item);
+			}catch(Exception $e){
+				var_dump($e);
+			}
+		}
+	}
+
+	private function insertHistory($content, $more = null){
+		static $historyDAO;
+		if(!$historyDAO) $historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
+
+		$history = new SOYShop_OrderStateHistory();
+		$history->setOrderId($this->orderId);
+		$history->setAuthor("顧客:" . $this->getUser()->getName());	//顧客名
+		$history->setContent($content);
+		$history->setMore($more);
+		$historyDAO->insert($history);
+	}
 }

@@ -8,7 +8,7 @@ class ConfirmPage extends IndexPage{
 		if(soy2_check_token()){
 
 			if(isset($_POST["post"])){
-				$mypage = MyPageLogic::getMyPage();
+				$mypage = $this->getMyPage();
 				$user = $this->getUser();
 
 				$post = $this->getPost("front_message_post");
@@ -92,4 +92,3 @@ class ConfirmPage extends IndexPage{
 
     }
 }
-?>

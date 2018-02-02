@@ -29,7 +29,7 @@ class IndexPage extends MainMyPagePageBase{
 	function __construct($args){
 		$this->checkIsLoggedIn(); //ログインチェック
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 		$mypage->clearErrorMessage();
 
 		$this->user = $this->getUser();
@@ -65,7 +65,7 @@ class IndexPage extends MainMyPagePageBase{
      * @return boolen エラーがない場合true
      */
     private function checkPassword(){
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 
     	$old = $_POST["old"];
     	$password = $_POST["password"];

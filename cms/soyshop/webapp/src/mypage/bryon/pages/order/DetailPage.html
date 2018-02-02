@@ -1,5 +1,5 @@
 <section>
-	<h1 class="cart_txt"><!-- soy:id="user_name" -->ソイ太郎<!-- /soy:id="user_name" -->さんの購入履歴詳細</h1>
+	<h1 class="cart_txt">注文番号『<!-- soy:id="order_number" /-->』の購入履歴詳細</h1>
 	<section>
 		<h1>ご注文内容</h1>
 		<div class="notice narrow" soy:display="updated"><p>注文内容を変更しました。</p></div>
@@ -116,7 +116,7 @@
 		<table cellpadding="0" cellspacing="0" class="cart_detail_table">
 			<tr>
 				<th scope="col">ご注文番号</th>
-				<td scope="col" soy:id="order_number">1-4225-2721</td>
+				<td scope="col" soy:id="order_number*">1-4225-2721</td>
 			</tr>
 			<tr>
 				<th>ご注文日時</th>
@@ -148,45 +148,66 @@
 	<section class="soycart_narrow">
 		<h1>お届け先の情報</h1>
 		<table cellpadding="0" cellspacing="0" class="cart_detail_table">
-			<tr>
+			<tr soy:id="user_name_show">
 				<th>お名前</th>
-				<td><!-- soy:id="user_name" -->齋藤　毅<!-- /soy:id="user_name" -->　様</td>
+				<td><!-- soy:id="user_name" -->齋藤　毅<!-- /soy:id="user_name" --></td>
 			</tr>
-			<tr>
+			<tr soy:id="user_reading_show">
+				<th>フリガナ</th>
+				<td><!-- soy:id="user_reading" -->サイトウツヨシ<!-- /soy:id="user_reading" --></td>
+			</tr>
+			<tr soy:id="user_office_show">
+				<th>法人名（勤務先など）</th>
+				<td><!-- soy:id="user_office" -->SOY Shop<!-- /soy:id="user_office" --></td>
+			</tr>
+			<tr soy:id="user_zipcode_show">
 				<th>郵便番号</th>
 				<td>〒<!-- soy:id="user_zipcode" -->606-8232<!-- /soy:id="user_zipcode" --></td>
 			</tr>
-			<tr>
+			<tr soy:id="user_area_show">
 				<th>ご住所</th>
 				<td><!-- soy:id="user_area" /--><!-- soy:id="user_address1" /--><!-- soy:id="user_address2" /--></td>
 			</tr>
-			<tr>
+			<tr soy:id="user_telephonenumber_show">
 				<th>電話番号</th>
-				<td><!-- soy:id="user_tel" -->090-7425-4064<!-- /soy:id="user_tel" --></td>
+				<td><!-- soy:id="user_telephonenumber" -->090-7425-4064<!-- /soy:id="user_telephonenumber" --></td>
 			</tr>
 		</table>
+
+		<p class="alC" soy:display="order_send_address"><a soy:id="send_address_link" class="table_btn">お届け先の情報の編集</a></p>
 	</section>
 
 	<section class="soycart_narrow">
 		<h1>請求先の情報</h1>
 		<table cellpadding="0" cellspacing="0" class="cart_detail_table">
-			<tr>
+			<tr soy:id="claimed_name_show">
 				<th>お名前</th>
-				<td><!-- soy:id="claimed_name" -->齋藤　毅<!-- /soy:id="claimed_name" -->　様</td>
+				<td><!-- soy:id="claimed_name" -->齋藤　毅<!-- /soy:id="claimed_name" --></td>
 			</tr>
-			<tr>
+			<tr soy:id="claimed_reading_show">
+				<th>フリガナ</th>
+				<td><!-- soy:id="claimed_reading" -->サイトウツヨシ<!-- /soy:id="claimed_reading" --></td>
+			</tr>
+			<tr soy:id="claimed_office_show">
+				<th>法人名（勤務先など）</th>
+				<td><!-- soy:id="claimed_office" -->SOY Shop<!-- /soy:id="claimed_office" --></td>
+			</tr>
+			<tr soy:id="claimed_zipcode_show">
 				<th>郵便番号</th>
 				<td>〒<!-- soy:id="claimed_zipcode" -->606-8232<!-- /soy:id="claimed_zipcode" --></td>
 			</tr>
-			<tr>
+			<tr soy:id="claimed_area_show">
 				<th>ご住所</th>
 				<td><!-- soy:id="claimed_area" /--><!-- soy:id="claimed_address1" /--><!-- soy:id="claimed_address2" /--></td>
 			</tr>
-			<tr>
+			<tr soy:id="claimed_telephonenumber_show">
 				<th>電話番号</th>
-				<td><!-- soy:id="claimed_tel" -->090-7425-4064<!-- /soy:id="claimed_tel" --></td>
+				<td><!-- soy:id="claimed_telephonenumber" -->090-7425-4064<!-- /soy:id="claimed_telephonenumber" --></td>
 			</tr>
 		</table>
+		<p class="alC" soy:display="order_claimed_address"><a soy:id="claimed_address_link" class="table_btn">請求先の情報の編集</a></p>
 	</section>
+
+	<p class="alC" soy:display="order_cancel"><a soy:id="cancel_link" class="table_btn">注文のキャンセル</a></p>
 	<p class="alC"><a href="#" soy:id="top_link">&lt;&lt; マイページトップへ戻る</a></p>
 </section>

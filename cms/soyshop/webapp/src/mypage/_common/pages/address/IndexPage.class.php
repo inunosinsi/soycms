@@ -5,7 +5,7 @@ class IndexPage extends MainMyPagePageBase{
 		$this->checkIsLoggedIn(); //ログインチェック
 
 		//編集中のセッションが残っている可能性があるので消しておく
-		MyPageLogic::getMyPage()->clearAttribute("address");
+		$this->getMyPage()->clearAttribute("address");
 
 		parent::__construct();
 

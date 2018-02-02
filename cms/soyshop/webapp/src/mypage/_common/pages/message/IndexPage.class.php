@@ -21,7 +21,7 @@ class IndexPage extends MainMyPagePageBase{
 	function __construct() {
 		$this->checkIsLoggedIn(); //ログインチェック
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 		$user = $this->getUser();
 
 		$oldRootDir = SOY2::RootDir();
@@ -86,7 +86,7 @@ class IndexPage extends MainMyPagePageBase{
 
 	function checkError($post){
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 
 		$res = false;
 		$mypage->clearErrorMessage();

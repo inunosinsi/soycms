@@ -5,7 +5,7 @@ class EditPage extends MainMyPagePageBase{
 
 	function doPost(){
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 
 		//保存
 		if(soy2_check_token()){
@@ -24,7 +24,7 @@ class EditPage extends MainMyPagePageBase{
 				$mypage->setAttribute("address", $address);
 
 				//エラーがなければ確認へ
-				if(!$this->checkError($address)){
+				if(!self::checkError($address)){
 					$this->jump("address/confirm/" . $this->address_key);
 				}else{
 					$this->jump("address/edit/" . $this->address_key);
@@ -63,17 +63,18 @@ class EditPage extends MainMyPagePageBase{
 		parent::__construct();
 
 		//セッションの値があればそれを使う
-		$address = MyPageLogic::getMyPage()->getAttribute("address");
+		$address = $this->getMyPage()->getAttribute("address");
 		if(!$address){
 			//保存されている値
 			//keyがなければ自動的に新規アドレスになる
 			$address = $this->getUser()->getAddress($this->address_key);
 		}
 
-		$this->buildSendForm($address);
+		self::buildSendForm($address);
 
+		$mypage = $this->getMyPage();
 		DisplayPlugin::toggle("has_error", $mypage->hasError());
-		$this->appendErrors($mypage);
+		self::appendErrors($mypage);
 
 		$this->addLink("address_link", array(
 			"link" => soyshop_get_mypage_url() . "/address"
@@ -81,7 +82,7 @@ class EditPage extends MainMyPagePageBase{
 
 	}
 
-	function buildSendForm($address){
+	private function buildSendForm($address){
 
 		$this->addForm("form");
 
@@ -144,7 +145,7 @@ class EditPage extends MainMyPagePageBase{
 	/**
 	 * エラー周りを設定
 	 */
-	function appendErrors($mypage){
+	private function appendErrors(MyPageLogic $mypage){
 
 		$this->createAdd("name_error", "ErrorMessageLabel", array(
 			"text" => $mypage->getErrorMessage("name")
@@ -168,9 +169,9 @@ class EditPage extends MainMyPagePageBase{
 
 	}
 
-	function checkError($address){
+	private function checkError($address){
 		$res = false;
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 		$mypage->clearErrorMessage();
 
 		if(tstrlen($address["name"]) < 1){

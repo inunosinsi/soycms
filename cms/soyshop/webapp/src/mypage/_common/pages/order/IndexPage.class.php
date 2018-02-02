@@ -10,6 +10,8 @@ class IndexPage extends MainMyPagePageBase{
 
         parent::__construct();
 
+		DisplayPlugin::toggle("canceled", isset($_GET["canceled"]));
+
         $user = $this->getUser();
 
         $this->addLabel("user_name", array(

@@ -11,7 +11,7 @@ class IndexPage extends MainMyPagePageBase{
 
 			if(isset($_POST["confirm"]) || isset($_POST["confirm_x"])){
 
-				$mypage = MyPageLogic::getMyPage();
+				$mypage = $this->getMyPage();
 				$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 				$user = new SOYShop_User();
 
@@ -46,7 +46,7 @@ class IndexPage extends MainMyPagePageBase{
 		//郵便番号での住所検索
 		if(isset($_POST["user_zip_search"]) || isset($_POST["user_zip_search_x"])){
 			$logic = SOY2Logic::createInstance("logic.cart.AddressSearchLogic");
-			$mypage = MyPageLogic::getMyPage();
+			$mypage = $this->getMyPage();
 
 			$postUser = (object)$_POST["Customer"];
 			$user = SOY2::cast("SOYShop_User",$postUser);
@@ -67,7 +67,7 @@ class IndexPage extends MainMyPagePageBase{
 
 	function __construct(){
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 
 		//すでにログインしていたら飛ばす
 		if($mypage->getIsLoggedin()){
@@ -140,4 +140,3 @@ class IndexPage extends MainMyPagePageBase{
 		return $res;
 	}
 }
-?>

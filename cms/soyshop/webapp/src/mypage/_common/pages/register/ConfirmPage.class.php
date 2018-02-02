@@ -1,46 +1,46 @@
 <?php
 SOY2HTMLFactory::importWebPage("register.IndexPage");
 class ConfirmPage extends IndexPage{
-	
+
 	function doPost(){
-		
+
 		//保存
 		if(soy2_check_token()){
-		
+
 			if(isset($_POST["register"]) || isset($_POST["register_x"])){
-		
-				$mypage = MyPageLogic::getMyPage();
+
+				$mypage = $this->getMyPage();
 				$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 				$user = $mypage->getUserInfo();
-					
+
 				try{
 					$tmpUser = $userDAO->getTmpUserByEmail($user->getMailAddress());
 					$user->setId($tmpUser->getId());
 					$user->setPassword($user->hashPassword($user->getPassword()));
 					$tmpUser = true;
-	
+
 				}catch(Exception $e){
 					$tmpUser = false;
 				}
-					
+
 				try{
 					$tmpUserMode = SOYShop_DataSets::get("config.mypage.tmp_user_register", 1);
 					if($tmpUserMode){
 						//仮登録あり
 						$user->setUserType(SOYShop_User::USERTYPE_TMP);
-						
+
 					}else{
 						//仮登録なし
 						$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 						$user->setRealRegisterDate(time());
 					}
-						
+
 					if($tmpUser){
 						$userId = $userDAO->update($user);
 					}else{
 						$userId = $userDAO->insert($user);
 					}
-					
+
 					//ユーザカスタムフィールドの値をセッションに入れる
 					SOYShopPlugin::load("soyshop.user.customfield");
 					SOYShopPlugin::invoke("soyshop.user.customfield", array(
@@ -48,57 +48,52 @@ class ConfirmPage extends IndexPage{
 						"app" => $mypage,
 						"userId" => $userId
 					));
-						
+
 					if($tmpUserMode){
 						//仮登録あり
 						list($token,$limit) = $mypage->createToken($user->getMailAddress());
 						$this->sendTmpRegisterMail($user, $token, $limit);
 						$this->jump("register/tmp");
-							
+
 					}else{
 						//仮登録なし
 						$this->sendRegisterMail($user);
 						$this->jump("register/complete");
-						
+
 					}
-	
+
 				}catch(Exception $e){
-					
-				}	
+
+				}
 			}
-				
+
 			if(isset($_POST["back"]) || isset($_POST["back_x"])){
 				$this->jump("register");
 			}
 		}
 	}
-	
+
 	function __construct(){
 
-		$mypage = MyPageLogic::getMyPage();
-		
+		$mypage = $this->getMyPage();
+
 		//すでにログインしていたら飛ばす
-		if($mypage->getIsLoggedin()){
-			$this->jumpToTop();
-		}
-		
+		if($mypage->getIsLoggedin()) $this->jumpToTop();
+
 		$user = $mypage->getUserInfo();
-		
+
 		//直接URLを入力したら入力フォームに戻す
-		if(is_null($user)){
-			$this->jump("register");
-		}
+		if(is_null($user)) $this->jump("register");
 
 		$this->backward = new BackwardUserComponent();
 		$this->component = new UserComponent();
-		
+
 		parent::__construct();
 
 		//顧客情報フォーム
 		$this->buildForm($user, $mypage, UserComponent::MODE_CUSTOM_CONFIRM);
-
 	}
-	
+
 	/**
 	 * 仮登録メールの送信
 	 * @param SOYShop_User $user
@@ -109,15 +104,15 @@ class ConfirmPage extends IndexPage{
 
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
 		$config = $mailLogic->getMyPageMailConfig("tmp_register");
-		
+
 		SOY2::import("domain.order.SOYShop_Order");
 		//convert title
 		$title = $mailLogic->convertMailContent($config["title"], $user, new SOYShop_Order());
 
 		$query = soyshop_get_mypage_url(true) . "/register/tmp/complete?q=" . $token;
-		
+
 		//リダイレクト
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 		$r = $mypage->getAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
 		if(isset($r)){
 			$mypage->clearAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
@@ -135,7 +130,7 @@ class ConfirmPage extends IndexPage{
 			//@TODO エラーログ出力
 		}
 	}
-	
+
 	/**
 	 * 本登録メールの送信
 	 * @param SOYShop_User $user
@@ -144,7 +139,7 @@ class ConfirmPage extends IndexPage{
 
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
 		$config = $mailLogic->getMyPageMailConfig("register");
-		
+
 		SOY2::import("domain.order.SOYShop_Order");
 		//convert title
 		$title = $mailLogic->convertMailContent($config["title"], $user, new SOYShop_Order());
@@ -162,7 +157,7 @@ class ConfirmPage extends IndexPage{
 }
 
 class UserCustomfieldConfirm extends HTMLList{
-	
+
 	protected function populateItem($entity, $key, $counter, $length){
 		$this->addLabel("customfield_name", array(
 			"text" => (isset($entity["name"])) ? $entity["name"] : ""
@@ -173,4 +168,3 @@ class UserCustomfieldConfirm extends HTMLList{
 		));
 	}
 }
-?>

@@ -8,7 +8,7 @@ class IndexPage extends MainMyPagePageBase{
 
 	function doPost(){
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 
 		//ユーザカスタムフィールドの値をセッションに入れる
 		if(isset($_POST["user_customfield"])){
@@ -106,6 +106,7 @@ class IndexPage extends MainMyPagePageBase{
 
 				$mypage->setUserInfo($user);
 				$mypage->setAttribute("user.edit.use_session_user_info", true);
+				$mypage->save();
 
 				if( self::checkError($mypage) ){
 					$this->jump("edit/confirm");
@@ -120,7 +121,7 @@ class IndexPage extends MainMyPagePageBase{
 	function __construct(){
 		$this->checkIsLoggedIn(); //ログインチェック
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 		$user = $mypage->getUserInfo();
 		if(is_null($user) || !$mypage->getAttribute("user.edit.use_session_user_info")){
 			$user = $this->getUser();
@@ -146,12 +147,14 @@ class IndexPage extends MainMyPagePageBase{
 		DisplayPlugin::toggle("has_error", $mypage->hasError());
 		$this->appendErrors($mypage);
 
-		//使用済みのセッション値をクリア
-		$mypage->clearUserInfo();
-		$mypage->clearErrorMessage();
-		$mypage->setAttribute("user.edit.use_session_user_info", null);
-		$this->clearCustomFieldValue($mypage);
-		$mypage->save();
+		//使用済みのセッション値をクリア confirmを見ている時は削除しない
+		if(!strpos($_SERVER["REQUEST_URI"], "/edit/confirm")){
+			$mypage->clearUserInfo();
+			$mypage->clearErrorMessage();
+			$mypage->setAttribute("user.edit.use_session_user_info", null);
+			$this->clearCustomFieldValue($mypage);
+			$mypage->save();
+		}
 
 		$this->addLink("top_link", array(
 			"link" => soyshop_get_mypage_top_url()

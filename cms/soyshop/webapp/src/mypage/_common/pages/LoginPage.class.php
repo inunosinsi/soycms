@@ -19,7 +19,7 @@ class LoginPage extends MainMyPagePageBase{
 						if(isset($_GET["r"]) && strlen($_GET["r"])){
 							$r = $_GET["r"];
 						}else{
-							$mypage = MyPageLogic::getMyPage();
+							$mypage = $this->getMyPage();
 							$r = $mypage->getAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
 							if(isset($r)){
 								$mypage->clearAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
@@ -51,7 +51,7 @@ class LoginPage extends MainMyPagePageBase{
 	function __construct(){
 		parent::__construct();
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 		//ログインチェック
 		if($mypage->getIsLoggedin()){
 			$this->jumpToTop();
@@ -121,15 +121,13 @@ class LoginPage extends MainMyPagePageBase{
 	 * ログイン
 	 */
 	function login($userId, $password){
-		$mypage = MyPageLogic::getMyPage();
-		return $mypage->login($userId, $password);
+		return $this->getMyPage()->login($userId, $password);
 	}
 
 	/**
 	 * 自動ログイン
 	 */
 	function autoLogin(){
-		$mypage = MyPageLogic::getMyPage();
-		$mypage->autoLogin();
+		$this->getMyPage()->autoLogin();
 	}
 }

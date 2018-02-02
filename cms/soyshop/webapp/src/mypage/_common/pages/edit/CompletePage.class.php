@@ -3,7 +3,7 @@ class CompletePage extends MainMyPagePageBase{
 
 	function __construct(){
 
-		$mypage = MyPageLogic::getMyPage();
+		$mypage = $this->getMyPage();
 		$mypage->clearUserInfo();
 		$mypage->clearErrorMessage();
 		$mypage->clear();

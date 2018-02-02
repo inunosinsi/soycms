@@ -16,7 +16,7 @@ class InputPage extends MainMyPagePageBase{
 			}
 
 			$mail = $_POST["mail"];
-			$mypage = MyPageLogic::getMyPage();
+			$mypage = $this->getMyPage();
 			$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
 			//get user
@@ -73,7 +73,7 @@ class InputPage extends MainMyPagePageBase{
 	}
 
     function __construct() {
-		$this->mypage = MyPageLogic::getMyPage();
+		$this->mypage = $this->getMyPage();
 
     	//ログイン済み
 		if($this->mypage->getIsLoggedin()){
@@ -107,4 +107,3 @@ class InputPage extends MainMyPagePageBase{
     	));
     }
 }
-?>

@@ -9,7 +9,7 @@ class ConfirmPage extends EditPage{
 
 			if(isset($_POST["register"]) || isset($_POST["register_x"])){
 
-				$mypage = MyPageLogic::getMyPage();
+				$mypage = $this->getMyPage();
 				$user = $this->getUser();
 				$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
@@ -41,7 +41,7 @@ class ConfirmPage extends EditPage{
 
 		parent::__construct();
 
-		$address = MyPageLogic::getMyPage()->getAttribute("address");
+		$address = $this->getMyPage()->getAttribute("address");
 
 		//送付先フォーム
 		$this->buildSendForm($address);

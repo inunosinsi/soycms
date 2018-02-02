@@ -1,18 +1,18 @@
 <section id="cart_procedure">
-	<form soy:id="form">
-		<h1 class="cart_txt">登録情報の変更</h1>
+	<h1 class="cart_txt">登録情報の変更</h1>
 
-		<div class="notice narrow" soy:display="is_editing">
-			<p>編集中です。</p>
-		</div>
+	<div class="notice narrow" soy:display="is_editing">
+		<p>編集中です。</p>
+	</div>
 
-		<!-- soy:display="has_error" -->
-		<div class="error narrow">
-			<p>正しく入力されていない項目があります。</p>
-		</div>
-		<!-- /soy:display="has_error" -->
+	<!-- soy:display="has_error" -->
+	<div class="error narrow">
+		<p>正しく入力されていない項目があります。</p>
+	</div>
+	<!-- /soy:display="has_error" -->
 
-		<section class="soycart_narrow">
+	<section class="soycart_narrow">
+		<form soy:id="form">
 			<table class="soycart_form">
 				<tr soy:id="name_show">
 					<th nowrap scope="row">お名前<span soy:id="name_required">（必須）</span></th>
@@ -204,8 +204,8 @@
 			</table>
 			<p class="btn"><input type="image" name="confirm" soy:src="themes/common/images/mypage/btn_confirm_off.jpg" alt="確認する"></p>
 			<p class="alC"><a onclick="history.back();" style="cursor: pointer">&lt;&lt; 戻る</a></p>
-		</section>
-	</form soy:id="form">
+		</form>
+	</section>
 </section>
 
 <script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
