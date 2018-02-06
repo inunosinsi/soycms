@@ -190,6 +190,26 @@ class MainMyPagePageBase extends WebPage{
 		return self::getItemById($itemId)->getCode();
 	}
 
+	function getModuleByOrderIdAndUserId($orderId, $userId){
+		static $module;
+		if(is_null($module)){
+			$moduleId = null;
+			foreach(self::getOrderByIdAndUserId($orderId, $userId)->getModuleList() as $modId => $mod){
+				if($mod->getType() === "delivery_module") {
+					$moduleId = $modId;
+					break;
+				}
+			}
+
+			try{
+				$module = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId($moduleId);
+			}catch(Exception $e){
+				$module = new SOYShop_PluginConfig();
+			}
+		}
+		return $module;
+	}
+
 	/* check */
 	function checkUnDeliveried($orderId, $userId){
 		$order = self::getOrderByIdAndUserId($orderId, $userId);
@@ -198,6 +218,28 @@ class MainMyPagePageBase extends WebPage{
 		//新規受付2、受付完了3、在庫確認中6のみtrue
 		$status = (int)$order->getStatus();
 		return ($status === SOYShop_Order::ORDER_STATUS_REGISTERED || $status === SOYShop_Order::ORDER_STATUS_RECEIVED || $status === SOYShop_Order::ORDER_STATUS_STOCK_CONFIRM);
+	}
+
+	function checkUsedDeliveryModule($orderId, $userId){
+		$module = self::getModuleByOrderIdAndUserId($orderId, $userId);
+		return (!is_null($module->getPluginId()));
+	}
+
+	/** mypage edit common **/
+	function getHistoryText($label, $old, $new){
+		return $label . "を『" . $old . "』から『" . $new . "』に変更しました";
+	}
+
+	function insertHistory($orderId, $content, $more = null){
+		static $historyDAO;
+		if(!$historyDAO) $historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
+
+		$history = new SOYShop_OrderStateHistory();
+		$history->setOrderId($orderId);
+		$history->setAuthor("顧客:" . $this->getUser()->getName());	//顧客名
+		$history->setContent($content);
+		$history->setMore($more);
+		$historyDAO->insert($history);
 	}
 
 	/* convert */

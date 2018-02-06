@@ -149,6 +149,12 @@ class DetailPage extends MainMyPagePageBase{
 			"link" => soyshop_get_mypage_url() . "/order/edit/item/" . $this->orderId
 		));
 
+		//配送時間帯等の編集
+		DisplayPlugin::toggle("order_module", ($isEditPlugin && $this->checkUsedDeliveryModule($this->orderId, $this->userId)));
+		$this->addLink("module_link", array(
+			"link" => soyshop_get_mypage_url() . "/order/edit/module/" . $this->orderId
+		));
+
 		//お届け先情報の編集
 		DisplayPlugin::toggle("order_send_address", $isEditPlugin);
 		$this->addLink("send_address_link", array(
@@ -357,7 +363,7 @@ class DetailPage extends MainMyPagePageBase{
 
 		//メールを送信する
 		$change = "注文番号『" . $order->getTrackingNumber() . "』の注文をキャンセルしました。";
-		self::insertHistory($change);
+		$this->insertHistory($this->orderId, $change);
 
 		//変更履歴のメールを送信する
 		$mailLogic = SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.NoticeSendMailLogic", array("order" => $order, "user" => $this->getUser()));
@@ -402,17 +408,5 @@ class DetailPage extends MainMyPagePageBase{
 				var_dump($e);
 			}
 		}
-	}
-
-	private function insertHistory($content, $more = null){
-		static $historyDAO;
-		if(!$historyDAO) $historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
-
-		$history = new SOYShop_OrderStateHistory();
-		$history->setOrderId($this->orderId);
-		$history->setAuthor("顧客:" . $this->getUser()->getName());	//顧客名
-		$history->setContent($content);
-		$history->setMore($more);
-		$historyDAO->insert($history);
 	}
 }
