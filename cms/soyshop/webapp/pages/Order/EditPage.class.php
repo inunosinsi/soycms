@@ -157,6 +157,9 @@ class EditPage extends WebPage{
 						$this->changeStock($itemOrder, $count);
 					}
 				}
+
+				//検索用のセッションのクリア
+				SOY2ActionSession::getUserSession()->setAttribute("Order.Register.Item.Search:search_condition", null);
 			}
 
 			if(
@@ -739,125 +742,129 @@ class EditPage extends WebPage{
 	function updateOrderCustomfield(SOYShop_Order $order, $newCustomfields){
 		$change = array();
 
-		$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
+		$list = SOYShopPlugin::invoke("soyshop.order.customfield", array(
 			"mode" => "config",
 			"orderId" => $order->getId()
-		));
+		))->getList();
 
-		$list = (is_array($delegate->getList())) ? $delegate->getList() : array();
-		//扱いやすい配列に変える
-		$array = array();
-		foreach($list as $obj){
-			if(is_array($obj)){
-				foreach($obj as $key => $value){
-					$array[$key] = $value;
+		if(count($list)){
+			//扱いやすい配列に変える
+			$array = array();
+			foreach($list as $obj){
+				if(is_array($obj)){
+					foreach($obj as $key => $value){
+						$array[$key] = $value;
+					}
 				}
 			}
-		}
 
-		$dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
-		$dateDao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
-	   	foreach($array as $key => $obj){
-	   		$newValue1 = null;
-			$newValue2 = null;
+			$dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
+			$dateDao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
+		   	foreach($array as $key => $obj){
+		   		$newValue1 = null;
+				$newValue2 = null;
 
-			switch($obj["type"]){
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_INPUT:
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
-					$newValue1 = (isset($newCustomfields[$key])) ? $newCustomfields[$key] : null;
-					break;
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
-					$newValue1 = (isset($newCustomfields[$key])) ? implode(",", $newCustomfields[$key]) : null;
-					break;
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
-					$newValue1 = (isset($newCustomfields[$key])) ? $newCustomfields[$key] : null;
+				switch($obj["type"]){
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_INPUT:
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
+						$newValue1 = (isset($newCustomfields[$key])) ? $newCustomfields[$key] : null;
+						break;
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
+						$newValue1 = (isset($newCustomfields[$key])) ? implode(",", $newCustomfields[$key]) : null;
+						break;
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
+						$newValue1 = (isset($newCustomfields[$key])) ? $newCustomfields[$key] : null;
 
-					//その他を選んだとき
-					if(isset($obj["value1"]) && $newCustomfields[$key] == trim($obj["value1"])){
-						$newValue2 = (isset($newCustomfields[$key . "_other_text"])) ? $newCustomfields[$key . "_other_text"] : null;
-					}
-					break;
-				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
-					$newValue1 = (isset($newCustomfields[$key]["date"])) ? $this->convertDate($newCustomfields[$key]["date"]) : null;
-					$newValue2 = null;
-					break;
-				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
-					$newValue1 = (isset($newCustomfields[$key]["start"])) ? $this->convertDate($newCustomfields[$key]["start"]) : null;
-					$newValue2 = (isset($newCustomfields[$key]["end"])) ? $this->convertDate($newCustomfields[$key]["end"]) : null;
-					break;
-			}
+						//その他を選んだとき
+						if(isset($obj["value1"]) && $newCustomfields[$key] == trim($obj["value1"])){
+							$newValue2 = (isset($newCustomfields[$key . "_other_text"])) ? $newCustomfields[$key . "_other_text"] : null;
+						}
+						break;
+					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
+						$newValue1 = (isset($newCustomfields[$key]["date"])) ? $this->convertDate($newCustomfields[$key]["date"]) : null;
+						$newValue2 = null;
+						break;
+					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
+						$newValue1 = (isset($newCustomfields[$key]["start"])) ? $this->convertDate($newCustomfields[$key]["start"]) : null;
+						$newValue2 = (isset($newCustomfields[$key]["end"])) ? $this->convertDate($newCustomfields[$key]["end"]) : null;
+						break;
+				}
 
-			switch($obj["type"]){
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_INPUT:
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
-				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
-					if($newValue1 != $obj["value1"]){
-						$change[]=self::getHistoryText($obj["label"], $obj["value1"], $newValue1);
-					}
-					if(isset($newValue2) && $newValue2 != $obj["value2"]){
-						$change[]=self::getHistoryText($obj["label"], $obj["value2"], $newValue2);
-					}
-					//ここで配列を入れてしまう。
-					try{
-						$dao->delete($order->getId(), $key);
-					}catch(Exception $e){
-						//
-					}
-
-					$orderAttr = new SOYShop_OrderAttribute();
-					$orderAttr->setOrderId($order->getId());
-					$orderAttr->setFieldId($key);
-					$orderAttr->setValue1($newValue1);
-					$orderAttr->setValue2($newValue2);
-
-					try{
-						$dao->insert($orderAttr);
-					}catch(Exception $e){
-						//
-					}
-					break;
-				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
-				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
-					//value2に値がない場合 dateとか
-					if(is_null($newValue2)){
+				switch($obj["type"]){
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_INPUT:
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
+					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
 						if($newValue1 != $obj["value1"]){
-							$change[] = self::getHistoryText($obj["label"], $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1));
+							$change[]=self::getHistoryText($obj["label"], $obj["value1"], $newValue1);
 						}
-
-					//value2に値がある場合 periodとか
-					}else{
-						if($newValue1 != $obj["value1"] || $newValue2 != $obj["value2"]){
-							$change[] = self::getHistoryText($obj["label"], $this->convertDateText($obj["value1"]) . " ～ " . $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1) . " ～ " . $this->convertDateText($newValue2));
+						if(isset($newValue2) && $newValue2 != $obj["value2"]){
+							$change[]=self::getHistoryText($obj["label"], $obj["value2"], $newValue2);
 						}
-					}
-
-					try{
-						$orderDateAttr = $dateDao->get($order->getId(), $key);
-					}catch(Exception $e){
-						$orderDateAttr = new SOYShop_OrderDateAttribute();
-						$orderDateAttr->setOrderId($order->getId());
-						$orderDateAttr->setFieldId($key);
-					}
-
-					$orderDateAttr->setValue1($newValue1);
-					$orderDateAttr->setValue2($newValue2);
-
-					try{
-						$dateDao->insert($orderDateAttr);
-					}catch(Exception $e){
+						//ここで配列を入れてしまう。
 						try{
-							$dateDao->update($orderDateAttr);
+							$orderAttr = $dao->get($order->getId(), $key);
 						}catch(Exception $e){
-							//
+							$orderAttr = new SOYShop_OrderAttribute();
+							$orderAttr->setOrderId($order->getId());
+							$orderAttr->setFieldId($key);
 						}
-					}
 
-					break;
-				default:
-					break;
+						$orderAttr->setValue1($newValue1);
+						$orderAttr->setValue2($newValue2);
+
+						try{
+							$dao->insert($orderAttr);
+						}catch(Exception $e){
+							try{
+								$dao->update($orderAttr);
+							}catch(Exception $e){
+								//
+							}
+						}
+						break;
+					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
+					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
+						//value2に値がない場合 dateとか
+						if(is_null($newValue2)){
+							if($newValue1 != $obj["value1"]){
+								$change[] = self::getHistoryText($obj["label"], $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1));
+							}
+
+						//value2に値がある場合 periodとか
+						}else{
+							if($newValue1 != $obj["value1"] || $newValue2 != $obj["value2"]){
+								$change[] = self::getHistoryText($obj["label"], $this->convertDateText($obj["value1"]) . " ～ " . $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1) . " ～ " . $this->convertDateText($newValue2));
+							}
+						}
+
+						try{
+							$orderDateAttr = $dateDao->get($order->getId(), $key);
+						}catch(Exception $e){
+							$orderDateAttr = new SOYShop_OrderDateAttribute();
+							$orderDateAttr->setOrderId($order->getId());
+							$orderDateAttr->setFieldId($key);
+						}
+
+						$orderDateAttr->setValue1($newValue1);
+						$orderDateAttr->setValue2($newValue2);
+
+						try{
+							$dateDao->insert($orderDateAttr);
+						}catch(Exception $e){
+							try{
+								$dateDao->update($orderDateAttr);
+							}catch(Exception $e){
+								//
+							}
+						}
+
+						break;
+					default:
+						break;
+				}
 			}
 		}
 

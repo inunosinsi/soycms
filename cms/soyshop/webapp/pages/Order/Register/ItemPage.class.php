@@ -6,6 +6,7 @@ include(dirname(__FILE__) . "/common.php");
 class ItemPage extends WebPage{
 
 	private $cart;
+	private $orderLogic;
 
 	function doPost(){
 		if(soy2_check_token()){
@@ -26,6 +27,9 @@ class ItemPage extends WebPage{
 
 						/** @ToDo 商品が重複する場合は統合したい。削除できるから不要かも **/
 
+						/** JSON形式でバックアップ **/
+						$this->orderLogic->backup($items);
+
 						$this->cart->setItems($items);
 						$this->cart->save();
 						SOY2PageController::jump("Order.Register.Item");
@@ -39,6 +43,9 @@ class ItemPage extends WebPage{
 				foreach($_POST["Item"] as $idx => $itemOrder){
 					$newItems[] = $items[$idx];
 				}
+
+				/** JSON形式でバックアップ **/
+				$this->orderLogic->backup($newItems);
 
 				$this->cart->setItems($newItems);
 				$this->cart->save();
@@ -99,6 +106,9 @@ class ItemPage extends WebPage{
 						$this->cart->save();
 					}
 				}
+
+				//検索用のセッションのクリア
+				SOY2ActionSession::getUserSession()->setAttribute("Order.Register.Item.Search:search_condition", null);
 			}
 
 			if(
@@ -124,6 +134,9 @@ class ItemPage extends WebPage{
 				}
 			}
 
+			/** JSON形式でバックアップ **/
+			$this->orderLogic->backup($this->cart->getItems());
+
 			//変更なし
 			SOY2PageController::jump("Order.Register.Item");
 		}
@@ -131,7 +144,11 @@ class ItemPage extends WebPage{
 
 	function __construct($args) {
 		$this->cart = AdminCartLogic::getCart();
+		$this->orderLogic = SOY2Logic::createInstance("logic.order.admin.OrderLogic");
 		parent::__construct();
+
+		DisplayPlugin::toggle("successed", isset($_GET["successed"]));
+		DisplayPlugin::toggle("failed", isset($_GET["failed"]));
 
 		//パラメータから商品IDを取得
 		$userId = (isset($args[0]))?$args[0]:null;
@@ -148,9 +165,15 @@ class ItemPage extends WebPage{
 	}
 
 	function buildForm(){
+		$items = $this->cart->getItems();
+
+		DisplayPlugin::toggle("restore", (!count($items) && $this->orderLogic->isBackupJsonFile()));
+		$this->addActionLink("restore_link", array(
+			"link" => SOY2PageController::createLink("Order.Register.Item.Restore")
+		));
 
 		$this->createAdd("item_list", "ItemList", array(
-			"list" => $this->cart->getItems(),
+			"list" => $items,
 			"cart" => $this->cart
 		));
 
