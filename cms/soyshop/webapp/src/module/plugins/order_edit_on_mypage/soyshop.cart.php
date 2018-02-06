@@ -12,13 +12,12 @@ class OrderEditOnMypageCart extends SOYShopCartBase{
 					//@ToDo ItemOptionをどうにかしなきゃ
 					$itemOrders = $mypage->getAttribute("order_edit_item_orders");
 					$orderId = null;
-					foreach($itemOrders as $itemOrder){
+					foreach($itemOrders as $itemOrder){	//配列のインデックスが必ず0から始まるとは限らない対策
 						$orderId = $itemOrder->getOrderId();
 						break;
 					}
 
 					$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($_REQUEST["item"]);
-					var_dump($item);
 
 					SOY2::import("domain.order.SOYShop_ItemOrder");
 					$itemOrder = new SOYShop_ItemOrder();
@@ -28,6 +27,11 @@ class OrderEditOnMypageCart extends SOYShopCartBase{
 					$itemOrder->setItemPrice($item->getPrice());
 					$itemOrder->setTotalPrice($itemOrder->getItemCount() * $itemOrder->getItemPrice());
 					$itemOrder->setItemName($item->getName());
+
+					/** @ToDo 商品オプションプラグイン soyshop_ordersテーブルのattributeに突っ込む **/
+					if(isset($_POST["item_option"])){
+
+					}
 
 					$itemOrders[] = $itemOrder;
 					$mypage->setAttribute("order_edit_item_orders", $itemOrders);

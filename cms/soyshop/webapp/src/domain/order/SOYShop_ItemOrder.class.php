@@ -128,7 +128,7 @@ class SOYShop_ItemOrder {
     	$this->attributes = $attributes;
     }
     function getAttributeList(){
-    	$res = soy2_unserialize($this->attributes);
+		$res = soy2_unserialize($this->attributes);
     	return (is_array($res)) ? $res : array();
     }
     function getAttribute($key) {

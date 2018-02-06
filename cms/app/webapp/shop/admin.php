@@ -129,4 +129,3 @@ class SOYShopApplication{
 
 $app = new SOYShopApplication();
 $app->init();
-?>

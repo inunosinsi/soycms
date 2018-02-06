@@ -152,12 +152,12 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * @param object SOYShop_ItemOrder
 	 * @return string html
 	 */
-	function display($item){
+	function display(SOYShop_ItemOrder $itemOrder){
 
 		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
 		$list = $logic->getOptions();
 
-		$attributes = $item->getAttributeList();
+		$attributes = $itemOrder->getAttributeList();
 
 		$html = array();
 		foreach($attributes as $key => $value){

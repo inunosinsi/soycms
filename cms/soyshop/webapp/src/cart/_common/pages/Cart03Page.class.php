@@ -207,7 +207,7 @@ class Cart03Page extends MainCartPageBase{
 			"list" => $cart->getModules()
 		));
 
-		$this->buildForm($cart);
+		self::buildForm($cart);
 
 		$this->addModel("is_subtotal", array(
 			"visible" => (SOYSHOP_CART_IS_TAX_MODULE)
@@ -222,7 +222,7 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		//ユーザ情報の出力
-		$this->outputUser($cart);
+		self::outputUser($cart);
 
 		//備考 旧カートで使用していたことがあるため、残しておく
 		$memo = $cart->getOrderAttribute("memo");
@@ -232,7 +232,7 @@ class Cart03Page extends MainCartPageBase{
 			"value" => (isset($memo["value"])) ? $memo["value"] : ""
 		));
 
-		$this->addExtensions($cart);
+		self::addExtensions($cart);
 
 		//エラー周り
 		if(!$cart->hasError()){
@@ -247,7 +247,7 @@ class Cart03Page extends MainCartPageBase{
 		if($this->moduleCount === 0) $this->jumpNextPage($cart);
 	}
 
-	function buildForm(CartLogic $cart){
+	private function buildForm(CartLogic $cart){
 
 		$user = $this->user;
 
@@ -313,7 +313,7 @@ class Cart03Page extends MainCartPageBase{
 		));
 	}
 
-	function outputUser(CartLogic $cart){
+	private function outputUser(CartLogic $cart){
 
 		$user = $this->user;
 		$send = $this->send;
@@ -370,7 +370,7 @@ class Cart03Page extends MainCartPageBase{
 	/**
 	 * 表示用拡張ポイント
 	 */
-	function addExtensions($cart){
+	private function addExtensions(CartLogic $cart){
 		/* カート soyshop.cart */
 		SOYShopPlugin::load("soyshop.cart");
 		$delegate = SOYShopPlugin::invoke("soyshop.cart", array(
