@@ -197,4 +197,3 @@ class DeliveryNormalConfigFormPage extends WebPage{
 		$this->configObj = $configObj;
 	}
 }
-?>

@@ -174,4 +174,3 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.customfield","SOYShopOrderCustomfieldDeletageAction");
-?>

@@ -76,4 +76,38 @@ class DeliveryNormalUtil{
 	public static function saveDescription($value){
 		SOYShop_DataSets::put("delivery.default.description", $value);
 	}
+
+	public static function getDeliveryDateOptions($config){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.DeliveryDateFormatLogic");
+
+		//最短の日付を取得
+		$time = time();
+
+		//営業日を加味
+		if(
+			isset($config["use_re_calc_shortest_date"]) &&
+			$config["use_re_calc_shortest_date"] == 1 &&
+			SOYShopPluginUtil::checkIsActive("parts_calendar")
+		){
+			$time = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.BusinessDateLogic")->getNextBusinessDate();
+		}
+
+		$shortest = $time + (int)$config["delivery_shortest_date"] * 24 * 60 * 60;
+		$last = $shortest + (int)$config["delivery_date_period"] * 24 * 60 * 60;
+
+		$opts = array();
+
+		//指定なしの項目を追加
+		if(isset($config["use_delivery_date_unspecified"]) && $config["use_delivery_date_unspecified"] == 1){
+			$opts[] = "指定なし";
+		}
+
+		do{
+			$opts[date("Y-m-d", $shortest)] = $logic->convertDateString($config["delivery_date_format"], $shortest);
+			$shortest += 24 * 60 * 60;
+		}while($shortest < $last);
+
+		return $opts;
+	}
 }

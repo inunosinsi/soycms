@@ -25,7 +25,7 @@ class SOYShopItemOptionBase implements SOY2PluginAction{
 
 	}
 
-	function display($item){
+	function display(SOYShop_ItemOrder $itemOrder){
 
 	}
 
@@ -74,7 +74,9 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 				$this->_addition = $action->addition($this->index);
 				break;
 			case "display":
-				$this->_htmls = $action->display($this->item);
+				if($this->item instanceof SOYShop_ItemOrder){
+					$this->_htmls = $action->display($this->item);
+				}
 				break;
 			case "edit":
 			default:

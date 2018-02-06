@@ -12,4 +12,3 @@ class DeliveryNormalModuleInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "delivery_normal", "DeliveryNormalModuleInfo");
-?>
