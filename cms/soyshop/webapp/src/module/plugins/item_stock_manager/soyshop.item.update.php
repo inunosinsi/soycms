@@ -14,7 +14,7 @@ class ItemStockManagerUpdate extends SOYShopItemUpdateBase{
 			$obj->setItemId($item->getId());
 			$obj->setUpdateStock($newStock - $oldStock);
 			$obj->setMemo($logMessage);
-			
+
 			try{
 				$dao->insert($obj);
 			}catch(Exception $e){
@@ -36,4 +36,3 @@ class ItemStockManagerUpdate extends SOYShopItemUpdateBase{
 }
 
 SOYShopPlugin::extension("soyshop.item.update","item_stock_manager","ItemStockManagerUpdate");
-?>

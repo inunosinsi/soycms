@@ -18,4 +18,3 @@ class ItemStockManagerAdminList extends SOYShopAdminListBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.list", "item_stock_manager", "ItemStockManagerAdminList");
-?>

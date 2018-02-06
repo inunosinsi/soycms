@@ -4,7 +4,7 @@ class ItemStockManagerAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		//return SOY2PageController::createLink("Config.ShopConfig");
 	}
-	
+
 	function getLinkTitle(){
 		return "";
 	}
@@ -22,4 +22,3 @@ class ItemStockManagerAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "item_stock_manager", "ItemStockManagerAdminTop");
-?>
