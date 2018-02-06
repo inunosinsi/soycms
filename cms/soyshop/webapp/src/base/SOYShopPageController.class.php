@@ -4,6 +4,10 @@ class SOYShopPageController extends SOY2PageController{
 
 	function execute(){
 
+		/* init event */
+        SOYShopPlugin::load("soyshop.admin.prepare");
+        SOYShopPlugin::invoke("soyshop.admin.prepare");
+
 		$session = SOY2ActionSession::getUserSession();
 
 		/**
