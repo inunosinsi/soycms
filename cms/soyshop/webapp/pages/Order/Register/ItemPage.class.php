@@ -150,6 +150,9 @@ class ItemPage extends WebPage{
 		DisplayPlugin::toggle("successed", isset($_GET["successed"]));
 		DisplayPlugin::toggle("failed", isset($_GET["failed"]));
 
+		DisplayPlugin::toggle("drafted", (isset($_GET["draft"]) && $this->orderLogic->isBackupJsonFile()));
+		DisplayPlugin::toggle("undrafted", (isset($_GET["draft"]) && !$this->orderLogic->isBackupJsonFile()));
+
 		//パラメータから商品IDを取得
 		$userId = (isset($args[0]))?$args[0]:null;
 		if(isset($args[0]) && strlen($args[0])){
@@ -161,6 +164,11 @@ class ItemPage extends WebPage{
 
 		$this->addForm("form");
 		$this->buildForm();
+
+		//下書き保存用のリンク
+		$this->addLink("draft_link", array(
+			"link" => SOY2PageController::createLink("Order.Register.Item") . "?draft"
+		));
 
 	}
 

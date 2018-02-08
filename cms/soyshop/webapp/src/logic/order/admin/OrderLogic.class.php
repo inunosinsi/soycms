@@ -51,7 +51,7 @@ class OrderLogic extends SOY2LogicBase {
 		$this->cart->setItems($itemOrders);
 		$this->cart->save();
 
-		self::removeBackup();
+		//self::removeBackup();	//バックアップファイルは念のために残しておく
 		return true;
 	}
 
@@ -66,8 +66,11 @@ class OrderLogic extends SOY2LogicBase {
 	private function getJsonFilePath(){
 		static $path;
 		if(is_null($path)){
-			$dir = SOYSHOP_SITE_DIRECTORY . ".cache/json/";
-			if(!file_exists($dir)) mkdir($dir);
+			$dir = SOYSHOP_SITE_DIRECTORY;
+			foreach(array(".backup", "admin", "order", "item") as $d){
+				$dir .= $d . "/";
+				if(!file_exists($dir)) mkdir($dir);
+			}
 			$path = $dir . "backup.json";
 		}
 		return $path;
