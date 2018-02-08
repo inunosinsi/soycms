@@ -12,7 +12,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	private $list;
 
 	//読み込み準備
-	function prepare(){
+	private function prepare(){
 		if(!$this->dao){
 			$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
 			$this->list = SOYShop_OrderAttributeConfig::load(true);
@@ -21,7 +21,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 
 	function clear(CartLogic $cart){
 
-		$this->prepare();
+		self::prepare();
 
 		foreach($this->list as $config){
 			$cart->removeModule($cart->getAttribute("order_customfield_" . $config->getFieldId()));
@@ -34,7 +34,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 
 		$cart = $this->getCart();
 
-		$this->prepare();
+		self::prepare();
 
 		//ファイル用
 		$new = array();
@@ -199,7 +199,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	function hasError($param){
 		$cart = $this->getCart();
 
-		$this->prepare();
+		self::prepare();
 
 		//paramの再配列
 		$array = array();
@@ -258,7 +258,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		//出力する内容を格納する
 		$array = array();
 
-		$this->prepare();
+		self::prepare();
 
 		foreach($this->list as $config){
 			$value = null;
@@ -293,7 +293,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 
 	function display($orderId){
 
-		$this->prepare();
+		self::prepare();
 
 		//リストの再配列
 		$array = array();
@@ -344,7 +344,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	 * @return array labelとformの連想配列を格納
 	 */
 	function edit($orderId){
-		$this->prepare();
+		self::prepare();
 
 		//扱いやすい形に整形
 		$attrList = array();
@@ -464,7 +464,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	 * @return array saveするための配列
 	 */
 	function config($orderId){
-		$this->prepare();
+		self::prepare();
 
 		//リストの再配列
 		$array = array();
@@ -526,7 +526,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	}
 
 	//最新の注文IDを取得する
-	function getNewOrderId(){
+	private function getNewOrderId(){
 		$dao = new SOY2DAO();
 
 		$sql = "SELECT id "
@@ -535,12 +535,11 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			  ."LIMIT 1";
 		try{
 			$result = $dao->executeQuery($sql);
-			$id = $result[0]["id"] + 1;
 		}catch(Exception $e){
-			$id = 1;
+			return 1;
 		}
 
-		return $id;
+		return (isset($result[0]["id"])) ? (int)$result[0]["id"] + 1 : 1;
 	}
 
 	private function getCacheDir(){
