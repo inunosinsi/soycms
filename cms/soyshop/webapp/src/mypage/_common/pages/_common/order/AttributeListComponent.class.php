@@ -1,9 +1,9 @@
 <?php
 
 class AttributeListComponent extends HTMLList{
-	
-	protected function populateItem($item) {
 
+	protected function populateItem($item) {
+		
 		$this->addLabel("attribute_title", array(
 			"text" => (isset($item["name"])) ? $item["name"] : ""
 		));
@@ -15,4 +15,3 @@ class AttributeListComponent extends HTMLList{
 		if(isset($item["hidden"]) && $item["hidden"])return false;
 	}
 }
-?>

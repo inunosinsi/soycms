@@ -2,8 +2,8 @@
 
 class OrderCustomfieldListComponent extends HTMLList {
 
-	protected function populateItem($item) {
-
+	protected function populateItem($item, $key) {
+		
 		$this->addLabel("customfield_title", array(
 			"text" => (isset($item["name"])) ? $item["name"] : ""
 		));
@@ -12,7 +12,7 @@ class OrderCustomfieldListComponent extends HTMLList {
 		if(isset($item["style"])){
 			$val = "<span style=\"" . $item["style"] . "\">" . $val . "</span>";
 		}
-		
+
 		if(isset($item["link"])){
 			$val = "<a href=\"" . $item["link"] . "\" target=\"_blank\">" . $val . "</a>";
 		}

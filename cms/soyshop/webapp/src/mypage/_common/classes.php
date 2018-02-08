@@ -249,8 +249,15 @@ class MainMyPagePageBase extends WebPage{
 	}
 
 	function convertKana($str){
-		$str = trim($str);
-		return mb_convert_kana($str, "CK", "UTF-8");
+		return mb_convert_kana(self::_trim($str), "CK", "UTF-8");
+	}
+
+	function convertDate($date){
+		return mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+	}
+
+	function convertDateText($date){
+		return date("Y-m-d", $date);
 	}
 
 	/* error */

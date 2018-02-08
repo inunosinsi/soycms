@@ -46,6 +46,13 @@ class DetailPage extends MainMyPagePageBase{
 		$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
         if(!$order->isOrderDisplay()) $this->jump("order");
 
+		//伝票番号プラグイン slip_number
+		$slipNumber = (SOYShopPluginUtil::checkIsActive("slip_number")) ? SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic")->getSlipNumberByOrderId($order->getId()) : null;
+		DisplayPlugin::toggle("slip_number", strlen($slipNumber));
+		$this->addLabel("slip_number", array(
+			"text" => $slipNumber
+		));
+
         //注文番号
         $this->addLabel("order_number", array(
             "text" => $order->getTrackingNumber()
@@ -254,15 +261,18 @@ class DetailPage extends MainMyPagePageBase{
 
     private function getCustomfield(){
         SOYShopPlugin::load("soyshop.order.customfield");
-        $delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
+        $list = SOYShopPlugin::invoke("soyshop.order.customfield", array(
             "mode" => "admin",
             "orderId" => $this->orderId
-        ));
+        ))->getDisplay();
+
+		if(!count($list)) return array();
 
         $array = array();
-        foreach($delegate->getDisplay() as $obj){
+        foreach($list as $key => $obj){
+			if($key == "slip_number") continue;	//伝票番号プラグインのみ別扱いのため、ここではスルー
             if(is_array($obj)){
-                foreach($obj as $value){
+				foreach($obj as $value){
                     $array[] = $value;
                 }
             }
