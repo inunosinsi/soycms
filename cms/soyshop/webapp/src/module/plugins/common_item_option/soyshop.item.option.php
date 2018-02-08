@@ -169,6 +169,11 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		return implode("<br />", $html);
 	}
 
+	function add(){
+		$list = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
+		
+	}
+
 	/**
 	 * 注文詳細で登録されている商品オプションを変更できるようにする
 	 */

@@ -28,9 +28,9 @@ class OrderEditOnMypageCart extends SOYShopCartBase{
 					$itemOrder->setTotalPrice($itemOrder->getItemCount() * $itemOrder->getItemPrice());
 					$itemOrder->setItemName($item->getName());
 
-					/** @ToDo 商品オプションプラグイン soyshop_ordersテーブルのattributeに突っ込む **/
+					// 商品オプション等
 					if(isset($_POST["item_option"])){
-
+						$itemOrder->setAttributes($_POST["item_option"]);
 					}
 
 					$itemOrders[] = $itemOrder;
