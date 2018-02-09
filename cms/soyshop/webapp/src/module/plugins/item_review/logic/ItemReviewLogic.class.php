@@ -1,5 +1,5 @@
 <?php
-SOY2::import("module.plugins.item_review.common.ItemReviewCommon");
+SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
 SOY2::imports("module.plugins.item_review.domain.*");
 class ItemReviewLogic extends SOY2LogicBase{
 
@@ -19,7 +19,7 @@ class ItemReviewLogic extends SOY2LogicBase{
 	function registerReview($array){
 		$review = SOY2::cast("SOYShop_ItemReview", (object)$array);
 
-		$config = ItemReviewCommon::getConfig();
+		$config = ItemReviewUtil::getConfig();
 
 		//値を挿入する
 		$review->setItemId(self::getItemId());

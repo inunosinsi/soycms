@@ -1,9 +1,9 @@
 <section>
 	<h1 class="cart_txt">レビューの編集</h1>
 	<section class="soycart_narrow">
-		<div class="notice" soy:id="update">更新しました</div>
-		<div class="error" soy:id="failed">更新に失敗しました</div>
-		
+		<div class="notice" soy:display="updated">更新しました</div>
+		<div class="error" soy:display="failed">更新に失敗しました</div>
+
 		<form soy:id="form">
 			<table class="soycart_form">
 				<tr>
@@ -13,8 +13,8 @@
 				<tr>
 					<th nowrap>評価</th>
 					<td>
-						<select name="" id="" soy:id="evaluation">
-						</select>
+						<!-- soy:display="evaluation_select" --><select name="" id="" soy:id="evaluation"></select><!-- /soy:display="evaluation_select" -->
+						<!-- soy:display="evaluation_star" --><!-- soy:id="evaluation_star" /--><!-- /soy:display="evaluation_star" -->
 					</td>
 				</tr>
 				<tr>
@@ -46,5 +46,5 @@
 			<p class="alC"><a href="#" soy:id="review_link">&lt;&lt; レビュー一覧へ戻る</a></p>
 		</form>
 	</section>
-				
+
 </section>

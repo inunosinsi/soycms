@@ -1,5 +1,5 @@
 <?php
-SOY2::import("module.plugins.item_review.common.ItemReviewCommon");
+SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
 SOY2::imports("module.plugins.item_review.domain.*");
 SOY2::imports("module.plugins.item_review.logic.*");
 class IndexPage extends MainMyPagePageBase{
@@ -23,10 +23,12 @@ class IndexPage extends MainMyPagePageBase{
 			"text" => $user->getName()
 		));
 
+		DisplayPlugin::toggle("deleted", isset($_GET["deleted"]));
 		$this->addModel("deleted", array(
 			"visible" => (isset($_GET["deleted"]))
 		));
 
+		DisplayPlugin::toggle("failed", isset($_GET["failed"]));
 		$this->addModel("failed", array(
 			"visible" => (isset($_GET["failed"]))
 		));
@@ -35,11 +37,8 @@ class IndexPage extends MainMyPagePageBase{
 		//表示件数
 		$limit = $this->limit;
 		$page = (isset($args[0])) ? (int)$args[0] : $this->getParameter("page");
-		if(array_key_exists("page", $_GET)){
-			$page = $_GET["page"];
-		}
+		if(array_key_exists("page", $_GET)) $page = $_GET["page"];
 		$page = max(1, $page);
-
 		$offset = ($page - 1) * $limit;
 
 		$searchLogic = SOY2Logic::createInstance("logic.review.SearchReviewLogic");
@@ -67,10 +66,12 @@ class IndexPage extends MainMyPagePageBase{
 
 		$pager->buildPager($this);
 
+		DisplayPlugin::toggle("no_review", !count($reviews));
 		$this->addModel("no_review", array(
 			"visible" => (count($reviews) === 0)
 		));
 
+		DisplayPlugin::toggle("is_review", count($reviews));
 		$this->addModel("is_review", array(
 			"visible" => (count($reviews) > 0)
 		));
@@ -78,15 +79,11 @@ class IndexPage extends MainMyPagePageBase{
 		$this->createAdd("reviews_list", "_common.review.MypageReviewsListComponent", array(
 			"list" => $reviews,
 			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO"),
-			"config" => $this->getConfig()
+			"config" => ItemReviewUtil::getConfig()
 		));
 
 		$this->addLink("top_link", array(
 			"link" => soyshop_get_mypage_top_url()
 		));
     }
-
-    function getConfig(){
-		return ItemReviewCommon::getConfig();
-	}
 }

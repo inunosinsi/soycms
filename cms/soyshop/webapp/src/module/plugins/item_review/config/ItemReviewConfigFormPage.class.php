@@ -4,7 +4,7 @@ class ItemReviewConfigFormPage extends WebPage{
 
     function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
-    	SOY2::import("module.plugins.item_review.common.ItemReviewCommon");
+    	SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
     }
 
     function doPost(){
@@ -23,6 +23,7 @@ class ItemReviewConfigFormPage extends WebPage{
     		$config["edit"] = (isset($config["edit"])) ? 1 : null;
     		$config["captcha"] = (isset($config["captcha"])) ? trim($config["captcha"]) : "";
     		$config["captcha_img"] = (isset($config["captcha_img"])) ? 1 : null;
+			$config["evaluation_star"] = (isset($config["evaluation_star"])) ? 1 : null;
 
     		$config["point"] = (isset($config["point"]) && is_numeric($config["point"])) ? (int)$config["point"] : 0;
 
@@ -32,7 +33,7 @@ class ItemReviewConfigFormPage extends WebPage{
     }
 
     function execute(){
-    	$config = ItemReviewCommon::getConfig();
+    	$config = ItemReviewUtil::getConfig();
 
     	parent::__construct();
 
@@ -96,6 +97,13 @@ class ItemReviewConfigFormPage extends WebPage{
     		"selected" => (isset($config["captcha_img"]) && $config["captcha_img"] == 1),
     		"label" => "画像認証による投稿制限を行う"
     	));
+
+		$this->addCheckBox("edit_evaluation_star", array(
+			"name" => "Config[evaluation_star]",
+			"value" => 1,
+			"selected" => (isset($config["evaluation_star"]) && $config["evaluation_star"] == 1),
+			"label" => "マイページでのレビュー変更時の評価の変更を5つ星をクリックして選択する形式にする"
+		));
     }
 
     function setConfigObj($obj) {

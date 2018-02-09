@@ -1,16 +1,14 @@
 <section id="cart_detail">
 	<h1 class="cart_txt"><!-- soy:id="user_name" -->齋藤 毅<!-- /soy:id="user_name" -->さんのレビュー一覧</h1>
-	
-	<!-- soy:id="no_review" -->
-	<aside class="note">
-	<p class="alC">投稿履歴がありません。</p>
-	</aside>
-	<!-- /soy:id="no_review" -->
-	
-	<div class="notice" soy:id="deleted">削除しました</div>
-	<div class="error" soy:id="failed">更新に失敗しました</div>
 
-	<!-- soy:id="is_review"  -->
+	<aside class="note" soy:display="no_review">
+		<p class="alC">投稿履歴がありません。</p>
+	</aside>
+
+	<div class="notice" soy:display="deleted">削除しました</div>
+	<div class="error" soy:display="failed">更新に失敗しました</div>
+
+	<!-- soy:display="is_review"  -->
 	<div class="cart_detail_dl">
 		<div class="cart_li title">
 			<div class="cart_itemthumb">投稿日時</div>
@@ -21,7 +19,7 @@
 				<li>&nbsp;</li>
 			</ul>
 		</div>
-	
+
 		<!-- soy:id="reviews_list" -->
 		<div class="cart_li">
 			<div class="cart_itemthumb" soy:id="create_date">2011年2月24日　12:02</div>
@@ -38,11 +36,11 @@
 					</li>
 				</ul>
 			</div>
-					
+
 		</div>
 		<!-- /soy:id="reviews_list" -->
 	</div>
-	
+
 	<!-- soy:id="has_multi_page" -->
 	<div class="item_pager clearfix">
 		<ul>
@@ -54,10 +52,10 @@
 			<!-- /soy:id="has_next" -->
 			<li><!-- soy:id="current_page" /-->/<!-- soy:id="last_page" /--></li>
 		</ul>
-	</div>  
+	</div>
 	<!-- /soy:id="has_multi_page" -->
-			
-	<!-- /soy:id="is_review"  -->
+
+	<!-- /soy:display="is_review"  -->
 </section>
 
 <p class="textcenter"><a href="#" cms:id="top_link">&lt;&lt; マイページトップへ戻る</a></p>

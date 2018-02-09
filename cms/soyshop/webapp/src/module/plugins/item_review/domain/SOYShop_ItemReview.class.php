@@ -108,8 +108,8 @@ class SOYShop_ItemReview {
 	}
 
 	function getEvaluationString(){
-		SOY2::import("module.plugins.item_review.common.ItemReviewCommon");
-		$config = ItemReviewCommon::getConfig();
+		SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
+		$config = ItemReviewUtil::getConfig();
 
 		$rank = $this->getEvaluation();
 		$notRank = 5 - (int)$rank;
