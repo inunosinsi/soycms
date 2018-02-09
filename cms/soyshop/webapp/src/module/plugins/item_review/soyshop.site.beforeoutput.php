@@ -165,6 +165,12 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			"selected" => (isset($this->review["evaluation"])) ? $this->review["evaluation"] : null
 		));
 
+		//Amazon形式の星をクリックで評価
+		$page->addLabel("evaluation_star", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"html" => self::buildEvaluateArea()
+		));
+
 		$page->addInput("captcha_input", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"name" => "Review[captcha]",
@@ -195,15 +201,18 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		));
 	}
 
-	function getItemName($itemId){
+	private function buildEvaluateArea(){
+		SOY2::import("module.plugins.item_review.common.ItemReviewCommon");
+		$config = ItemReviewCommon::getConfig();
 
-		try{
-			$item = $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			$item = new SOYShop_Item();
-		}
+		$html = array();
+		$html[] = "<span id=\"evaluate_star\"></span>";
+		$html[] = "<input type=\"hidden\" name=\"Review[evaluation]\" id=\"evaluate_value\" value=\"1\">";
+		$html[] = "<input type=\"hidden\" id=\"evaluate_color\" value=\"" . $config["code"] . "\">";
+		$html[] = "<script>\n" . file_get_contents(dirname(__FILE__) . "/js/evaluate.js") . "\n</script>";
+		$html[] = "<style>#evaluate_star{-moz-user-select: none;-webkit-user-select: none;-ms-user-select: none;}</style>";
 
-		return $item->getName();
+		return implode("\n", $html);
 	}
 
 	/**
