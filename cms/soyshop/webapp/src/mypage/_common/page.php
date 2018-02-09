@@ -5,6 +5,7 @@
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
+SOY2::import("util.SOYShopPluginUtil");
 include_once(dirname(__FILE__) . "/classes.php");
 SOY2HTMLConfig::PageDir(dirname(dirname(__FILE__)). "/" . SOYSHOP_CURRENT_MYPAGE_ID . "/pages/");
 

@@ -57,9 +57,12 @@ class IndexPage extends MainMyPagePageBase{
             "list" => $orders,
         ));
 
+		DisplayPlugin::toggle("has_order", (boolean)$total);
         $this->addModel("has_order", array(
             "visible" => (boolean)$total
         ));
+
+		DisplayPlugin::toggle("no_order", !(boolean)$total);
         $this->addModel("no_order", array(
             "visible" => !( (boolean)$total )
         ));

@@ -14,7 +14,7 @@
 		<form soy:id="form">
 			<table class="soycart_form">
 				<tr>
-					<th nowrap>お名前<span class="require">（必須）</span></th>
+					<th nowrap>お名前<span class="require" soy:id="required_label">（必須）</span></th>
 
 					<td>
 						<p class="error" soy:id="name_error">お名前が正しく入力されていません。</p>
@@ -23,7 +23,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th nowrap>お名前カナ<span class="require">（必須）</span></th>
+					<th nowrap>お名前カナ<span class="require" soy:id="required_label*">（必須）</span></th>
 					<td>
 						<p class="error" soy:id="reading_error">お名前カナが正しく入力されていません。</p>
 						<input name="" type="text" id="" class="w130" soy:id="reading">
@@ -35,7 +35,7 @@
 					<td><input name="" type="text" id="" class="w300" soy:id="office"></td>
 				</tr>
 				<tr id="zipcode">
-					<th nowrap>郵便番号<span class="require">（必須）</span></th>
+					<th nowrap>郵便番号<span class="require" soy:id="required_label*">（必須）</span></th>
 					<td>
 						<p class="error" soy:id="zipcode_error">郵便番号が正しく入力されていません。</p>
 						<input name="" type="text" id="" class="input-zip w80" soy:id="zipcode">
@@ -44,7 +44,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th nowrap>ご住所<span class="require">（必須）</span></th>
+					<th nowrap>ご住所<span class="require" soy:id="required_label*">（必須）</span></th>
 					<td>
 						<p class="error" soy:id="address_error">ご住所が正しく入力されていません。</p>
 						<select name="" id="" class="input-pref" soy:id="area">
@@ -74,7 +74,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th nowrap>電話番号<span class="require">（必須）</span></th>
+					<th nowrap>電話番号<span class="require" soy:id="required_label*">（必須）</span></th>
 					<td>
 						<p class="error" soy:id="telephonenumber_error">電話番号が正しく入力されていません。</p>
 						<input name="" type="text" id="" class="w130" soy:id="telephonenumber">

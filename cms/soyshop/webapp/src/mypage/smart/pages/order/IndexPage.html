@@ -1,13 +1,11 @@
 <section id="cart_detail">
 	<h1 class="cart_txt"><!-- soy:id="user_name" -->曽井　太郎<!-- /soy:id="user_name" -->さんの購入履歴一覧</h1>
-	
-	<!-- soy:id="no_order" -->
-	<aside class="note">
+
+	<aside class="note" soy:display="no_order">
 		<p class="alC">購入履歴がありません。</p>
 	</aside>
-	<!-- /soy:id="no_order" -->
-	
-	<!-- soy:id="has_order" -->
+
+	<!-- soy:display="has_order" -->
 	<div class="cart_detail_dl">
 		<div class="cart_li title">
 			<div class="cart_itemthumb">ご注文時刻</div>
@@ -38,7 +36,7 @@
 		</div>
 		<!-- /soy:id="order_list" -->
 	</div>
-	
+
 	<!-- soy:id="has_multi_page" -->
 	<div class="item_pager clearfix">
 		<ul>
@@ -50,10 +48,10 @@
 			<!-- /soy:id="has_next" -->
 			<li><!-- soy:id="current_page" /-->/<!-- soy:id="last_page" /--></li>
 		</ul>
-	</div>  
+	</div>
 	<!-- /soy:id="has_multi_page" -->
 
-	<!-- /soy:id="has_order" -->
+	<!-- /soy:display="has_order" -->
 </section>
 
 <p class="textcenter"><a soy:id="top_link">&lt;&lt; マイページトップへ戻る</a></p>

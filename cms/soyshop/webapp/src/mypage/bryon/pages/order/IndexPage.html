@@ -7,13 +7,11 @@
 		<p>注文をキャンセルしました。</p>
 	</div>
 
-    <!-- soy:id="no_order" -->
-    <aside class="note">
+    <aside class="note" soy:display="no_order">
         <p class="alC">購入履歴がありません。</p>
     </aside>
-    <!-- /soy:id="no_order" -->
 
-    <!-- soy:id="has_order" -->
+    <!-- soy:display="has_order" -->
     <table class="cart_detail_table">
         <thead>
             <tr>
@@ -65,7 +63,7 @@
     </div>
     <!-- /soy:id="has_multi_page" -->
 
-    <!-- /soy:id="has_order" -->
+    <!-- /soy:display="has_order" -->
 
     <p class="alC"><a soy:id="top_link">&lt;&lt; マイページトップへ戻る</a></p>
 </section>
