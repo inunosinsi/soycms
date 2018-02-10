@@ -129,15 +129,15 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	private function buildForm($page){
 
 		$user = $this->reviewLogic->getUser();
-		$nickname = (!is_null($user->getNickname())) ? $user->getNickname() : $user->getName();
+		$nickname = (!is_null($user->getNickname()) && strlen($user->getNickname())) ? $user->getNickname() : $user->getName();
 
 		$page->addForm("review_form", array(
 			"soy2prefix" => "block"
 		));
-
+		
 		$page->addModel("review_error", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"visible" => (!isset($this->review["title"]))
+			"visible" => (count($this->review) && !isset($this->review["title"]))
 		));
 
 		$page->addInput("nickname", array(
