@@ -150,6 +150,9 @@ footer{
 .textcenter{
 	text-align: center;
 }
+.textmt20{
+	margin-top:20px;
+}
 .clearfix:after{
 	content: "";
 	clear: both;

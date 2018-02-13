@@ -4,6 +4,7 @@
 	<h1>ご注文内容</h1>
 	<div class="cart_detail_dl">
 		<div class="cart_li title">
+			<div class="cart_itemthumb">&nbsp;</div>
 			<div class="cart_itemtitle">商品</div>
 			<ul>
 				<li class="cart_itemid">商品番号</li>
@@ -57,6 +58,8 @@
 				<li class="sumprice"><!-- soy:id="order_total_price" -->4,200<!-- /soy:id="order_total_price" -->円</li>
 			</ul>
 		</div>
+
+		<p class="textcenter textmt20" soy:display="order_edit"><a soy:id="edit_link" class="table_btn">注文詳細の編集</a></p>
 	</div>
 
 	<!-- soy:id="is_download_files" -->
@@ -127,6 +130,8 @@
 				<!-- /soy:id="customfield_list" -->
 			</dl>
 		</div>
+
+		<p class="textcenter" soy:display="order_module"><a soy:id="module_link" class="table_btn">配送時間等の編集</a></p>
 	</section>
 
 	<section>
@@ -146,6 +151,8 @@
 				<dd><!-- soy:id="user_tel" -->090-7425-4064<!-- /soy:id="user_tel" --></dd>
 			</dl>
 		</div>
+
+		<p class="textcenter" soy:display="order_send_address"><a soy:id="send_address_link" class="table_btn">お届け先の情報の編集</a></p>
 	</section>
 
 	<section>
@@ -165,7 +172,9 @@
 				<dd><!-- soy:id="claimed_tel" -->090-7425-4064<!-- /soy:id="claimed_tel" --></dd>
 			</dl>
 		</div>
+		<p class="textcenter" soy:display="order_claimed_address"><a soy:id="claimed_address_link" class="table_btn">請求先の情報の編集</a></p>
 	</section>
-</section>
 
-<p class="textcenter"><a href="#" soy:id="top_link">&lt;&lt; マイページトップへ戻る</a></p>
+	<p class="textcenter" soy:display="order_cancel"><a soy:id="cancel_link" class="table_btn">注文のキャンセル</a></p>
+	<p class="textcenter"><a href="#" soy:id="top_link">&lt;&lt; マイページトップへ戻る</a></p>
+</section>
