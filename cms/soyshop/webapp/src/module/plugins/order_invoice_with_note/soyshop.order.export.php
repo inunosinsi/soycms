@@ -21,6 +21,7 @@ class OrderInvoiceWithNoteExport extends SOYShopOrderExportBase{
 	 * export エクスポート実行
 	 */
 	function export($orders){
+		if(!defined("ORDER_DOCUMENT_MODE")) define("ORDER_DOCUMENT_MODE", "delivery");
 		if(!defined("ORDER_DOCUMENT_LABEL")) define("ORDER_DOCUMENT_LABEL", "納品書");
 		if(!defined("ORDER_TEMPLATE")) define("ORDER_TEMPLATE", "default");
 		$html = file_get_contents(dirname(__FILE__) . "/template/" . ORDER_TEMPLATE . ".html");

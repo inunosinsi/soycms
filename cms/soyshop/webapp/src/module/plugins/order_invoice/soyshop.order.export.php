@@ -21,6 +21,7 @@ class SOYShopMainInvoiceExport extends SOYShopOrderExportBase{
 	 * export エクスポート実行
 	 */
 	function export($orders){
+		if(!defined("ORDER_DOCUMENT_MODE")) define("ORDER_DOCUMENT_MODE", "delivary");
 		if(!defined("ORDER_DOCUMENT_LABEL")) define("ORDER_DOCUMENT_LABEL", "納品書");
 
 		SOY2::import("module.plugins.order_invoice.common.OrderInvoiceCommon");

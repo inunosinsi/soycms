@@ -20,6 +20,11 @@ class ContinuousPage extends HTMLTemplatePage{
 			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO"),
 			"config" => OrderInvoiceCommon::getConfig()
 		));
+
+		$logic = SOY2Logic::createInstance("module.plugins.order_invoice.logic.LogLogic");
+		foreach($this->orders as $order){
+			$logic->save($order);
+		}
 	}
 
 }

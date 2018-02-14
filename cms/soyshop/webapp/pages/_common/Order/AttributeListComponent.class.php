@@ -14,5 +14,8 @@ class AttributeListComponent extends HTMLList {
 
 		//オーダーカスタムフィールドの値は表示しない
 		if(strpos($key, "order_customfield") === 0 || strpos($key, "order_date_customfield") === 0) return false;
+
+		//管理画面でも表示させたくない値
+		if(isset($item["admin"]) && $item["admin"] === false) return false;
 	}
 }

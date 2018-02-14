@@ -73,7 +73,7 @@ class IndexPage extends WebPage{
 		$searchLogic->setOrder($sort);
 		$total = $searchLogic->getTotalCount();
 		$orders = $searchLogic->getOrders();
-
+		
 		//表示順リンク
 		self::buildSortLink($searchLogic,$sort);
 
@@ -213,7 +213,7 @@ class IndexPage extends WebPage{
 		))->getList();
 
 		DisplayPlugin::toggle("export_module_menu", (count($list) > 0));
-		
+
 		return $list;
 	}
 

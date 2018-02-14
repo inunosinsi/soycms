@@ -12,14 +12,18 @@ class InvoicePage extends HTMLTemplatePage{
 		SOY2::import("module.plugins.order_invoice.common.OrderInvoiceCommon");
 		SOY2::imports("module.plugins.order_invoice.component.*");
 
+		$order = self::getOrder();
+
 		/*** 注文情報 ***/
 		$this->createAdd("continuous_print", "InvoiceListComponent", array(
-			"list" => array(self::getOrder()),
+			"list" => array($order),
 			"itemOrderDao" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO"),
 			"userDao" => SOY2DAOFactory::create("user.SOYShop_UserDAO"),
 			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO"),
 			"config" => OrderInvoiceCommon::getConfig()
 		));
+
+		SOY2Logic::createInstance("module.plugins.order_invoice.logic.LogLogic")->save($order);
 	}
 
 	private function getOrder(){

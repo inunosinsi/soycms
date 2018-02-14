@@ -176,7 +176,6 @@ class SearchOrderLogic extends SOY2LogicBase{
 		if(isset($search["userGender"]) && count($search["userGender"])){
 			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");
 			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where gender IN (" . implode(",", $search["userGender"]) . "))";
-			var_dump($where);
 		}
 
 		if(isset($search["userBirthday"]) && count($search["userBirthday"])){
@@ -249,6 +248,19 @@ class SearchOrderLogic extends SOY2LogicBase{
 				$attr_where[] = "attributes LIKE '%" . $p . "%'";
 			}
 			$where[] = implode(" OR ", $attr_where);
+		}
+
+		//拡張ポイントから出力したフォーム用
+		SOYShopPlugin::load("soyshop.order.search");
+		$queries = SOYShopPlugin::invoke("soyshop.order.search", array(
+			"mode" => "search",
+			"params" => (isset($search["customs"])) ? $search["customs"] : array()
+		))->getQueries();
+
+		foreach($queries as $moduleId => $values){
+			if(is_null($values["queries"]) || !count($values["queries"])) continue;
+			$where = array_merge($where, $values["queries"]);
+			if(isset($values["binds"])) $binds = array_merge($binds, $values["binds"]);
 		}
 
 		$this->where = $where;

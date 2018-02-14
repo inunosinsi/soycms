@@ -15,29 +15,20 @@ class SOYShopOrderProcessDeletageAction implements SOY2PluginDelegateAction{
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
 		if($action instanceof SOYShopOrderProcess){
-			$cart = $this->getCart();
 			switch($this->mode){
 				case "cart03post":
 				default:
-					$action->execute($cart);
+					$action->execute($this->cart);
 					break;
 			}
 		}
 	}
-	
-	function getCart(){
-		return $this->cart;
-	}
+
 	function setCart($cart){
 		$this->cart = $cart;
-	}
-	
-	function getMode(){
-		return $this->mode;
 	}
 	function setMode($mode){
 		$this->mode = $mode;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.process", "SOYShopOrderProcessDeletageAction");
-?>

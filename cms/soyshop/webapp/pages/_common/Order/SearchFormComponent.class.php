@@ -37,6 +37,7 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	private $itemCode;
 
 	private $paymentMethod = array();
+	private $customs = array();	//プラグインから出力される項目用
 
 	/**
 	 * フォームの作成
@@ -195,6 +196,10 @@ class SearchFormComponent extends SOYBodyComponentBase{
 			"html" => self::getPaymentCheckboxesHTML()
 		));
 
+		$this->createAdd("custom_search_item_list", "_common.Order.CustomSearchItemListComponent", array(
+			"list" => self::getCustomSearchItems()
+		));
+
 		parent::execute();
 	}
 
@@ -221,6 +226,15 @@ class SearchFormComponent extends SOYBodyComponentBase{
 		}
 
 		return implode("\n", $html);
+	}
+
+	private function getCustomSearchItems(){
+		//検索フォームの拡張ポイント
+		SOYShopPlugin::load("soyshop.order.search");
+		return SOYShopPlugin::invoke("soyshop.order.search", array(
+			"mode" => "form",
+			"params" => $this->getCustoms()
+		))->getSearchItems();
 	}
 
 	function getUserArea(){
@@ -434,5 +448,12 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	}
 	function setPaymentMethod($paymentMethod){
 		$this->paymentMethod = $paymentMethod;
+	}
+
+	function getCustoms(){
+		return $this->customs;
+	}
+	function setCustoms($customs){
+		$this->customs = $customs;
 	}
 }
