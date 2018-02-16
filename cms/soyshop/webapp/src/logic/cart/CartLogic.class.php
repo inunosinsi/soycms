@@ -1086,18 +1086,18 @@ class CartLogic extends SOY2LogicBase{
 			$item->setOrderId($id);
 
 			//商品オプションがある場合は、attributeに値を挿入
-			$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
+			$attrs = SOYShopPlugin::invoke("soyshop.item.option", array(
 				"mode" => "order",
 				"index" => $key
-			));
-			$item->setAttributes($delegate->getAttributes());
+			))->getAttributes();
+			$item->setAttributes($attrs);
 
 			//加算オプションがある場合は、is_additionに値を挿入
-			$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
+			$add = SOYShopPlugin::invoke("soyshop.item.option", array(
 				"mode" => "addition",
 				"index" => $key
-			));
-			$item->setIsAddition($delegate->getAddition());
+			))->getAddition();
+			$item->setIsAddition($add);
 
 			$itemOrderId = $itemOrderDAO->insert($item);
 

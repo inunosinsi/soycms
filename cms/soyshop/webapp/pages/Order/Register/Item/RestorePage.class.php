@@ -4,7 +4,7 @@ class RestorePage extends WebPage {
 
 	function __construct(){
 		if(soy2_check_token()){
-			if(SOY2Logic::createInstance("logic.order.admin.OrderLogic")->restore()){
+			if(SOY2Logic::createInstance("logic.order.admin.AdminOrderLogic")->restore()){
 				SOY2PageController::jump("Order.Register.Item?successed");
 			}
 		}

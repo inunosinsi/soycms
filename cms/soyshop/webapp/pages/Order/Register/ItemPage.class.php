@@ -144,7 +144,7 @@ class ItemPage extends WebPage{
 
 	function __construct($args) {
 		$this->cart = AdminCartLogic::getCart();
-		$this->orderLogic = SOY2Logic::createInstance("logic.order.admin.OrderLogic");
+		$this->orderLogic = SOY2Logic::createInstance("logic.order.admin.AdminOrderLogic");
 		parent::__construct();
 
 		DisplayPlugin::toggle("successed", isset($_GET["successed"]));

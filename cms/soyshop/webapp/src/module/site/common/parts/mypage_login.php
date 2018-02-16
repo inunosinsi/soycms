@@ -175,6 +175,16 @@ function soyshop_parts_mypage_login($html, $page){
 		"link" => soyshop_get_mypage_url() . "/credit/payJp",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
+
+	$obj->addModel("is_inquiry", array(
+		"visible" => (SOYShopPluginUtil::checkIsActive("inquiry_on_mypage")),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+	$obj->addLink("inquiry_link", array(
+		"link" => soyshop_get_mypage_url() . "/inquiry",
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
 	$obj->addLink("withdraw_link", array(
 		"link" => soyshop_get_mypage_url() . "/withdraw",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
@@ -193,4 +203,3 @@ function soyshop_parts_mypage_login($html, $page){
 
 	$obj->display();
 }
-?>

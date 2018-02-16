@@ -75,8 +75,9 @@ class SearchPage extends WebPage{
 	private function buildSearchResult(){
 		$cnds = self::getParameter("search_condition");
 		if(!is_array($cnds) || is_null($cnds)) $cnds = array();
+		//if(count($cnds)) $cnds["is_child"] = 1;	// @ToDo 子商品は常に表示
 
-		//検索結果は5件
+		//検索結果は15件
 		if(count($cnds)){
 			$limit = 15;
 			$searchLogic = SOY2Logic::createInstance("logic.shop.item.SearchItemLogic");

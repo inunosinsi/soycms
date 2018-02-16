@@ -141,7 +141,12 @@ class CommonItemOption extends SOYShopItemOptionBase{
 			$optionId = self::ADMIN_OPTION_KEY;
 			$obj = $this->getCartAttributeId($optionId, $index, $itemId);
 			$value = $cart->getAttribute($obj);
-			if(strlen) $array[$optionId] = $value;
+			if(isset($value) && strlen($value)) {
+				$array[$optionId] = $value;
+			//セッションに値が格納されていない場合はitemOrderのattributeを見る
+			}else{
+				$array = $items[$index]->getAttributeList();
+			}
 		}
 
 		return (count($array) > 0) ? soy2_serialize($array) : null;
@@ -171,7 +176,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 
 	function add(){
 		$list = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
-		
+
 	}
 
 	/**

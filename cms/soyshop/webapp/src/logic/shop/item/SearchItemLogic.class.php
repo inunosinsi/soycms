@@ -144,7 +144,7 @@ class SearchItemLogic extends SOY2LogicBase{
 			$where[] = "(" . implode(" OR ", $openConditions) .")";
 		}
 
-		//小商品の表示
+		//子商品の表示
 		if(!isset($search["is_child"])){
 			$where[] = " item_type in (" . $this->getItemType() . ")";
 		}
@@ -186,7 +186,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		$array = SOYShop_Item::getItemTypes();
 		$obj = array();
 		foreach($array as $value){
-			$obj[] = "'" . $value."'";
+			$obj[] = "'" . $value . "'";
 		}
 		return implode(",", $obj);
 	}

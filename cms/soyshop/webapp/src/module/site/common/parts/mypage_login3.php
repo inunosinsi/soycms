@@ -10,4 +10,3 @@ function soyshop_parts_mypage_login3($html,$page){
 	}
 	soyshop_parts_mypage_login($html, $page);
 }
-?>
