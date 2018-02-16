@@ -4,24 +4,24 @@
  * @table EntryLabel
  */
 class EntryLabel {
-	
+
 	const ORDER_MAX = 10000000;
-	
+
 	/**
 	 * @column entry_id
 	 */
     private $entryId;
-    
+
     /**
      * @column label_id
      */
     private $labelId;
-    
+
     /**
      * @column display_order
      */
     private $displayOrder;
-    
+
     function getEntryId() {
     	return $this->entryId;
     }
@@ -38,11 +38,10 @@ class EntryLabel {
     	return $this->displayOrder;
     }
     function setDisplayOrder($displayOrder) {
-    	if(((int)$displayOrder) >= EntryLabel::ORDER_MAX)return;
+    	if(((int)$displayOrder) >= EntryLabel::ORDER_MAX) return;
     	$this->displayOrder = $displayOrder;
     }
     function setMaxDisplayOrder(){
     	$this->displayOrder = EntryLabel::ORDER_MAX;
     }
 }
-?>

@@ -819,6 +819,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			if(count($labelIds)){
 				$labelIds = array_diff($labelIds,array(null));
 			}
+
 			//数値のみ
 			$labelIds = array_map(function($val) {return (int)$val; }, $labelIds);
 			$query->where .= " EntryLabel.label_id in (" . implode(",",$labelIds) .") ";
@@ -836,10 +837,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 			$binds[":now"] = $now;
 		}
 
-		if($isAnd == false)$query->having = "";
-
-
-
+		if($isAnd == false) $query->having = "";
+		
 		if(strlen($start) && strlen($end)){
 			//endに等号は付けない
 			$query->where .= " AND (Entry.cdate >= :start AND Entry.cdate < :end)";

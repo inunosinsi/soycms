@@ -232,7 +232,6 @@ class CMSBlogPage extends CMSPage{
 				);
 
 				$this->label = $this->getLabel($label);
-				
 				$this->entries = $this->getEntriesByLabel($this->label);
 
 				$pageFormat = $this->page->getCategoryTitleFormat();
@@ -396,10 +395,10 @@ class CMSBlogPage extends CMSPage{
 		if(strlen($this->page->getMonthPageUri())<1)$default = CMSBlogPage::MODE_MONTH_ARCHIVE;
 		if(strlen($this->page->getRssPageUri())<1)$default = CMSBlogPage::MODE_RSS;
 		if(strlen($this->page->getTopPageUri())<1)$default = CMSBlogPage::MODE_TOP;
-		
+
 		//空の時はトップページ
 		if(strlen($arguments)<1)return CMSBlogPage::MODE_TOP;
-		
+
 		switch(true){
 
 			case (strpos($arguments,$this->page->getEntryPageUri()."/") === 0):
@@ -449,7 +448,7 @@ class CMSBlogPage extends CMSPage{
 					case CMSBlogPage::MODE_MONTH_ARCHIVE:
 						if(is_null($this->page->getMonthPageUri())) return $default;
 				}
-			
+
 				header("HTTP/1.1 404 Not Found");
 				return $default;
 				break;
@@ -565,7 +564,7 @@ class CMSBlogPage extends CMSPage{
 
 		//feedへのリンクを表示
 		soy_cms_blog_output_feed_link($this);
-		
+
 		//メッセージの設定
 		$this->createAdd("blog_name","CMSLabel",array(
 			"text" => $this->page->getTitle(),
@@ -583,7 +582,7 @@ class CMSBlogPage extends CMSPage{
 			"link" => $this->currentAbsoluteURL,
 			"soy2prefix"=>"b_block"
 		));
-		
+
 		//開いているカテゴリページで設定したラベルのエイリアスを表示する
 		$this->addLabel("category_alias", array(
 			"text" => (isset($this->label)) ? $this->label->getAlias() : null,
@@ -842,7 +841,7 @@ class CMSBlogPage extends CMSPage{
 		if($this->page->getCategoryEntrySort() == BlogPage::ENTRY_SORT_ASC){
 			$logic->setReverse(true);
 		}
-		
+
 		//ブログ用のラベルIdも同時に指定して絞込み
 		if($label->getId() == $this->page->getBlogLabelId()){
 			$entries = $logic->getOpenEntryByLabelIds(array($label->getId()));
@@ -950,6 +949,4 @@ class CMSBlogPage extends CMSPage{
 		if(!$labelDAO) $labelDAO = SOY2DAOFactory::create("cms.LabelDAO");
 		return $labelDAO;
 	}
-
 }
-

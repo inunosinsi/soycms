@@ -136,10 +136,7 @@ class CreatePage extends CMSWebPageBase{
 	 */
 	function getTemplateList(){
 		$result = SOY2ActionFactory::createInstance("Template.TemplateListAction")->run();
-
-		$list = $result->getAttribute("list");
-
-		return $list;
+		return $result->getAttribute("list");
 	}
 
 	/**
@@ -157,8 +154,11 @@ class CreatePage extends CMSWebPageBase{
 
 				$html[] = '<optgroup label="'.$template->getName().'">';
 
-				foreach($template->getTemplate() as $id => $array){
-					$html[] = '<option value="'.$template->getId()."/". $id .'">' . $array["name"] . '</option>';
+				$tmps = $template->getTemplate();
+				if(count($tmps)){
+					foreach($tmps as $id => $array){
+						$html[] = '<option value="'.$template->getId()."/". $id .'">' . $array["name"] . '</option>';
+					}
 				}
 
 				$html[] = "</optgroup>";
