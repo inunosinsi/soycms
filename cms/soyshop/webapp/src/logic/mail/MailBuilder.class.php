@@ -80,10 +80,10 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 		}
 		$itemColumnSize += "5";
 
-		$str  = $this->printColumn("商品名","left",$itemColumnSize);
-		$str .= $this->printColumn("商品コード","left");
-		$str .= $this->printColumn("数量","right");
-		$str .= $this->printColumn("価格","right");
+		$str  = self::printColumn("商品名","left",$itemColumnSize);
+		$str .= self::printColumn("商品コード","left");
+		$str .= self::printColumn("数量","right");
+		$str .= self::printColumn("価格","right");
 		$mail[] = $str;
 
 		$mail[] = str_repeat("-",$itemColumnSize + 30);
@@ -97,10 +97,10 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 				$item->setCode("-");
 			}
 
-			$str  = $this->printColumn($item->getOpenItemName(),"left",$itemColumnSize);
-			$str .= $this->printColumn($item->getCode(),"left");
-			$str .= $this->printColumn(number_format($orderItem->getItemCount())." 点");
-			$str .= $this->printColumn(number_format($orderItem->getItemPrice())." 円");
+			$str  = self::printColumn($item->getOpenItemName(),"left",$itemColumnSize);
+			$str .= self::printColumn($item->getCode(),"left");
+			$str .= self::printColumn(number_format($orderItem->getItemCount())." 点");
+			$str .= self::printColumn(number_format($orderItem->getItemPrice())." 円");
 
 			$itemPrice += $orderItem->getTotalPrice();
 
@@ -111,19 +111,19 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 
 		$leftColumnSize = $itemColumnSize + 10;
 
-		$mail[] = $this->printColumn("小計","right",$leftColumnSize) . $this->printColumn(number_format($itemPrice)." 円","right",20);
+		$mail[] = self::printColumn("小計","right",$leftColumnSize) . self::printColumn(number_format($itemPrice)." 円","right",20);
 
 		$modules = $order->getModuleList();
 
 		foreach($modules as $module){
 			if(!$module->isVisible()) continue;
-			$str = $this->printColumn($module->getName(),"right",$leftColumnSize);
-			$str .= $this->printColumn(number_format($module->getPrice())." 円","right",20);
+			$str = self::printColumn($module->getName(),"right",$leftColumnSize);
+			$str .= self::printColumn(number_format($module->getPrice())." 円","right",20);
 
 			$mail[] = $str;
 		}
 
-		$mail[] = $this->printColumn("合計","right",$leftColumnSize) . $this->printColumn(number_format($order->getPrice())." 円","right",20);
+		$mail[] = self::printColumn("合計","right",$leftColumnSize) . self::printColumn(number_format($order->getPrice())." 円","right",20);
 
 		return $mail;
 	}
@@ -139,13 +139,13 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 
 		$mail[] = "お届け先";
 		$mail[] = "-----------------------------------------";
-		if(isset($address["office"])&&strlen($address["office"]) > 0) $mail[] = $this->printColumn("法人名","left",10) . $address["office"];
-		$mail[] = $this->printColumn("お名前","left",10) . $address["name"]." 様";
-		if(isset($address["reading"])&&strlen($address["reading"]))$mail[] = $this->printColumn("フリガナ","left",10) . $address["reading"];
-		$mail[] = $this->printColumn("郵便番号","left",10) . $address["zipCode"];
-		$mail[] = $this->printColumn("住所","left",10) . SOYShop_Area::getAreaText($address["area"]).$address["address1"];
-		$mail[] = $this->printColumn("","left",10) . $address["address2"];
-		$mail[] = $this->printColumn("電話番号","left",10) . $address["telephoneNumber"];
+		if(isset($address["office"])&&strlen($address["office"]) > 0) $mail[] = self::printColumn("法人名","left",10) . $address["office"];
+		$mail[] = self::printColumn("お名前","left",10) . $address["name"]." 様";
+		if(isset($address["reading"])&&strlen($address["reading"]))$mail[] = self::printColumn("フリガナ","left",10) . $address["reading"];
+		$mail[] = self::printColumn("郵便番号","left",10) . $address["zipCode"];
+		$mail[] = self::printColumn("住所","left",10) . SOYShop_Area::getAreaText($address["area"]).$address["address1"];
+		$mail[] = self::printColumn("","left",10) . $address["address2"];
+		$mail[] = self::printColumn("電話番号","left",10) . $address["telephoneNumber"];
 		$mail[] = "";
 
 		return $mail;
@@ -166,13 +166,13 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 
 		$mail[] = "ご注文者";
 		$mail[] = "-----------------------------------------";
-		$mail[] = $this->printColumn("お名前","left",20) . $address["name"] ." 様";
-		if(isset($address["reading"])&&strlen($address["reading"]))$mail[] = $this->printColumn("フリガナ","left",20) . $address["reading"];
-		$mail[] = $this->printColumn("郵便番号","left",10) . $address["zipCode"];
-		$mail[] = $this->printColumn("住所","left",10) . SOYShop_Area::getAreaText($address["area"]).$address["address1"];
-		$mail[] = $this->printColumn("","left",10) . $address["address2"];
-		$mail[] = $this->printColumn("メールアドレス","left",20) . $user->getMailAddress();
-		$mail[] = $this->printColumn("電話番号","left",20) . $address["telephoneNumber"];
+		$mail[] = self::printColumn("お名前","left",20) . $address["name"] ." 様";
+		if(isset($address["reading"])&&strlen($address["reading"]))$mail[] = self::printColumn("フリガナ","left",20) . $address["reading"];
+		$mail[] = self::printColumn("郵便番号","left",10) . $address["zipCode"];
+		$mail[] = self::printColumn("住所","left",10) . SOYShop_Area::getAreaText($address["area"]).$address["address1"];
+		$mail[] = self::printColumn("","left",10) . $address["address2"];
+		$mail[] = self::printColumn("メールアドレス","left",20) . $user->getMailAddress();
+		$mail[] = self::printColumn("電話番号","left",20) . $address["telephoneNumber"];
 		$mail[] = "";
 
 		return $mail;
@@ -200,31 +200,24 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 		return $mail;
 	}
 
-	function printColumn($str,$pos = "right",$width = 10){
+	private function printColumn($str,$pos = "right",$width = 10){
 
 		$strWidth = mb_strwidth($str);
 
 		if($pos == "right"){
 			$size = max(0,$width - $strWidth);
-			$return = str_repeat(" ",$size);
+			return str_repeat(" ", $size) . $str;
 
-			return $return . $str;
-		}
-
-		else if($pos == "center"){
+		} else if ($pos == "center"){
 			$size = (int)(max(0,$width - $strWidth) / 2);
 			$return = str_repeat(" ",$size);
-
 			return $return . $str . $return;
-		}
 
-		else if($pos == "left"){
+		} else if ($pos == "left"){
 			$size = max(0,$width - $strWidth);
-			$return = str_repeat(" ",$size);
+			return $str . str_repeat(" ", $size);
 
-			return $str . $return;
 		}
-
 
 		return $str;
 	}

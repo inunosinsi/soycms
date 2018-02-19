@@ -19,7 +19,7 @@ class DetailPage extends WebPage{
 
 		SOYShopPlugin::load("soyshop.admin.list", $plugin);
 		$exts = SOYShopPlugin::invoke("soyshop.admin.list")->getContents();
-		
+
 		if(!isset($exts[$pluginId])) SOY2PageController::jump("");
 		$ext = $exts[$pluginId];
 
