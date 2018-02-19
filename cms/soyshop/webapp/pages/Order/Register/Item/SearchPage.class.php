@@ -75,7 +75,12 @@ class SearchPage extends WebPage{
 	private function buildSearchResult(){
 		$cnds = self::getParameter("search_condition");
 		if(!is_array($cnds) || is_null($cnds)) $cnds = array();
-		//if(count($cnds)) $cnds["is_child"] = 1;	// @ToDo 子商品は常に表示
+		if(count($cnds)){
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			if(SOYShop_ShopConfig::load()->getIsChildItemOnAdminOrder()){
+				$cnds["is_child"] = 1;	//子商品は常に表示
+			}
+		}
 
 		//検索結果は15件
 		if(count($cnds)){

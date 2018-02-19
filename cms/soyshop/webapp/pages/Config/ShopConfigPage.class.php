@@ -22,6 +22,7 @@ class ShopConfigPage extends WebPage{
 			"insertDummyMailAddress" => 0,
 			"insertDummyMailAddressOnAdmin" => 0,
 			"insertDummyMailAddressOnAdminRegister" => 0,
+			"isChildItemOnAdminOrder" => 0,
 			"displayOrderAdminPage" => 0,
 			"displayItemAdminPage" => 0,
 			"displayOrderButtonOnUserAdminPage" => 0,
@@ -275,6 +276,13 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getInsertDummyMailAddressOnAdminRegister(),
 			"label" => "管理画面からの顧客登録時、メールアドレスにダミーのメールアドレスを挿入する"
+		));
+
+		$this->addCheckBox("isChildItemOnAdminOrder", array(
+			"name" => "Config[isChildItemOnAdminOrder]",
+			"value" => 1,
+			"selected" => $config->getIsChildItemOnAdminOrder(),
+			"label" => "管理画面からの注文の際に子商品を検索結果に含める"
 		));
 
 		$this->addCheckBox("displayOrderAdminPage", array(

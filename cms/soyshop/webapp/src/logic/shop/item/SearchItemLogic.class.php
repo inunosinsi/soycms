@@ -112,7 +112,12 @@ class SearchItemLogic extends SOY2LogicBase{
 						if($value < 0){
 							$where[] = "item_category IS NULL";
 						}else{
-							$where[] = "item_category = :item_category";
+							//子商品の指定がある場合
+							if(isset($search["is_child"])){
+								$where[] = "(item_category = :item_category OR item_type in (SELECT id FROM soyshop_item WHERE item_category = :item_category))";
+							}else{
+								$where[] = "item_category = :item_category";
+							}
 							$binds[":item_category"] = $value;
 						}
 					}
@@ -144,11 +149,10 @@ class SearchItemLogic extends SOY2LogicBase{
 			$where[] = "(" . implode(" OR ", $openConditions) .")";
 		}
 
-		//子商品の表示
+		//子商品は表示しない
 		if(!isset($search["is_child"])){
 			$where[] = " item_type in (" . $this->getItemType() . ")";
 		}
-
 
 		$this->where = $where;
 		$this->binds = $binds;
@@ -177,7 +181,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		}
 
 		//削除フラグ
-		$sql .= "and is_disabled != 1 ";
+		$sql .= " and is_disabled != 1 ";
 		if(strlen($this->order)) $sql .= " " . $this->order;
 		return $sql;
 	}
@@ -207,16 +211,19 @@ class SearchItemLogic extends SOY2LogicBase{
 		$this->getQuery()->setLimit($this->limit);
 		$this->getQuery()->setOffset($this->offset);
 		$sql = $this->getItemsSQL();
-
+		
 		try{
 			$result = $this->getQuery()->executeQuery($sql, $this->binds);
 		}catch(Exception $e){
+			var_dump($e);
 			return array();
 		}
 
 		$items = array();
-		foreach($result as $raw){
-			$items[] = $this->getQuery()->getObject($raw);
+		if(count($result)){
+			foreach($result as $raw){
+				$items[] = $this->getQuery()->getObject($raw);
+			}
 		}
 
 		return $items;

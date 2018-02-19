@@ -394,7 +394,7 @@ class ItemList extends HTMLList {
 		try{
 			$attrs = $dao->getByItemId($itemId);
 		}catch(Exception $e){
-			//
+			$attrs = array();
 		}
 
 		if(count($attrs)){
