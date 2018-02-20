@@ -237,7 +237,8 @@ class CMSBlogPage extends CMSPage{
 				$pageFormat = $this->page->getCategoryTitleFormat();
 				$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
 				$pageFormat = preg_replace('/%BLOG%/',$this->page->getTitle(),$pageFormat);
-				$pageFormat = preg_replace('/%CATEGORY%/',$this->label->getCaption(),$pageFormat);
+				$pageFormat = preg_replace('/%CATEGORY_RAW%/',$this->label->getCaption(),$pageFormat);	//カテゴリを分類した場合にそのまま出力する
+				$pageFormat = preg_replace('/%CATEGORY%/',$this->label->getBranchName(),$pageFormat);
 				$this->title = $pageFormat;
 
 				//表示しているページの絶対URL
