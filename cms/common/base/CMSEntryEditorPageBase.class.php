@@ -19,7 +19,7 @@ class CMSEntryEditorPageBase extends CMSUpdatePageBase{
 		}
 
 		//Call Event
-		CMSPlugin::callEventFunc("onSetupWYSIWTG",array(
+		CMSPlugin::callEventFunc("onSetupWYSIWYG",array(
 			"id" => $entryId,
 			"labelIds" => $labelIds,
 		));
@@ -65,7 +65,6 @@ class CMSEntryEditorPageBase extends CMSUpdatePageBase{
 			DisplayPlugin::hide("publish");
 			if(!$this->id)DisplayPlugin::hide("publish_info");
 		}
-
 	}
 
 	/**

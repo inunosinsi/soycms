@@ -32,12 +32,13 @@ class CMSPlugin {
 		"onEntryStateChange"=>array(),	//*エントリー公開状態が変更された直後array(entryId,state)
 		"onEntryOutput"=>array(),		//エントリーが呼び出された際に呼ばれる array(entryId,SOYHTMLObject,entry)
 		"onEntryCopy"=>array(),			//エントリー複製時に呼び出される	array(oldId,newId)
-		"onSetupWYSIWTG"=>array(),		//WYSIWYGエディタをセットアップしている時 array(entryId, labelIds)
+		"onSetupWYSIWYG"=>array(),		//WYSIWYGエディタをセットアップしている時 array(entryId, labelIds)
 
 		//ラベル関連
 		"onLabelCreate"=>array(),		//ラベルが作成される直前			array(label)
 		"onLabelUpdate"=>array(),		//ラベルが更新される直前			array(new_label)
 		"onLabelRemove"=>array(),		//ラベルが削除される直前			array(labelId)
+		"onLabelSetupWYSIWYG"=>array(),	//ラベル詳細でWYSIWYGエディタをセットアップしている時
 
 		//エントリーラベル関連
 		"onEntryLabelApply"=>array(),	//エントリーがラベル付けされる直前	array(entryId,labelId)
