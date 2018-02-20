@@ -11,6 +11,8 @@ class CategoryInfoPlugin{
 
     const PLUGIN_ID = "soycms_category_info";
 
+	private $isWYSIWYG = false;
+
 
     function getId(){
         return self::PLUGIN_ID;
@@ -24,16 +26,16 @@ class CategoryInfoPlugin{
             "author"=>"日本情報化農業研究所",
             "url"=>"http://www.n-i-agroinformatics.com",
             "mail"=>"soycms@soycms.net",
-            "version"=>"1.0"
+            "version"=>"1.1"
         ));
         CMSPlugin::addPluginConfigPage($this->getId(),array(
             $this,"config_page"
         ));
 
+		CMSPlugin::setEvent("onLabelSetupWYSIWYG",$this->getId(),array($this,"onSetupWYSIWYG"));
+
         //公開側のページを表示させたときに、文字列を表示する
         CMSPlugin::setEvent('onPageOutput',$this->getId(),array($this,"onPageOutput"));
-
-
     }
 
 
@@ -41,14 +43,16 @@ class CategoryInfoPlugin{
      * ヘルプを表示
      */
     function config_page(){
-
-        ob_start();
-        include_once(dirname(__FILE__) . "/config.php");
-        $html = ob_get_contents();
-        ob_end_clean();
-
-        return $html;
+		SOY2::import("site_include.plugin.soycms_category_info.config.CategoryInfoConfigPage");
+		$form = SOY2HTMLFactory::createInstance("CategoryInfoConfigPage");
+		$form->setPluginObj($this);
+		$form->execute();
+		return $form->getObject();
     }
+
+	function onSetupWYSIWYG(){
+		$_COOKIE["label_text_editor"] = ($this->getIsWYSIWYG()) ? "tinyMCE" : "plain";
+	}
 
     /**
      * ラベルのdescriptionを取得
@@ -90,6 +94,13 @@ class CategoryInfoPlugin{
             "html" => nl2br($labelDescription)
         ));
     }
+
+	function getIsWYSIWYG(){
+		return $this->isWYSIWYG;
+	}
+	function setIsWYSIWYG($isWYSIWYG){
+		$this->isWYSIWYG = $isWYSIWYG;
+	}
 
     /**
      * プラグインの登録
