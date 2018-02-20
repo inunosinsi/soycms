@@ -44,7 +44,7 @@ class SearchAction extends SOY2Action{
     	$query = new SOY2DAO_Query();
     	$query->prefix = "select";
 		$query->distinct = true;
-		$query->sql = " id,alias,title,content,more,cdate,openPeriodStart,openPeriodEnd,isPublished ";
+		$query->sql = " id,alias,title,content,more,cdate,udate,openPeriodStart,openPeriodEnd,isPublished ";
 		$query->table = " Entry left outer join EntryLabel on(Entry.id = EntryLabel.entry_id) ";
 		$query->order = "udate desc";
 		$binds = array();
