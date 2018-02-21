@@ -38,38 +38,8 @@ class IndexPage extends WebPage{
 			SOY2PageController::jump("Order.Register");
 		}
 
-		if(!strlen($cart->getCustomerInformation()->getMailAddress())){
-			$cart->addErrorMessage("user", "注文者を指定してください。");
-		}else{
-			$cart->removeErrorMessage("user");
-		}
-
-
 		//まずはエラーチェックのみ
-		if(!isset($_POST["payment_module"]) || strlen($_POST["payment_module"]) < 1){
-			$cart->addErrorMessage("payment", "支払方法を選択してください。");
-		}else{
-			$cart->removeErrorMessage("payment");
-		}
-		if(!isset($_POST["delivery_module"]) || strlen($_POST["delivery_module"]) < 1){
-			$cart->addErrorMessage("delivery", "配送方法を選択してください。");
-		}else{
-			$cart->removeErrorMessage("delivery");
-		}
-		//Point Module
-		if(isset($_POST["point_module"])){
-			SOYShopPlugin::load("soyshop.point.payment");
-			$delegate = SOYShopPlugin::invoke("soyshop.point.payment", array(
-					"mode" => "checkError",
-					"cart" => $cart,
-					"param" => $_POST["point_module"]
-			));
-			if($delegate->hasError()){
-				$cart->addErrorMessage("point", MessageManager::get("POINT_ERROR"));
-			}else{
-				$cart->removeErrorMessage("point");
-			}
-		}
+		self::checkError($cart);
 
 		/* 古いのをクリア */
 		$cart->removeModule($cart->getAttribute("payment_module"));
@@ -80,6 +50,11 @@ class IndexPage extends WebPage{
 		SOYShopPlugin::invoke("soyshop.point.payment", array(
 				"mode" => "clear",
 				"cart" => $cart,
+		));
+		SOYShopPlugin::load("soyshop.order.customfield");
+		SOYShopPlugin::invoke("soyshop.order.customfield", array(
+			"mode" => "clear",
+			"cart" => $cart,
 		));
 
 		//支払
@@ -132,6 +107,17 @@ class IndexPage extends WebPage{
 			));
 		}
 
+		//カスタムフィールド
+		if(isset($_POST["customfield_module"]) || (isset($_FILES["customfield_module"]["tmp_name"]))){
+			//ロードしない？
+//				SOYShopPlugin::load("soyshop.order.customfield");
+			SOYShopPlugin::invoke("soyshop.order.customfield", array(
+				"mode" => "post",
+				"cart" => $cart,
+				"param" => $_POST["customfield_module"]
+			));
+		}
+
 
 		//備考
 		if(isset($_POST["memo"])){
@@ -145,6 +131,62 @@ class IndexPage extends WebPage{
 		}else{
 			SOY2PageController::jump("Order.Register.Confirm");
 		}
+	}
+
+	private function checkError(CartLogic $cart){
+		$res = false;
+
+		if(!strlen($cart->getCustomerInformation()->getMailAddress())){
+			$cart->addErrorMessage("user", "注文者を指定してください。");
+			$res = true;
+		}else{
+			$cart->removeErrorMessage("user");
+		}
+
+		if(!isset($_POST["payment_module"]) || strlen($_POST["payment_module"]) < 1){
+			$cart->addErrorMessage("payment", "支払方法を選択してください。");
+			$res = true;
+		}else{
+			$cart->removeErrorMessage("payment");
+		}
+		if(!isset($_POST["delivery_module"]) || strlen($_POST["delivery_module"]) < 1){
+			$cart->addErrorMessage("delivery", "配送方法を選択してください。");
+			$res = true;
+		}else{
+			$cart->removeErrorMessage("delivery");
+		}
+		//Point Module
+		if(isset($_POST["point_module"])){
+			SOYShopPlugin::load("soyshop.point.payment");
+			$delegate = SOYShopPlugin::invoke("soyshop.point.payment", array(
+					"mode" => "checkError",
+					"cart" => $cart,
+					"param" => $_POST["point_module"]
+			));
+			if($delegate->hasError()){
+				$cart->addErrorMessage("point", MessageManager::get("POINT_ERROR"));
+				$res = true;
+			}else{
+				$cart->removeErrorMessage("point");
+			}
+		}
+
+		//Customfield Module
+		SOYShopPlugin::load("soyshop.order.customfield");
+		$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
+			"mode" => "checkError",
+			"cart" => $cart,
+			"param" => (isset($_POST["customfield_module"])) ? $_POST["customfield_module"] : array()
+		));
+
+		if($delegate->hasError()){
+			$cart->addErrorMessage("customfield", MessageManager::get("CUSTOMFIELD_ERROR"));
+			$res = true;
+		}else{
+			$cart->removeErrorMessage("customfield");
+		}
+
+		return $res;
 	}
 
 	function __construct() {
@@ -167,17 +209,16 @@ class IndexPage extends WebPage{
 		$this->paymentForm();
 		$this->deliveryForm();
 		$this->pointForm();
+		$this->orderCustomForm();
 		$this->confirmForm();
 
-		$this->displayErrors();
+		self::displayErrors();
 
 		//リセットボタンの表示
 		$items = $this->cart->getItems();
 		$user = $this->cart->getCustomerInformation();
-		$hasOrder = count($items) || strlen($user->getMailAddress());
-		$this->addModel("has_order", array(
-			"visible" => $hasOrder,
-		));
+
+		DisplayPlugin::toggle("has_order", (count($items) || strlen($user->getMailAddress())));
 
 		$this->cart->clearErrorMessage();
 		$this->cart->save();
@@ -202,16 +243,14 @@ class IndexPage extends WebPage{
 	function itemInfo(){
 
 		$items = $this->cart->getItems();
+		$cnt = count($items);
 
-		$this->addModel("no_item", array(
-				"visible" => (count($items) < 1)
-		));
+		DisplayPlugin::toggle("no_item", $cnt === 0);
+		DisplayPlugin::toggle("item_info", $cnt > 0);
+		DisplayPlugin::toggle("item_info1", $cnt > 0);
 
-		$this->addModel("item_info", array(
-				"visible" => (count($items))
-		));
-
-		$this->createAdd("item_list", "ItemList", array(
+		include_once(dirname(__FILE__) . "/component/ItemListComponent.class.php");
+		$this->createAdd("item_list", "ItemListComponent", array(
 				"list" => $items,
 				"cart" => $this->cart,
 		));
@@ -221,9 +260,9 @@ class IndexPage extends WebPage{
 		));
 
 		//モジュール料金
-		$modules = $this->cart->getModules();
-		$this->createAdd("module_list", "ModuleList", array(
-				"list" => $modules
+		include_once(dirname(__FILE__) . "/component/ModuleListComponent.class.php");
+		$this->createAdd("module_list", "ModuleListComponent", array(
+				"list" => $this->cart->getModules()
 		));
 
 		//総額
@@ -245,9 +284,8 @@ class IndexPage extends WebPage{
 				"name" => "order_date",
 				"value" => $this->cart->getOrderDateText(),
 		));
-		$this->addModel("no_order_date", array(
-				"visible" => !strlen($this->cart->getOrderDateText()),
-		));
+
+		DisplayPlugin::toggle("no_order_date", !strlen($this->cart->getOrderDateText()));
 		$this->addLabel("order_date_text", array(
 				"text" => $this->cart->getOrderDateText(),
 		));
@@ -279,19 +317,18 @@ class IndexPage extends WebPage{
     	$has_user = strlen($user->getMailAddress());
 
 		//登録あり
-    	$this->addModel("has_user", array(
-    		"visible" => $has_user
-    	));
+		DisplayPlugin::toggle("has_user", $has_user);
+		DisplayPlugin::toggle("has_user2", $has_user);
 
 		//登録無し
-    	$this->addModel("no_user", array(
-    		"visible" => ! $has_user,
-    	));
+		DisplayPlugin::toggle("no_user", !$has_user);
 
 		//登録済みユーザー
-    	$this->addModel("user_is_registered", array(
-    		"visible" => strlen($user->getId()),
-    	));
+		DisplayPlugin::toggle("user_is_registered", strlen($user->getId()));
+
+		//ユーザ情報がある場合
+		DisplayPlugin::toggle("user_info", strlen($user->getMailAddress()));
+		DisplayPlugin::toggle("user_info1", strlen($user->getMailAddress()));
 
     	/* 以下、ユーザー情報 */
     	$this->addLabel("user_id", array(
@@ -301,49 +338,22 @@ class IndexPage extends WebPage{
     		"link" => SOY2PageController::createLink("User.Detail") . "/" . $user->getId(),
     	));
 
-    	$this->addLabel("mail_address", array(
-    		"text" => $user->getMailAddress(),
-    	));
+		/* 共通コンポーネント */
+		SOY2::import("base.site.classes.SOYShop_UserCustomfieldList");
+    	SOY2::import("component.UserComponent");
+    	SOY2::import("component.backward.BackwardUserComponent");
 
-    	$this->addLabel("name", array(
-    		"text" => $user->getName(),
-    	));
+		$backward = new BackwardUserComponent();
+		$component = new UserComponent();
 
-    	$this->addLabel("furigana", array(
-    		"text" => $user->getReading(),
-    	));
+		$backward->backwardAdminBuildForm($this, $this->cart->getCustomerInformation());
 
-    	$this->addLabel("post_number", array(
-    		"text" => $user->getZipCode()
-    	));
+		//共通フォーム
+		$component->buildForm($this, $this->cart->getCustomerInformation(), $this->cart, UserComponent::MODE_CUSTOM_CONFIRM);
 
-    	$this->addLabel("area", array(
-    		"text" => $user->getAreaText()
-    	));
-
-    	$this->addLabel("address1", array(
-    		"text" => $user->getAddress1(),
-    	));
-
-    	$this->addLabel("address2", array(
-    		"text" => $user->getAddress2(),
-    	));
-
-    	$this->addLabel("tel_number", array(
-    		"text" => $user->getTelephoneNumber(),
-    	));
-
-    	$this->addLabel("fax_number", array(
-    		"text" => $user->getFaxNumber(),
-    	));
-
-    	$this->addLabel("ketai_number", array(
-    		"text" => $user->getCellphoneNumber(),
-    	));
-
-    	$this->addLabel("office", array(
-    		"text" => $user->getJobName(),
-    	));
+		$this->addLabel("office_text", array(
+			"text" => $user->getJobName()
+		));
     }
 
     function addressInfo(){
@@ -361,14 +371,12 @@ class IndexPage extends WebPage{
 		$has_address = is_array($address) && isset($address["name"]) && strlen($address["name"]) ;
 
 		//登録あり
-    	$this->addModel("has_send_address", array(
-    		"visible" => $has_address
-    	));
+		DisplayPlugin::toggle("has_send_address", $has_address);
+		DisplayPlugin::toggle("has_send_address1", $has_address);
 
 		//登録なし（注文者の住所と同じ）
-    	$this->addModel("no_send_address", array(
-    		"visible" => ! $has_address
-    	));
+		DisplayPlugin::toggle("no_send_address", !$has_address);
+		DisplayPlugin::toggle("no_send_address1", !$has_address);
 
     	if(!is_array($address)){
     		$user = new SOYShop_User();
@@ -407,13 +415,6 @@ class IndexPage extends WebPage{
     	$this->addLabel("send_office", array(
     		"text" => (isset($address["office"])) ? $address["office"] : "",
     	));
-
-//    	$memo = $this->cart->getOrderAttribute("memo");
-//    	if(is_null($memo))$memo = array("name"=>"備考","value"=>"");
-//    	$this->createAdd("order_memo","HTMLTextArea", array(
-//    		"name" => "Attributes[memo]",
-//    		"value" => $memo["value"]
-//    	));
     }
 
 	/**
@@ -460,16 +461,13 @@ class IndexPage extends WebPage{
 		SOYShopPlugin::active("soyshop.payment");
 
 		$modules = $this->cart->getPaymentMethodList();
+		$cnt = count($modules);
 
-		$this->addModel("no_payment_method", array(
-			"visible" => (count($modules) < 1)
-		));
+		DisplayPlugin::toggle("no_payment_method", $cnt === 0);
+		DisplayPlugin::toggle("has_payment_method", $cnt > 0);
 
-		$this->addModel("has_payment_method", array(
-			"visible" => (count($modules))
-		));
-
-		$this->createAdd("payment_method_list", "Payment_methodList", array(
+		include_once(dirname(__FILE__) . "/component/PaymentMethodListComponent.class.php");
+		$this->createAdd("payment_method_list", "PaymentMethodListComponent", array(
 			"list"     => $modules,
 			"selected" => $this->cart->getAttribute("payment_module")
 		));
@@ -489,16 +487,13 @@ class IndexPage extends WebPage{
 		SOYShopPlugin::active("soyshop.delivery");
 
 		$modules = $this->cart->getDeliveryMethodList();
+		$cnt = count($modules);
 
-		$this->addModel("no_delivery_method", array(
-				"visible" => (count($modules) < 1)
-		));
+		DisplayPlugin::toggle("no_delivery_method", $cnt === 0);
+		DisplayPlugin::toggle("has_delivery_method", $cnt > 0);
 
-		$this->addModel("has_delivery_method", array(
-				"visible" => (count($modules))
-		));
-
-		$this->createAdd("delivery_method_list", "Delivery_methodList", array(
+		include_once(dirname(__FILE__) . "/component/DeliveryMethodListComponent.class.php");
+		$this->createAdd("delivery_method_list", "DeliveryMethodListComponent", array(
 				"list"     => $modules,
 				"selected" => $this->cart->getAttribute("delivery_module")
 		));
@@ -519,112 +514,53 @@ class IndexPage extends WebPage{
 
 		$modules = $this->cart->getPointMethodList($this->cart->getCustomerInformation()->getId());
 
-		$this->addModel("no_valid_user_for_point", array(
-				"visible" => !strlen($this->cart->getCustomerInformation()->getId()),
-		));
-		$this->addModel("has_valid_user_for_point", array(
-				"visible" => strlen($this->cart->getCustomerInformation()->getId()),
-		));
+		DisplayPlugin::toggle("has_point_method", count($modules));
+		DisplayPlugin::toggle("no_valid_user_for_point", !strlen($this->cart->getCustomerInformation()->getId()));
+		DisplayPlugin::toggle("has_valid_user_for_point", strlen($this->cart->getCustomerInformation()->getId()));
 
-		$this->addModel("has_point_method", array(
-				"visible" => (count($modules))
-		));
-
-		$this->createAdd("point_method_list", "Point_methodList", array(
+		include_once(dirname(__FILE__) . "/component/PointMethodListComponent.class.php");
+		$this->createAdd("point_method_list", "PointMethodListComponent", array(
 				"list"     => $modules,
 				"selected" => $this->cart->getAttribute("point_module"),
+		));
+	}
 
+	/**
+	 * 注文カスタムフィールド
+	 */
+	function orderCustomForm(){
+		//アクティブなプラグインをすべて読み込む
+		SOYShopPlugin::load("soyshop.order.customfield");
+		$values = SOYShopPlugin::invoke("soyshop.order.customfield", array(
+			"mode" => "list",
+			"cart" => $this->cart
+		))->getList();
+
+		if(!count($values)) return array();
+
+		$list = array();
+		foreach($values as $v){
+			if(!is_array($v)) continue;
+			foreach($v as $key => $obj){
+				$list[$key] = $obj;
+			}
+		}
+
+		DisplayPlugin::toggle("has_customfield_method", count($list));
+
+		include_once(dirname(__FILE__) . "/component/CustomfieldMethodListComponent.class.php");
+		$this->createAdd("customfield_method_list", "CustomfieldMethodListComponent", array(
+			"list" => $list,
 		));
 	}
 
 	/**
 	 * エラー
 	 */
-	function displayErrors(){
+	private function displayErrors(){
 		$this->addLabel("order_error",array(
 				"text" => "エラーにより注文を進めることができませんでした。",
 				"visible" => count($this->cart->getErrorMessages()),
 		));
-	}
-}
-
-class Payment_methodList extends HTMLList{
-
-	private $selected;
-
-	protected function populateItem($entity, $key, $counter, $length){
-		$this->addCheckBox("payment_method", array(
-			"name" => "payment_module",
-			"value" => $key,
-			"selected" => ( ($this->selected == $key) || ($length == 1) ),
-			"label" => (isset($entity["name"])) ? $entity["name"] : "",
-		));
-
-		$this->addLabel("payment_name", array(
-			"text" => (isset($entity["name"])) ? $entity["name"] : "",
-		));
-
-		$this->addLabel("payment_description", array(
-			"html" => (isset($entity["description"])) ? $entity["description"] : ""
-		));
-
-		$this->addLabel("payment_charge", array(
-			"text" => (isset($entity["price"]) && strlen($entity["price"])) ? number_format($entity["price"])." 円" : "",
-		));
-	}
-
-	function setSelected($selected) {
-		$this->selected = $selected;
-	}
-}
-
-class Delivery_methodList extends HTMLList{
-
-	private $selected;
-
-	protected function populateItem($entity, $key, $counter, $length){
-		$this->addCheckBox("delivery_method", array(
-			"name" => "delivery_module",
-			"value" => $key,
-			"selected" => ( ($this->selected == $key) || ($length == 1) ),
-			"label" => (isset($entity["name"])) ? $entity["name"] : ""
-		));
-
-		$this->addLabel("delivery_name", array(
-			"text" => (isset($entity["name"])) ? $entity["name"] : ""
-		));
-
-		$this->addLabel("delivery_description", array(
-			"html" => (isset($entity["description"])) ? $entity["description"] : ""
-		));
-
-		$this->addLabel("delivery_charge", array(
-			"text" => (isset($entity["price"]) &&strlen($entity["price"])) ? number_format($entity["price"])." 円" : "",
-		));
-	}
-
-	function setSelected($selected) {
-		$this->selected = $selected;
-	}
-}
-
-class Point_methodList extends HTMLList{
-	protected function populateItem($entity, $key, $counter, $length){
-		$this->addLabel("point_name", array(
-				"text" => $entity["name"]
-		));
-
-		$this->addLabel("point_description", array(
-				"html" => $entity["description"]
-		));
-
-		$this->addModel("has_point_error", array(
-				"visible" => (strlen($entity["error"]) > 0)
-		));
-		$this->addLabel("point_error", array(
-				"text" => $entity["error"]
-		));
-
-		return strlen($entity["name"]) >0;
 	}
 }

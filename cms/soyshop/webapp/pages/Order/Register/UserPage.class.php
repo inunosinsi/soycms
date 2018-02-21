@@ -3,6 +3,9 @@ include(dirname(__FILE__) . "/common.php");
 
 class UserPage extends WebPage{
 
+	public $component;
+	public $backward;
+
 	private $cart;
 	private $item;
 	private $user;
@@ -20,7 +23,7 @@ class UserPage extends WebPage{
 
 		if(isset($_POST["search_by_id"])){
 			if(strlen($_POST["search_by_id"])){
-				$user = $this->getUserById($_POST["search_by_id"]);
+				$user = self::getUserById($_POST["search_by_id"]);
 				if(strlen($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
@@ -37,7 +40,7 @@ class UserPage extends WebPage{
 			}
 		}else if(isset($_POST["search_by_email"])){
 			if(strlen($_POST["search_by_email"])){
-				$user = $this->getUserByEmail($_POST["search_by_email"]);
+				$user = self::getUserByEmail($_POST["search_by_email"]);
 				if(strlen($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
@@ -54,7 +57,7 @@ class UserPage extends WebPage{
 			}
 		}else if(isset($_POST["search_by_tell"])){
 			if(strlen($_POST["search_by_tell"])){
-				$user = $this->getUserByTell($_POST["search_by_tell"]);
+				$user = self::getUserByTell($_POST["search_by_tell"]);
 				if(strlen($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
@@ -71,7 +74,7 @@ class UserPage extends WebPage{
 			}
 		}else if(isset($_POST["search_by_name"])){
 			if(strlen($_POST["search_by_name"])){
-				$user = $this->getUserByName($_POST["search_by_name"]);
+				$user = self::getUserByName($_POST["search_by_name"]);
 				if(strlen($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
@@ -88,7 +91,7 @@ class UserPage extends WebPage{
 			}
 		}else if(isset($_POST["search_by_reading"])){
 			if(strlen($_POST["search_by_reading"])){
-				$user = $this->getUserByReading($_POST["search_by_reading"]);
+				$user = self::getUserByReading($_POST["search_by_reading"]);
 				if(strlen($user->getId())){
 					//OK
 					$cart->setCustomerInformation($user);
@@ -122,6 +125,16 @@ class UserPage extends WebPage{
 			}
 		}
 
+		//ユーザカスタムフィールドの値をセッションに入れる
+		if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
+			SOYShopPlugin::load("soyshop.user.customfield");
+			SOYShopPlugin::invoke("soyshop.user.customfield",array(
+				"mode" => "post",
+				"app" => $this->cart,
+				"param" => $_POST["user_customfield"]
+			));
+		}
+
 		if($next){
 			$cart->save();
 			SOY2PageController::jump("Order.Register");
@@ -133,14 +146,22 @@ class UserPage extends WebPage{
 	function __construct($args) {
 		$this->cart = AdminCartLogic::getCart();
 		$this->session = SOY2ActionSession::getUserSession();
-		$this->dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");;
+		$this->dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+
+		/* 共通コンポーネント */
+		SOY2::import("base.site.classes.SOYShop_UserCustomfieldList");
+    	SOY2::import("component.UserComponent");
+    	SOY2::import("component.backward.BackwardUserComponent");
+
+		$this->backward = new BackwardUserComponent();
+		$this->component = new UserComponent();
 
 		//パラメータからユーザIDの取得
 		$userId = (isset($args[0])) ? (int)$args[0] : null;
 		if(isset($args[0]) && strlen($args[0])){
 			$userId = (int)$args[0];
 			try{
-				$user = $this->getUserById($userId);
+				$user = self::getUserById($userId);
 				$this->cart->setCustomerInformation($user);
 				$this->cart->save();
 				SOY2PageController::jump("Order.Register");
@@ -176,7 +197,6 @@ class UserPage extends WebPage{
 		}
 
 		self::userForm($user);
-		self::addressForm($user);
 
 		//エラー文言
 		$error = $this->session->getAttribute("order_register.error.user");
@@ -221,172 +241,43 @@ class UserPage extends WebPage{
 
 		$this->addForm("user_create_form");
 
-		//新規登録フォーム
-		$this->addInput("mail_address", array(
-			"name" => "Customer[mailAddress]",
-			"value" => $mailAddress,
-		));
+		//以前のフォーム 後方互換
+		$this->backward->backwardAdminBuildForm($this, $user);
 
-//		$this->createAdd("password","HTMLInput", array(
-//			"name" => "Customer[password]",
-//			"value" => $user->getPassword(),
-//		));
+		//共通フォーム
+		$this->component->buildForm($this, $user, $this->cart, UserComponent::MODE_CUSTOM_FORM);
 
-		$this->addInput("name", array(
-			"name" => "Customer[name]",
-			"value" => $user->getName(),
-		));
-
-		$this->addInput("reading", array(
-			"name" => "Customer[reading]",
-			"value" => $user->getReading(),
-		));
-
-		$this->addCheckBox("gender_male", array(
-			"type" => "radio",
-			"name" => "Customer[gender]",
-			"value" => 0,
-			"elementId" => "radio_sex_male",
-			"selected" => ($user->getGender() === 0 OR $user->getGender() === "0") ? true : false
-		));
-
-		$this->addCheckBox("gender_female", array(
-			"type" => "radio",
-			"name" => "Customer[gender]",
-			"value" => 1,
-			"elementId" => "radio_sex_female",
-			"selected" => ($user->getGender() === 1 OR $user->getGender() === "1") ? true : false
-		));
-
-		$this->addInput("birth_year", array(
-			"name" => "Customer[birthday][]",
-			"value" => $user->getBirthdayYear(),
-		));
-
-		$this->addInput("birth_month", array(
-			"name" => "Customer[birthday][]",
-			"value" => $user->getBirthdayMonth(),
-		));
-
-		$this->addInput("birth_day", array(
-			"name" => "Customer[birthday][]",
-			"value" => $user->getBirthdayDay(),
-		));
-
-		$this->addInput("post_number", array(
-			"name" => "Customer[zipCode]",
-			"value" => $user->getZipCode()
-		));
-
-		$this->addSelect("area", array(
-			"name" => "Customer[area]",
-			"options" => SOYShop_Area::getAreas(),
-			"value" => $user->getArea()
-		));
-
-		$this->addInput("address1", array(
-			"name" => "Customer[address1]",
-			"value" => $user->getAddress1(),
-		));
-
-		$this->addInput("address2", array(
-			"name" => "Customer[address2]",
-			"value" => $user->getAddress2(),
-		));
-
-		$this->addInput("tel_number", array(
-			"name" => "Customer[telephoneNumber]",
-			"value" => $user->getTelephoneNumber(),
-		));
-
-		$this->addInput("fax_number", array(
-			"name" => "Customer[faxNumber]",
-			"value" => $user->getFaxNumber(),
-		));
-
-		$this->addInput("ketai_number", array(
-			"name" => "Customer[cellphoneNumber]",
-			"value" => $user->getCellphoneNumber(),
-		));
-
-		$this->addInput("office", array(
-			"name" => "Customer[jobName]",
-			"value" => $user->getJobName(),
-		));
+		//法人名(勤務先など)
+    	$this->addInput("office", array(
+    		"name" => "Customer[jobName]",
+    		"value" => $user->getJobName(),
+    		"size" => 60,
+    	));
 	}
 
-	private function addressForm(SOYShop_User $user){
-		$address = $user->getEmptyAddressArray();
 
-		$this->addInput("send_name", array(
-			"name" => "Address[name]",
-			"value" => (isset($address["name"])) ? $address["name"] : "",
-		));
-
-		$this->addInput("send_furigana", array(
-			"name" => "Address[reading]",
-			"value" => (isset($address["reading"])) ? $address["reading"] : "",
-		));
-
-		$this->addInput("send_post_number", array(
-			"name" => "Address[zipCode]",
-			"value" => (isset($address["zipCode"])) ? $address["zipCode"] : "",
-		));
-
-		$this->addSelect("send_area", array(
-			"name" => "Address[area]",
-			"options" => SOYShop_Area::getAreas(),
-			"value" => (isset($address["area"])) ? $address["area"] : null,
-		));
-
-		$this->addInput("send_address1", array(
-			"name" => "Address[address1]",
-			"value" => (isset($address["address1"])) ? $address["address1"] : "",
-		));
-
-		$this->addInput("send_address2", array(
-			"name" => "Address[address2]",
-			"value" => (isset($address["address2"])) ? $address["address2"] : "",
-		));
-
-		$this->addInput("send_tel_number", array(
-			"name" => "Address[telephoneNumber]",
-			"value" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : "",
-		));
-
-		$this->addInput("send_office", array(
-			"name" => "Address[office]",
-			"value" => (isset($address["office"])) ? $address["office"] : "",
-		));
-	}
-
-	function getUserById($userId){
-		$dao = $this->dao;
+	private function getUserById($userId){
 		try{
-			$user = $dao->getById($userId);
+			return $this->dao->getById($userId);
 		}catch(Exception $e){
-			$user = new SOYShop_User();
+			return new SOYShop_User();
 		}
-		return $user;
 	}
 
-	function getUserByEmail($email){
-		$dao = $this->dao;
+	private function getUserByEmail($email){
 		try{
-			$user = $dao->getByMailAddress($email);
+			return $this->dao->getByMailAddress($email);
 		}catch(Exception $e){
-			$user = new SOYShop_User();
+			return new SOYShop_User();
 		}
-		return $user;
 	}
-	function getUserByTell($tell){
+	private function getUserByTell($tell){
 		$tell = str_replace(array("-", "ー", "−"), "", $tell);
 
-		$dao = $this->dao;
 		//すべての顧客IDと電話番号を取得
 		$sql = "SELECT id, telephone_number FROM soyshop_user WHERE is_disabled != " . SOYShop_User::USER_IS_DISABLED . " AND telephone_number IS NOT NULL AND telephone_number != ''";
 		try{
-			$res = $dao->executeQuery($sql);
+			$res = $this->dao->executeQuery($sql);
 		}catch(Exception $e){
 			$res = array();
 		}
@@ -398,7 +289,7 @@ class UserPage extends WebPage{
 
 			if($tell == $t){
 				try{
-					return $dao->getById($v["id"]);
+					return $this->dao->getById($v["id"]);
 				}catch(Exception $e){
 					//
 				}
@@ -408,7 +299,7 @@ class UserPage extends WebPage{
 		return new SOYShop_User();
 	}
 
-	function getUserByName($name){
+	private function getUserByName($name){
 		$strings = self::str2array($name);
 		if(!count($strings)) return new SOYShop_User();
 
@@ -436,27 +327,26 @@ class UserPage extends WebPage{
 		return new SOYShop_User();
 	}
 
-	function getUserByReading($reading){
+	private function getUserByReading($reading){
 		$strings = self::str2array($reading);
 
 		if(!count($strings)) return new SOYShop_User();
 
-		$dao = $this->dao;
 		$sql = "SELECT id FROM soyshop_user " .
 				"WHERE is_disabled != " . SOYShop_User::USER_IS_DISABLED . " ";
 		foreach($strings as $str){
 			$sql .= "AND reading LIKE '%" . htmlspecialchars($str, ENT_QUOTES, "UTF-8") . "%' ";
 		}
 		try{
-			$res = $dao->executeQuery($sql);
+			$res = $this->dao->executeQuery($sql);
 		}catch(Exception $e){
-			$res = array();
+			return new SOYShop_User();
 		}
 
 		if(!count($res)) return new SOYShop_User();
 		foreach($res as $v){
 			try{
-				return $dao->getById($v["id"]);
+				return $this->dao->getById($v["id"]);
 			}catch(Exception $e){
 				//
 			}
@@ -467,8 +357,6 @@ class UserPage extends WebPage{
 
 	private function str2array($str){
 		//全角スペースを半角スペースにする
-		$str = str_replace("　", " ", $str);
-
-		return explode(" ", $str);
+		return explode(" ", str_replace("　", " ", $str));
 	}
 }

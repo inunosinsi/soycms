@@ -180,12 +180,13 @@ class ItemPage extends WebPage{
 			"link" => SOY2PageController::createLink("Order.Register.Item.Restore")
 		));
 
-		$this->createAdd("item_list", "ItemList", array(
+		include_once(dirname(__FILE__) . "/component/ItemListComponent.class.php");
+		$this->createAdd("item_list", "ItemListComponent", array(
 			"list" => $items,
 			"cart" => $this->cart
 		));
 
-		$this->createAdd("total_item_price","HTMLLabel", array(
+		$this->addLabel("total_item_price", array(
 			"text" => number_format($this->cart->getItemPrice())
 		));
 	}
@@ -198,12 +199,11 @@ class ItemPage extends WebPage{
 		}
 	}
 
-    function convertDate($date){
-    	return mktime(0,0,0,$date["month"],$date["day"],$date["year"]);
-    }
-
-    function convertDateText($time){
-    	return date("Y",$time)."-".date("m",$time)."-".date("d",$time);
-    }
-
+    // function convertDate($date){
+    // 	return mktime(0,0,0,$date["month"],$date["day"],$date["year"]);
+    // }
+    //
+    // function convertDateText($time){
+    // 	return date("Y",$time)."-".date("m",$time)."-".date("d",$time);
+    // }
 }

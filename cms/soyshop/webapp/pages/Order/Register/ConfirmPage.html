@@ -25,17 +25,19 @@
 
 		<dl>
 			<dt>商品
-				<!-- soy:id="item_info*" -->
+				<!-- soy:display="item_info" -->
 				<a class="button" soy:link="Order.Register.Item">変更</a>
-				<!-- /soy:id="item_info*" -->
+				<!-- /soy:display="item_info" -->
 			</dt>
 			<dd>
-				<p class="require" soy:id="no_item">
+				<!-- soy:display="no_item" -->
+				<p class="require">
 					商品を指定してください。
 					<a class="button" soy:link="Order.Register.Item">商品登録</a>
 				</p>
+				<!-- /soy:display="no_item" -->
 
-				<!-- soy:id="item_info" -->
+				<!-- soy:display="item_info1" -->
 				<table class="form_table">
 					<thead>
 						<tr>
@@ -77,23 +79,23 @@
 						<!-- /soy:id="module_list" -->
 					</tbody>
 				</table>
-				<!-- /soy:id="item_info" -->
+				<!-- /soy:display="item_info1" -->
 			</dd>
 
 			<dt>注文者
-				<!-- soy:id="user_info*" -->
+				<!-- soy:display="user_info" -->
 				<a class="button" soy:link="Order.Register.User">変更</a>
-				<!-- /soy:id="user_info*" -->
+				<!-- /soy:display="user_info" -->
 			</dt>
 			<dd>
-				<!-- soy:id="no_user" -->
+				<!-- soy:display="no_user" -->
 				<p class="require">
 					注文者を指定してください。
 					<a class="button" soy:link="Order.Register.User">注文者登録</a>
 				</p>
-				<!-- /soy:id="no_user" -->
-				<table class="form_table" soy:id="user_info">
-					<tr soy:id="user_is_registered">
+				<!-- /soy:display="no_user" -->
+				<table class="form_table" soy:display="user_info1">
+					<tr soy:display="user_is_registered">
 						<th>ID</th>
 						<td>
 							<!-- soy:id="user_id" /-->
@@ -102,60 +104,70 @@
 					</tr>
 					<tr>
 						<th>メールアドレス</th>
-						<td soy:id="mail_address"></td>
+						<td soy:id="mail_address_text"></td>
 					</tr>
 					<tr>
 						<th>氏名</th>
-						<td soy:id="name"></td>
+						<td soy:id="name_text"></td>
 					</tr>
 					<tr>
 						<th>フリガナ</th>
-						<td soy:id="furigana"></td>
+						<td soy:id="reading_text"></td>
 					</tr>
 					<tr>
 						<th>郵便番号</th>
-						<td soy:id="post_number">
+						<td soy:id="zip_code_text">
 						</td>
 					</tr>
 					<tr>
 						<th>住所</th>
 						<td >
-							<!-- soy:id="area" /-->
-							<!-- soy:id="address1" /-->
-							<!-- soy:id="address2" /-->
+							<!-- soy:id="area_text" /-->
+							<!-- soy:id="address1_text" /-->
+							<!-- soy:id="address2_text" /-->
 						</td>
 					</tr>
 					<tr>
 						<th>電話番号</th>
-						<td soy:id="tel_number"></td>
+						<td soy:id="telephone_number_text"></td>
 					</tr>
 					<tr>
 						<th>FAX番号</th>
-						<td soy:id="fax_number" size="30"><input type="text" name="" value="" soy:id="fax_number" size="30" /></td>
+						<td soy:id="fax_number_text"></td>
 					</tr>
 					<tr>
 						<th>携帯電話番号</th>
-						<td soy:id="ketai_number"></td>
+						<td soy:id="ketai_number_text"></td>
 					</tr>
 					<tr>
 						<th>勤務先名称・職種</th>
-						<td soy:id="office"></td>
+						<td soy:id="office_text"></td>
 					</tr>
+					<!-- soy:id="has_user_customfield" -->
+					<!-- soy:id="user_customfield_list" -->
+					<tr>
+						<th nowrap scope="row"><!-- soy:id="customfield_name" /--></th>
+						<td>
+							<!-- soy:id="customfield_confirm" /-->
+						</td>
+					</tr>
+					<!-- /soy:id="user_customfield_list" -->
+					<!-- /soy:id="has_user_customfield" -->
 				</table>
 			</dd>
 
 			<dt>送付先
-				<!-- soy:id="no_send_address*" -->
+				<!-- soy:display="no_send_address" -->
 				<a class="button" soy:link="Order.Register.SendAddress">変更</a>
-				<!-- /soy:id="no_send_address*" -->
-				<!-- soy:id="has_send_address*" -->
+				<!-- /soy:display="no_send_address" -->
+				<!-- soy:display="has_send_address" -->
 				<a class="button" soy:link="Order.Register.SendToUser">クリア</a>
-				<!-- /soy:id="has_send_address*" -->
+				<!-- /soy:display="has_send_address" -->
 			</dt>
 			<dd>
-				<p class="" soy:id="no_send_address">注文者の住所と同じ</p>
+				<p class="" soy:display="no_send_address1">注文者の住所と同じ</p>
 
-				<table class="form_table" soy:id="has_send_address">
+				<table class="form_table" soy:display="has_send_address">
 					<tr>
 						<th>氏名</th>
 						<td soy:id="send_name"></td>
@@ -209,11 +221,10 @@
 		</dl>
 
 		<form soy:id="order_form">
-		<div class="pageBtn">
-			<input type="submit" name="order" value="注文実行" soy:id="order_button" />
-			<p class="caution">メールは送信されません。</p>
-		</div>
-		</form soy:id="order_form">
-
+			<div class="pageBtn">
+				<input type="submit" name="order" value="注文実行" soy:id="order_button" />
+				<p class="caution">メールは送信されません。</p>
+			</div>
+		</form>
 	</div>
 </div>

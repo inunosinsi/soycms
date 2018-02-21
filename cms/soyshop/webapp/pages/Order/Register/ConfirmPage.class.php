@@ -86,9 +86,9 @@ class ConfirmPage extends IndexPage{
 	 * 注文属性：支払い方法、配送方法、備考など
 	 */
 	function attributeInfo(){
-		$attr = $this->cart->getOrderAttributes();
-		$this->createAdd("order_attribute_list", "OrderAttributeList", array(
-			"list" => $attr
+		include_once(dirname(__FILE__) . "/component/OrderAttributeListComponent.class.php");
+		$this->createAdd("order_attribute_list", "OrderAttributeListComponent", array(
+			"list" => $this->cart->getOrderAttributes()
 		));
 	}
 

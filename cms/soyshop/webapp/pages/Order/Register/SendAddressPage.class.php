@@ -58,7 +58,7 @@ class SendAddressPage extends WebPage{
 
     	$this->addForm("address_form");
 
-    	$this->addressForm($address);
+    	self::addressForm($address);
 
 		//エラー文言
 		$error = $this->session->getAttribute("order_register.error.send_address");
@@ -71,10 +71,13 @@ class SendAddressPage extends WebPage{
 		$this->session->setAttribute("order_register.input.send_address", null);
 		$this->session->setAttribute("order_register.error.send_address", null);
 
+		$this->addModel("zip2address_js", array(
+			"src" => soyshop_get_site_url() . "themes/common/js/zip2address.js"
+		));
    }
 
 
-    function addressForm($address){
+    private function addressForm($address){
 
 		$this->addInput("name", array(
     		"name" => "Address[name]",
@@ -116,12 +119,5 @@ class SendAddressPage extends WebPage{
     		"name" => "Address[office]",
     		"value" => (isset($address["office"])) ? $address["office"] : "",
     	));
-
-//    	$memo = $cart->getOrderAttribute("memo");
-//    	if(is_null($memo))$memo = array("name"=>"備考","value"=>"");
-//    	$this->createAdd("order_memo","HTMLTextArea", array(
-//    		"name" => "Attributes[memo]",
-//    		"value" => $memo["value"]
-//    	));
     }
 }
