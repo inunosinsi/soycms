@@ -12,4 +12,3 @@ class SlipNumberInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "slip_number", "SlipNumberInfo");
-?>
