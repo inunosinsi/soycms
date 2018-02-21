@@ -5,10 +5,10 @@
 <br />
 
 <div class="block_body clearfix">
-		
-	<p class="notice" soy:id="updated">更新しました</p>
-	<p class="notice" soy:id="error">入力したIDは使用できません</p>
-		
+
+	<p class="notice" soy:display="updated">更新しました</p>
+	<p class="notice" soy:display="error">入力したIDは使用できません</p>
+
 	<table class="form_list">
 		<caption>カスタム項目</caption>
 		<tr>
@@ -62,12 +62,17 @@
 						<dd>
 							<input type="text" class="text" soy:id="attribute_name" />
 						</dd-->
-						
+
+						<dt>表示範囲</dt>
+						<dd>
+							<input type="checkbox" soy:id="admin_only">
+						</dd>
+
 						<dt>カートに表示する説明文</dt>
 						<dd>
 							<textarea soy:id="attribute_description"></textarea>
 						</dd>
-						
+
 						<dt>表示年数</dt>
 						<dd>
 							<input type="text" soy:id="attribute_year_start" />から

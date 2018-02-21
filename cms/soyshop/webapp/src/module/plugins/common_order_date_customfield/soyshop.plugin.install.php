@@ -3,11 +3,10 @@ class CommonOrderDateCustomfieldInstall extends SOYShopPluginInstallerBase{
 
 	function onInstall(){
 		//初期化時のみテーブルを作成する
-		$sql = $this->getSQL();
 		$dao = new SOY2DAO();
 
 		try{
-			$dao->executeQuery($sql);
+			$dao->executeQuery(self::getSQL());
 		}catch(Exception $e){
 			//データベースが存在する場合はスルー
 		}
@@ -21,7 +20,7 @@ class CommonOrderDateCustomfieldInstall extends SOYShopPluginInstallerBase{
 	/**
 	 * @return String sql for init
 	 */
-	function getSQL(){
+	private function getSQL(){
 		return file_get_contents(dirname(__FILE__) . "/sql/init_" . SOYSHOP_DB_TYPE . ".sql");
 	}
 }

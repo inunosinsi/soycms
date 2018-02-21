@@ -15,7 +15,15 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	private function prepare(){
 		if(!$this->dao){
 			$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
-			$this->list = SOYShop_OrderAttributeConfig::load(true);
+			foreach(SOYShop_OrderAttributeConfig::load(true) as $config){
+				//管理画面側なら必ずフォームを表示する or 公開側の場合はisAdminOnlyが0であれば表示する
+				if(
+					(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE) ||
+					($config->getIsAdminOnly() != SOYShop_OrderAttribute::DISPLAY_ADMIN_ONLY)
+				) {
+					$this->list[] = $config;
+				}
+			}
 		}
 	}
 
@@ -142,7 +150,6 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		self::prepare();
 
 		foreach($this->list as $config){
-
 			$value = $cart->getAttribute("order_customfield_" . $config->getFieldId() . ".value");
 
 			$obj = new SOYShop_OrderAttribute();
@@ -261,6 +268,9 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		self::prepare();
 
 		foreach($this->list as $config){
+			//公開側でフォームを表示しない。管理画面側のみ表示
+			if($config->getIsAdminOnly() == SOYShop_OrderAttribute::DISPLAY_ADMIN_ONLY) continue;
+
 			$value = null;
 
 			$value = $cart->getAttribute("order_customfield_" . $config->getFieldId() . ".value");
@@ -507,14 +517,10 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	}
 
 	private function checkUploadFileExtension(SOYShop_OrderAttributeConfig $obj){
-
 		if(!strlen($obj->getFileOption())) return true;
 
-
 		$fileName = $_FILES["customfield_module"]["name"][$obj->getFieldId()];
-
-		//ファイル名がない場合は調べない
-		if(!strlen($fileName)) return true;
+		if(!strlen($fileName)) return true;	//ファイル名がない場合は調べない
 
 		$extension = trim(mb_strtolower(substr($fileName, strrpos($fileName, ".") + 1)));
 		$res = false;

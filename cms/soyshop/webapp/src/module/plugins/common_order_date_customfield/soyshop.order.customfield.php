@@ -15,7 +15,15 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	private function prepare(){
 		if(!$this->dao){
 			$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
-			$this->list = SOYShop_OrderDateAttributeConfig::load();
+			foreach(SOYShop_OrderDateAttributeConfig::load() as $config){
+				//管理画面側なら必ずフォームを表示する or 公開側の場合はisAdminOnlyが0であれば表示する
+				if(
+					(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE) ||
+					($config->getIsAdminOnly() != SOYShop_OrderDateAttribute::DISPLAY_ADMIN_ONLY)
+				) {
+					$this->list[] = $config;
+				}
+			}
 		}
 	}
 

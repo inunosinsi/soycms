@@ -10,7 +10,5 @@ class CommonOrderDateCustomfieldInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info", "common_order_date_customfield", "CommonOrderDateCustomfieldInfo");
-?>

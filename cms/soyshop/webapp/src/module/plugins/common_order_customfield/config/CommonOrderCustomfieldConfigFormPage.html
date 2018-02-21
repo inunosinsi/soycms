@@ -6,8 +6,8 @@
 
 <div class="block_body clearfix">
 
-	<p class="notice" soy:id="updated">更新しました</p>
-	<p class="notice" soy:id="error">入力したIDは使用できません</p>
+	<p class="notice" soy:display="updated">更新しました</p>
+	<p class="notice" soy:display="error">入力したIDは使用できません</p>
 
 	<table class="form_list">
 		<caption>カスタム項目</caption>
@@ -61,6 +61,10 @@
 						<dt>必須項目</dt>
 						<dd>
 							<input type="checkbox" soy:id="is_required">
+						</dd>
+						<dt>表示範囲</dt>
+						<dd>
+							<input type="checkbox" soy:id="admin_only">
 						</dd>
 						<dt>初期値</dt>
 						<dd>

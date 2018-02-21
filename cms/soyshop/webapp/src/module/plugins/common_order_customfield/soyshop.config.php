@@ -5,7 +5,7 @@ class CommonOrderCustomfieldConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-		include_once(dirname(__FILE__) . "/config/CommonOrderCustomfieldConfigFormPage.class.php");
+		SOY2::import("module.plugins.common_order_customfield.config.CommonOrderCustomfieldConfigFormPage");
 		$form = SOY2HTMLFactory::createInstance("CommonOrderCustomfieldConfigFormPage");
 		$form->setConfigObj($this);
 		$form->execute();
@@ -20,4 +20,3 @@ class CommonOrderCustomfieldConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "common_order_customfield", "CommonOrderCustomfieldConfig");
-?>

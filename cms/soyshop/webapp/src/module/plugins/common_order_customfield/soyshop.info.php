@@ -12,4 +12,3 @@ class CommonOrderCustomfieldInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "common_order_customfield", "CommonOrderCustomfieldInfo");
-?>
