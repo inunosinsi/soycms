@@ -53,6 +53,13 @@ class DetailPage extends MainMyPagePageBase{
 			"text" => $slipNumber
 		));
 
+		//返送伝票番号プラグイン returns_slip_number
+		$slipNumber = (SOYShopPluginUtil::checkIsActive("returns_slip_number")) ? SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic")->getSlipNumberByOrderId($order->getId()) : null;
+		DisplayPlugin::toggle("returns_slip_number", strlen($slipNumber));
+		$this->addLabel("returns_slip_number", array(
+			"text" => $slipNumber
+		));
+
         //注文番号
         $this->addLabel("order_number", array(
             "text" => $order->getTrackingNumber()
