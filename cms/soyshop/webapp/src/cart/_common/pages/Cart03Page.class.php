@@ -23,7 +23,7 @@ class Cart03Page extends MainCartPageBase{
 			$user = $this->user;
 
 			//まずはエラーチェックのみ
-			$this->checkError($cart);
+			self::checkError($cart);
 
 			$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 
@@ -391,15 +391,14 @@ class Cart03Page extends MainCartPageBase{
 
 		/* ボーナス soyshop.bonus */
 		SOYShopPlugin::load("soyshop.bonus");
-		$delegate = SOYShopPlugin::invoke("soyshop.bonus", array(
+		$bonuses = SOYShopPlugin::invoke("soyshop.bonus", array(
 			"mode" => "bonusList",
 			"cart" => $cart,
-		));
-		$bonuses = $delegate->getList();
+		))->getList();
 
-		//ボーナスプラグイン 表示/非表示
+		//ボーナスプラグインの表示の有無
 		$this->addModel("has_bonus_plugin", array(
-			"visible" => $delegate->getHasBonus()
+			"visible" => count($bonuses)
 		));
 
 		//ボーナスプラグイン おまけ内容HTML
@@ -412,76 +411,62 @@ class Cart03Page extends MainCartPageBase{
 
     	//アクティブなプラグインをすべて読み込む
     	SOYShopPlugin::load("soyshop.payment");
-
-		//実行
-		$delegate = SOYShopPlugin::invoke("soyshop.payment", array(
+		return SOYShopPlugin::invoke("soyshop.payment", array(
 			"mode" => "list",
 			"cart" => $cart
-		));
-
-		return $delegate->getList();
+		))->getList();
 	}
 
 	private function getDeliveryMethod(CartLogic $cart){
 
     	//アクティブなプラグインをすべて読み込む
 		SOYShopPlugin::load("soyshop.delivery");
-
-		$delegate = SOYShopPlugin::invoke("soyshop.delivery", array(
+		return SOYShopPlugin::invoke("soyshop.delivery", array(
 			"mode" => "list",
 			"cart" => $cart
-		));
-
-		return $delegate->getList();
+		))->getList();
 	}
 
 	private function getDiscountMethod(CartLogic $cart){
 
     	//アクティブなプラグインをすべて読み込む
 		SOYShopPlugin::load("soyshop.discount");
-
-		$delegate = SOYShopPlugin::invoke("soyshop.discount", array(
+		return SOYShopPlugin::invoke("soyshop.discount", array(
 			"mode" => "list",
 			"cart" => $cart
-		));
-
-		return $delegate->getList();
+		))->getList();
 	}
 
 	private function getPointMethod(CartLogic $cart){
 
     	//アクティブなプラグインをすべて読み込む
 		SOYShopPlugin::load("soyshop.point.payment");
-		$delegate = SOYShopPlugin::invoke("soyshop.point.payment", array(
+		return SOYShopPlugin::invoke("soyshop.point.payment", array(
 			"mode" => "list",
 			"cart" => $cart,
 			"userId" => $this->user->getId()
-		));
-
-		return $delegate->getList();
+		))->getList();
 	}
 
 	private function getCustomfieldMethod(CartLogic $cart){
-
     	//アクティブなプラグインをすべて読み込む
 		SOYShopPlugin::load("soyshop.order.customfield");
-
-		$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
+		$values = SOYShopPlugin::invoke("soyshop.order.customfield", array(
 			"mode" => "list",
 			"cart" => $cart
-		));
+		))->getList();
 
-		$obj = array();
-		if(is_array($delegate->getList())){
-			foreach($delegate->getList() as $list){
-				if(is_array($list)){
-					foreach($list as $key => $array){
-						$obj[$key] = $array;
-					}
-				}
+		if(!count($values)) return array();
+
+		$list = array();
+		foreach($values as $v){
+			if(!is_array($v)) continue;
+			foreach($v as $key => $obj){
+				$list[$key] = $obj;
 			}
 		}
-		return (count($obj) > 0) ? $obj : array();
+
+		return $list;
 	}
 
 	/**
@@ -511,7 +496,7 @@ class Cart03Page extends MainCartPageBase{
 	/**
 	 * @return boolean
 	 */
-	function checkError(CartLogic $cart){
+	private function checkError(CartLogic $cart){
 
 		$res = false;
 
@@ -584,8 +569,7 @@ class Cart03Page extends MainCartPageBase{
 		}else{
 			$cart->removeErrorMessage("customfield");
 		}
-
-
+		
 		return $res;
 	}
 

@@ -355,15 +355,14 @@ class Cart04Page extends MainCartPageBase{
 
 		/* ボーナス soyshop.bonus */
 		SOYShopPlugin::load("soyshop.bonus");
-		$delegate = SOYShopPlugin::invoke("soyshop.bonus", array(
+		$bonuses = SOYShopPlugin::invoke("soyshop.bonus", array(
 			"mode" => "bonusList",
 			"cart" => $cart,
-		));
-		$bonuses = $delegate->getList();
+		))->getList();
 
 		//ボーナスプラグイン 表示/非表示
 		$this->addModel("has_bonus_plugin", array(
-			"visible" => $delegate->getHasBonus()
+			"visible" => count($bonuses)
 		));
 
 		//ボーナスプラグイン おまけ内容HTML

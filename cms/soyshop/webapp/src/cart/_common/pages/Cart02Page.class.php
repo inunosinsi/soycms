@@ -56,7 +56,7 @@ class Cart02Page extends MainCartPageBase{
 			}
 
 			//エラーがなければ次へ
-			if($validAddress && $this->checkError($cart)){
+			if($validAddress && self::checkError($cart)){
 				$cart->setAttribute("prev_page", "Cart02");
 				$cart->setAttribute("page", "Cart03");
 			}else{
@@ -303,7 +303,7 @@ class Cart02Page extends MainCartPageBase{
 	 * エラーがなければtrue
 	 * @return boolean
 	 */
-	function checkError(CartLogic $cart){
+	private function checkError(CartLogic $cart){
 		$user = $cart->getCustomerInformation();
 
 		$res = true;
