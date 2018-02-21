@@ -23,6 +23,10 @@ class SOYShop_OrderAttribute {
 	const IS_REQUIRED = 1;
 	const NO_REQUIRED = 0;
 
+	//フォームの設置箇所
+	const DISPLAY_ALL = 0;
+	const DISPLAY_ADMIN_ONLY = 1;
+
 	/**
 	 * @column order_id
 	 */
@@ -206,9 +210,7 @@ class SOYShop_OrderAttributeConfig{
 
 	private $defaultValue;
 	private $emptyValue;
-
-	//必須項目であるか
-	private $isRequired;
+	
 	private $config;
 
 	function getFieldId() {
@@ -464,5 +466,11 @@ class SOYShop_OrderAttributeConfig{
 	}
 	function setIsRequired($isRequired){
 		$this->config["isRequired"] = $isRequired;
+	}
+	function getIsAdminOnly(){
+		return (isset($this->config["isAdminOnly"])) ? $this->config["isAdminOnly"] : 0;
+	}
+	function setIsAdminOnly($isAdminOnly){
+		$this->config["isAdminOnly"] = $isAdminOnly;
 	}
 }

@@ -8,8 +8,12 @@ class SOYShop_OrderDateAttribute {
 	const CUSTOMFIELD_TYPE_DATE = "date";		//日付
 	const CUSTOMFIELD_TYPE_PERIOD = "period";	//期間
 
+	//フォームの設置箇所
+	const DISPLAY_ALL = 0;
+	const DISPLAY_ADMIN_ONLY = 1;
+
 	public static function getTableName(){
-		return "soyshop_order_attribute";
+		return "soyshop_order_date_attribute";
 	}
 
 	/**
@@ -26,7 +30,7 @@ class SOYShop_OrderDateAttribute {
 	 * @column order_value_1
 	 */
 	private $value1;
-	
+
 	/**
 	 * @column order_value_2
 	 */
@@ -146,7 +150,7 @@ class SOYShop_OrderDateAttributeConfig{
 	private $fieldId;
 	private $label;
 	private $type;
-	
+
 	private $attributeName;
 	private $attributeDescription;
 	private $attributeYearStart;
@@ -184,7 +188,7 @@ class SOYShop_OrderDateAttributeConfig{
 	/* config method */
 
 	function getAttributeName(){
-		return $this->config["attributeName"];
+		return (isset($this->config["attributeName"])) ? $this->config["attributeName"] : null;
 	}
 	function setAttributeName($attributeName){
 		$this->attributeName = $attributeName;
@@ -222,7 +226,7 @@ class SOYShop_OrderDateAttributeConfig{
 		switch($this->getType()){
 			case "date":
 				$date = $values["date"];
-			
+
 				$body = '<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[date][year]"'
@@ -241,13 +245,13 @@ class SOYShop_OrderDateAttributeConfig{
 					   .'>' . "\n"
 					   .$this->getDayForm($date["day"]) . "\n"
 					   .'</select>日' . "\n";
-					   
+
 				break;
-			 
+
 			case "period":
 				$start = $values["start"];
 				$end = $values["end"];
-				
+
 				$body = '<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[start][year]"'
@@ -297,25 +301,25 @@ class SOYShop_OrderDateAttributeConfig{
 
 		return $return;
 	}
-	
+
 	function getYearForm($value){
-		
+
 		if(!is_null($this->getAttributeYearStart()) && strlen($this->getAttributeYearStart()) > 0){
 			$start = $this->getAttributeYearStart();
 		}else{
 			$start = date("Y", time());
 		}
-		
+
 		if(!is_null($this->getAttributeYearEnd()) && strlen($this->getAttributeYearEnd()) > 0){
 			$end = $this->getAttributeYearEnd() + 1;
 		}else{
 			$end = $start + 5;
 		}
-		
+
 		$count = $end - $start;
-		
+
 		$value = (isset($value)) ? $value : date("Y", time());
-		
+
 		$html = array();
 		for($i=0; $i < $count; $i++){
 			$year = $start + $i;
@@ -325,14 +329,14 @@ class SOYShop_OrderDateAttributeConfig{
 				$html[] = '<option value="' . $year.'">' . $year . '</option>';
 			}
 		}
-		
+
 		return implode("\n", $html);
 	}
-	
+
 	function getMonthForm($value){
-		
+
 		$value = (isset($value)) ? $value : date("n", time());
-		
+
 		$html = array();
 		for($i=1; $i < 13; $i++){
 			if($i == $value){
@@ -341,14 +345,14 @@ class SOYShop_OrderDateAttributeConfig{
 				$html[] = '<option value="' . $i . '">' . $i . '</option>';
 			}
 		}
-		
+
 		return implode("\n", $html);
 	}
-	
+
 	function getDayForm($value){
-		
+
 		$value = (isset($value)) ? $value : date("j", time());
-		
+
 		$html = array();
 		for($i=1; $i < 32; $i++){
 			if($i == $value){
@@ -357,8 +361,14 @@ class SOYShop_OrderDateAttributeConfig{
 				$html[] = '<option value="' . $i . '">' . $i . '</option>';
 			}
 		}
-		
+
 		return implode("\n", $html);
 	}
+
+	function getIsAdminOnly(){
+		return (isset($this->config["isAdminOnly"])) ? $this->config["isAdminOnly"] : 0;
+	}
+	function setIsAdminOnly($isAdminOnly){
+		$this->config["isAdminOnly"] = $isAdminOnly;
+	}
 }
-?>
