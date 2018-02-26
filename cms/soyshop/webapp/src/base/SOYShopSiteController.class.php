@@ -461,7 +461,7 @@ class SOYShopSiteController extends SOY2PageController{
             if($uri != SOYSHOP_TOP_PAGE_MARKER) array_unshift($args, $uri);
             $args = implode($args,"/");
             $sslUrl = soyshop_get_ssl_site_url();
-            SOY2PageController::redirect($sslUrl . $args);
+            SOY2PageController::redirect($sslUrl . $args, true);
             exit;
         }
     }
@@ -476,7 +476,7 @@ class SOYShopSiteController extends SOY2PageController{
         if(isset($_SERVER["HTTPS"])){
             if($uri != SOYSHOP_TOP_PAGE_MARKER) array_unshift($args, $uri);
             $args = implode($args,"/");
-            SOY2PageController::redirect(soyshop_get_site_url(true) . $args);
+            SOY2PageController::redirect(soyshop_get_site_url(true) . $args, true);
             exit;
         }
     }
