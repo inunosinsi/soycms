@@ -22,8 +22,7 @@ class SlipNumberInstall extends SOYShopPluginInstallerBase{
 	 */
 	private function getSQL(){
 		//オーダーカスタムフィールドのSQLを取得する
-		$sql = file_get_contents(dirname(dirname(__FILE__)) . "/common_order_customfield/sql/init_" . SOYSHOP_DB_TYPE . ".sql");
-		return $sql;
+		return file_get_contents(dirname(dirname(__FILE__)) . "/common_order_customfield/sql/init_" . SOYSHOP_DB_TYPE . ".sql");
 	}
 }
 SOYShopPlugin::extension("soyshop.plugin.install", "slip_number", "SlipNumberInstall");
