@@ -1,12 +1,16 @@
 <?php
-SOY2::imports("module.plugins.discount_free_coupon.config.*");
 class SOYShopDiscountFreeCouponConfig extends SOYShopConfigPageBase{
 
 	/**
 	 * @return string
 	 */
-	function getConfigPage(){		
-		$form = SOY2HTMLFactory::createInstance("DiscountFreeCouponConfigFormPage");
+	function getConfigPage(){
+		SOY2::imports("module.plugins.discount_free_coupon.config.*");
+		if(isset($_GET["category"])){
+			$form = SOY2HTMLFactory::createInstance("CouponCategoryConfigFormPage");
+		}else{
+			$form = SOY2HTMLFactory::createInstance("DiscountFreeCouponConfigFormPage");
+		}
 		$form->setConfigObj($this);
 		$form->execute();
 		return $form->getObject();
@@ -22,4 +26,3 @@ class SOYShopDiscountFreeCouponConfig extends SOYShopConfigPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.config", "discount_free_coupon", "SOYShopDiscountFreeCouponConfig");
-?>

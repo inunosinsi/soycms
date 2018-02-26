@@ -60,6 +60,7 @@ abstract class SOYShop_CouponDAO extends SOY2DAO{
 	 */
 	function onInsert($query, $binds){
 
+		if(!isset($binds[":categoryId"]) || !is_numeric($binds[":categoryId"])) $binds[":categoryId"] = null;
 		$binds[":createDate"] = time();
 		$binds[":updateDate"] = time();
 
@@ -71,6 +72,7 @@ abstract class SOYShop_CouponDAO extends SOY2DAO{
 	 */
 	function onUpdate($query, $binds){
 
+		if(!isset($binds[":categoryId"]) || !is_numeric($binds[":categoryId"])) $binds[":categoryId"] = null;
 		$binds[":updateDate"] = time();
 
 		return array($query, $binds);

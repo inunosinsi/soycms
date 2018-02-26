@@ -1,20 +1,16 @@
-<style type="text/css">
-<!--
-.error_mes{
-	color:red;
-}
--->
-</style>
+<p class="notice always" soy:display="issued">発行しました。</p>
+<p class="notice always" soy:display="updated">変更しました。</p>
+<p class="notice always" soy:display="deleted">削除しました。</p>
+<p class="error always" soy:display="error">保存に失敗しました。</p>
 
-<p class="notice always" soy:id="issued">発行しました。</p>
-<p class="notice always" soy:id="updated">変更しました。</p>
-<p class="error always" soy:id="error">保存に失敗しました。</p>
-
-<p><a soy:id="register_link">クーポンの登録</a></p>
+<p>
+	<a soy:id="register_link">クーポンの登録</a>&nbsp;
+	<a soy:id="category_link">カテゴリ設定</a>
+</p>
 <br />
 
-<!-- soy:id="is_coupon_list" -->
-<div class="edit_form">
+<!-- soy:display="has_coupon" -->
+<section class="edit_form">
 	<h3>CSV出力</h3>
 	<form soy:id="csv_form" id="export_form">
 		<dl>
@@ -35,7 +31,7 @@
 				<input type="submit" name="csv[coupon]" class="submit_button" value="CSV出力">
 			</dd>
 		</dl>
-	</form soy:id="csv_form">
+	</form>
 
 	<h1>登録済みクーポン</h1>
 	<h3>クーポン一覧</h3>
@@ -71,6 +67,11 @@
 				<td colspan="5">
 					<form method="post">
 						<dl>
+							<!-- soy:id="has_category" -->
+							<dt>カテゴリ</dt>
+							<dd><select soy:id="select_category"><option></option></select></dd>
+							<!-- /soy:id="has_category" -->
+
 							<dt>クーポン名</dt>
 							<dd>
 								<input type="text" soy:id="input_name" />
@@ -126,113 +127,120 @@
 			<!-- /soy:id="coupon_list" -->
 		</tbody>
 	</table>
-</div>
-<!-- /soy:id="is_coupon_list" -->
+</section>
+<!-- /soy:display="has_coupon" -->
 <br />
-<a name="register"></a>
-<form soy:id="form">
-
+<section id="register">
 	<h1>クーポンの新規登録</h1>
 
 	<div class="edit_form">
-		<dl id="coupon_detail">
-			<dt>クーポンコード&nbsp;<span class="option">必須、半角英数字で<!-- soy:id="coupon_conde_annotation_disits_min" /-->～<!-- soy:id="coupon_conde_annotation_disits_max" /-->文字</span></dt>
-			<dd>
-				<input type="text" soy:id="coupon_code" size="20" style="ime-mode:inactive;" />
-				<p class="error_mes" soy:id="coupon_length_error"><!-- soy:id="coupon_conde_annotation_disits_min*" /-->～<!-- soy:id="coupon_conde_annotation_disits_max*" /-->文字で入力してください</p>
-				<p class="error_mes" soy:id="coupon_reg_error">半角英数字で入力してください</p>
-			</dd>
+		<form soy:id="form">
+			<dl id="coupon_detail">
+				<!-- soy:display="has_category_list" -->
+				<dt>カテゴリ</dt>
+				<dd>
+					<select soy:id="category" id="coupon_category"><option></option></select>
+				</dd>
+				<!-- /soy:display="has_category_list" -->
 
-			<dt>クーポンの種類</dt>
-			<dd>
-				<input type="radio" soy:id="coupon_type_price" />
-				<input type="radio" soy:id="coupon_type_percent" />
-				<input type="radio" soy:id="coupon_type_delivery">
-			</dd>
+				<dt>クーポンコード&nbsp;<span class="option">必須、半角英数字で<!-- soy:id="coupon_conde_annotation_disits_min" /-->～<!-- soy:id="coupon_conde_annotation_disits_max" /-->文字</span></dt>
+				<dd>
+					<input type="text" soy:id="coupon_code" id="coupon_code" size="20" style="ime-mode:inactive;" />
+					<p class="error_mes" soy:display="coupon_length_error"><!-- soy:id="coupon_conde_annotation_disits_min*" /-->～<!-- soy:id="coupon_conde_annotation_disits_max*" /-->文字で入力してください</p>
+					<p class="error_mes" soy:display="coupon_reg_error">半角英数字で入力してください</p>
+				</dd>
 
-			<dt>クーポン名&nbsp;<span class="option">必須、例）2011年10月入会キャンペーン</span></dt>
-			<dd>
-				<input type="text" soy:id="name" size="60" />
-				<p class="error_mes" soy:id="name_error">クーポン名が入力されていません</p>
-			</dd>
+				<dt>クーポンの種類</dt>
+				<dd>
+					<input type="radio" soy:id="coupon_type_price" />
+					<input type="radio" soy:id="coupon_type_percent" />
+					<input type="radio" soy:id="coupon_type_delivery">
+				</dd>
 
-			<dt>お客様一人あたりの使用回数&nbsp;<span class="option">空の場合、無制限</span></dt>
-			<dd>
-				<input type="text" soy:id="count" size="5" style="ime-mode:inactive;text-align:right;" />&nbsp;回
-				<p class="error_mes" soy:id="count_error">数字を入力してください。</p>
-			</dd>
+				<dt>クーポン名&nbsp;<span class="option">必須、例）2011年10月入会キャンペーン</span></dt>
+				<dd>
+					<input type="text" soy:id="name" size="60" />
+					<p class="error_mes" soy:display="name_error">クーポン名が入力されていません</p>
+				</dd>
 
-			<dt>値引き額&nbsp;<span class="option">例）1000[円]</span>&nbsp;クーポンの種類で値引き額を選択した場合に設定してください</dt>
-			<dd>
-				<input type="text" soy:id="discount" size="20" style="ime-mode:inactive;text-align:right;" />&nbsp;円
-				<p class="error_mes" soy:id="discount_error">数字を入力してください。</p>
-			</dd>
+				<dt>お客様一人あたりの使用回数&nbsp;<span class="option">空の場合、無制限</span></dt>
+				<dd>
+					<input type="text" soy:id="count" size="5" style="ime-mode:inactive;text-align:right;" />&nbsp;回
+					<p class="error_mes" soy:display="count_error">数字を入力してください。</p>
+				</dd>
 
-			<dt>値引き率&nbsp;<span class="option">例）1000[円]</span>&nbsp;クーポンの種類で値引き率を選択した場合に設定してください</dt>
-			<dd>
-				<input type="text" soy:id="discout_percent" size="3" style="ime-mode:inactive;text-align:right;" />&nbsp;％
-				<p class="error_mes" soy:id="discount_percent_error">数字を入力してください。</p>
-			</dd>
+				<dt>値引き額&nbsp;<span class="option">例）1000[円]</span>&nbsp;クーポンの種類で値引き額を選択した場合に設定してください</dt>
+				<dd>
+					<input type="text" soy:id="discount" size="20" style="ime-mode:inactive;text-align:right;" />&nbsp;円
+					<p class="error_mes" soy:display="discount_error">数字を入力してください。</p>
+				</dd>
 
-			<dt>備考&nbsp;<span class="option">例）自由入力</span></dt>
-			<dd><input type="text" soy:id="memo" size="60" /></dd>
+				<dt>値引き率&nbsp;<span class="option">例）1000[円]</span>&nbsp;クーポンの種類で値引き率を選択した場合に設定してください</dt>
+				<dd>
+					<input type="text" soy:id="discout_percent" size="3" style="ime-mode:inactive;text-align:right;" />&nbsp;％
+					<p class="error_mes" soy:display="discount_percent_error">数字を入力してください。</p>
+				</dd>
 
-			<dt>利用可能金額&nbsp;<span class="option">このクーポンが使える商品金額合計(半角数字)</span></dt>
-			<dd>
-				<input type="text" soy:id="price_limit_min" size="10" style="ime-mode:inactive;text-align:right;" />&nbsp;円&nbsp;～&nbsp;
-				<input type="text" soy:id="price_limit_max" size="10" style="ime-mode:inactive;text-align:right;" />&nbsp;円
-				(空欄の場合、無制限)<br />
-				※下にあるクーポンの利用可能金額設定の値が優先されます。
-				<p class="error_mes" soy:id="price_limit_error">数字を入力してください</p>
-				<p class="error_mes" soy:id="price_limit_compare_error">上限は下限よりも高い金額で設定してください</p>
-			</dd>
+				<dt>備考&nbsp;<span class="option">例）自由入力</span></dt>
+				<dd><input type="text" soy:id="memo" size="60" /></dd>
 
-			<dt>有効期限&nbsp;<span class="option">空の場合は有効期限なし</span></dt>
-			<dd>
-				<input type="text" class="date_picker_start" soy:id="time_limit_start" size="12" />&nbsp;～&nbsp;
-				<input type="text" class="date_picker_end" soy:id="time_limit_end" size="12" />
-				<p class="error_mes" soy:id="time_limit_error">YYYY-MM-DDの形式で入力してください</p>
-				<p class="error_mes" soy:id="time_limit_compare_error">終了日は開始日の後に設定してください</p>
-			</dd>
-		</dl>
+				<dt>利用可能金額&nbsp;<span class="option">このクーポンが使える商品金額合計(半角数字)</span></dt>
+				<dd>
+					<input type="text" soy:id="price_limit_min" size="10" style="ime-mode:inactive;text-align:right;" />&nbsp;円&nbsp;～&nbsp;
+					<input type="text" soy:id="price_limit_max" size="10" style="ime-mode:inactive;text-align:right;" />&nbsp;円
+					(空欄の場合、無制限)<br />
+					※下にあるクーポンの利用可能金額設定の値が優先されます。
+					<p class="error_mes" soy:display="price_limit_error">数字を入力してください</p>
+					<p class="error_mes" soy:display="price_limit_compare_error">上限は下限よりも高い金額で設定してください</p>
+				</dd>
 
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="新規登録" />
-		</p>
+				<dt>有効期限&nbsp;<span class="option">空の場合は有効期限なし</span></dt>
+				<dd>
+					<input type="text" class="date_picker_start" soy:id="time_limit_start" size="12" />&nbsp;～&nbsp;
+					<input type="text" class="date_picker_end" soy:id="time_limit_end" size="12" />
+					<p class="error_mes" soy:display="time_limit_error">YYYY-MM-DDの形式で入力してください</p>
+					<p class="error_mes" soy:display="time_limit_compare_error">終了日は開始日の後に設定してください</p>
+				</dd>
+			</dl>
+
+			<p class="pageBtn">
+				<input type="submit" class="submit_button" value="新規登録" />
+			</p>
+		</form>
 	</div>
+</section>
 
 
+<section>
+	<h1>クーポンの設定</h1>
+	<div class="config_form">
+		<form soy:id="config_form">
+			<dl id="coupon_config">
+				<dt>利用可能金額&nbsp;<span class="option">クーポンが使える商品金額合計(半角数字)</span></dt>
+				<dd>
+					<input type="text" soy:id="config_enable_amount_min" style="text-align:right;ime-mode:inactive;" />&nbsp;円
+					&nbsp;～&nbsp;
+					<input type="text" soy:id="config_enable_amount_max" style="text-align:right;ime-mode:inactive;" />&nbsp;円(空欄の場合、無制限)
+				</dd>
 
-</form soy:id="form">
+				<dt>クーポンコード登録時の文字数</dt>
+				<dd>
+					下限:<input type="number" soy:id="config_code_disits_min" value="">&nbsp;上限:<input type="number" soy:id="config_code_disits_max" value="">
+				</dd>
+			</dl>
 
-<form soy:id="config_form">
-	<div class = "config_form">
-		<h1>クーポンの設定</h1>
-
-		<dl id="coupon_config">
-			<dt>利用可能金額&nbsp;<span class="option">クーポンが使える商品金額合計(半角数字)</span></dt>
-			<dd>
-				<input type="text" soy:id="config_enable_amount_min" style="text-align:right;ime-mode:inactive;" />&nbsp;円
-				&nbsp;～&nbsp;
-				<input type="text" soy:id="config_enable_amount_max" style="text-align:right;ime-mode:inactive;" />&nbsp;円(空欄の場合、無制限)
-			</dd>
-
-			<dt>クーポンコード登録時の文字数</dt>
-			<dd>
-				下限:<input type="number" soy:id="config_code_disits_min" value="">&nbsp;上限:<input type="number" soy:id="config_code_disits_max" value="">
-			</dd>
-		</dl>
-
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="設定変更" />
-		</p>
+			<p class="pageBtn">
+				<input type="submit" class="submit_button" value="設定変更" />
+			</p>
+		</form>
 	</div>
-</form soy:id="config_form">
-
+</section>
 
 <link rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink('./js/tools/soy2_date_picker.css');?>" />
 <script type="text/javascript" src="<?php echo SOY2PageController::createRelativeLink('./js/tools/soy2_date_picker.pack.js');?>" charset="utf-8"></script>
 
+<script soy:id="category_code_js"></script>
+<script soy:id="code_js"></script>
 <script type="text/javascript">
 $(function(){
 	$("#export_form").attr("target","download_frame");
@@ -241,3 +249,9 @@ $(function(){
 	});
 });
 </script>
+
+<style type="text/css">
+.error_mes{
+	color:red;
+}
+</style>

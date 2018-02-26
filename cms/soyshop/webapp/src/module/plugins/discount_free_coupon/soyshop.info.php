@@ -12,4 +12,3 @@ class SOYShopDiscountFreeCouponModuleInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "discount_free_coupon", "SOYShopDiscountFreeCouponModuleInfo");
-?>

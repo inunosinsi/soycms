@@ -3,6 +3,7 @@ create table soyshop_coupon(
 	coupon_code varchar(255) not null UNIQUE,
 	coupon_type tinyint not null default 0,
 	name varchar(255) not null,
+	category_id INTEGER,
 	discount integer not null,
 	discount_percent tinyint not null default 0,
 	is_free_delivery tinyint not null default 0,
@@ -13,9 +14,17 @@ create table soyshop_coupon(
 	count integer not null,
 	memo varchar(255),
 	is_delete integer not null default 0,
-	create_date integer,
-	update_date integer
+	create_date integer not null,
+	update_date integer not null
 ) ENGINE = InnoDB;
+
+create table soyshop_coupon_category(
+	id integer primary key AUTO_INCREMENT,
+	category_name varchar(255) not null,
+	coupon_code_prefix varchar(16) UNIQUE,
+	create_date integer not null,
+	update_date integer not null
+)ENGINE = InnoDB;
 
 create table soyshop_coupon_history(
 	user_id integer not null,

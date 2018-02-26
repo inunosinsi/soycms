@@ -4,7 +4,7 @@ class DiscountFreeCouponAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		return SOY2PageController::createLink("Config.Detail?plugin=discount_free_coupon");
 	}
-	
+
 	function getLinkTitle(){
 		return "クーポン自由設定プラグイン";
 	}
@@ -22,4 +22,3 @@ class DiscountFreeCouponAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "discount_free_coupon", "DiscountFreeCouponAdminTop");
-?>

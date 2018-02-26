@@ -68,4 +68,3 @@ class DiscountFreeCouponUtil {
 		return (isset($config["disitsMax"]) && (int)$config["disitsMax"] > 0) ? (int)$config["disitsMax"] : 16;
 	}
 }
-?>

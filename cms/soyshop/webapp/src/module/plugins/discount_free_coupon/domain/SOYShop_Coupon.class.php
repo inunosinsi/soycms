@@ -32,6 +32,11 @@ class SOYShop_Coupon {
 	private $name;
 
 	/**
+	 * @column category_id
+	 */
+	private $categoryId;
+
+	/**
 	 * @column discount
 	 */
 	private $discount;
@@ -117,6 +122,13 @@ class SOYShop_Coupon {
 	}
 	function setName($name){
 		$this->name = $name;
+	}
+
+	function getCategoryId(){
+		return $this->categoryId;
+	}
+	function setCategoryId($categoryId){
+		$this->categoryId = $categoryId;
 	}
 
 	function getDiscount(){
