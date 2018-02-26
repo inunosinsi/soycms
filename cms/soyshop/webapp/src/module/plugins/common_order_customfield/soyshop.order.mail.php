@@ -25,6 +25,8 @@ class CommonOrderCustomfieldMailModule extends SOYShopOrderMail{
 			$attributes = array();
 		}
 
+		if(!count($attributes)) return;
+
 		$array = array();
 		foreach($attributes as $obj){
 			if(isset($list[$obj->getFieldId()]["type"]) && strlen($obj->getValue1()) > 0){
@@ -33,14 +35,16 @@ class CommonOrderCustomfieldMailModule extends SOYShopOrderMail{
 
 				switch($list[$obj->getFieldId()]["type"]){
 					case "radio":
-						$msg = $obj->getValue1();
-						if(strlen($obj->getValue2())){
-							$msg .= ":" . $obj->getValue2();
+						if(strlen($obj->getValue1())){
+							$msg = $obj->getValue1();
+							if(strlen($obj->getValue2())){
+								$msg .= ":" . $obj->getValue2();
+							}
+							$res[] = $msg;
 						}
-						$res[] = $msg;
 						break;
 					default:
-						$res[] = $obj->getValue1();
+						if(strlen($obj->getValue1())) $res[] = $obj->getValue1();
 						break;
 				}
 

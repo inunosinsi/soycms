@@ -25,6 +25,8 @@ class CommonOrderDateCustomfieldMailModule extends SOYShopOrderMail{
 			$attributes = array();
 		}
 
+		if(!count($attributes)) return;
+
 		$array = array();
 		foreach($attributes as $obj){
 			if(isset($list[$obj->getFieldId()]["type"]) && strlen($obj->getValue1()) > 0){
