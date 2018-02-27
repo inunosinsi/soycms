@@ -2,9 +2,9 @@
 
 class CreateNewLabelPage extends CMSWebPageBase {
 
-    function CreateNewLabelPage() {
+    function __construct() {
     	$result = $this->run("Label.LabelCreateAction");
-    	
+
     	if($result->success()){
     		echo json_encode(
     			array(
@@ -21,7 +21,7 @@ class CreateNewLabelPage extends CMSWebPageBase {
 	    		)
     		);
     	}
-    	
+
     	exit;
     }
 }

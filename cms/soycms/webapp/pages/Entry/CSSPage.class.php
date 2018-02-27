@@ -2,10 +2,10 @@
 
 class CSSPage extends CMSWebPageBase{
 
-    function CSSPage($arg) {
+    function __construct($arg) {
     	$id = @$arg[0];
     	$entry = $this->getEntryInformation($id);
-    	
+
     	$style = $entry->getStyle();
     	header("Content-Type: text/css; charset=utf-8");
     	if(strlen($style)){
@@ -15,12 +15,12 @@ class CSSPage extends CMSWebPageBase{
     	}
     	exit;
     }
-    
+
     function getEntryInformation($id){
     	if(is_null($id)){
     		return SOY2DAOFactory::create("cms.Entry");
     	}
-    	
+
     	$action = SOY2ActionFactory::createInstance("Entry.EntryDetailAction",array("id"=>$id));
     	$result = $action->run();
     	if($result->success()){
@@ -28,7 +28,7 @@ class CSSPage extends CMSWebPageBase{
     	}else{
     		return new Entry();
     	}
-    	
+
     }
 }
 ?>
