@@ -314,7 +314,7 @@ class IndexPage extends WebPage{
 
     	//セッションからユーザIDの取得
     	$user = $this->cart->getCustomerInformation();
-    	$has_user = strlen($user->getMailAddress());
+		$has_user = strlen($user->getMailAddress());
 
 		//登録あり
 		DisplayPlugin::toggle("has_user", $has_user);

@@ -21,6 +21,7 @@ class SOYShop_Order {
 	const PAYMENT_STATUS_CONFIRMED = 2;	//支払確認済み
 	const PAYMENT_STATUS_ERROR = 3;	//入金エラー
 	const PAYMENT_STATUS_DIRECT = 4; //直接支払
+	const PAYMENT_STATUS_REFUNDED = 5;	//返金済み
 
 	//メール送信のタイプ
 	const SENDMAIL_TYPE_ORDER = "order";		//注文受付メール
@@ -161,7 +162,8 @@ class SOYShop_Order {
 				SOYShop_Order::PAYMENT_STATUS_WAIT => "支払待ち",
 				SOYShop_Order::PAYMENT_STATUS_CONFIRMED => "支払確認済み",
 				SOYShop_Order::PAYMENT_STATUS_ERROR => "入金エラー",
-				SOYShop_Order::PAYMENT_STATUS_DIRECT => "直接支払"
+				SOYShop_Order::PAYMENT_STATUS_DIRECT => "直接支払",
+				SOYShop_Order::PAYMENT_STATUS_REFUNDED => "返金済み",
     	);
     }
 
@@ -316,13 +318,14 @@ class SOYShop_Order {
 		}
 
 		/*
-		 * 入金エラーも見せる
+		 * 入金エラーや返金済みも見せる
 		 */
 		switch( $this->getPaymentStatus() ){
 			case self::PAYMENT_STATUS_WAIT :
 			case self::PAYMENT_STATUS_CONFIRMED :
 			case self::PAYMENT_STATUS_DIRECT :
 			case self::PAYMENT_STATUS_ERROR :
+			case self::PAYMENT_STATUS_REFUNDED :
 				$payment = true;
 				break;
 			default:
