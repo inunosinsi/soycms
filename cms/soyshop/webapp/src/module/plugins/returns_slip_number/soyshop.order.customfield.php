@@ -16,6 +16,7 @@ class ReturnsSlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 	function doPost($param){
 		$slipNumber = (isset($param["returns_slip_number"])) ? trim($param["returns_slip_number"]) : null;
 		if(strlen($slipNumber)){
+			$slipNumber = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic")->convert($slipNumber);
 			$cart = $this->getCart();
 			$cart->setAttribute("returns_slip_number.value", $slipNumber);
 			$cart->setOrderAttribute("returns_slip_number", "返送伝票番号", $slipNumber, true, true);
@@ -40,7 +41,7 @@ class ReturnsSlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 			$slipNumber = $cart->getAttribute("returns_slip_number.value");
 			return array("returns_slip_number" => array(
 				"name" => "返送伝票番号",
-				"description" => "<input type=\"text\" name=\"customfield_module[returns_slip_number]\" value=\"" . $slipNumber . "\">"
+				"description" => "<input type=\"text\" name=\"customfield_module[returns_slip_number]\" value=\"" . $slipNumber . "\" placeholder=\"伝票番号を複数登録する場合は、カンマ区切りで登録します。\" style=\"width:95%;\">"
 			));
 		}
 	}

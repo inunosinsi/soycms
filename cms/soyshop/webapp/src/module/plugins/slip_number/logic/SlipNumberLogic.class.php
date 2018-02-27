@@ -22,8 +22,9 @@ class SlipNumberLogic extends SOY2LogicBase{
 	}
 
 	function save($orderId, $value){
+
 		$attr = self::getAttribute($orderId);
-		$attr->setValue1(trim($value));
+		$attr->setValue1(self::convert($value));
 
 		//新規登録
 		if(is_null($attr->getOrderId())){
@@ -50,5 +51,13 @@ class SlipNumberLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			var_dump($e);
 		}
+	}
+
+	function convert($str){
+		$str = str_replace("、", ",", $str);
+		$str = str_replace(array(" ", "　"), "", $str);
+		$str = preg_replace('/,+/', ",", $str);
+		$str = trim($str, ",");
+		return trim($str);
 	}
 }

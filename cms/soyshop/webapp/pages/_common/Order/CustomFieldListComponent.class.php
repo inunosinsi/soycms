@@ -2,7 +2,7 @@
 
 class CustomfieldListComponent extends HTMLList {
 
-	protected function populateItem($item) {
+	protected function populateItem($item, $key) {
 
 		$this->addLabel("customfield_title", array(
 			"text" => (isset($item["name"])) ? $item["name"] : ""
@@ -15,6 +15,11 @@ class CustomfieldListComponent extends HTMLList {
 
 		if(isset($item["link"])){
 			$val = "<a href=\"" . $item["link"] . "\" target=\"_blank\">" . $val . "</a>";
+		}
+
+		//伝票番号の表示
+		if(mb_strpos($item["name"], "伝票番号") !== false || strpos($item["name"], "slip_number")) {
+			$val = str_replace(",", "<br>", $val);
 		}
 
 		$this->addLabel("customfield_value", array(

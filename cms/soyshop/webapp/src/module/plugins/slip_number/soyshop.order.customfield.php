@@ -16,6 +16,7 @@ class SlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 	function doPost($param){
 		$slipNumber = (isset($param["slip_number"])) ? trim($param["slip_number"]) : null;
 		if(strlen($slipNumber)){
+			$slipNumber = SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic")->convert($slipNumber);
 			$cart = $this->getCart();
 			$cart->setAttribute("slip_number.value", $slipNumber);
 			$cart->setOrderAttribute("slip_number", "伝票番号", $slipNumber, true, true);
@@ -39,7 +40,7 @@ class SlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 			$slipNumber = $cart->getAttribute("slip_number.value");
 			return array("slip_number" => array(
 				"name" => "伝票番号",
-				"description" => "<input type=\"text\" name=\"customfield_module[slip_number]\" value=\"" . $slipNumber . "\">"
+				"description" => "<input type=\"text\" name=\"customfield_module[slip_number]\" value=\"" . $slipNumber . "\" placeholder=\"伝票番号を複数登録する場合は、カンマ区切りで登録します。\" style=\"width:95%;\">"
 			));
 		}
 	}
