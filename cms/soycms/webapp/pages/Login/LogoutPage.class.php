@@ -2,7 +2,7 @@
 
 class LogoutPage extends WebPage{
 
-    function LogoutPage() {
+    function __construct() {
 		$action = SOY2ActionFactory::createInstance('LogoutAction');
 		$action->run();
 		if(!defined("SOYCMS_ASP_MODE")){
@@ -10,8 +10,7 @@ class LogoutPage extends WebPage{
 		}else{
 			SOY2PageController::jump("");
 		}
-		
+
 		exit;
     }
 }
-?>
