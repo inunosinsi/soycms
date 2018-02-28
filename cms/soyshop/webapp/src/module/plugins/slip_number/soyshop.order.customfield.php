@@ -22,7 +22,9 @@ class SlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 			$cart->setOrderAttribute("slip_number", "伝票番号", $slipNumber, true, true);
 		}
 	}
-	function order(CartLogic $cart){}
+	function order(CartLogic $cart){
+		$cart->clearOrderAttribute("slip_number");
+	}
 
 	function complete(CartLogic $cart){
 		$orderId = $cart->getAttribute("order_id");
@@ -30,7 +32,6 @@ class SlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 		if(is_numeric($orderId) && strlen($slipNumber)){
 			SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic")->save($orderId, $slipNumber);
 		}
-		$cart->clearOrderAttribute("slip_number");
 	}
 
 	function hasError($param){}

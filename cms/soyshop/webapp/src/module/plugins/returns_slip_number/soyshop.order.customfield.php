@@ -23,7 +23,9 @@ class ReturnsSlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 		}
 	}
 
-	function order(CartLogic $cart){}
+	function order(CartLogic $cart){
+		$cart->clearOrderAttribute("returns_slip_number");
+	}
 
 	function complete(CartLogic $cart){
 		$orderId = $cart->getAttribute("order_id");
@@ -31,7 +33,6 @@ class ReturnsSlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 		if(is_numeric($orderId) && strlen($slipNumber)){
 			SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic")->save($orderId, $slipNumber);
 		}
-		$cart->clearOrderAttribute("returns_slip_number");
 	}
 
 	function hasError($param){}
