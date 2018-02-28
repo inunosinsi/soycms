@@ -13,9 +13,6 @@ class SOYShop_Order {
 	const ORDER_STATUS_SENDED = 4; //発送済み
 	const ORDER_STATUS_CANCELED = 5; //キャンセル
 
-	const ORDER_STATUS_STOCK_CONFIRM = 6;	//在庫確認中
-	const ORDER_STATUS_RETURNED = 7;		//返品待ち
-
 	//支払ステータス
 	const PAYMENT_STATUS_WAIT = 1; //支払待ち
 	const PAYMENT_STATUS_CONFIRMED = 2;	//支払確認済み
@@ -138,18 +135,36 @@ class SOYShop_Order {
      * 注文ステータスの配列を取得
      */
     public static function getOrderStatusList($all = false){
-    	$list = array(
-    			//注文ステータス
-				SOYShop_Order::ORDER_STATUS_REGISTERED => "新規受付",
-				SOYShop_Order::ORDER_STATUS_RECEIVED => "受付完了",
-				SOYShop_Order::ORDER_STATUS_STOCK_CONFIRM => "在庫確認中",
-				SOYShop_Order::ORDER_STATUS_SENDED => "発送済み",
-				SOYShop_Order::ORDER_STATUS_RETURNED => "返品待ち",
-				SOYShop_Order::ORDER_STATUS_CANCELED => "キャンセル"
+		$list = array(
+    		//注文ステータス
+			SOYShop_Order::ORDER_STATUS_REGISTERED => "新規受付",
+			SOYShop_Order::ORDER_STATUS_RECEIVED => "受付完了",
+			SOYShop_Order::ORDER_STATUS_SENDED => "発送済み",
 		);
+
     	if($all){
     		$list[SOYShop_Order::ORDER_STATUS_INTERIM] = "仮登録";//仮登録は管理画面からは見えない
     	}
+
+		//拡張ポイント
+		SOYShopPlugin::load("soyshop.order.status");
+		$adds = SOYShopPlugin::invoke("soyshop.order.status", array(
+			"mode" => "status",
+		))->getList();
+
+		if(is_array($adds) && count($adds)){
+			foreach($adds as $add){
+				if(!is_array($add)) continue;
+				$key = key($add);
+				$list[$key] = $add[$key];
+			}
+		}
+
+		ksort($list);
+
+		//キャンセルは最後
+		$list[SOYShop_Order::ORDER_STATUS_CANCELED] = "キャンセル";
+
     	return $list;
     }
 
@@ -157,14 +172,35 @@ class SOYShop_Order {
      * 支払ステータスのリストを取得
      */
     public static function getPaymentStatusList(){
-		return array(
-				//支払ステータス
-				SOYShop_Order::PAYMENT_STATUS_WAIT => "支払待ち",
-				SOYShop_Order::PAYMENT_STATUS_CONFIRMED => "支払確認済み",
-				SOYShop_Order::PAYMENT_STATUS_ERROR => "入金エラー",
-				SOYShop_Order::PAYMENT_STATUS_DIRECT => "直接支払",
-				SOYShop_Order::PAYMENT_STATUS_REFUNDED => "返金済み",
-    	);
+		static $list;
+		if(is_null($list)){
+			$list = array(
+					//支払ステータス
+					SOYShop_Order::PAYMENT_STATUS_WAIT => "支払待ち",
+					SOYShop_Order::PAYMENT_STATUS_CONFIRMED => "支払確認済み",
+					SOYShop_Order::PAYMENT_STATUS_ERROR => "入金エラー",
+					SOYShop_Order::PAYMENT_STATUS_DIRECT => "直接支払",
+					SOYShop_Order::PAYMENT_STATUS_REFUNDED => "返金済み",
+	    	);
+
+			//拡張ポイント
+			SOYShopPlugin::load("soyshop.order.status");
+			$adds = SOYShopPlugin::invoke("soyshop.order.status", array(
+				"mode" => "payment",
+			))->getList();
+
+			if(is_array($adds) && count($adds)){
+				foreach($adds as $add){
+					if(!is_array($add)) continue;
+					$key = key($add);
+					$list[$key] = $add[$key];
+				}
+			}
+
+			ksort($list);
+		}
+
+		return $list;
     }
 
     function getId() {
@@ -308,8 +344,6 @@ class SOYShop_Order {
 			case self::ORDER_STATUS_RECEIVED :
 			case self::ORDER_STATUS_SENDED :
 			case self::ORDER_STATUS_CANCELED :
-			case self::ORDER_STATUS_STOCK_CONFIRM :
-			case self::ORDER_STATUS_RETURNED :
 				$order = true;
 				break;
 			case self::ORDER_STATUS_INTERIM :
