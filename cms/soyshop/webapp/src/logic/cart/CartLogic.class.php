@@ -1017,7 +1017,6 @@ class CartLogic extends SOY2LogicBase{
 	 * 商品情報の登録
 	 */
 	function orderItems(){
-
 		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 
