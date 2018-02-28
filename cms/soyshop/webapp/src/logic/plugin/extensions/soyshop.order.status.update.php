@@ -22,17 +22,17 @@ class SOYShopOrderStatusUpdateDeletageAction implements SOY2PluginDelegateAction
 					break;
 				default:
 					break;
-			}		
+			}
 		}
 	}
-	
+
 	function getOrder(){
 		return $this->order;
 	}
 	function setOrder($order){
 		$this->order = $order;
 	}
-	
+
 	function getMode(){
 		return $this->mode;
 	}
@@ -41,4 +41,3 @@ class SOYShopOrderStatusUpdateDeletageAction implements SOY2PluginDelegateAction
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.status.update", "SOYShopOrderStatusUpdateDeletageAction");
-?>
