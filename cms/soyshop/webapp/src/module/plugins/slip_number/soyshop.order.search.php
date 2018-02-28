@@ -5,18 +5,23 @@ class SlipNumberSearch extends SOYShopOrderSearch{
 	function setParameter($params){
 		$params = self::getParameters($params);
 		if(count($params)){
-			$queries = array();
 			$binds = array();
+			$q = array();
 			$i = 0;
 			foreach($params as $param){
 				$param = trim($param);
 				if(strlen($param)){
-					$queries[] = "id IN (SELECT order_id FROM soyshop_order_attribute WHERE order_field_id = 'slip_number_plugin' AND order_value1 LIKE :slipNumber" . $i . ")";
+					$q[] = "order_value1 LIKE :slipNumber" . $i;
 					$binds[":slipNumber" . $i] = "%" . $param . "%";
 					$i++;
 				}
 			}
-			if(count($queries)) return array("queries" => $queries, "binds" => $binds);
+
+			if(count($q)){
+				$queries = array();
+				$queries[] = "id IN (SELECT order_id FROM soyshop_order_attribute WHERE order_field_id = 'slip_number_plugin' AND (" . implode(" OR ", $q) . "))";
+				return array("queries" => $queries, "binds" => $binds);
+			}
 		}
 	}
 
