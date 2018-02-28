@@ -28,4 +28,3 @@ class RadioButtonListComponent extends HTMlList{
 		$this->selected = $selected;
 	}
 }
-?>

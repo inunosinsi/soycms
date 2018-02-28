@@ -324,6 +324,7 @@ class DetailPage extends WebPage{
     		"name" => "State[paymentStatus]"
     	));
 
+
     	/*** コメントフォームの生成 ***/
     	$this->addForm("comment_form");
 
