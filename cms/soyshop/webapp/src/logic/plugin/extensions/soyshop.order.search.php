@@ -9,7 +9,7 @@ class SOYShopOrderSearch implements SOY2PluginAction{
 	 * queriesはサブクエリ形式でSQL構文の配列を返せば良い id IN (SELECT id FROM soyshop_order 〜以下省略〜)
 	 */
 	function setParameter($params){
-
+		return array("queries" => "", "binds" => array());
 	}
 
 	/**
@@ -17,7 +17,7 @@ class SOYShopOrderSearch implements SOY2PluginAction{
 	 * formの値に挿入するフォームのnameはsearch[customs][モジュールID][ユニークなパラメータ]にしなければ動作しない
 	 **/
 	function searchItems($params){
-
+		return array("label" => "", "form" => "");
 	}
 }
 class SOYShopOrderSearchDeletageAction implements SOY2PluginDelegateAction{

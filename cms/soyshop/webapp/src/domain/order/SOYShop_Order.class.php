@@ -116,8 +116,8 @@ class SOYShop_Order {
      */
     function getPaymentStatusText(){
     	$texts = $this->getPaymentStatusList();
-    	$status = $this->getPaymentStatus() + 0;
-    	if($texts[$status]){
+		$status = $this->getPaymentStatus() + 0;
+    	if(isset($texts[$status])){
 	    	return $texts[$status];
     	} else {
     		return false;
