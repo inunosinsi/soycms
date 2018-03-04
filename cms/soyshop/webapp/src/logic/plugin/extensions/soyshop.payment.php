@@ -1,24 +1,76 @@
 <?php
 class SOYShopPayment implements SOY2PluginAction{
 
+	/**
+	 * Cartで支払い方法選択後にCartLogicに支払い方法を登録する等の処理を行う
+	 */
 	function onSelect(CartLogic $cart){
-
+		/**
+		 * 支払い方法を登録する
+		 * $module = new SOYShop_ItemModule();
+		 * $module->setId("payment_*****");       //プラグインIDを指定する
+		 * $module->setType("payment_module");    //他の支払いモジュールを登録しないように必ず登録
+		 * $module->setName($this->getName());    //支払い方法
+		 * $module->setIsInclude(false);          //注文の合算に含めるか？内税の場合はfalseにする
+		 * $module->setIsVisible(false);          //顧客に見せるか？
+		 * $module->setPrice($this->getPrice());  //当モジュールを選択した時の加算する金額
+		 * $cart->addModule($module);
+		**/
 	}
 
+	/**
+	 * @return string
+	 * Cartの支払い方法選択画面等で表示する支払い方法名
+	 */
 	function getName(){
 		return "";
 	}
 
+	/**
+	 * @return string
+	 * Cartの支払い方法選択画面で表示する支払い方法の説明文
+	 */
 	function getDescription(){
 		return "";
 	}
 
+	/**
+	 * @return integer
+	 * Cart等で支払い方法として選択した時に加算される金額
+	 */
 	function getPrice(){
+		return 0;
+	}
+
+	/**
+	 * @return boolen
+	 * Cartの支払い方法選択画面で選択項目として表示するか？
+	 */
+	function getMethod(CartLogic $cart, $moduleId){
+		return true;
+	}
+
+	/**
+	 * @return boolean
+	 * クレジットカードのカード番号の入力ページ等の追加ページを持っているか？
+	 */
+	function hasOptionPage(){
+		return false;
+	}
+
+	/**
+	 * @return string
+	 * hasOptionPageがtrueの場合、注文完了後の追加ページの表示内容
+	 */
+	function getOptionPage(){
 		return "";
 	}
 
-	function getMethod(CartLogic $cart, $moduleId){
-		return true;
+	/**
+	 * 追加ページでPOSTを送信した後に読み込まれる
+	 */
+	function onPostOptionPage(){
+
 	}
 
 	function getCart() {
@@ -27,22 +79,6 @@ class SOYShopPayment implements SOY2PluginAction{
 	function setCart($cart) {
 		$this->cart = $cart;
 	}
-
-	/**
-	 * 追加ページを持っているか
-	 */
-	function hasOptionPage(){
-		return false;
-	}
-
-	function getOptionPage(){
-
-	}
-
-	function onPostOptionPage(){
-
-	}
-
 }
 class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 

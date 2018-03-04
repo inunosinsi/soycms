@@ -1,0 +1,46 @@
+<p class="notice" soy:display="successed">変更しました。</p>
+<p class="error" soy:display="failed">失敗しました。</p>
+
+<div class="block">
+	<div class="block_title">
+		<h2>伝票番号一覧</h2>
+
+		<div class="block_title_right"></div>
+	</div>
+
+	<div class="block_body">
+		<!-- soy:display="no_slip_number" -->
+		<p class="notice always">返送待ちの伝票はありません。</p>
+		<!-- /soy:display="no_slip_number" -->
+
+		<!-- soy:display="is_slip_number" -->
+		<table class="form_list">
+			<caption>伝票番号一覧</caption>
+			<thead>
+				<tr class="alC">
+					<th>伝票番号</th>
+					<th>注文日時</th>
+					<th>注文番号</th>
+					<th>顧客名</th>
+					<th>状態</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="slip_number_list" -->
+				<tr>
+					<td soy:id="slip_number" class="alC"></td>
+					<td soy:id="order_date" class="alC"></td>
+					<td class="alC"><a soy:id="tracking_number"></a></td>
+					<td class="alC"><a soy:id="user_name"></a></td>
+					<td soy:id="status" class="alC"></td>
+					<td class="operation">
+						<a soy:id="delivery_link" class="button">発送</a>
+					</td>
+				</tr>
+				<!-- /soy:id="slip_number_list" -->
+			</tbody>
+		</table>
+		<!-- /soy:display="is_slip_number" -->
+	</div>
+</div>

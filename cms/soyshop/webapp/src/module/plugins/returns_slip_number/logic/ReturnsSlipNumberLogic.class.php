@@ -2,11 +2,17 @@
 
 class ReturnsSlipNumberLogic extends SOY2LogicBase{
 
+	const MODE_RETURN = "return";
+	const MODE_CANCEL = "cancel";
+
 	private $orderAttributeDao;
+	private $slipDao;
 
 	function __construct(){
 		SOY2::import("module.plugins.returns_slip_number.util.ReturnsSlipNumberUtil");
 		$this->orderAttributeDao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
+		SOY2::import("module.plugins.returns_slip_number.domain.SOYShop_ReturnsSlipNumberDAO");
+		$this->slipDao = SOY2DAOFactory::create("SOYShop_ReturnsSlipNumberDAO");
 	}
 
 	function getSlipNumberByOrderId($orderId){
@@ -43,6 +49,43 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 				var_dump($e);
 			}
 		}
+
+		//既に登録されているもの
+		$oldList = $this->slipDao->getRegisteredNumberListByOrderId($orderId);
+
+		//伝票番号の記録テーブルの記録する
+		$numbers = explode(",", $value);
+		foreach($numbers as $number){
+			$number = trim(trim($number));
+			if(!strlen($number)) continue;
+
+			//登録がなければ登録する
+			if(!isset($oldList[$number])){
+				$obj = new SOYShop_ReturnsSlipNumber();
+				$obj->setSlipNumber($number);
+				$obj->setOrderId($orderId);
+				try{
+					$this->slipDao->insert($obj);
+				}catch(Exception $e){
+					//
+				}
+			}else if(isset($oldList[$number])){
+				$oldList[$number] = 1;	//登録があればフラグを立てる
+			}
+		}
+
+		//最後までフラグが立たなかったものはこの場で削除する
+		if(count($oldList)){
+			foreach($oldList as $number => $flag){
+				if($flag != 1){
+					try{
+						$this->slipDao->deleteBySlipNumber($number);
+					}catch(Exception $e){
+						var_dump($e);
+					}
+				}
+			}
+		}
 	}
 
 	function delete($orderId){
@@ -59,5 +102,39 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		$str = preg_replace('/,+/', ",", $str);
 		$str = trim($str, ",");
 		return trim($str);
+	}
+
+	function changeStatus($slipId, $mode="return"){
+		$slipNumber = self::getSlipNumberById($slipId);
+		if($mode == self::MODE_RETURN){
+			$slipNumber->setIsReturn(SOYShop_ReturnsSlipNumber::IS_RETURN);
+		}else{
+			$slipNumber->setIsReturn(SOYShop_ReturnsSlipNumber::NO_RETURN);
+		}
+
+		try{
+			$this->slipDao->update($slipNumber);
+		}catch(Exception $e){
+			var_dump($e);
+			return false;
+		}
+
+		//一つの注文ですべて返送済みにしたら注文ステータスを返却済みにする
+		$cnt = $this->slipDao->countNoReturnByOrderId($slipNumber->getOrderId());
+		if($cnt === 0){
+			SOY2Logic::createInstance("logic.order.OrderLogic")->changeOrderStatus($slipNumber->getOrderId(), 21);
+		//戻す
+		}else{
+			SOY2Logic::createInstance("logic.order.OrderLogic")->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_SENDED);
+		}
+		return true;
+	}
+
+	private function getSlipNumberById($slipId){
+		try{
+			return $this->slipDao->getById($slipId);
+		}catch(Exception $e){
+			return new SOYShop_ReturnsSlipNumber();
+		}
 	}
 }

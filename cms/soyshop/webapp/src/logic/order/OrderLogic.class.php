@@ -187,14 +187,17 @@ class OrderLogic extends SOY2LogicBase{
     			continue;
     		}
 
-    		$order->setStatus($status);
-    		$historyContent = "注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。";
-    		try{
-    			$dao->update($order);
-    		}catch(Exception $e){
-    			continue;
-    		}
-    		self::addHistory($id, $historyContent);
+			//ステータスが異なる場合
+			if($order->getStatus() != $status){
+				$order->setStatus($status);
+	    		$historyContent = "注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。";
+	    		try{
+	    			$dao->update($order);
+	    		}catch(Exception $e){
+	    			continue;
+	    		}
+	    		self::addHistory($id, $historyContent);
+			}
     	}
 
     	$dao->commit();
