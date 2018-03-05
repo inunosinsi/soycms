@@ -32,12 +32,12 @@ class DetailPage extends WebPage{
 					$historyContents[] = "注文状態を<strong>「" . $order->getOrderStatusText() . "」</strong>に変更しました。";
 
 					//キャンセルの場合は紐付いた商品分だけ在庫数を戻したい
-					if($_POST["State"]["orderStatus"] == SOYShop_Order::ORDER_STATUS_CANCELED && $oldStatus != SOYShop_Order::ORDER_STATUS_CANCELED){
+					if(self::compareStatus($_POST["State"]["orderStatus"], $oldStatus, self::CHANGE_STOCK_MODE_CANCEL)){
 						self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
 					}
 
 					//キャンセルから他のステータスに戻した場合は在庫数を減らしたい
-					if($oldStatus == SOYShop_Order::ORDER_STATUS_CANCELED && $_POST["State"]["orderStatus"] != SOYShop_Order::ORDER_STATUS_CANCELED){
+					if(self::compareStatus($_POST["State"]["orderStatus"], $oldStatus, self::CHANGE_STOCK_MODE_RETURN)){
 						self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_RETURN);
 					}
 				}
@@ -96,6 +96,38 @@ class DetailPage extends WebPage{
 				//var_dump($e);
 			}
 		}
+	}
+
+	private function compareStatus($newStatus, $oldStatus, $mode=self::CHANGE_STOCK_MODE_CANCEL){
+		switch($mode){
+			case self::CHANGE_STOCK_MODE_CANCEL:
+				//キャンセルにする場合
+				if($newStatus == SOYShop_Order::ORDER_STATUS_CANCELED){
+					//前のステータスがキャンセルか返却(21)でないことを確認
+					return ($oldStatus != SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus != 21);
+				}
+
+				//返却にする場合
+				if($newStatus == 21){
+					//前のステータスがキャンセルか返却(21)でないことを確認
+					return ($oldStatus != SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus != 21);
+				}
+				break;
+			case self::CHANGE_STOCK_MODE_RETURN:
+				//キャンセルから戻す場合
+				if($newStatus != SOYShop_Order::ORDER_STATUS_CANCELED){
+					//前のステータスがキャンセルか返却(21)であるか確認する
+					return ($oldStatus == SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus == 21);
+				}
+
+				//返却(21)から戻す場合
+				if($newStatus != 21){
+					//前のステータスがキャンセルか返却(21)であるか確認する
+					return ($oldStatus == SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus == 21);
+				}
+		}
+
+		return false;
 	}
 
     function __construct($args) {
