@@ -14,8 +14,8 @@ class IndexPage extends WebPage{
 
 		parent::__construct();
 
-		SOYShopPlugin::load("soyshop.admin.list", $plugin);
-		$exts = self::delegate()->getContents();
+		SOYShopPlugin::load("soyshop.admin.list");
+		$exts = self::delegate($pluginId)->getContents();
 
 		if(!isset($exts[$pluginId])) SOY2PageController::jump("");
 		$ext = $exts[$pluginId];
@@ -39,10 +39,13 @@ class IndexPage extends WebPage{
 		return (isset($css) && is_array($css)) ? $css : array();
 	}
 
-	private function delegate(){
+	private function delegate($pluginId = null){
 		static $delegate;
 		if(is_null($delegate)){
-			$delegate = SOYShopPlugin::invoke("soyshop.admin.list", array("mode" => "list"));
+			$delegate = SOYShopPlugin::invoke("soyshop.admin.list", array(
+				"mode" => "list",
+				"pluginId" => $pluginId
+			));
 		}
 		return $delegate;
 	}
