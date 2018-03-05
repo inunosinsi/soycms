@@ -120,6 +120,7 @@ class SlipNumberLogic extends SOY2LogicBase{
 		}
 
 		//一つの注文ですべて配送済みにしたら注文ステータスを配送済みにする
+		SOY2::import("domain.order.SOYShop_Order");
 		$cnt = $this->slipDao->countNoDeliveryByOrderId($slipNumber->getOrderId());
 		if($cnt === 0){
 			SOY2Logic::createInstance("logic.order.OrderLogic")->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_SENDED);

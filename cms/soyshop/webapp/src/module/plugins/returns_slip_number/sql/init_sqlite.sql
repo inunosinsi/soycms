@@ -6,4 +6,4 @@ CREATE TABLE soyshop_returns_slip_number (
 	create_date INTEGER NOT NULL,
 	update_date INTEGER NOT NULL,
 	UNIQUE(slip_number, order_id)
-) ENGINE=InnoDB;
+);

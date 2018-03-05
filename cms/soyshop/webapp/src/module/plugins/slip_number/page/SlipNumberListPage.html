@@ -9,6 +9,31 @@
 	</div>
 
 	<div class="block_body">
+
+		<dl>
+			<dt class="search_btn_dt">
+				検索する
+			</dt>
+		</dl>
+		<div class="search_area_dd" soy:id="search_area">
+			<form soy:id="search_form">
+				<table class="form_table">
+					<tr>
+						<th>状態</th>
+						<td colspan="3">
+							<input type="checkbox" soy:id="no_delivery">&nbsp;
+							<input type="checkbox" soy:id="is_delivery">
+						</td>
+					</tr>
+				</table>
+
+				<p class="pageBtn">
+					<input type="submit" name="search" value="検索">&nbsp;&nbsp;
+					<input type="submit" name="reset" value="リセット">
+				</p>
+			</form>
+		</div>
+
 		<!-- soy:display="no_slip_number" -->
 		<p class="notice always">返送待ちの伝票はありません。</p>
 		<!-- /soy:display="no_slip_number" -->
@@ -44,3 +69,28 @@
 		<!-- /soy:display="is_slip_number" -->
 	</div>
 </div>
+
+<style>
+	dt.search_btn_dt {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	div.search_area_dd {}
+
+	#standard_form_area{
+		display:none;
+	}
+</style>
+
+<script>
+	(function() {
+		document.querySelector(".search_btn_dt").addEventListener("click", function() {
+			sarea = document.querySelector(".search_area_dd");
+			if (sarea.style.display == "none") {
+				sarea.style.display = "inline";
+			} else {
+				sarea.style.display = "none";
+			}
+		});
+	})();
+</script>

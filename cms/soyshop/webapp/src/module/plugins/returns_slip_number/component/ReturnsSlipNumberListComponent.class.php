@@ -29,8 +29,9 @@ class ReturnsSlipNumberListComponent extends HTMLList {
 		));
 
 		$this->addActionLink("return_link", array(
-			"link" => SOY2PageController::createLink("Extension.returns_slip_number?return=" . $entity->getId()),
-			"onclick" => "return confirm('返送済みにしますか？')"
+			"link" => self::getReturnLink($entity->getId(), $entity->getIsReturn()),
+			"text" => ($entity->getIsReturn() == SOYShop_ReturnsSlipNumber::NO_RETURN) ? "返送" : "戻す",
+			"onclick" => "return confirm('" . self::getConfirmText($entity->getIsReturn()) . "')"
 		));
 
 		//注文状態がキャンセルであれば表示しない
@@ -54,12 +55,6 @@ class ReturnsSlipNumberListComponent extends HTMLList {
 		return $orders[$orderId];
 	}
 
-	private function orderDao(){
-		static $dao;
-
-		return $dao;
-	}
-
 	private function getUserById($userId, $status){
 		static $users, $dao;
 		if(is_null($users)) $users = array();
@@ -76,5 +71,21 @@ class ReturnsSlipNumberListComponent extends HTMLList {
 			$users[$userId] = new SOYShop_User();
 		}
 		return $users[$userId];
+	}
+
+	private function getReturnLink($slipId, $status){
+		if($status == SOYShop_ReturnsSlipNumber::NO_RETURN){
+			return SOY2PageController::createLink("Extension.returns_slip_number?return=" . $slipId);
+		}else{
+			return SOY2PageController::createLink("Extension.returns_slip_number?return=" . $slipId . "&back");
+		}
+	}
+
+	private function getConfirmText($status){
+		if($status == SOYShop_ReturnsSlipNumber::NO_RETURN){
+			return "返送済みにしますか？";
+		}else{
+			return "未返送に戻しますか？";
+		}
 	}
 }
