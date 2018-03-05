@@ -9,9 +9,9 @@ class SOYShopPlugin extends SOY2Plugin{
         static $loaded = array();
 		
         if(in_array(array($extensionId, $module), $loaded)){
-            return;
+			return;
         }else{
-            $loaded[] = array($extensionId, $module);
+			$loaded[] = array($extensionId, $module);
         }
 
         if($extensionId){
