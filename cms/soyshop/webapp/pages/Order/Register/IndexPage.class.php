@@ -346,10 +346,10 @@ class IndexPage extends WebPage{
 		$backward = new BackwardUserComponent();
 		$component = new UserComponent();
 
-		$backward->backwardAdminBuildForm($this, $this->cart->getCustomerInformation());
+		$backward->backwardAdminBuildForm($this, $user);
 
 		//共通フォーム
-		$component->buildForm($this, $this->cart->getCustomerInformation(), $this->cart, UserComponent::MODE_CUSTOM_CONFIRM);
+		$component->buildForm($this, $user, $this->cart, UserComponent::MODE_CUSTOM_CONFIRM);
 
 		$this->addLabel("office_text", array(
 			"text" => $user->getJobName()
