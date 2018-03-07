@@ -119,14 +119,15 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 			return false;
 		}
 
-		//一つの注文ですべて返送済みにしたら注文ステータスを返却済みにする
+		//一つの注文ですべて返送済みにしたら注文ステータスを返却済みにする @Todo 在庫数
 		SOY2::import("domain.order.SOYShop_Order");
+		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		$cnt = $this->slipDao->countNoReturnByOrderId($slipNumber->getOrderId());
 		if($cnt === 0){
-			SOY2Logic::createInstance("logic.order.OrderLogic")->changeOrderStatus($slipNumber->getOrderId(), 21);
+			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), 21);
 		//戻す
 		}else{
-			SOY2Logic::createInstance("logic.order.OrderLogic")->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_SENDED);
+			$orderLogic::createInstance("logic.order.OrderLogic")->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_SENDED);
 		}
 		return true;
 	}

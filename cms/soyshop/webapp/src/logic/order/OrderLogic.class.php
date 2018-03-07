@@ -2,6 +2,9 @@
 
 class OrderLogic extends SOY2LogicBase{
 
+	const CHANGE_STOCK_MODE_CANCEL = "cancel";	//キャンセルにした場合
+	const CHANGE_STOCK_MODE_RETURN = "return";	//キャンセルから他のステータスに戻した場合
+
 	/**
 	 * 商品情報を詳細つきで取得
 	 * @return SOYShop_Order
@@ -188,7 +191,8 @@ class OrderLogic extends SOY2LogicBase{
     		}
 
 			//ステータスが異なる場合
-			if($order->getStatus() != $status){
+			$oldStatus = $order->getStatus();
+			if($oldStatus != $status){
 				$order->setStatus($status);
 	    		$historyContent = "注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。";
 	    		try{
@@ -196,6 +200,20 @@ class OrderLogic extends SOY2LogicBase{
 	    		}catch(Exception $e){
 	    			continue;
 	    		}
+
+				/** 在庫数の変更 **/
+
+				//キャンセルの場合は紐付いた商品分だけ在庫数を戻したい
+				if(self::compareStatus($status, $oldStatus, self::CHANGE_STOCK_MODE_CANCEL)){
+					self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
+				}
+
+				//キャンセルから他のステータスに戻した場合は在庫数を減らしたい
+				if(self::compareStatus($status, $oldStatus, self::CHANGE_STOCK_MODE_RETURN)){
+					self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_RETURN);
+				}
+
+
 	    		self::addHistory($id, $historyContent);
 			}
     	}
@@ -232,4 +250,72 @@ class OrderLogic extends SOY2LogicBase{
 
     	$dao->commit();
     }
+
+	function compareStatus($newStatus, $oldStatus, $mode=self::CHANGE_STOCK_MODE_CANCEL){
+		switch($mode){
+			case self::CHANGE_STOCK_MODE_CANCEL:
+				//キャンセルにする場合
+				if($newStatus == SOYShop_Order::ORDER_STATUS_CANCELED){
+					//前のステータスがキャンセルか返却(21)でないことを確認
+					return ($oldStatus != SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus != 21);
+				}
+
+				//返却にする場合
+				if($newStatus == 21){
+					//前のステータスがキャンセルか返却(21)でないことを確認
+					return ($oldStatus != SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus != 21);
+				}
+				break;
+			case self::CHANGE_STOCK_MODE_RETURN:
+				//キャンセルから戻す場合
+				if($newStatus != SOYShop_Order::ORDER_STATUS_CANCELED){
+					//前のステータスがキャンセルか返却(21)であるか確認する
+					return ($oldStatus == SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus == 21);
+				}
+
+				//返却(21)から戻す場合
+				if($newStatus != 21){
+					//前のステータスがキャンセルか返却(21)であるか確認する
+					return ($oldStatus == SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus == 21);
+				}
+		}
+
+		return false;
+	}
+
+	function changeItemStock($orderId, $mode){
+		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		try{
+			$itemOrders = $itemOrderDao->getByOrderId($orderId);
+		}catch(Exception $e){
+			return false;
+		}
+
+		if(!count($itemOrders)) return false;
+
+		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		foreach($itemOrders as $itemOrder){
+			try{
+				$item = $itemDao->getById($itemOrder->getItemId());
+			}catch(Exception $e){
+				continue;
+			}
+
+			//在庫数を戻す
+			if($mode == self::CHANGE_STOCK_MODE_CANCEL){
+				$item->setStock((int)$item->getStock() + (int)$itemOrder->getItemCount());
+			//在庫数を減らす
+			}else if($mode == self::CHANGE_STOCK_MODE_RETURN){
+				$item->setStock((int)$item->getStock() - (int)$itemOrder->getItemCount());
+			}else{
+				//何もしない
+			}
+
+			try{
+				$itemDao->update($item);
+			}catch(Exception $e){
+				var_dump($e);
+			}
+		}
+	}
 }

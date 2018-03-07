@@ -26,19 +26,20 @@ class DetailPage extends WebPage{
 
 
 				if (isset($_POST["State"]["orderStatus"]) && $order->getStatus() != $post->orderStatus) {
+					$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 					$oldStatus = $order->getStatus();
 
 					$order->setStatus($post->orderStatus);
 					$historyContents[] = "注文状態を<strong>「" . $order->getOrderStatusText() . "」</strong>に変更しました。";
 
 					//キャンセルの場合は紐付いた商品分だけ在庫数を戻したい
-					if(self::compareStatus($_POST["State"]["orderStatus"], $oldStatus, self::CHANGE_STOCK_MODE_CANCEL)){
-						self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
+					if($orderLogic->compareStatus($_POST["State"]["orderStatus"], $oldStatus, self::CHANGE_STOCK_MODE_CANCEL)){
+						$orderLogic->changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
 					}
 
 					//キャンセルから他のステータスに戻した場合は在庫数を減らしたい
-					if(self::compareStatus($_POST["State"]["orderStatus"], $oldStatus, self::CHANGE_STOCK_MODE_RETURN)){
-						self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_RETURN);
+					if($orderLogic->compareStatus($_POST["State"]["orderStatus"], $oldStatus, self::CHANGE_STOCK_MODE_RETURN)){
+						$orderLogic->changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_RETURN);
 					}
 				}
 				if (isset($_POST["State"]["paymentStatus"]) && $order->getPaymentStatus() != $post->paymentStatus) {
@@ -96,38 +97,6 @@ class DetailPage extends WebPage{
 				//var_dump($e);
 			}
 		}
-	}
-
-	private function compareStatus($newStatus, $oldStatus, $mode=self::CHANGE_STOCK_MODE_CANCEL){
-		switch($mode){
-			case self::CHANGE_STOCK_MODE_CANCEL:
-				//キャンセルにする場合
-				if($newStatus == SOYShop_Order::ORDER_STATUS_CANCELED){
-					//前のステータスがキャンセルか返却(21)でないことを確認
-					return ($oldStatus != SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus != 21);
-				}
-
-				//返却にする場合
-				if($newStatus == 21){
-					//前のステータスがキャンセルか返却(21)でないことを確認
-					return ($oldStatus != SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus != 21);
-				}
-				break;
-			case self::CHANGE_STOCK_MODE_RETURN:
-				//キャンセルから戻す場合
-				if($newStatus != SOYShop_Order::ORDER_STATUS_CANCELED){
-					//前のステータスがキャンセルか返却(21)であるか確認する
-					return ($oldStatus == SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus == 21);
-				}
-
-				//返却(21)から戻す場合
-				if($newStatus != 21){
-					//前のステータスがキャンセルか返却(21)であるか確認する
-					return ($oldStatus == SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus == 21);
-				}
-		}
-
-		return false;
 	}
 
     function __construct($args) {
@@ -427,45 +396,6 @@ class DetailPage extends WebPage{
     		"visible" => (count($list) > 0)
     	));
     }
-
-    //注文状態の変更に伴い、在庫数の変更を行う
-	private function changeItemStock($orderId, $mode){
-		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		$itemOrderDao->begin();
-		try{
-			$itemOrders = $itemOrderDao->getByOrderId($orderId);
-		}catch(Exception $e){
-			return false;
-		}
-
-		if(!count($itemOrders)) return false;
-
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		foreach($itemOrders as $itemOrder){
-			try{
-				$item = $itemDao->getById($itemOrder->getItemId());
-			}catch(Exception $e){
-				continue;
-			}
-
-			//在庫数を戻す
-			if($mode == self::CHANGE_STOCK_MODE_CANCEL){
-				$item->setStock((int)$item->getStock() + (int)$itemOrder->getItemCount());
-			//在庫数を減らす
-			}else if($mode == self::CHANGE_STOCK_MODE_RETURN){
-				$item->setStock((int)$item->getStock() - (int)$itemOrder->getItemCount());
-			}else{
-				//何もしない
-			}
-
-			try{
-				$itemDao->update($item);
-			}catch(Exception $e){
-				var_dump($e);
-			}
-		}
-		$itemOrderDao->commit();
-	}
 
     function getPointHistories($orderId){
     	$pointHistoryDao = SOY2DAOFactory::create("SOYShop_PointHistoryDAO");
