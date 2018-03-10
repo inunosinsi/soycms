@@ -56,6 +56,9 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
+	//住所フォームを分割するか？
+	private $zipDivide = true;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 */
@@ -76,9 +79,15 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<table class="soyinquiry_address_form" cellspacing="0" cellpadding="5" border="0" '. implode(" ",$attributes) .'>';
 		$html[] = '<tbody><tr>';
 		$html[] = '<td width="70">郵便番号：<br/></td>';
-		$html[] = '<td><input type="text" size="7" class="soyinquiry_address_zip1" name="data['.$this->getColumnId().'][zip1]" value="'.htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8").'"' . $required . '>';
-		$html[] = '-';
-		$html[] = '<input type="text" size="7" class="soyinquiry_address_zip2" name="data['.$this->getColumnId().'][zip2]" value="'.htmlspecialchars($value["zip2"], ENT_QUOTES, "UTF-8").'"' . $required . '>';
+		$html[] = '<td>';
+
+		if($this->zipDivide){
+			$html[] = '<input type="text" size="7" class="soyinquiry_address_zip1" name="data['.$this->getColumnId().'][zip1]" value="'.htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8").'"' . $required . '>';
+			$html[] = '-';
+			$html[] = '<input type="text" size="7" class="soyinquiry_address_zip2" name="data['.$this->getColumnId().'][zip2]" value="'.htmlspecialchars($value["zip2"], ENT_QUOTES, "UTF-8").'"' . $required . '>';
+		}else{
+			$html[] = '<input type="text" size="10" class="soyinquiry_address_zip1" name="data['.$this->getColumnId().'][zip]" value="'.htmlspecialchars($value["zip"], ENT_QUOTES, "UTF-8").'"' . $required . '>';
+		}
 		$html[] = '<input type="submit" name="test" value="住所検索"/></td>';
 		$html[] = '</tr>';
 		$html[] = '<tr>';
@@ -156,6 +165,11 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		if(isset($_POST["test"])){
 
 			$logic = SOY2Logic::createInstance("logic.AddressSearchLogic");
+			if(!$this->zipDivide){
+				list($zip1, $zip2) = self::divideZipCode($value["zip"]);
+				$value["zip1"] = $zip1;
+				$value["zip2"] = $zip2;
+			}
 			$res = $logic->search($value["zip1"],$value["zip2"]);
 
 			$value["prefecture"] = $res["prefecture"];
@@ -179,6 +193,11 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 			return "";
 		}
 
+		if(!$this->zipDivide){
+			list($zip1, $zip2) = self::divideZipCode($value["zip"]);
+			$value["zip1"] = $zip1;
+			$value["zip2"] = $zip2;
+		}
 		$address = $value["zip1"]  ."-" . $value["zip2"] . "\n" .
 		           $value["prefecture"] . $value["address1"] . $value["address2"];
 		if(strlen($value["address3"])) $address.= "\n" . $value["address3"];
@@ -203,7 +222,12 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	 * 設定画面で表示する用のフォーム
 	 */
 	function getConfigForm(){
-		$html = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
+		$html = '<label><input type="checkbox" name="Column[config][zipDivide]" value="1"';
+		if($this->zipDivide){
+			$html .= ' checked';
+		}
+		$html .= '>郵便番号フォームを分割する</label><br>';
+		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
 		if($this->requiredProp){
 			$html .= ' checked';
 		}
@@ -218,11 +242,13 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	function setConfigure($config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->zipDivide = (isset($config["zipDivide"])) ? $config["zipDivide"] : null;
 	}
 
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["requiredProp"] = $this->requiredProp;
+		$config["zipDivide"] = $this->zipDivide;
 		return $config;
 	}
 
@@ -253,5 +279,13 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 
 	function getReplacement() {
 		return (strlen($this->replacement) == 0) ? "#ADDRESS#" : $this->replacement;
+	}
+
+	private function divideZipCode($zip){
+		$zip = trim(mb_convert_kana($zip, "a"));
+		$zip = str_replace(array("-", "ー"), "", $zip);
+		$zip1 = (strlen($zip) > 3) ? substr($zip, 0, 3) : $zip;
+		$zip2 = (strlen($zip) > 3) ? substr($zip, 3) : "";
+		return array($zip1, $zip2);
 	}
 }

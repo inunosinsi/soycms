@@ -7,7 +7,7 @@ class SOYInquiry_Inquiry {
 	const FLAG_NEW     = 0;//未読
 	const FLAG_READ    = 1;//既読
 	const FLAG_DELETED = 2;//削除済み
-	
+
 	const COMMENT_HAS = 1;	//コメント有り
 	const COMMENT_NONE = 2;	//コメント無し
 
@@ -15,27 +15,27 @@ class SOYInquiry_Inquiry {
 	 * @id
 	 */
     private $id;
-    
+
     /**
      * @column tracking_number
      */
     private $trackingNumber;
-    
+
     /**
      * @column form_id
      */
     private $formId;
-    
+
     private $content;
-    
+
     private $data;
-    
+
     private $flag = 0;	//未読
-    
+
     /**
      * @column create_date
      */
-    private $createDate;    
+    private $createDate;
 
 	/**
 	 * @column form_url
@@ -73,7 +73,7 @@ class SOYInquiry_Inquiry {
     function setData($data) {
     	$this->data = $data;
     }
-    
+
     function getDataArray(){
     	return unserialize($this->data);
     }
@@ -84,7 +84,7 @@ class SOYInquiry_Inquiry {
     function setFlag($flag) {
     	$this->flag = $flag;
     }
-    
+
     function getFlagText(){
     	switch($this->flag){
     		case self::FLAG_NEW :
@@ -95,7 +95,7 @@ class SOYInquiry_Inquiry {
     			return "削除済";
     	}
     }
-    
+
     /**
      * 未読かどうか
      * @return boolean
@@ -118,4 +118,3 @@ class SOYInquiry_Inquiry {
     	$this->trackingNumber = $trackingNumber;
     }
 }
-?>
