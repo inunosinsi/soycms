@@ -29,9 +29,7 @@
 				<input type="submit" name="Reset" value="リセット">&nbsp;
 			</p>
 		</form>
-<script>
-console.log(location);
-</script>
+
 		<!-- soy:display="search_result" -->
 		<table class="form_table order_search">
 			<caption>検索結果&nbsp;<a href="javascript:void(0);" onclick='location.href=location.origin + location.pathname + "#regist_item";' class="button">商品登録</a></caption>
@@ -141,7 +139,6 @@ function changeItem(idx, code){
 
 //親ウィンドウのsoy2_tokenを常に更新することで、子ウィンドウを閉じた時もボタンを押せるようにしている
 $(function(){
-	console.log(location.search);
 	var isQuery = (location.search.length > 0 && location.search.indexOf("change="));
 	//追加と変更ボタン、どちらを表示するか？
 	$(".add_button").each(function(){

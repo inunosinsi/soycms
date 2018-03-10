@@ -345,7 +345,7 @@ class IndexPage extends WebPage{
 
 		$backward = new BackwardUserComponent();
 		$component = new UserComponent();
-
+		
 		$backward->backwardAdminBuildForm($this, $user);
 
 		//共通フォーム

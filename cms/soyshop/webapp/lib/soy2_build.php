@@ -4944,7 +4944,11 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	 * getter soy_type
 	 */
 	function getComponentType(){
-		return eval("return ".get_class($this). "::SOY_TYPE;");
+		$func = function(){
+			$className = get_class($this);
+			return $className::SOY_TYPE;
+		};
+		return $func();
 	}
 	/**
 	 * setter soy_visible
