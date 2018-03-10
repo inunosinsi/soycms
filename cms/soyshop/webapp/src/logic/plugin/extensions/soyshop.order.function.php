@@ -10,6 +10,10 @@ class SOYShopOrderFunction implements SOY2PluginAction{
 
 	function getDialogMessage(){}
 
+	function getTargetSelf(){
+		return false;
+	}
+
 	/**
 	 * @return html
 	 */
@@ -40,7 +44,8 @@ class SOYShopOrderFunctionDelegateAction implements SOY2PluginDelegateAction{
 				$this->_list[$moduleId] = array(
 					"moduleId" => $moduleId,
 					"name" => $action->getTitle(),
-					"dialog" => $action->getDialogMessage()
+					"dialog" => $action->getDialogMessage(),
+					"self" => $action->getTargetSelf()
 				);
 				break;
 			case "select":

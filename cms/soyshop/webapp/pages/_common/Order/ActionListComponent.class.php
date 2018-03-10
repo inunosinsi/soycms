@@ -11,7 +11,7 @@ class ActionListComponent extends HTMLList{
 			"link" => $this->getFunctionLink($bean["moduleId"]),
 			"text" => $bean["name"],
 			"onclick" => (isset($bean["dialog"]) && strlen($bean["dialog"])) ? "return confirm('" . htmlspecialchars($bean["dialog"], ENT_QUOTES, "UTF-8") . "');" : "return true;",
-			"target" => (isset($bean["dialog"]) && strlen($bean["dialog"])) ? "_self" : "_blank"
+			"target" => ((isset($bean["dialog"]) && strlen($bean["dialog"])) || (isset($bean["self"]) && $bean["self"] === true)) ? "_self" : "_blank"
 		));
 	}
 
