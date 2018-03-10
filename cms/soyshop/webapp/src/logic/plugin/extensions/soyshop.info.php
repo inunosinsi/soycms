@@ -10,9 +10,10 @@ class SOYShopInfoPageBase implements SOY2PluginAction{
 
 	/**
 	 * @return string
+	 * 各種プラグインの詳細画面と設定ページの拡張設定にリンクが出力されます
 	 */
 	function getPage(){
-	
+		return "";
 	}
 }
 class SOYShopInfoPageDeletageAction implements SOY2PluginDelegateAction{
@@ -32,4 +33,3 @@ class SOYShopInfoPageDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.info", "SOYShopInfoPageDeletageAction");
-?>
