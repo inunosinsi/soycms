@@ -2,11 +2,9 @@
 
 class InvoiceItemListComponent extends HTMLList {
 
-	private $itemDao;
-
 	protected function populateItem($itemOrder) {
-		
-		$item = $this->getItem($itemOrder->getItemId());
+
+		$item = self::getItem($itemOrder->getItemId());
 
 		$this->addLink("item_id", array(
 			"text" => (strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemOrder->getItemId(),
@@ -20,13 +18,13 @@ class InvoiceItemListComponent extends HTMLList {
 		$this->addLabel("item_name", array(
 			"text" => $itemOrder->getItemName()
 		));
-		
+
 		SOYShopPlugin::load("soyshop.item.option");
 		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "display",
 			"item" => $itemOrder,
 		));
-		
+
 		$this->addLabel("item_option", array(
 			"html" => $delegate->getHtmls()
 		));
@@ -51,17 +49,14 @@ class InvoiceItemListComponent extends HTMLList {
 	 * @return object#SOYShop_Item
 	 * @param itemId
 	 */
-	function getItem($itemId){
-		
+	private function getItem($itemId){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+
 		try{
-			return $this->itemDao->getById($itemId);
+			return $dao->getById($itemId);
 		}catch(Exception $e){
 			return new SOYShop_Item();
 		}
 	}
-	
-	function setItemDao($itemDao){
-		$this->itemDao = $itemDao;
-	}
 }
-?>

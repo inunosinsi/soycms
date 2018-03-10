@@ -17,9 +17,6 @@ class InvoicePage extends HTMLTemplatePage{
 		/*** 注文情報 ***/
 		$this->createAdd("continuous_print", "InvoiceListComponent", array(
 			"list" => array($order),
-			"itemOrderDao" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO"),
-			"userDao" => SOY2DAOFactory::create("user.SOYShop_UserDAO"),
-			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO"),
 			"config" => OrderInvoiceCommon::getConfig()
 		));
 

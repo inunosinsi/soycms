@@ -13,4 +13,3 @@ class ItemInfoEditInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "item_info_edit", "ItemInfoEditInfo");
-?>

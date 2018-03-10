@@ -21,4 +21,3 @@ class ItemInfoEditConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "item_info_edit", "ItemInfoEditConfig");
-?>
