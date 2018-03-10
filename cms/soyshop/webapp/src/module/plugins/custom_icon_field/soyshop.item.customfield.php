@@ -1,6 +1,6 @@
 <?php
-/*
- */
+
+SOY2::import("module.plugins.custom_icon_field.util.CustomIconFieldUtil");
 class CustomIconField extends SOYShopItemCustomFieldBase{
 
 	const PLUGIN_ID = "custom_icon_field";
@@ -66,15 +66,15 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 
 		if(!is_null($attr->getValue()) && strlen($attr->getValue())){
 			$icons = explode(",", $attr->getValue());
-	
+
 			$image = array();
 			foreach($icons as $icon){
 				if(!preg_match('/(jpg|jpeg|gif|png)$/', $icon)) continue;
-				$image[] = "<img src=\"" . $this->getIconPath() . $icon . "\" />";
+				$image[] = "<img src=\"" . CustomIconFieldUtil::getIconPath() . $icon . "\" />";
 			}
 			$html[] = implode(" ", $image);
 		}
-			
+
 		$html[] = "</p>\n";
 
 		if(count($icons)){
@@ -86,7 +86,7 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 		$html[] = "<a class=\"button\" href=\"javascript:void(0);\" onclick=\"$(this).hide();$('#icon_list').show();\">選択する</a>\n";
 		$html[] = "<ul id=\"icon_list\" style=\"display:none;\">\n";
 
-		$files = @scandir($this->getIconDirectory());
+		$files = @scandir(CustomIconFieldUtil::getIconDirectory());
 		if(!$files) $files = array();
 
 		foreach($files as $file){
@@ -97,7 +97,7 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 				$html[] = "<li><a class=\"\" href=\"javascript:void(0);\" onclick=\"onClickIconLeaf('" . $file . "',this);\">";
 			}
 
-			$html[] = "<img src=\"" . $this->getIconPath() . $file . "\" />";
+			$html[] = "<img src=\"" . CustomIconFieldUtil::getIconPath() . $file . "\" />";
 			$html[] = "</a></li>\n";
 		}
 
@@ -138,9 +138,9 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 					if(defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE !== "jp"){
 						$extension = "." . trim($tmp[0]);
 						$langIcon = str_replace($extension, "_" . SOYSHOP_PUBLISH_LANGUAGE . $extension, $icon);
-						if(file_exists($this->getIconDirectory() . $langIcon)) $icon = $langIcon;
+						if(file_exists(CustomIconFieldUtil::getIconDirectory() . $langIcon)) $icon = $langIcon;
 					}
-					$image[] = "<img src=\"" . $this->getIconPath() . $icon . "\" class=\"custom_icon_field\" />";
+					$image[] = "<img src=\"" . CustomIconFieldUtil::getIconPath() . $icon . "\" class=\"custom_icon_field\" />";
 				}
 			}
 			$html = implode(" ", $image);
@@ -150,28 +150,11 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"html" => $html
 		));
-
 	}
 
 	function onDelete($id){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$attributeDAO->deleteByItemId($id);
-	}
-
-	function getIconDirectory(){
-		$shopDir = SOYSHOP_SITE_DIRECTORY;
-		$iconDir = "files/custom-icons/";
-
-		return $shopDir . $iconDir;
-	}
-
-	function getIconPath(){
-		$shopPath = str_replace(array("https://", "http://"), "//", SOYSHOP_SITE_URL);
-		$iconPath = "files/custom-icons/";
-
-		return $shopPath . $iconPath;
+		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
 	}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "custom_icon_field", "CustomIconField");
-?>

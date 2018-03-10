@@ -14,12 +14,8 @@ class SOYShop_CustomIconField_CSV extends SOYShopItemCSVBase{
 	 * export
 	 */
 	function export($itemId){
-
 		try{
-			$dao = $this->getDAO();
-			$attr = $dao->get($itemId, "custom_icon_field");
-
-			return $attr->getValue();
+			return self::dao()->get($itemId, "custom_icon_field")->getValue();
 		}catch(Exception $e){
 			return "";
 		}
@@ -30,7 +26,7 @@ class SOYShop_CustomIconField_CSV extends SOYShopItemCSVBase{
 	 */
 	function import($itemId, $value){
 
-		$dao = $this->getDAO();
+		$dao = self::dao();
 
 		try{
 			$attr = $dao->get($itemId, "custom_icon_field");
@@ -52,12 +48,9 @@ class SOYShop_CustomIconField_CSV extends SOYShopItemCSVBase{
 		}
 	}
 
-	function getDAO(){
+	private function dao(){
 		static $dao;
-		if(!$dao){
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		}
-
+		if(!$dao) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		return $dao;
 	}
 

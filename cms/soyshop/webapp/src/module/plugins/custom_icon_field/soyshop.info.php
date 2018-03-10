@@ -13,4 +13,3 @@ class CustomIconFieldInfo extends SOYShopInfoPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.info", "custom_icon_field", "CustomIconFieldInfo");
-?>

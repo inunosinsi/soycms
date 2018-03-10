@@ -1,20 +1,14 @@
 <?php
 class CustomIconFieldInstall extends SOYShopPluginInstallerBase{
-	
+
 	function onInstall(){
-		
-		$siteDir = SOYSHOP_SITE_DIRECTORY;
-		$iconDir = $siteDir . "files/custom-icons/";
-		
-		if(!is_dir($iconDir)){
-			mkdir($iconDir);
-		}
-		
+		SOY2::import("module.plugins.custom_icon_field.util.CustomIconFieldUtil");
+		$dir = CustomIconFieldUtil::getIconDirectory();
+		if(!is_dir($dir)) mkdir($dir);
 	}
-	
+
 	function onUnInstall(){
-		
+
 	}
 }
 SOYShopPlugin::extension("soyshop.plugin.install", "custom_icon_field", "CustomIconFieldInstall");
-?>
