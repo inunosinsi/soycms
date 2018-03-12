@@ -127,7 +127,7 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), 21);
 		//戻す
 		}else{
-			$orderLogic::createInstance("logic.order.OrderLogic")->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_SENDED);
+			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_SENDED);
 		}
 		return true;
 	}

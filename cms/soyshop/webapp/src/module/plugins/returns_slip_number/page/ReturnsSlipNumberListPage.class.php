@@ -4,6 +4,88 @@ class ReturnsSlipNumberListPage extends WebPage {
 
 	private $configObj;
 
+	function doPost(){
+		if(soy2_check_token()){
+			if(isset($_POST["export"])){
+				$labels = array("返送伝票番号");
+
+				$searchLogic = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.SearchReturnsSlipNumberLogic");
+				$searchLogic->setLimit(100);
+				$searchLogic->setCondition(self::getParameter("search_condition"));
+				$lines = $searchLogic->getOnlySlipNumbers();
+
+				$charset = (isset($_POST["charset"])) ? $_POST["charset"] : "Shift-JIS";
+
+				if(count($lines) == 0) return;
+
+				set_time_limit(0);
+
+				header("Cache-Control: public");
+				header("Pragma: public");
+				header("Content-Disposition: attachment; filename=returns_slip_number_" .date("YmdHis", time()) . ".csv");
+				header("Content-Type: text/csv; charset=" . htmlspecialchars($charset).";");
+
+				ob_start();
+				echo implode(",", $labels);
+				echo "\n";
+				echo implode("\n", $lines);
+				$csv = ob_get_contents();
+				ob_end_clean();
+
+				echo mb_convert_encoding($csv, $charset, "UTF-8");
+				exit;
+			}
+
+			if(isset($_POST["import"])){
+				$file  = $_FILES["csv"];
+				$logic = SOY2Logic::createInstance("logic.csv.ExImportLogicBase");
+				$logic->setSeparator("comma");
+		        $logic->setQuote("checked");
+		        $logic->setCharset("Shift-JIS");
+
+				if(!$logic->checkUploadedFile($file)){
+		            SOY2PageController::jump("Extension.returns.slip_number?failed");
+		            exit;
+		        }
+		        // if(!$logic->checkFileContent($file)){
+		        //     SOY2PageController::jump("Extension.returns.slip_number?invalid");
+		        //     exit;
+		        // }
+
+				//ファイル読み込み・削除
+		        $fileContent = file_get_contents($file["tmp_name"]);
+		        unlink($file["tmp_name"]);
+
+		        //データを行単位にばらす
+		        $lines = $logic->GET_CSV_LINES($fileContent);    //fix multiple lines
+				array_shift($lines);	//必ず先頭行を削除
+
+		        //先頭行削除
+				//if(isset($format["label"])) array_shift($lines);
+				SOY2::import("module.plugins.returns_slip_number.domain.SOYShop_ReturnsSlipNumberDAO");
+				$slipDao = SOY2DAOFactory::create("SOYShop_ReturnsSlipNumberDAO");
+				$slipLogic = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic");
+
+				foreach($lines as $line){
+		            if(empty($line)) continue;
+					$slipNumber = trim($line);
+
+					try{
+						$slipId = $slipDao->getBySlipNumberAndNoReturn($slipNumber)->getId();
+					}catch(Exception $e){
+						continue;
+					}
+
+					$slipLogic->changeStatus((int)$slipId, "return");
+				}
+
+				SOY2PageController::jump("Extension.returns.slip_number?updated");
+			}
+		}
+
+		SOY2PageController::jump("Extension.returns_slip_number?failed");
+	}
+
 	function __construct(){
 
 		//リセット
@@ -16,7 +98,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 
 		if(isset($_GET["return"])) self::changeStatus();
 
-		foreach(array("successed", "failed") as $t){
+		foreach(array("successed", "failed", "invalid") as $t){
 			DisplayPlugin::toggle($t, isset($_GET[$t]));
 		}
 
@@ -35,6 +117,9 @@ class ReturnsSlipNumberListPage extends WebPage {
 		$this->createAdd("slip_number_list", "ReturnsSlipNumberListComponent", array(
 			"list" => $slips
 		));
+
+		self::buildExportForm();
+		self::buildImportForm();
 	}
 
 	private function buildSearchForm(){
@@ -91,6 +176,16 @@ class ReturnsSlipNumberListPage extends WebPage {
 				SOY2PageController::jump("Extension.returns_slip_number?failed");
 			}
 		}
+	}
+
+	private function buildExportForm(){
+		$this->addForm("export_form");
+	}
+
+	private function buildImportForm(){
+		$this->addForm("import_form", array(
+             "ENCTYPE" => "multipart/form-data"
+        ));
 	}
 
 	private function getParameter($key){
