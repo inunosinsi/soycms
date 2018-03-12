@@ -71,14 +71,14 @@ class SlipNumberListPage extends WebPage {
 					$slipNumber = trim($line);
 
 					try{
-						$slipObj = $slipDao->getBySlipNumberAndNoDelivery($slipNumber);
+						$slipId = $slipDao->getBySlipNumberAndNoDelivery($slipNumber)->getId();
 					}catch(Exception $e){
 						continue;
 					}
 
-					$slipLogic->changeStatus((int)$slipObj->getId(), "delivery");
+					$slipLogic->changeStatus((int)$slipId, "delivery");
 				}
-				
+
 				SOY2PageController::jump("Extension.slip_number?updated");
 			}
 		}
