@@ -15,10 +15,10 @@ class StockLogic extends SOY2LogicBase{
 				"INNER JOIN soyshop_order o ".
 				"ON os.order_id = o.id ".
 				"WHERE os.item_id = :itemId ".
-				//ステータスが発送済み(4)よりも下、もしくは在庫確認中(6)
+				//ステータスが発送済み(4)よりも下、もしくは在庫確認中(11)
 				"AND (" .
 					"o.order_status < " . SOYShop_Order::ORDER_STATUS_SENDED . " " .
-					"OR o.order_status = " . SOYShop_Order::ORDER_STATUS_STOCK_CONFIRM . " ".
+					"OR o.order_status = 11 ".
 				")";
 
 		/**

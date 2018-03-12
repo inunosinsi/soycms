@@ -27,7 +27,7 @@ class StockManagerPage extends WebPage{
 
 				$labels = $logic->getLabels();
 				$lines = $logic->getLines();
-				$charset = (isset($_POST["coupon"]["charset"])) ? $_POST["coupon"]["charset"] : "Shift-JIS";
+				$charset = (isset($_POST["charset"])) ? $_POST["charset"] : "Shift-JIS";
 
 				if(count($lines) == 0) return;
 
