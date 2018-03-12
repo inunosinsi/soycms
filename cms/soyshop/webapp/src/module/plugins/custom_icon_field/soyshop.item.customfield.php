@@ -7,7 +7,7 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 
 	function doPost(SOYShop_Item $item){
 
-		$path = (isset($_POST["custom_icon_field"])) ? $_POST["custom_icon_field"] : null;
+		$path = (isset($_POST[self::PLUGIN_ID])) ? $_POST[self::PLUGIN_ID] : null;
 
 		//アイコンパスをきれいにする。
 		$image = array();
@@ -26,18 +26,17 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		$array = $dao->getByItemId($item->getId());
 
-		$key = "custom_icon_field";
 		$value = $iconsPath;
 
 		try{
-			if(isset($array[$key])){
-				$obj = $array[$key];
+			if(isset($array[self::PLUGIN_ID])){
+				$obj = $array[self::PLUGIN_ID];
 				$obj->setValue($value);
 				$dao->update($obj);
 			}else{
 				$obj = new SOYShop_ItemAttribute();
 				$obj->setItemId($item->getId());
-				$obj->setFieldId($key);
+				$obj->setFieldId(self::PLUGIN_ID);
 				$obj->setValue($value);
 
 				$dao->insert($obj);
@@ -58,9 +57,9 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 
 		$html = array();
 		$html[] = "\n";
-		$html[] = "<dt><label for=\"custom_icon_field\">カスタムアイコンフィールド</label></dt>\n";
+		$html[] = "<dt><label for=\"" . self::PLUGIN_ID . "\">カスタムアイコンフィールド (cms:id=\"" . self::PLUGIN_ID . "\")</label></dt>\n";
 		$html[] = "<dd>\n";
-		$html[] = "<p class=\"mb\" id=\"custom_icon_field_text\">";
+		$html[] = "<p class=\"mb\" id=\"" . self::PLUGIN_ID . "_text\">";
 
 		$icons = array();
 
@@ -78,9 +77,9 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 		$html[] = "</p>\n";
 
 		if(count($icons)){
-			$html[] = "<input name=\"custom_icon_field\" id=\"custom_icon_field\" type=\"hidden\" value=\"" . implode(",", $icons) . "\" />\n";
+			$html[] = "<input name=\"" . self::PLUGIN_ID . "\" id=\"" . self::PLUGIN_ID . "\" type=\"hidden\" value=\"" . implode(",", $icons) . "\" />\n";
 		}else{
-			$html[] = "<input name=\"custom_icon_field\" id=\"custom_icon_field\" type=\"hidden\" value=\"\" />\n";
+			$html[] = "<input name=\"" . self::PLUGIN_ID . "\" id=\"" . self::PLUGIN_ID . "\" type=\"hidden\" value=\"\" />\n";
 		}
 
 		$html[] = "<a class=\"button\" href=\"javascript:void(0);\" onclick=\"$(this).hide();$('#icon_list').show();\">選択する</a>\n";
@@ -140,13 +139,13 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 						$langIcon = str_replace($extension, "_" . SOYSHOP_PUBLISH_LANGUAGE . $extension, $icon);
 						if(file_exists(CustomIconFieldUtil::getIconDirectory() . $langIcon)) $icon = $langIcon;
 					}
-					$image[] = "<img src=\"" . CustomIconFieldUtil::getIconPath() . $icon . "\" class=\"custom_icon_field\" />";
+					$image[] = "<img src=\"" . CustomIconFieldUtil::getIconPath() . $icon . "\" class=\"" . self::PLUGIN_ID . "\" />";
 				}
 			}
 			$html = implode(" ", $image);
 		}
 
-		$htmlObj->addLabel("custom_icon_field", array(
+		$htmlObj->addLabel(self::PLUGIN_ID, array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"html" => $html
 		));

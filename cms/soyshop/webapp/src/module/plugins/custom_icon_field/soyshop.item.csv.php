@@ -4,7 +4,9 @@
  * Created: 2010/10/03
  */
 
-class SOYShop_CustomIconField_CSV extends SOYShopItemCSVBase{
+class CustomIconFieldCSV extends SOYShopItemCSVBase{
+
+	const PLUGIN_ID = "custom_icon_field";
 
 	function getLabel(){
 		return "カスタムアイコンフィールド";
@@ -15,7 +17,7 @@ class SOYShop_CustomIconField_CSV extends SOYShopItemCSVBase{
 	 */
 	function export($itemId){
 		try{
-			return self::dao()->get($itemId, "custom_icon_field")->getValue();
+			return self::dao()->get($itemId, self::PLUGIN_ID)->getValue();
 		}catch(Exception $e){
 			return "";
 		}
@@ -29,13 +31,13 @@ class SOYShop_CustomIconField_CSV extends SOYShopItemCSVBase{
 		$dao = self::dao();
 
 		try{
-			$attr = $dao->get($itemId, "custom_icon_field");
+			$attr = $dao->get($itemId, self::PLUGIN_ID);
 		}catch(Exception $e){
 			if(strlen($value) < 1) return;
 
 			$attr = new SOYShop_ItemAttribute();
 			$attr->setItemId($itemId);
-			$attr->setFieldId("custom_icon_field");
+			$attr->setFieldId(self::PLUGIN_ID);
 			$dao->insert($attr);
 		}
 
@@ -53,7 +55,6 @@ class SOYShop_CustomIconField_CSV extends SOYShopItemCSVBase{
 		if(!$dao) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		return $dao;
 	}
-
 }
 
-SOYShopPlugin::extension("soyshop.item.csv", "common_icon_field", "SOYShop_CustomIconField_CSV");
+SOYShopPlugin::extension("soyshop.item.csv", "common_icon_field", "CustomIconFieldCSV");

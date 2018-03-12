@@ -11,7 +11,7 @@ class SimpleNewsConfig extends SOYShopConfigPageBase{
 			SOYShop_DataSets::put("plugin.simple_news",$news);
 			$this->redirect("updated");
 		}
-		
+
 		if(isset($_POST["update"]) && !array_key_exists("news", $_POST)){
 			SOYShop_DataSets::put("plugin.simple_news", null);
 			$this->redirect("updated");
@@ -47,4 +47,3 @@ class SimpleNewsConfig extends SOYShopConfigPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.config", "common_simple_news", "SimpleNewsConfig");
-?>

@@ -3,6 +3,7 @@
 class CustomIconFieldConfigFormPage extends WebPage{
 
 	private $configObj;
+	const PLUGIN_ID = "custom_icon_field";
 
 	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
@@ -83,6 +84,10 @@ class CustomIconFieldConfigFormPage extends WebPage{
 
 		$this->addLabel("custom_icon_directory", array(
 			"text" => CustomIconFieldUtil::getIconDirectory()
+		));
+
+		$this->addLabel("plugin_id", array(
+			"text" => self::PLUGIN_ID
 		));
 	}
 
