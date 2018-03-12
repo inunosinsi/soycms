@@ -1,11 +1,20 @@
 <?php
 class SOYShopAdminListBase implements SOY2PluginAction{
 
+	private $moduleId;
+
 	function getTabName(){}
 	function getTitle(){}
 	function getContent(){}
 	function getScripts(){}
 	function getCSS(){}
+
+	function getModuleId() {
+		return $this->moduleId;
+	}
+	function setModuleId($moduleId) {
+		$this->moduleId = $moduleId;
+	}
 }
 
 class SOYShopAdminListDeletageAction implements SOY2PluginDelegateAction{
@@ -17,6 +26,9 @@ class SOYShopAdminListDeletageAction implements SOY2PluginDelegateAction{
 	private $pluginId;	//同一ページ内で一度loadしてしまっているため、二回目の読み込みでpluginIDの指定が出来ない対策
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
+
+		$action->setModuleId($moduleId);
+
 		$array = array();
 		switch($this->mode){
 			case "tab":

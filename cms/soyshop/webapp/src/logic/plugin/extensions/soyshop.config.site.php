@@ -84,4 +84,3 @@ class SOYShopConfigPageDelegateAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.config.site","SOYShopConfigPageDelegateAction");
-?>

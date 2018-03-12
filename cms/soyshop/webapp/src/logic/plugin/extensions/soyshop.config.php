@@ -12,24 +12,30 @@ class SOYShopConfigPageBase implements SOY2PluginAction{
 
 	/**
 	 * @return string
+	 * プラグイン毎の詳細ページにコンテンツを表示
 	 */
 	function getConfigPage(){
-
+		return "";
 	}
 
 	/**
 	 * @return string
+	 * プラグイン毎の詳細ページのタイトルを表示
 	 */
 	function getConfigPageTitle(){
-
-	}
-
-	function getConfigPageDescription(){
-
+		return "";
 	}
 
 	/**
-	 *
+	 * @return string
+	 * プラグインの説明を表示
+	 */
+	function getConfigPageDescription(){
+		return "";
+	}
+
+	/**
+	 * プラグイン毎の詳細ページにリダイレクトする
 	 */
 	function redirect($query = ""){
 		if(strlen($query) > 0) $query = "&" . $query;
@@ -90,4 +96,3 @@ class SOYShopConfigPageDelegateAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.config","SOYShopConfigPageDelegateAction");
-?>
