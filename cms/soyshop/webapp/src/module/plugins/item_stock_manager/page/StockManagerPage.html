@@ -155,4 +155,11 @@
 			});
 		});
 	})();
+
+	$("#export_form").attr("target", "download_frame");
+    $("#export_form").submit(function() {
+        setTimeout(function() {
+            location.reload();
+        }, 1000);
+    });
 </script>
