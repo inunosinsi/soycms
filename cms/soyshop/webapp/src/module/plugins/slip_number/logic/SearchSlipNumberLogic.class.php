@@ -35,6 +35,29 @@ class SearchSlipNumberLogic extends SOY2LogicBase {
 		return $list;
 	}
 
+	function getOnlySlipNumbers(){
+		$sql = "SELECT slip.slip_number FROM soyshop_slip_number slip ".
+				"INNER JOIN soyshop_order o ".
+				"ON slip.order_id = o.id ";
+		$sql .= self::buildWhere();
+		$sql .= " LIMIT " . $this->limit;
+
+		try{
+		 	$results = $this->slipDao->executeQuery($sql, $this->binds);
+		}catch(Exception $e){
+			return array();
+		}
+
+		if(!count($results)) return array();
+
+		$list = array();
+		foreach($results as $v){
+			if(!isset($v["slip_number"])) continue;
+			$list[] = trim($v["slip_number"]);
+		}
+		return $list;
+	}
+
 	function getTotal(){
 		$sql = "SELECT COUNT(slip.id) as count FROM soyshop_slip_number slip ".
 				"INNER JOIN soyshop_order o ".

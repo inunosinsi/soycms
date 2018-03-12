@@ -1,6 +1,3 @@
-<p class="notice" soy:display="successed">変更しました。</p>
-<p class="error" soy:display="failed">失敗しました。</p>
-
 <div class="block">
 	<div class="block_title">
 		<h2>伝票番号一覧</h2>
@@ -9,6 +6,11 @@
 	</div>
 
 	<div class="block_body">
+
+		<p class="notice" soy:display="updated">更新しました</p>
+		<p class="notice" soy:display="successed">変更しました。</p>
+		<p class="error" soy:display="failed">失敗しました</p>
+		<p class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
 
 		<dl>
 			<dt class="search_btn_dt">
@@ -66,6 +68,16 @@
 				<!-- /soy:id="slip_number_list" -->
 			</tbody>
 		</table>
+
+		<h3>CSVエクスポート</h3>
+		<form soy:id="export_form" id="export_form">
+			<p class="content">未発送分のCSVエクスポート&nbsp;<input type="submit" name="export" value="出力"></p>
+		</form>
+
+		<h3>CSVインポート</h3>
+		<form soy:id="import_form">
+			<p class="content">未発送分の一括変更<br><input type="file" name="csv">&nbsp;<input type="submit" name="import" value="一括変更"></p>
+		</form>
 		<!-- /soy:display="is_slip_number" -->
 	</div>
 </div>
@@ -80,6 +92,9 @@
 	#standard_form_area{
 		display:none;
 	}
+	.content {
+		margin:2px 0 5px 23px;
+	}
 </style>
 
 <script>
@@ -93,4 +108,11 @@
 			}
 		});
 	})();
+
+    $("#export_form").attr("target", "download_frame");
+    $("#export_form").submit(function() {
+        setTimeout(function() {
+            location.reload();
+        }, 1000);
+    });
 </script>

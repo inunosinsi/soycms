@@ -26,6 +26,12 @@ abstract class SOYShop_SlipNumberDAO extends SOY2DAO {
 
 	abstract function getByIsDelivery($isDelivery);
 
+	/**
+	 * @return object
+	 * @query slip_number = :slipNumber AND is_delivery = 0
+	 */
+	abstract function getBySlipNumberAndNoDelivery($slipNumber);
+
 	abstract function deleteById($id);
 
 	abstract function deleteBySlipNumber($slipNumber);
