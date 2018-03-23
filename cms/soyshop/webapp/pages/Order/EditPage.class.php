@@ -38,7 +38,7 @@ class EditPage extends WebPage{
 			}
 
 			if(isset($_POST["Module"])){
-				$_change = $this->updateOrderModules($order, $_POST["Module"]);
+				$_change = self::updateOrderModules($order, $_POST["Module"]);
 				$change = array_merge($change, $_change);
 			}
 
@@ -51,6 +51,7 @@ class EditPage extends WebPage{
 				foreach($_POST["AddModule"]["name"] as $key => $value){
 					$name = trim($_POST["AddModule"]["name"][$key]);
 					$price = trim($_POST["AddModule"]["price"][$key]);
+					$isInclude = (isset($_POST["AddModule"]["isInclude"][$key]) && $_POST["AddModule"]["isInclude"][$key] == 1);
 
 					if(strlen($name) > 0 && strlen($price) > 0){
 						$module = new SOYShop_ItemModule();
@@ -58,6 +59,7 @@ class EditPage extends WebPage{
 						$module->setId($moduleId);
 						$module->setName($name);
 						$module->setPrice($price);
+						$module->setIsInclude($isInclude);
 
 						$modules[$moduleId] = $module;
 
@@ -871,7 +873,7 @@ class EditPage extends WebPage{
 		return $change;
 	}
 
-	function updateOrderModules(SOYShop_Order $order, $newModules){
+	private function updateOrderModules(SOYShop_Order $order, $newModules){
 		$change = array();
 		$modules = $order->getModuleList();
 
@@ -879,6 +881,7 @@ class EditPage extends WebPage{
 			if(isset($newModules[$key])){
 				$newValue = (isset($newModules[$key]["price"])) ? $newModules[$key]["price"] : 0;
 				$newName  = (isset($newModules[$key]["name"])) ? $newModules[$key]["name"] : "";
+				$newIsInclude = (isset($newModules[$key]["isInclude"]) && $newModules[$key]["isInclude"] == 1);
 				$delete   = ( isset($newModules[$key]["delete"]) && $newModules[$key]["delete"] );
 
 				if($delete){
@@ -887,9 +890,17 @@ class EditPage extends WebPage{
 				}else{
 					if($newValue != $module->getPrice()) $change[] = self::getHistoryText($module->getName(), $module->getPrice(), $newValue);
 					if($newName != $module->getName()) $change[] = self::getHistoryText($module->getName(), $module->getName(), $newName);
+					if($newIsInclude != $module->getIsInclude()){
+						if($newIsInclude){
+							$change[] = self::getHistoryText($module->getName(), "合計に含めない", "合計に含める");
+						}else{
+							$change[] = self::getHistoryText($module->getName(), "合計に含める", "合計に含めない");
+						}
+					}
 
 					$modules[$key]->setName($newName);
 					$modules[$key]->setPrice($newValue);
+					$modules[$key]->setIsInclude($newIsInclude);
 				}
 			}
 		}

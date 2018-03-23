@@ -169,8 +169,11 @@
 					<td class="alC"><input soy:id="module_delete" type="checkbox" /></td>
 					<td colspan="4" class="alR" style="font-weight:bold;padding-right:1em;">
 						<input type="text" soy:id="module_name" style="text-align:right;" />
+						<input type="checkbox" soy:id="module_is_include">
 					</td>
-					<td class="alR" style="width:120px;"><input soy:id="module_price" type="text" style="width:100px;text-align:right;" /> 円</td>
+					<td class="alR" style="width:120px;" nowrap>
+						<input soy:id="module_price" type="text" style="width:100px;text-align:right;" /> 円
+					</td>
 				</tr>
 				<!--  /soy:id="module_list" -->
 
@@ -178,8 +181,9 @@
 					<td class="alC">&nbsp;</td>
 					<td colspan="4" class="alR" style="font-weight:bold;padding-right:1em;">
 						<input type="text" name="AddModule[name][]" style="text-align:right;" disabled="disabled" />
+						<!-- なし label><input type="checkbox" name="AddModule[isInclude][]">代金合計に含める</label-->
 					</td>
-					<td class="alR" style="width:120px;"><input name="AddModule[price][]" type="text" style="width:100px;text-align:right;" disabled="disabled" /> 円</td>
+					<td class="alR" style="width:120px;" nowrap><input name="AddModule[price][]" type="text" style="width:100px;text-align:right;" disabled="disabled" /> 円</td>
 				</tr>
 
 				<tr>

@@ -5,7 +5,11 @@ class ItemListComponent extends HTMLList{
 	private $categories = array();
     private $detailLink;
 
-    protected function populateItem($item, $key) {
+    protected function populateItem($item, $idx) {
+		
+		$this->addLabel("index", array(
+			"text" => $idx
+		));
 
         $this->addLabel("item_id", array(
             "text" => $item->getId()

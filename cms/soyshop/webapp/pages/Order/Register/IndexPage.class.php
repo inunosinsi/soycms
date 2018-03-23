@@ -345,7 +345,7 @@ class IndexPage extends WebPage{
 
 		$backward = new BackwardUserComponent();
 		$component = new UserComponent();
-		
+
 		$backward->backwardAdminBuildForm($this, $user);
 
 		//共通フォーム
@@ -536,13 +536,13 @@ class IndexPage extends WebPage{
 			"cart" => $this->cart
 		))->getList();
 
-		if(!count($values)) return array();
-
 		$list = array();
-		foreach($values as $v){
-			if(!is_array($v)) continue;
-			foreach($v as $key => $obj){
-				$list[$key] = $obj;
+		if(count($values)){
+			foreach($values as $v){
+				if(!is_array($v)) continue;
+				foreach($v as $key => $obj){
+					$list[$key] = $obj;
+				}
 			}
 		}
 
