@@ -31,5 +31,3 @@ class PageListComponent extends HTMLList{
 		));
 	}
 }
-
-?>

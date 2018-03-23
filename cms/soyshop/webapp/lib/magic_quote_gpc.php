@@ -15,6 +15,4 @@ if(get_magic_quotes_gpc()){
 		$_COOKIE = _stripslashes($_COOKIE);
 		$_REQUEST = _stripslashes($_REQUEST);
 	}
-
 }
-?>

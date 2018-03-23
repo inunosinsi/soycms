@@ -9,11 +9,10 @@ class UpdatePageAreaPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		$pageDAO = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		$pageDAO->setLimit(5);
-
+		$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+		$pageDao->setLimit(5);
 		try{
-			$pages = $pageDAO->newPages();
+			$pages = $pageDao->newPages();
 		}catch(Exception $e){
 			$pages = array();
 		}

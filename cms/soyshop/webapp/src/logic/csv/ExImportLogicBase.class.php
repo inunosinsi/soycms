@@ -301,4 +301,3 @@ class ExImportLogicBase extends SOY2LogicBase{
         $this->labels = $labels;
     }
 }
-?>
