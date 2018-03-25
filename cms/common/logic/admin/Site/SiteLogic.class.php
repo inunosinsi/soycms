@@ -85,6 +85,32 @@ class SiteLogic implements SOY2LogicInterface{
     	return $ret_val;
     }
 
+	function getLoginableSiteListByUserId($userId){
+		$list = self::getSiteByUserId(UserInfoUtil::getUserId());
+
+		//ルート設定されたサイトを先頭にする
+		foreach($list as $id => $site){
+			if($site->getIsDomainRoot()){
+				unset($list[$id]);
+				array_unshift($list, $site);
+			}
+		}
+
+		return $list;
+	}
+
+	/**
+	 * 現在のユーザIDからログイン可能なサイトのIDのリストを取得する
+	 */
+	function getLoginableSiteIdsByUserId($userId){
+		$ids = array();
+		$list = self::getLoginableSiteListByUserId($userId);
+		foreach($list as $key => $site){
+			$ids[] = $site->getId();
+		}
+		return $ids;
+	}
+
     /**
 	 * 新しくサイトを追加する
 	 * @return boolean
@@ -125,8 +151,8 @@ class SiteLogic implements SOY2LogicInterface{
 					//既存のサイトを移管する際のためにエラーとはしない
 					//throw $e;
 			}
-			
-			
+
+
 			//サイトの存在チェック：ないときは例外発生
 			$logic->checkIfSiteCreated();
 
@@ -139,7 +165,7 @@ class SiteLogic implements SOY2LogicInterface{
 			$site->setDataSourceName($logic->dsn);
 			$id = $dao->insert($site);
 
-			if($copyFrom){			
+			if($copyFrom){
 				try{
 					$logic->createNewSite($siteId);
 					$this->copySite($copyFrom,$id);
@@ -164,8 +190,7 @@ class SiteLogic implements SOY2LogicInterface{
 				$logic->move_log_to_common_log();
 
 				$siteDir = SOYCMS_TARGET_DIRECTORY.$siteId;
-				$logic = SOY2Logic::createInstance("logic.admin.Site.SiteDeleteLogic");
-				$logic->deleteSiteDir($siteDir);
+				SOY2Logic::createInstance("logic.admin.Site.SiteDeleteLogic")->deleteSiteDir($siteDir);
 			}
 
 			return false;
@@ -177,8 +202,7 @@ class SiteLogic implements SOY2LogicInterface{
 	 * @param id 削除するサイトのID
 	 */
     function removeSite($id, $dropDB = true, $rmDir = true){
-    	$logic = SOY2Logic::createInstance("logic.admin.Site.SiteDeleteLogic");
-		return $logic->deleteSite($id, $dropDB, $rmDir);
+		return SOY2Logic::createInstance("logic.admin.Site.SiteDeleteLogic")->deleteSite($id, $dropDB, $rmDir);
     }
 
     /**
@@ -186,11 +210,8 @@ class SiteLogic implements SOY2LogicInterface{
      * @param id サイトID
      */
     function getById($id){
-    	$dao = SOY2DAOFactory::create("admin.SiteDAO");
-
 		try{
-			$site = $dao->getById($id);
-			return $site;
+			return SOY2DAOFactory::create("admin.SiteDAO")->getById($id);
 		}catch(Exception $e){
 			return null;
 		}
@@ -202,14 +223,11 @@ class SiteLogic implements SOY2LogicInterface{
     function setException($exception) {
     	$this->exception = $exception;
     }
-    
+
 	/**
 	 * サイトをコピーする
 	 */
     function copySite($from, $to){
-    	$logic = SOY2Logic::createInstance("logic.admin.Site.SiteCopyLogic");
-  		return $logic->copySite($from, $to);
+    	return SOY2Logic::createInstance("logic.admin.Site.SiteCopyLogic")->copySite($from, $to);
     }
-  
 }
-?>

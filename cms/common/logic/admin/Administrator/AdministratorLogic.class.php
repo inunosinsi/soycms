@@ -73,6 +73,29 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 		}
 	}
 
+	/**
+	 * 自分がログイン可能なサイトにログイン可能な管理者のリスト
+	 */
+	function getLimitedAdministratorList(){
+		if(UserInfoUtil::isDefaultUser()){
+			return self::getAdministratorList();
+		}else{
+			$list = array();
+			$loginableSiteIds = SOY2Logic::createInstance("logic.admin.Site.SiteLogic")->getLoginableSiteIdsByUserId(UserInfoUtil::getUserId());
+			$administratorList = self::getAdministratorList();
+			foreach($administratorList as $administrator){
+				foreach($administrator->sites as $key => $siteroll){
+					if(! in_array($siteroll->getSiteId(), $loginableSiteIds) ){
+						unset($administrator->sites[$key]);
+					}
+				}
+				if( count($administrator->sites) >0 ){
+					$list[] = $administrator;
+				}
+			}
+			return $list;
+		}
+	}
 
 	/**
 	 * 管理者の数を数える

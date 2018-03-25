@@ -108,5 +108,12 @@ class ApplicationLogic extends SOY2LogicBase{
 
     	return $app_res;
     }
+
+	function getLoginiableApplicationLists(){
+		if(UserInfoUtil::isDefaultUser()){
+			return self::getApplications();
+		}else{
+			return self::getLoginableApplications(UserInfoUtil::getUserId());
+		}
+	}
 }
-?>
