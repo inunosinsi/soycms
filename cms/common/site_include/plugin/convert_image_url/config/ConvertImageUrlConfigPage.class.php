@@ -27,6 +27,13 @@ class ConvertImageUrlConfigPage extends WebPage{
 				try{
 					$dao->executeUpdateQuery($sql);
 				}catch(Exception $e){
+					//REPLACE対応していない問題 まだ試していない テスト不十分のためコメントアウト
+					//$length = strlen("http://" . $_POST["domain"]);
+					// try{
+					// 	//$sql = "UPDATE Entry SET " . $col	. " = SUBSTR(" . $col . ", " . $length . ") WHERE " . $col . " like 'http://" . $_POST["domain"] . "%';";
+					// }catch(Exception $e){
+					// 	var_dump($e);
+					// }
 					var_dump($e);
 				}
 			}
@@ -36,11 +43,7 @@ class ConvertImageUrlConfigPage extends WebPage{
 	}
 
 	function execute(){
-		if(method_exists("WebPage", "WebPage")){
-			WebPage::WebPage();
-		}else{
-			parent::__construct();
-		}
+		parent::__construct();
 
 		DisplayPlugin::toggle("mode_sqlite", (SOYCMS_DB_TYPE == "sqlite"));
 		DisplayPlugin::toggle("mode_mysql", (SOYCMS_DB_TYPE == "mysql"));
