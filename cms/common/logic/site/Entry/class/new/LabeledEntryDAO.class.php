@@ -223,8 +223,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		$result = $this->executeQuery($spanSQL,$binds);
 
-		$max = $result[0]['max'];
-		$min = $result[0]['min'];
+		$max = (isset($result[0]['max'])) ? $result[0]['max'] : Entry::PERIOD_END;
+		$min = (isset($result[0]['min'])) ? $result[0]['min'] : Entry::PERIOD_START;
 
 		$maxMonth = date('m',$max);
 		$maxYear = date('Y',$max);
@@ -255,7 +255,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 					":now"=>SOYCMS_NOW
 				));
 
-				$ret_val[mktime (1, 1, 1, $m, 1, $y)] = $result[0]['total'];
+				$ret_val[mktime (1, 1, 1, $m, 1, $y)] = (isset($result[0]['total'])) ? $result[0]['total'] : 0;
 			}
 
 		}
@@ -284,8 +284,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		$result = $this->executeQuery($spanSQL,$binds);
 
-		$max = $result[0]['max'];
-		$min = $result[0]['min'];
+		$max = (isset($result[0]['max'])) ? $result[0]['max'] : Entry::PERIOD_END;
+		$min = (isset($result[0]['min'])) ? $result[0]['min'] : Entry::PERIOD_START;
 
 		$maxYear = date('Y',$max);
 		$minYear = date('Y',$min);
@@ -309,7 +309,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 				":now"=>SOYCMS_NOW
 			));
 
-			$ret_val[mktime (1, 1, 1, 1, 1, $y)] = $result[0]['total'];
+			$ret_val[mktime (1, 1, 1, 1, 1, $y)] = (isset($result[0]['total'])) ? $result[0]['total'] : 0;
 		}
 
 		//降順に並び替え

@@ -9,6 +9,9 @@ class Entry {
 	const ENTRY_OUTOFDATE = -1;
 	const ENTRY_NOTPUBLIC = -2;
 
+	const PERIOD_START = 0;
+    const PERIOD_END = 2147483647;
+
 	/**
 	 * @id
 	 */
@@ -205,4 +208,3 @@ class Entry {
    		$this->url = $url;
    	}
 }
-?>
