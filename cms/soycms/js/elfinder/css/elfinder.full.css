@@ -1,6 +1,6 @@
 /*!
  * elFinder - file manager for web
- * Version 2.1.32 (2018-02-07)
+ * Version 2.1.33 (2018-03-14)
  * http://elfinder.org
  * 
  * Copyright 2009-2018, Studio 42
@@ -294,6 +294,10 @@
 .elfinder-touch .elfinder-file-edit {
 	font-size: 16px;
 }
+/* edit area */
+.ui-dialog .ui-dialog-content.elfinder-edit-editor {
+	background-color: #fff;
+}
 /* bottom margen for softkeyboard on fullscreen mode */
 .elfinder-touch.elfinder-fullscreen-native textarea.elfinder-file-edit {
 	padding-bottom: 20em;
@@ -500,9 +504,15 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
 	display: inline-block;
 	cursor: pointer;
 }
-.elfinder-help-preference dd.elfinder-help-toolbarPref,
-.elfinder-help-preference dd.elfinder-help-columnPref {
+.elfinder-help-preference dt.elfinder-help-checkboxes {
+	width: 100%;
+	max-width: none;
+}
+.elfinder-help-preference dd.elfinder-help-checkboxes {
 	padding-top: 3ex;
+}
+.elfinder-help-preference select {
+	max-width: 100%;
 }
 
 /********************** COMMAND "INFO" ****************************/
@@ -584,6 +594,10 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
 	visibility: visible;
 	font-size: 18px;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
+}
+
+.elfinder-font-mono {
+	line-height: 2ex;
 }
 
 /* in lazy execution status */
@@ -829,6 +843,7 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
 .elfinder-navbar-root-googledrive.elfinder-contextmenu-icon { background-image:url("../img/volume_icon_googledrive.png"); }
 .elfinder-navbar-root-onedrive.elfinder-contextmenu-icon { background-image:url("../img/volume_icon_onedrive.png"); }
 .elfinder-navbar-root-box.elfinder-contextmenu-icon { background-image:url("../img/volume_icon_box.png"); }
+.elfinder-navbar-root-zip.elfinder-contextmenu-icon { background-image:url("../img/volume_icon_zip.png"); }
 
 /* text in item */
 .elfinder .elfinder-contextmenu .elfinder-contextmenu-item span { display:block; }
@@ -1145,6 +1160,13 @@ div.elfinder-cwd-wrapper-list tr.ui-state-default td span.ui-icon {
 .elfinder-cwd .elfinder-navbar-root-box.elfinder-droppable-active .elfinder-cwd-icon,
 .elfinder-cwd-view-list .elfinder-navbar-root-box td .elfinder-cwd-icon  {
 	background-image:url("../img/volume_icon_box.png");
+	background-position:0 0;
+	background-size: contain;
+}
+.elfinder-navbar-root-zip .elfinder-cwd-icon,
+.elfinder-cwd .elfinder-navbar-root-zip.elfinder-droppable-active .elfinder-cwd-icon,
+.elfinder-cwd-view-list .elfinder-navbar-root-zip td .elfinder-cwd-icon  {
+	background-image:url("../img/volume_icon_zip.png");
 	background-position:0 0;
 	background-size: contain;
 }
@@ -2027,9 +2049,22 @@ tr.elfinder-cwd-file td .elfinder-cwd-select {
 	min-width:200px;
 	border:0 solid;
 	margin:1em .2em 1em .2em;
+	width: 100%;
 }
 
-.elfinder-info-tb td { white-space:nowrap; padding:2px; }
+.elfinder-info-tb td {
+	white-space: pre-wrap;
+	padding: 2px;
+}
+
+.elfinder-info-tb td.elfinder-info-label {
+	white-space: nowrap;
+}
+
+.elfinder-info-tb td.elfinder-info-hash {
+	word-break: break-word;
+	max-width: 32em;
+}
 
 .elfinder-info-tb tr td:first-child { text-align:right;  }
 
@@ -2157,6 +2192,11 @@ button.elfinder-info-button {
 }
 
 /* File: /css/fonts.css */
+.elfinder-font-mono {
+	font-family: "Ricty Diminished", "Myrica M", Consolas, "Courier New", Courier, Monaco, monospace;
+	font-size: 1.1em;
+}
+
 .elfinder-contextmenu .elfinder-contextmenu-item span { font-size:.72em; }
 
 .elfinder-cwd-view-icons .elfinder-cwd-filename { font-size:.7em; }
@@ -2320,6 +2360,7 @@ button.elfinder-info-button {
 .elfinder-tree .elfinder-navbar-root-googledrive .elfinder-navbar-icon { background-image:url("../img/volume_icon_googledrive.png"); background-position:0 0; }
 .elfinder-tree .elfinder-navbar-root-onedrive .elfinder-navbar-icon { background-image:url("../img/volume_icon_onedrive.png"); background-position:0 0; }
 .elfinder-tree .elfinder-navbar-root-box .elfinder-navbar-icon { background-image:url("../img/volume_icon_box.png"); background-position:0 0; }
+.elfinder-tree .elfinder-navbar-root-zip .elfinder-navbar-icon { background-image:url("../img/volume_icon_zip.png"); background-position:0 0; }
 .elfinder-tree .elfinder-navbar-root-network .elfinder-navbar-icon { background-image:url("../img/toolbar.png"); background-position: 0 -688px; }
 
 /* icon in active/hove/dropactive state */
@@ -3083,6 +3124,8 @@ embed.elfinder-quicklook-preview-audio {
 	border-left:0 solid transparent;
 	border-top:0 solid transparent;
 	border-right:0 solid transparent;
+	max-height: 50%;
+	overflow-y: auto;
 }
 
 /* container for button's group */
@@ -3251,13 +3294,12 @@ embed.elfinder-quicklook-preview-audio {
 /* menu */
 .elfinder-button-menu {
 	position:absolute;
-	left:0;
-	top:25px;
-	padding:3px 0;
+	margin-top: 24px;
+	padding: 3px 0;
 }
 
 .elfinder-touch .elfinder-button-menu {
-	top:35px;
+	margin-top: 30px;
 }
 
 /* menu item */
@@ -3310,23 +3352,46 @@ embed.elfinder-quicklook-preview-audio {
 	height: auto;
 	min-height: 26px;
 	float:right;
-	width:202px;
+	width: 70px;
 	overflow: visible;
 }
 
-.elfinder .elfinder-button-search .elfinder-button-menu {
+.elfinder .elfinder-button-search.ui-state-active {
+	width: 220px;
+}
+
+/* search "pull down menu" */
+.elfinder .elfinder-button-search-menu {
 	font-size: 8pt;
 	text-align: center;
-	width: 100%;
+	width: auto;
+	min-width: 180px;
+	position: absolute;
+	top: 30px;
+	padding-right: 5px;
+	padding-left: 5px;
+}
+.elfinder-ltr .elfinder-button-search-menu {
+	right: 22px;
+	left: auto;
+}
+.elfinder-rtl .elfinder-button-search-menu {
+	right: auto;
+	left: 22px;
+}
+.elfinder-touch .elfinder-button-search-menu {
+	top: 34px;
 }
 
-.elfinder .elfinder-button-search .elfinder-button-menu div {
+.elfinder .elfinder-button-search-menu div {
 	margin-left: auto;
 	margin-right: auto;
+	margin-top: 5px;
 	margin-bottom: 5px;
+	display: table;
 }
 
-.elfinder .elfinder-button-search .elfinder-button-menu div .ui-state-hover {
+.elfinder .elfinder-button-search-menu div .ui-state-hover {
 	border: 1px solid;
 }
 
@@ -3336,8 +3401,9 @@ embed.elfinder-quicklook-preview-audio {
 
 /* search text field */
 .elfinder-button-search input[type=text] {
-	width:160px;
-	height:22px;
+	box-sizing: border-box;
+	width: 100%;
+	height: 26px;
 	padding:0 20px;
 	line-height: 22px;
 	border:0 solid;
@@ -3352,7 +3418,7 @@ embed.elfinder-quicklook-preview-audio {
 	display: none;
 }
 .elfinder-touch .elfinder-button-search input {
-	height:28px;
+	height:30px;
 	line-height: 28px;
 }
 .elfinder-rtl .elfinder-button-search input { direction:rtl; }
@@ -3367,7 +3433,7 @@ embed.elfinder-quicklook-preview-audio {
 	opacity: .6; 
 	filter:Alpha(Opacity=60);
 }
-.elfinder-button-search .ui-checkboxradio-icon {
+.elfinder-button-search-menu .ui-checkboxradio-icon {
 	display: none;
 }
 
