@@ -16,8 +16,7 @@ class RemovePage extends CMSEntryEditorPageBase{
 
     function __construct($args) {
 		$this->id = @$args[0];
-		
+
 		parent::__construct();
     }
 }
-?>

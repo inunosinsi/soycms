@@ -94,7 +94,7 @@ class SearchPage extends CMSWebPageBase{
 		$result = $this->run("Label.LabelListAction");
 		$this->createAdd("label_list","SearchLabelList",array(
 			"list"=>$result->getAttribute("list"),
-			"selectedIds"=>array_merge($form->label,$labelIds)
+			"selectedIds"=>array_merge($form->getLabel(),$labelIds)
 		));
 
 		$this->createAdd("freewordText","HTMLInput",array(
@@ -157,7 +157,7 @@ class SearchPage extends CMSWebPageBase{
 
 		//ページャーを作成
 		$this->createAdd("topPager","EntryPagerComponent",array(
-			"arguments"=> array($form->offset, $limit, $count, $currentLink .'?'. $form)
+			"arguments"=> array($form->getOffset(), $limit, $count, $currentLink .'?'. $form)
 		));
 
 		//IE9対応
@@ -194,7 +194,7 @@ class SearchPage extends CMSWebPageBase{
 		$this->createAdd("label_op_and","HTMLCheckBox",array(
 			"type"=>"radio",
 			"value"=>"AND",
-			"selected"=>is_null($form->labelOperator) || $form->labelOperator == "AND",
+			"selected"=>is_null($form->getLabelOperator()) || $form->getLabelOperator() == "AND",
 			"name"=>"labelOperator",
 			"label"=>"AND"
 		));
@@ -202,7 +202,7 @@ class SearchPage extends CMSWebPageBase{
 		$this->createAdd("label_op_or","HTMLCheckBox",array(
 			"type"=>"radio",
 			"value"=>"OR",
-			"selected"=>!(is_null($form->labelOperator) || $form->labelOperator == "AND"),
+			"selected"=>!(is_null($form->getLabelOperator()) || $form->getLabelOperator() == "AND"),
 			"name"=>"labelOperator",
 			"label"=>"OR"
 		));
@@ -221,24 +221,24 @@ class SearchPage extends CMSWebPageBase{
 	 * 表示件数を変更するリンクを作成
 	 */
 	private function addPageLink($currentLink, SearchActionForm $form){
-		$limit = $form->limit;
+		$limit = $form->getLimit();
 
-		$form->limit = 10;
+		$form->setLimit(10);
 		$this->createAdd("showCount10" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
 
-		$form->limit = 20;
+		$form->setLimit(20);
 		$this->createAdd("showCount20" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
 
-		$form->limit = 50;
+		$form->setLimit(50);
 		$this->createAdd("showCount50" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
 
-		$form->limit = 100;
+		$form->setLimit(100);
 		$this->createAdd("showCount100" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
 
-		$form->limit = 500;
+		$form->setLimit(500);
 		$this->createAdd("showCount500" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
 
-		$form->limit = $limit;//元に戻す。
+		$form->setLimit($limit);//元に戻す。
 	}
 
 	/**

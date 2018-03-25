@@ -23,8 +23,10 @@
 						<div class="panel-heading">機能</div>
 						<div class="panel-body">
 							<ul class="nav nav-pills">
-								<li class="icon_v"><a soy:link="Entry.Create"><img soy:src="./image/simplemode/new.gif" /><span>記事の新規作成</span></a></li>
-								<li class="icon_v"><a soy:link="Entry.Search"><img soy:src="./image/simplemode/search.gif" /><span>記事の検索</span></a></li>
+								<li class="icon_v"><a soy:link="Entry.Create" id="create_entry"><img soy:src="./image/simplemode/new.gif" /><span>記事の新規作成</span></a></li>
+								<li class="icon_v"><a soy:link="Entry.Search" id="search_entry"><img soy:src="./image/simplemode/search.gif" /><span>記事の検索</span></a></li>
+								<li class="icon_v"><a soy:link="Entry.Export" id="export_entry"><img soy:src="./image/simplemode/export.jpg" /><span>CSVエクスポート</span></a></li>
+								<li class="icon_v"><a soy:link="Entry.Import" id="import_entry"><img soy:src="./image/simplemode/import.jpg" /><span>CSVインポート</span></a></li>
 							</ul>
 						</div>
 					 </div>
@@ -188,7 +190,7 @@
 														});
 													}
 												</script>
-												<input type="checkbox" onclick="toggle_all_entry_check(this.checked);">
+												<input type="checkbox" id="check_all_entries" onclick="toggle_all_entry_check(this.checked);">
 											</td>
 											<td class="title">タイトル</td>
 											<td class="status">状態</td>

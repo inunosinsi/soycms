@@ -4,12 +4,12 @@ include_once(dirname(dirname(__FILE__))."/ListPage.class.php");
 
 class ClosedPage extends ListPage{
 
-	function ClosedPage($arg) {
+	function __construct($arg) {
     	parent::__construct(array("Closed"));
 
     	DisplayPlugin::hide("no_label");
 
-    	$this->createAdd("label_state","HTMLLabel",array(
+    	$this->addLabel("label_state", array(
     		"text"=>CMSMessageManager::get("SOYCMS_DRAFT_ENTRY_LIST")
     	));
     }

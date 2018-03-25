@@ -25,4 +25,3 @@ class CreateNewLabelPage extends CMSWebPageBase {
     	exit;
     }
 }
-?>

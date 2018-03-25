@@ -34,4 +34,3 @@ class ModuleListComponent extends HTMLList{
 		$this->editorLink = $editorLink;
 	}
 }
-?>

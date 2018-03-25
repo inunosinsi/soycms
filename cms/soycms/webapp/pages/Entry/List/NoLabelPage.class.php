@@ -4,11 +4,11 @@ include_once(dirname(dirname(__FILE__))."/ListPage.class.php");
 
 class NoLabelPage extends ListPage{
 
-	function NoLabelPage($arg) {
+	function __construct($arg) {
     	parent::__construct(array("NoLabel"));
 
     	DisplayPlugin::hide("no_label");
-    	$this->createAdd("label_state","HTMLLabel",array(
+    	$this->addLabel("label_state","HTMLLabel",array(
     		"text"=>CMSMessageManager::get("SOYCMS_NO_LABELED_ENTRY_LIST")
     	));
     }

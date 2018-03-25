@@ -31,4 +31,3 @@ class CSSPage extends CMSWebPageBase{
 
     }
 }
-?>

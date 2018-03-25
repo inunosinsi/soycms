@@ -22,13 +22,12 @@ class DetailPage extends CMSWebPageBase{
 	}
 
 	function __construct($args) {
-		$labelId = @$args[0];
-		$this->labelId = $labelId;
+		$this->labelId = (isset($args[0])) ? (int)$args[0] : null;
 
 		parent::__construct();
 
 		$res = $this->run("Label.LabelDetailAction",array(
-			"id" => $labelId
+			"id" => $this->labelId
 		));
 
 		//無かった場合
@@ -39,11 +38,11 @@ class DetailPage extends CMSWebPageBase{
 		self::setupWYSIWYG();
 
 		$label = $res->getAttribute("label");
-		$this->buildForm($label);
+		self::buildForm($label);
 
 		//アイコンリスト
-		$this->createAdd("image_list","LabelIconList",array(
-			"list" => $this->getLabelIconList()
+		$this->createAdd("image_list","_component.Label.LabelIconListComponent",array(
+			"list" => self::getLabelIconList()
 		));
 
 		// colorpickerプラグイン
@@ -55,47 +54,47 @@ class DetailPage extends CMSWebPageBase{
 			"src" => SOY2PageController::createRelativeLink("./js/colorpicker/colorpicker.js"),
 		));
 
-		$this->createAdd("update_form","HTMLForm");
+		$this->addForm("update_form");
 	}
 
-	function buildForm($entity){
+	private function buildForm(Label $entity){
 
-		$this->createAdd("caption","HTMLInput",array(
+		$this->addInput("caption", array(
 			"value" => $entity->getCaption(),
 			"name" => "caption"
 		));
 
-		$this->createAdd("alias","HTMLInput",array(
+		$this->addInput("alias", array(
 	    		"value" => $entity->getAlias(),
 	    		"name" => "alias"
 	    	));
 
-		$this->createAdd("label_icon","HTMLImage",array(
+		$this->addImage("label_icon", array(
 			"src" => $entity->getIconUrl(),
 			"onclick" => "javascript:changeImageIcon(".$entity->getId().");"
 		));
-		$this->createAdd("icon","HTMLInput",array(
+		$this->addInput("icon", array(
 			"value" => $entity->getIcon(),
 			"name" => "icon",
 			"id" => "labelicon"
 		));
 
-		$this->createAdd("description","HTMLTextArea",array(
+		$this->addTextArea("description", array(
 			"value" => $entity->getDescription(),
 			"name" => "description"
 		));
 
-		$this->createAdd("color","HTMLInput",array(
+		$this->addInput("color", array(
 			"value" => sprintf("%06X",$entity->getColor()),
 			"name" => "color"
 		));
 
-		$this->createAdd("background_color","HTMLInput",array(
+		$this->addInput("background_color", array(
 			"value" => sprintf("%06X",$entity->getBackgroundColor()),
 			"name" => "backgroundColor"
 		));
 
-		$this->createAdd("preview","HTMLLabel",array(
+		$this->addLabel("preview", array(
 			"text"=> $entity->getCaption(),
 			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";background-color:#" . sprintf("%06X",$entity->getBackgroundColor()) . ";padding:5px;line-height:1.7;"
 		));
@@ -104,7 +103,7 @@ class DetailPage extends CMSWebPageBase{
 	/**
 	 * ラベルに使えるアイコンの一覧を返す
 	 */
-	function getLabelIconList(){
+	private function getLabelIconList(){
 
 		$files = scandir(CMS_LABEL_ICON_DIRECTORY);
 
@@ -133,7 +132,7 @@ class DetailPage extends CMSWebPageBase{
 		);
 
 		//Cookieからエディタのタイプを取得
-		$editor = isset($_COOKIE["label_text_editor"]) ? $_COOKIE["label_text_editor"] : "tinyMCE" ;
+		$editor = isset($_COOKIE["label_text_editor"]) ? $_COOKIE["label_text_editor"] : "plain" ;
 
 		$scriptsArr = array(
 				"plain"=> array(
@@ -180,16 +179,4 @@ class DetailPage extends CMSWebPageBase{
 			"html" => implode("\n", $script),
 		));
 	}
-}
-
-
-class LabelIconList extends HTMLList{
-
-	function populateItem($entity){
-		$this->createAdd("image_list_icon","HTMLImage",array(
-			"src" => $entity->url,
-			"ondblclick" => "javascript:postChangeLabelIcon(this,'".$entity->filename."');"
-		));
-	}
-
 }
