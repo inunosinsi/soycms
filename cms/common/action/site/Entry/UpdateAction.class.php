@@ -8,14 +8,13 @@ class UpdateAction extends SOY2Action{
 	/**
 	 * エントリーID
 	 */
-	var $id;
+	private $id;
 
 	function setId($id){
 		$this->id = $id;
 	}
 
     protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
-
 
 		if($form->hasError()){
 
@@ -46,8 +45,7 @@ class UpdateAction extends SOY2Action{
 				return SOY2Action::FAILED;
 			}
 
-			$labelLogic = SOY2LogicContainer::get("logic.site.Label.LabelLogic");
-			$prohibitedLabelIds = $labelLogic->getProhibitedLabelIds();
+			$prohibitedLabelIds = SOY2LogicContainer::get("logic.site.Label.LabelLogic")->getProhibitedLabelIds();
 			//１つでも公開可能でないラベルが付いていたらこの記事を更新できない
 			if( count($prohibitedLabelIds) && count($entryLabelIds) && count(array_intersect($prohibitedLabelIds, $entryLabelIds))){
 				$this->setErrorMessage('failed','許可されていない操作です。');
@@ -56,9 +54,7 @@ class UpdateAction extends SOY2Action{
 		}
 
 		$entity = SOY2::cast("Entry",$form);
-
 		$entity->setCdate(strtotime($form->cdate));
-
 
 		//無限遠時刻、無限近時刻を設定
 		$entity->setOpenPeriodEnd(CMSUtil::encodeDate($entity->getOpenPeriodEnd(),false));
@@ -87,7 +83,4 @@ class UpdateAction extends SOY2Action{
     function getActionFormName(){
     	return "EntryActionForm";
     }
-
 }
-
-?>

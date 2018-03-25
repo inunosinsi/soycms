@@ -4,7 +4,7 @@ class OutOfDateEntryListActoin extends SOY2Action{
 
     private $offset;
 	private $limit;
-	
+
 
 	function setOffset($offset) {
     	$this->offset = $offset;
@@ -14,10 +14,8 @@ class OutOfDateEntryListActoin extends SOY2Action{
     }
 
     protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
-		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-		$logic->offset = $this->offset;
-		$logic->limit = $this->limit;
-		
+		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("offset" => $this->offset, "limit" => $this->limit));
+
 		try{
 			$list = $logic->getOutOfDateEntryList();
 			$this->setAttribute("Entities",$list);
@@ -26,8 +24,7 @@ class OutOfDateEntryListActoin extends SOY2Action{
 		}catch(Exception $e){
 			return SOY2Action::FAILED;
 		}
-				
+
 		return SOY2Action::SUCCESS;
     }
 }
-?>

@@ -10,11 +10,10 @@ class RecentListAction extends SOY2Action{
 
     function execute() {
 
-    	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+    	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("limit" => $this->limit));
 		$labelLogic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
 
     	//最新エントリーを3件取得
-    	$logic->setLimit($this->limit);
     	$array = $logic->getRecentEntries();
 
 		//記事管理者の場合
@@ -24,8 +23,7 @@ class RecentListAction extends SOY2Action{
 
     	$entries = array();
     	foreach($array as $entry){
-			$labeledEntry = SOY2::cast("LabeledEntry",$entry);
-
+			$labeledEntry = SOY2::cast("LabeledEntry", $entry);
 			$labels = $logic->getLabelIdsByEntryId($entry->getId());
 
 			if(count($labels) && isset($prohibitedLabelIds) && count($prohibitedLabelIds) && count(array_intersect($labels, $prohibitedLabelIds))){
@@ -41,11 +39,8 @@ class RecentListAction extends SOY2Action{
 
     	//ラベルを取得
     	$labels = $labelLogic->getWithAccessControl();
-
     	$this->setAttribute("labels",$labels);
 
     	return SOY2Action::SUCCESS;
     }
-
 }
-?>

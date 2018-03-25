@@ -54,7 +54,7 @@ class UploadFileAction extends SOY2Action{
 				return;
 			}
 		}
-		
+
 		//エラー POSTされてこなかった状態 post_max_sizeなど
 		if(isset($_FILES) && is_array($_FILES) && count($_FILES) == 0){
 			$responseObject->result = false;
@@ -63,14 +63,14 @@ class UploadFileAction extends SOY2Action{
 			$this->setAttribute("result", $responseObject);
 			return;
 		}
-		
+
 		$responseObject->result = false;
 		$responseObject->message = "ファイルのアップロードでエラーが発生しました。";
 		$responseObject->errorCode = 100;
 
     	//前回アップロードしたファイルを削除
-    	$beforepath = UserInfoUtil::getSiteDirectory().$this->getDefaultUpload().$form->beforepath;
-    	if(strlen($form->beforepath) != 0 && file_exists($beforepath)){
+    	$beforepath = UserInfoUtil::getSiteDirectory().$this->getDefaultUpload().$form->getBeforepath();
+    	if(strlen($form->getBeforepath()) != 0 && file_exists($beforepath)){
     		if(unlink($beforepath)){
     			$responseObject->clearfileresult = true;
     		}else{
@@ -80,8 +80,8 @@ class UploadFileAction extends SOY2Action{
     		$responseObject->clearfilereult = false;
     	}
 
-    	if(strlen($form->alter_name) != 0){
-    		$filename = str_ireplace('..','',$form->alter_name);
+    	if(strlen($form->getAlter_name()) != 0){
+    		$filename = str_ireplace('..','',$form->getAlter_name());
     		$_FILES['file']['name'] = $filename;
     	}else{
     		$filename = $_FILES['file']['name'];
@@ -202,15 +202,20 @@ class UploadFileAction extends SOY2Action{
 
 class UploadFileActionForm extends SOY2ActionForm{
 
-	var $beforepath;
-	var $alter_name;
+	private $beforepath;
+	private $alter_name;
+
+	function getBeforepath(){
+		return $this->beforepath;
+	}
 	function setBeforepath($beforpath){
 		$this->beforepath = $beforpath;
 	}
 
+	function getAlter_name(){
+		return $this->alter_name;
+	}
 	function setAlter_name($alter_name){
 		$this->alter_name = $alter_name;
 	}
-
 }
-?>

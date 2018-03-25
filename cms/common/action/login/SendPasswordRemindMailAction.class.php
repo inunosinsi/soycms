@@ -3,10 +3,10 @@
 class SendPasswordRemindMailAction extends SOY2Action{
 
 	protected function execute(SOY2ActionRequest &$request, SOY2ActionForm &$form, SOY2ActionResponse &$response){
-		
+
 		$email = $request->getParameter("email");
 		$userId = $request->getParameter("user_id");
-		
+
 		$dao = SOY2DAOFactory::create("admin.AdministratorDAO");
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
 
@@ -14,7 +14,7 @@ class SendPasswordRemindMailAction extends SOY2Action{
 			$this->setErrorMessage("error", "ログインIDとメールアドレスを入力して下さい。");
 			return SOY2Action::FAILED;
 		}
-		
+
 		try{
 			$user = $dao->getByUserIdAndEmail($userId, $email);
 		}catch (Exception $e){
@@ -27,7 +27,7 @@ class SendPasswordRemindMailAction extends SOY2Action{
 			$this->setErrorMessage("error", "エラーが発生しました。");
 			return SOY2Action::FAILED;
 		}
-		
+
 		try{
 			$mailLogic->sendPasswordRemindMail($user->getEmail(), strlen($user->getName()) ? $user->getName() : $user->getUserId() , $token);
 		}catch(Exception $e){
@@ -37,4 +37,3 @@ class SendPasswordRemindMailAction extends SOY2Action{
 		return SOY2Action::SUCCESS;
 	}
 }
-?>

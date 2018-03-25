@@ -17,8 +17,7 @@ class RecentEntryListByLabelId extends SOY2Action{
 
 		//記事管理者の場合
 		if(class_exists("UserInfoUtil") && !UserInfoUtil::hasSiteAdminRole()){
-			$labelLogic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
-			$prohibitedLabelIds = $labelLogic->getProhibitedLabelIds();
+			$prohibitedLabelIds = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getProhibitedLabelIds();
 			if(in_array($this->labelId, $prohibitedLabelIds)){
 				$this->setAttribute("entries",array());
 				return SOY2Action::FAILED;
@@ -28,8 +27,7 @@ class RecentEntryListByLabelId extends SOY2Action{
     	//最新エントリーを3件取得
     	$dao = SOY2DAOFactory::create("cms.EntryDAO");
 
-    	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-    	$logic->setLimit($this->limit);
+    	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("limit" => $this->limit));
 		$entries = $logic->getRecentEntriesByLabelId($this->labelId);
 
 		//記事管理者の場合
@@ -47,4 +45,3 @@ class RecentEntryListByLabelId extends SOY2Action{
     	return SOY2Action::SUCCESS;
     }
 }
-?>

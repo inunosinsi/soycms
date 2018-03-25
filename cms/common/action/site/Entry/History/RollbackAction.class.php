@@ -12,11 +12,8 @@ class RollbackAction extends SOY2Action {
 	}
 
 	protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
-
-		$logic = SOY2LogicContainer::get("logic.site.Entry.EntryHistoryLogic");
-
 		try{
-			$logic->rollback($this->entryId, $form->historyId);
+			SOY2LogicContainer::get("logic.site.Entry.EntryHistoryLogic")->rollback($this->entryId, $form->historyId);
 			return SOY2Action::SUCCESS;
 		}catch(Exception $e){
 			error_log(var_export($e,true));
@@ -28,10 +25,9 @@ class RollbackAction extends SOY2Action {
 }
 
 class RollbackActionForm extends SOY2ActionForm {
-	var $historyId;
+	private $historyId;
 
 	function setHistoryId($historyId){
 		$this->historyId = $historyId;
 	}
 }
-?>

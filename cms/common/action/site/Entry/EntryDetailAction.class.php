@@ -24,10 +24,8 @@ class EntryDetailAction extends SOY2Action{
 
 	protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
 
-		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-
 		try{
-			$entry = $logic->getById($this->id,$this->flag);
+			$entry = SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getById($this->id,$this->flag);
 		}catch(Exception $e){
 			$this->setErrorMessage('failed','エントリー情報の取得に失敗しました。');
 			return SOY2Action::FAILED;
@@ -36,8 +34,7 @@ class EntryDetailAction extends SOY2Action{
 		//記事管理者のためのラベルチェック
 		if(!UserInfoUtil::hasSiteAdminRole()){
 			$entryLabelIds = $entry->getLabels();
-			$labelLogic = SOY2LogicContainer::get("logic.site.Label.LabelLogic");
-			$prohibitedLabelIds = $labelLogic->getProhibitedLabelIds();
+			$prohibitedLabelIds = SOY2LogicContainer::get("logic.site.Label.LabelLogic")->getProhibitedLabelIds();
 			//１つでも公開可能でないラベルが付いていたらこの記事を更新できない
 			if( count($prohibitedLabelIds) && count($entryLabelIds) && count(array_intersect($prohibitedLabelIds, $entryLabelIds))){
 				$this->setErrorMessage('failed','許可されていない操作です。');
@@ -55,6 +52,4 @@ class EntryDetailAction extends SOY2Action{
 	function setFlag($flag) {
 		$this->flag = $flag;
 	}
-
 }
-?>

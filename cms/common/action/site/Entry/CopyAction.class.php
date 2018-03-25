@@ -27,7 +27,7 @@ class CopyAction extends SOY2Action{
 				return SOY2Action::FAILED;
 			}
 
-			$entryIds = $form->entry;
+			$entryIds = $form->getEntry();
 		}
 
 		$logic = SOY2LogicContainer::get("logic.site.Entry.EntryLogic");
@@ -63,11 +63,14 @@ class CopyAction extends SOY2Action{
 			return SOY2Action::FAILED;
 		}
     }
-
 }
 
 class CopyActionForm extends SOY2ActionForm{
-	var $entry;
+	private $entry;
+
+	function getEntry(){
+		return $this->entry;
+	}
 
 	/**
 	 * @validator Array {"type":"number"}
@@ -76,4 +79,3 @@ class CopyActionForm extends SOY2ActionForm{
 		$this->entry = $entry;
 	}
 }
-?>

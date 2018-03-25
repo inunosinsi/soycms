@@ -1,6 +1,6 @@
-<?php 
+<?php
 class EntryActionForm extends SOY2ActionForm{
-	
+
 	var $id;
 	var $title;
 	var $content;
@@ -11,7 +11,7 @@ class EntryActionForm extends SOY2ActionForm{
 	var $isPublished;
 	var $style;
 	var $description;
-	
+
 	//2009-02-12追加
 	var $alias;
 
@@ -33,24 +33,24 @@ class EntryActionForm extends SOY2ActionForm{
 	function setOpenPeriodStart($start) {
 		$utime = (strlen($start)) ? strtotime($start) : false;
 		if(!($utime === false)){
-			$this->openPeriodStart = $utime;	
+			$this->openPeriodStart = $utime;
 		}
-		
+
 	}
 	function setOpenPeriodEnd($end) {
 		$utime = (strlen($end)) ? strtotime($end) : false;
 		if(!($utime === false)){
-			$this->openPeriodEnd = $utime;	
+			$this->openPeriodEnd = $utime;
 		}
 	}
 	function setIsPublished($isPublished) {
 		$this->isPublished = $isPublished;
 	}
-	
+
 	function setStyle($style){
 		$this->style= $style;
 	}
-	
+
 	function setDescription($description){
 		$this->description = $description;
 	}
@@ -59,4 +59,3 @@ class EntryActionForm extends SOY2ActionForm{
 		$this->alias = $alias;
 	}
 }
-?>

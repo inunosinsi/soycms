@@ -36,17 +36,14 @@ class PublishAction extends SOY2Action{
 				return SOY2Action::FAILED;
 			}
 
-			$entries = $form->entry;
+			$entries = $form->getEntry();
 		}
 
-		$logic = SOY2LogicContainer::get("logic.site.Entry.EntryLogic");
-
-		if($logic->setPublish($entries,$this->publish)){
+		if(SOY2LogicContainer::get("logic.site.Entry.EntryLogic")->setPublish($entries,$this->publish)){
 
 			//履歴も更新する
 			// TODO EntryLogicのトランザクションに含めたい
-			$historyLogic = SOY2LogicContainer::get("logic.site.Entry.EntryHistoryLogic");
-			$historyLogic->onPublish($entries,$this->publish);
+			SOY2LogicContainer::get("logic.site.Entry.EntryHistoryLogic")->onPublish($entries,$this->publish);
 
 			return SOY2Action::SUCCESS;
 		}else{
@@ -58,7 +55,11 @@ class PublishAction extends SOY2Action{
 
 class PublishActionForm extends SOY2ActionForm{
 
-	var $entry;
+	private $entry;
+
+	function getEntry(){
+		return $this->entry;
+	}
 
 	/**
 	 * @validator Array {"type":"number"}
@@ -66,8 +67,4 @@ class PublishActionForm extends SOY2ActionForm{
 	function setEntry($entry){
 		$this->entry = $entry;
 	}
-
 }
-
-
-?>

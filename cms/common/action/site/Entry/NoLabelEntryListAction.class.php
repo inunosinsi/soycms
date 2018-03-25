@@ -4,7 +4,7 @@ class NoLabelEntryListAction extends SOY2Action{
 
     private $offset;
 	private $limit;
-	
+
 
 	function setOffset($offset) {
     	$this->offset = $offset;
@@ -14,9 +14,7 @@ class NoLabelEntryListAction extends SOY2Action{
     }
 
     protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
-		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-		$logic->offset = $this->offset;
-		$logic->limit = $this->limit;
+		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("offset" => $this->offset, "limit" => $this->limit));
 		
 		try{
 			$list = $logic->getNoLabelEntryList();
@@ -27,8 +25,7 @@ class NoLabelEntryListAction extends SOY2Action{
 			$this->setErrorMessage('failed',CMSMessageManager::get("SOYCMS_FAILED_TO_GET_ENTRY_LIST"));
 			return SOY2Action::FAILED;
 		}
-				
+
 		return SOY2Action::SUCCESS;
     }
 }
-?>

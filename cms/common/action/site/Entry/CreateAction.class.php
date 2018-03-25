@@ -44,8 +44,6 @@ class CreateAction extends SOY2Action{
 			return SOY2Action::FAILED;
 		}
 
-
-
 		return SOY2Action::SUCCESS;
 
     }
@@ -53,6 +51,4 @@ class CreateAction extends SOY2Action{
     function getActionFormName(){
     	return "EntryActionForm";
     }
-
 }
-?>

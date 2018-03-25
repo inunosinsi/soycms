@@ -28,18 +28,13 @@ class RemoveAction extends SOY2Action{
 				return SOY2Action::FAILED;
 			}
 
-			$entryIds = $form->entry;
+			$entryIds = $form->getEntry();
 		}
 
-		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-
-		if($logic->deleteByIds($entryIds)){
-
+		if(SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->deleteByIds($entryIds)){
 			foreach($entryIds as $id){
-
 				//CMS:PLUGIN callEventFunction
 				CMSPlugin::callEventFunc('onEntryRemove',array("entryId"=>$id));
-
 			}
 
 			return SOY2Action::SUCCESS;
@@ -51,7 +46,12 @@ class RemoveAction extends SOY2Action{
 }
 
 class RemoveActionForm extends SOY2ActionForm{
-	var $entry;
+
+	private $entry;
+
+	function getEntry(){
+		return $this->entry;
+	}
 
 	/**
 	 * @validator Array {"type":"number"}
@@ -60,5 +60,3 @@ class RemoveActionForm extends SOY2ActionForm{
 		$this->entry = $entry;
 	}
 }
-
-?>

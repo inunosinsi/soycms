@@ -19,9 +19,7 @@ class HistoryDetailAction extends SOY2Action {
 
 	protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
 		try{
-			$logic = SOY2LogicContainer::get("logic.site.Entry.EntryHistoryLogic");
-			$history = $logic->getHistory($this->historyId);
-
+			$history = SOY2LogicContainer::get("logic.site.Entry.EntryHistoryLogic")->getHistory($this->historyId);
 			if($history->getEntryId() != $this->entryId){
 				return SOY2Action::FAILED;
 			}

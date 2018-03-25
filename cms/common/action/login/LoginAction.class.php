@@ -69,6 +69,4 @@ class LoginAction extends SOY2Action{
 
     	return SOY2Action::SUCCESS;
     }
-
 }
-?>

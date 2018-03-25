@@ -2,18 +2,18 @@
 
 class SearchAction extends SOY2Action{
 
-	var $limit;
-	var $offset;
-	var $totalCount;
+	private $limit;
+	private $offset;
+	private $totalCount;
 
     function execute($request,$form,$response) {
 
-    	$this->limit = (is_numeric($form->limit) ? $form->limit : 10);
-    	$this->offset =(is_numeric($form->offset) ? $form->offset : 0);
+    	$this->limit = (is_numeric($form->getLimit()) ? $form->getLimit() : 10);
+    	$this->offset =(is_numeric($form->getOffset()) ? $form->getOffset() : 0);
 
-    	$entries = $this->searchEntries($form->freeword_text,array(
-    		"op"=>$form->labelOperator,
-    		"labels"=>$form->label
+    	$entries = $this->searchEntries($form->getFreeword_text(),array(
+    		"op"=>$form->getLabelOperator(),
+    		"labels"=>$form->getLabel()
        	));
 
     	$count = $this->totalCount;
@@ -137,13 +137,16 @@ class SearchAction extends SOY2Action{
 
 class SearchActionForm extends SOY2ActionForm{
 
-	var $freeword_text;
-	var $label;
-	var $limit;
-	var $offset;
+	private $freeword_text;
+	private $label;
+	private $limit;
+	private $offset;
 
-	var $labelOperator;
+	private $labelOperator;
 
+	function getLabel(){
+		return $this->label;
+	}
 	function setLabel($label){
 		$this->label = $label;
 		if(!is_array($this->label)){
@@ -151,22 +154,31 @@ class SearchActionForm extends SOY2ActionForm{
 		}
 	}
 
+	function getFreeword_text(){
+		return $this->freeword_text;
+	}
 	function setFreeword_text($text){
 		$this->freeword_text = $text;
 	}
 
+	function getLabelOperator(){
+		return $this->labelOperator;
+	}
 	function setLabelOperator($op){
 		$this->labelOperator = $op;
 	}
 
+	function getLimit(){
+		return $this->limit;
+	}
 	function setLimit($limit){
 		$this->limit = $limit;
 	}
 
+	function getOffset(){
+		return $this->offset;
+	}
 	function setOffset($offset){
 		$this->offset = $offset;
 	}
-
-
 }
-?>
