@@ -82,7 +82,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 			}else{
 				$site = $siteDAO->getBySiteId($this->siteId);
 			}
-		
+
 			SOY2DAOConfig::Dsn($site->getDataSourceName());
 
 			$dsn = $site->getDataSourceName();
@@ -103,14 +103,14 @@ class MultiLabelBlockComponent implements BlockComponent{
 
 			$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 
-			$this->displayCountFrom = max($this->displayCountFrom,1);//0件目は認めない→１件目に変更
+			$this->displayCountFrom = max($this->displayCountFrom, 1);//0件目は認めない→１件目に変更
 
 			if(is_numeric($this->displayCountTo)){
-				$logic->limit = $this->getDisplayCountTo()- (int)$this->getDisplayCountFrom()+1;//n件目～m件目はm-n+1個のエントリ
+				$logic->setLimit($this->getDisplayCountTo() - (int)$this->getDisplayCountFrom() + 1);//n件目～m件目はm-n+1個のエントリ
 			}
 
 			if(is_numeric($this->displayCountFrom)){
-				$logic->offset = $this->displayCountFrom-1;//offsetは0スタートなので、n件目=offset:n-1
+				$logic->setOffset = ($this->displayCountFrom - 1);//offsetは0スタートなので、n件目=offset:n-1
 			}
 
 			if($this->order == self::ORDER_ASC){

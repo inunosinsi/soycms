@@ -62,8 +62,8 @@ class LabeledBlockComponent implements BlockComponent{
 
 		//制限なしで数を数える：ページ分けする場合のみ必要
 		$total = 0;
-		$logic->limit = null;
-		$logic->offset = null;
+		$logic->setLimit(null);
+		$logic->setOffset(null);
 		if($this->enablePaging){
 			try{
 				if(defined("CMS_PREVIEW_ALL")){
@@ -79,8 +79,8 @@ class LabeledBlockComponent implements BlockComponent{
 
 		//制限をかけてデータ取得
 		$array = array();
-		if(isset($limit)) $logic->limit = $limit;
-		if(isset($offset)) $logic->offset = $offset;
+		if(isset($limit)) $logic->setLimit($limit);
+		if(isset($offset)) $logic->setOffset($offset);
 		try{
 			if(defined("CMS_PREVIEW_ALL")){
 				$array = $logic->getByLabelId($this->labelId);
@@ -124,7 +124,7 @@ class LabeledBlockComponent implements BlockComponent{
 		//ページャー
 		if($this->enablePaging){
 			try{
-				LabeledBlockPagerComponent::buildPager($page, $page->getPageUrl(), count($array), $total, $logic->offset, $pageNumber, $logic->limit, $this->pagingParameter);
+				LabeledBlockPagerComponent::buildPager($page, $page->getPageUrl(), count($array), $total, $logic->getOffset(), $pageNumber, $logic->getLimit(), $this->pagingParameter);
 			}catch(Exception $e){
 				error_log("Pager");
 				error_log($e);
@@ -813,4 +813,3 @@ class LabeledBlockSimplePager extends HTMLList{
 		$this->pagerParamKey = $pagerParamKey;
 	}
 }
-
