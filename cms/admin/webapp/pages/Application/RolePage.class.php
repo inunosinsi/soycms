@@ -85,7 +85,7 @@ class RolePage extends CMSUpdatePageBase{
 		$users = $userDAO->get();
 		$roles = $appRoleDAO->getByAppId($this->appId);
 
-		$this->createAdd("role_list", "RoleList", array(
+		$this->createAdd("role_list", "_common.Application.RoleListComponent", array(
 			"list" => $users,
 			"roles" => $roles,
 			"application" => $application
@@ -115,49 +115,5 @@ class RolePage extends CMSUpdatePageBase{
 			"text" => implode($errors),
 			"visible" => (count($errors) > 0)
 		));
-	}
-}
-
-class RoleList extends HTMLList{
-
-	private $roles;
-	private $application;
-
-	protected function populateItem($entity, $key){
-
-		$userId = $entity->getId();
-
-		$this->addLabel("user_name", array(
-			"text" => (strlen($entity->getName())) ? $entity->getName() . " (".$entity->getUserId().")" : $entity->getUserId()
-		));
-
-
-		if(isset($this->roles[$userId])){
-			$role = $this->roles[$userId];
-			$roleValeu = $role->getAppRole();
-		}else{
-			$roleValeu = 0;
-		}
-
-		$this->addSelect("role", array(
-			"options" => AppRole::getRoleLists($this->application["useMultipleRole"]),
-			"indexOrder" => true,
-			"name" => "AppRole[".$userId."]",
-			"selected" => $roleValeu,
-			"visible" => !$entity->getIsDefaultUser()
-		));
-	}
-
-	function getRoles() {
-		return $this->roles;
-	}
-	function setRoles($roles) {
-		$this->roles = $roles;
-	}
-	function getApplication() {
-		return $this->application;
-	}
-	function setApplication($application) {
-		$this->application = $application;
 	}
 }
