@@ -487,7 +487,10 @@ class DetailPage extends WebPage{
 		));
 
 		//管理制限の権限を取得し、権限がない場合は表示しない
-		DisplayPlugin::toggle("app_limit_function", $appLimit);
+		foreach(range(1,4) as $i){
+			DisplayPlugin::toggle("app_limit_function_" . $i, $appLimit);
+		}
+
 
 		//注文受付期間(終売品向け機能)
 		$this->addInput("item_order_period_start", array(

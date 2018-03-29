@@ -288,7 +288,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$orderDAO->setLimit($this->getLimit());
 		$orderDAO->setOffset($this->getOffset());
-
+		
 		try{
 			$res = $orderDAO->executeQuery($this->getSearchSQL(),$this->getBinds());
 		}catch(Exception $e){

@@ -48,10 +48,10 @@
 			<dd>
 				<p class="mb" soy:id="item_category_choice"></p>
 				<input type="hidden" soy:id="item_category" />
-				<!-- soy:id="app_limit_function" -->
+				<!-- soy:display="app_limit_function_1" -->
 				<a class="button" id="select_category_button" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
 				<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
-				<!-- /soy:id="app_limit_function" -->
+				<!-- /soy:display="app_limit_function_1" -->
 			</dd>
 			<!-- /soy:display="item_category_area" -->
 
@@ -107,11 +107,11 @@
 						<th style="vertical-align:top;padding-top:10px;" class="small_text alC" nowrap>セール価格</th>
 						<td>
 							<input type="number" class="text" soy:id="item_sale_price" />
-							<!-- soy:display="app_limit_function*" -->
+							<!-- soy:display="app_limit_function_2" -->
 							<h4>セール設定</h4>
 							<input type="checkbox" soy:id="item_is_sale" />
 							<label for="item_is_sale">セール中に設定する</label>
-							<!-- /soy:display="app_limit_function*" -->
+							<!-- /soy:display="app_limit_function_2" -->
 						</td>
 					</tr>
 					<!-- soy:id="extension_add_price_area" /-->
@@ -177,9 +177,9 @@
 
 		<p class="pageBtn">
 			<input type="submit" name="do_open" value="変更(公開)" style="width:180px;margin-right:50px;" />
-			<!-- soy:id="app_limit_function*" -->
+			<!-- soy:display="app_limit_function_3" -->
 			<input type="submit" name="do_close" value="変更(非公開)" style="width:180px;" />
-			<!-- /soy:id="app_limit_function*" -->
+			<!-- /soy:display="app_limit_function_3" -->
 		</p>
 
 		<dl>
@@ -200,9 +200,9 @@
 
 		<p class="pageBtn">
 			<input type="submit" name="do_open" value="変更(公開)" style="width:180px;margin-right:50px;" />
-			<!-- soy:id="app_limit_function*" -->
+			<!-- soy:display="app_limit_function_4" -->
 			<input type="submit" name="do_close" value="変更(非公開)" style="width:180px;" />
-			<!-- /soy:id="app_limit_function*" -->
+			<!-- /soy:display="app_limit_function_4" -->
 		</p>
 
 	</form soy:id="update_form">
