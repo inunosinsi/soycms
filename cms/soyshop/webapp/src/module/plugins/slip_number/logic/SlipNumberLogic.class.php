@@ -88,6 +88,12 @@ class SlipNumberLogic extends SOY2LogicBase{
 		}
 	}
 
+	//新しい伝票番号を加える
+	function add($orderId, $new){
+		$slipNumbers = self::getSlipNumberByOrderId($orderId);
+		self::save($orderId, $slipNumbers . "," . $new);
+	}
+
 	function delete($orderId){
 		try{
 			$this->orderAttributeDao->delete($orderId, SlipNumberUtil::PLUGIN_ID);
