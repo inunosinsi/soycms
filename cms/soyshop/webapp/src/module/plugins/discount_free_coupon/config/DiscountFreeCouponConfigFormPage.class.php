@@ -232,7 +232,7 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 
 	private function getCoupons(){
 		try{
-			return $this->dao->getByTimeLimitEndAndNoDelete(time());
+			return $this->dao->getNotDeleted();
 		}catch(Exception $e){
 			return array();
 		}

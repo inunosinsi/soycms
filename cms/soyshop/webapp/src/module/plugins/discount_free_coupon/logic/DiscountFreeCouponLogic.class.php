@@ -44,25 +44,14 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 	function checkUsable($code, $userId){
 
 		//クーポンが存在するかチェック
-		if($this->checkCouponExists($code)){
-			//チェックする関数内で取得したものを取り出す
-			$coupon = self::getCouponByCode($code);
-		}else{
-			return false;
-		}
+		if(!$this->checkCouponExists($code)) return false;
 
 		//有効期限のチェック
-		if(!$this->checkTimeLimit($coupon)){
-			return false;
-		}
+		$coupon = self::getCouponByCode($code); //チェックする関数内で取得したものを取り出す
+		if(!self::checkTimeLimit($coupon)) return false;
 
 		//ユーザIDがnullの場合は初めての購入になるので、購入履歴のチェックはスルーする
-		if(isset($userId)){
-			//ヒストリーテーブルのチェック
-			if(!$this->checkHistory($coupon, $userId)){
-				return false;
-			}
-		}
+		if(isset($userId) && !$this->checkHistory($coupon, $userId)) return false;
 
 		return true;
 	}
@@ -108,7 +97,7 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 	function checkTimeLimit(SOYShop_Coupon $coupon){
 		$timeLimitStart = $coupon->getTimeLimitStart();
 		$timeLimitEnd = $coupon->getTimeLimitEnd();
-		return ($timeLimitStart < time() && $timeLimitEnd > time()) ? true : false;
+		return ($timeLimitStart < time() && $timeLimitEnd > time());
 	}
 
 	/**
