@@ -300,12 +300,17 @@ class IndexPage extends WebPage{
     		//"action" => SOY2PageController::createLink("Order.Register.User"),
     	));
     	$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-    	$userDao->setOrder("id asc");
-    	$__users = $userDao->getByNotDisabled();
-    	$options = array();
-    	foreach($__users as $__user){
-    		$options[$__user->getId()] = $__user->getName()." <".$__user->getMailAddress().">";
-    	}
+
+		//先に集計 顧客数が50以上の場合は表示しない
+		$options = array();
+		if($userDao->countUser() < 1){
+			$userDao->setOrder("id asc");
+	    	$__users = $userDao->getByNotDisabled();
+	    	foreach($__users as $__user){
+	    		$options[$__user->getId()] = $__user->getName()." <".$__user->getMailAddress().">";
+	    	}
+		}
+
     	$this->addSelect("select_user", array(
     			"name" => "select_user",
     			"options" => $options,
@@ -321,7 +326,7 @@ class IndexPage extends WebPage{
 		DisplayPlugin::toggle("has_user2", $has_user);
 
 		//登録無し
-		DisplayPlugin::toggle("no_user", !$has_user);
+		DisplayPlugin::toggle("no_user", !$has_user && count($options));
 
 		//登録済みユーザー
 		DisplayPlugin::toggle("user_is_registered", strlen($user->getId()));
