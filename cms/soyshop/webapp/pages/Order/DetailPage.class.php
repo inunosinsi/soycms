@@ -223,7 +223,7 @@ class DetailPage extends WebPage{
     	));
 
     	$address = $order->getAddressArray();
-
+		
     	$customerHTML = ""; //customerHTML変数の初期化
     	if(isset($address["office"])){
     		$customerHTML.= $address["office"] . "\n";
