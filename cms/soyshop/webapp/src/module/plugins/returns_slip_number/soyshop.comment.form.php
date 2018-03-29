@@ -4,15 +4,7 @@ class ReturnsSlipNumberComment extends SOYShopCommentFormBase{
 	function doPost(SOYShop_Order $order){
 
 		if(isset($_POST["ReturnsSlipNumber"]) && strlen($_POST["ReturnsSlipNumber"])){
-			$attr = self::getLogic()->getAttribute($order->getId());
-			$slipNumber = $attr->getValue1();
-			if(strlen($slipNumber)){
-				$slipNumber .= "," . trim($_POST["ReturnsSlipNumber"]);
-			}else{
-				$slipNumber = trim($_POST["ReturnsSlipNumber"]);
-			}
-
-			self::getLogic()->save($order->getId(), $slipNumber);
+			self::getLogic()->add($order->getId(), $_POST["ReturnsSlipNumber"]);
 
 			//履歴を残す
 			return "返送伝票番号「" . self::getLogic()->convert($_POST["ReturnsSlipNumber"]) . "」を登録しました。";
