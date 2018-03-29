@@ -73,7 +73,7 @@ class IndexPage extends WebPage{
 		$searchLogic->setOrder($sort);
 		$total = $searchLogic->getTotalCount();
 		$orders = $searchLogic->getOrders();
-		
+
 		//表示順リンク
 		self::buildSortLink($searchLogic,$sort);
 
@@ -154,6 +154,8 @@ class IndexPage extends WebPage{
 			"name" => "search",
 			"value" => (isset($_GET["search"])) ? http_build_query($_GET["search"]) : ""
 		));
+
+		self::buildExtensionArea();
 	}
 
 	/**
@@ -170,6 +172,19 @@ class IndexPage extends WebPage{
 		$this->add("search_form", $form);
 
 		return $form;
+	}
+
+	private function buildExtensionArea(){
+		SOYShopPlugin::load("soyshop.order.upload");
+		$list = SOYShopPlugin::invoke("soyshop.order.upload", array(
+			"mode" => "list"
+		))->getList();
+
+		DisplayPlugin::toggle("upload_list", count($list));
+
+		$this->createAdd("upload_extension_list", "_common.Order.UploadExtensionListComponent", array(
+			"list" => $list
+		));
 	}
 
 	private function getParameter($key){
