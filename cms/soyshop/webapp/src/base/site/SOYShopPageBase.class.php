@@ -55,7 +55,7 @@ class SOYShopPageBase extends WebPage{
         $canonical = $this->getPageObject()->getConvertedCanonical();
 
         if(!empty($canonical)){
-            $this->getHeadElement()->appendHTML(
+			$this->getHeadElement()->appendHTML(
                 '<link rel="canonical" href="' . $canonical . '" />' . "\n"
             );
         }

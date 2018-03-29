@@ -14,7 +14,7 @@ class SOYShop_Page {
 	const TYPE_MEMBER = "member";
 	const TYPE_CART = "cart";
 	const TYPE_MYPAGE = "mypage";
-	
+
 	const URI_HOME = "_home";
 	const NOT_FOUND = "_404_not_found";
 
@@ -215,6 +215,7 @@ class SOYShop_Page {
 			$url .= $this->getUri();
 		}
 
+
 		switch($this->getType()){
 			case self::TYPE_LIST:
 				switch($this->getPageObject()->getType()){
@@ -236,6 +237,8 @@ class SOYShop_Page {
 				break;
 		}
 
+		//スラッシュのみエンコードされた文字列を戻す
+		if(strpos($url, "%2F")) $url = str_replace("%2F", "/", $url);
 		return $url;
 	}
 
@@ -357,7 +360,7 @@ class SOYShop_Page {
 
 		return $res;
 	}
-	
+
 	/**
 	 * ページの初期化ファイルがあるか
 	 */
@@ -428,4 +431,3 @@ class SOYShop_PageBase{
     	return implode("<br />", $html);
     }
 }
-?>
