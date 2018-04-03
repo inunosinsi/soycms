@@ -543,74 +543,74 @@ class EditPage extends WebPage{
 
 		$this->addInput("claimed_customerinfo_office", array(
 			"name" => "ClaimedAddress[office]",
-			"value" => $claimedAddress["office"]
+			"value" => (isset($claimedAddress["office"])) ? $claimedAddress["office"] : ""
 		));
 		$this->addInput("claimed_customerinfo_name", array(
 			"name" => "ClaimedAddress[name]",
-			"value" => $claimedAddress["name"]
+			"value" => (isset($claimedAddress["name"])) ? $claimedAddress["name"] : ""
 		));
 		$this->addInput("claimed_customerinfo_reading", array(
 			"name" => "ClaimedAddress[reading]",
-			"value" => $claimedAddress["reading"]
+			"value" => (isset($claimedAddress["reading"])) ? $claimedAddress["reading"] : ""
 		));
 		$this->addInput("claimed_customerinfo_zip_code", array(
 			"name" => "ClaimedAddress[zipCode]",
-			"value" => $claimedAddress["zipCode"],
+			"value" => (isset($claimedAddress["zipCode"])) ? $claimedAddress["zipCode"] : "",
 			"size" => 10
 		));
 		$this->addSelect("claimed_customerinfo_area", array(
 			"name" => "ClaimedAddress[area]",
 			"options" => SOYShop_Area::getAreas(),
-			"selected" => $claimedAddress["area"]
+			"selected" => (isset($claimedAddress["area"])) ? $claimedAddress["area"] : ""
 		));
 		$this->addInput("claimed_customerinfo_address1", array(
 			"name" => "ClaimedAddress[address1]",
-			"value" => $claimedAddress["address1"],
+			"value" => (isset($claimedAddress["address1"])) ? $claimedAddress["address1"] : "",
 		));
 		$this->addInput("claimed_customerinfo_address2", array(
 			"name" => "ClaimedAddress[address2]",
-			"value" => $claimedAddress["address2"]
+			"value" => (isset($claimedAddress["address2"])) ? $claimedAddress["address2"] : ""
 		));
 		$this->addInput("claimed_customerinfo_tel_number", array(
 			"name" => "ClaimedAddress[telephoneNumber]",
-			"value" => $claimedAddress["telephoneNumber"]
+			"value" => (isset($claimedAddress["telephoneNumber"])) ? $claimedAddress["telephoneNumber"] : ""
 		));
 
 		$address = $order->getAddressArray();
 
 		$this->addInput("order_customerinfo_office", array(
 			"name" => "Address[office]",
-			"value" => $address["office"]
+			"value" => (isset($address["office"])) ? $address["office"] : ""
 		));
 		$this->addInput("order_customerinfo_name", array(
 			"name" => "Address[name]",
-			"value" => $address["name"]
+			"value" => (isset($address["name"])) ? $address["name"] : ""
 		));
 		$this->addInput("order_customerinfo_reading", array(
 			"name" => "Address[reading]",
-			"value" => $address["reading"]
+			"value" => (isset($address["reading"])) ? $address["reading"] : ""
 		));
 		$this->addInput("order_customerinfo_zip_code", array(
 			"name" => "Address[zipCode]",
-			"value" => $address["zipCode"],
+			"value" => (isset($address["zipCode"])) ? $address["zipCode"] : "",
 			"size" => 10
 		));
 		$this->addSelect("order_customerinfo_area", array(
 			"name" => "Address[area]",
 			"options" => SOYShop_Area::getAreas(),
-			"selected" => $address["area"]
+			"selected" => (isset($address["area"])) ? $address["area"] : ""
 		));
 		$this->addInput("order_customerinfo_address1", array(
 			"name" => "Address[address1]",
-			"value" => $address["address1"],
+			"value" => (isset($address["address1"])) ? $address["address1"] : "",
 		));
 		$this->addInput("order_customerinfo_address2", array(
 			"name" => "Address[address2]",
-			"value" => $address["address2"]
+			"value" => (isset($address["address2"])) ? $address["address2"] : ""
 		));
 		$this->addInput("order_customerinfo_tel_number", array(
 			"name" => "Address[telephoneNumber]",
-			"value" => $address["telephoneNumber"]
+			"value" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : ""
 		));
 
 		$this->addLink("order_link", array(

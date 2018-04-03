@@ -345,6 +345,7 @@ class IndexPage extends WebPage{
 
 		/* 共通コンポーネント */
 		SOY2::import("base.site.classes.SOYShop_UserCustomfieldList");
+
     	SOY2::import("component.UserComponent");
     	SOY2::import("component.backward.BackwardUserComponent");
 
@@ -356,7 +357,61 @@ class IndexPage extends WebPage{
 		//共通フォーム
 		$component->buildForm($this, $user, $this->cart, UserComponent::MODE_CUSTOM_CONFIRM);
 
-		$this->addLabel("office_text", array(
+
+		//顧客詳細が表示されない問題 直接ユニークなタグを生成する
+
+		//メールアドレス
+		$this->addLabel("mail_address_on_admin", array(
+			"text" => $user->getMailAddress()
+		));
+
+		//氏名
+		$this->addLabel("name_on_admin", array(
+			"text" => $user->getName(),
+		));
+
+		//フリガナ
+		$this->addLabel("reading_on_admin", array(
+			"text" => $user->getReading(),
+		));
+
+		//郵便番号
+		$this->addLabel("zip_code_on_admin", array(
+			"text" => $user->getZipCode()
+		));
+
+		//都道府県
+
+		$this->addLabel("area_on_admin", array(
+			"text" => SOYShop_Area::getAreaText($user->getArea())
+		));
+
+		//住所入力1
+		$this->addLabel("address1_on_admin", array(
+			"text" => $user->getAddress1(),
+		));
+
+		//住所入力2
+		$this->addLabel("address2_on_admin", array(
+			"text" => $user->getAddress2(),
+		));
+
+		//電話番号
+		$this->addLabel("telephone_number_on_admin", array(
+			"text" => $user->getTelephoneNumber(),
+		));
+
+		//FAX番号
+		$this->addLabel("fax_number_on_admin", array(
+			"text" => $user->getFaxNumber(),
+		));
+
+		//携帯電話番号
+		$this->addLabel("cellphone_number_on_admin", array(
+			"text" => $user->getCellphoneNumber(),
+		));
+
+		$this->addLabel("office_on_admin", array(
 			"text" => $user->getJobName()
 		));
     }
