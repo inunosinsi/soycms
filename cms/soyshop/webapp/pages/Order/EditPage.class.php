@@ -704,7 +704,7 @@ class EditPage extends WebPage{
 
 		$address = $order->getAddressArray();
 
-		if($address["office"] != $newAddress["office"])		$change[]=self::getHistoryText("宛先",$address["office"],$newAddress["office"]);
+		if(isset($address["office"]) && $address["office"] != $newAddress["office"])		$change[]=self::getHistoryText("宛先",$address["office"],$newAddress["office"]);
 		if($address["name"] != $newAddress["name"])			$change[]=self::getHistoryText("宛先",$address["name"],$newAddress["name"]);
 		if($address["reading"] != $newAddress["reading"])	$change[]=self::getHistoryText("宛先",$address["reading"],$newAddress["reading"]);
 		if($address["zipCode"] != $newAddress["zipCode"])	$change[]=self::getHistoryText("宛先",$address["zipCode"],$newAddress["zipCode"]);
