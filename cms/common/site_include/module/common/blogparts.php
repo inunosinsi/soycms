@@ -7,21 +7,21 @@ function soycms_blogparts($html, $page){
 
 	if(property_exists($page, "page")){
 		switch($page->page->getPageType()){
-	    case Page::PAGE_TYPE_BLOG:
-	      switch($page->mode){
-	        case "_top_":
-	          $template = $page->page->getTopTemplate();
-	          break;
-	        case "_entry_":
-	          $template = $page->page->getEntryTemplate();
-	          break;
-	        default:
-	          $template = $page->page->getArchiveTemplate();
-	      }
-	      break;
-	    default:
-	      $template = $page->page->getTemplate();
-	  }
+		case Page::PAGE_TYPE_BLOG:
+			switch($page->mode){
+			case "_top_":
+				$template = $page->page->getTopTemplate();
+				break;
+			case "_entry_":
+				$template = $page->page->getEntryTemplate();
+				break;
+			default:
+				$template = $page->page->getArchiveTemplate();
+			}
+			break;
+		default:
+			$template = $page->page->getTemplate();
+		}
 	//SOY Shopの場合
 	}else{
 		switch(get_class($page)){
@@ -38,23 +38,23 @@ function soycms_blogparts($html, $page){
 	}
 
 
-  $blogPageId = null;
-  if(preg_match('/(<[^>]*[^\/]cms:module=\"common.sidenav\"[^>]*>)/', $template, $tmp)){
-    if(preg_match('/cms:blog=\"(.*?)\"/', $tmp[1], $ctmp)){
-      if(isset($ctmp[1]) && is_numeric($ctmp[1])) $blogPageId = (int)$ctmp[1];
-    }
-  }
+	$blogPageId = null;
+	if(preg_match('/(<[^>]*[^\/]cms:module=\"common.sidenav\"[^>]*>)/', $template, $tmp)){
+		if(preg_match('/cms:blog=\"(.*?)\"/', $tmp[1], $ctmp)){
+			if(isset($ctmp[1]) && is_numeric($ctmp[1])) $blogPageId = (int)$ctmp[1];
+		}
+	}
 
-  if(is_null($blogPageId)){
-    //最初に作成されたブログのラベルIDを取得する
-    $dao = new SOY2DAO();
-    try{
-      $res = $dao->executeQuery("SELECT id FROM Page WHERE page_type = 200 ORDER BY id ASC LIMIT 1;");
-      if(isset($res[0]["id"])) $blogPageId =  (int)$res[0]["id"];
-    }catch(Exception $e){
-      //
-    }
-  }
+	if(is_null($blogPageId)){
+		//最初に作成されたブログのラベルIDを取得する
+		$dao = new SOY2DAO();
+		try{
+			$res = $dao->executeQuery("SELECT id FROM Page WHERE page_type = 200 ORDER BY id ASC LIMIT 1;");
+			if(isset($res[0]["id"])) $blogPageId =	(int)$res[0]["id"];
+		}catch(Exception $e){
+			//
+		}
+	}
 
 	//ブログページ
 	try{
@@ -77,7 +77,7 @@ function soycms_blogparts($html, $page){
 	$entryCount = array();
 	foreach($labels as $labelId => $label){
 		if(in_array($labelId, $categories)){
-			$categoryLabel[] =  $label;
+			$categoryLabel[] =	$label;
 			try{
 				//記事の数を数える。
 				$counts = $logic->getOpenEntryCountByLabelIds(array_unique(array($blogLabelId,$labelId)));
@@ -253,7 +253,7 @@ class ModuleBlog_CategoryList extends HTMLList{
 class ModuleBlogPage_MonthArciveList extends HTMLList{
 
  	private $monthPageUri;
-	private  $format;
+	private	$format;
 
 	function setMonthPageUri($uri){
 		$this->monthPageUri = $uri;

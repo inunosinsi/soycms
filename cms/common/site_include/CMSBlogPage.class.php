@@ -142,13 +142,12 @@ class CMSBlogPage extends CMSPage{
 
 	function __construct($args){
 
-		$id = $args[0];
+		$this->id = $args[0];
 		$this->arguments = $args[1];
 		$this->siteConfig = $args[2];
 
 		$pageDao = SOY2DAOFactory::create("cms.BlogPageDAO");
-		$this->page = $pageDao->getById($id);
-		$this->id = $id;
+		$this->page = $pageDao->getById($this->id);
 
 		//サイトのURL
 		$this->siteUrl = $this->getSiteUrl();
@@ -232,7 +231,7 @@ class CMSBlogPage extends CMSPage{
 				);
 
 				$this->label = $this->getLabel($label);
-				$this->entries = $this->getEntriesByLabel($this->label);
+				$this->entries = self::getEntriesByLabel($this->label);
 
 				$pageFormat = $this->page->getCategoryTitleFormat();
 				$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
@@ -301,7 +300,8 @@ class CMSBlogPage extends CMSPage{
 
 				ob_start();
 
-				switch(@$_GET["feed"]){
+				$feed = (isset($_GET["feed"])) ? $_GET["feed"] : null;
+				switch($feed){
 					case "rss":
 						$content_type = "application/xml";
 						soy_cms_blog_output_rss($this,$entries,$pageFormat,$charset);
@@ -318,7 +318,7 @@ class CMSBlogPage extends CMSPage{
 
 				WebPage::__construct($args);
 
-				$this->createAdd("feed","HTMLLabel",array(
+				$this->addLabel("feed", array(
 					"html" => $html
 				));
 
@@ -340,7 +340,7 @@ class CMSBlogPage extends CMSPage{
 				$this->mode = CMSBlogPage::MODE_TOP;
 				$this->limit = $this->page->getTopDisplayCount();
 				//最新エントリーを取得
-				$this->entries = $this->getEntries();
+				$this->entries = self::getEntries();
 
 				$pageFormat = $this->page->getTopTitleFormat();
 				$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
@@ -777,24 +777,22 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * エントリーを取得
 	 */
-	function getEntries(){
-		$logic = $this->getEntryLogic();
+	private function getEntries(){
+		$logic = self::getEntryLogic();
 
 		//表示件数を指定
 		$logic->setLimit($this->page->getTopDisplayCount());
 		$logic->setOffset($this->offset * $this->limit);
 
 		//表示順の変更
-		if($this->page->getTopEntrySort() == BlogPage::ENTRY_SORT_ASC){
-			$logic->setReverse(true);
-		}
+		if($this->page->getTopEntrySort() == BlogPage::ENTRY_SORT_ASC) $logic->setReverse(true);
 
 		$entries = $logic->getOpenEntryByLabelIds(array($this->page->getBlogLabelId()));
 		$this->total = $logic->getTotalCount();
 
 		//ラベルの投入
 		foreach($entries as $entry){
-			$entry->setLabels($this->getLabelsInBlog($entry));
+			$entry->setLabels(self::getLabelsInBlog($entry));
 		}
 
 		return $entries;
@@ -807,7 +805,7 @@ class CMSBlogPage extends CMSPage{
 	 * $this->totalを汚さないためにgetRSSEntriesから分離した
 	 */
 	function getRecentEntries(){
-		$logic = $this->getEntryLogic();
+		$logic = self::getEntryLogic();
 
 		//表示件数を指定
 		$logic->setLimit($this->page->getRssDisplayCount());
@@ -823,7 +821,7 @@ class CMSBlogPage extends CMSPage{
 	 */
 	function getRSSEntries(){
 		$entries = $this->getRecentEntries();
-		$logic = $this->getEntryLogic();
+		$logic = self::getEntryLogic();
 		$this->total = $logic->getTotalCount();
 		return $entries;
 	}
@@ -831,8 +829,8 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * ラベルを指定してエントリーを取得
 	 */
-	function getEntriesByLabel(Label $label){
-		$logic = $this->getEntryLogic();
+	private function getEntriesByLabel(Label $label){
+		$logic = self::getEntryLogic();
 
 		//表示件数を指定
 		$logic->setLimit($this->page->getCategoryDisplayCount());
@@ -843,16 +841,14 @@ class CMSBlogPage extends CMSPage{
 			$logic->setReverse(true);
 		}
 
+		$labelIds = array($label->getId());
 		//ブログ用のラベルIdも同時に指定して絞込み
-		if($label->getId() == $this->page->getBlogLabelId()){
-			$entries = $logic->getOpenEntryByLabelIds(array($label->getId()));
-		}else{
-			$entries = $logic->getOpenEntryByLabelIds(array($label->getId(),$this->page->getBlogLabelId()));
-		}
+		if($label->getId() != $this->page->getBlogLabelId()) $labelIds[] = $this->page->getBlogLabelId();
+		$entries = $logic->getOpenEntryByLabelIds($labelIds);
 
 		//ラベルの投入
 		foreach($entries as $entry){
-			$entry->setLabels($this->getLabelsInBlog($entry));
+			$entry->setLabels(self::getLabelsInBlog($entry));
 		}
 
 		$this->total = $logic->getTotalCount();
@@ -864,7 +860,7 @@ class CMSBlogPage extends CMSPage{
 	 * 年、月、日を指定してエントリーを取得
 	 */
 	function getEntriesByDate($year = null, $month = null, $day = null){
-		$logic = $this->getEntryLogic();
+		$logic = self::getEntryLogic();
 
 		//表示件数を指定
 		$logic->setLimit($this->page->getMonthDisplayCount());
@@ -884,21 +880,21 @@ class CMSBlogPage extends CMSPage{
 		//2008-10-14 endは次の日または次の月の１日の00:00:00
 		//           LabeledEntry::getOpenEntryByLabelIdsImplementsではendには等号は入っていない
 		if(!$month){
-			$start = @mktime(0,0,0,1,1,$year);
-			$end = @mktime(0,0,0,1,1,$year+1);
+			$start = mktime(0,0,0,1,1,$year);
+			$end = mktime(0,0,0,1,1,$year+1);
 		}elseif(!$day){
-			$start = @mktime(0,0,0,$month,1,$year);
-			$end = @mktime(0,0,0,$month+1,1,$year);
+			$start = mktime(0,0,0,$month,1,$year);
+			$end = mktime(0,0,0,$month+1,1,$year);
 		}else{
-			$start = @mktime(0,0,0,$month,$day,$year);
-			$end = @mktime(0,0,0,$month,$day+1,$year);
+			$start = mktime(0,0,0,$month,$day,$year);
+			$end = mktime(0,0,0,$month,$day+1,$year);
 		}
 
 		$entries = $logic->getOpenEntryByLabelIds(array($this->page->getBlogLabelId()),false,$start,$end);
 
 		//ラベルの投入
 		foreach($entries as $entry){
-			$entry->setLabels($this->getLabelsInBlog($entry));
+			$entry->setLabels(self::getLabelsInBlog($entry));
 		}
 
 		$this->total = $logic->getTotalCount();
@@ -909,10 +905,10 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * エントリーのラベルを取得（ラベルの表示順を反映する）
 	 */
-	private function getLabelsInBlog($entry){
+	private function getLabelsInBlog(Entry $entry){
 		static $_labels;
 		//全ラベル：表示順に並んでいる
-		if(!$_labels){
+		if(is_null($_labels)){
 			try{
 				$_labels = $this->getLabelDAO()->get();
 			}catch(Exception $e){
@@ -921,10 +917,10 @@ class CMSBlogPage extends CMSPage{
 		}
 
 		$labels = $_labels;
-		$entryLabelIds = $this->getEntryLogic()->getLabelIdsByEntryId($entry->getId());
+		$entryLabelIds = self::getEntryLogic()->getLabelIdsByEntryId($entry->getId());
 		foreach($labels as $id => $label){
 			//記事に付いていないラベル、カテゴリーと関係ないラベルを除外する
-			if(!in_array($id, $entryLabelIds) || !in_array($id,$this->page->getCategoryLabelList())){
+			if(!in_array($id, $entryLabelIds) || !in_array($id, $this->page->getCategoryLabelList())){
 				unset($labels[$id]);
 			}
 		}

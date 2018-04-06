@@ -148,6 +148,51 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		return $array;
 	}
 
+	function countOpenEntryByLabelIds($labelIds, $now, $isAnd, $start = null, $end = null){
+		/** @ToDo isAndの使いみち **/
+
+		$sql = "SELECT count(DISTINCT entry.id) AS COUNT FROM Entry entry ".
+				"INNER JOIN EntryLabel label ".
+				"ON entry.id = label.entry_id ".
+				"WHERE ";
+		$binds = array();
+
+		if(is_array($labelIds)){
+			//nullや空文字を削除
+			if(count($labelIds)){
+				$labelIds = array_diff($labelIds,array(null));
+			}
+
+			//数値のみ
+			$labelIds = array_map(function($val) {return (int)$val; }, $labelIds);
+			$sql .= " entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ") ";
+		}else{
+			//保険（ラベル指定なし）
+			$sql .= " true ";
+		}
+
+		if(!defined("CMS_PREVIEW_ALL")){
+			$sql .= "AND entry.isPublished = 1 ";
+			$sql .= "AND (entry.openPeriodEnd >= :now AND entry.openPeriodStart < :now)";
+			$binds[":now"] = $now;
+		}
+
+		if(strlen($start) && strlen($end)){
+			//endに等号は付けない
+			$sql .= " AND (entry.cdate >= :start AND entry.cdate < :end)";
+			$binds[":start"] = $start;
+			$binds[":end"] = $end;
+		}
+
+		try{
+			$res = $this->executeQuery($sql, $binds);
+		}catch(Exception $e){
+			return 0;
+		}
+
+		return (isset($res[0]["COUNT"])) ? (int)$res[0]["COUNT"] : 0;
+	}
+
 	/**
 	 * ブログページ用。
 	 * 公開しているエントリーをラベルでフィルタリングして数え上げる

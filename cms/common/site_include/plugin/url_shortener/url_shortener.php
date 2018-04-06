@@ -284,7 +284,7 @@ class UrlShortenerPlugin{
 		//入力欄
 		$page->addInput("url_shortener_input", array(
 			"name" => "urlShortener",
-			"value" => $this->getPageURLShortener($page->id),
+			"value" => $this->getPageURLShortener($page->getId()),
 		));
 
 		return true;

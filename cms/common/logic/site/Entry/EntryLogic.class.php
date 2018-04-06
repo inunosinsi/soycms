@@ -228,13 +228,11 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * ラベルを複数指定してエントリーをすべて取得
 	 */
-	function getByLabelIds($labelids,$flag = true, $start = null, $end = null){
+	function getByLabelIds($labelIds,$flag = true, $start = null, $end = null){
 		$dao = self::labeledEntryDao();
-		$dao->setLimit($this->limit);
-		$dao->setOffset($this->offset);
 
-		$array = $dao->getByLabelIdsOnlyId($labelids, $this->reverse);
-		$this->totalCount = $dao->getRowCount();
+		$array = $dao->getByLabelIdsOnlyId($labelIds, $this->reverse, $this->limit, $this->offset);
+		$this->totalCount = $dao->countByLabelIdsOnlyId($labelIds);
 
 		//ラベルを取得
 		foreach($array as $key => $entry){
@@ -330,21 +328,21 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getOpenEntryByLabelIds($labelIds,$isAnd = true, $start = null, $end = null){
 		$dao = self::labeledEntryDao();
-		$dao->setLimit($this->limit);
-		$dao->setOffset($this->offset);
 
 		if($isAnd){
 			//$labelIdsのラベルがすべて設定されている記事のみ取得
-			$array = $dao->getOpenEntryByLabelIds($labelIds,SOYCMS_NOW,$start,$end,$this->reverse);
+			$array = $dao->getOpenEntryByLabelIds($labelIds,SOYCMS_NOW,$start,$end,$this->reverse, $this->limit, $this->offset);
+			$this->totalCount = $dao->countOpenEntryByLabelIds($labelIds, SOYCMS_NOW, $isAnd, $start, $end);
 		}else{
 			//$labelIdsのラベルがどれか１つでも設定されている記事を取得
-			$array = $dao->getOpenEntryByLabelIdsImplements($labelIds,SOYCMS_NOW,false,$start,$end,$this->reverse);
+			$array = $dao->getOpenEntryByLabelIdsImplements($labelIds,SOYCMS_NOW,false,$start,$end,$this->reverse, $this->limit, $this->offset);
+			$this->totalCount = $dao->countOpenEntryByLabelIds($labelIds, SOYCMS_NOW, $isAnd, $start, $end);
 		}
 		foreach($array as $key => $entry){
 			$array[$key]->setCommentCount($this->getApprovedCommentCountByEntryId($entry->getId()));
 			$array[$key]->setTrackbackCount($this->getCertificatedTrackbackCountByEntryId($entry->getId()));
 		}
-		$this->totalCount = $dao->getRowCount();
+
 		return $array;
 	}
 

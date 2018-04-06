@@ -63,12 +63,12 @@ class HTMLBlockComponent_FormPage extends HTMLPage{
 
 	public function execute(){
 
-		$this->createAdd("html","HTMLTextArea",array(
+		$this->addTextArea("html", array(
 			"name" => "object[html]",
 			"text" => $this->html
 		));
 
-		$this->createAdd("main_form","HTMLForm");
+		$this->addForm("main_form");
 	}
 
 	public function setHtml($html){

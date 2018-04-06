@@ -16,7 +16,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.2"
+			"version"=>"1.2.1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -161,6 +161,4 @@ class CustomAliasPlugin{
 	function setPostfix($postfix){
 		$this->postfix = $postfix;
 	}
-
 }
-?>

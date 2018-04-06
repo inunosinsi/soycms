@@ -124,7 +124,8 @@ class SiteLabeledBlockComponent implements BlockComponent{
 
 		SOY2DAOConfig::Dsn($oldDsn);
 
-		return SOY2HTMLFactory::createInstance("SiteLabeledBlockComponent_ViewPage",array(
+		SOY2::import("site_include.block._common.MultiEntryListComponent");
+		return SOY2HTMLFactory::createInstance("MultiEntryListComponent",array(
 			"list" => $array,
 			"isStickUrl" => $this->isStickUrl,
 			"articlePageUrl" => $articlePageUrl,
@@ -132,7 +133,6 @@ class SiteLabeledBlockComponent implements BlockComponent{
 			"soy2prefix"=>"block",
 			"dsn" => $siteDsn
 		));
-
 	}
 
 	/**

@@ -7,18 +7,17 @@ class SearchAction extends SOY2Action{
 	private $totalCount;
 
     function execute($request,$form,$response) {
-
     	$this->limit = (is_numeric($form->getLimit()) ? $form->getLimit() : 10);
     	$this->offset =(is_numeric($form->getOffset()) ? $form->getOffset() : 0);
 
-    	$entries = $this->searchEntries($form->getFreeword_text(),array(
-    		"op"=>$form->getLabelOperator(),
-    		"labels"=>$form->getLabel()
+    	$entries = self::searchEntries($form->getFreeword_text(),array(
+    		"op" => $form->getLabelOperator(),
+    		"labels" => $form->getLabel()
        	));
 
     	$count = $this->totalCount;
 
-    	$this->setAttribute("from",$this->offset);
+    	$this->setAttribute("from", $this->offset);
 
     	if(count($entries) < $this->limit){
     		$this->setAttribute("to",$this->offset+count($entries));
@@ -35,7 +34,7 @@ class SearchAction extends SOY2Action{
 
     }
 
-    function searchEntries($freewordText,$label,$others = null){
+    private function searchEntries($freewordText,$label,$others = null){
     	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
     	$dao = SOY2DAOFactory::create("LabeledEntryDAO");
     	$dao->setLimit($this->limit);
@@ -49,7 +48,6 @@ class SearchAction extends SOY2Action{
 		$query->order = "udate desc";
 		$binds = array();
 		$where = array();
-
 
 
 		//フリーワード検索を作成
@@ -131,7 +129,6 @@ class SearchAction extends SOY2Action{
 
 		}
 		return $ret_val;
-
     }
 }
 

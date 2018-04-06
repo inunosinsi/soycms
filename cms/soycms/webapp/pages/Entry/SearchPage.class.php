@@ -89,20 +89,20 @@ class SearchPage extends CMSWebPageBase{
 		parent::__construct();
 
 		//記事を取得
-		list($entries,$count,$from,$to,$limit,$form) = $this->getEntries();
+		list($entries,$count,$from,$to,$limit,$form) = self::getEntries();
 
 		$result = $this->run("Label.LabelListAction");
-		$this->createAdd("label_list","SearchLabelList",array(
+		$this->createAdd("label_list","_component.Entry.SearchLabelListComponent",array(
 			"list"=>$result->getAttribute("list"),
 			"selectedIds"=>array_merge($form->getLabel(),$labelIds)
 		));
 
-		$this->createAdd("freewordText","HTMLInput",array(
-			"value"=>@$_GET["freeword_text"]
+		$this->addInput("freewordText", array(
+			"value" => (isset($_GET["freeword_text"])) ? $_GET["freeword_text"] : ""
 		));
 
-		$this->createAdd("main_form","HTMLForm",array(
-			"method"=>"get"
+		$this->addForm("main_form", array(
+			"method" =>"get"
 		));
 
 		//記事テーブルのCSS
@@ -135,25 +135,25 @@ class SearchPage extends CMSWebPageBase{
 		}
 
 		//戻るリンクを作成
-		$this->createAdd("back_link","HTMLLink",array(
+		$this->addLink("back_link", array(
 			"link" => SOY2PageController::createLink("Entry.List") . "/" .implode("/",$labelIds)
 		));
 
 		//記事一覧の表を作成
-		$this->createAdd("list","LabeledEntryList",array(
-				"labelIds"=>array(),
-				"labelList"=>$labelList,
+		$this->createAdd("list","_component.Entry.LabeledEntryListComponent",array(
+				"labelIds" => array(),
+				"labelList" => $labelList,
 				"list" => $entries,
 				"currentLink" => $currentLink
 		));
 
-		$this->createAdd("index_form","HTMLForm",array(
+		$this->addForm("index_form", array(
 			"action"=>$currentLink."?".$form,
 			"visible"=>(count($_GET)>0)
 		));
 
 		//表示件数変更のリンクを作成
-		$this->addPageLink($currentLink, $form);
+		self::addPageLink($currentLink, $form);
 
 		//ページャーを作成
 		$this->createAdd("topPager","EntryPagerComponent",array(
@@ -176,7 +176,7 @@ class SearchPage extends CMSWebPageBase{
 		}
 
 		//操作用のJavaScript
-		$this->addScript("entry_list",array(
+		$this->addScript("entry_list", array(
 			"script"=> file_get_contents(dirname(__FILE__)."/script/entry_list.js")
 		));
 
@@ -191,54 +191,38 @@ class SearchPage extends CMSWebPageBase{
 			));
 		}
 
-		$this->createAdd("label_op_and","HTMLCheckBox",array(
-			"type"=>"radio",
-			"value"=>"AND",
-			"selected"=>is_null($form->getLabelOperator()) || $form->getLabelOperator() == "AND",
-			"name"=>"labelOperator",
-			"label"=>"AND"
+		$this->addCheckBox("label_op_and", array(
+			"type" => "radio",
+			"value" => "AND",
+			"selected" => is_null($form->getLabelOperator()) || $form->getLabelOperator() == "AND",
+			"name" => "labelOperator",
+			"label" => "AND"
 		));
 
-		$this->createAdd("label_op_or","HTMLCheckBox",array(
-			"type"=>"radio",
-			"value"=>"OR",
-			"selected"=>!(is_null($form->getLabelOperator()) || $form->getLabelOperator() == "AND"),
-			"name"=>"labelOperator",
-			"label"=>"OR"
+		$this->addCheckBox("label_op_or", array(
+			"type" => "radio",
+			"value" => "OR",
+			"selected" => !(is_null($form->getLabelOperator()) || $form->getLabelOperator() == "AND"),
+			"name" => "labelOperator",
+			"label" => "OR"
 		));
-
 
 		if(UserInfoUtil::hasEntryPublisherRole()){
 			DisplayPlugin::hide("publish_info");
 		}else{
 			DisplayPlugin::hide("publish");
 		}
-
-
 	}
 
 	/**
 	 * 表示件数を変更するリンクを作成
 	 */
 	private function addPageLink($currentLink, SearchActionForm $form){
-		$limit = $form->getLimit();
-
-		$form->setLimit(10);
-		$this->createAdd("showCount10" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
-
-		$form->setLimit(20);
-		$this->createAdd("showCount20" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
-
-		$form->setLimit(50);
-		$this->createAdd("showCount50" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
-
-		$form->setLimit(100);
-		$this->createAdd("showCount100" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
-
-		$form->setLimit(500);
-		$this->createAdd("showCount500" ,"HTMLLink",array("link"=> $currentLink ."?".$form));
-
-		$form->setLimit($limit);//元に戻す。
+		$this->addLink("showCount10" , array("link"=> $currentLink ."?limit=10"."#entry_list"));
+		$this->addLink("showCount20" , array("link"=> $currentLink ."?limit=20"."#entry_list"));
+		$this->addLink("showCount50" , array("link"=> $currentLink ."?limit=50"."#entry_list"));
+		$this->addLink("showCount100", array("link"=> $currentLink ."?limit=100"."#entry_list"));
+		$this->addLink("showCount500", array("link"=> $currentLink ."?limit=500"."#entry_list"));
 	}
 
 	/**
@@ -266,118 +250,5 @@ class SearchPage extends CMSWebPageBase{
 		}else{
 			return array();
 		}
-	}
-}
-
-class SearchLabelList extends HTMLList{
-	private $selectedIds = array();
-
-	public function setSelectedIds($ids){
-		$this->selectedIds = $ids;
-		if(!is_array($this->selectedIds)){
-			$this->selectedIds = array();
-		}
-	}
-	protected function populateItem($entity){
-
-		$elementID = "label_".$entity->getId();
-
-		$this->createAdd("label_check","HTMLCheckBox",array(
-			"name"=>"label[]",
-			"value"=>$entity->getId(),
-			"selected"=>in_array($entity->getId(),$this->selectedIds),
-			"elementId" => $elementID,
-		));
-
-		$this->createAdd("label_label","HTMLModel",array(
-			"for"=>$elementID,
-		));
-
-		$this->createAdd("label_name","HTMLLabel",array(
-			"text" => $entity->getCaption(),
-			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";"
-					 ."background-color:#" . sprintf("%06X",$entity->getBackgroundColor()).";"
-		));
-
-		$this->createAdd("label_icon","HTMLImage",array(
-			"src"=>$entity->getIconUrl()
-		));
-
-	}
-
-}
-class LabelList extends HTMLList{
-
-	var $entryLabelIds = array();
-
-	public function setEntryLabelIds($list){
-		if(is_array($list)){
-			$this->entryLabelIds = $list;
-		}
-	}
-
-	protected function populateItem($label){
-		$this->createAdd("entry_list_link","HTMLLink",array(
-			"link" => SOY2PageController::createLink("Entry.List.".$label->getId()),
-			"text" => $label->getCaption(),
-			"visible" => in_array($label->getId(), $this->entryLabelIds),
-			"style"=> "color:#" . sprintf("%06X",$label->getColor()).";"
-			."background-color:#" . sprintf("%06X",$label->getBackgroundColor()).";",
-
-		));
-	}
-}
-
-class LabeledEntryList extends HTMLList{
-
-	private $labelIds;
-	private $labelList;
-
-	public function setLabelIds($labelIds){
-		$this->labelIds = $labelIds;
-	}
-
-	public function setLabelList($list){
-		$this->labelList = $list;
-	}
-
-	protected function populateItem($entity){
-		$this->createAdd("entry_check","HTMLInput",array(
-			"type"=>"checkbox",
-			"name"=>"entry[]",
-			"value"=>$entity->getId()
-		));
-
-		$entity->setTitle(strip_tags($entity->getTitle()));
-		$title_link = SOY2HTMLFactory::createInstance("HTMLLink",array(
-			"text"=>((strlen($entity->getTitle())==0)?CMSMessageManager::get("SOYCMS_NO_TITLE"):$entity->getTitle()),
-			"link"=>SOY2PageController::createLink("Entry.Detail.".$entity->getId())
-		));
-
-		$this->add("title",$title_link);
-
-		$status = SOY2HTMLFactory::createInstance("HTMLLabel", array(
-			"text" => $entity->getStateMessage()
-		));
-
-		$this->add("status", $status);
-
-		$this->createAdd("content","HTMLLabel",array(
-			"text"=> mb_strimwidth(strip_tags($entity->getContent()),0,45,"...")
-		));
-
-		$displayOrder = null;
-		if(method_exists($entity,'getDisplayOrder')){
-			$displayOrder = $entity->getDisplayOrder();
-		}
-
-		DisplayPlugin::hide("no_label");
-
-		//ラベル表示部
-		$this->createAdd("label","LabelList",array(
-			"list" => $this->labelList,
-			"entryLabelIds"=>$entity->getLabels(),
-		));
-
 	}
 }

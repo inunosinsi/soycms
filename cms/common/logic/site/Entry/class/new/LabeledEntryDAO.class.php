@@ -27,32 +27,55 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 	/**
 	 * getByLabelIdsだと重すぎる場所があったので追加
-	 *
-	 * @index Entry.id
-	 * @columns Entry.id,EntryLabel.display_order,Entry.cdate
-	 * @order EntryLabel.display_order, Entry.cdate desc, Entry.id desc
-	 * @distinct
-	 * @group Entry.id,EntryLabel.display_order
-	 * @having count(Entry.id) = <?php count(:labelids) ?>
-	 * @query EntryLabel.label_id in (<?php implode(',',:labelids) ?>)
 	 */
-	function getByLabelIdsOnlyId($labelids, $orderReverse = false){
-		$query = $this->getQuery();
-		$binds = $this->getBinds();
+	function getByLabelIdsOnlyId($labelIds, $orderReverse = false, $limit = null, $offset = null){
+		$sql = "SELECT distinct entry.id, entry.*, entry.cdate, label.display_order FROM Entry entry ".
+				"INNER JOIN EntryLabel label ".
+				"ON entry.id = label.entry_id ";
 
+		$sql .= "WHERE entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ") ";
+
+		//Order
 		if($orderReverse){
-			$query->setOrder(" EntryLabel.display_order, Entry.cdate asc, Entry.id asc ");
+			$sql .= " Order By label.display_order, entry.cdate ASC, entry.id ASC ";
+		}else{
+			$sql .= " Order By label.display_order, entry.cdate DESC, entry.id DESC";
 		}
 
-		//MySQL5.7以降対策。groupingとhagingをnullにした
-		$result = $this->executeQuery($query,$binds);
+		if(is_numeric($limit)) $sql .= " LIMIT " . $limit;
+		if(is_numeric($offset)) $sql .= " OFFSET " . $offset;	/** @ToDo 作成日時順に並べて高速化 **/
 
-		$array = array();
-		foreach($result as $row){
-			$array[$row["id"]] = $this->getObject($row);
+		try{
+			$results = $this->executeQuery($sql);
+		}catch(Exception $e){
+			var_dump($e);
+			return array();
 		}
 
-		return $array;
+		if(!count($results)) return array();
+
+		$list = array();
+		foreach($results as $row){
+			$list[$row["id"]] = $this->getObject($row);
+		}
+
+		return $list;
+	}
+
+	function countByLabelIdsOnlyId($labelIds){
+		$sql = "SELECT count(DISTINCT entry.id) AS COUNT FROM Entry entry ".
+				"INNER JOIN EntryLabel label ".
+				"ON entry.id = label.entry_id ";
+
+		$sql .= "WHERE entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ") ";
+
+		try{
+			$results = $this->executeQuery($sql);
+		}catch(Exception $e){
+			return 0;
+		}
+
+		return (isset($results[0]["COUNT"])) ? (int)$results[0]["COUNT"] : 0;
 	}
 
 	/**
@@ -82,24 +105,97 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 *
 	 * @final
 	 */
-	function getOpenEntryByLabelIds($labelIds,$now,$start = null, $end = null, $orderReverse = false){
-		return 	$this->getOpenEntryByLabelIdsImplements($labelIds, $now, true, $start, $end, $orderReverse);
+	function getOpenEntryByLabelIds($labelIds,$now,$start = null, $end = null, $orderReverse = false, $limit = null, $offset = null){
+		return 	$this->getOpenEntryByLabelIdsImplements($labelIds, $now, true, $start, $end, $orderReverse, $limit, $offset);
 	}
 
 	/**
 	 * ブログページ用。
 	 * ラベルの絞り込みをアンドとオアを切り替える
 	 * ORのときの表示順は保証できない（？）
-	 *
-	 * @columns Entry.id,Entry.alias,Entry.title,Entry.content,Entry.more,Entry.cdate,Entry.udate,EntryLabel.display_order
-	 * @order EntryLabel.display_order asc,Entry.cdate desc,Entry.id desc
-	 * @distinct
-	 * @group Entry.id,EntryLabel.display_order
-	 * @having count(Entry.id) = <?php count(:labelIds) ?>
 	 */
-	function getOpenEntryByLabelIdsImplements($labelIds, $now, $isAnd, $start = null, $end = null, $orderReverse = false){
-		$query = $this->getQuery();
-		$query->where = "";
+	function getOpenEntryByLabelIdsImplements($labelIds, $now, $isAnd, $start = null, $end = null, $orderReverse = false, $limit = null, $offset = null){
+		/** @ToDo isAndの使いみち **/
+
+		$sql = "SELECT distinct entry.id, entry.*, entry.cdate, label.display_order FROM Entry entry ".
+				"INNER JOIN EntryLabel label ".
+				"ON entry.id = label.entry_id ";
+		$binds = array();
+		$where = array();
+
+		if(is_array($labelIds)){
+			//nullや空文字を削除
+			if(count($labelIds)){
+				$labelIds = array_diff($labelIds, array(null));
+			}
+
+			//数値のみ
+			$labelIds = array_map(function($val) {return (int)$val; }, $labelIds);
+			if(count($labelIds)){
+				//ブログページ等
+				if($isAnd){
+					$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ")";
+				//ブログリンクブロック等
+				}else{
+					$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . "))";
+				}
+			}
+		}else{
+			//保険（ラベル指定なし）
+			$where[] = "true";
+		}
+
+		if(!defined("CMS_PREVIEW_ALL")){
+			$where[] = "entry.isPublished = 1";
+			$where[] = "(entry.openPeriodEnd >= :now AND entry.openPeriodStart < :now)";
+			$binds[":now"] = $now;
+		}
+
+		if(strlen($start) && strlen($end)){
+			//endに等号は付けない
+			$where[] = "(entry.cdate >= :start AND entry.cdate < :end)";
+			$binds[":start"] = $start;
+			$binds[":end"] = $end;
+		}
+
+		if(count($where)){
+			$sql .= "WHERE " . implode(" AND ", $where);
+		}
+
+		//Order
+		if($orderReverse){
+			$sql .= " Order By label.display_order, entry.cdate ASC, entry.id ASC ";
+		}else{
+			$sql .= " Order By label.display_order, entry.cdate DESC, entry.id DESC";
+		}
+
+		if(is_numeric($limit)) $sql .= " LIMIT " . $limit;
+		if(is_numeric($offset)) $sql .= " OFFSET " . $offset;	/** @ToDo 作成日時順に並べて高速化 **/
+
+		try{
+			$results = $this->executeQuery($sql, $binds);
+		}catch(Exception $e){
+			return array();
+		}
+
+		if(!count($results)) return array();
+		$list = array();
+		foreach($results as $row){
+			if(!isset($row["id"]) || !is_numeric($row["id"])) continue;
+			$list[$row["id"]] = $this->getObject($row);
+		}
+
+		return $list;
+	}
+
+	function countOpenEntryByLabelIds($labelIds, $now, $isAnd, $start = null, $end = null){
+		/** @ToDo isAndの使いみち **/
+
+		$sql = "SELECT count(DISTINCT entry.id) AS COUNT FROM Entry entry ".
+				"INNER JOIN EntryLabel label ".
+				"ON entry.id = label.entry_id ";
+		$binds = array();
+		$where = array();
 
 		if(is_array($labelIds)){
 			//nullや空文字を削除
@@ -109,43 +205,44 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 			//数値のみ
 			$labelIds = array_map(function($val) {return (int)$val; }, $labelIds);
-			$query->where .= " EntryLabel.label_id in (" . implode(",",$labelIds) .") ";
+			if(count($labelIds)){
+				//ブログページ等
+				if($isAnd){
+					$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ")";
+				//ブログリンクブロック等
+				}else{
+					$where[] = "entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . "))";
+				}
+			}
 		}else{
 			//保険（ラベル指定なし）
-			$query->where .= " true ";
+			$where[] = "true";
 		}
 
-		$binds = array();
-
 		if(!defined("CMS_PREVIEW_ALL")){
-			$query->where .= "AND Entry.isPublished = 1 ";
-			$query->where .= "AND (Entry.openPeriodEnd >= :now AND Entry.openPeriodStart < :now)";
-
+			$where[] = "entry.isPublished = 1";
+			$where[] = "(entry.openPeriodEnd >= :now AND entry.openPeriodStart < :now)";
 			$binds[":now"] = $now;
 		}
 
-		if($isAnd == false) $query->having = "";
-
 		if(strlen($start) && strlen($end)){
 			//endに等号は付けない
-			$query->where .= " AND (Entry.cdate >= :start AND Entry.cdate < :end)";
-
+			$where[] = "(entry.cdate >= :start AND entry.cdate < :end)";
 			$binds[":start"] = $start;
 			$binds[":end"] = $end;
 		}
 
-		if($orderReverse){
-			$query->setOrder(" EntryLabel.display_order, Entry.cdate asc, Entry.id asc ");
+		if(count($where)){
+			$sql .= "WHERE " . implode(" AND ", $where);
 		}
 
-		$result = $this->executeQuery($query,$binds);
-
-		$array = array();
-		foreach($result as $row){
-			$array[$row["id"]] = $this->getObject($row);
+		try{
+			$res = $this->executeQuery($sql, $binds);
+		}catch(Exception $e){
+			return 0;
 		}
 
-		return $array;
+		return (isset($res[0]["COUNT"])) ? (int)$res[0]["COUNT"] : 0;
 	}
 
 	/**

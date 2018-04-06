@@ -6,93 +6,71 @@ class TreePage extends CMSWebPageBase{
 	private $trashFlag = false;
 	private $trashPage = array();
 
-	private $blogIcon;
-	private $deletedIcon;
-	private $draftIcon;
-	private $grayIcon;
-	private $greenIcon;
-
 	private function getDeletedIcon(){
-		if(!$this->deletedIcon){
-			$this->deletedIcon = SOY2PageController::createRelativeLink("./css/pagelist/images/cross.png");
-		}
-
-		return $this->deletedIcon;
+		static $icon;
+		if(is_null($icon)) $icon = SOY2PageController::createRelativeLink("./css/pagelist/images/cross.png");
+		return $icon;
 	}
 
 	private function getDraftIcon(){
-		if(!$this->draftIcon){
-			$this->draftIcon = SOY2PageController::createRelativeLink("./css/pagelist/images/draft.gif");
-		}
-
-		return $this->draftIcon;
+		static $icon;
+		if(is_null($icon)) $icon = SOY2PageController::createRelativeLink("./css/pagelist/images/draft.gif");
+		return $icon;
 	}
 
 	private function getGrayIcon(){
-		if(!$this->grayIcon){
-			$this->grayIcon = SOY2PageController::createRelativeLink("./css/pagelist/images/after.gif");
-		}
-
-		return $this->grayIcon;
+		static $icon;
+		if(is_null($icon)) $icon = SOY2PageController::createRelativeLink("./css/pagelist/images/after.gif");
+		return $icon;
 	}
 
 	private function getGreenIcon(){
-		if(!$this->greenIcon){
-			$this->greenIcon = SOY2PageController::createRelativeLink("./css/pagelist/images/before.gif");
-		}
-
-		return $this->greenIcon;
+		static $icon;
+		if(is_null($icon)) $icon = SOY2PageController::createRelativeLink("./css/pagelist/images/before.gif");
+		return $icon;
 	}
 
 
 
 	private function getSubIconPath($page){
-		$src = "";
-
 		if($page->getPageType() == Page::PAGE_TYPE_ERROR){
-			$src = "";
+			return "";
 		}elseif($page->getIsTrash()){
-			$src = $this->getDeletedIcon();
+			return self::getDeletedIcon();
 		}else{
 			switch($page->isActive(true)){
 				case Page::PAGE_ACTIVE_CLOSE_FUTURE:
-					$src = $this->getGreenIcon();
-					break;
+					return self::getGreenIcon();
 				case Page::PAGE_OUTOFDATE_BEFORE:
-					$src = $this->getGrayIcon();
-					break;
+					return self::getGrayIcon();
 				case Page::PAGE_OUTOFDATE_PAST:
 				case Page::PAGE_NOTPUBLIC:
-					$src = $this->getDraftIcon();
-					break;
+					return self::getDraftIcon();
 				case Page::PAGE_ACTIVE:
 				case Page::PAGE_ACTIVE_CLOSE_BEFORE:
 				default:
-					$src = "";
+					return "";
 			}
 		}
-
-		return $src;
 	}
 
 	private function getBlogIcon(){
-		if(!$this->blogIcon){
-			$this->blogIcon = SOY2PageController::createRelativeLink("./css/pagelist/images/blog.png");
-		}
-		return $this->blogIcon;
+		static $icon;
+		if(is_null($icon)) $icon = SOY2PageController::createRelativeLink("./css/pagelist/images/blog.gif");
+		return $icon;
 	}
 
 
 	public function __construct() {
 		$result = ($this->run("Page.PageListAction",array("buildtree"=>true)));
-		WebPage::__construct();
+		parent::__construct();
 
 		$this->treeIcon = SOY2PageController::createRelativeLink("./image/tree/tree.gif");
 
 		$page = $result->getAttribute("PageList");
 
-		$this->createAdd("page_list","HTMLLabel",array(
-			"html"=> $this->getTreeHTML($page)
+		$this->addLabel("page_list", array(
+			"html"=> self::getTreeHTML($page)
 		));
 
 		$trashPage = $result->getAttribute("RemovedPageList");
@@ -102,7 +80,7 @@ class TreePage extends CMSWebPageBase{
 			DisplayPlugin::hide("not_empty_trash");
 		}
 
-		$this->createAdd("trash_page_list","HTMLLabel",array(
+		$this->addLabel("trash_page_list", array(
 			"html"=> $this->getTreeHTML($trashPage)
 		));
 
@@ -117,10 +95,9 @@ class TreePage extends CMSWebPageBase{
 			"selected" => isset($_COOKIE['page-index-hide-out-of-publishing-period']) && $_COOKIE['page-index-hide-out-of-publishing-period'] == 'true',
 			"elementId" => 'hide-out-of-publishing-period',
 		));
-
 	}
 
-	function getTreeHTML($pages,$depth = 0){
+	private function getTreeHTML($pages,$depth = 0){
 		$result = array();
 		$result[] = '<ul class="list-unstyled">';//style="list-style-type: none">';
 
@@ -165,12 +142,12 @@ class TreePage extends CMSWebPageBase{
 			$html = array();
 			$html[] = '<li class="'.htmlspecialchars(implode(" ", $class_for_branch), ENT_QUOTES, SOY2HTML::ENCODING).'">' ;
 			$html[] = '<div class="'.htmlspecialchars(implode(" ", $class_for_leaf), ENT_QUOTES, SOY2HTML::ENCODING).'">';
-			$html[] = $this->buildPageIcon($page, $depth);
-			$html[] = $this->buildPageTitle($page);
+			$html[] = self::buildPageIcon($page, $depth);
+			$html[] = self::buildPageTitle($page);
 			$url = CMSUtil::getSiteUrl().$page->getUri();
 			$html[] = '<a href="'.htmlspecialchars($url, ENT_QUOTES, SOY2HTML::ENCODING).'" target="_blank">'.htmlspecialchars($page->getUri(), ENT_QUOTES, SOY2HTML::ENCODING).'<i class="fa fa-external-link fa-fw" style="font-size:smaller"></i></a>';
 			$html[] = '<br>';
-			$html[] = $this->buildPageMenu($page);
+			$html[] = self::buildPageMenu($page);
 			$html[] = '</div>';
 			if(count($page->getChildPages()) != 0){
 				$html[] = $this->getTreeHTML($page->getChildPages(),$depth+1);
@@ -238,10 +215,10 @@ class TreePage extends CMSWebPageBase{
 // 		}
 
 		if($page->getIsTrash()){
-			$function[] = '<a href="' .htmlspecialchars(SOY2PageController::createLink("Page.Remove")   . "/" . $page->getId(). "?soy2_token=" . soy2_get_token(), ENT_QUOTES, SOY2HTML::ENCODING). '" onclick="return confirm(\''.$this->getMessage("SOYCMS_CONFIRM_DELETE_COMPLETELY").'\');">'.$this->getMessage("SOYCMS_DELETE").'</a>';
-			$function[] = '<a href="' .htmlspecialchars(SOY2PageController::createLink("Page.Recover")  . "/" . $page->getId(). "?soy2_token=" . soy2_get_token(), ENT_QUOTES, SOY2HTML::ENCODING). '">'.$this->getMessage("SOYCMS_RECOVER").'</a>';
+			$function[] = '<a href="' .htmlspecialchars(SOY2PageController::createLink("Page.Remove")   . "/" . $page->getId(). "?soy2_token=" . soy2_get_token(), ENT_QUOTES, SOY2HTML::ENCODING). '" id="remove_' . $page->getId() . '" onclick="return confirm(\''.$this->getMessage("SOYCMS_CONFIRM_DELETE_COMPLETELY").'\');">'.$this->getMessage("SOYCMS_DELETE").'</a>';
+			$function[] = '<a href="' .htmlspecialchars(SOY2PageController::createLink("Page.Recover")  . "/" . $page->getId(). "?soy2_token=" . soy2_get_token(), ENT_QUOTES, SOY2HTML::ENCODING). '" id="recover_' . $page->getId() . '">'.$this->getMessage("SOYCMS_RECOVER").'</a>';
 		}elseif($page->isDeletable()){
-			$function[] = '<a href="' .htmlspecialchars(SOY2PageController::createLink("Page.PutTrash") . "/" . $page->getId(). "?soy2_token=" . soy2_get_token(), ENT_QUOTES, SOY2HTML::ENCODING). '">'.$this->getMessage("SOYCMS_DELETE").'</a>';
+			$function[] = '<a href="' .htmlspecialchars(SOY2PageController::createLink("Page.PutTrash") . "/" . $page->getId(). "?soy2_token=" . soy2_get_token(), ENT_QUOTES, SOY2HTML::ENCODING). '" id="put_trash_' . $page->getId() . '">'.$this->getMessage("SOYCMS_DELETE").'</a>';
 		}
 
 		if($page->isCopyable()){

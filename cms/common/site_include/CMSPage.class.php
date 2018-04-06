@@ -27,7 +27,7 @@ class CMSPage extends WebPage{
 		$pageDao = SOY2DAOFactory::create("cms.PageDAO");
 		$this->page = $pageDao->getById($id);
 		$this->id = $id;
-		
+
 		//サイトのURL
 		$this->siteUrl = $this->getSiteUrl();
 
@@ -59,7 +59,7 @@ class CMSPage extends WebPage{
 			 * 記事がなければ表示しない領域
 			 * if_has_entry_in:id="xxx"
 			 */
-			$this->createAdd($block->getSoyId().":has_entry","HTMLModel",array(
+			$this->addModel($block->getSoyId().":has_entry", array(
 				"visible"    => (isset($soy2HtmlObject->list) && count($soy2HtmlObject->list)),
 				"soy2prefix" => "if",
 			));
@@ -67,7 +67,7 @@ class CMSPage extends WebPage{
 			 * 記事があるときに表示しない領域
 			 * if_no_entry_in:id="xxx"
 			 */
-			$this->createAdd($block->getSoyId().":no_entry","HTMLModel",array(
+			$this->addModel($block->getSoyId().":no_entry", array(
 				"visible"    => (isset($soy2HtmlObject->list) && !count($soy2HtmlObject->list)),
 				"soy2prefix" => "if",
 			));
@@ -84,26 +84,26 @@ class CMSPage extends WebPage{
 		$pageFormat = preg_replace('/%PAGE%/',$this->page->getTitle(),$pageFormat);
 		$this->setTitle($pageFormat);
 
-		$this->createAdd("site_url_link", "HTMLLink", array(
+		$this->addLink("site_url_link", array(
 			"link" => $this->siteUrl,
 			"soy2prefix" => "cms"
 		));
 
-		$this->createAdd("site_url", "HTMLLabel", array(
+		$this->addLabel("site_url", array(
 			"text" => $this->siteUrl,
 			"soy2prefix" => "cms"
 		));
 
 		//メッセージの設定
-		$this->createAdd("site_name","HTMLLabel",array(
+		$this->addLabel("site_name", array(
 			"text" => $this->siteConfig->getName(),
 			"soy2prefix" => "cms"
 		));
-		$this->createAdd("page_title","HTMLLabel",array(
+		$this->addLabel("page_title", array(
 			"text" => $pageFormat,
 			"soy2prefix" => "cms"
 		));
-		$this->createAdd("raw_page_title","HTMLLabel",array(
+		$this->addLabel("raw_page_title", array(
 			"text" => $this->page->getTitle(),
 			"soy2prefix" => "cms"
 		));
@@ -118,11 +118,12 @@ class CMSPage extends WebPage{
 		 * 記述例
 		 * <!-- cms:id="apps" cms:app="inquiry mail catalog" /-->
 		 */
+		SOY2::import("site_include.component.CMSAppContainer");
 		$this->createAdd("apps","CMSAppContainer",array(
 			"page" => $this,
 			"soy2prefix" => "cms"
 		));
-		
+
 		$this->buildModules();
 
 	}
@@ -135,8 +136,7 @@ class CMSPage extends WebPage{
 	function getCacheFilePath($extension = ".html.php"){
 		//ダイナミック編集では管理側にキャッシュを作るのでサイトを区別する必要がある
 		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
-			 $siteId = UserInfoUtil::getSite()->getSiteId();
-			 $pageUri = $siteId."/".$this->page->getUri();
+			 $pageUri = UserInfoUtil::getSite()->getSiteId() . "/" . $this->page->getUri();
 		}else{
 			 $pageUri = $this->page->getUri();
 		}
@@ -288,16 +288,16 @@ class CMSPage extends WebPage{
 		}
 		return $html;
 	}
-	
+
 	function buildModules(){
-    	
+
 		SOY2::import("site_include.CMSPageModulePlugin");
 		$plugin = new CMSPageModulePlugin();
-		
+
 		while(true){
 			list($tag, $line, $innerHTML, $outerHTML, $value, $suffix, $skipendtag) =
 				$plugin->parse("module", "[a-zA-Z0-9\.\_]+", $this->_soy2_content);
-				
+
 			if(!strlen($tag)) break;
 
 			$plugin->_attribute = array();
@@ -366,7 +366,6 @@ class CMSPage extends WebPage{
 		}
 
 		return $html;
-
 	}
 
 	/**
@@ -425,105 +424,4 @@ class CMSPage extends WebPage{
 			return CMSPageController::createRelativeLink($path, true);
 		}
     }
-
 }
-
-class CMSAppContainer extends SOY2HTML{
-
-	//出力はApplicationに任せるので何もしない
-	const SOY_TYPE = SOY2HTML::SKIP_BODY;
-
-	private $page;
-	private $config = array();
-
-	function setPage($page){
-		$this->page = $page;
-	}
-
-	function getObject(){
-		$applicationIds = $this->getApplicationIds();
-
-		if(count($applicationIds)){
-			//定数の作成
-			if(!defined("CMS_APPLICATION_ROOT_DIR")){
-				define("CMS_APPLICATION_ROOT_DIR", dirname(SOY2::RootDir()) . "/app/");
-			}
-			if(!defined("CMS_COMMON")){
-				define("CMS_COMMON", SOY2::RootDir());
-			}
-
-			if(is_readable(CMS_APPLICATION_ROOT_DIR . "webapp/base/CMSApplication.class.php")){
-				//読み込み
-				include_once(CMS_APPLICATION_ROOT_DIR . "webapp/base/CMSApplication.class.php");
-
-				//保険
-				$this->saveSOY2Config();
-
-				//実行
-				try{
-					foreach($applicationIds as $applicationId){
-						$pagePHP = CMS_APPLICATION_ROOT_DIR . "webapp/" . $applicationId . "/page.php";
-						if(strlen($applicationId) && file_exists($pagePHP)){
-							include_once($pagePHP);
-							CMSApplication::page($this->page,$this->page->arguments);
-						}
-					}
-				}catch(Exception $e){
-					//復帰
-					$this->restoreSOY2Config();
-					throw $e;
-				}
-
-				//復帰
-				$this->restoreSOY2Config();
-			}
-
-		}
-
-		return $this->getInnerHTML();
-
-	}
-
-	private function getApplicationIds(){
-		$appIds = trim($this->getAttribute("cms:app"));
-
-		$applicationIds = array($appIds);
-		if(strpos($appIds, " ") !== false){
-			$applicationIds = explode(" ", $appIds);
-		}elseif(strpos($appIds, ";") !== false){
-			$applicationIds = explode(";", $appIds);
-		}elseif(strpos($appIds, ":") !== false){
-			$applicationIds = explode(":", $appIds);
-		}elseif(strpos($appIds, ",") !== false){
-			$applicationIds = explode(",", $appIds);
-		}
-
-		return $applicationIds;
-	}
-
-	private function saveSOY2Config(){
-		$this->config = array(
-			"RootDir" => SOY2::RootDir(),
-			"PageDir" => SOY2HTMLConfig::PageDir(),
-			"CacheDir" => SOY2HTMLConfig::CacheDir(),
-			"DaoDir" => SOY2DAOConfig::DaoDir(),
-			"EntityDir" => SOY2DAOConfig::EntityDir(),
-			"Dsn" => SOY2DAOConfig::Dsn(),
-			"User" => SOY2DAOConfig::user(),
-			"Pass" => SOY2DAOConfig::pass(),
-		);
-	}
-
-	private function restoreSOY2Config(){
-		SOY2::RootDir($this->config["RootDir"]);
-		SOY2HTMLConfig::PageDir($this->config["PageDir"]);
-		SOY2HTMLConfig::CacheDir($this->config["CacheDir"]);
-		SOY2DAOConfig::DaoDir($this->config["DaoDir"]);
-		SOY2DAOConfig::EntityDir($this->config["EntityDir"]);
-		SOY2DAOConfig::Dsn($this->config["Dsn"]);
-		SOY2DAOConfig::user($this->config["User"]);
-		SOY2DAOConfig::pass($this->config["Pass"]);
-	}
-
-}
-?>

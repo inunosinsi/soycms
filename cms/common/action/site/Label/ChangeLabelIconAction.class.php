@@ -58,4 +58,3 @@ class ChangeLabelIconActionForm extends SOY2ActionForm{
 		$this->labelicon = $filename;
 	}
 }
-?>

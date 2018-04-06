@@ -1,4 +1,5 @@
 <?php
+
 class ListPage extends CMSUpdatePageBase{
 
 	protected $labelIds;
@@ -110,7 +111,7 @@ class ListPage extends CMSUpdatePageBase{
 		}
 
 		//ラベル一覧を取得
-		$labelList = $this->getLabelList();
+		$labelList = self::getLabelList();
 
 		//自分自身へのリンク
 		$currentLink = SOY2PageController::createLink("Entry.List") . "/". implode("/",$labelIds);
@@ -121,7 +122,7 @@ class ListPage extends CMSUpdatePageBase{
 		}
 
 		//記事を取得
-		list($entries,$count,$offset) = $this->getEntries($offset,$limit,$this->labelIds);
+		list($entries, $count, $offset) = self::getEntries($offset,$limit,$this->labelIds);
 
 		//include_once(dirname(__FILE__).'/_EntryBlankPage.class.php');
 		$this->createAdd("no_entry_message","Entry._EntryBlankPage",array(
@@ -267,8 +268,8 @@ class ListPage extends CMSUpdatePageBase{
 	private function getEntries($offset,$limit,$labelIds){
 		if(strpos($_SERVER["PATH_INFO"], "/Closed")){
 			$result = $this->run("Entry.ClosedEntryListAction",array(
-	    		"offset"=>$offset,
-	    		"limit"=>$limit
+	    		"offset" => $offset,
+	    		"limit" => $limit
 	    	));
 
 	    	$entities = $result->getAttribute("Entities");
@@ -277,8 +278,8 @@ class ListPage extends CMSUpdatePageBase{
 	    	return array($entities,$totalCount,min($offset,$totalCount));
 		}else if(strpos($_SERVER["PATH_INFO"], "/OutOfDate")){
 			$result = $this->run("Entry.OutOfDateEntryListActoin",array(
-	    		"offset"=>$offset,
-	    		"limit"=>$limit
+	    		"offset" => $offset,
+	    		"limit" => $limit
 	    	));
 
 	    	$entities = $result->getAttribute("Entities");
@@ -287,8 +288,8 @@ class ListPage extends CMSUpdatePageBase{
 	    	return array($entities,$totalCount,min($offset,$totalCount));
 		}else if(strpos($_SERVER["PATH_INFO"], "/NoLabel")){
 			$result = $this->run("Entry.NoLabelEntryListAction",array(
-	    		"offset"=>$offset,
-	    		"limit"=>$limit
+	    		"offset" => $offset,
+	    		"limit" => $limit
 	    	));
 
 	    	$entities = $result->getAttribute("Entities");
@@ -300,10 +301,10 @@ class ListPage extends CMSUpdatePageBase{
 				if(!is_numeric($labelId))return array(array(),0,0);
 			}
 
-			$action = SOY2ActionFactory::createInstance("Entry.EntryListAction",array(
-				"ids"=>$labelIds,
-				"offset"=>$offset,
-				"limit"=>$limit
+			$action = SOY2ActionFactory::createInstance("Entry.EntryListAction", array(
+				"ids" => $labelIds,
+				"offset" => $offset,
+				"limit" => $limit
 			));
 			$result = $action->run();
 			$entities = $result->getAttribute("Entities");

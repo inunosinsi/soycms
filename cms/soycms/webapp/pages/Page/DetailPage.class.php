@@ -2,7 +2,7 @@
 
 class DetailPage extends CMSWebPageBase{
 
-	var $id;
+	private $id;
 
 	function doPost(){
 
@@ -23,9 +23,8 @@ class DetailPage extends CMSWebPageBase{
 	}
 
 	function __construct($arg){
-
-
-		$this->id = @$arg[0];
+		if(!isset($arg[0])) $this->jump("Page");
+		$this->id = (int)$arg[0];
 
 		parent::__construct();
 
@@ -35,106 +34,91 @@ class DetailPage extends CMSWebPageBase{
 			$this->jump("Page.Detail.".$this->id);
 		}
 
-		if(is_null($this->id)){
-			$this->jump("Page");
+		$page = $this->getPageObject($this->id);
+
+		switch($page->getPageType()){
+			case Page::PAGE_TYPE_BLOG:	//ブログだった場合はブログページへ
+				$this->jump("Blog." . $this->id);
+				break;
+			case Page::PAGE_TYPE_MOBILE:	//mobileページだった時はそっちに
+				$this->jump("Page.Mobile.Detail." . $this->id);
+				break;
+			case Page::PAGE_TYPE_APPLICATION:	//404ページだった場合の処理
+				DisplayPlugin::hide("openperiod_section");
+				break;
+			default:
+				DisplayPlugin::hide("error_submit_button");
 		}
 
-		$id = $this->id;
-
-
-		$page = $this->getPageObject($id);
-
-		//ブログだった場合はブログページへ
-		if($page->getPageType() == Page::PAGE_TYPE_BLOG){
-			$this->jump("Blog.".$id);
-		}
-
-		//mobileページだった時はそっちに
-		if($page->getPageType() == Page::PAGE_TYPE_MOBILE){
-			$this->jump("Page.Mobile.Detail.".$id);
-		}
-
-		//Applicationページだった場合はそっちに
-		if($page->getPageType() == Page::PAGE_TYPE_APPLICATION){
-			$this->jump("Page.Application.Detail.".$id);
-		}
-
-		//404ページだった場合の処理
-		if($page->getPageType() == Page::PAGE_TYPE_ERROR){
-			DisplayPlugin::hide("openperiod_section");
-		}else{
-			DisplayPlugin::hide("error_submit_button");
-		}
-
-		$this->createAdd("title","HTMLInput",array(
-			"value"=>$page->getTitle(),
-			"name"=>"title"
+		$this->addInput("title", array(
+			"value" => $page->getTitle(),
+			"name" => "title"
 		));
 
-		$this->createAdd("uri","HTMLInput",array(
-			"value"=>$page->getUri(),
-			"name"=>"uri"
+		$this->addInput("uri", array(
+			"value" => $page->getUri(),
+			"name" => "uri"
 		));
 
-		$this->createAdd("page_icon_show","HTMLImage",array(
+		$this->addImage("page_icon_show", array(
 			"src" => $page->getIconUrl(),
 			"onclick" => "javascript:changeImageIcon(".$page->getId().");"
 		));
 
-		$this->createAdd("page_icon","HTMLInput",array(
-			"value"=>$page->getIcon()
+		$this->addInput("page_icon", array(
+			"value" => $page->getIcon()
 		));
 
-		$this->createAdd("title_format","HTMLInput",array(
-			"value"=>$page->getPageTitleFormat(),
-			"name"=>"pageTitleFormat"
+		$this->addInput("title_format", array(
+			"value" => $page->getPageTitleFormat(),
+			"name" => "pageTitleFormat"
 		));
 
 
-		$this->createAdd("uri_prefix","HTMLLabel",array(
-			"text"=>$this->getURIPrefix($id)
+		$this->addLabel("uri_prefix", array(
+			"text" => $this->getURIPrefix($this->id)
 		));
 
-		$this->createAdd("parent_page","HTMLSelect",array(
-			"selected"=>$page->getParentPageId(),
-			"options"=>$this->getPageList(),
-			"indexOrder"=>true,
-			"name"=>"parentPageId"
+		$this->addSelect("parent_page", array(
+			"selected" => $page->getParentPageId(),
+			"options" => $this->getPageList(),
+			"indexOrder" => true,
+			"name" => "parentPageId"
 		));
 
 		//CSS保存のボタン
-		$this->createAdd("save_css_button", "HTMLModel", array(
+		$this->addLabel("save_css_button", array(
 			"visible" => function_exists("json_encode")
 		));
 
 		//template保存のボタン追加
-		$this->createAdd("save_template_button","HTMLModel",array(
+		$this->addModel("save_template_button", array(
 			"id" => "save_template_button",
 			"onclick" => "javascript:save_template('".SOY2PageController::createLink("Page.Editor.SaveTemplate." . $page->getId())."',this);",
 			"visible" => function_exists("json_encode")
 		));
 
-		$this->createAdd("template","HTMLTextArea",array(
-			"text"=>$page->getTemplate(),
-			"name"=>"template"
+		$this->addTextArea("template", array(
+			"text" => $page->getTemplate(),
+			"name" => "template"
 		));
 
-		$this->createAdd("template_editor","HTMLModel",array(
+		$this->addModel("template_editor", array(
 				//"_src"=>SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/soycms/template-editor/template-editor.html"),
 				"_src"=>SOY2PageController::createRelativeLink("./js/editor/template_editor.html"),
 		));
 
-		$this->createAdd("state_draft","HTMLCheckBox",array(
+		$this->addCheckBox("state_draft", array(
 			"selected"=>!$page->getIsPublished(),
-			"name"=>"isPublished",
-			"value"=>0,
-			"label"=>$this->getMessage("SOYCMS_DRAFT")
+			"name" => "isPublished",
+			"value" => 0,
+			"label" => $this->getMessage("SOYCMS_DRAFT")
 		));
-		$this->createAdd("state_public","HTMLCheckBox",array(
-			"selected"=>$page->getIsPublished(),
-			"name"=>"isPublished",
-			"value"=>1,
-			"label"=>$this->getMessage("SOYCMS_PUBLISHED")
+		$this->addCheckBox("state_public", array(
+			"selected" => $page->getIsPublished(),
+			"name" => "isPublished",
+			"value" => 1,
+			"label" => $this->getMessage("SOYCMS_PUBLISHED")
 		));
 
 		$start = $page->getOpenPeriodStart();
@@ -142,16 +126,16 @@ class DetailPage extends CMSWebPageBase{
 
 
 		//公開期間フォームの表示
-		$this->createAdd("start_date","HTMLInput",array(
+		$this->addInput("start_date", array(
 			"value"=>(is_null($start)) ? "" : date('Y-m-d H:i:s',$start),
-			"name"=>"openPeriodStart"
+			"name" => "openPeriodStart"
 		));
-		$this->createAdd("end_date","HTMLInput",array(
+		$this->addInput("end_date", array(
 			"value"=>(is_null($end)) ? "" : date('Y-m-d H:i:s',$end),
-			"name"=>"openPeriodEnd"
+			"name" => "openPeriodEnd"
 		));
 
-		$this->createAdd("open_period_show","HTMLLabel",array(
+		$this->addLabel("open_period_show", array(
 			"html" => CMSUtil::getOpenPeriodMessage($start, $end)
 		));
 
@@ -175,26 +159,26 @@ class DetailPage extends CMSWebPageBase{
 			"href" => SOY2PageController::createRelativeLink("./css/form.css")
 		));
 
-		HTMLHead::addLink("form",array(
+		HTMLHead::addLink("form", array(
 			"rel" => "stylesheet",
 			"type" => "text/css",
 			"href" => SOY2PageController::createRelativeLink("./js/cms/PanelManager.css")
 		));
 
 
-
-
-		$this->createAdd("page_detail_form","HTMLForm",array(
+		$this->addForm("page_detail_form", array(
 			"name" => "main_form"
 		));
 
 		//ブロック
 		$this->createAdd("page_block_info","Block.BlockListPage",array(
-			"pageId" => $id
+			"pageId" => $this->id
 		));
 
 		//見出しに現在編集しているページ名を表示
-		$this->createAdd("page_name","HTMLLabel",array("text"=>$page->getTitle()));
+		$this->addLabel("page_name", array(
+			"text" => $page->getTitle()
+		));
 		$this->addScript("cssmenu",array(
 				"src" => SOY2PageController::createRelativeLink("js/editor/cssMenu.js")
 			));
@@ -225,7 +209,7 @@ class DetailPage extends CMSWebPageBase{
 		));
 
 		//アイコンリスト
-		$this->createAdd("image_list","LabelIconList",array(
+		$this->createAdd("image_list","_component.Label.LabelIconListComponent",array(
 			"list" => $this->getLabelIconList()
 		));
 
@@ -303,17 +287,7 @@ class DetailPage extends CMSWebPageBase{
 		return $return;
 	}
 
-
-}
-
-class LabelIconList extends HTMLList{
-
-	function populateItem($entity){
-		$this->createAdd("image_list_icon","HTMLImage",array(
-			"src" => $entity->url,
-			"ondblclick" => "javascript:setChangeLabelIcon('".$entity->filename."','".$entity->url."');"
-		));
+	function getId(){
+		return $this->id;
 	}
 }
-
-?>

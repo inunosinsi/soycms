@@ -2,7 +2,7 @@
 
 class BlockListPage extends CMSWebPageBase{
 
-	var $pageId;
+	private $pageId;
 
 
 	function setPageId($id){
@@ -66,10 +66,13 @@ class BlockListPage_UnSetUpBlockList extends HTMLList{
 		$this->pageId = $pageId;
 	}
 	function populateItem($entity){
-		$this->createAdd("block_name","HTMLLabel",array("text"=>$entity));
+		$this->addLabel("block_name", array(
+			"text"=>$entity
+		));
 
-		$this->createAdd("block_add_link","HTMLLink",array(
-			"link"=>SOY2PageController::createLink("Block.Create") ."/".$this->pageId . "/" .$entity,
+		$this->addLink("block_add_link", array(
+			"link" => SOY2PageController::createLink("Block.Create") ."/".$this->pageId . "/" .$entity,
+			"id" => "block_" . $entity,
 			"onclick" => "return common_click_to_layer(this,{width:800,height:600,header:'ブロックの追加（block:id = ".$entity."）'});"
 		));
 	}

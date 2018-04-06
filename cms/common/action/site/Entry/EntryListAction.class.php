@@ -35,7 +35,7 @@ class EntryListAction extends SOY2Action{
 
     protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
 		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("offset" => $this->offset, "limit" => $this->limit));
-		
+
 		try{
 			if(!is_null($this->id)){
 				//ラベルIDに対するエントリーオブジェクトのリストを返す
