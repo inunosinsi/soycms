@@ -102,7 +102,11 @@ class SearchItemLogic extends SOY2LogicBase{
 					}
 					$ids = array_unique($ids);
 					if(count($ids) > 0){
-						$where[] = "item_category in (" . implode(",", $ids) . ")";
+						if(isset($search["is_child"])){
+							$where[] = "(item_category in (" . implode(",", $ids) . ") OR item_type in (SELECT id FROM soyshop_item WHERE item_category in (" . implode(",", $ids) . ")))";
+						}else{
+							$where[] = "item_category in (" . implode(",", $ids) . ")";
+						}
 					}
 					break;
 				//カテゴリ単体で調べたい時に使う
@@ -211,7 +215,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		$this->getQuery()->setLimit($this->limit);
 		$this->getQuery()->setOffset($this->offset);
 		$sql = $this->getItemsSQL();
-		
+
 		try{
 			$result = $this->getQuery()->executeQuery($sql, $this->binds);
 		}catch(Exception $e){
