@@ -82,17 +82,18 @@ class BlockListPage_BlockList extends HTMLList{
 
 	function populateItem($entity){
 		$component = $entity->getBlockComponent();
-		$this->createAdd("block_name","HTMLLabel",array("text"=>$entity->getSoyId()));
-		$this->createAdd("block_type","HTMLLabel",array("text"=>$component->getComponentName()));
-		$this->createAdd("block_info","HTMLLabel",array(
+		$this->addLabel("block_name", array("text"=>$entity->getSoyId()));
+		$this->addLabel("block_type", array("text"=>$component->getComponentName()));
+		$this->addLabel("block_info", array(
 			"id" => "block_info_" . $entity->getId(),
 			"text"=>$component->getInfoPage())
 		);
-		$this->createAdd("block_detail_link","HTMLLink",array(
+		$this->addLink("block_detail_link", array(
 			"link"=>SOY2PageController::createLink("Block.Detail.".$entity->getId()),
+			"id" => "block_" . $entity->getSoyId(),
 			"onclick" => "return common_click_to_layer(this,{width:800,height:650,header:'ブロックの設定（block:id = ".$entity->getSoyId()."）'});"
 		));
-		$this->createAdd("block_delete_link","HTMLActionLink",array(
+		$this->addActionLink("block_delete_link", array(
 			"link"=>SOY2PageController::createLink("Block.Remove.".$entity->getId()),
 			"id" => "block_remove_link_".$entity->getId(),
 		));
@@ -102,14 +103,15 @@ class BlockListPage_BlockList extends HTMLList{
 class BlockListPage_RemovedList extends HTMLList{
 	function populateItem($entity){
 		$component = $entity->getBlockComponent();
-		$this->createAdd("block_name","HTMLLabel",array("text"=>$entity->getSoyId()));
-		$this->createAdd("block_type","HTMLLabel",array("text"=>$component->getComponentName()));
-		$this->createAdd("block_info","HTMLLabel",array("text"=>$component->getInfoPage()));
-		$this->createAdd("block_detail_link","HTMLLink",array(
+		$this->addLabel("block_name", array("text"=>$entity->getSoyId()));
+		$this->addLabel("block_type", array("text"=>$component->getComponentName()));
+		$this->addLabel("block_info", array("text"=>$component->getInfoPage()));
+		$this->addLink("block_detail_link", array(
 			"link"=>SOY2PageController::createLink("Block.Detail.".$entity->getId()),
+			"id" => "block_" . $entity->getSoyId(),
 			"onclick" => "return common_click_to_layer(this,{width:800,height:650,header:'ブロックの設定（block:id = ".$entity->getSoyId()."）'});"
 		));
-		$this->createAdd("block_delete_link","HTMLActionLink",array(
+		$this->addActionLink("block_delete_link", array(
 			"link"=>SOY2PageController::createLink("Block.Remove.".$entity->getId()),
 			"id" => "block_remove_link_".$entity->getId(),
 		));

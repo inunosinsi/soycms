@@ -3,22 +3,26 @@
 class LabelIconListComponent extends HTMLList{
 
 	function populateItem($entity){
-		if(strpos($_SERVER["REQUEST_URI"], "/Page/Detail") === 0){
-			$script = "javascript:setChangeLabelIcon('".$entity->filename."','".$entity->url."');";
-		}else{
-			if(strpos($_SERVER["REQUEST_URI"], "/Label")){
-				if(strpos($_SERVER["REQUEST_URI"], "/Detail")){
-					$script = "javascript:postChangeLabelIcon(this,'".$entity->filename."');";
-				}else{
-					$script = "javascript:postChangeLabelIcon('".$entity->filename."');";
-				}
-			}
-
-		}
 
 		$this->addImage("image_list_icon", array(
 			"src" => $entity->url,
-			"ondblclick" => $script
+			"ondblclick" => self::buildScript($entity)
 		));
+	}
+
+	private function buildScript($entity){
+		if(strpos($_SERVER["REQUEST_URI"], "/Page/Detail") !== false){
+			return "javascript:setChangeLabelIcon('".$entity->filename."','".$entity->url."');";
+		}
+
+		if(strpos($_SERVER["REQUEST_URI"], "/Label")){
+			if(strpos($_SERVER["REQUEST_URI"], "/Detail")){
+				return "javascript:postChangeLabelIcon(this,'".$entity->filename."');";
+			}else{
+				return "javascript:postChangeLabelIcon('".$entity->filename."');";
+			}
+		}
+
+		return "";
 	}
 }
