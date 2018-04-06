@@ -104,7 +104,7 @@ class DiscountFreeCouponOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			$form = SOY2HTMLFactory::createInstance("CouponFormPage");
 			$form->setCart($cart);
 			$form->execute();
-			return array(array("name" => "クーポン", "description" => $form->getObject()));
+			return array("discount_free_coupon" => array("name" => "クーポン", "description" => $form->getObject()));
 		}
 	}
 
