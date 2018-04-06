@@ -3,7 +3,7 @@
 class AddStatusReturnWaitOrderStatus extends SOYShopOrderStatus{
 
 	function statusItem(){
-		return array("12" => "返品待ち");
+		return array("12" => array("label" => "返品待ち", "mail" => null));
 	}
 
 }

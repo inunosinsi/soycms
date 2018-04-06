@@ -156,7 +156,7 @@ class SOYShop_Order {
 			foreach($adds as $add){
 				if(!is_array($add)) continue;
 				$key = key($add);
-				$list[$key] = $add[$key];
+				if(isset($add[$key]["label"])) $list[$key] = $add[$key]["label"];
 			}
 		}
 
@@ -193,7 +193,7 @@ class SOYShop_Order {
 				foreach($adds as $add){
 					if(!is_array($add)) continue;
 					$key = key($add);
-					$list[$key] = $add[$key];
+					if(isset($add[$key]["label"])) $list[$key] = $add[$key]["label"];
 				}
 			}
 

@@ -3,7 +3,7 @@
 class AddStatusCheckStockInOrderStatus extends SOYShopOrderStatus{
 
 	function statusItem(){
-		return array("11" => "在庫確認中");
+		return array("11" => array("label" => "在庫確認中", "mail" => null));
 	}
 
 }
