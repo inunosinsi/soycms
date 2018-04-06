@@ -32,6 +32,13 @@ class DetailPage extends WebPage{
 					$order->setStatus($post->orderStatus);
 					$historyContents[] = "注文状態を<strong>「" . $order->getOrderStatusText() . "」</strong>に変更しました。";
 
+					//発送済みにした時に自動で送信メール
+					if($post->orderStatus == SOYShop_Order::ORDER_STATUS_SENDED){
+						if($orderLogic->sendMailOnChangeDeliveryStatus($order, $post->orderStatus, $oldStatus)) {
+							$order->setMailStatusByType(SOYShop_Order::SENDMAIL_TYPE_DELIVERY, time());
+						}
+					}
+
 					//キャンセルの場合は紐付いた商品分だけ在庫数を戻したい
 					if($orderLogic->compareStatus($_POST["State"]["orderStatus"], $oldStatus, self::CHANGE_STOCK_MODE_CANCEL)){
 						$orderLogic->changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
@@ -223,7 +230,7 @@ class DetailPage extends WebPage{
     	));
 
     	$address = $order->getAddressArray();
-		
+
     	$customerHTML = ""; //customerHTML変数の初期化
     	if(isset($address["office"])){
     		$customerHTML.= $address["office"] . "\n";

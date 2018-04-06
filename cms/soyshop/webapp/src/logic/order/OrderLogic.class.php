@@ -196,6 +196,10 @@ class OrderLogic extends SOY2LogicBase{
 				$order->setStatus($status);
 	    		$historyContent = "注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。";
 	    		try{
+					/** メール送信 **/
+					if(self::sendMailOnChangeDeliveryStatus($order, $status, $oldStatus)){
+						$order->setMailStatusByType(SOYShop_Order::SENDMAIL_TYPE_DELIVERY, time());
+					}
 	    			$dao->update($order);
 	    		}catch(Exception $e){
 	    			continue;
@@ -220,6 +224,31 @@ class OrderLogic extends SOY2LogicBase{
 
     	$dao->commit();
     }
+
+	function sendMailOnChangeDeliveryStatus(SOYShop_Order $order, $newStatus, $oldStatus){
+		//送信前に念の為に確認
+		if((int)$newStatus === (int)$oldStatus) return false;
+
+		//既に送信している場合は送信しない
+		$mailStatus = $order->getMailStatusByType(SOYShop_Order::SENDMAIL_TYPE_DELIVERY);
+		if(isset($mailStatus) && is_numeric($mailStatus)) return false;
+
+		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
+		$mailConfig = $mailLogic->getUserMailConfig(SOYShop_Order::SENDMAIL_TYPE_DELIVERY);
+		if(!isset($mailConfig["active"]) || (int)$mailConfig["active"] !== 1) return false;
+
+		list($mailBody, $title) = $mailLogic->buildMailBodyAndTitle($order, $mailConfig);
+
+		//宛名
+		$user = soyshop_get_user_by_id($order->getUserId());
+		$userName = $user->getName();
+		if(strlen($userName) > 0) $userName .= " 様";
+
+		//送信
+		$mailLogic->sendMail($user->getMailAddress(), $title, $mailBody, $userName, $order);
+
+		return true;
+	}
 
     /**
 	 * 支払状態を変更する

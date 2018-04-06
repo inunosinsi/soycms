@@ -20,7 +20,7 @@ class IndexPage extends WebPage{
 			try{
 				$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 				$order = $orderDAO->getById($this->id);
-				
+
 				//送信メールのタイプによって、注文の状況を変更する
 				switch($this->type){
 					case SOYShop_Order::SENDMAIL_TYPE_CONFIRM:
@@ -37,13 +37,13 @@ class IndexPage extends WebPage{
 						break;
 				}
 				$orderDAO->updateStatus($order);
-				
+
 				SOYShopPlugin::load("soyshop.order.status.update");
     			SOYShopPlugin::invoke("soyshop.order.status.update", array(
     				"order" => $order,
     				"mode" => "status"
     			));
-				
+
 				$sendToName = "";
 				$mail = unserialize(base64_decode($_POST["mail_value"]));
 				$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
@@ -71,7 +71,7 @@ class IndexPage extends WebPage{
 	}
 
 	function __construct($args){
-		
+
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 
 		try{
@@ -80,7 +80,7 @@ class IndexPage extends WebPage{
 		}catch(Exception $e){
 			CMSPageController::jump("Order");
 		}
-		
+
 		//メール送信時の言語設定
 		$this->checkLanguageConfig($order);
 
@@ -93,7 +93,7 @@ class IndexPage extends WebPage{
 		$sendTo = $user->getMailAddress();
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
 		$mail = $mailLogic->getUserMailConfig($type);
-		
+
 		$this->addForm("form");
 
 		$this->addInput("send_to", array(
@@ -123,27 +123,21 @@ class IndexPage extends WebPage{
 			"value" => (is_null($this->mail)) ? "送信" : "修正"
 		));
 
-		$this->addModel("on_confirm", array(
-			"visible" => (!is_null($this->mail))
-		));
+		DisplayPlugin::toggle("on_confirm", !is_null($this->mail));
 
 		$this->addInput("mail_value", array(
 			"name" => "mail_value",
 			"value" => base64_encode(serialize($this->mail))
 		));
 
-		$this->addModel("error", array(
-			"visible" => $this->error
-		));
-		$this->addModel("is_storage", array(
-			"visible" => (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("store_user_folder")))
-		));
-		
+		DisplayPlugin::toggle("error", isset($this->error));
+
+		DisplayPlugin::toggle("storage", class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("store_user_folder")));
 		$this->addLabel("storage_url", array(
 			"text" => SOY2PageController::createLink("User.Storage." . $order->getUserId())
-		));	
+		));
 	}
-	
+
 	function checkLanguageConfig($order){
 		$attr = $order->getAttribute("util_multi_language");
 		if(isset($attr["value"]) && strlen($attr["value"])){
@@ -167,15 +161,15 @@ class IndexPage extends WebPage{
 		//プラグインから出力したものを調べる
 		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("common_add_mail_type")) return "注文受付メール";
-		
+
 		SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
 		$configs = AddMailTypeUtil::getConfig();
-		
+
 		return (isset($configs[$type])) ? $configs[$type]["title"] : "注文受付メール";
 	}
 
 	function getMailContent($type, SOYShop_Order $order, $array, MailLogic $mailLogic, SOYShop_User $user){
-		
+
 		//システムからの出力を行うか？
 		if(isset($array["output"]) && $array["output"] === 1){
 			//メール本文を取得
@@ -184,14 +178,14 @@ class IndexPage extends WebPage{
 		}else{
 			$body = "";
 		}
-			
+
 
     	//プラグインを実行してメール本文の取得
     	SOYShopPlugin::load("soyshop.order.mail");
 
 		//プラグインの拡張ポイントはメールの種類で分ける
     	$id = ($type == "order") ? "soyshop.order.mail.user" : "soyshop.order.mail." . $type;
-    	
+
     	//ダウンロードプラグインは拡張ポイントのIDはユーザにする
     	$pluginDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 		try{
@@ -199,9 +193,9 @@ class IndexPage extends WebPage{
 		}catch(Exception $e){
 			$downloadPlugin = new SOYShop_PluginConfig();
 		}
-		
+
 		$id = ($downloadPlugin->getIsActive() == 1) ? "soyshop.order.mail.user" : $id;
-    	
+
     	$delegate = SOYShopPlugin::invoke($id, array(
 				"order" => $order,
 				"mail" => $array

@@ -65,7 +65,7 @@ class UserPage extends WebPage{
 		));
 
 		$this->mail = SOY2Logic::createInstance("logic.mail.MailLogic")->getUserMailConfig($type);
-		
+
 		$this->addInput("mail_title", array(
 			"name" => "mail[title]",
 			"value" => $this->getMailTitle(),
@@ -84,7 +84,7 @@ class UserPage extends WebPage{
 		/* 送信設定 */
 		//注文受付メールと支払い確認メールのみ
 		$this->addModel("mail_active_config", array(
-			"visible" => in_array($type, array("order","payment")),
+			"visible" => in_array($type, array("order","payment", "delivery")),
 		));
 
 		$this->addCheckBox("mail_active_yes", array(

@@ -66,9 +66,9 @@ class SearchPage extends WebPage{
 		));
 
 		$this->addSelect("category", array(
-			"name" => "search_condition[category]",
+			"name" => "search_condition[categories]",
 			"options" => self::getCategoryList(),
-			"selected" => (isset($cnds["category"])) ? $cnds["category"] : null
+			"selected" => (isset($cnds["categories"])) ? $cnds["categories"] : null
 		));
 	}
 

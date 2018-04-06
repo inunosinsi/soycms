@@ -9,8 +9,8 @@
 <div class="block">
 	<div class="block_title">
 		<h2>メールの送信　<!-- soy:id="mail_type_text" /--></h2>
-		
-		<div class="block_title_right" soy:id="is_storage">
+
+		<div class="block_title_right" soy:display="storage">
 			<a href="javascript:void(0);" onclick="return ChangeAccountInfo.popup();" class="button">ストレージ</a>
 		</div>
 	</div>
@@ -19,7 +19,7 @@
 
 	<form soy:id="form">
 
-	<!-- soy:id="on_confirm" -->
+	<!-- soy:display="on_confirm" -->
 
 	<h3>以下の内容で送信しますか？</h3>
 
@@ -57,9 +57,9 @@
 
 	<h3>修正する場合は以下から修正して下さい</h3>
 
-	<!-- /soy:id="on_confirm" -->
+	<!-- /soy:display="on_confirm" -->
 
-	<p class="error" soy:id="error">メールの送信に失敗しました</p>
+	<p class="error" soy:display="error">メールの送信に失敗しました</p>
 
 			<table class="form_table">
 				<tr>

@@ -1132,9 +1132,10 @@ class CartLogic extends SOY2LogicBase{
 	function sendMail($type="order"){
 
 		$logic = SOY2Logic::createInstance("logic.mail.MailLogic");
-		$builder = SOY2Logic::createInstance("logic.mail.MailBuilder");
 		$user = $this->getCustomerInformation();
 		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
+
+		SOYShopPlugin::load("soyshop.order.mail");
 
 		/**
 		 * ユーザー宛のメール
@@ -1149,25 +1150,7 @@ class CartLogic extends SOY2LogicBase{
 
 		if(isset($userMailConfig["active"]) && $userMailConfig["active"]){
 			//メール本文（注文内容）を取得
-			$body = $builder->buildOrderMailBodyForUser($this->order, $user);
-
-			SOYShopPlugin::load("soyshop.order.mail");
-
-			//プラグインを実行してメール本文の取得
-			$appned_body = SOYShopPlugin::invoke("soyshop.order.mail.user", array(
-				"order" => $this->order,
-				"mail" => $userMailConfig
-			))->getBody();
-
-			$mailBody =
-				$userMailConfig["header"] ."\n".
-				$body . "\n" .
-				$appned_body .
-				$userMailConfig["footer"];
-
-			//置換文字列
-			$title = $logic->convertMailContent($userMailConfig["title"], $user, $this->order);
-			$mailBody = $logic->convertMailContent($mailBody, $user, $this->order);
+			list($mailBody, $title) = $logic->buildMailBodyAndTitle($this->order, $userMailConfig, "user");
 
 			//宛名
 			$userName = $this->getCustomerInformation()->getName();
@@ -1199,24 +1182,8 @@ class CartLogic extends SOY2LogicBase{
 		$adminMailConfig = $logic->getAdminMailConfig($type);
 
 		if(isset($adminMailConfig["active"]) && $adminMailConfig["active"]){
-			//ユーザ情報
-			$body = $builder->buildOrderMailBodyForAdmin($this->order, $user);
-
-			//プラグインを実行してメール本文の取得
-			$appned_body = SOYShopPlugin::invoke("soyshop.order.mail.admin", array(
-				"order" => $this->order,
-				"mail" => $adminMailConfig
-			))->getBody();
-
-			$mailBody =
-				$adminMailConfig["header"] . "\n" .
-				$body . "\n" .
-				$appned_body .
-				$adminMailConfig["footer"];
-
-			//置換文字列
-			$title = $logic->convertMailContent($adminMailConfig["title"], $user, $this->order);
-			$mailBody = $logic->convertMailContent($mailBody, $user, $this->order);
+			//メール本文（注文内容）を取得
+			list($mailBody, $title) = $logic->buildMailBodyAndTitle($this->order, $adminMailConfig, "admin");
 
 			//送信
 			//@TODO 複数管理者へのメール送信
