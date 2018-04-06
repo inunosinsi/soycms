@@ -10,6 +10,7 @@ class RefundManagerUtil {
 
 		//値の確認 種別がある場合は保存
 		if(isset($params["type"])){
+			$dao = self::dao();
 			$obj = new SOYShop_OrderAttribute();
 			$obj->setOrderId($orderId);
 			$obj->setFieldId(self::FIELD_ID);
@@ -17,10 +18,10 @@ class RefundManagerUtil {
 			$obj->setValue2($isProcessed);	//処理済みか？
 
 			try{
-				self::dao()->insert($obj);
+				$dao->insert($obj);
 			}catch(Exception $e){
 				try{
-					self::dao()->update($obj);
+					$dao->update($obj);
 				}catch(Exception $e){
 					var_dump($e);
 				}
