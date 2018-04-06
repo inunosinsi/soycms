@@ -3,7 +3,7 @@
 class ReturnsSlipNumberOrderStatus extends SOYShopOrderStatus{
 
 	function statusItem(){
-		return array("21" => "返却済み");
+		return array("21" => array("label" => "返却済み", "mail" => null));
 	}
 
 }
