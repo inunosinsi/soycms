@@ -33,16 +33,16 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 
 		//注文商品
 		$mail[] = "";
-		$mail = array_merge($mail, $this->buildOrderInfo($order, $orderItems));
+		$mail = array_merge($mail, self::buildOrderInfo($order, $orderItems));
 
 		//配送先、備考
 		$mail[] = "";
-		$mail = array_merge($mail, $this->buildDeliveryInfo($order));
-		$mail = array_merge($mail, $this->buildMemo($order));
+		$mail = array_merge($mail, self::buildDeliveryInfo($order));
+		$mail = array_merge($mail, self::buildMemo($order));
 
 		//注文者情報
 		$mail[] = "";
-		$mail = array_merge($mail, $this->buildUserInfoMailBody($order, $user));
+		$mail = array_merge($mail, self::buildUserInfoMailBody($order, $user));
 
 		return implode("\n", $mail);
 	}
@@ -99,6 +99,7 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 
 		$mail[] = $this->printColumn(UtilMultiLanguageUtil::translate("subtotal"), "right", $leftColumnSize) . $this->printColumn(number_format($itemPrice) . " " . UtilMultiLanguageUtil::translate("yen"), "right", 20);
 
+		SOY2::import("domain.order.SOYShop_ItemModule");
 		$modules = $order->getModuleList();
 
 		foreach($modules as $module){
@@ -149,9 +150,9 @@ class UtilMultiLanguageMailBuilder extends SOYShopOrderMailBuilder{
 	private function buildUserInfoMailBody($order,$user){
 
 		$mail = array();
-		
+
 		$address = $order->getClaimedAddressArray();
-		
+
 		$mail[] = UtilMultiLanguageUtil::translate("customer");
 		$mail[] = "-----------------------------------------";
 		$mail[] = $this->printColumn(UtilMultiLanguageUtil::translate("name"), "left", 20) . $address["name"] . " " . UtilMultiLanguageUtil::translate("honorific");
