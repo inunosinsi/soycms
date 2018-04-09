@@ -134,6 +134,10 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 
 		$binds[":alias"] = $binds[":code"] . ".html";
 
+		if(!isset($binds[":category"]) || strlen($binds[":category"]) < 1){
+			$binds[":category"] = null;
+		}
+
 		if(isset($binds[":createDate"])){
 			$binds[":createDate"] = time();
 		}

@@ -10,22 +10,22 @@ class SearchPage extends WebPage{
 				self::setParameter("search_condition", null);
 				SOY2PageController::jump("Order.Register.Item.Search" . self::q());
 			}
+		}
 
-			//商品を登録する
-			if(isset($_POST["Register"])){
-				$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-				$item = SOY2::cast("SOYShop_Item", $_POST["Item"]);
+		//商品を登録する
+		if(isset($_POST["Register"])){
+			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+			$item = SOY2::cast("SOYShop_Item", $_POST["Item"]);
 
-				//他の諸々の設定
-				$item->setIsOpen(SOYShop_Item::IS_OPEN);
-
-				try{
-					$id = $itemDao->insert($item);
-					self::setParameter("search_condition", array("name" => $item->getName(), "code" => $item->getCode(), "category" => $item->getCategory())); //条件を入れる
-					SOY2PageController::jump("Order.Register.Item.Search" . self::q());
-				}catch(Exception $e){
-					$this->item = $item;
-				}
+			//他の諸々の設定
+			$item->setIsOpen(SOYShop_Item::IS_OPEN);
+			
+			try{
+				$id = $itemDao->insert($item);
+				self::setParameter("search_condition", array("name" => $item->getName(), "code" => $item->getCode(), "category" => $item->getCategory())); //条件を入れる
+				SOY2PageController::jump("Order.Register.Item.Search" . self::q());
+			}catch(Exception $e){
+				$this->item = $item;
 			}
 		}
 	}
