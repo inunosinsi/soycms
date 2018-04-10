@@ -5,7 +5,7 @@
  */
 class LabelListAction extends SOY2Action{
 
-    protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
+  protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
 		try{
 			$labels = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getWithAccessControl();
 			$this->setAttribute("list", $labels);
