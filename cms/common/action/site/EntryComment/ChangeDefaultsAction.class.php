@@ -12,11 +12,11 @@ class ChangeDefaultsAction extends SOY2Action{
 			return SOY2Action::FAILED;
 		}
 
-		$page->setDefaultAcceptComment($form->default_accept);
+		$page->setDefaultAcceptComment($form->getDefault_accept());
 
 		try{
-    		$dao->updatePageConfig($page);
-    		return SOY2Action::SUCCESS;
+    	$dao->updatePageConfig($page);
+    	return SOY2Action::SUCCESS;
 		}catch(Exception $e){
 			return SOY2Action::FAILED;
 		}
