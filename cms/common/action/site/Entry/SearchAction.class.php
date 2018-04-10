@@ -42,93 +42,93 @@ class SearchAction extends SOY2Action{
 
     	$query = new SOY2DAO_Query();
     	$query->prefix = "select";
-		$query->distinct = true;
-		$query->sql = " id,alias,title,content,more,cdate,udate,openPeriodStart,openPeriodEnd,isPublished ";
-		$query->table = " Entry left outer join EntryLabel on(Entry.id = EntryLabel.entry_id) ";
-		$query->order = "udate desc";
-		$binds = array();
-		$where = array();
+			$query->distinct = true;
+			$query->sql = " id,alias,title,content,more,cdate,udate,openPeriodStart,openPeriodEnd,isPublished ";
+			$query->table = " Entry left outer join EntryLabel on(Entry.id = EntryLabel.entry_id) ";
+			$query->order = "udate desc";
+			$binds = array();
+			$where = array();
 
 
-		//フリーワード検索を作成
-		if(strlen($freewordText) != 0){
-			$keywords = preg_split('/[\s,]+/',$freewordText);
-			$freeword = array();
-			$keywordCounts = 0;
-			$freewordQuery = array();
-
-			foreach(array("title","content","more") as $column){
+			//フリーワード検索を作成
+			if(strlen($freewordText) != 0){
+				$keywords = preg_split('/[\s,]+/',$freewordText);
 				$freeword = array();
-				foreach($keywords as $keyword){
+				$keywordCounts = 0;
+				$freewordQuery = array();
 
-					$bind_key = ':freeword'.$keywordCounts;
+				foreach(array("title","content","more") as $column){
+					$freeword = array();
+					foreach($keywords as $keyword){
 
-					if($keyword[0] == "-"){
-						$keyword = substr($keyword,1);
-						$freeword[] = 'Entry.'.$column." not like ".$bind_key."";
-					}else{
-						$freeword[] = 'Entry.'.$column." like ".$bind_key."";
+						$bind_key = ':freeword'.$keywordCounts;
+
+						if($keyword[0] == "-"){
+							$keyword = substr($keyword,1);
+							$freeword[] = 'Entry.'.$column." not like ".$bind_key."";
+						}else{
+							$freeword[] = 'Entry.'.$column." like ".$bind_key."";
+						}
+
+						$binds[$bind_key] = '%'.$keyword.'%';
+						$keywordCounts ++;
 					}
 
-					$binds[$bind_key] = '%'.$keyword.'%';
-					$keywordCounts ++;
+					$freewordQuery[] = "(" . implode(' AND ',$freeword) . ")";
 				}
 
-				$freewordQuery[] = "(" . implode(' AND ',$freeword) . ")";
+				$where[]= " ( ".implode(' OR ',$freewordQuery)." ) ";
 			}
 
-			$where[]= " ( ".implode(' OR ',$freewordQuery)." ) ";
-		}
+			//記事管理者に見えないラベルの付いた記事は除外する
+			$prohibitedLabelIds = array();
+			if(!UserInfoUtil::hasSiteAdminRole()){
+				$labelLogic = SOY2LogicContainer::get("logic.site.Label.LabelLogic");
+				$prohibitedLabelIds = $labelLogic->getProhibitedLabelIds();
 
-		//記事管理者に見えないラベルの付いた記事は除外する
-		$prohibitedLabelIds = array();
-		if(!UserInfoUtil::hasSiteAdminRole()){
-			$labelLogic = SOY2LogicContainer::get("logic.site.Label.LabelLogic");
-			$prohibitedLabelIds = $labelLogic->getProhibitedLabelIds();
-
-			$labelQuery = new SOY2DAO_Query();
-			$labelQuery->prefix = "select";
-			$labelQuery->sql = "EntryLabel.entry_id";
-			$labelQuery->table = "EntryLabel";
-			$labelQuery->distinct = true;
-			$labelQuery->where = 'EntryLabel.label_id IN (' . implode(",", $prohibitedLabelIds) . ')';
-			$where[] = 'Entry.id NOT IN ('.$labelQuery.')';
-		}
-
-		//ラベル絞込みを作成
-		if(count($label["labels"])){
-			//int化
-			$label["labels"] = array_map(function($v) {return (int)$v;} ,$label["labels"]);
-
-			$labelQuery = new SOY2DAO_Query();
-			$labelQuery->prefix = "select";
-			$labelQuery->sql = "EntryLabel.entry_id";
-			$labelQuery->table = "EntryLabel";
-			$labelQuery->distinct = true;
-			$labelQuery->where = 'EntryLabel.label_id IN (' . implode(",", $label["labels"]) . ')';
-
-			if($label["op"] == "AND" && count($label["labels"])){
-				$labelQuery->having = "count(EntryLabel.entry_id) = ".count($label["labels"]);
-				$labelQuery->group = "EntryLabel.entry_id";
+				$labelQuery = new SOY2DAO_Query();
+				$labelQuery->prefix = "select";
+				$labelQuery->sql = "EntryLabel.entry_id";
+				$labelQuery->table = "EntryLabel";
+				$labelQuery->distinct = true;
+				$labelQuery->where = 'EntryLabel.label_id IN (' . implode(",", $prohibitedLabelIds) . ')';
+				$where[] = 'Entry.id NOT IN ('.$labelQuery.')';
 			}
 
-			$where[] = 'Entry.id IN ('.$labelQuery.')';
-		}
+			//ラベル絞込みを作成
+			if(count($label["labels"])){
+				//int化
+				$label["labels"] = array_map(function($v) {return (int)$v;} ,$label["labels"]);
 
-		$query->where = implode(" AND ",$where);
+				$labelQuery = new SOY2DAO_Query();
+				$labelQuery->prefix = "select";
+				$labelQuery->sql = "EntryLabel.entry_id";
+				$labelQuery->table = "EntryLabel";
+				$labelQuery->distinct = true;
+				$labelQuery->where = 'EntryLabel.label_id IN (' . implode(",", $label["labels"]) . ')';
 
-		$result = $dao->executeQuery($query,$binds);
+				if($label["op"] == "AND" && count($label["labels"])){
+					$labelQuery->having = "count(EntryLabel.entry_id) = ".count($label["labels"]);
+					$labelQuery->group = "EntryLabel.entry_id";
+				}
 
-		$this->totalCount = $dao->getRowCount();
+				$where[] = 'Entry.id IN ('.$labelQuery.')';
+			}
 
-		$ret_val = array();
-		foreach($result as $row){
-			$obj = $dao->getObject($row);
-			$obj->setLabels($logic->getLabelIdsByEntryId($obj->getId()));
-			$ret_val[] = $obj;
+			$query->where = implode(" AND ",$where);
 
-		}
-		return $ret_val;
+			$result = $dao->executeQuery($query,$binds);
+
+			$this->totalCount = $dao->getRowCount();
+
+			$ret_val = array();
+			foreach($result as $row){
+				$obj = $dao->getObject($row);
+				$obj->setLabels($logic->getLabelIdsByEntryId($obj->getId()));
+				$ret_val[] = $obj;
+
+			}
+			return $ret_val;
     }
 }
 
@@ -155,6 +155,14 @@ class SearchActionForm extends SOY2ActionForm{
 		return $this->freeword_text;
 	}
 	function setFreeword_text($text){
+		if(isset($_GET["freeword_text"])){
+			setcookie("FREEWORD_TEXT",$_GET["freeword_text"],0,"/");
+		}
+
+		if(is_null($text) && isset($_COOKIE["FREEWORD_TEXT"])){
+			$text = $_COOKIE["FREEWORD_TEXT"];
+		}
+
 		$this->freeword_text = $text;
 	}
 
@@ -162,6 +170,13 @@ class SearchActionForm extends SOY2ActionForm{
 		return $this->labelOperator;
 	}
 	function setLabelOperator($op){
+		if(isset($_GET["labelOperator"])){
+			setcookie("LABEL_OPERATOR",$_GET["labelOperator"],0,"/");
+		}
+
+		if(is_null($op) && isset($_COOKIE["LABEL_OPERATOR"])){
+			$op = $_COOKIE["LABEL_OPERATOR"];
+		}
 		$this->labelOperator = $op;
 	}
 
