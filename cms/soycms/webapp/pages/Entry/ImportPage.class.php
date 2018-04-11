@@ -110,7 +110,7 @@ class ImportPage extends CMSWebPageBase {
         }
 
 		//エイリアスがない場合はタイトルをエイリアスを入れる
-		if(!strlen($entry)) $entry->setAlias($entry->getTitle());
+		if(!strlen($entry->getAlias())) $entry->setAlias($entry->getTitle());
 
 		/** @ToDo 作成時間や更新時間の修正 **/
 
