@@ -5,47 +5,47 @@ function soycms_multi_blog_category($html, $page){
 		"arguments" => array("multi_blog_category", $html)
 	));
 
-  $labelDao = SOY2DAOFactory::create("cms.LabelDAO");
+ 	$labelDao = SOY2DAOFactory::create("cms.LabelDAO");
 	$labels = $labelDao->get();//表示順に並んでいる
-  $logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 
 
 
-  /** @ToDo ブログページをすべて取得 **/
-  $blogDao = SOY2DAOFactory::create("cms.BlogPageDAO");
-  try{
-    $blogs = $blogDao->get();
-  }catch(Exception $e){
-    $blogs = array();
-  }
+	/** @ToDo ブログページをすべて取得 **/
+	$blogDao = SOY2DAOFactory::create("cms.BlogPageDAO");
+	try{
+		$blogs = $blogDao->get();
+	}catch(Exception $e){
+		$blogs = array();
+	}
 
-  if(count($blogs)){
-    foreach($blogs as $blog){
-      $blogLabelId = $blog->getBlogLabelId();
-      $categories = $blog->getCategoryLabelList();
-    	$categoryLabel = array();
-    	$entryCount = array();
-    	foreach($labels as $labelId => $label){
-    		if(in_array($labelId, $categories)){
-    			$categoryLabel[] =	$label;
-    			try{
-    				//記事の数を数える。
-    				$counts = $logic->getOpenEntryCountByLabelIds(array_unique(array($blogLabelId,$labelId)));
-    			}catch(Exception $e){
-    				$counts= 0;
-    			}
-    			$entryCount[$labelId] = $counts;
-    		}
-    	}
+	if(count($blogs)){
+		foreach($blogs as $blog){
+			$blogLabelId = $blog->getBlogLabelId();
+			$categories = $blog->getCategoryLabelList();
+			$categoryLabel = array();
+			$entryCount = array();
+			foreach($labels as $labelId => $label){
+				if(in_array($labelId, $categories)){
+					$categoryLabel[] =	$label;
+					try{
+						//記事の数を数える。
+						$counts = $logic->getOpenEntryCountByLabelIds(array_unique(array($blogLabelId,$labelId)));
+					}catch(Exception $e){
+						$counts= 0;
+					}
+					$entryCount[$labelId] = $counts;
+				}
+			}
 
-    	$obj->createAdd("category_on_" . str_replace("/", "_", $blog->getUri()), "MultiCategoryList", array(
-    		"list" => $categoryLabel,
-    		"entryCount" => $entryCount,
-    		"categoryUrl" => convertUrlOnModuleBlogParts($blog->getCategoryPageURL(true)),
-    		"soy2prefix" => "b_block"
-    	));
-    }
-  }
+			$obj->createAdd("category_on_" . str_replace("/", "_", $blog->getUri()), "MultiCategoryList", array(
+				"list" => $categoryLabel,
+				"entryCount" => $entryCount,
+				"categoryUrl" => convertUrlOnModuleBlogParts($blog->getCategoryPageURL(true)),
+				"soy2prefix" => "b_block"
+			));
+		}
+	}
 
 	$obj->display();
 }
