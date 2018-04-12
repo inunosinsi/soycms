@@ -23,8 +23,8 @@ class DetailPage extends CMSUpdatePageBase{
 			try{
 				$siteDAO->update($site);
 
-				//ファイルDBの更新
-				$this->updateFileDB();
+				//ファイルDBの更新　SOY CMS3系統ではファイルDBの更新を廃止したため、下記のコードは不要
+				//$this->updateFileDB();
 
 				//キャッシュ削除
 				CMSUtil::unlinkAllIn($site->getPath() . ".cache/");
