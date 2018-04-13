@@ -1,0 +1,40 @@
+<p class="notice always" soy:display="no_installed_slip_number_plugin">このプラグインを使用する場合は伝票番号プラグインを有効にする必要があります。</p>
+<p class="notice" soy:display="updated">更新しました。</p>
+
+<form soy:id="form">
+	<section>
+		<h1>API版の設定</h1>
+		<p class="notice always">API版を使用する場合は、cronでjobの実行の登録を行う必要があります。</p>
+		<dl>
+			<dt>API key</dt>
+			<dd>
+				<input type="text" soy:id="api_key"><br>
+				※ご利用の際は<a href="https://my.trackingmore.com" target="_blank">https://my.trackingmore.com</a>でアカウントを作成して、API keyを作成してください。				
+			</dd>
+			<dt>一回あたりの伝票番号の調査件数</dt>
+			<dd>
+				<input type="number" soy:id="try_count">
+			</dd>
+
+			<!-- soy:display="use_shipping_date" -->
+			<dt>出荷予定日の範囲</dt>
+			<dd>
+				前<input type="number" soy:id="start">日から
+				後<input type="number" soy:id="end">日までの伝票番号を調べる
+			</dd>
+			<!-- /soy:display="use_shipping_date" -->
+		</dl>
+	</section>
+
+	<p class="pageBtn">
+		<input type="submit" class="submit_button" value="変更" />
+	</p>
+</form>
+
+<section>
+	<div class="config_example" style="border:1px solid #000000; padding:5px; margin:5px 0;">
+		<h4>&nbsp;jobの実行</h4>
+		php <!-- soy:id="job_path" /--><br>
+		※exe.phpと<!-- soy:id="site_id" /-->の間には半角スペースが必要です
+	</div>
+</section>
