@@ -110,6 +110,7 @@ class SlipNumberLogic extends SOY2LogicBase{
 		return trim($str);
 	}
 
+	//slipIdには伝票番号もあり
 	function changeStatus($slipId, $mode="delivery"){
 		$slipNumber = self::getSlipNumberById($slipId);
 		if($mode == self::MODE_DELIVERY){
@@ -121,7 +122,6 @@ class SlipNumberLogic extends SOY2LogicBase{
 		try{
 			$this->slipDao->update($slipNumber);
 		}catch(Exception $e){
-			var_dump($e);
 			return false;
 		}
 
@@ -143,7 +143,12 @@ class SlipNumberLogic extends SOY2LogicBase{
 		try{
 			return $this->slipDao->getById($slipId);
 		}catch(Exception $e){
-			return new SOYShop_SlipNumber();
+			//伝票番号として受け取る可能性も加味して、再度取得を試みる
+			try{
+				return $this->slipDao->getBySlipNumber($slipId);
+			}catch(Exception $e){
+				return new SOYShop_SlipNumber();
+			}
 		}
 	}
 }

@@ -569,7 +569,7 @@ class Cart03Page extends MainCartPageBase{
 		}else{
 			$cart->removeErrorMessage("customfield");
 		}
-		
+
 		return $res;
 	}
 
