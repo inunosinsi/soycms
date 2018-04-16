@@ -4,12 +4,15 @@ class TrackLogic extends SOY2LogicBase {
 
 	private $forcedStop = false;	//強制終了
 	private $config;
+	private $track;	//TrackingMoreで用意されたクラス
 
 	function __construct(){
 		SOY2::import("module.plugins.tracking_more.util.TrackingMoreUtil");
 		SOY2::import("module.plugins.slip_number.domain.SOYShop_SlipNumberDAO");
 		SOY2::import("util.SOYShopPluginUtil");
 		$this->config = TrackingMoreUtil::getConfig();
+		include_once(dirname(dirname(__FILE__)) . "/api/track.class.php");
+		$this->track = new Trackingmore(trim($this->config["key"]));
 	}
 
 	function searchAll(){
@@ -28,18 +31,12 @@ class TrackLogic extends SOY2LogicBase {
 	}
 
 	function searchStatus($trackNo){
-		static $track;
-		if(is_null($track)){
-			include_once(dirname(dirname(__FILE__)) . "/api/track.class.php");
-			$track = new Trackingmore(trim($this->config["key"]));
-		}
-
 		$career = "taqbin-jp";	//クロネコヤマトのこと @ToDo いずれは他の配送業者でも確認できるようにしたい
-		$result = $track->getRealtimeTrackingResults($career, $trackNo);
+		$result = $this->track->getRealtimeTrackingResults($career, $trackNo);
 		//$result = array();	//止めておく
 		//include_once(dirname(dirname(__FILE__)) . "/sample/sample.php");
 		sleep(1);	//1秒待つ	これで過アクセスを防ぐ
-		
+
 		if(!isset($result["meta"]["code"]) || $result["meta"]["code"] != 200) {
 			error_log("TrackingMore ErrorCode:" . $result["meta"]["code"] . " " . $result["meta"]["message"]);
 			$this->forcedStop = true;	//強制終了
@@ -54,11 +51,6 @@ class TrackLogic extends SOY2LogicBase {
 
 		$infos = $item["origin_info"]["trackinfo"];
 		return (count($infos));	//trackinginfoがあれば発送済みとする
-	}
-
-	//webhookで受信する
-	function receiveByWebHook(){
-
 	}
 
 	private function getSlipNumberList(){
@@ -112,6 +104,78 @@ class TrackLogic extends SOY2LogicBase {
 		}
 
 		return $list;
+	}
+
+	//webhook用に伝票番号を登録する
+	function registSlipNumbers(){
+		$career = "taqbin-jp";	//クロネコヤマトのこと @ToDo いずれは他の配送業者でも確認できるようにしたい
+		$list = self::getSlipNumberListForRegstration();
+		if(!count($list)) return;
+
+		$items = array();
+		foreach($list as $v){
+			$items[] = array(
+				"tracking_number"	=> $v["slip_number"],
+				"carrier_code"		=> $career,
+				"title"				=> "宅配便",
+				"customer_name"		=> $v["name"],
+				"customer_email"	=> $v["mail_address"],
+				"order_id"			=> $v["tracking_number"]
+			);
+		}
+
+		$this->track->createMultipleTracking($items);
+
+		//実行した日時を記録しておく
+		SOYShop_DataSets::put("tracking_more.exec_time", time());
+	}
+
+	private function getSlipNumberListForRegstration(){
+		$dao = SOY2DAOFactory::create("SOYShop_SlipNumberDAO");
+
+		$lastExecTime = SOYShop_DataSets::get("tracking_more.exec_time", 0);
+
+		// @ToDo 最後に登録したものよりも後の伝票番号
+		$sql = "SELECT slip.slip_number, o.tracking_number, u.name, u.mail_address FROM soyshop_slip_number slip ".
+				"INNER JOIN soyshop_order o ".
+				"ON slip.order_id = o.id ".
+				"INNER JOIN soyshop_user u ".
+				"ON o.user_id = u.id ".
+				"WHERE slip.is_delivery = " . SOYShop_SlipNumber::NO_DELIVERY . " ".
+				"AND slip.create_date > " . $lastExecTime;
+
+		try{
+			return $dao->executeQuery($sql);
+		}catch(Exception $e){
+			return array();
+		}
+	}
+
+	//webhookで受信する
+	function receiveByWebHook($json=null){
+		//開発用 /ショップID/json/trackingmore/sample.phpを用意する
+		if(is_null($json)) $json = file_get_contents(SOYSHOP_SITE_DIRECTORY . "/json/trackingmore/sample.json");
+		$json = mb_convert_encoding($json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
+		$result = json_decode($json, true);
+		if(!isset($result["meta"]["code"]) || $result["meta"]["code"] != 200) {
+			error_log("TrackingMore ErrorCode:" . $result["meta"]["code"] . " " . $result["meta"]["message"]);
+			return false;
+		}
+
+		$trackNo = htmlspecialchars($result["data"]["tracking_number"], ENT_QUOTES, "UTF-8");
+		$status = htmlspecialchars($result["data"]["status"], ENT_QUOTES, "UTF-8");
+
+		switch($status){
+			case "transit":
+			case "pickup":
+			case "delivered":
+				self::changeStatus($trackNo);
+				//Trackingmoreで追跡から外す
+				$this->track->deleteTrackingItem("taqbin-jp", $trackNo);
+				break;
+			default:
+				//何もしない
+		}
 	}
 
 	function useShippingDate(){

@@ -86,6 +86,12 @@ class SlipNumberLogic extends SOY2LogicBase{
 				}
 			}
 		}
+
+		//Trackingmore連携プラグインを使用している場合
+		SOY2::import("util.SOYShopPluginUtil");
+		if(SOYShopPluginUtil::checkIsActive("tracking_more")){
+			SOY2Logic::createInstance("module.plugins.tracking_more.logic.TrackLogic")->registSlipNumbers();
+		}
 	}
 
 	//新しい伝票番号を加える

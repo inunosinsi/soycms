@@ -51,8 +51,15 @@ class TrackingMoreConfigFormPage extends WebPage {
 			"style" => "width:50px;"
 		));
 
-		$this->addLabel("job_path", array(
-			"text" => self::buildPath(). " " . SOYSHOP_ID
+		foreach(array("webhook", "realtime") as $t){
+			$this->addLabel($t . "_job_path", array(
+				"text" => self::buildPath($t). " " . SOYSHOP_ID
+			));
+		}
+
+		$this->addInput("webhook_url", array(
+			"value" => soyshop_get_cart_url(false, true) . "?soyshop_notification=tracking_more",
+			"style" => "width:70%"
 		));
 
 		$this->addLabel("site_id", array(
@@ -60,8 +67,8 @@ class TrackingMoreConfigFormPage extends WebPage {
 		));
 	}
 
-	private function buildPath(){
-		return dirname(dirname(__FILE__)) . "/job/exe.php";
+	private function buildPath($mode="realtime"){
+		return dirname(dirname(__FILE__)) . "/job/" . $mode . "/exe.php";
 	}
 
 	function setConfigObj($configObj){
