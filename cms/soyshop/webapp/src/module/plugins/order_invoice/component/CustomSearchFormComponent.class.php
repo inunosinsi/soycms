@@ -8,12 +8,12 @@ class CustomSearchFormComponent {
 		$queries = array();
 
 		if(isset($params[$propName . "Start"]) && strlen($params[$propName . "Start"])){
-			$where[] = "order_value_1 > :" . $moduleId . "_start";
+			$where[] = "order_value_1 >= :" . $moduleId . "_start";
 			$binds[":" . $moduleId . "_start"] = soyshop_convert_timestamp($params[$propName . "Start"]);
 		}
 
 		if(isset($params[$propName . "End"]) && strlen($params[$propName . "End"])){
-			$where[] = "order_value_1 < :" . $moduleId . "_end";
+			$where[] = "order_value_1 <= :" . $moduleId . "_end";
 			$binds[":" . $moduleId . "_end"] = soyshop_convert_timestamp($params[$propName . "End"], "end");
 		}
 
