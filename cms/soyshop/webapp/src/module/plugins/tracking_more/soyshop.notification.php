@@ -11,10 +11,10 @@ class TrackingMoreNotification extends SOYShopNotification{
 		$handle    = fopen($jsonDir . "test.log","a+");
 		$json = file_get_contents("php://input");
 		if(!empty($json)){
-			fwrite($handle, date("Y-m-d H:i:s").":  ".$json . "\r\n");
 			echo 200;
 
-			/** @ToDo 内容を調べて登録 **/
+			//内容を調べて登録
+			SOY2Logic::createInstance("module.plugins.tracking_more.logic.TrackLogic")->receiveByWebHook($json);
 		}else{
 			fwrite($handle, date("Y-m-d H:i:s").": can not get webhook data!\r\n");
 		}

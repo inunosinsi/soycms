@@ -157,7 +157,11 @@ class TrackLogic extends SOY2LogicBase {
 		if(is_null($json)) $json = file_get_contents(SOYSHOP_SITE_DIRECTORY . "/json/trackingmore/sample.json");
 		$json = mb_convert_encoding($json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN');
 		$result = json_decode($json, true);
-		if(!isset($result["meta"]["code"]) || $result["meta"]["code"] != 200) {
+		if(!isset($result["meta"]["code"]) || !isset($result["data"])) {
+			error_log("TrackingMore Fatal Error");
+			return false;
+		}
+		if($result["meta"]["code"] != 200) {
 			error_log("TrackingMore ErrorCode:" . $result["meta"]["code"] . " " . $result["meta"]["message"]);
 			return false;
 		}
