@@ -4,7 +4,7 @@ class ReturnsSlipNumberMailReplace extends SOYShopOrderMailReplace{
 
 	function strings(){
 		return array(
-			"SLIP_NUMBER" => "返送伝票番号"
+			"RETURNS_SLIP_NUMBER" => "返送伝票番号"
 		);
 	}
 
@@ -18,7 +18,7 @@ class ReturnsSlipNumberMailReplace extends SOYShopOrderMailReplace{
 			$slipNumber = $attr->getValue1();
 		}
 
-		return str_replace("#_RETURNS_SLIP_NUMBER#", $slipNumber, $content);
+		return str_replace("#RETURNS_SLIP_NUMBER#", $slipNumber, $content);
 	}
 }
 
