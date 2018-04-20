@@ -3,7 +3,7 @@ tinymce.init({
 	editor_selector : "mceEditor",
 	theme : "modern",
 	skin : "lightgray",
-	plugins : "save,pagebreak,table,hr,insertdatetime,searchreplace,contextmenu,code,textcolor,paste,directionality,fullscreen,noneditable,charmap,visualchars,nonbreaking,innerlink,insertimage,insertwidget,youTube,emoticons",
+	plugins : "save,pagebreak,table,hr,insertdatetime,searchreplace,contextmenu,code,textcolor,paste,directionality,noneditable,charmap,visualchars,nonbreaking,innerlink,insertimage,insertwidget,youTube,emoticons",
 	tools : "inserttable",
 	language : soycms.language,
 	height : "300px",
