@@ -8,10 +8,10 @@ tinymce.init({
 	language : soycms.language,
 	height : "300px",
 	resize: "both",
-	
+
 	menubar : false,
 	toolbar1 : "save | cut copy paste pastetext | searchreplace | bold italic underline strikethrough | subscript superscript | forecolor backcolor | alignleft aligncenter alignright | formatselect fontselect fontsizeselect",
-	toolbar2 : "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | fullscreen preview | insertdate inserttime | innerlink insertimage youTube insertwidget | emoticons charmap | table",
+	toolbar2 : "bullist numlist | outdent indent blockquote | undo redo | cleanup removeformat code styleprops attribs | preview | insertdate inserttime | innerlink insertimage youTube insertwidget | emoticons charmap | table",
 
 	init_instance_callback : function(editor) {
 		onInitTinymceEditor(editor.id);
@@ -30,32 +30,32 @@ tinymce.init({
 
 function applyTemplate(){
 	var template = $("#list_templates").val();
-	
+
 	if(template.length == 0){
 		return;
 	}
-	
+
 	var post = "id=" + template;
-	
+
 	var callback = function(oResponse) {
 		var result = eval('('+oResponse.responseText+')');
-			
+
 		$("#style").val(result['templates']['style']);
-		
+
 		if(result["templates"]["content"].length > 0){
 			tinymce.get("entry_content").setContent(result["templates"]["content"]);
 		}
-		
+
 		if(result["templates"]["more"].length > 0){
 			tinymce.get("entry_more").setContent(result["templates"]["more"]);
 		}
-		
+
 		if(result['style_path'].length > 0){
 			tinymce.get('entry_content').dom.loadCSS(result['style_path']);
 			tinymce.get('entry_more').dom.loadCSS(result['style_path']);
 		}
 	};
-	
+
 	$.ajax({
 		url: templateAjaxURL,
 		data: post,
@@ -76,11 +76,11 @@ function onInitTinymce(){
 		"visibility" : "hidden",
 		"display" : "none"
 	});
-	
+
 	$("#entry_content_switch").click(function(){
 		$("#entry_content_switch").attr("class", "content_tab_active");
 		$("#entry_more_switch").attr("class", "content_tab_inactive");
-		
+
 		$("#entry_content_wrapper").css({
 			"position" : "relative",
 			"visibility" : "visible",
@@ -116,10 +116,10 @@ function onInitTinymce(){
 		tinymce.get('entry_more').focus();
 	});
 
-		
+
 	//本文にフォーカス
 	tinyMCE.get('entry_content').focus();
-	
+
 	//toggle label
 	var obj = $('#labels input[type="checkbox"]');
 	$.each(obj,function(){
@@ -129,10 +129,10 @@ function onInitTinymce(){
 
 // tinymceのエディタがinitされる毎に呼ばれる
 function onInitTinymceEditor(id){
-	
+
 	//スタイルの適用
 	tinyMCE.get(id).dom.loadCSS(entry_css_path);
-	
+
 	//デフォルトの本文
 	if(tinyMCE.get(id).getContent().length < 1){
 		tinyMCE.get(id).setContent("<p></p>");
@@ -140,16 +140,16 @@ function onInitTinymceEditor(id){
 }
 
 function common_convert_urls(url, node, on_save) {
-	
+
 	if(url[0] == "/")return url;
-	
+
 	if(url[0] == "."){
 		var img = new Image;
 		img.src = url;
 		url = img.src;
-			
+
 		return url;
 	}
-	
+
 	return url;
 }
