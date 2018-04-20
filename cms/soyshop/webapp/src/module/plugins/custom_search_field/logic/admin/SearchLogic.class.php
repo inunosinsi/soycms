@@ -54,7 +54,7 @@ class SearchLogic extends SOY2LogicBase{
     }
 
     function setCondition($conditions){
-        if(count($conditions)) {
+        if(is_array($conditions) && count($conditions)) {
             foreach($conditions as $key => $value){
                 switch($key){
                     case $this->fieldId:
