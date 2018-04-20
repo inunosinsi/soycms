@@ -242,6 +242,9 @@ class CMSPageLinkPlugin extends PluginBase{
 				$siteRoot = $oldSiteRoot;
 			}
 
+			// スラッシュ２つから始まる場合はスラッシュを一つにする
+			if(strpos($url, "//") === 0) $url = "/" . substr($url, 2);
+
 			return $url;
 		}catch(Exception $e){
 
