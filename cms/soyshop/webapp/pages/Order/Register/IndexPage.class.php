@@ -299,18 +299,8 @@ class IndexPage extends WebPage{
     	$this->addForm("user_select_form", array(
     		//"action" => SOY2PageController::createLink("Order.Register.User"),
     	));
-    	$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
-		//先に集計 顧客数が50以上の場合は表示しない
-		$options = array();
-		if($userDao->countUser() < 1){
-			$userDao->setOrder("id asc");
-	    	$__users = $userDao->getByNotDisabled();
-	    	foreach($__users as $__user){
-	    		$options[$__user->getId()] = $__user->getName()." <".$__user->getMailAddress().">";
-	    	}
-		}
-
+		$options = self::getUserListOptions();
     	$this->addSelect("select_user", array(
     			"name" => "select_user",
     			"options" => $options,
@@ -415,6 +405,24 @@ class IndexPage extends WebPage{
 			"text" => $user->getJobName()
 		));
     }
+
+	private function getUserListOptions(){
+		$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+		$userDao->setOrder("id asc");
+		$userDao->setLimit(30);
+		try{
+			$__users = $userDao->getByNotDisabled();
+		}catch(Exception $e){
+			return array();
+		}
+		if(!count($__users)) return array();
+
+		$opts = array();
+		foreach($__users as $__user){
+		   	$opts[$__user->getId()] = $__user->getName()." <".$__user->getMailAddress().">";
+		}
+		return $opts;
+	}
 
     function addressInfo(){
     	SOY2DAOFactory::importEntity("config.SOYShop_Area");
