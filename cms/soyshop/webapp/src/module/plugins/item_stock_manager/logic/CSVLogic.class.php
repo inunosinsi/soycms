@@ -14,9 +14,13 @@ class CSVLogic extends SOY2LogicBase {
 		$labels = array();
 
 		$labels[] = "ID";
-		$labels[] = "商品名";
 		$labels[] = "商品コード";
+		$labels[] = "商品名";
+		$labels[] = "公開状態";
 		$labels[] = "在庫数";
+		$labels[] = "価格";
+		$labels[] = "セール価格";
+		$labels[] = "セール";
 
 		return $labels;
 	}
@@ -32,10 +36,14 @@ class CSVLogic extends SOY2LogicBase {
 
 		foreach($items as $item){
 			$line = array();
-			$line[] = $item->getId();
-			$line[] = $item->getName();
-			$line[] = $item->getCode();
-			$line[] = $item->getStock();
+			$line[] = $item->getId();		//ID
+			$line[] = $item->getCode();		//商品コード
+			$line[] = $item->getName();		//商品名
+			$line[] = ($item->getIsOpen() == 1) ? "公開" : "非公開";		//公開状態
+			$line[] = $item->getStock();	//在庫数
+			$line[] = $item->getPrice();	//価格
+			$line[] = $item->getSalePrice();	//セール価格
+			$line[] = ($item->getSaleFlag() == 1) ? "セール中" : "";		//セール中
 			$lines[] = implode(",", $line);
 		}
 

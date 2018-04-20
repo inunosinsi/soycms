@@ -8,7 +8,7 @@ class CommonItemStockHistory extends SOYShopItemUpdateBase{
 		if($oldStock != $newStock){
 			$logMessage = "在庫数を" . $oldStock."から" . $newStock."に変更しました";
 
-			SOY2::imports("module.plugins.common_stock_history.domain.*");
+			SOY2::imports("module.plugins.item_stock_manager.domain.*");
 			$dao = SOY2DAOFactory::create("SOYShop_StockHistoryDAO");
 
 			$obj = new SOYShop_StockHistory();
@@ -25,7 +25,7 @@ class CommonItemStockHistory extends SOYShopItemUpdateBase{
 	}
 
 	function display(SOYShop_Item $item){
-		SOY2::imports("module.plugins.common_stock_history.domain.*");
+		SOY2::imports("module.plugins.item_stock_manager.domain.*");
 		$dao = SOY2DAOFactory::create("SOYShop_StockHistoryDAO");
 		$dao->setLimit(5);
 
