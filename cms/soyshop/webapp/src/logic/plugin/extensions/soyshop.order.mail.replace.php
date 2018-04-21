@@ -2,11 +2,11 @@
 class SOYShopOrderMailReplace implements SOY2PluginAction{
 
 	function strings(){
-		
+
 	}
 
 	function replace(SOYShop_Order $order, $content){
-		
+
 	}
 }
 class SOYShopOrderMailReplaceDeletageAction implements SOY2PluginDelegateAction{
@@ -15,7 +15,7 @@ class SOYShopOrderMailReplaceDeletageAction implements SOY2PluginDelegateAction{
 	private $order;
 	private $content;
 	private $_strings = array();
-	
+
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 		switch($this->mode){
 			case "strings":
@@ -36,7 +36,7 @@ class SOYShopOrderMailReplaceDeletageAction implements SOY2PluginDelegateAction{
 	function setContent($content){
 		$this->content = $content;
 	}
-	
+
 	function getContent(){
 		return $this->content;
 	}
@@ -45,4 +45,3 @@ class SOYShopOrderMailReplaceDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.mail.replace","SOYShopOrderMailReplaceDeletageAction");
-?>

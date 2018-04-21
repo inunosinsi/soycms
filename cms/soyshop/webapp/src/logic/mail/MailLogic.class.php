@@ -438,6 +438,14 @@ class MailLogic extends SOY2LogicBase{
     	$content = str_replace("#ADMIN_URL#", $adminUrl, $content);
     	//$content = str_replace("#ADMIN_URL#",SOY2PageController::createRelativeLink("index.php", true),$content);
 
+		//拡張ポイントで追加した置換文字列分
+		SOYShopPlugin::load("soyshop.order.mail.replace");
+		$content = SOYShopPlugin::invoke("soyshop.order.mail.replace", array(
+			"mode" => "replace",
+			"order" => $order,
+			"content" => $content
+		))->getContent();
+
 		//最初に改行が存在した場合は改行を削除する
 		return trim($content);
 	}
