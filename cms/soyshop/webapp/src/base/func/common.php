@@ -10,7 +10,6 @@ function soyshop_get_page_url($uri, $suffix = null){
     }
 
     return soyshop_get_site_url(true) . $uri;
-
 }
 
 /**
@@ -30,11 +29,7 @@ function soyshop_get_site_url($isAbsolute = false){
         }
     }
 
-    if($isAbsolute){
-		return $url;
-    }else{
-        return preg_replace('/^h[a-z]+:\/\/[^\/]+/', '', $url);
-    }
+	return ($isAbsolute) ? $url : preg_replace('/^h[a-z]+:\/\/[^\/]+/', '', $url);
 }
 
 //httpsからはじまるURLに変更
@@ -187,7 +182,10 @@ function soyshop_check_price_string($price){
  */
 function soyshop_display_price($price){
 	if(!is_numeric($price)) return 0;
-	return (is_int($price)) ? number_format((int)$price) : number_format($price, 1);
+	if (is_int($price)) return number_format((int)$price);
+
+	//表記の小数点があるか？
+	return (preg_match('/\.[0-9]*/', $price, $tmp)) ? number_format($price, 1) : number_format((int)$price);
 }
 
 /**
@@ -203,11 +201,7 @@ function soyshop_get_cart_url($operation = false, $isAbsolute = false){
         $url = soyshop_get_site_url($isAbsolute) . soyshop_get_cart_uri();
     }
 
-    if($operation){
-        return $url . "/operation";
-    }else{
-        return $url;
-    }
+    return ($operation) ? $url . "/operation" : $url;
 }
 
 /**
