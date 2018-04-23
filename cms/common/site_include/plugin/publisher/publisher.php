@@ -63,7 +63,8 @@ class PublisherPlugin{
 			if(isset($_SERVER["PATH_INFO"])){
 				//ページャから出力されたページは除外 この処理はブログトップのみ
 				if(self::checkIsBlogTopPage($arg["page"]) && preg_match('/page-[0-9]*/', $_SERVER["PATH_INFO"])){
-					//何もしない
+					//何もしない → そのまま返す に変更
+					return $html;
 				}else{
 					return $html;
 				}

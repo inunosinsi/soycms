@@ -32,6 +32,12 @@
 								<input name="format[charset]" value="Shift-JIS" type="radio" id="format[charset]_shift_jis_id" checked="checked"><label for="format[charset]_shift_jis_id">SHIFT_JIS</label>
 								<input name="format[charset]" value="UTF-8" type="radio" id="format[charset]_utf-8_id"><label for="format[charset]_utf-8_id">UTF-8</label>
 							</div>
+							<div class="panel-heading">ラベルで絞り込み</div>
+							<div class="panel-body">
+								<!-- soy:id="label_list" -->
+								<input type="checkbox" soy:id="label_checkbox">&nbsp;
+								<!-- /soy:id="label_list" -->
+							</div>
 							<div class="panel-heading">出力項目</div>
 							<div class="panel-body">
 								<input type="hidden" name="item[id]" value="1" />

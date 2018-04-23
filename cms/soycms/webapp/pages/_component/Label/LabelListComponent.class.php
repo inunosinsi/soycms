@@ -43,5 +43,12 @@ class LabelListComponent extends HTMLList{
 //		$this->addLabel("entry_count", array(
 //			"text"=> $entity->getEntryCount(),
 //		));
+
+		//記事のエクスポートで利用
+		$this->addCheckBox("label_checkbox", array(
+			"name" => "Label[]",
+			"value" => $entity->getId(),
+			"label" => $entity->getCaption()
+		));
 	}
 }

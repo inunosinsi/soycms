@@ -10,6 +10,26 @@ class ExportPage extends CMSWebPageBase {
 
 	function main(){
 		$this->addForm("export_form");
+
+		$this->createAdd("label_list", "_component.Label.LabelListComponent", array(
+			"list" => self::getLabelLists(false)
+		));
+	}
+
+	/**
+	 *  ラベルオブジェクトのリストのリストを返す
+	 * @param Boolean $classified ラベルを分けるかどうか
+	 */
+	private function getLabelLists($classified = true){
+		$action = SOY2ActionFactory::createInstance("Label.CategorizedLabelListAction");
+		$result = $action->run();
+
+		if($result->success()){
+			$labels = $result->getAttribute("list");
+			return (isset($labels[""])) ? $labels[""] : array();
+		}else{
+			return array();
+		}
 	}
 
 	private function getLabels(){
@@ -47,7 +67,6 @@ class ExportPage extends CMSWebPageBase {
         //出力する項目にセット
         $logic->setItems($item);
         $logic->setLabels(self::getLabels());
-		// $logic->setCustomFields(self::getCustomFieldList(true));
 
         //DAO: 2000ずつ取得
         $limit = 2000;//16MB弱を消費
@@ -67,6 +86,9 @@ class ExportPage extends CMSWebPageBase {
                 $entries = array();
             }
 
+			//ラベルはここで精査する
+			if(count($entries) && isset($_POST["Label"]) && count($_POST["Label"])) $entries = self::refineByEntryLabels($entries);
+
             //CSV(TSV)に変換
             $lines = self::itemToCSV($entries);
 
@@ -76,6 +98,34 @@ class ExportPage extends CMSWebPageBase {
         }while(count($entries) >= $limit);
 
         exit;
+	}
+
+	private function refineByEntryLabels($entries){
+		static $dao, $labelCount;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryLabelDAO");
+		if(is_null($labelCount)) $labelCount = count($_POST["Label"]);
+
+		$list = array();
+		foreach($entries as $entry){
+			try{
+				$labels = $dao->getByEntryId($entry->getId());
+			}catch(Exception $e){
+				continue;
+			}
+
+			if(!count($labels)) continue;
+
+			//指定のラベルをすべて含むか？指定したラベルの個数とヒットの件数が一致するか？で調べる
+			$cnt = 0;
+			foreach($labels as $labelId => $label){
+				$res = array_search($labelId, $_POST["Label"]);
+				if(isset($res) && is_numeric($res)) $cnt++;
+			}
+
+			if($cnt === $labelCount) $list[] = $entry;
+		}
+
+		return $list;
 	}
 
 	/**
