@@ -118,4 +118,3 @@ class MessageManager{
         return $messagePath;
     }
 }
-?>

@@ -214,4 +214,3 @@ class IndexPage extends WebPage{
 		return $mailLogic->convertMailContent($str, $user, $order);
 	}
 }
-?>
