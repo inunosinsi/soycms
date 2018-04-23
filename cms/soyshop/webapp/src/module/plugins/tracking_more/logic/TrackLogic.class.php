@@ -114,6 +114,8 @@ class TrackLogic extends SOY2LogicBase {
 
 		$items = array();
 		foreach($list as $v){
+			if(strpos($v["slip_number"], "test") !== false) continue;
+
 			$items[] = array(
 				"tracking_number"	=> $v["slip_number"],
 				"carrier_code"		=> $career,
@@ -123,6 +125,8 @@ class TrackLogic extends SOY2LogicBase {
 				"order_id"			=> $v["tracking_number"]
 			);
 		}
+
+		if(!count($items)) return;
 
 		$this->track->createMultipleTracking($items);
 
