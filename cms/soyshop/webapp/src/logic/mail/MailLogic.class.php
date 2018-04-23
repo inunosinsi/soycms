@@ -451,14 +451,12 @@ class MailLogic extends SOY2LogicBase{
 	}
 
 	function buildMailBodyAndTitle(SOYShop_Order $order, $mailConfig, $mode = self::MODE_USER){
-		static $builder, $user;
+		static $builder;
 		if(is_null($builder)) $builder = SOY2Logic::createInstance("logic.mail.MailBuilder");
-		if(is_null($user)){
-			try{
-				$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
-			}catch(Exception $e){
-				$user = new SOYShop_User();
-			}
+		try{
+			$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
+		}catch(Exception $e){
+			$user = new SOYShop_User();
 		}
 
 		//プラグインを実行してメール本文の取得
