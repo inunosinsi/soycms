@@ -76,7 +76,13 @@
 
 		<h3>CSVインポート</h3>
 		<form soy:id="import_form">
-			<p class="content">未発送分の一括変更<br><input type="file" name="csv">&nbsp;<input type="submit" name="import" value="一括変更"></p>
+			<p class="content">
+				未発送分の一括変更<br>
+				<input type="file" name="csv">&nbsp;
+				<label><input type="radio" name="charset" value="Shift_JIS" checked="checked">Shift_JIS</label>&nbsp;
+				<label><input type="radio" name="charset" value="UTF-8">UTF-8</label>&nbsp;
+				<input type="submit" name="import" value="一括変更">
+			</p>
 		</form>
 		<!-- /soy:display="is_slip_number" -->
 	</div>

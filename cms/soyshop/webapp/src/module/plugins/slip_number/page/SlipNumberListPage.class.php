@@ -38,10 +38,12 @@ class SlipNumberListPage extends WebPage {
 
 			if(isset($_POST["import"])){
 				$file  = $_FILES["csv"];
+				$charset = (isset($_POST["charset"])) ? $_POST["charset"] : "Shift_JIS";
+
 				$logic = SOY2Logic::createInstance("logic.csv.ExImportLogicBase");
 				$logic->setSeparator("comma");
 		        $logic->setQuote("checked");
-		        $logic->setCharset("Shift-JIS");
+		        $logic->setCharset($charset);
 
 				if(!$logic->checkUploadedFile($file)){
 		            SOY2PageController::jump("Extension.slip_number?failed");
@@ -68,15 +70,20 @@ class SlipNumberListPage extends WebPage {
 
 				foreach($lines as $line){
 		            if(empty($line)) continue;
-					$slipNumber = trim($line);
 
-					try{
-						$slipId = $slipDao->getBySlipNumberAndNoDelivery($slipNumber)->getId();
-					}catch(Exception $e){
-						continue;
+					//PON対応 @ToDo 他のCSVのパターンがあったときはその都度考える
+					$v = explode(",", $line);
+					if(count($v)){
+						$slipNumber = trim(str_replace("\"", "", $v[0]));
+
+						try{
+							$slipId = $slipDao->getBySlipNumberAndNoDelivery($slipNumber)->getId();
+						}catch(Exception $e){
+							continue;
+						}
+
+						$slipLogic->changeStatus((int)$slipId, "delivery");
 					}
-
-					$slipLogic->changeStatus((int)$slipId, "delivery");
 				}
 
 				SOY2PageController::jump("Extension.slip_number?updated");
@@ -93,6 +100,9 @@ class SlipNumberListPage extends WebPage {
 			self::setParameter("search_condition", null);
 			SOY2PageController::jump("Extension.slip_number");
 		}
+
+		//ここで翻訳ファイルを読み込む
+		MessageManager::addMessagePath("admin");
 
 		parent::__construct();
 
