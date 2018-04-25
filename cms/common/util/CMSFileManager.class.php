@@ -250,6 +250,7 @@ class CMSFileManager{
 	}
 
 	public static function get($root,$target,$withChild = false){
+		$file = null;
 		if(is_numeric($target)){
 			$dao = self::_getDao();
 			try{
@@ -274,7 +275,7 @@ class CMSFileManager{
 			$file = $target;
 		}
 
-		if(!$file)throw new Exception("");
+		if(!$file) throw new Exception("");
 
 		if(strstr($file->getPath(),$root) != 0){
 			throw new Exception("Wrong path");
