@@ -70,6 +70,13 @@ class IndexPage extends CMSWebPageBase{
 			"label" => $this->getMessage("SOYCMS_CONFIG_USE_LABEL_CATEGORY")
 		));
 
+		$this->addSelect("uploadmode", array(
+			"name" => "defaultUploadMode",
+			"options" => array(1 => "ファイルをアップロードする", 2 => "既存のファイルから選ぶ", 3 => "URLを直接指定する"),
+			"selected" => $entity->getDefaultUploadMode(),
+			"indexOrder" => false
+		));
+
 		$this->createAdd("uploadpath","HTMLInput",array(
 			"name"=>"defaultUploadDirectory",
 			"value"=>$entity->getDefaultUploadDirectory(),

@@ -8,13 +8,13 @@
 		<fieldset>
 			<legend>1. 方法を選ぶ</legend>
 			<ul style="list-style: none; padding: 0; margin: 0;">
-				<li><input type="radio" name="select_method" id="select_method_1" onclick="toggle_method_panel(1)" style="border-style:none; background-color:transparent;" checked="checked"><label for="select_method_1">ファイルをアップロードする</label></li>
-				<li><input type="radio" name="select_method" id="select_method_2" onclick="toggle_method_panel(2)" style="border-style:none; background-color:transparent;"><label for="select_method_2">既存のファイルから選ぶ</label></li>
-				<li><input type="radio" name="select_method" id="select_method_3" onclick="toggle_method_panel(3)" style="border-style:none; background-color:transparent;"><label for="select_method_3">URLを直接指定する</label></li>
+				<li><input type="radio" soy:id="select_method_1"><label for="select_method_1">ファイルをアップロードする</label></li>
+				<li><input type="radio" soy:id="select_method_2"><label for="select_method_2">既存のファイルから選ぶ</label></li>
+				<li><input type="radio" soy:id="select_method_3"><label for="select_method_3">URLを直接指定する</label></li>
 			</ul>
 		</fieldset>
 
-		<fieldset id="method_1">
+		<fieldset soy:id="method_1">
 			<legend>2. ファイルをアップロードする</legend>
 
 			<form soy:id="uploadForm" method="post" enctype="multipart/form-data" target="targetIframe" onsubmit="return onPrepare()" id="upload_form" style="margin:0 0 2px;">
@@ -22,15 +22,15 @@
 			    <input type="hidden" id="beforepath" name="beforepath"/>
 			    <input type="hidden" name="alter_name" id="alter_name"/>
 			    <input type="submit" class="soycms_custom_button" value="アップロード" onclick="set_upload_mode();"/>
-			</form soy:id="uploadForm">
+			</form>
 		</fieldset>
 
-		<fieldset id="method_2" style="display:none;">
+		<fieldset soy:id="method_2">
 			<legend>2. 既存のファイルから選ぶ</legend>
 			<button class="soycms_custom_button" onclick="toggle_Filemanager();return false;" type="button">ファイルマネージャー起動</button>（アップロードも可能です）
 		</fieldset>
 
-		<fieldset id="method_3" style="display:none;">
+		<fieldset soy:id="method_3">
 			<legend>2. URLを直接指定する</legend>
 			<input type="text" id="outer_link" soy:id="outer_link"/>
 			<button class="soycms_custom_button" id="outer_link_button" onclick="select_outer_link($('#outer_link').val());return false;">指定</button>

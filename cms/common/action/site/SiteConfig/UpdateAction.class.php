@@ -28,6 +28,7 @@ class UpdateActionForm extends SOY2ActionForm{
 	var $description;
 	var $charset;
 	var $siteConfig;
+	var $defaultUploadMode = 0;
 	var $defaultUploadDirectory;
 	var $defaultUploadResizeWidth;
 	var $createUploadDirectoryByDate;
@@ -46,6 +47,11 @@ class UpdateActionForm extends SOY2ActionForm{
 	function setSiteConfig($siteConfig) {
 		$this->siteConfig = $siteConfig;
 	}
+
+	function setDefaultUploadMode($mode){
+		$this->defaultUploadMode = $mode;
+	}
+
 	function setDefaultUploadDirectory($defaultUploadDirectory) {
 		$this->defaultUploadDirectory = $defaultUploadDirectory;
 	}
@@ -56,9 +62,9 @@ class UpdateActionForm extends SOY2ActionForm{
 	function setCreateUploadDirectoryByDate($createUploadDirectoryByDate) {
 		$this->createUploadDirectoryByDate = $createUploadDirectoryByDate;
 	}
-	
+
 	function setDefaultUploadResizeWidth($defaultUploadResizeWidth){
-		$this->defaultUploadResizeWidth = $defaultUploadResizeWidth;	
+		$this->defaultUploadResizeWidth = $defaultUploadResizeWidth;
 	}
 
 	function getIsShowOnlyAdministrator() {
@@ -75,5 +81,3 @@ class UpdateActionForm extends SOY2ActionForm{
 		$this->useLabelCategory = $useLabelCategory;
 	}
 }
-
-?>

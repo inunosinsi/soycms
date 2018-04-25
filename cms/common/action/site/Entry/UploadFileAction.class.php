@@ -164,12 +164,8 @@ class UploadFileAction extends SOY2Action{
 	 * 最初にも最後にもスラッシュは付かない
 	 */
     function getDefaultUpload(){
-
-    	$dao = SOY2DAOFactory::create("cms.SiteConfigDAO");
-    	$config = $dao->get();
-
 		// 空文字列または/dir/**/path
-    	$dir = $config->getUploadDirectory();
+		$dir = SOY2DAOFactory::create("cms.SiteConfigDAO")->get()->getUploadDirectory();
 
 		//先頭の/を削除
 		if(strlen($dir) && $dir[0] == "/"){

@@ -149,6 +149,18 @@ class SiteConfig {
     	return $dir;
     }
 
+	/**
+	 * 記事投稿時のイメージの挿入の設定
+	 */
+	function getDefaultUploadMode(){
+		$v = (int)$this->getConfigValue("uploadMode");
+		if($v === 0) $v = 1;
+		return $v;
+	}
+	function setDefaultUploadMode($mode){
+		$this->setConfigValue("uploadMode", $mode);
+	}
+
     /**
      * アップロードディレクトリを作成して取得
      */

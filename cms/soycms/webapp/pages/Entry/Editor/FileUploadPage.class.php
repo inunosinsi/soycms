@@ -14,37 +14,58 @@ class FileUploadPage extends CMSWebPageBase {
 	function __construct($arg) {
 		parent::__construct();
 
-		$this->createAdd("jqueryjs","HTMLModel",array(
+		$mode = self::getDefaultUploadMode();
+		foreach(range(1,3) as $i){
+			$this->addCheckBox("select_method_" . $i, array(
+				"name" => "select_method",
+				"selected" => ($i == $mode),
+				"onclick" => "toggle_method_panel(" . $i. ")",
+				"elementId" => "select_method_" . $i,
+				"style" => "border-style:none; background-color:transparent;"
+			));
+
+			$this->addModel("method_" . $i, array(
+				"attr:style" => ($i == $mode) ? "display:block;" : "display:none;",
+				"attr:id" => "method_" . $i
+			));
+		}
+
+		$this->addModel("jqueryjs", array(
 			"type" => "text/JavaScript",
 			"src" => SOY2PageController::createRelativeLink("./js/jquery.js")
 		));
 
-		$this->createAdd("applyForm","HTMLForm",array(
+		$this->addForm("applyForm", array(
 			"action"=>SOY2PageController::createLink("Entry.Editor.UploadApply")
 		));
 
-		$this->createAdd("cancelForm","HTMLForm",array(
+		$this->addForm("cancelForm", array(
 			"action"=>SOY2PageController::createLink("Entry.Editor.UploadCancel")
 		));
 
-		$this->createAdd("uploadForm","HTMLForm");
+		$this->addForm("uploadForm");
 
 		$this->createAdd("parameters","HTMLScript",array(
 			"lang" => "text/JavaScript",
-			"script" => 'var remotoURI = "'.UserInfoUtil::getSiteURL().substr($this->getDefaultUpload(),1).'";'
+			"script" => 'var remotoURI = "'.UserInfoUtil::getSiteURL().substr(self::getDefaultUpload(),1).'";'
 		));
 
-		$this->createAdd("file_manager_iframe","HTMLModel",array(
+		$this->addModel("file_manager_iframe", array(
 			"target_src"=>SOY2PageController::createLink("FileManager.File")
 		));
 	}
 
-	function getDefaultUpload(){
+	private function getDefaultUpload(){
+		return self::dao()->get()->getUploadDirectory();
+	}
 
-		$dao = SOY2DAOFactory::create("cms.SiteConfigDAO");
-		$config = $dao->get();
-		$dir = $config->getUploadDirectory();
+	function getDefaultUploadMode(){
+		return self::dao()->get()->getDefaultUploadMode();
+	}
 
-		return $dir;
+	private function dao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.SiteConfigDAO");
+		return $dao;
 	}
 }
