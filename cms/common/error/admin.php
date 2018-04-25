@@ -14,7 +14,6 @@
 <link rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink("../admin/css/"); ?>table.css"/>
 <link type="text/css" rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink("../admin/css/"); ?>global_page/globalpage.css"/>
 <script type="text/JavaScript" charset="utf-8" src="<?php echo SOY2PageController::createRelativeLink("../admin/js/"); ?>common.js"></script>
-<script type="text/JavaScript" charset="utf-8" src="<?php echo SOY2PageController::createRelativeLink("../admin/js/"); ?>prototype.js"></script></head>
 
 <style type="text/css">
 
