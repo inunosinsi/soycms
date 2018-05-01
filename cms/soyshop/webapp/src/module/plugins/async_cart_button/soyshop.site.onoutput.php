@@ -6,9 +6,9 @@ class AsyncCartButtonOnOutput extends SOYShopSiteOnOutputAction{
 	 * @return string
 	 */
 	function onOutput($html){
-		
+
 		SOY2::import("module.plugins.async_cart_button.util.AsyncCartButtonUtil");
-		
+
 		//通常ページ
 		$displayConfig = AsyncCartButtonUtil::getPageDisplayConfig();
 		if(defined("SOYSHOP_PAGE_ID")){
@@ -27,9 +27,9 @@ class AsyncCartButtonOnOutput extends SOYShopSiteOnOutputAction{
 				}
 			}
 		}
-		
+
 		$script = file_get_contents(dirname(__FILE__) . "/js/obj.js");
-		
+
 		/**
 		 * @ToDo 全文検索は遅くなるので、どうにかしたい
 		 */
@@ -41,11 +41,10 @@ class AsyncCartButtonOnOutput extends SOYShopSiteOnOutputAction{
 		}else{
 			$html = str_replace("</head>", $script . "</head>", $html);
 		}
-		
-		
+
+
 		return $html;
 	}
 }
 
 SOYShopPlugin::extension("soyshop.site.onoutput", "async_cart_button", "AsyncCartButtonOnOutput");
-?>

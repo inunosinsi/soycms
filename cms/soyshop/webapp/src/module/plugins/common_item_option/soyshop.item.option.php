@@ -43,12 +43,19 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		//比較用の配列を作成する
 		$attributes = array();
 		foreach($items as $index => $item){
-			foreach($list as $key => $value){
-				$obj = $this->getCartAttributeId($key, $index, $item->getItemId());
-				$attributes[$index][$key] = $cart->getAttribute($obj);
-			}
+			//管理画面側では商品一覧のセッションの中にオプションが格納されている
+			if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+				$attrs = $item->getAttributes();
+				$currentOptions = (isset($attrs)) ? soy2_unserialize($attrs) : array();
+			//公開側の場合はカートのセッション内にオプションが格納されている
+			}else{
+				foreach($list as $key => $value){
+					$obj = $this->getCartAttributeId($key, $index, $item->getItemId());
+					$attributes[$index][$key] = $cart->getAttribute($obj);
+				}
 
-			$currentOptions = array_diff($attributes[$index], array(null));
+				$currentOptions = array_diff($attributes[$index], array(null));
+			}
 
 			if($postedOption == $currentOptions){
 				$checkOptionId = $index;

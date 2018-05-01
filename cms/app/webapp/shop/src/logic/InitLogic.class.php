@@ -8,7 +8,7 @@ class InitLogic extends SOY2LogicBase{
     public function init(){
     	$this->initTable();
     }
-    
+
     /**
      * テーブルを初期化する
      */
@@ -30,13 +30,13 @@ class InitLogic extends SOY2LogicBase{
     	if(!file_exists(CMS_COMMON . "db/".APPLICATION_ID.".db")){
     		file_put_contents(CMS_COMMON . "db/".APPLICATION_ID.".db", "created:" . date("Y-m-d H:i:s"));
     	}
-		
+
 		if(file_exists(CMS_COMMON . "db/".APPLICATION_ID.".db")){
 			$db->commit();
 		}
 
     }
-    
+
     /**
      * 既存のシングルサイトをマルチサイト
      * @param Stirng siteId サイトID
@@ -45,9 +45,9 @@ class InitLogic extends SOY2LogicBase{
      * @param String dsn DSN
      */
     public function registSite($siteId,$dir,$url,$dsn=""){
-		
+
 		$name = $this->getSiteName($dsn);
-		
+
 		/* shop.dbに登録 */
     	$obj = new SOYShop_Site();
     	$obj->setSiteId($siteId);
@@ -61,7 +61,7 @@ class InitLogic extends SOY2LogicBase{
     	}catch(Exception $e){
 
     	}
-    	
+
     	/* SOY CMSのサイトとして登録 */
 		//SOY2 config
 		//SOY2::RootDir()の書き換え
@@ -77,10 +77,10 @@ class InitLogic extends SOY2LogicBase{
 		SOY2DAOConfig::EntityDir(CMS_COMMON."domain/");
 		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
 		SOY2DAOConfig::user(ADMIN_DB_USER);
-		SOY2DAOConfig::pass(ADMIN_DB_PASS);		
-		
+		SOY2DAOConfig::pass(ADMIN_DB_PASS);
+
 		$dao = SOY2DAOFactory::create("admin.SiteDAO");
-		
+
 		$site = new Site();
 		$site->setSiteId($siteId);
 		$site->setPath($dir);
@@ -98,9 +98,9 @@ class InitLogic extends SOY2LogicBase{
 		SOY2DAOConfig::Dsn($oldDsn);
 		SOY2DAOConfig::user($oldUser);
 		SOY2DAOConfig::pass($oldPass);
-    	
+
     }
-    
+
     /**
      * /soyshop/webapp/config/shop/xxx.admin.conf.php
      * /soyshop/webapp/config/shop/xxx.conf.php
@@ -109,11 +109,11 @@ class InitLogic extends SOY2LogicBase{
      * @param String url サイトURL
      */
     function outputConfig($siteId,$siteDir,$url){
-    	
+
     	/* admin.conf.phpの作成 */
 		$dir = dirname(CMS_COMMON)."/soyshop/webapp/conf/shop/";
 		$name = $siteId . ".admin.conf.php";
-    	
+
 		$config = array();
 		$config[] = "<?php";
 		$config[] = 'define("'.$siteId.'_SOYSHOP_ID","'.$siteId.'");';
@@ -128,11 +128,11 @@ class InitLogic extends SOY2LogicBase{
 		$config[] = '?>';
 
 		file_put_contents($dir . $name, implode("\n",$config));
-    	
-    	
+
+
     	/* conf.phpの作成 */
     	$name = $siteId . ".conf.php";
-    	
+
 		$config = array();
 		$config[] = "<?php";
 		$config[] ='include(dirname(__FILE__)."/'.$siteId. '.admin.conf.php");';
@@ -146,11 +146,11 @@ class InitLogic extends SOY2LogicBase{
 			$config[] = 'define("SOYSHOP_SITE_PASS", '. $siteId. '_SOYSHOP_SITE_PASS);';
 		}
 		$config[] = '?>';
-	
+
 		file_put_contents($dir . $name,implode("\n",$config));
-    	
+
     }
-    
+
     /**
      * @param String dns DSN
      * @return Stirng 既存のショップ名
@@ -174,7 +174,7 @@ class InitLogic extends SOY2LogicBase{
 		SOY2DAOConfig::Dsn($dsn);
 		if(defined("SOYSHOP_SITE_DSN")){//mysql
 			SOY2DAOConfig::user(SOYSHOP_SITE_USER);
-			SOY2DAOConfig::pass(SOYSHOP_SITE_PASS);		
+			SOY2DAOConfig::pass(SOYSHOP_SITE_PASS);
 		}
 		SOY2::import("domain.config.SOYShop_DataSets");
 		SOY2::import("domain.config.SOYShop_ShopConfig");
@@ -187,12 +187,12 @@ class InitLogic extends SOY2LogicBase{
 		SOY2DAOConfig::Dsn($oldDsn);
 		SOY2DAOConfig::user($oldUser);
 		SOY2DAOConfig::pass($oldPass);
-    	
-    	
+
+
     	return $name;
     }
-    
-    
+
+
     /**
      * 既存のSOYShopサイトのIDが、既にSOY CMSで使われているかのチェック
      * @param String siteId soyshop site id
@@ -202,7 +202,7 @@ class InitLogic extends SOY2LogicBase{
     	$old = ShopUtil::switchConfig();
     	ShopUtil::setCMSDsn();
     	$dao = SOY2DAOFactory::create("admin.SiteDAO");
-    	
+
     	try{
     		$dao->getBySiteId($siteId);
     		$res = false;//サイトIDが存在する
@@ -211,9 +211,7 @@ class InitLogic extends SOY2LogicBase{
     	}
 
     	ShopUtil::resetConfig($old);
-    	
+
     	return $res;
     }
-    
 }
-?>
