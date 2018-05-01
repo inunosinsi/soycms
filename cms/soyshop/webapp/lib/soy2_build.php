@@ -6231,19 +6231,19 @@ class HTMLSelect extends HTMLFormElement {
 		$this->setAttribute("multiple",$multiple, false);
 	}
 	function getObject(){
-		$first = count($this->options) ? array_slice($this->options, 0, 1) : array();
+		$first = (is_array($this->options) && count($this->options)) ? array_slice($this->options, 0, 1) : array();
 		if(is_array(array_shift($first))){
 			$twoDimensional = true;
 			$isHash = false;
 		}else{
 			$twoDimensional = false;
-			$isHash = (array_keys($this->options) === range(0,count($this->options)-1)) ? false : true;
+			$isHash = (is_array($this->options) && array_keys($this->options) === range(0,count($this->options)-1)) ? false : true;
 		}
 		if($this->indexOrder){
 			$isHash = true;
 		}
 		$buff = "";
-		if($twoDimensional){
+		if($twoDimensional && is_array($this->options) && count($this->options)){
 			foreach($this->options as $key => $value){
 				if(is_array($value)){
 					$key = (string)$key;
@@ -6261,8 +6261,10 @@ class HTMLSelect extends HTMLFormElement {
 	}
 	function buildOptions($options, $isHash){
 		$buff = "";
-		foreach($options as $key => $value){
-			$buff .= $this->buildOption($key, $value, $isHash);
+		if(is_array($options) && count($options)){
+			foreach($options as $key => $value){
+				$buff .= $this->buildOption($key, $value, $isHash);
+			}
 		}
 		return $buff;
 	}
