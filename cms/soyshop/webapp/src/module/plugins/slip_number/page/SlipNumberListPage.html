@@ -9,6 +9,7 @@
 
 		<p class="notice" soy:display="updated">更新しました</p>
 		<p class="notice" soy:display="successed">変更しました。</p>
+		<p class="notice" soy:display="removed">削除しました。</p>
 		<p class="error" soy:display="failed">失敗しました</p>
 		<p class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
 
@@ -50,7 +51,9 @@
 					<th>注文番号</th>
 					<th>顧客名</th>
 					<th>状態</th>
-					<th>&nbsp;</th>
+					<th>
+						<a class="button fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -63,6 +66,7 @@
 					<td soy:id="status" class="alC"></td>
 					<td class="operation">
 						<a soy:id="delivery_link" class="button">発送</a>
+						<a soy:id="remove_link" class="button delete_btn">削除</a>
 					</td>
 				</tr>
 				<!-- /soy:id="slip_number_list" -->
@@ -100,6 +104,9 @@
 	}
 	.content {
 		margin:2px 0 5px 23px;
+	}
+	.delete_btn{
+		visibility:hidden;
 	}
 </style>
 

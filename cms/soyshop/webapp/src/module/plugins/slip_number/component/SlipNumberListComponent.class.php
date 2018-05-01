@@ -35,6 +35,11 @@ class SlipNumberListComponent extends HTMLList {
 			"onclick" => "return confirm('" . self::getConfirmText($entity->getIsDelivery()) . "')"
 		));
 
+		$this->addActionLink("remove_link", array(
+			"link" => SOY2PageController::createLink("Extension.slip_number?remove=" . $entity->getId()),
+			"onclick" => "return confirm('削除しますか？')"
+		));
+
 		//注文状態がキャンセルであれば表示しない
 		if($order->getStatus() == SOYShop_Order::ORDER_STATUS_CANCELED) return false;
 	}

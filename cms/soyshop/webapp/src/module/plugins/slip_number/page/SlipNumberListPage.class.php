@@ -60,22 +60,32 @@ class SlipNumberListPage extends WebPage {
 
 		        //データを行単位にばらす
 		        $lines = $logic->GET_CSV_LINES($fileContent);    //fix multiple lines
+
+				//PONであるか調べる
+				SOY2::import("module.plugins.slip_number.util.SlipNumberUtil");
+				$isPon = SlipNumberUtil::checkIsPon($lines[0]);
+
 				array_shift($lines);	//必ず先頭行を削除
 
 		        //先頭行削除
 				//if(isset($format["label"])) array_shift($lines);
-				SOY2::import("module.plugins.slip_number.domain.SOYShop_SlipNumberDAO");
 				$slipDao = SOY2DAOFactory::create("SOYShop_SlipNumberDAO");
 				$slipLogic = SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic");
 
 				foreach($lines as $line){
-		            if(empty($line)) continue;
+					if(empty($line)) continue;
 
-					//PON対応 @ToDo 他のCSVのパターンがあったときはその都度考える
 					$v = explode(",", $line);
 					if(count($v)){
-						$slipNumber = trim(str_replace("\"", "", $v[0]));
+						//PON対応
+						if($isPon && isset($v[2])){
+							//04/26のような日付が無い場合は処理を止める
+							preg_match('/^[0-9]*\/[0-9]*/', trim($v[2], "\""), $tmp);
+							if(!isset($tmp[0])) continue;
+						}
 
+						$slipNumber = trim(str_replace("\"", "", $v[0]));
+						
 						try{
 							$slipId = $slipDao->getBySlipNumberAndNoDelivery($slipNumber)->getId();
 						}catch(Exception $e){
@@ -94,6 +104,7 @@ class SlipNumberListPage extends WebPage {
 	}
 
 	function __construct(){
+		SOY2::import("module.plugins.slip_number.domain.SOYShop_SlipNumberDAO");
 
 		//リセット
 		if(isset($_POST["reset"])){
@@ -107,8 +118,9 @@ class SlipNumberListPage extends WebPage {
 		parent::__construct();
 
 		if(isset($_GET["delivery"])) self::changeStatus();
+		if(isset($_GET["remove"])) self::remove();
 
-		foreach(array("successed", "failed", "invalid") as $t){
+		foreach(array("successed", "failed", "removed", "invalid") as $t){
 			DisplayPlugin::toggle($t, isset($_GET[$t]));
 		}
 
@@ -183,6 +195,18 @@ class SlipNumberListPage extends WebPage {
 			if(SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic")->changeStatus((int)$_GET["delivery"], $mode)){
 				SOY2PageController::jump("Extension.slip_number?successed");
 			}else{
+				SOY2PageController::jump("Extension.slip_number?failed");
+			}
+		}
+	}
+
+	private function remove(){
+		if(soy2_check_token()){
+			$slipId = (int)$_GET["remove"];
+			try{
+				SOY2DAOFactory::create("SOYShop_SlipNumberDAO")->deleteById($slipId);
+				SOY2PageController::jump("Extension.slip_number?removed");
+			}catch(Exception $e){
 				SOY2PageController::jump("Extension.slip_number?failed");
 			}
 		}

@@ -64,7 +64,6 @@ class ReturnsSlipNumberListPage extends WebPage {
 
 		        //先頭行削除
 				//if(isset($format["label"])) array_shift($lines);
-				SOY2::import("module.plugins.returns_slip_number.domain.SOYShop_ReturnsSlipNumberDAO");
 				$slipDao = SOY2DAOFactory::create("SOYShop_ReturnsSlipNumberDAO");
 				$slipLogic = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic");
 
@@ -94,6 +93,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 	}
 
 	function __construct(){
+		SOY2::import("module.plugins.returns_slip_number.domain.SOYShop_ReturnsSlipNumberDAO");
 
 		//リセット
 		if(isset($_POST["reset"])){
@@ -107,8 +107,9 @@ class ReturnsSlipNumberListPage extends WebPage {
 		parent::__construct();
 
 		if(isset($_GET["return"])) self::changeStatus();
+		if(isset($_GET["remove"])) self::remove();
 
-		foreach(array("successed", "failed", "invalid") as $t){
+		foreach(array("successed", "failed", "removed", "invalid") as $t){
 			DisplayPlugin::toggle($t, isset($_GET[$t]));
 		}
 
@@ -183,6 +184,18 @@ class ReturnsSlipNumberListPage extends WebPage {
 			if(SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic")->changeStatus((int)$_GET["return"], $mode)){
 				SOY2PageController::jump("Extension.returns_slip_number?successed");
 			}else{
+				SOY2PageController::jump("Extension.returns_slip_number?failed");
+			}
+		}
+	}
+
+	private function remove(){
+		if(soy2_check_token()){
+			$slipId = (int)$_GET["remove"];
+			try{
+				SOY2DAOFactory::create("SOYShop_ReturnsSlipNumberDAO")->deleteById($slipId);
+				SOY2PageController::jump("Extension.returns_slip_number?removed");
+			}catch(Exception $e){
 				SOY2PageController::jump("Extension.returns_slip_number?failed");
 			}
 		}
