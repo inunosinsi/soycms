@@ -932,10 +932,13 @@ class EditPage extends WebPage{
 	}
 
 	function convertDate($date){
+		if(!isset($date["month"]) || !isset($date["day"]) || !isset($date["year"])) return null;
+		if(!is_numeric($date["month"]) || !is_numeric($date["day"]) || !is_numeric($date["year"])) return null;
 		return mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
 	}
 
 	function convertDateText($time){
+		if(is_null($time) || (int)$item === 0) return null;
 		return date("Y", $time) . "-" . date("m", $time) . "-" . date("d", $time);
 	}
 }

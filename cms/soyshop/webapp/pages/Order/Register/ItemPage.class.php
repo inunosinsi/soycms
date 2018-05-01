@@ -2,6 +2,7 @@
 SOY2::import("module.plugins.common_item_option.logic.ItemOptionLogic");
 
 include(dirname(__FILE__) . "/common.php");
+SOYShopPlugin::load("soyshop.item.option");
 
 class ItemPage extends WebPage{
 
@@ -70,15 +71,28 @@ class ItemPage extends WebPage{
 							$counts[$id] = $newItems[$id]["itemCount"];
 						}
 
-						//商品オプションの配列はシリアライズしておく
-						$newAttributes = (isset($newItems[$id]["attributes"])) ? $newItems[$id]["attributes"] : array();
-						if(count($newAttributes) > 0){
-							$opt = (isset($newItems[$id]["attributes"]) && is_array($newItems[$id]["attributes"])) ? soy2_serialize($newItems[$id]["attributes"]) : null;
-							$items[$id]->setAttributes($opt);
+						//商品オプションが一致する場合は統合
+						$resOpts = (isset($newItems[$id]["attributes"]) && is_array($newItems[$id]["attributes"])) ? $newItems[$id]["attributes"] : array();
+						$res = SOYShopPlugin::invoke("soyshop.item.option", array(
+							"mode" => "compare",
+							"cart" => $this->cart,
+							"option" => $resOpts
+						))->getCartOrderId();
+
+						//商品オプションが一致したため統合する
+						if($id != $res && isset($items[$res])){
+							/** @ToDo 数がうまくいかない **/
+							$items[$res]->setItemCount((int)$newItems[$res]["itemCount"] + (int)$newItems[$id]["itemCount"]);
+							unset($items[$id]);
+							continue;
 						}
+
+						//商品オプションの配列はシリアライズしておく
+						if(count($resOpts) > 0) $items[$id]->setAttributes(soy2_serialize($resOpts));
 						//$items[$id]->setItemCount($count);
 					}
 				}
+
 				//商品オプションの登録
 				$this->cart->setItems($items);
 

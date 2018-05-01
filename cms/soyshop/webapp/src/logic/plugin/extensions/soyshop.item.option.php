@@ -88,7 +88,6 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 			case "edit":
 			default:
 				$this->_label = $action->edit($this->key);
-				break;
 		}
 	}
 	function getCartOrderId(){

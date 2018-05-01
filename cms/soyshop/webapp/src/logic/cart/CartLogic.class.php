@@ -107,8 +107,15 @@ class CartLogic extends SOY2LogicBase{
 			//在庫以上は入らない
 			//$count = min($item->getOpenStock(),$count);
 
-			//商品オプションの値がポストされている場合
-			if(isset($_REQUEST["item_option"]) && is_array($_REQUEST["item_option"]) && count($_REQUEST["item_option"])){
+			//商品オプションの値がポストされている場合。商品オプションプラグインに対応するため、管理画面での挙動を追加する
+			$resOpts = (isset($_REQUEST["item_option"]) && is_array($_REQUEST["item_option"])) ? $_REQUEST["item_option"] : array();
+			if(!count($resOpts) && (defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE)){
+				//@ToDo soyshop.item.option拡張ポイントを利用しているものであればすべて対象にしたい
+				SOY2::import("util.SOYShopPluginUtil");
+				if(SOYShopPluginUtil::checkIsActive("common_item_option")) $resOpts = array("dummy" => null);
+			}
+			
+			if(count($resOpts)){
 				$cart = $this->getCart();
 
 				//商品オプションの配列を比較する
@@ -117,7 +124,7 @@ class CartLogic extends SOY2LogicBase{
 				//すでにカートの中に商品が入っていないかチェック
 				$res = false;
 				foreach($this->items as $key => $obj){
-					if($itemId==$obj->getItemId()){
+					if($itemId == $obj->getItemId()){
 						$res = true;
 						break;
 					}
@@ -125,14 +132,14 @@ class CartLogic extends SOY2LogicBase{
 
 				//商品があればオプションも同じかどうかを調べる
 				if($res){
-					$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
+					//すでにある商品と配列が一致したらtrueを返す
+					SOYShopPlugin::load("soyshop.item.option");
+					$result = SOYShopPlugin::invoke("soyshop.item.option", array(
 						"mode" => "compare",
 						"cart" => $cart,
-						"option" => $_REQUEST["item_option"]
-					));
+						"option" => $resOpts
+					))->getCartOrderId();
 
-					//すでにある商品と配列が一致したらtrueを返す
-					$result = $delegate->getCartOrderId();
 					if(isset($this->items[$result]) && $this->items[$result]->getItemId() == $itemId){
 						//
 					}else{
