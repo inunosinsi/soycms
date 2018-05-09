@@ -1,5 +1,6 @@
 <div class="alR">
     <a class="button" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
+	<a class="button" soy:link="Config.Detail?plugin=custom_search_field&custom">サーチフィールドのカスタムフィールド</a>
     <a class="button" soy:link="Config.Detail?plugin=custom_search_field&category">カテゴリカスタムサーチフィールド</a>
     <a class="button" soy:link="Config.Detail?plugin=custom_search_field&eximport">カスタムフィールド</a>
     <a class="button" soy:link="Config.Detail?plugin=custom_search_field&config">検索の設定</a>
@@ -86,6 +87,11 @@
                         <dt>公開側のページで項目を個別に表示する場合</dt>
                         <dd><pre soy:id="checkbox_tag_supple" style="width:400px;overflow-x:scroll;"></pre></dd>
                         <!-- /soy:id="checkbox_tag_supple_area" -->
+
+						<!-- soy:id="is_custom_field" -->
+						<dt>カスタムサーチフィールドのカスタムフィールド</dt>
+						<dd><a soy:id="custom_field_form_link">設定画面を開く</a></dd>
+						<!-- /soy:id="is_custom_field" -->
                     </dl>
 
                     <div style="margin:10px 1em 2em;text-align:right;">

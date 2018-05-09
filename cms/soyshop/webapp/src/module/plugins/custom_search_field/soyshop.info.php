@@ -10,7 +10,5 @@ class CustomSearchFieldInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info", "custom_search_field", "CustomSearchFieldInfo");
-?>

@@ -3,6 +3,7 @@ class CustomSearchFieldListComponent extends HTMLList{
 
     private $languages;
     private $mode = "item";
+	private $isCustomField = false;
 
     protected function populateItem($entity, $key){
 
@@ -106,6 +107,15 @@ class CustomSearchFieldListComponent extends HTMLList{
             "value" => $key,
             "attr:id" => "update_advance_submit_" . $key
         ));
+
+		//カスタムサーチフィールド用のカスタムフィールド
+		$this->addModel("is_custom_field", array(
+			"visible" => $this->isCustomField
+		));
+
+		$this->addLink("custom_field_form_link", array(
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=custom_search_field&customset=" . $key)
+		));
     }
 
     private function getPrefix(){
@@ -152,6 +162,9 @@ class CustomSearchFieldListComponent extends HTMLList{
     function setMode($mode){
       $this->mode = $mode;
     }
+	function setIsCustomField($isCustomField){
+		$this->isCustomField = $isCustomField;
+	}
 }
 
 

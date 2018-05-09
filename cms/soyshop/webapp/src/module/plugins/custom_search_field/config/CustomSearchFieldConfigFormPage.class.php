@@ -14,6 +14,7 @@ class CustomSearchFieldConfigFormPage extends WebPage{
         }else{
             $this->languages = array(UtilMultiLanguageUtil::LANGUAGE_JP => "日本語");
         }
+		SOY2::imports("module.plugins.custom_search_field.domain.*");
     }
 
     function doPost(){
@@ -100,9 +101,11 @@ class CustomSearchFieldConfigFormPage extends WebPage{
             DisplayPlugin::toggle($t, isset($_GET[$t]));
         }
 
+		SOY2DAOFactory::create("SOYShop_CustomSearchAttributeDAO");
         $this->createAdd("field_list", "CustomSearchFieldListComponent", array(
             "list" => CustomSearchFieldUtil::getConfig(),
-            "languages" => $this->languages
+            "languages" => $this->languages,
+			"isCustomField" => count(SOYShop_CustomSearchAttributeConfig::load())
         ));
 
         self::buildCreateForm();

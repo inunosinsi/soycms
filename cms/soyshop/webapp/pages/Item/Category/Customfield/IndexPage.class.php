@@ -94,13 +94,7 @@ class IndexPage extends WebPage{
     function __construct() {
         parent::__construct();
 
-        $this->addModel("updated", array(
-            "visible" => (isset($_GET["updated"]))
-        ));
-
-        $this->addModel("error", array(
-            "visible" => (isset($_GET["error"]))
-        ));
+        DisplayPlugin::toggle("error", isset($_GET["error"]));
 
         $this->addForm("create_form");
 

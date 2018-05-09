@@ -22,6 +22,8 @@ function soyshop_breadcrumb_navigation($html, $page){
         "arguments" => array("soyshop_breadcrumb_navigation", $html)
     ));
 
+	$name = "";
+
     if(SOYShopPluginUtil::checkIsActive("common_breadcrumb")){
 
         $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
