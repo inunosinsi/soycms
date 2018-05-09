@@ -38,6 +38,4 @@ abstract class SOYShop_OrderDateAttributeDAO extends SOY2DAO{
      * @query #orderId# = :orderId AND #fieldId# = :fieldId
      */
     abstract function delete($orderId, $fieldId);
-
 }
-?>

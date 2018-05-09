@@ -19,7 +19,7 @@ class SearchPage extends WebPage{
 
 			//他の諸々の設定
 			$item->setIsOpen(SOYShop_Item::IS_OPEN);
-			
+
 			try{
 				$id = $itemDao->insert($item);
 				self::setParameter("search_condition", array("name" => $item->getName(), "code" => $item->getCode(), "category" => $item->getCategory())); //条件を入れる
@@ -82,9 +82,9 @@ class SearchPage extends WebPage{
 			}
 		}
 
-		//検索結果は15件
+		//検索結果は30件
 		if(count($cnds)){
-			$limit = 15;
+			$limit = 30;
 			$searchLogic = SOY2Logic::createInstance("logic.shop.item.SearchItemLogic");
 			$searchLogic->setLimit($limit);
 			$searchLogic->setSearchCondition($cnds);

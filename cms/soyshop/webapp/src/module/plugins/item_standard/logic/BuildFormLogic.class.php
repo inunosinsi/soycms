@@ -149,10 +149,12 @@ class BuildFormLogic extends SOY2LogicBase{
 
 		//
 		$cands = array();	//候補
-		$cands = $array[0];
-		for($i = 1; $i < count($array); $i++){
-			$cands = self::direct_product($cands, $array[$i]);
-			if(!isset($array[$i + 1])) break;
+		if(isset($array[0])) $cands = $array[0];
+		if(count($array)){
+			for($i = 1; $i < count($array); $i++){
+				$cands = self::direct_product($cands, $array[$i]);
+				if(!isset($array[$i + 1])) break;
+			}
 		}
 
 		return $cands;
