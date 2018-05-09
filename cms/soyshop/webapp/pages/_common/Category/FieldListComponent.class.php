@@ -1,7 +1,7 @@
 <?php
 
 class FieldListComponent extends HTMLList{
-	
+
 	private $types;
 
 	protected function populateItem($entity,$key){
@@ -22,7 +22,7 @@ class FieldListComponent extends HTMLList{
 		));
 
 		$this->addLabel("display_form", array(
-			"text" => 'cms:id="' . $entity->getFieldId() . '"'
+			"text" => self::getPrefix() . ':id="' . $entity->getFieldId() . '"'
 		));
 
 
@@ -88,7 +88,7 @@ class FieldListComponent extends HTMLList{
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_' . $key . '\').toggle();',
-			"style" => ($entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getHideIfEmpty() || $entity->getOutput() || $entity->getDescription()) ? "background-color:yellow;" : ""
+			"style" => ($entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getHideIfEmpty() || $entity->getOutput() || $entity->getDescription() || $entity->getOption()) ? "background-color:yellow;" : ""
 		));
 
 		$this->addModel("field_config", array(
@@ -121,7 +121,7 @@ class FieldListComponent extends HTMLList{
 			"name" => "config[output]",
 			"value" => $entity->getOutput()
 		));
-		
+
 		$this->addInput("description", array(
 			"name" => "config[description]",
 			"value" => $entity->getDescription()
@@ -160,6 +160,15 @@ class FieldListComponent extends HTMLList{
 		));
 	}
 
+	private function getPrefix(){
+		if(isset($_GET["plugin"]) && $_GET["plugin"] == "custom_search_field"){
+			SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+			return CustomSearchFieldUtil::PLUGIN_PREFIX;
+		}else{
+			return "cms";
+		}
+	}
+
 	function getTypes() {
 		return $this->types;
 	}
@@ -167,4 +176,3 @@ class FieldListComponent extends HTMLList{
 		$this->types = $types;
 	}
 }
-?>

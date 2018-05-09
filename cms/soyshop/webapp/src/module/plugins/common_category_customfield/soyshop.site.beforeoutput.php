@@ -64,7 +64,7 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 		try{
 			$array = $dao->getByCategoryId($category->getId());
 		}catch(Exception $e){
-			return;
+			$array = array();
 		}
 
 		SOY2::import("domain.shop.SOYShop_Item");
@@ -75,6 +75,14 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 		foreach($list as $config){
 			$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : null;
 			$value2 = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue2() : null;
+
+			//空の時の挙動
+			if(!is_null($config->getConfig()) && (is_null($value) || !strlen($value))){
+				$fieldConf = $config->getConfig();
+				if(isset($fieldConf["hideIfEmpty"]) && !$fieldConf["hideIfEmpty"] && isset($fieldConf["emptyValue"])){
+					$value = $fieldConf["emptyValue"];
+				}
+			}
 
 			$page->addModel($config->getFieldId() . "_visible", array(
 				"visible" => (strlen(strip_tags($value)) > 0),
@@ -102,13 +110,13 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 								"src" => $value,
 								"attr:alt" => $value2,
 								"soy2prefix" => SOYSHOP_SITE_PREFIX,
-								"visible" => ($value) ? true : false
+								"visible" => (isset($value))
 							));
 						}else{
 							$page->addImage($config->getFieldId(), array(
 								"src" => $value,
 								"soy2prefix" => SOYSHOP_SITE_PREFIX,
-								"visible" => ($value)?true:false
+								"visible" => (isset($value))
 							));
 						}
 					}

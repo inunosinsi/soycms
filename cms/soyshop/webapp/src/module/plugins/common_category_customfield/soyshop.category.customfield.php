@@ -6,19 +6,19 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 	function doPost($category){
 
 		$list = (isset($_POST["custom_field"])) ? $_POST["custom_field"] : array();
-		
+
 		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
 		$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 		$array = $dao->getByCategoryId($category->getId());
 
 		$configs = SOYShop_CategoryAttributeConfig::load(true);
-		
+
 		foreach($list as $key => $value){
-			
+
 			if(!isset($configs[$key]))continue;
-			
+
 			$value2 = (isset($list[$key."_option"]) && strlen($list[$key."_option"]) > 0) ? $list[$key."_option"] : "";
-			
+
 			try{
 				if(isset($array[$key])){
 					$obj = $array[$key];
@@ -36,17 +36,17 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 				}
 			}catch(Exception $e){
 			}
-		
+
 			if($configs[$key]->isIndex()){
 				$$categoryDAO->updateSortValue($catogory->getId(),$key,$value);
 			}
 
 		}
-		
+
 		//チェックボックスが非選択時の処理
 		foreach($configs as $key => $value){
-			
-			try{			
+
+			try{
 				if(!isset($list[$key]) && isset($array[$key])){
 					$obj = $array[$key];
 					$obj->setValue("");
@@ -59,7 +59,7 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 	}
 
 	function getForm($category){
-		
+
 		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
 		try{
 			$array = $dao->getByCategoryId($category->getId());
@@ -69,11 +69,11 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 
 		$html = array();
 		$list = SOYShop_CategoryAttributeConfig::load();
-		
+
 		foreach($list as $config){
 			$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : null;
 			$value2 = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue2() : null;
-			
+
 			$html[] = $config->getForm($value,$value2);
 		}
 
@@ -81,11 +81,9 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 	}
 
 	function onDelete($id){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-		$attributeDAO->deleteByCategoryId($id);
+		SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO")->deleteByCategoryId($id);
 	}
 
 }
 
 SOYShopPlugin::extension("soyshop.category.customfield","common_category_customfield","CommonCategoryCustomfield");
-?>
