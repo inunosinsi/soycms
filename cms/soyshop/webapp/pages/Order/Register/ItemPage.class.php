@@ -73,12 +73,13 @@ class ItemPage extends WebPage{
 
 						//商品オプションが一致する場合は統合
 						$resOpts = (isset($newItems[$id]["attributes"]) && is_array($newItems[$id]["attributes"])) ? $newItems[$id]["attributes"] : array();
+						$resOpts["itemId"] = $itemOrder->getItemId();
 						$res = SOYShopPlugin::invoke("soyshop.item.option", array(
 							"mode" => "compare",
 							"cart" => $this->cart,
 							"option" => $resOpts
 						))->getCartOrderId();
-
+						
 						//商品オプションが一致したため統合する
 						if($id != $res && isset($items[$res])){
 							/** @ToDo 数がうまくいかない **/
@@ -86,6 +87,9 @@ class ItemPage extends WebPage{
 							unset($items[$id]);
 							continue;
 						}
+
+						//比較用で挿入しておいたitemIdを削除する
+						unset($resOpts["itemId"]);
 
 						//商品オプションの配列はシリアライズしておく
 						if(count($resOpts) > 0) $items[$id]->setAttributes(soy2_serialize($resOpts));

@@ -85,13 +85,13 @@ class SlipNumberListPage extends WebPage {
 						}
 
 						$slipNumber = trim(str_replace("\"", "", $v[0]));
-						
+
 						try{
 							$slipId = $slipDao->getBySlipNumberAndNoDelivery($slipNumber)->getId();
 						}catch(Exception $e){
 							continue;
 						}
-
+						
 						$slipLogic->changeStatus((int)$slipId, "delivery");
 					}
 				}
@@ -100,7 +100,7 @@ class SlipNumberListPage extends WebPage {
 			}
 		}
 
-		SOY2PageController::jump("Extension.slip_number?failed");
+		//SOY2PageController::jump("Extension.slip_number?failed");
 	}
 
 	function __construct(){

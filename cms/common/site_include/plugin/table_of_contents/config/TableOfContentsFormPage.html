@@ -1,0 +1,47 @@
+<h3>プラグインの概要</h3>
+<p>記事投稿画面で下記のように見出しタグ入りに記事を作成すると、</p>
+<pre>&lt;h1&gt;H1の文字列&lt;/h1&gt;
+&lt;h2&gt;H2の文字列1&lt;/h2&gt;
+&lt;h3&gt;H3の文字列1&lt;/h3&gt;
+&lt;p&gt;ここから本文&lt;/p&gt;
+&lt;h3&gt;H3の文字列2&lt;/h3&gt;
+&lt;p&gt;ここから本文&lt;/p&gt;
+&lt;h2&gt;H2の文字列2&lt;/h2&gt;
+&lt;h3&gt;H3の文字列3&lt;/h3&gt;
+&lt;p&gt;ここから本文&lt;/p&gt;
+&lt;h2&gt;H2の文字列3&lt;/h2&gt;
+&lt;h3&gt;H3の文字列4&lt;/h3&gt;
+&lt;p&gt;ここから本文&lt;/p&gt;</pre>
+<p>公開側のブログページの記事詳細ページで</p>
+<p><img soy:id="sample"></p>
+<pre>&lt;ul&gt;
+	&lt;li&gt;
+		&lt;a href="#heading-1-1"&gt;H1の文字列&lt;/a&gt;
+		&lt;ul&gt;
+			&lt;li&gt;
+				&lt;a href="#heading-2-2"&gt;H2の文字列1&lt;/a&gt;
+				&lt;ul&gt;
+					&lt;li&gt;&lt;a href="#heading-3-3"&gt;H3の文字列1&lt;/a&gt;&lt;/li&gt;
+					&lt;li&gt;&lt;a href="#heading-3-4"&gt;H3の文字列2&lt;/a&gt;&lt;/li&gt;
+				&lt;/ul&gt;
+			&lt;/li&gt;
+			&lt;li&gt;
+				&lt;a href="#heading-2-5"&gt;H2の文字列2&lt;/a&gt;
+				&lt;ul&gt;
+					&lt;li&gt;&lt;a href="#heading-3-6"&gt;H3の文字列3&lt;/a&gt;&lt;/li&gt;
+				&lt;/ul&gt;
+			&lt;/li&gt;
+			&lt;li&gt;
+				&lt;a href="#heading-2-7"&gt;H2の文字列3&lt;/a&gt;
+				&lt;ul&gt;
+					&lt;li&gt;&lt;a href="#heading-3-8"&gt;H3の文字列4&lt;/a&gt;&lt;/li&gt;
+				&lt;/ul&gt;
+			&lt;/li&gt;
+		&lt;/ul&gt;
+	&lt;/li&gt;
+&lt;/ul&gt;</pre>
+<p>記事の構成に従って、任意の箇所に見出しを出力できます。</p>
+<h3 style="margin-top:30px;">使い方</h3>
+<p>記事投稿画面、もしくはブログページの記事詳細画面で<strong>##HEADING##</strong>を入れておくと、ページの表示時に##HEADING##が置換されて見出しが表示されます。</p>
+<h4>※注意</h4>
+<p>記事投稿時に&lt;h2&gt;の下に&lt;h4&gt;と見出しの番号が連番でないと見出しの自動作成時に&lt;h4&gt;は解釈されないので、見出しタグは連番で使用してください。</p>

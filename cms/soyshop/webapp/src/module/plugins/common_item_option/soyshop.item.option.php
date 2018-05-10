@@ -47,6 +47,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 			if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
 				$attrs = $item->getAttributes();
 				$currentOptions = (isset($attrs)) ? soy2_unserialize($attrs) : array();
+				$currentOptions["itemId"] = $item->getItemId();
 			//公開側の場合はカートのセッション内にオプションが格納されている
 			}else{
 				foreach($list as $key => $value){
@@ -198,7 +199,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
 		$list = $logic->getOptions();
 
-		return $list[$key]["name"];
+		return (isset($list[$key]["name"])) ? $list[$key]["name"] : "";
 	}
 
 	private function getOptionName($values){

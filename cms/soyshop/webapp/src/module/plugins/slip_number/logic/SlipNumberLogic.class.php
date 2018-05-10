@@ -9,6 +9,7 @@ class SlipNumberLogic extends SOY2LogicBase{
 	private $slipDao;
 
 	function __construct(){
+		SOY2::import("util.SOYShopPluginUtil");
 		SOY2::import("module.plugins.slip_number.util.SlipNumberUtil");
 		$this->orderAttributeDao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
 		SOY2::import("module.plugins.slip_number.domain.SOYShop_SlipNumberDAO");
@@ -129,6 +130,11 @@ class SlipNumberLogic extends SOY2LogicBase{
 			$this->slipDao->update($slipNumber);
 		}catch(Exception $e){
 			return false;
+		}
+
+		//返送管理プラグインと連携している場合は返送のチェックを行う
+		if(SOYShopPluginUtil::checkIsActive("resend_manager")){
+			SOY2Logic::createInstance("module.plugins.resend_manager.logic.ResendLogic")->checkResendSlipNumber($slipNumber->getOrderId(), $slipNumber->getSlipNumber());
 		}
 
 		//一つの注文ですべて配送済みにしたら注文ステータスを配送済みにする

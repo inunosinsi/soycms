@@ -1,5 +1,6 @@
 <?php
 SOY2::import("domain.user.SOYShop_User");
+SOY2::import("domain.order.SOYShop_ItemModule");
 
 /**
  * @table soyshop_order
