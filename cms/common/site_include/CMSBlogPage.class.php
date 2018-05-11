@@ -486,16 +486,16 @@ class CMSBlogPage extends CMSPage{
 			soy_cms_blog_output_entry_navi($this,$this->nextEntry,$this->prevEntry);
 
 			//コメントフォームを出力
-			soy_cms_blog_output_comment_form($this,$this->entry,$this->entryComment);
+			if(self::checkUseBBlock(BlogPage::B_BLOCK_COMMENT_FORM)) soy_cms_blog_output_comment_form($this,$this->entry,$this->entryComment);
 
 			//トラックバックリンクを出力
-			soy_cms_blog_output_trackback_link($this,$this->entry);
+			if(self::checkUseBBlock(BlogPage::B_BLOCK_TRACKBACK_LINK)) soy_cms_blog_output_trackback_link($this,$this->entry);
 
 			//トラックバックリストを出力
-			soy_cms_blog_output_trackback_list($this,$this->entry);
+			if(self::checkUseBBlock(BlogPage::B_BLOCK_TRACKBACK_LIST)) soy_cms_blog_output_trackback_list($this,$this->entry);
 
 			//コメントリストを出力
-			soy_cms_blog_output_comment_list($this,$this->entry);
+			if(self::checkUseBBlock(BlogPage::B_BLOCK_COMMENT_LIST)) soy_cms_blog_output_comment_list($this,$this->entry);
 
 		}else{
 			//entry_list
@@ -512,7 +512,7 @@ class CMSBlogPage extends CMSPage{
 			soy_cms_blog_output_prev_link($this,$this->offset,$this->limit);
 
 			//記事リストのページャー
-			soy_cms_blog_output_entry_list_pager($this,$this->offset,$this->limit,$this->total);
+			if(self::checkUseBBlock(BlogPage::B_BLOCK_PAGER)) soy_cms_blog_output_entry_list_pager($this,$this->offset,$this->limit,$this->total);
 
 			//最初のページへのリンク first_page
 			soy_cms_blog_output_first_page_link($this,$this->offset,$this->limit,$this->total);
@@ -527,51 +527,51 @@ class CMSBlogPage extends CMSPage{
 			soy_cms_blog_output_current_page($this,$this->offset);
 
 			//現在選択されているカテゴリーを出力
-			soy_cms_blog_output_current_category($this);
+			if(self::checkUseBBlock(BlogPage::B_BLOCK_CURRENT_CATEGORY)) soy_cms_blog_output_current_category($this);
 
 			//現在選択されている年月日を表示
-			soy_cms_blog_output_current_archive($this);
+			if(self::checkUseBBlock(BlogPage::B_BLOCK_CURRENT_ARCHIVE)) soy_cms_blog_output_current_archive($this);
 
 			//現在選択されている年月またはカテゴリーを表示
-			soy_cms_blog_output_current_category_or_archive($this);
+			if(self::checkUseBBlock(BlogPage::B_BLOCK_CURRENT_CATEGORY_OR_ARCHIVE)) soy_cms_blog_output_current_category_or_archive($this);
 
 			//現在選択されている年月の翌月と前月へのリンク next_month
 			soy_cms_blog_output_prev_next_month($this);
 		}
 
 		//カテゴリリンクを出力 category
-		soy_cms_blog_output_category_link($this);
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_CATEGORY)) soy_cms_blog_output_category_link($this);
 
 		//月別リンクを出力 archive
-		soy_cms_blog_output_archive_link($this);
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_ARCHIVE)) soy_cms_blog_output_archive_link($this);
 
 		//年別リンクを出力 archive_by_year
-		soy_cms_blog_output_archive_link_by_year($this);
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_ARCHIVE_BY_YEAR)) soy_cms_blog_output_archive_link_by_year($this);
 
 		//トップページへのリンクを出力
-		soy_cms_blog_output_top_link($this);
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_TOP_LINK)) soy_cms_blog_output_top_link($this);
 
 		//最新エントリー一覧を取得
-		soy_cms_blog_output_recent_entry_list($this,$this->getRecentEntries());
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_RECENT_ENTRY_LIST)) soy_cms_blog_output_recent_entry_list($this,$this->getRecentEntries());
 
 		//最新コメントを出力
-		soy_cms_blog_output_recent_comment_list($this);
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_RECENT_COMMENT_LIST)) soy_cms_blog_output_recent_comment_list($this);
 
 		//最新トラックバックを出力
-		soy_cms_blog_output_recent_trackback_list($this);
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_RECENT_TRACKBACK_LIST)) soy_cms_blog_output_recent_trackback_list($this);
 
 		//feedのメタ情報を表示
-		soy_cms_blog_output_meta_feed_info($this);
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_META_FEED_LINK)) soy_cms_blog_output_meta_feed_info($this);
 
 		//feedへのリンクを表示
-		soy_cms_blog_output_feed_link($this);
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_RSS_LINK)) soy_cms_blog_output_feed_link($this);
 
 		//メッセージの設定
 		$this->createAdd("blog_name","CMSLabel",array(
 			"text" => $this->page->getTitle(),
 			"soy2prefix"=>"b_block")
 		);
-		$this->createAdd("blog_url","HTMLLink",array(
+		$this->addLink("blog_url", array(
 			"link" => $this->getTopPageURL(true),
 			"soy2prefix"=>"b_block")
 		);
@@ -579,7 +579,7 @@ class CMSBlogPage extends CMSPage{
 			"html"=>str_replace(array("\r\n","\r","\n"),"<br />",htmlspecialchars($this->page->getDescription())),
 			"soy2prefix"=>"b_block"
 		));
-		$this->createAdd("blog_current_absolute_url","HTMLLink",array(
+		$this->addLink("blog_current_absolute_url", array(
 			"link" => $this->currentAbsoluteURL,
 			"soy2prefix"=>"b_block"
 		));
@@ -599,6 +599,12 @@ class CMSBlogPage extends CMSPage{
 
 		$this->setTitle($this->title);
 
+	}
+
+	private function checkUseBBlock($tag){
+		static $conf;
+		if(is_null($conf)) $conf = $this->page->getBBlockConfig();
+		return (isset($conf[$tag]) && (int)$conf[$tag] === 1);
 	}
 
 	/**
@@ -805,15 +811,12 @@ class CMSBlogPage extends CMSPage{
 	 * $this->totalを汚さないためにgetRSSEntriesから分離した
 	 */
 	function getRecentEntries(){
-		$logic = self::getEntryLogic();
+		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 
 		//表示件数を指定
 		$logic->setLimit($this->page->getRssDisplayCount());
 		$logic->setOffset(0);
-
-		$entries = $logic->getOpenEntryByLabelIds(array($this->page->getBlogLabelId()));
-
-		return $entries;
+		return $logic->getOpenEntryByLabelIds(array($this->page->getBlogLabelId()));
 	}
 
 	/**

@@ -11,7 +11,7 @@ class LabelIconListComponent extends HTMLList{
 	}
 
 	private function buildScript($entity){
-		if(strpos($_SERVER["REQUEST_URI"], "/Page/Detail") !== false){
+		if(strpos($_SERVER["REQUEST_URI"], "/Page/Detail") !== false || strpos($_SERVER["REQUEST_URI"], "Blog/Config") !== false){
 			return "javascript:setChangeLabelIcon('".$entity->filename."','".$entity->url."');";
 		}
 

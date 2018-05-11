@@ -459,16 +459,18 @@ class EntryLogic extends SOY2LogicBase{
 	 * 月別アーカイブを数える
 	 */
 	function getCountMonth($labelIds){
-		$dao = self::labeledEntryDao();
-		return $dao->getCountMonth($labelIds);
+		return self::labeledEntryDao()->getCountMonth($labelIds);
+	}
+
+	function getMonth($labelIds){
+		return self::labeledEntryDao()->getMonth($labelIds);
 	}
 
 	/**
 	 * 年別アーカイブを数える
 	 */
 	function getCountYear($labelIds){
-		$dao = self::labeledEntryDao();
-		return $dao->getCountYear($labelIds);
+		return self::labeledEntryDao()->getCountYear($labelIds);
 	}
 
 	/**

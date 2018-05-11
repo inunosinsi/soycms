@@ -96,6 +96,9 @@ class BlogPage extends Page{
 
 	private $defaultAcceptTrackback;
 
+	//b_blockの設定
+	private $bBlockConfig;
+
 	/**
 	* @param startWithSlash /で始まるかどうか
 	*/
@@ -225,6 +228,8 @@ class BlogPage extends Page{
 
 		$obj->defaultAcceptComment = @$this->defaultAcceptComment;
 		$obj->defaultAcceptTrackback = @$this->defaultAcceptTrackback;
+
+		$obj->bBlockConfig = $this->bBlockConfig;
 
 		return $obj;
 	}
@@ -459,6 +464,18 @@ class BlogPage extends Page{
 		$this->defaultAcceptTrackback = $defaultAcceptTrackback;
 	}
 
+	function getBBlockConfig(){
+		if(is_null($this->bBlockConfig) || (is_array($this->bBlockConfig) && !count($this->bBlockConfig))){
+			foreach($this->getBBlockList() as $tag){
+				$this->bBlockConfig[$tag] = 1;
+			}
+		}
+		return $this->bBlockConfig;
+	}
+	function setBBlockConfig($bBlockConfig){
+		$this->bBlockConfig = $bBlockConfig;
+	}
+
 	function getFeedTitleFormat() {
 		return $this->feedTitleFormat;
 	}
@@ -471,5 +488,47 @@ class BlogPage extends Page{
 	}
 	function setTopPageUri($topPageUri) {
 		$this->topPageUri = $topPageUri;
+	}
+
+	/** 便利なメソッド **/
+
+	const B_BLOCK_CATEGORY = "category";
+	const B_BLOCK_ARCHIVE = "archive";
+	const B_BLOCK_ARCHIVE_BY_YEAR = "archive_by_year";
+	const B_BLOCK_RECENT_ENTRY_LIST = "recent_entry_list";
+	const B_BLOCK_RECENT_COMMENT_LIST = "recent_comment_list";
+	const B_BLOCK_RECENT_TRACKBACK_LIST = "recent_trackback_list";
+	const B_BLOCK_PAGER = "pager";
+	const B_BLOCK_CURRENT_CATEGORY = "current_category";
+	const B_BLOCK_CURRENT_ARCHIVE = "current_archive";
+	const B_BLOCK_CURRENT_CATEGORY_OR_ARCHIVE = "current_category_or_archive";
+	const B_BLOCK_COMMENT_FORM = "comment_form";
+	const B_BLOCK_COMMENT_LIST = "comment_list";
+	const B_BLOCK_TRACKBACK_LINK = "trackback_link";
+	const B_BLOCK_TRACKBACK_LIST = "trackback_list";
+	const B_BLOCK_TOP_LINK = "top_link";
+	const B_BLOCK_META_FEED_LINK = "meta_feed_link";
+	const B_BLOCK_RSS_LINK = "rss_link";
+
+	function getBBlockList(){
+		return array(
+			self::B_BLOCK_CATEGORY,
+			self::B_BLOCK_ARCHIVE,
+			self::B_BLOCK_ARCHIVE_BY_YEAR,
+			self::B_BLOCK_RECENT_ENTRY_LIST,
+			self::B_BLOCK_RECENT_COMMENT_LIST,
+			self::B_BLOCK_RECENT_TRACKBACK_LIST,
+			self::B_BLOCK_PAGER,
+			self::B_BLOCK_CURRENT_CATEGORY,
+			self::B_BLOCK_CURRENT_ARCHIVE,
+			self::B_BLOCK_CURRENT_CATEGORY_OR_ARCHIVE,
+			self::B_BLOCK_COMMENT_FORM,
+			self::B_BLOCK_COMMENT_LIST,
+			self::B_BLOCK_TRACKBACK_LINK,
+			self::B_BLOCK_TRACKBACK_LIST,
+			self::B_BLOCK_TOP_LINK,
+			self::B_BLOCK_META_FEED_LINK,
+			self::B_BLOCK_RSS_LINK
+		);
 	}
 }

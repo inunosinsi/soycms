@@ -1,35 +1,35 @@
 <?php
 
 class UpdateBlogConfigAction extends SOY2Action{
-	
+
 	var $id;
-	
+
 	function setId($id){
 		$this->id = $id;
 	}
 
     protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
-    	
+
     	//生成フラグの変換
-    	
+
     	if(
     		$form->entryPageUri == $form->categoryPageUri
     		|| $form->entryPageUri == $form->monthPageUri
     		|| $form->entryPageUri == $form->rssPageUri
     		|| $form->categoryPageUri == $form->monthPageUri
     		|| $form->categoryPageUri == $form->rssPageUri
-    		|| $form->monthPageUri == $form->rssPageUri    	
+    		|| $form->monthPageUri == $form->rssPageUri
     	){
     		return SOY2Action::FAILED;
     	}
-    	
+
     	$dao = SOY2DAOFactory::create("cms.BlogPageDAO");
     	$page = $dao->getById($this->id);
     	$page = SOY2::cast($page,$form);
-    	
+		
     	//カテゴリ未選択の場合は、pageオブジェクトも未選択にする
-    	if(is_null($form->getCategoryLabelList())) $page->setCategoryLabelList(null);    	
-    	
+    	if(is_null($form->getCategoryLabelList())) $page->setCategoryLabelList(null);
+
     	$page->setId($this->id);
 
 		try{
@@ -37,13 +37,13 @@ class UpdateBlogConfigAction extends SOY2Action{
 		}catch(Exception $e){
 			return SOY2Action::FAILED;
 		}
-    	
-    	return SOY2Action::SUCCESS;	
+
+    	return SOY2Action::SUCCESS;
     }
 }
 
 class UpdateBlogConfigActionForm extends SOY2ActionForm{
-	
+
 	var $uri;
 	var $title;
 	var $openPeriodStart;
@@ -76,7 +76,8 @@ class UpdateBlogConfigActionForm extends SOY2ActionForm{
 	var $feedTitleFormat;
 	var $icon;
 	var $description;
-	
+	var $bBlockConfig;
+
     function setId($id) {
     	$this->id = $id;
     }
@@ -109,7 +110,7 @@ class UpdateBlogConfigActionForm extends SOY2ActionForm{
     function setOpenPeriodEnd($openPeriodEnd) {
     	$tmpDate = (strlen($openPeriodEnd)) ? strtotime($openPeriodEnd) : false;
     	if($tmpDate === false){
-    		$this->openPeriodEnd = null;	
+    		$this->openPeriodEnd = null;
     	}else{
     		$this->openPeriodEnd = $tmpDate;
     	}
@@ -278,6 +279,13 @@ class UpdateBlogConfigActionForm extends SOY2ActionForm{
     	$this->description = $description;
     }
 
+	function getBBlockConfig(){
+		return $this->bBlockConfig;
+	}
+	function setBBlockConfig($bBlockConfig){
+		$this->bBlockConfig = $bBlockConfig;
+	}
+
     function getFeedTitleFormat() {
     	return $this->feedTitleFormat;
     }
@@ -292,4 +300,3 @@ class UpdateBlogConfigActionForm extends SOY2ActionForm{
     	$this->topPageUri = $topPageUri;
     }
 }
-?>

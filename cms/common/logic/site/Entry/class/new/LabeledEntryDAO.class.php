@@ -363,6 +363,46 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		return $ret_val;
 	}
 
+	function getMonth($labelIds){
+		$labelIds = array_map(function($val) { return (int)$val; }, $labelIds);
+
+		$binds = array(":now"=>SOYCMS_NOW);
+
+
+		$spanSQL = 'SELECT max(cdate) as max, min(cdate) as min ' .
+				'FROM Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ' .
+				'WHERE EntryLabel.label_id in (' . implode(",",$labelIds) .') ' .
+				'AND Entry.isPublished = 1 ' .
+				'AND (Entry.openPeriodEnd > :now AND Entry.openPeriodStart <= :now)';
+
+		$result = $this->executeQuery($spanSQL,$binds);
+
+		$max = (isset($result[0]['max'])) ? $result[0]['max'] : Entry::PERIOD_END;
+		$min = (isset($result[0]['min'])) ? $result[0]['min'] : Entry::PERIOD_START;
+
+		$maxMonth = date('m',$max);
+		$maxYear = date('Y',$max);
+		$minMonth = date('m',$min);
+		$minYear = date('Y',$min);
+
+		$ret_val = array();
+
+		for($y = $minYear; $y <= $maxYear; $y++){
+			$span_min = ($y == $minYear)?$minMonth:1;
+			$span_max = ($y == $maxYear)?$maxMonth:12;
+
+
+			for($m = $span_min;  $m<=$span_max; $m++){
+				$ret_val[mktime (1, 1, 1, $m, 1, $y)] = 1;
+			}
+		}
+
+		//降順に並び替え
+		$ret_val = array_reverse($ret_val,true);
+
+		return $ret_val;
+	}
+
 	/**
 	 * 年毎のエントリー数を数え上げる
 	 */

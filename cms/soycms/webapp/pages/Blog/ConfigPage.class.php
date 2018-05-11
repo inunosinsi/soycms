@@ -44,18 +44,17 @@ class ConfigPage extends CMSWebPageBase{
 
 		$page = $result->getAttribute("Page");
 
-
-		$this->createAdd("uri","HTMLInput",array(
-			"value"=>$page->getUri(),
-			"name"=>"uri"
+		$this->addInput("uri", array(
+			"value" => $page->getUri(),
+			"name" => "uri"
 		));
 
-		$this->createAdd("uri_prefix","HTMLLabel",array(
-			"text"=>$this->getURIPrefix($id)
+		$this->addLabel("uri_prefix", array(
+			"text" => self::getURIPrefix($id)
 		));
 
 		//アイコン設定
-		$this->createAdd("page_icon_show","HTMLImage",array(
+		$this->addImage("page_icon_show", array(
 			"src" => $page->getIconUrl(),
 			"onclick" => "javascript:changeImageIcon(".$page->getId().");"
 		));
@@ -66,7 +65,9 @@ class ConfigPage extends CMSWebPageBase{
 		));
 
 		//見出しに現在編集しているページ名を表示
-		$this->createAdd("page_name","HTMLLabel",array("text"=>$page->getTitle()));
+		$this->addLabel("page_name", array(
+			"text" => $page->getTitle()
+		));
 
 		$labels = $this->getLabels();
 
@@ -78,43 +79,44 @@ class ConfigPage extends CMSWebPageBase{
 		$this->createAdd("no_label_message2","_LabelBlankPage",array(
 			"visible"=>(count($labels) == 0)
 		));
-		$this->createAdd("label_exists","HTMLModel",array(
+		$this->addModel("label_exists", array(
 			"visible"=>(count($labels) > 0)
 		));
-		$this->createAdd("label_exists2","HTMLModel",array(
+		$this->addModel("label_exists2", array(
 			"visible"=>(count($labels) > 0)
 		));
 
 		/* フォームの部品　開始 */
 		$form = $this->create("page_detail_form","CMSFormBase");
 
-		$form->createAdd("title","HTMLInput",array(
-			"value"=>$page->getTitle(),
-			"name"=>"title"
+		$form->addInput("title", array(
+			"value" => $page->getTitle(),
+			"name" => "title"
 		));
 
-		$form->createAdd("description","HTMLTextArea",array(
+		$form->addTextArea("description", array(
 			"name" => "description",
 			"text" => $page->getDescription()
 		));
 
-		$form->createAdd("parent_page","HTMLSelect",array(
-			"selected"=>$page->getParentPageId(),
-			"options"=>$this->getPageList(),
-			"indexOrder"=>true,
-			"name"=>"parentPageId"
+		$form->addSelect("parent_page", array(
+			"selected" => $page->getParentPageId(),
+			"options" => $this->getPageList(),
+			"indexOrder" => true,
+			"name" => "parentPageId"
 		));
 
-		$form->createAdd("state_draft","HTMLCheckBox",array(
-			"selected"=>!$page->getIsPublished(),
-			"name"=>"isPublished",
-			"value"=>0,
+
+		$form->addCheckBox("state_draft", array(
+			"selected" => !$page->getIsPublished(),
+			"name" => "isPublished",
+			"value" => 0,
 			"label" => CMSMessageManager::get("SOYCMS_DRAFT")
 		));
-		$form->createAdd("state_public","HTMLCheckBox",array(
-			"selected"=>$page->getIsPublished(),
-			"name"=>"isPublished",
-			"value"=>1,
+		$form->addCheckBox("state_public", array(
+			"selected" => $page->getIsPublished(),
+			"name" => "isPublished",
+			"value" => 1,
 			"label" => CMSMessageManager::get("SOYCMS_PUBLISHED")
 		));
 
@@ -123,15 +125,15 @@ class ConfigPage extends CMSWebPageBase{
 
 
 		//公開期間フォームの表示
-		$form->createAdd("start_date","HTMLInput",array(
+		$form->addInput("start_date", array(
 			"value"=>(is_null($start)) ? "" : date('Y-m-d H:i:s',$start),
 			"name"=>"openPeriodStart"
 		));
-		$form->createAdd("end_date","HTMLInput",array(
+		$form->addInput("end_date", array(
 			"value"=>(is_null($end)) ? "" : date('Y-m-d H:i:s',$end),
 			"name"=>"openPeriodEnd"
 		));
-		$form->createAdd("open_period_show","HTMLLabel",array(
+		$form->addLabel("open_period_show", array(
 			"html" => CMSUtil::getOpenPeriodMessage($start, $end)
 		));
 
@@ -154,130 +156,130 @@ class ConfigPage extends CMSWebPageBase{
 
 
 		//ページ生成設定
-		$form->createAdd("top_page_uri_prefix","HTMLLabel",array(
-			"text" => (strlen($page->getUri())>0) ? "/" . $page->getUri() . "/" : "/"
+		$form->addLabel("top_page_uri_prefix", array(
+			"text" => (strlen($page->getUri()) > 0) ? "/" . $page->getUri() . "/" : "/"
 		));
 
-		$form->createAdd("entry_page_uri_prefix","HTMLLabel",array(
-			"text" => (strlen($page->getUri())>0) ? "/" . $page->getUri() . "/" : "/"
+		$form->addLabel("entry_page_uri_prefix", array(
+			"text" => (strlen($page->getUri()) > 0) ? "/" . $page->getUri() . "/" : "/"
 		));
 
-		$form->createAdd("top_page_uri","HTMLInput",array(
+		$form->addInput("top_page_uri", array(
 			"value" => $page->getTopPageUri(),
 			"name"=>"topPageUri",
 		));
 
-		$form->createAdd("entry_page_uri","HTMLInput",array(
+		$form->addInput("entry_page_uri", array(
 			"value" => $page->getEntryPageUri(),
 			"name"=>"entryPageUri",
 		));
 
-		$form->createAdd("month_page_uri_prefix","HTMLLabel",array(
+		$form->addLabel("month_page_uri_prefix", array(
 			"text" => (strlen($page->getUri())>0) ? "/" . $page->getUri() . "/" : "/"
 		));
 
-		$form->createAdd("month_page_uri","HTMLInput",array(
+		$form->addInput("month_page_uri", array(
 			"value" => $page->getMonthPageUri(),
 			"name"=>"monthPageUri",
 		));
 
-		$form->createAdd("category_page_uri_prefix","HTMLLabel",array(
+		$form->addLabel("category_page_uri_prefix", array(
 			"text" => (strlen($page->getUri())>0) ? "/" . $page->getUri() . "/" : "/"
 		));
 
-		$form->createAdd("category_page_uri","HTMLInput",array(
+		$form->addInput("category_page_uri", array(
 			"value" => $page->getCategoryPageUri(),
 			"name"=>"categoryPageUri",
 		));
 
-		$form->createAdd("rss_page_uri_prefix","HTMLLabel",array(
+		$form->addLabel("rss_page_uri_prefix", array(
 			"text" => (strlen($page->getUri())>0) ? "/" . $page->getUri() . "/" : "/"
 		));
 
-		$form->createAdd("rss_page_uri","HTMLInput",array(
+		$form->addInput("rss_page_uri", array(
 			"value" => $page->getRssPageUri(),
 			"name"=>"rssPageUri",
 		));
 
 		//表示件数
-		$form->createAdd("top_display_count","HTMLInput",array(
+		$form->addInput("top_display_count", array(
 			"value" => $page->getTopDisplayCount(),
 			"name"=>"topDisplayCount"
 		));
-		$form->createAdd("month_display_count","HTMLInput",array(
+		$form->addInput("month_display_count", array(
 			"value" => $page->getMonthDisplayCount(),
 			"name"=>"monthDisplayCount"
 		));
-		$form->createAdd("category_display_count","HTMLInput",array(
+		$form->addInput("category_display_count", array(
 			"value" => $page->getCategoryDisplayCount(),
 			"name"=>"categoryDisplayCount"
 		));
-		$form->createAdd("rss_display_count","HTMLInput",array(
+		$form->addInput("rss_display_count", array(
 			"value" => $page->getRssDisplayCount(),
 			"name"=>"rssDisplayCount"
 		));
 
 		//表示順
-		$form->createAdd("top_entry_sort", "HTMLSelect", array(
+		$form->addSelect("top_entry_sort", array(
 			"name" => "topEntrySort",
 			"options" => array("desc" => "降順", "asc" => "昇順"),
 			"selected" => $page->getTopEntrySort()
 		));
-		$form->createAdd("month_entry_sort", "HTMLSelect", array(
+		$form->addSelect("month_entry_sort", array(
 			"name" => "monthEntrySort",
 			"options" => array("desc" => "降順", "asc" => "昇順"),
 			"selected" => $page->getMonthEntrySort()
 		));
-		$form->createAdd("category_entry_sort", "HTMLSelect", array(
+		$form->addSelect("category_entry_sort", array(
 			"name" => "categoryEntrySort",
 			"options" => array("desc" => "降順", "asc" => "昇順"),
 			"selected" => $page->getCategoryEntrySort()
 		));
 
 		//生成フラグ
-		$form->createAdd("generateEntryFlag","HTMLCheckBox",array(
+		$form->addCheckBox("generateEntryFlag", array(
 			"selected"=>$page->getGenerateEntryFlag(),
 			"value"=>"1"
 		));
-		$form->createAdd("generateTopFlag","HTMLCheckBox",array(
+		$form->addCheckBox("generateTopFlag", array(
 			"selected"=>$page->getGenerateTopFlag(),
 			"value"=>"1"
 		));
-		$form->createAdd("generateMonthFlag","HTMLCheckBox",array(
+		$form->addCheckBox("generateMonthFlag", array(
 			"selected"=>$page->getGenerateMonthFlag(),
 			"value"=>"1"
 		));
-		$form->createAdd("generateCategoryFlag","HTMLCheckBox",array(
+		$form->addCheckBox("generateCategoryFlag", array(
 			"selected"=>$page->getGenerateCategoryFlag(),
 			"value"=>"1"
 		));
-		$form->createAdd("generateRssFlag","HTMLCheckBox",array(
+		$form->addCheckBox("generateRssFlag", array(
 			"selected"=>$page->getGenerateRssFlag(),
 			"value"=>"1"
 		));
 
 
-		$form->createAdd("top_title_format","HTMLInput",array(
+		$form->addInput("top_title_format", array(
 			"value"=>$page->getTopTitleFormat(),
 			"name"=>"topTitleFormat"
 		));
 
-		$form->createAdd("entry_title_format","HTMLInput",array(
+		$form->addInput("entry_title_format", array(
 			"value"=>$page->getEntryTitleFormat(),
 			"name"=>"entryTitleFormat"
 		));
 
-		$form->createAdd("month_title_format","HTMLInput",array(
+		$form->addInput("month_title_format", array(
 			"value"=>$page->getMonthTitleFormat(),
 			"name"=>"monthTitleFormat"
 		));
 
-		$form->createAdd("category_title_format","HTMLInput",array(
+		$form->addInput("category_title_format", array(
 			"value"=>$page->getCategoryTitleFormat(),
 			"name"=>"categoryTitleFormat"
 		));
 
-		$form->createAdd("feed_title_format","HTMLInput",array(
+		$form->addInput("feed_title_format", array(
 			"value"=>$page->getFeedTitleFormat(),
 			"name"=>"feedTitleFormat"
 		));
@@ -291,12 +293,27 @@ class ConfigPage extends CMSWebPageBase{
 		));
 
 		//アイコンリスト
-		$this->createAdd("image_list","LabelIconList",array(
+		$this->createAdd("image_list","_component.Label.LabelIconListComponent",array(
 			"list" => $this->getLabelIconList()
 		));
 
 		$this->addModel("innerLink",array(
 			"script" => 'var CreateLabelLink = "'.SOY2PageController::createLink("Entry.CreateNewLabel").'";'
+		));
+
+		//b_blockの使用設定
+		$bBlockConfig = $page->getBBlockConfig();
+		$html = array();
+		foreach($page->getBBlockList() as $tag){
+			if(isset($bBlockConfig[$tag]) && $bBlockConfig[$tag] == 1){
+				$html[] = "<label><input type=\"checkbox\" name=\"bBlockConfig[" . $tag . "]\" value=\"1\" checked=\"checked\">" . $tag . "</label>";
+			}else{
+				$html[] = "<label><input type=\"checkbox\" name=\"bBlockConfig[" . $tag . "]\" value=\"1\">" . $tag . "</label>";
+			}
+		}
+
+		$this->addLabel("b_block_config_checks", array(
+			"html" => implode("\n&nbsp;", $html)
 		));
 
 		//ラベルの追加
@@ -359,7 +376,7 @@ class ConfigPage extends CMSWebPageBase{
 	/**
 	 * このページIDに対する呼び出しURIの定型部分を取得
 	 */
-	function getURIPrefix($pageId){
+	private function getURIPrefix($pageId){
 		return CMSUtil::getSiteUrl();
 	}
 
@@ -458,15 +475,5 @@ class Blog_LabelList extends HTMLList{
 			"src" => $entity->getIconUrl()
 		));
 
-	}
-}
-
-class LabelIconList extends HTMLList{
-
-	protected function populateItem($entity){
-		$this->createAdd("image_list_icon","HTMLImage",array(
-			"src" => $entity->url,
-			"ondblclick" => "javascript:setChangeLabelIcon('".$entity->filename."','".$entity->url."');"
-		));
 	}
 }
