@@ -311,6 +311,8 @@ class ConfigPage extends CMSWebPageBase{
 				$html[] = "<label><input type=\"checkbox\" name=\"bBlockConfig[" . $tag . "]\" value=\"1\">" . $tag . "</label>";
 			}
 		}
+		//ダミーを追加
+		$html[] = "<input type=\"hidden\" name=\"bBlockConfig[dummy]\" value=\"1\">";
 
 		$this->addLabel("b_block_config_checks", array(
 			"html" => implode("\n&nbsp;", $html)
