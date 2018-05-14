@@ -129,7 +129,7 @@ create table Block(
 create table SiteConfig(
 	name varchar(255),
 	description varchar(255),
-	siteConfig varchar(255),
+	siteConfig TEXT,
 	charset integer default 1
 );
 

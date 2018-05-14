@@ -65,6 +65,4 @@ class CMSApplicationPage extends CMSPage{
     		throw $e;
     	}
     }
-
 }
-?>

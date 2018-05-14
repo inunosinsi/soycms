@@ -43,7 +43,10 @@ class DetailPage extends CMSWebPageBase{
 			case Page::PAGE_TYPE_MOBILE:	//mobileページだった時はそっちに
 				$this->jump("Page.Mobile.Detail." . $this->id);
 				break;
-			case Page::PAGE_TYPE_APPLICATION:	//404ページだった場合の処理
+			case Page::PAGE_TYPE_APPLICATION:	//applicationページだった場合
+				$this->jump("Page.Application.Detail." . $this->id);
+				break;
+			case Page::PAGE_TYPE_ERROR:	//404ページだった場合の処理
 				DisplayPlugin::hide("openperiod_section");
 				break;
 			default:
