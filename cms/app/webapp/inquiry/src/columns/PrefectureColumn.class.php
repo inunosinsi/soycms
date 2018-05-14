@@ -100,7 +100,7 @@ class PrefectureColumn extends SOYInquiry_ColumnBase{
 	 * 設定画面で表示する用のフォーム
 	 */
 	function getConfigForm(){
-		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
+		$html = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
 		if($this->requiredProp){
 			$html .= ' checked';
 		}

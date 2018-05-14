@@ -5,7 +5,7 @@ class SOYInquiryApplication{
 	function init(){
 
 		$level = CMSApplication::getAppAuthLevel();
-		
+
 		CMSApplication::setTabs(array(
 			array(
 				"label" => "新着",
@@ -32,7 +32,7 @@ class SOYInquiryApplication{
 		));
 
 		CMSApplication::main(array($this,"main"));
-		
+
 		CMSApplication::addLink(SOY2PageController::createRelativeLink("./webapp/" . APPLICATION_ID . "/js/tools/soy2_data_picker.css"));
 		CMSApplication::addScript(SOY2PageController::createRelativeLink("./webapp/" . APPLICATION_ID . "/js/tools/soy2_data_picker.js"));
 
@@ -140,5 +140,3 @@ class SOYInquiryApplication{
 
 $app = new SOYInquiryApplication();
 $app->init();
-
-?>

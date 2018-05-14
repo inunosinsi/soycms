@@ -82,11 +82,14 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<td>';
 
 		if($this->zipDivide){
-			$html[] = '<input type="text" size="7" class="soyinquiry_address_zip1" name="data['.$this->getColumnId().'][zip1]" value="'.htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8").'"' . $required . '>';
+			$zip1 = (isset($value["zip1"])) ? htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8") : null;
+			$zip2 = (isset($value["zip2"])) ? htmlspecialchars($value["zip2"], ENT_QUOTES, "UTF-8") : null;
+			$html[] = '<input type="text" size="7" class="soyinquiry_address_zip1" name="data['.$this->getColumnId().'][zip1]" value="'.$zip1.'"' . $required . '>';
 			$html[] = '-';
-			$html[] = '<input type="text" size="7" class="soyinquiry_address_zip2" name="data['.$this->getColumnId().'][zip2]" value="'.htmlspecialchars($value["zip2"], ENT_QUOTES, "UTF-8").'"' . $required . '>';
+			$html[] = '<input type="text" size="7" class="soyinquiry_address_zip2" name="data['.$this->getColumnId().'][zip2]" value="'.$zip2.'"' . $required . '>';
 		}else{
-			$html[] = '<input type="text" size="10" class="soyinquiry_address_zip1" name="data['.$this->getColumnId().'][zip]" value="'.htmlspecialchars($value["zip"], ENT_QUOTES, "UTF-8").'"' . $required . '>';
+			$zip = (isset($value["zip"])) ? htmlspecialchars($value["zip"], ENT_QUOTES, "UTF-8") : null;
+			$html[] = '<input type="text" size="10" class="soyinquiry_address_zip1" name="data['.$this->getColumnId().'][zip]" value="'.$zip.'"' . $required . '>';
 		}
 		$html[] = '<input type="submit" name="test" value="住所検索"/></td>';
 		$html[] = '</tr>';
@@ -128,11 +131,17 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	function validate(){
 		$value = $this->getValue();
 
+		if(isset($value["zip"])){
+			$zip = trim($value["zip"]);
+		}else if(isset($value["zip1"])){
+			$zip = trim($value["zip1"] . $value["zip2"]);
+		}
+
+
 		if(!isset($_POST["test"]) && $this->getIsRequire()){
 			if(
 				   empty($value)
-				|| @$value["zip1"] == ""
-				|| @$value["zip2"] == ""
+				|| $zip == ""
 				|| @$value["prefecture"] == ""
 				|| @$value["address1"] == ""
 				|| @$value["address2"] == ""
@@ -143,8 +152,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		}
 
 		if(empty($value)){
-			$value["zip1"] = "";
-			$value["zip2"] = "";
+			$zip = "";
 			$value["prefecture"] = "";
 			$value["address1"] = "";
 			$value["address2"] = "";
@@ -153,15 +161,11 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 			return true;
 		}
 
-		if(!empty($value["zip2"]) && !is_numeric($value["zip1"])){
+		if(!empty($zip) && !is_numeric($zip)){
 			$this->errorMessage = "郵便番号の書式が不正です。";
 			return false;
 		}
 
-		if(!empty($value["zip2"]) && !is_numeric($value["zip2"])){
-			$this->errorMessage = "郵便番号の書式が不正です。";
-			return false;
-		}
 		if(isset($_POST["test"])){
 
 			$logic = SOY2Logic::createInstance("logic.AddressSearchLogic");

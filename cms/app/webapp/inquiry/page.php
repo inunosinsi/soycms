@@ -472,4 +472,3 @@ class SOYInquiry_FormComponent extends HTMLLabel{
 
 $app = new SOYInquiry_PageApplication();
 $app->init();
-?>
