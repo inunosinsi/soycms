@@ -140,6 +140,7 @@ class CMSPageLinkPlugin extends PluginBase{
 					// リンク先が他のサイトの場合
 					$site = $dao->getById($arguments["site"]);
 				}else{
+					if(!defined("_SITE_ROOT_")) define("_SITE_ROOT_", UserInfoUtil::getSiteDirectory());
 					$site = $dao->getBySiteId(basename(_SITE_ROOT_));
 				}
 				$siteRoot = $site->getUrl();
