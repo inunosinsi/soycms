@@ -13,6 +13,8 @@ class ActionListComponent extends HTMLList{
 			"onclick" => (isset($bean["dialog"]) && strlen($bean["dialog"])) ? "return confirm('" . htmlspecialchars($bean["dialog"], ENT_QUOTES, "UTF-8") . "');" : "return true;",
 			"target" => ((isset($bean["dialog"]) && strlen($bean["dialog"])) || (isset($bean["self"]) && $bean["self"] === true)) ? "_self" : "_blank"
 		));
+
+		if(!isset($bean["name"]) || !strlen($bean["name"])) return false;
 	}
 
 	function getFunctionLink($moduleId){

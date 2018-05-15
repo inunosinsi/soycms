@@ -155,9 +155,10 @@ class SOYShop_Order {
 
 		if(is_array($adds) && count($adds)){
 			foreach($adds as $add){
-				if(!is_array($add)) continue;
-				$key = key($add);
-				if(isset($add[$key]["label"])) $list[$key] = $add[$key]["label"];
+				if(!is_array($add) || !count($add)) continue;
+				foreach($add as $key => $values){
+					if(isset($add[$key]["label"])) $list[$key] = $add[$key]["label"];
+				}
 			}
 		}
 
@@ -192,9 +193,10 @@ class SOYShop_Order {
 
 			if(is_array($adds) && count($adds)){
 				foreach($adds as $add){
-					if(!is_array($add)) continue;
-					$key = key($add);
-					if(isset($add[$key]["label"])) $list[$key] = $add[$key]["label"];
+					if(!is_array($add) || !count($add)) continue;
+					foreach($add as $key => $values){
+						if(isset($add[$key]["label"])) $list[$key] = $add[$key]["label"];
+					}
 				}
 			}
 
