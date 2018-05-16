@@ -10,10 +10,8 @@ class AddOrderStatus extends SOYShopOrderStatus{
 			foreach($config as $key => $conf){
 				$list[$key] = array("label" => $conf, "mail" => null);
 			}
+			return $list;
 		}
-
-		return $list;
 	}
-
 }
 SOYShopPlugin::extension("soyshop.order.status", "add_order_status", "AddOrderStatus");
