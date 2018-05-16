@@ -13,14 +13,11 @@ class IndexPage extends CMSWebPageBase{
 
 				set_time_limit(0);
 
-				/**
-				 * @SOY CMS3系統ではファイルDBの更新を廃止したため、下記のコードは不要
 				$sites = $this->getSiteList();
 				foreach($sites as $site){
 					CMSFileManager::setSiteInformation($site->getId(), $site->getUrl(), $site->getPath());
 					CMSFileManager::insertAll($site->getPath());
 				}
-				**/
 			}
 
 			$action = SOY2ActionFactory::createInstance("SiteConfig.UpdateAction");

@@ -264,12 +264,18 @@ class CMSFileManager{
 				$target = str_replace("\\","/",$target);
 				$file = $dao->getByPath($target,$withChild);
 			}catch(Exception $e){
+				//FileDBの更新を試みる
 				try{
-					$target = str_replace("\\","/",realpath($target));
+					self::updateFileDb();
 					$file = $dao->getByPath($target,$withChild);
 				}catch(Exception $e){
-					//
-				}
+					try{
+						$target = str_replace("\\","/",realpath($target));
+						$file = $dao->getByPath($target,$withChild);
+					}catch(Exception $e){
+						//
+					}
+				}	
 			}
 		}else{
 			$file = $target;
@@ -282,6 +288,18 @@ class CMSFileManager{
 		}
 
 		return $file;
+	}
+
+	private static function updateFileDb(){
+		$SiteLogic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
+		$old = CMSUtil::switchDsn();
+		$sites = $SiteLogic->getSiteList();
+		CMSUtil::resetDsn($old);
+
+		foreach($sites as $site){
+			self::setSiteInformation($site->getId(), $site->getUrl(), $site->getPath());
+			self::insertAll($site->getPath());
+		}
 	}
 
 	public static function getAllFile($root,$target,&$array = array()){
