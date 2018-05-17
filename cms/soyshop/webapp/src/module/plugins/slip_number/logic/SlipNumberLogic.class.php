@@ -82,7 +82,7 @@ class SlipNumberLogic extends SOY2LogicBase{
 					try{
 						$this->slipDao->deleteBySlipNumber($number);
 					}catch(Exception $e){
-						var_dump($e);
+						//var_dump($e);
 					}
 				}
 			}

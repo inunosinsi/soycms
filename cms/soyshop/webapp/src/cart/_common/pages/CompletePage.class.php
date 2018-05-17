@@ -56,7 +56,7 @@ class CompletePage extends MainCartPageBase{
 		$this->addLink("top_link", array(
 			"link" => soyshop_get_site_url(true)
 		));
-		
+
 		SOYShopPlugin::load("soyshop.cart");
 		$delegate = SOYShopPlugin::invoke("soyshop.cart", array(
 			"mode" => "complete",
@@ -64,11 +64,11 @@ class CompletePage extends MainCartPageBase{
 		));
 
 		$html = $delegate->getHtml();
-		
+
 		$this->addModel("has_cart_plugin", array(
 			"visible" => (count($html) > 0)
 		));
-		
+
 		$this->createAdd("cart_plugin_list","_common.CartPluginListComponent", array(
 			"list" => $html
 		));
@@ -77,4 +77,3 @@ class CompletePage extends MainCartPageBase{
 		$cart->clear();
 	}
 }
-?>
