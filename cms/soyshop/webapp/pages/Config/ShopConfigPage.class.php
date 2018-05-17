@@ -218,6 +218,15 @@ class ShopConfigPage extends WebPage{
 			"isBoolean" => 1
 		));
 
+		//キャンセル注文含むモード
+		$this->addCheckBox("displayCancelOrder", array(
+			"selected" => $config->getDisplayCancelOrder(),
+			"value" => 1,
+			"name" => "Config[displayCancelOrder]",
+			"label" => "注文一覧でキャンセルの注文も含める",
+			"isBoolean" => 1
+		));
+
 		//仮登録確認モード
 		$this->addCheckBox("checkPreOrder", array(
 			"selected" => $config->getCheckPreOrder(),

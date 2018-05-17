@@ -74,7 +74,13 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$where[] = "order_status = :order_status";
 			$binds[":order_status"] = (int)$search["orderStatus"];
 		}else{
-			$where[] = "order_status not in (".SOYShop_Order::ORDER_STATUS_INTERIM.",".SOYShop_Order::ORDER_STATUS_CANCELED.")";
+			//注文一覧でキャンセルを含むか？
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			if(SOYShop_ShopConfig::load()->getDisplayCancelOrder()){
+				$where[] = "order_status not in (".SOYShop_Order::ORDER_STATUS_INTERIM.")";
+			}else{
+				$where[] = "order_status not in (".SOYShop_Order::ORDER_STATUS_INTERIM.",".SOYShop_Order::ORDER_STATUS_CANCELED.")";
+			}
 		}
 
 		if(isset($search["noPayment"]) && $search["noPayment"] == 1){
@@ -288,7 +294,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$orderDAO->setLimit($this->getLimit());
 		$orderDAO->setOffset($this->getOffset());
-		
+
 		try{
 			$res = $orderDAO->executeQuery($this->getSearchSQL(),$this->getBinds());
 		}catch(Exception $e){

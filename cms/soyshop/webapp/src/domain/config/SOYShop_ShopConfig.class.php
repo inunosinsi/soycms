@@ -27,6 +27,7 @@ class SOYShop_ShopConfig {
 	private $displayChildItem;
 	private $childItemStock;
 	private $noChildItemStock;
+	private $displayCancelOrder;
 	private $checkPreOrder;
 	private $isShowOnlyAdministrator;
 	private $multiCategory;
@@ -437,6 +438,13 @@ class SOYShop_ShopConfig {
 	}
 	function setNoChildItemStock($noChildItemStock){
 		$this->noChildItemStock = $noChildItemStock;
+	}
+
+	function getDisplayCancelOrder(){
+		return $this->displayCancelOrder;
+	}
+	function setDisplayCancelOrder($displayCancelOrder){
+		$this->displayCancelOrder = $displayCancelOrder;
 	}
 
 	function getCheckPreOrder(){
