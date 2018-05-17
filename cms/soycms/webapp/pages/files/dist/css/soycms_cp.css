@@ -451,3 +451,18 @@ float:left;
 .entry_custom div.section{
   margin-bottom:10px;
 }
+
+/** プラグインで使用しているクラス **/
+table.list {
+    width: 100%;
+    margin-bottom: 30px;
+}
+table.list th,
+table.list td{
+    padding: 10px;
+    border: solid 1px #e7e7e7;
+}
+table.list tr {
+    background: #FFF;
+
+}
