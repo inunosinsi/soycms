@@ -29,6 +29,7 @@ class SOYShop_ShopConfig {
 	private $noChildItemStock;
 	private $displayCancelOrder;
 	private $checkPreOrder;
+	private $multiSelectStatusMode;
 	private $isShowOnlyAdministrator;
 	private $multiCategory;
 	private $cartPageTimeLimit = 30;//デフォルトは30分
@@ -452,6 +453,13 @@ class SOYShop_ShopConfig {
 	}
 	function setCheckPreOrder($checkPreOrder){
 		$this->checkPreOrder = $checkPreOrder;
+	}
+
+	function getMultiSelectStatusMode(){
+		return $this->multiSelectStatusMode;
+	}
+	function setMultiSelectStatusMode($multiSelectStatusMode){
+		$this->multiSelectStatusMode = $multiSelectStatusMode;
 	}
 
 	function getCartPageTimeLimit(){

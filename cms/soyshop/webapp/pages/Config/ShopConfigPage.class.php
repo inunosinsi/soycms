@@ -236,6 +236,15 @@ class ShopConfigPage extends WebPage{
 			"isBoolean" => 1
 		));
 
+		//注文状態の複数選択モード
+		$this->addCheckBox("multiSelectStatusMode", array(
+			"selected" => $config->getMultiSelectStatusMode(),
+			"value" => 1,
+			"name" => "Config[multiSelectStatusMode]",
+			"label" => "注文検索で注文状態や支払い状況の複数項目の選択モードに切り替える",
+			"isBoolean" => 1
+		));
+
 		//購入手続きの進捗の有効期間
 		$this->addInput("cartPageTimeLimit", array(
 			"name" => "Config[cartPageTimeLimit]",

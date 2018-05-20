@@ -94,6 +94,7 @@
 				</td>
 			</tr>
 
+			<!-- soy:display="status_single_select_mode" -->
 			<tr>
 				<th>注文状況</th>
 				<td>
@@ -111,6 +112,24 @@
 					<input type="checkbox" soy:id="no_payment">
 				</td>
 			</tr>
+			<!-- /soy:display="status_single_select_mode" -->
+
+			<!-- soy:display="status_multi_select_mode" -->
+			<tr>
+				<th>注文状況</th>
+				<td colspan="3">
+					<!-- soy:id="status_multi" /-->
+				</td>
+			</tr>
+
+			<tr>
+				<th>支払状況</th>
+				<td colspan="3">
+					<!-- soy:id="payment_multi" /-->
+				</td>
+			</tr>
+			<!-- /soy:display="status_multi_select_mode" -->
+
 			<tr>
 				<th>支払方法</th>
 				<td colspan="3">

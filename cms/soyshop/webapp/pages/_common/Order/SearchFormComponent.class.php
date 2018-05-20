@@ -55,12 +55,16 @@ class SearchFormComponent extends SOYBodyComponentBase{
 
 		//仮登録(登録エラー)の注文を検索できるようにする
 		$checkPreOrder = ($config->getCheckPreOrder() == 1) ? true : false;
+		$list = SOYShop_Order::getOrderStatusList($checkPreOrder);
 		$this->addSelect("status_list", array(
 			"name" => "search[orderStatus]",
-			"options" => SOYShop_Order::getOrderStatusList($checkPreOrder),
+			"options" => $list,
 			"selected" => (is_null($this->getNoDelivery()) || $this->getNoDelivery() != 1) ? $this->getSOYShop_OrderStatus() : false
 		));
 
+		//複数選択モードを表示
+		DisplayPlugin::toggle("status_single_select_mode", !$config->getMultiSelectStatusMode());
+		DisplayPlugin::toggle("status_multi_select_mode", $config->getMultiSelectStatusMode());
 
 		$this->addCheckBox("no_delivery", array(
 			"name" => "search[noDelivery]",
@@ -69,9 +73,24 @@ class SearchFormComponent extends SOYBodyComponentBase{
 			"label" => "未発送の注文"
 		));
 
+		//複数選択モード
+		$html = array();
+		foreach($list as $i => $label){
+			if(is_array($this->getSOYShop_OrderStatus()) && is_numeric(array_search($i, $this->getSOYShop_OrderStatus()))){
+				$html[] = "<label><input type=\"checkbox\" name=\"search[orderStatus][]\" value=\"" . $i ."\" checked=\"checked\">" . $label . "</label>";
+			}else{
+				$html[] = "<label><input type=\"checkbox\" name=\"search[orderStatus][]\" value=\"" . $i ."\">" . $label . "</label>";
+			}
+		}
+
+		$this->addLabel("status_multi", array(
+			"html" => implode("&nbsp;", $html)
+		));
+
+		$list = SOYShop_Order::getPaymentStatusList();
 		$this->addSelect("payment_status_list", array(
 			"name" => "search[paymentStatus]",
-			"options" => SOYShop_Order::getPaymentStatusList(),
+			"options" => $list,
 			"selected" => (is_null($this->getNoPayment()) || $this->getNoPayment() != 1) ? $this->getPaymentStatus() : false
 		));
 
@@ -80,6 +99,20 @@ class SearchFormComponent extends SOYBodyComponentBase{
 			"value" => 1,
 			"selected" => ($this->getNoPayment() == 1),
 			"label" => "未支払の注文"
+		));
+
+		//複数選択モード
+		$html = array();
+		foreach($list as $i => $label){
+			if(is_array($this->getPaymentStatus()) && is_numeric(array_search($i, $this->getPaymentStatus()))){
+				$html[] = "<label><input type=\"checkbox\" name=\"search[paymentStatus][]\" value=\"" . $i ."\" checked=\"checked\">" . $label . "</label>";
+			}else{
+				$html[] = "<label><input type=\"checkbox\" name=\"search[paymentStatus][]\" value=\"" . $i ."\">" . $label . "</label>";
+			}
+		}
+
+		$this->addLabel("payment_multi", array(
+			"html" => implode("&nbsp;", $html)
 		));
 
 		$this->addInput("total_price_min", array(

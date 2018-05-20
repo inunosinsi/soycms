@@ -69,10 +69,17 @@ class SearchOrderLogic extends SOY2LogicBase{
 		}
 
 		if(isset($search["noDelivery"]) && $search["noDelivery"] == 1){
-			$where[] = "order_status in (".SOYShop_Order::ORDER_STATUS_REGISTERED.",".SOYShop_Order::ORDER_STATUS_RECEIVED.",".SOYShop_Order::ORDER_STATUS_STOCK_CONFIRM.")";
-		}else if(isset($search["orderStatus"]) && strlen($search["orderStatus"]) > 0){
-			$where[] = "order_status = :order_status";
-			$binds[":order_status"] = (int)$search["orderStatus"];
+			$where[] = "order_status in (".SOYShop_Order::ORDER_STATUS_REGISTERED.",".SOYShop_Order::ORDER_STATUS_RECEIVED.")";
+		}else if(isset($search["orderStatus"])){
+			//注文状態を配列で渡す場合(チェックボックス式)
+			if(is_array($search["orderStatus"]) && count($search["orderStatus"])){
+				$where[] = "order_status IN (" . implode(",", $search["orderStatus"]) . ")";
+
+			//注文状態を文字列で渡す場合(セレクトボックス式)
+			}else if(is_string($search["orderStatus"]) && strlen($search["orderStatus"]) > 0){
+				$where[] = "order_status = :order_status";
+				$binds[":order_status"] = (int)$search["orderStatus"];
+			}
 		}else{
 			//注文一覧でキャンセルを含むか？
 			SOY2::import("domain.config.SOYShop_ShopConfig");
@@ -85,9 +92,16 @@ class SearchOrderLogic extends SOY2LogicBase{
 
 		if(isset($search["noPayment"]) && $search["noPayment"] == 1){
 			$where[] = "payment_status in (".SOYShop_Order::PAYMENT_STATUS_WAIT.",".SOYShop_Order::PAYMENT_STATUS_ERROR.",".SOYShop_Order::PAYMENT_STATUS_DIRECT.")";
-		}else if(isset($search["paymentStatus"]) && strlen($search["paymentStatus"]) > 0){
-			$where[] = "payment_status = :payment_status";
-			$binds[":payment_status"] = (int)$search["paymentStatus"];
+		}else if(isset($search["paymentStatus"])){
+			//支払い状況を配列で渡す場合(チェックボックス式)
+			if(is_array($search["paymentStatus"]) && count($search["paymentStatus"])){
+				$where[] = "payment_status IN (" . implode(",", $search["paymentStatus"]) . ")";
+
+			//支払い状況を文字列で渡す場合(セレクトボックス式)
+			}else if(is_string($search["paymentStatus"]) && strlen($search["paymentStatus"]) > 0){
+				$where[] = "payment_status = :payment_status";
+				$binds[":payment_status"] = (int)$search["paymentStatus"];
+			}
 		}
 
 		//合計金額
