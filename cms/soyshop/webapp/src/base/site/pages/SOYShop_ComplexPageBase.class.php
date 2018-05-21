@@ -29,7 +29,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 	private function getItems(SOYShop_ComplexPageBlock $block){
 
 		$isAnd = $block->isAndCustomFieldCordination();
-		
+
 		//表示件数が無記入だった場合、1～10件を表示する
 		if(strlen($block->getCountStart()) === 0 && strlen($block->getCountEnd()) === 0){
 			$countStart = 1;
@@ -48,6 +48,8 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 
 		if(count($customFieldCordinations)){
 			foreach($customFieldCordinations as $array){
+				if(is_numeric($array["type"]) && (int)$array["type"] < 0) continue;
+
 				$value = $array["value"];
 				if(false !== strpos($array["type"],"LIKE")){
 					$value = "%" . $value . "%";
@@ -60,7 +62,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 				);
 			}
 		}
-
+		
 		//ソート情報用にSOYShop_ComplexPageBlockを渡す
 		$this->logic->setSort($block);
 
