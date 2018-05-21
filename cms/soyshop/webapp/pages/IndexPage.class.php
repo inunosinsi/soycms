@@ -97,6 +97,28 @@ class IndexPage extends WebPage{
 		$this->addModel("init_link", array(
 			"visible" => DEBUG_MODE
 		));
+
+		//便利な機能
+		$this->createAdd("init_link_list", "_common.InitLinkListComponent", array(
+			"list" => self::getInitLinks()
+		));
+	}
+
+	private function getInitLinks(){
+		$list = SOYShopPlugin::invoke("soyshop.admin", array(
+			"mode" => "init"
+		))->getList();
+		if(!count($list)) return array();
+
+		$array = array();
+		foreach ($list as $moduleId => $vals){
+			if(!is_array($vals) || !count($vals)) continue;
+			foreach($vals as $v){
+				if(!isset($v["label"]) || !strlen($v["label"])) continue;
+				$array[] = $v;
+			}
+		}
+		return $array;
 	}
 
 	private function buildPluginArea(){

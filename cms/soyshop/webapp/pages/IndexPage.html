@@ -1,14 +1,14 @@
 <div class="block" soy:display="display_db_update_area">
-	
+
 	<p class="notice always" soy:display="do_db_update">
 		データベースの変更を行いました。
 	</p>
-		
+
 	<p class="error always" soy:display="has_db_update">
 		データベースの変更があります&nbsp;→&nbsp;<a soy:link="Update">データベースのバージョンアップを行う</a>
 	</p>
 </div>
-	
+
 <!-- soy:display="plugin_area" -->
 <!-- soy:id="plugin_area_list" -->
 <div class="block">
@@ -39,6 +39,10 @@
 			<a class="button" href="?init_theme">CSSファイル初期化</a>
 			<a class="button" href="?init_mail">メール初期化</a>
 			<!--  /soy:id="init_link" -->
+
+			<!-- soy:id="init_link_list" -->
+			<a class="button" soy:id="init_link">aaa</a>
+			<!-- /soy:id="init_link_list" -->
 		</p>
 	</div>
 </div>
