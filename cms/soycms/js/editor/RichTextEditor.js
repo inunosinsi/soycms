@@ -6,8 +6,9 @@ tinymce.init({
 	plugins : "save,pagebreak,table,hr,insertdatetime,searchreplace,contextmenu,code,textcolor,paste,directionality,noneditable,charmap,visualchars,nonbreaking,innerlink,insertimage,insertwidget,youTube,emoticons",
 	tools : "inserttable",
 	language : soycms.language,
-	height : "300px",
+	height : "400px",
 	resize: "both",
+	mobile: { theme: 'mobile' },
 
 	menubar : false,
 	toolbar1 : "save | cut copy paste pastetext | searchreplace | bold italic underline strikethrough | subscript superscript | forecolor backcolor | alignleft aligncenter alignright | formatselect fontselect fontsizeselect",
