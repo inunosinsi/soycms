@@ -5,10 +5,11 @@ class SOYShopDiscountFreeCouponConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-		SOY2::imports("module.plugins.discount_free_coupon.config.*");
 		if(isset($_GET["category"])){
+			SOY2::import("module.plugins.discount_free_coupon.config.CouponCategoryConfigFormPage");
 			$form = SOY2HTMLFactory::createInstance("CouponCategoryConfigFormPage");
 		}else{
+			SOY2::import("module.plugins.discount_free_coupon.config.DiscountFreeCouponConfigFormPage");
 			$form = SOY2HTMLFactory::createInstance("DiscountFreeCouponConfigFormPage");
 		}
 		$form->setConfigObj($this);
