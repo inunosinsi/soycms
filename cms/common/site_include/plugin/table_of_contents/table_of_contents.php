@@ -13,7 +13,7 @@ class TableOfContentsPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -38,43 +38,41 @@ class TableOfContentsPlugin{
 		try{
 			$blog = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($_SERVER["SOYCMS_PAGE_ID"]);
 		}catch(Exception $e){
-			return $html;
+			$blog = new BlogPage();
 		}
-
-		if(strpos($_SERVER["REQUEST_URI"], "/" . $blog->getEntryPageUri() . "/") === false) return $html;
-
-		//ブログのエイリアスを取得
-		$alias = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/")), "/");
-		$sql = "SELECT attr.entry_value FROM EntryAttribute attr ".
-				"INNER JOIN Entry ent ".
-				"ON attr.entry_id = ent.id ".
-				"WHERE ent.alias = :alias ".
-				"AND attr.entry_field_id = :fieldId";
-		$dao = new SOY2DAO();
-		try{
-			$res = $dao->executeQuery($sql, array(":alias" => $alias, ":fieldId" => self::PLUGIN_ID));
-		}catch(Exception $e){
-			$res = array();
-		}
-
 
 		$heading = "";
-		if(isset($res[0]["entry_value"]) && strlen($res[0]["entry_value"])) {
-			$array = soy2_unserialize($res[0]["entry_value"]);
-			$logic = SOY2Logic::createInstance("site_include.plugin.table_of_contents.logic.CreateHeadingLogic");
-			$heading = $logic->createHeading($array);
+		if(!is_null($blog->getId()) && strpos($_SERVER["REQUEST_URI"], "/" . $blog->getEntryPageUri() . "/") !== false) {
+			//ブログのエイリアスを取得
+			$alias = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/")), "/");
+			$sql = "SELECT attr.entry_value FROM EntryAttribute attr ".
+					"INNER JOIN Entry ent ".
+					"ON attr.entry_id = ent.id ".
+					"WHERE ent.alias = :alias ".
+					"AND attr.entry_field_id = :fieldId";
+			$dao = new SOY2DAO();
+			try{
+				$res = $dao->executeQuery($sql, array(":alias" => $alias, ":fieldId" => self::PLUGIN_ID));
+			}catch(Exception $e){
+				$res = array();
+			}
 
-			$list = $logic->getHeadingList();
-			if(count($list)){
-				foreach($list as $href => $title){
-					preg_match('/<h[0-9].*?>' . $title . '<\/h[0-9]>/', $html, $tmp);
-					if(!isset($tmp[0]) || !strlen($tmp[0])) continue;
-					$hTag = str_replace(">" . $title, " id=\"" . $href . "\">" . $title, $tmp[0]);
-					$html = str_replace($tmp[0], $hTag, $html);
+			if(isset($res[0]["entry_value"]) && strlen($res[0]["entry_value"])) {
+				$array = soy2_unserialize($res[0]["entry_value"]);
+				$logic = SOY2Logic::createInstance("site_include.plugin.table_of_contents.logic.CreateHeadingLogic");
+				$heading = $logic->createHeading($array);
+
+				$list = $logic->getHeadingList();
+				if(count($list)){
+					foreach($list as $href => $title){
+						preg_match('/<h[0-9].*?>' . $title . '<\/h[0-9]>/', $html, $tmp);
+						if(!isset($tmp[0]) || !strlen($tmp[0])) continue;
+						$hTag = str_replace(">" . $title, " id=\"" . $href . "\">" . $title, $tmp[0]);
+						$html = str_replace($tmp[0], $hTag, $html);
+					}
 				}
 			}
 		}
-
 
 		return str_replace("##HEADING##", $heading, $html);
 	}
