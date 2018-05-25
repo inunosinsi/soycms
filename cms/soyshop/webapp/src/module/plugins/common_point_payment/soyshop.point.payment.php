@@ -7,44 +7,53 @@ class CommonPointPayment extends SOYShopPointPaymentBase{
 
 		$cart = $this->getCart();
 
-		if(isset($param) && (int)$_POST["point_module"] > 0){
+		//使用したいポイント
+		$usePoint = (int)$_POST["point_module"];
 
-			$allpoint = self::getPoint($userId);
+		if(isset($param) && $usePoint > 0){
 
-			if((int)$_POST["point_module"] <= $allpoint){
-				$point = (int)$_POST["point_module"];
-				$module = new SOYShop_ItemModule();
-				$module->setId("point_payment");
-				$module->setName(MessageManager::get("MODULE_NAME_POINT_PAYMENT"));
-				$module->setType("point_payment_module");	//typeを指定すると同じtypeのモジュールは同時使用できなくなる
-
-				$module->setPrice(0 - $point);//負の値
-
-				$cart->addModule($module);
-
-				//合算が0の場合はクレジット支払を禁止する
-				if(self::getTotalPrice($cart->getItems()) == $point){
-					foreach($cart->getModules() as $m){
-						//モジュール内にクレジットという文字がある場合はエラーを追加
-						if(
-							strpos($m->getName(), "クレジット") !== false ||
-							strpos($m->getName(), "PayPal") !== false
-
-						){
-							$cart->addErrorMessage("payment", "全額ポイント支払の場合はクレジットカード支払は利用できません。");
-						}
-					}
-				}
-
-				//使用ポイント数を保持しておく
-				$cart->setAttribute("point_payment", $point);
-
-				//ポイント支払い：○○ポイントを使用する
-				$cart->setOrderAttribute("point_payment", MessageManager::get("MODULE_NAME_POINT_PAYMENT"), MessageManager::get("MODULE_DESCRIPTION_POINT_PAYMENT", array("point" => $point)));
-
-			}else{
+			//所有するポイントよりも指定するポイントが多かった場合
+			$ownedPoint = self::getPointByUserId($userId);
+			if($usePoint > $ownedPoint){
 				$cart->addErrorMessage("point", "所持しているポイントよりもポイントを多く指定しています。");
 				$cart->removeModule("point_payment");
+			}else{
+				$allpoint = self::getPoint($userId);
+
+				if($usePoint <= $allpoint){
+					$point = (int)$_POST["point_module"];
+					$module = new SOYShop_ItemModule();
+					$module->setId("point_payment");
+					$module->setName(MessageManager::get("MODULE_NAME_POINT_PAYMENT"));
+					$module->setType("point_payment_module");	//typeを指定すると同じtypeのモジュールは同時使用できなくなる
+
+					$module->setPrice(0 - $point);//負の値
+
+					$cart->addModule($module);
+
+					//合算が0の場合はクレジット支払を禁止する
+					if(self::getTotalPrice($cart->getItems()) == $point){
+						foreach($cart->getModules() as $m){
+							//モジュール内にクレジットという文字がある場合はエラーを追加
+							if(
+								strpos($m->getName(), "クレジット") !== false ||
+								strpos($m->getName(), "PayPal") !== false
+
+							){
+								$cart->addErrorMessage("payment", "全額ポイント支払の場合はクレジットカード支払は利用できません。");
+							}
+						}
+					}
+
+					//使用ポイント数を保持しておく
+					$cart->setAttribute("point_payment", $point);
+
+					//ポイント支払い：○○ポイントを使用する
+					$cart->setOrderAttribute("point_payment", MessageManager::get("MODULE_NAME_POINT_PAYMENT"), MessageManager::get("MODULE_DESCRIPTION_POINT_PAYMENT", array("point" => $point)));
+				}else{
+					$cart->addErrorMessage("point", "合計金額以上のポイントを使用しています。");
+					$cart->removeModule("point_payment");
+				}
 			}
 		}
 	}
@@ -122,7 +131,7 @@ class CommonPointPayment extends SOYShopPointPaymentBase{
 		$html[] = "<input type=\"number\" name=\"point_module\" id=\"point_payment\" value=\"" . $value . "\" style=\"width:100px;\">ポイント分使用する<br>";
 		$html[] = "<label><input type=\"checkbox\" id=\"use_all_point\">ポイントをすべて使用する</label>";
 		$html[] = " 所持ポイント:" . $point;
-		$html[] = "<input type=\"hidden\" id=\"have_point\" value=\"" . $point . "\">";
+		$html[] = "<input type=\"hidden\" id=\"have_point\" value=\"" . self::getPoint($userId) . "\">";
 		$html[] = "<script>";
 		$html[] = "(function(){";
 		$html[] = "	var usePointAll = document.querySelector('#use_all_point');";
