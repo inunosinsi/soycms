@@ -41,6 +41,7 @@ class SOYShop_ShopConfig {
 	private $insertDummyMailAddress = 1;
 	private $insertDummyMailAddressOnAdmin = 0;
 	private $insertDummyMailAddressOnAdminRegister = 0;
+	private $insertDummyAddressOnAdmin = 0;
 
 	private $isChildItemOnAdminOrder = 0;	//管理画面からの注文の際に子商品を検索結果に含める
 
@@ -522,6 +523,13 @@ class SOYShop_ShopConfig {
 	}
 	function setInsertDummyMailAddressOnAdminRegister($insertDummyMailAddressOnAdminRegister){
 		$this->insertDummyMailAddressOnAdminRegister = $insertDummyMailAddressOnAdminRegister;
+	}
+
+	function getInsertDummyAddressOnAdmin(){
+		return $this->insertDummyAddressOnAdmin;
+	}
+	function setInsertDummyAddressOnAdmin($insertDummyAddressOnAdmin){
+		$this->insertDummyAddressOnAdmin = $insertDummyAddressOnAdmin;
 	}
 
 	function getIsChildItemOnAdminOrder(){
