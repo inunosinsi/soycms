@@ -8,7 +8,7 @@ class ItemOrderFormListComponent extends HTMLList {
 
 		$id = $itemOrder->getId();
 		$item = $this->htmlObj->getItem($itemOrder->getItemId());
-		
+
 		$this->addInput("item_delete", array(
 			"name" => "Item[$id][itemDelete]",
 			"value" => 1
@@ -42,7 +42,7 @@ class ItemOrderFormListComponent extends HTMLList {
 
 		$orderAttributeList = array();
 		if(class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("common_item_option")){
-			$orderAttributeList = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : $this->getOptionIndex();
+			$orderAttributeList = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : $this->getOptionIndex($itemOrder->getItemId());
 		}
 
 		$this->createAdd("item_option_list", "_common.Order.ItemOptionFormListComponent", array(
@@ -52,16 +52,28 @@ class ItemOrderFormListComponent extends HTMLList {
 
 	}
 
-	function getOptionIndex(){
+	function getOptionIndex($itemId){
+		if(!isset($itemId) || !is_numeric($itemId)) return array();
+
+		$optList = self::attrDao()->getOnLikeSearch($itemId, "item_option_%", true, false);
+		if(!count($optList)) return array();
+
 		$logic = new ItemOptionLogic();
 		$list = $logic->getOptions();
 
 		$array = array();
 		foreach($list as $index => $value){
+			if(!isset($optList["item_option_" . $index])) continue;	//商品オプションの設定のないものは除く
 			$array[$index] = "";
 		}
 
 		return $array;
+	}
+
+	private function attrDao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+		return $dao;
 	}
 
 	function setHtmlObj($obj){

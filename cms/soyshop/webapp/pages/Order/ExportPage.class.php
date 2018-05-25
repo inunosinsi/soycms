@@ -57,6 +57,10 @@ class ExportPage extends WebPage{
 		$searchLogic = SOY2Logic::createInstance("logic.order.SearchOrderLogic");
 
 		$search = (isset($_POST["search"])) ? $_POST["search"] : array();
+		if(!count($search)){
+			$values = SOY2ActionSession::getUserSession()->getAttribute("Order.Search:search");
+			if(isset($values) && is_array($values) && count($values)) $search = $values;
+		}
 
 		//検索条件の投入と検索実行
 		$searchLogic->setSearchCondition($search);
