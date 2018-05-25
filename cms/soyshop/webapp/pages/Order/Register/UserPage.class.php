@@ -224,6 +224,12 @@ class UserPage extends WebPage{
 	//お客様情報入力画面
 	private function userForm(SOYShop_User $user){
 
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$config = SOYShop_ShopConfig::load();
+
+		//ダミーの住所挿入ボタン
+		DisplayPlugin::toggle("dummy_address_button", $config->getInsertDummyAddressOnAdmin());
+
 		foreach(array("id", "email", "tell", "name", "reading") as $t){
 			$this->addInput("search_by_" . $t, array(
 				"name" => "search_by_" . $t,
@@ -232,11 +238,8 @@ class UserPage extends WebPage{
 		}
 
 		$mailAddress = $user->getMailAddress();
-		if(!strlen($mailAddress)){
-			SOY2::import("domain.config.SOYShop_ShopConfig");
-			if(SOYShop_ShopConfig::load()->getInsertDummyMailAddressOnAdmin()){
-				$mailAddress = soyshop_dummy_mail_address();
-			}
+		if(!strlen($mailAddress) && $config->getInsertDummyMailAddressOnAdmin()){
+			$mailAddress = soyshop_dummy_mail_address();
 		}
 
 		$this->addForm("user_create_form");

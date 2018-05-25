@@ -105,7 +105,7 @@ class ItemListComponent extends HTMLList {
 
 		$html = array();
 		foreach($opts as $optionId => $opt){
-			if(!isset($list[$optionId])) continue;
+			if(!isset($list[$optionId]) || !strlen($opt)) continue;
 			$html[] = $list[$optionId]["name"] . ":" . $opt;
 		}
 
