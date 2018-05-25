@@ -12,10 +12,10 @@ class CouponFormPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
-		//顧客IDが取得できるか？
-		$userId = $this->cart->getCustomerInformation()->getId();
-		DisplayPlugin::toggle("no_coupon_code_area", is_null($userId));
-		DisplayPlugin::toggle("coupon_code_area", isset($userId));
+		//顧客メールアドレスが取得できるか？
+		$mailAddress = $this->cart->getCustomerInformation()->getMailAddress();
+		DisplayPlugin::toggle("no_coupon_code_area", is_null($mailAddress));
+		DisplayPlugin::toggle("coupon_code_area", isset($mailAddress));
 
 		$error = $this->cart->getAttribute("discount_free_coupon.error");
 		DisplayPlugin::toggle("coupon_error", strlen($error));
