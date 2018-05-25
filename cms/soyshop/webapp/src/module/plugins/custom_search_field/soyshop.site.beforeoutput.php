@@ -15,6 +15,7 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
         SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 
         //一覧で動作する
+		$pageUrl = "";
         if($page->getPageObject()->getType() == SOYShop_Page::TYPE_LIST || $page->getPageObject()->getType() == SOYShop_Page::TYPE_SEARCH){
 
             //_homeでもソートボタン設置プラグインを使用できるようにする
