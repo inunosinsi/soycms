@@ -264,10 +264,26 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	private function getCustomSearchItems(){
 		//検索フォームの拡張ポイント
 		SOYShopPlugin::load("soyshop.order.search");
-		return SOYShopPlugin::invoke("soyshop.order.search", array(
+		$items = SOYShopPlugin::invoke("soyshop.order.search", array(
 			"mode" => "form",
 			"params" => $this->getCustoms()
 		))->getSearchItems();
+
+		//再配列
+		$list = array();
+		foreach($items as $item){
+			$key = key($item);
+			if($key == "label"){
+				$list[] = $item;
+			//複数の項目が入っている
+			}else{
+				foreach($item as $v){
+					$list[] = $v;
+				}
+			}
+		}
+
+		return $list;
 	}
 
 	function getUserArea(){
