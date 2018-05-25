@@ -23,17 +23,17 @@ class EditPage extends WebPage{
 			}
 
 			if(isset($_POST["Address"])){
-				$_change = $this->updateOrderAddress($order, $_POST["Address"]);
+				$_change = self::updateOrderAddress($order, $_POST["Address"]);
 				$change = array_merge($change, $_change);
 			}
 
 			if(isset($_POST["Attribute"])){
-				$_change = $this->updateOrderAttribute($order, $_POST["Attribute"]);
+				$_change = self::updateOrderAttribute($order, $_POST["Attribute"]);
 				$change = array_merge($change, $_change);
 			}
 
 			if(isset($_POST["Customfield"])){
-				$_change = $this->updateOrderCustomfield($order, $_POST["Customfield"]);
+				$_change = self::updateOrderCustomfield($order, $_POST["Customfield"]);
 				$change = array_merge($change, $_change);
 			}
 
@@ -91,7 +91,7 @@ class EditPage extends WebPage{
 						$delete = $delete || $newCount == 0 || strlen($newName) == 0;
 						$updateCount = 0;	//商品個数の変更 マイナスの数字も含む
 
-						$item = $this->getItem($itemOrder->getItemId());
+						$item = self::getItem($itemOrder->getItemId());
 						if($delete){
 							$itemCode = (strlen($item->getCode()) > 0) ? $item->getCode() : $itemOrder->getItemId();
 
@@ -123,7 +123,7 @@ class EditPage extends WebPage{
 						$itemOrders[$id] = $itemOrder;
 
 						//在庫の変更 0でない場合　マイナスも含む
-						if($updateCount !== 0) $this->changeStock($itemOrder, $updateCount);
+						if($updateCount !== 0) self::changeStock($itemOrder, $updateCount);
 					}
 				}
 			}
@@ -156,7 +156,7 @@ class EditPage extends WebPage{
 						$itemChange[] = $itemOrder->getItemName() . "（" . $itemOrder->getItemPrice() . "円×" . $itemOrder->getItemCount() . "点）を追加しました。";
 
 						//在庫数の変更
-						$this->changeStock($itemOrder, $count);
+						self::changeStock($itemOrder, $count);
 					}
 				}
 
@@ -203,7 +203,7 @@ class EditPage extends WebPage{
 						$itemChange[] = $itemOrder->getItemName() . "（" . $item->getCode() . " " . $itemOrder->getItemPrice() . "円×" . $itemOrder->getItemCount() . "点）を追加しました。";
 
 						//在庫数の変更
-						$this->changeStock($itemOrder, $count);
+						self::changeStock($itemOrder, $count);
 					}
 				}
 			}
@@ -454,11 +454,11 @@ class EditPage extends WebPage{
 			"link" => SOY2PageController::createLink("Order.Detail." . $order->getId())
 		));
 
-		$this->buildForm($order);
+		self::buildForm($order);
 
 	}
 
-	function buildForm(SOYShop_Order $order){
+	private function buildForm(SOYShop_Order $order){
 		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
 
 		$this->addForm("update_form", array(
@@ -633,10 +633,10 @@ class EditPage extends WebPage{
 		));
 	}
 
-	function changeStock(SOYShop_ItemOrder $itemOrder, $stock){
+	private function changeStock(SOYShop_ItemOrder $itemOrder, $stock){
 		$item = self::getItem($itemOrder->getItemId());
 		$item->setStock($item->getStock() - $stock);
-		$this->updateItem($item);
+		self::updateItem($item);
 
 		SOYShopPlugin::invoke("soyshop.item.order", array(
 			"mode" => "edit",
@@ -664,7 +664,7 @@ class EditPage extends WebPage{
 		return $items[$itemId];
 	}
 
-	function updateItem(SOYShop_Item $item){
+	private function updateItem(SOYShop_Item $item){
 		static $itemDAO;
 		if(!$itemDAO)$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		try{
@@ -718,7 +718,7 @@ class EditPage extends WebPage{
 		return $change;
 	}
 
-	function updateOrderAttribute(SOYShop_Order $order, $newAttributes){
+	private function updateOrderAttribute(SOYShop_Order $order, $newAttributes){
 		$change = array();
 		$attributes = $order->getAttributeList();
 
@@ -741,7 +741,7 @@ class EditPage extends WebPage{
 	 * @param SOYShop_Order $order, newCustomfields($_POST["customfield"]の配列)
 	 * @return array $change
 	 */
-	function updateOrderCustomfield(SOYShop_Order $order, $newCustomfields){
+	private function updateOrderCustomfield(SOYShop_Order $order, $newCustomfields){
 		$change = array();
 
 		$list = SOYShopPlugin::invoke("soyshop.order.customfield", array(
@@ -784,12 +784,12 @@ class EditPage extends WebPage{
 						}
 						break;
 					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
-						$newValue1 = (isset($newCustomfields[$key]["date"])) ? $this->convertDate($newCustomfields[$key]["date"]) : null;
+						$newValue1 = (isset($newCustomfields[$key]["date"])) ? soyshop_convert_timestamp_on_array($newCustomfields[$key]["date"]) : null;
 						$newValue2 = null;
 						break;
 					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
-						$newValue1 = (isset($newCustomfields[$key]["start"])) ? $this->convertDate($newCustomfields[$key]["start"]) : null;
-						$newValue2 = (isset($newCustomfields[$key]["end"])) ? $this->convertDate($newCustomfields[$key]["end"]) : null;
+						$newValue1 = (isset($newCustomfields[$key]["start"])) ? soyshop_convert_timestamp_on_array($newCustomfields[$key]["start"]) : null;
+						$newValue2 = (isset($newCustomfields[$key]["end"])) ? soyshop_convert_timestamp_on_array($newCustomfields[$key]["end"]) : null;
 						break;
 				}
 
@@ -832,13 +832,13 @@ class EditPage extends WebPage{
 						//value2に値がない場合 dateとか
 						if(is_null($newValue2)){
 							if($newValue1 != $obj["value1"]){
-								$change[] = self::getHistoryText($obj["label"], $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1));
+								$change[] = self::getHistoryText($obj["label"], soyshop_convert_date_string($obj["value1"]), soyshop_convert_date_string($newValue1));
 							}
 
 						//value2に値がある場合 periodとか
 						}else{
 							if($newValue1 != $obj["value1"] || $newValue2 != $obj["value2"]){
-								$change[] = self::getHistoryText($obj["label"], $this->convertDateText($obj["value1"]) . " ～ " . $this->convertDateText($obj["value1"]), $this->convertDateText($newValue1) . " ～ " . $this->convertDateText($newValue2));
+								$change[] = self::getHistoryText($obj["label"], soyshop_convert_date_string($obj["value1"]) . " ～ " . soyshop_convert_date_string($obj["value1"]), soyshop_convert_date_string($newValue1) . " ～ " . soyshop_convert_date_string($newValue2));
 							}
 						}
 
@@ -929,17 +929,6 @@ class EditPage extends WebPage{
 		}
 
 		return $array;
-	}
-
-	function convertDate($date){
-		if(!isset($date["month"]) || !isset($date["day"]) || !isset($date["year"])) return null;
-		if(!is_numeric($date["month"]) || !is_numeric($date["day"]) || !is_numeric($date["year"])) return null;
-		return mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
-	}
-
-	function convertDateText($time){
-		if(is_null($time) || (int)$item === 0) return null;
-		return date("Y", $time) . "-" . date("m", $time) . "-" . date("d", $time);
 	}
 
 	function getCSS(){

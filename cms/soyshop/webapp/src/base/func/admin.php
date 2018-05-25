@@ -86,6 +86,21 @@ function soyshop_convert_timestamp($str, $mode = "start"){
 	}
 }
 
+function soyshop_convert_timestamp_on_array($array, $mode = "start"){
+	if(
+		(!isset($array["year"]) || !isset($array["month"]) || !isset($array["day"])) ||
+		(!is_numeric($array["year"]) || !is_numeric($array["month"]) || !is_numeric($array["day"]))
+	) {
+		return ($mode == "start") ? 0 : 2147483647;
+	}
+
+	if($mode == "start"){
+		return mktime(0, 0, 0, $array["month"], $array["day"], $array["year"]);
+	}else{
+		return mktime(23, 59, 59, $array["month"], $array["day"], $array["year"]);
+	}
+}
+
 /**
  * タイムスタンプから時刻へ変換
  * @param integer $timestamp
