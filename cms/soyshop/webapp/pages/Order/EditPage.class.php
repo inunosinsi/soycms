@@ -759,7 +759,7 @@ class EditPage extends WebPage{
 					}
 				}
 			}
-
+		
 			$dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
 			$dateDao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
 		   	foreach($array as $key => $obj){
@@ -791,6 +791,8 @@ class EditPage extends WebPage{
 						$newValue1 = (isset($newCustomfields[$key]["start"])) ? soyshop_convert_timestamp_on_array($newCustomfields[$key]["start"]) : null;
 						$newValue2 = (isset($newCustomfields[$key]["end"])) ? soyshop_convert_timestamp_on_array($newCustomfields[$key]["end"]) : null;
 						break;
+					default:
+						continue;
 				}
 
 				switch($obj["type"]){

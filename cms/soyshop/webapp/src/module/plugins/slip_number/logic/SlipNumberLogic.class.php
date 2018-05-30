@@ -24,26 +24,26 @@ class SlipNumberLogic extends SOY2LogicBase{
 		try{
 			return $this->orderAttributeDao->get($orderId, SlipNumberUtil::PLUGIN_ID);
 		}catch(Exception $e){
-			return new SOYShop_OrderAttribute();
+			$attr = new SOYShop_OrderAttribute();
+			$attr->setOrderId($orderId);
+			$attr->setFieldId(SlipNumberUtil::PLUGIN_ID);
+			return $attr;
 		}
 	}
 
 	function save($orderId, $value){
+		//同じ個所を二回読み込まれる謎現象を回避するための処理
+		static $cnt;
+		if(is_null($cnt)) $cnt = 0;
+		if($cnt > 0) return;
 
 		$attr = self::getAttribute($orderId);
 		$attr->setValue1(self::convert($value));
+		$cnt++;
 
-		//新規登録
-		if(is_null($attr->getOrderId())){
-			$attr->setOrderId($orderId);
-			$attr->setFieldId(SlipNumberUtil::PLUGIN_ID);
-
-			try{
-				$this->orderAttributeDao->insert($attr);
-			}catch(Exception $e){
-				var_dump($e);
-			}
-		}else{
+		try{
+			$this->orderAttributeDao->insert($attr);
+		}catch(Exception $e){
 			try{
 				$this->orderAttributeDao->update($attr);
 			}catch(Exception $e){
@@ -57,7 +57,7 @@ class SlipNumberLogic extends SOY2LogicBase{
 		//伝票番号の記録テーブルの記録する
 		$numbers = explode(",", $value);
 		foreach($numbers as $number){
-			$number = trim(trim($number));
+			$number = trim($number);
 			if(!strlen($number)) continue;
 
 			//登録がなければ登録する
@@ -78,9 +78,9 @@ class SlipNumberLogic extends SOY2LogicBase{
 		//最後までフラグが立たなかったものはこの場で削除する
 		if(count($oldList)){
 			foreach($oldList as $number => $flag){
-				if($flag != 1){
+				if($flag !== 1){
 					try{
-						$this->slipDao->deleteBySlipNumber($number);
+						$this->slipDao->deleteBySlipNumberWithOrderId($number, $orderId);
 					}catch(Exception $e){
 						//var_dump($e);
 					}
@@ -133,8 +133,9 @@ class SlipNumberLogic extends SOY2LogicBase{
 		}
 
 		//返送管理プラグインと連携している場合は返送のチェックを行う
+		$isResend = false;
 		if(SOYShopPluginUtil::checkIsActive("resend_manager")){
-			SOY2Logic::createInstance("module.plugins.resend_manager.logic.ResendLogic")->checkResendSlipNumber($slipNumber->getOrderId(), $slipNumber->getSlipNumber());
+			$isResend = SOY2Logic::createInstance("module.plugins.resend_manager.logic.ResendLogic")->checkResendSlipNumber($slipNumber->getOrderId(), $slipNumber->getSlipNumber());
 		}
 
 		//一つの注文ですべて配送済みにしたら注文ステータスを配送済みにする
@@ -143,8 +144,8 @@ class SlipNumberLogic extends SOY2LogicBase{
 		$cnt = $this->slipDao->countNoDeliveryByOrderId($slipNumber->getOrderId());
 		if($cnt === 0){
 			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_SENDED);
-		//戻す
-		}else{
+		//戻す。ただし再送を行っている場合は見ない
+		}else if(!$isResend){
 			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_RECEIVED);
 		}
 
