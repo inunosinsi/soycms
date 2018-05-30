@@ -124,8 +124,11 @@ class OrderLogic extends SOY2LogicBase{
     	$history->setMore($more);
     	$history->setAuthor($author);
 
-    	if(class_exists("UserInfoUtil")){
-    		$history->setAuthor(UserInfoUtil::getUserName());
+    	if(is_null($author) && class_exists("UserInfoUtil")){
+			$userName = UserInfoUtil::getUserName();
+			if(isset($userName) && strlen($userName)){
+				$history->setAuthor($userName);
+			}
     	}
 
     	$historyDAO->insert($history);
@@ -229,12 +232,24 @@ class OrderLogic extends SOY2LogicBase{
 		//送信前に念の為に確認
 		if((int)$newStatus === (int)$oldStatus) return false;
 
+		$sendMailType = null;
+		switch($newStatus){
+			case SOYShop_Order::ORDER_STATUS_SENDED:
+				$sendMailType = SOYShop_Order::SENDMAIL_TYPE_DELIVERY;
+				break;
+			default:
+				//何もしない
+		}
+
+		//
+		if(is_null($sendMailType)) return false;
+
 		//既に送信している場合は送信しない
-		$mailStatus = $order->getMailStatusByType(SOYShop_Order::SENDMAIL_TYPE_DELIVERY);
+		$mailStatus = $order->getMailStatusByType($sendMailType);
 		if(isset($mailStatus) && is_numeric($mailStatus)) return false;
 
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
-		$mailConfig = $mailLogic->getUserMailConfig(SOYShop_Order::SENDMAIL_TYPE_DELIVERY);
+		$mailConfig = $mailLogic->getUserMailConfig($sendMailType);
 		if(!isset($mailConfig["active"]) || (int)$mailConfig["active"] !== 1) return false;
 
 		list($mailBody, $title) = $mailLogic->buildMailBodyAndTitle($order, $mailConfig);

@@ -77,8 +77,9 @@ class AdminCartLogic extends CartLogic{
 			$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 
 			//登録者
-			if(class_exists("UserInfoUtil")){
-				$author = UserInfoUtil::getUserName()." (".UserInfoUtil::getUserId().")";
+			$loginId = (class_exists("UserInfoUtil")) ? UserInfoUtil::getUserId() : null;
+			if(isset($loginId)){
+				$author = UserInfoUtil::getUserName()." (".$loginId.")";
 			}else{
 				$author = SOY2ActionSession::getUserSession()->getAttribute("username")." (".SOY2ActionSession::getUserSession()->getAttribute("userid").")";
 			}

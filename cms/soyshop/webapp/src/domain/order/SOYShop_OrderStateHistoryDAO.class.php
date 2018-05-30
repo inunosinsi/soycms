@@ -32,11 +32,14 @@ abstract class SOYShop_OrderStateHistoryDAO extends SOY2DAO{
     		 * 管理画面では管理者情報をを登録する
     		 * SOY ShopでUserInfoUtilが使えることはないのでは？
     		 */
+			$author = null;
     		if(class_exists("UserInfoUtil")){
-    			$author = UserInfoUtil::getUserName()." (".UserInfoUtil::getUserId().")";
-    		}else{
-    			$author = SOY2ActionSession::getUserSession()->getAttribute("username")." (".SOY2ActionSession::getUserSession()->getAttribute("userid").")";
-    		}
+				$loginId = UserInfoUtil::getUserId();
+				if(isset($loginId) && strlen($loginId)){
+					$author = UserInfoUtil::getUserName()." (".$loginId.")";
+				}
+			}
+			if(is_null($author)) $author = SOY2ActionSession::getUserSession()->getAttribute("username")." (".SOY2ActionSession::getUserSession()->getAttribute("userid").")";
 
     		$binds[":author"] = $author;
     	}
