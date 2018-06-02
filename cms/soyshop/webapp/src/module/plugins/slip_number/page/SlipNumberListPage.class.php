@@ -91,7 +91,7 @@ class SlipNumberListPage extends WebPage {
 						}catch(Exception $e){
 							continue;
 						}
-						
+
 						$slipLogic->changeStatus((int)$slipId, "delivery");
 					}
 				}

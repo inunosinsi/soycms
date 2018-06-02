@@ -22,32 +22,49 @@ class SlipNumberLogic extends SOY2LogicBase{
 
 	function getAttribute($orderId){
 		try{
-			return $this->orderAttributeDao->get($orderId, SlipNumberUtil::PLUGIN_ID);
+			$attr = $this->orderAttributeDao->get($orderId, SlipNumberUtil::PLUGIN_ID);
 		}catch(Exception $e){
 			$attr = new SOYShop_OrderAttribute();
 			$attr->setOrderId($orderId);
 			$attr->setFieldId(SlipNumberUtil::PLUGIN_ID);
+		}
+
+		if(strlen($attr->getValue1())) return $attr;
+
+		//応急処置：soyshop_slip_numberで登録されている伝票番号を取得する
+		try{
+			$slips = $this->slipDao->getByOrderId($orderId);
+		}catch(Exception $e){
 			return $attr;
 		}
+
+		if(!count($slips)) return $attr;
+
+		$slipText = "";
+		foreach($slips as $slip){
+			$num = trim($slip->getSlipNumber());
+			if(!strlen($num)) continue;
+			$slipText .= "," . $num;
+		}
+
+		$attr->setValue1(trim($slipText, ","));
+		return $attr;
 	}
 
-	function save($orderId, $value){
-		//同じ個所を二回読み込まれる謎現象を回避するための処理
-		static $cnt;
-		if(is_null($cnt)) $cnt = 0;
-		if($cnt > 0) return;
+	function save($orderId, $value, $mode = "slip"){
+		if($mode == "slip"){
+			$attr = self::getAttribute($orderId);
+			$attr->setValue1(self::convert($value));
+			$cnt++;
 
-		$attr = self::getAttribute($orderId);
-		$attr->setValue1(self::convert($value));
-		$cnt++;
-
-		try{
-			$this->orderAttributeDao->insert($attr);
-		}catch(Exception $e){
 			try{
-				$this->orderAttributeDao->update($attr);
+				$this->orderAttributeDao->insert($attr);
 			}catch(Exception $e){
-				var_dump($e);
+				try{
+					$this->orderAttributeDao->update($attr);
+				}catch(Exception $e){
+					var_dump($e);
+				}
 			}
 		}
 
@@ -75,9 +92,17 @@ class SlipNumberLogic extends SOY2LogicBase{
 			}
 		}
 
+		SOY2::import("util.SOYShopPluginUtil");
+
 		//最後までフラグが立たなかったものはこの場で削除する
 		if(count($oldList)){
 			foreach($oldList as $number => $flag){
+				//再送設定がある場合は削除しない
+				if(SOYShopPluginUtil::checkIsActive("resend_manager")){
+					SOY2::import("module.plugins.resend_manager.util.ResendManagerUtil");
+					if($number == ResendManagerUtil::getSlipNumber($orderId)) $flag = 1;
+				}
+
 				if($flag !== 1){
 					try{
 						$this->slipDao->deleteBySlipNumberWithOrderId($number, $orderId);
@@ -89,7 +114,6 @@ class SlipNumberLogic extends SOY2LogicBase{
 		}
 
 		//Trackingmore連携プラグインを使用している場合
-		SOY2::import("util.SOYShopPluginUtil");
 		if(SOYShopPluginUtil::checkIsActive("tracking_more")){
 			SOY2Logic::createInstance("module.plugins.tracking_more.logic.TrackLogic")->registSlipNumbers();
 		}

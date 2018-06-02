@@ -49,7 +49,7 @@ class SlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 	function display($orderId){
 
 		$attr = self::getLogic()->getAttribute($orderId);
-		if(!is_null($attr->getOrderId())){
+		if(!is_null($attr->getOrderId()) && strlen($attr->getValue1())){
 			return array(array(
 				"name" => "伝票番号",
 				"value" => htmlspecialchars($attr->getValue1(), ENT_QUOTES, "UTF-8")
