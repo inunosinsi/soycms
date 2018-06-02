@@ -52,6 +52,15 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
         "soy2prefix" => SOYSHOP_SITE_PREFIX
     ));
 
+	//内税の税率
+	$taxRate = $shopConfig->getConsumptionTaxInclusivePricingRate() / 100 + 1;
+	
+	//税抜価格(内税の場合)
+	$htmlObj->addLabel("tax_exclusive_price", array(
+		"text" => soyshop_display_price(ceil($item->getSellingPrice() / $taxRate)),
+        "soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
     $htmlObj->addModel("item_normal_price_visible", array(
         "visible" => ((int)$item->getPrice() > 0),
         "soy2prefix" => SOYSHOP_SITE_PREFIX
@@ -63,6 +72,11 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
         "soy2prefix" => SOYSHOP_SITE_PREFIX
     ));
 
+	$htmlObj->addLabel("tax_exclusive_normal_price", array(
+		"text" => soyshop_display_price(ceil($item->getPrice() / $taxRate)),
+        "soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
     $htmlObj->addModel("item_sale_price_visible", array(
         "visible" => ((int)$item->getSalePrice() > 0),
         "soy2prefix" => SOYSHOP_SITE_PREFIX
@@ -73,6 +87,11 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
         "text" => soyshop_display_price($item->getSalePrice()),
         "soy2prefix" => SOYSHOP_SITE_PREFIX
     ));
+
+	$htmlObj->addLabel("tax_exclusive_sale_price", array(
+		"text" => soyshop_display_price(ceil($item->getSalePrice() / $taxRate)),
+        "soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
 
 
     $htmlObj->addModel("item_list_price_visible", array(
