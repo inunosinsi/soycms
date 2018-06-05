@@ -82,7 +82,7 @@ class SlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 	 * @return array saveするための配列
 	 */
 	function config($orderId){
-
+		
 		if(isset($_POST["Customfield"]["SlipNumber"])){
 			if(strlen($_POST["Customfield"]["SlipNumber"])){
 				self::getLogic()->save($orderId, trim($_POST["Customfield"]["SlipNumber"]));

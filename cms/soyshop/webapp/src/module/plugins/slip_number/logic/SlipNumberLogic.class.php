@@ -55,7 +55,6 @@ class SlipNumberLogic extends SOY2LogicBase{
 		if($mode == "slip"){
 			$attr = self::getAttribute($orderId);
 			$attr->setValue1(self::convert($value));
-			$cnt++;
 
 			try{
 				$this->orderAttributeDao->insert($attr);
@@ -121,15 +120,35 @@ class SlipNumberLogic extends SOY2LogicBase{
 
 	//新しい伝票番号を加える
 	function add($orderId, $new){
+		$new = trim($new);
 		$slipNumbers = self::getSlipNumberByOrderId($orderId);
-		self::save($orderId, $slipNumbers . "," . $new);
+
+		//同じ文字列があった場合はスルーする
+		if(strpos($slipNumbers, $new) === false){
+			self::save($orderId, $slipNumbers . "," . $new);
+		}
 	}
 
 	function delete($orderId){
+		$slipValue = self::getAttribute($orderId)->getValue1();
+
 		try{
 			$this->orderAttributeDao->delete($orderId, SlipNumberUtil::PLUGIN_ID);
 		}catch(Exception $e){
 			var_dump($e);
+		}
+
+		//発送伝票に登録されたものも削除
+		$slipNumbers = explode(",", $slipValue);
+		if(!count($slipNumbers)) return;
+
+		foreach($slipNumbers as $slipNumber){
+			try{
+				$this->slipDao->deleteBySlipNumberWithOrderId(trim($slipNumber), $orderId);
+			}catch(Exception $e){
+				var_dump($e);
+			}
+
 		}
 	}
 
