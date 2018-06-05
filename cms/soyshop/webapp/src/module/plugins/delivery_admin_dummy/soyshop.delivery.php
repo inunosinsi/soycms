@@ -39,7 +39,9 @@ class DeliveryAdminDummyModule extends SOYShopDelivery{
 	}
 
 	function getName(){
-		return "金額指定";
+		SOY2::import("module.plugins.delivery_admin_dummy.util.DeliveryAdminDummyUtil");
+		$config = DeliveryAdminDummyUtil::getConfig();
+		return (isset($config["label"])) ? $config["label"] : "金額指定";
 	}
 
 	function getDescription(){

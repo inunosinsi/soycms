@@ -22,6 +22,11 @@ class DeliveryAdminDummyConfigPage extends WebPage{
 
 		$this->addForm("form");
 
+		$this->addInput("label", array(
+			"name" => "Config[label]",
+			"value" => (isset($config["label"])) ? $config["label"] : "金額指定"
+		));
+
 		$this->addCheckBox("show_description", array(
 			"name" => "Config[show_description]",
 			"value" => 1,
