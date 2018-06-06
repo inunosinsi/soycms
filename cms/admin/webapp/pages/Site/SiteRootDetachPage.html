@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 
 <head soy:page="_common.HeaderPage" isOverWrite="true">
 </head>
@@ -6,34 +7,43 @@
 <body>
 
 <div id="wrapper">
-	<div id="upperMenu" soy:page="_common.UpperMenuPage"><!-- --></div>
-	<div id="content">
-		<h2>ルートサイト設定解除 - <span soy:id="site_name" /></h2>
-
-		<div class="functions" soy:display="for_default_user">
-			<p><a soy:link="Site">サイト一覧に戻る	</a></p>
-		</div soy:display="for_default_user">
-
-		<h3>.htaccessファイルの編集</h3>
-
-			<form soy:id="update_site_form">
-				<table class="globalpage_input">
-					<input soy:id="site_id" />
-					<tr>
-						<td style="width:100%;">
-						<textarea soy:id="contents"></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td class="button">
-							<input type="submit" value="解除">
-						</td>
-					</tr>
-				</table>
-			</form soy:id="update_site_form">
-		</div>
-	<div soy:page="_common.FooterPage"></div>
+  
+  <!-- Navigation -->
+		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<div id="page-wrapper">
+			<div class="row">
+				<div class="col-lg-12">
+        
+          <h1>ルートサイト設定解除 - <span soy:id="site_name" /></h1>
+      
+          <div class="functions" soy:display="for_default_user">
+            <p><a soy:link="Site">サイト一覧に戻る	</a></p>
+          </div soy:display="for_default_user">
+      
+          <h2>.htaccessファイルの編集</h2>
+      
+            <form soy:id="update_site_form">
+              <table class="globalpage_input">
+                <input soy:id="site_id" />
+                <tr>
+                  <td style="width:100%;">
+                  <textarea soy:id="contents"></textarea>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="button">
+                    <input type="submit" value="解除">
+                  </td>
+                </tr>
+              </table>
+            </form soy:id="update_site_form">
+			</div><!-- /.col-lg-12 -->
+    </div>
+    </div>
+		<!-- /#page-wrapper -->
+	<!-- soy:page="_common.FooterPage" /-->
 </div>
+<!-- / #wrapper -->
 
 </body>
 </html>

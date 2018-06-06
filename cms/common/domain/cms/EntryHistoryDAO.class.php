@@ -47,5 +47,4 @@ abstract class EntryHistoryDAO extends SOY2DAO{
 		$binds[':cdate'] = time();
 		return array($query,$binds);
 	}
-
 }

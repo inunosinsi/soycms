@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 
 <head soy:page="_common.HeaderPage" isOverWrite="true">
 </head soy:page="_common.HeaderPage">
@@ -6,13 +7,25 @@
 <body>
 
 <div id="wrapper">
-	<div id="upperMenu" soy:page="_common.UpperMenuPage"><!-- --></div>
-	<div id="content">
-		<h2>サイト管理 - データベースの更新（完了）</h2>
+  <!-- Navigation -->
+  <nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+  <div id="page-wrapper">
+    <div class="row">
+      <div class="col-lg-12">
+
+		<h1>サイト管理 - データベースの更新（完了）</h1>
 
 		<p class="message">データベースのバージョンアップが完了しました。→<a soy:link="">トップページへ</a>
 		
-	</div>
-	<div soy:page="_common.FooterPage"></div>
+
+    </div>
+    <!-- /.col-lg-12 -->
+    </div>
+
+  </div>
+  <!-- /#page-wrapper -->
+  <!-- soy:page="_common.FooterPage" /-->
 </div>
+<!-- /#wrapper -->
+
 </html>

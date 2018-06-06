@@ -205,4 +205,3 @@ abstract class PageDAO extends SOY2DAO{
 	 */
 	abstract function getNearestOpeningPage($now);
 }
-?>

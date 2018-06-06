@@ -89,7 +89,10 @@ class SOYAppUtil {
 		$old["user"] = SOY2DAOConfig::user();
 		$old["pass"] = SOY2DAOConfig::pass();
 
-		SOY2::RootDir(dirname(SOYCMS_COMMON_DIR) . "/webapp/" . $appId . "/src/");
+		//公開側でも使用できるように
+		if(!defined("SOYCMS_COMMON_DIR")) define("SOYCMS_COMMON_DIR", SOY2::RootDir());
+
+		SOY2::RootDir(dirname(SOYCMS_COMMON_DIR) . "/app/webapp/" . $appId . "/src/");
 		SOY2DAOConfig::DaoDir(SOY2::RootDir() . "domain/");
 		SOY2DAOConfig::EntityDir(SOY2::RootDir() . "domain/");
 
