@@ -114,7 +114,7 @@ class CartLogic extends SOY2LogicBase{
 				SOY2::import("util.SOYShopPluginUtil");
 				if(SOYShopPluginUtil::checkIsActive("common_item_option")) $resOpts = array("dummy" => null);
 			}
-			
+
 			if(count($resOpts)){
 				$cart = $this->getCart();
 
@@ -413,17 +413,19 @@ class CartLogic extends SOY2LogicBase{
 	 * 総合計金額を取得
 	 * @return number
 	 */
-	function getTotalPrice(){
+	function getTotalPrice($exceptedTax = false){
 		$total = $this->getItemPrice();
 
-		foreach($this->modules as $module){
+		foreach($this->modules as $moduleId => $module){
+			//外税を省いた合算モード
+			if($exceptedTax && $moduleId == "consumption_tax") continue;
 
 			//明細に記載されるのみモジュールに追加
 			if($module->isInclude()) continue;
 
 			$total += $module->getPrice();
 		}
-
+		
 		return $total;
 	}
 

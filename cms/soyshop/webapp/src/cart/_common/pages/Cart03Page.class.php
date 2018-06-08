@@ -93,9 +93,6 @@ class Cart03Page extends MainCartPageBase{
 
 			//割引
 			if(!$cart->hasError("discount") && isset($_POST["discount_module"])){
-
-				//全部ロードする
-				SOYShopPlugin::load("soyshop.discount");
 				SOYShopPlugin::invoke("soyshop.discount", array(
 					"mode" => "select",
 					"cart" => $cart,
@@ -108,8 +105,6 @@ class Cart03Page extends MainCartPageBase{
 			 * 念のため、顧客IDがあるかどうかですでに登録されているか？を見ておく
 			 */
 			if(!$cart->hasError("point") && (isset($_POST["point_module"])) && !is_null($user->getId())){
-				//全部ロードする
-				SOYShopPlugin::load("soyshop.point.payment");
 				SOYShopPlugin::invoke("soyshop.point.payment", array(
 					"mode" => "select",
 					"cart" => $cart,
