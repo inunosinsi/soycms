@@ -10,8 +10,7 @@ class SOYMailUserCustomfieldModule extends SOYShopUserCustomfield{
 
 	function register($app, $userId){
 
-		//マイページのみ
-		if(get_class($app) !== "MyPageLogic") return;
+		if(is_null($app) || get_class($app) !== "MyPageLogic") return;
 
 		//ポイントプラグインがインストールされていなければここで停止
 		SOY2::import("util.SOYShopPluginUtil");

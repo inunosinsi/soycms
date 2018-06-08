@@ -174,8 +174,7 @@ class CommonPointPayment extends SOYShopPointPaymentBase{
 		$cart = $this->getCart();
 
 		$point = self::getPointByUserId($userId);
-
-		$total = $cart->getTotalPrice();
+		$total = $cart->getTotalPrice(true);	//外税を省いた合算
 
 		if($point <= $total){
 			$price = $point;

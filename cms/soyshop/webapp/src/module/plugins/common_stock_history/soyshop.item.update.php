@@ -4,6 +4,8 @@ class CommonItemStockHistory extends SOYShopItemUpdateBase{
 
 	function addHistory(SOYShop_Item $item, $oldStock){
 
+		if(!isset($_POST["Item"]["stock"])) return;
+
 		$newStock = (int)$_POST["Item"]["stock"];
 		if($oldStock != $newStock){
 			$logMessage = "在庫数を" . $oldStock."から" . $newStock."に変更しました";
