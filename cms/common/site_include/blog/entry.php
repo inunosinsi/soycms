@@ -158,6 +158,10 @@ function soy_cms_blog_output_entry($page,$entry){
 					"html"=> $content,
 					"soy2prefix"=>"cms"
 				));
+				$this->addModel("has_content",array(
+					"visible"=> strlen(trim($content)),
+					"soy2prefix"=>"cms",
+				));
 
 				$more = $entry->getMore();
 
