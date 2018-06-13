@@ -7,11 +7,14 @@ class ActionListComponent extends HTMLList{
 
 	function populateItem($bean){
 
+		$targetSelf = ((isset($bean["dialog"]) && strlen($bean["dialog"])) || (isset($bean["self"]) && $bean["self"] === true));
+		if(isset($bean["self"]) && $bean["self"] === false) $targetSelf = false;
+
 		$this->addLink("action_link", array(
 			"link" => $this->getFunctionLink($bean["moduleId"]),
 			"text" => $bean["name"],
 			"onclick" => (isset($bean["dialog"]) && strlen($bean["dialog"])) ? "return confirm('" . htmlspecialchars($bean["dialog"], ENT_QUOTES, "UTF-8") . "');" : "return true;",
-			"target" => ((isset($bean["dialog"]) && strlen($bean["dialog"])) || (isset($bean["self"]) && $bean["self"] === true)) ? "_self" : "_blank"
+			"target" => ($targetSelf) ? "_self" : "_blank"
 		));
 
 		if(!isset($bean["name"]) || !strlen($bean["name"])) return false;

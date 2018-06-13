@@ -36,6 +36,15 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 		return $language;
 	}
 
+	function getJapanaseUrl($config, $url){
+		$url = trim($url);
+		$lang = SOY2ActionSession::getUserSession()->getAttribute("soyshop_publish_language");
+		if(is_null($lang)) $lang = UtilMultiLanguageUtil::LANGUAGE_JP;
+
+		if(!isset($config[$lang]) || !strlen($config[$lang]["prefix"])) return $url;
+		return str_replace("/" . $config[$lang]["prefix"] . "/", "/", $url);
+	}
+
 	function getRedirectPath($config){
 
 		//REQUEST_URI
