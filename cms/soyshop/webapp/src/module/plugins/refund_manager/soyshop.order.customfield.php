@@ -39,11 +39,14 @@ class RefundManagerOrderCustomfield extends SOYShopOrderCustomfield{
 	 * @return array labelとformの連想配列を格納
 	 */
 	function edit($orderId){
-		SOY2::import("module.plugins.refund_manager.form.RefundManagerForm");
-		$form = SOY2HTMLFactory::createInstance("RefundManagerForm");
-		$form->setOrderId($orderId);
-		$form->execute();
-		return array(array("label" => "返金関連", "form" => $form->getObject()));
+		//マイページでは表示しない
+		if(!defined("SOYSHOP_MYPAGE_MODE") || !SOYSHOP_MYPAGE_MODE){
+			SOY2::import("module.plugins.refund_manager.form.RefundManagerForm");
+			$form = SOY2HTMLFactory::createInstance("RefundManagerForm");
+			$form->setOrderId($orderId);
+			$form->execute();
+			return array(array("label" => "返金関連", "form" => $form->getObject()));
+		}
 	}
 
 	/**
@@ -52,6 +55,8 @@ class RefundManagerOrderCustomfield extends SOYShopOrderCustomfield{
 	 * @return array saveするための配列
 	 */
 	function config($orderId){
+		//マイページでは読み込まない
+		if(defined("SOYSHOP_MYPAGE_MODE") && SOYSHOP_MYPAGE_MODE) return array();
 
 		if(isset($_POST["Customfield"]["refund_manager"])){
 			self::prepare();
