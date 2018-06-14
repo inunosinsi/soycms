@@ -43,6 +43,8 @@
 			<tr>
 				<th style="text-align:center;">入力項目</th>
 				<td>
+					<label><input type="checkbox" onclick="toggleItemCheck(this);">すべてのチェックを付ける or 外す</label><br>
+
                     <input type="checkbox" checked="checked" name="item[id]" value="checked" id="item[id]_id" /><label for="item[id]_id">ID (id)</label><br/>
                     <span class="option">IDに『delete』を指定することで顧客の削除ができます</span><br />
 
@@ -105,3 +107,5 @@
 		</form>
 	</div><!-- /block_body -->
 </div><!-- /block -->
+
+<!-- soy:id="check_js" /-->

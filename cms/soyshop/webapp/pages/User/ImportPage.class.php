@@ -17,7 +17,7 @@ class ImportPage extends WebPage{
 		}
 
     	parent::__construct();
-    	$this->buildForm();
+    	self::buildForm();
 
 		DisplayPlugin::toggle("fail", (isset($_GET["fail"])));
 		DisplayPlugin::toggle("invalid", (isset($_GET["invalid"])));
@@ -32,9 +32,14 @@ class ImportPage extends WebPage{
 		$this->createAdd("custom_search_field_list", "_common.User.UserCustomSearchFieldImExportListComponent", array(
 			"list" => $this->getCustomSearchFieldList()
 		));
+
+		//前にチェックした項目 jqueryで制御
+		$this->addLabel("check_js", array(
+			"html" => SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->buildJSCode("user")
+		));
     }
 
-    function buildForm(){
+    private function buildForm(){
     	$this->addForm("import_form", array(
     		 "ENCTYPE" => "multipart/form-data"
     	));
@@ -54,7 +59,11 @@ class ImportPage extends WebPage{
 
 		$logic = SOY2Logic::createInstance("logic.user.ExImportLogic");
     	$format = $_POST["format"];
-    	$item = $_POST["item"];
+
+		$item = (isset($_POST["item"])) ? $_POST["item"] : array();
+
+		//今回チェックした内容を保持する
+		SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->save($item, "user");
 
 		$logic->setSeparator(@$format["separator"]);
 		$logic->setQuote(@$format["quote"]);

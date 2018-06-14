@@ -16,12 +16,17 @@ class ExportPage extends WebPage{
 
 		parent::__construct();
 
-		$this->buildForm();
+		self::buildForm();
 
 		DisplayPlugin::toggle("retry", isset($_GET["retry"]));
+
+		//前にチェックした項目 jqueryで制御
+		$this->addLabel("check_js", array(
+			"html" => SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->buildJSCode("user")
+		));
 	}
 
-	function buildForm(){
+	private function buildForm(){
 		$this->addForm("export_form");
 
 		DisplayPlugin::toggle("user_custom_search_field", SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
@@ -103,7 +108,12 @@ class ExportPage extends WebPage{
 
 
 		$format = $_POST["format"];
-		$item = $_POST["item"];
+
+		$item = (isset($_POST["item"])) ? $_POST["item"] : array();
+
+		//今回チェックした内容を保持する
+		SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->save($item, "user");
+
 		$displayLabel = @$format["label"];
 
 		$logic->setSeparator(@$format["separator"]);

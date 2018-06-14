@@ -42,6 +42,8 @@
                 <tr>
                     <th style="text-align:center;">入力項目</th>
                     <td>
+						<label><input type="checkbox" onclick="toggleItemCheck(this);">すべてのチェックを付ける or 外す</label><br>
+
                         <input type="hidden" name="item[id]" value="1" />
                         <input type="hidden" name="item[code]" value="1" />
 
@@ -148,3 +150,5 @@
     </div>
     <!-- /block_body -->
 </div>
+
+<!-- soy:id="check_js" /-->

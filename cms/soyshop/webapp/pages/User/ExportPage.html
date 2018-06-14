@@ -35,6 +35,8 @@
 			<tr>
 				<th style="text-align:center;">出力項目</th>
 				<td>
+					<label><input type="checkbox" onclick="toggleItemCheck(this);">すべてのチェックを付ける or 外す</label><br>
+
 					<input type="hidden" name="item[id]" value="1" />
 					<input type="checkbox" checked="checked" name="item[id]_dummy" value="1" id="item[id]_id" disabled="disabled" /><label for="item[id]_id">ID (id)</label><br/>
 					<input type="hidden" name="item[mailAddress]" value="1" />
@@ -103,3 +105,4 @@ $(function(){
 	});
 });
 </script>
+<!-- soy:id="check_js" /-->

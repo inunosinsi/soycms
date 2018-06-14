@@ -47,6 +47,11 @@ class ImportPage extends WebPage{
         $this->createAdd("plugin_list", "_common.Item.PluginCSVListComponent", array(
             "list" => $delegate->getModules()
         ));
+
+		//前にチェックした項目 jqueryで制御
+		$this->addLabel("check_js", array(
+			"html" => SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->buildJSCode("item")
+		));
     }
 
     private function buildForm(){
@@ -69,7 +74,10 @@ class ImportPage extends WebPage{
 
         $logic = SOY2Logic::createInstance("logic.shop.item.ExImportLogic");
         $format = $_POST["format"];
-        $item = $_POST["item"];
+        $item = (isset($_POST["item"])) ? $_POST["item"] : array();
+
+		//今回チェックした内容を保持する
+		SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->save($item, "item");
 
         $logic->setSeparator(@$format["separator"]);
         $logic->setQuote(@$format["quote"]);

@@ -5,10 +5,15 @@ class ExportPage extends WebPage{
 
     function __construct() {
         parent::__construct();
-        $this->buildForm();
+        self::buildForm();
+
+		//前にチェックした項目 jqueryで制御
+		$this->addLabel("check_js", array(
+			"html" => SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->buildJSCode("item")
+		));
     }
 
-    function buildForm(){
+    private function buildForm(){
         $this->addForm("export_form");
 
         //多言語化
@@ -141,7 +146,10 @@ class ExportPage extends WebPage{
         $category_id = $_POST["category"];
 
         $format = $_POST["format"];
-        $item = $_POST["item"];
+        $item = (isset($_POST["item"])) ? $_POST["item"] : array();
+
+		//今回チェックした内容を保持する
+		SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->save($item, "item");
 
         $displayLabel = @$format["label"];
         $logic->setSeparator(@$format["separator"]);
