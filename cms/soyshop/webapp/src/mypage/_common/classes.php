@@ -215,9 +215,9 @@ class MainMyPagePageBase extends WebPage{
 		$order = self::getOrderByIdAndUserId($orderId, $userId);
         if(!$order->isOrderDisplay()) return false;
 
-		//新規受付2、受付完了3、在庫確認中6のみtrue
+		//新規受付2、受付完了3のみtrue
 		$status = (int)$order->getStatus();
-		return ($status === SOYShop_Order::ORDER_STATUS_REGISTERED || $status === SOYShop_Order::ORDER_STATUS_RECEIVED || $status === SOYShop_Order::ORDER_STATUS_STOCK_CONFIRM);
+		return ($status === SOYShop_Order::ORDER_STATUS_REGISTERED || $status === SOYShop_Order::ORDER_STATUS_RECEIVED);
 	}
 
 	function checkUsedDeliveryModule($orderId, $userId){
