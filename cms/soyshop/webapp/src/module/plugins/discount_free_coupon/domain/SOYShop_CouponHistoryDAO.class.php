@@ -79,6 +79,7 @@ abstract class SOYShop_CouponHistoryDAO extends SOY2DAO{
    	function onInsert($query, $binds){
 
    		$binds[":createDate"] = time();
+		if(!isset($binds[":isFreeDelivery"]) || is_null($binds[":isFreeDelivery"])) $binds[":isFreeDelivery"] = 0;
 
    		return array($query, $binds);
    	}

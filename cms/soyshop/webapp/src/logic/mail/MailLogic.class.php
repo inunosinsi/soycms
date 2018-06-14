@@ -99,6 +99,9 @@ class MailLogic extends SOY2LogicBase{
 			$this->prepareSend();
 		}
 
+		//送信元メールアドレスが設定されていない時はメールを送信しない
+		if(!strlen($this->serverConfig->getAdministratorMailAddress())) return null;
+
 		//リセット
 		$this->reset();
 
