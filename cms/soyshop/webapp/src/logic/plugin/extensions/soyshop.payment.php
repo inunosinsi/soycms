@@ -141,6 +141,15 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 					$this->_list[$moduleId] = $action->getName();
 				}
 				break;
+			case "mypage":
+				if(strlen($action->getName()) && !$action->hasOptionPage()){
+					$this->_list[$moduleId] = array(
+						"name" => $action->getName(),
+						"price" => $action->getPrice(),
+						"description" => $action->getDescription(),
+					);
+				}
+				break;
 		}
 	}
 

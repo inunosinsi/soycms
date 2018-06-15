@@ -16,13 +16,17 @@ class PaymentMethodListComponent extends HTMLList{
 			"selected" => ( ($this->selected == $key) || ($length == 1) ),
 			"label" => MessageManager::get("LABEL_SELECT")
 		));
-		
+
 		$this->addLabel("payment_name", array(
 			"text" => $entity["name"],
 		));
 
 		$this->addLabel("payment_description", array(
 			"html" => $entity["description"]
+		));
+
+		$this->addModel("is_payment_charge", array(
+			"visible" => (isset($entity["price"]) && is_numeric($entity["price"]) && (int)$entity["price"] > 0)
 		));
 
 		$this->addLabel("payment_charge", array(

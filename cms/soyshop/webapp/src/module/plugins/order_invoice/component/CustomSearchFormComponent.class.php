@@ -38,7 +38,7 @@ class CustomSearchFormComponent {
 		$html[] = "最終出力日：";
 		$html[] = "<input name=\"search[customs][" . $moduleId . "][" . $propName . "Start]\" type=\"text\" class=\"date_picker_start\" value=\"" . $start . "\">";
 		$html[] = "～";
-		$html[] = "<input name=\"search[customs][" . $moduleId . "][" . $propName . "End]\" type=\"text\" class=\"date_picker_end\" value=\"" . $end . "\">";
+		$html[] = "<input name=\"search[customs][" . $moduleId . "][" . $propName . "End]\" type=\"text\" class=\"date_picker_end\" value=\"" . $end . "\"><br>";
 
 		//未出力
 		$propName = ucfirst($propName);

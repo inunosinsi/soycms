@@ -11,6 +11,10 @@ class ModuleListComponent extends HTMLList{
 			"text" => $entity->getName(),
 		));
 
+		$this->addModel("is_module_price", array(
+			"visible" => ((int)$entity->getPrice() > 0)
+		));
+
 		$this->createAdd("module_price", "NumberFormatLabel", array(
 			"text" => $entity->getPrice(),
 		));

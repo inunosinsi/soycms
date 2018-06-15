@@ -24,9 +24,18 @@ class ItemCheckListLogic extends SOY2LogicBase {
 		$scripts[] = "$('input[name$=\"_dummy\"]').prop('checked', true);";
 
 		//一つずつチェックを入れていく
-		foreach($checks as $key => $v){
-			if($v != 1) continue;
-			$scripts[] = "if($('input[name=\"item[" . $key . "]\"]')) $('input[name=\"item[" . $key . "]\"]').prop('checked', true);";
+		foreach($checks as $key => $val){
+			if(is_string($val) && $val != 1) continue;
+
+			//多言語プラグインの対応
+			if(is_array($val) && count($val)){
+				foreach($val as $k => $v){
+					if(is_string($v) && $v != 1) continue;
+					$scripts[] = "if($('input[name=\"item[" . $key . "][" . $k . "]\"]')) $('input[name=\"item[" . $key . "][" . $k . "]\"]').prop('checked', true);";
+				}
+			}else{
+				$scripts[] = "if($('input[name=\"item[" . $key . "]\"]')) $('input[name=\"item[" . $key . "]\"]').prop('checked', true);";
+			}
 		}
 
 		$scripts[] = "";

@@ -79,7 +79,8 @@ class DetailPage extends MainMyPagePageBase{
 
         //備考、支払方法、配送方法、配達時間
         $this->createAdd("attribute_list", "_common.order.AttributeListComponent", array(
-            "list" => $order->getAttributeList()
+            "list" => $order->getAttributeList(),
+			"orderId" => $order->getId()
         ));
 
         $this->addLabel("payment_status", array(
