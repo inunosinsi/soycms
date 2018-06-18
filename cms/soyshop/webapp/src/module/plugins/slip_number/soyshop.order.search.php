@@ -10,16 +10,13 @@ class SlipNumberSearch extends SOYShopOrderSearch{
 			$i = 0;
 			foreach($params as $param){
 				$param = trim($param);
-				if(strlen($param)){
-					$q[] = "order_value1 LIKE :slipNumber" . $i;
-					$binds[":slipNumber" . $i] = "%" . $param . "%";
-					$i++;
-				}
+				$q[] = "slip_number LIKE :slip" . $i;
+				$binds[":slip" . $i++] = "%" . $param . "%";
 			}
 
 			if(count($q)){
 				$queries = array();
-				$queries[] = "id IN (SELECT order_id FROM soyshop_order_attribute WHERE order_field_id = 'slip_number_plugin' AND (" . implode(" OR ", $q) . "))";
+				$queries[] = "id IN (SELECT order_id FROM soyshop_slip_number WHERE " . implode(" OR ", $q) . ")";
 				return array("queries" => $queries, "binds" => $binds);
 			}
 		}

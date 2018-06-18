@@ -2,6 +2,7 @@
 class SOYShopOrderCustomfield implements SOY2PluginAction{
 
 	private $cart;
+	private $mypage;
 
 	/**
 	 * セッションの削除
@@ -65,6 +66,18 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	}
 
 	/**
+	 * @param int $orderID
+	 * @return boolen
+	 */
+	function error($orderId){
+		return false;
+	}
+
+	function getErrorMessage(){
+		return "";
+	}
+
+	/**
 	 * saveする際のconfigを取得して返す
 	 */
 	function config($orderId){
@@ -77,11 +90,19 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	function setCart($cart) {
 		$this->cart = $cart;
 	}
+
+	function getMyPage(){
+		return $this->mypage;
+	}
+	function setMyPage($mypage){
+		$this->mypage = $mypage;
+	}
 }
 class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 
 	private $mode = "list";
 	private $cart;
+	private $mypage;
 	private $param;//$_POST["customfield_module"]
 	private $orderId;
 
@@ -89,6 +110,7 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 	private $_display = array();
 	private $_label = array();
 	private $hasError = false;
+	private $errorMessage = "";
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
 
@@ -98,6 +120,7 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 //		}
 
 		$action->setCart($this->getCart());
+		$action->setMyPage($this->getMyPage());
 
 		switch($this->mode){
 			case "list":
@@ -128,6 +151,17 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 			case "edit":
 				$this->_label[$moduleId] = $action->edit($this->orderId);
 				break;
+			case "error":
+				if($action->error($this->param)){
+					$this->hasError = true;
+				}else{
+					//do nothing
+				}
+				break;
+			case "error_message":	//当面は上書きのみ
+				$errMsg = $action->getErrorMessage();
+				if(strlen($errMsg)) $this->errorMessage = $errMsg;
+				break;
 			case "config":
 				$this->_list[$moduleId] = $action->config($this->orderId);
 				break;
@@ -157,6 +191,12 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 	function setCart($cart) {
 		$this->cart = $cart;
 	}
+	function getMyPage(){
+		return $this->mypage;
+	}
+	function setMyPage($mypage){
+		$this->mypage = $mypage;
+	}
 	function getOrderId(){
 		return $this->orderId;
 	}
@@ -171,6 +211,10 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 	}
 	function hasError(){
 		return $this->hasError;
+	}
+
+	function getErrorMessage(){
+		return $this->errorMessage;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.customfield","SOYShopOrderCustomfieldDeletageAction");
