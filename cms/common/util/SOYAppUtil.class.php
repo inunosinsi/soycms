@@ -100,7 +100,7 @@ class SOYAppUtil {
 			//SOYMailはdbファイル名がappIdと異なるから修正
 			if($appId == "mail") $appId = "soymail";
 
-			SOY2DAOConfig::Dsn(SOYCMS_COMMON_DIR . "db/" . $appId . ".db");
+			SOY2DAOConfig::Dsn("sqlite:" . SOYCMS_COMMON_DIR . "db/" . $appId . ".db");
 		//MySQLの場合は管理側のDB
 		}else{
 			SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
