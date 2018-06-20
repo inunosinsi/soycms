@@ -1,0 +1,51 @@
+<!-- soy:display="inactive_custom_field" -->
+<p>カスタムフィールドアドバンスドを有効にしてください。</p>
+<!-- /soy:display="inactive_custom_field" -->
+
+<!-- soy:display="active_custom_field" -->
+<form soy:id="form">
+お問い合わせフォーム：<select soy:id="form"><option></option></select>&nbsp;
+<input type="submit" name="formIdRegiseter" soy:id="form_button" value="選択">
+</form>
+
+<!-- soy:display="is_config" -->
+<form soy:id="connect_form">
+	<table class="list">
+		<caption>お問い合わせ-記事の連携設定</caption>
+		<thead>
+			<tr>
+				<th>カラム</th>
+				<th>カスタムフィールド</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="column_list" -->
+			<tr>
+				<td soy:id="label">label</td>
+				<td><select soy:id="customfield"><option></option></select></td>
+			</tr>
+			<!-- /soy:id="column_list" -->
+		</tbody>
+	</table>
+
+	<table class="list">
+		<caption>記事の設定</caption>
+		<tr>
+			<th>ラベル</th>
+			<td><select soy:id="label"><option></option></select></td>
+		</tr>
+		<tr>
+			<th>記事の公開状態</th>
+			<td>
+				<input type="radio" soy:id="no_published">&nbsp;
+				<input type="radio" soy:id="is_published">
+			</td>
+		</tr>
+	</table>
+
+	<p>
+		<input type="submit" name="connectRegister" value="更新">
+	</p>
+</form>
+<!-- /soy:display="is_config" -->
+<!-- /soy:display="active_custom_field" -->
