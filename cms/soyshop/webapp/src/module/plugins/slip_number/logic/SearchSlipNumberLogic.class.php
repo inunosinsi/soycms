@@ -74,8 +74,8 @@ class SearchSlipNumberLogic extends SOY2LogicBase {
 	}
 
 	private function buildWhere(){
-		//キャンセル、仮登録と発送済みを除く
-		$where = " WHERE o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_CANCELED . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . "," . SOYShop_Order::ORDER_STATUS_SENDED . ")";
+		//キャンセル、仮登録、発送済みと返却済み(返送用伝票番号：21)を除く
+		$where = " WHERE o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_CANCELED . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . "," . SOYShop_Order::ORDER_STATUS_SENDED . ", 21)";
 
 		if(count($this->where)){
 			foreach($this->where as $key => $w){

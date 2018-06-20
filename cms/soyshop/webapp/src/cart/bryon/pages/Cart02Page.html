@@ -3,7 +3,7 @@
 <form soy:id="order_form">
 	<section>
 		<h1 class="cart_txt">お客様情報の入力</h1>
-	
+
 		<!-- soy:display="has_error" -->
 		<div class="error narrow">
 			<p>正しく入力されていない項目があります。</p>
@@ -53,7 +53,7 @@
 						<p class="error" soy:id="address_error">ご住所が正しく入力されていません。</p>
 						<select name="" id="" class="input-pref" soy:id="area">
 							<option value="">都道府県名</option>
-						</select>								
+						</select>
 						<table>
 							<tr>
 								<td>市区郡：</td>
@@ -103,7 +103,7 @@
 					</td>
 				</tr>
 				<!-- /soy:id="password_input" -->
-		
+
 				<tr soy:id="gender_show">
 					<th nowrap scope="row">性別<span soy:id="gender_required">(必須)</span></th>
 					<td>
@@ -114,7 +114,7 @@
 						<label for="radio_sex_female">女性</label>
 					</td>
 				</tr>
-		
+
 				<tr id="birthday" soy:id="birthday_show">
 					<th nowrap scope="row">生年月日<span soy:id="birthday_required">(必須)</span></th>
 					<td>
@@ -144,7 +144,7 @@
 						<span class="note">【半角数字】</span><span class="exmpl">（例）080-1234-5678</span>
 					</td>
 				</tr>
-				
+
 				<!-- soy:id="has_user_customfield" -->
 				<!-- soy:id="user_customfield_list" -->
 				<tr>
@@ -172,20 +172,20 @@
 			<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_payment_off.png" alt="次へ（お支払・配送方法の選択）"></p>
 			<p class="alC"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
 		</section>
-				
+
 		<section class="soycart_narrow" soy:id="display_send_form">
 			<h1>お届け先情報</h1>
 			<p>
 				お届け先が基本情報にご記入の住所とは異なる場合に記入してください。<br>
 				<span class="require">※お届け先欄使用時には必須</span>
 			</p>
-	
+
 			<!-- soy:id="has_send_address_error" -->
 			<div class="error narrow">
 				<p soy:id="send_address_error">正しく入力されていない項目があります。</p>
 			</div>
 			<!-- /soy:id="has_send_address_error" -->
-			
+
 			<!--ul>
 				<li>
 					<input name="radio" type="radio" id="radio" value="radio" checked>
@@ -215,7 +215,7 @@
 					<th nowrap scope="row">法人名（勤務先など）</th>
 					<td><input name="" type="text" id="" class="w300" soy:id="send_office"></td>
 				</tr>
-		
+
 				<tr id="zipcode2">
 					<th nowrap scope="row">郵便番号<span class="require">（必須）</span></th>
 					<td>
@@ -229,7 +229,7 @@
 					<td>
 						<select name="" id="" class="input-send-pref" soy:id="send_area">
 							<option value="">都道府県名</option>
-						</select>								
+						</select>
 						<table>
 							<tr>
 								<td>市区郡：</td>
