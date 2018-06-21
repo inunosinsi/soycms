@@ -51,7 +51,7 @@ class IndexPage extends WebPage{
 
         SOY2::import("util.StepMailUtil");
 
-        WebPage::__construct();
+        parent::__construct();
 
         DisplayPlugin::toggle("updated", isset($_GET["updated"]));
         DisplayPlugin::toggle("created", isset($_GET["created"]));

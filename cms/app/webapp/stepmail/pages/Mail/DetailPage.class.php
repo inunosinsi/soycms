@@ -42,7 +42,7 @@ class DetailPage extends WebPage{
     function __construct($args){
         $this->id = (isset($args[0])) ? (int)$args[0] : null;    //nullの時は新規作成
 
-        WebPage::__construct();
+        parent::__construct();
 
         //詳細画面
         self::buildDetailArea();
