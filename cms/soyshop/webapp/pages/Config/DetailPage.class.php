@@ -15,8 +15,8 @@ class DetailPage extends WebPage{
 		}
 
 		$plugin = $_GET["plugin"];
-		
-		
+
+
 		$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
     	$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
 
@@ -46,4 +46,3 @@ class DetailPage extends WebPage{
 		));
 	}
 }
-?>

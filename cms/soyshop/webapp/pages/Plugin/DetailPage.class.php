@@ -61,7 +61,7 @@ class DetailPage extends WebPage{
 		$this->addLabel("module_description", array(
 			"text" => $this->module->getDescription()
 		));
-		
+
 		/** 詳細説明があるプラグインの場合は、説明のURLを記載する **/
 		$this->addModel("display_module_detail_link", array(
 			"visible" => (!is_null($this->module->getLink()) && strlen($this->module->getLink()) > 0)
@@ -91,4 +91,3 @@ class DetailPage extends WebPage{
 		));
     }
 }
-?>
