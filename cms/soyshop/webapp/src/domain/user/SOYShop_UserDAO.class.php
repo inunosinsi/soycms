@@ -146,7 +146,7 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
     	}
 
 		// SOY Mail連携プラグインを有効にしていない場合はメルマガのチェックは必ずなし
-		SOY2::import("util.SOYShopPluginUtil");
+		if(!class_exists("SOYShopPluginUtil")) SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("soymail_connector")){
 			$binds[":notSend"] = SOYShop_User::USER_NOT_SEND;
 		}

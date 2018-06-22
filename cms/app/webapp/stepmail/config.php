@@ -10,6 +10,7 @@ SOY2::RootDir(SOYSHOP_WEBAPP . "src/");
 SOY2::imports("domain.user.*");
 SOY2::import("logic.plugin.SOYShopPlugin");
 SOY2::imports("domain.plugin.*");
+SOY2::import("util.SOYShopPluginUtil");
 
 //SOY2の設定
 if(!defined("STEPMAIL_SRC")) define("STEPMAIL_SRC", dirname(__FILE__) . "/src/");
@@ -26,7 +27,7 @@ SOY2DAOConfig::EntityDir(SOY2::RootDir() . "domain/");
 
 //データベースの読み込み:soyshopのデータベースを使う
 if(file_exists(dirname(__FILE__) . "/shop_id.php")){
-	include_once(dirname(__FILE__) . "/shop_id.php");	
+	include_once(dirname(__FILE__) . "/shop_id.php");
 }else{
 	define("STEPMAIL_SHOP_ID", null);
 }
