@@ -16,7 +16,10 @@
     $label = $obj->getLabel();
     $view = $obj->getView();
 
-    if(strlen($view)<1)continue;
+    if(strlen($view) < 1) continue;
+
+	//個人情報保護方針は表示しない
+	if(get_class($obj) == "PrivacyPolicyColumn" && (int)$view === 1) continue;
 
     echo "<tr>";
 

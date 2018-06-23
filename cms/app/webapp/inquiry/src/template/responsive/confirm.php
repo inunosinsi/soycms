@@ -6,15 +6,18 @@
 
 <div class="soy_iqnuiry_responsive">
 	<dl>
-<?php foreach($columns as $column){ 
-	
+<?php foreach($columns as $column){
+
 	$id = $column->getId();
 	$obj = $column->getColumn();
 	$label = $obj->getLabel();
 	$view = $obj->getView();
-	
+
 	if(strlen($view) < 1) continue;
-		
+
+	//個人情報保護方針は表示しない
+	if(get_class($obj) == "PrivacyPolicyColumn" && (int)$view === 1) continue;
+
 	if(strlen($label) > 0 && strlen($view) > 0){
 		echo "<dt>";
 		echo $label;
@@ -23,7 +26,7 @@
 	    echo $view;
 	    echo "</dd>";
 	}
-}    
+}
 ?>
 	</dl>
 </div>
