@@ -27,6 +27,11 @@ class EditPage extends WebPage{
 				$change = array_merge($change, $_change);
 			}
 
+			if(isset($_POST["Payment"])){
+				$_change = self::updateOrderPayment($order, $_POST["Payment"]);
+				$change = array_merge($change, $_change);
+			}
+
 			if(isset($_POST["Attribute"])){
 				$_change = self::updateOrderAttribute($order, $_POST["Attribute"]);
 				$change = array_merge($change, $_change);
@@ -500,6 +505,16 @@ class EditPage extends WebPage{
 			"text" => number_format($order->getPrice()) . " 円"
 		));
 
+		//支払い方法の変更
+		$paymentModuleList = self::getPaymentMethodList();
+		DisplayPlugin::toggle("payment_method", count($paymentModuleList) > 0);
+
+		$this->createAdd("payment_method_list", "_common.Order.PaymentMethodListComponent", array(
+			"list" => $paymentModuleList,
+			"selected" => self::getSelectedPaymentMethod($order->getModuleList())
+		));
+
+
 		$this->createAdd("attribute_list", "_common.Order.AttributeFormListComponent", array(
 			"list" => $order->getAttributeList()
 		));
@@ -664,6 +679,24 @@ class EditPage extends WebPage{
 		return $items[$itemId];
 	}
 
+	private function getPaymentMethodList(){
+		SOY2::import("logic.cart.CartLogic");
+		SOYShopPlugin::load("soyshop.payment");
+		return SOYShopPlugin::invoke("soyshop.payment", array(
+			"mode" => "list",
+			"cart" => new CartLogic()
+		))->getList();
+	}
+
+	private function getSelectedPaymentMethod($modules){
+		if(!count($modules)) return null;
+
+		foreach($modules as $moduleId => $module){
+			if(strpos($moduleId, "payment_") !== false) return $moduleId;
+		}
+		return null;
+	}
+
 	private function updateItem(SOYShop_Item $item){
 		static $itemDAO;
 		if(!$itemDAO)$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
@@ -718,6 +751,40 @@ class EditPage extends WebPage{
 		return $change;
 	}
 
+	private function updateOrderPayment(SOYShop_Order $order, $newPayment){
+		$change = array();
+
+		$moduleList = $order->getModuleList();
+		$attrList = $order->getAttributeList();
+
+		$old = self::getSelectedPaymentMethod($moduleList);
+
+		if($newPayment !== $old){
+			unset($moduleList[$old]);
+			unset($attrList[$old]);
+
+			$list = self::getPaymentMethodList();
+
+			$module = new SOYShop_ItemModule();
+			$module->setId($newPayment);
+			$module->setType("payment_module");//typeを指定しておくといいことがある
+			$module->setName($list[$newPayment]["name"]);
+			$module->setPrice(0);	//@ToDo 金額の指定もしたいところ
+			$module->setIsVisible(false);
+
+			$moduleList[$newPayment] = $module;
+			$order->setModules($moduleList);
+
+			//attributeの方も変更
+			$attrList[$newPayment] = array("name" => "支払方法", "value" => $list[$newPayment]["name"]);
+			$order->setAttributes($attrList);
+
+			$change[] = self::getHistoryText("支払方法", $list[$old]["name"], $list[$newPayment]["name"]);
+		}
+
+		return $change;
+	}
+
 	private function updateOrderAttribute(SOYShop_Order $order, $newAttributes){
 		$change = array();
 		$attributes = $order->getAttributeList();
@@ -759,7 +826,7 @@ class EditPage extends WebPage{
 					}
 				}
 			}
-		
+
 			$dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
 			$dateDao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
 		   	foreach($array as $key => $obj){

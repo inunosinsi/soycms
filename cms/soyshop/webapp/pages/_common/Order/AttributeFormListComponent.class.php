@@ -16,5 +16,8 @@ class AttributeFormListComponent extends HTMLList {
 
 		//オーダーカスタムフィールドの値は表示しない
 		if(strpos($key, "order_customfield") === 0 || strpos($key, "order_date_customfield") === 0) return false;
+
+		//支払い方法も無視する
+		if(strpos($key, "payment_") === 0) return false;
 	}
 }
