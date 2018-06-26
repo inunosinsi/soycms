@@ -276,6 +276,4 @@ class CMSPageLinkPlugin extends PluginBase{
 		}
 		return $url;
 	}
-
 }
-?>

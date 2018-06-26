@@ -53,4 +53,3 @@ class CMSPagePluginBase extends PluginBase{
     	$this->arguments = $arguments;
     }
 }
-?>

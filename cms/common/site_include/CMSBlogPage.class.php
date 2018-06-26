@@ -187,7 +187,7 @@ class CMSBlogPage extends CMSPage{
 							$arguments
 					),
 					"UTF-8",
-					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS"
+					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS,SJIS-win"
 				);
 				list($this->entry,$this->nextEntry,$this->prevEntry) = $this->getEntry($entryId);
 
@@ -227,7 +227,7 @@ class CMSBlogPage extends CMSPage{
 						$arguments
 					),
 					"UTF-8",
-					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS"
+					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS,SJIS-win"
 				);
 
 				$this->label = $this->getLabel($label);
