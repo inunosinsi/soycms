@@ -26,7 +26,7 @@ class DisplayInquiryContentPlugin{
 			"modifier"=>"Tsuyoshi Saito",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -54,6 +54,12 @@ class DisplayInquiryContentPlugin{
 					CMSPlugin::savePluginConfig($this->getId(), $this);
 				}
 			}
+		}
+
+		//最終お問い合わせ時刻が常に0(他サイトにフォームを設置している)の場合は常に最終お問い合わせ時刻を調べに行く
+		if($this->lastInquiryTime === 0){
+			SOY2::import("site_include.plugin.display_inquiry_content.util.DisplayInquiryContentUtil");
+			$this->lastInquiryTime = DisplayInquiryContentUtil::getLastInquiryTime($this->getFormId());
 		}
 
 		//お問い合わせのデータベースから記事を登録する
@@ -126,7 +132,7 @@ class DisplayInquiryContentPlugin{
 					$dao->commit();
 
 					//最終登録日を記録
-					$this->lastEntryImportTime = time();
+					$this->lastEntryImportTime = $dates[$i];
 					CMSPlugin::savePluginConfig($this->getId(), $this);
 				}
 			}

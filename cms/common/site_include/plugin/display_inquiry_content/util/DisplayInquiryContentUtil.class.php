@@ -111,6 +111,23 @@ class DisplayInquiryContentUtil {
 		return $id;
 	}
 
+	public static function getLastInquiryTime($formId){
+		SOY2::import("util.SOYAppUtil");
+		$old = SOYAppUtil::switchAppMode("inquiry");
+		$dao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
+
+		$sql = "SELECT create_date FROM soyinquiry_inquiry WHERE form_id = :formId  AND flag != " . SOYInquiry_Inquiry::FLAG_DELETED . " ORDER BY create_date DESC LIMIT 1";
+		try{
+			$results = $dao->executeQuery($sql, array(":formId" => $formId));
+		}catch(Exception $e){
+			$results = array();
+		}
+
+		SOYAppUtil::resetAppMode($old);
+
+		return (isset($results[0]["create_date"]) && is_numeric($results[0]["create_date"])) ? (int)$results[0]["create_date"] : 0;
+	}
+
 	public static function getInquiryContentsAndDateByFormIdAfterSpecifiedTime($formId, $time){
 		SOY2::import("util.SOYAppUtil");
 		$old = SOYAppUtil::switchAppMode("inquiry");
@@ -120,7 +137,6 @@ class DisplayInquiryContentUtil {
 		try{
 			$results = $dao->executeQuery($sql, array(":formId" => $formId, ":t" => $time));
 		}catch(Exception $e){
-			var_dump($e);
 			$results = array();
 		}
 
