@@ -4945,6 +4945,8 @@ abstract class SOY2HTML extends SOY2HTMLBase{
 	 */
 	function getComponentType(){
 		$func = function(){
+			//PHP5.3でも一応動作する　調査用
+			if(is_null($this) || is_string($this)) return "_HTML_BODY_";
 			$className = get_class($this);
 			return $className::SOY_TYPE;
 		};
