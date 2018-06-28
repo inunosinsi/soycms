@@ -11,7 +11,7 @@ $.extend(SOY2_DatePicker,{
 				show_future : false
 			};
 		}
-		
+
 		if(!obj.date_picker){
 			option = $.extend(option);
 
@@ -338,13 +338,16 @@ $.extend(SOY2_DatePicker.prototype,{
 		$("select.month_select",ele).val(this.month);
 		$("select.year_select",ele).val(this.year);
 
-		if(!this.show_future
-		 && this.year == this.today.getFullYear()
-		 && this.month == this.today.getMonth() ){
-			$(".next_btn",ele).hide();
-		}else{
-			$(".next_btn",ele).show();
-		}
+		// if(!this.show_future
+		//  && this.year == this.today.getFullYear()
+		//  && this.month == this.today.getMonth() ){
+		// 	$(".next_btn",ele).hide();
+		// }else{
+		// 	$(".next_btn",ele).show();
+		// }
+
+		//常にshow
+		$(".next_btn",ele).show();
 
 		//input
 		if($(this.node).val().length > 0)this.selectValue(this.year,this.month,this.date);
