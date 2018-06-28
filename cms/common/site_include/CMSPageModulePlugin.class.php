@@ -24,7 +24,7 @@ class CMSPageModulePlugin extends PluginBase{
 		'<?php ' .
 				'$tmp_html=ob_get_contents();ob_end_clean(); ' .
 				'echo call_user_func("' . $func . '",$tmp_html,$this);' .
-			'}elseif(DEBUG_MODE){' .
+			'}elseif(defined("DEBUG_MODE") && DEBUG_MODE){' .
 				'echo "function not found : ' . $func . '";' .
 			'}' .
 		' ?>'
