@@ -27,6 +27,8 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	private $orderIdStart;
 	private $orderIdEnd;
 
+	private $orderMemo;
+
 	private $userName;
 	private $userReading;
 	private $userMailAddress;
@@ -227,6 +229,12 @@ class SearchFormComponent extends SOYBodyComponentBase{
 		//支払い方法のチェックボックス
 		$this->addLabel("order_payment_checkboxes", array(
 			"html" => self::getPaymentCheckboxesHTML()
+		));
+
+		$this->addInput("order_memo", array(
+			"name" => "search[orderMemo]",
+			"value" => $this->getOrderMemo(),
+			"style" => "width:95%;"
 		));
 
 		$this->createAdd("custom_search_item_list", "_common.Order.CustomSearchItemListComponent", array(
@@ -497,6 +505,13 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	}
 	function setPaymentMethod($paymentMethod){
 		$this->paymentMethod = $paymentMethod;
+	}
+
+	function getOrderMemo(){
+		return $this->orderMemo;
+	}
+	function setOrderMemo($orderMemo){
+		$this->orderMemo = $orderMemo;
 	}
 
 	function getCustoms(){

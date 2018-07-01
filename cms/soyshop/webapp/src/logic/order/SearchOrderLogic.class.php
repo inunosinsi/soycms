@@ -129,6 +129,24 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$binds[":order_date_end"] = $order_date_end_time;
 		}
 
+		//備考　SQLだけでは取得できないのでデータを取得直後に更に加工を行う
+		if(isset($search["orderMemo"]) && strlen($search["orderMemo"])){
+			//検索ワードをスペースやカンマで配列にする
+			$words = self::getOrderMemoWords($search["orderMemo"]);
+			if(count($words)){
+				$memoWhere = array();
+				for($i = 0; $i < count($words); $i++){
+					$word = $words[$i];
+					$memoWhere[] = "attributes LIKE :order_memo_" . $i;
+					$binds[":order_memo_" . $i] = "%" . $word . "%";
+				}
+
+				if(count($memoWhere)){
+					$where[] = "(" . implode(" OR ", $memoWhere) . ")";
+				}
+			}
+		}
+
 		//更新日
 		if(isset($search["updateDateStart"]) && strlen($search["updateDateStart"]) > 0 && strtotime($search["updateDateStart"])){
 			$where[] = "id IN (SELECT order_id FROM soyshop_order_state_history WHERE order_date >= :update_date_start)";
@@ -320,6 +338,23 @@ class SearchOrderLogic extends SOY2LogicBase{
 		foreach($res as $row){
 			if(!isset($row["id"])) continue;
 			$obj = $orderDAO->getObject($row);
+
+			//備考の検索を行う
+			if(isset($_GET["search"]["orderMemo"]) && strlen($_GET["search"]["orderMemo"])){
+				$words = self::getOrderMemoWords($_GET["search"]["orderMemo"]);
+				if(count($words)){
+					$attrs = $obj->getAttributeList();
+					if(!isset($attrs["memo"]) || !strlen($attrs["memo"]["value"])) continue;
+					$memo = $attrs["memo"];
+
+					$hit = false;
+					foreach($words as $word){
+						if(strpos($memo["value"], $word) !== false) $hit = true;
+					}
+					if(!$hit) continue;
+				}
+			}
+
 			$obj->setItems($itemOrderDAO->getByOrderId($obj->getId()));
 			$orders[] = $obj;
 		}
@@ -343,6 +378,28 @@ class SearchOrderLogic extends SOY2LogicBase{
 			return 0;
 		}
 		return (isset($countResult[0]["count"])) ? (int)$countResult[0]["count"] : 0;
+	}
+
+	/**
+	 * 備考用の検索ワードの配列を取得
+	 */
+	function getOrderMemoWords($str){
+		static $array;
+		if(isset($array)) return $array;
+		$array = array();
+
+		$str = str_replace(array(" ", "　"), ",", trim($str));
+		$strs = explode(",", $str);
+
+		if(!count($strs)) return $array;
+
+		for($i = 0; $i < count($strs); $i++) {
+			$str = trim($strs[$i]);
+			if(!isset($str) || !strlen($str)) continue;
+			$array[] = $str;
+		}
+
+		return $array;
 	}
 
 	/* getter setter */
