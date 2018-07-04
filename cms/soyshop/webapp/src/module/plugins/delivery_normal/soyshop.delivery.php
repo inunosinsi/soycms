@@ -179,5 +179,29 @@ class DeliveryNormalModule extends SOYShopDelivery{
 
 		return $changes;
 	}
+
+	function config(){
+		self::prepare();
+		$times = DeliveryNormalUtil::getDeliveryTimeConfig();
+
+		$attrs = $this->getOrder()->getAttributeList();
+		$selected = (isset($attrs["delivery_normal.time"]["value"])) ? $attrs["delivery_normal.time"]["value"] : "";
+
+		$html = array();
+		$html[] = "<select name=\"Attribute[delivery_normal.time]\">";
+		$html[] = "<option></option>";
+		if(count($times)){
+			foreach($times as $time){
+				if($time == $selected){
+					$html[] = "<option value=\"" . $time . "\" selected=\"selected\">" . $time . "</option>";
+				}else{
+					$html[] = "<option value=\"" . $time . "\">" . $time . "</option>";
+				}
+			}
+		}
+		$html[] = "</select>";
+
+		return implode("\n", $html);
+	}
 }
 SOYShopPlugin::extension("soyshop.delivery", "delivery_normal", "DeliveryNormalModule");

@@ -38,7 +38,7 @@ class DeliveryCoolModule extends SOYShopDelivery{
 	}
 
 	function getDescription(){
-		
+
 		$coolPrice = $this->getCoolPrice();
 
 		$html = array();
@@ -49,10 +49,10 @@ class DeliveryCoolModule extends SOYShopDelivery{
 		$html[] = '<select name="delivery_time">';
 
 		$time = DeliveryCoolCommon::getDliveryTimeConfig();
-		
+
 		$cart = $this->getCart();
 		$selected = $cart->getOrderAttribute("delivery_cool.time");
-		
+
 		foreach($time as $str){
 			if(isset($selected["value"]) && $selected["value"] == $str){
 				$html[] = '<option selected="selected">';
@@ -77,20 +77,41 @@ class DeliveryCoolModule extends SOYShopDelivery{
 		$area = $address["area"];
 
 		$price = (isset($prices[$area])) ? (int)$prices[$area] : 0;
-		
+
 		$coolPrice = (int)$this->getCoolPrice();
-		
+
 		$price = $price + $coolPrice;
 
 		return $price;
 	}
-	
+
 	function getCoolPrice(){
 		$coolPrice = DeliveryCoolCommon::getCoolPrice();
 
-		return $coolPrice;		
+		return $coolPrice;
 	}
 
+	function config(){
+		$times = DeliveryCoolCommon::getDliveryTimeConfig();
+
+		$attrs = $this->getOrder()->getAttributeList();
+		$selected = (isset($attrs["delivery_cool.time"]["value"])) ? $attrs["delivery_cool.time"]["value"] : "";
+
+		$html = array();
+		$html[] = "<select name=\"Attribute[delivery_cool.time]\">";
+		$html[] = "<option></option>";
+		if(count($times)){
+			foreach($times as $time){
+				if($time == $selected){
+					$html[] = "<option value=\"" . $time . "\" selected=\"selected\">" . $time . "</option>";
+				}else{
+					$html[] = "<option value=\"" . $time . "\">" . $time . "</option>";
+				}
+			}
+		}
+		$html[] = "</select>";
+
+		return implode("\n", $html);
+	}
 }
 SOYShopPlugin::extension("soyshop.delivery", "delivery_cool", "DeliveryCoolModule");
-?>

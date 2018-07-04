@@ -19,5 +19,11 @@ class AttributeFormListComponent extends HTMLList {
 
 		//支払い方法も無視する
 		if(strpos($key, "payment_") === 0) return false;
+
+		//配送時間帯がある場合も無視する
+		if(
+			strpos($key, "delivery_") !== false &&
+			(strpos($key, "_time_") || strpos($key, ".time"))
+		) return false;
 	}
 }

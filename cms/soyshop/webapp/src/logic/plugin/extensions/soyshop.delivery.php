@@ -60,6 +60,13 @@ class SOYShopDelivery implements SOY2PluginAction{
 
 	}
 
+	/**
+	 * 管理画面の注文編集画面で設定用のHTMLを取得
+	 */
+	function config(){
+
+	}
+
 	function getCart() {
 		return $this->cart;
 	}
@@ -81,6 +88,7 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 	private $cart;
 	private $order;
 	private $_changes = array();
+	private $_config;	//HTML
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 
@@ -116,6 +124,10 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 			case "update":
 				$this->_changes[$moduleId] = $action->update();
 				break;
+			//管理画面の注文編集で設定用の項目を追加
+			case "config":
+				$this->_config = $action->config();
+				break;
 		}
 	}
 
@@ -144,6 +156,10 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 
 	function getChanges(){
 		return $this->_changes;
+	}
+
+	function getConfig(){
+		return $this->_config;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.delivery","SOYShopDeliveryDeletageAction");

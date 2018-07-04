@@ -4,7 +4,7 @@ include_once(dirname(__FILE__) . "/util.php");
  * 無料配送モジュール
  */
 class DeliveryChargeFreeModule extends SOYShopDelivery{
-	
+
 	function onSelect(CartLogic $cart){
 
 		//割引を先に行う
@@ -42,10 +42,32 @@ class DeliveryChargeFreeModule extends SOYShopDelivery{
 		$form->execute();
 		return $form->getObject();
 	}
-	
+
 	function getPrice(){
 		return DeliveryChargeFreeConfigUtil::getShippingFee($this->getCart()->getItemPrice(), $this->getCart()->getAddress());
 	}
+
+	function config(){
+		$times = DeliveryChargeFreeConfigUtil::getDliveryTimeConfig();
+
+		$attrs = $this->getOrder()->getAttributeList();
+		$selected = (isset($attrs["delivery_charge_free.time"]["value"])) ? $attrs["delivery_charge_free.time"]["value"] : "";
+
+		$html = array();
+		$html[] = "<select name=\"Attribute[delivery_charge_free.time]\">";
+		$html[] = "<option></option>";
+		if(count($times)){
+			foreach($times as $time){
+				if($time == $selected){
+					$html[] = "<option value=\"" . $time . "\" selected=\"selected\">" . $time . "</option>";
+				}else{
+					$html[] = "<option value=\"" . $time . "\">" . $time . "</option>";
+				}
+			}
+		}
+		$html[] = "</select>";
+
+		return implode("\n", $html);
+	}
 }
 SOYShopPlugin::extension("soyshop.delivery", "delivery_charge_free", "DeliveryChargeFreeModule");
-?>

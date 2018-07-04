@@ -3,7 +3,7 @@
  * 無料配送モジュール
  */
 class DeliveryCountFreeModule extends SOYShopDelivery{
-	
+
 	function onSelect(CartLogic $cart){
 		include_once(dirname(__FILE__) . "/util.php");
 
@@ -28,7 +28,7 @@ class DeliveryCountFreeModule extends SOYShopDelivery{
 		}else{
 			$cart->setOrderAttribute("delivery_count_free.time","配達時間","指定なし");
 		}
-		
+
 	}
 
 	function getName(){
@@ -44,9 +44,9 @@ class DeliveryCountFreeModule extends SOYShopDelivery{
 		$form->execute();
 		return $form->getObject();
 	}
-	
+
 	function getPrice(){
-		
+
 		//カートに入っている商品の総合計数を計算する
 		$totalCount = 0;
 		$items = $this->getCart()->getItems();
@@ -55,9 +55,32 @@ class DeliveryCountFreeModule extends SOYShopDelivery{
 				$totalCount = $totalCount + (int)$item->getItemCount();
 			}
 		}
-		
+
 		return DeliveryCountFreeConfigUtil::getShippingFee($totalCount, $this->getCart()->getAddress());
 	}
 
+	function config(){
+		include_once(dirname(__FILE__) . "/util.php");
+		$times = DeliveryCountFreeConfigUtil::getDliveryTimeConfig();
+
+		$attrs = $this->getOrder()->getAttributeList();
+		$selected = (isset($attrs["delivery_count_free.time"]["value"])) ? $attrs["delivery_count_free.time"]["value"] : "";
+
+		$html = array();
+		$html[] = "<select name=\"Attribute[delivery_count_free.time]\">";
+		$html[] = "<option></option>";
+		if(count($times)){
+			foreach($times as $time){
+				if($time == $selected){
+					$html[] = "<option value=\"" . $time . "\" selected=\"selected\">" . $time . "</option>";
+				}else{
+					$html[] = "<option value=\"" . $time . "\">" . $time . "</option>";
+				}
+			}
+		}
+		$html[] = "</select>";
+
+		return implode("\n", $html);
+	}
 }
 SOYShopPlugin::extension("soyshop.delivery","delivery_count_free","DeliveryCountFreeModule");

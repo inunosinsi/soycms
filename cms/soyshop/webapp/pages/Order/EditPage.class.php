@@ -514,9 +514,15 @@ class EditPage extends WebPage{
 			"selected" => self::getSelectedPaymentMethod($order->getModuleList())
 		));
 
+		$attrs = $order->getAttributeList();
+		$isDeliveryTime = self::isDeliveryTimeItem($attrs);
+		DisplayPlugin::toggle("delivery_time", $isDeliveryTime);
+		$this->addLabel("delivery_time_config", array(
+			"html" => ($isDeliveryTime) ? self::getDeliveryTimeItemConfig($order) : ""
+		));
 
 		$this->createAdd("attribute_list", "_common.Order.AttributeFormListComponent", array(
-			"list" => $order->getAttributeList()
+			"list" => $attrs
 		));
 
 		$this->createAdd("customfield_list", "_common.Order.CustomFieldFormListComponent", array(
@@ -695,6 +701,39 @@ class EditPage extends WebPage{
 			if(strpos($moduleId, "payment_") !== false) return $moduleId;
 		}
 		return null;
+	}
+
+	private function isDeliveryTimeItem($attrs){
+		/** @ToDo 配送時間帯を項目に持つプラグインがインストールされているか？ **/
+
+		if(!count($attrs)) return false;
+		foreach($attrs as $key => $attr){
+			if(
+				strpos($key, "delivery_") !== false &&
+				(strpos($key, "_time_") || strpos($key, ".time"))
+			) return true;
+		}
+		return false;
+	}
+
+	private function getDeliveryTimeItemConfig(SOYShop_Order $order){
+		//配送モジュールは何を使用しているのか？を調べる
+		$modules = $order->getModuleList();
+		$moduleId = null;
+		foreach($modules as $key => $mod){
+			if($mod->getType() == "delivery_module") $moduleId = $key;
+		}
+
+		if(is_null($moduleId)) return "";
+
+		$plugin = SOYShopPluginUtil::getPluginById($moduleId);
+		if(is_null($plugin->getId())) return "";
+
+		SOYShopPlugin::load("soyshop.delivery", $plugin);
+		return SOYShopPlugin::invoke("soyshop.delivery", array(
+			"mode" => "config",
+			"order" => $order
+		))->getConfig();
 	}
 
 	private function updateItem(SOYShop_Item $item){
