@@ -30,6 +30,7 @@ class SOYShop_ShopConfig {
 	private $displayCancelOrder;
 	private $checkPreOrder;
 	private $multiSelectStatusMode;
+	private $orderCSVExportLimit = 1000;
 	private $isShowOnlyAdministrator;
 	private $multiCategory;
 	private $cartPageTimeLimit = 30;//デフォルトは30分
@@ -461,6 +462,13 @@ class SOYShop_ShopConfig {
 	}
 	function setMultiSelectStatusMode($multiSelectStatusMode){
 		$this->multiSelectStatusMode = $multiSelectStatusMode;
+	}
+
+	function getOrderCSVExportLimit(){
+		return $this->orderCSVExportLimit;
+	}
+	function setOrderCSVExportLimit($orderCSVExportLimit){
+		$this->orderCSVExportLimit = $orderCSVExportLimit;
 	}
 
 	function getCartPageTimeLimit(){

@@ -2,8 +2,6 @@
 
 class ExportPage extends WebPage{
 
-	const LIMIT = 1000;
-
     function __construct() {
 
     	//ログインチェック	ログインしていなければ強制的に止める
@@ -62,9 +60,14 @@ class ExportPage extends WebPage{
 			if(isset($values) && is_array($values) && count($values)) $search = $values;
 		}
 
+		//出力件数
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$limit = (int)SOYShop_ShopConfig::load()->getOrderCSVExportLimit();
+		if(!is_numeric($limit)) $limit = 1000;
+		
 		//検索条件の投入と検索実行
 		$searchLogic->setSearchCondition($search);
-		$searchLogic->setLimit(self::LIMIT);
+		$searchLogic->setLimit($limit);
 		$searchLogic->setOrder("order_date_desc");
 		return $searchLogic->getOrders();
     }

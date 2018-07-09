@@ -246,6 +246,11 @@ class ShopConfigPage extends WebPage{
 			"isBoolean" => 1
 		));
 
+		$this->addInput("orderCSVExportLimit", array(
+			"name" => "Config[orderCSVExportLimit]",
+			"value" => (is_numeric($config->getOrderCSVExportLimit())) ? (int)$config->getOrderCSVExportLimit() : 1000
+		));
+
 		//購入手続きの進捗の有効期間
 		$this->addInput("cartPageTimeLimit", array(
 			"name" => "Config[cartPageTimeLimit]",
