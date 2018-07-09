@@ -32,6 +32,9 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			$this->languages = array_keys(UtilMultiLanguageUtil::allowLanguages());
 		}
 
+		//子商品の表示モードか？
+		$isDisplayChildItem = SOYShop_ShopConfig::load()->getDisplayChildItem();
+
 		$url = soyshop_get_site_url(true);
 
 //		header("Content-Type: text/xml");
@@ -136,6 +139,9 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 					$items = self::getItems($obj->getId());
 					if(count($items)){
 						foreach($items as $item){
+							if(!$item->isPublished()) continue;	//非公開の商品は除く
+							if(!$isDisplayChildItem && is_numeric($item->getType())) continue;	//子商品を表示しないモードの場合は除く
+
 							$html[] = self::buildUrlTag($url, $uri, $item->getAlias(), 0.8, $item->getUpdateDate());
 						}
 					}
