@@ -23,6 +23,9 @@ class DisplayInquiryContentUtil {
 		if(!count($columns)) return array();
 
 		$list = array();
+		$list["tracking_number"] = "お問い合わせ番号";
+		$list["create_date"] = "お問い合わせ日時";
+
 		foreach($columns as $col){
 			$list[(int)$col->getId()] = $col->getLabel();
 		}
@@ -133,13 +136,14 @@ class DisplayInquiryContentUtil {
 		$old = SOYAppUtil::switchAppMode("inquiry");
 		$dao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
 
-		$sql = "SELECT content, data, create_date FROM soyinquiry_inquiry WHERE form_id = :formId AND create_date > :t AND flag != " . SOYInquiry_Inquiry::FLAG_DELETED;
+		$sql = "SELECT tracking_number, content, data, create_date FROM soyinquiry_inquiry WHERE form_id = :formId AND create_date > :t AND flag != " . SOYInquiry_Inquiry::FLAG_DELETED;
 		try{
 			$results = $dao->executeQuery($sql, array(":formId" => $formId, ":t" => $time));
 		}catch(Exception $e){
 			$results = array();
 		}
 
+		$trackingNumbers = array();
 		$contents = array();
 		$datas = array();
 		$dates = array();
@@ -148,6 +152,7 @@ class DisplayInquiryContentUtil {
 				if(!isset($v["data"]) || !strlen($v["data"])) continue;
 				$data = soy2_unserialize($v["data"]);
 				if(!count($data)) continue;
+				$trackingNumbers[] = $v["tracking_number"];
 				$contents[] = $v["content"];
 				$datas[] = $data;
 				$dates[] = $v["create_date"];
@@ -156,6 +161,6 @@ class DisplayInquiryContentUtil {
 
 		SOYAppUtil::resetAppMode($old);
 
-		return array($contents, $datas, $dates);
+		return array($trackingNumbers, $contents, $datas, $dates);
 	}
 }

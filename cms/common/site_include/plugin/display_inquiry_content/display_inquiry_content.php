@@ -9,7 +9,7 @@ class DisplayInquiryContentPlugin{
 	private $formId;
 	private $connects = array();							//お問い合わせと記事の連携設定
 	private $labelId;										//記事の自動作成時に紐付けるラベル
-	private $isPublished = 0;			//記事の自動作成時に注文状態をどのようにして作成するか？
+	private $isPublished = 0;								//記事の自動作成時に注文状態をどのようにして作成するか？
 	private $lastInquiryTime = 0;							//直近でいつお問い合わせがあったか？
 	private $lastEntryImportTime = 0;						//直近でいつお問い合わせを記事として登録したか？
 
@@ -26,7 +26,7 @@ class DisplayInquiryContentPlugin{
 			"modifier"=>"Tsuyoshi Saito",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -34,7 +34,8 @@ class DisplayInquiryContentPlugin{
 			CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 				$this,"config"));
 
-			CMSPlugin::setEvent('onOutput',self::PLUGIN_ID,array($this,"onOutput"),array("filter"=>"all"));
+			CMSPlugin::setEvent('onOutput', self::PLUGIN_ID, array($this, "onOutput"), array("filter" => "all"));
+			CMSPlugin::setEvent('onEntryOutput', self::PLUGIN_ID, array($this, "display"));
 		}
 	}
 
@@ -66,9 +67,10 @@ class DisplayInquiryContentPlugin{
 		if($this->lastEntryImportTime < $this->lastInquiryTime && count($this->connects)){
 			SOY2::import("site_include.plugin.display_inquiry_content.util.DisplayInquiryContentUtil");
 			$v = DisplayInquiryContentUtil::getInquiryContentsAndDateByFormIdAfterSpecifiedTime($this->getFormId(), $this->lastEntryImportTime);
-			$contents = $v[0];
-			$datas = $v[1];
-			$dates = $v[2];
+			$numbers = $v[0];
+			$contents = $v[1];
+			$datas = $v[2];
+			$dates = $v[3];
 			if(count($datas)){
 				$dao = SOY2DAOFactory::create("cms.EntryDAO");
 				$attrDao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
@@ -111,11 +113,22 @@ class DisplayInquiryContentPlugin{
 						//カスタムフィールドを登録
 						$data = $datas[$i];
 						foreach($this->connects as $columnId => $fieldId){
-							if(!isset($data[$columnId])) continue;
 							$attr = new EntryAttribute();
 							$attr->setEntryId($entryId);
 							$attr->setFieldId($fieldId);
-							$attr->setValue(htmlspecialchars($data[$columnId], ENT_QUOTES, "UTF-8"));
+
+							//通常のカラム
+							if(isset($data[$columnId])){
+								$attr->setValue(htmlspecialchars($data[$columnId], ENT_QUOTES, "UTF-8"));
+							//お問い合わせ番号
+							}else if($columnId == "tracking_number"){
+								$attr->setValue($numbers[$i]);
+							//お問い合わせ日時
+							}else if($columnId = "create_date"){
+								$attr->setValue($dates[$i]);
+							}else{
+								continue;
+							}
 
 							try{
 								$attrDao->insert($attr);
@@ -136,6 +149,24 @@ class DisplayInquiryContentPlugin{
 					CMSPlugin::savePluginConfig($this->getId(), $this);
 				}
 			}
+		}
+	}
+
+	function display($arg){
+		if(isset($this->connects["create_date"])){
+			$entryId = $arg["entryId"];
+			$htmlObj = $arg["SOY2HTMLObject"];
+
+			try{
+				$v = (int)SOY2DAOFactory::create("cms.EntryAttributeDAO")->get($entryId, $this->connects["create_date"])->getValue();
+			}catch(Exception $e){
+				$v = null;
+			}
+
+			$htmlObj->createAdd($this->connects["create_date"] . "_inquiry_date", "DateLabel", array(
+				"soy2prefix"=>"cms",
+				"text" => $v
+			));
 		}
 	}
 

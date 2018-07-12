@@ -11,13 +11,24 @@ class ColumnListComponent extends HTMLList {
 			"text" => (isset($entity)) ? $entity : ""
 		));
 
+		$fieldId = (isset($this->connects[$key])) ? $this->connects[$key] : "";
+		$this->addLabel("create_date_annotation", array(
+			"html" => ($key == "create_date" && strlen($fieldId)) ? self::getAnnotation($fieldId) : ""
+		));
+
 		$this->addSelect("customfield", array(
 			"name" => "Config[customfield][" . $key . "]",
 			"options" => $this->customfields,
-			"selected" => (isset($this->connects[$key])) ? $this->connects[$key] : ""
+			"selected" => $fieldId
 		));
 
 		if(!isset($entity) || !strlen($entity)) return false;
+	}
+
+	private function getAnnotation($fieldId){
+		$fieldId = (strlen($fieldId)) ? $fieldId : "***";
+		return "<br>※<strong>cms:id=\"" . $fieldId . "_inquiry_date\"</strong> cms:format使用可<br>".
+		"cms:formatの使用方法は<a href=\"https://www.soycms.net/man/use_list/block\" target=\"_blank\">SOY CMSマニュアルのよく使う項目</a>をご確認ください。";
 	}
 
 	function setCustomfields($customfields){
