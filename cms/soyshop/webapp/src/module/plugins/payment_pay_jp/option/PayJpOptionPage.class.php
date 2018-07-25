@@ -32,6 +32,7 @@ class PayJpOptionPage extends WebPage {
 			$this->addInput("card_" . ($i + 1), array(
 				"name" => "card[$i]",
 				"value" => (isset($values["number"])) ? substr($values["number"], (4*$i), 4) : "",
+				"attr:id" => "card_" . $i,
 				"attr:required" => true
 			));
 		}
@@ -39,34 +40,59 @@ class PayJpOptionPage extends WebPage {
 		$this->addSelect("month", array(
 			"name" => "month",
 			"options" => range(1, 12),
-			"selected" => (isset($values["exp_month"])) ? $values["exp_month"] : ""
+			"selected" => (isset($values["exp_month"])) ? $values["exp_month"] : "",
+			"attr:id" => "month"
 		));
 		$this->addSelect("year", array(
 			"name" => "year",
 			"options" => self::getYearRange(),
-			"selected" => (isset($values["exp_year"])) ? substr($values["exp_year"], 2) : ""
+			"selected" => (isset($values["exp_year"])) ? substr($values["exp_year"], 2) : "",
+			"attr:id" => "year"
 		));
 
 		$this->addInput("cvc", array(
 			"name" => "cvc",
 			"value" => (isset($values["cvc"])) ? $values["cvc"] : "",
-			"attr:required" => true
+			"attr:required" => true,
+			"attr:id" => "cvc"
 		));
 
 		$this->addInput("name", array(
 			"name" => "name",
 			"value" => PayJpUtil::get("name"),
-			"attr:required" => true
+			"attr:required" => true,
+			"attr:id" => "name"
 		));
 
-		$config = PayJpUtil::getConfig();
-		DisplayPlugin::toggle("repeat", (isset($config["repeat"]) && $config["repeat"] == 1));
+		//一旦停止
+		/**
+		<dd soy:display="repeat">
+			<input type="checkbox" soy:id="member_register">
+		</dd>
+		**/
+		// $config = PayJpUtil::getConfig();
+		// DisplayPlugin::toggle("repeat", (isset($config["repeat"]) && $config["repeat"] == 1));
+		//
+		// $this->addCheckBox("member_register", array(
+		// 	"name" => "member",
+		// 	"value" => 1,
+		// 	"selected" => PayJpUtil::get("member"),
+		// 	"label" => "入力したカード情報で会員登録を行う"
+		// ));
 
-		$this->addCheckBox("member_register", array(
-			"name" => "member",
-			"value" => 1,
-			"selected" => PayJpUtil::get("member"),
-			"label" => "入力したカード情報で会員登録を行う"
+		//非通過型に対応
+		$logic = SOY2Logic::createInstance("module.plugins.payment_pay_jp.logic.PayJpLogic");
+		$config = $logic->getPayJpConfig();
+		$this->addLabel("key", array(
+			"text" => (isset($config["key"])) ? trim($config["key"]) : ""
+		));
+
+		$this->addLabel("error_message_list_js", array(
+			"html" => $logic->getErrorMessageListOnJS()
+		));
+
+		$this->addLabel("token_js", array(
+			"html" => file_get_contents(dirname(dirname(__FILE__)) . "/js/token.js")
 		));
 
 		$this->addLink("back_link", array(

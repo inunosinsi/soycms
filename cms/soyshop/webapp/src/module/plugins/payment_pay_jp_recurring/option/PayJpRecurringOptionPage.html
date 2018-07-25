@@ -1,6 +1,8 @@
 <div class="error narrow" soy:display="error">失敗しました：<!-- soy:id="error_message" /--></div>
 
-<form soy:id="form">
+<div class="error narrow" id="error_message_area" style="display:none;">失敗しました：</div>
+
+<form soy:id="form" id="charge_form" onsubmit="return operateBefore();">
 <dl>
 	<dt>カード</dt>
 	<dd>
@@ -28,8 +30,14 @@
 </dl>
 
 <p>
-	<input type="submit" value="支払う">
+	<input type="hidden" id="card_token" name="token" value="">
+	<button>支払う</button>
 	<a soy:id="back_link">戻る</a>
 </p>
 
 </form>
+
+<script type="text/javascript" src="https://js.pay.jp/"></script>
+<script type="text/javascript">Payjp.setPublicKey('<!-- soy:id="key" /-->');</script>
+<script soy:id="error_message_list_js"></script>
+<script soy:id="token_js"></script>

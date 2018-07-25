@@ -170,11 +170,7 @@ class PayJpRecurringPayment extends SOYShopPayment{
 	}
 
 	private function registCustomerByUserId(SOYShop_User $user){
-		$myCard = PayJpRecurringUtil::get("myCard");
-		if(is_null($myCard)) return;
-
-		$customer["card"] = $myCard;
-		$customer["card"]["name"] = PayJpRecurringUtil::get("name");
+		$customer["card"] = $_POST["token"];
 		$customer["email"] = $user->getMailAddress();
 
 		list($res, $err) = $this->recurringLogic->registCustomer($customer);

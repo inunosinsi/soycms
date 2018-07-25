@@ -127,6 +127,8 @@ class PayJpPayment extends SOYShopPayment{
 		if(soy2_check_token()){
 			self::prepare();
 
+			/**
+			カード情報非通過対応により使用しなくなったコード
 			$card = "";
 			foreach($_POST["card"] as $c){
 				$card .= $c;
@@ -142,8 +144,6 @@ class PayJpPayment extends SOYShopPayment{
 			//セッションに入れる
 			PayJpUtil::save("myCard", $myCard);
 			PayJpUtil::save("name", $_POST["name"]);
-			$isMember = (isset($_POST["member"]) && $_POST["member"] == 1) ? 1 : 0;
-			PayJpUtil::save("member", $isMember);
 
 			//期限切れの場合 APIへの接続回数を減らすために事前にチェック
 			$expYear = $myCard["exp_year"];
@@ -162,8 +162,12 @@ class PayJpPayment extends SOYShopPayment{
 			//カード番号のトークンを作成
 			list($res, $err) = $this->payJpLogic->createToken(array("card" => $myCard));
 			if(is_null($res)) self::redirectCartOnError($err);
+**/
 
-			$token = $res->id;
+			$isMember = (isset($_POST["member"]) && $_POST["member"] == 1) ? 1 : 0;
+			PayJpUtil::save("member", $isMember);
+
+			$token = (isset($_POST["token"])) ? $_POST["token"] : null;
 			$cart = $this->getCart();
 
 	 		//仮入金モード(captureで指定)
@@ -177,6 +181,9 @@ class PayJpPayment extends SOYShopPayment{
 			//作成したカード番号のトークンで購入
 			list($res, $err) = $this->payJpLogic->charge($chargeCard);
 			if(is_null($res)) self::redirectCartOnError($err);
+
+			// カードのトークンを保持
+			PayJpUtil::save("myCardToken", $token);
 
 			//tokenを更新して注文完了
 			self::orderComplete($res->id);
@@ -211,7 +218,7 @@ class PayJpPayment extends SOYShopPayment{
 		$cart->setAttribute("page", "Complete");
 
 		//セッションのクリア
-		PayJpUtil::clear("myCard");
+		PayJpUtil::clear("myCardToken");
 		PayJpUtil::clear("name");
 		PayJpUtil::clear("member");
 		PayJpUtil::clear("errorCode");
@@ -247,11 +254,14 @@ class PayJpPayment extends SOYShopPayment{
 	}
 
 	private function saveTokenByUserId(SOYShop_User $user){
-		$myCard = PayJpUtil::get("myCard");
-		if(is_null($myCard)) return;
+		$myCardToken = PayJpUtil::get("myCardToken");
+		if(is_null($myCardToken)) return;
 
-		$customer["card"] = $myCard;
-		$customer["card"]["name"] = PayJpUtil::get("name");
+		//カード番号のトークンを作成
+		list($res, $err) = $this->payJpLogic->createToken(array("card" => $myCardToken));
+		if(is_null($res)) self::redirectCartOnError($err);
+
+		$customer["card"] = $myCardToken;
 		$customer["email"] = $user->getMailAddress();
 
 		list($res, $err) = $this->payJpLogic->registCustomer($customer);

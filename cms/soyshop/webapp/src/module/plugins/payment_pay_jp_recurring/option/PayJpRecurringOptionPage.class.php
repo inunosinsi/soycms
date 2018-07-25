@@ -32,6 +32,7 @@ class PayJpRecurringOptionPage extends WebPage {
 			$this->addInput("card_" . ($i + 1), array(
 				"name" => "card[" . $i . "]",
 				"value" => (isset($values["number"])) ? substr($values["number"], (4*$i), 4) : "",
+				"attr:id" => "card_" . $i,
 				"attr:required" => true
 			));
 		}
@@ -39,35 +40,44 @@ class PayJpRecurringOptionPage extends WebPage {
 		$this->addSelect("month", array(
 			"name" => "month",
 			"options" => range(1, 12),
-			"selected" => (isset($values["exp_month"])) ? $values["exp_month"] : ""
+			"selected" => (isset($values["exp_month"])) ? $values["exp_month"] : "",
+			"attr:id" => "month"
 		));
 		$this->addSelect("year", array(
 			"name" => "year",
 			"options" => self::getYearRange(),
-			"selected" => (isset($values["exp_year"])) ? substr($values["exp_year"], 2) : ""
+			"selected" => (isset($values["exp_year"])) ? substr($values["exp_year"], 2) : "",
+			"attr:id" => "year"
 		));
 
 		$this->addInput("cvc", array(
 			"name" => "cvc",
 			"value" => (isset($values["cvc"])) ? $values["cvc"] : "",
+			"attr:id" => "cvc",
 			"attr:required" => true
 		));
 
 		$this->addInput("name", array(
 			"name" => "name",
 			"value" => PayJpRecurringUtil::get("name"),
+			"attr:id" => "name",
 			"attr:required" => true
 		));
 
-		// $config = PayJpRecurringUtil::getConfig();
-		// DisplayPlugin::toggle("repeat", (isset($config["repeat"]) && $config["repeat"] == 1));
-		//
-		// $this->addCheckBox("member_register", array(
-		// 	"name" => "member",
-		// 	"value" => 1,
-		// 	"selected" => PayJpRecurringUtil::get("member"),
-		// 	"label" => "入力したカード情報で会員登録を行う"
-		// ));
+		//非通過型に対応
+		$logic = SOY2Logic::createInstance("module.plugins.payment_pay_jp.logic.PayJpLogic");
+		$config = $logic->getPayJpConfig();
+		$this->addLabel("key", array(
+			"text" => (isset($config["key"])) ? trim($config["key"]) : ""
+		));
+
+		$this->addLabel("error_message_list_js", array(
+			"html" => $logic->getErrorMessageListOnJS()
+		));
+
+		$this->addLabel("token_js", array(
+			"html" => file_get_contents(dirname(dirname(dirname(__FILE__))) . "/payment_pay_jp/js/token.js")
+		));
 
 		$this->addLink("back_link", array(
 			"link" => "?back"

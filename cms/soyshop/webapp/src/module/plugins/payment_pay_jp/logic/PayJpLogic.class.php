@@ -174,6 +174,20 @@ class PayJpLogic extends SOY2LogicBase {
 		}
 	}
 
+	function getErrorMessageListOnJS(){
+		$errList = PayJpUtil::getErrorMessageList();
+
+		$script = array();
+		$script[] = "var errMsgList = {";
+		foreach($errList as $key => $mes){
+			$script[] = "\t" . $key . ":\"" . $mes. "\",";
+		}
+
+		$script[] = "};";
+
+		return implode("\n", $script);
+	}
+
 	private function userAttrDao(){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
