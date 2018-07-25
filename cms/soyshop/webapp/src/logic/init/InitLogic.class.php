@@ -350,6 +350,4 @@ class InitLogic extends SOY2LogicBase{
 
 		return $res;
 	}
-
 }
-?>
