@@ -82,7 +82,7 @@ class PayJpPayment extends SOYShopPayment{
 		//秘密鍵の登録がなければエラー
 		self::prepare();
 		$config = $this->payJpLogic->getPayJpConfig();
-		if(!strlen($config["key"])){
+		if(!strlen($config["secret_key"])){
 			throw new Exception("秘密鍵が設定されていません。");
 		}
 

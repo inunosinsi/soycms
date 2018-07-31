@@ -28,12 +28,14 @@ class PayJpConfigPage extends WebPage {
 			"selected" => (isset($config["sandbox"]) && $config["sandbox"] == 1),
 			"label" => "テストモート"
 		));
-
-		foreach(array("test", "public") as $t){
-			$this->addInput($t . "_secret_key", array(
-				"name" => "Config[" . $t . "][key]",
-				"value" => (isset($config[$t]["key"])) ? $config[$t]["key"] : ""
-			));
+		
+		foreach(array("test", "production") as $t){
+			foreach(array("secret", "public") as $tt){
+				$this->addInput($t . "_" . $tt . "_key", array(
+					"name" => "Config[" . $t . "][" . $tt . "_key]",
+					"value" => (isset($config[$t][$tt . "_key"])) ? $config[$t][$tt . "_key"] : ""
+				));
+			}
 		}
 
 		$this->addCheckBox("capture", array(

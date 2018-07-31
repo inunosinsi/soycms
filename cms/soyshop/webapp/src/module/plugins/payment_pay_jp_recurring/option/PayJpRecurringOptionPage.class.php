@@ -68,7 +68,7 @@ class PayJpRecurringOptionPage extends WebPage {
 		$logic = SOY2Logic::createInstance("module.plugins.payment_pay_jp.logic.PayJpLogic");
 		$config = $logic->getPayJpConfig();
 		$this->addLabel("key", array(
-			"text" => (isset($config["key"])) ? trim($config["key"]) : ""
+			"text" => (isset($config["public_key"])) ? trim($config["public_key"]) : ""
 		));
 
 		$this->addLabel("error_message_list_js", array(

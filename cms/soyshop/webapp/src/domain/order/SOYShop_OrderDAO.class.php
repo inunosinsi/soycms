@@ -122,4 +122,3 @@ abstract class SOYShop_OrderDAO extends SOY2DAO{
 	abstract function deleteAll();
 
 }
-?>

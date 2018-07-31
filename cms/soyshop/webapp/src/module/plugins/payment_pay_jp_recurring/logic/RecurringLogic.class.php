@@ -13,7 +13,7 @@ class RecurringLogic extends SOY2LogicBase {
 
 		//PAY.JPのlibを読み込む
 		require_once(SOYSHOP_WEBAPP . "src/module/plugins/payment_pay_jp/payjp/init.php");
-		\Payjp\Payjp::setApiKey($config["key"]);
+		\Payjp\Payjp::setApiKey($config["secret_key"]);
 	}
 
 	function getPayJpConfig(){
@@ -23,7 +23,7 @@ class RecurringLogic extends SOY2LogicBase {
 			if(isset($conf["sandbox"]) && $conf["sandbox"] == 1){
 				$config = $conf["test"];
 			}else{
-				$config = $conf["public"];
+				$config = $conf["production"];
 			}
 		}
 		return $config;

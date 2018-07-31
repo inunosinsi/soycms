@@ -80,7 +80,7 @@ class PayJpRecurringPayment extends SOYShopPayment{
 		//秘密鍵の登録がなければエラー
 		self::prepare();
 		$config = $this->recurringLogic->getPayJpConfig();
-		if(!strlen($config["key"])){
+		if(!strlen($config["secret_key"])){
 			throw new Exception("秘密鍵が設定されていません。");
 		}
 
@@ -119,7 +119,7 @@ class PayJpRecurringPayment extends SOYShopPayment{
 
 		if(soy2_check_token()){
 			self::prepare();
-
+/**
 			$card = "";
 			foreach($_POST["card"] as $c){
 				$card .= $c;
@@ -149,7 +149,7 @@ class PayJpRecurringPayment extends SOYShopPayment{
 				soyshop_redirect_cart("error");
 				exit;
 			}
-
+**/
 			//会員情報を登録 顧客IDを取得
 			$cart = $this->getCart();
 			$customerToken = self::registCustomerByUserId($cart->getCustomerInformation());
