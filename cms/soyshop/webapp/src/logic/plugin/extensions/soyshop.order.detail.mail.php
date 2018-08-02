@@ -12,10 +12,9 @@ class SOYShopOrderDetailMailDeletageAction implements SOY2PluginDelegateAction{
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 		$this->_list[$moduleId] = $action->getMailType();
 	}
-	
+
 	function getList(){
 		return $this->_list;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.detail.mail",      "SOYShopOrderDetailMailDeletageAction");
-?>

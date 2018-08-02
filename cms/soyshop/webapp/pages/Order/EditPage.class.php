@@ -461,6 +461,11 @@ class EditPage extends WebPage{
 
 		self::buildForm($order);
 
+		//HTMLの自由記述
+		SOYShopPlugin::load("soyshop.order.edit");
+		$this->addLabel("extension_html", array(
+			"html" => SOYShopPlugin::invoke("soyshop.order.edit", array("mode" => "html"))->getHTML()
+		));
 	}
 
 	private function buildForm(SOYShop_Order $order){
