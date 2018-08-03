@@ -521,9 +521,12 @@ class EditPage extends WebPage{
 
 		$attrs = $order->getAttributeList();
 		$isDeliveryTime = self::isDeliveryTimeItem($attrs);
+		$deliveryTimeConfigForm = ($isDeliveryTime) ? self::getDeliveryTimeItemConfig($order) : "";
+		$isDeliveryTime = (strlen($deliveryTimeConfigForm) > 0);
+
 		DisplayPlugin::toggle("delivery_time", $isDeliveryTime);
 		$this->addLabel("delivery_time_config", array(
-			"html" => ($isDeliveryTime) ? self::getDeliveryTimeItemConfig($order) : ""
+			"html" => $deliveryTimeConfigForm
 		));
 
 		$this->createAdd("attribute_list", "_common.Order.AttributeFormListComponent", array(
@@ -709,8 +712,6 @@ class EditPage extends WebPage{
 	}
 
 	private function isDeliveryTimeItem($attrs){
-		/** @ToDo 配送時間帯を項目に持つプラグインがインストールされているか？ **/
-
 		if(!count($attrs)) return false;
 		foreach($attrs as $key => $attr){
 			if(
@@ -718,6 +719,11 @@ class EditPage extends WebPage{
 				(strpos($key, "_time_") || strpos($key, ".time"))
 			) return true;
 		}
+
+		// @ToDo 配送時間帯を項目に持つプラグインがインストールされているか？ 調べる術が思いつかないのでダミー以外の配送モジュールがあればtrueにする
+		$list = self::getInstalledDeliveryModuleList();
+		if(count($list)) return true;
+
 		return false;
 	}
 
@@ -731,6 +737,14 @@ class EditPage extends WebPage{
 
 		if(is_null($moduleId)) return "";
 
+		//ダミープラグインを使っていた場合はダミーでないプラグインを使用しているか？調べる
+		if(strpos($moduleId, "dummy")){
+			$list = self::getInstalledDeliveryModuleList();
+			$moduleId = (isset($list[0])) ? $list[0] : null;
+		}
+
+		if(is_null($moduleId)) return "";
+
 		$plugin = SOYShopPluginUtil::getPluginById($moduleId);
 		if(is_null($plugin->getId())) return "";
 
@@ -739,6 +753,31 @@ class EditPage extends WebPage{
 			"mode" => "config",
 			"order" => $order
 		))->getConfig();
+	}
+
+	private function getInstalledDeliveryModuleList(){
+		static $list;
+		if(is_array($list)) return $list;
+		$list = array();
+		$dao = new SOY2DAO();
+
+		//モジュールのタイプがpackageの方にも配送関連の設定があるかもしれない
+		$sql = "SELECT plugin_id FROM soyshop_plugins ".
+				"WHERE plugin_type IN (\"" . SOYShop_PluginConfig::PLUGIN_TYPE_DELIVERY . "\", \"" . SOYShop_PluginConfig::PLUGIN_TYPE_PACKAGE . "\") ".
+				"AND is_active = " . SOYShop_PluginConfig::PLUGIN_ACTIVE;
+		try{
+			$results = $dao->executeQuery($sql);
+		}catch(Exception $e){
+			$results = array();
+		}
+
+		if(!count($results)) return $list;
+
+		foreach($results as $res){
+			if(!isset($res["plugin_id"]) || strpos($res["plugin_id"], "dummy")) continue;
+			$list[] = $res["plugin_id"];
+		}
+		return $list;
 	}
 
 	private function updateItem(SOYShop_Item $item){
@@ -836,6 +875,7 @@ class EditPage extends WebPage{
 		foreach($attributes as $key => $array){
 			if(isset($newAttributes[$key])){
 				$newValue = $newAttributes[$key];
+				unset($newAttributes[$key]);
 
 				if(isset($array["value"]) && $newValue != $array["value"]){
 					$change[]=self::getHistoryText($array["name"], $array["value"], $newValue);
@@ -843,6 +883,18 @@ class EditPage extends WebPage{
 				}
 			}
 		}
+
+		//delivery_module系のデータが残った場合 最初はダミープラグインを使っていたけれども、正式な値を入れたい場合
+		if(count($newAttributes)){
+			foreach($newAttributes as $key => $array){
+				if(strpos($key, "delivery") !== false){
+					$newValue = $newAttributes[$key];
+					$change[]=self::getHistoryText($key, "", $newValue);
+					$attributes[$key] = array("name" => $key, "value" => $newValue);
+				}
+			}
+		}
+
 		$order->setAttributes($attributes);
 
 		return $change;
