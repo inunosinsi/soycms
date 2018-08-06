@@ -115,6 +115,10 @@ class SendAddressPage extends WebPage{
     		"value" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : "",
     	));
 
+		//法人名(勤務先など)
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		DisplayPlugin::toggle("office_item", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
+		
     	$this->addInput("office", array(
     		"name" => "Address[office]",
     		"value" => (isset($address["office"])) ? $address["office"] : "",

@@ -251,6 +251,9 @@ class UserPage extends WebPage{
 		$this->component->buildForm($this, $user, $this->cart, UserComponent::MODE_CUSTOM_FORM);
 
 		//法人名(勤務先など)
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		DisplayPlugin::toggle("office_item", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
+
     	$this->addInput("office", array(
     		"name" => "Customer[jobName]",
     		"value" => $user->getJobName(),

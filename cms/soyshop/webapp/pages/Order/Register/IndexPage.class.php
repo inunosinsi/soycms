@@ -401,6 +401,11 @@ class IndexPage extends WebPage{
 			"text" => $user->getCellphoneNumber(),
 		));
 
+		//法人名(勤務先など)
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$this->addModel("is_office_item", array(
+			"visible" => SOYShop_ShopConfig::load()->getDisplayUserOfficeItems()
+		));
 		$this->addLabel("office_on_admin", array(
 			"text" => $user->getJobName()
 		));

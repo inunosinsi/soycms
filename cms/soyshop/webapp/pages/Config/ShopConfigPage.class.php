@@ -348,7 +348,7 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[displayUserOfficeItems]",
 			"value" => 1,
 			"selected" => $config->getDisplayUserOfficeItems(),
-			"label" => "顧客詳細の編集画面で勤務先関連の項目を表示する"
+			"label" => "勤務先関連の項目を表示する(顧客詳細他、注文時のお届け先等)"
 		));
 
 		$this->addCheckBox("displayUserProfileItems", array(

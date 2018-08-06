@@ -568,6 +568,12 @@ class EditPage extends WebPage{
 			"link" => SOY2PageController::createLink("User.Detail." . $customer->getId())
 		));
 
+		//法人名の項目を表示するか？
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$this->addModel("is_offce_item", array(
+			"visible" => SOYShop_ShopConfig::load()->getDisplayUserOfficeItems()
+		));
+
 		$claimedAddress = $order->getClaimedAddressArray();
 
 		$this->addInput("claimed_customerinfo_office", array(
