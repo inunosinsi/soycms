@@ -221,9 +221,11 @@ class Cart02Page extends MainCartPageBase{
 	 */
 	function buildSendForm(CartLogic $cart, SOYShop_User $customer){
 
+		$config = SOYShop_ShopConfig::load();
+
 		//お届け先情報のフォームを表示するか？
 		$this->addModel("display_send_form", array(
-			"visible" => (SOYShop_ShopConfig::load()->getDisplaySendInformationForm())
+			"visible" => ($config->getDisplaySendInformationForm())
 		));
 
 		$address = ($cart->isUseCutomerAddress()) ? $cart->getAddress() : $cart->getCustomerInformation()->getEmptyAddressArray();
@@ -263,6 +265,11 @@ class Cart02Page extends MainCartPageBase{
     		"name" => "Address[telephoneNumber]",
     		"value" => (isset($address["telephoneNumber"])) ? $address["telephoneNumber"] : "",
     	));
+
+		//法人(勤務先等)を表示するか？
+		$this->addModel("is_offce_item", array(
+			"visible" => $config->getDisplayUserOfficeItems()
+		));
 
     	$this->addInput("send_office", array(
     		"name" => "Address[office]",
