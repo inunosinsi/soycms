@@ -387,7 +387,8 @@ class ShopConfigPage extends WebPage{
 		$this->createAdd("form_config_list", "_common.Config.CustomerFormListComponent", array(
 			"list" => $config->getCustomerDisplayFormConfigList(),
 			"formConfig" => $config->getCustomerDisplayFormConfig(),
-			"customerConfig" => $config->getCustomerInformationConfig()
+			"customerConfig" => $config->getCustomerInformationConfig(),
+			"adminConfig" => $config->getCustomerAdminConfig()
 		));
 
 		$this->addInput("require_text", array(

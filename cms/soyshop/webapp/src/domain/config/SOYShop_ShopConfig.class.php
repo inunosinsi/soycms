@@ -102,6 +102,25 @@ class SOYShop_ShopConfig {
 		"memo"			=> false
 	);
 
+	private $customerAdminConfig = array();
+	public static $customerAdminConfigDefault = array(
+		"mailAddress"	=>	true,
+		"accountId" 	=>	true,
+		"name"			=>	true,
+		"reading"		=>	true,
+		"nickname"		=>	true,
+		"zipCode"		=>	true,
+		"address"		=>	true,
+		"telephoneNumber"	=> true,
+		"gender"		=> true,
+		"birthday"		=> true,
+		"faxNumber"		=> true,
+		"cellphoneNumber"	=> true,
+		"url"			=> true,
+		"jobName"		=> true,
+		"memo"			=> true
+	);
+
 	private $customerFormLabels = array(
 		"mailAddress"	=>	"メールアドレス",
 		"accountId"		=>	"ログインID(マイページのみ)",
@@ -267,15 +286,38 @@ class SOYShop_ShopConfig {
 
 		$this->customerInformationConfig = SOYShop_ShopConfig::$customerConfigDefault;
 
-		//mailAddres
-		//name
-		//は必須
-		$customerInformationConfig["mailAddress"] = true;
-		$customerInformationConfig["name"] = true;
-
 		foreach($this->customerInformationConfig as $key => $value){
 			$this->customerInformationConfig[$key] = (boolean)@$array[$key];
 		}
+
+		//mailAddres
+		//name
+		//は必須
+		$this->customerInformationConfig["mailAddress"] = true;
+		$this->customerInformationConfig["name"] = true;
+	}
+
+	function getCustomerAdminConfig() {
+		if(count($this->customerAdminConfig)){
+			return $this->customerAdminConfig;
+		}else{
+			return SOYShop_ShopConfig::$customerAdminConfigDefault;
+		}
+
+	}
+	function setCustomerAdminConfig($array) {
+
+		$this->customerAdminConfig = SOYShop_ShopConfig::$customerAdminConfigDefault;
+
+		foreach($this->customerAdminConfig as $key => $value){
+			$this->customerAdminConfig[$key] = (boolean)@$array[$key];
+		}
+
+		//mailAddres
+		//name
+		//は必須
+		$this->customerAdminConfig["mailAddress"] = true;
+		$this->customerAdminConfig["name"] = true;
 	}
 
 	function getCustomerDisplayFormConfigList(){

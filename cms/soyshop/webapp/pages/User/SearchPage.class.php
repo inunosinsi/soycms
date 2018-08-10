@@ -25,6 +25,8 @@ class SearchPage extends WebPage{
 	}
 
 	function __construct($args){
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+
 		parent::__construct();
 
 		$this->addForm("advanced_search_form");
@@ -379,7 +381,7 @@ class SearchPage extends WebPage{
 		$this->addInput("advanced_search_register_date_start_year", array(
 			"name" => "search[register_date][start][year]",
 			"value" => (isset($search["register_date"]["start"]["year"])) ? $search["register_date"]["start"]["year"] : "",
-			"size" => "5"
+			"size" => "4"
 		));
 		$this->addInput("advanced_search_register_date_start_month", array(
 			"name" => "search[register_date][start][month]",
@@ -394,7 +396,7 @@ class SearchPage extends WebPage{
 		$this->addInput("advanced_search_register_date_end_year", array(
 			"name" => "search[register_date][end][year]",
 			"value" => (isset($search["register_date"]["end"]["year"])) ? $search["register_date"]["end"]["year"] : "",
-			"size" => "5"
+			"size" => "4"
 		));
 		$this->addInput("advanced_search_register_date_end_month", array(
 			"name" => "search[register_date][end][month]",
@@ -410,7 +412,7 @@ class SearchPage extends WebPage{
 		$this->addInput("advanced_search_update_date_start_year", array(
 			"name" => "search[update_date][start][year]",
 			"value" => (isset($search["update_date"]["start"]["year"])) ? $search["update_date"]["start"]["year"] : "",
-			"size" => "5"
+			"size" => "4"
 		));
 		$this->addInput("advanced_search_update_date_start_month", array(
 			"name" => "search[update_date][start][month]",
@@ -425,7 +427,7 @@ class SearchPage extends WebPage{
 		$this->addInput("advanced_search_update_date_end_year", array(
 			"name" => "search[update_date][end][year]",
 			"value" => (isset($search["update_date"]["end"]["year"])) ? $search["update_date"]["end"]["year"] : "",
-			"size" => "5"
+			"size" => "4"
 		));
 		$this->addInput("advanced_search_update_date_end_month", array(
 			"name" => "search[update_date][end][month]",
@@ -454,6 +456,11 @@ class SearchPage extends WebPage{
 			"name" => "search[purchase_count][max]",
 			"value" => (isset($search["purchase_count"]["max"])) ? $search["purchase_count"]["max"] : "",
 		));
+
+		//項目の非表示用タグ
+		foreach(SOYShop_ShopConfig::load()->getCustomerAdminConfig() as $key => $bool){
+			DisplayPlugin::toggle($key, $bool);
+		}
 	}
 
 	private function buildCustomSearchForm($custom){

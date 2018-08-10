@@ -42,33 +42,40 @@
 					<input type="hidden" name="item[mailAddress]" value="1" />
 					<input type="checkbox" checked="checked" name="item[mailAddress]_dummy" value="1" id="item[mailAddress]_id" disabled="disabled" /><label for="item[mailAddress]_id">メールアドレス (mailAddress)</label><br/>
 					<input type="checkbox" checked="checked" name="item[name]" value="1" id="item[name]_id" /><label for="item[name]_id">名前 (name)</label><br/>
-					<input type="checkbox" checked="checked" name="item[reading]" value="1" id="item[reading]_id" /><label for="item[reading]_id">フリガナ (reading)</label><br/>
-					<input type="checkbox" checked="checked" name="item[nickname]" value="1" id="item[nickname]_id" /><label for="item[nickname]_id">ニックネーム (nickname)</label><br/>
+					<!-- soy:display="reading" --><input type="checkbox" checked="checked" name="item[reading]" value="1" id="item[reading]_id" /><label for="item[reading]_id">フリガナ (reading)</label><br/><!-- /soy:display="reading" -->
+					<!-- soy:display="nickname" --><input type="checkbox" checked="checked" name="item[nickname]" value="1" id="item[nickname]_id" /><label for="item[nickname]_id">ニックネーム (nickname)</label><br/><!-- /soy:display="nickname" -->
 
 					<!-- soy:display="user_custom_search_field" -->
 					<input type="checkbox" checked="checked" name="item[isPublish]" value="1" id="item[isPublish]_id" /><label for="item[isPublish]_id">公開状態 (isPublish)</label><br/>
 					<!-- /soy:display="user_custom_search_field" -->
 
-					<input type="checkbox" checked="checked" name="item[genderText]" value="1" id="item[gender]_id" /><label for="item[gender]_id">性別 (gender)</label><br/>
-					<input type="checkbox" checked="checked" name="item[birthdayText]" value="1" id="item[birthday]_id" /><label for="item[birthday]_id">生年月日 (birthday)</label><br/>
+					<!-- soy:display="gender" --><input type="checkbox" checked="checked" name="item[genderText]" value="1" id="item[gender]_id" /><label for="item[gender]_id">性別 (gender)</label><br/><!-- /soy:display="gender" -->
+					<!-- soy:display="birthday" --><input type="checkbox" checked="checked" name="item[birthdayText]" value="1" id="item[birthday]_id" /><label for="item[birthday]_id">生年月日 (birthday)</label><br/><!-- /soy:display="birthday" -->
 
-					<input type="checkbox" checked="checked" name="item[zipCode]" value="1" id="item[zipCode]_id" /><label for="item[zipCode]_id">郵便番号 (zipCode)</label><br/>
+					<!-- soy:display="zipCode" --><input type="checkbox" checked="checked" name="item[zipCode]" value="1" id="item[zipCode]_id" /><label for="item[zipCode]_id">郵便番号 (zipCode)</label><br/><!-- /soy:display="zipCode" -->
+
+					<!-- soy:display="address" -->
 					<input type="checkbox" checked="checked" name="item[areaText]" value="1" id="item[area]_id" /><label for="item[area]_id">住所（都道府県） (area)</label><br/>
 					<input type="checkbox" checked="checked" name="item[address1]" value="1" id="item[address1]_id" /><label for="item[address1]_id">住所１ (address1)</label><br/>
 					<input type="checkbox" checked="checked" name="item[address2]" value="1" id="item[address2]_id" /><label for="item[address2]_id">住所２ (address2)</label><br/>
-					<input type="checkbox" checked="checked" name="item[telephoneNumber]" value="1" id="item[telephoneNumber]_id" /><label for="item[telephoneNumber]_id">電話番号 (telephoneNumber)</label><br/>
-					<input type="checkbox" checked="checked" name="item[faxNumber]" value="1" id="item[faxNumber]_id" /><label for="item[faxNumber]_id">FAX番号 (faxNumber)</label><br/>
+					<!-- /soy:display="address" -->
 
-					<input type="checkbox" checked="checked" name="item[cellphoneNumber]" value="1" id="item[cellphoneNumber]_id" /><label for="item[cellphoneNumber]_id">携帯電話 (cellphoneNumber)</label><br/>
-					<input type="checkbox" checked="checked" name="item[url]" value="1" id="item[url]_id" /><label for="item[url]_id">URL (url)</label><br/>
+					<!-- soy:display="telephoneNumber" --><input type="checkbox" checked="checked" name="item[telephoneNumber]" value="1" id="item[telephoneNumber]_id" /><label for="item[telephoneNumber]_id">電話番号 (telephoneNumber)</label><br/><!-- /soy:display="telephoneNumber" -->
+					<!-- soy:display="faxNumber" --><input type="checkbox" checked="checked" name="item[faxNumber]" value="1" id="item[faxNumber]_id" /><label for="item[faxNumber]_id">FAX番号 (faxNumber)</label><br/><!-- /soy:display="faxNumber" -->
+
+					<!-- soy:display="cellphoneNumber" --><input type="checkbox" checked="checked" name="item[cellphoneNumber]" value="1" id="item[cellphoneNumber]_id" /><label for="item[cellphoneNumber]_id">携帯電話 (cellphoneNumber)</label><br/><!-- /soy:display="cellphoneNumber" -->
+					<!-- soy:display="url" --><input type="checkbox" checked="checked" name="item[url]" value="1" id="item[url]_id" /><label for="item[url]_id">URL (url)</label><br/><!-- /soy:display="url" -->
+
+					<!-- soy:display="office_items" -->
 					<input type="checkbox" checked="checked" name="item[jobName]" value="1" id="item[jobName]_id" /><label for="item[jobName]_id">勤務先名称・職種 (jobName)</label><br/>
 					<input type="checkbox" checked="checked" name="item[jobZipCode]" value="1" id="item[jobZipCode]_id" /><label for="item[jobZipCode]_id">勤務先郵便番号 (jobZipCode)</label><br/>
 					<input type="checkbox" checked="checked" name="item[jobAreaText]" value="1" id="item[jobArea]_id" /><label for="item[jobArea]_id">勤務先住所（都道府県） (jobArea)</label><br/>
 					<input type="checkbox" checked="checked" name="item[jobAddress1]" value="1" id="item[jobAddress1]_id" /><label for="item[jobAddress1]_id">勤務先住所１ (jobAddress1)</label><br/>
 					<input type="checkbox" checked="checked" name="item[jobAddress2]" value="1" id="item[jobAddress2]_id" /><label for="item[jobAddress2]_id">勤務先住所２ (jobAddress2)</label><br/>
-
 					<input type="checkbox" checked="checked" name="item[jobTelephoneNumber]" value="1" id="item[jobTelephoneNumber]_id" /><label for="item[jobTelephoneNumber]_id">勤務先電話番号 (jobTelephoneNumber)</label><br/>
 					<input type="checkbox" checked="checked" name="item[jobFaxNumber]" value="1" id="item[jobFaxNumber]_id" /><label for="item[jobFaxNumber]_id">勤務先FAX番号 (jobFaxNumber)</label><br/>
+					<!-- /soy:display="office_items" -->
+
 					<input type="checkbox" checked="checked" name="item[attribute1]" value="1" id="item[attribute1]_id" /><label for="item[attribute1]_id">属性１ (attribute1)</label><br/>
 					<input type="checkbox" checked="checked" name="item[attribute2]" value="1" id="item[attribute2]_id" /><label for="item[attribute2]_id">属性２ (attribute2)</label><br/>
 					<input type="checkbox" checked="checked" name="item[attribute3]" value="1" id="item[attribute3]_id" /><label for="item[attribute3]_id">属性３ (attribute3)</label><br/>

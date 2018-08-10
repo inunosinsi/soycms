@@ -64,6 +64,7 @@ class RegisterPage extends WebPage{
 
     function __construct() {
     	/* 共通コンポーネント */
+		SOY2::import("domain.config.SOYShop_ShopConfig");
     	SOY2::import("base.site.classes.SOYShop_UserCustomfieldList");
     	SOY2::import("component.UserComponent");
     	SOY2::import("component.backward.BackwardUserComponent");
@@ -117,6 +118,11 @@ class RegisterPage extends WebPage{
 
 		SOY2::import("util.SOYShopPluginUtil");
 		DisplayPlugin::toggle("user_custom_search_field", SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
+
+		//項目の非表示用タグ
+		foreach(SOYShop_ShopConfig::load()->getCustomerAdminConfig() as $key => $bool){
+			DisplayPlugin::toggle($key, $bool);
+		}
     }
 
 
@@ -126,7 +132,6 @@ class RegisterPage extends WebPage{
 	 */
 	private function buildJobForm(SOYShop_User $user){
 		/* 勤務先 */
-		SOY2::import("domain.config.SOYShop_ShopConfig");
 		DisplayPlugin::toggle("office_items", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
 
 		//法人名(勤務先など)

@@ -5,6 +5,8 @@ class ExportPage extends WebPage{
 
 	function __construct() {
 
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+
 		//管理制限の権限を取得
 		$session = SOY2ActionSession::getUserSession();
 		$appLimit = $session->getAttribute("app_shop_auth_limit");
@@ -40,6 +42,13 @@ class ExportPage extends WebPage{
 		$this->createAdd("custom_search_field_list", "_common.User.UserCustomSearchFieldImExportListComponent", array(
 			"list" => $this->getCustomSearchFieldList()
 		));
+
+		//項目の非表示用タグ
+		foreach(SOYShop_ShopConfig::load()->getCustomerAdminConfig() as $key => $bool){
+			DisplayPlugin::toggle($key, $bool);
+		}
+
+		DisplayPlugin::toggle("office_items", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
 	}
 
 	function getLabels(){

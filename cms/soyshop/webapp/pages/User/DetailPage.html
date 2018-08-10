@@ -44,7 +44,7 @@
 					<!-- soy:id="id" /-->
 				</td>
 			</tr>
-			<tr>
+			<tr soy:display="mailAddress">
 				<th>メールアドレス</th>
 				<td>
 					<!-- soy:id="mail_address" /-->
@@ -61,21 +61,21 @@
 				</td>
 			</tr>
 
-			<tr>
+			<tr soy:display="name">
 				<th>氏名</th>
 				<td>
 					<input soy:id="name" type="text" style="width:95%;" />
 				</td>
 			</tr>
 
-			<tr>
+			<tr soy:display="reading">
 				<th>フリガナ</th>
 				<td>
 					<input soy:id="furigana" type="text" style="width:95%;" />
 				</td>
 			</tr>
 
-			<tr>
+			<tr soy:display="nickname">
 				<th>ニックネーム</th>
 				<td>
 					<input soy:id="nickname" type="text" style="width:95%;" />
@@ -92,7 +92,7 @@
 				</td>
 			</tr>
 
-			<tr>
+			<tr soy:display="gender">
 				<th>性別</th>
 				<td>
 					<input soy:id="gender_male" type="radio" id="radio_sex_male" name="" />
@@ -102,7 +102,7 @@
 				</td>
 			</tr>
 
-			<tr>
+			<tr soy:display="birthday">
 				<th>生年月日</th>
 				<td>
 					<input soy:id="birth_year" type="text" size="5" />年
@@ -113,7 +113,7 @@
 		</table>
 
 		<table class="form_table">
-			<tr>
+			<tr soy:display="zipCode">
 				<th>郵便番号</th>
 				<td>
 					<input soy:id="post_number" type="text" size="20" class="input-zip" />&nbsp;
@@ -121,7 +121,7 @@
 				</td>
 			</tr>
 
-			<tr>
+			<tr soy:display="address">
 				<th>住所</th>
 				<td>
 					<select soy:id="area" id="area" class="input-pref">
@@ -133,21 +133,21 @@
 				</td>
 			</tr>
 
-			<tr>
+			<tr soy:display="telephoneNumber">
 				<th>電話番号</th>
 				<td>
 					<input soy:id="tel_number" type="text" size="30" />
 				</td>
 			</tr>
 
-			<tr>
+			<tr soy:display="faxNumber">
 				<th>FAX番号</th>
 				<td>
 					<input soy:id="fax_number" type="text" size="30" />
 				</td>
 			</tr>
 
-			<tr>
+			<tr soy:display="cellphoneNumber">
 				<th>携帯電話番号</th>
 				<td>
 					<input soy:id="ketai_number" type="text" size="30" />
@@ -193,13 +193,13 @@
 		</table>
 
 		<table class="form_table">
-			<tr>
+			<tr soy:display="accountId">
 				<th>ログインID</th>
 				<td>
 					<input soy:id="account_id" type="text" style="width:95%;" />
 				</td>
 			</tr>
-			<tr>
+			<tr soy:display="url">
 				<th>URL</th>
 				<td>
 					<input soy:id="url" type="text" style="width:95%;"/>
@@ -418,7 +418,7 @@
 			<!-- /soy:id="ticket_history_list" -->
 		</table>
 		<!-- /soy:display="ticket_history" -->
-		
+
 		</div><!-- /block_body -->
 </div><!-- /block -->
 
