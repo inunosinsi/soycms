@@ -27,9 +27,9 @@ class CustomerFormListComponent extends HTMLList{
 		));
 
 		$this->addCheckBox("admin_form", array(
-			"selected" => ($key !== "mailAddress" && $key !== "name") ? $this->adminConfig[$key] : true,
+			"selected" => ($key !== "mailAddress") ? $this->adminConfig[$key] : true,
 			"value" => 1,
-			"onclick" => ($key == "mailAddress" || $key == "name") ? "return false" : null,
+			"onclick" => ($key == "mailAddress") ? "return false" : null,
 			"name" => "Config[CustomerAdminConfig][" . $key . "]"
 		));
 	}

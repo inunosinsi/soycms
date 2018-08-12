@@ -263,15 +263,14 @@ class SOYShop_ShopConfig {
 	function setCustomerDisplayFormConfig($array){
 		$this->customerDisplayFormConfig = SOYShop_ShopConfig::$customerDisplayConfigDefault;
 
-		//mailAddres
-		//name
-		//は必須
-		$customerDisplayFormConfig["mailAddress"] = true;
-		$customerDisplayFormConfig["name"] = true;
-
 		foreach($this->customerDisplayFormConfig as $key => $value){
 			$this->customerDisplayFormConfig[$key] = (boolean)@$array[$key];
 		}
+
+		//mailAddres
+		//は必須
+		$this->customerDisplayFormConfig["mailAddress"] = true;
+		//$this->customerDisplayFormConfig["name"] = true;
 	}
 
 	function getCustomerInformationConfig() {
@@ -291,10 +290,9 @@ class SOYShop_ShopConfig {
 		}
 
 		//mailAddres
-		//name
 		//は必須
 		$this->customerInformationConfig["mailAddress"] = true;
-		$this->customerInformationConfig["name"] = true;
+		//$this->customerInformationConfig["name"] = true;
 	}
 
 	function getCustomerAdminConfig() {
