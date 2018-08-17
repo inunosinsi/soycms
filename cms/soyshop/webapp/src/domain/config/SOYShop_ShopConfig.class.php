@@ -29,6 +29,7 @@ class SOYShop_ShopConfig {
 	private $noChildItemStock;
 	private $displayCancelOrder;
 	private $checkPreOrder;
+	private $destroyTrackingNumberOnCancelOrder = 0;
 	private $multiSelectStatusMode;
 	private $orderCSVExportLimit = 1000;
 	private $isShowOnlyAdministrator;
@@ -495,6 +496,13 @@ class SOYShop_ShopConfig {
 	}
 	function setCheckPreOrder($checkPreOrder){
 		$this->checkPreOrder = $checkPreOrder;
+	}
+
+	function getDestroyTrackingNumberOnCancelOrder(){
+		return $this->destroyTrackingNumberOnCancelOrder;
+	}
+	function setDestroyTrackingNumberOnCancelOrder($destroyTrackingNumberOnCancelOrder){
+		$this->destroyTrackingNumberOnCancelOrder = $destroyTrackingNumberOnCancelOrder;
 	}
 
 	function getMultiSelectStatusMode(){

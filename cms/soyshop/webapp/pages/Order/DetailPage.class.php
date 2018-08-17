@@ -32,6 +32,14 @@ class DetailPage extends WebPage{
 					$order->setStatus($post->orderStatus);
 					$historyContents[] = "注文状態を<strong>「" . $order->getOrderStatusText() . "」</strong>に変更しました。";
 
+					//キャンセルの場合に注文番号を壊す設定をしている場合
+					if($post->orderStatus == SOYShop_Order::ORDER_STATUS_CANCELED){
+						SOY2::import("domain.config.SOYShop_ShopConfig");
+						if(SOYShop_ShopConfig::load()->getDestroyTrackingNumberOnCancelOrder()){
+							$order->setTrackingNumber($orderLogic->destroyTrackingNumber($order));
+						}
+					}
+
 					//発送済みにした時に自動で送信メール
 					if($post->orderStatus == SOYShop_Order::ORDER_STATUS_SENDED){
 						if($orderLogic->sendMailOnChangeDeliveryStatus($order, $post->orderStatus, $oldStatus)) {

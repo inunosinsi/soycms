@@ -183,6 +183,9 @@ class OrderLogic extends SOY2LogicBase{
     	if(!is_array($orderIds)) $orderIds = array($orderIds);
     	$status = (int)$status;
 
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$isDestroyTrackingNumber = SOYShop_ShopConfig::load()->getDestroyTrackingNumberOnCancelOrder();
+
     	$dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
     	$dao->begin();
 
@@ -203,6 +206,9 @@ class OrderLogic extends SOY2LogicBase{
 					if(self::sendMailOnChangeDeliveryStatus($order, $status, $oldStatus)){
 						$order->setMailStatusByType(SOYShop_Order::SENDMAIL_TYPE_DELIVERY, time());
 					}
+					//注文番号を壊して登録
+					if($isDestroyTrackingNumber) $order->setTrackingNumber(self::destroyTrackingNumber($order));
+
 	    			$dao->update($order);
 	    		}catch(Exception $e){
 	    			continue;
@@ -227,6 +233,11 @@ class OrderLogic extends SOY2LogicBase{
 
     	$dao->commit();
     }
+
+	//注文番号を壊す
+	function destroyTrackingNumber(SOYShop_Order $order){
+		return "d" . $order->getId() . "-" . substr(md5($order->getTrackingNumber(). mt_rand(100, 999)), 0, 10);
+	}
 
 	function sendMailOnChangeDeliveryStatus(SOYShop_Order $order, $newStatus, $oldStatus){
 		//送信前に念の為に確認

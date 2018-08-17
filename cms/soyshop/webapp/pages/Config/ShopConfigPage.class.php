@@ -237,6 +237,15 @@ class ShopConfigPage extends WebPage{
 			"isBoolean" => 1
 		));
 
+		//注文キャンセル時に注文番号を壊す
+		$this->addCheckBox("destroyTrackingNumberOnCancelOrder", array(
+			"selected" => $config->getDestroyTrackingNumberOnCancelOrder(),
+			"value" => 1,
+			"name" => "Config[destroyTrackingNumberOnCancelOrder]",
+			"label" => "注文キャンセル時に注文番号を壊す",
+			"isBoolean" => 1
+		));
+
 		//注文状態の複数選択モード
 		$this->addCheckBox("multiSelectStatusMode", array(
 			"selected" => $config->getMultiSelectStatusMode(),
