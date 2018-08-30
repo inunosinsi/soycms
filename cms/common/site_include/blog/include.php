@@ -335,7 +335,7 @@ function soy_cms_blog_output_recent_entry_list($page,$entries){
 			}
 
 			function populateItem($entry){
-
+				
 				$link = $this->entryPageUri . rawurlencode($entry->getAlias());
 
 				$this->createAdd("entry_id","CMSLabel",array(

@@ -172,11 +172,15 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		if(is_numeric($limit)) $sql .= " LIMIT " . $limit;
 		if(is_numeric($offset)) $sql .= " OFFSET " . $offset;	/** @ToDo 作成日時順に並べて高速化 **/
 
+		$dao = new SOY2DAO();	//LabeledEntryDAOだと前の実行の影響を受けるため、都度DAOを呼び出す
+
 		try{
-			$results = $this->executeQuery($sql, $binds);
+			$results = $dao->executeQuery($sql, $binds);
 		}catch(Exception $e){
 			return array();
 		}
+
+		unset($dao);	//念の為、都度破棄
 
 		if(!count($results)) return array();
 		$list = array();

@@ -328,7 +328,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getOpenEntryByLabelIds($labelIds,$isAnd = true, $start = null, $end = null){
 		$dao = self::labeledEntryDao();
-
+		
 		if($isAnd){
 			//$labelIdsのラベルがすべて設定されている記事のみ取得
 			$array = $dao->getOpenEntryByLabelIds($labelIds,SOYCMS_NOW,$start,$end,$this->reverse, $this->limit, $this->offset);
