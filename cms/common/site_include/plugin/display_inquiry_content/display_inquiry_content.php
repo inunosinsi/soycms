@@ -26,7 +26,7 @@ class DisplayInquiryContentPlugin{
 			"modifier"=>"Tsuyoshi Saito",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -57,8 +57,11 @@ class DisplayInquiryContentPlugin{
 			}
 		}
 
+		//時々最終お問い合わせの日を確認しにいくためのフラグ
+		$r = (int)mt_rand(1,10);
+
 		//最終お問い合わせ時刻が常に0(他サイトにフォームを設置している)の場合は常に最終お問い合わせ時刻を調べに行く
-		if($this->lastInquiryTime === 0){
+		if($r < 2 || $this->lastInquiryTime === 0){
 			SOY2::import("site_include.plugin.display_inquiry_content.util.DisplayInquiryContentUtil");
 			$this->lastInquiryTime = DisplayInquiryContentUtil::getLastInquiryTime($this->getFormId());
 		}
