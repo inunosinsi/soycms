@@ -90,8 +90,8 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	/**
 	 * getOpenEntrybyLabeIdへのエイリアス
 	 */
-	function getOpenEntryByLabelId($labelId,$now,$orderReverse = false){
-		return $this->getOpenEntryByLabelIds(array($labelId),$now,null,null,$orderReverse);
+	function getOpenEntryByLabelId($labelId,$now,$orderReverse = false,$limit = null, $offset = null){
+		return $this->getOpenEntryByLabelIds(array($labelId),$now,null,null,$orderReverse, $limit, $offset);
 	}
 
 	/**

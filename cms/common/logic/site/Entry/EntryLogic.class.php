@@ -318,7 +318,8 @@ class EntryLogic extends SOY2LogicBase{
 		$dao = self::labeledEntryDao();
 		$dao->setLimit($this->limit);
 		$dao->setOffset($this->offset);
-		$array = $dao->getOpenEntryByLabelId($labelId,SOYCMS_NOW,$this->reverse);
+		//仕様変更により、記事取得関数実行時に念の為にlimitとoffsetを渡しておく
+		$array = $dao->getOpenEntryByLabelId($labelId,SOYCMS_NOW,$this->reverse, $this->limit, $this->offset);
 		$this->totalCount = $dao->getRowCount();
 		return $array;
 	}
@@ -328,7 +329,7 @@ class EntryLogic extends SOY2LogicBase{
 	 */
 	function getOpenEntryByLabelIds($labelIds,$isAnd = true, $start = null, $end = null){
 		$dao = self::labeledEntryDao();
-		
+
 		if($isAnd){
 			//$labelIdsのラベルがすべて設定されている記事のみ取得
 			$array = $dao->getOpenEntryByLabelIds($labelIds,SOYCMS_NOW,$start,$end,$this->reverse, $this->limit, $this->offset);
