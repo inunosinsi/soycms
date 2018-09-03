@@ -18,7 +18,7 @@ class PublisherPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 //		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 //			$this,"config_page"
@@ -201,7 +201,6 @@ class PublisherPlugin{
 		$siteDir = UserInfoUtil::getSiteDirectory(true);
 		$dirs = scandir($siteDir);
 		foreach($dirs as $dir){
-			var_dump($dir);
 			if(strpos($dir, ".") === 0) continue;
 			if(preg_match('/page-[0-9]*/', $dir)){
 				$file = $siteDir . $dir . "/index.html";
