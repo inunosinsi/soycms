@@ -39,6 +39,8 @@ abstract class SOYShop_SlipNumberDAO extends SOY2DAO {
 
 	abstract function deleteById($id);
 
+	abstract function deleteByOrderId($orderId);
+
 	/**
 	 * @query slip_number = :slipNumber
 	 */

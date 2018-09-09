@@ -56,7 +56,7 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		//伝票番号の記録テーブルの記録する
 		$numbers = explode(",", $value);
 		foreach($numbers as $number){
-			$number = trim(trim($number));
+			$number = trim($number);
 			if(!strlen($number)) continue;
 
 			//登録がなければ登録する
@@ -97,6 +97,9 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 	function delete($orderId){
 		try{
 			$this->orderAttributeDao->delete($orderId, ReturnsSlipNumberUtil::PLUGIN_ID);
+
+			//返送伝票番号の方も削除
+			$this->slipDao->deleteByOrderId($orderId);
 		}catch(Exception $e){
 			var_dump($e);
 		}

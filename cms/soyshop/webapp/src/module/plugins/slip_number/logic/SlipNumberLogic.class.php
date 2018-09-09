@@ -134,6 +134,9 @@ class SlipNumberLogic extends SOY2LogicBase{
 
 		try{
 			$this->orderAttributeDao->delete($orderId, SlipNumberUtil::PLUGIN_ID);
+
+			//伝票番号の方も削除
+			$this->slipDao->deleteByOrderId($orderId);
 		}catch(Exception $e){
 			var_dump($e);
 		}
