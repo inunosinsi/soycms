@@ -155,7 +155,7 @@ class CreatePage extends CMSWebPageBase{
 				$html[] = '<optgroup label="'.$template->getName().'">';
 
 				$tmps = $template->getTemplate();
-				if(count($tmps)){
+				if(is_array($tmps) && count($tmps)){
 					foreach($tmps as $id => $array){
 						$html[] = '<option value="'.$template->getId()."/". $id .'">' . $array["name"] . '</option>';
 					}
