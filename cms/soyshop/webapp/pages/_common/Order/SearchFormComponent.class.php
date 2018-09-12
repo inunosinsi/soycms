@@ -28,6 +28,7 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	private $orderIdEnd;
 
 	private $orderMemo;
+	private $orderMemoAndOr;
 	private $orderComment;
 	private $orderCommentAndOr;
 
@@ -236,7 +237,22 @@ class SearchFormComponent extends SOYBodyComponentBase{
 		$this->addInput("order_memo", array(
 			"name" => "search[orderMemo]",
 			"value" => $this->getOrderMemo(),
-			"style" => "width:95%;"
+			"style" => "width:80%;",
+			"attr:placeholder" => "スペース区切りで複数ワードで検索できます。"
+		));
+
+		$this->addCheckBox("order_memo_and", array(
+			"name" => "search[orderMemoAndOr]",
+			"value" => 0,
+			"selected" => (is_null($this->getOrderMemoAndOr()) || (int)$this->getOrderMemoAndOr() === 0),
+			"label" => "AND"
+		));
+
+		$this->addCheckBox("order_memo_or", array(
+			"name" => "search[orderMemoAndOr]",
+			"value" => 1,
+			"selected" => ((int)$this->getOrderMemoAndOr() === 1),
+			"label" => "OR"
 		));
 
 		$this->addInput("order_comment", array(
@@ -535,6 +551,13 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	}
 	function setOrderMemo($orderMemo){
 		$this->orderMemo = $orderMemo;
+	}
+
+	function getOrderMemoAndOr(){
+		return $this->orderMemoAndOr;
+	}
+	function setOrderMemoAnd($orderMemoAndOr){
+		$this->orderMemoAndOr = $orderMemoAndOr;
 	}
 
 	function getOrderComment(){

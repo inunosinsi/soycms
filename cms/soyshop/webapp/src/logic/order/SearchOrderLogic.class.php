@@ -142,7 +142,8 @@ class SearchOrderLogic extends SOY2LogicBase{
 				}
 
 				if(count($memoWhere)){
-					$where[] = "(" . implode(" OR ", $memoWhere) . ")";
+					$cnd = ((int)$search["orderMemoAndOr"] === 1) ? " OR " : " AND ";
+					$where[] = "(" . implode($cnd, $memoWhere) . ")";
 				}
 			}
 		}
