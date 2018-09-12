@@ -147,6 +147,25 @@ class SearchOrderLogic extends SOY2LogicBase{
 			}
 		}
 
+		//コメント
+		if(isset($search["orderComment"]) && strlen($search["orderComment"])){
+			//検索ワードをスペースやカンマで配列にする
+			$words = self::getOrderMemoWords($search["orderComment"]);
+			if(count($words)){
+				$commentWhere = array();
+				for($i = 0; $i < count($words); $i++){
+					$word = $words[$i];
+					$commentWhere[] = "content LIKE :comment_" . $i;
+					$binds[":comment_" . $i] = "%" . $word . "%";
+				}
+
+				if(count($commentWhere)){
+					$cnd = ((int)$search["orderCommentAndOr"] === 1) ? " OR " : " AND ";
+					$where[] = "id IN (SELECT order_id FROM soyshop_order_state_history WHERE ". implode($cnd, $commentWhere) . ")";
+				}
+			}
+		}
+
 		//更新日
 		if(isset($search["updateDateStart"]) && strlen($search["updateDateStart"]) > 0 && strtotime($search["updateDateStart"])){
 			$where[] = "id IN (SELECT order_id FROM soyshop_order_state_history WHERE order_date >= :update_date_start)";

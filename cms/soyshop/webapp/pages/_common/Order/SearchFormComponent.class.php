@@ -28,6 +28,8 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	private $orderIdEnd;
 
 	private $orderMemo;
+	private $orderComment;
+	private $orderCommentAndOr;
 
 	private $userName;
 	private $userReading;
@@ -235,6 +237,27 @@ class SearchFormComponent extends SOYBodyComponentBase{
 			"name" => "search[orderMemo]",
 			"value" => $this->getOrderMemo(),
 			"style" => "width:95%;"
+		));
+
+		$this->addInput("order_comment", array(
+			"name" => "search[orderComment]",
+			"value" => $this->getOrderComment(),
+			"style" => "width:80%;",
+			"attr:placeholder" => "スペース区切りで複数ワードで検索できます。"
+		));
+
+		$this->addCheckBox("order_comment_and", array(
+			"name" => "search[orderCommentAndOr]",
+			"value" => 0,
+			"selected" => (is_null($this->getOrderCommentAndOr()) || (int)$this->getOrderCommentAndOr() === 0),
+			"label" => "AND"
+		));
+
+		$this->addCheckBox("order_comment_or", array(
+			"name" => "search[orderCommentAndOr]",
+			"value" => 1,
+			"selected" => ((int)$this->getOrderCommentAndOr() === 1),
+			"label" => "OR"
 		));
 
 		$this->createAdd("custom_search_item_list", "_common.Order.CustomSearchItemListComponent", array(
@@ -512,6 +535,20 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	}
 	function setOrderMemo($orderMemo){
 		$this->orderMemo = $orderMemo;
+	}
+
+	function getOrderComment(){
+		return $this->orderComment;
+	}
+	function setOrderComment($orderComment){
+		$this->orderComment = $orderComment;
+	}
+
+	function getOrderCommentAndOr(){
+		return $this->orderCommentAndOr;
+	}
+	function setOrderCommentAndOr($orderCommentAndOr){
+		$this->orderCommentAndOr = $orderCommentAndOr;
 	}
 
 	function getCustoms(){
