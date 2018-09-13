@@ -31,7 +31,7 @@ class CreatePage extends WebPage{
 	}
 
     function __construct() {
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->addModel("error", array(
     		"visible" => ($this->error == true)

@@ -8,26 +8,26 @@ class SOYCalendar_PageApplication{
 
 	var $page;
 	var $serverConfig;
-	
+
 
 	function init(){
 		CMSApplication::main(array($this,"main"));
-		
+
 		//DBの初期化を行う
 		if(!file_exists(CMS_COMMON . "db/".APPLICATION_ID.".db")){
 			return;
 		}
 	}
-	
+
 	function prepare(){
-		
+
 	}
 
 	function main($page){
-		
+
 		$this->page = $page;
-		
-		
+
+
 		//SOY2::RootDir()の書き換え
 		$oldRooDir = SOY2::RootDir();
 		$oldPagDir = SOY2HTMLConfig::PageDir();
@@ -37,17 +37,17 @@ class SOYCalendar_PageApplication{
 		$oldDsn = SOY2DAOConfig::Dsn();
 		$oldUser = SOY2DAOConfig::user();
 		$oldPass = SOY2DAOConfig::pass();
-		
+
 		//設定ファイルの読み込み
 		include_once(dirname(__FILE__) . "/config.php");
 		$this->prepare();
-		
+
 		//DBの初期化を行う
 		if(!file_exists(CMS_COMMON . "db/".APPLICATION_ID.".db")){
 			$logic = SOY2Logic::createInstance("logic.InitLogic");
 			$logic->init();
 		}
-		
+
 		$arguments = CMSApplication::getArguments();
 
 		//app:id="soycalendar"
@@ -56,14 +56,14 @@ class SOYCalendar_PageApplication{
 			"page" => $page,
 			"soy2prefix" => "app"
 		));
-		
+
 		//app:id="mobilecalendar"
 		$this->page->createAdd("mobilecalendar","SOYCalendar_MobileComponent",array(
 			"application" => $this,
 			"page" => $page,
 			"soy2prefix" => "app"
 		));
-				
+
 		//元に戻す
 		SOY2::RootDir($oldRooDir);
 		SOY2HTMLConfig::PageDir($oldPagDir);
@@ -79,53 +79,53 @@ class SOYCalendar_PageApplication{
 }
 
 class SOYCalendar_ItemComponent extends SOYBodyComponentBase{
-	
+
 	private $page;
 	private $application;
-	
-	
+
+
 	function setPage($page){
 		$this->page = $page;
 	}
-	
+
 	function execute(){
 
 		$this->getCalendar();
 		parent::execute();
 	}
-	
+
 	function getCalendar(){
-		
+
 		static $logic;
-		if(!$logic)$logic = SOY2Logic::createInstance("logic.CalendarLogic");
+		if(!$logic) $logic = SOY2Logic::createInstance("logic.CalendarLogic");
 		$prefix = "cms";
-		
-		$this->createAdd("prev_calendar","HTMLLabel",array(
+
+		$this->addLabel("prev_calendar" ,array(
 			"soy2prefix" => $prefix,
-			"html" => $logic->getPrevCalendar(false,false)
+			"html" => $logic->getPrevCalendar(false, false)
 		));
-		
-		$this->createAdd("current_calendar","HTMLLabel",array(
+
+		$this->addLabel("current_calendar", array(
 			"soy2prefix" => $prefix,
-			"html" => $logic->getCurrentCalendar(false,true)
+			"html" => $logic->getCurrentCalendar(false, true)
 		));
-		
-		$this->createAdd("next_calendar","HTMLLabel",array(
+
+		$this->addLabel("next_calendar", array(
 			"soy2prefix" => $prefix,
-			"html" => $logic->getNextCalendar(false,true)
+			"html" => $logic->getNextCalendar(false, true)
 		));
-		
-		for($i=1;$i<=10;$i++){
-			$this->createAdd("specify_calender_".$i,"SpecifyCalendarDisplay",array(
+
+		for($i = 1; $i <= 10; $i++){
+			$this->createAdd("specify_calender_" . $i, "SpecifyCalendarDisplay", array(
 				"soy2prefix" => $prefix,
 			));
 		}
 	}
-	
+
 	function getApplication(){
 		return $this->application;
 	}
-	
+
 	function setApplication($application){
 		$this->application = $application;
 	}
@@ -143,76 +143,76 @@ class SpecifyCalendarDisplay extends HTMLLabel{
 		$this->setHtml($html);
 		parent::execute();
 	}
-	
+
 	function getLogic(){
 		static $logic;
-		if(!$logic)$logic = SOY2Logic::createInstance("logic.CalendarLogic");
+		if(!$logic) $logic = SOY2Logic::createInstance("logic.CalendarLogic");
 		return $logic;
 	}
 }
 
 class SOYCalendar_MobileComponent extends SOYBodyComponentBase{
-	
+
 	private $page;
 	private $application;
-	
-	
+
+
 	function setPage($page){
 		$this->page = $page;
 	}
-	
+
 	function execute(){
 
 		$this->getCalendar();
 		parent::execute();
 	}
-	
+
 	function getCalendar(){
-		
+
 		$page = $this->application->page;
 		$url = $page->siteRoot.$page->page->getUri();
-		if(strpos($url,"/")!=0){
+		if(strpos($url,"/") != 0){
 			$url = "/".$url;
 		}
-		
+
 		$logic = SOY2Logic::createInstance("logic.CalendarLogic");
 		$prefix = "cms";
-		
-		$this->createAdd("mobile_calendar","MobileCalendarDisplay",array(
+
+		$this->createAdd("mobile_calendar", "MobileCalendarDisplay", array(
 			"soy2prefix" => "block",
 			"list" => $logic->getMobileCalendar()
 		));
-		
+
 		/** モバイル用のページャ **/
-		
-		$this->createAdd("prev_link","HTMLLink",array(
+
+		$this->addLink("prev_link", array(
 			"soy2prefix" => $prefix,
 			"link" => $logic->getPrevPager($url),
 			"visible" => $logic->isPrev()
 		));
-		
-		$this->createAdd("next_link","HTMLLink",array(
-			"soy2prefix" => $prefix, 
+
+		$this->addLink("next_link", array(
+			"soy2prefix" => $prefix,
 			"link" => $logic->getNextPager($url)
 		));
 	}
-	
+
 	function getApplication(){
 		return $this->application;
 	}
-	
+
 	function setApplication($application){
 		$this->application = $application;
 	}
 }
 
 class MobileCalendarDisplay extends HTMLList{
-	
+
 	protected function populateItem($entity){
-		
+
 		$prefix = "cms";
-		
-		$this->createAdd("date","HTMLLabel",array(
+
+		$this->addLabel("date", array(
 			"soy2prefix" => $prefix,
 			"html" => (isset($entity["schedule"])) ? $entity["schedule"] : ""
 		));
@@ -221,5 +221,3 @@ class MobileCalendarDisplay extends HTMLList{
 
 $app = new SOYCalendar_PageApplication();
 $app->init();
-
-?>

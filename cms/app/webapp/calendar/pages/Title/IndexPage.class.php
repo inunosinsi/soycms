@@ -11,7 +11,7 @@ class IndexPage extends WebPage{
     		$titles = array();
     	}
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->createAdd("title_list","_common.TitleListComponent",array(
     		"list" => $titles

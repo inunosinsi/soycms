@@ -20,5 +20,3 @@ if(SOYCMS_DB_TYPE == "sqlite"){
 
 //PHP
 mb_internal_encoding("UTF-8");
-
-?>

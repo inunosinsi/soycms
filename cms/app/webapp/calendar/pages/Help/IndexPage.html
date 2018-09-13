@@ -1,15 +1,13 @@
 <div style="padding:20px;">
 
-
-
-<h2>公開までの手順について</h2>
+	<h2>公開までの手順について</h2>
 
 	<div class="howto_container">
 		<span class="howto_step">STEP1</span>
 		<p class="howto_content">
 
 			SOY CMSにログインし、SOYAppページをつくります。
-		</p>	
+		</p>
 	</div>
 	<p class="howto_arrow">↓</p>
 	<div class="howto_container">
@@ -18,14 +16,14 @@
 			作成したSOYAppページの設定画面で、SOY Calendarアプリケーションとの関連付けを行います。<br>
 
 			テンプレートには<a href="#template">記述例</a>を参考にして編集してください。
-		</p>	
+		</p>
 	</div>
 	<p class="howto_arrow">↓</p>
 	<div class="howto_container">
 		<span class="howto_step">STEP3</span>
 		<p class="howto_content">
 			ページを公開して「ページの確認」などからページにアクセスし表示を確認します。
-		</p>	
+		</p>
 	</div>
 
 	<a name="template"></a>
@@ -45,8 +43,18 @@
 </pre>
 <p>
 ※specify_calendar_1はcms:specifyで指定した数字を足した月のカレンダーを表示します。<br />
-cms:specifyを指定しなければ表示されず、タグはcms:specify_calendar_10まで使用可能です。	
+cms:specifyを指定しなければ表示されず、タグはcms:specify_calendar_10まで使用可能です。
 </p>
 	</div>
+
+	<h2>SOY Appページ以外でカレンダーを出力したい場合(SOY CMS3.0.2p13以降)</h2>
+
+	<pre style="width:90%;"><strong>&lt;!-- cms:module="common.soycalendar_display" --&gt;</strong>
+
+&lt;!-- cms:id="prev_calendar" 先月のカレンダーを表示 /--&gt;
+&lt;!-- cms:id="current_calendar" 今月のカレンダーを表示 /--&gt;
+&lt;!-- cms:id="next_calendar" 来月のカレンダーを表示 /--&gt;
+
+<strong>&lt;!-- /cms:module="common.soycalendar_display" --&gt;</strong></pre>
 
 </div>

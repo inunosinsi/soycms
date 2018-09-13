@@ -7,7 +7,7 @@ class IndexPage extends WebPage{
     	$year = (isset($_GET["year"]))?$_GET["year"]:date("Y");
     	$month = (isset($_GET["month"]))?$_GET["month"]:date("n");
     	
-    	WebPage::__construct();
+    	parent::__construct();
     	
     	$this->createAdd("archives","HTMLLabel",array(
     		"text" => $year."年".$month."月"
