@@ -6,11 +6,11 @@ class ItemStockManagerAdminTop extends SOYShopAdminTopBase{
 	}
 
 	function getLinkTitle(){
-		return "";
+		//return "";
 	}
 
 	function getTitle(){
-		return "";
+		//return "";
 	}
 
 	function getContent(){
