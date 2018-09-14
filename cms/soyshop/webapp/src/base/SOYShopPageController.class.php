@@ -144,6 +144,7 @@ class SOYShopPageController extends SOY2PageController{
 
 			$isOrder = $shopConfig->getDisplayOrderAdminPage();
 			$isItem = $shopConfig->getDisplayItemAdminPage();
+			$isUser = $shopConfig->getDisplayUserAdminPage();
 
 			ob_start();
 			$webPage->display();
