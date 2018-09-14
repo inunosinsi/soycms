@@ -46,7 +46,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 		        $logic->setCharset($charset);
 
 				if(!$logic->checkUploadedFile($file)){
-		            SOY2PageController::jump("Extension.returns.slip_number?failed");
+		            SOY2PageController::jump("Extension.returns_slip_number?failed");
 		            exit;
 		        }
 		        // if(!$logic->checkFileContent($file)){
@@ -85,7 +85,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 					}
 				}
 
-				SOY2PageController::jump("Extension.returns.slip_number?updated");
+				SOY2PageController::jump("Extension.returns_slip_number?updated");
 			}
 		}
 
