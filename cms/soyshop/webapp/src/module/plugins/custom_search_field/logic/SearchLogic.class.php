@@ -136,7 +136,7 @@ class SearchLogic extends SOY2LogicBase{
 
             //カテゴリー
             if(isset($_GET["c_search"]["item_category"]) && is_numeric($_GET["c_search"]["item_category"])){
-                //小カテゴリの商品も引っ張ってこれる様にする
+				//小カテゴリの商品も引っ張ってこれる様にする
                 $maps = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
                 $catId = (int)trim($_GET["c_search"]["item_category"]);
                 if(isset($maps[$catId])){
