@@ -78,9 +78,11 @@ foreach($scripts as $script){
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Order">注文</a>
 			</li>
 			<?php }?>
+			<?php if($isUser){?>
 			<li class="user">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/User">顧客</a>
 			</li>
+			<?php }?>
 			<?php if($isItem){?>
 			<li class="item">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Item">商品</a>

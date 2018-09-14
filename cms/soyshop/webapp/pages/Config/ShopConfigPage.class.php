@@ -26,6 +26,7 @@ class ShopConfigPage extends WebPage{
 			"isChildItemOnAdminOrder" => 0,
 			"displayOrderAdminPage" => 0,
 			"displayItemAdminPage" => 0,
+			"displayUserAdminPage" => 0,
 			"displayOrderButtonOnUserAdminPage" => 0,
 			"defalutArea" => 0,
 			"displayUserOfficeItems" => 0,
@@ -337,6 +338,13 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getDisplayItemAdminPage(),
 			"label" => "管理画面で商品タブを表示する"
+		));
+
+		$this->addCheckBox("displayUserAdminPage", array(
+			"name" => "Config[displayUserAdminPage]",
+			"value" => 1,
+			"selected" => $config->getDisplayUserAdminPage(),
+			"label" => "管理画面で顧客タブを表示する"
 		));
 
 		$this->addCheckBox("displayOrderButtonOnUserAdminPage", array(
