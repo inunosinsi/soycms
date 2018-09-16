@@ -2,7 +2,7 @@
  * Slovak translation
  * @author RobiNN <kelcakrobo@gmail.com>
  * @author Jakub Ďuraš <jkblmr@gmail.com>
- * @version 2018-03-07
+ * @version 2018-06-09
  */
 (function(root, factory) {
 	if (typeof define === 'function' && define.amd) {
@@ -132,7 +132,7 @@
 			'cmdinfo'      : 'Info',
 			'cmdmkdir'     : 'Nový priečinok',
 			'cmdmkdirin'   : 'Do novej zložky', // from v2.1.7 added 19.2.2016
-			'cmdmkfile'    : 'Nový textový súbor',
+			'cmdmkfile'    : 'Nový súbor',
 			'cmdopen'      : 'Otvoriť',
 			'cmdpaste'     : 'Vložiť',
 			'cmdquicklook' : 'Náhľad',
@@ -162,6 +162,7 @@
 			'cmdselectall' : 'Vybrať všetko', // from v2.1.28 added 15.08.2017
 			'cmdselectnone': 'Nič nevyberať', // from v2.1.28 added 15.08.2017
 			'cmdselectinvert': 'Invertovať výber', // from v2.1.28 added 15.08.2017
+			'cmdopennew'   : 'Otvoriť v novom okne', // from v2.1.38 added 3.4.2018
 
 			/*********************************** buttons ***********************************/
 			'btnClose'  : 'Zavrieť',
@@ -313,6 +314,10 @@
 			'selectlfile'     : 'Vybrať poslednú položku',
 			'viewlist'        : 'Zoznam',
 			'viewicons'       : 'Ikony',
+			'viewSmall'       : 'Malé ikony', // from v2.1.39 added 22.5.2018
+			'viewMedium'      : 'Stredné ikony', // from v2.1.39 added 22.5.2018
+			'viewLarge'       : 'Veľké ikony', // from v2.1.39 added 22.5.2018
+			'viewExtraLarge'  : 'Extra veľké ikony', // from v2.1.39 added 22.5.2018
 			'places'          : 'Miesta',
 			'calc'            : 'Prepočítavanie',
 			'path'            : 'Cesta',
@@ -413,7 +418,7 @@
 			'8pxgrid'         : '8px mriežka', // from v2.1.16 added 4.10.2016
 			'enabled'         : 'Povolené', // from v2.1.16 added 4.10.2016
 			'disabled'        : 'Zakázané', // from v2.1.16 added 4.10.2016
-			'emptyIncSearch'  : 'Výsledky vyhľadávania sú prázdne v aktuálnom zobrazení.\AStlačením tlačidla [Enter] rozšírite vyhľadávanie cieľa.', // from v2.1.16 added 5.10.2016
+			'emptyIncSearch'  : 'Výsledky vyhľadávania sú prázdne v aktuálnom zobrazení. Stlačením tlačidla [Enter] rozšírite vyhľadávanie cieľa.', // from v2.1.16 added 5.10.2016
 			'emptyLetSearch'  : 'Výsledky vyhľadávania prvého listu sú v aktuálnom zobrazení prázdne.', // from v2.1.23 added 24.3.2017
 			'textLabel'       : 'Nápis textu', // from v2.1.17 added 13.10.2016
 			'minsLeft'        : '$1 minút ostáva', // from v2.1.17 added 13.11.2016
@@ -450,6 +455,13 @@
 			'unmountChildren' : 'Nasledujúce médium(a) pripojené v tomto médiu je tiež odpojené. Určite ho odpojiť?', // from v2.1.33 added 5.3.2018
 			'selectionInfo'   : 'Informácie o výbere', // from v2.1.33 added 7.3.2018
 			'hashChecker'     : 'Algoritmy na zobrazenie hashu súborov', // from v2.1.33 added 10.3.2018
+			'infoItems'       : 'Informačné položky (panel s informáciami o výbere)', // from v2.1.38 added 28.3.2018
+			'pressAgainToExit': 'Opätovným stlačením opustíte.', // from v2.1.38 added 1.4.2018
+			'toolbar'         : 'Panel nástrojov', // from v2.1.38 added 4.4.2018
+			'workspace'       : 'Pracovný priestor', // from v2.1.38 added 4.4.2018
+			'dialog'          : 'Dialóg', // from v2.1.38 added 4.4.2018
+			'all'             : 'Všetko', // from v2.1.38 added 4.4.2018
+			'iconSize'        : 'Veľkosť ikony (zobrazenie ikon)', // form v2.1.39 added 7.5.2018
 
 			/********************************** mimetypes **********************************/
 			'kindUnknown'     : 'Neznámy',
