@@ -135,8 +135,8 @@ class SpecifyCalendarDisplay extends HTMLLabel{
 
 	function execute(){
 		$specify = (int)$this->getAttribute("cms:specify");
-		if($specify > 0){
-			$html = $this->getLogic()->getSpecifyCalendar(false,true,$this->getAttribute("cms:specify"));
+		if(isset($specify) && $specify !== 0){	//cms:spacifyが0の時は使用不可	current_calendarを使いましょう
+			$html = $this->getLogic()->getSpecifyCalendar(false, true, $specify);
 		}else{
 			$html = "";
 		}
