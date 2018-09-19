@@ -1,0 +1,61 @@
+<h3>使い方</h3>
+<p>
+	記事一覧を表示したいページに下記のコードを挿入する。<br>
+	※どのページでも設置可能
+</p>
+
+<pre><strong>&lt;!-- cms:module="common.entry_calendar" --&gt;</strong>
+<strong>&lt;!-- cms:blog="1" /--&gt;</strong>
+&lt;table&gt;
+	&lt;caption&gt;
+		&lt;a <strong>cms:id="prev_month_link"</strong>&gt;&lt;&lt;前の月&lt;/a&gt;
+		&lt;!-- <strong>cms:id="current_year"</strong> /--&gt;年&lt;!-- <strong>cms:id="current_month"</strong> /--&gt;月
+		&lt;a <strong>cms:id="next_month_link"</strong>&gt;次の月&gt;&gt;&lt;/a&gt;
+	&lt;/caption&gt;
+	&lt;tr&gt;
+		&lt;td&gt;日&lt;/td&gt;
+		&lt;td&gt;月&lt;/td&gt;
+		&lt;td&gt;火&lt;/td&gt;
+		&lt;td&gt;水&lt;/td&gt;
+		&lt;td&gt;木&lt;/td&gt;
+		&lt;td&gt;金&lt;/td&gt;
+		&lt;td&gt;土&lt;/td&gt;
+	&lt;/tr&gt;
+	&lt;tr&gt;
+		<strong>&lt;!-- c_block:id="date_list" --&gt;</strong>
+		&lt;td&gt;
+			<strong>&lt;!-- cms:id="day" --&gt;日付を表示&lt;!-- /cms:id="day" --&gt;</strong>&lt;br&gt;
+			<strong>&lt;!-- c_block:id="entry_list" --&gt;</strong>
+			&lt;p <strong>cms:id="title"</strong>&gt;記事タイトル&lt;/p&gt;
+			<strong>&lt;!-- /c_block:id="entry_list" --&gt;</strong>
+		&lt;/td&gt;
+	<strong>&lt;!-- cms:id="next_week" --&gt;</strong>
+	&lt;/tr&gt;
+	&lt;tr&gt;
+	<strong>&lt;!-- /cms:id="next_week" --&gt;</strong>
+
+		<strong>&lt;!-- /c_block:id="date_list" --&gt;</strong>
+	&lt;/tr&gt;
+&lt;/table&gt;
+<strong>&lt;!-- /cms:module="common.entry_calendar" --&gt;</strong></pre>
+<p></p>
+<h3>解説</h3>
+<ul class="dsp">
+	<li>
+		&lt;!-- cms:blog="<strong>ページID</strong>" /--&gt;のページIDの個所にブログページのページIDを挿入します。ページIDの取得方法は下記のリンク先の記事をご覧ください。<br>
+		<a href="https://saitodev.co/article/1246" target="_blank">SOY CMSで標準ページでも任意のブログページのb_blockを使用できるようにした - saitodev.co</a>
+	</li>
+	<li>&lt;caption&gt;タグ内にある各cms:idは&lt;table&gt;タグの外側でも使用出来ます。</li>
+	<li>&lt;!-- c_block:id="date_list" --&gt;で囲まれた個所は指定月の日付分繰り返し出力されます。</li>
+	<li>&lt;!-- cms:id="next_week" --&gt;で囲まれた個所は土曜日カラムの出力時に出力されます。</li>
+	<li>
+		&lt;!-- c_block:id="entry_list" --&gt;で囲まれた個所は指定日に投稿された記事分だけ繰り返し出力されます。<br>
+		使用できるタグは、cms:id="entry_id"、cms:id="title"、cms:id="title_plain"、cms:id="entry_link"とカスタムフィールドで生成したものになります。
+	</li>
+</ul>
+
+<style>
+ul.dsp li{
+	margin:5px 0;
+}
+</style>
