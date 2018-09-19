@@ -25,7 +25,7 @@ class RollbackAction extends SOY2Action {
 }
 
 class RollbackActionForm extends SOY2ActionForm {
-	private $historyId;
+	public $historyId;
 
 	function setHistoryId($historyId){
 		$this->historyId = $historyId;
