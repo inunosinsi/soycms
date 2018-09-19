@@ -44,6 +44,9 @@ class PublisherPlugin{
 		//GETがある場合は検索ページと見なして対象外とする
 		if(isset($_GET["q"])) return $html;
 
+		//@ToDo そのうち禁止するURLの設定を行いたい	cms:module="common.entry_calendar"を使用している場合は静的化を禁止
+		if(strpos($html, "cms:blog=")) return $html;
+
 		//GETの値がある場合は対象外
 		if(isset($_SERVER["REDIRECT_QUERY_STRING"])) return $html;
 
