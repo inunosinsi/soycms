@@ -292,4 +292,3 @@ class UserInfoUtil implements IUserInfoUtil{
     	return SOY2ActionSession::getUserSession()->getAttribute("app_auth");
     }
 }
-?>
