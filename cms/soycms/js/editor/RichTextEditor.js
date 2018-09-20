@@ -130,13 +130,24 @@ function onInitTinymce(){
 
 // tinymceのエディタがinitされる毎に呼ばれる
 function onInitTinymceEditor(id){
+	if(entry_css_path == undefined) var entry_css_path = null;
+	if(entry_css_path){
+		$.ajax({
+			type: "GET",
+			url: entry_css_path,
+			success: function(res){
+				//スタイルの適用
+				tinyMCE.get(id).dom.loadCSS(entry_css_path);
 
-	//スタイルの適用
-	tinyMCE.get(id).dom.loadCSS(entry_css_path);
-
-	//デフォルトの本文
-	if(tinyMCE.get(id).getContent().length < 1){
-		tinyMCE.get(id).setContent("<p></p>");
+				//デフォルトの本文
+				if(tinyMCE.get(id).getContent().length < 1){
+					tinyMCE.get(id).setContent("<p></p>");
+				}
+			},
+			error: function(res){
+				//何もしない
+			}
+		});
 	}
 }
 
