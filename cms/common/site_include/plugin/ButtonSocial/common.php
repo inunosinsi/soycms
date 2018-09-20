@@ -352,4 +352,3 @@ class ButtonSocialCommon{
 		$this->pluginObj = $pluginObj;
 	}
 }
-?>
