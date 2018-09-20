@@ -38,7 +38,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.2.6"
+			"version"=>"1.2.7"
 		));
 
 		//プラグイン アクティブ
@@ -460,6 +460,7 @@ class CustomFieldPluginAdvanced{
 		$script = str_replace("#FILE_UPLOAD_LINK#", SOY2PageController::createLink("Page.Editor.FileUpload"), $script);
 		$script = str_replace("#PUBLIC_URL#", UserInfoUtil::getSiteURLBySiteId(""), $script);
 		$script = str_replace("#SITE_URL#", UserInfoUtil::getSiteURL(), $script);
+		$script = str_replace("#SITE_ID#", UserInfoUtil::getSite()->getSiteId(), $script);
 
 		return $script;
 	}

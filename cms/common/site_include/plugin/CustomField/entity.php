@@ -223,12 +223,12 @@ class CustomField{
 			case "image":
 			case "file":
 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<input type="text" class="custom_field_input form-control" style="width:50%"'
+				$body = '<input type="text" class="custom_field_input" style="width:50%"'
 				       .' id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'"'
 				       .' />'
-				       .'<button type="button" onclick="open_customfield_filemanager($(\'#'.$h_formID.'\'));" style="margin-right:10px;">ファイルを指定する</button>';
+				       .' <button type="button" onclick="open_customfield_filemanager($(\'#'.$h_formID.'\'));" style="margin-right:10px;">ファイルを指定する</button>';
 
 				if($h_value){
 					if($this->getType() == "image"){
