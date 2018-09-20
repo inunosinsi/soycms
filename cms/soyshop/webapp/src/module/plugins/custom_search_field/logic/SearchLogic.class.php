@@ -169,28 +169,78 @@ class SearchLogic extends SOY2LogicBase{
                     case CustomSearchFieldUtil::TYPE_STRING:
                     case CustomSearchFieldUtil::TYPE_TEXTAREA:
                     case CustomSearchFieldUtil::TYPE_RICHTEXT:
-                        if(isset($_GET["c_search"][$key]) && strlen($_GET["c_search"][$key])){
-                            $this->where[$key] = "s." . $key . " LIKE :" . $key;
-                            $this->binds[":" . $key] = "%" . trim($_GET["c_search"][$key]) . "%";
-                        }
+						if(isset($_GET["c_search"][$key])){
+							//文字列として検索
+							if(is_string($_GET["c_search"][$key]) && strlen($_GET["c_search"][$key])){
+								//否定として検索
+								if(isset($field["denial"]) && $field["denial"] == 1){
+									$this->where[$key] = "s." . $key . " != :" . $key;
+									$this->binds[":" . $key] = trim($_GET["c_search"][$key]);
+								}else{
+									$this->where[$key] = "s." . $key . " LIKE :" . $key;
+									$this->binds[":" . $key] = "%" . trim($_GET["c_search"][$key]) . "%";
+								}
+							//配列として検索
+							}else if(is_array($_GET["c_search"][$key]) && count($_GET["c_search"][$key])){
+								$w = array();
+	                            foreach($_GET["c_search"][$key] as $i => $v){
+	                                if(!strlen($v)) continue;
+	                                $w[] = "s." . $key . " LIKE :" . $key . $i;
+	                                $this->binds[":" . $key . $i] = "%" . trim($v) . "%";
+	                            }
+	                            if(count($w)) $this->where[$key] = "(" . implode(" OR ", $w) . ")";
+							}
+						}
                         break;
 
                     //範囲の場合
                     case CustomSearchFieldUtil::TYPE_RANGE:
-                        $ws = "";$we = "";    //whereのスタートとエンド
-                        if(isset($_GET["c_search"][$key . "_start"]) && strlen($_GET["c_search"][$key . "_start"]) && is_numeric($_GET["c_search"][$key . "_start"])){
-                            $ws = "s." . $key . " >= :" . $key . "_start";
-                            $this->binds[":" . $key . "_start"] = (int)$_GET["c_search"][$key . "_start"];
-                        }
-                        if(isset($_GET["c_search"][$key . "_end"]) && strlen($_GET["c_search"][$key . "_end"]) && is_numeric($_GET["c_search"][$key . "_end"])){
-                            $we = "s." . $key .  " <= :" . $key . "_end";
-                            $this->binds[":" . $key . "_end"] = (int)$_GET["c_search"][$key . "_end"];
-                        }
-                        if(strlen($ws) && strlen($we)){
-                            $this->where[$key] = "(" . $ws . " AND " . $we . ")";
-                        }else if(strlen($ws) || strlen($we)){
-                            $this->where[$key] = $ws . $we;
-                        }
+						//配列で渡す
+						if(isset($_GET["c_search"][$key]) && is_array($_GET["c_search"][$key])){
+							$cnt = 0;
+							$rWhere = array();
+							$cnds = $_GET["c_search"][$key];
+							for($i = 0; $i < count($cnds); $i++){
+								$ws = "";
+								$we = "";
+								if(isset($cnds[$i]["start"][0]) && is_numeric($cnds[$i]["start"][0])){
+									$symbol = (isset($cnds[$i]["start"][1]) && $cnds[$i]["start"][1]) ? ">=" : ">";
+									$ws = "s." . $key . " " . $symbol . " :" . $key . "_start_" . $i;
+		                            $this->binds[":" . $key . "_start_" . $i] = (int)$cnds[$i]["start"][0];
+								}
+
+								if(isset($cnds[$i]["end"][0]) && is_numeric($cnds[$i]["end"][0])){
+									$symbol = (isset($cnds[$i]["end"][1]) && $cnds[$i]["end"][1]) ? "<=" : "<";
+									$we = "s." . $key .  " " . $symbol . " :" . $key . "_end_" . $i;
+									$this->binds[":" . $key . "_end_" . $i] = (int)$cnds[$i]["end"][0];
+								}
+
+								if(strlen($ws) && strlen($we)){
+		                            $rWhere[] = "(" . $ws . " AND " . $we . ")";
+		                        }else if(strlen($ws) || strlen($we)){
+		                            $rWhere[] = $ws . $we;
+		                        }
+							}
+							if(count($rWhere)) $this->where[$key] = "(" . implode(" OR ", $rWhere) . ")";
+
+						//通常の検索 @ToDo >= or <=の対応を考える
+						}else{
+							$ws = "";$we = "";    //whereのスタートとエンド
+	                        if(isset($_GET["c_search"][$key . "_start"]) && strlen($_GET["c_search"][$key . "_start"]) && is_numeric($_GET["c_search"][$key . "_start"])){
+	                            $ws = "s." . $key . " >= :" . $key . "_start";
+	                            $this->binds[":" . $key . "_start"] = (int)$_GET["c_search"][$key . "_start"];
+	                        }
+	                        if(isset($_GET["c_search"][$key . "_end"]) && strlen($_GET["c_search"][$key . "_end"]) && is_numeric($_GET["c_search"][$key . "_end"])){
+	                            $we = "s." . $key .  " <= :" . $key . "_end";
+	                            $this->binds[":" . $key . "_end"] = (int)$_GET["c_search"][$key . "_end"];
+	                        }
+	                        if(strlen($ws) && strlen($we)){
+	                            $this->where[$key] = "(" . $ws . " AND " . $we . ")";
+	                        }else if(strlen($ws) || strlen($we)){
+	                            $this->where[$key] = $ws . $we;
+	                        }
+						}
+
                         break;
 
                     //チェックボックスの場合
