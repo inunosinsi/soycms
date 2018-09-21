@@ -197,6 +197,7 @@ class SOYInquiry_PageApplication{
 
 	    //確認画面表示（Captcha判定に失敗したときのためにこのIF文は分離しておく必要がある）
 		if(isset($_POST["confirm"]) || isset($_POST["confirm_x"])){
+			$this->checkBanMailAddress($_POST["data"], $columns);
 			$errors = $this->checkPostData($_POST["data"], $columns);
 
 			if(empty($errors)){
@@ -258,6 +259,9 @@ class SOYInquiry_PageApplication{
 	 * POSTされた値をチェックする
 	 */
 	function checkPostData($data, $columns){
+		//イレギュラーな対応
+		$this->checkBanMailAddress($_POST["data"], $columns);
+
 		$errors = array();
 
 		foreach($columns as $column){
@@ -280,6 +284,42 @@ class SOYInquiry_PageApplication{
 		}
 
 		return $errors;
+	}
+
+	function checkBanMailAddress($data, $columns){
+		foreach($columns as $column){
+
+			if(strpos($column->getType(), "MailAddress") !== false && $column->getRequire() == 1){
+				if(isset($data[$column->getColumnId()])){
+					//確認フォーム付きメールアドレスカラムの場合は配列の0番目の値になる。普通のメールアドレスの場合は値
+					$mailAddress = (is_array($data[$column->getColumnId()])) ? trim($data[$column->getColumnId()][0]) : $data[$column->getColumnId()];
+				}else if(isset($data[$column->getId()])){
+					//上と同様
+					$mailAddress = (is_array($data[$column->getId()])) ? trim($data[$column->getId()][0]) : $data[$column->getId()];
+				}else{
+					$mailAddress = null;
+				}
+				
+				//メールアドレスカラムがあって、メールアドレスが空の場合は強制的にお問い合わせを止める
+				if(strlen($mailAddress) === 0){
+					SOY2PageController::redirect($this->pageUrl . "?block");
+			    	exit;
+				}
+
+				//禁止したドメインによる制御
+				$config = soy2_unserialize($column->getConfig());
+				if(isset($config["ban_mail_domain"]) && strlen($config["ban_mail_domain"])){
+					$bans = explode(",", $config["ban_mail_domain"]);
+					foreach($bans as $ban){
+						preg_match('/@' . $ban . '$/', $mailAddress, $tmp);
+						if(isset($tmp[0]) && strlen($tmp[0])){
+							SOY2PageController::redirect($this->pageUrl . "?block");
+					    	exit;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**

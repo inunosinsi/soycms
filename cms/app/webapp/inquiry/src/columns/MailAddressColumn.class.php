@@ -12,6 +12,9 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 	//携帯の入力モード指定
 	private $mobile_ime_mode = 0;
 
+	//ドメインの禁止
+	private $ban_mail_domain;
+
 	//フォームに挿入するクラス
 	private $style;	//1.0.1からclassのみ指定は廃止されるが、1.0.0以前から使用しているユーザのために残しておく
 
@@ -87,6 +90,11 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 
 		$html .= "<br/>";
 
+		$html .= '<label for="Column[config][ban_mail_domain]'.$this->getColumnId().'">お問い合わせ受付を禁止するドメイン:</label>';
+		$html .= '<input  id="Column[config][ban_mail_domain]'.$this->getColumnId().'" name="Column[config][ban_mail_domain]" type="text" value="'.$this->ban_mail_domain.'" placeholder="example.com,sample.jp"> ※カンマ区切り';
+
+		$html .= "<br/>";
+
 		if(is_null($this->attribute) && isset($this->style)){
 			$attribute = "class=&quot;".htmlspecialchars($this->style,ENT_QUOTES,"UTF-8")."&quot;";
 		}else{
@@ -115,6 +123,7 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 		$this->size = (isset($config["size"]) && is_numeric($config["size"])) ? (int)$config["size"] : null;
 		$this->ime_mode = (isset($config["ime_mode"])) ? $config["ime_mode"] : 0 ;
 		$this->mobile_ime_mode = (isset($config["mobile_ime_mode"])) ? $config["mobile_ime_mode"] : 0 ;
+		$this->ban_mail_domain = (isset($config["ban_mail_domain"])) ? $config["ban_mail_domain"] : null;
 		$this->style = (isset($config["style"])) ? $config["style"] : null ;
 		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
@@ -125,6 +134,7 @@ class MailAddressColumn extends SOYInquiry_ColumnBase{
 		$config["maxLength"] = $this->maxLength;
 		$config["ime_mode"] = $this->ime_mode;
 		$config["mobile_ime_mode"] = $this->mobile_ime_mode;
+		$config["ban_mail_domain"] = $this->ban_mail_domain;
 		$config["style"] = $this->style;
 		$config["attribute"] = $this->attribute;
 		$config["requiredProp"] = $this->requiredProp;

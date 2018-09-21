@@ -49,7 +49,7 @@ if(defined("SOYINQUIRY_USE_SITE_DB") && SOYINQUIRY_USE_SITE_DB){
 //SOY Mail連携
 if(SOYCMS_DB_TYPE == "sqlite"){
 	//SOY Mailがサイト側にDBを持つか
-	
+
 	//SQLiteでサイト側にDBを持つ
 	if(defined("SOYMAIL_USE_SITE_DB") && SOYMAIL_USE_SITE_DB){
 		/* サイトのデータベースを使う */
@@ -58,37 +58,37 @@ if(SOYCMS_DB_TYPE == "sqlite"){
 		CMSApplication::import("util.UserInfoUtil");
 		//データはサイトのDBに保存。専用のsoymail.dbではない。
 		define("SOYMAIL_DSN","sqlite:" . UserInfoUtil::getSiteDirectory() . ".db/sqlite.db");
-		
+
 	}else{
 		//SQLite で、管理側にDBを持つ
 		if(file_exists(CMS_COMMON . "db/soymail.db")){
 			define("SOYMAIL_DSN","sqlite:" . CMS_COMMON . "db/soymail.db");
-		}	
+		}
 	}
-	
-	
+
+
 }else{
-	
+
 	if(defined("SOYMAIL_USE_SITE_DB") && SOYMAIL_USE_SITE_DB){
 		/* MySQLでサイトのデータベースを使う */
 		//管理画面のみ指定する必要がある（公開側ではすでにサイトのDSNに接続済み）
-	
+
 		CMSApplication::import("domain.admin.Site");
 		CMSApplication::import("util.UserInfoUtil");
-	
+
 		SOY2DAOConfig::Dsn(UserInfoUtil::getSite()->getDataSourceName());
 		if(SOYCMS_DB_TYPE == "mysql"){
 			SOY2DAOConfig::user(ADMIN_DB_USER);
 			SOY2DAOConfig::pass(ADMIN_DB_PASS);
 		}
-		
+
 		define("SOYMAIL_DSN",SOY2DAOConfig::Dsn(UserInfoUtil::getSite()->getDataSourceName()));
-		
-		
+
+
 	}else{
 		//MySQLで、管理側にDBを持つ//もともとの仕様
 		define("SOYMAIL_DSN", ADMIN_DB_DSN);
-	}	
+	}
 }
 
 
@@ -104,4 +104,3 @@ if(strlen($doc_root)>0 && $doc_root[strlen($doc_root)-1] == "/") $doc_root = sub
 define("SOY_INQUIRY_UPLOAD_ROOT_DIR", $doc_root);
 
 SOY2::import("util.SOYInquiryUtil");
-?>
