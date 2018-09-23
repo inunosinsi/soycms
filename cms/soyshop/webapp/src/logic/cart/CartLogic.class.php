@@ -425,7 +425,7 @@ class CartLogic extends SOY2LogicBase{
 
 			$total += $module->getPrice();
 		}
-		
+
 		return $total;
 	}
 
@@ -1315,6 +1315,24 @@ class CartLogic extends SOY2LogicBase{
 	 */
 	function clearNoticeMessage(){
 		$this->noticeMessage = array();
+	}
+
+	/** カートをIPアドレスで制限 **/
+	function banIPAddress($pluginId){
+		$cartDao = SOY2DAOFactory::create("cart.SOYShop_BanIpAddressDAO");
+		$banObj = new SOYShop_BanIpAddress();
+		$banObj->setIpAddress($_SERVER['REMOTE_ADDR']);
+		$banObj->setPluginId($pluginId);
+		try{
+			$cartDao->insert($banObj);
+			$this->sendNoticeCartErrorMail("IPアドレスのカートの使用制限をしました：" . $banObj->getIpAddress());
+		}catch(Exception $e){
+			self::log("禁止するIP Addressの登録に失敗しました。");
+		}
+	}
+
+	function checkBanIpAddress(){
+		return SOY2DAOFactory::create("cart.SOYShop_BanIpAddressDAO")->checkBanByIpAddressAndUpdate($_SERVER['REMOTE_ADDR']);
 	}
 
 	public function log($text){

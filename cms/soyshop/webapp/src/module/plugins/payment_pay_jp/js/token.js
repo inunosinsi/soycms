@@ -1,3 +1,6 @@
+const limitCnt = 10;	//上限
+var tryCnt = 0;			//挑戦回数
+
 function operateBefore(){
 	var cardForms = [];
 	var cardNum = "";
@@ -22,6 +25,20 @@ function operateBefore(){
 
 	Payjp.createToken(card, function(s, response) {
 		if (response.error) {
+			//一時的なロックをかけたい
+			if(++tryCnt >= limitCnt){
+				var url = document.querySelector("#charge_form").action;
+				var xhr = new XMLHttpRequest();
+				xhr.open("GET", url + "?soyshop_ban=payment_pay_jp");
+				xhr.send();
+				xhr.addEventListener("load", function(){
+					//リダイレクト
+					if(xhr.status == 200){
+						//3秒後にリダイレクト
+						setTimeout(function(){location.href = location.href}, 3000);
+					}
+				});
+			}
 			var errMsg = (errMsgList[response.error.code]) ? errMsgList[response.error.code] : response.error.message;
 			var errMsgArea = document.getElementById("error_message_area");
 			errMsgArea.innerHTML = "失敗しました：" + errMsg;

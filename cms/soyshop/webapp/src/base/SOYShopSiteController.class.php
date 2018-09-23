@@ -302,6 +302,12 @@ class SOYShopSiteController extends SOY2PageController{
                 exit;
             }
 
+			//block event
+			if(isset($_GET["soyshop_ban"])){
+				self::executeBanAction($_GET["soyshop_ban"]);
+                exit;
+			}
+
             self::executeCartApplication($args);
             return true;
         }
@@ -376,6 +382,15 @@ class SOYShopSiteController extends SOY2PageController{
             //
         }
     }
+
+	/**
+	 * カートの禁止イベント
+	 * @param string $pluginId $_GET["soyshop_ban"]
+	 */
+	private function executeBanAction($pluginId){
+		SOY2Logic::createInstance("logic.cart.CartLogic")->banIPAddress($pluginId);
+		return "OK";
+	}
 
     /**
      * マイページ実行

@@ -60,7 +60,8 @@ $cart->setAttribute("last_access", SOY2_NOW);
 
 /* 表示 */
 try{
-	$page = SOY2HTMLFactory::createInstance($pageId . "Page");
+	$pageName = ($cart->checkBanIpAddress()) ? "Ban" : $pageId;
+	$page = SOY2HTMLFactory::createInstance($pageName . "Page");
 	$page->buildModules();
 	$page->display();
 }catch(Exception $e){
