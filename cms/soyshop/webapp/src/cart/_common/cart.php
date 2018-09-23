@@ -8,4 +8,3 @@
 $cart = CartLogic::getCart();
 $cart->setAttribute("page", null);
 $cart->save();
-?>

@@ -51,18 +51,18 @@ class MainCartPageBase extends WebPage{
 
 		return SOYSHOP_DEFAULT_CART_TEMPLATE_DIR . get_class($this) . ".html";
     }
-    
+
     /* convert */
-    
+
 	function _trim($str){
 		return trim($str);
 	}
-	
+
 	function convertKana($str){
 		$str = trim($str);
 		return mb_convert_kana($str, "CK", "UTF-8");
 	}
-	
+
 	function buildModules(){
 		$plugin = new SOYShopPageModulePlugin();
 
@@ -87,4 +87,3 @@ class MainCartPageBase extends WebPage{
 		}
 	}
 }
-?>
