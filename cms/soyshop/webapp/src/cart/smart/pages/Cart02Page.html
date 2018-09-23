@@ -24,7 +24,7 @@
 				<dt>お名前<span soy:id="name_required">（必須）</span></dt>
 				<dd>
 					<p class="error" soy:id="name_error">お名前が正しく入力されていません。</p>
-					<input name="" value="" type="text" id="" class="w300" soy:id="name">
+					<input name="" value="" type="text" class="w300" soy:id="name">
 					<span class="note">【全角】</span>
 				</dd>
 				<!-- /soy:id="name_show" -->
@@ -33,7 +33,7 @@
 				<dt>お名前カナ<span soy:id="reading_required">（必須）</span></dt>
 				<dd>
 					<p class="error" soy:id="reading_error">お名前カナが正しく入力されていません。</p>
-					<input name="" value="" type="text" id="" class="w300" soy:id="reading">
+					<input name="" value="" type="text" class="w300" soy:id="reading">
 					<span class="note">【全角カナ】</span>
 				</dd>
 				<!-- /soy:id="reading_show" -->
@@ -42,7 +42,7 @@
 				<dt>法人名（勤務先など）<span soy:id="jobName_required">（必須）</span></dt>
 				<dd>
 					<p class="error" soy:id="job_name_error">職種が正しく入力されていません。</p>
-					<input name="" value="" type="text" id="" class="w300" soy:id="job_name">
+					<input name="" value="" type="text" class="w300" soy:id="job_name">
 				</dd>
 				<!-- /soy:id="jobName_show" -->
 				
@@ -50,7 +50,7 @@
 				<dt id="zipcode1">郵便番号<span soy:id="zipCode_required">（必須）</span></dt>
 				<dd>
 					<p class="error" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
-					<input name="" type="text" id="" class="input-zip w300" soy:id="zip_code">
+					<input name="" type="text" class="input-zip w300" soy:id="zip_code">
 					<span class="note">【半角数字】</span>
 					<span class="search-btn btn" style="cursor: pointer;"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
 				</dd>
@@ -60,18 +60,18 @@
 				<dt>ご住所<span soy:id="address_required">（必須）</span></dt>
 				<dd>
 					<p class="error" soy:id="address_error">ご住所が正しく入力されていません。</p>
-					<select name="" id="" class="input-pref" soy:id="area">
+					<select name="" class="input-pref" soy:id="area">
 						<option value="">都道府県名</option>
 					</select>
 					<dl>
 						<dt>市区郡</dt>
 						<dd>
-							<input name="Customer[address1]" value="" type="text" id="" class="input-city w130" soy:id="address1"><br>
+							<input name="Customer[address1]" value="" type="text" class="input-city w130" soy:id="address1"><br>
 							<span class="exmpl">（例）京都市左京区</span>
 						</dd>
 						<dt>町番地</dt>
 						<dd>
-							<input name="Customer[address2]" value="" type="text" id="" class="input-town w130" soy:id="address2"><br>
+							<input name="Customer[address2]" value="" type="text" class="input-town w130" soy:id="address2"><br>
 							<span class="exmpl">（例）高野東開町8-5 SOYビル1F</span>
 						</dd>
 					</dl>
@@ -82,7 +82,7 @@
 				<dt>電話番号<span soy:id="telephoneNumber_required">（必須）</span></dt>
 				<dd>
 					<p class="error" soy:id="tel_number_error">お電話番号が正しく入力されていません。</p>
-					<input name="Customer[telephoneNumber]" value="" type="tel" id="" class="w300" soy:id="telephone_number">
+					<input name="Customer[telephoneNumber]" value="" type="tel" class="w300" soy:id="telephone_number">
 					<span class="note">【半角数字】</span><br>
 					<span class="exmpl">（例）075-204-4823</span>
 				</dd>
@@ -92,7 +92,7 @@
 				<dt>メールアドレス<span soy:id="mailAddress_required">（必須）</span></dt>
 				<dd>
 					<p class="error" soy:id="mail_address_error">メールアドレスが正しく入力されていません。</p>
-					<input name="" value="" type="email" id="" class="w300" soy:id="mail_address">
+					<input name="" value="" type="email" class="w300" soy:id="mail_address">
 					<span class="note">【半角英数】</span><br>
 					<span class="exmpl">（例）info@n-i-agroinformatics.com</span>
 				</dd>
@@ -102,7 +102,7 @@
 				<dt>パスワード</dt>
 				<dd>
 					<p class="error" soy:id="password_invalid">パスワードが違います</p>
-					<input name="" value="" type="password" id="" class="w300" autocomplete="off" soy:id="password">
+					<input name="" value="" type="password" class="w300" autocomplete="off" soy:id="password">
 					<span class="note">【半角英数・8文字以上】</span><br>
 					パスワードを入力することで、次回からの入力が簡単になります。
 				</dd>
@@ -123,9 +123,9 @@
 				<dt id="birthday">生年月日<span soy:id="birthday_required">(必須)</span></dt>
 				<dd>
 					<p class="error" soy:id="birthday_error">誕生日が正しく入力されていません。</p>
-					西暦<input name="" value="" type="text" id="" class="w50" soy:id="birth_year">年
-					<input name="" value="" type="text" id="" class="w50" soy:id="birth_month">月
-					<input name="" value="" type="text" id="" class="w50" soy:id="birth_day">日
+					西暦<input name="" value="" type="text" class="w50" soy:id="birth_year">年
+					<input name="" value="" type="text" class="w50" soy:id="birth_month">月
+					<input name="" value="" type="text" class="w50" soy:id="birth_day">日
 				</dd>
 				<!-- /soy:id="birthday_show" -->
 				
@@ -133,7 +133,7 @@
 				<dt>FAX番号<span soy:id="faxNumber_required">(必須)</span></dt>
 				<dd>
 					<p class="error" soy:id="fax_number_error">FAX番号が正しく入力されていません。</p>
-					<input name="" value="" type="tel" id="" class="w130" soy:id="fax_number">
+					<input name="" value="" type="tel" class="w130" soy:id="fax_number">
 					<span class="note">【半角数字】</span><br>
 					<span class="exmpl">（例）075-204-4823</span>
 				</dd>
@@ -143,7 +143,7 @@
 				<dt>携帯番号<span soy:id="cellphoneNumber_required">(必須)</span></dt>
 				<dd>
 					<p class="error" soy:id="cellphone_number_error">携帯番号が正しく入力されていません。</p>
-					<input name="" value="" type="tel" id="" class="w130" soy:id="cellphone_number">
+					<input name="" value="" type="tel" class="w130" soy:id="cellphone_number">
 					<span class="note">【半角数字】</span><br>
 					<span class="exmpl">（例）080-1234-5678</span>
 				</dd>
@@ -166,7 +166,7 @@
 				<dt>備考<span soy:id="memo_required">（必須)</span></dt>
 				<dd>
 					<p class="error" soy:id="memo_error">備考が入力されていません。</p>
-					<textarea name="" rows="6" class="w450" id="" soy:id="order_memo"></textarea><br>
+					<textarea name="" rows="6" class="w450" soy:id="order_memo"></textarea><br>
 					何かありましたらご自由にお書きください。
 				</dd>
 				<!-- /soy:id="memo_show" -->
@@ -193,46 +193,46 @@
 			<dl>
 				<dt>お名前<span class="require">（必須）</span></dt>
 				<dd>
-					<input name="" type="text" id="" class="w130" soy:id="send_name">
+					<input name="" type="text" class="w130" soy:id="send_name">
 					<span class="note">【全角】</span>
 				</dd>
 		
 				<dt>お名前カナ<span class="require">（必須）</span></dt>
 				<dd>
-					<input name="" type="text" id="" class="w130" soy:id="send_furigana">
+					<input name="" type="text" class="w130" soy:id="send_furigana">
 					<span class="note">【全角カナ】</span>
 				</dd>
 				<dt>法人名（勤務先など）</dt>
-				<dd><input name="" type="text" id="" class="w300" soy:id="send_office"></dd>
+				<dd><input name="" type="text" class="w300" soy:id="send_office"></dd>
 
 				<dt>郵便番号<span class="require">（必須）</span></dt>
 				<dd>
-					<input name="" type="text" id="" class="input-send-zip w80" soy:id="send_post_number">
+					<input name="" type="text" class="input-send-zip w80" soy:id="send_post_number">
 					<span class="note">【半角数字】</span>
 					<span class="send-search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
 				</dd>
 				<dt>ご住所<span class="require">（必須）</span></dt>
 				<dd>
-					<select name="" id="" class="input-send-pref" soy:id="send_area">
+					<select name="" class="input-send-pref" soy:id="send_area">
 						<option value="">都道府県名</option>
 					</select>
 					<dl>
 						<dt>市区郡：</dt>
 						<dd>
-							<input name="" type="text" id="" class="input-send-city w130" soy:id="send_address1">
+							<input name="" type="text" class="input-send-city w130" soy:id="send_address1">
 							<span class="exmpl">（例）京都市左京区</span>
 						</dd>
 						
 						<dt>町番地：</dt>
 						<dd>
-							<input name="" type="text" id="" class="input-send-town w300" soy:id="send_address2">
+							<input name="" type="text" class="input-send-town w300" soy:id="send_address2">
 							<span class="exmpl">（例）左京区高野東開町8-5 SOYビル1F</span>
 						</dd>
 					</dl>
 				</dd>
 				<dt>お電話番号<span class="require">（必須）</span></dt>
 				<dd>
-					<input name="" type="text" id="" class="w130" soy:id="send_tel_number">
+					<input name="" type="text" class="w130" soy:id="send_tel_number">
 					<span class="note">【半角数字】</span><span class="exmpl">（例）075-204-4823</span>
 				</dd>
 			</dl>

@@ -1,7 +1,7 @@
 <section id="cart_detail">
 	<!-- soy:display="is_empty" -->
 	<h1 class="cart_txt">カートに入っている商品</h1>
-	
+
 	<p>カートに商品がありません。</p>
 	<p class="alC"><a soy:id="return_link"><img soy:src="themes/common/images/cart/btn_continue_shop_off.png" alt="戻る（買いものを続ける）" /></a></p>
 
@@ -11,33 +11,33 @@
 
 	<form soy:id="order_form">
 	<h1 class="cart_txt">カートに入っている商品</h1>
-		
+
 	<!-- soy:display="has_stock_error" -->
 	<div class="error narrow">
 		<p soy:id="stock_error">正しく入力されていない項目があります。</p>
 	</div>
 	<!-- /soy:display="has_stock_error" -->
-	
+
 	<!-- soy:display="has_accept_error" -->
 	<div class="error narrow">
 		<p soy:id="accept_error">正しく入力されていない項目があります。</p>
 	</div>
 	<!-- /soy:display="has_accept_error" -->
-	
+
 	<!-- soy:display="has_plugin_error" -->
 	<div class="error narrow">
 		<p soy:id="plugin_error">正しく入力されていない項目があります。</p>
 	</div>
 	<!-- /soy:display="has_plugin_error" -->
-	
+
 	<!-- soy:display="has_plugin_notice" -->
 	<div class="notice narrow">
 		<p soy:id="plugin_notice">送料無料まで残りいくら？</p>
 	</div>
 	<!-- /soy:display="has_plugin_notice" -->
-	
+
 	<p>現在カートに入っている商品一覧です。</p>
-	
+
 	<table cellpadding="0" cellspacing="0" class="cart_detail_table">
 		<thead>
 			<tr>
@@ -49,14 +49,14 @@
 				<th scope="col">削除</th>
 			</tr>
 		</thead>
-					
+
 		<tfoot>
 			<tr>
 				<th colspan="3">合計</th>
 				<td colspan="3" class="price subsum"><span soy:id="total_price">4,200</span>円</td>
 			</tr>
 		</tfoot>
-				
+
 		<tbody>
 			<!-- soy:id="item_list" -->
 			<tr>
@@ -70,7 +70,7 @@
 				<td class="alC">
 					<p class="error" soy:id="item_stock_error"></p>
 					<p class="error" soy:id="item_order_error"></p>
-					<input name="" type="text" class="alR" id="" size="2" soy:id="order_number">
+					<input name="" type="text" class="alR" size="2" soy:id="order_number">
 				</td>
 				<td class="price subsum"><span soy:id="item_total">2,100</span>円</td>
 				<td nowrap class="alC"><a soy:id="item_delete">削除</a></td>
@@ -93,8 +93,8 @@
 	<!-- soy:id="content" /-->
 	<!-- /soy:id="bonus_plugin_list" -->
 	<!-- /soy:id="has_bonus_plugin" -->
-	
-	
+
+
 	<p class="resum">数量を変更された場合はボタンを押して合計金額の再計算をしてください。<input type="image" name="modify" soy:src="themes/common/images/cart/btn_resum_off.png" width="164" height="30" alt="合計料金の再計算"></p>
 	<p class="another_btn"><img soy:src="themes/common/images/cart/btn_continue_shop_off.png" width="152" height="37" onclick="history.back()" alt="お買い物を続ける"></p>
 </section>
@@ -106,16 +106,16 @@
 	<!-- /soy:id="is_loggedin" -->
 	<!-- soy:id="not_loggedin" -->
 	<h1 class="cart_txt">ご購入手続き</h1>
-		<p>画面に沿って必要事項を入力してください。</p>	
+		<p>画面に沿って必要事項を入力してください。</p>
 		<div class="clearfix">
 			<section class="cart_procedure_first_right">
 				<h1>はじめてお買い物をされるお客様</h1>
 				<p>当店ではじめてお買い物をされるお客様は、次へ進みお客様情報の入力をしてください。</p>
 				<p>お客様情報は、配達時の大切な情報となりますので、必ずご入力ください。</p>
 				<p class="btn"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_input_off.png" width="204" height="40" alt="次へ（お客様情報の入力）"></p>
-			</section>	 
+			</section>
 	</form>
-		
+
 			<section class="cart_procedure_login_right">
 				<form soy:id="login_form">
 					<h1>以前お買い物をされたことのあるお客様</h1>
@@ -123,11 +123,11 @@
 					<table class="soycart_form shop_login">
 						<tr>
 							<th scope="row">メールアドレス</th>
-							<td><input name="" type="email" id="" class="w200" soy:id="login_user_mail_address"><br><span class="exmpl">（例）info＠int_lbd.com</span></td>
+							<td><input name="" type="email" class="w200" soy:id="login_user_mail_address"><br><span class="exmpl">（例）info＠int_lbd.com</span></td>
 						</tr>
 						<tr>
 							<th scope="row">パスワード</th>
-							<td><input name="User[password]" type="password" id="" class="w130"></td>
+							<td><input name="User[password]" type="password" class="w130"></td>
 						</tr>
 					</table>
 					<!-- soy:display="has_login_error" -->
@@ -140,7 +140,7 @@
 				</form soy:id="login_form">
 			</section>
 		</div>
-				
+
 		<p class="another_btn"><img soy:src="themes/common/images/cart/btn_continue_shop_off.png" width="152" height="37" alt="お買い物を続ける" onclick="history.back()"></p>
 	<!-- /soy:id="not_loggedin" -->
 <!-- /soy:display="go_next" -->
