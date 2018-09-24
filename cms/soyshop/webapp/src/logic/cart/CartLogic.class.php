@@ -1319,6 +1319,8 @@ class CartLogic extends SOY2LogicBase{
 
 	/** カートをIPアドレスで制限 **/
 	function banIPAddress($pluginId){
+		$this->setAttribute("payment_option_page_display_count", null);
+
 		$cartDao = SOY2DAOFactory::create("cart.SOYShop_BanIpAddressDAO");
 		$banObj = new SOYShop_BanIpAddress();
 		$banObj->setIpAddress($_SERVER['REMOTE_ADDR']);
@@ -1333,6 +1335,23 @@ class CartLogic extends SOY2LogicBase{
 
 	function checkBanIpAddress(){
 		return SOY2DAOFactory::create("cart.SOYShop_BanIpAddressDAO")->checkBanByIpAddressAndUpdate($_SERVER['REMOTE_ADDR']);
+	}
+
+	function getPaymentOptionPageDisplayCount(){
+		$v = $this->getAttribute("payment_option_page_display_count");
+		if(is_null($v)) $v = array(0, time());	//第一引数に回数、第二引数に最後に開いた時刻を記録
+
+		// 一時間以内に開いたのであれば回数を増やす。@ToDo 管理画面で設定できるようにしたい
+		if((int)$v[1] - 1 * 60 * 60 >= time()){
+			$v = array(1, time());	//リセット
+		}else{
+			$v = array($v[0] + 1, time());
+		}
+
+		//記録
+		$this->setAttribute("payment_option_page_display_count", $v);
+
+		return (int)$v[0];
 	}
 
 	public function log($text){

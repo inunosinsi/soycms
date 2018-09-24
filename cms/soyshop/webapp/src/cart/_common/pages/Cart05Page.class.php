@@ -30,6 +30,16 @@ class Cart05Page extends MainCartPageBase{
 		$cart = CartLogic::getCart();
 		$paymentModule = $cart->getAttribute("payment_module");
 
+		//Cart05Pageを開いた回数を調べる。
+		$cnt = $cart->getPaymentOptionPageDisplayCount();
+
+		//指定の回数以上表示したら閲覧を禁止する @ToDo 管理画面で設定できるようにしたい
+		if($cnt >= 20){
+			$cart->banIPAddress($paymentModule);
+			soyshop_redirect_cart();
+			exit;
+		}
+
 		$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 		$paymentModule = $moduleDAO->getByPluginId($paymentModule);
 
