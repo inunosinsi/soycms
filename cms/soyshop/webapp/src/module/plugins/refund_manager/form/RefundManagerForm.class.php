@@ -48,6 +48,13 @@ class RefundManagerForm extends WebPage{
 			"id" => "refund_manager_increase"
 		));
 
+		//銀行名
+		$this->addInput("bank_name", array(
+			"name" => self::NAMEPROP . "[bank_name]",
+			"value" => (isset($values["bank_name"])) ? $values["bank_name"] : ""
+		));
+
+		//銀行口座　廃止
 		$this->addInput("account", array(
 			"name" => self::NAMEPROP . "[account]",
 			"value" => (isset($values["account"])) ? $values["account"] : ""
@@ -58,6 +65,13 @@ class RefundManagerForm extends WebPage{
 			"value" => (isset($values["branch"])) ? $values["branch"] : ""
 		));
 
+		//口座番号
+		$this->addInput("account_number", array(
+			"name" => self::NAMEPROP . "[account_number]",
+			"value" => (isset($values["account_number"])) ? $values["account_number"] : ""
+		));
+
+		//口座種別　廃止
 		$this->addInput("account_type", array(
 			"name" => self::NAMEPROP . "[account_type]",
 			"value" => (isset($values["account_type"])) ? $values["account_type"] : ""
