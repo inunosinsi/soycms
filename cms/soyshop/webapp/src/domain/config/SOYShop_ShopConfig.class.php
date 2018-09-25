@@ -35,6 +35,8 @@ class SOYShop_ShopConfig {
 	private $isShowOnlyAdministrator;
 	private $multiCategory;
 	private $cartPageTimeLimit = 30;//デフォルトは30分
+	private $cartTryCountAndBanByIpAddress = 10;	//カートの使用禁止までのトライ回数	デフォルトは10回
+	private $cartBanPeriod = 3;			//使用禁止にしたカートを再び使用できるようになるまでの期間　デフォルトは3時間
 	private $displayPageAfterLogout = 0;
 	private $displaySendInformationForm = 1;
 	private $allowMailAddressLogin = 1;
@@ -525,6 +527,20 @@ class SOYShop_ShopConfig {
 	}
 	function setCartPageTimeLimit($cartPageTimeLimit){
 		$this->cartPageTimeLimit = $cartPageTimeLimit;
+	}
+
+	function getCartTryCountAndBanByIpAddress(){
+		return $this->cartTryCountAndBanByIpAddress;
+	}
+	function setCartTryCountAndBanByIpAddress($cartTryCountAndBanByIpAddress){
+		$this->cartTryCountAndBanByIpAddress = $cartTryCountAndBanByIpAddress;
+	}
+
+	function getCartBanPeriod(){
+		return $this->cartBanPeriod;
+	}
+	function setCartBanPeriod($cartBanPeriod){
+		$this->cartBanPeriod = $cartBanPeriod;
 	}
 
 	function getDisplayPageAfterLogout(){

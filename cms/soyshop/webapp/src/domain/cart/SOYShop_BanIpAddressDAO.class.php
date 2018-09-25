@@ -28,8 +28,9 @@ abstract class SOYShop_BanIpAddressDAO extends SOY2DAO{
 
 		if(!isset($res[0]["log_date"])) return false;
 
-		//決め打ちで3時間 @ToDo 管理画面で設定できるようにしたい
-		if($res[0]["log_date"] + 3 * 60 * 60 < time()){
+		//使用禁止したカートを再び使用可にする時間
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		if($res[0]["log_date"] + SOYShop_ShopConfig::load()->getCartBanPeriod() * 60 * 60 < time()){
 			try{
 				$this->executeUpdateQuery("DELETE FROM soyshop_ban_ip_address WHERE ip_address = :attr", array(":attr" => $ipAddress));
 				return false;

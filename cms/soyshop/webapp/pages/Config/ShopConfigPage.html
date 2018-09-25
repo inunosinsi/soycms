@@ -159,8 +159,17 @@
 			<tr>
 				<th>購入手続きの進み具合の保持期限</th>
 				<td>
-					<input type="text" soy:id="cartPageTimeLimit" size="4" style="text-align:right;ime-mode:inactive;"/>分<br>
+					<input type="number" soy:id="cartPageTimeLimit" style="text-align:right;width:80px;">&nbsp;分<br>
 					※購入手続きの画面へのアクセスが指定の時間途絶えると進み具合がリセットされます。0を入力するとリセットされません。
+				</td>
+			</tr>
+			<tr>
+				<th>クレジットカード支払い</th>
+				<td>
+					カート情報の入力トライ回数(1時間以内)：<br>
+					<input type="number" soy:id="cartTryCountAndBanByIpAddress" style="text-align:right;width:60px;">&nbsp;回を超えるとアクセス時のIPアドレスでカートの使用を禁止する。<br>
+					使用禁止したカートを再び使用できるようになるまでの期間：
+					<input type="number" soy:id="cartBanPeriod" style="text-align:right;width:60px;">&nbsp;時間後
 				</td>
 			</tr>
 			<tr>

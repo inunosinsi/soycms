@@ -267,6 +267,16 @@ class ShopConfigPage extends WebPage{
 			"value" => $config->getCartPageTimeLimit()
 		));
 
+		$this->addInput("cartTryCountAndBanByIpAddress", array(
+			"name" => "Config[cartTryCountAndBanByIpAddress]",
+			"value" => $config->getCartTryCountAndBanByIpAddress()
+		));
+
+		$this->addInput("cartBanPeriod", array(
+			"name" => "Config[cartBanPeriod]",
+			"value" => $config->getCartBanPeriod()
+		));
+
 		//ログアウト後に表示するページ
 		$this->addCheckBox("displayPageAfterLogout", array(
 			"name" => "Config[displayPageAfterLogout]",
