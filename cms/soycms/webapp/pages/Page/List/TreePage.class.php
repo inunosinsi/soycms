@@ -194,7 +194,7 @@ class TreePage extends CMSWebPageBase{
 	 * ページ名（タイトル）
 	 */
 	private function buildPageTitle($page){
-		return '<a class="soycms-page-title" href="'.htmlspecialchars(SOY2PageController::createLink("Page.Detail") ."/".$page->getId(), ENT_QUOTES, SOY2HTML::ENCODING).'" title="'.htmlspecialchars($page->getTitle(), ENT_QUOTES, SOY2HTML::ENCODING).'">'.htmlspecialchars($this->trimPageTitle($page->getTitle()), ENT_QUOTES, SOY2HTML::ENCODING).'</a>';
+		return '<a class="soycms-page-title" href="'.htmlspecialchars(SOY2PageController::createLink("Page.Detail") ."/".$page->getId(), ENT_QUOTES, SOY2HTML::ENCODING).'" title="'.htmlspecialchars($page->getTitle(), ENT_QUOTES, SOY2HTML::ENCODING).'">'.htmlspecialchars(self::trimPageTitle($page->getTitle()), ENT_QUOTES, SOY2HTML::ENCODING).'</a>';
 	}
 
 	/**
@@ -230,10 +230,8 @@ class TreePage extends CMSWebPageBase{
 		return implode("&nbsp;&nbsp;", $function);
 	}
 
-	function trimPageTitle($title){
-		$str = mb_strimwidth($title,0,100,"...");
-
-		return $str;
+	private function trimPageTitle($title){
+		return mb_strimwidth($title, 0, 100, "...", "UTF-8");
 	}
 }
 
