@@ -65,6 +65,12 @@ class RefundManagerForm extends WebPage{
 			"value" => (isset($values["branch"])) ? $values["branch"] : ""
 		));
 
+		$this->addSelect("account_type", array(
+			"name" => self::NAMEPROP . "[account_type]",
+			"options" => RefundManagerUtil::getAccountTypeList(),
+			"selected" => (isset($values["account_type"])) ? $values["account_type"] : null
+		));
+
 		//口座番号
 		$this->addInput("account_number", array(
 			"name" => self::NAMEPROP . "[account_number]",
@@ -72,14 +78,19 @@ class RefundManagerForm extends WebPage{
 		));
 
 		//口座種別　廃止
-		$this->addInput("account_type", array(
-			"name" => self::NAMEPROP . "[account_type]",
-			"value" => (isset($values["account_type"])) ? $values["account_type"] : ""
-		));
+		// $this->addInput("account_type", array(
+		// 	"name" => self::NAMEPROP . "[account_type]",
+		// 	"value" => (isset($values["account_type"])) ? $values["account_type"] : ""
+		// ));
 
 		$this->addInput("name", array(
 			"name" => self::NAMEPROP . "[name]",
 			"value" => (isset($values["name"])) ? $values["name"] : ""
+		));
+
+		$this->addTextArea("comment", array(
+			"name" => self::NAMEPROP . "[comment]",
+			"value" => (isset($values["comment"])) ? $values["comment"] : ""
 		));
 	}
 

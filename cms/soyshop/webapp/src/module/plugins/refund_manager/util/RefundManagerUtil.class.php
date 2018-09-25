@@ -6,6 +6,9 @@ class RefundManagerUtil {
 	const TYPE_CANCEL = "cancel";
 	const TYPE_CHANGE = "change";
 
+	const ACCOUNT_TYPE_NORMAL = 1;
+	const ACCOUNT_TYPE_CURRENT = 2;
+
 	public static function save($params, $isProcessed, $orderId){
 
 		//値の確認 種別がある場合は保存
@@ -42,6 +45,22 @@ class RefundManagerUtil {
 			case self::TYPE_CHANGE:
 				return "変更";
 		}
+	}
+
+	public static function getAccountTypeList(){
+		return self::_getAccountTypeList();
+	}
+
+	public static function getAccountTypeText($type){
+		$types = self::_getAccountTypeList();
+		return (isset($types[$type])) ? $types[$type] : "普通";
+	}
+
+	private static function _getAccountTypeList(){
+		return array(
+			self::ACCOUNT_TYPE_NORMAL => "普通",
+			self::ACCOUNT_TYPE_CURRENT => "当座"
+		);
 	}
 
 	private static function _get($orderId){

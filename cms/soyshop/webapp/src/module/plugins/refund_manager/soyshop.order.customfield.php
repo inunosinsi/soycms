@@ -19,12 +19,14 @@ class RefundManagerOrderCustomfield extends SOYShopOrderCustomfield{
 			$html[] = "種別　　　" . RefundManagerUtil::getTypeTextByOrderId($orderId);
 			if(isset($values["refund"]) && (int)$values["refund"] > 0) $html[] = "返金額　　" . $values["refund"] . "円";
 			if(isset($values["increase"]) && (int)$values["increase"] > 0) $html[] = "増額　　　" . $values["increase"] . "円";
-			if(isset($values["bank_name"]) && strlen($values["bank_name"])) $html[] = "銀行名　" . $values["bank_name"];
+			if(isset($values["bank_name"]) && strlen($values["bank_name"])) $html[] = "銀行名　　" . $values["bank_name"];
 			//if(isset($values["account"]) && strlen($values["account"])) $html[] = "銀行口座　" . $values["account"];
 			if(isset($values["branch"]) && strlen($values["branch"])) $html[] = "支店名　　" . $values["branch"];
+			if(isset($values["account_type"]) && strlen($values["account_type"])) $html[] = "口座種別　" . RefundManagerUtil::getAccountTypeText($values["account_type"]);
 			if(isset($values["account_number"]) && strlen($values["account_number"])) $html[] = "口座番号　" . $values["account_number"];
 			//if(isset($values["account_type"]) && strlen($values["account_type"])) $html[] = "口座種別　" . $values["account_type"];
 			if(isset($values["name"]) && strlen($values["name"]))$html[] = "名義人　　" . $values["name"];
+			if(isset($values["comment"]) && strlen($values["comment"])) $html[] = "コメント\n" . $values["comment"];
 			return array(
 				array(
 					"name" => "返金関連",
