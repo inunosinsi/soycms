@@ -13,7 +13,7 @@ class TableOfContentsPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.3"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -140,14 +140,14 @@ class TableOfContentsPlugin{
 	 */
 	private function createTitleTree($content, $h = 1){
 		preg_match_all('/<h' . $h . '.*?>.*?<\/h' . $h . '.*?>/', $content, $res);
+		$array = array();
 		if(isset($res[0]) && count($res[0])){
-			$array = array();
 			foreach($res[0] as $r){
 				$values = array();
 
 				//下記の正規表現は絶対に成功する
 				preg_match('/<h' . $h . '.*?>(.*?)<\/h' . $h . '.*?>/', $r, $rr);
-				$values["title"] = trim($rr[1]);
+				$values["title"] = trim($rr[1]);	//この処理は必要ないかも
 
 				$conts = array();	//本文をばらしていく
 				$content .= "<h" . $h . ">***</h" . $h . ">";
@@ -163,17 +163,25 @@ class TableOfContentsPlugin{
 					foreach($conts as $cont){
 						preg_match('/<h' . $h . '.*?>(.*?)<\/h' . $h . '.*?>/', $cont, $tmp);
 						if(preg_match('/<h[0-9].*?>\*\*\*<\/h[0-9]/', $cont, $temp)) continue;
+						$values = array();
+
+						//titleの上書き
 						$values["title"] = trim($tmp[1]);
-						$cont = trim(str_replace($tmp[0], "", $cont));
-						$t = self::createTitleTree($cont, $h + 1);
-						if(isset($t)) $values["children"] = $t;
+
+						$tag = trim($tmp[0]);
+
+						$cont = trim(str_replace($tag, "", $cont));
+						preg_match('/h[0-9]/', $cont, $a);
+						if(count($a)){
+							$t = self::createTitleTree($cont, $h + 1);
+							if(isset($t) && is_array($t) && count($t)) $values["children"] = $t;
+						}
 						$array[] = $values;
 					}
 				}
 			}
-
-			return $array;
 		}
+		return $array;
 	}
 
 	/**
