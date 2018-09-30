@@ -1,5 +1,13 @@
 <div style="padding:4px 20px;">
 
+	<p class="success" soy:display="do_db_update">
+		データベースの変更を行いました。
+	</p>
+
+	<p class="success" soy:display="has_db_update">
+		データベースの変更があります&nbsp;→&nbsp;<a soy:link="inquiry.Update">データベースのバージョンアップを行う</a>
+	</p>
+
 <h1>フォーム</h1>
 
 	<div class="table_container">
@@ -8,7 +16,7 @@
 				<tr>
 					<th class="short">ID</th>
 					<th class="middle">名前</th>
-					<th class="short">件数 (未読)</th>	
+					<th class="short">件数 (未読)</th>
 					<th class="long"></th>
 				</tr>
 			</thead>
@@ -17,7 +25,7 @@
 				<tr>
 					<td soy:id="formId">FORM_A</td>
 					<td soy:id="name">フォームA</td>
-					<td><a soy:id="inquiry_link">10</a> <a soy:id="unread_inquiry_link">(10)</a></td>	
+					<td><a soy:id="inquiry_link">10</a> <a soy:id="unread_inquiry_link">(10)</a></td>
 					<td>
 						<a soy:id="design_link">問い合わせ項目</a>&nbsp;&nbsp;<a soy:id="config_link">設定</a>
 					</td>
@@ -41,7 +49,7 @@
 				<tr>
 					<th class="short" soy:id="form_name_th">フォーム</th>
 					<th class="short">受付番号</th>
-					<th class="long">内容</th>	
+					<th class="long">内容</th>
 					<th class="short">投稿日</th>
 				</tr>
 			</thead>
@@ -54,7 +62,7 @@
 					<td class="short"><span soy:id="create_date"></span></td>
 				</tr>
 				<!-- /soy:id="inquiry_list" -->
-	
+
 				<!-- soy:id="no_inquiry" -->
 				<tr>
 				<td colspan="4" soy:id="no_inquiry_text">
@@ -62,14 +70,14 @@
 				</td>
 				</tr>
 				<!-- /soy:id="no_inquiry" -->
-				
+
 			</tbody>
 		</table>
 	</div>
 
-<!-- 
+<!--
 	<hr />
-	
+
 	<div style="margin-bottom:10px;">
 		<a soy:link="inquiry.Template">テンプレートの編集</a>
 	</div>

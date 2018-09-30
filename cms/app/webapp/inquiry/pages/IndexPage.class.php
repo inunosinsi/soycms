@@ -16,12 +16,21 @@ class IndexPage extends WebPage{
     		}catch(Exception $e){
     			//tracking number が間違ってる
     		}
-    		
+
 		}
 
 	}
     function __construct() {
     	parent::__construct();
+
+		//データベースの更新を調べる
+		$checkVersionLogic = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic");
+		$hasCheckVer = $checkVersionLogic->checkVersion();
+		DisplayPlugin::toggle("has_db_update", $hasCheckVer);
+
+		//データベースの更新終了時に表示する
+		$doUpdated = (isset($_GET["update"]) && $_GET["update"] == "finish");
+		DisplayPlugin::toggle("do_db_update", $doUpdated);
 
     	try{
 	    	$formDAO = SOY2DAOFactory::create("SOYInquiry_FormDAO");
@@ -31,23 +40,23 @@ class IndexPage extends WebPage{
     	}
 
 		$this->buildFormList();
-		
+
 		$this->buildInquiryList();
-		    	
+
     }
-    
+
     function buildFormList(){
-    	
+
     	$this->createAdd("form_list","FormList",array(
-    		"list" => $this->forms    	
-    	));	
+    		"list" => $this->forms
+    	));
     }
-    
+
     function buildInquiryList(){
     	$dao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
     	$dao->setLimit(30);
     	$inquiries = $dao->search(null, null, null,null, 0);	//未読のみ
-    	
+
     	$this->createAdd("form_name_th","HTMLModel",array(
     		"visible" => count($this->forms) >= 2,
     	));
@@ -62,38 +71,38 @@ class IndexPage extends WebPage{
     		"onfocus" => "if(this.value == '受付番号'){ this.value = ''; this.style.color = '';}",
     		"onblur"  => "if(this.value.length == 0){ this.value='受付番号'; this.style.color = 'grey'}"
     	));
-    	
+
     	$this->createAdd("no_inquiry","HTMLModel",array(
     		"visible" => (count($inquiries) == 0)
     	));
     	$this->createAdd("no_inquiry_text","HTMLModel",array(
-    		"colspan" => ( count($this->forms) >= 2 ) ? "4" : "3" 
+    		"colspan" => ( count($this->forms) >= 2 ) ? "4" : "3"
     	));
     }
 }
 
 class InquiryList extends HTMLList{
-	
+
 	private $forms;
-	
+
 	protected function populateItem($entity){
-		
+
 		$formId = $entity->getFormId();
 		$detailLink = SOY2PageController::createLink(APPLICATION_ID . ".Inquiry.Detail." . $entity->getId());
-		
+
 		$this->createAdd("inquiry_item","HTMLModel",array(
 			"style" => "cursor:pointer;",
 			"onclick" => "location.href='{$detailLink}'"
 		));
-		
+
 		$this->createAdd("form_name_td","HTMLModel",array(
     		"visible" => count($this->forms) >= 2
 		));
 		$this->createAdd("form_name","HTMLLink",array(
 			"text" => (isset($this->forms[$formId])) ? $this->forms[$formId]->getName() : "",
-			//"link" => SOY2PageController::createLink(APPLICATION_ID . ".Inquiry?formId=" . $formId), 
+			//"link" => SOY2PageController::createLink(APPLICATION_ID . ".Inquiry?formId=" . $formId),
 		));
-		
+
 		$this->createAdd("id","HTMLLink",array(
 			"text" => $entity->getId(),
 			"link" => $detailLink,
@@ -102,26 +111,26 @@ class InquiryList extends HTMLList{
 			"text" => $entity->getTrackingNumber(),
 			"link" => $detailLink,
 		));
-		
+
 		//getContentの中身はhtmlspecialcharsがかかっている
 		$this->createAdd("content","HTMLLink",array(
 			"html"  => $entity->getContent(),
 			"link"  => $detailLink,
 			"title" => $entity->getContent(),
 		));
-		
+
 		$this->createAdd("create_date","HTMLLabel",array(
 			"text" => date("Y-m-d",$entity->getCreateDate())
 		));
-		
+
 		$this->createAdd("flag","HTMLLink",array(
 			"text" => $entity->getFlagText(),
 			"link" => $detailLink,
-			"style" => (!$entity->getFlag()) ? "color:red" : "" 
+			"style" => (!$entity->getFlag()) ? "color:red" : ""
 		));
-		
+
 	}
-	
+
 	function getForms() {
 		return $this->forms;
 	}
@@ -129,4 +138,3 @@ class InquiryList extends HTMLList{
 		$this->forms = $forms;
 	}
 }
-?>
