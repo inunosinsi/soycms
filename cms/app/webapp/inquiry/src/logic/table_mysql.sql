@@ -20,6 +20,7 @@ CREATE TABLE soyinquiry_inquiry (
   id INTEGER primary key AUTO_INCREMENT,
   tracking_number VARCHAR(255),
   form_id VARCHAR(255),
+  ip_address VARCHAR(15) NOT NULL,
   content TEXT,
   data TEXT,
   flag TINYINT default 1,

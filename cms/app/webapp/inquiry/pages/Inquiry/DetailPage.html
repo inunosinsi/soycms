@@ -5,12 +5,12 @@
 	<div class="function">
 		<a soy:link="inquiry.Inquiry.Export">CSVエクスポート</a>
 	</div>
-	
+
 	<br style="clear:both;" />
 </div>
 
 <div style="padding:0px 20px;">
-	
+
 	<h1>問い合わせ詳細</h1>
 
 	<div class="table_container">
@@ -27,33 +27,37 @@
 				<th>フォーム</th>
 				<td soy:id="form_name"></td>
 			</tr>
+			<tr>
+				<th>IPアドレス</th>
+				<td colspan="3" soy:id="ip_address"></td>
+			</tr>
 		</table>
 	</div>
-	
+
 	<h2>問い合わせ内容</h2>
-	
+
 	<div style="margin-left:20px;">
 	<pre soy:id="content" style="width:80%;overflow:auto;font-family: monospace !important;"></pre>
 	</div>
-		
+
 	<h2>メモ</h2>
-	
+
 	<a name="comment"></a>
-	
+
 	<div style="margin-left:20px;">
 		<!-- soy:id="comment_list" -->
-		
+
 		<span soy:id="title"></span>
 		<span soy:id="author"></span>
 		<span soy:id="create_date"></span>
 		<pre soy:id="content" style="width:80%;overflow:auto;font-family: monospace !important;height:auto;"></pre>
-		
+
 		<!-- /soy:id="comment_list" -->
 	</div>
-		
+
 
 	<h2>メモを追加する</h2>
-	
+
 	<script type="text/javascript">
 	<!--//
 		function confirm_post_comment(){
@@ -66,9 +70,9 @@
 		}
 	//-->
 	</script>
-	
+
 	<form soy:id="comment_form">
-	
+
 	<div class="table_container">
 		<table class="form_table list" style="width:100%;">
 			<tbody>
@@ -85,20 +89,20 @@
 				<tr class="memo_table_content">
 					<td colspan="4" style="text-align:center;">
 						<textarea soy:id="memo_content" style="width:98%;height:130px;"></textarea>
-						
+
 						<input type="submit" name="add_comment" value="コメント投稿" onclick="return confirm_post_comment();" />
 					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
-	
+
 	</form soy:id="comment_form">
-	
+
 	<!-- soy:display="reply_mail_area" -->
 	<h2>お問い合わせに返信する</h2>
 	<form soy:id="reply_form">
-	
+
 	<div class="table_container">
 		<table class="form_table list" style="width:100%;">
 			<tbody>
@@ -123,7 +127,7 @@
 				<tr class="memo_table_content">
 					<td colspan="2" style="text-align:center;">
 						<textarea soy:id="reply_content" style="width:98%;height:300px;"></textarea>
-						
+
 						<input type="submit" name="reply" value="返信" onclick="return confirm('送信しますか？');">
 					</td>
 				</tr>

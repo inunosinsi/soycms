@@ -26,6 +26,11 @@ class SOYInquiry_Inquiry {
      */
     private $formId;
 
+	/**
+	 * @column ip_address
+	 */
+	private $ipAddress;
+
     private $content;
 
     private $data;
@@ -54,6 +59,12 @@ class SOYInquiry_Inquiry {
     function setFormId($formId) {
     	$this->formId = $formId;
     }
+	function getIpAddress(){
+		return $this->ipAddress;
+	}
+	function setIpAddress($ipAddress){
+		$this->ipAddress = $ipAddress;
+	}
     function getContent() {
     	return $this->content;
     }

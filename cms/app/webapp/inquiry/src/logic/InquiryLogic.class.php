@@ -70,6 +70,7 @@ class InquiryLogic extends SOY2LogicBase{
     	$inquiry = new SOYInquiry_Inquiry();
 
     	$inquiry->setFormId($formId);
+		$inquiry->setIpAddress($_SERVER['REMOTE_ADDR']);
     	$inquiry->setCreateDate(time());
 
     	$id = $inquiryDao->insert($inquiry);
