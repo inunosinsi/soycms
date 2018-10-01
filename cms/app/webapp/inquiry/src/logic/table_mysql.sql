@@ -48,3 +48,8 @@ CREATE TABLE soyinquiry_data_sets(
 	class_name VARCHAR(255) UNIQUE,
 	object_data TEXT
 ) ENGINE=InnoDB;
+
+CREATE TABLE soyinquiry_ban_ip_address(
+	ip_address VARCHAR(15) NOT NULL UNIQUE,
+	log_date INTEGER
+) ENGINE=InnoDB;

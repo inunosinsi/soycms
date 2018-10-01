@@ -47,3 +47,8 @@ CREATE TABLE soyinquiry_data_sets(
 	class_name VARCHAR UNIQUE,
 	object_data TEXT
 );
+
+CREATE TABLE soyinquiry_ban_ip_address(
+	ip_address VARCHAR NOT NULL UNIQUE,
+	log_date INTEGER
+);

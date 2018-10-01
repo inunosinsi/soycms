@@ -72,6 +72,12 @@ class SOYInquiry_PageApplication{
 	 */
 	function getForm($formId){
 
+		//フォームの使用を禁止しているユーザであるか？
+		if(!isset($_GET["block"]) && SOY2Logic::createInstance("logic.InquiryLogic")->checkBanIpAddress()){
+			SOY2PageController::redirect($this->pageUrl . "?block");
+			exit;
+		}
+
 		try{
     		$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
     		$form = $dao->getByFormId($formId);
@@ -100,6 +106,20 @@ class SOYInquiry_PageApplication{
 			$templateDir = SOY2::RootDir() . "template/default/";
 		}
 		$this->templateDir = $templateDir;
+
+		//ブロックしている時の表示
+		if(isset($_GET["block"])){
+			ob_start();
+			if(file_exists($templateDir . "ban.php")){
+				include_once($templateDir . "ban.php");
+			}else{
+				include_once(SOY2::RootDir() . "template/_sample/ban.php");
+			}
+			$html = ob_get_contents();
+			ob_end_clean();
+
+			return $html;
+		}
 
 	    $columnDAO = SOY2DAOFactory::create("SOYInquiry_ColumnDAO");
 	    $columns = $columnDAO->getOrderedColumnsByFormId($form->getId());
@@ -151,6 +171,9 @@ class SOYInquiry_PageApplication{
 	    			//tracking number が不正または一定時間が経過した
 			    	SOY2PageController::redirect($this->pageUrl);
 	    		}
+
+				//IPアドレスによる使用制限
+
 
 	    		ob_start();
 				$this->outputCSS();
@@ -299,7 +322,7 @@ class SOYInquiry_PageApplication{
 				}else{
 					$mailAddress = null;
 				}
-				
+
 				//メールアドレスカラムがあって、メールアドレスが空の場合は強制的にお問い合わせを止める
 				if(strlen($mailAddress) === 0){
 					SOY2PageController::redirect($this->pageUrl . "?block");
@@ -371,7 +394,12 @@ class SOYInquiry_PageApplication{
 
 			//メールを送る
 		    $this->sendEmail($inquiry, $columns, $mailBody);
+
+			//IPアドレス毎に禁止するべきか調べた上で禁止する
+			$ipAddress = $_SERVER["REMOTE_ADDR"];
+			if($logic->checkRecentInquiryCount($ipAddress)) $logic->banIPAddress($ipAddress);
 		}
+
 		return $inquiry;
 	}
 

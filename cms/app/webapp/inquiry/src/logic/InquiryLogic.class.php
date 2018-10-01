@@ -363,5 +363,26 @@ class InquiryLogic extends SOY2LogicBase{
     }
     /**#@-*/
 
+	/** カートをIPアドレスで制限 **/
+	function checkRecentInquiryCount($ipAddress){
+		if($ipAddress == "127.0.0.1") return false;	//localhostの場合は無条件でfalse
+		//指定のIPアドレスで1時間以内にお問い合わせが10件あったか？ @ToDo 管理画面で回数設定 and IPアドレスの除外リスト
+		$cnt = SOY2DAOFactory::create("SOYInquiry_BanIpAddressDAO")->countInquiryCountByIpAddressWithinHour($ipAddress, 1);
+		return ($cnt >= 10);
+	}
+
+	function banIPAddress($ipAddress){
+		$dao = SOY2DAOFactory::create("SOYInquiry_BanIpAddressDAO");
+		$banObj = new SOYInquiry_BanIpAddress();
+		$banObj->setIpAddress($ipAddress);
+		try{
+			$dao->insert($banObj);
+		}catch(Exception $e){
+			//
+		}
+	}
+
+	function checkBanIpAddress(){
+		return SOY2DAOFactory::create("SOYInquiry_BanIpAddressDAO")->checkBanByIpAddressAndUpdate($_SERVER['REMOTE_ADDR']);
+	}
 }
-?>
