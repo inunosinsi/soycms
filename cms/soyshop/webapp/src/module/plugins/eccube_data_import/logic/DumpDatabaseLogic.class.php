@@ -5,18 +5,18 @@
  * メモリを抑えるためにDAOではなく、最低限のデータ量だけを取得するSQLで実行しています。
  */
 class DumpDatabaseLogic extends SOY2LogicBase{
-	
+
 	const LIMIT = 100;
-	
+
 	private $pdo;
-	
+
 	//EC CUBEの頃のカテゴリIDを保存しておく array("oldId" => "newId")の配列を想定
 	private $oldIds = array(null);
-	
+
 	//各カテゴリの親子関係を保持しておく array("oldId" => "level")の配列を想定 rootを0、下に行くほど+1
 	private $relatives = array(null);
 	private $parents = array();
-	
+
 	function __construct(){
 		//ポイントプラグインのインストール
 		if(!SOYShopPluginUtil::checkIsActive("common_point_base")){
@@ -25,7 +25,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 			$logic->installModule("common_point_base");
 			unset($logic);
 		}
-		
+
 		//お気に入り商品の登録
 		if(!SOYShopPluginUtil::checkIsActive("common_favorite_item")){
 			$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
@@ -33,48 +33,48 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 			$logic->installModule("common_favorite_item");
 			unset($logic);
 		}
-		
+
 		//住所
 		SOY2::import("domain.config.SOYShop_Area");
 	}
-	
+
 	function execute(){
 		set_time_limit(0);
-		
+
 		self::pdo();
-		
+
 		//PDOの接続に失敗した場合は処理を終了する
 		if(!$this->pdo) return false;
-				
+
 		//顧客の登録
 		self::registerCustomer();
-		
+
 		//カテゴリの登録
 		self::regiserCategory();
-		
+
 		//商品の登録
 		self::registerItem();
-		
+
 		//お気に入りの登録
 		self::registerFavorite();
-		
+
 		//注文の登録
 		self::registerOrder();
-		
+
 		//設定内容の削除
 		SOY2::import("module.plugins.eccube_data_import.util.EccubeDataImportUtil");
 		EccubeDataImportUtil::clearTable();
-		
+
 		return true;
 	}
-	
+
 	private function registerCustomer(){
 		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		$logic = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic");
-		
+
 		$n = 1;
 		$total = self::getTotal("dtb_customer");
-		
+
 		$dao->begin();
 		do{
 			$offset = self::LIMIT * ($n - 1) + 1;
@@ -105,27 +105,27 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				$user->setRegisterDate(self::t($d));
 				$user->setRealRegisterDate(self::t($d));
 				$user->setUpdateDate(self::convertTimestamp($r["update_date"]));
-				
+
 				//必ず入れる値 本登録ユーザにする
 				$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 				$user->setAttribute3("EC CUBE");
-				
+
 				//メルマガ 1と2が登録、3が拒否
 				if((int)$r["mailmaga_flg"] === 3) $user->setNotSend(SOYShop_User::USER_NOT_SEND);
-				
+
 				//def_flgを見る
 				if((int)$r["del_flg"] > 0){
 					/**
 					 * @ToDo ユーザの削除
 					 */
 				}
-				
+
 				try{
 					$id = $dao->insert($user);
 				}catch(Exception $e){
 					//
 				}
-				
+
 				//処理が重くなるけど、ここでパスワードをコピーする update時はセットした値がハッシュ化されないため
 				$user->setId($id);
 				$user->setPassword(self::t($r["password"]));
@@ -134,9 +134,9 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				}catch(Exception $e){
 					//
 				}
-				
+
 				if((int)$r["point"] > 0) $logic->insert($r["point"], "EC CUBEからの移行分", $id);
-				
+
 				//お届け先住所がある場合
 				$address = array();
 				foreach($this->pdo->query(
@@ -151,10 +151,10 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 					$addr["address1"] = self::t($rr["addr01"]);
 					$addr["address2"] = self::t($rr["addr02"]);
 					$addr["telephoneNumber"] = self::t($rr["tel01"]). self::t($rr["tel02"]) . self::t($rr["tel03"]);
-					
+
 					$address[] = $addr;
 				}
-				
+
 				if(count($address)){
 					$user->setAddressList($address);
 					try{
@@ -166,28 +166,28 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 			}
 		}while($total > self::LIMIT * $n++);
 		$dao->commit();
-		
+
 		unset($user);
 		unset($logic);
 		unset($dao);
-		
+
 		unset($addr);
 		unset($address);
-		
+
 		unset($r);
 		unset($rr);
 		unset($n);
 		unset($total);
 		unset($offset);
 	}
-	
+
 	private function regiserCategory(){
 		$exeFlag = false;
 		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		
+
 		$n = 1;
 		$total = self::getTotal("dtb_category");
-		
+
 		$dao->begin();
 		do{
 			$offset = self::LIMIT * ($n - 1) + 1;
@@ -202,7 +202,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				$category->setName(self::t($r["category_name"]));
 				$category->setAlias(self::t($r["category_name"]));
 				$category->setIsOpen( ((int)$r["del_flg"] > 0) ? SOYShop_Category::NO_OPEN : SOYShop_Category::IS_OPEN );
-				
+
 				//親カテゴリがある場合
 				if((int)$r["parent_category_id"] > 0 && isset($this->oldIds[$r["parent_category_id"]])){
 					$category->setParent($this->oldIds[$r["parent_category_id"]]);
@@ -211,7 +211,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				}else{
 					$this->relatives[$r["category_id"]] = 0;
 				}
-				
+
 				try{
 					//カテゴリを登録した際に、oldId(EC CUBE)とnewId(SOY Shop)を紐づける
 					$this->oldIds[$r["category_id"]] = $dao->insert($category);
@@ -222,32 +222,32 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 			}
 		}while($total > self::LIMIT * $n++);
 		$dao->commit();
-		
+
 		if($exeFlag){
 			//IDの対応表をデータベースに保持しておく
 			SOYShop_DataSets::put("eccube_import.cat_cor_tbl", $this->oldIds);
 			//親子関係の配列を変換後、データベースに保持しておく
 			SOYShop_DataSets::put("eccube_import.cat_par_tbl", self::convertParentRelatives());
 		}
-		
+
 		unset($dao);
 		unset($exeFlag);
 		unset($category);
-		
+
 		unset($r);
 		unset($n);
 		unset($total);
 		unset($offset);
 	}
-	
+
 	private function registerItem(){
 		$this->parents = SOYShop_DataSets::get("eccube_import.cat_par_tbl", array());
 		$this->oldIds = SOYShop_DataSets::get("eccube_import.cat_cor_tbl", array());
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		
+
 		$n = 1;
 		$total = self::getTotal("dtb_products_class");
-		
+
 		$dao->begin();
 		do{
 			$offset = self::LIMIT * ($n - 1) + 1;
@@ -258,7 +258,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 					$res = $dao->executeQuery("SELECT id FROM soyshop_item WHERE item_code = :code LIMIT 1;", array(":code" => self::t($r["product_code"])));
 					if(count($res) > 0) continue;
 				}catch(Exception $e){
-					
+
 				}
 				$item = new SOYShop_Item();
 				//商品コードや在庫数は先に入れておく
@@ -270,11 +270,11 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				}
 				//通常価格
 				$item->setAttribute("list_price", $r["price01"]);
-				
+
 				//販売価格
 				$item->setPrice($r["price02"]);
 				$id = self::t($r["product_id"]);
-				
+
 				//商品の詳細情報を入れる
 				foreach($this->pdo->query(
 					"SELECT name,status,comment3,main_list_image,main_large_image,del_flg,create_date,update_date FROM dtb_products WHERE product_id = " . $id . " LIMIT 1"
@@ -283,16 +283,16 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 					$item->setName(self::t($r["name"]));
 					$item->setIsOpen($status);
 					$item->setAttribute("keywords", $r["comment3"]);
-					
+
 					//画像
 					if(!file_exists(SOYSHOP_SITE_DIRECTORY . "files/" . $item->getCode() . "/")) mkdir(SOYSHOP_SITE_DIRECTORY . "files/" . $item->getCode() . "/");
 					if(isset($r["main_list_image"])) $item->setAttribute("image_small", "/" . SOYSHOP_ID . "/files/save_image/" . $r["main_list_image"]);
 					if(isset($r["main_large_image"])) $item->setAttribute("image_large", "/" . SOYSHOP_ID . "/files/save_image/" . $r["main_large_image"]);
-					
+
 					//登録時期
 					$item->setCreateDate(self::convertTimestamp($r["create_date"]));
 					$item->setUpdateDate(self::convertTimestamp($r["update_date"]));
-					
+
 					//削除の確認
 					if((int)$r["del_flg"] > 0) {
 						$item->setName($item->getName() . "(削除)");
@@ -301,17 +301,17 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 						$item->setIsDisabled(SOYShop_Item::IS_DISABLED);
 					}
 				}
-				
+
 				//詳細ページのページID
 				$pageId = self::getDetailPageId();
 				if($pageId > 0) $item->setDetailPageId($pageId);
-				
+
 				//カテゴリの取得
 				foreach($this->pdo->query("SELECT category_id FROM dtb_product_categories WHERE product_id = " . $id . " LIMIT 1") as $r){
 					$catId = self::getCategoryId((int)$r["category_id"]);
 					if(isset($catId)) $item->setCategory($catId);
 				}
-				
+
 				try{
 					$dao->insert($item);
 				}catch(Exception $e){
@@ -322,31 +322,31 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		$dao->commit();
 		unset($dao);
 		unset($item);
-		
+
 		unset($r);
 		unset($n);
 		unset($total);
 		unset($offset);
 	}
-	
+
 	private function registerFavorite(){
 		SOY2::imports("module.plugins.common_favorite_item.domain.*");
 		$dao = SOY2DAOFactory::create("SOYShop_FavoriteItemDAO");
 		$logic = SOY2Logic::createInstance("module.plugins.common_favorite_item.logic.FavoriteLogic");
-		
+
 		$n = 1;
 		$total = self::getTotal("dtb_customer_favorite_products");
-		
+
 		$dao->begin();
 		do{
 			$offset = self::LIMIT * ($n - 1) + 1;
 			foreach($this->pdo->query(
 				"SELECT customer_id, product_id FROM dtb_customer_favorite_products ORDER BY product_id ASC LIMIT " . self::LIMIT . " OFFSET " . $offset
 			) as $r){
-				
+
 				$userId = null;
 				$itemId = null;
-				
+
 				//対応するユーザIDを調べる
 				foreach($this->pdo->query(
 					"SELECT email FROM dtb_customer WHERE customer_id = " . $r["customer_id"]
@@ -356,15 +356,15 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 					}catch(Exception $e){
 						continue;
 					}
-					
+
 					if(isset($res[0]["id"]) && is_numeric($res[0]["id"])){
 						$userId = (int)$res[0]["id"];
 						break;
 					}
 				}
-				
+
 				if(is_null($userId)) continue;
-				
+
 				//対応する商品IDを調べる
 				foreach($this->pdo->query(
 					"SELECT product_code FROM dtb_products_class WHERE product_id = " . $r["product_id"]
@@ -374,42 +374,42 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 					}catch(Exception $e){
 						continue;
 					}
-					
+
 					if(isset($res[0]["id"]) && is_numeric($res[0]["id"])){
 						$itemId = (int)$res[0]["id"];
 						break;
 					}
 				}
-				
+
 				if(is_null($itemId)) continue;
-				
+
 				//お気に入りに登録する
 				$logic->registerFavorite($itemId, $userId);
 			}
 		}while($total > self::LIMIT * $n++);
 		$dao->commit();
-		
+
 		unset($dao);
 		unset($logic);
 		unset($userId);
 		unset($itemId);
-		
+
 		unset($r);
 		unset($rr);
-		
+
 		unset($n);
 		unset($total);
 		unset($offset);
 	}
-	
+
 	private function registerOrder(){
 		$dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$attrDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-		
+
 		$n = 1;
 		$total = self::getTotal("dtb_order");
-		
+
 		$dao->begin();
 		do{
 			$offset = self::LIMIT * ($n - 1) + 1;
@@ -423,7 +423,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				}catch(Exception $e){
 					continue;
 				}
-				
+
 				//同じ注文時間のものは厳密一つとする。顧客IDも見ておく
 				$odate = self::convertTimestamp($r["create_date"]);
 				try{
@@ -432,7 +432,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				}catch(Exception $e){
 					//
 				}
-				
+
 				$order = new SOYShop_Order();
 				$order->setUserId((int)$res[0]["id"]);
 				$order->setPrice((int)$r["payment_total"]);
@@ -442,17 +442,17 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 				$order->setModules(null);
 				$order->setOrderDate($odate);
 				$order->setTrackingNumber($logic->getTrackingNumber($order));
-				
+
 				/**
 				 * @ToDo 支払方法の情報はどうする？
 				 */
-				
+
 				try{
 					$id = $dao->insert($order);
 				}catch(Exception $e){
 					continue;
 				}
-				
+
 				foreach($this->pdo->query(
 					"SELECT product_code,price,quantity FROM dtb_order_detail WHERE order_id = " . (int)$r["order_id"]
 				) as $rr){
@@ -462,7 +462,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 					}catch(Exception $e){
 						continue;
 					}
-					
+
 					$iorder = new SOYShop_ItemOrder();
 					$iorder->setOrderId($id);
 					$iorder->setItemId((int)$res[0]["id"]);
@@ -471,7 +471,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 					$iorder->setTotalPrice($rr["quantity"] * $rr["price"]);
 					$iorder->setItemName($res[0]["item_name"]);
 					$iorder->setCdate($odate);
-					
+
 					try{
 						$attrDao->insert($iorder);
 					}catch(Exception $e){
@@ -481,17 +481,17 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 			}
 		}while($total > self::LIMIT * $n++);
 		$dao->commit();
-		
+
 		unset($odate);
 		unset($r);
 		unset($rr);
 		unset($order);
-		
+
 		unset($dao);
 		unset($attrDao);
 		unset($logic);
 	}
-	
+
 	/** getter **/
 	private function getTotal($db){
 		if(strlen($db) === 0) return 0;
@@ -500,7 +500,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		}
 		return 0;
 	}
-	
+
 	private function getCategoryId($id){
 		//子カテゴリからカテゴリIDを探していく
 		for($i = count($this->parents) - 1; $i >= 0; $i--){
@@ -513,24 +513,24 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		//ヒットしなければnull
 		return null;
 	}
-	
+
 	private function getDetailPageId(){
 		static $id;
 		if(is_null($id)){
-			
+
 			$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 			try{
 				$res = $dao->executeQuery("SELECT id FROM soyshop_page WHERE type = :type ORDER BY id ASC LIMIT 1;", array(":type" => SOYShop_Page::TYPE_DETAIL));
 			}catch(Exception $e){
 				$res = array();
 			}
-			
+
 			$id = (isset($res[0]["id"])) ? (int)$res[0]["id"] : 0;
 			unset($dao);
 		}
 		return $id;
 	}
-	
+
 	/** ビルダー **/
 	private function buildClaimedAddress($u){
 		return array(
@@ -544,26 +544,26 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 			"office" => ""
 		);
 	}
-	
+
 	/** コンバート系 **/
-	
+
 	private function convertTimestamp($time){
 		$array = explode(" ", $time); //[0]には日、[1]には時間
 		$dates = explode("-", $array[0]);
 		$times = explode(":", $array[1]);
 		return mktime($times[0], $times[1], $times[2], $dates[1], $dates[2], $dates[0]);		//時、分、秒、月、日、年
 	}
-	
+
 	private function convertParentRelatives(){
 		$parents = array();
 		foreach($this->relatives as $id => $rel){
 			if(is_null($rel)) continue;
 			$this->parents[$rel][] = $id;
 		}
-		
+
 		return $this->parents;
 	}
-	
+
 	private function convertAddress($r){
 		return array(
 			"name" => $r["order_name01"] . " " . $r["order_name02"],
@@ -576,7 +576,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 			"office" => ""
 		);
 	}
-	
+
 	private function pdo(){
 		SOY2::import("module.plugins.eccube_data_import.util.EccubeDataImportUtil");
 		$config = EccubeDataImportUtil::getConfig();
@@ -584,14 +584,14 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		$dsn = "mysql:host=" . self::ent($config["host"]) . ";dbname=" . self::ent($config["db"]);
 		if(isset($config["port"]) && strlen($config["port"])) $dsn .= ";port=" . self::ent($config["port"]);
 		$dsn .= ";charset=utf8";// PHP 5.3.6未満では無視される
-		
+
 		try{
 			$this->pdo = new PDO($dsn, self::ent($config["user"]), self::ent($_POST["Password"]));
 		}catch(Exception $e){
 			//
 		}
 	}
-	
+
 	/**
 	 * 文字列をHTMLエンティティに変換する
 	 * @params String s
@@ -600,7 +600,7 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 	private function ent($s){
 		return htmlspecialchars($s, ENT_QUOTES, "UTF-8");
 	}
-	
+
 	/**
 	 * トリム
 	 */
@@ -608,4 +608,3 @@ class DumpDatabaseLogic extends SOY2LogicBase{
 		return trim($s);
 	}
 }
-?>

@@ -31,7 +31,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 
 		self::prepare();
 
-		if(count($this->list)){
+		if(is_array($this->list) && count($this->list)){
 			foreach($this->list as $config){
 				$cart->removeModule($cart->getAttribute("order_customfield_" . $config->getFieldId()));
 				$cart->clearAttribute("order_customfield_" . $config->getFieldId() . ".value");
@@ -45,7 +45,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		$cart = $this->getCart();
 
 		self::prepare();
-		if(!count($this->list)) return;
+		if(is_null($this->list) || !count($this->list)) return;
 
 		//ファイル用
 		$new = array();
@@ -151,7 +151,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 
 		self::prepare();
-		if(!count($this->list)) return;
+		if(is_null($this->list) || !count($this->list)) return;
 
 		foreach($this->list as $config){
 			$value = $cart->getAttribute("order_customfield_" . $config->getFieldId() . ".value");
@@ -211,7 +211,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		$cart = $this->getCart();
 
 		self::prepare();
-		if(!count($this->list)) return false;	//項目がなければfalseを返す
+		if(is_null($this->list) || !count($this->list)) return false;	//項目がなければfalseを返す
 
 		//paramの再配列
 		$array = array();
@@ -269,7 +269,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	function getForm(CartLogic $cart){
 
 		self::prepare();
-		if(!count($this->list)) return array();
+		if(is_null($this->list) || !count($this->list)) return array();
 
 		//出力する内容を格納する
 		$array = array();
@@ -310,7 +310,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	function display($orderId){
 
 		self::prepare();
-		if(!count($this->list)) return array();
+		if(is_null($this->list) || !count($this->list)) return array();
 
 		//リストの再配列
 		$array = array();
@@ -362,7 +362,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	 */
 	function edit($orderId){
 		self::prepare();
-		if(!count($this->list)) return array();
+		if(is_null($this->list) || !count($this->list)) return array();
 
 		//扱いやすい形に整形
 		$attrList = array();
@@ -483,7 +483,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	 */
 	function config($orderId){
 		self::prepare();
-		if(!count($this->list)) return array();
+		if(is_null($this->list) || !count($this->list)) return array();
 
 		//リストの再配列
 		$array = array();

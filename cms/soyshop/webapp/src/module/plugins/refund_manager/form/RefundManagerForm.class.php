@@ -49,9 +49,11 @@ class RefundManagerForm extends WebPage{
 		));
 
 		//銀行名
+		$name = (isset($values["bank_name"])) ? $values["bank_name"] : null;
+		if(is_null($name)) $name = (isset($values["account"])) ? $values["account"] : "";
 		$this->addInput("bank_name", array(
 			"name" => self::NAMEPROP . "[bank_name]",
-			"value" => (isset($values["bank_name"])) ? $values["bank_name"] : ""
+			"value" => $name
 		));
 
 		//銀行口座　廃止
@@ -65,16 +67,19 @@ class RefundManagerForm extends WebPage{
 			"value" => (isset($values["branch"])) ? $values["branch"] : ""
 		));
 
+		//口座種別は前はテキストフォームだったので、セレクトボックスの時のみ表示
 		$this->addSelect("account_type", array(
 			"name" => self::NAMEPROP . "[account_type]",
 			"options" => RefundManagerUtil::getAccountTypeList(),
-			"selected" => (isset($values["account_type"])) ? $values["account_type"] : null
+			"selected" => (isset($values["account_type"]) && strlen($values["account_type"]) === 1) ? $values["account_type"] : null
 		));
 
-		//口座番号
+		//口座番号 下の行は以前の修正の互換性維持のための対応
+		$number = (isset($values["account_number"])) ? $values["account_number"] : null;
+		if(is_null($number) && isset($values["account_type"]) && strlen($values["account_type"]) > 1) $numher = $values["account_type"];
 		$this->addInput("account_number", array(
 			"name" => self::NAMEPROP . "[account_number]",
-			"value" => (isset($values["account_number"])) ? $values["account_number"] : ""
+			"value" => $number
 		));
 
 		//口座種別　廃止

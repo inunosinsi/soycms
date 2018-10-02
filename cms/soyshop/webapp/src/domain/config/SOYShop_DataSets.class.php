@@ -80,4 +80,3 @@ class SOYShop_DataSets {
 		$dao->clear($class);
 	}
 }
-?>

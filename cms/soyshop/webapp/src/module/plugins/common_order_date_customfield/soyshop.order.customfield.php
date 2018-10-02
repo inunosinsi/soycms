@@ -30,7 +30,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	function clear(CartLogic $cart){
 
 		self::prepare();
-		if(!count($this->list)) return;
+		if(is_null($this->list) || !count($this->list)) return;
 
 		foreach($this->list as $config){
 			$cart->removeModule($cart->getAttribute("order_date_customfield_" . $config->getFieldId()));
@@ -42,7 +42,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	function doPost($param){
 
 		self::prepare();
-		if(!count($this->list)) return;
+		if(is_null($this->list)!count($this->list)) return;
 
 		//paramの再配列
 		$array = array();
@@ -89,7 +89,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 
 		self::prepare();
-		if(!count($this->list)) return;
+		if(is_null($this->list) || !count($this->list)) return;
 
 		foreach($this->list as $config){
 
@@ -118,7 +118,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	function hasError($param){
 
 		self::prepare();
-		if(!count($this->list)) return array();
+		if(is_null($this->list) || !count($this->list)) return array();
 
 		$cart = $this->getCart();
 
@@ -167,7 +167,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	function getForm(CartLogic $cart){
 		self::prepare();
 
-		if(!count($this->list)) return array();
+		if(is_null($this->list) || !count($this->list)) return array();
 
 		//出力する内容を格納する
 		$array = array();
@@ -202,7 +202,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	function display($orderId){
 
 		self::prepare();
-		if(!count($this->list)) return array();
+		if(is_null($this->list) || !count($this->list)) return array();
 
 		//リストの再配列
 		$array = array();
@@ -246,7 +246,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	function edit($orderId){
 
 		self::prepare();
-		if(!count($this->list)) return array();
+		if(is_null($this->list) || !count($this->list)) return array();
 
 		//扱いやすい形に整形
 		$attrList = array();
@@ -324,7 +324,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	 */
 	function config($orderId){
 		self::prepare();
-		if(!count($this->list)) return array();
+		if(is_null($this->list) || !count($this->list)) return array();
 
 		//リストの再配列
 		$array = array();
