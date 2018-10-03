@@ -4781,8 +4781,10 @@ class SOY2HTMLBase{
 		$code = $func['code'];
 		$argments = $func['args'];
 		$variant = "";
-		for($i=0; $i<count($argments);$i++){
-			$variant .= $argments[$i].' = $args['.$i.'];';
+		if(is_array($argments)){
+			for($i = 0; $i < count($argments); $i++){
+				$variant .= $argments[$i].' = $args['.$i.'];';
+			}
 		}
 		return eval($variant.$code.";");
 	}
