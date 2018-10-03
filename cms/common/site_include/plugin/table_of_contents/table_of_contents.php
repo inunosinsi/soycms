@@ -13,7 +13,7 @@ class TableOfContentsPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.3"
+			"version"=>"0.4"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -65,7 +65,8 @@ class TableOfContentsPlugin{
 				$list = $logic->getHeadingList();
 				if(count($list)){
 					foreach($list as $href => $title){
-						preg_match('/<h[0-9].*?>' . $title . '<\/h[0-9]>/', $html, $tmp);
+						$title = htmlspecialchars($title, ENT_QUOTES, "UTF-8");
+						preg_match('/<h[0-9].*?>' . self::addEscapeChar($title) . '<\/h[0-9]>/', $html, $tmp);
 						if(!isset($tmp[0]) || !strlen($tmp[0])) continue;
 						$hTag = str_replace(">" . $title, " id=\"" . $href . "\">" . $title, $tmp[0]);
 						$html = str_replace($tmp[0], $hTag, $html);
@@ -75,6 +76,13 @@ class TableOfContentsPlugin{
 		}
 
 		return str_replace("##HEADING##", $heading, $html);
+	}
+
+	private function addEscapeChar($str){
+		foreach(array("(", ")", "?") as $c){
+			$str = str_replace($c, "\\" . $c, $str);
+		}
+		return $str;
 	}
 
 	/**

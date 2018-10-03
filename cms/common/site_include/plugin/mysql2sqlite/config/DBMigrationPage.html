@@ -1,0 +1,33 @@
+<!-- soy:display="ng" -->
+このプラグインは使用できません。
+<!-- /soy:display="ng" -->
+
+<!-- soy:display="middle" -->
+<h3>・以後の手順</h3>
+<!-- soy:id="front_controller_path" /-->を開き、下記の修正を行う。<br>
+<pre soy:id="migrate_before_code"></pre>
+から
+<pre soy:id="migrate_after_code"></pre>
+に変更。<br>
+※修正前のコードはコメントアウトして残しておいた方で良いです。
+<h3>・MySQLに戻す場合</h3>
+<form soy:id="return_form">
+	DSNをMySQLに戻す <input type="submit" name="return" value="実行する">
+</form>
+<!-- /soy:display="middle" -->
+
+<!-- soy:display="before" -->
+<form soy:id="form">
+	MySQL → SQLite <input type="submit" name="migrate" value="実行する">
+</form>
+<!-- /soy:display="before" -->
+<p>※実行後はサイトの管理画面からログアウトして、再びログインした後に再びこのページを開いて下さい。</p>
+<div>下記のプラグインのデータの移行には対応していません。
+	<ul>
+		<li>Gravatar連携プラグイン</li>
+		<li>よく読まれている記事プラグイン</li>
+		<li>リンク切れページURL記録プラグイン</li>
+		<li>SOY CMSいいねボタン</li>
+		<li>短縮URLプラグイン</li>
+	</ul>
+</div>
