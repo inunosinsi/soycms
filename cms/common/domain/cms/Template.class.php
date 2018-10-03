@@ -8,10 +8,10 @@ class Template {
 	private $description;
 	private $active;
 	private $archieveFileName;
-	private $templatesDirectory;	
-	
+	private $templatesDirectory;
+
 	private $fileList = array();
-	
+
 	/**
 	 * array
 	 * key : id
@@ -19,9 +19,9 @@ class Template {
 	 * 	id = ("entry","top","popup","archive")
 	 */
 	private $template;
-	
+
 	private $pageType;
-	
+
 
 	function getName() {
 		return $this->name;
@@ -41,27 +41,27 @@ class Template {
 	function setTemplate($template) {
 		$this->template = $template;
 	}
-	
+
 	function addTemplate($template){
 		if(is_array($this->template)){
-			$this->template = array_merge($this->template,$template);	
+			$this->template = array_merge($this->template,$template);
 		}else{
 			$this->template = $template;
 		}
-		
+
 	}
-	
+
 	function getTemplateById($id){
 		return @$this->template[$id];
 	}
-		
+
 	function getId() {
 		return $this->id;
 	}
 	function setId($id) {
 		$this->id = $id;
 	}
-	
+
 	function getPageType() {
 		return $this->pageType;
 	}
@@ -72,12 +72,12 @@ class Template {
 	function getActive() {
 		return $this->active;
 	}
-	
-	
+
+
 	function setActive($active) {
 		$this->active = $active;
 	}
-	
+
 	function isActive(){
 		return (boolean)$this->active;
 	}
@@ -95,19 +95,19 @@ class Template {
 	function setArchieveFileName($archieveFileName) {
 		$this->archieveFileName = $archieveFileName;
 	}
-	
+
 	function getTemplateContent($id = null){
-		
+
 		if($id){
 			$template = $this->template[$id];
 			return @file_get_contents($this->getTemplatesDirectory() . $id);
 		}
-		
+
 		$array = array();
 		foreach($this->template as $key => $template){
 			$array[$template["id"]] = @file_get_contents($this->getTemplatesDirectory() . $key);
 		}
-		
+
 		return $array;
 	}
 
@@ -118,4 +118,3 @@ class Template {
 		$this->templatesDirectory = $templatesDirecotry;
 	}
 }
-?>

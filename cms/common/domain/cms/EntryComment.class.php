@@ -9,7 +9,7 @@ class EntryComment {
 	 * @id
 	 */
     private $id;
-    
+
     /**
      * @column entry_id
      */
@@ -17,24 +17,24 @@ class EntryComment {
    	private $title;
    	private $author;
   	private $body;
-  	
+
   	/**
   	 * @column submitdate
   	 */
   	private $submitDate;
-    
+
     /**
      * @column is_approved
      */
 	private $isApproved;
-	
+
 	/**
 	 * @column mail_address
 	 */
 	private $mailAddress;
-	
+
 	private $url;
-   
+
 
    	function getId() {
    		return $this->id;
@@ -66,7 +66,7 @@ class EntryComment {
    	function setBody($body) {
    		$this->body = $body;
    	}
- 
+
 
    	function getSubmitDate() {
    		return $this->submitDate;
@@ -95,4 +95,3 @@ class EntryComment {
    		$this->mailAddress = $mailAddress;
    	}
 }
-?>

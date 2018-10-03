@@ -15,8 +15,7 @@ class CMSPageController extends SOY2PageController{
 		//デフォルトページ
 		$siteConfigDao = SOY2DAOFactory::create("cms.SiteConfigDAO");
 		$siteConfig = $siteConfigDao->get();
-
-
+		
 		$dao = SOY2DAOFactory::create("cms.PageDAO");
 		//onNotFound()でdaoが取れないとでてるので、ここで保存。
 		$this->dao = $dao;

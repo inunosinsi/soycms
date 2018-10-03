@@ -92,5 +92,3 @@ if(defined("SOYCMS_ASP_MODE")){
 
 SOY2HTMLConfig::CacheDir(_SITE_ROOT_."/.cache/");
 SOY2DAOConfig::DaoCacheDir(_SITE_ROOT_."/.cache/");
-
-?>
