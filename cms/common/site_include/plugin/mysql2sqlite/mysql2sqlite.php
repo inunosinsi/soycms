@@ -18,7 +18,7 @@ class MySQL2SQLitePlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.4"
+			"version"=>"0.5"
 		));
 
 		//移行前のMySQLのDSNを記録しておく

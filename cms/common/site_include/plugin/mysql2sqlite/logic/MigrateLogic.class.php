@@ -93,6 +93,11 @@ class MigrateLogic extends SOY2LogicBase {
 				self::registerCustomField();
 			}
 
+			//ブログ記事SEOプラグイン
+			if(file_exists(UserInfoUtil::getSiteDirectory() . "/.plugin/soycms_entry_info.active")){
+				self::registerEntryInfo();
+			}
+
 			/** @ToDo gravatar **/
 			/** @ToDo read_entry_count **/
 			/** @ToDo record_dead_link **/
@@ -331,6 +336,22 @@ class MigrateLogic extends SOY2LogicBase {
 		foreach($res as $v){
 			$stmt->execute(array(
 				":custom" => $v["custom_field"],
+				":id" => $v["id"]
+			));
+		}
+	}
+
+	private function registerEntryInfo(){
+		$this->pdo->query("ALTER TABLE Entry ADD COLUMN keyword VARCHAR");
+
+		$dao = new SOY2DAO();
+		$res = $dao->executeQuery("SELECT id, keyword FROM Entry WHERE LENGTH(keyword) > 0");
+		if(!count($res)) return;
+
+		$stmt = $this->pdo->prepare("UPDATE Entry SET keyword = :keyword WHERE id = :id");
+		foreach($res as $v){
+			$stmt->execute(array(
+				":keyword" => $v["keyword"],
 				":id" => $v["id"]
 			));
 		}
