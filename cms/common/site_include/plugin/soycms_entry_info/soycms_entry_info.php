@@ -24,7 +24,7 @@ class EntryInfoPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"http://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.5.3"
+			"version"=>"0.7"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
 			$this,"config_page"
@@ -81,9 +81,8 @@ class EntryInfoPlugin{
 	 */
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = @$arg[0];
-
-		list($keyword,$description) = $this->getEntryInfo($entryId);
+		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
+		list($keyword, $description) = self::getEntryInfo($entryId);
 
 		ob_start();
 		include(dirname(__FILE__) . "/keywordForm.php");
@@ -98,7 +97,8 @@ class EntryInfoPlugin{
 	 */
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = @$arg[1];
+		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
+		list($keyword, $description) = self::getEntryInfo($entryId);
 
 		list($keyword,$description) = $this->getEntryInfo($entryId);
 
@@ -142,58 +142,64 @@ class EntryInfoPlugin{
 	 *
 	 * @return array(keyword,description)
 	 */
-	function getEntryInfo($entryId){
+	private function getEntryInfo($entryId){
+		if(!isset($entryId)) return array("", "");
+
 		$dao = new SOY2DAO();
 
 		try{
 			$result = $dao->executeQuery("select keyword,description from Entry where id = :id",
-				array(":id"=>$entryId));
-
-			if(count($result)<1){
-				return array("","");
-			}
-
-			return array($result[0]["keyword"],$result[0]["description"]);
+				array(":id" => $entryId));
 
 		}catch(Exception $e){
-			return array("","");
+			return array("", "");
 		}
+
+		if(count($result) < 1) return array("", "");
+
+		return array($result[0]["keyword"], $result[0]["description"]);
 	}
 
+	//概要に何も入力していないときにブログトップからキーワードか概要を読み込む
+	private function getBlogTopMetaValue($type="keywords"){
+		$html = self::getBlogTopHeadHTML();
+		if(!strlen($html) || !strpos($html, $type)) return "";
 
-	/**
-	 * キーワードに何も入力していないときにブログトップからキーワードを読み込む
-	 */
-	function getKeyword(){
-
-		$getUrl = $_SERVER["REQUEST_URI"];
-		$getUrl = substr($getUrl, 0, strrpos($getUrl ,"/"));
-		$getUrl = substr($getUrl, 0, strrpos($getUrl ,"/"));
-		$getTopUrl = "http://" . $_SERVER["SERVER_NAME"] . $getUrl;
-		$getHtml = file_get_contents($getTopUrl);
-
-		$getText = substr($getHtml, strpos($getHtml, "keywords"));
-		$getText = substr($getText, strpos($getText, "="));
-		$getText = substr($getText, "2");
-		return substr($getText, "0", strpos($getText, "\""));
+		$text = substr($html, strpos($html, $type));
+		$text = substr($text, strpos($text, "=") + 2);
+		return trim(substr($text, "0", strpos($text, "\"")), "\"");
 	}
 
+	private function getBlogTopHeadHTML(){
+		static $html;
+		if(is_null($html)){
+			$url = substr($_SERVER["REQUEST_URI"], 0, strrpos($_SERVER["REQUEST_URI"] ,"/"));
+			$url = substr($url, 0, strrpos($url ,"/"));
+			$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
+			$html = @file_get_contents($http . "://" . $_SERVER["HTTP_HOST"] . $url);
+			if(!$html){
+				$html = "";
+			}else{
+				$html = substr($html, 0, strpos($html, "</head>"));
+				$html = substr($html, strpos($html, "<head") + 5);
+				if(strpos($html, "<link")){
+					$html = preg_replace('/<link.*>/', "", $html);
+				}
+				if(strpos($html, "<script")){
+					$html = preg_replace('/<script.*\/script>/s', "", $html);
+				}
+				if(strpos($html, "<style")){
+					$html = preg_replace('/<style.*\/style>/s', "", $html);
+				}
+				if(strpos($html, "<title")){
+					$html = preg_replace('/<title.*\/title>/s', "", $html);
+				}
 
-	/**
-	 * 概要に何も入力していないときにブログトップから概要を読み込む
-	 */
-	function getDescription(){
+				$html = trim($html);
+			}
+		}
 
-		$getUrl = $_SERVER["REQUEST_URI"];
-		$getUrl = substr($getUrl, 0, strrpos($getUrl ,"/"));
-		$getUrl = substr($getUrl, 0, strrpos($getUrl ,"/"));
-		$getTopUrl = "http://" . $_SERVER["SERVER_NAME"] . $getUrl;
-		$getHtml = file_get_contents($getTopUrl);
-
-		$getText = substr($getHtml, strpos($getHtml, "description"));
-		$getText = substr($getText, strpos($getText, "="));
-		$getText = substr($getText, "2");
-		return substr($getText, "0", strpos($getText, "\""));
+		return $html;
 	}
 
 
@@ -202,48 +208,29 @@ class EntryInfoPlugin{
 	 */
 	function onPageOutput($obj){
 
-		//ブログではない時は動作しません
-		if(false == ($obj instanceof CMSBlogPage)){
-			return;
-		}
-
-		//エントリー表示画面以外では動作しません
-		if($obj->mode != CMSBlogPage::MODE_ENTRY){
-			return;
-		}
-
+		//ブログではない時 or エントリー表示画面以外では動作しません
+		if(false == ($obj instanceof CMSBlogPage) || $obj->mode != CMSBlogPage::MODE_ENTRY) return;
 
 		$entry = $obj->entry;
-		if(is_null($entry))$entry = new Entry();
+		if(is_null($entry)) $entry = new Entry();
 
 		//データ取得
-		list($keyword,$description) = $this->getEntryInfo($entry->getId());
+		list($keyword, $description) = self::getEntryInfo($entry->getId());
 
-		if(strlen($keyword) == "0"){
+		if(is_null($keyword) || strlen($keyword) === "0") $keyword = self::getBlogTopMetaValue("keywords");
+		if(is_null($description) || strlen($description) === "0") $description = self::getBlogTopMetaValue("description");
 
-			$keyword = @$this->getKeyword();
-
-		}
-
-		if(strlen($description) == "0"){
-
-			$description = @$this->getDescription();
-
-		}
-
-		$obj->createAdd("entry_keyword","HTMLModel",array(
+		$obj->addModel("entry_keyword", array(
 			"soy2prefix" => "b_block",
 			"attr:name" => "keywords",
 			"attr:content" => $keyword
 		));
 
-		$obj->createAdd("entry_description","HTMLModel",array(
+		$obj->addModel("entry_description", array(
 			"soy2prefix" => "b_block",
 			"attr:name" => "description",
 			"attr:content" => $description
 		));
-
-
 	}
 
 	/**
@@ -253,9 +240,7 @@ class EntryInfoPlugin{
 		list($old,$new) = $args;
 
 		try{
-
 			$dao = new SOY2DAO();
-
 			$getKey = $dao->executeQuery("SELECT keyword FROM Entry WHERE Entry.id = :id",
 											array(
 											":id" =>$old
@@ -281,10 +266,10 @@ class EntryInfoPlugin{
 		try{
 			$dao->executeUpdateQuery("alter table Entry add keyword text",array());
 		}catch(Exception $e){
+			//
 		}
 
 		return;
-
 	}
 
 	/**
