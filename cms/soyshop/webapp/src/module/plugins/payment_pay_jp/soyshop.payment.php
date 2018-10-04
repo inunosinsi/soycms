@@ -98,7 +98,8 @@ class PayJpPayment extends SOYShopPayment{
 					'customer' => $token,
 					'amount' => $cart->getTotalPrice(),
 					'currency' => 'jpy',
-					"capture" => PayJpUtil::isCapture()
+					"capture" => PayJpUtil::isCapture(),
+					"description" => "payment via soyshop's cart."
 				);
 
 				list($res, $err) = $this->payJpLogic->charge($myCard);
@@ -175,7 +176,8 @@ class PayJpPayment extends SOYShopPayment{
 				'card' => $token,
 				'amount' => $cart->getTotalPrice(),
 				'currency' => 'jpy',
-				"capture" => PayJpUtil::isCapture()
+				"capture" => PayJpUtil::isCapture(),
+				"description" => "payment via soyshop's cart."
 			);
 
 			//作成したカード番号のトークンで購入
