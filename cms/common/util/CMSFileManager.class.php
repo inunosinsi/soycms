@@ -84,7 +84,11 @@ class CMSFileManager{
 	public static function deleteAll(){
 		$dao = self::_getDao();
 		$dao->begin();
-		$dao->deleteAll();
+		try{
+			$dao->deleteAll();
+		}catch(Exception $e){
+			// @Todo MySQL→SQLite移行プラグイン対策
+		}
 		$dao->commit();
 	}
 
@@ -92,7 +96,11 @@ class CMSFileManager{
 		$dao = self::_getDao();
 		$obj = self::getInstance($root);
 		$dao->begin();
-		$obj->insert($root);
+		try{
+			$obj->insert($root);
+		}catch(Exception $e){
+			// @Todo MySQL→SQLite移行プラグイン対策
+		}
 		$dao->commit();
 	}
 
@@ -275,7 +283,7 @@ class CMSFileManager{
 					}catch(Exception $e){
 						//
 					}
-				}	
+				}
 			}
 		}else{
 			$file = $target;
@@ -817,12 +825,20 @@ abstract class CMSFileDAO extends SOY2DAO{
 
 
 			}else{
-
 				$init = false;
+				$check = false;
 
-				$dsn =  CMS_FILE_DB;
-				$user = SOY2DAOConfig::user();
-				$pass = SOY2DAOConfig::pass();
+				//MySQL→SQLite移行プラグインを利用した場合
+				if(strpos(CMS_FILE_DB, "mysql") === 0 && strpos(SOY2DAOConfig::Dsn(), "sqlite") === 0){
+					$dsn = "sqlite:".SOY2::RootDir()."db/file.db";
+					$user = "";
+					$pass = "";
+					$check = true;
+				}else{
+					$dsn =  CMS_FILE_DB;
+					$user = SOY2DAOConfig::user();
+					$pass = SOY2DAOConfig::pass();
+				}
 
 				if(CMS_FILE_DB_EXISTS != true){
 					$init = true;
@@ -834,10 +850,18 @@ abstract class CMSFileDAO extends SOY2DAO{
 					die("Can not get DataSource.".$dsn);
 				}
 
-				if($init){
-					self::init();
+				if($check){
+					try{
+						$pdo->query("SELECT * FROM cmsfile LIMIT 1;");
+					}catch(Exception $e){
+						$init = true;
+					}
 				}
 
+				if($init){
+					$dbType = (strpos($dsn, "mysql") === 0) ? "mysql" : "sqlite";
+					self::init($dbType);
+				}
 			}
 		}
 
@@ -848,8 +872,8 @@ abstract class CMSFileDAO extends SOY2DAO{
 	 * DBの初期化
 	 * @final
 	 */
-	private static function init(){
-		$sql = file_get_contents(CMS_SQL_DIRECTORY."init_file_".SOYCMS_DB_TYPE.".sql");
+	private static function init($dbType){
+		$sql = file_get_contents(CMS_SQL_DIRECTORY."init_file_".$dbType.".sql");
 		CMSFileDAO::_getDataSource()->exec($sql);
 
 		if(!file_exists(SOY2::RootDir()."/db/file.db")){

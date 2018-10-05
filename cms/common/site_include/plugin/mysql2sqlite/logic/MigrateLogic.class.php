@@ -114,6 +114,20 @@ class MigrateLogic extends SOY2LogicBase {
 			$siteDao->update($site);
 
 			CMSUtil::resetDsn($old);
+
+			//SQLite用のfile.dbを作成する
+			$fileDbPath = SOY2::RootDir()."db/file.db";
+			unlink($fileDbPath);
+			touch($fileDbPath);
+
+			$filePdo = new PDO("sqlite:".$fileDbPath);
+			$sql = file_get_contents(CMS_SQL_DIRECTORY."init_file_sqlite.sql");
+			try{
+				$filePdo->exec($sql);
+			}catch(Exception $e){
+				//
+			}
+
         }
 	}
 
