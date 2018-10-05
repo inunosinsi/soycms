@@ -829,6 +829,7 @@ class SOYShop_User {
 	}
 
 	private function hashStringEcCube($input){
+		if(!isset($input) || !is_string($input)) return "";	//想定していないタイミングで読まれることがある
 
 		//ec cubeから移行した会員のパスワードをそのまま使用するためのチェック
 //		if(strpos($input, ":") !== false){
