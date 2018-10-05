@@ -46,6 +46,4 @@ class InitLogic extends SOY2LogicBase{
 	public function setInitCheckFile($file){
 		$this->initCheckFile = $file;
 	}
-
 }
-?>

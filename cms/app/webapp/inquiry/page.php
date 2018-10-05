@@ -73,10 +73,10 @@ class SOYInquiry_PageApplication{
 	function getForm($formId){
 
 		//フォームの使用を禁止しているユーザであるか？
-		if(!isset($_GET["block"]) && SOY2Logic::createInstance("logic.InquiryLogic")->checkBanIpAddress()){
-			SOY2PageController::redirect($this->pageUrl . "?block");
-			exit;
-		}
+		// if(!isset($_GET["block"]) && SOY2Logic::createInstance("logic.InquiryLogic")->checkBanIpAddress()){
+		// 	SOY2PageController::redirect($this->pageUrl . "?block");
+		// 	exit;
+		// }
 
 		try{
     		$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
@@ -157,7 +157,6 @@ class SOYInquiry_PageApplication{
 
 	    //送信完了画面表示
 	    }else if(isset($_GET["complete"])){
-
 	    	$inquiry = null;
 	    	if(empty($errors)){
 	    		$inqdao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
@@ -186,6 +185,7 @@ class SOYInquiry_PageApplication{
 
 	    //確定：値の保存、メール送信
 	    }else if(isset($_POST["send"]) || isset($_POST["send_x"])){
+			$this->checkBanMailAddress($_POST["data"], $columns);
 
 	    	$captcha_filename = str_replace(array(".", "/", "\\"), "", $_POST["data"]["hash"]);
 	    	$captcha_value = (isset($_POST["captcha_value"])) ? md5($_POST["captcha_value"]) : "";
@@ -220,7 +220,6 @@ class SOYInquiry_PageApplication{
 
 	    //確認画面表示（Captcha判定に失敗したときのためにこのIF文は分離しておく必要がある）
 		if(isset($_POST["confirm"]) || isset($_POST["confirm_x"])){
-			$this->checkBanMailAddress($_POST["data"], $columns);
 			$errors = $this->checkPostData($_POST["data"], $columns);
 
 			if(empty($errors)){
@@ -282,9 +281,6 @@ class SOYInquiry_PageApplication{
 	 * POSTされた値をチェックする
 	 */
 	function checkPostData($data, $columns){
-		//イレギュラーな対応
-		$this->checkBanMailAddress($_POST["data"], $columns);
-
 		$errors = array();
 
 		foreach($columns as $column){
