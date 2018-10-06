@@ -14,21 +14,32 @@ input[type="text"], input[type="password"]{
 }
 </style>
 
+<div class="functions">
+	<div class="function">
+		<a soy:link="inquiry.Config">サーバ設定</a>
+	</div>
+	<div class="function">
+		<a soy:link="inquiry.Config.Ban">IPアドレス制限</a>
+	</div>
+
+	<br style="clear:both;" />
+</div>
+
 <div style="padding:0 20px;">
 
 	<h1>サーバ設定</h1>
-	
+
 	<div class="table_container">
-		
+
 		<div class="success" soy:id="success_update">設定を保存しました。</div>
 		<div class="success" soy:id="success_test">メールを送信しました。</div>
 		<div class="error" soy:id="failed_to_update">更新に失敗しました</div>
 		<div class="error" soy:id="failed_to_test">送信に失敗しました。サーバの設定を確認して下さい。</div>
-		
+
 		<form soy:id="form">
 		<input type="hidden" soy:id="is_ssl_enabled" id="is_ssl_enabled" value="0" />
 		<input type="hidden" soy:id="is_imap_enabled" id="is_imap_enabled" value="0" />
-		
+
 		<table class="form_table list">
 			<col style="width:200px" />
 			<thead>
@@ -66,7 +77,7 @@ input[type="text"], input[type="password"]{
 					<input type="hidden" name="isUseSSLSendServer" value="0" />
 					<input soy:id="is_use_ssl_send_server" type="checkbox" name="" />
 					<label for="is_use_ssl_send_server">SSL(暗号化)を使用する</label>
-					
+
 					<p class="error" soy:id="ssl_disabled">SSLが使えないサーバーです。</p>
 				</td>
 			</tr>
@@ -93,13 +104,13 @@ input[type="text"], input[type="password"]{
 			</tr>
 			<tr>
 				<td>
-					<input name="isUsePopBeforeSMTP" type="hidden" value="0" />	
+					<input name="isUsePopBeforeSMTP" type="hidden" value="0" />
 					<input soy:id="is_use_pop_before_smtp" type="checkbox" name="" />
 					<label for="is_use_pop_before_smtp">「POP/IMAP before SMTP」を使用する</label>
 				</td>
 			</tr>
 		</table>
-		
+
 		<table class="form_table list">
 			<col style="width:200px" />
 			<thead>
@@ -112,10 +123,10 @@ input[type="text"], input[type="password"]{
 				<td>
 					<input soy:id="receive_server_type_pop" type="radio" name="server_type" />
 					<label for="receive_server_type_pop">POP3</label>
-					
+
 					<input soy:id="receive_server_type_imap" type="radio" name="server_type" />
 					<label for="receive_server_type_imap">IMAP</label>
-					
+
 					<p class="error" soy:id="imap_disabled">IMAPが使えないサーバーです。</p>
 				</td>
 			</tr>
@@ -143,7 +154,7 @@ input[type="text"], input[type="password"]{
 					</table>
 				</td>
 			</tr>
-			
+
 			<tr>
 				<td>
 					<input name="isUseSSLReceiveServer" type="hidden" value="0" />
@@ -154,7 +165,7 @@ input[type="text"], input[type="password"]{
 				</td>
 			</tr>
 		</table>
-		
+
 		<table class="form_table list">
 			<col style="width:200px" />
 			<thead>
@@ -174,7 +185,7 @@ input[type="text"], input[type="password"]{
 					<input soy:id="administrator_name" type="text" value="" />
 				</td>
 			</tr>
-			
+
 			<tr>
 				<th>返信先メールアドレス<br/>(Reply-To)</th>
 				<td>
@@ -195,7 +206,7 @@ input[type="text"], input[type="password"]{
 				</td>
 			</tr>
 		</table>
-		
+
 		<table class="form_table list">
 			<col style="width:200px" />
 			<thead>
@@ -212,9 +223,9 @@ input[type="text"], input[type="password"]{
 				</td>
 			</tr>
 		</table>
-		
+
 		<input type="hidden" soy:id="admin_url" />
-				
+
 		<table class="button_table">
 			<tr class="button_table_row">
 				<td style="backgruond-color:white;">
@@ -222,7 +233,7 @@ input[type="text"], input[type="password"]{
 				</td>
 			</tr>
 		</table>
-		
+
 		</form soy:id="form">
 	</div>
 
@@ -255,7 +266,7 @@ function changeSendPort(){
 	if($("#is_use_ssl_send_server").prop("checked")){
 		if($("#send_server_type_smtp").prop("checked"))port = 465;
 	}
-	
+
 	$('#send_server_port').val(port);
 }
 
@@ -268,8 +279,8 @@ function changeReceivePort(){
 		if($("#receive_server_type_pop").prop("checked"))port = 110;
 		if($("#receive_server_type_imap").prop("checked"))port = 147;
 	}
-	
-	$('#receive_server_port').val(port);	
+
+	$('#receive_server_port').val(port);
 }
 
 function toggleSMTP(){
@@ -342,14 +353,14 @@ function confirm_test_send(){
 		alert("「管理者メールアドレス」を入力してください。");
 		return false;
 	};
-	
+
 	if($("#test_mail_address").val().length < 1){
 		alert("「テストメールの送信先」を入力してください。");
 		return false;
 	};
-	
+
 	return confirm(
-			"現在保存されている設定内容でテストメールを送信します。\n" + 
+			"現在保存されている設定内容でテストメールを送信します。\n" +
 			"送信先: " + $("#test_mail_address").val() + "\n\n"
 			+ "よろしければ「OK」を押してください。\n"
 			+ "中止する場合は「キャンセル」を押してください。"

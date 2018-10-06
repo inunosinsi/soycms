@@ -1,4 +1,5 @@
 <?php
+SOY2::import("domain.SOYInquiry_DataSets");
 /**
  * @entity SOYInquiry_DataSets
  */

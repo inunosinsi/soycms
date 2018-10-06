@@ -73,10 +73,10 @@ class SOYInquiry_PageApplication{
 	function getForm($formId){
 
 		//フォームの使用を禁止しているユーザであるか？
-		// if(!isset($_GET["block"]) && SOY2Logic::createInstance("logic.InquiryLogic")->checkBanIpAddress()){
-		// 	SOY2PageController::redirect($this->pageUrl . "?block");
-		// 	exit;
-		// }
+		if(!isset($_GET["block"]) && SOY2Logic::createInstance("logic.InquiryLogic")->checkBanIpAddress()){
+			SOY2PageController::redirect($this->pageUrl . "?block");
+			exit;
+		}
 
 		try{
     		$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");

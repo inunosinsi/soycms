@@ -1,0 +1,58 @@
+<div class="functions">
+	<div class="function">
+		<a soy:link="inquiry.Config">サーバ設定</a>
+	</div>
+	<div class="function">
+		<a soy:link="inquiry.Config.Ban">IPアドレス制限</a>
+	</div>
+
+	<br style="clear:both;" />
+</div>
+
+<div style="padding:0 20px;">
+
+	<div class="success" soy:display="updated">更新しました。</div>
+
+	<h1>IPアドレス制限の設定</h1>
+
+	<div class="table_container">
+		<form soy:id="form">
+			<table class="form_table list">
+				<col style="width:200px" />
+				<thead>
+					<tr>
+						<td colspan="2">IPアドレスによるお問い合わせフォームの使用制限を設けます</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th>除外リスト</th>
+						<td>
+							<input type="text" soy:id="exclude_list"><br>
+							※IPアドレスをカンマ(,)区切りで指定します<br>
+							※ご利用中のIPアドレスは<strong soy:id="remote_addr"></strong>です
+						</td>
+					</tr>
+					<tr>
+						<th>回数制限</th>
+						<td>
+							同じIPアドレスから<input type="number" soy:id="count">&nbsp;回/時間のお問い合わせがあった場合は<br>アクセス元のIPアドレスに対してフォームの使用を制限する
+						</td>
+					</tr>
+					<tr>
+						<th>使用制限の解除</th>
+						<td>IPアドレスに対する使用制限後、<input type="number" soy:id="release">&nbsp;時間後に制限を解除する</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<table class="button_table">
+				<tr class="button_table_row">
+					<td style="backgruond-color:white;">
+						<input type="submit" class="submit_button" value="更新" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
