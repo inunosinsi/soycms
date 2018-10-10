@@ -32,12 +32,21 @@ class RefundManagerUtil {
 		}
 	}
 
-	public static function get($orderId){
-		return self::_get($orderId);
+	public static function get($orderId, $everytime=false){
+		if($everytime){	//隠しモード
+			return self::_get2($orderId);
+		}else{
+			return self::_get($orderId);
+		}
 	}
 
-	public static function getTypeTextByOrderId($orderId){
-		list($values, $isProcessed) = self::_get($orderId);
+	public static function getTypeTextByOrderId($orderId, $everytime=false){
+		if($everytime){		//隠しモード
+			list($values, $isProcessed) = self::_get2($orderId);
+		}else{
+			list($values, $isProcessed) = self::_get($orderId);
+		}
+
 		if(!isset($values["type"])) return "";
 		switch($values["type"]){
 			case self::TYPE_CANCEL:
@@ -78,6 +87,22 @@ class RefundManagerUtil {
 		}
 		return array($values, $isProcessed);
 	}
+
+	//値のみ取得	隠し機能
+	private static function _get2($orderId){
+		try{
+			$obj = self::dao()->get($orderId, self::FIELD_ID);
+			//設置値と処理済みかどうかを返す
+			$values = soy2_unserialize($obj->getValue1());
+			$isProcessed = (int)$obj->getValue2();
+		}catch(Exception $e){
+			$values = array();
+			$isProcessed = 0;
+		}
+		return array($values, $isProcessed);
+	}
+
+
 
 	private static function dao(){
 		static $dao;

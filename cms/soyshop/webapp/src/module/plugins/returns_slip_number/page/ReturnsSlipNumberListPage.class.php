@@ -60,6 +60,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 
 		        //データを行単位にばらす
 		        $lines = $logic->GET_CSV_LINES($fileContent);    //fix multiple lines
+				$lines = $logic->encodeFrom($lines);
 				array_shift($lines);	//必ず先頭行を削除
 
 		        //先頭行削除
@@ -73,6 +74,12 @@ class ReturnsSlipNumberListPage extends WebPage {
 					//PON対応 @ToDo 他のCSVのパターンがあったときはその都度考える
 					$v = explode(",", $line);
 					if(count($v)){
+						//PONではv[2]がステータス 3がプロセス
+						if(isset($v[3]) && $v[3] != 1) continue;
+						if(isset($v[2])){
+							if(strpos($v[2], "配達") === false || strpos($v[2], "完了") === false) continue;
+						}
+						
 						$slipNumber = trim(str_replace("\"", "", $v[0]));
 
 						try{
@@ -84,6 +91,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 						$slipLogic->changeStatus((int)$slipId, "return");
 					}
 				}
+				exit;
 
 				SOY2PageController::jump("Extension.returns_slip_number?updated");
 			}
