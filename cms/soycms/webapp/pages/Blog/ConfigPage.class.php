@@ -99,6 +99,8 @@ class ConfigPage extends CMSWebPageBase{
 			"text" => $page->getDescription()
 		));
 
+		self::setupWYSIWYG();
+
 		$form->addSelect("parent_page", array(
 			"selected" => $page->getParentPageId(),
 			"options" => $this->getPageList(),
@@ -434,6 +436,66 @@ class ConfigPage extends CMSWebPageBase{
 
 
 		return $return;
+	}
+
+	private function setupWYSIWYG(){
+		//Call Event
+		CMSPlugin::callEventFunc("onBlogSetupWYSIWYG");
+
+		$jsVarsAndPaths = array(
+				"InsertLinkAddress" => "Entry.Editor.InsertLink",
+				"InsertImagePage" => "Entry.Editor.FileUpload",
+				"CreateLabelLink" => "Entry.CreateNewLabel",
+				"templateAjaxURL" => "EntryTemplate.GetTemplateAjaxPage",
+		);
+
+		//Cookieからエディタのタイプを取得
+		$editor = isset($_COOKIE["blog_text_editor"]) ? $_COOKIE["blog_text_editor"] : "plain" ;
+
+		$scriptsArr = array(
+				"plain"=> array(
+						"./js/editor/PlainTextEditor.js",
+						"./js/editor/EntryEditorFunctions.js",
+				),
+				"tinyMCE" => array(
+						"./js/tinymce/tinymce.min.js",
+						"./js/editor/RichTextEditor.js",
+						"./js/editor/EntryEditorFunctions.js",
+				)
+		);
+		$jsFiles = isset($scriptsArr[$editor]) ? $scriptsArr[$editor] : $scriptsArr["tinyMCE"];
+
+		//bootstrapを使った管理画面用（JavaScriptはファイル末尾で読み込む）
+		self::createAddJavaScript($jsVarsAndPaths, $jsFiles);
+	}
+
+	/**
+	 * 記事編集に必要なJavaScriptをcreateAddで追加する。soy:id=entry_editor_javascripts
+	 */
+	private function createAddJavaScript($jsVarsAndPaths, $scriptFiles){
+		$script = array();
+		$script[] = '<script type="text/javascript">'."\n";
+		foreach($jsVarsAndPaths as $var => $path){
+			$script[] = 'var '.$var.' = "' . htmlspecialchars(SOY2PageController::createLink($path),ENT_QUOTES,"UTF-8") . '";';
+		}
+		if(SOYCMSEmojiUtil::isInstalled()){
+			$script[] = 'var mceSOYCMSEmojiURL = "'.htmlspecialchars(SOYCMSEmojiUtil::getEmojiInputPageUrl().'#tinymce',ENT_QUOTES,"UTF-8").'";';
+		}
+		$script[] = '</script>'."\n";
+
+		foreach($scriptFiles as $path){
+			$script[] = '<script type="text/javascript" src="'.htmlspecialchars(SOY2PageController::createRelativeLink($path)."?".SOYCMS_BUILD_TIME,ENT_QUOTES,"UTF-8").'"></script>';
+		}
+		//ラベルのチェック状況を調べる
+		$script[] = '<script type="text/javascript">';
+		$script[] = "$('input[name=\"label[]\"]').each(function(ele){";
+		$script[] = "	toggle_labelmemo(\$(this).val(), \$(this).is(\":checked\"));";
+		$script[] = "});";
+		$script[] = '</script>'."\n";
+
+		$this->addLabel("entry_editor_javascripts", array(
+			"html" => implode("\n", $script),
+		));
 	}
 }
 

@@ -579,6 +579,11 @@ class CMSBlogPage extends CMSPage{
 			"html"=>str_replace(array("\r\n","\r","\n"),"<br />",htmlspecialchars($this->page->getDescription())),
 			"soy2prefix"=>"b_block"
 		));
+		//WYSIWYG用
+		$this->createAdd("blog_description_raw","CMSLabel",array(
+			"html" => $this->page->getDescription(),
+			"soy2prefix" => "b_block"
+		));
 		$this->addLink("blog_current_absolute_url", array(
 			"link" => $this->currentAbsoluteURL,
 			"soy2prefix"=>"b_block"
