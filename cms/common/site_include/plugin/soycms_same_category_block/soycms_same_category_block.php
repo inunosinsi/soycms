@@ -20,7 +20,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.3"
+			"version"=>"0.5"
 		));
 
 	    if(CMSPlugin::activeCheck($this->getId())){
@@ -116,9 +116,21 @@ class SOYCMSSameCategoryBlockPlugin{
 		$blogLabelId = (int)PluginBlockUtil::getBlogPageByPageId($pageId)->getBlogLabelId();
 
 		$list = array();
+
+		//ラベルの指定
+		$labelIds = PluginBlockUtil::getLabelIdsByPageId($pageId);
+
 		foreach($res as $v){
 			if(isset($v["label_id"]) && is_numeric($v["label_id"]) && $blogLabelId !== (int)$v["label_id"]){
-				$list[] = (int)$v["label_id"];
+				//cms:labelsで条件を付ける
+				if(count($labelIds)){
+					if(in_array($v["label_id"], $labelIds)){
+						$list[] = (int)$v["label_id"];
+					}
+				//labelIdsがない場合は無条件で入れる
+				}else{
+					$list[] = (int)$v["label_id"];
+				}
 			}
 		}
 

@@ -15,7 +15,11 @@ class PluginBlockUtil {
 			//ブログページを取得できた場合
 			if(!is_null($blog) && !is_null($blog->getId())){
 				$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
-				$uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $pathInfo);
+				//サイトIDを除く
+				$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+				$uri = str_replace("/" . $siteId . "/", "/", $pathInfo);
+				$uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $uri);
+
 				//トップページ
 				if(strlen($blog->getTopPageUri()) && $uri === (string)$blog->getTopPageUri()){
 					$template = $blog->getTopTemplate();
@@ -104,6 +108,35 @@ class PluginBlockUtil {
 		}
 
 		return null;
+	}
+
+	public static function getLabelIdsByPageId($pageId){
+		$template = self::__getTemplateByPageId($pageId);
+		if(is_null($template)) return null;
+
+		$block = self::__getBlockByPageId($pageId);
+		if(is_null($block)) return null;
+
+		if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
+			if(preg_match('/cms:labels=\"(.*?)\"/', $tmp[1], $ctmp)){
+				if(isset($ctmp[1]) && strlen($ctmp[1])){
+					$v = str_replace("、", ",", $ctmp[1]);
+					$values = explode(",", $v);
+					if(count($values)){
+						$labelIds = array();
+						foreach($values as $v){
+							$v = (int)trim($v);
+							if(is_numeric($v) && $v > 0){
+								$labelIds[] = $v;
+							}
+						}
+						return $labelIds;
+					}
+				}
+			}
+		}
+
+		return array();
 	}
 
 	private static function getBlogPageById($pageId){
