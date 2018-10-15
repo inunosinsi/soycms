@@ -79,7 +79,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 						if(isset($v[2])){
 							if(strpos($v[2], "配達") === false || strpos($v[2], "完了") === false) continue;
 						}
-						
+
 						$slipNumber = trim(str_replace("\"", "", $v[0]));
 
 						try{
@@ -91,7 +91,6 @@ class ReturnsSlipNumberListPage extends WebPage {
 						$slipLogic->changeStatus((int)$slipId, "return");
 					}
 				}
-				exit;
 
 				SOY2PageController::jump("Extension.returns_slip_number?updated");
 			}

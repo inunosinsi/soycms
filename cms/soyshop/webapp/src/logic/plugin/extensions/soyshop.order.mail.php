@@ -19,7 +19,7 @@ class SOYShopOrderMail implements SOY2PluginAction{
 	function getDisplayOrder(){
 		return 1;
 	}
-	
+
 	private $isUse = false;
 
 	function setIsUse($flag){
@@ -29,7 +29,7 @@ class SOYShopOrderMail implements SOY2PluginAction{
 	function isUse(){
 		return $this->isUse;
 	}
-	
+
 	public function setOrder($order){
 		$this->order = $order;
 	}
@@ -46,6 +46,7 @@ class SOYShopOrderMailDeletageAction implements SOY2PluginDelegateAction{
 
 		//常にorderの値が入っていなければ不便
 		$action->setOrder($order);
+		$action->setIsUse(false);		//メール送信時に複数選択されているように見える不具合があるため、都度falseに初期化しておく
 
 		//注文時に選択されていればisUseフラグを立てる
 		if($order){
@@ -72,16 +73,16 @@ class SOYShopOrderMailDeletageAction implements SOY2PluginDelegateAction{
 	function getBody(){
 		//小さいものから並べる
 		ksort($this->body);
-		
+
 		$res = "";
-		
+
 		//改行で連結
 		foreach($this->body as $displayGroup){
 			foreach($displayGroup as $module){
 				if(strlen($module) > 0) $res .= $module."\n";
 			}
 		}
-		
+
 		return $res;
 	}
 
@@ -100,4 +101,3 @@ SOYShopPlugin::registerExtension("soyshop.order.mail.admin","SOYShopOrderMailDel
 SOYShopPlugin::registerExtension("soyshop.order.mail.confirm","SOYShopOrderMailDeletageAction");
 SOYShopPlugin::registerExtension("soyshop.order.mail.payment","SOYShopOrderMailDeletageAction");
 SOYShopPlugin::registerExtension("soyshop.order.mail.delivery","SOYShopOrderMailDeletageAction");
-?>

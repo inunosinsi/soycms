@@ -195,11 +195,12 @@ class IndexPage extends WebPage{
 		}
 
 		$id = ($downloadPlugin->getIsActive() == 1) ? "soyshop.order.mail.user" : $id;
-
+		
     	$delegate = SOYShopPlugin::invoke($id, array(
 				"order" => $order,
 				"mail" => $array
 		));
+
 		$appned_body = ($delegate) ? $delegate->getBody() : "";
 
 		$mailBody = $array["header"] ."\n". $body . $appned_body . "\n" . $array["footer"];
