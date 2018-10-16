@@ -97,4 +97,3 @@ abstract class EntryDAO extends SOY2DAO{
 	 */
 	abstract function getNearestOpeningEntry($now);
 }
-?>
