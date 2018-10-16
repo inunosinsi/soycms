@@ -16,7 +16,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.2.1"
+			"version"=>"1.3"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -85,10 +85,10 @@ class CustomAliasPlugin{
 			$html = "";
 		}else{
 			$arg = SOY2PageController::getArguments();
-			$entryId = @$arg[0];
+			$entryId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : null;
 			$alias = $this->getAlias($entryId);
 
-			$html = "<div class=\"section custom_alias\">";
+			$html = "<div style=\"margin:-0.5ex 0px 0.5ex 1em;\">";
 			$html .= "<p class=\"sub\"><label for=\"custom_alias_input\">カスタムエイリアス（ブログのエントリーページのURL）</label></p>";
 			$html .= "<input value=\"".htmlspecialchars($alias, ENT_QUOTES, "UTF-8")."\" id=\"custom_alias_input\" name=\"alias\" type=\"text\" style=\"width:400px\" />";
 			$html .= "</div>";
@@ -101,8 +101,8 @@ class CustomAliasPlugin{
 			$html = "";
 		}else{
 			$arg = SOY2PageController::getArguments();
-			$pageId = @$arg[0];
-			$entryId = @$arg[1];
+			$pageId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : null;
+			$entryId = (isset($arg[1]) && is_numeric($arg[1])) ? (int)$arg[1] : null;
 
 			$page = $this->getBlogPage($pageId);
 			$alias = $this->getAlias($entryId);
@@ -112,7 +112,7 @@ class CustomAliasPlugin{
 				$entryPageUri = CMSUtil::getSiteUrl().$page->getEntryPageURL();
 				$entryUri = $entryPageUri.rawurlencode($alias);
 
-				$html .= "<div class=\"section custom_alias\">";
+				$html = "<div style=\"margin:-0.5ex 0px 0.5ex 1em;\">";
 				$html .= "<p class=\"sub\"><label for=\"custom_alias_input\">カスタムエイリアス（ブログのエントリーページのURL）</label></p>";
 				$html .= $entryPageUri;
 				$html .= "<input value=\"".htmlspecialchars($alias, ENT_QUOTES, "UTF-8")."\" id=\"custom_alias_input\" name=\"alias\" type=\"text\" style=\"width:300px\" />";

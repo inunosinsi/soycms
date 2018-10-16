@@ -15,4 +15,12 @@
 <?php */ ?>
 	<input type="submit" name="save" value="設定" />
 </fieldset>
-</form soy:id="custom_alias_form">
+</form>
+
+<form soy:id="all_change_form">
+	<fieldset style="margin-top:10px;">
+		<legend>エイリアスの一括変更</legend>
+		過去に投稿した記事すべてのエイリアスをIDに変換：<input type="submit" name="all_change" value="実行" onclick="return confirm('実行しますか？');"><br>
+		過去に投稿した記事すべてのエイリアスを記事タイトルに変換：<input type="submit" name="all_restore" value="実行" onclick="return confirm('実行しますか？');">
+	</fieldset>
+</form>
