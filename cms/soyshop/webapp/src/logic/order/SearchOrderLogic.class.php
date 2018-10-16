@@ -305,7 +305,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 			foreach($search["paymentMethod"] as $p){
 				$attr_where[] = "attributes LIKE '%" . $p . "%'";
 			}
-			$where[] = implode(" OR ", $attr_where);
+			$where[] = "(" . implode(" OR ", $attr_where) . ")";
 		}
 
 		//拡張ポイントから出力したフォーム用
