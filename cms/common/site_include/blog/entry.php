@@ -296,24 +296,34 @@ function soy_cms_blog_output_entry($page,$entry){
 					"defaultFormat"=>"H:i"
 				));
 
-				$this->createAdd("entry_link","HTMLLink",array(
+				$this->addLink("entry_link", array(
 					"soy2prefix"=>"cms",
 					"link" => $link
 				));
 
-				$this->createAdd("more_link","HTMLLink",array(
+				$this->addLink("entry_link_id_ed", array(
+					"soy2prefix"=>"cms",
+					"link" => $this->entryPageUri . $entry->getId()
+				));
+
+				$this->addLabel("entry_link_text_id_ed", array(
+					"soy2prefix"=>"cms",
+					"text" => $this->entryPageUri . $entry->getId()
+				));
+
+				$this->addLink("more_link", array(
 					"soy2prefix"=>"cms",
 					"link" => $link ."#more",
 					"visible"=>(strlen($entry->getMore()) != 0)
 				));
 
-				$this->createAdd("more_link_no_anchor","HTMLLink",array(
+				$this->addLink("more_link_no_anchor", array(
 					"soy2prefix"=>"cms",
 					"link" => $link,
 					"visible"=>(strlen($entry->getMore()) != 0)
 				));
 
-				$this->createAdd("trackback_link","HTMLLink",array(
+				$this->addLink("trackback_link", array(
 					"soy2prefix"=>"cms",
 					"link" => $link ."#trackback_list"
 				));
@@ -323,7 +333,7 @@ function soy_cms_blog_output_entry($page,$entry){
 					"text" => $entry->getTrackbackCount()
 				));
 
-				$this->createAdd("comment_link","HTMLLink",array(
+				$this->addLink("comment_link", array(
 					"soy2prefix"=>"cms",
 					"link" => $link ."#comment_list"
 				));
