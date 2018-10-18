@@ -17,9 +17,9 @@
 
 	<div id="header">
 		<a href="<?php echo htmlspecialchars(SOYSHOP_ADMIN_URL,ENT_QUOTES,"UTF-8"); ?>">
-			<img src="./img/logo.png" />
+			<img src="<?php echo $appLogoPath; ?>" />
 		</a>
-		<h1>SOY Shop</h1>
+		<h1><?php echo $appName; ?></h1>
 
 		<div id="header_menu">
 			<ul>

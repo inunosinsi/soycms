@@ -14,6 +14,9 @@ class SOYShop_ShopConfig {
 
 	private $adminUrl;
 
+	private $appName = "SOY Shop";
+	private $appLogoPath = "./img/logo.png";
+
 	private $consumptionTax = 0;
 	private $consumptionTaxModule;
 	private $consumptionTaxInclusivePricing = 0;
@@ -390,6 +393,20 @@ class SOYShop_ShopConfig {
 	}
 	function setAdminUrl($adminUrl) {
 		$this->adminUrl = $adminUrl;
+	}
+
+	function getAppName(){
+		return $this->appName;
+	}
+	function setAppName($appName){
+		$this->appName = $appName;
+	}
+
+	function getAppLogoPath(){
+		return $this->appLogoPath;
+	}
+	function setAppLogoPath($appLogoPath){
+		$this->appLogoPath = $appLogoPath;
 	}
 
 	function getConsumptionTax(){

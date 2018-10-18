@@ -90,6 +90,22 @@ class ShopConfigPage extends WebPage{
 			));
 		}
 
+		//アプリの設定
+		$this->addInput("appName", array(
+			"name" => "Config[appName]",
+			"value" => $config->getAppName()
+		));
+
+		$this->addInput("appLogoPath", array(
+			"name" => "Config[appLogoPath]",
+			"value" => $config->getAppLogoPath()
+		));
+
+		//SOY Appのロゴ画像のパス
+		$this->addLabel("appLogoPathSample", array(
+			"text" => SOYAppUtil::getSOYAppLogoPath()
+		));
+
 		//消費税別表示モード
 		DisplayPlugin::toggle("consumption_tax_inclusive_pricing_mode_off", (!$config->getConsumptionTaxInclusivePricing()));
 

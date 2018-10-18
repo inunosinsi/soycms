@@ -29,9 +29,9 @@ foreach($scripts as $script){
 
 	<div id="header">
 		<a href="<?php echo SOYSHOP_ADMIN_URL; ?>">
-			<img src="./img/logo.png" />
+			<img src="<?php echo $appLogoPath; ?>" />
 		</a>
-		<h1><a href="<?php echo soyshop_get_site_url(true); ?>" target="_blank">SOY Shop - <?php echo htmlspecialchars($shopName,ENT_QUOTES,"UTF-8"); ?></a> - サイト管理</h1>
+		<h1><a href="<?php echo soyshop_get_site_url(true); ?>" target="_blank"><?php echo $appName; ?> - <?php echo htmlspecialchars($shopName,ENT_QUOTES,"UTF-8"); ?></a> - サイト管理</h1>
 
 		<div id="header_menu">
 			<ul>
