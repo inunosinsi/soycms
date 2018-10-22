@@ -45,4 +45,3 @@ class SqliteDatabaseBackupPlugin{
 }
 
 SqliteDatabaseBackupPlugin::register();
-?>
