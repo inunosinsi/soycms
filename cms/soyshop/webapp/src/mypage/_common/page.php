@@ -24,7 +24,7 @@ MyPageLogic::getMyPage(SOYSHOP_CURRENT_MYPAGE_ID);
 //最初はMYPAGE_IDの方を調べて、なければ_commonの方を調べる
 $i = 0;
 do{
-    if(SOY2HTMLFactory::pageExists($htmlObj->createPagePath(true) . "Page")){
+	if(SOY2HTMLFactory::pageExists($htmlObj->createPagePath(true) . "Page")){
         //Hoge.IndexPage
         $path = $htmlObj->createPagePath(true) . "Page";
     }else{
@@ -36,7 +36,7 @@ do{
 			//alias付きであることを疑ってみる
 			$values = explode(".", $htmlObj->createPagePath());
 			$args[] = strtolower(array_pop($values));
-
+		
 			$values[] = ucfirst(array_pop($values));
 			$path = implode(".", $values);
 			if(!SOY2HTMLFactory::pageExists($path . "Page")){

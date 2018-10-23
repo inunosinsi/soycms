@@ -10,7 +10,5 @@ class CommonItemOptionInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info", "common_item_option", "CommonItemOptionInfo");
-?>

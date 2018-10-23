@@ -2,7 +2,7 @@
 
 class OptionListComponent extends HTMLList{
 
-	private $orderId;
+	private $index;
 	private $attrs;
 
 	function __construct(){
@@ -19,36 +19,30 @@ class OptionListComponent extends HTMLList{
 			"text" => $label
 		));
 
-		// $this->addInput("option", array(
-		// 	"name" => "Item[" . $id."][attributes][" . $key."]",
-		// 	"value" => $entity
-		// ));
-
-		//セレクトボックスに変更
-		$opts = (isset($key) && strlen($key)) ? self::buildOptions($key) : array();
-		$this->addModel("is_option", array(
-			"visible" => count($opts)
-		));
-		$this->addSelect("option", array(
-			"name" => "Item[" . $this->orderId . "][attributes][" . $key . "]",
-			"options" => $opts,
-			"selected" => $entity
+		$this->addLabel("option_form", array(
+			"html" => self::buildForm($key, $entity)
 		));
 	}
 
-	private function buildOptions($idx){
-		if(!isset($this->attrs["item_option_" . $idx])) return array();
-		$opts = explode("\n", $this->attrs["item_option_" . $idx]);
-		for($i = 0; $i < count($opts); $i++){
-			$v = trim($opts[$i]);
-			if(!strlen($v)) continue;
-			$opts[$i] = $v;
-		}
-		return $opts;
+	private function buildForm($key, $selected){
+		$selected = trim(htmlspecialchars($selected, ENT_QUOTES, "UTF-8"));
+
+		$form = SOYShopPlugin::invoke("soyshop.item.option", array(
+			"mode" => "admin",
+			"index" => $this->index,
+			"fieldValue" => (isset($this->attrs["item_option_" . $key])) ? $this->attrs["item_option_" . $key] : "",
+			"key" => $key,
+			"selected" => $selected
+		))->getHtmls();
+
+		if(isset($form) && strlen($form)) return $form;
+
+		$name = "Item[" . $this->index . "][attributes][" . $key . "]";
+		return "<input type=\"text\" name=\"" . $name . "\" value=\"" . $selected . "\">";
 	}
 
-	function setOrderId($orderId){
-		$this->orderId = $orderId;
+	function setIndex($index){
+		$this->index = $index;
 	}
 	function setAttrs($attrs){
 		$this->attrs = $attrs;

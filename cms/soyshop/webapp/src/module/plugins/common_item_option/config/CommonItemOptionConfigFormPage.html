@@ -6,10 +6,10 @@
 <br />
 
 <div class="block_body clearfix">
-		
-	<p class="notice" soy:id="updated">更新しました</p>
-	<p class="notice" soy:id="error">入力したIDは使用できません</p>
-		
+
+	<p class="notice" soy:display="updated">更新しました</p>
+	<p class="notice" soy:display="error">入力したIDは使用できません</p>
+
 	<table class="form_list">
 		<caption>オプション項目</caption>
 		<tr>
@@ -66,7 +66,7 @@
 							</dd>
 							<!-- /soy:id="language_label_list" -->
 						</dl>
-						
+
 						<input type="hidden" soy:id="label_jp_input">
 						<input type="hidden" soy:id="option_type">
 
@@ -97,7 +97,7 @@
 				<input id="custom_id" name="option_id" type="text" class="text validate">
 				<p class="require" id="option_id_error" style="display:none;">必須項目を入力してください</p>
 				</div>
-				
+
 				項目種別
 				<div class="alL">
 					<select name="option_type" soy:id="option_type_select"></select>
@@ -117,7 +117,7 @@
 <div class="block_body clearfix">
 	<h3>テンプレートへの記述例</h3>
 	<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
-&lt;-- block:id="item" --&gt;	
+&lt;-- block:id="item" --&gt;
 
 <strong>&lt;!-- cms:id="***_visible" --&gt;</strong>
 &lt;tr&gt;
@@ -128,7 +128,7 @@
 
 &lt;-- /block:id="item" --&gt;
 </pre>
-	
+
 <p style="margin:20px 0 20px 35px;">
 <strong>***</strong>にはオプションごとのIDが入ります。<br />
 <strong>&lt;!-- cms:id="***_visible" --&gt;</strong>で囲んだ箇所は商品情報の設定時にoptionの設定があった場合に表示されます。<br />

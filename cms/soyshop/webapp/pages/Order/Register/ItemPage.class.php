@@ -1,5 +1,5 @@
 <?php
-SOY2::import("module.plugins.common_item_option.logic.ItemOptionLogic");
+SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
 
 include(dirname(__FILE__) . "/common.php");
 SOYShopPlugin::load("soyshop.item.option");
@@ -79,7 +79,7 @@ class ItemPage extends WebPage{
 							"cart" => $this->cart,
 							"option" => $resOpts
 						))->getCartOrderId();
-						
+
 						//商品オプションが一致したため統合する
 						if($id != $res && isset($items[$res])){
 							/** @ToDo 数がうまくいかない **/
@@ -216,12 +216,4 @@ class ItemPage extends WebPage{
 			return new SOYShop_Item();
 		}
 	}
-
-    // function convertDate($date){
-    // 	return mktime(0,0,0,$date["month"],$date["day"],$date["year"]);
-    // }
-    //
-    // function convertDateText($time){
-    // 	return date("Y",$time)."-".date("m",$time)."-".date("d",$time);
-    // }
 }

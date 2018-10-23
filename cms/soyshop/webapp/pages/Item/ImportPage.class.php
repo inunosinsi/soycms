@@ -331,7 +331,8 @@ class ImportPage extends WebPage{
     }
 
     private function getItemOptionList(){
-        return SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
+		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
+        return ItemOptionUtil::getOptions();
     }
 
         /**

@@ -65,8 +65,8 @@ class ItemListComponent extends HTMLList {
 		$opts = (get_class($entity) == "SOYShop_ItemOrder") ? self::getOptionList($entity) : array();
 		$this->createAdd("item_option_list", "OptionListComponent", array(
 			"list" => $opts,
+			"index" => $id,
 			"attrs" => self::getItemOptionAttributeById($itemId),
-			"orderId" => $id,
 		));
 
 		$this->addLabel("item_option", array(
@@ -83,24 +83,24 @@ class ItemListComponent extends HTMLList {
 		if(!SOYShopPluginUtil::checkIsActive("common_item_option")) return array();
 		if(count($itemOrder->getAttributeList()) > 0) return $itemOrder->getAttributeList();
 
-		$list = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
-		if(!count($list)) return array();
+		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return array();
 
 		//商品に紐付いている設定を取得
 		//$attrs = self::getItemOptionAttributeById($itemOrder->getItemId());
 
 		$array = array();
-		foreach($list as $idx => $v){
-			//if(!isset($attrs["item_option_" . $idx])) continue;
-			//$array[$idx] = $attrs["item_option_" . $idx];
-			$array[$idx] = "";
+		foreach($opts as $key => $conf){
+			$array[$key] = "";
 		}
 
 		return $array;
 	}
 
 	private function buildOptionList($opts){
-		$list = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
+		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
+		$list = ItemOptionUtil::getOptions();
 		if(!count($list)) return null;
 
 		$html = array();
@@ -136,11 +136,11 @@ class ItemListComponent extends HTMLList {
 	}
 
 	private function getItemOptionAttributeById($itemId){
-		static $dao;
-		static $list;
-
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		if(is_null($list)) $list = array();
+		static $dao, $list;
+		if(is_null($dao)){
+			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+			$list = array();
+		}
 
 		if(isset($list[$itemId])) return $list[$itemId];
 

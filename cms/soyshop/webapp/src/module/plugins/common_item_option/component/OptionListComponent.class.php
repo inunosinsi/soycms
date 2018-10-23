@@ -1,20 +1,21 @@
 <?php
 class OptionListComponent extends HTMLList{
-	
-	private $types;
+
 	private $languages;	//多言語化プラグインの設定状況
 	private $installedLangPlugin;	//多言語化プラグインがアクティブかどうか
 
 	protected function populateItem($entity, $key){
-		
+
+		$types = ItemOptionUtil::getTypes();
+
 		/* 情報表示用 */
 		$this->addLabel("label", array(
 			"text" => (isset($entity["name"])) ? $entity["name"] : "",
 			"attr:id" => "label_text_" . $key,
 		));
-		
+
 		$this->addLabel("type", array(
-			"text"=> (isset($entity["type"])) ? $this->types[$entity["type"]] : "セレクトボックス",
+			"text"=> (isset($entity["type"])) ? $types[$entity["type"]] : "セレクトボックス",
 			"attr:id" => "type_text_" . $key,
 		));
 
@@ -25,7 +26,7 @@ class OptionListComponent extends HTMLList{
 		$this->addLabel("display_form", array(
 			"text"=>'cms:id="' . $key . '"'
 		));
-		
+
 		/* 設定変更用 */
 		$this->addLink("toggle_update", array(
 			"link" => "javascript:void(0)",
@@ -55,14 +56,14 @@ class OptionListComponent extends HTMLList{
 			"attr:id" => "label_input_" . $key,
 			"value" => (isset($entity["name"])) ? $entity["name"] : "",
 		));
-		
+
 		$this->addSelect("type_select", array(
 			"name" => "obj[type]",
-			"options" => $this->types,
+			"options" => $types,
 			"attr:id" => "type_select_" . $key,
-			"selected" => (isset($entity["type"])) ? $entity["type"] : "セレクトボックス" 
+			"selected" => (isset($entity["type"])) ? $entity["type"] : "セレクトボックス"
 		));
-		
+
 		/* 順番変更用 */
 		$this->addInput("option_id", array(
 			"name" => "option_id",
@@ -81,7 +82,7 @@ class OptionListComponent extends HTMLList{
 			"link"=>"javascript:void(0);",
 			"onclick"=>'if(confirm("delete \"' . $entity["name"] . '\"?")){$(\'#delete_submit_' . $key . '\').click();}return false;'
 		));
-				
+
 		//高度な設定 toggleリンク
 		$this->addLink("toggle_config", array(
 			"link" => "javascript:void(0)",
@@ -90,33 +91,33 @@ class OptionListComponent extends HTMLList{
 			"style" => (count($entity) > 2) ? "background-color:yellow;" : "",
 			"visible" => ($this->installedLangPlugin)
 		));
-		
+
 		//高度な設定 入力行
 		$this->addModel("field_config", array(
 			"attr:id" => "field_config_" . $key
 		));
-		
+
 		$this->createAdd("language_label_list", "LanguageLabelListComponent", array(
 			"list" => $this->languages,
 			"labels" => $entity
 		));
-		
+
 		$this->addInput("label_jp_input", array(
 			"name" => "Option[name]",
 			"value" => (isset($entity["name"])) ? $entity["name"] : ""
 		));
-		
+
 		$this->addInput("option_type", array(
 			"name" => "Option[type]",
 			"value" => (isset($entity["type"])) ? $entity["type"] : "select"
 		));
-		
+
 		//設定保存 ボタン
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
 			"onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'
 		));
-		
+
 		//設定保存 submit ボタンで押される
 		$this->addInput("update_advance_submit", array(
 			"name" => "update_advance",
@@ -125,19 +126,11 @@ class OptionListComponent extends HTMLList{
 		));
 	}
 
-	function getTypes() {
-		return $this->types;
-	}
-	function setTypes($types) {
-		$this->types = $types;
-	}
-	
 	function setLanguages($languages){
 		$this->languages = $languages;
 	}
-	
+
 	function setInstalledLangPlugin($installedLangPlugin){
 		$this->installedLangPlugin = $installedLangPlugin;
 	}
 }
-?>

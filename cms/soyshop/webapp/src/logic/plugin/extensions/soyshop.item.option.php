@@ -29,11 +29,31 @@ class SOYShopItemOptionBase implements SOY2PluginAction{
 
 	}
 
+	function form(SOYShop_ItemOrder $itemOrder){
+
+	}
+
+	function change($itemOrders){
+
+	}
+
+	function history($newItemOrder, $oldItemOrder){
+
+	}
+
 	function add(){
 
 	}
 
 	function edit($key){
+
+	}
+
+	function build($itemOrderId, $key, $selected){
+
+	}
+
+	function buildOnAdmin($index, $fieldValue, $key, $selected){
 
 	}
 
@@ -48,6 +68,7 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 	private $_attributes;
 	private $_addition;
 	private $_label;
+	private $_changes = array();
 	private $mode;
 	private $cart;
 	private $index;
@@ -55,6 +76,12 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 	private $item;
 	private $htmlObj;
 	private $option;
+	private $itemOrders;
+	private $newItemOrder;
+	private $oldItemOrder;
+	private $itemOrderId;
+	private $selected;
+	private $fieldValue;
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
 
@@ -82,12 +109,31 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 					$this->_htmls = $action->display($this->item);
 				}
 				break;
+			case "form":	//隠しモード マイページで編集用のフォームを出力する
+				if($this->item instanceof SOYShop_ItemOrder){
+					$this->_htmls = $action->form($this->item);
+				}
+				break;
+			case "change":	//隠しモード マイページで編集用のフォームから値を変更する
+				$action->change($this->itemOrders);
+				break;
+			case "history":	//隠しモード マイページで編集用のフォーム変更時変更履歴を記録する
+				$this->_changes[$moduleId] = $action->history($this->newItemOrder, $this->oldItemOrder);
+				break;
 			case "add":
 				$this->_attributes[$moduleId] = $action->add();
 				break;
 			case "edit":
-			default:
 				$this->_label = $action->edit($this->key);
+				break;
+			case "build":
+				$this->_htmls = $action->build($this->itemOrderId, $this->key, $this->selected);
+				break;
+			case "admin":
+				$this->_htmls = $action->buildOnAdmin($this->index, $this->fieldValue, $this->key, $this->selected);
+				break;
+			default:
+				//何もしない
 		}
 	}
 	function getCartOrderId(){
@@ -104,6 +150,9 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 	}
 	function getLabel(){
 		return $this->_label;
+	}
+	function getChanges(){
+		return $this->_changes;
 	}
 
 	function setMode($mode){
@@ -126,6 +175,24 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 	}
 	function setOption($option) {
 		$this->option = $option;
+	}
+	function setItemOrders($itemOrders){
+		$this->itemOrders = $itemOrders;
+	}
+	function setNewItemOrder($newItemOrder){
+		$this->newItemOrder = $newItemOrder;
+	}
+	function setOldItemOrder($oldItemOrder){
+		$this->oldItemOrder = $oldItemOrder;
+	}
+	function setItemOrderId($itemOrderId){
+		$this->itemOrderId = $itemOrderId;
+	}
+	function setSelected($selected){
+		$this->selected = $selected;
+	}
+	function setFieldValue($fieldValue){
+		$this->fieldValue = $fieldValue;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.item.option","SOYShopItemOptionDeletageAction");

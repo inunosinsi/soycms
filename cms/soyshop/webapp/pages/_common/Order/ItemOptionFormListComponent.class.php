@@ -2,29 +2,41 @@
 
 class ItemOptionFormListComponent extends HTMLList{
 
-	private $orderId;
+	private $itemOrderId;
 
 	protected function populateItem($entity, $key) {
 
-		$id = $this->orderId;
-
-		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
+		$label = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "edit",
 			"key" => $key
-		));
+		))->getLabel();
 
 		$this->addLabel("label", array(
-			"text" => $delegate->getLabel()
+			"text" => $label
 		));
 
-		$this->addInput("option", array(
-			"name" => "Item[" . $id . "][attributes][" . $key . "]",
-			"value" => $entity
+		$this->addLabel("option", array(
+			"html" => self::buildForm($key, $entity)
 		));
 	}
 
-	function setOrderId($orderId){
-		$this->orderId = $orderId;
+	private function buildForm($key, $selected){
+		$selected = trim(htmlspecialchars($selected, ENT_QUOTES, "UTF-8"));
+
+		$form = SOYShopPlugin::invoke("soyshop.item.option", array(
+			"mode" => "build",
+			"itemOrderId" => $this->itemOrderId,
+			"key" => $key,
+			"selected" => $selected
+		))->getHtmls();
+
+		if(isset($form) && strlen($form)) return $form;
+
+		$name = "Item[" . $this->itemOrderId . "][attributes][" . $key . "]";
+		return "<input type=\"text\" name=\"" . $name . "\" value=\"" . $selected . "\">";
+	}
+
+	function setItemOrderId($itemOrderId){
+		$this->itemOrderId = $itemOrderId;
 	}
 }
-?>

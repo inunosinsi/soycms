@@ -29,13 +29,24 @@ class ItemOrderListComponent extends HTMLList{
 			"text" => (strlen($item->getCode())) ? $itemOrder->getItemName() : "---"
 		));
 
-		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
+		$html = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "display",
 			"item" => $itemOrder,
-		));
+		))->getHtmls();
 
 		$this->addLabel("item_option", array(
-			"html" => $delegate->getHtmls()
+			"html" => $html
+		));
+
+		//隠しモード　商品オプションの編集
+		$html = SOYShopPlugin::invoke("soyshop.item.option", array(
+			"mode" => "form",
+			"item" => $itemOrder,
+		))->getHtmls();
+		if(strlen($html)) $html .= "<input type=\"submit\" name=\"option\" value=\"変更\">";
+
+		$this->addLabel("item_option_form", array(
+			"html" => $html
 		));
 
 		$this->addLabel("item_price", array(

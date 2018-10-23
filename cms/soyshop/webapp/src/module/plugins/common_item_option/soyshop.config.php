@@ -8,11 +8,11 @@ class CommonItemOptionConfig extends SOYShopConfigPageBase{
 		//下記で取得しているConfig用のページのクラスファイルを読み込み、対になるHTMLファイルを出力する
 		if((isset($_GET["import"]))){
 			//設定のインポートエクスポートの画面
-			include_once(dirname(__FILE__) . "/config/CommonItemOptionExImportPage.class.php");
+			SOY2::import("module.plugins.common_item_option.config.CommonItemOptionExImportPage");
 			$form = SOY2HTMLFactory::createInstance("CommonItemOptionExImportPage");
 		}else{
 			//通常の設定画面
-			include_once(dirname(__FILE__) . "/config/CommonItemOptionConfigFormPage.class.php");
+			SOY2::import("module.plugins.common_item_option.config.CommonItemOptionConfigFormPage");
 			$form = SOY2HTMLFactory::createInstance("CommonItemOptionConfigFormPage");
 		}
 		$form->setConfigObj($this);
@@ -32,4 +32,3 @@ class CommonItemOptionConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "common_item_option", "CommonItemOptionConfig");
-?>

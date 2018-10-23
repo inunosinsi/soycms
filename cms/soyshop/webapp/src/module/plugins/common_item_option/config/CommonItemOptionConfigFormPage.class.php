@@ -1,73 +1,67 @@
 <?php
 class CommonItemOptionConfigFormPage extends WebPage{
 
-	private $types = array("select" => "セレクトボックス", "radio" => "ラジオボタン", "text" => "テキスト");
-
     function __construct() {
     	SOY2DAOFactory::importEntity("SOYShop_DataSets");
+		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
     }
 
     function doPost(){
-    	$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
 
     	if(isset($_POST["create"])){
+			$opts = ItemOptionUtil::getOptions();
 
-			$array = $logic->getOptions();
+			$v["name"] = $_POST["option_new_name"];
+			$v["type"] = $_POST["option_type"];
 
-			$obj["name"] = $_POST["option_new_name"];
-			$obj["type"] = $_POST["option_type"];
-
-			$array[$_POST["option_id"]] = $obj;
-
-			SOYShop_DataSets::put("item_option", soy2_serialize($array));
+			$opts[$_POST["option_id"]] = $v;
+			ItemOptionUtil::saveOptions($opts);
 
 			SOY2PageController::jump("Config.Detail?plugin=common_item_option&updated=created");
-
 		}
 
 		//update
 		if(isset($_POST["update_submit"])){
 			$optionId = $_POST["update_submit"];
 
-			$array = $logic->getOptions();
-			$array[$optionId]["name"] = $_POST["obj"]["name"];
-			$array[$optionId]["type"] = $_POST["obj"]["type"];
+			$opts = ItemOptionUtil::getOptions();
+			$opts[$optionId]["name"] = $_POST["obj"]["name"];
+			$opts[$optionId]["type"] = $_POST["obj"]["type"];
 
-			SOYShop_DataSets::put("item_option", soy2_serialize($array));
+			ItemOptionUtil::saveOptions($opts);
 		}
 
 		//advanced config
 		if(isset($_POST["update_advance"])){
 			$optionId = $_POST["update_advance"];
 
-			$array = $logic->getOptions();
+			$opts = ItemOptionUtil::getOptions();
 			foreach($_POST["Option"] as $key => $value){
-				$array[$optionId][$key] = $value;
+				$opts[$optionId][$key] = $value;
 			}
 
-			SOYShop_DataSets::put("item_option", soy2_serialize($array));
+			ItemOptionUtil::saveOptions($opts);
 		}
 
 		//delete
 		if(isset($_POST["delete_submit"])){
 			$optionId = $_POST["delete_submit"];
 
-			$array = $logic->getOptions();
-			$array[$optionId] = null;
-			unset($array[$optionId]);
+			$opts = ItemOptionUtil::getOptions();
+			$opts[$optionId] = null;
+			unset($opts[$optionId]);
 
-			SOYShop_DataSets::put("item_option", soy2_serialize($array));
+			ItemOptionUtil::saveOptions($opts);
 		}
 
 		//move
 		if(isset($_POST["move_up"]) || isset($_POST["move_down"])){
 			$optionId = $_POST["option_id"];
 
-			$configs = SOYShop_DataSets::get("item_option", null);
-			if(is_null($configs)) SOY2PageController::jump("Config.Detail?plugin=common_item_option&failed");
-			$configs = soy2_unserialize($configs);
+			$opts = ItemOptionUtil::getOptions();
+			if(!count($opts)) SOY2PageController::jump("Config.Detail?plugin=common_item_option&failed");
 
-			$keys = array_keys($configs);
+			$keys = array_keys($opts);
 			$currentKey = array_search($optionId, $keys);
 			$swap = (isset($_POST["move_up"])) ? $currentKey - 1 :$currentKey + 1;
 
@@ -76,13 +70,13 @@ class CommonItemOptionConfigFormPage extends WebPage{
 				$keys[$currentKey] = $keys[$swap];
 				$keys[$swap] = $tmp;
 
-				$tmpArray = array();
+				$tmps = array();
 				foreach($keys as $index => $value){
-					$option = $configs[$value];
-					$tmpArray[$value] = $option;
+					$opt = $opts[$value];
+					$tmps[$value] = $opt;
 				}
 
-				SOYShop_DataSets::put("item_option", soy2_serialize($tmpArray));
+				ItemOptionUtil::saveOptions($tmps);
 			}
 		}
 
@@ -92,20 +86,12 @@ class CommonItemOptionConfigFormPage extends WebPage{
     function execute(){
     	parent::__construct();
 
+		DisplayPlugin::toggle("error", isset($_GET["error"]));
+
     	$this->addForm("create_form");
 
-    	$this->addModel("updated", array(
-			"visible" => (isset($_GET["updated"]))
-		));
-
-		$this->addModel("error", array(
-			"visible" => (isset($_GET["error"]))
-		));
-
-		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
-
 		$this->addSelect("option_type_select", array(
-			"options" => $logic->getTypes(),
+			"options" => ItemOptionUtil::getTypes(),
 			"name" => "option_type"
 		));
 
@@ -113,8 +99,7 @@ class CommonItemOptionConfigFormPage extends WebPage{
 		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
 		SOY2::imports("module.plugins.common_item_option.component.*");
 		$this->createAdd("option_list", "OptionListComponent", array(
-			"list" => $logic->getOptions(),
-			"types" => $this->types,
+			"list" => ItemOptionUtil::getOptions(),
 			"languages" => self::getLanguageConfig(),	//多言語の設定を持っていく
 			"installedLangPlugin" => SOYShopPluginUtil::checkIsActive("util_multi_language")
 		));
@@ -135,4 +120,3 @@ class CommonItemOptionConfigFormPage extends WebPage{
 		$this->config = $obj;
 	}
 }
-?>

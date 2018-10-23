@@ -42,27 +42,28 @@ class ItemOrderFormListComponent extends HTMLList {
 
 		$orderAttributeList = array();
 		if(class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("common_item_option")){
-			$orderAttributeList = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : $this->getOptionIndex($itemOrder->getItemId());
+			$orderAttributeList = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : self::getOptionIndex($itemOrder->getItemId());
 		}
 
 		$this->createAdd("item_option_list", "_common.Order.ItemOptionFormListComponent", array(
 			"list" => $orderAttributeList,
-			"orderId" => $id
+			"itemOrderId" => $id
 		));
 
 	}
 
-	function getOptionIndex($itemId){
+	private function getOptionIndex($itemId){
 		if(!isset($itemId) || !is_numeric($itemId)) return array();
 
 		$optList = self::attrDao()->getOnLikeSearch($itemId, "item_option_%", true, false);
 		if(!count($optList)) return array();
 
-		$logic = new ItemOptionLogic();
-		$list = $logic->getOptions();
+		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return array();
 
 		$array = array();
-		foreach($list as $index => $value){
+		foreach($opts as $index => $value){
 			if(!isset($optList["item_option_" . $index])) continue;	//商品オプションの設定のないものは除く
 			$array[$index] = "";
 		}

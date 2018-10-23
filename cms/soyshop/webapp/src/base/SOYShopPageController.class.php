@@ -113,13 +113,13 @@ class SOYShopPageController extends SOY2PageController{
 			"arguments" => $args
 		));
 
-		try{
-			SOY2::import("domain.config.SOYShop_ShopConfig");
-			$shopConfig = SOYShop_ShopConfig::load();
-			$shopName = $shopConfig->getShopName();
-			$appName = trim(htmlspecialchars($shopConfig->getAppName(), ENT_QUOTES, "UTF-8"));
-			$appLogoPath = trim(htmlspecialchars($shopConfig->getAppLogoPath(), ENT_QUOTES, "UTF-8"));
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$shopConfig = SOYShop_ShopConfig::load();
+		$shopName = $shopConfig->getShopName();
+		$appName = trim(htmlspecialchars($shopConfig->getAppName(), ENT_QUOTES, "UTF-8"));
+		$appLogoPath = trim(htmlspecialchars($shopConfig->getAppLogoPath(), ENT_QUOTES, "UTF-8"));
 
+		try{
 			$subMenu = (method_exists($webPage,"getSubMenu")) ? $webPage->getSubMenu() : null;
 			$layout = ($subMenu) ? "layout_right" : "layout_full";
 

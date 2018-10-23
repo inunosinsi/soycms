@@ -1,6 +1,6 @@
 <?php
 SOY2::import("domain.order.SOYShop_ItemModule");
-SOY2::import("module.plugins.common_item_option.logic.ItemOptionLogic");
+SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
 SOYShopPlugin::load("soyshop.item.option");
 SOYShopPlugin::load("soyshop.item.order");
 SOYShopPlugin::load("soyshop.order.customfield");
@@ -111,7 +111,7 @@ class EditPage extends WebPage{
 								$updateCount = (int)$newCount - (int)$itemOrder->getItemCount();
 							}
 
-							$orderAttributes = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : $this->getOptionIndex();
+							$orderAttributes = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : self::getOptionIndex();
 
 							//商品オプションの比較
 							foreach($newAttributes as $index => $attribute){
@@ -413,13 +413,13 @@ class EditPage extends WebPage{
 		return $module;
 	}
 
-	function getOptionIndex(){
-		$logic = new ItemOptionLogic();
-		$list = $logic->getOptions();
-		$empty = array();
+	private function getOptionIndex(){
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return array();
 
-		foreach($list as $index => $value){
-			$empty[$index] = "";
+		$empty = array();
+		foreach($opts as $key => $conf){
+			$empty[$key] = "";
 		}
 
 		return $empty;
@@ -448,13 +448,17 @@ class EditPage extends WebPage{
 		$this->id = (isset($args[0])) ? (int)$args[0] : "";
 		parent::__construct();
 
-		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		try{
-			$order = $logic->getById($this->id);
+			$order = SOY2Logic::createInstance("logic.order.OrderLogic")->getById($this->id);
 		}catch(Exception $e){
 			SOY2PageController::jump("Order.Detail." . $this->id);
 		}
 
+		//言語設定
+		$attrs = $order->getAttributeList();
+		$lng = (isset($attrs["util_multi_language"]["value"])) ? $attrs["util_multi_language"]["value"] : "jp";
+		if(!defined("SOYSHOP_ADMIN_LANGUAGE")) define("SOYSHOP_ADMIN_LANGUAGE", $lng);
+		
 		$this->addLink("order_detail_link", array(
 			"link" => SOY2PageController::createLink("Order.Detail." . $order->getId())
 		));

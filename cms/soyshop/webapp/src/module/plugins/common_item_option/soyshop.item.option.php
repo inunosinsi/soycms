@@ -3,7 +3,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 
 	const ADMIN_OPTION_KEY = "admin";
 
-	function getCartAttributeId($optionId, $itemIndex, $itemId){
+	private function getCartAttributeId($optionId, $itemIndex, $itemId){
 		return "item_option_{$optionId}_{$itemIndex}_{$itemId}";
 	}
 
@@ -12,16 +12,17 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * @param integer index, object CartLogic
 	 */
 	function clear($index, CartLogic $cart){
-		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
-		$list = $logic->getOptions();
+		self::prepare();
 
-		$items = $cart->getItems();
-		if(isset($items[$index])){
-			$itemId = $items[$index]->getItemId();
+		$opts = ItemOptionUtil::getOptions();
+		if(count($opts)){
+			$items = $cart->getItems();
+			if(isset($items[$index])){
+				$itemId = $items[$index]->getItemId();
 
-			foreach($list as $key => $value){
-				$obj = $this->getCartAttributeId($key, $index, $itemId);
-				$cart->clearAttribute($obj);
+				foreach($opts as $key => $conf){
+					$cart->clearAttribute(self::getCartAttributeId($key, $index, $itemId));
+				}
 			}
 		}
 	}
@@ -33,34 +34,36 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * @return integer index
 	 */
 	function compare($postedOption, CartLogic $cart){
-		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
-		$list = $logic->getOptions();
+		self::prepare();
 
 		$checkOptionId = null;
 
-		$items = $cart->getItems();
+		$opts = ItemOptionUtil::getOptions();
+		if(count($opts)){
 
-		//比較用の配列を作成する
-		$attributes = array();
-		foreach($items as $index => $item){
-			//管理画面側では商品一覧のセッションの中にオプションが格納されている
-			if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
-				$attrs = $item->getAttributes();
-				$currentOptions = (isset($attrs)) ? soy2_unserialize($attrs) : array();
-				$currentOptions["itemId"] = $item->getItemId();
-			//公開側の場合はカートのセッション内にオプションが格納されている
-			}else{
-				foreach($list as $key => $value){
-					$obj = $this->getCartAttributeId($key, $index, $item->getItemId());
-					$attributes[$index][$key] = $cart->getAttribute($obj);
+			$items = $cart->getItems();
+
+			//比較用の配列を作成する
+			$attributes = array();
+			foreach($items as $index => $item){
+				//管理画面側では商品一覧のセッションの中にオプションが格納されている
+				if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+					$attrs = $item->getAttributes();
+					$currentOptions = (isset($attrs)) ? soy2_unserialize($attrs) : array();
+					$currentOptions["itemId"] = $item->getItemId();
+				//公開側の場合はカートのセッション内にオプションが格納されている
+				}else{
+					foreach($opts as $key => $conf){
+						$attrs[$index][$key] = $cart->getAttribute(self::getCartAttributeId($key, $index, $item->getItemId()));
+					}
+
+					$currentOptions = array_diff($attrs[$index], array(null));
 				}
 
-				$currentOptions = array_diff($attributes[$index], array(null));
-			}
-
-			if($postedOption == $currentOptions){
-				$checkOptionId = $index;
-				break;
+				if($postedOption == $currentOptions){
+					$checkOptionId = $index;
+					break;
+				}
 			}
 		}
 
@@ -75,15 +78,14 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	function doPost($index, CartLogic $cart){
 
 		if(isset($_POST["item_option"]) && is_array($_POST["item_option"]) && count($_POST["item_option"])){
-			$options = $_POST["item_option"];
+			$opts = $_POST["item_option"];
 
 			$items = $cart->getItems();
 			if(isset($items[$index])){
 				$itemId = $items[$index]->getItemId();
 
-				foreach($options as $key => $value){
-					$obj = $this->getCartAttributeId($key, $index, $itemId);
-					$cart->setAttribute($obj, $value);
+				foreach($opts as $key => $value){
+					$cart->setAttribute(self::getCartAttributeId($key, $index, $itemId), $value);
 				}
 			}
 		}
@@ -95,6 +97,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * @return string html
 	 */
 	function onOutput($htmlObj, $index){
+		self::prepare();
 
 		$cart = CartLogic::getCart();
 
@@ -103,18 +106,17 @@ class CommonItemOption extends SOYShopItemOptionBase{
 			return "";
 		}
 
-		$itemId = $items[$index]->getItemId();
+		$opts = ItemOptionUtil::getOptions();
+		if(count($opts)){
+			$itemId = $items[$index]->getItemId();
 
-		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
-		$list = $logic->getOptions();
+			$html = array();
+			foreach($opts as $key => $conf){
+				$opt = $cart->getAttribute(self::getCartAttributeId($key, $index, $itemId));
 
-		$html = array();
-		foreach($list as $key => $values){
-			$obj = $this->getCartAttributeId($key, $index, $itemId);
-			$option = $cart->getAttribute($obj);
-
-			if(strlen($option) > 0){
-				$html[] = self::getOptionName($values) . ":" . $option;
+				if(strlen($opt) > 0){
+					$html[] = self::getOptionName($conf) . ":" . trim(htmlspecialchars($opt, ENT_QUOTES, "UTF-8"));
+				}
 			}
 		}
 
@@ -129,26 +131,23 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		$cart = CartLogic::getCart();
 
 		$items = $cart->getItems();
-		if(!isset($items[$index])){
-			return null;
-		}
+		if(!isset($items[$index])) return null;
+
+		self::prepare();
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return null;
 
 		$itemId = $items[$index]->getItemId();
 
-		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
-		$list = $logic->getOptions();
-
 		$array = array();
-		foreach($list as $key => $__value){
-			$obj = $this->getCartAttributeId($key, $index, $itemId);
-			$array[$key] = $cart->getAttribute($obj);
+		foreach($opts as $key => $conf){
+			$array[$key] = $cart->getAttribute(self::getCartAttributeId($key, $index, $itemId));
 		}
 
 		//管理画面での注文の追加オプション
 		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
 			$optionId = self::ADMIN_OPTION_KEY;
-			$obj = $this->getCartAttributeId($optionId, $index, $itemId);
-			$value = $cart->getAttribute($obj);
+			$value = $cart->getAttribute(self::getCartAttributeId($optionId, $index, $itemId));
 			if(isset($value) && strlen($value)) {
 				$array[$optionId] = $value;
 			//セッションに値が格納されていない場合はitemOrderのattributeを見る
@@ -166,40 +165,130 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * @return string html
 	 */
 	function display(SOYShop_ItemOrder $itemOrder){
+		self::prepare();
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return "";
 
-		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
-		$list = $logic->getOptions();
-
-		$attributes = $itemOrder->getAttributeList();
+		$attrs = $itemOrder->getAttributeList();
+		if(!count($attrs)) return "";
 
 		$html = array();
-		foreach($attributes as $key => $value){
-			if(isset($list[$key]["name"]) && strlen($value) > 0){
-				$html[] = $list[$key]["name"] . " : " . $value;
+		foreach($attrs as $key => $value){
+			if(isset($opts[$key]["name"]) && strlen($value) > 0){
+				$html[] = $opts[$key]["name"] . " : " . trim(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
 			}
 		}
 
 		return implode("<br />", $html);
 	}
 
-	function add(){
-		$list = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic")->getOptions();
+	/**
+	 * マイページで商品オプションを変更できるようにする
+	 * @param object SOYShop_ItemOrder
+	 * @return string html
+	 */
+	function form(SOYShop_ItemOrder $itemOrder){
+		self::prepare();
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return "";
 
+		$attrs = $itemOrder->getAttributeList();
+		if(!count($attrs)) return "";
+
+		$html = array();
+		foreach($opts as $key => $conf){
+			if(!isset($opts[$key])) continue;
+			$selected = (isset($attrs[$key])) ? trim($attrs[$key]) : null;
+			$html[] = $opts[$key]["name"] . " : " . ItemOptionUtil::buildOptionsWithSelected($key, $conf, $itemOrder, $selected, SOYSHOP_PUBLISH_LANGUAGE, false);
+		}
+
+		return implode("<br />", $html);
+	}
+
+	function change($itemOrders){
+		if(is_null($itemOrders) || !count($itemOrders)) return;
+
+		self::prepare();
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return array();
+
+		foreach($itemOrders as $itemOrder){
+			$attrs = $itemOrder->getAttributeList();
+			foreach($opts as $key => $conf){
+				$attrs[$key] = (isset($_POST["item_option"][$itemOrder->getId()][$key])) ? trim($_POST["item_option"][$itemOrder->getId()][$key]) : null;
+			}
+			$itemOrder->setAttributes($attrs);
+		}
+	}
+
+	//変更履歴の取得のみ
+	function history($newItemOrder, $oldItemOrder){
+		if(is_null($newItemOrder)) return array();
+
+		self::prepare();
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return array();
+
+		$changes = array();
+		$newAttrs = $newItemOrder->getAttributeList();
+		$oldAttrs = $oldItemOrder->getAttributeList();
+
+		foreach($opts as $key => $conf){
+			$new = (isset($newAttrs[$key])) ? trim($newAttrs[$key]) : null;
+			$old = (isset($oldAttrs[$key])) ? trim($oldAttrs[$key]) : null;
+
+			if($new != $old){
+				$changes[] = $conf["name"] . "を『" . $old . "』から『" . $new . "』に変更しました";
+			}
+		}
+
+		return $changes;
+	}
+
+
+	function add(){
+		self::prepare();
+		$opts = ItemOptionUtil::getOptions();
+
+		/** @ToDo 何をしたかったか？を調べる **/
 	}
 
 	/**
 	 * 注文詳細で登録されている商品オプションを変更できるようにする
 	 */
 	function edit($key){
+		if($key == self::ADMIN_OPTION_KEY) return "オプション";
 
-		if($key == self::ADMIN_OPTION_KEY){
-			return "オプション";
-		}
+		self::prepare();
+		$opts = ItemOptionUtil::getOptions();
+		return (isset($opts[$key]["name"])) ? $opts[$key]["name"] : "";
+	}
 
-		$logic = SOY2Logic::createInstance("module.plugins.common_item_option.logic.ItemOptionLogic");
-		$list = $logic->getOptions();
+	function build($itemOrderId, $key, $selected){
+		self::prepare();
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts) || !isset($opts[$key])) return "";
 
-		return (isset($list[$key]["name"])) ? $list[$key]["name"] : "";
+		$type = (isset($opts[$key]["type"])) ? $opts[$key]["type"]: "select";
+		$name = "Item[" . $itemOrderId . "][attributes][" . $key . "]";	//必須
+
+		/** 多言語化を加味 **/
+		if(!defined("SOYSHOP_ADMIN_LANGUAGE")) define("SOYSHOP_ADMIN_LANGUAGE", "jp");
+		$attr = ItemOptionUtil::getFieldValueByItemOrderId($key, $itemOrderId, SOYSHOP_ADMIN_LANGUAGE);
+		if(!strlen($attr->getValue())) return "";
+
+		return ItemOptionUtil::buildOption($name, $type, $attr->getValue(), $selected, false);
+	}
+
+	function buildOnAdmin($index, $fieldValue, $key, $selected){
+		self::prepare();
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts) || !isset($opts[$key])) return "";
+
+		$type = (isset($opts[$key]["type"])) ? $opts[$key]["type"]: "select";
+		$name = "Item[" . $index . "][attributes][" . $key . "]";	//必須
+
+		return ItemOptionUtil::buildOption($name, $type, $fieldValue, $selected, false);
 	}
 
 	private function getOptionName($values){
@@ -208,6 +297,13 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		}else{
 			return $values["name"];
 		}
+	}
+
+	private function prepare(){
+		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
+
+		//多言語の方も念のため
+		if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
 	}
 }
 
