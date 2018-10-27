@@ -53,7 +53,7 @@ class SearchReturnsSlipNumberLogic extends SOY2LogicBase {
 		$list = array();
 		foreach($results as $v){
 			if(!isset($v["slip_number"])) continue;
-			$list[] = trim($v["slip_number"]);
+			$list[] = trim($v["slip_number"]) . ",,,0";
 		}
 		return $list;
 	}

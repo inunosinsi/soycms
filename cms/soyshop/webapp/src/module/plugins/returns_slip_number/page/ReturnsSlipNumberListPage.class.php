@@ -7,7 +7,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 	function doPost(){
 		if(soy2_check_token()){
 			if(isset($_POST["export"])){
-				$labels = array("返送伝票番号");
+				$labels = array("返送伝票番号","D","S","P");	//ダミーのカラム
 
 				$searchLogic = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.SearchReturnsSlipNumberLogic");
 				$searchLogic->setLimit(100);
@@ -95,8 +95,6 @@ class ReturnsSlipNumberListPage extends WebPage {
 				SOY2PageController::jump("Extension.returns_slip_number?updated");
 			}
 		}
-
-		SOY2PageController::jump("Extension.returns_slip_number?failed");
 	}
 
 	function __construct(){
