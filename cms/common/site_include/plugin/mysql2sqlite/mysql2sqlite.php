@@ -16,7 +16,7 @@ class MySQL2SQLitePlugin{
 			"name"=>"MySQL→SQLite移行プラグイン",
 			"description"=>"サイトのデータベースをMySQLからSQLiteへ移行します",
 			"author"=>"齋藤毅",
-			"url"=>"http://saitodev.co",
+			"url"=>"https://saitodev.co/article/2038",
 			"mail"=>"tsuyoshi@saitodev.co",
 			"version"=>"0.6"
 		));
