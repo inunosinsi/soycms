@@ -45,7 +45,8 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 */
 	function getForm(SOYShop_Item $item){
 		self::prepare();
-		$types = ItemOptionUtil::getTypes();
+		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return "";
 
 		$html = array();
 
@@ -55,11 +56,9 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 		$html[] = "表示したいオプション項目を改行で区切って入力してください。</p>";
 		$html[] = "</dd>";
 
-		$opts = ItemOptionUtil::getOptions();
-		if(count($opts)){
-			foreach($opts as $key => $value){
-				$html[] = self::buildTextArea($key, $value, $item->getId(), $types);
-			}
+		$types = ItemOptionUtil::getTypes();
+		foreach($opts as $key => $conf){
+			$html[] = self::buildTextArea($key, $conf, $item->getId(), $types);
 		}
 
 		return implode("\n", $html);
@@ -70,23 +69,23 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 * @param string key, string value, integer itemId
 	 * @retrun string html
 	 */
-	private function buildTextArea($key, $value, $itemId, $types){
+	private function buildTextArea($key, $conf, $itemId, $types){
 
-		$attr = ItemOptionUtil::getFieldValue($key, $itemId, $this->prefix);
+		$v = ItemOptionUtil::getFieldValue($key, $itemId, $this->prefix);
 
 		//古いバージョンから使用していて、typeの値がない場合はselectにする
-		$type = (isset($value["type"])) ? $value["type"] : "select";
+		$type = (isset($conf["type"])) ? $conf["type"] : "select";
 
 		$html = array();
 
 		$html[] = "<dt>";
-		$html[] = "<label for=\"item_option_" . $key . "\">オプション名：" . $value["name"] . "&nbsp;タイプ：" . $types[$type] . "</label>";
+		$html[] = "<label for=\"item_option_" . $key . "\">オプション名：" . $conf["name"] . "&nbsp;タイプ：" . $types[$type] . "</label>";
 		$html[] = "</dt>";
 		$html[] = "<dd>";
 		if($type == "text"){
-			$html[] = "<input type=\"hidden\" name=\"item_option[" . $key . "]\" value=\"0\"><input type=\"checkbox\" name=\"item_option[" . $key . "]\" id=\"item_option_" . $key ."\" value=\"1\"".( $attr->getValue() ? " checked" : "" )."><label for=\"item_option_" . $key ."\">使う</label>";
+			$html[] = "<input type=\"hidden\" name=\"item_option[" . $key . "]\" value=\"0\"><input type=\"checkbox\" name=\"item_option[" . $key . "]\" id=\"item_option_" . $key ."\" value=\"1\"".( $v ? " checked" : "" )."><label for=\"item_option_" . $key ."\">使う</label>";
 		}else{
-			$html[] = "<textarea name=\"item_option[" . $key . "]\">" . $attr->getValue() . "</textarea>";
+			$html[] = "<textarea name=\"item_option[" . $key . "]\">" . $v . "</textarea>";
 		}
 		$html[] = "</dd>";
 
@@ -125,63 +124,61 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	function outputFormForAdmin($htmlObj, SOYShop_Item $item, $nameBase, $itemIndex){
 		self::prepare();
 
-		$html = array();
 		$opts = ItemOptionUtil::getOptions();
-		if(count($opts)){
-			foreach($opts as $key => $conf){
-				$name = $nameBase . "[" . $key . "]";
+		if(!count($opts)) return "";
 
-				$cart = CartLogic::getCart();
-				$value = trim($cart->getAttribute("item_option_{$key}_{$itemIndex}_{$item->getId()}"));
+		$html = array();
+		foreach($opts as $key => $conf){
+			$name = $nameBase . "[" . $key . "]";
 
-				//古いバージョンから使用していて、typeの値がない場合はselectにする
-				$type = (isset($conf["type"])) ? $conf["type"] : "select";
-				$obj = ItemOptionUtil::getFieldValue($key, $item->getId(), $this->prefix);
+			$cart = CartLogic::getCart();
+			$value = trim($cart->getAttribute("item_option_{$key}_{$itemIndex}_{$item->getId()}"));
 
-				if(strlen(trim($obj->getValue())) > 0){//テキストの場合は使う設定、他は選択肢が必要
+			//古いバージョンから使用していて、typeの値がない場合はselectにする
+			$type = (isset($conf["type"])) ? $conf["type"] : "select";
+			$v = ItemOptionUtil::getFieldValue($key, $item->getId(), $this->prefix);
+			if(!strlen($v)) continue;
 
-					$html[] = htmlspecialchars($conf["name"], ENT_QUOTES, "UTF-8") . ": ";
+			$html[] = htmlspecialchars($conf["name"], ENT_QUOTES, "UTF-8") . ": ";
 
-					//選択したタイプによって、HTMLの出力を変える
-					switch($type){
-						case "text":
-							$html[] = "<input type=\"text\" name=\"" . htmlspecialchars($name, ENT_QUOTES, "UTF-8") . "\" value=\"" . htmlspecialchars($value, ENT_QUOTES, "UTF-8") . "\">";
-							break;
+			//選択したタイプによって、HTMLの出力を変える
+			switch($type){
+				case "text":
+					$html[] = "<input type=\"text\" name=\"" . htmlspecialchars($name, ENT_QUOTES, "UTF-8") . "\" value=\"" . htmlspecialchars($value, ENT_QUOTES, "UTF-8") . "\">";
+					break;
 
-						case "radio":
-							$options = explode("\n", trim($obj->getValue()));
-							$first = true;
-							foreach($options as $option){
-								$option = trim($option);
-								if($first){
-									$first = false;
-									$checked = strlen($value) ? "" : " checked=\"checked\"" ;
-								}else{
-									$checked = "";
-								}
-								if($option == $value) $checked = " checked=\"checked\"";
+				case "radio":
+					$options = explode("\n", trim($obj->getValue()));
+					$first = true;
+					foreach($options as $option){
+						$option = trim($option);
+						if($first){
+							$first = false;
+							$checked = strlen($value) ? "" : " checked=\"checked\"" ;
+						}else{
+							$checked = "";
+						}
+						if($option == $value) $checked = " checked=\"checked\"";
 
-								$html[] = "<label><input type=\"radio\" name=\"" . htmlspecialchars($name, ENT_QUOTES, "UTF-8") . "\" value=\"" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "\"".$checked.">" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "</label>&nbsp;";
-							}
-							break;
-
-						case "select":
-						default:
-							$html[] = "<select name=\"" . htmlspecialchars($name, ENT_QUOTES, "UTF-8") . "\">";
-
-							$options = explode("\n", trim($obj->getValue()));
-							foreach($options as $option){
-								$option = trim($option);
-								$selected = ($option == $value) ? " selected=\"selected\"" : "";
-								$html[] = "<option{$selected}>" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "</option>";
-							}
-
-							$html[] = "</select>";
-							break;
+						$html[] = "<label><input type=\"radio\" name=\"" . htmlspecialchars($name, ENT_QUOTES, "UTF-8") . "\" value=\"" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "\"".$checked.">" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "</label>&nbsp;";
 					}
-					$html[] = "<br>";
-				}
+					break;
+
+				case "select":
+				default:
+					$html[] = "<select name=\"" . htmlspecialchars($name, ENT_QUOTES, "UTF-8") . "\">";
+
+					$options = explode("\n", trim($obj->getValue()));
+					foreach($options as $option){
+						$option = trim($option);
+						$selected = ($option == $value) ? " selected=\"selected\"" : "";
+						$html[] = "<option{$selected}>" . htmlspecialchars($option, ENT_QUOTES, "UTF-8") . "</option>";
+					}
+
+					$html[] = "</select>";
+					break;
 			}
+			$html[] = "<br>";
 		}
 
 		echo implode("", $html);

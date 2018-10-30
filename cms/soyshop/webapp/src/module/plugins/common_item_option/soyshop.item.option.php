@@ -107,16 +107,16 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		}
 
 		$opts = ItemOptionUtil::getOptions();
-		if(count($opts)){
-			$itemId = $items[$index]->getItemId();
+		if(!count($opts)) return "";
 
-			$html = array();
-			foreach($opts as $key => $conf){
-				$opt = $cart->getAttribute(self::getCartAttributeId($key, $index, $itemId));
+		$itemId = $items[$index]->getItemId();
 
-				if(strlen($opt) > 0){
-					$html[] = self::getOptionName($conf) . ":" . trim(htmlspecialchars($opt, ENT_QUOTES, "UTF-8"));
-				}
+		$html = array();
+		foreach($opts as $key => $conf){
+			$opt = $cart->getAttribute(self::getCartAttributeId($key, $index, $itemId));
+
+			if(strlen($opt) > 0){
+				$html[] = self::getOptionName($conf) . ":" . trim(htmlspecialchars($opt, ENT_QUOTES, "UTF-8"));
 			}
 		}
 
@@ -274,10 +274,10 @@ class CommonItemOption extends SOYShopItemOptionBase{
 
 		/** 多言語化を加味 **/
 		if(!defined("SOYSHOP_ADMIN_LANGUAGE")) define("SOYSHOP_ADMIN_LANGUAGE", "jp");
-		$attr = ItemOptionUtil::getFieldValueByItemOrderId($key, $itemOrderId, SOYSHOP_ADMIN_LANGUAGE);
-		if(!strlen($attr->getValue())) return "";
+		$v = ItemOptionUtil::getFieldValueByItemOrderId($key, $itemOrderId, SOYSHOP_ADMIN_LANGUAGE);
+		if(!strlen($v)) return "";
 
-		return ItemOptionUtil::buildOption($name, $type, $attr->getValue(), $selected, false);
+		return ItemOptionUtil::buildOption($name, $type, $v, $selected, false);
 	}
 
 	function buildOnAdmin($index, $fieldValue, $key, $selected){

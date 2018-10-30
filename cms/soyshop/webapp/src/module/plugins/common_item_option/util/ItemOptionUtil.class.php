@@ -39,23 +39,23 @@ class ItemOptionUtil {
 	 * 設定に従いフォームを組み立てる
 	 */
 	public static function buildOptions($key, $conf, $itemId, $prefix = "jp"){
-		$obj = self::_getFieldValue($key, $itemId, $prefix);
-		if(!strlen($obj->getValue())) return "";
+		$v = self::_getFieldValue($key, $itemId, $prefix);
+		if(!strlen($v)) return "";
 
 		$name = "item_option[" . $key . "]";
 		$type = (isset($conf["type"])) ? $conf["type"] : "select";
 
-		return self::_buildOpt($name, $type, $obj->getValue());
+		return self::_buildOpt($name, $type, $v);
 	}
 
 	public static function buildOptionsWithSelected($key, $conf, SOYShop_ItemOrder $itemOrder, $selected, $prefix = "jp", $isBr = true){
-		$obj = self::_getFieldValue($key, $itemOrder->getItemId(), $prefix);
-		if(!strlen($obj->getValue())) return "";
+		$v = self::_getFieldValue($key, $itemOrder->getItemId(), $prefix);
+		if(!strlen($v)) return "";
 
 		$name = "item_option[" . $itemOrder->getId() . "][" . $key . "]";
 		$type = (isset($conf["type"])) ? $conf["type"] : "select";
 
-		return self::_buildOpt($name, $type, $obj->getValue(), $selected, $isBr);
+		return self::_buildOpt($name, $type, $v, $selected, $isBr);
 	}
 
 	public static function buildOption($name, $type, $fieldValue, $selected, $isBr = true){
@@ -120,21 +120,25 @@ class ItemOptionUtil {
 	 * @return object SOYShop_ItemAttribute
 	 */
 	private static function _getFieldValue($k, $itemId, $prefix = "jp"){
+		static $v;
+		if(is_null($v)) $v = array();
+		if(isset($v[$prefix][$itemId])) return $v[$prefix][$itemId];
+
 		$key = "item_option_" . $k;
-		$obj = null;
 
 		if(SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-			$obj = self::_get($itemId, $key . "_" . SOYSHOP_PUBLISH_LANGUAGE);
+			$v[$prefix][$itemId] = trim(self::_get($itemId, $key . "_" . SOYSHOP_PUBLISH_LANGUAGE)->getValue());
+			if(strlen($v[$prefix][$itemId])) return $v[$prefix][$itemId];
 
-			if(is_null($obj) && SOYSHOP_PUBLISH_LANGUAGE != $prefix){
-				$obj = self::_get($itemId, $key . "_" . $prefix);
+			if(SOYSHOP_PUBLISH_LANGUAGE != $prefix){
+				$v[$prefix][$itemId] = trim(self::_get($itemId, $key . "_" . $prefix)->getValue());
+				if(strlen($v[$prefix][$itemId])) return $v[$prefix][$itemId];
 			}
-
-			if(strlen($obj->getValue())) return $obj;
 		}
 
 		//多言語化の方の値を取得できなかった場合
-		return self::_get($itemId, $key);
+		$v[$prefix][$itemId] = trim(self::_get($itemId, $key)->getValue());
+		return $v[$prefix][$itemId];
 	}
 
 	private static function _get($itemId, $key){
@@ -148,29 +152,29 @@ class ItemOptionUtil {
 	}
 
 	private static function _getFieldValueByItemOrderId($key, $itemOrderId, $prefix = "jp"){
-		$obj = null;
 
 		if(SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-			$obj = self::_getByItemOrderId($itemOrderId, $key . "_" . SOYSHOP_PUBLISH_LANGUAGE);
+			$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . SOYSHOP_PUBLISH_LANGUAGE)->getValue());
+			if(strlen($v)) return $v;
 
-			if(!strlen($obj->getValue()) && SOYSHOP_PUBLISH_LANGUAGE != $prefix){
-				$obj = self::_getByItemOrderId($itemOrderId, $key . "_" . $prefix);
+			if(SOYSHOP_PUBLISH_LANGUAGE != $prefix){
+				$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . $prefix)->getValue());
+				if(strlen($v)) return $v;
 			}
 
-			if(strlen($obj->getValue())) return $obj;
 		//管理画面での多言語化
 		}else if(defined("SOYSHOP_ADMIN_LANGUAGE") && SOYSHOP_ADMIN_LANGUAGE != "jp"){
-			$obj = self::_getByItemOrderId($itemOrderId, $key . "_" . SOYSHOP_ADMIN_LANGUAGE);
+			$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . SOYSHOP_ADMIN_LANGUAGE)->getValue());
+			if(strlen($v)) return $v;
 
-			if(!strlen($obj->getValue()) && SOYSHOP_ADMIN_LANGUAGE != $prefix){
-				$obj = self::_getByItemOrderId($itemOrderId, $key . "_" . $prefix);
+			if(SOYSHOP_ADMIN_LANGUAGE != $prefix){
+				$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . $prefix)->getValue());
+				if(strlen($v)) return $v;
 			}
-
-			if(strlen($obj->getValue())) return $obj;
 		}
 
 		//多言語化の方の値を取得できなかった場合
-		return self::_getByItemOrderId($itemOrderId, $key);
+		return trim(self::_getByItemOrderId($itemOrderId, $key)->getValue());
 	}
 
 	private static function _getByItemOrderId($itemOrderId, $key){

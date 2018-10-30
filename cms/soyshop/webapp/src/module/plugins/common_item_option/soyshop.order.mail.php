@@ -8,6 +8,7 @@ class CommonItemOptionMail extends SOYShopOrderMail{
 	function getMailBody(SOYShop_Order $order){
 		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
 		$opts = ItemOptionUtil::getOptions();
+		if(!count($opts)) return null;
 
 		$res = array();
 
