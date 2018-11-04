@@ -332,6 +332,8 @@ class SOYInquiry_PageApplication{
 					foreach($bans as $ban){
 						preg_match('/@' . $ban . '$/', $mailAddress, $tmp);
 						if(isset($tmp[0]) && strlen($tmp[0])){
+							//該当するメールアドレスの場合、IPアドレスもBANする
+							SOY2Logic::createInstance("logic.InquiryLogic", array("form" => $this->form))->banIPAddress($_SERVER["REMOTE_ADDR"]);
 							SOY2PageController::redirect($this->pageUrl . "?block");
 					    	exit;
 						}
