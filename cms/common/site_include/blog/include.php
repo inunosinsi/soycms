@@ -187,6 +187,7 @@ function soy_cms_blog_output_archive_link($page){
 
 			var $monthPageUri;
 			var $format;
+			private $prevYear;
 
 			function setMonthPageUri($uri){
 				$this->monthPageUri = $uri;
@@ -196,25 +197,50 @@ function soy_cms_blog_output_archive_link($page){
 				$this->format = $format;
 			}
 
-			protected function populateItem($count,$key){
+			protected function populateItem($count, $key, $i){
 
-				$this->createAdd("archive_link","HTMLLink",array(
+				$this->addLink("archive_link", array(
 					"link" => $this->monthPageUri . date('Y/m',$key),
-					"soy2prefix"=>"cms"
+					"soy2prefix" => "cms"
 				));
 
-				$this->createAdd("archive_month","DateLabel",array(
-					"text"=>$key,
-					"soy2prefix"=>"cms",
-					"defaultFormat"=>"Y年n月"
+				$this->createAdd("archive_month", "DateLabel", array(
+					"text" => $key,
+					"soy2prefix" => "cms",
+					"defaultFormat" => "Y年n月"
 				));
-				$this->createAdd("entry_count","CMSLabel",array(
-					"text"=>$count,
-					"soy2prefix"=>"cms"
+				$this->createAdd("entry_count", "CMSLabel", array(
+					"text" => $count,
+					"soy2prefix" => "cms"
 				));
 
+				/** 隠しモード 初回、もしくは前年度の最後の月の前に年数を表示する **/
+				$showFlag = ($i === 1);
+
+				//下記のコードで指定年の最初の月であるか？を調べる
+				$y = (int)date("Y", $key);
+				if(!$showFlag && $this->prevYear != $y) $showFlag = true;
+
+				//今月の年の記録
+				if($y > 1970) $this->prevYear = $y;
+
+
+				$this->addModel("show_year_label", array(
+					"visible" => $showFlag,
+					"soy2prefix" => "cms"
+				));
+
+				$this->addModel("no_year_label", array(
+					"visible" => !$showFlag,
+					"soy2prefix" => "cms"
+				));
+
+				$this->addLabel("year", array(
+					"text" => $y,
+					"soy2prefix" => "cms"
+				));
+				/** 隠しモードここまで **/
 			}
-
 		}
 	}
 
@@ -335,7 +361,7 @@ function soy_cms_blog_output_recent_entry_list($page,$entries){
 			}
 
 			function populateItem($entry){
-				
+
 				$link = $this->entryPageUri . rawurlencode($entry->getAlias());
 
 				$this->createAdd("entry_id","CMSLabel",array(
@@ -744,4 +770,3 @@ function soy_cms_blog_output_feed_link($page){
 		"soy2prefix" => "b_block"
 	));
 }
-?>
