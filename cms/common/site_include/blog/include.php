@@ -230,6 +230,11 @@ function soy_cms_blog_output_archive_link($page){
 					"soy2prefix" => "cms"
 				));
 
+				$this->addModel("no_first", array(
+					"visible" => ($i > 1),
+					"soy2prefix" => "cms"
+				));
+
 				$this->addModel("no_year_label", array(
 					"visible" => !$showFlag,
 					"soy2prefix" => "cms"
