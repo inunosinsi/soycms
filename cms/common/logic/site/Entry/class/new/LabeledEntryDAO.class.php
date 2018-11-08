@@ -115,8 +115,6 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * ORのときの表示順は保証できない（？）
 	 */
 	function getOpenEntryByLabelIdsImplements($labelIds, $now, $isAnd, $start = null, $end = null, $orderReverse = false, $limit = null, $offset = null){
-		/** @ToDo isAndの使いみち **/
-
 		$sql = "SELECT distinct entry.id, entry.*, entry.cdate, label.display_order FROM Entry entry ".
 				"INNER JOIN EntryLabel label ".
 				"ON entry.id = label.entry_id ";
@@ -197,8 +195,6 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	}
 
 	function countOpenEntryByLabelIds($labelIds, $now, $isAnd, $start = null, $end = null){
-		/** @ToDo isAndの使いみち **/
-
 		$sql = "SELECT count(DISTINCT entry.id) AS COUNT FROM Entry entry ".
 				"INNER JOIN EntryLabel label ".
 				"ON entry.id = label.entry_id ";
