@@ -13,9 +13,10 @@
 	<div class="block_body">
 
 		<p class="error" soy:display="failed">モジュールの追加に失敗しました。</p>
+		<p class="error" soy:display="invalid">モジュール名に?{}|&amp;~!()^"を含めることができません。</p>
 
 		<form soy:id="create_form">
-		
+
 		<dl>
 			<dt>モジュールID <span class="option">ドット区切りの半角英数字（例：my_module.sample_module）</span></dt>
 			<dd>

@@ -3,6 +3,7 @@
 class ReturnsSlipNumberListPage extends WebPage {
 
 	private $configObj;
+	const OUTPUT_LIMIT = 300;
 
 	function doPost(){
 		if(soy2_check_token()){
@@ -10,7 +11,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 				$labels = array("返送伝票番号","D","S","P");	//ダミーのカラム
 
 				$searchLogic = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.SearchReturnsSlipNumberLogic");
-				$searchLogic->setLimit(100);
+				$searchLogic->setLimit(self::OUTPUT_LIMIT);
 				$searchLogic->setCondition(self::getParameter("search_condition"));
 				$lines = $searchLogic->getOnlySlipNumbers();
 
@@ -121,7 +122,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 		self::buildSearchForm();
 
 		$searchLogic = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.SearchReturnsSlipNumberLogic");
- 		$searchLogic->setLimit(100);
+ 		$searchLogic->setLimit(self::OUTPUT_LIMIT);
  		$searchLogic->setCondition(self::getParameter("search_condition"));
  		$slips = $searchLogic->get();
  		$total = $searchLogic->getTotal();

@@ -10,6 +10,11 @@ class EditorPage extends CMSWebPageBase{
 		if(soy2_check_token()){
 			$edit = $_POST["Edit"];
 
+			//禁止文字が含まれているか？
+			if(!SOY2Logic::createInstance("logic.site.Module.ModuleCreateLogic")->validate($edit["name"])){
+				$this->jump("Module.HTML.Editor?invalid&moduleId=" . $_GET["moduleId"]);
+			}
+
 			//make ini
 			$array = array();
 			$array[] = "name=" . $edit["name"];

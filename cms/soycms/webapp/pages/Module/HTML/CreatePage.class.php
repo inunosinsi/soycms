@@ -12,6 +12,11 @@ class CreatePage extends CMSWebPageBase{
 		$this->moduleName = $_POST["Module"]["name"];
 		if(strlen($this->moduleName) < 1) $this->moduleName = $this->moduleId;
 
+		//禁止文字が含まれているか？
+		if(!SOY2Logic::createInstance("logic.site.Module.ModuleCreateLogic")->validate($this->moduleName)){
+			$this->jump("Module.HTML.Create?invalid&moduleId=" . $this->moduleId);
+		}
+
 		$moduleDir = self::getModuleDirectory();
 
 		$this->modulePath = $moduleDir . str_replace(".", "/", $this->moduleId) . ".php";
@@ -39,7 +44,7 @@ class CreatePage extends CMSWebPageBase{
 
 		$this->addInput("module_id", array(
 			"name" => "Module[id]",
-			"value" => $this->moduleId,
+			"value" => (isset($_GET["moduleId"])) ? htmlspecialchars($_GET["moduleId"], ENT_QUOTES, "UTF-8") : $this->moduleId
 		));
 
 		$this->addInput("module_name", array(

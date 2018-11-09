@@ -13,16 +13,18 @@
 	<div class="block_body">
 
 		<p class="notice" soy:display="updated">更新しました</p>
+		<p class="error" soy:display="invalid">モジュール名に?{}|&amp;~!()^"を含めることができません。</p>
 
 		<form soy:id="update_form">
-		
+
 		<dl>
 			<dt>モジュール名</dt>
 			<dd>
-				<input type="text" class="title" soy:id="module_name" />
+				<input type="text" class="title" soy:id="module_name" /><br>
+				※モジュール名で?{}|&amp;~!()^"は使用できません
 			</dd>
 		</dl>
-			
+
 		<table class="form_list">
 			<caption soy:id="module_id">モジュール</caption>
 			<tr>
@@ -31,7 +33,7 @@
 				</td>
 			</tr>
 		</table>
-		
+
 		<p class="pageBtn">
 			<input type="submit" value="保存" />
 		</p>

@@ -9,11 +9,17 @@ class EditorPage extends CMSWebPageBase{
 	function doPost(){
 
 		if(soy2_check_token()){
+			$edit = $_POST["Module"];
+
+			//禁止文字が含まれているか？
+			if(!SOY2Logic::createInstance("logic.site.Module.ModuleCreateLogic")->validate($edit["name"])){
+				$this->jump("Module.Editor?invalid&moduleId=" . $_GET["moduleId"]);
+			}
 
 			//make ini
 			$array = array();
-			$array[] = "name=" . $_POST["Module"]["name"];
-			$array[] = "content=" . rawurlencode($_POST["Module"]["content"]);
+			$array[] = "name=" . $edit["name"];
+			$array[] = "content=" . rawurlencode($edit["content"]);
 
 			file_put_contents($this->iniPath, implode("\n", $array));
 
@@ -25,7 +31,7 @@ class EditorPage extends CMSWebPageBase{
 			$array[] = "function soycms_" . $funcName . '($html,$htmlObj){'."\n";
 			$array[] = "	ob_start();"."\n";
 			$array[] = "?>";
-			$array[] = trim($_POST["Module"]["content"]);
+			$array[] = trim($edit["content"]);
 			$array[] = "<?php"."\n";
 			$array[] = "	ob_end_flush();"."\n";
 			$array[] = "}"."\n";

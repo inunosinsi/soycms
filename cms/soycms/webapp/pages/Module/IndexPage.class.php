@@ -20,7 +20,7 @@ class IndexPage extends CMSWebPageBase{
 
 		$modules = self::getModules();
 
-		$this->addModel("is_module_list", array(
+		$this->addModel("has_module", array(
 			"visible" => (count($modules))
 		));
 
