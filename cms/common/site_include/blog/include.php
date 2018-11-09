@@ -164,7 +164,8 @@ function soy_cms_blog_output_category_link($page){
 </ul>
 
  */
-function soy_cms_blog_output_archive_link($page){
+//readOnlyはクラスの定義のみ読み込みたい場合はtrue
+function soy_cms_blog_output_archive_link($page, $readOnly = false){
 	$labels = array($page->page->getBlogLabelId());
 
 
@@ -188,6 +189,7 @@ function soy_cms_blog_output_archive_link($page){
 			var $monthPageUri;
 			var $format;
 			private $prevYear;
+			private $secretMode = true;
 
 			function setMonthPageUri($uri){
 				$this->monthPageUri = $uri;
@@ -195,6 +197,10 @@ function soy_cms_blog_output_archive_link($page){
 
 			function setFormat($format){
 				$this->format = $format;
+			}
+
+			function setSecretMode($secretMode){
+				$this->secretMode = $secretMode;
 			}
 
 			protected function populateItem($count, $key, $i){
@@ -215,47 +221,54 @@ function soy_cms_blog_output_archive_link($page){
 				));
 
 				/** 隠しモード 初回、もしくは前年度の最後の月の前に年数を表示する **/
-				$showFlag = ($i === 1);
+				if($this->secretMode){
+					$showFlag = ($i === 1);
 
-				//下記のコードで指定年の最初の月であるか？を調べる
-				$y = (int)date("Y", $key);
-				if(!$showFlag && $this->prevYear != $y) $showFlag = true;
+					//下記のコードで指定年の最初の月であるか？を調べる
+					$y = (int)date("Y", $key);
+					if(!$showFlag && $this->prevYear != $y) $showFlag = true;
 
-				//今月の年の記録
-				if($y > 1970) $this->prevYear = $y;
+					//今月の年の記録
+					if($y > 1970) $this->prevYear = $y;
 
 
-				$this->addModel("show_year_label", array(
-					"visible" => $showFlag,
-					"soy2prefix" => "cms"
-				));
+					$this->addModel("show_year_label", array(
+						"visible" => $showFlag,
+						"soy2prefix" => "cms"
+					));
 
-				$this->addModel("no_first", array(
-					"visible" => ($i > 1),
-					"soy2prefix" => "cms"
-				));
+					// cms:id="no_first" or cms:id="not_first"
+					foreach(array("no", "not") as $t){
+						$this->addModel($t . "_first", array(
+							"visible" => ($i > 1),
+							"soy2prefix" => "cms"
+						));
+					}
 
-				$this->addModel("no_year_label", array(
-					"visible" => !$showFlag,
-					"soy2prefix" => "cms"
-				));
+					$this->addModel("no_year_label", array(
+						"visible" => !$showFlag,
+						"soy2prefix" => "cms"
+					));
 
-				$this->addLabel("year", array(
-					"text" => $y,
-					"soy2prefix" => "cms"
-				));
+					$this->addLabel("year", array(
+						"text" => $y,
+						"soy2prefix" => "cms"
+					));
+				}
 				/** 隠しモードここまで **/
 			}
 		}
 	}
 
-	$page->createAdd("archive","BlogPage_MonthArciveList",array(
-		"list" => $month_list,
-		"monthPageUri" => $page->getMonthPageURL(true),
-		"soy2prefix" => "b_block"
-	));
+	if(!$readOnly){
+		$page->createAdd("archive","BlogPage_MonthArciveList",array(
+			"list" => $month_list,
+			"monthPageUri" => $page->getMonthPageURL(true),
+			"secretMode" => true,
+			"soy2prefix" => "b_block"
+		));
+	}
 }
-
 
 /*
 このブロックは、全てのブログページでご利用になれます。
@@ -333,6 +346,145 @@ function soy_cms_blog_output_archive_link_by_year($page){
 		"yearPageUri" => $page->getMonthPageURL(true),
 		"soy2prefix" => "b_block"
 	));
+}
+
+
+function soy_cms_blog_output_archive_link_every_year($page){
+	$labels = array($page->page->getBlogLabelId());
+
+	$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+	//取得までできているので、整形や表示を設定する
+	$month_list = $logic->getCountMonth($labels);
+
+	$month_every_year_list = array();
+	foreach($month_list as $key => $month){
+		if($month > 0){
+			$month_every_year_list[date("Y", $key)][$key] = $month;
+		}
+	}
+
+	if(!class_exists("BlogPage_MonthArciveList")){
+		soy_cms_blog_output_archive_link($page, true);
+	}
+
+	if(!class_exists("BlogPage_MonthArciveEveryYearList")){
+
+		class BlogPage_MonthArciveEveryYearList extends HTMLList{
+
+			var $monthPageUri;
+			var $format;
+
+			function setMonthPageUri($uri){
+				$this->monthPageUri = $uri;
+			}
+
+			function setFormat($format){
+				$this->format = $format;
+			}
+
+			protected function populateItem($month_list, $year){
+
+				$this->addLabel("year", array(
+					"text" => $year,
+					"soy2prefix" => "cms"
+				));
+
+				$this->createAdd("archive","BlogPage_MonthArciveList",array(
+					"list" => $month_list,
+					"monthPageUri" => $this->monthPageUri,
+					"secretMode" => false,
+					"soy2prefix" => "cms"
+				));
+			}
+		}
+	}
+
+	$page->createAdd("archive_every_year", "BlogPage_MonthArciveEveryYearList", array(
+		"list" => $month_every_year_list,
+		"monthPageUri" => $page->getMonthPageURL(true),
+		"soy2prefix" => "b_block"
+	));
+
+	//
+	// if(!class_exists("BlogPage_MonthArciveList")){
+	//
+	// 	/**
+	// 	 * 月別アーカイブを表示
+	// 	 */
+	// 	class BlogPage_MonthArciveList extends HTMLList{
+	//
+	// 		var $monthPageUri;
+	// 		var $format;
+	// 		private $prevYear;
+	//
+	// 		function setMonthPageUri($uri){
+	// 			$this->monthPageUri = $uri;
+	// 		}
+	//
+	// 		function setFormat($format){
+	// 			$this->format = $format;
+	// 		}
+	//
+	// 		protected function populateItem($count, $key, $i){
+	//
+	// 			$this->addLink("archive_link", array(
+	// 				"link" => $this->monthPageUri . date('Y/m',$key),
+	// 				"soy2prefix" => "cms"
+	// 			));
+	//
+	// 			$this->createAdd("archive_month", "DateLabel", array(
+	// 				"text" => $key,
+	// 				"soy2prefix" => "cms",
+	// 				"defaultFormat" => "Y年n月"
+	// 			));
+	// 			$this->createAdd("entry_count", "CMSLabel", array(
+	// 				"text" => $count,
+	// 				"soy2prefix" => "cms"
+	// 			));
+	//
+	// 			/** 隠しモード 初回、もしくは前年度の最後の月の前に年数を表示する **/
+	// 			$showFlag = ($i === 1);
+	//
+	// 			//下記のコードで指定年の最初の月であるか？を調べる
+	// 			$y = (int)date("Y", $key);
+	// 			if(!$showFlag && $this->prevYear != $y) $showFlag = true;
+	//
+	// 			//今月の年の記録
+	// 			if($y > 1970) $this->prevYear = $y;
+	//
+	//
+	// 			$this->addModel("show_year_label", array(
+	// 				"visible" => $showFlag,
+	// 				"soy2prefix" => "cms"
+	// 			));
+	//
+	// 			// cms:id="no_first" or cms:id="not_first"
+	// 			foreach(array("no", "not") as $t){
+	// 				$this->addModel($t . "_first", array(
+	// 					"visible" => ($i > 1),
+	// 					"soy2prefix" => "cms"
+	// 				));
+	// 			}
+	//
+	// 			$this->addModel("no_year_label", array(
+	// 				"visible" => !$showFlag,
+	// 				"soy2prefix" => "cms"
+	// 			));
+	//
+	// 			$this->addLabel("year", array(
+	// 				"text" => $y,
+	// 				"soy2prefix" => "cms"
+	// 			));
+	// 			/** 隠しモードここまで **/
+	// 		}
+	// 	}
+	// }
+
+	// $page->createAdd("archive", "BlogPage_MonthArciveList", array(
+	// 	"list" => $month_list,
+	// 	"monthPageUri" => $page->getMonthPageURL(true),
+	// 	"soy2prefix" => "b_block"
+	// ));
 }
 
 /*

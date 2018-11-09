@@ -495,6 +495,7 @@ class BlogPage extends Page{
 	const B_BLOCK_CATEGORY = "category";
 	const B_BLOCK_ARCHIVE = "archive";
 	const B_BLOCK_ARCHIVE_BY_YEAR = "archive_by_year";
+	const B_BLOCK_ARCHIVE_EVERY_YEAR = "archive_every_year";
 	const B_BLOCK_RECENT_ENTRY_LIST = "recent_entry_list";
 	const B_BLOCK_RECENT_COMMENT_LIST = "recent_comment_list";
 	const B_BLOCK_RECENT_TRACKBACK_LIST = "recent_trackback_list";
@@ -515,6 +516,7 @@ class BlogPage extends Page{
 			self::B_BLOCK_CATEGORY,
 			self::B_BLOCK_ARCHIVE,
 			self::B_BLOCK_ARCHIVE_BY_YEAR,
+			self::B_BLOCK_ARCHIVE_EVERY_YEAR,
 			self::B_BLOCK_RECENT_ENTRY_LIST,
 			self::B_BLOCK_RECENT_COMMENT_LIST,
 			self::B_BLOCK_RECENT_TRACKBACK_LIST,

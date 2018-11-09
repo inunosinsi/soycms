@@ -548,6 +548,9 @@ class CMSBlogPage extends CMSPage{
 		//年別リンクを出力 archive_by_year
 		if(self::checkUseBBlock(BlogPage::B_BLOCK_ARCHIVE_BY_YEAR)) soy_cms_blog_output_archive_link_by_year($this);
 
+		//年度ごとに月別リンクを出力 archive_every_year
+		if(self::checkUseBBlock(BlogPage::B_BLOCK_ARCHIVE_EVERY_YEAR)) soy_cms_blog_output_archive_link_every_year($this);
+
 		//トップページへのリンクを出力
 		if(self::checkUseBBlock(BlogPage::B_BLOCK_TOP_LINK)) soy_cms_blog_output_top_link($this);
 
