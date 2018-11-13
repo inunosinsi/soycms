@@ -109,20 +109,7 @@ class SOYShop_ItemReview {
 
 	function getEvaluationString(){
 		SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
-		$config = ItemReviewUtil::getConfig();
-
-		$rank = $this->getEvaluation();
-		$notRank = 5 - (int)$rank;
-		//評価分
-		$str1 = "";
-		$str2 = "";
-		for($i = 0; $i < $rank; $i++){
-			$str1 .= "★";
-		}
-		for($j = 0; $j < $notRank; $j++){
-			$str2 .= "☆";
-		}
-		return "<span style=\"color:#" . $config["code"] . ";\">" . $str1 . "</span>" . $str2;
+		return ItemReviewUtil::buildEvaluationString($this->getEvaluation());
 	}
 
 	function getApproval(){

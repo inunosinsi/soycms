@@ -67,7 +67,7 @@
 
 <h3><a href="javascript:void(0);" onclick="$('.id_example').toggle();">cms:id一覧</a></h3>
 <table class="form_list id_example" style="display:none;">
-	<caption>block:id="review_list"内で使用できるcms:id</caption>
+	<caption>block:id="review_list"内で使用できるタグ</caption>
 	<thead>
 		<tr>
 			<th>cms:id</th>
@@ -105,7 +105,7 @@
 </table>
 
 <table class="form_list id_example" style="display:none;">
-	<caption>block:id="review_form"内で使用できるcms:id</caption>
+	<caption>block:id="review_form"内で使用できるタグ</caption>
 	<thead>
 		<tr>
 			<th>cms:id</th>
@@ -166,7 +166,7 @@
 </table>
 
 <table class="form_list id_example" style="display:none;">
-	<caption>上記以外のcms:id</caption>
+	<caption>上記以外のタグ</caption>
 	<thead>
 		<tr>
 			<th>cms:id</th>
@@ -188,12 +188,41 @@
 	</tbody>
 </table>
 
+<table class="form_list id_example" style="display:none;">
+	<caption>block:id="item" or block:id="item_list"で使用できるタグ</caption>
+	<thead>
+		<tr>
+			<th>cms:id</th>
+			<th>タグ</th>
+			<th>説明</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>is_evaluate_average</td>
+			<td>すべて</td>
+			<td>囲った個所が評価の平均が1以上の場合に表示される</td>
+		</tr>
+		<tr>
+			<td>evaluate_average</td>
+			<td>すべて</td>
+			<td>評価の平均を数字で表示します</td>
+		</tr>
+		<tr>
+			<td>evaluate_average_star</td>
+			<td>すべて</td>
+			<td>評価の平均を５つ星形式で表示します</td>
+		</tr>
+	</tbody>
+</table>
+
 
 <br />
 
 <h1>商品レビューの設定</h1>
 
-<p class="notice" soy:id="updated">変更しました</p>
+<p class="notice" soy:display="updated">変更しました</p>
+<p class="error" soy:display="failed">失敗しました</p>
 
 <form soy:id="form">
 	<dl>
@@ -245,4 +274,4 @@
 	<p class="pageBtn">
 		<input type="submit" class="submit_button" name="update" value="変更" tabindex="400" />
 	</p>
-</form soy:id="form">
+</form>

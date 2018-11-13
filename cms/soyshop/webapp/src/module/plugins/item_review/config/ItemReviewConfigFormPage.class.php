@@ -9,37 +9,20 @@ class ItemReviewConfigFormPage extends WebPage{
 
     function doPost(){
 
-    	if(soy2_check_token()){
-    		$config = (isset($_POST["Config"])) ? $_POST["Config"] : array();
-
-    		$config["code"] = mb_convert_kana($config["code"], "a");
-    		$config["code"] = str_replace("#", "", $config["code"]);
-    		if(!preg_match("/^([a-fA-F0-9])/", $config["code"])){
-    			$config["code"] = "ffff00";
-    		}
-
-    		$config["login"] = (isset($config["login"])) ? 1 : null;
-    		$config["publish"] = (isset($config["publish"])) ? 1 : null;
-    		$config["edit"] = (isset($config["edit"])) ? 1 : null;
-    		$config["captcha"] = (isset($config["captcha"])) ? trim($config["captcha"]) : "";
-    		$config["captcha_img"] = (isset($config["captcha_img"])) ? 1 : null;
-			$config["evaluation_star"] = (isset($config["evaluation_star"])) ? 1 : null;
-
-    		$config["point"] = (isset($config["point"]) && is_numeric($config["point"])) ? (int)$config["point"] : 0;
-
-    		SOYShop_DataSets::put("item_review.config", $config);
+    	if(soy2_check_token() && isset($_POST["Config"])){
+			ItemReviewUtil::saveConfig($_POST["Config"]);
     		$this->config->redirect("updated");
     	}
+		$this->config->redirect("failed");
     }
 
     function execute(){
-    	$config = ItemReviewUtil::getConfig();
 
     	parent::__construct();
 
-    	$this->addModel("updated", array(
-    		"visible" => (isset($_GET["updated"]))
-    	));
+		DisplayPlugin::toggle("failed", isset($_GET["failed"]));
+
+		$config = ItemReviewUtil::getConfig();
 
     	$this->addForm("form");
 
