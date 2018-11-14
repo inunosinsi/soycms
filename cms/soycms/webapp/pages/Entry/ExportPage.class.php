@@ -38,7 +38,8 @@ class ExportPage extends CMSWebPageBase {
 			"title" => "タイトル",
 			"alias" => "エイリアス",
 			"content" => "本文",
-			"more" => "追記"
+			"more" => "追記",
+			"cdate" => "作成日時"
 		);
 	}
 
