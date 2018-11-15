@@ -20,7 +20,7 @@ class EntryCalendarPlugin{
 			"modifier"=>"Tsuyoshi Saito",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){

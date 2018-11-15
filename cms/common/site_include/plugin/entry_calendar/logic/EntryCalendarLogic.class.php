@@ -25,7 +25,7 @@ class EntryCalendarLogic extends SOY2LogicBase {
 				"AND ent.cdate <= " . $end . " ".
 				"AND ent.openPeriodStart <= " . $now . " ".
 				"AND ent.openPeriodEnd >= " . $now . " ".
-				"AND ent.isPublished != -2 ".
+				"AND ent.isPublished > 0 ".
 				"AND lab.label_id = :labelId";
 
 		try{
