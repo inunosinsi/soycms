@@ -134,7 +134,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$page->addForm("review_form", array(
 			"soy2prefix" => "block"
 		));
-		
+
 		$page->addModel("review_error", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"visible" => (count($this->review) && !isset($this->review["title"]))
@@ -169,13 +169,15 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		SOY2::import("module.plugins.item_review.component.EvaluationStarComponent");
 		$page->addLabel("evaluation_star", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"html" => EvaluationStarComponent::buildEvaluateArea()
+			"html" => EvaluationStarComponent::buildEvaluateArea(3)
 		));
 
 		$page->addInput("captcha_input", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"name" => "Review[captcha]",
-			"value" => ""
+			"value" => "",
+			"attr:required" => "required",
+			"attr:placeholder" => "表示されているアルファベットを入力して下さい。"
 		));
 
 		$page->addLabel("captcha_code", array(
