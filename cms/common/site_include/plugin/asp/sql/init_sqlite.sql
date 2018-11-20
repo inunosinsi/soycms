@@ -1,0 +1,6 @@
+CREATE TABLE asp_pre_register(
+	token VARCHAR(32) NOT NULL UNIQUE,
+	site_id VARCHAR(255) NOT NULL UNIQUE,
+	data TEXT NOT NULL,
+	create_date INTEGER NOT NULL
+);
