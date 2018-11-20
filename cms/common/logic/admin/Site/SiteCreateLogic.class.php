@@ -32,14 +32,14 @@ class SiteCreateLogic extends SOY2LogicBase{
 	 *
 	 * @param $siteId サイトのID
 	 */
-	public function createNewSite($siteId){
+	public function createNewSite($siteId, $dbType = SOYCMS_DB_TYPE){
 
 		//ディレクトリとパスを決める
 		$this->prepare($siteId);
 		$this->log("Create a new site [$siteId]");
 
 		//DSNが空なら入れておく。MySQLのアカウントも。
-		$this->setDefaultDBInfo($siteId);
+		$this->setDefaultDBInfo($siteId, $dbType);
 		$this->log("DSN: {$this->dsn}; USER: {$this->user}; PASSWORD: ----");
 
 		//ディレクトリを作る
@@ -50,7 +50,7 @@ class SiteCreateLogic extends SOY2LogicBase{
 
 		//ファイルを作る（既存のファイルはバックアップを取った上で上書き、）
 		$this->createHtaccess($siteId, false);//新規サイトはルートサイトではない
-		$this->createController($siteId);
+		$this->createController($siteId, $dbType);
 		$this->copy_im_php();
 
 		//デフォルトのアップロード先を作る
@@ -60,7 +60,7 @@ class SiteCreateLogic extends SOY2LogicBase{
 		$this->createUserDir();
 
 		//データベース作成
-		$this->initDB();
+		$this->initDB($dbType);
 
 		//同梱テンプレートをコピー
 		$this->addTemplatePack();
@@ -85,6 +85,7 @@ class SiteCreateLogic extends SOY2LogicBase{
 		$this->uploadDirPath        = $dirPath ."files/";
 
 		$this->logFile = $this->dbDirPath."soycms.log";
+		SOY2::import("util.ServerInfoUtil");
 		if(ServerInfoUtil::sys_get_writable_temp_dir()) $this->tmpLogFile = tempnam(ServerInfoUtil::sys_get_writable_temp_dir(), 'soycms');
 	}
 
@@ -204,7 +205,7 @@ class SiteCreateLogic extends SOY2LogicBase{
 
 		//404ページ
 		$uri = "_notfound";
-		$title = (SOYCMS_LANGUAGE=="ja") ? "ページが見つかりません":"404 Not Found";
+		$title = (defined("SOYCMS_LANGUAGE") && SOYCMS_LANGUAGE=="ja") ? "ページが見つかりません":"404 Not Found";
 		$template =  file_get_contents(dirname(__FILE__)."/404.html");
 		$template = str_replace("@@SITE_LINK;",$siteUrl,$template);
 		$pageType = Page::PAGE_TYPE_ERROR;
@@ -219,12 +220,12 @@ class SiteCreateLogic extends SOY2LogicBase{
 
 	}
 
-	private function initDB(){
-		$this->log("Init database: "."init_site_".SOYCMS_DB_TYPE.".sql");
+	private function initDB($dbType = SOYCMS_DB_TYPE){
+		$this->log("Init database: "."init_site_".$dbType.".sql");
 
 		$pdo = $this->getSitePDO();
 
-		$sql = file_get_contents(CMS_SQL_DIRECTORY . "init_site_".SOYCMS_DB_TYPE.".sql");
+		$sql = file_get_contents(CMS_SQL_DIRECTORY . "init_site_".$dbType.".sql");
 		$sqls = explode(";",$sql);
 
 		foreach($sqls as $sql){
@@ -248,13 +249,13 @@ class SiteCreateLogic extends SOY2LogicBase{
 		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
 	}
 
-	private function &getSitePDO(){
+	private function &getSitePDO($dbType = SOYCMS_DB_TYPE){
 
 		static $pdo;
 
 		if(!$pdo){
 
-			switch(SOYCMS_DB_TYPE){
+			switch($dbType){
 				case "mysql":
 					$pdo = new PDO($this->dsn,$this->user,$this->pass,array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 
@@ -278,9 +279,9 @@ class SiteCreateLogic extends SOY2LogicBase{
 	 * MySQL版のみ
 	 * データベースの作成
 	 */
-	public function createDataBase($siteId){
+	public function createDataBase($siteId, $dbType = SOYCMS_DB_TYPE){
 
-		if(SOYCMS_DB_TYPE != "mysql")return;
+		if($dbType != "mysql")return;
 
 		$dbExists = false;
 
@@ -375,13 +376,13 @@ class SiteCreateLogic extends SOY2LogicBase{
 		}
 	}
 
-	private function createController($siteId){
+	private function createController($siteId, $dbType = SOYCMS_DB_TYPE){
 		$this->log("Create the front controller");
 
 		$filename = $this->siteDirPath.self::CONTROLLER_FILENAME;
 
 		CMSUtil::createBackup($filename);
-		file_put_contents($filename, $this->getController($siteId));
+		file_put_contents($filename, $this->getController($siteId, $dbType));
 
 		$this->makeExecutableForCGI($filename);
 	}
@@ -389,37 +390,37 @@ class SiteCreateLogic extends SOY2LogicBase{
 	/**
 	 * @return String
 	 */
-	public function getController($siteId){
+	public function getController($siteId, $dbType = SOYCMS_DB_TYPE){
 
 		//DB情報が必要
 		if(strlen($this->dsn) == 0){
 			//$this->dsn = $site->getDataSourceName()
-			$this->setDefaultDBInfo($siteId);
+			$this->setDefaultDBInfo($siteId, $dbType);
 		}
 
-		return $this->__getController($this->dsn, $this->user, $this->pass);
+		return $this->__getController($this->dsn, $this->user, $this->pass, $dbType);
 	}
 
 	/**
 	 * @return String
 	 */
-	public function getControllerForRenew($site){
+	public function getControllerForRenew($site, $dbType = SOYCMS_DB_TYPE){
 
 		//DB情報が必要
 		if(strlen($this->dsn) == 0){
 			//DSNは現在保存されているものを使う
 			$this->dsn = $site->getDataSourceName();
 			//User, Password
-			$this->setDefaultDBInfo($site->getSiteId());
+			$this->setDefaultDBInfo($site->getSiteId(), $dbType);
 		}
 
-		return $this->__getController($this->dsn, $this->user, $this->pass);
+		return $this->__getController($this->dsn, $this->user, $this->pass, $dbType);
 	}
 
 	/**
 	 * @return String
 	 */
-	private function __getController($dsn, $dbUser, $dbPassword){
+	private function __getController($dsn, $dbUser, $dbPassword, $dbType = SOYCMS_DB_TYPE){
 
 		$controller = array();
 		$controller[] = "<?php ";
@@ -434,7 +435,7 @@ class SiteCreateLogic extends SOY2LogicBase{
 
 		$controller[] = 'define("_SITE_ROOT_",dirname(__FILE__));';
 		$controller[] = 'define("_SITE_DSN_","'.$dsn.'");';
-		$controller[] = 'define("_SITE_DB_FILE_",_SITE_ROOT_."/.db/'.SOYCMS_DB_TYPE.'.db");';
+		$controller[] = 'define("_SITE_DB_FILE_",_SITE_ROOT_."/.db/'.$dbType.'.db");';
 		if(strlen($dbUser))$controller[] = 'define("_SITE_DB_USER_",    "'.$dbUser.'");';
 		if(strlen($dbPassword))$controller[] = 'define("_SITE_DB_PASSWORD_","'.$dbPassword.'");';
 		$controller[] = 'define("_CMS_COMMON_DIR_", "'.dirname(CMS_SITE_INCLUDE).'");';
@@ -571,8 +572,8 @@ class SiteCreateLogic extends SOY2LogicBase{
 	 * MySQL版のときは$this->userと$this->
 	 * SQLite版のときは"sqlite:".$this->dbDirPath."sqlite.db"
 	 */
-	private function setDefaultDBInfo($siteId){
-		switch(SOYCMS_DB_TYPE){
+	private function setDefaultDBInfo($siteId, $dbType = SOYCMS_DB_TYPE){
+		switch($dbType){
 			case "mysql":
 				$this->user = ADMIN_DB_USER;
 				$this->pass = ADMIN_DB_PASS;
@@ -581,7 +582,7 @@ class SiteCreateLogic extends SOY2LogicBase{
 			default:
 		}
 		if(strlen($this->dsn) == 0){
-			switch(SOYCMS_DB_TYPE){
+			switch($dbType){
 				case "mysql":
 					$this->dsn = preg_replace('/dbname=([^;=]+)/',"dbname=".$this->getDatabaseName($siteId),ADMIN_DB_DSN);
 					break;

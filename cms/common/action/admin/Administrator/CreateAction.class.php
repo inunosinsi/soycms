@@ -37,7 +37,4 @@ class CreateAction extends SOY2Action{
     function getActionFormName(){
     	return "AdministratorActionForm";
     }
-
 }
-
-?>

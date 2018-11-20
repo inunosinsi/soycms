@@ -3,6 +3,7 @@
 class ModuleListComponent extends HTMLList{
 
 	private $editorLink;
+	private $removeLink;
 
 	protected function populateItem($entity){
 
@@ -20,6 +21,10 @@ class ModuleListComponent extends HTMLList{
 		$this->addLink("module_link", array(
 			"link" => (isset($moduleId)) ? $this->editorLink . $moduleId : null
 		));
+
+		$this->addLink("remove_link", array(
+			"link" => (isset($moduleId)) ? $this->removeLink . $moduleId : null
+		));
 	}
 
 	private function convertModuleId($moduleId){
@@ -32,5 +37,9 @@ class ModuleListComponent extends HTMLList{
 
 	function setEditorLink($editorLink){
 		$this->editorLink = $editorLink;
+	}
+
+	function setRemoveLink($removeLink){
+		$this->removeLink = $removeLink;
 	}
 }

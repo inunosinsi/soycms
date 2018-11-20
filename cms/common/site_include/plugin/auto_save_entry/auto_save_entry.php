@@ -116,4 +116,3 @@ class AutoSaveEntryPlugin{
 		CMSPlugin::addPlugin(AutoSaveEntryPlugin::PLUGIN_ID, array($obj, "init"));
 	}
 }
-?>

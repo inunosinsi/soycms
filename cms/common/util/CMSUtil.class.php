@@ -40,7 +40,7 @@ class CMSUtil {
 	 */
 	public static function getSiteUrl(){
 		static $siteUrlBySiteUrl;
-		if(!$siteUrlBySiteUrl){
+		if(is_null($siteUrlBySiteUrl)){
 			$siteConfigDao = SOY2DAOFactory::create("cms.SiteConfigDAO");
 	    	try{
 	    		$siteConfig = $siteConfigDao->get();
@@ -49,13 +49,14 @@ class CMSUtil {
 	    	}
 
 	    	//SiteConfigに入っているURLを取得する
-	    	if(!is_null($siteConfig->getConfigValue("url"))){
-	    		$siteUrlBySiteUrl = $siteConfig->getConfigValue("url");
-
-	    	//SiteConfigにURLが入っていなかった場合はUserInfoUtilから公開URLを取得する
-	    	}else{
-	    		$siteUrlBySiteUrl = UserInfoUtil::getSitePublishURL();
-	    	}
+			$url = $siteConfig->getConfigValue("url");
+			if(is_bool($url) && !$url) $url = null;	//falseで返ってくることがあった。
+			if(isset($url) && is_string($url) && strlen($url) > 0){
+				$siteUrlBySiteUrl = $url;
+			//SiteConfigにURLが入っていなかった場合はUserInfoUtilから公開URLを取得する
+			}else{
+				$siteUrlBySiteUrl = UserInfoUtil::getSitePublishURL();
+			}
 		}
 
     	return $siteUrlBySiteUrl;

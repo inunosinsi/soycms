@@ -64,7 +64,10 @@
 									<tr>
 										<th>モジュールID</th>
 										<th class="title">モジュール名</th>
-										<th class="status">操作</th>
+										<th class="status">
+											操作&nbsp;
+											<a class="btn btn-default" href="javascript:void(0);" onclick="$(this).hide();$('.module_delete_btn').css('visibility','visible');">削除</a>
+										</th>
 									</tr>
 								</thead>
 								<tbody class="entry_list">
@@ -75,7 +78,8 @@
 											<a soy:id="module_name">タイトル...</a>
 										</td>
 										<td>
-											<a class="btn btn-default" soy:id="module_link">編集</a>
+											<a class="btn btn-default" soy:id="module_link">編集</a>&nbsp;
+											<a soy:id="remove_link" href="#" class="btn btn-primary module_delete_btn" onclick="return confirm('削除してもよろしいですか？')">削除</a>
 										</td>
 									</tr>
 									<!-- /soy:id="module_list" -->
@@ -106,7 +110,10 @@
 									<tr>
 										<th>モジュールID</th>
 										<th class="title">モジュール名</th>
-										<th class="status">操作</th>
+										<th class="status">
+											操作&nbsp;
+											<a class="btn btn-default" href="javascript:void(0);" onclick="$(this).hide();$('.html_module_delete_btn').css('visibility','visible');">削除</a>
+										</th>
 									</tr>
 								</thead>
 								<tbody class="entry_list">
@@ -117,7 +124,8 @@
 											<a soy:id="module_name">タイトル...</a>
 										</td>
 										<td>
-											<a class="btn btn-default" soy:id="module_link">編集</a>
+											<a class="btn btn-default" soy:id="module_link">編集</a>&nbsp;
+											<a soy:id="remove_link" href="#" class="btn btn-primary html_module_delete_btn" onclick="return confirm('削除してもよろしいですか？')">削除</a>
 										</td>
 									</tr>
 									<!-- /soy:id="html_module_list" -->
@@ -134,7 +142,17 @@
 		<!-- soy:page="_common.FooterPage" /-->
 	</div>
 	<!-- /#wrapper -->
-
+	<style type="text/css">
+	.delete_btn{
+		visibility:hidden;
+	}
+	.module_delete_btn{
+		visibility:hidden;
+	}
+	.html_module_delete_btn{
+		visibility:hidden;
+	}
+	</style>
 </body>
 
 </html>

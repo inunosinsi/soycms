@@ -30,7 +30,8 @@ class IndexPage extends CMSWebPageBase{
 
 		$this->createAdd("module_list", "_component.Module.ModuleListComponent", array(
 			"list" => $modules,
-			"editorLink" => SOY2PageController::createLink("Module.Editor?moduleId=")
+			"editorLink" => SOY2PageController::createLink("Module.Editor?moduleId="),
+			"removeLink" => SOY2PageController::createLink("Module.Remove?moduleId=")
 		));
 
 		$modules = self::getModules(self::TYPE_HTML);
@@ -45,7 +46,8 @@ class IndexPage extends CMSWebPageBase{
 
 		$this->createAdd("html_module_list", "_component.Module.ModuleListComponent", array(
 			"list" => $modules,
-			"editorLink" => SOY2PageController::createLink("Module.HTML.Editor?moduleId=")
+			"editorLink" => SOY2PageController::createLink("Module.HTML.Editor?moduleId="),
+			"removeLink" => SOY2PageController::createLink("Module.HTML.Remove?moduleId=")
 		));
 	}
 

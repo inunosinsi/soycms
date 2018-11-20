@@ -7,11 +7,11 @@ class MailPage extends WebPage{
 	private $logic;
 
 	function doPost(){
-		
+
 		if(!soy2_check_token()){
 			SOY2PageController::jump("Administrator.Mail");
 		}
-		
+
 		//テスト送信
 		if(isset($_POST["test_mail_address"])){
 			try{
@@ -20,7 +20,7 @@ class MailPage extends WebPage{
 			}catch(Exception $e){
 				SOY2PageController::jump("Administrator.Mail?failed_to_send");
 			}
-		
+
 		//設定更新
 		}else{
 			try{
@@ -60,7 +60,7 @@ class MailPage extends WebPage{
 		$serverConfig = $this->logic->get();
 		$hasMailConfig = strlen($serverConfig->getFromMailAddress()) > 0;
 		$hasMailAddress = SOY2Logic::createInstance("logic.admin.Administrator.AdministratorLogic")->hasMailaddress();
-		
+
 		DisplayPlugin::toggle("no_mail_config", !$hasMailConfig);
 		DisplayPlugin::toggle("no_mail_address", !$hasMailAddress);
 		DisplayPlugin::toggle("valid", $hasMailConfig && $hasMailAddress);
@@ -228,7 +228,7 @@ class MailPage extends WebPage{
 			"name" => "returnMailAddress",
 			"value" => $serverConfig->getReturnMailAddress()
 		));
-		
+
 		$this->addInput("return_name", array(
 			"name" => "returnMailAddressName",
 			"value" => $serverConfig->getReturnMailAddressName()

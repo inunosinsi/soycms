@@ -119,16 +119,15 @@ class SiteLogic implements SOY2LogicInterface{
 	 * @param encoding 文字コード
 	 * @param flag 管理側DBに作成するかどうか
 	 */
-	function createSite($siteId, $siteName, $encoding, $flag = true, $copyFrom = false){
+	function createSite($siteId, $siteName, $encoding, $flag = true, $copyFrom = false, $dbType = SOYCMS_DB_TYPE){
 		$dao = SOY2DAOFactory::create("admin.SiteDAO");
 
 		//すでにディレクトリが存在するかどうか
 		$dirAlreadyExists = file_exists(SOYCMS_TARGET_DIRECTORY . $siteId);
+		$logic = SOY2Logic::createInstance("logic.admin.Site.SiteCreateLogic");
 
 		try{
 			$dao->begin();
-
-			$logic = SOY2Logic::createInstance("logic.admin.Site.SiteCreateLogic");
 
 			if($flag){
 				//サイトのDBを作成する
@@ -144,7 +143,7 @@ class SiteLogic implements SOY2LogicInterface{
 
 			//サイトのディレクトリ、DBを初期化
 			try{
-					$logic->createNewSite($siteId);
+					$logic->createNewSite($siteId, $dbType);
 					$logic->initSiteConfig($siteName,$encoding);
 					$logic->initDefaultPage(UserInfoUtil::getSiteURLBySiteId($siteId));
 				}catch(Exception $e){

@@ -62,12 +62,12 @@ class IndexPage extends CMSWebPageBase{
 
 		$result = $this->run("Entry.RecentListAction", array("limit" => self::NUMBER_OF_ENTRIES));
 
-		$this->createAdd("recentEntries", "RecentEntryList", array(
+		$this->createAdd("recentEntries", "_component.Recent.EntryListComponent", array(
 			"list"=>$result->getAttribute("list"),
 			"labels"=>$result->getAttribute("labels")
 		));
 
-		$this->createAdd("recentPage", "RecentPageList", array(
+		$this->createAdd("recentPage", "_component.Recent.PageListComponent", array(
 				"list" => $this->run("Page.RecentPageListAction", array("limit" => self::NUMBER_OF_ENTRIES))->getAttribute("list")
 		));
 
@@ -155,7 +155,7 @@ class IndexPage extends CMSWebPageBase{
 			$comment->info = $this->getBlogId($comment->getEntryId());
 		}
 
-		$this->createAdd("recentComment", "RecentCommentList", array(
+		$this->createAdd("recentComment", "_component.Recent.CommentListComponent", array(
 			"list"=>$comments
 		));
 	}
@@ -177,7 +177,7 @@ class IndexPage extends CMSWebPageBase{
 			$trackbacks[$key]->info = $this->getBlogId($trackback->getEntryId());
 		}
 
-		$this->createAdd("recentTrackback", "RecentTrackbackList", array(
+		$this->createAdd("recentTrackback", "_component.Recent.TrackbackListComponent", array(
 			"list"=>$trackbacks
 		));
 	}
@@ -216,121 +216,5 @@ class IndexPage extends CMSWebPageBase{
 	private function getSiteConfig(){
 		$result = SOY2ActionFactory::createInstance("SiteConfig.DetailAction")->run();
 		return $result->getAttribute("entity");
-	}
-}
-
-class RecentCommentList extends HTMLList{
-
-	function populateItem($entity){
-		$blog = (isset($entity->info["blog"])) ? $entity->info["blog"] : null;
-		$entry = (isset($entity->info["entry"])) ? $entity->info["entry"] : null;
-
-		if(is_null($blog)) $blog = new BlogPage();
-		if(is_null($entry)) $entry = new Entry();
-
-		$title = ((strlen($entity->getTitle())==0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle());
-		$title .= strlen($entity->getAuthor()) == 0  ? "" : " (" . $entity->getAuthor() . ")";
-
-		$this->addLink("title", array(
-			"link"=>SOY2PageController::createLink("Blog.Comment." . $blog->getId()),
-			"text"=>$title
-		));
-
-		$this->addLabel("content", array(
-			"text"=>$entry->getTitle() . " (" . $blog->getTitle() . ")"
-		));
-		$this->addLabel("udate", array(
-			"text"=>CMSUtil::getRecentDateTimeText($entity->getSubmitDate()),
-			"title" => date("Y-m-d H:i:s", $entity->getSubmitDate())
-		));
-	}
-}
-
-class RecentTrackbackList extends HTMLList{
-
-	function populateItem($entity){
-		$blog = (isset($entity->info["blog"])) ? $entity->info["blog"] : null;
-		$entry = (isset($entity->info["entry"])) ? $entity->info["entry"] : null;
-
-		if(is_null($blog)) $blog = new BlogPage();
-		if(is_null($entry)) $entry = new Entry();
-
-
-		$title = ((strlen($entity->getTitle()) == 0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle());
-		$title .= (strlen($entity->getBlogName()) == 0)  ? "" : " (" . $entity->getBlogName() . ")";
-
-		$this->addLink("title", array(
-			"link"=>SOY2PageController::createLink("Blog.Trackback." . $blog->getId()),
-			"text"=>$title
-		));
-		$this->addLabel("content", array(
-			"text"=>$entry->getTitle() . " (" . $blog->getTitle() . ")"
-		));
-		$this->addLabel("udate", array(
-			"text"  => CMSUtil::getRecentDateTimeText($entity->getSubmitDate()),
-			"title" => date("Y-m-d H:i:s", $entity->getSubmitDate())
-		));
-	}
-
-}
-
-class RecentEntryList extends HTMLList{
-
-	var $labels = array();
-
-	function setLabels($array){
-		if(is_array($array)){
-			$this->labels = $array;
-		}
-	}
-
-	function populateItem($entity){
-
-		$this->addLink("title", array(
-			"link" => SOY2PageController::createLink("Entry.Detail") . "/" . $entity->getId(),
-			"text" => (strlen($entity->getTitle()) == 0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle(),
-			"onmouseover" => 'var ele=$(\'#popup_entry_comment_' . $entity->getId() . '\');if(!ele)return;ele.show();',
-			"onmouseout" => 'var ele=$(\'#popup_entry_comment_' . $entity->getId() . '\');if(!ele)return;ele.hide();',
-		));
-
-		$popupText = ($entity->getDescription()) ? CMSUtil::getText("[メモ]") . $entity->getDescription() : "";
-		$this->addLabel("popup", array(
-			"id" => "popup_entry_comment_" . $entity->getId(),
-			"text" => $popupText,
-			"visible" => strlen($popupText)
-		));
-
-		$this->addLabel("content", array(
-			"text"  => SOY2HTML::ToText($entity->getContent()),
-			"width" => 60,
-			"title" => mb_strimwidth(SOY2HTML::ToText($entity->getContent()), 0, 1000, "..."),
-		));
-
-
-		$this->addLabel("udate", array(
-			"text"  => CMSUtil::getRecentDateTimeText($entity->getUdate()),
-			"title" => date("Y-m-d H:i:s", $entity->getUdate())
-		));
-	}
-}
-
-class RecentPageList extends HTMLList{
-
-	function populateItem($entity){
-
-		$this->addLink("title", array(
-			"text"=>(strlen($entity->getTitle()) == 0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle(),
-			"link"=>SOY2PageController::createLink("Page.Detail.") . $entity->getId()
-		));
-
-		$this->addLink("content", array(
-			"text" => "/" . $entity->getUri(),
-			"link" => CMSUtil::getSiteUrl() . $entity->getUri()
-		));
-
-		$this->addLabel("udate", array(
-			"text"=>CMSUtil::getRecentDateTimeText($entity->getUdate()),
-			"title" => date("Y-m-d H:i:s", $entity->getUdate())
-		));
 	}
 }

@@ -151,4 +151,3 @@ class SiteRoleLogic implements SOY2LogicInterface{
     	}
     }
 }
-?>

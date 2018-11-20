@@ -340,4 +340,3 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 		return SOY2DAOFactory::create("admin.AdministratorDAO");
 	}
 }
-?>
