@@ -480,11 +480,19 @@ class MailLogic extends SOY2LogicBase{
 			))->getBody();
 		}
 
-		$mailBody =
-			$mailConfig["header"] ."\n".
-			$body . "\n" .
-			$appned_body .
-			$mailConfig["footer"];
+		//システムからの内容を出力するか？
+		if(isset($mailConfig["output"]) && (int)$mailConfig["output"] === 1){
+			$mailBody =
+				$mailConfig["header"] ."\n".
+				$body . "\n" .
+				$appned_body .
+				$mailConfig["footer"];
+		}else{
+			$mailBody =
+				$mailConfig["header"] ."\n".
+				$mailConfig["footer"];
+		}
+
 
 		//置換文字列
 		$title = self::convertMailContent($mailConfig["title"], $user, $order);

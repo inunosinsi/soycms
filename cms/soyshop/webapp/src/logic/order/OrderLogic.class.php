@@ -204,7 +204,7 @@ class OrderLogic extends SOY2LogicBase{
 	    		try{
 					/** メール送信 **/
 					if(self::sendMailOnChangeDeliveryStatus($order, $status, $oldStatus)){
-						$order->setMailStatusByType(SOYShop_Order::SENDMAIL_TYPE_DELIVERY, time());
+						$order->setMailStatusByType(self::getMailStatus($status), time());
 					}
 					//注文番号を壊して登録
 					if($isDestroyTrackingNumber) $order->setTrackingNumber(self::destroyTrackingNumber($order));
@@ -243,25 +243,7 @@ class OrderLogic extends SOY2LogicBase{
 		//送信前に念の為に確認
 		if((int)$newStatus === (int)$oldStatus) return false;
 
-		$sendMailType = null;
-		switch($newStatus){
-			case SOYShop_Order::ORDER_STATUS_SENDED:
-				$sendMailType = SOYShop_Order::SENDMAIL_TYPE_DELIVERY;
-				break;
-			default:
-				//拡張ポイントを調べる
-				SOYShopPlugin::load("soyshop.order.detail.mail");
-				$statusList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "autosend"))->getList();
-				foreach($statusList as $mailConf){
-					foreach($mailConf as $statusCode => $mailType){
-						if((int)$statusCode === (int)$newStatus){
-							$sendMailType = $mailType;
-						}
-					}
-				}
-		}
-
-		//
+		$sendMailType = self::getMailStatus($newStatus);
 		if(is_null($sendMailType)) return false;
 
 		//既に送信している場合は送信しない
@@ -273,7 +255,7 @@ class OrderLogic extends SOY2LogicBase{
 		if(!isset($mailConfig["active"]) || (int)$mailConfig["active"] !== 1) return false;
 
 		list($mailBody, $title) = $mailLogic->buildMailBodyAndTitle($order, $mailConfig);
-		
+
 		//宛名
 		$user = soyshop_get_user_by_id($order->getUserId());
 		$userName = $user->getName();
@@ -283,6 +265,29 @@ class OrderLogic extends SOY2LogicBase{
 		$mailLogic->sendMail($user->getMailAddress(), $title, $mailBody, $userName, $order);
 
 		return true;
+	}
+
+	private function getMailStatus($status){
+		static $sendMailType;
+		if(is_null($sendMailType)){
+			switch($status){
+				case SOYShop_Order::ORDER_STATUS_SENDED:
+					$sendMailType = SOYShop_Order::SENDMAIL_TYPE_DELIVERY;
+					break;
+				default:
+					//拡張ポイントを調べる
+					SOYShopPlugin::load("soyshop.order.detail.mail");
+					$statusList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "autosend"))->getList();
+					foreach($statusList as $mailConf){
+						foreach($mailConf as $statusCode => $mailType){
+							if((int)$statusCode === (int)$status){
+								$sendMailType = $mailType;
+							}
+						}
+					}
+			}
+		}
+		return $sendMailType;
 	}
 
     /**
