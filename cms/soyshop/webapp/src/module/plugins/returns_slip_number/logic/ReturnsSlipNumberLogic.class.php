@@ -133,7 +133,7 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		$cnt = $this->slipDao->countNoReturnByOrderId($slipNumber->getOrderId());
 		if($cnt === 0){
-			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), 21);
+			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), ReturnsSlipNumberUtil::STATUS_CODE);
 		//戻す
 		}else{
 			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), SOYShop_Order::ORDER_STATUS_SENDED);

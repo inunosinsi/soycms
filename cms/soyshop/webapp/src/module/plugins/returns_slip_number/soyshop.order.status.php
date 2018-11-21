@@ -3,7 +3,8 @@
 class ReturnsSlipNumberOrderStatus extends SOYShopOrderStatus{
 
 	function statusItem(){
-		return array("21" => array("label" => "返却済み", "mail" => null));
+		SOY2::import("module.plugins.returns_slip_number.util.ReturnsSlipNumberUtil");
+		return array(ReturnsSlipNumberUtil::STATUS_CODE => array("label" => "返却済み", "mail" => null));
 	}
 
 }

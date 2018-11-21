@@ -249,7 +249,16 @@ class OrderLogic extends SOY2LogicBase{
 				$sendMailType = SOYShop_Order::SENDMAIL_TYPE_DELIVERY;
 				break;
 			default:
-				//何もしない
+				//拡張ポイントを調べる
+				SOYShopPlugin::load("soyshop.order.detail.mail");
+				$statusList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "autosend"))->getList();
+				foreach($statusList as $mailConf){
+					foreach($mailConf as $statusCode => $mailType){
+						if((int)$statusCode === (int)$newStatus){
+							$sendMailType = $mailType;
+						}
+					}
+				}
 		}
 
 		//
@@ -264,7 +273,7 @@ class OrderLogic extends SOY2LogicBase{
 		if(!isset($mailConfig["active"]) || (int)$mailConfig["active"] !== 1) return false;
 
 		list($mailBody, $title) = $mailLogic->buildMailBodyAndTitle($order, $mailConfig);
-
+		
 		//宛名
 		$user = soyshop_get_user_by_id($order->getUserId());
 		$userName = $user->getName();

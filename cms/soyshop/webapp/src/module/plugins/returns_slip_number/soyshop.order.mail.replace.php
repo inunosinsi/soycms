@@ -13,8 +13,6 @@ class ReturnsSlipNumberMailReplace extends SOYShopOrderMailReplace{
 
 		$attr = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic")->getAttribute($order->getId());
 		if(strlen($attr->getValue1())){
-			SOY2::import("module.plugins.returns_slip_number.util.ReturnsSlipNumberUtil");
-
 			$slipNumber = $attr->getValue1();
 		}
 

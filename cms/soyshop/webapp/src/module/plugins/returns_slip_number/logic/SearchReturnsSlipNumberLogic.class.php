@@ -9,6 +9,7 @@ class SearchReturnsSlipNumberLogic extends SOY2LogicBase {
 
 	function __construct(){
 		SOY2::import("domain.order.SOYShop_Order");
+		SOY2::import("module.plugins.returns_slip_number.util.ReturnsSlipNumberUtil");
 		SOY2::import("module.plugins.returns_slip_number.domain.SOYShop_ReturnsSlipNumberDAO");
 		$this->slipDao = SOY2DAOFactory::create("SOYShop_ReturnsSlipNumberDAO");
 	}
@@ -75,7 +76,7 @@ class SearchReturnsSlipNumberLogic extends SOY2LogicBase {
 
 	private function buildWhere(){
 		//キャンセル、仮登録、返却済み(21)は除く
-		$where = " WHERE o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_CANCELED . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . ",21)";
+		$where = " WHERE o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_CANCELED . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . "," . ReturnsSlipNumberUtil::STATUS_CODE . ")";
 
 		if(count($this->where)){
 			foreach($this->where as $key => $w){

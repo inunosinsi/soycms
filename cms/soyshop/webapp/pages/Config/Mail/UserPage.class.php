@@ -82,9 +82,9 @@ class UserPage extends WebPage{
 		));
 
 		/* 送信設定 */
-		//注文受付メールと支払い確認メールのみ
+
 		$this->addModel("mail_active_config", array(
-			"visible" => in_array($type, array("order","payment", "delivery")),
+			"visible" => self::isActive($type),
 		));
 
 		$this->addCheckBox("mail_active_yes", array(
@@ -108,6 +108,23 @@ class UserPage extends WebPage{
 			"selected" => $this->getMailOutput(),
 			"label" => "システムから出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
 		));
+	}
+
+	//自動送信設定の有無
+	private function isActive($type){
+		//注文受付メールと支払い確認メールのみ
+		if(in_array($type, array("order","payment", "delivery"))) return true;
+
+		//拡張ポイントで追加したメール設定の方でも確認する
+		SOYShopPlugin::load("soyshop.order.detail.mail");
+		$keys = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "key"))->getList();
+		if(!count($keys)) return false;
+
+		foreach($keys as $key){
+			if($type == $key) return true;
+		}
+
+		return false;
 	}
 
 	private function getReplaceStringList(){

@@ -3,6 +3,7 @@
 class ReturnsSlipNumberUtil {
 
 	const PLUGIN_ID = "returns_slip_number_plugin";
+	const STATUS_CODE = 21;	//注文状態のステータスコード
 
 	public static function getConfig(){
 		return SOYShop_DataSets::get(self::PLUGIN_ID . ".config", array(

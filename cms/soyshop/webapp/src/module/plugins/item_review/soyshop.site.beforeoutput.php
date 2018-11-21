@@ -169,7 +169,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		SOY2::import("module.plugins.item_review.component.EvaluationStarComponent");
 		$page->addLabel("evaluation_star", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"html" => EvaluationStarComponent::buildEvaluateArea(3)
+			"html" => EvaluationStarComponent::buildEvaluateArea(5)
 		));
 
 		$page->addInput("captcha_input", array(
