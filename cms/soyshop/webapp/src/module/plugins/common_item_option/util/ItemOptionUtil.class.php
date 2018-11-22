@@ -122,23 +122,23 @@ class ItemOptionUtil {
 	private static function _getFieldValue($k, $itemId, $prefix = "jp"){
 		static $v;
 		if(is_null($v)) $v = array();
-		if(isset($v[$prefix][$itemId])) return $v[$prefix][$itemId];
+		if(isset($v[$prefix][$itemId][$k])) return $v[$prefix][$itemId][$k];
 
 		$key = "item_option_" . $k;
 
 		if(SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-			$v[$prefix][$itemId] = trim(self::_get($itemId, $key . "_" . SOYSHOP_PUBLISH_LANGUAGE)->getValue());
-			if(strlen($v[$prefix][$itemId])) return $v[$prefix][$itemId];
+			$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key . "_" . SOYSHOP_PUBLISH_LANGUAGE)->getValue());
+			if(strlen($v[$prefix][$itemId][$k])) return $v[$prefix][$itemId][$k];
 
 			if(SOYSHOP_PUBLISH_LANGUAGE != $prefix){
-				$v[$prefix][$itemId] = trim(self::_get($itemId, $key . "_" . $prefix)->getValue());
-				if(strlen($v[$prefix][$itemId])) return $v[$prefix][$itemId];
+				$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key . "_" . $prefix)->getValue());
+				if(strlen($v[$prefix][$itemId][$k])) return $v[$prefix][$itemId][$k];
 			}
 		}
 
 		//多言語化の方の値を取得できなかった場合
-		$v[$prefix][$itemId] = trim(self::_get($itemId, $key)->getValue());
-		return $v[$prefix][$itemId];
+		$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key)->getValue());
+		return $v[$prefix][$itemId][$k];
 	}
 
 	private static function _get($itemId, $key){
