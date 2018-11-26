@@ -278,10 +278,12 @@ class OrderLogic extends SOY2LogicBase{
 					//拡張ポイントを調べる
 					SOYShopPlugin::load("soyshop.order.detail.mail");
 					$statusList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "autosend"))->getList();
-					foreach($statusList as $mailConf){
-						foreach($mailConf as $statusCode => $mailType){
-							if((int)$statusCode === (int)$status){
-								$sendMailType = $mailType;
+					if(count($statusList)){
+						foreach($statusList as $mailConf){
+							foreach($mailConf as $statusCode => $mailType){
+								if((int)$statusCode === (int)$status){
+									$sendMailType = $mailType;
+								}
 							}
 						}
 					}

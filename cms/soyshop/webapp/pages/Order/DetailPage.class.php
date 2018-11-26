@@ -442,14 +442,11 @@ class DetailPage extends WebPage{
 
     private function getMailPluginList(){
     	SOYShopPlugin::load("soyshop.order.detail.mail");
-    	$delegate = SOYShopPlugin::invoke("soyshop.order.detail.mail", array(
-
-    	));
-
-    	if(!count($delegate->getList())) return array();
+    	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array())->getList();
+		if(!count($mailList)) return array();
 
     	$list = array();
-    	foreach($delegate->getList() as $values){
+    	foreach($mailList as $values){
     		if(!is_array($values)) continue;
    			foreach($values as $value){
    				$list[] = $value;

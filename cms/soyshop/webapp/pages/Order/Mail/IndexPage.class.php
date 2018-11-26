@@ -32,9 +32,20 @@ class IndexPage extends WebPage{
 					case SOYShop_Order::SENDMAIL_TYPE_DELIVERY:
 						$order->setStatus(SOYShop_Order::ORDER_STATUS_SENDED);
 						break;
-					default:
 					case SOYShop_Order::SENDMAIL_TYPE_ORDER:
+						//何もしない
 						break;
+					default:
+						//拡張ポイントを調べる
+						SOYShopPlugin::load("soyshop.order.detail.mail");
+						$statusList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "aftersend"))->getList();
+						if(count($statusList)){
+							foreach($statusList as $status){
+								if(isset($status) && is_numeric($status) && (int)$status > 0){
+									$order->setStatus($status);
+								}
+							}
+						}
 				}
 				$orderDAO->updateStatus($order);
 
@@ -56,7 +67,7 @@ class IndexPage extends WebPage{
 				$author = (!is_null($session->getAttribute("loginid"))) ? $session->getAttribute("loginid") :  null;
 
 				//ヒストリーに追加
-				$orderLogic->addHistory($this->id, $this->getMailText($this->type) . "を送信しました", null, $author);
+				$orderLogic->addHistory($this->id, self::getMailText($this->type) . "を送信しました", null, $author);
 
 				//ステータスに登録
 				$orderLogic->setMailStatus($this->id, $this->type, time());
@@ -112,7 +123,7 @@ class IndexPage extends WebPage{
 		));
 
 		$this->addLabel("mail_type_text", array(
-			"text" => $this->getMailText($type)
+			"text" => self::getMailText($type)
 		));
 
 		$this->addLink("order_detail_link", array(
@@ -147,8 +158,9 @@ class IndexPage extends WebPage{
 		MessageManager::addMessagePath("admin");
 	}
 
-	function getMailText($type){
+	private function getMailText($type){
 		$array = array(
+			"order" => "注文受付メール",
 			"confirm" => "注文確認メール",
 			"payment" => "支払確認メール",
 			"delivery" => "配送連絡メール",
@@ -160,12 +172,25 @@ class IndexPage extends WebPage{
 
 		//プラグインから出力したものを調べる
 		SOY2::import("util.SOYShopPluginUtil");
-		if(!SOYShopPluginUtil::checkIsActive("common_add_mail_type")) return "注文受付メール";
+		if(SOYShopPluginUtil::checkIsActive("common_add_mail_type")) {
+			SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
+			$configs = AddMailTypeUtil::getConfig();
 
-		SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
-		$configs = AddMailTypeUtil::getConfig();
+			if(isset($configs[$type])) return $configs[$type]["title"];
+		//メール送信種類追加プラグイン以外
+		}else{
+			SOYShopPlugin::load("soyshop.order.detail.mail");
+			$mailConfList = SOYShopPlugin::invoke("soyshop.order.detail.mail")->getList();
+			if(count($mailConfList)){
+				foreach($mailConfList as $mailConf){
+					foreach($mailConf as $mailType => $conf){
+						if($mailType == $type) return $conf["title"];
+					}
+				}
+			}
+		}
 
-		return (isset($configs[$type])) ? $configs[$type]["title"] : "注文受付メール";
+		return $array["order"];
 	}
 
 	function getMailContent($type, SOYShop_Order $order, $array, MailLogic $mailLogic, SOYShop_User $user){
@@ -195,7 +220,7 @@ class IndexPage extends WebPage{
 		}
 
 		$id = ($downloadPlugin->getIsActive() == 1) ? "soyshop.order.mail.user" : $id;
-		
+
     	$delegate = SOYShopPlugin::invoke($id, array(
 				"order" => $order,
 				"mail" => $array

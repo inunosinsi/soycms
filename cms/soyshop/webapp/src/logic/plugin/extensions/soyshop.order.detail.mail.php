@@ -25,13 +25,28 @@ class SOYShopOrderDetailMailDeletageAction implements SOY2PluginDelegateAction{
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 		switch($this->mode){
 			case "key":	//メールの設定時に自動送信のチェックボックスを表示するか？
-				$this->_list[$moduleId] = $action->activeKey();
+				$key = $action->activeKey();
+				if(!is_null($key)){
+					$this->_list[$moduleId] = $key;
+				}
 				break;
 			case "autosend":	//ステータス変更時のメールの自動送信の設定
-				$this->_list[$moduleId] = $action->autoSendConfig();
+				$conf = $action->autoSendConfig();
+				if(!is_null($conf) && is_array($conf) && count($conf)){
+					$this->_list[$moduleId] = $conf;
+				}
+				break;
+			case "aftersend":	//注文詳細からメールを送信した時に注文状態を自動で変更する
+				$conf = $action->autoSendConfig();
+				if(!is_null($conf) && is_array($conf) && count($conf)){
+					$this->_list[$moduleId] = key($conf);
+				}
 				break;
 			default:
-				$this->_list[$moduleId] = $action->getMailType();
+				$mailType = $action->getMailType();
+				if(!is_null($mailType)){
+					$this->_list[$moduleId] = $mailType;
+				}
 		}
 	}
 
