@@ -125,36 +125,38 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 	}
 
 	function getDiscountPriceByCode($code){
-		$coupon = self::getCouponByCode($code);
+		return self::_getDiscountPrice($code, $this->cart->getItemPrice());
+	}
 
+	function getDiscountPriceByCodeWithTotalPrice($code, $total){
+		return self::_getDiscountPrice($code, $total);
+	}
+
+	private function _getDiscountPrice($code, $total){
+		$coupon = self::getCouponByCode(trim($code));
 		if(is_null($coupon->getId())) return 0;
-
-		$discount = 0;
 
 		//クーポンのタイプにより、割引額を変える
 		switch($coupon->getCouponType()){
 			//値引き額
 			case SOYShop_Coupon::TYPE_PRICE:
-				$discount = $coupon->getDiscount();
-
 				//割引金額：商品合計より大きくはならない。
-				$discount = min($discount, $this->cart->getItemPrice());
-				break;
+				return min($coupon->getDiscount(), $total);
 			//値引き率
 			case SOYShop_Coupon::TYPE_PERCENT:
-				$discount = $this->cart->getItemPrice() * $coupon->getDiscountPercent() / 100;
-				break;
+				return (int)($total * $coupon->getDiscountPercent() / 100);
 			//送料無料
 			case SOYShop_Coupon::TYPE_DELIVERY:
-				foreach($this->cart->getModules() as $moduleId => $obj){
-					if(strpos($moduleId, "delivery") === 0){
-						$discount = $obj->getPrice();
+				//カートの時のみ使用可
+				if(!is_null($this->cart)){
+					foreach($this->cart->getModules() as $moduleId => $module){
+						if(strpos($moduleId, "delivery") === 0){
+							return $module->getPrice();
+						}
 					}
 				}
-				break;
 		}
-
-		return $discount;
+		return 0;
 	}
 
 	function getCouponByCode($code){
