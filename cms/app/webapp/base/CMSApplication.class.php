@@ -136,14 +136,16 @@ class CMSApplication {
 		$tabs = $self->tabs;
 
 		$properties = $self->properties;
-		
+
 		//modeプロパティにはどのテンプレートを使うか？の値が格納されている。modeプロパティはrun関数で定義されている
-		$isCustomTemp = ($self->mode !== "template" && $self->mode !== "wide" && $self->mode !== "plain");
-	
+		$isThreeTemp = ($self->mode == "three");	//SOY CMS3系
+		$isCustomTemp = (!$isThreeTemp && $self->mode !== "template" && $self->mode !== "wide" && $self->mode !== "plain");
+
 		$html = "";
-		$isActive = (is_null($self->activeTab)) ? true : false;
-		
-		if($isCustomTemp === true) $html .= "<ul class=\"clearfix\">\n";
+		$isActive = (is_null($self->activeTab));
+
+		if($isCustomTemp) $html .= "<ul class=\"clearfix\">\n";
+		if($isThreeTemp) $html .= "<ul class=\"nav\" id=\"side-menu\">\n";
 		foreach($tabs as $key => $tab){
 			if(isset($tab["visible"]) && $tab["visible"] === false)continue;
 			if(!is_numeric($key)){
@@ -151,7 +153,7 @@ class CMSApplication {
 			}else{
 				$id = $self->applicationId . "_tab_" . $key;
 			}
-			
+
 			if(isset($tab["label"]) && strlen($tab["label"]) > 0){
 				$label = $tab["label"];
 			}else{
@@ -161,19 +163,49 @@ class CMSApplication {
 			$href = (isset($tab["href"])) ? ' href="'.htmlspecialchars($tab["href"],ENT_QUOTES).'" ' : ' href="javascript:void(0);" ';
 			$onclick = (isset($tab["onclick"])) ? ' onclick="'.htmlspecialchars($tab["onclick"],ENT_QUOTES) . '" ' : "";
 
-			$className = "menu";
-			if($isActive){
-				if($isCustomTemp === false) $className .= " menu_active";
-				$isActive = false;
-			}else if($key == $self->activeTab){
-				if($isCustomTemp === false) $className .= " menu_active";
+			if($isThreeTemp){
+				$className = "tab_inactive";
+			}else{
+				$className = "menu";
 			}
 
-			if($isCustomTemp === true) $html .= "<li>\n";
-			$html .= '<a class="'.$className.'"'.$href.$onclick.'>' . '<div class="'.$className.'" id="'.$id.'">' . $label . '</div></a>' . "\n";
-			if($isCustomTemp === true) $html .= "</li>\n";
+			if($isActive){
+				if(!$isThreeTemp || !$isCustomTemp) $className .= " menu_active";
+				if($isThreeTemp) $className = "tab_active";
+				$isActive = false;
+			}else if($key == $self->activeTab){
+				if(!$isThreeTemp || !$isCustomTemp) $className .= " menu_active";
+				if($isThreeTemp) $className = "tab_inactive";
+			}
+
+			if($isThreeTemp || $isCustomTemp) $html .= "<li>\n";
+			if($isThreeTemp){	//3系
+
+				$uri = trim(substr($tab["href"], strpos($tab["href"], APPLICATION_ID) + strlen(APPLICATION_ID)), "/");
+				switch($uri){
+					case "":
+					case "Home":
+					case "home":
+						$icon = "fa-home";
+						break;
+					case "Config":
+					case "config":
+						$icon = "fa-cog";
+						break;
+					case "Help":
+					case "help":
+						$icon = "fa-question";
+						break;
+					default:
+						$icon = "fa-angle-right";
+				}
+				$html .= '<a class="'.$className.'"'.$href.$onclick.'><i class="fa ' . $icon . ' fa-fw"></i>' . '<span class="'.$className.'">' . $label . '</span></a>' . "\n";
+			}else{
+				$html .= '<a class="'.$className.'"'.$href.$onclick.'>' . '<div class="'.$className.'" id="'.$id.'">' . $label . '</div></a>' . "\n";
+			}
+			if($isThreeTemp || $isCustomTemp) $html .= "</li>\n";
 		}
-		if($isCustomTemp === true) $html .= "</ul>\n";
+		if($isThreeTemp || $isCustomTemp) $html .= "</ul>\n";
 
 		echo $html;
 	}
@@ -270,7 +302,11 @@ class CMSApplication {
 		SOY2DAOConfig::DaoCacheDir($cacheDir);
 
 		//soycms設定を読み込む
-		include_once(CMS_COMMON . "soycms.config.php");
+		if(file_exists(CMS_COMMON . "config/custom.config.php")){
+			include_once(CMS_COMMON . "config/custom.config.php");
+		}else{
+			include_once(CMS_COMMON . "soycms.config.php");
+		}
 
 		//ログインチェックを行う
 		if(!self::checkLogin($self->applicationId)){
@@ -758,6 +794,4 @@ class CMSApplication {
     	self::switchAppMode();
     	return $users;
     }
-
 }
-?>
