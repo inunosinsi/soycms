@@ -37,6 +37,7 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	private $userMailAddress;
 	private $userGender = array();
 	private $userBirthday = array();
+	private $userTelephoneNumber = array();
 
 	private $itemName;
 	private $itemCode;
@@ -206,17 +207,37 @@ class SearchFormComponent extends SOYBodyComponentBase{
 		$this->addInput("order_user_birth_date_year", array(
 			"name" => "search[userBirthday][]",
 			"value" => (isset($birthArray[0])) ? $birthArray[0] : "",
-			"size" => "5"
+			"style" => "width:35%;ime-mode:inactive;",
 		));
 		$this->addInput("order_user_birth_date_month", array(
 			"name" => "search[userBirthday][]",
 			"value" => (isset($birthArray[1])) ? $birthArray[1] : "",
-			"size" => "3",
+			"style" => "width:25%;ime-mode:inactive;",
 		));
 		$this->addInput("order_user_birth_date_day", array(
 			"name" => "search[userBirthday][]",
 			"value" => (isset($birthArray[2])) ? $birthArray[2] : "",
-			"size" => "3",
+			"style" => "width:25%;ime-mode:inactive;",
+		));
+
+		//電話番号検索	携帯やFAX番号も同時検索
+		$tellArray = $this->getUserTelephoneNumber();
+		$this->addInput("order_user_telephone_number_area_code", array(
+			"name" => "search[userTelephoneNumber][]",
+			"value" => (isset($tellArray[0])) ? $tellArray[0] : "",
+			"style" => "width:15%;ime-mode:inactive;",
+		));
+
+		$this->addInput("order_user_telephone_number_1", array(
+			"name" => "search[userTelephoneNumber][]",
+			"value" => (isset($tellArray[1])) ? $tellArray[1] : "",
+			"style" => "width:15%;ime-mode:inactive;",
+		));
+
+		$this->addInput("order_user_telephone_number_2", array(
+			"name" => "search[userTelephoneNumber][]",
+			"value" => (isset($tellArray[2])) ? $tellArray[2] : "",
+			"style" => "width:15%;ime-mode:inactive;",
 		));
 
 		$this->addInput("order_item_name", array(
@@ -507,6 +528,12 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	}
 	function setUserBirthday($userBirthday){
 		$this->userBirthday = $userBirthday;
+	}
+	function getUserTelephoneNumber(){
+		return $this->userTelephoneNumber;
+	}
+	function setUserTelephoneNumber($userTelephoneNumber){
+		$this->userTelephoneNumber = $userTelephoneNumber;
 	}
 
 	function getItemName() {

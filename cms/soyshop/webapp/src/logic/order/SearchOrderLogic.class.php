@@ -276,6 +276,33 @@ class SearchOrderLogic extends SOY2LogicBase{
 			}
 		}
 
+		//電話番号 Faxと携帯も同時検索　出来れば全角数字にも対応したい
+		if(isset($search["userTelephoneNumber"]) && count($search["userTelephoneNumber"])){
+			$tellArray = $search["userTelephoneNumber"];
+			$tell_where = array();
+			foreach(array("telephone", "fax", "cellphone") as $tellType){
+				$w = array();	//半角版
+				$W = array();	//全角版
+				for($i = 0; $i < 3; $i++){
+					if(isset($tellArray[$i]) && strlen(trim($tellArray[$i]))){
+						$num = trim($tellArray[$i]);
+						$w[] = " " . $tellType . "_number LIKE :" . $tellType . $i;
+						$binds[":" . $tellType . $i] = "%" . $num . "%";
+						$W[] = " " . $tellType . "_number LIKE :" . $tellType . $i . "_N";
+						$binds[":" . $tellType . $i . "_N"] = "%" . mb_convert_kana($num, "N") . "%";
+					}
+				}
+
+				if(count($w)){
+					$tell_where[] = "((" . implode(" AND ", $w) . ") OR (" . implode(" AND ", $W) . "))";
+				}
+			}
+
+			if(count($tell_where)){
+				$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where " . implode(" OR ", $tell_where) . ")";
+			}
+		}
+
 		if(
 			(isset($search["itemName"]) && strlen($search["itemName"])) > 0 ||
 			(isset($search["itemCode"]) && strlen($search["itemCode"]) > 0)

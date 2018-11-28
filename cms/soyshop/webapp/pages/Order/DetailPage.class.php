@@ -125,9 +125,7 @@ class DetailPage extends WebPage{
 
 		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		$order = $logic->getById($this->id);
-		if(!$order){
-			SOY2PageController::jump("Order");
-		}
+		if(!$order) SOY2PageController::jump("Order");
 
     	$this->addLabel("order_name_text", array(
 			"text" => $order->getTrackingNumber()

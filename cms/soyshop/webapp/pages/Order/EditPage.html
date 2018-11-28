@@ -101,7 +101,10 @@
 				</tr>
 
 				<tr>
-					<th>送付先</th>
+					<th>
+						送付先<br>
+						<span id="address_copy_area"><a href="javascript:void(0);" class="button" id="address_copy_button">請求先住所のコピー</a></span>
+					</th>
 					<td>
 						<!-- soy:id="is_offce_item*" --><input type="text" class="text" soy:id="order_customerinfo_office" /><br ><!-- /soy:id="is_offce_item*" -->
 						<input type="text" class="text" soy:id="order_customerinfo_name" /><br />
@@ -262,6 +265,32 @@ $('#add_module_button').click(function(){
 	});
 	return false;
 });
+$("#address_copy_button").click(function(){
+	var res = confirm("請求先住所をコピーしますか？");
+	if(res){
+		var claimeds = $('[name^="ClaimedAddress"]');
+		for(var i = 0; i < claimeds.length; i++){
+			var obj = $(claimeds[i]);
+			var addrObj = $($('[name="' + obj.attr("name").replace("Claimed", "") + '"]')[0]);
+			addrObj.val(obj.val());
+		}
+		$("#address_copy_area").css("display", "none");
+	}
+});
+(function(){
+	var res = true;	//請求先住所と送付先住所が異なっているか？調べる
+	var claimeds = $('[name^="ClaimedAddress"]');
+	for(var i = 0; i < claimeds.length; i++){
+		var obj = $(claimeds[i]);
+		var addrObj = $($('[name="' + obj.attr("name").replace("Claimed", "") + '"]')[0]);
+		if(obj.val() != addrObj.val()) res = false;
+	}
+
+	if(!res){
+		$("#address_copy_area").css("display", "block");
+	}
+}());
+
 </script>
 
 <style>
@@ -270,5 +299,8 @@ $('#add_module_button').click(function(){
 }
 #option_window_el iframe{
 	width:98% !important;
+}
+#address_copy_area{
+	display:none;
 }
 </style>
