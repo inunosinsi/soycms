@@ -181,7 +181,7 @@ class ItemPage extends WebPage{
 		}
 
 		$this->addForm("form");
-		$this->buildForm();
+		self::buildForm();
 
 		//下書き保存用のリンク
 		$this->addLink("draft_link", array(
@@ -190,7 +190,7 @@ class ItemPage extends WebPage{
 
 	}
 
-	function buildForm(){
+	private function buildForm(){
 		$items = $this->cart->getItems();
 
 		DisplayPlugin::toggle("restore", (!count($items) && $this->orderLogic->isBackupJsonFile()));

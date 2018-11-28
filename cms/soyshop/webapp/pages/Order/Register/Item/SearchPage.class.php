@@ -165,7 +165,7 @@ class SearchPage extends WebPage{
 		if(is_null($list)){
 			$list = array();
 			try{
-				$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
+				$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getByIsOpen(SOYShop_Category::IS_OPEN);
 			}catch(Exception $e){
 				return $list;
 			}
