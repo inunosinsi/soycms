@@ -205,6 +205,7 @@ class CMSApplication {
 			}
 			if($isThreeTemp || $isCustomTemp) $html .= "</li>\n";
 		}
+		if($isThreeTemp) $html .= "<li class=\"hidden-xs\"><a href=\"#\" id=\"toggle-side-menu\" class=\"text-right\"><i class=\"fa fa-fw fa-angle-left\"></i><span>&nbsp;</span></a></li>";
 		if($isThreeTemp || $isCustomTemp) $html .= "</ul>\n";
 
 		echo $html;
