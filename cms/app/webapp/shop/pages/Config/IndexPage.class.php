@@ -5,39 +5,29 @@ class IndexPage extends SOYShopWebPage{
 	function doPost(){
 
 		if(soy2_check_token()&&isset($_POST["Account"])){
-			$accounts = $_POST["Account"];
-			$logic = SOY2Logic::createInstance("logic.ShopLogic");
-			$res = $logic->updateAppRole($accounts);
-
-			if($res){
+			if(SOY2Logic::createInstance("logic.ShopLogic")->updateAppRole($_POST["Account"])){
 				CMSApplication::jump("Config?updated");
 			}else{
 				CMSApplication::jump("Config?error");
 			}
-
 		}
-
 	}
 
 	function __construct(){
 		parent::__construct();
 
-		$this->buildForm();
+		self::buildForm();
 
 	}
 
-
-	function buildForm(){
+	private function buildForm(){
 
 		$logic = SOY2Logic::createInstance("logic.ShopLogic");
 		$accounts = $logic->getAccounts("app");
 
-		$this->addModel("updated", array(
-			"visible" => (isset($_GET["updated"]))
-		));
-		$this->addModel("error", array(
-			"visible" => (isset($_GET["error"]))
-		));
+		foreach(array("updated", "error") as $t){
+			DisplayPlugin::toggle($t, isset($_GET[$t]));
+		}
 
 		$this->addForm("form");
 
@@ -47,4 +37,3 @@ class IndexPage extends SOYShopWebPage{
 		));
 	}
 }
-?>

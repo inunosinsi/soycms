@@ -27,4 +27,3 @@ class SOYShop_AppAccountList extends HTMLList{
 		$this->role = $role;
 	}
 }
-?>

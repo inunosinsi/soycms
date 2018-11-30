@@ -180,26 +180,9 @@ class CMSApplication {
 
 			if($isThreeTemp || $isCustomTemp) $html .= "<li>\n";
 			if($isThreeTemp){	//3系
-
-				$uri = trim(substr($tab["href"], strpos($tab["href"], APPLICATION_ID) + strlen(APPLICATION_ID)), "/");
-				switch($uri){
-					case "":
-					case "Home":
-					case "home":
-						$icon = "fa-home";
-						break;
-					case "Config":
-					case "config":
-						$icon = "fa-cog";
-						break;
-					case "Help":
-					case "help":
-						$icon = "fa-question";
-						break;
-					default:
-						$icon = "fa-angle-right";
-				}
-				$html .= '<a class="'.$className.'"'.$href.$onclick.'><i class="fa ' . $icon . ' fa-fw"></i>' . '<span class="'.$className.'">' . $label . '</span></a>' . "\n";
+				//iconは各Appのadmin.phpで持つ。https://fontawesome.com のアイコンを使用する。指定時はfa-***の***の個所のみ指定
+				$icon = (isset($tab["icon"]) && strlen($tab["icon"])) ? trim($tab["icon"]) : "angle-right";
+				$html .= '<a class="'.$className.'"'.$href.$onclick.'><i class="fa fa-' . $icon . ' fa-fw"></i>' . '<span class="'.$className.'">' . $label . '</span></a>' . "\n";
 			}else{
 				$html .= '<a class="'.$className.'"'.$href.$onclick.'>' . '<div class="'.$className.'" id="'.$id.'">' . $label . '</div></a>' . "\n";
 			}

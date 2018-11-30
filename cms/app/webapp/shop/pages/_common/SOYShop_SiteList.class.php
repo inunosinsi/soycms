@@ -55,4 +55,3 @@ class SOYShop_SiteList extends HTMLList{
 		$this->logic = $logic;
 	}
 }
-?>

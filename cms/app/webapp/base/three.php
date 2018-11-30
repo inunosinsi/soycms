@@ -27,9 +27,10 @@
 <link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/morrisjs/morris.css?<?php echo $time;?>">
 <link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/font-awesome/css/font-awesome.min.css?<?php echo $time;?>">
 <link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.css?<?php echo $time;?>">
+<style>.navbar-static-top{background: linear-gradient(#ffeaef,#ffffff);}</style>
 <?php CMSApplication::printLink(); ?>
 <script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery/jquery.min.js?1510124446" type="text/JavaScript" charset="utf-8"></script>
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.js?1510124446" type="text/JavaScript" charset="utf-8"></script></head>
+<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.js?1510124446" type="text/JavaScript" charset="utf-8"></script>
 </head>
 
 <body>
@@ -56,15 +57,15 @@
 				<?php if(CMSApplication::isDirectLogin()){ ?>
 					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Login/Logout"); ?>"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
 				<?php }else{ ?>
-					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/"); ?>"><i class="fa fa-user fa-fw"></i>CMS管理</a></li>
+					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/"); ?>"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>
 					&nbsp;
 				<?php if(CMSApplication::checkUseSiteDb()){ ?>
-					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Site/Login/") . CMSApplication::getLoginedSiteId(); ?>"><i class="fa fa-user fa-fw"></i>ログイン中のサイトへ</a></li>
+					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Site/Login/") . CMSApplication::getLoginedSiteId(); ?>"><i class="fa fa-sitemap fa-fw"></i>ログイン中のサイトへ</a></li>
 				<?php }else{ ?>
-					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Site"); ?>"><i class="fa fa-user fa-fw"></i>サイト一覧</a></li>
+					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Site"); ?>"><i class="fa fa-sitemap fa-fw"></i>サイト一覧</a></li>
 				<?php }?>
 					&nbsp;
-					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Application"); ?>"><i class="fa fa-user fa-fw"></i>アプリケーション一覧</a></li>
+					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Application"); ?>"><i class="fa fa-arrows-alt fa-fw"></i>アプリケーション一覧</a></li>
 				<?php } ?>
 			</ul>
 			<!-- /.navbar-top-links -->
@@ -146,5 +147,4 @@ $(function(){
 });
 </script>
 </body>
-
 </html>

@@ -13,13 +13,29 @@ class SOYShopApplication{
 		$tabs = array();
 
 		//App操作者にはトップだけ
-		$tabs[] = array( "label" => "HOME", "href" => SOY2PageController::createLink("shop") );
+		$tabs[] = array(
+			"label" => "HOME",
+			"href" => SOY2PageController::createLink("shop"),
+			"icon" => "home"
+		);
 
 		//App管理者、初期管理者には以下のタブも見せる
 		if(CMSApplication::checkAuthSuperUser()){
-			$tabs[] = array( "label" => "新規作成", "href" => SOY2PageController::createLink("shop.Create") );
-			$tabs[] = array( "label" => "サイト設定", "href" => SOY2PageController::createLink("shop.Site") );
-			$tabs[] = array( "label" => "権限設定", "href" => SOY2PageController::createLink("shop.Config") );
+			$tabs[] = array(
+				"label" => "新規作成",
+				"href" => SOY2PageController::createLink("shop.Create"),
+				"icon" => "plus-circle"
+			);
+			$tabs[] = array(
+				"label" => "サイト設定",
+				"href" => SOY2PageController::createLink("shop.Site"),
+				"icon" => "sitemap"
+			);
+			$tabs[] = array(
+				"label" => "権限設定",
+				"href" => SOY2PageController::createLink("shop.Config"),
+				"icon" => "user"
+			);
 		}
 
 		CMSApplication::setTabs($tabs);

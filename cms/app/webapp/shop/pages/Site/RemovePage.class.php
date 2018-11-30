@@ -3,53 +3,50 @@
 class RemovePage extends SOYShopWebPage{
 
 	private $id;
-	
+
 	function doPost(){
-		
+
 		if(soy2_check_token() && isset($_POST["Check"])){
-			
-			$dao = SOY2DAOFactory::create("SOYShop_SiteDAO");
-			$site = $this->getSite();
+
+			$site = self::getSite();
 			try{
-				$dao->delete($this->id);
+				self::dao()->delete($this->id);
 				$res = true;
 			}catch(Exception $e){
 				$res = false;
 			}
-			
+
 			if($res){
-				$logic = SOY2Logic::createInstance("logic.ShopLogic");
-				$res = $logic->remove($site);
-				
+				$logic = SOY2Logic::createInstance("logic.ShopLogic")->remove($site);
 				CMSApplication::jump("Site");
 			}
 		}
-		
+
 		CMSApplication::jump("Site.Remove." . $this->id . "?error");
 	}
 
     function __construct($args) {
     	$this->id = (isset($args[0])) ? (int)$args[0] : null;
-    	
+
     	parent::__construct();
-    	
-    	$this->buildMessageForm();
-    	$this->buildForm();
+
+    	self::buildMessageForm();
+    	self::buildForm();
     }
-    
-    function buildForm(){
-    	$site = $this->getSite();
-    	
+
+    private function buildForm(){
+    	$site = self::getSite();
+
     	$this->addForm("form");
-    	
+
     	$this->addLabel("site_id", array(
     		"text" => $site->getSiteId()
     	));
-    	
+
     	$this->addLabel("site_name", array(
     		"text" => $site->getName()
     	));
-    	
+
     	$this->addLabel("site_db", array(
     		"text" => ($site->getIsMysql())? "MySQL": "SQLite"
     	));
@@ -64,22 +61,22 @@ class RemovePage extends SOYShopWebPage{
     		"elementId" => "check_remove"
     	));
     }
-    
-    function buildMessageForm(){
-    	$this->addModel("error", array(
-    		"visible" => (isset($_GET["error"]))
-    	));
+
+    private function buildMessageForm(){
+		DisplayPlugin::toggle("error", isset($_GET["error"]));
     }
-    
-    function getSite(){
-    	$this->dao = SOY2DAOFactory::create("SOYShop_SiteDAO");
+
+    private function getSite(){
     	try{
-    		$site = $this->dao->getById($this->id);
+    		return self::dao()->getById($this->id);
     	}catch(Exception $e){
-    		$site = new SOYShop_Site();
+    		return new SOYShop_Site();
     	}
-    	
-    	return $site;
     }
+
+	private function dao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShop_SiteDAO");
+		return $dao;
+	}
 }
-?>

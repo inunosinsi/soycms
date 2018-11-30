@@ -17,14 +17,8 @@ class IndexPage extends SOYShopWebPage{
 			"logic" => SOY2Logic::createInstance("logic.ShopLogic")
 		));
 
-		$this->addModel("no_soyshop", array(
-			"visible" => (count($sites) === 0)
-		));
-
-		$this->addModel("display_soyshop_list", array(
-			"visible" => (count($sites) > 0)
-		));
-
+		DisplayPlugin::toggle("no_soyshop", (count($sites) === 0));
+		DisplayPlugin::toggle("is_soyshop", (count($sites) > 0));
 	}
 
 	/**
