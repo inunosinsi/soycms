@@ -1,0 +1,87 @@
+<h3>使い方</h3>
+<ul>
+	<li>
+		サイトからログアウトして、下記のページを参考にしてパスワードリマインダを使用できるようにします。<br>
+		<a href="https://saitodev.co/soycms/tutorial/3" target="_blank">パスワードリマインダと不正ログイン対策を有効にする - saitodev.co</a>
+	</li>
+	<li>
+		ASP版のユーザ登録用のフォームを設置するページを作成します。<br>
+		※ページの種別は<strong>標準ページ</strong>で、URIは<strong>register</strong>が推奨の設定になります。
+	</li>
+	<li>
+		ページが作成できたら、テンプレート内に下記のコードを挿入します。
+		<pre>&lt;!-- cms:module="asp.user_app_register" --&gt;
+&lt;!-- cms:id="form" /--&gt;
+&lt;!-- /cms:module="asp.user_app_register" --&gt;</pre>
+	</li>
+</ul>
+
+<form soy:id="form">
+<h3>SOY Appの設定</h3>
+<p>登録したアカウントに権限を与えるSOY App：<select soy:id="app_id"></select>&nbsp;<input type="submit" value="保存"></p>
+
+<h3>メール文面の設定</h3>
+
+<table>
+	<caption>仮登録メール</caption>
+	<tr>
+		<th nowrap>タイトル</th>
+		<td><input type="text" soy:id="pre_title"></td>
+	</tr>
+	<tr>
+		<th>本文</th>
+		<td>
+			<textarea soy:id="pre_content"></textarea>
+			<input type="submit" value="保存"><br>
+			※使用できる置換文字列 <strong>##REGISTER_URL##</strong>は本登録用のURL
+		</td>
+	</tr>
+</table>
+
+<table>
+	<caption>本登録メール</caption>
+	<tr>
+		<th nowrap>タイトル</th>
+		<td><input type="text" soy:id="register_title"></td>
+	</tr>
+	<tr>
+		<th>本文</th>
+		<td>
+			<textarea soy:id="register_content"></textarea>
+			<input type="submit" value="保存"><br>
+			※使用できる置換文字列 <strong>##LOGIN_URL##</strong>はログインフォームのURL<br>
+			　<strong>##ACCOUNT##</strong>はログイン時に使用するID
+		</td>
+	</tr>
+</table>
+</form>
+
+<style>
+li {
+	margin-bottom:10px;
+}
+table {
+	padding:10px;
+	width:95%;
+}
+table caption {
+	font-weight: bold;
+}
+table tr th {
+	width:10%;
+}
+table tr td {
+	width:90%;
+}
+table tr td input[type="text"]{
+	width:70% !important;
+	margin:3px;
+	padding:3px;
+}
+table tr td textarea{
+	margin:3px;
+	padding: 3px;
+	width:70% !important;
+	height: 300px !important;
+}
+</style>
