@@ -5,6 +5,15 @@
 	<!-- /.col-lg-12 -->
 </div>
 
+<!-- soy:display="do_update" -->
+<div class="row">
+	<div class="col-lg-12">
+		<p class="alert-success" soy:display="do_db_update">データベースの変更を行いました。</p>
+		<p class="alert alert-success" soy:display="has_db_update">データベースの変更があります&nbsp;→&nbsp;<a soy:link="mail.Update">データベースのバージョンアップを行う</a></p>
+	</div>
+</div>
+<!-- /soy:display="do_update" -->
+
 <div class="row">
 	<div class="col-lg-5">
 		<div class="panel panel-green">

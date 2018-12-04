@@ -21,86 +21,81 @@ class IndexPage extends WebPage{
 					}
 
 				}else{
-
 					//ジョブをクリア、というものは無い
-
 					$config->setJobNextExecuteTime(null);
-
 					$config->setJobIsActived(0);
 				}
-
-
-
 				$dao->update($config);
 			}catch(Exception $e){
-				
+				//
 			}
 
 			CMSApplication::jump();
 		}
-
-
 	}
 
     function __construct() {
     	parent::__construct();
-    	
+
+		//データベースの更新を調べる
+		$checkVer = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic")->checkVersion();
+		DisplayPlugin::toggle("has_db_update", $checkVer);
+
+		//データベースの更新終了時に表示する
+		$doUpdated = (isset($_GET["update"]) && $_GET["update"] == "finish");
+		DisplayPlugin::toggle("do_db_update", $doUpdated);
+
+		//上記二つのsoy:displayの表示用
+		DisplayPlugin::toggle("do_update", ($checkVer || $doUpdated));
+
     	//メール情報出力
-    	$this->outputMailInfo();
-    	
+    	self::outputMailInfo();
+
     	//ユーザ情報出力
-    	$this->outputUserInfo();
+    	self::outputUserInfo();
 
     	//ジョブ情報出力
-    	$this->outputJobInfo();
+    	self::outputJobInfo();
     }
-    
-    function outputMailInfo(){
-    	$mailDAO = SOY2DAOFactory::create("MailDAO");
-    	
-    	$this->createAdd("unsend_mail","HTMLLabel",array(
-    		"text" => $mailDAO->countSendMail()
+
+    private function outputMailInfo(){
+    	$this->addLabel("unsend_mail", array(
+    		"text" => SOY2DAOFactory::create("MailDAO")->countSendMail()
     	));
-    	
-    	$errorMailDAO = SOY2DAOFactory::create("ErrorMailDAO");
-    	
-    	$this->createAdd("error_mail","HTMLLabel",array(
-    		"text" => $errorMailDAO->countErrorMail()
-    	));
-    }
-    
-    function outputUserInfo(){
-    	$extendLogic = SOY2Logic::createInstance("logic.user.ExtendUserDAO");
-    	
-    	$this->createAdd("user_count","HTMLLabel",array(
-    		"text" => $extendLogic->countUser()
+
+    	$this->addLabel("error_mail", array(
+    		"text" => SOY2DAOFactory::create("ErrorMailDAO")->countErrorMail()
     	));
     }
 
-    function outputJobInfo(){
+    private function outputUserInfo(){
+    	$this->createAdd("user_count","HTMLLabel",array(
+    		"text" => SOY2Logic::createInstance("logic.user.ExtendUserDAO")->countUser()
+    	));
+    }
+
+    private function outputJobInfo(){
     	$config = SOY2DAOFactory::create("ServerConfigDAO")->get();
 
-    	$this->createAdd("job_toggle_button","HTMLLabel",array(
+    	$this->addLabel("job_toggle_button", array(
     		"name" => "job_toggle_button",
     		"value" => ($config->getJobIsActived()) ? "無効にする" : "有効にする"
     	));
 
-    	$this->createAdd("job_is_active","HTMLLabel",array(
+    	$this->addLabel("job_is_active", array(
     		"text" => $config->getJobStatusText()
     	));
 
-    	$this->createAdd("job_last_execute_time","HTMLLabel",array(
+    	$this->addLabel("job_last_execute_time", array(
     		"text" => ($config->getJobLastExecuteTime()) ? date("Y/m/d H:i",$config->getJobLastExecuteTime()) : "----/--/-- --:--"
     	));
 
-    	$this->createAdd("job_next_execute_time","HTMLLabel",array(
+    	$this->addLabel("job_next_execute_time", array(
     		"text" => ($config->getJobNextExecuteTime()) ? date("Y/m/d H:i",$config->getJobNextExecuteTime()) : "----/--/-- --:--"
     	));
 
-		$this->createAdd("error","HTMLModel",array(
+		$this->addModel("error", array(
 			"visible" => ($config->getJobNextExecuteTime() && $config->getJobNextExecuteTime() < time() && $config->getJobIsActived() != 0)
 		));
-
     }
 }
-?>

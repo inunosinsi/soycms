@@ -37,6 +37,9 @@ class InitLogic extends SOY2LogicBase{
 		if(file_exists($this->initCheckFile)){
 			$db->commit();
 		}
+
+		//自動アップグレードをすべて実行しておく
+		SOY2Logic::createInstance("logic.upgrade.UpdateDBLogic")->update();
     }
 
     /**
@@ -47,4 +50,3 @@ class InitLogic extends SOY2LogicBase{
 		$this->initCheckFile = $file;
 	}
 }
-?>
