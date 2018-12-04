@@ -57,15 +57,18 @@
 				<?php if(CMSApplication::isDirectLogin()){ ?>
 					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Login/Logout"); ?>"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
 				<?php }else{ ?>
-					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/"); ?>"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>
-					&nbsp;
+					<?php if(CMSApplication::checkAuthWithSiteOnly()){?>
+						<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/"); ?>"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>&nbsp;
+					<?php } ?>
 				<?php if(CMSApplication::checkUseSiteDb()){ ?>
 					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Site/Login/") . CMSApplication::getLoginedSiteId(); ?>"><i class="fa fa-sitemap fa-fw"></i>ログイン中のサイトへ</a></li>
 				<?php }else{ ?>
 					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Site"); ?>"><i class="fa fa-sitemap fa-fw"></i>サイト一覧</a></li>
 				<?php }?>
-					&nbsp;
-					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Application"); ?>"><i class="fa fa-arrows-alt fa-fw"></i>アプリケーション一覧</a></li>
+					<?php if(CMSApplication::checkAuthWithSiteOnly()){?>
+						&nbsp;
+						<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Application"); ?>"><i class="fa fa-arrows-alt fa-fw"></i>アプリケーション一覧</a></li>
+					<?php } ?>
 				<?php } ?>
 			</ul>
 			<!-- /.navbar-top-links -->

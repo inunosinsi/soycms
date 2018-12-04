@@ -5,7 +5,7 @@ if(!defined("APPLICATION_ID")) define('APPLICATION_ID', "mail");
 class SOYMailApplication{
 
 	function init(){
-		
+
 		$level = CMSApplication::getAppAuthLevel();
 
 		/**
@@ -14,50 +14,58 @@ class SOYMailApplication{
 		CMSApplication::setTabs(array(
 			array(
 				"label" => "レポート",
-				"href" => SOY2PageController::createLink(APPLICATION_ID)
+				"href" => SOY2PageController::createLink(APPLICATION_ID),
+				"icon" => "file"
 			),
 			array(
 				"label" => "メール",
-				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Mail")
+				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Mail"),
+				"icon" => "envelope"
 			),
 			array(
 				"label" => "ユーザ",
-				"href" => SOY2PageController::createLink(APPLICATION_ID . ".User")
+				"href" => SOY2PageController::createLink(APPLICATION_ID . ".User"),
+				"icon" => "users"
 			),
 			array(
 				"label" => "設定",
 				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Config"),
-				"visible" => ($level == 1) ? true : false
+				"visible" => ($level == 1) ? true : false,
+				"icon" => "gear"
 			),
 			array(
 				"label" => "SOYShop連携",
 				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Connect"),
-				"visible" => ($level == 1) ? true : false
+				"visible" => ($level == 1) ? true : false,
+				"icon" => "arrows-alt"
 			),
 			array(
 				"label" => "ログ",
 				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Log"),
-				"visible" => ($level == 1) ? true : false
+				"visible" => ($level == 1) ? true : false,
+				"icon" => "database"
 			),
 			array(
 				"label" => "ヘルプ",
 				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Help"),
-				"visible" => ($level == 1) ? true : false
+				"visible" => ($level == 1) ? true : false,
+				"icon" => "question"
 			)
 		));
 
 		CMSApplication::main(array($this,"main"));
-		CMSApplication::addLink(SOY2PageController::createRelativeLink("./webapp/" . APPLICATION_ID . "/css/style.css"));
-		
+		CMSApplication::addLink(SOY2PageController::createRelativeLink("./webapp/" . APPLICATION_ID . "/css/three.css"));
+		CMSApplication::addScript(SOY2PageController::createRelativeLink("./webapp/" . APPLICATION_ID . "/js/advanced_textarea.js"));
+		CMSApplication::addScript(SOY2PageController::createRelativeLink("./webapp/" . APPLICATION_ID . "/js/three.js"));
+
 		//設定の読み込み
 		include_once(dirname(__FILE__) . "/config.php");
 
 		//DBの初期化を行う
 		if(!file_exists(SOYMAIL_DB_FILE)){
-			$logic = SOY2Logic::createInstance("logic.InitLogic", array(
+			SOY2Logic::createInstance("logic.InitLogic", array(
 				"initCheckFile" => SOYMAIL_DB_FILE,
-			));
-			$logic->init();
+			))->init();
 		}
 
 		//SOY2HTMLの設定
@@ -66,7 +74,7 @@ class SOYMailApplication{
 		SOY2HTMLPlugin::addPlugin("src","SrcPlugin");
 		SOY2HTMLPlugin::addPlugin("display","DisplayPlugin");
 		SOY2HTMLPlugin::addPlugin("panel","PanelPlugin");
-		
+
 		//共通のクラスを読み込む
 		SOY2::import("domain.Area");
 		SOY2::import("domain.SOYMailLog");
@@ -148,11 +156,8 @@ class SOYMailApplication{
 		}
 
 		return $html;
-
 	}
-
 }
 
 $app = new SOYMailApplication();
 $app->init();
-?>

@@ -11,76 +11,76 @@ class ExportPage extends CommonPartsPage{
     	$this->createTag();
     	$this->buildForm();
     }
-    
+
     function buildForm(){
-    	$this->addForm("export_form");
+    	$this->addForm("form");
     }
-    
+
     function doPost(){
-    	
+
     	if(soy2_check_token()){
     		$logic = SOY2Logic::createInstance("logic.user.ExImportLogic");
     		$this->logic = $logic;
-	    	
+
 			$format = $_POST["format"];
 			$item = $_POST["item"];
 			$displayLabel = @$format["label"];
-	
+
 			$charset = (isset($format["charset"])) ? $format["charset"] : "Shift_JIS";
-	
+
 			$logic->setSeparator(@$format["separator"]);
 			$logic->setQuote(@$format["quote"]);
 			$logic->setCharset($charset);
-	
+
 			//出力する項目にセット
 			$logic->setItems($item);
 			$logic->setLabels($this->getLabels());
-	   	
+
 	   		//DAO: 2000件ずつデータを取得
 			$limit = 2000;
 			$step = 0;
 			$dao = SOY2DAOFactory::create("SOYMailUserDAO");
 			$dao->setLimit($limit);
-	   	
+
 	   		do{
 				if(connection_aborted())exit;
-	
+
 				$dao->setOffset($step * $limit);
 				$step++;
-	
+
 				try{
 					$users = $dao->get();
 				}catch(Exception $e){
 					$users = array();
 				}
-				
+
 				//CSV(TSV)に変換
 				$lines = array();
 				foreach($users as $user){
 					$user->setBirthday($this->convertBirthday($user->getBirthday()));
 					$lines[] = $logic->export($user);
 				}
-				
+
 				//ファイル出力
-				$this->outputFile($lines, $charset, $displayLabel);
-	
+				self::outputFile($lines, $charset, $displayLabel);
+
 			}while(count($users) >= $limit);
-	   		
+
 	    	exit;
     	}
-	    	
+
     }
-    
+
     function convertBirthday($timestamp){
     	$birthday = null;
-    	
+
     	if(isset($timestamp) && $timestamp > 0){
     		$birthday = date("Y", $timestamp) . "-" . date("m", $timestamp) . "-" . date("d", $timestamp);
     	}
-    	
+
     	return $birthday;
     }
-    
+
     function getLabels(){
 		return array(
 			"id" => "ID",
@@ -115,8 +115,8 @@ class ExportPage extends CommonPartsPage{
 			"memo" => "備考",
 		);
 	}
-    
-    function outputFile($lines, $charset, $displayLabel){
+
+    private function outputFile($lines, $charset, $displayLabel){
     	static $headerSent = false;
 
 		if(!$headerSent){
@@ -131,12 +131,10 @@ class ExportPage extends CommonPartsPage{
 				echo "\r\n";
 			}
 		}
-		
+
 		if(count($lines) > 0){
 			echo implode("\r\n", $lines);
 			echo "\r\n";
 		}
 	}
-
 }
-?>

@@ -2,50 +2,50 @@
 
 class ApplicationLogic extends SOY2LogicBase{
 
-    function getApplications(){
-    	$applicationDir = $this->getApplicationDir();
+	function getApplications(){
+		$applicationDir = self::getApplicationDir();
 
-    	$files = scandir($applicationDir);
+		$files = scandir($applicationDir);
 
-    	if(! $this->checkIsInstalledApplication()){
-    		return array();
-    	}
+		if(! self::checkIsInstalledApplication()){
+			return array();
+		}
 
-    	$applications = array();
+		$applications = array();
 
-    	foreach($files as $file){
-    		if($file[0] == ".")continue;
-    		if($file == "base")continue;
+		foreach($files as $file){
+			if($file[0] == ".")continue;
+			if($file == "base")continue;
 
-			if( $info = $this->importApplicationIniFile($file) ){
+			if( $info = self::importApplicationIniFile($file) ){
 				$applications[$file] = $info;
 			}
-    	}
+		}
 
-    	return $applications;
-    }
+		return $applications;
+	}
 
-    function getApplicationDir(){
-    	return str_replace("\\","/",dirname(SOY2::RootDir()) . "/app/webapp/");
-    }
+	private function getApplicationDir(){
+		return str_replace("\\","/",dirname(SOY2::RootDir()) . "/app/webapp/");
+	}
 
-    /**
-     * アプリケーションを取得
-     * @throw Exception
-     */
-    function getApplication($appId){
-    	if( $info = $this->importApplicationIniFile($appId) ){
-    		return $info;
-    	}else{
-    		throw new Exception("No Application");
-    	}
-    }
+	/**
+	 * アプリケーションを取得
+	 * @throw Exception
+	 */
+	function getApplication($appId){
+		if( $info = $this->importApplicationIniFile($appId) ){
+			return $info;
+		}else{
+			throw new Exception("No Application");
+		}
+	}
 
 	/**
 	 * アプリケーションのINIファイルの内容を配列に変換する
 	 */
 	private function importApplicationIniFile($appId){
-		$applicationDir = $this->getApplicationDir();
+		$applicationDir = self::getApplicationDir();
 		$iniFile = $applicationDir . "/" . $appId . "/application.ini";
 
 		if(!is_readable($iniFile)) return false;
@@ -54,10 +54,10 @@ class ApplicationLogic extends SOY2LogicBase{
 		if(!$inis) return false;
 
 		return array(
-			"id"          => $appId,
-			"title"       => isset($inis["title"])       ? $inis["title"]       : null,
+			"id"		  => $appId,
+			"title"	   => isset($inis["title"])	   ? $inis["title"]	   : null,
 			"description" => isset($inis["description"]) ? $inis["description"] : null,
-			"version"     => isset($inis["version"])     ? $inis["version"]     : null,
+			"version"	 => isset($inis["version"])	 ? $inis["version"]	 : null,
 			//複数権限を使うかどうか（true/false）
 			"useMultipleRole" => ( isset($inis["multiple_role"]) && $inis["multiple_role"] ),
 			//権限設定を独自で持つときのURI（app/index.php/以降の部分）
@@ -66,48 +66,56 @@ class ApplicationLogic extends SOY2LogicBase{
 
 	}
 
-    /**
-     * アプリケーションがインストール済みか
-     */
-    function checkIsInstalledApplication(){
-    	$applicationDir = $this->getApplicationDir();
+	/**
+	 * アプリケーションがインストール済みか
+	 */
+	private function checkIsInstalledApplication(){
+		$applicationDir = $this->getApplicationDir();
 
-    	$files = scandir($applicationDir);
+		$files = scandir($applicationDir);
 
-    	$flag = false;
-    	foreach($files as $file){
-    		if($file[0] == ".")continue;
-    		if($file == "base")continue;
+		$flag = false;
+		foreach($files as $file){
+			if($file[0] == ".")continue;
+			if($file == "base")continue;
 
-    		$flag = true;
-    	}
+			$flag = true;
+		}
 
-    	return $flag;
+		return $flag;
 
-    }
+	}
 
-    /**
-     * ログイン可能なアプリケーションのリストを返します。
-     */
-    function getLoginableApplications($userId){
-    	$applications = self::getApplications();
+	/**
+	 * ログイン可能なアプリケーションのリストを返します。
+	 */
+	function getLoginableApplications($userId){
+		static $app_res;
+		if(is_null($app_res)){
+			$app_res = array();
 
-    	if(empty($applications)) return array();
+			$applications = self::getApplications();
 
-    	$roles = SOY2DAOFactory::create("admin.AppRoleDAO")->getByUserId($userId);
+			if(is_array($applications) && count($applications)){
+				$roles = SOY2DAOFactory::create("admin.AppRoleDAO")->getByUserId($userId);
 
+				foreach($roles as $userId => $role){
+					$appId = $role->getAppId();
 
-    	$app_res = array();
-    	foreach($roles as $userId => $role){
-    		$appId = $role->getAppId();
-    		//App管理者(1)、App操作者(2)共にログインできる
-    		if(isset($applications[$appId])&&$role->getAppRole() > 0){
-    			$app_res[$appId] = $applications[$appId];
-    		}
-    	}
+					//SOY Appでサイト側のデータベースに初期化するもの
+					if($appId == "inquiry" && defined("SOYINQUIRY_USE_SITE_DB") && SOYINQUIRY_USE_SITE_DB) continue;
+					if($appId == "mail" && defined("SOYMAIL_USE_SITE_DB") && SOYMAIL_USE_SITE_DB) continue;
 
-    	return $app_res;
-    }
+					//App管理者(1)、App操作者(2)共にログインできる
+					if(isset($applications[$appId])&&$role->getAppRole() > 0){
+						$app_res[$appId] = $applications[$appId];
+					}
+				}
+			}
+		}
+
+		return $app_res;
+	}
 
 	function getLoginiableApplicationLists(){
 		if(UserInfoUtil::isDefaultUser()){

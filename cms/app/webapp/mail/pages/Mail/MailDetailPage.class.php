@@ -80,20 +80,17 @@ class MailDetailPage extends WebPage{
     		"value" => "すぐに配信",
    			"visible" => $flag
    		));
+		DisplayPlugin::toggle("button_validate_wrapper", $mail->getStatus() == Mail::STATUS_ERROR);
     	$this->createAdd("button_validate","HTMLInput",array(
     		"name" => "validate",
     		"value" => "再送信予約",
    			"visible" => $mail->getStatus() == Mail::STATUS_ERROR
    		));
-   		$this->createAdd("button_validate_wrapper","HTMLModel",array(
-   			"visible" => $mail->getStatus() == Mail::STATUS_ERROR
-   		));
-   		$this->createAdd("button_copy","HTMLInput",array(
+
+		DisplayPlugin::toggle("button_copy_wrapper", $mail->getStatus() == Mail::STATUS_HISTORY);
+		$this->createAdd("button_copy","HTMLInput",array(
     		"name" => "copy",
     		"value" => "コピーして編集",
-   			"visible" => $mail->getStatus() == Mail::STATUS_HISTORY
-   		));
-   		$this->createAdd("button_copy_wrapper","HTMLModel",array(
    			"visible" => $mail->getStatus() == Mail::STATUS_HISTORY
    		));
 
@@ -108,10 +105,8 @@ class MailDetailPage extends WebPage{
    			"visible" => $flag
    		));
 
-   		$this->createAdd("editable_mail_button","HTMLModel",array(
-   			"visible" => $flag
-   		));
-
+		DisplayPlugin::toggle("editable_mail_button", $flag);
+   		
 	    $text = "確認(".$mail->getStatusText().") - " . $mail->getTitle();
 
     	$this->createAdd("mail_id","HTMLInput",array(
@@ -178,10 +173,10 @@ class MailDetailPage extends WebPage{
 		$this->createAdd("selected_age","HTMLLabel",array(
     		"text" => $age
     	));
-    	
+
     	//SOY Shopの時のみ誕生日検索
     	DisplayPlugin::toggle("display_birthday_form", SOY2Logic::createInstance("logic.user.ExtendUserDAO")->checkSOYShopConnect());
-    	
+
     	$birthday = (is_array($selector->getBirthday())) ? $selector->getBirthday() : array();
     	$year = (isset($birthday["year"]) && strlen($birthday["year"])) ? $birthday["year"] : "Y";
     	$month = (isset($birthday["month"]) && strlen($birthday["month"])) ? $birthday["month"] : "m";
@@ -243,5 +238,3 @@ class MailDetailPage extends WebPage{
     	));
     }
 }
-
-?>

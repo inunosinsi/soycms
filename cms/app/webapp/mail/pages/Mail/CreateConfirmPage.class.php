@@ -11,28 +11,28 @@ class CreateConfirmPage extends WebPage{
 		$mailDAO = SOY2DAOFactory::create("MailDAO");
 		$this->mailDAO = $mailDAO;
 		$mail = $this->mail;
-		
+
 		//送信予約
 		if(isset($_POST['wait'])){
-			
+
 			//予約送信時刻の値が入力されていない状態で送信予約を行う場合はエラーにする
 			if(is_null($mail->getSchedule()) || strlen($mail->getSchedule()) == 0){
 				CMSApplication::jump("Mail.CreateConfirm." . $this->id . "?error");
-			} 
-			
+			}
+
 			$mail->setStatus(Mail::STATUS_WAIT);
 			$mail = $this->updateMail($mail, true);
 			$this->reservationMail($mail);
 			CMSApplication::jump("Mail.SendBox");
 			exit;
-		
+
 		//即時配信
 		}elseif(isset($_POST['sendnow'])){
 			$mail->setStatus(Mail::STATUS_WAIT);
 			$this->updateMail($mail);
 			CMSApplication::jump("Mail.SendNow.".$this->id);
 			exit;
-		
+
 		//戻る
 		}elseif(isset($_POST['back'])){
 			CMSApplication::jump("Mail.".$this->id);
@@ -45,12 +45,10 @@ class CreateConfirmPage extends WebPage{
     	$dao = SOY2DAOFactory::create("MailDAO");
 	    $this->mail = $dao->getById($this->id);
 		parent::__construct();
-		
-		$this->createAdd("error", "HTMLModel", array(
-			"visible" => (isset($_GET["error"]))
-		));
 
-		$this->createAdd("form","HTMLForm");
+		DisplayPlugin::toggle("error", isset($_GET["error"]));
+
+		$this->addForm("form");
 		$this->createAdd("hidden_value","HTMLInput",array(
 			"name" => "hidden_value",
 			"value" => base64_encode(serialize($this->mail))
@@ -79,7 +77,7 @@ class CreateConfirmPage extends WebPage{
 		if(count($ignore_users)>0){
 			$str = "以下の".count($ignore_users)."件のあて先は無効になっているため、除外されます。";
 		}else{
-			$str = "現在登録されているメールアドレスはすべて有効です。";			
+			$str = "現在登録されているメールアドレスはすべて有効です。";
 		}
 		$this->createAdd("ignore_count","HTMLLabel",array(
 			"text"=> $str
@@ -87,7 +85,7 @@ class CreateConfirmPage extends WebPage{
 
 
 	}
-	
+
 	/**
 	 * 送信メールの更新
 	 * @param Mail $mail
@@ -103,49 +101,49 @@ class CreateConfirmPage extends WebPage{
 		}else{
 			$this->id = ($mailDAO->insert($mail));
 		}
-		
+
 		return $mail;
     }
-    
+
     /**
      * cronの予約テーブルに送信の予約を登録する
      * @param Mail $mail
      */
     function reservationMail($mail){
     	$reservationDao = SOY2DAOFactory::create("SOYMail_ReservationDAO");
-    	
+
     	$reservation = new SOYMail_Reservation();
     	$reservation->setMailId($mail->getId());
     	$reservation->setOffset(0);
     	$reservation->setScheduleDate($mail->getSchedule());
-    	
+
     	try{
     		$reservationDao->insert($reservation);
     	}catch(Exception $e){
     		var_dump($e);
     		//
     	}
-    	
+
     }
 
 	function getMailAddress($only_disable_user = false){
 		$extendLogic = SOY2Logic::createInstance("logic.user.ExtendUserDAO");
 		$dao = $extendLogic->getDAO();
 		$query = $dao->getQuery();
-		
+
 		//サーバによってはSQLの指定に"が入っておかしくなるので応急処置
 		if(strpos($query->sql, "\"") >= 0){
 			$query->sql = str_replace("\"", "`",$query->sql);
 		}
-		
+
 		list($query->where,$binds) = $this->mail->getSelectorObject()->generateConditions($only_disable_user);
-		
+
 		$checkSOYShop = $extendLogic->checkSOYShopConnect();
-		
+
 		if($checkSOYShop===true)$old = SOYMailUtil::switchSOYShopConfig();
-		
+
 		$result = $dao->executeQuery($query,$binds);
-		
+
 		if($checkSOYShop===true)$old = SOYMailUtil::resetConfig($old);
 
 		$mailaddress = array();
@@ -163,4 +161,3 @@ class CreateConfirmPage extends WebPage{
 		return $mailaddress;
 	}
 }
-?>

@@ -6,23 +6,23 @@ class IndexPage extends CommonPartsPage{
 
 	function __construct($args) {
 		parent::__construct();
-		
+
 		$this->createTag();
 
 		/*引数など取得*/
 		//表示件数
 		$limit = 15;
 		$page = (isset($args[0])) ? (int)$args[0] : 1;
-		if(array_key_exists("page", $_GET)) $page = $_GET["page"]; 
-		if(array_key_exists("sort", $_GET) OR array_key_exists("search", $_GET)) $page = 1; 
+		if(array_key_exists("page", $_GET)) $page = $_GET["page"];
+		if(array_key_exists("sort", $_GET) OR array_key_exists("search", $_GET)) $page = 1;
 		$offset = ($page - 1) * $limit;
-		
+
 		//表示順
 		$sort = $this->getParameter("sort");
 		//検索
 		$search = $this->getParameter("search");
 		if(!$search)$search = array();
-		
+
 		/*データ*/
 		//DAO
 		$SearchUsers = SOY2Logic::createInstance("logic.user.SearchUsersLogic");
@@ -34,19 +34,20 @@ class IndexPage extends CommonPartsPage{
 		//データ取得
 		$total = $SearchUsers->getTotalCount();
 		$users = $SearchUsers->getUsers();
-		
+
 		/*表示*/
-		
+
 		//表示順リンク
 		$this->buildSortLink($sort);
 		//絞込みフォーム
 		$this->buildSearchForm($search);
 		//詳細検索フォーム
 		$this->buildAdvancedSearchForm($search);
-		
+
 		//ユーザ一覧
 		$this->createAdd("user_list","_common.UserListComponent",array(
-			"list" => $users
+			"list" => $users,
+			"connect" => SOY2Logic::createInstance("logic.user.ExtendUserDAO")->checkSOYShopConnect()	//SOY Shop連携
 		));
 
 		//ページャー
@@ -64,7 +65,7 @@ class IndexPage extends CommonPartsPage{
 
 		$this->buildPager($pager);
 	}
-	
+
 	function doPost(){
 		if(array_key_exists("search", $_POST)){
 			$value = $_POST["search"];
@@ -75,7 +76,7 @@ class IndexPage extends CommonPartsPage{
 		}
 		CMSApplication::jump("User");
 	}
-	
+
 	function getParameter($key){
 		if(array_key_exists($key, $_GET)){
 			$value = $_GET[$key];
@@ -85,7 +86,7 @@ class IndexPage extends CommonPartsPage{
 		}
 		return $value;
 	}
-	
+
 	function buildSortLink($sort){
 		$this->createAdd("sort_id","HTMLLink",array(
 			"text" => "▲",
@@ -124,7 +125,7 @@ class IndexPage extends CommonPartsPage{
 			"class" => ($sort === SearchUsersLogic::SORT_MAIL_ADDRESS_DESC) ? "pager_disable" : ""
 		));
 	}
-	
+
 	function buildSearchForm($search){
     	$this->createAdd("search_form", "HTMLModel", array(
     		"method" => "GET",
@@ -135,7 +136,7 @@ class IndexPage extends CommonPartsPage{
     		             ."if(this.elements['search[attribute2]'].value == '属性２'){this.elements['search[attribute2]'].value = '';}"
     		             ."if(this.elements['search[attribute3]'].value == '属性３'){this.elements['search[attribute3]'].value = '';}"
     	));
-    	
+
     	$this->createAdd("soy2_token","HTMLInput",array(
     		"name" => "soy2_token",
     		"value" => soy2_get_token()
@@ -183,15 +184,15 @@ class IndexPage extends CommonPartsPage{
     		"onfocus" => "if(this.value == '属性３'){ this.value = ''; this.style.color = '';}else{ this.select(); }",
     		"onblur"  => "if(this.value.length == 0){ this.value='属性３'; this.style.color = 'grey'}"
 		));
-		$this->createAdd("advanced_search", "HTMLLink", array(
-			"onclick" => "advanced_search_form();return false;" 
+		$this->addLink("advanced_search", array(
+			"onclick" => "advanced_search_form();return false;"
 		));
-		
+
 	}
-	
+
 	function buildAdvancedSearchForm($search){
 		$this->createAdd("advanced_search_form","HTMLForm");
-		
+
 		$this->createAdd("advanced_search_id","HTMLInput",array(
 			"name" => "search[id]",
 			"value" => @$search["id"],
@@ -208,7 +209,7 @@ class IndexPage extends CommonPartsPage{
 			"value" => @$search["name"],
 			"style" => "width:100%",
 		));
-		
+
 		$this->createAdd("advanced_search_furigana","HTMLInput",array(
 			"name" => "search[reading]",
 			"value" => @$search["reading"],
@@ -221,7 +222,7 @@ class IndexPage extends CommonPartsPage{
 			"value" => 1,
 			"elementId" => "checkbox_gender_male"
 		));
-		
+
 		$this->createAdd("advanced_search_gender_female","HTMLCheckbox", array(
 			"name" => "search[gender][female]",
 			"selected" => ( array_key_exists("gender", $search) AND array_key_exists("female", $search["gender"]) ) ? true : false ,
@@ -234,7 +235,7 @@ class IndexPage extends CommonPartsPage{
 			"value" => 1,
 			"elementId" => "checkbox_gender_other"
 		));
-		
+
 		$this->createAdd("advanced_search_birth_date_start_year","HTMLInput",array(
 			"name" => "search[birthday][start][year]",
 			"value" => @$search["birthday"]["start"]["year"],
@@ -265,25 +266,25 @@ class IndexPage extends CommonPartsPage{
 			"value" => @$search["birthday"]["end"]["day"],
 			"size" => "3",
 		));
-		
+
 		$this->createAdd("advanced_search_post_number","HTMLInput",array(
 			"name" => "search[zip_code]",
 			"value" => @$search["zip_code"],
 			"style" => "width:100%",
 		));
-		
+
 		$this->createAdd("advanced_search_area","HTMLSelect",array(
 			"name" => "search[area]",
 			"selected" => @$search["area"],
 			"options" => Area::getAreas(),
 		));
-		
+
 		$this->createAdd("advanced_search_address1","HTMLInput",array(
 			"name" => "search[address1]",
 			"value" => @$search["address1"],
 			"style" => "width:100%",
 		));
-		
+
 		$this->createAdd("advanced_search_address2","HTMLInput",array(
 			"name" => "search[address2]",
 			"value" => @$search["address2"],
@@ -295,7 +296,7 @@ class IndexPage extends CommonPartsPage{
 			"value" => @$search["telephone_number"],
 			"style" => "width:100%",
 		));
-		
+
 		$this->createAdd("advanced_search_fax_number","HTMLInput",array(
 			"name" => "search[fax_number]",
 			"value" => @$search["fax_number"],
@@ -344,13 +345,13 @@ class IndexPage extends CommonPartsPage{
 			"style" => "width:100%",
 		));
 
-		
+
 		$this->createAdd("advanced_search_memo","HTMLTextArea",array(
 			"name" => "search[memo]",
 			"value" => @$search["memo"],
 			"style" => "width:100%; padding: 2px; margin: 0;",
 		));
-		
+
 		$this->createAdd("advanced_search_attribute1","HTMLInput",array(
 			"name" => "search[attribute1]",
 			"value" => @$search["attribute1"],
@@ -362,13 +363,13 @@ class IndexPage extends CommonPartsPage{
 			"value" => @$search["attribute2"],
 			"style" => "width:100%",
 		));
-		
+
 		$this->createAdd("advanced_search_attribute3","HTMLInput",array(
 			"name" => "search[attribute3]",
 			"value" => @$search["attribute3"],
 			"style" => "width:100%",
 		));
-		
+
 		$this->createAdd("advanced_search_mail_send_true","HTMLCheckbox",array(
 			"type" => "radio",
 			"name" => "search[is_disabled]",
@@ -451,7 +452,7 @@ class IndexPage extends CommonPartsPage{
 			"size" => "3"
 		));
 	}
-	
+
 	function buildPager(PagerLogic $pager){
 
 		//件数情報表示
@@ -469,7 +470,7 @@ class IndexPage extends CommonPartsPage{
 		$this->createAdd("next_pager","HTMLLink",$pager->getNextParam());
 		$this->createAdd("prev_pager","HTMLLink",$pager->getPrevParam());
 		$this->createAdd("pager_list","_common.SimplePagerComponent",$pager->getPagerParam());
-		
+
 		//ページへジャンプ
 		$this->createAdd("pager_jump","HTMLForm",array(
 			"method" => "get",
@@ -481,7 +482,5 @@ class IndexPage extends CommonPartsPage{
 			"selected" => $pager->getPage(),
 			"onchange" => "location.href=this.parentNode.action+this.options[this.selectedIndex].value"
 		));
-		
 	}
 }
-?>

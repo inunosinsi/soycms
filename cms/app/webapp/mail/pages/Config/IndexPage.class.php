@@ -21,38 +21,29 @@ class IndexPage extends WebPage{
 
 		SOY2PageController::jump("mail.Config?saved");
 		exit;
-
 	}
 
     function __construct() {
     	//SUPER USER以外には表示させない
     	if(CMSApplication::getAppAuthLevel() != 1)CMSApplication::jump("");
-    	
+
     	parent::__construct();
 
-    	$this->buildForm();
+    	self::buildForm();
 
-    	$this->createAdd("saved_message","HTMLModel",array(
-    		"visible" => (isset($_GET["saved"]))
-    	));
-
-    	$this->createAdd("sended_message","HTMLModel",array(
-    		"visible" => (isset($_GET["sended"]))
-    	));
-
-    	$this->createAdd("failed_message","HTMLModel",array(
-    		"visible" => (isset($_GET["failed"]))
-    	));
+		foreach(array("saved", "sended", "failed") as $t){
+			DisplayPlugin::toggle($t . "_message", isset($_GET[$t]));
+		}
     }
 
-    function buildForm(){
+    private function buildForm(){
 
-    	$this->createAdd("form","HTMLForm");
+    	$this->addForm("form");
 
     	$serverConfig = SOY2DAOFactory::create("ServerConfigDAO")->get();
 
 		/* 送信設定 */
-    	$this->createAdd("send_server_type_smtp","HTMLCheckBox",array(
+    	$this->addCheckBox("send_server_type_smtp", array(
     		"elementId" => "send_server_type_smtp",
     		"name" => "sendServerType",
     		"value" => ServerConfig::SERVER_TYPE_SMTP,
@@ -60,51 +51,51 @@ class IndexPage extends WebPage{
     		"onclick" => 'changeSendPort();'
     	));
 
-    	$this->createAdd("send_server_type_sendmail","HTMLCheckBox",array(
+    	$this->addCheckBox("send_server_type_sendmail", array(
     		"name" => "sendServerType",
     		"value" => ServerConfig::SERVER_TYPE_SENDMAIL,
     		"selected" => (ServerConfig::SERVER_TYPE_SENDMAIL == $serverConfig->getSendServerType()),
     	));
 
-    	$this->createAdd("is_use_smtp_auth_hidden","HTMLInput",array(
+    	$this->addInput("is_use_smtp_auth_hidden", array(
 			"name" => "isUseSMTPAuth",
     		"value" => 0,
     		"type" => "hidden"
     	));
-    	$this->createAdd("is_use_smtp_auth","HTMLCheckBox",array(
+    	$this->addCheckBox("is_use_smtp_auth", array(
 			"elementId" => "is_use_smtp_auth",
 			"name" => "isUseSMTPAuth",
     		"value" => 1,
     		"selected" => $serverConfig->getIsUseSMTPAuth()
     	));
 
-    	$this->createAdd("send_server_address","HTMLInput",array(
+    	$this->addInput("send_server_address", array(
 			"name" => "sendServerAddress",
     		"value" => $serverConfig->getSendServerAddress()
     	));
 
-    	$this->createAdd("send_server_user","HTMLInput",array(
+    	$this->addInput("send_server_user", array(
 			"name" => "sendServerUser",
     		"value" => $serverConfig->getSendServerUser()
     	));
 
-    	$this->createAdd("send_server_password","HTMLInput",array(
+    	$this->addInput("send_server_password", array(
 			"name" => "sendServerPassword",
     		"value" => $serverConfig->getSendServerPassword()
     	));
 
-    	$this->createAdd("send_server_port","HTMLInput",array(
+    	$this->addInput("send_server_port", array(
 			"id" => "sendServerPort",
 			"name" => "sendServerPort",
     		"value" => $serverConfig->getSendServerPort()
     	));
 
-    	$this->createAdd("is_use_ssl_send_server_hidden","HTMLInput",array(
+    	$this->addInput("is_use_ssl_send_server_hidden", array(
 			"name" => "isUseSSLSendServer",
     		"value" => 0,
     		"type" => "hidden"
     	));
-    	$this->createAdd("is_use_ssl_send_server","HTMLCheckBox",array(
+    	$this->addCheckBox("is_use_ssl_send_server", array(
     		"elementId" => "is_use_ssl_send_server",
 			"name" => "isUseSSLSendServer",
     		"value" => 1,
@@ -114,7 +105,7 @@ class IndexPage extends WebPage{
 
 
     	/* 受信設定 */
-    	$this->createAdd("receive_server_type_pop","HTMLCheckBox",array(
+    	$this->addCheckBox("receive_server_type_pop", array(
     		"elementId" => "receive_server_type_pop",
 			"name" => "receiveServerType",
     		"value" => ServerConfig::SERVER_TYPE_SMTP,
@@ -122,7 +113,7 @@ class IndexPage extends WebPage{
     		"onclick" => 'changeReceivePort();'
     	));
 
-    	$this->createAdd("receive_server_type_imap","HTMLCheckBox",array(
+    	$this->addCheckBox("receive_server_type_imap", array(
     		"elementId" => "receive_server_type_imap",
     		"name" => "receiveServerType",
     		"value" => ServerConfig::SERVER_TYPE_IMAP,
@@ -130,18 +121,18 @@ class IndexPage extends WebPage{
     		"onclick" => 'changeReceivePort();'
     	));
 
-    	$this->createAdd("receive_server_type_sendmail","HTMLCheckBox",array(
+    	$this->addCheckBox("receive_server_type_sendmail", array(
     		"name" => "receiveServerType",
     		"value" => ServerConfig::SERVER_TYPE_SENDMAIL,
     		"selected" => (ServerConfig::SERVER_TYPE_SENDMAIL == $serverConfig->getReceiveServerType())
     	));
 
-    	$this->createAdd("is_use_smtp_auth_hidden","HTMLInput",array(
+    	$this->addInput("is_use_smtp_auth_hidden", array(
 			"name" => "isUseSMTPAuth",
     		"value" => 0,
     		"type" => "hidden"
     	));
-    	$this->createAdd("is_use_smtp_auth","HTMLCheckBox",array(
+    	$this->addCheckBox("is_use_smtp_auth", array(
 			"name" => "isUseSMTPAuth",
     		"value" => 1,
     		"selected" => $serverConfig->getIsUseSMTPAuth()
@@ -220,7 +211,7 @@ class IndexPage extends WebPage{
     	));
 
     	/* メール配信設定 */
-    	
+
     	//送信処理の実行 exec
     	$this->createAdd("job_type_exec","HTMLCheckbox",array(
     		"name" => "jobType",
@@ -229,7 +220,7 @@ class IndexPage extends WebPage{
     		"selected" => ($serverConfig->getJobType() == ServerConfig::JOB_TYPE_EXEC),
     		"onclick" => "toggle_exec_wrapper(this.checked);"
     	));
-    	
+
     	//送信処理の実行 php
     	$this->createAdd("job_type_php","HTMLCheckbox",array(
     		"name" => "jobType",
@@ -248,7 +239,7 @@ class IndexPage extends WebPage{
     		"selected" => ($serverConfig->getSendType() == ServerConfig::SEND_TYPE_SINGLE),
     		"onclick" => "toggle_send_type(!this.checked);"
     	));
-    	
+
     	//配信の種類 分割
     	$this->createAdd("send_type_split","HTMLCheckbox",array(
     		"name" => "sendType",
@@ -257,45 +248,45 @@ class IndexPage extends WebPage{
     		"selected" => ($serverConfig->getSendType() == ServerConfig::SEND_TYPE_SPLIT),
     		"onclick" => "toggle_send_type(this.checked);"
     	));
-    	
+
     	//分割配信用項目の表示/非表示
     	$this->createAdd("send_type_restriction","HTMLModel",array(
     		"attr:id" => "send_type_restriction",
     		"style" => ($serverConfig->getSendType() == ServerConfig::SEND_TYPE_SPLIT) ? "" : "display:none",
     	));
-    	
+
     	//分割配信用項目の表示/非表示
     	$this->createAdd("send_type_interval","HTMLModel",array(
     		"attr:id" => "send_type_interval",
     		"style" => ($serverConfig->getSendType() == ServerConfig::SEND_TYPE_SPLIT) ? "" : "display:none",
     	));
-    	
-    	
+
+
     	//送信数制限
     	$this->createAdd("send_restriction", "HTMLInput", array(
     		"name" => "sendRestriction",
     		"value" => $serverConfig->getSendRestriction(),
     		"style" => "width:40px;ime-mode:inactive;"
     	));
-    	
+
     	//次回送信までの感覚
     	$this->createAdd("send_restriction_interval", "HTMLInput", array(
     		"name" => "sendRestrictionInterval",
     		"value" => $serverConfig->getSendRestrictionInterval(),
     		"style" => "width:40px;ime-mode:inactive;"
     	));
-    	
-    	$this->createAdd("php_path_wrapper","HTMLModel",array(
+
+    	$this->addModel("php_path_wrapper", array(
     		"attr:id" => "php_path_wrapper",
     		"style" => ($serverConfig->getJobType() == ServerConfig::JOB_TYPE_EXEC) ? "" : "display:none",
     		"visible" => (strpos(PHP_OS,"WIN") == false)	//windowsは非表示
     	));
-    	
-    	$this->createAdd("php_path","HTMLInput",array(
+
+    	$this->addInput("php_path", array(
     		"name" => "phpPath",
     		"value" => $serverConfig->getPhpPath()
     	));
-    	
+
     	$this->addCheckBox("is_auto_save", array(
     		"name" => "isAutoSave",
     		"value" => 1,
@@ -355,8 +346,5 @@ class IndexPage extends WebPage{
 		$send->addRecipient($serverConfig->getAdministratorMailAddress());
 		$send->send();
 
-
-
    }
 }
-?>

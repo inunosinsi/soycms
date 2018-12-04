@@ -9,9 +9,9 @@ class InitLogic extends SOY2LogicBase{
 	 * @todo
 	 */
     public function init(){
-    	$this->initTable();
+    	self::initTable();
     }
-    
+
     /**
      * テーブルを初期化する
      * @todo
@@ -19,7 +19,7 @@ class InitLogic extends SOY2LogicBase{
     private function initTable(){
     	$db = new SOY2DAO();
     	$db->begin();
-    	$sqls = file_get_contents(dirname(__FILE__)."/table_". SOYCMS_DB_TYPE .".sql");
+    	$sqls = file_get_contents(dirname(__FILE__)."/table_". SOYMAIL_DB_MODE .".sql");
     	$sqls = explode(";",$sqls);
     	foreach($sqls as $sql){
     		if(strlen(trim($sql))<1)continue;
@@ -38,7 +38,7 @@ class InitLogic extends SOY2LogicBase{
 			$db->commit();
 		}
     }
-    
+
     /**
 	 * initCheckFileのsetter
 	 * SQLiteの場合は原則としてデータベースファイルそのものを指定する

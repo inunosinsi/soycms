@@ -26,7 +26,7 @@ class SendNowPage extends WebPage{
 		CMSApplication::jump("Mail.SendBox?sended");
     	exit;
     }
-	
+
 	/**
 	 * execでの実行処理
 	 * @param Mail $mail
@@ -55,11 +55,11 @@ class SendNowPage extends WebPage{
 
 			$res = "";
     		exec($php_path . " " . $job_path . " 2>&1",$res);
-    		
+
     		SOYMailLog::add("[Exec]",implode("\n",$res));
     	}
     }
-	
+
 	/**
 	 * phpでの実行
 	 * @param Mail $mail
@@ -76,4 +76,3 @@ class SendNowPage extends WebPage{
 		include_once($job_path);
     }
 }
-?>

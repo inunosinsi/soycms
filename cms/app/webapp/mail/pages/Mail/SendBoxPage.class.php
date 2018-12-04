@@ -32,63 +32,59 @@ class SendBoxPage extends WebPage{
 
 				$dao->update($config);
 			}catch(Exception $e){
-				
+
 			}
 
 			CMSApplication::jump("Mail.SendBox");
 		}
-
-
 	}
 
     function __construct() {
     	parent::__construct();
-    	
-    	$this->createAdd("sended_message","HTMLModel",array(
-			"visible" => (isset($_GET["sended"]))
-    	));
-    	
+
+		DisplayPlugin::toggle("sended_message", isset($_GET["sended"]));
+
     	//メール表示件数
     	$limit = 15;
     	$startPage = (isset($args[0])) ? (int)$args[0] : 1;
     	$offset = ($startPage - 1) * $limit;
-    	
+
     	//DAO
     	SOY2DAOConfig::setOption("limit_query",true);
     	$mailDAO = SOY2DAOFactory::create("MailDAO");
 
     	$mailDAO->setOrder("update_date desc");
 
-    		
+
     	//合計件数取得
     	$total = $mailDAO->countSendMail();
-    	
+
     	//メール取得
     	$mailDAO->setLimit($limit);
     	$mailDAO->setOffset($offset);
     	$mails = $mailDAO->getSendMail();
-    	
+
     	$this->createAdd("mail_list","_common.SendBoxMailListComponent",array(
     		"list" => $mails
     	));
-    	
+
     	//件数情報表示
     	$start = $offset;
     	$end = $start + count($mails);
     	if($end > 0 && $start == 0)$start = 1;
-    	    	
+
     	$this->createAdd("count_start","HTMLLabel",array(
     		"text" => $start
     	));
-    	
+
     	$this->createAdd("count_end","HTMLLabel",array(
     		"text" => $end
     	));
-    	
+
     	$this->createAdd("count_max","HTMLLabel",array(
     		"text" => $total
     	));
-    	
+
     	//ページャー作成
     	$pageURL = SOY2PageController::createLink("mail.Mail.SendBox");
     	$this->createAdd("next_pager","HTMLLink",array(
@@ -103,13 +99,13 @@ class SendBoxPage extends WebPage{
     		max(1, $startPage - 3),
     		min((int)($total / $limit) + 1, $startPage + 3)
     	);
-    	
+
     	$this->createAdd("pager_list","_common.SimplePagerComponent",array(
     		"url" => $pageURL,
     		"current" => $startPage,
     		"list" => $pagers
     	));
-    	
+
     	$this->outputJobInfo();
     }
     function outputJobInfo(){
@@ -137,6 +133,4 @@ class SendBoxPage extends WebPage{
 		));
 
     }
-
 }
-?>

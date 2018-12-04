@@ -8,6 +8,8 @@ class IndexPage extends CMSWebPageBase{
 
 		//アプリケーション
 		$applications = SOY2Logic::createInstance("logic.admin.Application.ApplicationLogic")->getLoginiableApplicationLists();
+		if(!count($applications)) SOY2PageController::jump("");
+
 		$this->createAdd("application_list", "_common.Application.ApplicationListComponent", array(
 			"list" => $applications
 		));

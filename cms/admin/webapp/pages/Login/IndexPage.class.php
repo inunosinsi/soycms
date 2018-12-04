@@ -41,7 +41,7 @@ class IndexPage extends CMSHTMLPageBase{
 
 		//フォームの作成
 		$this->addForm("AuthForm");
-		
+
 		$this->addInput("username", array(
 			"name" => "Auth[name]",
 			"value" => $this->username
@@ -50,7 +50,7 @@ class IndexPage extends CMSHTMLPageBase{
 			"name" => "Auth[password]",
 			"value" => ""
 		));
-		
+
 		$this->addLabel("message", array(
 			"html" => $this->message,
 			"visible" => strlen($this->message)
@@ -61,7 +61,7 @@ class IndexPage extends CMSHTMLPageBase{
 			"visible" => SOY2Logic::createInstance("logic.admin.Administrator.AdministratorLogic")->hasMailAddress() &&
 			!is_null(SOY2Logic::createInstance("logic.mail.MailConfigLogic")->get()),
 		));
-		
+
 		$this->addModel("biglogo", array(
     		"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
     	));
@@ -88,4 +88,3 @@ class IndexPage extends CMSHTMLPageBase{
 		return 	parent::getTemplateFilePath();
     }
 }
-?>

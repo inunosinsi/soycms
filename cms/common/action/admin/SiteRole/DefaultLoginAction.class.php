@@ -20,8 +20,8 @@ class DefaultLoginAction extends SOY2Action{
 
 
 		if(! UserInfoUtil::isDefaultUser()){//初期管理者は自動ログインしない
-			$siteRoles = $this->getSiteRoles($userId);
-			$appRoles = $this->getAppRoles($userId);
+			$siteRoles = self::getSiteRoles($userId);
+			$appRoles = self::getAppRoles($userId);
 
 			if(count($siteRoles) == 1 && count($appRoles) == 0){
 				//ログインできるのがサイト１個のみなので、それにログイン
@@ -127,26 +127,33 @@ class DefaultLoginAction extends SOY2Action{
 	/**
 	 * ユーザーのサイト権限を取得する
 	 */
-	function getSiteRoles($userId){
-		$siteRoleDao = SOY2DAOFactory::create("admin.SiteRoleDAO");
+	private function getSiteRoles($userId){
 		try{
-			$siteRoles = $siteRoleDao->getByUserId($userId);
+			return SOY2DAOFactory::create("admin.SiteRoleDAO")->getByUserId($userId);
 		}catch(Exception $e){
-			$siteRoles = array();
+			return;
 		}
-		return $siteRoles;
 	}
 
 	/**
 	 * ユーザーのApp権限を取得する
 	 */
-	function getAppRoles($userId){
-		$appRoleDao = SOY2DAOFactory::create("admin.AppRoleDAO");
+	private function getAppRoles($userId){
 		try{
-			$appRoles = $appRoleDao->getByUserId($userId);
+			$appRoles = SOY2DAOFactory::create("admin.AppRoleDAO")->getByUserId($userId);
 		}catch(Exception $e){
 			$appRoles = array();
 		}
+
+		if(!count($appRoles)) return array();
+
+		foreach($appRoles as $appId => $role){
+			if(
+				($appId == "inquiry" && defined("SOYINQUIRY_USE_SITE_DB") && SOYINQUIRY_USE_SITE_DB) ||
+				($appId == "mail" && defined("SOYMAIL_USE_SITE_DB") && SOYMAIL_USE_SITE_DB)
+			) unset($appRoles[$appId]);
+		}
+
 		return $appRoles;
 	}
 }

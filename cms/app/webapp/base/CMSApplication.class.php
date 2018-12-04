@@ -542,6 +542,29 @@ class CMSApplication {
     	return $res;
     }
 
+	//権限を持つサイトが一つのみ。SOY InquiryとSOY Mailはサイト側にデータベースを持つ設定
+	public static function checkAuthWithSiteOnly(){
+		static $res;
+		if(is_null($res)){
+			$res = false;
+			$session = SOY2ActionSession::getUserSession();
+			if($session->getAttribute("isdefault")){	//初期管理者の場合は強制的にtrue
+				$res = true;
+			}else{
+				self::switchAdminMode();
+				$userId = $session->getAttribute("userid");
+				$app_res = SOY2Logic::createInstance("logic.admin.Application.ApplicationLogic")->getLoginableApplications($userId);
+
+				//SOY Appの画面を開きつつ、SOY Appの権限が無い場合はサイト側にデータベースを持つ設定になっている
+				$res = (count($app_res));
+
+				self::switchAppMode();
+			}
+		}
+
+		return $res;
+	}
+
     //サイト側のデータベースを使っている時にどのサイトにログインしているか？を調べる
     public static function getLoginedSiteId(){
     	$uri = null;

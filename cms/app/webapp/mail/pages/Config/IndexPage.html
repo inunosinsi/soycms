@@ -1,335 +1,278 @@
-<style type="text/css">
-.form_table th{
-	width:200px;
-}
-.inner_table{
-	margin:10px 5px;
-	table-layout:fixed;
-}
-.inner_table .even td{
-	background-color:white;
-}
-input[type="text"], input[type="password"]{
-	width: 100%;
-}
-</style>
-
-<div class="functions">
-	<div class="function">
-		<a soy:link="mail.Config">サーバ設定</a>
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">サーバ設定</h1>
 	</div>
-
-	<!--
-	<div class="function">
-		<a soy:link="mail.Config.JobConfig">ジョブ設定</a>
-	</div>
-	 -->
-
-	<br style="clear:both;" />
+	<!-- /.col-lg-12 -->
 </div>
 
-<style type="text/css">
-.form_table th{
-	width:200px;
-}
-.inner_table{
-	margin:10px 5px;
-	table-layout:fixed;
-}
-.inner_table .even td{
-	background-color:white;
-}
-</style>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="alert alert-success" soy:display="saved_message">保存しました</div>
+			<div class="alert alert-success" soy:display="sended_message">テストメールを送信しました。</div>
+			<div class="alert alert-danger" soy:display="failed_message">テストメールの送信に失敗しました。</div>
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<form soy:id="form">
+						<div class="table-responsive">
+							<table class="table">
+								<thead>
+									<tr>
+										<td colspan="2">送信設定</td>
+									</tr>
+								</thead>
+								<tr>
+									<th>送信方法</th>
+									<td>
+										<input soy:id="send_server_type_smtp" type="radio" name="server_type" />
+										SMTP
 
-<div style="padding:0 20px;">
+										<input soy:id="send_server_type_sendmail" type="radio" name="server_type" />
+										sendmail
+									</td>
+								</tr>
+								<tr>
+									<th rowspan="3">SMTP認証</th>
+									<td>
+										<input soy:id="is_use_smtp_auth_hidden" type="hidden" />
+										<input soy:id="is_use_smtp_auth" type="checkbox" id="is_use_smtp_auth" />
+										<label for="is_use_smtp_auth">SMTP認証を使用する</label>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table class="inner_table">
+											<tr>
+												<th>サーバ</th>
+												<td><input soy:id="send_server_address" class="form-control" type="text" name="" value="" /></td>
+											</tr>
+											<tr>
+												<th>ユーザ名</th>
+												<td><input soy:id="send_server_user" class="form-control" type="text" value=""></td>
+											</tr>
+											<tr>
+												<th>パスワード</th>
+												<td><input soy:id="send_server_password" class="form-control" type="password" name="" value="" /></td>
+											</tr>
+											<tr>
+												<th>ポート</th>
+												<td><input soy:id="send_server_port" class="form-control" type="text" name="" value="" /></td>
+											</tr>
 
-	<p class="notice" soy:id="saved_message">保存しました</p>
-	<p class="notice" soy:id="sended_message">テストメールを送信しました。</p>
-	<p class="error" soy:id="failed_message">テストメールの送信に失敗しました。</p>
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<input soy:id="is_use_ssl_send_server_hidden" type="hidden" name="" />
+										<input soy:id="is_use_ssl_send_server" type="checkbox" name="" />
+										<label for="is_use_ssl_send_server">SSL(暗号化)を使用する</label>
+									</td>
+								</tr>
+							</table>
 
-	<h1>サーバ設定</h1>
+							<table class="table">
+								<thead>
+									<tr>
+										<td colspan="2">受信設定</td>
+									</tr>
+								</thead>
+								<tr>
+									<th>受信方法</th>
+									<td>
+										<input soy:id="receive_server_type_pop" type="radio" name="server_type" />
+										POP3
 
-	<div class="table_container">
+										<input soy:id="receive_server_type_imap" type="radio" name="server_type" />
+										IMAP
 
-		<form soy:id="form">
+										<!--
+										<input soy:id="receive_server_type_sendmail" type="radio" name="server_type" />
+										sendmail
+										-->
+									</td>
+								</tr>
+								<tr>
+									<th rowspan="3">POP3/IMAP設定</th>
+									<td style="background-color:white;">
+										<table class="inner_table">
+											<tr>
+												<th>サーバ</th>
+												<td><input soy:id="receive_server_address" class="form-control" type="text" name="" value="" /></td>
+											</tr>
+											<tr>
+												<th>ユーザ名</th>
+												<td><input soy:id="receive_server_user" class="form-control" type="text" value=""></td>
+											</tr>
+											<tr>
+												<th>パスワード</th>
+												<td><input soy:id="receive_server_password" class="form-control" type="password" name="" value="" /></td>
+											</tr>
+											<tr>
+												<th>ポート</th>
+												<td><input soy:id="receive_server_port" class="form-control" type="text" name="" value="" /></td>
+											</tr>
 
-		<table class="form_table list">
-			<col style="width:200px" />
-			<thead>
-				<tr>
-					<td colspan="2">送信設定</td>
-				</tr>
-			</thead>
-			<tr>
-				<th>送信方法</th>
-				<td>
-					<input soy:id="send_server_type_smtp" type="radio" name="server_type" />
-					SMTP
+										</table>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<input soy:id="is_use_pop_before_smtp_hidden" type="hidden" name="" />
+										<input soy:id="is_use_pop_before_smtp" type="checkbox" name="" />
+										<label for="is_use_pop_before_smtp">「POP/IMAP before SMTP」を使用する</label><br></td>
+								</tr>
 
-					<input soy:id="send_server_type_sendmail" type="radio" name="server_type" />
-					sendmail
-				</td>
-			</tr>
-			<tr>
-				<th rowspan="3">SMTP認証</th>
-				<td>
-					<input soy:id="is_use_smtp_auth_hidden" type="hidden" />
-					<input soy:id="is_use_smtp_auth" type="checkbox" id="is_use_smtp_auth" />
-					<label for="is_use_smtp_auth">SMTP認証を使用する</label>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<table class="inner_table">
-						<col style="width:100px;text-align:left;" />
-						<tr>
-							<th>サーバ</th>
-							<td><input soy:id="send_server_address" type="text" name="" value="" /></td>
-						</tr>
-						<tr>
-							<th>ユーザ名</th>
-							<td><input soy:id="send_server_user" type="text" value=""></td>
-						</tr>
-						<tr>
-							<th>パスワード</th>
-							<td><input soy:id="send_server_password" type="password" name="" value="" /></td>
-						</tr>
-						<tr>
-							<th>ポート</th>
-							<td><input soy:id="send_server_port" type="text" name="" value="" /></td>
-						</tr>
+								<tr>
+									<td>
+										<input soy:id="is_use_ssl_receive_server_hidden" type="hidden" name="" />
+										<input soy:id="is_use_ssl_receive_server" type="checkbox" name="" />
+										<label for="is_use_ssl_receive_server">SSL(暗号化)を使用する</label>
+									</td>
+								</tr>
+							</table>
 
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input soy:id="is_use_ssl_send_server_hidden" type="hidden" name="" />
-					<input soy:id="is_use_ssl_send_server" type="checkbox" name="" />
-					<label for="is_use_ssl_send_server">SSL(暗号化)を使用する</label>
-				</td>
-			</tr>
-		</table>
+							<table class="table">
+								<thead>
+									<tr>
+										<td colspan="2">管理者設定</td>
+									</tr>
+								</thead>
+								<tr>
+									<th>管理者メールアドレス</th>
+									<td>
+										<input id="administrator_address" class="form-control" soy:id="administrator_address" type="text" value="" />
+									</td>
+								</tr>
+								<tr>
+									<th>管理者名称</th>
+									<td>
+										<input soy:id="administrator_name" class="form-control" type="text" value="" />
+									</td>
+								</tr>
+								<tr>
+									<th>差出人メールアドレス</th>
+									<td>
+										<input soy:id="administrator_mail" class="form-control" type="text" value="" />
+									</td>
+								</tr>
+								<tr>
+									<th>返信先メールアドレス</th>
+									<td>
+										<input soy:id="return_address" class="form-control" type="text" value="" />
+									</td>
+								</tr>
+								<tr>
+									<th>返信先名称</th>
+									<td>
+										<input soy:id="return_name" class="form-control" type="text" value="" />
+									</td>
+								</tr>
+							</table>
 
-		<table class="form_table list">
-			<col style="width:200px" />
-			<thead>
-				<tr>
-					<td colspan="2">受信設定</td>
-				</tr>
-			</thead>
-			<tr>
-				<th>受信方法</th>
-				<td>
-					<input soy:id="receive_server_type_pop" type="radio" name="server_type" />
-					POP3
+							<table class="table">
+								<tr>
+									<th colspan="2">署名</th>
+								</tr>
 
-					<input soy:id="receive_server_type_imap" type="radio" name="server_type" />
-					IMAP
+								<tr>
+									<td colspan="2">
+										<textarea soy:id="signature" class="form-control" style="padding:5px 2%"></textarea>
+									</td>
+								</tr>
+							</table>
 
-					<!--
-					<input soy:id="receive_server_type_sendmail" type="radio" name="server_type" />
-					sendmail
-					-->
-				</td>
-			</tr>
-			<tr>
-				<th rowspan="3">POP3/IMAP設定</th>
-				<td style="background-color:white;">
-					<table class="inner_table">
-						<col style="width:100px;text-align:left;" />
-						<tr>
-							<th>サーバ</th>
-							<td><input soy:id="receive_server_address" type="text" name="" value="" /></td>
-						</tr>
-						<tr>
-							<th>ユーザ名</th>
-							<td><input soy:id="receive_server_user" type="text" value=""></td>
-						</tr>
-						<tr>
-							<th>パスワード</th>
-							<td><input soy:id="receive_server_password" type="password" name="" value="" /></td>
-						</tr>
-						<tr>
-							<th>ポート</th>
-							<td><input soy:id="receive_server_port" type="text" name="" value="" /></td>
-						</tr>
+							<table class="table">
+								<thead>
+									<tr>
+										<td colspan="2">メール配信設定</td>
+									</tr>
+								</thead>
+								<tr>
+									<th>送信処理の実行方法</th>
+									<td>
+										<input soy:id="job_type_exec" type="radio" value="" />
+										<input soy:id="job_type_php" type="radio" value="" />
+									</td>
+								</tr>
 
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input soy:id="is_use_pop_before_smtp_hidden" type="hidden" name="" />
-					<input soy:id="is_use_pop_before_smtp" type="checkbox" name="" />
-					<label for="is_use_pop_before_smtp">「POP/IMAP before SMTP」を使用する</label><br></td>
-			</tr>
+								<tr>
+									<th>配信の種類(一括、分割)</th>
+									<td>
+										<input soy:id="send_type_single" type="radio" value="" />
+										<input soy:id="send_type_split" type="radio" value="" />
+									</td>
+								</tr>
 
-			<tr>
-				<td>
-					<input soy:id="is_use_ssl_receive_server_hidden" type="hidden" name="" />
-					<input soy:id="is_use_ssl_receive_server" type="checkbox" name="" />
-					<label for="is_use_ssl_receive_server">SSL(暗号化)を使用する</label>
-				</td>
-			</tr>
-		</table>
+								<tr soy:id="send_type_restriction">
+									<th>送信数制限<br />(cronを利用して、分割配信)</th>
+									<td>
+										<input soy:id="send_restriction" type="text" value="" />&nbsp;通
+									</td>
+								</tr>
 
-		<table class="form_table list">
-			<col style="width:200px" />
-			<thead>
-				<tr>
-					<td colspan="2">管理者設定</td>
-				</tr>
-			</thead>
-			<tr>
-				<th>管理者メールアドレス</th>
-				<td>
-					<input id="administrator_address" soy:id="administrator_address" type="text" value="" />
-				</td>
-			</tr>
-			<tr>
-				<th>管理者名称</th>
-				<td>
-					<input soy:id="administrator_name" type="text" value="" />
-				</td>
-			</tr>
-			<tr>
-				<th>差出人メールアドレス</th>
-				<td>
-					<input soy:id="administrator_mail" type="text" value="" />
-				</td>
-			</tr>
-			<tr>
-				<th>返信先メールアドレス</th>
-				<td>
-					<input soy:id="return_address" type="text" value="" />
-				</td>
-			</tr>
-			<tr>
-				<th>返信先名称</th>
-				<td>
-					<input soy:id="return_name" type="text" value="" />
-				</td>
-			</tr>
-		</table>
+								<tr soy:id="send_type_interval">
+									<th>次回送信までの間隔</th>
+									<td>
+										<input soy:id="send_restriction_interval" type="text" value="" />&nbsp;分後<br/>
+										<a soy:link="mail.Help#job">分割配信の設定方法</a>
+									</td>
+								</tr>
 
-		<table class="form_table list">
-			<tr>
-				<th colspan="2">署名</th>
-			</tr>
+								<tr soy:id="php_path_wrapper">
+									<th>PHPのパス</th>
+									<td>
+										<input soy:id="php_path" class="form-control" type="text" value="" />
+									</td>
+								</tr>
+							</table>
 
-			<tr>
-				<td colspan="2">
-					<textarea soy:id="signature" style="width:96%;padding:5px 2%"></textarea>
-				</td>
-			</tr>
-		</table>
-
-		<table class="form_table list">
-			<col style="width:200px" />
-			<thead>
-				<tr>
-					<td colspan="2">メール配信設定</td>
-				</tr>
-			</thead>
-			<tr>
-				<th>送信処理の実行方法</th>
-				<td>
-					<input soy:id="job_type_exec" type="radio" value="" />
-					<input soy:id="job_type_php" type="radio" value="" />
-				</td>
-			</tr>
-			
-			<tr>
-				<th>配信の種類(一括、分割)</th>
-				<td>
-					<input soy:id="send_type_single" type="radio" value="" />
-					<input soy:id="send_type_split" type="radio" value="" />
-				</td>
-			</tr>
-			
-			<tr soy:id="send_type_restriction">
-				<th>送信数制限<br />(cronを利用して、分割配信)</th>
-				<td>
-					<input soy:id="send_restriction" type="text" value="" />&nbsp;通
-				</td>
-			</tr>
-			
-			<tr soy:id="send_type_interval">
-				<th>次回送信までの間隔</th>
-				<td>
-					<input soy:id="send_restriction_interval" type="text" value="" />&nbsp;分後<br/>
-					<a soy:link="mail.Help#job">分割配信の設定方法</a>
-				</td>
-			</tr>
-			
-			<tr soy:id="php_path_wrapper">
-				<th>PHPのパス</th>
-				<td>
-					<input soy:id="php_path" type="text" value="" />
-				</td>
-			</tr>
-		</table>
-				
-		<script type="text/javascript">
-		function toggle_exec_wrapper(flag){
-			if(!$("#php_path_wrapper"))return;
-			
-			if(flag){
-				$("#php_path_wrapper").show();
-			}else{
-				$("#php_path_wrapper").hide();			
-			}
-			
-		}
-		
-		function toggle_send_type(flag){
- 			if(!$("#send_type_restriction"))return;
-			if(!$("#send_type_interval"))return;
-
-			if(flag){
-				$("#send_type_restriction").show();
-				$("#send_type_interval").show();
-			}else{
-				$("#send_type_restriction").hide();
-				$("#send_type_interval").hide();
-			}
-
-		}
-		
-		</script>
-		
-		<table class="form_table list">
-			<col style="width:200px" />
-			<thead>
-				<tr>
-					<td colspan="2">その他の設定</td>
-				</tr>
-			</thead>
-			<tr>
-				<th>下書きの自動保存設定</th>
-				<td><input type="checkbox" soy:id="is_auto_save"></td>
-			</tr>
-		</table>
-
-
-		<table class="button_table">
-			<tr class="button_table_row">
-				<td style="backgruond-color:white;">
-					<input type="submit" class="submit_button" value="更新" />
-				</td>
-
-				<td style="backgruond-color:white;">
-					<input name="test" type="submit" class="submit_button" value="テスト送信" onclick="return confirm_test_send();" />
-				</td>
-			</tr>
-		</table>
-
-		</form soy:id="form">
+							<table class="table">
+								<thead>
+									<tr>
+										<td colspan="2">その他の設定</td>
+									</tr>
+								</thead>
+								<tr>
+									<th>下書きの自動保存設定</th>
+									<td><input type="checkbox" soy:id="is_auto_save"></td>
+								</tr>
+							</table>
+						</div>
+						<div style="text-align:center;">
+							<input type="submit" class="btn btn-primary" value="更新">&nbsp;
+							<input name="test" type="submit" class="btn btn-primary" value="テスト送信" onclick="return confirm_test_send();">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 
 <script type="text/javascript">
+function toggle_exec_wrapper(flag){
+	if(!$("#php_path_wrapper"))return;
+
+	if(flag){
+		$("#php_path_wrapper").show();
+	}else{
+		$("#php_path_wrapper").hide();
+	}
+}
+
+function toggle_send_type(flag){
+	if(!$("#send_type_restriction"))return;
+	if(!$("#send_type_interval"))return;
+
+	if(flag){
+		$("#send_type_restriction").show();
+		$("#send_type_interval").show();
+	}else{
+		$("#send_type_restriction").hide();
+		$("#send_type_interval").hide();
+	}
+}
 function changeSendPort(){
 	var port = 25;
 	if($("#is_use_ssl_send_server").prop("checked")){
