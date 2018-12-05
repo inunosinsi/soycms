@@ -27,11 +27,22 @@
 <link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/morrisjs/morris.css?<?php echo $time;?>">
 <link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/font-awesome/css/font-awesome.min.css?<?php echo $time;?>">
 <link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.css?<?php echo $time;?>">
-<style>.navbar-static-top{background: linear-gradient(#ffeaef,#ffffff);}</style>
+<style>.navbar-static-top{background: linear-gradient(#<?php echo $backgroundColor; ?>,#ffffff);}</style>
 <?php CMSApplication::printLink(); ?>
 <script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery/jquery.min.js?1510124446" type="text/JavaScript" charset="utf-8"></script>
 <script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.js?1510124446" type="text/JavaScript" charset="utf-8"></script>
 </head>
+
+<?php if($hideSideMenu) { ?>
+<style type="text/css">
+@media (min-width: 768px) {
+	#page-wrapper{
+		margin-left: 50px;
+	}
+}
+</style>
+<?php } ?>
+
 
 <body>
 
@@ -47,7 +58,7 @@
 			 </div>
 			<!-- /.navbar-header -->
 
-			<img src="<?php echo CMSApplication::getRoot(); ?>css/images/main/logo.png" class="navbar-brand" alt="logo">
+			<img src="<?php echo $logoPath; ?>" class="navbar-brand" alt="logo">
 
 			<ul id="top_menu_site" class="nav navbar-top-links navbar-left">
 				<li><p><a style="text-decoration:none;color:black;" href="<?php echo CMSApplication::getApplicationRoot(); ?>"><?php echo CMSApplication::getApplicationName(); ?></a></p></li>
@@ -73,7 +84,12 @@
 			</ul>
 			<!-- /.navbar-top-links -->
 
+			<?php if($hideSideMenu) { ?>
+			<div class="navbar-default sidebar sidebar-narrow" role="navigation">
+			<?php }else{ ?>
 			<div class="navbar-default sidebar" role="navigation">
+			<?php } ?>
+
 				<div class="sidebar-nav navbar-collapse">
 					<?php CMSApplication::printTabs(); ?>
 					<!--ul class="nav" id="side-menu">
@@ -137,14 +153,14 @@ $(function(){
 			$(".sidebar").css({'width': '250px'});
 			$("#toggle-side-menu i").removeClass("fa-angle-right").addClass("fa-angle-left");
 			$("#toggle-side-menu").removeClass("active").blur();
-			$.cookie('admin-hide-side-menu', false);
+			$.cookie('app-hide-side-menu', false);
 		}else{
 			$("#page-wrapper").css({'margin-left': '50px'});
 			$("#side-menu li a span").hide();
 			$(".sidebar").css({'width': '50px'});
 			$("#toggle-side-menu i").removeClass("fa-angle-left").addClass("fa-angle-right");
 			$("#toggle-side-menu").removeClass("active").blur();
-			$.cookie('admin-hide-side-menu', true);
+			$.cookie('app-hide-side-menu', true);
 		}
 	});
 });

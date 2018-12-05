@@ -188,7 +188,13 @@ class CMSApplication {
 			}
 			if($isThreeTemp || $isCustomTemp) $html .= "</li>\n";
 		}
-		if($isThreeTemp) $html .= "<li class=\"hidden-xs\"><a href=\"#\" id=\"toggle-side-menu\" class=\"text-right\"><i class=\"fa fa-fw fa-angle-left\"></i><span>&nbsp;</span></a></li>";
+		if($isThreeTemp) {
+			if( isset($_COOKIE["app-hide-side-menu"]) && $_COOKIE["app-hide-side-menu"] == "true" ){
+				$html .= "<li class=\"hidden-xs\"><a href=\"#\" id=\"toggle-side-menu\" class=\"text-right\"><i class=\"fa fa-fw fa-angle-right\"></i><span>&nbsp;</span></a></li>";
+			}else{
+				$html .= "<li class=\"hidden-xs\"><a href=\"#\" id=\"toggle-side-menu\" class=\"text-right\"><i class=\"fa fa-fw fa-angle-left\"></i><span>&nbsp;</span></a></li>";
+			}
+		}
 		if($isThreeTemp || $isCustomTemp) $html .= "</ul>\n";
 
 		echo $html;
@@ -349,6 +355,32 @@ class CMSApplication {
 		if(isset($_GET["mode"]) && $_GET["mode"] == "print"){
 			include_once(dirname(__FILE__) . "/print.php");
 		}else{
+			$backgroundColor = (isset($self->properties["background-color"]) && strlen($self->properties["background-color"]) === 6) ? $self->properties["background-color"] : "ffeaef";
+			//隠しモードロゴ usage：/cmsインストールディレクトリ/app/webapp/{アプリケーションID}/logo/以下に画像ファイルを一枚配置する
+			$logoDir = dirname(dirname(__FILE__)) . "/" . $self->applicationId . "/logo/";
+			$fileName = null;
+			if(file_exists($logoDir) && is_dir($logoDir)){
+				foreach(glob($logoDir . "*") as $f){
+    				if(is_file($f)){
+						$fileName = trim(substr($f, strrpos($f, "/")), "/");
+						break;
+    				}
+				}
+			}
+
+			if(isset($fileName)){
+				$logoPath = self::getRoot() . "webapp/" . $self->applicationId . "/logo/" . $fileName;
+			}else{
+				$logoPath = self::getRoot() . "css/images/main/logo.png";
+			}
+
+			//サイドバーを折りたたむか？
+			if($self->mode == "three"){
+				$hideSideMenu = ( isset($_COOKIE["app-hide-side-menu"]) && $_COOKIE["app-hide-side-menu"] == "true" );
+			}else{
+				$hideSideMenu = null;
+			}
+
 			include_once(dirname(__FILE__) . "/" . $self->mode . ".php");
 		}
 	}
