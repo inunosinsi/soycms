@@ -24,7 +24,4 @@ class DraftBoxMailListComponent extends HTMLList{
 		));
 
 	}
-
 }
-
-?>
