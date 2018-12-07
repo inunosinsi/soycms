@@ -7,7 +7,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	private $checkVersionLogic;
 
 	//DataSets (soycms_admin_data_sets)でのclass名
-	const VERSION_KEY = "SOYMail_DB_VERSION";
+	const VERSION_KEY = "SOYMAIL_DB_VERSION";
 
 	/*
 	 * 更新ファイルの正規表現

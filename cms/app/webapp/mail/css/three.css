@@ -1,3 +1,6 @@
+table.table tr th {
+	width: 20%;
+}
 th.id{
 	width:100px !important;
 }
