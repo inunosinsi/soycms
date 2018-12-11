@@ -297,7 +297,7 @@ class InquiryList extends HTMLList{
 
 		//getContentの中身はhtmlspecialcharsがかかっている
 		$this->createAdd("content","HTMLLabel",array(
-			"html"  => $entity->getContent(),
+			"html"  => (mb_strlen($entity->getContent()) >= 80) ? mb_substr($entity->getContent(), 0, 80) . "..." : $entity->getContent(),
 			"style" => "cursor:pointer;". ( ($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "color:black;font-weight: bold;" : "" ),
 			"title" => $entity->getContent(),
 			"onclick" => "location.href='{$detailLink}'"

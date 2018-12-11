@@ -33,7 +33,7 @@ class InquiryListComponent extends HTMLList{
 
 		//getContentの中身はhtmlspecialcharsがかかっている
 		$this->createAdd("content","HTMLLink",array(
-			"html"  => $entity->getContent(),
+			"html"  => (mb_strlen($entity->getContent()) >= 80) ? mb_substr($entity->getContent(), 0, 80) . "..." : $entity->getContent(),
 			"link"  => $detailLink,
 			"title" => $entity->getContent(),
 		));
