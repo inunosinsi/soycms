@@ -10,24 +10,29 @@ class SOYInquiryApplication{
 			array(
 				"label" => "新着",
 				"href" => SOY2PageController::createLink(APPLICATION_ID),
+				"icon" => "home"
 			),
 			array(
 				"label" => "問い合わせ",
-				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Inquiry")
+				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Inquiry"),
+				"icon" => "list-alt"
 			),
 			array(
 				"label" => "フォーム",
-				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Form")
+				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Form"),
+				"icon" => "edit"
 			),
 			array(
 				"label" => "設定",
 				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Config"),
-				"visible" => ($level == 1) ? true : false
+				"visible" => ($level == 1) ? true : false,
+				"icon" => "cog"
 			),
 			array(
 				"label" => "ヘルプ",
 				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Help"),
-				"visible" => ($level == 1) ? true : false
+				"visible" => ($level == 1) ? true : false,
+				"icon" => "question"
 			)
 		));
 
@@ -41,10 +46,9 @@ class SOYInquiryApplication{
 
 		//DBの初期化を行う
 		if(!file_exists(SOYINQUIRY_DB_FILE)){
-			$logic = SOY2Logic::createInstance("logic.InitLogic", array(
+			SOY2Logic::createInstance("logic.InitLogic", array(
 				"initCheckFile" => SOYINQUIRY_DB_FILE,
-			));
-			$logic->init();
+			))->init();
 		}
 
 		//SOY2HTMLの設定
@@ -55,7 +59,7 @@ class SOYInquiryApplication{
 		SOY2HTMLPlugin::addPlugin("panel","PanelPlugin");
 
 		//CSSの読み込み
-		$cssLink = SOY2PageController::createRelativeLink("./webapp/".APPLICATION_ID."/css/style.css");
+		$cssLink = SOY2PageController::createRelativeLink("./webapp/".APPLICATION_ID."/css/three.css");
 		if(method_exists("CMSApplication", "getVersion")){
 			$cssLink .= "?".CMSApplication::getVersion();
 		}

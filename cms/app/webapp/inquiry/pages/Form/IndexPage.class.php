@@ -1,22 +1,13 @@
 <?php
 
-SOY2HTMLFactory::importWebPage("_common.FormList");
-
 class IndexPage extends WebPage{
 
     function __construct() {
     	parent::__construct();
-    	
-    	$formDAO = SOY2DAOFactory::create("SOYInquiry_FormDAO");
-    	$forms = $formDAO->get();
-    	
+
     	SOY2::import("domain.SOYInquiry_Inquiry");
-    	$this->createAdd("form_list","FormList",array(
-    		"list" => $forms    	
-    	));	
+    	$this->createAdd("form_list", "_common.FormListComponent", array(
+    		"list" => SOY2DAOFactory::create("SOYInquiry_FormDAO")->get()
+    	));
     }
 }
-
-
-
-?>

@@ -92,25 +92,6 @@
 
 				<div class="sidebar-nav navbar-collapse">
 					<?php CMSApplication::printTabs(); ?>
-					<!--ul class="nav" id="side-menu">
-						<li>
-							<a href="/main/admin/"><i class="fa fa-home fa-fw"></i><span class="tab_active">ダッシュボード</span></a>
-						</li>
-						<li>
-							<a href="/main/admin/index.php/Site"><i class="fa fa-sitemap fa-fw"></i><span class="tab_inactive">サイト一覧</span></a>
-						</li>
-						<li>
-							<a href="/main/admin/index.php/Application"><i class="fa fa-arrows-alt fa-fw"></i><span class="tab_inactive">アプリケーション</span></a>
-						</li>
-						<li>
-							<a href="/main/admin/index.php/Administrator"><i class="fa fa-users fa-fw"></i><span class="tab_inactive">管理者一覧</span></a>
-						</li>
-
-						<li class="hidden-xs">
-							<a href="#" id="toggle-side-menu" class="text-right"><i class="fa fa-fw fa-angle-left"></i><span>&nbsp;</span></a>
-						</li>
-
-					</ul-->
 				</div>
 				<!-- /.sidebar-collapse -->
 			</div>

@@ -3,16 +3,17 @@
 class RemovePage extends WebPage{
 
     function __construct($args) {
-    	$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
-    	
-    	$id = @$args[0];
-    	
-    	$dao->delete($id);
-    	
-    	$columnDAO = SOY2DAOFactory::create("SOYInquiry_ColumnDAO");
-    	$columnDAO->deleteByFormId($id);
-    	    	
-    	CMSApplication::jump("Form");
+		if(soy2_check_token()){
+			$id = (isset($args[0])) ? (int)$args[0] : null;
+
+			try{
+				SOY2DAOFactory::create("SOYInquiry_FormDAO")->delete($id);
+		    	SOY2DAOFactory::create("SOYInquiry_ColumnDAO")->deleteByFormId($id);
+			}catch(Exception $e){
+				//
+			}
+
+	    	CMSApplication::jump("Form");
+		}
     }
 }
-?>

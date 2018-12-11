@@ -1,42 +1,51 @@
-<div class="functions">
-	<div class="function">
-		<a soy:link="inquiry.Form.Create">フォームの作成</a>
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">フォーム</h1>
 	</div>
-	
-	<div class="function">	
-		<a soy:link="inquiry.Form.Copy">フォームの複製</a>
-	</div>
-	
-	<br style="clear:both;" />
 </div>
 
-<div style="padding:0px 20px;">
-
-<h1>フォーム</h1>
-
-	<div class="table_container">
-		<table class="nowrap list">
-			<thead>
-				<tr>
-					<th class="short">ID</th>
-					<th class="middle">名前</th>
-					<th class="short">件数 (未読)</th>	
-					<th class="long"></th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- soy:id="form_list" -->
-				<tr>
-					<td soy:id="formId">FORM_A</td>
-					<td soy:id="name">フォームA</td>
-					<td><a soy:id="inquiry_link">10</a> <a soy:id="unread_inquiry_link">(10)</a></td>	
-					<td>
-						<a soy:id="design_link">問い合わせ項目</a>&nbsp;&nbsp;<a soy:id="config_link">設定</a>&nbsp;&nbsp;<a soy:id="template_link">SOY CMS連携</a>&nbsp;&nbsp;<a soy:id="delete_link">削除</a>
-					</td>
-				</tr>
-				<!-- /soy:id="form_list" -->
-			</tbody>
-		</table>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="inquiry.Form.Create">フォームの作成</a>
+				<a class="btn btn-default" soy:link="inquiry.Form.Copy">フォームの複製</a>
+			</div>
+		</div>
 	</div>
+	<!-- /.col-lg-12 -->
+</div>
 
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="col-xs-3">ID</th>
+								<th class="col-xs-3">名前</th>
+								<th class="col-xs-3">件数 (未読)</th>
+								<th class="col-xs-7">&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="form_list" -->
+							<tr>
+								<td soy:id="formId">FORM_A</td>
+								<td soy:id="name">フォームA</td>
+								<td><a soy:id="inquiry_link">10</a> <a soy:id="unread_inquiry_link">(10)</a></td>
+								<td>
+									<a soy:id="design_link">問い合わせ項目</a>&nbsp;&nbsp;<a soy:id="config_link">設定</a>&nbsp;&nbsp;<br><a soy:id="template_link">SOY CMS連携</a>&nbsp;&nbsp;<a soy:id="delete_link" class="btn btn-danger">削除</a>
+								</td>
+							</tr>
+							<!-- /soy:id="form_list" -->
+						</tbody>
+					</table>
+				</div>
+
+			</div>
+		</div>
+	</div>
 </div>

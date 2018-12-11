@@ -1,25 +1,38 @@
-<div class="functions">
-	<div class="function">
-		<a soy:link="inquiry.Inquiry">一覧</a>
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">CSV出力</h1>
 	</div>
-	<div class="function">
-		<a soy:link="inquiry.Inquiry.Export">CSVエクスポート</a>
-	</div>
-	
-	<br style="clear:both;" />
 </div>
 
-<div style="padding:0px 20px;">
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="inquiry.Inquiry">一覧</a>
+				<a class="btn btn-default active" soy:link="inquiry.Inquiry.Export">CSVエクスポート</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
 
-<h1>CSV出力</h1>
-
-<form method="post" soy:id="export_form">
-	フォームを指定<select soy:id="forms"></select>
-	<input type="text" soy:id="start" />～<input type="text" soy:id="end" />
-	<select soy:id="flag">状態</select>
-	<input type="radio" soy:id="charset_sjis" />
-	<input type="radio" soy:id="charset_utf8" />
-	<input type="submit" name="output" value="出力" />
-</form soy:id="export_form">
-
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default" id="config_form" soy:panel="search_form">
+			<div class="panel-body">
+				<div class="form-group">
+					<div class="form-inline">
+						<form method="post" soy:id="export_form">
+							フォームを指定<select soy:id="forms" class="form-control"></select>
+							<input type="text" class="form-control" soy:id="start" />～<input type="text" class="form-control" soy:id="end" />
+							<select soy:id="flag" class="form-control">状態</select>
+							<input type="radio" soy:id="charset_sjis" />
+							<input type="radio" soy:id="charset_utf8" />
+							<input type="submit" name="output" class="btn btn-primary" value="出力" />
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

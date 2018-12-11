@@ -55,11 +55,11 @@ class IndexPage extends WebPage{
 		if(strlen($end) && strtotime($end) === strtotime(date("Y-m-d", strtotime($end)))){
 			$end = date("Y-m-d", strtotime($end));
 		}
-		
+
 		$trackId = (isset($_GET["trackId"]) && strlen($_GET["trackId"]) && $_GET["trackId"] != "受付番号") ? $_GET["trackId"] : null;
 		$flag = (isset($_GET["flag"]) && strlen($_GET["flag"])) ? $_GET["flag"] : null;
 		$commentFlag = (isset($_GET["comment_flag"]) && strlen($_GET["comment_flag"])) ? (int)$_GET["comment_flag"] : null;
-		
+
 		//ページャー
 		$limit = 20;
 		$page = (isset($args[0])) ? (int)$args[0] : 1;
@@ -69,11 +69,11 @@ class IndexPage extends WebPage{
     	$dao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
     	$dao->setLimit($limit);
     	$dao->setOffset($offset);
-    	
+
     	$inquiries = $dao->search($this->formId, strtotime($start), strtotime($end), $trackId, $flag, $commentFlag);
 
 		$this->forms = SOY2DAOFactory::create("SOYInquiry_FormDAO")->get();
-    	
+
 
     	//問い合わせ一覧
     	$this->buildList($inquiries);
@@ -113,9 +113,7 @@ class IndexPage extends WebPage{
     	));
 
     	//問い合わせがないとき
-    	$this->createAdd("no_inquiry","HTMLModel",array(
-    		"visible" => (count($inquiries) == 0)
-    	));
+		DisplayPlugin::toggle("no_inquiry", !count($inquiries));
     	$this->createAdd("no_inquiry_text","HTMLModel",array(
     		"colspan" => ( is_null($this->formId) AND count($this->forms) >= 2 ) ? "6" : "5"
     	));
@@ -130,9 +128,6 @@ class IndexPage extends WebPage{
     	$this->createAdd("pager_col","HTMLModel",array(
     		"colspan" => ( is_null($this->formId) AND count($this->forms) >= 2 ) ? "6" :"5"
 		));
-
-
-
     }
 
     function buildForm($start, $end, $trackId, $flag, $commentFlag = null){
@@ -145,19 +140,20 @@ class IndexPage extends WebPage{
     		             ."if(this.trackId.value == '受付番号'){this.trackId.value = '';}"
     	));
 
+		DisplayPlugin::toggle("multi_form", (count($this->forms) > 1));
+
     	//フォームが一つしかないときはフォーム名は表示しない
     	$this->createAdd("forms","HTMLSelect",array(
     		"name" => "formId",
 			"options" => $this->forms,
     		"property" => "name",
-    		"selected" => $this->formId,
-    		"visible" => count($this->forms) >= 2
+    		"selected" => $this->formId
     	));
 
     	$this->createAdd("start", "HTMLInput",array(
     		"name" => "start",
     		"value" => (strlen($start) >0) ? $start : "投稿日時（始）",
-    		"style" => (strlen($start) >0) ? "" : "color: grey;width:90px;",
+    		"style" => (strlen($start) >0) ? "" : "color: grey;width:120px;",
     		"onfocus" => "if(this.value == '投稿日時（始）'){ this.value = ''; this.style.color = '';}else{ this.select(); }",
     		"onblur"  => "if(this.value.length == 0){ this.value='投稿日時（始）'; this.style.color = 'grey'}",
     		"readonly" => true
@@ -166,7 +162,7 @@ class IndexPage extends WebPage{
     	$this->createAdd("end", "HTMLInput",array(
     		"name" => "end",
     		"value" => (strlen($end) >0) ? $end : "投稿日時（終）",
-    		"style" => (strlen($end) >0) ? "" : "color: grey;width:90px;",
+    		"style" => (strlen($end) >0) ? "" : "color: grey;width:120px",
     		"onfocus" => "if(this.value == '投稿日時（終）'){ this.value = ''; this.style.color = '';}else{ this.select(); }",
     		"onblur"  => "if(this.value.length == 0){ this.value='投稿日時（終）'; this.style.color = 'grey'}",
     		"readonly" => true
@@ -192,13 +188,13 @@ class IndexPage extends WebPage{
     		"indexOrder" => true,
     		"selected" => $flag
     	));
-    	
+
     	$comemnts = array(
     		"" => "全て",
     		SOYInquiry_Inquiry::COMMENT_HAS => "メモ有り",
     		SOYInquiry_Inquiry::COMMENT_NONE => "メモ無し",
     	);
-    	
+
     	$this->addSelect("comment_flag", array(
     		"name" => "comment_flag",
     		"options" => $comemnts,
@@ -335,5 +331,3 @@ class InquiryList extends HTMLList{
 		$this->formId = $formId;
 	}
 }
-
-?>

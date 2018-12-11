@@ -18,11 +18,11 @@ p.insert{
 </style>
 <div id="content" class="table_container" style="padding:10px;">
 	<h1>項目の追加</h1>
-	
+
 	<form soy:id="add_form">
-		
+
 		<p style="margin-left:50px;"></p>
-		
+
 		<table class="form_table list">
 		<col style="width:200px" />
 		<caption style="border-bottom:solid 1px #bbb;">項目の種類を選択してください。</caption>
@@ -30,7 +30,7 @@ p.insert{
 		<tr>
 			<th>名前</th>
 			<td>
-				<input soy:id="column_name" />
+				<input soy:id="column_name">
 			</td>
 		</tr>
 		<tr>
@@ -46,7 +46,7 @@ p.insert{
 			</td>
 		</tr>
 		</table>
-		
+
 		<table class="button_table">
 			<tr class="button_table_row">
 				<td>
@@ -54,10 +54,10 @@ p.insert{
 				</td>
 			</tr>
 		</table>
-		
+
 		<div style="margin:10px auto;width:80%;">
 			<p>追加する場所を設定してください。(ディフォルトは末尾に追加されます）</p>
-			
+
 			<!-- soy:id="column_list" -->
 			<p class="insert">
 				<input type="radio" soy:id="display_order">
@@ -74,7 +74,7 @@ p.insert{
 				<label for="display_order_default">ここに追加</label>
 			</p>
 		</div>
-		
+
 		<table class="button_table">
 			<tr class="button_table_row">
 				<td>
@@ -82,6 +82,6 @@ p.insert{
 				</td>
 			</tr>
 		</table>
-					
-	</form soy:id="add_form">
+
+	</form>
 </div>

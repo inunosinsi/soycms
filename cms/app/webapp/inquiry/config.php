@@ -9,6 +9,8 @@ SOY2HTMLConfig::PageDir(dirname(__FILE__) . "/pages/");
 SOY2DAOConfig::DaoDir(SOY2::RootDir() . "domain/");
 SOY2DAOConfig::EntityDir(SOY2::RootDir() . "domain/");
 
+$dbMode = SOYCMS_DB_TYPE;
+
 //データベース関連の設定
 if(defined("SOYINQUIRY_USE_SITE_DB") && SOYINQUIRY_USE_SITE_DB){
 	/* サイトのデータベースを使う */
@@ -23,11 +25,12 @@ if(defined("SOYINQUIRY_USE_SITE_DB") && SOYINQUIRY_USE_SITE_DB){
 			define("SOYINQUIRY_DB_FILE", UserInfoUtil::getSiteDirectory() . ".db/".APPLICATION_ID.".db");
 
 			SOY2DAOConfig::Dsn(UserInfoUtil::getSite()->getDataSourceName());
-			if(SOYCMS_DB_TYPE == "mysql"){
+			$dbMode = (strpos(UserInfoUtil::getSite()->getDataSourceName(), "sqlite") === 0) ? "sqlite" : "mysql";
+			if($dbMode == "mysql"){
 				SOY2DAOConfig::user(ADMIN_DB_USER);
 				SOY2DAOConfig::pass(ADMIN_DB_PASS);
 			}
-		}else{
+		}else{	//@ToDo 初期管理者のみ、この画面に遷移させたい
 			//どのサイトのSOY Inquiryにログインさせるか？の選択画面へ
 			SOY2PageController::redirect("../admin/index.php/Site/Application/?appId=" . APPLICATION_ID);
 		}
@@ -37,7 +40,7 @@ if(defined("SOYINQUIRY_USE_SITE_DB") && SOYINQUIRY_USE_SITE_DB){
 	define("SOYINQUIRY_DB_FILE", CMS_COMMON . "db/".APPLICATION_ID.".db");
 
 	/* 専用のデータベースを使う（従来通り） */
-	if(SOYCMS_DB_TYPE == "sqlite"){
+	if($dbMode == "sqlite"){
 		SOY2DAOConfig::Dsn("sqlite:" . SOYINQUIRY_DB_FILE);
 	}else{
 		SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
@@ -47,7 +50,7 @@ if(defined("SOYINQUIRY_USE_SITE_DB") && SOYINQUIRY_USE_SITE_DB){
 }
 
 //SOY Mail連携
-if(SOYCMS_DB_TYPE == "sqlite"){
+if($dbMode == "sqlite"){
 	//SOY Mailがサイト側にDBを持つか
 
 	//SQLiteでサイト側にDBを持つ
@@ -91,6 +94,8 @@ if(SOYCMS_DB_TYPE == "sqlite"){
 	}
 }
 
+//DBモードを定義しておく
+define("SOYINQUIRY_DB_MODE", $dbMode);
 
 //PHP
 mb_internal_encoding("UTF-8");

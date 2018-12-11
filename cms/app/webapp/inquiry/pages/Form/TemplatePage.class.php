@@ -1,6 +1,7 @@
 <?php
 
-class TemplatePage extends WebPage{
+SOY2HTMLFactory::importWebPage("_common.FormPageBase");
+class TemplatePage extends FormPageBase{
 
     function __construct($args) {
     	if(count($args)<1)CMSApplication::jump("Form");
@@ -44,12 +45,14 @@ class TemplatePage extends WebPage{
     		"link" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Config.".$this->id)
     	));
 
-    	$this->createAdd("preview_link","HTMLLink",array(
-    		"link" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Preview.".$this->id),
-    		"onclick" => "if(window.previewframe)window.previewframe.close();window.previewframe = new soycms.UI.TargetWindow(this);return false;"
-    	));
+    	// $this->createAdd("preview_link","HTMLLink",array(
+    	// 	"link" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Preview.".$this->id),
+    	// 	"onclick" => "if(window.previewframe)window.previewframe.close();window.previewframe = new soycms.UI.TargetWindow(this);return false;"
+    	// ));
 
-
+		//include_once(dirname(__FILE__) . "/Design/component/ModalComponent.class.php");
+		$this->addLabel("preview_modal", array(
+			"html" => $this->buildModal($this->id, self::MODE_PREVIEW)
+		));
     }
 }
-?>

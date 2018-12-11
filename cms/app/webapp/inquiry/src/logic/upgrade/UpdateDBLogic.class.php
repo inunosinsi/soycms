@@ -21,7 +21,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	public function __construct(){
 		$this->db = new SOY2DAO();
 		$this->checkVersionLogic = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic");
-		$this->setDirectory();
+		self::setDirectory();
 	}
 
 	/**
@@ -41,7 +41,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 		foreach($sql_files as $version => $sql_file){
 			if($version > $current && strpos($sql_file, ".sql") !== false){
 				self::executeSqlFile($sql_file, $version);
-				$this->registerVersion($version);
+				self::registerVersion($version);
 			}
 		}
 	}
@@ -98,7 +98,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	 * バージョン番号を保存する
 	 * @param string version
 	 */
-	function registerVersion($version){
+	private function registerVersion($version){
 		try{
 			SOYInquiry_DataSets::put(self::VERSION_KEY, $version);
 		}catch(Exception $e){
@@ -106,8 +106,9 @@ class UpdateDBLogic extends SOY2LogicBase{
 		}
 	}
 
-	function setDirectory(){
-		$this->directory = SOY2::RootDir() . "logic/upgrade/sql/" . SOYCMS_DB_TYPE ."/";
+	private function setDirectory(){
+		if(!defined("SOYINQUIRY_DB_MODE")) define("SOYINQUIRY_DB_MODE", SOYCMS_DB_TYPE);
+		$this->directory = SOY2::RootDir() . "logic/upgrade/sql/" . SOYINQUIRY_DB_MODE ."/";
 		$this->extendDirectory = SOY2::RootDir() . "logic/upgrade/extend/";
 	}
 }

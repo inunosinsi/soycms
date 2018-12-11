@@ -19,18 +19,15 @@ class CheckVersionLogic extends SOY2LogicBase{
 	 */
 	function checkVersion(){
 		//現在のバージョンを取得し、値がなければ1を返す
-		$version = $this->getUpdateVersion();
-		$current = $this->getCurrentVersion();
-		return ($current < $version);
+		return (self::getCurrentVersion() < self::getUpdateVersion());
 	}
 
 	function getCurrentVersion(){
 		return SOYInquiry_DataSets::get(self::VERSION_KEY,0);
 	}
 
-	function getUpdateVersion(){
-		$files = $this->getUpdateFiles();
-		return count($files);
+	private function getUpdateVersion(){
+		return count(self::getUpdateFiles());
 	}
 
 	/**
@@ -39,7 +36,7 @@ class CheckVersionLogic extends SOY2LogicBase{
 	 */
 	function getUpdateFiles(){
 
-		$this->setDirectory();
+		self::setDirectory();
 
 		//ディレクトリの実在チェック
 		if(strlen($this->directory) < 1){
@@ -54,8 +51,8 @@ class CheckVersionLogic extends SOY2LogicBase{
 		$match = array();
 		$files = scandir($this->directory);
 		foreach($files as $file){
-			if("." == $file)continue;
-			if(".." == $file)continue;
+			if("." == $file) continue;
+			if(".." == $file) continue;
 			if(preg_match(self::UPDATE_FILE_REGEX, $file, $match)){
 				$sql_files[(int)$match[1]] = $file;
 			}
@@ -67,7 +64,8 @@ class CheckVersionLogic extends SOY2LogicBase{
 		return $sql_files;
 	}
 
-	function setDirectory(){
-		$this->directory = SOY2::RootDir() . "logic/upgrade/sql/" . SOYCMS_DB_TYPE ."/";
+	private function setDirectory(){
+		if(!defined("SOYINQUIRY_DB_MODE")) define("SOYINQUIRY_DB_MODE", SOYCMS_DB_TYPE);
+		$this->directory = SOY2::RootDir() . "logic/upgrade/sql/" . SOYINQUIRY_DB_MODE ."/";
 	}
 }

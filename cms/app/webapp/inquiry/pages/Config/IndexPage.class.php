@@ -9,7 +9,7 @@ class IndexPage extends WebPage{
 		if(soy2_check_token()){
 			if(isset($_POST["test_mail_address"])){
 				try{
-					$this->testSend($_POST["test_mail_address"]);
+					self::testSend($_POST["test_mail_address"]);
 				}catch(Exception $e){
 					CMSApplication::jump("Config?failed_to_test");
 				}
@@ -38,17 +38,16 @@ class IndexPage extends WebPage{
 
     	parent::__construct();
 
-    	$this->buildForm();
-    	$this->buildTestSendForm();
+    	self::buildForm();
+    	self::buildTestSendForm();
 
-    	$this->createAdd("success_update","HTMLModel",array("visible" => isset($_GET["success_update"])));
-    	$this->createAdd("success_test","HTMLModel",array("visible" => isset($_GET["success_test"])));
-    	$this->createAdd("failed_to_test","HTMLModel",array("visible" => isset($_GET["failed_to_test"])));
-    	$this->createAdd("failed_to_update","HTMLModel",array("visible" => isset($_GET["failed_to_update"])));
-
+		DisplayPlugin::toggle("success_update", isset($_GET["success_update"]));
+		DisplayPlugin::toggle("success_test", isset($_GET["success_test"]));
+		DisplayPlugin::toggle("failed_to_update", isset($_GET["failed_to_update"]));
+		DisplayPlugin::toggle("failed_to_test", isset($_GET["failed_to_test"]));
     }
 
-    function buildForm(){
+    private function buildForm(){
 
     	$this->createAdd("form","HTMLForm");
 
@@ -246,7 +245,7 @@ class IndexPage extends WebPage{
     	));
     }
 
-    function buildTestSendForm(){
+    private function buildTestSendForm(){
 
     	$this->createAdd("test_form","HTMLForm");
 
@@ -257,7 +256,7 @@ class IndexPage extends WebPage{
 
     }
 
-    function testSend($to){
+    private function testSend($to){
 
     	$serverConfig = SOY2DAOFactory::create("SOYInquiry_ServerConfigDAO")->get();
 

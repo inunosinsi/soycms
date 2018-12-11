@@ -146,6 +146,7 @@ class DetailPage extends WebPage{
 		$commenDAO = SOY2DAOFactory::create("SOYInquiry_CommentDAO");
 		$comments = $commenDAO->getByInquiryId($this->id);
 
+		DisplayPlugin::toggle("comment", count($comments));
 		$this->createAdd("comment_list", "CommentList", array(
 			"list" => $comments
 		));
@@ -160,7 +161,7 @@ class DetailPage extends WebPage{
 
 		$this->addInput("memo_name", array(
 			"name" => "Memo[author]",
-			"value" => ""
+			"value" => SOY2ActionSession::getUserSession()->getAttribute("username")
 		));
 
 		$this->addTextArea("memo_content", array(
@@ -268,4 +269,3 @@ class CommentList extends HTMLList{
 		));
 	}
 }
-?>
