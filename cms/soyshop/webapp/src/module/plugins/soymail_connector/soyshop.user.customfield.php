@@ -29,8 +29,7 @@ class SOYMailUserCustomfieldModule extends SOYShopUserCustomfield{
 		$config = SOYMailConnectorUtil::getConfig();
 
 		if(isset($config["first_order_add_point"]) && (int)$config["first_order_add_point"] > 0){
-			$logic = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic");
-			$logic->insert((int)$config["first_order_add_point"], "メールマガジン会員登録プレゼント：" . $config["first_order_add_point"] . "ポイント", $userId);
+			SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->insert((int)$config["first_order_add_point"], "メールマガジン会員登録プレゼント：" . $config["first_order_add_point"] . "ポイント", $userId);
 		}
 	}
 }

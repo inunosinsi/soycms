@@ -106,4 +106,3 @@ if(!file_exists(CMS_COMMON . "db/".APPLICATION_ID.".db")){
 	$logic  = SOY2Logic::createInstance("logic.InitLogic");
 	$logic->init();
 }
-?>

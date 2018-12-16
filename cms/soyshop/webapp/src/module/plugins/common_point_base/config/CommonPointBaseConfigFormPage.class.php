@@ -11,15 +11,7 @@ class CommonPointBaseConfigFormPage extends WebPage{
     function doPost(){
 
     	if(soy2_check_token() && isset($_POST["Config"])){
-    		$config = $_POST["Config"];
-    		$config["percentage"] = soyshop_convert_number($config["percentage"], 10);
-    		$config["limit"] = soyshop_convert_number($config["limit"], null);
-			$config["mail"] = soyshop_convert_number($config["mail"], null);
-
-			$config["customer"] = (isset($config["customer"])) ? 1 : 0;
-			$config["recalculation"] = (isset($config["recalculation"])) ? 1 : 0;
-
-			SOYShop_DataSets::put("point_config", $config);
+    		PointBaseUtil::saveConfig($_POST["Config"]);
 
 			if($_POST["Mail"]){
 				PointBaseUtil::saveMailTitle($_POST["Mail"]["title"]);
@@ -44,11 +36,12 @@ class CommonPointBaseConfigFormPage extends WebPage{
 
 		$this->addForm("form");
 
-		$this->addInput("point_percentage", array(
-			"name" => "Config[percentage]",
-			"value" => (isset($config["percentage"])) ? $config["percentage"] : "",
-			"style" => "text-align:right;ime-mode:inactive;"
-		));
+		//common_point_grantに移行
+		// $this->addInput("point_percentage", array(
+		// 	"name" => "Config[percentage]",
+		// 	"value" => (isset($config["percentage"])) ? $config["percentage"] : "",
+		// 	"style" => "text-align:right;ime-mode:inactive;"
+		// ));
 
 		$this->addCheckBox("customer", array(
 			"name" => "Config[customer]",
@@ -103,4 +96,3 @@ class CommonPointBaseConfigFormPage extends WebPage{
 		$this->configObj = $obj;
 	}
 }
-?>

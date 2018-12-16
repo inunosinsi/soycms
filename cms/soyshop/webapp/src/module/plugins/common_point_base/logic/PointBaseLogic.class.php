@@ -2,6 +2,7 @@
 
 class PointBaseLogic extends SOY2LogicBase{
 
+	private $cart;
 	private $point;
 	private $config;
 	private $pointDao;
@@ -14,13 +15,12 @@ class PointBaseLogic extends SOY2LogicBase{
 
 	function __construct(){
 		SOY2::imports("module.plugins.common_point_base.domain.*");
-		SOY2::imports("module.plugins.common_point_base.util.*");
-		if(!$this->config) $this->config = PointBaseUtil::getConfig();
-		if(!$this->pointDao) $this->pointDao = SOY2DAOFactory::create("SOYShop_PointDAO");
-		if(!$this->pointHistoryDao) $this->pointHistoryDao = SOY2DAOFactory::create("SOYShop_PointHistoryDAO");
-		if(!$this->itemAttributeDao) $this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+		SOY2::import("module.plugins.common_point_grant.util.PointGrantUtil");
+		$this->config = PointGrantUtil::getConfig();
+		$this->pointDao = SOY2DAOFactory::create("SOYShop_PointDAO");
+		$this->pointHistoryDao = SOY2DAOFactory::create("SOYShop_PointHistoryDAO");
+		$this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 
-		$this->config = PointBaseUtil::getConfig();
 		$this->percentage = (int)$this->config["percentage"];
 	}
 
@@ -32,7 +32,7 @@ class PointBaseLogic extends SOY2LogicBase{
 		$res = true;
 
 		$obj = self::getPointByUserId($userId);
-		$obj->setTimeLimit($this->getTimeLimit($this->config["limit"]));
+		$obj->setTimeLimit(self::getTimeLimit());
 
 		//すでに指定したユーザにポイントがあった場合
 		if(!is_null(($obj->getUserId()))) {
@@ -85,7 +85,7 @@ class PointBaseLogic extends SOY2LogicBase{
 
 		if($flag){
 			$obj = self::getPointByUserId($userId);
-			$obj->setTimeLimit($this->getTimeLimit($this->config["limit"]));
+			$obj->setTimeLimit(self::getTimeLimit());
 
 			$res = true;
 
@@ -148,7 +148,7 @@ class PointBaseLogic extends SOY2LogicBase{
 		}else{
 			$obj->setUserId($userId);
 			$obj->setPoint($point);
-			$obj->setTimeLimit($this->getTimeLimit($this->config["limit"]));
+			$obj->setTimeLimit(self::getTimeLimit());
 
 			try{
 				$this->pointDao->insert($obj);
@@ -253,24 +253,9 @@ class PointBaseLogic extends SOY2LogicBase{
 	 * @param CartLogic $cart, SOYShop_Order $order
 	 * @return Integer $totalPoint
 	 */
-	function getTotalPointAfterPaymentPoint(CartLogic $cart, SOYShop_Order $order){
-		$totalPoint = 0;
-		$itemOrders = $cart->getItems();
-
-		//クレジット支払からの結果通知の場合はCartLogicのitemsは消えているので、再度取得する
-		if(is_null($itemOrders) || is_array($itemOrders)){
-			try{
-				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($order->getId());
-			}catch(Exception $e){
-				$itemOrders = array();
-			}
-		}
-
-		foreach($itemOrders as $itemOrder){
-			$totalPoint += self::getPointPercentage($itemOrder->getItemId(), $itemOrder->getTotalPrice());
-		}
-
-		$paymentPoint = $cart->getAttribute("point_payment");
+	function getTotalPointAfterPaymentPoint(SOYShop_Order $order){
+		$totalPoint = self::getTotalPointOnCart($order->getId());
+		$paymentPoint = $this->cart->getAttribute("point_payment");
 
 		//クレジット支払から結果通知の場合はCartLogicのポイント支払のモジュールが消えているので、再度取得する
 		if(is_null($paymentPoint)){
@@ -286,8 +271,10 @@ class PointBaseLogic extends SOY2LogicBase{
 			self::insertPaymentPointHistory($order, $paymentPoint);
 
 			//ポイントの再計算
-			if($this->config["recalculation"] == 1){
-				$itemTotalPrice = (int)$cart->getItemPrice();
+			SOY2::import("module.plugins.common_point_base.util.PointBaseUtil");
+			$conf = PointBaseUtil::getConfig();
+			if(isset($conf["recalculation"]) && $conf["recalculation"] == 1){
+				$itemTotalPrice = (int)$this->cart->getItemPrice();
 				$itemTotalPrice = $itemTotalPrice - (int)$paymentPoint;
 				if($itemTotalPrice < 0){
 					$itemTotalPrice = 0;
@@ -295,7 +282,6 @@ class PointBaseLogic extends SOY2LogicBase{
 
 				//pointによる支払があった場合は、ここで商品のトータルから引いておく
 				$totalPoint = $totalPoint - ceil($paymentPoint * (int)$this->config["percentage"] / 100);
-
 				if($totalPoint < 0) $totalPoint = 0;
 			}
 		}
@@ -304,32 +290,57 @@ class PointBaseLogic extends SOY2LogicBase{
 	}
 
 	/**
+	 * カート内に入れた商品のポイント合計
+	 * @return integer
+	 */
+	function getTotalPointOnCart($orderId = null){
+		$itemOrders = $this->cart->getItems();
+
+		//クレジット支払からの結果通知の場合はCartLogicのitemsは消えているので、再度取得する
+		if(isset($orderId) && is_null($itemOrders) || !is_array($itemOrders) || !count($itemOrders)){
+			try{
+				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
+			}catch(Exception $e){
+				$itemOrders = array();
+			}
+		}
+
+		if(!count($itemOrders)) return 0;
+
+		$total = 0;
+		foreach($itemOrders as $itemOrder){
+			$total += self::getPointPercentage($itemOrder->getItemId(), $itemOrder->getTotalPrice());
+		}
+		return (int)$total;
+	}
+
+	/**
 	 * 注文実行直前に、使用するポイントに不足がないか、有効期限を過ぎていないかをチェックする
 	 * @throws Exception
 	 */
-	public function checkIfPointIsEnoughAndValidBeforeOrder($cart){
-		$pointToUse = $cart->getAttribute("point_payment");
+	public function checkIfPointIsEnoughAndValidBeforeOrder(){
+		$pointToUse = $this->cart->getAttribute("point_payment");
 
 		//ポイントを使う場合
 		if(strlen($pointToUse) && is_numeric($pointToUse) && $pointToUse > 0){
-			$user = $cart->getCustomerInformation();
+			$user = $this->cart->getCustomerInformation();
 			$pointObj = self::getPointByUserId($user->getId());
 			$ownedPoint = $pointObj->getPoint();
 
 			//有効期限チェック
 			if(!is_null($pointObj->getTimeLimit()) && $pointObj->getTimeLimit() < time()){
-				$cart->log("[point] User: ".$user->getId());
-				$cart->log("[point] limit: ".date("c", $pointObj->getTimeLimit()));
+				$this->cart->log("[point] User: ".$user->getId());
+				$this->cart->log("[point] limit: ".date("c", $pointObj->getTimeLimit()));
 
-				$cart->addErrorMessage("point", MessageManager::get("POINT_ERROR"));
-				$cart->setAttribute("page", "Cart03");
+				$this->cart->addErrorMessage("point", MessageManager::get("POINT_ERROR"));
+				$this->cart->setAttribute("page", "Cart03");
 
-				$cart->removeModule("point_payment");
-				$cart->clearOrderAttribute("point_payment");
+				$this->cart->removeModule("point_payment");
+				$this->cart->clearOrderAttribute("point_payment");
 				//エラーを出せるように残しておく
 				//$cart->clearAttribute("point_payment");
 
-				$cart->save();
+				$this->cart->save();
 
 				throw new Exception("ポイントの有効期限が切れています。");
 			}
@@ -340,15 +351,15 @@ class PointBaseLogic extends SOY2LogicBase{
 				$cart->log("[point] own: ".$ownedPoint);
 				$cart->log("[point] use: ".$pointToUse);
 
-				$cart->addErrorMessage("point", MessageManager::get("POINT_ERROR"));
-				$cart->setAttribute("page", "Cart03");
+				$this->cart->addErrorMessage("point", MessageManager::get("POINT_ERROR"));
+				$this->cart->setAttribute("page", "Cart03");
 
-				$cart->removeModule("point_payment");
-				$cart->clearOrderAttribute("point_payment");
+				$this->cart->removeModule("point_payment");
+				$this->cart->clearOrderAttribute("point_payment");
 				//エラーを出せるように残しておく
 				// $cart->clearAttribute("point_payment");
 
-				$cart->save();
+				$this->cart->save();
 
 				throw new Exception("ポイントが不足しています。");
 			}
@@ -432,7 +443,13 @@ class PointBaseLogic extends SOY2LogicBase{
 		}
 	}
 
-	function getTimeLimit($timeLimit){
+	private function getTimeLimit(){
+		static $timeLimit;
+		if(is_null($timeLimit)){
+			SOY2::import("module.plugins.common_point_base.util.PointBaseUtil");
+			$conf = PointBaseUtil::getConfig();
+			$timeLimit = (isset($conf["limit"]) && (int)$conf["limit"] > 0) ? (int)(int)$conf["limit"] : null;
+		}
 		return (isset($timeLimit)) ? time() + $timeLimit * 60 * 60 * 24 : null;
 	}
 
@@ -444,5 +461,9 @@ class PointBaseLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			//var_dump($e);
 		}
+	}
+
+	function setCart($cart){
+		$this->cart = $cart;
 	}
 }

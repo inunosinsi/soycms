@@ -81,9 +81,7 @@ class CommonPointPayment extends SOYShopPointPaymentBase{
 
 		//使用ポイント数はポイント履歴として保存するので、注文実行前にorderAttributeからは消しておく
 		$cart->clearOrderAttribute("point_paiment");
-
-		$logic = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic");
-		$logic->checkIfPointIsEnoughAndValidBeforeOrder($cart);
+		SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic", array("cart" => $cart))->checkIfPointIsEnoughAndValidBeforeOrder();
 	}
 
 	/**
@@ -165,9 +163,7 @@ class CommonPointPayment extends SOYShopPointPaymentBase{
 	}
 
 	private function getPointObjectByUserId($userId){
-		static $logic;
-		if(!$logic)$logic = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic");
-		return $logic->getPointByUserId($userId);
+		return SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->getPointByUserId($userId);
 	}
 
 	private function getPoint($userId){

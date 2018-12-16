@@ -11,8 +11,7 @@ class CommonPointPayment_OrderCustomfieldModule extends SOYShopOrderCustomfield{
 	 */
 	function order(CartLogic $cart){
 
-		$logic = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic");
-		$logic->checkIfPointIsEnoughAndValidBeforeOrder($cart);
+		SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic", array("cart" => $cart))->checkIfPointIsEnoughAndValidBeforeOrder();
 
 		if(DEBUG_MODE)$cart->log("point: ". $cart->getAttribute("point_payment"));
 		if(DEBUG_MODE)$cart->log("point: ". var_export($cart->getModule("point_payment"),true));

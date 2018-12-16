@@ -22,7 +22,7 @@ class CommonPointBase extends SOYShopPointBase{
 	 */
 	function getPoint($userId){
 		$point = self::getPointByUserId($userId)->getPoint();
-		return (isset($point)) ? (int) $point : 0;
+		return (isset($point)) ? (int)$point : 0;
 	}
 
 	/**
@@ -36,10 +36,7 @@ class CommonPointBase extends SOYShopPointBase{
 
 	private function getPointByUserId($userId){
 		static $obj;
-		if(is_null($obj)) {
-			$logic = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic");
-			$obj = $logic->getPointByUserId($userId);
-		}
+		if(is_null($obj)) $obj = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->getPointByUserId($userId);
 		return $obj;
 	}
 }

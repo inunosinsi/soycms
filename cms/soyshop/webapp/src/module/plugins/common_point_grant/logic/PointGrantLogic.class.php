@@ -10,8 +10,8 @@ class PointGrantLogic extends SOY2LogicBase{
 	function __construct(){
 		if(!$this->itemAttributeDao) $this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		if(!$this->percentage){
-			SOY2::imports("module.plugins.common_point_base.util.*");
-			$config = PointBaseUtil::getConfig();
+			SOY2::import("module.plugins.common_point_grant.util.PointGrantUtil");
+			$config = PointGrantUtil::getConfig();
 			$this->percentage = (int)$config["percentage"];
 		}
 	}

@@ -65,6 +65,7 @@ try{
 	$page->buildModules();
 	$page->display();
 }catch(Exception $e){
+	var_dump($e);
 	//管理者にカートでエラーが表示された旨を伝える
 	$cart->sendNoticeCartErrorMail($e);
 

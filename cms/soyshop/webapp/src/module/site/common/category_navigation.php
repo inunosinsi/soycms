@@ -11,7 +11,7 @@ function soyshop_category_navigation(){
 	}catch(Exception $e){
 		$categories = array();
 	}
-	
+
 
 	$tree = array();
 	$root = array();
@@ -77,4 +77,3 @@ function soyshop_category_navigation_build_tree($args,$array,$tree){
 
 	return implode("",$html);
 }
-?>

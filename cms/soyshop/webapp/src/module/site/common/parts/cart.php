@@ -4,7 +4,7 @@ function soyshop_parts_cart($html, $page){
 	$obj = $page->create("soyshop_parts_cart", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_cart", $html)
 	));
-	
+
 	if(!defined("SOYSHOP_CURRENT_CART_ID")){
 		define("SOYSHOP_CURRENT_CART_ID", soyshop_get_cart_id());
 	}
@@ -27,7 +27,7 @@ function soyshop_parts_cart($html, $page){
 		"list" => $items,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
 	$count = 0;
 	foreach($items as $item){
 		$count = $count + (int)$item->getItemCount();
@@ -46,7 +46,36 @@ function soyshop_parts_cart($html, $page){
 		"link" => soyshop_get_cart_url(),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
-	
+
+	/** ポイント関連 **/
+
+	//カート内のポイント表示
+	$point = 0;
+	SOY2::import("util.SOYShopPluginUtil");
+    if(SOYShopPluginUtil::checkIsActive("common_point_base")){
+		if(SOYShopPluginUtil::checkIsActive("common_point_grant")){
+			$point = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic", array("cart" => $cart))->getTotalPointOnCart();
+		} else if(SOYShopPluginUtil::checkIsActive("fixed_point_grant")){
+			$point = SOY2Logic::createInstance("module.plugins.fixed_point_grant.logic.FixedPointGrantLogic", array("cart" => $cart))->getTotalPointOnCart();
+		}
+	}
+
+	//カート内にポイントがある場合
+	$obj->addModel("is_point_in_cart", array(
+		"visible" => ($point > 0),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$obj->addModel("no_point_in_cart", array(
+		"visible" => ($point === 0),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$obj->addLabel("point_in_cart", array(
+		"text" => $point,
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
 	$obj->display();
 }
 
@@ -77,4 +106,3 @@ class SOYShop_CartItemList extends HTMLList{
 	}
 }
 }
-?>
