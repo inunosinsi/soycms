@@ -506,17 +506,31 @@ class DetailPage extends WebPage{
     	$activedTicketPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_ticket_base")));
     	DisplayPlugin::toggle("ticket", $activedTicketPlugin);
 
-		$count = 0;
-		$histories = array();
-
 		/* ここ以下はチケット有効時 */
 		if($activedTicketPlugin){
 			SOY2::imports("module.plugins.common_ticket_base.domain.*");
 			$count = self::getTicketCountByUserId($user->getId());
 			$histories = self::getTicketHistories($user->getId());
+			SOY2::import("module.plugins.common_ticket_base.util.TicketBaseUtil");
+			$config = TicketBaseUtil::getConfig();
+			$label = $config["label"];
+			$unit = $config["unit"];
+		}else{
+			$count = 0;
+			$histories = array();
+			$label = "チケット";
+			$unit = "枚";
 		}
 
 		//チケットプラグインを無効にしていても下記の処理は行う
+		$this->addLabel("ticket_label", array(
+			"text" => $label
+		));
+
+		$this->addLabel("ticket_unit", array(
+			"text" => $unit
+		));
+
 		$this->addInput("ticket_count", array(
     		"name" => "Ticket",
     		"value" => $count,

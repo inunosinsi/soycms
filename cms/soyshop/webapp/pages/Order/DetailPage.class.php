@@ -120,6 +120,8 @@ class DetailPage extends WebPage{
 
     	parent::__construct();
 
+		if(!class_exists("SOYShopPluginUtil")) SOY2::import("util.SOYShopPluginUtil");
+
 		DisplayPlugin::toggle("sended", isset($_GET["sended"]));
 		DisplayPlugin::toggle("copy", isset($_GET["copy"]));
 
@@ -167,16 +169,22 @@ class DetailPage extends WebPage{
     	));
 
     	//ポイント履歴
-    	$activedPointPlugin = (class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("common_point_base"));
-		if($activedPointPlugin){
-			SOY2::imports("module.plugins.common_point_base.domain.*");
-			$histories = array_reverse($this->getPointHistories($order->getId()));
-		}else{
-			$histories = array();
-		}
-
 		$this->createAdd("point_history_list", "_common.Order.PointHistoryListComponent", array(
-			"list" => $histories
+			"list" => (SOYShopPluginUtil::checkIsActive("common_point_base")) ? array_reverse(self::getPointHistories($order->getId())) : array()
+		));
+
+		//チケット履歴
+		$activedTicketPlugin = SOYShopPluginUtil::checkIsActive("common_ticket_base");
+		if($activedTicketPlugin){
+			SOY2::import("module.plugins.common_ticket_base.util.TicketBaseUtil");
+			$ticketConfig = TicketBaseUtil::getConfig();
+			$label = $ticketConfig["label"];
+		}else{
+			$label = "チケット";
+		}
+		$this->createAdd("ticket_history_list", "_common.Order.TicketHistoryListComponent", array(
+			"list" => ($activedTicketPlugin) ? array_reverse(self::getTicketHistories($order->getId())) : array(),
+			"label" => $label
 		));
 
     	$this->createAdd("customfield_list", "_common.Order.CustomFieldListComponent", array(
@@ -410,14 +418,22 @@ class DetailPage extends WebPage{
     	));
     }
 
-    function getPointHistories($orderId){
-    	$pointHistoryDao = SOY2DAOFactory::create("SOYShop_PointHistoryDAO");
+    private function getPointHistories($orderId){
+		SOY2::imports("module.plugins.common_point_base.domain.*");
     	try{
-    		$histories = $pointHistoryDao->getByOrderId($orderId);
+    		return SOY2DAOFactory::create("SOYShop_PointHistoryDAO")->getByOrderId($orderId);
     	}catch(Exception $e){
-    		$histories = array();
+    		return array();
     	}
-    	return $histories;
+    }
+
+	private function getTicketHistories($orderId){
+		SOY2::imports("module.plugins.common_ticket_base.domain.*");
+    	try{
+    		return SOY2DAOFactory::create("SOYShop_TicketHistoryDAO")->getByOrderId($orderId);
+    	}catch(Exception $e){
+    		return array();
+    	}
     }
 
     function getCustomfield(){

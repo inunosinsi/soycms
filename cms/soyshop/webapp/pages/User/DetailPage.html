@@ -353,12 +353,12 @@
 		<!-- /soy:display="point" -->
 
 		<!-- soy:display="ticket" -->
-		<h3>チケット</h3>
+		<h3><!-- soy:id="ticket_label" -->チケット<!-- /soy:id="ticket_label" --></h3>
 		<table class="form_table">
 			<tr>
-				<th>チケット</th>
+				<th><!-- soy:id="ticket_label*" -->チケット<!-- /soy:id="ticket_label*" --></th>
 				<td>
-					<input soy:id="ticket_count" type="text">&nbsp;枚
+					<input soy:id="ticket_count" type="text">&nbsp;<!-- soy:id="ticket_unit" -->枚<!-- /soy:id="ticket_unit" -->
 				</td>
 			</tr>
 		</table>
@@ -404,7 +404,7 @@
 		<!-- /soy:display="point_history" -->
 
 		<!-- soy:display="ticket_history" -->
-		<h3>チケット履歴</h3>
+		<h3><!-- soy:id="ticket_label*" -->チケット<!-- /soy:id="ticket_label*" -->履歴</h3>
 		<table class="form_table">
 			<tr>
 				<th>日時</th>
