@@ -210,7 +210,7 @@ class SOYShop_OrderAttributeConfig{
 
 	private $defaultValue;
 	private $emptyValue;
-	
+
 	private $config;
 
 	function getFieldId() {

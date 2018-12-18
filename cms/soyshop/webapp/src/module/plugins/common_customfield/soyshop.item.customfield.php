@@ -22,6 +22,11 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 			if(!isset($configs[$key])) continue;
 			$extra = (isset($extraFields[$key])) ? $extraFields[$key] : array();
 
+			//type=checkboxesの時
+			if($configs[$key]->getType() === "checkboxes"){
+				$value = (isset($value) && count($value)) ? implode(",", $value) : null;
+			}
+
 			try{
 				if(isset($array[$key])){
 					$obj = $array[$key];

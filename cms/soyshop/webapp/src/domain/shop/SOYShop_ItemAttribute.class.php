@@ -164,6 +164,7 @@ class SOYShop_ItemAttributeConfig{
 			"input" => "一行テキスト",
 			"textarea" => "複数行テキスト",
 			"checkbox" => "チェックボックス",
+			"checkboxes" => "チェックボックス(複数)",
 			"radio" => "ラジオボタン",
 			"select" => "セレクトボックス",
 			"image" => "画像",
@@ -270,7 +271,7 @@ class SOYShop_ItemAttributeConfig{
 		$this->config["option"] = $option;
 	}
 	function hasOption(){
-		return (boolean)($this->getType() == "radio" || $this->getType() == "select");
+		return (boolean)($this->getType() == "checkboxes" || $this->getType() == "radio" || $this->getType() == "select");
 	}
 	function hasExtra(){
 		return (boolean)($this->getType() == "image");
@@ -325,6 +326,33 @@ class SOYShop_ItemAttributeConfig{
 				       .( ($value == $checkbox_value) ? ' checked="checked"' : ""  )
 				       .' />';
 
+				break;
+			case "checkboxes":
+				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->getOption()));
+				//$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
+				if(isset($value) && strlen($value)){
+					$values = explode(",", $value);
+				}else{
+					//カンマ区切りの初期値
+					$values = strpos($this->getDefaultValue(), ",") ? array($this->getDefaultValue()) : explode(",", $this->getDefaultValue());
+				}
+
+				$body = "";
+				foreach($options as $key => $option){
+					$option = trim($option);
+					if(strlen($option) > 0){
+						$h_option = htmlspecialchars($option, ENT_QUOTES, "UTF-8");
+						$id = 'custom_field_radio_'.$this->getFieldId().'_'.$key;
+
+						$body .= '<input type="checkbox" class="custom_field_radio"' .
+								 ' name="'.$h_formName.'[]"' .
+								 ' id="'.$id.'"'.
+								 ' value="'.$h_option.'"' .
+								 ((!is_bool(array_search($option, $values))) ? ' checked="checked"' : "") .
+								 ' />';
+						$body .= '<label for="'.$id.'">'.$h_option.'</label>';
+					}
+				}
 				break;
 			case "radio":
 				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->getOption()));

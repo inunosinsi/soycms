@@ -17,6 +17,11 @@ class CommonCategoryCustomfield extends SOYShopCategoryCustomFieldBase{
 
 			if(!isset($configs[$key]))continue;
 
+			//type=checkboxesの時
+			if($configs[$key]->getType() === "checkboxes"){
+				$value = (isset($value) && count($value)) ? implode(",", $value) : null;
+			}
+
 			$value2 = (isset($list[$key."_option"]) && strlen($list[$key."_option"]) > 0) ? $list[$key."_option"] : "";
 
 			try{
