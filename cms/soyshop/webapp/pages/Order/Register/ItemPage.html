@@ -27,9 +27,8 @@
 		<p class="error" soy:display="undrafted">下書き保存を失敗しました。</p>
 
 		<form soy:id="form">
-
 			<h3>商品 ※ドラックドロップで商品の並べ替えが可能です</h3>
-			<table class="form_table" id="order_content">
+			<table class="form_list" id="order_content">
 				<thead>
 					<tr class="alC">
 						<th>削除</th>
@@ -55,10 +54,10 @@
 							<p soy:id="is_option"><!-- soy:id="label" /-->:<!-- soy:id="option_form" /--></p>
 							<!-- /soy:id="item_option_list" -->
 						</td>
-						<td class="alR"><input type="text" soy:id="item_price" style="width:70px;" class="alR"> 円</td>
+						<td class="alR"><input type="text" soy:id="item_price" style="width:70px;ime-mode:inactive;" class="alR"> 円</td>
 						<td class="alR">
 							<p class="error always alC" soy:id="out_of_stock">在庫切れ</p>
-							<input type="text" soy:id="item_count" style="width:40px;" class="alR"> 点
+							<input type="text" soy:id="item_count" style="width:40px;ime-mode:inactive;" class="alR"> 点
 						</td>
 						<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
 					</tr>
@@ -185,6 +184,19 @@ $(function(){
 			document.forms[0].submit();
 		}
 	});
+
+	//sortdata中で無理やりtrの背景色を変更
+	var children = $('#sortdata').children();
+	if(children.length > 0){
+		for(var i = 0; i < children.length; i++){
+			if($(children[i]).hasClass("odd")){
+				var tds = $(children[i]).children();
+				for(var j = 0; j < tds.length; j++){
+					$(tds[j]).css("background-color", "#EEEEEE");
+				}
+			}
+		}
+	}
 });
 </script>
 

@@ -77,6 +77,19 @@ $(function(){
 			document.forms[0].submit();
 		}
 	});
+
+	//sortdata中で無理やりtrの背景色を変更
+	var children = $('#sortdata').children();
+	if(children.length > 0){
+		for(var i = 0; i < children.length; i++){
+			if($(children[i]).hasClass("odd")){
+				var tds = $(children[i]).children();
+				for(var j = 0; j < tds.length; j++){
+					$(tds[j]).css("background-color", "#EEEEEE");
+				}
+			}
+		}
+	}
 });
 </script>
 
