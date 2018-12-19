@@ -28,12 +28,13 @@ class IndexPage extends CMSHTMLPageBase{
 
 		parent::__construct();
 
+
 		//CSS読み込み
-		HTMLHead::addLink("login_style",array(
-				"rel" => "stylesheet",
-				"type" => "text/css",
-				"href" => SOY2PageController::createRelativeLink("./css/login/style.css")."?".SOYCMS_BUILD_TIME
-		));
+		// HTMLHead::addLink("login_style",array(
+		// 		"rel" => "stylesheet",
+		// 		"type" => "text/css",
+		// 		"href" => SOY2PageController::createRelativeLink("./css/login/style.css")."?".SOYCMS_BUILD_TIME
+		// ));
 		$this->createAdd("head" ,"HTMLHead",array(
 			"title" => "SOY CMS Login"
 		));

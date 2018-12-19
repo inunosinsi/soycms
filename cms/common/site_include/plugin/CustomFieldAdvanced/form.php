@@ -22,7 +22,7 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 		if(isset($_POST["csv"])){
 			$this->pluginObj->exportFields();
 		}
-		
+
 		//CSVインポート
 		if(isset($_POST["upload"])){
 			$this->pluginObj->importFields();
@@ -80,14 +80,15 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 		$this->createAdd("add_field","HTMLModel",array(
 			"visible"=> count($this->pluginObj->customFields)<1
 		));
-		
+
 		//カスタムフィールドから設定をインポート
 		$this->addForm("import_form");
 
 		//ラベルの取得
 		$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
 
-		$this->createAdd("field_list","FieldList",array(
+		SOY2::import("site_include.plugin.CustomFieldAdvanced.component.CustomFieldListComponent");
+		$this->createAdd("field_list","CustomFieldListComponent",array(
 			"list"=>$this->pluginObj->customFields,
 			"labels" => $labels
 		));
@@ -113,7 +114,7 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 			"label"    => "IDを表示する",
 			"onclick"  => "update_display_sample()"
 		));
-		
+
 		$this->addCheckBox("acceleration", array(
 			"type" => "checkbox",
 			"name" => "display_config[acceleration]",
@@ -136,201 +137,3 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 		$this->pluginObj = $pluginObj;
 	}
 }
-
-
-if(!class_exists("FieldList")){
-class FieldList extends HTMLList{
-
-	private $labels = array();
-
-	function populateItem($entity, $i){
-		static $i = 0;
-		$i++;
-
-		/* 情報表示用 */
-		$this->createAdd("label","HTMLLabel",array(
-			"text"=>$entity->getLabel(),
-			"id" => "label_text_" . $i,
-		));
-
-		$this->createAdd("id","HTMLLabel",array(
-			"text"=> $entity->getId(),
-		));
-
-		$this->createAdd("type","HTMLLabel",array(
-			"text"=> (isset(CustomField::$TYPES[$entity->getType()])) ? CustomField::$TYPES[$entity->getType()] : "",
-			"id" => "type_text_" . $i,
-		));
-
-		$this->createAdd("display_form","HTMLLabel",array(
-			"text"=>'cms:id="'.$entity->getId().'"'
-		));
-
-
-		/* カスタムフィールド設定変更用 */
-		$this->createAdd("toggle_update","HTMLLink",array(
-			"link" => "javascript:void(0)",
-			"onclick" => '$(\'#label_input_'.$i.'\').show();' .
-						'$(\'#label_text_'.$i.'\').hide();' .
-						'$(\'#type_select_'.$i.'\').show();' .
-						'$(\'#type_text_'.$i.'\').hide();' .
-						'$(\'#update_link_'.$i.'\').show();' .
-						'$(this).hide();'
-		));
-
-		$this->createAdd("update_link","HTMLLink",array(
-			"link" => "javascript:void(0)",
-			"id" => "update_link_" . $i,
-			"onclick" => '$(\'#update_submit_'.$i.'\').click();' .
-						'return false;'
-		));
-
-		$this->createAdd("update_submit","HTMLInput",array(
-			"name" => "update_submit",
-			"value" => $entity->getId(),
-			"id" => "update_submit_".$i
-		));
-
-		$this->createAdd("label_input","HTMLInput",array(
-			"name" => "label",
-			"id" => "label_input_" . $i,
-			"value" => $entity->getLabel(),
-		));
-
-		$this->createAdd("type_select","HTMLSelect",array(
-			"name" => "type",
-			"options" => CustomField::$TYPES,
-			"id" => "type_select_" . $i,
-			"selected" => $entity->getType(),
-		));
-
-		/* 順番変更用 */
-		$this->createAdd("field_id","HTMLInput",array(
-			"name" => "field_id",
-			"value" => $entity->getId(),
-		));
-
-
-		/* 削除用 */
-		$this->createAdd("delete_submit","HTMLInput",array(
-			"name" => "delete_submit",
-			"value" => $entity->getId(),
-			"id" => "delete_submit_".$i
-		));
-
-		$this->createAdd("delete","HTMLLink",array(
-			"text"=>"削除",
-			"link"=>"javascript:void(0);",
-			"onclick"=>'if(confirm("delete \"'.$entity->getLabel().'\"?")){$(\'#delete_submit_'.$i.'\').click();}return false;'
-		));
-
-		/* 高度な設定 */
-		$this->createAdd("toggle_config","HTMLLink",array(
-			"link" => "javascript:void(0)",
-			"text" => "高度な設定",
-			"onclick" => '$(\'#field_config_'.$i.'\').toggle();',
-			"style" => (!$entity->getShowInput() OR $entity->getLabelId() OR $entity->getDefaultValue() OR $entity->getEmptyValue() OR $entity->getDescription()) ? "background-color:yellow;" : ""
-		));
-
-		$this->createAdd("field_config","HTMLModel",array(
-			"id" => "field_config_" . $i
-		));
-
-		//表示の切り替え：表示/非表示/ラベルと連動
-		$this->createAdd("editer_show","HTMLCheckBox",array(
-			"name" => "config[showInput]",
-			"value" => CustomFieldPluginFormPage::SHOW_INPUT_YES,
-			"selected" => $entity->getShowInput() && strlen($entity->getLabelId())==0,
-			"label" => "常に表示",
-		));
-		$this->createAdd("editer_hide","HTMLCheckBox",array(
-			"name" => "config[showInput]",
-			"value" => CustomFieldPluginFormPage::SHOW_INPUT_NO,
-			"selected" => !$entity->getShowInput(),
-			"label" => "常に隠す",
-		));
-		$this->createAdd("editer_label","HTMLCheckBox",array(
-			"name" => "config[showInput]",
-			"value" => CustomFieldPluginFormPage::SHOW_INPUT_LABEL,
-			"selected" => strlen($entity->getLabelId()),
-			"label" => "ラベルと連動",
-		));
-		$this->createAdd("labels","HTMLSelect",array(
-			"options" => $this->labels,
-			"property" => "caption",
-			"name" => "config[labelId]",
-			"selected" => $entity->getLabelId(),
-		));
-
-		$this->createAdd("default_value","HTMLInput",array(
-			"name" => "config[defaultValue]",
-			"value" => $entity->getDefaultValue()
-		));
-
-		$this->createAdd("empty_hide","HTMLCheckBox",array(
-			"name" => "config[hideIfEmpty]",
-			"value" => 1,
-			"selected" => $entity->getHideIfEmpty(),
-			"label" => "表示しない",
-		));
-		$this->createAdd("empty_show","HTMLCheckBox",array(
-			"name" => "config[hideIfEmpty]",
-			"value" => 0,
-			"selected" => !$entity->getHideIfEmpty(),
-			"label" => "指定の値を出力",
-		));
-		$this->createAdd("empty_value","HTMLInput",array(
-			"name" => "config[emptyValue]",
-			"value" => $entity->getEmptyValue()
-		));
-
-		$this->createAdd("output","HTMLInput",array(
-			"name" => "config[output]",
-			"value" => $entity->getOutput()
-		));
-
-		$this->createAdd("use_extra", "HTMLModel", array(
-			"visible" => $entity->hasExtra(),
-		));
-		
-		$this->createAdd("extra_outputs", "HTMLTextArea", array(
-			"name" => "config[extraOutputs]",
-			"value" => $entity->getExtraOutputs(),
-		));
-
-		$this->createAdd("option","HTMLTextArea",array(
-			"name" => "config[option]",
-			"value" => $entity->getOption()
-		));
-		
-		$this->createAdd("description","HTMLInput",array(
-			"name" => "config[description]",
-			"value" => $entity->getDescription()
-		));
-
-		$this->createAdd("with_options","HTMLModel",array(
-			"visible" => $entity->hasOption()
-		));
-
-		$this->createAdd("update_advance","HTMLInput",array(
-			"value"=>"設定保存",
-			"onclick"=>'$(\'#update_advance_submit_'.$i.'\').click();return false;'
-		));
-
-		$this->createAdd("update_advance_submit","HTMLInput",array(
-			"name" => "update_advance",
-			"value" => $entity->getId(),
-			"id" => "update_advance_submit_".$i
-		));
-
-	}
-
-	function getLabels() {
-		return $this->labels;
-	}
-	function setLabels($labels) {
-		$this->labels = $labels;
-	}
-}	
-}
-?>

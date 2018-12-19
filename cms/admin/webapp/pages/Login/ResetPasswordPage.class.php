@@ -6,7 +6,7 @@ class ResetPasswordPage extends WebPage{
 			$flashSession = SOY2ActionSession::getFlashSession();
 			$flashSession->clearAttributes();
 			$flashSession->resetFlashCounter();
-			
+
 			$result = SOY2ActionFactory::createInstance("ResetPasswordAction")->run();
 			if($result->success()){
 				$flashSession->setAttribute("isCompleted", true);
@@ -16,26 +16,26 @@ class ResetPasswordPage extends WebPage{
 			}
 		}
 	}
-	
+
 	function __construct() {
-		
+
 		parent::__construct();
 
 		$flashSession = SOY2ActionSession::getFlashSession();
 		$isCompleted = is_null($flashSession->getAttribute("isCompleted")) ? false : $flashSession->getAttribute("isCompleted");
 		$errorMessage = $flashSession->getAttribute("errorMessage");
-		
+
 		// トークンないときはトップに飛ばす
 		if(!$isCompleted && (!isset($_GET["t"]) || strlen($_GET["t"]) < 1)){
 			SOY2PageController::jump("");
 		}
-		
-		HTMLHead::addLink("style", array(
-				"rel" => "stylesheet",
-				"type" => "text/css",
-				"href" => SOY2PageController::createRelativeLink("./css/login/style.css") . "?" . SOYCMS_BUILD_TIME
-		));
-		
+
+		// HTMLHead::addLink("style", array(
+		// 		"rel" => "stylesheet",
+		// 		"type" => "text/css",
+		// 		"href" => SOY2PageController::createRelativeLink("./css/login/style.css") . "?" . SOYCMS_BUILD_TIME
+		// ));
+
 		$this->createAdd("head", "HTMLHead", array(
 			"title" => "SOY CMS Reset Password ",
 		));
@@ -48,21 +48,15 @@ class ResetPasswordPage extends WebPage{
 			"name" => "token",
 			"value" => isset($_GET["t"]) ? $_GET["t"] : "",
 		));
-		
-		$this->addModel("password", array(
-			"visible" => !$isCompleted,
-		));
 
-		$this->addModel("completed", array(
-			"visible" => $isCompleted,
-		));
+		DisplayPlugin::toggle("password", !$isCompleted);
+		DisplayPlugin::toggle("completed", $isCompleted);
 
 		$this->addForm("reset_form");
 
+		DisplayPlugin::toggle("is_message", !$isCompleted && strlen($errorMessage));
 		$this->addLabel("message", array(
-			"visible" => !$isCompleted,
 			"text" => $errorMessage,
 		));
 	}
 }
-?>

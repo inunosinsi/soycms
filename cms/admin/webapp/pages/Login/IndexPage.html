@@ -1,33 +1,37 @@
 <html>
 
-<head soy:id="head">
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-	<meta name="robots" content="noindex">
-</head soy:id="head">
+<head soy:page="_common.HeaderPage" isOverWrite="true">
+</head soy:page="_common.HeaderPage">
 
 <body>
+	<div class="container">
+		<div class="main-div">
+			<div class="form-heading">&nbsp;</div>
 
-<form soy:id="AuthForm" name="AuthForm" action="" method="post">
-	<div id="login_wrapper_for_IE">
-		<div id="login_wrapper">
-			<img soy:id="biglogo" alt="logo" />
-			
-			<div id="login_main"> 
-				<div class="user">
-					<p>ログインID（管理者ID）</p>
-					<input id="login-id" type="text" soy:id="username" />
+			<form soy:id="AuthForm" name="AuthForm" action="" method="post">
+				<img soy:id="biglogo" alt="logo" />
+
+				<div class="panel">
+					<div class="panel-body">
+						<div class="alert alert-danger" soy:id="message">エラーメッセージ</div>
+						<div class="form-group">
+							<label>ログインID（管理者ID）</label>
+							<input id="login-id" class="form-control" type="text" soy:id="username">
+						</div>
+						<div class="form-group">
+							<label>パスワード <span soy:id="reminder"></span soy:id="reminder"></label>
+							<input type="password" class="form-control" soy:id="password" />
+						</div>
+					</div>
+					<div class="text-center">
+						<input class="btn btn-primary btn-lg btn-block" type="submit" name="login" value="ログイン" />
+					</div>
 				</div>
-				<div class="password">
-					<p>パスワード <span soy:id="reminder"></span soy:id="reminder"></p>
-					<input type="password" soy:id="password" />
-				</div>
-				<div class="failed_message" soy:id="message"></div soy:id="message">
-							
-				<input class="login" type="submit" name="login" value="ログイン" />
-			</div>
+			</form>
 		</div>
 	</div>
-</form soy:id="AuthForm">
+
+	<!-- soy:page="_common.FooterPage" /-->
 
 <script type="text/JavaScript">
 if (top != self) { top.location.href =self.location.href }

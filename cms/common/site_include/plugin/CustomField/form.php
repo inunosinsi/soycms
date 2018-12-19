@@ -11,12 +11,12 @@ class CustomFieldPluginFormPage extends WebPage{
 	function __construct(){}
 
 	function doPost(){
-		
+
 		//CSVエクスポート
 		if(isset($_POST["csv"])){
 			$this->pluginObj->exportFields();
 		}
-		
+
 		//CSVインポート
 		if(isset($_POST["upload"])){
 			$this->pluginObj->importFields();
@@ -270,7 +270,7 @@ class FieldList extends HTMLList{
 			"name" => "config[output]",
 			"value" => $entity->getOutput()
 		));
-		
+
 		$this->createAdd("description","HTMLInput",array(
 			"name" => "config[description]",
 			"value" => $entity->getDescription()
@@ -279,7 +279,7 @@ class FieldList extends HTMLList{
 		$this->createAdd("use_extra", "HTMLModel", array(
 			"visible" => $entity->hasExtra(),
 		));
-		
+
 		$this->createAdd("extra_outputs", "HTMLTextArea", array(
 			"name" => "config[extraOutputs]",
 			"value" => $entity->getExtraOutputs(),
@@ -314,5 +314,3 @@ class FieldList extends HTMLList{
 		$this->labels = $labels;
 	}
 }
-
-?>

@@ -8,13 +8,13 @@ class InitPage extends CMSHTMLPageBase{
 
 		if(soy2_check_token()){
 			$logic = SOY2Logic::createInstance("logic.init.InitializeLogic");
-	
+
 	    	$userId = $_POST['userId'];
 	    	$password = $_POST['password'];
 	    	$password_confirm = $_POST['password_confirm'];
-	
+
 	    	$this->_message = array();
-	
+
 	    	if(strlen($userId) < 4){
 	    		$this->_message["userId"] = CMSMessageManager::get("ADMIN_SUPERUSER_ID_IS_TOO_SHORT");
 	    	}elseif(strlen($userId) > 255){
@@ -28,28 +28,32 @@ class InitPage extends CMSHTMLPageBase{
 	    	if($password != $password_confirm){
 	    		$this->_message["password_confirm"] = CMSMessageManager::get("ADMIN_PASSWORDS_NOT_SAME");
 	    	}
-	
+
 	    	if(count($this->_message) > 0){
 	    		return;
 	    	}
-	
+
 	    	if($logic->initialize($userId, $password)){
 	    		SOY2PageController::redirect("./index.php/Redirect?userId=" . $userId);
 	    	}
-	
+
 			$this->_message["init"] = "[initialize] Failed to initialize cms";
 		}
 	}
 
 	function __construct(){
-		$loginable = $this->checkLoginable();
+		$loginable = self::checkLoginable();
 
 		//初期管理者が作成済み
-		if($loginable && ADMIN_DB_EXISTS && $this->hasDefaultUser()){
+		if($loginable && ADMIN_DB_EXISTS && self::hasDefaultUser()){
     		SOY2PageController::redirect("./index.php");
 		}
 
 		parent::__construct();
+
+		$this->createAdd("head" ,"HTMLHead",array(
+			"title" => "初回設定 - SOY CMS"
+		));
 
 		$this->addForm("initform");
 		$this->addInput("userId", array(
@@ -79,19 +83,12 @@ class InitPage extends CMSHTMLPageBase{
 			"disabled" => !$loginable
 		));
 
-		$this->addLabel("message_db", array(
-			"text" => (isset($this->_message["db"])) ? $this->_message["db"] : "",
-			"visible" => !$loginable
-		));
-		$this->addLabel("message_userId", array(
-			"text" => (isset($this->_message["userId"])) ? $this->_message["userId"] : "",
-		));
-		$this->addLabel("message_password", array(
-			"text" => (isset($this->_message["password"])) ? $this->_message["password"] : "",
-		));
-		$this->addLabel("message_password_confirm", array(
-			"text" => (isset($this->_message["password_confirm"])) ? $this->_message["password_confirm"] : "",
-		));
+		foreach(array("db", "userId", "password", "password_confirm") as $t){
+			DisplayPlugin::toggle("is_message_" . $t, isset($this->_message[$t]) && strlen($this->_message[$t]));
+			$this->addLabel("message_" . $t, array(
+				"text" => (isset($this->_message[$t])) ? $this->_message[$t] : "",
+			));
+		}
 
 		$this->addModel("biglogo", array(
     		"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
@@ -102,7 +99,7 @@ class InitPage extends CMSHTMLPageBase{
 	 * データベースに接続できるかをチェックする
 	 * @return Boolean
 	 */
-	function checkLoginable(){
+	private function checkLoginable(){
 
 		if(!is_writable(SOY2::RootDir() . "db")){
 			$this->_message["db"] = CMSMessageManager::get("ADMIN_DB_CONNECT_FAILURE") . " " . CMSMessageManager::get("ADMIN_DB_NO_ROLE") . " " . realpath(SOY2::RootDir() . "db");
@@ -122,9 +119,7 @@ class InitPage extends CMSHTMLPageBase{
 	 * すでに初期管理者がいるかどうかをチェックする
 	 * @return Boolean
 	 */
-	function hasDefaultUser(){
-		$logic = SOY2Logic::createInstance("logic.admin.Administrator.AdministratorLogic");
-		return $logic->hasDefaultUser();
+	private function hasDefaultUser(){
+		return SOY2Logic::createInstance("logic.admin.Administrator.AdministratorLogic")->hasDefaultUser();
 	}
 }
-?>
