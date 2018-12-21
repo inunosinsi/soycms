@@ -36,7 +36,7 @@ class PasswordRemindPage extends WebPage{
 		));
 
 		$this->addImage("biglogo", array(
-			"src" => SOY2PageController::createRelativeLink("css/img/logo_big.gif"),
+			"src" => CMSUtil::getLogoFile(),
 		));
 
 		DisplayPlugin::toggle("sendmail", !$isSended);

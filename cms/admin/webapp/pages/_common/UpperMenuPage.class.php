@@ -40,7 +40,7 @@ class UpperMenuPage extends CMSWebPageBase{
 		));
 
 		$this->addModel("biglogo", array(
-			"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
+			"src" => CMSUtil::getLogoFile()
 		));
 
 		/* タブの状態を設定 */
@@ -118,4 +118,3 @@ class UpperMenuPage extends CMSWebPageBase{
 	}
 
 }
-

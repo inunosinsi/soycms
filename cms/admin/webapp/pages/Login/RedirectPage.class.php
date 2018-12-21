@@ -23,9 +23,8 @@ class RedirectPage extends CMSHTMLPageBase{
 		));
 
 		$this->addImage("biglogo", array(
-			"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
+			"src" => CMSUtil::getLogoFile()
 		));
-
 	}
 
 	function setUserId($userId){
@@ -34,4 +33,3 @@ class RedirectPage extends CMSHTMLPageBase{
 		echo $userId;
 	}
 }
-

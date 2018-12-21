@@ -29,7 +29,7 @@ class UpperMenuPage extends CMSHTMLPageBase{
 		));
 
 		$this->addModel("biglogo", array(
-			"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
+			"src" => CMSUtil::getLogoFile(CMSUtil::MODE_SOYCMS)
 		));
 
 		//管理者名

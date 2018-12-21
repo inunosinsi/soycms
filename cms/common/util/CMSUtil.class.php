@@ -5,6 +5,9 @@ class CMSUtil {
 	const DATE_MIN = 0;
 	const DATE_MAX = 2147483647;
 
+	const MODE_ADMIN = 0;	//adminの管理画面を見ているか？
+	const MODE_SOYCMS = 1;	//サイト毎の管理画面を見ているか？
+
 	/**
 	 * Convert Unix time stamp to CMS time format
 	 * @param boolean true:startDate false:endDate
@@ -213,6 +216,31 @@ class CMSUtil {
 			$text = CMSMessageManager::get("SOYCMS_NO_SETTING");
 		}
 		return $text;
+	}
+
+	/** ロゴ画像 **/
+	public static function getLogoFile($mode=self::MODE_ADMIN){
+		switch($mode){
+			case self::MODE_SOYCMS:
+				$logoDir = dirname(SOY2::RootDir()) . "/soycms/image/logo/";
+				break;
+			case self::MODE_ADMIN:
+			default:
+				$logoDir = dirname(SOY2::RootDir()) . "/admin/image/logo/";
+				break;
+		}
+
+		if(file_exists($logoDir) && is_dir($logoDir)){
+			foreach(glob($logoDir . "*") as $f){
+				if(is_file($f) && !strpos($f, ".txt")){
+					$fileName = trim(substr($f, strrpos($f, "/") + 1), "/");
+					if(preg_match('/\.(jpg|jpeg|gif|png|bmp)/', $fileName, $tmp)){
+						return SOY2PageController::createRelativeLink("image/logo/" . $fileName);
+					}
+				}
+			}
+		}
+		return SOY2PageController::createRelativeLink("css/img/logo_big.gif");
 	}
 
 
