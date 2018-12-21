@@ -182,9 +182,9 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$binds[":update_date_end"] = $update_date_end_time;
 		}
 
-		if(isset($search["trackingNumber"]) && strlen($search["trackingNumber"]) > 0){
+		if(isset($search["trackingNumber"]) && strlen(trim($search["trackingNumber"])) > 0){
 			$where[] = "tracking_number LIKE :tracking_number";
-			$binds[":tracking_number"] = "%" . @$search["trackingNumber"] . "%";
+			$binds[":tracking_number"] = "%" . trim($search["trackingNumber"]) . "%";
 		}
 		if(isset($search["orderId"]) && strlen($search["orderId"]) > 0){
 			$where[] = "id LIKE :order_id";

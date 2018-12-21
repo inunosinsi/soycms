@@ -32,7 +32,7 @@ class PayJpOptionPage extends WebPage {
 			$this->addInput("card_" . ($i + 1), array(
 				"name" => "card[$i]",
 				"value" => (isset($values["number"])) ? substr($values["number"], (4*$i), 4) : "",
-				"style" => "ime-mode:inactive;"
+				"style" => "ime-mode:inactive;",
 				"attr:id" => "card_" . $i,
 				"attr:required" => true,
 			));
