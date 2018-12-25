@@ -18,7 +18,7 @@ class ArrivalNoticeDraftAdminTop extends SOYShopAdminTopBase{
 	function getContent(){
 		if(self::isDraft()){
 			$html = "<p class=\"notice always\">";
-			$html .= "管理画面からの注文で下書きがあります。 -&gt; <a href=\"" . SOY2PageController::createLink("Order.Register.Item") . "\">注文の登録</a>";
+			$html .= "管理画面からの注文で下書きがあります。&nbsp;<a href=\"" . SOY2PageController::createLink("Order.Register.Item") . "\" class=\"button\">注文の続ける</a>";
 			$html .= "</p>";
 			return $html;
 		}
