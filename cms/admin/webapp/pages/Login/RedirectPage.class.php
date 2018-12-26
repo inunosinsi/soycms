@@ -11,7 +11,7 @@ class RedirectPage extends CMSHTMLPageBase{
 			SOY2PageController::redirect("");
 		}
 
-
+		define("HEAD_TITLE", CMSUtil::getCMSName() . " Redirect ");
 		parent::__construct();
 
 		$this->addLabel("user_id", array(

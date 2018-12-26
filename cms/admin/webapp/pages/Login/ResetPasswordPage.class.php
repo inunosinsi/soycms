@@ -19,6 +19,7 @@ class ResetPasswordPage extends WebPage{
 
 	function __construct() {
 
+		define("HEAD_TITLE", CMSUtil::getCMSName() . " Reset Password ");
 		parent::__construct();
 
 		$flashSession = SOY2ActionSession::getFlashSession();
@@ -35,10 +36,9 @@ class ResetPasswordPage extends WebPage{
 		// 		"type" => "text/css",
 		// 		"href" => SOY2PageController::createRelativeLink("./css/login/style.css") . "?" . SOYCMS_BUILD_TIME
 		// ));
-
-		$this->createAdd("head", "HTMLHead", array(
-			"title" => "SOY CMS Reset Password ",
-		));
+		// $this->createAdd("head", "HTMLHead", array(
+		// 	"title" => "SOY CMS Reset Password ",
+		// ));
 
 		$this->addImage("biglogo", array(
 			"src" => CMSUtil::getLogoFile(),

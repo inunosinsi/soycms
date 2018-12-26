@@ -46,7 +46,7 @@ class HeaderPage extends CMSWebPageBase{
 
 	function execute(){
 		$this->createAdd("header", "HTMLHead", array(
-			"title" => $this->title,
+			"title" => (isset($this->title) && strlen($this->title)) ? $this->title : CMSUtil::getCMSName(),
 			"isEraseHead" => false
 		));
 

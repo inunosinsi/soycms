@@ -49,11 +49,12 @@ class InitPage extends CMSHTMLPageBase{
     		SOY2PageController::redirect("./index.php");
 		}
 
+		define("HEAD_TITLE", "初回設定 - " . CMSUtil::getCMSName());
 		parent::__construct();
 
-		$this->createAdd("head" ,"HTMLHead",array(
-			"title" => "初回設定 - SOY CMS"
-		));
+		// $this->createAdd("head" ,"HTMLHead",array(
+		// 	"title" => "初回設定 - SOY CMS"
+		// ));
 
 		$this->addForm("initform");
 		$this->addInput("userId", array(

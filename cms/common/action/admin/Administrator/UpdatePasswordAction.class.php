@@ -56,5 +56,3 @@ class UpdatePasswordActionForm extends SOY2ActionForm{
 		$this->newPassword = $newPassword;
 	}
 }
-
-?>

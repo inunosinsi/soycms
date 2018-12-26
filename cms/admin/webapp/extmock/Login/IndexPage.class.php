@@ -26,7 +26,8 @@ class IndexPage extends CMSHTMLPageBase{
 			SOY2PageController::jump("");
 		}
 
-		WebPage::WebPage();
+		define("HEAD_TITLE", "SOY CMS Login");
+		parent::__construct();
 
 		//CSS読み込み
 		HTMLHead::addLink("login_style",array(
@@ -34,14 +35,14 @@ class IndexPage extends CMSHTMLPageBase{
 				"type" => "text/css",
 				"href" => SOY2PageController::createRelativeLink("./css/login/style.css")."?".SOYCMS_BUILD_TIME
 		));
-		$this->createAdd("head" ,"HTMLHead",array(
-			"title" => "SOY CMS Login"
-		));
+		// $this->createAdd("head" ,"HTMLHead",array(
+		// 	"title" => "SOY CMS Login"
+		// ));
 
 
 		//フォームの作成
 		$this->addForm("AuthForm");
-		
+
 		$this->addInput("username", array(
 			"name" => "Auth[name]",
 			"value" => $this->username
@@ -50,7 +51,7 @@ class IndexPage extends CMSHTMLPageBase{
 			"name" => "Auth[password]",
 			"value" => ""
 		));
-		
+
 		$this->addLabel("message", array(
 			"html" => $this->message,
 			"visible" => strlen($this->message)
@@ -61,7 +62,7 @@ class IndexPage extends CMSHTMLPageBase{
 			"visible" => SOY2Logic::createInstance("logic.admin.Administrator.AdministratorLogic")->hasMailAddress() &&
 			!is_null(SOY2Logic::createInstance("logic.mail.MailConfigLogic")->get()),
 		));
-		
+
 		$this->addModel("biglogo", array(
     		"src"=>SOY2PageController::createRelativeLink("css/img/logo_big.gif")
     	));

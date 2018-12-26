@@ -53,6 +53,10 @@ class IndexPage extends CMSWebPageBase{
 				"text" => "version: ".SOYCMS_VERSION,
 		));
 
+		$this->addLabel("cms_name", array(
+			"text" => CMSUtil::getCMSName()
+		));
+
 		//現在のユーザーがログイン可能なサイトのみを表示する
 		$loginableSiteList = SOY2Logic::createInstance("logic.admin.Site.SiteLogic")->getLoginableSiteListByUserId(UserInfoUtil::getUserId());
 		$this->createAdd("list", "_common.Site.SiteListComponent", array(

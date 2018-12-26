@@ -2,12 +2,6 @@
 
 class HeaderPage extends CMSHTMLPageBase{
 
-	var $title = "";
-
-	function setTitle($title){
-		$this->title = $title;
-	}
-
 	function __construct(){
 		parent::__construct();
 
@@ -46,7 +40,7 @@ class HeaderPage extends CMSHTMLPageBase{
 
 	function execute(){
 		$this->createAdd("header", "HTMLHead", array(
-			"title" => $this->title,
+			"title" => (defined("HEAD_TITLE")) ? HEAD_TITLE : CMSUtil::getCMSName(),
 			"isEraseHead" => false
 		));
 

@@ -26,6 +26,7 @@ class IndexPage extends CMSHTMLPageBase{
 			SOY2PageController::jump("");
 		}
 
+		define("HEAD_TITLE", CMSUtil::getCMSName() . " Login");
 		parent::__construct();
 
 
@@ -35,9 +36,9 @@ class IndexPage extends CMSHTMLPageBase{
 		// 		"type" => "text/css",
 		// 		"href" => SOY2PageController::createRelativeLink("./css/login/style.css")."?".SOYCMS_BUILD_TIME
 		// ));
-		$this->createAdd("head" ,"HTMLHead",array(
-			"title" => "SOY CMS Login"
-		));
+		// $this->createAdd("head" ,"HTMLHead",array(
+		// 	"title" => "SOY CMS Login"
+		// ));
 
 
 		//フォームの作成

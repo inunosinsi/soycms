@@ -24,12 +24,20 @@ class FooterPage extends CMSWebPageBase{
 			"html" => $this->copyRight
 		));
 
+		$this->addLabel("cms_name", array(
+			"text" => CMSUtil::getCMSName()
+		));
+
 		//バージョン番号
 		$this->addLabel("version",array(
 				"text" => SOYCMS_VERSION,
 		));
 		$this->addLabel("php-version",array(
 				"text" => PHP_VERSION
+		));
+
+		$this->addLabel("developer_name", array(
+			"text" => CMSUtil::getDeveloperName()
 		));
 
 		$this->addLabel("jQuery", array(

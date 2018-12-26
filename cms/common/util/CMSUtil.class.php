@@ -243,6 +243,14 @@ class CMSUtil {
 		return SOY2PageController::createRelativeLink("css/img/logo_big.gif");
 	}
 
+	public static function getCMSName(){
+		return (defined("SOYCMS_CMS_NAME")) ? SOYCMS_CMS_NAME : "SOY CMS";
+	}
+
+	public static function getDeveloperName(){
+		return (defined("SOYCMS_DEVELOPER_NAME")) ? SOYCMS_DEVELOPER_NAME : "Brassica, Inc.";
+	}
+
 
 	/* 以下使わなくなったメソッド */
 

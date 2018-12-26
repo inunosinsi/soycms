@@ -19,6 +19,7 @@ class PasswordRemindPage extends WebPage{
 	}
 
 	function __construct(){
+		define("HEAD_TITLE", CMSUtil::getCMSName() . " Password Remind ");
 		parent::__construct();
 
 		//nullでは返さない
@@ -31,9 +32,9 @@ class PasswordRemindPage extends WebPage{
 		// 		"href" => SOY2PageController::createRelativeLink("./css/login/style.css") . "?" . SOYCMS_BUILD_TIME
 		// ));
 
-		$this->createAdd("head" ,"HTMLHead",array(
-			"title" => "SOY CMS Password Remind "
-		));
+		// $this->createAdd("head" ,"HTMLHead",array(
+		// 	"title" => "SOY CMS Password Remind "
+		// ));
 
 		$this->addImage("biglogo", array(
 			"src" => CMSUtil::getLogoFile(),

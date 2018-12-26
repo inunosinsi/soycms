@@ -1,18 +1,21 @@
-<form soy:id="form">
-	<dl>
-		<dt>使用者名</dt>
-		<dd soy:id="user_name"></dd>
+<div class="card">
+ <div class="card-body">
+  <form soy:id="form">
+   <dl class="row">
+    <dt class="col-sm-9">使用者名</dt>
+    <dd class="col-sm-9" soy:id="user_name"></dd>
+    <dt class="col-sm-9">メールアドレス</dt>
+    <dd class="col-sm-9" soy:id="mail_address"></dd>
 
-		<dt>メールアドレス</dt>
-		<dd soy:id="mail_address"></dd>
-
-
-		<dt>パスワード(半角英数字と記号で8文字以上)</dt>
-		<dd soy:id="password"></dd>
-	</dl>
-
-	<p>
-		<input type="submit" name="register" value="登録">&nbsp;
-		<input type="submit" name="back" value="戻る">
-	</p>
-</form>
+    <dt class="col-sm-9">パスワード(半角英数字と記号で8文字以上)</dt>
+    <dd class="col-sm-9" soy:id="password"></dd>
+   </dl>
+   <div class="mb-2">
+    <input type="submit" name="register" class="btn btn-primary btn-lg btn-block" value="登録">
+   </div>
+    <div class="mx-auto" style="width:55px;">
+     <input type="submit" name="back" class="btn btn-default" value="戻る">
+    </div>
+  </form>
+ </div>
+</div>

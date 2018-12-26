@@ -9,16 +9,16 @@ class LoginAction extends SOY2Action{
     	$redirect = $req->getParameter('r');
 
     	if(defined("SOYCMS_ASP_MODE")){
-    		return $this->aspLogin($auth);
+    		return self::aspLogin($auth);
     	}else{
-    		return $this->normalLogin($auth, $redirect);
+    		return self::normalLogin($auth, $redirect);
     	}
     }
 
     /**
      * 通常のログインを行う
      */
-    function normalLogin($auth, $redirect){
+    private function normalLogin($auth, $redirect){
     	$logic = SOY2Logic::createInstance("logic.admin.Administrator.AdministratorLogic");
 
     	if($logic->login($auth['name'],$auth['password'])){
@@ -44,7 +44,7 @@ class LoginAction extends SOY2Action{
     /**
      * ASP版のログインを行う
      */
-    function aspLogin($auth){
+    private function aspLogin($auth){
 
     	$name = $auth['name'];
     	$pass = $auth['password'];

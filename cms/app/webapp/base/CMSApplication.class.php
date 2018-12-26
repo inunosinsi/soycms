@@ -43,7 +43,8 @@ class CMSApplication {
 		$title = (strlen($self->title) > 0) ? $self->title . " - " : "";
 		$title .= (isset($self->properties["title"])) ? $self->properties["title"] : "";
 		$title .= (strlen($title)>0) ? " | " : "";
-		$title .= "SOY CMS Application";
+		$cmsName = (defined("SOYCMS_CMS_NAME")) ? SOYCMS_CMS_NAME : "SOY CMS";
+		$title .= $cmsName . " Application";
 		return $title;
 	}
 

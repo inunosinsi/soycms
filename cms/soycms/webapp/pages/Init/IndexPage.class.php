@@ -18,6 +18,10 @@ class IndexPage extends CMSWebPageBase{
 
 		WebPage::__construct();
 
+		$this->addLabel("cms_name", array(
+			"text" => CMSUtil::getCMSName()
+		));
+
 		$this->addModel("has_zip_archive",array(
 				"visible" => CMSUtil::checkZipEnable(true),
 		));
