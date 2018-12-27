@@ -1,0 +1,3 @@
+<?php
+define("SOYCMS_CMS_NAME", "SOY CMS");			//CMS名の変更
+define("SOYCMS_DEVELOPER_NAME", "Brassica, Inc.");	//開発元名称
