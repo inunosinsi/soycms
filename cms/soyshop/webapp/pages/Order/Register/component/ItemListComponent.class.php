@@ -66,7 +66,18 @@ class ItemListComponent extends HTMLList {
 		$this->createAdd("item_option_list", "OptionListComponent", array(
 			"list" => $opts,
 			"index" => $id,
-			"attrs" => self::getItemOptionAttributeById($itemId),
+			"itemId" => $itemId,
+			"configs" => (count($opts)) ? self::getOptionConfig() : array(),
+			"attrs" => (count($opts)) ? self::getItemOptionAttributeById($itemId) : array(),
+		));
+
+		$this->addModel("option_pluign_active", array(
+			"visible" => SOYShopPluginUtil::checkIsActive("common_item_option")
+		));
+
+		//商品一覧へのリンク
+		$this->addLink("item_edit_link", array(
+			"link" => SOY2PageController::createLink("Item.Detail." . $entity->getItemId()) . "?registration_in"
 		));
 
 		$this->addLabel("item_option", array(
@@ -84,18 +95,24 @@ class ItemListComponent extends HTMLList {
 		if(count($itemOrder->getAttributeList()) > 0) return $itemOrder->getAttributeList();
 
 		SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
-		$opts = ItemOptionUtil::getOptions();
-		if(!count($opts)) return array();
+		$configs = self::getOptionConfig();
+		if(!count($configs)) return array();
 
 		//商品に紐付いている設定を取得
 		//$attrs = self::getItemOptionAttributeById($itemOrder->getItemId());
 
 		$array = array();
-		foreach($opts as $key => $conf){
+		foreach($configs as $key => $conf){
 			$array[$key] = "";
 		}
 
 		return $array;
+	}
+
+	private function getOptionConfig(){
+		static $configs;
+		if(is_null($configs)) $configs = ItemOptionUtil::getOptions();
+		return $configs;
 	}
 
 	private function buildOptionList($opts){

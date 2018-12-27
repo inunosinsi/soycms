@@ -42,7 +42,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	function doPost($param){
 
 		self::prepare();
-		if(is_null($this->list)!count($this->list)) return;
+		if(is_null($this->list) && !count($this->list)) return;
 
 		//paramの再配列
 		$array = array();

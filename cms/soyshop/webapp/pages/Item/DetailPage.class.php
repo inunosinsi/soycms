@@ -178,7 +178,13 @@ class DetailPage extends WebPage{
 					"item" => $item
 				));
 
-				SOY2PageController::jump("Item.Detail.$id?updated");
+				//管理画面からの注文で商品情報を変更したい時
+				if(isset($_GET["registration_in"])){
+					SOY2PageController::jump("Order.Register.Item");
+				}else{
+					SOY2PageController::jump("Item.Detail.$id?updated");
+				}
+
 
 				exit;
 			}
@@ -220,6 +226,10 @@ class DetailPage extends WebPage{
 
 		DisplayPlugin::toggle("copy", (isset($_GET["copy"])));
 		DisplayPlugin::toggle("error", (isset($_GET["error"])));
+
+		//管理画面からの注文の際に表示する
+		DisplayPlugin::toggle("registration_in_1", (isset($_GET["registration_in"])));
+		DisplayPlugin::toggle("registration_in_2", (isset($_GET["registration_in"])));
 
 		$this->addForm("update_form");
 

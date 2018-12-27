@@ -53,6 +53,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		//paramの再配列
 		$array = array();
 		foreach($this->list as $obj){
+			$isContinue = false;
 			switch($obj->getType()){
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
 					$value["value"] = (isset($param[$obj->getFieldId()]) && is_array($param[$obj->getFieldId()])) ? implode(",", $param[$obj->getFieldId()]) : "";
@@ -65,7 +66,10 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					if(isset($tmp) && strlen($tmp)){
 
 						//拡張子を調べる。許可していない拡張子の場合は処理を止める
-						if(!self::checkUploadFileExtension($obj)) continue;
+						if(!self::checkUploadFileExtension($obj)) {
+							$isContinue = true;
+							break;
+						}
 
 						$filename = $_FILES["customfield_module"]["name"][$obj->getFieldId()];
 						$new[$obj->getFieldId()] = date("YmdHis") . "." . substr($filename, strrpos($filename, ".") + 1);
@@ -73,17 +77,20 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 						if(move_uploaded_file($tmp, self::getCacheDir() . $new[$obj->getFieldId()])){
 							$value["value"] = $filename;
 						}else{
-							continue;	//ファイルアップロードに関する処理を止める
+							$isContinue = true;//ファイルアップロードに関する処理を止める
 						}
 					//今回はアップロードしないけど、すでにファイルをアップロードしている時
 					}else{
-						if(!isset($param[$obj->getFieldId()])) continue;
+						if(!isset($param[$obj->getFieldId()])) $isContinue = true;;
 						$value["value"] = $param[$obj->getFieldId()];
 					}
 					break;
 				default:
 					$value["value"] = (isset($param[$obj->getFieldId()])) ? $param[$obj->getFieldId()] : "";
 			}
+
+			//switch中でのcontinueの処理をswitchの外に出した PHP7.3対策
+			if($isContinue) continue;
 
 			$value["label"] = $obj->getLabel();
 			$value["type"] = $obj->getType();
@@ -396,6 +403,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			$htmls = array();
 			$attrObjects["label"] = $attrList[$attribute->getFieldId()]["label"];
 			$name = "Customfield[" . $attribute->getFieldId() . "]";
+			$isContinue = false;
 			switch($attrList[$attribute->getFieldId()]["type"]){
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_INPUT:
 					$htmls[] = "<input type=\"text\" name=\"" . $name . "\" value=\"" .$attribute->getValue1() . "\">";
@@ -418,9 +426,15 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					}
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
-					if(!isset($attrList[$attribute->getFieldId()]["config"]["option"])) continue;
+					if(!isset($attrList[$attribute->getFieldId()]["config"]["option"])) {
+						$isContinue = true;
+						break;
+					}
 					$options = explode("\n", $attrList[$attribute->getFieldId()]["config"]["option"]);
-					if(count($options) === 0) continue;
+					if(count($options) === 0) {
+						$isContinue = true;
+						break;
+					}
 					foreach($options as $option){
 						if(strpos($option, "*") === 0) $option = substr($option, 1);
 						$htmls[] = "<label>";
@@ -447,9 +461,16 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					}
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
-					if(!isset($attrList[$attribute->getFieldId()]["config"]["option"])) continue;
+					if(!isset($attrList[$attribute->getFieldId()]["config"]["option"])) {
+						$isContinue = true;;
+						break;
+					}
 					$options = explode("\n", $attrList[$attribute->getFieldId()]["config"]["option"]);
-					if(count($options) === 0) continue;
+					if(count($options) === 0) {
+						$isContinue = true;
+						break;
+					}
+
 					$htmls[] = "<select name=\"" . $name . "\">";
 					foreach($options as $option){
 						if(strpos($option, "*") === 0) $option = substr($option, 1);
@@ -463,12 +484,16 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
 					//何もしない
-					continue;
+					$isContinue = true;
+					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RICHTEXT:
 				default:
 					//未実装
-					continue;
+					$isContinue = true;
 			}
+
+			//switch中でのcontinueの処理をswitchの外に出した PHP7.3対策
+			if($isContinue) continue;
 			$attrObjects["form"] = implode("\n", $htmls);
 			$array[] = $attrObjects;
 		}

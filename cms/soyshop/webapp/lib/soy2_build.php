@@ -1,4 +1,4 @@
-<?php /* soy2_build 2015-06-01 15:49:07 */
+<?php /* soy2_build 2018-12-27 04:49:07 */
 /* SOY2/SOY2.php */
 class SOY2{
 	private $_rootDir = "webapp/";
@@ -1640,9 +1640,11 @@ class SOY2Mail_SMTPAuth_DigestMD5{
 		$response["response"] = md5(md5($a1).":".$response["nonce"].":".$response["nc"].":".$response["cnonce"].":".$response["qop"].":".md5($a2));
 		$responseArr = array();
 		foreach($response as $key => $value){
+			$isContinue = false;
 			switch($key){
 				case "realm":
-					if(!strlen($value))continue;
+					if(!strlen($value)) $isContinue = false;
+					break;
 				case "username":
 				case "nonce":
 				case "cnonce":
@@ -1650,6 +1652,7 @@ class SOY2Mail_SMTPAuth_DigestMD5{
 					$value = '"'.$value.'"';
 					break;
 			}
+			if(!$isContinue) continue;
 			$responseArr[] = $key."=".$value;
 		}
 		$resonseStr = implode(",",$responseArr);

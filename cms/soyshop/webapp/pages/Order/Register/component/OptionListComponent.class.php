@@ -3,6 +3,8 @@
 class OptionListComponent extends HTMLList{
 
 	private $index;
+	private $itemId;
+	private $configs;
 	private $attrs;
 
 	function __construct(){
@@ -19,12 +21,27 @@ class OptionListComponent extends HTMLList{
 			"text" => $label
 		));
 
+		$form = self::buildForm($key, $entity);
+		$this->addModel("is_option", array(
+			"visible" => (strlen($form))
+		));
+
 		$this->addLabel("option_form", array(
-			"html" => self::buildForm($key, $entity)
+			"html" => $form
 		));
 	}
 
 	private function buildForm($key, $selected){
+		if(!isset($key) || !isset($this->configs[$key])) return "";
+		switch($this->configs[$key]){
+			case "text":
+				return self::_buildForm($key, $selected);
+			default:
+				return (strlen(ItemOptionUtil::getFieldValue($key, $this->itemId))) ? self::_buildForm($key, $selected) : "";
+		}
+	}
+
+	private function _buildForm($key, $selected){
 		$selected = trim(htmlspecialchars($selected, ENT_QUOTES, "UTF-8"));
 
 		$form = SOYShopPlugin::invoke("soyshop.item.option", array(
@@ -43,6 +60,12 @@ class OptionListComponent extends HTMLList{
 
 	function setIndex($index){
 		$this->index = $index;
+	}
+	function setItemId($itemId){
+		$this->itemId = $itemId;
+	}
+	function setConfigs($configs){
+		$this->configs = $configs;
 	}
 	function setAttrs($attrs){
 		$this->attrs = $attrs;
