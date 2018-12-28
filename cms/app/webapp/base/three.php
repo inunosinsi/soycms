@@ -66,6 +66,7 @@
 
 			<ul id="top_menu" class="nav navbar-top-links navbar-right">
 				<?php if(CMSApplication::isDirectLogin()){ ?>
+					<li><a href="javascript:void(0);" data-toggle="modal" data-target="#accountModal"><i class="fa fa-user fa-fw"></i>ユーザ情報</a></li>
 					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Login/Logout"); ?>"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
 				<?php }else{ ?>
 					<?php if(CMSApplication::checkAuthWithSiteOnly()){?>
@@ -124,6 +125,21 @@
 
 <script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js?<?php echo $time;?>" type="text/javascript"></script>
 <?php CMSApplication::printScript(); ?>
+
+<!-- モーダル -->
+<div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="AccountLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<iframe src="<?php echo dirname(CMSApplication::getRoot()); ?>/admin/index.php/Account" style="width:100%;height:460px;"></iframe>
+			</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 
 <script type="text/javascript">
 $(function(){

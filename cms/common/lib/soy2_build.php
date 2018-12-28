@@ -1,4 +1,4 @@
-<?php /* soy2_build 2015-06-01 15:49:07 */
+<?php /* soy2_build 2018-12-27 04:49:07 */
 /* SOY2/SOY2.php */
 class SOY2{
 	private $_rootDir = "webapp/";
