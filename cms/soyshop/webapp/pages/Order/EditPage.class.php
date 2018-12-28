@@ -458,7 +458,7 @@ class EditPage extends WebPage{
 		$attrs = $order->getAttributeList();
 		$lng = (isset($attrs["util_multi_language"]["value"])) ? $attrs["util_multi_language"]["value"] : "jp";
 		if(!defined("SOYSHOP_ADMIN_LANGUAGE")) define("SOYSHOP_ADMIN_LANGUAGE", $lng);
-		
+
 		$this->addLink("order_detail_link", array(
 			"link" => SOY2PageController::createLink("Order.Detail." . $order->getId())
 		));
@@ -939,6 +939,7 @@ class EditPage extends WebPage{
 		   		$newValue1 = null;
 				$newValue2 = null;
 
+				$isContinue = false;
 				switch($obj["type"]){
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_INPUT:
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
@@ -965,8 +966,11 @@ class EditPage extends WebPage{
 						$newValue2 = (isset($newCustomfields[$key]["end"])) ? soyshop_convert_timestamp_on_array($newCustomfields[$key]["end"]) : null;
 						break;
 					default:
-						continue;
+						$isContinue = true;
 				}
+
+				// PHP7.3対策
+				if($isContinue) continue;
 
 				switch($obj["type"]){
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_INPUT:
@@ -1040,7 +1044,6 @@ class EditPage extends WebPage{
 
 						break;
 					default:
-						break;
 				}
 			}
 		}

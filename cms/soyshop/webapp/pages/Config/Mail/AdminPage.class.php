@@ -18,19 +18,19 @@ class AdminPage extends WebPage{
 
 		if(isset($_POST["mail"])){
 			$mail = $_POST["mail"];
-
+			$mail["output"] = (isset($mail["output"])) ? 1 : 0;
 			$logic = SOY2Logic::createInstance("logic.mail.MailLogic");
 			$logic->setAdminMailConfig($mail,$type);
 
 		}
-		
+
 		SOYShopPlugin::load("soyshop.mail.config");
 		$delegate = SOYShopPlugin::invoke("soyshop.mail.config",array(
 			"mode" => "update",
 			"target" => "admin",
 			"type" => $type
 		));
-		
+
 		SOY2PageController::jump("Config.Mail.Admin?updated&type=" . $type);
 	}
 
@@ -42,8 +42,8 @@ class AdminPage extends WebPage{
 		//管理者向けメール設定のタイプ
 		$type = (isset($_GET["type"])) ? $_GET["type"] : "order";
 		$this->buildForm($type);
-		
-		
+
+
 		SOYShopPlugin::load("soyshop.mail.config");
 		$delegate = SOYShopPlugin::invoke("soyshop.mail.config",array(
 			"mode" => "edit",
@@ -78,6 +78,14 @@ class AdminPage extends WebPage{
 			"label" => "送信しない",
 		));
 
+		//メール本文の出力の有無
+		$this->addCheckBox("is_mail_content_output", array(
+			"name" => "mail[output]",
+			"value" => 1,
+			"selected" => $this->getMailOutput(),
+			"label" => "システムから出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
+		));
+
 		$this->addInput("mail_title", array(
 			"name" => "mail[title]",
 			"value" => $this->getMailTitle(),
@@ -96,6 +104,10 @@ class AdminPage extends WebPage{
 
 	function getMailActive(){
 		return $this->mail["active"];
+	}
+
+	function getMailOutput(){
+		return (isset($this->mail["output"])) ? $this->mail["output"] : 0;
 	}
 
 	function getMailTitle(){

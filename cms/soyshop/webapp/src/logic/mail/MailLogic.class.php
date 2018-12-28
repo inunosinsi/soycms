@@ -320,6 +320,7 @@ class MailLogic extends SOY2LogicBase{
 			if("order" == $type){
 				return array(
 					"active" => SOYShop_DataSets::get("mail.admin.active", 1),
+					"output" => SOYShop_DataSets::get("mail.admin.output", 1),
 					"title"  => SOYShop_DataSets::get("mail.admin.title", "[SOY Shop]"),
 					"header" => SOYShop_DataSets::get("mail.admin.header", ""),
 					"footer" => SOYShop_DataSets::get("mail.admin.footer", "")
@@ -327,6 +328,7 @@ class MailLogic extends SOY2LogicBase{
 			}else{
 				return array(
 					"active" => SOYShop_DataSets::get("mail.admin.$type.active",SOYShop_DataSets::get("mail.admin.active",1)),
+					"output" => SOYShop_DataSets::get("mail.admin.$type.output",SOYShop_DataSets::get("mail.admin.output",1)),
 					"title"  => SOYShop_DataSets::get("mail.admin.$type.title", SOYShop_DataSets::get("mail.admin.title","[SOY Shop]")),
 					"header" => SOYShop_DataSets::get("mail.admin.$type.header",SOYShop_DataSets::get("mail.admin.header","")),
 					"footer" => SOYShop_DataSets::get("mail.admin.$type.footer",SOYShop_DataSets::get("mail.admin.footer",""))
@@ -379,11 +381,13 @@ class MailLogic extends SOY2LogicBase{
 		if(is_null($type) || strlen($type) < 1) $type = "order";
 		if("order" == $type){
 			if(isset($mail["active"]))SOYShop_DataSets::put("mail.admin.active",$mail["active"]);
+			if(isset($mail["output"]))SOYShop_DataSets::put("mail.admin.output",$mail["output"]);
 			if(isset($mail["title"])) SOYShop_DataSets::put("mail.admin.title", $mail["title"]);
 			if(isset($mail["header"]))SOYShop_DataSets::put("mail.admin.header",$mail["header"]);
 			if(isset($mail["footer"]))SOYShop_DataSets::put("mail.admin.footer",$mail["footer"]);
 		}else{
 			if(isset($mail["active"]))SOYShop_DataSets::put("mail.admin.$type.active",$mail["active"]);
+			if(isset($mail["output"]))SOYShop_DataSets::put("mail.admin.$type.output",$mail["output"]);
 			if(isset($mail["title"])) SOYShop_DataSets::put("mail.admin.$type.title", $mail["title"]);
 			if(isset($mail["header"]))SOYShop_DataSets::put("mail.admin.$type.header",$mail["header"]);
 			if(isset($mail["footer"]))SOYShop_DataSets::put("mail.admin.$type.footer",$mail["footer"]);
