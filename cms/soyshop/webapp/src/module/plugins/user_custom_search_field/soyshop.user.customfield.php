@@ -107,7 +107,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 				}
 
 				if(is_null($usfValue) && isset($values[$key])) $usfValue = $values[$key];
-
+				
 				$nameProperty = "user_custom_search[" . htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "]";
 
 				switch($field["type"]){

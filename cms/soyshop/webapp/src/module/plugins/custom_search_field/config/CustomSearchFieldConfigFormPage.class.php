@@ -126,9 +126,11 @@ class CustomSearchFieldConfigFormPage extends WebPage{
     }
 
     private function buildExampleTags(){
-        $html = array();
+		$configs = CustomSearchFieldUtil::getConfig();
+		if(!count($configs)) return "";
 
-        foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
+		$html = array();
+        foreach($configs as $key => $field){
             $html[] = "\t" . $field["label"] . ":\n";
 
             switch($field["type"]){

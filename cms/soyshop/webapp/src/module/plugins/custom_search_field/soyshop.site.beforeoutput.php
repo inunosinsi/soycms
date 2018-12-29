@@ -64,21 +64,21 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
         //カテゴリカスタムサーチフィールド
         switch($page->getPageObject()->getType()){
-          case SOYShop_Page::TYPE_LIST:
-            $currentCategory = $page->getPageObject()->getObject()->getCurrentCategory();
-            if(is_null($currentCategory)) $currentCategory = new SOYShop_Category();
-            $categoryId = $currentCategory->getId();
-            break;
-          case SOYShop_Page::TYPE_DETAIL:
-            $item = $page->getPageObject()->getObject()->getCurrentItem();
-            if(!is_null($item)){
-              $categoryId = $item->getCategory();
-            }else{
-              $categoryId = null;
-            }
-            break;
-          default:
-            $categoryId = null;
+			case SOYShop_Page::TYPE_LIST:
+				$currentCategory = $page->getPageObject()->getObject()->getCurrentCategory();
+				if(is_null($currentCategory)) $currentCategory = new SOYShop_Category();
+				$categoryId = $currentCategory->getId();
+				break;
+			case SOYShop_Page::TYPE_DETAIL:
+		  		$item = $page->getPageObject()->getObject()->getCurrentItem();
+				if(!is_null($item)){
+					$categoryId = $item->getCategory();
+				}else{
+					$categoryId = null;
+            	}
+            	break;
+			default:
+		  		$categoryId = null;
         }
         //if(is_null($categoryId)) return;
 
@@ -87,7 +87,10 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	        foreach(CustomSearchFieldUtil::getCategoryConfig() as $key => $field){
 
 	            //多言語化対応はデータベースから値を取得した時点で行っている
-	            $csfValue = $values[$key];
+	            $csfValue = (isset($values[$key])) ? $values[$key] : null;
+				if(isset($csfValue) && $field["type"] == CustomSearchFieldUtil::TYPE_TEXTAREA){
+					$csfValue = nl2br($csfValue);
+				}
 
 	            $page->addModel($key . "_visible", array(
 	                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX,
@@ -96,7 +99,7 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	            $page->addLabel($key, array(
 	                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX,
-	                "html" => (isset($csfValue)) ? $csfValue : null
+	                "html" => $csfValue
 	            ));
 
 	            switch($field["type"]){

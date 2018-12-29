@@ -54,6 +54,9 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 
             //多言語化対応はデータベースから値を取得した時点で行っている
             $csfValue = (isset($values[$key])) ? $values[$key] : null;
+			if(isset($csfValue) && $field["type"] == CustomSearchFieldUtil::TYPE_TEXTAREA){
+				$csfValue = nl2br($csfValue);
+			}
 
             $htmlObj->addModel($key . "_visible", array(
                 "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
