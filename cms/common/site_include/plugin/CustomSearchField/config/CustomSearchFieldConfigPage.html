@@ -1,0 +1,162 @@
+<h4>カスタムサーチフィールド　<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#fieldModal">項目の追加</a></h4>
+
+<table class="list">
+	<tr>
+		<th>ID</th>
+		<th>ラベル</th>
+		<th>タイプ</th>
+		<th>表示順</th>
+		<th>表示のさせ方</th>
+		<th>操作</th>
+	</tr>
+
+	<!-- soy:id="field_list" -->
+	<tr>
+		<td soy:id="key"></td>
+		<td soy:id="label"></td>
+		<td soy:id="type"></td>
+		<td style="text-align:center;">
+			<form method="post">
+				<input type="hidden" soy:id="field_id" />
+				<input type="submit" name="move_up" value="△" />
+				<input type="submit" name="move_down" value="▽" />
+			</form>
+		</td>
+		<td soy:id="display"></td>
+		<td>
+			<a soy:id="toggle_config">Detail</a>&nbsp;
+
+			<a soy:id="delete">Delete</a>
+			<form method="post">
+				<input type="submit" soy:id="delete_submit" style="display:none;" />
+			</form>
+		</td>
+	</tr>
+	<tr soy:id="field_config" style="display:none;">
+		<td colspan="3"></td>
+		<td colspan="3">
+			<h5 style="margin-bottom:0;">詳細設定</h5>
+
+			<form method="post">
+				<!-- soy:id="with_options" -->
+				<div class="form-group">
+					<label>選択項目(項目を改行で区切ってください)</label>
+					<textarea soy:id="option" class="form-control" style="width:400px;height:120px;"></textarea>
+				</div>
+				<!-- /soy:id="with_options" -->
+
+				<!-- soy:id="radio_search_form_default_area" -->
+				<div class="form-group">
+					<label>ラジオの項目の設定</label>
+					<div><input type="checkbox" soy:id="radio_search_form_default"></div>
+				</div>
+				<!-- /soy:id="radio_search_form_default_area" -->
+
+				<!-- soy:id="checkbox_tag_supple_area" -->
+				<div class="form-group">
+					<label>公開側のページで項目を個別に表示する場合</label>
+					<pre soy:id="checkbox_tag_supple" style="width:400px;overflow-x:scroll;"></pre>
+				</div>
+				<!-- /soy:id="checkbox_tag_supple_area" -->
+
+				<div style="margin:10px 1em 2em;text-align:right;">
+					<input type="button" soy:id="update_advance" class="btn btn-primary" style="padding:10px 20px;" value="設定保存" />
+				</div>
+
+				<input type="submit" style="display:none;" soy:id="update_advance_submit" />
+			</form>
+
+		</td>
+	</tr>
+	<!-- /soy:id="field_list" -->
+</table>
+
+<h3 style="margin:10px 0;">テンプレートへの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:5px 35px; overflow-x: auto;" class="script_example">
+&lt;!-- cms:module="common.custom_search_field" --&gt;
+&lt;form action="{作成した検索ページのURLを入力してください}"&gt;
+    記事検索:
+    &lt;input type="text" csf:id="custom_search_entry"&gt;
+
+<!-- soy:id="example_tag_list" -->
+<!-- /soy:id="example_tag_list" -->
+
+    &lt;input type="submit" value="検索する"&gt;
+&lt;/form&gt;
+&lt;!-- /cms:module="common.custom_search_field" --&gt;
+</pre>
+
+<h3>検索結果ページの設定</h3>
+<p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>CustomSearchField</strong>を選びます。</p>
+
+<h3>タグの記述例</h3>
+<p>他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます</p>
+
+<pre>&lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
+表示したい内容のcms:idを追加
+&lt;!-- /block:id="***" --&gt;</pre>
+<p>
+    ***の箇所は任意の値です。<br>
+    cms:labelでどのラベルが設定されている記事一覧を取得するかを決めることができます。<br>
+    ※cms:labelの指定がないと動きません<br>
+    cms:countで検索結果を何件表示するか決めることができます。<br>
+    ※cms:countの指定がなくても動作します。
+</p>
+
+<!-- モーダル -->
+<div class="modal fade" id="fieldModal" tabindex="-1" role="dialog" aria-labelledby="fieldLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+					<input type="hidden" name="create" value="create" />
+
+					<div class="form-group">
+						<label for="id">ID</label>
+						<input id="custom_key" name="custom_key" type="text" class="form-control validate">
+						<div class="alert alert-danger" id="custom_key_error" style="display:none;">必須項目を入力してください</div>
+					</div>
+
+					<div class="form-group">
+						<label for="label">ラベル</label>
+						<input id="custom_label" name="custom_label" type="text" class="form-control validate">
+						<div class="alert alert-danger" id="custom_label_error" style="display:none;">必須項目を入力してください</div>
+					</div>
+
+					<div class="form-group">
+						<label for="label">項目種別</label>
+						<select name="custom_type" class="form-control" soy:id="custom_type_select"></select>
+					</div>
+
+					<div class="text-center">
+						<a class="btn btn-primary btn-lg btn-block" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	//validate
+	$(function() {
+		$(".validate").each(function() {
+
+			var input = $(this);
+
+			$(this).bind("blur", function() {
+				if (input.val().length < 1) {
+					$("#" + input.attr("id") + "_error").show();
+					return false;
+				}
+			});
+
+			$(this).bind("focus", function() {
+				$("#" + input.attr("id") + "_error").hide();
+			});
+		});
+	}());
+</script>
