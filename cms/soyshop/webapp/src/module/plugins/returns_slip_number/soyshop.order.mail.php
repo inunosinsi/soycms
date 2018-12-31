@@ -26,4 +26,6 @@ class ReturnsSlipNumberMail extends SOYShopOrderMail{
 
 SOYShopPlugin::extension("soyshop.order.mail.user", "returns_slip_number", "ReturnsSlipNumberMail");
 SOYShopPlugin::extension("soyshop.order.mail.confirm", "returns_slip_number", "ReturnsSlipNumberMail");
+SOYShopPlugin::extension("soyshop.order.mail.payment", "returns_slip_number", "ReturnsSlipNumberMail");
+SOYShopPlugin::extension("soyshop.order.mail.delivery", "returns_slip_number", "ReturnsSlipNumberMail");
 SOYShopPlugin::extension("soyshop.order.mail.admin", "returns_slip_number", "ReturnsSlipNumberMail");
