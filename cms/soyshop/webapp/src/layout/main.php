@@ -25,7 +25,7 @@ foreach($scripts as $script){
 <title><?php echo htmlspecialchars($title,ENT_QUOTES,"UTF-8"); ?></title>
 </head>
 <body class="<?php echo "$layout $pageClass"; ?>" id="<?php echo $activeTab;?>">
-<div id="wrapper" class="w950 _w750">
+<div id="wrapper" class="w1050 _w750">
 
 	<div id="header">
 		<a href="<?php echo SOYSHOP_ADMIN_URL; ?>">
@@ -129,4 +129,9 @@ foreach($scripts as $script){
 	</div>
 
 </div>
+<?php
+if(count($extConts)){
+	echo "<style>\n#menu ul li a{padding:0 " . (35 - (count($extConts) * 2)) . "px;}</style>\n";
+}
+?>
 </body>

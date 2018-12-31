@@ -168,6 +168,9 @@ textarea.editor{
 .w950{
 	width:950px !important;
 }
+.w1050{
+	width:1050px !important;
+}
 
 .layout_full{
 
@@ -336,7 +339,7 @@ textarea.editor{
 #menu ul li a{
 	display:block;
 	line-height:2.3em;
-	padding:0 30px;
+	padding:0 35px;
 
 	color:#ffffff;
 	text-decoration:none;
