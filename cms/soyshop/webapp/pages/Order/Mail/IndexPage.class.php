@@ -221,6 +221,20 @@ class IndexPage extends WebPage{
 
 		$id = ($downloadPlugin->getIsActive() == 1) ? "soyshop.order.mail.user" : $id;
 
+		//soyshop.order.mailの拡張ポイントを増やす
+		SOYShopPlugin::load("soyshop.order.detail.mail");
+    	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array())->getList();
+		if(count($mailList)){
+			foreach($mailList as $mailConfigs){
+				if(!count($mailConfigs)) continue;
+				foreach($mailConfigs as $mailType => $config){
+					if($id === "soyshop.order.mail." . $mailType){
+						SOYShopPlugin::registerExtension($id, "SOYShopOrderMailDeletageAction");
+					}
+				}
+			}
+		}
+
     	$delegate = SOYShopPlugin::invoke($id, array(
 				"order" => $order,
 				"mail" => $array
