@@ -1,0 +1,23 @@
+<div soy:display="noinstalled_customSearchField" class="alert alert-info">カスタムサーチフィールドがインストールされていなければ、このプラグインは使用できません。</div>
+
+<h3>記事一覧ページの設定</h3>
+<p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>CustomSearchFieldEntryListBlock</strong>を選びます。</p>
+
+<h3>タグの記述例</h3>
+<p>他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます</p>
+
+<pre>&lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
+表示したい内容のcms:idを追加
+&lt;!-- /block:id="***" --&gt;</pre>
+<p>
+    ***の箇所は任意の値です。<br>
+    cms:labelでどのラベルが設定されている記事一覧を取得するかを決めることができます。<br>
+    ※cms:labelの指定がないと動きません<br>
+    cms:countで検索結果を何件表示するか決めることができます。<br>
+    ※cms:countの指定がなくても動作します。
+</p>
+
+<h3>カスタムサーチフィールドによる記事一覧ページの出力方法</h3>
+<p>
+カスタムサーチフィールドでタグ毎の既知一覧ページを作成する場合は<strong>http://ドメイン/{サイトID}/{URI}/{サーチフィールドID}/{フィールドの値}</strong>になります。</li>
+</p>

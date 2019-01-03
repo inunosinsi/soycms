@@ -248,4 +248,59 @@ class SearchLogic extends SOY2LogicBase{
 	//
     //     return null;
     // }
+
+	/** 商品一覧ページ用 **/
+    function getEntryList($key, $value, $current, $offset, $limit){
+
+        $confs = CustomSearchFieldUtil::getConfig();
+        if(!isset($confs[$key])) return array();
+
+        $binds = array(":now" => time());
+
+        $sql = "SELECT ent.* " .
+                "FROM Entry ent ".
+                "INNER JOIN EntryCustomSearch s ".
+                "ON ent.id = s.entry_id ";
+        $sql .= self::buildListWhere();    //カウントの時と共通の処理は切り分ける
+        switch($confs[$key]["type"]){
+            case CustomSearchFieldUtil::TYPE_CHECKBOX:
+                $sql .= "AND s." . $key . " LIKE :" . $key;
+                $binds[":" . $key] = "%" . trim($value) . "%";
+                break;
+            default:
+                $sql .= "AND s." . $key . " = :" . $key;
+                $binds[":" . $key] = trim($value);
+        }
+
+        //$sql .= self::buildOrderBySQLOnListPage($obj);
+		if(isset($limit) && is_numeric($limit) && $limit > 0){
+			$sql .= " LIMIT " . $limit;
+
+	        //OFFSET
+	        $offset = $limit * ($current - 1);
+	        if($offset > 0) $sql .= " OFFSET " . $offset;
+		}
+
+        try{
+            $res = $this->entryDao->executeQuery($sql, $binds);
+        }catch(Exception $e){
+            return array();
+        }
+
+        if(count($res) === 0) return array();
+
+        $entries = array();
+        foreach($res as $obj){
+            if(!isset($obj["id"])) continue;
+            $entries[] = $this->entryDao->getObject($obj);
+        }
+
+        return $entries;
+    }
+
+	private function buildListWhere(){
+		return "WHERE ent.openPeriodStart < :now ".
+			"AND ent.openPeriodEnd > :now ".
+			"AND ent.isPublished = 1 ";
+    }
 }

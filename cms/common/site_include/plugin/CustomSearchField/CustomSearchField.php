@@ -180,7 +180,6 @@ class CustomSearchFieldPlugin{
 		if(is_null($labelId)) return array();
 
 		$count = PluginBlockUtil::getLimitByPageId($pageId);
-
 		return SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.SearchLogic")->search($labelId, $count);
 	}
 
