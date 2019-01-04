@@ -37,7 +37,7 @@ class SOYShopOrderMail implements SOY2PluginAction{
 class SOYShopOrderMailDeletageAction implements SOY2PluginDelegateAction{
 
 	private $order;
-	private $body = array();
+	private $_body = array();
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 
@@ -61,12 +61,12 @@ class SOYShopOrderMailDeletageAction implements SOY2PluginDelegateAction{
 			if($res === false)return;
 
 			$displayOrder = $action->getDisplayOrder();
-			if(!isset($this->body[$displayOrder]))$this->body[$displayOrder] = array();
+			if(!isset($this->_body[$displayOrder])) $this->_body[$displayOrder] = array();
 
 			$this->body[$displayOrder][$moduleId] = $res;
 
 		}catch(Exception $e){
-
+			
 		}
 	}
 

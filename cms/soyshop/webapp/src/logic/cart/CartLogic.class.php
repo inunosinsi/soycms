@@ -1159,7 +1159,7 @@ class CartLogic extends SOY2LogicBase{
 
 		if(isset($userMailConfig["active"]) && $userMailConfig["active"]){
 			//メール本文（注文内容）を取得
-			list($mailBody, $title) = $logic->buildMailBodyAndTitle($this->order, $userMailConfig, "user");
+			list($mailBody, $title) = $logic->buildMailBodyAndTitle($this->order, $type, "user");
 
 			//宛名
 			$userName = $this->getCustomerInformation()->getName();
@@ -1192,7 +1192,7 @@ class CartLogic extends SOY2LogicBase{
 
 		if(isset($adminMailConfig["active"]) && $adminMailConfig["active"]){
 			//メール本文（注文内容）を取得
-			list($mailBody, $title) = $logic->buildMailBodyAndTitle($this->order, $adminMailConfig, "admin");
+			list($mailBody, $title) = $logic->buildMailBodyAndTitle($this->order, $type, "admin");
 
 			//送信
 			//@TODO 複数管理者へのメール送信

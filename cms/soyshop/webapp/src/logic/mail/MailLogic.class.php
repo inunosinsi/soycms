@@ -455,7 +455,7 @@ class MailLogic extends SOY2LogicBase{
 		return trim($content);
 	}
 
-	function buildMailBodyAndTitle(SOYShop_Order $order, $mailConfig, $mode = self::MODE_USER){
+	function buildMailBodyAndTitle(SOYShop_Order $order, $mailType, $mode = self::MODE_USER){
 		static $builder;
 		if(is_null($builder)) $builder = SOY2Logic::createInstance("logic.mail.MailBuilder");
 		try{
@@ -464,32 +464,36 @@ class MailLogic extends SOY2LogicBase{
 			$user = new SOYShop_User();
 		}
 
+		$mailConfig = self::getUserMailConfig($mailType);
+
 		//プラグインを実行してメール本文の取得
 		SOYShopPlugin::load("soyshop.order.mail");
 
 		//顧客向けメール文面
 		if($mode == self::MODE_USER){
 			$body = $builder->buildOrderMailBodyForUser($order, $user);
-			$appned_body = SOYShopPlugin::invoke("soyshop.order.mail.user", array(
+			$delegate = SOYShopPlugin::invoke(self::getOrderMailExtension($mailType), array(
 				"order" => $order,
 				"mail" => $mailConfig
-			))->getBody();
+			));
 
 		//管理者向けメール文面
 		}else if($mode == self::MODE_ADMIN){
 			$body = $builder->buildOrderMailBodyForAdmin($order, $user);
-			$appned_body = SOYShopPlugin::invoke("soyshop.order.mail.admin", array(
+			$delegate = SOYShopPlugin::invoke("soyshop.order.mail.admin", array(
 				"order" => $order,
 				"mail" => $mailConfig
-			))->getBody();
+			));
 		}
+
+		$append_body = (!is_null($delegate)) ? $delegate->getBody() : "";
 
 		//システムからの内容を出力するか？
 		if(isset($mailConfig["output"]) && (int)$mailConfig["output"] === 1){
 			$mailBody =
 				$mailConfig["header"] ."\n".
 				$body . "\n" .
-				$appned_body .
+				$append_body .
 				$mailConfig["footer"];
 		}else{
 			$mailBody =
@@ -502,6 +506,26 @@ class MailLogic extends SOY2LogicBase{
 		$title = self::convertMailContent($mailConfig["title"], $user, $order);
 		$mailBody = self::convertMailContent($mailBody, $user, $order);
 		return array($mailBody, $title);
+	}
+
+	function getOrderMailExtension($type){
+		if($type == "order") return "soyshop.order.mail.user";
+		$id = "soyshop.order.mail." . $type;
+
+		//soyshop.order.mailの拡張ポイントを増やす
+		SOYShopPlugin::load("soyshop.order.detail.mail");
+    	$list = SOYShopPlugin::invoke("soyshop.order.detail.mail", array())->getList();
+		if(!count($list)) return $id;
+
+		foreach($list as $configs){
+			if(!count($configs)) continue;
+			foreach($configs as $type => $config){
+				if($id === "soyshop.order.mail." . $type){
+					SOYShopPlugin::registerExtension($id, "SOYShopOrderMailDeletageAction");
+					return;
+				}
+			}
+		}
 	}
 
 	function getShopConfig() {

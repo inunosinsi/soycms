@@ -12,6 +12,7 @@ class IndexPage extends WebPage{
 	private $mail;
 	private $error;
 	private $type;
+	private $mailLogic;
 
 	function doPost(){
 
@@ -57,8 +58,7 @@ class IndexPage extends WebPage{
 
 				$sendToName = "";
 				$mail = unserialize(base64_decode($_POST["mail_value"]));
-				$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
-				$mailLogic->sendMail($mail["sendTo"], $mail["title"], $mail["content"], $sendToName, $order);
+				$this->mailLogic->sendMail($mail["sendTo"], $mail["title"], $mail["content"], $sendToName, $order);
 
 
 				$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
@@ -86,11 +86,12 @@ class IndexPage extends WebPage{
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 
 		try{
-			$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-			$order = $orderDAO->getById($this->id);
+			$order = SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getById($this->id);
 		}catch(Exception $e){
 			CMSPageController::jump("Order");
 		}
+
+		$this->mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
 
 		//メール送信時の言語設定
 		$this->checkLanguageConfig($order);
@@ -102,8 +103,8 @@ class IndexPage extends WebPage{
 
 		$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
 		$sendTo = $user->getMailAddress();
-		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
-		$mail = $mailLogic->getUserMailConfig($type);
+
+		$mail = $this->mailLogic->getUserMailConfig($type);
 
 		$this->addForm("form");
 
@@ -114,12 +115,12 @@ class IndexPage extends WebPage{
 
 		$this->addInput("mail_title", array(
 			"name" => "Mail[title]",
-			"value" => (isset($this->mail["title"])) ? $this->mail["title"] : $this->convertMailContent($mail["title"], $mailLogic, $user, $order),
+			"value" => (isset($this->mail["title"])) ? $this->mail["title"] : $this->mailLogic->convertMailContent($mail["title"], $user, $order),
 		));
 
 		$this->addTextArea("mail_content", array(
 			"name" => "Mail[content]",
-			"value" => (isset($this->mail["content"])) ? $this->mail["content"] : $this->getMailContent($type, $order, $mail, $mailLogic, $user),
+			"value" => (isset($this->mail["content"])) ? $this->mail["content"] : self::getMailContent($type, $order, $mail, $user),
 		));
 
 		$this->addLabel("mail_type_text", array(
@@ -149,7 +150,7 @@ class IndexPage extends WebPage{
 		));
 	}
 
-	function checkLanguageConfig($order){
+	private function checkLanguageConfig($order){
 		$attr = $order->getAttribute("util_multi_language");
 		if(isset($attr["value"]) && strlen($attr["value"])){
 			define("SOYSHOP_MAIL_LANGUAGE", $attr["value"]);
@@ -193,64 +194,37 @@ class IndexPage extends WebPage{
 		return $array["order"];
 	}
 
-	function getMailContent($type, SOYShop_Order $order, $array, MailLogic $mailLogic, SOYShop_User $user){
+	private function getMailContent($type, SOYShop_Order $order, $array, SOYShop_User $user){
 
 		//システムからの出力を行うか？
 		if(isset($array["output"]) && $array["output"] === 1){
 			//メール本文を取得
-			$builder = SOY2Logic::createInstance("logic.mail.MailBuilder");
-	    	$body = $builder->buildOrderMailBodyForUser($order, $user);
+	    	$body = SOY2Logic::createInstance("logic.mail.MailBuilder")->buildOrderMailBodyForUser($order, $user);
 		}else{
 			$body = "";
 		}
 
-
-    	//プラグインを実行してメール本文の取得
-    	SOYShopPlugin::load("soyshop.order.mail");
-
-		//プラグインの拡張ポイントはメールの種類で分ける
-    	$id = ($type == "order") ? "soyshop.order.mail.user" : "soyshop.order.mail." . $type;
-
-    	//ダウンロードプラグインは拡張ポイントのIDはユーザにする
-    	$pluginDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-		try{
-			$downloadPlugin = $pluginDAO->getByPluginId("download_assistant");
-		}catch(Exception $e){
-			$downloadPlugin = new SOYShop_PluginConfig();
-		}
-
-		$id = ($downloadPlugin->getIsActive() == 1) ? "soyshop.order.mail.user" : $id;
-
-		//soyshop.order.mailの拡張ポイントを増やす
-		SOYShopPlugin::load("soyshop.order.detail.mail");
-    	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array())->getList();
-		if(count($mailList)){
-			foreach($mailList as $mailConfigs){
-				if(!count($mailConfigs)) continue;
-				foreach($mailConfigs as $mailType => $config){
-					if($id === "soyshop.order.mail." . $mailType){
-						SOYShopPlugin::registerExtension($id, "SOYShopOrderMailDeletageAction");
-					}
-				}
-			}
-		}
-
-    	$delegate = SOYShopPlugin::invoke($id, array(
+		//プラグインを実行してメール本文の取得 プラグインの拡張ポイントはメールの種類で分ける
+		SOYShopPlugin::load("soyshop.order.mail");
+    	$delegate = SOYShopPlugin::invoke($this->mailLogic->getOrderMailExtension($type), array(
 				"order" => $order,
 				"mail" => $array
 		));
 
-		$appned_body = ($delegate) ? $delegate->getBody() : "";
-
-		$mailBody = $array["header"] ."\n". $body . $appned_body . "\n" . $array["footer"];
+		$append_body = (!is_null($delegate)) ? $delegate->getBody() : "";
+		$mailBody = $array["header"] ."\n". $body . $append_body . "\n" . $array["footer"];
 
 		//convert
-		$mailBody = $this->convertMailContent($mailBody, $mailLogic, $user, $order);
-
-		return $mailBody;
+		return $this->mailLogic->convertMailContent($mailBody, $user, $order);
 	}
-
-	function convertMailContent($str,MailLogic $mailLogic , SOYShop_User $user, SOYShop_Order $order){
-		return $mailLogic->convertMailContent($str, $user, $order);
+	
+/**
+	private function checkDownloadPluginIsActive(){
+		try{
+			return (int)SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId("download_assistant")->getIsActive();
+		}catch(Exception $e){
+			return 0;
+		}
 	}
+**/
 }

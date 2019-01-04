@@ -254,7 +254,7 @@ class OrderLogic extends SOY2LogicBase{
 		$mailConfig = $mailLogic->getUserMailConfig($sendMailType);
 		if(!isset($mailConfig["active"]) || (int)$mailConfig["active"] !== 1) return false;
 
-		list($mailBody, $title) = $mailLogic->buildMailBodyAndTitle($order, $mailConfig);
+		list($mailBody, $title) = $mailLogic->buildMailBodyAndTitle($order, $sendMailType);
 
 		//宛名
 		$user = soyshop_get_user_by_id($order->getUserId());
