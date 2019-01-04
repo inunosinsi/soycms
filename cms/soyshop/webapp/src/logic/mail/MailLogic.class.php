@@ -281,12 +281,11 @@ class MailLogic extends SOY2LogicBase{
 		if(is_null($type) || strlen($type) < 1) $type = "order";
 
 		SOYShopPlugin::load("soyshop.mail.config");
-		$delegate = SOYShopPlugin::invoke("soyshop.mail.config",array(
+		$config = SOYShopPlugin::invoke("soyshop.mail.config",array(
 			"mode" => "send",
 			"target" => "user",
 			"type" => $type
-		));
-		$config = $delegate->getConfig();
+		))->getConfig();
 		if(is_array($config) && isset($config["title"]) && isset($config["header"]) && isset($config["footer"])){
 			return $config;
 		}else{
@@ -308,11 +307,11 @@ class MailLogic extends SOY2LogicBase{
 		if(is_null($type) || strlen($type) < 1) $type = "order";
 
 		SOYShopPlugin::load("soyshop.mail.config");
-		$delegate = SOYShopPlugin::invoke("soyshop.mail.config",array(
+		$config = SOYShopPlugin::invoke("soyshop.mail.config",array(
 			"mode" => "send",
 			"target" => "admin",
 			"type" => $type
-		));
+		))->getConfig();
 		$config = $delegate->getConfig();
 		if(is_array($config) && isset($config["title"]) && isset($config["header"]) && isset($config["footer"])){
 			return $config;
@@ -522,10 +521,12 @@ class MailLogic extends SOY2LogicBase{
 			foreach($configs as $type => $config){
 				if($id === "soyshop.order.mail." . $type){
 					SOYShopPlugin::registerExtension($id, "SOYShopOrderMailDeletageAction");
-					return;
+					return $id;
 				}
 			}
 		}
+
+		return "soyshop.order.mail.user";	//念の為
 	}
 
 	function getShopConfig() {

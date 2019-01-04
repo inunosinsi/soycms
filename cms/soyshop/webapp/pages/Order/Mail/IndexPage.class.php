@@ -217,14 +217,4 @@ class IndexPage extends WebPage{
 		//convert
 		return $this->mailLogic->convertMailContent($mailBody, $user, $order);
 	}
-	
-/**
-	private function checkDownloadPluginIsActive(){
-		try{
-			return (int)SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId("download_assistant")->getIsActive();
-		}catch(Exception $e){
-			return 0;
-		}
-	}
-**/
 }
