@@ -15,7 +15,7 @@
 		</ul>
 
 	</fieldset>
-	
+
 	<fieldset>
 		<legend>SSL設定</legend>
 		<div>https://のページ設定</div>
@@ -31,13 +31,30 @@
 			</li soy:id="ssl_list">
 		</ul>
 
-		<input type="submit" style="padding:10px 20px;" value="保存" />
+		<input type="submit" class="btn btn-primary" value="保存" />
 	</fieldset>
+</form>
+
+<form soy:id="url_form">
+	<h3>URLを取得で登録する</h3>
+
+	<!-- soy:display="is_urls" -->
+	<ul>
+		<!-- soy:id="url_list" -->
+		<li style="padding:3px 0px;"><a soy:id="url"></a>&nbsp;<a soy:id="remove_link" class="btn btn-default">削除</a></li>
+		<!-- /soy:id="url_list" -->
+	</ul>
+	<!-- /soy:display="is_urls" -->
+
+	<div class="form-inline">
+		<input type="url" soy:id="url" class="form-control" style="width:70%;">
+		<input type="submit" class="btn btn-primary" value="追加">
+	</div>
 </form>
 
 <h3>設定方法</h3>
 <ul>
-	<li>標準ページでページのアドレスがsitemap.xmlを作成します</li>
+	<li>標準ページでページのURIがsitemap.xmlを作成します</li>
 	<li>作成したページのテンプレートに&lt;!-- cms&#058;id="sitemap" /--&gt;のみを記述し、テンプレートの更新を行います</li>
 	<li>ページの確認を行い、サイトマップのXMLが表示されることを確認しましょう</li>
 </ul>
