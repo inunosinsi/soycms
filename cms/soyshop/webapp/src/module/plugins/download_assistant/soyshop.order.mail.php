@@ -93,4 +93,6 @@ class DownloadAssistantMailModule extends SOYShopOrderMail{
 
 SOYShopPlugin::extension("soyshop.order.mail.user", "download_assistant", "DownloadAssistantMailModule");
 SOYShopPlugin::extension("soyshop.order.mail.confirm", "download_assistant", "DownloadAssistantMailModule");
+SOYShopPlugin::extension("soyshop.order.mail.payment", "download_assistant", "DownloadAssistantMailModule");
+SOYShopPlugin::extension("soyshop.order.mail.delivery", "download_assistant", "DownloadAssistantMailModule");
 SOYShopPlugin::extension("soyshop.order.mail.admin", "download_assistant", "DownloadAssistantMailModule");
