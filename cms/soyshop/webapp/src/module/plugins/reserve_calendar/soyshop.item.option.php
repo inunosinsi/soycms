@@ -115,12 +115,12 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         return soy2_serialize(array("reserve_id" => $resId));
     }
 
-    function display($item){
-        $attributes = $item->getAttributeList();
+    function display(SOYShop_ItemOrder $itemOrder){
+        $attributes = $itemOrder->getAttributeList();
         if(isset($attributes["reserve_id"]) && is_numeric($attributes["reserve_id"])){
             $sch = self::schDao()->getScheduleByReserveId((int)$attributes["reserve_id"]);
 
-            $list = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($item->getItemId());
+            $list = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($itemOrder->getItemId());
 
             if(isset($list[$sch->getLabelId()])){
                 return $sch->getYear() . "-" . $sch->getMonth() . "-"  . $sch->getDay() . " " . $list[$sch->getLabelId()];
@@ -160,4 +160,3 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
 }
 
 SOYShopPlugin::extension("soyshop.item.option", "reserve_calendar", "ReserveCalendarOption");
-?>

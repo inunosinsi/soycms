@@ -312,7 +312,6 @@ class MailLogic extends SOY2LogicBase{
 			"target" => "admin",
 			"type" => $type
 		))->getConfig();
-		$config = $delegate->getConfig();
 		if(is_array($config) && isset($config["title"]) && isset($config["header"]) && isset($config["footer"])){
 			return $config;
 		}else{
