@@ -510,15 +510,19 @@ class MailLogic extends SOY2LogicBase{
 		if($type == "order") return "soyshop.order.mail.user";
 		$id = "soyshop.order.mail." . $type;
 
+		SOY2::import("domain.order.SOYShop_Order");
+		$res = array_search($type, SOYShop_Order::getMailTypes());
+		if(is_numeric($res)) return $id;
+
 		//soyshop.order.mailの拡張ポイントを増やす
 		SOYShopPlugin::load("soyshop.order.detail.mail");
     	$list = SOYShopPlugin::invoke("soyshop.order.detail.mail", array())->getList();
-		if(!count($list)) return $id;
+		if(!count($list)) return "soyshop.order.mail.user";
 
 		foreach($list as $configs){
 			if(!count($configs)) continue;
-			foreach($configs as $type => $config){
-				if($id === "soyshop.order.mail." . $type){
+			foreach($configs as $mailType => $config){
+				if($id === "soyshop.order.mail." . $mailType){
 					SOYShopPlugin::registerExtension($id, "SOYShopOrderMailDeletageAction");
 					return $id;
 				}
