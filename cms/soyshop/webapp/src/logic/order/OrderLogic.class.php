@@ -122,14 +122,21 @@ class OrderLogic extends SOY2LogicBase{
     	$history->setOrderId($id);
     	$history->setContent($content);
     	$history->setMore($more);
-    	$history->setAuthor($author);
 
-    	if(is_null($author) && class_exists("UserInfoUtil")){
-			$userName = UserInfoUtil::getUserName();
-			if(isset($userName) && strlen($userName)){
-				$history->setAuthor($userName);
+		/**
+		 * 下記の処理はSOYShop_OrderStateHistoryDAOのonInsert内で同じことをしているので、ここでは省略する
+    	if(is_null($author)){
+			if(!class_exists("UserInfoUtil")){
+				if(!class_exists("SOYAppUtil")) SOY2::import("util.SOYAppUtil");
+				$old = SOYAppUtil::switchAdminDsn();
+				SOY2::import("util.UserInfoUtil");
+				SOYAppUtil::resetAdminDsn($old);
 			}
+			$author = UserInfoUtil::getUserName();
     	}
+		**/
+
+		$history->setAuthor($author);
 
     	$historyDAO->insert($history);
     }

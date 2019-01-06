@@ -14,12 +14,25 @@ class OrderHistoryLogic extends SOY2LogicBase{
 		$history->setOrderId($id);
 		$history->setContent($content);
 		$history->setMore($more);
-
-		if(class_exists("UserInfoUtil")){
-			$history->setAuthor(UserInfoUtil::getUserName());
-		}
-
+		$history->setAuthor(self::_getAuthor());
 		$dao->insert($history);
+	}
+
+	/**
+	 * authorを取得する
+	 */
+	public static function getAuthor(){
+		return self::_getAuthor();
+	}
+
+	private static function _getAuthor(){
+		$session = SOY2ActionSession::getUserSession();
+		if(!is_null($session->getAttribute("loginid"))){
+			return $session->getAttribute("loginid");
+		}else{
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			return SOYShop_ShopConfig::load()->getAutoOperateAuthorId();
+		}
 	}
 
 	/**
@@ -37,4 +50,3 @@ class OrderHistoryLogic extends SOY2LogicBase{
 	}
 
 }
-

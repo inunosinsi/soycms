@@ -28,20 +28,8 @@ abstract class SOYShop_OrderStateHistoryDAO extends SOY2DAO{
     function onInsert($query, $binds){
     	if(!isset($binds[":date"])) $binds[":date"] = time();
     	if(!isset($binds[":author"])){
-    		/*
-    		 * 管理画面では管理者情報をを登録する
-    		 * SOY ShopでUserInfoUtilが使えることはないのでは？
-    		 */
-			$author = null;
-    		if(class_exists("UserInfoUtil")){
-				$loginId = UserInfoUtil::getUserId();
-				if(isset($loginId) && strlen($loginId)){
-					$author = UserInfoUtil::getUserName()." (".$loginId.")";
-				}
-			}
-			if(is_null($author)) $author = SOY2ActionSession::getUserSession()->getAttribute("username")." (".SOY2ActionSession::getUserSession()->getAttribute("userid").")";
-
-    		$binds[":author"] = $author;
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$binds[":author"] = SOYShop_ShopConfig::load()->getAutoOperateAuthorId();
     	}
     	return array($query, $binds);
     }

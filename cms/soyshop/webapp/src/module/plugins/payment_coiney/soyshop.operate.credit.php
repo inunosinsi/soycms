@@ -84,7 +84,7 @@ class CoineyOperateCredit extends SOYShopOperateCreditBase{
 		$dao = self::historyDao();
 		$history = new SOYShop_OrderStateHistory();
 		$history->setOrderId($orderId);
-		$history->setAuthor("管理人");
+		$history->setAuthor(SOY2Logic::createInstance("logic.order.OrderHistoryLogic")->getAuthor());
 		$history->setContent($content);
 		$history->setDate(time());
 

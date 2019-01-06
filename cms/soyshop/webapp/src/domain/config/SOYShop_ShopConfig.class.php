@@ -57,6 +57,8 @@ class SOYShop_ShopConfig {
 	private $displayUserAdminPage = 1;
 	private $displayOrderButtonOnUserAdminPage = 1;
 
+	private $autoOperateAuthorId = "soyshop";	//注文等の操作者が不在の時の対応者ID
+
 	private $defaultArea = 0;
 	private $displayUserOfficeItems = 1;
 	private $displayUserProfileItems = 1;
@@ -641,6 +643,13 @@ class SOYShop_ShopConfig {
 	}
 	function setDisplayOrderButtonOnUserAdminPage($displayOrderButtonOnUserAdminPage){
 		$this->displayOrderButtonOnUserAdminPage = $displayOrderButtonOnUserAdminPage;
+	}
+
+	function getAutoOperateAuthorId(){
+		return $this->autoOperateAuthorId;
+	}
+	function setAutoOperateAuthorId($autoOperateAuthorId){
+		$this->autoOperateAuthorId = $autoOperateAuthorId;
 	}
 
 	function getDisplayItemAdminPage(){

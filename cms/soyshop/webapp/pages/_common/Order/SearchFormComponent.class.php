@@ -340,6 +340,7 @@ class SearchFormComponent extends SOYBodyComponentBase{
 		//再配列
 		$list = array();
 		foreach($items as $item){
+			if(is_null($item)) continue;
 			$key = key($item);
 			if($key == "label"){
 				$list[] = $item;

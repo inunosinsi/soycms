@@ -380,6 +380,13 @@ class ShopConfigPage extends WebPage{
 			"label" => "管理画面の顧客詳細で注文関連のボタンを表示する"
 		));
 
+		$this->addInput("autoOperateAuthorId", array(
+			"name" => "Config[autoOperateAuthorId]",
+			"value" => $config->getAutoOperateAuthorId(),
+			"attr:placeholder" => "soyshop",
+			"attr:required" => "required"
+		));
+
 		SOY2::import("domain.config.SOYShop_Area");
 		$this->addSelect("defaultArea", array(
 			"name" => "Config[defaultArea]",

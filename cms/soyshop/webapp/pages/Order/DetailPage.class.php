@@ -88,13 +88,9 @@ class DetailPage extends WebPage{
 
 
 			if (count($historyContents)) {
-				//ログインしているアカウントを返すことにする
-				$session = SOY2ActionSession::getUserSession();
-				$author = (!is_null($session->getAttribute("loginid"))) ? $session->getAttribute("loginid") :  "管理人";
-
 				$history = new SOYShop_OrderStateHistory();
 				$history->setOrderId($this->id);
-				$history->setAuthor($author);
+				$history->setAuthor(SOY2Logic::createInstance("logic.order.OrderHistoryLogic")->getAuthor());	//ログインしているアカウントを返すことにする
 				$history->setContent(implode("\n" ,$historyContents));
 				$history->setDate(time());
 			}
