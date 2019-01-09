@@ -1,3 +1,4 @@
+
 <?php
 
 class SOYShopItemOptionBase implements SOY2PluginAction{
@@ -96,22 +97,28 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 				$action->doPost($this->index, $this->cart);
 				break;
 			case "item":
-				$this->_htmls = $action->onOutput($this->htmlObj, $this->index);
+				$this->_htmls[$moduleId] = $action->onOutput($this->htmlObj, $this->index);
 				break;
 			case "order":
-				$this->_attributes = $action->order($this->index);
+				$attrs = $action->order($this->index);
+				if(isset($attrs)){
+					$this->_attributes = $attrs;
+				}
 				break;
 			case "addition":
-				$this->_addition = $action->addition($this->index);
+				$isAddition = $action->addition($this->index);
+				if(isset($isAddition)){
+					$this->_addition = $isAddition;
+				}
 				break;
 			case "display":
 				if($this->item instanceof SOYShop_ItemOrder){
-					$this->_htmls = $action->display($this->item);
+					$this->_htmls[$moduleId] = $action->display($this->item);
 				}
 				break;
 			case "form":	//隠しモード マイページで編集用のフォームを出力する
 				if($this->item instanceof SOYShop_ItemOrder){
-					$this->_htmls = $action->form($this->item);
+					$this->_htmls[$moduleId] = $action->form($this->item);
 				}
 				break;
 			case "change":	//隠しモード マイページで編集用のフォームから値を変更する
@@ -124,13 +131,16 @@ class SOYShopItemOptionDeletageAction implements SOY2PluginDelegateAction{
 				$this->_attributes[$moduleId] = $action->add();
 				break;
 			case "edit":
-				$this->_label = $action->edit($this->key);
+				$label = $action->edit($this->key);
+				if(isset($label)){
+					$this->_label = $label;
+				}
 				break;
 			case "build":
-				$this->_htmls = $action->build($this->itemOrderId, $this->key, $this->selected);
+				$this->_htmls[$moduleId] = $action->build($this->itemOrderId, $this->key, $this->selected);
 				break;
 			case "admin":
-				$this->_htmls = $action->buildOnAdmin($this->index, $this->fieldValue, $this->key, $this->selected);
+				$this->_htmls[$moduleId] = $action->buildOnAdmin($this->index, $this->fieldValue, $this->key, $this->selected);
 				break;
 			default:
 				//何もしない

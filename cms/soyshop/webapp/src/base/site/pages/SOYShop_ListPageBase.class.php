@@ -68,7 +68,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
         $page = $this->getPageObject();
         $obj = $page->getPageObject();
-
+		
         //SearchItemUtilの作成。ソート順作成のためlistPageオブジェクトを渡す
         $logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array(
             "sort" => $obj

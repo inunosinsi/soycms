@@ -16,4 +16,3 @@ class CommonAdditionOptionInfo extends SOYShopInfoPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.info", "common_addition_option", "CommonAdditionOptionInfo");
-?>

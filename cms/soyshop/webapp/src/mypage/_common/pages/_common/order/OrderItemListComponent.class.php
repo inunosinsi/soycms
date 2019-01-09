@@ -5,7 +5,7 @@ class OrderItemListComponent extends HTMLList{
     private $itemDao;
 
     function populateItem($entity){
-        $item = $this->getItem($entity);
+        $item = ($entity instanceof SOYShop_ItemOrder) ? self::getItem($entity) : new SOYShop_Item();
 
         $this->addLink("item_link", array(
             "link" => soyshop_get_item_detail_link($item)
@@ -14,34 +14,45 @@ class OrderItemListComponent extends HTMLList{
         $this->addLabel("item_name", array(
             "text" => (strlen($item->getCode())) ? $entity->getItemName() : "---"
         ));
-        $delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
-            "mode" => "display",
-            "item" => $entity,
-        ));
 
         $this->addImage("item_small_image", array(
             "src" => soyshop_convert_file_path($item->getAttribute("image_small"), $item)
         ));
 
+		$html = ($entity instanceof SOYShop_ItemOrder) ? self::getItemOptionHtml($entity) : "";
+
         $this->addModel("has_option", array(
-            "visible" => (strlen($delegate->getHtmls()) > 0)
+            "visible" => (strlen($html) > 0)
         ));
 
         $this->addLabel("item_option", array(
-            "html" => $delegate->getHtmls()
+            "html" => $html
         ));
     }
 
-    function getItem($entity){
-        if(!$this->itemDao){
-            $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-        }
+	private function getItemOptionHtml(SOYShop_ItemOrder $itemOrder){
+		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
+            "mode" => "display",
+            "item" => $itemOrder,
+        ))->getHtmls();
 
+		if(!count($htmls)) return "";
+
+		$html = array();
+		foreach($htmls as $h){
+			if(!strlen($h)) continue;
+			$html[] = $h;
+		}
+
+		return implode("<br>", $html);
+	}
+
+    private function getItem(SOYShop_ItemOrder $itemOrder){
+        if(!$this->itemDao) $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
         try{
-            $item = $this->itemDao->getById($entity->getItemId());
+            return $this->itemDao->getById($itemOrder->getItemId());
         }catch(Exception $e){
-            $item = new SOYShop_Item();
+            return new SOYShop_Item();
         }
-        return $item;
     }
 }

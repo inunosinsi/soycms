@@ -20,4 +20,3 @@ class CommonAdditionOptionConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "common_addition_option", "CommonAdditionOptionConfig");
-?>

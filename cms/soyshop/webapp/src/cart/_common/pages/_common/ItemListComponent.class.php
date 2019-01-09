@@ -64,15 +64,8 @@ class ItemListComponent extends HTMLList{
 			"htmlObj" => $this
 		));
 
-		SOYShopPlugin::load("soyshop.item.option");
-		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
-			"mode" => "item",
-			"index" => $key,
-			"htmlObj" => $this
-		));
-
 		$this->addLabel("item_option", array(
-			"html" => $delegate->getHtmls()
+			"html" => self::getItemOptionHtml($key)
 		));
 
 		$this->addInput("order_number", array(
@@ -110,7 +103,7 @@ class ItemListComponent extends HTMLList{
 		}else{
 			$parent = new SOYShop_Item();
 		}
-		
+
 		$this->addLabel("item_stock_error", array(
 			"visible" => ($itemCount > $openStock && !$this->ignoreStock),
 			"text" => ($openStock > 0) ? MessageManager::get("STOCK_NOTICE", array("stock" => $openStock)) : MessageManager::get("NO_STOCK")
@@ -153,6 +146,27 @@ class ItemListComponent extends HTMLList{
 		$this->addImage("parent_large_image", array(
 			"src" => soyshop_convert_file_path($parent->getAttribute("image_large"), $parent)
 		));
+	}
+
+	private function getItemOptionHtml($key){
+		if(is_null($key)) return "";
+
+		SOYShopPlugin::load("soyshop.item.option");
+		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
+			"mode" => "item",
+			"index" => $key,
+			"htmlObj" => $this
+		))->getHtmls();
+
+		if(!count($htmls)) return "";
+
+		$html = array();
+		foreach($htmls as $modId => $h){
+			if(!strlen($h)) continue;
+			$html[] = $h;
+		}
+
+		return implode("<br>", $html);
 	}
 
 	private function getChildItemOrders($itemId){

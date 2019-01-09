@@ -29,24 +29,13 @@ class ItemOrderListComponent extends HTMLList{
 			"text" => (strlen($item->getCode())) ? $itemOrder->getItemName() : "---"
 		));
 
-		$html = SOYShopPlugin::invoke("soyshop.item.option", array(
-			"mode" => "display",
-			"item" => $itemOrder,
-		))->getHtmls();
-
 		$this->addLabel("item_option", array(
-			"html" => $html
+			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? self::getItemOptionHtml($itemOrder) : ""
 		));
 
 		//隠しモード　商品オプションの編集
-		$html = SOYShopPlugin::invoke("soyshop.item.option", array(
-			"mode" => "form",
-			"item" => $itemOrder,
-		))->getHtmls();
-		if(strlen($html)) $html .= "<input type=\"submit\" name=\"option\" value=\"変更\">";
-
 		$this->addLabel("item_option_form", array(
-			"html" => $html
+			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? self::getItemOptionForm($itemOrder) : ""
 		));
 
 		$this->addLabel("item_price", array(
@@ -101,6 +90,42 @@ class ItemOrderListComponent extends HTMLList{
 		$this->addImage("parent_large_image", array(
 			"src" => soyshop_convert_file_path($parent->getAttribute("image_large"), $parent)
 		));
+	}
+
+	private function getItemOptionHtml(SOYShop_ItemOrder $itemOrder){
+		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
+			"mode" => "display",
+			"item" => $itemOrder,
+		))->getHtmls();
+
+		if(!count($htmls)) return "";
+
+		$html = array();
+		foreach($htmls as $h){
+			if(!strlen($h)) continue;
+			$html[] = $h;
+		}
+
+		return implode("<br>", $html);
+	}
+
+	private function getItemOptionForm(SOYShop_ItemOrder $itemOrder){
+		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
+			"mode" => "form",
+			"item" => $itemOrder,
+		))->getHtmls();
+
+		if(!count($htmls)) return "";
+
+		$html = array();
+		foreach($htmls as $h){
+			if(!strlen($h)) continue;
+			$html[] = $h;
+		}
+
+		if(count($html)) $html[] = "<input type=\"submit\" name=\"option\" value=\"変更\">";
+
+		return implode("\n", $html);
 	}
 
 	private function getParentItem($itemId){

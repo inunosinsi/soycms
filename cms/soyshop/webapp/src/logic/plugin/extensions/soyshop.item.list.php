@@ -15,31 +15,38 @@ class SOYShopItemListBase implements SOY2PluginAction{
 	 * @return string
 	 */
 	function getLabel(){
-		return $this->moduleId;	
+		return $this->moduleId;
 	}
-	
+
 	/**
 	 * @return array
 	 */
 	function getItems($pageObj, $offset, $limit){
-		
+
 	}
-	
+
 	/**
 	 * @return number
 	 */
 	function getTotal($pageObj){
-		
+
 	}
-	
+
 	/**
 	 * @return string
 	 */
 	function getForm(){
-		
+
 	}
-	
+
 	function doPost(){
+	}
+
+	/**
+	 * @return array("sort" => "", "csort" => "", "suffix" => " desc or 空文字")
+	 */
+	function getSort(){
+
 	}
 
 
@@ -69,13 +76,14 @@ class SOYShopItemListDelegateAction implements SOY2PluginDelegateAction{
 	private $obj = array();
 	private $action;
 	private $_form = array();
-	
+	private $_sort = array();
+
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 
 		if($action instanceof SOYShopItemListBase){
 
 			$action->setModuleId($moduleId);
-						
+
 			switch($this->mode){
 				case "list":
 					$action->setPageId($this->obj->getPage()->getId());
@@ -86,22 +94,25 @@ class SOYShopItemListDelegateAction implements SOY2PluginDelegateAction{
 					}
 					$this->_form[$moduleId] = $action->getForm();
 					break;
-				case "post":					
+				case "post":
 					$action->setPageId($this->obj->getPage()->getId());
 					if($this->isUse($moduleId)){
 						$action->doPost();
 					}
 					break;
+				case "sort":
+					$this->_sort = $action->getSort();	//実行するのは最後に読み込まれたプラグインのみ
+					break;
 				case "search":
-				default:					
+				default:
 					break;
 			}
-			
+
 			$this->action = $action;
 
 		}
 	}
-	
+
 	/* getter setter */
 
 	function getList(){
@@ -110,6 +121,9 @@ class SOYShopItemListDelegateAction implements SOY2PluginDelegateAction{
 	function getForm(){
 		if(!$this->action) return array();
 		return $this->_form;
+	}
+	function getSort(){
+		return $this->_sort;
 	}
 	function isUse($moduleId){
 		if(is_null($this->obj)){
@@ -130,7 +144,7 @@ class SOYShopItemListDelegateAction implements SOY2PluginDelegateAction{
 		if(!$this->action)return array();
 		return $this->action->getItems($pageObj, $limit, $offset);
 	}
-	
+
 	function getTotal($pageObj){
 		if(!$this->action)return 0;
 		return $this->action->getTotal($pageObj);

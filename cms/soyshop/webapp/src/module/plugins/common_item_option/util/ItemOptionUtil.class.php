@@ -137,7 +137,14 @@ class ItemOptionUtil {
 		}
 
 		//多言語化の方の値を取得できなかった場合
-		$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key)->getValue());
+		$val = trim(self::_get($itemId, $key)->getValue());
+		if(!strlen($val)) {	//なければ親商品も調べる
+			$parentId = self::_getParentIdByItemId($itemId);
+			if($parentId > 0) $val = trim(self::_get($parentId, $key)->getValue());
+		}
+
+		$v[$prefix][$itemId][$k] = $val;
+
 		return $v[$prefix][$itemId][$k];
 	}
 
@@ -194,5 +201,20 @@ class ItemOptionUtil {
 		}
 
 		return (isset($res[0])) ? $dao->getObject($res[0]) : new SOYShop_ItemAttribute();
+	}
+
+	private static function _getParentIdByItemId($itemId){
+		static $parentIds, $dao;
+		if(is_null($dao)) $dao = new SOY2DAO();
+		if(isset($parentIds[$itemId])) return $parentIds[$itemId];
+
+		try{
+			$res = $dao->executeQuery("SELECT item_type FROM soyshop_item WHERE id = :itemId LIMIT 1", array(":itemId" => $itemId));
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		$parentIds[$itemId] = (isset($res[0]["item_type"]) && is_numeric($res[0]["item_type"])) ? (int)$res[0]["item_type"] : 0;
+		return $parentIds[$itemId];
 	}
 }

@@ -413,6 +413,8 @@ class IndexPage extends WebPage{
 
 	private function getUserListOptions(){
 		$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+		if($userDao->countUser() > 10000) return array();	//メモリーの安全装置
+
 		$userDao->setOrder("id asc");
 		$userDao->setLimit(30);
 		try{

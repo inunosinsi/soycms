@@ -119,11 +119,28 @@ class SearchItemUtil extends SOY2LogicBase{
 
 		//default
 		if(!$sort && !$csort && $this->getSort()){
+
 			$obj = $this->getSort();
 			$defaultSort = $obj->getDefaultSort();
 			$suffix = ($obj->getIsReverse()) ? " desc" : "";
-			if($defaultSort != "custom") $sort = $defaultSort;
-			$csort = $obj->getCustomSort();
+
+			//カテゴリによってソートの設定を出し分ける
+			SOYShopPlugin::load("soyshop.item.list");
+			$extSort = SOYShopPlugin::invoke("soyshop.item.list", array(
+				"mode" => "sort"
+			))->getSort();
+
+			if(!is_null($extSort) && is_array($extSort)){
+				$sort = (isset($extSort["sort"])) ? $extSort["sort"] : $defaultSort;
+				$csort = (isset($extSort["csort"])) ? $extSort["csort"] : null;
+				//suffixの上書き
+				if(isset($extSort["suffix"])) $suffix = $extSort["suffix"];
+			//通常
+			}else{
+				if($defaultSort != "custom") $sort = $defaultSort;
+				$csort = $obj->getCustomSort();
+			}
+
 		}
 
 		if($sort){
@@ -464,4 +481,3 @@ class SearchItemUtil extends SOY2LogicBase{
     	$this->sort = new SearchItemUtil_SortImpl($sort);
     }
 }
-?>

@@ -387,13 +387,15 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 			$value = "__________________"; //適当な値
 		}
 
-		$this->executeUpdateQuery($query, array(
-			":id" => $id,
-			":sort_column" => $value
-		));
+		try{
+			$this->executeUpdateQuery($query, array(
+				":id" => $id,
+				":sort_column" => $value
+			));
+		}catch(Exception $e){
+			//
+		}
 	 }
-
-
 
 
 

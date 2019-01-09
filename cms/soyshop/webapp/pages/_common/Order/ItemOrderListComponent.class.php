@@ -6,7 +6,7 @@ class ItemOrderListComponent extends HTMLList {
 	private $itemDAO;
 
 	protected function populateItem($itemOrder) {
-		
+
 		$item = self::getItem($itemOrder->getItemId());
 
 		$itemExists = (method_exists($item, "getCode") && strlen($item->getCode()) > 0);
@@ -25,13 +25,8 @@ class ItemOrderListComponent extends HTMLList {
 			"text" => ((int)$itemOrder->getItemId() === 0 || strpos($item->getCode(), "_delete_") === false) ? $itemOrder->getItemName() : "---"
 		));
 
-		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
-			"mode" => "display",
-			"item" => $itemOrder,
-		));
-
 		$this->addLabel("item_option", array(
-			"html" => $delegate->getHtmls()
+			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? self::getItemOptionHtml($itemOrder) : ""
 		));
 
 		$this->addLabel("item_price", array(
@@ -45,6 +40,23 @@ class ItemOrderListComponent extends HTMLList {
 		$this->addLabel("item_total_price", array(
 			"text" => number_format($itemOrder->getTotalPrice())
 		));
+	}
+
+	private function getItemOptionHtml(SOYShop_ItemOrder $itemOrder){
+		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
+			"mode" => "display",
+			"item" => $itemOrder,
+		))->getHtmls();
+
+		if(!count($htmls)) return "";
+
+		$html = array();
+		foreach($htmls as $h){
+			if(!strlen($h)) continue;
+			$html[] = $h;
+		}
+
+		return implode("<br>", $html);
 	}
 
 	/**

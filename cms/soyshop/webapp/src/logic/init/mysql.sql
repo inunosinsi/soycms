@@ -32,8 +32,8 @@ create table soyshop_item(
 	open_period_start integer,
 	open_period_end integer,
 	detail_page_id integer,
-	item_is_open integer default 0,
-	is_disabled INTEGER default 0
+	item_is_open tinyint default 0,
+	is_disabled tinyint default 0
 ) ENGINE=InnoDB;
 
 drop table soyshop_item_attribute;
@@ -70,8 +70,8 @@ create table soyshop_order(
 	id integer primary key auto_increment,
 	order_date integer not null,
 	price integer not null,
-	order_status integer not null,
-	payment_status integer not null,
+	order_status tinyint not null,
+	payment_status tinyint not null,
 	address TEXT,
 	claimed_address TEXT,
 	user_id integer not null,
@@ -91,9 +91,9 @@ create table soyshop_orders(
 	total_price integer not null,
 	item_name TEXT not null,
 	cdate integer not null,
-	is_sended integer default 0,
+	is_sended tinyint default 0,
 	attributes TEXT,
-	is_addition integer default 0,
+	is_addition tinyint default 0,
 	display_order tinyint not null default 0
 ) ENGINE=InnoDB;
 
@@ -104,7 +104,7 @@ create table soyshop_plugins(
 	plugin_type VARCHAR(255) not null,
 	config VARCHAR(255),
 	display_order INTEGER default 2147483647,
-	is_active integer not null default 0
+	is_active TINYINT not null default 0
 ) ENGINE=InnoDB;
 
 drop table soyshop_order_state_history;
@@ -208,7 +208,7 @@ create table soyshop_item_review(
 	approval integer,
 	vote integer,
 	attributes varchar(255),
-	is_approved integer not null,
+	is_approved tinyint not null,
 	create_date integer not null,
 	update_date integer
 ) ENGINE = InnoDB;

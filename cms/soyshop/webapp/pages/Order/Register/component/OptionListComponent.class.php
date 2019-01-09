@@ -44,7 +44,17 @@ class OptionListComponent extends HTMLList{
 	private function _buildForm($key, $selected){
 		$selected = trim(htmlspecialchars($selected, ENT_QUOTES, "UTF-8"));
 
-		$form = SOYShopPlugin::invoke("soyshop.item.option", array(
+		$form = self::getItemOptionHtml($key, $selected);
+		if(isset($form) && strlen($form)) return $form;
+
+		$name = "Item[" . $this->index . "][attributes][" . $key . "]";
+		return "<input type=\"text\" name=\"" . $name . "\" value=\"" . $selected . "\">";
+	}
+
+	private function getItemOptionHtml($key, $selected){
+		if(is_null($key)) return "";
+
+		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "admin",
 			"index" => $this->index,
 			"fieldValue" => (isset($this->attrs["item_option_" . $key])) ? $this->attrs["item_option_" . $key] : "",
@@ -52,10 +62,15 @@ class OptionListComponent extends HTMLList{
 			"selected" => $selected
 		))->getHtmls();
 
-		if(isset($form) && strlen($form)) return $form;
+		if(!count($htmls)) return "";
 
-		$name = "Item[" . $this->index . "][attributes][" . $key . "]";
-		return "<input type=\"text\" name=\"" . $name . "\" value=\"" . $selected . "\">";
+		$html = array();
+		foreach($htmls as $h){
+			if(!strlen($h)) continue;
+			$html[] = $h;
+		}
+
+		return implode("\n", $html);
 	}
 
 	function setIndex($index){
