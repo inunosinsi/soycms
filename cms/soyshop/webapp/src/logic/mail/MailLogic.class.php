@@ -463,41 +463,34 @@ class MailLogic extends SOY2LogicBase{
 		}
 
 		$mailConfig = self::getUserMailConfig($mailType);
+		$isOutput = (isset($mailConfig["output"]) && (int)$mailConfig["output"] === 1);	//システムからの内容を出力するか？
 
 		//プラグインを実行してメール本文の取得
 		SOYShopPlugin::load("soyshop.order.mail");
 
 		//顧客向けメール文面
 		if($mode == self::MODE_USER){
-			$body = $builder->buildOrderMailBodyForUser($order, $user);
-			$delegate = SOYShopPlugin::invoke(self::getOrderMailExtension($mailType), array(
-				"order" => $order,
-				"mail" => $mailConfig
-			));
+			$body = ($isOutput) ? $builder->buildOrderMailBodyForUser($order, $user) . "\n" : "";
+			$mailId = self::getOrderMailExtension($mailType);
 
 		//管理者向けメール文面
 		}else if($mode == self::MODE_ADMIN){
-			$body = $builder->buildOrderMailBodyForAdmin($order, $user);
-			$delegate = SOYShopPlugin::invoke("soyshop.order.mail.admin", array(
-				"order" => $order,
-				"mail" => $mailConfig
-			));
+			$body = ($isOutput) ? $builder->buildOrderMailBodyForAdmin($order, $user) . "\n" : "";
+			$mailId = "soyshop.order.mail.admin";
 		}
+
+		$delegate = SOYShopPlugin::invoke($mailId, array(
+			"order" => $order,
+			"mail" => $mailConfig
+		));
 
 		$append_body = (!is_null($delegate)) ? $delegate->getBody() : "";
+		if(strlen($append_body)) $body .= $append_body;
 
-		//システムからの内容を出力するか？
-		if(isset($mailConfig["output"]) && (int)$mailConfig["output"] === 1){
-			$mailBody =
-				$mailConfig["header"] ."\n".
-				$body . "\n" .
-				$append_body .
-				$mailConfig["footer"];
-		}else{
-			$mailBody =
-				$mailConfig["header"] ."\n".
-				$mailConfig["footer"];
-		}
+		$mailBody =
+			$mailConfig["header"] ."\n".
+			$body . "\n" .
+			$mailConfig["footer"];
 
 
 		//置換文字列

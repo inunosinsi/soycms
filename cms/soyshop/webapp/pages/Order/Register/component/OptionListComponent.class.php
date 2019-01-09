@@ -62,7 +62,7 @@ class OptionListComponent extends HTMLList{
 			"selected" => $selected
 		))->getHtmls();
 
-		if(!count($htmls)) return "";
+		if(!is_array($htmls) || !count($htmls)) return "";
 
 		$html = array();
 		foreach($htmls as $h){

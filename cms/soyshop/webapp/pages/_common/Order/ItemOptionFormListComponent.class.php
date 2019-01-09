@@ -10,7 +10,7 @@ class ItemOptionFormListComponent extends HTMLList{
 			"mode" => "edit",
 			"key" => $key
 		))->getLabel();
-		
+
 		$this->addLabel("label", array(
 			"text" => $label
 		));
@@ -40,7 +40,7 @@ class ItemOptionFormListComponent extends HTMLList{
 			"selected" => $selected
 		))->getHtmls();
 
-		if(!count($htmls)) return "";
+		if(!is_array($htmls) || !count($htmls)) return "";
 
 		$html = array();
 		foreach($htmls as $h){
