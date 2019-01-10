@@ -250,7 +250,8 @@
 		//ed = tinyMCEPopup.editor, dom = ed.dom;
 
 		var $img_src = $("#preview_image").attr("src");
-		if($img_src.indexOf(location.host) >= 0){
+		var m = $img_src.match(/http.*:\/\/(.*?)\//);	//管理画面と公開側でドメインが異なる場合対策
+		if(m.length > 1 && m[1] == location.host && $img_src.indexOf(location.host) >= 0){
 			if($img_src.indexOf("https://") >= 0) $img_src = $img_src.replace("https://", "");
 			if($img_src.indexOf("http://") >= 0) $img_src = $img_src.replace("http://", "");
 

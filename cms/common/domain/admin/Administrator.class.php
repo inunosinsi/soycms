@@ -19,14 +19,14 @@ class Administrator {
 	 * @column user_password
 	 */
 	private $userPassword;
-	
+
 	/**
 	 * @column default_user
 	 */
 	private $isDefaultUser;
-	
+
 	private $email;
-	
+
 	private $name;
 
 	/**
@@ -96,6 +96,5 @@ class Administrator {
 	function setTokenIssuedDate($tokenIssuedDate) {
 		$this->tokenIssuedDate = $tokenIssuedDate;
 	}
-	
+
 }
-?>
