@@ -30,6 +30,7 @@ class MailLogic extends SOY2LogicBase{
 	const TYPE_NAME_FOR_REGISTER     = "登録完了メール";
 
 	const TYPE_NAME_FOR_UNKNOWN = "種類の不明なメール";
+	const MAIL_CONFIG_TYPES = array("active" => 1, "output" => 1, "plugin" => 1, "title" => "[SOY Shop]", "header" => "", "footer" => "");
 
 	private $serverConfig;
 	private $shopConfig;
@@ -286,16 +287,15 @@ class MailLogic extends SOY2LogicBase{
 			"target" => "user",
 			"type" => $type
 		))->getConfig();
+
 		if(is_array($config) && isset($config["title"]) && isset($config["header"]) && isset($config["footer"])){
 			return $config;
 		}else{
-			return array(
-				"active" => SOYShop_DataSets::get("mail.user.$type.active", 1),
-				"output" => SOYShop_DataSets::get("mail.user.$type.output", 1),
-				"title"  => SOYShop_DataSets::get("mail.user.$type.title", "[SOY Shop]"),
-		    	"header" => SOYShop_DataSets::get("mail.user.$type.header", ""),
-		    	"footer" => SOYShop_DataSets::get("mail.user.$type.footer", "")
-		    );
+			$config = array();
+			foreach(self::MAIL_CONFIG_TYPES as $t => $v){
+				$config[$t] = SOYShop_DataSets::get("mail.user.$type." . $t, $v);
+			}
+			return $config;
 		}
 	}
 
@@ -312,26 +312,21 @@ class MailLogic extends SOY2LogicBase{
 			"target" => "admin",
 			"type" => $type
 		))->getConfig();
+
 		if(is_array($config) && isset($config["title"]) && isset($config["header"]) && isset($config["footer"])){
 			return $config;
 		}else{
+			$config = array();
 			if("order" == $type){
-				return array(
-					"active" => SOYShop_DataSets::get("mail.admin.active", 1),
-					"output" => SOYShop_DataSets::get("mail.admin.output", 1),
-					"title"  => SOYShop_DataSets::get("mail.admin.title", "[SOY Shop]"),
-					"header" => SOYShop_DataSets::get("mail.admin.header", ""),
-					"footer" => SOYShop_DataSets::get("mail.admin.footer", "")
-				);
+				foreach(self::MAIL_CONFIG_TYPES as $t => $v){
+					$config[$t] = SOYShop_DataSets::get("mail.admin." . $t, $v);
+				}
 			}else{
-				return array(
-					"active" => SOYShop_DataSets::get("mail.admin.$type.active",SOYShop_DataSets::get("mail.admin.active",1)),
-					"output" => SOYShop_DataSets::get("mail.admin.$type.output",SOYShop_DataSets::get("mail.admin.output",1)),
-					"title"  => SOYShop_DataSets::get("mail.admin.$type.title", SOYShop_DataSets::get("mail.admin.title","[SOY Shop]")),
-					"header" => SOYShop_DataSets::get("mail.admin.$type.header",SOYShop_DataSets::get("mail.admin.header","")),
-					"footer" => SOYShop_DataSets::get("mail.admin.$type.footer",SOYShop_DataSets::get("mail.admin.footer",""))
-				);
+				foreach(self::MAIL_CONFIG_TYPES as $t => $v){
+					$config[$t] = SOYShop_DataSets::get("mail.admin.$type." . $t, SOYShop_DataSets::get("mail.admin." . $t, $v));
+				}
 			}
+			return $config;
 		}
 	}
 
@@ -342,21 +337,20 @@ class MailLogic extends SOY2LogicBase{
 		if(is_null($type) || strlen($type) < 1) $type = "remind";
 
 		SOYShopPlugin::load("soyshop.mail.config");
-		$delegate = SOYShopPlugin::invoke("soyshop.mail.config",array(
+		$config = SOYShopPlugin::invoke("soyshop.mail.config",array(
 			"mode" => "send",
 			"target" => "mypage",
 			"type" => $type
-		));
-		$config = $delegate->getConfig();
+		))->getConfig();
+
 		if(is_array($config) && isset($config["title"]) && isset($config["header"]) && isset($config["footer"])){
 			return $config;
 		}else{
-			return array(
-				"active" => SOYShop_DataSets::get("mail.mypage.$type.active",1),
-				"title"  => SOYShop_DataSets::get("mail.mypage.$type.title", "[SOY Shop]"),
-				"header" => SOYShop_DataSets::get("mail.mypage.$type.header",""),
-				"footer" => SOYShop_DataSets::get("mail.mypage.$type.footer","")
-			);
+			$config = array();
+			foreach(self::MAIL_CONFIG_TYPES as $t => $v){
+				$config[$t] = SOYShop_DataSets::get("mail.mypage.$type." . $t, $v);
+			}
+			return $config;
 		}
 	}
 
@@ -366,11 +360,10 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	function setUserMailConfig($mail, $type = null){
 		if(is_null($type) || strlen($type) < 1) $type = "order";
-		if(isset($mail["active"]))SOYShop_DataSets::put("mail.user.$type.active",$mail["active"]);
-		if(isset($mail["output"]))SOYShop_DataSets::put("mail.user.$type.output",$mail["output"]);
-		if(isset($mail["title"])) SOYShop_DataSets::put("mail.user.$type.title", $mail["title"]);
-		if(isset($mail["header"]))SOYShop_DataSets::put("mail.user.$type.header",$mail["header"]);
-	    if(isset($mail["footer"]))SOYShop_DataSets::put("mail.user.$type.footer",$mail["footer"]);
+
+		foreach(self::MAIL_CONFIG_TYPES as $t => $v){
+			if(isset($mail[$t])) SOYShop_DataSets::put("mail.user.$type." . $t, $mail[$t]);
+		}
 	}
 	/**
 	 * 管理者に送信するメール設定の保存
@@ -378,17 +371,13 @@ class MailLogic extends SOY2LogicBase{
 	function setAdminMailConfig($mail, $type = null){
 		if(is_null($type) || strlen($type) < 1) $type = "order";
 		if("order" == $type){
-			if(isset($mail["active"]))SOYShop_DataSets::put("mail.admin.active",$mail["active"]);
-			if(isset($mail["output"]))SOYShop_DataSets::put("mail.admin.output",$mail["output"]);
-			if(isset($mail["title"])) SOYShop_DataSets::put("mail.admin.title", $mail["title"]);
-			if(isset($mail["header"]))SOYShop_DataSets::put("mail.admin.header",$mail["header"]);
-			if(isset($mail["footer"]))SOYShop_DataSets::put("mail.admin.footer",$mail["footer"]);
+			foreach(self::MAIL_CONFIG_TYPES as $t => $v){
+				if(isset($mail[$t])) SOYShop_DataSets::put("mail.admin." . $t, $mail[$t]);
+			}
 		}else{
-			if(isset($mail["active"]))SOYShop_DataSets::put("mail.admin.$type.active",$mail["active"]);
-			if(isset($mail["output"]))SOYShop_DataSets::put("mail.admin.$type.output",$mail["output"]);
-			if(isset($mail["title"])) SOYShop_DataSets::put("mail.admin.$type.title", $mail["title"]);
-			if(isset($mail["header"]))SOYShop_DataSets::put("mail.admin.$type.header",$mail["header"]);
-			if(isset($mail["footer"]))SOYShop_DataSets::put("mail.admin.$type.footer",$mail["footer"]);
+			foreach(self::MAIL_CONFIG_TYPES as $t => $v){
+				if(isset($mail[$t])) SOYShop_DataSets::put("mail.admin.$type." . $t, $mail[$t]);
+			}
 		}
 	}
 
@@ -397,10 +386,9 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	function setMyPageMailConfig($mail, $type = null){
 		if(is_null($type) || strlen($type) < 1) $type = "remind";
-		if(isset($mail["active"]))SOYShop_DataSets::put("mail.mypage.$type.active",$mail["active"]);
-		if(isset($mail["title"])) SOYShop_DataSets::put("mail.mypage.$type.title", $mail["title"]);
-		if(isset($mail["header"]))SOYShop_DataSets::put("mail.mypage.$type.header",$mail["header"]);
-    	if(isset($mail["footer"]))SOYShop_DataSets::put("mail.mypage.$type.footer",$mail["footer"]);
+		foreach(self::MAIL_CONFIG_TYPES as $t => $v){
+			if(isset($mail[$t])) SOYShop_DataSets::put("mail.mypage.$type." . $t, $mail[$t]);
+		}
 	}
 
 	/**
@@ -479,13 +467,16 @@ class MailLogic extends SOY2LogicBase{
 			$mailId = "soyshop.order.mail.admin";
 		}
 
-		$delegate = SOYShopPlugin::invoke($mailId, array(
-			"order" => $order,
-			"mail" => $mailConfig
-		));
+		if(isset($mailConfig["plugin"]) && (int)$mailConfig["plugin"] === 1){
+			$delegate = SOYShopPlugin::invoke($mailId, array(
+				"order" => $order,
+				"mail" => $mailConfig
+			));
 
-		$append_body = (!is_null($delegate)) ? $delegate->getBody() : "";
-		if(strlen($append_body)) $body .= $append_body;
+			$append_body = (!is_null($delegate)) ? $delegate->getBody() : "";
+			if(strlen($append_body)) $body .= $append_body;
+		}
+
 
 		$mailBody =
 			$mailConfig["header"] ."\n".

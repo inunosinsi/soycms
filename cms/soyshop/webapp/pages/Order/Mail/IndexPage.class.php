@@ -205,14 +205,18 @@ class IndexPage extends WebPage{
 		}
 
 		//プラグインを実行してメール本文の取得 プラグインの拡張ポイントはメールの種類で分ける
-		SOYShopPlugin::load("soyshop.order.mail");
-    	$delegate = SOYShopPlugin::invoke($this->mailLogic->getOrderMailExtension($type), array(
-				"order" => $order,
-				"mail" => $array
-		));
+		if(isset($array["plugin"]) && $array["plugin"] === 1){
+			SOYShopPlugin::load("soyshop.order.mail");
+	    	$delegate = SOYShopPlugin::invoke($this->mailLogic->getOrderMailExtension($type), array(
+					"order" => $order,
+					"mail" => $array
+			));
 
-		$append_body = (!is_null($delegate)) ? $delegate->getBody() : "";
-		$mailBody = $array["header"] ."\n". $body . $append_body . "\n" . $array["footer"];
+			$append_body = (!is_null($delegate)) ? $delegate->getBody() : "";
+			if(strlen($append_body)) $body .= $append_body;
+		}
+
+		$mailBody = $array["header"] ."\n". $body . "\n" . $array["footer"];
 
 		//convert
 		return $this->mailLogic->convertMailContent($mailBody, $user, $order);

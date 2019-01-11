@@ -18,6 +18,7 @@ class UserPage extends WebPage{
 		if(isset($_POST["mail"])){
 			$mail = $_POST["mail"];
 			$mail["output"] = (isset($mail["output"])) ? 1 : 0;
+			$mail["plugin"] = (isset($mail["plugin"])) ? 1 : 0;
 			$logic = SOY2Logic::createInstance("logic.mail.MailLogic");
 			$logic->setUserMailConfig($mail, $type);
 		}
@@ -106,7 +107,14 @@ class UserPage extends WebPage{
 			"name" => "mail[output]",
 			"value" => 1,
 			"selected" => $this->getMailOutput(),
-			"label" => "システムから出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
+			"label" => "システム(購入状況等)から出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
+		));
+
+		$this->addCheckBox("is_mail_content_plugin", array(
+			"name" => "mail[plugin]",
+			"value" => 1,
+			"selected" => $this->getMailPlugin(),
+			"label" => "プラグイン(配送方法等)から出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
 		));
 	}
 
@@ -150,6 +158,10 @@ class UserPage extends WebPage{
 
 	function getMailOutput(){
 		return (isset($this->mail["output"])) ? $this->mail["output"] : 0;
+	}
+
+	function getMailPlugin(){
+		return (isset($this->mail["plugin"])) ? $this->mail["plugin"] : 0;
 	}
 
 	function getMailTitle(){
