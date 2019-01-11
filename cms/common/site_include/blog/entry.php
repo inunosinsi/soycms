@@ -158,6 +158,11 @@ function soy_cms_blog_output_entry($page,$entry){
 					"html"=> $content,
 					"soy2prefix"=>"cms"
 				));
+				/** 一度目でcms:id="content" cms:length="*"を使用してしまうと、以後もcms:lengthに引き連れてしまうため、予備でcms:id="contents"を設ける **/
+				$this->createAdd("content2","CMSLabel",array(
+					"html"=> $content,
+					"soy2prefix"=>"cms"
+				));
 				$this->addModel("has_content",array(
 					"visible"=> strlen(trim($content)),
 					"soy2prefix"=>"cms",
