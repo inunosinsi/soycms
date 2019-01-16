@@ -577,16 +577,11 @@ function soyshop_convert_file_path_on_admin($path){
 
 //ダミーのメールアドレスを取得する
 function soyshop_dummy_mail_address(){
-    $str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
     $userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
     //ランダムなメールアドレスを取得する。一応重複チェックも行う
     for(;;){
-        $r_str = null;
-        for ($i = 0; $i < 10; $i++) {
-            $r_str .= $str[rand(0, count($str) - 1)];
-        }
-        $mailAddress = $r_str . "@" . DUMMY_MAIL_ADDRESS_DOMAIN;
+        $mailAddress = soyshop_create_random_string(10) . "@" . DUMMY_MAIL_ADDRESS_DOMAIN;
         try{
             $user = $userDao->getByMailAddress($mailAddress);
         }catch(Exception $e){
@@ -594,6 +589,55 @@ function soyshop_dummy_mail_address(){
         }
     }
     return $mailAddress;
+}
+
+//ダミーの商品コードを取得する
+function soyshop_dummy_item_code(){
+	SOY2::import("domain.config.SOYShop_ShopConfig");
+	$config = SOYShop_ShopConfig::load();
+	if((int)$config->getInsertDummyItemCode() !== 1) return "";
+
+	$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+	$rule = $config->getDummyItemCodeRule();
+
+	for(;;){
+		if(is_null($rule) || !strlen($rule)){
+			$code = soyshop_create_random_string(8);
+		}else{
+			try{
+				$res = $itemDao->executeQuery("SELECT item_code FROM soyshop_item WHERE item_code LIKE :code ORDER BY item_code DESC LIMIT 1", array(":code" => $rule . "%"));
+			}catch(Exception $e){
+				$res = array();
+			}
+
+			if(isset($res[0]["item_code"])){
+				preg_match('/^' . $rule . '(.*)/', $res[0]["item_code"], $tmp);
+				$n = (int)$tmp[1] + 1;
+			}else{
+				$n = 1;
+			}
+
+			if(strlen($n) < 3) $n = "00" . $n;
+			$code = $rule . $n;
+		}
+
+		try{
+			$item = $itemDao->getByCode($code);
+		}catch(Exception $e){
+			break;
+		}
+	}
+
+	return $code;
+}
+
+function soyshop_create_random_string($n = 10){
+	$str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
+	$r_str = "";
+	for ($i = 0; $i < $n; $i++) {
+		$r_str .= $str[rand(0, count($str) - 1)];
+	}
+	return $r_str;
 }
 
 /**

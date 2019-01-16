@@ -31,6 +31,7 @@ class ShopConfigPage extends WebPage{
 			"defalutArea" => 0,
 			"displayUserOfficeItems" => 0,
 			"displayUserProfileItems" => 0,
+			"insertDummyItemCode" => 0
 		) as $key => $null){
 			$_POST["Config"][$key] = (isset($_POST["Config"][$key])) ? (int)$_POST["Config"][$key] : $null;
 		}
@@ -406,6 +407,19 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getDisplayUserProfileItems(),
 			"label" => "顧客詳細の編集画面でプロフィール関連の項目を表示する"
+		));
+
+		$this->addCheckBox("insertDummyItemCode", array(
+			"name" => "Config[insertDummyItemCode]",
+			"value" => 1,
+			"selected" => $config->getInsertDummyItemCode(),
+			"label" => "管理画面からの商品登録時、商品コードにダミーのコードを挿入する"
+		));
+
+		$this->addInput("dummyItemCodeRule", array(
+			"name" => "Config[dummyItemCodeRule]",
+			"value" => $config->getDummyItemCodeRule(),
+			"attr:placeholder" => "空欄でランダム"
 		));
 
 		//メンテナンスモード

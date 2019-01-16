@@ -63,6 +63,9 @@ class SOYShop_ShopConfig {
 	private $displayUserOfficeItems = 1;
 	private $displayUserProfileItems = 1;
 
+	private $insertDummyItemCode = 0;
+	private $dummyItemCodeRule;
+
 	private $companyInformation = array(
 		"name" => "",
 		"address1" => "",
@@ -685,6 +688,20 @@ class SOYShop_ShopConfig {
 	}
 	function setDisplayUserProfileItems($displayUserProfileItems){
 		$this->displayUserProfileItems = $displayUserProfileItems;
+	}
+
+	function getInsertDummyItemCode(){
+		return $this->insertDummyItemCode;
+	}
+	function setInsertDummyItemCode($insertDummyItemCode){
+		$this->insertDummyItemCode = $insertDummyItemCode;
+	}
+
+	function getDummyItemCodeRule(){
+		return $this->dummyItemCodeRule;
+	}
+	function setDummyItemCodeRule($dummyItemCodeRule){
+		return $this->dummyItemCodeRule = $dummyItemCodeRule;
 	}
 
 	function getIsShowOnlyAdministrator(){

@@ -135,6 +135,7 @@ class SearchPage extends WebPage{
 
 		foreach(array("name", "code", "price", "stock", "unit") as $t){
 			$v = (isset($cnds[$t])) ? $cnds[$t] : null;
+			if($t == "code" && (is_null($v) || !strlen($v))) $v = soyshop_dummy_item_code();
 			if($t == "unit" && is_null($v)) $v = SOYShop_Item::UNIT;
 			if(is_null($v) && $t == "stock") $v = 100;
 			$typeProp = ($t == "price" || $t == "stock") ? "number" : "text";

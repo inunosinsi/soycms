@@ -170,7 +170,8 @@ class SOYShop_Item {
         $this->name = $name;
     }
     function getCode() {
-        return $this->code;
+		if(is_null($this->code)) $this->code = soyshop_dummy_item_code();
+		return $this->code;
     }
     function setCode($code) {
         $this->code = $code;
