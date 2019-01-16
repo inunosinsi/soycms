@@ -72,7 +72,7 @@ class ItemListComponent extends HTMLList {
 		));
 
 		$this->addModel("option_pluign_active", array(
-			"visible" => SOYShopPluginUtil::checkIsActive("common_item_option")
+			"visible" => (SOYShopPluginUtil::checkIsActive("common_item_option") && (int)$entity->getItemId() > 0)
 		));
 
 		//商品一覧へのリンク

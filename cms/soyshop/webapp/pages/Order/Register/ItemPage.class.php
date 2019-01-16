@@ -54,25 +54,24 @@ class ItemPage extends WebPage{
 			}
 
 			if(isset($_POST["Item"])){
-
 				$newItems = $_POST["Item"];
 				$counts = array();
-				foreach($items as $id => $itemOrder){
-					if(isset($newItems[$id]) && is_array($newItems[$id])){
+				foreach($items as $idx => $itemOrder){
+					if(isset($newItems[$idx]) && is_array($newItems[$idx])){
 						//商品の金額
-						if(isset($newItems[$id]["itemPrice"]) && is_numeric($newItems[$id]["itemPrice"])){
-							$items[$id]->setItemPrice((int)$newItems[$id]["itemPrice"]);
+						if(isset($newItems[$idx]["itemPrice"]) && is_numeric($newItems[$idx]["itemPrice"])){
+							$items[$idx]->setItemPrice((int)$newItems[$idx]["itemPrice"]);
 						}
 
 						//商品個数
-						if( isset($newItems[$id]["itemDelete"]) && $newItems[$id]["itemDelete"] ){
-							$counts[$id] = 0;
-						}else if(isset($newItems[$id]["itemCount"]) && is_numeric($newItems[$id]["itemCount"]) && $newItems[$id]["itemCount"] > 0){
-							$counts[$id] = $newItems[$id]["itemCount"];
+						if( isset($newItems[$idx]["itemDelete"]) && $newItems[$idx]["itemDelete"] ){
+							$counts[$idx] = 0;
+						}else if(isset($newItems[$idx]["itemCount"]) && is_numeric($newItems[$idx]["itemCount"]) && $newItems[$idx]["itemCount"] > 0){
+							$counts[$idx] = $newItems[$idx]["itemCount"];
 						}
 
 						//商品オプションが一致する場合は統合
-						$resOpts = (isset($newItems[$id]["attributes"]) && is_array($newItems[$id]["attributes"])) ? $newItems[$id]["attributes"] : array();
+						$resOpts = (isset($newItems[$idx]["attributes"]) && is_array($newItems[$idx]["attributes"])) ? $newItems[$idx]["attributes"] : array();
 						$resOpts["itemId"] = $itemOrder->getItemId();
 						$res = SOYShopPlugin::invoke("soyshop.item.option", array(
 							"mode" => "compare",
@@ -80,11 +79,11 @@ class ItemPage extends WebPage{
 							"option" => $resOpts
 						))->getCartOrderId();
 
-						//商品オプションが一致したため統合する
-						if($id != $res && isset($items[$res])){
+						//商品オプションが一致したため統合する	3番目の条件式は未登録商品は下記の処理を行わない為に追加
+						if($idx != $res && isset($items[$res]) && (int)$items[$res]->getItemId() > 0){
 							/** @ToDo 数がうまくいかない **/
-							$items[$res]->setItemCount((int)$newItems[$res]["itemCount"] + (int)$newItems[$id]["itemCount"]);
-							unset($items[$id]);
+							$items[$res]->setItemCount((int)$newItems[$res]["itemCount"] + (int)$newItems[$idx]["itemCount"]);
+							unset($items[$idx]);
 							continue;
 						}
 
@@ -92,7 +91,7 @@ class ItemPage extends WebPage{
 						unset($resOpts["itemId"]);
 
 						//商品オプションの配列はシリアライズしておく
-						if(count($resOpts) > 0) $items[$id]->setAttributes(soy2_serialize($resOpts));
+						if(count($resOpts) > 0) $items[$idx]->setAttributes(soy2_serialize($resOpts));
 						//$items[$id]->setItemCount($count);
 					}
 				}
