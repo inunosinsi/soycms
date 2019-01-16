@@ -15,7 +15,7 @@ class ItemListComponent extends HTMLList {
 			"value" => 1
 		));
 
-		$itemExists = (method_exists($item, "getCode") && strlen($item->getCode()) > 0);
+		$itemExists = (method_exists($item, "getCode") && $itemId > 0 && strlen($item->getCode()) > 0);
 		$this->addLink("item_id", array(
 			"text" => $itemExists ? $item->getCode() : "",
 			"link" => $itemExists ? SOY2PageController::createLink("Item.Detail." . $entity->getItemId()) : "",
