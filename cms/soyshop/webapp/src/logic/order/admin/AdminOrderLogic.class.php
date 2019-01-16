@@ -19,6 +19,7 @@ class AdminOrderLogic extends SOY2LogicBase {
 				$values["name"] = $itemOrder->getItemName();
 				$values["count"] = $itemOrder->getItemCount();
 				$values["price"] = $itemOrder->getItemPrice();
+				$values["attributes"] = $itemOrder->getAttributes();
 				$array[] = $values;
 			}
 
@@ -45,6 +46,7 @@ class AdminOrderLogic extends SOY2LogicBase {
 			$itemOrder->setItemPrice((int)$v["price"]);
 			$itemOrder->setTotalPrice($itemOrder->getItemPrice() * $itemOrder->getItemCount());
 			$itemOrder->setItemName($v["name"]);
+			if(isset($v["attributes"])) $itemOrder->setAttributes($v["attributes"]);
 			$itemOrders[] = $itemOrder;
 		}
 
@@ -60,7 +62,7 @@ class AdminOrderLogic extends SOY2LogicBase {
 	}
 
 	private function removeBackup(){
-		unlink(self::getJsonFilePath());
+		@unlink(self::getJsonFilePath());
 	}
 
 	function isBackupJsonFile(){
