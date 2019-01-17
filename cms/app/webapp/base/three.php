@@ -66,7 +66,7 @@
 
 			<ul id="top_menu" class="nav navbar-top-links navbar-right">
 				<?php if(CMSApplication::isDirectLogin()){ ?>
-					<li><a href="javascript:void(0);" data-toggle="modal" data-target="#accountModal"><i class="fa fa-user fa-fw"></i>ユーザ情報</a></li>
+					<?php if(CMSApplication::getDisplayAccountEditPanelConfig()) {?><li><a href="javascript:void(0);" data-toggle="modal" data-target="#accountModal"><i class="fa fa-user fa-fw"></i>ユーザ情報</a></li><?php }?>
 					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Login/Logout"); ?>"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
 				<?php }else{ ?>
 					<?php if(CMSApplication::checkAuthWithSiteOnly()){?>
@@ -127,19 +127,20 @@
 <?php CMSApplication::printScript(); ?>
 
 <!-- モーダル -->
+<?php if(CMSApplication::getDisplayAccountEditPanelConfig()) {?>
 <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="AccountLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-body">
 				<iframe src="<?php echo dirname(CMSApplication::getRoot()); ?>/admin/index.php/Account" style="width:100%;height:460px;"></iframe>
 			</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				</div>
-			</form>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
 		</div>
 	</div>
 </div>
+<?php }?>
 
 <script type="text/javascript">
 $(function(){

@@ -58,6 +58,15 @@ class CMSApplication {
 	}
 
 	/**
+	 * アプリ操作者の際にアカウントの編集画面を表示するか？
+	 */
+	public static function getDisplayAccountEditPanelConfig(){
+		$self = CMSApplication::getInstance();
+		if(!isset($self->properties["display_edit_panel"])) return true;	//設定が特になければ出力する
+		return ($self->properties["display_edit_panel"] == "Yes");
+	}
+
+	/**
 	 * ショップIDを取得する
 	 */
 	public static function getShopId(){
