@@ -70,29 +70,31 @@ class ItemPage extends WebPage{
 							$counts[$idx] = $newItems[$idx]["itemCount"];
 						}
 
-						//商品オプションが一致する場合は統合
-						$resOpts = (isset($newItems[$idx]["attributes"]) && is_array($newItems[$idx]["attributes"])) ? $newItems[$idx]["attributes"] : array();
-						$resOpts["itemId"] = $itemOrder->getItemId();
-						$res = SOYShopPlugin::invoke("soyshop.item.option", array(
-							"mode" => "compare",
-							"cart" => $this->cart,
-							"option" => $resOpts
-						))->getCartOrderId();
+						//商品オプションが一致する場合は統合	未登録商品の場合は下記の処理は関係ないので行わない
+						if((int)$itemOrder->getItemId() > 0){
+							$resOpts = (isset($newItems[$idx]["attributes"]) && is_array($newItems[$idx]["attributes"])) ? $newItems[$idx]["attributes"] : array();
+							$resOpts["itemId"] = $itemOrder->getItemId();
+							$res = SOYShopPlugin::invoke("soyshop.item.option", array(
+								"mode" => "compare",
+								"cart" => $this->cart,
+								"option" => $resOpts
+							))->getCartOrderId();
 
-						//商品オプションが一致したため統合する	3番目の条件式は未登録商品は下記の処理を行わない為に追加
-						if($idx != $res && isset($items[$res]) && (int)$items[$res]->getItemId() > 0){
-							/** @ToDo 数がうまくいかない **/
-							$items[$res]->setItemCount((int)$newItems[$res]["itemCount"] + (int)$newItems[$idx]["itemCount"]);
-							unset($items[$idx]);
-							continue;
+							//商品オプションが一致したため統合する
+							if(isset($res) && $idx != $res && isset($items[$res])){
+								/** @ToDo 数がうまくいかない **/
+								$items[$res]->setItemCount((int)$newItems[$res]["itemCount"] + (int)$newItems[$idx]["itemCount"]);
+								unset($items[$idx]);
+								continue;
+							}
+
+							//比較用で挿入しておいたitemIdを削除する
+							unset($resOpts["itemId"]);
+
+							//商品オプションの配列はシリアライズしておく
+							if(count($resOpts) > 0) $items[$idx]->setAttributes(soy2_serialize($resOpts));
+							//$items[$id]->setItemCount($count);
 						}
-
-						//比較用で挿入しておいたitemIdを削除する
-						unset($resOpts["itemId"]);
-
-						//商品オプションの配列はシリアライズしておく
-						if(count($resOpts) > 0) $items[$idx]->setAttributes(soy2_serialize($resOpts));
-						//$items[$id]->setItemCount($count);
 					}
 				}
 

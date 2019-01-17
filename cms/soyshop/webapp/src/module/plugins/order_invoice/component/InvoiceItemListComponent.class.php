@@ -12,7 +12,7 @@ class InvoiceItemListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_code", array(
-			"text" => $item->getCode()
+			"text" => ((int)$itemOrder->getItemId() > 0) ? $item->getCode() : ""
 		));
 
 		$this->addLabel("item_name", array(
@@ -20,7 +20,7 @@ class InvoiceItemListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_option", array(
-			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? self::getItemOptionHtml($itemOrder) : ""
+			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? soyshop_build_item_option_html_on_item_order($itemOrder) : ""
 		));
 
 		$this->addLabel("item_count", array(
@@ -52,23 +52,5 @@ class InvoiceItemListComponent extends HTMLList {
 		}catch(Exception $e){
 			return new SOYShop_Item();
 		}
-	}
-
-	private function getItemOptionHtml($itemOrder){
-		SOYShopPlugin::load("soyshop.item.option");
-		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
-			"mode" => "display",
-			"item" => $itemOrder,
-		))->getHtmls();
-
-		if(!count($htmls)) return "";
-
-		$html = array();
-		foreach($htmls as $h){
-			if(!strlen($h)) continue;
-			$html[] = $h;
-		}
-
-		return implode("<br>", $html);
 	}
 }

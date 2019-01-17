@@ -663,3 +663,24 @@ if(!function_exists("_empty")){
         return empty($arg);
     }
 }
+
+/**
+ * 商品オプションプラグインのHTMLの組み立て パターン1
+ */
+function soyshop_build_item_option_html_on_item_order(SOYShop_ItemOrder $itemOrder){
+	SOYShopPlugin::load("soyshop.item.option");
+	$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
+		"mode" => "display",
+		"item" => $itemOrder,
+	))->getHtmls();
+
+	if(!is_array($htmls) || !count($htmls)) return "";
+
+	$html = array();
+	foreach($htmls as $h){
+		if(!strlen($h)) continue;
+		$html[] = $h;
+	}
+
+	return implode("<br>", $html);
+}

@@ -46,6 +46,8 @@ class CommonItemOption extends SOYShopItemOptionBase{
 			//比較用の配列を作成する
 			$attributes = array();
 			foreach($items as $index => $item){
+				if((int)$item->getItemid() === 0) continue;	//未登録商品の場合は確認しない
+
 				//管理画面側では商品一覧のセッションの中にオプションが格納されている
 				if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
 					$attrs = $item->getAttributes();

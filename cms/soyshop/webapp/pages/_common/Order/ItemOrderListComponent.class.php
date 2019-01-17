@@ -9,7 +9,7 @@ class ItemOrderListComponent extends HTMLList {
 
 		$item = self::getItem($itemOrder->getItemId());
 
-		$itemExists = (method_exists($item, "getCode") && strlen($item->getCode()) > 0);
+		$itemExists = ((int)$itemOrder->getItemId() > 0 && method_exists($item, "getCode") && strlen($item->getCode()) > 0);
 		$this->addLink("item_id", array(
 			"text" => $itemExists ? $item->getCode() : "Deleted Item (ID=" . $itemOrder->getItemId() . ")",
 			"link" => $itemExists ? SOY2PageController::createLink("Item.Detail." . $itemOrder->getItemId()) : "",
@@ -26,7 +26,7 @@ class ItemOrderListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_option", array(
-			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? self::getItemOptionHtml($itemOrder) : ""
+			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? soyshop_build_item_option_html_on_item_order($itemOrder) : ""
 		));
 
 		$this->addLabel("item_price", array(
@@ -40,23 +40,6 @@ class ItemOrderListComponent extends HTMLList {
 		$this->addLabel("item_total_price", array(
 			"text" => number_format($itemOrder->getTotalPrice())
 		));
-	}
-
-	private function getItemOptionHtml(SOYShop_ItemOrder $itemOrder){
-		$htmls = SOYShopPlugin::invoke("soyshop.item.option", array(
-			"mode" => "display",
-			"item" => $itemOrder,
-		))->getHtmls();
-
-		if(!is_array($htmls) || !count($htmls)) return "";
-
-		$html = array();
-		foreach($htmls as $h){
-			if(!strlen($h)) continue;
-			$html[] = $h;
-		}
-
-		return implode("<br>", $html);
 	}
 
 	/**

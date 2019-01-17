@@ -14,7 +14,7 @@ class ItemOrderFormListComponent extends HTMLList {
 			"value" => 1
 		));
 
-		$itemExists = (method_exists($item, "getCode") && strlen($item->getCode()) > 0);
+		$itemExists = ((int)$itemOrder->getItemId() > 0 && method_exists($item, "getCode") && strlen($item->getCode()) > 0);
 		$this->addLink("item_id", array(
 			"text" => $itemExists ? $item->getCode() : "Deleted Item (ID=" . $itemOrder->getItemId() . ")",
 			"link" => $itemExists ? SOY2PageController::createLink("Item.Detail." . $itemOrder->getItemId()) : "",
