@@ -352,7 +352,11 @@ class RecentLabelList extends HTMLList{
 			"link"=>SOY2PageController::createLink("Entry.List.".$entity->getId())
 		));
 		$this->createAdd("label_title","HTMLLabel",array(
-			"html" => $entity->getDisplayCaption() ." <nobr>(".$entity->getEntryCount().")</nobr>",
+			"text" => $entity->getDisplayCaption(),
+		));
+
+		$this->addLabel("label_entries_count", array(
+			"text" => $entity->getEntryCount()
 		));
 
 	}
