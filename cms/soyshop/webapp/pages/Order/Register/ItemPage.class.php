@@ -208,6 +208,12 @@ class ItemPage extends WebPage{
 		$this->addLabel("total_item_price", array(
 			"text" => number_format($this->cart->getItemPrice())
 		));
+
+		//商品詳細で自由に拡張機能を追加できる
+		SOYShopPlugin::load("soyshop.order.edit");
+		$this->addLabel("item_edit_add_func", array(
+			"html" => SOYShopPlugin::invoke("soyshop.order.edit", array("mode" => "order"))->getHTML()
+		));
 	}
 
 	private function getItemByCode($code){

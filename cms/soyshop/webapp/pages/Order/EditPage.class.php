@@ -4,6 +4,7 @@ SOY2::import("module.plugins.common_item_option.util.ItemOptionUtil");
 SOYShopPlugin::load("soyshop.item.option");
 SOYShopPlugin::load("soyshop.item.order");
 SOYShopPlugin::load("soyshop.order.customfield");
+SOYShopPlugin::load("soyshop.order.edit");
 class EditPage extends WebPage{
 
 	private $id;
@@ -444,6 +445,7 @@ class EditPage extends WebPage{
 	function __construct($args) {
 		MessageManager::addMessagePath("admin");
 		$this->id = (isset($args[0])) ? (int)$args[0] : "";
+
 		parent::__construct();
 
 		try{
@@ -464,7 +466,6 @@ class EditPage extends WebPage{
 		self::buildForm($order);
 
 		//HTMLの自由記述
-		SOYShopPlugin::load("soyshop.order.edit");
 		$this->addLabel("extension_html", array(
 			"html" => SOYShopPlugin::invoke("soyshop.order.edit", array("mode" => "html"))->getHTML()
 		));
@@ -667,6 +668,11 @@ class EditPage extends WebPage{
 
 		$this->createAdd("module_list", "_common.Order.ModuleFormListComponent", array(
 			"list" => $order->getModuleList()
+		));
+
+		//商品詳細で自由に拡張機能を追加できる
+		$this->addLabel("item_edit_add_func", array(
+			"html" => SOYShopPlugin::invoke("soyshop.order.edit", array("mode" => "item", "orderId" => $order->getId()))->getHTML()
 		));
 	}
 
