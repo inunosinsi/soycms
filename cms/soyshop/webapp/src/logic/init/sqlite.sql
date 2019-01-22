@@ -78,7 +78,8 @@ create table soyshop_order(
 	attributes varchar,
 	modules varchar,
 	mail_status varchar,
-	tracking_number varchar
+	tracking_number varchar,
+	UNIQUE(order_date, user_id)
 );
 
 drop table soyshop_orders;
@@ -94,7 +95,8 @@ create table soyshop_orders(
 	is_sended integer default 0,
 	attributes varchar,
 	is_addition integer default 0,
-	display_order integer not null default 0
+	display_order integer not null default 0,
+	UNIQUE(order_id, item_id, cdate)
 );
 
 drop table soyshop_plugins;
@@ -114,7 +116,8 @@ create table soyshop_order_state_history(
 	order_date integer not null,
 	author varchar,
 	content varchar,
-	more varchar
+	more varchar,
+	UNIQUE(order_id, order_date)
 );
 
 drop table soyshop_data_sets;
@@ -182,7 +185,8 @@ create table soyshop_auto_login(
 	id integer primary key AUTOINCREMENT,
 	user_id integer not null,
 	session_token varchar not null,
-	time_limit integer
+	time_limit integer,
+	UNIQUE(user_id, session_token)
 );
 
 drop table soyshop_user_token;
@@ -209,7 +213,8 @@ create table soyshop_item_review(
 	attributes varchar,
 	is_approved integer not null,
 	create_date integer not null,
-	update_date integer
+	update_date integer,
+	UNIQUE(item_id, user_id, create_date)
 );
 
 create table soyshop_review_point(
@@ -233,7 +238,8 @@ create table soyshop_mail_log(
 	title text,
 	content text,
 	is_success tinyint not null default 0,
-	send_date integer NOT NULL
+	send_date integer NOT NULL,
+	UNIQUE(order_id, user_id, send_date)
 );
 
 create table soyshop_favorite_item(

@@ -78,7 +78,8 @@ create table soyshop_order(
 	attributes TEXT,
 	modules TEXT,
 	mail_status TEXT,
-	tracking_number VARCHAR(255)
+	tracking_number VARCHAR(255),
+	UNIQUE(order_date, user_id)
 ) ENGINE=InnoDB;
 
 drop table soyshop_orders;
@@ -94,7 +95,8 @@ create table soyshop_orders(
 	is_sended tinyint default 0,
 	attributes TEXT,
 	is_addition tinyint default 0,
-	display_order tinyint not null default 0
+	display_order tinyint not null default 0,
+	UNIQUE(order_id, item_id, cdate)
 ) ENGINE=InnoDB;
 
 drop table soyshop_plugins;
@@ -114,7 +116,8 @@ create table soyshop_order_state_history(
 	order_date integer not null,
 	author VARCHAR(255),
 	content TEXT,
-	more VARCHAR(255)
+	more VARCHAR(255),
+	UNIQUE(order_id, order_date)
 ) ENGINE=InnoDB;
 
 drop table soyshop_data_sets;
@@ -183,7 +186,8 @@ create table soyshop_auto_login(
 	id integer primary key auto_increment,
 	user_id integer not null,
 	session_token CHAR(32) NOT NULL,
-	time_limit integer
+	time_limit integer,
+	UNIQUE(user_id, session_token)
 ) ENGINE=InnoDB;
 
 drop table soyshop_user_token;
@@ -210,7 +214,8 @@ create table soyshop_item_review(
 	attributes varchar(255),
 	is_approved tinyint not null,
 	create_date integer not null,
-	update_date integer
+	update_date integer,
+	UNIQUE(item_id, user_id, create_date)
 ) ENGINE = InnoDB;
 
 create table soyshop_review_point(
@@ -234,7 +239,8 @@ create table soyshop_mail_log(
 	title text,
 	content text,
 	is_success tinyint not null default 0,
-	send_date integer NOT NULL
+	send_date integer NOT NULL,
+	UNIQUE(order_id, user_id, send_date)
 ) ENGINE=InnoDB;
 
 create table soyshop_favorite_item(

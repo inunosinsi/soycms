@@ -16,8 +16,24 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
 	 * @final
 	 */
 	function onInsert($query, $binds){
+		static $i;
+		if(is_null($i)) $i = 0;
+		if(!isset($binds[":cdate"])) $binds[":cdate"] = time();
 		if(!isset($binds[":displayOrder"])) $binds[":displayOrder"] = 0;
 		if(!isset($binds[":isAddition"]) || strlen($binds[":isAddition"]) < 1) $binds[":isAddition"] = 0;
+
+		for(;;){
+			$i++;
+			try{
+				$res = $this->executeQuery("SELECT id FROM soyshop_orders WHERE order_id = :orderId AND item_id = :itemId AND cdate = :cdate LIMIT 1;", array(":orderId" => $binds[":orderId"], ":itemId" => $binds[":itemId"], ":cdate" => $binds[":cdate"] + $i));
+			}catch(Exception $e){
+				$res = array();
+			}
+
+			if(!count($res)) break;
+		}
+		$binds[":cdate"] += $i;
+
 		return array($query, $binds);
 	}
 

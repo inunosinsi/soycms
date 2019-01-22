@@ -26,7 +26,21 @@ abstract class SOYShop_OrderStateHistoryDAO extends SOY2DAO{
      * @final
      */
     function onInsert($query, $binds){
+		static $i;
+		if(is_null($i)) $i = 0;
     	if(!isset($binds[":date"])) $binds[":date"] = time();
+		for(;;){
+			$i++;
+			try{
+				$res = $this->executeQuery("SELECT id FROM soyshop_order_state_history WHERE order_id = :orderId AND order_date = :orderDate LIMIT 1;", array(":orderId" => $binds[":orderId"], ":orderDate" => $binds[":date"] + $i));
+			}catch(Exception $e){
+				$res = array();
+			}
+
+			if(!count($res)) break;
+		}
+		$binds[":date"] += $i;
+
     	if(!isset($binds[":author"]) || !strlen($binds[":author"])){
 			/*
     		 * 管理画面では管理者情報をを登録する
@@ -48,6 +62,6 @@ abstract class SOYShop_OrderStateHistoryDAO extends SOY2DAO{
 
 			$binds[":author"] = $author;
     	}
-    	return array($query, $binds);
+		return array($query, $binds);
     }
 }
