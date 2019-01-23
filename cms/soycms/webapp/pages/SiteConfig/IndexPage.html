@@ -42,7 +42,7 @@
 									</div>
 									<div class="form-group">
 										<label>サイトの説明</label>
-										<textarea class="form-control" type="text" soy:id="description" soy:id="description">説明が入ります。</textarea>
+										<textarea class="form-control" type="text" soy:id="description" style="height:200px;">説明が入ります。</textarea>
 									</div>
 									<div class="form-group">
 										<label>文字コード</label>
@@ -60,14 +60,18 @@
 									</div>
 									<div class="form-group">
 										<label>ファイルアップロード先パス設定</label>
-										<input class="form-control" type="text" soy:id="uploadpath" >
-										<input type="hidden" name="createUploadDirectoryByDate" value="0" >
-										<input class="" soy:id="create_by_date" >
+										<div class="form-inline">
+											<input class="form-control" type="text" soy:id="uploadpath" style="width:30% !important;">
+											<input type="hidden" name="createUploadDirectoryByDate" value="0" >
+											<input class="" soy:id="create_by_date" >
+										</div>
 									</div>
 
 									<div class="form-group">
-										<label>ファイルアップロード<br>リサイズ設定(width)</label>
-										<input class="form-control" type="text" soy:id="resizewidth">px
+										<label>ファイルアップロード リサイズ設定(width)</label>
+										<div class="form-inline">
+											<input class="form-control" type="text" soy:id="resizewidth"> px
+										</div>
 									</div>
 
 									<div class="form-group">

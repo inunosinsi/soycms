@@ -13,7 +13,7 @@ class IndexPage extends CMSWebPageBase{
 
 				set_time_limit(0);
 
-				$sites = $this->getSiteList();
+				$sites = self::getSiteList();
 				foreach($sites as $site){
 					CMSFileManager::setSiteInformation($site->getId(), $site->getUrl(), $site->getPath());
 					CMSFileManager::insertAll($site->getPath());
@@ -104,7 +104,7 @@ class IndexPage extends CMSWebPageBase{
 	/**
 	 * サイト一覧
 	 */
-	function getSiteList(){
+	private function getSiteList(){
 		$SiteLogic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
 		$old = CMSUtil::switchDsn();
 		$sites = $SiteLogic->getSiteList();

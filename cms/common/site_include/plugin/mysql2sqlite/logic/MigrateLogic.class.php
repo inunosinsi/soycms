@@ -132,81 +132,107 @@ class MigrateLogic extends SOY2LogicBase {
 	}
 
 	private function registerEntry($sql){
-		try{
-			$entries = SOY2DAOFactory::create("cms.EntryDAO")->get();
-			if(!count($entries)) return;
-		}catch(Exception $e){
-			return;
-		}
-
+		$dao = SOY2DAOFactory::create("cms.EntryDAO");
 		$columns = self::splitColumns($sql);
 		$stmt = $this->pdo->prepare("INSERT INTO Entry (" . implode(",", $columns) . ") VALUES (:" . implode(",:", $columns) . ");");
-		foreach($entries as $entry){
-			$stmt->execute(array(
-				":id" => $entry->getId(),
-				":title" => $entry->getTitle(),
-				":alias" => $entry->getAlias(),
-				":content" => $entry->getContent(),
-				":more" => $entry->getMore(),
-				":cdate" => $entry->getCdate(),
-				":udate" => $entry->getUdate(),
-				":description" => $entry->getDescription(),
-				":openPeriodStart" => $entry->getOpenPeriodStart(),
-				":openPeriodEnd" => $entry->getOpenPeriodEnd(),
-				":isPublished" => $entry->getIsPublished(),
-				":style" => $entry->getStyle(),
-				":author" => $entry->getAuthor()
-			));
+
+		$i = 0;
+		for(;;){
+			try{
+				$dao->setOrder("id ASC");
+				$dao->setLimit(100);
+				$dao->setOffset($i++);
+				$entries = $dao->get();
+				if(!count($entries)) break;
+			}catch(Exception $e){
+				break;
+			}
+
+			foreach($entries as $entry){
+				$stmt->execute(array(
+					":id" => $entry->getId(),
+					":title" => $entry->getTitle(),
+					":alias" => $entry->getAlias(),
+					":content" => $entry->getContent(),
+					":more" => $entry->getMore(),
+					":cdate" => $entry->getCdate(),
+					":udate" => $entry->getUdate(),
+					":description" => $entry->getDescription(),
+					":openPeriodStart" => $entry->getOpenPeriodStart(),
+					":openPeriodEnd" => $entry->getOpenPeriodEnd(),
+					":isPublished" => $entry->getIsPublished(),
+					":style" => $entry->getStyle(),
+					":author" => $entry->getAuthor()
+				));
+			}
 		}
 	}
 
 	private function registerEntryComment($sql){
-		try{
-			$comments = SOY2DAOFactory::create("cms.EntryCommentDAO")->get();
-			if(!count($comments)) return;
-		}catch(Exception $e){
-			return;
-		}
-
+		$dao = SOY2DAOFactory::create("cms.EntryCommentDAO");
 		$columns = self::splitColumns($sql);
 		$stmt = $this->pdo->prepare("INSERT INTO EntryComment (" . implode(",", $columns) . ") VALUES (:" . implode(",:", $columns) . ");");
-		foreach($comments as $comment){
-			$stmt->execute(array(
-				":id" => $comment->getId(),
-				":entry_id" => $comment->getEntryId(),
-				":title" => $comment->getTitle(),
-				":author" => $comment->getAuthor(),
-				":body" => $comment->getBody(),
-				":is_approved" => $comment->getIsApproved(),
-				":mail_address" => $comment->getMailAddress(),
-				":url" => $comment->getUrl(),
-				":submitdate" => $comment->getSubmitDate()
-			));
+
+		$i = 0;
+		for(;;){
+			try{
+				$dao->setOrder("id ASC");
+				$dao->setLimit(100);
+				$dao->setOffset($i++);
+				$comments = $dao->get();
+				if(!count($comments)) break;
+			}catch(Exception $e){
+				break;
+			}
+
+			foreach($comments as $comment){
+				$stmt->execute(array(
+					":id" => $comment->getId(),
+					":entry_id" => $comment->getEntryId(),
+					":title" => $comment->getTitle(),
+					":author" => $comment->getAuthor(),
+					":body" => $comment->getBody(),
+					":is_approved" => $comment->getIsApproved(),
+					":mail_address" => $comment->getMailAddress(),
+					":url" => $comment->getUrl(),
+					":submitdate" => $comment->getSubmitDate()
+				));
+			}
 		}
+
 	}
 
 	private function registerEntryTrackback($sql){
-		try{
-			$trackbacks = SOY2DAOFactory::create("cms.EntryTrackbackDAO")->get();
-			if(!count($trackbacks)) return;
-		}catch(Exception $e){
-			return;
-		}
-
+		$dao = SOY2DAOFactory::create("cms.EntryTrackbackDAO");
 		$columns = self::splitColumns($sql);
 		$stmt = $this->pdo->prepare("INSERT INTO EntryTrackback (" . implode(",", $columns) . ") VALUES (:" . implode(",:", $columns) . ");");
-		foreach($trackbacks as $trackback){
-			$stmt->execute(array(
-				":id" => $trackback->getId(),
-				":entry_id" => $trackback->getEntryId(),
-				":title" => $trackback->getTitle(),
-				":url" => $trackback->getUrl(),
-				":blog_name" => $trackback->getBlogName(),
-				":excerpt" => $trackback->getExcerpt(),
-				":submitdate" => $trackback->getSubmitDate(),
-				":certification" => $trackback->getCertification()
-			));
+
+		$i = 0;
+		for(;;){
+			$dao->setOrder("id ASC");
+			$dao->setLimit(100);
+			$dao->setOffset($i++);
+			try{
+				$trackbacks = $dao->get();
+				if(!count($trackbacks)) break;
+			}catch(Exception $e){
+				break;
+			}
+
+			foreach($trackbacks as $trackback){
+				$stmt->execute(array(
+					":id" => $trackback->getId(),
+					":entry_id" => $trackback->getEntryId(),
+					":title" => $trackback->getTitle(),
+					":url" => $trackback->getUrl(),
+					":blog_name" => $trackback->getBlogName(),
+					":excerpt" => $trackback->getExcerpt(),
+					":submitdate" => $trackback->getSubmitDate(),
+					":certification" => $trackback->getCertification()
+				));
+			}
 		}
+
 	}
 
 	private function registerEntryAttribute($sql){
@@ -230,26 +256,34 @@ class MigrateLogic extends SOY2LogicBase {
 	}
 
 	private function registerLabel($sql){
-		try{
-			$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
-			if(!count($labels)) return;
-		}catch(Exception $e){
-			return;
-		}
-
+		$dao = SOY2DAOFactory::create("cms.LabelDAO");
 		$columns = self::splitColumns($sql);
 		$stmt = $this->pdo->prepare("INSERT INTO Label (" . implode(",", $columns) . ") VALUES (:" . implode(",:", $columns) . ");");
-		foreach($labels as $label){
-			$stmt->execute(array(
-				":id" => $label->getId(),
-				":caption" => $label->getCaption(),
-				":description" => $label->getDescription(),
-				":alias" => $label->getAlias(),
-				":icon" => $label->getIcon(),
-				":display_order" => $label->getDisplayOrder(),
-				":color" => $label->getColor(),
-				":background_color" => $label->getBackgroundColor()
-			));
+
+		$i = 0;
+		for(;;){
+			$dao->setOrder("id ASC");
+			$dao->setLimit(100);
+			$dao->setOffset($i++);
+			try{
+				$labels = $dao->get();
+				if(!count($labels)) break;
+			}catch(Exception $e){
+				break;
+			}
+
+			foreach($labels as $label){
+				$stmt->execute(array(
+					":id" => $label->getId(),
+					":caption" => $label->getCaption(),
+					":description" => $label->getDescription(),
+					":alias" => $label->getAlias(),
+					":icon" => $label->getIcon(),
+					":display_order" => $label->getDisplayOrder(),
+					":color" => $label->getColor(),
+					":background_color" => $label->getBackgroundColor()
+				));
+			}
 		}
 	}
 
@@ -273,31 +307,39 @@ class MigrateLogic extends SOY2LogicBase {
 	}
 
 	private function registerPage($sql){
-		try{
-			$pages = SOY2DAOFactory::create("cms.PageDAO")->get();
-			if(!count($pages)) return;
-		}catch(Exception $e){
-			return;
-		}
-
+		$dao = SOY2DAOFactory::create("cms.PageDAO");
 		$columns = self::splitColumns($sql);
 		$stmt = $this->pdo->prepare("INSERT INTO Page (" . implode(",", $columns) . ") VALUES (:" . implode(",:", $columns) . ");");
-		foreach($pages as $page){
-			$stmt->execute(array(
-				":id" => $page->getId(),
-				":title" => $page->getTitle(),
-				":template" => $page->getTemplate(),
-				":uri" => $page->getUri(),
-				":page_type" => $page->getPageType(),
-				":page_config" => $page->getPageConfig(),
-				":openPeriodStart" => $page->getOpenPeriodStart(),
-				":openPeriodEnd" => $page->getOpenPeriodEnd(),
-				":isPublished" => $page->getIsPublished(),
-				":isTrash" => $page->getIsTrash(),
-				":parent_page_id" => $page->getParentPageId(),
-				":udate" => $page->getUdate(),
-				":icon" => $page->getIcon()
-			));
+
+		$i = 0;
+		for(;;){
+			$dao->setOrder("id ASC");
+			$dao->setLimit(100);
+			$dao->setOffset($i++);
+			try{
+				$pages = $dao->get();
+				if(!count($pages)) return;
+			}catch(Exception $e){
+				return;
+			}
+
+			foreach($pages as $page){
+				$stmt->execute(array(
+					":id" => $page->getId(),
+					":title" => $page->getTitle(),
+					":template" => $page->getTemplate(),
+					":uri" => $page->getUri(),
+					":page_type" => $page->getPageType(),
+					":page_config" => $page->getPageConfig(),
+					":openPeriodStart" => $page->getOpenPeriodStart(),
+					":openPeriodEnd" => $page->getOpenPeriodEnd(),
+					":isPublished" => $page->getIsPublished(),
+					":isTrash" => $page->getIsTrash(),
+					":parent_page_id" => $page->getParentPageId(),
+					":udate" => $page->getUdate(),
+					":icon" => $page->getIcon()
+				));
+			}
 		}
 	}
 

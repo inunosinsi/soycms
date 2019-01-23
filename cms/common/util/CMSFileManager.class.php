@@ -264,24 +264,34 @@ class CMSFileManager{
 			try{
 				$file = $dao->getById($target,$withChild);
 			}catch(Exception $e){
+				var_dump($e);
 				//
 			}
 		}else if(is_string($target)){
+			//targetがhttpから始まる場合はURLの方で取得を試みる
 			$dao = self::_getDao();
-			try{
-				$target = str_replace("\\","/",$target);
-				$file = $dao->getByPath($target,$withChild);
-			}catch(Exception $e){
-				//FileDBの更新を試みる
+			if(strpos($target, "http") === 0){
 				try{
-					self::updateFileDb();
+					$file = $dao->getByUrl($target);
+				}catch(Exception $e){
+					//
+				}
+			}else{
+				try{
+					$target = str_replace("\\","/",$target);
 					$file = $dao->getByPath($target,$withChild);
 				}catch(Exception $e){
+					//FileDBの更新を試みる
 					try{
-						$target = str_replace("\\","/",realpath($target));
+						self::updateFileDb();
 						$file = $dao->getByPath($target,$withChild);
 					}catch(Exception $e){
-						//
+						try{
+							$target = str_replace("\\","/",realpath($target));
+							$file = $dao->getByPath($target,$withChild);
+						}catch(Exception $e){
+							//
+						}
 					}
 				}
 			}
@@ -696,6 +706,11 @@ abstract class CMSFileDAO extends SOY2DAO{
 	 * @return object
 	 */
 	abstract function _getByPath($path);
+
+	/**
+	 * @return object
+	 */
+	abstract function getByUrl($url);
 
 
 	/**

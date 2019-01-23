@@ -82,12 +82,11 @@ class ConfirmStage extends StageBase{
 		$fileReplaceList = array();
 
 		foreach($template->getFileList() as $key => $value){
-
 			$fileNode = $doc->createElement("file");
 			$id = $value["id"];
 
 			try{
-				$file = CMSFileManager::get($siteRoot,$id);
+				$file = CMSFileManager::get($siteRoot, $value["path"]);
 			}catch(Exception $e){
 				//todo エラーリストに追加
 				continue;

@@ -143,7 +143,7 @@ class IndexPage extends CMSWebPageBase{
 		}else{
 			$currentStage = "StartStage";
 		}
-
+		
 		if(CMSUtil::isPageTemplateEnabled() === false){
 			$currentStage = "FailedStage";
 		}

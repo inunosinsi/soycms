@@ -10,7 +10,7 @@ class FileSettingStage extends StageBase{
 		$list = $this->wizardObj->template->getFileList();
 
 		$this->createAdd("add_file_table","HTMLModel",array(
-			"style" => (count($list)>0) ? "width:750px;" : "display:none;width:750px;"
+			"style" => (count($list)) ? "" : "display:none;"
 		));
 
 		$this->createAdd("add_file_list","AddFileList",array(
