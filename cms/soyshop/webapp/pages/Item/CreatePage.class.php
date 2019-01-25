@@ -124,6 +124,9 @@ class CreatePage extends WebPage{
     		"value" => $obj->getPrice()
     	));
 
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		DisplayPlugin::toggle("item_description", SOYShop_ShopConfig::load()->getDisplayItemDescription());
+
 		$config = $obj->getConfigObject();
     	$this->addTextArea("item_description", array(
     		"name" => "Item[config][description]",

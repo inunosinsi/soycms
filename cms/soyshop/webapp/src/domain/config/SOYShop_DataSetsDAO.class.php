@@ -1,6 +1,6 @@
 <?php
 /**
- * @entity SOYShop_DataSets
+ * @entity config.SOYShop_DataSets
  */
 abstract class SOYShop_DataSetsDAO extends SOY2DAO{
 

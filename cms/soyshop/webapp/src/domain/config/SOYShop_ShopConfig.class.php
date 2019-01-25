@@ -65,6 +65,8 @@ class SOYShop_ShopConfig {
 
 	private $insertDummyItemCode = 0;
 	private $dummyItemCodeRule;
+	private $displayItemKeywords = 1;
+	private $displayItemDescription = 1;
 
 	private $companyInformation = array(
 		"name" => "",
@@ -702,6 +704,20 @@ class SOYShop_ShopConfig {
 	}
 	function setDummyItemCodeRule($dummyItemCodeRule){
 		return $this->dummyItemCodeRule = $dummyItemCodeRule;
+	}
+
+	function getDisplayItemKeywords(){
+		return $this->displayItemKeywords;
+	}
+	function setDisplayItemKeywords($displayItemKeywords){
+		$this->displayItemKeywords = $displayItemKeywords;
+	}
+
+	function getDisplayItemDescription(){
+		return $this->displayItemDescription;
+	}
+	function setDisplayItemDescription($displayItemDescription){
+		$this->displayItemDescription = $displayItemDescription;
 	}
 
 	function getIsShowOnlyAdministrator(){

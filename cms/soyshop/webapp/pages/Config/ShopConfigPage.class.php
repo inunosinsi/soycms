@@ -31,7 +31,9 @@ class ShopConfigPage extends WebPage{
 			"defalutArea" => 0,
 			"displayUserOfficeItems" => 0,
 			"displayUserProfileItems" => 0,
-			"insertDummyItemCode" => 0
+			"insertDummyItemCode" => 0,
+			"displayItemKeywords" => 0,
+			"displayItemDescription" => 0
 		) as $key => $null){
 			$_POST["Config"][$key] = (isset($_POST["Config"][$key])) ? (int)$_POST["Config"][$key] : $null;
 		}
@@ -420,6 +422,20 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[dummyItemCodeRule]",
 			"value" => $config->getDummyItemCodeRule(),
 			"attr:placeholder" => "空欄でランダム"
+		));
+
+		$this->addCheckBox("displayItemKeywords", array(
+			"name" => "Config[displayItemKeywords]",
+			"value" => 1,
+			"selected" => $config->getDisplayItemKeywords(),
+			"label" => "商品情報の登録画面でキーワードの入力画面を表示する"
+		));
+
+		$this->addCheckBox("displayItemDescription", array(
+			"name" => "Config[displayItemDescription]",
+			"value" => 1,
+			"selected" => $config->getDisplayItemDescription(),
+			"label" => "商品情報の登録画面で説明の入力画面を表示する"
 		));
 
 		//メンテナンスモード

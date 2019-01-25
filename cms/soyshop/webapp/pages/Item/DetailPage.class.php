@@ -450,14 +450,15 @@ class DetailPage extends WebPage{
 					'"text" => $entity->getName()));'
 		));
 
-
 		/* config */
+		DisplayPlugin::toggle("item_description", $config->getDisplayItemDescription());
 		$this->addTextArea("item_description", array(
 			"name" => "Item[config][description]",
 			"value" => $item->getAttribute("description"),
 			"readonly" => $readOnly
 		));
 
+		DisplayPlugin::toggle("item_keywords", $config->getDisplayItemKeywords());
 		$this->addInput("item_keywords", array(
 			"name" => "Item[config][keywords]",
 			"value" => $item->getAttribute("keywords"),

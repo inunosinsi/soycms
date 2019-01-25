@@ -29,7 +29,7 @@
 				<p class="require" soy:id="error_code"></p>
 			</dd>
 
-			<?php /*
+			<!-- soy:ignore="category" -->
 			<dt>商品カテゴリ</dt>
 			<dd>
 				<p class="mb" soy:id="item_category_text"></p>
@@ -37,7 +37,7 @@
 				<a class="button" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
 				<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
 			</dd>
-			*/ ?>
+			<!-- /soy:ignore="category" -->
 
 			<dt>価格</dt>
 			<dd>
@@ -54,10 +54,12 @@
 				<input type="text" class="text" soy:id="item_unit">
 			</dd>
 
+			<!-- soy:display="item_description" -->
 			<dt>説明（&lt;meta type="description"&gt;）</dt>
 			<dd>
 				<textarea soy:id="item_description"></textarea>
 			</dd>
+			<!-- /soy:display="item_description" -->
 
 			<dt>商品グループ</dt>
 			<dd>
