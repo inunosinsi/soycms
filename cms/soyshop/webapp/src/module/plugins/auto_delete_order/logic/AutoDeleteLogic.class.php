@@ -13,10 +13,20 @@ class AutoDeleteLogic extends SOY2LogicBase {
 	function execute(){
 		$conf = AutoDeleteOrderUtil::getConfig();
 
+		//自動キャンセル
+		if(isset($conf["auto_cancel"]) && $conf["auto_cancel"] == 1){
+			$timming = time() - (int)$conf["auto_cancel_timming"] * 31 * 24 * 60 * 60;
+			try{
+				self::dao()->executeUpdateQuery("UPDATE soyshop_order SET order_status = " . self::MODE_CANCEL . " WHERE order_date < " . $timming);
+			}catch(Exception $e){
+				//
+			}
+		}
+
 		$orderIds = array();
 
 		foreach(AutoDeleteOrderUtil::getTypes() as $t){
-			if(!isset($conf[$t]) || (int)$conf[$t] !== 1) continue;
+			if(!isset($conf[$t]) || (int)$conf[$t] !== 1 || strpos($t, "auto") === 0) continue;	//自動キャンセルはここでは行わない
 			switch($t){
 				case "pre":
 					$mode = self::MODE_INTERIM;

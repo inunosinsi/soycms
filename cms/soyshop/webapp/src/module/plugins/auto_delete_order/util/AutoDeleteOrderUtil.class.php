@@ -4,8 +4,9 @@ class AutoDeleteOrderUtil {
 
 	private static function _types(){
 		return array(
-			"cancel",	//キャンセル注文
-			"pre"		//仮登録注文
+			"cancel",		//キャンセル注文
+			"pre",			//仮登録注文
+			"auto_cancel"	//自動キャンセル
 		);
 	}
 
@@ -19,7 +20,7 @@ class AutoDeleteOrderUtil {
 
 		foreach(self::_types() as $t){
 			$conf[$t] = 1;
-			$conf[$t . "_timming"] = 3;
+			$conf[$t . "_timming"] = (strpos($t, "auto") === 0) ? 48 : 3;
 		}
 
 		return $conf;

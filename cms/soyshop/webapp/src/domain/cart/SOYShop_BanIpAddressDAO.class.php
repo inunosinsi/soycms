@@ -9,6 +9,8 @@ abstract class SOYShop_BanIpAddressDAO extends SOY2DAO{
 	 */
 	abstract function insert(SOYShop_BanIpAddress $bean);
 
+	abstract function get();
+
 	/**
 	 * @return object
 	 */

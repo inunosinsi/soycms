@@ -13,24 +13,24 @@ abstract class SOYShop_MailLogDAO extends SOY2DAO{
 	abstract function update(SOYShop_MailLog $bean);
 
 	abstract function get();
-	
+
 	/**
 	 * @return object
 	 */
 	abstract function getById($id);
-	
+
 	/**
 	 * @return object
 	 * @query #id# = :id AND #userId# = :userId
 	 */
 	abstract function getByIdAndUserId($id, $userId);
-	
+
 	/**
 	 * @return list
 	 * @order send_date DESC
 	 */
 	abstract function getByOrderId($orderId);
-	
+
 	/**
 	 * @return list
 	 * @order send_date DESC
@@ -42,11 +42,10 @@ abstract class SOYShop_MailLogDAO extends SOY2DAO{
 	 */
 	function onInsert($query, $binds){
 		$binds[":sendDate"] = time();
-		
+
 		if($binds[":isSuccess"] != SOYShop_MailLog::SUCCESS){
 			$binds[":isSuccess"] = SOYShop_MailLog::FAILED;
 		}
 		return array($query, $binds);
 	}
 }
-?>

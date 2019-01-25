@@ -5,5 +5,6 @@ create table soyshop_notice_arrival(
 	sended INTEGER NOT NULL DEFAULT 0,
 	checked INTEGER NOT NULL DEFAULT 0,
 	create_date INTEGER,
-	update_date INTEGER
+	update_date INTEGER,
+	unique(item_id, user_id)
 );

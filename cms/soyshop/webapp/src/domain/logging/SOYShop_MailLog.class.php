@@ -3,7 +3,7 @@
  * @table soyshop_mail_log
  */
 class SOYShop_MailLog {
-	
+
 	const SUCCESS = 1;
 	const FAILED = 0;
 
@@ -12,19 +12,19 @@ class SOYShop_MailLog {
 	 */
     private $id;
     private $recipient;
-    
+
     /**
      * @column order_id
      */
     private $orderId;
-    
+
     /**
      * @column user_id
      */
     private $userId;
     private $title;
     private $content;
-    
+
     /**
      * @column is_success
      */
@@ -34,7 +34,7 @@ class SOYShop_MailLog {
 	 * @column send_date
 	 */
 	private $sendDate;
-	
+
 	function getId(){
 		return $this->id;
 	}
@@ -48,49 +48,49 @@ class SOYShop_MailLog {
 	function setRecipient($recipient){
 		$this->recipient = $recipient;
 	}
-	
+
 	function getOrderId(){
 		return $this->orderId;
 	}
 	function setOrderId($orderId){
 		$this->orderId = $orderId;
 	}
-	
+
 	function getUserId(){
 		return $this->userId;
 	}
 	function setUserId($userId){
 		$this->userId = $userId;
 	}
-	
+
 	function getTitle(){
 		return $this->title;
 	}
 	function setTitle($title){
 		$this->title = $title;
 	}
-	
+
 	function getContent(){
 		return $this->content;
 	}
 	function setContent($content){
 		$this->content = $content;
 	}
-	
+
 	function getIsSuccess(){
 		return $this->isSuccess;
 	}
 	function setIsSuccess($isSuccess){
 		$this->isSuccess = $isSuccess;
 	}
-	
+
 	function getSendDate(){
 		return $this->sendDate;
 	}
 	function setSendDate($sendDate){
 		$this->sendDate = $sendDate;
 	}
-	
+
 	/**
      * テーブル名を取得
      */
@@ -98,4 +98,3 @@ class SOYShop_MailLog {
     	return "soyshop_mail_log";
     }
 }
-?>

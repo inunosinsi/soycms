@@ -197,6 +197,33 @@ create table soyshop_user_token(
 	time_limit integer not null
 );
 
+drop table soyshop_mail_log;
+create table soyshop_mail_log(
+	id integer primary key AUTOINCREMENT,
+	recipient text,
+	order_id integer,
+	user_id integer,
+	title text,
+	content text,
+	is_success tinyint not null default 0,
+	send_date integer NOT NULL,
+	UNIQUE(order_id, user_id, send_date)
+);
+
+drop table soyshop_ban_ip_address;
+create table soyshop_ban_ip_address(
+	ip_address VARCHAR NOT NULL UNIQUE,
+	plugin_id VARCHAR NOT NULL,
+	log_date INTEGER
+);
+
+drop table soyshop_breadcrumb;
+create table soyshop_breadcrumb(
+	item_id integer not null,
+	page_id integer not null,
+	unique(item_id, page_id)
+);
+
 drop table soyshop_item_review;
 create table soyshop_item_review(
 	id integer primary key AUTOINCREMENT,
@@ -217,42 +244,19 @@ create table soyshop_item_review(
 	UNIQUE(item_id, user_id, create_date)
 );
 
+drop table soyshop_review_point;
 create table soyshop_review_point(
 	review_id integer not null,
 	point integer not null default 0
 );
 
-drop table soyshop_breadcrumb;
-create table soyshop_breadcrumb(
-	item_id integer not null,
-	page_id integer not null,
-	unique(item_id, page_id)
-);
-
-drop table soyshop_mail_log;
-create table soyshop_mail_log(
-	id integer primary key AUTOINCREMENT,
-	recipient text,
-	order_id integer,
-	user_id integer,
-	title text,
-	content text,
-	is_success tinyint not null default 0,
-	send_date integer NOT NULL,
-	UNIQUE(order_id, user_id, send_date)
-);
-
+drop table soyshop_favorite_item;
 create table soyshop_favorite_item(
 	id INTEGER primary key AUTOINCREMENT,
 	item_id INTEGER NOT NULL,
 	user_id INTEGER NOT NULL,
 	purchased INTEGER DEFAULT 0,
 	create_date INTEGER,
-	update_date INTEGER
-);
-
-create table soyshop_ban_ip_address(
-	ip_address VARCHAR NOT NULL UNIQUE,
-	plugin_id VARCHAR NOT NULL,
-	log_date INTEGER
+	update_date INTEGER,
+	unique(item_id, user_id, purchased)
 );

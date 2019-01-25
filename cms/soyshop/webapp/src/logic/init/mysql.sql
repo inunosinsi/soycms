@@ -128,7 +128,7 @@ create table soyshop_data_sets(
 ) ENGINE=InnoDB;
 
 drop table soyshop_user;
-CREATE TABLE soyshop_user (
+create table soyshop_user (
 	id INTEGER primary key auto_increment,
 	mail_address VARCHAR(255) unique,
 	attribute1 TEXT,
@@ -198,6 +198,33 @@ create table soyshop_user_token(
 	time_limit integer not null
 ) ENGINE=INNODB;
 
+drop table soyshop_mail_log;
+create table soyshop_mail_log(
+	id integer primary key AUTO_INCREMENT,
+	recipient text,
+	order_id integer,
+	user_id integer,
+	title text,
+	content text,
+	is_success tinyint not null default 0,
+	send_date integer NOT NULL,
+	UNIQUE(order_id, user_id, send_date)
+) ENGINE=InnoDB;
+
+drop table soyshop_ban_ip_address;
+create table soyshop_ban_ip_address(
+	ip_address VARCHAR(15) NOT NULL UNIQUE,
+	plugin_id VARCHAR(52) NOT NULL,
+	log_date INTEGER
+) ENGINE=InnoDB;
+
+drop table soyshop_breadcrumb;
+create table soyshop_breadcrumb(
+	item_id integer not null,
+	page_id integer not null,
+	unique(item_id, page_id)
+) ENGINE=InnoDB;
+
 drop table soyshop_item_review;
 create table soyshop_item_review(
 	id integer primary key AUTO_INCREMENT,
@@ -212,48 +239,25 @@ create table soyshop_item_review(
 	approval integer,
 	vote integer,
 	attributes varchar(255),
-	is_approved tinyint not null,
+	is_approved integer not null,
 	create_date integer not null,
 	update_date integer,
 	UNIQUE(item_id, user_id, create_date)
 ) ENGINE = InnoDB;
 
+drop table soyshop_review_point;
 create table soyshop_review_point(
 	review_id integer not null,
 	point integer not null default 0
 )ENGINE = InnoDB;
 
-drop table soyshop_breadcrumb;
-create table soyshop_breadcrumb(
-	item_id integer not null,
-	page_id integer not null,
-	unique(item_id, page_id)
-) ENGINE=InnoDB;
-
-drop table soyshop_mail_log;
-create table soyshop_mail_log(
-	id integer primary key AUTO_INCREMENT,
-	recipient text,
-	order_id integer,
-	user_id integer,
-	title text,
-	content text,
-	is_success tinyint not null default 0,
-	send_date integer NOT NULL,
-	UNIQUE(order_id, user_id, send_date)
-) ENGINE=InnoDB;
-
+drop table soyshop_favorite_item;
 create table soyshop_favorite_item(
 	id INTEGER primary key AUTO_INCREMENT,
 	item_id INTEGER NOT NULL,
 	user_id INTEGER NOT NULL,
 	purchased TINYINT DEFAULT 0,
 	create_date INTEGER,
-	update_date INTEGER
-) ENGINE=InnoDB;
-
-create table soyshop_ban_ip_address(
-	ip_address VARCHAR(15) NOT NULL UNIQUE,
-	plugin_id VARCHAR(52) NOT NULL,
-	log_date INTEGER
+	update_date INTEGER,
+	unique(item_id, user_id, purchased)
 ) ENGINE=InnoDB;

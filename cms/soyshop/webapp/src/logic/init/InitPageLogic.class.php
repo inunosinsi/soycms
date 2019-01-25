@@ -11,10 +11,10 @@ class InitPageLogic extends SOY2LogicBase{
 		}else{
 			$ini = SOY2::RootDir() . "logic/init/page/ini.default.csv";
 		}
-		
+
 		//ページ一覧の初期化はPageCreateLogicの方で行う
 		SOY2Logic::createInstance("logic.site.page.PageCreateLogic")->initPage($ini);
-		
+
 		return true;
 	}
 
@@ -489,4 +489,3 @@ class InitPageLogic extends SOY2LogicBase{
 		return true;
 	}
 }
-?>

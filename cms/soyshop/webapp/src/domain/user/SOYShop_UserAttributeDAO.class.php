@@ -22,6 +22,11 @@ abstract class SOYShop_UserAttributeDAO extends SOY2DAO{
 	 */
     abstract function get($userId,$fieldId);
 
+	/**
+	 * @return object
+	 */
+	abstract function getAll();
+
     abstract function deleteByUserId($userId);
 
     /**

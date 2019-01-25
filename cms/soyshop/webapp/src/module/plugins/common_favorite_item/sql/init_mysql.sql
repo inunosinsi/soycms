@@ -4,5 +4,6 @@ create table soyshop_favorite_item(
 	user_id INTEGER NOT NULL,
 	purchased TINYINT DEFAULT 0,
 	create_date INTEGER,
-	update_date INTEGER
+	update_date INTEGER,
+	unique(item_id, user_id, purchased)
 ) ENGINE=InnoDB;

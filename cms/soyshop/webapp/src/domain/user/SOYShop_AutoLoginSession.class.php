@@ -3,34 +3,34 @@
  * @table soyshop_auto_login
  */
 class SOYShop_AutoLoginSession extends SOY2DAO_EntityBase{
-	
+
 	/**
 	 * @id
 	 */
 	private $id;
-	
+
 	/**
 	 * @column user_id
 	 */
 	private $userId;
-	
+
 	/**
 	 * @column session_token
 	 */
 	private $token;
-	
+
 	/**
 	 * @column time_limit
 	 */
 	private $limit;
-	
+
 	function check(){
 		return true;
 	}
-	
+
 	/* setter getter */
-	
-	
+
+
 
 	function getId() {
 		return $this->id;
@@ -57,5 +57,3 @@ class SOYShop_AutoLoginSession extends SOY2DAO_EntityBase{
 		$this->limit = $limit;
 	}
 }
-
-?>

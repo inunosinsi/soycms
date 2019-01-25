@@ -13,7 +13,8 @@ create table soyshop_item_review(
 	attributes varchar,
 	is_approved integer not null,
 	create_date integer not null,
-	update_date integer
+	update_date integer,
+	UNIQUE(item_id, user_id, create_date)
 );
 
 create table soyshop_review_point(

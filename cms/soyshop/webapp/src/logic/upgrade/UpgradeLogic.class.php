@@ -1,16 +1,16 @@
 <?php
 
 class UpgradeLogic extends SOY2LogicBase{
-	
-	
+
+
 	private $version;
-	
+
 
 	function upgrade(){
 
 		include_once(dirname(__FILE__) . "/batch/upgrade" . $this->version.".php");
-		execute();		
-		
+		execute();
+
 	}
 
 
@@ -21,4 +21,3 @@ class UpgradeLogic extends SOY2LogicBase{
 		$this->version = $version;
 	}
 }
-?>

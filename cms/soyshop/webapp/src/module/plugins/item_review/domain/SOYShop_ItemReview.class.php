@@ -28,6 +28,9 @@ class SOYShop_ItemReview {
 	private $movie;
 	private $evaluation;
 	private $approval;
+	private $vote;
+	private $attributes;
+
 
 	/**
 	 * @column is_approved
@@ -117,6 +120,20 @@ class SOYShop_ItemReview {
 	}
 	function setApproval($approval){
 		$this->approval = $approval;
+	}
+
+	function getVote(){
+		return $this->vote;
+	}
+	function setVote($vote){
+		$this->vote = $vote;
+	}
+
+	function getAttributes(){
+		return $this->attributes;
+	}
+	function setAttributes($attributes){
+		$this->attributes = $attributes;
 	}
 
 	function getIsApproved(){

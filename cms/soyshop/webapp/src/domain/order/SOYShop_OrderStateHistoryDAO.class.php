@@ -10,6 +10,11 @@ abstract class SOYShop_OrderStateHistoryDAO extends SOY2DAO{
 	 */
     abstract function insert(SOYShop_OrderStateHistory $bean);
 
+	/**
+	 * @return list
+	 */
+	abstract function get();
+
     /**
      * @order id desc
      */
