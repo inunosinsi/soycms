@@ -100,6 +100,7 @@ class ItemPage extends WebPage{
 
 				//商品オプションの登録
 				$this->cart->setItems($items);
+				$this->cart->setAttribute("add_mode_on_admin_order", 0);
 
 				//個数変更や削除
 				foreach($items as $id => $itemOrder){
@@ -122,6 +123,7 @@ class ItemPage extends WebPage{
 					       ? trim($_POST["AddItemByName"]["count"][$key]) : 1 ;
 					if(strlen($name)>0 && strlen($price)>0 && $count > 0){
 						$this->cart->addUnlistedItem($name, $count, $price);
+						$this->cart->setAttribute("add_mode_on_admin_order", 0);
 						$this->cart->save();
 					}
 				}
@@ -145,6 +147,7 @@ class ItemPage extends WebPage{
 						try{
 							$item = $dao->getByCode($code);
 							$this->cart->addItem($item->getId(), $count);
+							$this->cart->setAttribute("add_mode_on_admin_order", 1);
 							$this->cart->save();
 						}catch(Exception $e){
 							continue;
