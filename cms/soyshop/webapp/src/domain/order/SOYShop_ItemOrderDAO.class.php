@@ -96,4 +96,17 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
      */
     abstract function getTotalItemCountByOrderId($orderId);
 
+	/**
+	 * @final
+	 */
+	function getItemIdById($id){
+		try{
+			$res = $this->executeQuery("SELECT item_id FROM soyshop_orders WHERE id = :id LIMIT 1", array(":id" => $id));
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		return (isset($res[0]["item_id"])) ? (int)$res[0]["item_id"] : 0;
+	}
+
 }

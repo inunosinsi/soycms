@@ -10,11 +10,24 @@ class ItemOptionOrderEdit extends SOYShopOrderEditBase{
 			$items = $cart->getItems();
 			$item = end($items);
 
+			$sql = "SELECT item_value FROM soyshop_item_attribute WHERE item_id = :itemId AND item_field_id LIKE 'item_option_%'";
 			$dao = new SOY2DAO();
 			try{
-				$res = $dao->executeQuery("SELECT item_value FROM soyshop_item_attribute WHERE item_id = :itemId AND item_field_id LIKE 'item_option_%'", array(":itemId" => $item->getItemId()));
+				$res = $dao->executeQuery($sql, array(":itemId" => $item->getItemId()));
 			}catch(Exception $e){
 				$res = array();
+			}
+
+			//親商品の方を調べる
+			if(count($res) && isset($res[0]["item_value"]) && !strlen($res[0]["item_value"])){
+				$parentId = soyshop_get_parent_id_by_child_id($item->getItemId());
+				if($parentId > 0) {
+					try{
+						$res = $dao->executeQuery($sql, array(":itemId" => $parentId));
+					}catch(Exception $e){
+						//
+					}
+				}
 			}
 
 			if(count($res)){

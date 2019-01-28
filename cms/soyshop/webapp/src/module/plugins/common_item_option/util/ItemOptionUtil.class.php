@@ -58,14 +58,15 @@ class ItemOptionUtil {
 		return self::_buildOpt($name, $type, $v, $selected, $isBr);
 	}
 
-	public static function buildOption($name, $type, $fieldValue, $selected, $isBr = true){
-		return self::_buildOpt($name, $type, $fieldValue, $selected, $isBr);
+	public static function buildOption($name, $type, $fieldValue, $selected, $isBr = true, $editMode = false){
+		return self::_buildOpt($name, $type, $fieldValue, $selected, $isBr, $editMode);
 	}
 
-	private static function _buildOpt($name, $type, $fieldValue, $selected = null, $isBr = true){
+	private static function _buildOpt($name, $type, $fieldValue, $selected = null, $isBr = true, $editMode = false){
 		$opts = explode("\n", trim($fieldValue));
 		$selected = trim(htmlspecialchars($selected, ENT_QUOTES, "UTF-8"));
 		if(!strlen($selected)) $selected = null;
+		if(is_null($selected) && $editMode) $type = "text";	//管理画面で編集の場合は選択がnullの場合はテキストフォームを出力する
 
 		//選択したタイプによって、HTMLの出力を変える
 		switch($type){
@@ -139,7 +140,7 @@ class ItemOptionUtil {
 		//多言語化の方の値を取得できなかった場合
 		$val = trim(self::_get($itemId, $key)->getValue());
 		if(!strlen($val)) {	//なければ親商品も調べる
-			$parentId = self::_getParentIdByItemId($itemId);
+			$parentId = soyshop_get_parent_id_by_child_id($itemId);
 			if($parentId > 0) $val = trim(self::_get($parentId, $key)->getValue());
 		}
 
@@ -200,21 +201,23 @@ class ItemOptionUtil {
 			$res = array();
 		}
 
-		return (isset($res[0])) ? $dao->getObject($res[0]) : new SOYShop_ItemAttribute();
-	}
+		if(isset($res[0]) && isset($res[0]["item_value"]) && strlen($res[0]["item_value"])) return $dao->getObject($res[0]);
 
-	private static function _getParentIdByItemId($itemId){
-		static $parentIds, $dao;
-		if(is_null($dao)) $dao = new SOY2DAO();
-		if(isset($parentIds[$itemId])) return $parentIds[$itemId];
+		//子商品である場合は親商品の設定を調べる
+		$itemId = self::itemOrderDao()->getItemIdById($itemOrderId);
+		$parentId = soyshop_get_parent_id_by_child_id($itemId);
+		if($parentId === 0) return new SOYShop_ItemAttribute();
 
 		try{
-			$res = $dao->executeQuery("SELECT item_type FROM soyshop_item WHERE id = :itemId LIMIT 1", array(":itemId" => $itemId));
+			return $dao->get($parentId, "item_option_" . $key);
 		}catch(Exception $e){
-			$res = array();
+			return new SOYShop_ItemAttribute();
 		}
+	}
 
-		$parentIds[$itemId] = (isset($res[0]["item_type"]) && is_numeric($res[0]["item_type"])) ? (int)$res[0]["item_type"] : 0;
-		return $parentIds[$itemId];
+	private function itemOrderDao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		return $dao;
 	}
 }

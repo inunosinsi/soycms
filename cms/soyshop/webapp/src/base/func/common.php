@@ -640,6 +640,22 @@ function soyshop_create_random_string($n = 10){
 	return $r_str;
 }
 
+//親商品のIDを取得する
+function soyshop_get_parent_id_by_child_id($itemId){
+	static $parentIds, $dao;
+	if(is_null($dao)) $dao = new SOY2DAO();
+	if(isset($parentIds[$itemId])) return $parentIds[$itemId];
+
+	try{
+		$res = $dao->executeQuery("SELECT item_type FROM soyshop_item WHERE id = :itemId LIMIT 1", array(":itemId" => $itemId));
+	}catch(Exception $e){
+		$res = array();
+	}
+
+	$parentIds[$itemId] = (isset($res[0]["item_type"]) && is_numeric($res[0]["item_type"])) ? (int)$res[0]["item_type"] : 0;
+	return $parentIds[$itemId];
+}
+
 /**
  * 携帯自動振り分けプラグインと多言語化プラグインでも詳細ページが開ける様にページIDを変更する
  * @param Object SOYShop_Item, Object SOYShop_Page

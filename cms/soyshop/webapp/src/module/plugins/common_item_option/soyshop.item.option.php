@@ -279,7 +279,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 		$v = ItemOptionUtil::getFieldValueByItemOrderId($key, $itemOrderId, SOYSHOP_ADMIN_LANGUAGE);
 		if(!strlen($v)) return "";
 
-		return ItemOptionUtil::buildOption($name, $type, $v, $selected, false);
+		return ItemOptionUtil::buildOption($name, $type, $v, $selected, false, true);
 	}
 
 	function buildOnAdmin($index, $fieldValue, $key, $selected){
