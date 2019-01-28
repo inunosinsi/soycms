@@ -2,7 +2,7 @@
 
 if(isset($argv[1])){
 	$shopId = $argv[1];
-	$limit = (isset($argv[2]) && is_numeric($argv[2])) ? (int)$argv[2] : 500;
+	$limit = (isset($argv[2]) && is_numeric($argv[2])) ? (int)$argv[2] : 1000;
 
 	chdir(dirname(__FILE__));
 	$soyshopWebapp = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));

@@ -10,7 +10,7 @@ class OrderTableIndexConfigPage extends WebPage {
 		parent::__construct();
 
 		$this->addLabel("cron_path", array(
-			"text" => "php " . SOY2::RootDir() . "module/plugins/order_table_index/job/optimize.php " . SOYSHOP_ID . " 1000"
+			"text" => "php " . SOY2::RootDir() . "module/plugins/order_table_index/job/optimize.php " . SOYSHOP_ID . " 2000"
 		));
 	}
 
