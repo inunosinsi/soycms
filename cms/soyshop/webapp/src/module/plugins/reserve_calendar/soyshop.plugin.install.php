@@ -1,13 +1,13 @@
 <?php
 class ReserveCalendarInstall extends SOYShopPluginInstallerBase{
-	
+
 	function onInstall(){
 		//初期化時のみテーブルを作成する
 		$sql = $this->getSQL();
 		$dao = new SOY2DAO();
-		
+
 		$array = preg_split('/CREATE TABLE/', $sql, -1, PREG_SPLIT_NO_EMPTY) ;
-		
+
 		foreach($array as $value){
 			$sql = "create table " . trim($value);
 			try{
@@ -16,7 +16,7 @@ class ReserveCalendarInstall extends SOYShopPluginInstallerBase{
 				//
 			}
 		}
-		
+
 		//このプラグイン以外のすべてのプラグインを無効にする
 		try{
 			$dao->executeUpdateQuery("UPDATE soyshop_plugins SET is_active = 0 WHERE plugin_id != 'reserve_calendar'");
@@ -24,11 +24,11 @@ class ReserveCalendarInstall extends SOYShopPluginInstallerBase{
 			//
 		}
 	}
-	
+
 	function onUnInstall(){
 		//アンインストールしてもテーブルは残す
 	}
-		
+
 	/**
 	 * @return String sql for init
 	 */
@@ -38,4 +38,3 @@ class ReserveCalendarInstall extends SOYShopPluginInstallerBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.plugin.install", "reserve_calendar", "ReserveCalendarInstall");
-?>

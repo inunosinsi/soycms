@@ -12,7 +12,7 @@ class AutoDeleteLogic extends SOY2LogicBase {
 
 	function execute(){
 		$conf = AutoDeleteOrderUtil::getConfig();
-
+		
 		//自動キャンセル
 		if(isset($conf["auto_cancel"]) && $conf["auto_cancel"] == 1){
 			$timming = time() - (int)$conf["auto_cancel_timming"] * 31 * 24 * 60 * 60;

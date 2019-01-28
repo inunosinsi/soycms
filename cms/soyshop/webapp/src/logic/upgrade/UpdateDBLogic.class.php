@@ -190,4 +190,3 @@ class UpdateDBLogic extends SOY2LogicBase{
 		}
 	}
 }
-?>

@@ -76,6 +76,7 @@ class IndexPage extends WebPage{
 
 	function __construct(){
 		MessageManager::addMessagePath("admin");
+		SOYShopPlugin::load("soyshop.admin.top");
 
 		parent::__construct();
 
@@ -90,7 +91,26 @@ class IndexPage extends WebPage{
 
 		DisplayPlugin::toggle("display_db_update_area", ($hasCheckVer || $doUpdated));
 
+		//noticeの拡張ポイント
+		$notices = SOYShopPlugin::invoke("soyshop.admin.top", array("mode" => "notice"))->getContents();
+		if(is_null($notices)) $notices = array();
+		
+		$this->createAdd("notice_list", "_common.TopPageNoticeListComponent", array(
+			"list" => $notices,
+			"mode" => "notice"
+		));
+
+		//errorの拡張ポイント
+		$errors = SOYShopPlugin::invoke("soyshop.admin.top", array("mode" => "error"))->getContents();
+		if(is_null($errors)) $errors = array();
+
+		$this->createAdd("error_list", "_common.TopPageNoticeListComponent", array(
+			"list" => $errors,
+			"mode" => "error"
+		));
+
 		$this->action();
+
 
 		self::buildPluginArea();
 
@@ -122,10 +142,7 @@ class IndexPage extends WebPage{
 	}
 
 	private function buildPluginArea(){
-		SOYShopPlugin::load("soyshop.admin.top");
-		$delegate = SOYShopPlugin::invoke("soyshop.admin.top");
-
-		$contents = $delegate->getContents();
+		$contents = SOYShopPlugin::invoke("soyshop.admin.top")->getContents();
 		if(is_null($contents)) $contents = array();
 		DisplayPlugin::toggle("plugin_area", (count($contents) > 0));
 

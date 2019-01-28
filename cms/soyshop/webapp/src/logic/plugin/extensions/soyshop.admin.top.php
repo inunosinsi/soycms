@@ -1,6 +1,18 @@
 <?php
 class SOYShopAdminTopBase implements SOY2PluginAction{
 
+	function notice(){
+		return "";
+	}
+
+	function error(){
+		return "";
+	}
+
+	function always(){
+		return true;
+	}
+
 	/**
 	 * @return boolen
 	 * ログインしているアカウントの権限によって表示するかどうか？
@@ -45,16 +57,43 @@ class SOYShopAdminTopBase implements SOY2PluginAction{
 class SOYShopAdminTopDeletageAction implements SOY2PluginDelegateAction{
 
 	private $_contents;
+	private $mode;
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
-		if($action->allowDisplay()){
-			$array = array();
-			$array["title"] = $action->getTitle();
-			$array["content"] = $action->getContent();
-			$array["link"] = $action->getLink();
-			$array["link_title"] = $action->getLinkTitle();
-			$this->_contents[$moduleId] = $array;
+		switch($this->mode){
+			case "notice":
+				$notice = $action->notice();
+				if(strlen($notice)) {
+					$array = array();
+					$array["wording"] = $notice;
+					$array["always"] = $action->always();
+					$this->_contents[$moduleId] = $array;
+				}
+				break;
+			case "error":
+				$error = $action->error();
+				if(strlen($error)) {
+					$array = array();
+					$array["wording"] = $error;
+					$array["always"] = $action->always();
+					$this->_contents[$moduleId] = $array;
+				}
+				break;
+			default:
+				if($action->allowDisplay()){
+					$array = array();
+					$array["title"] = $action->getTitle();
+					$array["content"] = $action->getContent();
+					$array["link"] = $action->getLink();
+					$array["link_title"] = $action->getLinkTitle();
+					$this->_contents[$moduleId] = $array;
+				}
 		}
+
+	}
+
+	function setMode($mode){
+		$this->mode = $mode;
 	}
 
 	function getContents(){

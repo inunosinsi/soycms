@@ -1,17 +1,17 @@
 <?php
 SOY2::import("domain.config.SOYShop_DataSets");
 class CheckVersionLogic extends SOY2LogicBase{
-	
+
 	private $directory;
-	
+
 	const VERSION_KEY = "SOYSHOP_DB_VERSION";
-	
+
 	/*
 	 * 更新ファイルの正規表現
 	 * 例：update-1.5.sql
 	 */
 	const UPDATE_FILE_REGEX = "/^update-([.0-9]+)\\.sql\$/";
-	
+
 	/**
 	 * データベースを更新する必要があるか？を調べる
 	 * 更新する必要がある場合はtrueを返す
@@ -19,23 +19,23 @@ class CheckVersionLogic extends SOY2LogicBase{
 	 */
 	function checkVersion(){
 		$res = true;
-		
+
 		//現在のバージョンを取得し、値がなければ1を返す
 		$version = $this->getUpdateVersion();
 		$current = $this->getCurrentVersion();
-		
+
 		return ($current < $version) ? true : false;
 	}
-	
+
 	function getCurrentVersion(){
 		return SOYShop_DataSets::get(self::VERSION_KEY,1);
 	}
-	
+
 	function getUpdateVersion(){
 		$files = $this->getUpdateFiles();
 		return count($files) + 1;
 	}
-	
+
 	/**
 	 * 更新ファイルを取得する
 	 * @return Array
@@ -43,7 +43,7 @@ class CheckVersionLogic extends SOY2LogicBase{
 	function getUpdateFiles(){
 
 		$this->setDirectory();
-		
+
 		//ディレクトリの実在チェック
 		if(strlen($this->directory) < 1){
 			throw new Exception("'dir' is empty.");
@@ -68,10 +68,9 @@ class CheckVersionLogic extends SOY2LogicBase{
 		ksort($sql_files);
 
 		return $sql_files;
-	}	
-	
+	}
+
 	function setDirectory(){
 		$this->directory = SOY2::RootDir() . "logic/upgrade/sql/" . SOYSHOP_DB_TYPE ."/";
-	}	
+	}
 }
-?>
