@@ -181,18 +181,16 @@ class LabeledBlockComponent implements BlockComponent{
 		return $this->displayCountFrom;
 	}
 	public function setDisplayCountFrom($displayCountFrom) {
-		if(is_numeric($displayCountFrom)){
-			$this->displayCountFrom = (int)$displayCountFrom;
-		}
+		$cnt = (strlen($displayCountFrom) && is_numeric($displayCountFrom)) ? (int)$displayCountFrom : null;
+		$this->displayCountFrom = $cnt;
 	}
 
 	public function getDisplayCountTo() {
 		return $this->displayCountTo;
 	}
 	public function setDisplayCountTo($displayCountTo) {
-		if(is_numeric($displayCountTo)){
-			$this->displayCountTo = (int)$displayCountTo;
-		}
+		$cnt = (strlen($displayCountTo) && is_numeric($displayCountTo)) ? (int)$displayCountTo : null;
+		$this->displayCountTo = $cnt;
 	}
 
 	public function getEnablePaging(){
@@ -250,7 +248,6 @@ class LabeledBlockComponent_FormPage extends HTMLPage{
 			"list"=>$this->getLabelList(),
 			"currentLabel"=>$this->entity->getLabelId()
 		));
-
 
 		$this->addInput("display_number_start", array(
 			"value"=>$this->entity->getDisplayCountFrom(),

@@ -447,10 +447,11 @@ class SOY2_PathInfoPathBuilder implements SOY2_PathBuilder{
 		if(!$scheme){
 			$scheme = (isset($_SERVER["HTTPS"]) || defined("SOY2_HTTPS") && SOY2_HTTPS) ? "https" : "http";
 		}
-		if(!$domain){
+		if(!$domain && isset($_SERVER["SERVER_NAME"])){
 			$domain = $_SERVER["SERVER_NAME"];
 		}
 		if(!$port){
+			if(!isset($_SERVER["SERVER_PORT"])) $_SERVER["SERVER_PORT"] = 80;
 			if( $_SERVER["SERVER_PORT"] == "80" && !isset($_SERVER["HTTPS"]) || $_SERVER["SERVER_PORT"] == "443" && isset($_SERVER["HTTPS"]) ){
 				$port = "";
 			}elseif(strlen($_SERVER["SERVER_PORT"]) > 0){
@@ -471,7 +472,7 @@ class SOY2_PathInfoPathBuilder implements SOY2_PathBuilder{
 		$relativePath = preg_replace("/\/+/","/",$relativePath);
 		$dirs = explode("/", $base);
 		if($dirs[0] == "") array_shift($dirs);
-		if($dirs[count($dirs)-1] == "") array_pop($dirs);
+		if(count($dirs) > 0 && $dirs[count($dirs)-1] == "") array_pop($dirs);
 		$paths = explode("/",$relativePath);
 		$pathStack = array();
 		foreach($paths as $path){
