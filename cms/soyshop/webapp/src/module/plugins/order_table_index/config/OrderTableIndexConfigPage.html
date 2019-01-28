@@ -3,7 +3,7 @@
 注文件数が多い場合は数回(運営年数が長い場合は数十回)のデータの最適化の処理を必要とします。<br>
 処理の実行は管理画面にアクセスした時に自動で実行されます。<br><br>
 最適化をより速く終了したい場合は下記のコマンドをcrontabに登録して下さい。
-<pre style="border:1px solid #000000; padding:3px;">0 */2 * * * <!-- soy:id="cron_path" /--></pre>
+<pre style="border:1px solid #000000; padding:3px;">*/10 * * * * <!-- soy:id="cron_path" /--> 2000</pre>
 ※時限実行の間隔はサーバのリソースに応じて適宜調整して下さい。<br><br>
 <strong>当プラグインは最適化終了後に自動でアンインストールされます</strong>
 <br><br>

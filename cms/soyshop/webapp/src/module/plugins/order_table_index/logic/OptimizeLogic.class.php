@@ -48,7 +48,23 @@ class OptimizeLogic extends SOY2LogicBase{
 			$res3 = $dao->executeQuery("SELECT order_id, user_id, send_date FROM soyshop_mail_log GROUP BY order_id, user_id, send_date HAVING count(*) > 1 LIMIT " . $limit);
 			if(count($res3)){
 				foreach($res3 as $v){
-					$results = $dao->executeQuery("SELECT id FROM soyshop_mail_log WHERE order_id = " . $v["order_id"] . " AND user_id = " . $v["user_id"] . " AND send_date =" . $v["send_date"]);
+					$q = "SELECT id FROM soyshop_mail_log WHERE ";
+					if(is_null($v["order_id"]) || !strlen($v["order_id"])){
+						$q .= "order_id IS NULL ";
+					}else{
+						$q .= "order_id = " . $v["order_id"] . " ";
+					}
+					$q .= "AND ";
+
+					if(is_null($v["user_id"]) || !strlen($v["user_id"])){
+						$q .= "user_id IS NULL ";
+					}else{
+						$q .= "user_id = " . $v["user_id"] . " ";
+					}
+					$q .= "AND ";
+
+					$q .= "send_date = " . $v["send_date"];
+					$results = $dao->executeQuery($q);
 					if(!count($results)) {
 						self::createIndex("mail_log");
 						break;
@@ -87,7 +103,7 @@ class OptimizeLogic extends SOY2LogicBase{
 			foreach($sqls as $sql){
 				if(strlen(trim($sql)) < 1) continue;
 				if(isset($alias) && strpos($sql, "soyshop_" . $alias) === false) continue;
-				
+
 				try{
 					$dao->executeUpdateQuery($sql);
 				}catch(Exception $e){
