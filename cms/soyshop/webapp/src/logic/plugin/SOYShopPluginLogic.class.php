@@ -12,7 +12,7 @@ class SOYShopPluginLogic extends SOY2LogicBase{
 	 * prepare コンストラクタに任せて、prepareでは何もしない
 	 */
 	function prepare(){}
-	
+
 	/**
 	 * type指定なしですべて
 	 *
@@ -32,7 +32,7 @@ class SOYShopPluginLogic extends SOY2LogicBase{
 		}
 		return $installed;
 	}
-	
+
 	/**
 	 * type指定してモジュールリストを取得する
 	 * type指定なしですべて
@@ -46,7 +46,7 @@ class SOYShopPluginLogic extends SOY2LogicBase{
 
 		return $modulelist;
 	}
-	
+
 	/**
 	 * DBに登録されているモジュールを検索
 	 */
@@ -98,14 +98,14 @@ class SOYShopPluginLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			return;
 		}
-			
+
 
 		SOYShopPlugin::load("soyshop.plugin.install",$module);
 		SOYShopPlugin::invoke("soyshop.plugin.install", array(
 			"mode" => "uninstall"
 		));
 	}
-	
+
 	/**
 	 * plugin.iniに記載されている内容に基づいて、
 	 */
@@ -117,47 +117,49 @@ class SOYShopPluginLogic extends SOY2LogicBase{
 			}catch(Exception $e){
 				$list = array();
 			}
-			
+
 			if(count($list)){
 				foreach($list as $module){
 					$this->uninstallModule($module->getPluginId());
 				}
 			}
-			
+
 			$list = $this->readModuleFile();
 			foreach($list as $moduleId){
 				$this->installModule(trim($moduleId));
 			}
 		}
 	}
-	
-	
-	function readModuleFile(){
+
+
+	function readModuleFile($isOnlyAdmin=false){
 		if(file_exists(SOY2::RootDir() . "logic/init/plugin/plugin.ini")){
 			$pluginListFile = SOY2::RootDir() . "logic/init/plugin/plugin.ini";
+		}else if($isOnlyAdmin){
+			$pluginListFile = SOY2::RootDir() . "logic/init/plugin/plugin.only_admin.ini";
 		}else{
 			$pluginListFile = SOY2::RootDir() . "logic/init/plugin/plugin.default.ini";
 		}
-		
+
 		return explode("\n", file_get_contents($pluginListFile));
 	}
-	
+
 	/**
 	 * iniファイルを探してdbに登録
 	 */
 	function checkNewIni() {
 		$scandir = SOYSHOP_SITE_DIRECTORY . ".plugins/";
 		$this->checkNewIniImpl($scandir);
-		
+
 		$scandir = SOYSHOP_MODULE_DIR . "features/";
 		$this->checkNewIniImpl($scandir);
 	}
-		
+
 	function checkNewIniImpl($scandir){
-		
+
 		$modulelist = array();
 		$inidata = array();
-		
+
 		if(!is_dir($scandir))return;
 		$files = scandir($scandir);
 
@@ -184,7 +186,7 @@ class SOYShopPluginLogic extends SOY2LogicBase{
 						}catch(Exception $e){
 							//
 						}
-						
+
 	  				}
 	  			}
 			}

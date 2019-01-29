@@ -4,10 +4,12 @@ class InitPageLogic extends SOY2LogicBase{
 
 	private $detailPageId = null;
 
-	function initPage() {
+	function initPage($isOnlyAdmin=false) {
 		//ページの初期化用のCSVをインポート(/soyshop/webapp/src/logic/init/page/ini.csvにある)
 		if(file_exists(SOY2::RootDir() . "logic/init/page/ini.csv")){
 			$ini = SOY2::RootDir() . "logic/init/page/ini.csv";
+		}else if($isOnlyAdmin){		//管理画面モード
+			$ini = SOY2::RootDir() . "logic/init/page/ini.only_admin.csv";
 		}else{
 			$ini = SOY2::RootDir() . "logic/init/page/ini.default.csv";
 		}
@@ -33,7 +35,9 @@ class InitPageLogic extends SOY2LogicBase{
 
 	}
 
-	function initCategory(){
+	function initCategory($isOnlyAdmin=false){
+		if($isOnlyAdmin) return true;	//管理画面モードの場合はカテゴリを作成しない
+
 		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 		$categoryLogic = SOY2Logic::createInstance("logic.shop.CategoryLogic");
 
@@ -111,7 +115,9 @@ class InitPageLogic extends SOY2LogicBase{
 
 	}
 
-	function initItems(){
+	function initItems($isOnlyAdmin=false){
+		if($isOnlyAdmin) return true;		//管理画面モードの場合は商品を登録しない
+
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$itemLogic = SOY2Logic::createInstance("logic.shop.item.ItemLogic");
 
@@ -352,7 +358,9 @@ class InitPageLogic extends SOY2LogicBase{
 	/**
 	 * メール本文の初期設定
 	 */
-	function initDefaultMail(){
+	function initDefaultMail($isOnlyAdmin=false){
+		if($isOnlyAdmin) return true;		//管理画面モードの場合はメールの設定を行わない
+
 		try{
 			$logic = SOY2Logic::createInstance("logic.mail.MailLogic");
 
@@ -439,20 +447,17 @@ class InitPageLogic extends SOY2LogicBase{
 	/**
 	 * カートの初期設定
 	 */
-	function initCart(){
+	function initCart($isOnlyAdmin=false){
 		try{
 			SOYShop_DataSets::put("config.cart.cart_title","ショッピングカート");
 
 			SOYShop_DataSets::put("config.cart.use_ssl", 0);
 			SOYShop_DataSets::put("config.cart.ssl_url",str_replace("http","https",SOYSHOP_SITE_URL));
 
-			SOYShop_DataSets::put("config.cart.cart_id",SOYSHOP_TEMPLATE_ID);
+			$cartId = (!$isOnlyAdmin) ? SOYSHOP_TEMPLATE_ID : "none";
+			SOYShop_DataSets::put("config.cart.cart_id", $cartId);
 			SOYShop_DataSets::put("config.cart.cart_url","cart");
 			SOYShop_DataSets::put("config.cart.cart_charset","UTF-8");
-
-			SOYShop_DataSets::put("config.cart.mobile_cart_id","mobile");
-			SOYShop_DataSets::put("config.cart.mobile_cart_url","mb/cart");
-			SOYShop_DataSets::put("config.cart.mobile_cart_charset","Shift_JIS");
 		}catch(Exception $e){
 			return false;
 		}
@@ -470,16 +475,11 @@ class InitPageLogic extends SOY2LogicBase{
 			SOYShop_DataSets::put("config.mypage.use_ssl", 0);
 			SOYShop_DataSets::put("config.mypage.ssl_url",str_replace("http","https",SOYSHOP_SITE_URL));
 
+			$mypageId = (!$isOnlyAdmin) ? SOYSHOP_TEMPLATE_ID : "none";
 			SOYShop_DataSets::put("config.mypage.id",SOYSHOP_TEMPLATE_ID);
 			SOYShop_DataSets::put("config.mypage.url","user");
 			SOYShop_DataSets::put("config.mypage.top","order");
 			SOYShop_DataSets::put("config.mypage.charset","UTF-8");
-
-			SOYShop_DataSets::put("config.mypage.mobile.id","mobile");
-			SOYShop_DataSets::put("config.mypage.mobile.url","mb/user");
-			SOYShop_DataSets::put("config.mypage.mobile.top","mb/order");
-			SOYShop_DataSets::put("config.mypage.mobile.charset","Shift_JIS");
-
 
 			SOYShop_DataSets::put("config.mypage.tmp_user_register", 1);
 		}catch(Exception $e){

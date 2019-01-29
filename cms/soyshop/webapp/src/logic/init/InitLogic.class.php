@@ -9,7 +9,7 @@ class InitLogic extends SOY2LogicBase{
 		$this->option = $option;
 	}
 
-	function initDirectory(){
+	function initDirectory($isOnlyAdmin=false){
 		$shopId = SOYSHOP_ID;
 		$targetDir = SOYSHOP_SITE_DIRECTORY;
 
@@ -29,10 +29,12 @@ class InitLogic extends SOY2LogicBase{
 		));
 
 		file_put_contents($targetDir . ".db/.htaccess","deny from all");
-		$this->initDefaultTemplate($targetDir. ".template/");
-		$this->initDefaultTheme($targetDir."themes/");
-		$this->initDefaultPartsModule($targetDir.".module/");
-		$this->initDefaultIcon($targetDir."files/");
+		$this->initDefaultTemplate($targetDir. ".template/", $isOnlyAdmin);
+		if(!$isOnlyAdmin){
+			$this->initDefaultTheme($targetDir."themes/");
+			$this->initDefaultPartsModule($targetDir.".module/");
+			$this->initDefaultIcon($targetDir."files/");
+		}
 		$this->initController();
 	}
 
@@ -162,7 +164,7 @@ class InitLogic extends SOY2LogicBase{
 		return true;
     }
 
-	function initDefaultTemplate($to){
+	function initDefaultTemplate($to, $isOnlyAdmin=false){
 		if(!defined("SOYSHOP_TEMPLATE_ID"))define("SOYSHOP_TEMPLATE_ID","bryon");
 		$path = dirname(__FILE__) . "/template/".SOYSHOP_TEMPLATE_ID."/";
 
@@ -176,6 +178,7 @@ class InitLogic extends SOY2LogicBase{
 
 			foreach($templates as $file){
 				if($file[0] == ".")continue;
+				if($isOnlyAdmin && strpos($file, "notfound") === false) continue;
 				if(preg_match('/\.ini$/',$file)){
 					file_put_contents($to . $dir . "/" . $file,file_get_contents($path . $dir . "/" . $file));
 				}else{
@@ -267,20 +270,20 @@ class InitLogic extends SOY2LogicBase{
 		}
 	}
 
-	function initModules(){
+	function initModules($isOnlyAdmin=false){
 		if(!defined("SOYSHOP_TEMPLATE_ID")) define("SOYSHOP_TEMPLATE_ID","bryon");
 		$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
 	    $logic->prepare();
 	    $logic->searchModules();
 
 	    //初期化時にインストールするモジュールの管理は/soyshop/src/init/plugin/plugin.default.iniで管理
-	    $list = $logic->readModuleFile();
+	    $list = $logic->readModuleFile($isOnlyAdmin);
 	    foreach($list as $moduleId){
 	    	$logic->installModule(trim($moduleId));
 	    }
 
 		//プラグインの並べ替え
-		include_once(SOY2::RootDir() . "logic/upgrade/extend/extendUpdate-27.php");
+		if(!$isOnlyAdmin) include_once(SOY2::RootDir() . "logic/upgrade/extend/extendUpdate-27.php");
 
 		return true;
 	}

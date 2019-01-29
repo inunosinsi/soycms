@@ -53,9 +53,12 @@ class IndexPage extends SOYShopWebPage{
 
 			if(count($this->errors)) return;//エラーなければサイト作成
 
+			//管理画面のみ使用
+			$isOnlyAdmin = (isset($_POST["only_admin"]) && (int)$_POST["only_admin"] === 1);
+
 			//soyshop init.phpのinclude
 			include_once(dirname(CMS_COMMON) . "/soyshop/init.php");
-			$res = init_soyshop($siteId, $option, $siteName, false);	//実行
+			$res = init_soyshop($siteId, $option, $siteName, false, $isOnlyAdmin);	//実行
 
 
 			if($res){
@@ -193,6 +196,12 @@ class IndexPage extends SOYShopWebPage{
 		$this->addInput("mysql_pass", array(
 			"name" => "MySQL[pass]",
 			"value" => $pass
+		));
+
+		$this->addCheckBox("only_admin", array(
+			"name" => "only_admin",
+			"value" => 1,
+			"label" => "管理画面のみ使用する"
 		));
 	}
 

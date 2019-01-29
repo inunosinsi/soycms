@@ -1,6 +1,6 @@
 <?php
 
-function init_soyshop($siteId = null, $option = array(), $siteName=null, $redirect=true){
+function init_soyshop($siteId = null, $option = array(), $siteName=null, $redirect=true, $isOnlyAdmin=false){
 
 if(!soy2_check_token()) return false;
 
@@ -98,7 +98,7 @@ echo "init start: " . date(DATE_RFC2822);
 echo "\n======================================================\n";
 
 echo "init directory\n";
-$initLogic->initDirectory();
+$initLogic->initDirectory($isOnlyAdmin);
 
 
 echo "\n------------------------------------------------------\n";
@@ -119,7 +119,7 @@ echo "\n------------------------------------------------------\n";
 $initPageLogic = SOY2Logic::createInstance("logic.init.InitPageLogic");
 
 echo "init page";
-$res = $initPageLogic->initPage();
+$res = $initPageLogic->initPage($isOnlyAdmin);
 echo "\n" . ( ($res) ? "success" : "failed");
 echo "\n";
 $end = microtime(true);
@@ -132,7 +132,7 @@ ob_end_clean();ob_start();
 echo "\n------------------------------------------------------\n";
 
 echo "init category";
-$res = $initPageLogic->initCategory();
+$res = $initPageLogic->initCategory($isOnlyAdmin);
 echo "\n" . ( ($res) ? "success" : "failed");
 echo "\n";
 $end = microtime(true);
@@ -145,7 +145,7 @@ ob_end_clean();ob_start();
 echo "\n------------------------------------------------------\n";
 
 echo "init item";
-$res = $initPageLogic->initItems();
+$res = $initPageLogic->initItems($isOnlyAdmin);
 echo "\n" . ( ($res) ? "success" : "failed");
 echo "\n";
 $end = microtime(true);
@@ -158,7 +158,7 @@ ob_end_clean();ob_start();
 echo "\n------------------------------------------------------\n";
 
 echo "init mail";
-$res = $initPageLogic->initDefaultMail();
+$res = $initPageLogic->initDefaultMail($isOnlyAdmin);
 echo "\n" . ( ($res) ? "success" : "failed");
 echo "\n";
 $end = microtime(true);
@@ -172,7 +172,7 @@ echo "\n------------------------------------------------------\n";
 
 echo "init modules";
 
-$res = $initLogic->initModules();
+$res = $initLogic->initModules($isOnlyAdmin);
 echo "\n" . ( ($res) ? "success" : "failed");
 echo "\n";
 $end = microtime(true);
@@ -184,7 +184,7 @@ echo "\n------------------------------------------------------\n";
 
 echo "init cart";
 
-$res = $initPageLogic->initCart();
+$res = $initPageLogic->initCart($isOnlyAdmin);
 echo "\n" . ( ($res) ? "success" : "failed");
 echo "\n";
 $end = microtime(true);
@@ -196,7 +196,7 @@ echo "\n------------------------------------------------------\n";
 
 echo "init mypage";
 
-$res = $initPageLogic->initMypage();
+$res = $initPageLogic->initMypage($isOnlyAdmin);
 echo "\n" . ( ($res) ? "success" : "failed");
 echo "\n";
 $end = microtime(true);
