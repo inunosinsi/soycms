@@ -113,7 +113,7 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		return trim($str);
 	}
 
-	function changeStatus($slipId, $mode="return"){
+	function changeStatus($slipId, $mode=self::MODE_RETURN){
 		$slipNumber = self::getSlipNumberById($slipId);
 		if($mode == self::MODE_RETURN){
 			$slipNumber->setIsReturn(SOYShop_ReturnsSlipNumber::IS_RETURN);
@@ -131,6 +131,10 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		//一つの注文ですべて返送済みにしたら注文ステータスを返却済みにする @Todo 在庫数
 		SOY2::import("domain.order.SOYShop_Order");
 		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
+
+		//注文が既にキャンセルの場合は注文状態を変更しない
+		if($orderLogic->getById($slipNumber->getOrderId())->getStatus() == SOYShop_Order::ORDER_STATUS_CANCELED) return true;
+
 		$cnt = $this->slipDao->countNoReturnByOrderId($slipNumber->getOrderId());
 		if($cnt === 0){
 			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), ReturnsSlipNumberUtil::STATUS_CODE);
