@@ -46,10 +46,10 @@ class CustomFieldListComponent extends HTMLList {
 						'return false;'
 		));
 
-		$this->addLink("update_submit", array(
+		$this->addInput("update_submit", array(
 			"name" => "update_submit",
 			"value" => $entity->getId(),
-			"id" => "update_submit_".$i
+			"attr:id" => "update_submit_".$i
 		));
 
 		$this->addInput("label_input", array(
