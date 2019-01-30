@@ -25,14 +25,14 @@ abstract class SOYShop_PluginConfigDAO extends SOY2DAO{
     abstract function isActiveImpl($id);
 
 	/**
-	 * @order display_order ASC, id ASC
+	 * @order display_order ASC, plugin_id ASC, id ASC
 	 */
     abstract function get();
 
 
     /**
      * @query #isActive# = 1
-     * @order display_order ASC, id ASC
+     * @order display_order ASC, plugin_id ASC, id ASC
      */
     abstract function getActiveModules();
 
@@ -47,7 +47,7 @@ abstract class SOYShop_PluginConfigDAO extends SOY2DAO{
 	abstract function getByPluginId($pluginId);
 
 	/**
-	 * @order display_order ASC, id ASC
+	 * @order display_order ASC, plugin_id ASC, id ASC
 	 */
 	abstract function getByType($type);
 

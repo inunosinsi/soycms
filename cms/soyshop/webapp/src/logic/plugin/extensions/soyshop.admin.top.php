@@ -52,6 +52,14 @@ class SOYShopAdminTopBase implements SOY2PluginAction{
 	function getLinkTitle(){
 		return "";
 	}
+
+	/**
+	 * @return boolean
+	 * タイトル横に表示されるリンクURLを別タブで開くか？
+	 */
+	function getTargetBlank(){
+		return false;
+	}
 }
 
 class SOYShopAdminTopDeletageAction implements SOY2PluginDelegateAction{
@@ -86,6 +94,7 @@ class SOYShopAdminTopDeletageAction implements SOY2PluginDelegateAction{
 					$array["content"] = $action->getContent();
 					$array["link"] = $action->getLink();
 					$array["link_title"] = $action->getLinkTitle();
+					$array["target_blank"] = $action->getTargetBlank();
 					$this->_contents[$moduleId] = $array;
 				}
 		}

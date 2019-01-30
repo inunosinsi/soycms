@@ -283,7 +283,11 @@ class InitLogic extends SOY2LogicBase{
 	    }
 
 		//プラグインの並べ替え
-		if(!$isOnlyAdmin) include_once(SOY2::RootDir() . "logic/upgrade/extend/extendUpdate-27.php");
+		if(!$isOnlyAdmin){
+			foreach(array(27, 47) as $n){
+				include_once(SOY2::RootDir() . "logic/upgrade/extend/extendUpdate-" . $n . ".php");
+			}
+		}
 
 		return true;
 	}
