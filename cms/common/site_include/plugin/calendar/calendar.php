@@ -90,15 +90,17 @@ class CalendarPlugin{
 
 			if(defined("CMS_PREVIEW_MODE")){
 				$monthLink = SOY2PageController::createLink("Page.Preview") ."/". $blog->getId() ."?uri=/". $blog->getMonthPageUri()."/";
+				$entryLink = SOY2PageController::createLink("Page.Preview") ."/". $blog->getId() ."?uri=/". $blog->getEntryPageUri()."/";
 			}else{
 				$monthLink = $page->webPage->getMonthPageURL(true);
+				$entryLink = ($blog->getGenerateEntryFlag()) ? $page->webPage->getEntryPageURL(true) : null;
 			}
 
 			$labelId = $blog->getBlogLabelId();
 
 			$query = new SOY2DAO_Query();
 			$query->prefix  = "select";
-			$query->sql = "count(Entry.id) as count";
+			$query->sql = "Entry.id ";
 			$query->table = " Entry inner join EntryLabel on(Entry.id = EntryLabel.entry_id) ";
 			$where  = array();
 			$where[] = "EntryLabel.label_id = :labelId";
@@ -112,6 +114,7 @@ class CalendarPlugin{
 			$stmt->bindParam(":labelId",$labelId);
 
 			$calendar = array();
+			$entryIdsOnDate = array();	//記事数が1件の日の時の記事IDを格納
 
 			for($i=$monthStart;$i<$monthEnd;){
 				$start = $i;
@@ -121,8 +124,12 @@ class CalendarPlugin{
 				$stmt->bindParam(":end",$end);
 
 				$result = $stmt->execute();
-				$row =  $stmt->fetch(PDO::FETCH_ASSOC);
-				$calendar[date("Y/m/d",$i)] = $row["count"];
+				$row =  $stmt->fetchAll();
+				$count = (isset($row) && is_array($row)) ? count($row) : 0;
+				$calendar[date("Y/m/d",$i)] = $count;
+				if($count === 1){
+					$entryIdsOnDate[date("Y/m/d",$i)] = $row[0]["id"];
+				}
 				$i = $end;
 			}
 
@@ -168,7 +175,19 @@ class CalendarPlugin{
 				if(isset($calendar[$date_text])){
 					$this_month = true;
 					$count = $calendar[$date_text];
-					$text = ($count>0) ? '<a href="'.$monthLink.$date_text.'">'.date("j",$tmpDate).'</a>' : date("j",$tmpDate) ;
+					$j = date("j",$tmpDate);
+					switch($count){
+						case 0:
+							$text = $j;
+							break;
+						case 1:
+							if(!is_null($entryLink) && isset($entryIdsOnDate[$date_text])){
+								$text = '<a href="' . $entryLink.$entryIdsOnDate[$date_text] . '">'.$j.'</a>';
+								break;
+							}
+						default:
+							$text = '<a href="'.$monthLink.$date_text.'">'.$j.'</a>';
+					}
 					$class .= ($count>0) ? ' HasEntry' : ' NoEntry';
 				}else{
 					$text = "&nbsp;";
@@ -207,4 +226,3 @@ class CalendarPlugin{
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }
-?>
