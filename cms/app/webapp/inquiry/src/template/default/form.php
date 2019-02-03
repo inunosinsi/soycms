@@ -25,8 +25,16 @@ foreach($columns as $key => $column){
 	if(isset($errors[$id]))   $class[] = "error";
 	if($column->getType() == "PlainText") $class[] = "title";
 
-	if(count($class)){
-		$output .= "<tr class=\"".implode(" ",$class)."\">";
+	$tr_prop = $obj->getTrProperty();
+	if(strpos($tr_prop, "class=") !== false && count($class)){
+		preg_match('/class="(.*?)"/', $tr_prop, $tmp);
+		if(isset($tmp[1])){
+			$tr_prop = preg_replace('/class="(.*?)"/', "class=\"" . trim($tmp[1]) . " " . implode(" ", $class) . "\"", $tr_prop);
+		}
+	}
+
+	if(strlen($tr_prop)){
+		$output .= "<tr " . $tr_prop . ">";
 	}else{
 		$output .= "<tr>";
 	}

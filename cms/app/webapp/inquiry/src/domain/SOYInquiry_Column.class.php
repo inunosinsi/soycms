@@ -265,6 +265,7 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 	protected $SOYShopFrom = SOYShopConnector::SOYSHOP_NONE;
 	protected $replacement;
 	protected $annotation;
+	protected $trProperty;
 	protected $noPersistent = false;
 
 	/**
@@ -390,7 +391,8 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 		$this->SOYMailTo = isset($config["SOYMailTo"]) ? $config["SOYMailTo"] : null;
 		$this->SOYShopFrom = isset($config["SOYShopFrom"]) ? $config["SOYShopFrom"] : null;
 		$this->replacement = isset($config["replacement"])? $config["replacement"] : null;
-		$this->annotation = isset($config["annotation"])? $config["annotation"] : null;
+		$this->annotation = isset($config["annotation"]) ? $config["annotation"] : null;
+		$this->trProperty = (isset($config["trProperty"])) ? $config["trProperty"] : null;
 
 		if(!defined("SOYINQUIRY_FORM_DESIGN_PAGE")){
 			define("SOYINQUIRY_FORM_DESIGN_PAGE", (isset($_SERVER["PATH_INFO"]) && strpos($_SERVER["PATH_INFO"], "/" . APPLICATION_ID . "/Form/Design/") !== false));
@@ -407,7 +409,8 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 			"SOYShopFrom" => $this->SOYShopFrom,
 			"SOYShopFrom" => $this->SOYShopFrom,
 			"replacement" => $this->replacement,
-			"annotation" => $this->annotation
+			"annotation" => $this->annotation,
+			"trProperty" => $this->trProperty
 		);
 		return $config;
 	}
@@ -513,9 +516,15 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 	function getAnnotation(){
 		return $this->annotation;
 	}
-
 	function setAnnotation($annotation){
 		$this->annotation = $annotation;
+	}
+
+	function getTrProperty(){
+		return $this->trProperty;
+	}
+	function setTrProperty($trProperty){
+		$this->trProperty = $trProperty;
 	}
 
 	function getNoPersistent(){
@@ -525,4 +534,3 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 		$this->noPersistent = $noPersistent;
 	}
 }
-?>

@@ -42,7 +42,7 @@ body{
 </style>
 
 <div style="padding:0px 20px;margin-top:10px;">
-	
+
 	<div class="column_box">
 		<table>
 		<tr>
@@ -52,7 +52,7 @@ body{
 			<th style="width:10em;border-left:solid 1px #bbb;">SOY Mail連携</th>
 			<th style="width:10em;border-left:solid 1px #bbb;">SOY Shop連携</th>
 		</tr>
-		
+
 		</table>
 	</div>
 
@@ -82,8 +82,12 @@ body{
 			<tr>
 				<td class="configure" colspan="4">
 					<div soy:id="configure_wrapper">
-						
+
 						<div soy:id="configure" style="margin:8px 0;"></div>
+						<div style="margin:8px 0;" soy:id="is_tr_property">
+							trの属性:<input type="text" soy:id="tr_property" style="width: 90%;"><br>
+							※記述例：class="sample" title="サンプル" placeholder="" pattern=""
+						</div>
 						<div style="margin:8px 0;">
 							注釈:<input type="text" soy:id="annotation" style="width: 90%;"/>
 						</div>
@@ -97,7 +101,7 @@ body{
 			</tr>
 		</table>
 	</div>
-	
+
 	</form soy:id="column_form">
 	<!-- /soy:id="column_list" -->
 </div>
