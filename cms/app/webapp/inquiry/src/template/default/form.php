@@ -34,9 +34,9 @@ foreach($columns as $key => $column){
 	}
 
 	if(strlen($tr_prop)){
-		$output .= "<tr " . $tr_prop . ">";
+		$output .= "<tr " . $tr_prop . ">\n";
 	}else{
-		$output .= "<tr>";
+		$output .= "<tr>\n";
 	}
 
 	if(strlen($label)>0){

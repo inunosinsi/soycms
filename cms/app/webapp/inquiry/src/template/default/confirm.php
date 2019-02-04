@@ -23,28 +23,36 @@
 
 	$class = array();
 	if($column->getType() == "PlainText") $class[] = "title";
-	if(count($class)){
-		echo "<tr class=\"".implode(" ",$class)."\">";
+	$tr_prop = $obj->getTrProperty();
+	if(strpos($tr_prop, "class=") !== false && count($class)){
+		preg_match('/class="(.*?)"/', $tr_prop, $tmp);
+		if(isset($tmp[1])){
+			$tr_prop = preg_replace('/class="(.*?)"/', "class=\"" . trim($tmp[1]) . " " . implode(" ", $class) . "\"", $tr_prop);
+		}
+	}
+
+	if(strlen($tr_prop)){
+		echo "<tr " . $tr_prop . ">\n";
 	}else{
-		echo "<tr>";
+		echo "<tr>\n";
 	}
 
 	if(strlen($view) > 0){
 		if(strlen($label)){
 			echo "<th>";
 			echo $label;
-			echo "</th>";
+			echo "</th>\n";
 			echo "<td>";
 			echo $view;
-			echo "</td>";
+			echo "</td>\n";
 		}else{
 			echo '<td colspan="2">';
 			echo $view;
-			echo "</td>";
+			echo "</td>\n";
 		}
 	}
 
-	echo "</tr>";
+	echo "</tr>\n";
 }
 ?>
 </table>
