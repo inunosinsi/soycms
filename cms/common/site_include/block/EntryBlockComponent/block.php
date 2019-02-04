@@ -85,6 +85,13 @@ class EntryBlockComponent implements BlockComponent{
 		$this->entryId = $entryId;
 	}
 
+	public function getDisplayCountFrom() {
+		return $this->displayCountFrom;
+	}
+	public function setDisplayCountFrom($displayCountFrom) {
+		$cnt = (strlen($displayCountFrom) && is_numeric($displayCountFrom)) ? (int)$displayCountFrom : null;
+		$this->displayCountFrom = $cnt;
+	}
 }
 
 

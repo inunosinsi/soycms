@@ -221,7 +221,8 @@ class MultiLabelBlockComponent implements BlockComponent{
 		return $this->displayCountFrom;
 	}
 	public function setDisplayCountFrom($displayCountFrom) {
-		$this->displayCountFrom = $displayCountFrom;
+		$cnt = (strlen($displayCountFrom) && is_numeric($displayCountFrom)) ? (int)$displayCountFrom : null;
+		$this->displayCountFrom = $cnt;
 	}
 	public function getDisplayCountTo() {
 		return $this->displayCountTo;
