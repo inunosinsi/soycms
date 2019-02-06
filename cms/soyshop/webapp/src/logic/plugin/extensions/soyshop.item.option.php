@@ -1,4 +1,3 @@
-
 <?php
 
 class SOYShopItemOptionBase implements SOY2PluginAction{
