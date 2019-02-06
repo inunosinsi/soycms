@@ -3,11 +3,10 @@
 SOYShopPlugin::load("soyshop.item.option");
 class ItemOrderListComponent extends HTMLList{
 
-	private $itemDao;
 	private $itemCount;
 
 	protected function populateItem($itemOrder, $key, $counter) {
-		$item = self::getItem($itemOrder->getItemId());
+		$item = soyshop_get_item_object($itemOrder->getItemId());
 
 		$this->addLink("item_link", array(
 			"link" => soyshop_get_item_detail_link($item)
@@ -64,11 +63,7 @@ class ItemOrderListComponent extends HTMLList{
 		));
 
 		//子商品
-		if(is_numeric($item->getType())){
-			$parent = self::getParentItem($item->getType());
-		}else{
-			$parent = new SOYShop_Item();
-		}
+		$parent = (is_numeric($item->getType())) ? soyshop_get_item_object($item->getType()) : new SOYShop_Item();
 
 		/** 親商品関連のタグ **/
 		$this->addLink("parent_link", array(
@@ -109,30 +104,6 @@ class ItemOrderListComponent extends HTMLList{
 		if(count($html)) $html[] = "<input type=\"submit\" name=\"option\" value=\"変更\">";
 
 		return implode("\n", $html);
-	}
-
-	private function getParentItem($itemId){
-		try{
-			return $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
-	}
-
-	/**
-	 * @return object#SOYShop_Item
-	 * @param itemId
-	 */
-	private function getItem($itemId){
-		try{
-			return $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
-	}
-
-	function setItemDao($itemDao){
-		$this->itemDao = $itemDao;
 	}
 
 	function setItemCount($itemCount){

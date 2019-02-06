@@ -55,7 +55,7 @@ class DetailPage extends WebPage{
 
     private function buildForm(SOYShop_ItemReview $review){
 
-    	$item = self::getItem($review->getItemId());
+    	$item = soyshop_get_item_object($review->getItemId());
     	$user = self::getUser($review->getUserId());
 
     	$this->addLabel("id", array(
@@ -117,14 +117,6 @@ class DetailPage extends WebPage{
     	}catch(Exception $e){
     		SOY2PageController::jump("Review");
 			exit;
-    	}
-    }
-
-    private function getItem($itemId){
-    	try{
-    		return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
-    	}catch(Exception $e){
-    		return new SOYShop_Item();
     	}
     }
 

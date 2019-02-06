@@ -97,7 +97,7 @@ class EditPage extends WebPage{
 						$delete = $delete || $newCount == 0 || strlen($newName) == 0;
 						$updateCount = 0;	//商品個数の変更 マイナスの数字も含む
 
-						$item = self::getItem($itemOrder->getItemId());
+						$item = soyshop_get_item_object($itemOrder->getItemId());
 						if($delete){
 							$itemCode = (strlen($item->getCode()) > 0) ? $item->getCode() : $itemOrder->getItemId();
 
@@ -677,7 +677,7 @@ class EditPage extends WebPage{
 	}
 
 	private function changeStock(SOYShop_ItemOrder $itemOrder, $stock){
-		$item = self::getItem($itemOrder->getItemId());
+		$item = soyshop_get_item_object($itemOrder->getItemId());
 		$item->setStock($item->getStock() - $stock);
 		self::updateItem($item);
 
@@ -685,26 +685,6 @@ class EditPage extends WebPage{
 			"mode" => "edit",
 			"itemOrder" => $itemOrder
 		));
-	}
-
-	/**
-	 * @return object#SOYShop_Item
-	 * @param itemId
-	 */
-	function getItem($itemId){
-		static $itemDAO;
-		static $items = array();
-
-		if(!$itemDAO)$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		if(!isset($items[$itemId])){
-			try{
-				$items[$itemId] = $itemDAO->getById($itemId);
-			}catch(Exception $e){
-				$items[$itemId] = new SOYShop_Item();
-			}
-		}
-
-		return $items[$itemId];
 	}
 
 	private function getPaymentMethodList(){

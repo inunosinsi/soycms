@@ -21,7 +21,7 @@ class SOYShopItemNameDeletageAction implements SOY2PluginDelegateAction{
 	private $item;
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
-		
+
 		if(strtolower($_SERVER['REQUEST_METHOD']) == "post"){
 			$action->doPost($this->getItem());
 		}else{
@@ -37,4 +37,3 @@ class SOYShopItemNameDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.item.name","SOYShopItemNameDeletageAction");
-?>

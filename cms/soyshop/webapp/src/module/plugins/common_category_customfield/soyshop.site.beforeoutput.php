@@ -45,10 +45,10 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 				$current = $obj->getObject()->getCurrentItem();
 				if(is_null($current->getCategory())) return;
 				if(is_numeric($current->getCategory())){
-					$parent = self::getItem($current->getCategory());
-					$category = self::getCategory($parent->getCategory());
+					$parent = soyshop_get_item_object($current->getCategory());
+					$category = soyshop_get_category_object($parent->getCategory());
 				}else{
-					$category = self::getCategory($current->getCategory());
+					$category = soyshop_get_category_object($current->getCategory());
 				}
 				$name = $category->getOpenCategoryName();
 				break;
@@ -184,21 +184,6 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 						));
 					}
 			}
-		}
-	}
-
-	private function getItem($itemId){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
-	}
-	private function getCategory($categoryId){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getById($categoryId);
-		}catch(Exception $e){
-			return new SOYShop_Category();
 		}
 	}
 }

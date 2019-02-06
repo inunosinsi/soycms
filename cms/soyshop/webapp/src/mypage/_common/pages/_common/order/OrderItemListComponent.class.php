@@ -5,7 +5,7 @@ class OrderItemListComponent extends HTMLList{
     private $itemDao;
 
     function populateItem($entity){
-        $item = ($entity instanceof SOYShop_ItemOrder) ? self::getItem($entity) : new SOYShop_Item();
+        $item = soyshop_get_item_object($entity->getItemId());
 
         $this->addLink("item_link", array(
             "link" => soyshop_get_item_detail_link($item)
@@ -28,14 +28,5 @@ class OrderItemListComponent extends HTMLList{
         $this->addLabel("item_option", array(
             "html" => $html
         ));
-    }
-
-    private function getItem(SOYShop_ItemOrder $itemOrder){
-        if(!$this->itemDao) $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-        try{
-            return $this->itemDao->getById($itemOrder->getItemId());
-        }catch(Exception $e){
-            return new SOYShop_Item();
-        }
     }
 }

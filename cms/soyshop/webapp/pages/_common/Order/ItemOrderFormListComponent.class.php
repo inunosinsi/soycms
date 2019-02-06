@@ -7,7 +7,7 @@ class ItemOrderFormListComponent extends HTMLList {
 	protected function populateItem($itemOrder) {
 
 		$id = $itemOrder->getId();
-		$item = $this->htmlObj->getItem($itemOrder->getItemId());
+		$item = soyshop_get_item_object($itemOrder->getItemId());
 
 		$this->addInput("item_delete", array(
 			"name" => "Item[$id][itemDelete]",

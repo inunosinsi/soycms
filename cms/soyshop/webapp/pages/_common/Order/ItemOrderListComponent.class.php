@@ -3,11 +3,9 @@
 SOYShopPlugin::load("soyshop.item.option");
 class ItemOrderListComponent extends HTMLList {
 
-	private $itemDAO;
-
 	protected function populateItem($itemOrder) {
 
-		$item = self::getItem($itemOrder->getItemId());
+		$item = soyshop_get_item_object($itemOrder->getItemId());
 
 		$itemExists = ((int)$itemOrder->getItemId() > 0 && method_exists($item, "getCode") && strlen($item->getCode()) > 0);
 		$this->addLink("item_id", array(
@@ -40,26 +38,5 @@ class ItemOrderListComponent extends HTMLList {
 		$this->addLabel("item_total_price", array(
 			"text" => number_format($itemOrder->getTotalPrice())
 		));
-	}
-
-	/**
-	 * @return object#SOYShop_Item
-	 * @param itemId
-	 */
-	private function getItem($itemId){
-		static $items;
-		if(is_null($items)) $items = array();
-		if(!is_numeric($itemId)) return new SOYShop_Item();
-		if(isset($items[$itemId])) return $items[$itemId];
-		try{
-			$items[$itemId] = $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			$items[$itemId] = new SOYShop_Item();
-		}
-		return $items[$itemId];
-	}
-
-	function setItemDao($itemDao){
-		$this->itemDao = $itemDao;
 	}
 }

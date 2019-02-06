@@ -8,7 +8,7 @@ class ItemListComponent extends HTMLList {
 	protected function populateItem($entity, $id) {
 
 		$itemId = (int)$entity->getItemId();
-		$item = self::getItem($itemId);
+		$item = soyshop_get_item_object($itemId);
 
 		$this->addInput("item_delete", array(
 			"name" => "Item[$id][itemDelete]",
@@ -133,25 +133,6 @@ class ItemListComponent extends HTMLList {
 		$this->cart = $cart;
 	}
 
-	/**
-	 * @return object#SOYShop_Item
-	 * @param itemId
-	 */
-	private function getItem($itemId){
-		static $itemDAO;
-		static $items = array();
-
-		if(!$itemDAO)$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		if(!isset($items[$itemId])){
-			try{
-				$items[$itemId] = $itemDAO->getById($itemId);
-			}catch(Exception $e){
-				$items[$itemId] = new SOYShop_Item();
-			}
-		}
-		return $items[$itemId];
-	}
-
 	private function getItemOptionAttributeById($itemId){
 		static $dao, $list;
 		if(is_null($dao)){
@@ -162,7 +143,7 @@ class ItemListComponent extends HTMLList {
 		if(isset($list[$itemId])) return $list[$itemId];
 
 		//今見ている商品が子商品であるか調べる
-		$type = self::getItem($itemId)->getType();
+		$type = soyshop_get_item_object($itemId)->getType();
 		if(is_numeric($type)) $itemId = $type;
 
 		$list[$itemId] = array();

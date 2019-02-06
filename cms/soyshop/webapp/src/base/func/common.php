@@ -61,27 +61,54 @@ function soyshop_get_site_path(){
     return str_replace($dir, '/', SOYSHOP_SITE_DIRECTORY);
 }
 
+/** 商品IDから商品オブジェクト **/
+function soyshop_get_item_object($itemId){
+	static $items, $dao;
+	if(is_null($items)) $items = array();
+	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+	if(is_null($itemId) || !is_numeric($itemId)) return new SOYShop_Item();
+	if(isset($items[$itemId])) return $items[$itemId];
+
+	try{
+        $items[$itemId] = $dao->getById($itemId);
+    }catch(Exception $e){
+        $items[$itemId] = new SOYShop_Item();
+    }
+    return $items[$itemId];
+}
+
 /** カテゴリIDからカテゴリオブジェクトを取得する **/
 function soyshop_get_category_object($categoryId){
-    static $results, $dao;
-
-    if(is_null($categoryId)) return new SOYShop_Category();
-
-    if(is_null($results)){
-        $results = array();
-        $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-    }
-
-    if(isset($results[$categoryId])) return $results[$categoryId];
+    static $categories, $dao;
+	if(is_null($categories)) $categories = array();
+    if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+    if(is_null($categoryId) || !is_numeric($categoryId)) return new SOYShop_Category();
+    if(isset($categories[$categoryId])) return $categories[$categoryId];
 
     try{
-        $category = $dao->getById($categoryId);
+        $categories[$categoryId] = $dao->getById($categoryId);
     }catch(Exception $e){
-        $category = new SOYShop_Category();
+        $categories[$categoryId] = new SOYShop_Category();
     }
 
-    $results[$categoryId] = $category;
-    return $category;
+    return $categories[$categoryId];
+}
+
+/** 顧客IDから顧客オブジェクトを取得する **/
+function soyshop_get_user_object($userId){
+	static $users, $dao;
+	if(is_null($users)) $users = array();
+	if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+	if(is_null($userId) || !is_numeric($userId)) return new SOYShop_User();
+	if(isset($users[$userId])) return $users[$userId];
+
+	try{
+		$users[$userId] = $dao->getById($userId);
+	}catch(Exception $e){
+		$users[$userId] = new SOYShop_User();
+	}
+
+	return $users[$userId];
 }
 
 /**
@@ -590,6 +617,8 @@ function soyshop_dummy_mail_address(){
     }
     return $mailAddress;
 }
+
+
 
 //ダミーの商品コードを取得する
 function soyshop_dummy_item_code(){

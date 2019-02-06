@@ -17,7 +17,7 @@ class InquiryListComponent extends HTMLList {
 		));
 
 		$this->addLabel("user_name", array(
-			"text" => soyshop_get_user_by_id($entity->getUserId())->getName()
+			"text" => soyshop_get_user_object($entity->getUserId())->getName()
 		));
 
 		$this->addLink("mail_detail_link", array(

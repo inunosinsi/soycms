@@ -3,7 +3,7 @@
 class ItemLogic extends SOY2LogicBase{
 
 	private $errors = array();
-	
+
     function validate(SOYShop_Item $obj){
 
 		$dao = self::getItemDAO();
@@ -57,7 +57,7 @@ class ItemLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			var_dump($e);
 		}
-		
+
     }
 
     function setAttribute($id, $key, $value){
@@ -87,7 +87,7 @@ class ItemLogic extends SOY2LogicBase{
 				unset($recommend[$index]);
 				SOYShop_DataSets::put("item.recommend_items", $recommend);
 			}
-			
+
 			try{
 				$item = $dao->getById($id);
 			}catch(Exception $e){
@@ -104,7 +104,7 @@ class ItemLogic extends SOY2LogicBase{
     				break;
     			}
     		}
-    		
+
     		$itemAlias = $item->getAlias();
 			for($j = 0; $j <= 100; $j++){
     			try{
@@ -120,7 +120,7 @@ class ItemLogic extends SOY2LogicBase{
 			$item->setCode($deleteItemCode);
 			$item->setAlias($deleteItemAlias);
 			$item->setIsDisabled(SOYShop_Item::IS_DISABLED);
-			
+
 			try{
 				$dao->update($item);
 			}catch(Exception $e){
@@ -172,7 +172,7 @@ class ItemLogic extends SOY2LogicBase{
     	}
     	return $dao;
     }
-    
+
     private function getItemDAO(){
     	static $itemDAO;
     	if(!$itemDAO){
@@ -180,7 +180,7 @@ class ItemLogic extends SOY2LogicBase{
     	}
     	return$itemDAO;
     }
-    
+
     //マルチカテゴリモード
     function updateCategories($categories, $itemId){
     	$dao = SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO");
@@ -189,7 +189,7 @@ class ItemLogic extends SOY2LogicBase{
     	}catch(Exception $e){
     		//
     	}
-    	
+
     	foreach($categories as $categoryId){
     		$obj = new SOYShop_Categories();
     		$obj->setItemId($itemId);
@@ -201,11 +201,11 @@ class ItemLogic extends SOY2LogicBase{
     		}
     	}
     }
-    
+
     /** ダミー商品をたくさん追加 **/
     function createDummyItems($count = 100){
     	$dao = self::getItemDAO();
-    	
+
     	for($i = 0; $i < $count; $i++){
     		$code = self::createDummyCode();
     		$obj = new SOYShop_Item();
@@ -220,13 +220,13 @@ class ItemLogic extends SOY2LogicBase{
 			}
     	}
     }
-    
+
     const RAND_MIN = 10000;
     const RAND_MAX = 99999;
-    
+
     private function createDummyCode(){
     	$dao = self::getItemDAO();
-    	
+
     	//被らない値を取得するまで何度も取得する
     	for(;;){
     		$code = mt_rand(self::RAND_MIN, self::RAND_MAX);
@@ -239,4 +239,3 @@ class ItemLogic extends SOY2LogicBase{
     	}
     }
 }
-?>

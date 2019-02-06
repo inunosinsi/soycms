@@ -32,7 +32,7 @@ class DetailMenuPage extends HTMLPage{
 		$this->addLink("item_site_link", array(
 			"link" => $url,
 		));
-		
+
 		//確認ページ
 		$this->addLink("item_confirm_link", array(
 			"link" => $url . "?foradminonly",
@@ -52,9 +52,9 @@ class DetailMenuPage extends HTMLPage{
 		$this->addLink("item_order_link", array(
 			"link" => SOY2PageController::createLink("Order.Register.Item." . $this->id)
 		));
-		
+
 		DisplayPlugin::toggle("can_copy", ($item->getType() == SOYShop_Item::TYPE_SINGLE || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD));
-		
+
 		$this->addActionLink("copy_link", array(
 			"link" => SOY2PageController::createLink("Item.Copy." . $this->id)
 		));
@@ -98,5 +98,3 @@ class DetailMenuPage extends HTMLPage{
 		));
 	}
 }
-
-?>

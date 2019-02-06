@@ -88,7 +88,7 @@ class DetailPage extends MainMyPagePageBase{
 
 		$this->addForm("form");
 
-		$item = self::getItem($review->getItemId());
+		$item = soyshop_get_item_object($review->getItemId());
 
 		$this->addLink("item_link", array(
 			"link" => soyshop_get_item_detail_link($item)
@@ -142,14 +142,4 @@ class DetailPage extends MainMyPagePageBase{
 			"text" => date("Y年n月j日 H:i", $review->getUpdateDate())
 		));
     }
-
-    private function getItem($itemId){
-		if(!$this->itemDao) $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-
-		try{
-			return $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
-	}
 }

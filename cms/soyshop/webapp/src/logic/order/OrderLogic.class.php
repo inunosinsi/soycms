@@ -264,7 +264,7 @@ class OrderLogic extends SOY2LogicBase{
 		list($mailBody, $title) = $mailLogic->buildMailBodyAndTitle($order, $sendMailType);
 
 		//宛名
-		$user = soyshop_get_user_by_id($order->getUserId());
+		$user = soyshop_get_user_object($order->getUserId());
 		$userName = $user->getName();
 		if(strlen($userName) > 0) $userName .= " 様";
 

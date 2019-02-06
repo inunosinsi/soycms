@@ -7,8 +7,7 @@ class DetailPage extends WebPage{
 	const CHANGE_STOCK_MODE_RETURN = "return";	//キャンセルから他のステータスに戻した場合
 
 	private $id;
-	private $itemDao;
-
+	
 	function doPost(){
 		if(soy2_check_token()){
 			$dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
@@ -265,13 +264,11 @@ class DetailPage extends WebPage{
 			"style" => "font-weight:normal !important;"
 		));
 
-		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$itemOrders = $logic->getItemsByOrderId($this->id);
 
         /*** 注文商品 ***/
     	$this->createAdd("item_list", "_common.Order.ItemOrderListComponent", array(
     		"list" => $itemOrders,
-    		"itemDao" => $this->itemDao
     	));
 
     	$this->addLabel("order_total_price", array(
@@ -304,7 +301,6 @@ class DetailPage extends WebPage{
 		}
 
 		/*** 注文状態変更の履歴 ***/
-		$historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
 		try{
 			$histories = $logic->getOrderHistories($order->getId());
 		}catch(Exception $e){
@@ -316,9 +312,8 @@ class DetailPage extends WebPage{
     	));
 
     	/*** メールの送信履歴 ***/
-    	$mailLogDAO = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO");
 		try{
-			$mailLogs = $mailLogDAO->getByOrderId($order->getId());
+			$mailLogs = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO")->getByOrderId($order->getId());
 		}catch(Exception $e){
 			$mailLogs = array();
 		}
@@ -471,7 +466,7 @@ class DetailPage extends WebPage{
 		$items = array();
 		foreach($itemOrders as $itemOrder){
 			try{
-				$item = $this->itemDao->getById($itemOrder->getItemId());
+				$item = soyshop_get_item_object($itemOrder->getItemId());
 			}catch(Exception $e){
 				continue;
 			}

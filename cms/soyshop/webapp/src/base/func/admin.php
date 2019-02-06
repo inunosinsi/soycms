@@ -109,19 +109,3 @@ function soyshop_convert_timestamp_on_array($array, $mode = "start"){
 function soyshop_convert_date_string($timestamp){
 	return ($timestamp == 0 || $timestamp == 2147483647) ? "" : date("Y-m-d", $timestamp);
 }
-
-function soyshop_get_user_by_id($userId){
-	static $users, $dao;
-	if(is_null($users)) $users = array();
-	if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-	if(is_null($userId) || !is_numeric($userId)) return new SOYShop_User();
-	if(isset($users[$userId])) return $users[$userId];
-
-	try{
-		$users[$userId] = $dao->getById($userId);
-	}catch(Exception $e){
-		$users[$userId] = new SOYShop_User();
-	}
-
-	return $users[$userId];
-}

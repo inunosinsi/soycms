@@ -106,7 +106,6 @@ class DetailPage extends MainMyPagePageBase{
         $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
         $this->createAdd("item_list", "_common.order.ItemOrderListComponent", array(
             "list" => $itemOrders,
-            "itemDao" => $this->itemDao
         ));
 
         //ダウンロード商品関連

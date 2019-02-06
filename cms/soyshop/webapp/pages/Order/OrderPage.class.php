@@ -49,24 +49,7 @@ class OrderPage extends WebPage{
 		$this->addForm("form");
 
 		$this->createAdd("item_list", "_common.Order.ItemOrderListComponent", array(
-			"list" => $logic->getItemsByOrderId($this->id),
-			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO")
+			"list" => $logic->getItemsByOrderId($this->id)
 		));
-	}
-
-	function getItem($itemId){
-		static $itemDAO;
-		static $items = array();
-
-		if(!$itemDAO)$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		if(!isset($items[$itemId])){
-			try{
-				$items[$itemId] = $itemDAO->getById($itemId);
-			}catch(Exception $e){
-				$items[$itemId] = new SOYShop_Item();
-			}
-		}
-
-		return $items[$itemId];
 	}
 }
