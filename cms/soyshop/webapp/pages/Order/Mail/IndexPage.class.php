@@ -34,6 +34,7 @@ class IndexPage extends WebPage{
 						$order->setStatus(SOYShop_Order::ORDER_STATUS_SENDED);
 						break;
 					case SOYShop_Order::SENDMAIL_TYPE_ORDER:
+					case SOYShop_Order::SENDMAIL_TYPE_OTHER:
 						//何もしない
 						break;
 					default:
