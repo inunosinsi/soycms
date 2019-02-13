@@ -388,6 +388,7 @@ function common_show_message_popup(node, message){
 	if(top < 0){
 		top = 0;
 	}
+	console.log(top);
 	$div.css("top", top);
 
 	$node.mouseout(function(){

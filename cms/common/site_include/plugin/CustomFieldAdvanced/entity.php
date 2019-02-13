@@ -11,7 +11,8 @@ class CustomField{
 		"image" => "画像",
 		"file" => "ファイル",
 		"richtext" => "リッチテキスト",
-		"link" => "リンク"
+		"link" => "リンク",
+		"entry" => "記事"
 	);
 
 	private $id;

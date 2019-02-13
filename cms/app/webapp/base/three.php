@@ -61,7 +61,7 @@
 			<img src="<?php echo $logoPath; ?>" class="navbar-brand" alt="logo">
 
 			<ul id="top_menu_site" class="nav navbar-top-links navbar-left">
-				<li><p><a style="text-decoration:none;color:black;" href="<?php echo CMSApplication::getApplicationRoot(); ?>"><?php echo CMSApplication::getApplicationName(); ?></a></p></li>
+				<li><p><a style="text-decoration:none;color:black;" href="<?php echo CMSApplication::getApplicationRoot(); ?>"><?php echo CMSApplication::getApplicationName(); ?></a><?php echo CMSApplication::getApplicationNameAdding(); ?></p></li>
 			</ul>
 
 			<ul id="top_menu" class="nav navbar-top-links navbar-right">

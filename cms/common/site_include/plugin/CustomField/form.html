@@ -1,3 +1,5 @@
+<p class="alert alert-danger" soy:id="no_field">当プラグインは開発が終了しています。カスタムフィールドアドバンスドの使用を推奨しています。</p>
+
 
 <div style="line-height:2em;">
 <p>
@@ -11,7 +13,7 @@
 
 
 <form method="POST">
-	
+
 	<fieldset>
 		<legend>カスタムフィールドを追加する</legend>
 		<div style="margin:10px;">
@@ -20,18 +22,19 @@
 		<select name="type" style="width:100px;">
 		<?php
 		foreach(CustomField::$TYPES as $key => $value){
+			if($key === "entry") continue;
 			echo "<option value=\"$key\">$value</option>";
 		}
 		?>
 		</select>
 		<input type="submit" value="追加" />
-		
+
 		<span style="margin-left:20px;">
 		<a href="#" onclick="$('#add_field_help').toggle();return false;">使い方</a>
 		</span>
-		
+
 		</div>
-		
+
 		<div id="add_field_help" style="display:none;margin:10px;">
 			<p>エントリーに対して、任意のフィールドを追加することができます。</p>
 			<p>例えば、IDに<b>「customer」</b>を設定し、フィールド名に「<b>連絡先</b>」を設定すると、エントリー編集画面に<b>カスタムフィールド：連絡先</b>と書かれた入力項目が追加されます。<br />
@@ -41,11 +44,11 @@
 			ただし初期値が設定されている場合は初期値を値として使います（&lt;input type=&quot;checkbox&quot; value=&quot;[初期値]&quot;&gt;）。
 			</p>
 		</div>
-		
+
 	</fieldset>
 </form>
 
-	
+
 <div soy:id="add_field">
 	<p>カスタムフィールドは作成されていません。</p>
 	<p>上のフォームより、カスタムフィールドを追加して下さい。</p>
@@ -79,7 +82,7 @@
 			<td>
 				<a soy:id="toggle_update">設定変更</a>
 				<a soy:id="update_link" style="display:none;">変更する</a>
-				
+
 				<input type="submit" soy:id="update_submit" style="display:none;" />
 			</td>
 			<td style="text-align:center;">
@@ -90,9 +93,9 @@
 			<td soy:id="display_form">表示のためのcms:id</td>
 			<td>
 				<a soy:id="toggle_config">Detail</a>
-				
+
 				<a soy:id="delete">Delete</a>
-				
+
 				<input type="submit" soy:id="delete_submit" style="display:none;" />
 			</td>
 			</form>
@@ -114,14 +117,14 @@
 							</select>
 						</div>
 					</div>
-					
+
 					<div class="section">
 						<p class="head">初期値<a href="javascript:void(0);" onclick="common_show_message_popup(this,'初期状態で入力される値です。ラジオボタンとセレクトボックスでは初期状態で選択される項目になります。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
 						<div class="body">
 							<input type="text" class="text" soy:id="default_value" />
 						</div>
 					</div>
-					
+
 					<div class="section">
 						<p class="head">空の時の動作：</p>
 						<div class="body">
@@ -129,14 +132,14 @@
 							<input type="radio" soy:id="empty_hide" id="radio_empty_hide" /><a href="javascript:void(0);" onclick="common_show_message_popup(this,'カスタムフィールドの値が空の場合にタグごと表示されなくなります。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a>
 						</div>
 					</div>
-										
+
 					<div class="section">
 						<p class="head">指定の属性に出力<a href="javascript:void(0);" onclick="common_show_message_popup(this,'altやsrcなど属性名を設定することで、タグに囲まれた部分ではなく&lt;br&gt;そのタグのその属性の値として出力されるようになります。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
 						<div class="body">
 							<input type="text" class="text" soy:id="output" size="20" />
 						</div>
 					</div>
-					
+
 					<div class="section">
 						<p class="head">フォームの説明<a href="javascript:void(0);" onclick="common_show_message_popup(this,'記事投稿画面のフォームの上にフィールドの説明文を表示します。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
 						<div class="body">
@@ -150,20 +153,20 @@
 							<textarea soy:id="extra_outputs"></textarea>
 						</div>
 					</div soy:id="use_extra">
-					
+
 					<div class="section" soy:id="with_options">
 						<p class="head">選択項目<a href="javascript:void(0);" onclick="common_show_message_popup(this,'ラジオボタンとセレクトボックスの選択項目を一行ごとに入力してください。最初に選択されている項目は「初期値」で設定できます。');"><img src="../../../soycms/image/icon/help.gif" class="help_icon" /></a></p>
 						<div class="body">
 							<textarea soy:id="option"></textarea>
 						</div>
 					</div soy:id="with_options">
-																	
+
 					<div style="margin:10px 1em 2em;text-align:right;">
 						<input type="button" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
 					</div>
-					
+
 					<input type="submit" style="display:none;" soy:id="update_advance_submit" />
-				</form>	
+				</form>
 			</td>
 		</tr>
 		<!-- /soy:id="field_list" -->
@@ -182,13 +185,13 @@
 				<td rowspan="2" style="text-align:right;">
 					<input type="submit" style="padding:10px 20px;" value="設定保存" />
 				</td>
-			</tr>				
+			</tr>
 			<tr>
 				<td colspan="2">表示例：<span id="display_sample_title">カスタムフィールド：</span>フィールド名<span id="display_sample_id"> (ID)</span></td>
 			</tr>
 		</table>
 	</fieldset>
-		
+
 </form>
 
 <fieldset style="width:670px">
@@ -257,7 +260,7 @@ function check_update(old){
 		$("#new_label").val(res);
 		return true;
 	}
-	
+
 	return false;
 }
 function update_display_sample(){

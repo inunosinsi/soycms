@@ -1,0 +1,315 @@
+<h4>カスタムフィールド　<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#fieldModal">項目の追加</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-info" onclick="$('#add_field_help').toggle();return false;">使い方</a></h4>
+
+<div id="add_field_help" style="display:none;margin:10px;">
+	<p>記事に対して、任意のフィールドを追加することができます。</p>
+	<p>例えば、IDに<b>「customer」</b>を設定し、フィールド名に「<b>連絡先</b>」を設定すると、エントリー編集画面に<b>カスタムフィールド：連絡先</b>と書かれた入力項目が追加されます。<br />
+	ここで入力したデータは <b>cms:id="customer"</b> で表示させることが可能です。</p>
+	<p>
+	チェックボックスではチェックされたときにフィールド名が値として保持されます（&lt;input type=&quot;checkbox&quot; value=&quot;[フィールド名]&quot;&gt;）。<br/>
+	ただし初期値が設定されている場合は初期値を値として使います（&lt;input type=&quot;checkbox&quot; value=&quot;[初期値]&quot;&gt;）。
+	</p>
+</div>
+
+<div id="abstract" soy:display="no_field">
+	<p>カスタムフィールドプラグインはエントリー編集画面に独自の要素を追加するプラグインです。</p>
+	<p>カスタムフィールドを活用することで、簡単なデータベースとして運用することができます。<br/>
+		※他サイトラベルブロックとブログリンクブロックでカスタムフィールドを使う場合、呼び出し側のサイト（ブロックを設定するサイト）でもカスタムフィールドを同じように設定しておく必要があります。</p>
+</div>
+
+<div id="field_table" soy:display="field_table">
+	<table class="list">
+		<thead>
+			<tr>
+				<td>ID</td>
+				<td>フィールド名</td>
+				<td>タイプ</td>
+				<td>操作</td>
+				<td>表示順</td>
+				<td>表示のさせ方</td>
+				<td>&nbsp;</td>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="field_list" -->
+			<tr>
+				<form method="post">
+				<td soy:id="id">ID</td>
+				<td>
+					<span soy:id="label">説明</span>
+					<input soy:id="label_input" style="display:none;" />
+				</td>
+				<td>
+					<span soy:id="type">input</span>
+					<select soy:id="type_select" style="display:none;" />
+				</td>
+				<td class="text-center">
+					<a soy:id="toggle_update" class="btn btn-info">設定変更</a>
+					<a soy:id="update_link" style="display:none;" class="btn btn-primary">変更する</a>
+
+					<input type="submit" soy:id="update_submit" style="display:none;" />
+				</td>
+				<td class="text-center">
+					<input type="hidden" soy:id="field_id" />
+					<input type="submit" name="move_up" value="△" />
+					<input type="submit" name="move_down" value="▽" />
+				</td>
+				<td soy:id="display_form">表示のためのcms:id</td>
+				<td>
+					<a soy:id="toggle_config" class="btn btn-info">Detail</a>
+					<a soy:id="delete" class="btn btn-danger">Delete</a>
+					<input type="submit" soy:id="delete_submit" style="display:none;" />
+				</td>
+				</form>
+			</tr>
+			<tr soy:id="field_config" style="display:none;">
+				<td colspan="3"></td>
+				<td colspan="4">
+					<h4>高度な設定</h4>
+					<form method="post">
+						<div class="section">
+							<h5>ラベルとの関連付け<a href="javascript:void(0);" title="記事編集画面において特定のラベルが設定されている時のみ表示するようにできます。"><i class="fa fa-question-circle"></i></a></h5>
+							<div class="body">
+								<input type="radio" soy:id="editer_show"  /><a href="javascript:void(0);" title="どの記事でもカスタムフィールドの入力欄を表示します。"><i class="fa fa-question-circle"></i></a><br/>
+								<input type="radio" soy:id="editer_hide"  /><a href="javascript:void(0);" title="カスタムフィールドの入力欄を表示しません。他のサイトと同じ設定が必要なときに使うと不要な入力欄が表示されないため便利です。"><i class="fa fa-question-circle"></i></a><br/>
+								<input type="radio" soy:id="editer_label" /><a href="javascript:void(0);" title="特定のラベルが設定されている時のみカスタムフィールドの入力欄を表示します。"><i class="fa fa-question-circle"></i></a>
+								&nbsp;
+								<select soy:id="labels">
+									<option value="">----</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="section">
+							<h5>初期値<a href="javascript:void(0);" title="初期状態で入力される値です。ラジオボタンとセレクトボックスでは初期状態で選択される項目になります。"><i class="fa fa-question-circle"></i></a></h5>
+							<div class="body">
+								<input type="text" class="text" soy:id="default_value" />
+							</div>
+						</div>
+
+						<div class="section">
+							<h5>空の時の動作：</h5>
+							<div class="body">
+								<input type="radio" soy:id="empty_show" id="radio_empty_show" />&nbsp;<input type="text" class="text" soy:id="empty_value" /><a href="javascript:void(0);" title="カスタムフィールドの値が空の場合に出力される値を指定できます。"><i class="fa fa-question-circle"></i></a><br/>
+								<input type="radio" soy:id="empty_hide" id="radio_empty_hide" /><a href="javascript:void(0);" title="カスタムフィールドの値が空の場合にタグごと表示されなくなります。"><i class="fa fa-question-circle"></i></a>
+							</div>
+						</div>
+
+						<div class="section">
+							<h5>指定の属性に出力<a href="javascript:void(0);" title="altやsrcなど属性名を設定することで、タグに囲まれた部分ではなく、そのタグのその属性の値として出力されるようになります。"><i class="fa fa-question-circle"></i></a></h5>
+							<div class="body">
+								<input type="text" class="text" soy:id="output" size="20" />
+							</div>
+						</div>
+
+						<div class="section">
+							<h5>フォームの説明<a href="javascript:void(0);" title="記事投稿画面のフォームの上にフィールドの説明文を表示します。"><i class="fa fa-question-circle"></i></a></h5>
+							<div class="body">
+								<input type="text" class="text" soy:id="description" size="20" />
+							</div>
+						</div>
+
+						<div class="section" soy:id="use_extra">
+							<h5>属性を追加<a href="javascript:void(0);" title="altやwidth、heightなどの属性名を一行ごとに入力して下さい。指定の属性に出力を設定している場合のみ使用されます。"><i class="fa fa-question-circle"></i></a></h5>
+							<div class="body">
+								<textarea soy:id="extra_outputs"></textarea>
+							</div>
+						</div soy:id="use_extra">
+
+						<div class="section" soy:id="with_options">
+							<h5>選択項目<a href="javascript:void(0);" title="ラジオボタンとセレクトボックスの選択項目を一行ごとに入力してください。最初に選択されている項目は「初期値」で設定できます。"><i class="fa fa-question-circle"></i></a></h5>
+							<div class="body">
+								<textarea soy:id="option" class="form-control" style="height:150px !important; margin-bottom:10px !important;"></textarea>
+							</div>
+						</div soy:id="with_options">
+
+						<div class="text-right">
+							<input type="button" class="btn btn-primary" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
+						</div>
+
+						<input type="submit" style="display:none;" soy:id="update_advance_submit" />
+					</form>
+				</td>
+			</tr>
+			<!-- /soy:id="field_list" -->
+		</tbody>
+	</table>
+</div>
+
+<div soy:id="add_field">
+	<div>
+		<p>
+			カスタムフィールドは作成されていません。<br />
+			上のフォームより、カスタムフィールドを追加して下さい。
+		</p>
+	</div>
+
+	<form soy:id="import_form">
+		<div>
+			<p>カスタムフィールドから設定と記事に紐づいた値をコピーする。
+				<input type="submit" name="import" value="実行">
+			</p>
+		</div>
+	</form>
+</div soy:id="add_field">
+
+<form method="POST">
+	<h4>設定</h4>
+	<table class="list">
+		<tr>
+			<th colspan="3">記事編集画面でのフィールド名の表示形式</th>
+		</tr>
+		<tr>
+			<td colspan="2"><input soy:id="config_display_title"/>&nbsp;&nbsp;<input soy:id="config_display_id"/></td>
+		</tr>
+		<tr>
+			<td colspan="3">表示例：<span id="display_sample_title">カスタムフィールド：</span>フィールド名<span id="display_sample_id"> (ID)</span></td>
+		</tr>
+		<tr>
+			<th colspan="3">表示の高速化β</th>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="checkbox" soy:id="acceleration">
+			</td>
+			<td rowspan="2" style="text-align:right;">
+				<input type="submit" class="btn btn-primary" value="設定保存" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				フィールド数が増え公開側の表示に時間がかかる場合にフィールド取得を制限して表示の高速化を行います。(フィールド数が少ない場合は低速になる可能性があります)
+			</td>
+		</tr>
+	</table>
+</form>
+
+<h4>フィールドID_visible</h4>
+<div>cms:id="<strong>フィールドID_visible</strong>"またはcms:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空の時に表示されなくなります。</div>
+<div>cms:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空ではない時に表示されます。</div>
+<div>例:フィールドIDがsampleの時</div>
+<pre>&lt;div <strong>cms:id="sample_visible"</strong>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;カスタムフィールドの値は<strong>&lt;!-- cms:id="sample" /--&gt;</strong>です。
+&lt;/div&gt;
+&lt;div <strong>cms:id="sample_is_empty"</strong>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;カスタムフィールドの値は空です。
+&lt;/div&gt;</pre>
+
+<form id="export_form" method="post">
+	<h4>CSVエクスポートβ</h4>
+	<div>
+		<label><input type="checkbox" name="format[label]" value="1" checked="checked">1行目をラベルとする</label><br>
+		<label><input type="checkbox" name="format[quote]" value="1">データをダブルクォーテーションで必ず括る（オフの場合は自動判別）</label><br>
+		<label><input type="radio" name="format[separator]" value="comma" checked="checked">カンマ区切り</label>
+		<label><input type="radio" name="format[separator]" value="tab">タブ区切り</label><br/>
+		<label><input type="radio" name="format[charset]" value="Shift-JIS" checked="checked">Shift-JIS</label>
+		<label><input type="radio" name="format[charset]" value="UTF-8">UTF-8</label>&nbsp;
+		<input type="submit" name="csv" class="btn btn-default" value="CSV出力">
+	</div>
+</form>
+
+<form id="import_form" method="post" enctype="multipart/form-data">
+<h4>CSVインポートβ</h4>
+<div>
+	<label><input type="checkbox" name="format[label]" value="1" checked="checked">1行目をラベルとする</label><br>
+	<label><input type="checkbox" name="format[quote]" value="1">データをダブルクォーテーションで必ず括る（オフの場合は自動判別）</label><br>
+	<label><input type="radio" name="format[separator]" value="comma" checked="checked">カンマ区切り</label>
+	<label><input type="radio" name="format[separator]" value="tab">タブ区切り</label><br/>
+	<label><input type="radio" name="format[charset]" value="Shift-JIS" checked="checked">Shift-JIS</label>
+	<label><input type="radio" name="format[charset]" value="UTF-8">UTF-8</label>&nbsp;
+	<div class="form-inline">
+		<input type="file" name="import_file" value="">&nbsp;
+		<input type="submit" name="upload" class="btn btn-default" value="CSVアップロード">
+	</div>
+</div>
+</form>
+
+<!-- モーダル -->
+<div class="modal fade" id="fieldModal" tabindex="-1" role="dialog" aria-labelledby="fieldLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+					<input type="hidden" name="create" value="create" />
+
+					<div class="form-group">
+						<label for="id">ID</label>
+						<input id="custom_key" name="id" type="text" class="form-control validate" required>
+						<div class="alert alert-danger" id="custom_key_error" style="display:none;">必須項目を入力してください</div>
+					</div>
+
+					<div class="form-group">
+						<label for="label">ラベル</label>
+						<input id="custom_label" name="label" type="text" class="form-control validate" required>
+						<div class="alert alert-danger" id="custom_label_error" style="display:none;">必須項目を入力してください</div>
+					</div>
+
+					<div class="form-group">
+						<label for="label">項目種別</label>
+						<select name="type" class="form-control" soy:id="custom_type_select"></select>
+					</div>
+
+					<div class="text-center">
+						<a class="btn btn-primary btn-lg btn-block" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.section h5{text-decoration:underline;}
+</style>
+
+<script>
+$(function(){
+	$("#export_form").attr("target","download_frame");
+	$("#export_form").submit(function(){
+		setTimeout(function(){location.reload();},1000);
+	});
+});
+
+function check_update(old){
+	var res = window.prompt("New Label?",old);
+	if(res != null && res.length > 0){
+		$("#new_label").val(res);
+		return true;
+	}
+
+	return false;
+}
+function update_display_sample(){
+	if($("#config_display_title").prop('checked')){
+		$("#display_sample_title").show();
+	}else{
+		$("#display_sample_title").hide();
+	}
+	if($("#config_display_id").prop('checked')){
+		$("#display_sample_id").show();
+	}else{
+		$("#display_sample_id").hide();
+	}
+}
+update_display_sample();
+
+//validate
+$(function() {
+	$(".validate").each(function() {
+		var input = $(this);
+
+		$(this).bind("blur", function() {
+			if (input.val().length < 1) {
+				$("#" + input.attr("id") + "_error").show();
+				return false;
+			}
+		});
+
+		$(this).bind("focus", function() {
+			$("#" + input.attr("id") + "_error").hide();
+		});
+	});
+}());
+</script>

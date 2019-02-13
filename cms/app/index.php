@@ -7,13 +7,11 @@ include_once(dirname(__FILE__)."/webapp/base/config.php");
 try{
 	//アプリケーションの実行
 	CMSApplication::run();
-	
+
 	//表示
 	CMSApplication::display();
 
 }catch(Exception $e){
 	$exception = $e;
-	include_once(CMS_COMMON . "error/admin.php");
-		
+	include_once(CMS_COMMON . "error/admin.php");		
 }
-?>

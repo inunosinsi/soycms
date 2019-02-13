@@ -38,7 +38,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.2.8"
+			"version"=>"1.5"
 		));
 
 		//プラグイン アクティブ
@@ -158,6 +158,16 @@ class CustomFieldPluginAdvanced{
 					$attr["html"] = $field->getValue();
 				}
 
+				//記事フィールド
+				if($master->getType() == "entry" && strlen($field->getValue()) && strpos($field->getValue(), "-")){
+					$v = explode("-", $field->getValue());
+					$selectedEntryId = (isset($v[1]) && is_numeric($v[1])) ? (int)$v[1] : null;
+					if($selectedEntryId){
+						$entry = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getTitleAndContentByEntryId($selectedEntryId);
+						$attr["html"] = $entry->getContent();
+					}
+				}
+
 				//属性に出力
 				if(strlen($master->getOutput()) > 0){
 
@@ -224,6 +234,7 @@ class CustomFieldPluginAdvanced{
 	 */
 	function config_page($message){
 		//$this->importFields();
+		SOY2::import("site_include.plugin.CustomFieldAdvanced.config.CustomFieldAdvancedPluginFormPage");
 		$form = SOY2HTMLFactory::createInstance("CustomFieldAdvancedPluginFormPage");
 		$form->setPluginObj($this);
 		$form->execute();
@@ -411,7 +422,7 @@ class CustomFieldPluginAdvanced{
 
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
-		return $this->buildFormOnEntryPage($entryId);
+		return self::buildFormOnEntryPage($entryId);
 	}
 
 	/**
@@ -421,10 +432,10 @@ class CustomFieldPluginAdvanced{
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
-		return $this->buildFormOnEntryPage($entryId);
+		return self::buildFormOnEntryPage($entryId);
 	}
 
-	function buildFormOnEntryPage($entryId){
+	private function buildFormOnEntryPage($entryId){
 		$html = $this->getScripts();
 		$html .= '<div class="section custom_field">';
 		$db_arr = $this->getCustomFields($entryId);
@@ -434,16 +445,21 @@ class CustomFieldPluginAdvanced{
 			$db_values[$field->getId()] = $field->getValue();
 		}
 
+		$isEntryField = false;	//記事フィールドがあるか？
 		$db_extra_values = array();
 		foreach($db_arr as $field){
 			$db_extra_values[$field->getId()] = $field->getExtraValues();
 		}
 
 		foreach($this->customFields as $fieldId => $fieldObj){
+			if($fieldObj->getType() == "entry") $isEntryField = true;
 			$html .= $fieldObj->getForm($this, @$db_values[$fieldId], @$db_extra_values[$fieldId]);
 		}
 
 		$html .= '</div>';
+		if($isEntryField){
+			$html .= "<script>\n" . file_get_contents(SOY2::RootDir() . "site_include/plugin/CustomField/js/entry.js") . "\n</script>\n";
+		}
 
 		return $html;
 	}

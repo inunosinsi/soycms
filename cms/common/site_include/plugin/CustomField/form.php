@@ -71,6 +71,10 @@ class CustomFieldPluginFormPage extends WebPage{
 			"visible"=> count($this->pluginObj->customFields)
 		));
 
+		$this->addModel("no_field", array(
+			"visible" => !count($this->pluginObj->customFields)
+		));
+
 		$this->createAdd("add_field","HTMLModel",array(
 			"visible"=> count($this->pluginObj->customFields)<1
 		));

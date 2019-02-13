@@ -90,7 +90,7 @@ class CustomFieldListComponent extends HTMLList {
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_'.$i.'\').toggle();',
-			"style" => (!$entity->getShowInput() OR $entity->getLabelId() OR $entity->getDefaultValue() OR $entity->getEmptyValue() OR $entity->getDescription()) ? "background-color:yellow;" : ""
+			"class" => (!$entity->getShowInput() OR $entity->getLabelId() OR $entity->getDefaultValue() OR $entity->getEmptyValue() OR $entity->getDescription()) ? "btn btn-warning" : "btn btn-info"
 		));
 
 		$this->addModel("field_config", array(

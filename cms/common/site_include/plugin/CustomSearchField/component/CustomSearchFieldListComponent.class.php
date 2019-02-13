@@ -24,7 +24,7 @@ class CustomSearchFieldListComponent extends HTMLList{
             "link" => "javascript:void(0)",
             "text" => "詳細設定",
             "onclick" => '$(\'#field_config_' . $key . '\').toggle();',
-            "style" => ((isset($entity["option"]) && strlen($entity["option"]))) ? "background-color:yellow !important;" : ""
+            "class" => ((isset($entity["option"]) && strlen($entity["option"]))) ? "btn btn-warning" : "btn btn-info"
         ));
 
         /* 順番変更用 */

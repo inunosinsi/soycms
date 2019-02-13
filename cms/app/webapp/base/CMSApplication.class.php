@@ -58,6 +58,17 @@ class CMSApplication {
 	}
 
 	/**
+	 * アプリケーションの名前の横にページ毎から出力した内容を表示する
+	 */
+	public static function getApplicationNameAdding(){
+		$self = CMSApplication::getInstance();
+		if(isset($self->adding) && strlen($self->adding)){
+			return $self->adding;
+		}
+		return "";
+	}
+
+	/**
 	 * アプリ操作者の際にアカウントの編集画面を表示するか？
 	 */
 	public static function getDisplayAccountEditPanelConfig(){
@@ -250,6 +261,7 @@ class CMSApplication {
 	private $menus = array();
 	private $scripts = array();
 	private $links = array();
+	private $adding;
 	private $application;
 	private $mode = "template";
 	private $title = "";
@@ -354,6 +366,14 @@ class CMSApplication {
 
 		//実行
 		$self->application = call_user_func($self->appMain);
+
+		//アプリ名の横にページごとに指定したHTMLを表示したい admin.phpで$appにクラスのインスタンスを入れている場合のみ使用可
+		if(isset($app) && is_object($app)){
+			$className = get_class($app);
+			if(class_exists($className) && method_exists($className, "add")){
+				$self->adding = $className::add();
+			}
+		}
 	}
 
 	/**
