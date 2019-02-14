@@ -52,6 +52,9 @@ class CustomField{
 	//追加属性値の値
 	private $extraValues;
 
+	//記事フィールドでラベルの固定
+	private $fixedLabelId;
+
 	function __construct($array = array()){
 		$obj = (object)$array;
 		SOY2::cast($this,$obj);
@@ -273,6 +276,52 @@ class CustomField{
 					$body .= "&nbsp;<a href=\"" . $h_value . "\" target=\"_blank\">確認</a>";
 				}
 				break;
+			case "entry":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
+				$values = (strlen($fieldValue)) ? explode("-", $fieldValue) : array();
+				$selectedLabelId = (isset($values[0]) && is_numeric($values[0])) ? (int)$values[0] : null;
+				$selectedEntryId = (isset($values[1]) && is_numeric($values[1])) ? (int)$values[1] : 0;
+
+				//ラベルの固定設定
+				if(is_null($selectedLabelId) && strlen($this->getFixedLabelId()) && is_numeric($this->getFixedLabelId())){
+					$selectedLabelId = $this->getFixedLabelId();
+				}
+
+				$html = array();
+				//ラベル一覧
+				$labels = self::_getLabels();
+				if(count($labels)){
+					$html[] = "<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
+					$html[] = "<option></option>";
+					foreach($labels as $labelId => $caption){
+						if($selectedLabelId == $labelId){
+							$html[] = "<option value=\"" . $labelId . "\" selected>" . $caption . "</option>";
+						}else{
+							$html[] = "<option value=\"" . $labelId . "\">" . $caption . "</option>";
+						}
+					}
+					$html[] = "<select>";
+					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
+					$html[] = "<span id=\"" . $this->getFormId() . "\">";
+					if(isset($selectedLabelId) || $selectedEntryId > 0){
+						$entries = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getEntriesByLabelId($selectedLabelId);
+						if(count($entries)){
+							$html[] = "<select name=\"" . $h_formName . "\">";
+							$html[] = "<option></option>";
+							foreach($entries as $entry){
+								$v = $selectedLabelId . "-" . $entry["id"];
+								if($entry["id"] == $selectedEntryId){
+									$html[] = "<option value=\"" . $v . "\" selected>" . $entry["title"] . "</option>";
+								}else{
+									$html[] = "<option value=\"" . $v . "\">" . $entry["title"] . "</option>";
+								}
+							}
+							$html[] = "</select>";
+						}
+					}
+					$html[] = "</span>";
+				}
+				$body = implode("\n", $html);
+				break;
 			case "input":
 			default:
 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
@@ -346,5 +395,35 @@ class CustomField{
 	function setExtraValues($extraValues) {
 		$this->extraValues = $extraValues;
 	}
+
+	function getFixedLabelId(){
+		return $this->fixedLabelId;
+	}
+	function setFixedLabelId($fixedLabelId){
+		$this->fixedLabelId = $fixedLabelId;
+	}
+
+	/** @便利な関数 **/
+	function getLabels(){
+		return self::_getLabels();
+	}
+
+	private function _getLabels(){
+		static $list;
+		if(is_null($list)) {
+			$list = array();
+			try{
+				$labels = SOY2DAOFactory::create("cms.LabelDAO")->get();
+			}catch(Exception $e){
+				$labels = array();
+			}
+
+			if(count($labels)){
+				foreach($labels as $label){
+					$list[$label->getId()] = $label->getCaption();
+				}
+			}
+		}
+		return $list;
+	}
 }
-?>

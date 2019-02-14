@@ -120,7 +120,16 @@
 							<div class="body">
 								<textarea soy:id="option" class="form-control" style="height:150px !important; margin-bottom:10px !important;"></textarea>
 							</div>
-						</div soy:id="with_options">
+						</div>
+
+						<div class="section" soy:id="is_entry_field">
+							<h5>記事フィールドでラベルの固定<a href="javascript:void(0);" title="記事投稿画面でラベルの選択を指定の値に固定します。"><i class="fa fa-question-circle"></i></a></h5>
+							<div class="body">
+								<select soy:id="fixed_label_id">
+									<option></option>
+								</select>
+							</div>
+						</div>
 
 						<div class="text-right">
 							<input type="button" class="btn btn-primary" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />

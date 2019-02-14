@@ -51,6 +51,9 @@ class CustomField{
 	//追加属性値の値
 	private $extraValues;
 
+	//記事フィールドでラベルの固定
+	private $fixedLabelId;
+
 	function __construct($array = array()){
 		$obj = (object)$array;
 		SOY2::cast($this,$obj);
@@ -274,9 +277,15 @@ class CustomField{
 				$values = (strlen($fieldValue)) ? explode("-", $fieldValue) : array();
 				$selectedLabelId = (isset($values[0]) && is_numeric($values[0])) ? (int)$values[0] : null;
 				$selectedEntryId = (isset($values[1]) && is_numeric($values[1])) ? (int)$values[1] : 0;
+
+				//ラベルの固定設定
+				if(is_null($selectedLabelId) && strlen($this->getFixedLabelId()) && is_numeric($this->getFixedLabelId())){
+					$selectedLabelId = $this->getFixedLabelId();
+				}
+
 				$html = array();
 				//ラベル一覧
-				$labels = self::getLabels();
+				$labels = self::_getLabels();
 				if(count($labels)){
 					$html[] = "<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
 					$html[] = "<option></option>";
@@ -290,7 +299,7 @@ class CustomField{
 					$html[] = "<select>";
 					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
 					$html[] = "<span id=\"" . $this->getFormId() . "\">";
-					if($selectedEntryId > 0){
+					if(isset($selectedLabelId) || $selectedEntryId > 0){
 						$entries = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getEntriesByLabelId($selectedLabelId);
 						if(count($entries)){
 							$html[] = "<select name=\"" . $h_formName . "\">";
@@ -384,8 +393,19 @@ class CustomField{
 		$this->extraValues = $extraValues;
 	}
 
+	function getFixedLabelId(){
+		return $this->fixedLabelId;
+	}
+	function setFixedLabelId($fixedLabelId){
+		$this->fixedLabelId = $fixedLabelId;
+	}
+
 	/** @便利な関数 **/
-	private function getLabels(){
+	function getLabels(){
+		return self::_getLabels();
+	}
+
+	private function _getLabels(){
 		static $list;
 		if(is_null($list)) {
 			$list = array();

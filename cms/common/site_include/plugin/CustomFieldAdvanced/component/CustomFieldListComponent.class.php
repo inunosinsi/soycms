@@ -90,7 +90,7 @@ class CustomFieldListComponent extends HTMLList {
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_'.$i.'\').toggle();',
-			"class" => (!$entity->getShowInput() OR $entity->getLabelId() OR $entity->getDefaultValue() OR $entity->getEmptyValue() OR $entity->getDescription()) ? "btn btn-warning" : "btn btn-info"
+			"class" => (!$entity->getShowInput() OR $entity->getLabelId() OR $entity->getDefaultValue() OR $entity->getEmptyValue() OR $entity->getDescription() OR $entity->getFixedLabelId()) ? "btn btn-warning" : "btn btn-info"
 		));
 
 		$this->addModel("field_config", array(
@@ -172,6 +172,18 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addModel("with_options", array(
 			"visible" => $entity->hasOption()
 		));
+
+		/** 記事フィールド用 **/
+		$this->addModel("is_entry_field", array(
+			"visible" => ($entity->getType() == "entry")
+		));
+		$this->addSelect("fixed_label_id", array(
+			"name" => "config[fixedLabelId]",
+			"options" => $entity->getLabels(),
+			"selected" => $entity->getFixedLabelId()
+		));
+
+		/** 記事フィールド用 **/
 
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
