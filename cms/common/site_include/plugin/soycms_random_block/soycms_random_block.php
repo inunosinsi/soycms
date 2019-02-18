@@ -21,7 +21,7 @@ class SOYCMS_Random_Block_Plugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
         if(CMSPlugin::activeCheck($this->getId())){
@@ -43,7 +43,7 @@ class SOYCMS_Random_Block_Plugin{
         //ラベルIDを取得とデータベースから記事の取得件数指定
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);;
         $count = PluginBlockUtil::getLimitByPageId($pageId);
-		
+
         $entryDao = SOY2DAOFactory::create("cms.EntryDAO");
         $sql = "SELECT ent.* FROM Entry ent ".
              "JOIN EntryLabel lab ".

@@ -53,25 +53,24 @@ class PluginBlockUtil {
 	}
 
 	private static function __getBlockByPageId($pageId){
-		static $block;
-		if(is_null($block)){
+		static $plugBlocks;
+		if(is_null($plugBlocks)){
+			$plugBlocks = array();
 			try{
 					$blocks = SOY2DAOFactory::create("cms.BlockDAO")->getByPageId($pageId);
+					if(!count($blocks)) return null;
 			}catch(Exception $e){
 					return null;
 			}
 
-			if(!count($blocks)) return null;
-
-			$block = null;
 			foreach($blocks as $obj){
 				if($obj->getClass() == "PluginBlockComponent"){
-					$block = $obj;
+					$plugBlocks[] = $obj;
 				}
 			}
 		}
 
-		return $block;
+		return $plugBlocks;
 	}
 
 	public static function getBlogPageByPageId($pageId){
@@ -82,12 +81,14 @@ class PluginBlockUtil {
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return null;
 
-		$block = self::__getBlockByPageId($pageId);
-		if(is_null($block)) return null;
+		$blocks = self::__getBlockByPageId($pageId);
+		if(!count($blocks)) return null;
 
-		if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
-			if(preg_match('/cms:count=\"(.*?)\"/', $tmp[1], $ctmp)){
-				if(isset($ctmp[1]) && is_numeric($ctmp[1])) return (int)$ctmp[1];
+		foreach($blocks as $block){
+			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
+				if(preg_match('/cms:count=\"(.*?)\"/', $tmp[1], $ctmp)){
+					if(isset($ctmp[1]) && is_numeric($ctmp[1])) return (int)$ctmp[1];
+				}
 			}
 		}
 
@@ -98,12 +99,14 @@ class PluginBlockUtil {
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return null;
 
-		$block = self::__getBlockByPageId($pageId);
-		if(is_null($block)) return null;
+		$blocks = self::__getBlockByPageId($pageId);
+		if(!count($blocks)) return null;
 
-		if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
-			if(preg_match('/cms:label=\"(.*?)\"/', $tmp[1], $ctmp)){
-				if(isset($ctmp[1]) && is_numeric($ctmp[1])) return (int)$ctmp[1];
+		foreach($blocks as $block){
+			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
+				if(preg_match('/cms:label=\"(.*?)\"/', $tmp[1], $ctmp)){
+					if(isset($ctmp[1]) && is_numeric($ctmp[1])) return (int)$ctmp[1];
+				}
 			}
 		}
 
@@ -114,23 +117,25 @@ class PluginBlockUtil {
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return null;
 
-		$block = self::__getBlockByPageId($pageId);
-		if(is_null($block)) return null;
+		$blocks = self::__getBlockByPageId($pageId);
+		if(!counts($blocks)) return null;
 
-		if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
-			if(preg_match('/cms:labels=\"(.*?)\"/', $tmp[1], $ctmp)){
-				if(isset($ctmp[1]) && strlen($ctmp[1])){
-					$v = str_replace("、", ",", $ctmp[1]);
-					$values = explode(",", $v);
-					if(count($values)){
-						$labelIds = array();
-						foreach($values as $v){
-							$v = (int)trim($v);
-							if(is_numeric($v) && $v > 0){
-								$labelIds[] = $v;
+		foreach($blocks as $block){
+			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
+				if(preg_match('/cms:labels=\"(.*?)\"/', $tmp[1], $ctmp)){
+					if(isset($ctmp[1]) && strlen($ctmp[1])){
+						$v = str_replace("、", ",", $ctmp[1]);
+						$values = explode(",", $v);
+						if(count($values)){
+							$labelIds = array();
+							foreach($values as $v){
+								$v = (int)trim($v);
+								if(is_numeric($v) && $v > 0){
+									$labelIds[] = $v;
+								}
 							}
+							return $labelIds;
 						}
-						return $labelIds;
 					}
 				}
 			}
