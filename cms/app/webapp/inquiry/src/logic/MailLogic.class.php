@@ -316,6 +316,3 @@ class MailLogic extends SOY2LogicBase{
     	return true;
 	}
 }
-
-
-?>
