@@ -17,7 +17,8 @@ class AffiliateA8flyCart extends SOYShopCartBase{
 		$html = array();
 
 		$html[] = "<span id=\"a8sales\"></span>";
-		$html[] = "<script src=\"//statics.a8.net/a8sales/a8sales.js\"></script>";
+		//</head>直前に移動
+		//$html[] = "<script src=\"//statics.a8.net/a8sales/a8sales.js\"></script>";
 		$html[] = "<script>";
 		$html[] = "a8sales({";
   		$html[] = "	\"pid\": \"" . trim($config["id"]) . "\",";

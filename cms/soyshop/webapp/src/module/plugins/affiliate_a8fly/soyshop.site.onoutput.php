@@ -24,6 +24,9 @@ class AffiliateA8flyOnOutput extends SOYShopSiteOnOutputAction{
 			return $html;
 		}
 
+		//マイページでは表示しない
+		//if(defined("SOYSHOP_MYPAGE_MODE") && SOYSHOP_MYPAGE_MODE) return $html;
+
 		//</head>の直前。なければ挿入しない
 		if(stripos($html, '</head>') === false) return $html;
 

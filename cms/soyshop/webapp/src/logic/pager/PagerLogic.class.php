@@ -210,4 +210,3 @@ class SimplePager extends HTMLList{
 		$this->query = $query;
 	}
 }
-?>

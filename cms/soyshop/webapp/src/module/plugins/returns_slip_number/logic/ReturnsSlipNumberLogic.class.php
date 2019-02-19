@@ -124,7 +124,6 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		try{
 			$this->slipDao->update($slipNumber);
 		}catch(Exception $e){
-			var_dump($e);
 			return false;
 		}
 
