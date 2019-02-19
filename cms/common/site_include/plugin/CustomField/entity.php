@@ -264,7 +264,8 @@ class CustomField{
 				break;
 			case "link":
 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<input type="text" class="custom_field_input form-control" style="width:70%"'
+				$body =  '<div class="form-inline">'
+						.'<input type="text" class="custom_field_input form-control" style="width:70%"'
 				       .' id="'.$h_formID.'"'
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'"'
@@ -272,6 +273,7 @@ class CustomField{
 				if(strlen($h_value)){
 					$body .= "&nbsp;<a href=\"" . $h_value . "\" target=\"_blank\">確認</a>";
 				}
+				$body .= '</div>';
 				break;
 			case "entry":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
 				$values = (strlen($fieldValue)) ? explode("-", $fieldValue) : array();
@@ -296,7 +298,7 @@ class CustomField{
 							$html[] = "<option value=\"" . $labelId . "\">" . $caption . "</option>";
 						}
 					}
-					$html[] = "<select>";
+					$html[] = "</select>";
 					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
 					$html[] = "<span id=\"" . $this->getFormId() . "\">";
 					if(isset($selectedLabelId) || $selectedEntryId > 0){
