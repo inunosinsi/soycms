@@ -9,7 +9,7 @@ function preview_customfield($form){
 
 		var publicURL = "#PUBLIC_URL#";
 		var siteURL = "#SITE_URL#";
-		var siteID = "#SITE_ID#";
+		var siteId = "#SITE_ID#";
 
 		var url = "";
 		var href = $form.val();
