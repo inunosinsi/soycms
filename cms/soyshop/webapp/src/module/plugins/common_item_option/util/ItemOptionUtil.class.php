@@ -66,7 +66,7 @@ class ItemOptionUtil {
 		$opts = explode("\n", trim($fieldValue));
 		$selected = trim(htmlspecialchars($selected, ENT_QUOTES, "UTF-8"));
 		if(!strlen($selected)) $selected = null;
-		if(is_null($selected) && $editMode) $type = "text";	//管理画面で編集の場合は選択がnullの場合はテキストフォームを出力する
+		//if(is_null($selected) && $editMode) $type = "text";	//管理画面で編集の場合は選択がnullの場合はテキストフォームを出力する
 
 		//選択したタイプによって、HTMLの出力を変える
 		switch($type){
