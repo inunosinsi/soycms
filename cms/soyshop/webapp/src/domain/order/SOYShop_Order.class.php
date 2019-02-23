@@ -1,6 +1,8 @@
 <?php
 SOY2::import("domain.user.SOYShop_User");
 SOY2::import("domain.order.SOYShop_ItemModule");
+SOYShopPlugin::load("soyshop.order.status");
+SOYShopPlugin::load("soyshop.order.status.sort");
 
 /**
  * @table soyshop_order
@@ -136,45 +138,80 @@ class SOYShop_Order {
      * 注文ステータスの配列を取得
      */
     public static function getOrderStatusList($all = false){
-		$list = array(
-    		//注文ステータス
-			SOYShop_Order::ORDER_STATUS_REGISTERED => "新規受付",
-			SOYShop_Order::ORDER_STATUS_RECEIVED => "受付完了",
-			SOYShop_Order::ORDER_STATUS_SENDED => "発送済み",
-		);
+		static $list;
+		if(is_null($list)){
+			$list = array(
+	    		//注文ステータス
+				SOYShop_Order::ORDER_STATUS_INTERIM => "仮登録",		//仮登録は管理画面からは見えない
+				SOYShop_Order::ORDER_STATUS_REGISTERED => "新規受付",
+				SOYShop_Order::ORDER_STATUS_RECEIVED => "受付完了",
+				SOYShop_Order::ORDER_STATUS_SENDED => "発送済み",
+			);
 
-    	if($all){
-    		$list[SOYShop_Order::ORDER_STATUS_INTERIM] = "仮登録";//仮登録は管理画面からは見えない
-    	}
+			//拡張ポイント
+			$adds = SOYShopPlugin::invoke("soyshop.order.status", array(
+				"mode" => "status",
+			))->getList();
 
-		//拡張ポイント
-		SOYShopPlugin::load("soyshop.order.status");
-		$adds = SOYShopPlugin::invoke("soyshop.order.status", array(
-			"mode" => "status",
-		))->getList();
-
-		if(is_array($adds) && count($adds)){
-			foreach($adds as $add){
-				if(!is_array($add) || !count($add)) continue;
-				foreach($add as $key => $values){
-					if(isset($add[$key]["label"])) $list[$key] = $add[$key]["label"];
+			if(is_array($adds) && count($adds)){
+				foreach($adds as $add){
+					if(!is_array($add) || !count($add)) continue;
+					foreach($add as $key => $values){
+						if(isset($add[$key]["label"])) $list[$key] = $add[$key]["label"];
+					}
 				}
 			}
+
+			ksort($list);
+
+			//プラグインで状態の並び替え
+			$sort = SOYShopPlugin::invoke("soyshop.order.status.sort", array(
+				"mode" => "status",
+			))->getSort();
+
+			if(is_array($sort) && count($sort)){
+				$tmps = array();	//並び順に合わせて格納
+
+				//仮登録がある場合は必ず先頭にする
+				if(isset($list[self::ORDER_STATUS_INTERIM])){
+					$tmps[self::ORDER_STATUS_INTERIM] = $list[self::ORDER_STATUS_INTERIM];
+					unset($list[self::ORDER_STATUS_INTERIM]);
+				}
+
+				foreach($sort as $s){
+					if(isset($list[$s])){
+						$tmps[$s] = $list[$s];
+						unset($list[$s]);
+					}
+				}
+
+				//プラグインで設定していないステータスコードがあった場合は末尾に追加する
+				if(isset($list) && count($list)){
+					foreach($list as $key => $v){
+						$tmps[$key] = $v;
+					}
+				}
+				$list = $tmps;
+			}
+
+			//キャンセルは最後
+			$list[SOYShop_Order::ORDER_STATUS_CANCELED] = "キャンセル";
 		}
 
-		ksort($list);
+		//allがtrueの場合はそのまま出力
+		if($all) return $list;
 
-		//キャンセルは最後
-		$list[SOYShop_Order::ORDER_STATUS_CANCELED] = "キャンセル";
-
-    	return $list;
+    	//allがfalseの場合は場合は仮登録分のみ削除して出力
+		$tmps = $list;
+		unset($tmps[SOYShop_Order::ORDER_STATUS_INTERIM]);
+		return $tmps;
     }
 
     /**
      * 支払ステータスのリストを取得
      */
     public static function getPaymentStatusList(){
-		static $list;
+		static $list;	//2度読み込むことがないのでstatic
 		if(is_null($list)){
 			$list = array(
 					//支払ステータス
@@ -186,7 +223,6 @@ class SOYShop_Order {
 	    	);
 
 			//拡張ポイント
-			SOYShopPlugin::load("soyshop.order.status");
 			$adds = SOYShopPlugin::invoke("soyshop.order.status", array(
 				"mode" => "payment",
 			))->getList();
@@ -201,6 +237,30 @@ class SOYShop_Order {
 			}
 
 			ksort($list);
+
+			//プラグインで状態の並び替え
+			$sort = SOYShopPlugin::invoke("soyshop.order.status.sort", array(
+				"mode" => "payment",
+			))->getSort();
+
+			if(is_array($sort) && count($sort)){
+				$tmps = array();	//並び順に合わせて格納
+
+				foreach($sort as $s){
+					if(isset($list[$s])){
+						$tmps[$s] = $list[$s];
+						unset($list[$s]);
+					}
+				}
+
+				//プラグインで設定していないステータスコードがあった場合は末尾に追加する
+				if(isset($list) && count($list)){
+					foreach($list as $key => $v){
+						$tmps[$key] = $v;
+					}
+				}
+				$list = $tmps;
+			}
 		}
 
 		return $list;
