@@ -50,6 +50,21 @@ class IndexPage extends CMSWebPageBase{
 			$this->addMessage("SOYCMS_CONFIG_SHOW_ONLY_ADMINISTRATOR");
 		}
 
+		//プラグインによるコンテンツの追加
+		$contents = array();
+		$onLoad = CMSPlugin::getEvent('onAdminTop');
+		foreach($onLoad as $plugin){
+			$func = $plugin[0];
+			$res = call_user_func($func);
+			if(!isset($res["title"])) continue;	//コンテンツ名が無い場合はスルー
+			$contents[] = $res;
+		}
+
+		DisplayPlugin::toggle("plugin_area", (count($contents) > 0));
+		$this->createAdd("plugin_area_list", "_component.Top.TopPagePluginAreaListComponent", array(
+			"list" => $contents
+		));
+
 		$this->addLabel("widgets", array(
 			"html" => $this->getWidgetsHTML()
 		));

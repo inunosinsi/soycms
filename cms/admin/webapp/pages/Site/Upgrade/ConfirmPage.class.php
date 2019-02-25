@@ -10,17 +10,17 @@ class ConfirmPage extends CMSUpdatePageBase{
 			$logic = SOY2LogicContainer::get("logic.db.UpdateDBLogic", array(
 				"target" => "site"
 			));
-	
+
 			$sites = $this->getSiteOnly();
 			foreach($sites as $site){
 				//切り替え
 				SOY2DAOConfig::Dsn($site->getDataSourceName());
 				//実行（バージョン番号も入る）
-				$logic->update();
+				$logic->update($site->getPath());
 			}
 			//戻す
 			SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
-	
+
 			SOY2PageController::jump("Site.Upgrade.Complete");
 		}
 	}
@@ -124,4 +124,3 @@ class SiteList extends HTMLList{
 		));
 	}
 }
-?>

@@ -14,6 +14,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	private $target;
 	private $dir;
 	private $db;
+	private $extendDirectory;	//データベースの実行以外の更新
 
 	//DataSets (soycms_admin_data_sets)でのclass名
 	const VERSION_KEY = "SOYCMS_DB_VERSION";
@@ -33,8 +34,9 @@ class UpdateDBLogic extends SOY2LogicBase{
 
 	/**
 	 * データベースを更新する
+	 * サイト側のDBの更新の場合は$siteDirに値がある
 	 */
-	public function update() {
+	public function update($siteDir = null) {
 
 		//現在のデータベースのバージョンを取得する
 		$current_version = $this->getCurrentVersion();
@@ -45,7 +47,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 		//現在のデータベースのバージョンより上のupdateを実行する
 		foreach($sql_files as $version => $sql_file){
 			if($version > $current_version && strpos($sql_file,".sql")!==false){
-				$this->executeSqlFile($sql_file);
+				$this->executeSqlFile($sql_file, $version , $siteDir);
 				$this->registerVersion($version);
 			}
 		}
@@ -134,7 +136,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	/**
 	 * 指定したファイルのSQL文を実行
 	 */
-	private function executeSqlFile($file){
+	private function executeSqlFile($file, $version=1, $siteDir=null){
 
 		$sqls = $this->getSqlQuery($file);
 		foreach($sqls as $sql){
@@ -144,6 +146,11 @@ class UpdateDBLogic extends SOY2LogicBase{
 			}catch(Exception $e){
 				error_log(var_export($e,true));
 			}
+		}
+
+		//データベース以外の更新
+		if(file_exists($this->extendDirectory . "extendUpdate-" . $version . ".php")){
+			include_once($this->extendDirectory . "extendUpdate-" . $version . ".php");
 		}
 	}
 
@@ -203,6 +210,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 			case "site":
 			case "admin":
 				$this->dir = CMS_SQL_DIRECTORY."update/".$target."/".SOYCMS_DB_TYPE."/";
+				$this->extendDirectory = CMS_SQL_DIRECTORY."extend/".$target."/";
 		}
 		switch($target){
 			case "site":

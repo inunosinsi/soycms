@@ -22,7 +22,8 @@ class CMSPlugin {
 		"onPageOutput" => array(),		//ページが出力される前				array($pageObject)
 		"onPageEdit" => array(),		//ページの編集画面が呼び出される直前	array(page)
 
-
+		//管理画面の拡張
+		"onAdminTop" => array(),		//管理画面トップページの拡張	@params array()、@return array("title" => "", "content" => "")
 
 		//エントリー関連
 		"onEntryLoad"=>array(),			//*エントリーが読み込まれる直前		array(entry)
