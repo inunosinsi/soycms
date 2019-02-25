@@ -27,7 +27,7 @@ class UtilMultiLanguagePlugin{
 
 		//二回目以降の動作
 		if(CMSPlugin::activeCheck($this->getId())){
-			
+
 			SOY2::import("site_include.plugin.util_multi_language.util.SOYCMSUtilMultiLanguageUtil");
 
 			//公開側へのアクセス時に必要に応じてリダイレクトする
@@ -64,31 +64,31 @@ class UtilMultiLanguagePlugin{
 	 * 公開側の出力
 	 */
 	function redirect(){
-		
+
 		//既に設定している場合は処理を止める
 		if(defined("SOYCMS_PUBLISH_LANGUAGE")) return;
-			
+
 		$config = $this->getConfig();
 		$redirectLogic = SOY2Logic::createInstance("site_include.plugin.util_multi_language.logic.RedirectLanguageSiteLogic");
-		
+
 		//ブラウザの言語設定を確認するモード
 		if($this->check_browser_language){
 			$language = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
-			
+
 			foreach(self::getLanguageList() as $lang => $title){
 				if(preg_match('/^' . $lang . '/i', $language)) {
 					$languageConfig = $lang;
 					break;
 				}
 			}
-			
+
 			//念の為
 			if(!isset($languageConfig)) $languageConfig = "jp";
-			
+
 		//言語切替ボタンを使うモード
 		}else{
 			$userSession = SOY2ActionSession::getUserSession();
-			
+
 			//言語切替ボタンを押したとき
 			if(isset($_GET["language"])){
 				$languageConfig = $redirectLogic->getLanguageArterCheck($config);
@@ -100,7 +100,7 @@ class UtilMultiLanguagePlugin{
 				if(is_null($languageConfig)){
 					//SOY Shopの方の言語設定も確認する
 					$languageConfig = $userSession->getAttribute("soyshop_publish_language");
-					
+
 					if(is_null($languageConfig)){
 						$languageConfig = "jp";
 						$userSession->setAttribute("soycms_publish_language", $languageConfig);
@@ -108,13 +108,13 @@ class UtilMultiLanguagePlugin{
 				}
 			}
 		}
-		
+
 		if(!defined("SOYCMS_PUBLISH_LANGUAGE")){
 			define("SOYCMS_PUBLISH_LANGUAGE", $languageConfig);
 			define("SOYSHOP_PUBLISH_LANGUAGE", $languageConfig);
 		}
 		$redirectPath = $redirectLogic->getRedirectPath($config);
-		
+
 		if($redirectLogic->checkRedirectPath($redirectPath)){
 			CMSPageController::redirect($redirectPath);
 			exit;
@@ -137,19 +137,19 @@ class UtilMultiLanguagePlugin{
 			return $this->config;
 		}
 	}
-	
+
 	function setConfig($config){
 		$this->config = soy2_serialize($config);
 	}
-	
+
 	function getCheckBrowserLanguage(){
 		return $this->check_browser_language;
 	}
-	
+
 	function setCheckBrowserLanguage($check_browser_language){
 		$this->check_browser_language = $check_browser_language;
 	}
-	
+
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		if(is_null($obj)){
@@ -159,4 +159,3 @@ class UtilMultiLanguagePlugin{
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }
-?>
