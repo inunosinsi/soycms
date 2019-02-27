@@ -20,7 +20,7 @@ class SOYCMS_Search_Block_Plugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.0"
+			"version"=>"1.1"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){

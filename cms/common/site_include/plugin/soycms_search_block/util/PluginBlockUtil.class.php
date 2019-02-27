@@ -58,9 +58,9 @@ class PluginBlockUtil {
 			$plugBlocks = array();
 			try{
 					$blocks = SOY2DAOFactory::create("cms.BlockDAO")->getByPageId($pageId);
-					if(!count($blocks)) return null;
+					if(!count($blocks)) return array();
 			}catch(Exception $e){
-					return null;
+					return array();
 			}
 
 			foreach($blocks as $obj){
@@ -82,7 +82,7 @@ class PluginBlockUtil {
 		if(is_null($template)) return null;
 
 		$blocks = self::__getBlockByPageId($pageId);
-		if(!count($blocks)) return null;
+		if(!is_array($blocks) || !count($blocks)) return null;
 
 		foreach($blocks as $block){
 			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
@@ -100,7 +100,7 @@ class PluginBlockUtil {
 		if(is_null($template)) return null;
 
 		$blocks = self::__getBlockByPageId($pageId);
-		if(!count($blocks)) return null;
+		if(!is_array($blocks) || !count($blocks)) return null;
 
 		foreach($blocks as $block){
 			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
@@ -118,7 +118,7 @@ class PluginBlockUtil {
 		if(is_null($template)) return null;
 
 		$blocks = self::__getBlockByPageId($pageId);
-		if(!counts($blocks)) return null;
+		if(!is_array($blocks) || !counts($blocks)) return null;
 
 		foreach($blocks as $block){
 			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
