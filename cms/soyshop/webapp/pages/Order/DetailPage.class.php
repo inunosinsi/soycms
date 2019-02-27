@@ -7,7 +7,7 @@ class DetailPage extends WebPage{
 	const CHANGE_STOCK_MODE_RETURN = "return";	//キャンセルから他のステータスに戻した場合
 
 	private $id;
-	
+
 	function doPost(){
 		if(soy2_check_token()){
 			$dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
@@ -115,6 +115,13 @@ class DetailPage extends WebPage{
 
     	parent::__construct();
 
+		//詳細ページを開いた時に何らかの処理をする
+		SOYShopPlugin::load("soyshop.order");
+		SOYShopPlugin::invoke("soyshop.order", array(
+			"mode" => "detail",
+			"orderId" => $this->id
+		));
+
 		if(!class_exists("SOYShopPluginUtil")) SOY2::import("util.SOYShopPluginUtil");
 
 		DisplayPlugin::toggle("sended", isset($_GET["sended"]));
@@ -134,6 +141,26 @@ class DetailPage extends WebPage{
     	$this->addLabel("order_raw_id", array(
 			"text" => $order->getId()
 		));
+
+		/** 注文番号のバーコード **/
+		if(SOYShopPluginUtil::checkIsActive("generate_barcode_tracking_number")){
+			SOY2::import("module.plugins.generate_barcode_tracking_number.util.GenerateBarcodeUtil");
+			$barcodeSrc = GenerateBarcodeUtil::getBarcodeImagePath($order->getTrackingNumber() . ".jpg");
+		}else{
+			$barcodeSrc = null;
+		}
+
+		DisplayPlugin::toggle("barcode", strlen($barcodeSrc));
+		$this->addImage("barcode", array(
+			"src" => $barcodeSrc
+		));
+
+		$this->addLink("barcode_download_button", array(
+			"link" => $barcodeSrc,
+			"attr:download" => $order->getTrackingNumber() . ".jpg"
+		));
+		/** 注文番号のバーコード **/
+
 
 		$this->addLabel("order_date", array(
 			"text" => date('Y-m-d H:i', $order->getOrderDate())

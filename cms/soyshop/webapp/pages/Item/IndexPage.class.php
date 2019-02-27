@@ -46,6 +46,12 @@ class IndexPage extends WebPage{
 
 		parent::__construct();
 
+		//一覧ページを開いた時に何らかの処理をする
+		SOYShopPlugin::load("soyshop.item");
+		SOYShopPlugin::invoke("soyshop.item", array(
+			"mode" => "list"
+		));
+
 		//管理制限の権限を取得し、権限がない場合は表示しない
 		$this->addModel("app_limit_function", array(
 			"visible" => $appLimit

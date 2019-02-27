@@ -224,6 +224,13 @@ class DetailPage extends WebPage{
 
 		parent::__construct();
 
+		//詳細ページを開いた時に何らかの処理をする
+		SOYShopPlugin::load("soyshop.item");
+		SOYShopPlugin::invoke("soyshop.item", array(
+			"mode" => "detail",
+			"itemId" => $this->id
+		));
+
 		DisplayPlugin::toggle("copy", (isset($_GET["copy"])));
 		DisplayPlugin::toggle("error", (isset($_GET["error"])));
 

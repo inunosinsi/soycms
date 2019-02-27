@@ -48,6 +48,22 @@ class InvoiceListComponent extends HTMLList{
 
 	/*** 注文概要 ***/
 	private function buildOrderArea(SOYShop_Order $order){
+		//バーコード	使いどころは決めていない
+		if(SOYShopPluginUtil::checkIsActive("generate_barcode_tracking_number")){
+			if(!class_exists("GenerateBarcodeUtil")) SOY2::import("module.plugins.generate_barcode_tracking_number.util.GenerateBarcodeUtil");
+			$barcodeSrc = GenerateBarcodeUtil::getBarcodeImagePath($order->getTrackingNumber() . ".jpg");
+		}else{
+			$barcodeSrc = null;
+		}
+
+		$this->addModel("is_barcode", array(
+			"visible" => (strlen($barcodeSrc))
+		));
+
+		$this->addImage("barcode", array(
+			"src" => $barcodeSrc
+		));
+
 		$this->addLabel("order_id", array(
 			"text" => $order->getTrackingNumber()
 		));

@@ -24,9 +24,17 @@
 		<caption>注文詳細</caption>
 		<col style="width:180px;" />
 		<tbody>
+			<tr soy:display="barcode" class="alC">
+				<td colspan="2">
+					<img soy:id="barcode">&nbsp;
+					<a soy:id="barcode_download_button" class="button">ダウンロード</a>
+				</td>
+			</tr>
 			<tr>
 				<th>注文番号（注文ID）</th>
-				<td><!-- soy:id="order_id" -->123-4567-8979<!-- /soy:id="order_id" --> (<!-- soy:id="order_raw_id" -->123<!-- /soy:id="order_raw_id" -->)</td>
+				<td>
+					<!-- soy:id="order_id" -->123-4567-8979<!-- /soy:id="order_id" --> (<!-- soy:id="order_raw_id" -->123<!-- /soy:id="order_raw_id" -->)
+				</td>
 			</tr>
 			<tr>
 				<th>注文日時</th>
