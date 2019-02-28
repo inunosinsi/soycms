@@ -188,7 +188,37 @@ class IndexPage extends WebPage{
 			"value" => (isset($form["categories"])) ? $form["categories"] : ""
 		));
 
+		$this->createAdd("custom_search_item_list", "_common.Item.CustomSearchItemListComponent", array(
+			"list" => self::getCustomSearchItems($form)
+		));
+
 		return $form;
+	}
+
+	private function getCustomSearchItems($form){
+		//検索フォームの拡張ポイント
+		SOYShopPlugin::load("soyshop.item.search");
+		$items = SOYShopPlugin::invoke("soyshop.item.search", array(
+			"mode" => "form",
+			"params" => (isset($form["customs"])) ? $form["customs"] : array()
+		))->getSearchItems();
+
+		//再配列
+		$list = array();
+		foreach($items as $item){
+			if(is_null($item)) continue;
+			$key = key($item);
+			if($key == "label"){
+				$list[] = $item;
+			//複数の項目が入っている
+			}else{
+				foreach($item as $v){
+					$list[] = $v;
+				}
+			}
+		}
+
+		return $list;
 	}
 
 	function getParameter($key){

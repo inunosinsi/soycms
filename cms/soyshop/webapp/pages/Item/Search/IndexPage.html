@@ -138,30 +138,42 @@
 
 		<table class="form_table">
 			<caption>商品検索条件</caption>
-			<tr><th>商品名</th>
-			<td>
-				<input type="text" class="text" soy:id="item_name" />
+			<tr>
+				<th>商品名</th>
+				<td>
+					<input type="text" class="text" soy:id="item_name" />
 
-				<input type="checkbox" class="option" soy:id="is_open" checked/>
-				<label for="is_open_check">公開中</label>
-				<input type="checkbox" class="option" soy:id="is_close" checked/>
-				<label for="is_close_check">非公開</label>
-				<input type="checkbox" class="option" soy:id="is_sale" />
-				<label for="is_sale_check">セール中</label>
-			</td>
+					<input type="checkbox" class="option" soy:id="is_open" checked/>
+					<label for="is_open_check">公開中</label>
+					<input type="checkbox" class="option" soy:id="is_close" checked/>
+					<label for="is_close_check">非公開</label>
+					<input type="checkbox" class="option" soy:id="is_sale" />
+					<label for="is_sale_check">セール中</label>
+				</td>
+			</tr>
 
-			<tr><th>商品コード</th>
-			<td>
-				<input type="text" class="text" soy:id="item_code" />
+			<tr>
+				<th>商品コード</th>
+				<td>
+					<input type="text" class="text" soy:id="item_code" />
 
-				<input type="checkbox" class="option" soy:id="is_child">
-			</td>
+					<input type="checkbox" class="option" soy:id="is_child">
+				</td>
+			</tr>
 
-			<tr><th>商品カテゴリ</th>
-			<td>
-				<input type="hidden" soy:id="item_categories" />
-				<ul id="category_tree" soy:id="category_tree"></ul>
-			</td>
+			<tr>
+				<th>商品カテゴリ</th>
+				<td>
+					<input type="hidden" soy:id="item_categories" />
+					<ul id="category_tree" soy:id="category_tree"></ul>
+				</td>
+			</tr>
+			<!-- soy:id="custom_search_item_list" -->
+			<tr>
+				<th soy:id="label">拡張ポイントからラベルを出力</th>
+				<td soy:id="form">拡張ポイントからフォームを出力</td>
+			</tr>
+			<!-- /soy:id="custom_search_item_list" -->
 		</table>
 
 		<p class="pageBtn">

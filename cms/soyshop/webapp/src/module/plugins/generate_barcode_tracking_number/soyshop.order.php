@@ -8,12 +8,17 @@ class GenerateBarcodeTrackingNumberOrder extends SOYShopOrderBase{
 
 		$trackingNumber = SOY2Logic::createInstance("logic.order.OrderLogic")->getById($orderId)->getTrackingNumber();
 		$jpgFile = $dir . $trackingNumber . ".jpg";
-
+		
 		if(!file_exists($jpgFile)){
 			require_once(dirname(__FILE__) . "/vendor/autoload.php");
 			$generator = new Picqer\Barcode\BarcodeGeneratorJPG();
 			try{
 				file_put_contents($jpgFile, $generator->getBarcode($trackingNumber, $generator::TYPE_CODE_39));
+				sleep(1);
+
+				//横のみリサイズ
+    			list($width, $height, $type) = getimagesize($jpgFile);
+				soy2_resizeimage($jpgFile, $jpgFile, (int)$width/2, $height);
 			}catch(Exception $e){
 				//
 			}

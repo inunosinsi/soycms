@@ -158,6 +158,19 @@ class SearchItemLogic extends SOY2LogicBase{
 			$where[] = " item_type in (" . $this->getItemType() . ")";
 		}
 
+		//拡張ポイントから出力したフォーム用
+		SOYShopPlugin::load("soyshop.item.search");
+		$queries = SOYShopPlugin::invoke("soyshop.item.search", array(
+			"mode" => "search",
+			"params" => (isset($search["customs"])) ? $search["customs"] : array()
+		))->getQueries();
+
+		foreach($queries as $moduleId => $values){
+			if(is_null($values["queries"]) || !count($values["queries"])) continue;
+			$where = array_merge($where, $values["queries"]);
+			if(isset($values["binds"])) $binds = array_merge($binds, $values["binds"]);
+		}
+
 		$this->where = $where;
 		$this->binds = $binds;
 	}
