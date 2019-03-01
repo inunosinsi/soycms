@@ -47,6 +47,7 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 			if(property_exists($xml, "entries")){
 				$entries = $xml->entries;
 				if(property_exists($entries, "entry") && count($entries->entry)){
+					$html[] = "<div class=\"notice always\">下記で紹介している機能を使用する場合はSOY Shopのバージョンアップを行って下さい。最新版のダウンロードは<a href=\"https://saitodev.co/soycms/soyshop\" target=\"_blank\" style=\"text-decoration:underline;\">こちら</a>から</div>";
 					$html[] = "<ul class=\"soyshop_news\">";
 					for($i = 0; $i < count($entries->entry); $i++){
 						$entry = $entries->entry[$i];

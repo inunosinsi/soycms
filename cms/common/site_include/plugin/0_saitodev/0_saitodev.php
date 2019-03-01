@@ -11,7 +11,7 @@ class ZeroSaitodevPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"1.0"
 		));
 
 		//二回目以降の動作
@@ -57,6 +57,7 @@ class ZeroSaitodevPlugin{
 			if(property_exists($xml, "entries")){
 				$entries = $xml->entries;
 				if(property_exists($entries, "entry") && count($entries->entry)){
+					$html[] = "<div class=\"alert alert-info\" style=\"margin:5px 20px;\">下記で紹介している機能を使用する場合はSOY CMSのバージョンアップを行って下さい。最新版のダウンロードは<a href=\"https://saitodev.co/soycms\" target=\"_blank\" style=\"text-decoration:underline;\">こちら</a>から</div>";
 					$html[] = "<ul class=\"soycms_news\">";
 					for($i = 0; $i < count($entries->entry); $i++){
 						$entry = $entries->entry[$i];
