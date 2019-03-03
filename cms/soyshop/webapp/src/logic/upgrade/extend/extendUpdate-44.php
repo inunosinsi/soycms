@@ -5,10 +5,11 @@ for(;;){
 	if($try++ > 2) break;	//トライ回数は2回まで
 	$res = $dao->executeQuery("SELECT order_id, item_id, cdate FROM soyshop_orders GROUP BY order_id, item_id, cdate HAVING count(*) > 1 LIMIT 1000");
 	if(!count($res)) {
-		SOY2::import("util.SOYShopPluginUtil");
-		if(SOYShopPluginUtil::checkIsActive("order_table_index")){
-			SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic")->uninstallModule("order_table_index");
-		}
+		//勝手に終了するからこのコードは要らない
+		// SOY2::import("util.SOYShopPluginUtil");
+		// if(SOYShopPluginUtil::checkIsActive("order_table_index")){
+		// 	SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic")->uninstallModule("order_table_index");
+		// }
 		break;
 	}
 

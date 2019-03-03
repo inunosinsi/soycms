@@ -2,28 +2,28 @@
 
 class LanguageListComponent extends HTMLList{
 
-  private $index;
-  private $values;
+    private $index;
+    private $values;
 
-  protected function populateItem($entity, $key){
+    protected function populateItem($entity, $key){
 
-    $this->addLabel("lang", array(
-      "text" => $key
-    ));
+        $this->addLabel("lang", array(
+            "text" => $key
+        ));
 
-    $this->addInput("lang_url", array(
-      "name" => "config[" . $this->index . "][" . $key . "]",
-      "value" => (isset($this->values[$key])) ? $this->values[$key] : null
-    ));
+        $this->addInput("lang_url", array(
+            "name" => "config[" . $this->index . "][" . $key . "]",
+            "value" => (isset($this->values[$key])) ? $this->values[$key] : null
+        ));
 
-    if($key == UtilMultiLanguageUtil::LANGUAGE_JP) return false;
-  }
+        if($key == UtilMultiLanguageUtil::LANGUAGE_JP) return false;
+    }
 
-  function setIndex($index){
-    $this->index = $index;
-  }
+    function setIndex($index){
+        $this->index = $index;
+    }
 
-  function setValues($values){
-    $this->values = $values;
-  }
+    function setValues($values){
+        $this->values = $values;
+    }
 }

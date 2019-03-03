@@ -102,31 +102,32 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 											$this->csfConfigs = CustomSearchFieldUtil::getConfig();
 									}
 
-									if(!count($this->csfConfigs)) continue;
+									if(!count($this->csfConfigs)) break;
 									foreach($this->csfConfigs as $fieldId => $config){
 										if(!isset($config["sitemap"]) || !is_numeric($config["sitemap"]) || (int)$config["sitemap"] !== (int)$obj->getId()) continue;
 										if(!isset($config["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) || !strlen($config["option"][UtilMultiLanguageUtil::LANGUAGE_JP])) continue;
 
 										foreach(explode("\n", $config["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) as $index => $opt){
 											$opt = trim($opt);
-											if(!strlen($opt)) continue;
-											$html[] = "	<url>";
-											$html[] = "		<loc>" . $url . $uri . "/" . $fieldId . "/" . $opt . "</loc>";
-											//多言語化
-											if(count($this->languages)){
-												foreach($this->languages as $lang){
-													if(!self::isMultiLanguagePage($uri, $lang)) continue;
-													if($lang == UtilMultiLanguageUtil::LANGUAGE_JP || !isset($config["option"][$lang]) || !strlen($config["option"][$lang])) continue;
-													$multiOpts = explode("\n", $config["option"][$lang]);
-													if(!isset($multiOpts[$index])) continue;
-													$multiOpt = trim($multiOpts[$index]);
-													if(!strlen($multiOpt)) continue;
-													$html[] = self::buildMultiLangagePageUrl($url, $uri . "/" . $fieldId . "/" . $multiOpt, $lang);
+											if(strlen($opt)){
+												$html[] = "	<url>";
+												$html[] = "		<loc>" . $url . $uri . "/" . $fieldId . "/" . $opt . "</loc>";
+												//多言語化
+												if(count($this->languages)){
+													foreach($this->languages as $lang){
+														if(!self::isMultiLanguagePage($uri, $lang)) continue;
+														if($lang == UtilMultiLanguageUtil::LANGUAGE_JP || !isset($config["option"][$lang]) || !strlen($config["option"][$lang])) continue;
+														$multiOpts = explode("\n", $config["option"][$lang]);
+														if(!isset($multiOpts[$index])) continue;
+														$multiOpt = trim($multiOpts[$index]);
+														if(!strlen($multiOpt)) continue;
+														$html[] = self::buildMultiLangagePageUrl($url, $uri . "/" . $fieldId . "/" . $multiOpt, $lang);
+													}
 												}
+		 										$html[] = "		<priority>0.5</priority>";
+		 										$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
+		 										$html[] = "	</url>";
 											}
-	 										$html[] = "		<priority>0.5</priority>";
-	 										$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
-	 										$html[] = "	</url>";
 										}
 									}
 								}
