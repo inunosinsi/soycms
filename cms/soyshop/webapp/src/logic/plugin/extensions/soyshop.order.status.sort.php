@@ -28,10 +28,16 @@ class SOYShopOrderStatusSortDeletageAction implements SOY2PluginDelegateAction{
 		if($action instanceof SOYShopOrderStatusSort){
 			switch($this->mode){
 				case "status":
-					$this->_sort = $action->statusSort();
+					$sort = $action->statusSort();
+					if(is_array($sort) && count($sort)){
+						$this->_sort = $sort;
+					}
 					break;
 				case "payment":
-					$this->_sort = $action->paymentStatusSort();
+					$sort = $action->paymentStatusSort();
+					if(is_array($sort) && count($sort)){
+						$this->_sort = $sort;
+					}
 					break;
 			}
 		}

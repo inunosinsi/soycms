@@ -168,7 +168,7 @@ class SOYShop_Order {
 			$sort = SOYShopPlugin::invoke("soyshop.order.status.sort", array(
 				"mode" => "status",
 			))->getSort();
-
+			
 			if(is_array($sort) && count($sort)){
 				$tmps = array();	//並び順に合わせて格納
 
