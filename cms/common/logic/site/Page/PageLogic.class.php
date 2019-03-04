@@ -239,8 +239,7 @@ class PageLogic extends SOY2LogicBase{
 
 	private $page;
 	private $siteUrl;
-	private $mode;	//ブログページのみ
-	private $entryId;	//ブログページのみ
+	private $params = array();	//ブログページで使用する値を格納する entry→記事のエイリアス label→ラベルのエイリアス mode→ブログのモード等
 
 	function buildCanonicalUrl(){
 		static $url;
@@ -283,34 +282,56 @@ class PageLogic extends SOY2LogicBase{
 			if(!$isDocumentRoot){
 				$url .= "/" . self::getSiteId();
 			}
+		}
 
-			if(strlen($this->page->getUri())){
-				$url .= "/" . $this->page->getUri();
-			}
+		if(strlen($this->page->getUri())){
+			$url .= "/" . $this->page->getUri();
 		}
 
 		switch($this->page->getPageType()){
 			case Page::PAGE_TYPE_BLOG:
-				switch($this->mode){
-					case "_entry_":
-						//$url .= $this->page->getEntryPageUri() . "/" . rawurlencode($this->page->entry->getAlias());
-						break;
-					case "_category_":
-						//$cap = $this->page->label->getCaption();
-						// 	if(strpos($cap, " ")) $cap = str_replace(" ", "_", $cap);
-						// 	$url .= $this->page->getCategoryPageUri() . "/" . rawurlencode($cap);
-						break;
-					case "_month_":
-						//$url .= $this->page->getMonthPageUri() . "/" . $this->page->year . "/" . sprintf("%02d",$this->page->month);
-						break;
-					default:
-						//何もしない
+				if(isset($this->params["mode"])){
+					switch($this->params["mode"]){
+						case "_entry_":
+							$alias = (isset($this->params["entry"])) ? $this->params["entry"] : null;
+							if(strlen($this->page->getEntryPageUri())){
+								$url .= "/" . $this->page->getEntryPageUri();
+							}
+							$url .= "/" . rawurlencode($alias);
+							break;
+						case "_category_":
+							$alias = (isset($this->params["label"])) ? $this->params["label"] : null;
+							if(strpos($alias, " ")) $alias = str_replace(" ", "_", $alias);
+							if(strlen($this->page->getCategoryPageUri())){
+								$url .= "/" . $this->page->getCategoryPageUri();
+							}
+							$url .= "/" . rawurlencode($alias);
+							break;
+						case "_month_":
+							if(strlen($this->page->getMonthPageUri())){
+								$url .= "/" . $this->page->getMonthPageUri();
+							}
+							if(isset($this->params["year"]) && strlen($this->params["year"]) === 4){
+								$url .= "/" . $this->params["year"];
+								if(isset($this->params["month"]) && strlen($this->params["month"]) > 0){
+									$url .= "/" . sprintf("%02d", $this->params["month"]);
+									if(isset($this->params["day"]) && strlen($this->params["day"]) > 0){
+										$url .= "/" . sprintf("%02d", $this->params["day"]);
+									}
+								}
+							}
+							break;
+						default:
+							if(strlen($this->page->getTopPageUri())){
+								$url .= "/" . $this->page->getTopPageUri();
+							}
+					}
+					break;
 				}
-				break;
 			default:
 				//何もしない
 		}
-
+		
 		return $url;
 	}
 
@@ -326,10 +347,7 @@ class PageLogic extends SOY2LogicBase{
 	function setSiteUrl($siteUrl){
 		$this->siteUrl = $siteUrl;
 	}
-	function setMode($mode){
-		$this->mode = $mode;
-	}
-	function setEntryId($entryId){
-		$this->entryId = $entryId;
+	function setParams($params){
+		$this->params = $params;
 	}
 }

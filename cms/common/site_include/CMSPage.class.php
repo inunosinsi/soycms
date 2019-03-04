@@ -108,13 +108,17 @@ class CMSPage extends WebPage{
 			"soy2prefix" => "cms"
 		));
 
-		//canonical
-		SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url")))->buildCanonicalUrl();
+		//canonical ブログページのみCMSBlogPage.class.phpの__construct内で一度読み込んで、canonical urlを組み立てている
+		$canonicalUrl = SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url")))->buildCanonicalUrl();
+
+		$this->addLabel("page_link", array(
+			"text" => $canonicalUrl,
+			"soy2prefix" => "cms"
+		));
 
 		$this->addMessageProperty("site_name",'<?php echo $'.$this->_soy2_pageParam.'["site_name"]; ?>');
 		$this->addMessageProperty("page_title",'<?php echo $'.$this->_soy2_pageParam.'["page_title"]; ?>');
 		$this->addMessageProperty("raw_page_title",'<?php echo $'.$this->_soy2_pageParam.'["raw_page_title"]; ?>');
-
 
 		/**
 		 * SOY Appを複数呼び出す（実際に複数を呼び出した場合、APPLICATION_IDが繰り返しdefineされてしまうので問題が発生しうる。）

@@ -372,8 +372,17 @@ class CMSBlogPage extends CMSPage{
 				break;
 		}
 
-		//ここで一度呼んでおく　CMSPage.class.phpの方でcms:idタグを出力
-		SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url"), "mode" => $this->mode))->buildCanonicalUrl();
+		//カノニカルを組み立てる上で必要な値
+		$params = array();
+		if(isset($this->mode)) $params["mode"] = $this->mode;
+		if(isset($this->entry)) $params["entry"] = $this->entry->getAlias();
+		if(isset($this->label)) $params["label"] = $this->label->getAlias();
+		if(isset($this->year)) $params["year"] = $this->year;
+		if(isset($this->month)) $params["month"] = $this->month;
+		if(isset($this->day)) $params["day"] = $this->day;
+
+		//カノニカルタグ用のURLの出力　ここで一度呼んでおく　CMSPage.class.phpの方でcms:idタグを出力
+		SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url"), "params" => $params))->buildCanonicalUrl();
 
 		WebPage::__construct($args);
 	}
