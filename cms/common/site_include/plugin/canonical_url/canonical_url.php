@@ -12,7 +12,7 @@ class CanonicalUrlPlugin{
 			"author"=>"齋藤 毅",
 			"url"=>"https://saitodev.co/",
 			"mail"=>"info@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -24,9 +24,13 @@ class CanonicalUrlPlugin{
 		$html = &$arg["html"];
 
 		//ダイナミック編集では挿入しない
-		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE){
-			return $html;
-		}
+		if(defined("CMS_PREVIEW_MODE") && CMS_PREVIEW_MODE) return $html;
+
+		//URLの末尾が.xmlか.jsonの場合は挿入しない
+		if(strpos($_SERVER["REQUEST_URI"], ".xml") || strpos($_SERVER["REQUEST_URI"], ".json")) return $html;
+
+		//RSSでは挿入しない
+		if(strpos($html, '<rss version="2.0">') !== false || strpos($html, '<feed xml:lang="ja" xmlns="http://www.w3.org/2005/Atom">') !== false) return null;
 
 		//</head>が無い場合は挿入しない
 		if(stripos($html, "</head>") === false) return $html;
