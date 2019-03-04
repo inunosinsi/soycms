@@ -6571,7 +6571,7 @@ class HTMLLabel extends SOY2HTML{
 		return (string)$this->text;
 	}
 	function setHtml($html){
-		$this->text = (string)$html;
+		$this->text = (is_string($html)) ? (string)$html : "";
 		$this->isHtml = true;
 	}
 	function getObject(){

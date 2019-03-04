@@ -446,4 +446,3 @@ class CMSMobilePage_Pager extends HTMLList{
 		$this->counter++;
 	}
 }
-?>

@@ -108,6 +108,9 @@ class CMSPage extends WebPage{
 			"soy2prefix" => "cms"
 		));
 
+		//canonical
+		SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url")))->buildCanonicalUrl();
+
 		$this->addMessageProperty("site_name",'<?php echo $'.$this->_soy2_pageParam.'["site_name"]; ?>');
 		$this->addMessageProperty("page_title",'<?php echo $'.$this->_soy2_pageParam.'["page_title"]; ?>');
 		$this->addMessageProperty("raw_page_title",'<?php echo $'.$this->_soy2_pageParam.'["raw_page_title"]; ?>');

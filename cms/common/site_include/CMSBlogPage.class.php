@@ -372,6 +372,8 @@ class CMSBlogPage extends CMSPage{
 				break;
 		}
 
+		//ここで一度呼んでおく　CMSPage.class.phpの方でcms:idタグを出力
+		SOY2Logic::createInstance("logic.site.Page.PageLogic", array("page" => $this->page, "siteUrl" => $this->siteConfig->getConfigValue("url"), "mode" => $this->mode))->buildCanonicalUrl();
 
 		WebPage::__construct($args);
 	}
