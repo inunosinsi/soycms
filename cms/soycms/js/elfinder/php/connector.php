@@ -119,6 +119,11 @@ if(isset($_GET["site_id"])){
 
 	$path = $site->getPath();
 	$url = $site->getUrl();
+
+	//URLで末尾にサイトIDが無い場合は付与する。ダメな対応かもしれない
+	if(!strpos($url, "/" . $_GET["site_id"] . "/")){
+		$url = rtrim($url, "/") . "/" . $_GET["site_id"] . "/";
+	}
 }else if(isset($_GET["shop_id"])){
 	//SOY Shopとの接続:サイトのパスを取得
 	$shopId = strtr($_GET["shop_id"], array("." => "", "/" => "", "\\" => "", "\0" => ""));//余計な文字列は削除
