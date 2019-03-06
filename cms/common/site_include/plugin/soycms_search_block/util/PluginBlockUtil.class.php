@@ -118,7 +118,7 @@ class PluginBlockUtil {
 		if(is_null($template)) return null;
 
 		$blocks = self::__getBlockByPageId($pageId);
-		if(!is_array($blocks) || !counts($blocks)) return null;
+		if(!is_array($blocks) || !count($blocks)) return null;
 
 		foreach($blocks as $block){
 			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
