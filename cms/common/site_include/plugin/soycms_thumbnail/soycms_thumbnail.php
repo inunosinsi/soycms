@@ -36,7 +36,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.9.4"
+			"version"=>"0.9.5"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -258,8 +258,8 @@ class SOYCMSThumbnailPlugin{
 
 		$htmls = array();
 
-		$htmls[] = "<div class=\"section\">";
-		$htmls[] = $this->buildFormHtml($entryId);
+		$htmls[] = "<div class=\"form-inline\">";
+		$htmls[] = self::buildFormHtml($entryId);
 		$htmls[] = "</div>";
 
 		return implode("\n", $htmls);
@@ -271,8 +271,8 @@ class SOYCMSThumbnailPlugin{
 
 		$htmls = array();
 
-		$htmls[] = "<div class=\"section\">";
-		$htmls[] = $this->buildFormHtml($entryId);
+		$htmls[] = "<div class=\"form-inline\">";
+		$htmls[] = self::buildFormHtml($entryId);
 		$htmls[] = "</div>";
 
 		return implode("\n", $htmls);
@@ -283,7 +283,7 @@ class SOYCMSThumbnailPlugin{
 	 * @param integer entryId
 	 * @return string html
 	 */
-	function buildFormHtml($entryId){
+	private function buildFormHtml($entryId){
 		$objects = $this->getImageObjects($entryId);
 		$config = $this->getConfigObject($entryId);
 
@@ -297,56 +297,54 @@ class SOYCMSThumbnailPlugin{
 
 
 		$htmls = array();
-		$htmls[] = "<p class=\"sub\">";
 		$htmls[] = "<label for=\"custom_field_img\">サムネイルの生成</label>";
-		$htmls[] = "</p>";
 		$htmls[] = '<div class="table-responsive"><table class="table">';
 		$htmls[] = "<tr>";
 		$htmls[] = "<th style=\"width:15%;\">";
 		$htmls[] = "アップロード";
-		$htmls[] = "<img src=\"" . SOY2PageController::createLink("") . "image/icon/help.gif\" class=\"help_icon\" onMouseOver=\"this.style.cursor='pointer'\" onMouseOut=\"this.style.cursor='auto'\" onclick=\"common_show_message_popup(this,'サムネイルの生成用の画像を選択します。')\" />";
+		$htmls[] = "<a href=\"javascript:void(0);\" title=\"サムネイルの生成用の画像を選択します。\"><i class=\"fa fa-question-circle\"></i></a>";
 		$htmls[] = "</th>";
-		$htmls[] = "<td><input type=\"text\" class=\"jcrop_field_input\" style=\"width:70%\" id=\"jcrop_upload_field\" name=\"jcrop_upload_field\" value=\"" . $objects["upload"]->getValue() . "\" />";
-		$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_filemanager($('#jcrop_upload_field'));\" value=\"ファイルを指定する\">";
+		$htmls[] = "<td><input type=\"text\" class=\"jcrop_field_input form-control\" style=\"width:70%\" id=\"jcrop_upload_field\" name=\"jcrop_upload_field\" value=\"" . $objects["upload"]->getValue() . "\" />";
+		$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_filemanager($('#jcrop_upload_field'));\" class=\"btn\" value=\"ファイルを指定する\">";
 		if(strlen($objects["upload"]->getValue()) > 0){
-			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_upload_field'));\">Preview</a>";
+			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_upload_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
 		$htmls[] = "</td>";
 		$htmls[] = "</tr>";
 
 		$htmls[] = "<tr>";
 		$htmls[] = "<th>トリミング</th>";
-		$htmls[] = "<td><input type=\"text\" style=\"width:70%;\" id=\"jcrop_trimming_field\" name=\"jcrop_trimming_field\" value=\"" . $objects["trimming"]->getValue() . "\" readonly=\"readonly\">";
+		$htmls[] = "<td><input type=\"text\" style=\"width:70%;\" id=\"jcrop_trimming_field\" class=\"form-control\" name=\"jcrop_trimming_field\" value=\"" . $objects["trimming"]->getValue() . "\" readonly=\"readonly\">";
 		if(strlen($objects["trimming"]->getValue()) === 0){
-			$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_trimming($('#jcrop_trimming_field'));\" value=\"トリミング\">";
+			$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_trimming($('#jcrop_trimming_field'));\" class=\"btn btn-primary\" value=\"トリミング\">";
 		}
 		if(strlen($objects["trimming"]->getValue()) > 0){
-			$htmls[] = "<input type=\"button\" onclick=\"clearTrimmingForm();\" value=\"クリア\">";
+			$htmls[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearTrimmingForm();\" value=\"クリア\">";
 		}
 		if(strlen($objects["trimming"]->getValue()) > 0){
-			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_trimming_field'));\">Preview</a>";
+			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_trimming_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
-		$htmls[] = "<br><span style=\"display:block;margin-top:10px;\">アスペクト比:width:<input type=\"number\" id=\"ratio_w\" name=\"jcrop_ratio_w\" value=\"". (int)$config["ratio_w"] . "\">&nbsp;";
-		$htmls[] = "height:<input type=\"number\" id=\"ratio_h\" name=\"jcrop_ratio_h\" value=\"" . (int)$config["ratio_h"] . "\"></span>";
+		$htmls[] = "<br><span style=\"display:block;margin-top:10px;\">アスペクト比:width:<input type=\"number\" id=\"ratio_w\" class=\"form-control\" name=\"jcrop_ratio_w\" value=\"". (int)$config["ratio_w"] . "\">&nbsp;";
+		$htmls[] = "height:<input type=\"number\" id=\"ratio_h\" class=\"form-control\" name=\"jcrop_ratio_h\" value=\"" . (int)$config["ratio_h"] . "\"></span>";
 		$htmls[] = "</td>";
 		$htmls[] = "</tr>";
 
 		$htmls[] = "<tr>";
 		$htmls[] = "<th>";
 		$htmls[] = "サムネイルの<br>リサイズ";
-		$htmls[] = "<img src=\"" . SOY2PageController::createLink("") . "image/icon/help.gif\" class=\"help_icon\" onMouseOver=\"this.style.cursor='pointer'\" onMouseOut=\"this.style.cursor='auto'\" onclick=\"common_show_message_popup(this,'トリミングの画像があればリサイズして、トリミング画像がなければアップロードの画像をリサイズしてサムネイルを生成します<br>リサイズをし直す時は一度クリアを押してください。')\" />";
+		$htmls[] = "<a href=\"javascript:void(0);\" title=\"トリミングの画像があればリサイズして、トリミング画像がなければアップロードの画像をリサイズしてサムネイルを生成します。リサイズをし直す時は一度クリアを押してください。\"><i class=\"fa fa-question-circle\"></i></a>";
 		$htmls[] = "</th>";
 		$htmls[] = "<td>";
-		$htmls[] = "<input type=\"text\" style=\"width:70%;\" id=\"jcrop_resize_field\" name=\"jcrop_resize_field\" value=\"" . $objects["resize"]->getValue() . "\" readonly=\"readonly\">";
+		$htmls[] = "<input type=\"text\" style=\"width:70%;\" id=\"jcrop_resize_field\" class=\"form-control\" name=\"jcrop_resize_field\" value=\"" . $objects["resize"]->getValue() . "\" readonly=\"readonly\">";
 		if(strlen($objects["resize"]->getValue()) > 0){
-			$htmls[] = "<input type=\"button\" onclick=\"clearResizeForm();\" value=\"クリア\">";
+			$htmls[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearResizeForm();\" value=\"クリア\">";
 		}
 		if(strlen($objects["resize"]->getValue()) > 0){
-			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_resize_field'));\">Preview</a>";
+			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_resize_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
-		$htmls[] = "<br /><span style=\"display:block;margin-top:10px;\">リサイズ:width:<input type=\"number\" name=\"jcrop_resize_w\" value=\"" . (int)$config["resize_w"] . "\">&nbsp;";
-		$htmls[] = "height:<input type=\"number\" name=\"jcrop_resize_h\" value=\"" . (int)$config["resize_h"] . "\"></span><br />";
-    $htmls[] = "<span style=\"display:block;\">alt:<input type=\"text\" name=\"jcrop_thumbnail_alt\" value=\"" . $this->getAlt($entryId) . "\" style=\"width:50%;\"></span>";
+		$htmls[] = "<br /><span style=\"display:block;margin-top:10px;\">リサイズ:width:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_w\" value=\"" . (int)$config["resize_w"] . "\">&nbsp;";
+		$htmls[] = "height:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_h\" value=\"" . (int)$config["resize_h"] . "\"></span><br />";
+    $htmls[] = "<span style=\"display:block;\">alt:<input type=\"text\" class=\"form-control\" name=\"jcrop_thumbnail_alt\" value=\"" . $this->getAlt($entryId) . "\" style=\"width:50%;\"></span>";
 		$htmls[] = "</td>";
 		$htmls[] = "</tr>";
 		$htmls[] = "</table></div>";

@@ -1,44 +1,44 @@
-<form soy:id="form">
-<fieldset>
-	<legend>アスペクト比の設定</legend>
-	<div>
-		width:<input type="number" soy:id="ratio_w"> ： height:<input type="number" soy:id="ratio_h">
+</label><form soy:id="form">
+<div class="form-group">
+	<label>アスペクト比の設定</label>
+	<div class="form-inline">
+		width:<input type="number" soy:id="ratio_w" class="form-control"> ： height:<input type="number" soy:id="ratio_h" class="form-control">
 	</div>
-</fieldset>
+</div>
 
-<fieldset>
-	<legend>リサイズの設定</legend>
-	<div>
-		width:<input type="number" soy:id="resize_w">&nbsp;px&nbsp;height:<input type="number" soy:id="resize_h">&nbsp;px
+<div class="form-group">
+	<label>リサイズの設定</label>
+	<div class="form-inline">
+		width:<input type="number" soy:id="resize_w" class="form-control">&nbsp;px&nbsp;height:<input type="number" soy:id="resize_h" class="form-control">&nbsp;px
 	</div>
-</fieldset>
+</div>
 
-<fieldset>
-	<legend>サムネイルの登録をしていない時の画像の設定</legend>
-	<div>
+<div class="form-group">
+	<label>サムネイルの登録をしていない時の画像の設定</label>
+	<div class="form-inline">
 		画像のパス：<input type="text" soy:id="no_thumbnail_path" id="noimage_image_path">
-		<input type="button" onclick="open_plugin_image_filemanager('noimage_image_path');" value="ファイルを指定する">
+		<input type="button" onclick="open_plugin_image_filemanager('noimage_image_path');" class="btn" value="ファイルを指定する">
 		<!-- soy:display="display_noimage_ppreview_button" -->
 		&nbsp;<a href="#" onclick="return preview_thumbnail_plugin('noimage_image_path');">Preview</a>
 		<!-- /soy:display="display_noimage_ppreview_button" -->
 	</div>
-</fieldset>
+</div>
 
 <!-- soy:diplay="display_label_upload_area" -->
-<fieldset>
-	<legend>ラベル毎の標準の画像設定</legend>
-	<div soy:id="label_list">
-		<!-- soy:id="caption" /-->：<input type="text" soy:id="label_thumbnail_path">
-		<input type="button" onclick="open_plugin_image_filemanager('<!-- soy:id="label_thumbnail_path_id" /-->');" value="ファイルを指定する">
+<div class="form-group">
+	<label>ラベル毎の標準の画像設定</label>
+	<div soy:id="label_list" class="form-inline">
+		<!-- soy:id="caption" /-->：<input type="text" soy:id="label_thumbnail_path" class="form-control">
+		<input type="button" onclick="open_plugin_image_filemanager('<!-- soy:id="label_thumbnail_path_id" /-->');" class="btn" value="ファイルを指定する">
 		<!-- soy:id="display_label_image_ppreview_button" -->
 		&nbsp;<a href="#" onclick="return preview_thumbnail_plugin('<!-- soy:id="label_thumbnail_path_id*" /-->');">Preview</a>
 		<!-- /soy:id="display_label_image_ppreview_button" -->
 	</div>
-</fieldset>
+</div>
 <!-- /soy:diplay="display_label_upload_area" -->
 
-<div>
-	<input type="submit" value="保存">
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="保存">
 </div>
 </form>
 
