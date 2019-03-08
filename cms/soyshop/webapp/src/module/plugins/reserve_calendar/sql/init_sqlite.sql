@@ -16,19 +16,22 @@ CREATE TABLE soyshop_reserve_calendar_reserve(
     token VARCHAR(25),
     temp TINYINT NOT NULL DEFAULT 0,
     temp_date INTEGER,
-    reserve_date INTEGER
+    reserve_date INTEGER,
+	UNIQUE(schedule_id, order_id)
 );
 
 CREATE TABLE soyshop_reserve_calendar_cancel(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     schedule_id INTEGER NOT NULL,
     order_id INTEGER NOT NULL,
-    cancel_date INTEGER
+    cancel_date INTEGER,
+	UNIQUE(schedule_id, order_id)
 );
 
 CREATE TABLE soyshop_reserve_calendar_label(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     item_id INTEGER NOT NULL,
     label VARCHAR(52),
-    display_order TINYINT NOT NULL
+    display_order TINYINT NOT NULL,
+	UNIQUE(item_id, label)
 );

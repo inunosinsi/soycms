@@ -1,7 +1,7 @@
 <div class="block">
 	<div class="block_title">
 		<h2>予約</h2>
-		
+
 		<div class="block_title_right">
 		</div>
 	</div>
@@ -9,7 +9,7 @@
 	<div class="block_body">
 		<p class="notice" soy:display="canceled">キャンセルしました。</p>
 		<p class="error" soy:display="error">失敗しました。</p>
-		
+
 		<div class="table_container">
 			<table class="form_table short_table">
 				<caption>スケジュール詳細</caption>
@@ -28,7 +28,7 @@
 					</td>
 				</tr>
 			</table>
-			
+
 			<!-- soy:display="has_reserved" -->
 			<table class="form_list">
 				<caption>予約状況</caption>
@@ -49,7 +49,7 @@
 						<td><a soy:id="mail_address"></a></td>
 						<td soy:id="telephone_number"></td>
 						<td class="operation">
-							<a soy:id="cancel_link">キャンセル</a>
+							<a soy:id="cancel_link" class="button">キャンセル</a>
 						</td>
 					</tr>
 					<!-- /soy:id="reserved_list" -->
@@ -57,7 +57,7 @@
 			</table>
 			<span style="margin-left:20px;">※再予約を行う場合は一度キャンセルを行ってからにしてください</span>
 			<!-- /soy:display="has_reserved" -->
-			
+
 			<!-- soy:display="has_canceled" -->
 			<table class="form_list cancel_table">
 				<caption>キャンセル</caption>
@@ -85,7 +85,7 @@
 				</tbody>
 			</table>
 			<!-- /soy:display="has_canceled" -->
-			
+
 			<!-- soy:display="display_register_form" -->
 			<form soy:id="form">
 				<table class="form_table short_table">
@@ -107,7 +107,7 @@
 						<td><input type="text" class="text" soy:id="telephone_number"></td>
 					</tr>
 				</table>
-				
+
 				<p class="pageBtn">
 					<input type="submit" value="登録する">
 				</p>
