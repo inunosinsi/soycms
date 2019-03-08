@@ -298,6 +298,7 @@ class DetailPage extends WebPage{
 			"readonly" => $readOnly
 		));
 
+		DisplayPlugin::toggle("item_stock", !$this->config->getIgnoreStock());
 		$this->addInput("item_stock", array(
 			"name" => "Item[stock]",
 			"value" => $item->getStock()
@@ -353,16 +354,22 @@ class DetailPage extends WebPage{
 			"list" => SOYShopPlugin::invoke("soyshop.price.option", array("item" => $item))->getContents()
 		));
 
+		$detailPages = $pageDAO->getByType(SOYShop_Page::TYPE_DETAIL);
+		DisplayPlugin::toggle("detail_page_id_select", count($detailPages));
 
-		$detailPageId = $item->getDetailPageId();
 		$editable = false;
-		try{
-			$page = $pageDAO->getById($detailPageId);
-			$url = soyshop_get_page_url($page->getUri(), $item->getAlias());
-			$url = str_replace($item->getAlias(), "<b>" . $item->getAlias() . "</b>", $url);
-			$editable = true;
-		}catch(Exception $e){
-			$url = MessageManager::get("ERROR_ITEM_SELECT_DETAIL_PAGE");
+		$url = "";
+
+		if(count($detailPages)){
+			$detailPageId = $item->getDetailPageId();
+			try{
+				$page = $pageDAO->getById($detailPageId);
+				$url = soyshop_get_page_url($page->getUri(), $item->getAlias());
+				$url = str_replace($item->getAlias(), "<b>" . $item->getAlias() . "</b>", $url);
+				$editable = true;
+			}catch(Exception $e){
+				$url = MessageManager::get("ERROR_ITEM_SELECT_DETAIL_PAGE");
+			}
 		}
 
 		$this->addLabel("item_url_text", array(
@@ -380,7 +387,6 @@ class DetailPage extends WebPage{
 			"style" => (isset($this->errors["alias"])) ? "" : "display:none;"
 		));
 
-		$detailPages = $pageDAO->getByType(SOYShop_Page::TYPE_DETAIL);
 		$this->addSelect("detail_page_list", array(
 			"name" => "Item[detailPageId]",
 			"options" => $detailPages,
@@ -409,9 +415,8 @@ class DetailPage extends WebPage{
 			"attr:id" => "item_category_text"
 		));
 
-		$config = SOYShop_ShopConfig::load();
-		DisplayPlugin::toggle("item_category_area", (!$item->isChild() && $config->getMultiCategory() != 1));
-		DisplayPlugin::toggle("multi_category_area", (!$item->isChild() && $config->getMultiCategory() != 0));
+		DisplayPlugin::toggle("item_category_area", (!$item->isChild() && $this->config->getMultiCategory() != 1));
+		DisplayPlugin::toggle("multi_category_area", (!$item->isChild() && $this->config->getMultiCategory() != 0));
 
 		$this->addInput("multi_category", array(
 			"name" => "Item[multi][categories]",
@@ -458,20 +463,21 @@ class DetailPage extends WebPage{
 		));
 
 		/* config */
-		DisplayPlugin::toggle("item_description", $config->getDisplayItemDescription());
+		DisplayPlugin::toggle("item_description", $this->config->getDisplayItemDescription());
 		$this->addTextArea("item_description", array(
 			"name" => "Item[config][description]",
 			"value" => $item->getAttribute("description"),
 			"readonly" => $readOnly
 		));
 
-		DisplayPlugin::toggle("item_keywords", $config->getDisplayItemKeywords());
+		DisplayPlugin::toggle("item_keywords", $this->config->getDisplayItemKeywords());
 		$this->addInput("item_keywords", array(
 			"name" => "Item[config][keywords]",
 			"value" => $item->getAttribute("keywords"),
 			"readonly" => $readOnly
 		));
 
+		DisplayPlugin::toggle("item_image", $this->config->getDisplayItemImage());
 		$this->createAdd("item_small_image","_common.Item.ImageSelectComponent", array(
 			"domId" => "item_small_image",
 			"name" => "Item[config][image_small]",

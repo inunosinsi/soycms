@@ -33,7 +33,8 @@ class ShopConfigPage extends WebPage{
 			"displayUserProfileItems" => 0,
 			"insertDummyItemCode" => 0,
 			"displayItemKeywords" => 0,
-			"displayItemDescription" => 0
+			"displayItemDescription" => 0,
+			"displayItemImage" => 0
 		) as $key => $null){
 			$_POST["Config"][$key] = (isset($_POST["Config"][$key])) ? (int)$_POST["Config"][$key] : $null;
 		}
@@ -436,6 +437,13 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getDisplayItemDescription(),
 			"label" => "商品情報の登録画面で説明の入力画面を表示する"
+		));
+
+		$this->addCheckBox("displayItemImage", array(
+			"name" => "Config[displayItemImage]",
+			"value" => 1,
+			"selected" => $config->getDisplayItemImage(),
+			"label" => "商品情報の登録画面で商品画像の登録を表示する"
 		));
 
 		//メンテナンスモード

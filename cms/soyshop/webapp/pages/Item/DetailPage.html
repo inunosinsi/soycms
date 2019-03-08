@@ -126,19 +126,20 @@
 				</table>
 			</dd>
 
-
-
+			<!-- soy:display="item_stock" -->
 			<dt>在庫数(注文数)</dt>
 			<dd>
 				<input type="text" class="text" soy:id="item_stock" />
 				(<!-- soy:id="item_order_count" /-->)
 			</dd>
+			<!-- /soy:display="item_stock" -->
 
 			<dt>単位</dt>
 			<dd>
 				<input type="text" class="text" soy:id="item_unit">
 			</dd>
 
+			<!-- soy:display="detail_page_id_select" -->
 			<dt>商品URL</dt>
 			<dd>
 				<!-- soy:id="item_url_text" /-->
@@ -153,8 +154,8 @@
 					商品URL:<input type="text" class="text" soy:id="item_alias" />
 					<p class="require" soy:id="error_alias"></p>
 				</div>
-
 			</dd>
+			<!-- /soy:display="detail_page_id_select" -->
 
 			<!-- soy:display="item_keywords" -->
 			<dt>キーワード (&lt;meta type="keywords"&gt;)</dt>
@@ -170,6 +171,7 @@
 			</dd>
 			<!-- /soy:display="item_description" -->
 
+			<!-- soy:display="item_image" -->
 			<dt>一覧用画像</dt>
 			<dd>
 				<input type="text" id="item_small_image" soy:id="item_small_image" />
@@ -179,6 +181,7 @@
 			<dd>
 				<input type="text" id="item_large_image"  soy:id="item_large_image" />
 			</dd>
+			<!-- /soy:display="item_image" -->
 		</dl>
 
 		<p class="pageBtn">

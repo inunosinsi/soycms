@@ -67,6 +67,7 @@ class SOYShop_ShopConfig {
 	private $dummyItemCodeRule;
 	private $displayItemKeywords = 1;
 	private $displayItemDescription = 1;
+	private $displayItemImage = 1;
 
 	private $companyInformation = array(
 		"name" => "",
@@ -718,6 +719,13 @@ class SOYShop_ShopConfig {
 	}
 	function setDisplayItemDescription($displayItemDescription){
 		$this->displayItemDescription = $displayItemDescription;
+	}
+
+	function getDisplayItemImage(){
+		return $this->displayItemImage;
+	}
+	function setDisplayItemImage($displayItemImage){
+		$this->displayItemImage = $displayItemImage;
 	}
 
 	function getIsShowOnlyAdministrator(){
