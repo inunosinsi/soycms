@@ -63,23 +63,25 @@ class SOYShopOrderMailDeletageAction implements SOY2PluginDelegateAction{
 			$displayOrder = $action->getDisplayOrder();
 			if(!isset($this->_body[$displayOrder])) $this->_body[$displayOrder] = array();
 
-			$this->body[$displayOrder][$moduleId] = $res;
+			$this->_body[$displayOrder][$moduleId] = $res;
 
 		}catch(Exception $e){
-			
+
 		}
 	}
 
 	function getBody(){
-		//小さいものから並べる
-		ksort($this->body);
-
 		$res = "";
 
-		//改行で連結
-		foreach($this->body as $displayGroup){
-			foreach($displayGroup as $module){
-				if(strlen($module) > 0) $res .= $module."\n";
+		if(is_array($this->_body) && count($this->_body)){
+			//小さいものから並べる
+			ksort($this->_body);
+
+			//改行で連結
+			foreach($this->_body as $displayGroup){
+				foreach($displayGroup as $module){
+					if(strlen($module) > 0) $res .= $module."\n";
+				}
 			}
 		}
 

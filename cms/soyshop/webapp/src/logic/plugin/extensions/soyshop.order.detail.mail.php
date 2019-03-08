@@ -21,6 +21,7 @@ class SOYShopOrderDetailMailDeletageAction implements SOY2PluginDelegateAction{
 
 	private $_list = array();
 	private $mode;
+	private $type;	//returnとか
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 		switch($this->mode){
@@ -37,9 +38,11 @@ class SOYShopOrderDetailMailDeletageAction implements SOY2PluginDelegateAction{
 				}
 				break;
 			case "aftersend":	//注文詳細からメールを送信した時に注文状態を自動で変更する
-				$conf = $action->autoSendConfig();
-				if(!is_null($conf) && is_array($conf) && count($conf)){
-					$this->_list[$moduleId] = key($conf);
+				if($this->type == $action->activeKey()){
+					$conf = $action->autoSendConfig();
+					if(!is_null($conf) && is_array($conf) && count($conf)){
+						$this->_list[$moduleId] = key($conf);
+					}
 				}
 				break;
 			default:
@@ -56,6 +59,9 @@ class SOYShopOrderDetailMailDeletageAction implements SOY2PluginDelegateAction{
 
 	function setMode($mode){
 		$this->mode = $mode;
+	}
+	function setType($type){
+		$this->type = $type;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.detail.mail",      "SOYShopOrderDetailMailDeletageAction");

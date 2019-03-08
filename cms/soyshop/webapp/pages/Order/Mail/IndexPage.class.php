@@ -40,7 +40,7 @@ class IndexPage extends WebPage{
 					default:
 						//拡張ポイントを調べる
 						SOYShopPlugin::load("soyshop.order.detail.mail");
-						$statusList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "aftersend"))->getList();
+						$statusList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "aftersend", "type" => $this->type))->getList();
 						if(count($statusList)){
 							foreach($statusList as $status){
 								if(isset($status) && is_numeric($status) && (int)$status > 0){
