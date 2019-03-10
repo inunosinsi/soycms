@@ -23,6 +23,14 @@ class DetailPage extends CMSUpdatePageBase{
 	function __construct($arg) {
 		$adminID = (isset($arg[0])) ? $arg[0] : null;
 		if(!UserInfoUtil::isDefaultUser() || strlen($adminID) < 1) $adminID = UserInfoUtil::getUserId();
+		if(is_null($adminID)){
+			//データベースから直接取得する 初期管理者は必ず1
+			try{
+				$adminID = SOY2DAOFactory::create("admin.AdministratorDAO")->getById(1)->getId();
+			}catch(Exception $e){
+				$adminID = null;
+			}
+		}
 
 		$result = $this->run("Administrator.DetailAction", array("adminId" => $adminID));
 		$admin = $result->getAttribute("admin");
