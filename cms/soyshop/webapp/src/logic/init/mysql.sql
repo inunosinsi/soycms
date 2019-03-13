@@ -95,6 +95,7 @@ create table soyshop_orders(
 	is_sended tinyint default 0,
 	attributes TEXT,
 	is_addition tinyint default 0,
+	is confirm tinyint default 0,
 	display_order tinyint not null default 0,
 	UNIQUE(order_id, item_id, cdate)
 ) ENGINE=InnoDB;

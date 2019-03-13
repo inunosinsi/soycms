@@ -5,6 +5,11 @@ class ItemOrderListComponent extends HTMLList {
 
 	protected function populateItem($itemOrder) {
 
+		//確認済みの時は背景色を変更する
+		$this->addModel("is_confirm_tr", array(
+			"style" => ($itemOrder->getIsConfirm()) ? "background-color:#cdcdcd;" : ""
+		));
+
 		$item = soyshop_get_item_object($itemOrder->getItemId());
 
 		$itemExists = ((int)$itemOrder->getItemId() > 0 && method_exists($item, "getCode") && strlen($item->getCode()) > 0);
@@ -16,6 +21,14 @@ class ItemOrderListComponent extends HTMLList {
 		$this->addInput("index_hidden", array(
 			"name" => "Item[" . $itemOrder->getId() . "]",
 			"value" => $itemOrder->getId()
+		));
+
+		$this->addCheckBox("is_confirm", array(
+			"name" => "Confirm[]",
+			"value" => $itemOrder->getId(),
+			"selected" => $itemOrder->getIsConfirm(),
+			"elementId" => "is_confirm_" . $itemOrder->getId(),	//テストコード用
+			"onchange" => '$(\'#confirm_operation\').show();'
 		));
 
 		//item_idが0の場合は名前を表示する

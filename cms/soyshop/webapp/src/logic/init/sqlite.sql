@@ -95,6 +95,7 @@ create table soyshop_orders(
 	is_sended integer default 0,
 	attributes varchar,
 	is_addition integer default 0,
+	is_confirm integer default 0,
 	display_order integer not null default 0,
 	UNIQUE(order_id, item_id, cdate)
 );

@@ -184,7 +184,7 @@ class ImportPage extends WebPage{
 
                     //カスタムサーチフィールド 日本語の値で確認しておく
 					$csfJpValues = (isset($customSearchFields[UtilMultiLanguageUtil::LANGUAGE_JP])) ? $customSearchFields[UtilMultiLanguageUtil::LANGUAGE_JP] : array();
-                    if(is_array($csfJpValues) && count($csfJpValues)){
+					if(is_array($csfJpValues) && count($csfJpValues)){
                         foreach($customSearchFields as $lang => $csfValues){
                             $customSearchFieldDBLogic->save($item->getId(), $csfValues, $lang);
                         }
@@ -361,11 +361,12 @@ class ImportPage extends WebPage{
     function setDetailPage(){
         $detail = $this->pageDao->getByType("detail");
 
+		$this->detailPage = "";
         if(count($detail) > 1){
-            $this->detailPage = "";
-        }else{
-            $key = array_keys($detail);
-            $this->detailPage = (int)$detail[$key[0]]->getId();
+			$key = array_keys($detail);
+			if(isset($detail[$key[0]])){
+				$this->detailPage = (int)$detail[$key[0]]->getId();
+			}
         }
     }
 

@@ -23,7 +23,7 @@
 			<dl>
 				<dt>商品
 					<!-- soy:display="item_info" -->
-					<a class="button" soy:link="Order.Register.Item">変更</a>
+					<a class="button" soy:link="Order.Register.Item" id="item_change">変更</a>
 					<!-- /soy:display="item_info" -->
 				</dt>
 				<dd>
@@ -90,7 +90,7 @@
 				</dd>
 
 				<dt>注文者
-					<a class="button" soy:link="Order.Register.User">変更</a>
+					<a class="button" soy:link="Order.Register.User" id="user_change">変更</a>
 				</dt>
 				<dd>
 					<!-- soy:display="no_user" -->
@@ -165,7 +165,7 @@
 				<dt>送付先
 					<!-- soy:display="has_user1" -->
 					<!-- soy:display="no_send_address" -->
-					<a class="button" soy:link="Order.Register.SendAddress">変更</a>
+					<a class="button" soy:link="Order.Register.SendAddress" id="send_address_change">変更</a>
 					<!-- /soy:display="no_send_address" -->
 					<!-- /soy:display="has_user1" -->
 					<!-- soy:display="has_send_address" -->

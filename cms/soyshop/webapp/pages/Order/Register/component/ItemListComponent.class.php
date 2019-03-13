@@ -86,7 +86,7 @@ class ItemListComponent extends HTMLList {
 
 		//在庫切れかどうか？
 		$this->addModel("out_of_stock", array(
-			"visible" => ($entity->getItemCount() > $item->getStock())
+			"visible" => (!self::checkIgnoreStockMode() && $entity->getItemCount() > $item->getStock())
 		));
 	}
 
@@ -163,5 +163,11 @@ class ItemListComponent extends HTMLList {
 		}
 
 		return $list[$itemId];
+	}
+
+	private function checkIgnoreStockMode(){
+		static $on;
+		if(is_null($on)) $on = ((int)SOYShop_ShopConfig::load()->getIgnoreStock() == 1);
+		return $on;
 	}
 }

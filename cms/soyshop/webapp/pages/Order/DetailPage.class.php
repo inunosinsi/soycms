@@ -15,6 +15,16 @@ class DetailPage extends WebPage{
 			$historyContents = array();
 
 			$order = $dao->getById($this->id);
+			$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
+
+			//確認状態
+			if(isset($_POST["do_confirm"])){
+				//なにもチェックがなければ、全てを確認前に戻す
+				$isConfirmItemOrders = (isset($_POST["Confirm"])) ? $_POST["Confirm"] : array();
+
+				//どの商品(idx)を確認済み or 確認前に戻したか？の履歴を残す
+				$historyContents = $orderLogic->changeItemOrdersIsConfirm($order->getId(), $isConfirmItemOrders);
+			}
 
 			if (isset($_POST["Comment"]) && strlen($_POST["Comment"])) {
 				$historyContents[] = $_POST["Comment"];
@@ -23,9 +33,7 @@ class DetailPage extends WebPage{
 			if (isset($_POST["State"])) {
 				$post = (object)$_POST["State"];
 
-
 				if (isset($_POST["State"]["orderStatus"]) && $order->getStatus() != $post->orderStatus) {
-					$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 					$oldStatus = $order->getStatus();
 
 					$order->setStatus($post->orderStatus);
@@ -294,6 +302,8 @@ class DetailPage extends WebPage{
 		$itemOrders = $logic->getItemsByOrderId($this->id);
 
         /*** 注文商品 ***/
+		$this->addForm("confirm_form");
+
     	$this->createAdd("item_list", "_common.Order.ItemOrderListComponent", array(
     		"list" => $itemOrders,
     	));

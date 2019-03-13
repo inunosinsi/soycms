@@ -379,7 +379,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			return array();
 		}
-
+		
 		$orders = array();
 		$itemOrderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 		foreach($res as $row){

@@ -115,46 +115,58 @@
 	</table>
 
 	<h3>注文の内訳&nbsp;<a href="javascript:void(0);" soy:id="order_link" class="button">並び順の変更</a></h3>
-	<table class="form_list">
-		<thead>
-			<tr class="alC">
-				<th>商品コード</th>
-				<th>商品名</th>
-				<th>単価</th>
-				<th>注文数</th>
-				<th>代金小計</th>
-			</tr>
-		</thead>
+	<form soy:id="confirm_form">
+		<table class="form_list">
+			<thead>
+				<tr class="alC">
+					<th style="width:30px;">確認</th>
+					<th>商品コード</th>
+					<th>商品名</th>
+					<th>単価</th>
+					<th>注文数</th>
+					<th>代金小計</th>
+				</tr>
+			</thead>
 
-		<tbody>
-			<!--  soy:id="item_list" -->
-			<tr>
-				<td class="alC"><a soy:id="item_id">11</a></td>
-				<td>
-					<!-- soy:id="item_name" -->豆腐<!-- /soy:id="item_name" --><br />
-					<!-- soy:id="item_option" /-->
-				</td>
-				<td class="alR"><!-- soy:id="item_price" /--> 円</td>
-				<td class="alR"><!-- soy:id="item_count" /--> 点</td>
-				<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
-			</tr>
-			<!--  /soy:id="item_list" -->
+			<tbody>
+				<!--  soy:id="item_list" -->
+				<tr soy:id="is_confirm_tr">
+					<td class="alC"><input type="checkbox" soy:id="is_confirm"></td>
+					<td class="alC"><a soy:id="item_id">11</a></td>
+					<td>
+						<!-- soy:id="item_name" -->豆腐<!-- /soy:id="item_name" --><br />
+						<!-- soy:id="item_option" /-->
+					</td>
+					<td class="alR"><!-- soy:id="item_price" /--> 円</td>
+					<td class="alR"><!-- soy:id="item_count" /--> 点</td>
+					<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
+				</tr>
+				<!--  /soy:id="item_list" -->
 
-			<!--  soy:id="module_list" -->
-			<tr>
-				<td colspan="4" class="alR" soy:id="module_name" style="font-weight:bold;padding-right:1em;">モジュール名</td>
-				<td class="alR"><!-- soy:id="module_price" /--> 円</td>
-			</tr>
-			<!--  /soy:id="module_list" -->
+				<!--  soy:id="module_list" -->
+				<tr>
+					<td colspan="5" class="alR" soy:id="module_name" style="font-weight:bold;padding-right:1em;">モジュール名</td>
+					<td class="alR"><!-- soy:id="module_price" /--> 円</td>
+				</tr>
+				<!--  /soy:id="module_list" -->
 
-			<tr>
-				<th colspan="4" class="alR" style="font-weight:bold;padding-right:1em;">代金合計</th>
-				<td class="alR">
-					<!-- soy:id="order_total_price" /--> 円
-				</td>
-			</tr>
-		</tbody>
-	</table>
+				<tr>
+					<th colspan="5" class="alR" style="font-weight:bold;padding-right:1em;">代金合計</th>
+					<td class="alR">
+						<!-- soy:id="order_total_price" /--> 円
+					</td>
+				</tr>
+
+				<tr id="confirm_operation">
+					<td colspan="6">
+						操作：
+						<a href="javascript:void(0);" onclick="$('#do_confirm_btn').trigger('click');" class="button">確認状態を変更する</a>
+						<input type="submit" id="do_confirm_btn" name="do_confirm" value="1" style="display:none;">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
 
 	<!-- soy:id="actived_download_plugin" -->
 	<h3>ダウンロード詳細</h3>
@@ -225,7 +237,7 @@
 					<!-- /soy:id="app_limit_function*" -->
 				</tbody>
 			</table>
-		</form soy:id="update_form">
+		</form>
 
 		<h3>コメント</h3>
 		<form soy:id="comment_form">
@@ -377,3 +389,18 @@
 	<!-- /soy:id="operate_list" -->
 </div>
 <!-- /soy:display="operate_credit_menu" -->
+
+<style>
+#confirm_operation{
+	display:none;
+}
+</style>
+
+<script type="text/javascript">
+function changeCheckBoxAuto(){
+	$('#confirm_operation').show();
+	$('.item_checkbox').each(function(){
+		$(this).prop("checked", $("#item_checkbox").prop("checked"));
+	});
+}
+</script>

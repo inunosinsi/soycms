@@ -396,4 +396,44 @@ class OrderLogic extends SOY2LogicBase{
 			}
 		}
 	}
+
+	function changeItemOrdersIsConfirm($orderId, $isConfirmItemOrderIds){
+		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		try{
+			$itemOrders = $itemOrderDao->getByOrderId($orderId);
+		}catch(Exception $e){
+			$itemOrders = array();
+		}
+
+		if(!count($itemOrders)) return array();
+
+		$changes = array();
+		foreach($itemOrders as $itemOrder){
+			if((int)$itemOrder->getIsConfirm() == 1){
+				//既に確認済みの場合、新たにステータスを変更するID一覧になければステータス変更
+				if(!in_array($itemOrder->getId(), $isConfirmItemOrderIds)){
+					$itemOrder->setIsConfirm(SOYShop_ItemOrder::NO_CONFIRM);
+					try{
+						$itemOrderDao->update($itemOrder);
+						$changes[] = "「" . $itemOrder->getItemName() . "」の確認済みを取り消しました。";
+					}catch(Exception $e){
+						//
+					}
+				}
+			}else{
+				//未確認の場合、新たにステータスを変更するID一覧になければステータス変更
+				if(in_array($itemOrder->getId(), $isConfirmItemOrderIds)){
+					$itemOrder->setIsConfirm(SOYShop_ItemOrder::IS_CONFIRM);
+					try{
+						$itemOrderDao->update($itemOrder);
+						$changes[] = "「" . $itemOrder->getItemName() . "」の確認済みにしました。";
+					}catch(Exception $e){
+						//
+					}
+				}
+			}
+		}
+
+		return $changes;
+	}
 }

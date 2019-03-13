@@ -4,6 +4,9 @@
  */
 class SOYShop_ItemOrder {
 
+	const IS_CONFIRM = 1;
+	const NO_CONFIRM = 0;
+
 	/**
 	 * @id
 	 */
@@ -53,6 +56,11 @@ class SOYShop_ItemOrder {
      * @column is_addition
      */
     private $isAddition;
+
+	/**
+	 * @column is_confirm
+	 */
+	private $isConfirm = 0;
 
 	/**
 	 * @column display_order
@@ -158,6 +166,13 @@ class SOYShop_ItemOrder {
     function setIsAddition($isAddition){
     	$this->isAddition = $isAddition;
     }
+
+	function getIsConfirm(){
+		return $this->isConfirm;
+	}
+	function setIsConfirm($isConfirm){
+		$this->isConfirm = $isConfirm;
+	}
 
     /** 便利なメソッド **/
     //多言語化プラグインを考慮した商品名の取得
