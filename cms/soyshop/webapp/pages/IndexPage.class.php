@@ -78,6 +78,10 @@ class IndexPage extends WebPage{
 		MessageManager::addMessagePath("admin");
 		SOYShopPlugin::load("soyshop.admin.top");
 
+		//バージョンアップ時のキャッシュの自動削除
+		$cacheLogic = SOY2Logic::createInstance("logic.cache.CacheLogic");
+		if($cacheLogic->checkCacheVersion()) $cacheLogic->clearCache();
+
 		parent::__construct();
 
 		//データベースの更新を調べる
@@ -94,7 +98,7 @@ class IndexPage extends WebPage{
 		//noticeの拡張ポイント
 		$notices = SOYShopPlugin::invoke("soyshop.admin.top", array("mode" => "notice"))->getContents();
 		if(is_null($notices)) $notices = array();
-		
+
 		$this->createAdd("notice_list", "_common.TopPageNoticeListComponent", array(
 			"list" => $notices,
 			"mode" => "notice"

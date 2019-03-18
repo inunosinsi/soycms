@@ -9,16 +9,7 @@ class IndexPage extends CMSWebPageBase{
 			if(isset($_POST["cache_clear"])){
 				set_time_limit(0);
 
-				$root = dirname(SOY2::RootDir());
-				CMSUtil::unlinkAllIn($root . "/admin/cache/");
-				CMSUtil::unlinkAllIn($root . "/soycms/cache/");
-				CMSUtil::unlinkAllIn($root . "/soyshop/cache/");
-				CMSUtil::unlinkAllIn($root . "/app/cache/", true);
-
-				$sites = SOY2Logic::createInstance("logic.admin.Site.SiteLogic")->getSiteList();
-				foreach($sites as $site){
-					CMSUtil::unlinkAllIn($site->getPath() . ".cache/", true);
-				}
+				SOY2Logic::createInstance("logic.cache.CacheLogic")->clearCache();
 
 				$this->addMessage("ADMIN_DELETE_CACHE");
 
@@ -31,6 +22,10 @@ class IndexPage extends CMSWebPageBase{
 	}
 
 	function __construct($arg){
+		//バージョンアップ時のキャッシュの自動削除
+		$cacheLogic = SOY2Logic::createInstance("logic.cache.CacheLogic");
+		if($cacheLogic->checkCacheVersion()) $cacheLogic->clearCache();
+
 		parent::__construct();
 
 		/*
