@@ -3,7 +3,7 @@
  * プラグイン 管理画面
  */
 class DiscountBulkBuyingConfig extends SOYShopConfigPageBase{
-	
+
 	/**
 	 * @return string
 	 */
@@ -16,7 +16,7 @@ class DiscountBulkBuyingConfig extends SOYShopConfigPageBase{
 		$form->execute();
 		return $form->getObject();
 	}
-	
+
 	/**
 	 * h2タグ
 	 * @return string
@@ -24,7 +24,6 @@ class DiscountBulkBuyingConfig extends SOYShopConfigPageBase{
 	function getConfigPageTitle(){
 		return "まとめ買い割引";
 	}
-	
+
 }
 SOYShopPlugin::extension("soyshop.config", "discount_bulk_buying", "DiscountBulkBuyingConfig");
-?>

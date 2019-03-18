@@ -11,8 +11,6 @@ class DiscountBulkBuyingInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 
 SOYShopPlugin::extension("soyshop.info", "discount_bulk_buying", "DiscountBulkBuyingInfo");
-?>
