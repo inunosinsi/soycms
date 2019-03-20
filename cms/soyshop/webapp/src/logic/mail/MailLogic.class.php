@@ -450,7 +450,12 @@ class MailLogic extends SOY2LogicBase{
 			$user = new SOYShop_User();
 		}
 
-		$mailConfig = self::getUserMailConfig($mailType);
+		if($mode == self::MODE_USER){
+			$mailConfig = self::getUserMailConfig($mailType);
+		}else{
+			$mailConfig = self::getAdminMailConfig($mailType);
+		}
+
 		$isOutput = (isset($mailConfig["output"]) && (int)$mailConfig["output"] === 1);	//システムからの内容を出力するか？
 
 		//プラグインを実行してメール本文の取得

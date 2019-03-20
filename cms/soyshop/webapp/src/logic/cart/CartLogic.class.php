@@ -1189,7 +1189,7 @@ class CartLogic extends SOY2LogicBase{
 		 */
 		//DBから設定を取得：ヘッダー、フッター
 		$adminMailConfig = $logic->getAdminMailConfig($type);
-
+		
 		if(isset($adminMailConfig["active"]) && $adminMailConfig["active"]){
 			//メール本文（注文内容）を取得
 			list($mailBody, $title) = $logic->buildMailBodyAndTitle($this->order, $type, "admin");
