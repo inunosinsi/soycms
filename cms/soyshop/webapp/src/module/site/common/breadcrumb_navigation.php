@@ -185,6 +185,12 @@ function soyshop_breadcrumb_navigation($html, $page){
             "soy2prefix" => SOYSHOP_SITE_PREFIX,
         ));
 
+		//リンクのみ出力したい場合
+		$obj->addLink("current_name_link_only", array(
+            "link" => soyshop_get_site_url() . $uri . "/" . $alias,
+            "soy2prefix" => SOYSHOP_SITE_PREFIX,
+        ));
+
         $obj->addLink("top_link", array(
             "link" => soyshop_get_site_url(),
             "soy2prefix" => SOYSHOP_SITE_PREFIX
@@ -215,6 +221,12 @@ class BreadcrumbNavigation extends HTMLList{
 
         $this->addLink("breadcrumb_link", array(
             "text" => $entity->getOpenCategoryName(),
+            "link" => soyshop_get_site_url() . $this->uri . "/" . $entity->getAlias(),
+            "soy2prefix" => SOYSHOP_SITE_PREFIX
+        ));
+
+		//リンクのみ出力したい場合
+		$this->addLink("breadcrumb_link_only", array(
             "link" => soyshop_get_site_url() . $this->uri . "/" . $entity->getAlias(),
             "soy2prefix" => SOYSHOP_SITE_PREFIX
         ));

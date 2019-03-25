@@ -142,7 +142,7 @@ class ItemListComponent extends HTMLList{
             //子商品のIDを取得する
             $ids = self::getChildItemIds($item->getId());
             $count = 0;
-            if(count($ids) > 0){
+            if(isset($ids) && is_array($ids) && count($ids) > 0){
 
                 foreach($ids as $id){
                     try{

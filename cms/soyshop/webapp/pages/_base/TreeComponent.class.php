@@ -48,7 +48,7 @@ class TreeComponent extends HTMLLabel{
 	function setList($list) {
 		$this->list = $list;
 	}
-	
+
 	function _buildTree($array,$tree,$depth){
 		$html = array();
 
@@ -56,12 +56,12 @@ class TreeComponent extends HTMLLabel{
 
 			if(is_null($this->getHref($obj->getId()))){
 				$onclick = $this->getOnclick($obj->getId());
-				$html[] = '<li><a class="'.$this->getClass($obj->getId()).'" href="javascript:void(0);" onclick="'.$onclick.'" object:id="'.$obj->getId().'">' . $obj->getNameWithStatus() . '</a>';
+				$html[] = '<li><a class="'.$this->getClass($obj->getId()).'" href="javascript:void(0);" onclick="'.$onclick.'" object:id="'.$obj->getId().'" title="' . $obj->getNameWithStatus() . '">' . $obj->getNameWithStatus() . '</a>';
 			}else{
 				$href = $this->getHref($obj->getId());
 				$html[] = '<li><a class="'.$this->getClass($obj->getId()).'" href="'. $href .'" object:id="'.$obj->getId().'">'. $obj->getNameWithStatus() .'</a>';
 			}
-		
+
 			if(isset($tree[$obj->getId()])){
 				$html[] = '<ul>';
 				$html[] = $this->_buildTree($tree[$obj->getId()],$tree,($depth+1));
@@ -80,7 +80,7 @@ class TreeComponent extends HTMLLabel{
 	function getClass($id){
 		return "";
 	}
-	
+
 	function getHref($id){
 		return null;
 	}
