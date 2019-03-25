@@ -20,7 +20,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 	    if(CMSPlugin::activeCheck($this->getId())){
@@ -39,7 +39,7 @@ class SOYCMSSameCategoryBlockPlugin{
 
 		//検索結果ブロックプラグインのUTILクラスを利用する
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
-
+		
 		//詳細ページでない場合は空の配列を返す
 		if(!self::checkIsBlogEntryPage($pageId)) return array();
 
@@ -50,20 +50,33 @@ class SOYCMSSameCategoryBlockPlugin{
     	//ラベルIDを取得とデータベースから記事の取得件数指定
 		$count = PluginBlockUtil::getLimitByPageId($pageId);
 
+		//並び順の指定
+		$randomMode = PluginBlockUtil::getSortRandomMode($pageId);
+
     	$sql = "SELECT ent.* FROM Entry ent ".
-         "INNER JOIN EntryLabel lab ".
-         "ON ent.id = lab.entry_id ".
-         "WHERE lab.label_id IN (" . implode(",", $labelIds) . ") ".
-         "AND ent.isPublished = 1 ".
-         "AND ent.openPeriodEnd >= :now ".
-         "AND ent.openPeriodStart < :now ".
-         "ORDER BY ent.cdate desc ";
+        	"INNER JOIN EntryLabel lab ".
+        	"ON ent.id = lab.entry_id ".
+        	"WHERE lab.label_id IN (" . implode(",", $labelIds) . ") ".
+        	"AND ent.isPublished = 1 ".
+        	"AND ent.openPeriodEnd >= :now ".
+        	"AND ent.openPeriodStart < :now ";
 
-		 if(isset($count) && $count > 0){
+		//記事のランダム表示
+		if($randomMode){
+			if(SOY2DAOConfig::type() == "mysql"){
+				$sql .= "ORDER BY Rand() ";
+			}else{
+				$sql .= "ORDER BY Random() ";
+			}
+		}else{
+			$sql .= "ORDER BY ent.cdate desc ";
+		}
+
+		if(isset($count) && $count > 0){
 			 $sql .= "LIMIT " . $count;
-		 }
+		}
 
-		 $dao = SOY2DAOFactory::create("cms.EntryDAO");
+		$dao = SOY2DAOFactory::create("cms.EntryDAO");
 
 	    try{
 	        $results = $dao->executeQuery($sql, array(":now" => time()));

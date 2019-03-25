@@ -6,7 +6,7 @@
 <h4>タグの記述例</h4>
 <p>他のブロックの時と同じですが、block:id="***"の記述の時に、表示件数を指定することができます</p>
 
-<pre>&lt;!-- block:id="***" cms:count="10" cms:labels="2,3" --&gt;
+<pre>&lt;!-- block:id="***" cms:count="10" cms:labels="2,3" cms:random="1" --&gt;
 表示したい内容のcms:idを追加
 &lt;!-- /block:id="***" --&gt;</pre>
 <p>
@@ -15,5 +15,6 @@
     ※cms:countの指定がなくても動作します。<br><br>
 	cms:labelsはブログページで設定したカテゴリ分けで使用するラベルの内、表示したいラベルのIDをカンマ区切りで指定できます。<br>
 	ラベルIDは管理画面でラベルの詳細を開き、ブラウザのアドレスバーに入力されているURLの末尾の数字になります。<br>
-	例："http://example/cms/soycms/index.php/Label/Detail/2"の場合のラベルIDは<strong>2</strong>になります。
+	例："http://example/cms/soycms/index.php/Label/Detail/2"の場合のラベルIDは<strong>2</strong>になります。<br><br>
+	cms:randomは1を指定すると表示順がランダムになります。
 </p>

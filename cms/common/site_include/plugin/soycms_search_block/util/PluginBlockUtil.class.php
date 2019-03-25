@@ -95,6 +95,24 @@ class PluginBlockUtil {
 		return null;
 	}
 
+	public static function getSortRandomMode($pageId){
+		$template = self::__getTemplateByPageId($pageId);
+		if(is_null($template)) return false;
+
+		$blocks = self::__getBlockByPageId($pageId);
+		if(!is_array($blocks) || !count($blocks)) return false;
+
+		foreach($blocks as $block){
+			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
+				if(preg_match('/cms:random=\"(.*?)\"/', $tmp[1], $ctmp)){
+					if(isset($ctmp[1]) && is_numeric($ctmp[1]) && (int)$ctmp[1] === 1) return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	public static function getLabelIdByPageId($pageId){
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return null;
