@@ -7,6 +7,8 @@
 <div class="soy_iqnuiry_responsive">
 	<dl>
 <?php foreach($columns as $column){
+	//連番カラムは表示しない
+	if($column->getType() == "SerialNumber") continue;
 
 	$id = $column->getId();
 	$obj = $column->getColumn();

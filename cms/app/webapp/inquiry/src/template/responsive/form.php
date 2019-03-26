@@ -9,16 +9,18 @@
 <?php $counter = 0; ?>
 <?php $columnCount = count($columns); ?>
 <?php foreach($columns as $column){
-	
+	//連番カラムは表示しない
+	if($column->getType() == "SerialNumber") continue;
+
 	/**
 	 * @プライバシーポリシーは必ず一行目で別テーブルで表示する
 	 */
-	
+
 	$id = $column->getId();
 	$obj = $column->getColumn();
 	$label = $obj->getLabel();
 	$annotation = $obj->getAnnotation();
-	
+
 	echo "<dt>";
 	echo $label;
 	if($column->getRequire()){
@@ -30,13 +32,13 @@
     	echo "<p class=\"error_message\">";
     	echo $errors[$id];
     	echo "</p>";
-    } 
+    }
     echo "\t".$obj->getForm();
     if(isset($annotation) && strlen($annotation)){
     	echo "&nbsp;".$annotation;
     }
     echo "\n</dd>\n";
-  	
+
 	$counter++;
 }
 ?>

@@ -24,7 +24,14 @@ class InquiryLogic extends SOY2LogicBase{
 
     		$id = $column->getId();
     		$label = $column->getLabel();
-    		$value = ($useMailBody) ? $column->getColumn()->getMailText() : $column->getContent();
+
+			//連番の場合
+			if($column->getType() == "SerialNumber"){
+				$config = soy2_unserialize($column->getConfig());
+				$value = (isset($config["serialNumber"]) && is_numeric($config["serialNumber"])) ? (int)$config["serialNumber"] : 1;
+			}else{
+				$value = ($useMailBody) ? $column->getColumn()->getMailText() : $column->getContent();
+			}
 
     		//改行が含まれる場合は空白をあける
     		if(strpos($value,"\n") !== false){
@@ -154,10 +161,27 @@ class InquiryLogic extends SOY2LogicBase{
 
 		foreach($columns as $column){
 			//NoPersistentは無視して全項目を保存する
-
 			$id = $column->getId();
 			$column->setInquiry($inquiry);
-			$res[$id] = $column->getContent();
+
+			//連番の場合
+			if($column->getType() == "SerialNumber"){
+				$config = soy2_unserialize($column->getConfig());
+				if(!isset($config["serialNumber"]) || !is_numeric($config["serialNumber"])) continue;
+				$res[$id] = (int)$config["serialNumber"];
+
+				//連番を更新する
+				$config["serialNumber"] = $res[$id] + 1;
+				$column->setConfig($config);
+
+				try{
+					SOY2DAOFactory::create("SOYInquiry_ColumnDAO")->update($column);
+				}catch(Exception $e){
+					//
+				}
+			}else{
+				$res[$id] = $column->getContent();
+			}
 		}
 
 		return $res;

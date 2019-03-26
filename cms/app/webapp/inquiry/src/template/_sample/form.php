@@ -13,6 +13,9 @@
 $columnCount = count($columns);
 $raws = array();
 foreach($columns as $key => $column){
+	//連番カラムは表示しない
+	if($column->getType() == "SerialNumber") continue;
+
 	$output = "";
 
 	$id = $column->getId();
