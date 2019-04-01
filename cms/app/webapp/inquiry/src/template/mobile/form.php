@@ -8,9 +8,12 @@
     </table>
 
     <table id="inquiry_form">
-        <?php foreach($columns as $column){
+<?php 
+foreach($columns as $column){
+	//連番カラムは表示しない
+	if($column->getType() == "SerialNumber") continue;
 
-    $id = $column->getId();
+	$id = $column->getId();
     $obj = $column->getColumn();
     $label = $obj->getLabel();
     $annotation = $obj->getAnnotation();
