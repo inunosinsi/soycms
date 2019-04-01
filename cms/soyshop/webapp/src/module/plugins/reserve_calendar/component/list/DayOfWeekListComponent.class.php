@@ -4,21 +4,21 @@
  * 第1から第5
  */
 class DayOfWeekListComponent extends HTMLList{
-	
+
 	private $config;
 	private $dow;
 	private $day;
-	
-	
+
+
 	function populateItem($entity, $key, $index){
-	
+
 		$selected = false;
 		if(isset($this->config[$entity]) && !is_null($this->config[$entity])){
 			if(in_array(@$this->day, @$this->config[$entity])){
 				$selected = true;
 			}
 		}
-		
+
 		//第1から第5まで
 		$this->addCheckBox("day", array(
 			"name" => "dow[$entity][" . @$this->day . "]",
@@ -35,7 +35,7 @@ class DayOfWeekListComponent extends HTMLList{
 	function setConfig($config) {
 		$this->config = $config;
 	}
-	
+
 	function getDow() {
 		return $this->dow;
 	}
@@ -50,4 +50,3 @@ class DayOfWeekListComponent extends HTMLList{
 		$this->day = $day;
 	}
 }
-?>

@@ -103,4 +103,3 @@ class LabelLogic extends SOY2LogicBase{
         return $dao;
     }
 }
-?>

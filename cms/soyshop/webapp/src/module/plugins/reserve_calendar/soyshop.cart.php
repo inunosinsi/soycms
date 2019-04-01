@@ -6,18 +6,18 @@ class ReserveCalendarCart extends SOYShopCartBase{
 
 		//
 		if(isset($_REQUEST["a"]) && $_REQUEST["a"] == "add"){
-			
+
 			if(isset($_REQUEST["schId"]) && is_numeric($_REQUEST["schId"])){
 				SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Schedule");
 				SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
-				
+
 				//スケジュールが登録されているか確認してから商品IDを$_REQUESTに渡す
 				try{
 					$sch = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO")->getById($_REQUEST["schId"]);
 				}catch(Exception $e){
 					$sch = new SOYShopReserveCalendar_Schedule();
 				}
-				
+
 				if(!is_null($sch->getItemId())){
 					//残席数の確認もしておきたい
 					if(SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->checkIsUnsoldSeatByScheduleId($sch->getId())){
@@ -26,10 +26,9 @@ class ReserveCalendarCart extends SOYShopCartBase{
 					}
 				}
 			}
-			
+
 			/** @ToDo エラーの場合はどうしよう？ **/
 		}
 	}
 }
 SOYShopPlugin::extension("soyshop.cart", "reserve_calendar", "ReserveCalendarCart");
-?>

@@ -64,4 +64,3 @@ class CalendarLogic extends CalendarBaseComponent{
 		$this->itemId = $itemId;
 	}
 }
-?>

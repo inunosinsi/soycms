@@ -1,9 +1,9 @@
 <?php
 
 class WeekHolidayListComponent extends HTMLList{
-	
+
 	private $config;
-	
+
 	function populateItem($entity, $key, $index){
 
 		$this->addCheckBox("dow", array(
@@ -12,7 +12,7 @@ class WeekHolidayListComponent extends HTMLList{
 			"label" => $entity["jp"],
 			"selected" => (isset($this->config) && in_array($key,$this->config)),
 			"value" => 1
-		));		
+		));
 	}
 
 	function getConfig() {
@@ -22,4 +22,3 @@ class WeekHolidayListComponent extends HTMLList{
 		$this->config = $config;
 	}
 }
-?>

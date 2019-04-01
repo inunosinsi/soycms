@@ -61,7 +61,7 @@ class HolidayConfigPage extends WebPage{
 	function execute(){
 
 		parent::__construct();
-		
+
 		$this->addLink("back_link", array(
 			"link" => SOY2PageController::createLink("Item.Detail." . $this->itemId),
 			"text" => self::getItemById($this->itemId)->getName() . "の詳細ページに戻る"
@@ -116,7 +116,7 @@ class HolidayConfigPage extends WebPage{
 //			"html" => $displayLogic->getNextCalendar()
 //		));
 	}
-	
+
 	private function getItemById($itemId){
 		try{
 			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
@@ -158,7 +158,7 @@ class HolidayConfigPage extends WebPage{
 		}
 		return $val;
 	}
-	
+
 	function setConfigObj($obj) {
 		$this->config = $obj;
 	}
@@ -166,4 +166,3 @@ class HolidayConfigPage extends WebPage{
 		$this->itemId = $itemId;
 	}
 }
-?>

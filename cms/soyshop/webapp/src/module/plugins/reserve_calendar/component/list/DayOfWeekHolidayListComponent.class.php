@@ -6,7 +6,7 @@
 class DayOfWeekHolidayListComponent extends HTMLList{
 
 	private $config;
-	
+
 	function populateItem($entity, $key, $index){
 
 		//第1から第5まで
@@ -21,7 +21,7 @@ class DayOfWeekHolidayListComponent extends HTMLList{
 		$this->addLabel("day_label", array(
 			"text" => (isset($entity["jp"])) ? $entity["jp"] : ""
 		));
-		
+
 	}
 
 	function getConfig() {
@@ -30,7 +30,4 @@ class DayOfWeekHolidayListComponent extends HTMLList{
 	function setConfig($config) {
 		$this->config = $config;
 	}
-	
 }
-
-?>

@@ -97,14 +97,18 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         $res = new SOYShopReserveCalendar_Reserve();
         $res->setScheduleId($schId);
         $res->setOrderId($cart->getAttribute("order_id"));
-        //$res->setToken();
         $res->setTemp(SOYShopReserveCalendar_Reserve::NO_TEMP);
-        //$res->setTempDate();
         $res->setReserveDate(time());
 
-        /**
-         * @ToDo 仮登録の仕組み
-         */
+		//仮登録
+		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+		$config = ReserveCalendarUtil::getConfig();
+		if(isset($config["tmp"]) && $config["tmp"] == ReserveCalendarUtil::IS_TMP){
+			$res->setTemp(ReserveCalendarUtil::IS_TMP);
+			$res->setTempDate(time());
+			$res->setToken(substr(md5($res->getScheduleId() . $res->getOrderId() . $res->getTempDate()), 0, 25));
+		}
+
         try{
             $resId = $resDao->insert($res);
         }catch(Exception $e){

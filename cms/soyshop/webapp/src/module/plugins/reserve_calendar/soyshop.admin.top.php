@@ -4,7 +4,7 @@ class ReserveCalendarAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		//return SOY2PageController::createLink("Config.ShopConfig");
 	}
-	
+
 	function getLinkTitle(){
 		return "";
 	}
@@ -22,4 +22,3 @@ class ReserveCalendarAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "reserve_calendar", "ReserveCalendarAdminTop");
-?>

@@ -79,4 +79,3 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
 
     abstract function deleteById($id);
 }
-?>

@@ -7,6 +7,7 @@
 	</div>
 
 	<div class="block_body">
+		<p class="notice" soy:display="registration">本登録にしました。</p>
 		<p class="notice" soy:display="canceled">キャンセルしました。</p>
 		<p class="error" soy:display="error">失敗しました。</p>
 
@@ -57,6 +58,35 @@
 			</table>
 			<span style="margin-left:20px;">※再予約を行う場合は一度キャンセルを行ってからにしてください</span>
 			<!-- /soy:display="has_reserved" -->
+
+			<!-- soy:display="has_tmp_reserved" -->
+			<table class="form_list">
+				<caption>仮予約</caption>
+				<thead>
+					<tr class="alC">
+						<th>予約日時</th>
+						<th>顧客名</th>
+						<th>メールアドレス</th>
+						<th>電話番号</th>
+						<th>&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- soy:id="tmp_reserved_list" -->
+					<tr>
+						<td soy:id="reserve_date" class="alC"></td>
+						<td class="alC"><a soy:id="user_name"></a></td>
+						<td><a soy:id="mail_address"></a></td>
+						<td soy:id="telephone_number"></td>
+						<td class="operation">
+							<a soy:id="reserve_link" class="button">本登録</a>
+						</td>
+					</tr>
+					<!-- /soy:id="tmp_reserved_list" -->
+				</tbody>
+			</table>
+			<span style="margin-left:20px;">※再予約を行う場合は一度キャンセルを行ってからにしてください</span>
+			<!-- /soy:display="has_tmp_reserved" -->
 
 			<!-- soy:display="has_canceled" -->
 			<table class="form_list cancel_table">

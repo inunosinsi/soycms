@@ -15,4 +15,3 @@ class ReserveCalendarAdminDetail extends SOYShopAdminDetailBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.detail", "reserve_calendar", "ReserveCalendarAdminDetail");
-?>

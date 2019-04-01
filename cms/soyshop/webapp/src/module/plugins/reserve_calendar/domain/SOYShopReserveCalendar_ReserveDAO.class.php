@@ -10,6 +10,8 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
      */
     abstract function insert(SOYShopReserveCalendar_Reserve $bean);
 
+	abstract function update(SOYShopReserveCalendar_Reserve $bean);
+
     /**
      * @return object
      */
@@ -70,7 +72,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
         return $list;
     }
 
-    function getReservedListByScheduleId($scheduleId){
+    function getReservedListByScheduleId($scheduleId, $isTmp = false){	//isTmpで仮登録の予約を検索
         SOY2::import("domain.order.SOYShop_Order");
 
         $sql = "SELECT res.id, res.reserve_date, u.id AS user_id, u.name AS user_name, u.mail_address, u.telephone_number FROM soyshop_reserve_calendar_reserve res ".
@@ -78,13 +80,20 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
                 "ON res.order_id = o.id ".
                 "INNER JOIN soyshop_user u ".
                 "ON o.user_id = u.id ".
-                "WHERE res.schedule_id = :schId ".
-                "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+                "WHERE res.schedule_id = :schId ";
+
+		//仮登録モード
+		if($isTmp){
+			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
+			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP;
+		}else{	//本登録モード
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+		}
 
         try{
-            return $this->executeQuery($sql, array(":schId" => $scheduleId));
+			return $this->executeQuery($sql, array(":schId" => $scheduleId));
         }catch(Exception $e){
-            return array();
+			return array();
         }
     }
 
@@ -147,4 +156,3 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
         return ((int)$res[0]["COUNT"] < (int)$res[0]["unsold_seat"]);
     }
 }
-?>

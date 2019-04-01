@@ -1,3 +1,21 @@
+<p class="notice" soy:display="updated">更新しました</p>
+
+<section>
+	<h1>プラグインの設定</h1>
+	<form soy:id="form">
+		<dl>
+			<dt>注文の手続き</dt>
+			<dd>
+				<input type="radio" soy:id="is_tmp_order">&nbsp;
+				<input type="radio" soy:id="no_tmp_order">
+			</dd>
+		</dl>
+
+		<p class="pageBtn" style="clear:both;">
+			<input type="submit" class="submit_button" value="変更" />
+		</p>
+	</form>
+</section>
 <section>
 	<h1>共通</h1>
 	<dl>
@@ -9,7 +27,7 @@
 				<li>顧客情報の入力フォームの設定で不必要な項目のチェックを外します。</li>
 			</ul>
 		</dd>
-		
+
 		<dt>カレンダーの作成</dt>
 		<dd>
 			予約カレンダーは商品に日付情報を持たせて扱います。下記の手順に従ってカレンダー用の商品を作成します。

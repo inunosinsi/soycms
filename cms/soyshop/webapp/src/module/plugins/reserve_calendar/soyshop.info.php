@@ -12,4 +12,3 @@ class ReserveCalendarInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "reserve_calendar", "ReserveCalendarInfo");
-?>

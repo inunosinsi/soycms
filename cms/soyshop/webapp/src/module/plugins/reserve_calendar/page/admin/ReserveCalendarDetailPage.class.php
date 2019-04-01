@@ -7,6 +7,8 @@ class ReserveCalendarDetailPage extends WebPage{
 	private $itemId;
 	private $reservedList;
 	private $reservedCount;
+	private $tmpReservedList = array();	//仮登録
+	private $tmpReservedCount = 0;
 	private $configObj;
 
 	private $backward;
@@ -136,6 +138,14 @@ class ReserveCalendarDetailPage extends WebPage{
 		$this->reservedList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedListByScheduleId($this->schId);
 		$this->reservedCount = count($this->reservedList);
 
+		//仮登録
+		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+		$config = ReserveCalendarUtil::getConfig();
+		if(isset($config["tmp"]) && $config["tmp"] == ReserveCalendarUtil::IS_TMP){
+			$this->tmpReservedList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedListByScheduleId($this->schId, true);	//trueで仮登録を取得
+			$this->tmpReservedCount = count($this->tmpReservedList);
+		}
+
 		parent::__construct();
 
 		//キャンセル
@@ -145,11 +155,20 @@ class ReserveCalendarDetailPage extends WebPage{
 			exit;
 		}
 
-		DisplayPlugin::toggle("canceled", isset($_GET["canceled"]));
-		DisplayPlugin::toggle("error", isset($_GET["error"]));
+		//本登録
+		if(isset($_GET["reserve"]) && is_numeric($_GET["reserve"])){
+			SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->registration($_GET["reserve"]);
+			SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?registration");
+			exit;
+		}
+
+		foreach(array("canceled", "error", "registration") as $t){
+			DisplayPlugin::toggle($t, isset($_GET[$t]));
+		}
 
 		self::buildScheduleInfoArea();
 		self::buildReservedList();
+		self::buildTmpReservedList();	//仮予約
 		self::buildCanceledList();
 		self::buildReserveFormArea();
 	}
@@ -187,6 +206,16 @@ class ReserveCalendarDetailPage extends WebPage{
 		$this->createAdd("reserved_list", "ReservedListComponent", array(
 			"list" => $this->reservedList,
 			"scheduleId" => $this->schId
+		));
+	}
+
+	private function buildTmpReservedList(){
+		DisplayPlugin::toggle("has_tmp_reserved", ($this->tmpReservedCount > 0));
+
+		$this->createAdd("tmp_reserved_list", "ReservedListComponent", array(
+			"list" => $this->tmpReservedList,
+			"scheduleId" => $this->schId,
+			"tempMode" => true
 		));
 	}
 

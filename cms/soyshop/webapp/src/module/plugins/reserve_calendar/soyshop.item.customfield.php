@@ -18,7 +18,7 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&tag&item_id=" . $item->getId()) . "\" class=\"button\">テンプレートへの記述例</a></dd>";
 		return implode("\n", $html);
 	}
-	
+
 	/**
 	 * 公開側のblock:id="item"で囲まれた箇所にフォームを出力する
 	 * @param object htmlObj, object SOYShop_Item
@@ -33,4 +33,3 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "reserve_calendar", "ReserveCalendarCustomField");
-?>

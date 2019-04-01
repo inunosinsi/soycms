@@ -110,4 +110,3 @@ class CalendarLogic extends CalendarBaseComponent{
 		$this->sync = $sync;
 	}
 }
-?>

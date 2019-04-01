@@ -71,4 +71,3 @@ class ScheduleLogic extends SOY2LogicBase{
         return $dao;
     }
 }
-?>

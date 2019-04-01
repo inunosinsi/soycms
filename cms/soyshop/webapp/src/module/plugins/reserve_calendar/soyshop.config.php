@@ -11,12 +11,12 @@ class ReserveCalendarConfig extends SOYShopConfigPageBase{
 			if(isset($_GET["calendar"])){
 				SOY2::import("module.plugins.reserve_calendar.config.Calendar.CalendarFormPage");
 				$form = SOY2HTMLFactory::createInstance("CalendarFormPage");
-				
+
 			//定休日の設定
 			}else if(isset($_GET["holiday"])){
 				SOY2::import("module.plugins.reserve_calendar.config.Calendar.HolidayConfigPage");
 				$form = SOY2HTMLFactory::createInstance("HolidayConfigPage");
-				
+
 			//ラベルの設定
 			}else if(isset($_GET["label"]) || isset($_GET["remove"])){
 				SOY2::import("module.plugins.reserve_calendar.config.Calendar.LabelConfigPage");
@@ -32,7 +32,7 @@ class ReserveCalendarConfig extends SOYShopConfigPageBase{
 			SOY2::import("module.plugins.reserve_calendar.config.ReserveCalendarConfigFormPage");
 			$form = SOY2HTMLFactory::createInstance("ReserveCalendarConfigFormPage");
 		}
-		
+
 		$form->setConfigObj($this);
 		$form->execute();
 		return $form->getObject();
@@ -52,4 +52,3 @@ class ReserveCalendarConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "reserve_calendar", "ReserveCalendarConfig");
-?>
