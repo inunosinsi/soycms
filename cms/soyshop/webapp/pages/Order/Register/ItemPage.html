@@ -48,6 +48,7 @@
 						<td>
 							<p>
 								<!-- soy:id="item_name_text" -->商品名<!-- /soy:id="item_name_text" -->&nbsp;
+								<!-- soy:id="display_price_list_link" --><a class="button" soy:id="price_list_link">価格一覧</a>&nbsp;<!-- /soy:id="display_price_list_link" -->
 								<a class="button" soy:id="change_link">変更</a>
 							</p>
 							<!-- soy:id="item_option_list" -->
@@ -147,15 +148,24 @@ $('#add_module_button').click(function(){
 function open_window_with_add(){
 	var $searchWindow = $("#item_search_window");
 	var $src = $searchWindow.prop("src");
-	if($src.indexOf("?change") > 0){
-		$src = $src.substr(0, $src.indexOf("?change"));
-	}
+	if($src.indexOf("?") > 0) $src = $src.substr(0, $src.indexOf("?"));
 	$searchWindow.prop("src", $src);
 	OptionWindow.popup();
 }
 function open_window_with_change(idx){
 	var $searchWindow = $("#item_search_window");
-	var $src = $searchWindow.prop("src") + "?change=" + idx;
+	var $src = $searchWindow.prop("src");
+	if($src.indexOf("?") > 0) $src = $src.substr(0, $src.indexOf("?"));
+	var $src = $src + "?change=" + idx;
+	$searchWindow.prop("src", $src);
+	OptionWindow.popup();
+}
+
+function open_window_item_price(itemId){
+	var $searchWindow = $("#item_search_window");
+	var $src = $searchWindow.prop("src");
+	if($src.indexOf("?") > 0) $src = $src.substr(0, $src.indexOf("?"));
+	var $src = $src + "?price=" + itemId;	//一旦検索ページを開き、iframe内でリダイレクト
 	$searchWindow.prop("src", $src);
 	OptionWindow.popup();
 }
@@ -204,7 +214,7 @@ $(function(){
 </script>
 
 <style>
-#option_window_el {
+#option_window_el{
 	width:800px !important;
 }
 #option_window_el iframe{

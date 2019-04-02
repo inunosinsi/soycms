@@ -238,4 +238,38 @@ class ItemLogic extends SOY2LogicBase{
 	    	}
     	}
     }
+
+	function getItemPriceListByItemId($itemId){
+		static $list;
+		if(isset($list[$itemId])) return $list[$itemId];
+		$list = array();
+
+		$item = soyshop_get_item_object($itemId);
+
+		//価格一覧を格納する配列
+		$prices = array();
+
+		//商品に紐付いた価格
+		$prices[] = array("label" => "定価", "price" => soyshop_check_price_string($item->getAttribute("list_price")));
+		$price = soyshop_check_price_string($item->getPrice());
+		$prices[] = array("label" => "通常価格", "price" => $price);
+		$salePrice = soyshop_check_price_string($item->getSalePrice());
+		if($salePrice > 0 && $price != $salePrice) $prices[] = array("label" => "セール価格", "price" => $salePrice);
+
+		//会員特別価格の拡張ポイント
+		SOYShopPlugin::load("soyshop.add.price");
+		$priceList = SOYShopPlugin::invoke("soyshop.add.price", array(
+			"mode" => "confirm",
+			"item" => $item
+		))->getPriceList();
+
+		if(is_array($priceList) && count($priceList)){
+			foreach($priceList as $moduleId => $extPrices){
+				$prices = array_merge($prices, $extPrices);
+			}
+		}
+
+		$list[$itemId] = $prices;
+		return $list[$itemId];
+	}
 }

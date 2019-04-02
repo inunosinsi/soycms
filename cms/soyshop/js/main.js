@@ -190,13 +190,13 @@ var OptionWindow = {
 	popup : function(type){
 
 		this.type = type;
-		
+
 		if(type != undefined && type.length > 0){
 			url = location.href;
 			url = url.replace("Detail", type);
 			$("#option_window").prop("src", url);
 		}
-		
+
 		//if onPopup
 		if(window.onPopup){
 			window.onPopup();

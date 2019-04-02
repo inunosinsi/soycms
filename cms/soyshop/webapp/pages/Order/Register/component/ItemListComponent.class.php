@@ -42,6 +42,17 @@ class ItemListComponent extends HTMLList {
 			"attr:id" => "change_item_" . $id
 		));
 
+		$priceList = self::itemLogic()->getItemPriceListByItemId($item->getId());
+
+		$this->addModel("display_price_list_link", array(
+			"visible" => (count($priceList) > 2)	//セール価格があったり会員特別価格があったり
+		));
+
+		$this->addLink("price_list_link", array(
+			"link" => "javascript:void(0);",
+			"onclick" => "open_window_item_price(" . $item->getId() . ")",
+		));
+
 		$this->addInput("item_price", array(
 			"name" => "Item[$id][itemPrice]",
 			"value" => $entity->getItemPrice(),
@@ -129,10 +140,6 @@ class ItemListComponent extends HTMLList {
 		return implode("<br>", $html);
 	}
 
-	public function setCart($cart){
-		$this->cart = $cart;
-	}
-
 	private function getItemOptionAttributeById($itemId){
 		static $dao, $list;
 		if(is_null($dao)){
@@ -169,5 +176,15 @@ class ItemListComponent extends HTMLList {
 		static $on;
 		if(is_null($on)) $on = ((int)SOYShop_ShopConfig::load()->getIgnoreStock() == 1);
 		return $on;
+	}
+
+	private function itemLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("logic.shop.item.ItemLogic");
+		return $logic;
+	}
+
+	function setCart($cart){
+		$this->cart = $cart;
 	}
 }

@@ -37,6 +37,10 @@ class SearchPage extends WebPage{
 	}
 
 	function __construct(){
+		//iframe内のリダイレクト　商品価格一覧
+		if(isset($_GET["price"]) && is_numeric($_GET["price"])){
+			SOY2PageController::jump("Order.Register.Item.Price.". $_GET["price"]);
+		}
 
 		SOY2::import("domain.shop.SOYShop_Item");
 		parent::__construct();
