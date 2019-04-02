@@ -68,6 +68,10 @@ class ReserveLogic extends SOY2LogicBase{
 		$resDao->commit();
 	}
 
+	function getTokensByOrderId($orderId){
+		return self::dao()->getTokensByOrderId($orderId);
+	}
+
 	private function dao(){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");

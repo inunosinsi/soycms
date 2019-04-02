@@ -28,7 +28,7 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
 			try{
 				$res = $this->executeQuery("SELECT id FROM soyshop_orders WHERE order_id = :orderId AND item_id = :itemId AND cdate = :cdate LIMIT 1;", array(":orderId" => $binds[":orderId"], ":itemId" => $binds[":itemId"], ":cdate" => $binds[":cdate"] + $i));
 			}catch(Exception $e){
-				var_dump($e);
+				//var_dump($e);
 				$res = array();
 			}
 

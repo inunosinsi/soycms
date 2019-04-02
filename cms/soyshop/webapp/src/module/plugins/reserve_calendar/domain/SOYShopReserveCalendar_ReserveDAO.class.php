@@ -155,4 +155,21 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 
         return ((int)$res[0]["COUNT"] < (int)$res[0]["unsold_seat"]);
     }
+
+	function getTokensByOrderId($orderId){
+		try{
+			$res = $this->executeQuery("SELECT token FROM soyshop_reserve_calendar_reserve WHERE order_id = :orderId", array(":orderId" => $orderId));
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		if(!count($res)) return array();
+
+		$tokens = array();
+		foreach($res as $v){
+			if(!isset($v["token"]) || !strlen($v["token"])) continue;
+			$tokens[] = $v["token"];
+		}
+		return $tokens;
+	}
 }
