@@ -3,7 +3,6 @@
 class LabelLogic extends SOY2LogicBase{
 
     function __construct(){
-        SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Label");
         SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_LabelDAO");
     }
 

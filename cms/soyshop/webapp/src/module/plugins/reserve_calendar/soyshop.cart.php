@@ -8,7 +8,6 @@ class ReserveCalendarCart extends SOYShopCartBase{
 		if(isset($_REQUEST["a"]) && $_REQUEST["a"] == "add"){
 
 			if(isset($_REQUEST["schId"]) && is_numeric($_REQUEST["schId"])){
-				SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Schedule");
 				SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
 
 				//スケジュールが登録されているか確認してから商品IDを$_REQUESTに渡す

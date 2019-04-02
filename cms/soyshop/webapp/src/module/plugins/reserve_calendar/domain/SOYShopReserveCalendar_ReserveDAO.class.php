@@ -1,5 +1,5 @@
 <?php
-
+SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Reserve");
 /**
  * @entity SOYShopReserveCalendar_Reserve
  */
@@ -16,6 +16,11 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
      * @return object
      */
     abstract function getById($id);
+
+	/**
+	 * @return object
+	 */
+	abstract function getByToken($token);
 
     abstract function deleteById($id);
 

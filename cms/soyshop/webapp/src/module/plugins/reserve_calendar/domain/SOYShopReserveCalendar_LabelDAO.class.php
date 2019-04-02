@@ -1,4 +1,6 @@
 <?php
+SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Label");
+
 /**
  * @entity SOYShopReserveCalendar_Label
  */

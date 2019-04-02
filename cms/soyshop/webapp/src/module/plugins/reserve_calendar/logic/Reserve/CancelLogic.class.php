@@ -3,9 +3,7 @@
 class CancelLogic extends SOY2LogicBase{
 
 	function __construct(){
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Reserve");
 		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Cancel");
 		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_CancelDAO");
 	}
 

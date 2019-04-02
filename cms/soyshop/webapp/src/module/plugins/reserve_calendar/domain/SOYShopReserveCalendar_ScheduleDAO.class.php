@@ -1,5 +1,5 @@
 <?php
-
+SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Schedule");
 /**
  * @entity SOYShopReserveCalendar_Schedule
  */

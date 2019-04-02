@@ -1,4 +1,5 @@
 <?php
+SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Cancel");
 
 /**
  * @entity SOYShopReserveCalendar_Cancel

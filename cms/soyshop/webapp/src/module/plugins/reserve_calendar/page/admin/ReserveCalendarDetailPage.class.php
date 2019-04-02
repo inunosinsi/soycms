@@ -37,7 +37,6 @@ class ReserveCalendarDetailPage extends WebPage{
 		//多言語
 		MessageManager::addMessagePath("admin");
 
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Reserve");
 		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
 	}
 

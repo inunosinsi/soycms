@@ -26,7 +26,7 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"name" => "Config[tmp]",
 			"value" => ReserveCalendarUtil::IS_TMP,
 			"selected" => (!isset($config["tmp"]) || $config["tmp"] == ReserveCalendarUtil::IS_TMP),
-			"label" => "仮登録を行う"
+			"label" => "仮登録を行う(β版)"
 		));
 
 		$this->addCheckBox("no_tmp_order", array(

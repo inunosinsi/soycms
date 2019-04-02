@@ -145,7 +145,6 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
     private function schDao(){
         static $dao;
         if(is_null($dao)){
-            SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Schedule");
             SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
             $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
         }
@@ -155,7 +154,6 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
     private function resDao(){
         static $dao;
         if(is_null($dao)){
-            SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_Reserve");
             SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
             $dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
         }
