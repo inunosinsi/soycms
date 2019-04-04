@@ -299,7 +299,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 	 */
 	private function checkCarrier($prefix){
 		//PATH_INFO
-		$pathInfo = self::getPathInfo();
+		$pathInfo = UtilMobileCheckUtil::getPathInfo();
 
 		if($pathInfo === "/" . $prefix || strpos($pathInfo, "/" . $prefix . "/") === 0){
 			$path = self::getRedirectPcPath($prefix);
@@ -312,166 +312,23 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 	 * URLにプレフィックスを付けた絶対パスを返す
 	 */
 	private function getRedirectPath($prefix){
-		//REQUEST_URI
-		$requestUri = rawurldecode($_SERVER['REQUEST_URI']);
-		//getの値を取り除く
-		if(strpos($requestUri, "?") !== false){
-			$requestUri = substr($requestUri, 0, strpos($requestUri, "?"));
-		}
-
 		//スマホのプレフィックスと多言語のプレフィックスが付与されている場合はfalseを返す
-		if(self::checkMultiLanguage($requestUri)){
-			return false;
-		}
-
-		//PATH_INFO
-		$pathInfo = self::getPathInfo();
-
-		//先頭はスラッシュ
-		if(strlen($pathInfo) && $pathInfo[0] !== "/"){
-			$pathInfo = "/" . $pathInfo;
-		}
+		if(UtilMobileCheckUtil::checkMultiLanguage()) return false;
 
 		//無限ループになるときはfalseを返す
-		if(self::checkLoop($pathInfo, $prefix)){
-			return false;
-		}
+		if(UtilMobileCheckUtil::checkLoop($prefix)) return false;
 
-		//サイトID：最初と最後に/を付けておく
-		$siteDir = strlen($pathInfo) ? strtr($requestUri, array($pathInfo => "")) : $requestUri ;//strtrのキーは空文字列であってはいけない
-		if(strlen($siteDir)){
-			if($siteDir[0] !== "/"){
-				$siteDir = "/" . $siteDir;
-			}
-			if(substr($siteDir, -1) !== "/"){
-				$siteDir = $siteDir . "/";
-			}
-		}
-
-		//prefixを付ける
-		$path = $siteDir. $prefix . $pathInfo;
-
-		return self::addQueryString($path);
-	}
-
-	//多言語化プラグインがすでに実行されているか調べる
-	private function checkMultiLanguage($path){
-		$reg = "/" . $this->config["prefix_i"] . "/";
-		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-		$config = UtilMultiLanguageUtil::getConfig();
-		if(isset($config["check_browser_language_config"])) unset($config["check_browser_language_config"]);
-		foreach($config as $conf){
-			if(!isset($conf["prefix"]) || strlen($conf["prefix"]) === 0) continue;
-			if(strpos($path, $reg . $conf["prefix"]) === 0) return true;
-		}
-
-		return false;
-	}
-
-	private function checkLoop($path, $prefix){
-		return ( $path === "/" . $prefix || strpos($path, "/" . $prefix . "/") === 0 );
+		$path = UtilMobileCheckUtil::buildUrl($prefix);
+		return UtilMobileCheckUtil::addQueryString($path);
 	}
 
 	/**
 	 * 各キャリアのprefixを除いたパスを返す
 	 */
 	private function getRedirectPcPath($prefix){
-		//REQUEST_URI
-		$requestUri = rawurldecode($_SERVER['REQUEST_URI']);
-
-		//getの値を取り除く
-		if(strpos($requestUri,"?") !== false){
-			$requestUri = substr($requestUri, 0, strpos($requestUri, "?"));
-		}
-
-		//PATH_INFO
-		$pathInfo = self::getPathInfo();
-
-		//先頭はスラッシュ
-		if(strlen($pathInfo) && $pathInfo[0] !== "/"){
-			$pathInfo = "/" . $pathInfo;
-		}
-
-		//サイトID：最初と最後に/を付けておく
-		$path = $requestUri;
-		if($path[0] !== "/"){
-			$path = "/" . $path;
-		}
-		if(substr($path, -1) !== "/"){
-			$path = $path . "/";
-		}
-
-		//各キャリアのprefixを除いたものを返す
-		if(strrpos($path,"/" . $prefix) == strlen($path) - strlen($prefix) - 1){
-			$path = str_replace("/" . $prefix, "", $path);
-		}else{
-			$path = str_replace("/" . $prefix . "/", "/", $path);
-		}
-
-		return self::addQueryString($path);
-	}
-
-	/**
-	 * PATH_INFOを取得する
-	 * PATH_INFOをGETで渡す環境があるらしい
-	 */
-	private function getPathInfo(){
-		if(isset($_SERVER['PATH_INFO'])){
-			$pathInfo = $_SERVER['PATH_INFO'];
-		}elseif(isset($_GET['pathinfo'])){
-			$pathInfo = $_GET['pathinfo'];
-		}else{
-			$pathInfo = null;
-		}
-		return $pathInfo;
-	}
-
-	private function addQueryString($path){
-		//絶対パスにQuery Stringを追加する
-		if(isset($_SERVER["QUERY_STRING"]) && strlen($_SERVER["QUERY_STRING"]) > 0){
-			$path = rtrim($path, "/");
-			$array = explode("&", $_SERVER["QUERY_STRING"]);
-			$queries = array();
-			foreach($array as $query){
-				if(strpos($query, "=")){
-					$key = substr($query, 0, strpos($query, "="));
-					$value = substr($query, strpos($query, "=") + 1);
-				}else{
-					$key = $query;
-					$value = null;
-				}
-				$queries[$key] = $value;
-			}
-
-			//pathinfoの値はここで除く
-			if(array_key_exists("pathinfo", $queries)) unset($queries["pathinfo"]);
-
-			if(count($queries) > 0){
-				$querystring = "?";
-				$counter = 0;
-				foreach($queries as $key => $value){
-					if($counter > 0) $querystring .= "&";
-
-					if(isset($value) && strlen($value) > 0){
-						$querystring .= $key . "=" . $value;
-					}else{
-						$querystring .= $key;
-					}
-
-					$counter++;
-				}
-
-				if(strpos($querystring, session_name() . "=") !== false){
-					$querystring = preg_replace("/" . session_name() . "=[A-Za-z0-9]*/", session_name() . "=" . session_id(), $querystring);
-				}else{
-					$querystring = $querystring;
-				}
-
-				$path .= $querystring;
-			}
-		}
-
-		return $path;
+		//各キャリアのprefixを除いたREQUEST URIを取得
+		$path = UtilMobileCheckUtil::removeCarrierPrefixUri($prefix);
+		return UtilMobileCheckUtil::addQueryString($path);
 	}
 }
 

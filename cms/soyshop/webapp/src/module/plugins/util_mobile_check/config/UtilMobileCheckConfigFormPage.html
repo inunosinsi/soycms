@@ -11,56 +11,57 @@
 			※http://<!-- soy:id="domain" /--><!-- soy:id="shop_id" /-->の場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br />
 			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/item/listの場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_text*" /--></strong>/item/listにリダイレクトします
 		</dd>
-		
+
 		<dt>スマートフォン用プリフィックスの設定</dt>
 		<dd>
 			<input type="text" soy:id="prefix_i" />&nbsp;&nbsp;
 			<a soy:id="create_i_page_link" class="button">ページの追加</a><br />
 			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->の場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_i_text" /--></strong>にリダイレクトします<br />
-			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/item/listの場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_i_text*" /--></strong>/item/listにリダイレクトします
+			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/item/listの場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_i_text*" /--></strong>/item/listにリダイレクトします<br>
+			<input type="checkbox" soy:id="prefix_i_alternate">
 		</dd>
-		
+
 		<dt>DoCoMoの外部CSSに対応</dt>
 		<dd>
 			<input type="checkbox" soy:id="docomo_css" />
 			<label for="docomo_css">有効にする</label>
 		</dd>
-		
+
 		<!-- soy:id="is_docomo_css" -->
 		<dt>3キャリア対応Content-Type</dt>
 		<dd>&lt;meta cms:id="mobile_http_equiv" /&gt;</dd>
 		<!-- /soy:id="is_docomo_css" -->
-		
+
 		<dt>クッキー非対応機種設定</dt>
 		<dd>セッションIDの値をGETで保持するため、セッションハイジャックの危険性があります。<br />
 			危険性を了解した上で、クッキー非対応機種を許可する&nbsp;<input type="checkbox" soy:id="cookie" />
 		</dd>
-		
+
 		<dt>セッション保持時間の設定</dt>
 		<dd><input type="text" soy:id="session" size="3" style="text-align:right;ime-mode:inactive;"/>&nbsp;分</dd>
-		
+
 		<dt>カート内のお買物に戻るリンクのURL設定</dt>
 		<dd>
 			<input type="text" soy:id="url" size="60" />
 		</dd>
-		
+
 		<dt>自動転送機能</dt>
 		<dd>
 			<input type="checkbox" soy:id="auto_redirect" />
 			<label for="auto_redirect">有効にする</label>
 		</dd>
-		
+
 		<!-- soy:id="no_auto_redirect" -->
 		<dt>転送文言の設定</dt>
 		<dd>
 			<textarea soy:id="message"></textarea>
 		</dd>
 		<!-- /soy:id="no_auto_redirect" -->
-		
+
 		<!-- soy:id="is_auto_redirect" -->
 		<input type="hidden" soy:id="message_input" />
 		<!-- /soy:id="is_auto_redirect" -->
-		
+
 		<dt>タブレットで表示するページ</dt>
 		<dd>
 			<input type="radio" soy:id="do_not_redirect_ipad" />
@@ -68,7 +69,7 @@
 			<input type="radio" soy:id="redirect_ipad_smartphone" />
 			<label for="redirect_ipad_smartphone">スマートフォン用ページを表示する</label>
 		</dd>
-		
+
 		<dt>スマートフォンで表示するページ</dt>
 		<dd>
 			<input type="radio" soy:id="do_not_redirect" />
@@ -85,4 +86,3 @@
 	</p>
 
 </form soy:id="form">
-
