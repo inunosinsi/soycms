@@ -26,6 +26,14 @@ class DetailPage extends WebPage{
 				$historyContents = $orderLogic->changeItemOrdersIsConfirm($order->getId(), $isConfirmItemOrders);
 			}
 
+			//状態
+			if(isset($_POST["Status"]) && is_array($_POST["Status"]) && count($_POST["Status"])){
+				$hists = $orderLogic->changeItemOrdersStatus($order->getId(), $_POST["Status"]);
+				if(is_array($hists) && count($hists)){
+					$historyContents = array_merge($historyContents, $hists);
+				}
+			}
+
 			if (isset($_POST["Comment"]) && strlen($_POST["Comment"])) {
 				$historyContents[] = $_POST["Comment"];
 			}

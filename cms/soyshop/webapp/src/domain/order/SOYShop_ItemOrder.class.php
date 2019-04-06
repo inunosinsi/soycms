@@ -7,6 +7,8 @@ class SOYShop_ItemOrder {
 	const IS_CONFIRM = 1;
 	const NO_CONFIRM = 0;
 
+	const STATUS_NONE = 0;	//何もない
+
 	/**
 	 * @id
 	 */
@@ -42,6 +44,7 @@ class SOYShop_ItemOrder {
      * @column item_name
      */
     private $itemName;
+	private $status = 0;	//商品毎に何らかの状態を保持する
 
     private $cdate;
 
@@ -109,6 +112,12 @@ class SOYShop_ItemOrder {
     function setItemName($itemName) {
     	$this->itemName = $itemName;
     }
+	function getStatus(){
+		return $this->status;
+	}
+	function setStatus($status){
+		$this->status = $status;
+	}
     function getCdate() {
     	if(!$this->cdate) $this->cdate = time();
     	return $this->cdate;
@@ -190,6 +199,35 @@ class SOYShop_ItemOrder {
 		}else{
 			return $this->itemName;
 		}
+	}
+
+	public static function getStatusList(){
+		static $list;
+		if(is_null($list)){
+			$list[self::STATUS_NONE] = "";
+
+			//拡張ポイント
+			SOYShopPlugin::load("soyshop.itemorder.status");
+			$adds = SOYShopPlugin::invoke("soyshop.itemorder.status")->getList();
+
+			if(is_array($adds) && count($adds)){
+				foreach($adds as $add){
+					if(!is_array($add) || !count($add)) continue;
+					foreach($add as $key => $label){
+						if(isset($add[$key])) $list[$key] = $label;
+					}
+				}
+			}
+
+			ksort($list);
+		}
+		return $list;
+	}
+
+	public static function getStatusText($status){
+		$statusList = self::getStatusList();
+		if(!isset($statusList[$status])) $status = self::STATUS_NONE;
+		return $statusList[$status];
 	}
 
     /**

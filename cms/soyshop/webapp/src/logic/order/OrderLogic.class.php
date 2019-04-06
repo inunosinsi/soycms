@@ -39,19 +39,15 @@ class OrderLogic extends SOY2LogicBase{
 
     function getTotalPrice($orderId) {
     	try{
-    		return SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getTotalPriceByOrderId($orderId);
+    		return self::itemOrderDao()->getTotalPriceByOrderId($orderId);
     	}catch(Exception $e){
     		return null;
     	}
     }
 
-    function getItemsByOrderId($orderId) {
-    	try{
-			return SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
-    	}catch(Exception $e){
-    		return array();
-    	}
-    }
+	function getItemsByOrderId($orderId){
+		return self::_getItemsByOrderId($orderId);
+	}
 
 	/**
 	 * @param integer $itemId
@@ -59,7 +55,7 @@ class OrderLogic extends SOY2LogicBase{
 	 */
     function getOrderCountByItemId($itemId){
     	try{
-			return SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->countByItemId($itemId);
+			return self::itemOrderDao()->countByItemId($itemId);
     	}catch(Exception $e){
     		return 0;
     	}
@@ -72,7 +68,7 @@ class OrderLogic extends SOY2LogicBase{
 	 */
     function getTotalOrderItemCountByItemId($orderId){
     	try{
-			return SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getTotalItemCountByOrderId($orderId);
+			return self::itemOrderDao()->getTotalItemCountByOrderId($orderId);
     	}catch(Exception $e){
     		return 0;
     	}
@@ -83,8 +79,7 @@ class OrderLogic extends SOY2LogicBase{
 	 * @return integer 商品の個数
 	 */
     function getItemCountById($orderId){
-    	$items = $this->getItemsByOrderId($orderId);
-    	return count($items);
+    	return count(self::_getItemsByOrderId($orderId));
     }
 
     /**
@@ -362,13 +357,7 @@ class OrderLogic extends SOY2LogicBase{
 	}
 
 	function changeItemStock($orderId, $mode){
-		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		try{
-			$itemOrders = $itemOrderDao->getByOrderId($orderId);
-		}catch(Exception $e){
-			return false;
-		}
-
+		$itemOrders = self::_getItemsByOrderId($orderId);
 		if(!count($itemOrders)) return false;
 
 		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
@@ -398,13 +387,7 @@ class OrderLogic extends SOY2LogicBase{
 	}
 
 	function changeItemOrdersIsConfirm($orderId, $isConfirmItemOrderIds){
-		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		try{
-			$itemOrders = $itemOrderDao->getByOrderId($orderId);
-		}catch(Exception $e){
-			$itemOrders = array();
-		}
-
+		$itemOrders = self::_getItemsByOrderId($orderId);
 		if(!count($itemOrders)) return array();
 
 		$changes = array();
@@ -414,7 +397,7 @@ class OrderLogic extends SOY2LogicBase{
 				if(!in_array($itemOrder->getId(), $isConfirmItemOrderIds)){
 					$itemOrder->setIsConfirm(SOYShop_ItemOrder::NO_CONFIRM);
 					try{
-						$itemOrderDao->update($itemOrder);
+						self::itemOrderDao()->update($itemOrder);
 						$changes[] = "「" . $itemOrder->getItemName() . "」の確認済みを取り消しました。";
 					}catch(Exception $e){
 						//
@@ -425,8 +408,8 @@ class OrderLogic extends SOY2LogicBase{
 				if(in_array($itemOrder->getId(), $isConfirmItemOrderIds)){
 					$itemOrder->setIsConfirm(SOYShop_ItemOrder::IS_CONFIRM);
 					try{
-						$itemOrderDao->update($itemOrder);
-						$changes[] = "「" . $itemOrder->getItemName() . "」の確認済みにしました。";
+						self::itemOrderDao()->update($itemOrder);
+						$changes[] = "「" . $itemOrder->getItemName() . "」を確認済みにしました。";
 					}catch(Exception $e){
 						//
 					}
@@ -435,5 +418,39 @@ class OrderLogic extends SOY2LogicBase{
 		}
 
 		return $changes;
+	}
+
+	function changeItemOrdersStatus($orderId, $statuses){
+		if(!is_array($statuses) || !count($statuses)) return array();
+		$itemOrders = self::_getItemsByOrderId($orderId);
+		if(!count($itemOrders)) return array();
+
+		$changes = array();
+		foreach($statuses as $itemOrderId => $newStatus){
+			if(!isset($itemOrders[$itemOrderId])) continue;
+			$itemOrder = $itemOrders[$itemOrderId];
+			$oldStatus = $itemOrder->getStatus();
+			if($oldStatus != $newStatus){
+				$itemOrder->setStatus($newStatus);
+				self::itemOrderDao()->update($itemOrder);
+				$changes[] = "「" . $itemOrder->getItemName() . "」の状態を「" . SOYShop_ItemOrder::getStatusText($oldStatus) . "」から「" . SOYShop_ItemOrder::getStatusText($newStatus) . "」に変更しました。";
+			}
+		}
+
+		return $changes;
+	}
+
+	private function _getItemsByOrderId($orderId) {
+    	try{
+			return self::itemOrderDao()->getByOrderId($orderId);
+    	}catch(Exception $e){
+    		return array();
+    	}
+    }
+
+	private function itemOrderDao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		return $dao;
 	}
 }

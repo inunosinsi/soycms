@@ -18,6 +18,7 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
 	function onInsert($query, $binds){
 		static $i;
 		if(is_null($i)) $i = 0;
+		if(!isset($binds[":status"])) $binds[":status"] = 0;
 		if(!isset($binds[":cdate"])) $binds[":cdate"] = time();
 		if(!isset($binds[":displayOrder"])) $binds[":displayOrder"] = 0;
 		if(!isset($binds[":isAddition"]) || strlen($binds[":isAddition"]) < 1) $binds[":isAddition"] = 0;

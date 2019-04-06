@@ -36,6 +36,21 @@ class ItemOrderListComponent extends HTMLList {
 			"text" => ((int)$itemOrder->getItemId() === 0 || strpos($item->getCode(), "_delete_") === false) ? $itemOrder->getItemName() : "---"
 		));
 
+		//状態のセレクトボックス 状態が2個以上の場合にセレクトボックスを出力する
+		$statusList = SOYShop_ItemOrder::getStatusList();
+		$this->addModel("is_status", array(
+			"visible" => (count($statusList) > 1)
+		));
+
+		$this->addSelect("status", array(
+			"name" => "Status[" . $itemOrder->getId() . "]",
+			"options" => $statusList,
+			"selected" => $itemOrder->getStatus(),
+			"indexOrder" => true,
+			"onchange" => '$(\'#confirm_operation\').show();'
+		));
+
+
 		$this->addLabel("item_option", array(
 			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? soyshop_build_item_option_html_on_item_order($itemOrder) : ""
 		));

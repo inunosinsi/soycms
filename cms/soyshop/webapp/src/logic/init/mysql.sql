@@ -91,6 +91,7 @@ create table soyshop_orders(
 	item_price integer not null,
 	total_price integer not null,
 	item_name TEXT not null,
+	status TINYINT NOT NULL DEFAULT 0,
 	cdate integer not null,
 	is_sended tinyint default 0,
 	attributes TEXT,
