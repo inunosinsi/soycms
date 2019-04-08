@@ -81,11 +81,28 @@ class SOYInquiry_Column{
 	private $inquiry;
 
 	/**
+	 * #helper function
+	 */
+	private function _types(){
+		static $types;
+		if(is_null($types)){
+			$types = SOYInquiry_Column::$columnTypes;
+
+			//拡張 /common/inquiry.config.phpがあれば読み込む
+			if(file_exists(CMS_COMMON . "/config/inquiry.config.php")){
+				include_once(CMS_COMMON . "/config/inquiry.config.php");
+				$types = array_merge($types, $advancedColumns);
+			}
+		}
+		return $types;
+	}
+
+	/**
 	 * #factory
 	 */
 	function getColumn(SOYInquiry_Form $form = null){
 
-		if($this->type)SOY2::import("columns." . $this->type . "Column");
+		if($this->type) SOY2::import("columns." . $this->type . "Column");
 		$className = $this->type . "Column";
 
 		if(!class_exists($className)){
@@ -176,9 +193,12 @@ class SOYInquiry_Column{
 		return $obj->getContent();
 	}
 
-	function getTypeText(){
-		$types = SOYInquiry_Column::$columnTypes;
+	public static function getTypes(){
+		return self::_types();
+	}
 
+	function getTypeText(){
+		$types = self::_types();
 		return (isset($types[$this->type])) ? $types[$this->type] : "無効な種別(".$this->type.")";
 	}
 

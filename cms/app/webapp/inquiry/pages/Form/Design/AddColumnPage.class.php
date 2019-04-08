@@ -40,21 +40,21 @@ class AddColumnPage extends WebPage{
 	    	exit;
     	}
 
-    	$this->createAdd("add_form","HTMLForm");
+    	$this->addForm("add_form");
 
-    	$this->createAdd("form_name","HTMLLabel",array(
+    	$this->addLabel("form_name", array(
     		"text" => $this->form->getName()
     	));
 
-    	$this->createAdd("column_name","HTMLInput",array(
+    	$this->addInput("column_name", array(
     		"name" => "Column[label]",
 			"attr:required" => "required"
     	));
-    	$this->createAdd("column_type","HTMLSelect",array(
+    	$this->addSelect("column_type", array(
     		"name" => "Column[type]",
-    		"options" => SOYInquiry_Column::$columnTypes
+    		"options" => SOYInquiry_Column::getTypes()
     	));
-    	$this->createAdd("column_require","HTMLCheckbox",array(
+    	$this->addCheckBox("column_require", array(
     		"name" => "Column[require]",
     		"value" => 1,
     		"label" => "必須項目にする"
@@ -67,7 +67,7 @@ class AddColumnPage extends WebPage{
 			"mode" => "add"
     	));
 
-    	$this->createAdd("order_default","HTMLInput",array(
+    	$this->addInput("order_default", array(
     		"name" => "Column[order]",
     		"value" => 10 * count($columns) + 1,
     		"checked" => "checked"
