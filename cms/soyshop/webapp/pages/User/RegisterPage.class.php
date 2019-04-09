@@ -40,6 +40,14 @@ class RegisterPage extends WebPage{
 			//OK
 		}
 
+		try{
+			$dao->getByUserCode($user->getUserCode());
+			$this->errorType = "used_user_code";
+			return;
+		}catch(Exception $e){
+			//OK
+		}
+
 		/*
 		 * 登録
 		 */
@@ -78,15 +86,14 @@ class RegisterPage extends WebPage{
 
     	$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
-    	if(!$this->user){
-	    	$this->user = new SOYShop_User();
-    	}
+    	if(!$this->user) $this->user = new SOYShop_User();
 
     	self::buildForm($this->user);
     	self::buildJobForm($this->user);		//法人
 
     	DisplayPlugin::toggle("wrong_email",($this->errorType == "wrong_email"));
     	DisplayPlugin::toggle("used_email",($this->errorType == "used_email"));
+		DisplayPlugin::toggle("used_user_code",($this->errorType == "used_user_code"));
 
 		$this->addModel("zip2address_js", array(
 			"src" => soyshop_get_site_url() . "themes/common/js/zip2address.js"

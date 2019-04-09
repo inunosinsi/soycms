@@ -19,6 +19,7 @@ class ShopConfigPage extends WebPage{
 			"allowMailAddressLogin" => 0,
 			"allowLoginIdLogin" => 0,
 			"displayUsableTagList" => 0,
+			"useUserCode" => 0,
 			"insertDummyMailAddress" => 0,
 			"insertDummyMailAddressOnAdmin" => 0,
 			"insertDummyMailAddressOnAdminRegister" => 0,
@@ -319,6 +320,13 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getDisplayUsableTagList(),
 			"label" => "テンプレートの編集画面で使用できるタグを表示"
+		));
+
+		$this->addCheckBox("useUserCode", array(
+			"name" => "Config[useUserCode]",
+			"value" => 1,
+			"selected" => $config->getUseUserCode(),
+			"label" => "顧客コードを使用する"
 		));
 
 		$this->addCheckBox("insertDummyMailAddress", array(

@@ -125,10 +125,17 @@ class SearchPage extends WebPage{
 
 	private function buildAdvancedSearchForm($search){
 		SOY2::import("domain.user.SOYShop_User");
+		$config = SOYShop_ShopConfig::load();
 
 		$this->addInput("advanced_search_id", array(
 			"name" => "search[id]",
 			"value" => (isset($search["id"])) ? $search["id"] : ""
+		));
+
+		DisplayPlugin::toggle("userCode", $config->getUseUserCode());
+		$this->addInput("advanced_search_user_code", array(
+			"name" => "search[user_code]",
+			"value" => (isset($search["user_code"])) ? $search["user_code"] : ""
 		));
 
 		$this->addInput("advanced_search_mail_address", array(
@@ -458,7 +465,7 @@ class SearchPage extends WebPage{
 		));
 
 		//項目の非表示用タグ
-		foreach(SOYShop_ShopConfig::load()->getCustomerAdminConfig() as $key => $bool){
+		foreach($config->getCustomerAdminConfig() as $key => $bool){
 			DisplayPlugin::toggle($key, $bool);
 		}
 	}

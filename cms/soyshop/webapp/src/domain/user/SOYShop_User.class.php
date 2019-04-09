@@ -39,6 +39,11 @@ class SOYShop_User {
 	 */
 	private $mailAddress;
 
+	/**
+	 * @column user_code
+	 */
+	private $userCode;
+
 	private $password;
 
 	private $attribute1;
@@ -195,6 +200,12 @@ class SOYShop_User {
 	}
 	function setId($id) {
 		$this->id = $id;
+	}
+	function getUserCode(){
+		return $this->userCode;
+	}
+	function setUserCode($userCode){
+		$this->userCode = $userCode;
 	}
 	function getAttribute1() {
 		return $this->attribute1;

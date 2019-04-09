@@ -19,7 +19,7 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
 
         SOY2::import("domain.shop.SOYShop_Item");
         $now = time();
-        $sql = "SELECT sch.id, sch.label_id, sch.day, sch.unsold_seat FROM soyshop_reserve_calendar_schedule sch ".
+        $sql = "SELECT sch.id, sch.label_id, sch.price, sch.day, sch.unsold_seat FROM soyshop_reserve_calendar_schedule sch ".
                 "INNER JOIN soyshop_reserve_calendar_label lab ".
                 "ON sch.label_id = lab.id ".
                 "INNER JOIN soyshop_item item ".
@@ -53,7 +53,7 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
 
         $list = array();
         foreach($res as $v){
-            $list[$v["day"]][$v["id"]] = array("label_id" => (int)$v["label_id"], "seat" => (int)$v["unsold_seat"]);
+            $list[$v["day"]][$v["id"]] = array("label_id" => (int)$v["label_id"], "price" => $v["price"], "seat" => (int)$v["unsold_seat"]);
         }
 
         return $list;

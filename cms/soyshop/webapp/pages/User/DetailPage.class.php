@@ -40,9 +40,24 @@ class DetailPage extends WebPage{
 				}
 			}
 
+			$oldCode = $user->getUserCode();	//更新前の顧客コードの取得
+
 			SOY2::cast($user, $detail);
 			$user->setAddressList($address);
 	//		$user->setAttributes($custom);
+
+			$newCode = $user->getUserCode();	//新たに入力した顧客コードを取得
+
+			//指定の顧客コードは既に登録されているか？
+			if(SOYShop_ShopConfig::load()->getUseUserCode()){
+				try{
+					$confirmUser = $dao->getByUserCode($newCode);
+					$user->setUserCode($oldCode);	//顧客コードを戻して更新
+					SOY2ActionSession::getUserSession()->setAttribute("user_code_error", 1);
+				}catch(Exception $e){
+					//
+				}
+			}
 
 
 			//メール配信をしないチェックボックス 値を反転
@@ -80,6 +95,7 @@ class DetailPage extends WebPage{
 				$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 				$user->setRealRegisterDate(time());
 			}
+
 
 			try{
 				$dao->update($user);
@@ -149,6 +165,11 @@ class DetailPage extends WebPage{
 
 		DisplayPlugin::toggle("notice_tmp_register", ($shopUser->getUserType() != SOYShop_User::USERTYPE_REGISTER));
 		DisplayPlugin::toggle("notice_no_publish", ($shopUser->getIsPublish() != SOYShop_User::USER_IS_PUBLISH));
+
+		$session = SOY2ActionSession::getUserSession();
+		$userCodeError = $session->getAttribute("user_code_error");
+		DisplayPlugin::toggle("user_code_error", isset($userCodeError));
+		$session->setAttribute("user_code_error", null);
 
 		//タイトルの箇所にあるボタン
 		SOYShopPlugin::load("soyshop.user.button");

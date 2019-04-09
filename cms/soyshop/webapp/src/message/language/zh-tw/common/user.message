@@ -1,5 +1,6 @@
 MAIL_ADDRESS_EMPTY = 請輸入您的電子郵件地址
 MAIL_ADDRESS_FALSE = E-mail地址格式無效
+USER_CODE_DUPLICATE = 既に登録されている顧客コードです。
 USER_NAME_EMPTY = 請輸入您的姓名
 USER_READING_EMPTY = 請輸入您的名字的拼音發音
 USER_READING_FALSE = 請輸入您的片假名名字的拼音發音

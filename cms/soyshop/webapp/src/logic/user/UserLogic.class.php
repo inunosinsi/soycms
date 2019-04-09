@@ -28,6 +28,7 @@ class UserLogic extends SOY2LogicBase{
 			}while(!$res);
 
 			$accountId = $user->getAccountId();
+			$deleteAccountId = null;
 			if(!is_null($accountId)){
 				$i = 0;
 				$res = false;
@@ -44,6 +45,7 @@ class UserLogic extends SOY2LogicBase{
 
     		$user->setName("(削除)" . $user->getName());
     		$user->setMailAddress($deleteAddress);
+			$user->setUserCode(null);
     		$user->setAccountId($deleteAccountId);
     		$user->setIsDisabled(SOYShop_User::USER_IS_DISABLED);
 
@@ -51,7 +53,7 @@ class UserLogic extends SOY2LogicBase{
     			$userDao->update($user);
     			$res = true;
     		}catch(Exception $e){
-    			$res = false;
+				$res = false;
     		}
     	}
 

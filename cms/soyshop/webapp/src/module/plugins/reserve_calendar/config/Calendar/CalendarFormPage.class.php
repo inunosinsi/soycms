@@ -28,12 +28,14 @@ class CalendarFormPage extends WebPage{
 
 			if(isset($_POST["register"]) && isset($_POST["column"]) && count($_POST["column"]) && (int)$_POST["unsoldSeat"] > 0 && isset($_POST["labelId"])){
 
+				$price = (int)$_POST["price"];
 				$seat = (int)$_POST["unsoldSeat"];
 				foreach($_POST["column"] as $d => $v){
 
 					$obj = new SOYShopReserveCalendar_Schedule();
 					$obj->setItemId($this->itemId);
 					$obj->setLabelId($_POST["labelId"]);
+					$obj->setPrice($price);
 					$obj->setYear($this->y);
 					$obj->setMonth($this->m);
 					$obj->setDay($d);
@@ -71,9 +73,11 @@ class CalendarFormPage extends WebPage{
 		DisplayPlugin::toggle("removed", (isset($_GET["removed"])));
 		DisplayPlugin::toggle("error", (isset($_GET["error"])));
 
+		$item = soyshop_get_item_object($this->itemId);
+
 		$this->addLink("back_link", array(
 			"link" => SOY2PageController::createLink("Item.Detail." . $this->itemId),
-			"text" => self::getItemById($this->itemId)->getName() . "の詳細ページに戻る"
+			"text" => $item->getName() . "の詳細ページに戻る"
 		));
 
 		$this->addSelect("sch_year", array(
@@ -127,6 +131,12 @@ class CalendarFormPage extends WebPage{
 			"style" => "width:60px"
 		));
 
+		$this->addInput("price", array(
+			"name" => "price",
+			"value" => $item->getPrice(),
+			"style" => "width:100px"
+		));
+
 		$autoConfig = ReserveCalendarUtil::getAutoConfig($this->itemId);
 		$this->addCheckBox("auto_register", array(
 			"name" => "auto_register",
@@ -144,14 +154,6 @@ class CalendarFormPage extends WebPage{
 		$this->addLabel("calendar_css", array(
 			"html" => file_get_contents(SOY2::RootDir() . "module/plugins/reserve_calendar/css/calendar.css")
 		));
-	}
-
-	private function getItemById($itemId){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
 	}
 
 	private function schDao(){

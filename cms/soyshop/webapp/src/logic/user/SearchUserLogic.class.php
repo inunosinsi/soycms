@@ -134,6 +134,7 @@ class SearchUserLogic extends SOY2LogicBase{
 					case "name":
 					case "reading":
 					case "mail_address":
+					case "user_code":
 					case "zip_code" :
 					case "address1" :
 					case "address2" :

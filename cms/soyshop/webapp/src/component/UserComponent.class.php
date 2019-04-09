@@ -105,6 +105,14 @@ class UserComponent {
 			"value" => $confirmMailAddress
 		));
 
+		//顧客コード
+		DisplayPlugin::toggle("userCode", $this->config->getUseUserCode());
+		$page->addInput("user_code", array(
+			"name" => "Customer[userCode]",
+			"value" => $user->getUserCode(),
+			"attr:required" => "required"
+		));
+
 		//パスワード
 		$page->addInput("password", array(
 			"name" => "Customer[password]",
@@ -407,6 +415,16 @@ class UserComponent {
 			if($user->getMailAddress() != $_POST["Customer"]["mailAddressConfirm"]){
 				$app->addErrorMessage("mail_address_confirm", MessageManager::get("MAIL_ADDRESS_CONFIRM_FALSE"));
 				$res = false;
+			}
+		}
+
+		/* 顧客コード 必須ではない 重複チェックのみ */
+		if($this->config->getUseUserCode() && isset($_POST["Customer"]["userCode"]) && strlen($_POST["Customer"]["userCode"])){
+			try{
+				$oldUser = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByUserCode($userCode);
+				$app->addErrorMessage("user_code_duplicate", MessageManager::get("USER_CODE_DUPLICATE"));
+			}catch(Exception $e){
+				//
 			}
 		}
 
@@ -730,7 +748,7 @@ class UserComponent {
 		}else{
 			$app->removeErrorMessage("customfield");
 		}
-		
+
 		return $res;
 	}
 

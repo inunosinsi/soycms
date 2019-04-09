@@ -2,6 +2,7 @@ MAIL_ADDRESS_EMPTY = メールアドレスを入力してください。
 MAIL_ADDRESS_FALSE = メールアドレスの書式が不正です。
 MAIL_ADDRESS_CONFIRM_EMPTY = 確認用のメールアドレスを入力してください。
 MAIL_ADDRESS_CONFIRM_FALSE = メールアドレスが異なります。
+USER_CODE_DUPLICATE = 既に登録されている顧客コードです。
 USER_NAME_EMPTY = お名前を入力してください。
 USER_READING_EMPTY = お名前のフリガナを入力してください。
 USER_READING_FALSE = お名前のフリガナをカタカナで入力してください。

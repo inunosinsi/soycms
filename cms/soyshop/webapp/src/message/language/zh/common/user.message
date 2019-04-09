@@ -1,8 +1,9 @@
 MAIL_ADDRESS_EMPTY = 请输入您的电子邮件地址
 MAIL_ADDRESS_FALSE = Email地址格式无效
-USER_NAME_EMPTY = 请输入您的姓名 
+USER_CODE_DUPLICATE = 既に登録されている顧客コードです。
+USER_NAME_EMPTY = 请输入您的姓名
 USER_READING_EMPTY = 请输入您的名字的拼音发音
-USER_READING_FALSE = 请输入您的片假名名字的拼音发音 
+USER_READING_FALSE = 请输入您的片假名名字的拼音发音
 USER_NICKNAME_EMPTY = 请输入昵称
 ZIP_CODE_EMPTY = 请输入一个邮政编码
 ADDRESS_EMPTY = 请输入您的地址

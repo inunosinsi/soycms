@@ -25,12 +25,12 @@ class ItemCheckListLogic extends SOY2LogicBase {
 			$scripts[] = "$('input[name$=\"_dummy\"]').prop('checked', true);";
 
 			foreach($checks as $key => $val){
-				if(is_string($val) && $val != 1) continue;
+				if(is_string($val) && $val != 1 && $val != "checked") continue;
 
 				//多言語プラグインの対応
 				if(is_array($val) && count($val)){
 					foreach($val as $k => $v){
-						if(is_string($v) && $v != 1) continue;
+						if(is_string($v) && $v != 1 && $val != "checked") continue;
 						$scripts[] = "if($('input[name=\"item[" . $key . "][" . $k . "]\"]')) $('input[name=\"item[" . $key . "][" . $k . "]\"]').prop('checked', true);";
 
 						//カスタムサーチフィールドがあった場合はもう一つチェックを追加。インポート用

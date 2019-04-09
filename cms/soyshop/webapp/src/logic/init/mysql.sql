@@ -133,6 +133,7 @@ drop table soyshop_user;
 create table soyshop_user (
 	id INTEGER primary key auto_increment,
 	mail_address VARCHAR(255) unique,
+	user_code VARCHAR(54) UNIQUE,
 	attribute1 TEXT,
 	attribute2 TEXT,
 	attribute3 TEXT,

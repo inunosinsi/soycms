@@ -43,12 +43,15 @@ class ExportPage extends WebPage{
 			"list" => $this->getCustomSearchFieldList()
 		));
 
+		$config = SOYShop_ShopConfig::load();
+
 		//項目の非表示用タグ
-		foreach(SOYShop_ShopConfig::load()->getCustomerAdminConfig() as $key => $bool){
+		foreach($config->getCustomerAdminConfig() as $key => $bool){
 			DisplayPlugin::toggle($key, $bool);
 		}
 
-		DisplayPlugin::toggle("office_items", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
+		DisplayPlugin::toggle("office_items", $config->getDisplayUserOfficeItems());
+		DisplayPlugin::toggle("userCode", $config->getUseUserCode());
 	}
 
 	function getLabels(){
@@ -56,6 +59,7 @@ class ExportPage extends WebPage{
 			"id" => "ID",
 
 			"mailAddress" => "メールアドレス",
+			"userCode" => "顧客コード",
 			"name" => "名前",
 			"reading" => "フリガナ",
 			"nickname" => "ニックネーム",

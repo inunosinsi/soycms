@@ -46,12 +46,15 @@ class ImportPage extends WebPage{
     		 "ENCTYPE" => "multipart/form-data"
     	));
 
+		$config = SOYShop_ShopConfig::load();
+
 		//項目の非表示用タグ
-		foreach(SOYShop_ShopConfig::load()->getCustomerAdminConfig() as $key => $bool){
+		foreach($config->getCustomerAdminConfig() as $key => $bool){
 			DisplayPlugin::toggle($key, $bool);
 		}
 
-		DisplayPlugin::toggle("office_items", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
+		DisplayPlugin::toggle("office_items", $config->getDisplayUserOfficeItems());
+		DisplayPlugin::toggle("userCode", $config->getUseUserCode());
     }
 
     function doPost(){

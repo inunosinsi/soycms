@@ -16,6 +16,7 @@
 	<p class="notice always" soy:display="failed">顧客の追加に失敗しました。</p>
 	<p class="error always" soy:display="wrong_email">メールアドレスを正しく入力してください。</p>
 	<p class="error always" soy:display="used_email">そのメールアドレスはすでに他のユーザーが使用しています。</p>
+	<p class="error always" soy:display="used_user_code">その顧客コードはすでに他のユーザーが使用しています。</p>
 
 	<form soy:id="register_form">
 
@@ -25,6 +26,12 @@
 				<th>メールアドレス（必須）</th>
 				<td>
 					<input soy:id="mail_address" type="text" class="title" name="" value="" />
+				</td>
+			</tr>
+			<tr soy:display="userCode">
+				<th>顧客コード</th>
+				<td>
+					<input type="text" soy:id="user_code" class="text">
 				</td>
 			</tr>
 			<tr soy:display="name">

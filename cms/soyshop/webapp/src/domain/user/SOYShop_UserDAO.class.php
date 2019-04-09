@@ -47,6 +47,11 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 	 */
 	abstract function getByMailAddress($mailAddress);
 
+	/**
+	 * @return object
+	 */
+	abstract function getByUserCode($userCode);
+
     /**
      * 互換性のために残しますが、使用禁止
      * @return object
@@ -120,41 +125,22 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 	 * @final
 	 */
 	function onInsert($query, $binds){
-		if((int)$binds[":area"] === 0){
-			$binds[":area"] = null;
-		}
-
-		if(strlen($binds[":accountId"]) === 0){
-			$binds[":accountId"] = null;
-		}
-
-		if(strlen($binds[":profileId"]) === 0){
-			$binds[":profileId"] = null;
-		}
-
-		if(!isset($binds[":isProfileDisplay"]) || !is_numeric($binds[":isProfileDisplay"])){
-			$binds[":isProfileDisplay"] = SOYShop_User::PROFILE_NO_DISPLAY;
-		}
+		if(!isset($binds[":userCode"]) || !strlen($binds[":userCode"])) $binds[":userCode"] = null;
+		if((int)$binds[":area"] === 0) $binds[":area"] = null;
+		if(strlen($binds[":accountId"]) === 0) $binds[":accountId"] = null;
+		if(strlen($binds[":profileId"]) === 0) $binds[":profileId"] = null;
+		if(!isset($binds[":isProfileDisplay"]) || !is_numeric($binds[":isProfileDisplay"])) $binds[":isProfileDisplay"] = SOYShop_User::PROFILE_NO_DISPLAY;
 
 		//別システムからのインポートを考慮して必ずチェック
-		if(strlen($binds[":registerDate"]) === 0){
-			$binds[":registerDate"] = time();
-		}
-
-    	if(strlen($binds[":updateDate"]) === 0){
-	    	$binds[":updateDate"] = time();
-    	}
+		if(strlen($binds[":registerDate"]) === 0) $binds[":registerDate"] = time();
+    	if(strlen($binds[":updateDate"]) === 0) $binds[":updateDate"] = time();
 
 		// SOY Mail連携プラグインを有効にしていない場合はメルマガのチェックは必ずなし
 		if(!class_exists("SOYShopPluginUtil")) SOY2::import("util.SOYShopPluginUtil");
-		if(!SOYShopPluginUtil::checkIsActive("soymail_connector")){
-			$binds[":notSend"] = SOYShop_User::USER_NOT_SEND;
-		}
+		if(!SOYShopPluginUtil::checkIsActive("soymail_connector")) $binds[":notSend"] = SOYShop_User::USER_NOT_SEND;
 
 		//ユーザーカスタムサーチフィールが有効ではない場合は、常に公開
-		if(!SOYShopPluginUtil::checkIsActive("user_custom_search_field")){
-			$binds[":isPublish"] = SOYShop_User::USER_IS_PUBLISH;
-		}
+		if(!SOYShopPluginUtil::checkIsActive("user_custom_search_field")) $binds[":isPublish"] = SOYShop_User::USER_IS_PUBLISH;
 
     	return array($query, $binds);
 	}
@@ -163,34 +149,20 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 	 * @final
 	 */
 	function onUpdate($query, $binds){
-		if((int)$binds[":area"] === 0){
-			$binds[":area"] = null;
-		}
-
-		if(strlen($binds[":accountId"]) === 0){
-			$binds[":accountId"] = null;
-		}
-
-		if(strlen($binds[":profileId"]) === 0){
-			$binds[":profileId"] = null;
-		}
-
-		if(!isset($binds[":isProfileDisplay"]) || !is_numeric($binds[":isProfileDisplay"])){
-			$binds[":isProfileDisplay"] = SOYShop_User::PROFILE_NO_DISPLAY;
-		}
+		if(!isset($binds[":userCode"]) || !strlen($binds[":userCode"])) $binds[":userCode"] = null;
+		if((int)$binds[":area"] === 0) $binds[":area"] = null;
+		if(strlen($binds[":accountId"]) === 0) $binds[":accountId"] = null;
+		if(strlen($binds[":profileId"]) === 0) $binds[":profileId"] = null;
+		if(!isset($binds[":isProfileDisplay"]) || !is_numeric($binds[":isProfileDisplay"])) $binds[":isProfileDisplay"] = SOYShop_User::PROFILE_NO_DISPLAY;
 
     	$binds[":updateDate"] = time();
 
 		// SOY Mail連携プラグインを有効にしていない場合はメルマガのチェックは必ずなし
 		SOY2::import("util.SOYShopPluginUtil");
-		if(!SOYShopPluginUtil::checkIsActive("soymail_connector")){
-			$binds[":notSend"] = SOYShop_User::USER_NOT_SEND;
-		}
+		if(!SOYShopPluginUtil::checkIsActive("soymail_connector")) $binds[":notSend"] = SOYShop_User::USER_NOT_SEND;
 
 		//ユーザーカスタムサーチフィールが有効ではない場合は、常に公開
-		if(!SOYShopPluginUtil::checkIsActive("user_custom_search_field")){
-			$binds[":isPublish"] = SOYShop_User::USER_IS_PUBLISH;
-		}
+		if(!SOYShopPluginUtil::checkIsActive("user_custom_search_field")) $binds[":isPublish"] = SOYShop_User::USER_IS_PUBLISH;
 
     	return array($query, $binds);
 	}

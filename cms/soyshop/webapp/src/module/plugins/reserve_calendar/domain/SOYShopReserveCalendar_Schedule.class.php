@@ -20,6 +20,7 @@ class SOYShopReserveCalendar_Schedule {
 	 */
 	private $labelId;
 
+	private $price;
 	private $year;
 	private $month;
 	private $day;
@@ -48,6 +49,13 @@ class SOYShopReserveCalendar_Schedule {
 	}
 	function setLabelId($labelId){
 		$this->labelId = $labelId;
+	}
+
+	function getPrice(){
+		return $this->price;
+	}
+	function setPrice($price){
+		$this->price = $price;
 	}
 
 	function getYear(){

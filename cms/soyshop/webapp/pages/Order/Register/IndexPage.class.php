@@ -355,6 +355,14 @@ class IndexPage extends WebPage{
 			"text" => $user->getMailAddress()
 		));
 
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+
+		//顧客コード
+		DisplayPlugin::toggle("userCode", SOYShop_ShopConfig::load()->getUseUserCode());
+		$this->addLabel("user_code_on_admin", array(
+			"text" => $user->getUserCode()
+		));
+
 		//氏名
 		$this->addLabel("name_on_admin", array(
 			"text" => $user->getName(),

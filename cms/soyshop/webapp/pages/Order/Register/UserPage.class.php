@@ -38,6 +38,23 @@ class UserPage extends WebPage{
 				$this->session->setAttribute("order_register.error.id", "IDを入力してください。");
 				$this->session->setAttribute("order_register.input.id", $_POST["search_by_id"]);
 			}
+		}else if(isset($_POST["search_by_user_code"])){
+			if(strlen($_POST["search_by_user_code"])){
+				$user = self::getUserByUserCode($_POST["search_by_user_code"]);
+				if(strlen($user->getId())){
+					//OK
+					$cart->setCustomerInformation($user);
+					$next = true;
+				}else{
+					//NG
+					$this->session->setAttribute("order_register.error.user_code", "入力された顧客コードに該当するユーザーが見つかりません。");
+					$this->session->setAttribute("order_register.input.user_code", $_POST["search_by_user_code"]);
+				}
+			}else{
+				//NG
+				$this->session->setAttribute("order_register.error.user_code", "顧客コードを入力してください。");
+				$this->session->setAttribute("order_register.input.user_code", $_POST["search_by_user_code"]);
+			}
 		}else if(isset($_POST["search_by_email"])){
 			if(strlen($_POST["search_by_email"])){
 				$user = self::getUserByEmail($_POST["search_by_email"]);
@@ -181,7 +198,7 @@ class UserPage extends WebPage{
 
 		parent::__construct();
 
-		foreach(array("id", "email", "tell", "name", "reading") as $t){
+		foreach(array("id", "user_code", "email", "tell", "name", "reading") as $t){
 			$this->addForm("user_search_by_" . $t . "_form");
 
 			//エラー文言
@@ -230,7 +247,7 @@ class UserPage extends WebPage{
 		//ダミーの住所挿入ボタン
 		DisplayPlugin::toggle("dummy_address_button", $config->getInsertDummyAddressOnAdmin());
 
-		foreach(array("id", "email", "tell", "name", "reading") as $t){
+		foreach(array("id", "user_code", "email", "tell", "name", "reading") as $t){
 			$this->addInput("search_by_" . $t, array(
 				"name" => "search_by_" . $t,
 				"value" => $this->session->getAttribute("order_register.input." . $t),
@@ -265,6 +282,14 @@ class UserPage extends WebPage{
 	private function getUserById($userId){
 		try{
 			return $this->dao->getById($userId);
+		}catch(Exception $e){
+			return new SOYShop_User();
+		}
+	}
+
+	private function getUserByUserCode($userCode){
+		try{
+			return $this->dao->getByUserCode($userCode);
 		}catch(Exception $e){
 			return new SOYShop_User();
 		}

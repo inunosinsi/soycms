@@ -133,6 +133,7 @@ drop table soyshop_user;
 CREATE TABLE soyshop_user (
 	id INTEGER primary key AUTOINCREMENT,
 	mail_address VARCHAR unique,
+	user_code VARCHAR UNIQUE,
 	attribute1 VARCHAR,
 	attribute2 VARCHAR,
 	attribute3 VARCHAR,

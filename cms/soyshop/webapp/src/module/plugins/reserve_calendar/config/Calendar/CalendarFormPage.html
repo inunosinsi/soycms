@@ -14,7 +14,7 @@
 
 <form soy:id="form">
 	<!-- soy:id="calendar" /-->
-	
+
 	<section style="width:50%;float:left;">
 		<h3>スケジュールの登録</h3>
 		<p class="error always" soy:display="no_label">ラベルを設定してください。<a soy:id="label_link">ラベル設定画面を開く</a></p>
@@ -23,7 +23,8 @@
 				<!-- soy:display="has_label" -->
 				ラベル : <select soy:id="label_list"><option></option></select><br>
 				<!-- /soy:display="has_label" -->
-				残席数 : <input type="number" soy:id="unsold_seat">&nbsp;席
+				残席数 : <input type="number" soy:id="unsold_seat">&nbsp;席<br>
+				価格　：<input type="number" soy:id="price">円
 			</dd>
 			<dt>スケジュールの自動登録</dt>
 			<dd>
@@ -31,7 +32,7 @@
 				自動登録の際の残席数 : <input type="number" soy:id="auto_seat">&nbsp;席
 			</dd>
 		</dl>
-		
+
 		<p class="pageBtn">
 				<input type="submit" class="submit_button" name="register" value="登録" />
 		</p>
@@ -41,7 +42,7 @@
 		<dl>
 			<dd>チェックしたスケジュールを削除します。</dd>
 		</dl>
-		
+
 		<p class="pageBtn">
 				<input type="submit" class="submit_button" name="remove" value="削除" onclick="return confirm('削除しますか？');" />
 		</p>
@@ -55,14 +56,14 @@
 <script>
 function redirectAfterSelectOfSch(){
 	var r = location.href;
-	
+
 	//item_idを取得
 	var res = r.match('item_id=([0-9]*)');
-	var itemId = parseInt(res[1]);	
-	
+	var itemId = parseInt(res[1]);
+
 	if(r.indexOf("?")){
 		r = r.substr(0, r.indexOf("?"));
-		
+
 	}
 	r += "?plugin=reserve_calendar&calendar&item_id=" + itemId + "&y=" + $("#year_select").val() + "&m=" + $("#month_select").val();
 	location.href = r;

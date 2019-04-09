@@ -41,7 +41,7 @@ class CalendarLogic extends CalendarBaseComponent{
 		//予定がある場合
 		if(count($sch)){
 			foreach($sch as $schId => $v){
-				$html[] = "<label><input type=\"checkbox\" name=\"Schedule[" . $schId . "]\" value=\"1\">" . self::getLabel($v["label_id"]) . " " . $v["seat"] . "</label>";
+				$html[] = "<label><input type=\"checkbox\" name=\"Schedule[" . $schId . "]\" value=\"1\">" . self::getLabel($v["label_id"]) . " " . $v["seat"] . "</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . number_format($v["price"]) . "円";
 			}
 		}
 

@@ -45,6 +45,7 @@ class SOYShop_ShopConfig {
 	private $allowMailAddressLogin = 1;
 	private $allowLoginIdLogin = 0;
 	private $displayUsableTagList = 0;
+	private $useUserCode = 0;			//顧客コード
 	private $insertDummyMailAddress = 1;
 	private $insertDummyMailAddressOnAdmin = 0;
 	private $insertDummyMailAddressOnAdminRegister = 0;
@@ -602,6 +603,14 @@ class SOYShop_ShopConfig {
 	function setDisplayUsableTagList($displayUsableTagList){
 		$this->displayUsableTagList = $displayUsableTagList;
 	}
+
+	function getUseUserCode(){
+		return $this->useUserCode;
+	}
+	function setUseUserCode($useUserCode){
+		$this->useUserCode = $useUserCode;
+	}
+
 	function getInsertDummyMailAddress(){
 		return $this->insertDummyMailAddress;
 	}

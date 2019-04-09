@@ -182,6 +182,10 @@ class ReserveCalendarDetailPage extends WebPage{
 			"text" => $this->schedule->getYear() . "-" . $this->schedule->getMonth() . "-" . $this->schedule->getDay() . " " . SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelNameById($this->schedule->getLabelId())
 		));
 
+		$this->addLabel("price", array(
+			"text" => number_format($this->schedule->getPrice())
+		));
+
 		$this->addLabel("reserved_count", array(
 			"text" => $this->reservedCount
 		));
