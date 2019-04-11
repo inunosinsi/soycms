@@ -53,7 +53,9 @@ class DetailPage extends WebPage{
 				try{
 					$confirmUser = $dao->getByUserCode($newCode);
 					$user->setUserCode($oldCode);	//顧客コードを戻して更新
-					SOY2ActionSession::getUserSession()->setAttribute("user_code_error", 1);
+					if($confirmUser->getId() != $user->getId()){	//確認用に取得したユーザとIDが異なる場合のみエラー
+						SOY2ActionSession::getUserSession()->setAttribute("user_code_error", 1);
+					}
 				}catch(Exception $e){
 					//
 				}
@@ -155,6 +157,9 @@ class DetailPage extends WebPage{
     		SOY2PageController::jump("User");
     		exit;
     	}
+
+		//カートIDがnoneの場合は公開側からの注文ボタンを表示しない
+		DisplayPlugin::toggle("order_cart_link", (soyshop_get_cart_id() != "none"));
 
 		//管理画面から注文ボタン
 		SOY2::import("domain.config.SOYShop_ShopConfig");

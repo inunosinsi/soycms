@@ -109,3 +109,42 @@ function soyshop_convert_timestamp_on_array($array, $mode = "start"){
 function soyshop_convert_date_string($timestamp){
 	return ($timestamp == 0 || $timestamp == 2147483647) ? "" : date("Y-m-d", $timestamp);
 }
+
+/**
+ * 半角カナから全角カナに変換する時の濁点の処理
+ */
+function soyshop_convert_kana_sonant($kana){
+	$list = array(
+		"カ゛" => "ガ",
+		"キ゛" => "ギ",
+		"ク゛" => "グ",
+		"ケ゛" => "ゲ",
+		"コ゛" => "ゴ",
+		"サ゛" => "ザ",
+		"シ゛" => "ジ",
+		"ス゛" => "ズ",
+		"セ゛" => "ゼ",
+		"ソ゛" => "ゾ",
+		"タ゛" => "ダ",
+		"チ゛" => "ヂ",
+		"ツ゛" => "ヅ",
+		"テ゛" => "デ",
+		"ト゛" => "ド",
+		"ハ゛" => "バ",
+		"ヒ゛" => "ビ",
+		"フ゛" => "ブ",
+		"ヘ゛" => "ベ",
+		"ホ゛" => "ボ",
+		"ハ゜" => "パ",
+		"ヒ゜" => "ピ",
+		"フ゜" => "プ",
+		"ヘ゜" => "ペ",
+		"ホ゜" => "ポ"
+	);
+
+	foreach($list as $k => $c){
+		if(strpos($kana, $k) === false) continue;
+		$kana = str_replace($k, $c, $kana);
+	}
+	return $kana;
+}

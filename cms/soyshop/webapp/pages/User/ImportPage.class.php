@@ -127,13 +127,20 @@ class ImportPage extends WebPage{
 				$obj["mailAddress"] = soyshop_dummy_mail_address();
 			}
 
-    		$deleted = ($obj["id"] == "delete");
+    		$deleted = (isset($obj["id"]) && $obj["id"] == "delete");
 
 			//メールアドレスが無ければcontinue;
 			if(strlen($obj["mailAddress"]) === 0) continue;
 
 			//SOYShop_Userに変換
 			$user = $this->import($obj);
+
+			//フリガナで半角カナの場合は全角カナにする
+			if(strlen($user->getReading()) && preg_match('/^[ｦ-ﾟｰ ]+$/u', $user->getReading())){
+				$kana = mb_convert_kana($user->getReading(), "aK");
+				$user->setReading($kana);
+			}
+			$user->setReading(soyshop_convert_kana_sonant($user->getReading()));
 
 			//新規登録の場合は必ず本登録にしておく
 			if(is_null($user->getUserType())) $user->setUserType(SOYShop_User::USERTYPE_REGISTER);

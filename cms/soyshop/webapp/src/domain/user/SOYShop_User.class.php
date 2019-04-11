@@ -327,15 +327,15 @@ class SOYShop_User {
 
 	function getBirthdayYear() {
 		$birthday = $this->getBirthday(true);
-		return ($birthday[0] > 0) ? (int)$birthday[0] : "" ;
+		return (is_array($birthday) && isset($birthday[0]) && $birthday[0] > 0) ? (int)$birthday[0] : "" ;
 	}
 	function getBirthdayMonth() {
 		$birthday = $this->getBirthday(true);
-		return ($birthday[1] > 0) ? (int)$birthday[1] : "" ;
+		return (is_array($birthday) && isset($birthday[1]) && $birthday[1] > 0) ? (int)$birthday[1] : "" ;
 	}
 	function getBirthdayDay() {
 		$birthday = $this->getBirthday(true);
-		return ($birthday[2] > 0) ? (int)$birthday[2] : "" ;
+		return (is_array($birthday) && isset($birthday[2]) && $birthday[2] > 0) ? (int)$birthday[2] : "" ;
 	}
 
 	function getZipCode() {
