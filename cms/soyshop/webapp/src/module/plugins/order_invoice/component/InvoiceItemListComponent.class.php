@@ -15,8 +15,10 @@ class InvoiceItemListComponent extends HTMLList {
 			"text" => ((int)$itemOrder->getItemId() > 0) ? $item->getCode() : ""
 		));
 
+		$itemName = $itemOrder->getItemName();
+		if($item->getIsDisabled() == SOYShop_Item::IS_DISABLED) $itemName = "<span style=\"font-weight:bold;color:red;\">" . $itemName . "(削除した商品)</span>";
 		$this->addLabel("item_name", array(
-			"text" => $itemOrder->getItemName()
+			"html" => $itemName
 		));
 
 		$this->addLabel("item_option", array(
