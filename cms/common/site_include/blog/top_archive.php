@@ -778,6 +778,11 @@ function soy_cms_blog_output_current_category($page){
                     "link"=>($page->label)? $page->getCategoryPageURL(true) . rawurlencode($page->label->getAlias()) : "",
                     "soy2prefix"=>"cms"
                 ));
+				
+				$this->createAdd("category_alias","CMSLabel",array(
+                    "text" => ($page->label) ? $page->label->getAlias() : "",
+                    "soy2prefix" => "cms"
+                ));
             }
         }
     }

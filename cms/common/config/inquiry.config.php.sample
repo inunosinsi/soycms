@@ -1,0 +1,8 @@
+<?php
+/**
+ * 追加するカラムを配列で指定 例:SingleTextはSingleTextColumn.class.phpで、
+ * インデックスの指定の際はColumn.class.phpを除く
+**/
+$advancedColumns = array(
+	"SingleText" => "1行テキスト",
+);
