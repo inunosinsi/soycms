@@ -2,16 +2,16 @@
 
 class ReserveCalendarOption extends SOYShopItemOptionBase{
 
-    private function getCartAttributeId($optionId, $itemIndex, $itemId){
-        return "reserve_calendar_{$optionId}_{$itemIndex}_{$itemId}";
-    }
+	function __construct(){
+		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+	}
 
     function clear($index, CartLogic $cart){
         $items = $cart->getItems();
         if(isset($items[$index])){
             $itemId = $items[$index]->getItemId();
 
-            $obj = self::getCartAttributeId("schedule_id", $index, $itemId);
+            $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId);
             $cart->clearAttribute($obj);
         }
     }
@@ -24,7 +24,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         //比較用の配列を作成する
         $attributes = array();
         foreach($items as $index => $item){
-            $obj = self::getCartAttributeId("schedule_id", $index, $item->getItemId());
+            $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $item->getItemId());
             $attributes[$index]["schedule_id"] = $cart->getAttribute($obj);
 
             $currentOptions = array_diff($attributes[$index], array(null));
@@ -45,7 +45,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
             if(isset($items[$index])){
                 $itemId = $items[$index]->getItemId();
 
-                $obj = self::getCartAttributeId("schedule_id", $index, $itemId);
+                $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId);
                 $cart->setAttribute($obj, $_REQUEST["item_option"]["schedule_id"]);
             }
         }
@@ -66,7 +66,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
 
         $itemId = $items[$index]->getItemId();
 
-        $obj = self::getCartAttributeId("schedule_id", $index, $itemId);
+        $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId);
         $schId = $cart->getAttribute($obj);
 
         $list = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($itemId);
@@ -89,7 +89,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
 
         $itemId = $items[$index]->getItemId();
 
-        $obj = self::getCartAttributeId("schedule_id", $index, $itemId);
+        $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId);
         $schId = $cart->getAttribute($obj);
 
         //予約として登録

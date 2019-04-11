@@ -132,16 +132,18 @@ class ReserveCalendarDetailPage extends WebPage{
 	}
 
 	function execute(){
+		$resLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic");
+
 		$this->schedule = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic")->getScheduleById($this->schId);
 		$this->itemId = $this->schedule->getItemId();
-		$this->reservedList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedListByScheduleId($this->schId);
+		$this->reservedList = $resLogic->getReservedListByScheduleId($this->schId);
 		$this->reservedCount = count($this->reservedList);
 
 		//仮登録
 		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
 		$config = ReserveCalendarUtil::getConfig();
 		if(isset($config["tmp"]) && $config["tmp"] == ReserveCalendarUtil::IS_TMP){
-			$this->tmpReservedList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedListByScheduleId($this->schId, true);	//trueで仮登録を取得
+			$this->tmpReservedList = $resLogic->getReservedListByScheduleId($this->schId, true);	//trueで仮登録を取得
 			$this->tmpReservedCount = count($this->tmpReservedList);
 		}
 
@@ -174,8 +176,10 @@ class ReserveCalendarDetailPage extends WebPage{
 
 	private function buildScheduleInfoArea(){
 
-		$this->addLabel("item_name", array(
-			"text" => self::getItemById($this->itemId)->getName()
+		$item = soyshop_get_item_object($this->itemId);
+		$this->addLink("item_name", array(
+			"link" => SOY2PageController::createLink("Item.Detail." . $this->itemId),
+			"text" => $item->getName()
 		));
 
 		$this->addLabel("schedule", array(
@@ -193,14 +197,6 @@ class ReserveCalendarDetailPage extends WebPage{
 		$this->addLabel("seat", array(
 			"text" => $this->schedule->getUnsoldSeat()
 		));
-	}
-
-	private function getItemById($itemId){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
 	}
 
 	private function buildReservedList(){

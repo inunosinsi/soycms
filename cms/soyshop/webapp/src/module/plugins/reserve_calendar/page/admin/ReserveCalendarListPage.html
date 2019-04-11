@@ -1,7 +1,7 @@
 <div class="block">
 	<div class="block_title">
 		<h2>予約</h2>
-		
+
 		<div class="block_title_right">
 		</div>
 	</div>
@@ -11,7 +11,7 @@
 			<select soy:id="item_select"><option></option></select>&nbsp;
 			<select soy:id="sch_year"></select>&nbsp;年<select soy:id="sch_month"></select>&nbsp;月の予約状況
 		</div>
-		
+
 		<!-- soy:id="calendar" /-->
 	</div>
 </div>
@@ -23,7 +23,7 @@ function redirectAfterSelectOfSch(){
 	var r = location.href;
 	if(r.indexOf("?") > 0){
 		r = r.substr(0, r.indexOf("?"));
-		
+
 	}
 	r += "?item_id=" + $("#item_select").val() + "&y=" + $("#year_select").val() + "&m=" + $("#month_select").val();
 	location.href = r;

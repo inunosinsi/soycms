@@ -16,12 +16,12 @@ class ReserveLogic extends SOY2LogicBase{
 		return self::dao()->getReservedListByScheduleId($scheduleId, $isTmp);
 	}
 
-	function getReservedSchedulesByPeriod($year = null, $month = null){
+	function getReservedSchedulesByPeriod($year = null, $month = null, $isTmp = false){
 		//どちらかが指定されていない時は動きません
 		if(is_null($year) || is_null($month)) return array();
 
 		//schedule_idと予約数を返す
-		return self::dao()->getReservedSchedulesByPeriod($year, $month);
+		return self::dao()->getReservedSchedulesByPeriod($year, $month, $isTmp);
 	}
 
 	function checkIsUnsoldSeatByScheduleId($scheduleId){

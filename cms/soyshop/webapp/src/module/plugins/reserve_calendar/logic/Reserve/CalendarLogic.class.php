@@ -7,7 +7,8 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $month;
 	private $itemId;
 
-	private $reservedList;
+	private $reservedList;		//本登録
+	private $tmpReservedList;	//仮登録
 	private $schList;
 	private $labelList;
 
@@ -15,7 +16,10 @@ class CalendarLogic extends CalendarBaseComponent{
 		$this->year = $y;
 		$this->month = $m;
 
-		$this->reservedList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedSchedulesByPeriod($y, $m);
+		$resLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic");
+
+		$this->reservedList = $resLogic->getReservedSchedulesByPeriod($y, $m);
+		$this->tmpReservedList = $resLogic->getReservedSchedulesByPeriod($y, $m, true);
 		$this->schList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic")->getScheduleList($this->itemId, $y, $m);
 		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($this->itemId);
 
@@ -49,9 +53,12 @@ class CalendarLogic extends CalendarBaseComponent{
 		if(count($sch)){
 			foreach($sch as $schId => $v){
 				$resCnt = self::getReservedCount($schId);
+				$tmpResCnt = self::getTmpReservedCount($schId);
 				$seat = (int)$v["seat"];
 
 				$schText = "<a href=\"" . SOY2PageController::createLink("Extension.Detail.reserve_calendar." . $schId) . "\">" . self::getLabel($v["label_id"]) . "  " . $resCnt . "/" . $seat . "</a>";
+				if($tmpResCnt > 0) $schText .= " (" . $tmpResCnt . ")";
+				if(isset($v["price"]) && is_numeric($v["price"]) && $v["price"] > 0) $schText .= "<br>" . number_format($v["price"]) . "円";
 
 				//満席
 				if($resCnt >= $seat){
@@ -75,6 +82,10 @@ class CalendarLogic extends CalendarBaseComponent{
 
 	private function getReservedCount($schId){
 		return (isset($this->reservedList[$schId])) ? (int)$this->reservedList[$schId] : 0;
+	}
+
+	private function getTmpReservedCount($schId){
+		return (isset($this->tmpReservedList[$schId])) ? (int)$this->tmpReservedList[$schId] : 0;
 	}
 
 	function setItemId($itemId){

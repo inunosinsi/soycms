@@ -80,15 +80,14 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
     function getReservedListByScheduleId($scheduleId, $isTmp = false){	//isTmpで仮登録の予約を検索
         SOY2::import("domain.order.SOYShop_Order");
 
-        $sql = "SELECT res.id, res.reserve_date, u.id AS user_id, u.name AS user_name, u.mail_address, u.telephone_number FROM soyshop_reserve_calendar_reserve res ".
+        $sql = "SELECT res.id, res.reserve_date, u.id AS user_id, u.name AS user_name, u.mail_address, u.telephone_number, o.id FROM soyshop_reserve_calendar_reserve res ".
                 "INNER JOIN soyshop_order o ".
                 "ON res.order_id = o.id ".
                 "INNER JOIN soyshop_user u ".
                 "ON o.user_id = u.id ".
                 "WHERE res.schedule_id = :schId ";
 
-		//仮登録モード
-		if($isTmp){
+		if($isTmp){	//仮登録モード
 			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
 			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP;
 		}else{	//本登録モード
@@ -102,7 +101,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
         }
     }
 
-    function getReservedSchedulesByPeriod($year, $month){
+    function getReservedSchedulesByPeriod($year, $month, $isTmp = false){	//isTmpで仮登録の予約を検索
         SOY2::import("domain.order.SOYShop_Order");
 
         $sql = "SELECT res.schedule_id, COUNT(res.schedule_id) AS COUNT " .
@@ -112,9 +111,16 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
                 "INNER JOIN soyshop_order o ".
                 "ON res.order_id = o.id ".
                 "WHERE sch.year = :y ".
-                "AND sch.month = :m ".
-                "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ".
-                "GROUP BY res.schedule_id";
+                "AND sch.month = :m ";
+
+		if($isTmp){	//仮登録モード
+			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
+			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP . " ";
+		}else{	//本登録モード
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+		}
+
+		$sql .=	"GROUP BY res.schedule_id";
 
         try{
             $res = $this->executeQuery($sql, array(":y" => $year, ":m" => $month));

@@ -2,6 +2,10 @@
 
 class ReserveCalendarCart extends SOYShopCartBase{
 
+	function __construct(){
+		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+	}
+
 	function doOperation(){
 
 		//
@@ -27,6 +31,20 @@ class ReserveCalendarCart extends SOYShopCartBase{
 			}
 
 			/** @ToDo エラーの場合はどうしよう？ **/
+		}
+	}
+
+	function afterOperation(CartLogic $cart){
+		$items = $cart->getItems();
+		if(count($items)){
+			$schLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic");
+			//価格の更新
+			foreach($items as $index => $itemOrder){
+				$schId = $cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrder->getItemId()));
+				$schPrice = (int)$schLogic->getScheduleById($schId)->getPrice();
+				$itemOrder->setItemPrice($schPrice);
+				$itemOrder->setTotalPrice($schPrice * $itemOrder->getItemCount());
+			}
 		}
 	}
 }

@@ -6,8 +6,9 @@ class ReservedListComponent extends HTMLList{
 	private $tempMode = false;
 
 	function populateItem($entity, $i){
-		
-		$this->addLabel("reserve_date", array(
+
+		$this->addLink("reserve_date", array(
+			"link" => (isset($entity["id"])) ? SOY2PageController::createLink("Order.Detail." . $entity["id"]) : null,
 			"text" => (isset($entity["reserve_date"])) ? date("Y-m-d H:i:s", $entity["reserve_date"]) : ""
 		));
 

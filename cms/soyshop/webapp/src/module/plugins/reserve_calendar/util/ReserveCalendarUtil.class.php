@@ -17,6 +17,10 @@ class ReserveCalendarUtil{
 
 	private $baseDate;
 
+	public static function getCartAttributeId($optionId, $itemIndex, $itemId){
+		return "reserve_calendar_" . $optionId . "_" . $itemIndex . "_" . $itemId;
+	}
+
 	public static function getConfig(){
 		return SOYShop_DataSets::get("reserve_calendar.config", array(
 			"tmp" => self::NO_TMP
