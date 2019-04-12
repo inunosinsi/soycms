@@ -158,8 +158,8 @@ class DetailPage extends WebPage{
     		exit;
     	}
 
-		//カートIDがnoneの場合は公開側からの注文ボタンを表示しない
-		DisplayPlugin::toggle("order_cart_link", (soyshop_get_cart_id() != "none"));
+		//カートIDとマイページIDがnoneの場合は公開側からの注文ボタンを表示しない
+		DisplayPlugin::toggle("order_cart_link", (soyshop_get_cart_id() != "none" && soyshop_get_mypage_id() != "none"));
 
 		//管理画面から注文ボタン
 		SOY2::import("domain.config.SOYShop_ShopConfig");
