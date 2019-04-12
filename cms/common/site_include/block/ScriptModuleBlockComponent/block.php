@@ -229,6 +229,21 @@ class ScriptModuleBlockComponent implements BlockComponent{
 		$this->blockId = $blockId;
 	}
 
+	public function getDisplayCountFrom() {
+		return $this->displayCountFrom;
+	}
+	public function setDisplayCountFrom($displayCountFrom) {
+		$cnt = (strlen($displayCountFrom) && is_numeric($displayCountFrom)) ? (int)$displayCountFrom : null;
+		$this->displayCountFrom = $cnt;
+	}
+
+	public function getDisplayCountTo() {
+		return $this->displayCountTo;
+	}
+	public function setDisplayCountTo($displayCountTo) {
+		$cnt = (strlen($displayCountTo) && is_numeric($displayCountTo)) ? (int)$displayCountTo : null;
+		$this->displayCountTo = $cnt;
+	}
 }
 
 
