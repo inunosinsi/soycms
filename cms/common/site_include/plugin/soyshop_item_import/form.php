@@ -16,7 +16,7 @@
 			<td>&nbsp;</td>
 		</tr>
 		<?php
-			if(!is_null($item->getCode())){
+			if(!is_null($item->getCode()) && strlen($item->getCode())){
 				$html = array();
 				$html[] = "<tr>";
 				$html[] = "<td rowspan=\"5\">";
@@ -41,7 +41,7 @@
 				$html[] = "<td>セール価格:</td>";
 				$html[] = "<td>" . number_format($item->getSalePrice()) . "</td>";
 				$html[] = "</tr>";
-				
+
 				echo implode("\n",$html);
 			}
 		?>

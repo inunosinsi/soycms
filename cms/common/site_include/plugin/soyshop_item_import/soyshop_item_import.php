@@ -19,16 +19,15 @@ class SOYShopItemImportPlugin{
 	}
 
 	function init(){
-
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"SOYShop商品紹介プラグイン",
 			"description"=>"SOY Shopで登録した商品をSOY CMSのブログで紹介する",
-			"author"=>"日本情報化農業研究所",
-			"url"=>"http://www.n-i-agroinformatics.com",
-			"mail"=>"info@n-i-agroinformatics.com",
+			"author"=>"齋藤毅",
+			"url"=>"https://saitodev.co",
+			"mail"=>"info@saitodev.co",
 			"label" => "",
 			"entry" => "",
-			"version"=>"0.9.4"
+			"version"=>"0.10"
 		));
 
 		//二回目以降の動作
@@ -87,7 +86,7 @@ class SOYShopItemImportPlugin{
 				SOY2::import("base.func.common", ".php");
 				SOY2::imports("domain.config.*");
 				SOY2::imports("domain.shop.*");
-        SOY2::import("util.SOYShopPluginUtil");
+        		SOY2::import("util.SOYShopPluginUtil");
 
 				if(!defined("SOYSHOP_IS_ROOT")){
 					$file = @file_get_contents($_SERVER["DOCUMENT_ROOT"] . "index.php");
@@ -118,8 +117,8 @@ class SOYShopItemImportPlugin{
 
 //				}
 
-        //カスタムサーチフィールドの値を取得してみる
-        if(SOYShopPluginUtil::checkIsActive("custom_search_field")){
+		        //カスタムサーチフィールドの値を取得してみる
+		        if(SOYShopPluginUtil::checkIsActive("custom_search_field")){
 					self::checkMultiLanguagePrefix();
 
 					SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
@@ -129,38 +128,38 @@ class SOYShopItemImportPlugin{
 						if(!isset($values[$key])) continue;
 						$csfValue = $values[$key];
 						$obj->addModel($key . "_visible", array(
-              "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-              "visible" => (strlen($csfValue))
-            ));
+							"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+							"visible" => (strlen($csfValue))
+		            	));
 
-            $obj->addLabel($key, array(
-                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                "html" => (isset($csfValue)) ? $csfValue : null
-            ));
+		            	$obj->addLabel($key, array(
+		                	"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+		                	"html" => (isset($csfValue)) ? $csfValue : null
+		            	));
 
-            switch($field["type"]){
-              case CustomSearchFieldUtil::TYPE_CHECKBOX:
-								//多言語対応
-                if(isset($field["option"]) && count($field["option"])){
-									  $vals = explode(",", $csfValue);
-                    $opts = explode("\n", $field["option"][SOYCMS_PUBLISH_LANGUAGE]);
-                    foreach($opts as $i => $opt){
-                        $opt = trim($opt);
-                        $obj->addModel($key . "_"  . $i . "_visible", array(
-                            "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                            "visible" => (in_array($opt, $vals))
-                        ));
+		            	switch($field["type"]){
+							case CustomSearchFieldUtil::TYPE_CHECKBOX:
+							//多言語対応
+		                		if(isset($field["option"]) && count($field["option"])){
+									$vals = explode(",", $csfValue);
+		                    		$opts = explode("\n", $field["option"][SOYCMS_PUBLISH_LANGUAGE]);
+		                    		foreach($opts as $i => $opt){
+		                        		$opt = trim($opt);
+		                        		$obj->addModel($key . "_"  . $i . "_visible", array(
+		                            		"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+		                            		"visible" => (in_array($opt, $vals))
+		                        		));
 
-                        $obj->addLabel($key . "_" . $i, array(
-                            "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                            "text" => $opt
-                        ));
-                    }
-                }
-                break;
-            }
+				                        $obj->addLabel($key . "_" . $i, array(
+				                            "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+				                            "text" => $opt
+				                        ));
+				                    }
+				                }
+				                break;
+		            	}
 					}
-        }
+		        }
 
 				SOYShopUtil::resetShopMode($old);
 			}
@@ -178,9 +177,8 @@ class SOYShopItemImportPlugin{
 		//商品コードの取得
 		$code = trim($_POST["item_code"]);
 
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		try{
-			$item = $itemDao->getByCode($code);
+			$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByCode($code);
 		}catch(Exception $e){
 			$item = new SOYShop_Item();
 		}
@@ -253,12 +251,9 @@ class SOYShopItemImportPlugin{
 			$attr = new EntryAttribute();
 		}
 
-
 		$old = SOYShopUtil::switchShopMode($this->siteId);
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-
 		try{
-			$item = $itemDao->getByCode($attr->getValue());
+			$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByCode($attr->getValue());
 		}catch(Exception $e){
 			$item = new SOYShop_Item();
 		}
