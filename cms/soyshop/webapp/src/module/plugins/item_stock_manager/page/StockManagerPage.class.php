@@ -264,6 +264,9 @@ class StockManagerPage extends WebPage{
 		if(array_key_exists($key, $_POST)){
 			$value = $_POST[$key];
 			self::setParameter($key,$value);
+		}else if(array_key_exists($key, $_GET)){
+			$value = $_GET[$key];
+			self::setParameter($key,$value);
 		}else{
 			$value = SOY2ActionSession::getUserSession()->getAttribute("Plugin.Collective.Stock:" . $key);
 		}

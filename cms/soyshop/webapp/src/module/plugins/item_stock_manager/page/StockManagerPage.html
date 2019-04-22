@@ -9,10 +9,7 @@
 	</div>
 
 	<div class="block_body clearfix">
-
-		<p class="notice" soy:display="updated">
-			更新しました
-		</p>
+		<p class="notice" soy:display="updated">更新しました</p>
 
 		<dl>
 			<dt class="search_btn_dt">
@@ -127,6 +124,20 @@
 	</div>
 </div>
 
+<div class="block">
+	<div class="block_title">
+		<h2>CSVのツール</h2>
+
+		<div class="block_title_right">
+
+		</div>
+	</div>
+
+	<div class="block_body clearfix body_margin">
+		<a soy:link="Config.Detail?plugin=item_stock_manager" class="button">商品コード - 在庫一括</a>
+	</div>
+</div>
+
 <style>
 	dt.search_btn_dt {
 		text-decoration: underline;
@@ -136,6 +147,10 @@
 
 	#standard_form_area{
 		display:none;
+	}
+
+	.body_margin{
+		padding: 15px !important;
 	}
 </style>
 
