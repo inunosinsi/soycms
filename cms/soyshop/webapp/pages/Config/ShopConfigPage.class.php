@@ -14,6 +14,8 @@ class ShopConfigPage extends WebPage{
 			"consumptionTaxInclusiveCommission" => 0,
 			"isOrderListOneYearsWonth" => 0,
 			"displayStockCount" => 0,
+			"ignoreStock" => 0,
+			"isHiddenStockCount" => 0,
 			"displayPageAfterLogout" => 0,
 			"displaySendInformationForm" => 0,
 			"allowMailAddressLogin" => 0,
@@ -211,6 +213,14 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"name" => "Config[ignoreStock]",
 			"label" => "無視する",
+			"isBoolean" => 1
+		));
+
+		$this->addCheckBox("isHiddenStockCount", array(
+			"selected" => $config->getIsHiddenStockCount(),
+			"value" => 1,
+			"name" => "Config[isHiddenStockCount]",
+			"label" => "在庫数を無視している時、商品毎の在庫数を---にする",
 			"isBoolean" => 1
 		));
 

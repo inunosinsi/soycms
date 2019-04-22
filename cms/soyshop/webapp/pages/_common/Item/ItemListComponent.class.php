@@ -66,13 +66,15 @@ class ItemListComponent extends HTMLList{
             "text" => number_format((int)$item->getSalePrice())
         ));
 
+		$isIgnoreStock = ($this->config->getIgnoreStock() && $this->config->getIsHiddenStockCount());
+
         //在庫無視モード
         $this->addModel("ignore_stock", array(
-            "visible" => ($this->config->getIgnoreStock())
+            "visible" => ($isIgnoreStock)
         ));
 
         $this->addModel("display_stock", array(
-            "visible" => (is_null($this->config->getIgnoreStock()) || $this->config->getIgnoreStock() == 0)
+            "visible" => (!$isIgnoreStock)
         ));
 
         $this->addLabel("item_stock", array(
@@ -101,7 +103,7 @@ class ItemListComponent extends HTMLList{
         ));
 
         $this->addLabel("order_count", array(
-            "text" => (!$this->config->getIgnoreStock() && get_class($item) === "SOYShop_Item") ? number_format(self::getOrderCount($item)) : null
+            "text" => (!$isIgnoreStock && get_class($item) === "SOYShop_Item") ? number_format(self::getOrderCount($item)) : null
         ));
     }
 

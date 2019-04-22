@@ -27,6 +27,7 @@ class SOYShop_ShopConfig {
 	private $displayStock;
 	private $displayStockCount = 0;
 	private $ignoreStock;
+	private $isHiddenStockCount;	//在庫数無視モードで在庫数を隠すか？
 	private $displayChildItem;
 	private $childItemStock;
 	private $noChildItemStock;
@@ -490,6 +491,13 @@ class SOYShop_ShopConfig {
 	}
 	function setIgnoreStock($ignoreStock) {
 		$this->ignoreStock = $ignoreStock;
+	}
+
+	function getIsHiddenStockCount(){
+		return $this->isHiddenStockCount;
+	}
+	function setIsHiddenStockCount($isHiddenStockCount){
+		$this->isHiddenStockCount = $isHiddenStockCount;
 	}
 
 	function getDisplayChildItem(){

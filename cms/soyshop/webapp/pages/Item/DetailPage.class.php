@@ -298,7 +298,8 @@ class DetailPage extends WebPage{
 			"readonly" => $readOnly
 		));
 
-		DisplayPlugin::toggle("item_stock", !$this->config->getIgnoreStock());
+		$isIgnoreStock = ($this->config->getIgnoreStock() && $this->config->getIsHiddenStockCount());
+		DisplayPlugin::toggle("item_stock", !$isIgnoreStock);
 		$this->addInput("item_stock", array(
 			"name" => "Item[stock]",
 			"value" => $item->getStock()
