@@ -267,64 +267,76 @@ class SearchLogic extends SOY2LogicBase{
 
             //カテゴリカスタムフィールド
             if(isset($_GET["cat_search"]) && count($_GET["cat_search"])){
-              $catWhere = array();
-              foreach(CustomSearchFieldUtil::getCategoryConfig() as $key => $field){
-                //まずは各タイプのfield SQLでkeyを指定する場合、s.を付けること。soyshop_custom_searchのaliasがs
-                switch($field["type"]){
-                    //文字列の場合
-                    case CustomSearchFieldUtil::TYPE_STRING:
-                    case CustomSearchFieldUtil::TYPE_TEXTAREA:
-                    case CustomSearchFieldUtil::TYPE_RICHTEXT:
-                        if(isset($_GET["cat_search"][$key]) && strlen($_GET["cat_search"][$key])){
-                            $catWhere["c_" . $key] = $key . " LIKE :c_" . $key;
-                            $this->binds[":c_" . $key] = "%" . trim($_GET["cat_search"][$key]) . "%";
-                        }
-                        break;
+            	$catWhere = array();
+            	foreach(CustomSearchFieldUtil::getCategoryConfig() as $key => $field){
+                	//まずは各タイプのfield SQLでkeyを指定する場合、s.を付けること。soyshop_custom_searchのaliasがs
+	                switch($field["type"]){
+	                    //文字列の場合
+	                    case CustomSearchFieldUtil::TYPE_STRING:
+	                    case CustomSearchFieldUtil::TYPE_TEXTAREA:
+	                    case CustomSearchFieldUtil::TYPE_RICHTEXT:
+	                        if(isset($_GET["cat_search"][$key]) && strlen($_GET["cat_search"][$key])){
+	                            $catWhere["c_" . $key] = $key . " LIKE :c_" . $key;
+	                            $this->binds[":c_" . $key] = "%" . trim($_GET["cat_search"][$key]) . "%";
+	                        }
+	                        break;
 
-                    //範囲の場合
-                    case CustomSearchFieldUtil::TYPE_RANGE:
-                        $ws = "";$we = "";    //whereのスタートとエンド
-                        if(isset($_GET["cat_search"][$key . "_start"]) && strlen($_GET["cat_search"][$key . "_start"]) && is_numeric($_GET["cat_search"][$key . "_start"])){
-                            $ws = $key . " >= :c_" . $key . "_start";
-                            $this->binds[":c_" . $key . "_start"] = (int)$_GET["cat_search"][$key . "_start"];
-                        }
-                        if(isset($_GET["cat_search"][$key . "_end"]) && strlen($_GET["cat_search"][$key . "_end"]) && is_numeric($_GET["cat_search"][$key . "_end"])){
-                            $we = $key .  " <= :c_" . $key . "_end";
-                            $this->binds[":c_" . $key . "_end"] = (int)$_GET["cat_search"][$key . "_end"];
-                        }
-                        if(strlen($ws) && strlen($we)){
-                            $catWhere[$key] = "(" . $ws . " AND " . $we . ")";
-                        }else if(strlen($ws) || strlen($we)){
-                            $catWhere[$key] = $ws . $we;
-                        }
-                        break;
+	                    //範囲の場合
+	                    case CustomSearchFieldUtil::TYPE_RANGE:
+	                        $ws = "";$we = "";    //whereのスタートとエンド
+	                        if(isset($_GET["cat_search"][$key . "_start"]) && strlen($_GET["cat_search"][$key . "_start"]) && is_numeric($_GET["cat_search"][$key . "_start"])){
+	                            $ws = $key . " >= :c_" . $key . "_start";
+	                            $this->binds[":c_" . $key . "_start"] = (int)$_GET["cat_search"][$key . "_start"];
+	                        }
+	                        if(isset($_GET["cat_search"][$key . "_end"]) && strlen($_GET["cat_search"][$key . "_end"]) && is_numeric($_GET["cat_search"][$key . "_end"])){
+	                            $we = $key .  " <= :c_" . $key . "_end";
+	                            $this->binds[":c_" . $key . "_end"] = (int)$_GET["cat_search"][$key . "_end"];
+	                        }
+	                        if(strlen($ws) && strlen($we)){
+	                            $catWhere[$key] = "(" . $ws . " AND " . $we . ")";
+	                        }else if(strlen($ws) || strlen($we)){
+	                            $catWhere[$key] = $ws . $we;
+	                        }
+	                        break;
 
-                    //チェックボックスの場合
-                    case CustomSearchFieldUtil::TYPE_CHECKBOX:
-                        if(isset($_GET["cat_search"][$key]) && count($_GET["cat_search"][$key])){
-                            $w = array();
-                            foreach($_GET["cat_search"][$key] as $i => $v){
-                                if(!strlen($v)) continue;
-                                $w[] = $key . " LIKE :c_" . $key . $i;
-                                $this->binds[":c_" . $key . $i] = "%" . trim($v) . "%";
-                            }
-                            if(count($w)) $catWhere[$key] = "(" . implode(" OR ", $w) . ")";
-                        }
-                        break;
+	                    //チェックボックスの場合
+	                    case CustomSearchFieldUtil::TYPE_CHECKBOX:
+	                        if(isset($_GET["cat_search"][$key]) && count($_GET["cat_search"][$key])){
+	                            $w = array();
+	                            foreach($_GET["cat_search"][$key] as $i => $v){
+	                                if(!strlen($v)) continue;
+	                                $w[] = $key . " LIKE :c_" . $key . $i;
+	                                $this->binds[":c_" . $key . $i] = "%" . trim($v) . "%";
+	                            }
+	                            if(count($w)) $catWhere[$key] = "(" . implode(" OR ", $w) . ")";
+	                        }
+	                        break;
 
-                    //数字、ラジオボタン、セレクトボックス
-                    default:
-                        if(isset($_GET["cat_search"][$key]) && strlen($_GET["cat_search"][$key])){
-                            $catWhere[$key] = "s." . $key . " = :c_" . $key;
-                            $this->binds[":c_" . $key] = $_GET["cat_search"][$key];
-                        }
-                }
-              }
+	                    //数字、ラジオボタン、セレクトボックス
+	                    default:
+	                        if(isset($_GET["cat_search"][$key]) && strlen($_GET["cat_search"][$key])){
+	                            $catWhere[$key] = "s." . $key . " = :c_" . $key;
+	                            $this->binds[":c_" . $key] = $_GET["cat_search"][$key];
+	                        }
+	                }
+        		}
 
-              if(count($catWhere)){
-                $this->where["category_custom_search"] = "i.item_category IN (SELECT category_id FROM soyshop_category_custom_search WHERE " . implode(" AND ", $catWhere) . " AND lang = " . UtilMultiLanguageUtil::getLanguageId(SOYSHOP_PUBLISH_LANGUAGE) . ")";
-              }
+            	if(count($catWhere)){
+        			$this->where["category_custom_search"] = "i.item_category IN (SELECT category_id FROM soyshop_category_custom_search WHERE " . implode(" AND ", $catWhere) . " AND lang = " . UtilMultiLanguageUtil::getLanguageId(SOYSHOP_PUBLISH_LANGUAGE) . ")";
+            	}
             }
+
+			//予約カレンダーとの連携	現在予約可能のカレンダー商品のみ検索対象にする @ToDo モードを作りたい
+			SOY2::import("util.SOYShopPluginUtil");
+			if(SOYShopPluginUtil::checkIsActive("reserve_calendar")){
+				//検索用のデータを作成する
+				SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();
+				$subquery = "SELECT item_id FROM soyshop_reserve_calendar_schedule sch ".
+							"INNER JOIN soyshop_reserve_calendar_schedule_search search ".
+							"ON sch.id = search.schedule_id ".
+							"WHERE search.schedule_date >= " . time();
+				$this->where["reserve_calendar"] = "i.id IN (" . $subquery . ")";
+			}
 
             //多言語化
             $this->where["lang"] = "s.lang = " . UtilMultiLanguageUtil::getLanguageId(SOYSHOP_PUBLISH_LANGUAGE);
