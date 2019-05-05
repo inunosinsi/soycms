@@ -37,7 +37,25 @@ class ReserveCalendarCart extends SOYShopCartBase{
 	function afterOperation(CartLogic $cart){
 		$items = $cart->getItems();
 		if(count($items)){
+			//商品は必ず一つモードの場合は前に入れた商品は削除する
+			SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+			$config = ReserveCalendarUtil::getConfig();
+			if(isset($config["only"]) && (int)$config["only"] === ReserveCalendarUtil::IS_ONLY){
+				//既に商品が入っていれば、indexが1の商品をindexが0にする
+				if(count($items) > 1){
+					$indexOne = ReserveCalendarUtil::getCartAttributeId("schedule_id", 1, $items[1]->getItemId());
+					$schId = $cart->getAttribute($indexOne);
+					$cart->clearAttribute($indexOne);
+					$cart->setAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", 0, $items[0]->getItemId()), $schId);
+
+					$item = end($items);
+					$items = array($item);
+					$cart->setItems($items);
+				}
+			}
+
 			$schLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic");
+
 			//価格の更新
 			foreach($items as $index => $itemOrder){
 				$schId = $cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrder->getItemId()));

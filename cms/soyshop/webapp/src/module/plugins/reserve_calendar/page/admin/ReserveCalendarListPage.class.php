@@ -21,9 +21,14 @@ class ReserveCalendarListPage extends WebPage{
 			ReserveCalendarUtil::saveSessionValue("user", (int)$_GET["re_reserve"]);
 		}
 
+		$items = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemsOnLabel();
+		if(count($items) === 1) {	//登録されている商品が１件の場合は強制的にそのカレンダーにする
+			$this->itemId = key($items);
+		}
+
 		$this->addSelect("item_select", array(
 			"name" => "item_id",
-			"options" => SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemsOnLabel(),
+			"options" => $items,
 			"selected" => $this->itemId,
 			"attr:id" => "item_select",
 			"attr:onchange" => "redirectAfterSelectOfSch()"
@@ -43,6 +48,11 @@ class ReserveCalendarListPage extends WebPage{
 			"selected" => $this->m,
 			"attr:id" => "month_select",
 			"attr:onchange" => "redirectAfterSelectOfSch()"
+		));
+
+		DisplayPlugin::toggle("schedule_register_button", isset($this->itemId));
+		$this->addLink("schedule_setting_link", array(
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&calendar&item_id=" . $this->itemId)
 		));
 
 		$this->addLabel("calendar", array(

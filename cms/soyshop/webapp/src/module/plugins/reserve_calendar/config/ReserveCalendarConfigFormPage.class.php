@@ -35,6 +35,13 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"selected" => (isset($config["tmp"]) && $config["tmp"] == ReserveCalendarUtil::NO_TMP),
 			"label" => "仮登録を行わない"
 		));
+
+		$this->addCheckBox("only", array(
+			"name" => "Config[only]",
+			"value" => ReserveCalendarUtil::IS_ONLY,
+			"selected" => (isset($config["only"]) && (int)$config["only"] === ReserveCalendarUtil::IS_ONLY),
+			"label" => "注文時の商品個数は１個のみ"
+		));
 	}
 
 	function setConfigObj($configObj){

@@ -77,8 +77,8 @@ class LabelConfigPage extends WebPage{
 		DisplayPlugin::toggle("error", (isset($_GET["error"])));
 
 		$this->addLink("back_link", array(
-			"link" => SOY2PageController::createLink("Item.Detail." . $this->itemId),
-			"text" => self::getItemById($this->itemId)->getName() . "の詳細ページに戻る"
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&calendar&item_id=" . $this->itemId),
+			"text" => soyshop_get_item_object($this->itemId)->getName() . "の詳細ページに戻る"
 		));
 
 		$this->addForm("form");
@@ -93,14 +93,6 @@ class LabelConfigPage extends WebPage{
 			SOY2DAOFactory::create("SOYShopReserveCalendar_LabelDAO")->deleteById($labelId);
 		}catch(Exception $e){
 			var_dump($e);
-		}
-	}
-
-	private function getItemById($itemId){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
 		}
 	}
 

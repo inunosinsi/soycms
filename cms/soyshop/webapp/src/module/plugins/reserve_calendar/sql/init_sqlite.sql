@@ -10,6 +10,12 @@ CREATE TABLE soyshop_reserve_calendar_schedule(
     UNIQUE(item_id, label_id, year, month, day)
 );
 
+CREATE TABLE soyshop_reserve_calendar_schedule_search(
+	schedule_id INTEGER NOT NULL,
+	schedule_date INTEGER NOT NULL,
+	UNIQUE(schedule_id, schedule_date)
+);
+
 CREATE TABLE soyshop_reserve_calendar_reserve(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     schedule_id INTEGER NOT NULL,

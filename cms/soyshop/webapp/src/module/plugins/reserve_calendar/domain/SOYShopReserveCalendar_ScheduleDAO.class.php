@@ -77,5 +77,30 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
         return $this->getObject($res[0]);
     }
 
-    abstract function deleteById($id);
+	function getScheduleDates($scheduleId){
+		$sql = "SELECT id, year, month, day FROM soyshop_reserve_calendar_schedule WHERE id > :id";
+		try{
+			$res = $this->executeQuery($sql, array(":id" => $scheduleId));
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[$v["id"]] = mktime(0, 0, 0, $v["month"], $v["day"], $v["year"]);
+		}
+
+		return $list;
+	}
+
+    function deleteById($id){
+		try{
+			$this->executeQuery("DELETE FROM soyshop_reserve_calendar_schedule WHERE id = :id", array(":id" => $id));
+			$this->executeQuery("DELETE FROM soyshop_reserve_calendar_schedule_search WHERE schedule_id = :id", array(":id" => $id));
+		}catch(Exception $e){
+			//
+		}
+	}
 }

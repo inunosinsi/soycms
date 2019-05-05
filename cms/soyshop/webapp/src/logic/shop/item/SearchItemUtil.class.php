@@ -23,6 +23,8 @@ class SearchItemUtil_SortImpl implements SearchItemUtil_Sort{
 	function getDefaultSort(){
 		if(method_exists($this->obj, "getDefaultSort")){
 			return $this->obj->getDefaultSort();
+		}else if(method_exists($this->obj, "getObject") && method_exists($this->obj->getObject(), "getDefaultSort")){
+			return $this->obj->getObject()->getDefaultSort();
 		}
 
 		return "id";
@@ -140,7 +142,6 @@ class SearchItemUtil extends SOY2LogicBase{
 				if($defaultSort != "custom") $sort = $defaultSort;
 				$csort = $obj->getCustomSort();
 			}
-
 		}
 
 		if($sort){

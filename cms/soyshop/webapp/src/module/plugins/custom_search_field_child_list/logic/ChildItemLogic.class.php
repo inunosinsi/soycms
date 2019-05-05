@@ -23,7 +23,7 @@ class ChildItemLogic extends SOY2LogicBase{
                 "FROM soyshop_item ";
         $sql .= self::buildWhere();    //カウントの時と共通の処理は切り分ける
         $sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
-        if(isset($sort)) $sql .= " ORDER BY " . $sort . " ";
+		if(isset($sort)) $sql .= " ORDER BY " . $sort . " ";
 
         //表示件数
         $sql .= " LIMIT " . (int)$limit;
@@ -361,4 +361,3 @@ class ChildItemLogic extends SOY2LogicBase{
         }
     }
 }
-?>

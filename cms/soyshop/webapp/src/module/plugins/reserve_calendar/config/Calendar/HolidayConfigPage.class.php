@@ -63,8 +63,8 @@ class HolidayConfigPage extends WebPage{
 		parent::__construct();
 
 		$this->addLink("back_link", array(
-			"link" => SOY2PageController::createLink("Item.Detail." . $this->itemId),
-			"text" => self::getItemById($this->itemId)->getName() . "の詳細ページに戻る"
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&calendar&item_id=" . $this->itemId),
+			"text" => soyshop_get_item_object($this->itemId)->getName() . "の詳細ページに戻る"
 		));
 
 		$this->addForm("form");
@@ -115,14 +115,6 @@ class HolidayConfigPage extends WebPage{
 //		$this->addLabel("next_calendar", array(
 //			"html" => $displayLogic->getNextCalendar()
 //		));
-	}
-
-	private function getItemById($itemId){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
 	}
 
 	/**

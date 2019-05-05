@@ -5,6 +5,9 @@ class ReserveCalendarUtil{
 	const IS_TMP = 1;	//注文時の仮登録あり
 	const NO_TMP = 0;	//注文時の仮登録なし
 
+	const IS_ONLY = 1;	//注文時の商品個数が1個のみに制限
+	const NO_ONLY = 0;
+
 /* sync customfield config */
 	const DELIVERY_TWO_DAYS = "1～2営業日";
 	const DELIVERY_FOUR_DAYS = "3～4営業日";
@@ -23,12 +26,14 @@ class ReserveCalendarUtil{
 
 	public static function getConfig(){
 		return SOYShop_DataSets::get("reserve_calendar.config", array(
-			"tmp" => self::NO_TMP
+			"tmp" => self::NO_TMP,
+			"only" => self::NO_ONLY
 		));
 	}
 
 	public static function saveConfig($values){
 		$values["tmp"] = (isset($values["tmp"])) ? (int)$values["tmp"] : 0;
+		$values["only"] = (isset($values["only"])) ? (int)$values["only"] : self::NO_ONLY;
 		SOYShop_DataSets::put("reserve_calendar.config", $values);
 	}
 

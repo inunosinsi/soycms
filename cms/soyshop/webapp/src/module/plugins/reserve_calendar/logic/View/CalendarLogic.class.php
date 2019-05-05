@@ -13,7 +13,7 @@ class CalendarLogic extends CalendarBaseComponent{
 
 	private $addedList = array();
 
-	function build($y, $m, $dspOtherMD = false, $dspCaption = true, $dspRegHol = true, $dspMonthLink = false){
+	function build($y, $m, $dspOtherMD = false, $dspCaption = true, $dspRegHol = true, $dspMonthLink = false, $isBefore = false, $isNextMonth = false){
 		$this->year = $y;
 		$this->month = $m;
 
@@ -30,7 +30,7 @@ class CalendarLogic extends CalendarBaseComponent{
 			}
 		}
 
-		return parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink);
+		return parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink, $isBefore, $isNextMonth);
 	}
 
 	/**

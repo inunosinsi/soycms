@@ -28,15 +28,22 @@ class CalendarBaseComponent extends SOY2LogicBase{
 	//今月のカレンダーであるか？
 	private $isThisMonth;
 
+	//今日よりも前の週や日にbeforeクラスを付与
+	private $isBefore;
+
+	//来月のカレンダーを合わせて表示するか？
+	private $isNextMonth;
+
 	function __construct(){}
 
-	function build($y, $m, $dspOtherMD = true, $dspCaption = true, $dspRegHol = false, $dspMonthLink = false){
+	function build($y, $m, $dspOtherMD = true, $dspCaption = true, $dspRegHol = false, $dspMonthLink = false, $isBefore = false, $isNextMonth = false){
 
 		//週のカウントを初期化する
 		$this->wc = 0;
 
 		//本日の日付を取得
 		if(!defined("TODAY_DATE")) define("TODAY_DATE", date("j", time()));
+		if(!defined("TODAY_MONTH")) define("TODAY_MONTH", date("n", time()));
 
 		//他の月を表示しない場合かつ日曜スタートでない場合は1を加算しておく
 		if(!$dspOtherMD && date("w", mktime(0, 0, 0, $m, 1, $y)) != "0") $this->wc++;
@@ -44,6 +51,12 @@ class CalendarBaseComponent extends SOY2LogicBase{
 		//翌月の日付を表示するか？
 		$this->dspOtherMonthDate = $dspOtherMD;
 		$this->isThisMonth = true;
+
+		//今日よりも前の週や日にbeforeクラスを付与
+		$this->isBefore = $isBefore;
+
+		//次の月のカレンダーを続けて表示するか？
+		$this->isNextMonth = $isNextMonth;
 
 		//captionを表示するか
 		$this->dspCaption = $dspCaption;
@@ -97,6 +110,8 @@ class CalendarBaseComponent extends SOY2LogicBase{
 		//その月の日付の数
 		$last = date("t", $t);
 
+		$nextMonthLast = ($this->isNextMonth) ? date("t", strtotime("+1 month", $t)) : 0;
+
 		//表示用の年月日を取得
 		$y = date("Y", $t);
 		$m = date("n", $t);
@@ -143,22 +158,49 @@ class CalendarBaseComponent extends SOY2LogicBase{
 
 		//<tr>から</tr>までの<td>のカウンター
 		$counter = 0;
+
+		$today = date("j");
+
 		//カレンダの日付を作成する
-		for($i = 1; $i <= $last; $i++){
+		for($i = 1; $i <= $last + $nextMonthLast; $i++){
+			//次の月のカレンダー用に日付を書き換える
+			if($i > $last){
+				$ii = $i - $last;
+				$mm = $m + 1;
+				$tt = strtotime("+1 month", $t);	//月始めのタイムスタンプを更新
+			}else{
+				$ii = $i;
+				$mm = $m;
+				$tt = $t;
+			}
+
+			if($mm > 12){
+				$mm -= 12;
+				$yy = $y + 1;
+			}else{
+				$yy = $y;
+			}
+
 			//カラムごとの曜日を取得する
-			$this->cd = mktime(0, 0, 0, $m, $i, $y);
+			$this->cd = mktime(0, 0, 0, $mm, $ii, $yy);
 			$w = date("w", $this->cd);
 
 			//その月の初日
 			if($i === 1){
-				$html[] = "		<tr>";
+				if($this->isBefore && $i + (6 - $w) < $today){	//今日を含む週よりも前の週であればclassにbeforeを追加
+					$html[] = "		<tr class=\"before\">";
+				}else if($this->isNextMonth && $i > $last){		//次の月のカレンダー
+					$html[] = "		<tr class=\"next\">";
+				}else{
+					$html[] = "		<tr>";
+				}
 
 				//初日まで（前月）
 				for($j = 1; $j <= $w; $j++){
 					if($this->dspOtherMonthDate){
-						$lastDate = date("j", self::getPrevMonthLastDate($m, $y));
+						$lastDate = date("j", self::getPrevMonthLastDate($mm, $yy));
 						$int = $lastDate - $w + $j;
-						$html[] = self::createDayColumn($int, 0, 0, 0, true, $t);
+						$html[] = self::createDayColumn($int, 0, 0, 0, true, $tt);
 					}else{
 						$html[] = "			<td>&nbsp;</td>";
 					}
@@ -166,7 +208,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 					$counter++;
 				}
 
-				$html[] = self::createDayColumn($i, $m, $w, $d, $last);
+				$html[] = self::createDayColumn($ii, $mm, $w, $d, $last);
 				$counter++;
 				//土曜日の場合は</tr>で閉じる
 				if($w == 6){
@@ -175,21 +217,28 @@ class CalendarBaseComponent extends SOY2LogicBase{
 			//二日目以降
 			}else{
 				if($w == 0){
-					$html[] = "		<tr>";
+					if($this->isBefore &&  $i + (6 - $w) < $today){	//今日を含む週よりも前の週であればclassにbeforeを追加
+						$html[] = "		<tr class=\"before\">";
+					}else if($this->isNextMonth && $i > $last){		//次の月のカレンダー
+						$html[] = "		<tr class=\"next\">";
+					}else{
+						$html[] = "		<tr>";
+					}
 				}
-				$html[] = self::createDayColumn($i, $m, $w, $d, $last);
+				$html[] = self::createDayColumn($ii, $mm, $w, $d, $last);
 				$counter++;
 
 				//末日以降（次の月）
-				if($i == $last && $w < 6){
+				if($i == $last + $nextMonthLast && $w < 6){
 					for($k = 1; $k <= 7 - $counter; $k++){
 						if($this->dspOtherMonthDate){
-							$html[] = self::createDayColumn($k, $m, 0, 0, 0, true, $t);
+							$html[] = self::createDayColumn($k, $mm, 0, 0, 0, true, $tt);
 						}else{
 							$html[] = "			<td>&nbsp;</td>";
 						}
 					}
 				}
+
 
 				if($w == 6){
 					$html[] = "		</tr>";
@@ -221,7 +270,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 			$w = date("w", $this->cd);
 		}
 
-		$isToday = ($this->isThisMonth && $i == TODAY_DATE);
+		$isToday = ($this->isThisMonth && $i == TODAY_DATE && $m == TODAY_MONTH);
 
 		$class = array();
 		switch($w){
@@ -248,6 +297,22 @@ class CalendarBaseComponent extends SOY2LogicBase{
 		if($isOtherMonth) {
 			$class[] = "other";
 			$da = "other";
+		}
+
+		//今日より前の日付
+		if($this->isBefore){
+			if($m == TODAY_MONTH && $i < TODAY_DATE){
+				$class[] = "before";
+				$da = "before";
+			}
+		}
+
+		//次の月 週が4週目以降 4週目、5週目の場合は念の為に日付を確認し、6週目以降であればすべての日にnextを付与
+		if($this->isNextMonth){
+			if(($this->wc == 4 && $i < 7) || ($this->wc == 5 && $i < 15) || $this->wc > 5){
+				$class[] = "next";
+				$da = "next";
+			}
 		}
 
 		//定休日

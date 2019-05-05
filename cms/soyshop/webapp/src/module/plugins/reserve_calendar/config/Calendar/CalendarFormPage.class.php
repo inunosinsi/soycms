@@ -75,6 +75,11 @@ class CalendarFormPage extends WebPage{
 
 		$item = soyshop_get_item_object($this->itemId);
 
+		$this->addLink("reserve_calendar_link", array(
+			"link" => SOY2PageController::createLink("Extension.reserve_calendar?item_id=" . $this->itemId),
+			"text" => "予約ページに戻る"
+		));
+
 		$this->addLink("back_link", array(
 			"link" => SOY2PageController::createLink("Item.Detail." . $this->itemId),
 			"text" => $item->getName() . "の詳細ページに戻る"
