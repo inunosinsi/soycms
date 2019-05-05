@@ -91,7 +91,7 @@ class Cart01Page extends MainCartPageBase{
 		if(isset($_POST["next"]) || isset($_POST["next_x"])){
 
 			//すでにマイページでログインしているならログインする
-			if( $user = $this->checkMyPageLoggedIn() ){//代入
+			if( $user = self::getMyPageLoggedInUser() ){//代入
 				//ログイン情報
 				$cart->setCustomerInformation($user);
 				$cart->setAttribute("logined", true);
@@ -345,7 +345,7 @@ class Cart01Page extends MainCartPageBase{
 	 * マイページでログイン済みかどうか
 	 * @return SOYShop_User
 	 */
-	private function checkMyPageLoggedIn(){
+	private function getMyPageLoggedInUser(){
 		$mypage = MyPageLogic::getMyPage();
 		if($mypage->getIsLoggedin()){
 			$userId = $mypage->getAttribute("userId");
