@@ -32,10 +32,16 @@ class SearchItemUtil_SortImpl implements SearchItemUtil_Sort{
 	function getIsReverse(){
 		if(method_exists($this->obj, "isReverse")){
 			return $this->obj->isReverse();
+		}else if(method_exists($this->obj, "getIsReverse")){
+			return $this->obj->getIsReverse();
 		}
 
-		if(method_exists($this->obj, "getIsReverse")){
-			return $this->obj->getIsReverse();
+		if(method_exists($this->obj, "getObject")){
+			if(method_exists($this->obj->getObject(), "isReverse")){
+				return $this->obj->getObject()->isReverse();
+			}else if(method_exists($this->obj->getObject(), "getIsReverse")){
+				return $this->obj->getObject()->getIsReverse();
+			}
 		}
 
 		return false;
@@ -125,7 +131,7 @@ class SearchItemUtil extends SOY2LogicBase{
 			$obj = $this->getSort();
 			$defaultSort = $obj->getDefaultSort();
 			$suffix = ($obj->getIsReverse()) ? " desc" : "";
-
+			
 			//カテゴリによってソートの設定を出し分ける
 			SOYShopPlugin::load("soyshop.item.list");
 			$extSort = SOYShopPlugin::invoke("soyshop.item.list", array(
