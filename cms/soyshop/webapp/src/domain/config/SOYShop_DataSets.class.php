@@ -49,7 +49,7 @@ class SOYShop_DataSets {
 		try{
 			$dao->clear($class);
 		}catch(Exception $e){
-
+			//
 		}
 
 		$dao->insert($data);
