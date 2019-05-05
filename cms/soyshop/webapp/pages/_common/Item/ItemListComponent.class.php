@@ -40,7 +40,7 @@ class ItemListComponent extends HTMLList{
 		$imagePath = soyshop_convert_file_path_on_admin($item->getAttribute("image_small"));
 		if(!strlen($imagePath)) $imagePath = soyshop_get_item_sample_image();
 		$this->addImage("item_small_image", array(
-            "src" => SOYSHOP_SITE_URL . "im.php?src=" . $imagePath . "&width=60",
+            "src" => "/" . SOYSHOP_ID . "/im.php?src=" . $imagePath . "&width=60",
         ));
 
         $this->addLabel("sale_text", array(
