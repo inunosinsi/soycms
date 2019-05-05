@@ -43,6 +43,11 @@ function onSignIn(googleUser) {
 					location.href = location.pathname;
 				}
 
+				// 仮登録モードの場合は他の場所に飛ばす result == 2で返ってくる
+				if(res.result == 2){
+					location.href = location.origin + pathname + "/register/tmp";
+				}
+
 				// @ToDo 失敗した場合はどうしよう？
 			}
 		});
@@ -52,4 +57,8 @@ function onSignIn(googleUser) {
 			// @ToDo どうしよう？
 		});
 	}
+}
+
+function onFailure(err){
+	console.log(err);
 }

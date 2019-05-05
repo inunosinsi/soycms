@@ -15,7 +15,10 @@ class GooleSignInUserOnOutput extends SOYShopSiteUserOnOutputAction{
 			if(!isset($config["client_id"]) || !strpos($config["client_id"], "apps.googleusercontent.com")) return $html;
 			$scopeTag = "<meta name=\"google-signin-scope\" content=\"profile email\">";
 			$metaClientId = "<meta name=\"google-signin-client_id\" content=\"" . htmlspecialchars($config["client_id"], ENT_QUOTES, "UTF-8") . "\">";
-			$scriptTag = "<script src=\"https://apis.google.com/js/platform.js\" async defer></script>";
+
+			$jspath = "https://apis.google.com/js/platform.js";
+			if(isset($config["render_function"]) && strlen(trim($config["render_function"]))) $jspath .= "?onload=" . trim($config["render_function"]);
+			$scriptTag = "<script src=\"" . $jspath . "\" async defer></script>";
 			$insertTag = $scopeTag . "\n" . $metaClientId . "\n" . $scriptTag;
 
 			if(strpos($html, "</head>")){

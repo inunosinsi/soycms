@@ -18,7 +18,7 @@ class SignInLogic extends SOY2LogicBase {
 		}catch(Exception $e){
 			$user = new SOYShop_User();
 			$user->setMailAddress($mailAddress);
-			$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
+				$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 			return $user;
 		}
 	}

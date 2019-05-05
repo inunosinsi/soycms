@@ -6,6 +6,23 @@
 		<dd>
 			<input type="text" class="text" soy:id="client_id" style="width:90%;" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com">
 		</dd>
+
+		<dt>仮登録モード</dt>
+		<dd>
+			<input type="checkbox" soy:id="pre_register_mode"><br>
+			会員向けサイト等でGoogleログインボタンで個人情報を取得した後、管理画面で確認したアカウントのみマイページにログインさせたい場合にご利用下さい。
+		</dd>
+
+		<dt>
+			ボタンのカスタマイズ
+			<a soy:id="return_link" class="button" onclick="return confirm('HTMLを戻しますか？');">戻す</a>
+			<a soy:id="sample_link" class="button" onclick="return confirm('HTMLをサンプルに変更しますか？');">サンプル</a>
+			<a href="https://developers.google.com/identity/sign-in/web/reference#gapisignin2renderid-options" target="_blank">説明ページへ(英語)</a>
+		</dt>
+		<dd>
+			<textarea soy:id="button_html"></textarea><br>
+			ボタンのカスタマイズ用の関数名：<input type="text" soy:id="render_function">&nbsp;例：renderButton
+		</dd>
 	</dl>
 
 	<p class="pageBtn">

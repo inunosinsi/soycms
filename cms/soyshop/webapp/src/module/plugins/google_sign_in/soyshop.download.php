@@ -5,10 +5,14 @@ class GoogleSignInDownload extends SOYShopDownload{
 	function execute(){
 		if(soy2_check_token()){
 			$logic = SOY2Logic::createInstance("module.plugins.google_sign_in.logic.SignInLogic");
+			SOY2::import("module.plugins.google_sign_in.util.GoogleSignInUtil");
+			$config = GoogleSignInUtil::getConfig();
 
 			$user = $logic->getUserByMailAddress($_POST["mail"]);
 			if(is_null($user->getId())){
 				$user->setName($_POST["name"]);
+				$user->setUserType(SOYShop_User::USERTYPE_TMP);
+
 				$userId = $logic->registUser($user);
 
 				//失敗
@@ -20,11 +24,16 @@ class GoogleSignInDownload extends SOYShopDownload{
 			$logic->saveGoogleId($user->getId(), $_POST["google_id"]);
 
 			//ログイン
-			$mypage = MyPageLogic::getMyPage();
-			$mypage->noPasswordLogin($user->getId());
+			if($user->getUserType() == SOYShop_User::USERTYPE_REGISTER){
+				$mypage = MyPageLogic::getMyPage();
+				$mypage->noPasswordLogin($user->getId());
 
-			//成功
-			self::sendResult(1);
+				//成功
+				self::sendResult(1);
+			}else{
+				//仮登録モード
+				self::sendResult(2);
+			}
 		}
 	}
 
