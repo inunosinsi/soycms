@@ -332,7 +332,10 @@ class SOYShop_Item {
     }
 
     function getAttachmentsUrl(){
-        return soyshop_get_site_path() . "files/" . $this->getCode() . "/";
+		$dir = soyshop_get_site_path() . "files/" . $this->getCode() . "/";
+		//@ToDo ドメインをhttp://***.***.***.***/サイトID/に当てた時の対処を考える
+		//if(strpos($dir, "/" . SOYSHOP_ID . "/") !== false) $dir = str_replace("/" . SOYSHOP_ID . "/", "/", $dir);
+        return $dir;
     }
 
     /**
