@@ -89,6 +89,12 @@
 						<input type="radio" soy:id="sort_reverse" />
 					</div>
 
+					<h4>商品種別の表示設定(β版)</h4>
+					<div>
+						<input type="checkbox" soy:id="is_parent">&nbsp;
+						<input type="checkbox" soy:id="is_child">
+					</div>
+
 					<h4>テンプレートの記述例</h4>
 					<a href="javascript:void(0);" onclick="$('.template_example').toggle();">記述例を表示</a>
 					<textarea class="template_example" style="display:none;height:200px;" soy:id="template_example"></textarea>
@@ -97,9 +103,8 @@
 
 				<p class="pageBtn"><input type="submit" value="更新" /></p>
 
-				</form soy:id="update_form">
-			</dl soy:id="block_detail_row">
-
+				</form>
+			</dl>
 			<!-- /soy:id="block_detail_list" -->
 	</div>
 </div>
@@ -184,7 +189,7 @@ function copy_item(ele){
 	var parent = $(ele).parent();
 	var target = parent.clone();
 
-	var counter = parent.parent().children().size();
+	var counter = parent.parent().children().length;
 
 	target.children("select").val("-1");
 	target.children("input").val("");
@@ -199,7 +204,7 @@ function copy_item(ele){
 	target.insertAfter(parent);
 }
 function remove_item(ele){
-	if($(ele).parent().parent().children().size() > 1){
+	if($(ele).parent().parent().children().length > 1){
 		$(ele).parent().remove();
 	}
 }

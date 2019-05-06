@@ -10,7 +10,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 		//条件によってはComplexページでなくても、このファイルを読み込む可能性があるため、別ページの場合の対策
 		if(method_exists($obj, "getBlocks")){
 			//SearchItemUtilの作成。ソート順作成のためlistPageオブジェクトを渡す
-			$this->logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil");
+			$this->logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("mode" => "complex"));
 
 			$blocks = $obj->getBlocks();
 			foreach($blocks as $blockId => $block){
@@ -62,14 +62,14 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 				);
 			}
 		}
-		
+
 		//ソート情報用にSOYShop_ComplexPageBlockを渡す
 		$this->logic->setSort($block);
 
 		list($items,$total) = $this->logic->searchItems(
 			$block->getCategories(),
 			$customFields,
-			array(),
+			$block->getParams(),
 			$offset,
 			$limit,
 			$isAnd
@@ -78,9 +78,7 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 		//商品ブロックの条件に子商品がある場合は除く
 		$result = array();
 		foreach($items as $item){
-			if(!is_numeric($item->getType())){
-				$result[] = $item;
-			}
+			$result[] = $item;
 		}
 
 		return $result;

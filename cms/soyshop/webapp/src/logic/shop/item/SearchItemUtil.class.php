@@ -66,6 +66,7 @@ class SearchItemUtil_SortImpl implements SearchItemUtil_Sort{
 class SearchItemUtil extends SOY2LogicBase{
 
 	private $sort;
+	private $mode;
 
 	function getByCategoryIds($categoryId, $offset = null, $limit = null){
 		return $this->getByCategoryId($categoryId, $offset, $limit, true);
@@ -131,7 +132,7 @@ class SearchItemUtil extends SOY2LogicBase{
 			$obj = $this->getSort();
 			$defaultSort = $obj->getDefaultSort();
 			$suffix = ($obj->getIsReverse()) ? " desc" : "";
-			
+
 			//カテゴリによってソートの設定を出し分ける
 			SOYShopPlugin::load("soyshop.item.list");
 			$extSort = SOYShopPlugin::invoke("soyshop.item.list", array(
@@ -171,7 +172,6 @@ class SearchItemUtil extends SOY2LogicBase{
 					break;
 				//カスタムフィールドによるソート
 				default:
-					//ソート用のカラムがあるか調べる
 					//ソート用のカラムがあるか調べる
 					if(SOY2DAOConfig::type() == "mysql"){
 						try{
@@ -309,6 +309,9 @@ class SearchItemUtil extends SOY2LogicBase{
      * @return array($result,$total)
      */
     function searchItems($categories, $customFieldCordination, $params, $offset, $limit, $isAnd = true){
+
+		list($isParent, $isChild) = self::getDisplayGroupItemMode($params);
+
     	$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
     	$itemAttributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 
@@ -328,23 +331,35 @@ class SearchItemUtil extends SOY2LogicBase{
 	    		. " on ($table.id = $attrTable.item_id)";
 	    $query->group = "$table.id";
 
+		//$queries = array();
+		$parentqueris = array();
+		$parentbinds = array();
+		$childqueries = array();	//子商品との出し分け設定用
+		$childbinds = array();
+
     	//append where(categories)
-    	if(count($categories) > 0) $query->where = "item_category in (" . implode(",", $categories) . ")";
+    	if(count($categories) > 0) {
+			if($isParent) $parentqueries[] = "item_category in (" . implode(",", $categories) . ")";
+			if($isChild) $childqueries[] = "item_category in (" . implode(",", $categories) . ")";
+		}
 
     	//append where(params)
     	if(count($params)){
-    		if(count($categories) > 0) $query->where .= " AND ";
     		foreach($params as $column => $value){
-    			if(isset($query->where) && strlen($query->where) > 0 && strlen($query->where) - 4 !== strrpos($query->where, "AND ")) $query->where .= " AND ";
-
     			switch($column){
     				//フラグ系
     				case "item_sale_flag":
     				case "item_type":
     				case "item_is_open":
     				case "is_disabled":
-    					$query->where .= $column . " = :" . $column;
-    					$binds[":" . $column] = $value;
+						if($isParent){
+							$parentqueries[] = $column . " = :" . $column;
+	    					$parentbinds[":" . $column] = $value;
+						}
+						if($isChild){
+							$childqueries[] = $column . " = :" . $column ."_child";
+							$childbinds[":" . $column . "_child"] = $value;
+						}
     					break;
     				//数字系
     				case "item_price":
@@ -364,22 +379,31 @@ class SearchItemUtil extends SOY2LogicBase{
     				 * @ToDo 時刻等の数字の値が入るカラムの場合を追加
     				 */
 						break;
+					case "is_parent":
+					case "is_child":
+						//処理は今回のswitch文より後
+						break;
     				//文字列系
     				case "item_name":
     				case "item_code":
     				case "item_alias":
     				default:
-    					$query->where .= $column . " LIKE :" . $column;
-    					$binds[":" . $column] = "%" . $value . "%";
+						if($isParent){
+							$parentqueries[] = $column . " LIKE :" . $column;
+	    					$parentbinds[":" . $column] = "%" . $value . "%";
+						}
+						if($isChild){
+							$childqueries[] = $column . " = :" . $column ."_child";
+							$childbinds[":" . $column . "_child"] = $value;
+						}
     					break;
     			}
-
-
     		}
     	}
 
     	//append where(customfield)
-    	$where = array();
+    	$parentwhere = array();
+		$childwhere = array();
     	$counter = 0;
     	foreach($customFieldCordination as $key => $array){
     		if((int)$key < 0 && (!isset($array["fieldId"]) || (int)$array["fieldId"] < 1)) continue;
@@ -387,28 +411,61 @@ class SearchItemUtil extends SOY2LogicBase{
     		$operation = (isset($array["type"])) ? $array["type"] : "=";
     		if(!in_array($operation, array("=", "<>", "LIKE", "NOT LIKE"))) $operation = "=";
 
-			$customWhere = "(item_field_id = :field_id${counter} and item_value ${operation} :field_value${counter})";
-			$where[] = $customWhere;
-    		$binds[":field_id${counter}"] = (isset($array["fieldId"])) ? $array["fieldId"] : $key;
-    		$binds[":field_value${counter}"] = $array["value"];
+			if($isParent){
+				$customWhere = "(item_field_id = :field_id${counter} and item_value ${operation} :field_value${counter})";
+				$parentwhere[] = $customWhere;
+				$parentbinds[":field_id${counter}"] = (isset($array["fieldId"])) ? $array["fieldId"] : $key;
+	    		$parentbinds[":field_value${counter}"] = $array["value"];
+			}
+
+			if($isChild){
+				$customWhere = "(item_field_id = :field_id${counter}_child and item_value ${operation} :field_value${counter}_child)";
+				$childwhere[] = $customWhere;
+				$childbinds[":field_id${counter}_child"] = (isset($array["fieldId"])) ? $array["fieldId"] : $key;
+	    		$childbinds[":field_value${counter}_child"] = $array["value"];
+			}
+
     		$counter++;
     	}
 		if($counter > 0){
-			if(isset($query->where) && strlen($query->where) > 0) $query->where .= " AND ";	//すでにwhere節に文字列が存在していれば、whereをつける
-			$query->where .= "("  . implode(" OR ",$where) . ")";
+			if(count($parentwhere)) $parentqueries[] = "("  . implode(" OR ",$parentwhere) . ")";
+			if(count($childwhere)) $childqueries[] = "("  . implode(" OR ",$childwhere) . ")";
 
 			//カスタムフィールドの複数条件対応(AND用)
-	    	if($isAnd){
-	    		$query->having = "count(item_field_id) = " . count($where);
+	    	if($isAnd && count($parentwhere)){
+				$query->having = "count(item_field_id) = " . count($parentwhere);
 	    	}
 		}
 
-    	if($limit)$itemDAO->setLimit($limit);
-    	if($offset)$itemDAO->setOffset($offset);
+		if($isChild){
+			$childquery = "SELECT soyshop_item.id FROM soyshop_item LEFT OUTER JOIN soyshop_item_attribute ON (soyshop_item.id = soyshop_item_attribute.item_id) WHERE " . implode(" AND ", $childqueries);
+			//if(count($childwhere)) $childquery .= " HAVING count(item_field_id) = " . count($childwhere);
+		}else{
+			$childquery = "";
+		}
+
+		if($isParent && $isChild){
+			$query->where = "(" . implode(" AND ", $parentqueries) . ") OR (item_type IN (" . $childquery . "))";
+			$binds = $parentbinds + $childbinds;
+			$query->having = "";	//@ToDo この対応で良いのか？
+		}else if($isParent && !$isChild){
+			$query->where = implode(" AND ", $parentqueries);
+			$binds = $parentbinds;
+		}else if(!$isParent && $isChild){
+			$query->where = "item_type IN (" . $childquery . ")";
+			$binds = $childbinds;
+			$query->having = "";
+		}else{
+			$query->where = "item_type = 'dummy'";
+			$binds = array();
+		}
+
+    	if($limit) $itemDAO->setLimit($limit);
+    	if($offset) $itemDAO->setOffset($offset);
 
     	//append sort
     	$sort = $this->getSortQuery();
-    	if($sort)$query->order = $sort;
+    	if($sort) $query->order = $sort;
 
     	if(isset($_GET["debug"]) && DEBUG_MODE){
 
@@ -452,7 +509,7 @@ class SearchItemUtil extends SOY2LogicBase{
     	try{
     		$res = $itemDAO->executeOpenItemQuery($query, $binds);
     	}catch(Exception $e){
-    		return array(array(), 0);
+			return array(array(), 0);
     	}
 
     	$items = array();
@@ -480,6 +537,22 @@ class SearchItemUtil extends SOY2LogicBase{
     	return array($items, $total);
     }
 
+	private function getDisplayGroupItemMode($params){
+		if($this->mode != "complex") return array(true, false);	//標準では通常商品のみ
+
+		//ナビゲーションページの商品ブロックのみの条件
+		return array(isset($params["is_parent"]), isset($params["is_child"]));
+	}
+
+	private function getItemType(){
+		$array = SOYShop_Item::getItemTypes();
+		$obj = array();
+		foreach($array as $value){
+			$obj[] = "'" . $value . "'";
+		}
+		return implode(",", $obj);
+	}
+
 
     function getSort() {
     	return $this->sort;
@@ -487,4 +560,8 @@ class SearchItemUtil extends SOY2LogicBase{
     function setSort($sort) {
     	$this->sort = new SearchItemUtil_SortImpl($sort);
     }
+
+	function setMode($mode){
+		$this->mode = $mode;
+	}
 }

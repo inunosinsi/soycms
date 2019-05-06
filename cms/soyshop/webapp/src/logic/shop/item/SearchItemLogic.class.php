@@ -155,7 +155,7 @@ class SearchItemLogic extends SOY2LogicBase{
 
 		//子商品は表示しない
 		if(!isset($search["is_child"])){
-			$where[] = " item_type in (" . $this->getItemType() . ")";
+			$where[] = " item_type in (" . self::getItemType() . ")";
 		}
 
 		//拡張ポイントから出力したフォーム用
@@ -180,7 +180,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		if(count($this->where) > 0){
 			$countSql .= " where ".implode(" and ", $this->where);
 		}else{
-			$countSql .= " where item_type in (" . $this->getItemType() . ") ";
+			$countSql .= " where item_type in (" . self::getItemType() . ") ";
 		}
 
 		//削除フラグ
@@ -194,7 +194,7 @@ class SearchItemLogic extends SOY2LogicBase{
 			$sql .= " where ".implode(" and ", $this->where);
 		//一覧ページの時
 		}else{
-			$sql .= " where item_type in (" . $this->getItemType() . ") ";
+			$sql .= " where item_type in (" . self::getItemType() . ") ";
 		}
 
 		//削除フラグ
@@ -203,7 +203,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		return $sql;
 	}
 
-	function getItemType(){
+	private function getItemType(){
 		$array = SOYShop_Item::getItemTypes();
 		$obj = array();
 		foreach($array as $value){

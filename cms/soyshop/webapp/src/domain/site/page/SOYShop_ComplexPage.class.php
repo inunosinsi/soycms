@@ -91,6 +91,7 @@ class SOYShop_ComplexPageBlock{
 	private $defaultSort = "name";
 	private $customSort = "";
 	private $isReverse = false;
+	private $params;
 
 	public static function getOperations(){
 		return array(
@@ -165,5 +166,12 @@ class SOYShop_ComplexPageBlock{
 	}
 	function setIsReverse($isReverse) {
 		$this->isReverse = $isReverse;
+	}
+
+	function getParams(){
+		return $this->params;
+	}
+	function setParams($params){
+		$this->params = $params;
 	}
 }
