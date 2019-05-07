@@ -201,5 +201,12 @@ function soyshop_parts_mypage_login($html, $page){
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 
+
+	//ログインしている時だけカートを表示したい場合用
+	$obj->addLink("cart_link", array(
+		"link" => soyshop_get_cart_url(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
 	$obj->display();
 }
