@@ -15,7 +15,8 @@ class IndexPage extends WebPage{
 		}
 
 		$logic = SOY2Logic::createInstance("logic.InquiryLogic");
-		$flag_text = array_shift(array_keys($_POST["bulk_modify"]["flag"]));
+		$keys = array_keys($_POST["bulk_modify"]["flag"]);
+		$flag_text = array_shift($keys);
 		$inquiry_ids = $_POST["bulk_modify"]["inquiry"];
 
 		if($flag_text == "delete_completely"){

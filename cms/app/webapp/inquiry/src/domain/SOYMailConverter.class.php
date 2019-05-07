@@ -148,10 +148,9 @@ class DateConverter extends SOYMailConverter {
     			return array(
 					SOYMailConverter::SOYMAIL_BIRTHDAY => mktime( 0, 0, 0, (int)$value["month"], (int)$value["day"], (int)$value["year"])
 				);
-		   		break;
     		default:
+				if(!is_array($value)) $value = array();
     			return SOYMailConverter::convert(implode("/", $value), $linkto);
-    			break;
     	}
     }
 }
@@ -164,11 +163,9 @@ class RadioConverter extends SOYMailConverter {
     			return array(
 					SOYMailConverter::SOYMAIL_GENDER => (strpos("a".$value,"男")) ? 0 : 1
 				);
-		   		break;
     		default:
     			// 見つからないときは親クラスのconvertを使用
     			return SOYMailConverter::convert($value, $linkto);
-    			break;
     	}
     }
 }
@@ -182,9 +179,6 @@ class CheckConverter extends SOYMailConverter {
     			} else {
 					return null;
 				}
-    			break;
     	}
     }
 }
-
-?>
