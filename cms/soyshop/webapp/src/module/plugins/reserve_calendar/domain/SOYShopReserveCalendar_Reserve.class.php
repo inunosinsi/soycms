@@ -22,6 +22,8 @@ class SOYShopReserveCalendar_Reserve {
 	 * @column order_id
 	 */
 	private $orderId;
+	private $seat;	//予約人数
+
 	private $token;
 	private $temp;
 
@@ -55,6 +57,13 @@ class SOYShopReserveCalendar_Reserve {
 	}
 	function setOrderId($orderId){
 		$this->orderId = $orderId;
+	}
+
+	function getSeat(){
+		return $this->seat;
+	}
+	function setSeat($seat){
+		$this->seat = $seat;
 	}
 
 	function getToken(){

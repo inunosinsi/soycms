@@ -140,6 +140,19 @@ td.today {
 	background: #FEFBDA;
 }
 
+/** スマホで回転禁止 **/
+#calendar{
+	display:block;
+}
+#rotate{
+	display:none;
+	font-size:5vw;
+	width:100%;
+	height:auto;
+	text-align:center;
+	padding-top:80px;
+}
+
 @media screen and (max-width: 600px) {
 	.pager{
 		display:none;

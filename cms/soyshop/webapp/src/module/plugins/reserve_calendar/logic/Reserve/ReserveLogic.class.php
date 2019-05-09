@@ -16,6 +16,10 @@ class ReserveLogic extends SOY2LogicBase{
 		return self::dao()->getReservedListByScheduleId($scheduleId, $isTmp);
 	}
 
+	function getReservedCountByScheduleId($scheduleId, $isTmp = false){
+		return self::dao()->getReservedCountByScheduleId($scheduleId, $isTmp);
+	}
+
 	function getReservedSchedulesByPeriod($year = null, $month = null, $isTmp = false){
 		//どちらかが指定されていない時は動きません
 		if(is_null($year) || is_null($month)) return array();

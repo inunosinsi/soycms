@@ -11,6 +11,8 @@ class ReserveCalendarDetailPage extends WebPage{
 	private $tmpReservedCount = 0;
 	private $configObj;
 
+	private $config;	//プラグイン側の設定内容
+
 	private $backward;
 	private $component;
 
@@ -37,69 +39,100 @@ class ReserveCalendarDetailPage extends WebPage{
 		//多言語
 		MessageManager::addMessagePath("admin");
 
+		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
 		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
 	}
 
 	function doPost(){
 
-		//if(soy2_check_token()){
-			$this->userDao->begin();
+		if(soy2_check_token()){
 
-			$userId = self::getUserIdAfterRegister($_POST["Customer"]);
-			if(is_null($userId)) return;
+			//管理画面から予約
+			if(isset($_POST["Customer"])){
+				$this->userDao->begin();
 
-			//商品情報
-			$item = self::getItemById($this->itemId);
+				$userId = self::getUserIdAfterRegister($_POST["Customer"]);
+				if(is_null($userId)) return;
 
-			/** 注文する **/
-			$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-			$order = new SOYShop_Order();
-			$order->setUserId($userId);
-			$order->setPrice($item->getPrice());	/** @ToDo 消費税も考慮しないと **/
-			try{
-				$orderId = $orderDao->insert($order);
-			}catch(Exception $e){
-				return;
+				$seat = (isset($_POST["seat"]) && is_numeric($_POST["seat"])) ? (int)$_POST["seat"] : 1;
+
+				//商品情報
+				$item = soyshop_get_item_object($this->itemId);
+
+				/** 注文する **/
+				$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+				$order = new SOYShop_Order();
+				$order->setUserId($userId);
+				$order->setPrice($item->getPrice() * $seat);	/** @ToDo 消費税も考慮しないと **/
+				$order->setOrderDate(time());
+				try{
+					$orderId = $orderDao->insert($order);
+					$order->setId($orderId);
+				}catch(Exception $e){
+					return;
+				}
+
+				/** 予約する **/
+				$resDao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
+				$res = new SOYShopReserveCalendar_Reserve();
+				$res->setScheduleId($this->schId);
+				$res->setOrderId($orderId);
+				$res->setSeat($seat);
+				$res->setTemp(SOYShopReserveCalendar_Reserve::NO_TEMP);
+				$res->setReserveDate(time());
+
+				try{
+					$resId = $resDao->insert($res);
+				}catch(Exception $e){
+					var_dump($e);
+				}
+
+				/** @ToDo 注文詳細 **/
+				$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+				$itemOrder = new SOYShop_ItemOrder();
+				$itemOrder->setOrderId($orderId);
+				$itemOrder->setItemId($item->getId());
+				$itemOrder->setItemCount($seat);
+				$itemOrder->setItemPrice($item->getPrice());
+				$itemOrder->setTotalPrice($item->getPrice());
+				$itemOrder->setItemName($item->getName());
+				$itemOrder->setAttributes(array("reserve_id" => $resId));
+
+				try{
+					$itemOrderDao->insert($itemOrder);
+				}catch(Exception $e){
+					var_dump($e);
+				}
+
+				$this->userDao->commit();
+
+				//注文番号を作成して更新する
+				//注文番号を作成して更新
+				$trackingNumber = SOY2Logic::createInstance("logic.order.OrderLogic")->getTrackingNumber($order);
+				$order->setTrackingNumber($trackingNumber);
+				try{
+					$orderDao->update($order);
+				}catch(Exception $e){
+					//
+				}
+
+				//セッションを空にする
+				ReserveCalendarUtil::saveSessionValue("user", null);
+
+				SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?updated");
 			}
 
-			/** 予約する **/
-			$resDao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
-			$res = new SOYShopReserveCalendar_Reserve();
-			$res->setScheduleId($this->schId);
-			$res->setOrderId($orderId);
-			$res->setTemp(SOYShopReserveCalendar_Reserve::NO_TEMP);
-			$res->setReserveDate(time());
-
-			try{
-				$resId = $resDao->insert($res);
-			}catch(Exception $e){
-				var_dump($e);
+			//残席数の変更
+			if(isset($_POST["Change"]) && is_numeric($_POST["Change"]["seat"])){
+				$this->schedule->setUnsoldSeat((int)$_POST["Change"]["seat"]);
+				try{
+					SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO")->update($this->schedule);
+					SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?updated");
+				}catch(Exception $e){
+					var_dump($e);
+				}
 			}
-
-			/** @ToDo 注文詳細 **/
-			$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-			$itemOrder = new SOYShop_ItemOrder();
-			$itemOrder->setOrderId($orderId);
-			$itemOrder->setItemId($item->getId());
-			$itemOrder->setItemCount(1);
-			$itemOrder->setItemPrice($item->getPrice());
-			$itemOrder->setTotalPrice($item->getPrice());
-			$itemOrder->setItemName($item->getName());
-			$itemOrder->setAttributes(array("reserve_id" => $resId));
-
-			try{
-				$itemOrderDao->insert($itemOrder);
-			}catch(Exception $e){
-				var_dump($e);
-			}
-
-			$this->userDao->commit();
-
-			//セッションを空にする
-			ReserveCalendarUtil::saveSessionValue("user", null);
-
-			SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?updated");
-		//}
+		}
 
 		SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?error");
 	}
@@ -137,14 +170,14 @@ class ReserveCalendarDetailPage extends WebPage{
 		$this->schedule = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic")->getScheduleById($this->schId);
 		$this->itemId = $this->schedule->getItemId();
 		$this->reservedList = $resLogic->getReservedListByScheduleId($this->schId);
-		$this->reservedCount = count($this->reservedList);
+		$this->reservedCount = $resLogic->getReservedCountByScheduleId($this->schId);
 
 		//仮登録
 		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
-		$config = ReserveCalendarUtil::getConfig();
-		if(isset($config["tmp"]) && $config["tmp"] == ReserveCalendarUtil::IS_TMP){
+		$this->config = ReserveCalendarUtil::getConfig();
+		if(isset($this->config["tmp"]) && $this->config["tmp"] == ReserveCalendarUtil::IS_TMP){
 			$this->tmpReservedList = $resLogic->getReservedListByScheduleId($this->schId, true);	//trueで仮登録を取得
-			$this->tmpReservedCount = count($this->tmpReservedList);
+			$this->tmpReservedCount = $resLogic->getReservedCountByScheduleId($this->schId, true);
 		}
 
 		parent::__construct();
@@ -197,6 +230,15 @@ class ReserveCalendarDetailPage extends WebPage{
 		$this->addLabel("seat", array(
 			"text" => $this->schedule->getUnsoldSeat()
 		));
+
+		//残席数の変更フォーム
+		$this->addForm("change_form");
+
+		$this->addInput("unsold_seat_change", array(
+			"name" => "Change[seat]",
+			"value" => $this->schedule->getUnsoldSeat(),
+			"style" => "width:80px;"
+		));
 	}
 
 	private function buildReservedList(){
@@ -228,11 +270,20 @@ class ReserveCalendarDetailPage extends WebPage{
 	}
 
 	private function buildReserveFormArea(){
-
 		DisplayPlugin::toggle("display_register_form", self::checkDisplayForm());
 
 		//共通フォーム
 		$this->component->buildForm($this, self::getUser(), null, UserComponent::MODE_CUSTOM_FORM);
+
+		//残席数
+		$unsoldSeat = (isset($this->config["ignore"]) && $this->config["ignore"] == ReserveCalendarUtil::RESERVE_LIMIT_IGNORE) ? 10000 : ($this->schedule->getUnsoldSeat() - $this->reservedCount);
+		$this->addInput("seat_input", array(
+			"name" => "seat",
+			"value" => 1,
+			"attr:min" => 1,
+			"attr:max" => $unsoldSeat,
+			"attr:required" => "required"
+		));
 	}
 
 	private function getUser(){
@@ -244,6 +295,9 @@ class ReserveCalendarDetailPage extends WebPage{
 	}
 
 	private function checkDisplayForm(){
+
+		//残席数の上限を超えた予約がある場合でもフォームを表示
+		if(isset($this->config["ignore"]) && $this->config["ignore"] == ReserveCalendarUtil::RESERVE_LIMIT_IGNORE) return true;
 
 		//スケジュールの日付が既に終了していないか？
 		$scheduleDate = mktime(0, 0, 0, $this->schedule->getMonth(), $this->schedule->getDay(), $this->schedule->getYear());

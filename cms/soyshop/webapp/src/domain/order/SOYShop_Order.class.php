@@ -168,7 +168,7 @@ class SOYShop_Order {
 			$sort = SOYShopPlugin::invoke("soyshop.order.status.sort", array(
 				"mode" => "status",
 			))->getSort();
-			
+
 			if(is_array($sort) && count($sort)){
 				$tmps = array();	//並び順に合わせて格納
 
@@ -313,6 +313,7 @@ class SOYShop_Order {
     }
     function setModules($modules) {
     	if(is_array($modules)) $modules = soy2_serialize($modules);
+		if(is_string($modules) && $modules == "Array") $modules = null;
     	$this->modules = $modules;
     }
     function getModuleList(){
@@ -334,16 +335,19 @@ class SOYShop_Order {
     	$this->claimedAddress = $claimedAddress;
     }
     function getAddressArray(){
-    	return soy2_unserialize($this->address);
+		if(is_null($this->address) || !strlen($this->address)) return array("name" => "", "zipCode" => "", "area" => "", "address1" => "", "address2" => "");
+		return soy2_unserialize($this->address);
     }
     function getClaimedAddressArray(){
-    	return soy2_unserialize($this->claimedAddress);
+		if(is_null($this->claimedAddress) || !strlen($this->claimedAddress)) return array("name" => "", "zipCode" => "", "area" => "", "address1" => "", "address2" => "");
+		return soy2_unserialize($this->claimedAddress);
     }
     function getAttributes() {
     	return $this->attributes;
     }
     function setAttributes($attributes) {
     	if(is_array($attributes)) $attributes = soy2_serialize($attributes);
+		if(is_string($attributes) && $attributes == "Array") $attributes = null;
     	$this->attributes = $attributes;
     }
     function getAttributeList(){

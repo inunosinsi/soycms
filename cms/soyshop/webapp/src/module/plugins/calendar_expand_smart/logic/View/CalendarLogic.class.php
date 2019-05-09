@@ -18,9 +18,6 @@ class CalendarLogic extends CalendarBaseComponent{
 		$this->month = $m;
 
 		$this->schList = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.ScheduleLogic")->getScheduleList($this->itemId, $y, $m);
-		foreach($this->schList as $t => $sch){
-
-		}
 		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($this->itemId);
 
 		//カートに入っているスケジュールを取得する
@@ -55,8 +52,8 @@ class CalendarLogic extends CalendarBaseComponent{
 
 	function handleFunc($i, $cd, $wc, $da, $isOtherMonth){
 
-		$y = (isset($_GET["y"])) ? (int)$_GET["y"] : date("Y");
-		$m = (isset($_GET["m"])) ? (int)$_GET["m"] : date("n");
+		$y = $this->year;
+		$m = $this->month;
 
 		$isForceHidden = false;	//条件を満たしていてもボタンを表示しない
 		if($wc > 4){	//5週目以降かつ日付では10日以下であれば必ず次の月

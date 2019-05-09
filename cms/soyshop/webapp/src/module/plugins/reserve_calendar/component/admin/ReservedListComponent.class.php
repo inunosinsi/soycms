@@ -12,6 +12,10 @@ class ReservedListComponent extends HTMLList{
 			"text" => (isset($entity["reserve_date"])) ? date("Y-m-d H:i:s", $entity["reserve_date"]) : ""
 		));
 
+		$this->addLabel("seat", array(
+			"text" => (isset($entity["seat"])) ? (int)$entity["seat"] : 0
+		));
+
 		$this->addLink("user_name", array(
 			"link" => (isset($entity["user_id"])) ? SOY2PageController::createLink("User.Detail." . $entity["user_id"]) : null,
 			"text" => (isset($entity["user_name"])) ? $entity["user_name"] : null

@@ -88,6 +88,8 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         }
 
         $itemId = $items[$index]->getItemId();
+		$itemCount = $items[$index]->getItemCount();
+		if(!strlen($itemCount) || (int)$itemCount === 0) $itemCount = 1;
 
         $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId);
         $schId = $cart->getAttribute($obj);
@@ -97,6 +99,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         $res = new SOYShopReserveCalendar_Reserve();
         $res->setScheduleId($schId);
         $res->setOrderId($cart->getAttribute("order_id"));
+		$res->setSeat($itemCount);
         $res->setTemp(SOYShopReserveCalendar_Reserve::NO_TEMP);
         $res->setReserveDate(time());
 

@@ -21,6 +21,6 @@ if(SOYShopPluginUtil::checkIsActive("reserve_calendar")){
 	try{
 		$dao->executeQuery($sql);
 	}catch(Exception $e){
-		var_dump($e);
+		//var_dump($e);
 	}
 }

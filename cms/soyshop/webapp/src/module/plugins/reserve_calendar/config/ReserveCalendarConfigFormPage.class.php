@@ -42,6 +42,13 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"selected" => (isset($config["only"]) && (int)$config["only"] === ReserveCalendarUtil::IS_ONLY),
 			"label" => "注文時の商品個数は１個のみ"
 		));
+
+		$this->addCheckBox("ignore", array(
+			"name" => "Config[ignore]",
+			"value" => ReserveCalendarUtil::RESERVE_LIMIT_IGNORE,
+			"selected" => (isset($config["ignore"]) && (int)$config["ignore"] === ReserveCalendarUtil::RESERVE_LIMIT_IGNORE),
+			"label" => "残席以上の予約数があっても管理画面から予約を行うことができる"
+		));
 	}
 
 	function setConfigObj($configObj){

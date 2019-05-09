@@ -7,6 +7,7 @@
 	</div>
 
 	<div class="block_body">
+		<p class="notice" soy:display="updated">更新しました。</p>
 		<p class="notice" soy:display="registration">本登録にしました。</p>
 		<p class="notice" soy:display="canceled">キャンセルしました。</p>
 		<p class="error" soy:display="error">失敗しました。</p>
@@ -29,7 +30,14 @@
 				<tr>
 					<th>予約人数</th>
 					<td>
-						<!-- soy:id="reserved_count" /--> / <!-- soy:id="seat" /-->
+						<!-- soy:id="reserved_count" /--> / <!-- soy:id="seat" /-->&nbsp;&nbsp;
+						<a href="javascript:void(0);" class="button" id="show_change_button">上限を変更する</a>&nbsp;
+						<span id="change_seat">
+							<form soy:id="change_form">
+								<input type="number" soy:id="unsold_seat_change">&nbsp;
+								<input type="submit" name="change" value="変更">
+							</form>
+						</span>
 					</td>
 				</tr>
 			</table>
@@ -40,6 +48,7 @@
 				<thead>
 					<tr class="alC">
 						<th>予約日時</th>
+						<th>席数</th>
 						<th>顧客名</th>
 						<th>メールアドレス</th>
 						<th>電話番号</th>
@@ -50,6 +59,7 @@
 					<!-- soy:id="reserved_list" -->
 					<tr>
 						<td class="alC"><a soy:id="reserve_date"></a></td>
+						<td class="alC" soy:id="seat"></td>
 						<td class="alC"><a soy:id="user_name"></a></td>
 						<td><a soy:id="mail_address"></a></td>
 						<td soy:id="telephone_number"></td>
@@ -69,6 +79,7 @@
 				<thead>
 					<tr class="alC">
 						<th>予約日時</th>
+						<th>席数</th>
 						<th>顧客名</th>
 						<th>メールアドレス</th>
 						<th>電話番号</th>
@@ -79,6 +90,7 @@
 					<!-- soy:id="tmp_reserved_list" -->
 					<tr>
 						<td class="alC"><a soy:id="reserve_date"></a></td>
+						<td class="alC" soy:id="seat"></td>
 						<td class="alC"><a soy:id="user_name"></a></td>
 						<td><a soy:id="mail_address"></a></td>
 						<td soy:id="telephone_number"></td>
@@ -140,6 +152,10 @@
 						<th>電話番号</th>
 						<td><input type="text" class="text" soy:id="telephone_number"></td>
 					</tr>
+					<tr>
+						<th>席数</th>
+						<td><input type="number" class="text" soy:id="seat_input" min="1"></td>
+					</tr>
 				</table>
 
 				<p class="pageBtn">
@@ -166,4 +182,15 @@ table.cancel_table{
 th {
 	text-align:center;
 }
+
+#change_seat{
+	display:none;
+}
 </style>
+
+<script>
+$("#show_change_button").on("click", function(){
+	$("#change_seat").show();
+	$("#show_change_button").hide();
+});
+</script>

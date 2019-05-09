@@ -20,6 +20,7 @@ CREATE TABLE soyshop_reserve_calendar_reserve(
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	schedule_id INTEGER NOT NULL,
 	order_id INTEGER NOT NULL,
+	seat INTEGER NOT NULL DEFAULT 1,
 	token VARCHAR(25),
 	temp TINYINT NOT NULL DEFAULT 0,
 	temp_date INTEGER,

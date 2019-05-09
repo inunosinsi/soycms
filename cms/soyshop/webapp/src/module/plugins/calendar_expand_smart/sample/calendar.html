@@ -14,7 +14,7 @@
 
 <body>
 	<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-		<a class="navbar-brand" href="/spark">予約アプリ</a>
+		<a class="navbar-brand" href="/">予約アプリ</a>
 		<!-- shop:module="common.parts.mypage_login" -->
 		<!-- cms:id="is_loggedin" -->
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,7 +34,7 @@
 		<!-- /shop:module="common.parts.mypage_login" -->
 	</nav>
 
-	<main role="main" class="container">
+	<main role="main" class="container" id="calendar">
 		<!-- shop:module="reserve.smart_calendar" -->
 
 		<nav class="pager">
@@ -58,6 +58,10 @@
 
 		<!-- /shop:module="reserve.smart_calendar" -->
 	</main>
+
+	<section id="rotate" class="container">
+		画面の向きを縦にしましょう
+	</section>
 </body>
 
 <script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

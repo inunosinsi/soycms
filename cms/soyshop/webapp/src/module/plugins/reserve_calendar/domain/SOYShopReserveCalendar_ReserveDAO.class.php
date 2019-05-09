@@ -7,6 +7,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 
     /**
      * @return id
+	 * @trigger onInsert
      */
     abstract function insert(SOYShopReserveCalendar_Reserve $bean);
 
@@ -16,6 +17,11 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
      * @return object
      */
     abstract function getById($id);
+
+	/**
+	 * @return object
+	 */
+	abstract function getByOrderId($orderId);
 
 	/**
 	 * @return object
@@ -80,7 +86,33 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
     function getReservedListByScheduleId($scheduleId, $isTmp = false){	//isTmpで仮登録の予約を検索
         SOY2::import("domain.order.SOYShop_Order");
 
-        $sql = "SELECT res.id, res.reserve_date, u.id AS user_id, u.name AS user_name, u.mail_address, u.telephone_number, o.id FROM soyshop_reserve_calendar_reserve res ".
+        $sql = "SELECT res.id, res.reserve_date, res.seat, u.id AS user_id, u.name AS user_name, u.mail_address, u.telephone_number, o.id FROM soyshop_reserve_calendar_reserve res ".
+                "INNER JOIN soyshop_order o ".
+                "ON res.order_id = o.id ".
+                "INNER JOIN soyshop_user u ".
+                "ON o.user_id = u.id ".
+                "WHERE res.schedule_id = :schId ";
+
+		if($isTmp){	//仮登録モード
+			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
+			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP . " ";
+		}else{	//本登録モード
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+		}
+
+		//$sql .= "GROUP BY res.schedule_id";
+
+        try{
+			return $this->executeQuery($sql, array(":schId" => $scheduleId));
+        }catch(Exception $e){
+			return array();
+        }
+    }
+
+	function getReservedCountByScheduleId($scheduleId, $isTmp = false){	//isTmpで仮登録の予約を検索
+        SOY2::import("domain.order.SOYShop_Order");
+
+        $sql = "SELECT SUM(res.seat) AS SEAT FROM soyshop_reserve_calendar_reserve res ".
                 "INNER JOIN soyshop_order o ".
                 "ON res.order_id = o.id ".
                 "INNER JOIN soyshop_user u ".
@@ -95,16 +127,18 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 		}
 
         try{
-			return $this->executeQuery($sql, array(":schId" => $scheduleId));
+			$res = $this->executeQuery($sql, array(":schId" => $scheduleId));
         }catch(Exception $e){
-			return array();
+			$res = array();
         }
+
+		return (isset($res[0]["SEAT"])) ? (int)$res[0]["SEAT"] : 0;
     }
 
     function getReservedSchedulesByPeriod($year, $month, $isTmp = false){	//isTmpで仮登録の予約を検索
         SOY2::import("domain.order.SOYShop_Order");
 
-        $sql = "SELECT res.schedule_id, COUNT(res.schedule_id) AS COUNT " .
+        $sql = "SELECT res.schedule_id, SUM(res.seat) AS SEAT " .
                 "FROM soyshop_reserve_calendar_reserve res ".
                 "INNER JOIN soyshop_reserve_calendar_schedule sch ".
                 "ON res.schedule_id = sch.id ".
@@ -132,7 +166,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 
         $list = array();
         foreach($res as $v){
-            $list[$v["schedule_id"]] = (int)$v["COUNT"];
+            $list[$v["schedule_id"]] = (int)$v["SEAT"];
         }
 
         return $list;
@@ -141,7 +175,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
     function checkIsUnsoldSeatByScheduleId($scheduleId){
         $now = time();
         SOY2::import("domain.shop.SOYShop_Item");
-        $sql = "SELECT res.schedule_id, COUNT(res.schedule_id) AS COUNT, sch.unsold_seat " .
+        $sql = "SELECT res.schedule_id, SUM(res.seat) AS SEAT, sch.unsold_seat " .
                 "FROM soyshop_reserve_calendar_reserve res ".
                 "INNER JOIN soyshop_reserve_calendar_schedule sch ".
                 "ON res.schedule_id = sch.id ".
@@ -164,7 +198,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 
         if(!count($res)) return true;
 
-        return ((int)$res[0]["COUNT"] < (int)$res[0]["unsold_seat"]);
+        return ((int)$res[0]["SEAT"] < (int)$res[0]["unsold_seat"]);
     }
 
 	function getTokensByOrderId($orderId){
@@ -182,5 +216,13 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 			$tokens[] = $v["token"];
 		}
 		return $tokens;
+	}
+
+	/**
+	 * @final
+	 */
+	function onInsert($query, $binds){
+		if(!isset($binds[":seat"]) || !is_numeric($binds[":seat"])) $binds[":seat"] = 1;
+		return array($query, $binds);
 	}
 }

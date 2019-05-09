@@ -10,6 +10,8 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
      */
     abstract function insert(SOYShopReserveCalendar_Schedule $bean);
 
+    abstract function update(SOYShopReserveCalendar_Schedule $bean);
+
     /**
      * @return object
      */
