@@ -344,7 +344,7 @@ class SearchItemUtil extends SOY2LogicBase{
 		}
 
     	//append where(params)
-    	if(count($params)){
+    	if(is_array($params) && count($params)){
     		foreach($params as $column => $value){
     			switch($column){
     				//フラグ系
