@@ -31,7 +31,7 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 		if(file_exists($cacheFile) && self::checkCacheOld($cacheFile)){
 			$contents = file_get_contents($cacheFile);
 		}else{
-			$contents = file_get_contents("https://saitodev.co/soyshop.xml", false, $ctx = stream_context_create(array(
+			$contents = @file_get_contents("https://saitodev.co/soyshop.xml", false, $ctx = stream_context_create(array(
 				'http' => array(
 					'timeout' => 3
 				)
@@ -44,7 +44,7 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 			file_put_contents($cacheFile, $contents);
 
 			$xml = simplexml_load_string($contents);
-			if(property_exists($xml, "entries")){
+			if(!is_bool($xml) && property_exists($xml, "entries")){
 				$entries = $xml->entries;
 				if(property_exists($entries, "entry") && count($entries->entry)){
 					$html[] = "<div class=\"notice always\">下記で紹介している機能を使用する場合はSOY Shopのバージョンアップを行って下さい。最新版のダウンロードは<a href=\"https://saitodev.co/soycms/soyshop\" target=\"_blank\" style=\"text-decoration:underline;\">こちら</a>から</div>";
