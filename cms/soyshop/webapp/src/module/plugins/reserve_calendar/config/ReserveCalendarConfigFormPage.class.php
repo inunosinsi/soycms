@@ -49,6 +49,11 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"selected" => (isset($config["ignore"]) && (int)$config["ignore"] === ReserveCalendarUtil::RESERVE_LIMIT_IGNORE),
 			"label" => "残席以上の予約数があっても管理画面から予約を行うことができる"
 		));
+
+		//
+		$cartId = SOYShop_DataSets::get("config.cart.cart_id");
+		$mypageId = SOYShop_DataSets::get("config.mypage.id");
+		DisplayPlugin::toggle("recommend", $cartId != "bootstrap" || $mypageId != "bootstrap");
 	}
 
 	function setConfigObj($configObj){
