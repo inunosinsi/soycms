@@ -581,9 +581,16 @@ class CartLogic extends SOY2LogicBase{
 	 */
 	function order(){
 
+		//配送ダミーか支払いダミーモジュールがインストールされている場合、ダミーモジュールでセットを試みる
+		//これで配送と支払いのどちらもダミーのサイトを構築することができる
+		if(!count($this->getModules())){
+			self::setDummyModule();
+		}
+
 		//念の為に登録したモジュールが消えてないか調べて、消えていればCart03に飛ばす
 		//有効な注文にはモジュールかOrderAttributeかどちらかが最低１つ必要
 		if(!count($this->getModules()) || !count($this->getOrderAttributes())){
+
 			$this->setAttribute("page", "Cart03");
 			$this->save();
 			$this->log("No module and no order_attribute. At least one module or one order_attribute should be specified.");
@@ -665,6 +672,28 @@ class CartLogic extends SOY2LogicBase{
 			$orderDAO->rollback();
 			throw new Exception("注文実行時にエラーが発生しました。");
 		}
+	}
+
+	private function setDummyModule(){
+		if(SOYShopPluginUtil::checkIsActive("payment_admin_dummy")){
+			$module = new SOYShop_ItemModule();
+			$module->setId("payment_admin_dummy");
+			$module->setType("payment_module");//typeを指定しておくといいことがある
+			$module->setName("決済手数料ダミー");
+			$module->setIsVisible(false);
+			$module->setIsInclude(false);
+			$this->addModule($module);
+		}else if(SOYShopPluginUtil::checkIsActive("payment_admin_dummy")){
+			$module = new SOYShop_ItemModule();
+			$module->setId("delivery_admin_dummy");
+			$module->setName("送料ダミー");
+			$module->setType("delivery_module");
+			$module->setIsVisible(false);
+			$module->setIsInclude(false);
+			$this->addModule($module);
+		}
+
+		//何もしない
 	}
 
 	/**
@@ -1189,7 +1218,7 @@ class CartLogic extends SOY2LogicBase{
 		 */
 		//DBから設定を取得：ヘッダー、フッター
 		$adminMailConfig = $logic->getAdminMailConfig($type);
-		
+
 		if(isset($adminMailConfig["active"]) && $adminMailConfig["active"]){
 			//メール本文（注文内容）を取得
 			list($mailBody, $title) = $logic->buildMailBodyAndTitle($this->order, $type, "admin");
