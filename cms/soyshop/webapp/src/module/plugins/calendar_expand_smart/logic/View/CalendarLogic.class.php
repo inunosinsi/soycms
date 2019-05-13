@@ -84,7 +84,7 @@ class CalendarLogic extends CalendarBaseComponent{
 				//残席があるか調べる
 				if(!$isForceHidden && self::checkIsUnsoldSeat($t, $schId, $v["seat"])){
 					if($this->sync){
-						$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\" class=\"btn btn-info\">" . self::getLabel($v["label_id"]) . "</a>";
+						$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\" class=\"btn btn-info schedule_button\">" . self::getLabel($v["label_id"]) . "</a>";
 					//非同期ボタン
 					}else{
 						$html[] = "<button id=\"reserve_calendar_async_button_" . $schId . "\" onclick=\"AsyncReserveCalendar.add(this," . $schId . ");\">" . self::getLabel($v["label_id"]) . "</button>";

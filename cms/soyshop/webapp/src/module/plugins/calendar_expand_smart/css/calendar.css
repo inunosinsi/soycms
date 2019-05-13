@@ -17,6 +17,10 @@ body {
 	padding: 0 5%;
 }
 
+.schedule_button{
+	margin:2px 0;
+}
+
 @media screen and (max-width: 600px) {
 	#wrap {
 		padding: 0 5px;
