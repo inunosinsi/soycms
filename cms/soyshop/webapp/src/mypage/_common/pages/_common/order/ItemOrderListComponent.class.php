@@ -51,6 +51,10 @@ class ItemOrderListComponent extends HTMLList{
 			"attr:id" => "item_count_" . $counter
 		));
 
+		$this->addModel("is_item_delete", array(
+			"visible" => ($this->itemCount > 1)
+		));
+
 		//商品が２つ以上でボタンを押せるようにする
 		$this->addActionLink("item_delete", array(
 			"text" => ($this->itemCount > 1) ? "削除" : "",

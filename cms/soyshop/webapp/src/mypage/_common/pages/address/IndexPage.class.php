@@ -30,6 +30,4 @@ class IndexPage extends MainMyPagePageBase{
 			"link" => soyshop_get_mypage_url()
 		));
 	}
-
 }
-?>

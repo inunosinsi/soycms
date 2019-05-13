@@ -39,7 +39,7 @@ class ConfirmPage extends EditPage{
 
 		$this->address_key = $args[0];
 
-		parent::__construct();
+		parent::__construct($args);
 
 		$address = $this->getMyPage()->getAttribute("address");
 
