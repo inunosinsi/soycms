@@ -9,8 +9,6 @@ class Cart03Page extends MainCartPageBase{
 	private $user;
 	private $send;
 
-	private $moduleCount = 0;
-
 	function doPost(){
 
 		if(isset($_POST["next"]) || isset($_POST["next_x"])){
@@ -181,6 +179,9 @@ class Cart03Page extends MainCartPageBase{
 		SOYShopPlugin::active("soyshop.order.customfield");
 
 		$cart = CartLogic::getCart();
+		//アクティブなモジュールが一つもない場合はこのページを飛ばしたい
+		if(parent::getInstalledModulesCount() === 0) $this->jumpNextPage($cart);
+
 		$this->user = $cart->getCustomerInformation();
 		$this->send = $cart->getAddress();
 
@@ -237,9 +238,6 @@ class Cart03Page extends MainCartPageBase{
 
 		$cart->clearErrorMessage();
 		$cart->save();
-
-		//アクティブなモジュールが一つもない場合はこのページを飛ばしたい
-		if($this->moduleCount === 0) $this->jumpNextPage($cart);
 	}
 
 	private function buildForm(CartLogic $cart){
@@ -247,11 +245,9 @@ class Cart03Page extends MainCartPageBase{
 		$user = $this->user;
 
 		//支払いモジュール
-		$paymentMethodList = self::getPaymentMethod($cart);
-		$cnt = count($paymentMethodList);
-		$this->moduleCount += $cnt;
+		$paymentMethodList = parent::getPaymentMethod($cart);
 		$this->addModel("has_payment_method", array(
-			"visible" => ($cnt)
+			"visible" => (count($paymentMethodList))
 		));
 
 		$this->createAdd("payment_method_list", "_common.PaymentMethodListComponent", array(
@@ -261,11 +257,9 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		//配送モジュール
-		$deliveryMethodList = self::getDeliveryMethod($cart);
-		$cnt = count($deliveryMethodList);
-		$this->moduleCount += $cnt;
+		$deliveryMethodList = parent::getDeliveryMethod($cart);
 		$this->addModel("has_delivery_method", array(
-			"visible" => ($cnt)
+			"visible" => count($deliveryMethodList)
 		));
 		$this->createAdd("delivery_method_list", "_common.DeliveryMethodListComponent", array(
 			"list" => $deliveryMethodList,
@@ -273,18 +267,16 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		//割引モジュール
-		$discountModuleList = self::getDiscountMethod($cart);
-		$cnt = count($discountModuleList);
-		$this->moduleCount += $cnt;
+		$discountModuleList = parent::getDiscountMethod($cart);
 		$this->addModel("has_discount_method", array(
-			"visible" => ($cnt > 0),
+			"visible" => (count($discountModuleList) > 0),
 		));
 		$this->createAdd("discount_method_list", "_common.DiscountMethodListComponent", array(
 			"list" => $discountModuleList,
 		));
 
 		//ポイントモジュール
-		$pointModuleList = self::getPointMethod($cart);
+		$pointModuleList = parent::getPointMethod($cart, $this->user->getId());
 		$this->addModel("has_point_method", array(
 			"visible" => (count($pointModuleList) > 0),
 		));
@@ -293,11 +285,9 @@ class Cart03Page extends MainCartPageBase{
 		));
 
 		//注文カスタムフィールド
-		$customfieldModuleList = self::getCustomfieldMethod($cart);
-		$cnt = count($customfieldModuleList);
-		$this->moduleCount += $cnt;
+		$customfieldModuleList = parent::getCustomfieldMethod($cart);
 		$this->addModel("has_customfield_method", array(
-			"visible" => ($cnt > 0),
+			"visible" => (count($customfieldModuleList) > 0),
 		));
 		$this->createAdd("customfield_method_list", "_common.CustomfieldMethodListComponent", array(
 			"list" => $customfieldModuleList,
@@ -400,68 +390,6 @@ class Cart03Page extends MainCartPageBase{
 		$this->createAdd("bonus_plugin_list", "_common.BonusPluginListComponent", array(
 			"list" => $bonuses
 		));
-	}
-
-	private function getPaymentMethod(CartLogic $cart){
-
-    	//アクティブなプラグインをすべて読み込む
-    	SOYShopPlugin::load("soyshop.payment");
-		return SOYShopPlugin::invoke("soyshop.payment", array(
-			"mode" => "list",
-			"cart" => $cart
-		))->getList();
-	}
-
-	private function getDeliveryMethod(CartLogic $cart){
-
-    	//アクティブなプラグインをすべて読み込む
-		SOYShopPlugin::load("soyshop.delivery");
-		return SOYShopPlugin::invoke("soyshop.delivery", array(
-			"mode" => "list",
-			"cart" => $cart
-		))->getList();
-	}
-
-	private function getDiscountMethod(CartLogic $cart){
-
-    	//アクティブなプラグインをすべて読み込む
-		SOYShopPlugin::load("soyshop.discount");
-		return SOYShopPlugin::invoke("soyshop.discount", array(
-			"mode" => "list",
-			"cart" => $cart
-		))->getList();
-	}
-
-	private function getPointMethod(CartLogic $cart){
-
-    	//アクティブなプラグインをすべて読み込む
-		SOYShopPlugin::load("soyshop.point.payment");
-		return SOYShopPlugin::invoke("soyshop.point.payment", array(
-			"mode" => "list",
-			"cart" => $cart,
-			"userId" => $this->user->getId()
-		))->getList();
-	}
-
-	private function getCustomfieldMethod(CartLogic $cart){
-    	//アクティブなプラグインをすべて読み込む
-		SOYShopPlugin::load("soyshop.order.customfield");
-		$values = SOYShopPlugin::invoke("soyshop.order.customfield", array(
-			"mode" => "list",
-			"cart" => $cart
-		))->getList();
-
-		if(!count($values)) return array();
-
-		$list = array();
-		foreach($values as $v){
-			if(!is_array($v)) continue;
-			foreach($v as $key => $obj){
-				$list[$key] = $obj;
-			}
-		}
-
-		return $list;
 	}
 
 	/**

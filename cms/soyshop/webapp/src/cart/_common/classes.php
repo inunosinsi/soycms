@@ -37,6 +37,14 @@ function isValidEmail($email){
  */
 class MainCartPageBase extends WebPage{
 
+	function __construct(){
+		parent::__construct();
+
+		$this->addModel("has_delivery_or_payment_modules", array(
+			"visible" => self::getInstalledModulesCount() > 0
+		));
+	}
+
     /**
      * @override HTMLPage::getTemplateFilePath()
      */
@@ -85,5 +93,96 @@ class MainCartPageBase extends WebPage{
 
 			$this->_soy2_content = $this->getContent($plugin, $this->_soy2_content);
 		}
+	}
+
+	function getInstalledModulesCount(){
+		static $cnt;
+		if(is_null($cnt)){
+			$cart = CartLogic::getCart();
+			$cnt = count(self::getPaymentMethod($cart));
+			$cnt += count(self::getDeliveryMethod($cart));
+			$cnt += count(self::getCustomfieldMethod($cart));
+		}
+		return $cnt;
+	}
+
+	/** モジュールのインストール状況 **/
+	function getPaymentMethod(CartLogic $cart){
+		static $list;
+		if(is_null($list)){
+			//アクティブなプラグインをすべて読み込む
+	    	SOYShopPlugin::load("soyshop.payment");
+			$list = SOYShopPlugin::invoke("soyshop.payment", array(
+				"mode" => "list",
+				"cart" => $cart
+			))->getList();
+		}
+		return $list;
+	}
+
+	function getDeliveryMethod(CartLogic $cart){
+		static $list;
+		if(is_null($list)){
+	    	//アクティブなプラグインをすべて読み込む
+			SOYShopPlugin::load("soyshop.delivery");
+			$list = SOYShopPlugin::invoke("soyshop.delivery", array(
+				"mode" => "list",
+				"cart" => $cart
+			))->getList();
+		}
+		return $list;
+	}
+
+	function getDiscountMethod(CartLogic $cart){
+		static $list;
+		if(is_null($list)){
+			//アクティブなプラグインをすべて読み込む
+			SOYShopPlugin::load("soyshop.discount");
+			$list = SOYShopPlugin::invoke("soyshop.discount", array(
+				"mode" => "list",
+				"cart" => $cart
+			))->getList();
+		}
+		return $list;
+	}
+
+	function getPointMethod(CartLogic $cart, $userId){
+		static $list;
+		if(is_null($list)){
+			//アクティブなプラグインをすべて読み込む
+			SOYShopPlugin::load("soyshop.point.payment");
+			$list = SOYShopPlugin::invoke("soyshop.point.payment", array(
+				"mode" => "list",
+				"cart" => $cart,
+				"userId" => $userId
+			))->getList();
+		}
+		return $list;
+	}
+
+	function getCustomfieldMethod(CartLogic $cart){
+		static $list;
+		if(is_null($list)){
+			$list = array();
+
+			//アクティブなプラグインをすべて読み込む
+			SOYShopPlugin::load("soyshop.order.customfield");
+			$values = SOYShopPlugin::invoke("soyshop.order.customfield", array(
+				"mode" => "list",
+				"cart" => $cart
+			))->getList();
+
+			if(!count($values)) return $list;
+
+			$list = array();
+			foreach($values as $v){
+				if(!is_array($v)) continue;
+				foreach($v as $key => $obj){
+					$list[$key] = $obj;
+				}
+			}
+		}
+
+		return $list;
 	}
 }

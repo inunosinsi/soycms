@@ -22,4 +22,3 @@ class ModuleListComponent extends HTMLList{
 		return $entity->isVisible();
 	}
 }
-?>

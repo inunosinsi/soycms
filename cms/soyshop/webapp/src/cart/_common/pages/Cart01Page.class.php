@@ -177,6 +177,10 @@ class Cart01Page extends MainCartPageBase{
 			"action" => soyshop_get_cart_url(false)
 		));
 
+		$this->addLink("login_link", array(
+			"link" => soyshop_get_mypage_url() . "/login?r=" . soyshop_get_cart_url()
+		));
+
 		$this->createAdd("item_list", "_common.ItemListComponent", array(
 			"list" => $items,
 			"ignoreStock" => $shopConfig->getIgnoreStock()

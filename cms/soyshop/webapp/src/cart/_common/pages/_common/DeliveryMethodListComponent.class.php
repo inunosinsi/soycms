@@ -36,4 +36,3 @@ class DeliveryMethodListComponent extends HTMLList{
 		}
 	}
 }
-?>

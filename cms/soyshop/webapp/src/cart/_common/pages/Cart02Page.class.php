@@ -207,7 +207,7 @@ class Cart02Page extends MainCartPageBase{
 		$this->component->buildForm($this, $user, $cart, $mode);
 
 		//割引モジュール 隠しモード
-		$discountModuleList = self::getDiscountMethod($cart);
+		$discountModuleList = parent::getDiscountMethod($cart);
 		$this->addModel("has_discount_method", array(
 			"visible" => (count($discountModuleList) > 0),
 		));
@@ -282,19 +282,6 @@ class Cart02Page extends MainCartPageBase{
     		"name" => "Attributes[memo]",
     		"value" => (isset($memo["value"])) ? $memo["value"] : ""
     	));
-	}
-
-	private function getDiscountMethod(CartLogic $cart){
-
-    	//アクティブなプラグインをすべて読み込む
-		SOYShopPlugin::load("soyshop.discount");
-
-		$delegate = SOYShopPlugin::invoke("soyshop.discount", array(
-			"mode" => "list",
-			"cart" => $cart
-		));
-
-		return $delegate->getList();
 	}
 
 	/**
