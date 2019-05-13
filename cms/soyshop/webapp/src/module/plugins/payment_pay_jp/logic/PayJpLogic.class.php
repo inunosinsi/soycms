@@ -11,9 +11,11 @@ class PayJpLogic extends SOY2LogicBase {
 	function initPayJp(){
 		$config = $this->getPayJpConfig();
 
-		//PAY.JPのlibを読み込む
-		require_once(SOYSHOP_WEBAPP . "src/module/plugins/payment_pay_jp/payjp/init.php");
-		\Payjp\Payjp::setApiKey($config["secret_key"]);
+		if(isset($config["secret_key"]) && strlen($config["secret_key"])){
+			//PAY.JPのlibを読み込む
+			require_once(SOYSHOP_WEBAPP . "src/module/plugins/payment_pay_jp/payjp/init.php");
+			\Payjp\Payjp::setApiKey($config["secret_key"]);
+		}
 	}
 
 	function getPayJpConfig(){
