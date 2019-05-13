@@ -1,0 +1,23 @@
+<!-- soy:id="before" -->
+<form soy:id="form">
+    <p class="alert alert-info" role="alert">ご登録いただいたメールアドレスを入力してください。<br>
+    パスワードの再発行に関するメールをお送りいたします。</p>
+
+	<div class="form-group">
+		<label for="mail_address">メールアドレス<span class="require"></span></label>
+		<input type="email" class="form-control" soy:id="mail">
+	</div>
+
+	<p class="text-center">
+		<input type="submit" name="remind" class="btn btn-primary btn-lg" value="送信する">
+	</p>
+</form>
+<!-- /soy:id="before" -->
+
+<!-- soy:id="after" -->
+<p class="alert alert-info" role="alert">ご登録いただいたメールアドレスにパスワードの再設定に関するメールをお送りいたしましたので、ご確認ください。</p>
+<!-- /soy:id="after" -->
+
+<p class="text-center">
+	<a href="javascript:history.back();" class="btn btn-light btn-lg">戻る</a>
+</p>
