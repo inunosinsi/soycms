@@ -29,9 +29,11 @@ function soyshop_seat_calendar($html, $page){
 	));
 **/
 
-	//itemIdはGETで指定
-	$itemId = 0;
-	if(isset($_GET["item_id"])){
+
+
+	if(get_class($page) == "detail_page"){	//itemIdはpageオブジェクトから取得
+		$itemId = $page->getItem()->getId();
+	}else if(isset($_GET["item_id"])){	//itemIdはGETで指定
 		$itemId = (int)$_GET["item_id"];
 	}else{
 		$itemIdList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemIdsOnLabel();
@@ -63,6 +65,9 @@ function soyshop_seat_calendar($html, $page){
 	}
 
 	$url = soyshop_get_page_url($page->getPageObject()->getUri());
+	if(get_class($page) == "detail_page"){
+		$url .= "/" . $page->getItem()->getAlias();
+	}
 
 	//リンク
 	$obj->addModel("prev_month", array(

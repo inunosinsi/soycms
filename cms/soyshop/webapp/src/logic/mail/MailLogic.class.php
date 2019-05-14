@@ -140,19 +140,20 @@ class MailLogic extends SOY2LogicBase{
 
 			//別アプリとの連携→メールの送り先を増やす
 			SOYShopPlugin::load("soyshop.add.mailaddress");
-			$delegate = SOYShopPlugin::invoke("soyshop.add.mailaddress", array(
+			$addEmails = SOYShopPlugin::invoke("soyshop.add.mailaddress", array(
 				"order" => $order,
 				"orderFlag" => $orderFlag
-			));
-			$addEmails = $delegate->getMailAddress();
+			))->getMailAddress();
+
 			if(is_array($addEmails) && count($addEmails) > 0){
 				$additionalEmails = array_merge($additionalEmails, $addEmails);
 			}
 		}
 		if(is_array($additionalEmails) && count($additionalEmails)){
 			foreach($additionalEmails as $email){
-				if(strlen(trim($email)) && strpos($email, "@") !== false){
-					$this->send->addBccRecipient(trim($email));
+				$email = trim($email);
+				if(strlen($email) && strpos($email, "@") !== false){
+					$this->send->addBccRecipient($email);
 				}
 			}
 		}
