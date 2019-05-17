@@ -616,6 +616,13 @@ class CartLogic extends SOY2LogicBase{
 			$this->setOrderAttribute("order_first_order", "初回購入", "初回購入", true, true);
 		}
 
+		//setOrderAttributeに追加出来る拡張ポイント
+		SOYShopPlugin::load("soyshop.order.complete");
+		SOYShopPlugin::invoke("soyshop.order.complete", array(
+			"mode" => "before",
+			"cart" => $this,
+		));
+
 		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 
 		try{

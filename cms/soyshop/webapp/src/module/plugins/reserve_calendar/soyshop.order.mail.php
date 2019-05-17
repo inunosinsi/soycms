@@ -8,6 +8,13 @@ class ReserveCalendarOrderMail extends SOYShopOrderMail{
 	 */
 	function getMailBody(SOYShop_Order $order){
 
+		$bodies = array();
+
+		foreach($order->getAttributeList() as $attrId => $attr){
+			if(strpos($attrId, "reserve_manager_composition") === false) continue;
+			$bodies[] = "\n" . $attr["name"] . "：" . $attr["value"];
+		}
+
 		//仮登録モードの場合、注文内容毎にトークンを発行
 		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
 		$config = ReserveCalendarUtil::getConfig();
@@ -16,9 +23,11 @@ class ReserveCalendarOrderMail extends SOYShopOrderMail{
 			//一つでもクリックすればすべての予約が終わるようにする
 			if(isset($tokens[0])){
 				$url = soyshop_get_cart_url(false, true) . "?soyshop_notification=reserve_calendar&token=" . $tokens[0];
-				return "予約を完了するには下記のリンクをクリックします。\n" . $url . "\n";	//@ToDo文章
+				$bodies[] = "\n予約を完了するには下記のリンクをクリックします。\n" . $url . "\n";	//@ToDo文章
 			}
 		}
+
+		return implode("\n", $bodies);
 	}
 
 

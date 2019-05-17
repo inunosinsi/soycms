@@ -1,8 +1,8 @@
 <?php
 class SOYShopCartSetItemOrderBase implements SOY2PluginAction{
-	
+
 	function setItemOrder(SOYShop_Item $item, $count){
-		
+
 	}
 }
 class SOYShopCartSetItemOrderDeletageAction implements SOY2PluginDelegateAction{
@@ -12,10 +12,10 @@ class SOYShopCartSetItemOrderDeletageAction implements SOY2PluginDelegateAction{
 	private $item;
 	private $count;
 
-	function run($extetensionId,$moduleId,SOY2PluginAction $action){		
+	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 			$this->_object = $action->setItemOrder($this->getItem(), $this->getCount());
 	}
-	
+
 	function getObject(){
 		return $this->_object;
 	}
@@ -33,4 +33,3 @@ class SOYShopCartSetItemOrderDeletageAction implements SOY2PluginDelegateAction{
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.cart.set.itemorder","SOYShopCartSetItemOrderDeletageAction");
-?>

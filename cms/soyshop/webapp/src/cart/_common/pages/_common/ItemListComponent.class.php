@@ -68,6 +68,10 @@ class ItemListComponent extends HTMLList{
 			"html" => self::getItemOptionHtml($key)
 		));
 
+		$this->addModel("order_number_tr", array(
+			"attr:id" => "order_number_" . $key
+		));
+
 		$this->addInput("order_number", array(
 			"name" => "ItemCount[" . $key . "]",
 			"value" => $entity->getItemCount()

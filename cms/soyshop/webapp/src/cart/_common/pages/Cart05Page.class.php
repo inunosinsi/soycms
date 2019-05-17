@@ -44,7 +44,8 @@ class Cart05Page extends MainCartPageBase{
 
 		$this->addLabel("option_page", array(
 			"html" => SOYShopPlugin::display("soyshop.payment.option", array(
-				"cart" => $cart
+				"cart" => $cart,
+				"moduleId" => $paymentModule->getPluginId()	//Cart05ページで指定していない支払い方法が出力されないように厳重に確認する
 			))
 		));
 

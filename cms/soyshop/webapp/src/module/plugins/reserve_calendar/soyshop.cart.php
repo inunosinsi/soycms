@@ -52,6 +52,13 @@ class ReserveCalendarCart extends SOYShopCartBase{
 					$items = array($item);
 					$cart->setItems($items);
 				}
+
+				//大人と子供の人数をセッションに入れる
+				$idx = key($items);
+				if(isset($_POST["Option"]["adult"]) && isset($_POST["Option"]["child"])){
+					$cart->setAttribute(ReserveCalendarUtil::getCartAttributeId("seat_div_adult", $idx, $items[$idx]->getItemId()), (int)$_POST["Option"]["adult"]);
+					$cart->setAttribute(ReserveCalendarUtil::getCartAttributeId("seat_div_child", $idx, $items[$idx]->getItemId()), (int)$_POST["Option"]["child"]);
+				}
 			}
 
 			$schLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic");

@@ -2,35 +2,35 @@
 class SOYShopCartBase implements SOY2PluginAction{
 
 	function doOperation(){
-		
+
 	}
-	
+
 	function afterOperation(CartLogic $cart){
-		
+
 	}
 
 	function displayPage01(CartLogic $cart){
-		
+
 	}
-	
+
 	function displayPage02(CartLogic $cart){
-		
+
 	}
-	
+
 	function displayPage03(CartLogic $cart){
-		
+
 	}
-	
+
 	function displayPage04(CartLogic $cart){
-		
+
 	}
-	
+
 	function displayPage05(CartLogic $cart){
-		
+
 	}
-	
+
 	function displayCompletePage(CartLogic $cart){
-		
+
 	}
 }
 class SOYShopCartDeletageAction implements SOY2PluginDelegateAction{
@@ -44,7 +44,7 @@ class SOYShopCartDeletageAction implements SOY2PluginDelegateAction{
 	private $count;
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
-		
+
 		switch($this->mode){
 			case "doOperation":
 				$action->doOperation();
@@ -86,7 +86,7 @@ class SOYShopCartDeletageAction implements SOY2PluginDelegateAction{
 				break;
 		}
 	}
-	
+
 	function getHtml(){
 		return $this->_html;
 	}

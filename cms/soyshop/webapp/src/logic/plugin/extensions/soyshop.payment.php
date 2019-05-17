@@ -103,7 +103,10 @@ class SOYShopPaymentDeletageAction implements SOY2PluginDelegateAction{
 			if($this->mode == "post"){
 				$action->onPostOptionPage();
 			}else{
-				echo $action->getOptionPage();
+				//モジュールの読み込みの二段階チェック
+				if(isset($this->moduleId) && $this->moduleId == $moduleId){
+					echo $action->getOptionPage();
+				}
 			}
 			return;
 		}

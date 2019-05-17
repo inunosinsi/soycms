@@ -1,6 +1,23 @@
 <?php
 class ReserveCalendarOrderComplete extends SOYShopOrderComplete{
 
+	function beforeComplete(CartLogic $cart){
+		$items = $cart->getItems();
+		if(count($items)){
+			foreach($items as $idx => $item){
+				//大人、子供の人数を入力させている場合
+				SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+				$adultSeat = $cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("seat_div_adult", $idx, $item->getItemId()));
+				if(isset($adultSeat) && is_numeric($adultSeat) && $adultSeat > 0){
+					$childSeat = $cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("seat_div_child", $idx, $item->getItemId()));
+					if(!is_numeric($childSeat)) $childSeat = 0;
+					$cart->setOrderAttribute("reserve_manager_composition_" . $idx, "予約構成", "大人：" . $adultSeat . "人 子供：" . $childSeat . "人");
+				}
+			}
+			$cart->save();
+		}
+	}
+
 	/**
 	 * @return string
 	 */

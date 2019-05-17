@@ -122,15 +122,28 @@ function soyshop_seat_calendar($html, $page){
 		"action" => soyshop_get_cart_url(true)
 	));
 
+	$obj->addInput("adult_seat", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"name" => "Option[adult]",
+		"value" => 1,
+		"attr:max" => 10,
+	));
+
+	$obj->addInput("child_seat", array(
+		"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		"name" => "Option[child]",
+		"value" => 0,
+		"attr:max" => 10,
+	));
+
+
 	$obj->addInput("seat", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"name" => "count",
-		"value" => 1,
-		"attr:min" => 1,
-		"attr:max" => 5,
+		"value" => 0,
+		"attr:max" => 1,
 		"style" => "ime-mode:inactive;"
 	));
-
 
 
 	//非同期の場合のjsファイルの挿入
