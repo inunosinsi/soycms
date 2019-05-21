@@ -8,6 +8,7 @@ class ItemOptionOrderEdit extends SOYShopOrderEditBase{
 		$cart = AdminCartLogic::getCart();
 		if($cart->getAttribute("add_mode_on_admin_order") == 1){
 			$items = $cart->getItems();
+			if(!count($items)) return null;
 			$item = end($items);
 
 			$sql = "SELECT item_value FROM soyshop_item_attribute WHERE item_id = :itemId AND item_field_id LIKE 'item_option_%'";

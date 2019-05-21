@@ -105,8 +105,8 @@ class CalendarLogic extends CalendarBaseComponent{
 		//今日よりも前の日の場合は残席数は0になる
 		if($schDate < time()) return false;
 
-		//すでにカートに入れてないか？
-		if(in_array($schId, $this->addedList)) return false;
+		//すでにカートに入れてないか？ @ToDo 簡易予約カレンダーの方の設定に合わせたい
+		if(!self::isOnly() && in_array($schId, $this->addedList)) return false;
 
 		//予約がなければ必ずtrue
 		if(!isset($GLOBALS["reserved_schedules"][$schId])) return true;
@@ -121,6 +121,17 @@ class CalendarLogic extends CalendarBaseComponent{
 
 	private function getLabel($labelId){
 		return (isset($this->labelList[$labelId])) ? $this->labelList[$labelId] : "";
+	}
+
+	//カートに入れるプランは一件のみモードであるか？
+	private function isOnly(){
+		static $isOnly;
+		if(is_null($isOnly)){
+			SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+			$config = ReserveCalendarUtil::getConfig();
+			$isOnly = (isset($config["only"]) && (int)$config["only"] === 1);
+		}
+		return $isOnly;
 	}
 
 	function setItemId($itemId){
