@@ -76,7 +76,7 @@ class InitializeLogic implements SOY2LogicInterface{
 		));
 		$logic->registerCurrentSQLVersion();
 	}
-	
+
 	/**
 	 * データベース（admin）のバージョンを保存する
 	 */
@@ -86,7 +86,3 @@ class InitializeLogic implements SOY2LogicInterface{
 	}
 
 }
-
-
-
-?>

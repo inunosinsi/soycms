@@ -91,6 +91,13 @@ class ZeroSaitodevPlugin{
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		if(is_null($obj)){
 			$obj = new ZeroSaitodevPlugin();
+
+			//この時プラグインを強制的に有効にする
+			$filepath = CMSPlugin::getSiteDirectory().'/.plugin/'. self::PLUGIN_ID;
+			if(!file_exists($filepath . ".inited") && ini_get("allow_url_fopen")){
+				@file_put_contents($filepath .".active","active");
+				@file_put_contents($filepath .".inited","inited");
+			}
 		}
 
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
