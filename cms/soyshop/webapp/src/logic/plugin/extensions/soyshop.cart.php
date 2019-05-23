@@ -9,6 +9,11 @@ class SOYShopCartBase implements SOY2PluginAction{
 
 	}
 
+	//@return boolean
+	function isUpdate(CartLogic $cart){
+
+	}
+
 	function displayPage01(CartLogic $cart){
 
 	}
@@ -42,6 +47,7 @@ class SOYShopCartDeletageAction implements SOY2PluginDelegateAction{
 	private $cart;
 	private $item;
 	private $count;
+	private $_isUpdate;
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 
@@ -51,6 +57,10 @@ class SOYShopCartDeletageAction implements SOY2PluginDelegateAction{
 				break;
 			case "afterOperation":
 				$action->afterOperation($this->getCart());
+				break;
+			case "updateItem":
+				$isUpdate = $action->isUpdate($this->getCart());
+				if(isset($isUpdate) && is_bool($isUpdate)) $this->_isUpdate = $isUpdate;
 				break;
 			case "page01":
 				$this->_html[$moduleId] = array(
@@ -117,6 +127,8 @@ class SOYShopCartDeletageAction implements SOY2PluginDelegateAction{
 	function setCount($count){
 		$this->count = $count;
 	}
+	function getIsUpdate(){
+		return $this->_isUpdate;
+	}
 }
 SOYShopPlugin::registerExtension("soyshop.cart","SOYShopCartDeletageAction");
-?>

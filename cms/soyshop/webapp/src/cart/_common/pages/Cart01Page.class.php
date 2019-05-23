@@ -19,7 +19,7 @@ class Cart01Page extends MainCartPageBase{
 
 		//数量変更
 		if(isset($_POST["ItemCount"])){
-			$this->updateItemCount($cart, $_POST["ItemCount"]);
+			self::updateItemCount($cart, $_POST["ItemCount"]);
 			$cart->removeErrorMessage("stock");
 			$cart->save();
 		}
@@ -311,8 +311,17 @@ class Cart01Page extends MainCartPageBase{
 			 $count[$key] = max(0, (int)$value);
 		}
 
-		foreach($count as $index => $value){
-			$cart->updateItem($index, $value);
+		//拡張ポイントでカートに入れた商品数と商品毎の合計の再計算を行うかを制御する
+		SOYShopPlugin::load("soyshop.cart");
+		$isUpdate = SOYShopPlugin::invoke("soyshop.cart", array(
+			"mode" => "updateItem",
+			"cart" => $cart
+		))->getIsUpdate();
+
+		if(is_null($isUpdate) || (is_bool($isUpdate) && $isUpdate)){
+			foreach($count as $index => $value){
+				$cart->updateItem($index, $value);
+			}
 		}
 
 		//消費税の計算とモジュールの登録
