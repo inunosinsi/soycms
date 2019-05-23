@@ -23,6 +23,7 @@ class ReserveCalendarDetailPage extends WebPage{
 
 		SOY2::import("module.plugins.reserve_calendar.component.admin.ReservedListComponent");
 		SOY2::import("module.plugins.reserve_calendar.component.admin.CancelListComponent");
+		SOY2::import("module.plugins.reserve_calendar.component.admin.PriceListComponent");
 
 		/* 共通コンポーネント */
     	SOY2::import("base.site.classes.SOYShop_UserCustomfieldList");
@@ -223,6 +224,12 @@ class ReserveCalendarDetailPage extends WebPage{
 			"text" => number_format($this->schedule->getPrice())
 		));
 
+		//金額に関する拡張ポイント
+		$this->createAdd("price_list", "PriceListComponent", array(
+			"list" => self::getExtPrices()
+		));
+
+
 		$this->addLabel("reserved_count", array(
 			"text" => $this->reservedCount
 		));
@@ -239,6 +246,22 @@ class ReserveCalendarDetailPage extends WebPage{
 			"value" => $this->schedule->getUnsoldSeat(),
 			"style" => "width:80px;"
 		));
+	}
+
+	private function getExtPrices(){
+		SOYShopPlugin::load("soyshop.add.price.on.calendar");
+		$array = SOYShopPlugin::invoke("soyshop.add.price.on.calendar", array(
+			"mode" => "list",
+			"scheduleId" => $this->schedule->getId()
+		))->getList();
+
+		if(!is_array($array) || !count($array)) return array();
+
+		$list = array();
+		foreach($array as $values){
+			$list[] = $values;
+		}
+		return $list;
 	}
 
 	private function buildReservedList(){

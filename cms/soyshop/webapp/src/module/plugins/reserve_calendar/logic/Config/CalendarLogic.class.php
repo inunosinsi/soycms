@@ -6,10 +6,15 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $year;
 	private $month;
 	private $itemId;
+	private $extPrices = array();
 
 	function build($y, $m, $dspOtherMD = false, $dspCaption = true, $dspRegHol = true, $dspMonthLink = false, $isBefore = false, $isNextMonth = false){
 		$this->year = $y;
 		$this->month = $m;
+
+		//金額の拡張があるか？調べる
+		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
+		$this->extPrices = SOY2DAOFactory::create("SOYShopReserveCalendar_SchedulePriceDAO")->getPriceListByYearAndMonth($y, $m);
 
 		return parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink, $isBefore, $isNextMonth);
 	}
@@ -41,7 +46,22 @@ class CalendarLogic extends CalendarBaseComponent{
 		//予定がある場合
 		if(count($sch)){
 			foreach($sch as $schId => $v){
-				$html[] = "<label><input type=\"checkbox\" name=\"Schedule[" . $schId . "]\" value=\"1\">" . self::getLabel($v["label_id"]) . " " . $v["seat"] . "</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . number_format($v["price"]) . "円";
+				$f = array();
+				$f[] = "<label>";
+				$f[] = "<input type=\"checkbox\" name=\"Schedule[" . $schId . "]\" value=\"1\">";
+				$f[] = self::getLabel($v["label_id"]) . " " . $v["seat"];
+				$f[] = "</label>";
+				$f[] = "<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . number_format($v["price"]) . "円";
+
+				if(isset($this->extPrices[$schId]) && count($this->extPrices[$schId])){
+					foreach($this->extPrices[$schId] as $fieldId => $values){
+						$f[] = "<br>&nbsp;&nbsp;&nbsp;&nbsp;" . mb_substr($values["label"], 0, 1) . number_format($values["price"]) . "円";
+					}
+				}
+
+				//拡張の金額があるか？調べる
+
+				$html[] = implode("", $f);
 			}
 		}
 

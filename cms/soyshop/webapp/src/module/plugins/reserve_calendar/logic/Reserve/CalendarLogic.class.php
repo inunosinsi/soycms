@@ -6,6 +6,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $year;
 	private $month;
 	private $itemId;
+	private $extPrices = array();
 
 	private $reservedList;		//本登録
 	private $tmpReservedList;	//仮登録
@@ -22,6 +23,10 @@ class CalendarLogic extends CalendarBaseComponent{
 		$this->tmpReservedList = $resLogic->getReservedSchedulesByPeriod($y, $m, true);
 		$this->schList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic")->getScheduleList($this->itemId, $y, $m);
 		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($this->itemId);
+
+		//金額の拡張があるか？調べる
+		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_SchedulePriceDAO");
+		$this->extPrices = SOY2DAOFactory::create("SOYShopReserveCalendar_SchedulePriceDAO")->getPriceListByYearAndMonth($y, $m);
 
 		return parent::build($y, $m, $dspOtherMD, $dspCaption, $dspRegHol, $dspMonthLink, $isBefore, $isNextMonth);
 	}
@@ -59,6 +64,12 @@ class CalendarLogic extends CalendarBaseComponent{
 				$schText = "<a href=\"" . SOY2PageController::createLink("Extension.Detail.reserve_calendar." . $schId) . "\">" . self::getLabel($v["label_id"]) . "  " . $resCnt . "/" . $seat . "</a>";
 				if($tmpResCnt > 0) $schText .= " (" . $tmpResCnt . ")";
 				if(isset($v["price"]) && is_numeric($v["price"]) && $v["price"] > 0) $schText .= "<br>" . number_format($v["price"]) . "円";
+
+				if(isset($this->extPrices[$schId]) && count($this->extPrices[$schId])){
+					foreach($this->extPrices[$schId] as $fieldId => $values){
+						$schText .= "<br>" . mb_substr($values["label"], 0, 1) . number_format($values["price"]) . "円";
+					}
+				}
 
 				//満席
 				if($resCnt >= $seat){

@@ -42,10 +42,16 @@ class CalendarFormPage extends WebPage{
 					$obj->setUnsoldSeat($seat);
 
 					try{
-						$schDao->insert($obj);
+						$schId = $schDao->insert($obj);
 					}catch(Exception $e){
 						//
 					}
+
+					//拡張ポイント
+					SOYShopPlugin::load("soyshop.add.price.on.calendar");
+					SOYShopPlugin::invoke("soyshop.add.price.on.calendar", array(
+						"scheduleId" => $schId
+					));
 				}
 
 			}else if(isset($_POST["remove"])){
@@ -54,7 +60,7 @@ class CalendarFormPage extends WebPage{
 						try{
 							$schDao->deleteById($schId);
 						}catch(Exception $e){
-							var_dump($e);
+							//var_dump($e);
 						}
 					}
 
@@ -140,6 +146,12 @@ class CalendarFormPage extends WebPage{
 			"name" => "price",
 			"value" => $item->getPrice(),
 			"style" => "width:100px"
+		));
+
+		//価格に関する拡張ポイント
+		SOYShopPlugin::load("soyshop.add.price.on.calendar");
+		$this->addLabel("extension_add_price_area", array(
+			"html" => SOYShopPlugin::display("soyshop.add.price.on.calendar")
 		));
 
 		$autoConfig = ReserveCalendarUtil::getAutoConfig($this->itemId);
