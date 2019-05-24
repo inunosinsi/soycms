@@ -16,6 +16,7 @@ abstract class SOYShopReserveCalendar_SchedulePriceDAO extends SOY2DAO {
 
 	/**
 	 * @return object
+	 * @query schedule_id = :scheduleId AND field_id = :fieldId
 	 */
 	abstract function get($scheduleId, $fieldId);
 
