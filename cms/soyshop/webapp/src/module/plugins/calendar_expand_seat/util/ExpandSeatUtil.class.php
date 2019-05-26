@@ -83,6 +83,10 @@ class ExpandSeatUtil {
 		return $str;
 	}
 
+	public static function getChildPrice($scheduleId){
+		return self::_getChildPrice($scheduleId);
+	}
+
 	private static function _getChildPrice($scheduleId){
 		static $dao;
 		if(is_null($dao)){

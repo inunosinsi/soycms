@@ -34,7 +34,6 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
                 "AND item.open_period_end > " . $now . " ".
                 "AND item.item_is_open = " . SOYShop_Item::IS_OPEN . " ".
                 "AND item.is_disabled != " . SOYShop_Item::IS_DISABLED . " ";
-
         $binds = array(":y" => $year, ":m" => $month);
 
         if(isset($itemId) && is_numeric($itemId)){
@@ -42,7 +41,7 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
             $binds[":itemId"] = $itemId;
         }
 
-        $sql .= "ORDER BY lab.display_order ASC ";    //ラベルのソート順に並べ替える
+        $sql .= "ORDER BY lab.display_order ASC, lab.id ASC ";    //ラベルのソート順に並べ替える
 
         try{
             $res = $this->executeQuery($sql, $binds);

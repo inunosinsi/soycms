@@ -8,6 +8,9 @@ class ReserveCalendarUtil{
 	const IS_ONLY = 1;	//注文時の商品個数が1個のみに制限
 	const NO_ONLY = 0;
 
+	const IS_SHOW = 1;	//表示
+	const NO_SHOW = 0;	//非表示
+
 	const RESERVE_LIMIT = 0;
 	const RESERVE_LIMIT_IGNORE = 1;	//管理画面で残席数以上の予約を行うことが出来る
 
@@ -31,6 +34,7 @@ class ReserveCalendarUtil{
 		return SOYShop_DataSets::get("reserve_calendar.config", array(
 			"tmp" => self::NO_TMP,
 			"only" => self::NO_ONLY,
+			"show_price" => self::NO_SHOW,
 			"ignore" => self::RESERVE_LIMIT
 		));
 	}

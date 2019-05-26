@@ -12,11 +12,17 @@ class CalendarLogic extends CalendarBaseComponent{
 
 	private $addedList = array();
 
+	private $config;
+
 	function build($y, $m, $dspOtherMD = true, $dspCaption = false, $dspRegHol = true, $dspMonthLink = false, $isBefore = true, $isNextMonth = false){
 		$this->year = $y;
 		$this->month = $m;
 
 		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($this->itemId);
+
+		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+		SOY2::import("module.plugins.calendar_expand_seat.util.ExpandSeatUtil");
+		$this->config = ReserveCalendarUtil::getConfig();
 
 		//カートに入っているスケジュールを取得する
 		$cart = CartLogic::getCart();
@@ -62,6 +68,17 @@ class CalendarLogic extends CalendarBaseComponent{
 				//残席があるか調べる
 				if(!$isOtherMonth && self::checkIsUnsoldSeat($i, $schId, $v["seat"])){
 					$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-primary schedule_button\" onclick=\"insert_schedule_form(this, " . $schId . ");\">" . self::getLabel($v["label_id"]) . "</a>";
+
+					//価格の表示
+					if(isset($v["price"]) && isset($this->config["show_price"]) && $this->config["show_price"] == ReserveCalendarUtil::IS_SHOW){
+						$html[] = number_format($v["price"]) . "円";
+
+						//子供料金
+						$childPrice = ExpandSeatUtil::getChildPrice($schId);
+						if(isset($childPrice) && is_numeric($childPrice) && $v["price"] != $childPrice){
+							$html[] = "子 " . number_format($childPrice) . "円";
+						}
+					}
 				//残席がなければ、今のところ何もしない
 				}else{
 

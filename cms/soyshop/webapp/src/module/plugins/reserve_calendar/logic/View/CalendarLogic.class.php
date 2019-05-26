@@ -12,6 +12,7 @@ class CalendarLogic extends CalendarBaseComponent{
 	private $labelList;
 
 	private $addedList = array();
+	private $config;
 
 	function build($y, $m, $dspOtherMD = false, $dspCaption = true, $dspRegHol = true, $dspMonthLink = false, $isBefore = false, $isNextMonth = false){
 		$this->year = $y;
@@ -19,6 +20,9 @@ class CalendarLogic extends CalendarBaseComponent{
 
 		$this->schList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic")->getScheduleList($this->itemId, $y, $m);
 		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($this->itemId);
+
+		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+		$this->config = ReserveCalendarUtil::getConfig();
 
 		//カートに入っているスケジュールを取得する
 		$cart = CartLogic::getCart();
@@ -67,6 +71,11 @@ class CalendarLogic extends CalendarBaseComponent{
 					//非同期ボタン
 					}else{
 						$html[] = "<button id=\"reserve_calendar_async_button_" . $schId . "\" onclick=\"AsyncReserveCalendar.add(this," . $schId . ");\">" . self::getLabel($v["label_id"]) . "</button>";
+					}
+
+					//価格の表示
+					if(isset($v["price"]) && isset($this->config["show_price"]) && $this->config["show_price"] == ReserveCalendarUtil::IS_SHOW){
+						$html[] = number_format($v["price"]) . "円";
 					}
 
 

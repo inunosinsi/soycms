@@ -43,6 +43,13 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"label" => "注文時の商品個数は１個のみ"
 		));
 
+		$this->addCheckBox("show_price", array(
+			"name" => "Config[show_price]",
+			"value" => ReserveCalendarUtil::IS_SHOW,
+			"selected" => (isset($config["show_price"]) && (int)$config["show_price"] === ReserveCalendarUtil::IS_SHOW),
+			"label" => "公開側のカレンダーでプランに価格を表示する"
+		));
+
 		$this->addCheckBox("ignore", array(
 			"name" => "Config[ignore]",
 			"value" => ReserveCalendarUtil::RESERVE_LIMIT_IGNORE,
