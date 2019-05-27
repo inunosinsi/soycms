@@ -1,0 +1,23 @@
+<p class="notice" soy:display="updated">更新しました</p>
+
+<dl>
+	<dt>商品ブロックの生成個数</dt>
+	<dd>
+		<form soy:id="form">
+			<input type="number" soy:id="count">&nbsp;個&nbsp;
+			<input type="submit" value="更新">
+		</form>
+	</dd>
+</dl>
+
+<!-- soy:display="module_description" -->
+<h3>テンプレートへの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">&lt;!-- shop:module="parts.item_block_category_{数字}" --&gt;
+&lt;!-- block:id="item_list" category="{カテゴリID}" --&gt;
+商品一覧や商品詳細と同様のcms:idが使えます
+&lt;!-- /block:id="item_list" --&gt;
+&lt;!-- /shop:module="parts.item_block_category_{数字}" --&gt;</pre>
+<span style="margin:0 0 10px 35px;">※{数字}には<!-- soy:id="range" /-->が入ります。</span><br>
+<span style="margin:0 0 10px 35px;">※{カテゴリID}には数字が入ります。調べ方は下記の記事を参考にしてください。</span><br>
+<span style="margin:0 0 10px 35px;"><a href="https://saitodev.co/article/2470" target="_blank">SOY Shopでカテゴリ商品ブロック生成プラグインを作成しました - saitodev.co</a></span>
+<!-- /soy:display="module_description" -->

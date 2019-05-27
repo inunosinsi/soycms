@@ -340,7 +340,10 @@ class SearchItemUtil extends SOY2LogicBase{
     	//append where(categories)
     	if(count($categories) > 0) {
 			if($isParent) $parentqueries[] = "item_category in (" . implode(",", $categories) . ")";
-			if($isChild) $childqueries[] = "item_category in (" . implode(",", $categories) . ")";
+			if($isChild) {	//親商品で設定しているカテゴリを調べる
+				$childqueries[] = "item_category in (" . implode(",", $categories) . ")";
+				//$childqueries[] = "item_type IN (SELECT id FROM soyshop_item WHERE item_type = '" . SOYSHOP_ITEM::TYPE_GROUP . "' AND item_category in (" . implode(",", $categories) . "))";
+			}
 		}
 
     	//append where(params)
@@ -403,6 +406,7 @@ class SearchItemUtil extends SOY2LogicBase{
 
     	//append where(customfield)
     	$parentwhere = array();
+		$parentqueries = array();
 		$childwhere = array();
     	$counter = 0;
     	foreach($customFieldCordination as $key => $array){
@@ -449,7 +453,7 @@ class SearchItemUtil extends SOY2LogicBase{
 			$binds = $parentbinds + $childbinds;
 			$query->having = "";	//@ToDo この対応で良いのか？
 		}else if($isParent && !$isChild){
-			$query->where = implode(" AND ", $parentqueries);
+			if(count($parentqueries)) $query->where = implode(" AND ", $parentqueries);
 			$binds = $parentbinds;
 		}else if(!$isParent && $isChild){
 			$query->where = "item_type IN (" . $childquery . ")";

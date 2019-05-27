@@ -7,7 +7,7 @@ class InquiryOnMypageUtil {
 	}
 
 	public static function saveConfig($values){
-		return SOYShop_DataSets::put("inquiry_on_mypage.config", $values);
+		SOYShop_DataSets::put("inquiry_on_mypage.config", $values);
 	}
 
 	public static function getMailConfig(){

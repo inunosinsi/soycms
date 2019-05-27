@@ -8,7 +8,7 @@ class SOYShop_ItemListComponent extends HTMLList{
 	private $pageClassName;
 	private $iteration;
 	private $forAdminOnly;
-	
+
 	function execute(){
 		$iteration = $this->getAttribute("cms:count");
 		if(strlen($iteration)){
@@ -26,14 +26,14 @@ class SOYShop_ItemListComponent extends HTMLList{
 		if($this->iteration > 0 && $counter > $this->iteration){
 			return false;
 		}
-		
+
 		//実行
 		soyshop_output_item($this, $entity, $this->obj);
-				
+
 		//非公開は表示しない。ただし、商品詳細確認モードがtrueの場合は表示する。
 		return $this->getIsDisplay($entity);
 	}
-	
+
 	/**
 	 * 商品詳細ページを表示するか？
 	 * @param object SOYShop_Item
@@ -43,7 +43,7 @@ class SOYShop_ItemListComponent extends HTMLList{
 		//商品詳細確認モード forAdminOnlyがboolean値の場合
 		if(isset($this->forAdminOnly) && is_bool($this->forAdminOnly)){
 			$isDisplay = $this->forAdminOnly;
-			
+
 		//通常モード forAdminOnlyがnullの場合
 		}else{
 			$isDisplay = ($entity->isPublished());
@@ -57,15 +57,14 @@ class SOYShop_ItemListComponent extends HTMLList{
 			$this->pageClassName = get_class($obj);
 		}
 	}
-	
+
 	function setForAdminOnly($forAdminOnly){
 		$this->forAdminOnly = $forAdminOnly;
 	}
-	
+
 	public function getPageClassName(){
 		return $this->pageClassName;
 	}
 }
 
 class SOYShop_ChildItemListComponent extends SOYShop_ItemListComponent{};
-?>
