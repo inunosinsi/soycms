@@ -24,9 +24,9 @@ class SearchLogic extends SOY2LogicBase{
                 "INNER JOIN soyshop_custom_search s ".
                 "ON i.id = s.item_id ";
         $sql .= self::buildWhere();    //カウントの時と共通の処理は切り分ける
-        $sort = self::buildOrderBySQLOnSearchPage($obj->getPageObject());
+        $sort = (method_exists($obj, "getPageObject")) ? self::buildOrderBySQLOnSearchPage($obj->getPageObject()) : null;
         if(isset($sort)) $sql .= $sort;
-
+		
         //表示件数
         $sql .= " LIMIT " . (int)$limit;
 
@@ -434,16 +434,25 @@ class SearchLogic extends SOY2LogicBase{
     }
 
     private function buildOrderBySQLOnSearchPage(SOYShop_SearchPage $obj){
-        return self::buildOrderBySQLCommon($obj->getPage()->getId());
+		$page = $obj->getPage();
+		if(isset($page)){
+			return self::buildOrderBySQLCommon($page->getId());
+		}else{
+			return null;
+		}
     }
 
     private function buildOrderBySQLOnListPage(SOYShop_ListPage $obj){
-        $orderSql = self::buildOrderBySQLCommon($obj->getPage()->getId());
-        if(is_null($orderSql)){
-            $sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
-            $orderSql = " ORDER BY i." . $sort . " ";
-        }
-        return $orderSql;
+		$page = $obj->getPage();
+		if(isset($page)){
+			$orderSql = self::buildOrderBySQLCommon($page->getId());
+	        if(is_null($orderSql)){
+	            $sort = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("sort" => $obj))->getSortQuery();
+	            $orderSql = " ORDER BY i." . $sort . " ";
+	        }
+	        return $orderSql;
+		}
+		return null;
     }
 
     private function buildOrderBySQLCommon($pageId){
