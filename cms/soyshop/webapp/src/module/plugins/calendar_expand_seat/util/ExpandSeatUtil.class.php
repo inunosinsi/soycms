@@ -2,34 +2,6 @@
 
 class ExpandSeatUtil {
 
-	public static function get($app, $key){
-		return self::_get($app, $key);
-	}
-
-	public static function set($app, $key, $values){
-		$v = self::_get($app, $key);
-		switch($key){
-			case "representative":
-				foreach($values as $k => $val){
-					$v[$k] = $val;
-				}
-				break;
-			case "companion":
-				foreach($values as $i => $val){
-					foreach($val as $k => $vv){
-						$v[$i][$k] = $vv;
-					}
-				}
-		}
-
-		$app->setAttribute($key, soy2_serialize($v));
-	}
-
-	private static function _get($app, $key){
-		$v = $app->getAttribute($key);
-		return (isset($v) && strlen($v)) ? soy2_unserialize($v) : array("rain" => "", "shoes" => "");
-	}
-
 	public static function getScheduleIdByReserveId($reserveId){
 		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
 		return (int)SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO")->getScheduleByReserveId($reserveId)->getId();

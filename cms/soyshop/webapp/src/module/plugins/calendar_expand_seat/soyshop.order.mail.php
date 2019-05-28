@@ -28,18 +28,6 @@ class CalendarExpandSeatOrderMail extends SOYShopOrderMail{
 			$bodies[] = $str;
 		}
 
-		foreach($order->getAttributeList() as $attrId => $attr){
-			if(strpos($attrId, "emergency_") !== false || strpos($attrId, "relationship") !== false){
-				$bodies[] = "\n" . $attr["name"] . "\n" . $attr["value"];
-			} else if(strpos($attrId, "representative") !== false || strpos($attrId, "companion") !== false){
-				if(strpos($attrId, "companion") !== false){	//同行者の場合
-					preg_match('/companion(.*)/', $attrId, $tmp);
-					if(!isset($tmp[1]) || !is_numeric($tmp[1])) continue;
-				}
-				$bodies[] = "\n" . $attr["name"] . "\n" . $attr["value"];
-			}
-		}
-
 		$bodies[] = "";	//改行
 
 		return implode("\n", $bodies);
@@ -51,5 +39,5 @@ class CalendarExpandSeatOrderMail extends SOYShopOrderMail{
 	}
 }
 
-SOYShopPlugin::extension("soyshop.order.mail.user", "calendar_expand_seat", "CalendarExpandSeatOrderMail");
-SOYShopPlugin::extension("soyshop.order.mail.admin", "calendar_expand_seat", "CalendarExpandSeatOrderMail");
+SOYShopPlugin::extension("soyshop.order.mail.user", "calendar_expand_set", "CalendarExpandSeatOrderMail");
+SOYShopPlugin::extension("soyshop.order.mail.admin", "calendar_expand_set", "CalendarExpandSeatOrderMail");
