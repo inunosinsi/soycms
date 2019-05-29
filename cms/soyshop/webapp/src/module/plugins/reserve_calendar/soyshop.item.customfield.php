@@ -23,13 +23,31 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 	 * 公開側のblock:id="item"で囲まれた箇所にフォームを出力する
 	 * @param object htmlObj, object SOYShop_Item
 	 */
-	function onOutput($htmlObj, SOYShop_Item $item){}
+	function onOutput($htmlObj, SOYShop_Item $item){
+		list($low, $high) = self::logic()->getLowPriceAndHighPriceByItemId($item->getId());
+		
+		$htmlObj->addLabel("schedule_price_min", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => number_format($low)
+		));
+
+		$htmlObj->addLabel("schedule_price_max", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => number_format($high)
+		));
+	}
 
 	/**
 	 * 管理画面側で商品情報を削除した時にオプション設定も一緒に削除する
 	 * @param integer id
 	 */
 	function onDelete($id){}
+
+	private function logic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.PriceLogic");
+		return $logic;
+	}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield", "reserve_calendar", "ReserveCalendarCustomField");
