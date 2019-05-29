@@ -48,6 +48,19 @@ function soyshop_custom_search_field($html, $htmlObj){
             "selected" => (isset($params["item_category"])) ? (int)$params["item_category"] : false
         ));
 
+		$obj->addInput("custom_search_csf_free_word", array(
+			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+            "name" => "c_search[csf_free_word]",
+			"value" => (isset($params["csf_free_word"])) ? $params["csf_free_word"] : ""
+		));
+
+		//隠しモード　テキストエリアでフリーワード検索
+		$obj->addTextArea("custom_search_csf_free_word_textarea", array(
+			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+            "name" => "c_search[csf_free_word]",
+			"value" => (isset($params["csf_free_word"])) ? $params["csf_free_word"] : ""
+		));
+
         //カスタムサーチフィールドとカテゴリカスタムフィールドの検索用フォームを出力
         foreach(array("item", "category") as $mode){
 			switch($mode){

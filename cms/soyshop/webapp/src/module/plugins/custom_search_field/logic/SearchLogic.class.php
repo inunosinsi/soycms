@@ -26,7 +26,7 @@ class SearchLogic extends SOY2LogicBase{
         $sql .= self::buildWhere();    //カウントの時と共通の処理は切り分ける
         $sort = (method_exists($obj, "getPageObject")) ? self::buildOrderBySQLOnSearchPage($obj->getPageObject()) : null;
         if(isset($sort)) $sql .= $sort;
-		
+
         //表示件数
         $sql .= " LIMIT " . (int)$limit;
 
@@ -37,6 +37,7 @@ class SearchLogic extends SOY2LogicBase{
         try{
             $res = $this->itemDao->executeQuery($sql, $this->binds);
         }catch(Exception $e){
+			var_dump($e);
             return array();
         }
 
@@ -255,6 +256,8 @@ class SearchLogic extends SOY2LogicBase{
                             if(count($w)) $this->where[$key] = "(" . implode(" OR ", $w) . ")";
                         }
                         break;
+					case "csf_free_word":	//フリーワード検索は何もしない
+						break;
 
                     //数字、ラジオボタン、セレクトボックス
                     default:
@@ -264,6 +267,30 @@ class SearchLogic extends SOY2LogicBase{
                         }
                 }
             }
+
+			//フリーワード検索
+			if(isset($_GET["c_search"]["csf_free_word"]) && strlen($_GET["c_search"]["csf_free_word"])){
+				$v = htmlspecialchars($_GET["c_search"]["csf_free_word"], ENT_QUOTES, "UTF-8");
+				$v = str_replace("　", " ", $v);
+				$words = explode(" ", $v);
+				$freeQueries = array();
+				for($i = 0; $i < count($words); $i++){
+					$word = trim($words[$i]);
+					if(!strlen($word)) continue;
+					$freeSubQueries = array();
+					foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
+						$freeSubQueries[] = "s." . $key . " LIKE :csffree" . $key . $i;
+						$this->binds[":csffree" . $key . $i] = "%" . $word . "%";
+					}
+					if(count($freeSubQueries)){
+						$freeQueries[] = "(" . implode(" OR ", $freeSubQueries) . ")";
+					}
+				}
+
+				if(count($freeQueries)){
+					$this->where["csf_free_word"] = "(" . implode(" AND ", $freeQueries) . ")";
+				}
+			}
 
             //カテゴリカスタムフィールド
             if(isset($_GET["cat_search"]) && count($_GET["cat_search"])){
