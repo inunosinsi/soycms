@@ -88,6 +88,15 @@ class BlogMenuPage extends CMSHTMLPageBase{
 				"class" => $this->getMenuStatus("blog_comment_link"),
 				"visible" => UserInfoUtil::hasEntryPublisherRole(),//記事公開権限のある場合のみ
 		));
+		$this->createAdd("blog_category_link","HTMLLink",array(
+				"link" => SOY2PageController::createLink("Blog.Category.".$id),
+				"class" => $this->getMenuStatus("blog_comment_link")
+		));
+
+		$this->addModel("blog_category_link_wrapper",array(
+				"class" => $this->getMenuStatus("blog_comment_link"),
+				"visible" => !UserInfoUtil::hasSiteAdminRole(),//サイト管理者で無い場合
+		));
 
 		$this->createAdd("blog_template_link","HTMLLink",array(
 				"link" => SOY2PageController::createLink("Blog.Template.".$id.".top"),

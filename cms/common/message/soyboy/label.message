@@ -30,3 +30,7 @@ LABEL_ICON_UPDATE_FAILED	=		アイコンの変更に失敗しました。
 LABEL_FLIP_BLOG_ERROR		=		ラベルがブログで使用されているため削除できません。
 
 LABEL_UPDATE_DISPLAY_ORDER	=		表示順を更新しました。
+
+BLOG_CATEGORY_ADD_SUCCESS =			ラベル(カテゴリ)を作成しました。
+BLOG_CATEGORY_REMOVE_SUCCESS =		ラベル(カテゴリ)を削除しました。
+BLOG_CATEGORY_ADD_FAILED　= 			ラベル(カテゴリ)の作成に失敗しました。

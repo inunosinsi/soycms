@@ -164,6 +164,10 @@ class BlogPageList extends HTMLList{
 			"link" => SOY2PageController::createLink("Blog.Comment") ."/".$entity->getId(),
 			"visible" => UserInfoUtil::hasEntryPublisherRole(),//記事公開権限のある場合のみ
 		));
+		$this->createAdd("category_link","HTMLLink",array(
+			"link" => SOY2PageController::createLink("Blog.Category") ."/".$entity->getId(),
+			"visible" => !UserInfoUtil::hasSiteAdminRole(),//記事公開権限のある場合のみ
+		));
 
 		$trashLink = "";
 		if($entity->getIsTrash() == 1){

@@ -11,13 +11,13 @@ class CategoryPage extends CMSWebPageBase{
 			$labelDao = SOY2DAOFactory::create("cms.LabelDAO");
 			$label = new Label();
 			$label->setCaption($_POST["caption"]);
-			
+
 			$logic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
 			if(!$logic->checkDuplicateCaption($label->getCaption())){
 				$this->addErrorMessage("BLOG_CATEGORY_ADD_FAILED");
 				$this->jump("Blog.Category.".$this->pageId);
 			}
-			
+
 			//並び順補正
 			$label->setDisplayOrder(Label::ORDER_MAX);
 
@@ -28,7 +28,7 @@ class CategoryPage extends CMSWebPageBase{
 				$this->addErrorMessage("BLOG_CATEGORY_ADD_FAILED");
 				$this->jump("Blog.Category.".$this->pageId);
 			}
-			
+
 			$pageDao = SOY2DAOFactory::create("cms.BlogPageDAO");
 			try{
 				$blogPage = $pageDao->getById($this->pageId);
@@ -36,20 +36,20 @@ class CategoryPage extends CMSWebPageBase{
 				$this->addErrorMessage("BLOG_CATEGORY_ADD_FAILED");
 				$this->jump("Blog.Category.".$this->pageId);
 			}
-				
+
 			$categoryLabelList = $blogPage->getCategoryLabelList();
 			array_push($categoryLabelList, $id);
 			$blogPage->setCategoryLabelList($categoryLabelList);
-			
+
 			try{
 				$pageDao->updatePageConfig($blogPage);
 			}catch(Exception $e){
 				$this->addErrorMessage("BLOG_CATEGORY_ADD_FAILED");
 				$this->jump("Blog.Category.".$this->pageId);
 			}
-			
+
 			$labelDao->commit();
-			
+
 			$this->addMessage("BLOG_CATEGORY_ADD_SUCCESS");
 		}
 	}
@@ -62,7 +62,7 @@ class CategoryPage extends CMSWebPageBase{
 		$this->pageId = (int)$arg[0];
 
 		parent::__construct();
-		
+
 		$labels = $this->getLabelLists();
 		$this->createAdd("label_lists","LabelLists",array(
 			"list" => $labels,
@@ -76,9 +76,9 @@ class CategoryPage extends CMSWebPageBase{
 			"tabindex" => LabelList::$tabIndex++
 		));
 
-		$this->createAdd("no_label_message","Label._LabelBlankPage",array(
-			"visible" => (count($labels)<1)
-		));
+		// $this->createAdd("no_label_message","Label._LabelBlankPage",array(
+		// 	"visible" => (count($labels)<1)
+		// ));
 
 		if(count($labels)<1){
 			DisplayPlugin::hide("must_exist_label");
@@ -93,12 +93,12 @@ class CategoryPage extends CMSWebPageBase{
 		$this->createAdd("reNameForm","HTMLForm",array(
 			"action"=>SOY2PageController::createLink("Label.Rename")
 		));
-		
+
 		$this->createAdd("BlogMenu","Blog.BlogMenuPage",array(
 			"arguments" => array($this->pageId)
 		));
-		
-		
+
+
 		HTMLHead::addScript("root",array(
 			"script"=>'var reNameLink = "'.SOY2PageController::createLink("Blog.Rename.".$this->pageId).'";' .
 					'var reDesciptionLink = "'.SOY2PageController::createLink("Blog.ReDescription.".$this->pageId).'";' .
@@ -120,7 +120,7 @@ class CategoryPage extends CMSWebPageBase{
 			"href" => SOY2PageController::createRelativeLink("./css/label/label.css")
 		));
 	}
-	
+
 	/**
 	 *  ラベルオブジェクトのリストのリストを返す
 	 * @param Boolean $classified ラベルを分けるかどうか
@@ -129,17 +129,17 @@ class CategoryPage extends CMSWebPageBase{
 		/**
 		 * actionクラスを介さず直接ブログに設定されているカテゴリを取得
 		 */
-		
+
 		//ブログページを取得
 		try{
 			$blogPage = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($this->pageId);
 		}catch(Exception $e){
 			return array();
 		}
-		
+
 		$categoryLabelList = $blogPage->getCategoryLabelList();
 		if(!count($categoryLabelList)) return array();
-		
+
 		$labelDao = SOY2DAOFactory::create("cms.LabelDAO");
 		$labels = array();
 		foreach($categoryLabelList as $labelId){
@@ -149,10 +149,10 @@ class CategoryPage extends CMSWebPageBase{
 				continue;
 			}
 		}
-		
+
 		return array("" => $labels);
 	}
-	
+
 	/**
 	 * ラベルに使えるアイコンの一覧を返す
 	 */
@@ -181,7 +181,7 @@ class CategoryPage extends CMSWebPageBase{
 }
 
 class LabelLists extends HTMLList{
-	
+
 	private $pageId;
 
 	function populateItem($entity, $key){
@@ -196,7 +196,7 @@ class LabelLists extends HTMLList{
 
 		return ( count($entity) > 0 );
 	}
-	
+
 	function setPageId($pageId){
 		$this->pageId = $pageId;
 	}
@@ -218,7 +218,7 @@ class LabelList extends HTMLList{
 			"style"=> "cursor:pointer;color:#" . sprintf("%06X",$entity->getColor()).";background-color:#" . sprintf("%06X",$entity->getBackgroundColor()) . ";margin:5px",
 			"onclick"=>'postReName('.$entity->getId().',"'.addslashes($entity->getDescription()).'")'
 		));
-		
+
 		$this->createAdd("remove_link","HTMLActionLink",array(
 			"link" => SOY2PageController::createLink("Blog.Remove." .$this->pageId . "." .$entity->getId()),
 			"visible" => UserInfoUtil::hasEntryPublisherRole(),
@@ -234,7 +234,7 @@ class LabelList extends HTMLList{
 //			"text"=> $entity->getEntryCount(),
 //		));
 	}
-	
+
 	function setPageId($pageId){
 		$this->pageId = $pageId;
 	}
