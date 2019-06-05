@@ -166,9 +166,28 @@ class CustomSearchFieldConfigFormPage extends WebPage{
                     $html[] = "\t<input type=\"text\" csf:id=\"custom_search_" . $key . "\">\n\n";
             }
 
+			if($field["type"] == CustomSearchFieldUtil::TYPE_RANGE){
+                $html[] = "\t" . $field["label"] . "(セレクトボックス):\n";
+				foreach(array("start", "end") as $t){
+					$html[] = "\t<select csf:id=\"custom_search_" . $key . "_" . $t . "_select\"><option value=\"\"></option></select>\n";
+				}
+				$html[] = "\n";
+            }
+
             if($field["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX){
                 $html[] = "\t" . $field["label"] . "(セレクトボックス):\n";
                 $html[] = "\t<select csf:id=\"custom_search_" . $key . "_select\"><option value=\"\"></option></select>\n\n";
+            }
+
+			if($field["type"] == CustomSearchFieldUtil::TYPE_RADIO){
+                $html[] = "\t" . $field["label"] . "(チェックボックス):\n";
+				if(isset($field["option"][UtilMultiLanguageUtil::LANGUAGE_JP])) {
+					foreach(explode("\n", $field["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) as $i => $o){
+						$o = trim($o);
+						$html[] = "\t<input type=\"checkbox\" csf:id=\"custom_search_" . $key . "_checkbox_" . $i . "\">\n";
+					}
+					$html[] = "\n";
+				}
             }
         }
 

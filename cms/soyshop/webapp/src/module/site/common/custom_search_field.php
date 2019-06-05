@@ -89,6 +89,13 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                                "name" => $name . "[" . $key . "_" . $t . "]",
 	                                "value" => (isset($params[$key . "_" . $t]) && strlen($params[$key . "_" . $t])) ? (int)$params[$key . "_" . $t] : null
 	                            ));
+
+								$obj->addSelect("custom_search_" . $key . "_" . $t . "_select", array(
+									"soy2prefix" => $prefix,
+									"name" => $name . "[" . $key . "_" . $t . "]",
+									"options" => range(1, 9),	//決め打ち @ToDo管理画面で指定できるようにしたい
+									"selected" => (isset($params[$key . "_" . $t]) && strlen($params[$key . "_" . $t])) ? (int)$params[$key . "_" . $t] : null
+								));
 	                        }
 	                        break;
 	                    case CustomSearchFieldUtil::TYPE_CHECKBOX:
@@ -151,11 +158,21 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                                    "label" => $o,
 	                                    "elementId" => "custom_search_" . $key . "_" . $i
 	                                ));
+
+									$obj->addCheckBox("custom_search_" . $key . "_checkbox_" .$i, array(
+	                                    "soy2prefix" => $prefix,
+	                                    "type" => "checkbox",
+	                                    "name" => $name . "[" . $key . "][]",
+	                                    "value" => $o,
+	                                    "selected" => (isset($params[$key]) && is_array($params[$key]) && in_array($o, $params[$key])),
+	                                    "label" => $o,
+	                                    "elementId" => "custom_search_" . $key . "_" . $i
+	                                ));
 	                            }
 	                        }
 	                        break;
 	                    case CustomSearchFieldUtil::TYPE_SELECT:
-	                        if(!isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE])) {
+						    if(!isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE])) {
 								$isContinue = true;
 								break;
 							}
@@ -163,8 +180,8 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                        $options = array();
 	                        foreach(explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]) as $o){
 	                            $options[trim($o)] = trim($o);
-	                        }
-	                        $obj->addSelect("custom_search_" . $key, array(
+							}
+							$obj->addSelect("custom_search_" . $key, array(
 	                            "soy2prefix" => $prefix,
 	                            "name" => $name . "[" . $key . "]",
 	                            "options" => $options,
@@ -175,7 +192,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                        $obj->addInput("custom_search_" . $key, array(
 	                            "soy2prefix" => $prefix,
 	                            "name" => $name . "[" . $key . "]",
-	                            "value" => (isset($params[$key])) ? $params[$key] : null
+	                            "value" => (isset($params[$key]) && is_string($params[$key])) ? $params[$key] : null
 	                        ));
 	                }
 					if(!$isContinue) continue;

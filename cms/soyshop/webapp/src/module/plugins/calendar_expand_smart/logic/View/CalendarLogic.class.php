@@ -113,7 +113,7 @@ class CalendarLogic extends CalendarBaseComponent{
 
 	private function checkIsUnsoldSeat($schDate, $schId, $seat){
 		//今日よりも前の日の場合は残席数は0になる
-		if($schDate < time()) return false;
+		if($schDate < strtotime("-1 day")) return false;
 
 		//すでにカートに入れてないか？ @ToDo 簡易予約カレンダーの方の設定に合わせたい
 		if(!self::isOnly() && in_array($schId, $this->addedList)) return false;

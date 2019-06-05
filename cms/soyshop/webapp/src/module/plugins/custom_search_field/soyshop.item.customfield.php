@@ -13,7 +13,7 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 
         if(isset($_POST["custom_search"])){
             self::prepare();
-            $this->dbLogic->save($item->getId(), $_POST["custom_search"]);
+			$this->dbLogic->save($item->getId(), $_POST["custom_search"]);
         }
     }
 

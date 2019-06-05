@@ -163,8 +163,7 @@ class SearchLogic extends SOY2LogicBase{
             }
 
             foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
-
-                //まずは各タイプのfield SQLでkeyを指定する場合、s.を付けること。soyshop_custom_searchのaliasがs
+				//まずは各タイプのfield SQLでkeyを指定する場合、s.を付けること。soyshop_custom_searchのaliasがs
                 switch($field["type"]){
                     //文字列の場合
                     case CustomSearchFieldUtil::TYPE_STRING:
@@ -243,28 +242,25 @@ class SearchLogic extends SOY2LogicBase{
 						}
 
                         break;
-
-                    //チェックボックスの場合
-                    case CustomSearchFieldUtil::TYPE_CHECKBOX:
-                        if(isset($_GET["c_search"][$key]) && count($_GET["c_search"][$key])){
-                            $w = array();
-                            foreach($_GET["c_search"][$key] as $i => $v){
-                                if(!strlen($v)) continue;
-                                $w[] = "s." . $key . " LIKE :" . $key . $i;
-                                $this->binds[":" . $key . $i] = "%" . trim($v) . "%";
-                            }
-                            if(count($w)) $this->where[$key] = "(" . implode(" OR ", $w) . ")";
-                        }
-                        break;
 					case "csf_free_word":	//フリーワード検索は何もしない
 						break;
 
-                    //数字、ラジオボタン、セレクトボックス
+                    //数字、ラジオボタン、セレクトボックス、チェックボックスの場合
                     default:
-                        if(isset($_GET["c_search"][$key]) && strlen($_GET["c_search"][$key])){
-                            $this->where[$key] = "s." . $key . " = :" . $key;
-                            $this->binds[":" . $key] = $_GET["c_search"][$key];
-                        }
+						if(isset($_GET["c_search"][$key])){
+							if(is_array($_GET["c_search"][$key]) && count($_GET["c_search"][$key])){	//配列できた場合
+								$w = array();
+	                            foreach($_GET["c_search"][$key] as $i => $v){
+	                                if(!strlen($v)) continue;
+	                                $w[] = "s." . $key . " LIKE :" . $key . $i;
+	                                $this->binds[":" . $key . $i] = "%" . trim($v) . "%";
+	                            }
+	                            if(count($w)) $this->where[$key] = "(" . implode(" OR ", $w) . ")";
+							}else if(is_string($_GET["c_search"][$key]) && strlen($_GET["c_search"][$key])){
+								$this->where[$key] = "s." . $key . " = :" . $key;
+	                            $this->binds[":" . $key] = $_GET["c_search"][$key];
+							}
+						}
                 }
             }
 

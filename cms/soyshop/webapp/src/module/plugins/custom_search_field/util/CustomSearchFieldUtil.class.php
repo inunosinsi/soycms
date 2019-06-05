@@ -15,7 +15,20 @@ class CustomSearchFieldUtil{
     const TYPE_SELECT = "select";
 
     public static function getConfig(){
-        return SOYShop_DataSets::get("custom_search.config", array());
+        $config = SOYShop_DataSets::get("custom_search.config", array());
+		/**
+		 *隠しモード soyshop.site.prepare拡張ポイントで$GLOBALS["csf_config_advanced"]にカラムの情報を入れておくと、ここで追加できる
+		 * $GLOBALS["csf_config_advanced"] = array(
+		 *	"fieldId" => array("type" => ""),
+		 * 	...
+		 * );
+		 */
+		if(isset($GLOBALS["csf_config_advanced"]) && is_array($GLOBALS["csf_config_advanced"]) && count($GLOBALS["csf_config_advanced"])){
+			foreach($GLOBALS["csf_config_advanced"] as $fieldId => $field){
+				$config[$fieldId] = $field;
+			}
+		}
+		return $config;
     }
 
     public static function saveConfig($values){

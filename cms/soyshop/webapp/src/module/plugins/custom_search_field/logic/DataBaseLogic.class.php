@@ -122,11 +122,11 @@ class DataBaseLogic extends SOY2LogicBase{
         $binds = array();
 
         switch($this->getMode()){
-          case self::MODE_CATEGORY:
-            $columns[] = "category_id";
-            break;
-          default:
-            $columns[] = "item_id";
+        	case self::MODE_CATEGORY:
+        		$columns[] = "category_id";
+        		break;
+        	default:
+            	$columns[] = "item_id";
         }
 
         $values[] = (int)$id;
@@ -142,7 +142,7 @@ class DataBaseLogic extends SOY2LogicBase{
         $sql = "INSERT INTO " . $this->getTableName() . " ".
                 "(" . implode(",", $columns) . ") ".
                 "VALUES (" . implode(",", $values) . ")";
-
+		
         $dao = new SOY2DAO();
 
         try{
