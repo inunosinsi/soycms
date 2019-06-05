@@ -83,7 +83,7 @@ class SOYInquiry_Column{
 	/**
 	 * #helper function
 	 */
-	private function _types(){
+	private static function _types(){
 		static $types;
 		if(is_null($types)){
 			$types = SOYInquiry_Column::$columnTypes;
