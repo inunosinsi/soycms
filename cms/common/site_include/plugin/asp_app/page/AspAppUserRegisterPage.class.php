@@ -19,6 +19,11 @@ class AspAppUserRegisterPage extends WebPage {
 	}
 
 	function execute(){
+		//隠しモード　管理画面からの登録
+		if(isset($_GET["mode"])){
+			AspAppUtil::setSession("hidden_mode", $_GET["mode"]);
+		}
+
 		parent::__construct();
 
 		DisplayPlugin::toggle("error", count($this->errors));

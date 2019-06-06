@@ -18,6 +18,13 @@ class AspAppUserCompletePage extends WebPage {
 
 			$res = $logic->register($_GET["token"]);
 
+			$mode = AspAppUtil::getSession("hidden_mode");	//モードがある場合はメールを送信しない
+			if(isset($mode) && strlen($mode)){
+				AspAppUtil::clearSession("hidden_mode");
+				header("location:" . AspAppUtil::getPageUri(AspAppUtil::MODE_DIRECT_REGISTRATION));
+				exit;
+			}
+
 			//メールを送信
 			if($res){
 				$mail = AspAppUtil::getMailConfig(AspAppUtil::MAIL_REGISTER);

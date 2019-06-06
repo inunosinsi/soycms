@@ -23,6 +23,9 @@ class BuildAspAppFormLogic extends SOY2LogicBase {
 			case AspAppUtil::MODE_COMPLETE:
 				$pageClass = "AspAppUserCompletePage";
 				break;
+			case AspAppUtil::MODE_DIRECT_REGISTRATION:
+				$pageClass = "AspAppUserDirectRegistrationPage";
+				break;
 		}
 
 		SOY2::import("site_include.plugin.asp_app.page." . $pageClass);

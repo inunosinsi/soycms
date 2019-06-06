@@ -6,6 +6,7 @@ class AspAppUtil {
 	const MODE_CONFIRM = 1;
 	const MODE_PRE_REGISTRATION = 2;
 	const MODE_COMPLETE = 3;
+	const MODE_DIRECT_REGISTRATION = 4;
 
 	const MAIL_PRE = "pre";
 	const MAIL_REGISTER = "register";
@@ -38,6 +39,18 @@ class AspAppUtil {
 		CMSUtil::resetDsn($old);
 
 		return $admin;
+	}
+
+	public static function setSession($key, $v){
+		SOY2ActionSession::getUserSession()->setAttribute("soycms_asp_app_" . $key, $v);
+	}
+
+	public static function getSession($key){
+		return SOY2ActionSession::getUserSession()->getAttribute("soycms_asp_app_" . $key);
+	}
+
+	public static function clearSession($key){
+		SOY2ActionSession::getUserSession()->setAttribute("soycms_asp_app_" . $key, null);
 	}
 
 	// public static function saveSiteId($siteId){
@@ -73,6 +86,9 @@ class AspAppUtil {
 				case self::MODE_COMPLETE:
 					$baseUri = str_replace("/complete", "", $baseUri);
 					break;
+				case self::MODE_DIRECT_REGISTRATION:
+					$baseUri = str_replace("/success", "", $baseUri);
+					break;
 				default:
 					//何もしない
 			}
@@ -89,6 +105,8 @@ class AspAppUtil {
 				return $baseUri . "/pre";
 			case self::MODE_COMPLETE:
 				return $baseUri . "/complete";
+			case self::MODE_DIRECT_REGISTRATION:
+				return $baseUri . "/success";
 			default:
 				return $baseUri;
 		}
@@ -138,6 +156,9 @@ class AspAppUtil {
 				break;
 			case "complete":
 				$mode = self::MODE_COMPLETE;
+				break;
+			case "success":
+				$mode = self::MODE_DIRECT_REGISTRATION;
 				break;
 			default:
 				$mode = self::MODE_REGISTER;

@@ -33,10 +33,20 @@ class AspAppUserConfirmPage extends WebPage {
 				}
 
 
+				$registerUrl = AspAppUtil::getPageUri(AspAppUtil::MODE_COMPLETE, true) . "?token=" . $obj->getToken();
+
+				//いきなり本登録
+				$mode = AspAppUtil::getSession("hidden_mode");
+				if(isset($mode) && strlen($mode)){
+					header("location:" . $registerUrl);
+					exit;
+				}
+
+				//仮登録モード
 				$mail = AspAppUtil::getMailConfig(AspAppUtil::MAIL_PRE);
 				$title = $mail["title"];
 				$body = $mail["content"];
-				$body = str_replace("##REGISTER_URL##", AspAppUtil::getPageUri(AspAppUtil::MODE_COMPLETE, true) . "?token=" . $obj->getToken(), $body);
+				$body = str_replace("##REGISTER_URL##", $registerUrl, $body);
 				$sendToName = "ASP版登録";	//@ToDo設定画面
 				SOY2Logic::createInstance("logic.mail.MailLogic")->sendMail(AspAppUtil::get()->getEmail(), $title, $body, $sendToName);
 
