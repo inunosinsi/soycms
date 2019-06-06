@@ -12,7 +12,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 
         //GETの値を変数に入れておく。そのうちページャ対応を行わなければならないため
         $params = (isset($_GET["c_search"])) ? $_GET["c_search"] : array();
-        $catParams = (isset($_GET["cat_search"])) ? $_GET["cat_search"] : array();
+		$catParams = (isset($_GET["cat_search"])) ? $_GET["cat_search"] : array();
 
         //商品名
         $obj->addInput("custom_search_item_name", array(
@@ -68,13 +68,13 @@ function soyshop_custom_search_field($html, $htmlObj){
 					$configs = CustomSearchFieldUtil::getCategoryConfig();
 					$prefix = CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX;
 					$name = "cat_search";
-					$params = $catParams;
+					$csfParams = $catParams;
 					break;
 				default:
 					$configs = CustomSearchFieldUtil::getConfig();
 					$prefix = CustomSearchFieldUtil::PLUGIN_PREFIX;
 					$name = "c_search";
-					//paramはそのまま
+					$csfParams = $params;
 			}
 
 			if(count($configs)){
@@ -87,14 +87,14 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                                "soy2prefix" => $prefix,
 	                                "type" => "number",
 	                                "name" => $name . "[" . $key . "_" . $t . "]",
-	                                "value" => (isset($params[$key . "_" . $t]) && strlen($params[$key . "_" . $t])) ? (int)$params[$key . "_" . $t] : null
+	                                "value" => (isset($csfParams[$key . "_" . $t]) && strlen($csfParams[$key . "_" . $t])) ? (int)$csfParams[$key . "_" . $t] : null
 	                            ));
 
 								$obj->addSelect("custom_search_" . $key . "_" . $t . "_select", array(
 									"soy2prefix" => $prefix,
 									"name" => $name . "[" . $key . "_" . $t . "]",
 									"options" => range(1, 9),	//決め打ち @ToDo管理画面で指定できるようにしたい
-									"selected" => (isset($params[$key . "_" . $t]) && strlen($params[$key . "_" . $t])) ? (int)$params[$key . "_" . $t] : null
+									"selected" => (isset($csfParams[$key . "_" . $t]) && strlen($csfParams[$key . "_" . $t])) ? (int)$csfParams[$key . "_" . $t] : null
 								));
 	                        }
 	                        break;
@@ -115,7 +115,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                                    "type" => "checkbox",
 	                                    "name" => $name . "[" . $key . "][]",
 	                                    "value" => $o,
-	                                    "selected" => (isset($params[$key]) && is_array($params[$key]) && in_array($o, $params[$key])),
+	                                    "selected" => (isset($csfParams[$key]) && is_array($csfParams[$key]) && in_array($o, $csfParams[$key])),
 	                                    "label" => $o,
 	                                    "elementId" => "custom_search_" . $key . "_" . $i
 	                                ));
@@ -128,7 +128,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                                "soy2prefix" => $prefix,
 	                                "name" => $name . "[" . $key . "][]",
 	                                "options" => $opt,
-	                                "selected" => (isset($params[$key][0])) ? $params[$key][0] : null
+	                                "selected" => (isset($csfParams[$key][0])) ? $csfParams[$key][0] : null
 	                            ));
 	                        }
 	                        break;
@@ -144,9 +144,9 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                                if(!strlen($o)) continue;
 
 	                                if(isset($field["default"]) && $field["default"] == 1){
-	                                    $selected = ((!isset($params[$key]) && $i === 0) || (isset($params[$key]) && $o === $params[$key]));
+	                                    $selected = ((!isset($csfParams[$key]) && $i === 0) || (isset($csfParams[$key]) && $o === $csfParams[$key]));
 	                                }else{
-	                                    $selected = (isset($params[$key]) && $o === $params[$key]);
+	                                    $selected = (isset($csfParams[$key]) && $o === $csfParams[$key]);
 	                                }
 
 	                                $obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
@@ -164,7 +164,7 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                                    "type" => "checkbox",
 	                                    "name" => $name . "[" . $key . "][]",
 	                                    "value" => $o,
-	                                    "selected" => (isset($params[$key]) && is_array($params[$key]) && in_array($o, $params[$key])),
+	                                    "selected" => (isset($csfParams[$key]) && is_array($csfParams[$key]) && in_array($o, $csfParams[$key])),
 	                                    "label" => $o,
 	                                    "elementId" => "custom_search_" . $key . "_" . $i
 	                                ));
@@ -185,18 +185,30 @@ function soyshop_custom_search_field($html, $htmlObj){
 	                            "soy2prefix" => $prefix,
 	                            "name" => $name . "[" . $key . "]",
 	                            "options" => $options,
-	                            "selected" => (isset($params[$key])) ? $params[$key] : false
+	                            "selected" => (isset($csfParams[$key])) ? $csfParams[$key] : false
 	                        ));
 	                        break;
 	                    default:
 	                        $obj->addInput("custom_search_" . $key, array(
 	                            "soy2prefix" => $prefix,
 	                            "name" => $name . "[" . $key . "]",
-	                            "value" => (isset($params[$key]) && is_string($params[$key])) ? $params[$key] : null
+	                            "value" => (isset($csfParams[$key]) && is_string($csfParams[$key])) ? $csfParams[$key] : null
 	                        ));
 	                }
 					if(!$isContinue) continue;
 				}
+			}
+		}
+
+		//簡易予約カレンダー
+		if(SOYShopPluginUtil::checkIsActive("reserve_calendar")){
+			foreach(array("start", "end") as $t){
+				$obj->addInput("custom_search_reserve_calendar_" . $t, array(
+					"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+					"type" => "text",
+					"name" => "c_search[reserve_calendar_" . $t . "]",
+					"value" => (isset($params["reserve_calendar_" . $t]) && strlen($params["reserve_calendar_" . $t])) ? $params["reserve_calendar_" . $t] : null
+				));
 			}
 		}
     }

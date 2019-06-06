@@ -2,7 +2,7 @@
 
 class CustomSearchFieldUtil{
 
-    const PLUGIN_PREFIX = "csf";    //csf:id="***"
+    const PLUGIN_PREFIX = "csf";        //csf:id="***"
     const PLUGIN_CATEGORY_PREFIX = "c_csf"; //c_csf:id="***"
 
     const TYPE_STRING = "string";
@@ -13,6 +13,9 @@ class CustomSearchFieldUtil{
     const TYPE_CHECKBOX = "checkbox";
     const TYPE_RADIO = "radio";
     const TYPE_SELECT = "select";
+
+	CONST CONVERT_MODE_START = 0;
+	const CONVERT_MODE_END = 1;
 
     public static function getConfig(){
         $config = SOYShop_DataSets::get("custom_search.config", array());
@@ -32,26 +35,26 @@ class CustomSearchFieldUtil{
     }
 
     public static function saveConfig($values){
-        return SOYShop_DataSets::put("custom_search.config", $values);
+            return SOYShop_DataSets::put("custom_search.config", $values);
     }
 
     public static function getCategoryConfig(){
-        return SOYShop_DataSets::get("custom_search.category", array());
+            return SOYShop_DataSets::get("custom_search.category", array());
     }
 
     public static function saveCategoryConfig($values){
-        return SOYShop_DataSets::put("custom_search.category", $values);
+            return SOYShop_DataSets::put("custom_search.category", $values);
     }
 
     public static function getSearchConfig(){
         return SOYShop_DataSets::get("custom_search.search_config", array(
             "search" => array(
-                "single" => 1,
-                "parent" => 1,
-                "child" => 0,
-                "download" => 1,
-                "set_mult_lang" => 0
-            )
+            	"single" => 1,
+            	"parent" => 1,
+            	"child" => 0,
+            	"download" => 1,
+            	"set_mult_lang" => 0
+        	)
         ));
     }
 
@@ -104,23 +107,56 @@ class CustomSearchFieldUtil{
     }
 
     public static function getCustomSearchItemListPages(){
-      static $list;
-      if(is_null($list)){
-        $list = array();
-        try{
-          $pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByType(SOYShop_Page::TYPE_LIST);
-        }catch(Exception $e){
-          return $list;
-        }
-        if(!count($pages)) return $list;
+        static $list;
+        if(is_null($list)){
+            $list = array();
+            try{
+                $pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByType(SOYShop_Page::TYPE_LIST);
+            }catch(Exception $e){
+                return $list;
+            }
+            if(!count($pages)) return $list;
 
-        foreach($pages as $page){
-          $moduleId = $page->getPageObject()->getModuleId();
-          if(isset($moduleId) && strpos($moduleId, "custom_search_field") === 0){
-            $list[$page->getId()] = $page->getName();
-          }
+            foreach($pages as $page){
+                $moduleId = $page->getPageObject()->getModuleId();
+                if(isset($moduleId) && strpos($moduleId, "custom_search_field") === 0){
+                    $list[$page->getId()] = $page->getName();
+                }
+            }
         }
-      }
-      return $list;
+        return $list;
     }
+
+	public static function str2timestamp($str, $mode = self::CONVERT_MODE_START){
+		if(!strlen($str)) return null;
+
+		//@ToDo フォーマットに合わせてバリエーションを増やす
+		if(strpos($str, "/")){	//YYYY/mm/ddの形式
+			$v = explode("/", $str);
+		}else if(strpos($str, "-")){	//YYYY-mm-ddの形式
+			$v = explode("-", $str);
+		}else{
+			//@ToDo YYYY年mm月dd日の場合
+		}
+
+		if(count($v) < 3) return null;
+
+		$v1 = (int)trim($v[0]);
+		if(strlen($v1) === 4){
+			$year = $v1;
+			$month = (int)trim($v[1]);
+			$day = (int)trim($v[2]);
+		}else{
+			// ?
+			$year = 0;
+			$month = 0;
+			$day = 0;
+		}
+
+		if($mode == self::CONVERT_MODE_START){
+			return mktime(0, 0, 0, $month, $day, $year);
+		}else{
+			return mktime(0, 0, 0, $month, $day + 1, $year) - 1;
+		}
+	}
 }

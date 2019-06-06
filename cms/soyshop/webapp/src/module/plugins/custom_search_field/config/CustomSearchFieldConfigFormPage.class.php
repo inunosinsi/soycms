@@ -114,6 +114,9 @@ class CustomSearchFieldConfigFormPage extends WebPage{
         $this->addLabel("example_tag_list", array(
             "text" => self::buildExampleTags()
         ));
+
+		//簡易予約カレンダーとの連携
+		DisplayPlugin::toggle("connect_reserve_calendar", SOYShopPluginUtil::checkIsActive("reserve_calendar"));
     }
 
     private function buildCreateForm(){

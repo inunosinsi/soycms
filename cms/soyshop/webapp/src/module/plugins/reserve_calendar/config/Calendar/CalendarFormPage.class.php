@@ -26,7 +26,7 @@ class CalendarFormPage extends WebPage{
 			$auto = (isset($_POST["auto_register"]) && $_POST["auto_register"]) ? 1 : 0;
 			ReserveCalendarUtil::saveAutoConfig($this->itemId, array("register" => $auto, "seat" => (int)$_POST["auto_seat"]));
 
-			if(isset($_POST["register"]) && isset($_POST["column"]) && count($_POST["column"]) && (int)$_POST["unsoldSeat"] > 0 && isset($_POST["labelId"])){
+			if(isset($_POST["register"]) && isset($_POST["column"]) && count($_POST["column"]) && (int)$_POST["unsoldSeat"] >= 0 && isset($_POST["labelId"])){
 
 				$price = (int)$_POST["price"];
 				$seat = (int)$_POST["unsoldSeat"];

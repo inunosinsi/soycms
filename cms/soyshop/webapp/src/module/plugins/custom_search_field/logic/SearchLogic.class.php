@@ -354,11 +354,21 @@ class SearchLogic extends SOY2LogicBase{
 			if(SOYShopPluginUtil::checkIsActive("reserve_calendar")){
 				//検索用のデータを作成する
 				SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();
-				$subquery = "SELECT item_id FROM soyshop_reserve_calendar_schedule sch ".
-							"INNER JOIN soyshop_reserve_calendar_schedule_search search ".
-							"ON sch.id = search.schedule_id ".
-							"WHERE search.schedule_date >= " . time();
-				$this->where["reserve_calendar"] = "i.id IN (" . $subquery . ")";
+
+				if(isset($_GET["c_search"]["reserve_calendar_start"]) || isset($_GET["c_search"]["reserve_calendar_start"])){
+					$start = (isset($_GET["c_search"]["reserve_calendar_start"]) && strlen($_GET["c_search"]["reserve_calendar_start"])) ? CustomSearchFieldUtil::str2timestamp($_GET["c_search"]["reserve_calendar_start"], CustomSearchFieldUtil::CONVERT_MODE_START) : null;
+					$end = (isset($_GET["c_search"]["reserve_calendar_end"]) && strlen($_GET["c_search"]["reserve_calendar_end"])) ? CustomSearchFieldUtil::str2timestamp($_GET["c_search"]["reserve_calendar_end"], CustomSearchFieldUtil::CONVERT_MODE_END) : null;
+					if(is_null($start)) $start = time();	//もしかしたら0の方が良いかも
+
+					$subquery = "SELECT item_id FROM soyshop_reserve_calendar_schedule sch ".
+								"INNER JOIN soyshop_reserve_calendar_schedule_search search ".
+								"ON sch.id = search.schedule_id ".
+								"WHERE search.schedule_date >= " . $start;
+					if(is_numeric($end)) $subquery .= " AND search.schedule_date <= " . $end;
+					$this->where["reserve_calendar"] = "i.id IN (" . $subquery . ")";
+				}
+
+
 			}
 
             //多言語化
