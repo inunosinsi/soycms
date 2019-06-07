@@ -61,7 +61,7 @@ class DomainRootSiteLogic extends SOY2LogicBase{
 
 		$tmp[] = "# 常にhttpsでアクセスさせる（httpでのアクセスをhttpsにリダイレクトする）";
 		$tmp[] = "#RewriteCond %{HTTPS} =off";
-		$tmp[] = "#RewriteRule ^(.*)$ https://%{HTTP_HOST}/%{REQUEST_URI} [R=301,L,QSA]";
+		$tmp[] = "#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,QSA]";
 		$tmp[] = "";
 		$tmp[] = 'RewriteCond %{REQUEST_FILENAME} !-f';
 		$tmp[] = 'RewriteCond %{REQUEST_FILENAME}/index.php !-f';
