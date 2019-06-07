@@ -60,7 +60,7 @@ class SOYInquiry_Column{
 		"DateWithoutDay" => "日付(日なし)",
 		"Prefecture" => "都道府県",
 		"Address" => "住所",
-//		"AddressJs" => "住所(JS版)",
+		"AddressJs" => "住所(JS版)",
 		"File" => "アップロード",
 		"Telephone" => "電話番号",
 		"MultiSingleText" => "分割1行テキスト",

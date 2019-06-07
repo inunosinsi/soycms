@@ -71,43 +71,52 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 
 		$value = $this->getValue();
 
-		$html[] = "郵便番号を入力して「住所検索」ボタンをクリックすると住所が表示されます。";
+		//$html[] = "郵便番号を入力して「住所検索」ボタンをクリックすると住所が表示されます。";
 
-		$html[] = '<table cellspacing="0" cellpadding="5" border="0" '. implode(" ",$attributes) .'>';
+		$html[] = '<div class="responsive">';
+		$html[] = '<table class="table" '. implode(" ",$attributes) .'>';
 		$html[] = '<tbody><tr>';
-		$html[] = '<td width="70">郵便番号：<br/></td>';
+		$html[] = '<td>郵便番号</td>';
 		$html[] = '<td>';
-		$html[] = '<input class="input-zip1" type="text" size="4" name="data['.$this->getColumnId().'][zip1]" value="'.htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8").'" style="ime-mode:inactive;"' . $required . '>-';
-		$html[] = '<input class="input-zip2" type="text" size="5" name="data['.$this->getColumnId().'][zip2]" value="'.htmlspecialchars($value["zip2"], ENT_QUOTES, "UTF-8").'" style="ime-mode:inactive;"' . $required . '>';
-		$html[] = '<span class="roll"><a href="javascript:void(0);" class="search-btn">住所検索</a></span>';
-		$html[] = '</td>';
+
+		$zip1 = (isset($value["zip1"])) ? htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8") : null;
+		$zip2 = (isset($value["zip2"])) ? htmlspecialchars($value["zip2"], ENT_QUOTES, "UTF-8") : null;
+		$html[] = '<input type="text" size="7" class="input-zip1" name="data['.$this->getColumnId().'][zip1]" value="'.$zip1.'"' . $required . '>';
+		$html[] = '-';
+		$html[] = '<input type="text" size="7" class="input-zip2" name="data['.$this->getColumnId().'][zip2]" value="'.$zip2.'"' . $required . '>';
+		$html[] = '<a href="javascript:void(0);" class="btn btn-primary search-btn">住所検索</a></td>';
 		$html[] = '</tr>';
 		$html[] = '<tr>';
-		$html[] = '<td>都道府県：</td>';
-		$html[] = '<td><select class="input-pref" name="data['.$this->getColumnId().'][prefecture]"' . $required . '>';
+		$html[] = '<td nowrap>都道府県</td>';
+		$html[] = '<td><select class="input-pref" name="data['.$this->getColumnId().'][prefecture]">';
 		$html[] = '<option value="">選択してください</option>';
 		foreach($this->prefecture as $id => $pref){
-			if($pref == $value["prefecture"] || $id == $value["prefecture"]){
-				$html[] ="<option value=\"" . $id . "\" selected=\"selected\">".$pref."</option>";
+			if($pref == $value["prefecture"]){
+				$html[] ="<option selected=\"selected\">".$pref."</option>";
 			}else{
-				$html[] ="<option value=\"" . $id . "\">".$pref."</option>";
+				$html[] ="<option>".$pref."</option>";
 			}
 		}
 		$html[] = '</select></td></tr>';
 
 		$html[] = '<tr>
-					<td>市区町村：</td>
-					<td><input class="input-city" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.htmlspecialchars($value["address1"], ENT_QUOTES, "UTF-8").'"' . $required . '></td>
+					<td>市区町村</td>
+					<td><input class="input-city" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.htmlspecialchars($value["address1"], ENT_QUOTES, "UTF-8").'"></td>
 				</tr>';
 		$html[] = '<tr>
-					<td>番地：</td>
-					<td><input type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.htmlspecialchars($value["address2"], ENT_QUOTES, "UTF-8").'"' . $required . '></td>
+					<td>番地</td>
+					<td><input class="input-town" type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.htmlspecialchars($value["address2"], ENT_QUOTES, "UTF-8").'"></td>
 				</tr>';
 		$html[] = '<tr>
-					<td colspan="2">建物名・部屋番号：
+					<td colspan="2">建物名・部屋番号
 					<input type="text" size="37" name="data['.$this->getColumnId().'][address3]" value="'.htmlspecialchars($value["address3"], ENT_QUOTES, "UTF-8").'" /></td>
 				</tr>';
 		$html[] = '</tbody></table>';
+		$html[] = '</div>';
+
+		$html[] = "<script>";
+		$html[] = file_get_contents(dirname(dirname(dirname(__FILE__))) . "/js/zip2address.js");
+		$html[] = "</script>";
 
 		return implode("\n",$html);
 	}
