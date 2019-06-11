@@ -1,7 +1,7 @@
 <?php
 
 class DeliveryTimeConfigListComponent extends HTMLList{
-	
+
 	function populateItem($entity){
 		$this->addInput("delivery_time", array(
 			"value" => $entity,
@@ -9,4 +9,3 @@ class DeliveryTimeConfigListComponent extends HTMLList{
 		));
 	}
 }
-?>

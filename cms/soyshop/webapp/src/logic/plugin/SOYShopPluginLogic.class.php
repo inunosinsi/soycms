@@ -193,4 +193,3 @@ class SOYShopPluginLogic extends SOY2LogicBase{
 		}
 	}
 }
-?>

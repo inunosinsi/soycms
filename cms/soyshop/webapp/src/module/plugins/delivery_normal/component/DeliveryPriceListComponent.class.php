@@ -1,7 +1,7 @@
 <?php
 
 class DeliveryPriceListComponent extends HTMLList{
-	
+
 	private $prices;
 
 	function populateItem($entity, $key, $counter, $length){
@@ -24,4 +24,3 @@ class DeliveryPriceListComponent extends HTMLList{
 		$this->prices = $prices;
 	}
 }
-?>
