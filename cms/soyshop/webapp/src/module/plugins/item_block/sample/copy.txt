@@ -9,6 +9,4 @@ function soyshop_item_block_plugin_#int#($html, $page){
 		include(dirname(__FILE__) . "/item_block_plugin.php");
 	}
 	soyshop_item_block_plugin($html, $page);
-
-	$obj->display();
 }
