@@ -37,8 +37,7 @@ class SearchLogic extends SOY2LogicBase{
         try{
             $res = $this->itemDao->executeQuery($sql, $this->binds);
         }catch(Exception $e){
-			var_dump($e);
-            return array();
+			return array();
         }
 
         if(!count($res)) return array();
@@ -47,7 +46,7 @@ class SearchLogic extends SOY2LogicBase{
         foreach($res as $v){
             $items[] = $this->itemDao->getObject($v);
         }
-
+		
         return $items;
     }
 
@@ -142,6 +141,16 @@ class SearchLogic extends SOY2LogicBase{
                 $catId = (int)trim($_GET["c_search"]["item_category"]);
                 if(isset($maps[$catId])){
                     $this->where["item_category"] = " i.item_category IN (" . implode(",", $maps[$catId]) . ")";
+                }
+            }
+
+			//親と子のカテゴリを加味
+			if(isset($_GET["c_search"]["parent_and_child_category"]) && is_numeric($_GET["c_search"]["parent_and_child_category"])){
+				//小カテゴリの商品も引っ張ってこれる様にする
+                $maps = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
+                $catId = (int)trim($_GET["c_search"]["parent_and_child_category"]);
+                if(isset($maps[$catId])){
+                    $this->where["parent_and_child_category"] = " (i.item_category IN (" . implode(",", $maps[$catId]) . ") OR i.id IN (SELECT item_type FROM soyshop_item WHERE item_category IN (" . implode(",", $maps[$catId]) . ")))";
                 }
             }
 

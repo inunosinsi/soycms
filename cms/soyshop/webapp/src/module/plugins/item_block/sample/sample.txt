@@ -25,7 +25,7 @@ function soyshop_item_block_plugin($html, $page){
 
 		$logic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.SearchLogic");
 
-		if(isset($categoryId)) $_GET["c_search"]["item_category"] = $categoryId;
+		if(isset($categoryId)) $_GET["c_search"]["parent_and_child_category"] = $categoryId;	//親子を両方調べる
 		$_GET["c_search"][$csfFieldId] = $csfValue;
 		$items = $logic->search(new SOYShop_SearchPage(), 1, $limit);
 
