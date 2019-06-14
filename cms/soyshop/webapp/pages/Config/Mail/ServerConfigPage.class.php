@@ -268,10 +268,10 @@ class ServerConfigPage extends WebPage{
 
     	$title = "SOY Shop テストメール " . date("Y-m-d H:i:s");
     	$content = "これはSOY Shopから送信したテストメールです。";
-			$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
+		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
 
     	$serverConfig = SOYShop_ServerConfig::load();
-			$mailLogic->sendMail($to, $title, $content, "テストメール送信先");
+		$mailLogic->sendMail($to, $title, $content, "テストメール送信先");
     }
 
     /**

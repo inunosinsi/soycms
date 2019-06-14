@@ -1310,28 +1310,30 @@ class SOY2Mail_SMTPLogic extends SOY2Mail implements SOY2Mail_SenderInterface{
 		}
 		if($this->isSMTPAuth && isset($this->esmtpOptions["AUTH"]) && is_array($this->esmtpOptions["AUTH"])){
 			$authTypes = $this->esmtpOptions["AUTH"];
-			if(in_array("DIGEST-MD5",$authTypes)){
-				$hostname = str_replace("ssl://", "", $this->host);
-				$this->smtpCommand("AUTH DIGEST-MD5");
-				$buff = $this->getSmtpResponse();
-				if(strlen($buff) < 5 || substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
-				$challenge = base64_decode(substr(trim($buff),4));
-				$response = SOY2Mail_SMTPAuth_DigestMD5::getResponse($this->user,$this->pass,$challenge,$hostname);
-				$this->smtpCommand(base64_encode($response));
-				while(true){
-					$buff = $this->getSmtpResponse();
-					if(substr($buff,0,3) == "334") break;
-					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
-					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
-				}
-				$this->smtpCommand("");
-				while(true){
-					$buff = $this->getSmtpResponse();
-					if(substr($buff,0,3) == "235") break;
-					if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
-					if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
-				}
-			}elseif(in_array("CRAM-MD5",$authTypes)){
+			/** DIGEST-MD5を廃止　CRAM-MD5から調べる **/
+			// if(in_array("DIGEST-MD5",$authTypes)){
+			// 	$hostname = str_replace("ssl://", "", $this->host);
+			// 	$this->smtpCommand("AUTH DIGEST-MD5");
+			// 	$buff = $this->getSmtpResponse();
+			// 	if(strlen($buff) < 5 || substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
+			// 	$challenge = base64_decode(substr(trim($buff),4));
+			// 	$response = SOY2Mail_SMTPAuth_DigestMD5::getResponse($this->user,$this->pass,$challenge,$hostname);
+			// 	$this->smtpCommand(base64_encode($response));
+			// 	while(true){
+			// 		$buff = $this->getSmtpResponse();
+			// 		if(substr($buff,0,3) == "334") break;
+			// 		if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
+			// 		if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
+			// 	}
+			// 	$this->smtpCommand("");
+			// 	while(true){
+			// 		$buff = $this->getSmtpResponse();
+			// 		if(substr($buff,0,3) == "235") break;
+			// 		if(substr($buff,0,3) == "501") throw new SOY2MailException("smtp login failed: wrong parameter");
+			// 		if(substr($buff,0,3) == "535") throw new SOY2MailException("smtp login failed: wrong id or password");
+			// 	}
+			// }elseif(in_array("CRAM-MD5",$authTypes)){
+			if(in_array("CRAM-MD5",$authTypes)){
 				$this->smtpCommand("AUTH CRAM-MD5");
 				$buff = $this->getSmtpResponse();
 				if(strlen($buff) < 5 || substr($buff,0,3) != "334") throw new SOY2MailException("smtp login failed");
