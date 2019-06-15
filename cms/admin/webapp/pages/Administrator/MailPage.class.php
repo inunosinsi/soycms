@@ -253,9 +253,9 @@ class MailPage extends WebPage{
 
 	function testSend($to){
 
-		$title = "SOY CMS テストメール " . date("Y-m-d H:i:s");
-		$content = "これはSOY CMSから送信したテストメールです。";
-
+		$title = CMSUtil::getCMSName() . " テストメール " . date("Y-m-d H:i:s");
+		$content = "これは" . CMSUtil::getCMSName() . "から送信したテストメールです。";
+		
 		$logic = SOY2LogicContainer::get("logic.mail.MailLogic");
 
 		$logic->sendTestMail($to);
