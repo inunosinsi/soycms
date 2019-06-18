@@ -12,6 +12,11 @@ class SOYShopAddPriceOnCalendarBase implements SOY2PluginAction{
 	 * @return array("label" => string, "price" => integer)
 	 */
 	function list($scheduleId){}
+
+	/**
+	 * @return array("key" => string, "label" => string)
+	 */
+	function getCsvItems(){}
 }
 
 class SOYShopAddPriceOnCalendarDeletageAction implements SOY2PluginDelegateAction{
@@ -27,6 +32,9 @@ class SOYShopAddPriceOnCalendarDeletageAction implements SOY2PluginDelegateActio
 				if(isset($list) && count($list)){
 					$this->_list[$moduleId] = $list;
 				}
+				break;
+			case "csv":	//CSV関連
+				$this->_list[$moduleId] = $action->getCsvItems();
 				break;
 			default:
 				if(strtolower($_SERVER['REQUEST_METHOD']) == "post"){

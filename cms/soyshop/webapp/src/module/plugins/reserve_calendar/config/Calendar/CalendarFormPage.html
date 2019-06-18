@@ -1,6 +1,7 @@
 <p class="notice" soy:display="updated">登録しました</p>
 <p class="notice" soy:display="removed">削除しました</p>
 <p class="error" soy:display="error">失敗しました</p>
+<p class="notice" soy:display="successed">一括登録を行いました</p>
 
 <div style="margin-bottom:10px;">
 	<a soy:id="reserve_calendar_link" class="button"></a>&nbsp;
@@ -55,6 +56,23 @@
 
 <br style="clear:both;">
 
+<h1>スケジュールをCSVから一括登録</h1>
+<form soy:id="export_form" id="export_form">
+	<input type="submit" name="export" value="フォーマットのダウンロード">
+</form>
+
+<br>
+
+<h3>CSVで一括登録</h3>
+<p class="notice always">CSVのフォーマットをダウンロードし、CSVを開き、記述に従ってスケジュールを記載します</p>
+<form soy:id="import_form">
+	<input type="file" name="import">&nbsp;
+	<input type="submit" name="import" value="一括登録" onclick="return confirmBeforeCollectiveRegister();">
+</form><br>
+<h2>CSVの一括登録の際のラベルID一覧</h2>
+<p soy:id="label_list_string"></p>
+<br><br>
+
 <style type="text/css" soy:id="calendar_css"></style>
 
 <script>
@@ -71,5 +89,14 @@ function redirectAfterSelectOfSch(){
 	}
 	r += "?plugin=reserve_calendar&calendar&item_id=" + itemId + "&y=" + $("#year_select").val() + "&m=" + $("#month_select").val();
 	location.href = r;
+}
+
+$("#export_form").attr("target","download_frame");
+$("#export_form").submit(function(){
+	setTimeout(function(){location.reload();},1000);
+});
+
+function confirmBeforeCollectiveRegister(){
+	return confirm('<!-- soy:id="item_name" /-->のスケジュールの一括登録の実行でお間違いないですか？');
 }
 </script>

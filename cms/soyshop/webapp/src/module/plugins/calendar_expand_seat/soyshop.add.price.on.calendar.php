@@ -40,5 +40,12 @@ class CalendarExpandSeatAddPriceOnCalendar extends SOYShopAddPriceOnCalendarBase
 		return array("label" => "子供料金", "price" => $price);
 	}
 
+	/**
+	 * @return array("key" => string, "label" => string)
+	 */
+	function getCsvItems(){
+		return array("key" => "child_price", "label" => "子供料金");
+	}
+
 }
 SOYShopPlugin::extension("soyshop.add.price.on.calendar", "calendar_expand_seat", "CalendarExpandSeatAddPriceOnCalendar");

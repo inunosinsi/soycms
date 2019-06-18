@@ -24,7 +24,8 @@ class CalendarFormPage extends WebPage{
 
 			//自動登録
 			$auto = (isset($_POST["auto_register"]) && $_POST["auto_register"]) ? 1 : 0;
-			ReserveCalendarUtil::saveAutoConfig($this->itemId, array("register" => $auto, "seat" => (int)$_POST["auto_seat"]));
+			$autoSeat = (isset($_POST["auto_seat"]) && is_numeric($_POST["auto_seat"])) ? (int)$_POST["auto_seat"] : 0;
+			ReserveCalendarUtil::saveAutoConfig($this->itemId, array("register" => $auto, "seat" => $autoSeat));
 
 			if(isset($_POST["register"]) && isset($_POST["column"]) && count($_POST["column"]) && (int)$_POST["unsoldSeat"] >= 0 && isset($_POST["labelId"])){
 
@@ -67,6 +68,22 @@ class CalendarFormPage extends WebPage{
 					$this->config->redirect("removed&calendar&item_id=" . $this->itemId . "&y=" . $this->y . "&m="  . $this->m);
 				}
 			}
+
+			//CSV一括登録用のフォーマットのダウンロード
+			if(isset($_POST["export"])){
+				SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ExportLogic")->export();
+				exit;
+			}
+
+			if(isset($_POST["import"])){
+				//一括登録
+				if(SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ImportLogic", array("itemId" => $this->itemId))->import()){
+					$this->config->redirect("successed&calendar&item_id=" . $this->itemId . "&y=" . $this->y . "&m="  . $this->m);
+				//失敗
+				}else{
+					$this->config->redirect("error&calendar&item_id=" . $this->itemId . "&y=" . $this->y . "&m="  . $this->m);
+				}
+			}
 		}
 
 		$this->config->redirect("updated&calendar&item_id=" . $this->itemId . "&y=" . $this->y . "&m="  . $this->m);
@@ -78,7 +95,13 @@ class CalendarFormPage extends WebPage{
 
 		DisplayPlugin::toggle("removed", (isset($_GET["removed"])));
 		DisplayPlugin::toggle("error", (isset($_GET["error"])));
+		DisplayPlugin::toggle("successed", (isset($_GET["successed"])));
 
+		self::buildCalendarForm();
+		self::buildImExportForm();
+	}
+
+	private function buildCalendarForm(){
 		$item = soyshop_get_item_object($this->itemId);
 
 		$this->addLink("reserve_calendar_link", array(
@@ -171,6 +194,47 @@ class CalendarFormPage extends WebPage{
 		$this->addLabel("calendar_css", array(
 			"html" => file_get_contents(SOY2::RootDir() . "module/plugins/reserve_calendar/css/calendar.css")
 		));
+	}
+
+	private function buildImExportForm(){
+		$this->addForm("export_form");
+
+		$this->addForm("import_form", array(
+			"ENCTYPE" => "multipart/form-data"
+		));
+
+		$this->addLabel("item_name", array(
+			"text" => soyshop_get_item_object($this->itemId)->getName()
+		));
+
+		$this->addLabel("label_list_string", array(
+			"html" => self::buildLabelListTable()
+		));
+	}
+
+	private function buildLabelListTable(){
+		if(!is_array($GLOBALS["labelList"]) || !count($GLOBALS["labelList"])) return "";
+
+		$html = array();
+		$html[] = "<table class=\"form-table\" style=\"margin-top:10px;width:20%;float:left;\">";
+		$html[] = "<thead>";
+		$html[] = "<tr>";
+		$html[] = "<th>ラベルID</th>";
+		$html[] = "<th>ラベル</th>";
+		$html[] = "</tr>";
+		$html[] = "</thead>";
+		$html[] = "<tbody>";
+		foreach($GLOBALS["labelList"] as $labelId => $label){
+			$html[] = "<tr>";
+			$html[] = "<td>" . $labelId . "</td>";
+			$html[] = "<td>" . $label . "</td>";
+			$html[] = "</tr>";
+		}
+		$html[] = "</tbody>";
+		$html[] = "</table>";
+		$html[] = "<br style=\"clear:both;\">";
+
+		return implode("\n", $html);
 	}
 
 	private function schDao(){
