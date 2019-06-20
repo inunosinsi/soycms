@@ -46,7 +46,7 @@ class SearchLogic extends SOY2LogicBase{
         foreach($res as $v){
             $items[] = $this->itemDao->getObject($v);
         }
-		
+
         return $items;
     }
 
@@ -115,60 +115,66 @@ class SearchLogic extends SOY2LogicBase{
     }
 
     private function setCondition(){
+		$params = CustomSearchFieldUtil::getParameter("c_search");
+		$catParams = CustomSearchFieldUtil::getParameter("cat_search");
+
         if(!count($this->where)){
             //SOYShop_Itemの値
-            if(isset($_GET["c_search"]["item_name"]) && strlen($_GET["c_search"]["item_name"])) {
+            if(isset($params["item_name"]) && strlen($params["item_name"])) {
                 //日本語検索
                 if(SOYSHOP_PUBLISH_LANGUAGE == "jp"){
                     $this->where["item_name"] = "i.item_name LIKE :item_name";
-                    $this->binds[":item_name"] = "%" . trim($_GET["c_search"]["item_name"]) . "%";
+                    $this->binds[":item_name"] = "%" . trim($params["item_name"]) . "%";
                 //多言語検索
                 }else{
                     $this->where["item_name"] = "id IN (SELECT item_id FROM soyshop_item_attribute WHERE item_field_id = 'item_name_" . SOYSHOP_PUBLISH_LANGUAGE . "' AND item_value LIKE :item_name)";
-                    $this->binds[":item_name"] = "%" . trim($_GET["c_search"]["item_name"]) . "%";
+                    $this->binds[":item_name"] = "%" . trim($params["item_name"]) . "%";
                 }
             }
 
-            if(isset($_GET["c_search"]["item_code"]) && strlen($_GET["c_search"]["item_code"])) {
+            if(isset($params["item_code"]) && strlen($params["item_code"])) {
                 $this->where["item_code"] = "i.item_code LIKE :item_code";
-                $this->binds[":item_code"] = "%" . trim($_GET["c_search"]["item_code"]) . "%";
+                $this->binds[":item_code"] = "%" . trim($params["item_code"]) . "%";
             }
 
             //カテゴリー
-            if(isset($_GET["c_search"]["item_category"]) && is_numeric($_GET["c_search"]["item_category"])){
+            if(isset($params["item_category"]) && is_numeric($params["item_category"])){
 				//小カテゴリの商品も引っ張ってこれる様にする
                 $maps = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
-                $catId = (int)trim($_GET["c_search"]["item_category"]);
+                $catId = (int)trim($params["item_category"]);
                 if(isset($maps[$catId])){
                     $this->where["item_category"] = " i.item_category IN (" . implode(",", $maps[$catId]) . ")";
                 }
             }
 
 			//親と子のカテゴリを加味
-			if(isset($_GET["c_search"]["parent_and_child_category"]) && is_numeric($_GET["c_search"]["parent_and_child_category"])){
+			if(isset($params["parent_and_child_category"]) && is_numeric($params["parent_and_child_category"])){
 				//小カテゴリの商品も引っ張ってこれる様にする
                 $maps = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
-                $catId = (int)trim($_GET["c_search"]["parent_and_child_category"]);
+                $catId = (int)trim($params["parent_and_child_category"]);
                 if(isset($maps[$catId])){
                     $this->where["parent_and_child_category"] = " (i.item_category IN (" . implode(",", $maps[$catId]) . ") OR i.id IN (SELECT item_type FROM soyshop_item WHERE item_category IN (" . implode(",", $maps[$catId]) . ")))";
                 }
             }
 
             $pmin = "";$pmax = "";
-            if(isset($_GET["c_search"]["item_price_min"]) && strlen($_GET["c_search"]["item_price_min"]) && is_numeric($_GET["c_search"]["item_price_min"])) {
+            if(isset($params["item_price_min"]) && strlen($params["item_price_min"]) && is_numeric($params["item_price_min"])) {
                 $pmin = "i.item_price >= :item_price_min";
-                $this->binds[":item_price_min"] = (int)$_GET["c_search"]["item_price_min"];
+                $this->binds[":item_price_min"] = (int)$params["item_price_min"];
             }
 
-            if(isset($_GET["c_search"]["item_price_max"]) && strlen($_GET["c_search"]["item_price_max"]) && is_numeric($_GET["c_search"]["item_price_max"])) {
+            if(isset($params["item_price_max"]) && strlen($params["item_price_max"]) && is_numeric($params["item_price_max"])) {
                 $pmax = "i.item_price <= :item_price_max";
-                $this->binds[":item_price_max"] = (int)$_GET["c_search"]["item_price_max"];
+                $this->binds[":item_price_max"] = (int)$params["item_price_max"];
             }
 
             if(strlen($pmin) && strlen($pmax)){
                 $this->where["item_price"] = "(" . $pmin . " AND " . $pmax . ")";
             }else{
                 $this->where["item_price"] = $pmin . $pmax;
+				if(!strlen($this->where["item_price"])){
+					unset($this->where["item_price"]);
+				}
             }
 
             foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
@@ -178,21 +184,21 @@ class SearchLogic extends SOY2LogicBase{
                     case CustomSearchFieldUtil::TYPE_STRING:
                     case CustomSearchFieldUtil::TYPE_TEXTAREA:
                     case CustomSearchFieldUtil::TYPE_RICHTEXT:
-						if(isset($_GET["c_search"][$key])){
+						if(isset($params[$key])){
 							//文字列として検索
-							if(is_string($_GET["c_search"][$key]) && strlen($_GET["c_search"][$key])){
+							if(is_string($params[$key]) && strlen($params[$key])){
 								//否定として検索
 								if(isset($field["denial"]) && $field["denial"] == 1){
 									$this->where[$key] = "s." . $key . " != :" . $key;
-									$this->binds[":" . $key] = trim($_GET["c_search"][$key]);
+									$this->binds[":" . $key] = trim($params[$key]);
 								}else{
 									$this->where[$key] = "s." . $key . " LIKE :" . $key;
-									$this->binds[":" . $key] = "%" . trim($_GET["c_search"][$key]) . "%";
+									$this->binds[":" . $key] = "%" . trim($params[$key]) . "%";
 								}
 							//配列として検索
-							}else if(is_array($_GET["c_search"][$key]) && count($_GET["c_search"][$key])){
+							}else if(is_array($params[$key]) && count($params[$key])){
 								$w = array();
-	                            foreach($_GET["c_search"][$key] as $i => $v){
+	                            foreach($params[$key] as $i => $v){
 	                                if(!strlen($v)) continue;
 	                                $w[] = "s." . $key . " LIKE :" . $key . $i;
 	                                $this->binds[":" . $key . $i] = "%" . trim($v) . "%";
@@ -205,10 +211,10 @@ class SearchLogic extends SOY2LogicBase{
                     //範囲の場合
                     case CustomSearchFieldUtil::TYPE_RANGE:
 						//配列で渡す
-						if(isset($_GET["c_search"][$key]) && is_array($_GET["c_search"][$key])){
+						if(isset($params[$key]) && is_array($params[$key])){
 							$cnt = 0;
 							$rWhere = array();
-							$cnds = $_GET["c_search"][$key];
+							$cnds = $params[$key];
 							for($i = 0; $i < count($cnds); $i++){
 								$ws = "";
 								$we = "";
@@ -235,13 +241,13 @@ class SearchLogic extends SOY2LogicBase{
 						//通常の検索 @ToDo >= or <=の対応を考える
 						}else{
 							$ws = "";$we = "";    //whereのスタートとエンド
-	                        if(isset($_GET["c_search"][$key . "_start"]) && strlen($_GET["c_search"][$key . "_start"]) && is_numeric($_GET["c_search"][$key . "_start"])){
+	                        if(isset($params[$key . "_start"]) && strlen($params[$key . "_start"]) && is_numeric($params[$key . "_start"])){
 	                            $ws = "s." . $key . " >= :" . $key . "_start";
-	                            $this->binds[":" . $key . "_start"] = (int)$_GET["c_search"][$key . "_start"];
+	                            $this->binds[":" . $key . "_start"] = (int)$params[$key . "_start"];
 	                        }
-	                        if(isset($_GET["c_search"][$key . "_end"]) && strlen($_GET["c_search"][$key . "_end"]) && is_numeric($_GET["c_search"][$key . "_end"])){
+	                        if(isset($params[$key . "_end"]) && strlen($params[$key . "_end"]) && is_numeric($params[$key . "_end"])){
 	                            $we = "s." . $key .  " <= :" . $key . "_end";
-	                            $this->binds[":" . $key . "_end"] = (int)$_GET["c_search"][$key . "_end"];
+	                            $this->binds[":" . $key . "_end"] = (int)$params[$key . "_end"];
 	                        }
 	                        if(strlen($ws) && strlen($we)){
 	                            $this->where[$key] = "(" . $ws . " AND " . $we . ")";
@@ -256,26 +262,26 @@ class SearchLogic extends SOY2LogicBase{
 
                     //数字、ラジオボタン、セレクトボックス、チェックボックスの場合
                     default:
-						if(isset($_GET["c_search"][$key])){
-							if(is_array($_GET["c_search"][$key]) && count($_GET["c_search"][$key])){	//配列できた場合
+						if(isset($params[$key])){
+							if(is_array($params[$key]) && count($params[$key])){	//配列できた場合
 								$w = array();
-	                            foreach($_GET["c_search"][$key] as $i => $v){
+	                            foreach($params[$key] as $i => $v){
 	                                if(!strlen($v)) continue;
 	                                $w[] = "s." . $key . " LIKE :" . $key . $i;
 	                                $this->binds[":" . $key . $i] = "%" . trim($v) . "%";
 	                            }
 	                            if(count($w)) $this->where[$key] = "(" . implode(" OR ", $w) . ")";
-							}else if(is_string($_GET["c_search"][$key]) && strlen($_GET["c_search"][$key])){
+							}else if(is_string($params[$key]) && strlen($params[$key])){
 								$this->where[$key] = "s." . $key . " = :" . $key;
-	                            $this->binds[":" . $key] = $_GET["c_search"][$key];
+	                            $this->binds[":" . $key] = $params[$key];
 							}
 						}
                 }
             }
 
 			//フリーワード検索
-			if(isset($_GET["c_search"]["csf_free_word"]) && strlen($_GET["c_search"]["csf_free_word"])){
-				$v = htmlspecialchars($_GET["c_search"]["csf_free_word"], ENT_QUOTES, "UTF-8");
+			if(isset($params["csf_free_word"]) && strlen($params["csf_free_word"])){
+				$v = htmlspecialchars($params["csf_free_word"], ENT_QUOTES, "UTF-8");
 				$v = str_replace("　", " ", $v);
 				$words = explode(" ", $v);
 				$freeQueries = array();
@@ -298,7 +304,7 @@ class SearchLogic extends SOY2LogicBase{
 			}
 
             //カテゴリカスタムフィールド
-            if(isset($_GET["cat_search"]) && count($_GET["cat_search"])){
+            if(isset($catParams) && count($catParams)){
             	$catWhere = array();
             	foreach(CustomSearchFieldUtil::getCategoryConfig() as $key => $field){
                 	//まずは各タイプのfield SQLでkeyを指定する場合、s.を付けること。soyshop_custom_searchのaliasがs
@@ -307,22 +313,22 @@ class SearchLogic extends SOY2LogicBase{
 	                    case CustomSearchFieldUtil::TYPE_STRING:
 	                    case CustomSearchFieldUtil::TYPE_TEXTAREA:
 	                    case CustomSearchFieldUtil::TYPE_RICHTEXT:
-	                        if(isset($_GET["cat_search"][$key]) && strlen($_GET["cat_search"][$key])){
+	                        if(isset($catParams[$key]) && strlen($catParams[$key])){
 	                            $catWhere["c_" . $key] = $key . " LIKE :c_" . $key;
-	                            $this->binds[":c_" . $key] = "%" . trim($_GET["cat_search"][$key]) . "%";
+	                            $this->binds[":c_" . $key] = "%" . trim($catParams[$key]) . "%";
 	                        }
 	                        break;
 
 	                    //範囲の場合
 	                    case CustomSearchFieldUtil::TYPE_RANGE:
 	                        $ws = "";$we = "";    //whereのスタートとエンド
-	                        if(isset($_GET["cat_search"][$key . "_start"]) && strlen($_GET["cat_search"][$key . "_start"]) && is_numeric($_GET["cat_search"][$key . "_start"])){
+	                        if(isset($catParams[$key . "_start"]) && strlen($catParams[$key . "_start"]) && is_numeric($catParams[$key . "_start"])){
 	                            $ws = $key . " >= :c_" . $key . "_start";
-	                            $this->binds[":c_" . $key . "_start"] = (int)$_GET["cat_search"][$key . "_start"];
+	                            $this->binds[":c_" . $key . "_start"] = (int)$catParams[$key . "_start"];
 	                        }
-	                        if(isset($_GET["cat_search"][$key . "_end"]) && strlen($_GET["cat_search"][$key . "_end"]) && is_numeric($_GET["cat_search"][$key . "_end"])){
+	                        if(isset($catParams[$key . "_end"]) && strlen($catParams[$key . "_end"]) && is_numeric($catParams[$key . "_end"])){
 	                            $we = $key .  " <= :c_" . $key . "_end";
-	                            $this->binds[":c_" . $key . "_end"] = (int)$_GET["cat_search"][$key . "_end"];
+	                            $this->binds[":c_" . $key . "_end"] = (int)$catParams[$key . "_end"];
 	                        }
 	                        if(strlen($ws) && strlen($we)){
 	                            $catWhere[$key] = "(" . $ws . " AND " . $we . ")";
@@ -333,9 +339,9 @@ class SearchLogic extends SOY2LogicBase{
 
 	                    //チェックボックスの場合
 	                    case CustomSearchFieldUtil::TYPE_CHECKBOX:
-	                        if(isset($_GET["cat_search"][$key]) && count($_GET["cat_search"][$key])){
+	                        if(isset($catParams[$key]) && count($catParams[$key])){
 	                            $w = array();
-	                            foreach($_GET["cat_search"][$key] as $i => $v){
+	                            foreach($catParams[$key] as $i => $v){
 	                                if(!strlen($v)) continue;
 	                                $w[] = $key . " LIKE :c_" . $key . $i;
 	                                $this->binds[":c_" . $key . $i] = "%" . trim($v) . "%";
@@ -346,9 +352,9 @@ class SearchLogic extends SOY2LogicBase{
 
 	                    //数字、ラジオボタン、セレクトボックス
 	                    default:
-	                        if(isset($_GET["cat_search"][$key]) && strlen($_GET["cat_search"][$key])){
+	                        if(isset($catParams[$key]) && strlen($catParams[$key])){
 	                            $catWhere[$key] = "s." . $key . " = :c_" . $key;
-	                            $this->binds[":c_" . $key] = $_GET["cat_search"][$key];
+	                            $this->binds[":c_" . $key] = $catParams[$key];
 	                        }
 	                }
         		}
@@ -364,9 +370,9 @@ class SearchLogic extends SOY2LogicBase{
 				//検索用のデータを作成する
 				SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();
 
-				if(isset($_GET["c_search"]["reserve_calendar_start"]) || isset($_GET["c_search"]["reserve_calendar_start"])){
-					$start = (isset($_GET["c_search"]["reserve_calendar_start"]) && strlen($_GET["c_search"]["reserve_calendar_start"])) ? CustomSearchFieldUtil::str2timestamp($_GET["c_search"]["reserve_calendar_start"], CustomSearchFieldUtil::CONVERT_MODE_START) : null;
-					$end = (isset($_GET["c_search"]["reserve_calendar_end"]) && strlen($_GET["c_search"]["reserve_calendar_end"])) ? CustomSearchFieldUtil::str2timestamp($_GET["c_search"]["reserve_calendar_end"], CustomSearchFieldUtil::CONVERT_MODE_END) : null;
+				if(isset($params["reserve_calendar_start"]) || isset($params["reserve_calendar_start"])){
+					$start = (isset($params["reserve_calendar_start"]) && strlen($params["reserve_calendar_start"])) ? CustomSearchFieldUtil::str2timestamp($params["reserve_calendar_start"], CustomSearchFieldUtil::CONVERT_MODE_START) : null;
+					$end = (isset($params["reserve_calendar_end"]) && strlen($params["reserve_calendar_end"])) ? CustomSearchFieldUtil::str2timestamp($params["reserve_calendar_end"], CustomSearchFieldUtil::CONVERT_MODE_END) : null;
 					if(is_null($start)) $start = time();	//もしかしたら0の方が良いかも
 
 					$subquery = "SELECT item_id FROM soyshop_reserve_calendar_schedule sch ".
@@ -376,8 +382,6 @@ class SearchLogic extends SOY2LogicBase{
 					if(is_numeric($end)) $subquery .= " AND search.schedule_date <= " . $end;
 					$this->where["reserve_calendar"] = "i.id IN (" . $subquery . ")";
 				}
-
-
 			}
 
             //多言語化

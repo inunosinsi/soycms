@@ -96,8 +96,28 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
 		return $list;
 	}
 
-	function getLowPriceAndHighPriceByItemId($itemId){
+	function getLowPriceAndHighPriceByItemId($itemId, $start = null, $end = null){
 		$sql = "SELECT MIN(price) AS MIN, MAX(price) AS MAX from soyshop_reserve_calendar_schedule WHERE item_id = :itemId";
+
+		//スケジュールの日時も加味
+		if(
+			(isset($start) && is_numeric($start)) ||
+			(isset($end) && is_numeric($end))
+		){
+			$q = array();
+			if(isset($start) && is_numeric($start)){
+				$q[] = "schedule_date >= " . $start;
+			}
+
+			if(isset($end) && is_numeric($end)){
+				$q[] = "schedule_date <= " . $end;
+			}
+
+			if(count($q)){
+				$sql .= " AND id IN (SELECT schedule_id FROM soyshop_reserve_calendar_schedule_search WHERE " . implode(" AND ", $q) .")";
+			}
+		}
+
 		try{
 			$res = $this->executeQuery($sql, array(":itemId" => $itemId));
 		}catch(Exception $e){

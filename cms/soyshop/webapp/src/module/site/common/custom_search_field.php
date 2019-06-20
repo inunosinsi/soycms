@@ -10,9 +10,9 @@ function soyshop_custom_search_field($html, $htmlObj){
 
         SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 
-        //GETの値を変数に入れておく。そのうちページャ対応を行わなければならないため
-        $params = (isset($_GET["c_search"])) ? $_GET["c_search"] : array();
-		$catParams = (isset($_GET["cat_search"])) ? $_GET["cat_search"] : array();
+        //検索条件はセッションから取得
+        $params = CustomSearchFieldUtil::getParameter("c_search");
+		$catParams = CustomSearchFieldUtil::getParameter("cat_search");
 
         //商品名
         $obj->addInput("custom_search_item_name", array(
@@ -198,18 +198,29 @@ function soyshop_custom_search_field($html, $htmlObj){
 					if(!$isContinue) continue;
 				}
 			}
-		}
 
-		//簡易予約カレンダー
-		if(SOYShopPluginUtil::checkIsActive("reserve_calendar")){
-			foreach(array("start", "end") as $t){
-				$obj->addInput("custom_search_reserve_calendar_" . $t, array(
-					"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-					"type" => "text",
-					"name" => "c_search[reserve_calendar_" . $t . "]",
-					"value" => (isset($params["reserve_calendar_" . $t]) && strlen($params["reserve_calendar_" . $t])) ? $params["reserve_calendar_" . $t] : null
-				));
+			//簡易予約カレンダー
+			if(SOYShopPluginUtil::checkIsActive("reserve_calendar")){
+				foreach(array("start", "end") as $t){
+					$obj->addInput("custom_search_reserve_calendar_" . $t, array(
+						"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+						"type" => "text",
+						"name" => "c_search[reserve_calendar_" . $t . "]",
+						"value" => (isset($params["reserve_calendar_" . $t]) && strlen($params["reserve_calendar_" . $t])) ? $params["reserve_calendar_" . $t] : null
+					));
+				}
 			}
+
+			$reqUri = $_SERVER["REQUEST_URI"];
+			if(strpos($reqUri, "?") !== false){
+				$reqUri = substr($reqUri, 0, strpos($reqUri, "?"));
+			}
+
+			//リセットボタン
+			$obj->addLink("reset_link", array(
+				"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+				"link" => $reqUri . "?reset"
+			));
 		}
     }
 

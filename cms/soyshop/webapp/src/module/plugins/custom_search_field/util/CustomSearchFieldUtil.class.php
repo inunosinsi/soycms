@@ -159,4 +159,19 @@ class CustomSearchFieldUtil{
 			return mktime(0, 0, 0, $month, $day + 1, $year) - 1;
 		}
 	}
+
+	public static function getParameter($key){
+		$session = SOY2ActionSession::getUserSession();
+		if(isset($_GET[$key])){
+			$session->setAttribute("soyshop_custom_search:" . $key, $_GET[$key]);
+			$params = $_GET[$key];
+		}else if(isset($_GET["reset"])){
+			$session->setAttribute("soyshop_custom_search:" . $key, array());
+			$params = array();
+		}else{
+			$params = $session->getAttribute("soyshop_custom_search:" . $key);
+			if(is_null($params)) $params = array();
+		}
+		return $params;
+	}
 }
