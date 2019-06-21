@@ -10,6 +10,39 @@ class ReserveCalendarOrderMail extends SOYShopOrderMail{
 
 		$bodies = array();
 
+		try{
+			$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($order->getId());
+		}catch(Exception $e){
+			$itemOrders = array();
+		}
+
+		//プラン詳細
+		if(count($itemOrders)){
+			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
+			$schDao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
+
+			$bodies[] = "";
+			$bodies[] = "予約詳細";
+			$bodies[] = "-----------------------------------------";
+
+			foreach($itemOrders as $itemOrder){
+				$attrs = $itemOrder->getAttributeList();
+				if(!isset($attrs["reserve_id"])) continue;
+
+				try{
+					$sch = $schDao->getScheduleByReserveId($attrs["reserve_id"]);
+				}catch(Exception $e){
+					continue;
+				}
+
+				$labels = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($itemOrder->getItemId());
+				if(isset($labels[$sch->getLabelId()])){
+					$bodies[] = $itemOrder->getItemName() . " " . $sch->getYear() . "-" . $sch->getMonth() . "-"  . $sch->getDay() . " " . $labels[$sch->getLabelId()];
+				}
+			}
+			$bodies[] = "";
+		}
+
 		foreach($order->getAttributeList() as $attrId => $attr){
 			if(strpos($attrId, "reserve_manager_composition") === false) continue;
 			$bodies[] = "\n" . $attr["name"] . "：" . $attr["value"];

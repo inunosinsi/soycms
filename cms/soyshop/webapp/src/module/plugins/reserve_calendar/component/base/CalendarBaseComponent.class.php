@@ -200,7 +200,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 					if($this->dspOtherMonthDate){
 						$lastDate = date("j", self::getPrevMonthLastDate($mm, $yy));
 						$int = $lastDate - $w + $j;
-						$html[] = self::createDayColumn($int, 0, 0, 0, true, $tt);
+						$html[] = self::createDayColumn($int, 0, 0, 0, $last, true, $tt);
 					}else{
 						$html[] = "			<td>&nbsp;</td>";
 					}

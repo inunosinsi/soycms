@@ -7,28 +7,30 @@ class CalendarExpandSeatOrderMail extends SOYShopOrderMail{
 	 * @return string
 	 */
 	function getMailBody(SOYShop_Order $order){
-
 		$bodies = array();
 
 		//内訳
-		$attrs = $order->getAttributeList();
-		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
 		try{
-			$resId = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO")->getByOrderId($order->getId())->getId();
+			$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($order->getId());
 		}catch(Exception $e){
-			$resId = null;
-		}
-		if(isset($resId)){
-			SOY2::import("module.plugins.calendar_expand_seat.util.ExpandSeatUtil");
-			$scheduleId = ExpandSeatUtil::getScheduleIdByReserveId($resId);
-			list($adultSeat, $childSeat) = ExpandSeatUtil::extractSeatCompositionByOrderId($order->getId());
-			$str = ExpandSeatUtil::buildBreakdown($scheduleId, $adultSeat, $childSeat);
-			$str = str_replace("<br>", "\n", $str);
-			$str = str_replace("&nbsp;", " ", $str);
-			$bodies[] = $str;
+			$itemOrders = array();
 		}
 
-		$bodies[] = "";	//改行
+		if(count($itemOrders)){
+			foreach($itemOrders as $itemOrder){
+				$attrs = $itemOrder->getAttributeList();
+				if(isset($attrs["reserve_id"])){
+					SOY2::import("module.plugins.calendar_expand_seat.util.ExpandSeatUtil");
+					$scheduleId = ExpandSeatUtil::getScheduleIdByReserveId($attrs["reserve_id"]);
+					list($adultSeat, $childSeat) = ExpandSeatUtil::extractSeatCompositionByOrderId($order->getId());
+					$str = ExpandSeatUtil::buildBreakdown($scheduleId, $adultSeat, $childSeat);
+					$str = str_replace("<br>", "\n", $str);
+					$str = str_replace("&nbsp;", " ", $str);
+					$bodies[] = $str;
+					$bodies[] = "";	//改行
+				}
+			}
+		}
 
 		return implode("\n", $bodies);
 	}

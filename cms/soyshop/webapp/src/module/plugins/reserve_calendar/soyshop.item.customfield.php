@@ -24,8 +24,9 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 	 * @param object htmlObj, object SOYShop_Item
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
+		//最安値と最高値
 		list($low, $high) = self::logic()->getLowPriceAndHighPriceByItemId($item->getId());
-		
+
 		$htmlObj->addLabel("schedule_price_min", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => number_format($low)
@@ -34,6 +35,18 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 		$htmlObj->addLabel("schedule_price_max", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => number_format($high)
+		));
+
+		//スケジュールの日付の範囲
+		list($start, $end) = self::dateLogic()->getSchedulePeriodByItemId($item->getId());
+		$htmlObj->addLabel("schedule_date_start", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => (isset($start) && is_numeric($start)) ? date("Y-m-d", $start) : ""
+		));
+
+		$htmlObj->addLabel("schedule_date_end", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => (isset($end) && is_numeric($end)) ? date("Y-m-d", $end) : ""
 		));
 	}
 
@@ -46,6 +59,12 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 	private function logic(){
 		static $logic;
 		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.PriceLogic");
+		return $logic;
+	}
+
+	private function dateLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.DateLogic");
 		return $logic;
 	}
 }

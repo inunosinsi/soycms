@@ -18,9 +18,6 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
      */
     abstract function getById($id);
 
-	/**
-	 * @return object
-	 */
 	abstract function getByOrderId($orderId);
 
 	/**

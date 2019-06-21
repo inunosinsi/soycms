@@ -7,12 +7,15 @@ class ReserveCalendarItemOrder extends SOYShopItemOrderBase{
 		SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
 		$resDao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
 		try{
-			$res = $resDao->getByOrderId($itemOrder->getOrderId());
+			$reserves = $resDao->getByOrderId($itemOrder->getOrderId());
 		}catch(Exception $e){
-			var_dump($e);
-			return;
+			$reserves = array();
 		}
 
+		if(!count($reserves)) return;
+
+		// @ToDo 複数個の注文の場合を検討
+		$res = $reserves[0];
 		$res->setSeat($itemOrder->getItemCount());
 		try{
 			$resDao->update($res);

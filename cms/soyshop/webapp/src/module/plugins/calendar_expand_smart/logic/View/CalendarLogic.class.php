@@ -56,7 +56,6 @@ class CalendarLogic extends CalendarBaseComponent{
 	}
 
 	function handleFunc($i, $cd, $wc, $da, $isOtherMonth){
-
 		$y = $this->year;
 		$m = $this->month;
 

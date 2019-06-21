@@ -13,6 +13,8 @@
 			$(tds[i]).addClass("after");
 		}
 	}
+
+	
 })();
 
 $(window).on('load orientationchange resize', function(){
