@@ -98,11 +98,13 @@ class UtilMultiLanguageUtil {
 
     public static function getMailConfig($target, $type, $lang){
         $key = "util_multi_language." . $target . "_" . $lang . "_" . $type;
-        return array(
+     	return array(
             "active" => SOYShop_DataSets::get($key . ".active", null),
             "title" => SOYShop_DataSets::get($key . ".title", null),
             "header" => SOYShop_DataSets::get($key . ".header", null),
-            "footer" => SOYShop_DataSets::get($key . ".footer", null)
+            "footer" => SOYShop_DataSets::get($key . ".footer", null),
+			"output" => SOYShop_DataSets::get($key . ".output", null),
+			"plugin" => SOYShop_DataSets::get($key . ".plugin", null)
         );
     }
 
@@ -112,6 +114,8 @@ class UtilMultiLanguageUtil {
         SOYShop_DataSets::put($key . ".title", @$values["title"]);
         SOYShop_DataSets::put($key . ".header", @$values["header"]);
         SOYShop_DataSets::put($key . ".footer", @$values["footer"]);
+		SOYShop_DataSets::put($key . ".output", @$values["output"]);
+        SOYShop_DataSets::put($key . ".plugin", @$values["plugin"]);
     }
 
     public static function getPageTitle($mode, $lang){

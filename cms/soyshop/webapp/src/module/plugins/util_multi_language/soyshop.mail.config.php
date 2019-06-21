@@ -48,4 +48,3 @@ class UtilMultiLanguageMailConfig extends SOYShopMailConfig{
 	}
 }
 SOYShopPlugin::extension("soyshop.mail.config", "util_multi_language", "UtilMultiLanguageMailConfig");
-?>

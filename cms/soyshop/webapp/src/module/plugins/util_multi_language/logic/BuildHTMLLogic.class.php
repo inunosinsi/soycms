@@ -24,6 +24,24 @@ class BuildHTMLLogic extends SOY2LogicBase{
 			$htmls[] = "<input name=\"Config[" . $lang . "][active]\" value=\"0\" type=\"radio\" id=\"active_no_" . $lang . "\" checked=\"checked\"><label for=\"active_no_" . $lang . "\">送信しない</label>";
 		}
 
+		$htmls[] = "<dt>メール本文出力設定</dt>";
+		$htmls[] = "<dd>";
+
+		$txt = "システム(購入状況等)から出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する";
+		if(isset($config["output"]) && $config["output"] == 1){
+			$htmls[] = "<label><input name=\"Config[" . $lang . "][output]\" value=\"1\" type=\"checkbox\" checked=\"checked\">" . $txt . "</label><br>";
+		}else{
+			$htmls[] = "<label><input name=\"Config[" . $lang . "][output]\" value=\"1\" type=\"checkbox\">" . $txt . "</label><br>";
+		}
+
+		$txt = "プラグイン(配送方法等)から出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する";
+		if(isset($config["plugin"]) && $config["plugin"] == 1){
+			$htmls[] = "<label><input name=\"Config[" . $lang . "][plugin]\" value=\"1\" type=\"checkbox\" checked=\"checked\">" . $txt . "</label>";
+		}else{
+			$htmls[] = "<label><input name=\"Config[" . $lang . "][plugin]\" value=\"1\" type=\"checkbox\">" . $txt . "</label>";
+		}
+		$html[] = "</dd>";
+
 		$title = (isset($config["title"])) ? $config["title"] : "";
 
 		$htmls[] = "</dd>";
