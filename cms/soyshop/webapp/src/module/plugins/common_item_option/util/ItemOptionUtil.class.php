@@ -64,7 +64,7 @@ class ItemOptionUtil {
 
 	private static function _buildOpt($name, $type, $fieldValue, $selected = null, $isBr = true, $editMode = false){
 		$opts = explode("\n", trim($fieldValue));
-		$selected = trim(htmlspecialchars($selected, ENT_QUOTES, "UTF-8"));
+		$selected = self::escapeString($selected);
 		if(!strlen($selected)) $selected = null;
 		//if(is_null($selected) && $editMode) $type = "text";	//管理画面で編集の場合は選択がnullの場合はテキストフォームを出力する
 
@@ -213,6 +213,28 @@ class ItemOptionUtil {
 		}catch(Exception $e){
 			return new SOYShop_ItemAttribute();
 		}
+	}
+
+	//文字列エスケープしつつ、エスケープしてはいけない文字列を元に戻す
+	private function escapeString($str){
+		$str = trim($str);
+		if(!strlen($str)) return "";
+		$str = htmlspecialchars($str, ENT_QUOTES, "UTF-8");
+
+		$old = array("#039;");
+		$new = array("'");
+
+		for($i = 0; $i < count($old); $i++){
+			switch($i){
+				case 0;	//&#039;を変換する
+					$str = str_replace("&", "", $str);
+					$str = str_replace("amp;", "", $str);
+					break;
+			}
+			$str = str_replace($old[$i], $new[$i], $str);
+		}
+
+		return $str;
 	}
 
 	private function itemOrderDao(){
