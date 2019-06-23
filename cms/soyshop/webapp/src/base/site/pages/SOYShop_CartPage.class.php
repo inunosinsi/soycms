@@ -16,7 +16,7 @@ class SOYShop_CartPage extends SOYShopPageBase{
 		SOYShopPlugin::invoke("soyshop.cart", array(
 			"mode" => "doOperation"
 		));
-				
+
 		$this->checkSSL();
 
 		SOY2::import("base.cart.cart", ".php");

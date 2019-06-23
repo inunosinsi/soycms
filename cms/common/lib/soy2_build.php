@@ -7156,6 +7156,10 @@ class HTMLPage extends SOYBodyComponentBase{
 	 */
 	function isModified(){
 		$filePath = $this->getCacheFilePath();
+		//キャッシュの出力に失敗した場合は強制的にキャッシュの生成 キャッシュの生成に失敗した時、キャッシュファイルの文字数が81になるので、81以下の場合は失敗と見なす
+		if(file_exists($filePath) && strlen(trim(file_get_contents($filePath))) <= 81){
+			return true;
+		}
 		$templateFilePath = $this->getTemplateFilePath();
 		$reflection = new ReflectionClass(get_class($this));
 		$classFilePath = $reflection->getFileName();
