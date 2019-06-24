@@ -6820,6 +6820,13 @@ class HTMLPage extends SOYBodyComponentBase{
 	protected $_soy2_page;
 	private $_soy2_body_element;
 	private $_soy2_head_element;
+
+	/**
+	 * キャッシュファイルの生成に失敗しているか判定する為の文字数
+	 * キャッシュファイルの生成に失敗すると白紙ページになってしまい、一定期間キャッシュが残ってしまう
+	 */
+	const CACHE_CONTENTS_LENGTH_MIN = 81;
+
 	function __construct(){
 		$this->prepare();
 	}
@@ -7157,8 +7164,17 @@ class HTMLPage extends SOYBodyComponentBase{
 	function isModified(){
 		$filePath = $this->getCacheFilePath();
 		//キャッシュの出力に失敗した場合は強制的にキャッシュの生成 キャッシュの生成に失敗した時、キャッシュファイルの文字数が81になるので、81以下の場合は失敗と見なす
-		if(file_exists($filePath) && strlen(trim(file_get_contents($filePath))) <= 81){
-			return true;
+		if(file_exists($filePath)){
+			$len = 0;
+			$fp = fopen($filePath, "r");
+			if($fp){
+				while ($line = fgets($fp)) {
+					$len += strlen(trim($line));
+					if($len > self::CACHE_CONTENTS_LENGTH_MIN) break;
+  				}
+			}
+			fclose($fp);
+			if($len <= self::CACHE_CONTENTS_LENGTH_MIN) return true;
 		}
 		$templateFilePath = $this->getTemplateFilePath();
 		$reflection = new ReflectionClass(get_class($this));
