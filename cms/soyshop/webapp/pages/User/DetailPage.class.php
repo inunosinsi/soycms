@@ -230,7 +230,7 @@ class DetailPage extends WebPage{
 		//1つしかなければそこにリンクする
 		if($count == 1){
 			try{
-				$orders = $orderDao->getByUserId($id);
+				$orders = $orderDao->getByUserIdIsRegistered($id);
 				$order = $orders[0];
 			}catch(Exception $e){
 				//
