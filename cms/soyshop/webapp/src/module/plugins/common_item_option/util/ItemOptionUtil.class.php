@@ -128,11 +128,11 @@ class ItemOptionUtil {
 		$key = "item_option_" . $k;
 
 		if(SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-			$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key . "_" . SOYSHOP_PUBLISH_LANGUAGE)->getValue());
+			$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key . "_" . self::convertConfigPrefix(SOYSHOP_PUBLISH_LANGUAGE))->getValue());
 			if(strlen($v[$prefix][$itemId][$k])) return $v[$prefix][$itemId][$k];
 
 			if(SOYSHOP_PUBLISH_LANGUAGE != $prefix){
-				$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key . "_" . $prefix)->getValue());
+				$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key . "_" . self::convertConfigPrefix($prefix))->getValue());
 				if(strlen($v[$prefix][$itemId][$k])) return $v[$prefix][$itemId][$k];
 			}
 		}
@@ -161,22 +161,22 @@ class ItemOptionUtil {
 
 	private static function _getFieldValueByItemOrderId($key, $itemOrderId, $prefix = "jp"){
 
-		if(SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-			$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . SOYSHOP_PUBLISH_LANGUAGE)->getValue());
-			if(strlen($v)) return $v;
-
-			if(SOYSHOP_PUBLISH_LANGUAGE != $prefix){
-				$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . $prefix)->getValue());
-				if(strlen($v)) return $v;
-			}
-
-		//管理画面での多言語化
-		}else if(defined("SOYSHOP_ADMIN_LANGUAGE") && SOYSHOP_ADMIN_LANGUAGE != "jp"){
-			$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . SOYSHOP_ADMIN_LANGUAGE)->getValue());
+		//管理画面での多言語化 管理画面優先
+		if(defined("SOYSHOP_ADMIN_LANGUAGE") && SOYSHOP_ADMIN_LANGUAGE != "jp"){
+			$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . self::convertConfigPrefix(SOYSHOP_ADMIN_LANGUAGE))->getValue());
 			if(strlen($v)) return $v;
 
 			if(SOYSHOP_ADMIN_LANGUAGE != $prefix){
-				$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . $prefix)->getValue());
+				$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . self::convertConfigPrefix($prefix))->getValue());
+				if(strlen($v)) return $v;
+			}
+		//公開側
+		}else if(SOYSHOP_PUBLISH_LANGUAGE != "jp"){
+			$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . self::convertConfigPrefix(SOYSHOP_PUBLISH_LANGUAGE))->getValue());
+			if(strlen($v)) return $v;
+
+			if(SOYSHOP_PUBLISH_LANGUAGE != $prefix){
+				$v = trim(self::_getByItemOrderId($itemOrderId, $key . "_" . self::convertConfigPrefix($prefix))->getValue());
 				if(strlen($v)) return $v;
 			}
 		}
@@ -213,6 +213,16 @@ class ItemOptionUtil {
 		}catch(Exception $e){
 			return new SOYShop_ItemAttribute();
 		}
+	}
+
+	//多言語のプレフィックスでプラグイン側で決めたプレフィックスに変換する 例：zhをcnに変換
+	private static function convertConfigPrefix($prefix = "jp"){
+		static $config;
+		if(is_null($config)){
+			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+			$config = UtilMultiLanguageUtil::getConfig();
+		}
+		return (isset($config[$prefix]["prefix"])) ? $config[$prefix]["prefix"] : $prefix;
 	}
 
 	//文字列エスケープしつつ、エスケープしてはいけない文字列を元に戻す
