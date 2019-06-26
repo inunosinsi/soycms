@@ -67,16 +67,21 @@ class CalendarLogic extends CalendarBaseComponent{
 
 				//残席があるか調べる
 				if(!$isOtherMonth && self::checkIsUnsoldSeat($i, $schId, $v["seat"])){
-					$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-primary schedule_button\" onclick=\"insert_schedule_form(this, " . $schId . ");\">" . self::getLabel($v["label_id"]) . "</a>";
+					$label = self::getLabel($v["label_id"]);
 
-					//価格の表示
-					if(isset($v["price"]) && isset($this->config["show_price"]) && $this->config["show_price"] == ReserveCalendarUtil::IS_SHOW){
-						$html[] = number_format($v["price"]) . "円";
+					//ラベル名から表示するか決める
+					if(ReserveCalendarUtil::checkLabelString($label, $this->year, $this->month, $i)){
+						$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-primary schedule_button\" onclick=\"insert_schedule_form(this, " . $schId . ");\">" . $label . "</a>";
 
-						//子供料金
-						$childPrice = ExpandSeatUtil::getChildPrice($schId);
-						if(isset($childPrice) && is_numeric($childPrice) && $v["price"] != $childPrice){
-							$html[] = "子 " . number_format($childPrice) . "円";
+						//価格の表示
+						if(isset($v["price"]) && isset($this->config["show_price"]) && $this->config["show_price"] == ReserveCalendarUtil::IS_SHOW){
+							$html[] = number_format($v["price"]) . "円";
+
+							//子供料金
+							$childPrice = ExpandSeatUtil::getChildPrice($schId);
+							if(isset($childPrice) && is_numeric($childPrice) && $v["price"] != $childPrice){
+								$html[] = "子 " . number_format($childPrice) . "円";
+							}
 						}
 					}
 				//残席がなければ、今のところ何もしない

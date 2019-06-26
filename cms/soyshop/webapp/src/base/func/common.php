@@ -742,3 +742,58 @@ function soyshop_build_item_option_html_on_item_order(SOYShop_ItemOrder $itemOrd
 
 	return implode("<br>", $html);
 }
+
+/**
+ * 時刻からタイムスタンプへ変換
+ * @param string $str, string mode:startとendがある
+ * @return integer
+ */
+function soyshop_convert_timestamp($str, $mode = "start"){
+	$array = explode("-", $str);
+
+	if(
+		(!isset($array[0]) || !isset($array[1]) || !isset($array[2])) ||
+		(!is_numeric($array[0]) || !is_numeric($array[1]) || !is_numeric($array[2]))
+	) {
+		return ($mode == "start") ? 0 : 2147483647;
+	}
+
+	if($mode == "start"){
+		return mktime(0, 0, 0, $array[1], $array[2], $array[0]);
+	}else{
+		return mktime(23, 59, 59, $array[1], $array[2], $array[0]);
+	}
+}
+
+function soyshop_convert_timestamp_on_array($array, $mode = "start"){
+	if(
+		(!isset($array["year"]) || !isset($array["month"]) || !isset($array["day"])) ||
+		(!is_numeric($array["year"]) || !is_numeric($array["month"]) || !is_numeric($array["day"]))
+	) {
+		return ($mode == "start") ? 0 : 2147483647;
+	}
+
+	if($mode == "start"){
+		return mktime(0, 0, 0, $array["month"], $array["day"], $array["year"]);
+	}else{
+		return mktime(23, 59, 59, $array["month"], $array["day"], $array["year"]);
+	}
+}
+
+function soyshop_shape_timestamp($timestamp, $mode="start"){
+	$array = explode("-", date("Y-m-d", $timestamp));
+	if($mode == "start"){
+		return mktime(0, 0, 0, $array[1], $array[2], $array[0]);
+	}else{
+		return mktime(23, 59, 59, $array[1], $array[2], $array[0]);
+	}
+}
+
+/**
+ * タイムスタンプから時刻へ変換
+ * @param integer $timestamp
+ * @return string
+ */
+function soyshop_convert_date_string($timestamp){
+	return ($timestamp == 0 || $timestamp == 2147483647) ? "" : date("Y-m-d", $timestamp);
+}

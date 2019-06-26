@@ -66,18 +66,22 @@ class CalendarLogic extends CalendarBaseComponent{
 
 				//残席があるか調べる
 				if(self::checkIsUnsoldSeat($i, $schId, $v["seat"])){
-					if($this->sync){
-						$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\"><button>" . self::getLabel($v["label_id"]) . "</button></a>";
-					//非同期ボタン
-					}else{
-						$html[] = "<button id=\"reserve_calendar_async_button_" . $schId . "\" onclick=\"AsyncReserveCalendar.add(this," . $schId . ");\">" . self::getLabel($v["label_id"]) . "</button>";
-					}
+					$label = self::getLabel($v["label_id"]);
 
-					//価格の表示
-					if(isset($v["price"]) && isset($this->config["show_price"]) && $this->config["show_price"] == ReserveCalendarUtil::IS_SHOW){
-						$html[] = number_format($v["price"]) . "円";
-					}
+					//ラベル名から表示するか決める
+					if(ReserveCalendarUtil::checkLabelString($label, $this->year, $this->month, $i)){
+						if($this->sync){
+							$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\"><button>" . $label . "</button></a>";
+						//非同期ボタン
+						}else{
+							$html[] = "<button id=\"reserve_calendar_async_button_" . $schId . "\" onclick=\"AsyncReserveCalendar.add(this," . $schId . ");\">" . $label . "</button>";
+						}
 
+						//価格の表示
+						if(isset($v["price"]) && isset($this->config["show_price"]) && $this->config["show_price"] == ReserveCalendarUtil::IS_SHOW){
+							$html[] = number_format($v["price"]) . "円";
+						}
+					}
 
 				//残席がなければ、今のところ何もしない
 				}else{

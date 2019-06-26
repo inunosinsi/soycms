@@ -154,6 +154,41 @@ class ReserveCalendarUtil{
 		SOYShop_DataSets::put("reserve_calendar.other_day_" . $itemId, $values);
 	}
 
+	/** 文字列から時間帯を取得してカレンダーにスケジュールを表示するか決める **/
+	public static function checkLabelString($label, $y, $m, $d){
+		$now = time();
+		if(soyshop_convert_timestamp_on_array(array("year" => $y, "month" => $m, "day" => $d)) > $now) return true;	//明日以降は必ずtrue
+
+		$label = trim($label);
+		if($label == "午前"){
+			$label = "11:00";
+		}
+
+		//半角に変換
+		$old = array("０", "１", "２", "３", "４", "５", "６", "７", "８", "９", "：", "ー");
+		$new = array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ":", "-");
+		for($i = 0; $i < count($old); $i++){
+			$label = str_replace($old[$i], $new[$i], $label);
+		}
+
+		if(strpos($label, "時") !== false){
+			preg_match('/\d{1,2}時$/', $label, $tmp);
+			if(isset($tmp[0])){
+				$label = str_replace("時", ":00", $label);
+			}
+		}
+
+		//00:00の形式でなければtrueを返す
+		preg_match('/\d{1,2}:\d{2}/', $label, $tmp);
+		if(!isset($tmp[0])) return true;
+
+		$v = explode(":", $label);
+		//念の為
+		if(!is_numeric($v[0]) || !is_numeric($v[1])) return true;
+
+		return (mktime($v[0], $v[1], 0, $m, $d, $y) > $now);
+	}
+
 	/** セッション **/
 	public static function getSessionValue($key){
 		$session = SOY2ActionSession::getUserSession();

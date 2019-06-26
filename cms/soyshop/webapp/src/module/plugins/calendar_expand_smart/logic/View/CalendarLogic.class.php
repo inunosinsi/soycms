@@ -86,17 +86,23 @@ class CalendarLogic extends CalendarBaseComponent{
 			foreach($sch as $schId => $v){
 
 				//残席があるか調べる
-				if(!$isForceHidden && self::checkIsUnsoldSeat($t, $schId, $v["seat"])){
-					if($this->sync){
-						$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\" class=\"btn btn-info schedule_button\">" . self::getLabel($v["label_id"]) . "</a>";
-					//非同期ボタン
-					}else{
-						$html[] = "<button id=\"reserve_calendar_async_button_" . $schId . "\" onclick=\"AsyncReserveCalendar.add(this," . $schId . ");\">" . self::getLabel($v["label_id"]) . "</button>";
-					}
 
-					//価格の表示
-					if(isset($v["price"]) && isset($this->config["show_price"]) && $this->config["show_price"] == ReserveCalendarUtil::IS_SHOW){
-						$html[] = number_format($v["price"]) . "円";
+				if(!$isForceHidden && self::checkIsUnsoldSeat($t, $schId, $v["seat"])){
+					$label = self::getLabel($v["label_id"]);
+
+					//ラベル名から表示するか決める
+					if(ReserveCalendarUtil::checkLabelString($label, $y, $m, $i)){
+						if($this->sync){
+							$html[] = "<a href=\"" . soyshop_get_cart_url(true) . "?a=add&schId=" . $schId . "\" class=\"btn btn-info schedule_button\">" . $label . "</a>";
+						//非同期ボタン
+						}else{
+							$html[] = "<button id=\"reserve_calendar_async_button_" . $schId . "\" onclick=\"AsyncReserveCalendar.add(this," . $schId . ");\">" . $label . "</button>";
+						}
+
+						//価格の表示
+						if(isset($v["price"]) && isset($this->config["show_price"]) && $this->config["show_price"] == ReserveCalendarUtil::IS_SHOW){
+							$html[] = number_format($v["price"]) . "円";
+						}
 					}
 
 
