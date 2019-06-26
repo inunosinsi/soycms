@@ -533,7 +533,7 @@ class EditPage extends WebPage{
 		));
 
 		$this->createAdd("attribute_list", "_common.Order.AttributeFormListComponent", array(
-			"list" => $attrs
+			"list" => self::addExtendAttributes($attrs)
 		));
 
 		$this->createAdd("customfield_list", "_common.Order.CustomFieldFormListComponent", array(
@@ -749,6 +749,30 @@ class EditPage extends WebPage{
 		))->getConfig();
 	}
 
+	private function addExtendAttributes($attrs){
+		if(!is_array($attrs) || !count($attrs)) return array();
+
+		//注文詳細の編集画面でattributeを増やせる拡張ポイント
+		SOYShopPlugin::load("soyshop.order.edit");
+		$extAttrsList = SOYShopPlugin::invoke("soyshop.order.edit", array(
+			"mode" => "attribute",
+		))->getAttributes();
+
+		if(!is_array($extAttrsList) || !count($extAttrsList)) return $attrs;
+
+		$attrIds = array_keys($attrs);
+
+		foreach($extAttrsList as $moduldId => $extAttrs){
+			foreach($extAttrs as $attrId => $extAttr){
+				if(!array_search($attrId, $attrIds)){
+					$attrs[$attrId] = $extAttr;
+				}
+			}
+		}
+
+		return $attrs;
+	}
+
 	private function getInstalledDeliveryModuleList(){
 		static $list;
 		if(is_array($list)) return $list;
@@ -864,7 +888,7 @@ class EditPage extends WebPage{
 
 	private function updateOrderAttribute(SOYShop_Order $order, $newAttributes){
 		$change = array();
-		$attributes = $order->getAttributeList();
+		$attributes = self::addExtendAttributes($order->getAttributeList());
 
 		foreach($attributes as $key => $array){
 			if(isset($newAttributes[$key])){

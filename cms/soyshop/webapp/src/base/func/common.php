@@ -797,3 +797,9 @@ function soyshop_shape_timestamp($timestamp, $mode="start"){
 function soyshop_convert_date_string($timestamp){
 	return ($timestamp == 0 || $timestamp == 2147483647) ? "" : date("Y-m-d", $timestamp);
 }
+
+function soyshop_file_put_contents($f, $v){
+	$dir = SOYSHOP_SITE_DIRECTORY . ".cache/var_export/";
+	if(!file_exists($dir)) mkdir($dir);
+	file_put_contents($dir . $f . ".txt", var_export($v, true) . "\n", FILE_APPEND);
+}
