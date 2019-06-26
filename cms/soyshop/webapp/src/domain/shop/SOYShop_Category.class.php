@@ -92,17 +92,28 @@ class SOYShop_Category {
 
        //多言語化プラグインを考慮した商品名の取得
     function getOpenCategoryName(){
-        static $attrDao;
+        static $attrDao, $lngCnf;
         if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
         if(!defined("SOYSHOP_MAIL_LANGUAGE")) define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
 
-        if(SOYSHOP_MAIL_LANGUAGE != "jp"){
-            if(is_null($attrDao)) $attrDao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+		if(SOYSHOP_MAIL_LANGUAGE != "jp"){
+            if(is_null($attrDao)) {
+				$attrDao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+				SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+				$lngCnf = UtilMultiLanguageUtil::getConfig();
+			}
+
             try{
                 $name = $attrDao->get($this->id, "category_name_" . SOYSHOP_MAIL_LANGUAGE)->getValue();
                 if(strlen($name)) return $name;
             }catch(Exception $e){
-                //
+                try{
+					$lng = (isset($lngCnf[SOYSHOP_MAIL_LANGUAGE]["prefix"])) ? $lngCnf[SOYSHOP_MAIL_LANGUAGE]["prefix"] : SOYSHOP_MAIL_LANGUAGE;
+					$name = $attrDao->get($this->id, "category_name_" . $lng)->getValue();
+	                if(strlen($name)) return $name;
+				}catch(Exception $e){
+					//
+				}
             }
         }
         return $this->name;
