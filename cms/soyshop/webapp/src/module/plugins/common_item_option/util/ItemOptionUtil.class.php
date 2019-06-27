@@ -226,7 +226,7 @@ class ItemOptionUtil {
 	}
 
 	//文字列エスケープしつつ、エスケープしてはいけない文字列を元に戻す
-	private function escapeString($str){
+	private static function escapeString($str){
 		$str = trim($str);
 		if(!strlen($str)) return "";
 		$str = htmlspecialchars($str, ENT_QUOTES, "UTF-8");
