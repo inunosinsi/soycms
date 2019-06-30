@@ -165,4 +165,3 @@ class SOYShop_Category {
         return $logic->getCategoryChain($this->id);
     }
 }
-?>

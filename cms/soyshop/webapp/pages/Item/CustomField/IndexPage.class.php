@@ -11,12 +11,12 @@ class IndexPage extends WebPage{
 		if(isset($_POST["create"])){
 			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 			$configs = SOYShop_ItemAttributeConfig::load();
-			
+
 			$custom_id = $_POST["custom_id"];
 
 			//ダウンロード販売用と多言語化プラグインのIDとバッティングしないようにする
 			if(
-				!preg_match('/^download_assistant_(.*)/', $custom_id) && 
+				!preg_match('/^download_assistant_(.*)/', $custom_id) &&
 				!preg_match('/^item_name_(.*)/', $custom_id)
 			){
 				$config = new SOYShop_ItemAttributeConfig();
@@ -31,7 +31,7 @@ class IndexPage extends WebPage{
 			}else{
 				SOY2PageController::jump("Item.CustomField?error=error");
 			}
-			
+
 		}
 
 		//update
@@ -56,7 +56,7 @@ class IndexPage extends WebPage{
 
 			$config = $configs[$fieldId];
 			$config->setConfig($_POST["config"]);
-			
+
 			SOYShop_ItemAttributeConfig::save($configs);
 		}
 
@@ -97,7 +97,7 @@ class IndexPage extends WebPage{
 				SOYShop_ItemAttributeConfig::save($tmpArray);
 			}
 		}
-		
+
 		//隠しモード　項目を一番下へ
 		if(isset($_POST["move_bottom"])){
 			$fieldId = $_POST["field_id"];
@@ -109,7 +109,7 @@ class IndexPage extends WebPage{
 			$currentKey = array_search($fieldId, $keys);
 			//最後の番号
 			$swap = count($keys) + 1;
-			
+
 			$tmp = $keys[$currentKey];
 			$keys[$currentKey] = $keys[$swap];
 			$keys[$swap] = $tmp;
@@ -123,7 +123,7 @@ class IndexPage extends WebPage{
 			}
 
 			SOYShop_ItemAttributeConfig::save($tmpArray);
-			
+
 		}
 
 		SOY2PageController::jump("Item.CustomField?updated");
@@ -131,11 +131,11 @@ class IndexPage extends WebPage{
 
 	function __construct(){
 		parent::__construct();
-		
+
 		$this->addModel("updated", array(
 			"visible" => (isset($_GET["updated"]))
 		));
-		
+
 		$this->addModel("error", array(
 			"visible" => (isset($_GET["error"]))
 		));
@@ -145,7 +145,7 @@ class IndexPage extends WebPage{
 
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		$config = SOYShop_ItemAttributeConfig::load();
-		
+
 		$types = SOYShop_ItemAttributeConfig::getTypes();
 		$this->addSelect("custom_type_select", array(
 			"options" => $types,
@@ -154,8 +154,24 @@ class IndexPage extends WebPage{
 
 		$this->createAdd("field_list", "_common.Item.FieldListComponent", array(
 			"list" => $config,
-			"types" => $types
+			"types" => $types,
+			"categories" => self::getCategoryList()
 		));
 	}
+
+	private function getCategoryList(){
+		try{
+			$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
+		}catch(Exception $e){
+			return array();
+		}
+
+		if(!count($categories)) return array();
+
+		$list = array();
+		foreach($categories as $category){
+			$list[$category->getId()] = $category->getName();
+		}
+		return $list;
+	}
 }
-?>

@@ -15,10 +15,10 @@
 	</div>
 
 	<div class="block_body clearfix">
-		
+
 		<p class="notice" soy:id="updated">更新しました</p>
 		<p class="notice" soy:id="error">入力したIDは使用できません</p>
-		
+
 		<table class="form_list">
 			<caption>カスタム項目</caption>
 			<tr>
@@ -73,6 +73,10 @@
 					<h5 style="margin-bottom:0;">高度な設定</h5>
 					<form method="post">
 						<dl>
+							<dt>カテゴリとの関連付け</dt>
+							<dd>
+								<select soy:id="show_input"><option></option></select>
+							</dd>
 							<dt>初期値</dt>
 							<dd>
 								<input type="text" class="text" soy:id="default_value" />
@@ -88,7 +92,7 @@
 							<dd>
 								<input type="text" class="text" soy:id="output" size="20" />
 							</dd>
-							
+
 							<dt>フォームの説明</dt>
 							<dd>
 								<input type="text" class="text" soy:id="description" size="20" />
@@ -169,7 +173,7 @@
 	<dl>
 		<dt><a soy:link="Item.CustomField.Config" href="javascript:void(0);">設定のインポート・エクスポート</a></dt>
 		<dd>カスタムフィールドの設定のインポート／エクスポートを行います。</dd>
-				
+
 		<dt><a soy:link="Site.Pages">ページ設定</a></dt>
 		<dd>ページを設定します</dd>
 

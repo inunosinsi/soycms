@@ -81,13 +81,60 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 
 		$html = array();
 		$list = SOYShop_ItemAttributeConfig::load();
+		if(!count($list)) return "";
+
+		$associationMode = false;	//カテゴリとの関連付けモード
 
 		foreach($list as $config){
 			$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : null;
 			$extraValues = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getExtraValuesArray() : null;
 
 			$html[] = $config->getForm($value, $extraValues);
+
+			//関連付けモードを起動するか調べる
+			if(!$associationMode && strlen($config->getShowInput()) && is_numeric($config->getShowInput())) $associationMode = true;
 		}
+
+		if(!$associationMode) return implode("\n", $html);
+
+		//カテゴリマップ
+		$map = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
+		if(!count($map)) return implode("\n", $html);
+
+		//カテゴリとの関連付けのJavaScript
+		$html[] = "<script>";
+
+		//カテゴリマップの連想配列を組み立てる
+		$html[] = "var customfield_category_map = {";
+		foreach($map as $categoryId => $children){
+			$html[] = "	\"" . $categoryId . "\" : [" . implode(",", $children) . "],";
+		}
+		$html[] = "};";
+
+		$html[] = "setInterval(function(){";
+		$html[] = 'var categoryId = $("#item_category").val();';
+		$html[] = 'var isCategory';
+
+		foreach($list as $config){
+			if(!strlen($config->getShowInput())) continue;
+			$html[] = 'isCategory = (categoryId == ' . $config->getShowInput() . ');';
+			$html[] = 'if(!isCategory){';	//親カテゴリの方にあるか調べる
+			$html[] = '	if(customfield_category_map[categoryId].length > 0){';
+			$html[] = '		isCategory = (customfield_category_map[categoryId].indexOf(' . $config->getShowInput(). ') >= 0);';
+			$html[] = '	}';
+			$html[] = '}';
+
+			$html[] = 'if(isCategory){';
+			$html[] = '	$("#custom_field_' . $config->getFieldId() . '_dt").show();';
+			$html[] = '	$("#custom_field_' . $config->getFieldId() . '").show();';
+			$html[] = '}else{';
+			$html[] = '	$("#custom_field_' . $config->getFieldId() . '_dt").hide();';
+			$html[] = '	$("#custom_field_' . $config->getFieldId() . '").hide();';
+			$html[] = '}';
+		}
+		$html[] = "}, 1000);";
+
+		$html[] = "</script>";
 
 		return implode("\n", $html);
 	}

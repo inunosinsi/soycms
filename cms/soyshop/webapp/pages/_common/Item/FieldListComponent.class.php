@@ -3,6 +3,7 @@
 class FieldListComponent extends HTMLList{
 
 	private $types;
+	private $categories;
 
 	protected function populateItem($entity, $key){
 
@@ -104,12 +105,19 @@ class FieldListComponent extends HTMLList{
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_' . $key . '\').toggle();',
-			"style" => ($entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getHideIfEmpty() || $entity->getOutput() || $entity->getDescription() || $entity->getExtraOutputs()) ? "background-color:yellow;" : ""
+			"style" => ($entity->getShowInput() || $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getHideIfEmpty() || $entity->getOutput() || $entity->getDescription() || $entity->getExtraOutputs()) ? "background-color:yellow;" : ""
 		));
 
 		//高度な設定 入力行
 		$this->addModel("field_config", array(
 			"attr:id" => "field_config_" . $key
+		));
+
+		//カテゴリとの連動
+		$this->addSelect("show_input", array(
+			"name" => "config[showInput]",
+			"options" => $this->categories,
+			"selected" => $entity->getShowInput()
 		));
 
 		//初期値
@@ -205,5 +213,9 @@ class FieldListComponent extends HTMLList{
 	}
 	function setTypes($types) {
 		$this->types = $types;
+	}
+
+	function setCategories($categories){
+		$this->categories = $categories;
 	}
 }
