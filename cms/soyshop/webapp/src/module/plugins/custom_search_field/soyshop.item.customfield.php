@@ -63,6 +63,11 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
                 "visible" => (strlen($csfValue))
             ));
 
+            $htmlObj->addModel($key . "_is_empty", array(
+                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+                "visible" => (!strlen($csfValue))
+            ));
+
             $htmlObj->addLabel($key, array(
                 "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
                 "html" => (isset($csfValue)) ? $csfValue : null
