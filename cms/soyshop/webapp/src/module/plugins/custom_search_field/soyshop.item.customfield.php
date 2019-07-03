@@ -27,17 +27,64 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
         self::prepare();
         $values = $this->dbLogic->getByItemId($item->getId());
 
+		$associationMode = false;	//カテゴリとの関連付けモード
+
         $html = array();
 
         SOY2::import("module.plugins." . self::FIELD_ID . ".component.FieldFormComponent");
-        foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
-            $html[] = "<dt>" . htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8") . " (" . CustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")</dt>";
-            $html[] = "<dd>";
+		$list = CustomSearchFieldUtil::getConfig();
+        foreach($list as $key => $field){
+			$html[] = "<dt id=\"csf_field_" . $key . "_dt\">" . htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8") . " (" . CustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")</dt>";
+            $html[] = "<dd id=\"csf_field_" . $key . "\">";
 
             $value = (isset($values[$key])) ? $values[$key] : null;
             $html[] = FieldFormComponent::buildForm($key, $field, $value);
             $html[] = "</dd>";
+
+			//関連付けモードを起動するか調べる
+			if(!$associationMode && isset($field["showInput"]) && is_numeric($field["showInput"])) $associationMode = true;
         }
+
+		if(!$associationMode) return implode("\n", $html);
+
+		//カテゴリマップ
+		$map = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
+		if(!count($map)) return implode("\n", $html);
+
+		//カテゴリとの関連付けのJavaScript
+		$html[] = "<script>";
+
+		//カテゴリマップの連想配列を組み立てる
+		$html[] = "var csf_category_map = {";
+		foreach($map as $categoryId => $children){
+			$html[] = "	\"" . $categoryId . "\" : [" . implode(",", $children) . "],";
+		}
+		$html[] = "};";
+
+		$html[] = "setInterval(function(){";
+		$html[] = 'var categoryId = $("#item_category").val();';
+		$html[] = 'var isCategory';
+
+		foreach($list as $key => $field){
+			if(!isset($field["showInput"]) || !is_numeric($field["showInput"])) continue;
+			$html[] = 'isCategory = (categoryId == ' . $field["showInput"] . ');';
+			$html[] = 'if(!isCategory){';	//親カテゴリの方にあるか調べる
+			$html[] = '	if(csf_category_map[categoryId].length > 0){';
+			$html[] = '		isCategory = (csf_category_map[categoryId].indexOf(' . $field["showInput"]. ') >= 0);';
+			$html[] = '	}';
+			$html[] = '}';
+
+			$html[] = 'if(isCategory){';
+			$html[] = '	$("#csf_field_' . $key . '_dt").show();';
+			$html[] = '	$("#csf_field_' . $key . '").show();';
+			$html[] = '}else{';
+			$html[] = '	$("#csf_field_' . $key . '_dt").hide();';
+			$html[] = '	$("#csf_field_' . $key . '").hide();';
+			$html[] = '}';
+		}
+		$html[] = "}, 1300);";
+
+		$html[] = "</script>";
 
         return implode("\n", $html);
     }
@@ -58,14 +105,21 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 				$csfValue = nl2br($csfValue);
 			}
 
+			$csfValueLength = strlen(trim(strip_tags($csfValue)));
+
             $htmlObj->addModel($key . "_visible", array(
                 "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                "visible" => (strlen($csfValue))
+                "visible" => ($csfValueLength > 0)
             ));
 
-            $htmlObj->addModel($key . "_is_empty", array(
+			$htmlObj->addModel($key . "_is_not_empty", array(
                 "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                "visible" => (!strlen($csfValue))
+                "visible" => ($csfValueLength > 0)
+            ));
+
+			$htmlObj->addModel($key . "_is_empty", array(
+                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+                "visible" => ($csfValueLength === 0)
             ));
 
             $htmlObj->addLabel($key, array(

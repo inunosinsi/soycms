@@ -154,24 +154,7 @@ class IndexPage extends WebPage{
 
 		$this->createAdd("field_list", "_common.Item.FieldListComponent", array(
 			"list" => $config,
-			"types" => $types,
-			"categories" => self::getCategoryList()
+			"types" => $types
 		));
-	}
-
-	private function getCategoryList(){
-		try{
-			$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
-		}catch(Exception $e){
-			return array();
-		}
-
-		if(!count($categories)) return array();
-
-		$list = array();
-		foreach($categories as $category){
-			$list[$category->getId()] = $category->getName();
-		}
-		return $list;
 	}
 }

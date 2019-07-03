@@ -84,8 +84,20 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 				}
 			}
 
+			$valueLength = strlen(trim(strip_tags($value)));
+
 			$page->addModel($config->getFieldId() . "_visible", array(
-				"visible" => (strlen(strip_tags($value)) > 0),
+				"visible" => ($valueLength > 0),
+				"soy2prefix" => SOYSHOP_SITE_PREFIX
+			));
+
+			$page->addModel($config->getFieldId() . "_is_not_empty", array(
+				"visible" => ($valueLength > 0),
+				"soy2prefix" => SOYSHOP_SITE_PREFIX
+			));
+
+			$page->addModel($config->getFieldId() . "_is_empty", array(
+				"visible" => ($valueLength === 0),
 				"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 

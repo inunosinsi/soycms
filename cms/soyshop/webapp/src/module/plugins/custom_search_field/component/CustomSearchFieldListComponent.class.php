@@ -28,7 +28,7 @@ class CustomSearchFieldListComponent extends HTMLList{
             "link" => "javascript:void(0)",
             "text" => "詳細設定",
             "onclick" => '$(\'#field_config_' . $key . '\').toggle();',
-            "style" => ((isset($entity["option"]) && is_array($entity["option"])) || (isset($entity["denial"]) && $entity["denial"] == 1)) ? "background-color:yellow;" : ""
+            "style" => ((isset($entity["option"]) && is_array($entity["option"])) || (isset($entity["denial"]) && $entity["denial"] == 1) || (isset($entity["showInput"]) && is_numeric($entity["showInput"]))) ? "background-color:yellow;" : ""
         ));
 
         /* 順番変更用 */
@@ -53,6 +53,13 @@ class CustomSearchFieldListComponent extends HTMLList{
             "link"=>"javascript:void(0);",
             "onclick"=>'if(confirm("delete \"' . $entity["label"] . '\"?")){$(\'#delete_submit_' . $key . '\').click();}return false;'
         ));
+
+		//カテゴリとの連動
+		$this->addSelect("show_input", array(
+			"name" => "config[showInput]",
+			"options" => soyshop_get_category_list(),
+			"selected" => (isset($entity["showInput"])) ? $entity["showInput"] : ""
+		));
 
 		// 否定モード　現時点では文字列のみ
 		$this->addModel("is_denial", array(

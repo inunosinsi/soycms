@@ -117,6 +117,21 @@
             <p class="close"></p>
         </form>
     </div>
+
+	<div style="margin:5px 25px;">
+		<h2>フィールドID_visible</h2>
+		<p>c_csf:id="<strong>フィールドID_visible</strong>"またはc_csf:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、c_csf:id="フィールドID"の値が空の時に表示されなくなります。<br>
+		c_csf:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、c_csf:id="フィールドID"の値が空ではない時に表示されます。</p>
+		<br>
+		<span>例:フィールドIDがsampleの時</span>
+<pre style="border:1px solid #000000;padding:3px 5px;">&lt;div <strong>c_csf:id="sample_visible"</strong>&gt;
+カスタムフィールドの値は<strong>&lt;!-- c_csf:id="sample" /--&gt;</strong>です。
+&lt;/div&gt;
+&lt;div <strong>c_csf:id="sample_is_empty"</strong>&gt;
+カスタムフィールドの値は空です。
+&lt;/div&gt;</pre>
+	</div>
+
 </div><!-- /block_body -->
 
 <h3 style="margin:10px 0;">テンプレートへの記述例</h3>

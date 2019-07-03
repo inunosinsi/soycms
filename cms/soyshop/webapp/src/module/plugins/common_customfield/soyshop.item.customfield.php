@@ -167,8 +167,10 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 				}
 			}
 
+			$valueLength = strlen(trim(strip_tags($value)));
+
 			$htmlObj->addModel($config->getFieldId() . "_visible", array(
-				"visible" => (strlen(strip_tags($value)) > 0),
+				"visible" => ($valueLength > 0),
 				"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 
@@ -281,11 +283,11 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 					"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 			$htmlObj->addModel($config->getFieldId()."_is_empty", array(
-					"visible" => strlen(trim($value)),
+					"visible" => ($valueLength > 0),
 					"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 			$htmlObj->addLabel($config->getFieldId()."_is_not_empty", array(
-					"visible" => !strlen(trim($value)),
+					"visible" => ($valueLength === 0),
 					"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 		}

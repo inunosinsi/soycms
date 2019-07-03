@@ -15,7 +15,7 @@ class SettingPage extends WebPage{
         SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
         $this->config = CustomSearchFieldUtil::getConfig();
         $this->dbLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
-        $this->categories = self::getCategories();
+        $this->categories = soyshop_get_category_objects();
         SOY2::import("domain.shop.SOYShop_Item");
 
         //言語設定
@@ -214,14 +214,6 @@ class SettingPage extends WebPage{
         $searchLogic->setLimit(50);    //仮
         $searchLogic->setCondition(self::getParameter("search_condition"));
         return $searchLogic->get();
-    }
-
-    private function getCategories(){
-        try{
-            return SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
-        }catch(Exception $e){
-            return array();
-        }
     }
 
     private function getParameter($key){

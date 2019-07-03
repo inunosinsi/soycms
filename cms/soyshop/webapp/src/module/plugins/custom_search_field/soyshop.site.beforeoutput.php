@@ -92,9 +92,21 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 					$csfValue = nl2br($csfValue);
 				}
 
+				$csfValueLength = strlen(trim(strip_tags($csfValue)));
+
 	            $page->addModel($key . "_visible", array(
 	                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX,
-	                "visible" => (strlen($csfValue))
+	                "visible" => ($csfValueLength > 0)
+	            ));
+
+				$page->addModel($key . "_is_not_empty", array(
+	                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX,
+	                "visible" => ($csfValueLength > 0)
+	            ));
+
+				$page->addModel($key . "_is_empty", array(
+	                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX,
+	                "visible" => ($csfValueLength === 0)
 	            ));
 
 	            $page->addLabel($key, array(
