@@ -34,7 +34,7 @@ class IndexPage extends WebPage{
         if(isset($_POST["update"])){
 
             $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-            $obj = $dao->getById($_POST["Category"]["id"]);
+            $obj = soyshop_get_category_object($_POST["Category"]["id"]);
             SOY2::cast($obj,(object)$_POST["Category"]);
 
             //設定する親カテゴリが自身だった場合
@@ -84,11 +84,8 @@ class IndexPage extends WebPage{
 
         $this->addForm("create_form");
 
-        $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-        $array = $dao->get();
-
         $this->createAdd("category_tree","MyTree", array(
-            "list" => $array
+            "list" => soyshop_get_category_objects()
         ));
 
         DisplayPlugin::toggle("custom_plugin", SOYShopPluginUtil::checkIsActive("common_category_customfield"));
@@ -118,8 +115,7 @@ class IndexPage extends WebPage{
      * 失敗時には false
      */
     function uploadImage($id){
-        $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-        $category = $dao->getById($id);
+        $category = soyshop_get_category_object($id);
 
         $urls = array();
 
@@ -175,4 +171,3 @@ class MyTree extends TreeComponent{
         return SOY2PageController::createLink("Item.Category.Detail.").$id;
     }
 }
-?>

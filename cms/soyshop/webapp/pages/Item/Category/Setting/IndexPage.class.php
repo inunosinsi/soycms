@@ -12,11 +12,8 @@ class IndexPage extends WebPage{
                 $catIds = $_POST["categories"];
 
                 foreach($catIds as $catId){
-                    try{
-                        $category = $categoryDao->getById($catId);
-                    }catch(Exception $e){
-                        continue;
-                    }
+					$category = soyshop_get_category_object($catId);
+                    if(is_null($category->getId())) continue;
 
                     //公開かどうか
                     if(isset($_POST["open_change"])){
@@ -35,11 +32,8 @@ class IndexPage extends WebPage{
 
             }else if(isset($_POST["order_change"])){
                 foreach($_POST["Order"] as $catId => $o){
-                    try{
-                        $category = $categoryDao->getById($catId);
-                    }catch(Exception $e){
-                        continue;
-                    }
+					$category = soyshop_get_category_object($catId);
+                    if(is_null($category->getId())) continue;
 
                     if(isset($o) && is_numeric($o) && $o > 0){
                         $category->setOrder($o);
@@ -71,9 +65,8 @@ class IndexPage extends WebPage{
 
         $selectParent = self::getParameter("parent");
 
-        $catList = self::getCategoryList();
         $this->addSelect("parent_select", array(
-            "options" => $catList,
+            "options" => soyshop_get_category_list(),
             "selected" => $selectParent,
             "onchange" => "redirectAfterSelect(this);"
         ));
@@ -90,7 +83,7 @@ class IndexPage extends WebPage{
 
         $this->addSelect("parent_change_select", array(
             "name" => "Parent",
-            "options" => $catList
+            "options" => soyshop_get_category_list()
         ));
 
         DisplayPlugin::toggle("custom_plugin", SOYShopPluginUtil::checkIsActive("common_category_customfield"));
@@ -123,22 +116,6 @@ class IndexPage extends WebPage{
             $list[] = $categoryDao->getObject($values);
         }
 
-        return $list;
-    }
-
-    private function getCategoryList(){
-        try{
-            $categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
-        }catch(Exception $e){
-            return array();
-        }
-
-        if(!count($categories)) return array();
-
-        $list = array();
-        foreach($categories as $category){
-            $list[$category->getId()] = $category->getName();
-        }
         return $list;
     }
 

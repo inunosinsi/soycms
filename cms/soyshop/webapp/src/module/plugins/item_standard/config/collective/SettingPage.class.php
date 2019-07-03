@@ -1,33 +1,33 @@
 <?php
 
 class SettingPage extends WebPage{
-	
+
 	private $configObj;
 	private $itemDao;
 	private $attrDao;
-	
+
 	private $categories = array();
-	
+
 	function __construct(){
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$this->categories = self::getCategories();
+		$this->categories = soyshop_get_category_objects();
 	}
-	
+
 	function doPost(){
 		if(isset($_POST["items"]) && count($_POST["items"]) && isset($_POST["Standard"])){
-			
+
 			//子商品生成
 			$logic = SOY2Logic::createInstance("module.plugins.item_standard.logic.ChildItemLogic");
 			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-			
+
 			foreach($_POST["items"] as $itemId){
 				foreach($_POST["Standard"] as $confId => $value){
 					if(strlen($value)){
 						$obj = self::get($itemId, $confId);
 						$obj->setValue(trim($value));
-						
+
 						//新規
 						if(is_null($obj->getItemId())){
 							$obj->setItemId($itemId);
@@ -37,7 +37,7 @@ class SettingPage extends WebPage{
 							}catch(Exception $e){
 								continue;
 							}
-							
+
 						//更新
 						}else{
 							try{
@@ -49,14 +49,14 @@ class SettingPage extends WebPage{
 					}
 				}
 			}
-			
+
 			//一旦ループをやめる
-			
+
 			$values = array();
 			foreach($_POST["Standard"] as $confId => $value){
 				if(strlen(trim($value))) $values[] = explode("\n", trim($value));
 			}
-			
+
 			if(count($values)){
 				$result;
 				$keyCnt = count($values);
@@ -73,7 +73,7 @@ class SettingPage extends WebPage{
 						}
 					}
 				}
-				
+
 				//整形
 				$list = array();
 				foreach($result as $res){
@@ -81,43 +81,43 @@ class SettingPage extends WebPage{
 						$list[] = $res;
 					}
 				}
-				
+
 				foreach($_POST["items"] as $itemId){
 					try{
 						$parent = $itemDao->getById($itemId);
 					}catch(Exception $e){
 						continue;
 					}
-					
+
 					//小商品のリセット
 					try{
 						$children = $itemDao->getByType($parent->getId());
 					}catch(Exception $e){
 						return;
 					}
-					
+
 					if(!count($children)) return;
-					
+
 					//データベース高速化のために完全削除
 					foreach($children as $child){
 						try{
 							$itemDao->delete($child->getId());
 						}catch(Exception $e){
-							
+
 						}
 					}
-					
+
 					//小商品の登録
 					$doExe = false;
 					foreach($list as $keys){
-						
+
 						$child = new SOYShop_Item();
 						$child = $logic->setChildItemName($child, $parent, $keys);
 						$child->setPrice((int)$parent->getPrice());
 						$child->setStock((int)$parent->getStock());
-						
+
 						$child = $logic->setParentInfo($child, $parent);
-						
+
 						try{
 							$itemDao->insert($child);
 							$doExe = true;
@@ -125,7 +125,7 @@ class SettingPage extends WebPage{
 							var_dump($e);
 						}
 					}
-					
+
 					//一度でも実行したら、親商品のタイプをGroupにする
 					if($doExe && $parent->getType() !== SOYShop_Item::TYPE_GROUP){
 						$parent->setType(SOYShop_Item::TYPE_GROUP);
@@ -136,40 +136,40 @@ class SettingPage extends WebPage{
 						}
 					}
 				}
-				
+
 			}
-			
+
 			$this->configObj->redirect("collective&updated");
 		}
 	}
-	
+
 	function execute(){
 		MessageManager::addMessagePath("admin");
-		
+
 		parent::__construct();
-		
+
 		self::buildSearchForm();
-		
+
 		$this->addForm("form");
-				
+
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$this->createAdd("item_list", "_common.Item.ItemListComponent", array(
 			"list" => self::getItems(),
 			"itemOrderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO"),
 			"categoriesDAO" => SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO"),
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"categories" => $this->categories,
+			"categories" => soyshop_get_category_objects(),
 			"config" => SOYShop_ShopConfig::load(),
 			"appLimit" => true
 		));
-		
+
 		$this->addLabel("standard_form_area", array(
 			"html" => SOY2Logic::createInstance("module.plugins." . $this->configObj->getModuleId() . ".logic.BuildFormLogic")->buildCollectiveFormArea()
 		));
 	}
-	
+
 	private function buildSearchForm(){
-		
+
 		//リセット
 		if(isset($_POST["search_condition"])){
 			foreach($_POST["search_condition"] as $key => $value){
@@ -182,7 +182,7 @@ class SettingPage extends WebPage{
 				}
 			}
 		}
-		
+
 		if(isset($_POST["search"]) && !isset($_POST["search_condition"])){
 			self::setParameter("search_condition", null);
 			$cnd = array();
@@ -190,70 +190,66 @@ class SettingPage extends WebPage{
 			$cnd = self::getParameter("search_condition");
 		}
 		//リセットここまで
-		
-		
+
+
 		$this->addModel("search_area", array(
 			"style" => (isset($cnd) && count($cnd)) ? "display:inline;" : "display:none;"
 		));
-		
+
 		$this->addForm("search_form");
-				
+
 		foreach(array("item_name", "item_code") as $t){
 			$this->addInput("search_" . $t, array(
 				"name" => "search_condition[" . $t . "]",
 				"value" => (isset($cnd[$t])) ? $cnd[$t] : ""
 			));
 		}
-		
-		$opts = array();
-		foreach($this->categories as $cat){
-			$opts[$cat->getId()] = $cat->getName();
-		}
+
 		$this->addSelect("search_item_category", array(
 			"name" => "search_condition[item_category]",
-			"options" => $opts,
+			"options" => soyshop_get_category_list(),
 			"selected" => $cnd["item_category"]
 		));
-		
+
 		$this->addCheckBox("search_item_is_open", array(
 			"name" => "search_condition[item_is_open][]",
 			"value" => SOYShop_Item::IS_OPEN,
 			"selected" => (isset($cnd["item_is_open"]) && in_array(SOYShop_Item::IS_OPEN, $cnd["item_is_open"])),
 			"label" => "公開"
 		));
-		
+
 		$this->addCheckBox("search_item_no_open", array(
 			"name" => "search_condition[item_is_open][]",
 			"value" => SOYShop_Item::NO_OPEN,
 			"selected" => (isset($cnd["item_is_open"]) && in_array(SOYShop_Item::NO_OPEN, $cnd["item_is_open"])),
 			"label" => "非公開"
 		));
-		
+
 		//カスタムサーチフィールド
 		SOY2::import("util.SOYShopPluginUtil");
 		$isCsf = SOYShopPluginUtil::checkIsActive("custom_search_field");
 		DisplayPlugin::toggle("custom_search_field", $isCsf);
-		
+
 		if($isCsf) self::buildCustomSearchForm($cnd);
 	}
-	
+
 	private function buildCustomSearchForm($cnd){
 		SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-		
+
 		SOY2::import("module.plugins.item_standard.component.CustomSearchFieldFormListComponent");
 		$this->createAdd("form_list", "CustomSearchFieldFormListComponent", array(
 			"list" => CustomSearchFieldUtil::getConfig(),
 			"conditions" => (isset($cnd["csf"]) && is_array($cnd["csf"])) ? $cnd["csf"] : array()
 		));
 	}
-	
+
 	private function getItems(){
 		$searchLogic = SOY2Logic::createInstance("module.plugins." . $this->configObj->getModuleId() . ".logic.SearchLogic");
 		$searchLogic->setLimit(50);	//仮
 		$searchLogic->setCondition(self::getParameter("search_condition"));
 		return $searchLogic->get();
 	}
-	
+
 	private function get($itemId, $confId){
 		try{
 			return $this->attrDao->get($itemId, $this->configObj->getModuleId() . "_plugin_" . $confId);
@@ -261,7 +257,7 @@ class SettingPage extends WebPage{
 			return new SOYShop_ItemAttribute();
 		}
 	}
-	
+
 	private function combine() {
 		$args = func_get_args();
 
@@ -283,15 +279,7 @@ class SettingPage extends WebPage{
 
 		return $result;
 	}
-	
-	private function getCategories(){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
-		}catch(Exception $e){
-			return array();
-		}
-	}
-	
+
 	private function getParameter($key){
 		if(array_key_exists($key, $_POST)){
 			$value = $_POST[$key];
@@ -304,9 +292,8 @@ class SettingPage extends WebPage{
 	private function setParameter($key,$value){
 		SOY2ActionSession::getUserSession()->setAttribute("Plugin.Standard:" . $key, $value);
 	}
-			
+
 	function setConfigObj($configObj) {
 		$this->configObj = $configObj;
 	}
 }
-?>

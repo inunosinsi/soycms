@@ -19,12 +19,6 @@ class AjaxPage extends WebPage {
 
 	function getCategories(){
 		SOY2HTMLFactory::importWebPage("_base.TreeComponent");
-
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		$array = $dao->get();
-
-		echo "<ul>" . TreeComponent::buildTree($array) . "</ul>";
-
+		echo "<ul>" . TreeComponent::buildTree(soyshop_get_category_objects()) . "</ul>";
 	}
-
 }

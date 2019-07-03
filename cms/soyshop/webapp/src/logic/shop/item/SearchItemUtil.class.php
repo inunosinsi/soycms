@@ -212,8 +212,7 @@ class SearchItemUtil extends SOY2LogicBase{
 		$useMultiCategory = ($config->getMultiCategory() == 1);
 
 		if($withChild && $categoryId){
-			$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-			$mapping = $categoryDAO->getMapping();
+			$mapping = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
 			$ids = (isset($mapping[$categoryId])) ? $mapping[$categoryId] : array();
 		}else{
 			$ids = array($categoryId);
@@ -263,8 +262,7 @@ class SearchItemUtil extends SOY2LogicBase{
     function countByCategoryId($categoryId, $withChild = false){
 
 		if($withChild){
-			$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-			$mapping = $categoryDAO->getMapping();
+			$mapping = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
 			$ids = $mapping[$categoryId];
 		}else{
 			$ids = array($categoryId);

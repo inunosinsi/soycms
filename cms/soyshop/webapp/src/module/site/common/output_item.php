@@ -7,10 +7,8 @@ SOY2::import("domain.config.SOYShop_ShopConfig");
  * テンプレートに記述しない
  */
 function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
-    static $itemDao, $categoryDao, $shopConfig;
-    if(is_null($itemDao)) $itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-    if(is_null($categoryDao)) $categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-	if(is_null($shopConfig)) $shopConfig = SOYShop_ShopConfig::load();
+    static $shopConfig;
+    if(is_null($shopConfig)) $shopConfig = SOYShop_ShopConfig::load();
 
     //グループの場合の処理
     $childItems = array();
@@ -54,7 +52,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 
 	//内税の税率
 	$taxRate = $shopConfig->getConsumptionTaxInclusivePricingRate() / 100 + 1;
-	
+
 	//税抜価格(内税の場合)
 	$htmlObj->addLabel("tax_exclusive_price", array(
 		"text" => soyshop_display_price(ceil($item->getSellingPrice() / $taxRate)),
@@ -238,18 +236,10 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
     $parent = new SOYShop_Item();
     $parentCategory = new SOYShop_Category();
     if(is_numeric($item->getType())) {
-        try{
-            $parent = $itemDao->getById($item->getType());
-        }catch(Exception $e){
-            //
-        }
+        $parent = soyshop_get_item_object($item->getType());
 
         if(is_numeric($parent->getCategory())){
-            try{
-                $parentCategory = $categoryDao->getById($parent->getCategory());
-            }catch(Exception $e){
-                //
-            }
+            $parentCategory = soyshop_get_category_object($parent->getCategory());
         }
     }
 

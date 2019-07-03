@@ -82,7 +82,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 							$categoryIds = $pageObject->getCategories();
 							foreach($categoryIds as $categoryId){
-								$category = self::getCategory($categoryId);
+								$category = soyshop_get_category_object($categoryId);
 								$html[] = self::buildUrlTag($url, $uri, $category->getAlias(), 0.5, $obj->getUpdateDate());
 							}
 							break;
@@ -250,17 +250,6 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			return $dao->getByDetailPageIdIsOpen($pageId);
 		}catch(Exception $e){
 			return array();
-		}
-	}
-
-	private function getCategory($categoryId){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-
-		try{
-			return $dao->getById($categoryId);
-		}catch(Exception $e){
-			return new SOYShop_Category();
 		}
 	}
 }

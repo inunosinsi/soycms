@@ -51,4 +51,3 @@ class DetailMenuPage_ItemList extends HTMLList{
 		$this->detailLink = $detailLink;
 	}
 }
-?>

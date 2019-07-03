@@ -5,13 +5,10 @@ class StockManagerPage extends WebPage{
 	private $configObj;
 	private $itemDao;
 
-	private $categories = array();
-
 	private $limit = 15;
 
 	function __construct(){
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$this->categories = self::getCategories();
 		if(isset($_POST["search_number"])) $this->limit = (int)$_POST["search_number"];
 	}
 
@@ -143,7 +140,7 @@ class StockManagerPage extends WebPage{
 			"list" => $items,
 			"stockLogic" => SOY2Logic::createInstance("module.plugins.item_stock_manager.logic.StockLogic"),
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"categories" => $this->categories
+			"categories" => soyshop_get_category_objects()
 		));
 
 		//表示順リンク
@@ -202,13 +199,9 @@ class StockManagerPage extends WebPage{
 			));
 		}
 
-		$opts = array();
-		foreach($this->categories as $cat){
-			$opts[$cat->getId()] = $cat->getName();
-		}
 		$this->addSelect("search_item_category", array(
 			"name" => "search_condition[item_category]",
-			"options" => $opts,
+			"options" => soyshop_get_category_list(),
 			"selected" => (isset($cnd["item_category"])) ? $cnd["item_category"] : null
 		));
 
@@ -250,14 +243,6 @@ class StockManagerPage extends WebPage{
 			"selected" => (isset($cnd["item_type"]["child"]) && $cnd["item_type"]["child"] == 1),
 			"label" => "子商品"
 		));
-	}
-
-	private function getCategories(){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
-		}catch(Exception $e){
-			return array();
-		}
 	}
 
 	private function getParameter($key){

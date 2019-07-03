@@ -18,11 +18,11 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		SOY2::import("module.plugins.parts_google_analytics.util.GoogleAnalyticsUtil");
 		$config = GoogleAnalyticsUtil::getConfig();
 		$code = $config["tracking_code"];
-		
+
 		if(strlen($code) == 0){
 			return $html;
 		}
-		
+
 		//アナリティクスタグの挿入設定　カートとマイページは無条件で挿入
 		if(defined("SOYSHOP_PAGE_ID")){
 			$displayConfig = GoogleAnalyticsUtil::getPageDisplayConfig();
@@ -30,7 +30,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 				return $html;
 			}
 		}
-			
+
 
 		//XHTMLではないXMLでは出力しない
 		if(
@@ -49,9 +49,9 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		){
 			return $html;
 		}
-		
+
 		$completePage = false;	//カートの注文完了画面かどうかのフラグ
-		
+
 		//現在のページがカートページであるか？をチェック
 		if(isset($_SERVER["REDIRECT_URL"]) && strpos(soyshop_get_cart_url(), $_SERVER["REDIRECT_URL"]) !== false){
 			$query = "_gaq.push(['_trackPageview', '" . $_SERVER["REDIRECT_URL"] . "/complete/']);";
@@ -59,7 +59,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 				$completePage = true;	//注文完了画面ならばtrue
 			}
 		}
-		
+
 		//完了ページならば、eコマーストラッキングを挿入する
 		if($completePage === true){
 			$code = $this->convertTrackingCode($html, $code);
@@ -108,25 +108,25 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 
 		return $html;
 	}
-	
+
 	function convertTrackingCode($html, $code){
 		/**
 		 * 注文情報取得で良い方法が思いつかないので、htmlからトラッキングナンバーを取得する
 		 */
 		preg_match('/\d{1,7}-\d{4}-\d{4}/', $html, $tmp);
-		
+
 		//値を取得できたか？
 		if(!isset($tmp[0])) return $code;
-		
+
 		//トラッキングコードが新しいバージョンかどうか？
 		$query = "_gaq.push(['_trackPageview']);";
 		if(strpos($code, $query) === false) return $code;
-		
+
 		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		foreach($tmp as $trackingNumber){
 			//市外局番は必ず0から始まるので、0から始まっている番号は除く
 			if(strpos($trackingNumber, "0") === 0) continue;
-			
+
 			try{
 				$order = $orderDao->getByTrackingNumber($trackingNumber);
 			}catch(Exception $e){
@@ -134,51 +134,51 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 			}
 			if(!is_null($order->getId())) break;
 		}
-		
+
 		//注文情報を取得できたか？
 		if(is_null($order->getId())) return $code;
-		
+
 		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 		try{
 			$items = $itemOrderDao->getByOrderId($order->getId());
 		}catch(Exception $e){
 			$items = array();
 		}
-		
+
 		//注文された商品が一つでもあったか？
 		if(count($items) === 0) return $code;
-		
+
 		$insertCode = $this->buildInsertCode($order, $items);
 		$changeCode = $query . "\n" . $insertCode;
-		
+
 		return str_replace($query, "$changeCode", $code);
 	}
-	
+
 	function buildInsertCode($order, $items){
 		$insertOrderCode = $this->buildInsertOrderCode($order);
 		$insertItemCode = $this->buildInsertItemCode($items, $order->getTrackingNumber());
-		
+
 		return $insertOrderCode . "\n\n" . $insertItemCode . "\n\n" . "  _gaq.push(['_trackTrans']);";
 	}
-	
+
 	//店舗情報と注文の総額
 	function buildInsertOrderCode($order){
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$config = SOYShop_ShopConfig::load();
-		
+
 		$s = "  ";	//表示の調整用
-		
+
 		$html = array();
-		
+
 		$html[] = $s."_gaq.push(['_addTrans',";
-		
+
 		$html[] = $s . $s . "'" . $order->getTrackingNumber() . "',";		//トラッキングナンバー
 		$html[] = $s . $s . "'" . $config->getShopName() . "',";			//店舗名
 		$html[] = $s . $s . "'" . $order->getPrice() . "',";				//総額
 		$html[] = $s . $s . "'0',";									//税額
-		
+
 		$deliveryPrice = 0;
-		
+
 		$modules = $order->getModuleList();
 		foreach($modules as $key => $module){
 			if(strpos($key, "delivery_") === 0){
@@ -186,16 +186,16 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 				break;
 			}
 		}
-		
+
 		$html[] = $s . $s . "'" . $deliveryPrice . "',";					//送料
-		
+
 		//郵便番号から住所情報を取得する
 		$company = $config->getCompanyInformation();
 		if(isset($company["address1"])){
 			$zipcode = soyshop_cart_address_validate($company["address1"]);
 			$addressSearchLogic = SOY2Logic::createInstance("logic.cart.AddressSearchLogic");
 			$res = $addressSearchLogic->search($zipcode);
-						
+
 			$html[] = $s . $s . "'" . $res["address1"] . "',";			//市区町村
 			$html[] = $s . $s . "'" . $res["prefecture"] . "',";			//県
 		}else{
@@ -203,51 +203,41 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 			$html[] = $s . $s . "'',";
 		}
 		$html[] = $s . $s . "'日本'";									//国名
-		
+
 		$html[] = $s . "]);";
-		
+
 		return implode("\n", $html);
 	}
-	
+
 	//各商品の情報
 	function buildInsertItemCode($items, $trackingNumber){
-		
+
 		$s = "  ";	//表示の調整用
-		
+
 		$html = array();
-				
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		
+
+		$categoryList = soyshop_get_category_list();
 		foreach($items as $orderItem){
-			try{
-				$item = $itemDao->getById($orderItem->getItemId());
-			}catch(Exception $e){
-				continue;
-			}
-			
+			$item = soyshop_get_item_object($orderItem->getItemId());
+			if(is_null($item->getId())) continue;
+
 			$html[] = $s . "_gaq.push(['_addItem',";
-			
+
 			$html[] = $s . $s . "'" . $trackingNumber . "',";	//トラッキングナンバー
 			$html[] = $s . $s . "'" . $item->getCode() . "',";
 			$html[] = $s . $s . "'" . $item->getName() . "',";
-			
-			try{
-				$category = $categoryDao->getById($item->getCategory());
-			}catch(Exception $e){
-				$category = new SOYShop_Category();
-			}
-			
-			$html[] = $s . $s . "'" . $category->getName() . "',";			//カテゴリー
+
+			$categoryName = (isset($categoryList[$item->getCategory()])) ? $categoryList[$item->getCategory()] : "";
+
+			$html[] = $s . $s . "'" . $categoryName . "',";			//カテゴリー
 			$html[] = $s . $s . "'" . $orderItem->getItemPrice() . "',";	//商品単価
 			$html[] = $s . $s . "'" . $orderItem->getItemCount() . "'";	//注文個数
-			
+
 			$html[] = $s . "]);";
 		}
-		
+
 		return implode("\n", $html);
 	}
 }
 
 SOYShopPlugin::extension("soyshop.site.onoutput", "parts_google_analytics", "GoogleAnalyticsOnOutput");
-?>

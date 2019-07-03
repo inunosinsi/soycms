@@ -100,7 +100,7 @@ class DiscountBulkBuyingConfigPage extends WebPage{
 	}
 
 	private function buildConditionForm(){
-		$list = SOY2Logic::createInstance("module.plugins.discount_bulk_buying_each_category.logic.CategoryLogic")->getCategoryList();
+		$list = soyshop_get_category_list();
 
 		$this->createAdd("condition_list", "BulkBuyingCategoryConditionListComponent", array(
 			"list" => DiscountBulkBuyingUtil::getCategoryCondition(),

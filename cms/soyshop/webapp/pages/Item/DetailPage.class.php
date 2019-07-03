@@ -254,10 +254,8 @@ class DetailPage extends WebPage{
 		//appLimitがfalseの場合は、在庫以外の項目をreadOnlyにする
 		$readOnly = (!$appLimit) ? true : false;
 
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		try{
-			$item = ($this->obj) ? $this->obj : $itemDAO->getById($id);
-		}catch(Exception $e){
+		$item = ($this->obj) ? $this->obj : soyshop_get_item_object($id);
+		if(is_null($item->getId())){
 			SOY2PageController::jump("Item");
 			exit;
 		}
@@ -396,11 +394,9 @@ class DetailPage extends WebPage{
 		));
 
 		/* category */
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		$array = $dao->get();
-
+		$categories = soyshop_get_category_objects();
 		$this->createAdd("category_tree","_base.MyTreeComponent", array(
-			"list" => $array,
+			"list" => $categories,
 			"selected" => array($item->getCategory())
 		));
 
@@ -410,9 +406,9 @@ class DetailPage extends WebPage{
 			"attr:id" => "item_category"
 		));
 
-		$category = (isset($array[$item->getCategory()]))? $array[$item->getCategory()] : null;
+		$category = (isset($categories[$item->getCategory()])) ? $categories[$item->getCategory()] : new SOYShop_Category();
 		$this->addLabel("item_category_choice", array(
-			"text" => $this->getCategoryRelation($dao, $category),
+			"text" => self::getCategoryRelation($category),
 			"attr:id" => "item_category_text"
 		));
 
@@ -426,30 +422,26 @@ class DetailPage extends WebPage{
 		));
 
 		$this->addLabel("multi_category_text", array(
-			"text" => $this->getCategoriesName($array),
+			"text" => $this->getCategoriesName($categories),
 			"attr:id" => "multi_category_text"
 		));
 
 		$this->createAdd("multi_category_tree", "_base.MyTreeComponent", array(
-			"list" => $array,
+			"list" => $categories,
 			"selected" => $this->getCategoryIds(),
 			"func" => "onMultiClickLeaf"
 		));
 
 		/* parent item */
 		DisplayPlugin::toggle("item_parent_area", $item->isChild());
-		try{
-			$parentItem = $itemDAO->getById($item->getType());
-		}catch(Exception $e){
-			$parentItem = false;
-		}
+		$parentItem = soyshop_get_item_object($item->getType());
+
 		$this->addLink("parent_item_link", array(
 			"link" => SOY2PageController::createLink("Item.Detail." . $item->getType()),
-			"text" => ($parentItem) ? $parentItem->getName() : "[この商品グループは削除されています]"
+			"text" => (is_numeric($parentItem->getId())) ? $parentItem->getName() : "[この商品グループは削除されています]"
 		));
 
 		/* child item */
-		$childItems = $itemDAO->getByTypeNoDisabled($item->getId());
 		DisplayPlugin::toggle("child_item_list_area", ($item->getType() == SOYShop_Item::TYPE_GROUP || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD_GROUP));
 
 		$getParam = ($item->getType() == SOYShop_Item::TYPE_GROUP) ? "parent" : "dlparent";
@@ -457,7 +449,7 @@ class DetailPage extends WebPage{
 			"link" => SOY2PageController::createLink("Item.Create") . "?" . $getParam . "=" . $item->getId()
 		));
 		$this->createAdd("child_item_list","HTMLList", array(
-			"list" => $childItems,
+			"list" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByTypeNoDisabled($item->getId()),
 			'populateItem:function($entity,$key)' => '$this->createAdd("item_detail_link","HTMLLink", array(' .
 					'"link" => "'.SOY2PageController::createLink("Item.Detail").'/" . $entity->getId(),' .
 					'"text" => $entity->getName()));'
@@ -701,8 +693,7 @@ class DetailPage extends WebPage{
 	 * 失敗時には false
 	 */
 	function uploadImage(){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$item = $dao->getById($this->id);
+		$item = soyshop_get_item_object($this->id);
 
 		$urls = array();
 
@@ -777,7 +768,9 @@ class DetailPage extends WebPage{
 		return implode(",",$array);
 	}
 
-	function getCategoryRelation($dao, $category){
+	private function getCategoryRelation(SOYShop_Category $category){
+		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+
 		$array = array();
 
 		try{

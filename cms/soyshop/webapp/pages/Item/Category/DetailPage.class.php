@@ -7,18 +7,15 @@ class DetailPage extends WebPage{
 	private $config;
 
 	function doPost(){
-	
+
 		//カテゴリー情報の更新
 		if(isset($_POST["update"]) && soy2_check_token()){
 
 			$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 			$categoryId = $_POST["Category"]["id"];
-			try{
-				$obj = $dao->getById($categoryId);
-			}catch(Exception $e){
-				SOY2PageController::jump("Item.Category.Detail." . $categoryId . "?failed");
-			}
-			
+			$obj = soyshop_get_category_object($categoryId);
+			if(is_null($obj->getId())) SOY2PageController::jump("Item.Category.Detail." . $categoryId . "?failed");
+
 			SOY2::cast($obj, (object)$_POST["Category"]);
 
 			//設定する親カテゴリが自身だった場合
@@ -40,7 +37,7 @@ class DetailPage extends WebPage{
 			SOYShopPlugin::invoke("soyshop.category.customfield", array(
 					"category" => $obj
 			));
-			
+
 			SOYShopPlugin::load("soyshop.category.name");
 			SOYShopPlugin::invoke("soyshop.category.name", array(
 				"category" => $obj
@@ -49,26 +46,26 @@ class DetailPage extends WebPage{
 			SOY2PageController::jump("Item.Category.Detail." . $categoryId . "?updated");
 			exit;
 		}
-		
+
 		//カテゴリーの追加
 		if(isset($_POST["create"])){
-	
+
 			$name = $_POST["name"];
-	
+
 			$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 			$obj = new SOYShop_Category();
 			$obj->setName($name);
-	
+
 			if(isset($_POST["parent"])){
 				$obj->setParent($_POST["parent"]);
 			}
-	
+
 			try{
 				$id = $dao->insert($obj);
 			}catch(SOY2DAOException $e){
 				//echo $e->getPDOExceptionMessage();
 			}
-	
+
 			SOY2PageController::jump("Item.Category.Detail." . $id . "?updated=created");
 			exit;
 		}
@@ -97,10 +94,10 @@ class DetailPage extends WebPage{
     	if(!isset($args[0])){
     		SOY2PageController::jump("Item.Category");
     	}
-    	
+
     	//ショップの基本設定を取得
     	$this->config = SOYShop_ShopConfig::load();
-    	
+
     	$this->id = (int)$args[0];
     	$id = $this->id;
 
@@ -108,22 +105,19 @@ class DetailPage extends WebPage{
 
     	$this->addForm("create_form");
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		try{
-			$category = $dao->getById($id);
-			$array = $dao->get();
-		}catch(Exception $e){
-			SOY2PageController::jump("Item.Category?failed");
-		}
+		$category = soyshop_get_category_object($id);
+		if(is_null($category->getId())) SOY2PageController::jump("Item.Category?failed");
+
+		$categories = soyshop_get_category_objects();
 
 		$this->createAdd("category_tree","MyTree", array(
-			"list" => $array,
+			"list" => $categories,
 		));
 
-		$this->buildForm($category,$array);
+		self::buildForm($category, $categories);
     }
 
-    function buildForm($entity, $parents){
+    private function buildForm($entity, $parents){
 
     	$id = $entity->getId();
 
@@ -140,7 +134,7 @@ class DetailPage extends WebPage{
 		$nameForm = SOYShopPlugin::display("soyshop.category.name", array(
 			"category" => $entity
 		));
-		
+
 		$this->addLabel("extension_category_name_input", array(
 			"html" => $nameForm
 		));
@@ -161,7 +155,7 @@ class DetailPage extends WebPage{
 			"name" => "parent",
 			"value" => $id
 		));
-		
+
 		$this->addModel("create_submit_btn", array(
 			"onclick" => '$(\'#child_create_form_'.$id.'\').trigger(\'submit\');'
 		));
@@ -218,14 +212,14 @@ class DetailPage extends WebPage{
 		$this->addLabel("category_custom_field", array(
 			"html" => $html
 		));
-		
+
 		$this->addCheckBox("category_is_open", array(
 			"name" => "Category[isOpen]",
 			"value" => SOYShop_Category::IS_OPEN,
 			"selected" => ($entity->getIsOpen() == SOYShop_Category::IS_OPEN),
 			"label" => "公開"
 		));
-		
+
 		$this->addCheckBox("category_no_open", array(
 			"name" => "Category[isOpen]",
 			"value" => SOYShop_Category::NO_OPEN,
@@ -280,8 +274,7 @@ class DetailPage extends WebPage{
 	 * 失敗時には false
 	 */
 	function uploadImage($id){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		$category = $dao->getById($id);
+		$category = soyshop_get_category_object($id);
 
 		$urls = array();
 
@@ -338,4 +331,3 @@ class MyTree extends TreeComponent{
 		return SOY2PageController::createLink("Item.Category.Detail.").$id;
 	}
 }
-?>

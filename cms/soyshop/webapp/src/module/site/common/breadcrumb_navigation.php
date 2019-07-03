@@ -69,13 +69,7 @@ function soyshop_breadcrumb_navigation($html, $page){
 
                     //商品グループの子商品の時
                     if(is_numeric($item->getType())){
-                        $itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-                        try{
-                            $parent = $itemDao->getById($item->getType());
-                        }catch(Exception $e){
-                            $parent = new SOYShop_Item();
-                        }
-
+                        $parent = soyshop_get_item_object($item->getType());
                         $categoryId = $parent->getCategory();
 
                         $pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
@@ -111,15 +105,11 @@ function soyshop_breadcrumb_navigation($html, $page){
                         "soy2prefix" => SOYSHOP_SITE_PREFIX
                     ));
 
-                    try{
-                        $current = $dao->getById($categoryId);
-                    }catch(Exception $e){
-                        return;
-                    }
+					$current = soyshop_get_category_object($categoryId);
+					if(is_null($current->getId())) return;
 
                     SOY2::imports("module.plugins.common_breadcrumb.domain.*");
-                    $breadcrumbDao = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO");
-                    $uri = $breadcrumbDao->getPageUriByItemId($item->getId());
+                    $uri = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO")->getPageUriByItemId($item->getId());
 
                     $categories = $dao->getAncestry($current, false);
 

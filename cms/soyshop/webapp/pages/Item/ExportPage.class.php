@@ -52,7 +52,7 @@ class ExportPage extends WebPage{
 
         //カテゴリ
         $this->createAdd("category_tree", "_base.MyTreeComponent", array(
-            "list" => SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get(),
+            "list" => soyshop_get_category_objects(),
         ));
 
         $this->addModel("retry", array("visible" => (isset($_GET["retry"]))));
@@ -172,8 +172,7 @@ class ExportPage extends WebPage{
         $logic->setModules($delegate->getModules());
 
         //カテゴリの親子取得
-        $categoryDao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-        $mappings = $categoryDao->getMapping();
+        $mappings = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
 
         //DAO: 2000ずつ取得
         $limit = 2000;//16MB弱を消費
@@ -213,13 +212,7 @@ class ExportPage extends WebPage{
      * カテゴリーは">"でつないだ文字列にする。
      */
     private function itemToCSV($items){
-        static $categories;
-
-        if(!$categories){
-            //カテゴリ全部取得
-            $categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-            $categories = $categoryDAO->get();
-        }
+        $categories = soyshop_get_category_objects();
 
         $lines = array();
         foreach($items as $item){

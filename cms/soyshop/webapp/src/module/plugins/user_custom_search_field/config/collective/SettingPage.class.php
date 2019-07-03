@@ -8,14 +8,11 @@ class SettingPage extends WebPage{
 	private $config;
 	private $dbLogic;
 
-	private $categories = array();
-
 	function __construct(){
 		$this->fieldId = (isset($_GET["field_id"])) ? $_GET["field_id"] : null;
 		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
 		$this->config = UserCustomSearchFieldUtil::getConfig();
 		$this->dbLogic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic");
-		$this->categories = self::getCategories();
 		SOY2::import("domain.user.SOYShop_User");
 	}
 
@@ -159,14 +156,6 @@ class SettingPage extends WebPage{
 		$searchLogic->setLimit(50);	//仮
 		$searchLogic->setCondition(self::getParameter("search_condition"));
 		return $searchLogic->get();
-	}
-
-	private function getCategories(){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
-		}catch(Exception $e){
-			return array();
-		}
 	}
 
 	private function getParameter($key){

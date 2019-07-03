@@ -4,12 +4,11 @@ class RemovePage extends WebPage{
 
     function __construct($args) {
 
-		$id = @$args[0];
+		$id = (isset($args[0])) ? (int)$args[0] : null;
 
 		if(soy2_check_token()){
 			try{
-				$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-				$dao->deleteById($id);
+				SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->deleteById($id);
 			}catch(Exception $e){
 		    	SOY2PageController::jump("Item.Category?failed");
 			}
@@ -18,4 +17,3 @@ class RemovePage extends WebPage{
     	SOY2PageController::jump("Item.Category?removed");
     }
 }
-?>

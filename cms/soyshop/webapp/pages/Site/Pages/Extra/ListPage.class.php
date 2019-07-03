@@ -26,7 +26,7 @@ class ListPage extends WebPage{
 
 			$page->setPageObject($obj);
 			$logic->updatePageObject($page);
-			
+
 			SOYShopPlugin::load("soyshop.item.list");
 			SOYShopPlugin::invoke("soyshop.item.list", array(
 				"mode" => "post",
@@ -107,20 +107,19 @@ class ListPage extends WebPage{
 			"attr:id" => "config_type_category"
 		));
 
-    	$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		$array = $dao->get();
+    	$categories = soyshop_get_category_objects();
 
 		$this->createAdd("category_tree","_base.MyTreeComponent", array(
-			"list" => $array,
+			"list" => $categories,
 			"selected" => $obj->getCategories(),
 		));
 
 		$text = array();
 		foreach($obj->getCategories() as $id){
-			if(!isset($array[$id])) continue;
-			$text[] = $array[$id]->getNameWithStatus();
+			if(!isset($categories[$id])) continue;
+			$text[] = $categories[$id]->getNameWithStatus();
 		}
-		
+
 		$this->addLabel("categories_choice", array(
 			"text" => implode(",", $text),
 			"attr:id" => "categories_text"
@@ -132,13 +131,13 @@ class ListPage extends WebPage{
 		));
 
 		$this->createAdd("default_category_tree", "_base.MyTreeComponent", array(
-			"list" => $array,
+			"list" => $categories,
 			"selected" => array($obj->getDefaultCategory()),
 			"func" => "onClickDefaultLeaf"
 		));
 
 		$this->addLabel("default_categories_choice", array(
-			"text" => (isset($array[$obj->getDefaultCategory()])) ? $array[$obj->getDefaultCategory()]->getNameWithStatus() : "",
+			"text" => (isset($categories[$obj->getDefaultCategory()])) ? $categories[$obj->getDefaultCategory()]->getNameWithStatus() : "",
 			"attr:id" => "default_categories_text"
 		));
 		$this->addInput("default_categories", array(
@@ -198,13 +197,13 @@ class ListPage extends WebPage{
 			"mode" => "list",
 			"obj" => $obj
 		));
-		
+
 		$this->addSelect("module_name", array(
 			"name" => "Page[moduleId]",
 			"options" => $delegetor->getList(),
 			"selected" => $obj->getModuleId()
 		));
-		
+
 		$this->addLabel("module_config", array(
 			"html" => (is_array($delegetor->getForm())) ? implode("",$delegetor->getForm()) : ""
 		));
@@ -289,4 +288,3 @@ class ListPage extends WebPage{
 		);
 	}
 }
-?>

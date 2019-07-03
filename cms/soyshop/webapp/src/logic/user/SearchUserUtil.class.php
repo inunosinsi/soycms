@@ -46,7 +46,7 @@
 //
 //		return null;
 //	}
-//	
+//
 //	function getObject(){
 //		return $this->obj;
 //	}
@@ -56,7 +56,7 @@
 // * この商品検索クラスはサイト側で使用する
 // */
 //class SearchUserUtil extends SOY2LogicBase{
-//	
+//
 //	private $sort;
 //
 //	/**
@@ -74,7 +74,7 @@
 //	 *
 //	 */
 //	function getSortQuery(){
-//		
+//
 //		$session = SOY2ActionSession::getUserSession();
 //		if(method_exists($this, "getObject")){
 //			$pageId = $this->getSort()->getObject()->getPage()->getId();
@@ -82,11 +82,11 @@
 //		}else{
 //			$pageId = null;
 //		}
-//		
+//
 //		$sort = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_sort" . $pageId);
 //		$csort = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_csort" . $pageId);
 //		$suffix = $session->getAttribute("soyshop_" . SOYSHOP_ID . "_suffix" . $pageId);
-//		
+//
 //		if(isset($_GET["sort"])){
 //			$sort = ($_GET["sort"] != "reset") ? $_GET["sort"] : null;
 //			$session->setAttribute("soyshop_" . SOYSHOP_ID . "_sort" . $pageId, $sort);
@@ -96,12 +96,12 @@
 //			$csort = ($_GET["csort"] != "reset") ? $_GET["csort"] : null;
 //			$session->setAttribute("soyshop_" . SOYSHOP_ID . "_csort" . $pageId, $csort);
 //		}
-//		
+//
 //		if(isset($_GET["r"])){
 //			$suffix = ($_GET["r"] == 1) ? " desc" : "";
 //			$session->setAttribute("soyshop_" . SOYSHOP_ID . "_suffix" . $pageId, $suffix);
 //		}
-//		
+//
 //		//default
 //		if(!$sort && !$csort && $this->getSort()){
 //			$obj = $this->getSort();
@@ -110,7 +110,7 @@
 //			if($defaultSort != "custom") $sort = $defaultSort;
 //			$csort = $obj->getCustomSort();
 //		}
-//		
+//
 //		if($sort){
 //			switch($sort){
 //				case "id":
@@ -167,8 +167,7 @@
 //		$useMultiCategory = ($config->getMultiCategory() == 1);
 //
 //		if($withChild && $categoryId){
-//			$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-//			$mapping = $categoryDAO->getMapping();
+//			$mapping = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
 //			$ids = $mapping[$categoryId];
 //		}else{
 //			$ids = array($categoryId);
@@ -218,8 +217,7 @@
 //    function countByCategoryId($categoryId, $withChild = false){
 //
 //		if($withChild){
-//			$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-//			$mapping = $categoryDAO->getMapping();
+//			$mapping = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getMapping();
 //			$ids = $mapping[$categoryId];
 //		}else{
 //			$ids = array($categoryId);
@@ -285,13 +283,13 @@
 //
 //    	//append where(categories)
 //    	if(count($categories) > 0) $query->where = "item_category in (" . implode(",", $categories) . ")";
-//    	
+//
 //    	//append where(params)
 //    	if(count($params)){
 //    		if(count($categories) > 0) $query->where .= " AND ";
 //    		foreach($params as $column => $value){
 //    			if(isset($query->where) && strlen($query->where) > 0 && strlen($query->where) - 4 !== strrpos($query->where, "AND ")) $query->where .= " AND ";
-//    			
+//
 //    			switch($column){
 //    				//フラグ系
 //    				case "item_sale_flag":
@@ -328,17 +326,17 @@
 //    					$binds[":" . $column] = "%" . $value . "%";
 //    					break;
 //    			}
-//    			
-//    			
+//
+//
 //    		}
 //    	}
-//    	
+//
 //    	//append where(customfield)
 //    	$where = array();
 //    	$counter = 0;
 //    	foreach($customFieldCordination as $key => $array){
 //    		if((int)$key < 0 && (!isset($array["fieldId"]) || (int)$array["fieldId"] < 1)) continue;
-//    		
+//
 //    		$operation = (isset($array["type"])) ? $array["type"] : "=";
 //    		if(!in_array($operation, array("=", "<>", "LIKE", "NOT LIKE"))) $operation = "=";
 //
@@ -409,7 +407,7 @@
 //    	}catch(Exception $e){
 //    		return array(array(), 0);
 //    	}
-//    	
+//
 //    	$items = array();
 //    	foreach($res as $row){
 //    		try{
@@ -417,10 +415,10 @@
 //    		}catch(Exception $e){
 //    			continue;
 //    		}
-//    		
+//
 //    		$items[$item->getId()] = $item;
 //    	}
-//    	
+//
 //    	//count
 //    	$itemDAO->setLimit(null);
 //	   	$itemDAO->setOffset(null);
@@ -429,7 +427,7 @@
 //	   	}catch(Exception $e){
 //	   		return array(array(), 0);
 //	   	}
-//    	
+//
 //    	$total = ($isAnd) ? count($res) : $res[0]["row_count"];
 //
 //    	return array($items, $total);

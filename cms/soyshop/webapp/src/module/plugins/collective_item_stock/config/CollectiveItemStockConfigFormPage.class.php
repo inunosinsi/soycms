@@ -9,7 +9,7 @@ class CollectiveItemStockConfigFormPage extends WebPage{
 
 	function __construct(){
 		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$this->categories = self::getCategories();
+		$this->categories = soyshop_get_category_objects();
 	}
 
 	function doPost(){
@@ -71,7 +71,7 @@ class CollectiveItemStockConfigFormPage extends WebPage{
 			"itemOrderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO"),
 			"categoriesDAO" => SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO"),
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"categories" => $this->categories,
+			"categories" => soyshop_get_category_objects(),
 			"config" => SOYShop_ShopConfig::load(),
 		));
 	}
@@ -113,13 +113,9 @@ class CollectiveItemStockConfigFormPage extends WebPage{
 			));
 		}
 
-		$opts = array();
-		foreach($this->categories as $cat){
-			$opts[$cat->getId()] = $cat->getName();
-		}
 		$this->addSelect("search_item_category", array(
 			"name" => "search_condition[item_category]",
-			"options" => $opts,
+			"options" => soyshop_get_category_list(),
 			"selected" => (isset($cnd["item_category"])) ? $cnd["item_category"] : null
 		));
 
@@ -170,14 +166,6 @@ class CollectiveItemStockConfigFormPage extends WebPage{
 		$searchLogic->setLimit($num);	//仮
 		$searchLogic->setCondition(self::getParameter("search_condition"));
 		return $searchLogic->get();
-	}
-
-	private function getCategories(){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
-		}catch(Exception $e){
-			return array();
-		}
 	}
 
 	private function getParameter($key){

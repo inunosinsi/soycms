@@ -102,3 +102,32 @@ function soyshop_convert_kana_sonant($kana){
 	}
 	return $kana;
 }
+
+function soyshop_get_category_objects(){
+	static $categories;
+	if(is_null($categories)){
+		try{
+			$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
+		}catch(Exception $e){
+			$categories = array();
+		}
+	}
+	return $categories;
+}
+
+// array(categoryId => categoryName)
+function soyshop_get_category_list(){
+	static $list;
+	if(is_null($list)){
+		$list = array();
+		$categories = soyshop_get_category_objects();
+
+		if(count($categories)){
+			foreach($categories as $category){
+				$list[$category->getId()] = $category->getName();
+			}
+		}
+	}
+
+	return $list;
+}

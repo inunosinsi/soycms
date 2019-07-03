@@ -8,21 +8,11 @@ class CategoryCordinationListComponent extends HTMLList{
 
 		$this->addSelect("category_list", array(
 			"name" => "Block[" . $this->getBlockId() . "][categories][]",
-			"options" => self::getCategories(),
+			"options" => soyshop_get_category_objects(),
 			"selected" => $entity,
 			"property" => "name"
 		));
 	}
-
-	private static function getCategories(){
-		static $categories;
-		if(is_null($categories)){
-			$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->get();
-		}
-
-		return $categories;
-	}
-
 
 	function getBlockId() {
 		return $this->blockId;

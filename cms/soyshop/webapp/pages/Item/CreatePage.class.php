@@ -133,22 +133,21 @@ class CreatePage extends WebPage{
     		"value" => (isset($config["description"])) ? $config["description"] : ""
     	));
 
-    	$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		$array = $categoryDAO->get();
+		$categories = soyshop_get_category_objects();
 
 		$this->createAdd("category_tree", "_base.MyTreeComponent", array(
-			"list" => $array,
+			"list" => $categories,
 			"selected" => $obj->getCategory()
 		));
 
 		$this->addInput("item_category", array(
 			"name" => "Item[category]",
-			"value" =>$obj->getCategory(),
+			"value" => $obj->getCategory(),
 			"attr:id" => "item_category"
 		));
 
 		$this->addLabel("item_category_text", array(
-			"text" => (isset($array[$obj->getCategory()])) ? $array[$obj->getCategory()]->getName() : "選択してください",
+			"text" => (isset($categories[$obj->getCategory()])) ? $categories[$obj->getCategory()]->getName() : "選択してください",
 			"attr:id" => "item_category_text"
 		));
 

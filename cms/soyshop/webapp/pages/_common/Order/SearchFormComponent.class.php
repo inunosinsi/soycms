@@ -441,10 +441,7 @@ class SearchFormComponent extends SOYBodyComponentBase{
 	 *  @return arrray Item
 	 */
 	function getItemObjectList(){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$items = $dao->get();
-
-		return $items;
+		return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->get();
 	}
 
 	/**

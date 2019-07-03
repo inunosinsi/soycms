@@ -3,7 +3,6 @@
 class FieldListComponent extends HTMLList{
 
 	private $types;
-	private $categories;
 
 	protected function populateItem($entity, $key){
 
@@ -116,7 +115,7 @@ class FieldListComponent extends HTMLList{
 		//カテゴリとの連動
 		$this->addSelect("show_input", array(
 			"name" => "config[showInput]",
-			"options" => $this->categories,
+			"options" => soyshop_get_category_list(),
 			"selected" => $entity->getShowInput()
 		));
 
@@ -213,9 +212,5 @@ class FieldListComponent extends HTMLList{
 	}
 	function setTypes($types) {
 		$this->types = $types;
-	}
-
-	function setCategories($categories){
-		$this->categories = $categories;
 	}
 }

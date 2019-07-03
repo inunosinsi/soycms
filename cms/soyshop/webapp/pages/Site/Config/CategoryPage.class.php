@@ -9,8 +9,7 @@ class CategoryPage extends WebPage{
 	function doPost(){
 
 		if(soy2_check_token()){
-
-			$this->saveConfig($_POST["Config"]);
+			self::saveConfig($_POST["Config"]);
 		}
 
 		SOY2PageController::jump("Site.Config.Category");
@@ -25,28 +24,31 @@ class CategoryPage extends WebPage{
 	}
 
 	function buildForm(){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-		$array = $dao->get();
+		$categories = soyshop_get_category_objects();
 
 		$this->createAdd("category_tree","MyTree", array(
-			"list" => $array
+			"list" => $categories
 		));
 
-		$pageDAO = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		$pages = $pageDAO->getByType(SOYShop_Page::TYPE_LIST);
+		try{
+			$pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByType(SOYShop_Page::TYPE_LIST);
+		}catch(Exception $e){
+			$pages = array();
+		}
+
 
 		$this->createAdd("category_detail_list", "_common.Site.Config.CategoryDetailListComponent", array(
-			"list" => $array,
+			"list" => $categories,
 			"pages" => $pages,
-			"config" => $this->getConfig()
+			"config" => self::getConfig()
 		));
 	}
 
-	function getConfig(){
+	private function getConfig(){
 		return SOYShop_DataSets::get("common.category_navigation", array());
 	}
 
-	function saveConfig($array){
+	private function saveConfig($array){
 		SOYShop_DataSets::put("common.category_navigation", $array);
 	}
 
@@ -77,4 +79,3 @@ class MyTree extends TreeComponent{
 		return "";
 	}
 }
-?>

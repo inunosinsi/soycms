@@ -72,8 +72,7 @@ class IndexPage extends WebPage{
 		$pager->buildPager($this);
 
 		//ItemListの準備
-		$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-    	$categories = $categoryDAO->get();
+    	$categories = soyshop_get_category_objects();
 
 		$orderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 
@@ -170,8 +169,7 @@ class IndexPage extends WebPage{
 		));
 
 		//カテゴリ
-		$categoryDAO = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-    	$categories = $categoryDAO->get();
+		$categories = soyshop_get_category_objects();
 
 		$selected_categories = (strlen(@$form["categories"]) > 0) ? explode(" ", trim(@$form["categories"])) : array();
 
