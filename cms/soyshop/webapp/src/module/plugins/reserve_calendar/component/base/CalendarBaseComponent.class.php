@@ -301,7 +301,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 
 		//今日より前の日付
 		if($this->isBefore){
-			if($m == TODAY_MONTH && $i < TODAY_DATE){
+			if(($m == TODAY_MONTH && $i < TODAY_DATE) || $isOtherMonth){
 				$class[] = "before";
 				$da = "before";
 			}
