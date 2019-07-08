@@ -729,6 +729,25 @@ class EditPage extends WebPage{
 			if($mod->getType() == "delivery_module") $moduleId = $key;
 		}
 
+		//moduleIdが空の場合、attributesから配送関連があるか調べる
+		if(is_null($moduleId)){
+			$attrs = $order->getAttributeList();
+			if(count($attrs)){
+				$isDeliveryAttribute = false;
+				foreach($attrs as $key => $attr){
+					if(strpos($key, "delivery_time") !== false){
+						$isDeliveryAttribute = true;
+						break;
+					}
+				}
+
+				if($isDeliveryAttribute){
+					$list = self::getInstalledDeliveryModuleList();
+					if(isset($list[0])) $moduleId = $list[0];
+				}
+			}
+		}
+
 		if(is_null($moduleId)) return "";
 
 		//ダミープラグインを使っていた場合はダミーでないプラグインを使用しているか？調べる
