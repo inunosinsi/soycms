@@ -1,69 +1,69 @@
 <p style="color:#ff0000;" soy:display="error">登録に失敗しました。メールアドレスが重複していないか？確認しましょう。</p>
 
 <form soy:id="form">
-  <table class="form_table">
-    <caption>Gravatarアカウント</caption>
-  	<thead>
-  		<tr class="alC">
-        <th>名前</th>
-        <th>メールアドレス</th>
-        <th>&nbsp;</th>
-      </tr>
-  	</thead>
-  	<tbody>
-      <tr soy:id="gravatar_list">
-        <td soy:id="name"></td>
-        <td>
-          <a soy:id="mail_address"></a>&nbsp;
-          <a soy:id="confirm_link" target="_blank">確認</a>
-        </td>
-        <td>
-          <a soy:id="remove_link">削除</a>
-        </td>
-      </tr>
-      <tr>
-        <td><input type="text" soy:id="name"></td>
-        <td><input type="email" soy:id="mail_address"></td>
-        <td><input type="submit" value="登録"></td>
-      </tr>
-  	</tbody>
-  </table>
+	<table class="form_table">
+		<caption>Gravatarアカウント</caption>
+		<thead>
+			<tr class="alC">
+				<th>名前</th>
+				<th>メールアドレス</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr soy:id="gravatar_list">
+				<td soy:id="name"></td>
+				<td>
+					<a soy:id="mail_address"></a>&nbsp;
+					<a soy:id="confirm_link" target="_blank">確認</a>
+				</td>
+				<td>
+					<a soy:id="remove_link">削除</a>
+				</td>
+			</tr>
+			<tr>
+				<td><input type="text" soy:id="name"></td>
+				<td><input type="email" soy:id="mail_address"></td>
+				<td><input type="submit" value="登録"></td>
+			</tr>
+		</tbody>
+	</table>
 </form>
 
 <h3>サムネイル設定</h3>
 <form soy:id="thumb_form">
-  <table>
-    <tr>
-      <th>アバター一覧</th>
-      <td><input type="number" soy:id="thumbnail">&nbsp;px</td>
-      <th>記事詳細</th>
-      <td><input type="number" soy:id="detail">&nbsp;px</td>
-      <td><input type="submit" name="size" value="更新"></td>
-    </tr>
-  </table>
+	<table>
+		<tr>
+			<th>アバター一覧</th>
+			<td><input type="number" soy:id="thumbnail">&nbsp;px</td>
+			<th>記事詳細</th>
+			<td><input type="number" soy:id="detail">&nbsp;px</td>
+			<td><input type="submit" name="size" value="更新"></td>
+		</tr>
+	</table>
 </form>
 
 <h3>Gravatarごとの記事一覧ページ設定</h3>
 <form soy:id="list_form">
-  <table class="form_table">
-    <tr>
-      <th width="20%;">ページ</th>
-      <td><select soy:id="page"><option></option></select>&nbsp;<input type="submit" value="更新"></td>
-    </tr>
-  </table>
+	<table class="form_table">
+		<tr>
+			<th width="20%;">ページ</th>
+			<td><select soy:id="page"><option></option></select>&nbsp;<input type="submit" value="更新"></td>
+		</tr>
+	</table>
 </form>
 
 <h3>使用方法</h3>
 <ul>
-  <li><a href="https://ja.gravatar.com/" target="_blank">Gravatar</a>のサイトにアクセスし、アバターを作成します。</li>
-  <li>Gravatarで作成したアカウントのメールアドレスを上のフォームに登録します。</li>
-  <li>Gravatarから取得したデータを表示したいページに下記のタグを追加します。</li>
+	<li><a href="https://ja.gravatar.com/" target="_blank">Gravatar</a>のサイトにアクセスし、アバターを作成します。</li>
+	<li>Gravatarで作成したアカウントのメールアドレスを上のフォームに登録します。</li>
+	<li>Gravatarから取得したデータを表示したいページに下記のタグを追加します。</li>
 </ul>
 
 <h3>使用上の注意</h3>
 <p>Gravatar連携は表示の高速化を図るため、Gravatarから取得したデータはキャッシュ化して、再度取得しないようにしています。<br>
-  Gravatar側でプロフィールを変更した場合は、キャッシュの削除を行って下さい。&nbsp;
-  <form soy:id="cache_form"><input type="submit" name="cache" value="キャッシュの削除"></form></p>
+	Gravatar側でプロフィールを変更した場合は、キャッシュの削除を行って下さい。&nbsp;
+	<form soy:id="cache_form"><input type="submit" name="cache" value="キャッシュの削除"></form></p>
 
 <h3>タグの使用</h3>
 <p>タグはアバター一覧を表示するためのp_block:id="gravatar_list"が用意されており、b_block:id="entry"内でも下記のgra:idは使用可能です。</p>
@@ -91,18 +91,18 @@
 <strong>&lt;!-- /b_block:id="entry" --&gt;</strong></pre>
 
 <table class="plugin_table">
-  <caption class="table_caption">使用できるgra:id</caption>
+	<caption class="table_caption">使用できるgra:id</caption>
 	<tr>
 		<th>gra:id</th>
 		<th>タグ</th>
 		<th class="plugin_table_td">説明</th>
 	</tr>
-  <tr>
+	<tr>
 		<td>reading</td>
 		<td>全て</td>
 		<td class="plugin_table_td">姓を出力します</td>
 	</tr>
-  <tr>
+	<tr>
 		<td>name</td>
 		<td>全て</td>
 		<td class="plugin_table_td">名を出力します</td>
@@ -112,33 +112,33 @@
 		<td>全て</td>
 		<td class="plugin_table_td">フルネームを出力します</td>
 	</tr>
-  <tr>
+	<tr>
 		<td>display_name</td>
 		<td>全て</td>
 		<td class="plugin_table_td">表示名を出力します</td>
 	</tr>
-  <tr>
+	<tr>
 		<td>gravatar_link</td>
 		<td>A</td>
 		<td class="plugin_table_td">Gravatarのプロフィールページへのリンクを出力します</td>
 	</tr>
-  <tr>
+	<tr>
 		<td>about_me</td>
 		<td>すべて</td>
 		<td class="plugin_table_td">自己紹介を出力します</td>
 	</tr>
-  <tr>
+	<tr>
 		<td>gravatar_thumbnail</td>
 		<td>IMG</td>
 		<td class="plugin_table_td">アバター画像を出力します</td>
 	</tr>
-  <tr>
+	<tr>
 		<td>list_page_link</td>
 		<td>A</td>
 		<td class="plugin_table_td">
-      SOY CMS側のページの著者毎の記事一覧ページへのリンクを出力します<br>
-      ※<strong>Gravatarごとの記事一覧ページ設定</strong>を設定しておかなければ動作しません
-    </td>
+			SOY CMS側のページの著者毎の記事一覧ページへのリンクを出力します<br>
+			※<strong>Gravatarごとの記事一覧ページ設定</strong>を設定しておかなければ動作しません
+		</td>
 	</tr>
 </table>
 
@@ -151,9 +151,9 @@
 
 <h4>設定方法</h4>
 <p>
-  1.テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>gravatar</strong>を選びます。<br>
-  2.ページ作成後にこのページの上部にある<strong>Gravatarごとの記事一覧ページ設定</strong>で作成したページを指定します。<br>
-  ※ページの種類は<strong>標準ページ</strong>が推奨の設定になります。
+	1.テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>gravatar</strong>を選びます。<br>
+	2.ページ作成後にこのページの上部にある<strong>Gravatarごとの記事一覧ページ設定</strong>で作成したページを指定します。<br>
+	※ページの種類は<strong>標準ページ</strong>が推奨の設定になります。
 </p>
 
 <h4>タグの記述例</h4>
@@ -163,7 +163,7 @@
 表示したい内容のcms:idを追加
 &lt;!-- /block:id="***" --&gt;</pre>
 <p>
-    ***の箇所は任意の値です。
+		***の箇所は任意の値です。
 </p>
 
 <h4>ページャの設置</h4>
