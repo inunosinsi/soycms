@@ -26,7 +26,6 @@ class CustomConfigFormPage extends WebPage{
                 $indexes = array("LanguageConfig", "custom_field");
                 foreach($indexes as $index){
                     foreach($_POST[$index] as $key => $value) {
-
                         if(strlen($value)){
                             $attr = new SOYShop_ItemAttribute();
                             $attr->setItemId($this->itemId);
@@ -42,7 +41,13 @@ class CustomConfigFormPage extends WebPage{
                                     //
                                 }
                             }
-                        }
+                        }else{	//削除
+							try{
+								$this->attrDao->delete($this->itemId, $key);
+							}catch(Exception $e){
+								//
+							}
+						}
                     }
                 }
             }
