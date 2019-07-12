@@ -10,7 +10,9 @@ class AffiliateA8flyCart extends SOYShopCartBase{
 		$config = AffiliateA8flyUtil::getConfig();
 		if(!isset($config["id"]) || !strlen($config["id"])) return "";
 
-		$trackingNumber = SOY2Logic::createInstance("logic.order.OrderLogic")->getById($items[0]->getOrderId())->getTrackingNumber();
+		$itemOrder = current($items);
+		if(is_null($itemOrder->getOrderId())) return "";
+		$trackingNumber = SOY2Logic::createInstance("logic.order.OrderLogic")->getById($itemOrder->getOrderId())->getTrackingNumber();
 
 		$total = 0;
 
