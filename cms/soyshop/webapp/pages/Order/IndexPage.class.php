@@ -127,6 +127,16 @@ class IndexPage extends WebPage{
 			));
 		}
 
+		//注文状態の一括変更のボタン
+		$this->createAdd("order_status_bulk_change_list", "_common.Order.OrderStatusBulkChangeListComponent", array(
+			"list" => SOYShop_Order::getOrderStatusList()
+		));
+
+		//支払い状況の一括変更ボタン
+		$this->createAdd("payment_status_bulk_change_list", "_common.Order.PaymentStatusBulkChangeListComponent", array(
+			"list" => SOYShop_Order::getPaymentStatusList()
+		));
+
 
 		//注文結果を出力
 		$this->createAdd("order_list", "_common.Order.OrderListComponent", array(

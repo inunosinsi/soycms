@@ -232,19 +232,15 @@
 				<td soy:id="col_count_0" colspan="*">
 					<div class="mb">
 						<span class="option">注文状態：</span>
-						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(2).trigger('click');" class="button">新規受付</a>
-						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(3).trigger('click');" class="button">受付完了</a>
-						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(6).trigger('click');" class="button">在庫確認中</a>
-						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(4).trigger('click');" class="button">発送済み</a>
-						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(7).trigger('click');" class="button">返品待ち</a>
-						<a href="javascript:void(0);" onclick="$('#do_change_order_status_btn').val(5).trigger('click');" class="button">キャンセル</a>
+						<!-- soy:id="order_status_bulk_change_list" -->
+						<a soy:id="status_change_button" class="button">新規受付</a>
+						<!-- /soy:id="order_status_bulk_change_list" -->
 					</div>
 					<div>
 						<span class="option">支払状態：</span>
-						<a href="javascript:void(0);" onclick="$('#do_change_payment_status_btn').val(1).trigger('click');" class="button">支払待ち</a>
-						<a href="javascript:void(0);" onclick="$('#do_change_payment_status_btn').val(2).trigger('click');" class="button">支払確認済み</a>
-						<a href="javascript:void(0);" onclick="$('#do_change_payment_status_btn').val(3).trigger('click');" class="button">入金エラー</a>
-						<a href="javascript:void(0);" onclick="$('#do_change_payment_status_btn').val(4).trigger('click');" class="button">直接支払</a>
+						<!-- soy:id="payment_status_bulk_change_list" -->
+						<a soy:id="status_change_button" class="button">支払待ち</a>
+						<!-- /soy:id="payment_status_bulk_change_list" -->
 					</div>
 				</td>
 			</tr>
