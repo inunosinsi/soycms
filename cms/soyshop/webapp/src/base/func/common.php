@@ -4,6 +4,7 @@
  * ページのURLを取得する
  */
 function soyshop_get_page_url($uri, $suffix = null){
+	SOY2::import("domain.site.SOYShop_Page");
 	if($uri == SOYShop_Page::URI_HOME) $uri = "";
 
     if($suffix){
