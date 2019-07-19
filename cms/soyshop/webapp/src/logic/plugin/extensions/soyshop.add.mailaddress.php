@@ -17,8 +17,9 @@ class SOYShopAddMailAddressDeletageAction implements SOY2PluginDelegateAction{
     private $_mailaddress;
 
     function run($extetensionId,$moduleId,SOY2PluginAction $action){
-
-        $this->_mailaddress = $action->getMailAddress($this->order, $this->orderFlag);
+		if($this->order instanceof SOYShop_Order){
+        	$this->_mailaddress = $action->getMailAddress($this->order, $this->orderFlag);
+		}
     }
 
     function getMailAddress(){
