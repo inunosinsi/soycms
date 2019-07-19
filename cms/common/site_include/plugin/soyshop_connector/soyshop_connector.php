@@ -18,7 +18,7 @@ class SOYShopConnectorPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.0"
+			"version"=>"1.0.1"
 		));
 
 		//プラグインのアクティブかつ、SOY Shopがインストールされているか？
@@ -47,10 +47,9 @@ class SOYShopConnectorPlugin{
 	function onPageLoad($args){
 		$webPage = $args["webPage"];
 
-		if(!defined("SOYSHOP_WEBAPP")){
-			define("SOYSHOP_WEBAPP", dirname(SOY2::RootDir()) . "/soyshop/webapp/");
-		}
-
+		if(!defined("SOYSHOP_WEBAPP")) define("SOYSHOP_WEBAPP", dirname(SOY2::RootDir()) . "/soyshop/webapp/");
+		if(!defined("SOY2_NOW")) define("SOY2_NOW", time());
+		
 		SOYCMS_SOYShopPageModulePlugin::configure(array(
 			"siteId" => $this->siteId,
 			"rootDir" => SOYSHOP_WEBAPP . "src/"
@@ -58,9 +57,7 @@ class SOYShopConnectorPlugin{
 		SOYCMS_SOYShopPageModulePlugin::prepare(true);
 
 		//定数の準備
-		if(!defined("SOYSHOP_SITE_DIRECTORY")){
-			define("SOYSHOP_SITE_DIRECTORY", $_SERVER["DOCUMENT_ROOT"] . "/" . $this->siteId);
-		}
+		if(!defined("SOYSHOP_SITE_DIRECTORY")) define("SOYSHOP_SITE_DIRECTORY", $_SERVER["DOCUMENT_ROOT"] . "/" . $this->siteId);
 
 
 		//プラグインの実行
