@@ -30,8 +30,7 @@ function soyshop_seat_calendar($html, $page){
 **/
 
 
-
-	if(get_class($page) == "detail_page"){	//itemIdはpageオブジェクトから取得
+	if($page->getPageObject()->getType() == SOYShop_Page::TYPE_DETAIL){	//itemIdはpageオブジェクトから取得
 		$itemId = $page->getItem()->getId();
 	}else if(isset($_GET["item_id"])){	//itemIdはGETで指定
 		$itemId = (int)$_GET["item_id"];
