@@ -10,6 +10,9 @@ EntryInfoPlugin::register();
 class EntryInfoPlugin{
 
 	const PLUGIN_ID = "soycms_entry_info";
+	const MODE_REACQUIRE = 1;	//記事詳細でメタ情報が無い場合はトップページから再取得する
+	const MODE_NONE = 0;	//記事詳細でメタ情報が無い場合はトップページから再取得しない
+	private $mode = self::MODE_REACQUIRE;
 
 
 	function getId(){
@@ -24,7 +27,7 @@ class EntryInfoPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"http://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
 			$this,"config_page"
@@ -217,13 +220,25 @@ class EntryInfoPlugin{
 		//データ取得
 		list($keyword, $description) = self::getEntryInfo($entry->getId());
 
-		if(is_null($keyword) || strlen($keyword) === "0") $keyword = self::getBlogTopMetaValue("keywords");
-		if(is_null($description) || strlen($description) === "0") $description = self::getBlogTopMetaValue("description");
+		if($this->mode == self::MODE_REACQUIRE){
+			if(is_null($keyword) || strlen($keyword) === "0") $keyword = self::getBlogTopMetaValue("keywords");
+			if(is_null($description) || strlen($description) === "0") $description = self::getBlogTopMetaValue("description");
+		}
+
+		$obj->addModel("is_entry_keyword", array(
+			"soy2prefix" => "b_block",
+			"visible" => (isset($keyword) && strlen($keyword))
+		));
 
 		$obj->addModel("entry_keyword", array(
 			"soy2prefix" => "b_block",
 			"attr:name" => "keywords",
 			"attr:content" => $keyword
+		));
+
+		$obj->addModel("is_entry_description", array(
+			"soy2prefix" => "b_block",
+			"visible" => (isset($description) && strlen($description))
 		));
 
 		$obj->addModel("entry_description", array(
