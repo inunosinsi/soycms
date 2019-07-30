@@ -27,7 +27,7 @@ class EntryInfoPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"http://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.8"
+			"version"=>"0.8.1"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
 			$this,"config_page"
