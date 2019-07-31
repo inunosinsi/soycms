@@ -1,4 +1,3 @@
-
 CREATE TABLE Site (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   site_id VARCHAR(255) UNIQUE,
@@ -21,6 +20,13 @@ CREATE TABLE Administrator (
   token_issued_date INTEGER
 )ENGINE = InnoDB;
 
+CREATE TABLE AdministratorAttribute (
+	admin_id INTEGER NOT NULL,
+	admin_field_id VARCHAR(255) NOT NULLs,
+	admin_value TEXT,
+	unique(admin_id, admin_field_id)
+)ENGINE = InnoDB;
+
 CREATE TABLE SiteRole (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   user_id INTEGER,
@@ -37,7 +43,7 @@ CREATE TABLE AppRole (
   app_role_config TEXT,
   unique(user_id,app_id),
   FOREIGN KEY(user_id)
-    REFERENCES Administrator(id)  
+    REFERENCES Administrator(id)
 )ENGINE = InnoDB;
 
 CREATE TABLE soycms_admin_data_sets(

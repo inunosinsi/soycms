@@ -7,7 +7,7 @@ class CreatePage extends CMSUpdatePageBase{
 	function doPost(){
 
 		if(soy2_check_token()){
-			$res = $this->createAdministrator();
+			$res = self::createAdministrator();
 
 			if($res !== false){
 				$this->addMessage("CREATE_SUCCESS");
@@ -28,13 +28,19 @@ class CreatePage extends CMSUpdatePageBase{
 		$this->addModel("error", array(
 			"visible" => $this->failed
 		));
+
+		//カスタムフィールド
+		$this->addLabel("customfield", array(
+			"html" => self::buildCustomField()
+		));
+
 	}
 
 	/**
 	 * 管理者を追加する。
 	 * Administrator.CreateActionを呼び出す
 	 */
-	function createAdministrator(){
+	private function createAdministrator(){
 		$action = SOY2ActionFactory::createInstance("Administrator.CreateAction");
 		$result = $action->run();
 
@@ -43,5 +49,18 @@ class CreatePage extends CMSUpdatePageBase{
 		}else{
 			return false;
 		}
+	}
+
+	private function buildCustomField(){
+		SOY2::import("domain.admin.AdministratorAttribute");
+		$configs = AdministratorAttributeConfig::load();
+		if(!count($configs)) return array();
+
+		$html = array();
+		foreach($configs as $config){
+			$html[] = $config->getForm("");
+		}
+
+		return implode("\n", $html);
 	}
 }

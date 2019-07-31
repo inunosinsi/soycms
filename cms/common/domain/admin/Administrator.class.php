@@ -96,5 +96,4 @@ class Administrator {
 	function setTokenIssuedDate($tokenIssuedDate) {
 		$this->tokenIssuedDate = $tokenIssuedDate;
 	}
-
 }

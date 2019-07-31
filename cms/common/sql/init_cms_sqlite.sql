@@ -21,6 +21,13 @@ CREATE TABLE Administrator (
   token_issued_date integer
 );
 
+CREATE TABLE AdministratorAttribute (
+	admin_id INTEGER NOT NULL,
+	admin_field_id VARCHAR NOT NULL,
+	admin_value TEXT,
+	unique(admin_id, admin_field_id)
+);
+
 CREATE TABLE SiteRole (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER,
@@ -41,7 +48,7 @@ CREATE TABLE AppRole (
   app_role_config VARCHAR,
   unique(user_id,app_id),
   FOREIGN KEY(user_id)
-    REFERENCES Administrator(id)  
+    REFERENCES Administrator(id)
 );
 
 CREATE TABLE soycms_admin_data_sets(

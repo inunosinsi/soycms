@@ -18,19 +18,19 @@ class EntryAttribute {
 	 * @column entry_value
 	 */
 	private $value;
-	
+
 	/**
 	 * soy2_serialize対象
 	 * @column entry_extra_values
 	 */
 	private $extraValues;
-	
+
 	/**
 	 * @no_persistent
 	 */
 	private $customFieldObject;
-	
-	
+
+
 	function getEntryId() {
 		return $this->entryId;
 	}
@@ -97,4 +97,3 @@ class EntryAttribute {
 	}
 
 }
-?>

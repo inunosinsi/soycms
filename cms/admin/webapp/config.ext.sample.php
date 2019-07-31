@@ -112,4 +112,3 @@ if($isExtLink === true){
 }else{
 	DisplayPlugin::hide("ext_mode_link");
 }
-?>

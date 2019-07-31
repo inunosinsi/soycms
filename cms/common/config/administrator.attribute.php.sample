@@ -1,0 +1,13 @@
+<?php
+
+//AdministratorAttributeの設定内容を書く
+
+/** 記述例 **/
+//AdministratorAttributeの読み込みは必須
+SOY2::import("domain.admin.AdministratorAttribute");
+
+//変数名を変えてはいけません typeの値はinputのみ使用可
+$adminAttributeConfig = array(
+	array("fieldId" => "", "label" => "", "type" => "input"),
+	array("fieldId" => "", "label" => "", "type" => "input"),
+);

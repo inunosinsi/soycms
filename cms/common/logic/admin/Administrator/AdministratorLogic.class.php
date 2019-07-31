@@ -168,11 +168,37 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 			$id = $dao->insert($entity);
 			$this->setId($id);
 
-			return true;
+			//return true;
 
 		}catch(Exception $e){
 			return false;
 		}
+
+		//カスタムフィールド
+		if(!isset($_POST["custom_field"])) return true;
+		SOY2::import("domain.admin.AdministratorAttribute");
+		$configs = AdministratorAttributeConfig::load();
+		if(!isset($configs)) return true;
+
+		$attrDao = SOY2DAOFactory::create("admin.AdministratorAttributeDAO");
+		foreach($configs as $config){
+			if(!isset($_POST["custom_field"][$config->getFieldId()])) continue;
+			$attr = new AdministratorAttribute();
+			$attr->setAdminId($id);
+			$attr->setFieldId($config->getFieldId());
+			$attr->setValue($_POST["custom_field"][$config->getFieldId()]);
+			try{
+				$attrDao->insert($attr);
+			}catch(Exception $e){
+				try{
+					$attrDao->update($attr);
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -197,12 +223,11 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 	 */
 	function deleteAdministrator($id){
 		$dao = SOY2DAOFactory::create("admin.AdministratorDAO");
-		$siteRoleDAO = SOY2DAOFactory::create("admin.SiteRoleDAO");
-		$appRoleDAO = SOY2DAOFactory::create("admin.AppRoleDAO");
 		$dao->begin();
 		try{
-			$appRoleDAO->deleteByUserId($id);
-			$siteRoleDAO->deleteByUserId($id);
+			SOY2DAOFactory::create("admin.AppRoleDAO")->deleteByUserId($id);
+			SOY2DAOFactory::create("admin.SiteRoleDAO")->deleteByUserId($id);
+			SOY2DAOFactory::create("admin.AdministratorAttributeDAO")->deleteByAdminId($id);
 			$dao->delete($id);
 			$dao->commit();
 			return true;

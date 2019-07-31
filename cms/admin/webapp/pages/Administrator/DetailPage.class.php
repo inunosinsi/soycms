@@ -11,7 +11,7 @@ class DetailPage extends CMSUpdatePageBase{
 			exit;
 		}
 
-		if(soy2_check_token() && $this->updateAdministrator()){
+		if(soy2_check_token() && self::updateAdministrator()){
 			$this->addMessage("UPDATE_SUCCESS");
 			$this->jump("Administrator.Detail." . $this->adminId);
 			exit;
@@ -54,6 +54,11 @@ class DetailPage extends CMSUpdatePageBase{
 			"name" => "email",
 			"value"=>$admin->getEmail(),
 			"visible"=> $showInputForm
+		));
+
+		//カスタムフィールド
+		$this->addLabel("customfield", array(
+			"html" => self::buildCustomField($admin->getId())
 		));
 
 		$this->addLabel("userId_text", array(
@@ -103,9 +108,28 @@ class DetailPage extends CMSUpdatePageBase{
 		$this->adminId = $adminId;
 	}
 
-	function updateAdministrator(){
+	private function updateAdministrator(){
 		$result = $this->run("Administrator.UpdateAction", array("adminId" => $this->adminId));
 		return $result->success();
 	}
+
+	private function buildCustomField($adminId){
+		$attrDao = SOY2DAOFactory::create("admin.AdministratorAttributeDAO");
+		$configs = AdministratorAttributeConfig::load();
+		if(!count($configs)) return array();
+
+		try{
+			$attrs = $attrDao->getByAdminId($adminId);
+		}catch(Exception $e){
+			$attrs = array();
+		}
+
+		$html = array();
+		foreach($configs as $config){
+			$value = (isset($attrs[$config->getFieldId()])) ? $attrs[$config->getFieldId()]->getValue() : "";
+			$html[] = $config->getForm($value);
+		}
+
+		return implode("\n", $html);
+	}
 }
-?>

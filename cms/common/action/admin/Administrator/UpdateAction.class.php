@@ -31,12 +31,38 @@ class UpdateAction extends SOY2Action{
     			if(!$name)$name = $admin->getUserId();
     			$this->getUserSession()->setAttribute('username',$name);
     		}
-
-	    	return SOY2Action::SUCCESS;
     	}catch(Exception $e){
     		return SOY2Action::FAILED;
     	}
 
+		if(!isset($_POST["custom_field"])) return SOY2Action::SUCCESS;
+		SOY2::import("domain.admin.AdministratorAttribute");
+		$configs = AdministratorAttributeConfig::load();
+		if(!isset($configs)) return SOY2Action::SUCCESS;
+
+		$attrDao = SOY2DAOFactory::create("admin.AdministratorAttributeDAO");
+		foreach($configs as $config){
+			try{
+				$attr = $attrDao->get($admin->getId(), $config->getFieldId());
+			}catch(Exception $e){
+				$attr = new AdministratorAttribute();
+				$attr->setAdminId($admin->getId());
+				$attr->setFieldId($config->getFieldId());
+			}
+
+			$attr->setValue($_POST["custom_field"][$config->getFieldId()]);
+			try{
+				$attrDao->insert($attr);
+			}catch(Exception $e){
+				try{
+					$attrDao->update($attr);
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+
+		return SOY2Action::SUCCESS;
     }
 }
 
@@ -66,4 +92,3 @@ class UpdateActionForm extends SOY2ActionForm{
 		$this->name = $name;
 	}
 }
-?>
