@@ -90,9 +90,9 @@ class FileColumn extends SOYInquiry_ColumnBase{
 			$tmp_name = $value["tmp_name"];
 
 			$new_dir = SOY_INQUIRY_UPLOAD_DIR . "/" . $this->getFormId() . "/" . date("Ym") . "/";
-			if(!file_exists($new_dir))mkdir($new_dir,0777,true);
+			if(!file_exists($new_dir)) mkdir($new_dir,0777,true);
 
-			$new_name = str_replace(SOY_INQUIRY_UPLOAD_TEMP_DIR, $new_dir,$tmp_name);
+			$new_name = str_replace(SOY_INQUIRY_UPLOAD_TEMP_DIR, $new_dir, $tmp_name);
 
 			if(rename($tmp_name,$new_name)){
 				$value["filepath"] = str_replace("\\","/",realpath($new_name));

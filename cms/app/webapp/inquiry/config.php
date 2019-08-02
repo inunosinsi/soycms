@@ -105,7 +105,10 @@ define("SOYINQUIRY_FONT_NAME","tuffy.ttf");
 
 //ファイルのアップロード先のルートディレクトリ 末尾に/なし
 $doc_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
-if(strlen($doc_root)>0 && $doc_root[strlen($doc_root)-1] == "/") $doc_root = substr($doc_root, 0, -1);
+if(strlen($doc_root) > 0 && $doc_root[strlen($doc_root)-1] == "/") $doc_root = substr($doc_root, 0, -1);
+//ドキュメントルート内にsiteIDがある場合は消してみる
+if(defined("_SITE_ROOT_") && $doc_root == _SITE_ROOT_){	//公開側
+	$doc_root = substr(_SITE_ROOT_, 0, strrpos(_SITE_ROOT_, "/"));
+}
 define("SOY_INQUIRY_UPLOAD_ROOT_DIR", $doc_root);
-
 SOY2::import("util.SOYInquiryUtil");

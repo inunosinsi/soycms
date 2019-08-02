@@ -41,8 +41,8 @@ class SOYInquiry_PageApplication{
 
 		//定数設定
 		$this->serverConfig = SOY2DAOFactory::create("SOYInquiry_ServerConfigDAO")->get();
-		define("SOY_INQUIRY_UPLOAD_DIR", SOY_INQUIRY_UPLOAD_ROOT_DIR . $this->serverConfig->getUploadDir());
-		define("SOY_INQUIRY_UPLOAD_TEMP_DIR", SOY_INQUIRY_UPLOAD_DIR . "tmp");
+		define("SOY_INQUIRY_UPLOAD_DIR", rtrim(SOY_INQUIRY_UPLOAD_ROOT_DIR . "/" . trim($this->serverConfig->getUploadDir(), "/"), "/") . "/");
+		define("SOY_INQUIRY_UPLOAD_TEMP_DIR", SOY_INQUIRY_UPLOAD_DIR . "tmp/");
 
 		$arguments = CMSApplication::getArguments();
 
