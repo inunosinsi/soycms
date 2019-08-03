@@ -125,7 +125,7 @@ class IndexPage extends WebPage{
 			//ini
 			$iniFilePath = preg_replace('/\.php$/', ".ini", $file);
 			if(file_exists($iniFilePath)){
-				$array = parse_ini_file($iniFilePath);
+				$array = @parse_ini_file($iniFilePath);
 				if(isset($array["name"])) $name = $array["name"];
 			}
 

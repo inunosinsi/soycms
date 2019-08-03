@@ -152,7 +152,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				case SOYShop_Page::TYPE_FREE:
 				case SOYShop_Page::TYPE_SEARCH:
 				default:
-					if(strpos($uri, ".xml") !== false) continue;
+					if(strpos($uri, ".xml") !== false) break;
 					if(strpos($uri, ".html") == false && strlen($uri) > 1){
 						$uri = $uri . "/";
 					}
