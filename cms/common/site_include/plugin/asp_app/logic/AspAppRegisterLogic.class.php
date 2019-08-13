@@ -88,7 +88,7 @@ class AspAppRegisterLogic extends SOY2LogicBase {
 		CMSUtil::resetDsn($old);
 
 		//user_idをメールアドレスにする
-		$admin->setUserId($admin->getEmail());
+		if(!strlen($admin->getUserId())) $admin->setUserId($admin->getEmail());
 
 		return $admin;
 	}

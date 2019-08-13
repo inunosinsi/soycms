@@ -3,8 +3,11 @@
 				<p class="alert alert-danger" soy:display="error" role="alert">入力内容にエラーがあります。</p>
 				<form soy:id="form">
 					<div class="form-group">
-							<label for="validationDefault01" soy:id="user_name">使用者名</label>
-							<input type="text" class="form-control" soy:id="user_name" id="validationDefault01" >
+							<label for="name">ユーザー名</label>
+							<input type="text" class="form-control" soy:id="user_name" id="name" >
+							<label for="user_id">ログインID(半角英数字)</label>
+							<p class="alert alert-danger" soy:display="user_id_duplicate_error">入力したログインIDは使用できません</p>
+							<input type="text" class="form-control" soy:id="user_id" id="user_id" >
 							<label for="Email1">メールアドレス</label>
 							<input type="email" class="form-control" soy:id="mail_address" id="Email1" aria-describedby="emailHelp" >
 							<label for="Email2">メールアドレス(確認用)</label>

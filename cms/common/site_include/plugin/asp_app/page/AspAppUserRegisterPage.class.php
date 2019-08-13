@@ -38,6 +38,13 @@ class AspAppUserRegisterPage extends WebPage {
 			"attr:required" => "required"
 		));
 
+		$this->addInput("user_id", array(
+			"name" => "User[userId]",
+			"value" => $admin->getUserId(),
+			"attr:required" => "required",
+			"attr:pattern" => "^[a-zA-Z0-9]+$"
+		));
+
 		//登録時はuser_idにも同じ値を入れる
 		$this->addInput("mail_address", array(
 			"name" => "User[email]",
@@ -59,6 +66,7 @@ class AspAppUserRegisterPage extends WebPage {
 
 		//エラー
 		foreach(array(
+			"user_id_duplicate",
 			"mail_address_confirm",
 			"password",
 			"mail_address_duplicate",
@@ -78,10 +86,21 @@ class AspAppUserRegisterPage extends WebPage {
 		}
 
 		$old = CMSUtil::switchDsn();
+		$adminDao = SOY2DAOFactory::create("admin.AdministratorDAO");
+
+		//既に登録されているログインIDか？
+		if(isset($admin["userId"])){
+			try{
+				$obj = $adminDao->getByUserId($admin["userId"]);
+				$this->errors["user_id_duplicate_error"] = true;
+			}catch(Exception $e){
+				//
+			}
+		}
 
 		//既に登録されているメールアドレスか？
 		try{
-			$obj = SOY2DAOFactory::create("admin.AdministratorDAO")->getByEmail($admin["email"]);
+			$obj = $adminDao->getByEmail($admin["email"]);
 			$this->errors["mail_address_duplicate_error"] = true;
 		}catch(Exception $e){
 			//

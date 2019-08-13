@@ -73,6 +73,10 @@ class AspAppUserConfirmPage extends WebPage {
 			"text" => $admin->getName()
 		));
 
+		$this->addLabel("user_id", array(
+			"text" => $admin->getUserId()
+		));
+
 		$this->addLabel("mail_address", array(
 			"text" => $admin->getEmail()
 		));
