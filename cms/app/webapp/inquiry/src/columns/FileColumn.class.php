@@ -18,16 +18,17 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		$value = $this->getValue();
 
+		$html = array();
+		$isUploaded = is_array($value);
+
 		//アップロードされていた場合
-		if(is_array($value)){
-
-			$new_value = base64_encode(serialize($this->getValue()));
-
-			$html = array();
+		if($isUploaded){
 			$html[] = htmlspecialchars($value["name"], ENT_QUOTES, "UTF-8") . "(".(int)($value["size"] / self::KB_SIZE)."KB)";
+			$new_value = base64_encode(serialize($this->getValue()));
 			$html[] = '<input type="hidden" name="data['.$this->getColumnId().']" value="'.$new_value.'" />';
+			$html[] = "<br>";
 
-			return implode("\n",$html);
+			//return implode("\n",$html);
 		}
 
 		$attributes = array();
@@ -36,8 +37,7 @@ class FileColumn extends SOYInquiry_ColumnBase{
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 
-		$html = array();
-		$html[] = "<input type=\"file\" name=\"data[".$this->getColumnId()."]\" value=\"".htmlspecialchars($this->getValue(), ENT_QUOTES, "UTF-8")."\"" . implode(" ",$attributes) . " />";
+		$html[] = "<input type=\"file\" name=\"data[".$this->getColumnId()."]\" value=\"\"" . implode(" ",$attributes) . " />";
 
 		return implode("\n",$html);
 	}
@@ -61,16 +61,19 @@ class FileColumn extends SOYInquiry_ColumnBase{
 		$value = $this->getValue();
 
 		if(is_array($value) && isset($value["name"]) && isset($value["size"])){
-/**
-			$imgPath = str_replace(SOY_INQUIRY_UPLOAD_DIR, "", $value["tmp_name"]);
-			$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
-
-			//リサイズ
-			$resizeW = (is_numeric($this->resize_w) && $this->resize_w > 150) ? 150 : $this->resize_w;
-
-			$html = "<img src=\"/" . $siteId . "/im.php?src=/" . $imgPath . "&width=" . $resizeW . "\"><br>";
-			**/
 			$html = "";
+/**
+			if(strpos($value["type"], "image") !== false){
+				$imgPath = str_replace(SOY_INQUIRY_UPLOAD_DIR, "", $value["tmp_name"]);
+				$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+
+				//リサイズ
+				$resizeW = (is_numeric($this->resize_w) && $this->resize_w > 150) ? 150 : $this->resize_w;
+
+				$html .= "<img src=\"/" . $siteId . "/im.php?src=/" . $imgPath . "&width=" . $resizeW . "\"><br>";
+			}
+			**/
+
 			$html .= htmlspecialchars($value["name"] . " (".(int)($value["size"] / self::KB_SIZE)."KB)", ENT_QUOTES, "UTF-8");
 			return $html;
 		}
@@ -144,21 +147,22 @@ class FileColumn extends SOYInquiry_ColumnBase{
 	 */
 	function validate(){
 
-		$value = $this->getValue();
-
-		$tmp = @unserialize(base64_decode($value));
-
-		//二回目のPOST
-		if(is_array($tmp) && isset($tmp["tmp_name"])
-			&& file_exists($tmp["tmp_name"]) && is_readable($tmp["tmp_name"])){
-
-			$this->setValue($tmp);
-			return;
-		}
-
-
 		$id = $this->getColumnId();
+		if(isset($_FILES["data"]["size"][$id]) && $_FILES["data"]["size"][$id] > 0){	//アップロードした
+			//ここでは何もしない
+			
+		}else{	//アップロードしてない
+			$value = $this->getValue();
+			$tmp = @unserialize(base64_decode($value));
 
+			//二回目のPOST
+			if(is_array($tmp) && isset($tmp["tmp_name"])
+				&& file_exists($tmp["tmp_name"]) && is_readable($tmp["tmp_name"])){
+
+				$this->setValue($tmp);
+				return;
+			}
+		}
 
 		//チェック
 		$name = @$_FILES["data"]["name"][$id];

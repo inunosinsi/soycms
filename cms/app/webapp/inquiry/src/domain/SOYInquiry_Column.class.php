@@ -62,6 +62,7 @@ class SOYInquiry_Column{
 		"Address" => "住所",
 		"AddressJs" => "住所(JS版)",
 		"File" => "アップロード",
+		//"Files" => "アップロード(複数)",
 		"Telephone" => "電話番号",
 		"MultiSingleText" => "分割1行テキスト",
 		"NameText" => "[名前]",
