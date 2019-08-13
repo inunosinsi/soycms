@@ -12,8 +12,14 @@ class ApplicationListComponent extends HTMLList{
 		 */
 		$param = array();
 		if(isset($_GET["r"]) && strlen($_GET["r"]) && strpos($_GET["r"], "/app/index.php/" . $key)) $param["r"] = $_GET["r"];
+		$loginLink = SOY2PageController::createRelativeLink("../app/index.php/" . $key) . ( count($param) ? "?" . http_build_query($param) : "" );
+		if(strpos($loginLink, "?")){
+			$loginLink .= "&login";
+		}else{
+			$loginLink .= "?login";
+		}
 		$this->addLink("login_link", array(
-			"link" => SOY2PageController::createRelativeLink("../app/index.php/" . $key) . ( count($param) ? "?" . http_build_query($param) : "" )
+			"link" => $loginLink
 		));
 
 		$this->addLabel("description", array(
