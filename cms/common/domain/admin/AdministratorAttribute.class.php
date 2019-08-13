@@ -75,7 +75,7 @@ class AdministratorAttributeConfig {
 			// "checkbox" => "チェックボックス",
 			// "checkboxes" => "チェックボックス(複数)",
 			// "radio" => "ラジオボタン",
-			// "select" => "セレクトボックス",
+			"select" => "セレクトボックス",
 			// "image" => "画像",
 			// "file" => "ファイル",
 			// "richtext" => "リッチテキスト",
@@ -204,6 +204,23 @@ class AdministratorAttributeConfig {
 		$h_formID = htmlspecialchars($this->getFormId(), ENT_QUOTES, "UTF-8");
 
 		switch($this->getType()){
+			case "select":
+				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->getOption()));
+				$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
+
+				$body = '<select class="form-control" name="'.$h_formName.'" id="'.$h_formID.'">';
+				//$body .= '<option value="">----</option>';
+				foreach($options as $option){
+					$option = trim($option);
+					if(strlen($option) > 0){
+						$h_option = htmlspecialchars($option, ENT_QUOTES, "UTF-8");
+						$body .= '<option value="'.$h_option.'" ' .
+								 (($option == $value) ? 'selected="selected"' : "") .
+								 '>' . $h_option . '</option>' . "\n";
+					}
+				}
+				$body .= '</select>';
+				break;
 			case "input":
 			default:
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;

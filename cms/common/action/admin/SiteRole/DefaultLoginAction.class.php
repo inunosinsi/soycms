@@ -98,7 +98,7 @@ class DefaultLoginAction extends SOY2Action{
 		if(strlen($this->redirect) >0 && CMSAdminPageController::isAllowedPath($this->redirect, "../app/index.php/" . $appId)){
 			SOY2PageController::redirect($this->redirect);
 		}else{
-			SOY2PageController::redirect("../app/index.php/" . $appId);
+			SOY2PageController::redirect("../app/index.php/" . $appId . "?login");
 		}
     }
 

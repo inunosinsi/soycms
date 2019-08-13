@@ -40,6 +40,30 @@
 			<!-- /.row -->
 			<div class="row">
 				<div class="col-lg-12">
+					<div class="panel panel-green">
+						<div class="panel-heading">
+							管理者検索
+						</div>
+						<div class="panel-body">
+							<form soy:id="search_form">
+								<div class="form-group form-inline">
+									<label>管理者ID</label>
+									<input type="search" soy:id="search_user_id" class="form-control">&nbsp;
+									<label>管理者名</label>
+									<input type="search" soy:id="search_name" class="form-control">&nbsp;
+									<label>メールアドレス</label>
+									<input type="search" soy:id="search_email" class="form-control">&nbsp;
+
+									<input type="submit" class="btn btn-primary" value="検索">&nbsp;
+									<a soy:link="Administrator?reset" class="btn btn-warning">リセット</a>
+								</div>
+							</form>
+						</div>
+					<div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
 					<div class="panel panel-yellow">
 						<div class="panel-heading">
 							管理者一覧
@@ -66,10 +90,17 @@
 											<a class="btn btn-default" soy:id="detail_link">権限設定</a>
 											<a class="btn btn-danger btn-outline pull-right" soy:id="remove_link">削除</a>
 										</td>
-										<form soy:id="remove_form" method="post"></form>
-									</tr soy:id="list">
+									</tr>
 								</tbody>
 						</table>
+
+						<div class="text-center" style="margin:15px 0;">
+							<a soy:id="prev_pager">&lt;&lt;</a>
+							<!-- soy:id="pager_list" -->
+							<a soy:id="target_link">1</a>
+							<!-- /soy:id="pager_list" -->
+							<a soy:id="next_pager">&gt;&gt;</a>
+						</div>
 					</div>
 				</div>
 				<!-- /.col-lg-12 -->
