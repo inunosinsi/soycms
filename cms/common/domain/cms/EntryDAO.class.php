@@ -66,6 +66,19 @@ abstract class EntryDAO extends SOY2DAO{
 	 * @final
 	 */
 	function onUpdate($query,$binds){
+		//記事表示の高速化
+		for(;;){
+			$i++;
+			try{
+				$res = $this->executeQuery("SELECT id FROM Entry WHERE cdate = :cdate LIMIT 1;", array(":cdate" => $binds[":cdate"] + $i));
+			}catch(Exception $e){
+				$res = array();
+			}
+
+			if(!count($res)) break;
+		}
+		$binds[":cdate"] += $i;
+
 		$binds[':author'] = UserInfoUtil::getUserName();
 		$binds[':udate'] = time();
 
