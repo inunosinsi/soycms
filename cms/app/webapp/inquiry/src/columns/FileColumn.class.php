@@ -17,14 +17,14 @@ class FileColumn extends SOYInquiry_ColumnBase{
 	function getForm($attr = array()){
 
 		$value = $this->getValue();
-
+		
 		$html = array();
 		$isUploaded = is_array($value);
 
 		//アップロードされていた場合
 		if($isUploaded){
 			$html[] = htmlspecialchars($value["name"], ENT_QUOTES, "UTF-8") . "(".(int)($value["size"] / self::KB_SIZE)."KB)";
-			$new_value = base64_encode(serialize($this->getValue()));
+			$new_value = base64_encode(soy2_serialize($value));
 			$html[] = '<input type="hidden" name="data['.$this->getColumnId().']" value="'.$new_value.'" />';
 			$html[] = "<br>";
 
@@ -150,10 +150,10 @@ class FileColumn extends SOYInquiry_ColumnBase{
 		$id = $this->getColumnId();
 		if(isset($_FILES["data"]["size"][$id]) && $_FILES["data"]["size"][$id] > 0){	//アップロードした
 			//ここでは何もしない
-			
+
 		}else{	//アップロードしてない
 			$value = $this->getValue();
-			$tmp = @unserialize(base64_decode($value));
+			$tmp = (isset($value) && strlen($value)) ? soy2_unserialize(base64_decode($value)) : array();
 
 			//二回目のPOST
 			if(is_array($tmp) && isset($tmp["tmp_name"])

@@ -24,8 +24,9 @@ CREATE TABLE soyinquiry_inquiry (
   content TEXT,
   data TEXT,
   flag TINYINT default 1,
-  create_date INTEGER,
-  form_url VARCHAR(255)
+  create_date INTEGER NOT NULL,
+  form_url VARCHAR(255),
+  UNIQUE(form_id, create_date)
 )ENGINE = InnoDB;
 
 CREATE INDEX soyinquiry_tracking_number_idx on soyinquiry_inquiry(tracking_number);
@@ -40,7 +41,8 @@ CREATE TABLE soyinquiry_comment (
 	title VARCHAR(255),
 	author VARCHAR(255),
 	content TEXT,
-	create_date INTEGER
+	create_date INTEGER NOT NULL,
+	UNIQUE(inquiry_id, create_date)
 )ENGINE = InnoDB;
 
 CREATE TABLE soyinquiry_data_sets(

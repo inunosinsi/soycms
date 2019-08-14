@@ -6,6 +6,7 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
 
     /**
 	 * @return id
+	 * @trigger onInsert
 	 */
     abstract function insert(SOYInquiry_Inquiry $bean);
 
@@ -135,4 +136,26 @@ abstract class SOYInquiry_InquiryDAO extends SOY2DAO{
      * @query form_id = :formId and flag <> 2
      */
     abstract function countUndeletedInquiryByFormId($formId);
+
+	/**
+	 * @final
+	 */
+	function onInsert($query, $binds){
+		static $i;
+		if(is_null($i)) $i = 0;
+
+		for(;;){
+			$i++;
+			try{
+				$res = $this->executeQuery("SELECT id FROM soyinquiry_inquiry WHERE form_id = :formId AND create_date = :createDate LIMIT 1;", array(":formId" => $binds[":formId"], ":createDate" => $binds[":createDate"] + $i));
+			}catch(Exception $e){
+				$res = array();
+			}
+
+			if(!count($res)) break;
+		}
+		$binds[":createDate"] += $i;
+
+		return array($query, $binds);
+	}
 }

@@ -16,18 +16,16 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getForm($attr = array()){
 
-		$value = $this->getValue();
+		$html = array();
 
-		//アップロードされていた場合
-		if(is_array($value)){
+		$values = self::getValues();
+		if(count($values)){
+			foreach($values as $v){
+				$html[] = htmlspecialchars($v["name"], ENT_QUOTES, "UTF-8") . "(".(int)($v["size"] / self::KB_SIZE)."KB)";
+				$html[] = "<br>";
+			}
 
-			$new_value = base64_encode(serialize($this->getValue()));
-
-			$html = array();
-			$html[] = htmlspecialchars($value["name"], ENT_QUOTES, "UTF-8") . "(".(int)($value["size"] / self::KB_SIZE)."KB)";
-			$html[] = '<input type="hidden" name="data['.$this->getColumnId().']" value="'.$new_value.'" />';
-
-			return implode("\n",$html);
+			$html[] = '<input type="hidden" name="data['.$this->getColumnId().']" value="'.base64_encode(soy2_serialize($values)).'" />';
 		}
 
 		$attributes = array();
@@ -36,8 +34,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 
-		$html = array();
-		$html[] = "<input type=\"file\" name=\"data[".$this->getColumnId()."]\" value=\"".htmlspecialchars($this->getValue(), ENT_QUOTES, "UTF-8")."\"" . implode(" ",$attributes) . " />";
+		$html[] = "<input type=\"file\" name=\"data[".$this->getColumnId()."][]\" value=\"\"" . implode(" ",$attributes) . " multiple>";
 
 		return implode("\n",$html);
 	}
@@ -58,24 +55,13 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 * 確認画面用
 	 */
 	function getView(){
-		$value = $this->getValue();
-
-		if(is_array($value) && isset($value["name"]) && isset($value["size"])){
-			$html = "";
-/**
-			if(strpos($value["type"], "image") !== false){
-				$imgPath = str_replace(SOY_INQUIRY_UPLOAD_DIR, "", $value["tmp_name"]);
-				$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
-
-				//リサイズ
-				$resizeW = (is_numeric($this->resize_w) && $this->resize_w > 150) ? 150 : $this->resize_w;
-
-				$html .= "<img src=\"/" . $siteId . "/im.php?src=/" . $imgPath . "&width=" . $resizeW . "\"><br>";
+		$values = self::getValues();
+		if(count($values)){
+			$html = array();
+			foreach($values as $v){
+				$html[] = htmlspecialchars($v["name"] . " (".(int)($v["size"] / self::KB_SIZE)."KB)", ENT_QUOTES, "UTF-8");
 			}
-			**/
-
-			$html .= htmlspecialchars($value["name"] . " (".(int)($value["size"] / self::KB_SIZE)."KB)", ENT_QUOTES, "UTF-8");
-			return $html;
+			return implode("<br>", $html);
 		}
 
 		return "";
@@ -85,14 +71,13 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 * データ投入用
 	 */
 	function getContent(){
-		$value = $this->getValue();
-
-		if(is_array($value) && isset($value["name"]) && isset($value["size"])){
-
+		$values = self::getValues();
+		if(count($values)){
 			$html = array();
-			$html[] = $value["name"] . " (".(int)($value["size"] / self::KB_SIZE)."KB)";
-
-			return implode("\n",$html);
+			foreach($values as $v){
+				$html[] = $v["name"] . " (".(int)($v["size"] / self::KB_SIZE)."KB)";
+			}
+			return trim(implode("\n", $html));
 		}
 
 		return "";
@@ -102,44 +87,43 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 * onSend
 	 */
 	function onSend($inquiry){
-
-		$value = $this->getValue();
-
-		if(is_array($value)){
-			$tmp_name = $value["tmp_name"];
-
+		$values = self::getValues();
+		if(count($values)){
 			$new_dir = SOY_INQUIRY_UPLOAD_DIR . "/" . $this->getFormId() . "/" . date("Ym") . "/";
 			if(!file_exists($new_dir)) mkdir($new_dir,0777,true);
 
-			$new_name = str_replace(SOY_INQUIRY_UPLOAD_TEMP_DIR, $new_dir, $tmp_name);
+			$commentDAO = SOY2DAOFactory::create("SOYInquiry_CommentDAO");
 
-			if(rename($tmp_name,$new_name)){
-				$value["filepath"] = str_replace("\\","/",realpath($new_name));
-				$value["filepath"] = str_replace(SOY_INQUIRY_UPLOAD_ROOT_DIR,"",$value["filepath"]);
-				$this->setValue($value);
+			foreach($values as $i => $v){
+				$tmp_name = $v["tmp_name"];
+				$new_name = str_replace(SOY_INQUIRY_UPLOAD_TEMP_DIR, $new_dir, $tmp_name);
+				
+				if(rename($tmp_name, $new_name)){
+					$v["filepath"] = str_replace("\\","/",realpath($new_name));
+					$v["filepath"] = str_replace(SOY_INQUIRY_UPLOAD_ROOT_DIR,"",$v["filepath"]);
+					$values[$i] = $v;
 
-				//コメントに追加する
-				$content = $this->getLabel() . ":";
-				$content .= '<a href="'.htmlspecialchars($value["filepath"],ENT_QUOTES,"UTF-8").'">'.htmlspecialchars($value["name"],ENT_QUOTES,"UTF-8").'</a>';
+					//コメントに追加する
+					$content = $this->getLabel() . ":";
+					$content .= '<a href="' . htmlspecialchars($v["filepath"], ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($v["name"], ENT_QUOTES, "UTF-8") . '</a>';
 
-				$pathinfo = pathinfo($value["filepath"]);
-				if(in_array($pathinfo["extension"],array("jpg","jpeg","gif","png"))){
-					$content .= '<br/><img src="'.htmlspecialchars($value["filepath"],ENT_QUOTES,"UTF-8").'"/>';
+					$pathinfo = pathinfo($v["filepath"]);
+					if(in_array($pathinfo["extension"], array("jpg", "jpeg", "gif", "png"))){
+						$content .= '<br/><img src="' . htmlspecialchars($v["filepath"], ENT_QUOTES, "UTF-8") . '"/>';
+					}
+
+					$comment = new SOYInquiry_Comment();
+					$comment->setInquiryId($inquiry->getId());
+					$comment->setTitle($this->getLabel());
+					$comment->setAuthor("-");
+					$comment->setContent($content);
+
+					$commentDAO->insert($comment);
 				}
-
-				$commentDAO = SOY2DAOFactory::create("SOYInquiry_CommentDAO");
-				$comment = new SOYInquiry_Comment();
-
-				$comment->setInquiryId($inquiry->getId());
-				$comment->setTitle($this->getLabel());
-				$comment->setAuthor("-");
-				$comment->setContent($content);
-
-				$commentDAO->insert($comment);
-
 			}
-		}
 
+			$this->setValue($values);
+		}
 	}
 
 	/**
@@ -147,94 +131,88 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 */
 	function validate(){
 
-		$value = $this->getValue();
+		$id = $this->getColumnId();
 
-		$tmp = @unserialize(base64_decode($value));
+		//アップロードした
+		$values = array();
+		if(isset($_FILES["data"]["size"]) && is_array($_FILES["data"]["size"][$id]) && count($_FILES["data"]["size"][$id]) && (int)$_FILES["data"]["size"][$id][0] > 0){
+			if(!file_exists(SOY_INQUIRY_UPLOAD_TEMP_DIR)) mkdir(SOY_INQUIRY_UPLOAD_TEMP_DIR);
 
-		//二回目のPOST
-		if(is_array($tmp) && isset($tmp["tmp_name"])
-			&& file_exists($tmp["tmp_name"]) && is_readable($tmp["tmp_name"])){
+			for($i = 0; $i < count($_FILES["data"]["size"][$id]); $i++){
+				if(!isset($_FILES["data"]["size"][$id][$i]) || (int)$_FILES["data"]["size"][$id][$i] === 0) continue;
+				$v = array();
+				$v["name"] = $_FILES["data"]["name"][$id][$i];
+				$v["type"] = $_FILES["data"]["type"][$id][$i];
+				$v["tmp_name"] = $_FILES["data"]["tmp_name"][$id][$i];
+				$v["error"] = $_FILES["data"]["error"][$id][$i];
+				$v["size"] = $_FILES["data"]["size"][$id][$i];
 
-			$this->setValue($tmp);
+				$check = true;
+
+				//拡張子のチェック
+				$pathinfo = pathinfo($v["name"]);
+				$extensions = explode(",", $this->extensions);
+				if(!in_array($pathinfo["extension"], $extensions)){
+					// @ToDo 何らかのエラーを出力したい
+					$check = false;
+				}
+
+				//ファイルサイズチェック
+				if(($this->uploadsize * self::KB_SIZE) < $v["size"]){
+					// @ToDo 何らかのエラーを出力したい
+					$check = false;
+				}
+
+				//一時的にアップロードする
+				if($check) {
+					$path_to = SOY_INQUIRY_UPLOAD_TEMP_DIR . md5($v["name"] . time()) . "." . $pathinfo["extension"];
+					$result = move_uploaded_file($v["tmp_name"], $path_to);
+					$v["tmp_name"] = $path_to;	//tmp_nameを上書き
+
+					if(!$result){
+						// @ToDo 何らかのエラーを出力したい
+						$check = false;
+					}
+
+					//$path_toにあるファイルをリサイズする
+					if(strpos($v["type"], "image") !== false && is_numeric($this->resize_w) && $this->resize_w > 0){
+						$imgInfo = getimagesize($path_to);
+						if(is_array($imgInfo) && count($imgInfo) >= 7){	//idx:0がwidthでidx:1がheight
+							if($imgInfo[0] >= $imgInfo[1]){	//横長画像もしくは正方形
+								$resizeW = $this->resize_w;
+								$resizeH = (int)($this->resize_w * $imgInfo[1] / $imgInfo[0]);
+							}else{ //縦長画像
+								$resizeW = (int)($this->resize_h * $imgInfo[0] / $imgInfo[1]);
+								$resizeH = $this->resize_h;
+							}
+							soy2_resizeimage($path_to, $path_to, $resizeW, $resizeH);
+							$v["size"] = filesize($path_to);
+						}
+					}
+
+					if($check) $values[] = $v;
+				}
+			}
+		}else{	//アップロードしていない
+			$this->setValue(self::getValues());
 			return;
 		}
 
-
-		$id = $this->getColumnId();
-
-
-		//チェック
-		$name = @$_FILES["data"]["name"][$id];
-		$type = @$_FILES["data"]["type"][$id];
-		$tmp_name = @$_FILES["data"]["tmp_name"][$id];
-		$error = @$_FILES["data"]["error"][$id];
-		$size = @$_FILES["data"]["size"][$id];
-
 		//必須チェック
-		if($this->getIsRequire() && strlen($name)<1){
+		if($this->getIsRequire() && !count($values)){
 			$this->setErrorMessage($this->getLabel()."を入力してください。");
 			return false;
 		}
 
-		//アップロードしていない場合は終了
-		if(strlen($name)<1)return;
+		$this->setValue($values);
+		$_POST["data"][$this->getColumnId()] = base64_encode(serialize($this->getValue()));
+	}
 
-		$pathinfo = pathinfo($name);
-
-		//拡張子チェック
-		$extensions = explode(",", $this->extensions);
-		if(!in_array($pathinfo["extension"], $extensions)){
-			$this->setErrorMessage($this->getLabel()."の形式が不正です。");
-			return false;
-		}
-
-		//ファイルサイズチェック
-		if(($this->uploadsize * self::KB_SIZE)< $size){
-			$this->setErrorMessage($this->getLabel()."が大きすぎます。");
-			return false;
-		}
-
-		//一時的にアップロードする
-		if(!file_exists(SOY_INQUIRY_UPLOAD_TEMP_DIR)){
-			mkdir(SOY_INQUIRY_UPLOAD_TEMP_DIR);
-		}
-		$path_to = SOY_INQUIRY_UPLOAD_TEMP_DIR . md5($name . time()) . "." . $pathinfo["extension"];
-		$result = move_uploaded_file($tmp_name,$path_to);
-
-		//一時アップロードに失敗した場合
-		if(!$result){
-			$this->setErrorMessage("アップロードに失敗しました。");
-			return false;
-		}
-
-		//$path_toにあるファイルをリサイズする @ToDo 画像ファイルであるか？を調べた後に実行
-		if(strpos($type, "image") !== false && is_numeric($this->resize_w) && $this->resize_w > 0){
-			$imgInfo = getimagesize($path_to);
-			if(is_array($imgInfo) && count($imgInfo) >= 7){	//idx:0がwidthでidx:1がheight
-				if($imgInfo[0] >= $imgInfo[1]){	//横長画像もしくは正方形
-					$resizeW = $this->resize_w;
-					$resizeH = (int)($this->resize_w * $imgInfo[1] / $imgInfo[0]);
-				}else{ //縦長画像
-					$resizeW = (int)($this->resize_h * $imgInfo[0] / $imgInfo[1]);
-					$resizeH = $this->resize_h;
-				}
-				soy2_resizeimage($path_to, $path_to, $resizeW, $resizeH);
-				$size = filesize($path_to);
-			}
-		}
-
-
-		//もしアップロードされているのであれば値を保存する
-		$this->setValue(array(
-			"name" => $name,
-			"type" => $type,
-			"tmp_name" => $path_to,
-			"error" => $error,
-			"size" => $size
-		));
-
-		$new_value = base64_encode(serialize($this->getValue()));
-		$_POST["data"][$this->getColumnId()] = $new_value;
+	private function getValues(){
+		$values = $this->getValue();
+		if(is_string($values) && strlen($values)) $values = soy2_unserialize(base64_decode($values));
+		if(!isset($values) || !is_array($values)) $values = array();
+		return $values;
 	}
 
 	/**
