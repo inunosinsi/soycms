@@ -6,6 +6,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	private $uploadsize = 500;	//KB
 	private $resize_w;
 	private $resize_h;
+	private $upload_limit = 3;
 
 	/** @ToDo リサイズで縦長過ぎる画像をアップロードされたらどうする？ **/
 
@@ -34,7 +35,24 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 
-		$html[] = "<input type=\"file\" name=\"data[".$this->getColumnId()."][]\" value=\"\"" . implode(" ",$attributes) . " multiple>";
+		$html[] = "<input type=\"file\" name=\"data[".$this->getColumnId()."][]\" value=\"\"" . implode(" ",$attributes) . " onchange=\"inquiry_upload_file_limit_" . $this->getColumnId() . "(this)\" multiple>";
+
+		//アップロードの枚数制限
+		if(is_numeric($this->upload_limit) && $this->upload_limit){
+			$html[] = "<script>";
+			$html[] = "function inquiry_upload_file_limit_" . $this->getColumnId() ."(ele){";
+			$html[] = "	var inquiry_confirm_button = document.getElementsByName('confirm')[0];";	//必ずボタンはある
+			$html[] = "	var upload_limit = " . $this->upload_limit . ";";
+			$html[] = "	if(ele.files.length > upload_limit){";
+			$html[] = "		alert('アップロード枚数の上限は' + upload_limit + '枚です。');";
+			$html[] = "		inquiry_confirm_button.disabled = true;";
+			$html[] = "	}else{";
+			$html[] = "		inquiry_confirm_button.disabled = false;";
+			$html[] = "	}";
+			$html[] = "}";
+			$html[] = "</script>";
+		}
+
 
 		return implode("\n",$html);
 	}
@@ -46,7 +64,8 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 		$html  = 'サイズ:<input type="text" name="Column[config][uploadsize]" value="'.htmlspecialchars($this->uploadsize,ENT_QUOTES).'" size="3">KB&nbsp;';
 		$html .= '拡張子:<input type="text" name="Column[config][extensions]" value="'.htmlspecialchars($this->extensions,ENT_QUOTES).'"><br>';
 		$html .= '画像のリサイズ: width:<input type="text" name="Column[config][resize_w]" value="'.htmlspecialchars($this->resize_w, ENT_QUOTES) . '" size="5">px ';
-		$html .= 'height:<input type="text" name="Column[config][resize_h]" value="'.htmlspecialchars($this->resize_h, ENT_QUOTES) . '" size="5">px(アスペクト比は維持)';
+		$html .= 'height:<input type="text" name="Column[config][resize_h]" value="'.htmlspecialchars($this->resize_h, ENT_QUOTES) . '" size="5">px(アスペクト比は維持)<br>';
+		$html .= '同時アップロードファイル数:<input type="number" value="' . $this->upload_limit . '" style="width:50px;">';
 
 		return $html;
 	}
@@ -97,7 +116,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 			foreach($values as $i => $v){
 				$tmp_name = $v["tmp_name"];
 				$new_name = str_replace(SOY_INQUIRY_UPLOAD_TEMP_DIR, $new_dir, $tmp_name);
-				
+
 				if(rename($tmp_name, $new_name)){
 					$v["filepath"] = str_replace("\\","/",realpath($new_name));
 					$v["filepath"] = str_replace(SOY_INQUIRY_UPLOAD_ROOT_DIR,"",$v["filepath"]);
