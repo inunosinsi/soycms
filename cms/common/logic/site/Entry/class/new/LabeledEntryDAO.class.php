@@ -37,9 +37,9 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		//Order
 		if($orderReverse){
-			$sql .= " Order By label.display_order, entry.cdate ASC, entry.id ASC ";
+			$sql .= self::addOrder("ASC", $labelIds);
 		}else{
-			$sql .= " Order By label.display_order, entry.cdate DESC, entry.id DESC";
+			$sql .= self::addOrder("DESC", $labelIds);
 		}
 
 		if(is_numeric($limit)) $sql .= " LIMIT " . $limit;
@@ -48,7 +48,6 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 		try{
 			$results = $this->executeQuery($sql);
 		}catch(Exception $e){
-			var_dump($e);
 			return array();
 		}
 
@@ -162,9 +161,9 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		//Order
 		if($orderReverse){
-			$sql .= " Order By label.display_order, entry.cdate ASC, entry.id ASC ";
+			$sql .= self::addOrder("ASC", $labelIds);
 		}else{
-			$sql .= " Order By label.display_order, entry.cdate DESC, entry.id DESC";
+			$sql .= self::addOrder("DESC", $labelIds);
 		}
 
 		if(is_numeric($limit)) {
@@ -262,6 +261,14 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * @return array
 	 */
 	abstract function getOpenEntryCountByLabelIds($labelids,$now);
+
+	//ソート
+	private function addOrder($sort="ASC", $labelIds){
+		if(!is_array($labelIds) || !count($labelIds)) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;
+		$labelId = (int)$labelIds[count($labelIds) - 1];	//末尾のラベルID
+		if($labelId === 0) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;
+		return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $labelId . " AND entry_id = entry.id), entry.cdate " . $sort . ", entry.id " . $sort;
+	}
 
 
 	/**

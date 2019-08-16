@@ -1,0 +1,5 @@
+<?php
+
+// admin/index.php/Administrator/Detailの最後に読み込まれる
+//<input type="hidden">や<script>等	$customHtmlに出力したいHTMLを格納
+$customHtml = "";

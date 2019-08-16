@@ -37,7 +37,7 @@ class EntryListAction extends SOY2Action{
 		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("offset" => $this->offset, "limit" => $this->limit));
 
 		try{
-			if(!is_null($this->id)){
+			if(!is_null($this->id) && (is_string($this->id) || is_numeric($this->id))){
 				//ラベルIDに対するエントリーオブジェクトのリストを返す
 				$entries = $logic->getByLabelId($this->id);
 				$this->setAttribute("Entities",$entries);

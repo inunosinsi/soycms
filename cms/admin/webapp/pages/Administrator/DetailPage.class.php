@@ -102,6 +102,12 @@ class DetailPage extends CMSUpdatePageBase{
 		$this->addModel("has_message_or_error",array(
 			"visible" => $this->failed || !empty($messages),
 		));
+
+		//ページの末尾にカスタムHTMLを追加
+		if(file_exists(SOY2::RootDir() . "config/administrator.detail.custom.php")) include_once(SOY2::RootDir() . "config/administrator.detail.custom.php");
+		$this->addLabel("custom_html", array(
+			"html" => (isset($customHtml) && strlen($customHtml)) ? $customHtml : ""
+		));
 	}
 
 	function setAdminId($adminId) {
