@@ -157,4 +157,3 @@ class EntryListComponent extends HTMLList{
 		$this->thisIsNewDate = $thisIsNewDate;
 	}
 }
-?>

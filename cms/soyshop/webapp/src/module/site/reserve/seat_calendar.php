@@ -64,7 +64,7 @@ function soyshop_seat_calendar($html, $page){
 	}
 
 	$url = soyshop_get_page_url($page->getPageObject()->getUri());
-	if(get_class($page) == "detail_page"){
+	if($page->getPageObject()->getType() == SOYShop_Page::TYPE_DETAIL){
 		$url .= "/" . $page->getItem()->getAlias();
 	}
 
