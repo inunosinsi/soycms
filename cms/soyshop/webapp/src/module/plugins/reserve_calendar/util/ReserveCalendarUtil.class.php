@@ -27,6 +27,10 @@ class ReserveCalendarUtil{
 	private $baseDate;
 
 	public static function getCartAttributeId($optionId, $itemIndex, $itemId){
+		return self::_getCartAttributeId($optionId, $itemIndex, $itemId);
+	}
+
+	private static function _getCartAttributeId($optionId, $itemIndex, $itemId){
 		return "reserve_calendar_" . $optionId . "_" . $itemIndex . "_" . $itemId;
 	}
 
@@ -187,6 +191,48 @@ class ReserveCalendarUtil{
 		if(!is_numeric($v[0]) || !is_numeric($v[1])) return true;
 
 		return (mktime($v[0], $v[1], 0, $m, $d, $y) > $now);
+	}
+
+	/** 便利なメソッド **/
+	public static function getScheduleByItemIndexAndItemId(CartLogic $cart, $itemIndex, $itemId){
+		static $schedules, $scheduleLogic;
+		if(is_null($schedules)) $schedules = array();
+		if(is_null($scheduleLogic)) $scheduleLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic");
+		$key = self::_getCartAttributeId("schedule_id", $itemIndex, $itemId);
+		$scheduleId = (int)$cart->getAttribute($key);
+		if(isset($schedules[$scheduleId])) return $schedules[$scheduleId];
+
+		$schedules[$scheduleId] = $scheduleLogic->getScheduleById($scheduleId);
+		return $schedules[$scheduleId];
+	}
+
+	//定員数が0でないか？
+	public static function checkIsUnsoldSeatByScheduleId($scheduleId){
+		static $results;
+		if(is_null($results)) $results = array();
+		if(!is_numeric($scheduleId) || (int)$scheduleId < 1) return false;
+
+		if(isset($results[$scheduleId])) return $results[$scheduleId];
+
+		$results[$scheduleId] = self::_reserveLogic()->checkIsUnsoldSeatByScheduleId($scheduleId);
+		return $results[$scheduleId];
+	}
+
+	//残席数を調べる @ToDo 仮登録を含めるか？
+	public static function getCountUnsoldSeat(SOYShopReserveCalendar_Schedule $schedule){
+		static $results;
+		if(is_null($results)) $results = array();
+		if(is_null($schedule->getId())) return false;
+
+		if(isset($results[$schedule->getId()])) return $results[$schedule->getId()];
+
+		return $schedule->getUnsoldSeat() - self::_reserveLogic()->getReservedCountByScheduleId($schedule->getId());
+	}
+
+	private static function _reserveLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic");
+		return $logic;
 	}
 
 	/** セッション **/

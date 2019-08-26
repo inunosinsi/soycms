@@ -34,6 +34,7 @@ class CalendarExpandSeatCart extends SOYShopCartBase{
 				}
 
 				$itemOrder->setTotalPrice($total);	//商品毎の合計のみ更新してみる
+				$itemOrder->setItemCount($adultSeat + $childSeat);
 				$items[$idx] = $itemOrder;
 			}
 			$cart->setItems($items);

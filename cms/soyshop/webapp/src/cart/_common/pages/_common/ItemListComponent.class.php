@@ -108,9 +108,33 @@ class ItemListComponent extends HTMLList{
 			$parent = new SOYShop_Item();
 		}
 
+
+		$itemStockErrorMessage = "";
+		if(!SOYShopPluginUtil::checkIsActive("reserve_calendar")){	//通常モード
+			$isItemStockError = ($itemCount > $openStock && !$this->ignoreStock);
+			$itemStockErrorMessage = ($openStock > 0) ? MessageManager::get("STOCK_NOTICE", array("stock" => $openStock)) : MessageManager::get("NO_STOCK");
+		}else{	//予約カレンダーモード
+			SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+			$schedule = ReserveCalendarUtil::getScheduleByItemIndexAndItemId(CartLogic::getCart(), $key, $entity->getItemId());
+			if(!is_null($schedule->getId())){
+				//定員数0
+				if(!ReserveCalendarUtil::checkIsUnsoldSeatByScheduleId($schedule->getId())){
+					$itemStockErrorMessage = "予約受付を終了しました";	//@ToDo 多言語化
+				}
+
+				//定員数オーバー
+				$unsoldSeat = ReserveCalendarUtil::getCountUnsoldSeat($schedule);
+				if($unsoldSeat < $itemCount){
+					$itemStockErrorMessage = MessageManager::get("STOCK_NOTICE", array("stock" => $unsoldSeat));	//@ToDo 多言語化
+				}
+			}
+
+			$isItemStockError = (strlen($itemStockErrorMessage));
+		}
+
 		$this->addLabel("item_stock_error", array(
-			"visible" => ($itemCount > $openStock && !$this->ignoreStock),
-			"text" => ($openStock > 0) ? MessageManager::get("STOCK_NOTICE", array("stock" => $openStock)) : MessageManager::get("NO_STOCK")
+			"visible" => $isItemStockError,
+			"text" => $itemStockErrorMessage
 		));
 
 		$this->addLabel("item_order_error", array(

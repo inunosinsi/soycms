@@ -17,7 +17,11 @@ class ReserveCalendarUserOutput extends SOYShopSiteUserOnOutputAction{
 				"個数" => "人数",
 				"お買い物を続ける" => "戻る",
 				"注文" => "予約",
-				"数量" => "人数"
+				"数量" => "人数",
+				"在庫切れ" => "受付終了",
+				"在庫不足" => "定員数超え",
+				"残り" => "定員数が",
+				"個" => "人"
 			);
 		}else if(SOYSHOP_MYPAGE_MODE && SOYSHOP_CURRENT_MYPAGE_ID == "bootstrap"){
 			$replacements = array(

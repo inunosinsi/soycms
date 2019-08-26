@@ -850,7 +850,12 @@ class CartLogic extends SOY2LogicBase{
 
 		$items = $this->getItems();
 
-		foreach($items as $itemOrder){
+		SOY2::import("util.SOYShopPluginUtil");
+		$reserveCalendarMode = SOYShopPluginUtil::checkIsActive("reserve_calendar");
+		if($reserveCalendarMode){
+			SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+		}
+		foreach($items as $index => $itemOrder){
 			$itemId = $itemOrder->getItemId();
 
 			//管理画面から購入時の未登録商品の購入
@@ -865,31 +870,50 @@ class CartLogic extends SOY2LogicBase{
 				throw new SOYShop_EmptyStockException($item->getName()." (".$item->getId().") is not published.");
 			}
 
-			//在庫無視モード
-			if($ignoreStock) continue;
-
-			//在庫0
-			if($item->getOpenStock() < 1){
-				throw new SOYShop_EmptyStockException($item->getName()." (".$item->getId().") is empty (stock is 0).");
-			}
-
-			$openStock = $item->getOpenStock();
+			//カートに入れた商品
 			$itemCount = $itemOrder->getItemCount();
 
-			//子商品の在庫管理設定をオン(子商品購入時に親商品の在庫数で購入できるか判断する)
-			$childItemStock = $config->getChildItemStock();
-			if($childItemStock && is_numeric($item->getType())){
-				//親商品の残り在庫数を取得
-				$parent = $this->getParentOpenStock($item->getType());
-				$openStock = $parent->getStock();
+			if(!$reserveCalendarMode){	//通常モード
+				//在庫無視モード
+				if($ignoreStock) continue;
 
-				//子商品の注文数の合計を取得
-				$itemCount = $this->getChildItemOrders($parent->getId());
-			}
+				//在庫0
+				if($item->getOpenStock() < 1){
+					throw new SOYShop_EmptyStockException($item->getName()." (".$item->getId().") is empty (stock is 0).");
+				}
 
-			//在庫オーバー
-			if($openStock < $itemCount){
-				throw new SOYShop_OverStockException($item->getName()." (".$item->getId().") is fewer (".$openStock.") than order (".$itemCount.").");
+				$openStock = $item->getOpenStock();
+
+				//子商品の在庫管理設定をオン(子商品購入時に親商品の在庫数で購入できるか判断する)
+				$childItemStock = $config->getChildItemStock();
+				if($childItemStock && is_numeric($item->getType())){
+					//親商品の残り在庫数を取得
+					$parent = $this->getParentOpenStock($item->getType());
+					$openStock = $parent->getStock();
+
+					//子商品の注文数の合計を取得
+					$itemCount = $this->getChildItemOrders($parent->getId());
+				}
+
+				//在庫オーバー
+				if($openStock < $itemCount){
+					throw new SOYShop_OverStockException($item->getName()." (".$item->getId().") is fewer (" . $openStock . ") than order (" . $itemCount . ").");
+				}
+			}else{	//予約カレンダーモード
+				$schedule = ReserveCalendarUtil::getScheduleByItemIndexAndItemId($this, $index, $itemOrder->getItemId());
+				if(!is_null($schedule->getId())){
+
+					//定員数0
+					if(!ReserveCalendarUtil::checkIsUnsoldSeatByScheduleId($schedule->getId())){
+						throw new SOYShop_EmptyStockException($item->getName()." (".$item->getId().") is empty (stock is 0).");
+					}
+
+					//定員数オーバー @ToDo 仮登録を含めるか？
+					$unsoldSeat = ReserveCalendarUtil::getCountUnsoldSeat($schedule);
+					if($unsoldSeat < $itemCount){
+						throw new SOYShop_OverStockException($item->getName()." (".$item->getId().") is fewer (" . $unsoldSeat . ") than order (" . $itemCount . ").");
+					}
+				}
 			}
 
 			//販売期間
