@@ -66,6 +66,9 @@ abstract class EntryDAO extends SOY2DAO{
 	 * @final
 	 */
 	function onUpdate($query,$binds){
+		static $i;
+		if(is_null($i)) $i = 0;
+
 		//記事表示の高速化
 		for(;;){
 			$i++;
