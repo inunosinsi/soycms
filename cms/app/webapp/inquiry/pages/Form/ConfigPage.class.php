@@ -83,7 +83,7 @@ class ConfigPage extends FormPageBase{
 			"html" => $this->buildModal($this->id, self::MODE_PREVIEW)
 		));
 
-    	$this->createAdd("template_link","HTMLLink",array(
+    	$this->addLink("template_link", array(
     		"link" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Template.".$this->id),
     	));
 
@@ -110,28 +110,28 @@ class ConfigPage extends FormPageBase{
      * 基本設定画面を表示
      */
     function outputConfigForm(){
-    	$this->createAdd("config_form","HTMLForm",array(
+    	$this->addForm("config_form", array(
     		"action" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Config." . $this->form->getId() . "#config_form")
     	));
 
-    	$this->createAdd("config_form_name","HTMLInput",array(
+    	$this->addInput("config_form_name", array(
     		"name" => "Form[name]",
 			"value" => $this->form->getName()
     	));
 
-    	$this->createAdd("config_form_id","HTMLInput",array(
+    	$this->addInput("config_form_id", array(
     		"name" => "Form[formId]",
 			"value" => $this->form->getFormId(),
     	));
 
     	$config = $this->form->getConfigObject();
 
-    	$this->createAdd("config_notUseCaptcha","HTMLInput",array(
+    	$this->addInput("config_notUseCaptcha", array(
     		"type" => "hidden",
 			"name" => "Config[isUseCaptcha]",
 			"value" => "0"
     	));
-    	$this->createAdd("config_isUseCaptcha","HTMLCheckBox",array(
+    	$this->addCheckBox("config_isUseCaptcha", array(
     		"name" => "Config[isUseCaptcha]",
 			"value" => "1",
 			"selected" => $config->getIsUseCaptcha(),
@@ -139,19 +139,19 @@ class ConfigPage extends FormPageBase{
 			"disabled" => !$config->enabledGD()
     	));
 
-    	$this->createAdd("config_notSmartPhone","HTMLInput",array(
+    	$this->addInput("config_notSmartPhone", array(
     		"type" => "hidden",
 			"name" => "Config[isSmartPhone]",
 			"value" => "0"
     	));
-    	$this->createAdd("config_isSmartPhone","HTMLCheckBox",array(
+    	$this->addCheckBox("config_isSmartPhone", array(
     		"name" => "Config[isSmartPhone]",
     		"value" => "1",
     		"selected" => $config->getIsSmartPhone(),
     		"label" => "スマートフォンからの閲覧の場合、スマートフォン用のカラムを使用する",
     	));
 
-    	$this->createAdd("gd_disabled","HTMLModel",array(
+    	$this->addModel("gd_disabled", array(
     		"visible" => !$config->enabledGD()
     	));
     }
@@ -203,7 +203,6 @@ class ConfigPage extends FormPageBase{
 	    	CMSApplication::jump("Form.Config." . $this->id . "#config_form");
 
 	    	break;
-
     	}
 
     }
@@ -219,78 +218,78 @@ class ConfigPage extends FormPageBase{
     	$config = $this->form->getConfigObject();
 
     	//管理者宛メールの設定
-    	$this->createAdd("config_notSendNotifyMail","HTMLCheckbox",array(
+    	$this->addCheckBox("config_notSendNotifyMail", array(
     		"name" => "Mail[isSendNotifyMail]",
 			"value" => "0"
     	));
-    	$this->createAdd("config_isSendNotifyMail","HTMLCheckbox",array(
+    	$this->addCheckBox("config_isSendNotifyMail", array(
     		"name" => "Mail[isSendNotifyMail]",
 			"value" => "1",
 			"selected" => $config->getIsSendNotifyMail(),
 			"label" => "管理者に通知メールを送信する"
     	));
-    	$this->createAdd("config_administratorMailAddress","HTMLInput",array(
+    	$this->addInput("config_administratorMailAddress", array(
     		"name" => "Mail[administratorMailAddress]",
 			"value" => $config->getAdministratorMailAddress()
     	));
 
-    	$this->createAdd("config_notifyMailSubject","HTMLInput",array(
+    	$this->addInput("config_notifyMailSubject", array(
     		"name" => "Mail[notifyMailSubject]",
 			"value" => $config->getNotifyMailSubject()
     	));
 
-    	$this->createAdd("config_notIncludeAdminURL","HTMLCheckbox",array(
+    	$this->addCheckBox("config_notIncludeAdminURL", array(
     		"name" => "Mail[isIncludeAdminURL]",
 			"value" => "0"
     	));
-    	$this->createAdd("config_isIncludeAdminURL","HTMLCheckbox",array(
+    	$this->addCheckBox("config_isIncludeAdminURL", array(
     		"name" => "Mail[isIncludeAdminURL]",
 			"value" => "1",
 			"selected" => $config->getIsIncludeAdminURL(),
 			"label" => "管理画面のURLをメール本文に含める"
     	));
 
-    	$this->createAdd("config_notReplyToUser","HTMLCheckbox",array(
+    	$this->addCheckBox("config_notReplyToUser", array(
     		"name" => "Mail[isReplyToUser]",
 			"value" => "0"
     	));
-    	$this->createAdd("config_isReplyToUser","HTMLCheckbox",array(
+    	$this->addCheckBox("config_isReplyToUser", array(
     		"name" => "Mail[isReplyToUser]",
 			"value" => "1",
 			"selected" => $config->getIsReplyToUser(),
-			"label" => "メールの返信先にユーザーのメールアドレスを追加する"
+			"label" => "メールの返信先をユーザーのメールアドレスにする"
     	));
 
 
     	//ユーザー宛メールの設定
-    	$this->createAdd("config_notSendConfirmMail","HTMLCheckbox",array(
+    	$this->addCheckBox("config_notSendConfirmMail", array(
     		"name" => "Mail[isSendConfirmMail]",
 			"value" => "0"
     	));
 
-    	$this->createAdd("config_isSendConfirmMail","HTMLCheckbox",array(
+    	$this->addCheckBox("config_isSendConfirmMail", array(
     		"name" => "Mail[isSendConfirmMail]",
 			"value" => "1",
 			"selected" => $config->getIsSendConfirmMail(),
 			"label" => "ユーザに確認メールを送信する"
     	));
 
-    	$this->createAdd("config_fromAddress","HTMLInput",array(
+    	$this->addInput("config_fromAddress", array(
     		"name" => "Mail[fromAddress]",
 			"value" => $config->getFromAddress()
     	));
 
-    	$this->createAdd("config_returnAddress","HTMLInput",array(
+    	$this->addInput("config_returnAddress", array(
     		"name" => "Mail[returnAddress]",
 			"value" => $config->getReturnAddress()
     	));
 
-    	$this->createAdd("config_fromAddressName","HTMLInput",array(
+    	$this->addInput("config_fromAddressName", array(
     		"name" => "Mail[fromAddressName]",
 			"value" => $config->getFromAddressName()
     	));
 
-    	$this->createAdd("config_returnAddressName","HTMLInput",array(
+    	$this->addInput("config_returnAddressName", array(
     		"name" => "Mail[returnAddressName]",
 			"value" => $config->getReturnAddressName()
     	));
@@ -336,21 +335,20 @@ class ConfigPage extends FormPageBase{
     	$configObject= $this->form->getConfigObject();
     	$message = $configObject->getMessage();
 
-    	$this->createAdd("message_information","HTMLTextArea",array(
+    	$this->addTextArea("message_information", array(
     		"name" => "Message[information]",
     		"value" => $message["information"]
     	));
 
-    	$this->createAdd("message_confirm","HTMLTextArea",array(
+    	$this->addTextArea("message_confirm", array(
     		"name" => "Message[confirm]",
     		"value" => $message["confirm"]
     	));
 
-    	$this->createAdd("message_complete","HTMLTextArea",array(
+    	$this->addTextArea("message_complete", array(
     		"name" => "Message[complete]",
     		"value" => $message["complete"]
     	));
-
     }
 
     /**
@@ -372,51 +370,49 @@ class ConfigPage extends FormPageBase{
     	$this->dao->update($this->form);
 
 		CMSApplication::jump("Form.Config." . $this->id . "#message_form");
-
-
     }
 
     /**
      * 詳細メール設定
      */
     function outputConfirmMailForm(){
-    	$this->createAdd("confirmmail_form","HTMLForm",array(
+    	$this->addForm("confirmmail_form", array(
     		"action" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Config." . $this->form->getId() . "#confirmmail_form")
     	));
 
     	$confirmMail = $this->form->getConfigObject()->getConfirmMail();
 
-    	$this->createAdd("confirmmail_title","HTMLInput",array(
+    	$this->addInput("confirmmail_title", array(
     		"name" => "ConfirmMail[title]",
     		"value" => $confirmMail["title"]
     	));
 
-    	$this->createAdd("confirmmail_notoutput_content","HTMLInput",array(
+    	$this->addInput("confirmmail_notoutput_content", array(
     		"name" => "ConfirmMail[isOutputContent]",
     		"value" => "0"
     	));
 
-    	$this->createAdd("confirmmail_isoutput_content","HTMLCheckBox",array(
+    	$this->addCheckBox("confirmmail_isoutput_content", array(
     		"name" => "ConfirmMail[isOutputContent]",
     		"value" => "1",
     		"selected" => $confirmMail["isOutputContent"],
     		"label" => "お問い合わせ内容を出力する"
     	));
-    	$this->createAdd("replace_trackingnumber","HTMLInput",array(
+    	$this->addInput("replace_trackingnumber", array(
     		"name" => "ConfirmMail[replaceTrackingNumber]",
-    		"value" => @$confirmMail["replaceTrackingNumber"]
+    		"value" => (isset($confirmMail["replaceTrackingNumber"])) ? $confirmMail["replaceTrackingNumber"] : ""
     	));
-    	$this->createAdd("confirmmail_header","HTMLTextArea",array(
+    	$this->addTextArea("confirmmail_header", array(
     		"name" => "ConfirmMail[header]",
     		"value" => $confirmMail["header"]
     	));
-    	$this->createAdd("confirmmail_footer","HTMLTextArea",array(
+    	$this->addTextArea("confirmmail_footer", array(
     		"name" => "ConfirmMail[footer]",
     		"value" => $confirmMail["footer"]
     	));
 
-    	$this->createAdd("replace_trackingnumber_text", "HTMLLabel", array(
-    		"text" => @$confirmMail["replaceTrackingNumber"]
+    	$this->addLabel("replace_trackingnumber_text", array(
+    		"text" => (isset($confirmMail["replaceTrackingNumber"])) ? $confirmMail["replaceTrackingNumber"] : ""
     	));
     }
 
@@ -446,31 +442,30 @@ class ConfigPage extends FormPageBase{
      * デザイン設定
      */
     function outputDesignForm(){
-    	$this->createAdd("design_form","HTMLForm",array(
+    	$this->addForm("design_form", array(
     		"action" => SOY2PageController::createLink(APPLICATION_ID . ".Form.Config." . $this->form->getId() . "#design_form")
     	));
 
     	$design = $this->form->getConfigObject()->getDesign();
 
 
-    	$this->createAdd("design_notoutput_stylesheet","HTMLInput",array(
+    	$this->addInput("design_notoutput_stylesheet", array(
     		"name" => "Design[isOutputStylesheet]",
     		"value" => "0"
     	));
 
-    	$this->createAdd("design_theme","HTMLSelect",array(
+    	$this->addSelect("design_theme", array(
     		"name" => "Design[theme]",
     		"options" => $this->form->getDesignList(),
     		"selected" => $design["theme"]
     	));
 
-    	$this->createAdd("design_isoutput_stylesheet","HTMLCheckBox",array(
+    	$this->addCheckBox("design_isoutput_stylesheet", array(
     		"name" => "Design[isOutputStylesheet]",
     		"value" => "1",
     		"selected" => $design["isOutputStylesheet"],
     		"label" => "スタイルシートを読み込む"
     	));
-
     }
 
     /**
@@ -537,9 +532,7 @@ class ConfigPage extends FormPageBase{
     	try{
     		return $this->dao->getById($this->id);
     	}catch(Exception $e){
-    		//
+    		return null;
     	}
-
-    	return null;
     }
 }

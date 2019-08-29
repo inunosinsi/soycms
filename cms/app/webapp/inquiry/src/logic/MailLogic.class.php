@@ -79,15 +79,21 @@ class MailLogic extends SOY2LogicBase{
 	 * @param String body
 	 * @param String sendToName
 	 * @param <String> replyTo
+	 * @param Boolean replyToOnly 返信先をユーザのメールアドレスのみにする
 	 */
-	function sendMail($sendTo,$title,$body,$sendToName,$replyTo = null){
+	function sendMail($sendTo,$title,$body,$sendToName,$replyTo = null, $replyToOnly=false){
 
 		//リセット
 		$this->reset();
 
 		$replyToArray = array();
 		if($replyTo) $replyToArray = $replyTo;
-		if($this->replyTo) $replyToArray[] = $this->replyTo->getString();
+		if($replyToOnly){
+			//何もしない
+		}else{
+			if($this->replyTo) $replyToArray[] = $this->replyTo->getString();
+		}
+
 		$this->send->setHeader("Reply-To", implode(",", $replyToArray));
 
 		$this->send->setSubject($title);
@@ -179,7 +185,8 @@ class MailLogic extends SOY2LogicBase{
 							$title,
 							$content,
 							null,
-							($formConfig->getIsReplyToUser() ? $userMailAddress : null )
+							($formConfig->getIsReplyToUser() ? $userMailAddress : null ),
+							($formConfig->getIsReplyToUser())	//返信先をユーザのメールアドレスのみにする
 						);
 					}catch(Exception $e){
 						//管理者へ送信失敗
