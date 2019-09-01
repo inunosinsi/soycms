@@ -12,7 +12,7 @@ class ItemDetailBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$pageObj = $page->getPageObject();
 
 		//カートページとマイページでは読み込まない
-		if(!is_object($pageObject) || get_class($pageObj) != "SOYShop_Page") return;
+		if(!is_object($pageObj) || get_class($pageObj) != "SOYShop_Page") return;
 
 		$pageType = $pageObj->getType();
 		if($pageType == SOYShop_Page::TYPE_LIST || $pageType == SOYShop_Page::TYPE_DETAIL) return;
@@ -26,9 +26,8 @@ class ItemDetailBeforeOutput extends SOYShopSiteBeforeOutputAction{
 //			$alias = $alias.".html";
 //		}
 
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		try{
-			$item = $dao->getByAlias($alias);
+			$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByAlias($alias);
 		}catch(Exception $e){
 			return;
 		}
@@ -41,4 +40,4 @@ class ItemDetailBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	}
 }
 
-SOYShopPlugin::extension("soyshop.site.beforeoutput","parts_item_detail","ItemDetailBeforeOutput");
+SOYShopPlugin::extension("soyshop.site.beforeoutput", "parts_item_detail", "ItemDetailBeforeOutput");
