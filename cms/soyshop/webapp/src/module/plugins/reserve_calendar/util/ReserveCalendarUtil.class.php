@@ -237,12 +237,10 @@ class ReserveCalendarUtil{
 
 	/** セッション **/
 	public static function getSessionValue($key){
-		$session = SOY2ActionSession::getUserSession();
-		return $session->getAttribute("reserve_calender_session_" . $key);
+		return SOY2ActionSession::getUserSession()->getAttribute("reserve_calender_session_" . $key);
 	}
 
 	public static function saveSessionValue($key, $value){
-		$session = SOY2ActionSession::getUserSession();
-		return $session->setAttribute("reserve_calender_session_" . $key, $value);
+		SOY2ActionSession::getUserSession()->setAttribute("reserve_calender_session_" . $key, $value);
 	}
 }

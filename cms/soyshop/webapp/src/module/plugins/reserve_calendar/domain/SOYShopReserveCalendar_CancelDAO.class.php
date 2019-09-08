@@ -15,7 +15,7 @@ abstract class SOYShopReserveCalendar_CancelDAO extends SOY2DAO{
 	abstract function deleteById($id);
 
 	function getCancelListByScheduleId($scheduleId){
-		$sql = "SELECT can.cancel_date, o.user_id, u.name AS user_name, u.mail_address, u.telephone_number FROM soyshop_reserve_calendar_cancel can ".
+		$sql = "SELECT can.cancel_date, can.order_id, o.user_id, u.name AS user_name, u.mail_address, u.telephone_number FROM soyshop_reserve_calendar_cancel can ".
 				"INNER JOIN soyshop_order o ".
 				"ON can.order_id = o.id ".
 				"INNER JOIN soyshop_user u ".

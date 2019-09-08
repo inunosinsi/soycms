@@ -18,6 +18,7 @@ function soyshop_parts_mypage_navi($html, $page){
 		$pages = array(
 			"profile" => "プロフィール",
 			"order" => "注文履歴",
+			//"reserve" => "予約の変更",	//隠しモード 仕様が決まるまで
 			"mail" => "メールボックス",
 			"edit" => "登録情報の変更",
 			"password" => "パスワードの変更",
@@ -48,6 +49,9 @@ function soyshop_parts_mypage_navi($html, $page){
 					break;
 				case "payjp":
 					if(!SOYShopPluginUtil::checkIsActive("payment_pay_jp")) $isThrow = true;
+					break;
+				case "reserve":
+					//if(!SOYShopPluginUtil::checkIsActive("reserve_calendar") || soyshop_get_mypage_id() != "bootstrap") $isThrow = true;
 					break;
 				default:
 					//

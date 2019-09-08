@@ -70,7 +70,7 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
         try{
             $res = $this->executeQuery($sql, array(":id" => $reserveId));
         }catch(Exception $e){
-            return array();
+            return new SOYShopReserveCalendar_Schedule();
         }
 
         if(!count($res)) return new SOYShopReserveCalendar_Schedule();

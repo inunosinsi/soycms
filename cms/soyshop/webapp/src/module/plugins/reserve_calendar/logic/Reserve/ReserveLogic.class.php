@@ -28,6 +28,15 @@ class ReserveLogic extends SOY2LogicBase{
 		return self::dao()->getReservedSchedulesByPeriod($year, $month, $isTmp);
 	}
 
+	//予約済みのスケジュールオブジェクトを取得する
+	function getReservedScheduleListByUserIdAndPeriod($userId, $year = null, $month = null, $isTmp = false){
+		//どちらかが指定されていない時は動きません
+		if(is_null($year) || is_null($month)) return array();
+
+		//schedule_idと予約数を返す
+		return self::dao()->getReservedScheduleListByUserIdAndPeriod($userId, $year, $month, $isTmp);
+	}
+
 	function checkIsUnsoldSeatByScheduleId($scheduleId){
 		//boolean
 		return self::dao()->checkIsUnsoldSeatByScheduleId($scheduleId);
@@ -73,6 +82,13 @@ class ReserveLogic extends SOY2LogicBase{
 
 	function getTokensByOrderId($orderId){
 		return self::dao()->getTokensByOrderId($orderId);
+	}
+
+	/** マイページ **/
+
+	//ページを開いているユーザの予約であるか調べる
+	function checkReserveByUserId($reserveId, $userId){
+		return self::dao()->checkReserveByUserId($reserveId, $userId);
 	}
 
 	private function dao(){

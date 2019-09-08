@@ -22,8 +22,17 @@ class CancelListComponent extends HTMLList{
 			"text" => (isset($entity["telephone_number"])) ? $entity["telephone_number"] : ""
 		));
 
+		//$reReserveLink = SOY2PageController::createLink("Extension.reserve_calendar?re_reserve=" . $entity["user_id"]);
+		$reReserveLink = SOY2PageController::createLink("Extension.reserve_calendar");
+		$param = "";
+		if(isset($entity["user_id"])) $param = "re_reserve=" . $entity["user_id"];
+		if(isset($entity["order_id"])){
+			if(strlen($param)) $param .= "&";
+			$param .= "re_order_id=" . $entity["order_id"];
+		}
+		if(strlen($param)) $reReserveLink .= "?" . $param;
 		$this->addActionLink("re_reserve_link", array(
-			"link" => (isset($entity["user_id"])) ? SOY2PageController::createLink("Extension.reserve_calendar?re_reserve=" . $entity["user_id"]) : "",
+			"link" => $reReserveLink
 		));
 	}
 }

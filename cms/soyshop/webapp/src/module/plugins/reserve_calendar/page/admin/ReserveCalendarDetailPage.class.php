@@ -61,10 +61,18 @@ class ReserveCalendarDetailPage extends WebPage{
 				$item = soyshop_get_item_object($this->itemId);
 
 				/** 注文する **/
+				$orderId = ReserveCalendarUtil::getSessionValue("order");
 				$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-				$order = new SOYShop_Order();
+				try{
+					$order = $orderDao->getById($orderId);
+					$order->setId(null);
+				}catch(Exception $e){
+					$order = new SOYShop_Order();
+				}
+
 				$order->setUserId($userId);
 				$order->setPrice($item->getPrice() * $seat);	/** @ToDo 消費税も考慮しないと **/
+				$order->setStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
 				$order->setOrderDate(time());
 				try{
 					$orderId = $orderDao->insert($order);
@@ -85,7 +93,8 @@ class ReserveCalendarDetailPage extends WebPage{
 				try{
 					$resId = $resDao->insert($res);
 				}catch(Exception $e){
-					var_dump($e);
+					return;
+					//var_dump($e);
 				}
 
 				/** @ToDo 注文詳細 **/
@@ -119,6 +128,7 @@ class ReserveCalendarDetailPage extends WebPage{
 
 				//セッションを空にする
 				ReserveCalendarUtil::saveSessionValue("user", null);
+				ReserveCalendarUtil::saveSessionValue("order", null);
 
 				SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?updated");
 			}

@@ -19,6 +19,7 @@ class ReserveCalendarListPage extends WebPage{
 		//再予約モード
 		if(soy2_check_token() && isset($_GET["re_reserve"]) && is_numeric($_GET["re_reserve"])){
 			ReserveCalendarUtil::saveSessionValue("user", (int)$_GET["re_reserve"]);
+			if(isset($_GET["re_order_id"]) && is_numeric($_GET["re_order_id"])) ReserveCalendarUtil::saveSessionValue("order", (int)$_GET["re_order_id"]);
 		}
 
 		$items = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemsOnLabel();

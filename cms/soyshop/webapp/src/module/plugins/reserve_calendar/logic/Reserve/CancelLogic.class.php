@@ -36,6 +36,23 @@ class CancelLogic extends SOY2LogicBase{
 			return;
 		}
 
+		//予約に紐付いた注文をキャンセルにする
+		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+		try{
+			$order = $orderDao->getById($reserve->getOrderId());
+		}catch(Exception $e){
+			//
+		}
+
+		if($order->getStatus() != SOYShop_Order::ORDER_STATUS_CANCELED){
+			$order->setStatus(SOYShop_Order::ORDER_STATUS_CANCELED);
+			try{
+				$orderDao->update($order);
+			}catch(Exception $e){
+				//
+			}
+		}
+
 		$resDao->commit();
 	}
 

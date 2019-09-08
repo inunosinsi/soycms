@@ -169,6 +169,45 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
         return $list;
     }
 
+	function getReservedScheduleListByUserIdAndPeriod($userId, $year, $month, $isTmp = false){	//isTmpで仮登録の予約を検索
+        SOY2::import("domain.order.SOYShop_Order");
+
+		//schedule_idは念の為
+        $sql = "SELECT res.id, res.schedule_id, sch.label_id, sch.day " .
+                "FROM soyshop_reserve_calendar_reserve res ".
+                "INNER JOIN soyshop_reserve_calendar_schedule sch ".
+                "ON res.schedule_id = sch.id ".
+                "INNER JOIN soyshop_order o ".
+                "ON res.order_id = o.id ".
+                "WHERE sch.year = :y ".
+                "AND sch.month = :m ".
+				"AND o.user_id = :userId ";
+
+		if($isTmp){	//仮登録モード
+			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
+			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP . " ";
+		}else{	//本登録モード
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+		}
+
+		$sql .=	"GROUP BY res.schedule_id";
+
+        try{
+            $res = $this->executeQuery($sql, array(":userId" => $userId, ":y" => $year, ":m" => $month));
+        }catch(Exception $e){
+            return array();
+        }
+
+        if(!count($res)) return array();
+
+        $list = array();
+        foreach($res as $v){
+			$list[$v["day"]][(int)$v["id"]] = array("schedule_id" => (int)$v["schedule_id"], "label_id" => (int)$v["label_id"]);
+        }
+
+        return $list;
+    }
+
     function checkIsUnsoldSeatByScheduleId($scheduleId){
         $now = time();
         SOY2::import("domain.shop.SOYShop_Item");
@@ -197,6 +236,25 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 
         return ((int)$res[0]["SEAT"] < (int)$res[0]["unsold_seat"]);
     }
+
+	function checkReserveByUserId($reserveId, $userId){
+
+		//schedule_idは念の為
+        $sql = "SELECT res.id " .
+                "FROM soyshop_reserve_calendar_reserve res ".
+                "INNER JOIN soyshop_order o ".
+                "ON res.order_id = o.id ".
+                "WHERE res.id = :id ".
+				"AND o.user_id = :userId ".
+				"LIMIT 1";
+
+		try{
+			$res = $this->executeQuery($sql, array(":id" => $reserveId, ":userId" => $userId));
+			return (isset($res[0]));
+		}catch(Exception $e){
+			return false;
+		}
+	}
 
 	function getTokensByOrderId($orderId){
 		try{

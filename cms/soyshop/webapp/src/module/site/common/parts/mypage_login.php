@@ -208,5 +208,15 @@ function soyshop_parts_mypage_login($html, $page){
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 
+	//予約変更
+	$obj->addModel("is_reserve", array(
+		"visible" => (SOYShopPluginUtil::checkIsActive("reserve_calendar") && soyshop_get_mypage_id() == "bootstrap")
+	));
+	
+	$obj->addLink("reserve_link", array(
+		"link" => soyshop_get_mypage_url() . "/reserve",
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
 	$obj->display();
 }
