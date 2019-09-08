@@ -16,9 +16,8 @@ class PartsItemDetailOnOutput extends SOYShopSiteOnOutputAction{
         if($pageType == SOYShop_Page::TYPE_FREE || $pageType == SOYShop_Page::TYPE_COMPLEX){
             $args = $this->getPage()->getArguments();
             if(isset($args[0])){
-                $itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
                 try{
-                    $item = $itemDao->getByAlias($args[0]);
+                    $item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByAlias($args[0]);
                 }catch(Exception $e){
                     $item = new SOYShop_Item();
                 }

@@ -9,34 +9,58 @@ SOY2::import("module.site.common.output_item",".php");
 class ItemDetailBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	function beforeOutput($page){
-		$pageObj = $page->getPageObject();
+		$alias = null;
 
 		//カートページとマイページでは読み込まない
-		if(!is_object($pageObj) || get_class($pageObj) != "SOYShop_Page") return;
-
-		$pageType = $pageObj->getType();
-		if($pageType == SOYShop_Page::TYPE_LIST || $pageType == SOYShop_Page::TYPE_DETAIL) return;
-
-		$args = $page->getArguments();
-		if(count($args) == 0) return;
-
-		$alias = $args[0];
-
-//		if(strpos($alias,".html")==false){
-//			$alias = $alias.".html";
-//		}
-
-		try{
-			$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByAlias($alias);
-		}catch(Exception $e){
-			return;
+		$pageObj = $page->getPageObject();
+		if(is_object($pageObj) && get_class($pageObj) == "SOYShop_Page"){
+			$pageType = $pageObj->getType();
+			//商品一覧ページと商品詳細ページでは表示しない
+			if($pageType != SOYShop_Page::TYPE_LIST && $pageType != SOYShop_Page::TYPE_DETAIL){
+				$args = $page->getArguments();
+				if(isset($args[0])) $alias = trim($args[0]);
+			}
 		}
 
 		//item
 		$page->createAdd("item_by_alias", "SOYShop_ItemListComponent", array(
-			"list" => array($item),
+			"list" => array(self::getItem($alias)),
 			"soy2prefix" => "block"
 		));
+	}
+
+	private function getItem($alias){
+		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		if(!strlen($alias)) return new SOYShop_Item();
+
+		try{
+			$item = $dao->getByCode($alias);
+		}catch(Exception $e){
+			try{
+				$item = $dao->getByAlias($alias);
+			}catch(Exception $e){
+				if(!strpos($alias, ".html")){
+					try{
+						$item = $dao->getByAlias($alias . ".html");
+					}catch(Exception $e){
+						$item = new SOYShop_Item();
+					}
+				}
+			}
+		}
+
+		if(is_null($item->getId())) return $item;
+
+		//削除されていないか？
+		if($item->getIsDisabled() == SOYShop_Item::IS_DISABLED) return new SOYShop_Item();
+
+		//公開されていないか？
+		if($item->getIsOpen() == SOYShop_Item::NO_OPEN) return new SOYShop_Item();
+
+		//公開期限外であるか？
+		if($item->getOpenPeriodStart() > SOY2_NOW || $item->getOpenPeriodEnd() < SOY2_NOW) return SOYShop_Item();
+
+		return $item;
 	}
 }
 

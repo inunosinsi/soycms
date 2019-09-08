@@ -13,4 +13,3 @@ class ItemDetailModuleInfo extends SOYShopInfoPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.info", "parts_item_detail", "ItemDetailModuleInfo");
-?>
