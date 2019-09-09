@@ -135,6 +135,7 @@ function soyshop_breadcrumb_navigation($html, $page){
                 default:
                     $categories = array();
                     $uri = "";
+					$alias = "";
                     $name = $pageObject->getName();
 
 					//商品詳細表示プラグインでcms:id="current_item_name"を使用出来るようにする
@@ -142,8 +143,13 @@ function soyshop_breadcrumb_navigation($html, $page){
 						$args = $page->getArguments();
 						if(isset($args[0])){
 							SOY2::import("module.plugins.parts_item_detail.util.PartsItemDetailUtil");
-							$alias = trim($args[0]);
-							$itemName = PartsItemDetailUtil::getItemByAlias($alias)->getName();
+							$item = PartsItemDetailUtil::getItemByAlias(trim($args[0]));
+							$itemName = $item->getOpenItemName();
+							$category = soyshop_get_category_object($item->getCategory());
+
+							$categories = $dao->getAncestry($category, false);
+							$uri = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO")->getPageUriByItemId($item->getId());
+							$alias = $category->getAlias();
 						}else{
 							$itemName = "";
 						}
@@ -155,7 +161,6 @@ function soyshop_breadcrumb_navigation($html, $page){
 	                    ));
 					}
 
-                    $alias = "";	//aliasの初期化
                     break;
             }
 
