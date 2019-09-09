@@ -23,44 +23,11 @@ class ItemDetailBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
 
 		//item
+		SOY2::import("module.plugins.parts_item_detail.util.PartsItemDetailUtil");
 		$page->createAdd("item_by_alias", "SOYShop_ItemListComponent", array(
-			"list" => array(self::getItem($alias)),
+			"list" => array(PartsItemDetailUtil::getItemByAlias($alias)),
 			"soy2prefix" => "block"
 		));
-	}
-
-	private function getItem($alias){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		if(!strlen($alias)) return new SOYShop_Item();
-
-		try{
-			$item = $dao->getByCode($alias);
-		}catch(Exception $e){
-			try{
-				$item = $dao->getByAlias($alias);
-			}catch(Exception $e){
-				if(!strpos($alias, ".html")){
-					try{
-						$item = $dao->getByAlias($alias . ".html");
-					}catch(Exception $e){
-						$item = new SOYShop_Item();
-					}
-				}
-			}
-		}
-
-		if(is_null($item->getId())) return $item;
-
-		//削除されていないか？
-		if($item->getIsDisabled() == SOYShop_Item::IS_DISABLED) return new SOYShop_Item();
-
-		//公開されていないか？
-		if($item->getIsOpen() == SOYShop_Item::NO_OPEN) return new SOYShop_Item();
-
-		//公開期限外であるか？
-		if($item->getOpenPeriodStart() > SOY2_NOW || $item->getOpenPeriodEnd() < SOY2_NOW) return SOYShop_Item();
-
-		return $item;
 	}
 }
 

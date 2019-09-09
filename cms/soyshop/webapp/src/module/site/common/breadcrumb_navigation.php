@@ -136,7 +136,26 @@ function soyshop_breadcrumb_navigation($html, $page){
                     $categories = array();
                     $uri = "";
                     $name = $pageObject->getName();
-                    $alias = "";
+
+					//商品詳細表示プラグインでcms:id="current_item_name"を使用出来るようにする
+					if(SOYShopPluginUtil::checkIsActive("parts_item_detail")){
+						$args = $page->getArguments();
+						if(isset($args[0])){
+							SOY2::import("module.plugins.parts_item_detail.util.PartsItemDetailUtil");
+							$alias = trim($args[0]);
+							$itemName = PartsItemDetailUtil::getItemByAlias($alias)->getName();
+						}else{
+							$itemName = "";
+						}
+
+						//表示中の商品名
+	                    $obj->addLabel("current_item_name", array(
+	                        "html" => $itemName,
+	                        "soy2prefix" => SOYSHOP_SITE_PREFIX
+	                    ));
+					}
+
+                    $alias = "";	//aliasの初期化
                     break;
             }
 
