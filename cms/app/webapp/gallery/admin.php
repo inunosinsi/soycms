@@ -3,7 +3,7 @@
 class SOYGalleryApplication{
 
 	function init(){
-		
+
 		$level = CMSApplication::getAppAuthLevel();
 
 		/**
@@ -42,7 +42,7 @@ class SOYGalleryApplication{
 			$logic = SOY2Logic::createInstance("logic.InitLogic");
 			$logic->init();
 		}
-		
+
 		//データベースの更新:getでupgradeのindexが存在した場合に実行
 		if(isset($_GET["upgrade"])){
 			$logic = SOY2Logic::createInstance("logic.UpgradeLogic");
@@ -116,4 +116,3 @@ class SOYGalleryApplication{
 
 $app = new SOYGalleryApplication();
 $app->init();
-?>

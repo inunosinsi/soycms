@@ -63,13 +63,16 @@ class SOYGallery_Gallery {
 	}
 
 	function getConfigArray(){
-		return soy2_unserialize($this->getConfig());
+		$config = $this->getConfig();
+		if(!isset($config) || !strlrn($config)) return array();
+		return soy2_unserialize($config);
 	}
 	function setConfigArray($config){
 		$this->setConfig(soy2_serialize($config));
 	}
 
 	function getConfigValue($key){
+		if(!isset($this->config) || !strlen($this->config)) return "";
 		$configs = soy2_unserialize($this->config);
 		return (isset($configs[$key])) ? $configs[$key] : "";
 	}
