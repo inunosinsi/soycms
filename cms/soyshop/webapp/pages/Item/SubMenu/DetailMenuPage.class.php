@@ -6,21 +6,18 @@
  */
 class DetailMenuPage extends HTMLPage{
 
-	var $id;
+	private $id;
 
 	function __construct($arg = array()){
 		$this->id = (isset($arg[0])) ? (int)$arg[0] : null;
 		parent::__construct();
 
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		$item = $itemDAO->getById($this->id);
-		$pageDAO = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+		$item = soyshop_get_item_object($this->id);
 
-		$detailPageId = $item->getDetailPageId();
-		try{
-			$page = $pageDAO->getById($detailPageId);
+		$page = soyshop_get_page_object($item->getDetailPageId());
+		if(!is_null($page->getId())){
 			$url = soyshop_get_page_url($page->getUri(), $item->getAlias());
-		}catch(Exception $e){
+		}else{
 			$url = null;
 		}
 
@@ -65,6 +62,7 @@ class DetailMenuPage extends HTMLPage{
 		$nextItem = null;
 		$prevItem = null;
 
+		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$itemDAO->setLimit(1);
 
 		$sql = "select id from " . SOYShop_Item::getTableName() . " where id > :id and item_category = :category order by id";
@@ -74,7 +72,7 @@ class DetailMenuPage extends HTMLPage{
 		));
 
 		if(count($res) > 0){
-			$nextItem = $itemDAO->getById($res[0]["id"]);
+			$nextItem = soyshop_get_item_object($res[0]["id"]);
 		}
 
 		$this->addLink("next_item_link", array(
@@ -88,9 +86,7 @@ class DetailMenuPage extends HTMLPage{
 			":category" => $item->getCategory()
 		));
 
-		if(count($res) > 0){
-			$prevItem = $itemDAO->getById($res[0]["id"]);
-		}
+		if(count($res) > 0) $prevItem = soyshop_get_item_object($res[0]["id"]);
 
 		$this->addLink("prev_item_link", array(
 			"link" => ($prevItem && $prevItem->getIsDisabled()!=1) ? $detailLink ."/". $prevItem->getId() : "javascript:void(0)",

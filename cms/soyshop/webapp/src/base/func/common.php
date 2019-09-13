@@ -113,6 +113,23 @@ function soyshop_get_user_object($userId){
 	return $users[$userId];
 }
 
+/** ページIDからページオブジェクトを取得する **/
+function soyshop_get_page_object($pageId){
+	static $pages, $dao;
+	if(is_null($pages)) $pages = array();
+	if(is_null($dao)) $dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+	if(is_null($pageId) || !is_numeric($pageId)) return new SOYShop_Page();
+	if(isset($pages[$pageId])) return $pages[$pageId];
+
+	try{
+		$pages[$pageId] = $dao->getById($pageId);
+	}catch(Exception $e){
+		$pages[$pageId] = new SOYShop_Page();
+	}
+
+	return $pages[$pageId];
+}
+
 /**
  * 商品一覧のURLを取得する
  */

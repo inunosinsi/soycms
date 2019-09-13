@@ -1,142 +1,135 @@
 <?php
 /**
  * <!-- shop:module="common.breadcrumb_navigation" -->
- *     <p id="pankuzu">
- *    <a cms:id="top_link">トップ</a>
- *    <!-- block:id="breadcrumb" -->
- *    &nbsp;&gt;&nbsp;
- *    <a cms:id="breadcrumb_link">カテゴリー名</a>
- *    <!-- /block:id="breadcrumb" -->
- *    &nbsp;&gt;&nbsp;
- *    <a cms:id="current_name_link">子のカテゴリー名</a>
- *    &nbsp;&gt;&nbsp;
- *    <!-- cms:id="current_item_name" -->
- *    商品名
- *    <!-- /cms:id="current_item_name" -->
+ *	 <p id="pankuzu">
+ *	<a cms:id="top_link">トップ</a>
+ *	<!-- block:id="breadcrumb" -->
+ *	&nbsp;&gt;&nbsp;
+ *	<a cms:id="breadcrumb_link">カテゴリー名</a>
+ *	<!-- /block:id="breadcrumb" -->
+ *	&nbsp;&gt;&nbsp;
+ *	<a cms:id="current_name_link">子のカテゴリー名</a>
+ *	&nbsp;&gt;&nbsp;
+ *	<!-- cms:id="current_item_name" -->
+ *	商品名
+ *	<!-- /cms:id="current_item_name" -->
  * </p>
  * <!-- /shop:module="common.breadcrumb_navigation" -->
  */
 SOY2::import("util.SOYShopPluginUtil");
 function soyshop_breadcrumb_navigation($html, $page){
-    $obj = $page->create("soyshop_breadcrumb_navigation", "HTMLTemplatePage", array(
-        "arguments" => array("soyshop_breadcrumb_navigation", $html)
-    ));
+	$obj = $page->create("soyshop_breadcrumb_navigation", "HTMLTemplatePage", array(
+		"arguments" => array("soyshop_breadcrumb_navigation", $html)
+	));
 
 	$name = "";
 
-    if(SOYShopPluginUtil::checkIsActive("common_breadcrumb")){
+	if(SOYShopPluginUtil::checkIsActive("common_breadcrumb")){
 
-        $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
+		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 
-        $pageObject = $page->getPageObject();
-        $className = (isset($pageObject)) ? get_class($pageObject) : "";
-        if($className == "SOYShop_Page"){
+		$pageObject = $page->getPageObject();
+		$className = (isset($pageObject)) ? get_class($pageObject) : "";
+		if($className == "SOYShop_Page"){
 
-            $type = $pageObject->getType();
-            switch($type){
+			$type = $pageObject->getType();
+			switch($type){
 
-                case SOYShop_Page::TYPE_LIST:
-                    $current = $pageObject->getObject()->getCurrentCategory();
-                    $uri = null;
-                    $categories = array();
-                    $alias = "";
-                    if(isset($current)){
-                        $uri = $pageObject->getUri();
-                        $categories = $dao->getAncestry($current, false);
-                        $name = $current->getOpenCategoryName();
-                        $alias = $current->getAlias();
-                    }else{
-                        //カスタムフィールドの場合
-                        if($pageObject->getObject()->getType() == "field"){
-                            $itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-                            $list = SOYShop_ItemAttributeConfig::load(true);
-                            $object = $pageObject->getObject();
-                            $name = (isset($list[$object->getFieldId()])) ? $list[$object->getFieldId()]->getLabel() : "";
-                        //その他
-                        }else{
-                            //カスタムサーチフィールド
-                            if(!is_null($pageObject->getObject()->getModuleId()) && $pageObject->getObject()->getModuleId() === "custom_search_field"){
-                                $args = $page->getArguments();
-                                if(isset($args[1])) $name = htmlspecialchars($args[1], ENT_QUOTES, "UTF-8");
-                            }
-                        }
+				case SOYShop_Page::TYPE_LIST:
+					$current = $pageObject->getObject()->getCurrentCategory();
+					$uri = null;
+					$categories = array();
+					$alias = "";
+					if(isset($current)){
+						$uri = $pageObject->getUri();
+						$categories = $dao->getAncestry($current, false);
+						$name = $current->getOpenCategoryName();
+						$alias = $current->getAlias();
+					}else{
+						//カスタムフィールドの場合
+						if($pageObject->getObject()->getType() == "field"){
+							$itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+							$list = SOYShop_ItemAttributeConfig::load(true);
+							$object = $pageObject->getObject();
+							$name = (isset($list[$object->getFieldId()])) ? $list[$object->getFieldId()]->getLabel() : "";
+						//その他
+						}else{
+							//カスタムサーチフィールド
+							if(!is_null($pageObject->getObject()->getModuleId()) && $pageObject->getObject()->getModuleId() === "custom_search_field"){
+								$args = $page->getArguments();
+								if(isset($args[1])) $name = htmlspecialchars($args[1], ENT_QUOTES, "UTF-8");
+							}
+						}
 
-                    }
-                    break;
+					}
+					break;
 
-                case SOYShop_Page::TYPE_DETAIL:
-                    $item = $page->getItem();
+				case SOYShop_Page::TYPE_DETAIL:
+					$item = $page->getItem();
 
-                    //商品グループの子商品の時
-                    if(is_numeric($item->getType())){
-                        $parent = soyshop_get_item_object($item->getType());
-                        $categoryId = $parent->getCategory();
+					//商品グループの子商品の時
+					if(is_numeric($item->getType())){
+						$parent = soyshop_get_item_object($item->getType());
+						$categoryId = $parent->getCategory();
 
-                        $pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-                        try{
-                            $detailPage = $pageDao->getById($parent->getDetailPageId());
-                        }catch(Exception $e){
-                            $detailPage = new SOYShop_Page();
-                        }
+						SOY2::import("module.plugins.common_breadcrumb.util.BreadcrumbUtil");
+						$config = BreadcrumbUtil::getConfig();
 
-                        SOY2::import("module.plugins.common_breadcrumb.util.BreadcrumbUtil");
-                        $config = BreadcrumbUtil::getConfig();
+						//パンくずに子商品まで表示させる
+						if(isset($config["displayChild"]) && $config["displayChild"] == 1){
+							$parentUrl = soyshop_get_site_url() . soyshop_get_page_object($parent->getDetailPageId())->getUri() . "/" . $parent->getAlias();
+							$itemName = "<a href=\"" . $parentUrl."\">" . $parent->getOpenItemName() . "</a>"."&nbsp;&gt;&nbsp;" .$item->getOpenItemName();
 
-                        //パンくずに子商品まで表示させる
-                        if(isset($config["displayChild"]) && $config["displayChild"] == 1){
-                            $parentUrl = soyshop_get_site_url().$detailPage->getUri() . "/" . $parent->getAlias();
-                            $itemName = "<a href=\"" . $parentUrl."\">" . $parent->getOpenItemName() . "</a>"."&nbsp;&gt;&nbsp;" .$item->getOpenItemName();
-
-                        //パンくずに表示する商品を親商品までにする
-                        }else{
-                            $itemName = $parent->getOpenItemName();
-                        }
+						//パンくずに表示する商品を親商品までにする
+						}else{
+							$itemName = $parent->getOpenItemName();
+						}
 
 
-                    //子商品以外の時
-                    }else{
-                        $categoryId = $item->getCategory();
-                        $itemName = $item->getOpenItemName();
-                    }
+					//子商品以外の時
+					}else{
+						$categoryId = $item->getCategory();
+						$itemName = $item->getOpenItemName();
+					}
 
-                    //表示中の商品名
-                    $obj->addLabel("current_item_name", array(
-                        "html" => $itemName,
-                        "soy2prefix" => SOYSHOP_SITE_PREFIX
-                    ));
+					//表示中の商品名
+					$obj->addLabel("current_item_name", array(
+						"html" => $itemName,
+						"soy2prefix" => SOYSHOP_SITE_PREFIX
+					));
 
 					$current = soyshop_get_category_object($categoryId);
 					if(is_null($current->getId())) return;
 
-                    SOY2::imports("module.plugins.common_breadcrumb.domain.*");
-                    $uri = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO")->getPageUriByItemId($item->getId());
+					SOY2::imports("module.plugins.common_breadcrumb.domain.*");
+					$uri = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO")->getPageUriByItemId($item->getId());
 
-                    $categories = $dao->getAncestry($current, false);
+					$categories = $dao->getAncestry($current, false);
 
-                    $name = $current->getOpenCategoryName();
-                    $alias = $current->getAlias();
+					$name = $current->getOpenCategoryName();
+					$alias = $current->getAlias();
 
-                    break;
-                case SOYShop_Page::TYPE_SEARCH:
-                    $categories = array();
+					break;
+				case SOYShop_Page::TYPE_SEARCH:
+					$categories = array();
 
-                    $uri = "";
-                    $name = "";
-                    if(isset($_GET["q"])){
-                        $name = trim($_GET["q"]);
-                    //カスタムサーチフィールド
-                    }else if(isset($_GET["c_search"]["item_name"])){
-                        $name = trim($_GET["c_search"]["item_name"]);
-                    }
-                    $alias = "";
-                    break;
-                case SOYShop_Page::TYPE_FREE:
-                case SOYShop_Page::TYPE_COMPLEX:
-                default:
-                    $categories = array();
-                    $uri = "";
+					$uri = "";
+					$name = "";
+					if(isset($_GET["q"])){
+						$name = trim($_GET["q"]);
+					//カスタムサーチフィールド
+					}else if(isset($_GET["c_search"]["item_name"])){
+						$name = trim($_GET["c_search"]["item_name"]);
+					}
 					$alias = "";
-                    $name = $pageObject->getName();
+					break;
+				case SOYShop_Page::TYPE_FREE:
+				case SOYShop_Page::TYPE_COMPLEX:
+				default:
+					$categories = array();
+					$uri = "";
+					$alias = "";
+					$name = $pageObject->getName();
 
 					//商品詳細表示プラグインでcms:id="current_item_name"を使用出来るようにする
 					if(SOYShopPluginUtil::checkIsActive("parts_item_detail")){
@@ -145,79 +138,100 @@ function soyshop_breadcrumb_navigation($html, $page){
 							SOY2::import("module.plugins.parts_item_detail.util.PartsItemDetailUtil");
 							$item = PartsItemDetailUtil::getItemByAlias(trim($args[0]));
 							$itemName = $item->getOpenItemName();
-							$category = soyshop_get_category_object($item->getCategory());
+
+							//商品グループの子商品の時
+							if(is_numeric($item->getType())){
+								$parent = soyshop_get_item_object($item->getType());
+								$category = soyshop_get_category_object($parent->getCategory());
+
+								SOY2::import("module.plugins.common_breadcrumb.util.BreadcrumbUtil");
+								$config = BreadcrumbUtil::getConfig();
+
+								//パンくずに子商品まで表示させる
+								if(isset($config["displayChild"]) && $config["displayChild"] == 1){
+									$parentUrl = soyshop_get_site_url() . soyshop_get_page_object($parent->getDetailPageId())->getUri() . "/" . $parent->getAlias();
+									$itemName = "<a href=\"" . $parentUrl."\">" . $parent->getOpenItemName() . "</a>"."&nbsp;&gt;&nbsp;" .$item->getOpenItemName();
+
+								//パンくずに表示する商品を親商品までにする
+								}else{
+									$itemName = $parent->getOpenItemName();
+								}
+							}else{
+								$category = soyshop_get_category_object($item->getCategory());
+							}
 
 							$categories = $dao->getAncestry($category, false);
 							$uri = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO")->getPageUriByItemId($item->getId());
+							$name = $category->getOpenCategoryName();
 							$alias = $category->getAlias();
 						}else{
 							$itemName = "";
 						}
 
 						//表示中の商品名
-	                    $obj->addLabel("current_item_name", array(
-	                        "html" => $itemName,
-	                        "soy2prefix" => SOYSHOP_SITE_PREFIX
-	                    ));
+						$obj->addLabel("current_item_name", array(
+							"html" => $itemName,
+							"soy2prefix" => SOYSHOP_SITE_PREFIX
+						));
 					}
 
-                    break;
-            }
+					break;
+			}
 
-        //カートページとマイページ
-        }else{
-            $className = get_class($page);
-            if($className == "SOYShop_CartPage"){
-                $name = SOYShop_DataSets::get("config.cart.cart_title", "ショッピングカート");
-            //マイページ
-            }else{
-                //マイページのタイトルフォーマットで置換文字列を使用
-                $name = MyPageLogic::getMyPage()->getTitleFormat($page->getArgs());
-            }
+		//カートページとマイページ
+		}else{
+			$className = get_class($page);
+			if($className == "SOYShop_CartPage"){
+				$name = SOYShop_DataSets::get("config.cart.cart_title", "ショッピングカート");
+			//マイページ
+			}else{
+				//マイページのタイトルフォーマットで置換文字列を使用
+				$name = MyPageLogic::getMyPage()->getTitleFormat($page->getArgs());
+			}
 
-            $categories = array();
-            $uri = "";
-            $alias = "";
-        }
+			$categories = array();
+			$uri = "";
+			$alias = "";
+		}
 
-        $obj->createAdd("breadcrumb", "BreadcrumbNavigation", array(
-            "list" => $categories,
-            "uri" => $uri,
-            "soy2prefix" => "block"
-        ));
+		$obj->createAdd("breadcrumb", "BreadcrumbNavigation", array(
+			"list" => $categories,
+			"uri" => $uri,
+			"soy2prefix" => "block"
+		));
 
-        //表示中のカテゴリ名
-        $obj->addLabel("current_name", array(
-            "text" => $name,
-            "soy2prefix" => SOYSHOP_SITE_PREFIX,
-        ));
+		//表示中のカテゴリ名
+		$obj->addLabel("current_name", array(
+			"text" => $name,
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		));
 
-        //表示中のカテゴリ名
-        $obj->addLink("current_name_link", array(
-            "text" => $name,
-            "link" => soyshop_get_site_url() . $uri . "/" . $alias,
-            "soy2prefix" => SOYSHOP_SITE_PREFIX,
-        ));
+		//表示中のカテゴリ名
+		$obj->addLink("current_name_link", array(
+			"text" => $name,
+			"link" => soyshop_get_site_url() . $uri . "/" . $alias,
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		));
 
 		//リンクのみ出力したい場合
 		$obj->addLink("current_name_link_only", array(
-            "link" => soyshop_get_site_url() . $uri . "/" . $alias,
-            "soy2prefix" => SOYSHOP_SITE_PREFIX,
-        ));
+			"link" => soyshop_get_site_url() . $uri . "/" . $alias,
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+		));
 
-        $obj->addLink("top_link", array(
-            "link" => soyshop_get_site_url(),
-            "soy2prefix" => SOYSHOP_SITE_PREFIX
-        ));
+		$obj->addLink("top_link", array(
+			"link" => soyshop_get_site_url(),
+			"soy2prefix" => SOYSHOP_SITE_PREFIX
+		));
 
-        //検索ワード
-        $obj->addLabel("search_word", array(
-            "text" => $name,
-            "soy2prefix" => SOYSHOP_SITE_PREFIX
-        ));
-    }
+		//検索ワード
+		$obj->addLabel("search_word", array(
+			"text" => $name,
+			"soy2prefix" => SOYSHOP_SITE_PREFIX
+		));
+	}
 
-    $obj->display();
+	$obj->display();
 }
 
 /**
@@ -226,34 +240,34 @@ function soyshop_breadcrumb_navigation($html, $page){
 if(!class_exists("BreadcrumbNavigation")){
 class BreadcrumbNavigation extends HTMLList{
 
-    private $uri;
+	private $uri;
 
-    protected function populateItem($entity, $key){
-        if(false == ($entity instanceof SOYShop_Category)){
-            $entity = new SOYShop_Category();
-        }
+	protected function populateItem($entity, $key){
+		if(false == ($entity instanceof SOYShop_Category)){
+			$entity = new SOYShop_Category();
+		}
 
-        $this->addLink("breadcrumb_link", array(
-            "text" => $entity->getOpenCategoryName(),
-            "link" => soyshop_get_site_url() . $this->uri . "/" . $entity->getAlias(),
-            "soy2prefix" => SOYSHOP_SITE_PREFIX
-        ));
+		$this->addLink("breadcrumb_link", array(
+			"text" => $entity->getOpenCategoryName(),
+			"link" => soyshop_get_site_url() . $this->uri . "/" . $entity->getAlias(),
+			"soy2prefix" => SOYSHOP_SITE_PREFIX
+		));
 
 		//リンクのみ出力したい場合
 		$this->addLink("breadcrumb_link_only", array(
-            "link" => soyshop_get_site_url() . $this->uri . "/" . $entity->getAlias(),
-            "soy2prefix" => SOYSHOP_SITE_PREFIX
-        ));
+			"link" => soyshop_get_site_url() . $this->uri . "/" . $entity->getAlias(),
+			"soy2prefix" => SOYSHOP_SITE_PREFIX
+		));
 
 
-        $this->addLabel("breadcrumb_name", array(
-            "text" => $entity->getOpenCategoryName(),
-            "soy2prefix" => SOYSHOP_SITE_PREFIX
-        ));
-    }
+		$this->addLabel("breadcrumb_name", array(
+			"text" => $entity->getOpenCategoryName(),
+			"soy2prefix" => SOYSHOP_SITE_PREFIX
+		));
+	}
 
-    function setUri($uri){
-        $this->uri = $uri;
-    }
+	function setUri($uri){
+		$this->uri = $uri;
+	}
 }
 }
