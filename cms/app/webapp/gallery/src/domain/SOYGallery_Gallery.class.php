@@ -64,7 +64,7 @@ class SOYGallery_Gallery {
 
 	function getConfigArray(){
 		$config = $this->getConfig();
-		if(!isset($config) || !strlrn($config)) return array();
+		if(!isset($config) || !strlen($config)) return array();
 		return soy2_unserialize($config);
 	}
 	function setConfigArray($config){
