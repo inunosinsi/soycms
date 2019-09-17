@@ -24,22 +24,63 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 	 * @return boolean ログイン成功したかどうか
 	 */
 	function login($userid,$password){
-		$dao = SOY2DAOFactory::create("admin.AdministratorDAO");
 		try{
-			$bean = $dao->getByUserId($userid);
+			$bean = SOY2DAOFactory::create("admin.AdministratorDAO")->getByUserId($userid);
 		}catch(Exception $e){
 			return false;
 		}
 
 		SOY2::cast($this,$bean);
 
-		$hash = $bean->getUserPassword();
-		if($bean->getUserId() == $userid && PasswordUtil::checkPassword($password,$hash)){
+		if($bean->getUserId() == $userid && PasswordUtil::checkPassword($password, $bean->getUserPassword())){
 			//2009-04-30 パスワードの自動更新は保留
 			//$this->upgradeAdministratorPassword($bean, $password);
 			return true;
 		}else{
 			return false;
+		}
+	}
+
+	/**
+	 * 自動ログイン用のメソッド
+	 * @return boolean ログイン成功したかどうか
+	 */
+	function autoLogin($userid){
+		try{
+			$bean = SOY2DAOFactory::create("admin.AdministratorDAO")->getById($userid);
+		}catch(Exception $e){
+			return false;
+		}
+
+		SOY2::cast($this,$bean);
+		return true;
+	}
+
+	/**
+	 * auto login
+	 * @param int defult
+	 * @param str defult documentRoot
+	 */
+	function setAutoLogin($userId){
+		$token = md5(time() . $userId . mt_rand(0, 65535));
+		$expire = SOYCMS_AUTOLOGIN_EXPIRE * 24 * 60 * 60 + time();
+
+		$domain = $_SERVER["HTTP_HOST"];
+		if(strpos($domain, ":")) $domain = substr($domain, 0, strpos($domain, ":"));	//portがある場合は削除
+		$secure = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on");
+
+		setcookie("soycms_auto_login", $token, $expire, "/", $domain, $secure);
+
+		$dao = SOY2DAOFactory::create("admin.AutoLoginDAO");
+		$login = new AutoLogin();
+		$login->setUserId($userId);
+		$login->setToken($token);
+		$login->setLimit($expire);
+
+		try{
+			$dao->insert($login);
+		}catch(Exception $e){
+			//
 		}
 	}
 

@@ -26,6 +26,12 @@ class IndexPage extends CMSHTMLPageBase{
 			SOY2PageController::jump("");
 		}
 
+
+		//自動ログイン
+		if(SOY2ActionFactory::createInstance('AutoLoginAction')->run()->success()){
+			SOY2PageController::redirect("");
+		}
+
 		define("HEAD_TITLE", CMSUtil::getCMSName() . " Login");
 		parent::__construct();
 
@@ -68,6 +74,13 @@ class IndexPage extends CMSHTMLPageBase{
     		"src" => CMSUtil::getLogoFile()
     	));
 
+		//auto_loginのチェック
+		DisplayPlugin::toggle("auto_login", self::_isAutoLogin());
+		$this->addCheckBox("auto_login", array(
+			"name" => "auto_login",
+			"value" => 1,
+			"label" => "次回から自動的にログインする"
+		));
 	}
 
     /**
@@ -89,4 +102,16 @@ class IndexPage extends CMSHTMLPageBase{
 
 		return 	parent::getTemplateFilePath();
     }
+
+	private function _isAutoLogin(){
+		if(defined("SOYCMS_ASP_MODE")) return false;	//ASPモードの場合はAutoLoginは利用できない
+
+		$dao = new SOY2DAO();
+		try{
+			$dao->executeQuery("SELECT * FROM AutoLogin LIMIT 1;");
+			return true;
+		}catch(Exception $e){
+			return false;
+		}
+	}
 }

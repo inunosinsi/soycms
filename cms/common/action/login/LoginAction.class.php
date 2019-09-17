@@ -26,6 +26,9 @@ class LoginAction extends SOY2Action{
     		//ログイン状態をセッションに保存：$logicはloginに成功したらAdministratorが入っている
     		UserInfoUtil::login($logic);
 
+			//autologin
+			if(isset($_POST["auto_login"])) $logic->setAutoLogin($logic->getId());
+
 			/**
 			 * 転送先が指定されている場合はそこへ遷移する
 			 */

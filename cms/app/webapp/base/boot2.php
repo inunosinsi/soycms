@@ -13,7 +13,7 @@
 <?php if(!IFRAME_DISPLAY_MODE){?>
 <div class="masthead">
 	<h3 class="text-muted"><?php echo CMSApplication::getApplicationName(); ?></h3>
-	
+
 	<nav>
 		<?php BillManagerApplication::printTabs();?>
 	</nav>

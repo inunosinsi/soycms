@@ -159,7 +159,7 @@ class CMSApplication {
 		$properties = $self->properties;
 
 		//modeプロパティにはどのテンプレートを使うか？の値が格納されている。modeプロパティはrun関数で定義されている
-		$isThreeTemp = ($self->mode == "three");	//SOY CMS3系
+		$isThreeTemp = ($self->mode == "three" || $self->mode == "analyzer");	//SOY CMS3系
 		$isCustomTemp = (!$isThreeTemp && $self->mode !== "template" && $self->mode !== "wide" && $self->mode !== "plain");
 
 		$html = "";

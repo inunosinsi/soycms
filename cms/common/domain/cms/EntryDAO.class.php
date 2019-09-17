@@ -69,7 +69,7 @@ abstract class EntryDAO extends SOY2DAO{
 		static $i;
 		if(is_null($i)) $i = 0;
 
-		//記事表示の高速化
+		//記事表示の高速化 @ToDo 記事を更新する度に作成日に1秒ずつ加算される問題をどうにかしたい
 		for(;;){
 			$i++;
 			try{

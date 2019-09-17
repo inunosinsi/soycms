@@ -73,3 +73,10 @@ CREATE TABLE LoginErrorLog (
 	start_date INTEGER NOT NULL,
 	update_date INTEGER NOT NULL
 );
+
+CREATE TABLE AutoLogin (
+	user_id INTEGER NOT NULL,
+	session_token CHAR(32) NOT NULL,
+	time_limit INTEGER,
+	UNIQUE(user_id, session_token)
+);
