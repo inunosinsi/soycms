@@ -116,7 +116,7 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	function validate(){
 		$value = $this->getValue();
 
-		if(empty($value) || strlen(implode("",$value))<1){
+		if(empty($value) || (is_array($value) && strlen(implode("",$value)))<1){
 			$this->setValue(array("", "", ""));
 
 			if($this->getIsRequire()){
