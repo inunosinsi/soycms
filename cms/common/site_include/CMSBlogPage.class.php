@@ -260,7 +260,7 @@ class CMSBlogPage extends CMSPage{
 				$this->year  = isset($date[0]) && is_numeric($date[0]) ? (int)$date[0] : null ;
 				$this->month = isset($date[1]) && is_numeric($date[1]) ? (int)$date[1] : null ;
 				$this->day   = isset($date[2]) && is_numeric($date[2]) ? (int)$date[2] : null ;
-				$this->entries = $this->getEntriesByDate($this->year,$this->month,$this->day);
+				$this->entries = ($this->limit > 0) ? $this->getEntriesByDate($this->year,$this->month,$this->day) : array();
 
 				$pageFormat = $this->page->getMonthTitleFormat();
 				$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
@@ -339,8 +339,9 @@ class CMSBlogPage extends CMSPage{
 
 				$this->mode = CMSBlogPage::MODE_TOP;
 				$this->limit = $this->page->getTopDisplayCount();
+
 				//最新エントリーを取得
-				$this->entries = self::getEntries();
+				$this->entries = ($this->limit > 0) ? self::getEntries() : array();
 
 				$pageFormat = $this->page->getTopTitleFormat();
 				$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
@@ -510,32 +511,34 @@ class CMSBlogPage extends CMSPage{
 
 		}else{
 			//entry_list
-			try{
-				soy_cms_blog_output_entry_list($this,$this->entries);
-			}catch(Exception $e){
+			if(count($this->entries)){
+				try{
+					soy_cms_blog_output_entry_list($this,$this->entries);
+				}catch(Exception $e){
 
+				}
 			}
 
 			//次のページへのリンク　next_page (next_link)
-			soy_cms_blog_output_next_link($this,$this->offset,$this->limit,$this->total);
+			if(count($this->entries)) soy_cms_blog_output_next_link($this,$this->offset,$this->limit,$this->total);
 
 			//前のページへのリンク prev_page (prev_link)
-			soy_cms_blog_output_prev_link($this,$this->offset,$this->limit);
+			if(count($this->entries)) soy_cms_blog_output_prev_link($this,$this->offset,$this->limit);
 
 			//記事リストのページャー
 			if(self::checkUseBBlock(BlogPage::B_BLOCK_PAGER)) soy_cms_blog_output_entry_list_pager($this,$this->offset,$this->limit,$this->total);
 
 			//最初のページへのリンク first_page
-			soy_cms_blog_output_first_page_link($this,$this->offset,$this->limit,$this->total);
+			if(count($this->entries)) soy_cms_blog_output_first_page_link($this,$this->offset,$this->limit,$this->total);
 
 			//最後のページへのリンク last_page
-			soy_cms_blog_output_last_page_link($this,$this->offset,$this->limit,$this->total);
+			if(count($this->entries)) soy_cms_blog_output_last_page_link($this,$this->offset,$this->limit,$this->total);
 
 			//ページ数 pages
-			soy_cms_blog_output_pages($this,$this->limit,$this->total);
+			if(count($this->entries)) soy_cms_blog_output_pages($this,$this->limit,$this->total);
 
 			//現在のページ番号 current_page
-			soy_cms_blog_output_current_page($this,$this->offset);
+			if(count($this->entries)) soy_cms_blog_output_current_page($this,$this->offset);
 
 			//現在選択されているカテゴリーを出力
 			if(self::checkUseBBlock(BlogPage::B_BLOCK_CURRENT_CATEGORY)) soy_cms_blog_output_current_category($this);
@@ -547,7 +550,7 @@ class CMSBlogPage extends CMSPage{
 			if(self::checkUseBBlock(BlogPage::B_BLOCK_CURRENT_CATEGORY_OR_ARCHIVE)) soy_cms_blog_output_current_category_or_archive($this);
 
 			//現在選択されている年月の翌月と前月へのリンク next_month
-			soy_cms_blog_output_prev_next_month($this);
+			if(count($this->entries)) soy_cms_blog_output_prev_next_month($this);
 		}
 
 		//カテゴリリンクを出力 category
