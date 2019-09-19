@@ -16,6 +16,12 @@ class ButtonSocialConfigFormPage extends WebPage{
 			$this->pluginObj->setAdmins($_POST["Config"]["admins"]);
 			$this->pluginObj->setDescription($_POST["Config"]["description"]);
 			$this->pluginObj->setImage($_POST["Config"]["image"]);
+
+			//Twitter Card
+			$twCard = (isset($_POST["Config"]["tw_card"])) ? $_POST["Config"]["tw_card"] : "";
+			$this->pluginObj->setTwCard($twCard);
+			$this->pluginObj->setTwId(trim($_POST["Config"]["tw_id"]));
+
 			$this->pluginObj->setMixiCheckKey($_POST["Config"]["mixi_check_key"]);
 			$this->pluginObj->setMixiLikeKey($_POST["Config"]["mixi_like_key"]);
 
@@ -63,6 +69,17 @@ class ButtonSocialConfigFormPage extends WebPage{
 		$this->addInput("image", array(
 			"name" => "Config[image]",
 			"value" => $this->pluginObj->getImage(),
+		));
+
+		$this->addSelect("twitter_card", array(
+			"name" => "Config[tw_card]",
+			"options" => array("summary", "summary_large_image"),
+			"selected" => $this->pluginObj->getTwCard()
+		));
+
+		$this->addInput("twitter_id", array(
+			"name" => "Config[tw_id]",
+			"value" => $this->pluginObj->getTwid()
 		));
 
 		$this->addInput("mixi_like_key", array(

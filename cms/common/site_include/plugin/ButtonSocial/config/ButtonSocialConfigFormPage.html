@@ -13,6 +13,17 @@
 				</td>
 			</tr>
 			<tr>
+				<th>Twitter Cardの設定</th>
+			</tr>
+			<tr>
+				<td>
+					twitter:card：<select soy:id="twitter_card"><option></option></select><br>
+					<div class="form-inline">
+						twitter:site：@<input type="text" soy:id="twitter_id" class="form-control">
+					</div>
+				</td>
+			</tr>
+			<tr>
 				<th>mixiイイネの設定</th>
 			</tr>
 			<tr>
@@ -59,6 +70,7 @@
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;;">
 &lt;!-- ヘッダ内 --&gt;
 <strong>&lt;!-- sns:id="og_meta" /--&gt;</strong>
+<strong>&lt;!-- sns:id="twitter_card_meta" /--&gt;</strong>
 <strong>&lt;!-- sns:id="facebook_meta" /--&gt;</strong>
 </pre>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;;">
@@ -66,7 +78,6 @@
 <strong>&lt;!-- sns:id="facebook_like_button" /--&gt;</strong>
 <strong>&lt;!-- sns:id="twitter_button" /--&gt;</strong>
 <strong>&lt;!-- sns:id="hatena_button" /--&gt;</strong>
-<strong>&lt;!-- sns:id="google_plus_button" /--&gt;</strong>
 <strong>&lt;!-- sns:id="pocket_button" /--&gt;</strong>
 </pre>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
@@ -74,7 +85,6 @@
 <strong>&lt;!-- cms:id="facebook_like_button" /--&gt;</strong>
 <strong>&lt;!-- cms:id="twitter_button" /--&gt;</strong>
 <strong>&lt;!-- cms:id="hatena_button" /--&gt;</strong>
-<strong>&lt;!-- cms:id="google_plus_button" /--&gt;</strong>
 <strong>&lt;!-- cms:id="mixi_check_button" /--&gt;</strong>
 <strong>&lt;!-- cms:id="mixi_like_button" /--&gt;</strong>
 <strong>&lt;!-- cms:id="pocket_button" /--&gt;</strong>
