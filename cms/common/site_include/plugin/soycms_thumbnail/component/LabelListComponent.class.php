@@ -5,7 +5,7 @@ class LabelListComponent extends HTMLList{
 	private $paths;
 
 	protected function populateItem($entity){
-		
+
 		$path = (isset($this->paths[$entity->getId()])) ? trim($this->paths[$entity->getId()]) : null;
 
 		$this->addLabel("caption", array(
@@ -32,4 +32,3 @@ class LabelListComponent extends HTMLList{
 		$this->paths = $paths;
 	}
 }
-?>

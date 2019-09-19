@@ -341,7 +341,7 @@ class SOYCMSThumbnailPlugin{
 		}
 		$htmls[] = "<br /><span style=\"display:block;margin-top:10px;\">リサイズ:width:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_w\" value=\"" . (int)$config["resize_w"] . "\">&nbsp;";
 		$htmls[] = "height:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_h\" value=\"" . (int)$config["resize_h"] . "\"></span><br />";
-    $htmls[] = "<span style=\"display:block;\">alt:<input type=\"text\" class=\"form-control\" name=\"jcrop_thumbnail_alt\" value=\"" . self::getAlt($entryId) . "\" style=\"width:50%;\"></span>";
+    	$htmls[] = "<span style=\"display:block;\">alt:<input type=\"text\" class=\"form-control\" name=\"jcrop_thumbnail_alt\" value=\"" . self::getAlt($entryId) . "\" style=\"width:50%;\"></span>";
 		$htmls[] = "</td>";
 		$htmls[] = "</tr>";
 		$htmls[] = "</table></div>";

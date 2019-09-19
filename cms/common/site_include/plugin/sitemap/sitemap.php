@@ -35,7 +35,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -238,7 +238,8 @@ class SitemapPlugin{
 								//httpsのページであるか？
 								$http = ($this->ssl_per_page[$page->getId()]) ? "https" : "http";
 								$url = $http . "://" . $host . "/" . $page->getUri();
-								$xml[] =  self::buildColumn($url, 0.8, $page->getUdate());
+								$priority = (strlen($page->getUri()) === 0) ? 1 : 0.8;
+								$xml[] =  self::buildColumn($url, $priority, $page->getUdate());
 							}
 
 							break;
