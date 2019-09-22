@@ -38,12 +38,13 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.6"
+			"version"=>"1.8"
 		));
 
 		//プラグイン アクティブ
 		if(CMSPlugin::activeCheck(CustomFieldPluginAdvanced::PLUGIN_ID)){
 			$this->dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
+			SOY2::import("site_include.plugin.CustomFieldAdvanced.util.CustomfieldAdvancedUtil");
 
 			//管理側
 			if(!defined("_SITE_ROOT_")){
@@ -206,6 +207,37 @@ class CustomFieldPluginAdvanced{
 					}
 
 					unset($attr["html"]);//HTMLModelなのでunsetしなくても出力されないはず
+				}
+
+				//ペアフィールド
+				if($master->getType() == "pair" && strlen($master->getExtraValues())){
+					$extraValues = soy2_unserialize($master->getExtraValues());
+					if(count($extraValues)){
+						foreach($extraValues as $idx => $pairValues){
+							$_hash = (strlen($field->getValue())) ? CustomfieldAdvancedUtil::createHash($field->getValue()) : null;
+							$pairValue = (isset($_hash) && isset($pairValues[$_hash])) ? $pairValues[$_hash] : "";
+
+							$htmlObj->addLabel($field->getId() . "_pair_" . ($idx + 1) . "_visible", array(
+								"soy2prefix" => "cms",
+								"visible" => (strlen($pairValue) > 0)
+							));
+
+							$htmlObj->addLabel($field->getId() . "_pair_" . ($idx + 1) . "_is_not_empty", array(
+								"soy2prefix" => "cms",
+								"visible" => (strlen($pairValue) > 0)
+							));
+
+							$htmlObj->addLabel($field->getId() . "_pair_" . ($idx + 1) . "_is_empty", array(
+								"soy2prefix" => "cms",
+								"visible" => (strlen($pairValue) === 0)
+							));
+
+							$htmlObj->addLabel($field->getId() . "_pair_" . ($idx + 1), array(
+								"soy2prefix" => "cms",
+								"html" => $pairValue
+							));
+						}
+					}
 				}
 			}
 

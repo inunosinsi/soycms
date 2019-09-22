@@ -11,7 +11,8 @@ class CustomField{
 		"file" => "ファイル",
 		"richtext" => "リッチテキスト",
 		"link" => "リンク",
-		"entry" => "記事"
+		"entry" => "記事",
+		"pair" => "ペア"
 	);
 
 	private $id;
@@ -121,7 +122,7 @@ class CustomField{
 	}
 
 	function hasOption(){
-		return (boolean)($this->getType() == "radio" OR $this->getType() == "select");
+		return (boolean)($this->getType() == "radio" || $this->getType() == "select" || $this->getType() == "pair");
 	}
 
 	function hasExtra(){
@@ -190,10 +191,12 @@ class CustomField{
 
 				break;
 			case "select":
+			case "pair":
 				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->option));
 				$value = (is_null($fieldValue)) ? $this->getDefaultValue() : $fieldValue ;
 
-				$body = '<select class="cstom_field_select form-control" name="'.$h_formName.'" id="'.$h_formID.'">';
+				$body = '<div class="form-inline">';
+				$body .= '<select class="cstom_field_select form-control" name="'.$h_formName.'" id="'.$h_formID.'">';
 				$body .= '<option value="">----</option>';
 				foreach($options as $option){
 					$option = trim($option);
@@ -205,6 +208,7 @@ class CustomField{
 					}
 				}
 				$body .= '</select>';
+				$body .= '<div>';
 
 				break;
 			case "textarea":
@@ -424,5 +428,33 @@ class CustomField{
 			}
 		}
 		return $list;
+	}
+
+	function getPairForm(){
+		$v = trim($this->option);
+		if(!strlen($v)) return "";
+
+		$html = array();
+
+		$opts = explode("\n", $v);
+		$values = (strlen($this->extraValues)) ? soy2_unserialize($this->extraValues) : array();
+
+		$i = 0;	//@ToDo いずれ複数の値を設定できるように
+		$pairValues = (isset($values[$i])) ? $values[$i] : array();
+		
+		$html[] = "<table>";
+		$html[] = "<caption><strong>ペア" . ($i + 1) . "</strong> (cms:id=\"" . $this->id . "_pair_" . ($i + 1) . "\")</caption>";
+		foreach($opts as $opt){
+			$opt = trim($opt);
+			if(!strlen($opt)) continue;
+			$html[] = "<tr>";
+			$html[] = "<td>" . htmlspecialchars($opt, ENT_QUOTES, "UTF-8") . "</td>";
+			$idx = CustomfieldAdvancedUtil::createHash($opt);
+			$html[] = "<td><input type=\"text\" name=\"pair[" . $i . "][" . $idx . "]\" value=\"" . ((isset($pairValues[$idx])) ? $pairValues[$idx] : "") . "\"></td>";
+			$html[] = "</tr>";
+		}
+		$html[] = "</table>";
+
+		return implode("\n", $html);
 	}
 }

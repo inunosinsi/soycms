@@ -108,21 +108,35 @@
 							</div>
 						</div>
 
-						<div class="section" soy:id="use_extra">
+						<!-- soy:id="use_extra" -->
+						<div class="section">
 							<h5>属性を追加<a href="javascript:void(0);" title="altやwidth、heightなどの属性名を一行ごとに入力して下さい。指定の属性に出力を設定している場合のみ使用されます。"><i class="fa fa-question-circle"></i></a></h5>
 							<div class="body">
 								<textarea soy:id="extra_outputs"></textarea>
 							</div>
-						</div soy:id="use_extra">
+						</div>
+						<!-- /soy:id="use_extra" -->
 
-						<div class="section" soy:id="with_options">
-							<h5>選択項目<a href="javascript:void(0);" title="ラジオボタンとセレクトボックスの選択項目を一行ごとに入力してください。最初に選択されている項目は「初期値」で設定できます。"><i class="fa fa-question-circle"></i></a></h5>
+						<!-- soy:id="with_options" -->
+						<div class="section">
+							<h5>選択項目<a href="javascript:void(0);" title="ラジオボタン、セレクトボックスやペアの選択項目を一行ごとに入力してください。最初に選択されている項目は「初期値」で設定できます。"><i class="fa fa-question-circle"></i></a></h5>
 							<div class="body">
 								<textarea soy:id="option" class="form-control" style="height:150px !important; margin-bottom:10px !important;"></textarea>
 							</div>
 						</div>
+						<!-- /soy:id="with_options" -->
 
-						<div class="section" soy:id="is_entry_field">
+						<!-- soy:id="is_pair" -->
+						<div class="section">
+							<h5>選択項目のペア</h5>
+							<div class="body">
+								<!-- soy:id="pair_form" /-->
+							</div>
+						</div>
+						<!-- /soy:id="is_pair" -->
+
+						<!-- soy:id="is_entry_field" -->
+						<div class="section">
 							<h5>記事フィールドでラベルの固定<a href="javascript:void(0);" title="記事投稿画面でラベルの選択を指定の値に固定します。"><i class="fa fa-question-circle"></i></a></h5>
 							<div class="body">
 								<select soy:id="fixed_label_id">
@@ -130,6 +144,7 @@
 								</select>
 							</div>
 						</div>
+						<!-- /soy:id="is_entry_field" -->
 
 						<div class="text-right">
 							<input type="button" class="btn btn-primary" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />

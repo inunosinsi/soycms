@@ -90,7 +90,7 @@ class CustomFieldListComponent extends HTMLList {
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_'.$i.'\').toggle();',
-			"class" => (!$entity->getShowInput() OR $entity->getLabelId() OR $entity->getDefaultValue() OR $entity->getEmptyValue() OR $entity->getDescription() OR $entity->getFixedLabelId()) ? "btn btn-warning" : "btn btn-info"
+			"class" => (!$entity->getShowInput() || $entity->getLabelId() || $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption())) ? "btn btn-warning" : "btn btn-info"
 		));
 
 		$this->addModel("field_config", array(
@@ -162,6 +162,15 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addTextArea("option", array(
 			"name" => "config[option]",
 			"value" => $entity->getOption()
+		));
+
+		//ペアフィールド用
+		$this->addModel("is_pair", array(
+			"visible" => ($entity->getType() == "pair")
+		));
+
+		$this->addLabel("pair_form", array(
+			"html" => ($entity->getType() == "pair") ? $entity->getPairForm() : ""
 		));
 
 		$this->addInput("description", array(
