@@ -40,7 +40,7 @@ class SOYCMS_Info_Plugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
 			$this,"config_page"
@@ -60,16 +60,16 @@ class SOYCMS_Info_Plugin{
 
 	function widget(){
 		if(ini_get("allow_url_fopen") && function_exists("simplexml_load_string")){
-			list($rss,$time) = $this->loadRSS(self::INFO_RSS_URL);
+			//list($rss,$time) = $this->loadRSS(self::INFO_RSS_URL);
 			list($forum,$time2) = $this->loadRSS(self::FORUM_RSS_URL);
 
 			$html = $this->getStyleSheet();
-			if($rss)$html .= $this->outputRSS("お知らせ",$rss,$time);
-			if($forum)$html .= $this->outputRSS("フォーラム",$forum,$time,2);
+			//if($rss)$html .= $this->outputRSS("お知らせ",$rss,$time);
+			if($forum)$html .= $this->outputRSS("フォーラム",$forum,$time2,6);
 
-			if(!$rss && !$forum){
-				$html = "<p>RSSの取得に失敗しました。</p>";
-			}
+			// if(!$rss && !$forum){
+			// 	$html = "<p>RSSの取得に失敗しました。</p>";
+			// }
 		}elseif(!function_exists("simplexml_load_string")){
 			$html = "<p class='warning'>SimpleXMLが必要です。</p>";
 
@@ -164,7 +164,7 @@ class SOYCMS_Info_Plugin{
 			)
 		));
 
-		$contents = file_get_contents($url, false, $ctx);
+		$contents = @file_get_contents($url, false, $ctx);
 		if(isset($contents)){
 			$xml = simplexml_load_string($contents);
 
