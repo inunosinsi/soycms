@@ -149,7 +149,11 @@ class Label {
 	 */
 	public function getCategoryName(){
 		static $useLabelCategory;
-		if(is_null($useLabelCategory)) $useLabelCategory = UserInfoUtil::getSiteConfig("useLabelCategory");
+		if(is_null($useLabelCategory)) {
+			if(!class_exists("UserInfoUtil")) SOY2::import("util.UserInfoUtil");
+			$useLabelCategory = UserInfoUtil::getSiteConfig("useLabelCategory");
+		}
+
 		if( $useLabelCategory && ( $pos = strpos($this->caption,"/") ) > 0 ){
 			return substr($this->caption, 0, $pos);
 		}else{
@@ -158,7 +162,10 @@ class Label {
 	}
 	public function getBranchName(){
 		static $useLabelCategory;
-		if(is_null($useLabelCategory)) $useLabelCategory = UserInfoUtil::getSiteConfig("useLabelCategory");
+		if(is_null($useLabelCategory)) {
+			if(!class_exists("UserInfoUtil")) SOY2::import("util.UserInfoUtil");
+			$useLabelCategory = UserInfoUtil::getSiteConfig("useLabelCategory");
+		}
 		if( $useLabelCategory && ( $pos = strpos($this->caption,"/") ) > 0 ){
 			return substr($this->caption, $pos+1);
 		}else{
@@ -166,3 +173,4 @@ class Label {
 		}
 	}
 }
+
