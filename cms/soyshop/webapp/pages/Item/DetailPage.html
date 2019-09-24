@@ -216,28 +216,28 @@
 			<!-- /soy:display="app_limit_function_4" -->
 		</p>
 
-	</form soy:id="update_form">
+	</form>
 
 	<!-- image_select -->
 	<div id="upload_form_el" class="popup" style="display:none;">
 		<iframe name="upload_target_frame" src="about:blank;" frameborder="0" style="height:0;width:0;position:absolute;"></iframe>
 		<form soy:id="upload_form" id="upload_form" target="upload_target_frame" enctype="multipart/form-data">
-		<input type="hidden" name="upload" soy:id="upload_entry_id" />
-		<p>
-			<span>
-			<input id="upload_input" name="upload_file[]" type="file" multiple="true" />
-			</span>
-			<a class="button" href="javascript:void(0);" onclick="$('#upload_form').trigger('submit');">Upload</a>
-		</p>
-		<hr />
-		<div id="select_image_list" class="image_list">
-		<!-- soy:id="image_list" -->
-		<img soy:id="image" class="image_list_image" />
-		<!-- /soy:id="image_list" -->
-		</div>
+			<input type="hidden" name="upload" soy:id="upload_entry_id">
+			<p>
+				<span>
+				<input id="upload_input" name="upload_file[]" type="file" multiple="true" />
+				</span>
+				<a class="button" href="javascript:void(0);" onclick="$('#upload_form').trigger('submit');">Upload</a>
+			</p>
+			<hr />
+			<div id="select_image_list" class="image_list">
+			<!-- soy:id="image_list" -->
+			<img soy:id="image" class="image_list_image" />
+			<!-- /soy:id="image_list" -->
+			</div>
 
-		<p class="close"></p>
-		</form soy:id="upload_form">
+			<p class="close"></p>
+		</form>
 	</div>
 	<!-- /image_select -->
 

@@ -12,7 +12,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 
 		$list = (isset($_POST["custom_field"])) ? $_POST["custom_field"] : array();
 		$extraFields = (isset($_POST["custom_field_extra"])) ? $_POST["custom_field_extra"] : null;
-
+		
 		$array = $this->itemAttributeDao->getByItemId($item->getId());
 
 		$configs = SOYShop_ItemAttributeConfig::load(true);

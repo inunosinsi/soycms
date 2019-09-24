@@ -313,7 +313,7 @@ class SOYShop_ItemAttributeConfig{
 		$h_formName = htmlspecialchars($this->getFormName(), ENT_QUOTES, "UTF-8");
 		$h_formID = htmlspecialchars($this->getFormId(), ENT_QUOTES, "UTF-8");
 
-		$title = '<dt id="' . $h_formID . '_dt"><label for="'.$h_formID.'">'
+		$title = '<dt id="' . $h_formID . '_dt"><label for="'.$h_formID.'_dd">'
 		         .''
 		         .htmlspecialchars($this->getLabel(), ENT_QUOTES, "UTF-8")
 		         //.' ('.htmlspecialchars($this->getFieldId(), ENT_QUOTES, "UTF-8").')'
@@ -522,6 +522,6 @@ class SOYShop_ItemAttributeConfig{
 				break;
 		}
 
-		return $title . "<dd id=\"" . $h_formID . "\">" . $body . "</dd>\n";
+		return $title . "<dd id=\"" . $h_formID . "_dd\">" . $body . "</dd>\n";
 	}
 }

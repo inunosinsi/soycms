@@ -207,4 +207,3 @@ class ButtonSocialCommon {
         return $ogType;
     }
 }
-?>

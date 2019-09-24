@@ -7,10 +7,7 @@ class ItemImageListComponent extends HTMLList{
 		$this->addImage("image", array(
 			"src" => $entity,
 		));
-		
-		if(!$isImage){
-			return false;
-		}
+
+		if(!$isImage) return false;
 	}
 }
-?>
