@@ -40,7 +40,7 @@ class ImageSelectComponent extends HTMLInput{
 
 		//プレビュー画像
 		$html[] = '<a id="image_select_preview_link_'.$id.'" href="<?php echo $'.$this->getPageParam().'["'.$this->getId().'"]; ?>" target="_blank">';
-		/**$html[] = '<img class="image_select_preview" id="image_select_preview_'.$id.'" src="/' . SOYSHOP_ID . '/im.php?src=<?php echo $'.$this->getPageParam().'["'.$this->getId().'"]; ?>&width=100"  style="'.$size.'<?php if(!$'.$this->getPageParam().'["'.$this->getId().'"]){ ?>display:none;<?php }?>" />';**/
+		$html[] = '<img class="image_select_preview" id="image_select_preview_'.$id.'" src="/' . SOYSHOP_ID . '/im.php?src=<?php echo $'.$this->getPageParam().'["'.$this->getId().'"]; ?>&width=100"  style="'.$size.'<?php if(!$'.$this->getPageParam().'["'.$this->getId().'"]){ ?>display:none;<?php }?>" />';
 		$html[] = '</a>';
 
 		$html[] = '</div>';

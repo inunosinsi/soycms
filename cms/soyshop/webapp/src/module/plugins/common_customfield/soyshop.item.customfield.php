@@ -12,7 +12,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 
 		$list = (isset($_POST["custom_field"])) ? $_POST["custom_field"] : array();
 		$extraFields = (isset($_POST["custom_field_extra"])) ? $_POST["custom_field_extra"] : null;
-		
+
 		$array = $this->itemAttributeDao->getByItemId($item->getId());
 
 		$configs = SOYShop_ItemAttributeConfig::load(true);
@@ -283,11 +283,11 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 					"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 			$htmlObj->addModel($config->getFieldId()."_is_empty", array(
-					"visible" => ($valueLength > 0),
+					"visible" => ($valueLength === 0),
 					"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 			$htmlObj->addLabel($config->getFieldId()."_is_not_empty", array(
-					"visible" => ($valueLength === 0),
+					"visible" => ($valueLength > 0),
 					"soy2prefix" => SOYSHOP_SITE_PREFIX
 			));
 		}
