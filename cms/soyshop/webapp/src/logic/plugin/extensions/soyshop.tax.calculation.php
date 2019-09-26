@@ -4,18 +4,19 @@ class SOYShopTaxCalculationBase implements SOY2PluginAction{
 	private $cart;
 
 	function calculation(CartLogic $cart){
-		
+
 	}
-	
-	function calculationOnEditPage($total){
-		
+
+	function calculationOnEditPage($total, $reducedRateTotal){
+
 	}
 }
 class SOYShopTaxCalculationDeletageAction implements SOY2PluginDelegateAction{
-	
+
 	private $mode = "post";
 	private $cart;
 	private $total;
+	private $reducedRateTotal;	//軽減税率商品金額の合計
 	private $_module;
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
@@ -25,13 +26,13 @@ class SOYShopTaxCalculationDeletageAction implements SOY2PluginDelegateAction{
 				$action->calculation($this->cart);
 				break;
 			case "edit":
-				$this->_module = $action->calculationOnEditPage($this->total);
+				$this->_module = $action->calculationOnEditPage($this->total, $this->reducedRateTotal);
 				break;
 			default:
 				break;
 		}
 	}
-	
+
 	function getModule(){
 		return $this->_module;
 	}
@@ -45,6 +46,8 @@ class SOYShopTaxCalculationDeletageAction implements SOY2PluginDelegateAction{
 	function setTotal($total){
 		$this->total = $total;
 	}
+	function setReducedRateTotal($reducedRateTotal){
+		$this->reducedRateTotal = $reducedRateTotal;
+	}
 }
 SOYShopPlugin::registerExtension("soyshop.tax.calculation","SOYShopTaxCalculationDeletageAction");
-?>

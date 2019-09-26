@@ -12,4 +12,3 @@ class CommonConsumptionTaxInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info","common_consumption_tax","CommonConsumptionTaxInfo");
-?>

@@ -20,4 +20,3 @@ class CommonConsumptionTaxConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config","common_consumption_tax","CommonConsumptionTaxConfig");
-?>

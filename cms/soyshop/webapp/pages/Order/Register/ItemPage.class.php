@@ -12,6 +12,11 @@ class ItemPage extends WebPage{
 	function doPost(){
 		if(soy2_check_token()){
 
+			//モジュールをクリアする
+			$this->cart->removeModule($this->cart->getAttribute("payment_module"));
+			$this->cart->removeModule($this->cart->getAttribute("delivery_module"));
+			$this->cart->removeModule("consumption_tax");
+
 			$items = $this->cart->getItems();
 
 			//商品の差し替え

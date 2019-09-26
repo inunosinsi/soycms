@@ -4,13 +4,13 @@
  * @entity SOYShop_ConsumptionTaxSchedule
  */
 abstract class SOYShop_ConsumptionTaxScheduleDAO extends SOY2DAO{
-	
+
 	/**
 	 * @return list
 	 * @order start_date DESC
 	 */
 	abstract function get();
-	
+
 	/**
 	 * @return list
 	 * @query start_date <= :date
@@ -23,13 +23,13 @@ abstract class SOYShop_ConsumptionTaxScheduleDAO extends SOY2DAO{
 	 * @trigger onInsert
 	 */
 	abstract function insert(SOYShop_ConsumptionTaxSchedule $bean);
-	
+
 	/**
 	 * @return id
 	 * @trigger onUpdate
 	 */
 	abstract function update(SOYShop_ConsumptionTaxSchedule $bean);
-	
+
 	abstract function deleteById($id);
 
 	/**
@@ -38,7 +38,7 @@ abstract class SOYShop_ConsumptionTaxScheduleDAO extends SOY2DAO{
 	function onInsert($query, $binds){
 		return array($query, $binds);
 	}
-	
+
 	/**
 	 * @final
 	 */
@@ -46,4 +46,3 @@ abstract class SOYShop_ConsumptionTaxScheduleDAO extends SOY2DAO{
 		return array($query, $binds);
 	}
 }
-?>

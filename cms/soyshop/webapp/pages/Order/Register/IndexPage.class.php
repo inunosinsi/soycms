@@ -118,12 +118,14 @@ class IndexPage extends WebPage{
 			));
 		}
 
-
 		//備考
 		if(isset($_POST["memo"])){
 			$cart->setOrderAttribute("memo", "備考", $_POST["memo"]);
 			$cart->save();
 		}
+
+		//税金
+		$cart->calculateConsumptionTax();
 
 		$cart->save();
 		if($cart->hasError()){
