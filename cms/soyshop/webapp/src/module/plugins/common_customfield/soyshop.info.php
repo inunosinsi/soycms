@@ -13,4 +13,3 @@ class CommonItemCustomFieldInfo extends SOYShopInfoPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.info","common_customfield","CommonItemCustomFieldInfo");
-?>
