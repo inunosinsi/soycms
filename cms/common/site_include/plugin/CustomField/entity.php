@@ -437,23 +437,37 @@ class CustomField{
 		$html = array();
 
 		$opts = explode("\n", $v);
-		$values = (strlen($this->extraValues)) ? soy2_unserialize($this->extraValues) : array();
+		$pairConf = (strlen($this->extraValues)) ? soy2_unserialize($this->extraValues) : array();
 
-		$i = 0;	//@ToDo いずれ複数の値を設定できるように
-		$pairValues = (isset($values[$i])) ? $values[$i] : array();
-		
-		$html[] = "<table>";
-		$html[] = "<caption><strong>ペア" . ($i + 1) . "</strong> (cms:id=\"" . $this->id . "_pair_" . ($i + 1) . "\")</caption>";
-		foreach($opts as $opt){
-			$opt = trim($opt);
-			if(!strlen($opt)) continue;
-			$html[] = "<tr>";
-			$html[] = "<td>" . htmlspecialchars($opt, ENT_QUOTES, "UTF-8") . "</td>";
-			$idx = CustomfieldAdvancedUtil::createHash($opt);
-			$html[] = "<td><input type=\"text\" name=\"pair[" . $i . "][" . $idx . "]\" value=\"" . ((isset($pairValues[$idx])) ? $pairValues[$idx] : "") . "\"></td>";
-			$html[] = "</tr>";
+		if(isset($pairConf["pair"])){
+			$values = (isset($pairConf["pair"]) && is_array($pairConf["pair"])) ? $pairConf["pair"] : array();
+			$cnt = (isset($pairConf["count"]) && is_numeric($pairConf["count"]) && (int)$pairConf["count"] > 0) ? (int)$pairConf["count"] : 1;
+		}else{
+			$values = $pairConf;
+			$cnt = 1;
 		}
-		$html[] = "</table>";
+
+		$html[] = "<div class=\"form-inline\">";
+		$html[] = "パターン：<input type=\"number\" name=\"pair_count\" class=\"form-control\" value=\"" . $cnt . "\" min=\"1\" style=\"width:70px;\">";
+		$html[] = "</div>";
+
+
+		for($i = 0; $i < $cnt; $i++){
+			$pairValues = (isset($values[$i])) ? $values[$i] : array();
+
+			$html[] = "<table>";
+			$html[] = "<caption><strong>ペア" . ($i + 1) . "</strong> (cms:id=\"" . $this->id . "_pair_" . ($i + 1) . "\")</caption>";
+			foreach($opts as $opt){
+				$opt = trim($opt);
+				if(!strlen($opt)) continue;
+				$html[] = "<tr>";
+				$html[] = "<td>" . htmlspecialchars($opt, ENT_QUOTES, "UTF-8") . "</td>";
+				$idx = CustomfieldAdvancedUtil::createHash($opt);
+				$html[] = "<td><input type=\"text\" class=\"form-control\" name=\"pair[" . $i . "][" . $idx . "]\" value=\"" . ((isset($pairValues[$idx])) ? $pairValues[$idx] : "") . "\"></td>";
+				$html[] = "</tr>";
+			}
+			$html[] = "</table>";
+		}
 
 		return implode("\n", $html);
 	}

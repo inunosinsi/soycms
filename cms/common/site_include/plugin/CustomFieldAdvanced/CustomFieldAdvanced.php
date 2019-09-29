@@ -38,7 +38,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.8"
+			"version"=>"1.9"
 		));
 
 		//プラグイン アクティブ
@@ -212,6 +212,10 @@ class CustomFieldPluginAdvanced{
 				//ペアフィールド
 				if($master->getType() == "pair" && strlen($master->getExtraValues())){
 					$extraValues = soy2_unserialize($master->getExtraValues());
+
+					//後方互換
+					if(isset($extraValues["pair"]) && is_array($extraValues["pair"])) $extraValues = $extraValues["pair"];
+
 					if(count($extraValues)){
 						foreach($extraValues as $idx => $pairValues){
 							$_hash = (strlen($field->getValue())) ? CustomfieldAdvancedUtil::createHash($field->getValue()) : null;

@@ -55,7 +55,10 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 
 			//pairの値は配列からシリアライズした文字列にしてExtraValuesに格納する
 			if(isset($_POST["pair"]) && is_array($_POST["pair"]) && count($_POST["pair"])){
-				$_POST["config"]["extraValues"] = soy2_serialize($_POST["pair"]);
+				$pairConf = array();
+				$pairConf["count"] = (isset($_POST["pair_count"]) && (int)$_POST["pair_count"] > 0) ? (int)$_POST["pair_count"] : 1;
+				$pairConf["pair"] = $_POST["pair"];
+				$_POST["config"]["extraValues"] = soy2_serialize($pairConf);
 			}
 
 			$this->pluginObj->updateAdvance($_POST["update_advance"],(object)$_POST["config"]);
