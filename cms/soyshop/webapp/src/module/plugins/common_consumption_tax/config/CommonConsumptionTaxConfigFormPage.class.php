@@ -3,6 +3,7 @@ SOY2::imports("module.plugins.common_consumption_tax.domain.*");
 SOY2::imports("module.plugins.common_consumption_tax.config.*");
 class CommonConsumptionTaxConfigFormPage extends WebPage{
 
+	private $configObj;
 	private $scheduleDao;
 
 	function __construct() {
@@ -23,7 +24,7 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 					$schedule = SOY2::cast("SOYShop_ConsumptionTaxSchedule", $register);
 					try{
 						$this->scheduleDao->insert($schedule);
-						SOY2PageController::jump("Config.Detail?plugin=common_consumption_tax&updated");
+						$this->configObj->redirect("updated");
 					}catch(Exception $e){
 						//
 					}
@@ -32,7 +33,7 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 
 			//サーバで設定されている時間の確認
 			if(isset($_POST["confirm"])){
-				SOY2PageController::jump("Config.Detail?plugin=common_consumption_tax&time");
+				$this->configObj->redirect("time");
 			}
 
 			$config = ConsumptionTaxUtil::getConfig();
@@ -42,7 +43,7 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 				$config["reduced_tax_rate"] = (isset($_POST["Reduced"]["reduced_tax_rate"])) ? (int)$_POST["Reduced"]["reduced_tax_rate"] : 0;
 				ConsumptionTaxUtil::saveConfig($config);
 
-				SOY2PageController::jump("Config.Detail?plugin=common_consumption_tax&updated");
+				$this->configObj->redirect("updated");
 			}
 
 			//消費税の金額の小数点の扱いについての設定
@@ -50,11 +51,11 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 				$config["method"] = $_POST["Method"];
 				ConsumptionTaxUtil::saveConfig($config);
 
-				SOY2PageController::jump("Config.Detail?plugin=common_consumption_tax&updated");
+				$this->configObj->redirect("updated");
 			}
 		}
 
-		SOY2PageController::jump("Config.Detail?plugin=common_consumption_tax&failed");
+		$this->configObj->redirect("failed");
 	}
 
 	function execute(){
@@ -163,7 +164,7 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 		return mktime(0, 0, 0, $array[1], $array[2], $array[0]);
 	}
 
-	function setConfigObj($obj) {
-		$this->config = $obj;
+	function setConfigObj($configObj) {
+		$this->configObj = $configObj;
 	}
 }

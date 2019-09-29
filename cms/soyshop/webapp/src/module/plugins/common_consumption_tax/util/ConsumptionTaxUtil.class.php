@@ -25,6 +25,16 @@ class ConsumptionTaxUtil{
 
 	//該当する商品が軽減率対象商品であるか？を判定する
 	public static function isReducedTaxRateItem($itemId){
+		$list = self::_getList();
+		if(!count($list)) return false;
+		return (is_numeric(array_search($itemId, $list)));
+	}
+
+	public static function getItemIdsOfReducedTaxRate(){
+		return self::_getList();
+	}
+
+	private static function _getList(){
 		static $list;
 		if(is_null($list)){
 			$list = array();
@@ -42,8 +52,6 @@ class ConsumptionTaxUtil{
 				}
 			}
 		}
-
-		if(!count($list)) return false;
-		return (is_numeric(array_search($itemId, $list)));
+		return $list;
 	}
 }
