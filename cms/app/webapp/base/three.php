@@ -15,7 +15,7 @@
 	<![endif]-->
 
 <?php
-	$soycmsDir = dirname(CMSApplication::getRoot()) . "/soycms";
+	$soycmsDir = rtrim(dirname(CMSApplication::getRoot()), "/") . "/soycms";
 	$time = time();
 ?>
 
@@ -132,7 +132,7 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-body">
-				<iframe src="<?php echo dirname(CMSApplication::getRoot()); ?>/admin/index.php/Account" style="width:100%;height:460px;"></iframe>
+				<iframe src="<?php echo rtrim(dirname(CMSApplication::getRoot()), "/"); ?>/admin/index.php/Account" style="width:100%;height:460px;"></iframe>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
