@@ -144,8 +144,7 @@ class CustomField{
 		         .( ($pluginObj->displayTitle) ? 'カスタムフィールド：' : '' )
 		         .htmlspecialchars($this->getLabel(),ENT_QUOTES,"UTF-8")
 		         .( ($pluginObj->displayID) ? ' ('.htmlspecialchars($this->getId(),ENT_QUOTES,"UTF-8").')' : '' )
-		         .'</label>'
-		         .'';
+		         .'</label>';
 		$title .= (strlen($this->getDescription())) ? '<br /><span>' . $this->getDescription() . '</span>' : "";
 
 		switch($this->getType()){
@@ -195,20 +194,20 @@ class CustomField{
 				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->option));
 				$value = (is_null($fieldValue)) ? $this->getDefaultValue() : $fieldValue ;
 
-				$body = '<div class="form-inline">';
-				$body .= '<select class="cstom_field_select form-control" name="'.$h_formName.'" id="'.$h_formID.'">';
-				$body .= '<option value="">----</option>';
+				$body = '<div class="form-inline">' . "\n";
+				$body .= "\t" . '<select class="cstom_field_select form-control" name="'.$h_formName.'" id="'.$h_formID.'">' . "\n";
+				$body .= "\t\t" . '<option value="">----</option>' . "\n";
 				foreach($options as $option){
 					$option = trim($option);
 					if(strlen($option)>0){
 						$h_option = htmlspecialchars($option,ENT_QUOTES,"UTF-8");
-						$body .= '<option value="'.$h_option.'" ' .
+						$body .= "\t\t" . '<option value="'.$h_option.'" ' .
 								 (($option == $value) ? 'selected="selected"' : "") .
 								 '>' . $h_option . '</option>' . "\n";
 					}
 				}
-				$body .= '</select>';
-				$body .= '<div>';
+				$body .= "\t" . '</select>' . "\n";
+				$body .= '</div>';
 
 				break;
 			case "textarea":
@@ -235,14 +234,14 @@ class CustomField{
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'"'
 				       .' />'
-				       .' <button type="button" onclick="open_customfield_filemanager($(\'#'.$h_formID.'\'));" style="margin-right:10px;">ファイルを指定する</button>';
+				       .' <button type="button" class="btn btn-default" onclick="open_customfield_filemanager($(\'#'.$h_formID.'\'));" style="margin-right:10px;">ファイルを指定する</button>';
 
 				if($h_value){
 					if($this->getType() == "image"){
-						$body .= '<a href="#" onclick="return preview_customfield($(\'#'.$h_formID.'\'));">Preview</a>';
+						$body .= '<a href="#" class="btn btn-primary" onclick="return preview_customfield($(\'#'.$h_formID.'\'));">Preview</a>';
 					}
 					if($this->getType() == "file"){
-						$body .= '<a href="'.$h_value.'" target="_blank">'.basename($h_value).'</a>';
+						$body .= '<a href="'.$h_value.'" class="btn btn-primary" target="_blank">'.basename($h_value).'</a>';
 					}
 				}
 
@@ -275,7 +274,7 @@ class CustomField{
 				       .' value="'.$h_value.'"'
 				       .' />';
 				if(strlen($h_value)){
-					$body .= "&nbsp;<a href=\"" . $h_value . "\" target=\"_blank\">確認</a>";
+					$body .= "&nbsp;<a href=\"" . $h_value . "\" class=\"btn btn-primary\" target=\"_blank\">確認</a>";
 				}
 				$body .= '</div>';
 				break;
@@ -293,16 +292,16 @@ class CustomField{
 				//ラベル一覧
 				$labels = self::_getLabels();
 				if(count($labels)){
-					$html[] = "<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
-					$html[] = "<option></option>";
+					$html[] = "\t<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
+					$html[] = "\t\t<option></option>";
 					foreach($labels as $labelId => $caption){
 						if($selectedLabelId == $labelId){
-							$html[] = "<option value=\"" . $labelId . "\" selected>" . $caption . "</option>";
+							$html[] = "\t\t<option value=\"" . $labelId . "\" selected>" . $caption . "</option>";
 						}else{
-							$html[] = "<option value=\"" . $labelId . "\">" . $caption . "</option>";
+							$html[] = "\t\t<option value=\"" . $labelId . "\">" . $caption . "</option>";
 						}
 					}
-					$html[] = "</select>";
+					$html[] = "\t</select>";
 					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
 					$html[] = "<span id=\"" . $this->getFormId() . "\">";
 					if(isset($selectedLabelId) || $selectedEntryId > 0){
@@ -338,25 +337,21 @@ class CustomField{
 
 		switch($this->type){
 			case "checkbox":
-				$return = '<p class="sub">'
-				       .$title
-				       .$body
-				       .'</p>';
+				$return = $title . "\n" . $body;
 				break;
 			case "textarea":
 			case "input":
 			default:
-				$return = '<div class="form-group"><p class="sub"><label>'
-				       .$title
-				       .'</label></p>'
-				       .'<div style="margin:-0.5ex 0px 0.5ex 1em;">'.$body.'</div></div>';
+				$return = '<div class="form-group">' . "\n" . $title
+				       .'<div style="margin:-0.5ex 0px 0.5ex 1em;">' . "\n" . $body ."\n" .'</div>' . "\n"
+					   .'</div>';
 				break;
 		}
 
 		if($this->labelId){
-			return '<div class="toggled_by_label_'.$this->labelId.'" style="display:none;">' . $return . '</div>' . "\n";
+			return '<div class="toggled_by_label_'.$this->labelId.'" style="display:none;">' ."\n" . $return . "\n" . '</div>' . "\n";
 		}else{
-			return '<div class="toggled_by_label_'.$this->labelId.'">' . $return . '</div>' . "\n";
+			return '<div class="toggled_by_label_'.$this->labelId.'">' . "\n" . $return . "\n" . '</div>' . "\n\n";
 		}
 
 	}

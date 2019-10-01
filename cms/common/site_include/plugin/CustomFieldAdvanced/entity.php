@@ -133,236 +133,229 @@ class CustomField{
 	/**
 	 * 1.2.0でcheckboxを追加
 	 */
-	function getForm($pluginObj, $fieldValue, $extraValues=null){
+	 function getForm($pluginObj, $fieldValue, $extraValues=null){
 
-		//表示しないとき
-		if(!$this->showInput){
-			return "";
-		}
+ 		//表示しないとき
+ 		if(!$this->showInput) return "";
 
-		$h_formName = htmlspecialchars($this->getFormName(),ENT_QUOTES,"UTF-8");
-		$h_formID = htmlspecialchars($this->getFormId(),ENT_QUOTES,"UTF-8");
+ 		$h_formName = htmlspecialchars($this->getFormName(),ENT_QUOTES,"UTF-8");
+ 		$h_formID = htmlspecialchars($this->getFormId(),ENT_QUOTES,"UTF-8");
 
-		$title = '<label for="'.$h_formID.'">'
-		         .( ($pluginObj->displayTitle) ? 'カスタムフィールド：' : '' )
-		         .htmlspecialchars($this->getLabel(),ENT_QUOTES,"UTF-8")
-		         .( ($pluginObj->displayID) ? ' ('.htmlspecialchars($this->getId(),ENT_QUOTES,"UTF-8").')' : '' )
-		         .'</label>'
-		         .'';
-		$title .= (strlen($this->getDescription())) ? '<br /><span>' . $this->getDescription() . '</span>' : "";
+ 		$title = '<label for="'.$h_formID.'">'
+ 		         .( ($pluginObj->displayTitle) ? 'カスタムフィールド：' : '' )
+ 		         .htmlspecialchars($this->getLabel(),ENT_QUOTES,"UTF-8")
+ 		         .( ($pluginObj->displayID) ? ' ('.htmlspecialchars($this->getId(),ENT_QUOTES,"UTF-8").')' : '' )
+ 		         .'</label>';
+ 		$title .= (strlen($this->getDescription())) ? '<br /><span>' . $this->getDescription() . '</span>' : "";
 
-		switch($this->getType()){
-			case "checkbox":
-				//DefaultValueがあればそれを使う
-				if(strlen($this->getDefaultValue()) > 0){
-					$checkbox_value = $this->getDefaultValue();
-					//NULLであれば初期状態 0文字の文字列であれば一度記事を投稿したことになる
-					if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
-				}else{
-					$checkbox_value = $this->getLabel() ;
-				}
+ 		switch($this->getType()){
+ 			case "checkbox":
+ 				//DefaultValueがあればそれを使う
+ 				if(strlen($this->getDefaultValue()) > 0){
+ 					$checkbox_value = $this->getDefaultValue();
+ 					//NULLであれば初期状態 0文字の文字列であれば一度記事を投稿したことになる
+ 					if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
+ 				}else{
+ 					$checkbox_value = $this->getLabel() ;
+ 				}
 
-				$h_checkbox_value = htmlspecialchars($checkbox_value,ENT_QUOTES,"UTF-8");
-				$body = '<input type="checkbox" class="custom_field_checkbox"'
-				       .' id="'.$h_formID.'"'
-				       .' name="'.$h_formName.'"'
-				       .' value="'.$h_checkbox_value.'"'
-				       .( ($fieldValue == $checkbox_value) ? ' checked="checked"' : ""  )
-				       .' />';
+ 				$h_checkbox_value = htmlspecialchars($checkbox_value,ENT_QUOTES,"UTF-8");
+ 				$body = '<input type="checkbox" class="custom_field_checkbox"'
+ 				       .' id="'.$h_formID.'"'
+ 				       .' name="'.$h_formName.'"'
+ 				       .' value="'.$h_checkbox_value.'"'
+ 				       .( ($fieldValue == $checkbox_value) ? ' checked="checked"' : ""  )
+ 				       .' />';
 
-				break;
-			case "radio":
-				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->option));
-				$value = (is_null($fieldValue)) ? $this->getDefaultValue() : $fieldValue ;
+ 				break;
+ 			case "radio":
+ 				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->option));
+ 				$value = (is_null($fieldValue)) ? $this->getDefaultValue() : $fieldValue ;
 
-				$body = "";
-				foreach($options as $key => $option){
-					$option = trim($option);
-					if(strlen($option)>0){
-						$h_option = htmlspecialchars($option,ENT_QUOTES,"UTF-8");
-						$id = 'custom_field_radio_'.$this->getId().'_'.$key;
+ 				$body = "";
+ 				foreach($options as $key => $option){
+ 					$option = trim($option);
+ 					if(strlen($option)>0){
+ 						$h_option = htmlspecialchars($option,ENT_QUOTES,"UTF-8");
+ 						$id = 'custom_field_radio_'.$this->getId().'_'.$key;
 
-						$body .= '<input type="radio" class="custom_field_radio"' .
-								 ' name="'.$h_formName.'"' .
-								 ' id="'.$id.'"'.
-								 ' value="'.$h_option.'"' .
-								 (($option == $value) ? ' checked="checked"' : "") .
-								 ' />';
-						$body .= '<label for="'.$id.'">'.$h_option.'</label>';
-					}
-				}
+ 						$body .= '<input type="radio" class="custom_field_radio"' .
+ 								 ' name="'.$h_formName.'"' .
+ 								 ' id="'.$id.'"'.
+ 								 ' value="'.$h_option.'"' .
+ 								 (($option == $value) ? ' checked="checked"' : "") .
+ 								 ' />';
+ 						$body .= '<label for="'.$id.'">'.$h_option.'</label>';
+ 					}
+ 				}
 
-				break;
-			case "select":
-			case "pair":
-				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->option));
-				$value = (is_null($fieldValue)) ? $this->getDefaultValue() : $fieldValue ;
+ 				break;
+ 			case "select":
+ 			case "pair":
+ 				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->option));
+ 				$value = (is_null($fieldValue)) ? $this->getDefaultValue() : $fieldValue ;
 
-				$body = '<div class="form-inline">';
-				$body .= '<select class="cstom_field_select form-control" name="'.$h_formName.'" id="'.$h_formID.'">';
-				$body .= '<option value="">----</option>';
-				foreach($options as $option){
-					$option = trim($option);
-					if(strlen($option)>0){
-						$h_option = htmlspecialchars($option,ENT_QUOTES,"UTF-8");
-						$body .= '<option value="'.$h_option.'" ' .
-								 (($option == $value) ? 'selected="selected"' : "") .
-								 '>' . $h_option . '</option>' . "\n";
-					}
-				}
-				$body .= '</select>';
-				$body .= '<div>';
+ 				$body = '<div class="form-inline">' . "\n";
+ 				$body .= "\t" . '<select class="cstom_field_select form-control" name="'.$h_formName.'" id="'.$h_formID.'">' . "\n";
+ 				$body .= "\t\t" . '<option value="">----</option>' . "\n";
+ 				foreach($options as $option){
+ 					$option = trim($option);
+ 					if(strlen($option)>0){
+ 						$h_option = htmlspecialchars($option,ENT_QUOTES,"UTF-8");
+ 						$body .= "\t\t" . '<option value="'.$h_option.'" ' .
+ 								 (($option == $value) ? 'selected="selected"' : "") .
+ 								 '>' . $h_option . '</option>' . "\n";
+ 					}
+ 				}
+ 				$body .= "\t" . '</select>' . "\n";
+ 				$body .= '</div>';
 
-				break;
-			case "textarea":
-				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<textarea class="custom_field_textarea" style="width:100%;"'
-				        .' id="'.$h_formID.'"'
-				        .' name="'.$h_formName.'"'
-				        .'>'
-						.$h_value.'</textarea>';
-				break;
-			case "richtext":
-				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<textarea class="custom_field_textarea mceEditor" style="width:100%;"'
-				        .' id="'.$h_formID.'"'
-				        .' name="'.$h_formName.'"'
-				        .'>'
-						.$h_value.'</textarea>';
-				break;
-			case "image":
-			case "file":
-				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<input type="text" class="custom_field_input" style="width:50%"'
-				       .' id="'.$h_formID.'"'
-				       .' name="'.$h_formName.'"'
-				       .' value="'.$h_value.'"'
-				       .' />'
-				       .' <button type="button" onclick="open_customfield_filemanager($(\'#'.$h_formID.'\'));" style="margin-right:10px;">ファイルを指定する</button>';
+ 				break;
+ 			case "textarea":
+ 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+ 				$body = '<textarea class="custom_field_textarea form-control" style="width:100%;"'
+ 				        .' id="'.$h_formID.'"'
+ 				        .' name="'.$h_formName.'"'
+ 				        .'>'
+ 						.$h_value.'</textarea>';
+ 				break;
+ 			case "richtext":
+ 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+ 				$body = '<textarea class="custom_field_textarea mceEditor" style="width:100%;"'
+ 				        .' id="'.$h_formID.'"'
+ 				        .' name="'.$h_formName.'"'
+ 				        .'>'
+ 						.$h_value.'</textarea>';
+ 				break;
+ 			case "image":
+ 			case "file":
+ 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+ 				$body = '<input type="text" class="custom_field_input" style="width:50%"'
+ 				       .' id="'.$h_formID.'"'
+ 				       .' name="'.$h_formName.'"'
+ 				       .' value="'.$h_value.'"'
+ 				       .' />'
+ 				       .' <button type="button" onclick="open_customfield_filemanager($(\'#'.$h_formID.'\'));" style="margin-right:10px;">ファイルを指定する</button>';
 
-				if($h_value){
-					if($this->getType() == "image"){
-						$body .= '<a href="#" onclick="return preview_customfield($(\'#'.$h_formID.'\'));">Preview</a>';
-					}
-					if($this->getType() == "file"){
-						$body .= '<a href="'.$h_value.'" target="_blank">'.basename($h_value).'</a>';
-					}
-				}
+ 				if($h_value){
+ 					if($this->getType() == "image"){
+ 						$body .= '<a href="#" onclick="return preview_customfield($(\'#'.$h_formID.'\'));">Preview</a>';
+ 					}
+ 					if($this->getType() == "file"){
+ 						$body .= '<a href="'.$h_value.'" target="_blank" class="btn btn-default">'.basename($h_value).'</a>';
+ 					}
+ 				}
 
-				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->extraOutputs));
+ 				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->extraOutputs));
 
-				foreach($extraOutputs as $key => $extraOutput){
-					$extraOutput = trim($extraOutput);
-					if(strlen($extraOutput) > 0){
-						$h_extraformName = htmlspecialchars($this->getExtraFormName($extraOutput), ENT_QUOTES, "UTF-8");
-						$h_extraformID = htmlspecialchars($this->getExtraFormId($extraOutput), ENT_QUOTES, "UTF-8");
-						$h_extraOutput = htmlspecialchars($extraOutput, ENT_QUOTES, "UTF-8");
-						$extraValue = is_array($extraValues) && isset($extraValues[$h_extraOutput]) ? $extraValues[$h_extraOutput] : "";
-						$h_extraValue = htmlspecialchars($extraValue, ENT_QUOTES, "UTF-8");
+ 				foreach($extraOutputs as $key => $extraOutput){
+ 					$extraOutput = trim($extraOutput);
+ 					if(strlen($extraOutput) > 0){
+ 						$h_extraformName = htmlspecialchars($this->getExtraFormName($extraOutput), ENT_QUOTES, "UTF-8");
+ 						$h_extraformID = htmlspecialchars($this->getExtraFormId($extraOutput), ENT_QUOTES, "UTF-8");
+ 						$h_extraOutput = htmlspecialchars($extraOutput, ENT_QUOTES, "UTF-8");
+ 						$extraValue = is_array($extraValues) && isset($extraValues[$h_extraOutput]) ? $extraValues[$h_extraOutput] : "";
+ 						$h_extraValue = htmlspecialchars($extraValue, ENT_QUOTES, "UTF-8");
 
-						$body .= '<br />' . $h_extraOutput . '&nbsp;<input type="text" class="custom_field_input" style="width:50%"' .
-							' id="'.$h_extraformID.'"'.
-							' name="'.$h_extraformName.'"' .
-							' value="'.$h_extraValue.'"' .
-							' />';
-					}
-				}
+ 						$body .= '<br />' . $h_extraOutput . '&nbsp;<input type="text" class="custom_field_input form-control" style="width:50%"' .
+ 							' id="'.$h_extraformID.'"'.
+ 							' name="'.$h_extraformName.'"' .
+ 							' value="'.$h_extraValue.'"' .
+ 							' />';
+ 					}
+ 				}
 
-				break;
-			case "link":
-				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body =  '<div class="form-inline">'
-						.'<input type="text" class="custom_field_input form-control" style="width:70%"'
-				       .' id="'.$h_formID.'"'
-				       .' name="'.$h_formName.'"'
-				       .' value="'.$h_value.'"'
-				       .' />';
-				if(strlen($h_value)){
-					$body .= "&nbsp;<a href=\"" . $h_value . "\" target=\"_blank\">確認</a>";
-				}
-				$body .= '</div>';
-				break;
-			case "entry":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
-				$values = (strlen($fieldValue)) ? explode("-", $fieldValue) : array();
-				$selectedLabelId = (isset($values[0]) && is_numeric($values[0])) ? (int)$values[0] : null;
-				$selectedEntryId = (isset($values[1]) && is_numeric($values[1])) ? (int)$values[1] : 0;
+ 				break;
+ 			case "link":
+ 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+ 				$body =  '<div class="form-inline">'
+ 						.'<input type="text" class="custom_field_input form-control" style="width:70%"'
+ 				       .' id="'.$h_formID.'"'
+ 				       .' name="'.$h_formName.'"'
+ 				       .' value="'.$h_value.'"'
+ 				       .' />';
+ 				if(strlen($h_value)){
+ 					$body .= "&nbsp;<a href=\"" . $h_value . "\" class=\"btn btn-primary\" target=\"_blank\">確認</a>";
+ 				}
+ 				$body .= '</div>';
+ 				break;
+ 			case "entry":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
+ 				$values = (strlen($fieldValue)) ? explode("-", $fieldValue) : array();
+ 				$selectedLabelId = (isset($values[0]) && is_numeric($values[0])) ? (int)$values[0] : null;
+ 				$selectedEntryId = (isset($values[1]) && is_numeric($values[1])) ? (int)$values[1] : 0;
 
-				//ラベルの固定設定
-				if(is_null($selectedLabelId) && strlen($this->getFixedLabelId()) && is_numeric($this->getFixedLabelId())){
-					$selectedLabelId = $this->getFixedLabelId();
-				}
+ 				//ラベルの固定設定
+ 				if(is_null($selectedLabelId) && strlen($this->getFixedLabelId()) && is_numeric($this->getFixedLabelId())){
+ 					$selectedLabelId = $this->getFixedLabelId();
+ 				}
 
-				$html = array();
-				//ラベル一覧
-				$labels = self::_getLabels();
-				if(count($labels)){
-					$html[] = "<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
-					$html[] = "<option></option>";
-					foreach($labels as $labelId => $caption){
-						if($selectedLabelId == $labelId){
-							$html[] = "<option value=\"" . $labelId . "\" selected>" . $caption . "</option>";
-						}else{
-							$html[] = "<option value=\"" . $labelId . "\">" . $caption . "</option>";
-						}
-					}
-					$html[] = "</select>";
-					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
-					$html[] = "<span id=\"" . $this->getFormId() . "\">";
-					if(isset($selectedLabelId) || $selectedEntryId > 0){
-						$entries = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getEntriesByLabelId($selectedLabelId);
-						if(count($entries)){
-							$html[] = "<select name=\"" . $h_formName . "\">";
-							$html[] = "<option></option>";
-							foreach($entries as $entry){
-								$v = $selectedLabelId . "-" . $entry["id"];
-								if($entry["id"] == $selectedEntryId){
-									$html[] = "<option value=\"" . $v . "\" selected>" . $entry["title"] . "</option>";
-								}else{
-									$html[] = "<option value=\"" . $v . "\">" . $entry["title"] . "</option>";
-								}
-							}
-							$html[] = "</select>";
-						}
-					}
-					$html[] = "</span>";
-				}
-				$body = implode("\n", $html);
-				break;
-			case "input":
-			default:
-				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
-				$body = '<input type="text" class="custom_field_input" style="width:100%"'
-				       .' id="'.$h_formID.'"'
-				       .' name="'.$h_formName.'"'
-				       .' value="'.$h_value.'"'
-				       .' />';
-				break;
-		}
+ 				$html = array();
+ 				//ラベル一覧
+ 				$labels = self::_getLabels();
+ 				if(count($labels)){
+ 					$html[] = "\t<select id=\"" . $this->getFormId() . "_select\" onchange='CustomFieldEntryField.change(this, \"" . $this->getFormId() . "\", \"" . $h_formName . "\", 0);'>";
+ 					$html[] = "\t\t<option></option>";
+ 					foreach($labels as $labelId => $caption){
+ 						if($selectedLabelId == $labelId){
+ 							$html[] = "\t\t<option value=\"" . $labelId . "\" selected>" . $caption . "</option>";
+ 						}else{
+ 							$html[] = "\t\t<option value=\"" . $labelId . "\">" . $caption . "</option>";
+ 						}
+ 					}
+ 					$html[] = "\t</select>";
+ 					$html[] = "<input type=\"hidden\" name=\"" . $h_formName . "\" value=\"\">";
+ 					$html[] = "<span id=\"" . $this->getFormId() . "\">";
+ 					if(isset($selectedLabelId) || $selectedEntryId > 0){
+ 						$entries = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getEntriesByLabelId($selectedLabelId);
+ 						if(count($entries)){
+ 							$html[] = "<select name=\"" . $h_formName . "\">";
+ 							$html[] = "<option></option>";
+ 							foreach($entries as $entry){
+ 								$v = $selectedLabelId . "-" . $entry["id"];
+ 								if($entry["id"] == $selectedEntryId){
+ 									$html[] = "<option value=\"" . $v . "\" selected>" . $entry["title"] . "</option>";
+ 								}else{
+ 									$html[] = "<option value=\"" . $v . "\">" . $entry["title"] . "</option>";
+ 								}
+ 							}
+ 							$html[] = "</select>";
+ 						}
+ 					}
+ 					$html[] = "</span>";
+ 				}
+ 				$body = implode("\n", $html);
+ 				break;
+ 			case "input":
+ 			default:
+ 				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
+ 				$body = '<input type="text" class="custom_field_input form-control" style="width:100%"'
+ 				       .' id="'.$h_formID.'"'
+ 				       .' name="'.$h_formName.'"'
+ 				       .' value="'.$h_value.'"'
+ 				       .' />';
+ 				break;
+ 		}
 
 		switch($this->type){
 			case "checkbox":
-				$return = '<p class="sub">'
-				       .$title
-				       .$body
-				       .'</p>';
+				$return = $title . "\n" . $body;
 				break;
 			case "textarea":
 			case "input":
 			default:
-				$return = '<p class="sub">'
-				       .$title
-				       .'</p>'
-				       .'<div style="margin:-0.5ex 0px 0.5ex 1em;">'.$body.'</div>';
+				$return = '<div class="form-group">' . "\n" . $title
+				       .'<div style="margin:-0.5ex 0px 0.5ex 1em;">' . "\n" . $body ."\n" .'</div>' . "\n"
+					   .'</div>';
 				break;
 		}
 
-		if($this->labelId){
-			return '<div class="toggled_by_label_'.$this->labelId.'" style="display:none;">' . $return . '</div>' . "\n";
-		}else{
-			return '<div class="toggled_by_label_'.$this->labelId.'">' . $return . '</div>' . "\n";
-		}
+ 		if($this->labelId){
+ 			return '<div class="toggled_by_label_'.$this->labelId.'" style="display:none;">' ."\n" . $return . "\n" . '</div>' . "\n";
+ 		}else{
+ 			return '<div class="toggled_by_label_'.$this->labelId.'">' . "\n" . $return . "\n" . '</div>' . "\n\n";
+ 		}
 
-	}
+ 	}
 
 	function getDefaultValue() {
 		return $this->defaultValue;
