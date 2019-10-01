@@ -13,16 +13,15 @@ class CustomFieldForm {
 		}
 
 		$html = array();
-		$html[] = "<label for=\"custom_field_img\">";
-		$html[] = "og:image";
-		$html[] = "<a href=\"javascript:void(0);\" title=\"FacebookやTwitterで投稿する時のサムネイル画像の指定\"><i class=\"fa fa-question-circle\"></i></a>";
-		$html[] = "</label>";
-		$html[] = "<div class=\"form-inline\">";
-		$html[] = "<input type=\"text\" class=\"ogimage_field_input form-control\" style=\"width:50%\" id=\"ogimage_field\" name=\"" . ButtonSocialUtil::PLUGIN_KEY . "\" value=\"". $imgPath . "\" >";
-		$html[] = "<button type=\"button\" class=\"btn btn-default\" onclick=\"open_ogimage_filemanager($('#ogimage_field'));\" style=\"margin-right:10px;\">ファイルを指定する</button>";
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "\t<label for=\"custom_field_img\">og:image <a href=\"javascript:void(0);\" title=\"FacebookやTwitterで投稿する時のサムネイル画像の指定\"><i class=\"fa fa-question-circle\"></i></a></label>";
+		$html[] = "\t<div class=\"form-inline\">";
+		$html[] = "\t\t<input type=\"text\" class=\"ogimage_field_input form-control\" style=\"width:50%\" id=\"ogimage_field\" name=\"" . ButtonSocialUtil::PLUGIN_KEY . "\" value=\"". $imgPath . "\" >";
+		$html[] = "\t\t<button type=\"button\" class=\"btn btn-default\" onclick=\"open_ogimage_filemanager($('#ogimage_field'));\" style=\"margin-right:10px;\">ファイルを指定する</button>";
 		if(strlen($imgPath) > 0){
-			$html[] = "<a href=\"#\" onclick=\"return preview_ogimage_plugin(\$('#ogimage_field'));\" class=\"btn btn-info\">Preview</a>";
+			$html[] = "\t\t<a href=\"#\" onclick=\"return preview_ogimage_plugin(\$('#ogimage_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
+		$html[] = "\t</div>";
 		$html[] = "</div>";
 		$html[] = "<script type=\"text/javascript\">";
 		$html[] = "var \$custom_field_input = \$();";
