@@ -10,7 +10,5 @@ class OrderInvoiceInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
-SOYShopPlugin::extension("soyshop.info","order_invoice","OrderInvoiceInfo");
-?>
+SOYShopPlugin::extension("soyshop.info", "order_invoice", "OrderInvoiceInfo");

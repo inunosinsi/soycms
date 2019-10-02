@@ -2,6 +2,8 @@
 
 class InvoiceItemListComponent extends HTMLList {
 
+	private $reducedTaxRateMode;	//軽減税率モード
+
 	protected function populateItem($itemOrder) {
 
 		$item = self::getItem($itemOrder->getItemId());
@@ -19,6 +21,11 @@ class InvoiceItemListComponent extends HTMLList {
 		if($item->getIsDisabled() == SOYShop_Item::IS_DISABLED) $itemName = "<span style=\"font-weight:bold;color:red;\">" . $itemName . "(削除した商品)</span>";
 		$this->addLabel("item_name", array(
 			"html" => $itemName
+		));
+
+		//軽減税率の区分
+		$this->addLabel("reduced_tax_rate_item", array(
+			"text" => ($this->reducedTaxRateMode && ConsumptionTaxUtil::isReducedTaxRateItem($itemOrder->getItemId())) ? "*" : ""
 		));
 
 		$this->addLabel("item_option", array(
@@ -54,5 +61,9 @@ class InvoiceItemListComponent extends HTMLList {
 		}catch(Exception $e){
 			return new SOYShop_Item();
 		}
+	}
+
+	function setReducedTaxRateMode($reducedTaxRateMode){
+		$this->reducedTaxRateMode = $reducedTaxRateMode;
 	}
 }

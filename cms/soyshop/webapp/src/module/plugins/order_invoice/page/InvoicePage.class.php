@@ -11,6 +11,7 @@ class InvoicePage extends HTMLTemplatePage{
 	function build_invoice(){
 		SOY2::import("module.plugins.order_invoice.common.OrderInvoiceCommon");
 		SOY2::imports("module.plugins.order_invoice.component.*");
+		SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");	//軽減税率用
 
 		$order = self::getOrder();
 

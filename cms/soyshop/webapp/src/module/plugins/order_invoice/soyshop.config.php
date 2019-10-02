@@ -20,4 +20,3 @@ class OrderInvoiceConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config","order_invoice","OrderInvoiceConfig");
-?>

@@ -7,6 +7,12 @@ class InvoiceListComponent extends HTMLList{
 	protected function populateItem($order){
 		if(!$order instanceof SOYShop_Order) $order = new SOYShop_Order();
 
+		//軽減税率に対応しているか？
+		$reducedTaxRateMode = OrderInvoiceCommon::checkReducedTaxRateMode($order);
+		
+		//軽減税率モードの場合は区分の項目を追加する
+		$this->addModel("reduced_tax_rate_division", array("visible" => $reducedTaxRateMode));
+
 		/*** 注文概要 ***/
 		self::buildOrderArea($order);
 
@@ -26,15 +32,14 @@ class InvoiceListComponent extends HTMLList{
 		self::buildClaimedArea($order);
 
 		/*** 注文商品 ***/
-		$items = $this->getItemOrders($order->getItems(), $order->getId());
-		if(ORDER_TEMPLATE !== "jungle" && count($items) < 10){
-			for($i = count($items) + 1; $i <= 10; $i++){
-				$items[] = new SOYShop_ItemOrder();
-			}
-		}
+		$items = self::_getItemOrders($order->getItems(), $order->getId());
 	   	$this->createAdd("item_detail", "InvoiceItemListComponent", array(
-			"list" => $items
+			"list" => $items,
+			"reducedTaxRateMode" => $reducedTaxRateMode
 		));
+
+		/*** 軽減税率に関する記述 ***/
+		self::buildReducedTaxRateArea($order, $items, $reducedTaxRateMode);
 
 		/*** ショップ情報 ***/
 		self::buildCompanyArea();
@@ -161,6 +166,30 @@ class InvoiceListComponent extends HTMLList{
 		//注文者の名前
 		$this->addLabel("name", array(
 			"text" => (isset($claimedAddress["name"])) ? $claimedAddress["name"] : ""
+		));
+	}
+
+	private function buildReducedTaxRateArea(SOYShop_Order $order, $itemOrders, $reducedTaxRateMode){
+		//軽減税率に関する記述
+		$reducedTaxRateTargetItemTotal = ($reducedTaxRateMode) ? OrderInvoiceCommon::calcReducedTaxRateTargetItemTotal($itemOrders) : 0;
+		$this->addModel("is_reduced_tax_rate_detail", array(
+			"visible" => ($reducedTaxRateTargetItemTotal > 0)
+		));
+
+		$this->addLabel("reduced_tax_rate_label", array(
+			"text" => ConsumptionTaxUtil::getReducedTaxRate() . "%税率対象合計"
+		));
+
+		$this->addLabel("reduced_tax_rate_items_total", array(
+			"text" => number_format($reducedTaxRateTargetItemTotal)
+		));
+
+		$this->addLabel("normal_tax_rate_label", array(
+			"text" => ConsumptionTaxUtil::getTaxRate() . "%税率対象合計"
+		));
+
+		$this->addLabel("normal_tax_rate_items_total", array(
+			"text" => number_format(self::getNormalTaxTargetTotal($order) - $reducedTaxRateTargetItemTotal)
 		));
 	}
 
@@ -299,15 +328,19 @@ class InvoiceListComponent extends HTMLList{
 		return array($paymentId, $deliveryId);
 	}
 
-	private function getItemOrders($itemOrders, $orderId){
-
-		//ordersが空の時は再度取得する
+	private function _getItemOrders($itemOrders, $orderId){
 		if(count($itemOrders) === 0){
 			try{
 				//一件しか取得できないのがちらほらあるので、再度コンストラクトすることにした
 				$itemOrders = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")->getByOrderId($orderId);
 			}catch(Exception $e){
 				$itemOrders = array();
+			}
+		}
+
+		if(ORDER_TEMPLATE !== "jungle" && count($itemOrders) < 10){
+			for($i = count($itemOrders) + 1; $i <= 10; $i++){
+				$itemOrders[] = new SOYShop_ItemOrder();
 			}
 		}
 
@@ -344,6 +377,18 @@ class InvoiceListComponent extends HTMLList{
 		}catch(Exception $e){
 			return 0;
 		}
+	}
+
+	private function getNormalTaxTargetTotal(SOYShop_Order $order){
+		$total = self::getTotalPrice($order->getId());
+		$modules = $order->getModuleList();
+		if(!count($modules)) return 0;
+		foreach($modules as $moduleId => $module){
+			if($module->getIsInclude() || $moduleId == "consumption_tax") continue;
+			$total += $module->getPrice();
+		}
+
+		return $total;
 	}
 
 	function setConfig($config){

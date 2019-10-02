@@ -13,9 +13,14 @@ class ConsumptionTaxUtil{
 	}
 
 	public static function getConfig(){
+		return self::_getConfig();
+	}
+
+	private static function _getConfig(){
 		return SOYShop_DataSets::get("consumption_tax.config", array(
 			"method" => 0,
 			"reduced_tax_rate" => 0,
+			"reduced_tax_rate_start_date" => "",
 		));
 	}
 
@@ -23,8 +28,44 @@ class ConsumptionTaxUtil{
 		SOYShop_DataSets::put("consumption_tax.config", $values);
 	}
 
+	public static function getTaxRate(){
+		SOY2::imports("module.plugins.common_consumption_tax.domain.*");
+		$scheduleDao = SOY2DAOFactory::create("SOYShop_ConsumptionTaxScheduleDAO");
+		$scheduleDao->setLimit(1);
+
+		try{
+			$schedules =$scheduleDao->getScheduleByDate(time());
+		}catch(Exception $e){
+			return 0;
+		}
+
+		return (isset($schedules[0])) ? (int)$schedules[0]->getTaxRate() : 0;
+	}
+
+	public static function getReducedTaxRate(){
+		$cnf = self::_getConfig();
+		return (isset($cnf["reduced_tax_rate"])) ? (int)$cnf["reduced_tax_rate"] : 0;
+	}
+
+	public static function calculateTax($price, $rate){
+		if($price == 0 || $rate == 0) return 0;
+		$cnf = self::_getConfig();
+		$m = (isset($cnf["method"])) ? $cnf["method"] : 0;
+
+		switch($m){
+			case self::METHOD_ROUND:
+				return (int)round($price * $rate / 100);
+			case self::METHOD_CEIL:
+				return (int)ceil($price * $rate / 100);
+			case self::METHOD_FLOOR:
+			default:
+				return (int)floor($price * $rate / 100);
+		}
+	}
+
 	//該当する商品が軽減率対象商品であるか？を判定する
 	public static function isReducedTaxRateItem($itemId){
+		if(!is_numeric($itemId)) return false;
 		$list = self::_getList();
 		if(!count($list)) return false;
 		return (is_numeric(array_search($itemId, $list)));

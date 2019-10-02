@@ -53,6 +53,7 @@ td{
 	border-bottom: 1px solid #000000;
 	width: 20%;
 }
+
 /** お買上げ明細 **/
 .buy_detail th{
 	border: 1px solid #000000;
@@ -202,6 +203,7 @@ function onload(){
 			<tr>
 				<th width="15%">商品コード</th>
 				<th width="45%">商品名</th>
+				<!-- soy:id="reduced_tax_rate_division" --><th nowrap>区分</th><!-- /soy:id="reduced_tax_rate_division" -->
 				<th width="10%">数量</th>
 				<th width="15%">価格</th>
 				<th width="15%">金額</th>
@@ -213,6 +215,7 @@ function onload(){
 					<!-- soy:id="item_name" -->仙豆<!-- /soy:id="item_name" --><br />
 					<!-- soy:id="item_option" /-->
 				</td>
+				<!-- soy:id="reduced_tax_rate_division*" --><td style="text-align:center !important;" soy:id="reduced_tax_rate_item">*</td><!-- /soy:id="reduced_tax_rate_division*" -->
 				<td><!-- soy:id="item_count" -->2<!-- /soy:id="item_count" --></td>
 				<td><!-- soy:id="is_item_price" --><!-- soy:id="item_price" -->5000<!-- /soy:id="item_price" --> 円<!-- /soy:id="is_item_price" --></td>
 				<td><!-- soy:id="is_item_price*" --><!-- soy:id="item_total_price" -->10000<!-- /soy:id="item_total_price" --> 円<!-- /soy:id="is_item_price*" --></td>
@@ -222,6 +225,7 @@ function onload(){
 			<tr>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
+				<!-- soy:id="reduced_tax_rate_division*" --><td>&nbsp;</td><!-- /soy:id="reduced_tax_rate_division*" -->
 				<td>&nbsp;</td>
 				<td>商品小計</td>
 				<td><!-- soy:id="subtotal_price" -->14600<!-- /soy:id="subtotal_price" --> 円</td>
@@ -230,6 +234,7 @@ function onload(){
 			<tr>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
+				<!-- soy:id="reduced_tax_rate_division*" --><td>&nbsp;</td><!-- /soy:id="reduced_tax_rate_division*" -->
 				<td>&nbsp;</td>
 				<td><!-- soy:id="module_name" -->代引手数料<!-- /soy:id="module_name" --></td>
 				<td><!-- soy:id="module_price" -->500<!-- /soy:id="module_price" --> 円</td>
@@ -238,11 +243,27 @@ function onload(){
 			<tr>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
+				<!-- soy:id="reduced_tax_rate_division*" --><td>&nbsp;</td><!-- /soy:id="reduced_tax_rate_division*" -->
 				<td>&nbsp;</td>
 				<td>代金合計</td>
 				<td><!-- soy:id="order_total_price*" -->15600<!-- /soy:id="order_total_price*" --> 円</td>
 			</tr>
+			<!-- soy:id="is_reduced_tax_rate_detail" -->
+			<tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td colspan="3" soy:id="reduced_tax_rate_label">&nbsp;</td>
+				<td><!-- soy:id="reduced_tax_rate_items_total" -->100<!-- /soy:id="reduced_tax_rate_items_total" --> 円</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+				<td colspan="3" soy:id="normal_tax_rate_label">&nbsp;</td>
+				<td><!-- soy:id="normal_tax_rate_items_total" -->100<!-- /soy:id="normal_tax_rate_items_total" --> 円</td>
+			</tr>
+			<!-- /soy:id="is_reduced_tax_rate_detail" -->
 		</table>
+		<!-- soy:id="is_reduced_tax_rate_detail*" -->注）*は軽減税率対象<!-- /soy:id="is_reduced_tax_rate_detail*" -->
 
 		<!-- soy:id="display_payment" -->
 		<table class="payment_detail">

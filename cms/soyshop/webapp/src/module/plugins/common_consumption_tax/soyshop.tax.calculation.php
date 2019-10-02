@@ -1,5 +1,4 @@
 <?php
-SOY2::imports("module.plugins.common_consumption_tax.domain.*");
 class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 
 	function __construct(){
@@ -8,6 +7,7 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 
 	function calculation(CartLogic $cart){
 		$cart->removeModule("consumption_tax");
+		$cart->clearOrderAttribute("reduced_tax_rate_mode");
 
 		$items = $cart->getItems();
 		if(count($items) === 0) return;
@@ -23,6 +23,9 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 		}
 
 		if($total === 0 && $reducedRateTotal === 0) return;
+		if($reducedRateTotal > 0){	//軽減税率対象期間内であることを登録しておく
+			$cart->setOrderAttribute("reduced_tax_rate_mode", "軽減税率", "active", true, true);
+		}
 
 		foreach($cart->getModules() as $mod){
 			//値引き分も加味するので、isIncludeされていない値は0以上でなくても加算対象
@@ -46,38 +49,14 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 
 	//外税の計算
 	private function calcTax($total, $reducedRateTotal=0){
-		$scheduleDao = SOY2DAOFactory::create("SOYShop_ConsumptionTaxScheduleDAO");
-		$scheduleDao->setLimit(1);
-
-		try{
-			$schedules =$scheduleDao->getScheduleByDate(time());
-		}catch(Exception $e){
-			return null;
-		}
-
-		if(!isset($schedules[0])) return null;
-
-		$taxRate = (int)$schedules[0]->getTaxRate();
+		$taxRate = ConsumptionTaxUtil::getTaxRate();
 		if($taxRate === 0) return null;
 
-		$config = ConsumptionTaxUtil::getConfig();
-		$reducedTaxRate = ($reducedRateTotal > 0 && isset($config["reduced_tax_rate"])) ? (int)$config["reduced_tax_rate"] : 0;	//軽減税率 @軽減税率の設定
+		//軽減税率
+		$reducedTaxRate = ($reducedRateTotal > 0) ? ConsumptionTaxUtil::getReducedTaxRate() : 0;
 
-		$m = (isset($config["method"])) ? $config["method"] : 0;
-		switch($m){
-			case ConsumptionTaxUtil::METHOD_ROUND:
-				$price = (int)round($total * $taxRate / 100);
-				if($reducedTaxRate > 0) $price += (int)round($reducedRateTotal * $reducedTaxRate / 100);
-				break;
-			case ConsumptionTaxUtil::METHOD_CEIL:
-				$price = (int)ceil($total * $taxRate / 100);
-				if($reducedTaxRate > 0) $price += (int)ceil($reducedRateTotal * $reducedTaxRate / 100);
-				break;
-			case ConsumptionTaxUtil::METHOD_FLOOR:
-			default:
-				$price = (int)floor($total * $taxRate / 100);
-				if($reducedTaxRate > 0) $price += (int)floor($reducedRateTotal * $reducedTaxRate / 100);
-		}
+		$taxPrice = ConsumptionTaxUtil::calculateTax($total, $taxRate);
+		if($reducedTaxRate > 0) $taxPrice += ConsumptionTaxUtil::calculateTax($reducedRateTotal, $reducedTaxRate);
 
 		//消費税がある場合
 		SOY2::import("domain.order.SOYShop_ItemModule");
@@ -85,8 +64,7 @@ class CommonConsumptionTaxCalculation extends SOYShopTaxCalculationBase{
 		$module->setId("consumption_tax");
 		$module->setName("消費税");
 		$module->setType(SOYShop_ItemModule::TYPE_TAX);	//typeを指定しておくといいことがある
-		$module->setPrice($price);
-
+		$module->setPrice($taxPrice);
 		return $module;
 	}
 }

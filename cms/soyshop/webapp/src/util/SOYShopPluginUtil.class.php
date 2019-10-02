@@ -3,14 +3,11 @@
 class SOYShopPluginUtil {
 
     public static function checkIsActive($pluginId){
-    	$pluginDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 		try{
-			$plugin = $pluginDAO->getByPluginId($pluginId);
+			return (SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId($pluginId)->getIsActive() == SOYShop_PluginConfig::PLUGIN_ACTIVE);
 		}catch(Exception $e){
-			$plugin = new SOYShop_PluginConfig();
+			return false;
 		}
-
-		return ($plugin->getIsActive() == SOYShop_PluginConfig::PLUGIN_ACTIVE);
     }
 
     public static function checkPluginListFile(){

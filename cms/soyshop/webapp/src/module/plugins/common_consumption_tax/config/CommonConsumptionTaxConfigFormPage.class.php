@@ -41,6 +41,10 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 			//軽減税率
 			if(isset($_POST["Reduced"])){
 				$config["reduced_tax_rate"] = (isset($_POST["Reduced"]["reduced_tax_rate"])) ? (int)$_POST["Reduced"]["reduced_tax_rate"] : 0;
+				if(isset($_POST["Reduced"]["reduced_tax_rate_start_date"]) && strlen($_POST["Reduced"]["reduced_tax_rate_start_date"])){
+					$values = explode("-", $_POST["Reduced"]["reduced_tax_rate_start_date"]);
+					$config["reduced_tax_rate_start_date"] = mktime(0, 0, 0, (int)$values[1], (int)$values[2], (int)$values[0]);
+				}
 				ConsumptionTaxUtil::saveConfig($config);
 
 				$this->configObj->redirect("updated");
@@ -111,6 +115,13 @@ class CommonConsumptionTaxConfigFormPage extends WebPage{
 			"name" => "Reduced[reduced_tax_rate]",
 			"value" => (isset($config["reduced_tax_rate"])) ? (int)$config["reduced_tax_rate"] : 0,
 			"style" => "width:80px;padding:0 3px"
+		));
+
+		//コメントアウトして使用していない
+		$this->addInput("reduced_tax_rate_start_date", array(
+			"name" => "Reduced[reduced_tax_rate_start_date]",
+			"value" => (isset($config["reduced_tax_rate_start_date"]) && strlen($config["reduced_tax_rate_start_date"])) ? date("Y-m-d",$config["reduced_tax_rate_start_date"]) : "",
+			"style" => "width:90px;padding:0 3px"
 		));
 
 		/** 小数点の扱いについて **/

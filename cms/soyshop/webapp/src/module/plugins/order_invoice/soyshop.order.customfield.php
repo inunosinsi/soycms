@@ -21,7 +21,6 @@ class OrderInvoiceCustomfieldModule extends SOYShopOrderCustomfield{
 		}catch(Exception $e){
 			return new SOYShop_OrderDateAttribute();
 		}
-
 	}
 
 	private function dao(){

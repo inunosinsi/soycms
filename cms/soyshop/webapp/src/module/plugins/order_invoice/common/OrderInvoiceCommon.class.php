@@ -49,4 +49,20 @@ class OrderInvoiceCommon{
 
 		return $files;
 	}
+
+	public static function checkReducedTaxRateMode(SOYShop_Order $order){
+		$attrList = $order->getAttributeList();
+		return (isset($attrList["reduced_tax_rate_mode"]));
+	}
+
+	public static function calcReducedTaxRateTargetItemTotal($itemOrders){
+		if(!count($itemOrders)) return 0;
+
+		$total = 0;
+		foreach($itemOrders as $itemOrder){
+			if(is_null($itemOrder->getItemId()) || !ConsumptionTaxUtil::isReducedTaxRateItem($itemOrder->getItemId())) continue;
+			$total += (int)$itemOrder->getTotalPrice();
+		}
+		return $total;
+	}
 }
