@@ -65,7 +65,7 @@ class CustomFieldForm {
 	 * @param string url
 	 * @return string url
 	 */
-	private function getDomainUrl($url){
+	private static function getDomainUrl($url){
 		$siteId = UserInfoUtil::getSite()->getSiteId();
 
 		if(strpos($url, "/" . $siteId . "/")){

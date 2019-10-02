@@ -99,7 +99,7 @@ class UploadFileAction extends SOY2Action{
 		}
 		$_FILES['file']['name'] = $filename;
 
-		$fileurl = UserInfoUtil::getSiteUrl() . $this->getDefaultUpload() .  "/". rawurlencode($filename);
+		$fileurl = self::getSiteUrl() . $this->getDefaultUpload() .  "/". rawurlencode($filename);
 		$responseObject->filepath = $fileurl;
 
     	//一時ファイルにしたほうがいいかも
@@ -156,8 +156,16 @@ class UploadFileAction extends SOY2Action{
 	    	}
     	}
     	$this->setAttribute("result",$responseObject);
-
     }
+
+	private function getSiteUrl(){
+		$siteUrl = UserInfoUtil::getSiteURL();
+		$siteId = UserInfoUtil::getSite()->getSiteId();
+		if(strpos($siteUrl, "/" . $siteId . "/") === false){
+			$siteUrl = rtrim($siteUrl, "/") . "/" . $siteId . "/";
+		}
+		return $siteUrl;
+	}
 
 	/**
 	 * アップロードディレクトリのパスを返す

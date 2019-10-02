@@ -47,12 +47,21 @@ class FileUploadPage extends CMSWebPageBase {
 
 		$this->createAdd("parameters","HTMLScript",array(
 			"lang" => "text/JavaScript",
-			"script" => 'var remotoURI = "'.UserInfoUtil::getSiteURL().substr(self::getDefaultUpload(),1).'";'
+			"script" => 'var remotoURI = "'.self::getSiteUrl().ltrim(substr(self::getDefaultUpload(),1), "/").'";'
 		));
 
 		$this->addModel("file_manager_iframe", array(
 			"target_src"=>SOY2PageController::createLink("FileManager.File")
 		));
+	}
+
+	private function getSiteUrl(){
+		$siteUrl = UserInfoUtil::getSiteURL();
+		$siteId = UserInfoUtil::getSite()->getSiteId();
+		if(strpos($siteUrl, "/" . $siteId . "/") === false){
+			$siteUrl = rtrim($siteUrl, "/") . "/" . $siteId . "/";
+		}
+		return $siteUrl;
 	}
 
 	private function getDefaultUpload(){
