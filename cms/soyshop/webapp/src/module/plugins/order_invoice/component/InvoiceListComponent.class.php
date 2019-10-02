@@ -9,7 +9,7 @@ class InvoiceListComponent extends HTMLList{
 
 		//軽減税率に対応しているか？
 		$reducedTaxRateMode = OrderInvoiceCommon::checkReducedTaxRateMode($order);
-		
+
 		//軽減税率モードの場合は区分の項目を追加する
 		$this->addModel("reduced_tax_rate_division", array("visible" => $reducedTaxRateMode));
 
@@ -32,7 +32,7 @@ class InvoiceListComponent extends HTMLList{
 		self::buildClaimedArea($order);
 
 		/*** 注文商品 ***/
-		$items = self::_getItemOrders($order->getItems(), $order->getId());
+		$items = self::_getItemOrders($order->getItems(), $order->getId(), $reducedTaxRateMode);
 	   	$this->createAdd("item_detail", "InvoiceItemListComponent", array(
 			"list" => $items,
 			"reducedTaxRateMode" => $reducedTaxRateMode
@@ -328,7 +328,7 @@ class InvoiceListComponent extends HTMLList{
 		return array($paymentId, $deliveryId);
 	}
 
-	private function _getItemOrders($itemOrders, $orderId){
+	private function _getItemOrders($itemOrders, $orderId, $reducedTaxRateMode){
 		if(count($itemOrders) === 0){
 			try{
 				//一件しか取得できないのがちらほらあるので、再度コンストラクトすることにした
@@ -338,8 +338,9 @@ class InvoiceListComponent extends HTMLList{
 			}
 		}
 
-		if(ORDER_TEMPLATE !== "jungle" && count($itemOrders) < 10){
-			for($i = count($itemOrders) + 1; $i <= 10; $i++){
+		$maxLimit = ($reducedTaxRateMode) ? 7 : 10;
+		if(ORDER_TEMPLATE !== "jungle" && count($itemOrders) < $maxLimit){
+			for($i = count($itemOrders) + 1; $i <= $maxLimit; $i++){
 				$itemOrders[] = new SOYShop_ItemOrder();
 			}
 		}
