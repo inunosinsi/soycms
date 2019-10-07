@@ -85,9 +85,14 @@ class DetailPage extends CMSUpdatePageBase{
 			"visible"=> $showInputForm
 		));
 
+		//このユーザでログインボタン
+		DisplayPlugin::toggle("instead_login", (UserInfoUtil::isDefaultUser() && UserInfoUtil::getUserId() != $adminID));
+		$this->addLink("instead_login_link", array(
+			"link" => SOY2PageController::createLink("Administrator.InsteadLogin.".$adminID),
+			"onclick" => "return confirm('" . UserInfoUtil::getLoginId() . "をログアウトしてから" . $admin->getUserId() ."でログインしますがよろしいですか？');"
+		));
 
 		$this->addForm("detailForm");
-
 
 		$this->addModel("error", array(
 			"visible" => $this->failed
