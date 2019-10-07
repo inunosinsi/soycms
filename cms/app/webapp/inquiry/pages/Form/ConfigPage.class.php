@@ -139,6 +139,9 @@ class ConfigPage extends FormPageBase{
 			"disabled" => !$config->enabledGD()
     	));
 
+		// GoogleのreCAPTCHA v3が使用できる場合はSOY CMSのreCAPTCHA v3の使用を促す
+		DisplayPlugin::toggle("enabledGoogleReCAPTCHA_v3", function_exists("curl_init"));
+
     	$this->addInput("config_notSmartPhone", array(
     		"type" => "hidden",
 			"name" => "Config[isSmartPhone]",

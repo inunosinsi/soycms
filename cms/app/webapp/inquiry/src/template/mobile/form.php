@@ -8,7 +8,7 @@
     </table>
 
     <table id="inquiry_form">
-<?php 
+<?php
 foreach($columns as $column){
 	//連番カラムは表示しない
 	if($column->getType() == "SerialNumber") continue;

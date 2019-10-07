@@ -187,6 +187,31 @@ class SOYInquiry_PageApplication{
 	    }else if(isset($_POST["send"]) || isset($_POST["send_x"])){
 			$this->checkBanMailAddress($_POST["data"], $columns);
 
+			//Google reCAPTCHA v3を利用している場合はここで調べる
+			if(isset($_POST["google_recaptcha"]) && strlen($_POST["google_recaptcha"])){
+				$obj = CMSPlugin::loadPluginConfig("re_captcha_v3");
+				if(strlen($obj->getSecretKey())){
+					$reCapValues = array(
+						"secret" => $obj->getSecretKey(),
+						"response" => $_POST["google_recaptcha"]
+					);
+					$ch = curl_init("https://www.google.com/recaptcha/api/siteverify");
+					curl_setopt($ch, CURLOPT_POST, TRUE);
+					curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($reCapValues));
+					curl_setopt($ch,CURLOPT_RETURNTRANSFER, TRUE);
+					$out = curl_exec($ch);
+
+					$json = json_decode($out);
+					//@ToDo scoreを見て挙動を確認する スコアは0.0〜1.0で0.5が人とボットの閾値
+					if(!$json->success || $json->score < 0.5){
+						//BANのページに飛ばす
+						SOY2Logic::createInstance("logic.InquiryLogic", array("form" => $this->form))->banIPAddress($_SERVER["REMOTE_ADDR"]);
+						SOY2PageController::redirect($this->pageUrl . "?block");
+						exit;
+					}
+				}
+			}
+
 	    	$captcha_filename = str_replace(array(".", "/", "\\"), "", $_POST["data"]["hash"]);
 	    	$captcha_value = (isset($_POST["captcha_value"])) ? md5($_POST["captcha_value"]) : "";
 	    	$captcha = (isset($_POST["data"]["captcha"])) ? str_replace(array(".", "/", "\\"), "", $_POST["data"]["captcha"]) : "";

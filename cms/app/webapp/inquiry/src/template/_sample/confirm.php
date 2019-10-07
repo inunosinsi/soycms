@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" id="soy_inquiry_form">
 
 <table class="soy_inquiry_message" id="soy_inquiry_message_confirm">
 <tr>

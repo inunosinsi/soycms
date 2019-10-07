@@ -1,4 +1,4 @@
-<form method="post" enctype="multipart/form-data">
+<form method="post">
 
 <div class="soy_inquiry_message">
 	<?php $message = $config->getMessage(); echo $message["information"]; ?>

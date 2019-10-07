@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" id="soy_inquiry_form">
 
 <div class="alert alert-info" data-role="alert">
 	<?php $message = $config->getMessage(); echo $message["confirm"]; ?>
