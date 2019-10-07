@@ -16,7 +16,7 @@ class AspAppPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 
 		//二回目以降の動作

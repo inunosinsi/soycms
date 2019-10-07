@@ -21,6 +21,7 @@ class AspAppUserCompletePage extends WebPage {
 			$mode = AspAppUtil::getSession("hidden_mode");	//モードがある場合はメールを送信しない
 			if(isset($mode) && strlen($mode)){
 				AspAppUtil::clearSession("hidden_mode");
+				AspAppUtil::setSession("admin_id", $logic->getAdminId());
 				header("location:" . AspAppUtil::getPageUri(AspAppUtil::MODE_DIRECT_REGISTRATION));
 				exit;
 			}

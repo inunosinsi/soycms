@@ -2,6 +2,8 @@
 
 class AspAppRegisterLogic extends SOY2LogicBase {
 
+	private $adminId;
+
 	function __construct(){
 		SOY2::import("site_include.plugin.asp_app.domain.AspAppPreRegisterDAO");
 		SOY2::import("site_include.plugin.asp_app.util.AspAppUtil");
@@ -34,11 +36,11 @@ class AspAppRegisterLogic extends SOY2LogicBase {
 		//トランザクションが使えない
 
 		try {
-			$adminId = $dao->insert($admin);
+			$this->adminId = $dao->insert($admin);
 
 			$roleDao = SOY2DAOFactory::create("admin.AppRoleDAO");
 			$role = new AppRole();
-			$role->setUserId($adminId);
+			$role->setUserId($this->adminId);
 			$role->setAppId($appId);
 			$role->setAppRole(AppRole::APP_USER);
 			$roleDao->insert($role);
@@ -49,6 +51,10 @@ class AspAppRegisterLogic extends SOY2LogicBase {
 		CMSUtil::resetDsn($old);
 
 		return $res;
+	}
+
+	function getAdminId(){
+		return $this->adminId;
 	}
 
 	function getAdminByToken($token){

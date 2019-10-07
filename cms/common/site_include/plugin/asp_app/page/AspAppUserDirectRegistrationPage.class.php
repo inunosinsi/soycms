@@ -9,9 +9,6 @@ class AspAppUserDirectRegistrationPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
-		AspAppUtil::clearSession("hidden_mode");
-		AspAppUtil::clear();
-
 		$cmsDir = AspAppUtil::getSession("cms_dir");
 		AspAppUtil::clearSession("cms_dir");
 
@@ -20,6 +17,14 @@ class AspAppUserDirectRegistrationPage extends WebPage {
 		$this->addLink("cms_admin_link", array(
 			"link" => "/" . $cmsDir . "/admin/"
 		));
+
+		$this->addLabel("admin_id", array(
+			"text" => AspAppUtil::getSession("admin_id")
+		));
+
+		AspAppUtil::clearSession("hidden_mode");
+		AspAppUtil::clearSession("admin_id");
+		AspAppUtil::clear();
 	}
 
 	/** @ToDo テンプレート編集モード **/
