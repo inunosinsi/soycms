@@ -176,20 +176,55 @@ class InvoiceListComponent extends HTMLList{
 			"visible" => ($reducedTaxRateTargetItemTotal > 0)
 		));
 
-		$this->addLabel("reduced_tax_rate_label", array(
-			"text" => ConsumptionTaxUtil::getReducedTaxRate() . "%税率対象合計"
+		$this->addLabel("reduced_tax_rate_subtotal_label", array(
+			"text" => ConsumptionTaxUtil::getReducedTaxRate() . "%税率対象小計"
 		));
 
-		$this->addLabel("reduced_tax_rate_items_total", array(
+		$this->addLabel("reduced_tax_rate_items_subtotal", array(
 			"text" => number_format($reducedTaxRateTargetItemTotal)
 		));
 
-		$this->addLabel("normal_tax_rate_label", array(
+		$this->addLabel("reduced_tax_rate_target_tax_label", array(
+			"text" => ConsumptionTaxUtil::getReducedTaxRate() . "%税率対象消費税"
+		));
+
+		$reducedTax = ConsumptionTaxUtil::calculateTax($reducedTaxRateTargetItemTotal, ConsumptionTaxUtil::getReducedTaxRate());
+		$this->addLabel("reduced_tax_rate_items_tax_total", array(
+			"text" => number_format($reducedTax)
+		));
+
+		$this->addLabel("reduced_tax_rate_total_label", array(
+			"text" => ConsumptionTaxUtil::getReducedTaxRate() . "%税率対象合計(税込)"
+		));
+
+		$this->addLabel("reduced_tax_rate_total", array(
+			"text" => number_format($reducedTaxRateTargetItemTotal + $reducedTax)
+		));
+
+		$this->addLabel("normal_tax_rate_subtotal_label", array(
+			"text" => ConsumptionTaxUtil::getTaxRate() . "%税率対象小計"
+		));
+
+		$normalTaxTargetTotal = self::getNormalTaxTargetTotal($order) - $reducedTaxRateTargetItemTotal;
+		$this->addLabel("normal_tax_rate_items_sub_total", array(	//soy:idでsubtotalにすると何故か動かないので、sub_totalにした
+			"text" => number_format($normalTaxTargetTotal)
+		));
+
+		$this->addLabel("normal_tax_rate_target_tax_label", array(
+			"text" => ConsumptionTaxUtil::getTaxRate() . "%税率対象消費税"
+		));
+
+		$normalTax = ConsumptionTaxUtil::calculateTax($normalTaxTargetTotal, ConsumptionTaxUtil::getTaxRate());
+		$this->addLabel("normal_tax_rate_items_tax_total", array(
+			"text" => number_format($normalTax)
+		));
+
+		$this->addLabel("normal_tax_rate_total_label", array(
 			"text" => ConsumptionTaxUtil::getTaxRate() . "%税率対象合計"
 		));
 
 		$this->addLabel("normal_tax_rate_items_total", array(
-			"text" => number_format(self::getNormalTaxTargetTotal($order) - $reducedTaxRateTargetItemTotal)
+			"text" => number_format($normalTaxTargetTotal + $normalTax)
 		));
 	}
 
@@ -338,7 +373,7 @@ class InvoiceListComponent extends HTMLList{
 			}
 		}
 
-		$maxLimit = ($reducedTaxRateMode) ? 7 : 10;
+		$maxLimit = ($reducedTaxRateMode) ? 5 : 10;
 		if(ORDER_TEMPLATE !== "jungle" && count($itemOrders) < $maxLimit){
 			for($i = count($itemOrders) + 1; $i <= $maxLimit; $i++){
 				$itemOrders[] = new SOYShop_ItemOrder();
