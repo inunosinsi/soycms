@@ -84,7 +84,7 @@ class RolePage extends CMSUpdatePageBase{
 
 		$users = $userDAO->get();
 		$roles = $appRoleDAO->getByAppId($this->appId);
-
+		
 		$this->createAdd("role_list", "_common.Application.RoleListComponent", array(
 			"list" => $users,
 			"roles" => $roles,

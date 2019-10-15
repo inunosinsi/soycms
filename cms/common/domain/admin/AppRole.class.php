@@ -19,7 +19,6 @@ class AppRole{
 	 */
 	const APP_USER = 2;
 
-
 	/**
 	 * @id
 	 */
@@ -112,4 +111,3 @@ class AppRole{
 		return self::getRoleLists(true);
 	}
 }
-
