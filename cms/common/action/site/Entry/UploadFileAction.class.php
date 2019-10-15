@@ -159,12 +159,12 @@ class UploadFileAction extends SOY2Action{
     }
 
 	private function getSiteUrl(){
-		$siteUrl = UserInfoUtil::getSiteURL();
+		$url = UserInfoUtil::getSiteURL();
 		$siteId = UserInfoUtil::getSite()->getSiteId();
-		if(strpos($siteUrl, "/" . $siteId . "/") === false){
-			$siteUrl = rtrim($siteUrl, "/") . "/" . $siteId . "/";
+		if(strpos($url, $_SERVER["HTTP_HOST"]) !== false && !strpos($url, "/" . $siteId . "/")){
+			$url = rtrim($url, "/") . "/" . $siteId . "/";
 		}
-		return $siteUrl;
+		return $url;
 	}
 
 	/**
