@@ -200,7 +200,6 @@ class IndexPage extends CMSUpdatePageBase{
 	 * @return (entry_array,記事の数,大きすぎた場合最終オフセット)
 	 */
 	private function getEntries($offset,$limit){
-
 		$action = SOY2ActionFactory::createInstance("Entry.EntryListAction",array(
 			"offset"=>$offset,
 			"limit"=>$limit

@@ -29,10 +29,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * getByLabelIdsだと重すぎる場所があったので追加
 	 */
 	function getByLabelIdsOnlyId($labelIds, $orderReverse = false, $limit = null, $offset = null){
-		$sql = "SELECT distinct entry.id, entry.*, entry.cdate, label.display_order FROM Entry entry ".
-				"INNER JOIN EntryLabel label ".
-				"ON entry.id = label.entry_id ";
-
+		$sql = "SELECT entry.* FROM Entry entry ";
 		$sql .= "WHERE entry.id IN (SELECT entry_id FROM EntryLabel WHERE label_id IN (" .implode(",", $labelIds) . ") GROUP BY entry_id HAVING count(*) = " . count($labelIds) . ") ";
 
 		//Order
@@ -114,9 +111,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	 * ORのときの表示順は保証できない（？）
 	 */
 	function getOpenEntryByLabelIdsImplements($labelIds, $now, $isAnd, $start = null, $end = null, $orderReverse = false, $limit = null, $offset = null){
-		$sql = "SELECT distinct entry.id, entry.*, entry.cdate, label.display_order FROM Entry entry ".
-				"INNER JOIN EntryLabel label ".
-				"ON entry.id = label.entry_id ";
+		$sql = "SELECT entry.* FROM Entry entry ";
 		$binds = array();
 		$where = array();
 
@@ -185,6 +180,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		if(!count($results)) return array();
 		$list = array();
+		$cnt = 0;
 		foreach($results as $row){
 			if(!isset($row["id"]) || !is_numeric($row["id"])) continue;
 			$list[$row["id"]] = $this->getObject($row);
