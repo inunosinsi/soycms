@@ -80,7 +80,7 @@ class PartsItemDetailUtil {
 			}
 		}else{
 			try{
-				self::dao()->delete($attr->getItemId(), $fieldId);
+				self::_dao()->delete($attr->getItemId(), $fieldId);
 			}catch(Exception $e){
 
 			}
