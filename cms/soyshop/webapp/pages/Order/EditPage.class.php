@@ -359,7 +359,6 @@ class EditPage extends WebPage{
 
 	//税金の計算 $reducedRateTotalは軽減税率商品金額の合算
 	private function calculateConsumptionTax($price, $modulePrice, $reducedRateTotal){
-		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$config = SOYShop_ShopConfig::load();
 
 		$total = $price;
@@ -399,7 +398,7 @@ class EditPage extends WebPage{
    		}
 
    		if($plugin->getIsActive() == SOYShop_PluginConfig::PLUGIN_INACTIVE) return null;
-		
+
    		SOYShopPlugin::load("soyshop.tax.calculation", $plugin);
 		return SOYShopPlugin::invoke("soyshop.tax.calculation", array(
 			"mode" => "edit",
@@ -457,6 +456,8 @@ class EditPage extends WebPage{
 		MessageManager::addMessagePath("admin");
 		$this->id = (isset($args[0])) ? (int)$args[0] : "";
 
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+
 		parent::__construct();
 
 		try{
@@ -475,6 +476,9 @@ class EditPage extends WebPage{
 		));
 
 		self::buildForm($order);
+
+		//未登録商品の追加ボタンの有無
+		DisplayPlugin::toggle("allow_add_unregistered_item", SOYShop_ShopConfig::load()->getIsUnregisteredItem());
 
 		//HTMLの自由記述
 		$this->addLabel("extension_html", array(
@@ -583,7 +587,6 @@ class EditPage extends WebPage{
 		));
 
 		//法人名の項目を表示するか？
-		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$this->addModel("is_offce_item", array(
 			"visible" => SOYShop_ShopConfig::load()->getDisplayUserOfficeItems()
 		));

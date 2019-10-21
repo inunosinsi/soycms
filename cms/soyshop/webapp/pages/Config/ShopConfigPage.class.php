@@ -27,6 +27,7 @@ class ShopConfigPage extends WebPage{
 			"insertDummyMailAddressOnAdminRegister" => 0,
 			"insertDummyAddressOnAdmin" => 0,
 			"isChildItemOnAdminOrder" => 0,
+			"isUnregisteredItem" => 0,
 			"displayOrderAdminPage" => 0,
 			"displayItemAdminPage" => 0,
 			"displayUserAdminPage" => 0,
@@ -372,6 +373,13 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getIsChildItemOnAdminOrder(),
 			"label" => "管理画面からの注文の際に子商品を検索結果に含める"
+		));
+
+		$this->addCheckBox("isUnregisteredItem", array(
+			"name" => "Config[isUnregisteredItem]",
+			"value" => 1,
+			"selected" => $config->getIsUnregisteredItem(),
+			"label" => "管理画面からの注文の際に未登録商品の追加を許可する"
 		));
 
 		$this->addCheckBox("displayOrderAdminPage", array(

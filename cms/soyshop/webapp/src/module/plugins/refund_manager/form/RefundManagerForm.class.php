@@ -48,6 +48,11 @@ class RefundManagerForm extends WebPage{
 			"id" => "refund_manager_increase"
 		));
 
+		$this->addInput("bank_number", array(
+			"name" => self::NAMEPROP . "[bank_number]",
+			"value" => (isset($values["bank_number"])) ? $values["bank_number"] : null
+		));
+
 		//銀行名
 		$name = (isset($values["bank_name"])) ? $values["bank_name"] : null;
 		if(is_null($name)) $name = (isset($values["account"])) ? $values["account"] : "";
@@ -60,6 +65,11 @@ class RefundManagerForm extends WebPage{
 		$this->addInput("account", array(
 			"name" => self::NAMEPROP . "[account]",
 			"value" => (isset($values["account"])) ? $values["account"] : ""
+		));
+
+		$this->addInput("branch_number", array(
+			"name" => self::NAMEPROP . "[branch_number]",
+			"value" => (isset($values["branch_number"])) ? $values["branch_number"] : ""
 		));
 
 		$this->addInput("branch", array(

@@ -53,6 +53,7 @@ class SOYShop_ShopConfig {
 	private $insertDummyAddressOnAdmin = 0;
 
 	private $isChildItemOnAdminOrder = 0;	//管理画面からの注文の際に子商品を検索結果に含める
+	private $isUnregisteredItem = 1;		//管理画面からの注文の際に未登録商品の追加を許可する
 
 	private $displayOrderAdminPage = 1;
 	private $displayItemAdminPage = 1;
@@ -652,6 +653,13 @@ class SOYShop_ShopConfig {
 	}
 	function setIsChildItemOnAdminOrder($isChildItemOnAdminOrder){
 		$this->isChildItemOnAdminOrder = $isChildItemOnAdminOrder;
+	}
+
+	function getIsUnregisteredItem(){
+		return $this->isUnregisteredItem;
+	}
+	function setIsUnregisteredItem($isUnregisteredItem){
+		$this->isUnregisteredItem = $isUnregisteredItem;
 	}
 
 	function getDisplayOrderAdminPage(){

@@ -192,6 +192,10 @@ class ItemPage extends WebPage{
 		$this->addForm("form");
 		self::buildForm();
 
+		//未登録商品の追加ボタンの有無
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		DisplayPlugin::toggle("allow_add_unregistered_item", SOYShop_ShopConfig::load()->getIsUnregisteredItem());
+
 		//下書き保存用のリンク
 		$this->addLink("draft_link", array(
 			"link" => SOY2PageController::createLink("Order.Register.Item") . "?draft"
