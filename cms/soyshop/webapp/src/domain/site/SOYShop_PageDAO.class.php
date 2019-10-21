@@ -86,4 +86,3 @@ abstract class SOYShop_PageDAO extends SOY2DAO{
 
 	}
 }
-?>

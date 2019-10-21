@@ -149,8 +149,13 @@ function soyshop_breadcrumb_navigation($html, $page){
 
 								//パンくずに子商品まで表示させる
 								if(isset($config["displayChild"]) && $config["displayChild"] == 1){
-									$parentUrl = soyshop_get_site_url() . soyshop_get_page_object($parent->getDetailPageId())->getUri() . "/" . $parent->getAlias();
+									//URIの書き換え
+									$pageId = PartsItemDetailUtil::getAttr($item->getId(), PartsItemDetailUtil::PARENT_FIELD_ID)->getValue();
+									$parentPageId = (is_numeric($pageId) && $pageId > 0) ? $pageId : $parent->getDetailPageId();
+
+									$parentUrl = soyshop_get_site_url() . soyshop_get_page_object($parentPageId)->getUri() . "/" . $parent->getAlias();
 									$itemName = "<a href=\"" . $parentUrl."\">" . $parent->getOpenItemName() . "</a>"."&nbsp;&gt;&nbsp;" .$item->getOpenItemName();
+
 
 								//パンくずに表示する商品を親商品までにする
 								}else{
@@ -161,9 +166,16 @@ function soyshop_breadcrumb_navigation($html, $page){
 							}
 
 							$categories = $dao->getAncestry($category, false);
-							$uri = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO")->getPageUriByItemId($item->getId());
 							$name = $category->getOpenCategoryName();
 							$alias = $category->getAlias();
+
+							//URIの書き換え
+							$pageId = PartsItemDetailUtil::getAttr($item->getId(), PartsItemDetailUtil::FIELD_ID)->getValue();
+							if(is_numeric($pageId) && $pageId > 0){
+								$uri = soyshop_get_page_object($pageId)->getUri();
+							}else{
+								$uri = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO")->getPageUriByItemId($item->getId());
+							}
 						}else{
 							$itemName = "";
 						}
