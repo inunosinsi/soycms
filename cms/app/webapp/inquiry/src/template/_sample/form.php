@@ -20,7 +20,7 @@ foreach($columns as $key => $column){
 
 	$id = $column->getId();
 	$obj = $column->getColumn();
-	$label = $obj->getLabel();
+	$label = ($column->getType() != "Enquete" && $column->getType() != "EnqueteFree") ? $obj->getLabel() : null;
 	$annotation = $obj->getAnnotation();
 
 	$class = array();
@@ -54,6 +54,17 @@ foreach($columns as $key => $column){
 	    }
 	    $output .= "\n</td>\n";
 	}else{
+		if(($column->getType() == "Enquete" || $column->getType() == "EnqueteFree")){	//アンケートカラムの場合は文言を大きく表示
+			$cnf = $column->getConfig();
+			$config = (strlen($cnf)) ? soy2_unserialize($cnf) : array();
+			if(isset($config["question"]) && strlen($config["question"])){
+				$output .= "<th colspan=\"2\">\n";
+				$output .= htmlspecialchars($config["question"], ENT_QUOTES, "UTF-8");
+				$output .= "\n</th>\n";
+				$output .= "</tr><tr>";
+			}
+		}
+
 		$output .= "<td colspan=\"2\">\n";
 	    $output .= "\t".$obj->getForm();
 	    if(isset($errors[$id])){
