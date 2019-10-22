@@ -21,17 +21,19 @@ class InitLogic extends SOY2LogicBase{
     	$sqls = file_get_contents(dirname(__FILE__)."/table_". SOYINQUIRY_DB_MODE .".sql");
     	$sqls = explode(";",$sqls);
     	foreach($sqls as $sql){
-    		if(strlen(trim($sql))<1)continue;
+    		if(strlen(trim($sql))<1) continue;
     		try{
     			$db->executeUpdateQuery($sql,array());
     		}catch(Exception $e){
-
+				//
     		}
     	}
 
     	if(!file_exists($this->initCheckFile)){
     		file_put_contents($this->initCheckFile, "created:" . date("Y-m-d H:i:s"));
     	}
+
+		sleep(1);
 
 		if(file_exists($this->initCheckFile)){
 			$db->commit();

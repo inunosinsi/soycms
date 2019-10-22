@@ -139,6 +139,4 @@ class SimplePager extends HTMLList{
 	function setQueryString($queryString) {
 		$this->queryString = $queryString;
 	}
-
 }
-?>
