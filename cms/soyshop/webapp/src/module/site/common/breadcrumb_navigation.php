@@ -16,6 +16,11 @@
  * </p>
  * <!-- /shop:module="common.breadcrumb_navigation" -->
  */
+
+/**
+ * 隠しモード
+ * <!-- cms:id="current_item_name" cms:list_url="商品一覧ページのURLを書き換え" cms:detail_url="親商品の商品詳細ページのURLの書き換え" -->商品名<!-- /cms:id="current_item_name" -->
+ */
 SOY2::import("util.SOYShopPluginUtil");
 function soyshop_breadcrumb_navigation($html, $page){
 	$obj = $page->create("soyshop_breadcrumb_navigation", "HTMLTemplatePage", array(
@@ -149,11 +154,24 @@ function soyshop_breadcrumb_navigation($html, $page){
 
 								//パンくずに子商品まで表示させる
 								if(isset($config["displayChild"]) && $config["displayChild"] == 1){
-									//URIの書き換え
-									$pageId = PartsItemDetailUtil::getAttr($item->getId(), PartsItemDetailUtil::PARENT_FIELD_ID)->getValue();
-									$parentPageId = (is_numeric($pageId) && $pageId > 0) ? $pageId : $parent->getDetailPageId();
+									$parentUrl = null;
 
-									$parentUrl = soyshop_get_site_url() . soyshop_get_page_object($parentPageId)->getUri() . "/" . $parent->getAlias();
+									//隠しモード cms:detail_urlがある場合はこちらの値を利用する
+									if(strpos($html, "cms:detail_url") !== false){
+										preg_match('/cms:id="current_item_name".*cms:detail_url="(.*?)"/', $html, $tmp);
+										if(isset($tmp[1])){
+											$parentUrl = soyshop_get_site_url() . htmlspecialchars(trim(trim($tmp[1]), "/"), ENT_QUOTES, "UTF-8") . "/" . $parent->getAlias();
+										}
+									}
+
+									//URIの書き換え
+									if(is_null($parentUrl)){
+										$pageId = PartsItemDetailUtil::getAttr($item->getId(), PartsItemDetailUtil::PARENT_FIELD_ID)->getValue();
+										$parentPageId = (is_numeric($pageId) && $pageId > 0) ? $pageId : $parent->getDetailPageId();
+
+										$parentUrl = soyshop_get_site_url() . soyshop_get_page_object($parentPageId)->getUri() . "/" . $parent->getAlias();
+									}
+
 									$itemName = "<a href=\"" . $parentUrl."\">" . $parent->getOpenItemName() . "</a>"."&nbsp;&gt;&nbsp;" .$item->getOpenItemName();
 
 
@@ -169,13 +187,26 @@ function soyshop_breadcrumb_navigation($html, $page){
 							$name = $category->getOpenCategoryName();
 							$alias = $category->getAlias();
 
-							//URIの書き換え
-							$pageId = PartsItemDetailUtil::getAttr($item->getId(), PartsItemDetailUtil::FIELD_ID)->getValue();
-							if(is_numeric($pageId) && $pageId > 0){
-								$uri = soyshop_get_page_object($pageId)->getUri();
-							}else{
-								$uri = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO")->getPageUriByItemId($item->getId());
+							$uri = null;
+
+							//隠しモード cms:list_urlがある場合はこちらの値を利用する
+							if(strpos($html, "cms:list_url") !== false){
+								preg_match('/cms:id="current_item_name".*cms:list_url="(.*?)"/', $html, $tmp);
+								if(isset($tmp[1])){
+									$uri = htmlspecialchars(trim(trim($tmp[1]), "/"), ENT_QUOTES, "UTF-8");
+								}
 							}
+
+							if(is_null($uri)){
+								//URIの書き換え
+								$pageId = PartsItemDetailUtil::getAttr($item->getId(), PartsItemDetailUtil::FIELD_ID)->getValue();
+								if(is_numeric($pageId) && $pageId > 0){
+									$uri = soyshop_get_page_object($pageId)->getUri();
+								}else{
+									$uri = SOY2DAOFactory::create("SOYShop_BreadcrumbDAO")->getPageUriByItemId($item->getId());
+								}
+							}
+
 						}else{
 							$itemName = "";
 						}

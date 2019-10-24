@@ -110,6 +110,7 @@ class ItemListComponent extends HTMLList{
 
 
 		$itemStockErrorMessage = "";
+		if(!class_exists("SOYShopPluginUtil")) SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("reserve_calendar")){	//通常モード
 			$isItemStockError = ($itemCount > $openStock && !$this->ignoreStock);
 			$itemStockErrorMessage = ($openStock > 0) ? MessageManager::get("STOCK_NOTICE", array("stock" => $openStock)) : MessageManager::get("NO_STOCK");
