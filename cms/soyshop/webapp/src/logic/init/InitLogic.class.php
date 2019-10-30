@@ -226,11 +226,7 @@ class InitLogic extends SOY2LogicBase{
 	}
 
 	function initDefaultVersion(){
-		$checkVersionLogic = SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic");
-		$updateDBLogic = SOY2Logic::createInstance("logic.upgrade.UpdateDBLogic");
-
-		UpdateDBLogic::registerVersion($checkVersionLogic->getUpdateVersion());
-
+		SOY2Logic::createInstance("logic.upgrade.UpdateDBLogic")->registerVersion(SOY2Logic::createInstance("logic.upgrade.CheckVersionLogic")->getUpdateVersion());
 		return true;
 	}
 

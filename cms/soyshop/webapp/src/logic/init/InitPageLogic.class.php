@@ -468,7 +468,7 @@ class InitPageLogic extends SOY2LogicBase{
 	/**
 	 * マイページの初期設定
 	 */
-	function initMypage(){
+	function initMypage($isOnlyAdmin=false){
 		try{
 			SOYShop_DataSets::put("config.mypage.title","マイページ");
 
