@@ -167,11 +167,18 @@ class CustomSearchFieldUtil{
 			$params = $_GET[$key];
 		}else if(isset($_GET["reset"])){
 			$session->setAttribute("soyshop_custom_search:" . $key, array());
+			if(!defined("CUSTOM_SEARCH_FIRST_TIME_DISPLAY")) define("CUSTOM_SEARCH_FIRST_TIME_DISPLAY", true);	//リセットのときも初回表示として扱う
 			$params = array();
 		}else{
 			$params = $session->getAttribute("soyshop_custom_search:" . $key);
-			if(is_null($params)) $params = array();
+			if(is_null($params)) {
+				if(!defined("CUSTOM_SEARCH_FIRST_TIME_DISPLAY")) define("CUSTOM_SEARCH_FIRST_TIME_DISPLAY", true);	//検索フォームを初めて表示したときの定数
+				$params = array();
+			}
 		}
+
+		if(!defined("CUSTOM_SEARCH_FIRST_TIME_DISPLAY")) define("CUSTOM_SEARCH_FIRST_TIME_DISPLAY", false);	//検索フォームの初回表示でないとき
+
 		return $params;
 	}
 }

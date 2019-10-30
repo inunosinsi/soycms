@@ -22,11 +22,12 @@ class FieldFormComponent {
                 $html = array();
 
                 $opt = self::getFieldOption($field["option"], $lang);
-                if (strlen($opt) > 0) {
+				if (strlen($opt) > 0) {
                     $chks = (isset($value)) ? explode(",", $value) : array(); //valuesを配列化
-                    $options = explode("\n", $opt);
+					$options = explode("\n", $opt);
                     foreach ($options as $option) {
                         $oVal = trim($option);
+						if(strlen($oVal) && $oVal[0] == "*") $oVal = substr($oVal, 1);	//先頭の*を除く
                         if (in_array($oVal, $chks)) {
                             $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
                         } else {
@@ -46,6 +47,7 @@ class FieldFormComponent {
                     $options = explode("\n", $opt);
                     foreach ($options as $option) {
                         $oVal = trim($option);
+						if(strlen($oVal) && $oVal[0] == "*") $oVal = substr($oVal, 1);	//先頭の*を除く
                         if (isset($value) && $oVal === $value) {
                             $html[] = "<label><input type=\"radio\" name=\"custom_search[" . $fieldId . "]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
                         } else {
@@ -67,6 +69,7 @@ class FieldFormComponent {
                     $html[] = "<option value=\"\"></option>";
                     foreach ($options as $option) {
                         $oVal = trim($option);
+						if(strlen($oVal) && $oVal[0] == "*") $oVal = substr($oVal, 1);	//先頭の*を除く
                         if (isset($value) && $oVal === $value) {
                             $html[] = "<option value=\"" . $oVal . "\" selected=\"selected\">" . $oVal . "</option>";
                         } else {
