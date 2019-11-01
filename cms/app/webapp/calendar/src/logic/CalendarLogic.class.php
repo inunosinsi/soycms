@@ -284,78 +284,39 @@ class CalendarLogic extends SOY2LogicBase{
 		}
 
 		$today = false;
-		if($i == $day && $flag == true)$today = true;
+		if($i == $day && $flag == true) $today = true;
 
-		$date = array();
-		if($w == 0){
-			$date[] = "<td class=\"sun";
-
-			if($today == true){
-				$date[] = " today";
-			}
-			if(in_array(date("Ymd",$todayTime),$holiday)){
-				$date[] = " holiday";
-			}
-			if($nextMonth == true){
-				$date[] = " other";
-			}
-			if(isset($attribute)){
-				$date[] = " ".$attribute;
-			}
-			$date[] = "\"";
-
-		}elseif($w == 6){
-
-			$date[] = "<td class=\"sat";
-
-			if($today == true){
-				$date[] = " today";
-			}
-			if(in_array(date("Ymd",$todayTime),$holiday)){
-				$date[] = " holiday";
-			}
-			if($nextMonth == true){
-				$date[] = " other";
-			}
-			if(isset($attribute)){
-				$date[] = " ".$attribute;
-			}
-			$date[] = "\"";
-
-		}else{
-
-			$date[] = "<td";
-
-			if($today == true || in_array(date("Ymd",$todayTime),$holiday) != false || $nextMonth == true || isset($attribute)){
-				$date[] = " class=\"";
-			}
-			$startFlag = false;
-
-			if($today == true){
-				$date[] = " today";
-				$startFlag = true;
-			}
-			if(in_array(date("Ymd",$todayTime),$holiday)){
-				$date[] = " holiday";
-			}
-			if($nextMonth == true){
-				$date[] = " other";
-			}
-			if(isset($attribute)){
-				$date[] = " ".$attribute;
-			}
-
-			if($today == true || in_array(date("Ymd",$todayTime),$holiday) != false || $nextMonth == true || isset($attribute)){
-				$date[] = "\"";
-			}
-
+		$classes = array();
+		if($w == 0) {
+			$classes[] = "sun";
+		}else if($w == 6){
+			$classes[] = "sat";
 		}
 
-		$date[] = ">";
-		$date[] = self::displaySchedule($i,$todayTime,$nextMonth);
+		//今日より前ならbeforeを追加
+		if($todayTime < time()) {
+			$classes[] = "before";
+		}
 
+		if($today == true){
+			$classes[] = "today";
+		}
+		if(in_array(date("Ymd",$todayTime),$holiday)){
+			$classes[] = "holiday";
+		}
+		if($nextMonth == true){
+			$classes[] = " other";
+		}
 
-		return implode("",$date);
+		if(isset($attribute)){
+			$classes[] = $attribute;
+		}
+
+		$html = array();
+		$html[] = (count($classes)) ? "<td class=\"" . implode(" ", $classes) . "\">" : "<td>";
+		$html[] = self::displaySchedule($i,$todayTime,$nextMonth);
+		$html[] = "</td>";
+		return implode("",$html);
 	}
 
 	/** ここからモバイルモード **/
@@ -466,7 +427,7 @@ class CalendarLogic extends SOY2LogicBase{
 			$html[] = "</span>\n";
 		}
 
-		if(!$mobile) $html[] = "</td>";
+		//if(!$mobile) $html[] = "</td>";
 
 
 		return implode("",$html);
@@ -602,8 +563,6 @@ class CalendarLogic extends SOY2LogicBase{
 	}
 
 	function getNextPager($path){
-
-
 		if(isset($_GET["page"])){
 			$pageId = $_GET["page"] + 1;
 		}else{

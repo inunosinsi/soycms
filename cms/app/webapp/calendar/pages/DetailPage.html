@@ -1,65 +1,72 @@
-<div style="padding:4px 20px;">
-
-<div class="functions">
-	<div class="function">
-		<a soy:link="calendar">一覧</a>
-	</div><!-- class="function"の終了 -->
-	<div class="function">
-		<a soy:link="calendar.Create">予定の追加</a>
-	</div><!-- class="function"の終了 -->
-	<div class="function">
-		<a soy:link="calendar.Remove">予定の一括削除</a>
-	</div><!-- class="function"の終了 -->
-	<br style="clear:both;" />
-</div><!-- class="functions"の終了 -->
-
-
-<h1><!-- soy:id="date" -->YYYY年mm月dd日<!-- /soy:id="date" -->のスケジュール変更</h1>
-
-<div class="table_container">
-	<p class="error" soy:id="error">登録に失敗しました。</p>
-	
-	<form soy:id="form">
-
-	<table class="form_table list">
-		<tr>
-			<th width="20%">タイトル</th>
-			<td><select soy:id="title"></select></td>
-		</tr>
-		<tr>
-			<th>日時</th>
-			<td>
-				<select soy:id="year"></select>
-				&nbsp;
-				<select soy:id="month"></select>
-				&nbsp;
-				<select soy:id="day"></select>
-				&nbsp;&nbsp;
-				<input type="text" soy:id="start" />&nbsp;～&nbsp;<input type="text" soy:id="end" />
-				<input type="hidden" soy:id="id" />
-				<input type="hidden" soy:id="create_date" />
-			</td>
-		</tr>
-			
-	</table>
-		
-	<table class="button_table">
-		<tr class="button_table_row">
-			<td>
-				<input type="submit" name="delete" value="削除" onclick='return window.confirm("この内容で削除しますがよろしいですか？");' />
-			</td>
-			<td>
-				<input type="submit" name="confirm" value="変更" onclick='return window.confirm("この内容に変更しますがよろしいですか？");'　/>
-			</td>
-		</tr>
-	</table>
-	
-	</form soy:id="form">
-
-</div>
-	
-<div class="table_container">
-	<!-- soy:id="calendar" /-->
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header"><!-- soy:id="date" -->YYYY年mm月dd日<!-- /soy:id="date" -->のスケジュール変更</h1>
+	</div>
 </div>
 
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="calendar">一覧</a>
+				<a class="btn btn-default" soy:link="calendar.Create">予定の追加</a>
+				<a class="btn btn-default" soy:link="calendar.Remove">予定の一括削除</a>
+			</div>
+		</div>
+	</div>
+</div><!-- .row -->
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<p class="alert alert-danger" soy:display="error">登録に失敗しました。</p>
+				<form soy:id="form">
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<tr>
+								<th width="20%">タイトル</th>
+								<td>
+									<div class="form-inline">
+										<select soy:id="title" class="form-control"></select>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>日時</th>
+								<td>
+									<div class="form-inline">
+										<select soy:id="year" class="form-control"></select>&nbsp;年
+										&nbsp;
+										<select soy:id="month" class="form-control"></select>&nbsp;月
+										&nbsp;
+										<select soy:id="day" class="form-control"></select>&nbsp;日
+										&nbsp;&nbsp;
+										<input type="text" soy:id="start" class="form-control">&nbsp;～&nbsp;<input type="text" soy:id="end" class="form-control">
+										<input type="hidden" soy:id="id">
+										<input type="hidden" soy:id="create_date" />
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="text-center">
+						<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="変更" onclick='return window.confirm("この内容に変更しますがよろしいですか？");'>&nbsp;
+						<input type="submit" class="btn btn-warning btn-lg" name="delete" value="削除" onclick='return window.confirm("この内容で削除しますがよろしいですか？");'>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default" id="calendar_panel">
+			<div class="panel-body">
+				<!-- soy:id="calendar" /-->
+			</div>
+		</div>
+	</div>
 </div>

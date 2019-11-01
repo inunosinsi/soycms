@@ -18,5 +18,7 @@ if(SOYCMS_DB_TYPE == "sqlite"){
 	SOY2DAOConfig::pass(ADMIN_DB_PASS);
 }
 
+SOY2::import("util.CalendarAppUtil");
+
 //PHP
 mb_internal_encoding("UTF-8");

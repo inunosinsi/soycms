@@ -10,20 +10,24 @@ class SOYCalendarApplication{
 		 */
 		CMSApplication::setTabs(array(
 			array(
-				"label" => "Schedule",
-				"href" => SOY2PageController::createLink("calendar")
+				"label" => "ホーム",
+				"href" => SOY2PageController::createLink(APPLICATION_ID),
+				"icon" => "home"
 			),
 			array(
-				"label" => "Title",
-				"href" => SOY2PageController::createLink("calendar.Title")
+				"label" => "タイトル",
+				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Title"),
+				"icon" => "tags"
 			),
 			array(
-				"label" => "Archives",
-				"href" => SOY2PageController::createLink("calendar.Archives")
+				"label" => "アーカイブ",
+				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Archives"),
+				"icon" => "archive"
 			),
 			array(
-				"label" => "Help",
-				"href" => SOY2PageController::createLink("calendar.Help")
+				"label" => "ヘルプ",
+				"href" => SOY2PageController::createLink(APPLICATION_ID . ".Help"),
+				"icon" => "question"
 			),
 		));
 
@@ -31,7 +35,7 @@ class SOYCalendarApplication{
 
 		CMSApplication::addLink(SOY2PageController::createRelativeLink("./webapp/calendar/css/style.css"));
 		CMSApplication::addScript(SOY2PageController::createRelativeLink("./webapp/calendar/js/repeat.js"));
-		
+
 
 		//設定の読み込み
 		include_once(dirname(__FILE__) . "/config.php");
@@ -48,7 +52,7 @@ class SOYCalendarApplication{
 			$logic = SOY2Logic::createInstance("logic.InitLogic");
 			$logic->init();
 		}
-		
+
 		//データベースの更新:getでupgradeのindexが存在した場合に実行
 		if(isset($_GET["upgrade"])){
 			$logic = SOY2Logic::createInstance("logic.UpgradeLogic");

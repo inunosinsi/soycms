@@ -28,10 +28,8 @@ class CreatePage extends WebPage{
 						CMSApplication::jump();
 					}
 
-
 				//繰返し登録を利用する
 				}else{
-
 					 $repeat = $_POST["repeat"]["type"];
 
 					 $end = $_POST["end"];
@@ -45,11 +43,7 @@ class CreatePage extends WebPage{
 							$count = 1;
 					 }
 
-					 if($repeat == 1){
-					 	$flag = $this->getDayFlag();
-					 }else{
-					 	$flag = $_POST["repeat"]["day"];
-					 }
+					 $flag = ($repeat == 1) ? self::getDayFlag() : $_POST["repeat"]["day"];
 
 					 $logic->insertSchedule($item,$end,$endDate,$count,$flag);
 					 CMSApplication::jump();
@@ -76,20 +70,8 @@ class CreatePage extends WebPage{
 		return $year.$month.$day;
 	}
 
-	function getDayFlag(){
+	private function getDayFlag(){
 		return array("Sun","Mon","Tue","Wed","Thu","Fri","Sat");
-	}
-
-
-	function getTitleArray(){
-		$dao = SOY2DAOFactory::create("SOYCalendar_TitleDAO");
-		$titles = $dao->get();
-
-		$array = array();
-		foreach($titles as $title){
-			$array[$title->getId()] = $title->getTitle();
-		}
-		return $array;
 	}
 
     function __construct() {
@@ -112,21 +94,19 @@ class CreatePage extends WebPage{
     		$day = $_POST["item"]["day"];
     	}
 
-    	$this->createAdd("error","HTMLModel",array(
-    		"visible" => $this->error == true
-    	));
+		DisplayPlugin::toggle("error", $this->error === true);
 
-    	$this->createAdd("form","HTMLForm");
+    	$this->addForm("form");
 
     	$this->createAdd("title","HTMLSelect",array(
     		"name" => "item[title]",
-    		"options" => $this->getTitleArray(),
-    		"selected" => @$_POST["item"]["title"]
+    		"options" => CalendarAppUtil::getTitleList(),
+    		"selected" => (isset($_POST["item"]["title"])) ? $_POST["item"]["title"] : ""
     	));
 
     	$this->createAdd("year","HTMLSelect",array(
     		"name" => "item[year]",
-    		"options" => $this->getYearArray(),
+    		"options" => CalendarAppUtil::getYearArray(),
     		"selected" => $year
     	));
     	$this->createAdd("month","HTMLSelect",array(
@@ -141,12 +121,12 @@ class CreatePage extends WebPage{
     	));
     	$this->createAdd("start","HTMLInput",array(
     		"name" => "item[start]",
-    		"value" => @$_POST["item"]["start"],
+    		"value" => (isset($_POST["item"]["start"])) ? $_POST["item"]["start"] : "",
     		"style" => "width:15%;"
     	));
     	$this->createAdd("end","HTMLInput",array(
     		"name" => "item[end]",
-    		"value" => @$_POST["item"]["end"],
+    		"value" => (isset($_POST["item"]["end"])) ? $_POST["item"]["end"] : "",
     		"style" => "width:15%;"
     	));
 
@@ -160,7 +140,7 @@ class CreatePage extends WebPage{
     	$this->createAdd("repeat","HTMLSelect",array(
     		"name" => "repeat[type]",
     		"options" => $this->repeatArray,
-    		"selected" => @$_POST["repeat"]["type"]
+    		"selected" => (isset($_POST["repeat"]["type"])) ? $_POST["repeat"]["type"] : ""
     	));
 
     	if(isset($_GET["year"])){
@@ -175,7 +155,7 @@ class CreatePage extends WebPage{
 
     	$this->createAdd("end_year","HTMLSelect",array(
     		"name" => "end[year]",
-    		"options" => $this->getYearArray(),
+    		"options" => CalendarAppUtil::getYearArray(),
     		"selected" => $end["year"]
     	));
     	$this->createAdd("end_month","HTMLSelect",array(
@@ -189,75 +169,22 @@ class CreatePage extends WebPage{
     		"selected" => $end["day"]
     	));
 
-    	$this->getCheckboxList();
+    	self::buildCheckboxList();
 
-    	$logic = SOY2Logic::createInstance("logic.CalendarLogic");
-
-    	$this->createAdd("calendar","HTMLLabel",array(
-    		"html" => $logic->getCurrentCalendar(true)
+    	$this->addLabel("calendar", array(
+    		"html" => SOY2Logic::createInstance("logic.CalendarLogic")->getCurrentCalendar(true)
     	));
     }
 
-    function getCheckboxList(){
-
-    	$this->createAdd("sun","HTMLCheckBox",array(
-    		"name" => "repeat[day][]",
-    		"value" => "Sun",
-    		"elementId" => "sun",
-    		"selected" => @in_array("Sun",$_POST["repeat"]["day"])
-    	));
-
-    	$this->createAdd("mon","HTMLCheckBox",array(
-    		"name" => "repeat[day][]",
-    		"value" => "Mon",
-    		"elementId" => "mon",
-    		"selected" => @in_array("Mon",$_POST["repeat"]["day"])
-    	));
-
-    	$this->createAdd("tue","HTMLCheckBox",array(
-    		"name" => "repeat[day][]",
-    		"value" => "Tue",
-    		"elementId" => "tue",
-    		"selected" => @in_array("Tue",$_POST["repeat"]["day"])
-    	));
-
-    	$this->createAdd("wed","HTMLCheckBox",array(
-    		"name" => "repeat[day][]",
-    		"value" => "Wed",
-    		"elementId" => "wed",
-    		"selected" => @in_array("Wed",$_POST["repeat"]["day"])
-    	));
-
-    	$this->createAdd("thu","HTMLCheckBox",array(
-    		"name" => "repeat[day][]",
-    		"value" => "Thu",
-    		"elementId" => "thu",
-    		"selected" => @in_array("Thu",$_POST["repeat"]["day"])
-    	));
-
-    	$this->createAdd("fri","HTMLCheckBox",array(
-    		"name" => "repeat[day][]",
-    		"value" => "Fri",
-    		"elementId" => "fri",
-    		"selected" => @in_array("Fri",$_POST["repeat"]["day"])
-    	));
-
-    	$this->createAdd("sat","HTMLCheckBox",array(
-    		"name" => "repeat[day][]",
-    		"value" => "Sat",
-    		"elementId" => "sat",
-    		"selected" => @in_array("Sat",$_POST["repeat"]["day"])
-    	));
-
-    }
-
-    function getYearArray(){
-    	$year = date("Y",time());
-
-    	$array = array();
-    	$array[] = $year;
-    	$array[] = $year+1;
-
-    	return $array;
+    private function buildCheckboxList(){
+		foreach(self::getDayFlag() as $flg){
+			$lowFlg = strtolower($flg);
+			$this->addCheckBox($lowFlg, array(
+	    		"name" => "repeat[day][]",
+	    		"value" => $flg,
+	    		"elementId" => $lowFlg,
+	    		"selected" => (isset($_POST["repeat"]["day"]) && in_array($flg, $_POST["repeat"]["day"]))
+	    	));
+		}
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
 class DetailPage extends WebPage{
-	
+
 	private $error;
 	private $id;
 	private $dao;
-	
+
 	private $titleArray = array(
     							"1" => "午前",
     							"2" => "午後",
@@ -18,17 +18,17 @@ class DetailPage extends WebPage{
 							);
 
 	function doPost(){
-		
+
 		if(soy2_check_token()){
-			
+
 			$item = $_POST["item"];
-			
+
 			if(isset($_POST["confirm"])/**&&$this->check($item)==true**/){
-				
+
 				$item["schedule"] = $this->getSchedule($item);
 				$item = SOY2::cast("SOYCalendar_Item",$item);
 				$item->setUpdateDate(time());
-			
+
 				try{
 					$this->dao->update($item);
 					CMSApplication::jump();
@@ -36,7 +36,7 @@ class DetailPage extends WebPage{
 					var_dump($e);
 				}
 			}
-			
+
 			if(isset($_POST["delete"])){
 				try{
 					$this->dao->deleteById($item["id"]);
@@ -44,11 +44,11 @@ class DetailPage extends WebPage{
 				}catch(Exception $e){
 					var_dump($e);
 				}
-			}	
+			}
 		}
 		$this->error = true;
 	}
-	
+
 	function check($item){
 		if(strlen($item["start"])>0&&strlen($item["end"])>0){
 			return true;
@@ -56,53 +56,50 @@ class DetailPage extends WebPage{
 			return false;
 		}
 	}
-	
+
 	function getSchedule($array){
 		$year = $array["year"];
 		$month = $array["month"];
 		if(strlen($month)==1)$month = "0".$month;
 		$day = $array["day"];
 		if(strlen($day)==1)$day = "0".$day;
-		
+
 		return $year.$month.$day;
 	}
 
     function __construct($args) {
-    	
+
     	$id = $args[0];
     	$this->id = $id;
-    	
+
     	$this->dao = SOY2DAOFactory::create("SOYCalendar_ItemDAO");
     	try{
     		$item = $this->dao->getById($id);
     	}catch(Exception $e){
     		$item = new SOYCalendar_Item();
     	}
-    	
+
     	$schedule = $this->getDateArray($item->getSchedule());
-    	
+
     	parent::__construct();
-    	
+
     	$this->createAdd("date","HTMLLabel",array(
     		"text" => $schedule["year"]."年".$schedule["month"]."月".$schedule["day"]."日"
     	));
-    	
-    	
-    	$this->createAdd("error","HTMLModel",array(
-    		"visible" => $this->error == true
-    	));
-    	
+
+		DisplayPlugin::toggle("error", $this->error === true);
+
     	$this->createAdd("form","HTMLForm");
-    	    	
+
     	$this->createAdd("title","HTMLSelect",array(
     		"name" => "item[title]",
-    		"options" => $this->getTitleArray(),
+    		"options" => CalendarAppUtil::getTitleList(),
     		"selected" => $item->getTitle()
     	));
-    	
+
     	$this->createAdd("year","HTMLSelect",array(
     		"name" => "item[year]",
-    		"options" => $this->getYearArray(),
+    		"options" => CalendarAppUtil::getYearArray(),
     		"selected" => $schedule["year"]
     	));
     	$this->createAdd("month","HTMLSelect",array(
@@ -133,42 +130,20 @@ class DetailPage extends WebPage{
     		"name" => "item[createDate]",
     		"value" => $item->getCreateDate()
     	));
-    	
+
     	$logic = SOY2Logic::createInstance("logic.CalendarLogic");
-    	
+
     	$this->createAdd("calendar","HTMLLabel",array(
     		"html" => $logic->getCalendar($schedule["year"],$schedule["month"],true)
     	));
     }
-    
-    function getYearArray(){
-    	$year = date("Y",time());
-    	
-    	$array = array();
-    	$array[] = $year;
-    	$array[] = $year+1;
-    	
-    	return $array;
-    }
-    
+
     function getDateArray($time){
     	$array = array();
     	$array["year"] = substr($time,0,4);
     	$array["month"] = substr($time,4,2);
     	$array["day"] = substr($time,6,2);
-    	
+
     	return $array;
     }
-    
-    function getTitleArray(){
-		$dao = SOY2DAOFactory::create("SOYCalendar_TitleDAO");
-		$titles = $dao->get();
-		
-		$array = array();
-		foreach($titles as $title){
-			$array[$title->getId()] = $title->getTitle();
-		}
-		return $array;
-	}
 }
-?>
