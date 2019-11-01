@@ -294,11 +294,11 @@ class CalendarLogic extends SOY2LogicBase{
 		}
 
 		//今日より前ならbeforeを追加
-		if($todayTime < time()) {
+		if(($todayTime + 24 * 60 * 60) < time()) {
 			$classes[] = "before";
 		}
 
-		if($today == true){
+		if($today){
 			$classes[] = "today";
 		}
 		if(in_array(date("Ymd",$todayTime),$holiday)){
