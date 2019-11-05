@@ -315,10 +315,10 @@ class CartLogic extends SOY2LogicBase{
 	}
 
 	function calculateConsumptionTax(){
-		if(SOYSHOP_CONSUMPTION_TAX_MODE){
+		if(defined("SOYSHOP_CONSUMPTION_TAX_MODE") && SOYSHOP_CONSUMPTION_TAX_MODE){
 			//外税(プラグインによる処理)
 			$this->setConsumptionTax();
-		}elseif(SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE){
+		}elseif(defined("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE") && SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE){
 			//内税(標準実装)
 			$this->setConsumptionTaxInclusivePricing();
 		}else{
