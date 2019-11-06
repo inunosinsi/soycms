@@ -1,0 +1,31 @@
+<p class="alert alert-info">プラグインブロックで管理画面でチェック入れた記事一覧を表示できるブロックを使用できます</p>
+
+<h4>記事投稿画面に表示するチェックボックスの項目名</h4>
+
+<form soy:id="form">
+<div class="form-group form-inline">
+	<label>記事投稿画面で表示する項目名：</label>
+	<input type="text" soy:id="item_name" class="form-control" style="width:70%;">
+</div>
+
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="更新">
+</div>
+</form>
+
+<br>
+
+<h4>設定方法</h4>
+<p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>selected_entries_block</strong>を選びます。</p>
+
+<h4>タグの記述例</h4>
+<p>他のブロックの時と同じですが、block:id="***"の記述の時に、表示件数を指定することができます</p>
+
+<pre>&lt;!-- block:id="***" cms:count="10" --&gt;
+表示したい内容のcms:idを追加
+&lt;!-- /block:id="***" --&gt;</pre>
+<p>
+    ***の箇所は任意の値です。<br>
+    cms:countで選択した記事を何件表示するか決めることができます。<br>
+    ※cms:countの指定がなくても動作します。
+</p>
