@@ -79,15 +79,19 @@ if(function_exists("soy2_realpath")){
 //ルートドメインに設定しているかどうか
 $file = @file_get_contents($_SERVER["DOCUMENT_ROOT"] . "index.php");
 if(isset($file) && preg_match('/\("(.*)\//', $file, $res)){
-	$isRoot = ($res[1] == SOYSHOP_ID) ? true : false;
+	$isRoot = ($res[1] == SOYSHOP_ID);
 }else{
 	$isRoot = false;
 }
 define("SOYSHOP_IS_ROOT", $isRoot);
 
-$config = SOYShop_ShopConfig::load();
-define("SOYSHOP_CONSUMPTION_TAX_MODE", ($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
-define("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE", ($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
+//税金の設定
+if(!defined("SOYSHOP_CONSUMPTION_TAX_MODE")){
+	SOY2::import("domain.config.SOYShop_ShopConfig");
+	$config = SOYShop_ShopConfig::load();
+	define("SOYSHOP_CONSUMPTION_TAX_MODE", ($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
+	define("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE", ($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
+}
 
 //SOYShop側のサイトを表示しているか？
 define("DISPLAY_SOYSHOP_SITE", true);

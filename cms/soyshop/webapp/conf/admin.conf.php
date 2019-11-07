@@ -20,7 +20,7 @@ $session = SOY2ActionSession::getUserSession();
 if(isset($_GET["site_id"])){
 	$session->setAttribute("soyshop.shop.id", $_GET["site_id"]);
 	$url = SOY2PageController::createRelativeLink("", true);
-	
+
 	//https:の画面でログインした場合、SOY Shopの管理画面もhttpsにする
 	if(isset($_GET["https"]) && strpos($url, "http://") === 0){
 		$url = str_replace("http://", "https://", $url);
@@ -64,6 +64,15 @@ define("SOYSHOP_IS_ROOT",$isRoot);
 if(!defined("SOYSHOP_ADMIN_PAGE")){
 	define("SOYSHOP_ADMIN_PAGE", true);
 }
+
+//税金の設定
+if(!defined("SOYSHOP_CONSUMPTION_TAX_MODE")){
+	SOY2::import("domain.config.SOYShop_ShopConfig");
+	$config = SOYShop_ShopConfig::load();
+	define("SOYSHOP_CONSUMPTION_TAX_MODE", ($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
+	define("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE", ($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
+}
+
 
 //ダミーのメールアドレス用のドメイン(管理画面用:一応、公開側と分けておく)
 if(!defined("DUMMY_MAIL_ADDRESS_DOMAIN")) define("DUMMY_MAIL_ADDRESS_DOMAIN", "dummy.soyshop.net");
