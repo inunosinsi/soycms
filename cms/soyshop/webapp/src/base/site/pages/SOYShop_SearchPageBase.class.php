@@ -48,7 +48,8 @@ class SOYShop_SearchPageBase extends SOYShopPageBase{
 		 * 検索実行
 		 */
 		$items = $delegate->getItems($this->currentPage, $this->limit);
-		$this->setTotal($delegate->getTotal());
+		$total = $delegate->getTotal();
+		$this->setTotal($total);
 
 		//item_list
 		$this->createAdd("item_list","SOYShop_ItemListComponent", array(
@@ -62,23 +63,21 @@ class SOYShop_SearchPageBase extends SOYShopPageBase{
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
-		$q = (isset($_GET["q"])) ? $_GET["q"] : "";
-
 		//if results exist
 		$this->addModel("results", array(
-			"visible" => (count($items) > 0 && strlen($q) > 0),
+			"visible" => ($total > 0),
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
 		//no_results
 		$this->addModel("no_results", array(
-			"visible" => (count($items) == 0||strlen($q) == 0),
+			"visible" => ($total == 0),
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
 		//total
 		$this->addLabel("total_count", array(
-			"html" => $this->getTotal(),
+			"html" => $total,
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
@@ -90,7 +89,7 @@ class SOYShop_SearchPageBase extends SOYShopPageBase{
 		));
 
 		$this->addLabel("count_end", array(
-			"html" => $currentCount + count($items),
+			"html" => $currentCount + $total,
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
