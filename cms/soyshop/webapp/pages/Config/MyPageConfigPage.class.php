@@ -16,16 +16,6 @@ class MyPageConfigPage extends WebPage{
 			$mypage_top = self::checkMyPageUrl($_POST["mypage_top"]);
 			$mypage_charset = $_POST["mypage_charset"];
 
-			$mobile_mypage_id = self::checkMyPageId($_POST["mobile_mypage_id"]);
-			$mobile_mypage_url = self::checkMyPageUrl($_POST["mobile_mypage_url"]);
-			$mobile_mypage_top = self::checkMyPageUrl($_POST["mobile_mypage_top"]);
-			$mobile_mypage_charset = $_POST["mobile_mypage_charset"];
-
-			$smartphone_mypage_id = self::checkMyPageId($_POST["smartphone_mypage_id"]);
-			$smartphone_mypage_url = self::checkMyPageUrl($_POST["smartphone_mypage_url"]);
-			$smartphone_mypage_top = self::checkMyPageUrl($_POST["smartphone_mypage_top"]);
-			$smartphone_mypage_charset = $_POST["smartphone_mypage_charset"];
-
 			$profile_resize = (isset($_POST["mypage_profile_resize"])) ? 1 : 0;
 
 			SOYShop_DataSets::put("config.mypage.title", $_POST["mypage_title"]);
@@ -40,15 +30,29 @@ class MyPageConfigPage extends WebPage{
 
 			//携帯自動振り分けプラグインが有効な時だけ設定を保存する
 			if( class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("util_mobile_check")) ){
-				SOYShop_DataSets::put("config.mypage.mobile.id", $mobile_mypage_id);
-				SOYShop_DataSets::put("config.mypage.mobile.url", $mobile_mypage_url);
-				SOYShop_DataSets::put("config.mypage.mobile.top", $mobile_mypage_top);
-				SOYShop_DataSets::put("config.mypage.mobile.charset", $mobile_mypage_charset);
+				if(isset($_POST["mobile_mypage_id"])){
+					$mobile_mypage_id = self::checkMyPageId($_POST["mobile_mypage_id"]);
+					$mobile_mypage_url = self::checkMyPageUrl($_POST["mobile_mypage_url"]);
+					$mobile_mypage_top = self::checkMyPageUrl($_POST["mobile_mypage_top"]);
+					$mobile_mypage_charset = $_POST["mobile_mypage_charset"];
 
-				SOYShop_DataSets::put("config.mypage.smartphone.id", $smartphone_mypage_id);
-				SOYShop_DataSets::put("config.mypage.smartphone.url", $smartphone_mypage_url);
-				SOYShop_DataSets::put("config.mypage.smartphone.top", $smartphone_mypage_top);
-				SOYShop_DataSets::put("config.mypage.smartphone.charset", $smartphone_mypage_charset);
+					SOYShop_DataSets::put("config.mypage.mobile.id", $mobile_mypage_id);
+					SOYShop_DataSets::put("config.mypage.mobile.url", $mobile_mypage_url);
+					SOYShop_DataSets::put("config.mypage.mobile.top", $mobile_mypage_top);
+					SOYShop_DataSets::put("config.mypage.mobile.charset", $mobile_mypage_charset);
+				}
+
+				if(isset($_POST["smartphone_mypage_id"])){
+					$smartphone_mypage_id = self::checkMyPageId($_POST["smartphone_mypage_id"]);
+					$smartphone_mypage_url = self::checkMyPageUrl($_POST["smartphone_mypage_url"]);
+					$smartphone_mypage_top = self::checkMyPageUrl($_POST["smartphone_mypage_top"]);
+					$smartphone_mypage_charset = $_POST["smartphone_mypage_charset"];
+
+					SOYShop_DataSets::put("config.mypage.smartphone.id", $smartphone_mypage_id);
+					SOYShop_DataSets::put("config.mypage.smartphone.url", $smartphone_mypage_url);
+					SOYShop_DataSets::put("config.mypage.smartphone.top", $smartphone_mypage_top);
+					SOYShop_DataSets::put("config.mypage.smartphone.charset", $smartphone_mypage_charset);
+				}
 			}
 
 			SOYShop_DataSets::put("config.mypage.tmp_user_register", (int)$_POST["mypage_tmp_user_register"]);
