@@ -163,25 +163,7 @@ class InquiryLogic extends SOY2LogicBase{
 			//NoPersistentは無視して全項目を保存する
 			$id = $column->getId();
 			$column->setInquiry($inquiry);
-
-			//連番の場合
-			if($column->getType() == "SerialNumber"){
-				$config = soy2_unserialize($column->getConfig());
-				if(!isset($config["serialNumber"]) || !is_numeric($config["serialNumber"])) continue;
-				$res[$id] = (int)$config["serialNumber"];
-
-				//連番を更新する
-				$config["serialNumber"] = $res[$id] + 1;
-				$column->setConfig($config);
-
-				try{
-					SOY2DAOFactory::create("SOYInquiry_ColumnDAO")->update($column);
-				}catch(Exception $e){
-					//
-				}
-			}else{
-				$res[$id] = $column->getContent();
-			}
+			$res[$id] = $column->getContent();
 		}
 
 		return $res;

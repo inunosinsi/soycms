@@ -390,6 +390,24 @@ class SOYInquiry_PageApplication{
 
 			$inquiryMailBody = $logic->getInquiryMailBody($inquiry, $columns);
 
+			//連番はここで値を更新
+			foreach($columns as $column){
+				if($column->getType() == "SerialNumber"){
+					$config = soy2_unserialize($column->getConfig());
+					if(!isset($config["serialNumber"]) || !is_numeric($config["serialNumber"])) $config["serialNumber"] = 1;
+
+					//連番を更新する
+					$config["serialNumber"]++;
+					$column->setConfig($config);
+
+					try{
+						SOY2DAOFactory::create("SOYInquiry_ColumnDAO")->update($column);
+					}catch(Exception $e){
+						//
+					}
+				}
+			}
+
 			//管理者用メールボディ
 			$mailBody[0] = $inquiryMailBody;
     		if($this->form->getConfigObject()->getIsIncludeAdminURL()){
