@@ -2,7 +2,6 @@
 /**
  * @ToDo 後日、iframe周りのhttpsの読み込みの対応を行う
  */
-SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
 class ButtonSocialPlugin{
 
 	private $logic;
@@ -25,13 +24,15 @@ class ButtonSocialPlugin{
 	public $config_per_blog = array();
 
 	function init(){
+		SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
+
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"ソーシャルボタン設置プラグイン",
 			"description"=>"ページにソーシャルボタンを設置します。",
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/soycms/",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.3"
+			"version"=>"1.4"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
@@ -39,6 +40,8 @@ class ButtonSocialPlugin{
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
+			SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
+
 			//公開画面側
 			if(defined("_SITE_ROOT_")){
 				CMSPlugin::setEvent('onEntryOutput',$this->getId(),array($this,"display"));
@@ -52,6 +55,7 @@ class ButtonSocialPlugin{
 				CMSPlugin::setEvent('onEntryCopy', $this->getId(), array($this, "onEntryCopy"));
 				CMSPlugin::setEvent('onEntryRemove', $this->getId(), array($this, "onEntryRemove"));
 
+				SOY2::import("site_include.plugin.ButtonSocial.component.CustomFieldForm");
 				CMSPlugin::addCustomFieldFunction($this->getId(), "Entry.Detail", array($this, "onCallCustomField"));
 				CMSPlugin::addCustomFieldFunction($this->getId(), "Blog.Entry", array($this, "onCallCustomField_inBlog"));
 			}
@@ -81,8 +85,8 @@ class ButtonSocialPlugin{
 		$htmlObj->addLabel("twitter_button", array(
 			"soy2prefix" => "cms",
 			"html" => $btnLogic->buildTwitterButton($url)
-		));
 
+		));
 		$htmlObj->addLabel("hatena_button", array(
 			"soy2prefix" => "cms",
 			"html" => $btnLogic->buildHatenaButton($url)
@@ -268,7 +272,6 @@ class ButtonSocialPlugin{
 	}
 
 	function onCallCustomField(){
-		SOY2::import("site_include.plugin.ButtonSocial.component.CustomFieldForm");
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
 		return CustomFieldForm::buildForm($entryId);
@@ -353,6 +356,7 @@ class ButtonSocialPlugin{
 
 
 	public static function register(){
+		SOY2::import("site_include.plugin.ButtonSocial.util.ButtonSocialUtil");
 		$obj = CMSPlugin::loadPluginConfig(ButtonSocialUtil::PLUGIN_ID);
 		if(is_null($obj)){
 			$obj = new ButtonSocialPlugin();
