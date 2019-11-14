@@ -20,4 +20,3 @@ class CustomSearchFieldChildListConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "custom_search_field_child_list", "CustomSearchFieldChildListConfig");
-?>

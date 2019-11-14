@@ -293,6 +293,13 @@ class SearchLogic extends SOY2LogicBase{
 						$freeSubQueries[] = "s." . $key . " LIKE :csffree" . $key . $i;
 						$this->binds[":csffree" . $key . $i] = "%" . $word . "%";
 					}
+
+					//商品名等
+					foreach(array("item_name", "item_code") as $key){
+						$freeSubQueries[] = "i." . $key . " LIKE :csffree" . $key . $i;
+						$this->binds[":csffree" . $key . $i] = "%" . $word . "%";
+					}
+
 					if(count($freeSubQueries)){
 						$freeQueries[] = "(" . implode(" OR ", $freeSubQueries) . ")";
 					}
