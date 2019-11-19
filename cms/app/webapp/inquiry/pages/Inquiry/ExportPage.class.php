@@ -63,7 +63,7 @@ class ExportPage extends WebPage{
     			echo "\"" . $inquiry->getTrackingNumber() . "\",";
 
     			$data = $inquiry->getDataArray();
-    			$function($data);
+				$function($data);
     		}
 
     		$csv = ob_get_contents();
@@ -172,4 +172,3 @@ class ExportPage extends WebPage{
 		return $str;
     }
 }
-?>

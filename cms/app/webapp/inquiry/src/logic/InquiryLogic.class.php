@@ -91,7 +91,7 @@ class InquiryLogic extends SOY2LogicBase{
      * 問い合わせ情報を更新
      */
     function updateInquiry(SOYInquiry_Inquiry $inquiry, $body, $data, $url){
-    	$inquiryDao = $this->getDAO();
+		$inquiryDao = $this->getDAO();
 
     	$inquiry->setContent($body);
     	$inquiry->setData(serialize($data));

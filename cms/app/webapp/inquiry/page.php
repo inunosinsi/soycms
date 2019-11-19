@@ -221,7 +221,7 @@ class SOYInquiry_PageApplication{
 		    	$errors = $this->checkPostData($_POST["data"], $columns);
 
 		    	//問い合わせを追加＆メール送信
-		    	$inquiry = $this->addInquiry($form->getId(), $columns, $_POST["data"], $this->pageUrl);
+				$inquiry = $this->addInquiry($form->getId(), $columns, $_POST["data"], $this->pageUrl);
 
 		    	@include_once($templateDir . "send.php");
 

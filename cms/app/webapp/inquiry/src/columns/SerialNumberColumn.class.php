@@ -12,6 +12,14 @@ class SerialNumberColumn extends SOYInquiry_ColumnBase{
 	}
 
 	/**
+	 * データ投入用
+	 *
+	 */
+	function getContent(){
+		return $this->serialNumber;
+	}
+
+	/**
 	 * 設定画面で表示する用のフォーム
 	 */
 	function getConfigForm(){
