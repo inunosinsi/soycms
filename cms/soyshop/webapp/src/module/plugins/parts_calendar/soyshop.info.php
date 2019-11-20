@@ -13,5 +13,3 @@ class CalendarModuleInfo extends SOYShopInfoPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.info","parts_calendar","CalendarModuleInfo");
-?>
-

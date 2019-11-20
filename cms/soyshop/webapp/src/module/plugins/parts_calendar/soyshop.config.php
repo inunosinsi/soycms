@@ -22,4 +22,3 @@ class CalendarConfig extends SOYShopConfigPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.config", "parts_calendar", "CalendarConfig");
-?>
