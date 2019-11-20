@@ -160,7 +160,7 @@ class IndexPage extends SOYShopWebPage{
 			preg_match('/host=(.*?)(?:;|$)/', $dsn, $match);
 			$host = $match[1];
 			preg_match('/port=(.*?)(?:;|$)/', $dsn, $match);
-			$port = $match[1];
+			$port = (isset($match[1])) ? $match[1] : 3306;	//portは省略可の為
 			preg_match('/dbname=(.*?)(?:;|$)/', $dsn, $match);
 			$db = $match[1];
 		}

@@ -9,7 +9,7 @@ class DetailPage extends WebPage{
 	function __construct($args){
 		$pluginId = (isset($args[0])) ? $args[0] : null;
 		$this->detailId = (isset($args[1])) ? $args[1] : null;
-		
+
 		$plugin = SOYShopPluginUtil::getPluginById($pluginId);
 		if(is_null($plugin->getId())) SOY2PageController::jump("");
 

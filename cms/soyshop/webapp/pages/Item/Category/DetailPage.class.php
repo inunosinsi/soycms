@@ -115,6 +115,14 @@ class DetailPage extends WebPage{
 		));
 
 		self::buildForm($category, $categories);
+
+		SOYShopPlugin::load("soyshop.notepad");
+		$this->addLabel("notepad_extension", array(
+			"html" => SOYShopPlugin::invoke("soyshop.notepad", array(
+				"mode" => "category",
+				"id" => $category->getId()
+			))->getHtml()
+		));
     }
 
     private function buildForm($entity, $parents){
@@ -205,12 +213,8 @@ class DetailPage extends WebPage{
 		));
 
 		SOYShopPlugin::load("soyshop.category.customfield");
-		$html = SOYShopPlugin::display("soyshop.category.customfield", array(
-			"category" => $entity
-		));
-
 		$this->addLabel("category_custom_field", array(
-			"html" => $html
+			"html" => SOYShopPlugin::display("soyshop.category.customfield", array("category" => $entity))
 		));
 
 		$this->addCheckBox("category_is_open", array(
