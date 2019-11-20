@@ -1,0 +1,87 @@
+<style type="text/css">
+textarea{
+	height:50px;
+}
+
+p.insert{
+	color:white;
+	background-color:gray;
+	weight:800;
+	width:100%;
+	padding:2px;
+	display:block;
+	margin-bottom:0;
+}
+.form_table caption{
+	padding:10px 0;background-color:white;
+}
+</style>
+<div id="content" class="table_container" style="padding:10px;">
+	<h1>項目の追加</h1>
+
+	<form soy:id="add_form">
+
+		<p style="margin-left:50px;"></p>
+
+		<table class="form_table list">
+		<col style="width:200px" />
+		<caption style="border-bottom:solid 1px #bbb;">項目の種類を選択してください。</caption>
+
+		<tr>
+			<th>名前</th>
+			<td>
+				<input soy:id="column_name">
+			</td>
+		</tr>
+		<tr>
+			<th>種類</th>
+			<td>
+				<select soy:id="column_type"></select>
+			</td>
+		</tr>
+		<tr>
+			<th>必須</th>
+			<td>
+				<input type="checkbox" soy:id="column_require" />
+			</td>
+		</tr>
+		</table>
+
+		<table class="button_table">
+			<tr class="button_table_row">
+				<td>
+					<button type="submit">追加</button>
+				</td>
+			</tr>
+		</table>
+
+		<div style="margin:10px auto;width:80%;">
+			<p>追加する場所を設定してください。(ディフォルトは末尾に追加されます）</p>
+
+			<!-- soy:id="column_list" -->
+			<p class="insert">
+				<input type="radio" soy:id="display_order">
+			</p>
+			<table style="overflow:hidden;margin:0 0 0 10px;">
+				<tr class="dummy">
+					<td soy:id="label" style="width:100px;"></td>
+					<td soy:id="form"></td>
+				</tr>
+			</table>
+			<!-- /soy:id="column_list" -->
+			<p class="insert">
+				<input type="radio" id="display_order_default" soy:id="order_default" name="Column[order]" value="0" checked="checked">
+				<label for="display_order_default">ここに追加</label>
+			</p>
+		</div>
+
+		<table class="button_table">
+			<tr class="button_table_row">
+				<td>
+					<button type="submit">追加</button>
+				</td>
+			</tr>
+		</table>
+
+	</form>
+</div>

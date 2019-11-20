@@ -1,0 +1,13 @@
+table.table tr th {
+	width: 20%;
+}
+th.id{
+	width:100px !important;
+}
+div.pagination{
+	text-align:right;
+}
+div.pager_item{
+	float:left;
+	margin-left:5px;
+}

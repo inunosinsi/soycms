@@ -1,0 +1,177 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-green" id="top">
+			<div class="panel-heading">目次</div>
+			<div class="panel-body">
+
+				<ul>
+					<li><a href="#about">このアプリケーションについて</a></li>
+					<li>フォーム管理
+						<ul>
+							<li><a href="#form_1">フォームの追加・削除</a></li>
+							<li><a href="#form_2">フォームの問い合わせ項目の変更</a></li>
+							<li><a href="#form_3">フォームの設定</a></li>
+						</ul>
+					</li>
+					<li><a href="#inquiry">問い合わせ管理</a></li>
+					<li>SOY CMSとの連携
+						<ul>
+							<li><a href="#soycms_1">問い合わせフォームを表示する</a></li>
+						</ul>
+					</li>
+				</ul>
+
+			</div>
+		</div><!-- /.panel panel-green -->
+
+		<div class="panel panel-green" id="about">
+			<div class="panel-heading">このアプリケーションについて</div>
+			<div class="panel-body">
+				<div style="margin-left:20px;">
+					<p>
+						SOY Inquiryは問い合わせフォームを作成し、問い合わせを管理するアプリケーションです。<br>
+						問い合わせはメールで配信するのと同時に、管理画面から確認することが出来ます。
+					</p>
+
+				</div>
+
+				<div style="text-align:right;margin:10px;">
+					<a href="#top">▲</a>
+				</div>
+			</div><!-- /.panel-body -->
+		</div><!-- /.panel panel-green -->
+
+
+		<div class="panel panel-green" id="form_1">
+			<div class="panel-heading">フォームの追加・削除</div>
+			<div class="panel-body">
+
+				<div style="margin-left:20px;">
+					<p>フォームは<a soy:link="inquiry.Form.Create">フォームの作成</a>から作成します。</p>
+
+					<p>作成した段階で、いくつかの項目が既に追加されています。<br />
+						削除も同じ画面で行います。
+					</p>
+
+					<p>フォームの作成で設定したフォームIDはSOY CMSで問い合わせフォームを表示するのに
+						使用します。</p>
+
+				</div>
+				<div style="text-align:right;margin:10px;">
+					<a href="#top">▲</a>
+				</div>
+			</div><!-- /.panel-body -->
+		</div><!-- /.panel panel-green -->
+
+
+		<div class="panel panel-green" id="form_2">
+			<div class="panel-heading">フォームの問い合わせ項目の変更</div>
+			<div class="panel-body">
+
+				<div style="margin-left:20px;">
+
+					<p><a soy:link="inquiry.Form">フォーム一覧</a>から問い合わせ項目を選択することで問い合わせ項目編集画面に移動します。</p>
+
+					<p>問い合わせ項目編集画面で、項目を追加したり、順番を変更することが出来ます。</p>
+				</div>
+				<div style="text-align:right;margin:10px;">
+					<a href="#top">▲</a>
+				</div>
+			</div><!-- /.panel-body -->
+		</div><!-- /.panel panel-green -->
+
+
+		<div class="panel panel-green" id="form_3">
+			<div class="panel-heading">フォームの設定</div>
+			<div class="panel-body">
+
+				<div style="margin-left:20px;">
+					<p><a soy:link="inquiry.Form">フォーム一覧</a>から設定を選択することで設定画面に移動します。</p>
+
+					<p>各種メッセージなどを編集し、フォームのカスタマイズします。</p>
+				</div>
+				<div style="text-align:right;margin:10px;">
+					<a href="#top">▲</a>
+				</div>
+			</div><!-- /.panel-body -->
+		</div><!-- /.panel panel-green -->
+
+
+		<div class="panel panel-green" id="inquiry">
+			<div class="panel-heading">問い合わせ管理</div>
+			<div class="panel-body">
+
+				<div style="margin-left:20px;">
+					<p><a soy:link="inquiry.Inquiry">問い合わせ管理</a>より問い合わせ管理画面に移動します。</p>
+
+					<p>フォーム毎や期間で絞り込むことが出来ます。</p>
+
+					<p>また、問い合わせ情報をすべてCSVで出力することが出来ます。</p>
+
+				</div>
+
+				<div style="text-align:right;margin:10px;">
+					<a href="#top">▲</a>
+				</div>
+			</div><!-- /.panel-body -->
+		</div><!-- /.panel panel-green -->
+
+
+		<div class="panel panel-green" id="soycms_1">
+			<div class="panel-heading">問い合わせフォームを表示する</div>
+			<div class="panel-body">
+
+
+				<div style="margin-left:20px;">
+					<p>SOY CMSと連携するには、SOYAppページを使用します（※）。<br>
+						ページの新規作成からページの種類に「SOYAppページ」を選択して下さい。
+					</p>
+					<p>SOYAppページはSOY CMSの基本機能(ブロック、プラグイン）も使えます。</p>
+
+					<p>フォームID「test」のフォームを表示するには以下のようにテンプレートに記述します。</p>
+					<blockquote class="blockquote">
+						<p class="mb-0">
+							&lt;!-- app:id="soyinquiry" app:formid="test" --&gt;
+							ここにフォームが表示されます。
+							&lt;!-- /app:id="soyinquiry" --&gt;
+						</p>
+					</blockquote>
+
+				</div>
+
+
+				<div style="margin-left:20px;">
+					<p>※SOY CMS 1.3.3から<strong>標準ページなどSOYAppページ以外でもSOY Appを呼び出せるようになりました</strong>。</p>
+					<p>標準ページやブログページでSOY Inquiryを呼び出すには以下のように記述してください。<br>
+						これでSOYAppページでSOY Inquiryを指定したのと同じ状態になります。
+					</p>
+					<blockquote class="blockquote">
+						<p class="mb-0">
+							&lt;!-- cms:id="apps" cms:app="inquiry" /--&gt;
+						</p>
+					</blockquote>
+					<!-- <pre>&lt;!-- cms:id="apps" cms:app="inquiry" /--&gt;</pre> -->
+
+					<p>フォームを呼び出す記述も別途必要です。フォームID「test」のフォームを表示するには合わせて以下のようにテンプレートに記述します。</p>
+					<blockquote class="blockquote">
+						<p class="mb-0">
+							&lt;!-- app:id="soyinquiry" app:formid="test" --&gt;
+							ここにフォームが表示されます。
+							&lt;!-- /app:id="soyinquiry" --&gt;
+						</p>
+					</blockquote>
+					<!-- <pre>&lt;!-- cms:id="apps" cms:app="inquiry" /--&gt;
+		&lt;!-- app:id="soyinquiry" app:formid="test" --&gt;
+		ここにフォームが表示されます。
+		&lt;!-- /app:id="soyinquiry" --&gt;
+		</pre> -->
+				</div>
+
+				<div style="text-align:right;margin:10px;">
+					<a href="#top">▲</a>
+				</div>
+			</div><!-- /.panel-body -->
+		</div><!-- /.panel panel-green -->
+	</div>
+</div>
+<!-- /.row -->

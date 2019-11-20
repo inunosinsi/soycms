@@ -1,0 +1,39 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">SOY CMSとの連携 - <span soy:id="form_name">フォームA</span></h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="inquiry.Form">戻る</a>
+				<a class="btn btn-default" soy:id="design_link">問い合わせ項目</a>
+				<a class="btn btn-default" soy:id="config_link">設定</a>
+				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#previewModal">プレビュー</button>
+				<a class="btn btn-default active" soy:id="template_link">SOY CMS連携</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default" id="config_form">
+			<div class="panel-heading">問い合わせフォームを表示する</div>
+			<div class="panel-body">
+				<p>アプリケーションページのテンプレートに以下のように記述してください。</p>
+				<textarea soy:id="template" class="form-control" style="height:80px;"></textarea>
+				<p style="margin-top:1em;margin-bottom:1ex;">※SOY CMS 1.3.3から<strong>標準ページでもSOY Appを呼び出せるようになりました</strong>。<br>
+				標準ページなどでSOY Inquiryを呼び出すには以下のように記述してください。<br>
+				一行目の記述によりSOYAppページでSOY Inquiryを指定したのと同じ状態になります。
+				</p>
+				<textarea soy:id="template2" class="form-control" style="height:95px;"></textarea>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- soy:id="preview_modal" /-->

@@ -1,0 +1,137 @@
+<style type="text/css">
+textarea{
+	height:50px;
+	width:90%;
+}
+
+tr.active{
+	background-color:#ffd700;
+}
+tr .buttons{
+	display:none;
+	margin:10px 0;
+	float:left;
+
+}
+tr.active .buttons{
+	display:block;
+}
+input{
+	border:solid 1px #BBBBBB;
+}
+td{
+	border:solid 1px #BBBBBB;
+}
+</style>
+<div id="content" class="table_container" style="padding:10px;">
+	<h1>順番の変更</h1>
+
+	<div style="margin:8px auto;">
+		<p>列を選択した後、ボタンまたはキーボードの上下キーで順番を変更できます。</p>
+		<p>変更後、[保存]ボタンを押して保存します。</p>
+	</div>
+
+	<form soy:id="update_form" onsubmit="return false;">
+
+		<table style="width:80%;overflow:hidden;margin:8px auto;">
+		<!-- soy:id="column_list" -->
+		<tr class="dummy" soy:id="column_row">
+			<td style="width:30px;vertical-align:top;">
+				<input type="radio" soy:id="display_order">
+				<input type="hidden" soy:id="display_order_hidden">
+
+				<div class="buttons">
+					<button type="button" onclick="move_up();">▲</button><br /><br />
+					<button type="button" onclick="move_down();">▼</button>
+				</div>
+			</td>
+			<td soy:id="label" style="width:100px;"></td>
+			<td soy:id="form" style="padding:8px;"></td>
+		</tr>
+		<!-- /soy:id="column_list" -->
+		</table>
+
+		<table class="button_table">
+			<tr class="button_table_row">
+				<td>
+					<button type="submit" onclick="submit_form(this.form);">保存</button>
+				</td>
+			</tr>
+		</table>
+
+	</form>
+
+</div>
+
+<script type="text/javascript">
+var active_row = null;
+function select_row(row, input){
+	if($(active_row))$(active_row).removeClass("active");
+
+	$(row).addClass("active");
+	active_row = row;
+
+	$(input).prop("checked",true);
+}
+function move_up(){
+	if(!active_row)return;
+
+	//前があれば
+	if(getPreviousNode(active_row)){
+		active_row.parentNode.insertBefore(active_row, getPreviousNode(active_row));
+	}
+
+}
+function move_down(){
+	if(!active_row)return;
+
+	//前があれば
+	if(getNextNode(active_row)){
+		if(getNextNode(getNextNode(active_row))){
+			active_row.parentNode.insertBefore(active_row, getNextNode(getNextNode(active_row)));
+		}else{
+			active_row.parentNode.appendChild(active_row);
+		}
+	}
+}
+function getPreviousNode(ele, tag){
+	if(!tag)tag = ele.tagName;
+	var node = ele.previousSibling;
+	if(!node)return node;
+
+	if(node.tagName == tag)return node;
+
+	return getPreviousNode(node, tag);
+}
+
+function getNextNode(ele, tag){
+	if(!tag)tag = ele.tagName;
+	var node = ele.nextSibling;
+	if(!node)return node;
+
+	if(node.tagName == tag)return node;
+
+	return getNextNode(node, tag);
+}
+
+function submit_form(form){
+	form.onsubmit = function(){};
+	form.submit();
+}
+
+$(window).keydown(function(e){
+
+	keycode = e.keyCode;
+
+	if(keycode == 38){
+		move_up();
+		return false;
+	}
+
+	if(keycode == 40){
+		move_down();
+		return false;
+	}
+
+});
+</script>

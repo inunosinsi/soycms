@@ -1,0 +1,41 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header"><span soy:id="form_name">フォーム名</span> - 問い合わせ項目の編集</h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="inquiry.Form">戻る</a>
+				<a class="btn btn-default active" soy:id="design_link">問い合わせ項目</a>
+				<a class="btn btn-default" soy:id="config_link">設定</a>
+				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#previewModal">プレビュー</button>
+				<a class="btn btn-default" soy:id="template_link">SOY CMS連携</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div style="border:1px solid lightgrey; border-bottom:none;padding:8px 20px 0px;">
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">項目を追加する</button>&nbsp;
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#changeModal">順番を変更する</button>
+				</div>
+				<div style="border:1px solid lightgrey; border-top:none;">
+					<iframe id="column_fr" name="column_fr" soy:id="column_fr" style="width:100%;height:550px;" frameborder="0"></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- soy:id="preview_modal" /-->
+<!-- soy:id="add_modal" /-->
+<!-- soy:id="change_modal" /-->
