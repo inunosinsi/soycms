@@ -4,7 +4,7 @@ class CampaignAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		return SOY2PageController::createLink("Config.Detail?plugin=campaign");
 	}
-	
+
 	function getLinkTitle(){
 		return "キャンペーンプラグイン";
 	}
@@ -22,4 +22,3 @@ class CampaignAdminTop extends SOYShopAdminTopBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "campaign", "CampaignAdminTop");
-?>

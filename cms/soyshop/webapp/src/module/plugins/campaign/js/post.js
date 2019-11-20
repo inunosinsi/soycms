@@ -2,7 +2,7 @@ $(function(){
 	$("#restore_from_backup").click(function(){
 		AutoSaveEntry.restore();
 	});
-	
+
 	setInterval(function(){
 		AutoSaveEntry.save();
 	}, 10000);
@@ -14,16 +14,16 @@ var AutoSaveEntry = {
 
 		$.ajax({
 			type: "POST",
-			url: AutoSagePage,
+			url: AutoSavePage,
 			data: "soy2_token=" + $("input[name=soy2_token]").val() + "&mode=auto_save&login_id=" + CurrentLoginId + "&title=" + $("#title").val() + "&content=" + content,
 			dataType: 'text',
 			success: function(data){
 				var res = eval("array="+data);
 				$("input[name=soy2_token]").val(res.soy2_token);
-				
+
 				//一瞬だけsubmitボタンを押せない様にする
 				$("#update_button").attr("disabled", true);
-				
+
 				//バックアップに成功した場合
 				if( res.result){
 					var now = new Date();
@@ -33,7 +33,7 @@ var AutoSaveEntry = {
 				} else {
 					//
 				}
-				
+
 				//0.5秒後に戻す
 				setTimeout(function(){
 					$("#update_button").attr("disabled", false);
@@ -42,7 +42,7 @@ var AutoSaveEntry = {
 		});
 
 	},
-	
+
 	restore : function(){
 		$("#restoratoin_area").css("display", "none");
 		$.ajax({
@@ -53,13 +53,13 @@ var AutoSaveEntry = {
 			success: function(data){
 				var res = eval("array="+data);
 				$("input[name=soy2_token]").val(res.soy2_token);
-				
+
 				//一瞬だけsubmitボタンを押せない様にする
 				$("#update_button").attr("disabled", true);
-				
+
 				$("#title").val(res.title);
 				$('#main_content_ifr').contents().find("body").html(res.content);
-				
+
 				//0.5秒後に戻す
 				setTimeout(function(){
 					$("#update_button").attr("disabled", false);
