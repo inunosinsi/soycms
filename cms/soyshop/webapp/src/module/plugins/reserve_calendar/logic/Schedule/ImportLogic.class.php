@@ -9,7 +9,7 @@ class ImportLogic extends SOY2LogicBase {
 	}
 
 	function import(){
-		if(!isset($_FILES["import"]["type"]) || !strpos($_FILES["import"]["type"], "csv")) return false;
+		if(!isset($_FILES["import"]["name"]) || !stripos($_FILES["import"]["name"], ".csv")) return false;
 
 		set_time_limit(0);
 

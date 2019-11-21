@@ -229,6 +229,12 @@ class SOYShopPageBase extends WebPage{
             $html = str_replace("@@page_title;", $this->getPageObject()->getName(), $html);
         }
 
+		//ルート設定していれば、スラッシュのみ。設定をしていなければ/サイトID/に変換する置換文字列
+		if(strpos($html, "%TOPPAGE_URL%")){
+			$url = (defined("SOYSHOP_IS_ROOT") && SOYSHOP_IS_ROOT) ? "/" : "/" . SOYSHOP_ID . "/";
+			$html = str_replace("%TOPPAGE_URL%", $url, $html);
+		}
+
         return $html;
     }
 
