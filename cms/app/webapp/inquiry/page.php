@@ -189,10 +189,20 @@ class SOYInquiry_PageApplication{
 
 			//Google reCAPTCHA v3を利用している場合はここで調べる
 			if(isset($_POST["google_recaptcha"]) && strlen($_POST["google_recaptcha"])){
-				$obj = CMSPlugin::loadPluginConfig("re_captcha_v3");
-				if(strlen($obj->getSecretKey())){
+				if(defined("SOYSHOP_ID")){	//SOY Shop版
+					$old = SOYInquiryUtil::switchSOYShopConfig(SOYSHOP_ID);
+					SOY2::import("module.plugins.reCAPTCHAv3.util.reCAPTCHAUtil");
+					$config = reCAPTCHAUtil::getConfig();
+					$secretKey = (isset($config["secret_key"])) ? $config["secret_key"] : "";
+					SOYInquiryUtil::resetConfig($old);
+				}else{	// SOY CMS版
+					$obj = CMSPlugin::loadPluginConfig("re_captcha_v3");
+					$secretKey = $obj->getSecretKey();
+				}
+
+				if(strlen($secretKey)){
 					$reCapValues = array(
-						"secret" => $obj->getSecretKey(),
+						"secret" => $secretKey,
 						"response" => $_POST["google_recaptcha"]
 					);
 					$ch = curl_init("https://www.google.com/recaptcha/api/siteverify");

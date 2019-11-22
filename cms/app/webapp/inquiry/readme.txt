@@ -19,6 +19,7 @@ NEXT
 	- コメントテーブルでinquiry_idとcreate_dateでUNIQUEインデックスを追加
 	- お問い合わせテーブルでform_idとcreate_dateでUNIQUEインデックスを追加
 	- 管理者向けメールの返信先メールアドレスの設定でユーザのメールアドレスに変更する設定を追加
+	- Google reCAPTCHA v3に対応
 1.1.7 2014-12-08
 	修正
 	-SOY InquiryのSOY Shop連携の際にapplication.iniがない場合にエラーになっていた件を修正(動作はしていた)
