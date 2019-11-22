@@ -192,8 +192,8 @@ class SOYInquiry_PageApplication{
 				if(defined("SOYSHOP_ID")){	//SOY Shop版
 					$old = SOYInquiryUtil::switchSOYShopConfig(SOYSHOP_ID);
 					SOY2::import("module.plugins.reCAPTCHAv3.util.reCAPTCHAUtil");
-					$config = reCAPTCHAUtil::getConfig();
-					$secretKey = (isset($config["secret_key"])) ? $config["secret_key"] : "";
+					$shopconf = reCAPTCHAUtil::getConfig();
+					$secretKey = (isset($shopconf["secret_key"])) ? $shopconf["secret_key"] : "";
 					SOYInquiryUtil::resetConfig($old);
 				}else{	// SOY CMS版
 					$obj = CMSPlugin::loadPluginConfig("re_captcha_v3");
