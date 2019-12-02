@@ -168,7 +168,7 @@ td.today {
 	td {
 		display: block;
 		width: 100%;
-		height:56px !important;
+		min-height:56px !important;
 		padding: 0;
 	}
 	td {

@@ -6,6 +6,7 @@
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+
 body {
 	/**color: #333;**/
 	/**background: #EFECE5;**/
@@ -17,34 +18,38 @@ body {
 	padding: 0 5%;
 }
 
-.schedule_button{
+.schedule_button {
 	margin: 2px 0;
+	white-space: nowrap;
 }
 
 /** 人数選択フォーム **/
-#seat_select{
-	margin:30px 0;
+
+#seat_select {
+	margin: 30px 0;
 }
 
-#reserve_button{
-	display:none;
+#reserve_button {
+	display: none;
 }
 
-@media screen and (max-width: 600px) {
-	#wrap {
-		padding: 0 5px;
-	}
+#adult_seat,
+#child_seat{
+	width:150px !important;
 }
+
 
 /* ========================================
  * #mini-calendar
  * ========================================*/
+
 .calendar-year-month {
 	text-align: center;
 	font-size: 32px;
 	margin-bottom: 20px;
 	font-weight: bold;
 }
+
 table {
 	width: 100%;
 	border-spacing: 0;
@@ -54,6 +59,7 @@ table {
 	line-height: 1.5;
 	border-collapse: separate;
 }
+
 th,
 td {
 	background: #fff;
@@ -61,6 +67,7 @@ td {
 	border-bottom: 1px solid #ccc;
 	border-right: 1px solid #ccc;
 }
+
 th {
 	color: #fff;
 	background: #4F616B;
@@ -69,8 +76,8 @@ th {
 	padding-bottom: 7px;
 }
 
-tr.next{
-	display:none;
+tr.next {
+	display: none;
 }
 
 /*
@@ -83,23 +90,27 @@ th.calendar-sat {
 	background: #E2F3FC;
 }
 */
+
 td {
 	width: 14.3%;
 	height: 100px;
 	vertical-align: top;
 }
+
 td.holiday,
 td.sun {
 	color: #CE2727;
 	background: #FCF3F3;
 }
+
 td.sat {
 	color: #54AFC8;
 	background: #F5FBFE;
 }
+
 td.other,
-td.next{
-	color:#CDCDCD;
+td.next {
+	color: #CDCDCD;
 }
 
 
@@ -112,6 +123,7 @@ td.next{
 	padding: 0 3px;
 	line-height: 1.2;
 }**/
+
 i {
 	font-style: normal;
 	font-family: "Helvetica Neue", Arial, sans-serif;
@@ -121,18 +133,22 @@ i {
 	padding: 0 3px;
 	line-height: 1.2;
 }
+
 td.holiday .day,
 td.sun .day {
 	color: #DF0D2D;
 }
+
 td.sat .day {
 	color: #2574D3;
 }
+
 td span {
 	font-size: 11px;
 	line-height: 1.3;
 	display: block;
 }
+
 [class*=calender-label] {
 	font-size: 11px;
 	line-height: 1.3;
@@ -153,8 +169,8 @@ td.today {
 	background: #FEFBDA;
 }
 
-.pager-footer{
-	display:none;
+.pager-footer {
+	display: none;
 }
 
 @media screen and (max-width: 768px) {
@@ -165,7 +181,7 @@ td.today {
 	td {
 		display: block;
 		width: 100%;
-		height:56px !important;
+		min-height: 56px !important;
 		padding: 0;
 	}
 	td {
@@ -174,9 +190,12 @@ td.today {
 		display: flex;
 	}
 
+
+
 	.calendar-labels {
 		padding: 5px;
 	}
+
 	[class*=calender-label] {
 		display: inline-block;
 		padding: 5px;
@@ -185,11 +204,12 @@ td.today {
 		font-size: 12px;
 	}
 
-	tr.before{
-		color:#CDCDCD;
+	tr.before {
+		color: #CDCDCD;
 		/**display:none;**/
 	}
-	tr.next{
+
+	tr.next {
 		/**display:block;**/
 	}
 
@@ -204,31 +224,37 @@ td.today {
 		width: 75px;
 		height: auto;
 	}
-	td.before{
-		color:#CDCDCD;
+
+	td.before {
+		color: #CDCDCD;
 		/**display:none !important;**/
 	}
-	td.after{
+
+	td.after {
 		/**display:none !important;**/
 	}
-	td.next{
-		color:#212529;
+
+	td.next {
+		color: #212529;
 	}
-	td.other{
+
+	td.other {
 		/**display:none !important;**/
 	}
+
 	td.holiday,
-	td.sun{
+	td.sun {
 		background: #f8c7c7 !important;
 	}
 
-	td.sat{
+	td.sat {
 		background: #c8ebfe !important;
 	}
 
 	td.sun.next {
 		color: #DF0D2D;
 	}
+
 	td.sat.next {
 		color: #2574D3;
 	}
@@ -239,34 +265,73 @@ td.today {
 		position: relative;
 		left: -5px;
 	}
+
 	td:nth-child(1) i:after {
 		content: "（日）";
 	}
+
 	td:nth-child(2) i:after {
 		content: "（月）";
 	}
+
 	td:nth-child(3) i:after {
 		content: "（火）";
 	}
+
 	td:nth-child(4) i:after {
 		content: "（水）";
 	}
+
 	td:nth-child(5) i:after {
 		content: "（木）";
 	}
+
 	td:nth-child(6) i:after {
 		content: "（金）";
 	}
+
 	td:nth-child(7) i:after {
 		content: "（土）";
 	}
 
 	a.btn {
-		margin:8px;
+		margin: 3px 3px 3px 1px;
 	}
 
 	.pager-footer {
-		display:block;
-		margin:10px 0 0 0;
+		display: block;
+		margin: 10px 0 0 0;
+	}
+
+}
+
+@media screen and (max-width: 600px) {
+	#wrap {
+		padding: 0 5px;
+	}
+
+}
+
+
+@media screen and (max-width: 500px) {
+
+	table {
+		width: 480px;
+
+	}
+	td {
+		width: 480px;
+		 !important;
+		padding: 0.4rem;
+	}
+	i {
+		width: 50px;
+	}
+	.table td {
+		padding: 0.4rem;
+
+	}
+	article.w80 {
+		width: 80px;
 	}
 }

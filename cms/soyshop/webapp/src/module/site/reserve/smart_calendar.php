@@ -78,6 +78,8 @@ function soyshop_smart_calendar($html, $page){
 		"text" => $year . "年" . $month . "月"
 	));
 
+	if(!defined("RESERVE_CALENDAR_MODE")) define("RESERVE_CALENDAR_MODE", "bootstrap");
+
 	//商品分だけタグを生成する
 	$itemIdList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemIdsOnLabel();
 	foreach($itemIdList as $itemId){

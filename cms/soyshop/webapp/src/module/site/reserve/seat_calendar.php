@@ -111,6 +111,7 @@ function soyshop_seat_calendar($html, $page){
 	}
 	$js .= "};</script>";
 
+	if(!defined("RESERVE_CALENDAR_MODE")) define("RESERVE_CALENDAR_MODE", "bootstrap");
 	$obj->addLabel("calendar", array(
 		"soy2prefix" => "block",
 		"html" => SOY2Logic::createInstance("module.plugins.calendar_expand_seat.logic.View.CalendarLogic", array("itemId" => $itemId))->build($year, $month) . "\n" . $js
