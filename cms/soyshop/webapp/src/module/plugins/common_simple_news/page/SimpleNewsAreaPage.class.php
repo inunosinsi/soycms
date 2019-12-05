@@ -1,14 +1,14 @@
 <?php
 
 class SimpleNewsAreaPage extends WebPage{
-	
+
 	private $configObj;
-	
+
 	function __construct(){}
-	
+
 	function execute(){
 		parent::__construct();
-		
+
 		$news = SOYShop_DataSets::get("plugin.simple_news", array());
 		if(!is_array($news)) $news = array();
 
@@ -19,7 +19,7 @@ class SimpleNewsAreaPage extends WebPage{
 			"list" => $news
 		));
 	}
-	
+
 	function setConfigObj($configObj){
 		$this->configObj = $configObj;
 	}
