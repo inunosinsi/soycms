@@ -37,6 +37,11 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
         "soy2prefix" => SOYSHOP_SITE_PREFIX
     ));
 
+	//商品名サブタイトル
+	$htmlObj->addLabel("item_subtitle", array(
+		"text" => $item->getSubtitle(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
 
     //表示価格が0円以上の場合は表示する
     $htmlObj->addModel("item_price_visible", array(

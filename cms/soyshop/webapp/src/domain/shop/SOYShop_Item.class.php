@@ -49,6 +49,11 @@ class SOYShop_Item {
      */
     private $name;
 
+	/**
+	 * @column item_subtitle
+	 */
+	private $subtitle;
+
     /**
      * @column item_alias
      */
@@ -169,6 +174,12 @@ class SOYShop_Item {
     function setName($name) {
         $this->name = $name;
     }
+	function getSubtitle(){
+		return $this->subtitle;
+	}
+	function setSubtitle($subtitle){
+		$this->subtitle = $subtitle;
+	}
     function getCode() {
 		if(is_null($this->code)) $this->code = soyshop_dummy_item_code();
 		return $this->code;

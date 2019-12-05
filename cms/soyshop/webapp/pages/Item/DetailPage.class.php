@@ -120,7 +120,7 @@ class DetailPage extends WebPage{
 			$obj = (object)$newItem;
 
 			SOY2::cast($item, $obj);
-
+			
 			$alias = null;
 			if(isset($_POST["custom_alias"])){
 				$alias = $_POST["custom_alias"];

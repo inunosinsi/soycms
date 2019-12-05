@@ -13,7 +13,8 @@ create table soyshop_page(
 drop table soyshop_item;
 create table soyshop_item(
 	id integer primary key auto_increment,
-	item_name TEXT,
+	item_name VARCHAR(512),
+	item_subtitle VARCHAR(512),
 	item_code VARCHAR(255) unique,
 	item_alias VARCHAR(255) unique,
 	item_price integer,

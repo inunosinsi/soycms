@@ -14,6 +14,7 @@ drop table soyshop_item;
 create table soyshop_item(
 	id integer primary key AUTOINCREMENT,
 	item_name varchar,
+	item_subtitle varchar,
 	item_code varchar unique,
 	item_alias varchar unique,
 	item_price integer,
