@@ -13,5 +13,5 @@
 	</dl>
 </div>
 <p class="btn">
-<a href="/">戻る</a>
+<a href="<?php echo $page_link; ?>">戻る</a>
 </p>
