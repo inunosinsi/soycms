@@ -7,7 +7,7 @@
 
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<title>SOY CMS</title>
+<title><?php echo CMSUtil::getCMSName(); ?></title>
 
 <link rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink("../admin/css/"); ?>style.css"/>
 <link rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink("../admin/css/"); ?>form.css"/>
@@ -69,7 +69,7 @@
 <div id="wrapper">
 
 	<div id="upperMenu">
-		<img src="<?php echo SOY2PageController::createRelativeLink("../admin/css/"); ?>img/logo_big.gif" alt="logo" />
+		<img src="<?php echo CMSUtil::getLogoFile(); ?>" alt="logo">
 		<div style="clear:both;"></div>
 	</div>
 
@@ -85,10 +85,14 @@
 		<div id="resolve_message">
 			<h3>詳細/解決策</h3>
 			<div><?php echo get_resolve_message($exception); ?></div>
-			<p style="margin-top:30px">
-				解決策や内容がご不明な場合は<a href="http://www.soycms.org">フォーラム</a>をご利用ください。<br>
-				その際、以下のレポートをご利用いただけると解決の役に立つ場合がございます。
-			</p>
+
+			<?php if(CMSUtil::getCMSName() == "SOY CMS"){ ?>
+				<p style="margin-top:30px">
+					解決策や内容がご不明な場合は<a href="http://www.soycms.org">フォーラム</a>をご利用ください。<br>
+					その際、以下のレポートをご利用いただけると解決の役に立つ場合がございます。
+				</p>
+			<?php } ?>
+
 		</div>
 
 		<div id="stack_trace">
@@ -104,7 +108,7 @@
 		<div id="footer">
 			<div id="footer_left"></div>
 			<div id="footer_right"></div>
-			<div id="copyright">Copyright © 2007-2013, Nippon Institute of Agroinformatics Ltd.</div>
+			<div id="copyright">Copyright © 2007-2013, <?php echo CMSUtil::getDeveloperName(); ?></div>
 		</div>
 	</div>
 

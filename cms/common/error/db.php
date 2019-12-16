@@ -5,7 +5,7 @@
 
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<title>SOY CMS</title>
+<title><?php echo CMSUtil::getCMSName(); ?></title>
 
 <link rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink("../admin/css/"); ?>style.css"/>
 <link rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink("../admin/css/"); ?>form.css"/>
@@ -67,7 +67,7 @@
 <div id="wrapper">
 
 	<div id="upperMenu">
-		<img src="<?php echo SOY2PageController::createRelativeLink("../admin/css/"); ?>img/logo_big.gif" alt="logo" />
+		<img src="<?php echo CMSUtil::getLogoFile(); ?>" alt="logo" />
 		<div style="clear:both;"></div>
 	</div>
 
@@ -84,7 +84,7 @@
 				<hr style="margin: 1em 0;">
 
 				<h4>Can not get a data source.</h4>
-				<p>No database configuration file is found.<br/>Check your database configuration in SOY CMS.</p>
+				<p>No database configuration file is found.<br/>Check your database configuration in <?php echo CMSUtil::getCMSName(); ?>.</p>
 			</div>
 		</div>
 
@@ -102,9 +102,11 @@
 				<p>A configuration file should exist at <strong><?php echo htmlspecialchars(SOY2::RootDir()."config/db/".SOYCMS_DB_TYPE.".php",ENT_QUOTES,"UTF-8"); ?></strong>.<br>
 				<p>See <strong><?php echo htmlspecialchars(SOY2::RootDir()."config/db/".SOYCMS_DB_TYPE.".sample.php",ENT_QUOTES,"UTF-8"); ?></strong> for example.
 			</div>
+			<?php if(CMSUtil::getCMSName() == "SOY CMS"){ ?>
 			<p style="margin-top:30px">
 				解決策や内容がご不明な場合は<a href="http://www.soycms.org/">フォーラム</a>をご利用ください。
 			</p>
+			<?php } ?>
 		</div>
 
 		<!-- no stack_trace -->
@@ -115,7 +117,7 @@
 		<div id="footer">
 			<div id="footer_left"></div>
 			<div id="footer_right"></div>
-			<div id="copyright">Copyright © 2007-2013, Nippon Institute of Agroinformatics Ltd.</div>
+			<div id="copyright">Copyright © 2007-2013, <?php echo CMSUtil::getDeveloperName(); ?></div>
 		</div>
 	</div>
 
