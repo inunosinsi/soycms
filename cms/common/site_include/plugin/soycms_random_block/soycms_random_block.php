@@ -41,7 +41,7 @@ class SOYCMS_Random_Block_Plugin{
         $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
 
         //ラベルIDを取得とデータベースから記事の取得件数指定
-		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);;
+		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
         $count = PluginBlockUtil::getLimitByPageId($pageId);
 
         $entryDao = SOY2DAOFactory::create("cms.EntryDAO");
