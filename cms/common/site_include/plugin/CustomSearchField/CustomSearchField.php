@@ -157,7 +157,8 @@ class CustomSearchFieldPlugin{
 
 	private function buildFormOnEntryPage($entryId){
 		$values = SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.DataBaseLogic")->getByEntryId($entryId);
-
+		$html = array();
+		
 		SOY2::import("site_include.plugin.CustomSearchField.component.FieldFormComponent");
         foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
 			$html[] = "<div class=\"form-group\">";

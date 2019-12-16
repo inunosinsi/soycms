@@ -11,7 +11,7 @@ class CustomFieldForm {
 		return implode("\n", $html);
 	}
 
-	private function _getRegisteredTags($entryId){
+	private static function _getRegisteredTags($entryId){
 		SOY2::imports("site_include.plugin.tag_cloud.domain.*");
 
 		try{
