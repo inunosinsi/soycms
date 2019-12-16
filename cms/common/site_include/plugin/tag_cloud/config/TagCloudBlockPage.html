@@ -1,6 +1,19 @@
 <div class="alert alert-info">記事投稿画面でタグを登録するフォームが出力されています。</div>
 
-<p>プラグインブロックでランダムな記事一覧を表示できるブロックを使用できます</p>
+<h3>設定</h3>
+<div class="mt-3 mb-3">
+	<form soy:id="form">
+		<div class="form-group">
+			<div class="form-inline">
+				<label for="">タグクラウドのタグ一覧で使用回数毎にランクを区切る：</label>
+				<input type="number" soy:id="rank_divide">&nbsp;個区切り&nbsp;
+				<input type="submit" class="btn btn-primary" value="更新">
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class="alert alert-info">プラグインブロックでランダムな記事一覧を表示できるブロックを使用できます</div>
 
 <h4>設定方法</h4>
 <p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>TagCloud</strong>を選びます。<br>
@@ -24,8 +37,10 @@
 </p>
 
 <h4>タグクラウドモジュールの設置(TagCloudブロックを設置したページへのタグのリンク一覧)</h4>
-<pre><strong>&lt;!-- cms:module="common.tag_cloud" --&gt;</strong>
+<pre><strong>&lt;!-- cms:module="common.tag_cloud" cms:count="10" --&gt;</strong>
 <strong>&lt;!-- p_block:id="tag_cloud_word_list" --&gt;</strong>
 &lt;a <strong>cms:id="tag_link"</strong>&gt;&lt;!-- <strong>cms:id="tag"</strong> --&gt;タグ&lt;!-- /<strong>cms:id="tag"</strong> --&gt;&lt;/a&gt;
 <strong>&lt;!-- /p_block:id="tag_cloud_word_list" --&gt;</strong>
 <strong>&lt;!-- /cms:module="common.tag_cloud" --&gt;</strong></pre>
+<p>cms:countでタグを何個表示するか決めることができます。<br>
+※cms:countの指定がなくても動作します。</p>
