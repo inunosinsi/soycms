@@ -1,0 +1,31 @@
+<div class="alert alert-info">記事投稿画面でタグを登録するフォームが出力されています。</div>
+
+<p>プラグインブロックでランダムな記事一覧を表示できるブロックを使用できます</p>
+
+<h4>設定方法</h4>
+<p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>TagCloud</strong>を選びます。<br>
+※TagCloudのブロックを設置するページは一つだけになります
+</p>
+
+<h4>タグの記述例</h4>
+<p>他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます</p>
+
+<pre>&lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
+表示したい内容のcms:idを追加
+&lt;!-- /block:id="***" --&gt;</pre>
+<p>
+    ***の箇所は任意の値です。<br>
+    cms:labelでどのラベルが設定されている記事一覧を取得するかを決めることができます。<br>
+    ※cms:labelは必ず指定してください。ブログで使用するラベルのIDを指定します<br>
+	ラベルIDは管理画面でラベルの詳細を開き、ブラウザのアドレスバーに入力されているURLの末尾の数字になります。<br>
+	例："http://example/cms/soycms/index.php/Label/Detail/2"の場合のラベルIDは<strong>2</strong>になります。<br><br>
+    cms:countで記事を何件表示するか決めることができます。<br>
+    ※cms:countの指定がなくても動作します。
+</p>
+
+<h4>タグクラウドモジュールの設置(TagCloudブロックを設置したページへのタグのリンク一覧)</h4>
+<pre><strong>&lt;!-- cms:module="common.tag_cloud" --&gt;</strong>
+<strong>&lt;!-- p_block:id="tag_cloud_word_list" --&gt;</strong>
+&lt;a <strong>cms:id="tag_link"</strong>&gt;&lt;!-- <strong>cms:id="tag"</strong> --&gt;タグ&lt;!-- /<strong>cms:id="tag"</strong> --&gt;&lt;/a&gt;
+<strong>&lt;!-- /p_block:id="tag_cloud_word_list" --&gt;</strong>
+<strong>&lt;!-- /cms:module="common.tag_cloud" --&gt;</strong></pre>

@@ -1,0 +1,10 @@
+CREATE TABLE TagCloudDictionary(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	word VARCHAR(128) UNIQUE
+) ENGINE=InnoDB;
+
+CREATE TABLE TagCloudLinking(
+	entry_id INTEGER NOT NULL,
+	word_id INTEGER NOT NULL,
+	UNIQUE(entry_id, word_id)
+) ENGINE=InnoDB;
