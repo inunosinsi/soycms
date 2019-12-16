@@ -1,2 +1,0 @@
-<?php
-//ItemOptionUtilに移行

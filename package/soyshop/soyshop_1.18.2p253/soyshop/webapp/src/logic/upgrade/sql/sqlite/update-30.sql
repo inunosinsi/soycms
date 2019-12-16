@@ -1,1 +1,0 @@
-ALTER TABLE soyshop_stock_history ADD COLUMN update_stock INTEGER NOT NULL DEFAULT 0;
