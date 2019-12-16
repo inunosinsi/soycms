@@ -1,0 +1,32 @@
+<h1>
+	ページ管理
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Pages">ページ管理</a> &gt; <a soy:id="detail_page_link">ページ設定</a> &gt; フリーページ設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2><span soy:id="page_name"></span> | コンテンツ設定</h2>
+	</div>
+
+	<div class="block_body">
+		<form soy:id="update_form">
+
+			<dl class="form center">
+				<dt>タイトル</dt>
+				<dd>
+					<input class="title" type="text" soy:id="title" />
+				</dd>
+				<dt>
+					本文
+				</dt>
+				<dd>
+					<textarea class="mceEditor editor" soy:id="content" style="height:400px;"></textarea>
+				</dd>
+			</dl>
+			<p class="pageBtn"><input type="submit" value="更新" /></p>
+
+		</form soy:id="update_form">
+	</div>
+</div>

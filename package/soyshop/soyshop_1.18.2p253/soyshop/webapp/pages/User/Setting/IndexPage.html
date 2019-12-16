@@ -1,0 +1,196 @@
+<h1>
+	顧客管理
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="User">顧客管理</a> &gt; 顧客属性の一括設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>顧客属性の一括設定</h2>
+
+		<div class="block_title_right">
+			<a soy:id="reset_button" onclick="$('#advanced_search_form_reset').trigger('click');" href="javascript:void(0);" class="button">リセット(全て表示)</a>
+			<a soy:link="User.Search" class="button">詳細検索</a>
+			<a soy:link="User.Register" class="button">顧客の追加</a>
+		</div>
+
+		<form id="reset_form" soy:id="reset_form">
+				<input id="advanced_search_form_reset" type="submit" name="reset" style="display:none;" />
+		</form soy:id="reset_form">
+	</div>
+
+	<div class="block_body">
+
+		<p class="notice" soy:display="updated">更新しました。</p>
+
+		<div soy:id="search_condition"></div>
+
+		<form soy:id="form">
+			<div class="ml20">
+				<input type="checkbox" soy:id="search_no_attribute1">
+				<input type="checkbox" soy:id="search_no_attribute2">
+				<input type="checkbox" soy:id="search_no_attribute3">
+				の値のない顧客を<input type="submit" name="search_btn" value="検索する">
+			</div>
+			
+			<table class="form_list">
+				<caption>顧客一覧</caption>
+				<thead>
+					<tr class="alC">
+						<th>
+							<!-- soy:id="app_limit_function" -->
+							<input id="user_checkbox" class="user_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
+							<!-- /soy:id="app_limit_function" -->
+						</th>
+						<th class="short">ID</th>
+						<th class="middle">姓名</th>
+						<th class="middle nowrap">メールアドレス</th>
+						<th>属性１</th>
+						<th>属性２</th>
+						<th>属性３</th>
+						<th class="operation">
+							&nbsp;
+						</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr class="search last_row mb20">
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+						<td class="middle"><input soy:id="search_name" value=""/></td>
+						<td class="middle"><input soy:id="search_mail_address" value=""/></td>
+						<td><input soy:id="search_attribute1" value=""/></td>
+						<td><input soy:id="search_attribute2" value=""/></td>
+						<td><input soy:id="search_attribute3" value=""/></td>
+						<td class="operation">
+							<input type="submit" name="search_btn" value="検索"/>
+						</td>
+					</tr>
+					<tr id="users_operation" style="display:none;">
+						<td colspan="8">
+							<div class="mb20">
+								<span class="option">操作：</span>
+								属性1；<input value="" soy:id="input_attribute1">&nbsp;
+								属性2：<input value="" soy:id="input_attribute2">&nbsp;
+								属性3：<input value="" soy:id="input_attribute3">&nbsp;
+								<input type="submit" name="register_btn" value="登録する">
+							</div>
+							<div>
+								<span class="option">操作：</span>
+								顧客の属性から
+								<input type="checkbox" soy:id="remove_attribute1">
+								<input type="checkbox" soy:id="remove_attribute2">
+								<input type="checkbox" soy:id="remove_attribute3">
+								の値を<input type="submit" name="remove_btn" value="削除する">
+							</div>
+						</td>
+					</tr>
+					<tr class="pager">
+						<td colspan="8">
+							<!-- 何故かうまく動かなかったのでコメントアウト div class="pager_item">
+								<form soy:id="pager_jump">
+									<select soy:id="pager_select"></select>
+									<noscript><input type="submit" value="移動"/></noscript>
+								</form>
+							</div-->
+							<div class="pager_item">
+								<a soy:id="prev_pager">&lt;</a>
+								<!-- soy:id="pager_list" -->
+								<a soy:id="target_link">1</a>
+								<!-- /soy:id="pager_list" -->
+								<a soy:id="next_pager">&gt;</a>
+							</div>
+							<div class="pager_item">
+								<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+							</div>
+						</td>
+					</tr>
+				</tfoot>
+				<tbody>
+					<!-- soy:id="user_list" -->
+					<tr>
+						<td><input soy:id="user_check" class="user_checkbox" type="checkbox" /></td>
+						<td class="alC short"><span soy:id="id"></span></td>
+						<td class="middle"><a soy:id="edit_link"><span soy:id="name"></span></a></td>
+						<td class="middle"><span soy:id="mailaddress">メールアドレス</span></td>
+						<td class="middle"><span soy:id="attribute1">属性１</span></td>
+						<td class="middle"><span soy:id="attribute2">属性２</span></td>
+						<td class="middle"><span soy:id="attribute3">属性３</span></td>
+						<td class="operation">
+							&nbsp;
+						</td>
+					</tr>
+					<!-- /soy:id="user_list" -->
+					<!-- soy:display="no_user" -->
+					<tr>
+						<td colspan="7">
+							<p class="notice always">顧客情報が登録されていません</p>
+						</td>
+					</tr>
+					<!-- /soy:display="no_user" -->
+				</tbody>
+			</table>
+		</form>			
+
+	</div><!-- /block_body -->
+</div><!-- /block -->
+
+<!-- soy:display="app_limit_function" -->
+<div class="block">
+	<div class="block_title">
+		<h2>その他</h2>
+	</div>
+
+	<div class="block_body">
+
+	<dl>
+		<!-- soy:display="custom_plugin" -->
+		<dt>
+			<a soy:link="User.CustomField">カスタム項目設定</a>
+		</dt>
+		<dd>ユーザの追加項目を編集します。</dd>
+		<!-- /soy:display="custom_plugin" -->
+		<dt>
+			<a soy:link="User.Setting">顧客属性の一括設定</a>
+		</dt>
+		<dd>ユーザ属性を一括で設定します。</dd>
+		<dt>
+			<a soy:link="User.Export">CSVエクスポート</a>
+		</dt>
+		<dd>ユーザ情報をCSV出力します。</dd>
+		<dt>
+			<a soy:link="User.Import">CSVインポート</a>
+		</dt>
+		<dd>ユーザ情報をCSVから入力します。</dd>
+		<!-- soy:id="function_list" -->
+		<dt soy:id="function_title">エクスポートの種類を選択してください</dt>
+		<dd>
+			<!-- soy:id="function_description" /-->&nbsp;<a class="button" target="_blank" soy:id="action_link">実行</a>
+		</dd>
+		<!-- /soy:id="function_list" -->
+		<!-- soy:id="info_list" -->
+		<dt soy:id="info_title">プラグイン</dt>
+		<dd>
+			<!-- soy:id="info_description" /-->
+		</dd>
+		<!-- /soy:id="info_list" -->
+	</dl>
+	
+	</div><!-- /block_body -->
+</div>
+<!-- /soy:display="app_limit_function" -->
+
+<style type="text/css">
+.delete_btn{
+	visibility:hidden;
+}
+</style>
+<script type="text/javascript">
+function changeCheckBoxAuto(){
+	$("#users_operation").show();
+	$('.user_checkbox').each(function(){
+		$(this).prop("checked", $("#user_checkbox").prop("checked"));
+	});
+}
+</script>

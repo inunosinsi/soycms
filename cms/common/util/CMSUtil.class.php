@@ -229,18 +229,29 @@ class CMSUtil {
 				$logoDir = dirname(SOY2::RootDir()) . "/admin/image/logo/";
 				break;
 		}
+		if(strpos($logoDir, "/app/webapp/") && defined("APPLICATION_ID")){	// SOY Appから開いている場合
+			$logoDir = str_replace("/app/webapp/" . APPLICATION_ID, "", $logoDir);
+		}
 
 		if(file_exists($logoDir) && is_dir($logoDir)){
 			foreach(glob($logoDir . "*") as $f){
 				if(is_file($f) && !strpos($f, ".txt")){
 					$fileName = trim(substr($f, strrpos($f, "/") + 1), "/");
 					if(preg_match('/\.(jpg|jpeg|gif|png|bmp)/', $fileName, $tmp)){
-						return SOY2PageController::createRelativeLink("image/logo/" . $fileName);
+						$src = SOY2PageController::createRelativeLink("image/logo/" . $fileName);
+						if(strpos($src, "/app/image/logo/") && defined("APPLICATION_ID")) {
+							$src = str_replace("/app/image/logo/", "/admin/image/logo/", $src);
+						}
+						return $src;
 					}
 				}
 			}
 		}
-		return SOY2PageController::createRelativeLink("css/img/logo_big.gif");
+		$src = SOY2PageController::createRelativeLink("css/img/logo_big.gif");
+		if(strpos($src, "/app/css/") && defined("APPLICATION_ID")) {
+			$src = str_replace("/app/css/", "/admin/css/", $src);
+		}
+		return $src;
 	}
 
 	public static function getCMSName(){

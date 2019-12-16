@@ -1,0 +1,35 @@
+<p class="notice always" soy:display="no_black_list">ブラックリストに登録されている顧客はいません</p>
+
+<!-- soy:display="display_black_list" -->
+<div class="block_body clearfix">
+	<table class="form_list">
+		<caption>ブラック顧客一覧</caption>
+		<thead>
+			<tr class="alC">
+				<th class="short">ID</th>
+				<th class="middle">姓名</th>
+				<th class="middle nowrap">メールアドレス</th>
+				<th>属性１</th>
+				<th>属性２</th>
+				<th>属性３</th>
+				<th class="operation">編集</th>
+			</tr>
+		</thead
+		<tbody>
+			<!-- soy:id="user_list" -->
+			<tr>
+				<td class="alC short"><span soy:id="id"></span></td>
+				<td class="middle"><a soy:id="edit_link"><span soy:id="name"></span></a></td>
+				<td class="middle"><span soy:id="mailaddress">メールアドレス</span></td>
+				<td class="middle"><span soy:id="attribute1">属性１</span></td>
+				<td class="middle"><span soy:id="attribute2">属性２</span></td>
+				<td class="middle"><span soy:id="attribute3">属性３</span></td>
+				<td class="operation">
+					<a class="button" soy:id="edit_link*">編集</a>
+				</td>
+			</tr>
+			<!-- /soy:id="user_list" -->
+		</tbody>
+	</table>
+</div>
+<!-- /soy:display="display_black_list" -->

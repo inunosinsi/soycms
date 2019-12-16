@@ -1,0 +1,116 @@
+<h1>
+	マイページの設定
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Config">設定</a> &gt; マイページの設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>マイページの設定</h2>
+	</div>
+
+	<div class="block_body">
+
+	<p class="notice" soy:display="updated">更新しました</p>
+
+
+	<form soy:id="update_form">
+
+		<dl>
+			<dt>マイページのタイトル(#USERNAME#と#NICKNAME#が使用可能。ログインしているユーザ名に置換されます。)</dt>
+			<dd>
+				<input type="text" class="title" soy:id="mypage_title" />
+			</dd>
+
+			<!-- soy:id="extension_mypage_name_input" /-->
+
+			<dt>顧客情報のフォームの設定</dt>
+			<dd>
+				<a soy:link="Config.ShopConfig#customer_form_config">顧客情報のフォームの設定(基本設定)</a>
+			</dd>
+			<dt>SSLを使用する</dt>
+			<dd>
+				<input type="hidden" name="mypage_ssl" value="0" />
+				<input type="checkbox" soy:id="mypage_is_ssl" onclick="$('#mypage_use_ssl').toggle(this.checked);" />
+
+				<div id="mypage_use_ssl" soy:id="mypage_ssl_url_input">
+					<h4>[SSL]サイトのURL</h4>
+					<input type="text" soy:id="mypage_ssl_url" class="title" />
+				</div>
+			</dd>
+			<dt>ユーザ登録手続き</dt>
+			<dd>
+				<input type="radio" soy:id="mypage_tmp_user_register" />
+				<input type="radio" soy:id="mypage_user_register" />
+				<p class="option">「仮登録処理を行う」場合、ユーザーが「仮登録完了メール」に記載されたURLにアクセスすることで登録完了となります。</p>
+			</dd>
+			<dt>プロフィール画像のリサイズ</dt>
+			<dd>
+				<input type="checkbox" soy:id="mypage_profile_resize" />&nbsp;
+				幅&nbsp;<input type="input" soy:id="mypage_profile_resize_width" size="4" style="text-align:right;ime-mode:inactive;" />&nbsp;px
+			</dd>
+			<dt>マイページ設定<!-- soy:id="is_enabled_util_mobile_check" -->(PC用)<!-- /soy:id="is_enabled_util_mobile_check" --></dt>
+			<dd>
+				<h4>マイページのURI</h4>
+				<input type="text" soy:id="mypage_url" />
+
+				<h4>マイページの種類の選択</h4>
+				<select soy:id="mypage_application"></select><br>
+				※マイページ機能を封じる場合は<strong>none</strong>を選択してください。
+
+				<h4>ログイン後のトップページのURL</h4>
+				<input type="text" soy:id="mypage_top" />
+
+				<h4>文字コード</h4>
+				<select soy:id="mypage_charset"></select>
+			</dd>
+
+			<!-- soy:id="is_enabled_util_mobile_check*" -->
+			<dt>マイページ設定(mobile用)</dt>
+			<dd>
+				<h4>マイページページのURI</h4>
+				<input type="text" soy:id="mobile_mypage_url" />
+
+				<h4>マイページの種類の選択</h4>
+				<select soy:id="mobile_mypage_application"></select><br>
+				※マイページ機能を封じる場合は<strong>none</strong>を選択してください。
+
+				<h4>ログイン後のトップページのURL</h4>
+				<input type="text" soy:id="mobile_mypage_top" />
+
+				<h4>文字コード</h4>
+				<select soy:id="mobile_mypage_charset"></select>
+			</dd>
+
+			<dt>マイページ設定(スマートフォン用)</dt>
+			<dd>
+				<h4>マイページページのURI</h4>
+				<input type="text" soy:id="smartphone_mypage_url" />
+
+				<h4>マイページの種類の選択</h4>
+				<select soy:id="smartphone_mypage_application"></select><br>
+				※マイページ機能を封じる場合は<strong>none</strong>を選択してください。
+
+				<h4>ログイン後のトップページのURL</h4>
+				<input type="text" soy:id="smartphone_mypage_top" />
+
+				<h4>文字コード</h4>
+				<select soy:id="smartphone_mypage_charset"></select>
+			</dd>
+			<!-- /soy:id="is_enabled_util_mobile_check*" -->
+
+		</dl>
+
+		<p class="pageBtn">
+			<input type="submit" value="更新" />
+		</p>
+
+	</form>
+
+	<!-- soy:id="is_not_enabled_util_mobile_check" -->
+	<p>※携帯電話やスマートフォンで使用するマイページを分けたい場合は、<a soy:link="Plugin.List">プラグイン管理</a>で「携帯自動振り分けプラグイン」をインストールしてください。</p>
+	<!-- /soy:id="is_not_enabled_util_mobile_check" -->
+
+	</div><!-- /block_body -->
+</div><!-- /block -->

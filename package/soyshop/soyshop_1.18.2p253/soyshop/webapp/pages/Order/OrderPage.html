@@ -1,0 +1,100 @@
+<h1>
+	注文の内訳の並び順の変更
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Order">注文管理</a> &gt; <a soy:id="order_detail_link">注文詳細</a> &gt; <a soy:id="order_edit_link">注文編集</a> &gt; 注文の内訳の並び順の変更</span>
+</h1>
+
+<div class="block">
+	<div class="block_title">
+		<h2>注文の内訳の並び順の変更 - <!-- soy:id="order_name_text" /--></h2>
+
+		<div class="block_title_right">
+			<a soy:id="order_edit_link*" class="button">戻る</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+		<p class="notice always">商品の並び替えの変更はドラックドロップで行います</p>
+
+		<form soy:id="form">
+			<table class="form_table" id="order_content">
+				<thead>
+					<tr class="alC">
+						<th>商品コード</th>
+						<th>商品名</th>
+						<th>単価</th>
+						<th>注文数</th>
+						<th>代金小計</th>
+					</tr>
+				</thead>
+
+				<tbody id="sortdata">
+					<!--  soy:id="item_list" -->
+					<tr>
+						<td class="alC">
+							<a soy:id="item_id" target="_blank">11</a>
+							<input type="hidden" soy:id="index_hidden">
+						</td>
+						<td>
+							<p><!-- soy:id="item_name" /--></p>
+						</td>
+						<td class="alR"><!-- soy:id="item_price" /--> 円</td>
+						<td class="alR"><!-- soy:id="item_count" /--> 点</td>
+						<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
+					</tr>
+					<!--  /soy:id="item_list" -->
+				</tbody>
+			</table>
+		</form>
+	</div>
+</div>
+
+<script>
+$(function(){
+	$('#sortdata').sortable();
+	$('#sortdata').bind('sortstop',function(){
+		// @ToDo 並び順を変更する
+		var doSort = false;
+		if($(this)[0]){
+			var results = $(this)[0].innerHTML.match(/Item\[([0-9]*)\]/g);
+			if(results.length){
+				for (var i = 0; i < results.length; i++){
+					var r = results[i].match(/\[([0-9]*)\]/);
+
+					//r[1]とiの値がずれた箇所がソートした箇所となる
+					var idx = parseInt(r[1]);
+					if(idx !== i){
+						doSort = true;
+						break;
+					}
+				}
+			}
+		}
+
+		//ソートが実行された
+		if(doSort) {
+			$("#sort").val(1);
+			document.forms[0].submit();
+		}
+	});
+
+	//sortdata中で無理やりtrの背景色を変更
+	var children = $('#sortdata').children();
+	if(children.length > 0){
+		for(var i = 0; i < children.length; i++){
+			if($(children[i]).hasClass("odd")){
+				var tds = $(children[i]).children();
+				for(var j = 0; j < tds.length; j++){
+					$(tds[j]).css("background-color", "#EEEEEE");
+				}
+			}
+		}
+	}
+});
+</script>
+
+<style>
+#sortdata {
+	cursor: move;
+}
+</style>

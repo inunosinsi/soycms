@@ -1,0 +1,131 @@
+<div class="block">
+	<div class="block_title">
+		<h2>返送伝票番号一覧</h2>
+
+		<div class="block_title_right"></div>
+	</div>
+
+	<div class="block_body">
+
+		<p class="notice" soy:display="updated">更新しました</p>
+		<p class="notice" soy:display="successed">変更しました。</p>
+		<p class="notice" soy:display="removed">削除しました。</p>
+		<p class="error" soy:display="failed">失敗しました</p>
+		<p class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
+
+		<dl>
+			<dt class="search_btn_dt">
+				検索する
+			</dt>
+		</dl>
+		<div class="search_area_dd" soy:id="search_area">
+			<form soy:id="search_form">
+				<table class="form_table">
+					<tr>
+						<th>状態</th>
+						<td colspan="3">
+							<input type="checkbox" soy:id="no_return">&nbsp;
+							<input type="checkbox" soy:id="is_return">
+						</td>
+					</tr>
+				</table>
+
+				<p class="pageBtn">
+					<input type="submit" name="search" value="検索">&nbsp;&nbsp;
+					<input type="submit" name="reset" value="リセット">
+				</p>
+			</form>
+		</div>
+
+		<!-- soy:display="no_slip_number" -->
+		<p class="notice always">返送待ちの伝票はありません。</p>
+		<!-- /soy:display="no_slip_number" -->
+
+		<!-- soy:display="is_slip_number" -->
+		<table class="form_list">
+			<caption>返送伝票番号一覧</caption>
+			<thead>
+				<tr class="alC">
+					<th>伝票番号</th>
+					<th>注文日時</th>
+					<th>注文番号</th>
+					<th>顧客名</th>
+					<th>状態</th>
+					<th>
+						<a class="button fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="slip_number_list" -->
+				<tr>
+					<td soy:id="slip_number" class="alC"></td>
+					<td soy:id="order_date" class="alC"></td>
+					<td class="alC"><a soy:id="tracking_number"></a></td>
+					<td class="alC"><a soy:id="user_name"></a></td>
+					<td soy:id="status" class="alC"></td>
+					<td class="operation">
+						<a soy:id="return_link" class="button">返送</a>
+						<a soy:id="remove_link" class="button delete_btn">削除</a>
+					</td>
+				</tr>
+				<!-- /soy:id="slip_number_list" -->
+			</tbody>
+		</table>
+
+		<h3>CSVエクスポート</h3>
+		<form soy:id="export_form" id="export_form">
+			<p class="content">未返送分のCSVエクスポート&nbsp;<input type="submit" name="export" value="出力"></p>
+		</form>
+
+		<h3>CSVインポート</h3>
+		<form soy:id="import_form">
+			<p class="content">
+				未返送分の一括変更<br>
+				<input type="file" name="csv">&nbsp;
+				<label><input type="radio" name="charset" value="Shift_JIS" checked="checked">Shift_JIS</label>&nbsp;
+				<label><input type="radio" name="charset" value="UTF-8">UTF-8</label>&nbsp;
+				<input type="submit" name="import" value="一括変更">
+			</p>
+		</form>
+		<!-- /soy:display="is_slip_number" -->
+	</div>
+</div>
+
+<style>
+	dt.search_btn_dt {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	div.search_area_dd {}
+
+	#standard_form_area{
+		display:none;
+	}
+	.content {
+		margin:2px 0 5px 23px;
+	}
+	.delete_btn{
+		visibility:hidden;
+	}
+</style>
+
+<script>
+	(function() {
+		document.querySelector(".search_btn_dt").addEventListener("click", function() {
+			sarea = document.querySelector(".search_area_dd");
+			if (sarea.style.display == "none") {
+				sarea.style.display = "inline";
+			} else {
+				sarea.style.display = "none";
+			}
+		});
+	})();
+
+	$("#export_form").attr("target", "download_frame");
+    $("#export_form").submit(function() {
+        setTimeout(function() {
+            location.reload();
+        }, 1000);
+    });
+</script>

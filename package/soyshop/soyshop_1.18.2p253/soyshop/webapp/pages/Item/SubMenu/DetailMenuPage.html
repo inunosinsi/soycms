@@ -1,0 +1,25 @@
+<h3>その他</h3>
+<ul>
+	<li soy:display="is_open">
+		<a soy:id="item_site_link" target="_blank">確認ページ</a>
+	</li>
+	<li soy:display="no_open">
+		<a soy:id="item_confirm_link" target="_blank">非公開商品のプレビュー</a>
+	</li>
+	<li>
+		<a soy:id="item_attachment_link">商品画像の管理</a>
+	</li>
+	<li>
+		前の商品:<a soy:id="prev_item_link">商品名</a><br />
+		次の商品:<a soy:id="next_item_link">商品名</a>
+	</li>
+	<li soy:display="is_open">
+		<a soy:id="item_order_link">この商品を注文する</a>
+	</li>
+	<li soy:display="can_copy">
+		<a onclick="return confirm('この商品を複製しますか？')" soy:id="copy_link">この商品を複製する</a>
+	</li>
+	<li>
+		<a onclick="return confirm('この商品を削除しますか？')" soy:id="item_remove_link">この商品を削除する</a>
+	</li>
+</ul>

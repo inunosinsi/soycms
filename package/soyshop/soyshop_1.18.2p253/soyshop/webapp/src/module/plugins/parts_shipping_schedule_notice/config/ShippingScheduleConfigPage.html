@@ -1,0 +1,46 @@
+<!-- soy:display="no_installed_calendar_plugin" -->
+<p class="error always">このプラグインを使用する場合は営業日カレンダープラグインを有効にしてください。</p>
+<!-- /soy:display="no_installed_calendar_plugin" -->
+
+<!-- soy:display="installed_calendar_plugin" -->
+<p class="notice always">
+	営業日カレンダーの営業日や定休日に合わせて、公開側で出力する文言を設定します。<br>
+	<a soy:link="Config.Detail?plugin=parts_calendar">営業日カレンダーの詳細ページを開く</a><br>
+	<br>
+	/** サンプル **/<br>
+	##TODAY_Y##年##TODAY_M##月##TODAY_D##日（##TODAY_W##）正午までのご注文は<br>
+	##SCH_Y##年##SCH_M##月##SCH_D##日（##SCH_W##）の発送予定です。<br>
+	/** サンプルここまで **/
+</p>
+<p class="notice" soy:display="updated">更新しました。</p>
+<div style="border:1px solid #ABABAB;margin:7px 0;padding:5px;">
+	<!-- soy:id="replace_words_list" /-->
+</div>
+<form soy:id="form">
+	<dl>
+		<!-- soy:id="notice_list" -->
+		<dt soy:id="label"></dt>
+		<dd>
+			出荷日は&nbsp;<input type="number" soy:id="schedule">&nbsp;日以降の営業日の日付を出力する<br>
+			<span style="font-size:0.9em; color:#787878;">※0日にすると当日の日付を出力</span><br>
+			<textarea soy:id="wording" style="height:70px;"></textarea>
+		</dd>
+		<!-- /soy:id="notice_list" -->
+	</dl>
+
+	<p class="pageBtn">
+		<input type="submit" class="submit_button" value="更新">
+	</p>
+</form>
+<!-- /soy:display="installed_calendar_plugin" -->
+
+<section>
+	<h1>テンプレートの記述例</h1>
+	<pre style="border:1px solid #ABABAB;padding:3px;">&lt;!-- shop:module="common.shipping_schedule_notice" --&gt;
+ここに設定した内容を出力します。
+&lt;!-- /shop:module="common.shipping_schedule_notice" --&gt;</pre><br>
+	<h1>HTML有りの文言を出力したい場合</h1>
+	<pre style="border:1px solid #ABABAB;padding:3px;">&lt;!-- shop:module="common.shipping_schedule_notice_raw" --&gt;
+ここに設定した内容を出力します。
+&lt;!-- /shop:module="common.shipping_schedule_notice_raw" --&gt;</pre>
+</section>

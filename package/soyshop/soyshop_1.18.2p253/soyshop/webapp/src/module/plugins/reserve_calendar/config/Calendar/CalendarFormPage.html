@@ -1,0 +1,102 @@
+<p class="notice" soy:display="updated">登録しました</p>
+<p class="notice" soy:display="removed">削除しました</p>
+<p class="error" soy:display="error">失敗しました</p>
+<p class="notice" soy:display="successed">一括登録を行いました</p>
+
+<div style="margin-bottom:10px;">
+	<a soy:id="reserve_calendar_link" class="button"></a>&nbsp;
+	<a soy:id="back_link" class="button"></a>
+</div>
+
+<p class="notice always" soy:display="no_holiday_config">定休日の設定がありません。<a soy:id="holiday_link">定休日の設定画面を開く</a></p>
+
+<div class="calendar_select_area">
+	<select soy:id="sch_year"></select>&nbsp;年<select soy:id="sch_month"></select>&nbsp;月の予定
+</div>
+
+<form soy:id="form">
+	<!-- soy:id="calendar" /-->
+
+	<section style="width:50%;float:left;">
+		<h3>スケジュールの登録</h3>
+		<p class="error always" soy:display="no_label">ラベルを設定してください。<a soy:id="label_link">ラベル設定画面を開く</a></p>
+		<dl>
+			<dd>
+				<!-- soy:display="has_label" -->
+				ラベル : <select soy:id="label_list"><option></option></select>
+				&nbsp;&nbsp;<a soy:id="label_link*" class="button">ラベルの新規登録</a>
+				<br>
+				<!-- /soy:display="has_label" -->
+				残席数 : <input type="number" soy:id="unsold_seat">&nbsp;席<br>
+				価格　：<input type="number" soy:id="price">&nbsp;円<br>
+				<!-- soy:id="extension_add_price_area" /-->
+			</dd>
+			<dt>スケジュールの自動登録</dt>
+			<dd>
+				<input type="checkbox" soy:id="auto_register"><br>
+				自動登録の際の残席数 : <input type="number" soy:id="auto_seat">&nbsp;席
+			</dd>
+		</dl>
+
+		<p class="pageBtn">
+				<input type="submit" class="submit_button" name="register" value="登録" />
+		</p>
+	</section>
+	<section style="width:50%;float:left;">
+		<h3>スケジュールの削除</h3>
+		<dl>
+			<dd>チェックしたスケジュールを削除します。</dd>
+		</dl>
+
+		<p class="pageBtn">
+				<input type="submit" class="submit_button" name="remove" value="削除" onclick="return confirm('削除しますか？');" />
+		</p>
+	</section>
+</form>
+
+<br style="clear:both;">
+
+<h1>スケジュールをCSVから一括登録</h1>
+<form soy:id="export_form" id="export_form">
+	<input type="submit" name="export" value="フォーマットのダウンロード">
+</form>
+
+<br>
+
+<h3>CSVで一括登録</h3>
+<p class="notice always">CSVのフォーマットをダウンロードし、CSVを開き、記述に従ってスケジュールを記載します</p>
+<form soy:id="import_form">
+	<input type="file" name="import">&nbsp;
+	<input type="submit" name="import" value="一括登録" onclick="return confirmBeforeCollectiveRegister();">
+</form><br>
+<h2>CSVの一括登録の際のラベルID一覧</h2>
+<p soy:id="label_list_string"></p>
+<br><br>
+
+<style type="text/css" soy:id="calendar_css"></style>
+
+<script>
+function redirectAfterSelectOfSch(){
+	var r = location.href;
+
+	//item_idを取得
+	var res = r.match('item_id=([0-9]*)');
+	var itemId = parseInt(res[1]);
+
+	if(r.indexOf("?")){
+		r = r.substr(0, r.indexOf("?"));
+
+	}
+	r += "?plugin=reserve_calendar&calendar&item_id=" + itemId + "&y=" + $("#year_select").val() + "&m=" + $("#month_select").val();
+	location.href = r;
+}
+
+$("#export_form").attr("target","download_frame");
+$("#export_form").submit(function(){
+	setTimeout(function(){location.reload();},1000);
+});
+
+function confirmBeforeCollectiveRegister(){
+	return confirm('<!-- soy:id="item_name" /-->のスケジュールの一括登録の実行でお間違いないですか？');
+}
+</script>

@@ -1,0 +1,114 @@
+<form soy:id="form">
+	<h2 style="font-size:medium;font-weight:normal;margin:0;padding:0;"><span style="color:#996600;font-size:medium;font-weight:normal;">お客様情報の入力</span></h2>
+
+	<!-- soy:display="has_error" -->
+	<div>
+		<span style="font-weight:bold;color:#FF0000;">入力項目に不備があります。</span>
+	</div>
+	<!-- /soy:display="has_error" -->
+
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">メールアドレス<span style="font-size:xx-small; color:#FF0000;">[必須]</span></span><br />
+	<input id="user_mail_address" soy:id="user_mail_address" value="" /><br />
+	<span soy:id="mail_address_error" style="font-size:small;font-weight:bold;color:#FF0000;">○○が△△△△です。</span>
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">パスワード</span><br />
+	<input soy:id="password" type="password" name="" value="" size="7" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" /><br />
+	<span soy:id="password_error" style="font-size:small;font-weight:bold;color:#FF0000;">パスワードが違います</span>
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">氏名<span style="font-size:xx-small; color:#FF0000;">[必須]</span></span><br />
+	<input id="user_name" soy:id="user_name" type="text" value="" /><br />
+	<span soy:id="name_error" style="font-size:small;font-weight:bold;color:#FF0000;">○○が△△△△です。</span>
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">フリガナ<span style="font-size:xx-small; color:#FF0000;">[必須]</span></span><br />
+	<input id="user_furigana" soy:id="user_furigana" value="" /><br />
+	<span soy:id="reading_error" style="font-size:small;font-weight:bold;color:#FF0000;">○○が△△△△です。</span>
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">郵便番号<span style="font-size:xx-small; color:#FF0000;">[必須]</span></span><br />
+	<input id="user_zip_code" soy:id="user_post_number" type="text" value="" size="7" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" />
+	<input type="submit" name="user_zip_search" value="住所自動入力"/><br />
+	<span soy:id="zip_code_error" style="font-size:small;font-weight:bold;color:#FF0000;">○○が△△△△です。</span>
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">住所<span style="font-size:xx-small; color:#FF0000;">[必須]</span></span><br />				
+	<select id="user_area" soy:id="user_area"><option value="">▼選択</option></select><br />
+	<input id="user_address1" soy:id="user_address1" type="text" value="" /><br />
+	<input id="user_address2" soy:id="user_address2" type="text" value="" /><br />
+	<span soy:id="address_error" style="font-size:small;font-weight:bold;color:#FF0000;">○○が△△△△です。</span>
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">電話番号<span style="font-size:xx-small; color:#FF0000;">[必須]</span></span><br />
+	<input id="user_tel_number" type="text" soy:id="user_tel_number" value="" istyle="4" format="*N" mode="numeric" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" />
+	<span soy:id="tel_number_error" style="font-size:small;font-weight:bold;color:#FF0000;">○○が△△△△です。</span>
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">性別</span><br />
+	<input type="radio" soy:id="gender_male" value="0" />
+	<label for="radio_sex_male">男</label>
+	<input type="radio" soy:id="gender_female" value="1" />
+	<label for="radio_sex_female">女</label>
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">生年月日</span><br />
+	<input soy:id="birth_year" type="text" size="5" istyle="4" format="*N" mode="numeric" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" />/
+	<input soy:id="birth_month" type="text" size="3" istyle="4" format="*N" mode="numeric" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" />/
+	<input soy:id="birth_day" type="text" size="3" istyle="4" format="*N" mode="numeric" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" />
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">FAX番号</span><br />
+	<input id="user_fax_number" type="text" soy:id="user_fax_number" value="" istyle="4" format="*N" mode="numeric" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" />
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">携帯電話番号</span><br />
+	<input id="user_keitai_number" type="text" soy:id="user_keitai_number" value="" istyle="4" format="*N" mode="numeric" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" />
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">勤務先名称・職種</span><br />
+	<input id="user_office" type="text" soy:id="user_office" value="" istyle="4" format="*N" mode="numeric" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" />
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">備考</span><br />			
+	<textarea soy:id="order_memo"></textarea>
+	</p>	
+	<!-- ボタン配置 -->
+	<p>
+		<a soy:id="return_link">戻る</a>
+		<input type="submit" name="confirm" value="確認" />
+	</p>
+
+</form soy:id="form">
+
+<script type="text/javascript">
+<!--
+function copy_user(){
+	var $ = function(id){ return document.getElementById(id); };
+
+	$("send_name").value = $("user_name").value;
+	$("send_reading").value = $("user_reading").value;
+	$("send_zip_code").value = $("user_zip_code").value;
+	$("send_area").value = $("user_area").value;
+	$("send_address1").value = $("user_address1").value;
+	$("send_address2").value = $("user_address2").value;
+	$("send_tel_number").value = $("user_tel_number").value;
+
+	return false;
+}
+-->
+</script>

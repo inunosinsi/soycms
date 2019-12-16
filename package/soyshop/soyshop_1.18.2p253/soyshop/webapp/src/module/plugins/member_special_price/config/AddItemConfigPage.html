@@ -1,0 +1,59 @@
+<p class="notice" soy:display="updated">追加しました</p>
+<p class="notice" soy:display="removed">削除しました</p>
+
+<div class="block_body clearfix">
+
+	<form soy:id="form">
+	<dl>
+		<dt>価格の項目を追加する</dt>
+		<dd>
+			<input type="radio" soy:id="user_attribute_1">&nbsp;
+			<input type="radio" soy:id="user_attribute_2">&nbsp;
+			<input type="radio" soy:id="user_attribute_3">
+			の値が
+			<input type="text" soy:id="user_attribute_value" class="text" style="width:100px !important;">の会員用の価格項目を
+			<input type="submit" value="追加">する
+		</dd>
+	</dl>
+	</form>
+	
+	<!-- soy:display="list" -->
+	<dl>
+		<dt>登録した項目</dt>
+		<dd>
+			<table class="form_table" style="width:350px;float:left;">
+				<thead class="alC">
+					<tr>
+						<th>項目名</th>
+						<th>属性</th>
+						<th>&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- soy:id="item_list" -->
+					<tr>
+						<td soy:id="label" nowrap></td>
+						<td class="alC">顧客属性<!-- soy:id="attribute" /--></td>
+						<td class="operation">
+							<a soy:id="remove_link" class="button">削除</a>
+						</td>
+					</tr>
+					<!-- /soy:id="item_list" -->
+				</tbody>
+			</table>
+			<br style="clear:both;">
+		</dd>
+	</dl>
+	<!-- /soy:display="list" -->
+</div>
+
+<h1>テンプレートへの記述</h1>
+
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 20px 0;">
+&lt;!-- block:id="item" --&gt;
+
+&lt;!-- 顧客にあった価格を表示する。対象外であれば通常の価格(セール中も加味)を表示する --&gt;
+&lt;!-- <strong>cms:id="member_price"</strong> /--&gt;円
+
+&lt;!-- /block:id="item" --&gt;
+</pre>

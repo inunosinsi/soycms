@@ -1,0 +1,38 @@
+.upload_image{
+	width:300px;
+}
+.upload_image td{
+	border-style:none !important;
+	text-align:center;
+}
+
+.upload_image td.last_col{
+	border-right:solid 1px #ccc !important;
+}
+
+img.preview_image{
+	width:100px;
+	height:100px;
+}
+
+/* mail editor */
+.mail_replace_word_panel{
+	width:10px;
+}
+.mail_replace_word_panel div{
+	display:none;
+}
+
+td.actived{
+	width:100px;
+}
+td.actived div{
+	vertical-align:top;
+	display:block !important;
+}
+.mail_replace_word_panel ul,
+.mail_replace_word_panel li{
+	list-style-type:none;
+	margin:0;
+	font-sisze:1em;
+}

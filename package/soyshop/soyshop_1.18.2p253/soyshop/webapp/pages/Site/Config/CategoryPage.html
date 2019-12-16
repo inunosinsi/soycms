@@ -1,0 +1,103 @@
+<h1>
+	カテゴリツリーの設定
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Config">サイト設定</a> &gt; カテゴリツリーの設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>カテゴリツリーの設定</h2>
+	</div>
+	<div class="block_body">
+		<form soy:id="update_form">
+
+		<!--
+		<h3>表示階層数</h3>
+		<dl>
+			<dt>何階層目まで表示するか設定出来ます。</dt>
+			<dd>
+				<input type="text" soy:id="category_navi_depth" />
+				<span class="option">(空の場合は全て)</span>
+			</dd>
+		</dl>
+		-->
+
+		<h3>商品一覧ページの選択</h3>
+		<div class="section clearfix">
+			<div class="left" style="height:430px;">
+				<ul id="category_tree" soy:id="category_tree"></ul>
+			</div>
+
+			<div class="right" style="height:430px;overflow:auto;">
+				<div id="category_detail">
+					<!-- soy:id="category_detail_list" -->
+					<div soy:id="list_row" class="category_detail_list mb40">
+						<h3><span soy:id="category_name"></span></h3>
+
+							<dl>
+								<dt>商品一覧ページを選択してください</dt>
+								<dd>
+									<select soy:id="list_page_select"></select>
+								</dd>
+								<dt>パラメーター<span class="option">（パラメータ（GET変数）を付加することが出来ます）</span></dt>
+								<dd>
+									?<input class="text" soy:id="page_parameter" />
+								</dd>
+								<dt>Keyword</dt>
+								<dd>
+									<input type="text" class="text" soy:id="page_keyword" />
+								</dd>
+
+								<dt>Description</dt>
+								<dd>
+									<textarea type="text" soy:id="page_description"></textarea>
+								</dd>
+							</dl>
+
+					</div>
+					<!-- /soy:id="category_detail_list" -->
+				</div>
+			</div>
+		</div>
+
+		<p class="pageBtn"><input type="submit" value="保存" /></p>
+		</form soy:id="update_form">
+
+	</div>
+</div>
+
+
+<script type="text/javascript">
+function onClickLeaf(category_id){
+	var left_box = $("#category_detail").parent();
+	var offset = $("#category_detail_" + category_id).offset().top;
+
+	offset -= left_box.offset().top;
+	offset += left_box.scrollTop();
+
+
+	left_box.animate({scrollTop : offset},500);
+}
+</script>
+<style type="text/css">
+
+.treeview ul{
+	background-color:#eee;
+}
+
+
+#category_detail{
+	margin-bottom:20px;
+}
+
+#category_tree{
+	margin-left:8px;
+	margin-top:5px;
+}
+
+#category .section .left{
+	height:500px;
+	overflow:auto;
+}
+</style>

@@ -1,0 +1,57 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">ようこそSOY Shopへ！</h1>
+	</div><!-- /.col-lg-12 -->
+</div>
+
+<!-- soy:display="for_super_user" -->
+<div class="row">
+	<div class="col-lg-12">
+		<p>SOY ShopはSOY CMSのサイトを使って簡単にECサイトを運営するためのアプリケーションです。</p>
+		<p>SOY Shopを使うには、SOY Shop専用のサイトを作成する必要があります。</p>
+	</div>
+</div>
+<!-- /soy:display="for_super_user" -->
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-green">
+			<div class="panel-heading">SOY Shopサイトの一覧</div>
+
+			<!-- soy:display="no_soyshop" -->
+			<p class="alert alert-info" role="alert">サイトがありません。 → <a soy:link="shop.Create">サイトの新規作成</a></p>
+			<!-- /soy:display="no_soyshop" -->
+
+			<!-- soy:display="is_soyshop" -->
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<td class="short">サイトID</td>
+									<td>サイト名</td>
+									<td class="short">データベース</td>
+									<td>URL</td>
+									<td class="short">&nbsp;</td>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- soy:id="soyshop_list" -->
+								<tr>
+									<td><!-- soy:id="soyshop_site_id" /--></td>
+									<td><!-- soy:id="soyshop_site_name" /--></td>
+									<td><!-- soy:id="soyshop_site_db" /--></td>
+									<td><a soy:id="soyshop_site_url" >site url link</a></td>
+									<td><a soy:id="soyshop_site_login" class="btn btn-info">site url link</a></td>
+								</tr>
+								<!-- /soy:id="soyshop_list" -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- /soy:display="is_soyshop" -->
+		</div>
+	</div>
+</div>

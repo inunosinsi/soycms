@@ -1,0 +1,240 @@
+<div class="alR">
+    <a class="button" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
+	<a class="button" soy:link="Config.Detail?plugin=custom_search_field&custom">サーチフィールドのカスタムフィールド</a>
+    <a class="button" soy:link="Config.Detail?plugin=custom_search_field&category">カテゴリカスタムサーチフィールド</a>
+    <a class="button" soy:link="Config.Detail?plugin=custom_search_field&eximport">カスタムフィールド</a>
+    <a class="button" soy:link="Config.Detail?plugin=custom_search_field&config">検索の設定</a>
+</div>
+
+<br />
+
+<div class="block_body clearfix">
+
+    <p class="notice" soy:display="updated">更新しました</p>
+    <p class="notice" soy:display="deleted">削除しました</p>
+    <p class="error" soy:display="error">失敗しました</p>
+
+    <table class="form_list">
+        <caption>サーチフィールド</caption>
+        <tr>
+            <th>ID</th>
+            <th>ラベル</th>
+            <th>タイプ</th>
+            <th>表示順</th>
+            <th>表示のさせ方</th>
+            <th>操作</th>
+        </tr>
+
+        <!-- soy:id="field_list" -->
+        <tr>
+            <td soy:id="key"></td>
+            <td soy:id="label"></td>
+            <td soy:id="type"></td>
+            <td style="text-align:center;">
+                    <form method="post">
+                        <input type="hidden" soy:id="field_id" />
+                        <input type="submit" name="move_up" value="△" />
+                        <input type="submit" name="move_down" value="▽" />
+                    </form>
+            </td>
+            <td soy:id="display"></td>
+            <td>
+                <a soy:id="toggle_config">Detail</a>&nbsp;
+
+                <a soy:id="delete">Delete</a>
+                <form method="post">
+                    <input type="submit" soy:id="delete_submit" style="display:none;" />
+                </form>
+            </td>
+        </tr>
+        <tr soy:id="field_config" style="display:none;">
+            <td colspan="3"></td>
+            <td colspan="3">
+                <h5 style="margin-bottom:0;">詳細設定</h5>
+
+                <form method="post">
+                    <dl>
+						<dt>カテゴリとの関連付け</dt>
+						<dd>
+							<select soy:id="show_input"><option></option></select>
+						</dd>
+
+						<!-- soy:id="is_denial" -->
+						<dt>検索時に否定(○○がない)の項目として使用する</dt>
+						<dd>
+							<input type="checkbox" soy:id="denial">
+						</dd>
+						<!-- /soy:id="is_denial" -->
+
+                        <!-- soy:id="with_options" -->
+                        <dt>選択項目<span class="option">(項目を改行で区切ってください)</span></dt>
+                        <!-- soy:id="multi_lang_list" -->
+                        <dd>
+                            <span soy:id="label_area"><!-- soy:id="multi_language_label" /--></span>
+                            <textarea soy:id="option"></textarea><br>
+							※項目名の前に*を付けると公開側の検索フォームで選択された状態で表示されます。
+                        </dd>
+                        <!-- /soy:id="multi_lang_list" -->
+                        <!-- /soy:id="with_options" -->
+
+                        <!-- soy:id="radio_search_form_default_area" -->
+                        <dt>ラジオの項目の設定</dt>
+                        <dd><input type="checkbox" soy:id="radio_search_form_default"></dd>
+                        <!-- /soy:id="radio_search_form_default_area" -->
+
+                        <!-- soy:id="sitemap_option_area" -->
+                        <dt>サイトマップに追加する</dt>
+                        <dd>
+                          <select soy:id="custom_search_item_list_page">
+                            <option></option>
+                          </select>
+                        </dd>
+                        <!-- /soy:id="sitemap_option_area" -->
+
+                        <dt>一括設定</dt>
+                        <dd>
+                            <a href="" soy:id="setting_link">一括設定ページを開く</a>
+                        </dd>
+
+                        <!-- soy:id="checkbox_tag_supple_area" -->
+                        <dt>公開側のページで項目を個別に表示する場合</dt>
+                        <dd><pre soy:id="checkbox_tag_supple" style="width:400px;overflow-x:scroll;"></pre></dd>
+                        <!-- /soy:id="checkbox_tag_supple_area" -->
+
+						<!-- soy:id="is_custom_field" -->
+						<dt>カスタムサーチフィールドのカスタムフィールド</dt>
+						<dd><a soy:id="custom_field_form_link">設定画面を開く</a></dd>
+						<!-- /soy:id="is_custom_field" -->
+                    </dl>
+
+                    <div style="margin:10px 1em 2em;text-align:right;">
+                        <input type="button" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
+                    </div>
+
+                    <input type="submit" style="display:none;" soy:id="update_advance_submit" />
+                </form>
+
+            </td>
+        </tr>
+        <!-- /soy:id="field_list" -->
+    </table>
+
+    <div id="append_form_el" class="popup" style="display:none;">
+        <form soy:id="create_form" id="create_form">
+            <input type="hidden" name="create" value="create" />
+            <p>
+                ID
+                <div class="alL">
+                <input id="custom_key" name="custom_key" type="text" class="text validate">
+                <p class="require" id="custom_key_error" style="display:none;">必須項目を入力してください</p>
+                </div>
+
+                ラベル
+
+                <div class="alL">
+                <input id="custom_label" name="custom_label" type="text" class="text validate">
+                <p class="require" id="custom_label_error" style="display:none;">必須項目を入力してください</p>
+                </div>
+
+
+                項目種別
+                <div class="alL">
+                    <select name="custom_type" soy:id="custom_type_select"></select>
+                </div>
+
+            </p>
+            <p class="alC">
+                <a class="button" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+            </p>
+            <p class="close"></p>
+        </form>
+    </div>
+
+	<div style="margin:5px 25px;">
+		<h2>フィールドID_visible</h2>
+		<p>csf:id="<strong>フィールドID_visible</strong>"またはcsf:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、csf:id="フィールドID"の値が空の時に表示されなくなります。<br>
+		csf:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、csf:id="フィールドID"の値が空ではない時に表示されます。</p>
+		<br>
+		<span>例:フィールドIDがsampleの時</span>
+<pre style="border:1px solid #000000;padding:3px 5px;">&lt;div <strong>csf:id="sample_visible"</strong>&gt;
+カスタムフィールドの値は<strong>&lt;!-- csf:id="sample" /--&gt;</strong>です。
+&lt;/div&gt;
+&lt;div <strong>csf:id="sample_is_empty"</strong>&gt;
+カスタムフィールドの値は空です。
+&lt;/div&gt;</pre>
+	</div>
+
+</div><!-- /block_body -->
+
+<h3 style="margin:10px 0;">テンプレートへの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:5px 35px; overflow-x: auto;" class="script_example">
+&lt;!-- shop:module="common.custom_search_field" --&gt;
+&lt;form action="{作成した検索ページのURLを入力してください}"&gt;
+    商品名:
+    &lt;input type="text" csf:id="custom_search_item_name"&gt;
+
+    商品コード:
+    &lt;input type="text" csf:id="custom_search_item_code"&gt;
+
+    価格:
+    &lt;input type="number" csf:id="custom_search_item_price_min"&gt;～&lt;input type="number" csf:id="custom_search_item_price_max"&gt;
+
+<!-- soy:id="example_tag_list" -->
+<!-- /soy:id="example_tag_list" -->
+
+	フリーワード検索
+	&lt;input type="text" csf:id="custom_search_csf_free_word"&gt;
+
+	<!-- soy:display="connect_reserve_calendar" --><strong>簡易予約カレンダーとの連携</strong> (jQuery等のdatepickerの使用を推奨)
+	予約が可能なプランの期間検索
+	&lt;input type="text" csf:id="custom_search_reserve_calendar_start"&gt;〜&lt;input type="text" csf:id="custom_search_reserve_calendar_end"&gt;
+	<!-- /soy:display="connect_reserve_calendar" -->
+
+    &lt;input type="submit" value="検索する"&gt;
+	&lt;a csf:id="reset_link"&gt;リセット&lt;/a&gt;
+&lt;/form&gt;
+&lt;!-- /shop:module="common.custom_search_field" --&gt;
+</pre>
+
+<div class="block_body clearfix" style="margin:10px 0;">
+    <div class="section">
+    <h3>検索結果ページの設定</h3>
+        <ul style="list-style-type: decimal;margin-left:45px;margin-bottom:10px;">
+            <li>ページの追加から、検索結果ページを作成する。</li>
+            <li>作成した検索結果ページの編集から、<strong>検索モジュールの設定</strong>を開き、<strong>Custom Search Field</strong>を選び、更新する。</li>
+            <li>公開側ページにフォームを設置する</li>
+        </ul>
+    </div>
+</div>
+
+<div class="block_body clearfix" style="margin:10px 0;">
+    <div class="section">
+    <h3>商品一覧ページの設定</h3>
+        <ul style="list-style-type: decimal;margin-left:45px;margin-bottom:10px;">
+            <li>商品一覧用のページを新たに作成し、商品一覧ページの設定でその他を選び、<strong>CustomSearchFieldItemList</strong>を選びます。</li>
+            <li>カスタムサーチフィールドで商品を選択する場合は<strong>http://ドメイン/{ショップID}/{URI}/{サーチフィールドID}/{フィールドの値}</strong>になります。</li>
+        </ul>
+    </div>
+</div>
+
+<div class="block_body clearfix" style="margin:10px 0;">
+    <div class="section">
+        <h3>商品一覧ページと検索結果ページで使用できるソート用リンクタグ</h3>
+<pre style="border:1px solid #000000;padding:5px 20px 0 5px;margin:5px 35px 10px 5px; overflow-x: auto;" class="script_example">
+<!-- soy:id="field_list*" -->
+&lt;a css:id="custom_search_sort_<!-- soy:id="key" /-->_asc"&gt;<!-- soy:id="label" /-->の昇順&lt;/a&gt;
+&lt;a css:id="custom_search_sort_<!-- soy:id="key*" /-->_desc"&gt;<!-- soy:id="label*" /-->の降順&lt;/a&gt;
+<!-- /soy:id="field_list*" -->
+</pre>
+    </div>
+</div>
+
+<div class="block_body clearfix" style="margin:10px 0;">
+    <div class="section">
+        <h3>商品一覧ページを開いた直後にソートを反映する方法</h3>
+        <ul style="margin-left:45px;margin-bottom:10px;">
+            <li>一覧ページへのURLの末尾に?custom_search_sort=フィールドID&r=0を追加</li>
+            <li>rの値は0は昇順で1が降順になります</li>
+        </ul>
+    </div>
+</div>

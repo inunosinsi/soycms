@@ -1,0 +1,73 @@
+<p class="notice" soy:display="updated">更新しました</p>
+
+<form soy:id="form">
+
+<dl>
+	<dt>購入回数による属性名の区分</dt>
+	<dd>
+		<div class="notice always" soy:display="notice_zero_orders">※0回で登録すると、購入履歴なしの顧客が対象になります。</div>
+		<table class="form_table">
+			<thead>
+				<tr>
+					<th>購入回数</th>
+					<th>属性に入れる値</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="attribute_list" -->
+				<tr>
+					<td><input type="number" soy:id="count">&nbsp;回以下</td>
+					<td><input type="text" class="text" soy:id="label"></td>
+					<td class="operation">
+						<input type="submit" name="register" value="更新">
+					</td>
+				</tr>
+				<!-- /soy:id="attribute_list" -->
+				<!-- soy:display="over_orders" -->
+				<tr>
+					<td>上の条件より上</td>
+					<td><input type="text" class="text" soy:id="last_label"></td>
+					<td class="operation">
+						<input type="submit" name="register" value="更新">
+					</td>
+				</tr>
+				<!-- /soy:display="over_orders" -->
+				<tr>
+					<td><input type="number" soy:id="order_count">&nbsp;回以下</td>
+					<td><input type="text" class="text" soy:id="order_label"></td>
+					<td class="operation">
+						<input type="submit" name="register" value="登録">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<span style="margin-left:20px;">※メールマガジンを希望している方のみ属性値が自動で設定されます。</span>
+	</dd>
+	<dt>属性値の挿入設定</dt>
+	<dd>
+		<div>
+			<h2>自動挿入を行う属性値の選択</h2>
+			<input type="radio" soy:id="insert_attribute1">&nbsp;
+			<input type="radio" soy:id="insert_attribute2">&nbsp;
+			<input type="radio" soy:id="insert_attribute3">&nbsp;
+			<input type="submit" value="設定">
+			
+			<h2>期間設定</h2>
+			<input type="number" soy:id="analyze_period">&nbsp;
+			<input type="submit" value="設定"><br>
+			※一ヶ月間の集計の場合は30、一年間の場合は365と設定してください。<br>
+			※登録なしの場合は無期限
+		</div>
+	</dd>
+	
+	<dd>
+		<div class="config_example" style="border:1px solid #000000; padding:5px; margin:5px 0;">
+			<h4>&nbsp;jobの実行</h4>
+			php <!-- soy:id="job_path" /--><br>
+			※exe.phpと<!-- soy:id="site_id" /-->の間には半角スペースが必要です
+			<input type="submit" name="execute" value="実行">
+		</div>
+	</dd>
+</dl>
+</form>

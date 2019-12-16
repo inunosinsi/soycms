@@ -1,0 +1,61 @@
+<h3>テンプレートへの記述例(商品一覧)</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- shop:module="common.breadcrumb_navigation" --&gt;
+&lt;p id="pankuzu"&gt;
+  &lt;a href="/"&gt;トップ&lt;/a&gt;
+  &lt;!-- block:id="breadcrumb" --&gt;
+  &nbsp;&gt;&nbsp; 
+  &lt;a cms:id="breadcrumb_link"&gt;インテリア&lt;/a&gt;
+  &lt;!-- /block:id="breadcrumb" --&gt;
+  &nbsp;&gt;&nbsp;
+  &lt;!-- cms:id="current_name" --&gt;
+  子のカテゴリー名
+  &lt;!-- /cms:id="current_name" --&gt;
+&lt;/p&gt;
+&lt;!-- /shop:module="common.breadcrumb_navigation" --&gt;
+</pre>
+
+<h3>テンプレートへの記述例(商品詳細)</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- shop:module="common.breadcrumb_navigation" --&gt;
+&lt;p id="pankuzu"&gt;
+  &lt;a href="/"&gt;トップ&lt;/a&gt;
+  &lt;!-- block:id="breadcrumb" --&gt;
+  &nbsp;&gt;&nbsp; 
+  &lt;a cms:id="breadcrumb_link"&gt;インテリア&lt;/a&gt;
+  &lt;!-- /block:id="breadcrumb" --&gt;
+  &nbsp;&gt;&nbsp;
+  &lt;a cms:id="current_name_link"&gt;子のカテゴリー名&lt;/a&gt;
+  &nbsp;&gt;&nbsp;
+  &lt;!-- cms:id="current_item_name" --&gt;
+  商品名
+  &lt;!-- /cms:id="current_item__name" --&gt;
+&lt;/p&gt;
+&lt;!-- /shop:module="common.breadcrumb_navigation" --&gt;
+</pre>
+
+<h3>テンプレートへの記述例(フリーページ)</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- shop:module="common.breadcrumb_navigation" --&gt;
+&lt;p id="pankuzu"&gt;
+  &lt;a href="/"&gt;トップ&lt;/a&gt;
+  &nbsp;&gt;&nbsp;
+  &lt;!-- cms:id="current_item_name" --&gt;
+  ページ名
+  &lt;!-- /cms:id="current_item__name" --&gt;
+&lt;/p&gt;
+&lt;!-- /shop:module="common.breadcrumb_navigation" --&gt;
+</pre>
+
+<h3>テンプレートへの記述例(検索結果)</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- shop:module="common.breadcrumb_navigation" --&gt;
+&lt;p id="pankuzu"&gt;
+  &lt;a href="/"&gt;トップ&lt;/a&gt;
+  &nbsp;&gt;&nbsp;
+  &lt;!-- cms:id="search_word" --&gt;
+  商品名
+  &lt;!-- /cms:id="search_word" --&gt;
+&lt;/p&gt;
+&lt;!-- /shop:module="common.breadcrumb_navigation" --&gt;
+</pre>
