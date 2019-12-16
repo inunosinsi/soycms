@@ -61,7 +61,7 @@
 			<img src="<?php echo $logoPath; ?>" class="navbar-brand" alt="logo">
 
 			<ul id="top_menu_site" class="nav navbar-top-links navbar-left">
-				<li><p><a style="text-decoration:none;color:black;" href="<?php echo CMSApplication::getApplicationRoot(); ?>"><?php echo CMSApplication::getApplicationName(); ?></a><?php echo CMSApplication::getApplicationNameAdding(); ?></p></li>
+				<li><p><a style="text-decoration:none;color:white;" href="<?php echo CMSApplication::getApplicationRoot(); ?>"><?php echo CMSApplication::getApplicationName(); ?></a><?php echo CMSApplication::getApplicationNameAdding(); ?></p></li>
 			</ul>
 
 			<?php $enMode = AnalyzerUtil::getIsNecessaryTranslatePlan();?>
@@ -72,16 +72,12 @@
 					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Login/Logout"); ?>"><i class="fa fa-sign-out fa-fw"></i><?php echo ($enMode) ? "Logout" : "ログアウト"; ?></a></li>
 				<?php }else{ ?>
 					<?php if(CMSApplication::checkAuthWithSiteOnly()){?>
-						<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/"); ?>"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>&nbsp;
+						<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/"); ?>"><i class="fa fa-home fa-fw"></i>ダッシュボード</a></li>&nbsp;
 					<?php } ?>
 				<?php if(CMSApplication::checkUseSiteDb()){ ?>
-					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Site/Login/") . CMSApplication::getLoginedSiteId(); ?>"><i class="fa fa-sitemap fa-fw"></i>ログイン中のサイトへ</a></li>
 				<?php }else{ ?>
-					<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Site"); ?>"><i class="fa fa-sitemap fa-fw"></i>サイト一覧</a></li>
 				<?php }?>
 					<?php if(CMSApplication::checkAuthWithSiteOnly()){?>
-						&nbsp;
-						<li><a href="<?php echo SOY2PageController::createRelativeLink("../admin/index.php/Application"); ?>"><i class="fa fa-arrows-alt fa-fw"></i>アプリケーション一覧</a></li>
 					<?php } ?>
 				<?php } ?>
 			</ul>
@@ -106,7 +102,7 @@
 		</div><!-- /#page-wrapper -->
 
 		<footer class="text-right">
-			<div id="copyright" class=""><?php echo (defined("SOYCMS_CMS_NAME")) ? SOYCMS_CMS_NAME : "SOY CMS";?> developing. Copyright &copy; 2007-2017, <?php echo (defined("SOYCMS_DEVELOPER_NAME")) ? SOYCMS_DEVELOPER_NAME : "Brassica, Inc."?></div>
+			<div id="copyright">Copyright © <?php echo (defined("SOYCMS_DEVELOPER_NAME")) ? SOYCMS_DEVELOPER_NAME : "Brassica, Inc."?> All Rights Reserved.</div>
 		</footer>
 	</div><!-- /#wrapper -->
 
