@@ -38,6 +38,4 @@ abstract class BlockDAO extends SOY2DAO{
 	 * @return object
 	 */
 	abstract function getPageBlock($pageId,$soyId);
-
 }
-?>
