@@ -124,7 +124,7 @@ class TagCloudWordListComponent extends HTMLList {
 
 	private function _buildClass($rank){
 		if(strlen($rank) === 1) $rank = "0" . $rank;
-		return "rank" . $rank;
+		return "tagcloud rank" . $rank;
 	}
 
 	function setUrl($url){
