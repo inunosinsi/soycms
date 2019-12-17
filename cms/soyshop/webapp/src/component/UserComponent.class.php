@@ -113,6 +113,9 @@ class UserComponent {
 			"attr:required" => "required"
 		));
 
+		SOY2::import("util.SOYShopPluginUtil");
+		DisplayPlugin::toggle("password", !SOYShopPluginUtil::checkIsActive("generate_password"));
+
 		//パスワード
 		$page->addInput("password", array(
 			"name" => "Customer[password]",
@@ -256,7 +259,6 @@ class UserComponent {
 			"value" => $user->getUrl(),
 		));
 
-		SOY2::import("util.SOYShopPluginUtil");
 		$activeSOYMail = (SOYShopPluginUtil::checkIsActive("soymail_connector"));
 		//メールマガジン(ユーザカスタムフィールド内で登録の処理を行う)
 		$page->addModel("active_soymail_connector", array(
@@ -373,8 +375,6 @@ class UserComponent {
 			"pageObj" => $page,
 			"userId" => $user->getId()
 		));
-
-
 	}
 
 	/**
@@ -565,82 +565,84 @@ class UserComponent {
 		}
 
 		/* パスワード */
+		if(!SOYShopPluginUtil::checkIsActive("generate_password")){	//パスワード自動生成プラグインがアンインストールの時のみパスワードチェック
+			switch($mode){
+				/* カート 登録 */
+				case self::MODE_CART_REGISTER;
+				default:
 
-		switch($mode){
-			/* カート 登録 */
-			case self::MODE_CART_REGISTER;
-			default:
+					if( $app->getAttribute("logined") ){
+						//ログイン時：パスワード変更
+						if(isset($_POST["new_password"]) && is_array($_POST["new_password"]) &&
+							(strlen($_POST["new_password"]["old"]) > 0 || strlen($_POST["new_password"]["new"]) > 0)
+						){
+							$old = (isset($_POST["new_password"]["old"])) ? $_POST["new_password"]["old"] : "";
+							$new = (isset($_POST["new_password"]["new"])) ? $_POST["new_password"]["new"] : "";
 
-				if( $app->getAttribute("logined") ){
-					//ログイン時：パスワード変更
-					if(isset($_POST["new_password"]) && is_array($_POST["new_password"]) &&
-						(strlen($_POST["new_password"]["old"]) > 0 || strlen($_POST["new_password"]["new"]) > 0)
-					){
-						$old = (isset($_POST["new_password"]["old"])) ? $_POST["new_password"]["old"] : "";
-						$new = (isset($_POST["new_password"]["new"])) ? $_POST["new_password"]["new"] : "";
+							try{
+								$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+								$oldUser = $userDAO->getById($app->getAttribute("logined_userid"));
 
-						try{
-							$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-							$oldUser = $userDAO->getById($app->getAttribute("logined_userid"));
-
-							if( $user->checkPassword($oldUser) ){
-								if( strlen($new) < 8 ){
-									//新しいパスワード設定で文字数が足りない場合
-									$app->addErrorMessage("password_error", MessageManager::get("NEW_PASSWORD_COUNT_NOT_ENOUGH"));
-									$res = false;
+								if( $user->checkPassword($oldUser) ){
+									if( strlen($new) < 8 ){
+										//新しいパスワード設定で文字数が足りない場合
+										$app->addErrorMessage("password_error", MessageManager::get("NEW_PASSWORD_COUNT_NOT_ENOUGH"));
+										$res = false;
+									}else{
+										$app->setAttribute("new_password", $new);
+									}
 								}else{
-									$app->setAttribute("new_password", $new);
+									//新しいパスワード設定で古いパスワードに誤りがある場合
+									$app->addErrorMessage("password_error", MessageManager::get("OLD_PASSWORD_DIFFERENT"));
+									$res = false;
 								}
-							}else{
-								//新しいパスワード設定で古いパスワードに誤りがある場合
-								$app->addErrorMessage("password_error", MessageManager::get("OLD_PASSWORD_DIFFERENT"));
+							}catch(Exception $e){
+								//DB error?
+							}
+						}
+					}else{
+						//未ログイン時
+						if( tstrlen($user->getPassword()) ){
+							if(tstrlen($user->getPassword()) < 8){
+								//パスワード設定で文字数が足りない場合
+								$app->addErrorMessage("password_error", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
 								$res = false;
 							}
-						}catch(Exception $e){
-							//DB error?
 						}
 					}
-				}else{
-					//未ログイン時
-					if( tstrlen($user->getPassword()) ){
-						if(tstrlen($user->getPassword()) < 8){
-							//パスワード設定で文字数が足りない場合
-							$app->addErrorMessage("password_error", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
-							$res = false;
-						}
+
+					break;
+
+				/* カート 編集 */
+				case self::MODE_CART_EDIT;
+
+					break;
+
+				/* マイページ 登録 */
+				case self::MODE_MYPAGE_REGISTER;
+
+					if(tstrlen($user->getPassword()) < 1){
+						//パスワードが入力されていない場合
+						$app->addErrorMessage("password", MessageManager::get("PASSWORD_EMPTY"));
+						$res = false;
+					}elseif(tstrlen($user->getPassword()) < 8){
+						//パスワード設定で文字数が足りない場合
+						$app->addErrorMessage("password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
+						$res = false;
+					}elseif(!preg_match("/^[a-zA-Z0-9]+$/", $user->getPassword())){
+						//パスワードの書式に誤りがある場合
+						$app->addErrorMessage("password", MessageManager::get("PASSWORD_FALSE"));
 					}
-				}
 
-				break;
+					break;
 
-			/* カート 編集 */
-			case self::MODE_CART_EDIT;
-
-				break;
-
-			/* マイページ 登録 */
-			case self::MODE_MYPAGE_REGISTER;
-
-				if(tstrlen($user->getPassword()) < 1){
-					//パスワードが入力されていない場合
-					$app->addErrorMessage("password", MessageManager::get("PASSWORD_EMPTY"));
-					$res = false;
-				}elseif(tstrlen($user->getPassword()) < 8){
-					//パスワード設定で文字数が足りない場合
-					$app->addErrorMessage("password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
-					$res = false;
-				}elseif(!preg_match("/^[a-zA-Z0-9]+$/", $user->getPassword())){
-					//パスワードの書式に誤りがある場合
-					$app->addErrorMessage("password", MessageManager::get("PASSWORD_FALSE"));
-				}
-
-				break;
-
-			/* マイページ 編集 */
-			case self::MODE_MYPAGE_EDIT;
-				//パスワード変更なし
-				break;
+				/* マイページ 編集 */
+				case self::MODE_MYPAGE_EDIT;
+					//パスワード変更なし
+					break;
+			}
 		}
+
 
 		/* メールアドレスの重複チェック */
 		switch($mode){

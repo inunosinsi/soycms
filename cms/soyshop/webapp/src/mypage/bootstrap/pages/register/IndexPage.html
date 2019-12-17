@@ -89,12 +89,14 @@
 		<small class="form-text text-muted">【半角英数】</small>
 	</div>
 
+	<!-- soy:display="password" -->
 	<div class="form-group">
 		<label for="">パスワード<span class="require">（必須）</span></label>
 		<p class="alert alert-danger" role="alert" soy:id="password_error">パスワードを入力してください</p>
 		<input name="" type="password" class="form-control" autocomplete="off" soy:id="password">
 		<small class="form-text text-muted">【半角英数・8文字以上】</small>
 	</div>
+	<!-- /soy:display="password" -->
 
 	<div class="form-group" soy:id="gender_show">
 		<label for="">性別<span soy:id="gender_required">(必須)</span></label>
