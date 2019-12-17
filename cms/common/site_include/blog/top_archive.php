@@ -692,6 +692,7 @@ function soy_cms_blog_output_current_category_or_archive($page){
             function setPage($page){
                 $alias = null;
                 $link = null;
+				$description = null;
 
                 switch($page->mode){
                     case CMSBlogPage::MODE_CATEGORY_ARCHIVE :
@@ -702,6 +703,7 @@ function soy_cms_blog_output_current_category_or_archive($page){
                         if($page->label){
                             $link = $page->getCategoryPageURL(true) . rawurlencode($page->label->getAlias());
                             $alias = $page->label->getAlias();
+							$description = $page->label->getDescription();
                         }
                         break;
 
@@ -737,6 +739,10 @@ function soy_cms_blog_output_current_category_or_archive($page){
 
                 $this->createAdd("category_alias","CMSLabel",array(
                     "text"=>$alias,
+                    "soy2prefix"=>"cms"
+                ));
+				$this->createAdd("category_description","CMSLabel",array(
+                    "text"=>$description,
                     "soy2prefix"=>"cms"
                 ));
             }
@@ -778,11 +784,16 @@ function soy_cms_blog_output_current_category($page){
                     "link"=>($page->label)? $page->getCategoryPageURL(true) . rawurlencode($page->label->getAlias()) : "",
                     "soy2prefix"=>"cms"
                 ));
-				
+
 				$this->createAdd("category_alias","CMSLabel",array(
                     "text" => ($page->label) ? $page->label->getAlias() : "",
                     "soy2prefix" => "cms"
                 ));
+
+				$this->createAdd("category_description", "CMSLabel", array(
+					"text" => ($page->label) ? $page->label->getDescription() : "",
+                    "soy2prefix" => "cms"
+				));
             }
         }
     }
@@ -1000,3 +1011,4 @@ function soy_cms_blog_output_prev_next_month($page){
     ));
 
 }
+
