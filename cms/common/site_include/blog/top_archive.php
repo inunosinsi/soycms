@@ -1011,4 +1011,3 @@ function soy_cms_blog_output_prev_next_month($page){
     ));
 
 }
-
