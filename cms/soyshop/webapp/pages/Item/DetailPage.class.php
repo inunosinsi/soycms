@@ -120,7 +120,7 @@ class DetailPage extends WebPage{
 			$obj = (object)$newItem;
 
 			SOY2::cast($item, $obj);
-			
+
 			$alias = null;
 			if(isset($_POST["custom_alias"])){
 				$alias = $_POST["custom_alias"];
@@ -458,9 +458,13 @@ class DetailPage extends WebPage{
 		));
 		$this->createAdd("child_item_list","HTMLList", array(
 			"list" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByTypeNoDisabled($item->getId()),
-			'populateItem:function($entity,$key)' => '$this->createAdd("item_detail_link","HTMLLink", array(' .
+			'populateItem:function($entity,$key)' => '$itemName = $entity->getName();'.
+				'if($entity->getIsOpen() != 1) $itemName .= " <span style=\"color:#FF0000;\">(非公開)</span>";'.
+				'if($entity->getIsDisabled() != 0) $itemName .= " <span style=\"color:#FF0000;\">(削除)</span>";'.
+				'$this->createAdd("item_detail_link","HTMLLink", array(' .
 					'"link" => "'.SOY2PageController::createLink("Item.Detail").'/" . $entity->getId(),' .
-					'"text" => $entity->getName()));'
+					'"html" => $itemName
+				));'
 		));
 
 		/* config */
