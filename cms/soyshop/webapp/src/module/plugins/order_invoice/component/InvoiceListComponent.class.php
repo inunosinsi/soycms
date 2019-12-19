@@ -85,6 +85,11 @@ class InvoiceListComponent extends HTMLList{
 			"text" => date('Y-m-d', time())
 		));
 
+		//和表記
+		$this->addLabel("create_date_jp", array(
+			"text" => date('Y年m月d日', time())
+		));
+
 		$this->addLabel("subtotal_price", array(
 			"text" => number_format(self::getTotalPrice($order->getId()))
 		));
