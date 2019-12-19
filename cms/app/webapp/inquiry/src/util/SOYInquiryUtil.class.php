@@ -99,4 +99,34 @@ class SOYInquiryUtil{
 
 		return SOYSHOP_SITE_ID;
 	}
+
+	/** 連番カラム用の便利な関数 **/
+	public static function buildSerialNumber($cnf){
+		if(!isset($cnf["serialNumber"])) return "";
+		$num = ((int)$cnf["serialNumber"] > 0) ? $cnf["serialNumber"] : 1;
+
+		$str = "";
+		if(isset($cnf["prefix"]) && strlen($cnf["prefix"])){
+			$str .= $cnf["prefix"];
+			$str = str_replace("##YEAR##", date("Y"), $str);
+			$str = str_replace("##MONTH##", date("m"), $str);
+			$str = str_replace("##DAY##", date("d"), $str);
+		}
+
+		if(isset($cnf["digits"]) && is_numeric($cnf["digits"]) && $cnf["digits"] > 0){
+			if(strlen($num) > $cnf["digits"]) $num = (int)substr($num, strlen($num) - $cnf["digits"]);
+			$zeros = "";
+			$cmp = $cnf["digits"] - strlen($num);
+			if($cmp > 0){
+				for($i = 0; $i < $cmp; $i++){
+					$zeros .= "0";
+				}
+			}
+			$str .= $zeros . $num;
+		}else{
+			$str .= $num;
+		}
+
+		return $str;
+	}
 }

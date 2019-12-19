@@ -255,7 +255,7 @@ class SOYInquiry_PageApplication{
 
 	    //確認画面表示（Captcha判定に失敗したときのためにこのIF文は分離しておく必要がある）
 		if(isset($_POST["confirm"]) || isset($_POST["confirm_x"])){
-			$errors = $this->checkPostData($_POST["data"], $columns);
+			$errors = self::checkPostData($_POST["data"], $columns);
 
 			if(empty($errors)){
 
@@ -315,7 +315,7 @@ class SOYInquiry_PageApplication{
 	/**
 	 * POSTされた値をチェックする
 	 */
-	function checkPostData($data, $columns){
+	private function checkPostData($data, $columns){
 		$errors = array();
 
 		foreach($columns as $column){
@@ -330,7 +330,8 @@ class SOYInquiry_PageApplication{
 			}
 			$obj = $column->getColumn($this->form);
 
-			if(false === $obj->validate()){
+			//エラーチェック　連番の場合は必須でもチェックしない
+			if(get_class($obj) != "SerialNumberColumn" && false === $obj->validate()){
 				$errors[$id] = $obj->getErrorMessage();
 				$errors[$column->getColumnId()] = $errors[$id];
 			}

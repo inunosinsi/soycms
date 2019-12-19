@@ -27,8 +27,8 @@ class InquiryLogic extends SOY2LogicBase{
 
 			//連番の場合
 			if($column->getType() == "SerialNumber"){
-				$config = soy2_unserialize($column->getConfig());
-				$value = (isset($config["serialNumber"]) && is_numeric($config["serialNumber"])) ? (int)$config["serialNumber"] : 1;
+				SOY2::import("util.SOYInquiryUtil");
+				$value = SOYInquiryUtil::buildSerialNumber(soy2_unserialize($column->getConfig()));
 			}else{
 				$value = ($useMailBody) ? $column->getColumn()->getMailText() : $column->getContent();
 			}

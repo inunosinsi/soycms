@@ -3,6 +3,8 @@
 class SerialNumberColumn extends SOYInquiry_ColumnBase{
 
 	private $serialNumber = 1;
+	private $prefix;		//接頭語
+	private $digits = 0;	//桁数
 
     /**
 	 * ユーザに表示するようのフォーム
@@ -24,7 +26,16 @@ class SerialNumberColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getConfigForm(){
 		$html = array();
-		$html[] = "次回お問い合わせ時に生成する番号：<input type=\"number\" name=\"Column[config][serialNumber]\" value=\"" . $this->serialNumber . "\">";
+		$html[] = "次回お問い合わせ時に生成する番号：<input type=\"number\" name=\"Column[config][serialNumber]\" value=\"" . $this->serialNumber . "\"><br><br>";
+		$html[] = "番号の桁数：<input type=\"number\" name=\"Column[config][digits]\" value=\"" . $this->digits . "\" style=\"width:80px;\"><br>";
+		$html[] = "※桁数が4の場合、1を出力する時は「0001」に変更してから出力する。桁数が0の場合は何もしない。<br><br>";
+		$html[] = "接頭語の設定：<input type=\"text\" name=\"Column[config][prefix]\" value=\"" . $this->prefix . "\" placeholder=\"下記の置換文字列を使用できます\" style=\"width:40%;\"><br>";
+		$html[] = "※使用可能な置換文字列：##YEAR##、##MONTH##、##DAY##<br>";
+
+		if(strlen($this->prefix)){
+			$html[] = "<br>次回お問い合わせ時の出力例：<strong style=\"font-size:1.2em;\">" . SOYInquiryUtil::buildSerialNumber(self::getConfigure()) . "</strong><br><br>";
+		}
+
 		return implode("\n", $html);
 	}
 
@@ -34,11 +45,15 @@ class SerialNumberColumn extends SOYInquiry_ColumnBase{
 	function setConfigure($config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->serialNumber = (isset($config["serialNumber"]) && is_numeric($config["serialNumber"])) ? (int)$config["serialNumber"] : 1;
+		$this->prefix = (isset($config["prefix"])) ? $config["prefix"] : "";
+		$this->digits = (isset($config["digits"]) && is_numeric($config["digits"])) ? (int)$config["digits"] : 0;
 	}
 
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["serialNumber"] = $this->serialNumber;
+		$config["prefix"] = $this->prefix;
+		$config["digits"] = $this->digits;
 		return $config;
 	}
 
