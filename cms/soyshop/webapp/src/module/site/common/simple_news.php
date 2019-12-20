@@ -37,4 +37,3 @@ function soyshop_simple_news($html, $htmlObj){
 		ob_end_clean();
 	}
 }
-?>
