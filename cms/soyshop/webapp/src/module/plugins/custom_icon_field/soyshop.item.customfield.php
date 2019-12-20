@@ -125,11 +125,11 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 			$attr = new SOYShop_ItemAttribute();
 		}
 
-		$icons = (!is_null($attr->getValue())) ? explode(",", $attr->getValue()) : null;
+		$icons = (!is_null($attr->getValue())) ? explode(",", $attr->getValue()) : array();
 
 		$image = array();
 		$html = "";
-		if(!is_null($icons[0])){
+		if(isset($icons[0])){
 			foreach($icons as $icon){
 				if(preg_match('/(jpg|jpeg|gif|png)$/', $icon, $tmp)){
 

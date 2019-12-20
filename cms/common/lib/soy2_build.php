@@ -4759,6 +4759,7 @@ class SOY2HTMLBase{
 	 *
 	 */
 	function __call($name,$args){
+		/** PHP7.4対策で廃止
 		if(method_exists($this,"createAdd") && preg_match('/^add([A-Za-z]+)$/',$name,$tmp) && count($args)>0){
 			$class = "HTML" . $tmp[1];
 			if(class_exists($class)){
@@ -4778,6 +4779,7 @@ class SOY2HTMLBase{
 				return;
 			}
 		}
+		**/
 
 		if(!$this->functionExists($name) && $name != "HTMLPage" && $name != "WebPage"){
 			throw new SOY2HTMLException("Method not found: ".$name);
@@ -4793,6 +4795,7 @@ class SOY2HTMLBase{
 		}
 		return eval($variant.$code.";");
 	}
+
 	/**
 	 * 関数を追加登録します
 	 *
@@ -5591,37 +5594,40 @@ class SOY2HTMLFactory extends SOY2HTMLBase{
 		}else{
 			$class = new $className();
 		}
-		foreach($attributes as $key => $value){
-			if($key == "id"){
-				$class->setAttribute($key,$value);
-				continue;
-			}
-			if(strpos($key,"attr:") !== false){
-				$key = substr($key,5);
-				$class->setAttribute($key,$value);
-				continue;
-			}
-			if(method_exists($class,"set".ucwords($key))  || $class->functionExists("set".ucwords($key))){
-				$func = "set".ucwords($key);
-				$class->$func($value);
-				continue;
-			}
-			if(stristr($key,':function')){
-				$key = trim($key);
-				$funcName = str_replace(strstr($key,":function"),"",$key);
-				$argsRegex = '/:function\s*\((.*)\)$/';
-				$tmp = array();
-				if(preg_match($argsRegex,$key,$tmp)){
-					$args = explode(",",$tmp[1]);
-				}else{
+		if(is_array($attributes)){
+			foreach($attributes as $key => $value){
+				if($key == "id"){
+					$class->setAttribute($key,$value);
 					continue;
 				}
-				$code = $value;
-				$class->addFunction($funcName,$args,$code);
-				continue;
+				if(strpos($key,"attr:") !== false){
+					$key = substr($key,5);
+					$class->setAttribute($key,$value);
+					continue;
+				}
+				if(method_exists($class,"set".ucwords($key))  || $class->functionExists("set".ucwords($key))){
+					$func = "set".ucwords($key);
+					$class->$func($value);
+					continue;
+				}
+				if(stristr($key,':function')){
+					$key = trim($key);
+					$funcName = str_replace(strstr($key,":function"),"",$key);
+					$argsRegex = '/:function\s*\((.*)\)$/';
+					$tmp = array();
+					if(preg_match($argsRegex,$key,$tmp)){
+						$args = explode(",",$tmp[1]);
+					}else{
+						continue;
+					}
+					$code = $value;
+					$class->addFunction($funcName,$args,$code);
+					continue;
+				}
+				$class->setAttribute($key,$value);
 			}
-			$class->setAttribute($key,$value);
 		}
+
 		return $class;
 	}
 	/**
@@ -5832,7 +5838,10 @@ class SOYBodyComponentBase extends SOY2HTML{
 	 * @see HTMLPage.add
 	 */
 	function createAdd($id,$className,$array = array()){
-		if(!isset($array["soy2prefix"]) && $this->_childSoy2Prefix)$array["soy2prefix"] = $this->_childSoy2Prefix;
+		if(!isset($array["soy2prefix"]) && $this->_childSoy2Prefix) {
+			if(!is_array($array)) $array = array();
+			$array["soy2prefix"] = $this->_childSoy2Prefix;
+		}
 		$this->add($id,SOY2HTMLFactory::createInstance($className,$array));
 	}
 	function getStartTag(){
@@ -5866,6 +5875,23 @@ class SOYBodyComponentBase extends SOY2HTML{
 	function isMerge(){
 		return true;
 	}
+
+	/** PHP7.4対応 __call()の廃止 **/
+	function addForm($id, $array=array()){self::createAdd($id, "HTMLForm", $array);}
+	function addUploadForm($id, $array=array()){self::createAdd($id, "HTMLUploadForm", $array);}
+	function addModel($id, $array=array()){self::createAdd($id, "HTMLModel", $array);}
+	function addLabel($id, $array=array()){self::createAdd($id, "HTMLLabel", $array);}
+	function addImage($id, $array=array()){self::createAdd($id, "HTMLImage", $array);}
+	function addLink($id, $array=array()){self::createAdd($id, "HTMLLink", $array);}
+	function addActionLink($id, $array=array()){self::createAdd($id, "HTMLActionLink", $array);}
+	function addInput($id, $array=array()){self::createAdd($id, "HTMLInput", $array);}
+	function addTextArea($id, $array=array()){self::createAdd($id, "HTMLTextArea", $array);}
+	function addCheckBox($id, $array=array()){self::createAdd($id, "HTMLCheckBox", $array);}
+	function addSelect($id, $array=array()){self::createAdd($id, "HTMLSelect", $array);}
+	function addHidden($id, $array=array()){self::createAdd($id, "HTMLHidden", $array);}
+	function addScript($id, $array=array()){self::createAdd($id, "HTMLScript", $array);}
+	function addCSS($id, $array=array()){self::createAdd($id, "HTMLCSS", $array);}
+	function addCSSLink($id, $array=array()){self::createAdd($id, "HTMLCSSLink", $array);}
 }
 /**
  * @package SOY2.SOY2HTML

@@ -213,9 +213,10 @@ class CMSUpdatePageBase extends CMSWebPageBase{
 	}
 
 	/**
+	 * @final
 	 * トークン付きのフォームを生成する
 	 */
-	protected function addForm($form_soy_id, $attributes = array()){
+	function addForm($form_soy_id, $attributes = array()){
 
 		$token = md5(mt_rand());
 
@@ -256,7 +257,6 @@ class CMSUpdatePageBase extends CMSWebPageBase{
 			"visible" =>$inSite
 		));
 		$this->add($form_soy_id, $form);
-
 	}
 
 	private function getRequestUrl(){

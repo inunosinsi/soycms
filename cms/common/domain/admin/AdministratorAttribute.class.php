@@ -129,7 +129,7 @@ class AdministratorAttributeConfig {
 	/* config method */
 
 	function getOutput() {
-		return $this->config["output"];
+		return (isset($this->config["output"])) ? $this->config["output"] : null;
 	}
 	function setOutput($output) {
 		$this->config["output"] = $output;
@@ -141,19 +141,19 @@ class AdministratorAttributeConfig {
 		$this->config["description"] = $description;
 	}
 	function getDefaultValue() {
-		return $this->config["defaultValue"];
+		return (isset($this->config["defaultValue"])) ? $this->config["defaultValue"] : null;
 	}
 	function setDefaultValue($defaultValue) {
 		$this->config["defaultValue"] = $defaultValue;
 	}
 	function getEmptyValue() {
-		return $this->config["emptyValue"];
+		return (isset($this->config["emptyValue"])) ? $this->config["emptyValue"] : null;
 	}
 	function setEmptyValue($emptyValue) {
 		$this->config["emptyValue"] = $emptyValue;
 	}
 	function getHideIfEmpty() {
-		return $this->config["hideIfEmpty"];
+		return (isset($this->config["hideIfEmpty"])) ? $this->config["hideIfEmpty"] : null;
 	}
 	function setHideIfEmpty($hideIfEmpty) {
 		$this->config["hideIfEmpty"] = $hideIfEmpty;

@@ -7,6 +7,7 @@ class DiscountFreeCouponOrderComplete extends SOYShopOrderComplete{
 		$couponDao = SOY2DAOFactory::create("SOYShop_CouponDAO");
 
 		$values = $order->getAttribute("discount_free_coupon.code");
+		if(!isset($values["value"])) return;
 		$couponCode = $values["value"];
 
 		try{

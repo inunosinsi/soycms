@@ -343,7 +343,8 @@ class SearchOrderLogic extends SOY2LogicBase{
 		))->getQueries();
 
 		foreach($queries as $moduleId => $values){
-			if(is_null($values["queries"]) || !count($values["queries"])) continue;
+			if(!isset($values["queries"])) continue;
+			if(!is_array($values["queries"]) || !count($values["queries"])) continue;
 			$where = array_merge($where, $values["queries"]);
 			if(isset($values["binds"])) $binds = array_merge($binds, $values["binds"]);
 		}
@@ -379,7 +380,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			return array();
 		}
-		
+
 		$orders = array();
 		$itemOrderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 		foreach($res as $row){

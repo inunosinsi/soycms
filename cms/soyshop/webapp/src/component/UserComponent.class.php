@@ -25,6 +25,7 @@ class UserComponent {
 	}
 
 	/**
+	 * @final
 	 * @param any $page 各部のページクラス
 	 * @param SOYShop_User $user
 	 * @param any $app CartLogic、もしくはMyPageLogic
@@ -32,7 +33,6 @@ class UserComponent {
 	 * @param boolean $isAdmin SOY Shop管理画面かどうか
 	 */
 	public function buildForm($page, SOYShop_User $user, $app ,$mode = self::MODE_CUSTOM_FORM){
-
 		$page->addForm("form", array(
 			"enctype" => "multipart/form-data"
 		));
@@ -77,7 +77,7 @@ class UserComponent {
 				$mailAddress = "";
 			}
 		}
-
+		
 		$page->addInput("mail_address", array(
 			"name" => "Customer[mailAddress]",
 			"value" => $mailAddress,

@@ -240,26 +240,26 @@ class SOYShop_OrderAttributeConfig{
 
 	/* config method */
 	function getAttributeDescription(){
-		return $this->config["attributeDescription"];
+		return (isset($this->config["attributeDescription"])) ? $this->config["attributeDescription"] : null;
 	}
 	function setAttributeDescription($attributeDescription){
 		$this->attributeDescription = $attributeDescription;
 	}
 	function getAttributeOther(){
-		return @$this->config["attributeOther"];
+		return (isset($this->config["attributeOther"])) ? $this->config["attributeOther"] : null;
 	}
 	function setAttributeOther($attributeOther){
 		$this->attributeOther = $attributeOther;
 	}
 	function getAttributeOtherText(){
-		return @$this->config["attributeOtherText"];
+		return (isset($this->config["attributeOtherText"])) ? $this->config["attributeOtherText"] : null;
 	}
 	function setAttributeOtherText($attributeOtherText){
 		$this->attributeOtherText = $attributeOtherText;
 	}
 
 	function getOption() {
-		return (isset($this->config["option"])) ? $this->config["option"] : "";
+		return (isset($this->config["option"])) ? $this->config["option"] : null;
 	}
 	function setOption($option) {
 		$this->config["option"] = $option;
@@ -272,7 +272,7 @@ class SOYShop_OrderAttributeConfig{
 	}
 
 	function getFileOption() {
-		return (isset($this->config["fileOption"])) ? $this->config["fileOption"] : "";
+		return (isset($this->config["fileOption"])) ? $this->config["fileOption"] : null;
 	}
 	function setFileOption($fileOption) {
 		$this->config["fileOption"] = $fileOption;
@@ -450,13 +450,13 @@ class SOYShop_OrderAttributeConfig{
 	}
 
 	function getDefaultValue() {
-		return $this->config["defaultValue"];
+		return (isset($this->config["defaultValue"])) ? $this->config["defaultValue"] : null;
 	}
 	function setDefaultValue($defaultValue) {
 		$this->config["defaultValue"] = $defaultValue;
 	}
 	function getEmptyValue() {
-		return $this->config["emptyValue"];
+		return (isset($this->config["emptyValue"])) ? $this->config["emptyValue"] : null;
 	}
 	function setEmptyValue($emptyValue) {
 		$this->config["emptyValue"] = $emptyValue;
