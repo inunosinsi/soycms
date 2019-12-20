@@ -108,7 +108,7 @@ class IndexPage extends MainMyPagePageBase{
 	function buildForm(SOYShop_User $user, MyPageLogic $mypage, $mode=UserComponent::MODE_CUSTOM_FORM){
 		//共通コンポーネントに移し替え  soyshop/component/UserComponent.class.php buildFrom()
 		//後方互換性確保は soyshop/component/backward/BackwardUserComponent
-
+		
 		//以前のフォーム 後方互換
 		$this->backward->backwardMyPageRegister($this, $user);
 
