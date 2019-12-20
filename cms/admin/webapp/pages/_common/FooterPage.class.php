@@ -69,6 +69,5 @@ class FooterPage extends CMSWebPageBase{
 		$this->addScript("jquery-cookie",array(
 				"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js") . "?" . SOYCMS_BUILD_TIME
 		));
-
 	}
 }
