@@ -25,10 +25,25 @@
 
 	$class = array();
 	if($column->getType() == "PlainText") $class[] = "title";
+
+	$tr_prop = $obj->getTrProperty();
 	if(count($class)){
-		echo "<tr class=\"".implode(" ",$class)."\">";
+		if(strlen($tr_prop)){
+			if(strpos($tr_prop, "class=") !== false){
+				preg_match('/class="(.*?)"/', $tr_prop, $tmp);
+				if(isset($tmp[1])){
+					$tr_prop = preg_replace('/class="(.*?)"/', "class=\"" . trim($tmp[1]) . " " . implode(" ", $class) . "\"", $tr_prop);
+				}
+			}
+		}else{
+			$tr_prop = "class=\"" . implode(" ", $class) . "\"";
+		}
+	}
+
+	if(strlen($tr_prop)){
+		echo "<tr " . $tr_prop . ">\n";
 	}else{
-		echo "<tr>";
+		echo "<tr>\n";
 	}
 
 	if(strlen($view)>0){

@@ -9,6 +9,7 @@ NEXT
 	- お問い合わせ詳細で接続元IPアドレスを保持
 	- IPアドレスによるフォームの使用制限
 	- defaultテンプレートで管理画面側からtrに属性を挿入できるフォームを追加
+	→ どのフォームでもform.phpとconfirm.phpにgetTrProperty()があれば使用可にした
 	- 連番カラム(接頭語付与設定付き)
 	- カラムの拡張設定ファイル(inquiry.config.php)の読み込みを追加
 	- Bootstrapテンプレート

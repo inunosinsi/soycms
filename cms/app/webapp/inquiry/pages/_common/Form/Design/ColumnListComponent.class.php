@@ -91,7 +91,7 @@ class ColumnListComponent extends HTMLList{
 
 		//デザインがdefaultの時のみ属性(tr)のフォームを出力する
 		$this->addModel("is_tr_property", array(
-			"visible" => ($this->formDesign == "default")
+			"visible" => SOYInquiryUtil::checkUsabledTrProperty($this->formDesign)
 		));
 
 		$this->addInput("tr_property", array(

@@ -100,6 +100,42 @@ class SOYInquiryUtil{
 		return SOYSHOP_SITE_ID;
 	}
 
+	/** tr_propertyが使用可能なフォームを選択しているか？ **/
+	public static function checkUsabledTrProperty($theme){
+		static $isTrProp;
+		if(isset($isTrProp) && is_bool($isTrProp)) return $isTrProp;
+		$dir = self::_getTemplateDir($theme);
+		if(!file_exists($dir . "form.php") || !file_exists($dir . "confirm.php")){
+			$isTrProp = false;
+			return $isTrProp;
+		}
+
+		$code = file_get_contents($dir . "form.php");
+		if(strpos($code, "getTrProperty") === false){
+			$isTrProp = false;
+			return $isTrProp;
+		}
+
+		$code = file_get_contents($dir . "confirm.php");
+		if(strpos($code, "getTrProperty") === false){
+			$isTrProp = false;
+			return $isTrProp;
+		}
+
+		$isTrProp = true;
+		return $isTrProp;
+	}
+
+	public static function getTemplateDir($theme){
+		return self::_getTemplateDir($theme);
+	}
+
+	private static function _getTemplateDir($theme){
+		$dir = SOY2::RootDir() . "template/" . $theme . "/";
+		if(file_exists($dir)) return $dir;
+		return SOY2::RootDir() . "template/default/";
+	}
+
 	/** 連番カラム用の便利な関数 **/
 	public static function buildSerialNumber($cnf){
 		if(!isset($cnf["serialNumber"])) return "";

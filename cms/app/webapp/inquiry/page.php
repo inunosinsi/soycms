@@ -101,10 +101,7 @@ class SOYInquiry_PageApplication{
 		$page_link = $this->pageUrl;
 
 		//template directory setting
-		$templateDir = SOY2::RootDir() . "template/" . $config->getTheme() . "/";
-		if(!file_exists($templateDir)){
-			$templateDir = SOY2::RootDir() . "template/default/";
-		}
+		$templateDir = SOYInquiryUtil::getTemplateDir($config->getTheme());
 		$this->templateDir = $templateDir;
 
 		//ブロックしている時の表示
