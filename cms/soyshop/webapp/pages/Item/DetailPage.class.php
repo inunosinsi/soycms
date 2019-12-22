@@ -459,8 +459,9 @@ class DetailPage extends WebPage{
 		$this->createAdd("child_item_list","HTMLList", array(
 			"list" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByTypeNoDisabled($item->getId()),
 			'populateItem:function($entity,$key)' => '$itemName = $entity->getName();'.
-				'if($entity->getIsOpen() != 1) $itemName .= " <span style=\"color:#FF0000;\">(非公開)</span>";'.
-				'if($entity->getIsDisabled() != 0) $itemName .= " <span style=\"color:#FF0000;\">(削除)</span>";'.
+				'if($entity->getIsOpen() != 1) $itemName = "(非公開)" . $itemName;'.
+				'if($entity->getIsDisabled() != 0) $itemName .= "(削除)" . $itemName;'.
+				'if($entity->getIsOpen() != 1 || $entity->getIsDisabled() != 0) $itemName = "<span style=\"color:#787878;font-size:0.9em;\">" . $itemName . "</span>";'.
 				'$this->createAdd("item_detail_link","HTMLLink", array(' .
 					'"link" => "'.SOY2PageController::createLink("Item.Detail").'/" . $entity->getId(),' .
 					'"html" => $itemName
