@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 		//active or non active
@@ -92,7 +92,7 @@ class TagCloudPlugin{
 						try{
 							$linkDao->insert($linkObj);
 						}catch(Exception $e){
-							var_dump($e);
+							//
 						}
 					}
 				}

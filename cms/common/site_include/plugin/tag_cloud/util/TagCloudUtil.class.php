@@ -5,11 +5,13 @@ class TagCloudUtil {
 	public static function getConfig(){
 		SOY2::import("domain.cms.DataSets");
 		return DataSets::get("tag_cloud.config", array(
-			"divide" => 10
+			"divide" => 10,
+			"tags" => ""
 		));
 	}
 
 	public static function saveConfig($values){
+		if(isset($values["tags"]) && strlen($values["tags"])) $values["tags"] = self::_shapeTags($values["tags"]);
 		SOY2::import("domain.cms.DataSets");
 		DataSets::put("tag_cloud.config", $values);
 	}
@@ -21,5 +23,20 @@ class TagCloudUtil {
 			}
 		}
 		return null;
+	}
+
+	private static function _shapeTags($tags){
+		$tags = trim($tags);
+		if(!strlen($tags)) return "";
+		$tags = trim(str_replace("、", ",", $tags));
+
+		$tagsArray = explode(",", $tags);
+		$list = array();
+		foreach($tagsArray as $tag){
+			$tag = trim($tag);
+			if(!strlen($tag)) continue;
+			$list[] = $tag;
+		}
+		return implode(",", $list);
 	}
 }

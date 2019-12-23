@@ -26,6 +26,11 @@ class TagCloudBlockPage extends WebPage{
 			"value" => (isset($cnf["divide"])) ? (int)$cnf["divide"] : 10,
 			"style" => "width:80px;"
 		));
+
+		$this->addTextArea("tags", array(
+			"name" => "Config[tags]",
+			"value" => (isset($cnf["tags"])) ? $cnf["tags"] : "",
+		));
 	}
 
 	function getPluginObj() {
