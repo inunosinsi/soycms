@@ -77,7 +77,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getView(){
 		$values = self::getValues();
-		if(count($values)){
+		if(is_array($values) && count($values)){
 			$html = array();
 			foreach($values as $v){
 				if(isset($v["tmp_name"]) && strlen($v["tmp_name"])){
@@ -97,7 +97,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getContent(){
 		$values = self::getValues();
-		if(count($values)){
+		if(is_array($values) && count($values)){
 			$html = array();
 			foreach($values as $v){
 				if(isset($v["tmp_name"]) && strlen($v["tmp_name"])){
@@ -197,7 +197,7 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 	 */
 	function onSend($inquiry){
 		$values = self::getValues();
-		if(count($values)){
+		if(is_array($values) && count($values)){
 			$new_dir = SOY_INQUIRY_UPLOAD_DIR . "/" . $this->getFormId() . "/" . date("Ym") . "/";
 			if(!file_exists($new_dir)) mkdir($new_dir,0777,true);
 

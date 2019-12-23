@@ -21,29 +21,27 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	 */
 	function getForm($attr = array()){
 
-		$value = $this->getValue();
+		$values = $this->getValue();
 		$required = $this->getRequiredProp();
 
 		$inputType = htmlspecialchars($this->inputType, ENT_QUOTES, "UTF-8");
 
-		$html = array();
-		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$value[0]."\" size=\"".$this->size1."\" ".$this->getFormAttribute($this->attribute1)."" . $required . ">";
-		$html[] = "-";
-		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$value[1]."\" size=\"".$this->size2."\" ".$this->getFormAttribute($this->attribute2)."" . $required . ">";
-		$html[] = "-";
-		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$value[2]."\" size=\"".$this->size3."\" ".$this->getFormAttribute($this->attribute3)."" . $required . ">";
+		if(!is_array($values)) $values = array("", "", "");
+		$tel1 = (isset($values[0])) ? $values[0] : "";
+		$tel2 = (isset($values[1])) ? $values[1] : "";
+		$tel3 = (isset($values[2])) ? $values[2] : "";
 
+		$html = array();
+		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$tel1."\" size=\"".$this->size1."\" ".$this->getFormAttribute($this->attribute1)."" . $required . ">";
+		$html[] = "-";
+		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$tel2."\" size=\"".$this->size2."\" ".$this->getFormAttribute($this->attribute2)."" . $required . ">";
+		$html[] = "-";
+		$html[] = "<input type=\"".$inputType."\" name=\"data[".$this->getColumnId()."][]\" value=\"".$tel3."\" size=\"".$this->size3."\" ".$this->getFormAttribute($this->attribute3)."" . $required . ">";
 		return implode("\n",$html);
 	}
 
 	function getFormAttribute($attribute){
-		$value = "";
-
-		if(isset($attribute) && strlen($attribute) > 0){
-			$value = str_replace("&quot;","\"",$attribute);
-		}
-
-		return $value;
+		return (isset($attribute) && strlen($attribute) > 0) ? str_replace("&quot;","\"",$attribute) : "";
 	}
 
 	function getRequiredProp(){
@@ -54,7 +52,6 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	 * 個々のフォームのサイズを変更するフォーム
 	 */
 	function getConfigForm(){
-
 		$html  = '幅:<input type="text" name="Column[config][size1]" value="'.$this->size1.'" size="3" />';
 		$html .= '-<input type="text" name="Column[config][size2]" value="'.$this->size2.'" size="3" />';
 		$html .= '-<input type="text" name="Column[config][size3]" value="'.$this->size3.'" size="3" />';
@@ -114,9 +111,9 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		$value = $this->getValue();
+		$values = $this->getValue();
 
-		if(empty($value) || (is_array($value) && strlen(implode("",$value)))<1){
+		if(empty($values) || (is_array($values) && strlen(implode("",$values)))<1){
 			$this->setValue(array("", "", ""));
 
 			if($this->getIsRequire()){
@@ -127,8 +124,8 @@ class TelephoneColumn extends SOYInquiry_ColumnBase{
 			return true;
 		}
 
-		if( (strlen($value[0]) + strlen($value[1]) + strlen($value[2]) > 0)
-		 && (strlen($value[0]) * strlen($value[1]) * strlen($value[2]) == 0)
+		if( (strlen($values[0]) + strlen($values[1]) + strlen($values[2]) > 0)
+		 && (strlen($values[0]) * strlen($values[1]) * strlen($values[2]) == 0)
 		){
 			$this->errorMessage = "電話番号の書式が不正です。";
 			return false;

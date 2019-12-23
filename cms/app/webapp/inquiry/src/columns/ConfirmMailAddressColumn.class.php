@@ -40,12 +40,18 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 			$attributes[] = htmlspecialchars($key) . "=\"".htmlspecialchars($value)."\"";
 		}
 
-		$value = $this->getValue();
+		$values = $this->getValue();
+		if(is_array($values)){
+			$mail = htmlspecialchars($values[0], ENT_QUOTES, "UTF-8");
+			$confirm = htmlspecialchars($values[1], ENT_QUOTES, "UTF-8");
+		}else{
+			$mail = "";
+			$confirm = "";
+		}
 
 		$html = array();
-		$html[] = "<input type=\"email\" name=\"data[".$this->getColumnId()."][0]\" value=\"".htmlspecialchars($value[0], ENT_QUOTES, "UTF-8")."\" " . implode(" ",$attributes) . "" . $required ."><br />";
-		$html[] = "<input type=\"email\" name=\"data[".$this->getColumnId()."][1]\" value=\"".htmlspecialchars($value[1], ENT_QUOTES, "UTF-8")."\" " . implode(" ",$attributes) . "" . $required . ">[確認用]";
-
+		$html[] = "<input type=\"email\" name=\"data[".$this->getColumnId()."][0]\" value=\"".$mail."\" " . implode(" ",$attributes) . "" . $required ."><br />";
+		$html[] = "<input type=\"email\" name=\"data[".$this->getColumnId()."][1]\" value=\"".$confirm."\" " . implode(" ",$attributes) . "" . $required . ">[確認用]";
 		return implode("\n",$html);
 	}
 
@@ -115,7 +121,6 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 			$html .= ' checked';
 		}
 		$html .= '>required属性を利用する</label>';
-
 		return $html;
 	}
 
@@ -150,12 +155,15 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 	 * 確認画面で呼び出す
 	 */
 	function getView(){
-		$value = $this->getValue();
-		return htmlspecialchars(trim($value[0]), ENT_QUOTES, "UTF-8");;
+		$values = $this->getValue();
+		return (is_array($values)) ? htmlspecialchars(trim($values[0]), ENT_QUOTES, "UTF-8") : "";
 	}
 
 	function validate(){
 		$values = $this->getValue();
+		if(!is_array($values)){
+			$values = array("", "");
+		}
 
 		if(trim($values[0])!==trim($values[1])){
 			$this->setErrorMessage("確認用のメールアドレスが正しくありません。");
@@ -188,8 +196,7 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 
 	function getAttributeForInputMode(){
 		//$attribute = "style=\"ime-mode:inactive;\"";
-		$attribute = "style=\"ime-mode:disabled;\"";
-		return $attribute;
+		return "style=\"ime-mode:disabled;\"";
 	}
 
 

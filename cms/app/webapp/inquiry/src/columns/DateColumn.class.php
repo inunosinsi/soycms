@@ -25,21 +25,20 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$attributes = $this->getAttributes();
 		$required = $this->getRequiredProp();
 
-		$value = $this->getValue();
+		$values = $this->getValue();
 
-		if(!$value){
+		if(!is_array($values)){
 			$hasToday = $this->hasToday;
-
-			$value = array();
+			$values = array();
 
 			//ディフォルトで今日を表示する
 			if(isset($hasToday)){
 				//設定した表示年数に今日があるかチェックする
 				if(date("Y") >= $startYear && date("Y") <= $endYear){
-					$value = array("year" => date("Y"), "month" => date("m"), "day" => date("d"));
+					$values = array("year" => date("Y"), "month" => date("m"), "day" => date("d"));
 				}
 			}else{
-				$value = array("year" => "", "month" => "", "day" => "");
+				$values = array("year" => "", "month" => "", "day" => "");
 			}
 		}
 
@@ -48,7 +47,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$html[] ="<option value=\"\">----</option>";
 
 		for($i = $startYear; $i <= $endYear; $i++){
-			if($value["year"] == $i){
+			if(isset($values["year"]) && $values["year"] == $i){
 				$html[] ="<option selected=\"selected\">".$i."</option>";
 			}else{
 				$html[] ="<option>".$i."</option>";
@@ -59,26 +58,24 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$html[] = "<select name=\"data[".$this->getColumnId()."][month]\" ".implode(" ",$attributes)."" . $required . ">";
 		$html[] ="<option value=\"\">--</option>";
 		for($i = 1; $i <= 12; $i++){
-			if($value["month"] == $i){
+			if(isset($values["month"]) && $values["month"] == $i){
 				$html[] = "<option selected=\"selected\">" . sprintf("%0d",$i) . "</option>";
 			}else{
 				$html[] = "<option>" . sprintf("%0d",$i) . "</option>";
 			}
-
 		}
 		$html[] = "</select>";
 
 		$html[] = "<select name=\"data[".$this->getColumnId()."][day]\" ".implode(" ",$attributes)."" . $required . ">";
 		$html[] ="<option value=\"\">--</option>";
 		for($i = 1; $i <= 31; $i++){
-			if($value["day"] == $i){
+			if(isset($values["day"]) && $values["day"] == $i){
 				$html[] = "<option selected=\"selected\">" . sprintf("%0d",$i) . "</option>";
 			}else{
 				$html[] = "<option>" . sprintf("%0d",$i) . "</option>";
 			}
 		}
 		$html[] = "</select>";
-
 		return implode("\n",$html);
 	}
 
@@ -102,12 +99,11 @@ class DateColumn extends SOYInquiry_ColumnBase{
 	 * 確認画面で呼び出す
 	 */
 	function getView(){
-		$value = $this->getValue();
-		if(!$value["year"] || !$value["month"] || !$value["day"]){
+		$values = $this->getValue();
+		if(!isset($values["year"]) || !isset($values["month"]) || !isset($values["day"])){
 			return "----/--/--";
 		}else{
-			$value = $value["year"] . "/" . $value["month"] . "/" . $value["day"];
-			return htmlspecialchars($value, ENT_QUOTES, "UTF-8");
+			return htmlspecialchars($values["year"] . "/" . $values["month"] . "/" . $values["day"], ENT_QUOTES, "UTF-8");
 		}
 	}
 
@@ -147,7 +143,6 @@ class DateColumn extends SOYInquiry_ColumnBase{
 			$html .= ' checked';
 		}
 		$html .= '>required属性を利用する</label>';
-
 		return $html;
 	}
 
@@ -175,14 +170,14 @@ class DateColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		$value = $this->getValue();
+		$values = $this->getValue();
 
 		if($this->getIsRequire()){
 			if(
-				empty($value)
-				|| !strlen(@$value["year"])
-				|| !strlen(@$value["month"])
-				|| !strlen(@$value["day"])
+				empty($values)
+				|| !strlen(@$values["year"])
+				|| !strlen(@$values["month"])
+				|| !strlen(@$values["day"])
 			){
 				$this->setErrorMessage($this->getLabel()."を入力してください。");
 				return false;

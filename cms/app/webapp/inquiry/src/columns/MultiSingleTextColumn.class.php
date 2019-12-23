@@ -50,11 +50,11 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 
 		$count = $this->count;
 
-		$value = $this->getValue();
+		$values = $this->getValue();
 
 		$html = array();
 		for($i = 0; $i < $count; $i++){
-			$_value = @$value[$i];
+			$_value = (isset($values[$i])) ? $values[$i] : "";
 			$html[] = "<input type=\"" . htmlspecialchars($this->inputType, ENT_QUOTES, "UTF-8") . "\" name=\"data[".$this->getColumnId()."][$i]\" value=\"".htmlspecialchars($_value, ENT_QUOTES, "UTF-8")."\" " . implode(" ",$attributes) . "" . $required . ">";
 		}
 
@@ -73,7 +73,6 @@ class MultiSingleTextColumn extends SOYInquiry_ColumnBase{
 		}
 
 		return $attributes;
-
 	}
 
 	function getRequiredProp(){

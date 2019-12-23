@@ -56,6 +56,9 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
+	//郵便番号を入力した直後に自動で住所検索を開始する
+	private $autoSearchMode = 0;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 */
@@ -81,10 +84,12 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 
 		$zip1 = (isset($values["zip1"])) ? htmlspecialchars($values["zip1"], ENT_QUOTES, "UTF-8") : null;
 		$zip2 = (isset($values["zip2"])) ? htmlspecialchars($values["zip2"], ENT_QUOTES, "UTF-8") : null;
-		$html[] = '<input type="text" size="7" class="input-zip1" name="data['.$this->getColumnId().'][zip1]" value="'.$zip1.'"' . $required . '>';
+		$html[] = '<input type="text" size="7" class="input-zip1" name="data['.$this->getColumnId().'][zip1]" value="'.$zip1.'"' . $required . ' pattern="\d{0,3}" style="ime-mode:inactive;">';
 		$html[] = '-';
-		$html[] = '<input type="text" size="7" class="input-zip2" name="data['.$this->getColumnId().'][zip2]" value="'.$zip2.'"' . $required . '>';
-		$html[] = '<a href="javascript:void(0);" class="btn btn-primary search-btn">住所検索</a></td>';
+		$html[] = '<input type="text" size="7" class="input-zip2" name="data['.$this->getColumnId().'][zip2]" value="'.$zip2.'"' . $required . ' pattern="\d{0,4}" style="ime-mode:inactive;">';
+		if(!$this->autoSearchMode){	//自動検索モードではない時はボタンを表示
+			$html[] = '<a href="javascript:void(0);" class="btn btn-primary search-btn">住所検索</a></td>';
+		}
 		$html[] = '</tr>';
 		$html[] = '<tr>';
 		$html[] = '<td nowrap>都道府県</td>';
@@ -131,7 +136,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	function validate(){
 		$values = $this->getValue();
 
-		if(!isset($_POST["test"]) && $this->getIsRequire()){
+		if($this->getIsRequire()){
 			if(
 				   empty($values)
 				|| @$values["zip1"] == ""
@@ -164,17 +169,6 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		if(!empty($values["zip2"]) && !is_numeric($values["zip2"])){
 			$this->errorMessage = "郵便番号の書式が不正です。";
 			return false;
-		}
-		if(isset($_POST["test"])){
-
-			$logic = SOY2Logic::createInstance("logic.AddressSearchLogic");
-			$res = $logic->search($values["zip1"],$values["zip2"]);
-
-			$values["prefecture"] = $res["prefecture"];
-			$values["address1"] = $res["address1"];
-			$values["address2"] = $res["address2"];
-
-			$this->setValue($values);
 		}
 		return true;
 	}
@@ -213,13 +207,23 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	 * 設定画面で表示する用のフォーム
 	 */
 	function getConfigForm(){
-		$html = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
+		$html = array();
 		if($this->requiredProp){
-			$html .= ' checked';
+			$html[] = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1" checked="checked">required属性を利用する</label>';
+		}else{
+			$html[] = '<label><input type="checkbox" name="Column[config][requiredProp]" value="1">required属性を利用する</label>';
 		}
-		$html .= '>required属性を利用する</label>';
+		$html[] = "<br>";
 
-		return $html;
+		//自動住所検索モード
+		if($this->autoSearchMode){
+			$html[] = '<label><input type="checkbox" name="Column[config][autoSearchMode]" value="1" checked="checked">郵便番号の入力直後で住所検索を行う</label>';
+		}else{
+			$html[] = '<label><input type="checkbox" name="Column[config][autoSearchMode]" value="1">郵便番号の入力直後で住所検索を行う</label>';
+		}
+
+
+		return implode("\n", $html);
 	}
 
 	/**
@@ -228,11 +232,13 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	function setConfigure($config){
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
+		$this->autoSearchMode = (isset($config["autoSearchMode"])) ? $config["autoSearchMode"] : 0;
 	}
 
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["requiredProp"] = $this->requiredProp;
+		$config["autoSearchMode"] = $this->autoSearchMode;
 		return $config;
 	}
 
