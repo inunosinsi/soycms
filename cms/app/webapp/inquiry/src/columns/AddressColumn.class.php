@@ -72,7 +72,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 
 		$html = array();
 
-		$value = $this->getValue();
+		$values = $this->getValue();
 
 		$html[] = "郵便番号を入力して「住所検索」ボタンをクリックすると該当する住所が自動で入力されます。";
 
@@ -82,13 +82,13 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<td>';
 
 		if($this->zipDivide){
-			$zip1 = (isset($value["zip1"])) ? htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8") : null;
-			$zip2 = (isset($value["zip2"])) ? htmlspecialchars($value["zip2"], ENT_QUOTES, "UTF-8") : null;
+			$zip1 = (isset($values["zip1"])) ? htmlspecialchars($values["zip1"], ENT_QUOTES, "UTF-8") : null;
+			$zip2 = (isset($values["zip2"])) ? htmlspecialchars($values["zip2"], ENT_QUOTES, "UTF-8") : null;
 			$html[] = '<input type="text" size="7" class="soyinquiry_address_zip1" name="data['.$this->getColumnId().'][zip1]" value="'.$zip1.'"' . $required . '>';
 			$html[] = '-';
 			$html[] = '<input type="text" size="7" class="soyinquiry_address_zip2" name="data['.$this->getColumnId().'][zip2]" value="'.$zip2.'"' . $required . '>';
 		}else{
-			$zip = (isset($value["zip"])) ? htmlspecialchars($value["zip"], ENT_QUOTES, "UTF-8") : null;
+			$zip = (isset($values["zip"])) ? htmlspecialchars($values["zip"], ENT_QUOTES, "UTF-8") : null;
 			$html[] = '<input type="text" size="10" class="soyinquiry_address_zip1" name="data['.$this->getColumnId().'][zip]" value="'.$zip.'"' . $required . '>';
 		}
 		$html[] = '<input type="submit" name="test" value="住所検索"/></td>';
@@ -98,7 +98,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<td><select class="soyinquiry_address_prefecture" name="data['.$this->getColumnId().'][prefecture]">';
 		$html[] = '<option value="">選択してください</option>';
 		foreach($this->prefecture as $id => $pref){
-			if($pref == $value["prefecture"]){
+			if(is_array($values) && $pref == $values["prefecture"]){
 				$html[] ="<option selected=\"selected\">".$pref."</option>";
 			}else{
 				$html[] ="<option>".$pref."</option>";
@@ -106,17 +106,20 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 		}
 		$html[] = '</select></td></tr>';
 
+		$addr1 = (isset($values["address1"])) ? htmlspecialchars($values["address1"], ENT_QUOTES, "UTF-8") : "";
+		$addr2 = (isset($values["address2"])) ? htmlspecialchars($values["address2"], ENT_QUOTES, "UTF-8") : "";
+		$addr3 = (isset($values["address3"])) ? htmlspecialchars($values["address3"], ENT_QUOTES, "UTF-8") : "";
 		$html[] = '<tr>
 					<td>市区町村：</td>
-					<td><input class="soyinquiry_address_input1" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.htmlspecialchars($value["address1"], ENT_QUOTES, "UTF-8").'"></td>
+					<td><input class="soyinquiry_address_input1" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.$addr1.'"></td>
 				</tr>';
 		$html[] = '<tr>
 					<td>番地：</td>
-					<td><input class="soyinquiry_address_input2" type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.htmlspecialchars($value["address2"], ENT_QUOTES, "UTF-8").'"></td>
+					<td><input class="soyinquiry_address_input2" type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.$addr2.'"></td>
 				</tr>';
 		$html[] = '<tr>
 					<td colspan="2">建物名・部屋番号：
-					<input class="soyinquiry_address_input3" type="text" size="37" name="data['.$this->getColumnId().'][address3]" value="'.htmlspecialchars($value["address3"], ENT_QUOTES, "UTF-8").'" /></td>
+					<input class="soyinquiry_address_input3" type="text" size="37" name="data['.$this->getColumnId().'][address3]" value="'.$addr3.'" /></td>
 				</tr>';
 		$html[] = '</tbody></table>';
 
@@ -129,58 +132,59 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		$value = $this->getValue();
+		$values = $this->getValue();
 
-		if(isset($value["zip"])){
-			$zip = trim($value["zip"]);
-		}else if(isset($value["zip1"])){
-			$zip = trim($value["zip1"] . $value["zip2"]);
+		if(isset($values["zip"])){
+			$zip = trim($values["zip"]);
+		}else if(isset($values["zip1"])){
+			$zip = trim($values["zip1"] . $values["zip2"]);
 		}
 
 
 		if(!isset($_POST["test"]) && $this->getIsRequire()){
 			if(
-				   empty($value)
+				   empty($values)
 				|| $zip == ""
-				|| @$value["prefecture"] == ""
-				|| @$value["address1"] == ""
-				|| @$value["address2"] == ""
+				|| @$values["prefecture"] == ""
+				|| @$values["address1"] == ""
+				|| @$values["address2"] == ""
 			){
 				$this->errorMessage = "住所を入力してください。";
 				return false;
 			}
 		}
 
-		if(empty($value)){
+		if(empty($values)){
 			$zip = "";
-			$value["prefecture"] = "";
-			$value["address1"] = "";
-			$value["address2"] = "";
-			$value["address3"] = "";
-			$this->setValue($value);
+			$values["prefecture"] = "";
+			$values["address1"] = "";
+			$values["address2"] = "";
+			$values["address3"] = "";
+			$this->setValue($values);
 			return true;
 		}
 
-		if(!empty($zip) && !is_numeric($zip)){
-			$this->errorMessage = "郵便番号の書式が不正です。";
-			return false;
+		if(!empty($zip)){
+			list($zip1, $zip2) = self::divideZipCode($zip);
+			if(!is_numeric($zip1.$zip2)){
+				$this->errorMessage = "郵便番号の書式が不正です。";
+				return false;
+			}
 		}
 
 		if(isset($_POST["test"])){
-
-			$logic = SOY2Logic::createInstance("logic.AddressSearchLogic");
 			if(!$this->zipDivide){
-				list($zip1, $zip2) = self::divideZipCode($value["zip"]);
-				$value["zip1"] = $zip1;
-				$value["zip2"] = $zip2;
+				list($zip1, $zip2) = self::divideZipCode($values["zip"]);
+				$values["zip1"] = $zip1;
+				$values["zip2"] = $zip2;
 			}
-			$res = $logic->search($value["zip1"],$value["zip2"]);
+			$res = SOY2Logic::createInstance("logic.AddressSearchLogic")->search($values["zip1"],$values["zip2"]);
 
-			$value["prefecture"] = $res["prefecture"];
-			$value["address1"] = $res["address1"];
-			$value["address2"] = $res["address2"];
+			$values["prefecture"] = $res["prefecture"];
+			$values["address1"] = $res["address1"];
+			$values["address2"] = $res["address2"];
 
-			$this->setValue($value);
+			$this->setValue($values);
 		}
 	}
 
@@ -192,24 +196,22 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	 * 確認画面で呼び出す
 	 */
 	function getView($html = true){
-		$value = $this->getValue();
-		if(empty($value)){
+		$values = $this->getValue();
+		if(empty($values)){
 			return "";
 		}
 
 		if(!$this->zipDivide){
-			list($zip1, $zip2) = self::divideZipCode($value["zip"]);
-			$value["zip1"] = $zip1;
-			$value["zip2"] = $zip2;
+			list($zip1, $zip2) = self::divideZipCode($values["zip"]);
+			$values["zip1"] = $zip1;
+			$values["zip2"] = $zip2;
 		}
-		$address = $value["zip1"]  ."-" . $value["zip2"] . "\n" .
-		           $value["prefecture"] . $value["address1"] . $value["address2"];
-		if(strlen($value["address3"])) $address.= "\n" . $value["address3"];
+		$address = $values["zip1"]  ."-" . $values["zip2"] . "\n" .
+		           $values["prefecture"] . $values["address1"] . $values["address2"];
+		if(strlen($values["address3"])) $address.= "\n" . $values["address3"];
 
 		$address = htmlspecialchars($address, ENT_QUOTES, "UTF-8");
-
 		if($html) $address = nl2br($address);
-
 		return $address;
 	}
 
@@ -218,8 +220,7 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 	 *
 	 */
 	function getContent(){
-		$address = $this->getView(false);
-		return $address;
+		return $this->getView(false);
 	}
 
 	/**
@@ -236,7 +237,6 @@ class AddressColumn extends SOYInquiry_ColumnBase{
 			$html .= ' checked';
 		}
 		$html .= '>required属性を利用する</label>';
-
 		return $html;
 	}
 

@@ -69,7 +69,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 
 		$html = array();
 
-		$value = $this->getValue();
+		$values = $this->getValue();
 
 		//$html[] = "郵便番号を入力して「住所検索」ボタンをクリックすると住所が表示されます。";
 
@@ -79,8 +79,8 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<td>郵便番号</td>';
 		$html[] = '<td>';
 
-		$zip1 = (isset($value["zip1"])) ? htmlspecialchars($value["zip1"], ENT_QUOTES, "UTF-8") : null;
-		$zip2 = (isset($value["zip2"])) ? htmlspecialchars($value["zip2"], ENT_QUOTES, "UTF-8") : null;
+		$zip1 = (isset($values["zip1"])) ? htmlspecialchars($values["zip1"], ENT_QUOTES, "UTF-8") : null;
+		$zip2 = (isset($values["zip2"])) ? htmlspecialchars($values["zip2"], ENT_QUOTES, "UTF-8") : null;
 		$html[] = '<input type="text" size="7" class="input-zip1" name="data['.$this->getColumnId().'][zip1]" value="'.$zip1.'"' . $required . '>';
 		$html[] = '-';
 		$html[] = '<input type="text" size="7" class="input-zip2" name="data['.$this->getColumnId().'][zip2]" value="'.$zip2.'"' . $required . '>';
@@ -91,7 +91,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$html[] = '<td><select class="input-pref" name="data['.$this->getColumnId().'][prefecture]">';
 		$html[] = '<option value="">選択してください</option>';
 		foreach($this->prefecture as $id => $pref){
-			if($pref == $value["prefecture"]){
+			if(is_array($values) && $pref == $values["prefecture"]){
 				$html[] ="<option selected=\"selected\">".$pref."</option>";
 			}else{
 				$html[] ="<option>".$pref."</option>";
@@ -99,17 +99,20 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		}
 		$html[] = '</select></td></tr>';
 
+		$addr1 = (isset($values["address1"])) ? htmlspecialchars($values["address1"], ENT_QUOTES, "UTF-8") : "";
+		$addr2 = (isset($values["address2"])) ? htmlspecialchars($values["address2"], ENT_QUOTES, "UTF-8") : "";
+		$addr3 = (isset($values["address3"])) ? htmlspecialchars($values["address3"], ENT_QUOTES, "UTF-8") : "";
 		$html[] = '<tr>
 					<td>市区町村</td>
-					<td><input class="input-city" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.htmlspecialchars($value["address1"], ENT_QUOTES, "UTF-8").'"></td>
+					<td><input class="input-city" type="text" size="37" name="data['.$this->getColumnId().'][address1]" value="'.$addr1.'"></td>
 				</tr>';
 		$html[] = '<tr>
 					<td>番地</td>
-					<td><input class="input-town" type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.htmlspecialchars($value["address2"], ENT_QUOTES, "UTF-8").'"></td>
+					<td><input class="input-town" type="text" size="37" name="data['.$this->getColumnId().'][address2]" value="'.$addr2.'"></td>
 				</tr>';
 		$html[] = '<tr>
 					<td colspan="2">建物名・部屋番号
-					<input type="text" size="37" name="data['.$this->getColumnId().'][address3]" value="'.htmlspecialchars($value["address3"], ENT_QUOTES, "UTF-8").'" /></td>
+					<input type="text" size="37" name="data['.$this->getColumnId().'][address3]" value="'.$addr3.'" /></td>
 				</tr>';
 		$html[] = '</tbody></table>';
 		$html[] = '</div>';
@@ -126,52 +129,52 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){
-		$value = $this->getValue();
+		$values = $this->getValue();
 
 		if(!isset($_POST["test"]) && $this->getIsRequire()){
 			if(
-				   empty($value)
-				|| @$value["zip1"] == ""
-				|| @$value["zip2"] == ""
-				|| @$value["prefecture"] == ""
-				|| @$value["address1"] == ""
-				|| @$value["address2"] == ""
+				   empty($values)
+				|| @$values["zip1"] == ""
+				|| @$values["zip2"] == ""
+				|| @$values["prefecture"] == ""
+				|| @$values["address1"] == ""
+				|| @$values["address2"] == ""
 			){
 				$this->errorMessage = "住所を入力してください。";
 				return false;
 			}
 		}
 
-		if(empty($value)){
-			$value["zip1"] = "";
-			$value["zip2"] = "";
-			$value["prefecture"] = "";
-			$value["address1"] = "";
-			$value["address2"] = "";
-			$value["address3"] = "";
-			$this->setValue($value);
+		if(empty($values)){
+			$values["zip1"] = "";
+			$values["zip2"] = "";
+			$values["prefecture"] = "";
+			$values["address1"] = "";
+			$values["address2"] = "";
+			$values["address3"] = "";
+			$this->setValue($values);
 			return true;
 		}
 
-		if(!empty($value["zip2"]) && !is_numeric($value["zip1"])){
+		if(!empty($values["zip2"]) && !is_numeric($values["zip1"])){
 			$this->errorMessage = "郵便番号の書式が不正です。";
 			return false;
 		}
 
-		if(!empty($value["zip2"]) && !is_numeric($value["zip2"])){
+		if(!empty($values["zip2"]) && !is_numeric($values["zip2"])){
 			$this->errorMessage = "郵便番号の書式が不正です。";
 			return false;
 		}
 		if(isset($_POST["test"])){
 
 			$logic = SOY2Logic::createInstance("logic.AddressSearchLogic");
-			$res = $logic->search($value["zip1"],$value["zip2"]);
+			$res = $logic->search($values["zip1"],$values["zip2"]);
 
-			$value["prefecture"] = $res["prefecture"];
-			$value["address1"] = $res["address1"];
-			$value["address2"] = $res["address2"];
+			$values["prefecture"] = $res["prefecture"];
+			$values["address1"] = $res["address1"];
+			$values["address2"] = $res["address2"];
 
-			$this->setValue($value);
+			$this->setValue($values);
 		}
 		return true;
 	}
@@ -184,19 +187,17 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	 * 確認画面で呼び出す
 	 */
 	function getView($html = true){
-		$value = $this->getValue();
-		if(empty($value)){
+		$values = $this->getValue();
+		if(empty($values)){
 			return "";
 		}
 
-		$address = $value["zip1"]  ."-" . $value["zip2"] . "\n" .
-		           $this->prefecture[$value["prefecture"]] . $value["address1"] . $value["address2"];
-		if(strlen($value["address3"])) $address.= "\n" . $value["address3"];
+		$address = $values["zip1"]  ."-" . $values["zip2"] . "\n" .
+		           $values["prefecture"] . $values["address1"] . $values["address2"];
+		if(strlen($values["address3"])) $address.= "\n" . $values["address3"];
 
 		$address = htmlspecialchars($address, ENT_QUOTES, "UTF-8");
-
 		if($html) $address = nl2br($address);
-
 		return $address;
 	}
 
@@ -205,8 +206,7 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	 *
 	 */
 	function getContent(){
-		$address = $this->getView(false);
-		return $address;
+		return $this->getView(false);
 	}
 
 	/**
