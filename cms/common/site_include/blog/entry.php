@@ -371,6 +371,11 @@ function soy_cms_blog_output_entry($page,$entry){
 					"soy2prefix" => "cms"
 				));
 
+				$this->createAdd("entry_url", "HTMLLabel", array(
+					"text" => $link,
+					"soy2prefix" => "cms",
+				));
+
 
 				CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entry));
 

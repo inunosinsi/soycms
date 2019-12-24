@@ -553,6 +553,11 @@ function soy_cms_blog_output_recent_entry_list($page,$entries){
 					"defaultFormat"=>"H:i"
 				));
 
+				$this->createAdd("entry_url", "HTMLLabel", array(
+					"text" => $link,
+					"soy2prefix" => "cms",
+				));
+
 				CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entry));
 			}
 
