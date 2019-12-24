@@ -230,18 +230,6 @@ class MainMyPagePageBase extends WebPage{
 		return $label . "を『" . $old . "』から『" . $new . "』に変更しました";
 	}
 
-	function insertHistory($orderId, $content, $more = null){
-		static $historyDAO;
-		if(!$historyDAO) $historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
-
-		$history = new SOYShop_OrderStateHistory();
-		$history->setOrderId($orderId);
-		$history->setAuthor("顧客:" . $this->getUser()->getName());	//顧客名
-		$history->setContent($content);
-		$history->setMore($more);
-		$historyDAO->insert($history);
-	}
-
 	/* convert */
 
 	function _trim($str){

@@ -107,33 +107,25 @@ class OrderLogic extends SOY2LogicBase{
     	$orderDAO->updateMailStatus($order);
     }
 
+	//マイページで使用する為のメソッド
+	function addHistory($id, $content, $more = null, $author = null){
+		self::_addHistory($id, $content, $more, $author);
+	}
+
     /**
      * ヒストリーに追加
      */
-    function addHistory($id, $content, $more = null, $author = null){
-    	$historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
+    private function _addHistory($id, $content, $more = null, $author = null){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
     	$history = new SOYShop_OrderStateHistory();
 
     	$history->setOrderId($id);
     	$history->setContent($content);
     	$history->setMore($more);
 
-		/**
-		 * 下記の処理はSOYShop_OrderStateHistoryDAOのonInsert内で同じことをしているので、ここでは省略する
-    	if(is_null($author)){
-			if(!class_exists("UserInfoUtil")){
-				if(!class_exists("SOYAppUtil")) SOY2::import("util.SOYAppUtil");
-				$old = SOYAppUtil::switchAdminDsn();
-				SOY2::import("util.UserInfoUtil");
-				SOYAppUtil::resetAdminDsn($old);
-			}
-			$author = UserInfoUtil::getUserName();
-    	}
-		**/
-
-		$history->setAuthor($author);
-
-    	$historyDAO->insert($history);
+		if(isset($author) && strlen($author)) $history->setAuthor($author);
+    	$dao->insert($history);
     }
 
     /**
@@ -179,9 +171,9 @@ class OrderLogic extends SOY2LogicBase{
     }
 
     /**
-	 * 注文状態を変更する
+	 * 注文状態を変更する マイページで実行した場合はauthorに何らかの値がある
 	 */
-    function changeOrderStatus($orderIds,$status){
+    function changeOrderStatus($orderIds, $status, $author=null){
     	if(!is_array($orderIds)) $orderIds = array($orderIds);
     	$status = (int)$status;
 
@@ -202,15 +194,21 @@ class OrderLogic extends SOY2LogicBase{
 			$oldStatus = $order->getStatus();
 			if($oldStatus != $status){
 				$order->setStatus($status);
-	    		$historyContent = "注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。";
-	    		try{
-					/** メール送信 **/
-					if(self::sendMailOnChangeDeliveryStatus($order, $status, $oldStatus)){
-						$order->setMailStatusByType(self::getMailStatus($status), time());
-					}
-					//注文番号を壊して登録
-					if($isDestroyTrackingNumber) $order->setTrackingNumber(self::destroyTrackingNumber($order));
+				if(isset($author) && strlen($author)){	//マイページでの実行
+					$historyContent = "注文番号『" . $order->getTrackingNumber() . "』の注文をキャンセルしました。";
+					$author = "顧客：" . $author;
+				}else{	//管理画面
+					$historyContent = "注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。";
+				}
 
+				/** メール送信 **/
+				if(self::_sendMailOnChangeDeliveryStatus($order, $status, $oldStatus)){
+					$order->setMailStatusByType(self::_getMailStatus($status), time());
+				}
+				//注文番号を壊して登録
+				if($isDestroyTrackingNumber) $order->setTrackingNumber(self::_destroyTrackingNumber($order));
+
+	    		try{
 	    			$dao->update($order);
 	    		}catch(Exception $e){
 	    			continue;
@@ -219,17 +217,16 @@ class OrderLogic extends SOY2LogicBase{
 				/** 在庫数の変更 **/
 
 				//キャンセルの場合は紐付いた商品分だけ在庫数を戻したい
-				if(self::compareStatus($status, $oldStatus, self::CHANGE_STOCK_MODE_CANCEL)){
-					self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
+				if(self::_compareStatus($status, $oldStatus, self::CHANGE_STOCK_MODE_CANCEL)){
+					self::_changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
 				}
 
 				//キャンセルから他のステータスに戻した場合は在庫数を減らしたい
-				if(self::compareStatus($status, $oldStatus, self::CHANGE_STOCK_MODE_RETURN)){
-					self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_RETURN);
+				if(self::_compareStatus($status, $oldStatus, self::CHANGE_STOCK_MODE_RETURN)){
+					self::_changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_RETURN);
 				}
 
-
-	    		self::addHistory($id, $historyContent);
+	    		self::_addHistory($id, $historyContent, "", $author);
 			}
     	}
 
@@ -237,15 +234,15 @@ class OrderLogic extends SOY2LogicBase{
     }
 
 	//注文番号を壊す
-	function destroyTrackingNumber(SOYShop_Order $order){
+	private function _destroyTrackingNumber(SOYShop_Order $order){
 		return "d" . $order->getId() . "-" . substr(md5($order->getTrackingNumber(). mt_rand(100, 999)), 0, 10);
 	}
 
-	function sendMailOnChangeDeliveryStatus(SOYShop_Order $order, $newStatus, $oldStatus){
+	private function _sendMailOnChangeDeliveryStatus(SOYShop_Order $order, $newStatus, $oldStatus){
 		//送信前に念の為に確認
 		if((int)$newStatus === (int)$oldStatus) return false;
 
-		$sendMailType = self::getMailStatus($newStatus);
+		$sendMailType = self::_getMailStatus($newStatus);
 		if(is_null($sendMailType)) return false;
 
 		//既に送信している場合は送信しない
@@ -269,7 +266,7 @@ class OrderLogic extends SOY2LogicBase{
 		return true;
 	}
 
-	private function getMailStatus($status){
+	private function _getMailStatus($status){
 		static $sendMailType;
 		if(is_null($sendMailType)){
 			switch($status){
@@ -318,13 +315,13 @@ class OrderLogic extends SOY2LogicBase{
     		}catch(Exception $e){
     			continue;
     		}
-    		self::addHistory($id,$historyContent);
+    		self::_addHistory($id,$historyContent);
     	}
 
     	$dao->commit();
     }
 
-	function compareStatus($newStatus, $oldStatus, $mode=self::CHANGE_STOCK_MODE_CANCEL){
+	private function _compareStatus($newStatus, $oldStatus, $mode=self::CHANGE_STOCK_MODE_CANCEL){
 		switch($mode){
 			case self::CHANGE_STOCK_MODE_CANCEL:
 				//キャンセルにする場合
@@ -356,7 +353,7 @@ class OrderLogic extends SOY2LogicBase{
 		return false;
 	}
 
-	function changeItemStock($orderId, $mode){
+	private function _changeItemStock($orderId, $mode){
 		$itemOrders = self::_getItemsByOrderId($orderId);
 		if(!count($itemOrders)) return false;
 

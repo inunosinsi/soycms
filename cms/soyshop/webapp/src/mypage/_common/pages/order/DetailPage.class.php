@@ -11,7 +11,7 @@ class DetailPage extends MainMyPagePageBase{
     private $itemDao;
 
     function doPost(){
-		if(isset($_POST["cancel"])) self::cancel();
+		if(isset($_POST["cancel"])) self::_cancel();
 	}
 
     function __construct($args){
@@ -33,16 +33,16 @@ class DetailPage extends MainMyPagePageBase{
         $this->userId = (int)$this->getUser()->getId();
 
 		//キャンセル
-		if(isset($_GET["cancel"])) self::cancel();
+		if(isset($_GET["cancel"])) self::_cancel();
 
         parent::__construct();
 
 		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
 
-        self::buildOrder();
+        self::_buildOrder();
     }
 
-    private function buildOrder(){
+    private function _buildOrder(){
 		$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
         if(!$order->isOrderDisplay()) $this->jump("order");
 
@@ -363,67 +363,16 @@ class DetailPage extends MainMyPagePageBase{
         return $list;
     }
 
-	private function cancel(){
+	private function _cancel(){
 		if(!soy2_check_token()) $this->jump("order");
 		$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
-		$order->setStatus(SOYShop_Order::ORDER_STATUS_CANCELED);
+		SOY2Logic::createInstance("logic.order.OrderLogic")->changeOrderStatus(array($order->getId()), SOYShop_Order::ORDER_STATUS_CANCELED, $this->getUser()->getName());
 
-		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		$orderDao->begin();
-
-		try{
-			$orderDao->update($order);
-			self::changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
-		}catch(Exception $e){
-			var_dump($e);
-		}
-
-		//メールを送信する
-		$change = "注文番号『" . $order->getTrackingNumber() . "』の注文をキャンセルしました。";
-		$this->insertHistory($this->orderId, $change);
-
-		//変更履歴のメールを送信する
+		//変更履歴のメールを送信する @ToDo この処理は必要だろうか？　キャンセルメールプラグインが有効の場合は送信しないといった処理が必要になるかもしれない
 		$mailLogic = SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.NoticeSendMailLogic", array("order" => $order, "user" => $this->getUser()));
-		$mailLogic->send($change);
+		$mailLogic->send("注文番号『" . $order->getTrackingNumber() . "』の注文をキャンセルしました。");
 
-		$orderDao->commit();
+		//$orderDao->commit();
 		$this->jump("order?canceled");
-	}
-
-	private function changeItemStock($orderId, $mode){
-		$itemOrderDao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		try{
-			$itemOrders = $itemOrderDao->getByOrderId($orderId);
-		}catch(Exception $e){
-			return false;
-		}
-
-		if(!count($itemOrders)) return false;
-
-		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		foreach($itemOrders as $itemOrder){
-			try{
-				$item = $itemDao->getById($itemOrder->getItemId());
-			}catch(Exception $e){
-				var_dump($e);
-				continue;
-			}
-
-			//在庫数を戻す
-			if($mode == self::CHANGE_STOCK_MODE_CANCEL){
-				$item->setStock((int)$item->getStock() + (int)$itemOrder->getItemCount());
-			//在庫数を減らす
-			}else if($mode == self::CHANGE_STOCK_MODE_RETURN){
-				$item->setStock((int)$item->getStock() - (int)$itemOrder->getItemCount());
-			}else{
-				//何もしない
-			}
-
-			try{
-				$itemDao->update($item);
-			}catch(Exception $e){
-				var_dump($e);
-			}
-		}
 	}
 }
