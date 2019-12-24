@@ -10,12 +10,12 @@ class IndexPage extends WebPage{
 		parent::__construct();
 
 		$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
-    		"list" => self::getMailPluginList()
+    		"list" => self::_getMailPluginList()
     	));
 
 	}
 
-	private function getMailPluginList(){
+	private function _getMailPluginList(){
     	SOYShopPlugin::load("soyshop.order.detail.mail");
     	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array())->getList();
     	if(!count($mailList)) return array();

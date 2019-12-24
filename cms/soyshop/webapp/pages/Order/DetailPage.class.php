@@ -42,39 +42,10 @@ class DetailPage extends WebPage{
 				$post = (object)$_POST["State"];
 
 				if (isset($_POST["State"]["orderStatus"]) && $order->getStatus() != $post->orderStatus) {
-					$oldStatus = $order->getStatus();
-
-					$order->setStatus($post->orderStatus);
-					$historyContents[] = "注文状態を<strong>「" . $order->getOrderStatusText() . "」</strong>に変更しました。";
-
-					//キャンセルの場合に注文番号を壊す設定をしている場合
-					if($post->orderStatus == SOYShop_Order::ORDER_STATUS_CANCELED){
-						SOY2::import("domain.config.SOYShop_ShopConfig");
-						if(SOYShop_ShopConfig::load()->getDestroyTrackingNumberOnCancelOrder()){
-							$order->setTrackingNumber($orderLogic->destroyTrackingNumber($order));
-						}
-					}
-
-					//発送済みにした時に自動で送信メール
-					if($post->orderStatus == SOYShop_Order::ORDER_STATUS_SENDED){
-						if($orderLogic->sendMailOnChangeDeliveryStatus($order, $post->orderStatus, $oldStatus)) {
-							$order->setMailStatusByType(SOYShop_Order::SENDMAIL_TYPE_DELIVERY, time());
-						}
-					}
-
-					//キャンセルの場合は紐付いた商品分だけ在庫数を戻したい
-					if($orderLogic->compareStatus($_POST["State"]["orderStatus"], $oldStatus, self::CHANGE_STOCK_MODE_CANCEL)){
-						$orderLogic->changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_CANCEL);
-					}
-
-					//キャンセルから他のステータスに戻した場合は在庫数を減らしたい
-					if($orderLogic->compareStatus($_POST["State"]["orderStatus"], $oldStatus, self::CHANGE_STOCK_MODE_RETURN)){
-						$orderLogic->changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_RETURN);
-					}
+					$orderLogic->changeOrderStatus(array($order->getId()), $post->orderStatus);
 				}
 				if (isset($_POST["State"]["paymentStatus"]) && $order->getPaymentStatus() != $post->paymentStatus) {
-					$order->setPaymentStatus($post->paymentStatus);
-					$historyContents[] = "支払い状態を<strong>「" . $order->getPaymentStatusText() . "」</strong>に変更しました。";
+					$orderLogic->changePaymentStatus(array($order->getId()), $post->paymentStatus);
 				}
 
 				SOYShopPlugin::load("soyshop.order.status.update");

@@ -85,7 +85,7 @@ class UserPage extends WebPage{
 		/* 送信設定 */
 
 		$this->addModel("mail_active_config", array(
-			"visible" => self::isActive($type),
+			"visible" => self::_isActive($type),
 		));
 
 		$this->addCheckBox("mail_active_yes", array(
@@ -119,7 +119,7 @@ class UserPage extends WebPage{
 	}
 
 	//自動送信設定の有無
-	private function isActive($type){
+	private function _isActive($type){
 		//注文受付メールと支払い確認メールのみ
 		if(in_array($type, array("order","payment", "delivery"))) return true;
 

@@ -9,14 +9,14 @@ class OrderHistoryOnMyPage extends WebPage{
 
 		SOY2::import("module.plugins.order_edit_on_mypage.component.HistoryOnMyPageListComponent");
 		$this->createAdd("history_list", "HistoryOnMyPageListComponent", array(
-			"list" => self::getHistories()
+			"list" => self::_getHistories()
 		));
 	}
 
-	private function getHistories(){
+	private function _getHistories(){
 		$historyDao = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
 		try{
-			$results = $historyDao->executeQuery("SELECT * FROM soyshop_order_state_history WHERE author LIKE '顧客:%' AND (content LIKE '注文合計%' OR content LIKE '注文番号%') ORDER BY order_date DESC LIMIT 15");
+			$results = $historyDao->executeQuery("SELECT * FROM soyshop_order_state_history WHERE author LIKE '顧客%' AND (content LIKE '注文合計%' OR content LIKE '注文番号%') ORDER BY order_date DESC LIMIT 15");
 		}catch(Exception $e){
 			var_dump($e);
 			return array();
