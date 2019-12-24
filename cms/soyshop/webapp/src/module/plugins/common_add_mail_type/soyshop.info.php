@@ -15,4 +15,3 @@ class CommonAddMailTypeInfo extends SOYShopInfoPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.info", "common_add_mail_type", "CommonAddMailTypeInfo");
-?>

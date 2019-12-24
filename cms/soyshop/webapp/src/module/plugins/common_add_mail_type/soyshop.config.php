@@ -26,4 +26,3 @@ class CommonAddMailTypeConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "common_add_mail_type", "CommonAddMailTypeConfig");
-?>
