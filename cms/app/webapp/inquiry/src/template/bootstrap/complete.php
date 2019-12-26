@@ -18,5 +18,5 @@
 </div>
 
 <div class="text-center">
-	<a href="/" class="btn btn-primary btn-lg">戻る</a>
+	<a href="<?php echo $page_link; ?>" class="btn btn-primary btn-lg">戻る</a>
 </div>
