@@ -29,7 +29,7 @@ function soyshop_simple_news($html, $htmlObj){
 
 
 	//商品があるときだけ表示
-	if(count($news) > 0){
+	if(is_array($news) && count($news) > 0){
 		$obj->display();
 	}else{
 		ob_start();
