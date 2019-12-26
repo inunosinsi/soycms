@@ -368,6 +368,8 @@ class DetailPage extends MainMyPagePageBase{
 		$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
 		SOY2Logic::createInstance("logic.order.OrderLogic")->changeOrderStatus(array($order->getId()), SOYShop_Order::ORDER_STATUS_CANCELED, $this->getUser()->getName());
 
+		sleep(1);	//sleepを入れないとメールが送信できないらしい
+
 		//変更履歴のメールを送信する @ToDo この処理は必要だろうか？　キャンセルメールプラグインが有効の場合は送信しないといった処理が必要になるかもしれない
 		$mailLogic = SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.NoticeSendMailLogic", array("order" => $order, "user" => $this->getUser()));
 		$mailLogic->send("注文番号『" . $order->getTrackingNumber() . "』の注文をキャンセルしました。");

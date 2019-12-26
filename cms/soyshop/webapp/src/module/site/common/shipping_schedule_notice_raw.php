@@ -2,11 +2,11 @@
 
 SOY2::import("util.SOYShopPluginUtil");
 function soyshop_shipping_schedule_notice_raw($html, $page){
-	$obj = $page->create("soyshop_shipping_schedule_notice_raw", "HTMLTemplatePage", array(
-		"arguments" => array("soyshop_shipping_schedule_notice_raw", $html)
+	$obj = $page->create("soyshop_shipping_schedule_notice_each_items_raw", "HTMLTemplatePage", array(
+		"arguments" => array("soyshop_shipping_schedule_notice_each_items_raw", $html)
 	));
 
-	if(SOYShopPluginUtil::checkIsActive("parts_shipping_schedule_notice") && SOYShopPluginUtil::checkIsActive("parts_calendar")){
+	if(SOYShopPluginUtil::checkIsActive("parts_shipping_schedule_notice_each_items") && SOYShopPluginUtil::checkIsActive("parts_calendar")){
 		//本日の文言を取得
 		$bizLogic = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.BusinessDateLogic");
 
