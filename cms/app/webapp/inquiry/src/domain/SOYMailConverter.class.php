@@ -106,8 +106,9 @@ class AddressConverter extends SOYMailConverter {
     function convert($value, $linkto=SOYMailConverter::SOYMAIL_NONE) {
     	switch ($linkto) {
     		case SOYMailConverter::SOYMAIL_ADDRESS:
+
 				$ret = array(
-					"zip_code" => $value["zip1"]  ."-" . $value["zip2"],
+					"zip_code" => self::_zipcode($value),
 					"area" => $this->prefecture[$value["prefecture"]],
 					"address1" => $value["address1"],
 					"address2" => $value["address2"]
@@ -117,7 +118,7 @@ class AddressConverter extends SOYMailConverter {
 		   		break;
     		case SOYMailConverter::SOYMAIL_JOBADDRESS:
 				$ret = array(
-					"job_zip_code" => $value["zip1"]  ."-" . $value["zip2"],
+					"job_zip_code" => self::_zipcode($value),
 					"job_area" => $this->prefecture[$value["prefecture"]],
 					"job_address1" => $value["address1"],
 					"job_address2" => $value["address2"]
@@ -126,7 +127,7 @@ class AddressConverter extends SOYMailConverter {
 				return $ret;
 		   		break;
     		case SOYMailConverter::SOYMAIL_MEMO:
-    			$val  = $value["zip1"] . "-" . $value["zip2"] ." ";
+    			$val  = self::_zipcode($value) ." ";
     			$val .= $value["prefecture"] . $value["address1"] . $value["address2"] . $value["address3"];
     			return array(
     				SOYMailConverter::SOYMAIL_MEMO => $val
@@ -138,6 +139,18 @@ class AddressConverter extends SOYMailConverter {
     			break;
     	}
     }
+
+	private function _zipcode($value){
+		if(isset($value["zip"])){
+			$zip = trim($value["zip"]);
+			$zip = str_replace(array("-", "ー", " ", "　"), "", $zip);
+			$zip1 = substr($zip, 0, 3);
+			$zip2 = substr($zip, 3);
+			return $zip1 . "-" . $zip2;
+		}else{
+			return trim($value["zip1"]) . "-" . trim($value["zip2"]);
+		}
+	}
 }
 
 

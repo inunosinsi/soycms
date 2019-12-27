@@ -244,6 +244,13 @@ class ConfirmMailAddressColumn extends SOYInquiry_ColumnBase{
 		);
 	}
 
+	function getLinkagesSOYShopFrom() {
+		return array(
+			SOYShopConnector::SOYSHOP_NONE  => "連携しない",
+			SOYShopConnector::SOYSHOP_MAIL 	=> "メールアドレス"
+		);
+	}
+
 	function getReplacement() {
 		return (strlen($this->replacement) == 0) ? "#EMAIL#" : $this->replacement;
 	}

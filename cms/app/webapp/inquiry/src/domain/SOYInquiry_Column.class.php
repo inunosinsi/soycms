@@ -358,6 +358,25 @@ class SOYInquiry_ColumnBase implements ISOYInquiry_Column{
 	}
 
 	/**
+	 * SOYMail連携用のデータ(convert後のデータを取得)
+	 *
+	 * @return array
+	 */
+	function convertToSOYShop(){
+		$converter = $this->factoryConverter();	//ConverterはSOY Mailを流用
+
+		$value = $this->getValue();
+		$soyShopTo = $this->getSOYShopFrom();	//SOY Shopの場合はToとFromを一緒にする
+
+		//確認用メールアドレス対策、カラムファイルでgetValueを持ちたかったが、validateが動かなくなるのでこちらで対応
+		if($soyShopTo === "mail_address" && is_array($value) === true){
+			$value = $value[0];
+		}
+
+		return $converter->convert($value, $soyShopTo);
+	}
+
+	/**
 	 * @return String
 	 */
 	function insertFromSOYShop(){

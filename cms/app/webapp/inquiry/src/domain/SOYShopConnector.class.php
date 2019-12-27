@@ -34,10 +34,10 @@ class SOYShopConnector {
 			$this->user = $this->connectLogic->getSOYShopUser();
 		}
 	}
-	
+
 	function insert($connectFrom){
 		$user = $this->user;
-		
+
 		switch($connectFrom){
 			case SOYShopConnector::SOYSHOP_NAME:
 				$value = $user->getName();
@@ -80,7 +80,7 @@ class SOYShopConnector {
 				$value = null;
 				break;
 		}
-		
+
 		return $value;
 	}
 }
@@ -140,7 +140,7 @@ class AddressConnector extends SOYShopConnector {
 
     function insert($connectFrom) {
     	$user = $this->user;
-    	
+
     	switch ($connectFrom) {
     		case SOYShopConnector::SOYSHOP_AREA:
 				$value = (!is_null($user->getArea())) ? $this->prefecture[$user->getArea()] : null;
@@ -186,18 +186,17 @@ class AddressConnector extends SOYShopConnector {
 				$value = null;
 				break;
     	}
-    	
+
     	return $value;
     }
 }
 
 class DateConnector extends SOYShopConnector{
-	
 	function insert($connectFrom){
 		$user = $this->user;
-		
+
 		if(is_null($user->getBirthday())) return null;
-		
+
 		switch($connectFrom){
 			case SOYShopConnector::SOYSHOP_BIRTHDAY:
 				$birthday = explode("-", $user->getBirthday());
@@ -207,8 +206,7 @@ class DateConnector extends SOYShopConnector{
 				$value = null;
 				break;
 		}
-		
+
 		return $value;
 	}
 }
-?>

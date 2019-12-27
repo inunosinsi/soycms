@@ -3,8 +3,6 @@
 class SOYShopConnectLogic extends SOY2LogicBase{
 
 	private $checkVersion;
-	private $soyshopUser;
-	private $isLoggedIn;
 
 	function getSOYShopSiteList(){
 
@@ -73,7 +71,8 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 	}
 
 	function getSOYShopUser(){
-		if(is_null($this->isLoggedIn)){
+		static $user;
+		if(is_null($user)){
 			$shopId = SOYInquiryUtil::getSOYShopSiteId();
 			$old = SOYInquiryUtil::switchSOYShopConfig($shopId);
 
@@ -84,23 +83,21 @@ class SOYShopConnectLogic extends SOY2LogicBase{
 			SOY2::import("logic.mypage.MyPageLogic");
 			$mypage = MyPageLogic::getMyPage();
 
-			$this->isLoggedIn = $mypage->getIsLoggedin();
+			$isLoggedIn = $mypage->getIsLoggedin();
 			$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
-			if(!$this->isLoggedIn){
-				$this->soyshopUser = new SOYShop_User();
+			if(!$isLoggedIn){
+				$user = new SOYShop_User();
 			}else{
 				try{
-					$this->soyshopUser = $userDao->getById($mypage->getUserId());
+					$user = $userDao->getById($mypage->getUserId());
 				}catch(Exception $e){
-					$this->soyshopUser = new SOYShop_User();
+					$user = new SOYShop_User();
 				}
 			}
 
 			SOYInquiryUtil::resetConfig($old);
 		}
-
-		return $this->soyshopUser;
+		return $user;
 	}
 }
-?>

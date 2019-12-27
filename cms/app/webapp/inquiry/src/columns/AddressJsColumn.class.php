@@ -66,7 +66,6 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 	 * ユーザに表示するようのフォーム
 	 */
 	function getForm($attr = array()){
-
 		$attributes = array();
 		foreach($attr as $key => $value){
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
