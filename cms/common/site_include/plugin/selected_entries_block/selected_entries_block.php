@@ -19,7 +19,7 @@ class SelectedEntriesBlockPlugin{
 			"author" => "齋藤毅",
 			"url" => "http://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version" => "0.1"
+			"version" => "0.5"
 		));
 
 		//プラグイン アクティブ
@@ -35,7 +35,7 @@ class SelectedEntriesBlockPlugin{
 				CMSPlugin::setEvent('onEntryUpdate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
 				CMSPlugin::setEvent('onEntryCreate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
 
-				SOY2::import("site_include.plugin.selected_entries_block.component.CustomFieldForm");
+				SOY2::import("site_include.plugin.selected_entries_block.component.SelectedEntriesCustomFieldForm");
 				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Entry.Detail", array($this, "onCallCustomField"));
 				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Blog.Entry", array($this, "onCallCustomField_inBlog"));
 			}
@@ -55,13 +55,13 @@ class SelectedEntriesBlockPlugin{
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
-		return CustomFieldForm::buildForm($entryId, $this->getItemName());
+		return SelectedEntriesCustomFieldForm::buildForm($entryId, $this->getItemName());
 	}
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
-		return CustomFieldForm::buildForm($entryId, $this->getItemName());
+		return SelectedEntriesCustomFieldForm::buildForm($entryId, $this->getItemName());
 	}
 
 	function onLoad(){
@@ -85,7 +85,7 @@ class SelectedEntriesBlockPlugin{
 		if(is_numeric($count) && $count > 0){
 			$sql .= "LIMIT " . $count;
 		}
-		
+
 		try{
 			$res = $entryDao->executeQuery($sql);
 		}catch(Exception $e){

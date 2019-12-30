@@ -32,7 +32,7 @@ class ButtonSocialPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/soycms/",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.4"
+			"version"=>"1.5"
 		));
 
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
@@ -55,7 +55,7 @@ class ButtonSocialPlugin{
 				CMSPlugin::setEvent('onEntryCopy', $this->getId(), array($this, "onEntryCopy"));
 				CMSPlugin::setEvent('onEntryRemove', $this->getId(), array($this, "onEntryRemove"));
 
-				SOY2::import("site_include.plugin.ButtonSocial.component.CustomFieldForm");
+				SOY2::import("site_include.plugin.ButtonSocial.component.SocialCustomFieldForm");
 				CMSPlugin::addCustomFieldFunction($this->getId(), "Entry.Detail", array($this, "onCallCustomField"));
 				CMSPlugin::addCustomFieldFunction($this->getId(), "Blog.Entry", array($this, "onCallCustomField_inBlog"));
 			}
@@ -274,13 +274,13 @@ class ButtonSocialPlugin{
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
-		return CustomFieldForm::buildForm($entryId);
+		return SocialCustomFieldForm::buildForm($entryId);
 	}
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
-		return CustomFieldForm::buildForm($entryId);
+		return SocialCustomFieldForm::buildForm($entryId);
 	}
 
 	function config_page($message){

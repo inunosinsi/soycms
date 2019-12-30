@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
 		//active or non active
@@ -26,7 +26,7 @@ class TagCloudPlugin{
 				CMSPlugin::setEvent("onEntryCreate", self::PLUGIN_ID, array($this, "onEntryUpdate"));
 				CMSPlugin::setEvent("onEntryUpdate", self::PLUGIN_ID, array($this, "onEntryUpdate"));
 
-				SOY2::import("site_include.plugin.tag_cloud.component.CustomFieldForm");
+				SOY2::import("site_include.plugin.tag_cloud.component.TagCloudCustomFieldForm");
 				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Entry.Detail", array($this, "onCallCustomField"));
 				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Blog.Entry", array($this, "onCallCustomField_inBlog"));
 
@@ -104,13 +104,13 @@ class TagCloudPlugin{
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
-		return CustomFieldForm::buildForm($entryId);
+		return TagCloudCustomFieldForm::buildForm($entryId);
 	}
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
-		return CustomFieldForm::buildForm($entryId);
+		return TagCloudCustomFieldForm::buildForm($entryId);
 	}
 
 	function onLoad(){
