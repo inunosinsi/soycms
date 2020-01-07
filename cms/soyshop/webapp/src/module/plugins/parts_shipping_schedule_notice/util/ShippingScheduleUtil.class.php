@@ -26,8 +26,29 @@ class ShippingScheduleUtil {
 		return (isset($types[$type])) ? $types[$type] : $types[0];
 	}
 
-	//使用できる置換文字列
+	public static function buildUsabledReplaceWordsList(){
+		$html = array();
+		$html[] = "<table class=\"form_list\">";
+		$html[] = "<caption>使用できる置換文字列</caption>";
+		$html[] = "<thead><tr><th>置換文字列</th><th>種類</th></tr></thead>";
+		$html[] = "<tbody>";
+		foreach(self::_getUsabledReplaceWords() as $k => $w){
+			$html[] = "<tr>";
+			$html[] = "<td>##" . $k . "##</td>";
+			$html[] = "<td>" . $w . "</td>";
+			$html[] = "</tr>";
+		}
+		$html[] = "</tbody>";
+		$html[] = "</table>";
+		return implode("\n", $html);
+	}
+
 	public static function getUsabledReplaceWords(){
+		return self::_getUsabledReplaceWords();
+	}
+
+	//使用できる置換文字列
+	private static function _getUsabledReplaceWords(){
 		return array(
 			"TODAY_Y" => "今日の日付の年",
 			"TODAY_M" => "今日の日付の月",

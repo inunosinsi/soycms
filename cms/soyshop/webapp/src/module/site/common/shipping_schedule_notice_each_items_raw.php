@@ -16,10 +16,19 @@ function soyshop_shipping_schedule_notice_each_items_raw($html, $page){
 		if(preg_match('/item:code="(.*?)"/', $html, $tmp)){
 			if(isset($tmp[1]) && strlen(trim($tmp[1]))){
 				$code = trim($tmp[1]);
-				try{
-					$itemId = (int)SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByCode($code)->getId();
-				}catch(Exception $e){
-					//
+
+				//商品詳細表示プラグインと連携している場合
+				if($code == "##ALIAS##" && SOYShopPluginUtil::checkIsActive("parts_item_detail")){
+					$args = $page->getArguments();
+					$code = (isset($args[0])) ? trim($args[0]) : "";
+				}
+
+				if(strlen($code)){
+					try{
+						$itemId = (int)SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByCode($code)->getId();
+					}catch(Exception $e){
+						//
+					}
 				}
 			}
 		}

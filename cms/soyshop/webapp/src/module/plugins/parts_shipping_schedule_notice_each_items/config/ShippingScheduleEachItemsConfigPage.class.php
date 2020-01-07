@@ -35,7 +35,7 @@ class ShippingScheduleEachItemsConfigPage extends WebPage {
 		DisplayPlugin::toggle("installed_calendar_plugin", $isInstalledCalendarPlugin);
 
 		$this->addLabel("replace_words_list", array(
-			"html" => self::buildUsabledReplaceWordsList()
+			"html" => ShippingScheduleUtil::buildUsabledReplaceWordsList()
 		));
 
 		self::buildForm();
@@ -44,31 +44,21 @@ class ShippingScheduleEachItemsConfigPage extends WebPage {
 		$this->addLabel("item_code", array(
 			"text" => $item->getCode()
 		));
-	}
 
-	private function buildUsabledReplaceWordsList(){
-		$html = array();
-		$html[] = "<table class=\"form_list\">";
-		$html[] = "<caption>使用できる置換文字列</caption>";
-		$html[] = "<thead><tr><th>置換文字列</th><th>種類</th></tr></thead>";
-		$html[] = "<tbody>";
-		foreach(ShippingScheduleUtil::getUsabledReplaceWords() as $k => $w){
-			$html[] = "<tr>";
-			$html[] = "<td>##" . $k . "##</td>";
-			$html[] = "<td>" . $w . "</td>";
-			$html[] = "</tr>";
-		}
-		$html[] = "</tbody>";
-		$html[] = "</table>";
-		return implode("\n", $html);
+		SOY2::import("util.SOYShopPluginUtil");
+		DisplayPlugin::toggle("parts_item_detail", SOYShopPluginUtil::checkIsActive("parts_item_detail"));
 	}
 
 	private function buildForm(){
 		$this->addForm("form");
 
+		$cnf = ShippingScheduleEachItemsUtil::getConfig($this->itemId);
+		if(!count($cnf)){	//何も設定していない時はテンプレートから取得
+			$cnf = ShippingScheduleEachItemsUtil::getTemplates();
+		}
 		$this->createAdd("notice_list", "ScheduleNoticeEachItemsListComponent", array(
 			"list" => ShippingScheduleUtil::getPatterns(),
-			"config" => ShippingScheduleEachItemsUtil::getConfig($this->itemId)
+			"config" => $cnf
 		));
 	}
 

@@ -24,27 +24,10 @@ class ShippingScheduleConfigPage extends WebPage {
 		DisplayPlugin::toggle("installed_calendar_plugin", $isInstalledCalendarPlugin);
 
 		$this->addLabel("replace_words_list", array(
-			"html" => self::buildUsabledReplaceWordsList()
+			"html" => ShippingScheduleUtil::buildUsabledReplaceWordsList()
 		));
 
 		self::buildForm();
-	}
-
-	private function buildUsabledReplaceWordsList(){
-		$html = array();
-		$html[] = "<table class=\"form_list\">";
-		$html[] = "<caption>使用できる置換文字列</caption>";
-		$html[] = "<thead><tr><th>置換文字列</th><th>種類</th></tr></thead>";
-		$html[] = "<tbody>";
-		foreach(ShippingScheduleUtil::getUsabledReplaceWords() as $k => $w){
-			$html[] = "<tr>";
-			$html[] = "<td>##" . $k . "##</td>";
-			$html[] = "<td>" . $w . "</td>";
-			$html[] = "</tr>";
-		}
-		$html[] = "</tbody>";
-		$html[] = "</table>";
-		return implode("\n", $html);
 	}
 
 	private function buildForm(){
