@@ -34,6 +34,9 @@ class SOYShopSiteController extends SOY2PageController{
         //言語設定がされていない場合はここで日本語に設定する
         if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
 
+		//運営者の代理販売のためのログイン
+        self::purchaseProxy();
+
         /*
          * カート、マイページ
          * notificationやdownloadでのexitを含む
@@ -48,9 +51,6 @@ class SOYShopSiteController extends SOY2PageController{
 
         //https → http
         self::checkSSL($uri, $args);
-
-        //運営者の代理販売のためのログイン
-        self::purchaseProxy();
 
         try{
             //URIからページを取得
@@ -500,7 +500,7 @@ class SOYShopSiteController extends SOY2PageController{
      * 運営者の代理購入用のログイン
      */
     private function purchaseProxy(){
-        if(isset($_GET["purchase"]) && $_GET["purchase"] == "proxy" && isset($_GET["user_id"]) && is_numeric($_GET["user_id"])){
+		if(isset($_GET["purchase"]) && $_GET["purchase"] == "proxy" && isset($_GET["user_id"]) && is_numeric($_GET["user_id"])){
             //管理画面にログインしているか調べる
             $session = SOY2ActionSession::getUserSession();
             if(!is_null($session->getAttribute("loginid"))){

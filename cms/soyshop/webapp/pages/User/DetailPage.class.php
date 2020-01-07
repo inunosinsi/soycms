@@ -163,7 +163,11 @@ class DetailPage extends WebPage{
 
 		//管理画面から注文ボタン
 		SOY2::import("domain.config.SOYShop_ShopConfig");
-		DisplayPlugin::toggle("orderable_button", SOYShop_ShopConfig::load()->getDisplayOrderButtonOnUserAdminPage());
+		$isDisplayOrderButton = SOYShop_ShopConfig::load()->getDisplayOrderButtonOnUserAdminPage();
+		DisplayPlugin::toggle("orderable_button", $isDisplayOrderButton);
+
+		//例外：注文関連ボタンを表示しない設定だけれども、マイページが有効の場合はログインボタンを出力する
+		DisplayPlugin::toggle("log_in_button", (!$isDisplayOrderButton && soyshop_get_mypage_id() != "none"));
 
     	//ユーザの画像保存ディレクトリが無い場合は生成する
 		$dir = $shopUser->getAttachmentsPath();
@@ -250,6 +254,11 @@ class DetailPage extends WebPage{
 		));
 		$this->addLink("order_cart_link", array(
 			"link" => soyshop_get_site_url(true) . "?purchase=proxy&user_id=" . $shopUser->getId(),
+			"target" => "_blank"
+		));
+
+		$this->addLink("mypage_login_link", array(
+			"link" => soyshop_get_mypage_url(true) . "/login?purchase=proxy&user_id=" . $shopUser->getId(),
 			"target" => "_blank"
 		));
 

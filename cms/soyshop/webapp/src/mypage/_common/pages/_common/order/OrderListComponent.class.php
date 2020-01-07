@@ -30,4 +30,3 @@ class OrderListComponent extends HTMLList{
         return $entity->isOrderDisplay();
     }
 }
-?>

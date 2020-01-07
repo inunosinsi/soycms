@@ -7,7 +7,7 @@ class ModuleListComponent extends HTMLList {
 		$this->addLabel("module_name", array(
 			"text" => $item->getName()
 		));
-		
+
 		$this->addLabel("module_price", array(
 			"text" => number_format($item->getPrice())
 		));
@@ -15,4 +15,3 @@ class ModuleListComponent extends HTMLList {
 		return $item->isVisible();
 	}
 }
-?>
