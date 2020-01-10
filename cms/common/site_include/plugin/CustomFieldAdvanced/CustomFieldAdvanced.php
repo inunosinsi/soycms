@@ -176,6 +176,10 @@ class CustomFieldPluginAdvanced{
 							"text" => $entry->getTitle(),
 							"soy2prefix"=>"cms"
 						));
+						$htmlObj->addLabel($field->getId() . "_more", array(
+							"html" => $entry->getMore(),
+							"soy2prefix"=>"cms"
+						));
 						$htmlObj->createAdd($field->getId() . "_create_date", "DateLabel", array(
 							"text" => $entry->getCdate(),
 							"soy2prefix"=>"cms"
