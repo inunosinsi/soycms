@@ -38,7 +38,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.9.2"
+			"version"=>"1.9.3"
 		));
 
 		//プラグイン アクティブ
@@ -172,11 +172,19 @@ class CustomFieldPluginAdvanced{
 						 * cms:id="***_title"で記事名を出力
 						 * cms:id="***_create_date"で記事の作成時刻を出力
 						 **/
+						$htmlObj->addLabel($field->getId() . "_id", array(
+ 							"text" => $entry->getId(),
+ 							"soy2prefix"=>"cms"
+ 						));
 						$htmlObj->addLabel($field->getId() . "_title", array(
 							"text" => $entry->getTitle(),
 							"soy2prefix"=>"cms"
 						));
-						$htmlObj->addLabel($field->getId() . "_more", array(
+						$htmlObj->createAdd($field->getId() . "_content", "CMSLabel", array(
+							"html" => $entry->getContent(),
+							"soy2prefix"=>"cms"
+						));
+						$htmlObj->createAdd($field->getId() . "_more", "CMSLabel", array(
 							"html" => $entry->getMore(),
 							"soy2prefix"=>"cms"
 						));

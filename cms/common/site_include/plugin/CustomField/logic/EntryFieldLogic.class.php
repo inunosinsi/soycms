@@ -26,7 +26,7 @@ class EntryFieldLogic extends SOY2LogicBase {
 		if(isset($values[$entryId])) return $values[$entryId];
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryDAO");
 		$now = time();
-		$sql = "SELECT title, more, content, cdate FROM Entry ".
+		$sql = "SELECT id, title, more, content, cdate FROM Entry ".
 				"WHERE id = :id ".
 				"AND isPublished = " . Entry::ENTRY_ACTIVE . " ".
 				"AND openPeriodStart < " . $now . " ".
