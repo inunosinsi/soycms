@@ -160,38 +160,13 @@ class CustomFieldPluginAdvanced{
 				}
 
 				//記事フィールド
+				$entry = new Entry();
 				if($master->getType() == "entry" && strlen($field->getValue()) && strpos($field->getValue(), "-")){
 					$v = explode("-", $field->getValue());
 					$selectedEntryId = (isset($v[1]) && is_numeric($v[1])) ? (int)$v[1] : null;
 					if($selectedEntryId){
 						$entry = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getTitleAndContentByEntryId($selectedEntryId);
 						$attr["html"] = $entry->getContent();
-
-						/**
-						 * @隠しモード
-						 * cms:id="***_title"で記事名を出力
-						 * cms:id="***_create_date"で記事の作成時刻を出力
-						 **/
-						$htmlObj->addLabel($field->getId() . "_id", array(
- 							"text" => $entry->getId(),
- 							"soy2prefix"=>"cms"
- 						));
-						$htmlObj->addLabel($field->getId() . "_title", array(
-							"text" => $entry->getTitle(),
-							"soy2prefix"=>"cms"
-						));
-						$htmlObj->createAdd($field->getId() . "_content", "CMSLabel", array(
-							"html" => $entry->getContent(),
-							"soy2prefix"=>"cms"
-						));
-						$htmlObj->createAdd($field->getId() . "_more", "CMSLabel", array(
-							"html" => $entry->getMore(),
-							"soy2prefix"=>"cms"
-						));
-						$htmlObj->createAdd($field->getId() . "_create_date", "DateLabel", array(
-							"text" => $entry->getCdate(),
-							"soy2prefix"=>"cms"
-						));
 					}
 				}
 
@@ -285,6 +260,33 @@ class CustomFieldPluginAdvanced{
 				"soy2prefix" => "cms",
 				"visible" => (strlen($field->getValue()) === 0)
 			));
+
+			/**
+			 * @記事フィールドの隠しモード
+			 * cms:id="***_title"で記事名を出力
+			 * cms:id="***_create_date"で記事の作成時刻を出力
+			 **/
+			$htmlObj->addLabel($field->getId() . "_id", array(
+				"text" => $entry->getId(),
+				"soy2prefix"=>"cms"
+			));
+			$htmlObj->addLabel($field->getId() . "_title", array(
+				"text" => $entry->getTitle(),
+				"soy2prefix"=>"cms"
+			));
+			$htmlObj->createAdd($field->getId() . "_content", "CMSLabel", array(
+				"html" => $entry->getContent(),
+				"soy2prefix"=>"cms"
+			));
+			$htmlObj->createAdd($field->getId() . "_more", "CMSLabel", array(
+				"html" => $entry->getMore(),
+				"soy2prefix"=>"cms"
+			));
+			$htmlObj->createAdd($field->getId() . "_create_date", "DateLabel", array(
+				"text" => $entry->getCdate(),
+				"soy2prefix"=>"cms"
+			));
+			/** 記事フィールドの隠しモードここまで **/
 
 			//SOY2HTMLのデフォルトの _visibleがあるので、$field->getId()."_visible"より後にこれをやらないと表示されなくなる
 			$htmlObj->createAdd($field->getId(), $class, $attr);
@@ -718,3 +720,4 @@ class CustomFieldPluginAdvanced{
 		CMSPlugin::addPlugin(CustomFieldPluginAdvanced::PLUGIN_ID, array($obj, "init"));
 	}
 }
+
