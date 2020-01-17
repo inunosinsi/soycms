@@ -11,6 +11,9 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 	//フォームに自由に挿入する属性
 	private $attribute;
 
+	//公開側で各項目毎に改行の<br>を加えるか？
+	private $isBr = false;
+
 	/**
 	 * ユーザに表示するようのフォーム
 	 */
@@ -44,6 +47,7 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 
 			$html[] = "<input type=\"radio\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."]\" value=\"".$item."\" " . implode(" ",$attributes). " ". $checked."/>";
 			$html[] = "<label for=\"data_".$this->getColumnId() . "_" . $key. "\">".$item."</label>";
+			if($this->isBr) $html[] = "<br>";
 		}
 
 		return implode("\n",$html);
@@ -74,7 +78,10 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 		$html.= '<textarea type="text" name="Column[config][items]" style="height:100px;padding:0;">'.$this->items.'</textarea>';
 		$html.= '<p>初期値として選択される項目がある場合、項目の前に[*]を入力して下さい。</p>';
 
-		$html .= "<br/>";
+		$checked = ($this->isBr) ? " checked=\"checked\"" : "";
+		$html .= "<label><input type=\"checkbox\" name=\"Column[config][isBr]\" value=\"1\"" . $checked. "> 各項目毎に改行コード&lt;br&gt;を追加する。</label>";
+
+		$html .= "<br><br>";
 
 		if(is_null($this->attribute) && isset($this->style)){
 			$attribute = "class=&quot;".htmlspecialchars($this->style,ENT_QUOTES,"UTF-8")."&quot;";
@@ -97,12 +104,14 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 		$this->items = (isset($config["items"])) ? $config["items"] : "*項目１\n項目２\n項目３";
 		$this->style = (isset($config["style"])) ? $config["style"] : null ;
 		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
+		$this->isBr = (isset($config["isBr"]) && $config["isBr"] == 1);
 	}
 	function getConfigure(){
 		$config = parent::getConfigure();
 		$config["items"] = $this->items;
 		$config["style"] = $this->style;
 		$config["attribute"] = $this->attribute;
+		$config["isBr"] = $this->isBr;
 		return $config;
 	}
 
