@@ -26,8 +26,9 @@ class ShopConfigPage extends WebPage{
 			"insertDummyMailAddressOnAdmin" => 0,
 			"insertDummyMailAddressOnAdminRegister" => 0,
 			"insertDummyAddressOnAdmin" => 0,
-			"isChildItemOnAdminOrder" => 0,
+			//"isChildItemOnAdminOrder" => 0,
 			"isUnregisteredItem" => 0,
+			"displayRegisterAfterItemSearchOnAdmin" => 0,
 			"displayOrderAdminPage" => 0,
 			"displayItemAdminPage" => 0,
 			"displayUserAdminPage" => 0,
@@ -368,18 +369,25 @@ class ShopConfigPage extends WebPage{
 			"label" => "管理画面からの注文時、顧客の住所にダミーの値を挿入できるボタンを表示する"
 		));
 
-		$this->addCheckBox("isChildItemOnAdminOrder", array(
-			"name" => "Config[isChildItemOnAdminOrder]",
-			"value" => 1,
-			"selected" => $config->getIsChildItemOnAdminOrder(),
-			"label" => "管理画面からの注文の際に子商品を検索結果に含める"
-		));
+		// $this->addCheckBox("isChildItemOnAdminOrder", array(
+		// 	"name" => "Config[isChildItemOnAdminOrder]",
+		// 	"value" => 1,
+		// 	"selected" => $config->getIsChildItemOnAdminOrder(),
+		// 	"label" => "管理画面からの注文の際に子商品を検索結果に含める"
+		// ));
 
 		$this->addCheckBox("isUnregisteredItem", array(
 			"name" => "Config[isUnregisteredItem]",
 			"value" => 1,
 			"selected" => $config->getIsUnregisteredItem(),
 			"label" => "管理画面からの注文の際に未登録商品の追加を許可する"
+		));
+
+		$this->addCheckBox("displayRegisterAfterItemSearchOnAdmin", array(
+			"name" => "Config[displayRegisterAfterItemSearchOnAdmin]",
+			"value" => 1,
+			"selected" => $config->getDisplayRegisterAfterItemSearchOnAdmin(),
+			"label" => "管理画面からの注文の際に商品検索後に商品を登録するフォームを表示する"
 		));
 
 		$this->addCheckBox("displayOrderAdminPage", array(

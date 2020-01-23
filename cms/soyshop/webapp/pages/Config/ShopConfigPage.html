@@ -152,12 +152,11 @@
 				<td><input type="checkbox" soy:id="displayChildItem" /></td>
 			</tr>
 			<tr>
-				<th>子商品の在庫管理設定1</th>
-				<td><input type="checkbox" soy:id="childItemStock" /></td>
-			</tr>
-			<tr>
-				<th>子商品の在庫管理設定2</th>
-				<td><input type="checkbox" soy:id="noChildItemStock" /></td>
+				<th>子商品の在庫管理設定</th>
+				<td>
+					<input type="checkbox" soy:id="childItemStock" /><br>
+					<input type="checkbox" soy:id="noChildItemStock" />
+				</td>
 			</tr>
 			<tr>
 				<th>注文一覧の表示設定</th>
@@ -225,18 +224,8 @@
 			<tr>
 				<th>ダミーのメールアドレス</th>
 				<td>
-					<input type="checkbox" soy:id="insertDummyMailAddress">
-				</td>
-			</tr>
-			<tr>
-				<th>ダミーのメールアドレス<br>(管理画面：注文登録)</th>
-				<td>
-					<input type="checkbox" soy:id="insertDummyMailAddressOnAdmin">
-				</td>
-			</tr>
-			<tr>
-				<th>ダミーのメールアドレス<br>(管理画面：顧客追加)</th>
-				<td>
+					<input type="checkbox" soy:id="insertDummyMailAddress"><br>
+					<input type="checkbox" soy:id="insertDummyMailAddressOnAdmin"><br>
 					<input type="checkbox" soy:id="insertDummyMailAddressOnAdminRegister">
 				</td>
 			</tr>
@@ -247,28 +236,20 @@
 				</td>
 			</tr>
 			<tr>
-				<th>管理画面からの注文登録での<br>子商品の扱い</th>
+				<th>管理画面からの注文</th>
 				<td>
-					<input type="checkbox" soy:id="isChildItemOnAdminOrder">
+					<!-- soy:ignore="child_item" --><input type="checkbox" soy:id="isChildItemOnAdminOrder"><!-- /soy:ignore="child_item" -->
+					<input type="checkbox" soy:id="isUnregisteredItem"><br>
+					<input type="checkbox" soy:id="displayRegisterAfterItemSearchOnAdmin">
 				</td>
 			</tr>
 			<tr>
-				<th>管理画面からの注文での未登録商品の扱い</th>
+				<th>管理画面のナビ</th>
 				<td>
-					<input type="checkbox" soy:id="isUnregisteredItem">
+					<input type="checkbox" soy:id="displayOrderAdminPage"><br>
+					<input type="checkbox" soy:id="displayItemAdminPage"><br>
+					<input type="checkbox" soy:id="displayUserAdminPage">
 				</td>
-			</tr>
-			<tr>
-				<th>管理画面の注文ページ</th>
-				<td><input type="checkbox" soy:id="displayOrderAdminPage"></td>
-			</tr>
-			<tr>
-				<th>管理画面の商品ページ</th>
-				<td><input type="checkbox" soy:id="displayItemAdminPage"></td>
-			</tr>
-			<tr>
-				<th>管理画面の顧客ページ</th>
-				<td><input type="checkbox" soy:id="displayUserAdminPage"></td>
 			</tr>
 			<tr>
 				<th>管理画面の顧客詳細ページ</th>
@@ -377,10 +358,10 @@
 		</table>
 
 		<p class="pageBtn">
-					<input type="submit" class="submit_button" value="設定" />
+			<input type="submit" class="submit_button" value="設定" />
 		</p>
 
-		</form soy:id="update_form">
+		</form>
 
 	</div>
 </div>

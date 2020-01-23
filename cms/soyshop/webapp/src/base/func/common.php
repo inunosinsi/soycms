@@ -633,6 +633,20 @@ function soyshop_get_item_sample_image(){
 	return "/" . SOYSHOP_ID . "/themes/sample/noimage.jpg";
 }
 
+function soyshop_get_zip_2_address_js_filepath(){
+	$zipJsPath = SOYSHOP_SITE_DIRECTORY . "themes/common/js/zip2address.js";
+	if(!file_exists($zipJsPath)){
+		$dir = SOYSHOP_SITE_DIRECTORY . "themes/";
+		if(!file_exists($dir)) mkdir($dir);
+		$dir .= "common/";
+		if(!file_exists($dir)) mkdir($dir);
+		$dir .= "js/";
+		if(!file_exists($dir)) mkdir($dir);
+		copy(SOYSHOP_WEBAPP. "/src/logic/init/theme/bryon/common/js/zip2address.js", $zipJsPath);
+	}
+	return "/" . SOYSHOP_ID . "/themes/common/js/zip2address.js";
+}
+
 //ダミーのメールアドレスを取得する
 function soyshop_dummy_mail_address(){
     $userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");

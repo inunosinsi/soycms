@@ -54,4 +54,3 @@ class CategorySelectComponent extends HTMLSelect{
 		$this->label = $label;
 	}
 }
-?>

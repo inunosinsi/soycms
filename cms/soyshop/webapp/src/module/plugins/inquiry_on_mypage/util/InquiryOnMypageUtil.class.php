@@ -3,7 +3,9 @@
 class InquiryOnMypageUtil {
 
 	public static function getConfig(){
-		return SOYShop_DataSets::get("inquiry_on_mypage.config", array());
+		return SOYShop_DataSets::get("inquiry_on_mypage.config", array(
+			"tab" => 1
+		));
 	}
 
 	public static function saveConfig($values){
@@ -25,5 +27,21 @@ class InquiryOnMypageUtil {
 
 	public static function saveMailConfig($values){
 		SOYShop_DataSets::put("inquiry_on_mypage.mail", $values);
+	}
+
+	public static function getParameter($key){
+		$session = SOY2ActionSession::getUserSession();
+		if(isset($_POST[$key])){
+			$session->setAttribute("inquiry_on_mypage_search:" . $key, $_POST[$key]);
+			$params = $_POST[$key];
+		}else if(isset($_GET["reset"])){
+			$session->setAttribute("inquiry_on_mypage_search:" . $key, array());
+			$params = array();
+		}else{
+			$params = $session->getAttribute("inquiry_on_mypage_search:" . $key);
+			if(is_null($params)) $params = array();
+		}
+
+		return $params;
 	}
 }

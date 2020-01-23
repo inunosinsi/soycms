@@ -10,25 +10,33 @@ function soyshop_shipping_schedule_notice_raw($html, $page){
 		//本日の文言を取得
 		$bizLogic = SOY2Logic::createInstance("module.plugins.parts_calendar.logic.BusinessDateLogic");
 
-		$now = time();
-		$idx = "";
-
-		//本日が定休日であるか？
-		if(!$bizLogic->checkRegularHoliday($now)){	//営業日
-			$idx = "biz";
-		}else{	//定休日
-			$idx = "hol";
-		}
-
-		//今が午前であるか？
-		if(date("H", $now) < 12){	//午前
-			$idx .= "_am";
-		}else{	//午後
-			$idx .= "_pm";
-		}
-
+		//連休を調べる
 		SOY2::import("module.plugins.parts_shipping_schedule_notice.util.ShippingScheduleUtil");
 		$config = ShippingScheduleUtil::getConfig();
+
+		$idx = "";
+
+		//連休の設定があるか調べる
+		if(ShippingScheduleUtil::checkDuringConsecutiveHolidays($config)){
+			$idx = ShippingScheduleUtil::HOL_CO;
+		}else{
+			$now = time();
+
+			//本日が定休日であるか？
+			if(!$bizLogic->checkRegularHoliday($now)){	//営業日
+				$idx = "biz";
+			}else{	//定休日
+				$idx = "hol";
+			}
+
+			//今が午前であるか？
+			if(date("H", $now) < 12){	//午前
+				$idx .= "_am";
+			}else{	//午後
+				$idx .= "_pm";
+			}
+		}
+
 		if(isset($config["notice"][$idx])){
 			$wording = $config["notice"][$idx];
 

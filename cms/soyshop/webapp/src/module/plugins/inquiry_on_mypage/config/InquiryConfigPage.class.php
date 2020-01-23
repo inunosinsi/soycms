@@ -28,6 +28,13 @@ class InquiryConfigPage extends WebPage {
 
 		$this->addForm("form");
 
+		$this->addCheckBox("add_tab", array(
+			"name" => "Config[tab]",
+			"value" => 1,
+			"selected" => (isset($config["tab"]) && $config["tab"] == 1),
+			"label" => "管理画面のナビに『お問い合せ』ボタンを追加する"
+		));
+
 		$this->addTextArea("requirement", array(
 			"name" => "Config[requirement]",
 			"value" => (isset($config["requirement"])) ? $config["requirement"] : "",

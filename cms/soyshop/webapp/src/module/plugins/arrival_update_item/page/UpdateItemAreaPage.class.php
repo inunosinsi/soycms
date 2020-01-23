@@ -35,9 +35,7 @@ class UpdateItemAreaPage extends WebPage{
 
 		$this->createAdd("item_list", "_common.Item.ItemListComponent", array(
 			"list" => $itemList,
-			"config" => SOYShop_ShopConfig::load(),
-			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"itemOrderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")
+			"detailLink" => SOY2PageController::createLink("Item.Detail.")
 		));
 	}
 

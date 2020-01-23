@@ -2,11 +2,10 @@
 
 class ItemListComponent extends HTMLList{
 
-	private $categories = array();
     private $detailLink;
 
     protected function populateItem($item, $idx) {
-		
+
 		$this->addLabel("index", array(
 			"text" => $idx
 		));
@@ -29,28 +28,42 @@ class ItemListComponent extends HTMLList{
             "text" => $item->getCode()
         ));
 
+		$categories = soyshop_get_category_list(true);
 		$this->addLabel("item_category", array(
-            "text" => (isset($this->categories[$item->getCategory()])) ? $this->categories[$item->getCategory()] : "-"
+            "text" => (is_array($categories) && isset($categories[$item->getCategory()])) ? $categories[$item->getCategory()] : "-"
         ));
 
+		//親商品であるか？
+		$isParent = ($item instanceof SOYShop_Item && $item->getType() == SOYShop_Item::TYPE_GROUP);
         $this->addLabel("item_price", array(
-            "text" => number_format((int)$item->getPrice())
+            "text" => (!$isParent) ? number_format((int)$item->getPrice()) . " 円" : ""
         ));
 
         $this->addLabel("item_stock", array(
-            "text" => number_format($item->getStock())
+            "text" => (!$isParent) ? number_format($item->getStock()) : ""
         ));
 
-        // $this->addLabel("item_category", array(
-        //     "text" => $text
-        // ));
-
-        $detailLink = $this->getDetailLink() . $item->getId();
         $this->addLink("detail_link", array(
-            "link" => $detailLink
+            "link" => $this->detailLink . $item->getId()
         ));
 
 		//在庫切れ
+
+		//親商品の場合は追加ボタンを表示しない
+		$this->addModel("show_add_button", array(
+			"visible" => !$isParent
+		));
+
+		//子商品の表
+		$children = ($isParent) ? self::_getChildrenByParentId($item->getId()) : array();
+		$childrenCount = count($children);
+		$this->addModel("show_child_table", array(
+			"visible" => $childrenCount
+		));
+
+		$this->addLabel("children_table", array(
+			"html" => ($childrenCount > 0) ? self::_buildChildrenTable($children) : ""
+		));
 
 		//iframeのchangeにあるindexを出力
 		$this->addLabel("iframe_index", array(
@@ -58,14 +71,26 @@ class ItemListComponent extends HTMLList{
 		));
     }
 
-	function setCategories($categories){
-		$this->categories = $categories;
+	private function _getChildrenByParentId($parentId){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+
+		try{
+			return $dao->getByTypeIsOpenNoDisabled($parentId);
+		}catch(Exception $e){
+			return array();
+		}
 	}
 
+	private function _buildChildrenTable($children){
+		static $component;
+		if(is_null($component)){
+			include_once(dirname(dirname(dirname(__FILE__))) . "/Order/Register/component/ChildrenTableComponent.class.php");
+			$component = new ChildrenTableComponent();
+		}
+		return $component->buildTable($children);
+	}
 
-    function getDetailLink() {
-        return $this->detailLink;
-    }
     function setDetailLink($detailLink) {
         $this->detailLink = $detailLink;
     }

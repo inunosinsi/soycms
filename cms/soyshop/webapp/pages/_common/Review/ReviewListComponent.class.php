@@ -2,9 +2,6 @@
 
 class ReviewListComponent extends HTMLList{
 
-	private $itemDao;
-	private $logic;
-
 	protected function populateItem($entity){
 
 		$this->addInput("review_check", array(
@@ -19,7 +16,7 @@ class ReviewListComponent extends HTMLList{
 
 		$this->addLink("item_name", array(
 			"link" => SOY2PageController::createLink("Item.Detail." . $entity->getItemId()),
-			"text" => $this->getItemName($entity->getItemId())
+			"text" => ($entity instanceof SOYShop_ItemReview) ? soyshop_get_item_object($entity->getItemId())->getOpenItemName() : ""
 		));
 
 		$this->addModel("is_user_id", array(
@@ -53,19 +50,4 @@ class ReviewListComponent extends HTMLList{
 			"link" => SOY2PageController::createLink("Review.Detail." . $entity->getId())
 		));
 	}
-
-	function getItemName($itemId){
-		try{
-			$item = $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			$item = new SOYShop_Item();
-		}
-
-		return $item->getName();
-	}
-
-	function setItemDao($itemDao){
-		$this->itemDao = $itemDao;
-	}
 }
-?>

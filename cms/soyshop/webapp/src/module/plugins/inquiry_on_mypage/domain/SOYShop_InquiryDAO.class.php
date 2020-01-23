@@ -1,5 +1,5 @@
 <?php
-
+SOY2::import("module.plugins.inquiry_on_mypage.domain.SOYShop_Inquiry");
 /**
  * @entity SOYShop_Inquiry
  */
@@ -15,6 +15,8 @@ abstract class SOYShop_InquiryDAO extends SOY2DAO{
 	 * @trigger onUpdate
 	 */
 	abstract function update(SOYShop_Inquiry $bean);
+
+	abstract function get();
 
 	/**
 	 * @return object

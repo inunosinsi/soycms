@@ -1,23 +1,13 @@
 <?php
 class ReviewsListComponent extends HTMLList{
 
-	private $config;
-	private $item;
-	private $mypage;
+	private $itemId;
 
 	protected function populateItem($entity){
 
-		$nickname = (strlen($entity->getNickname()) > 0) ? $entity->getNickname() : $this->config["nickname"];
-
-		//プロフィール閲覧が許可されている場合はリンクを出力する
-		$profileLink = $this->mypage->getProfileUserLink($entity->getUserId());
-		if(isset($profileLink) && (strlen($profileLink) > 0)){
-			$nickname = "<a href=\"" . $profileLink."\">" . $nickname . "</a>";
-		}
-
 		$this->addLabel("nickname", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"html" => $nickname
+			"html" => ($entity instanceof SOYShop_ItemReview) ? self::_getNickname($entity->getNickname(), $entity->getUserId()) : ""
 		));
 
 		$this->addLabel("evaluation", array(
@@ -42,19 +32,38 @@ class ReviewsListComponent extends HTMLList{
 
 		$this->addLabel("item_name", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => $this->item->getName()
+			"text" => (is_numeric($this->itemId)) ? soyshop_get_item_object($this->itemId)->getOpenItemName() : ""
 		));
 	}
 
-	function setConfig($config){
-		return $this->config;
+	private function _getNickname($nickname, $userId){
+		$nickname = (strlen($nickname) > 0) ? $nickname : self::_getNicknameConfig();
+		if(!is_numeric($userId)) return $nickname;
+
+		//プロフィール閲覧が許可されている場合はリンクを出力する
+		$link = self::_mypage()->getProfileUserLink($userId);
+		if(!isset($link) || !strlen($link)) return $nickname;
+
+		return "<a href=\"" . $link . "\">" . $nickname . "</a>";
 	}
 
-	function setItem($item){
-		$this->item = $item;
+	private function _mypage(){
+		static $my;
+		if(is_null($my)) $my = MyPageLogic::getMyPage();
+		return $my;
 	}
 
-	function setMypage($mypage){
-		$this->mypage = $mypage;
+	private function _getNicknameConfig(){
+		static $cnf;
+		if(is_null($cnf)){
+			SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
+			$c = ItemReviewUtil::getConfig();
+			$cnf = (isset($c["nickname"])) ? $c["nickname"] : "";
+		}
+		return $cnf;
+	}
+
+	function setItemId($itemId){
+		$this->itemId = $itemId;
 	}
 }

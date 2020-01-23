@@ -1,13 +1,13 @@
 <?php
 SOY2::import("util.SOYShopPluginUtil");
 function soyshop_new_items($html, $htmlObj){
-	
+
 	$obj = $htmlObj->create("soyshop_new_items", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_new_items", $html)
 	));
-    
+
 	$items = array();
-	
+
 	if(SOYShopPluginUtil::checkIsActive("common_new_item")){
         //標準の出力設定は10にしておく
         $lim = 10;
@@ -32,12 +32,12 @@ function soyshop_new_items($html, $htmlObj){
         SOY2::import("module.plugins.common_new_item.util.NewItemUtil");
         $config = NewItemUtil::getConfig();
         $try = (isset($config["tryCount"])) ? (int)$config["tryCount"] : 1;
-        
+
         //登録時刻を一ヶ月ずつ前にして商品が登録されているか調べる
         $cdate = time();
         do{
             if($try-- === 0) break;
-            
+
             try{
                 $res = $itemDao->executeQuery($sql, array(":cdate" => $cdate, ":edate" => $cdate - 31*24*60*60));
             }catch(Exception $e){
@@ -46,24 +46,24 @@ function soyshop_new_items($html, $htmlObj){
 
             //次回用に更新
             $cdate -= 31*24*60*60;
-        
+
             if(!count($res)) continue;
-            
+
             foreach($res as $v){
                 if(isset($v["id"]) && is_numeric($v["id"])){
                     $ids[] = (int)$v["id"];
                     if($c > 0) $c--;
                 }
             }
-        
+
         }while($c > 0);
 
         if(count($ids)){
-            
+
             //すでに公開に関する諸々の条件は調べてある
             $sql = "SELECT * FROM soyshop_item ".
                  "WHERE id IN (" . implode(",", $ids) . ") ";
-				
+
             //ソートの設定
             if(isset($config["defaultSort"])){
                 //ランダム表示
@@ -87,9 +87,9 @@ function soyshop_new_items($html, $htmlObj){
                     }
                     $sql .= "ORDER BY " . $key . " ";
                     $sql .= ($config["isReverse"] == 1) ? "ASC " : "DESC ";
-                }	
+                }
             }
-            
+
             $sql .= "LIMIT " . $lim;
 
             try{
@@ -101,7 +101,7 @@ function soyshop_new_items($html, $htmlObj){
             if(count($res)) foreach($res as $v){
                     $items[] = $itemDao->getObject($v);
                 }
-                 
+
         }
     }
 
@@ -109,7 +109,7 @@ function soyshop_new_items($html, $htmlObj){
 		"list" => $items,
 		"soy2prefix" => "block"
 	));
-	
+
 	//商品があるときだけ表示
 	if(count($items) > 0){
 		$obj->display();
@@ -119,4 +119,3 @@ function soyshop_new_items($html, $htmlObj){
 		ob_end_clean();
 	}
 }
-?>

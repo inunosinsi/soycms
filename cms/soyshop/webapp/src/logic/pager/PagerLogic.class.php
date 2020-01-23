@@ -62,7 +62,12 @@ class PagerLogic extends SOY2LogicBase{
 	}
 
 	function getNextParam(){
-		$link = ($this->total > $this->end) ? $this->pageURL . ($this->page + 1) : $this->pageURL . $this->page;
+		if(strpos($this->pageURL, "?")){	//プラグインの詳細画面でページャを使用したい場合
+			$pageURL = rtrim($this->pageURL, "/") . "&page=";
+			$link = ($this->total > $this->end) ? $pageURL . ($this->page + 1) : $pageURL . $this->page;
+		}else{
+			$link = ($this->total > $this->end) ? $this->pageURL . ($this->page + 1) : $this->pageURL . $this->page;
+		}
 		if(strlen($this->getQuery()))$link .= "?" . $this->getQuery();
 
 		return array(
@@ -71,7 +76,13 @@ class PagerLogic extends SOY2LogicBase{
     	);
 	}
 	function getPrevParam(){
-		$link = ($this->page > 1) ? $this->pageURL . ($this->page - 1) : $this->pageURL . ($this->page);
+		if(strpos($this->pageURL, "?")){	//プラグインの詳細画面でページャを使用したい場合
+			$pageURL = rtrim($this->pageURL, "/") . "&page=";
+			$link = ($this->page > 1) ? $pageURL . ($this->page - 1) : $pageURL . ($this->page);
+		}else{
+			$link = ($this->page > 1) ? $this->pageURL . ($this->page - 1) : $this->pageURL . ($this->page);
+		}
+
 		if(strlen($this->getQuery())) $link .= "?" . $this->getQuery();
 		return array(
     		"link" => $link,
@@ -183,7 +194,11 @@ class SimplePager extends HTMLList{
 	private $query;
 
 	protected function populateItem($bean){
-		$url = $this->url . $bean;
+		if(strpos($this->url, "?")){	//プラグインの詳細画面でページャを使用したい場合
+			$url = rtrim($this->url, "/") . "&page=" . $bean;
+		}else{
+			$url = $this->url . $bean;
+		}
 		if(strlen($this->query)) $url .= "?" . $this->query;
 
 		$this->addLink("target_link", array(

@@ -75,6 +75,12 @@ class SOYShop_Item {
      */
     private $price;
 
+	/**
+	 * 仕入値
+	 * @column item_purchase_price
+	 */
+	private $purchasePrice = 0;
+
     /**
      * セール価格
      * @column item_sale_price
@@ -193,6 +199,12 @@ class SOYShop_Item {
     function setPrice($price) {
         $this->price = $price;
     }
+	function getPurchasePrice(){
+		return (int)$this->purchasePrice;
+	}
+	function setPurchasePrice($purchasePrice){
+		$this->purchasePrice = $purchasePrice;
+	}
     function getStock() {
         return (int)$this->stock;
     }

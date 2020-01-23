@@ -84,7 +84,6 @@ class IndexPage extends WebPage{
 
     	$this->createAdd("review_list", "_common.Review.ReviewListComponent", array(
     		"list" => $reviews,
-    		"itemDao" => $itemDao
     	));
 
     	//操作周り

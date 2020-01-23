@@ -52,6 +52,7 @@ class SOYShop_User {
 
 	private $name;
 	private $nickname;
+	private $honorific;
 	private $reading;
 
 	/**
@@ -230,6 +231,12 @@ class SOYShop_User {
 	}
 	function setName($name) {
 		$this->name = $name;
+	}
+	function getHonorific(){
+		return $this->honorific;
+	}
+	function setHonorific($honorific){
+		$this->honorific = $honorific;
 	}
 	function getNickname(){
 		return $this->nickname;

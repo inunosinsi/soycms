@@ -4,18 +4,21 @@ class CommonItemStockHistory extends SOYShopItemUpdateBase{
 
 	function addHistory(SOYShop_Item $item, $oldStock){
 
-		if(!isset($_POST["Item"]["stock"])) return;
+		if((isset($_POST["Item"]["stock"]) && is_numeric($_POST["Item"]["stock"]))){
+			$newStock = (int)$_POST["Item"]["stock"];
+		}else{
+			$newStock = (int)$item->getStock();
+		}
 
-		$newStock = (int)$_POST["Item"]["stock"];
 		if($oldStock != $newStock){
-			$logMessage = "在庫数を" . $oldStock."から" . $newStock."に変更しました";
+			$msg = "在庫数を" . $oldStock."から" . $newStock."に変更しました";
 
-			SOY2::imports("module.plugins.item_stock_manager.domain.*");
+			SOY2::import("module.plugins.item_stock_manager.domain.SOYShop_StockHistoryDAO");
 			$dao = SOY2DAOFactory::create("SOYShop_StockHistoryDAO");
 
 			$obj = new SOYShop_StockHistory();
 			$obj->setItemId($item->getId());
-			$obj->setMemo($logMessage);
+			$obj->setMemo($msg);
 
 			try{
 				$dao->insert($obj);

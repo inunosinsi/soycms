@@ -157,7 +157,27 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 						$uri = $uri . "/";
 					}
 					$priority = (!strlen($uri)) ? "1.0" : "0.8";
-					$html[] = self::buildUrlTag($url, $uri, "", $priority, $obj->getUpdateDate());
+
+					/** レビュープラグインからの自動出力 **/
+					if(self::_isReviewPage() && self::_getReviewPageId() == $obj->getId()){
+						$reviews = self::_getReviewCountListEarchItems();
+						if(count($reviews)){
+							$div = self::_getDivideReviewCount();
+							if($div > 0){
+								foreach($reviews as $itemId => $cnt){
+									$pageCnt = (int)max(1, ceil($cnt / $div));
+									if($pageCnt > 0){
+										for($pi = 1; $pi <= $pageCnt; $pi++){
+											$html[] = self::buildUrlTag($url, $uri . "/" . $itemId . "/page-" . $pi . ".html", "", "0.5", $obj->getUpdateDate());
+										}
+									}
+								}
+							}
+						}
+					}else{
+						$html[] = self::buildUrlTag($url, $uri, "", $priority, $obj->getUpdateDate());
+					}
+
 					break;
 			}
 		}
@@ -251,6 +271,48 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}catch(Exception $e){
 			return array();
 		}
+	}
+
+	/** レビュープラグイン **/
+	private function _isReviewPage(){
+		static $isActive;
+		if(is_null($isActive)){
+			$isActive = false;
+			if(SOYShopPluginUtil::checkIsActive("item_review")){
+				$config = self::_reviewConfig();
+				$isActive = (isset($config["active_other_page"]) && (int)$config["active_other_page"] === 1);
+			}
+		}
+		return $isActive;
+	}
+
+	private function _getReviewPageId(){
+		static $id;
+		if(is_null($id)){
+			$config = self::_reviewConfig();
+			$id = (isset($config["review_page_id"]) && is_numeric($config["review_page_id"])) ? (int)$config["review_page_id"] : nul;
+		}
+		return $id;
+	}
+
+	private function _getReviewCountListEarchItems(){
+		SOY2::import("module.plugins.item_review.domain.SOYShop_ItemReviewDAO");
+		return SOY2DAOFactory::create("SOYShop_ItemReviewDAO")->getReviewCountListEarchItems();
+	}
+
+	//1ページあたり何個レビューを表示するか？
+	private function _getDivideReviewCount(){
+		$config = self::_reviewConfig();
+		return (isset($config["review_count"]) && is_numeric($config["review_count"]) && $config["review_count"] > 0) ? (int)$config["review_count"] : null;
+	}
+
+	private function _reviewConfig(){
+		static $cnf;
+		if(is_null($cnf)){
+			SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
+			$cnf = ItemReviewUtil::getConfig();
+		}
+		return $cnf;
 	}
 }
 

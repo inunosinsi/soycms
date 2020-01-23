@@ -19,6 +19,22 @@ class ScheduleNoticeListComponent extends HTMLList {
 			"name" => "Config[notice][" . $entity . "]",
 			"value" => (isset($this->config["notice"][$entity])) ? $this->config["notice"][$entity] : ""
 		));
+
+		//entityに_coがある場合は連休
+		$isConHol = (isset($entity) && is_string($entity) && strpos($entity, "_co"));
+		$this->addModel("is_consecutive_holidays", array(
+			"visible" => $isConHol
+		));
+
+		$this->addModel("no_consecutive_holidays", array(
+			"visible" => !$isConHol
+		));
+
+		$this->addInput("consecutive_holidays", array(
+			"name" => "Config[consecutive][" . $entity . "]",
+			"value" => (isset($this->config["consecutive"][$entity])) ? trim($this->config["consecutive"][$entity]) : "",
+			"style" => "width:50%;"
+		));
 	}
 
 	function setConfig($config){

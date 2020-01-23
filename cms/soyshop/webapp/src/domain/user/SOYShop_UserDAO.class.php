@@ -125,6 +125,7 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 	 * @final
 	 */
 	function onInsert($query, $binds){
+		if(!isset($binds[":honorific"]) || !strlen($binds[":honorific"])) $binds[":honorific"] = "様";
 		if(!isset($binds[":userCode"]) || !strlen($binds[":userCode"])) $binds[":userCode"] = null;
 		if((int)$binds[":area"] === 0) $binds[":area"] = null;
 		if(strlen($binds[":accountId"]) === 0) $binds[":accountId"] = null;

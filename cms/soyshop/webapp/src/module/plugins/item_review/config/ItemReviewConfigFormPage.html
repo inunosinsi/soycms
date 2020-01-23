@@ -17,7 +17,10 @@
     &lt;p <strong>cms:id="content"</strong>&gt;レビューの中身テキスト&lt;/p&gt;
   &lt;/article&gt;
   <strong>&lt;!-- /block:id="review_list" --&gt;</strong>
+
+  <strong>&lt;!-- block:id="is_review_page" --&gt;&lt;a cms:id="review_page_link"&gt;レビューをもっと見る&lt;/a&gt;&lt;!-- /block:id="is_review_page" --&gt;</strong>
 &lt;/section&gt;
+
 <strong>&lt;!-- /block:id="has_reviews" --&gt;</strong>
 
 <strong>&lt;!-- cms:id="is_logged_in" --&gt;</strong>
@@ -103,6 +106,25 @@
 		</tr>
 	</tbody>
 </table>
+
+<table class="form_list id_example" style="display:none;">
+	<caption>レビュー用のページを設けた時に使用するタグblock:id="is_review_page"</caption>
+	<thead>
+		<tr>
+			<th>cms:id</th>
+			<th>タグ</th>
+			<th>説明</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>review_page_link</td>
+			<td>A</td>
+			<td>レビュー用ページに遷移する為のリンクを出力します</td>
+		</tr>
+	</tbody>
+</table>
+
 
 <table class="form_list id_example" style="display:none;">
 	<caption>block:id="review_form"内で使用できるタグ</caption>
@@ -269,6 +291,65 @@
 		<dd>
 			<input type="checkbox" soy:id="edit_evaluation_star">
 		</dd>
+
+		<dt>レビューを別ページで表示する(ページャ付き)</dt>
+		<dd>
+			<input type="checkbox" soy:id="active_other_page"><br>
+			<a href="javascript:void(0);" onclick="$('.other_page_example').toggle();">レビューページの設定方法</a>
+			<div class="other_page_example" style="display:none;">
+				<ul style="list-style-type:disc;margin-left:15px;">
+					<li>フリーページでレビューを表示するページを作成する</li>
+					<li>下記の記述例を元にテンプレートを作成する<br>
+						shop:module="common.review_page"タグ内ではこのページの上部のcms:id一覧とshop:module="common.pager_navigation"で使用できるタグが使用可能です。<br>
+						<a href="https://saitodev.co/soycms/soyshop/tutorial/72" target="_blank">商品一覧ページでページャを設置する - SOY Shopを使ってみよう</a>
+<pre style="border:1px solid #000000;padding:3px;overflow-x:scroll;">&lt;!-- shop:module="common.review_page" --&gt;
+&lt;section&gt;
+	&lt;h1&gt;「&lt;!-- cms:id="review_item_name" --&gt;苔オブジェ&lt;!-- /cms:id="review_item_name" --&gt;」へのカスタマーレビュー&lt;/h1&gt;
+
+	&lt;div&gt;&lt;a cms:id="back_link"&gt;商品詳細ページに戻る&lt;/a&gt;&lt;/div&gt;
+
+	&lt;!-- block:id="review_list" --&gt;
+	&lt;article&gt;
+		&lt;header class="clearfix"&gt;
+			&lt;div class="star"&gt;&lt;!-- cms:id="evaluation" --&gt;★★☆☆☆&lt;!-- /cms:id="evaluation" --&gt;&lt;/div&gt;
+			&lt;h2 cms:id="title"&gt;レビューのタイトルレビューのタイトル&lt;/h2&gt;
+			&lt;p class="date"&gt;&lt;!-- cms:id="update_date" --&gt;2011.04.14&lt;!-- /cms:id="update_date" --&gt;&lt;/p&gt;
+			&lt;p class="author"&gt;by &lt;!--a href="#"--&gt;&lt;!-- cms:id="nickname" --&gt;齋藤 毅&lt;!-- /cms:id="nickname" --&gt;&lt;!--/a--&gt;&lt;/p&gt;
+		&lt;/header&gt;
+		&lt;p class="target"&gt;&lt;span&gt;レビュー対象商品：&lt;/span&gt;&lt;!-- cms:id="item_name" --&gt;苔オブジェ&lt;!-- /cms:id="item_name" --&gt;&lt;/p&gt;
+		&lt;p cms:id="content"&gt;レビューの中身テキスト文章レビューの中身テキスト文章レビューの中身テキスト文章レビューの中身テキスト文章レビューの中身テキスト文章レビューの中身テキスト文章レビューの中身テキスト文章レビューの中身テキスト文章。&lt;/p&gt;
+	&lt;/article&gt;
+	&lt;!-- /block:id="review_list" --&gt;
+&lt;/section&gt;
+
+&lt;!-- block:id="has_pager" --&gt;
+&lt;div&gt;
+	&lt;ul&gt;
+		&lt;!-- cms:id="has_prev" --&gt;&lt;li class="prev"&gt;&lt;a href="#" cms:id="prev_link"&gt;前へ&lt;/a&gt;&lt;/li&gt;&lt;!-- /cms:id="has_prev" --&gt;
+		&lt;!-- cms:id="has_next" --&gt;&lt;li class="next"&gt;&lt;a href="#" cms:id="next_link"&gt;次へ&lt;/a&gt;&lt;/li&gt;&lt;!-- /cms:id="has_next" --&gt;
+		&lt;li&gt;&lt;!-- cms:id="current_page" /--&gt;/&lt;!-- cms:id="total_page" /--&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+&lt;/div&gt;
+&lt;!-- /block:id="has_pager" --&gt;
+&lt;!-- /shop:module="common.review_page" --&gt;</pre>
+					</li>
+					<li>下記のレビュー用のページの項目で作成したページを登録する</li>
+					<li>レビューのフォームを設置している商品詳細ページでレビューページへ遷移するリンクを設置する<br>
+<pre style="border:1px solid #000000;padding:3px;overflow-x:scroll;">&lt;!-- block:id="is_review_page" --&gt;
+&lt;a cms:id="review_page_link"&gt;レビューをもっと見る&lt;/a&gt;
+&lt;!-- /block:id="is_review_page" --&gt;</pre>
+					</li>
+				</ul>
+			</div>
+		</dd>
+
+		<dt>レビュー用のページ(フリーページのみ)</dt>
+		<dd>
+			<select soy:id="review_page_id"><option></option></select>
+		</dd>
+
+		<dt>レビューの出力件数(1以上で有効)</dt>
+		<dd><input type="number" soy:id="review_count">&nbsp;件</dd>
 	</dl>
 
 	<p class="pageBtn">

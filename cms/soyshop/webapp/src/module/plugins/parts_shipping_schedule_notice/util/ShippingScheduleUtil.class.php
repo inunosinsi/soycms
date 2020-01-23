@@ -6,6 +6,7 @@ class ShippingScheduleUtil {
 	const BIZ_PM = "biz_pm";	//営業日の午後
 	const HOL_AM = "hol_am";	//定休日の午前
 	const HOL_PM = "hol_pm";	//定休日の午後
+	const HOL_CO = "hol_co";	//連休	英語でConsecutive holidaysと書く
 
 	//文言設定のパターン
 	private static function _type(){
@@ -13,7 +14,8 @@ class ShippingScheduleUtil {
 			self::BIZ_AM => "営業日の午前",
 			self::BIZ_PM => "営業日の午後",
 			self::HOL_AM => "定休日の午前",
-			self::HOL_PM => "定休日の午後"
+			self::HOL_PM => "定休日の午後",
+			self::HOL_CO => "連休"
 		);
 	}
 
@@ -79,6 +81,60 @@ class ShippingScheduleUtil {
 	private static function _convertWeeks($w){
 		$weeks = array("日", "月", "火", "水", "木", "金", "土");
 		return (isset($weeks[$w])) ? $weeks[$w] : $weeks[0];
+	}
+
+
+	public static function checkDuringConsecutiveHolidays($cnf){
+		if(!isset($cnf["consecutive"][self::HOL_CO])) return false;
+		list($start, $end) = self::_dividePeriod($cnf["consecutive"][self::HOL_CO]);
+		if(is_null($start)) return false;
+		if(!strpos($start, "/") || !strpos($end, "/")) return false;
+
+		$periods = self::_generatePeriodArray($start, $end);
+		if(!count($periods)) return false;
+		
+		$todayM = date("n");
+		$todayD = date("j");
+
+		foreach($periods as $p){
+			if($p == $todayM . "/" . $todayD) return true;
+		}
+
+		return false;
+	}
+
+	private static function _dividePeriod($p){
+		if(!strpos($p, "〜")) return array(null, null);
+		$v = explode("〜", $p);
+		return array(trim($v[0]), trim($v[1]));
+	}
+
+	private static function _generatePeriodArray($start, $end){
+		$startV = explode("/", $start);
+		$startM = (int)$startV[0];
+		$startD = (int)$startV[1];
+
+		$endV = explode("/", $end);
+		$endM = (int)$endV[0];
+		$endD = (int)$endV[1];
+
+		$list = array();
+		if($startM === $endM){
+			if($startD > $endD) return array();	//開始日よりも終了日の方が前の場合はエラー
+			for($i = $startD; $i <= $endD; $i++){
+				$list[] = $startM . "/" . $i;
+			}
+		}else{	//月をまたぐ場合	2ヶ月以上の連休は設定できない
+			for($i = $startD; $i <= 31; $i++){
+				$list[] = $startM . "/" . $i;
+			}
+			for($i = 1; $i <= $endD; $i++){
+				$list[] = $endM . "/" . $i;
+			}
+
+		}
+
+		return $list;
 	}
 
 	public static function getConfig(){

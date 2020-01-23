@@ -1,4 +1,5 @@
 <?php
+SOY2::import("module.plugins.item_stock_manager.domain.SOYShop_StockHistory");
 /**
  * @entity SOYShop_StockHistory
  */

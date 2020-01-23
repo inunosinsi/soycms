@@ -71,7 +71,7 @@ class SearchPage extends WebPage{
 
 		$this->addSelect("category", array(
 			"name" => "search_condition[categories]",
-			"options" => self::getCategoryList(),
+			"options" => soyshop_get_category_list(true),
 			"selected" => (isset($cnds["categories"])) ? $cnds["categories"] : null
 		));
 	}
@@ -79,17 +79,18 @@ class SearchPage extends WebPage{
 	private function buildSearchResult(){
 		$cnds = self::getParameter("search_condition");
 		if(!is_array($cnds) || is_null($cnds)) $cnds = array();
-		if(count($cnds)){
-			SOY2::import("domain.config.SOYShop_ShopConfig");
-			if(SOYShop_ShopConfig::load()->getIsChildItemOnAdminOrder()){
-				$cnds["is_child"] = 1;	//子商品は常に表示
-			}
-		}
+		// if(count($cnds)){
+		// 	// SOY2::import("domain.config.SOYShop_ShopConfig");
+		// 	// if(SOYShop_ShopConfig::load()->getIsChildItemOnAdminOrder()){
+		// 	// 	$cnds["is_child"] = 1;	//子商品は常に表示
+		// 	// }
+		// }
 
 		//検索結果は30件
 		if(count($cnds)){
 			$limit = 30;
 			$searchLogic = SOY2Logic::createInstance("logic.shop.item.SearchItemLogic");
+			$searchLogic->setMode("admin");
 			$searchLogic->setLimit($limit);
 			$searchLogic->setSearchCondition($cnds);
 			$items = $searchLogic->getItems();
@@ -105,19 +106,21 @@ class SearchPage extends WebPage{
 		DisplayPlugin::toggle("search_result", $cnt > 0);
 		DisplayPlugin::toggle("search_no_result", ($doSearch && $cnt === 0));
 
-		//商品登録画面は必ず表示
-		DisplayPlugin::toggle("regist_item", $doSearch);
+		//商品登録画面の表示は基本設定で決めることができる
+		if($doSearch){
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$doSearch = (SOYShop_ShopConfig::load()->getDisplayRegisterAfterItemSearchOnAdmin());
+		}
+		DisplayPlugin::toggle("register_item", $doSearch);
 
 		//商品一覧
 		$this->createAdd("item_list", "_common.Order.ItemListComponent", array(
 			"list" => $items,
-			"categories" => self::getCategoryList(),
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
 		));
 	}
 
 	private function buildItemRegisterForm(){
-
 		$cnds = self::getParameter("search_condition");
 
 		DisplayPlugin::toggle("error", (isset($this->item)));
@@ -153,7 +156,7 @@ class SearchPage extends WebPage{
 
 		$this->addSelect("register_item_category", array(
 			"name" => "Item[category]",
-			"options" => self::getCategoryList(),
+			"options" => soyshop_get_category_list(true),
 			"selected" => (isset($cnds["category"])) ? $cnds["category"] : false
 		));
 
@@ -163,25 +166,6 @@ class SearchPage extends WebPage{
 			"name" => "Item[config][list_price]",
 			"value" => (isset($cnds["list_price"])) ? $cnds["list_price"] : 0,
 		));
-	}
-
-	private function getCategoryList(){
-		static $list;
-		if(is_null($list)){
-			$list = array();
-			try{
-				$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getByIsOpen(SOYShop_Category::IS_OPEN);
-			}catch(Exception $e){
-				return $list;
-			}
-			if(!count($categories)) return $list;
-
-			foreach($categories as $category){
-				$list[$category->getId()] = $category->getName();
-			}
-		}
-
-		return $list;
 	}
 
 	private function getParameter($key){

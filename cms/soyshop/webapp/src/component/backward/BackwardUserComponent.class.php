@@ -1217,6 +1217,4 @@ class BackwardUserComponent {
     	));
 
 	}
-
 }
-?>

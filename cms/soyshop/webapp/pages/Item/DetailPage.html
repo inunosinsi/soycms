@@ -48,12 +48,16 @@
 			<!-- soy:display="item_category_area" -->
 			<dt>商品カテゴリ</dt>
 			<dd>
+				<!-- soy:display="has_category" -->
 				<p class="mb" soy:id="item_category_choice"></p>
 				<input type="hidden" soy:id="item_category" />
 				<!-- soy:display="app_limit_function_1" -->
 				<a class="button" id="select_category_button" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
 				<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
 				<!-- /soy:display="app_limit_function_1" -->
+				<!-- /soy:display="has_category" -->
+
+				<p class="error always" soy:display="no_category">カテゴリが登録されていません</p>
 			</dd>
 			<!-- /soy:display="item_category_area" -->
 
@@ -93,6 +97,14 @@
 			<dt>価格</dt>
 			<dd>
 				<table>
+					<!-- soy:ignore="purchase_price" -->
+					<tr>
+						<th class="small_text alC" nowrap style="width:140p;">仕入値</th>
+						<td>
+							<input type="number" class="text" soy:id="item_purchase_price">
+						</td>
+					</tr>
+					<!-- /soy:ignore="purchase_price" -->
 					<tr>
 						<th class="small_text alC" nowrap style="width:140px;">定価</th>
 						<td>
@@ -283,10 +295,6 @@
 			</tbody>
 
 		</table>
-
-
-
-
 	</div><!-- /block_body -->
 </div>
 

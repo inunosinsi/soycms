@@ -62,6 +62,7 @@ class ExportPage extends WebPage{
 			"userCode" => "顧客コード",
 			"name" => "名前",
 			"reading" => "フリガナ",
+			"honorific" => "敬称",
 			"nickname" => "ニックネーム",
 			"isPublish" => "公開状態",
 			"genderText" => "性別",

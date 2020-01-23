@@ -81,22 +81,32 @@
 					<th>メールアドレス</th>
 					<td><input type="text" soy:id="mail_address" name="" value="" size="60" /></td>
 				</tr>
-				<tr>
+				<tr soy:display="userCode">
+					<th>顧客コード</th>
+					<td>
+						<input soy:id="user_code" type="text" style="width:50%;">
+					</td>
+				</tr>
+				<tr soy:display="name">
 					<th>氏名</th>
 					<td><input type="text" soy:id="name" name="" value="" size="60" /></td>
 				</tr>
-				<tr>
+				<tr soy:display="reading">
 					<th>フリガナ</th>
 					<td><input type="text" soy:id="reading" name="" value="" size="60" /></td>
 				</tr>
-				<tr>
+				<tr soy:display="honorific">
+					<th>敬称</th>
+					<td><input type="text" soy:id="honorific" name="" value="" size="60" /></td>
+				</tr>
+				<tr soy:display="zipCode">
 					<th>郵便番号</th>
 					<td>
 						<input type="text" soy:id="post_number" name="" value="" size="20" class="input-zip" id="zipcode">
 						<a href="javascript:void(0);" class="search-btn button">検索</a>
 					</td>
 				</tr>
-				<tr>
+				<tr soy:display="address">
 					<th>住所</th>
 					<td>
 						<select soy:id="area" class="input-pref" id="pref">
@@ -106,15 +116,15 @@
 						<input type="text" name="" value="" soy:id="address2" size="60" class="input-town">
 					</td>
 				</tr>
-				<tr>
+				<tr soy:display="telephoneNumber">
 					<th>電話番号</th>
 					<td><input type="text" name="" value="" soy:id="tel_number" size="30" id="telephone_number" /></td>
 				</tr>
-				<tr>
+				<tr soy:display="faxNumber">
 					<th>FAX番号</th>
 					<td><input type="text" name="" value="" soy:id="fax_number" size="30" /></td>
 				</tr>
-				<tr>
+				<tr soy:display="cellphoneNumber">
 					<th>携帯電話番号</th>
 					<td><input type="text" name="" value="" soy:id="ketai_number" size="30" /></td>
 				</tr>

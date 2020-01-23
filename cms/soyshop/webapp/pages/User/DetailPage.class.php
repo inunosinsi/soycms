@@ -268,7 +268,7 @@ class DetailPage extends WebPage{
 		));
 
 		$this->addModel("zip2address_js", array(
-			"src" => soyshop_get_site_url() . "themes/common/js/zip2address.js"
+			"src" => soyshop_get_zip_2_address_js_filepath()
 		));
 
 		SOYShopPlugin::load("soyshop.notepad");

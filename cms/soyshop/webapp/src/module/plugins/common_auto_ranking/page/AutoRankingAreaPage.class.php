@@ -1,26 +1,26 @@
 <?php
 
 class AutoRankingAreaPage extends WebPage{
-	
+
 	private $configObj;
-	
+
 	function __construct(){}
-	
+
 	function execute(){
 		parent::__construct();
-		
+
 		$displayLogic = SOY2Logic::createInstance("module.plugins.common_auto_ranking.logic.DisplayRankingLogic");
 		$items = $displayLogic->getItems();
 		$items = array_slice($items, 0, 5);
-		
+
 		$latestDate = $displayLogic->getLatestCalcDate();
-		
+
 		if($latestDate){
 			$calcMessage = "最終集計日時は" . date("Y-m-d H:i:s", $latestDate) . "です。";
 		}else{
 			$calcMessage = "集計されていません。";
 		}
-		
+
 		$this->addLabel("latest_calc_date", array(
 			"text" => $calcMessage
 		));
@@ -30,12 +30,10 @@ class AutoRankingAreaPage extends WebPage{
 
 		$this->createAdd("auto_ranking_list", "_common.Item.ItemListComponent", array(
 			"list" => $items,
-			"config" => SOYShop_ShopConfig::load(),
-			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"itemOrderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")
+			"detailLink" => SOY2PageController::createLink("Item.Detail.")
 		));
 	}
-	
+
 	function setConfigObj($configObj){
 		$this->configObj = $configObj;
 	}

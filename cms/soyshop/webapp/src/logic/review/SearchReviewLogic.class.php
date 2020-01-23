@@ -12,13 +12,13 @@ class SearchReviewLogic extends SOY2LogicBase{
 	private $binds = array();
 
 	private $sorts = array(
-		
+
 		"nickname" => "nickname",
 		"nickname_desc" => "nickname desc",
-		
+
 		"evaluation" =>  "evaluation",
 		"evaluation_desc" =>  "evaluation desc",
-		
+
 		"update_date" => "update_date",
 		"update_date_desc" => "update_date desc",
 	);
@@ -77,7 +77,7 @@ class SearchReviewLogic extends SOY2LogicBase{
 		$this->where = $where;
 		$this->binds = $binds;
 	}
-	
+
 	/**
 	 * マイページの購入履歴一覧で使う
 	 */
@@ -136,4 +136,3 @@ class SearchReviewLogic extends SOY2LogicBase{
 		return $users;
 	}
 }
-?>

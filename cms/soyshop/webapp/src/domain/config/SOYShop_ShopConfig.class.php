@@ -52,8 +52,9 @@ class SOYShop_ShopConfig {
 	private $insertDummyMailAddressOnAdminRegister = 0;
 	private $insertDummyAddressOnAdmin = 0;
 
-	private $isChildItemOnAdminOrder = 0;	//管理画面からの注文の際に子商品を検索結果に含める
+	//private $isChildItemOnAdminOrder = 0;	//管理画面からの注文の際に子商品を検索結果に含める
 	private $isUnregisteredItem = 1;		//管理画面からの注文の際に未登録商品の追加を許可する
+	private $displayRegisterAfterItemSearchOnAdmin = 1;	//管理画面からの注文の際に商品検索後に商品を登録するフォームを表示する
 
 	private $displayOrderAdminPage = 1;
 	private $displayItemAdminPage = 1;
@@ -88,6 +89,7 @@ class SOYShop_ShopConfig {
 		"accountId"		=>	false,
 		"name"			=>	true,
 		"reading"		=>	true,
+		"honorific"		=>  false,
 		"nickname" 		=>	true,
 		"zipCode"		=>	true,
 		"address"		=>	true,
@@ -107,6 +109,7 @@ class SOYShop_ShopConfig {
 		"accountId" 	=>	false,
 		"name"			=>	true,
 		"reading"		=>	true,
+		"honorific"		=> false,
 		"nickname"		=>	false,
 		"zipCode"		=>	true,
 		"address"		=>	true,
@@ -126,6 +129,7 @@ class SOYShop_ShopConfig {
 		"accountId" 	=>	true,
 		"name"			=>	true,
 		"reading"		=>	true,
+		"honorific"		=> 	false,
 		"nickname"		=>	true,
 		"zipCode"		=>	true,
 		"address"		=>	true,
@@ -139,23 +143,26 @@ class SOYShop_ShopConfig {
 		"memo"			=> true
 	);
 
-	private $customerFormLabels = array(
-		"mailAddress"	=>	"メールアドレス",
-		"accountId"		=>	"ログインID(マイページのみ)",
-		"name"			=>	"名前",
-		"reading"		=>	"フリガナ",
-		"nickname" 		=>	"ニックネーム(マイページのみ)",
-		"zipCode"		=>	"郵便番号",
-		"address"		=>	"住所",
-		"telephoneNumber"	=> "電話番号",
-		"gender"		=> "性別",
-		"birthday"		=> "生年月日",
-		"faxNumber"		=> "FAX番号",
-		"cellphoneNumber"	=> "携帯番号",
-		"url"			=> "URL(マイページのみ)",
-		"jobName"		=> "職業",
-		"memo"			=> "備考"
-	);
+	function getCustomerDisplayFormConfigList(){
+		return array(
+			"mailAddress"	=>	"メールアドレス",
+			"accountId"		=>	"ログインID(マイページのみ)",
+			"name"			=>	"名前",
+			"reading"		=>	"フリガナ",
+			"honorific"		=>	"敬称(管理画面のみ)",
+			"nickname" 		=>	"ニックネーム(マイページのみ)",
+			"zipCode"		=>	"郵便番号",
+			"address"		=>	"住所",
+			"telephoneNumber"	=> "電話番号",
+			"gender"		=> "性別",
+			"birthday"		=> "生年月日",
+			"faxNumber"		=> "FAX番号",
+			"cellphoneNumber"	=> "携帯番号",
+			"url"			=> "URL(マイページのみ)",
+			"jobName"		=> "職業",
+			"memo"			=> "備考"
+		);;
+	}
 
 	private $requireText = "(必須)";
 
@@ -173,18 +180,21 @@ class SOYShop_ShopConfig {
 		"deliveryMail" => true
 	);
 
-	private $orderItemLabels = array(
-		"orderId" => "注文ID",
-		"trackingNumber" => "注文番号",
-		"orderDate" => "注文時刻",
-		"customerName" => "顧客名",
-		"totalPrice" => "合計金額",
-		"status" => "状態",
-		"paymentStatus" => "支払い状態",
-		"confirmMail" => "注文確認メール",
-		"paymentMail" => "支払確認メール",
-		"deliveryMail" => "発送メール"
-	);
+	function getOrderItemList(){
+		return array(
+			"orderId" => "注文ID",
+			"trackingNumber" => "注文番号",
+			"orderDate" => "注文時刻",
+			"customerName" => "顧客名",
+			"totalPrice" => "合計金額",
+			"status" => "状態",
+			"paymentStatus" => "支払い状態",
+			"confirmMail" => "注文確認メール",
+			"paymentMail" => "支払確認メール",
+			"deliveryMail" => "発送メール"
+		);
+	}
+
 
 	const DATASETS_KEY = "soyshop.ShopConfig";
 
@@ -336,10 +346,6 @@ class SOYShop_ShopConfig {
 		$this->customerAdminConfig["name"] = true;
 	}
 
-	function getCustomerDisplayFormConfigList(){
-		return $this->customerFormLabels;
-	}
-
 	function getOrderItemConfig(){
 		if(count($this->orderItemConfig)){
 			return $this->orderItemConfig;
@@ -354,10 +360,6 @@ class SOYShop_ShopConfig {
 		foreach($this->orderItemConfig as $key => $value){
 			$this->orderItemConfig[$key] = (boolean)@$array[$key];
 		}
-	}
-
-	function getOrderItemList(){
-		return $this->orderItemLabels;
 	}
 
 	function getShopName() {
@@ -648,18 +650,25 @@ class SOYShop_ShopConfig {
 		$this->insertDummyAddressOnAdmin = $insertDummyAddressOnAdmin;
 	}
 
-	function getIsChildItemOnAdminOrder(){
-		return $this->isChildItemOnAdminOrder;
-	}
-	function setIsChildItemOnAdminOrder($isChildItemOnAdminOrder){
-		$this->isChildItemOnAdminOrder = $isChildItemOnAdminOrder;
-	}
+	// function getIsChildItemOnAdminOrder(){
+	// 	return $this->isChildItemOnAdminOrder;
+	// }
+	// function setIsChildItemOnAdminOrder($isChildItemOnAdminOrder){
+	// 	$this->isChildItemOnAdminOrder = $isChildItemOnAdminOrder;
+	// }
 
 	function getIsUnregisteredItem(){
 		return $this->isUnregisteredItem;
 	}
 	function setIsUnregisteredItem($isUnregisteredItem){
 		$this->isUnregisteredItem = $isUnregisteredItem;
+	}
+
+	function getDisplayRegisterAfterItemSearchOnAdmin(){
+		return $this->displayRegisterAfterItemSearchOnAdmin;
+	}
+	function setDisplayRegisterAfterItemSearchOnAdmin($displayRegisterAfterItemSearchOnAdmin){
+		$this->displayRegisterAfterItemSearchOnAdmin = $displayRegisterAfterItemSearchOnAdmin;
 	}
 
 	function getDisplayOrderAdminPage(){

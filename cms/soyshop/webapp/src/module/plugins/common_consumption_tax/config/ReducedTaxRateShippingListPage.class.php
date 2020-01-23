@@ -18,16 +18,9 @@ class ReducedTaxRateShippingListPage extends WebPage {
 		DisplayPlugin::toggle("no_items", $cnt === 0);
 		DisplayPlugin::toggle("items", $cnt > 0);
 
-		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$this->createAdd("item_list", "_common.Item.ItemListComponent", array(
 			"list" => $items,
-			// "itemOrderDAO" => $itemOrderDAO,
-			// "categoriesDAO" => $categoriesDAO,
-			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"categories" => soyshop_get_category_objects(),
-			"config" => SOYShop_ShopConfig::load(),
-			// "multi" => $config->getMultiCategory(),
-			// "appLimit" => $appLimit
+			"detailLink" => SOY2PageController::createLink("Item.Detail."),			
 		));
 	}
 

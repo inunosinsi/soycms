@@ -87,7 +87,36 @@ class ItemReviewConfigFormPage extends WebPage{
 			"selected" => (isset($config["evaluation_star"]) && $config["evaluation_star"] == 1),
 			"label" => "マイページでのレビュー変更時の評価の変更を5つ星をクリックして選択する形式にする"
 		));
+
+		$this->addCheckBox("active_other_page", array(
+			"name" => "Config[active_other_page]",
+			"value" => 1,
+			"selected" => (isset($config["active_other_page"]) && $config["active_other_page"] == 1),
+			"label" => "フリーページに設けたレビュー一覧ページを使用する"
+		));
+
+
+		$this->addSelect("review_page_id", array(
+			"name" => "Config[review_page_id]",
+			"options" => self::_getPageList(),
+			"selected" => (isset($config["review_page_id"]) && is_numeric($config["review_page_id"])) ? $config["review_page_id"] : null,
+			"property" => "name"
+		));
+
+		$this->addInput("review_count", array(
+			"name" => "Config[review_count]",
+			"value" => (isset($config["review_count"]) && strlen($config["review_count"])) ? (int)$config["review_count"] : "",
+			"style" => "width:80px;"
+		));
     }
+
+	private function _getPageList(){
+		try{
+			return SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByType(SOYShop_Page::TYPE_FREE);
+		}catch(Exception $e){
+			return array();
+		}
+	}
 
     function setConfigObj($obj) {
 		$this->config = $obj;

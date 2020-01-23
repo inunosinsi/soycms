@@ -65,6 +65,28 @@ abstract class SOYShop_ItemReviewDAO extends SOY2DAO{
 		return (int)($total / $count);
 	}
 
+	/**
+	 * @final
+	 */
+	function getReviewCountListEarchItems(){
+		$sql = "SELECT item_id, COUNT(item_id) AS CNT FROM soyshop_item_review ".
+				"WHERE is_approved = " . SOYShop_ItemReview::REVIEW_IS_APPROVED . " ".
+				"GROUP BY item_id";
+		try{
+			$res = $this->executeQuery($sql);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[$v["item_id"]] = (int)$v["CNT"];
+		}
+
+		return $list;
+	}
+
    	/**
 	 * @return id
 	 */

@@ -3,6 +3,7 @@ SOY2::import("domain.shop.SOYShop_Item");
 class SearchItemLogic extends SOY2LogicBase{
 
 	private $query;
+	private $mode;
 	private $limit;
 	private $offset;
 	private $order;
@@ -48,7 +49,9 @@ class SearchItemLogic extends SOY2LogicBase{
 
 		return $this->query;
 	}
-
+	function setMode($mode){
+		$this->mode = $mode;
+	}
 	function setLimit($value){
 		$this->limit = $value;
 	}
@@ -86,8 +89,16 @@ class SearchItemLogic extends SOY2LogicBase{
 					$values = explode(" ", str_replace("　", " ", $value));
 					$subWhere = array();
 					foreach($values as $idx => $v){
-						$subWhere[] = "item_" . $key . " LIKE :item_" . $key . "_" . $idx;
-						$binds[":item_" . $key . "_" . $idx] = "%" . $v . "%";
+						switch($this->mode){
+							case "admin":	//管理画面での注文の際の商品検索では、子商品も合わせて検索対象にする
+								$subWhere[] = "(item_" . $key . " LIKE :item_" . $key . "_" . $idx . " OR id IN (SELECT item_type FROM soyshop_item WHERE item_" . $key . " LIKE :child_" . $key . "_" . $idx . "))";
+								$binds[":item_" . $key . "_" . $idx] = "%" . $v . "%";
+								$binds[":child_" . $key . "_" . $idx] = "%" . $v . "%";
+								break;
+							default:
+								$subWhere[] = "item_" . $key . " LIKE :item_" . $key . "_" . $idx;
+								$binds[":item_" . $key . "_" . $idx] = "%" . $v . "%";
+						}
 					}
 					if(count($subWhere)) $where[] = "(" . implode(" OR ", $subWhere) . ")";
 					break;

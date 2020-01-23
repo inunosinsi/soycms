@@ -56,6 +56,14 @@ class ShippingScheduleEachItemsConfigPage extends WebPage {
 		if(!count($cnf)){	//何も設定していない時はテンプレートから取得
 			$cnf = ShippingScheduleEachItemsUtil::getTemplates();
 		}
+
+		$this->addCheckBox("hidden", array(
+			"name" => "Config[hidden]",
+			"value" => 1,
+			"selected" => (isset($cnf["hidden"]) && $cnf["hidden"] == 1),
+			"label" => "公開側で出荷予定日通知を非表示にする"
+		));
+
 		$this->createAdd("notice_list", "ScheduleNoticeEachItemsListComponent", array(
 			"list" => ShippingScheduleUtil::getPatterns(),
 			"config" => $cnf

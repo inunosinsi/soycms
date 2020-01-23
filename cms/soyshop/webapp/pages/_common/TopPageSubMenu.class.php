@@ -6,4 +6,3 @@ class TopPageSubMenu extends HTMLPage{
 		parent::__construct();
     }
 }
-?>

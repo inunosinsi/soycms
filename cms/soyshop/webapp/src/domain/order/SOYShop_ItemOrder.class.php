@@ -24,7 +24,6 @@ class SOYShop_ItemOrder {
      */
     private $itemId;
 
-
     /**
      * @column item_count
      */

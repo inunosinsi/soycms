@@ -21,5 +21,3 @@ class PageTypeListComponent extends HTMLList{
 		$this->selected = $selected;
 	}
 }
-
-?>

@@ -30,9 +30,7 @@ class ItemStockAreaPage extends WebPage{
 
 		$this->createAdd("stock_list", "_common.Item.ItemListComponent", array(
 			"list" => array_slice($items, 0, 5),
-			"config" => $shopConfig,
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"itemOrderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO")
 		));
 	}
 

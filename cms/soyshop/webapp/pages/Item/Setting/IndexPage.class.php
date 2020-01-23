@@ -81,13 +81,9 @@ class IndexPage extends WebPage{
 
 		$this->addForm("form");
 
-		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$this->createAdd("item_list", "_common.Item.ItemListComponent", array(
 			"list" => $items,
-			"itemOrderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO"),
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"categories" => soyshop_get_category_objects(),
-			"config" => SOYShop_ShopConfig::load(),
 			"appLimit" => $appLimit
 		));
 
@@ -131,18 +127,18 @@ class IndexPage extends WebPage{
 		$this->addSelect("item_category", array(
 			"name" => "SearchForm[category]",
 			"options" => self::buildCategoryList(true),
-			"selected" => $form["category"]
+			"selected" => (isset($form["category"])) ? $form["category"] : ""
 		));
 
 		return $form;
-
+	}
 
 	private function buildCategoryList($minusMode = false){
 		$list = array();
 		if($minusMode){
 			$list["-1"] = "カテゴリなし";
 		}
-		
+
 		return $list + soyshop_get_category_list();
 	}
 

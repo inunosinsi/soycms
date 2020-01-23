@@ -77,7 +77,7 @@ class UserComponent {
 				$mailAddress = "";
 			}
 		}
-		
+
 		$page->addInput("mail_address", array(
 			"name" => "Customer[mailAddress]",
 			"value" => $mailAddress,
@@ -140,6 +140,12 @@ class UserComponent {
 		$page->addInput("reading", array(
 			"name" => "Customer[reading]",
 			"value" => $user->getReading(),
+		));
+
+		$page->addInput("honorific", array(
+			"name" => "Customer[honorific]",
+			"value" => $user->getHonorific(),
+			"attr:placeholder" => "様"
 		));
 
 		//ニックネーム
@@ -938,4 +944,3 @@ class UserComponent {
 		return $isCheck = ($user->getNotSend() == SOYShop_User::USER_SEND);
 	}
 }
-?>

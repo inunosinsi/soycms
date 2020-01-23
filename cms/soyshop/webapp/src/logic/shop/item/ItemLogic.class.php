@@ -133,10 +133,8 @@ class ItemLogic extends SOY2LogicBase{
     function create(SOYShop_Item $obj){
 		$dao = self::getItemDAO();
 
-		$siteUrl = soyshop_get_site_url();
-		$obj->setAttribute("image_small", $siteUrl . "themes/sample/sample1_thumb.jpg");
-		$obj->setAttribute("image_large", $siteUrl . "themes/sample/sample1.jpg");
-
+		$obj->setAttribute("image_small", soyshop_get_item_sample_image());
+		$obj->setAttribute("image_large", soyshop_get_item_sample_image());
 
 		return $dao->insert($obj);
     }

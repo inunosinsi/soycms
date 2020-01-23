@@ -112,20 +112,9 @@ class IndexPage extends WebPage{
 		$pager->buildPager($this);
 
 		//ItemListの準備
-		$categories = soyshop_get_category_objects();
-
-		$itemOrderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		$categoriesDAO = SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO");
-
-		$config = SOYShop_ShopConfig::load();
 		$this->createAdd("item_list", "_common.Item.ItemListComponent", array(
 			"list" => $items,
-			"itemOrderDAO" => $itemOrderDAO,
-			"categoriesDAO" => $categoriesDAO,
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"categories" => $categories,
-			"config" => $config,
-			"multi" => $config->getMultiCategory(),
 			"appLimit" => $appLimit
 		));
 

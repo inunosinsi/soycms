@@ -116,7 +116,7 @@ function soyshop_get_category_objects(){
 }
 
 // array(categoryId => categoryName)
-function soyshop_get_category_list(){
+function soyshop_get_category_list($isOnlyOpen=false){
 	static $list;
 	if(is_null($list)){
 		$list = array();
@@ -124,6 +124,7 @@ function soyshop_get_category_list(){
 
 		if(count($categories)){
 			foreach($categories as $category){
+				if($isOnlyOpen && $category->getIsOpen() != SOYShop_Category::IS_OPEN) continue;
 				$list[$category->getId()] = $category->getName();
 			}
 		}

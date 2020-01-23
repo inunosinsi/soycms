@@ -85,14 +85,9 @@ class SettingPage extends WebPage{
             "html" => self::buildForm($field)
         ));
 
-        SOY2::import("domain.config.SOYShop_ShopConfig");
         $this->createAdd("item_list", "_common.Item.ItemListComponent", array(
             "list" => self::getItems(),
-            "itemOrderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO"),
-            "categoriesDAO" => SOY2DAOFactory::create("shop.SOYShop_CategoriesDAO"),
             "detailLink" => SOY2PageController::createLink("Item.Detail."),
-            "categories" => $this->categories,
-            "config" => SOYShop_ShopConfig::load(),
             "appLimit" => true
         ));
     }

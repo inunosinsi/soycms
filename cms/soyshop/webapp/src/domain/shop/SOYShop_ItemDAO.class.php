@@ -87,6 +87,12 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
    	 */
    	abstract function getByType($type);
 
+	/**
+	 * @index id
+	 * @query item_type = :type AND item_is_open = 1 AND is_disabled = 0
+	 */
+	abstract function getByTypeIsOpenNoDisabled($type);
+
    	/**
    	 * @index id
    	 * @query item_type = :type AND is_disabled = 0
@@ -133,6 +139,10 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
    	function onInsert($query, $binds){
 
 		$binds[":alias"] = $binds[":code"] . ".html";
+
+		if(!isset($binds[":purchasePrice"]) || !is_numeric($binds[":purchasePrice"])){
+			$binds[":purchasePrice"] = 0;
+		}
 
 		if(!isset($binds[":category"]) || strlen($binds[":category"]) < 1){
 			$binds[":category"] = null;
@@ -327,6 +337,13 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 
 		return 0;
 	}
+
+	/**
+     * @columns sum(item_stock) as item_stock
+     * @return column_item_stock
+     * @query item_type = :itemId and is_disabled != 1
+     */
+	abstract function getChildStockTotalByItemId($itemId);
 
 	/* end サイト側で使用 */
 

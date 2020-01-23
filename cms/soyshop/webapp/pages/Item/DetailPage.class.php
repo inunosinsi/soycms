@@ -319,7 +319,14 @@ class DetailPage extends WebPage{
 
 		//注文数
 		$this->addLabel("item_order_count", array(
-			"text" => $this->getOrderConunt($item)
+			"text" => self::_getOrderCount($item)
+		));
+
+		//仕入値
+		$this->addInput("item_purchase_price", array(
+			"name" => "Item[price]",
+			"value" => $item->getPurchasePrice(),
+			"readonly" => $readOnly
 		));
 
 		//通常価格
@@ -368,13 +375,12 @@ class DetailPage extends WebPage{
 		$url = "";
 
 		if(count($detailPages)){
-			$detailPageId = $item->getDetailPageId();
-			try{
-				$page = $pageDAO->getById($detailPageId);
+			$page = soyshop_get_page_object($item->getDetailPageId());
+			if(is_numeric($page->getId())){
 				$url = soyshop_get_page_url($page->getUri(), $item->getAlias());
 				$url = str_replace($item->getAlias(), "<b>" . $item->getAlias() . "</b>", $url);
 				$editable = true;
-			}catch(Exception $e){
+			}else{
 				$url = MessageManager::get("ERROR_ITEM_SELECT_DETAIL_PAGE");
 			}
 		}
@@ -403,6 +409,9 @@ class DetailPage extends WebPage{
 
 		/* category */
 		$categories = soyshop_get_category_objects();
+		$categoryCount = count($categories);
+		DisplayPlugin::toggle("has_category", $categoryCount);
+		DisplayPlugin::toggle("no_category", !$categoryCount);
 		$this->createAdd("category_tree","_base.MyTreeComponent", array(
 			"list" => $categories,
 			"selected" => array($item->getCategory())
@@ -416,7 +425,7 @@ class DetailPage extends WebPage{
 
 		$category = (isset($categories[$item->getCategory()])) ? $categories[$item->getCategory()] : new SOYShop_Category();
 		$this->addLabel("item_category_choice", array(
-			"text" => self::getCategoryRelation($category),
+			"text" => self::_getCategoryRelation($category),
 			"attr:id" => "item_category_text"
 		));
 
@@ -513,7 +522,7 @@ class DetailPage extends WebPage{
 		$this->addForm("upload_form");
 
 		$this->createAdd("image_list","_common.Item.ItemImageListComponent", array(
-			"list" => $this->getAttachments($item)
+			"list" => self::_getAttachments($item)
 		));
 
 		//管理制限の権限を取得し、権限がない場合は表示しない
@@ -595,11 +604,11 @@ class DetailPage extends WebPage{
 	/**
 	 * 添付ファイル取得
 	 */
-	function getAttachments(SOYShop_Item $item){
+	private function _getAttachments(SOYShop_Item $item){
 		return $item->getAttachments();
 	}
 
-	function getOrderConunt(SOYShop_Item $item){
+	private function _getOrderCount(SOYShop_Item $item){
 
 		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
 		$childItemStock = $this->config->getChildItemStock();
@@ -781,7 +790,7 @@ class DetailPage extends WebPage{
 		return implode(",",$array);
 	}
 
-	private function getCategoryRelation(SOYShop_Category $category){
+	private function _getCategoryRelation(SOYShop_Category $category){
 		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 
 		$array = array();

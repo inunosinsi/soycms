@@ -41,24 +41,33 @@
 				<th>在庫</th>
 				<th>&nbsp;</th>
 			</tr>
-			<tr soy:id="item_list">
+			<!-- soy:id="item_list" -->
+			<tr>
 				<td soy:id="item_name">ダイズ</td>
 				<td soy:id="item_code">omame-001</td>
 				<td><!-- soy:id="item_category" /--></td>
-				<td><!-- soy:id="item_price" -->1000<!-- /soy:id="item_price" -->&nbsp;円</td>
+				<td><!-- soy:id="item_price" -->1000<!-- /soy:id="item_price" --></td>
 				<td soy:id="item_stock"></td>
 				<td class="operation">
+					<!-- soy:id="show_add_button" -->
 					<span class="add_button"><a href="javascript:void(0);" id="add_<!-- soy:id="index" /-->" class="button" onclick="addItem('<!-- soy:id="item_code*" /-->');">追加</a></span>
 					<span class="change_button"><a href="javascript:void(0);" class="button" onclick="changeItem(<!-- soy:id="iframe_index" /-->, '<!-- soy:id="item_code*" /-->');">変更</a></span>
+					<!-- /soy:id="show_add_button" -->
 				</td>
+			<!-- soy:id="show_child_table" -->
 			</tr>
+			<tr>
+				<td colspan="6"><!-- soy:id="children_table" /--></td>
+			<!-- /soy:id="show_child_table" -->
+			</tr>
+			<!-- /soy:id="item_list" -->
 		</table>
 		<!-- /soy:display="search_result" -->
 
 		<p class="error always" soy:display="search_no_result" style="margin-top:10px;">登録されている商品がありません</p>
 		<p class="error always" soy:display="error" style="margin-top:10px;">商品登録に失敗しました</p>
 
-		<!-- soy:display="regist_item" -->
+		<!-- soy:display="register_item" -->
 		<form soy:id="register_form">
 			<table class="form_table" id="regist_item">
 				<caption>商品を登録する</caption>
@@ -99,7 +108,7 @@
 				<input type="submit" name="Register" value="登録する">
 			</p>
 		</form>
-		<!-- /soy:display="regist_item" -->
+		<!-- /soy:display="register_item" -->
 	</div>
 </div>
 

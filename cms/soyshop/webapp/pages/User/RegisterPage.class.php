@@ -95,8 +95,9 @@ class RegisterPage extends WebPage{
     	DisplayPlugin::toggle("used_email",($this->errorType == "used_email"));
 		DisplayPlugin::toggle("used_user_code",($this->errorType == "used_user_code"));
 
+
 		$this->addModel("zip2address_js", array(
-			"src" => soyshop_get_site_url() . "themes/common/js/zip2address.js"
+			"src" => soyshop_get_zip_2_address_js_filepath()
 		));
     }
 

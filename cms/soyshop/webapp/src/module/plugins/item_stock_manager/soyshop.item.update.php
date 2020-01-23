@@ -1,5 +1,4 @@
 <?php
-SOY2::imports("module.plugins.item_stock_manager.domain.*");
 class ItemStockManagerUpdate extends SOYShopItemUpdateBase{
 
 	function addHistory(SOYShop_Item $item, $oldStock){
@@ -8,6 +7,7 @@ class ItemStockManagerUpdate extends SOYShopItemUpdateBase{
 		if($oldStock != $newStock){
 			$logMessage = "在庫数を" . $oldStock."から" . $newStock . "に変更しました";
 
+			SOY2::import("module.plugins.item_stock_manager.domain.SOYShop_StockHistoryDAO");
 			$dao = SOY2DAOFactory::create("SOYShop_StockHistoryDAO");
 
 			$obj = new SOYShop_StockHistory();
@@ -24,6 +24,7 @@ class ItemStockManagerUpdate extends SOYShopItemUpdateBase{
 	}
 
 	function display(SOYShop_Item $item){
+		SOY2::import("module.plugins.item_stock_manager.domain.SOYShop_StockHistoryDAO");
 		$dao = SOY2DAOFactory::create("SOYShop_StockHistoryDAO");
 		$dao->setLimit(5);
 

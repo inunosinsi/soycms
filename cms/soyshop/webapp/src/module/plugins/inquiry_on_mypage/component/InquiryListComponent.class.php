@@ -20,6 +20,10 @@ class InquiryListComponent extends HTMLList {
 			"text" => soyshop_get_user_object($entity->getUserId())->getName()
 		));
 
+		$this->addLabel("is_confirm", array(
+			"text" => ($entity->getIsConfirm()) ? "確認済み" : "未確認"
+		));
+
 		$this->addLink("mail_detail_link", array(
 			"link" => SOY2PageController::createLink("Extension.Detail.inquiry_on_mypage." . $entity->getMailLogId())
 		));

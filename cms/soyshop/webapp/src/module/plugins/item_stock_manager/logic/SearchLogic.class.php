@@ -93,6 +93,7 @@ class SearchLogic extends SOY2LogicBase{
 	}
 
 	function setCondition($conditions){
+		if(is_null($conditions)) $conditions = array();
 
 		if(is_array($conditions) && count($conditions)) {
 			foreach($conditions as $key => $value){
@@ -123,7 +124,8 @@ class SearchLogic extends SOY2LogicBase{
 		}
 
 		//通常商品の扱い
-		if(is_null($conditions["item_type"]["parent"]) || (isset($conditions["item_type"]["parent"]) && $conditions["item_type"]["parent"] == 1)){
+		$itemTypeParent = (isset($conditions["item_type"]["parent"])) ? $conditions["item_type"]["parent"] : null;
+		if(is_null($itemTypeParent) || $itemTypeParent == 1){
 			//何もしない
 		}else{
 			$this->where[] = "item_type NOT IN (\"" . SOYShop_Item::TYPE_SINGLE ."\",\"" . SOYShop_Item::TYPE_GROUP . "\",\"" . SOYShop_Item::TYPE_DOWNLOAD . "\")";
