@@ -113,6 +113,20 @@ function soycms_blogparts($html, $page){
 		"soy2prefix" => "b_block"
 	));
 
+	//b_block:id="archive_every_year"
+	$month_every_year_list = array();
+	foreach($month_list as $key => $month){
+		if($month > 0){
+			$month_every_year_list[date("Y", $key)][$key] = $month;
+		}
+	}
+
+	$obj->createAdd("archive_every_year", "ModuleBlogPage_MonthArciveEveryYearList", array(
+		"list" => $month_every_year_list,
+		"monthPageUri" => convertUrlOnModuleBlogParts($blog->getMonthPageURL(true)),
+		"soy2prefix" => "b_block"
+	));
+
 	//b_block:id="recent_entry_list"
 	$logic->setLimit($blog->getRssDisplayCount());
 	$logic->setOffset(0);
@@ -282,6 +296,35 @@ class ModuleBlogPage_MonthArciveList extends HTMLList{
 	}
 }
 
+class ModuleBlogPage_MonthArciveEveryYearList extends HTMLList{
+
+	private $monthPageUri;
+	private $format;
+
+	function setMonthPageUri($uri){
+		$this->monthPageUri = $uri;
+	}
+
+	function setFormat($format){
+		$this->format = $format;
+	}
+
+	protected function populateItem($month_list, $year){
+
+		$this->addLabel("year", array(
+			"text" => $year,
+			"soy2prefix" => "cms"
+		));
+
+		$this->createAdd("archive","ModuleBlogPage_MonthArciveList",array(
+			"list" => $month_list,
+			"monthPageUri" => $this->monthPageUri,
+			"secretMode" => false,
+			"soy2prefix" => "cms"
+		));
+	}
+}
+
 class ModuleBlog_RecentEntryList extends HTMLList{
 
 	private $entryPageUri;
@@ -447,3 +490,4 @@ class ModuleBlog_RecentTrackBackList extends HTMLList{
 		));
 	}
 }
+
