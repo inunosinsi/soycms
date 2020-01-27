@@ -490,4 +490,3 @@ class ModuleBlog_RecentTrackBackList extends HTMLList{
 		));
 	}
 }
-
