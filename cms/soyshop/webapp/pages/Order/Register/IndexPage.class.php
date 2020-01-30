@@ -244,6 +244,11 @@ class IndexPage extends WebPage{
 	//商品情報
 	function itemInfo(){
 
+		//仕入値を出力するか？
+		$this->addModel("is_purchase_price", array(
+			"visible" => (SOYShop_ShopConfig::load()->getDisplayPurchasePriceOnAdmin())
+		));
+
 		$items = $this->cart->getItems();
 		$cnt = count($items);
 

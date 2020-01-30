@@ -78,12 +78,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 				//SINGLE(またはDOWNLOAD)に戻すとき、小商品をすべて削除したい
 				if($item->getType() == SOYShop_Item::TYPE_SINGLE || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD){
-					try{
-						$children = $itemDao->getByType($item->getId());
-					}catch(Exception $e){
-						return;
-					}
-
+					$children = soyshop_get_item_children($item->getId());
 					if(!count($children)) return;
 
 					//データベース高速化のために完全削除
@@ -98,11 +93,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 			}
 
 			//セールの一括設定と公開設定
-			try{
-				$children = $itemDao->getByType($item->getId());
-			}catch(Exception $e){
-				return;
-			}
+			$children = soyshop_get_item_children($item->getId());
 
 			//名前の候補
 			$cands = SOY2Logic::createInstance("module.plugins.item_standard.logic.BuildFormLogic", array("parentId" => $item->getId()))->getCandidate();

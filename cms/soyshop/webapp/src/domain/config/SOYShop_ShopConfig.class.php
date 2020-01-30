@@ -55,6 +55,8 @@ class SOYShop_ShopConfig {
 	//private $isChildItemOnAdminOrder = 0;	//管理画面からの注文の際に子商品を検索結果に含める
 	private $isUnregisteredItem = 1;		//管理画面からの注文の際に未登録商品の追加を許可する
 	private $displayRegisterAfterItemSearchOnAdmin = 1;	//管理画面からの注文の際に商品検索後に商品を登録するフォームを表示する
+	private $changeParentItemNameOnAdmin = 0;	//管理画面でカートや注文詳細で表記されている子商品名を親商品名に変換する
+	private $displayPurchasePriceOnAdmin = 0;	//管理画面からの注文の際に単価の横に仕入値を出力する
 
 	private $displayOrderAdminPage = 1;
 	private $displayItemAdminPage = 1;
@@ -669,6 +671,20 @@ class SOYShop_ShopConfig {
 	}
 	function setDisplayRegisterAfterItemSearchOnAdmin($displayRegisterAfterItemSearchOnAdmin){
 		$this->displayRegisterAfterItemSearchOnAdmin = $displayRegisterAfterItemSearchOnAdmin;
+	}
+
+	function getChangeParentItemNameOnAdmin(){
+		return $this->changeParentItemNameOnAdmin;
+	}
+	function setChangeParentItemNameOnAdmin($changeParentItemNameOnAdmin){
+		$this->changeParentItemNameOnAdmin = $changeParentItemNameOnAdmin;
+	}
+
+	function getDisplayPurchasePriceOnAdmin(){
+		return $this->displayPurchasePriceOnAdmin;
+	}
+	function setDisplayPurchasePriceOnAdmin($displayPurchasePriceOnAdmin){
+		$this->displayPurchasePriceOnAdmin = $displayPurchasePriceOnAdmin;
 	}
 
 	function getDisplayOrderAdminPage(){

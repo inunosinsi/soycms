@@ -671,6 +671,11 @@ class EditPage extends WebPage{
 		));
 
 		/*** 注文商品 ***/
+		//仕入値を出力するか？
+		$this->addModel("is_purchase_price", array(
+			"visible" => (SOYShop_ShopConfig::load()->getDisplayPurchasePriceOnAdmin())
+		));
+
 		$this->createAdd("item_list", "_common.Order.ItemOrderFormListComponent", array(
 			"list" => $logic->getItemsByOrderId($this->id),
 			"htmlObj" => $this

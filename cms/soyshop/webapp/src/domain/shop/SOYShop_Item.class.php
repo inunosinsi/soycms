@@ -345,6 +345,24 @@ class SOYShop_Item {
         return $this->name;
     }
 
+	function getCodeOnAdmin(){
+		if(!self::_isConvertParentNameConfig()) return $this->code;
+
+		$parentId = soyshop_get_item_object($this->id)->getType();
+		if(!is_numeric($parentId)) return $this->code;
+
+		return soyshop_get_item_object($parentId)->getCode();
+	}
+
+	private function _isConvertParentNameConfig(){
+		static $cnf;
+		if(is_null($cnf)) {
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$cnf = ((int)SOYShop_ShopConfig::load()->getChangeParentItemNameOnAdmin() === 1);
+		}
+		return $cnf;
+	}
+
     function getAttachmentsPath(){
         $dir = SOYSHOP_SITE_DIRECTORY . "files/" . $this->getCode() . "/";
         if(!file_exists($dir)){

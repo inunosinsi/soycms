@@ -34,7 +34,7 @@
 						<th>削除</th>
 						<th>商品コード</th>
 						<th>商品名</th>
-						<th>単価</th>
+						<th>単価<!-- soy:id="is_purchase_price" -->(仕入値)<!-- /soy:id="is_purchase_price" --></th>
 						<th>注文数</th>
 						<th>代金小計</th>
 					</tr>
@@ -56,7 +56,10 @@
 							<!-- /soy:id="item_option_list" -->
 							<!-- soy:id="option_pluign_active" --><div class="alC" style="margin:5px 0;"><a soy:id="item_edit_link" class="button">オプションの追加</a></div><!-- /soy:id="option_pluign_active" -->
 						</td>
-						<td class="alR"><input type="text" soy:id="item_price" style="width:70px;ime-mode:inactive;" class="alR"> 円</td>
+						<td class="alR">
+							<input type="text" soy:id="item_price" style="width:70px;ime-mode:inactive;" class="alR"> 円
+							<!-- soy:id="is_purchase_price" -->(<!-- soy:id="purchase_price" /-->)<!-- /soy:id="is_purchase_price" -->
+						</td>
 						<td class="alR">
 							<p class="error always alC" soy:id="out_of_stock">在庫切れ</p>
 							<input type="text" soy:id="item_count" style="width:40px;ime-mode:inactive;" class="alR"> 点

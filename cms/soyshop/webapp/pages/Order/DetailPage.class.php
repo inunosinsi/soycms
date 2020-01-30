@@ -283,6 +283,11 @@ class DetailPage extends WebPage{
         /*** 注文商品 ***/
 		$this->addForm("confirm_form");
 
+		//仕入値を出力するか？
+		$this->addModel("is_purchase_price", array(
+			"visible" => (SOYShop_ShopConfig::load()->getDisplayPurchasePriceOnAdmin())
+		));
+
     	$this->createAdd("item_list", "_common.Order.ItemOrderListComponent", array(
     		"list" => $itemOrders,
     	));

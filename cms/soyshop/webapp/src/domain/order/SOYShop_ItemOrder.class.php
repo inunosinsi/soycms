@@ -200,6 +200,25 @@ class SOYShop_ItemOrder {
 		}
 	}
 
+	//管理画面で商品名を出力する時に便利な関数
+	function getItemNameOnAdmin(){
+		if(!self::_isConvertParentNameConfig()) return $this->itemName;
+
+		$parentId = soyshop_get_item_object($this->itemId)->getType();
+		if(!is_numeric($parentId)) return $this->itemName;
+
+		return soyshop_get_item_object($parentId)->getName();
+	}
+
+	private function _isConvertParentNameConfig(){
+		static $cnf;
+		if(is_null($cnf)) {
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$cnf = ((int)SOYShop_ShopConfig::load()->getChangeParentItemNameOnAdmin() === 1);
+		}
+		return $cnf;
+	}
+
 	public static function getStatusList(){
 		static $list;
 		if(is_null($list)){

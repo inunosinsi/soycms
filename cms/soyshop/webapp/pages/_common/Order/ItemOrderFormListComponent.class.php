@@ -30,6 +30,15 @@ class ItemOrderFormListComponent extends HTMLList {
 			"value" => $itemOrder->getItemPrice()
 		));
 
+		//仕入値
+		$this->addModel("is_purchase_price", array(
+			"visible" => self::_isPurchasePrice()
+		));
+
+		$this->addLabel("purchase_price", array(
+			"text" => number_format($item->getPurchasePrice())
+		));
+
 		$this->addInput("item_count", array(
 			"name" => "Item[$id][itemCount]",
 			"value" => $itemOrder->getItemCount()
@@ -69,6 +78,12 @@ class ItemOrderFormListComponent extends HTMLList {
 		}
 
 		return $array;
+	}
+
+	private function _isPurchasePrice(){
+		static $cnf;
+		if(is_null($cnf)) $cnf = SOYShop_ShopConfig::load()->getDisplayPurchasePriceOnAdmin();
+		return $cnf;
 	}
 
 	private function attrDao(){

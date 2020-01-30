@@ -122,7 +122,7 @@
 					<th style="width:30px;">確認</th>
 					<th>商品コード</th>
 					<th>商品名</th>
-					<th>単価</th>
+					<th>単価<!-- soy:id="is_purchase_price" -->(仕入値)<!-- /soy:id="is_purchase_price" --></th>
 					<th>注文数</th>
 					<th>代金小計</th>
 				</tr>
@@ -138,7 +138,10 @@
 						<!-- soy:id="is_status" --><select soy:id="status"></select><!-- /soy:id="is_status" --><br />
 						<!-- soy:id="item_option" /-->
 					</td>
-					<td class="alR"><!-- soy:id="item_price" /--> 円</td>
+					<td class="alR">
+						<!-- soy:id="item_price" /--> 円
+						<!-- soy:id="is_purchase_price" -->(<!-- soy:id="purchase_price" /-->)<!-- /soy:id="is_purchase_price" -->
+					</td>
 					<td class="alR"><!-- soy:id="item_count" /--> 点</td>
 					<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
 				</tr>

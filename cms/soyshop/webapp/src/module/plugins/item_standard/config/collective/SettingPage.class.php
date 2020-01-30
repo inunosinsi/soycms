@@ -83,19 +83,10 @@ class SettingPage extends WebPage{
 				}
 
 				foreach($_POST["items"] as $itemId){
-					try{
-						$parent = $itemDao->getById($itemId);
-					}catch(Exception $e){
-						continue;
-					}
+					$parent = soyshop_get_item_object($itemId);
 
 					//小商品のリセット
-					try{
-						$children = $itemDao->getByType($parent->getId());
-					}catch(Exception $e){
-						return;
-					}
-
+					$children = soyshop_get_item_children($parent->getId());
 					if(!count($children)) return;
 
 					//データベース高速化のために完全削除

@@ -211,6 +211,11 @@ class ItemPage extends WebPage{
 			"link" => SOY2PageController::createLink("Order.Register.Item.Restore")
 		));
 
+		//仕入値を出力するか？
+		$this->addModel("is_purchase_price", array(
+			"visible" => (SOYShop_ShopConfig::load()->getDisplayPurchasePriceOnAdmin())
+		));
+
 		include_once(dirname(__FILE__) . "/component/ItemListComponent.class.php");
 		$this->createAdd("item_list", "ItemListComponent", array(
 			"list" => $items,

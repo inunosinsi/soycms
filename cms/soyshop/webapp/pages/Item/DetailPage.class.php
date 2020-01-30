@@ -466,7 +466,7 @@ class DetailPage extends WebPage{
 			"link" => SOY2PageController::createLink("Item.Create") . "?" . $getParam . "=" . $item->getId()
 		));
 		$this->createAdd("child_item_list","HTMLList", array(
-			"list" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getByTypeNoDisabled($item->getId()),
+			"list" => soyshop_get_item_children($item->getId()),
 			'populateItem:function($entity,$key)' => '$itemName = $entity->getName();'.
 				'if($entity->getIsOpen() != 1) $itemName = "(非公開)" . $itemName;'.
 				'if($entity->getIsDisabled() != 0) $itemName .= "(削除)" . $itemName;'.

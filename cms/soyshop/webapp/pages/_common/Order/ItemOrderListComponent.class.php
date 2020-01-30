@@ -9,12 +9,11 @@ class ItemOrderListComponent extends HTMLList {
 		$this->addModel("is_confirm_tr", array(
 			"style" => ($itemOrder->getIsConfirm()) ? "background-color:#cdcdcd;" : ""
 		));
-
 		$item = soyshop_get_item_object($itemOrder->getItemId());
 
-		$itemExists = ((int)$itemOrder->getItemId() > 0 && method_exists($item, "getCode") && strlen($item->getCode()) > 0);
+		$itemExists = ((int)$itemOrder->getItemId() > 0 && method_exists($item, "getCodeOnAdmin") && strlen($item->getCodeOnAdmin()) > 0);
 		$this->addLink("item_id", array(
-			"text" => $itemExists ? $item->getCode() : "Deleted Item (ID=" . $itemOrder->getItemId() . ")",
+			"text" => $itemExists ? $item->getCodeOnAdmin() : "Deleted Item (ID=" . $itemOrder->getItemId() . ")",
 			"link" => $itemExists ? SOY2PageController::createLink("Item.Detail." . $itemOrder->getItemId()) : "",
 		));
 
@@ -33,7 +32,7 @@ class ItemOrderListComponent extends HTMLList {
 
 		//item_idが0の場合は名前を表示する
 		$this->addLabel("item_name", array(
-			"text" => ((int)$itemOrder->getItemId() === 0 || strpos($item->getCode(), "_delete_") === false) ? $itemOrder->getItemName() : "---"
+			"text" => ((int)$itemOrder->getItemId() === 0 || strpos($item->getCodeOnAdmin(), "_delete_") === false) ? $itemOrder->getItemNameOnAdmin() : "---"
 		));
 
 		//状態のセレクトボックス 状態が2個以上の場合にセレクトボックスを出力する
@@ -59,6 +58,15 @@ class ItemOrderListComponent extends HTMLList {
 			"text" => is_numeric($itemOrder->getItemPrice()) ? number_format($itemOrder->getItemPrice()) : $itemOrder->getItemPrice()
 		));
 
+		//仕入値
+		$this->addModel("is_purchase_price", array(
+			"visible" => self::_isPurchasePrice()
+		));
+
+		$this->addLabel("purchase_price", array(
+			"text" => number_format($item->getPurchasePrice())
+		));
+
 		$this->addLabel("item_count", array(
 			"text" => number_format($itemOrder->getItemCount())
 		));
@@ -66,5 +74,11 @@ class ItemOrderListComponent extends HTMLList {
 		$this->addLabel("item_total_price", array(
 			"text" => number_format($itemOrder->getTotalPrice())
 		));
+	}
+
+	private function _isPurchasePrice(){
+		static $cnf;
+		if(is_null($cnf)) $cnf = SOYShop_ShopConfig::load()->getDisplayPurchasePriceOnAdmin();
+		return $cnf;
 	}
 }

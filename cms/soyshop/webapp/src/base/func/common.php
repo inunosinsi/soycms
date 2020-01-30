@@ -79,6 +79,25 @@ function soyshop_get_item_object($itemId){
     return $items[$itemId];
 }
 
+/** 商品IDから子商品のリストを取得 **/
+function soyshop_get_item_children($itemId, $isOpen=false){
+	static $list, $dao;
+	if(is_null($list)) $list = array();
+	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+	if(!is_numeric($itemId)) return array();
+	if(isset($list[$itemId])) return $list[$itemId];
+	try{
+		if($isOpen){
+			$list[$itemId] = $dao->getByTypeIsOpenNoDisabled($itemId);
+		}else{
+			$list[$itemId] = $dao->getByTypeNoDisabled($itemId);
+		}
+	}catch(Exception $e){
+		$list[$itemId] = array();
+	}
+	return $list[$itemId];
+}
+
 /** カテゴリIDからカテゴリオブジェクトを取得する **/
 function soyshop_get_category_object($categoryId){
     static $categories, $dao;
@@ -128,6 +147,22 @@ function soyshop_get_page_object($pageId){
 	}
 
 	return $pages[$pageId];
+}
+
+/** 注文IDから注文オブジェクトを取得する **/
+function soyshop_get_order_object($orderId){
+	static $orders, $dao;
+	if(is_null($orders)) $orders = array();
+	if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+	if(is_null($orderId) || !is_numeric($orderId)) return new SOYShop_Order();
+
+	try{
+		$orders[$orderId] = $dao->getById($orderId);
+	}catch(Exception $e){
+		$orders[$orderId] = new SOYShop_Order();
+	}
+
+	return $orders[$orderId];
 }
 
 /**

@@ -128,7 +128,7 @@
 					<th>削除</th>
 					<th>商品コード</th>
 					<th>商品名</th>
-					<th>単価</th>
+					<th>単価<!-- soy:id="is_purchase_price" -->(仕入値)<!-- /soy:id="is_purchase_price" --></th>
 					<th>注文数</th>
 					<th>代金小計</th>
 				</tr>
@@ -145,7 +145,10 @@
 						<p><!-- soy:id="label" /-->:<!-- soy:id="option" /--></p>
 						<!-- /soy:id="item_option_list" -->
 					</td>
-					<td class="alR"><input type="text" soy:id="item_price" style="width:60px;" class="alR" /> 円</td>
+					<td class="alR">
+						<input type="text" soy:id="item_price" style="width:60px;" class="alR" /> 円
+						<!-- soy:id="is_purchase_price" -->(<!-- soy:id="purchase_price" /-->)<!-- /soy:id="is_purchase_price" -->
+					</td>
 					<td class="alR"><input type="text" soy:id="item_count" style="width:40px;" class="alR" /> 点</td>
 					<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
 				</tr>
