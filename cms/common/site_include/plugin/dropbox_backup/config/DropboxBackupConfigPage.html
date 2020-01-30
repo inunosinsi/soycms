@@ -1,0 +1,41 @@
+<p class="alert alert-danger" role="alert">
+	<i class="fa fa-exclamation fa-fw"></i>当プラグインは現時点ではSQLite版のみ対応となっています。
+	β版ですので、お試しの際は自己責任でお願いします。
+</p>
+
+<section>
+	<h1>設定</h1>
+	<form soy:id="form">
+		<div class="form-group">
+			<div class="form-inline">
+				<label for="">アクセストークン(access token)</label>
+				<input type="text" soy:id="token" class="form-control" style="width:80%;">
+			</div>
+		</div>
+
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="更新">
+		</div>
+	</form>
+</section>
+
+<section class="mt-5">
+	<h1>設定方法</h1>
+	<h3>Dropboxの App Console側での設定</h3>
+	<ul>
+		<li><a href="https://www.dropbox.com/developers/apps" target="_blank">App Console - Dropbox</a>を開き、Create appボタンを押します。</li>
+		<li>Choose an APIでDropbox APIにチェックを入れます。</li>
+		<li>Choose the type of access you needでApp folderにチェックを入れます。</li>
+		<li>Name your appの項目ではサイトのドメインなどを入力してください。</li>
+		<li>すべての選択を行った後にCreate appボタンを押します。</li>
+		<li>SettinsのページでGenerated access tokenをクリックをクリックして、出力されたアクセストークンを上記の設定フォームで登録します。</li>
+	</ul>
+	<h3>SOY CMSをインストールしている側のサーバでの設定</h3>
+	<ul>
+		<li>
+			cronで下記のコマンドを設定する
+			<pre soy:id="cmd"></pre>
+			※cronに関しては<a href="https://saitodev.co/article/620" target="_blank">SOY Mailの送信予約を使ってみよう - saitodev.co</a>に詳しい記載があります。
+		</li>
+	</ul>
+</section>
