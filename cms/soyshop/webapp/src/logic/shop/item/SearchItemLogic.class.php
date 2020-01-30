@@ -177,7 +177,7 @@ class SearchItemLogic extends SOY2LogicBase{
 		))->getQueries();
 
 		foreach($queries as $moduleId => $values){
-			if(is_null($values["queries"]) || !count($values["queries"])) continue;
+			if(!isset($values["queries"]) || !is_array($values["queries"]) || !count($values["queries"])) continue;
 			$where = array_merge($where, $values["queries"]);
 			if(isset($values["binds"])) $binds = array_merge($binds, $values["binds"]);
 		}

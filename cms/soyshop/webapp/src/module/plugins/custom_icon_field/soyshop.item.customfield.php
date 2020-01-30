@@ -129,7 +129,7 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 
 		$image = array();
 		$html = "";
-		if(isset($icons[0])){
+		if(is_array($icons) && count($icons)){
 			foreach($icons as $icon){
 				if(preg_match('/(jpg|jpeg|gif|png)$/', $icon, $tmp)){
 
