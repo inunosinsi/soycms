@@ -77,6 +77,44 @@
 				<!-- /.col-lg-12 -->
 			</div>
 
+			<!-- soy:display="label_info" -->
+			<div class="row mt-3">
+				<div class="col-lg-12">
+					<p class="alert alert-info"><!-- soy:id="caption_text" /-->が使用されているブロック等</p>
+					<!-- soy:display="used_block" -->
+					<h3>ブロック</h3>
+					<ul>
+						<!-- soy:id="used_block_list" -->
+						<li><!-- soy:id="page_title" /--> (<!-- soy:id="block_soy_id" /-->)</li>
+						<!-- /soy:id="used_block_list" -->
+					</ul>
+					<!-- /soy:display="used_block" -->
+
+					<!-- soy:display="used_blog" -->
+					<h3>ブログの設定</h3>
+
+					<!-- soy:display="used_blog_label" -->
+					<h4>使用するラベルとして</h4>
+					<ul>
+						<!-- soy:id="used_blog_label_list" -->
+						<li><!-- soy:id="page_title" /--></li>
+						<!-- /soy:id="used_blog_label_list" -->
+					</ul>
+					<!-- /soy:display="used_blog_label" -->
+
+					<!-- soy:display="used_blog_category" -->
+					<h4>カテゴリ分けで使用するラベルとして</h4>
+					<ul>
+						<!-- soy:id="used_blog_category_list" -->
+						<li><!-- soy:id="page_title" /--></li>
+						<!-- /soy:id="used_blog_category_list" -->
+					</ul>
+					<!-- /soy:display="used_blog_category" -->
+					<!-- /soy:display="used_blog" -->
+				</div>
+			</div>
+			<!-- /soy:display="label_info" -->
+
 		</div>
 		<!-- /#page-wrapper -->
 		<!-- soy:page="_common.FooterPage" /-->

@@ -38,7 +38,7 @@ class DetailPage extends CMSWebPageBase{
 		self::setupWYSIWYG();
 
 		$label = $res->getAttribute("label");
-		self::buildForm($label);
+		self::_buildForm($label);
 
 		//アイコンリスト
 		$this->createAdd("image_list","_component.Label.LabelIconListComponent",array(
@@ -55,9 +55,11 @@ class DetailPage extends CMSWebPageBase{
 		));
 
 		$this->addForm("update_form");
+
+		self::_buildUsedLabelInfo($label);
 	}
 
-	private function buildForm(Label $entity){
+	private function _buildForm(Label $entity){
 
 		$this->addInput("caption", array(
 			"value" => $entity->getCaption(),
@@ -100,6 +102,41 @@ class DetailPage extends CMSWebPageBase{
 		));
 	}
 
+	private function _buildUsedLabelInfo(Label $label){
+		//ブロックとして使用中
+		$blocks = self::_getBlockComponentsByLabelId($label->getId());
+
+		//使用するラベルとして設定されているもの
+		$blogs = self::_getBlogDefaultLabelByLabelId($label->getId());
+
+		//カテゴリとして使用されているもの
+		$blogCategories = self::_getBlogCategoryLabelByLabelId($label->getId());
+
+		DisplayPlugin::toggle("label_info", (count($blocks) || count($blogs) || count($blogCategories)));
+
+		$this->addLabel("caption_text", array(
+			"text" => $label->getCaption()
+		));
+
+
+		DisplayPlugin::toggle("used_block", count($blocks));
+		$this->createAdd("used_block_list", "_component.Label.UsedBlockListComponent", array(
+			"list" => $blocks
+		));
+
+		DisplayPlugin::toggle("used_blog", (count($blogs) || count($blogCategories)));
+
+		DisplayPlugin::toggle("used_blog_label", count($blogs));
+		$this->createAdd("used_blog_label_list", "_component.Label.UsedBlogLabelListComponent", array(
+			"list" => $blogs
+		));
+
+		DisplayPlugin::toggle("used_blog_category", count($blogCategories));
+		$this->createAdd("used_blog_category_list", "_component.Label.UsedBlogLabelListComponent", array(
+			"list" => $blogCategories
+		));
+	}
+
 	/**
 	 * ラベルに使えるアイコンの一覧を返す
 	 */
@@ -118,6 +155,96 @@ class DetailPage extends CMSWebPageBase{
 		}
 
 		return $return;
+	}
+
+	/**
+	 * @param labelId
+	 * @return array(pageId => soy:id)
+	 */
+	private function _getBlockComponentsByLabelId($labelId){
+		//一旦すべて取得する
+		try{
+			$blocks = SOY2DAOFactory::create("cms.BlockDAO")->get();
+		}catch(Exception $e){
+			$blocks = array();
+		}
+		if(!count($blocks)) return array();
+
+		$list = array();
+		foreach($blocks as $block){
+			$cmp = $block->getBlockComponent();
+			if(!method_exists($cmp, "getLabelId") && !method_exists($cmp, "getMapping")) continue;
+			switch(get_class($cmp)){
+				case "MultiLabelBlockComponent":
+					if(array_key_exists($labelId, $cmp->getMapping())){
+						$list[$block->getPageId()] = $block->getSoyId();
+					}
+					break;
+				default:
+					if($cmp->getLabelId() == $labelId){
+						$list[$block->getPageId()] = $block->getSoyId();
+					}
+			}
+		}
+		return $list;
+	}
+
+	/**
+	 * @param labelId
+	 * @return array(pageId)
+	 */
+	private function _getBlogDefaultLabelByLabelId($labelId){
+		//一旦全て取得する
+		$blogs = self::_getAllBlogPages();
+		if(!count($blogs)) return array();
+
+		$list = array();
+		foreach($blogs as $pageId => $blog){
+			if($blog["blogLabelId"] == $labelId){
+				$list[] = $pageId;
+			}
+		}
+		return $list;
+	}
+
+
+	/**
+	 * @param labelId
+	 * @return array(pageId)
+	 */
+	private function _getBlogCategoryLabelByLabelId($labelId){
+		//一旦全て取得する
+		$blogs = self::_getAllBlogPages();
+		if(!count($blogs)) return array();
+
+		$list = array();
+		foreach($blogs as $pageId => $blog){
+			if(!isset($blog["categoryLabelList"]) || !is_array($blog["categoryLabelList"]) || !count($blog["categoryLabelList"])) continue;
+			if(is_numeric(array_search($labelId, $blog["categoryLabelList"]))){
+				$list[] = $pageId;
+			}
+		}
+		return $list;
+	}
+
+	private function _getAllBlogPages(){
+		static $blogs;
+		if(is_null($blogs)){
+			//必要な情報だけ整理
+			$blogs = array();
+			try{
+				$blogPages = SOY2DAOFactory::create("cms.BlogPageDAO")->get();
+			}catch(Exception $e){
+				$blogPages = array();
+			}
+
+			if(count($blogPages)){
+				foreach($blogPages as $page){
+					$blogs[$page->getId()] = array("blogLabelId" => $page->getBlogLabelId(), "categoryLabelList" => $page->getCategoryLabelList());
+				}
+			}
+		}
+		return $blogs;
 	}
 
 	private function setupWYSIWYG(){
