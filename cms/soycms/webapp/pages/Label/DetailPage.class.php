@@ -159,7 +159,7 @@ class DetailPage extends CMSWebPageBase{
 
 	/**
 	 * @param labelId
-	 * @return array(pageId => soy:id)
+	 * @return array(pageId => array("soy" => soy:id, "type" => component)
 	 */
 	private function _getBlockComponentsByLabelId($labelId){
 		//一旦すべて取得する
@@ -174,15 +174,16 @@ class DetailPage extends CMSWebPageBase{
 		foreach($blocks as $block){
 			$cmp = $block->getBlockComponent();
 			if(!method_exists($cmp, "getLabelId") && !method_exists($cmp, "getMapping")) continue;
-			switch(get_class($cmp)){
+			$cmpName = get_class($cmp);
+			switch($cmpName){
 				case "MultiLabelBlockComponent":
 					if(array_key_exists($labelId, $cmp->getMapping())){
-						$list[$block->getPageId()] = $block->getSoyId();
+						$list[$block->getPageId()] = array("soy" => $block->getSoyId(), "type" => $cmpName);
 					}
 					break;
 				default:
 					if($cmp->getLabelId() == $labelId){
-						$list[$block->getPageId()] = $block->getSoyId();
+						$list[$block->getPageId()] = array("soy" => $block->getSoyId(), "type" => $cmpName);
 					}
 			}
 		}

@@ -78,39 +78,72 @@
 			</div>
 
 			<!-- soy:display="label_info" -->
-			<div class="row mt-3">
+			<div class="row mt-3 label_info">
 				<div class="col-lg-12">
-					<p class="alert alert-info"><!-- soy:id="caption_text" /-->が使用されているブロック等</p>
+					<div class="alert alert-info">
+					<p class="alert">このラベル「<!-- soy:id="caption_text" /-->」が使用されている箇所</p>
 					<!-- soy:display="used_block" -->
-					<h3>ブロック</h3>
-					<ul>
+					<div class="panel panel-default">
+					<div class="panel-heading">
+					<h3 class="panel-title">ページ / ブロック</h3>
+					</div>
+					<div class="panel-body">
+					<ul class="list-group">
 						<!-- soy:id="used_block_list" -->
-						<li><!-- soy:id="page_title" /--> (<!-- soy:id="block_soy_id" /-->)</li>
+						<li class="list-group-item">
+							<span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+							<!-- soy:id="page_title" /-->
+							(<!-- soy:id="block_name" /-->)
+							<span class="badge custom"><!-- soy:id="block_soy_id" /--></span>
+
+						</li>
 						<!-- /soy:id="used_block_list" -->
 					</ul>
+					</div>
+					</div>
 					<!-- /soy:display="used_block" -->
 
 					<!-- soy:display="used_blog" -->
-					<h3>ブログの設定</h3>
+					<div class="panel panel-default">
+					<div class="panel-heading">
+					<h3 class="panel-title">ブログの設定</h3>
+					</div>
 
+					<div class="panel-body">
 					<!-- soy:display="used_blog_label" -->
-					<h4>使用するラベルとして</h4>
-					<ul>
+					<div class="panel panel-default">
+					<div class="panel-heading">
+					<h4 class="panel-title">ブログに使用するラベルとして</h4>
+					</div>
+					<div class="panel-body">
+					<ul class="list-group">
 						<!-- soy:id="used_blog_label_list" -->
-						<li><!-- soy:id="page_title" /--></li>
+						<li class="list-group-item"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <!-- soy:id="page_title" /--></li>
 						<!-- /soy:id="used_blog_label_list" -->
 					</ul>
+					</div>
+					</div>
 					<!-- /soy:display="used_blog_label" -->
 
 					<!-- soy:display="used_blog_category" -->
-					<h4>カテゴリ分けで使用するラベルとして</h4>
-					<ul>
+					<div class="panel panel-default">
+					<div class="panel-heading">
+					<h4 class="panel-title">カテゴリ分けで使用するラベルとして</h4>
+					</div>
+					<div class="panel-body">
+					<ul class="list-group">
 						<!-- soy:id="used_blog_category_list" -->
-						<li><!-- soy:id="page_title" /--></li>
+						<li class="list-group-item"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <!-- soy:id="page_title" /--></li>
 						<!-- /soy:id="used_blog_category_list" -->
 					</ul>
+					</div>
+					</div>
 					<!-- /soy:display="used_blog_category" -->
+					</div>
+
+					</div>
 					<!-- /soy:display="used_blog" -->
+					</div>
 				</div>
 			</div>
 			<!-- /soy:display="label_info" -->

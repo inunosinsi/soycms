@@ -313,6 +313,17 @@ h1{
   cursor: pointer;
 }
 
+/** ラベルの使用状況 **/
+.label_info{
+	margin-top: 30px;
+}
+.label_info .alert-info .list-group-item{
+	color: #333;
+}
+.label_info .list-group-item .badge.custom{
+	float: none; font-size: 14px;
+}
+
 .entry_list_functions{
   width:400px;
 }
