@@ -52,7 +52,7 @@ class SOYShopLoginCheckPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com",
 			"mail"=>"info@n-i-agroinformatics.com",
-			"version"=>"1.0"
+			"version"=>"1.0.1"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
