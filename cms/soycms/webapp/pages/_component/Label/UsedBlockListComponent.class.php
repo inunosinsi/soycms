@@ -5,7 +5,7 @@ class UsedBlockListComponent extends HTMLList{
 	function populateItem($entity, $pageId){
 		$cmpName = (isset($entity["type"])) ? $entity["type"] : "";
 		$this->addLabel("page_title", array(
-			"text" => (strpos($cmpName, "SiteLabel") === false && is_numeric($pageId)) ? self::_getPageTitleById($pageId) : "他のサイトのページです"
+			"text" => (strpos($cmpName, "SiteLabel") === false && is_numeric($pageId)) ? self::_getPageTitleById($pageId) : "---"
 		));
 
 		$this->addLabel("block_soy_id", array(

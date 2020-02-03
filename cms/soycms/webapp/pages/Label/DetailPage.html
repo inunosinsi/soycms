@@ -8,7 +8,9 @@
 
 	<div id="wrapper">
 		<!-- Navigation -->
-		<nav  class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage"><!-- --></nav>
+		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0" soy:page="_common.UpperMenuPage">
+			<!-- -->
+		</nav>
 		<div id="page-wrapper">
 			<div class="row">
 				<div class="col-lg-12">
@@ -32,7 +34,7 @@
 							<p class="sub">アイコン</p>
 							<div class="well col-lg-3">
 								<img id="icon_preview" soy:id="label_icon" style="cursor:pointer;width:64px;height:64px" />
-								</div>
+							</div>
 							<input type="hidden" soy:id="icon" />
 						</div>
 
@@ -50,14 +52,14 @@
 							<label>文字色</label>
 							<div class="input-group">
 								<span class="input-group-addon">#</span>
-								<input class="form-control" type="text" id="fcolor" soy:id="color" maxlength="6"/>
+								<input class="form-control" type="text" id="fcolor" soy:id="color" maxlength="6" />
 							</div>
 						</div>
-						<div class="form-group col-lg-3" >
+						<div class="form-group col-lg-3">
 							<label>背景色</label>
 							<div class="input-group">
 								<span class="input-group-addon">#</span>
-								<input class="form-control" type="text" id="bcolor" soy:id="background_color" maxlength="6"/>
+								<input class="form-control" type="text" id="bcolor" soy:id="background_color" maxlength="6" />
 							</div>
 						</div>
 
@@ -81,68 +83,78 @@
 			<div class="row mt-3 label_info">
 				<div class="col-lg-12">
 					<div class="alert alert-info">
-					<p class="alert">このラベル「<!-- soy:id="caption_text" /-->」が使用されている箇所</p>
-					<!-- soy:display="used_block" -->
-					<div class="panel panel-default">
-					<div class="panel-heading">
-					<h3 class="panel-title">ページ / ブロック</h3>
-					</div>
-					<div class="panel-body">
-					<ul class="list-group">
-						<!-- soy:id="used_block_list" -->
-						<li class="list-group-item">
-							<span class="glyphicon glyphicon-file" aria-hidden="true"></span>
-							<!-- soy:id="page_title" /-->
-							(<!-- soy:id="block_name" /-->)
-							<span class="badge custom"><!-- soy:id="block_soy_id" /--></span>
+						<p class="alert">
+							このラベル「<!-- soy:id="caption_text" /-->」が使用されている箇所<br>
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> 他サイトブロックではページ名の取得ができません。<br>
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ブログリンクブロックを使用しているとページ名が正しく出力されない場合があります。<br>
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> プラグインブロックは対象外です。<br>
+							<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> ブロック設定を削除していない場合はリストに表示されます。</p>
+						</p>
+						<!-- soy:display="used_block" -->
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">ページ / ブロック</h3>
+							</div>
+							<div class="panel-body">
+								<ul class="list-group">
+									<!-- soy:id="used_block_list" -->
+									<li class="list-group-item">
+										<span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+										<!-- soy:id="page_title" /-->
+										(
+										<!-- soy:id="block_name" /-->)
+										<span class="badge custom">
+											<!-- soy:id="block_soy_id" /--></span>
 
-						</li>
-						<!-- /soy:id="used_block_list" -->
-					</ul>
-					</div>
-					</div>
-					<!-- /soy:display="used_block" -->
+									</li>
+									<!-- /soy:id="used_block_list" -->
+								</ul>
+							</div>
+						</div>
+						<!-- /soy:display="used_block" -->
 
-					<!-- soy:display="used_blog" -->
-					<div class="panel panel-default">
-					<div class="panel-heading">
-					<h3 class="panel-title">ブログの設定</h3>
-					</div>
+						<!-- soy:display="used_blog" -->
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">ブログの設定</h3>
+							</div>
 
-					<div class="panel-body">
-					<!-- soy:display="used_blog_label" -->
-					<div class="panel panel-default">
-					<div class="panel-heading">
-					<h4 class="panel-title">ブログに使用するラベルとして</h4>
-					</div>
-					<div class="panel-body">
-					<ul class="list-group">
-						<!-- soy:id="used_blog_label_list" -->
-						<li class="list-group-item"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <!-- soy:id="page_title" /--></li>
-						<!-- /soy:id="used_blog_label_list" -->
-					</ul>
-					</div>
-					</div>
-					<!-- /soy:display="used_blog_label" -->
+							<div class="panel-body">
+								<!-- soy:display="used_blog_label" -->
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">ブログに使用するラベルとして</h4>
+									</div>
+									<div class="panel-body">
+										<ul class="list-group">
+											<!-- soy:id="used_blog_label_list" -->
+											<li class="list-group-item"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <!-- soy:id="page_title" /-->
+											</li>
+											<!-- /soy:id="used_blog_label_list" -->
+										</ul>
+									</div>
+								</div>
+								<!-- /soy:display="used_blog_label" -->
 
-					<!-- soy:display="used_blog_category" -->
-					<div class="panel panel-default">
-					<div class="panel-heading">
-					<h4 class="panel-title">カテゴリ分けで使用するラベルとして</h4>
-					</div>
-					<div class="panel-body">
-					<ul class="list-group">
-						<!-- soy:id="used_blog_category_list" -->
-						<li class="list-group-item"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <!-- soy:id="page_title" /--></li>
-						<!-- /soy:id="used_blog_category_list" -->
-					</ul>
-					</div>
-					</div>
-					<!-- /soy:display="used_blog_category" -->
-					</div>
+								<!-- soy:display="used_blog_category" -->
+								<div class="panel panel-default">
+									<div class="panel-heading">
+										<h4 class="panel-title">カテゴリ分けで使用するラベルとして</h4>
+									</div>
+									<div class="panel-body">
+										<ul class="list-group">
+											<!-- soy:id="used_blog_category_list" -->
+											<li class="list-group-item"><span class="glyphicon glyphicon-file" aria-hidden="true"></span> <!-- soy:id="page_title" /-->
+											</li>
+											<!-- /soy:id="used_blog_category_list" -->
+										</ul>
+									</div>
+								</div>
+								<!-- /soy:display="used_blog_category" -->
+							</div>
 
-					</div>
-					<!-- /soy:display="used_blog" -->
+						</div>
+						<!-- /soy:display="used_blog" -->
 					</div>
 				</div>
 			</div>
@@ -161,53 +173,52 @@
 		</span soy:id="image_list">
 	</div>
 
-<script soy:id="colorpicker"></script>
+	<script soy:id="colorpicker"></script>
 
-<script lang="text/javascript">
-
-$("#fcolor").ColorPicker({
-		color: "#" + $("#fcolor").val(),
-		onChange: function (hsb, hex, rgb) {
+	<script lang="text/javascript">
+		$("#fcolor").ColorPicker({
+			color: "#" + $("#fcolor").val(),
+			onChange: function(hsb, hex, rgb) {
 				$("#fcolor").val(hex.toUpperCase());
 				$("#preview").css("color", "#" + hex);
-		}
-});
-$("#bcolor").ColorPicker({
-		color: "#" + $("#bcolor").val(),
-		onChange: function (hsb, hex, rgb) {
+			}
+		});
+		$("#bcolor").ColorPicker({
+			color: "#" + $("#bcolor").val(),
+			onChange: function(hsb, hex, rgb) {
 				$("#bcolor").val(hex.toUpperCase());
 				$("#preview").css("background", "#" + hex);
+			}
+		});
+
+		function captionOnBlur(input) {
+			$("#preview").html($("<div>").text($(input).val()).html());
 		}
-});
 
-function captionOnBlur(input){
-  $("#preview").html($("<div>").text($(input).val()).html());
-}
-
-function changeImageIcon(id){
-	common_element_to_layer($("#image_list"),
-		{	width:600,
-			height:400,
-			onclose:function(){
-				$("body").append($("#image_list"));
-				$("#image_list").hide();
-			},
-			header: "適用したいアイコンをダブルクリックしてください",
+		function changeImageIcon(id) {
+			common_element_to_layer($("#image_list"), {
+				width: 600,
+				height: 400,
+				onclose: function() {
+					$("body").append($("#image_list"));
+					$("#image_list").hide();
+				},
+				header: "適用したいアイコンをダブルクリックしてください",
+			});
+			$("#image_list").attr("label_id", id);
+			$("#image_list").show();
 		}
-	);
-	$("#image_list").attr("label_id",id);
-	$("#image_list").show();
-}
 
-function postChangeLabelIcon(ele,filename){
-	$("#labelicon").val(filename);
-	$("#icon_preview").attr("src",ele.src);
-	common_close_layer();
-	return false;
-}
-</script>
+		function postChangeLabelIcon(ele, filename) {
+			$("#labelicon").val(filename);
+			$("#icon_preview").attr("src", ele.src);
+			common_close_layer();
+			return false;
+		}
+	</script>
 
-<!-- soy:id="entry_editor_javascripts" /-->
+	<!-- soy:id="entry_editor_javascripts" /-->
 
 </body>
+
 </html>
