@@ -80,7 +80,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 						if(isset($v[2])){
 							if(strpos($v[2], "配達") === false || strpos($v[2], "完了") === false) continue;
 						}
-						
+
 						$slipNumber = trim(str_replace("\"", "", $v[0]));
 
 						try{
@@ -137,6 +137,11 @@ class ReturnsSlipNumberListPage extends WebPage {
 
 		self::buildExportForm();
 		self::buildImportForm();
+
+		SOYShopPlugin::load("soyshop.slip.html");
+		$this->addLabel("extension_html", array(
+			"html" => SOYShopPlugin::display("soyshop.slip.html")
+		));
 	}
 
 	private function buildSearchForm(){
@@ -163,10 +168,18 @@ class ReturnsSlipNumberListPage extends WebPage {
 		//リセットここまで
 
 		$this->addModel("search_area", array(
-			"style" => (isset($cnd) && count($cnd)) ? "display:inline;" : "display:none;"
+			//"style" => (isset($cnd) && count($cnd)) ? "display:inline;" : "display:none;"
+			"style" => "display:inline;"
 		));
 
 		$this->addForm("search_form");
+
+		foreach(array("item_name", "user_name") as $t){
+			$this->addInput("search_" . $t, array(
+				"name" => "search_condition[" . $t . "]",
+				"value" => (isset($cnd[$t])) ? $cnd[$t] : ""
+			));
+		}
 
 		SOY2::import("module.plugins.returns_slip_number.domain.SOYShop_ReturnsSlipNumber");
 		$this->addCheckBox("no_return", array(
@@ -182,6 +195,36 @@ class ReturnsSlipNumberListPage extends WebPage {
 			"selected" => (isset($cnd["is_return"]) && is_numeric(array_search(SOYShop_ReturnsSlipNumber::IS_RETURN, $cnd["is_return"]))),
 			"label" => "返送済み(注文詳細で返却済みのものは除く)"
 		));
+
+		$this->createAdd("custom_search_item_list", "_common.Order.CustomSearchItemListComponent", array(
+			"list" => self::_getCustomSearchItems($cnd)
+		));
+	}
+
+	private function _getCustomSearchItems($cnd){
+		//検索フォームの拡張ポイント
+		SOYShopPlugin::load("soyshop.slip.search");
+		$items = SOYShopPlugin::invoke("soyshop.slip.search", array(
+			"mode" => "form",
+			"params" => (isset($cnd["customs"])) ? $cnd["customs"] : array()
+		))->getSearchItems();
+
+		//再配列
+		$list = array();
+		foreach($items as $item){
+			if(is_null($item)) continue;
+			$key = key($item);
+			if($key == "label"){
+				$list[] = $item;
+			//複数の項目が入っている
+			}else{
+				foreach($item as $v){
+					$list[] = $v;
+				}
+			}
+		}
+
+		return $list;
 	}
 
 	private function changeStatus(){

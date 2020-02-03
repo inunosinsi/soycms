@@ -13,14 +13,16 @@
 		<p class="error" soy:display="failed">失敗しました</p>
 		<p class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
 
-		<dl>
-			<dt class="search_btn_dt">
-				検索する
-			</dt>
-		</dl>
 		<div class="search_area_dd" soy:id="search_area">
 			<form soy:id="search_form">
 				<table class="form_table">
+					<caption>検索</caption>
+					<tr>
+						<th>商品名</th>
+						<td><input type="search" class="text" soy:id="search_item_name"></td>
+						<th>顧客名</th>
+						<td><input type="search" class="text" soy:id="search_user_name"></td>
+					</tr>
 					<tr>
 						<th>状態</th>
 						<td colspan="3">
@@ -28,10 +30,16 @@
 							<input type="checkbox" soy:id="is_return">
 						</td>
 					</tr>
+					<!-- soy:id="custom_search_item_list" -->
+					<tr>
+						<th soy:id="label">拡張ポイントからラベルを出力</th>
+						<td soy:id="form" colspan="3">拡張ポイントからフォームを出力</td>
+					</tr>
+					<!-- /soy:id="custom_search_item_list" -->
 				</table>
 
 				<p class="pageBtn">
-					<input type="submit" name="search" value="検索">&nbsp;&nbsp;
+					<input type="submit" name="execute" value="検索">&nbsp;&nbsp;
 					<input type="submit" name="reset" value="リセット">
 				</p>
 			</form>
@@ -88,6 +96,9 @@
 				<input type="submit" name="import" value="一括変更">
 			</p>
 		</form>
+
+		<!-- soy:id="extension_html" /-->
+		
 		<!-- /soy:display="is_slip_number" -->
 	</div>
 </div>
@@ -100,7 +111,7 @@
 	div.search_area_dd {}
 
 	#standard_form_area{
-		display:none;
+		/**display:none;**/
 	}
 	.content {
 		margin:2px 0 5px 23px;
@@ -112,14 +123,14 @@
 
 <script>
 	(function() {
-		document.querySelector(".search_btn_dt").addEventListener("click", function() {
-			sarea = document.querySelector(".search_area_dd");
-			if (sarea.style.display == "none") {
-				sarea.style.display = "inline";
-			} else {
-				sarea.style.display = "none";
-			}
-		});
+		// document.querySelector(".search_btn_dt").addEventListener("click", function() {
+		// 	sarea = document.querySelector(".search_area_dd");
+		// 	if (sarea.style.display == "none") {
+		// 		sarea.style.display = "inline";
+		// 	} else {
+		// 		sarea.style.display = "none";
+		// 	}
+		// });
 	})();
 
 	$("#export_form").attr("target", "download_frame");

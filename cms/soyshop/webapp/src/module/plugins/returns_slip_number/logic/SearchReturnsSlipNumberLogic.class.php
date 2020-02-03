@@ -84,7 +84,7 @@ class SearchReturnsSlipNumberLogic extends SOY2LogicBase {
 	            $where .= " AND " . $w;
 	        }
 		}
-        return $where;
+		return $where;
 	}
 
 	function setCondition($conditions){
@@ -92,8 +92,16 @@ class SearchReturnsSlipNumberLogic extends SOY2LogicBase {
 		if(is_array($conditions) && count($conditions)){
 			foreach($conditions as $key => $cnd){
 				switch($key){
+					case "item_name":
+						$this->where[$key] = "o.id IN (SELECT order_id FROM soyshop_orders WHERE " . $key . " LIKE :" . $key . ")";
+						$this->binds[":" . $key] = "%" . $cnd . "%";
+						break;
+					case "user_name":
+						$this->where[$key] = "o.user_id IN (SELECT id FROM soyshop_user WHERE name LIKE :" . $key . ")";
+						$this->binds[":" . $key] = "%" . $cnd . "%";
+						break;
 					case "is_return":
-						$this->where[":is_return"] = "slip.is_return IN (" . implode(",", $cnd) . ")";
+						$this->where[$key] = "slip." . $key . " IN (" . implode(",", $cnd) . ")";
 						break;
 				}
 			}
@@ -101,6 +109,20 @@ class SearchReturnsSlipNumberLogic extends SOY2LogicBase {
 
 		if(!isset($conditions["is_return"])){
 			$this->where[":is_return"] = "slip.is_return = " . SOYShop_ReturnsSlipNumber::NO_RETURN;
+		}
+
+		//拡張ポイントから出力したフォーム用
+		SOYShopPlugin::load("soyshop.slip.search");
+		$queries = SOYShopPlugin::invoke("soyshop.slip.search", array(
+			"mode" => "search",
+			"params" => (isset($conditions["customs"])) ? $conditions["customs"] : array()
+		))->getQueries();
+
+		foreach($queries as $moduleId => $values){
+			if(!isset($values["queries"])) continue;
+			if(!is_array($values["queries"]) || !count($values["queries"])) continue;
+			$this->where = array_merge($this->where, $values["queries"]);
+			if(isset($values["binds"])) $this->binds = array_merge($this->binds, $values["binds"]);
 		}
 	}
 
