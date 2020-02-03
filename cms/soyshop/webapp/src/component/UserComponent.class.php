@@ -571,6 +571,7 @@ class UserComponent {
 		}
 
 		/* パスワード */
+		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("generate_password")){	//パスワード自動生成プラグインがアンインストールの時のみパスワードチェック
 			switch($mode){
 				/* カート 登録 */
