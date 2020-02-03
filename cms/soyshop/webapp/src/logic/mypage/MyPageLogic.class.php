@@ -316,15 +316,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @return Object SOYShop_User
 	 */
 	function getUser(){
-		static $user;
-		if(is_null($user)){
-			try{
-				$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($this->getUserId());
-			}catch(Exception $e){
-				$user = new SOYShop_User();
-			}
-		}
-		return $user;
+		return soyshop_get_user_object($this->getUserId());
 	}
 
 	//ダミーの値を表示したりといろいろできる
@@ -357,11 +349,8 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @return string url
 	 */
 	function getProfileUserLink($userId){
-		try{
-			$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($userId);
-		}catch(Exception $e){
-			return null;
-		}
+		$user = soyshop_get_user_object($userId);
+		if(is_null($user->getId())) return null;
 
 		if($user->getIsProfileDisplay() != SOYShop_User::PROFILE_IS_DISPLAY) return null;
 		if(is_null($user->getProfileId())) return null;

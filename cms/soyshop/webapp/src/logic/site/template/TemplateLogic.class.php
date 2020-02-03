@@ -91,6 +91,7 @@ class TemplateLogic extends SOY2LogicBase{
 
 	function getApplicationTemplateList($mode = "cart"){
 		$templateDir = $this->dir . $mode . "/";
+		if(!file_exists($templateDir)) return array();
 
 		$files = scandir($templateDir);
 		$res = array();
