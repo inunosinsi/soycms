@@ -5884,14 +5884,33 @@ class SOYBodyComponentBase extends SOY2HTML{
 	function addImage($id, $array=array()){self::createAdd($id, "HTMLImage", $array);}
 	function addLink($id, $array=array()){self::createAdd($id, "HTMLLink", $array);}
 	function addActionLink($id, $array=array()){self::createAdd($id, "HTMLActionLink", $array);}
-	function addInput($id, $array=array()){self::createAdd($id, "HTMLInput", $array);}
-	function addTextArea($id, $array=array()){self::createAdd($id, "HTMLTextArea", $array);}
-	function addCheckBox($id, $array=array()){self::createAdd($id, "HTMLCheckBox", $array);}
-	function addSelect($id, $array=array()){self::createAdd($id, "HTMLSelect", $array);}
+	function addInput($id, $array=array()){
+		self::createAdd($id, "HTMLInput", $array);
+		self::addText($id, $array);
+	}
+	function addTextArea($id, $array=array()){
+		self::createAdd($id, "HTMLTextArea", $array);
+		self::addText($id, $array);
+	}
+	function addCheckBox($id, $array=array()){
+		self::createAdd($id, "HTMLCheckBox", $array);
+		self::addText($id, $array);
+	}
+	function addSelect($id, $array=array()){
+		self::createAdd($id, "HTMLSelect", $array);
+		self::addText($id, $array);
+	}
 	function addHidden($id, $array=array()){self::createAdd($id, "HTMLHidden", $array);}
 	function addScript($id, $array=array()){self::createAdd($id, "HTMLScript", $array);}
 	function addCSS($id, $array=array()){self::createAdd($id, "HTMLCSS", $array);}
 	function addCSSLink($id, $array=array()){self::createAdd($id, "HTMLCSSLink", $array);}
+	function addText($id, $array=array()){
+		$new = array();
+		if(isset($array["soy2prefix"]) && strlen($array["soy2prefix"])) $new["soy2prefix"] = $array["soy2prefix"];
+		$new["text"] = (isset($array["value"])) ? $array["value"] : null;
+		if(!strlen($new["text"]) && isset($array["text"]) && strlen($array["text"])) $new["text"] = $array["text"]; //addTextAreaの場合
+		self::createAdd($id. "_text", "HTMLLabel", $new);
+	}
 }
 /**
  * @package SOY2.SOY2HTML
