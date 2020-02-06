@@ -39,6 +39,10 @@ class ItemListComponent extends HTMLList{
             "text" => (!$isParent) ? number_format((int)$item->getPrice()) . " 円" : ""
         ));
 
+		$this->addLabel("purchase_price", array(
+			"text" => number_format($item->getPurchasePrice())
+		));
+
         $this->addLabel("item_stock", array(
             "text" => (!$isParent) ? number_format($item->getStock()) : ""
         ));

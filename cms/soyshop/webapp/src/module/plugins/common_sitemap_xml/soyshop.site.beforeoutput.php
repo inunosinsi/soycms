@@ -159,7 +159,9 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 					$priority = (!strlen($uri)) ? "1.0" : "0.8";
 
 					/** レビュープラグインからの自動出力 **/
-					if(self::_isReviewPage() && self::_getReviewPageId() == $obj->getId()){
+					if(self::_isReviewPage() && self::_checkReviewPageId($obj->getId())){
+
+
 						$reviews = self::_getReviewCountListEarchItems();
 						if(count($reviews)){
 							$div = self::_getDivideReviewCount();
@@ -286,13 +288,44 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		return $isActive;
 	}
 
+	private function _checkReviewPageId($pageId){
+		$reviewPageId = self::_getReviewPageId();
+		if($reviewPageId == $pageId) return true;
+
+		//@ToDo スマホページを開いている場合
+		SOY2::import("util.SOYShopPluginUtil");
+		if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
+			SOY2::import("module.plugins.util_mobile_check.util.UtilMobileCheckUtil");
+			$mbCnf = UtilMobileCheckUtil::getConfig();
+			if(isset($mbCnf["prefix_i"]) && strlen($mbCnf["prefix_i"])){
+				return (self::_getMbReviewPageId($mbCnf["prefix_i"]) == $pageId);
+			}
+		}
+
+		return false;
+	}
+
 	private function _getReviewPageId(){
-		static $id;
+		static $id, $pageDao;
 		if(is_null($id)){
 			$config = self::_reviewConfig();
 			$id = (isset($config["review_page_id"]) && is_numeric($config["review_page_id"])) ? (int)$config["review_page_id"] : nul;
 		}
 		return $id;
+	}
+
+	private function _getMbReviewPageId($prefix){
+		static $ids, $pageDao;
+		if(isset($ids[$prefix])) return $ids[$prefix];
+		if(is_null($pageDao)) $pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+
+		$mbPageUri = $prefix . "/" . soyshop_get_page_object(self::_getReviewPageId())->getUri();
+		try{
+			$ids[$prefix] = $pageDao->getByUri($mbPageUri)->getId();
+		}catch(Exception $e){
+			$ids[$prefix] = null;
+		}
+		return $ids[$prefix];
 	}
 
 	private function _getReviewCountListEarchItems(){
