@@ -32,9 +32,12 @@
 </p>
 
 <h4>タグの記述例</h4>
-<p>他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます</p>
+<p>他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます<br>
+※ブロックの外側でcms:id="tag_cloud_tag"で表示中のタグ一覧ページのタグ名を出力します。</p>
 
-<pre>&lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
+<pre>&lt;!-- cms:id="tag_cloud_tag" --&gt;タグ名&lt;!-- /cms:id="tag_cloud_tag" --&gt;
+
+&lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
 表示したい内容のcms:idを追加
 &lt;!-- /block:id="***" --&gt;</pre>
 <p>

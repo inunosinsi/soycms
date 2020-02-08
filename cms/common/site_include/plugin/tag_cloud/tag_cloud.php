@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 
 		//active or non active
@@ -32,6 +32,9 @@ class TagCloudPlugin{
 
 				CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
 			}else{
+				//公開側のページを表示させたときに、メタデータを表示する
+				CMSPlugin::setEvent('onPageOutput',self::PLUGIN_ID,array($this,"onPageOutput"));
+
 				CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
 			}
 		} else {
@@ -164,6 +167,23 @@ class TagCloudPlugin{
 
 	function returnPluginId(){
 		return self::PLUGIN_ID;
+	}
+
+	function onPageOutput($obj){
+		$tag = "";
+		if(isset($_GET["tagcloud"]) && is_numeric($_GET["tagcloud"]) && (int)$_GET["tagcloud"] > 0){
+			SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
+			try{
+				$tag = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getById($_GET["tagcloud"])->getWord();
+			}catch(Exception $e){
+				//
+			}
+		}
+
+		$obj->addLabel("tag_cloud_tag", array(
+			"soy2prefix" => "cms",
+			"text" => $tag
+		));
 	}
 
 	/**
