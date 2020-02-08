@@ -20,7 +20,7 @@ class SOYCMS_Search_Block_Plugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.1.1"
+			"version"=>"1.2"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -57,6 +57,11 @@ class SOYCMS_Search_Block_Plugin{
 		if(is_null($limit)) $limit = 100000;
 
 		$query = (isset($_GET["q"]) && strlen(trim($_GET["q"]))) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : null;
+
+		$obj->addLabel("search_keyword", array(
+			"soy2prefix" => "cms",
+			"text" => $query
+		));
 
 		$args = $logic->getArgs();
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
