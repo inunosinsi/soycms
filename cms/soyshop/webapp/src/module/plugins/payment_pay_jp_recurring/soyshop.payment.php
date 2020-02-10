@@ -110,7 +110,6 @@ class PayJpRecurringPayment extends SOYShopPayment{
 		//出力
 		SOY2::import("module.plugins.payment_pay_jp_recurring.option.PayJpRecurringOptionPage");
 		$form = SOY2HTMLFactory::createInstance("PayJpRecurringOptionPage");
-		$form->setCart($cart);
 		$form->execute();
 		echo $form->getObject();
 	}

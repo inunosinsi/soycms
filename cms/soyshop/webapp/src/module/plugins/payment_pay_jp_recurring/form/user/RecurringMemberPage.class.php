@@ -25,6 +25,9 @@ class RecurringMemberPage extends WebPage{
 		DisplayPlugin::toggle("subscribe", isset($subscribeId));
 		DisplayPlugin::toggle("no_subscribe", !isset($subscribeId));
 
+		//メールアドレスからカードの状態を取得する
+		$isActiveCard = (isset($subscribeId)) ? $logic->checkCardExpirationDateByUserId($this->user->getId()) : false;
+		
 		$this->addForm("form");
 
 		$this->addLabel("subscribe_token", array(

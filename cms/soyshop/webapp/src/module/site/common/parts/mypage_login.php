@@ -212,9 +212,20 @@ function soyshop_parts_mypage_login($html, $page){
 	$obj->addModel("is_reserve", array(
 		"visible" => (SOYShopPluginUtil::checkIsActive("reserve_calendar") && soyshop_get_mypage_id() == "bootstrap")
 	));
-	
+
 	$obj->addLink("reserve_link", array(
 		"link" => soyshop_get_mypage_url() . "/reserve",
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	SOYShopPlugin::load("soyshop.mypage.card");
+	$obj->addModel("is_card", array(
+		"visible" => SOYShopPlugin::invoke("soyshop.mypage.card")->hasOptionPage(),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$obj->addLink("card_link", array(
+		"link" => soyshop_get_mypage_url() . "/card",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 

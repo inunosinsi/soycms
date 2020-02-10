@@ -236,6 +236,90 @@ class RecurringLogic extends SOY2LogicBase {
 		return self::getTokenAttributeByUserId($userId)->getValue();
 	}
 
+	function checkCardExpirationDateByUserId($userId){
+		$token = self::getCustomerTokenByUserId($userId);
+		if(!strlen($token)) return null;
+
+		$res = null;
+		$err = null;
+		try{
+			$res = \Payjp\Customer::retrieve($token);
+		} catch (Error\Card $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\InvalidRequest $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Authentication $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Api $e) {
+			$err = $e->getJsonBody();
+		} catch (\Payjp\Error\Base $e) {
+			$err = $e->getJsonBody();
+		} catch (Exception $e) {
+			$err = $e->getJsonBody();
+		} finally {
+			//何もしない
+		}
+		if(isset($res)){
+			$cards = $res->cards->data;
+			if(count($cards)){
+				foreach($cards as $card){
+					$res = self::_checkCardExpire($card->exp_year, $card->exp_month);
+					if($res) return true;	//一つでもtrueであればtrueを返す
+				}
+			}
+		}
+		return false;
+	}
+
+	private function _checkCardExpire($year, $month){
+		return (strtotime("1 month", mktime(0, 0, 0, $month, 1, $year)) > time());
+	}
+
+	function updateCardInfo($userId, $cardToken, $name){
+		$token = self::getCustomerTokenByUserId($userId);
+		if(!strlen($token)) return false;
+
+		$cu = null;
+		$res = null;
+		$err = null;
+		try{
+			$cu = \Payjp\Customer::retrieve($token);
+			$res = $cu->cards->create(array(
+        		"card" => $cardToken
+			));
+		} catch (Error\Card $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\InvalidRequest $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Authentication $e) {
+			$err = $e->getJsonBody();
+		} catch (Error\Api $e) {
+			$err = $e->getJsonBody();
+		} catch (\Payjp\Error\Base $e) {
+			$err = $e->getJsonBody();
+		} catch (Exception $e) {
+			$err = $e->getJsonBody();
+		} finally {
+			//何もしない
+		}
+
+		// @ToDo エラーハンドリングはどうしよう？
+		if(isset($err)){}
+
+		//古いカードの情報を破棄
+		if(isset($res)){
+			$results = $cu->cards->all(array("limit"=>10, "offset"=>1));
+			$cards = $results->data;
+			foreach($cards as $card){
+				if($card->id != $res->id){
+					$card->delete();	//古いカードはすべて削除
+				}
+			}
+		}
+
+		return true;
+	}
+
 	function getTokenAttributeByUserId($userId){
 		try{
 			return self::userAttrDao()->get($userId, self::FIELD_KEY);
@@ -395,6 +479,20 @@ class RecurringLogic extends SOY2LogicBase {
 		$subscribeId = (isset($attr["value"])) ? $attr["value"] : null;
 
 		return array($subscribeId, $order->getId());
+	}
+
+	function getErrorMessageListOnJS(){
+		$errList = PayJpRecurringUtil::getErrorMessageList();
+
+		$script = array();
+		$script[] = "var errMsgList = {";
+		foreach($errList as $key => $mes){
+			$script[] = "\t" . $key . ":\"" . $mes. "\",";
+		}
+
+		$script[] = "};";
+
+		return implode("\n", $script);
 	}
 
 	private function userAttrDao(){

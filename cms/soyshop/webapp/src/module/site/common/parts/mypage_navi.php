@@ -26,6 +26,7 @@ function soyshop_parts_mypage_navi($html, $page){
 			"point" => "ポイント履歴",
 			"inquiry" => "お問い合わせ",
 			"payjp" => "クレジットカード",
+			"card" => "カード",
 			"withdraw" => "退会",
 			"logout" => "ログアウト"
 		);
@@ -49,6 +50,10 @@ function soyshop_parts_mypage_navi($html, $page){
 					break;
 				case "payjp":
 					if(!SOYShopPluginUtil::checkIsActive("payment_pay_jp")) $isThrow = true;
+					break;
+				case "card":
+					SOYShopPlugin::load("soyshop.mypage.card");
+					if(!SOYShopPlugin::invoke("soyshop.mypage.card")->hasOptionPage()) $isThrow = true;
 					break;
 				case "reserve":
 					//if(!SOYShopPluginUtil::checkIsActive("reserve_calendar") || soyshop_get_mypage_id() != "bootstrap") $isThrow = true;

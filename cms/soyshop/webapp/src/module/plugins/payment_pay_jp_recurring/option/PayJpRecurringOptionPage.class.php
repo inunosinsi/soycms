@@ -2,7 +2,6 @@
 
 class PayJpRecurringOptionPage extends WebPage {
 
-	private $cart;
 	private $configObj;
 	private $errorMessage;
 
@@ -66,7 +65,7 @@ class PayJpRecurringOptionPage extends WebPage {
 		));
 
 		//非通過型に対応
-		$logic = SOY2Logic::createInstance("module.plugins.payment_pay_jp.logic.PayJpLogic");
+		$logic = SOY2Logic::createInstance("module.plugins.payment_pay_jp_recurring.logic.RecurringLogic");
 		$config = $logic->getPayJpConfig();
 		$this->addLabel("key", array(
 			"text" => (isset($config["public_key"])) ? trim($config["public_key"]) : ""
@@ -78,6 +77,10 @@ class PayJpRecurringOptionPage extends WebPage {
 
 		$this->addLabel("token_js", array(
 			"html" => file_get_contents(dirname(dirname(dirname(__FILE__))) . "/payment_pay_jp/js/token.js")
+		));
+
+		$this->addLabel("button_label", array(
+			"text" => (SOYSHOP_CART_MODE) ? "支払う" : "更新する"
 		));
 
 		$this->addLink("back_link", array(
@@ -94,10 +97,6 @@ class PayJpRecurringOptionPage extends WebPage {
 			$array[$i] = $i;
 		}
 		return $array;
-	}
-
-	function setCart($cart){
-		$this->cart = $cart;
 	}
 
 	function setConfigObj($configObj){

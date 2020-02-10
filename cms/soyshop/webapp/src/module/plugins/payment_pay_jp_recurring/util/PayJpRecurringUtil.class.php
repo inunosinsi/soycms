@@ -2,8 +2,8 @@
 
 class PayJpRecurringUtil {
 
-	public static function getErrorText($code){
-		$errorCodes = array(
+	private static function _errorMessageList(){
+		return array(
 			"invalid_number" => "不正なカード番号",
 			"invalid_cvc" => "不正なCVC",
 			"invalid_expiration_date" => "不正な有効期限年、または月",
@@ -88,6 +88,14 @@ class PayJpRecurringUtil {
 			"not_allowed_method" => "許可されていないHTTPメソッド",
 			"other" => "その他のエラー"
 		);
+	}
+
+	public static function getErrorMessageList(){
+		return self::_errorMessageList();
+	}
+
+	public static function getErrorText($code){
+		$errorCodes = self::_errorMessageList();
 
 		if(!isset($errorCodes[$code])) $code = "other";
 		return $errorCodes[$code];
