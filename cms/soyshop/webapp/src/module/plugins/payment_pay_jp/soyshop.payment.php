@@ -118,7 +118,6 @@ class PayJpPayment extends SOYShopPayment{
 		//出力
 		SOY2::import("module.plugins.payment_pay_jp.option.PayJpOptionPage");
 		$form = SOY2HTMLFactory::createInstance("PayJpOptionPage");
-		$form->setCart($cart);
 		$form->execute();
 		echo $form->getObject();
 	}

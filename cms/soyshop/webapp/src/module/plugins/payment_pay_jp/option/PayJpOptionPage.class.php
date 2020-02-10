@@ -2,7 +2,6 @@
 
 class PayJpOptionPage extends WebPage {
 
-	private $cart;
 	private $configObj;
 	private $errorMessage;
 
@@ -110,10 +109,6 @@ class PayJpOptionPage extends WebPage {
 			$array[$i] = $i;
 		}
 		return $array;
-	}
-
-	function setCart($cart){
-		$this->cart = $cart;
 	}
 
 	function setConfigObj($configObj){
