@@ -90,7 +90,8 @@ class DetailPage extends WebPage{
 	}
 
 	function __construct($args) {
-		$this->id = @$args[0];
+		if(!isset($args[0]) || !is_numeric($args[0])) CMSApplication::jump("Inquiry");
+		$this->id = (int)$args[0];
 
 		$dao = SOY2DAOFactory::create("SOYInquiry_InquiryDAO");
 		$formDao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
@@ -139,7 +140,7 @@ class DetailPage extends WebPage{
 		));
 
 		$this->addLabel("content", array(
-			"html" => $inquiry->getContent()
+			"html" => self::_shaping($inquiry->getContent())
 		));
 
 		//コメントを取得
@@ -147,7 +148,7 @@ class DetailPage extends WebPage{
 		$comments = $commenDAO->getByInquiryId($this->id);
 
 		DisplayPlugin::toggle("comment", count($comments));
-		$this->createAdd("comment_list", "CommentList", array(
+		$this->createAdd("comment_list", "_common.CommentListComponent", array(
 			"list" => $comments
 		));
 
@@ -246,26 +247,69 @@ class DetailPage extends WebPage{
 
 		return array($from, $cc);
 	}
-}
 
-class CommentList extends HTMLList{
+	private function _shaping($txt){
+		$lines = explode("\n", $txt);
+		if(!count($lines)) return "";
 
-	protected function populateItem($bean){
+		//とても長い項目名を探す
+		$mostLongStrlen = 0;
+		$lns = array();
+		foreach($lines as $line){
+			$label = trim(substr($line, 0 , strpos($line, ":")));
+			$lns[] = mb_strlen($label);
+		}
 
-		$this->addLabel("title", array(
-			"text" => $bean->getTitle()
-		));
+		//最も長いラベル
+		rsort($lns);
+		$mostLong = array_shift($lns);
 
-		$this->addLabel("author", array(
-			"text" => $bean->getAuthor()
-		));
+		//labelが30文字以内であればそのまま返す
+		$ln = 30;
+		if($mostLong <= $ln) return $txt;
 
-		$this->addLabel("content", array(
-			"html" => $bean->getContent()
-		));
+		//2番目に長いラベル
+		for(;;){
+			if(!count($lns)) {
+				$secLong = 1;
+				break;
+			}
+			$secLong = array_shift($lns);
+			if($secLong < $ln) break;
+		}
 
-		$this->addLabel("create_date", array(
-			"text" => date("Y-m-d H:i:s", $bean->getCreateDate())
-		));
+
+		//組み立てる
+		$t = array();
+		foreach($lines as $line){
+			if(strlen($line)){
+				$label = trim(substr($line, 0 , strpos($line, ":")));
+				$content = trim(mb_substr($line, mb_strpos($line, ":") + 1));
+				$strlen = mb_strlen($label);
+				if($strlen > $ln){
+					$label = mb_substr($label, 0, $ln - 1) . "...";
+					$t[] = $label . ":";
+					$t[] = $content;
+				}else{
+					if(strlen($label)){
+						// : の位置を合わせる
+						$length = mb_strlen($label);
+						if(mb_strlen($content) && $secLong > $length){
+							for($i = 0; $i < $secLong - $length; $i++){
+								$label .= "  ";
+							}
+						}
+						$t[] = $label . " : " . $content;
+					}else{	//住所等
+						$t[] = $line;
+					}
+				}
+			}else{
+				$t[] = "";
+			}
+		}
+
+
+		return implode("\n", $t);
 	}
 }
