@@ -93,12 +93,15 @@ class MailLogic extends SOY2LogicBase{
 
     /**
 	 * 一通送信する
+	 * @隠しモード sendToにadminを指定すると管理者のみにメールを送信する
 	 */
-	function sendMail($sendTo, $title, $body, $sendToName = "", $order = null, $orderFlag = false){
+	function sendMail($sendTo="admin", $title, $body, $sendToName = "", $order = null, $orderFlag = false){
 
 		if(is_null($this->send)){
 			$this->prepareSend();
 		}
+
+		if($sendTo == "admin") $sendTo = $this->serverConfig->getAdministratorMailAddress();
 
 		//リセット
 		$this->reset();

@@ -10,5 +10,8 @@
 <!-- /soy:display="is_identity" -->
 
 <!-- soy:display="no_identity" -->
-upload form
+<form soy:id="upload_form" enctype="multipart/form-data">
+	<input type="file" soy:id="upload_input" accept="image/*">&nbsp;
+	<input type="submit" class="btn btn-primary" value="アップロード">
+</form>
 <!-- /soy:display="no_identity" -->

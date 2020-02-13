@@ -98,12 +98,15 @@ class SOYShopAuthUtil {
 	}
 
 	private static function _check($classPath){
-		//DetailPageを開いている場合はAUTH_OPERATEを見る：拡張ページから詳細に遷移する可能性があるため
-		if(strpos($classPath, "DetailPage")){
-			return (AUTH_EXTENSION && AUTH_OPERATE);
+		if(strpos($classPath, "Order") !== false){
+			//注文の時のみ振る舞いが異なる
+			if(($classPath == "Order.IndexPage" || $classPath == "OrderPage") && !AUTH_ORDER) return false;
+
+			//商品管理のみアカウントの場合は注文すべてのページを見れなくする
+			if(AUTH_ITEM && !AUTH_EXTENSION && !AUTH_ORDER) return false;
 		}else{
 			if(!AUTH_EXTENSION && strpos($classPath,"Extension") === 0) return false;
-			if(!AUTH_ORDER && strpos($classPath,"Order") === 0) return false;
+			//if(!AUTH_ORDER && strpos($classPath,"Order") === 0) return false;
 			if(!AUTH_ITEM && strpos($classPath,"Item") === 0) return false;
 			if(!AUTH_USER && strpos($classPath,"User") === 0) return false;
 			if(!AUTH_REVIEW && strpos($classPath,"Review") === 0) return false;
