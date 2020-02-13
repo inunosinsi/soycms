@@ -135,7 +135,7 @@ class SelectBoxColumn extends SOYInquiry_ColumnBase{
 		SOYInquiry_ColumnBase::setConfigure($config);
 		$this->items = (isset($config["items"])) ? $config["items"] : "*項目１\n項目２\n項目３";
 		$this->emptyOption = (isset($config["emptyOption"]) && $config["emptyOption"] == 1) ? 1 : 0;
-		$this->emptyOptionText = $config["emptyOptionText"];
+		$this->emptyOptionText = (isset($config["emptyOptionText"])) ? $config["emptyOptionText"] : null;
 		$this->style = (isset($config["style"])) ? $config["style"] : null ;
 		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
