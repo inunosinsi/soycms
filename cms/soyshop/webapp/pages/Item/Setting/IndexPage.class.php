@@ -76,15 +76,11 @@ class IndexPage extends WebPage{
 		//表示順リンク
 //		$this->buildSortLink($searchLogic, $sort);
 
-		$appLimit = SOY2ActionSession::getUserSession()->getAttribute("app_shop_auth_limit");
-		DisplayPlugin::toggle("app_limit_function", $appLimit);
-
 		$this->addForm("form");
 
 		$this->createAdd("item_list", "_common.Item.ItemListComponent", array(
 			"list" => $items,
-			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"appLimit" => $appLimit
+			"detailLink" => SOY2PageController::createLink("Item.Detail.")
 		));
 
 		$this->addSelect("category_change_select", array(

@@ -87,8 +87,7 @@ class SettingPage extends WebPage{
 
         $this->createAdd("item_list", "_common.Item.ItemListComponent", array(
             "list" => self::getItems(),
-            "detailLink" => SOY2PageController::createLink("Item.Detail."),
-            "appLimit" => true
+            "detailLink" => SOY2PageController::createLink("Item.Detail.")
         ));
     }
 

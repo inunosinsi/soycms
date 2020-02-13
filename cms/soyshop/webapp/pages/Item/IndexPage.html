@@ -34,9 +34,9 @@
 			<thead>
 				<tr class="alC">
 					<th>
-						<!-- soy:id="app_limit_function" -->
+						<!-- soy:display="app_limit_function" -->
 						<input id="item_checkbox" class="item_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
-						<!-- /soy:id="app_limit_function" -->
+						<!-- /soy:display="app_limit_function" -->
 					</th>
 					<th>&nbsp;</th>
 					<th><nobr>公開状態</nobr></th>
@@ -77,7 +77,7 @@
 							<form soy:id="pager_jump">
 								<select soy:id="pager_select"></select>
 								<noscript><input type="submit" value="移動"/></noscript>
-							</form soy:id="pager_jump">
+							</form>
 						</div>
 						<div class="pager_item">
 							<a soy:id="prev_pager">&lt;</a>
@@ -110,7 +110,7 @@
 					</td>
 					<!-- /soy:id="ignore_stock" -->
 					<!-- soy:id="display_stock" -->
-					<td class="alR">   
+					<td class="alR">
 						<span soy:id="item_stock">100</span>
 						(<span soy:id="order_count">100</span>)
 					</td>
@@ -124,7 +124,7 @@
 				<input type="submit" id="do_remove_btn" name="do_remove" value="1" style="display:none;" />
 				<input type="submit" id="do_change_publish_btn" name="do_change_publish" value="1" style="display:none;" />
 
-				</form soy:id="item_form">
+				</form>
 			</tbody>
 
 		</table>
@@ -132,7 +132,7 @@
 	</div><!-- /block_body -->
 </div>
 
-<!-- soy:id="app_limit_function*" -->
+<!-- soy:display="app_limit_function_rv" -->
 <div class="block">
 	<div class="block_title">
 		<h2>その他</h2>
@@ -143,7 +143,7 @@
 	<dl>
 		<dt><a soy:link="Item.Category">カテゴリ管理</a></dt>
 		<dd>商品カテゴリを編集します</dd>
-		
+
 		<dt><a soy:link="Item.Setting">商品カテゴリの一括設定</a></dt>
 		<dd>商品カテゴリを一括で変更します</dd>
 
@@ -159,7 +159,7 @@
 
 	</div><!-- /block_body -->
 </div>
-<!-- /soy:id="app_limit_function*" -->
+<!-- /soy:display="app_limit_function_rv" -->
 
 <script type="text/javascript">
 function changeCheckBoxAuto(){

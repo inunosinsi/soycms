@@ -298,13 +298,6 @@ class DetailPage extends WebPage{
 
 
     	/** 注文状況の変更に関して **/
-    	$session = SOY2ActionSession::getUserSession();
-		$appLimit = $session->getAttribute("app_shop_auth_limit");
-
-    	//管理制限の権限を取得し、権限がない場合は表示しない
-		$this->addModel("app_limit_function", array(
-			"visible" => $appLimit
-		));
 
     	$this->createAdd("module_list", "_common.Order.ModuleListComponent", array(
     		"list" => $order->getModuleList()

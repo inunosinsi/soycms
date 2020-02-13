@@ -7,14 +7,8 @@ class ExportPage extends WebPage{
 
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 
-		//管理制限の権限を取得
-		$session = SOY2ActionSession::getUserSession();
-		$appLimit = $session->getAttribute("app_shop_auth_limit");
-
 		//権限がない場合は顧客トップにリダイレクト
-		if(!$appLimit){
-			SOY2PageController::jump("User");
-		}
+		if(!AUTH_OPERATE) SOY2PageController::jump("User");
 
 		parent::__construct();
 

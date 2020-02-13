@@ -42,8 +42,6 @@ class IndexPage extends WebPage{
 
 		MessageManager::addMessagePath("admin");
 
-		$appLimit = SOY2ActionSession::getUserSession()->getAttribute("app_shop_auth_limit");
-
 		parent::__construct();
 
 		//一覧ページを開いた時に何らかの処理をする
@@ -52,14 +50,9 @@ class IndexPage extends WebPage{
 			"mode" => "list"
 		));
 
-		//管理制限の権限を取得し、権限がない場合は表示しない
-		$this->addModel("app_limit_function", array(
-			"visible" => $appLimit
-		));
-
 		$this->addLink("create_link", array(
 			"link" => SOY2PageController::createLink("Item.Create"),
-			"visible" => $appLimit
+			"visible" => AUTH_OPERATE
 		));
 
 		if(isset($_GET["reset"])){
@@ -114,8 +107,7 @@ class IndexPage extends WebPage{
 		//ItemListの準備
 		$this->createAdd("item_list", "_common.Item.ItemListComponent", array(
 			"list" => $items,
-			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"appLimit" => $appLimit
+			"detailLink" => SOY2PageController::createLink("Item.Detail.")
 		));
 
 		$this->addLink("reset_link", array(

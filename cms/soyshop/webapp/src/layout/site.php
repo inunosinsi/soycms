@@ -35,12 +35,15 @@ foreach($scripts as $script){
 
 		<div id="header_menu">
 			<ul>
-				<?php if($inquiryUseSiteDb){?><li>
-					<a href="<?php echo $createAppLink; ?>/inquiry">お問い合わせフォーム</a>
+				<?php if(AUTH_SOYAPP){?>
+				<?php if(USE_INQUIRY_SITE_DB){?><li>
+					<a href="<?php echo SOYAPP_LINK; ?>/inquiry">お問い合わせフォーム</a>
 				</li><?php }?>
-				<?php if($mailUseSiteDb){?><li>
-					<a href="<?php echo $createAppLink; ?>/mail">メールマガジン</a>
+				<?php if(USE_MAIL_SITE_DB){?><li>
+					<a href="<?php echo SOYAPP_LINK; ?>/mail">メールマガジン</a>
 				</li><?php }?>
+				<?php }?>
+				<?php if(AUTH_SITE){?>
 				<li class="shop">
 					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Navigation">ショップ管理</a>
 				</li>
@@ -50,8 +53,9 @@ foreach($scripts as $script){
 				<li class="user">
 					<a href="javascript:void(0);" onclick="return ChangeAccountInfo.popup();">ユーザー情報</a>
 				</li>
+				<?php }?>
 				<li>
-				<?php if($showLogoutLink){ ?>
+				<?php if(SHOW_LOGOUT_LINK){ ?>
 					<a href="<?php echo SOYCMS_ADMIN_URL; ?>index.php/Login/Logout">ログアウト</a>
 				<?php }else{ ?>
 					<a href="<?php echo SOYCMS_ADMIN_URL; ?>">CMS管理</a>

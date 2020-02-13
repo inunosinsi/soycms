@@ -240,7 +240,7 @@ class DetailPage extends WebPage{
 
 		$this->addForm("update_form");
 
-		self::buildForm($this->id);
+		self::_buildForm($this->id);
 		//入荷通知周り
 		self::buildNoticeButton();
 		self::buildFavoriteButton();
@@ -254,13 +254,7 @@ class DetailPage extends WebPage{
 		));
 	}
 
-	private function buildForm($id){
-
-		$session = SOY2ActionSession::getUserSession();
-		$appLimit = $session->getAttribute("app_shop_auth_limit");
-
-		//appLimitがfalseの場合は、在庫以外の項目をreadOnlyにする
-		$readOnly = (!$appLimit) ? true : false;
+	private function _buildForm($id){
 
 		$item = ($this->obj) ? $this->obj : soyshop_get_item_object($id);
 		if(is_null($item->getId())){
@@ -273,7 +267,7 @@ class DetailPage extends WebPage{
 			SOY2PageController::jump("Item");
 		}
 
-		$pageDAO = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+		$readOnly = (!AUTH_OPERATE);
 
 		$this->addLabel("open_text", array(
 			"text" => "[" . $item->getPublishText() . "]",
@@ -368,7 +362,12 @@ class DetailPage extends WebPage{
 			"list" => SOYShopPlugin::invoke("soyshop.price.option", array("item" => $item))->getContents()
 		));
 
-		$detailPages = $pageDAO->getByType(SOYShop_Page::TYPE_DETAIL);
+		try{
+			$detailPages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByType(SOYShop_Page::TYPE_DETAIL);
+		}catch(Exception $e){
+			$detailPages = array();
+		}
+
 		DisplayPlugin::toggle("detail_page_id_select", count($detailPages));
 
 		$editable = false;
@@ -527,7 +526,7 @@ class DetailPage extends WebPage{
 
 		//管理制限の権限を取得し、権限がない場合は表示しない
 		foreach(range(1,4) as $i){
-			DisplayPlugin::toggle("app_limit_function_" . $i, $appLimit);
+			DisplayPlugin::toggle("app_limit_function_" . $i, AUTH_OPERATE);
 		}
 
 

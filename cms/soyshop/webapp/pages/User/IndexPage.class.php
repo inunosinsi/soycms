@@ -67,9 +67,6 @@ class IndexPage extends WebPage{
 		$this->buildPager($pager);
 
 
-		//管理制限の権限を取得し、権限がない場合は表示しない
-		$session = SOY2ActionSession::getUserSession();
-		DisplayPlugin::toggle("app_limit_function", $session->getAttribute("app_shop_auth_limit"));
 		DisplayPlugin::toggle("custom_plugin", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_user_customfield"))));
 
 		//user.function
@@ -226,4 +223,3 @@ class IndexPage extends WebPage{
 		}
 	}*/
 }
-?>

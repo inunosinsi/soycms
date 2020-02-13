@@ -11,20 +11,20 @@ class ShopLogic extends SOY2LogicBase{
 	function updateShopSite($shopSite){
 
 		$site = $this->getSite($shopSite->getSiteId());
-		
+
 		//SOY2::RootDir()の書き換え
 		$old = ShopUtil::switchConfig();
 		ShopUtil::setShopSiteDsn($shopSite);
-		
+
 		if($site->getIsDomainRoot() && strpos(SOYSHOP_SITE_URL, $site->getUrl()) !== false){
-			$publishUrl = ShopUtil::getSiteUrl($site);	
+			$publishUrl = ShopUtil::getSiteUrl($site);
 		}else{
 			$publishUrl = $site->getUrl();
 		}
-		
+
 		//管理画面からURLのフォームを非表示しても良い様にしておく
 		$siteUrl = (isset($_POST["Site"]["url"])) ? $_POST["Site"]["url"] : $publishUrl;
-		
+
 		try{
 			$config = SOYShop_ShopConfig::load();
 			$config->setShopName($site->getSiteName());
@@ -34,18 +34,18 @@ class ShopLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			$res = false;
 		}
-		
+
 		ShopUtil::resetConfig($old);
-				
+
 		return $res;
 	}
-		
+
 	function updateAppRole($accounts){
 		$old = ShopUtil::switchConfig();
 		ShopUtil::setCMSDsn();
 
 		$appId = "shop";
-		
+
 		$res = true;
 
 		$dao = SOY2DAOFactory::create("admin.AppRoleDAO");
@@ -269,7 +269,8 @@ class ShopLogic extends SOY2LogicBase{
 			"0" => "権限なし",
 			"1" => "一般管理者",
 			"2" => "受注管理者",
-			"3" => "管理制限者"
+			"3" => "管理制限者",
+			"10" => "商品管理のみ"
 		);
 	}
 
@@ -367,7 +368,7 @@ class ShopLogic extends SOY2LogicBase{
 		$dao->resetDomainRootSite();
 		$dao->updateDomainRootSite($site->getId());
 		$dao->commit();
-		
+
 		try{
 			$logic = SOY2Logic::createInstance("logic.admin.Site.DomainRootSiteLogic");
 			$logic->create();
@@ -384,9 +385,9 @@ class ShopLogic extends SOY2LogicBase{
 		foreach($sites as $site){
 			CMSUtil::unlinkAllIn($site->getPath().".cache/");
 		}
-		
+
 		ShopUtil::resetConfig($old);
-			
+
 		return $res;
 	}
 

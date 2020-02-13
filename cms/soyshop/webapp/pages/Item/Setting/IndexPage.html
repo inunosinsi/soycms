@@ -10,9 +10,9 @@
 		<h2>商品一覧</h2>
 
 	</div>
-	
+
 	<div class="block_body">
-		
+
 		<dl>
 		<dt class="search_btn_dt">
 			検索する
@@ -51,16 +51,16 @@
 
 		</div>
 	</dl>
-		
+
 		<form soy:id="form">
 			<table class="form_list">
 				<caption>商品一覧</caption>
 				<thead>
 					<tr class="alC">
 						<th>
-							<!-- soy:id="app_limit_function" -->
+							<!-- soy:display="app_limit_function" -->
 							<input id="item_checkbox" class="item_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
-							<!-- /soy:id="app_limit_function" -->
+							<!-- /soy:display="app_limit_function" -->
 						</th>
 						<th>&nbsp;</th>
 						<th><nobr>公開状態</nobr></th>
@@ -70,18 +70,18 @@
 						<th>価格 / セール</th>
 					</tr>
 				</thead>
-				
+
 				<tfoot>
 					<tr id="items_operation" style="display:none;">
 						<td colspan="7">
 							<span class="option">操作：</span>
 							カテゴリを<select soy:id="category_change_select"></select>に<input type="submit" name="change" value="変更する">&nbsp;
 							カテゴリの設定を<input type="submit" name="remove" value="外す">
-	
+
 						</td>
 					</tr>
 				</tfoot>
-				
+
 				<tbody>
 					<!-- soy:id="item_list" -->
 					<tr>
@@ -95,14 +95,14 @@
 					</tr>
 					<!-- /soy:id="item_list" -->
 				</tbody>
-	
+
 			</table>
 		</form>
 
 	</div><!-- /block_body -->
 </div>
 
-<!-- soy:display="app_limit_function" -->
+<!-- soy:display="app_limit_function_rv" -->
 <div class="block">
 	<div class="block_title">
 		<h2>その他</h2>
@@ -113,7 +113,7 @@
 	<dl>
 		<dt><a soy:link="Item.Category">カテゴリ管理</a></dt>
 		<dd>商品カテゴリを編集します</dd>
-		
+
 		<dt><a soy:link="Item.Setting">商品カテゴリの一括設定</a></dt>
 		<dd>商品カテゴリを一括で変更します</dd>
 
@@ -129,7 +129,7 @@
 
 	</div><!-- /block_body -->
 </div>
-<!-- /soy:display="app_limit_function" -->
+<!-- /soy:display="app_limit_function_rv" -->
 
 <style>
 	dt.search_btn_dt {

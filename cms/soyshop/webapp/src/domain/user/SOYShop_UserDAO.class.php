@@ -9,7 +9,7 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 	 */
     function insert(SOYShop_User $bean){
     	$password = $bean->getPassword();
-    	if(strlen($password) > 0){
+    	if(strlen($password) > 0 && strlen($password) < 100){	//念の為文字数制限を加えておく
     		$bean->setPassword($bean->hashPassword($password));
     	}
 

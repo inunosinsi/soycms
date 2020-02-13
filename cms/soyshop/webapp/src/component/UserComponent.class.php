@@ -308,7 +308,6 @@ class UserComponent {
 			"value" => $user->getJobName(),
 		));
 
-
 		/* ユーザカスタムフィールド */
 		SOYShopPlugin::load("soyshop.user.customfield");
 		$delegate = SOYShopPlugin::invoke("soyshop.user.customfield", array(

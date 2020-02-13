@@ -20,20 +20,20 @@ class IndexPage extends WebPage{
 						}catch(Exception $e){
 							continue;
 						}
-						
+
 						//一括登録
 						if(isset($_POST["register_btn"])){
 							if(strlen($_POST["input"]["attribute1"])) $user->setAttribute1($_POST["input"]["attribute1"]);
 							if(strlen($_POST["input"]["attribute2"])) $user->setAttribute2($_POST["input"]["attribute2"]);
 							if(strlen($_POST["input"]["attribute3"])) $user->setAttribute3($_POST["input"]["attribute3"]);
-							
+
 						//一括削除
 						}else if(isset($_POST["remove_btn"])){
 							if(isset($_POST["remove"]["attribute1"])) $user->setAttribute1(null);
 							if(isset($_POST["remove"]["attribute2"])) $user->setAttribute2(null);
 							if(isset($_POST["remove"]["attribute3"])) $user->setAttribute3(null);
 						}
-						
+
 						try{
 							$userDao->update($user);
 						}catch(Exception $e){
@@ -41,16 +41,16 @@ class IndexPage extends WebPage{
 						}
 					}
 				}
-				
+
 				if(isset($this->pageNumber)){
 					SOY2PageController::jump("User.Setting.".$this->pageNumber."?updated");
 				}else{
 					SOY2PageController::jump("User.Setting?updated");
 				}
-				
+
 			}
 		}
-		
+
 		if(array_key_exists("reset", $_POST)){
 			SOY2ActionSession::getUserSession()->setAttribute("User.Search:"."search", array());
 		}
@@ -58,7 +58,7 @@ class IndexPage extends WebPage{
 	}
 
 	function __construct($args) {
-		
+
 		$this->pageNumber = (isset($args[0])) ? (int)$args[0] : null;
 
 		parent::__construct();
@@ -99,19 +99,15 @@ class IndexPage extends WebPage{
 		$this->addModel("reset_button", array(
 			"visible" => (!empty($search))
 		));
-		
+
 		$this->addForm("form");
 
-		$session = SOY2ActionSession::getUserSession();
-		$appLimit = $session->getAttribute("app_shop_auth_limit");
-
 		//ユーザ一覧
-		$this->createAdd("user_list", "_common.User.UserListComponent", array(
-			"list" => $users,
-			"appLimit" => $appLimit
-		));
 		DisplayPlugin::toggle("no_user", (count($users) < 1));
-		
+		$this->createAdd("user_list", "_common.User.UserListComponent", array(
+			"list" => $users
+		));
+
 		//ページャー
 		$start = $offset + 1;
 		$end = $offset + count($users);
@@ -126,21 +122,17 @@ class IndexPage extends WebPage{
 		$pager->setLimit($limit);
 
 		$this->buildPager($pager);
-		
+
 		self::buildInputForm();
 		self::buildRemoveForm();
 
-		//管理制限の権限を取得し、権限がない場合は表示しない
-		$this->addModel("app_limit_function", array(
-			"visible" => $appLimit
-		));
 		DisplayPlugin::toggle("custom_plugin", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_user_customfield"))));
 
 		//user.function
 		$this->createAdd("function_list", "_common.User.FunctionListComponent", array(
 			"list" => $this->getFunctionList()
 		));
-		
+
 		//user.info
 		$this->createAdd("info_list", "_common.User.InfoListComponent", array(
 			"list" => $this->getInfoList()
@@ -155,7 +147,7 @@ class IndexPage extends WebPage{
 
 		return $delegate->getList();
 	}
-	
+
 	function getInfoList(){
 		SOYShopPlugin::load("soyshop.user.info");
 		$delegate = SOYShopPlugin::invoke("soyshop.user.info");
@@ -176,7 +168,7 @@ class IndexPage extends WebPage{
 	}
 
 	private function buildSearchForm($search){
-		
+
 		foreach(range(1, 3) as $key){
 			$this->addCheckbox("search_no_attribute" . $key, array(
 				"name" => "search[no][attribute" . $key . "]",
@@ -185,17 +177,17 @@ class IndexPage extends WebPage{
 				"label" => "属性" . $key
 			));
 		}
-		
+
 		foreach(array("id", "name", "mail_address", "attribute1", "attribute2", "attribute3") as $key){
 			$this->addInput("search_" . $key, array(
 				"name" => "search[" . $key . "]",
 				"value" => (isset($search[$key])) ? $search[$key] : "",
 				"style" => "width:90%;",
 				"onclick" => "this.select()"
-			));	
+			));
 		}
 	}
-	
+
 	private function buildInputForm(){
 		foreach(array("attribute1", "attribute2", "attribute3") as $key){
 			$this->addInput("input_" . $key, array(
@@ -215,7 +207,7 @@ class IndexPage extends WebPage{
 			));
 		}
 	}
-	
+
 	function buildPager(PagerLogic $pager){
 
 		//件数情報表示

@@ -58,15 +58,6 @@ class CreatePage extends WebPage{
 	var $errors = array();
 
     function __construct() {
-
-    	$session = SOY2ActionSession::getUserSession();
-		$appLimit = $session->getAttribute("app_shop_auth_limit");
-
-    	//管理制限者で商品の追加を開こうとしたとき、商品一覧にリダイレクト
-		if($appLimit == false){
-			SOY2PageController::jump("Item");
-		}
-
 		MessageManager::addMessagePath("admin");
 
     	parent::__construct();

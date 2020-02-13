@@ -3,7 +3,6 @@
 class ItemListComponent extends HTMLList{
 
     private $detailLink;
-    private $appLimit;
 
     protected function populateItem($item, $key) {
 
@@ -23,7 +22,7 @@ class ItemListComponent extends HTMLList{
             "name" => "items[]",
             "value" => $item->getId(),
             "onchange" => '$(\'#items_operation\').show();',
-            "visible" => $this->appLimit
+            "visible" => AUTH_OPERATE
         ));
 
         $this->addLabel("item_publish", array(
@@ -85,10 +84,6 @@ class ItemListComponent extends HTMLList{
 
     function setDetailLink($detailLink) {
         $this->detailLink = $detailLink;
-    }
-
-    function setAppLimit($appLimit){
-        $this->appLimit = $appLimit;
     }
 
 	/** 便利な関数 **/

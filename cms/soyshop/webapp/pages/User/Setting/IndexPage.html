@@ -33,15 +33,15 @@
 				<input type="checkbox" soy:id="search_no_attribute3">
 				の値のない顧客を<input type="submit" name="search_btn" value="検索する">
 			</div>
-			
+
 			<table class="form_list">
 				<caption>顧客一覧</caption>
 				<thead>
 					<tr class="alC">
 						<th>
-							<!-- soy:id="app_limit_function" -->
+							<!-- soy:display="app_limit_function" -->
 							<input id="user_checkbox" class="user_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
-							<!-- /soy:id="app_limit_function" -->
+							<!-- /soy:display="app_limit_function" -->
 						</th>
 						<th class="short">ID</th>
 						<th class="middle">姓名</th>
@@ -131,7 +131,7 @@
 					<!-- /soy:display="no_user" -->
 				</tbody>
 			</table>
-		</form>			
+		</form>
 
 	</div><!-- /block_body -->
 </div><!-- /block -->
@@ -176,7 +176,7 @@
 		</dd>
 		<!-- /soy:id="info_list" -->
 	</dl>
-	
+
 	</div><!-- /block_body -->
 </div>
 <!-- /soy:display="app_limit_function" -->

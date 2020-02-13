@@ -72,8 +72,6 @@ class SettingPage extends WebPage{
 		$this->createAdd("user_list", "_common.User.UserListComponent", array(
 			"list" => self::getUsers(),
 			"detailLink" => SOY2PageController::createLink("User.Detail."),
-//			"config" => SOYShop_ShopConfig::load(),
-			"appLimit" => true
 		));
 
 		$this->addModel("datapicker_css", array(

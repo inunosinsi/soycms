@@ -35,13 +35,15 @@ foreach($scripts as $script){
 
 		<div id="header_menu">
 			<ul>
-				<?php if($appAuth){?>
-				<?php if($inquiryUseSiteDb){?><li>
-					<a href="<?php echo $createAppLink; ?>/inquiry">お問い合わせフォーム</a>
+				<?php if(AUTH_SOYAPP){?>
+				<?php if(USE_INQUIRY_SITE_DB){?><li>
+					<a href="<?php echo SOYAPP_LINK; ?>/inquiry">お問い合わせフォーム</a>
 				</li><?php }?>
-				<?php if($mailUseSiteDb){?><li>
-					<a href="<?php echo $createAppLink; ?>/mail">メールマガジン</a>
+				<?php if(USE_MAIL_SITE_DB){?><li>
+					<a href="<?php echo SOYAPP_LINK; ?>/mail">メールマガジン</a>
 				</li><?php }?>
+				<?php }?>
+				<?php if(AUTH_SITE){?>
 				<li class="shop">
 					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Navigation">ショップ管理</a>
 				</li>
@@ -53,7 +55,7 @@ foreach($scripts as $script){
 				</li>
 				<?php }?>
 				<li>
-				<?php if($showLogoutLink){ ?>
+				<?php if(SHOW_LOGOUT_LINK){ ?>
 					<a href="<?php echo SOYCMS_ADMIN_URL; ?>index.php/Login/Logout">ログアウト</a>
 				<?php }else{ ?>
 					<a href="<?php echo SOYCMS_ADMIN_URL; ?>">CMS管理</a>
@@ -65,40 +67,44 @@ foreach($scripts as $script){
 
 	<div id="menu">
 		<ul class="clearfix">
+			<?php if(AUTH_HOME){?>
 			<li class="news">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>">新着</a>
 			</li>
-			<?php if(count($extConts)) {
+			<?php }?>
+			<?php if(AUTH_EXTENSION && count($extConts)) {
 				foreach($extConts as $plgId => $cont){
 					echo "<li class=\"extention\">";
 					echo "<a href=\"" . SOYSHOP_ADMIN_URL . "/Extension/" . $plgId . "\">" . $cont["tab"] . "</a>";
 					echo "</li>";
 				}
 			}?>
-			<?php if($isOrder){?>
+			<?php if(AUTH_ORDER){?>
 			<li class="order">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Order">注文</a>
 			</li>
 			<?php }?>
-			<?php if($isUser){?>
+			<?php if(AUTH_USER){?>
 			<li class="user">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/User">顧客</a>
 			</li>
 			<?php }?>
-			<?php if($isItem){?>
+			<?php if(AUTH_ITEM){?>
 			<li class="item">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Item">商品</a>
 			</li>
 			<?php }?>
-			<?php if($isReview){?>
+			<?php if(AUTH_REVIEW){?>
 			<li class="review">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Review">レビュー</a>
 			</li>
 			<?php }?>
-			<?php if($appLimit){ ?>
+			<?php if(AUTH_CONFIG){ ?>
 			<li class="config">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Config">設定</a>
 			</li>
+			<?php } ?>
+			<?php if(AUTH_PLUGIN){ ?>
 			<li class="plugin">
 				<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Plugin">プラグイン</a>
 			</li>

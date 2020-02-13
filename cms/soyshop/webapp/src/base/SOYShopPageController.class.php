@@ -8,31 +8,9 @@ class SOYShopPageController extends SOY2PageController{
         SOYShopPlugin::load("soyshop.admin.prepare");
         SOYShopPlugin::invoke("soyshop.admin.prepare");
 
-		$session = SOY2ActionSession::getUserSession();
-
-		/**
-		 * appAuth	テンプレートの変更やページの追加を許可する
-		 * appLimit	プラグインやCSVの使用を許可する。設定の変更も許可する
-		 */
-
-		//初期管理者の時は全操作を許可する
-		if($session->getAttribute("isdefault")){
-			$appAuth = true;
-			$appLimit = true;
-		//App権限を取得する
-		}else{
-			//一般管理者の場合、true
-			$appAuth = ($session->getAttribute("app_shop_auth_level")==1) ? true : false;
-			//一般管理者または受注管理者の場合、true
-			if($appAuth){
-				$appLimit = true;
-			//管理制限者の場合、false
-			}else{
-				$appLimit = ($session->getAttribute("app_shop_auth_level")==2) ? true : false;
-			}
-		}
-
-		$session->setAttribute("app_shop_auth_limit", $appLimit);
+		//管理権限の設定 SOYShopAuthUtil内で権限に関することをすべて対応してしまう
+		SOY2::import("util.SOYShopAuthUtil");
+		SOYShopAuthUtil::setAuthConstant();
 
 		$template = "main";
 
@@ -51,25 +29,12 @@ class SOYShopPageController extends SOY2PageController{
 
 		$classPath .= 'Page';
 
-		//管理制限者でプラグインの管理画面を開こうとしたとき、トップページにリダイレクト
-		if($appLimit == false && strpos($classPath,"Plugin") !== false){
-			SOY2PageController::jump("");
-		}
-
-		//管理制限者で設定画面を開こうとしたとき、トップページにリダイレクト
-		if($appLimit == false && strpos($classPath,"Config") !== false){
-			SOY2PageController::jump("");
-		}
-
+		//該当するページを表示して良いか調べて、ダメであればリダイレクト
+		SOYShopAuthUtil::checkAuthEachPage($classPath);
 
 		if(strpos($classPath,"Site") !== false){
-			//App権限を確認し、許可されていない場合はトップページにリダイレクト
-			if($appAuth){
-				$template = "site";
-				$pageClass = "site";
-			}else{
-				SOY2PageController::jump("");
-			}
+			$template = "site";
+			$pageClass = "site";
 		}else{
 			$pageClass = "shop";
 		}
@@ -114,41 +79,35 @@ class SOYShopPageController extends SOY2PageController{
 			"arguments" => $args
 		));
 
-		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$shopConfig = SOYShop_ShopConfig::load();
 		$shopName = $shopConfig->getShopName();
 		$appName = trim(htmlspecialchars($shopConfig->getAppName(), ENT_QUOTES, "UTF-8"));
 		$appLogoPath = trim(htmlspecialchars($shopConfig->getAppLogoPath(), ENT_QUOTES, "UTF-8"));
 
+		$subMenu = (method_exists($webPage,"getSubMenu")) ? $webPage->getSubMenu() : null;
+		$layout = ($subMenu) ? "layout_right" : "layout_full";
+
+		$activeTab = (strlen($classPathBuilder->getClassPath($path)) > 0)
+				   ? strtolower(strtr($classPathBuilder->getClassPath($path), ".", "_"))
+				   : "news" ;
+
+		define("SHOW_LOGOUT_LINK", self::_isDirectLogin());
+
+		//SOY Appのリンク表示
+		define("USE_INQUIRY_SITE_DB", SOYAppUtil::checkAppAuth("inquiry"));
+		define("USE_MAIL_SITE_DB", SOYAppUtil::checkAppAuth("mail"));
+
+		define("SOYAPP_LINK", SOYAppUtil::createAppLink());
+
+		$title = (method_exists($webPage,"getTitle")) ? $webPage->getTitle() . " | SOY Shop" : "SOY Shop" . " | ".$shopName;
+		$css= (method_exists($webPage,"getCSS")) ? $webPage->getCSS() : array();
+		$scripts= (method_exists($webPage,"getScripts")) ? $webPage->getScripts() : array();
+
+		if(method_exists($webPage,"isLayer") && $webPage->isLayer()){
+			$template = "layer";
+		}
+
 		try{
-			$subMenu = (method_exists($webPage,"getSubMenu")) ? $webPage->getSubMenu() : null;
-			$layout = ($subMenu) ? "layout_right" : "layout_full";
-
-			$activeTab = (strlen($classPathBuilder->getClassPath($path)) > 0)
-			           ? strtolower(strtr($classPathBuilder->getClassPath($path), ".", "_"))
-			           : "news" ;
-
-			$showLogoutLink = $this->isDirectLogin();
-			$isReview = SOYShopPluginUtil::checkIsActive("item_review");
-
-			//SOY Appのリンク表示
-			$inquiryUseSiteDb = SOYAppUtil::checkAppAuth("inquiry");
-			$mailUseSiteDb = SOYAppUtil::checkAppAuth("mail");
-
-			$createAppLink = SOYAppUtil::createAppLink();
-
-			$title = (method_exists($webPage,"getTitle")) ? $webPage->getTitle() . " | SOY Shop" : "SOY Shop" . " | ".$shopName;
-			$css= (method_exists($webPage,"getCSS")) ? $webPage->getCSS() : array();
-			$scripts= (method_exists($webPage,"getScripts")) ? $webPage->getScripts() : array();
-
-			if(method_exists($webPage,"isLayer") && $webPage->isLayer()){
-				$template = "layer";
-			}
-
-			$isOrder = $shopConfig->getDisplayOrderAdminPage();
-			$isItem = $shopConfig->getDisplayItemAdminPage();
-			$isUser = $shopConfig->getDisplayUserAdminPage();
-
 			ob_start();
 			$webPage->display();
 			$html = ob_get_contents();
@@ -157,7 +116,6 @@ class SOYShopPageController extends SOY2PageController{
 			include(SOY2::RootDir() . "layout/{$template}.php");
 
 		}catch(Exception $e){
-
 
 			ob_start();
 			echo "<pre>";
@@ -176,8 +134,7 @@ class SOYShopPageController extends SOY2PageController{
     /**
      * SOY Shopしかログイン権限がない管理者かどうか
      */
-    function isDirectLogin(){
-     	$only_one = SOY2ActionSession::getUserSession()->getAttribute("hasOnlyOneRole");
-     	return ($only_one == true);
+    private function _isDirectLogin(){
+     	return (SOY2ActionSession::getUserSession()->getAttribute("hasOnlyOneRole"));
     }
 }

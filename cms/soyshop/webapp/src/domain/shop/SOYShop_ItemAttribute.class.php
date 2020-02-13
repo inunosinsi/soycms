@@ -304,11 +304,8 @@ class SOYShop_ItemAttributeConfig{
 
 	function getForm($value, $extraValues = null){
 
-		$session = SOY2ActionSession::getUserSession();
-		$appLimit = $session->getAttribute("app_shop_auth_limit");
-
-		//appLimitがfalseの場合は、在庫以外の項目をreadOnlyにする
-		$readOnly = (!$appLimit) ? true : false;
+		//AUTH_OPERATEがfalseの場合は、在庫以外の項目をreadOnlyにする
+		$readOnly = (!AUTH_OPERATE);
 
 		$h_formName = htmlspecialchars($this->getFormName(), ENT_QUOTES, "UTF-8");
 		$h_formID = htmlspecialchars($this->getFormId(), ENT_QUOTES, "UTF-8");

@@ -108,10 +108,8 @@ class UserLogic extends SOY2LogicBase{
 		$path = $this->makeDirectory($userId) . $new;
 		@move_uploaded_file($tmp, $path);
 
-		$res = $this->checkSizeBeforeResize(getimagesize($path), $resizeWidth);
-
 		//リサイズ
-		if($isResize && $res){
+		if($isResize && self::_checkSizeBeforeResize(getimagesize($path), $resizeWidth)){
 			soy2_resizeimage($path, $path, $resizeWidth);
 		}
 
@@ -123,10 +121,8 @@ class UserLogic extends SOY2LogicBase{
 		$path = $this->makeTmpDirectory() . $new;
 		@move_uploaded_file($tmp, $path);
 
-		$res = $this->checkSizeBeforeResize(getimagesize($path),$resizeWidth);
-
 		//リサイズ
-		if($isResize && $res){
+		if($isResize && self::_checkSizeBeforeResize(getimagesize($path),$resizeWidth)){
 			soy2_resizeimage($path, $path, $resizeWidth);
 		}
 
@@ -138,14 +134,8 @@ class UserLogic extends SOY2LogicBase{
 		return md5($file . time()) . $fileType;
 	}
 
-	function checkSizeBeforeResize($image, $resize_width){
-		$res = true;
-		$width = $image[0];
-		if($resize_width - $width > 0){
-			$res = false;
-		}
-
-		return $res;
+	function _checkSizeBeforeResize($image, $resize_width){
+		return (isset($image[0]) && ($image[0] - $resize_width));
 	}
 
 	function makeDirectory($userId){
@@ -190,4 +180,3 @@ class UserLogic extends SOY2LogicBase{
 		$dir->close();
 	}
 }
-?>
