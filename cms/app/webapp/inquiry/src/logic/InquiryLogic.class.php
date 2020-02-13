@@ -218,6 +218,35 @@ class InquiryLogic extends SOY2LogicBase{
 				//
 			}
 
+			//パスワードの登録
+			SOY2::import("util.SOYShopPluginUtil");
+			if(SOYShopPluginUtil::checkIsActive("generate_password")){	//パスワードの自動生成　後ほどパスワードをメールで通知する
+				$mailAddress = "";
+				foreach($binds as $bind){
+					if(preg_match('/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/', $bind)){
+						$mailAddress = trim($bind);
+					}
+				}
+
+				if(strlen($mailAddress)){
+					include_once(SOY2::RootDir() . "base/func/common.php");
+					SOY2::import("module.plugins.generate_password.util.GeneratePasswordUtil");
+					$cnf = GeneratePasswordUtil::getConfig();
+					$len = (isset($cnf["password_strlen"]) && is_numeric($cnf["password_strlen"])) ? (int)$cnf["password_strlen"] : 12;
+					$pw = soyshop_create_random_string($len);
+
+					$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+					try{
+						$user = $userDao->getByMailAddress($mailAddress);
+						GeneratePasswordUtil::saveAutoGeneratePassword($user->getMailAddress(), $pw);
+						$user->setPassword($user->hashPassword($pw));
+						$userDao->update($user);
+					}catch(Exception $e){
+						//
+					}
+				}
+			}
+
 			SOYInquiryUtil::resetConfig($old);
 		}
     }

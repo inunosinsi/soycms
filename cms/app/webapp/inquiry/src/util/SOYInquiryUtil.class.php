@@ -49,7 +49,7 @@ class SOYInquiryUtil{
 
 		if(is_null($shopId)) $shopId = "shop";
 		$soyshopWebapp = dirname(CMS_COMMON) . "/soyshop/webapp/";
-		include_once($soyshopWebapp."conf/shop/" . $shopId . ".conf.php");
+		if(!defined("SOYSHOP_SITE_DIRECTORY")) include_once($soyshopWebapp."conf/shop/" . $shopId . ".conf.php");
 
 		$entityDir = $soyshopWebapp . "src/domain/";
 
