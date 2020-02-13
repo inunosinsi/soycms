@@ -136,7 +136,7 @@ window.zip2address = zip2address;
 function inquiry_search_address(){
 	if((document.querySelector(".input-zip"))){
 		var zip = (document.querySelector(".input-zip")) ? inquiry_convert_zipcode(document.querySelector(".input-zip").value) : "";
-		
+
 		if(zip.length === 7){
 			inquiry_zip2address(zip);
 		}else{
@@ -167,7 +167,7 @@ function inquiry_zip2address(zip){
 function inquiry_insert_empty_values(){
 	document.querySelector(".input-pref").value = "";
 	document.querySelector(".input-city").value = "";
-	document.querySelector(".input-town").value = "";
+	zdocument.querySelector(".input-town").value = "";
 }
 
 function inquiry_convert_zipcode(zip){
