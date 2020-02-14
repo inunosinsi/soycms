@@ -120,12 +120,11 @@ class CalendarBaseComponent extends SOY2LogicBase{
 		//カレンダを表示する
 		$html = array();
 
-		//bootstrap用のタグ
 		if(defined("RESERVE_CALENDAR_MODE")){
 			switch(RESERVE_CALENDAR_MODE){
 				case "bootstrap":
 					//@ToDo モードを細分化するかもしれない
-					$html[] = "<table class=\"table\">";
+					$html[] = "<table class=\"table reserve_calendar\">";
 					break;
 				default:
 					$html[] = "<table>";

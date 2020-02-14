@@ -36,7 +36,7 @@ body {
 	margin-bottom: 20px;
 	font-weight: bold;
 }
-table {
+table.reserve_calendar {
 	width: 100%;
 	border-spacing: 0;
 	border-left: 1px solid #ccc;
@@ -45,14 +45,14 @@ table {
 	line-height: 1.5;
 	border-collapse: separate;
 }
-th,
-td {
+table.reserve_calendar thead th,
+table.reserve_calendar tbody td {
 	background: #fff;
 	padding: 7px;
 	border-bottom: 1px solid #ccc;
 	border-right: 1px solid #ccc;
 }
-th {
+table.reserve_calendar thead th {
 	color: #fff;
 	background: #4F616B;
 	vertical-align: top;
@@ -60,41 +60,41 @@ th {
 	padding-bottom: 7px;
 }
 
-tr.next{
+table.reserve_calendar tbody tr.next{
 	display:none;
 }
 
 /*
-th.calendar-sun {
+table.reserve_calendar thead tr th.calendar-sun {
 	color: #DF0D2D;
 	background: #F8E4E4;
 }
-th.calendar-sat {
+table.reserve_calendar thead tr th.calendar-sat {
 	color: #2574D3;
 	background: #E2F3FC;
 }
 */
-td {
+table.reserve_calendar tbody tr td {
 	width: 14.3%;
 	height: 100px;
 	vertical-align: top;
 }
-td.holiday,
-td.sun {
+table.reserve_calendar tbody tr td.holiday,
+table.reserve_calendar tbody tr td.sun {
 	color: #CE2727;
 	background: #FCF3F3;
 }
-td.sat {
+table.reserve_calendar tbody tr td.sat {
 	color: #54AFC8;
 	background: #F5FBFE;
 }
-td.other,
-td.next{
+table.reserve_calendar tbody tr td.other,
+table.reserve_calendar tbody tr td.next{
 	color:#CDCDCD;
 }
 
 
-/**.calendar-day-number {
+/**table.reserve_calendar tbody tr td.calendar-day-number {
 	font-style: normal;
 	font-family: "Helvetica Neue", Arial, sans-serif;
 	font-weight: bold;
@@ -112,14 +112,14 @@ i {
 	padding: 0 3px;
 	line-height: 1.2;
 }
-td.holiday .day,
-td.sun .day {
+table.reserve_calendar tbody tr td.holiday .day,
+table.reserve_calendar tbody tr td.sun .day {
 	color: #DF0D2D;
 }
-td.sat .day {
+table.reserve_calendar tbody tr td.sat .day {
 	color: #2574D3;
 }
-td span {
+table.reserve_calendar tbody tr td span {
 	font-size: 11px;
 	line-height: 1.3;
 	display: block;
@@ -140,7 +140,7 @@ td span {
 	-ms-border-radius: 4px;
 }
 
-td.today {
+table.reserve_calendar tbody tr td.today {
 	background: #FEFBDA;
 }
 
@@ -161,23 +161,23 @@ td.today {
 	.pager{
 		display:none;
 	}
-	thead {
+	table.reserve_calendar thead {
 		display: none;
 	}
-	th,
-	td {
+	table.reserve_calendar thead tr th,
+	table.reserve_calendar tbody tr td {
 		display: block;
 		width: 100%;
 		min-height:56px !important;
 		padding: 0;
 	}
-	td {
+	table.reserve_calendar tbody tr td {
 		height: auto;
 		display: -webkit-flex;
 		display: flex;
 	}
 
-	.calendar-labels {
+	table.reserve_calendar tbody tr td.calendar-labels {
 		padding: 5px;
 	}
 	[class*=calender-label] {
@@ -188,15 +188,17 @@ td.today {
 		font-size: 12px;
 	}
 
-	tr.before{
+	table.reserve_calendar thead tr.before,
+	table.reserve_calendar tbody tr.before{
 		display:none;
 	}
-	tr.next{
+	table.reserve_calendar thead tr.next,
+	table.reserve_calendar tbody tr.next{
 		display:block;
 	}
 
 	/* 日付 */
-	td .calendar-day-number {
+	table.reserve_calendar tbody tr td .calendar-day-number {
 		font-weight: normal;
 		padding: 7px;
 		font-size: 18px;
@@ -206,63 +208,63 @@ td.today {
 		width: 75px;
 		height: auto;
 	}
-	td.before{
+	table.reserve_calendar tbody tr td.before{
 		display:none !important;
 	}
-	td.after{
+	table.reserve_calendar tbody tr td.after{
 		display:none !important;
 	}
-	td.next{
+	table.reserve_calendar tbody tr td.next{
 		color:#212529;
 	}
-	td.other{
+	table.reserve_calendar tbody tr td.other{
 		color:#212529;
 	}
-	td.holiday,
-	td.sun{
+	table.reserve_calendar tbody tr td.holiday,
+	table.reserve_calendar tbody tr td.sun{
 		background: #f8c7c7 !important;
 	}
 
-	td.sat{
+	table.reserve_calendar tbody tr td.sat{
 		background: #c8ebfe !important;
 	}
 
-	td.sun.next {
+	table.reserve_calendar tbody tr td.sun.next {
 		color: #DF0D2D;
 	}
-	td.sat.next {
+	table.reserve_calendar tbody tr td.sat.next {
 		color: #2574D3;
 	}
 
 	/* モバイル用曜日を追加 */
-	td i:after {
+	table.reserve_calendar tbody tr td i:after {
 		font-size: 12px;
 		position: relative;
 		left: -5px;
 	}
-	td:nth-child(1) i:after {
+	table.reserve_calendar tbody tr td:nth-child(1) i:after {
 		content: "（日）";
 	}
-	td:nth-child(2) i:after {
+	table.reserve_calendar tbody tr td:nth-child(2) i:after {
 		content: "（月）";
 	}
-	td:nth-child(3) i:after {
+	table.reserve_calendar tbody tr td:nth-child(3) i:after {
 		content: "（火）";
 	}
-	td:nth-child(4) i:after {
+	table.reserve_calendar tbody tr td:nth-child(4) i:after {
 		content: "（水）";
 	}
-	td:nth-child(5) i:after {
+	table.reserve_calendar tbody tr td:nth-child(5) i:after {
 		content: "（木）";
 	}
-	td:nth-child(6) i:after {
+	table.reserve_calendar tbody tr td:nth-child(6) i:after {
 		content: "（金）";
 	}
-	td:nth-child(7) i:after {
+	table.reserve_calendar tbody tr td:nth-child(7) i:after {
 		content: "（土）";
 	}
 
-	a.btn {
+	table.reserve_calendar tbody tr td a.btn {
 		margin:8px;
 	}
 }

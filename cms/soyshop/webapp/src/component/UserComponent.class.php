@@ -311,7 +311,7 @@ class UserComponent {
 		/* ユーザカスタムフィールド */
 		SOYShopPlugin::load("soyshop.user.customfield");
 		$delegate = SOYShopPlugin::invoke("soyshop.user.customfield", array(
-			"mode" => (!(SOYSHOP_ADMIN_PAGE && strpos($_SERVER["PATH_INFO"], "User/Detail"))) ? $mode : "none",	//管理画面を開いている時は二重読み込みを防止する意味でnoneモードを渡す
+			"mode" => (!(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE && strpos($_SERVER["PATH_INFO"], "User/Detail"))) ? $mode : "none",	//管理画面を開いている時は二重読み込みを防止する意味でnoneモードを渡す
 			"app" => $app,
 			"userId" => $user->getId()
 		));
