@@ -119,6 +119,10 @@ class SOYShopUserCustomfieldDelegateAction implements SOY2PluginDelegateAction{
 			case "order":
 				$this->_list[$moduleId] = $action->order($this->userId);
 				break;
+
+			case "none":
+				//何もしない
+				break;
 		}
 	}
 

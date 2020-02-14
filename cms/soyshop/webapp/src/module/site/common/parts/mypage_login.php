@@ -176,6 +176,15 @@ function soyshop_parts_mypage_login($html, $page){
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 
+	$obj->addModel("is_bank", array(
+		"visible" => (SOYShopPluginUtil::checkIsActive("transfer_information")),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+	$obj->addLink("bank_link", array(
+		"link" => soyshop_get_mypage_url() . "/bank",
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
 	$obj->addModel("is_inquiry", array(
 		"visible" => (SOYShopPluginUtil::checkIsActive("inquiry_on_mypage")),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
