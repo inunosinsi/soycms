@@ -136,6 +136,73 @@ class SOYInquiryUtil{
 		return SOY2::RootDir() . "template/default/";
 	}
 
+	/** 管理画面確認用の便利な関数 **/
+	const INQUIRY_LABEL_LENGTH = 20;
+
+	public static function shapeInquiryContent($txt){
+		$lines = explode("\n", $txt);
+		if(!count($lines)) return "";
+
+		//とても長い項目名を探す
+		$mostLongStrlen = 0;
+		$lns = array();
+		foreach($lines as $line){
+			$label = trim(substr($line, 0 , strpos($line, ":")));
+			$lns[] = mb_strlen($label);
+		}
+
+		//最も長いラベル
+		rsort($lns);
+		$mostLong = array_shift($lns);
+
+		//labelが20文字以内であればそのまま返す
+		if($mostLong <= self::INQUIRY_LABEL_LENGTH) return $txt;
+
+		//2番目に長いラベル
+		for(;;){
+			if(!count($lns)) {
+				$secLong = 1;
+				break;
+			}
+			$secLong = array_shift($lns);
+			if($secLong < self::INQUIRY_LABEL_LENGTH) break;
+		}
+
+
+		//組み立てる
+		$t = array();
+		foreach($lines as $line){
+			if(strlen($line)){
+				$label = trim(substr($line, 0 , strpos($line, ":")));
+				$content = trim(mb_substr($line, mb_strpos($line, ":") + 1));
+				$strlen = mb_strlen($label);
+				if($strlen > self::INQUIRY_LABEL_LENGTH){
+					//$label = mb_substr($label, 0, $ln - 1) . "...";
+					$t[] = $label . " :";
+					$t[] = $content;
+					$t[] = "";
+				}else{
+					if(strlen($label)){
+						// : の位置を合わせる
+						$length = mb_strlen($label);
+						if(mb_strlen($content) && $secLong > $length){
+							for($i = 0; $i < $secLong - $length; $i++){
+								$label .= "  ";
+							}
+						}
+						$t[] = $label . " : " . $content;
+					}else{	//住所等
+						$t[] = $line;
+					}
+				}
+			}else{
+				$t[] = "";
+			}
+		}
+
+		return trim(implode("\n", $t));
+	}
+
 	/** 連番カラム用の便利な関数 **/
 	public static function buildSerialNumber($cnf){
 		if(!isset($cnf["serialNumber"])) return "";
