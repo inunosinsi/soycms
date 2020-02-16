@@ -3,6 +3,7 @@ SOY2::import("domain.config.SOYShop_ShopConfig");
 class DetailPage extends WebPage{
 
 	function doPost(){
+		if(!AUTH_OPERATE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
 
 		if(!empty($_FILES) && empty($_POST)){
 			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");

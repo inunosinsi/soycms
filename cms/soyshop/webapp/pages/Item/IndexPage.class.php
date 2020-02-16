@@ -8,6 +8,7 @@ SOY2::import("domain.config.SOYShop_ShopConfig");
 class IndexPage extends WebPage{
 
 	function doPost(){
+		if(!AUTH_OPERATE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
 
 		if(!soy2_check_token()) SOY2PageController::jump("Item");
 

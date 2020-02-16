@@ -3,6 +3,7 @@
 class CreatePage extends WebPage{
 
 	function doPost(){
+		if(!AUTH_OPERATE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
 
 		if(isset($_POST["Item"]) && soy2_check_token()){
 			$item = (object)$_POST["Item"];

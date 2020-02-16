@@ -4,6 +4,8 @@ class IndexPage extends WebPage{
 	private $pageNumber;
 
 	function doPost(){
+		if(!AUTH_OPERATE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
+
 		if(soy2_check_token()){
 			if(isset($_POST["search_btn"])){
 				if(array_key_exists("search", $_POST)){
@@ -239,4 +241,3 @@ class IndexPage extends WebPage{
 		));
 	}
 }
-?>

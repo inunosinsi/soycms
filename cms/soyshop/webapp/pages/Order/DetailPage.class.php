@@ -9,6 +9,8 @@ class DetailPage extends WebPage{
 	private $id;
 
 	function doPost(){
+		if(!AUTH_OPERATE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
+
 		if(soy2_check_token()){
 			$dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 			$historyDAO = SOY2DAOFactory::create("order.SOYShop_OrderStateHistoryDAO");
@@ -118,6 +120,8 @@ class DetailPage extends WebPage{
 		$order = $logic->getById($this->id);
 		if(!$order) SOY2PageController::jump("Order");
 
+		$user = soyshop_get_user_object($order->getUserId());
+
     	$this->addLabel("order_name_text", array(
 			"text" => $order->getTrackingNumber()
 		));
@@ -158,7 +162,8 @@ class DetailPage extends WebPage{
 		));
 
 		$this->addLink("edit_link", array(
-			"link" => SOY2PageController::createLink("Order.Edit." . $order->getId())
+			"link" => (AUTH_OPERATE) ? SOY2PageController::createLink("Order.Edit." . $order->getId()) : "",
+			"visible" => AUTH_OPERATE
 		));
 
 		$this->addLabel("order_status", array(
@@ -326,12 +331,8 @@ class DetailPage extends WebPage{
     	));
 
     	/*** メールの送信履歴 ***/
-		try{
-			$mailLogs = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO")->getByOrderId($order->getId());
-		}catch(Exception $e){
-			$mailLogs = array();
-		}
-
+		$mailLogs = ($user->isUsabledEmail()) ? self::_getMailHistories($order->getId()) : array();
+		DisplayPlugin::toggle("mail_history", count($mailLogs));
 		$this->createAdd("mail_history_list", "_common.Order.MailHistoryListComponent", array(
     		"list" => $mailLogs
     	));
@@ -366,26 +367,30 @@ class DetailPage extends WebPage{
 		));
 
     	/*** メール送信フォームの生成 ***/
-    	$mailStatus = $order->getMailStatusList();
-    	$mailTypes = SOYShop_Order::getMailTypes();
-    	foreach($mailTypes as $type){
-	    	$this->addLabel($type . "_mail_status", array(
-	    		"text" => (isset($mailStatus[$type])) ? date("Y-m-d H:i:s", $mailStatus[$type]) : "未送信"
-	    	));
+		DisplayPlugin::toggle("mail", $user->isUsabledEmail());
 
-	    	$this->addLink($type . "_mail_link", array(
-	    		"link" => SOY2PageController::createLink("Order.Mail." . $order->getId() . "?type=" . $type)
-	    	));
-    	}
+    	$mailTypes = ($user->isUsabledEmail()) ? SOYShop_Order::getMailTypes() : array();
+		if(is_array($mailTypes) && count($mailTypes)){
+			$mailStatus = $order->getMailStatusList();
+			foreach($mailTypes as $type){
+		    	$this->addLabel($type . "_mail_status", array(
+		    		"text" => (isset($mailStatus[$type])) ? date("Y-m-d H:i:s", $mailStatus[$type]) : "未送信"
+		    	));
 
-    	$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
-    		"list" => self::getMailPluginList(),
-    		"status" => $mailStatus,
-    		"orderId" => $order->getId()
-    	));
+		    	$this->addLink($type . "_mail_link", array(
+		    		"link" => SOY2PageController::createLink("Order.Mail." . $order->getId() . "?type=" . $type)
+		    	));
+	    	}
+
+			$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
+	    		"list" => self::getMailPluginList(),
+	    		"status" => $mailStatus,
+	    		"orderId" => $order->getId()
+	    	));
+		}
 
     	/*** Output Action　***/
-    	$this->outputActions();
+    	self::_outputActions();
 
 		/*** カード決済操作 ***/
 		SOYShopPlugin::load("soyshop.operate.credit");
@@ -401,10 +406,18 @@ class DetailPage extends WebPage{
 		));
     }
 
+	private function _getMailHistories($orderId){
+		try{
+			return SOY2DAOFactory::create("logging.SOYShop_MailLogDAO")->getByOrderId($orderId);
+		}catch(Exception $e){
+			return array();
+		}
+	}
+
     /**
      * Action
      */
-    function outputActions(){
+    private function _outputActions(){
     	SOYShopPlugin::load("soyshop.order.function");
     	$delegate = SOYShopPlugin::invoke("soyshop.order.function", array(
     		"orderId" => $this->id

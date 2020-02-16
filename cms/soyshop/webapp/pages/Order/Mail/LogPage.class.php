@@ -9,9 +9,8 @@ class LogPage extends WebPage{
 
 		parent::__construct();
 
-		$mailLogDao = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO");
 		try{
-			$log = $mailLogDao->getbyId($this->logId);
+			$log = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO")->getbyId($this->logId);
 		}catch(Exception $e){
 			SOY2PageController::jump("Order");
 		}
@@ -42,6 +41,11 @@ class LogPage extends WebPage{
 		$this->addLabel("content", array(
 			"html" => nl2br($log->getContent())
 		));
+
+		$user = soyshop_get_user_object($log->getUserId());
+		DisplayPlugin::toggle("mail", $user->isUsabledEmail());
+		$this->addLink("send_mail_link", array(
+			"link" => SOY2PageController::createLink("User.Mail." . $user->getId())
+		));
 	}
 }
-?>

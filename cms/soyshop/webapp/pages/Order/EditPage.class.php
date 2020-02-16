@@ -10,6 +10,8 @@ class EditPage extends WebPage{
 	private $id;
 
 	function doPost(){
+		if(!AUTH_OPERATE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
+
 		if(soy2_check_token()){
 
 			$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
@@ -453,6 +455,8 @@ class EditPage extends WebPage{
 	}
 
 	function __construct($args) {
+		if(!AUTH_OPERATE) SOY2PageController::jump("Order");
+
 		MessageManager::addMessagePath("admin");
 		$this->id = (isset($args[0])) ? (int)$args[0] : "";
 
