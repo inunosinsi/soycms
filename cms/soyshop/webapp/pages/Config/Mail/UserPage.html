@@ -18,19 +18,21 @@
 		<form soy:id="form">
 
 		<dl>
-			<!-- soy:id="mail_active_config" -->
+			<!-- soy:display="mail_active_config" -->
 			<dt>自動送信設定</dt>
 			<dd>
 				<input soy:id="mail_active_yes" type="radio" />
 				<input soy:id="mail_active_no" type="radio" />
 			</dd>
-			<!-- /soy:id="mail_active_config" -->
+			<!-- /soy:display="mail_active_config" -->
 
+			<!-- soy:display="system_mail_active_config" -->
 			<dt>メール本文出力設定</dt>
 			<dd>
 				<input type="checkbox" soy:id="is_mail_content_output"><br>
 				<input type="checkbox" soy:id="is_mail_content_plugin">
 			</dd>
+			<!-- /soy:display="system_mail_active_config" -->
 
 			<dt>件名</dt>
 			<dd>
@@ -75,6 +77,7 @@
 							<!-- soy:id="replace_string_list" -->
 							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#<!-- soy:id="replace_string" /-->#');"><!-- soy:id="replace_label" /--></a></li>
 							<!-- /soy:id="replace_string_list" -->
+							<li><a href="javascript:void(0);" onclick="$('#mail_header').textarea().insertHTML('#MYPAGE_LOGIN#');">マイページログインページ</a></li>
 						</ul>
 					</div>
 				</td>
@@ -111,6 +114,7 @@
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#SEND_MAIL_YEAR#');">メール送信時刻(年)</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#SEND_MAIL_MONTH#');">メール送信時刻(月)</a></li>
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#SEND_MAIL_DATE#');">メール送信時刻(日)</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#MYPAGE_LOGIN#');">マイページログインページ</a></li>
 							<!-- soy:id="replace_string_list*" -->
 							<li><a href="javascript:void(0);" onclick="$('#mail_footer').textarea().insertHTML('#<!-- soy:id="replace_string" /-->#');"><!-- soy:id="replace_label" /--></a></li>
 							<!-- /soy:id="replace_string_list*" -->
@@ -143,6 +147,6 @@
 }
 .actived .word_list{
 	display:block;
-	width:120px;
+	width:180px;
 }
 </style>

@@ -41,7 +41,7 @@ class UserPage extends WebPage{
 		$this->addForm("form");
 
 		$type = (isset($_GET["type"])) ? $_GET["type"] : "order";
-		$this->buildForm($type);
+		self::_buildForm($type);
 
 		SOYShopPlugin::load("soyshop.mail.config");
 		$delegate = SOYShopPlugin::invoke("soyshop.mail.config",array(
@@ -55,65 +55,64 @@ class UserPage extends WebPage{
 
 		//置換文字列の拡張
 		$this->createAdd("replace_string_list", "_common.Config.ReplaceStringListComponent", array(
-			"list" => self::getReplaceStringList()
+			"list" => self::_getReplaceStringList()
 		));
 	}
 
-	function buildForm($type){
+	private function _buildForm($type){
 
 		$this->addLabel("mail_text", array(
-			"text" => $this->getMailText($type)
+			"text" => self::_getMailText($type)
 		));
 
 		$this->mail = SOY2Logic::createInstance("logic.mail.MailLogic")->getUserMailConfig($type);
 
 		$this->addInput("mail_title", array(
 			"name" => "mail[title]",
-			"value" => $this->getMailTitle(),
+			"value" => self::_getMailTitle(),
 		));
 
 		$this->addTextArea("mail_header", array(
 			"name" => "mail[header]",
-			"value" => $this->getHeader(),
+			"value" => self::_getHeader(),
 		));
 
 		$this->addTextArea("mail_footer", array(
 			"name" => "mail[footer]",
-			"value" => $this->getFooter(),
+			"value" => self::_getFooter(),
 		));
 
 		/* 送信設定 */
-
-		$this->addModel("mail_active_config", array(
-			"visible" => self::_isActive($type),
-		));
+		DisplayPlugin::toggle("mail_active_config", self::_isActive($type));
 
 		$this->addCheckBox("mail_active_yes", array(
 			"name" => "mail[active]",
 			"value" => "1",
-			"selected" => $this->getMailActive(),
+			"selected" => self::_getMailActive(),
 			"label" => "送信する",
 		));
 
 		$this->addCheckBox("mail_active_no", array(
 			"name" => "mail[active]",
 			"value" => "0",
-			"selected" => ! $this->getMailActive(),
+			"selected" => ! self::_getMailActive(),
 			"label" => "送信しない",
 		));
 
 		//メール本文の出力の有無
+		DisplayPlugin::toggle("system_mail_active_config", self::_isSystemMailActive($type));
+
 		$this->addCheckBox("is_mail_content_output", array(
 			"name" => "mail[output]",
 			"value" => 1,
-			"selected" => $this->getMailOutput(),
+			"selected" => self::_getMailOutput(),
 			"label" => "システム(購入状況等)から出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
 		));
 
 		$this->addCheckBox("is_mail_content_plugin", array(
 			"name" => "mail[plugin]",
 			"value" => 1,
-			"selected" => $this->getMailPlugin(),
+			"selected" => self::_getMailPlugin(),
 			"label" => "プラグイン(配送方法等)から出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する"
 		));
 	}
@@ -135,7 +134,14 @@ class UserPage extends WebPage{
 		return false;
 	}
 
-	private function getReplaceStringList(){
+	private function _isSystemMailActive($type){
+		//顧客宛メールのみfalse
+		if(in_array($type, array("user"))) return false;
+
+		return true;
+	}
+
+	private function _getReplaceStringList(){
 		SOYShopPlugin::load("soyshop.order.mail.replace");
 		$values = SOYShopPlugin::invoke("soyshop.order.mail.replace",array("mode" => "strings"))->getStrings();
 		if(!count($values)) return array();
@@ -152,36 +158,37 @@ class UserPage extends WebPage{
 		return $list;
 	}
 
-	function getMailActive(){
+	private function _getMailActive(){
 		return $this->mail["active"];
 	}
 
-	function getMailOutput(){
+	private function _getMailOutput(){
 		return (isset($this->mail["output"])) ? $this->mail["output"] : 0;
 	}
 
-	function getMailPlugin(){
+	private function _getMailPlugin(){
 		return (isset($this->mail["plugin"])) ? $this->mail["plugin"] : 0;
 	}
 
-	function getMailTitle(){
+	private function _getMailTitle(){
 		return $this->mail["title"];
 	}
 
-	function getHeader(){
+	private function _getHeader(){
 		return $this->mail["header"];
 	}
 
-	function getFooter(){
+	private function _getFooter(){
 		return $this->mail["footer"];
 	}
 
-	function getMailText($type){
+	private function _getMailText($type){
 		$array = array(
 			"confirm" => "注文確認メール雛型設定",
 			"payment" => "支払確認メール雛型設定",
 			"delivery" => "配送連絡メール雛型設定",
-			"other" => "その他のメール雛形設定"
+			"other" => "その他のメール雛形設定",
+			"user" => "顧客宛メール設定"
 		);
 
 		if(isset($array[$type])) return $array[$type];

@@ -424,6 +424,9 @@ class MailLogic extends SOY2LogicBase{
     		$content = str_replace(strtoupper("#COMPANY_" . $key ."#"), $value, $content);
     	}
 
+		//マイページログイン
+		$content = str_replace("#MYPAGE_LOGIN#", soyshop_get_mypage_url(true) . "/login", $content);
+
 		$adminUrl = $config->getAdminUrl();
 		if(false === strpos($adminUrl, "http")){
 			$adminUrl = "http://" . $_SERVER["SERVER_NAME"] . $adminUrl;

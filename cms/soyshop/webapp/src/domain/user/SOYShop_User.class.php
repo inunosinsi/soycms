@@ -780,7 +780,22 @@ class SOYShop_User {
 	function isValidEmail(){
 		static $logic;
 		if(!$logic) $logic = SOY2Logic::createInstance("logic.mail.MailLogic");
-		return $logic->isValidEmail($this->getMailAddress());
+		return $logic->isValidEmail($this->mailAddress);
+	}
+
+	/**
+	 * ダミーではないメールアドレスであるか？
+	 */
+	function isUsabledEmail(){
+		static $isUse;
+		if(is_null($isUse)){
+			$isUse = false;
+			if(strlen($this->mailAddress) && self::isValidEmail()){
+				preg_match('/@' . DUMMY_MAIL_ADDRESS_DOMAIN . '$/', $this->mailAddress, $tmp);
+				$isUse = (!isset($tmp[0]));
+			}
+		}
+		return $isUse;
 	}
 
 	/* パスワードの暗号化関連 */
@@ -796,12 +811,11 @@ class SOYShop_User {
 		$array = explode("/", $stored);
 		if(count($array) == 3){
 			list($algo, $salt, $hash) = $array;
-			return ( $stored == self::hashString($input, $salt, $algo) );
+			return ( $stored == self::_hashString($input, $salt, $algo) );
 
 		//EC CUBEで使われている暗号化の仕組みでパスワードのチェックを行う
 		}else{
-			$hash = self::hashStringEcCube($input);
-			return ($stored == $hash);
+			return ($stored == self::_hashStringEcCube($input));
 		}
 	}
 
@@ -818,10 +832,10 @@ class SOYShop_User {
 
 		if(function_exists("hash")){
 			// hash関数があればSHA512で
-			return self::hashString($rawPassword, $salt, "sha512");
+			return self::_hashString($rawPassword, $salt, "sha512");
 		}else{
 			// なければMD5
-			return self::hashString($rawPassword, $salt, "md5");
+			return self::_hashString($rawPassword, $salt, "md5");
 		}
 	}
 
@@ -833,7 +847,7 @@ class SOYShop_User {
 	 * @param String ハッシュ化アルゴリズム
 	 * @return String ハッシュ化された文字列（algo/salt/hash）
 	 */
-	private static function hashString($string, $salt, $algo){
+	private static function _hashString($string, $salt, $algo){
 		$algo = strtolower($algo);
 
 		if($algo == "md5"){
@@ -846,7 +860,7 @@ class SOYShop_User {
 		return "$algo/$salt/$hash";
 	}
 
-	private function hashStringEcCube($input){
+	private function _hashStringEcCube($input){
 		if(!isset($input) || !is_string($input)) return "";	//想定していないタイミングで読まれることがある
 
 		//ec cubeから移行した会員のパスワードをそのまま使用するためのチェック

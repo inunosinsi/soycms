@@ -436,6 +436,14 @@ class InitPageLogic extends SOY2LogicBase{
 			);
 			$logic->setMyPageMailConfig($mail,"register");
 
+			//"user" => "顧客宛メール雛型設定"
+			$mail = array(
+				"title" => "[#SHOP_NAME#] ",
+				"header" => file_get_contents(dirname(__FILE__) . "/mail/user/header.txt"),
+				"footer" => file_get_contents(dirname(__FILE__) . "/mail/user/footer.txt")
+			);
+			$logic->setUserMailConfig($mail,"user");
+
 		}catch(Exception $e){
 			return false;
 		}

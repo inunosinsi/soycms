@@ -37,6 +37,7 @@
 
 	<div class="block_body">
 
+	<p class="notice" soy:display="sended">メールを送信しました</p>
 	<p class="notice" soy:display="update_message">更新しました</p>
 	<p class="error always" soy:display="notice_tmp_register">仮登録の顧客です。</p>
 	<p class="error always" soy:display="notice_no_publish">非公開の顧客です。</p>
@@ -389,7 +390,7 @@
 		</p>
 
 
-		</form soy:id="detail_form">
+		</form>
 
 		<!-- soy:display="display_mail_history" -->
 		<h3>メールの送信履歴</h3>
@@ -406,6 +407,12 @@
 			<!--  /soy:id="mail_history_list" -->
 		</table>
 		<!-- /soy:display="display_mail_history" -->
+
+		<!-- soy:display="mail" -->
+		<p class="pageBtn">
+			<a soy:id="send_mail_link" class="button">メールの送信画面を開く</a>
+		</p>
+		<!-- /soy:display="mail" -->
 
 		<!-- soy:display="point_history" -->
 		<h3>ポイント履歴</h3>

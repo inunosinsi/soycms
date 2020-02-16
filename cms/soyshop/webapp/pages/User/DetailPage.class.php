@@ -8,6 +8,8 @@ class DetailPage extends WebPage{
 	public $backward;
 
 	function doPost(){
+		if(!AUTH_OPERATE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
+
 		if(!soy2_check_token()){
 			SOY2PageController::jump("User.Detail." . $this->id);
 		}
@@ -148,6 +150,8 @@ class DetailPage extends WebPage{
 		MessageManager::addMessagePath("admin");
 
     	parent::__construct();
+
+		DisplayPlugin::toggle("sended", isset($_GET["sended"]));
 
     	$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
@@ -485,6 +489,11 @@ class DetailPage extends WebPage{
 		$this->createAdd("mail_history_list", "_common.Order.MailHistoryListComponent", array(
     		"list" => $mailLogs
     	));
+
+		DisplayPlugin::toggle("mail", $user->isUsabledEmail());
+		$this->addLink("send_mail_link", array(
+			"link" => SOY2PageController::createLink("User.Mail." . $user->getId())
+		));
 	}
 
 	/**
