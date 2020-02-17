@@ -18,6 +18,9 @@ class reCAPTCHAv3OnOutput extends SOYShopSiteOnOutputAction{
 		//URLの末尾が.xmlだった時は以下の処理を行わない
 		if(strpos($_SERVER["REQUEST_URI"], ".xml") !== false) return $html;
 
+		//カレンダープラグインから出力されるCSSページの場合は以下の処理を行わない
+		if(strpos($_SERVER["REQUEST_URI"], "?output_css_mode") !== false) return $html;
+
 		$jsPath = dirname(SOYSHOP_ROOT) . "/common/site_include/plugin/reCAPTCHAv3/js/script.js";
 		if(!file_exists($jsPath)) return $html;	// SOYCMSのバージョンが古い時は使えない
 
