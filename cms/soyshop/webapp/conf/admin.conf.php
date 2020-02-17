@@ -73,6 +73,8 @@ if(!defined("SOYSHOP_CONSUMPTION_TAX_MODE")){
 	define("SOYSHOP_CONSUMPTION_TAX_INCLUSIVE_PRICING_MODE", ($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON));
 }
 
+//libディレクトリ内のcomposerのautoload
+define("COMPOSER_LIB_DIR", SOYSHOP_WEBAPP . "lib/vendor/");
 
 //ダミーのメールアドレス用のドメイン(管理画面用:一応、公開側と分けておく)
 if(!defined("DUMMY_MAIL_ADDRESS_DOMAIN")) define("DUMMY_MAIL_ADDRESS_DOMAIN", "dummy.soyshop.net");
