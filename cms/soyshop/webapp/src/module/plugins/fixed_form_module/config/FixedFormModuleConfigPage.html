@@ -1,0 +1,31 @@
+<div class="notice" soy:display="updated">更新しました。</div>
+
+<div class="notice always">
+	商品毎パーツモジュール選択読み込みプラグインは商品毎に任意の箇所に出力するパーツモジュールを設定することが出来ます。<br>
+	商品詳細ページのみで使用可能です。<br><br>
+	パーツモジュールに関しては下記の２つの記事をご覧ください。<br>
+	<ul style="list-style-type:disc;margin-left:20px;">
+		<li><a href="https://saitodev.co/soycms/soyshop/tutorial/80" target="_blank">共通箇所はHTMLモジュールで管理する - saitodev.co</a></li>
+		<li><a href="https://saitodev.co/soycms/soyshop/tutorial/96" target="_blank">共通箇所をPHPモジュールで管理する - saitodev.co</a></li>
+	</ul>
+</div>
+
+<form soy:id="form">
+	<dl>
+		<dt>商品情報の編集画面で表示する項目名</dt>
+		<dd><input type="text" soy:id="form_name" class="text"></dd>
+	</dl>
+
+	<p class="pageBtn">
+		<input type="submit" value="更新">
+	</p>
+</form>
+
+<section style="margin-bottom:10px;">
+	<h1>使用方法</h1>
+	・商品詳細ページのテンプレートでblock:id="item"の外側で下記のモジュールを記述します
+	<pre style="border:1px solid #ABABAB;padding:3px;">&lt;!-- shop:module="common.fixed_form_module" --&gt;
+ここに設定した内容を出力します。
+&lt;!-- /shop:module="common.fixed_form_module" --&gt;</pre>
+	・商品情報の編集画面でfixed_form_module内で出力するモジュールを選択します。
+</section>
