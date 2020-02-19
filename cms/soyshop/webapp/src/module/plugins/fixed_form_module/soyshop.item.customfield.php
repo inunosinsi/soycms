@@ -28,16 +28,16 @@ class FixedFormModuleCustomField extends SOYShopItemCustomFieldBase{
 			}
 		}
 		$html[] = "</select>";
-		$html[] = "  <a href=\"" . SOY2PageController::createLink("Site.Template#html_module_list") . "\" class=\"button\">モジュールの作成</a><br>";
-		$html[] = "<table style=\"margin-top:5px;\">";
-		$html[] = "<tr>";
-		$html[] = "<th>モジュールについて</th>";
-		$html[] = "<td>";
-		$html[] = "<a href=\"https://saitodev.co/soycms/soyshop/tutorial/80\" target=\"_blank\">共通箇所はHTMLモジュールで管理する - saitodev.co</a><br>";
-		$html[] = "<a href=\"https://saitodev.co/soycms/soyshop/tutorial/96\" target=\"_blank\">共通箇所をPHPモジュールで管理する - saitodev.co</a>";
-		$html[] = "</td>";
-		$html[] = "</tr>";
-		$html[] = "</table>";
+		//$html[] = "  <a href=\"" . SOY2PageController::createLink("Site.Template#html_module_list") . "\" class=\"button\">モジュールの作成</a><br>";
+		// $html[] = "<table style=\"margin-top:5px;\">";
+		// $html[] = "<tr>";
+		// $html[] = "<th>モジュールについて</th>";
+		// $html[] = "<td>";
+		// $html[] = "<a href=\"https://saitodev.co/soycms/soyshop/tutorial/80\" target=\"_blank\">共通箇所はHTMLモジュールで管理する - saitodev.co</a><br>";
+		// $html[] = "<a href=\"https://saitodev.co/soycms/soyshop/tutorial/96\" target=\"_blank\">共通箇所をPHPモジュールで管理する - saitodev.co</a>";
+		// $html[] = "</td>";
+		// $html[] = "</tr>";
+		// $html[] = "</table>";
 		$html[] = "</dd>";
 		return implode("\n", $html);
 	}

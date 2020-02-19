@@ -95,13 +95,10 @@ class ConfirmPage extends IndexPage{
 		//直接URLを入力したら入力フォームに戻す
 		if(is_null($user)) $this->jump("register");
 
-		$this->backward = new BackwardUserComponent();
-		$this->component = new UserComponent();
-
 		parent::__construct();
 
 		//顧客情報フォーム
-		$this->buildForm($user, $mypage, UserComponent::MODE_CUSTOM_CONFIRM);
+		$this->buildForm($user, $mypage);
 	}
 
 	/**
@@ -169,18 +166,5 @@ class ConfirmPage extends IndexPage{
 		}catch(Exception $e){
 			//@TODO エラーログ出力
 		}
-	}
-}
-
-class UserCustomfieldConfirm extends HTMLList{
-
-	protected function populateItem($entity, $key, $counter, $length){
-		$this->addLabel("customfield_name", array(
-			"text" => (isset($entity["name"])) ? $entity["name"] : ""
-		));
-
-		$this->addLabel("customfield_confirm", array(
-			"html" => (isset($entity["confirm"])) ? $entity["confirm"] : ""
-		));
 	}
 }
