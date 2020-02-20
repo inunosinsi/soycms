@@ -39,6 +39,5 @@ abstract class SOYShop_MailAddressTokenDAO extends SOY2DAO{
 		}catch(Exception $e){
 			//
 		}
-
 	}
 }

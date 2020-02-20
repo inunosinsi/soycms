@@ -22,7 +22,7 @@ class TransferInformationInstall extends SOYShopPluginInstallerBase{
 	 * @return String sql for init
 	 */
 	function getSQL(){
-		return = file_get_contents(dirname(dirname(__FILE__)) . "/common_user_customfield/sql/init_" . SOYSHOP_DB_TYPE . ".sql");
+		return file_get_contents(dirname(dirname(__FILE__)) . "/common_user_customfield/sql/init_" . SOYSHOP_DB_TYPE . ".sql");
 	}
 }
 SOYShopPlugin::extension("soyshop.plugin.install","transfer_information","TransferInformationInstall");

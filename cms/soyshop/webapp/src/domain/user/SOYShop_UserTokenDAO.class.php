@@ -29,4 +29,15 @@ abstract class SOYShop_UserTokenDAO extends SOY2DAO{
 	abstract function getByToken($token);
 
     abstract function delete($id);
+
+	/**
+	 * @final
+	 */
+	function deleteOldObjects(){
+		try{
+			$this->executeUpdateQuery("DELETE FROM soyshop_user_token WHERE time_limit < " . time());
+		}catch(Exception $e){
+			//
+		}
+	}
 }

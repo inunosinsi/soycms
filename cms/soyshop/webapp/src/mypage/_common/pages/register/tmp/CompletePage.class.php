@@ -40,9 +40,11 @@ class CompletePage extends MainMyPagePageBase{
 		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		$tokenDAO = SOY2DAOFactory::create("user.SOYShop_UserTokenDAO");
 
+		$tokenDAO->deleteOldObjects();
+
 		try{
 			$token = $tokenDAO->getByToken($query);
-			$user = $userDAO->getByI($token->getUserId());
+			$user = $userDAO->getById($token->getUserId());
 
 			//user type
 			if($user->getUserType() != SOYShop_User::USERTYPE_TMP){
