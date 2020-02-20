@@ -42,7 +42,7 @@ class CompletePage extends MainMyPagePageBase{
 
 		try{
 			$token = $tokenDAO->getByToken($query);
-			$user = $userDAO->getById($token->getUserId());
+			$user = $userDAO->getByI($token->getUserId());
 
 			//user type
 			if($user->getUserType() != SOYShop_User::USERTYPE_TMP){
@@ -95,4 +95,3 @@ class CompletePage extends MainMyPagePageBase{
 		}
 	}
 }
-?>

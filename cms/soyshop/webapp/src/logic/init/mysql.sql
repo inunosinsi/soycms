@@ -204,6 +204,15 @@ create table soyshop_user_token(
 	time_limit integer not null
 ) ENGINE=INNODB;
 
+drop table soyshop_mail_address_token;
+create table soyshop_mail_address_token(
+	id integer primary key auto_increment,
+	user_id integer not null,
+	new_mail_address VARCHAR(255) not null,
+	token varchar(255) not null,
+	time_limit integer not null
+) ENGINE=INNODB;
+
 drop table soyshop_mail_log;
 create table soyshop_mail_log(
 	id integer primary key AUTO_INCREMENT,

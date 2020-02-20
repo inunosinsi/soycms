@@ -8,14 +8,14 @@ class SOYShop_UserToken extends SOY2DAO_EntityBase{
 	 * @id
 	 */
 	private $id;
-	
+
 	/**
 	 * @column user_id
 	 */
 	private $userId;
-	
+
 	private $token;
-	
+
 	/**
 	 * @column time_limit
 	 */
@@ -55,4 +55,3 @@ class SOYShop_UserToken extends SOY2DAO_EntityBase{
 		$this->limit = $limit;
 	}
 }
-?>

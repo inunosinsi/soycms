@@ -102,16 +102,6 @@
 				</dd>
 				<!-- /soy:id="telephoneNumber_show" -->
 
-				<!-- soy:id="mailAddress_show" -->
-				<dt>メールアドレス<span soy:id="mailAddress_required">（必須）</span></dt>
-				<dd>
-					<p class="error" soy:id="mail_address_error">メールアドレスが正しく入力されていません。</p>
-					<input name="" type="text" class="w300" soy:id="user_mail_address">
-					<span class="note">【半角英数】</span><br>
-					<span class="exmpl">（例）info＠n-i-agroinformatics.com</span>
-				</dd>
-				<!-- /soy:id="mailAddress_show" -->
-
 				<!-- soy:id="accountId_show" -->
 				<dt>ログインID<span soy:id="accountId_required">（必須）</span></dt>
 				<dd>
@@ -197,6 +187,7 @@
 				<!-- /soy:id="memo_show" -->
 			</dl>
 		</div>
+		<input type="hidden" soy:id="user_mail_address">
 		<p class="textcenter"><input type="image" name="confirm" soy:src="themes/common/images/mypage/btn_confirm_off.jpg" alt="確認する"></p>
 		<p class="textcenter"><a onclick="history.back();" style="cursor: pointer">&lt;&lt; 戻る</a></p>
 	</section>

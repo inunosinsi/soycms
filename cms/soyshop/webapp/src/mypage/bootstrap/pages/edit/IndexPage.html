@@ -88,13 +88,6 @@
 		<input name="" type="text" class="form-control" soy:id="user_telephone_number">
 		<small class="form-text text-muted">【半角数字】</small>
 	</div>
-
-	<div class="form-group" soy:id="mailAddress_show">
-		<label for="">メールアドレス<span soy:id="mailAddress_required">（必須）</span></label>
-		<p class="alert alert-danger" role="alert" soy:id="mail_address_error">メールアドレスが正しく入力されていません。</p>
-		<input name="" type="text" class="form-control" soy:id="user_mail_address">
-		<small class="form-text text-muted">【半角英数】</small>
-	</div>
 	<div class="form-group" soy:id="accountId_show">
 		<label for="">ログインID<span soy:id="accountId_required">（必須）</span></label><br>
 		<!-- soy:id="user_account_id_text" /-->
@@ -173,6 +166,7 @@
 
 
 	<div class="text-center">
+		<input type="hidden" soy:id="user_mail_address">
 		<input type="submit" name="confirm" class="btn btn-primary btn-lg" value="確認する">
 	</div>
 </form>

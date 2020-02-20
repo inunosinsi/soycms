@@ -21,6 +21,7 @@ function soyshop_parts_mypage_navi($html, $page){
 			//"reserve" => "予約の変更",	//隠しモード 仕様が決まるまで
 			"mail" => "メールボックス",
 			"edit" => "登録情報の変更",
+			"mailaddress" => "メールアドレスの変更",
 			"password" => "パスワードの変更",
 			"review" => "レビュー",
 			"point" => "ポイント履歴",
@@ -68,7 +69,13 @@ function soyshop_parts_mypage_navi($html, $page){
 			if($isThrow) continue;
 
 			$html[] = " <li class=\"nav-item\">";
-			$cls = (strpos($currentUri, $type) === 0) ? "nav-link active" : "nav-link";
+			switch($type){
+				case "mail":
+					$cls = ($currentUri == $type) ? "nav-link active" : "nav-link";
+					break;
+				default:
+					$cls = (strpos($currentUri, $type) === 0) ? "nav-link active" : "nav-link";
+			}
 			switch($type){
 				case "profile":
 					$html[] = "		<a class=\"" . $cls . "\" href=\"" . soyshop_get_mypage_url() . "/" . $type . "/" . $user->getProfileId() . "\">" . $label . "</a>";

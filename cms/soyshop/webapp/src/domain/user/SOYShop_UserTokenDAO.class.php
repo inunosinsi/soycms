@@ -22,14 +22,11 @@ abstract class SOYShop_UserTokenDAO extends SOY2DAO{
 	 * @return object
 	 */
 	abstract function getByUserId($userId);
-	
+
 	/**
 	 * @return object
 	 */
 	abstract function getByToken($token);
 
     abstract function delete($id);
-
-
 }
-?>

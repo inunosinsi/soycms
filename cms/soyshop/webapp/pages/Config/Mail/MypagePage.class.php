@@ -16,14 +16,14 @@ class MypagePage extends WebPage{
 			$logic = SOY2Logic::createInstance("logic.mail.MailLogic");
 			$logic->setMyPageMailConfig($mail,$type);
 		}
-		
+
 		SOYShopPlugin::load("soyshop.mail.config");
 		$delegate = SOYShopPlugin::invoke("soyshop.mail.config",array(
 			"mode" => "update",
 			"target" => "mypage",
 			"type" => $type
 		));
-		
+
 		SOY2PageController::jump("Config.Mail.Mypage?type=" . $type . "&updated");
 	}
 
@@ -141,7 +141,8 @@ class MypagePage extends WebPage{
 		$array = array(
 			"tmp_register" => "仮登録メール",
 			"register" => "登録完了メール",
-			"remind" => "パスワード再設定メール"
+			"remind" => "パスワード再設定メール",
+			"edit" => "顧客情報の変更の確認メール"
 		);
 
 		return (isset($array[$type])) ? $array[$type] : "パスワード再設定メール";
