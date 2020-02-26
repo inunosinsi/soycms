@@ -54,5 +54,9 @@ class DetailPage extends MainMyPagePageBase{
 		$this->addLink("top_link", array(
     		"link" => soyshop_get_mypage_top_url()
     	));
+
+		$this->addLink("mail_link", array(
+    		"link" => soyshop_get_mypage_url() . "/mail"
+    	));
 	}
 }

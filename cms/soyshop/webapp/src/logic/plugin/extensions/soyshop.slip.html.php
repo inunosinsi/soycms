@@ -15,13 +15,20 @@ class SOYShopSlipHtmlBase implements SOY2PluginAction{
 
 class SOYShopSlipHtmlDeletageAction implements SOY2PluginDelegateAction{
 
-	function run($extetensionId, $moduleId, SOY2PluginAction $action){
+	private $mode;
 
-		if(strtolower($_SERVER['REQUEST_METHOD']) == "post"){
-			$action->doPost();
-		}else{
-			echo $action->html();
+	function run($extetensionId, $moduleId, SOY2PluginAction $action){
+		switch($this->mode){
+			case "post":
+				$action->doPost();
+				break;
+			default:
+				echo $action->html();
 		}
+	}
+
+	function setMode($mode){
+		$this->mode = $mode;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.slip.html","SOYShopSlipHtmlDeletageAction");

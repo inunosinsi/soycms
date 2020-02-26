@@ -95,6 +95,10 @@ class ReturnsSlipNumberListPage extends WebPage {
 
 				SOY2PageController::jump("Extension.returns_slip_number?updated");
 			}
+
+			SOYShopPlugin::invoke("soyshop.slip.html", array(
+				"mode" => "post"
+			));
 		}
 	}
 
@@ -109,6 +113,7 @@ class ReturnsSlipNumberListPage extends WebPage {
 
 		//ここで翻訳ファイルを読み込む
 		MessageManager::addMessagePath("admin");
+		SOYShopPlugin::load("soyshop.slip.html");
 
 		parent::__construct();
 
@@ -138,7 +143,6 @@ class ReturnsSlipNumberListPage extends WebPage {
 		self::buildExportForm();
 		self::buildImportForm();
 
-		SOYShopPlugin::load("soyshop.slip.html");
 		$this->addLabel("extension_html", array(
 			"html" => SOYShopPlugin::display("soyshop.slip.html")
 		));
