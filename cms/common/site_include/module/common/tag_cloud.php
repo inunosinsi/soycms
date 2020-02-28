@@ -39,9 +39,6 @@ function soycms_tag_cloud($html, $page){
 					$cnf = TagCloudUtil::getConfig();
 					$rankDivide = (isset($cnf["divide"]) && (int)$cnf["divide"]) ? (int)$cnf["divide"] : 0;
 
-					//タグの表示個数
-					$cnt = TagCloudUtil::getDisplayCount($html);
-
 					//タグを設定した記事が公開であること。記事が任意のラベルと紐付いていること
 					$sql = "SELECT lnk.word_id, dic.word, COUNT(lnk.word_id) AS word_id_count FROM TagCloudLinking lnk ".
 							"INNER JOIN TagCloudDictionary dic ".
@@ -49,15 +46,26 @@ function soycms_tag_cloud($html, $page){
 							"INNER JOIN Entry ent ".
 							"ON lnk.entry_id = ent.id ".
 							"INNER JOIN EntryLabel lab ".
-				        	"ON lnk.entry_id = lab.entry_id ".
+							"ON lnk.entry_id = lab.entry_id ".
 							"WHERE ent.isPublished = 1 ".
-				        	"AND ent.openPeriodEnd >= :now ".
-				        	"AND ent.openPeriodStart < :now ".
+							"AND ent.openPeriodEnd >= :now ".
+							"AND ent.openPeriodStart < :now ".
 							"AND lab.label_id = :labelId ".
 							"GROUP BY lnk.word_id ".
-							"HAVING COUNT(lnk.word_id) > 0 ".
-							"ORDER BY word_id_count DESC ";
+							"HAVING COUNT(lnk.word_id) > 0 ";
+					//ランダム表示であるか？
+					if(TagCloudUtil::isRandomMode($html)){
+						if(SOY2DAOConfig::type() == "mysql"){
+							$sql .= "ORDER BY Rand() ";
+						}else{
+							$sql .= "ORDER BY Random() ";
+						}
+					}else{
+						$sql .= "ORDER BY word_id_count DESC ";
+					}
 
+					//タグの表示個数
+					$cnt = TagCloudUtil::getDisplayCount($html);
 					if(isset($cnt) && is_numeric($cnt) && $cnt > 0){
 						$sql .= "LIMIT " . $cnt;
 					}
@@ -66,6 +74,7 @@ function soycms_tag_cloud($html, $page){
 						$words = $dao->executeQuery($sql, array(":now" => time(), ":labelId" => $labelId));
 					}catch(Exception $e){
 						//
+						$words = array();
 					}
 
 					//ページのURLを調べる
@@ -118,6 +127,7 @@ class TagCloudWordListComponent extends HTMLList {
 		static $rank;
 		if(is_null($rank)) $rank = 1;
 		$cls = self::_buildClass($rank);
+		if($this->divide === 0) return $cls;
 		if($int % $this->divide === 0) $rank++;
 		return $cls;
 	}

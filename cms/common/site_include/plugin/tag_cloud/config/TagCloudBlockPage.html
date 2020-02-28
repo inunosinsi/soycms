@@ -51,10 +51,12 @@
 </p>
 
 <h4>タグクラウドモジュールの設置(TagCloudブロックを設置したページへのタグのリンク一覧)</h4>
-<pre><strong>&lt;!-- cms:module="common.tag_cloud" cms:count="10" --&gt;</strong>
-<strong>&lt;!-- p_block:id="tag_cloud_word_list" --&gt;</strong>
+<pre><strong>&lt;!-- cms:module="common.tag_cloud" --&gt;</strong>
+<strong>&lt;!-- p_block:id="tag_cloud_word_list" cms:count="10" cms:random="on" --&gt;</strong>
 &lt;a <strong>cms:id="tag_link"</strong>&gt;&lt;!-- <strong>cms:id="tag"</strong> --&gt;タグ&lt;!-- /<strong>cms:id="tag"</strong> --&gt;&lt;/a&gt;
 <strong>&lt;!-- /p_block:id="tag_cloud_word_list" --&gt;</strong>
 <strong>&lt;!-- /cms:module="common.tag_cloud" --&gt;</strong></pre>
 <p>cms:countでタグを何個表示するか決めることができます。<br>
-※cms:countの指定がなくても動作します。</p>
+※cms:countの指定がなくても動作します。<br>
+cms:random="on"でタグの表示順をランダムにします。<br>
+※cms:randomがない場合はタグが付いた記事が多い順になります</p>

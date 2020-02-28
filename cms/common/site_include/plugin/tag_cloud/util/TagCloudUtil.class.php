@@ -25,6 +25,15 @@ class TagCloudUtil {
 		return null;
 	}
 
+	public static function isRandomMode($tmp){
+		if(preg_match('/(<[^>]*[^\/]p_block:id=\"tag_cloud_word_list\"[^>]*>)/', $tmp, $tm)){
+			if(preg_match('/cms:random=\"(.*?)\"/', $tm[1], $t)){
+				if(isset($t[1]) && $t[1] = "on") return true;
+			}
+		}
+		return false;
+	}
+
 	private static function _shapeTags($tags){
 		$tags = trim($tags);
 		if(!strlen($tags)) return "";
