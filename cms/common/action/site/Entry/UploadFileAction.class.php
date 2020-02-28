@@ -145,6 +145,19 @@ class UploadFileAction extends SOY2Action{
 							}
 		   				}
 		   			}
+
+					//jpegoptim
+					switch(strtolower($file->getExtension())){
+						case "jpg":
+						case "jpeg":
+							exec("jpegoptim -V", $out);
+							if(isset($out) && count($out)){
+								exec("jpegoptim --strip-all " . $file->getPath());
+							}
+							break;
+						default:
+					}
+
 				}else{
 		   			$responseObject->type = $_FILES['file']['type'];
 		   		}
