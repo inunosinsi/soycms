@@ -118,8 +118,8 @@ class ImportPage extends WebPage{
         //カスタムサーチフィールド
         $customSearchFieldDBLogic = SOY2Logic::createInstance("module.plugins.custom_search_field.logic.DataBaseLogic");
 
-        //商品詳細ページの挿入の有無
-        $this->setDetailPage();
+        //商品詳細ページの挿入の有無	← 後の処理で丁寧に行っている箇所がある
+        //$this->setDetailPage();
 
         //カテゴリのデータを取得
         $categoryLogic = SOY2Logic::createInstance("logic.shop.CategoryLogic");

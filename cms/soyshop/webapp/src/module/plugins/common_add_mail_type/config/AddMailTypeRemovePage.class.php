@@ -11,9 +11,9 @@ class AddMailTypeRemovePage extends WebPage{
 	function execute(){
 		if(soy2_check_token() && isset($_GET["field_id"])){
 
-			$configs = AddMailTypeUtil::getConfig();
+			$configs = AddMailTypeUtil::getConfig($_GET["mode"]);
 			unset($configs[$_GET["field_id"]]);
-			AddMailTypeUtil::saveConfig($configs);
+			AddMailTypeUtil::saveConfig($configs, $_GET["mode"]);
 
 			$this->configObj->redirect("removed");
 		}

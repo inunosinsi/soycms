@@ -198,6 +198,7 @@ class DetailPage extends WebPage{
     	self::buildForm($shopUser);		//共通など。
 		self::buildJobForm($shopUser);		//法人
 		self::buildProfileForm($shopUser);	//プロフィール
+		self::buildMailForm($shopUser);		//顧客宛メール
 		self::buildMailLogForm($shopUser);	//メールログ
 		self::buildPointForm($shopUser);	//ポイント
 		self::buildTicketForm($shopUser);	//チケット
@@ -476,6 +477,34 @@ class DetailPage extends WebPage{
 		));
 	}
 
+	private function buildMailForm(SOYShop_User $user){
+		DisplayPlugin::toggle("mail", $user->isUsabledEmail());
+		$this->addLink("send_mail_link", array(
+			"link" => SOY2PageController::createLink("User.Mail." . $user->getId())
+		));
+
+		//メールの拡張
+		$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
+			"list" => self::_getMailPluginList(),
+			"userId" => $user->getId()
+		));
+	}
+
+	private function _getMailPluginList(){
+    	SOYShopPlugin::load("soyshop.order.detail.mail");
+    	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "user"))->getList();
+		if(!count($mailList)) return array();
+
+    	$list = array();
+    	foreach($mailList as $values){
+    		if(!is_array($values)) continue;
+   			foreach($values as $value){
+   				$list[] = $value;
+   			}
+    	}
+    	return $list;
+    }
+
 	private function buildMailLogForm(SOYShop_User $user){
 		$mailLogDao = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO");
 		$mailLogDao->setLimit(10);
@@ -489,11 +518,6 @@ class DetailPage extends WebPage{
 		$this->createAdd("mail_history_list", "_common.Order.MailHistoryListComponent", array(
     		"list" => $mailLogs
     	));
-
-		DisplayPlugin::toggle("mail", $user->isUsabledEmail());
-		$this->addLink("send_mail_link", array(
-			"link" => SOY2PageController::createLink("User.Mail." . $user->getId())
-		));
 	}
 
 	/**

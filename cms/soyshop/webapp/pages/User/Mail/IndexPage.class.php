@@ -47,8 +47,7 @@ class IndexPage extends WebPage{
 		//メール送信時の言語設定
 		//$this->checkLanguageConfig($order);
 
-		//$type = (isset($_GET["type"])) ? $_GET["type"] : SOYShop_Order::SENDMAIL_TYPE_ORDER;
-		$type = "user";
+		$type = (isset($_GET["type"])) ? $_GET["type"] : "user";
 		$this->type = $type;
 
 		parent::__construct();
@@ -116,7 +115,20 @@ class IndexPage extends WebPage{
 			"other" => "その他のメール"
 		);
 
-		return (isset($array[$type])) ? $array[$type] : $array["other"];
+		if(isset($array[$type])) return $array[$type];
+
+		SOY2::import("util.SOYShopPluginUtil");
+		if(SOYShopPluginUtil::checkIsActive("common_add_mail_type")) {
+			SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
+			$configs = AddMailTypeUtil::getConfig(AddMailTypeUtil::MAIL_TYPE_USER);
+
+			if(isset($configs[$type])) return $configs[$type]["title"];
+		//メール送信種類追加プラグイン以外
+		}else{
+			// @ToDo　必要になったら実装する
+		}
+
+		return $array["other"];
 	}
 
 	private function _getMailContent($type, $array, SOYShop_User $user){

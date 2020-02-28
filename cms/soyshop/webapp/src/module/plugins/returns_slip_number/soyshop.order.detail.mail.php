@@ -1,8 +1,10 @@
 <?php
 class ReturnsSlipNumberOrderDetailMail extends SOYShopOrderDetailMailBase{
 
-	function getMailType(){
-		return array("return" => array("id" => "return", "title" => "返送完了メール"));
+	function getMailType($mode){
+		if($mode == "order"){
+			return array("return" => array("id" => "return", "title" => "返送完了メール"));
+		}
 	}
 
 	//メール種別でメール文面編集画面のGETパラメータと一致すればtrueにする文字列

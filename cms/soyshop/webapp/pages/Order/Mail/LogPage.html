@@ -36,11 +36,30 @@
 		</tr>
 	</table>
 
-	<!-- soy:display="mail" -->
-	<p class="pageBtn">
-		<a soy:id="send_mail_link" class="button">メールの送信画面を開く</a>
-	</p>
-	<!-- /soy:display="mail" -->
-
 	</div><!-- /block_body -->
 </div><!-- /block -->
+
+<!-- soy:display="mail" -->
+<div class="block">
+	<div class="block_title">
+		<h2>メール送信</h2>
+	</div>
+
+	<div class="block_body">
+		<table class="form_table">
+			<tbody>
+				<tr>
+					<th>顧客宛メール</th>
+					<td><a soy:id="send_mail_link">送信（編集）</a></td>
+				</tr>
+				<!-- soy:id="mail_plugin_list" -->
+				<tr>
+					<th soy:id="mail_title">メール雛形タイトル</th>
+					<td><a soy:id="mail_send_link">送信（編集）</a></td>
+				</tr>
+				<!-- /soy:id="mail_plugin_list" -->
+			</tbody>
+		</table>
+	</div>
+</div>
+<!-- /soy:display="mail" -->

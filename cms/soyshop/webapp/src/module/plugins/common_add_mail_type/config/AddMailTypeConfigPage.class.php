@@ -16,10 +16,11 @@ class AddMailTypeConfigPage extends WebPage{
 			$values["id"] = trim(htmlspecialchars($_POST["mail_id"], ENT_QUOTES, "UTF-8"));
 			$values["title"] = trim(htmlspecialchars($_POST["mail_title"], ENT_QUOTES, "UTF-8"));
 
-			$configs = AddMailTypeUtil::getConfig();
+
+			$configs = AddMailTypeUtil::getConfig($_POST["mail_type"]);
 			$configs[$values["id"]] = $values;
 
-			AddMailTypeUtil::saveConfig($configs);
+			AddMailTypeUtil::saveConfig($configs, $_POST["mail_type"]);
 
 			$this->configObj->redirect("created");
 		}
@@ -61,8 +62,21 @@ class AddMailTypeConfigPage extends WebPage{
 
 		$this->addForm("form");
 
+		$orderCnfs = AddMailTypeUtil::getConfig();
+		$userCnfs = AddMailTypeUtil::getConfig(AddMailTypeUtil::MAIL_TYPE_USER);
+
+		DisplayPlugin::toggle("no_config", (!count($orderCnfs) && !count($userCnfs)));
+
+		DisplayPlugin::toggle("order_mail", (is_array($orderCnfs) && count($orderCnfs)));
 		$this->createAdd("mail_type_list", "MailTypeListComponent", array(
-			"list" => AddMailTypeUtil::getConfig()
+			"list" => $orderCnfs,
+			"mode" => AddMailTypeUtil::MAIL_TYPE_ORDER
+		));
+
+		DisplayPlugin::toggle("user_mail", (is_array($userCnfs) && count($userCnfs)));
+		$this->createAdd("user_mail_type_list", "MailTypeListComponent", array(
+			"list" => $userCnfs,
+			"mode" => AddMailTypeUtil::MAIL_TYPE_USER
 		));
 
 		$this->addForm("create_form");
@@ -78,6 +92,19 @@ class AddMailTypeConfigPage extends WebPage{
 			"value" => "",
 			"required" => "required",
 			"pattern" => "^[a-zA-Z0-9]+$"
+		));
+
+		$this->addCheckBox("mail_type_order", array(
+			"name" => "mail_type",
+			"value" => AddMailTypeUtil::MAIL_TYPE_ORDER,
+			"selected" => true,
+			"label" => "注文関連メール"
+		));
+
+		$this->addCheckBox("mail_type_user", array(
+			"name" => "mail_type",
+			"value" => AddMailTypeUtil::MAIL_TYPE_USER,
+			"label" => "顧客詳細メール"
 		));
 	}
 

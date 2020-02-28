@@ -1,8 +1,10 @@
 <?php
 class SOYShopOrderDetailMailBase implements SOY2PluginAction{
 
-	//配列を返す array(array("id" => 0, "title" => ""))
-	function getMailType(){}
+	/**
+	 * @return array(array("id" => string, "title" => ""))
+	 */
+	function getMailType($mode){}
 
 	/**
 	 * メール種別でメール文面編集画面のGETパラメータと一致すればtrueにする文字列
@@ -46,7 +48,8 @@ class SOYShopOrderDetailMailDeletageAction implements SOY2PluginDelegateAction{
 				}
 				break;
 			default:
-				$mailType = $action->getMailType();
+				//modeがorderかuserの場合は何かに使用するかもしれないから引数として渡しておく
+				$mailType = $action->getMailType($this->mode);
 				if(!is_null($mailType)){
 					$this->_list[$moduleId] = $mailType;
 				}

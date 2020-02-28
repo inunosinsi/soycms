@@ -138,6 +138,12 @@ class UserPage extends WebPage{
 		//顧客宛メールのみfalse
 		if(in_array($type, array("user"))) return false;
 
+		//拡張ポイントからも調べる
+		SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
+		$configs = AddMailTypeUtil::getConfig(AddMailTypeUtil::MAIL_TYPE_USER);
+		$keys = array_keys($configs);
+		if(in_array($type, $keys)) return false;
+
 		return true;
 	}
 
@@ -188,7 +194,7 @@ class UserPage extends WebPage{
 			"payment" => "支払確認メール雛型設定",
 			"delivery" => "配送連絡メール雛型設定",
 			"other" => "その他のメール雛形設定",
-			"user" => "顧客宛メール設定"
+			"user" => "顧客宛メール雛形設定"
 		);
 
 		if(isset($array[$type])) return $array[$type];
@@ -198,8 +204,11 @@ class UserPage extends WebPage{
 		if(!SOYShopPluginUtil::checkIsActive("common_add_mail_type")) return "注文受付メール設定(自動送信)";
 
 		SOY2::import("module.plugins.common_add_mail_type.util.AddMailTypeUtil");
-		$configs = AddMailTypeUtil::getConfig();
+		$configs = AddMailTypeUtil::getConfig(AddMailTypeUtil::MAIL_TYPE_ORDER);
 
+		if(isset($configs[$type])) return $configs[$type]["title"] . "雛形設定";
+
+		$configs = AddMailTypeUtil::getConfig(AddMailTypeUtil::MAIL_TYPE_USER);
 		return (isset($configs[$type])) ? $configs[$type]["title"] . "雛形設定" : "注文受付メール設定(自動送信)";
 	}
 }

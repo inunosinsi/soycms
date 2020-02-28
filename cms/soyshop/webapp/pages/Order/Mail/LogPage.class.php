@@ -47,5 +47,35 @@ class LogPage extends WebPage{
 		$this->addLink("send_mail_link", array(
 			"link" => SOY2PageController::createLink("User.Mail." . $user->getId())
 		));
+
+		self::_buildMailForm($user);		//顧客宛メール
 	}
+
+	private function _buildMailForm(SOYShop_User $user){
+		DisplayPlugin::toggle("mail", $user->isUsabledEmail());
+		$this->addLink("send_mail_link", array(
+			"link" => SOY2PageController::createLink("User.Mail." . $user->getId())
+		));
+
+		//メールの拡張
+		$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
+			"list" => self::_getMailPluginList(),
+			"userId" => $user->getId()
+		));
+	}
+
+	private function _getMailPluginList(){
+    	SOYShopPlugin::load("soyshop.order.detail.mail");
+    	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "user"))->getList();
+		if(!count($mailList)) return array();
+
+    	$list = array();
+    	foreach($mailList as $values){
+    		if(!is_array($values)) continue;
+   			foreach($values as $value){
+   				$list[] = $value;
+   			}
+    	}
+    	return $list;
+    }
 }
