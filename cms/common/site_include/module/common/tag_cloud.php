@@ -6,8 +6,10 @@ function soycms_tag_cloud($html, $page){
 	));
 
 	$words = array();
+	$ranks = array();		//array(word_id => count)
+
 	$url = null;
-	$rankDivide = 0;
+	$rankDivide = 1;
 
 	//プラグインがアクティブかどうか？
 	if(file_exists(_SITE_ROOT_ . "/.plugin/TagCloud.active")){
@@ -33,11 +35,12 @@ function soycms_tag_cloud($html, $page){
 			if(isset($pageId) && is_numeric($pageId)){
 				SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 				$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
+				$labelId = 1;
 				if(isset($labelId) && is_numeric($labelId)){
 					//表示速度の改善の為にここでランクの区切りの位を取得する
 					SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
 					$cnf = TagCloudUtil::getConfig();
-					$rankDivide = (isset($cnf["divide"]) && (int)$cnf["divide"]) ? (int)$cnf["divide"] : 0;
+					if(isset($cnf["divide"]) && (int)$cnf["divide"]) $rankDivide = (int)$cnf["divide"];
 
 					//タグを設定した記事が公開であること。記事が任意のラベルと紐付いていること
 					$sql = "SELECT lnk.word_id, dic.word, COUNT(lnk.word_id) AS word_id_count FROM TagCloudLinking lnk ".
@@ -74,7 +77,6 @@ function soycms_tag_cloud($html, $page){
 						$words = $dao->executeQuery($sql, array(":now" => time(), ":labelId" => $labelId));
 					}catch(Exception $e){
 						//
-						$words = array();
 					}
 
 					//ページのURLを調べる
@@ -88,6 +90,21 @@ function soycms_tag_cloud($html, $page){
 						}catch(Exception $e){
 							//
 						}
+
+						//ワードID毎の記事数
+						$list = array();
+						foreach($words as $word){
+							if(isset($word["word_id_count"]) && is_numeric($word["word_id_count"]) && (int)$word["word_id_count"] > 0){
+								$list[(int)$word["word_id"]] = (int)$word["word_id_count"];
+							}
+						}
+						if(count($list)){
+							asort($list);
+							$c = 0;
+							foreach($list as $wordId => $cnt){
+								$ranks[$wordId] = TagCloudUtil::getRank($c++);
+							}
+						}
 					}
 				}
 			}
@@ -99,7 +116,7 @@ function soycms_tag_cloud($html, $page){
 		"soy2prefix" => "p_block",
 		"list" => $words,
 		"url" => $url,
-		"divide" => $rankDivide
+		"ranks" => $ranks
 	));
 
 	$obj->display();
@@ -108,28 +125,20 @@ function soycms_tag_cloud($html, $page){
 class TagCloudWordListComponent extends HTMLList {
 
 	private $url;
-	private $divide; //タグの使用頻度が何位でクラスのrank01を次の数字にするか？
+	private $ranks; //タグの使用頻度が何位でクラスのrank01を次の数字にするか？
 
 	protected function populateItem($entity, $key, $int){
+		$rank = (isset($entity["word_id"]) && isset($this->ranks[$entity["word_id"]])) ? $this->ranks[$entity["word_id"]] : 1;
 		$this->addLink("tag_link", array(
 			"soy2prefix" => "cms",
 			"link" => (isset($entity["word_id"]) && is_numeric($entity["word_id"])) ? $this->url . "?tagcloud=" . $entity["word_id"] : "",
-			"attr:class" => self::_getRankClass($int)
+			"attr:class" => self::_buildClass($rank)
 		));
 
 		$this->addLabel("tag", array(
 			"soy2prefix" => "cms",
 			"text" => (isset($entity["word"])) ? $entity["word"] : ""
 		));
-	}
-
-	private function _getRankClass($int){
-		static $rank;
-		if(is_null($rank)) $rank = 1;
-		$cls = self::_buildClass($rank);
-		if($this->divide === 0) return $cls;
-		if($int % $this->divide === 0) $rank++;
-		return $cls;
 	}
 
 	private function _buildClass($rank){
@@ -140,7 +149,7 @@ class TagCloudWordListComponent extends HTMLList {
 	function setUrl($url){
 		$this->url = $url;
 	}
-	function setDivide($divide){
-		$this->divide = $divide;
+	function setRanks($ranks){
+		$this->ranks = $ranks;
 	}
 }

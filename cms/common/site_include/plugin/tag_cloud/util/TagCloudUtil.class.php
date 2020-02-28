@@ -3,6 +3,10 @@
 class TagCloudUtil {
 
 	public static function getConfig(){
+		return self::_config();
+	}
+
+	private static function _config(){
 		SOY2::import("domain.cms.DataSets");
 		return DataSets::get("tag_cloud.config", array(
 			"divide" => 10,
@@ -32,6 +36,17 @@ class TagCloudUtil {
 			}
 		}
 		return false;
+	}
+
+	public static function getRank($i){
+		static $div, $rank;
+		if(is_null($rank)) $rank = 0;
+		if(is_null($div)){
+			$cnf = self::_config();
+			$div = (isset($cnf["divide"]) && (int)$cnf["divide"]) ? (int)$cnf["divide"] : 1;
+		}
+		if($i % $div === 0) $rank++;
+		return $rank;
 	}
 
 	private static function _shapeTags($tags){
