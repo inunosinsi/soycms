@@ -13,7 +13,7 @@ class AddMailTypeUtil {
 		SOYShop_DataSets::put(self::_getKey($mode), $values);
 	}
 
-	private function _getKey($mode){
+	private static function _getKey($mode){
 		switch($mode){
 			case self::MAIL_TYPE_USER:
 				return "add_user_mail_type.config";
