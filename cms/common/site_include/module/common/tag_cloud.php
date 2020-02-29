@@ -35,7 +35,6 @@ function soycms_tag_cloud($html, $page){
 			if(isset($pageId) && is_numeric($pageId)){
 				SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 				$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
-				$labelId = 1;
 				if(isset($labelId) && is_numeric($labelId)){
 					//表示速度の改善の為にここでランクの区切りの位を取得する
 					SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
@@ -99,7 +98,7 @@ function soycms_tag_cloud($html, $page){
 							}
 						}
 						if(count($list)){
-							asort($list);
+							arsort($list);
 							$c = 0;
 							foreach($list as $wordId => $cnt){
 								$ranks[$wordId] = TagCloudUtil::getRank($c++);

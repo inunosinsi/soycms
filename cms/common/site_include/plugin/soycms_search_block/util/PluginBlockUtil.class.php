@@ -7,45 +7,45 @@ class PluginBlockUtil {
 	}
 
 	private static function __getTemplateByPageId($pageId=null){
-		static $template;
-		if(is_null($template)){
-			$template = "";
-			$blog = self::getBlogPageById($pageId);
+		static $templates;
+		if(is_null($templates)) $templates = array();
+		if(isset($templates[$pageId])) return $templates[$pageId];
 
-			//ブログページを取得できた場合
-			if(!is_null($blog) && !is_null($blog->getId())){
-				$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
-				//サイトIDを除く
-				$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
-				$uri = str_replace("/" . $siteId . "/", "/", $pathInfo);
-				$uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $uri);
+		$blog = self::getBlogPageById($pageId);
 
-				//トップページ
-				if(strlen($blog->getTopPageUri()) && $uri === (string)$blog->getTopPageUri()){
-					$template = $blog->getTopTemplate();
-					//アーカイブページ
-				}else if(
-					(strlen($blog->getCategoryPageUri()) && strpos($uri, $blog->getCategoryPageUri()) === 0) ||
-					(strlen($blog->getMonthPageUri()) && strpos($uri, $blog->getMonthPageUri()) === 0)
-				){
-					$template = $blog->getArchiveTemplate();
-					//記事ごとページ
-				}else if(strlen($blog->getEntryPageUri()) && strpos($uri, $blog->getEntryPageUri()) === 0){
-					$template = $blog->getEntryTemplate();
-				}
+		//ブログページを取得できた場合
+		if(!is_null($blog) && !is_null($blog->getId())){
+			$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : (isset($_SERVER["REQUEST_URI"])) ? $_SERVER["REQUEST_URI"] : null;
+			//サイトIDを除く
+			$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+			$uri = str_replace("/" . $siteId . "/", "/", $pathInfo);
+			$uri = str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $uri);
 
-				//テンプレートがまだ空の場合 トップページのURIを調べて、空の場合はトップページのテンプレートを登録する
-				if(!strlen($template) && !strlen($blog->getTopPageUri())){
-					$template = $blog->getTopTemplate();
-				}
-
-			//ブログページ以外
-			}else{
-				$template = self::getPageById($pageId)->getTemplate();
+			//トップページ
+			if(strlen($blog->getTopPageUri()) && $uri === (string)$blog->getTopPageUri()){
+				$templates[$pageId] = $blog->getTopTemplate();
+				//アーカイブページ
+			}else if(
+				(strlen($blog->getCategoryPageUri()) && strpos($uri, $blog->getCategoryPageUri()) === 0) ||
+				(strlen($blog->getMonthPageUri()) && strpos($uri, $blog->getMonthPageUri()) === 0)
+			){
+				$templates[$pageId] = $blog->getArchiveTemplate();
+				//記事ごとページ
+			}else if(strlen($blog->getEntryPageUri()) && strpos($uri, $blog->getEntryPageUri()) === 0){
+				$templates[$pageId] = $blog->getEntryTemplate();
 			}
+
+			//テンプレートがまだ空の場合 トップページのURIを調べて、空の場合はトップページのテンプレートを登録する
+			if(!strlen($template) && !strlen($blog->getTopPageUri())){
+				$templates[$pageId] = $blog->getTopTemplate();
+			}
+
+		//ブログページ以外
+		}else{
+			$templates[$pageId] = self::getPageById($pageId)->getTemplate();
 		}
 
-		return $template;
+		return (isset($templates[$pageId])) ? $templates[$pageId] : null;
 	}
 
 	public static function getBlockByPageId($pageId){
@@ -54,23 +54,25 @@ class PluginBlockUtil {
 
 	private static function __getBlockByPageId($pageId){
 		static $plugBlocks;
-		if(is_null($plugBlocks)){
-			$plugBlocks = array();
-			try{
-					$blocks = SOY2DAOFactory::create("cms.BlockDAO")->getByPageId($pageId);
-					if(!count($blocks)) return array();
-			}catch(Exception $e){
-					return array();
-			}
+		if(is_null($plugBlocks)) $plugBlocks = array();
+		if(isset($plugBlocks[$pageId])) return $plugBlocks[$pageId];
+		try{
+			$blocks = SOY2DAOFactory::create("cms.BlockDAO")->getByPageId($pageId);
+		}catch(Exception $e){
+			$blocks = array();
+		}
 
+		$plugBlocks[$pageId] = array();
+
+		if(count($blocks)){
 			foreach($blocks as $obj){
 				if($obj->getClass() == "PluginBlockComponent"){
-					$plugBlocks[] = $obj;
+					$plugBlocks[$pageId][] = $obj;
 				}
 			}
 		}
 
-		return $plugBlocks;
+		return $plugBlocks[$pageId];
 	}
 
 	public static function getBlogPageByPageId($pageId){
@@ -163,26 +165,30 @@ class PluginBlockUtil {
 	}
 
 	private static function getBlogPageById($pageId){
-		static $page;
-		if(is_null($page)){
-			try{
-				$page = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($pageId);
-			}catch(Exception $e){
-				$page = new BlogPage();
-			}
+		static $pages;
+		if(is_null($pages)) $pages = array();
+		if(isset($pages[$pageId])) return $pages[$pageId];
+
+		try{
+			$pages[$pageId] = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($pageId);
+		}catch(Exception $e){
+			$pages[$pageId] = new BlogPage();
 		}
-		return $page;
+
+		return $pages[$pageId];
 	}
 
 	private static function getPageById($pageId){
-		static $page;
-		if(is_null($page)){
-			try{
-				$page = SOY2DAOFactory::create("cms.PageDAO")->getById($pageId);
-			}catch(Exception $e){
-				$page = new Page();
-			}
+		static $pages;
+		if(is_null($pages)) $pages = array();
+		if(isset($pages[$pageId])) return $pages[$pageId];
+
+		try{
+			$pages[$pageId] = SOY2DAOFactory::create("cms.PageDAO")->getById($pageId);
+		}catch(Exception $e){
+			$pages[$pageId] = new Page();
 		}
-		return $page;
+
+		return (isset($pages[$pageId])) ? $pages[$pageId] : new Page();
 	}
 }
