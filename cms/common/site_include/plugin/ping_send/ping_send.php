@@ -125,7 +125,7 @@ class PingSendPlugin{
 
 		foreach($servers as $key => $value){
 
-			if(strlen($value) < 1)continue;
+			if(strlen($value)<1)continue;
 
 			$urls = parse_url($value);
 			$host = $urls["host"];
@@ -134,22 +134,7 @@ class PingSendPlugin{
 			$this->sendUpdatePing($host,$path,$title,$url);
 
 		}
-	}
 
-	private function _buildXml($title, $url){
-		return
-			   "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n" .
-			   "<methodCall>\r\n" .
-			   "<methodName>weblogUpdates.ping</methodName>\r\n" .
-			   "<params>\r\n" .
-			   "<param>\r\n" .
-			   "<value>" . htmlspecialchars($title) . "</value>\r\n" .
-			   "</param>\r\n" .
-			   "<param>\r\n" .
-			   "<value>" . $url . "</value>\r\n" .
-			   "</param>\r\n" .
-			   "</params>\r\n" .
-			   "</methodCall>\r\n";
 	}
 
 	function sendUpdatePing($host, $path, $title, $url){
@@ -157,23 +142,21 @@ class PingSendPlugin{
 		$sock = @fsockopen($host, 80, $errno, $errstr, 2.0);
 		$result = "";
 		if($sock){
-
+			$title_str = htmlspecialchars($title);
+			$content =
+				   "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n" .
+				   "<methodCall>\r\n" .
+				   "<methodName>weblogUpdates.ping</methodName>\r\n" .
+				   "<params>\r\n" .
+				   "<param>\r\n" .
+				   "<value>$title_str</value>\r\n" .
+				   "</param>\r\n" .
+				   "<param>\r\n" .
+				   "<value>$url</value>\r\n" .
+				   "</param>\r\n" .
+				   "</params>\r\n" .
+				   "</methodCall>\r\n";
 			$length = strlen($content);
-
-			$headers = array(
-  				'Content-Type: application/xml',
-  				'Content-Length: '.$length
-			);
-
-			$context = stream_context_create(
-				array(
-					'http'=>array(
-						'method'=>'POST',
-						'header'=>implode( "\r\n", $headers ),
-						'content'=>$content
-					)
-				)
-			);
 			$req = "POST $path HTTP/1.0\r\n" .
 				   "Host: $host\r\n" .
 				   "Content-Type: text/xml\r\n" .
