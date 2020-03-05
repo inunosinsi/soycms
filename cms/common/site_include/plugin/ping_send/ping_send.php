@@ -9,7 +9,7 @@ if(is_null($obj)){
 CMSPlugin::addPlugin(PING_SEND_PLUGIN,array($obj,"init"));
 
 class PingSendPlugin{
-	
+
 	//Ping送信先
 	var $pingServers = array(
 		"http://blogsearch.google.com/ping/RPC2",
@@ -26,15 +26,15 @@ class PingSendPlugin{
 		"http://ping.rss.drecom.jp/",
 		"http://ping.ask.jp/xmlrpc.m",
 	);
-	
+
 	//最終送信時刻
 	var $lastSendDate = array();
-	
-	
+
+
 	function getId(){
 		return PING_SEND_PLUGIN;
 	}
-	
+
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"更新Ping送信プラグイン",
@@ -43,14 +43,14 @@ class PingSendPlugin{
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
 			"version"=>"1.1"
-		));	
+		));
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
 			$this,"config_page"
 		));
 	}
-	
+
 	function config_page(){
-		
+
 		//Pingサーバの情報を取得
 		if(isset($_POST["update_ping_server"])){
 			$this->pingServers = explode("\n",$_POST["ping_server"]);
@@ -59,25 +59,25 @@ class PingSendPlugin{
 			CMSPlugin::redirectConfigPage();
 			exit;
 		}
-		
+
 		//Ping送信
 		if(isset($_POST["send_ping"])){
 			$id = $_POST["blog_id"];
-			
+
 			$now = time();
 			if(strlen($id) && is_numeric($id)){
-				
+
 				set_time_limit(600);
-				
+
 				$id = (int)$id;
-				
+
 				$blogDAO = SOY2DAOFactory::create("cms.BlogPageDAO");
-				
+
 				$this->sendUpdatePings($id,$this->pingServers,$blogDAO);
 				$this->lastSendDate[$id] = $now;
 				CMSPlugin::savePluginConfig($this->getId(),$this);
 			}
-			
+
 			$html = array();
 			$html[] = "<html><head></head><body>";
 			$html[] = "<script type=\"text/javascript\">";
@@ -89,80 +89,97 @@ class PingSendPlugin{
 			$html[] = "if(ele){ ele.innerHTML = '".date("Y-m-d H:i:s",$now)."'; } ";
 			$html[] = "</script>";
 			$html[] = "</body></html>";
-			
-			
+
+
 			echo implode("\n",$html);
-			
+
 			exit;
 		}
-		
+
 		//全ブログページを取得
 		$blogDAO = SOY2DAOFactory::create("cms.BlogPageDAO");
 		$blogs = $blogDAO->get();
-		
+
 		ob_start();
 		include_once(dirname(__FILE__)."/config.php");
 		$html = ob_get_contents();
 		ob_clean();
-		
+
 		return $html;
-		
+
 	}
-	
+
 	function sendUpdatePings($id,$servers,$blogDAO){
 		try{
 			$blogPage = $blogDAO->getById($id);
 		}catch(Exception $e){
 			return;
 		}
-		
+
 		$title = $blogPage->getTitle();
 		if(strlen($blogPage->getUri()) >0){
 			$url = UserInfoUtil::getSiteURL() . $blogPage->getUri() . "/";
 		}else{
 			$url = UserInfoUtil::getSiteURL();
 		}
-		
+
 		foreach($servers as $key => $value){
-			
-			if(strlen($value)<1)continue;
-			
+
+			if(strlen($value) < 1)continue;
+
 			$urls = parse_url($value);
 			$host = $urls["host"];
 			$path = @$urls["path"];
-			
+
 			$this->sendUpdatePing($host,$path,$title,$url);
-			
+
 		}
-		
 	}
-	
+
+	private function _buildXml($title, $url){
+		return
+			   "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n" .
+			   "<methodCall>\r\n" .
+			   "<methodName>weblogUpdates.ping</methodName>\r\n" .
+			   "<params>\r\n" .
+			   "<param>\r\n" .
+			   "<value>" . htmlspecialchars($title) . "</value>\r\n" .
+			   "</param>\r\n" .
+			   "<param>\r\n" .
+			   "<value>" . $url . "</value>\r\n" .
+			   "</param>\r\n" .
+			   "</params>\r\n" .
+			   "</methodCall>\r\n";
+	}
+
 	function sendUpdatePing($host, $path, $title, $url){
-		
+
 		$sock = @fsockopen($host, 80, $errno, $errstr, 2.0);
 		$result = "";
 		if($sock){
-			$title_str = htmlspecialchars($title);
-			$content =
-				   "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\r\n" .
-				   "<methodCall>\r\n" .
-				   "<methodName>weblogUpdates.ping</methodName>\r\n" .
-				   "<params>\r\n" .
-				   "<param>\r\n" .
-				   "<value>$title_str</value>\r\n" .
-				   "</param>\r\n" .
-				   "<param>\r\n" .
-				   "<value>$url</value>\r\n" .
-				   "</param>\r\n" .
-				   "</params>\r\n" .
-				   "</methodCall>\r\n";
+
 			$length = strlen($content);
+
+			$headers = array(
+  				'Content-Type: application/xml',
+  				'Content-Length: '.$length
+			);
+
+			$context = stream_context_create(
+				array(
+					'http'=>array(
+						'method'=>'POST',
+						'header'=>implode( "\r\n", $headers ),
+						'content'=>$content
+					)
+				)
+			);
 			$req = "POST $path HTTP/1.0\r\n" .
 				   "Host: $host\r\n" .
 				   "Content-Type: text/xml\r\n" .
 				   "Content-Length: $length\r\n" .
 				   "\r\n" . $content;
-				   
+
 			fputs($sock, $req);
 			while(!feof($sock)){
 				$result .= fread($sock, 1024);
@@ -171,4 +188,3 @@ class PingSendPlugin{
 		return $result;
 	}
 }
-?>

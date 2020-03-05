@@ -36,7 +36,7 @@ class PluginBlockUtil {
 			}
 
 			//テンプレートがまだ空の場合 トップページのURIを調べて、空の場合はトップページのテンプレートを登録する
-			if(!strlen($template) && !strlen($blog->getTopPageUri())){
+			if(!isset($templates[$pageId]) && !strlen($blog->getTopPageUri())){
 				$templates[$pageId] = $blog->getTopTemplate();
 			}
 
