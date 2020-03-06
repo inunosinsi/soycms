@@ -19,7 +19,7 @@ class PingNewPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.5"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -79,16 +79,19 @@ class PingNewPlugin{
 			)
 		);
 
+		$isSuccess = true;
 		foreach(explode("\n", $this->pingServers) as $server){
 			$server = trim($server);
 			if(!strlen($server)) continue;
 			if(!preg_match('/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i', $server)) continue;
 
 			$resp = @file_get_contents($server, false, $cxt);
+			if(is_bool($resp) && !$resp) $isSuccess = false;
+			if(!strpos($resp, "Thanks for the ping")) $isSuccess = false;
 		}
 
 		// 一度投稿したら、二回目の投稿を行わないようにしたい
-		PingUtil::save($entry->getId());
+		if($isSuccess) PingUtil::save($entry->getId());
 	}
 
 	private function _getBlogInfo($labels){
