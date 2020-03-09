@@ -23,21 +23,44 @@ class PluginBlockUtil {
 
 			//トップページ
 			if(strlen($blog->getTopPageUri()) && $uri === (string)$blog->getTopPageUri()){
-				$templates[$pageId] = $blog->getTopTemplate();
+				$tmp = trim(strip_tags($blog->getTopTemplate()));
+				if(strlen($tmp)){
+					$templates[$pageId] = $blog->getTopTemplate();
+				}
+
 				//アーカイブページ
 			}else if(
 				(strlen($blog->getCategoryPageUri()) && strpos($uri, $blog->getCategoryPageUri()) === 0) ||
 				(strlen($blog->getMonthPageUri()) && strpos($uri, $blog->getMonthPageUri()) === 0)
 			){
-				$templates[$pageId] = $blog->getArchiveTemplate();
+				$tmp = trim(strip_tags($blog->getArchiveTemplate()));
+				if(strlen($tmp)){
+					$templates[$pageId] = $blog->getArchiveTemplate();
+				}
 				//記事ごとページ
 			}else if(strlen($blog->getEntryPageUri()) && strpos($uri, $blog->getEntryPageUri()) === 0){
-				$templates[$pageId] = $blog->getEntryTemplate();
+				$tmp = trim(strip_tags($blog->getEntryTemplate()));
+				if(strlen($tmp)){
+					$templates[$pageId] = $blog->getEntryTemplate();
+				}
 			}
 
-			//テンプレートがまだ空の場合 トップページのURIを調べて、空の場合はトップページのテンプレートを登録する
-			if(!isset($templates[$pageId]) && !strlen($blog->getTopPageUri())){
-				$templates[$pageId] = $blog->getTopTemplate();
+			//すべての条件を満たさなかった時は何らかのテンプレートを入れておく
+			if(!isset($templates[$pageId])){
+				$tmp = trim(strip_tags($blog->getTopTemplate()));
+				if(strlen($tmp)){
+					$templates[$pageId] = $blog->getTopTemplate();
+				}else{
+					$tmp = trim(strip_tags($blog->getArchiveTemplate()));
+					if(strlen($tmp)){
+						$templates[$pageId] = $blog->getArchiveTemplate();
+					}else{
+						$templates[$pageId] = $blog->getEntryTemplate();
+					}
+				}
+
+				//上記の対応でもまだ取得出来なかった場合は空文字を入れておく
+				if(!isset($templates[$pageId])) $templates[$pageId] = "";
 			}
 
 		//ブログページ以外
