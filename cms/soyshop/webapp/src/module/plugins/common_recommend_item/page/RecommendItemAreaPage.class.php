@@ -34,4 +34,3 @@ class RecommendItemAreaPage extends WebPage{
 		$this->configObj = $configObj;
 	}
 }
-?>

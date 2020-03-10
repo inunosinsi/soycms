@@ -5910,6 +5910,7 @@ class SOYBodyComponentBase extends SOY2HTML{
 		if(!strlen($new["text"]) && isset($array["text"]) && strlen($array["text"])) $new["text"] = $array["text"]; //addTextAreaの場合
 		self::createAdd($id. "_text", "HTMLLabel", $new);
 	}
+	function addList($id, $array=array()){self::createAdd($id, "HTMLList", $array);}
 }
 /**
  * @package SOY2.SOY2HTML
