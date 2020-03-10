@@ -92,12 +92,12 @@ class SOYShop_User {
 	 * @column fax_number
 	 */
 	private $faxNumber;
-	private $url;
 
 	/**
 	 * @column cellphone_number
 	 */
 	private $cellphoneNumber;
+	private $url;
 
 	/**
 	 * @column job_name
@@ -382,17 +382,17 @@ class SOYShop_User {
 	function setFaxNumber($faxNumber) {
 		$this->faxNumber = $faxNumber;
 	}
-	function getUrl(){
-		return $this->url;
-	}
-	function setUrl($url){
-		$this->url = $url;
-	}
 	function getCellphoneNumber() {
 		return $this->cellphoneNumber;
 	}
 	function setCellphoneNumber($cellphoneNumber) {
 		$this->cellphoneNumber = $cellphoneNumber;
+	}
+	function getUrl(){
+		return $this->url;
+	}
+	function setUrl($url){
+		$this->url = $url;
 	}
 	function getJobName() {
 		return $this->jobName;
