@@ -26,6 +26,9 @@ class IndexPage extends WebPage{
 				$mail = unserialize(base64_decode($_POST["mail_value"]));
 				$this->mailLogic->sendMail($mail["sendTo"], $mail["title"], $mail["content"], $sendToName, $order);
 
+				//管理者に送信するメール
+				$this->mailLogic->sendMail("admin", "【確認用】" . $mail["title"], $mail["content"], $sendToName, $order);
+
 				SOY2PageController::jump("User.Detail." . $this->id . "?sended");
 			}catch(Exception $e){
 				$this->error = true;
