@@ -299,7 +299,7 @@ class SOYShop_ItemAttributeConfig{
 		return "custom_field_" .$this->getFieldId() . "_extra_" . $extraOutput;
 	}
 	function isIndex(){
-		return (boolean)$this->config["isIndex"];
+		return (isset($this->config["isIndex"])) ? (boolean)$this->config["isIndex"] : false;
 	}
 
 	function getForm($value, $extraValues = null){

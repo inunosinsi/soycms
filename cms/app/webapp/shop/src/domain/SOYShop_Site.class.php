@@ -9,43 +9,43 @@ class SOYShop_Site extends SOY2DAO_EntityBase{
 	const SUPER_USER = 1;  //受注管理とテンプレート編集ができる
 	const ORDER_USER = 2;  //受注管理とCSVのインポート等までできる
 	const ORDER_LIMIT = 3;	//受注管理のみ
-	
+
 
     /**
 	 * @id
 	 */
 	private $id;
-	
+
 	/**
 	 * @column site_id
 	 */
 	private $siteId;
-	
+
 	/**
 	 * @column site_name
 	 */
 	private $name;
-	
+
 	private $url;
-	
+
 	private $path;
-	
+
 	/**
 	 * @column data_source_name
 	 */
 	private $dsn;
-	
-	
+
+
 	/**
 	 * @column create_date
 	 */
 	private $createDate;
-	
+
 	/**
 	 * @column update_date
 	 */
 	private $updateDate;
-	
+
 	function check(){
 		return true;
 	}
@@ -91,7 +91,7 @@ class SOYShop_Site extends SOY2DAO_EntityBase{
 	public function setDsn($dsn) {
 		$this->dsn = $dsn;
 	}
-	
+
 	function getCreateDate() {
 		return $this->createDate;
 	}
@@ -105,15 +105,13 @@ class SOYShop_Site extends SOY2DAO_EntityBase{
 	function setUpdateDate($updateDate) {
 		$this->updateDate = $updateDate;
 	}
-	
+
 	/* util */
 	function getIsMySQL(){
 		$dsn = $this->getDsn();
 		$str = substr($dsn,0,6);
 		$res = strpos($str,"mysql");
-		
+
 		return is_int($res);
 	}
-	
 }
-?>

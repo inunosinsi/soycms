@@ -14,7 +14,9 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 	}
 
 	function getTitle(){
-		return "SOY Shopの新機能紹介 (開発者のサイト)";
+		if(self::checkDisplayAuth()){
+			return "SOY Shopの新機能紹介 (開発者のサイト)";
+		}
 	}
 
 	function getContent(){
@@ -23,6 +25,9 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 			SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic")->uninstallModule("0_saitodev");
 			SOY2PageController::jump("");
 		}
+
+		//表示する権限を調べる
+		if(!self::checkDisplayAuth()) return "";
 
 		$cacheDir = SOYSHOP_SITE_DIRECTORY . ".cache/xml/";
 		if(!file_exists($cacheDir)) mkdir($cacheDir);
@@ -75,6 +80,30 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 
 		//今の一日前よりも古い場合はキャッシュを削除 falseで返す
 		return ($ftimestamp > time() - 24 * 60 * 60);
+	}
+
+	private function checkDisplayAuth(){
+		static $auth;
+		if(is_null($auth)){
+			SOY2::import("module.plugins.0_saitodev.util.SaitodevUtil");
+			$conf = SaitodevUtil::getConfig();
+			if(is_array($conf) && count($conf)){	//権限による非表示設定の値がある場合
+				//権限を取得
+				$session = SOY2ActionSession::getUserSession();
+
+				//初期管理者であれば無条件でtrue
+				if($session->getAttribute("isdefault") === 1){
+					$auth = true;
+				}else{
+					$level = (int)$session->getAttribute("app_shop_auth_level");
+					$auth = (!is_numeric(array_search($level, $conf)));
+				}
+			}else{
+				$auth = true;	//非表示設定がなければ絶対にtrue
+			}
+		}
+
+		return $auth;
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "0_saitodev", "SaitodevAdminTop");

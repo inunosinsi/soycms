@@ -17,4 +17,3 @@ class ListPage extends SOYShopWebPage{
     	));
     }
 }
-?>
