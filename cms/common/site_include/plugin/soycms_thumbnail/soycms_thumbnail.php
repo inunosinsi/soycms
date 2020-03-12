@@ -96,6 +96,11 @@ class SOYCMSThumbnailPlugin{
 				"alt" => self::getAlt($entryId)
 			));
 
+			$htmlObj->addLabel($label . "_text", array(
+				"soy2prefix" => "cms",
+				"text" => $imagePath
+			));
+
 			$htmlObj->addLabel($label . "_path_text", array(
 				"soy2prefix" => "cms",
 				"text" => $imagePath
