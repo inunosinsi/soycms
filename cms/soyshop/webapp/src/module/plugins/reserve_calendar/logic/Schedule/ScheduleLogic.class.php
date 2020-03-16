@@ -28,7 +28,7 @@ class ScheduleLogic extends SOY2LogicBase{
         }
 
         return $list;
-    }
+	}
 
     private function autoInsert($itemId, $year, $month, $seat){
         //今月の日数を取得
@@ -64,6 +64,10 @@ class ScheduleLogic extends SOY2LogicBase{
 
         return true;
     }
+
+	function findLatestScheduleDate($year, $month){
+		return self::dao()->findLatestScheduleDate($year, $month);
+	}
 
     private function dao(){
         static $dao;

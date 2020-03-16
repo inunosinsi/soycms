@@ -8,6 +8,10 @@ function soyshop_yamatrip_calendar($html, $page){
 	$year = (isset($_GET["y"]) && is_numeric($_GET["y"])) ? (int)$_GET["y"] : (int)date("Y");
 	$month = (isset($_GET["m"]) && is_numeric($_GET["m"])) ? (int)$_GET["m"] : (int)date("n");
 
+	//直近の空き予約を調べる
+	if(!isset($_GET["y"]) || !isset($_GET["m"])){
+		list($year, $month) = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic")->findLatestScheduleDate($year, $month);
+	}
 
 	if(get_class($page) == "detail_page"){	//itemIdはpageオブジェクトから取得
 		$itemId = $page->getItem()->getId();

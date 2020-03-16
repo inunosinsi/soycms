@@ -131,6 +131,28 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
 		return array($min, $max);
 	}
 
+	/**
+	 * @final
+	 */
+	function findLatestScheduleDate($year, $month){
+		$sql = "SELECT id, year, month, day FROM soyshop_reserve_calendar_schedule WHERE year > " . $year . " OR (year = " . $year . " AND month >= " . $month . ") ORDER BY id ASC LIMIT 100";
+		try{
+			$res = $this->executeQuery($sql);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array($year, $month);
+
+		$list = array();
+		foreach($res as $v){
+			$list[$v["id"]] = mktime(0, 0, 0, $v["month"], $v["day"], $v["year"]);
+		}
+		sort($list);
+		$latest = $list[0];
+
+		return array(date("Y", $latest), date("n", $latest));
+	}
+
     function deleteById($id){
 		try{
 			$this->executeQuery("DELETE FROM soyshop_reserve_calendar_schedule WHERE id = :id", array(":id" => $id));
