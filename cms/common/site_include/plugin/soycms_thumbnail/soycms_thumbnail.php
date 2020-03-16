@@ -36,12 +36,11 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"0.9.6"
+			"version"=>"1.0"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
-
-			$this->entryAttributeDao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
+			SOY2::import("site_include.plugin.soycms_thumbnail.util.ThumbnailPluginUtil");
 
 			//管理側
 			if(!defined("_SITE_ROOT_")){
@@ -67,12 +66,10 @@ class SOYCMSThumbnailPlugin{
 		$entryId = $arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
 
+		$objects = ThumbnailPluginUtil::getThumbnailObjectsByEntryId($entryId);
+
 		foreach(array(self::UPLOAD_IMAGE, self::TRIMMING_IMAGE, self::RESIZE_IMAGE) as $imageType){
-			try{
-				$obj = $this->entryAttributeDao->get($entryId, $imageType);
-			}catch(Exception $e){
-				$obj = new EntryAttribute();
-			}
+			$obj = (isset($objects[$imageType])) ? $objects[$imageType] : new EntryAttribute();
 
 			$label = str_replace("soycms_thumbnail_plugin_", "", $imageType);
 			if($label == "resize") $label = "thumbnail";
@@ -93,7 +90,7 @@ class SOYCMSThumbnailPlugin{
 			$htmlObj->addImage($label, array(
 				"soy2prefix" => "cms",
 				"src" => $imagePath,
-				"alt" => self::getAlt($entryId)
+				"alt" => (isset($objects["soycms_thumbnail_plugin_alt"])) ? $objects["soycms_thumbnail_plugin_alt"]->getValue() : ""
 			));
 
 			$htmlObj->addLabel($label . "_text", array(
@@ -117,11 +114,11 @@ class SOYCMSThumbnailPlugin{
 		$entryId = $entry->getId();
 
 		try{
-			$this->entryAttributeDao->delete($entryId, self::UPLOAD_IMAGE);
-			$this->entryAttributeDao->delete($entryId, self::TRIMMING_IMAGE);
-			$this->entryAttributeDao->delete($entryId, self::RESIZE_IMAGE);
-			$this->entryAttributeDao->delete($entryId, self::THUMBNAIL_CONFIG);
-			$this->entryAttributeDao->delete($entryId, self::THUMBNAIL_ALT);
+			self::_attrDao()->delete($entryId, self::UPLOAD_IMAGE);
+			self::_attrDao()->delete($entryId, self::TRIMMING_IMAGE);
+			self::_attrDao()->delete($entryId, self::RESIZE_IMAGE);
+			self::_attrDao()->delete($entryId, self::THUMBNAIL_CONFIG);
+			self::_attrDao()->delete($entryId, self::THUMBNAIL_ALT);
 		}catch(Exception $e){
 			//
 		}
@@ -193,7 +190,7 @@ class SOYCMSThumbnailPlugin{
 			$obj->setFieldId($key);
 			$obj->setValue($image);
 			try{
-				$this->entryAttributeDao->insert($obj);
+				self::_attrDao()->insert($obj);
 			}catch(Exception $e){
 				//
 			}
@@ -210,7 +207,7 @@ class SOYCMSThumbnailPlugin{
 		$obj->setFieldId(self::THUMBNAIL_CONFIG);
 		$obj->setValue(soy2_serialize($config));
 		try{
-			$this->entryAttributeDao->insert($obj);
+			self::_attrDao()->insert($obj);
 		}catch(Exception $e){
 			//
 		}
@@ -219,7 +216,7 @@ class SOYCMSThumbnailPlugin{
 		$obj->setFieldId(self::THUMBNAIL_ALT);
 		$obj->setValue($_POST["jcrop_thumbnail_alt"]);
 		try{
-			$this->entryAttributeDao->insert($obj);
+			self::_attrDao()->insert($obj);
 		}catch(Exception $e){
 			//
 		}
@@ -227,16 +224,16 @@ class SOYCMSThumbnailPlugin{
 
 	function onEntryCopy($args){
 		list($old, $new) = $args;
-		$objects = self::getImageObjects($old);
+		$objects = ThumbnailPluginUtil::getThumbnailObjectsByEntryId($old);
 
 		foreach($objects as $key => $object){
 			try{
 				$obj = new EntryAttribute();
 				$obj->setEntryId($new);
-				$obj->setFieldId(self::PREFIX_IMAGE . $key);
+				$obj->setFieldId($key);
 				$obj->setValue($object->getValue());
 				$obj->setExtraValuesArray(null);
-				$this->entryAttributeDao->insert($obj);
+				self::_attrDao()->insert($obj);
 			}catch(Exception $e){
 				//
 			}
@@ -248,7 +245,7 @@ class SOYCMSThumbnailPlugin{
 	function onEntryRemove($args){
 		foreach($args as $entryId){
 			try{
-				$this->entryAttributeDao->deleteByEntryId($entryId);
+				self::_attrDao()->deleteByEntryId($entryId);
 			}catch(Exception $e){
 				//
 			}
@@ -289,7 +286,7 @@ class SOYCMSThumbnailPlugin{
 	 * @return string html
 	 */
 	private function buildFormHtml($entryId){
-		$objects = self::getImageObjects($entryId);
+		$objects = ThumbnailPluginUtil::getThumbnailObjectsByEntryId($entryId);
 		$config = self::getConfigObject($entryId);
 
 		try{
@@ -297,6 +294,8 @@ class SOYCMSThumbnailPlugin{
 		}catch(Exception $e){
 			$siteConfig = new SiteConfig();
 		}
+
+		$uploadObject = (isset($objects["soycms_thumbnail_plugin_upload"])) ? $objects["soycms_thumbnail_plugin_upload"] : new EntryAttribute();
 
 		$htmls = array();
 		$htmls[] = "<label for=\"custom_field_img\">サムネイルの生成</label>";
@@ -306,24 +305,24 @@ class SOYCMSThumbnailPlugin{
 		$htmls[] = "アップロード";
 		$htmls[] = "<a href=\"javascript:void(0);\" title=\"サムネイルの生成用の画像を選択します。\"><i class=\"fa fa-question-circle\"></i></a>";
 		$htmls[] = "</th>";
-		$htmls[] = "<td><input type=\"text\" class=\"jcrop_field_input form-control\" style=\"width:70%\" id=\"jcrop_upload_field\" name=\"jcrop_upload_field\" value=\"" . $objects["upload"]->getValue() . "\" />";
+		$htmls[] = "<td><input type=\"text\" class=\"jcrop_field_input form-control\" style=\"width:70%\" id=\"jcrop_upload_field\" name=\"jcrop_upload_field\" value=\"" . $uploadObject->getValue() . "\" />";
 		$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_filemanager($('#jcrop_upload_field'));\" class=\"btn\" value=\"ファイルを指定する\">";
-		if(strlen($objects["upload"]->getValue()) > 0){
+		if(strlen($uploadObject->getValue()) > 0){
 			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_upload_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
 		$htmls[] = "</td>";
 		$htmls[] = "</tr>";
 
+		$trimmingObject = (isset($objects["soycms_thumbnail_plugin_trimming"])) ? $objects["soycms_thumbnail_plugin_trimming"] : new EntryAttribute();
+
 		$htmls[] = "<tr>";
 		$htmls[] = "<th>トリミング</th>";
-		$htmls[] = "<td><input type=\"text\" style=\"width:70%;\" id=\"jcrop_trimming_field\" class=\"form-control\" name=\"jcrop_trimming_field\" value=\"" . $objects["trimming"]->getValue() . "\" readonly=\"readonly\">";
-		if(strlen($objects["trimming"]->getValue()) === 0){
+		$htmls[] = "<td><input type=\"text\" style=\"width:70%;\" id=\"jcrop_trimming_field\" class=\"form-control\" name=\"jcrop_trimming_field\" value=\"" . $trimmingObject->getValue() . "\" readonly=\"readonly\">";
+		if(strlen($trimmingObject->getValue()) === 0){
 			$htmls[] = "<input type=\"button\" onclick=\"open_jcrop_trimming($('#jcrop_trimming_field'));\" class=\"btn btn-primary\" value=\"トリミング\">";
 		}
-		if(strlen($objects["trimming"]->getValue()) > 0){
+		if(strlen($trimmingObject->getValue()) > 0){
 			$htmls[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearTrimmingForm();\" value=\"クリア\">";
-		}
-		if(strlen($objects["trimming"]->getValue()) > 0){
 			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_trimming_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
 		$htmls[] = "<br><span style=\"display:block;margin-top:10px;\">アスペクト比:width:<input type=\"number\" id=\"ratio_w\" class=\"form-control\" name=\"jcrop_ratio_w\" value=\"". (int)$config["ratio_w"] . "\">&nbsp;";
@@ -331,22 +330,27 @@ class SOYCMSThumbnailPlugin{
 		$htmls[] = "</td>";
 		$htmls[] = "</tr>";
 
+		$resizeObject = (isset($objects["soycms_thumbnail_plugin_resize"])) ? $objects["soycms_thumbnail_plugin_resize"] : new EntryAttribute();
+
 		$htmls[] = "<tr>";
 		$htmls[] = "<th>";
 		$htmls[] = "サムネイルの<br>リサイズ";
 		$htmls[] = "<a href=\"javascript:void(0);\" title=\"トリミングの画像があればリサイズして、トリミング画像がなければアップロードの画像をリサイズしてサムネイルを生成します。リサイズをし直す時は一度クリアを押してください。\"><i class=\"fa fa-question-circle\"></i></a>";
 		$htmls[] = "</th>";
 		$htmls[] = "<td>";
-		$htmls[] = "<input type=\"text\" style=\"width:70%;\" id=\"jcrop_resize_field\" class=\"form-control\" name=\"jcrop_resize_field\" value=\"" . $objects["resize"]->getValue() . "\" readonly=\"readonly\">";
-		if(strlen($objects["resize"]->getValue()) > 0){
+		$htmls[] = "<input type=\"text\" style=\"width:70%;\" id=\"jcrop_resize_field\" class=\"form-control\" name=\"jcrop_resize_field\" value=\"" . $resizeObject->getValue() . "\" readonly=\"readonly\">";
+		if(strlen($resizeObject->getValue()) > 0){
 			$htmls[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearResizeForm();\" value=\"クリア\">";
 		}
-		if(strlen($objects["resize"]->getValue()) > 0){
+		if(strlen($resizeObject->getValue()) > 0){
 			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_resize_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
+
+		$altObject = (isset($objects["soycms_thumbnail_plugin_alt"])) ? $objects["soycms_thumbnail_plugin_alt"] : new EntryAttribute();
+
 		$htmls[] = "<br /><span style=\"display:block;margin-top:10px;\">リサイズ:width:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_w\" value=\"" . (int)$config["resize_w"] . "\">&nbsp;";
 		$htmls[] = "height:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_h\" value=\"" . (int)$config["resize_h"] . "\"></span><br />";
-    	$htmls[] = "<span style=\"display:block;\">alt:<input type=\"text\" class=\"form-control\" name=\"jcrop_thumbnail_alt\" value=\"" . self::getAlt($entryId) . "\" style=\"width:50%;\"></span>";
+    	$htmls[] = "<span style=\"display:block;\">alt:<input type=\"text\" class=\"form-control\" name=\"jcrop_thumbnail_alt\" value=\"" . $altObject->getValue() . "\" style=\"width:50%;\"></span>";
 		$htmls[] = "</td>";
 		$htmls[] = "</tr>";
 		$htmls[] = "</table></div>";
@@ -437,26 +441,12 @@ class SOYCMSThumbnailPlugin{
 		return $url;
 	}
 
-	private function getImageObjects($entryId){
-		try{
-			$uploadImageObj = $this->entryAttributeDao->get($entryId, self::UPLOAD_IMAGE);
-			$trimmingImageObj = $this->entryAttributeDao->get($entryId, self::TRIMMING_IMAGE);
-			$resizeImageObj = $this->entryAttributeDao->get($entryId, self::RESIZE_IMAGE);
-		}catch(Exception $e){
-			$uploadImageObj = new EntryAttribute();
-			$trimmingImageObj = new EntryAttribute();
-			$resizeImageObj = new EntryAttribute();
-		}
-
-		return array("upload" => $uploadImageObj, "trimming" => $trimmingImageObj, "resize" => $resizeImageObj);
-	}
-
 	/**
 	 * 記事毎のトリミング設定の取得
 	 */
 	private function getConfigObject($entryId){
 		try{
-			$config = $this->entryAttributeDao->get($entryId, self::THUMBNAIL_CONFIG);
+			$config = self::_attrDao()->get($entryId, self::THUMBNAIL_CONFIG);
 		}catch(Exception $e){
 			$config = new EntryAttribute();
 		}
@@ -473,19 +463,6 @@ class SOYCMSThumbnailPlugin{
 		}
 
 		return $configArray;
-	}
-
-	/**
-	 * altの取得
-	 * @param integer entryId
-	 * @return string alt
-	 */
-	private function getAlt($entryId){
-		try{
-			return $this->entryAttributeDao->get($entryId, self::THUMBNAIL_ALT)->getValue();
-		}catch(Exception $e){
-			return "";
-		}
 	}
 
 	/**
@@ -539,6 +516,12 @@ class SOYCMSThumbnailPlugin{
 	}
 	function setLabelThumbnailPaths($label_thumbail_paths){
 		$this->label_thumbail_paths = $label_thumbail_paths;
+	}
+
+	private function _attrDao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
+		return $dao;
 	}
 
 	public static function register(){
