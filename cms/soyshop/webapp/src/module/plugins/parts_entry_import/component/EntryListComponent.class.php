@@ -8,9 +8,9 @@
 class EntryListComponent extends HTMLList{
 
 	private $blogUrl;
-	private $customField;
-	private $entryAttributeDao;
+	private $customFields;
 	private $thisIsNewDate = 7;
+	private $thumbnailConfig;
 
 	protected function populateItem($entity){
 
@@ -85,19 +85,15 @@ class EntryListComponent extends HTMLList{
 
 		//カスタムフィールドを呼び出す
 		$array = array();
-		if(count($this->customField)){
+		if(count($this->customFields)){
 			try{
-				$array = $this->entryAttributeDao->getByEntryId($entity->getId());
+				$array = self::_attrDao()->getByEntryId($entity->getId());
 			}catch(Exception $e){
 				//
 			}
 
-			foreach($this->customField as $fieldId => $obj){
-				if(isset($array[$fieldId])){
-					$value = $array[$fieldId]->getValue();
-				}else{
-					$value = "";
-				}
+			foreach($this->customFields as $fieldId => $obj){
+				$value = (isset($array[$fieldId])) ? $array[$fieldId]->getValue() : "";
 
 				$this->addModel($fieldId . "_visible", array(
 					"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -130,14 +126,80 @@ class EntryListComponent extends HTMLList{
 			}
 		}
 
+		//サムネイルプラグイン
+		if(!is_null($this->thumbnailConfig)){
+			$objects = (is_numeric($entity->getId())) ? self::_getThumbnailValues($entity->getId()) : array();
+			foreach(array("upload", "trimming", "resize") as $label){
+				$key = "soycms_thumbnail_plugin_" . $label;
+				$obj = (isset($objects[$key])) ? $objects[$key] : new EntryAttribute();
+
+				if($label == "resize") $label = "thumbnail";
+
+				$imagePath = trim($obj->getValue());
+				if($label == "thumbnail" && !strlen($imagePath)) $imagePath = $this->thumbnailConfig;
+
+				$this->addModel("is_" . $label, array(
+					"soy2prefix" => SOYSHOP_SITE_PREFIX,
+					"visible" => (strlen($imagePath) > 0)
+				));
+
+				$this->addModel("no_" . $label, array(
+					"soy2prefix" => SOYSHOP_SITE_PREFIX,
+					"visible" => (strlen($imagePath) === 0)
+				));
+
+				$this->addImage($label, array(
+					"soy2prefix" => SOYSHOP_SITE_PREFIX,
+					"src" => $imagePath,
+					"alt" => (isset($objects["soycms_thumbnail_plugin_alt"])) ? $objects["soycms_thumbnail_plugin_alt"]->getValue() : ""
+				));
+
+				$this->addLabel($label . "_text", array(
+					"soy2prefix" => SOYSHOP_SITE_PREFIX,
+					"text" => $imagePath
+				));
+
+				$this->addLabel($label . "_path_text", array(
+					"soy2prefix" => SOYSHOP_SITE_PREFIX,
+					"text" => $imagePath
+				));
+			}
+		}
+
+
 		//this is new
-		$this->addModel("this_is_new", array(
-			"visible" => (isset($entity) && self::compareTime($entity) > time()),
-			"soy2prefix" => SOYSHOP_SITE_PREFIX
-		));
+		if(is_numeric($this->thisIsNewDate) && $this->thisIsNewDate > 0){
+			$this->addModel("this_is_new", array(
+				"visible" => (isset($entity) && self::_compareTime($entity) > time()),
+				"soy2prefix" => SOYSHOP_SITE_PREFIX
+			));
+		}
 	}
 
-	private function compareTime($entry){
+	private function _getThumbnailValues($entryId){
+		if(!is_numeric($entryId)) return array();
+		$dao = self::_attrDao();
+		try{
+			$res = $dao->executeQuery("SELECT entry_field_id, entry_value FROM EntryAttribute WHERE entry_id = :entryId AND entry_field_id LIKE 'soycms_thumbnail_plugin_%' AND entry_field_id NOT LIKE '%config'", array(":entryId" => $entryId));
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[$v["entry_field_id"]] = $dao->getObject($v);
+		}
+		return $list;
+	}
+
+	private function _attrDao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
+		return $dao;
+	}
+
+	private function _compareTime($entry){
 		return $entry->getCdate() + $this->thisIsNewDate * 60*60*24;
 	}
 
@@ -145,15 +207,15 @@ class EntryListComponent extends HTMLList{
 		$this->blogUrl = $blogUrl;
 	}
 
-	function setCustomField($customField){
-		$this->customField = $customField;
-	}
-
-	function setEntryAttributeDao($entryAttributeDao){
-		$this->entryAttributeDao = $entryAttributeDao;
+	function setCustomFields($customFields){
+		$this->customFields = $customFields;
 	}
 
 	function setThisIsNewDate($thisIsNewDate){
 		$this->thisIsNewDate = $thisIsNewDate;
+	}
+
+	function setThumbnailConfig($thumbnailConfig){
+		$this->thumbnailConfig = $thumbnailConfig;
 	}
 }

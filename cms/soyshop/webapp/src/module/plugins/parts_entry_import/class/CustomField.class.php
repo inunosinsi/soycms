@@ -338,4 +338,3 @@ class CustomField{
 		$this->extraValues = $extraValues;
 	}
 }
-?>

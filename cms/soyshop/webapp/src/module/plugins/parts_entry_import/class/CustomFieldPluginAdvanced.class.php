@@ -6,10 +6,10 @@ class CustomFieldPluginAdvanced{
 	function getId(){
 		return self::PLUGIN_ID;
 	}
-	
+
 	//カスタムフィールドの項目設定
 	public $customFields = array();
-	
+
 		/**
 	 * 特定の記事のカスタムフィールドの値を返す
 	 * @param int entryId 記事のID
@@ -33,7 +33,7 @@ class CustomFieldPluginAdvanced{
 		 */
 
 		SOY2::import("module.plugins.parts_entry_import.class.CustomField");
-		
+
 
 		//記事にないカスタムフィールドの設定内容を入れておく
 		//（HTMLListやカスタムフィールドを追加したときの既存の記事のため）
@@ -61,4 +61,3 @@ class CustomFieldPluginAdvanced{
 		return $list;
 	}
 }
-?>
