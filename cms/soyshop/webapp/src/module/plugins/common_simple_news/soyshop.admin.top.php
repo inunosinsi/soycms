@@ -2,11 +2,11 @@
 class SimpleNewsAdminTop extends SOYShopAdminTopBase{
 
 	function getLink(){
-		return SOY2PageController::createLink("Config.Detail?plugin=common_simple_new");
+		return (AUTH_CONFIG) ? SOY2PageController::createLink("Config.Detail?plugin=common_simple_new") : "";
 	}
-	
+
 	function getLinkTitle(){
-		return "新着情報の編集";
+		return (AUTH_CONFIG) ? "新着情報の編集" : "";
 	}
 
 	function getTitle(){

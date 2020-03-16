@@ -2,11 +2,11 @@
 class ArrivalShopInfoAdminTop extends SOYShopAdminTopBase{
 
 	function getLink(){
-		return SOY2PageController::createLink("Config.ShopConfig");
+		return (AUTH_CONFIG) ? SOY2PageController::createLink("Config.ShopConfig") : "";
 	}
 
 	function getLinkTitle(){
-		return "ショップ設定";
+		return (AUTH_CONFIG) ? "ショップ設定" : "";
 	}
 
 	function getTitle(){
