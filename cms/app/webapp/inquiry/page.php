@@ -101,7 +101,8 @@ class SOYInquiry_PageApplication{
 		$page_link = $this->pageUrl;
 
 		//template directory setting
-		$templateDir = SOYInquiryUtil::getTemplateDir($config->getTheme());
+		if(!defined("SOYSHOP_INQUIRY_FORM_THEME")) define("SOYSHOP_INQUIRY_FORM_THEME", $config->getTheme());
+		$templateDir = SOYInquiryUtil::getTemplateDir(SOYSHOP_INQUIRY_FORM_THEME);
 		$this->templateDir = $templateDir;
 
 		//ブロックしている時の表示

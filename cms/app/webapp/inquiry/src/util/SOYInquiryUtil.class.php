@@ -39,7 +39,6 @@ class SOYInquiryUtil{
 	}
 
 	public static function switchSOYShopConfig($shopId="shop"){
-
 		$old["root"] = SOY2::RootDir();
 		$old["dao"] = SOY2DAOConfig::DaoDir();
 		$old["entity"] = SOY2DAOConfig::EntityDir();
@@ -49,7 +48,23 @@ class SOYInquiryUtil{
 
 		if(is_null($shopId)) $shopId = "shop";
 		$soyshopWebapp = dirname(CMS_COMMON) . "/soyshop/webapp/";
-		if(!defined("SOYSHOP_SITE_DIRECTORY")) include_once($soyshopWebapp."conf/shop/" . $shopId . ".conf.php");
+		if(!defined("SOYSHOP_SITE_DIRECTORY")) {
+			if(file_exists($soyshopWebapp."conf/shop/" . $shopId . ".conf.php")){
+				include_once($soyshopWebapp."conf/shop/" . $shopId . ".conf.php");
+			}else{
+				//なんでも良いからconf.phpファイルを探す
+				$cnfDir = $soyshopWebapp."conf/shop/";
+				if(is_dir($cnfDir)){
+					if($dh = opendir($cnfDir)){
+						while(($file = readdir($dh)) !== false && strpos($file, ".conf.php") && !strpos($file, ".admin.")) {
+							include_once($cnfDir . $file);
+							break;
+						}
+						closedir($dh);
+					}
+				}
+			}
+		}
 
 		$entityDir = $soyshopWebapp . "src/domain/";
 
@@ -59,7 +74,6 @@ class SOYInquiryUtil{
 		SOY2DAOConfig::Dsn(SOYSHOP_SITE_DSN);
 		SOY2DAOConfig::user(SOYSHOP_SITE_USER);
 		SOY2DAOConfig::pass(SOYSHOP_SITE_PASS);
-
 
 		return $old;
 	}
@@ -231,5 +245,28 @@ class SOYInquiryUtil{
 		}
 
 		return $str;
+	}
+
+	/** Parsely.js連携 **/
+	public static function checkIsParsely(){
+		static $isParsely;
+		if(is_null($isParsely)){
+			$isParsely = false;
+			if(defined("SOYSHOP_INQUIRY_FORM_THEME")){
+				$path = self::_getTemplateDir(SOYSHOP_INQUIRY_FORM_THEME) . "form.php";
+				if(file_exists($path)){
+					$lines = explode("\n", file_get_contents($path));
+					if(count($lines)){
+						foreach($lines as $line){
+							if(stripos($line, "<form") !== false) {
+								$isParsely = (is_numeric(strpos($line, "data-parsley-validate")));
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+		return $isParsely;
 	}
 }

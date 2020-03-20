@@ -11,6 +11,9 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 	//フォームに自由に挿入する属性
 	private $attribute;
 
+	//HTML5のrequired属性を利用するか？
+	private $requiredProp = false;
+
 	//公開側で各項目毎に改行の<br>を加えるか？
 	private $isBr = false;
 
@@ -21,6 +24,7 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 
 		$items = explode("\n",$this->items);
 		$value = $this->getValue();
+		$required = $this->getRequiredProp();
 
 		$__attributes = $this->getAttributes();//HTML
 
@@ -45,10 +49,14 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 				$checked = 'checked="checked"';
 			}
 
-			$html[] = "<input type=\"radio\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."]\" value=\"".$item."\" " . implode(" ",$attributes). " ". $checked."/>";
+			$radioReq = ($key == 0) ? $required : "";
+			if(strlen($radioReq) && SOYInquiryUtil::checkIsParsely()) $radioReq .= " data-parsley-errors-container=\"#parsely-error-" . $this->getColumnId() . "\"";
+			$html[] = "<input type=\"radio\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."]\" value=\"".$item."\" " . implode(" ",$attributes). " ". $checked . " " . $radioReq . ">";
 			$html[] = "<label for=\"data_".$this->getColumnId() . "_" . $key. "\">".$item."</label>";
+
 			if($this->isBr) $html[] = "<br>";
 		}
+		if(SOYInquiryUtil::checkIsParsely()) $html[] = "<span id=\"parsely-error-" . $this->getColumnId() . "\"></span>";
 
 		return implode("\n",$html);
 	}
@@ -68,6 +76,10 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 		}
 
 		return $attributes;
+	}
+
+	function getRequiredProp(){
+		return (!SOYINQUIRY_FORM_DESIGN_PAGE && $this->requiredProp) ? " required" : "";
 	}
 
 	/**
@@ -91,7 +103,13 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 
 		$html .= '<label for="Column[config][attribute]'.$this->getColumnId().'">属性:</label>';
 		$html .= '<input  id="Column[config][attribute]'.$this->getColumnId().'" name="Column[config][attribute]" type="text" value="'.$attribute.'" style="width:90%;" /><br />';
-		$html .= "※記述例：class=\"sample\" title=\"サンプル\"";
+		$html .= "※記述例：class=\"sample\" title=\"サンプル\"<br>";
+
+		$html .= '<label><input type="checkbox" name="Column[config][requiredProp]" value="1"';
+		if($this->requiredProp){
+			$html .= ' checked';
+		}
+		$html .= '>required属性を利用する</label>';
 
 		return $html;
 	}
@@ -104,6 +122,7 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 		$this->items = (isset($config["items"])) ? $config["items"] : "*項目１\n項目２\n項目３";
 		$this->style = (isset($config["style"])) ? $config["style"] : null ;
 		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
+		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
 		$this->isBr = (isset($config["isBr"]) && $config["isBr"] == 1);
 	}
 	function getConfigure(){
@@ -111,6 +130,7 @@ class RadioColumn extends SOYInquiry_ColumnBase{
 		$config["items"] = $this->items;
 		$config["style"] = $this->style;
 		$config["attribute"] = $this->attribute;
+		$config["requiredProp"] = $this->requiredProp;
 		$config["isBr"] = $this->isBr;
 		return $config;
 	}

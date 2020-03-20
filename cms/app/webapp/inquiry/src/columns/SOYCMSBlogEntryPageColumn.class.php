@@ -20,11 +20,13 @@ class SOYCMSBlogEntryPageColumn extends SOYInquiry_ColumnBase{
 		if(!strlen($value)){
 			//ReflectionClassを使って無理矢理createAddされた値を取得する
 			$pageCont = SOY2PageController::init();
-			$values = $this->getPrivateProperty($pageCont->webPage, "_soy2_page");
+			if(property_exists($pageCont, "webPage")){
+				$values = $this->getPrivateProperty($pageCont->webPage, "_soy2_page");
 
-			//b_block:id="entry"から値を取得する
-			if(is_array($values) && isset($values["entry"]) && is_array($values["entry"]) && isset($values["entry"][$this->cms_id])){
-				$value = $values["entry"][$this->cms_id];
+				//b_block:id="entry"から値を取得する
+				if(is_array($values) && isset($values["entry"]) && is_array($values["entry"]) && isset($values["entry"][$this->cms_id])){
+					$value = $values["entry"][$this->cms_id];
+				}
 			}
 		}
 

@@ -43,10 +43,12 @@ class CheckBoxColumn extends SOYInquiry_ColumnBase{
 				$checked = 'checked="checked"';
 			}
 
-			$html[] = "<input type=\"checkbox\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."][]\" value=\"".$item."\" " . implode(" ",$attributes). " ".$checked." />";
+			$parselyProp = ($key == 0 && SOYInquiryUtil::checkIsParsely()) ? "data-parsley-errors-container=\"#parsely-error-" . $this->getColumnId() . "\"" : "";
+			$html[] = "<input type=\"checkbox\" id=\"data_".$this->getColumnId() . "_" . $key. "\" name=\"data[".$this->getColumnId()."][]\" value=\"".$item."\" " . implode(" ",$attributes). " ".$checked." " . $parselyProp . ">";
 			$html[] = "<label for=\"data_".$this->getColumnId() . "_" . $key. "\">".$item."</label>";
 			if($this->isBr) $html[] = "<br>";
 		}
+		if(SOYInquiryUtil::checkIsParsely()) $html[] = "<span id=\"parsely-error-" . $this->getColumnId() . "\"></span>";
 
 		return implode("\n",$html);
 

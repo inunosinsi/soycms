@@ -75,7 +75,8 @@ class SOYInquiry_Column{
 		"SOYShop" => "商品名 [SOY Shop連携]",
 		"Enquete" => "アンケート項目",
 		"EnqueteFree" => "アンケート自由記述",
-		"SerialNumber" => "連番"
+		"SerialNumber" => "連番",
+		//"CustomfieldAdvanced" => "カスタムフィールドアドバンスド連携"
 	);
 
 	/**

@@ -21,7 +21,7 @@ class ColumnListComponent extends HTMLList{
 		));
 
 		$this->addLabel("form", array(
-			"html" => $obj->getForm(),
+			"html" => self::_stripRequired($obj->getForm()),
 			"colspan" => (strlen($label)>0) ? "1" : "2"
 		));
 
@@ -47,6 +47,12 @@ class ColumnListComponent extends HTMLList{
 		$this->addModel("column_row", array(
 			"onclick" => "select_row(this,'display_order_".$entity->getId()."');"
 		));
+	}
+
+	private function _stripRequired($form){
+		if(!strlen($form)) return "";
+		$form = str_replace("required=\"required\"", "", $form);
+		return str_replace("required", "", $form);
 	}
 
 	function setMode($mode){
