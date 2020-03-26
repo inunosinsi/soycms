@@ -49,7 +49,7 @@
     cms:countで記事を何件表示するか決めることができます。<br>
     ※cms:countの指定がなくても動作します。
 </p>
-
+<br>
 <h4>タグクラウドモジュールの設置(TagCloudブロックを設置したページへのタグのリンク一覧)</h4>
 <pre><strong>&lt;!-- cms:module="common.tag_cloud" --&gt;</strong>
 <strong>&lt;!-- p_block:id="tag_cloud_word_list" cms:count="10" cms:random="on" --&gt;</strong>
@@ -60,3 +60,15 @@
 ※cms:countの指定がなくても動作します。<br>
 cms:random="on"でタグの表示順をランダムにします。<br>
 ※cms:randomがない場合はタグが付いた記事が多い順になります</p>
+<br>
+<h4>ブロック内でのタグ一覧の出力の記述例</h4>
+<pre>&lt;!-- b_block:id="entry" --&gt;
+
+<strong>&lt;!-- cms:id="tag_cloud_tag_list" --&gt;</strong>
+&lt;a <strong>cms:id="tag_cloud_tag_link"</strong>&gt;<strong>&lt;!-- cms:id="tag_cloud_tag_word" --&gt;</strong>タグ<strong>&lt;!-- /cms:id="tag_cloud_tag_word" --&gt;</strong>&lt;/a&gt;&nbsp;
+<strong>&lt;!-- /cms:id="tag_cloud_tag_list" --&gt;</strong>
+
+<strong>&lt;!-- cms:id="is_tag_cloud" --&gt;</strong>記事に登録されているタグが有る時に出力されます<strong>&lt;!-- /cms:id="is_tag_cloud" --&gt;</strong>
+<strong>&lt;!-- cms:id="no_tag_cloud" --&gt;</strong>記事に登録されているタグが無い時に出力されます<strong>&lt;!-- /cms:id="no_tag_cloud" --&gt;</strong>
+
+&lt;!-- /b_block:id="entry" --&gt;</pre>

@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.0"
+			"version"=>"1.1"
 		));
 
 		//active or non active
@@ -32,6 +32,8 @@ class TagCloudPlugin{
 
 				CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
 			}else{
+				CMSPlugin::setEvent("onEntryOutput", self::PLUGIN_ID, array($this,"onEntryOutput"));
+
 				//公開側のページを表示させたときに、メタデータを表示する
 				CMSPlugin::setEvent('onPageOutput',self::PLUGIN_ID,array($this,"onPageOutput"));
 
@@ -51,6 +53,32 @@ class TagCloudPlugin{
         $form->setPluginObj($this);
         $form->execute();
         return $form->getObject();
+	}
+
+	function onEntryOutput($arg){
+		$entryId = $arg["entryId"];
+		$htmlObj = $arg["SOY2HTMLObject"];
+
+		SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
+		$tags = TagCloudUtil::getRegisterdTagsByEntryId($entryId);
+
+		$cnt = count($tags);
+		$htmlObj->addModel("no_tag_cloud", array(
+			"soy2prefix" => "cms",
+			"visible" => ($cnt === 0)
+		));
+
+		$htmlObj->addModel("is_tag_cloud", array(
+			"soy2prefix" => "cms",
+			"visible" => ($cnt > 0)
+		));
+
+		SOY2::import("site_include.plugin.tag_cloud.component.TagCloudTagListComponent");
+		$htmlObj->createAdd("tag_cloud_tag_list", "TagCloudTagListComponent", array(
+			"soy2prefix" => "cms",
+			"list" =>  $tags,
+			"url" => ($cnt > 0) ? TagCloudUtil::getPageUrlSettedTagCloudBlock() : ""
+		));
 	}
 
 	/**
