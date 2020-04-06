@@ -394,6 +394,30 @@ class EntryLogic extends SOY2LogicBase{
 		return $entry;
 	}
 
+	function getBlogEntryWithoutExecption($blogLabelId,$entryId){
+		$dao = self::entryDao();
+		if(is_numeric($entryId)){
+			try{
+				return $dao->getOpenEntryById($entryId,SOYCMS_NOW);
+			}catch(Exception $e){
+				//記事IDで取得できなければ、エイリアスの方でも取得を試みる
+				try{
+					return $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
+				}catch(Exception $e){
+					//
+				}
+
+			}
+		}else{
+			try{
+				return $dao->getOpenEntryByAlias($entryId,SOYCMS_NOW);
+			}catch(Exception $e){
+				//
+			}
+		}
+		return new Entry();
+	}
+
 	/**
 	 * 次のエントリーを取得
 	 */

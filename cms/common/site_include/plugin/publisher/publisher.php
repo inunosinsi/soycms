@@ -18,7 +18,7 @@ class PublisherPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 //		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 //			$this,"config_page"
@@ -38,15 +38,15 @@ class PublisherPlugin{
 			}else{
 				CMSPlugin::setEvent('onOutput',self::PLUGIN_ID, array($this,"onOutput"), array("filter"=>"all"));
 			}
-
 		}
 	}
 
 	function onOutput($arg){
 		$html = &$arg["html"];
+		$page = &$arg["page"];
 
 		//アプリケーションページと404ページの場合は静的化しない
-		if($arg["page"]->getPageType() == Page::PAGE_TYPE_APPLICATION || $arg["page"]->getPageType() == Page::PAGE_TYPE_ERROR) return $html;
+		if($page->getPageType() == Page::PAGE_TYPE_APPLICATION || $page->getPageType() == Page::PAGE_TYPE_ERROR) return $html;
 
 		//GETがある場合は検索ページと見なして対象外とする
 		if(isset($_GET["q"])) return $html;
@@ -55,24 +55,35 @@ class PublisherPlugin{
 		if(strpos($html, "cms:blog=")) return $html;
 
 		//GETの値がある場合は対象外
-		if(isset($_SERVER["REDIRECT_QUERY_STRING"])) return $html;
+		if(isset($_SERVER["REDIRECT_QUERY_STRING"]) && strpos($_SERVER["REDIRECT_QUERY_STRING"], "pathinfo") != 0) return $html;
 
 		//URIにsearchとresultがある場所は検索結果ページと見なして、静的化の対象外とする
-		if(strpos($arg["page"]->getUri(), "search") !== false || strpos($arg["page"]->getUri(), "result") !== false) return $html;
+		if(strpos($page->getUri(), "search") !== false || strpos($page->getUri(), "result") !== false) return $html;
 
 		//ブログページの場合はトップページのみ静的化の対象とする
-		if($arg["page"]->getPageType() == Page::PAGE_TYPE_BLOG){
+		if($page->getPageType() == Page::PAGE_TYPE_BLOG){
 
-			/** @ToDo feedの場合 **/
-			if(strpos($_SERVER["REQUEST_URI"], $arg["page"]->getPageConfigObject()->rssPageUri)) return;
+			//ブログの記事詳細の場合は少し趣向を変える /サイトID/.cache/ページID/記事ID.html
+			$webPage = &$arg["webPage"];
+			switch($webPage->mode){
+				case CMSBlogPage::MODE_ENTRY:
+				case CMSBlogPage::MODE_MONTH_ARCHIVE:
+				case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
+					self::generateStaticHTMLFileOnEntry($html);
+					break;
+				case CMSBlogPage::MODE_RSS:
+				case CMSBlogPage::MODE_POPUP:
+					return $html;
+			}
 
 			//PATH_INFOがある場合はトップではないとみなす
 			/**
 			 * @ToDo もっときれいな書き方を検討する
 			 */
 			if(isset($_SERVER["PATH_INFO"])){
+
 				//ページャから出力されたページは除外 この処理はブログトップのみ
-				if(self::checkIsBlogTopPage($arg["page"]) && preg_match('/page-[0-9]*/', $_SERVER["PATH_INFO"])){
+				if(self::checkIsBlogTopPage($page) && preg_match('/page-[0-9]*/', $_SERVER["PATH_INFO"])){
 					//何もしない → そのまま返す に変更
 					return $html;
 				}else{
@@ -81,8 +92,9 @@ class PublisherPlugin{
 			}
 		}
 
+
 		//トップページである
-		if(!strlen($arg["page"]->getUri())){
+		if(!strlen($page->getUri())){
 			//ルート直下
 			if(self::checkIsDomainRoot(trim($arg["webPage"]->siteRoot, "/")) && file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.php") && !file_exists($_SERVER["DOCUMENT_ROOT"] . "/index.html")){
 				file_put_contents($_SERVER["DOCUMENT_ROOT"] . "/index.html", $html);
@@ -130,6 +142,35 @@ class PublisherPlugin{
 				file_put_contents($currentDir . "/index.html", $html);
 			}
 		}
+	}
+
+	// /サイトID/.cache/ページID/記事ID.html
+	private function generateStaticHTMLFileOnEntry($html){
+		if(!isset($_SERVER["PATH_INFO"])) return;
+		$pathInfo = $_SERVER["PATH_INFO"];
+		if(!strlen($pathInfo)) return;
+
+		$alias = trim(substr($pathInfo, strrpos($pathInfo, "/")), "/");
+
+		$dir = _SITE_ROOT_ . "/.cache/static_cache/";
+		if(!file_exists($dir)) mkdir($dir);
+
+		if(is_numeric($alias)){
+			$dir .= "n/";
+			if(!file_exists($dir)) mkdir($dir);
+		}else{
+			$dir .= "s/";
+			if(!file_exists($dir)) mkdir($dir);
+		}
+
+		$hash = md5($pathInfo);
+		for($i = 0; $i < 10; $i++){
+			$dir .= substr($hash, 0, 1) . "/";
+			if(!file_exists($dir)) mkdir($dir);
+			$hash = substr($hash, 1);
+		}
+
+		file_put_contents($dir . $hash . ".html", $html);
 	}
 
 	private function checkIsBlogTopPage(Page $page){

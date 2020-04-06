@@ -27,6 +27,12 @@ function execute_site_cache(){
 	execute_site();
 }
 
+function execute_site_static_cache(){
+	//静的キャッシュ
+	static_cache_execute();
+	execute_site_cache();
+}
+
 /**
  * サイトのページの処理を行いつつ、キャッシュを作る
  * キャッシュがあればそれを出力する
@@ -34,6 +40,38 @@ function execute_site_cache(){
 function execute_site(){
 	$obj = new SOYCMS_OutputContents();
 	$obj->execute();
+}
+
+function static_cache_execute(){
+	if(!isset($_SERVER["PATH_INFO"])) return;
+	$pathInfo = $_SERVER["PATH_INFO"];
+	if(!strlen($pathInfo)) return;
+
+	$alias = trim(substr($pathInfo, strrpos($pathInfo, "/")), "/");
+
+	$dir = _SITE_ROOT_ . "/.cache/static_cache/";
+	if(!file_exists($dir)) mkdir($dir);
+
+	if(is_numeric($alias)){
+		$dir .= "n/";
+		if(!file_exists($dir)) mkdir($dir);
+	}else{
+		$dir .= "s/";
+		if(!file_exists($dir)) mkdir($dir);
+	}
+
+	$hash = md5($pathInfo);
+	for($i = 0; $i < 10; $i++){
+		$dir .= substr($hash, 0, 1) . "/";
+		if(!file_exists($dir)) mkdir($dir);
+		$hash = substr($hash, 1);
+	}
+
+	$filepath = $dir . $hash . ".html";
+	if(file_exists($filepath)){
+		echo file_get_contents($filepath);
+		exit;
+	}
 }
 
 class SOYCMS_OutputContents{
