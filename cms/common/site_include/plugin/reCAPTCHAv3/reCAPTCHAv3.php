@@ -43,7 +43,7 @@ class reCAPTCHAv3Plugin{
 		$page = &$arg["page"];
 		if(strpos($page->getUri(), ".xml") !== false) return $html;
 
-		if($page->getPageType() != Page::PAGE_TYPE_APPLICATION && $page->getPageConfigObject()->applicationId != "inquiry") return $html;
+		if($page->getPageType() != Page::PAGE_TYPE_APPLICATION || $page->getPageConfigObject()->applicationId != "inquiry") return $html;
 
 		$js = array();
 		$js[] = "<script src=\"https://www.google.com/recaptcha/api.js?render=" . $this->siteKey . "\"></script>";
