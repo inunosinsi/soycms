@@ -18,11 +18,11 @@ class PublisherPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.9"
+			"version"=>"0.10"
 		));
-//		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
-//			$this,"config_page"
-//		));
+		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
+			$this,"config_page"
+		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 			//管理画面側
@@ -260,16 +260,40 @@ class PublisherPlugin{
 				}
 			}
 		}
+
+		//static_cacheの削除
+		$staticCacheDir = UserInfoUtil::getSiteDirectory(true) . ".cache/static_cache/";
+		if(file_exists($staticCacheDir)) self::_deleteDir($staticCacheDir);
 	}
 
-//	function config_page(){
-//
-//		include_once(dirname(__FILE__) . "/config/SitemapConfigFormPage.class.php");
-//		$form = SOY2HTMLFactory::createInstance("SitemapConfigFormPage");
-//		$form->setPluginObj($this);
-//		$form->execute();
-//		return $form->getObject();
-//	}
+	private function _deleteDir($path){
+		//ディレクトリ指定でスラッシュがあれば除去
+		$path = rtrim($path, "/");
+		//指定されたディレクトリの中身一覧取得
+		$list = glob($path . "/*");
+
+		foreach($list as $key => $value){
+			//ディレクトリ(フォルダ)なら再帰呼出し
+			if(is_dir($value)){
+				self::_deleteDir($value);
+			//ファイルなら削除
+			}else{
+				unlink($value);
+			}
+		}
+
+		//指定されたディレクトリの中身が空ならディレクトリ削除して終了
+		$list = glob($path . "/*");
+		if(count($list) === 0){
+			rmdir($path);
+			return;
+		}
+	}
+
+
+	function config_page(){
+		return "/ルート/サイトID/index.php内のexecute_site();をexecute_site_static_cache();に変更するとブログページの記事詳細も静的化の対象になります。";
+	}
 
 	public static function register(){
 
