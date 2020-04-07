@@ -18,7 +18,7 @@ class ReadEntryCountPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -33,8 +33,9 @@ class ReadEntryCountPlugin{
 				//
 			//公開側
 			}else{
+				CMSPlugin::setEvent('onEntryOutput', self::PLUGIN_ID, array($this, "display"));
 				//公開側のページを表示させたときに、メタデータを表示する
-				CMSPlugin::setEvent('onPageOutput',$this->getId(),array($this,"onPageOutput"));
+				CMSPlugin::setEvent('onPageOutput', self::PLUGIN_ID, array($this,"onPageOutput"));
 			}
 
 		}else{
@@ -42,6 +43,15 @@ class ReadEntryCountPlugin{
 		}
 	}
 
+	function display($arg){
+		$entryId = $arg["entryId"];
+		$htmlObj = $arg["SOY2HTMLObject"];
+
+		$htmlObj->addLabel("view_count", array(
+			"soy2prefix" => "cms",
+			"text" => (isset($entryId) && is_numeric($entryId)) ? self::getReadEntryCountObject($entryId)->getCount() : 0//self::getReadEntryCountObject($entryId)->getCount()
+		));
+	}
 	/**
 	 * 公開側の出力
 	 */
@@ -94,13 +104,17 @@ class ReadEntryCountPlugin{
 	}
 
 	private function getReadEntryCountObject($entryId){
+		static $list;
+		if(is_null($list)) $list = array();
+		if(isset($list[$entryId])) return $list[$entryId];
 		try{
-			return self::dao()->getByEntryId($entryId);
+			$list[$entryId] = self::dao()->getByEntryId($entryId);
 		}catch(Exception $e){
 			$obj = new ReadEntryCount();
 			$obj->setEntryId($entryId);
-			return $obj;
+			$list[$entryId] = $obj;
 		}
+		return $list[$entryId];
 	}
 
 	private function save(ReadEntryCount $obj){

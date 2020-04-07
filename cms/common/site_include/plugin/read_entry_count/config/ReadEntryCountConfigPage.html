@@ -2,7 +2,7 @@
 	<h4>よく読まれている記事一覧の表示件数</h4>
 	<p>
     <input type="number" soy:id="limit" style="width:80px;">
-		<input type="submit" value="選択">
+		<input type="submit" class="btn btn-primary" value="選択">
 	</p>
 </form>
 
@@ -15,7 +15,7 @@
 &lt;ul&gt;
 </pre>
 
-<table class="plugin_table" style="margin-top:30px;">
+<table class="table table-striped" style="margin-top:30px;">
 	<caption>p_block:id="read_entry_ranking_list"内で使用できるcms:idタグ</caption>
 	<tr>
 		<th>cms:id</th>
@@ -41,35 +41,9 @@
 		<td colspan="3">※サムネイルプラグイン等のブロック内で使用できるプラグイン由来のcms:idを使用できます。</td>
 	</tr>
 </table>
+<p class="alert alert-warning">※b_block:id="entry"やb_block:id="entry_list"内で表示回数を出力する場合はcms:id="view_count"が使用できます</p>
 
 <h3>閲覧数の集計の初期化</h3>
 <form soy:id="reset_form">
-<p>閲覧数の集計をリセットする：<input type="submit" name="reset" value="実行"></p>
+<p>閲覧数の集計をリセットする：<input type="submit" name="reset" class="btn btn-primary" value="実行"></p>
 </form>
-
-<style type="text/stylesheet">
-.table_caption{
-	font-weight: bold;
-}
-.plugin_table{
-}
-
-.plugin_table tr{
-}
-
-.plugin_table tr th{
-	border-top: #000000 solid 1px;
-	border-left: #000000 solid 1px;
-	border-bottom: #000000 solid 1px;
-}
-
-.plugin_table tr td{
-	text-indent: 0.1em;
-	border-left: #000000 solid 1px;
-	border-bottom: #000000 solid 1px;
-}
-
-.plugin_table_td {
-	border-right: #000000 solid 1px;
-}
-</style>
