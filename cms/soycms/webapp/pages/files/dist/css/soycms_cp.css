@@ -47,7 +47,7 @@ body.sub{
 	padding: 0;
 }
 .navbar-top-links li p, .navbar-top-links li a{
-	padding: 0 15px;
+	padding: 0 15px 0 0;
 	margin: 0;
 	height: 80px;/* ロゴに合わせる */
 	line-height: 80px;

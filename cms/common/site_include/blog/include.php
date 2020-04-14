@@ -79,6 +79,11 @@ function soy_cms_blog_output_category_link($page){
 					"soy2prefix" => "cms"
 				));
 
+				$this->addLabel("category_description_raw", array(
+					"html" => $entry->getDescription(),
+					"soy2prefix" => "cms"
+				));
+
 
 				$arg = substr(rtrim($_SERVER["REQUEST_URI"], "/"), strrpos(rtrim($_SERVER["REQUEST_URI"], "/"), "/") + 1);
 				$alias = rawurlencode($entry->getAlias());

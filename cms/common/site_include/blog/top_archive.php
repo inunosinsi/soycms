@@ -104,6 +104,11 @@ function soy_cms_blog_output_entry_list($page,$entries){
                     "soy2prefix" => "cms"
                 ));
 
+				$this->addLabel("category_description_raw", array(
+					"html" => $entry->getDescription(),
+					"soy2prefix" => "cms"
+				));
+
                 $arg = substr(rtrim($_SERVER["REQUEST_URI"], "/"), strrpos(rtrim($_SERVER["REQUEST_URI"], "/"), "/") + 1);
                 $alias = rawurlencode($entry->getAlias());
                 $this->createAdd("is_current_category", "HTMLModel", array(
@@ -750,6 +755,10 @@ function soy_cms_blog_output_current_category_or_archive($page){
                     "text"=>$description,
                     "soy2prefix"=>"cms"
                 ));
+				$this->addLabel("category_description_raw", array(
+					"html" => $description,
+					"soy2prefix" => "cms"
+				));
             }
         }
     }
@@ -797,6 +806,11 @@ function soy_cms_blog_output_current_category($page){
 
 				$this->createAdd("category_description", "CMSLabel", array(
 					"text" => ($page->label) ? $page->label->getDescription() : "",
+                    "soy2prefix" => "cms"
+				));
+
+				$this->addLabel("category_description_raw", array(
+					"html" => ($page->label) ? $page->label->getDescription() : "",
                     "soy2prefix" => "cms"
 				));
             }

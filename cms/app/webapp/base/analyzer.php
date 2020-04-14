@@ -97,7 +97,7 @@
 			<!-- /.navbar-static-side -->
 		</nav>
 
-		<div id="page-wrapper" style="padding-top: 30px;">
+		<div id="page-wrapper">
 			<?php CMSApplication::printApplication(); ?>
 		</div><!-- /#page-wrapper -->
 
