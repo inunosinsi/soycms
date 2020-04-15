@@ -61,16 +61,16 @@ class HTMLCachePlugin{
 
 		switch($page->getPageType()){
 			case Page::PAGE_TYPE_NORMAL:
-				self::_generateStaticHTMLFile($html);
+				self::_generateStaticHTMLCacheFile($html);
 				break;
 			case Page::PAGE_TYPE_BLOG:
-				//ブログの記事詳細の場合は少し趣向を変える /サイトID/.cache/ページID/記事ID.html
 				$webPage = &$arg["webPage"];
 				switch($webPage->mode){
+					case CMSBlogPage::MODE_TOP:
 					case CMSBlogPage::MODE_ENTRY:
 					case CMSBlogPage::MODE_MONTH_ARCHIVE:
 					case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
-						self::_generateStaticHTMLFile($html);
+						self::_generateStaticHTMLCacheFile($html);
 						break;
 					case CMSBlogPage::MODE_RSS:
 					case CMSBlogPage::MODE_POPUP:
@@ -85,8 +85,8 @@ class HTMLCachePlugin{
 		return $html;
 	}
 
-	// /サイトID/.cache/ページID/記事ID.html
-	private function _generateStaticHTMLFile($html){
+	//HTMLCache
+	private function _generateStaticHTMLCacheFile($html){
 		$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : "_top";
 		$alias = trim(substr($pathInfo, strrpos($pathInfo, "/")), "/");
 
