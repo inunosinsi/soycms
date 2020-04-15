@@ -30,7 +30,7 @@ function execute_site_cache(){
 function execute_site_static_cache(){
 	//静的キャッシュ
 	static_cache_execute();
-	execute_site_cache();
+	execute_site();
 }
 
 /**
@@ -43,10 +43,7 @@ function execute_site(){
 }
 
 function static_cache_execute(){
-	if(!isset($_SERVER["PATH_INFO"])) return;
-	$pathInfo = $_SERVER["PATH_INFO"];
-	if(!strlen($pathInfo)) return;
-
+	$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : "_top";
 	$alias = trim(substr($pathInfo, strrpos($pathInfo, "/")), "/");
 
 	$dir = _SITE_ROOT_ . "/.cache/static_cache/";
