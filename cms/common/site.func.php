@@ -21,16 +21,14 @@ function execute_site_normal(){
  * 1.3.5a以前のSOY CMSでexecute_site_cacheを呼び出している場合への互換性対策
  */
 function execute_site_cache(){
-	if(!defined("SOYCMS_USE_CACHE")){
-		define("SOYCMS_USE_CACHE", true);
-	}
+	if(!defined("SOYCMS_USE_CACHE")) define("SOYCMS_USE_CACHE", true);
 	execute_site();
 }
 
 function execute_site_static_cache(){
 	//静的キャッシュ
 	static_cache_execute();
-	execute_site();
+	execute_site_cache();
 }
 
 /**
@@ -49,13 +47,8 @@ function static_cache_execute(){
 	$dir = _SITE_ROOT_ . "/.cache/static_cache/";
 	if(!file_exists($dir)) mkdir($dir);
 
-	if(is_numeric($alias)){
-		$dir .= "n/";
-		if(!file_exists($dir)) mkdir($dir);
-	}else{
-		$dir .= "s/";
-		if(!file_exists($dir)) mkdir($dir);
-	}
+	$dir .= (is_numeric($alias)) ? "n/" : "s/";
+	if(!file_exists($dir)) mkdir($dir);
 
 	$hash = md5($pathInfo);
 	for($i = 0; $i < 10; $i++){
