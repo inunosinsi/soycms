@@ -96,6 +96,10 @@ class UpperMenuPage extends CMSHTMLPageBase{
 			unset($_GET["soy2_token"]);
 			$current = SOY2PageController::getRequestPath().".".implode(".",SOY2PageController::getArguments());
 			$param = ( count($_GET) ? "?".http_build_query($_GET) : "");
+
+			//拡張ポイントを追加
+			CMSPlugin::callEventFunc("onClearCache");
+
 			SOY2PageController::jump($current.$param);
 		}
 

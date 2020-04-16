@@ -79,6 +79,9 @@ class CMSPlugin {
 		"afterOutput"=>array(),			//出力された直後
 		"onOutput"=>array(),			//出力されるHTMLに対して最後に呼ばれるイベント（最終的に出力されるHTML）	array(html,page,webPage),
 
+		//キャッシュの削除
+		"onClearCache"=>array(),			//キャッシュの削除の際
+
 		//アクセス関連
 		"onSiteAccess"=>array(),		//サイトにアクセスがあった場合 array()
 		"onSite404NotFound"=>array()	//404NotFoundページを開いた時
