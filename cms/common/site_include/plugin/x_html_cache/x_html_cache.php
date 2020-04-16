@@ -20,7 +20,7 @@ class HTMLCachePlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3096",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -50,20 +50,17 @@ class HTMLCachePlugin{
 		//アプリケーションページと404ページの場合は静的化しない
 		if($page->getPageType() == Page::PAGE_TYPE_APPLICATION || $page->getPageType() == Page::PAGE_TYPE_ERROR) return $html;
 
+		//HTMLCacheの対象ページであるか？
+		if(!isset($this->config_per_page[$page->getId()]) || $this->config_per_page[$page->getId()] != 1) return $html;
+
 		//GETがある場合は検索ページと見なして対象外とする
 		if(isset($_GET["q"])) return $html;
-
-		//@ToDo そのうち禁止するURLの設定を行いたい	cms:module="common.entry_calendar"を使用している場合は静的化を禁止
-		if(strpos($html, "cms:blog=")) return $html;
 
 		//GETの値がある場合は対象外
 		if(isset($_SERVER["REDIRECT_QUERY_STRING"]) && strpos($_SERVER["REDIRECT_QUERY_STRING"], "pathinfo") != 0) return $html;
 
 		//URIにsearchとresultがある場所は検索結果ページと見なして、静的化の対象外とする
 		if(strpos($page->getUri(), "search") !== false || strpos($page->getUri(), "result") !== false) return $html;
-
-		//HTMLCacheの対象ページであるか？
-		if(!isset($this->config_per_page[$page->getId()]) || $this->config_per_page[$page->getId()] != 1) return $html;
 
 		switch($page->getPageType()){
 			case Page::PAGE_TYPE_NORMAL:

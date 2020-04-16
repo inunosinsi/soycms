@@ -9,6 +9,10 @@ class XPublisherPlugin{
 	//挿入するページ
 	var $config_per_page = array();
 
+	private $exts = array(
+		"jpg", "jpeg", "png", "gif", "txt", "xml", "json", "css", "js"
+	);
+
 	function getId(){
 		return self::PLUGIN_ID;
 	}
@@ -52,20 +56,17 @@ class XPublisherPlugin{
 		//アプリケーションページと404ページの場合は静的化しない
 		if($page->getPageType() == Page::PAGE_TYPE_APPLICATION || $page->getPageType() == Page::PAGE_TYPE_ERROR) return $html;
 
-		//GETがある場合は検索ページと見なして対象外とする
-		if(isset($_GET["q"])) return $html;
+		//静的化の対象のページか？
+		if(!isset($this->config_per_page[$page->getId()]) || $this->config_per_page[$page->getId()] != 1) return $html;
 
-		//@ToDo そのうち禁止するURLの設定を行いたい	cms:module="common.entry_calendar"を使用している場合は静的化を禁止
-		if(strpos($html, "cms:blog=")) return $html;
+		//GETがある場合は検索ページと見なして対象外とする 緯度軽度も
+		if(isset($_GET["q"]) || isset($_GET["lat"]) || isset($_GET["lng"])) return $html;
 
 		//GETの値がある場合は対象外
 		if(isset($_SERVER["REDIRECT_QUERY_STRING"]) && strpos($_SERVER["REDIRECT_QUERY_STRING"], "pathinfo") != 0) return $html;
 
 		//URIにsearchとresultがある場所は検索結果ページと見なして、静的化の対象外とする
 		if(strpos($page->getUri(), "search") !== false || strpos($page->getUri(), "result") !== false) return $html;
-
-		//静的化の対象のページか？
-		if(!isset($this->config_per_page[$page->getId()]) || $this->config_per_page[$page->getId()] != 1) return $html;
 
 		switch($page->getPageType()){
 			case Page::PAGE_TYPE_BLOG:
@@ -93,11 +94,12 @@ class XPublisherPlugin{
 		$dirs = explode("/", trim($_SERVER["REQUEST_URI"], "/"));
 		foreach($dirs as $dir){
 			if(!strlen($dir)) break;
-
-			//繰り返し中に嫌だが、jsonとxmlの場合は処理を止める
-			if(strpos($dir, ".json") || strpos($dir, ".xml")) return $html;
-
 			if(strpos($dir, ".html") || strpos($dir, ".php")) break;
+
+			//下記の拡張子は処理を終了する
+			foreach($this->exts as $ext){
+				if(stripos($dir, "." . $ext)) return;
+			}
 
 			//この２つのディレクトリは確実に関係ないたた調べるのを省く
 			if($dir == "fonts" || $dir == "images") break;
