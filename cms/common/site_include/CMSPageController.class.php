@@ -47,21 +47,16 @@ class CMSPageController extends SOY2PageController{
 				if($page->isActive() < 0){
 					throw new Exception("out of date.");
 				}
+				//argsが一つでページ種別がブログの場合はもう少し試す
+				if(count($args) === 1 && $args[0] != "feed" && $page->getPageType() == Page::PAGE_TYPE_BLOG){
+					try{
+						$page = $dao->getActivePageByUri($uri . "/" . $args[0]);
+					}catch(Exception $e){
+						throw new Exception("out of date.");
+					}
+				}
 			}catch(Exception $e){
-				//ブログページのURLが空で各ページのどれかのURIも空の時対策
-				try{
-					$tmp = $dao->getActivePageByUri("");
-				}catch(Exception $e){
-					$tmp = new Page();
-				}
-
-				//仮で取得したページがブログページでなかった場合は、空のPageオブジェクトを返す
-				if($tmp->getPageType() == Page::PAGE_TYPE_BLOG){
-					$page = $tmp;
-					$uri = "";	//以後の処理は$uriが空の状態で進める
-				}else{
-					$page = new Page();
-				}
+				$page = new Page();
 			}
 
 			try{
@@ -86,8 +81,6 @@ class CMSPageController extends SOY2PageController{
 				$this->pageType = $page->getPageType();
 
 				switch($page->getPageType()){
-
-
 					case Page::PAGE_TYPE_BLOG:
 						$webPage = &SOY2HTMLFactory::createInstance("CMSBlogPage", array(
 							"arguments" => array($page->getId(), $args, $siteConfig),
@@ -253,11 +246,7 @@ class CMSPageController extends SOY2PageController{
 
 	function &getPathBuilder(){
 		static $builder;
-
-		if(!$builder){
-			$builder = new CMS_PathInfoBuilder();
-		}
-
+		if(!$builder) $builder = new CMS_PathInfoBuilder();
 		return $builder;
 	}
 
@@ -368,6 +357,9 @@ class CMS_PathInfoBuilder extends SOY2_PathInfoPathBuilder{
 			//uriの末尾をargsに移す
 			array_unshift($args, array_pop($_uri));
 		}
+
+		//uriが空の時でargsの値が1の時はargs[0]をuriに持ってくる。argsの値が2以上の場合はブログページである可能性が高い
+		if(!strlen($uri) && count($args) === 1 && $args[0] != "feed") $uri = $args[0];
 
 		return array($uri, $args);
 	}

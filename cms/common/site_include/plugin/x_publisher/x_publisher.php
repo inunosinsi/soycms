@@ -10,7 +10,7 @@ class XPublisherPlugin{
 	var $config_per_page = array();
 
 	private $exts = array(
-		"jpg", "jpeg", "png", "gif", "txt", "xml", "json", "css", "js"
+		"jpg", "jpeg", "png", "gif", "txt", "xml", "json", "css", "js", "ico"
 	);
 
 	function getId(){
@@ -91,33 +91,33 @@ class XPublisherPlugin{
 
 	private function _generateStaticHTMLFile($html){
 		$currentDir = $_SERVER["DOCUMENT_ROOT"];
-		$dirs = explode("/", trim($_SERVER["REQUEST_URI"], "/"));
-		foreach($dirs as $dir){
-			if(!strlen($dir)) break;
-			if(strpos($dir, ".html") || strpos($dir, ".php")) break;
 
-			//下記の拡張子は処理を終了する
-			foreach($this->exts as $ext){
-				if(stripos($dir, "." . $ext)) return;
-			}
+		//末尾が指定の拡張子の場合は以後の処理を実行しない
+		$reqUri = trim($_SERVER["REQUEST_URI"], "/");
+		foreach($this->exts as $ext){
+			if(stripos($reqUri, ".".$ext)) return;
+		}
 
-			//この２つのディレクトリは確実に関係ないたた調べるのを省く
-			if($dir == "fonts" || $dir == "images") break;
-			$currentDir .= "/" . $dir;
-			if(!file_exists($currentDir) && strlen($currentDir) <= 100){
-				mkdir($currentDir);
+		$dirs = explode("/", $reqUri);
+		if(count($dirs)){
+			foreach($dirs as $dir){
+				if(!strlen($dir)) break;
+				if(strpos($dir, ".html") || strpos($dir, ".php")) break;
+
+				//この２つのディレクトリは確実に関係ないたた調べるのを省く
+				if($dir == "fonts" || $dir == "images") break;
+				$currentDir .= "/" . $dir;
+				if(!file_exists($currentDir) && strlen($currentDir) <= 100){
+					mkdir($currentDir);
+				}
 			}
 		}
 
-		//配列の最後の値がhtmlかどうかを確認する
-		$lastDir = end($dirs);
-
 		if(file_exists($currentDir)){
-			if(strpos($lastDir, ".html")){
-				file_put_contents($currentDir . "/" . $lastDir, $html);
-			}else{
-				file_put_contents($currentDir . "/index.html", $html);
-			}
+			//配列の最後の値がhtmlかどうかを確認する
+			$lastDir = (count($dirs)) ? end($dirs) : "";
+			$staticFilePath = (strlen($lastDir) && strpos($lastDir, ".html")) ? rtrim($currentDir . "/" . $lastDir, "/") : $currentDir . "/index.html";
+			file_put_contents($staticFilePath, $html);
 		}
 	}
 
