@@ -338,6 +338,11 @@ class CMSBlogPage extends CMSPage{
 					throw new Exception("TOPPageは表示できません");
 				}
 
+				//ブログトップページでargsが２つ以上あるのはおかしい
+				if(count($this->arguments) >= 2){
+					throw new Exception("Too Many Argument Values.");
+				}
+
 				$this->mode = CMSBlogPage::MODE_TOP;
 				$this->limit = $this->page->getTopDisplayCount();
 				if(!is_numeric($this->limit)) $this->limit = 0;

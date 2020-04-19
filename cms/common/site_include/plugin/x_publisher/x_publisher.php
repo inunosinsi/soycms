@@ -24,7 +24,7 @@ class XPublisherPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3096",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -90,15 +90,19 @@ class XPublisherPlugin{
 	}
 
 	private function _generateStaticHTMLFile($html){
-		$currentDir = $_SERVER["DOCUMENT_ROOT"];
 
 		//末尾が指定の拡張子の場合は以後の処理を実行しない
-		$reqUri = trim($_SERVER["REQUEST_URI"], "/");
+		$reqUri = $_SERVER["REQUEST_URI"];
 		foreach($this->exts as $ext){
 			if(stripos($reqUri, ".".$ext)) return;
 		}
 
-		$dirs = explode("/", $reqUri);
+		//静的の対象ページであるか？調べる
+		if(!self::_checkUri($reqUri)) return;
+
+		$currentDir = $_SERVER["DOCUMENT_ROOT"];
+
+		$dirs = explode("/", trim($reqUri, "/"));
 		if(count($dirs)){
 			foreach($dirs as $dir){
 				if(!strlen($dir)) break;
@@ -131,6 +135,48 @@ class XPublisherPlugin{
 
 	function onClearCache($obj){
 		self::_removeStaticHTMLFile();
+	}
+
+	private function _checkUri($req){
+		if(!is_array($this->config_per_page) || !count($this->config_per_page)) return false;
+		$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+		if(strpos($req, "/" . $siteId . "/") === 0) $req = str_replace("/" . $siteId. "/", "", $req);
+		$req = trim($req, "/");
+
+		if(!strlen($req)) return true;	//URIが空の場合は判定できないから常にtrueにしておく
+		$pageIds = array();
+		foreach($this->config_per_page as $pageId => $on){
+			$pageIds[] = $pageId;
+		}
+
+		if(!count($pageIds)) return false;
+		$uriList = self::_getUriList($pageIds);
+		if(!count($uriList)) return false;
+
+		foreach($uriList as $uri){
+			if(strpos($req, $uri) === 0) return true;
+		}
+
+		return false;
+	}
+
+	private function _getUriList($pageIds){
+		$dao = new SOY2DAO();
+		try{
+			$res = $dao->executeQuery("SELECT id, uri FROM Page WHERE id IN (" .implode(",", $pageIds) . ")");
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		if(!count($res)) return array();
+
+		$list = array();
+
+		foreach($res as $v){
+			if(!isset($v["uri"]) || !strlen($v["uri"])) continue;
+			$list[(int)$v["id"]] = $v["uri"];
+		}
+		return $list;
 	}
 
 	private function _removeStaticHTMLFile(){

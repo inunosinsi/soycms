@@ -358,8 +358,10 @@ class CMS_PathInfoBuilder extends SOY2_PathInfoPathBuilder{
 			array_unshift($args, array_pop($_uri));
 		}
 
-		//uriが空の時でargsの値が1の時はargs[0]をuriに持ってくる。argsの値が2以上の場合はブログページである可能性が高い
-		if(!strlen($uri) && count($args) === 1 && $args[0] != "feed") $uri = $args[0];
+		if(!strlen($uri)){
+			//uriが空の時でargsの値が1の時はargs[0]をuriに持ってくる。argsの値が2以上の場合はブログページである可能性が高い
+			if(count($args) === 1 && $args[0] != "feed") $uri = $args[0];
+		}
 
 		return array($uri, $args);
 	}
