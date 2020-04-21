@@ -47,14 +47,6 @@ class CMSPageController extends SOY2PageController{
 				if($page->isActive() < 0){
 					throw new Exception("out of date.");
 				}
-				//argsが一つでページ種別がブログの場合はもう少し試す
-				if(count($args) === 1 && $args[0] != "feed" && $page->getPageType() == Page::PAGE_TYPE_BLOG){
-					try{
-						$page = $dao->getActivePageByUri($uri . "/" . $args[0]);
-					}catch(Exception $e){
-						throw new Exception("out of date.");
-					}
-				}
 			}catch(Exception $e){
 				$page = new Page();
 			}
@@ -360,7 +352,7 @@ class CMS_PathInfoBuilder extends SOY2_PathInfoPathBuilder{
 
 		if(!strlen($uri)){
 			//uriが空の時でargsの値が1の時はargs[0]をuriに持ってくる。argsの値が2以上の場合はブログページである可能性が高い
-			if(count($args) === 1 && $args[0] != "feed") $uri = $args[0];
+			if(count($args) === 1 && $args[0] != "feed" && strpos($args[0], "page-") === false) $uri = $args[0];
 		}
 
 		return array($uri, $args);
