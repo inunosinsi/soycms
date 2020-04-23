@@ -127,6 +127,11 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
                 "html" => (isset($csfValue)) ? $csfValue : null
             ));
 
+			$htmlObj->addLink($key . "_link", array(
+				"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+				"link" => (isset($csfValue) && strlen($csfValue)) ? $csfValue : null
+			));
+
             switch($field["type"]){
                 case CustomSearchFieldUtil::TYPE_CHECKBOX:
                     if(strlen($field["option"][SOYSHOP_PUBLISH_LANGUAGE])){

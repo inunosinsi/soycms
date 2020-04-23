@@ -13,6 +13,7 @@ class CustomSearchFieldUtil{
     const TYPE_CHECKBOX = "checkbox";
     const TYPE_RADIO = "radio";
     const TYPE_SELECT = "select";
+	const TYPE_URL = "url";
 
 	CONST CONVERT_MODE_START = 0;
 	const CONVERT_MODE_END = 1;
@@ -74,7 +75,8 @@ class CustomSearchFieldUtil{
             self::TYPE_RANGE => "数字(範囲)",
             self::TYPE_CHECKBOX => "チェックボックス",
             self::TYPE_RADIO => "ラジオボタン",
-            self::TYPE_SELECT => "セレクトボックス"
+            self::TYPE_SELECT => "セレクトボックス",
+			self::TYPE_URL => "URL"
         );
     }
 
