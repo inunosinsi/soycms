@@ -144,8 +144,11 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
 		if(!count($res)) return array($year, $month);
 
 		$list = array();
+		$now = time();
 		foreach($res as $v){
-			$list[$v["id"]] = mktime(0, 0, 0, $v["month"], $v["day"], $v["year"]);
+			$t = mktime(0, 0, 0, $v["month"], $v["day"], $v["year"]);
+			if($t < $now) continue;
+			$list[$v["id"]] = $t;
 		}
 		sort($list);
 		$latest = $list[0];
