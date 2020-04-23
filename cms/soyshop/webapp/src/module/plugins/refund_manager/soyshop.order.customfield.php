@@ -66,8 +66,24 @@ class RefundManagerOrderCustomfield extends SOYShopOrderCustomfield{
 
 		if(isset($_POST["Customfield"]["refund_manager"])){
 			self::prepare();
+
+			$old = RefundManagerUtil::get($orderId, true);
 			$isProcessed = (isset($_POST["Customfield"]["refund_manager_processed"])) ? 1 : null;
 			RefundManagerUtil::save($_POST["Customfield"]["refund_manager"], $isProcessed, $orderId);
+
+			$comment = (isset($_POST["Customfield"]["refund_manager"]["comment"])) ? $_POST["Customfield"]["refund_manager"]["comment"] : "";
+
+			//コメントに変更がある場合は変更履歴に登録
+			$oldComment = (isset($old[0]["comment"])) ? $old[0]["comment"] : "";
+			if(
+				$comment != $oldComment ||
+				(!strlen($oldComment) && strlen($comment)) || 
+				(strlen($oldComment) && !strlen($comment))
+			){
+				SOY2::import("logic.order.OrderHistoryLogic");
+				$mes = "返金関連コメントを『" . $oldComment . "』から『" . $comment . "』に変更しました";
+				OrderHistoryLogic::add($orderId, $mes);
+			}
 		}
 
 		//ここで完結させるため、returnで空の配列を返す
