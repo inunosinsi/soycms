@@ -8,10 +8,20 @@ function soyshop_get_page_url($uri, $suffix = null){
 	if($uri == SOYShop_Page::URI_HOME) $uri = "";
 
     if($suffix){
-        return soyshop_get_site_url(true) . $uri . "/" . $suffix;
+        return soyshop_shape_page_url(soyshop_get_site_url(true) . $uri . "/" . $suffix);
     }
 
-    return soyshop_get_site_url(true) . $uri;
+    return soyshop_shape_page_url(soyshop_get_site_url(true) . $uri);
+}
+
+//URLの小手先の修正集は下記のラッパー関数で行う
+function soyshop_shape_page_url($url){
+	//サイトIDが２つ繋がってしまった時
+	if(strpos($url, "/" . SOYSHOP_ID . "//" . SOYSHOP_ID . "/") !== false){
+		$url = str_replace("/" . SOYSHOP_ID . "//" . SOYSHOP_ID . "/", "/" . SOYSHOP_ID . "/", $url);
+	}
+
+	return $url;
 }
 
 /**
@@ -590,7 +600,7 @@ function soyshop_add_get_value($url){
  * @param Object SOYShop_Item, String path 画像の絶対パス
  * @return path 画像ファイルの絶対パス
  */
-function soyshop_convert_file_path($path, SOYShop_Item $item){
+function soyshop_convert_file_path($path, SOYShop_Item $item, $isAbsolute=false){
     static $isOwnDomain;
     if(is_null($isOwnDomain)){
         $siteUrl = trim(SOYSHOP_SITE_URL, "/") . "/";
@@ -641,7 +651,7 @@ function soyshop_convert_file_path($path, SOYShop_Item $item){
         }
     }
 
-    return $path;
+    return ($isAbsolute) ? soyshop_get_page_url($path) : $path;
 }
 
 /**
