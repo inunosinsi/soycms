@@ -26,7 +26,7 @@ class CalendarExpandSeatCart extends SOYShopCartBase{
 				}catch(Exception $e){
 					$childPrice = null;
 				}
-
+				
 				if(!is_null($childPrice) && is_numeric($childPrice) && $childPrice >= 0){
 					$total += $childSeat * $childPrice;
 				}else{
