@@ -55,6 +55,11 @@ class AdminPage extends WebPage{
 		$this->addLabel("mail_config_extension_html", array(
 			"html" => $html
 		));
+
+		//置換文字列の拡張
+		$this->createAdd("replace_string_list", "_common.Config.ReplaceStringListComponent", array(
+			"list" => self::_getReplaceStringList()
+		));
 	}
 
 	function buildForm($type){
@@ -108,6 +113,23 @@ class AdminPage extends WebPage{
 			"name" => "mail[footer]",
 			"value" => $this->getFooter(),
 		));
+	}
+
+	private function _getReplaceStringList(){
+		SOYShopPlugin::load("soyshop.order.mail.replace");
+		$values = SOYShopPlugin::invoke("soyshop.order.mail.replace",array("mode" => "strings"))->getStrings();
+		if(!count($values)) return array();
+
+		$list = array();
+		foreach($values as $strings){
+			if(!is_array($strings) || !count($strings)) continue;
+			foreach($strings as $replace => $v){
+				if(!strlen($replace) || !strlen($v)) continue;
+				$list[$replace] = $v;
+			}
+		}
+
+		return $list;
 	}
 
 	function getMailActive(){
