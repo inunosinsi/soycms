@@ -39,6 +39,14 @@ abstract class SOYShop_OrderDAO extends SOY2DAO{
 	abstract function countByUserIdIsRegistered($userId);
 
 	/**
+	 * @return column_count
+	 * @columns count(id) as count
+	 * @query #userId# = :userId AND #status# = 5
+	 * @order id desc
+	 */
+	abstract function countByUserIdIsCanceled($userId);
+
+	/**
 	 * @return object
 	 * @query #id# = :id AND #userId# = :userId
 	 */
