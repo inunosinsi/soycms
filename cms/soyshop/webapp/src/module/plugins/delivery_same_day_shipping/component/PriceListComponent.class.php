@@ -24,4 +24,3 @@ class PriceListComponent extends HTMLList{
 		$this->prices = $prices;
 	}
 }
-?>
