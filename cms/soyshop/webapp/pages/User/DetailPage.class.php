@@ -235,24 +235,32 @@ class DetailPage extends WebPage{
 		//注文
 		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$count = $orderDao->countByUserIdIsRegistered($id);
+		$cancelCount = $orderDao->countByUserIdIsCanceled($id);
 
 		//1つしかなければそこにリンクする
-		if($count == 1){
-			try{
-				$orders = $orderDao->getByUserIdIsRegistered($id);
-				$order = $orders[0];
-			}catch(Exception $e){
-				//
-			}
-		}
+		// if($count == 1){
+		// 	try{
+		// 		$orders = $orderDao->getByUserIdIsRegistered($id);
+		// 		$order = $orders[0];
+		// 	}catch(Exception $e){
+		// 		//
+		// 	}
+		// }
 
 		$this->addLabel("order_count", array(
 			"text" => $count,
 		));
+		DisplayPlugin::toggle("cancel_count", $cancelCount);
+		$this->addLabel("order_cancel_count", array(
+			"text" => $cancelCount
+		));
+		// $this->addLink("order_list_link", array(
+		// 		"link" => ( is_numeric($count) && isset($order) )
+		// 		? SOY2PageController::createLink("Order.Detail.".$order->getId())
+		// 		: SOY2PageController::createLink("Order?search[userId]=" . $shopUser->getId()),
+		// ));
 		$this->addLink("order_list_link", array(
-				"link" => ( is_numeric($count) && isset($order) )
-				? SOY2PageController::createLink("Order.Detail.".$order->getId())
-				: SOY2PageController::createLink("Order?search[userId]=" . $shopUser->getId()),
+				"link" => SOY2PageController::createLink("Order?search[userId]=" . $shopUser->getId()),
 		));
 		$this->addLink("order_register_link", array(
 			"link" => SOY2PageController::createLink("Order.Register.User." . $shopUser->getId())
