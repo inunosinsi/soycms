@@ -79,6 +79,14 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
             $content = str_replace("#RESERVED_LIST#", $reservedList, $content);
         }
 
+		//拡張ポイントで追加した置換文字列分
+		SOYShopPlugin::load("soyshop.order.mail.replace");
+		$content = SOYShopPlugin::invoke("soyshop.order.mail.replace", array(
+			"mode" => "replace",
+			"order" => $order,
+			"content" => $content
+		))->getContent();
+
         return $content;
     }
 

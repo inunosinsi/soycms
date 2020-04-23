@@ -8,7 +8,5 @@ class CommonMailbuilderInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info", "common_mailbuilder", "CommonMailbuilderInfo");
-?>

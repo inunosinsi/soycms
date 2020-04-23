@@ -53,6 +53,9 @@
                             <li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#CLAIMED_TELEPHONE#');">請求先電話番号</a></li>
                             <li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#MEMO#');">備考</a></li>
                             <li soy:id="installed_reserve_calendar"><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#RESERVED_LIST#');">予約一覧</a></li>
+							<!-- soy:id="replace_string_list" -->
+							<li><a href="javascript:void(0);" onclick="$('#mail_user').textarea().insertHTML('#<!-- soy:id="replace_string" /-->#');"><!-- soy:id="replace_label" /--></a></li>
+							<!-- /soy:id="replace_string_list" -->
                         </ul>
                     </div>
                 </td>
@@ -96,7 +99,10 @@
                             <li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_ADDRESS2#');">請求先住所2</a></li>
                             <li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#CLAIMED_TELEPHONE#');">請求先電話番号</a></li>
                             <li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#MEMO#');">備考</a></li>
-                            <li soy:id="installed_reserve_calendar*"><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#RESERVED_LIST#');">予約一覧</a></li>
+							<li soy:id="installed_reserve_calendar"><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#RESERVED_LIST#');">予約一覧</a></li>
+                            <!-- soy:id="replace_string_list*" -->
+							<li><a href="javascript:void(0);" onclick="$('#mail_admin').textarea().insertHTML('#<!-- soy:id="replace_string" /-->#');"><!-- soy:id="replace_label" /--></a></li>
+							<!-- /soy:id="replace_string_list*" -->
                         </ul>
                     </div>
                 </td>
@@ -122,7 +128,7 @@
 
     .actived .word_list {
         display: block;
-        width: 130px;
+        width: 180px;
     }
 
 </style>

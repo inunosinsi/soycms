@@ -21,4 +21,3 @@ class CommonMailbuilderConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "common_mailbuilder", "CommonMailbuilderConfig");
-?>
