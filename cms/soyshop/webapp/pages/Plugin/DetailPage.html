@@ -35,24 +35,24 @@
 					<th>説明</th>
 					<td soy:id="module_description"></td>
 				</tr>
-				<tr soy:id="display_module_detail_link">
+				<tr soy:display="display_module_detail_link">
 					<th>紹介記事</th>
-					<td><a soy:id="module_detail_link" target="_blank">記事のタイトル</a></td>
+					<td><a soy:id="module_detail_link" target="_blank" rel="noopener">記事のタイトル</a></td>
 				</tr>
 			</tbody>
 		</table>
 
-		<div soy:id="has_info" class="section">
+		<!-- soy:display="has_info" -->
+		<div class="section">
 			<h3 style="margin-top:5px;">詳細</h3>
 			<div class="ml20 mb20" soy:id="plugin_info"></div>
-		</div soy:id="has_info">
+		</div>
+		<!-- /soy:display="has_info" -->
 
 		<form soy:id="toggle_form">
-		<p class="pageBtn">
-			<input type="submit" soy:id="button" style="width:150px;" />
-		</p>
+			<p class="pageBtn">
+				<input type="submit" soy:id="button" style="width:150px;">
+			</p>
 		</form soy:id="toggle_form">
-
-
 	</div>
 </div>

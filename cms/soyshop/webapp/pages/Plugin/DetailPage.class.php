@@ -63,9 +63,7 @@ class DetailPage extends WebPage{
 		));
 
 		/** 詳細説明があるプラグインの場合は、説明のURLを記載する **/
-		$this->addModel("display_module_detail_link", array(
-			"visible" => (!is_null($this->module->getLink()) && strlen($this->module->getLink()) > 0)
-		));
+		DisplayPlugin::toggle("display_module_detail_link", (!is_null($this->module->getLink()) && strlen($this->module->getLink()) > 0));
 		$this->addLink("module_detail_link", array(
 			"link" => $this->module->getLink(),
 			"text" => (!is_null($this->module->getLabel()) && strlen($this->module->getLabel()) > 0) ? $this->module->getLabel() : $this->module->getLink()
@@ -75,9 +73,7 @@ class DetailPage extends WebPage{
     		"html" => $html
     	));
 
-    	$this->addModel("has_info", array(
-    		"visible" => (strlen($html) > 0)
-    	));
+		DisplayPlugin::toggle("has_info", (strlen($html) > 0));
     }
 
     /**
