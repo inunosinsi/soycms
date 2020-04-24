@@ -37,7 +37,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 		$url = soyshop_get_site_url(true);
 
-//		header("Content-Type: text/xml");
+		header("Content-Type: text/xml");
 
 		$html = array();
 		$html[] = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
