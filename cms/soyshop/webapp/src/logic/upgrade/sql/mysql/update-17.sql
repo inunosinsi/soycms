@@ -1,1 +1,0 @@
-ALTER TABLE soyshop_user ADD COLUMN is_error TINYINT default 0 AFTER not_send;

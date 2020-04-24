@@ -1,1 +1,0 @@
-ALTER TABLE soymail_user ADD COLUMN not_send INTEGER DEFAULT 0;

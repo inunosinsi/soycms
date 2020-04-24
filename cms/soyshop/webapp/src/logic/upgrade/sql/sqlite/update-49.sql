@@ -1,1 +1,0 @@
-ALTER TABLE soyshop_orders ADD COLUMN status INTEGER NOT NULL DEFAULT 0;

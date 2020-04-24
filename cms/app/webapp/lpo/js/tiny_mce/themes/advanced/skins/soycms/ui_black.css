@@ -1,8 +1,0 @@
-/* Black */
-.soycmsSkinBlack .mceToolbar .mceToolbarStart span, .soycmsSkinBlack .mceToolbar .mceToolbarEnd span, .soycmsSkinBlack .mceButton, .soycmsSkinBlack .mceSplitButton, .soycmsSkinBlack .mceSeparator, .soycmsSkinBlack .mceSplitButton span.mceOpen, .soycmsSkinBlack .mceListBox .mceOpen {background-image:url(img/button_bg_black.png)}
-.soycmsSkinBlack table, .soycmsSkinBlack .mceMenuItemTitle a, .soycmsSkinBlack .mceMenuItemTitle span.mceText, .soycmsSkinBlack .mceStatusbar div, .soycmsSkinBlack .mceStatusbar span, .soycmsSkinBlack .mceStatusbar a {background:#535353; color:#FFF}
-.soycmsSkinBlack table.mceListBoxEnabled .mceText, soycmsSkinBlack .mceListBox .mceText {background:#FFF; border:1px solid #CBCFD4; border-bottom-color:#989FA9; border-right:0}
-.soycmsSkinBlack table.mceListBoxEnabled:hover .mceText, .soycmsSkin .mceListBoxHover .mceText, .soycmsSkin .mceListBoxSelected .mceText {background:#FFF; border:1px solid #FFBD69; border-right:0}
-.soycmsSkinBlack .mceExternalToolbar, .soycmsSkinBlack .mceListBox .mceText, .soycmsSkinBlack div.mceMenu, .soycmsSkinBlack table.mceLayout, .soycmsSkinBlack .mceMenuItemTitle a, .soycmsSkinBlack table.mceLayout tr.mceFirst td, .soycmsSkinBlack table.mceLayout, .soycmsSkinBlack .mceMenuItemTitle a, .soycmsSkinBlack table.mceLayout tr.mceLast td, .soycmsSkinBlack .mceIframeContainer {border-color: #535353;}
-.soycmsSkinBlack table.mceSplitButtonEnabled:hover a.mceAction, .soycmsSkin .mceSplitButtonHover a.mceAction, .soycmsSkin .mceSplitButtonSelected {background-image:url(img/button_bg_black.png)}
-.soycmsSkinBlack .mceMenu .mceMenuItemEnabled a:hover, .soycmsSkin .mceMenu .mceMenuItemActive {background-color:#FFE7A1}

@@ -1,1 +1,0 @@
-&lt;!-- shop:module="common.cart_application" /--&gt;

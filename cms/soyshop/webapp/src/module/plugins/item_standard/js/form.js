@@ -1,1 +1,0 @@
-$(".child_item").css("display", "none");
