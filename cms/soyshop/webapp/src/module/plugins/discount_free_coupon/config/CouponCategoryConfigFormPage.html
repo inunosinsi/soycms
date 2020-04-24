@@ -1,0 +1,79 @@
+<p class="notice always" soy:display="updated">変更しました。</p>
+<p class="notice always" soy:display="deleted">削除しました。</p>
+<p class="error always" soy:display="error">保存に失敗しました。</p>
+
+<p>
+	<a soy:id="back_link" class="button">戻る</a>&nbsp;
+	<a soy:id="register_link">カテゴリの登録</a>
+</p>
+<br />
+
+<!-- soy:display="has_category" -->
+<section>
+	<h3>カテゴリ一覧</h3>
+	<table class="form_table">
+		<thead>
+			<tr class="alC">
+				<th>カテゴリ名</th>
+				<th>クーポンコードの接頭辞</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="category_list" -->
+			<tr>
+				<td soy:id="name"></td>
+				<td soy:id="prefix"></td>
+				<td class="alC">
+					<a soy:id="detail_link" class="button">詳細</a>
+				</td>
+			</tr>
+			<tr class="category_detail_<!-- soy:id="id" /-->" style="display:none;">
+				<td colspan="3">
+					<form method="post">
+						<dl>
+							<dt>カテゴリ名</dt>
+							<dd>
+								<input type="text" soy:id="input_name">
+								<input type="hidden" soy:id="input_id">
+							</dd>
+
+							<dt>クーポンコードの接頭辞</dt>
+							<dd>
+								<input type="text" soy:id="input_prefix">
+							</dd>
+						</dl>
+
+						<p class="pageBtn">
+							<input type="submit" class="submit_button" name="edit_save" value="変更">&nbsp;
+							<input type="submit" class="submit_button" name="remove" value="削除する" onclick="return confirm('削除してもよろしいですか？');" />
+						</p>
+					</form>
+				</td>
+			</tr>
+			<!-- /soy:id="category_list" -->
+		</tbody>
+	</table>
+</section>
+<br>
+<!-- /soy:display="has_category" -->
+
+<section id="register">
+	<h1>カテゴリの新規登録</h1>
+	<form soy:id="form">
+		<dl>
+			<dt>カテゴリ名</dt>
+			<dd>
+				<input type="text" soy:id="name">
+			</dd>
+			<dt>クーポンコードの接頭辞</dt>
+			<dd>
+				<input type="text" soy:id="prefix">
+			</dd>
+		</dl>
+
+		<p class="pageBtn">
+			<input type="submit" class="submit_button" name="register" value="新規登録" />
+		</p>
+	</form>
+</section>

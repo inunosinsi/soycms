@@ -1,0 +1,19 @@
+<!-- soy:display="error" -->
+<p class="error" soy:id="error_message">エラーがあります。</p>
+<!-- /soy:display="error" -->
+
+<!-- soy:display="success" -->
+<h1 class="cart_txt">Coineyペイジに移動しています</h1>
+
+<form soy:id="payment_form" id="coiney_submit_form">
+	<p class="btn"><input type="submit" value="決済画面に移動" /></p>
+</form>
+
+<script type="text/javascript">
+setTimeout(function(){
+	document.getElementById("coiney_submit_form").submit();
+}, 3000);
+</script>
+<!-- /soy:display="success" -->
+
+<p class="alC"><a soy:id="cancel_link">支払い方法選択画面に戻る</a></p>

@@ -1,0 +1,48 @@
+<p class="notice" soy:display="updated">更新しました</p>
+<p class="notice" soy:display="removed">削除しました</p>
+<p class="error" soy:display="error">失敗しました</p>
+
+<div style="margin-bottom:10px;">
+	<a soy:id="back_link" class="button"></a>
+</div>
+
+<div class="block_body clearfix">
+
+	<form soy:id="form">
+
+		<table class="form_list">
+			<caption>ラベル一覧</caption>
+			<thead>
+				<tr class="alC">
+					<th style="width:60%;">ラベル</th>
+					<th style="width:20%;">表示順</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="label_list" -->
+				<tr>
+					<td><input type="text" class="text" soy:id="label"></td>
+					<td><input type="number" soy:id="display_order"></td>
+					<td class="operation">
+						<input type="submit" value="更新">&nbsp;
+						<a soy:id="remove_link">削除</a>
+					</td>
+				</tr>
+				<!-- /soy:id="label_list" -->
+				<tr>
+					<td><input type="text" class="text" name="new_label"></td>
+					<td><input type="number" name="new_display_order"></td>
+					<td class="operation">
+						<input type="submit" value="登録">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</form>
+
+	<p class="notice always"><strong>10:00</strong>や<strong>○時</strong>のフォーマットでラベルを作成した場合、スケジュールで指定の時間を超えると自動で非表示になります。</p>
+</div>
+
+<br>

@@ -1,0 +1,33 @@
+<section id="cart_procedure">
+	<form soy:id="form">
+		<h1 class="cart_txt">振込先の登録</h1>
+		<table class="bank_info">
+			<caption>振込先情報</caption>
+			<tr>
+				<th>金融機関名</th>
+				<td soy:id="bank_name_text"></td>
+			</tr>
+			<tr>
+				<th>支店名</th>
+				<td soy:id="branch_name_text"></td>
+			</tr>
+			<tr>
+				<th>預金種別</th>
+				<td soy:id="deposit_type_text"></td>
+			</tr>
+			<tr>
+				<th>口座番号</th>
+				<td soy:id="account_number_text"></td>
+			</tr>
+			<tr>
+				<th>口座名義</th>
+				<td soy:id="account_holder_text"></td>
+			</tr>
+		</table>
+
+		<p class="btn">
+			<input type="submit" name="back" value="戻る">&nbsp;
+			<input type="submit" name="next" value="登録">
+		</p>
+	</form>
+</section>

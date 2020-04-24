@@ -1,0 +1,29 @@
+<p class="notice" soy:id="updated">更新しました</p>
+
+<form soy:id="form">
+	<dl>
+		<dt>入金済み</dt>
+		<dd>
+			<input type="checkbox" value="1" soy:id="paid">
+		</dd>
+	</dl>
+	
+	<p class="pageBtn" style="clear:both;">
+		<input type="submit" class="submit_button" value="変更" />
+	</p>
+</form>
+
+<h3>テンプレートへの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;">
+&lt;!-- block:id="item" --&gt;
+
+<strong>&lt;!-- cms:id="is_purchased" --&gt;</strong>
+購入済み商品の場合に表示する箇所
+<strong>&lt;!-- /cms:id="is_purchased" --&gt;</strong>
+
+<strong>&lt;!-- cms:id="no_purchased" --&gt;</strong>
+購入したことがない商品の場合に表示する箇所
+<strong>&lt;!-- /cms:id="no_purchased" --&gt;</strong>
+
+&lt;!-- /block:id="item" --&gt;
+</pre>

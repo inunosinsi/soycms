@@ -1,0 +1,340 @@
+<h1>
+	注文を追加する
+	<span class="navi">
+		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Order">注文管理</a> &gt; 注文を追加する
+	</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>注文の追加</h2>
+
+		<div class="block_title_right" soy:display="has_order">
+			<a class="button" soy:link="Order.Register.Reset">クリア</a>
+		</div>
+	</div>
+
+
+	<div class="block_body">
+		<p class="error always" soy:id="order_error"></p>
+
+		<form soy:id="confirm_form">
+			<dl>
+				<dt>商品
+					<!-- soy:display="item_info" -->
+					<a class="button" soy:link="Order.Register.Item" id="item_change">変更</a>
+					<!-- /soy:display="item_info" -->
+				</dt>
+				<dd>
+					<p class="error always" soy:id="stock_error"></p>
+
+					<!-- soy:display="no_item" -->
+					<p class="require">
+						商品を指定してください。
+						<a class="button" soy:link="Order.Register.Item">商品登録</a>
+					</p>
+					<!-- /soy:display="no_item" -->
+
+					<!-- soy:display="item_info1" -->
+					<table class="form_list">
+						<thead>
+							<tr>
+								<th>商品コード</th>
+								<th>商品</th>
+								<th>単価<!-- soy:id="is_purchase_price" -->(仕入値)<!-- /soy:id="is_purchase_price" --></th>
+								<th>個数</th>
+								<th>小計</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr>
+								<th colspan="4" class="alR">合計</th>
+								<td colspan="1" class="alR"><!-- soy:id="total_price" /-->&nbsp;円</td>
+							</tr>
+						</tfoot>
+						<tbody>
+							<!-- soy:id="item_list" -->
+							<tr>
+								<td><a soy:id="item_id" target="_blank">11</a></td>
+								<td style="min-width:400px;">
+									<!-- soy:id="item_name_text" -->ナノブロック（フレンチブルドッグ）<!-- /soy:id="item_name_text" --><br>
+									<!-- soy:id="item_option" /-->
+								</td>
+								<td class="alR">
+									<!-- soy:id="item_price_text" /-->&nbsp;円
+									<!-- soy:id="is_purchase_price" -->(<!-- soy:id="purchase_price" /-->)<!-- /soy:id="is_purchase_price" -->
+								</td>
+								<td class="alR"><!-- soy:id="item_count_text" /-->&nbsp;点</td>
+								<td class="alR"><!-- soy:id="item_total_price" /-->&nbsp;円</td>
+							</tr>
+							<!-- /soy:id="item_list" -->
+
+							<tr>
+								<th colspan="4" class="alR">小計</th>
+								<td colspan="1" class="alR"><!-- soy:id="total_item_price" /-->&nbsp;円</td>
+							</tr>
+
+							<!--  soy:id="module_list" -->
+							<tr>
+								<td colspan="4" class="alR" soy:id="module_name" >モジュール名</td>
+								<td class="alR"><!-- soy:id="module_price" /--> 円</td>
+							</tr>
+							<!--  /soy:id="module_list" -->
+
+						</tbody>
+					</table>
+					<!-- /soy:display="item_info1" -->
+				</dd>
+
+				<dt>注文日時</dt>
+				<dd>
+					<p><input type="date" class="date_picker_start" name="" soy:id="order_date" placeholder="YYYY-MM-DD"> <input type="submit" name="select_user_button" value="決定"></p>
+				</dd>
+
+				<dt>注文者
+					<a class="button" soy:link="Order.Register.User" id="user_change">変更</a>
+				</dt>
+				<dd>
+					<!-- soy:display="no_user" -->
+					<p class="require">
+						注文者を指定してください。
+					</p>
+					<p><select soy:id="select_user" name=""><option value="">選んで下さい</option></select> <input type="submit" name="select_user_button" value="決定"></p>
+					<!-- /soy:display="no_user" -->
+
+					<table class="form_table" soy:display="has_user">
+						<tr soy:display="user_is_registered">
+							<th>ID</th>
+							<td>
+								<!-- soy:id="user_id" /-->
+								<a href="" soy:id="user_detail_link" class="button" target="_blank">詳細</a>
+							</td>
+						</tr>
+						<tr>
+							<th>メールアドレス</th>
+							<td soy:id="mail_address_on_admin"></td>
+						</tr>
+						<tr soy:display="userCode">
+							<th>顧客コード</th>
+							<td soy:id="user_code_on_admin"></td>
+						</tr>
+						<tr>
+							<th>氏名</th>
+							<td soy:id="name_on_admin"></td>
+						</tr>
+						<tr>
+							<th>フリガナ</th>
+							<td soy:id="reading_on_admin"></td>
+						</tr>
+						<tr>
+							<th>郵便番号</th>
+							<td soy:id="zip_code_on_admin">
+							</td>
+						</tr>
+						<tr>
+							<th>住所</th>
+							<td >
+								<!-- soy:id="area_on_admin" /-->
+								<!-- soy:id="address1_on_admin" /-->
+								<!-- soy:id="address2_on_admin" /-->
+							</td>
+						</tr>
+						<tr>
+							<th>電話番号</th>
+							<td soy:id="telephone_number_on_admin"></td>
+						</tr>
+						<tr>
+							<th>FAX番号</th>
+							<td soy:id="fax_number_on_admin"></td>
+						</tr>
+						<tr>
+							<th>携帯電話番号</th>
+							<td soy:id="cellphone_number_on_admin"></td>
+						</tr>
+						<tr soy:id="is_office_item">
+							<th>勤務先名称・職種</th>
+							<td soy:id="office_on_admin"></td>
+						</tr>
+						<!-- soy:id="has_user_customfield" -->
+						<!-- soy:id="user_customfield_list" -->
+						<tr>
+							<th nowrap scope="row"><!-- soy:id="customfield_name" /--></th>
+							<td>
+								<!-- soy:id="customfield_confirm" /-->
+							</td>
+						</tr>
+						<!-- /soy:id="user_customfield_list" -->
+						<!-- /soy:id="has_user_customfield" -->
+					</table>
+				</dd>
+
+				<dt>送付先
+					<!-- soy:display="has_user1" -->
+					<!-- soy:display="no_send_address" -->
+					<a class="button" soy:link="Order.Register.SendAddress" id="send_address_change">変更</a>
+					<!-- /soy:display="no_send_address" -->
+					<!-- /soy:display="has_user1" -->
+					<!-- soy:display="has_send_address" -->
+					<a class="button" soy:link="Order.Register.SendToUser">クリア</a>
+					<!-- /soy:display="has_send_address" -->
+				</dt>
+				<dd>
+					<p class="" soy:display="no_send_address1">注文者の住所と同じ</p>
+
+					<table class="form_table" soy:display="has_send_address">
+						<tr>
+							<th>氏名</th>
+							<td soy:id="send_name"></td>
+						</tr>
+						<tr>
+							<th>フリガナ</th>
+							<td soy:id="send_furigana"></td>
+						</tr>
+						<tr>
+							<th>郵便番号</th>
+							<td soy:id="send_post_number">
+							</td>
+						</tr>
+						<tr>
+							<th>住所</th>
+							<td >
+								<!-- soy:id="send_area" /-->
+								<!-- soy:id="send_address1" /-->
+								<!-- soy:id="send_address2" /-->
+							</td>
+						</tr>
+						<tr>
+							<th>電話番号</th>
+							<td soy:id="send_tel_number"></td>
+						</tr>
+						<tr soy:id="is_office_item*">
+							<th>法人名</th>
+							<td soy:id="send_office"></td>
+						</tr>
+					</table>
+				</dd>
+
+				<dt>支払方法</dt>
+				<dd>
+					<p soy:id="payment_error" class="error always">エラー</p>
+					<p soy:display="no_payment_method" class="caution">選択可能な支払方法がありません。</p>
+
+					<!-- soy:display="has_payment_method" -->
+					<p class="caution">クレジットカードなどの外部連携の必要な決済サービスは選択しないでください。</p>
+					<table class="form_table">
+						<thead>
+							<tr>
+								<th>支払方法</th>
+								<td>&nbsp;</td>
+								<td>手数料</td>
+							</tr>
+						</thead>
+
+						<tbody>
+							<!-- soy:id="payment_method_list" -->
+							<tr>
+								<td class="method_title">
+									<input type="radio" soy:id="payment_method" />
+								</td>
+								<td>
+									<div>
+										<!-- soy:id="payment_description" /-->
+									</div>
+								</td>
+								<td class="alC"><!--  soy:id="payment_charge" /--></td>
+							</tr>
+							<!-- /soy:id="payment_method_list" -->
+						</tbody>
+					</table>
+					<!-- /soy:display="has_payment_method" -->
+				</dd>
+
+				<dt>配送方法</dt>
+				<dd>
+					<p soy:id="delivery_error" class="error always">エラー</p>
+					<p soy:display="no_delivery_method" class="caution">選択可能な配送方法がありません。</p>
+
+					<!-- soy:display="has_delivery_method" -->
+					<table class="form_table">
+						<thead>
+							<tr>
+								<th>配送方法</th>
+								<td>&nbsp;</td>
+								<td>送料</td>
+							</tr>
+						</thead>
+
+						<tbody>
+							<!-- soy:id="delivery_method_list" -->
+							<tr>
+								<td class="method_title">
+									<input type="radio" soy:id="delivery_method" />
+								</td>
+								<td>
+									<div>
+										<!-- soy:id="delivery_description" /-->
+									</div>
+								</td>
+								<td class="alC"><!--  soy:id="delivery_charge" /--></td>
+							</tr>
+							<!-- /soy:id="delivery_method_list" -->
+						</tbody>
+					</table>
+					<!-- /soy:display="has_delivery_method" -->
+				</dd>
+
+				<!-- soy:display="has_point_method" -->
+				<dt>ポイント</dt>
+				<dd>
+					<p soy:display="no_valid_user_for_point" class="caution">ポイントを利用できる注文者を指定してください。</p>
+
+					<!-- soy:display="has_valid_user_for_point" -->
+					<table class="form_table">
+						<!-- soy:id="point_method_list" -->
+						<tr>
+							<th nowrap scope="row"><!-- soy:id="point_name" /--></th>
+							<td colspan="2">
+								<!-- soy:id="has_point_error" -->
+								<p class="error always" soy:id="point_error"></p>
+								<!-- /soy:id="has_point_error" -->
+								<!-- soy:id="point_description" /-->
+							</td>
+						</tr>
+						<!-- /soy:id="point_method_list" -->
+					</table>
+					<!-- /soy:display="has_valid_user_for_point" -->
+				</dd>
+				<!-- /soy:display="has_point_method" -->
+
+				<!-- soy:display="has_customfield_method" -->
+				<dt>その他</dt>
+				<dd>
+					<table class="form_table">
+						<!-- soy:id="customfield_method_list" -->
+						<tr>
+							<th nowrap scope="row"><!-- soy:id="customfield_name" /--><!-- soy:id="customfield_is_required" -->必須<!-- /soy:id="customfield_is_required" --></th>
+							<td colspan="2">
+								<!-- soy:id="has_customfield_error" -->
+								<p class="error always" soy:id="customfield_error"></p>
+								<!-- /soy:id="has_customfield_error" -->
+								<!-- soy:id="customfield_description" /-->
+							</td>
+						</tr>
+						<!-- /soy:id="customfield_method_list" -->
+					</table>
+				</dd>
+				<!-- /soy:display="has_customfield_method" -->
+
+				<dt>備考</dt>
+				<dd>
+					<textarea soy:id="memo"></textarea>
+				</dd>
+			</dl>
+
+			<div class="pageBtn">
+				<input type="submit" name="order" value="注文実行（確認）" soy:id="confirm_button" />
+			</div>
+		</form>
+	</div>
+</div>

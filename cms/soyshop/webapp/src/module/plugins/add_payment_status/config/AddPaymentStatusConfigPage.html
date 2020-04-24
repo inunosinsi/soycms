@@ -1,0 +1,26 @@
+<p class="notice" soy:display="updated">更新しました。</p>
+
+<form soy:id="form">
+<dl>
+	<dt>項目の追加</dt>
+	<dd>
+		<ul>
+			<!-- soy:id="status_list" -->
+			<li><input type="number" soy:id="number" style="width:80px;">&nbsp;<input type="text" soy:id="label"></li>
+			<!-- /soy:id="status_list" -->
+			<li><input type="number" name="new_number" style="width:80px;">&nbsp;<input type="text" name="new_label"></li>
+		</ul>
+		※<strong>左の項目には数字を入力します。数字は下記の「支払い状況の設定状況」と被らない数字を入力してください。</strong><br>
+		※支払い状況の項目を削除する場合は左の項目を空の値か0にして更新します。
+	</dd>
+</dl>
+
+<p class="pageBtn">
+	<input type="submit" name="update" value="更新">
+</p>
+</form>
+
+<section>
+<h2>支払い状況の設定状況</h2>
+<!-- soy:id="config_detail" /-->
+</section>

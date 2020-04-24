@@ -1,0 +1,29 @@
+<p class="notice" soy:display="updated">変更しました</p>
+
+<h3>メール設定</h3>
+<form soy:id="form">
+	<table class="form_table" style="">
+
+		<tr>
+			<th>内容</th>
+		</tr>
+		<tr>
+			<td>
+				<textarea class="minieditor" soy:id="content"></textarea><br>
+				※#RETURNS_SLIP_NUMBER#は返送伝票番号に置換されます
+			</td>
+		</tr>
+	</table>
+
+	<p class="pageBtn" style="clear:both;">
+		<input type="submit" class="submit_button" value="変更" />
+	</p>
+</form>
+
+<h3>使用方法</h3>
+<dl>
+	<dd>
+		このプラグインをインストールすると、注文詳細のコメントフォームの下に返送伝票番号の記録用のフォームが表示されます。<br>
+		記録用のフォームから返送伝票番号を登録してください。
+	</dd>
+</dl>

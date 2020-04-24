@@ -1,0 +1,59 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">権限設定</h1>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default active" soy:link="shop.Config">SOY Shopの権限</a>
+				<a class="btn btn-default" soy:link="shop.Config.List">サイトごとの権限</a></a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-6">
+		<h1 class="page-header">SOY Shopの権限設定</h1>
+		<div class="panel panel-default">
+			<div class="alert alert-success" soy:display="updated">更新しました。</div>
+			<div class="alert alert-danger" soy:display="error">失敗しました。</div>
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<form soy:id="form">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>ユーザID</th>
+										<th>権限設定</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!-- soy:id="account_list" -->
+									<tr>
+										<td soy:id="user_id">mamezo</td>
+										<td>
+											<!-- soy:id="is_default_user" -->初期管理者<!-- /soy:id="is_default_user" -->
+											<select soy:id="app_role"></select>
+										</td>
+									</tr>
+									<!-- /soy:id="account_list" -->
+								</tbody>
+							</table>
+						</div>
+
+						<div class="text-center">
+							<input type="submit" class="btn btn-primary btn-lg btn-block" value="変更" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,31 @@
+<p class="notice" soy:id="updated">更新しました</p>
+
+<form soy:id="form">
+
+<dl>
+	<dt>URL</dt>
+	<dd>
+		<input type="text" soy:id="url" size="50" /><br />
+		※スラッシュから始まる絶対パスも可(例:/inquiry)
+	</dd>
+</dl>
+<p class="pageBtn" style="clear:both;">
+	<input type="submit" class="submit_button" value="変更" />
+</p>
+
+</form soy:id="form">
+
+<h3>テンプレートへの記述例</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- block:id="item" --&gt;
+&lt;a cms:id="inquiry_link"&gt;この商品のお問い合わせをする&lt;/a&gt;
+&lt;!-- /block:id="item" --&gt;
+</pre>
+
+<h3>SOY Inquiryとの連携方法</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<p>1.SOY Inquiryで商品名[SOYShop連携]カラムを追加</p>
+<p>2.フォーム毎の設定のSOY Shop連携でショップサイトのIDを指定</p>
+<p>3.上記フォームでSOY Inquiryを動作させるページのURLを指定</p>
+<p>4.商品詳細ページにcms:idタグを追加</p>
+</pre>

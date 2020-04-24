@@ -1,0 +1,250 @@
+<h1>
+	テンプレート管理
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; テンプレート管理</span>
+</h1>
+
+<!-- soy:id="template_carrier_list" -->
+<div class="block">
+	<div class="block_title">
+		<h2>テンプレート一覧<!-- soy:id="carrier" /--></h2>
+
+		<div class="block_title_right">
+			<a soy:id="create_template_link" class="button">テンプレートの追加</a>
+		</div>
+	</div>
+
+	<div class="block_body">
+
+		<!-- soy:id="template_category_list" -->
+		<table class="form_list">
+		<caption><!-- soy:id="template_type" /-->テンプレート一覧</caption>
+			<tr>
+				<th>名前</th>
+				<th>種類</th>
+				<th class="column3">
+					操作
+					<a class="button fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+				</th>
+			</tr>
+			<!-- soy:id="template_list" -->
+			<tr>
+				<td soy:id="name">あああああ</td>
+				<td class="column3" soy:id="type">トップページ</td>
+				<td class="column3">
+					<a href="#" soy:id="edit_link" class="button">編集</a>
+
+					<!--
+					<a href="#" class="button">ページ一覧</a>
+					-->
+					<a soy:id="remove_link" href="#" class="button fr delete_btn" onclick="return confirm('削除してもよろしいですか？')">削除</a>
+				</td>
+			</tr>
+			<!-- /soy:id="template_list" -->
+			<tfoot>
+				<tr>
+					<td colspan="3" class="alR">
+						<a soy:id="create_link" class="button">テンプレートの追加</a>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+		<!-- /soy:id="template_category_list" -->
+	</div>
+
+</div>
+<!-- /soy:id="template_carrier_list" -->
+
+<div class="block">
+	<div class="block_title">
+		<h2>アプリケーションページテンプレート一覧</h2>
+
+		
+		<div class="block_title_right" soy:display="show_app_tmp_link">
+			<a soy:link="Site.Template.Application" class="button">アプリケーションテンプレート</a>
+		</div>
+	</div>
+	
+	<div class="block_body">
+		<table class="form_list">
+		<caption>カートテンプレート一覧</caption>
+			<tr>
+				<th>名前</th>
+				<th>カートID</th>
+				<th class="column3">操作</th>
+			</tr>
+			<!-- soy:id="cart_template_list" -->
+			<tr>
+				<td soy:id="name">あああああ</td>
+				<td class="column3" soy:id="type">トップページ</td>
+				<td class="column3">
+					<a href="#" soy:id="edit_link" class="button">編集</a>
+				</td>
+			</tr>
+			<!-- /soy:id="cart_template_list" -->
+		</table>
+
+		<table class="form_list">
+		<caption>Myページテンプレート一覧</caption>
+			<tr>
+				<th>名前</th>
+				<th>MyページID</th>
+				<th class="column3">操作</th>
+			</tr>
+			<!-- soy:id="mypage_template_list" -->
+			<tr>
+				<td soy:id="name">あああああ</td>
+				<td class="column3" soy:id="type">トップページ</td>
+				<td class="column3">
+					<a href="#" soy:id="edit_link" class="button">編集</a>
+				</td>
+			</tr>
+			<!-- /soy:id="mypage_template_list" -->
+		</table>
+
+		<h3>ページのテンプレート</h3>
+		<!-- soy:display="custom_template_list_empty" -->
+		<dl>
+			<dd>個別設定されているページはありません</dd>
+		</dl>
+		<!-- /soy:display="custom_template_list_empty" -->
+
+		<!-- soy:display="custom_template_list_exists" -->
+		<table class="form_list">
+			
+			<tr>
+				<th>名前</th>
+				<th>URL</th>
+				<th>種類</th>
+				<th class="column3">操作</th>
+			</tr>
+			<!-- soy:id="custom_template_list" -->
+			<tr>
+				<td soy:id="name">あああああ</td>
+				<td soy:id="url">あああああ</td>
+				<td soy:id="type">トップページ</td>
+				<td class="column3">
+					<a href="#" soy:id="edit_link" class="button">編集</a>
+				</td>
+			</tr>
+			<!-- /soy:id="custom_template_list" -->
+
+		</table>
+		<!-- /soy:display="custom_template_list_exists" -->
+
+
+	</div>
+
+</div>
+
+<!-- soy:display="allow_php_module" -->
+<div class="block">
+	<div class="block_title">
+		<h2>モジュール一覧</h2>
+
+		<div class="block_title_right">
+			<a soy:link="Site.Template.Module.Create" class="button">モジュールの追加</a>
+		</div>
+
+	</div>
+
+	<a name="module_list"></a>
+
+	<div class="block_body">
+			
+		<!-- soy:display="module_list_empty" -->
+		<dl>
+			<dd>モジュールはありません</dd>
+		</dl>
+		<!-- /soy:display="module_list_empty" -->
+		
+		<!-- soy:display="module_list_exists" -->
+		<table class="form_list">
+			<caption>モジュール一覧</caption>
+			<tr>
+				<th>名前(モジュールID)</th>
+				<th class="column3">
+					操作
+					<a class="button fr" href="javascript:void(0);" onclick="$(this).hide();$('.module_delete_btn').css('visibility','visible');">削除</a>
+				</th>
+			</tr>
+			<!-- soy:id="module_list" -->
+			<tr>
+				<td soy:id="name">あああああ</td>
+				<td class="column3">
+					<a href="#" soy:id="edit_link" class="button">編集</a>
+					<a soy:id="remove_link" href="#" class="button fr module_delete_btn" onclick="return confirm('削除してもよろしいですか？')">削除</a>
+				</td>
+			</tr>
+			<!-- /soy:id="module_list" -->
+
+		</table>
+		<!-- /soy:display="module_list_exists" -->
+		
+	</div>
+</div>
+<!-- /soy:display="allow_php_module" -->
+
+<div class="block">
+	<div class="block_title">
+		<h2>HTMLモジュール一覧</h2>
+
+		<div class="block_title_right">
+			<a soy:link="Site.Template.Module.html.Create" class="button">HTMLモジュールの追加</a>
+		</div>
+
+	</div>
+	
+	<a name="html_module_list"></a>
+
+	<div class="block_body">
+			
+		<!-- soy:display="html_module_list_empty" -->
+		<dl>
+			<dd>モジュールはありません</dd>
+		</dl>
+		<!-- /soy:display="html_module_list_empty" -->
+		
+		<!-- soy:display="html_module_list_exists" -->
+		<table class="form_list">
+			<caption>モジュール一覧</caption>
+			<tr>
+				<th>名前(モジュールID)</th>
+				<th class="column3">
+					操作
+					<a class="button fr" href="javascript:void(0);" onclick="$(this).hide();$('.html_module_delete_btn').css('visibility','visible');">削除</a>
+				</th>
+			</tr>
+			<!-- soy:id="html_module_list" -->
+			<tr>
+				<td soy:id="name">あああああ</td>
+				<td class="column3">
+					<a href="#" soy:id="edit_link" class="button">編集</a>
+					<a soy:id="remove_link" href="#" class="button fr html_module_delete_btn" onclick="return confirm('削除してもよろしいですか？')">削除</a>
+				</td>
+			</tr>
+			<!-- /soy:id="html_module_list" -->
+
+		</table>
+		<!-- /soy:display="html_module_list_exists" -->
+		
+	</div>
+</div>
+
+<style type="text/css">
+.column3{
+	width:200px;
+}
+</style>
+
+<style type="text/css">
+.delete_btn{
+	visibility:hidden;
+}
+.module_delete_btn{
+	visibility:hidden;
+}
+.html_module_delete_btn{
+	visibility:hidden;
+}
+</style>

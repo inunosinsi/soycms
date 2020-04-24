@@ -1,0 +1,130 @@
+<form soy:id="form">
+	<section id="cart_detail">
+		<h1 class="cart_txt">登録情報の変更</h1>
+		<p>下記の情報で変更します。</p>
+		<div class="cart_detail_dl">
+			<dl>
+				<!-- soy:id="name_show" -->
+				<dt>お名前</dt>
+				<dd><!-- soy:id="user_name_text" -->齋藤　毅<!-- /soy:id="user_name_text" --></dd>
+				<!-- /soy:id="name_show" -->
+
+				<!-- soy:id="reading_show" -->
+				<dt>お名前カナ</dt>
+				<dd><!-- soy:id="user_reading_text" -->サイトウ　ツヨシ<!-- /soy:id="user_reading_text" --></dd>
+				<!-- /soy:id="reading_show" -->
+
+				<!-- soy:id="nickname_show" -->
+				<dt>ニックネーム</dt>
+				<dd><!-- soy:id="user_nickname_text" --><!-- /soy:id="user_nickname_text" --></dd>
+				<!-- /soy:id="nickname_show" -->
+
+				<dt>プロフィールページ</dt>
+				<dd soy:id="profile_display_text"></dd>
+
+				<dt>プロフィール画像</dt>
+				<dd>
+					<!-- soy:id="confirm_detele_image" -->この画像を削除します<br><!-- /soy:id="confirm_detele_image" -->
+					<img soy:id="user_image">
+				</dd>
+
+				<!-- soy:id="jobName_show" -->
+				<dt>法人名（勤務先など）</dt>
+				<dd><!-- soy:id="user_job_name_text" -->&nbsp;<!-- /soy:id="user_job_name_text" --></dd>
+				<!-- /soy:id="jobName_show" -->
+
+				<!-- soy:id="zipCode_show" -->
+				<dt>郵便番号</dt>
+				<dd><!-- soy:id="user_zip_code_text" -->606-8232<!-- /soy:id="user_zip_code_text" --></dd>
+				<!-- /soy:id="zipCode_show" -->
+
+				<!-- soy:id="address_show" -->
+				<dt>ご住所</dt>
+				<dd>
+					<!-- soy:id="user_area_text" -->京都府<!-- /soy:id="user_area_text" -->　
+					<!-- soy:id="user_address1_text" -->京都市左京区<!-- /soy:id="user_address1_text" -->　
+					<!-- soy:id="user_address2_text" -->田中古川町44 SOYビル1F<!-- /soy:id="user_address2_text" -->　
+				</dd>
+				<!-- /soy:id="address_show" -->
+
+				<!-- soy:id="telephoneNumber_show" -->
+				<dt>電話番号</dt>
+				<dd><!-- soy:id="user_telephone_number_text" -->075-204-4823<!-- /soy:id="user_telephone_number_text" --></dd>
+				<!-- /soy:id="telephoneNumber_show" -->
+
+				<!-- soy:id="accountId_show" -->
+				<dt>ログインID</dt>
+				<dd><!-- soy:id="user_account_id_text" -->mamekura<!-- /soy:id="user_account_id_text" --></dd>
+				<!-- /soy:id="accountId_show" -->
+
+				<!-- soy:id="gender_show" -->
+				<dt>性別</dt>
+				<dd><!-- soy:id="gender_text" -->男性<!-- /soy:id="gender_text" --></dd>
+				<!-- /soy:id="gender_show" -->
+
+				<!-- soy:id="birthday_show" -->
+				<dt>生年月日</dt>
+				<dd><!-- soy:id="birth_year_text" -->1982<!-- /soy:id="birth_year_text" -->
+					年
+					<!-- soy:id="birth_month_text" -->6<!-- /soy:id="birth_month_text" -->
+					月
+					<!-- soy:id="birth_day_text" -->xx<!-- /soy:id="birth_day_text" -->
+					日
+				</dd>
+				<!-- /soy:id="birthday_show" -->
+
+				<!-- soy:id="faxNumber_show" -->
+				<dt>FAX番号</dt>
+				<dd><!-- soy:id="user_fax_number_text" -->&nbsp;<!-- /soy:id="user_fax_number_text" --></dd>
+				<!-- /soy:id="faxNumber_show" -->
+
+				<!-- soy:id="cellphoneNumber_show"-->
+				<dt>携帯番号</dt>
+				<dd><!-- soy:id="user_cellphone_number_text" -->&nbsp;<!-- /soy:id="user_cellphone_number_text" --></dd>
+				<!-- /soy:id="cellphoneNumber_show"-->
+
+				<!-- soy:id="url_show" -->
+				<dt>URL</dt>
+				<dd><!-- soy:id="user_url_text" -->http://www.soyshop.net/<!-- /soy:id="user_url_text" --></dd>
+				<!-- /soy:id="url_show" -->
+
+				<!-- soy:id="has_user_customfield" -->
+				<!-- soy:id="user_customfield_list" -->
+				<dt><!-- soy:id="customfield_name" /--></dt>
+				<dd>
+					<!-- soy:id="customfield_confirm" /-->
+				</dd>
+				<!-- /soy:id="user_customfield_list" -->
+				<!-- /soy:id="has_user_customfield" -->
+
+				<!-- soy:id="memo_show" -->
+				<dt>備考・その他</dt>
+				<dd><!-- soy:id="order_memo_text" --><!-- /soy:id="order_memo_text" --></dd>
+				<!-- /soy:id="memo_show" -->
+			</dl>
+		</div>
+		<aside class="note">
+			<p>この内容で確定します。よろしければ下の「登録する」ボタンを押してください。</p>
+		</aside>
+		<p class="textcenter"><input type="image" name="register" soy:src="themes/common/images/mypage/btn_regist_off.jpg" alt="登録する"></p>
+		<p class="textcenter"><input type="submit" name="back" value="&lt;&lt; 戻る"></p>
+	</section>
+</form soy:id="form">
+
+<script type="text/javascript">
+function copy_user(){
+
+	var $ = function(id){ return document.getElementById(id); };
+
+	$("send_name").value = $("user_name").value;
+	$("send_reading").value = $("user_reading").value;
+	$("send_zip_code").value = $("user_zip_code").value;
+	$("send_area").value = $("user_area").value;
+	$("send_address1").value = $("user_address1").value;
+	$("send_address2").value = $("user_address2").value;
+	$("send_tel_number").value = $("user_tel_number").value;
+
+	return false;
+}
+
+</script>

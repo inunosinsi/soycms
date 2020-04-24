@@ -1,0 +1,246 @@
+<div class="text-center">
+	<ul class="list-group list-group-horizontal-sm">
+		<li class="list-group-item list-group-item-primary">お客様情報の入力</li>
+		<li class="list-group-item list-group-item-light" soy:id="has_delivery_or_payment_modules">お支払・配送方法の選択</li>
+		<li class="list-group-item list-group-item-light">ご注文内容の確認</li>
+		<li class="list-group-item list-group-item-light">ご注文確定</li>
+	</ul>
+</div>
+
+<form soy:id="order_form">
+
+	<!-- soy:display="has_error" -->
+	<p class="alert alert-danger mt-1">正しく入力されていない項目があります。</p>
+	<!-- /soy:display="has_error" -->
+
+	<p class="alert alert-info mt-3">お客様の情報をご入力ください。</p>
+	<div class="form-group" soy:id="name_show">
+		<label for="name">お名前<span soy:id="name_required">（必須）</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="name_error">お名前が正しく入力されていません。</p>
+		<input name="" type="text" class="form-control" soy:id="name">
+		<small class="form-text text-muted">【全角】</small>
+	</div>
+
+	<div class="form-group" soy:id="reading_show">
+		<label for="reading">フリガナ<span soy:id="reading_required">（必須）</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="reading_error">お名前カナが正しく入力されていません。</p>
+		<input name="" type="text" class="form-control" soy:id="reading">
+		<small class="form-text text-muted">【全角】</small>
+	</div>
+
+	<div class="form-group" soy:id="jobName_show">
+		<label for="jobName">法人名（勤務先など）<span soy:id="jobName_required">（必須）</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="job_name_error">職種が正しく入力されていません。</p>
+		<input name="" type="text" class="form-control" soy:id="job_name">
+	</div>
+
+	<!-- soy:id="zipCode_show" -->
+	<div class="form-group">
+		<label for="zipCode">郵便番号<span soy:id="zipCode_required">（必須）</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="zip_code_error">郵便番号が正しく入力されていません。</p>
+		<div class="form-inline">
+			<input name="" type="text" class="form-control input-zip" soy:id="zip_code">&nbsp;
+			<a href="javascript:void(0);" class="search-btn btn btn-primary">郵便番号検索</a>
+		</div>
+		<small class="form-text text-muted">【半角数字】</small>
+	</div>
+	<!-- /soy:id="zipCode_show" -->
+
+	<!-- soy:id="address_show" -->
+	<div class="form-group">
+		<label>ご住所<span soy:id="address_required">（必須）</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="address_error">ご住所が正しく入力されていません。</p>
+		<div class="form-inline">
+			<select name="" class="input-pref form-control" soy:id="area">
+				<option value="">都道府県名</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="city" class="col-sm-2 col-form-label">市区郡</label>
+		<div class="col-sm-8">
+			<input name="" type="text" class="input-city form-control" soy:id="address1">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="town" class="col-sm-2 col-form-label">町番地</label>
+		<div class="col-sm-8">
+			<input name="" type="text" class="input-town form-control" soy:id="address2">
+		</div>
+	</div>
+	<!-- /soy:id="address_show" -->
+
+	<div class="form-group" soy:id="telephoneNumber_show">
+		<label for="telephoneNumber">電話番号<span soy:id="telephoneNumber_required">（必須）</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="tel_number_error">電話番号が正しく入力されていません。</p>
+		<input name="" type="tel" class="form-control" soy:id="telephone_number">
+		<small class="form-text text-muted">【半角数字】</small>
+	</div>
+
+	<div class="form-group" soy:id="mailAddress_show">
+		<label for="email">メールアドレス<span soy:id="mailAddress_required">（必須）</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="mail_address_error">メールアドレスが正しく入力されていません。</p>
+		<input name="" type="email" class="form-control" soy:id="mail_address">
+	</div>
+
+	<div class="form-group" soy:id="password_input">
+		<label for="password">パスワード</label>
+		<p class="alert alert-info">パスワードを入力することで、次回からの入力が簡単になります。</p>
+		<p class="alert alert-danger" role="alert" soy:id="password_invalid">パスワードが違います</p>
+		<input name="" type="password" class="form-control" autocomplete="off" soy:id="password">
+		<small class="form-text text-muted">【半角英数・8文字以上】</small>
+	</div>
+
+	<div class="form-group" soy:id="gender_show">
+		<label for="gender">性別<span soy:id="gender_required">(必須)</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="gender_error">性別が選択されていません。</p>
+		<div class="form-check">
+			<input type="radio" name="" soy:id="gender_male">
+			<label for="radio_sex_male">男性</label>
+			<input type="radio" name="" value="" soy:id="gender_female">
+			<label for="radio_sex_female">女性</label>
+		</div>
+	</div>
+
+	<div class="form-group" id="birthday" soy:id="birthday_show">
+		<label for="birthday">生年月日<span soy:id="birthday_required">(必須)</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="birthday_error">誕生日が正しく入力されていません。</p>
+		<div class="form-inline">
+			西暦&nbsp;
+			<input name="" type="number" class="form-control col-md-2" soy:id="birth_year">&nbsp;
+			年&nbsp;
+			<input name="" type="number" class="form-control col-md-1" soy:id="birth_month">&nbsp;
+			月&nbsp;
+			<input name="" type="number" class="form-control col-md-1" soy:id="birth_day">&nbsp;
+			日
+		</div>
+	</div>
+
+	<div class="form-group" soy:id="faxNumber_show">
+		<label for="faxNumber">FAX番号<span soy:id="faxNumber_required">(必須)</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="fax_number_error">FAX番号が正しく入力されていません。</p>
+		<input name="" type="tel" class="form-control" soy:id="fax_number">
+		<small class="form-text text-muted">【半角数字】</small>
+	</div>
+
+	<div class="form-group" soy:id="cellphoneNumber_show">
+		<label for="cellphoneNumber">携帯番号<span soy:id="cellphoneNumber_required">(必須)</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="cellphone_number_error">携帯番号が正しく入力されていません。</p>
+		<input name="" type="tel" class="form-control" soy:id="cellphone_number">
+		<small class="form-text text-muted">【半角数字】</small>
+	</div>
+
+	<!-- soy:id="has_user_customfield" -->
+	<!-- soy:id="user_customfield_list" -->
+	<div class="form-group">
+		<label for=""><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></label>
+		<!-- soy:id="has_customfield_error" -->
+		<p class="alert alert-danger" role="alert" soy:id="customfield_error"></p>
+		<!-- /soy:id="has_customfield_error" -->
+		<!-- soy:id="customfield_form" /-->
+	</div>
+	<!-- /soy:id="user_customfield_list" -->
+	<!-- /soy:id="has_user_customfield" -->
+
+	<div class="form-group" soy:id="memo_show">
+		<label for="memo">備考・その他<span soy:id="memo_required">（必須)</span></label>
+		<p class="alert alert-danger" role="alert" soy:id="memo_error">備考が入力されていません。</p>
+		<textarea name="" rows="6" class="form-control" soy:id="order_memo"></textarea>
+		<small class="form-text text-muted">何かありましたらご自由にお書きください。</small>
+	</div>
+
+	<p class="text-center">
+		<input type="submit" name="prev" class="btn btn-warning btn-lg" value="戻る">&nbsp;
+		<input type="submit" name="next" class="btn btn-primary btn-lg" value="次へ">
+	</p>
+
+	<!-- soy:id="display_send_form" -->
+	<p class="alert alert-info mt-5">
+		お届け先が基本情報にご記入の住所とは異なる場合に記入してください。<br>
+		<span class="require">※お届け先欄使用時には必須</span>
+	</p>
+
+	<!-- soy:id="has_send_address_error" -->
+	<p soy:id="send_address_error" class="alert alert-danger" role="alert">正しく入力されていない項目があります。</p>
+	<!-- /soy:id="has_send_address_error" -->
+
+	<!--ul>
+		<li>
+			<input name="radio" type="radio" id="radio" value="radio" checked>
+			上記住所にお届けする<br>
+		</li>
+		<li>
+			<input type="radio" name="radio" id="radio2" value="radio">
+			別のお届け先を指定する
+		</li>
+	</ul-->
+	<div class="form-group">
+		<label for="">お名前<span class="require">（必須）</span></label>
+		<input name="" type="text" class="form-control" soy:id="send_name">
+		<small class="form-text text-muted">【全角】</small>
+	</div>
+	<div class="form-group">
+		<label for="">フリガナ<span class="require">（必須）</span></label>
+		<input name="" type="text" class="form-control" soy:id="send_furigana">
+		<small class="form-text text-muted">【全角カナ】</small>
+	</div>
+	<div class="form-group" soy:id="is_offce_item">
+		<label for="">法人名（勤務先など）</label>
+		<input name="" type="text" class="form-control" soy:id="send_office">
+	</div>
+
+	<div class="form-group" id="zipcode2">
+		<label for="">郵便番号<span class="require">（必須）</span></label>
+		<div class="form-inline">
+			<input name="" type="text" class="input-send-zip form-control" soy:id="send_post_number">&nbsp;
+			<a href="javascript:void(0);" class="send-search-btn btn btn-primary">郵便番号検索</a>
+		</div>
+		<small class="form-text text-muted">【半角数字】</small>
+	</div>
+
+	<div class="form-group">
+		<label for="">ご住所<span class="require">（必須）</span></label>
+		<div class="form-inline">
+			<select name="" class="input-send-pref form-control" soy:id="send_area">
+				<option value="">都道府県名</option>
+			</select>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="" class="col-sm-2 col-form-label">市区郡</label>
+		<div class="col-sm-8">
+			<input name="" type="text" class="input-send-city form-control" soy:id="send_address1">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="" class="col-sm-2 col-form-label">町番地</label>
+		<div class="col-sm-8">
+			<input name="" type="text" class="input-send-town form-control" soy:id="send_address2">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label for="">お電話番号<span class="require">（必須）</span></label>
+		<input name="" type="text" class="form-control" soy:id="send_tel_number">
+		<small class="form-text text-muted">【半角数字】</small>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" name="prev" class="btn btn-warning btn-lg" value="戻る">&nbsp;
+		<input type="submit" name="next" class="btn btn-primary btn-lg" value="次へ">
+	</div>
+	<!-- /soy:id="display_send_form" -->
+</form>
+<script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
+
+<!-- soy:id="has_cart_plugin" -->
+
+<!-- soy:id="cart_plugin_list" -->
+<!-- soy:id="content" --><!-- /soy:id="content" -->
+<!-- /soy:id="cart_plugin_list" -->
+
+<!-- /soy:id="has_cart_plugin" -->

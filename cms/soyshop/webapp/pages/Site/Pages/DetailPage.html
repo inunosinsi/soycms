@@ -1,0 +1,101 @@
+<h1>
+	ページ管理
+	<span class="navi">
+		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Pages">ページ管理</a> &gt; ページ設定</span>
+</h1>
+
+
+<div class="block">
+	<div class="block_title">
+		<h2>ページ設定</h2>
+	</div>
+
+	<div class="block_body">
+
+		<p class="notice" soy:display="updated">更新しました</p>
+
+		<form soy:id="update_form">
+
+			<dl class="form center">
+				<dt>ページ名</dt>
+				<dd>
+					<input class="title" type="text" soy:id="name" />
+					<p class="require" soy:id="error_name"></p>
+				</dd>
+				<dt>
+					ページURL
+					<span class="option">(半角英数字または「.」「/」「_」「-」)</span>
+				</dt>
+				<dd>
+					<input class="title" type="text" soy:id="uri" />
+					<p class="require" soy:id="error_uri"></p>
+					<p class="caution" soy:id="caution_for_home"><!-- soy:id="SOYSHOP_TOP_PAGE_MARKER" /-->はトップページのための特別なURLなので変更できません。<br>/や/index.htmlなどへのアクセスはこのページにへのアクセスとみなされます。</p>
+					<p class="caution" soy:id="caution_for_404"><!-- soy:id="SOYSHOP_404_PAGE_MARKER" /-->は存在しないURLにアクセスがあったときに表示されるページのためのURLなので変更できません。</p>
+				</dd>
+				<dt>ページ種別</dt>
+				<dd><span soy:id="type_text"></span></dd>
+
+				<dt>キーワード (&lt;meta type="keywords"&gt;)</dt>
+				<dd>
+					<input class="title" type="text" soy:id="keyword" />
+					<p soy:id="keyword_format_description"></p>
+				</dd>
+
+				<dt>説明 (&lt;meta type="description"&gt;)</dt>
+				<dd>
+					<textarea soy:id="description"></textarea>
+					<p soy:id="description_format_description"></p>
+				</dd>
+
+				<dt>Canonical フォーマット</dt>
+				<dd>
+					<input class="title" soy:id="canonical_format" /><br />
+					<p soy:id="canonical_format_description"></p>
+				</dd>
+
+				<dt>文字コード</dt>
+				<dd>
+					<select soy:id="charset_list"></select>
+				</dd>
+
+				<dt>タイトルフォーマット</dt>
+				<dd>
+					<input class="title" soy:id="title_format" /><br />
+					<p soy:id="title_format_description"></p>
+				</dd>
+
+				<dt>テンプレート</dt>
+				<dd>
+					<!-- soy:id="template_select" -->
+					<div>
+						<a soy:id="btn_template_custom" class="button">個別に設定する</a>
+						<br />
+
+						<select soy:id="template"></select>
+						<a class="button" soy:id="btn_template_edit" target="_blank">→テンプレートの編集・確認画面</a>
+					</div>
+					<!-- /soy:id="template_select" -->
+
+					<!-- soy:id="template_custom" -->
+					<div>
+						個別に設定されています
+						<a class="button" soy:id="btn_custom_template_edit" target="_blank">→編集する</a><br />
+						<a class="button" soy:id="btn_template_restore">個別設定の解除</a>
+					</div>
+					<!-- /soy:id="template_custom" -->
+				</dd>
+
+				<dt>個別CSS</dt>
+				<dd>
+					<a soy:id="btn_css_custom" class="button">個別CSSを生成する</a>
+
+					<!-- soy:id="css_custom" -->
+					<a soy:id="css_url"></a>
+					<!-- /soy:id="css_custom" -->
+				</dd>
+			</dl>
+			<p class="pageBtn"><input type="submit" value="更新" /></p>
+
+		</form soy:id="update_form">
+	</div>
+</div>

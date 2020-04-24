@@ -1,0 +1,37 @@
+<!-- soy:display="has_reserve" -->
+<table class="form_list">
+	<caption>新着予約</caption>
+	<thead>
+		<tr class="alC">
+			<th>カレンダー名</th>
+			<th>日付</th>
+			<th>ラベル</th>
+			<th>顧客名</th>
+			<th>予約日時</th>
+		</tr>
+	</thead>
+	<tbody>
+		<!-- soy:id="reserve_list" -->
+		<tr class="alC">
+			<td><a soy:id="item_name"></a></td>
+			<td soy:id="schedule_date"></td>
+			<td soy:id="label"></td>
+			<td><a soy:id="user_name"></a></td>
+			<td soy:id="reserve_date"></td>
+		</tr>
+		<!-- /soy:id="reserve_list" -->
+	</tbody>
+</table>
+<!-- /soy:display="has_reserve" -->
+
+<!-- soy:display="more_reserve" -->
+<p class="notice always">
+	開催前の予約が15件以上あります	-&gt;
+</p>
+<!-- /soy:display="more_reserve" -->
+
+<!-- soy:display="no_reserve" -->
+<p class="notice always">
+	予約はありません。
+</p>
+<!-- /soy:display="no_reserve" -->

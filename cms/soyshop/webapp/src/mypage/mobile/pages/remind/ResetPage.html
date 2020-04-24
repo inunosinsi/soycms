@@ -1,0 +1,39 @@
+<h2 style="font-size:medium;font-weight:normal;margin:0;padding:0;"><span style="color:#996600;font-size:medium;font-weight:normal;">パスワード再設定</span></h2>
+
+<!-- soy:display="has_error" -->
+<div>
+	<!-- soy:id="error_list" -->
+	<span style="font-weight:bold;color:#FF0000;">入力項目に不備があります。</span><br />
+	<!-- /soy:id="error_list" -->
+</div>
+<!-- /soy:display="has_error" -->
+			
+<form soy:id="form">
+			
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">メールアドレス<span style="font-size:xx-small; color:#FF0000;">[必須]</span></span><br />
+	<!-- soy:id="address" /-->
+	</p>
+	
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">パスワード</span><br />
+	<input soy:id="password" type="password" name="" value="" size="7" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" /><br />
+	</p>
+
+	<p>
+	<span style="font-size:x-small;font-weight:bold;">パスワード再入力</span><br />
+	<input soy:id="confirm" type="password" name="" value="" size="7" style="-wap-input-format:&quot;*&lt;ja:n&gt;&quot;;-wap-input-format:*N;" /><br />
+	</p>
+
+	<!-- ボタン配置 -->
+	<p>
+		<input type="submit" name="reset" value="登録" />
+	</p>
+				
+</form soy:id="form">
+
+<!-- soy:display="has_error" -->
+<p><a soy:id="remind_link">パスワード再設定手続きはこちら</a></p>
+<!-- /soy:display="has_error" -->
+
+<p><a soy:id="return_link">戻る</a></p>

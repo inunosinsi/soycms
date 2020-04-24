@@ -1,0 +1,37 @@
+<div class="alert alert-info" role="alert">注文番号『<!-- soy:id="purchase_number" /-->』の買取履歴詳細</div>
+
+<table class="table table-striped">
+	<col width="180px">
+	<tbody>
+		<tr>
+			<th>買取番号</th>
+			<td soy:id="purchase_number*">soy-1234</td>
+		</tr>
+		<tr>
+			<th>お問い合わせ時刻</th>
+			<td soy:id="inquiry_date">2019年12月24日</td>
+		</tr>
+		<tr>
+			<th>状態</th>
+			<td soy:id="status">新規受付</td>
+		</tr>
+		<!-- soy:display="assessment" -->
+		<tr>
+			<th>査定書</th>
+			<td><a soy:id="assessment_file_link" class="btn btn-info">確認</a></td>
+		</tr>
+		<!-- /soy:display="assessment" -->
+		<tr>
+			<td colspan="2">
+				<div class="alert alert-warning">詳細</div>
+				<!-- soy:id="inquiry_content" -->お問い合わせ内容<!-- /soy:id="inquiry_content" -->
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<!-- soy:display="inquiry" -->
+<div class="text-center mt-5">
+	<a href="" soy:id="inquiry_link" class="btn btn-primary btn-lg">お問い合わせ</a>
+</div>
+<!-- /soy:display="inquiry" -->

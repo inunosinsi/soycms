@@ -1,0 +1,30 @@
+<section id="cart_procedure">
+    <h1 class="cart_txt">メールアドレスの変更</h1>
+    <section class="soycart_narrow">
+
+		<!-- soy:id="before" -->
+		<form soy:id="form">
+			<table class="soycart_form">
+                <tr>
+                    <th nowrap scope="row">メールアドレス<span class="require"></span></th>
+                    <td>
+                        <!--p class="error">メールアドレスが正しく入力されていません。</p-->
+                        <input name="textfield2" type="text" id="textfield2" class="w300" soy:id="mailaddress">
+                        <span class="note">【半角英数】<br>
+                        <span class="exmpl">（例）info＠n-i-agroinformatics.com</span></span>
+                    </td>
+                </tr>
+            </table>
+            <p class="btn"><input type="submit" name="remind" class="btn btn-primary btn-lg" value="送信する"></p>
+		</form>
+		<!-- /soy:id="before" -->
+
+		<!-- soy:id="after" -->
+		<p>メールアドレスの変更のメールを送信しました。内容をご確認ください。</p>
+		<!-- /soy:id="after" -->
+
+		<p class="alC">
+			<a href="javascript:history.back();">戻る</a>
+		</p>
+	</section>
+</section>
