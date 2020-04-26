@@ -14,6 +14,10 @@ class CustomAliasPluginFormPage extends WebPage{
 				if(isset($_POST["custom_alias_prefix"])) $this->pluginObj->setPrefix($_POST["custom_alias_prefix"]);
 				if(isset($_POST["custom_alias_postfix"])) $this->pluginObj->setPostfix($_POST["custom_alias_postfix"]);
 
+				if(isset($_POST["IdCnf"])){
+					CustomAliasUtil::saveAdvancedConfig(CustomAliasUtil::MODE_ID, $_POST["IdCnf"]);
+				}
+
 				if(isset($_POST["RandomCnf"])){
 					CustomAliasUtil::saveAdvancedConfig(CustomAliasUtil::MODE_RANDOM, $_POST["RandomCnf"]);
 				}
@@ -66,6 +70,7 @@ class CustomAliasPluginFormPage extends WebPage{
 		parent::__construct();
 
 		self::_buildConfigForm();
+		self::_buildIdConfigForm();
 		self::_buildRandomConfigForm();
 		self::_buildChangeForm();
 	}
@@ -138,6 +143,22 @@ class CustomAliasPluginFormPage extends WebPage{
 				"label" => $l
 			));
 		}
+	}
+
+	private function _buildIdConfigForm(){
+		$cnf = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_ID);
+
+		$this->addInput("id_cnf_prefix", array(
+			"name" => "IdCnf[prefix]",
+			"value" => (isset($cnf["prefix"])) ? $cnf["prefix"] : "",
+			"style" =>"width:200px;"
+		));
+
+		$this->addInput("id_cnf_postfix", array(
+			"name" => "IdCnf[postfix]",
+			"value" => (isset($cnf["postfix"])) ? $cnf["postfix"] : "",
+			"style" =>"width:200px;"
+		));
 	}
 
 	private function _buildChangeForm(){

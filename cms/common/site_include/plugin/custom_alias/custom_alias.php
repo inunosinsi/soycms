@@ -21,7 +21,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.6"
+			"version"=>"1.7"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -78,10 +78,17 @@ class CustomAliasPlugin{
 	private function _generateAlias(Entry $entry, $mode){
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
-				if($entry->isEmptyAlias() || (is_numeric($entry->getId()) && $entry->getId() != $entry->getAlias())){
-				 	return $entry->getId();
+				$cnf = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_ID);
+				$alias = $entry->getId();
+				if(isset($cnf["prefix"]) && strlen($cnf["prefix"])){
+					$alias = $cnf["prefix"] . $alias;
 				}
-				break;
+
+				if(isset($cnf["postfix"]) && strlen($cnf["postfix"])){
+					$alias .= $cnf["postfix"];
+				}
+			 	return $alias;
+				
 			case CustomAliasUtil::MODE_HASH:
 				// @ToDo ハッシュ関数を選択できるようにしたい
 				return md5($entry->getTitle());
