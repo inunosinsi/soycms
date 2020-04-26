@@ -1,0 +1,44 @@
+table.button_table{
+	width:80%;
+	margin-right:auto;
+	margin-left:auto;
+	
+	border:none;
+}
+.button_table td{
+	background-color:white;
+	text-align:center;
+	border:none;
+}
+
+.column_box label{
+	font-weight: normal;
+}
+
+/* inquiry */
+#inquiry_list a{
+	text-decoration: none;
+}
+
+#inquiry_list td.checkbox{
+	width: 2em;
+}
+
+/* pager */
+.pager_item{
+	display:inline;
+}
+.pager_disable{
+	text-decoration:none;
+	cursor:normal;
+	color:gray;
+}
+.pager_current{
+	text-decoration:none;
+	cursor:normal;
+	font-weight:bold;
+	color:black;
+}
+.pager select{
+	margin :0;
+}

@@ -1,0 +1,372 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">フォーム - <span soy:id="form_name">フォームA</span></h1>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="inquiry.Form">戻る</a>
+				<a class="btn btn-default" soy:id="design_link">問い合わせ項目</a>
+				<a class="btn btn-default active" soy:id="config_link">設定</a>
+				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#previewModal">プレビュー</button>
+				<a class="btn btn-default" soy:id="template_link">SOY CMS連携</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default" id="config_form">
+			<div class="panel-heading">フォームの設定</div>
+			<div class="panel-body">
+				<form soy:id="config_form">
+					<div class="table-responsive">
+						<table class="table">
+							<tr>
+								<th>
+									フォーム名
+								</th>
+								<td>
+									<input class="form-control" soy:id="config_form_name" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>
+									フォームID
+								</th>
+								<td>
+									<input class="form-control" soy:id="config_form_id" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>
+									CAPCTHA(画像認証)を使用する
+								</th>
+								<td>
+									<input soy:id="config_notUseCaptcha" type="hidden" />
+									<input soy:id="config_isUseCaptcha" type="checkbox" />
+									<p class="alert alert-warning" soy:id="gd_disabled"><a href="http://www.php.net/manual/book.image.php">GD</a>が使えないため使用出来ません。</p><br>
+									<p class="alert alert-info" soy:display="enabledGoogleReCAPTCHA_v3"><a href="https://www.google.com/recaptcha/intro/v3.html" target="_blank" style="text-decoration:underline;">Google reCAPTCHA v3</a>が使用可能です。上記のチェックを外し、SOY CMS側もしくはSOY Shop側で<strong>Google reCAPTCHA v3</strong>プラグインを有効にします。</p>
+								</td>
+							</tr>
+							<!--tr>
+						<th>
+							スマートフォン設定
+						</th>
+						<td>
+							<input soy:id="config_notSmartPhone" type="hidden" />
+							<input soy:id="config_isSmartPhone" type="checkbox" />
+						</td>
+					</tr-->
+
+						</table>
+					</div>
+					<div class="text-center">
+						<input type="submit" name="config" class="btn btn-primary" value="保存">
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="panel panel-default" id="mail_form">
+			<div class="panel-heading">メールの送信設定</div>
+			<div class="panel-body">
+				<form soy:id="mail_form">
+					<div class="table-responsive">
+						<table class="table">
+							<tr>
+								<td colspan="2">管理者宛メールの設定</td>
+							</tr>
+							<tr>
+								<th>
+									送信可否
+								</th>
+								<td>
+									<input soy:id="config_notSendNotifyMail" type="hidden" />
+									<input soy:id="config_isSendNotifyMail" type="checkbox" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									追加の送信先
+								</th>
+								<td>
+									<input class="form-control" soy:id="config_administratorMailAddress" /><br />
+									<span class="small_message">「,」区切りで複数個入力できます。</span>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									件名
+								</th>
+								<td>
+									<input class="form-control" soy:id="config_notifyMailSubject" /><br />
+									<span class="small_message">
+										<!-- soy:id="replace_trackingnumber_text" -->#TRACKNUM#
+										<!-- /soy:id="replace_trackingnumber_text" -->などが使えます。</span>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									管理画面へのリンク
+								</th>
+								<td>
+									<input soy:id="config_notIncludeAdminURL" type="hidden" />
+									<input soy:id="config_isIncludeAdminURL" type="checkbox" />
+								</td>
+							</tr>
+							<tr>
+								<th>
+									返信先
+								</th>
+								<td>
+									<input soy:id="config_notReplyToUser" type="hidden" />
+									<input soy:id="config_isReplyToUser" type="checkbox" />
+								</td>
+							</tr>
+						</table>
+
+						<table class="table">
+							<tr>
+								<td colspan="2">ユーザー宛メールの設定</td>
+							</tr>
+							<tr>
+								<th>
+									送信可否
+								</th>
+								<td>
+									<input soy:id="config_notSendConfirmMail" type="hidden" />
+									<input soy:id="config_isSendConfirmMail" type="checkbox" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>送信元メールアドレス（個別）</th>
+								<td>
+									<input soy:id="config_fromAddress" class="form-control" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>送信元名称（個別）</th>
+								<td>
+									<input soy:id="config_fromAddressName" class="form-control" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>返信先メールアドレス（個別）</th>
+								<td>
+									<input soy:id="config_returnAddress" class="form-control" />
+								</td>
+							</tr>
+
+							<tr>
+								<th>返信先名称（個別）</th>
+								<td>
+									<input soy:id="config_returnAddressName" class="form-control" />
+								</td>
+							</tr>
+
+						</table>
+
+						<table class="table">
+							<tr>
+								<td colspan="2">お問い合わせ詳細内の返信設定</td>
+							</tr>
+							<tr>
+								<th>CC</th>
+								<td>
+									<input type="hidden" soy:id="config_noCcOnReplyForm">
+									<input type="checkbox" soy:id="config_isCcOnReplyForm">
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="text-center">
+						<input type="submit" name="mail" class="btn btn-primary" value="保存">
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="panel panel-default" id="message_form">
+			<div class="panel-heading">フォームのメッセージ設定</div>
+			<div class="panel-body">
+				<form soy:id="message_form">
+					<div class="table-responsive">
+						<table class="table">
+							<tr>
+								<th>説明</th>
+							</tr>
+							<tr>
+								<td>
+									<textarea soy:id="message_information" class="form-control"></textarea>
+								</td>
+							</tr>
+						</table>
+
+						<table class="table">
+							<tr>
+								<th>確認メッセージ</th>
+							</tr>
+							<tr>
+								<td>
+									<textarea soy:id="message_confirm" class="form-control"></textarea>
+								</td>
+							</tr>
+						</table>
+
+						<table class="table">
+							<tr>
+								<th>送信完了メッセージ</th>
+							</tr>
+							<tr>
+								<td>
+									<textarea soy:id="message_complete" class="form-control"></textarea>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="text-center">
+						<input name="message" type="submit" class="btn btn-primary" value="保存">
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="panel panel-default" id="confirmmail_form">
+			<div class="panel-heading">確認メール設定</div>
+			<div class="panel-body">
+				<form soy:id="confirmmail_form">
+					<div class="table-responsive">
+						<table class="table">
+							<tr>
+								<th>件名</th>
+								<td>
+									<input soy:id="confirmmail_title" class="form-control" />
+									<span class="small_message">
+										<!-- soy:id="replace_trackingnumber_text" -->#TRACKNUM#
+										<!-- /soy:id="replace_trackingnumber_text" -->などが使えます。</span>
+								</td>
+							</tr>
+						</table>
+
+						<table class="table">
+							<tr>
+								<th>本文</th>
+							</tr>
+							<tr class="last_row">
+								<td>
+									<input soy:id="confirmmail_notoutput_content" type="hidden" />
+									<input soy:id="confirmmail_isoutput_content" type="checkbox" />
+								</td>
+							</tr>
+							<tr>
+								<td>
+									お問い合わせ番号をメールの件名および本文で使用する：<input soy:id="replace_trackingnumber" type="input">
+								</td>
+							</tr>
+							<tr>
+								<th>ヘッダー</th>
+							</tr>
+							<tr class="last_row">
+								<td>
+									<textarea soy:id="confirmmail_header" class="form-control"></textarea>
+								</td>
+							</tr>
+							<tr>
+								<th>フッター</th>
+							</tr>
+							<tr>
+								<td>
+									<textarea soy:id="confirmmail_footer" class="form-control"></textarea>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="text-center">
+						<input name="confirmmail" type="submit" class="btn btn-primary" value="保存">
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="panel panel-default" id="design_form">
+			<div class="panel-heading">デザイン設定</div>
+			<div class="panel-body">
+				<form soy:id="design_form">
+					<div class="table-responsive">
+						<table class="table">
+							<tr>
+								<th>
+									デザイン
+								</th>
+								<td>
+									<select soy:id="design_theme" class="form-control"></select>
+								</td>
+							</tr>
+							<tr>
+								<th>
+									スタイルシート
+								</th>
+								<td>
+									<input soy:id="design_notoutput_stylesheet" type="hidden" />
+									<input soy:id="design_isoutput_stylesheet" type="checkbox" />
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="text-center">
+						<input name="design" type="submit" class="btn btn-primary" value="保存">
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="panel panel-default" id="connect_form">
+			<div class="panel-heading">SOY Shop連携</div>
+			<div class="panel-body">
+				<p class="alert alert-info" soy:display="check_version">SOY Shopのバージョンが1.8.0より古いため、連携機能は使えません</p>
+				<form soy:id="connect_form">
+					<div class="table-responsive">
+						<table class="table">
+							<tr>
+								<th>
+									SOY Shopの連携
+								</th>
+								<td>
+									ショップ名 :
+									<select soy:id="connect_sites" class="form-control">
+										<option value="0">連携しない</option>
+									</select><br />
+									※お問い合わせユーザの情報がSOY Shopの顧客名簿に登録されます。<br />(要SOY Mail連携)<br />
+									※SOY Shopの顧客情報を取得し、各カラムに値を挿入します。<br />(要SOY Shop連携)
+								</td>
+							</tr>
+						</table>
+
+						<div class="text-center">
+							<input name="connect" type="submit" class="btn btn-primary" value="保存">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- soy:id="preview_modal" /-->
+
+<style>textarea{padding:2px 5px;height:300px !important;}</style>

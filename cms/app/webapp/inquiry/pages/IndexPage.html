@@ -1,0 +1,104 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">新着</h1>
+
+<!-- soy:display="do_update" -->
+<div class="row">
+	<div class="col-lg-12">
+		<p class="alert-success" soy:display="do_db_update">データベースの変更を行いました。</p>
+		<p class="alert alert-info" soy:display="has_db_update">データベースの変更があります&nbsp;→&nbsp;<a soy:link="inquiry.Update">データベースのバージョンアップを行う</a></p>
+	</div>
+</div>
+<!-- /soy:display="do_update" -->
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">フォーム</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th class="short">ID</th>
+								<th class="middle">名前</th>
+								<th class="short">件数 (未読)</th>
+								<th class="long"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="form_list" -->
+							<tr>
+								<td soy:id="formId">FORM_A</td>
+								<td soy:id="name">フォームA</td>
+								<td><a soy:id="inquiry_link">10</a> <a soy:id="unread_inquiry_link">(10)</a></td>
+								<td>
+									<a soy:id="design_link">問い合わせ項目</a>&nbsp;&nbsp;<a soy:id="config_link">設定</a>
+								</td>
+							</tr>
+							<!-- /soy:id="form_list" -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form method="GET">
+					<div class="form-group">
+						<div class="form-inline">
+							<input type="text" class="form-control" soy:id="trackId"><input type="submit" class="btn btn-primary" value="詳細">
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">新着問い合わせ</div>
+			<div class="panel-body">
+				<div class="table-responsive" id="inquiry_list">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th soy:id="form_name_th">フォーム</th>
+								<th>受付番号</th>
+								<th>内容</th>
+								<th>投稿日</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="inquiry_list" -->
+							<tr soy:id="inquiry_item">
+								<td soy:id="form_name_td"><a soy:id="form_name">フォームA</a></td>
+								<td><a soy:id="traking_number">1</a></td>
+								<td><a soy:id="content">あああああああああああああ</a></td>
+								<td><span soy:id="create_date"></span></td>
+							</tr>
+							<!-- /soy:id="inquiry_list" -->
+
+							<!-- soy:display="no_inquiry" -->
+							<tr>
+								<td colspan="4" soy:id="no_inquiry_text">
+									新着の問い合わせはありません。
+								</td>
+							</tr>
+							<!-- /soy:display="no_inquiry" -->
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!--
+	<hr />
+
+	<div style="margin-bottom:10px;">
+		<a soy:link="inquiry.Template">テンプレートの編集</a>
+	</div>
+ -->
+
+		</div>
+	</div>
+</div>

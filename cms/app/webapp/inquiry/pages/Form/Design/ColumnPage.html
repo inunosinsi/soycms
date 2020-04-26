@@ -1,0 +1,126 @@
+<style type="text/css">
+.column_box{
+	border:solid 1px black;
+	margin-bottom:8px;
+}
+.column_box table{
+	width:100%;
+	height:100%;
+	border-collapse:collapse;
+	margin:0;
+}
+#require_cell_title, .require_cell{
+	width:30px;border-right:solid 1px gray;text-align:center;vertical-align:middle;
+}
+#item_name_title{
+	width:10em;border-right:solid 1px gray;text-align:center;vertical-align:middle;
+}
+.require_cell{
+	cursor:pointer;
+}
+td.operation{
+	width:80px;background-color:#CCFFCC;
+}
+td.configure{
+	border-top:solid 1px gray;
+}
+body{
+	background-image: none;
+}
+.column_box input{
+	display:inline;
+	vertical-align:middle;
+}
+.column_box input[type="text"]{
+	border:solid 1px #666;
+	margin-right:3px;
+	margin-left:3px;
+}
+.column_hash{
+	display:none;
+}
+</style>
+
+<div style="padding:0px 20px;margin-top:10px;">
+
+	<div class="column_box">
+		<table>
+		<tr>
+			<th id="require_cell_title">必須</th>
+			<th id="item_name_title" style="width:10em;">項目名</th>
+			<th>名前</th>
+			<th style="width:10em;border-left:solid 1px #bbb;">SOY Mail連携</th>
+			<th style="width:10em;border-left:solid 1px #bbb;">SOY Shop連携</th>
+		</tr>
+
+		</table>
+	</div>
+
+	<!-- soy:id="column_list" -->
+	<form soy:id="column_form">
+	<div class="column_box">
+		<a class="column_hash" soy:id="column_hash"></a>
+		<table>
+			<tr>
+				<td rowspan="2" class="require_cell" soy:id="require_cell">
+					<input soy:id="not_require" type="hidden">
+					<input soy:id="require" type="checkbox">
+				</td>
+				<td style="width:10em;border-right:solid 1px #bbb;">
+					<span soy:id="column_type">一行テキスト</span>
+				</td>
+				<td>
+					<input soy:id="label" class="text" type="text" value="件名" />
+				</td>
+				<td style="width:10em;border-left:solid 1px #bbb;">
+					<select soy:id="linkage_soymail" style="width:8em;"></select>
+				</td>
+				<td style="width:10em;border-left:solid 1px #bbb;">
+					<select soy:id="linkage_soyshop"　style="width:8em;"></select>
+				</td>
+			</tr>
+			<tr>
+				<td class="configure" colspan="4">
+					<div soy:id="configure_wrapper">
+
+						<div soy:id="configure" style="margin:8px 0;"></div>
+						<div style="margin:8px 0;" soy:id="is_tr_property">
+							trの属性:<input type="text" soy:id="tr_property" style="width: 90%;"><br>
+							※記述例：class="sample" title="サンプル" placeholder="" pattern=""
+						</div>
+						<div style="margin:8px 0;">
+							注釈:<input type="text" soy:id="annotation" style="width: 90%;"/>
+						</div>
+						<span soy:id="replace_wrapper">
+							メールで引用:<input type="input" name="replace" value="#NAME#" soy:id="replace" style="margin-right:10px;margin-left:10px;" />
+						</span>
+						<input type="submit" name="update" value="保存" style="margin-right:50px;margin-left:50px;" />
+						<input type="submit" name="remove" value="削除" />
+					</div soy:id="configure_wrapper">
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	</form soy:id="column_form">
+	<!-- /soy:id="column_list" -->
+</div>
+
+<script type="text/javascript">
+$(function(){
+    $("#column_fr").css("height",document.body.scrollHeight + 50 + "px");
+});
+function changeColor(cell, input){
+	$(input).prop("checked",!$(input).prop("checked"));
+	var css_attr = ($(input).prop("checked")) ? $(cell).attr("checkColor") : "white";
+	$(cell).css("backgroundColor",css_attr);
+};
+
+function changeRepalce(div,check){
+    if($(check).prop("checked")){
+		$(div).css("visibility","visible");
+	}else{
+		$(div).attr("visibility","hidden");
+	}
+};
+</script>
