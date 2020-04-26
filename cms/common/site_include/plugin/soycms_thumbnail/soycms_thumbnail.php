@@ -325,8 +325,8 @@ class SOYCMSThumbnailPlugin{
 			$htmls[] = "<input type=\"button\" class=\"btn btn-warning\" onclick=\"clearTrimmingForm();\" value=\"クリア\">";
 			$htmls[] = "<a href=\"#\" onclick=\"return preview_thumbnail_plugin(\$('#jcrop_trimming_field'));\" class=\"btn btn-info\">Preview</a>";
 		}
-		$htmls[] = "<br><span style=\"display:block;margin-top:10px;\">アスペクト比:width:<input type=\"number\" id=\"ratio_w\" class=\"form-control\" name=\"jcrop_ratio_w\" value=\"". (int)$config["ratio_w"] . "\">&nbsp;";
-		$htmls[] = "height:<input type=\"number\" id=\"ratio_h\" class=\"form-control\" name=\"jcrop_ratio_h\" value=\"" . (int)$config["ratio_h"] . "\"></span>";
+		$htmls[] = "<br><span style=\"display:block;margin-top:10px;\">アスペクト比:width:<input type=\"number\" id=\"ratio_w\" class=\"form-control\" name=\"jcrop_ratio_w\" value=\"". (int)$config["ratio_w"] . "\" style=\"width:80px;\">&nbsp;";
+		$htmls[] = "height:<input type=\"number\" id=\"ratio_h\" class=\"form-control\" name=\"jcrop_ratio_h\" value=\"" . (int)$config["ratio_h"] . "\" style=\"width:80px;\"></span>";
 		$htmls[] = "</td>";
 		$htmls[] = "</tr>";
 
@@ -348,9 +348,9 @@ class SOYCMSThumbnailPlugin{
 
 		$altObject = (isset($objects["soycms_thumbnail_plugin_alt"])) ? $objects["soycms_thumbnail_plugin_alt"] : new EntryAttribute();
 
-		$htmls[] = "<br /><span style=\"display:block;margin-top:10px;\">リサイズ:width:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_w\" value=\"" . (int)$config["resize_w"] . "\">&nbsp;";
-		$htmls[] = "height:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_h\" value=\"" . (int)$config["resize_h"] . "\"></span><br />";
-    	$htmls[] = "<span style=\"display:block;\">alt:<input type=\"text\" class=\"form-control\" name=\"jcrop_thumbnail_alt\" value=\"" . $altObject->getValue() . "\" style=\"width:50%;\"></span>";
+		$htmls[] = "<br /><span style=\"display:block;margin-top:10px;\">リサイズ:width:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_w\" value=\"" . (int)$config["resize_w"] . "\" style=\"width:100px;\">&nbsp;";
+		$htmls[] = "height:<input type=\"number\" class=\"form-control\" name=\"jcrop_resize_h\" value=\"" . (int)$config["resize_h"] . "\" style=\"width:100px;\"></span><br />";
+    	$htmls[] = "<span style=\"display:block;\">alt:<input type=\"text\" class=\"form-control\" name=\"jcrop_thumbnail_alt\" value=\"" . $altObject->getValue() . "\" style=\"width:40%;\"></span>";
 		$htmls[] = "</td>";
 		$htmls[] = "</tr>";
 		$htmls[] = "</table></div>";
