@@ -61,7 +61,7 @@ class ZeroSaitodevPlugin{
 					$html[] = "<ul class=\"soycms_news\">";
 					for($i = 0; $i < count($entries->entry); $i++){
 						$entry = $entries->entry[$i];
-						$html[] = "<li>" . $entry->create_date . "&nbsp;&nbsp;&nbsp;<a href=\"" . $entry->url . "\" target=\"_blank\">" . $entry->entry_title . "</a></li>";
+						$html[] = "<li>" . $entry->create_date . "&nbsp;&nbsp;&nbsp;<a href=\"" . $entry->url . "\" target=\"_blank\" rel=\"noopener\">" . $entry->entry_title . "</a></li>";
 					}
 					$html[] = "</ul>";
 				}
