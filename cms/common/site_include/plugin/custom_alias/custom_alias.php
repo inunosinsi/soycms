@@ -21,7 +21,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.7"
+			"version"=>"1.9"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -88,7 +88,7 @@ class CustomAliasPlugin{
 					$alias .= $cnf["postfix"];
 				}
 			 	return $alias;
-				
+
 			case CustomAliasUtil::MODE_HASH:
 				// @ToDo ハッシュ関数を選択できるようにしたい
 				return md5($entry->getTitle());
@@ -124,17 +124,8 @@ class CustomAliasPlugin{
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
 			case CustomAliasUtil::MODE_HASH:
-				$alias = CustomAliasUtil::getAliasById($entryId);
-				if(!strlen($alias)) return "";
-				//確認用のURLだけ表示しておく
-				$html = array();
-				$html[] = "<div class=\"form-group\">";
-				$html[] = "<label for=\"custom_alias_input\">カスタムエイリアス</label><br>";
-				$html[] = $entryPageUri . $alias . " ";
-				$html[] = "<a href=\"".htmlspecialchars($entryPageUri.rawurlencode($alias), ENT_QUOTES, "UTF-8")."\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-primary\">確認</a>";
-				$html[] = "</div>";
-
-				return implode("\n", $html);
+				SOY2::import("site_include.plugin.custom_alias.component.CustomAliasConfirmUrlComponent");
+				return CustomAliasConfirmUrlComponent::buildForm($entryId, $entryPageUri);
 			default:
 				SOY2::import("site_include.plugin.custom_alias.component.CustomAliasFormComponent");
 				return CustomAliasFormComponent::buildForm($mode, $entryId, $entryPageUri);
