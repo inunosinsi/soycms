@@ -15,12 +15,12 @@
 </ul>
 
 <ul id="top_menu" class="nav navbar-top-links navbar-right hidden-xs">
-	<li soy:id="display_ext_link"><a href="?ext_mode" soy:id="ext_link"><i class="fa fa-exchange fa-fw"></i>画面切替</a></li>
+	<li soy:display="display_ext_link"><a href="?ext_mode" soy:id="ext_link"><i class="fa fa-exchange fa-fw"></i>画面切替</a></li>
 	<li soy:display="for_default_user"><a href="#" soy:id="delete_cache_link"><i class="fa fa-refresh fa-fw"></i>キャッシュ削除</a></li>
 
 	<li><a soy:id="account_link"  onclick="return common_click_to_layer(this,{header:'アカウント情報'});" href="/admin/index.php/Account"><i class="fa fa-user fa-fw"></i>管理者情報（<!-- soy:id="adminname" /-->）</a></li>
-	<li soy:id="only_for_site_admin"><a soy:link="SiteConfig"><i class="fa fa-gear fa-fw"></i>サイト設定</a></li>
-	<li soy:id="show_admin_link"><a soy:id="admin_link"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>
+	<li soy:display="only_for_site_admin"><a soy:link="SiteConfig"><i class="fa fa-gear fa-fw"></i>サイト設定</a></li>
+	<li soy:display="admin_link"><a soy:id="admin_link"><i class="fa fa-home fa-fw"></i>CMS管理</a></li>
 	<li><a soy:link="Login.Logout" onclick="return confirm('ログアウトしますか？');"><i class="fa fa-sign-out fa-fw"></i>ログアウト</a></li>
 </ul>
 <!-- /.navbar-top-links -->
