@@ -40,11 +40,14 @@ class UpperMenuPage extends CMSHTMLPageBase{
 		));
 
 		//記事管理者には表示しないもの
-		DisplayPlugin::toggle("only_for_site_admin", UserInfoUtil::hasSiteAdminRole());
+		$this->addModel("only_for_site_admin", array(
+			"visible" => UserInfoUtil::hasSiteAdminRole(),
+		));
 
 		//config.ext.phpがあり、extモード用のディレクトリがあることを確認してからリンクを表示する
-		DisplayPlugin::toggle("display_ext_link", (file_exists(dirname(SOY2HTMLConfig::PageDir()) . "/config.ext.php") && defined("EXT_MODE_DERECTORY_NAME") && file_exists(dirname(SOY2HTMLConfig::PageDir()) . "/" . EXT_MODE_DERECTORY_NAME)));
-
+		$this->addModel("display_ext_link", array(
+			"visible" => file_exists(dirname(SOY2HTMLConfig::PageDir()) . "/config.ext.php") && defined("EXT_MODE_DERECTORY_NAME") && file_exists(dirname(SOY2HTMLConfig::PageDir()) . "/" . EXT_MODE_DERECTORY_NAME),
+		));
 		$args = SOY2PageController::getArguments();
 		$this->addLink("ext_link", array(
 			"link" => (count($args)) ? SOY2PageController::createLink(SOY2PageController::getRequestPath().".".implode(".", $args))."?ext_mode" : null,
@@ -65,10 +68,12 @@ class UpperMenuPage extends CMSHTMLPageBase{
 		));
 
 		//CMS管理へのリンク
-		$this->addLink("admin_link", array(
+		$this->createAdd("admin_link","HTMLLink",array(
 				"link" => SOY2PageController::createRelativeLink("../admin/"),
 		));
-		DisplayPlugin::toggle("admin_link", (!defined("SOYCMS_ASP_MODE") && !UserInfoUtil::hasOnlyOneRole()));
+		$this->addModel("show_admin_link","HTMLLink",array(
+				"visible" => !defined("SOYCMS_ASP_MODE") && !UserInfoUtil::hasOnlyOneRole()
+		));
 
 		/* サイドバーの表示・非表示 */
 		$hideSideMenu = ( isset($_COOKIE["soycms-hide-side-menu"]) && $_COOKIE["soycms-hide-side-menu"] == "true" );

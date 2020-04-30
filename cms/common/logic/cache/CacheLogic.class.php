@@ -30,6 +30,6 @@ class CacheLogic extends SOY2LogicBase {
 		}
 
 		//リダイレクト
-		SOY2PageController::jump("");
+		//SOY2PageController::jump("");
 	}
 }
