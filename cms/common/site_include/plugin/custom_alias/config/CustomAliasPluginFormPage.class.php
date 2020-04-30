@@ -143,6 +143,18 @@ class CustomAliasPluginFormPage extends WebPage{
 				"label" => $l
 			));
 		}
+
+		//ラベル毎の設定
+		$logic = SOY2Logic::createInstance("site_include.plugin.custom_alias.logic.RandomAliasLogic");
+		$list = $logic->getLabelList();
+		DisplayPlugin::toggle("random_labels", count($list));
+
+		$labelCheckedList = (isset($cnf["label"]) && is_array($cnf["label"])) ? $cnf["label"] : array();
+
+		//name="RandomCnf[label][]"でチェックボックスを作る
+		$this->addLabel("random_checkbox", array(
+			"html" => (count($list)) ? $logic->buildLabelCheckboxes($list, $labelCheckedList) : ""
+		));
 	}
 
 	private function _buildIdConfigForm(){
