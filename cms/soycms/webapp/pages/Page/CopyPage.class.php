@@ -2,7 +2,7 @@
 
 class CopyPage extends CMSWebPageBase{
 
-    function __construct($args) {
+    function CopyPage($args) {
 
     	if(soy2_check_token()){
 	    	$id = $args[0];
