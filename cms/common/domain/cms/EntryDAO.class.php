@@ -82,6 +82,8 @@ abstract class EntryDAO extends SOY2DAO{
 		}
 		$binds[":cdate"] += $i;
 
+		//プラグインによっては読み込まれていないことがある
+		if(!class_exists("UserInfoUtil")) SOY2::import("util.UserInfoUtil");
 		$binds[':author'] = UserInfoUtil::getUserName();
 		$binds[':udate'] = time();
 

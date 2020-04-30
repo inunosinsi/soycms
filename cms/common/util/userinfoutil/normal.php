@@ -192,7 +192,7 @@ class UserInfoUtil implements IUserInfoUtil{
      * @param isRealpath(=false) trueならば場所を返す
      */
     public static function getSiteDirectory($realpath = false){
-		return self::getSite()->getPath();
+    	return self::getSite()->getPath();
     }
 
     /**
