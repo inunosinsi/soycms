@@ -256,7 +256,8 @@ class SOYShopPageBase extends WebPage{
     function getPageUrl($isIncludeArguments = false){
         $url = soyshop_get_page_url($this->getPageObject()->getUri());
         if($isIncludeArguments){
-            $url .= "/" . implode($this->getArguments(), "/");
+            //$url .= "/" . implode($this->getArguments(), "/");
+			$url .= "/" . implode("/", $this->getArguments());
         }
         return $url;
     }
