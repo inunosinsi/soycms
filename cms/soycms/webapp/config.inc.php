@@ -102,8 +102,4 @@ if(!UserInfoUtil::isLoggined()){
 }
 
 //update event
-SOY2DAOConfig::setUpdateQueryEvent(function($sql,$binds) {
-	//sqlでAutoLoginがある場合は処理を止める
-	if(is_numeric(strpos($sql, "AutoLogin"))) return;
-	touch(UserInfoUtil::getSiteDirectory().".db/".SOYCMS_DB_TYPE.".db");
-});
+SOY2DAOConfig::setUpdateQueryEvent(function($sql,$binds) { touch(UserInfoUtil::getSiteDirectory().".db/".SOYCMS_DB_TYPE.".db"); });
