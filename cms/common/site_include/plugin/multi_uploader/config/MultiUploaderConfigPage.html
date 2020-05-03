@@ -1,0 +1,43 @@
+<div class="alert alert-info">記事編集画面で画像を複数枚アップロードできるフォームを設置します。</div>
+
+<h3>テンプレートへの記述例(ブロック内、p_block:id="entry_list"とp_block:id="entry"で使用できます)</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- p_block:id="multi_uploader_image_list" --&gt;
+&lt;img cms:id="image"&gt;
+&lt;!-- /p_block:id="multi_uploader_image_list" --&gt;
+</pre>
+<br>
+<h3 class="mt-3">im.phpを利用する場合</h3>
+<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+&lt;!-- p_block:id="multi_uploader_image_list" --&gt;
+&lt;img src="/<!-- soy:id="site_id" /-->/im.php?src=&lt;!-- cms:id="image_path" /--&gt;&width=150"&gt;
+&lt;!-- /p_block:id="multi_uploader_image_list" --&gt;
+</pre>
+<div style="margin:5px 0 0 35px;">※im.phpに関しては<a href="https://saitodev.co/article/529" target="_blank" rel="noopener">SOY CMSで表示直前で画像のリサイズ表示を行う - saitodev.co</a>をご覧ください。</div>
+<h3 class="mt-3">p_block:id="multi_uploader_image_list"内で使用できるcms:id</h3>
+<table class="table table-striped" style="width:600px;">
+	<thead>
+		<tr>
+			<th>cms:id</th>
+			<th>タグ</th>
+			<th>内容</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>image</td>
+			<td>img</td>
+			<td>記事編集画面でアップロードした画像を出力します。</td>
+		</tr>
+		<tr>
+			<td>image_path</td>
+			<td>すべて</td>
+			<td>画像のパスを出力します。</td>
+		</tr>
+		<tr>
+			<td>image_link</td>
+			<td>a</td>
+			<td>画像のリンクを出力します。</td>
+		</tr>
+	</tbody>
+</table>

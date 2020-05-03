@@ -29,12 +29,16 @@ class CustomAliasPlugin{
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
-			SOY2::import("site_include.plugin.custom_alias.util.CustomAliasUtil");
-			CMSPlugin::setEvent("onEntryCreate", self::PLUGIN_ID, array($this, "onEntryUpdate"));
-			CMSPlugin::setEvent("onEntryUpdate", self::PLUGIN_ID, array($this, "onEntryUpdate"));
-			CMSPlugin::setEvent("onEntryCopy", self::PLUGIN_ID, array($this, "onEntryCopy"));
-			CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Entry.Detail", array($this, "onCallCustomField"));
-			CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Blog.Entry", array($this, "onCallCustomField_inBlog"));
+			if(defined("_SITE_ROOT_")){
+				//無駄な処理を避けて、サイトの表示速度の高速化
+			}else{
+				SOY2::import("site_include.plugin.custom_alias.util.CustomAliasUtil");
+				CMSPlugin::setEvent("onEntryCreate", self::PLUGIN_ID, array($this, "onEntryUpdate"));
+				CMSPlugin::setEvent("onEntryUpdate", self::PLUGIN_ID, array($this, "onEntryUpdate"));
+				CMSPlugin::setEvent("onEntryCopy", self::PLUGIN_ID, array($this, "onEntryCopy"));
+				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Entry.Detail", array($this, "onCallCustomField"));
+				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Blog.Entry", array($this, "onCallCustomField_inBlog"));
+			}
 		}
 	}
 
