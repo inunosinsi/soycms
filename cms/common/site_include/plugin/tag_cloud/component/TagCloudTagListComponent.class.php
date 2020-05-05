@@ -10,6 +10,11 @@ class TagCloudTagListComponent extends HTMLList {
 			"link" => (is_numeric($key)) ? $this->url . "?tagcloud=" . $key : ""
 		));
 
+		$this->addLabel("tag_cloud_tag_get_param", array(
+			"soy2prefix" => "cms",
+			"text" => (is_numeric($key)) ? "?tagcloud=" . $key : ""
+		));
+
 		$this->addLabel("tag_cloud_tag_word", array(
 			"soy2prefix" => "cms",
 			"text" => (is_string($entity)) ? $entity : ""

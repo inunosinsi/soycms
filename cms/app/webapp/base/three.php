@@ -31,8 +31,6 @@
 <?php CMSApplication::printLink(); ?>
 <script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery/jquery.min.js?1510124446" type="text/JavaScript" charset="utf-8"></script>
 <script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.js?1510124446" type="text/JavaScript" charset="utf-8"></script>
-</head>
-
 <?php if($hideSideMenu) { ?>
 <style type="text/css">
 @media (min-width: 768px) {
@@ -42,10 +40,9 @@
 }
 </style>
 <?php } ?>
-
+</head>
 
 <body>
-
 	<div id="wrapper">
 		<!-- Navigation -->
 		<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0;">			<div class="navbar-header">
