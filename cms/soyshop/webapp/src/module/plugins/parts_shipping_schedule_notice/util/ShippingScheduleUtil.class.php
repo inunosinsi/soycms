@@ -30,7 +30,7 @@ class ShippingScheduleUtil {
 
 	public static function buildUsabledReplaceWordsList(){
 		$html = array();
-		$html[] = "<table class=\"form_list\">";
+		$html[] = "<table class=\"table table-striped\">";
 		$html[] = "<caption>使用できる置換文字列</caption>";
 		$html[] = "<thead><tr><th>置換文字列</th><th>種類</th></tr></thead>";
 		$html[] = "<tbody>";

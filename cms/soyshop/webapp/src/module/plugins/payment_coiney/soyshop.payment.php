@@ -21,7 +21,7 @@ class CoineyPaymentModule extends SOYShopPayment{
 
 	function getName(){
 		$config = CoineyUtil::getConfig();
-		if($config["sandbox"] == 1){
+		if(isset($config["sandbox"]) && $config["sandbox"] == 1){
 			return "Coineyペイジ(テストモード)で支払い";
 		}
 		return "クレジットカード支払い";

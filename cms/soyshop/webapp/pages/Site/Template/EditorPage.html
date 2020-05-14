@@ -1,70 +1,78 @@
-<h1>
-	<!-- soy:id="template_name" /--> - テンプレート編集
-	<span class="navi">
-		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Template">テンプレート管理</a> &gt; テンプレート編集</span>
-</h1>
+<h2><!-- soy:id="template_name" /--> - テンプレート編集</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="Site">サイト管理</a></li>
+		<li><a soy:link="Site.Template">テンプレート管理</a></li>
+		<li class="active">テンプレート編集</li>
+	</ol>
+</nav>
 
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				編集
+				<!-- soy:display="custom_template" -->
+				<small class="pull-right">
+					<a soy:id="page_link" class="btn btn-default btn-xs">ページ詳細</a>
+				</small>
+				<!-- /soy:display="custom_template" -->
+			</div>
 
-<div class="block">
-	<div class="block_title">
-		<h2>編集</h2>
+			<div class="panel-body">
+				<div class="alert alert-success" soy:display="updated">更新しました</div>
+				<div class="alert alert-success" soy:display="success">実行しました</div>
 
-		<!-- soy:id="is_custom_template" -->
-		<div class="block_title_right">
-			<a soy:id="page_link" class="button">ページ詳細</a>
+				<form soy:id="update_form" id="main_form">
+					<div class="form-group">
+						<label for="">テンプレート名</label>
+						<input class="form-control" type="text" soy:id="template_name_input" />&nbsp;&nbsp;&nbsp;
+						<a soy:id="copy_template" class="btn btn-default">フォームの外出し</a>
+					</div>
+
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<caption><!-- soy:id="template_path" /-->&nbsp;<a soy:id="save_template_button" class="btn btn-default btn-sm">テンプレートの保存</a></caption>
+							<tr>
+								<td>
+									<textarea id="template_editor" class="editor form-control" soy:id="template_content"></textarea>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="text-center">
+						<input type="submit" class="btn btn-primary btn-lg" value="保存">
+					</div>
+				</form>
+			</div>
 		</div>
-		<!-- /soy:id="is_custom_template" -->
-	</div>
-
-	<div class="block_body">
-
-		<p class="notice" soy:display="updated">更新しました</p>
-		<p class="notice" soy:display="success">実行しました</p>
-
-		<form soy:id="update_form" id="main_form">
-		<dl class="form center">
-				<dt>テンプレート名</dt>
-				<dd>
-					<input class="title" type="text" soy:id="template_name_input" />&nbsp;&nbsp;&nbsp;
-					<a soy:id="copy_template" class="button">フォームの外出し</a>
-				</dd>
-		</dl>
-			
-		<span class="template_button"><a soy:id="save_template_button" class="button">テンプレートの保存</a></span>
-		<table class="form_list">
-			<caption soy:id="template_path">HTML</caption>
-			<tr>
-				<td>
-					<textarea id="template_editor" class="editor" soy:id="template_content"></textarea>
-				</td>
-			</tr>
-		</table>
-
-		<p class="pageBtn">
-			<input type="submit" value="保存" />
-		</p>
-
-		</form>
 	</div>
 </div>
 
-<!-- soy:id="show_tag_sample_list" -->
-<h1>使用できるタグ</h1>
-<div class="block">
-	<!-- soy:id="tag_sample_list" -->
-	<h4><a soy:id="tag_link" class="toggle_link">block:id="hogehoge"</a></h4>
-	<div soy:id="sample_area">
-		<!-- soy:id="tag" /-->
-		<!-- soy:id="sample" /-->
+<!-- soy:display="show_tag_sample_list" -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">使用できるタグ</div>
+			<div class="panel-body">
+				<!-- soy:id="tag_sample_list" -->
+				<h4><a soy:id="tag_link" class="toggle_link">block:id="hogehoge"</a></h4>
+				<div soy:id="sample_area">
+					<!-- soy:id="tag" /-->
+					<!-- soy:id="sample" /-->
+				</div>
+				<!-- /soy:id="tag_sample_list" -->
+			</div>
+		</div>
 	</div>
-	<!-- /soy:id="tag_sample_list" -->
 </div>
-<!-- /soy:id="show_tag_sample_list" -->
+<!-- /soy:display="show_tag_sample_list" -->
+
 <style type="text/css">
 #template_editor{
-	height:400px;
+	height:600px;
 }
-
 </style>
 
 <script src="./js/tools/template_editor.js"></script>

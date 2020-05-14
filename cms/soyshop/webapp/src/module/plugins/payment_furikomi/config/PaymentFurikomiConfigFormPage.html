@@ -1,26 +1,28 @@
-<p class="notice" soy:display="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<div class="table_container">
-	<form method="post">
-	
-		<dl>
-			<dt>振込先情報<span class="option">（#ACCOUNT#で他で使用可能）</span></dt>
-			<dd>
-				<textarea class="minieditor" soy:id="account"></textarea>
-			</dd>
-			<dt>支払い方法選択時の文言<span class="option">（HTML可）</span></dt>
-			<dd>
-				<textarea class="editor" soy:id="text"></textarea>
-			</dd>
-			<dt>メールの文章</dt>
-			<dd>
-				<textarea class="editor" soy:id="mail"></textarea>
-			</dd>
-		</dl>
-	
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
-		
-	</form>
-</div>
+<form method="post">
+	<div class="form-group">
+		<label>振込先情報<span class="option">（#ACCOUNT#で他で使用可能）</span></label>
+		<textarea class="minieditor form-control" soy:id="account"></textarea>
+	</div>
+
+	<div class="form-group">
+		<label>支払い方法選択時の文言<span class="option">（HTML可）</span></label>
+		<textarea class="editor form-control" soy:id="text"></textarea>
+	</div>
+
+	<div class="form-group">
+		<label>メールの文章</label>
+		<textarea class="editor form-control" soy:id="mail"></textarea>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>
+
+<style>
+textarea{
+	height:200px !important;
+}
+</style>

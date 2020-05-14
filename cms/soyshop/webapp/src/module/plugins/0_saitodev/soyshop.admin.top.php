@@ -52,7 +52,7 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 			if(!is_bool($xml) && property_exists($xml, "entries")){
 				$entries = $xml->entries;
 				if(property_exists($entries, "entry") && count($entries->entry)){
-					$html[] = "<div class=\"notice always\">下記で紹介している機能を使用する場合はSOY Shopのバージョンアップを行って下さい。最新版のダウンロードは<a href=\"https://saitodev.co/soycms/soyshop\" target=\"_blank\" style=\"text-decoration:underline;\">こちら</a>から</div>";
+					$html[] = "<div class=\"alert alert-info\">下記で紹介している機能を使用する場合はSOY Shopのバージョンアップを行って下さい。最新版のダウンロードは<a href=\"https://saitodev.co/soycms/soyshop\" target=\"_blank\" rel=\"noopener\" style=\"text-decoration:underline;\">こちら</a>から</div>";
 					$html[] = "<ul class=\"soyshop_news\">";
 					for($i = 0; $i < count($entries->entry); $i++){
 						$entry = $entries->entry[$i];
@@ -67,7 +67,7 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 		}
 
 		//記事一覧へのリンク
-		$html[] = "<div class=\"soyshop_news alR\"><a href=\"https://saitodev.co/category/SOY_Shop\" target=\"_blank\">SOY Shopの記事をもっと読む</a></div>";
+		$html[] = "<div class=\"soyshop_news text-center\"><a href=\"https://saitodev.co/category/SOY_Shop\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-default\">SOY Shopの記事をもっと読む</a></div>";
 		$html[] = "<style>" . file_get_contents(dirname(__FILE__) . "/css/style.css") . "</style>";
 
 		return implode("\n", $html);

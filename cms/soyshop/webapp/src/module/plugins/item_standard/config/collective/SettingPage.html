@@ -1,22 +1,20 @@
-<div class="alR">
-	<a class="button" soy:link="Config.Detail?plugin=item_standard">商品規格一覧</a>
+<div>
+	<a class="btn btn-default btn-sm" soy:link="Config.Detail?plugin=item_standard">商品規格一覧</a>
 </div>
 
 <br>
 
-<div class="block_body clearfix">
 
-	<p class="notice" soy:display="updated">
-		更新しました
-	</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
-	<dl>
-		<dt class="search_btn_dt">
-			検索する
-		</dt>
-		<div class="search_area_dd" soy:id="search_area">
-			<form soy:id="search_form">
-				<table class="form_table">
+<dl>
+	<dt class="search_btn_dt">
+		検索する
+	</dt>
+	<div class="search_area_dd" soy:id="search_area">
+		<form soy:id="search_form">
+			<div class="table-responsive">
+				<table class="table table-striped">
 					<tr>
 						<th>商品名</th>
 						<td><input type="search" soy:id="search_item_name"></td>
@@ -37,9 +35,11 @@
 						</td>
 					</tr>
 				</table>
-				
-				<!-- soy:display="custom_search_field" -->
-				<table class="form_table">
+			</div>
+
+			<!-- soy:display="custom_search_field" -->
+			<div class="table-responsive">
+				<table class="table table-striped">
 					<!-- soy:id="form_list" -->
 					<tr>
 						<th soy:id="label" nowrap></th>
@@ -47,23 +47,23 @@
 					</tr>
 					<!-- /soy:id="form_list" -->
 				</table>
-				<!-- /soy:display="custom_search_field" -->
-				<p class="pageBtn">
-					<input type="submit" name="search" value="検索">
-				</p>
-			</form>
+			</div>
+			<!-- /soy:display="custom_search_field" -->
+			<div class="text-center">
+				<input type="submit" name="search" class="btn btn-primary btn-lg" value="検索">
+			</div>
+		</form>
+	</div>
+</dl>
 
-		</div>
-	</dl>
-
-	<form soy:id="form">
-
-		<table class="form_list">
+<form soy:id="form">
+	<div class="table-responsive">
+		<table class="table table-striped">
 			<caption>
 				商品一覧
 			</caption>
 			<thead>
-				<tr class="alC">
+				<tr >
 					<th>
 					<input id="item_checkbox" class="item_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
 					</th>
@@ -86,33 +86,33 @@
 					<input soy:id="item_check" class="item_checkbox" type="checkbox" />
 					</td>
 					<td><img soy:id="item_small_image"></td>
-					<td class="alC"><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
-					<td class="alC" soy:id="item_category">１</td>
+					<td ><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
+					<td  soy:id="item_category">１</td>
 					<td soy:id="item_name">大豆</td>
 					<td soy:id="item_code">ITEM_001</td>
-					<td class="alR"><span soy:id="item_price">1000</span> 円 <!-- soy:id="is_sale" --> / <span soy:id="sale_price">1000</span> 円<!-- /soy:id="is_sale" --></td>
+					<td><span soy:id="item_price">1000</span> 円 <!-- soy:id="is_sale" --> / <span soy:id="sale_price">1000</span> 円<!-- /soy:id="is_sale" --></td>
 					<!-- soy:id="ignore_stock" -->
-					<td class="alC"> ------ </td>
+					<td > ------ </td>
 					<!-- /soy:id="ignore_stock" -->
 					<!-- soy:id="display_stock" -->
-					<td class="alR"><span soy:id="item_stock">100</span> (<span soy:id="order_count">100</span>) </td>
+					<td><span soy:id="item_stock">100</span> (<span soy:id="order_count">100</span>) </td>
 					<!-- /soy:id="display_stock" -->
-					<td class="operation"><a class="button" soy:id="detail_link">詳細</a></td>
+					<td><a class="btn btn-primary" soy:id="detail_link">詳細</a></td>
 				</tr>
 				<!-- /soy:id="item_list" -->
 			</tbody>
 		</table>
-		
-		<section id="standard_form_area">
-			<!-- soy:id="standard_form_area" /-->
-		</section>
+	</div>
 
-		<p class="pageBtn">
-			<input type="submit" name="set" value="設定する">
-		</p>
+	<section id="standard_form_area">
+		<!-- soy:id="standard_form_area" /-->
+	</section>
 
-	</form>
-</div>
+	<div class="text-center">
+		<input type="submit" name="set" class="btn btn-primary btn-lg" value="設定">
+	</div>
+
+</form>
 
 <style>
 	dt.search_btn_dt {
@@ -121,7 +121,7 @@
 	}
 	dd.search_area_dd {
 	}
-	
+
 	#standard_form_area{
 		display:none;
 	}

@@ -9,14 +9,14 @@
 <!-- /soy:id="display_download_assistant_plugin_install" -->
 
 <!-- soy:id="display_download_assistant_plugin_not_install" -->
-<p class="notice" soy:id="notice_updated">変更しました</p>
-<p class="notice" soy:id="notice_bonus_file_uploaded">ファイルをアップロードしました</p>
-<p class="notice" soy:id="notice_bonus_file_uploaded_fail">ファイルをアップロードに失敗しました</p>
-<p class="notice" soy:id="notice_bonus_file_deleted">ファイルを削除しました</p>
+<p class="alert alert-success" soy:id="notice_updated">変更しました</p>
+<p class="alert alert-success" soy:id="notice_bonus_file_uploaded">ファイルをアップロードしました</p>
+<p class="alert alert-success" soy:id="notice_bonus_file_uploaded_fail">ファイルをアップロードに失敗しました</p>
+<p class="alert alert-success" soy:id="notice_bonus_file_deleted">ファイルを削除しました</p>
 
 <h1>ファイルアップロード</h1>
 <form soy:id="upload_form" id="upload_form" enctype="multipart/form-data">
-<dl>	
+<dl>
 	<dt>
 		購入特典ファイル設定<br />
 		<span style="font-size:0.9em;padding:5px 0;">※登録可能なファイルの拡張子&nbsp;:&nbsp;<strong><!-- soy:id="bonus_file_type_list_text" /--></strong></span>
@@ -29,17 +29,17 @@
 		<h3>登録されているファイル</h3>
 		<ul>
 			<!-- soy:id="bonus_file_list" -->
-			<li style="padding:3px;"><!-- soy:id="bonus_file_name" /-->&nbsp;<!-- soy:id="bonus_file_size" /-->&nbsp;<a class="button" soy:id="bonus_file_delete_link" onclick="return confirm('このファイルを削除しますか？')">削除</a></li>
-			<!-- /soy:id="bonus_file_list" -->	
+			<li style="padding:3px;"><!-- soy:id="bonus_file_name" /-->&nbsp;<!-- soy:id="bonus_file_size" /-->&nbsp;<a class="btn btn-default" soy:id="bonus_file_delete_link" onclick="return confirm('このファイルを削除しますか？')">削除</a></li>
+			<!-- /soy:id="bonus_file_list" -->
 		</ul>
 		<!-- /soy:id="display_bonus_files" -->
 		<input type="hidden" id="delete_filename" name="delete_filename"  value="">
 	</dd>
 </dl>
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" style="width:150px;" value="アップロード" name="submit_upload" id="submit_upload" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="アップロード" name="submit_upload" id="submit_upload">
+</div>
 
 </form>
 
@@ -59,11 +59,11 @@
 		<input type="radio" soy:id="bonus_type_file" /><label for="bonus_type_file">アップロードしたファイルから選択</label><br />
 		<input type="radio" soy:id="bonus_type_text" /><label for="bonus_type_text">URLを出力</label>&nbsp;
 	</dd>
-	
+
 </dl>
 
 <div id="bonus_type_file_area">
-<dl>	
+<dl>
 	<dt>購入特典ファイル選択</dt>
 	<dd>
 		<!-- soy:id="display_bonus_files*" -->
@@ -72,7 +72,7 @@
 		<!-- /soy:id="bonus_file_selected_list" -->
 		<!-- /soy:id="display_bonus_files*" -->
 		<!-- soy:id="display_no_bonus_files" -->
-		登録されているファイルはありません。		
+		登録されているファイルはありません。
 		<!-- /soy:id="display_no_bonus_files" -->
 	</dd>
 	<dt>購入特典ファイル ダウンロード期間</dt>
@@ -84,7 +84,7 @@
 </div>
 
 <div id="bonus_type_text_area">
-<dl>	
+<dl>
 	<dt>URL</dt>
 	<dd>
 		<input type="text" style="width:80%;" soy:id="bonus_download_url">
@@ -100,9 +100,9 @@
 	</dd>
 </dl>
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" value="設定変更" name="submit_content" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="設定変更" name="submit_content">
+</div>
 
 
 </form>
@@ -146,7 +146,7 @@
 		<span class="condition_amount_area">
 			[合計商品数]&nbsp;
 		</span>
-		
+
 		<span id="condition_combination_area">
 			<input type="radio" soy:id="condition_combination_all" ><label for="condition_combination_all">両方の条件に一致</label>&nbsp;
 			<input type="radio" soy:id="condition_combination_any" ><label for="condition_combination_any">片方の条件に一致</label>
@@ -154,9 +154,9 @@
 	</dd>
 </dl>
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" value="条件変更" name="submit_condition" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="条件変更" name="submit_condition">
+</div>
 
 </form>
 <!-- /soy:id="display_download_assistant_plugin_not_install" -->
@@ -170,8 +170,8 @@ function display_bonus_type_area(args){
 	$(args.data).fadeIn("slow");
 }
 
-$("#bonus_type_text").bind("click", "#bonus_type_text_area", display_bonus_type_area);	
-$("#bonus_type_file").bind("click", "#bonus_type_file_area", display_bonus_type_area);	
+$("#bonus_type_text").bind("click", "#bonus_type_text_area", display_bonus_type_area);
+$("#bonus_type_file").bind("click", "#bonus_type_file_area", display_bonus_type_area);
 
 if($("#bonus_type_text").prop("checked")){
 	args = {data:"#bonus_type_text_area"};
@@ -189,7 +189,7 @@ function display_condition_area(){
 	}else{
 		$(".condition_price_area").fadeOut("slow")
 	}
-	
+
 	//合計商品数
 	amount = $("#condition_amount_checkbox").prop("checked");
 	if(amount){
@@ -197,15 +197,15 @@ function display_condition_area(){
 	}else{
 		$(".condition_amount_area").fadeOut("slow")
 	}
-	
+
 	//条件組み合わせ
 	if(price && amount){
 		$("#condition_combination_area").fadeIn("slow");
 	}else{
 		$("#condition_combination_area").fadeOut("slow");
 	}
-	
-}	
+
+}
 
 $("#condition_price_checkbox").bind("click", display_condition_area);
 $("#condition_amount_checkbox").bind("click", display_condition_area);

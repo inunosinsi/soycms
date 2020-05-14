@@ -1,12 +1,12 @@
-<div class="alR">
-	<a class="button" soy:link="Config.Detail?plugin=campaign&mode=entry">新規登録</a>
+<div class="text-right">
+	<a class="btn btn-default" soy:link="Config.Detail?plugin=campaign&mode=entry">新規登録</a>
 </div>
 
 <div class="edit_form">
 	<h3>キャンペーン一覧</h3>
-	<table class="form_table">
+	<table class="table table-striped">
 		<thead>
-			<tr class="alC">
+			<tr >
 				<th>タイトル</th>
 				<th>掲載期間</th>
 				<th>公開状態</th>
@@ -20,7 +20,7 @@
 				<td soy:id="post_period"></td>
 				<td class="short alC" soy:id="is_open"></td>
 				<td class="operation">
-					<a soy:id="detail_link*" class="button">詳細</a>
+					<a soy:id="detail_link*" class="btn btn-default">詳細</a>
 				</td>
 			</tr>
 			<!-- /soy:id="campaign_list" -->
@@ -29,7 +29,7 @@
 </div>
 <br>
 
-<div class="block_body clearfix" style="margin:10px 0;">
+<div class="panel-body" style="margin:10px 0;">
 	<div class="section">
 		<h3>設定方法</h3>
 		<ul style="list-style-type: decimal;margin-left:45px;margin-bottom:10px;">

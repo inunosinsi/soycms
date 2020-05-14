@@ -1,18 +1,18 @@
 <!-- soy:display="capture" -->
-<p class="error always">この注文の支払は未確定の状態です</p>
+<p class="alert alert-danger">この注文の支払は未確定の状態です</p>
 
 <h3>支払詳細</h3>
 
 <form soy:id="form">
-	<table class="form_table">
+	<table class="table table-striped">
 		<col style="width:130px;" />
 		<tbody>
 			<tr>
 				<th>支払い確定期限</th>
 				<td soy:id="expired"></td>
 				<td style="text-align:center;vertical-align:middle;">
-					<input name="capture" type="submit" class="submit_button" value="支払い確定" onclick="return confirm('支払いを確定しますがよろしいですか？');">&nbsp;
-					<input name="cancel" type="submit" class="submit_button" value="キャンセル" onclick="return confirm('キャンセルしてもよろしいですか？');">
+					<input name="capture" type="submit" class="btn btn-primary" value="支払い確定" onclick="return confirm('支払いを確定しますがよろしいですか？');">&nbsp;
+					<input name="cancel" type="submit" class="btn btn-primary" value="キャンセル" onclick="return confirm('キャンセルしてもよろしいですか？');">
 				</td>
 			</tr>
 		</tbody>
@@ -20,5 +20,5 @@
 </form>
 <!-- /soy:display="capture" -->
 
-<p class="error always" soy:display="expired_over">支払い確定期限を越えています</p>
-<p class="notice always" soy:display="refunded">この注文は返金済みです</p>
+<p class="alert alert-danger" soy:display="expired_over">支払い確定期限を越えています</p>
+<p class="alert alert-info" soy:display="refunded">この注文は返金済みです</p>

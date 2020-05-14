@@ -12,6 +12,14 @@ class SOYShopPageController extends SOY2PageController{
 		SOY2::import("util.SOYShopAuthUtil");
 		SOYShopAuthUtil::setAuthConstant();
 
+		//キャッシュの削除
+		if(isset($_GET["clear_cache"])) self::_clearCache();
+
+		//SOY Appのリンク表示
+		define("SHOW_LOGOUT_LINK", self::_isDirectLogin());
+		define("USE_INQUIRY_SITE_DB", SOYAppUtil::checkAppAuth("inquiry"));
+		define("USE_MAIL_SITE_DB", SOYAppUtil::checkAppAuth("mail"));
+
 		$template = "main";
 
 		//Pathを作成
@@ -85,17 +93,12 @@ class SOYShopPageController extends SOY2PageController{
 		$appLogoPath = trim(htmlspecialchars($shopConfig->getAppLogoPath(), ENT_QUOTES, "UTF-8"));
 
 		$subMenu = (method_exists($webPage,"getSubMenu")) ? $webPage->getSubMenu() : null;
+		$footerMenu = (method_exists($webPage,"getFooterMenu")) ? $webPage->getFooterMenu() : null;
 		$layout = ($subMenu) ? "layout_right" : "layout_full";
 
 		$activeTab = (strlen($classPathBuilder->getClassPath($path)) > 0)
 				   ? strtolower(strtr($classPathBuilder->getClassPath($path), ".", "_"))
 				   : "news" ;
-
-		define("SHOW_LOGOUT_LINK", self::_isDirectLogin());
-
-		//SOY Appのリンク表示
-		define("USE_INQUIRY_SITE_DB", SOYAppUtil::checkAppAuth("inquiry"));
-		define("USE_MAIL_SITE_DB", SOYAppUtil::checkAppAuth("mail"));
 
 		define("SOYAPP_LINK", SOYAppUtil::createAppLink());
 
@@ -128,6 +131,15 @@ class SOYShopPageController extends SOY2PageController{
 			include(SOY2::RootDir() . "layout/main.php");
 
 			exit;
+		}
+	}
+
+	private function _clearCache(){
+		$dir = SOYSHOP_SITE_DIRECTORY . "/.cache/";
+		$files = scandir($dir);
+		foreach($files as $file){
+			if($file[0] == ".") continue;
+			@unlink($dir . $file);
 		}
 	}
 

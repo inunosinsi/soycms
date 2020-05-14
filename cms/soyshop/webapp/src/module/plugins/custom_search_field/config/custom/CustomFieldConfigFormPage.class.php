@@ -99,6 +99,10 @@ class CustomFieldConfigFormPage extends WebPage{
     function execute(){
         parent::__construct();
 
+		$this->addLabel("nav", array(
+			"html" => LinkNaviAreaComponent::build()
+		));
+
 		DisplayPlugin::toggle("error", isset($_GET["error"]));
 
         $this->addForm("create_form");

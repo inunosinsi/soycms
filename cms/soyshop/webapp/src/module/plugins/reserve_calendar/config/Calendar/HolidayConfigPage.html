@@ -1,14 +1,14 @@
-<p class="notice" soy:display="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
 <div style="margin-bottom:5px;">
-	<a soy:id="back_link" class="button"></a>
+	<a soy:id="back_link" class="btn btn-default"></a>
 </div>
 
 <h1>営業日・定休日の設定</h1>
-<div class="table_container">
+<div class="table-responsive">
 	<form soy:id="form">
 
-		<table class="form_table" style="width:80%;">
+		<table class="table table-striped" style="width:80%;">
 			<tr>
 				<th style="width:20%;">
 					毎週
@@ -50,11 +50,10 @@
 				<textarea soy:id="other_day" class="minieditor"></textarea>
 			</dd>
 		</dl>
-	
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
-		
+
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="変更">
+		</div>
 	</form>
 </div>
 

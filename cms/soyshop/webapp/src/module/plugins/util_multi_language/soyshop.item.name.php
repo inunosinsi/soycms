@@ -15,7 +15,7 @@ class UtilMultiLanguageItemName extends SOYShopItemNameBase{
 
 			$html[] = "<dt>商品名(" . $lang . ")&nbsp;<a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=util_multi_language&item_id=" . $item->getId() . "&language=" . $lang) ."\">カスタムフィールドの設定</a></dt>";
 			$html[] = "<dd>";
-			$html[] = "<input name=\"LanguageConfig[item_name_" . $lang . "]\" value=\"" . $itemName . "\" type=\"text\" class=\"text\">";
+			$html[] = "<input name=\"LanguageConfig[item_name_" . $lang . "]\" value=\"" . $itemName . "\" type=\"text\" class=\"form-control\">";
 			$html[] = "</dd>";
 		}
 

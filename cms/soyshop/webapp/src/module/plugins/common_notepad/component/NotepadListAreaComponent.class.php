@@ -30,7 +30,7 @@ class NotepadListAreaComponent {
 
 		$html[] = "<h2>" . $title . "のメモ</h2>";
 		$html[] = "<div class=\"block_title_right\">";
-		$html[] = "<a href=\"" . self::_buildLink() . "\" class=\"button\">新規作成</a>";
+		$html[] = "<a href=\"" . self::_buildLink() . "\" class=\"btn btn-default\">新規作成</a>";
 		$html[] = "</div>";
 		$html[] = "</div>";
 		return implode("\n", $html);

@@ -1,41 +1,34 @@
-<p class="notice" soy:display="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<div class="table_container">
-	<form method="post">
-	
-		<dl>
-			<dt>表示する商品数の最大値</dt>
-			<dd>
-				<input type="number" soy:id="max_display_number" style="text-align:right;ime-mode:inactive;" />件
-			</dd>
-		</dl>
-	
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
-		
-	</form>
-</div>
+<form method="post">
+	<div class="form-group">
+		<label>表示する商品数の最大値</label><br>
+		<input type="number" soy:id="max_display_number" style="width:80px;">件
+	</div>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>
 
 
-<h3>テンプレートへの記述例</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
-<b>&lt;!-- shop:module="common.recently_checked_items" --&gt;</b>
+
+<h4>テンプレートへの記述例</h4>
+<pre>
+<strong>&lt;!-- shop:module="common.recently_checked_items" --&gt;</strong>
 &lt;h3&gt;最近表示した商品&lt;/h3&gt;
-<b>&lt;!-- block:id="recently_checked_item_list" cms:count="3" --&gt;</b>&lt;!-- ←cms:countで表示数を指定できます。 --&gt;
+<strong>&lt;!-- block:id="recently_checked_item_list" cms:count="3" --&gt;</strong>&lt;!-- ←cms:countで表示数を指定できます。 --&gt;
 &lt;div&gt;
-	&lt;p&gt;&lt;a <b>cms:id="item_link*"</b>&gt;&lt;img <b>cms:id="item_small_image"</b> /&gt;&lt;/a&gt;&lt;/p&gt;
+	&lt;p&gt;&lt;a <strong>cms:id="item_link*"</strong>&gt;&lt;img <strong>cms:id="item_small_image"</strong> /&gt;&lt;/a&gt;&lt;/p&gt;
 	&lt;dl&gt;
 		&lt;dt&gt;
-			&lt;a <b>cms:id="item_link"</b>&gt;
-				<b>&lt;!-- cms:id="item_name" --&gt;</b>ここに商品名が入ります<b>&lt;!-- /cms:id="item_name" --&gt;</b>
+			&lt;a <strong>cms:id="item_link"</strong>&gt;
+				<strong>&lt;!-- cms:id="item_name" --&gt;</strong>ここに商品名が入ります<strong>&lt;!-- /cms:id="item_name" --&gt;</strong>
 			&lt;/a&gt;
 		&lt;/dt&gt;
-		&lt;dd <b>cms:id="item_description"</b>&gt;商品説明&lt;/dd&gt;
-		&lt;dd <b>cms:id="item_price"</b>&gt;1000円/100g&lt;/dd&gt;
+		&lt;dd <strong>cms:id="item_description"</strong>&gt;商品説明&lt;/dd&gt;
+		&lt;dd <strong>cms:id="item_price"</strong>&gt;1000円/100g&lt;/dd&gt;
 	&lt;/dl&gt;
-<b>&lt;!-- /block:id="recently_checked_item_list" --&gt;</b>
+<strong>&lt;!-- /block:id="recently_checked_item_list" --&gt;</strong>
 &lt;/div&gt;
-<b>&lt;!-- /shop:module="common.recently_checked_items" --&gt;</b>
+<strong>&lt;!-- /shop:module="common.recently_checked_items" --&gt;</strong>
 </pre>
-

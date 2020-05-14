@@ -70,10 +70,6 @@ class PartsCalendarConfigFormPage extends WebPage{
 
 		parent::__construct();
 
-		$this->addModel("updated", array(
-			"visible" => isset($_GET["updated"])
-		));
-
 		$this->addForm("calendar_form");
 
 		//毎週
@@ -157,7 +153,7 @@ class PartsCalendarConfigFormPage extends WebPage{
 		}
 		return $val;
 	}
-	
+
 	function setConfigObj($obj) {
 		$this->config = $obj;
 	}

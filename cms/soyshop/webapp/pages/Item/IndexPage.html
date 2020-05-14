@@ -1,165 +1,140 @@
-<h1>
-	商品管理
-	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt; 商品管理</span>
-</h1>
+<h2>商品管理</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="">ショップ管理</a></li>
+		<li class="active">商品管理</li>
+	</ol>
+</nav>
 
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				商品一覧
+				<small class="pull-right">
+					<a soy:link="Item.Search?reset" class="btn btn-default  btn-xs">商品検索</a>
+					<a soy:id="create_link" class="btn btn-default btn-xs">商品の追加</a>
+				</small>
+			</div>
 
-<div class="block">
-	<div class="block_title">
-		<h2>商品一覧</h2>
+			<div class="panel-body">
+				<p class="alert alert-success" soy:display="deleted">削除しました</p>
+				<div class="alert alert-success" soy:display="updated">更新しました</div>
 
-		<div class="block_title_right">
-			<a soy:link="Item.Search?reset" class="button">商品検索</a>
-			<a soy:id="create_link" class="button">商品の追加</a>
-		</div>
-	</div>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<caption>
+							<span class="fl">
+								商品一覧 (<span soy:id="count_max*">100000</span>件)：
+								<span soy:id="count_start*">1</span> ～ <span soy:id="count_end*">20</span>
+							</span>
+							<span class="fr">
+								登録順 <a soy:id="sort_create_date" style="text-decoration:none;">↓</a> <a soy:id="sort_create_date_desc" style="text-decoration:none;">↑</a>
+								更新順 <a soy:id="sort_update_date" style="text-decoration:none;">↓</a> <a soy:id="sort_update_date_desc" style="text-decoration:none;">↑</a>
+							</span>
+						</caption>
+						<thead>
+							<tr>
+								<th class="col-x1-1 text-center">
+									<!-- soy:display="app_limit_function" -->
+									<input id="item_checkbox" class="item_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
+									<!-- /soy:display="app_limit_function" -->
+								</th>
+								<th>&nbsp;</th>
+								<th><nobr>公開状態</nobr></th>
+								<th><nobr>カテゴリ<a soy:id="sort_category">↓</a> <a soy:id="sort_category_desc">↑</a></nobr></th>
+								<th><nobr>商品名<a soy:id="sort_name">↓</a> <a soy:id="sort_name_desc">↑</a></nobr></th>
+								<th><nobr>商品コード<a soy:id="sort_code">↓</a> <a soy:id="sort_code_desc">↑</a></nobr></th>
+								<th><nobr>価格 / セール<a soy:id="sort_price">↓</a> <a soy:id="sort_price_desc">↑</a></nobr></th>
+								<th><nobr>在庫数 (注文数)<a soy:id="sort_stock">↓</a> <a soy:id="sort_stock_desc">↑</a></nobr></th>
+								<th class="col-lg-1">&nbsp;</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr id="items_operation" style="display:none;">
+								<td colspan="9">
+									<span class="option">操作：</span>
+									<a href="javascript:void(0);" onclick="$('#do_change_publish_btn').val(1).trigger('click');" class="btn btn-primary">公開</a>
+									<a href="javascript:void(0);" onclick="$('#do_change_publish_btn').val(0).trigger('click');" class="btn btn-warning">非公開</a>
 
-	<div class="block_body">
+									<a href="javascript:void(0);" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">商品の削除</a>
+								</td>
+							</tr>
+						</tfoot>
 
-		<p class="notice" soy:display="deleted">削除しました</p>
-		<p class="notice" soy:display="updated">更新しました</p>
+						<tbody>
+							<form soy:id="item_form">
+							<!-- soy:id="item_list" -->
+							<tr>
+								<td class="text-center"><input soy:id="item_check" class="item_checkbox" type="checkbox" /></td>
+								<td><img soy:id="item_small_image"></td>
+								<td><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
+								<td soy:id="item_category">１</td>
+								<td soy:id="item_name">大豆</td>
+								<td soy:id="item_code">ITEM_001</td>
+								<td class="text-center"><span soy:id="item_price">1000</span> 円 <!-- soy:id="is_sale" --> / <span soy:id="sale_price">1000</span> 円<!-- /soy:id="is_sale" --></td>
+								<!-- soy:id="ignore_stock" -->
+								<td class="text-center">
+								    ------
+								</td>
+								<!-- /soy:id="ignore_stock" -->
+								<!-- soy:id="display_stock" -->
+								<td class="text-center">
+									<span soy:id="item_stock">100</span>
+									(<span soy:id="order_count">100</span>)
+								</td>
+								<!-- /soy:id="display_stock" -->
+								<td>
+									<a class="btn btn-primary" soy:id="detail_link">詳細</a>
+								</td>
+							</tr>
+							<!-- /soy:id="item_list" -->
 
-		<table class="form_list">
-			<caption>
-				<span class="fl">
-					商品一覧 (<span soy:id="count_max*">100000</span>件)：
-					<span soy:id="count_start*">1</span> ～ <span soy:id="count_end*">20</span>
-				</span>
-				<span class="fr">
-					登録順 <a soy:id="sort_create_date" style="text-decoration:none;">↓</a> <a soy:id="sort_create_date_desc" style="text-decoration:none;">↑</a>
-					更新順 <a soy:id="sort_update_date" style="text-decoration:none;">↓</a> <a soy:id="sort_update_date_desc" style="text-decoration:none;">↑</a>
-				</span>
-			</caption>
-			<thead>
-				<tr class="alC">
-					<th>
-						<!-- soy:display="app_limit_function" -->
-						<input id="item_checkbox" class="item_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
-						<!-- /soy:display="app_limit_function" -->
-					</th>
-					<th>&nbsp;</th>
-					<th><nobr>公開状態</nobr></th>
-					<th><nobr>カテゴリ<a soy:id="sort_category">↓</a> <a soy:id="sort_category_desc">↑</a></nobr></th>
-					<th><nobr>商品名<a soy:id="sort_name">↓</a> <a soy:id="sort_name_desc">↑</a></nobr></th>
-					<th><nobr>商品コード<a soy:id="sort_code">↓</a> <a soy:id="sort_code_desc">↑</a></nobr></th>
-					<th><nobr>価格 / セール<a soy:id="sort_price">↓</a> <a soy:id="sort_price_desc">↑</a></nobr></th>
-					<th><nobr>在庫数 (注文数)<a soy:id="sort_stock">↓</a> <a soy:id="sort_stock_desc">↑</a></nobr></th>
-					<th>&nbsp;</th>
-				</tr>
-			</thead>
-			<tfoot>
-				<tr id="items_operation" style="display:none;">
-					<td colspan="9">
-						<span class="option">操作：</span>
-						<a href="javascript:void(0);" onclick="$('#do_change_publish_btn').val(1).trigger('click');" class="button">公開</a>
-						<a href="javascript:void(0);" onclick="$('#do_change_publish_btn').val(0).trigger('click');" class="button">非公開</a>
+							<input type="submit" id="do_remove_btn" name="do_remove" value="1" style="display:none;" />
+							<input type="submit" id="do_change_publish_btn" name="do_change_publish" value="1" style="display:none;" />
 
-						<a href="javascript:void(0);" onclick="$('#remove_confirm').trigger('popup');" class="button fr">商品の削除</a>
-
-						<div id="remove_confirm"  class="popup alC" style="display:none;">
-							<p class="mb40">本当に商品を削除しても良いですか？</p>
-
-							<p>
-							<a href="javascript:void(0);" onclick="$('#do_remove_btn').trigger('click');" class="button">削除実行</a>
-							<a href="javascript:void(0);" onclick="$('#remove_confirm').hide();" class="button ml20">キャンセル</a>
-							</p>
-
-
-						</div>
-					</td>
-				</tr>
-				<tr class="pager">
-					<td colspan="9">
-						<a soy:id="reset_link" class="button fl">並び順のリセット</a>
-
-						<div class="pager_item">
-							<form soy:id="pager_jump">
-								<select soy:id="pager_select"></select>
-								<noscript><input type="submit" value="移動"/></noscript>
 							</form>
-						</div>
-						<div class="pager_item">
+						</tbody>
+					</table>
+				</div>
+
+				<div class="pull-right">
+					<a soy:id="reset_link" class="button fl" class="btn btn-warning">並び順のリセット</a>
+					<div class="pager_item">
+						<form soy:id="pager_jump">
+							<select soy:id="pager_select"></select>
+							<noscript><input type="submit" value="移動"/></noscript>
 							<a soy:id="prev_pager">&lt;</a>
 							<!-- soy:id="pager_list" -->
 							<a soy:id="target_link">1</a>
 							<!-- /soy:id="pager_list" -->
 							<a soy:id="next_pager">&gt;</a>
-						</div>
-						<div class="pager_item">
 							<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
-						</div>
-					</td>
-				</tr>
-			</tfoot>
-
-			<tbody>
-				<form soy:id="item_form">
-				<!-- soy:id="item_list" -->
-				<tr>
-					<td><input soy:id="item_check" class="item_checkbox" type="checkbox" /></td>
-					<td><img soy:id="item_small_image"></td>
-					<td class="alC"><!-- soy:id="item_publish" -->公開<!-- /soy:id="item_publish" --><!-- soy:id="sale_text" /--></td>
-					<td class="alC" soy:id="item_category">１</td>
-					<td soy:id="item_name">大豆</td>
-					<td soy:id="item_code">ITEM_001</td>
-					<td class="alR"><span soy:id="item_price">1000</span> 円 <!-- soy:id="is_sale" --> / <span soy:id="sale_price">1000</span> 円<!-- /soy:id="is_sale" --></td>
-					<!-- soy:id="ignore_stock" -->
-					<td class="alC">
-					    ------
-					</td>
-					<!-- /soy:id="ignore_stock" -->
-					<!-- soy:id="display_stock" -->
-					<td class="alR">
-						<span soy:id="item_stock">100</span>
-						(<span soy:id="order_count">100</span>)
-					</td>
-					<!-- /soy:id="display_stock" -->
-					<td class="operation">
-						<a class="button" soy:id="detail_link">詳細</a>
-					</td>
-				</tr>
-				<!-- /soy:id="item_list" -->
-
-				<input type="submit" id="do_remove_btn" name="do_remove" value="1" style="display:none;" />
-				<input type="submit" id="do_change_publish_btn" name="do_change_publish" value="1" style="display:none;" />
-
-				</form>
-			</tbody>
-
-		</table>
-
-	</div><!-- /block_body -->
-</div>
-
-<!-- soy:display="app_limit_function_rv" -->
-<div class="block">
-	<div class="block_title">
-		<h2>その他</h2>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-
-	<div class="block_body">
-
-	<dl>
-		<dt><a soy:link="Item.Category">カテゴリ管理</a></dt>
-		<dd>商品カテゴリを編集します</dd>
-
-		<dt><a soy:link="Item.Setting">商品カテゴリの一括設定</a></dt>
-		<dd>商品カテゴリを一括で変更します</dd>
-
-		<dt><a soy:link="Item.CustomField">カスタム項目設定</a></dt>
-		<dd>商品の追加項目を編集します</dd>
-
-		<dt><a soy:link="Item.Import">CSVインポート</a></dt>
-		<dd>商品情報をCSVから入力します。</dd>
-
-		<dt><a soy:link="Item.Export">CSVエクスポート</a></dt>
-		<dd>商品情報をCSV出力します。</dd>
-	</dl>
-
-	</div><!-- /block_body -->
 </div>
-<!-- /soy:display="app_limit_function_rv" -->
+
+<div class="modal" tabindex="-1" role="dialog" id="deleteModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">商品の削除</h5>
+			</div>
+			<div class="modal-body">
+				<p class="mb40">本当に商品を削除しても良いですか？</p>
+
+				<p>
+				<a href="javascript:void(0);" onclick="$('#do_remove_btn').trigger('click');" class="btn btn-primary">削除実行</a>
+				<a href="javascript:void(0);" class="btn btn-default" data-dismiss="modal">キャンセル</a>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
 
 <script type="text/javascript">
 function changeCheckBoxAuto(){

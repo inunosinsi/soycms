@@ -1,17 +1,17 @@
-<p class="notice" soy:id="updated">更新しました。</p>
+<p class="alert alert-success" soy:display="updated">更新しました。</p>
 
 <form soy:id="form">
 	<dl>
 		<dt>商品をカートに入れる処理の制限</dt>
 		<dd><input type="checkbox" soy:id="limitation_cart"></dd>
 	</dl>
-	<p class="pageBtn">
-		<input type="submit" class="submit_button" value="設定" />
-	</p>	
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary" value="設定" />
+	</div>
 </form>
 
 
-<h3>テンプレートへの記述例</h3>
+<h4>テンプレートへの記述例</h4>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 20px 35px;">
 &lt;!-- block:id="item" --&gt;
 

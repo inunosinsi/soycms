@@ -1,6 +1,6 @@
-<p class="notice">使用の際は必ず検索ページにある検索モジュールの設定でCustom Search Moduleに変更してください。</p>
+<p class="alert alert-success">使用の際は必ず検索ページにある検索モジュールの設定でCustom Search Moduleに変更してください。</p>
 
-<p class="notice" soy:id="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 <dl>
@@ -12,7 +12,7 @@
 	<dd>
 		<p>表示のさせ方 : &lt;!-- cms:id="search_range_price" /--&gt;</p>
 	</dd>
-	
+
 	<!-- soy:id="search_field_list" -->
 	<dt>
 		Field名 : <strong><!-- soy:id="field_name" /--></strong>&nbsp;&nbsp;
@@ -26,10 +26,10 @@
 	<!-- /soy:id="search_field_list" -->
 </dl>
 
-<p class="pageBtn">
-	<input type="submit" value="更新" />
-</p>
-</form soy:id="form">
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="更新">
+</div>
+</form>
 
 <h3><a href="javascript:void(0);" onclick="$('.script_example').toggle();">テンプレートへの記述例</a></h3>
 <pre style="display:none;border:1px solid #000000;padding:5px 20px;margin:0 35px;" class="script_example">
@@ -62,7 +62,7 @@
     &lt;/tr&gt;
   &lt;/table&gt;
 
-  &lt;p class="alC"&gt;
+  &lt;p &gt;
     &lt;input type="submit" value="検索する"&gt;
   &lt;/p&gt;
 &lt;/form&gt;
@@ -79,7 +79,7 @@
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;th&gt;価格帯&lt;/th&gt;
-      &lt;td&gt;&lt;input type="text" name="range_price_min" value=""&gt; ～ 
+      &lt;td&gt;&lt;input type="text" name="range_price_min" value=""&gt; ～
 	  &lt;input type="text" name="range_price_max" value=""&gt;&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
@@ -116,7 +116,7 @@
       &lt;/td&gt;
     &lt;/tr&gt;
   &lt;/table&gt;
-  &lt;p class="alC"&gt;
+  &lt;p &gt;
     &lt;input type="submit" value="検索する"&gt;
   &lt;/p&gt;
 &lt;/form&gt;

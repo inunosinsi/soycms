@@ -28,7 +28,7 @@ class FixedFormModuleCustomField extends SOYShopItemCustomFieldBase{
 			}
 		}
 		$html[] = "</select>";
-		//$html[] = "  <a href=\"" . SOY2PageController::createLink("Site.Template#html_module_list") . "\" class=\"button\">モジュールの作成</a><br>";
+		//$html[] = "  <a href=\"" . SOY2PageController::createLink("Site.Template#html_module_list") . "\" class=\"btn btn-default\">モジュールの作成</a><br>";
 		// $html[] = "<table style=\"margin-top:5px;\">";
 		// $html[] = "<tr>";
 		// $html[] = "<th>モジュールについて</th>";

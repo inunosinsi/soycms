@@ -25,23 +25,20 @@ class BuildFormLogic extends SOY2LogicBase{
 		if(!count($configs)) return "";
 
 		$html = array();
-		$html[] = "<dd>";
 		$html[] = "<section>";
-		$html[] = "<h1>商品の規格設定</h1>";
+		$html[] = "<h4>商品の規格設定</h4>";
 		$html[] = "<div style=\"float:left;margin-right:5px;\">※規格を改行区切りで入力してください</div>";
-		$html[] = "<div style=\"float:left;\"><a href=\"" . SOY2PageController::createLink("Config.Detail") . "?plugin=item_standard&item_id=" . $this->parentId . "\" class=\"button\">規格毎の料金設定</a></div>";
+		$html[] = "<div style=\"float:left;\"><a href=\"" . SOY2PageController::createLink("Config.Detail") . "?plugin=item_standard&item_id=" . $this->parentId . "\" class=\"btn btn-success\">規格毎の料金設定</a></div>";
 		$html[] = "<br style=\"clear:both;\">";
-		$html[] = "<dl>";
 		foreach($configs as $conf){
 			$obj = self::get($this->parentId, $conf["id"]);
-
-			$html[] = "<dt>" . $conf["standard"] . "(" . $conf["id"] . ")</dt>";
-			$html[] = "<dd><textarea name=\"Standard[" . $conf["id"] . "]\">" . $obj->getValue() . "</textarea>";
+			$html[] = "<div class=\"form-group\">";
+			$html[] = "<label>" . $conf["standard"] . "(" . $conf["id"] . ")</label>";
+			$html[] = "<textarea name=\"Standard[" . $conf["id"] . "]\" class=\"form-control\" style=\"height:100px;\">" . $obj->getValue() . "</textarea>";
+			$html[] = "</div>";
 		}
 
-		$html[] = "</dl>";
 		$html[] = "</section>";
-		$html[] = "</dd>";
 
 		//子商品のエリアを非表示にする
 		$html[] = "<script>";
@@ -61,7 +58,7 @@ class BuildFormLogic extends SOY2LogicBase{
 		foreach($configs as $conf){
 
 			$html[] = "<dt>" . $conf["standard"] . "(" . $conf["id"] . ")</dt>";
-			$html[] = "<dd><textarea name=\"Standard[" . $conf["id"] . "]\"></textarea>";
+			$html[] = "<dd><textarea name=\"Standard[" . $conf["id"] . "]\" class=\"form-control\" style=\"height:200px;\"></textarea>";
 		}
 
 		$html[] = "</dl>";
@@ -76,21 +73,22 @@ class BuildFormLogic extends SOY2LogicBase{
 
 		$html = array();
 
-		$html[] = "<table class=\"form_list\">";
+		$html[] = "<div class=\"table-responsive\">";
+		$html[] = "<table class=\"table table-striped\" style=\"width:60px;\">";
 		$html[] = "<caption>規格毎の設定</caption>";
 		$html[] = "	<thead>";
 		$html[] = "		<tr>";
 
 		foreach($configs as $conf){
 			if(isset($conf["id"]) && self::checkFieldValue($conf["id"])){
-				$html[] = "<th>" . $conf["standard"] . "</th>";
+				$html[] = "<th nowrap>" . $conf["standard"] . "</th>";
 				$list[] = $conf["id"];		//使用する規格を保持しておく
 			}
 		}
-		$html[] = "<th class=\"short\">在庫数</th>";
-		$html[] = "<th class=\"middle\">価格</th>";
-		$html[] = "<th class=\"middle\">セール価格</th>";
-		$html[] = "<th class=\"operation\"></th>";
+		$html[] = "<th nowrap>在庫数</th>";
+		$html[] = "<th nowrap>価格</th>";
+		$html[] = "<th nowrap>セール価格</th>";
+		$html[] = "<th></th>";
 
 		$html[] = "		</tr>";
 		$html[] = "	</thead>";
@@ -106,6 +104,7 @@ class BuildFormLogic extends SOY2LogicBase{
 
 		$html[] = "	</tbody>";
 		$html[] = "</table>";
+		$html[] = "</div>";
 
 		return implode("\n", $html);
 	}
@@ -192,7 +191,7 @@ class BuildFormLogic extends SOY2LogicBase{
 
 		foreach($values as $value){
 			$value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
-			$html[] = "<td>";
+			$html[] = "<td nowrap>";
 			$html[] = $value;
 			$html[] = "<input type=\"hidden\" name=\"Item[" . $key . "][key][]\" value=\"" . $value . "\">";
 			$html[] = "</td>";
@@ -202,10 +201,10 @@ class BuildFormLogic extends SOY2LogicBase{
 		$html[] = "<td><input type=\"number\" name=\"Item[" . $key . "][price]\" value=\"" . $price . "\"></td>";
 		$html[] = "<td><input type=\"number\" name=\"Item[" . $key . "][salePrice]\" value=\"" . $salePrice . "\"></td>";
 		$html[] = "<td>";
-		$html[] = "<input type=\"submit\" value=\"更新\">";
+		$html[] = "<input type=\"submit\" class=\"btn btn-primary btn-sm\" value=\"更新\">";
 		//詳細ページへのリンク
 		if(!is_null($child->getId())){
-			$html[] = " <a href=\"" . SOY2PageController::createLink("Item.Detail.". $child->getId()) . "\">詳細</a>";
+			$html[] = "  <a href=\"" . SOY2PageController::createLink("Item.Detail.". $child->getId()) . "\" class=\"btn btn-info btn-sm\">詳細</a>";
 		}
 		$html[] = "</td>";
 		return implode("\n", $html);

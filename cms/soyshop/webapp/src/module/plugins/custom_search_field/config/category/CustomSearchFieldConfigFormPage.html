@@ -1,20 +1,13 @@
-<div class="alR">
-    <a class="button" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
-    <a class="button" soy:link="Config.Detail?plugin=custom_search_field">カスタムサーチフィールド</a>
-	<a class="button" soy:link="Config.Detail?plugin=custom_search_field&custom">サーチフィールドのカスタムフィールド</a>
-    <a class="button" soy:link="Config.Detail?plugin=custom_search_field&eximport">カスタムフィールド</a>
-    <a class="button" soy:link="Config.Detail?plugin=custom_search_field&config">検索の設定</a>
-</div>
+<!-- soy:id="nav" /-->
 
-<br />
+<br>
 
-<div class="block_body clearfix">
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+<div class="alert alert-success" soy:display="deleted">削除しました</div>
+<div class="alert alert-danger" soy:display="error">失敗しました</div>
 
-    <p class="notice" soy:display="updated">更新しました</p>
-    <p class="notice" soy:display="deleted">削除しました</p>
-    <p class="error" soy:display="error">失敗しました</p>
-
-    <table class="form_list">
+<div class="table-responsive">
+    <table class="table table-striped">
         <caption>カテゴリサーチフィールド</caption>
         <tr>
             <th>ID</th>
@@ -30,18 +23,17 @@
             <td soy:id="key"></td>
             <td soy:id="label"></td>
             <td soy:id="type"></td>
-            <td style="text-align:center;">
-                    <form method="post">
-                        <input type="hidden" soy:id="field_id" />
-                        <input type="submit" name="move_up" value="△" />
-                        <input type="submit" name="move_down" value="▽" />
-                    </form>
+            <td>
+                <form method="post">
+                    <input type="hidden" soy:id="field_id" />
+                    <input type="submit" name="move_up" class="btn btn-default" value="△">
+                    <input type="submit" name="move_down" class="btn btn-default" value="▽">
+                </form>
             </td>
             <td soy:id="display"></td>
             <td>
-                <a soy:id="toggle_config">Detail</a>&nbsp;
-
-                <a soy:id="delete">Delete</a>
+                <a soy:id="toggle_config" class="btn btn-warning">Detail</a>&nbsp;
+                <a soy:id="delete" class="btn btn-danger">Delete</a>
                 <form method="post">
                     <input type="submit" soy:id="delete_submit" style="display:none;" />
                 </form>
@@ -53,30 +45,32 @@
                 <h5 style="margin-bottom:0;">詳細設定</h5>
 
                 <form method="post">
-                    <dl>
-                        <!-- soy:id="with_options" -->
-                        <dt>選択項目<span class="option">(項目を改行で区切ってください)</span></dt>
+					<!-- soy:id="with_options" -->
+                    <div class="form-group">
+                        <label>選択項目<span class="option">(項目を改行で区切ってください)</span></label>
                         <!-- soy:id="multi_lang_list" -->
-                        <dd>
-                            <span soy:id="label_area"><!-- soy:id="multi_language_label" /--></span>
-                            <textarea soy:id="option"></textarea>
-                        </dd>
-                        <!-- /soy:id="multi_lang_list" -->
-                        <!-- /soy:id="with_options" -->
+                        <span soy:id="label_area"><!-- soy:id="multi_language_label" /--></span>
+                        <textarea soy:id="option" class="form-control"></textarea>
+						<!-- /soy:id="multi_lang_list" -->
+					</div>
+					<!-- /soy:id="with_options" -->
 
-                        <!-- soy:id="radio_search_form_default_area" -->
-                        <dt>ラジオの項目の設定</dt>
-                        <dd><input type="checkbox" soy:id="radio_search_form_default"></dd>
-                        <!-- /soy:id="radio_search_form_default_area" -->
+                    <!-- soy:id="radio_search_form_default_area" -->
+					<div class="form-group">
+                        <label>ラジオの項目の設定</label><br>
+                        <input type="checkbox" soy:id="radio_search_form_default">
+					</div>
+                    <!-- /soy:id="radio_search_form_default_area" -->
 
-                        <!-- soy:id="checkbox_tag_supple_area" -->
-                        <dt>公開側のページで項目を個別に表示する場合</dt>
-                        <dd><pre soy:id="checkbox_tag_supple" style="width:400px;overflow-x:scroll;"></pre></dd>
-                        <!-- /soy:id="checkbox_tag_supple_area" -->
-                    </dl>
+                    <!-- soy:id="checkbox_tag_supple_area" -->
+					<div class="form-group">
+                        <label>公開側のページで項目を個別に表示する場合</label><br>
+                        <pre soy:id="checkbox_tag_supple" style="overflow-x:scroll;"></pre>
+                    </div>
+					<!-- /soy:id="checkbox_tag_supple_area" -->
 
-                    <div style="margin:10px 1em 2em;text-align:right;">
-                        <input type="button" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
+                    <div class="text-right">
+                        <input type="button" soy:id="update_advance" class="btn btn-primary btn-lg" value="設定保存">
                     </div>
 
                     <input type="submit" style="display:none;" soy:id="update_advance_submit" />
@@ -86,56 +80,24 @@
         </tr>
         <!-- /soy:id="field_list" -->
     </table>
+</div>
 
-    <div id="append_form_el" class="popup" style="display:none;">
-        <form soy:id="create_form" id="create_form">
-            <input type="hidden" name="create" value="create" />
-            <p>
-                ID
-                <div class="alL">
-                <input id="custom_key" name="custom_key" type="text" class="text validate">
-                <p class="require" id="custom_key_error" style="display:none;">必須項目を入力してください</p>
-                </div>
-
-                ラベル
-
-                <div class="alL">
-                <input id="custom_label" name="custom_label" type="text" class="text validate">
-                <p class="require" id="custom_label_error" style="display:none;">必須項目を入力してください</p>
-                </div>
-
-
-                項目種別
-                <div class="alL">
-                    <select name="custom_type" soy:id="custom_type_select"></select>
-                </div>
-
-            </p>
-            <p class="alC">
-                <a class="button" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
-            </p>
-            <p class="close"></p>
-        </form>
-    </div>
-
-	<div style="margin:5px 25px;">
-		<h2>フィールドID_visible</h2>
-		<p>c_csf:id="<strong>フィールドID_visible</strong>"またはc_csf:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、c_csf:id="フィールドID"の値が空の時に表示されなくなります。<br>
-		c_csf:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、c_csf:id="フィールドID"の値が空ではない時に表示されます。</p>
-		<br>
-		<span>例:フィールドIDがsampleの時</span>
-<pre style="border:1px solid #000000;padding:3px 5px;">&lt;div <strong>c_csf:id="sample_visible"</strong>&gt;
+<h4>フィールドID_visible</h4>
+<p>c_csf:id="<strong>フィールドID_visible</strong>"またはc_csf:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、c_csf:id="フィールドID"の値が空の時に表示されなくなります。<br>
+c_csf:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、c_csf:id="フィールドID"の値が空ではない時に表示されます。</p>
+<br>
+<span>例:フィールドIDがsampleの時</span>
+<pre>&lt;div <strong>c_csf:id="sample_visible"</strong>&gt;
 カスタムフィールドの値は<strong>&lt;!-- c_csf:id="sample" /--&gt;</strong>です。
 &lt;/div&gt;
 &lt;div <strong>c_csf:id="sample_is_empty"</strong>&gt;
 カスタムフィールドの値は空です。
 &lt;/div&gt;</pre>
-	</div>
 
-</div><!-- /block_body -->
+<br>
 
-<h3 style="margin:10px 0;">テンプレートへの記述例</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:5px 35px; overflow-x: auto;" class="script_example">
+<h4>テンプレートへの記述例</h4>
+<pre style="overflow-x: auto;" class="script_example">
 &lt;!-- shop:module="common.custom_search_field" --&gt;
 &lt;form action="{作成した検索ページのURLを入力してください}"&gt;
 <!-- soy:id="example_tag_list" -->
@@ -145,3 +107,45 @@
 &lt;/form&gt;
 &lt;!-- /shop:module="common.custom_search_field" --&gt;
 </pre>
+
+<div class="modal" tabindex="-1" role="dialog" id="customfieldModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">項目の追加</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+		            <input type="hidden" name="create" value="create" />
+		            <div>
+		                ID
+		                <div class="alL">
+		                <input id="custom_key" name="custom_key" type="text" class="text validate">
+		                <p class="require" id="custom_key_error" style="display:none;">必須項目を入力してください</p>
+		                </div>
+
+		                ラベル
+
+		                <div class="alL">
+		                <input id="custom_label" name="custom_label" type="text" class="text validate">
+		                <p class="require" id="custom_label_error" style="display:none;">必須項目を入力してください</p>
+		                </div>
+
+
+		                項目種別
+		                <div class="alL">
+		                    <select name="custom_type" soy:id="custom_type_select"></select>
+		                </div>
+
+		            </div>
+		            <div class="text-right">
+		                <a class="btn btn-primary" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+		            </div>
+		        </form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="customfieldModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

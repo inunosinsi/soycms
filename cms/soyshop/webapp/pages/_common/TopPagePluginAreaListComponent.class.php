@@ -14,7 +14,8 @@ class TopPagePluginAreaListComponent extends HTMLList{
 		$this->addLink("plugin_area_link", array(
 			"link" => (isset($entity["link"])) ? $entity["link"] : null,
 			"text" => (isset($entity["link_title"])) ? $entity["link_title"] : "",
-			"target" => (isset($entity["target_blank"]) && $entity["target_blank"]) ? "_blank" : "_self"
+			"target" => (isset($entity["target_blank"]) && $entity["target_blank"]) ? "_blank" : "_self",
+			"attr:rel" => (isset($entity["target_blank"]) && $entity["target_blank"]) ? "noopener" : ""
 		));
 
 		$this->addLabel("plugin_area_content", array(

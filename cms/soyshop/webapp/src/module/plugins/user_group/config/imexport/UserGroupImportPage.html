@@ -1,14 +1,14 @@
 <div>
-	<a class="button" soy:link="Extension.user_group">グループ一覧</a>
+	<a class="btn btn-default" soy:link="Extension.user_group">グループ一覧</a>
 </div>
 
 <br>
 
-<div class="block_body clearfix">
+<div class="panel-body">
 
 	<p class="error" soy:display="failed">ファイルのアップロードに失敗しました。</p>
 	<p class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
-	<p class="notice always" soy:display="updated">インポートが完了しました</p>
+	<p class="alert alert-info" soy:display="updated">インポートが完了しました</p>
 
 	<h3>CSVインポート</h3>
 	<form soy:id="import_form">
@@ -18,7 +18,7 @@
 				<label><input type="radio" name="charset" value="Shift-JIS" checked="checked">Shift-JIS</label>&nbsp;
 				<label><input type="radio" name="charset" value="UTF-8">UTF-8</label>
 				<input type="file" name="import">&nbsp;
-				<input type="submit" class="submit_button" value="アップロード">
+				<input type="submit" class="btn btn-primary" value="アップロード">
 			</dd>
 		</dl>
 	</form>

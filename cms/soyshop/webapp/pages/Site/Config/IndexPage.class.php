@@ -7,26 +7,21 @@
 class IndexPage extends WebPage{
 
 	function __construct(){
-		parent::__construct();
+		SOY2PageController::jump("");
+		//parent::__construct();
 
-		$this->createAdd("plugin_list", "_common.Site.Config.PluginListComponent", array(
-			"list" => $this->getPluginList(),
-			"configPageLink" => SOY2PageController::createLink("Site.Config.Detail")
-		));
+		// $this->createAdd("plugin_list", "_common.Site.Config.PluginListComponent", array(
+		// 	"list" => $this->getPluginList(),
+		// 	"configPageLink" => SOY2PageController::createLink("Site.Config.Detail")
+		// ));
 	}
 
 	function getPluginList(){
     	$array = array();
 
     	SOYShopPlugin::load("soyshop.config.site");
-
-		$delegate = SOYShopPlugin::invoke("soyshop.config.site", array(
+		return SOYShopPlugin::invoke("soyshop.config.site", array(
 			"mode" => "list"
-		));
-
-		$list = $delegate->getList();
-
-		return $list;
+		))->getList();
     }
 }
-?>

@@ -1,41 +1,39 @@
 <form soy:id="form">
-	<dl>
-		<dt>
-			ソート順の設定
-		</dt>
-		<dd>
-			<!-- soy:id="sort_list" -->
-			<input type="radio" soy:id="sort_input" />
-			<!-- /soy:id="sort_list" -->
+	<div class="form-group">
+		<label>ソート順の設定</label><br>
+		<!-- soy:id="sort_list" -->
+		<input type="radio" soy:id="sort_input" />
+		<!-- /soy:id="sort_list" -->
+	</div>
+	<div class="form-group">
+		<label>昇順・降順</label><br>
+		<input type="radio" soy:id="sort_normal" />
+		<input type="radio" soy:id="sort_reverse" />
+	</div>
 
-			<h4>昇順・降順</h4>
-			<input type="radio" soy:id="sort_normal" />
-			<input type="radio" soy:id="sort_reverse" />
-		</dd>
-		<dt>新着商品設定</dt>
-		<dd>
-		    商品情報登録後、<input type="number" soy:id="try_count" style="width:40px;" required>月間、新着商品として扱う
-		</dd>
-	</dl>
+	<div class="form-group">
+		<label>新着商品設定</label><br>
+		    商品情報登録後、<input type="number" soy:id="try_count" style="width:60px;" required>月間、新着商品として扱う
+	</div>
 
-	<p class="pageBtn">
-		<input type="submit" value="更新" />
-	</p>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+	</div>
 </form>
 
-<h3>テンプレートへの記述例</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<h4>テンプレートへの記述例</h4>
+<pre>
 &lt;!-- shop:module="common.new_items" --&gt;
 &lt;section id="new_items"&gt;
     &lt;h1&gt;新着の商品&lt;/h1&gt;
     &lt;div class="item_list"&gt;
-        &lt;!-- block:id="new_item_list" cms:count="3" --&gt;</b>&lt;!-- ←cms:countで表示数を指定できます。 --&gt;
+        &lt;!-- block:id="new_item_list" cms:count="3" --&gt;</strong>&lt;!-- ←cms:countで表示数を指定できます。 --&gt;
         &lt;article&gt;
             &lt;a href="detail1.html" cms:id="item_link"&gt;&lt;img cms:id="item_small_image" src="/bryon/themes/photos/list_sample1.jpg" width="150" height="113" alt="苔オブジェ"&gt;
             &lt;h1 cms:id="item_name"&gt;苔オブジェ&lt;/h1&gt;&lt;/a&gt;
             &lt;p class="tag"&gt;&lt;!-- cms:id="custom_icon_field" /--&gt;&lt;/p&gt;
             &lt;p class="price"&gt;\&lt;!-- cms:id="item_price" --&gt;2,750&lt;!-- /cms:id="item_price" --&gt;&lt;/p&gt;
-            &lt;p class="text" cms:id="item_copy1"&gt;ロゴをかたどったオブジェ、本物の苔を植えています。&lt;/p&gt;
+            &lt;p class="form-control" cms:id="item_copy1"&gt;ロゴをかたどったオブジェ、本物の苔を植えています。&lt;/p&gt;
             &lt;p class="new" cms:id="this_is_new" &gt;&lt;img src="/bryon/themes/common/images/new_icon.png" alt="NEW!"&gt;&lt;/p&gt;
             &lt;p class="more"&gt;&lt;a href="detail1.html" cms:id="item_link*"&gt;&amp;gt;&amp;gt;詳細を見る&lt;/a&gt;&lt;/p&gt;
         &lt;/article&gt;

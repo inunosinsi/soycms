@@ -1,38 +1,35 @@
-<div class="alR">
-	<a class="button" soy:link="Config.Detail?plugin=custom_search_field">カスタムサーチフィールド一覧</a>
+<!-- soy:id="nav" /-->
+
+<br>
+
+<p class="alert alert-success" soy:display="successed">成功しました</p>
+<div class="error" soy:display="failed">失敗しました</div>
+
+<div class="form-group">
+	<label>カスタムフィールドの設定を取得する</label>
+	<form soy:id="export_form" id="export_form">
+		<input type="submit" name="output_customfield_config" class="btn btn-default" value="CSV出力"><br>
+		※カスタムフィールドの値を取得出来たら、使用するフィールドのみを残してインポートします。<br>
+		※一行テキストは文字列(string)として出力されます。<br>
+		※数字の場合はinteger、範囲の場合はrangeにします。
+	</form>
 </div>
 
-<br />
+<div class="form-group">
+	<label>カスタムフィールドの設定をインポートする</label>
+	<form soy:id="import_form">
+		<div class="form-inline">
+			<input type="file" class="btn btn-default" name="csv">
+			<input type="submit" class="btn btn-primary" name="import_customfield_config" value="CSVインポート">
+		</div>
+	</form>
+</div>
 
-<div class="block_body clearfix">
-	
-	<p class="notice" soy:display="successed">成功しました</p>
-	<p class="error" soy:display="failed">失敗しました</p>
-	
-	<dl>
-		<dt>カスタムフィールドの設定を取得する</dt>
-		<dd>
-			<form soy:id="export_form" id="export_form">
-				<input type="submit" name="output_customfield_config" value="CSV出力"><br>
-				※カスタムフィールドの値を取得出来たら、使用するフィールドのみを残してインポートします。<br>
-				※一行テキストは文字列(string)として出力されます。<br>
-				※数字の場合はinteger、範囲の場合はrangeにします。
-			</form>
-		</dd>
-		<dt>カスタムフィールドの設定をインポートする</dt>
-		<dd>
-			<form soy:id="import_form">
-				<input type="file" name="csv">
-				<input type="submit" name="import_customfield_config" value="CSVインポート">
-			</form>
-		</dd>
-		<dt>各商品のカスタムフィールドに登録した値をインポートする</dt>
-		<dd>
-			<form soy:id="migrate_form">
-				<input type="submit" name="migrate_customfield_values" value="値の移行">
-			</form>
-		</dd>
-	</dl>
+<div class="form-group">
+	<label>各商品のカスタムフィールドに登録した値をインポートする</label>
+	<form soy:id="migrate_form">
+		<input type="submit" name="migrate_customfield_values" class="btn btn-primary" value="値の移行">
+	</form>
 </div>
 
 <script type="text/javascript">

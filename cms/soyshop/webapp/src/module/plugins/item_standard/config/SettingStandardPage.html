@@ -1,20 +1,26 @@
-<p class="notice always" soy:display="is_first">初回時は必ずどこかの更新ボタンを押してください。</p>
+<div class="alert alert-info" soy:display="is_first">初回時は必ずどこかの更新ボタンを押してください。</div>
 
-<h1>商品規格の設定</h1>
+<h3>商品規格の設定</h3>
 
-<div style="margin:0 0 7px 22px;"><a soy:id="return_link" class="button">商品詳細へ戻る</a></div>
+<div><a soy:id="return_link" class="btn btn-default">商品詳細へ戻る</a></div>
 
-<h3>親商品の情報</h3>
-<dl>
-	<dt>商品名&nbsp;(商品コード)</dt>
-	<dd><!-- soy:id="item_name" /-->&nbsp;(<!-- soy:id="item_code" /-->)</dd>
-		
-	<dt>価格</dt>
-	<dd><!-- soy:id="item_price" /-->&nbsp;円</dd>
-	
-	<dt>セール価格</dt>
-	<dd><!-- soy:id="item_sale_price" /-->&nbsp;円</dd>
-</dl>
+<br>
+
+<h4>親商品の情報</h4>
+<div class="form-group">
+	<label for="">商品名&nbsp;(商品コード)</label><br>
+	<!-- soy:id="item_name" /-->&nbsp;(<!-- soy:id="item_code" /-->)
+</div>
+
+<div class="form-group">
+	<label for="">価格</label><br>
+	<!-- soy:id="item_price" /-->&nbsp;円
+</div>
+
+<div class="form-group">
+	<label for="">セール価格</label><br>
+	<!-- soy:id="item_sale_price" /-->&nbsp;円
+</div>
 
 <form soy:id="form">
 	<!-- soy:id="table" /-->

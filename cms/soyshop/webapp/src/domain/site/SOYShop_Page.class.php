@@ -221,7 +221,7 @@ class SOYShop_Page {
 				switch($this->getPageObject()->getType()){
 					case "category":
 						$current = $this->getPageObject()->getCurrentCategory();
-						if(method_exists($current,"getAlias")&&strpos($_SERVER["PATH_INFO"],$current->getAlias()) !== false){
+						if(method_exists($current, "getAlias") && isset($_SERVER["PATH_INFO"]) && strpos($_SERVER["PATH_INFO"], $current->getAlias()) !== false){
 							$url .= "/" . rawurlencode($current->getAlias());
 						}
 						break;

@@ -1,42 +1,43 @@
-<p class="notice" soy:display="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
 <form soy:id="form">
-
-<dl>
-	<dt>テストモード</dt>
-	<dd>
+	<div class="form-group">
+		<label>テストモード</label>
 		<input type="checkbox" soy:id="sandbox"><br>
 		テストモードを利用する際は事前に下記のページをご確認ください。<br>
-		<a href="https://pay.jp/docs/testcard" target="_blank">テストカード | PAY.JP</a>
-	</dd>
+		<a href="https://pay.jp/docs/testcard" target="_blank" rel="noopener">テストカード | PAY.JP</a>
+	</div>
 
-	<dt>テスト秘密鍵</dt>
-	<dd><input type="text" class="text" soy:id="test_secret_key" /></dd>
+	<div class="form-group">
+		<label>テスト秘密鍵</label>
+		<input type="text" class="form-control" soy:id="test_secret_key" />
+	</div>
 
-	<dt>テスト公開鍵</dt>
-	<dd><input type="text" class="text" soy:id="test_public_key" /></dd>
+	<div class="form-group">
+		<label>テスト公開鍵</label>
+		<input type="text" class="form-control" soy:id="test_public_key" />
+	</div>
 
-	<dt>本番秘密鍵</dt>
-	<dd><input type="text" class="text" soy:id="production_secret_key" /></dd>
+	<div class="form-group">
+		<label>本番秘密鍵</label>
+		<input type="text" class="form-control" soy:id="production_secret_key" />
+	</div>
 
-	<dt>本番公開鍵</dt>
-	<dd><input type="text" class="text" soy:id="production_public_key" /></dd>
+	<div class="form-group">
+		<label>本番公開鍵</label>
+		<input type="text" class="form-control" soy:id="production_public_key" />
+	</div>
 
-</dl>
-
-<p class="pageBtn">
-	<input type="submit" class="submit_button" value="変更" />
-</p>
-
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>
 
-<div class="section">
-	<h3>このプラグインを使用するにあたって</h3>
-    <ul style="list-style-type: decimal;margin-left:45px;margin-bottom:10px;">
-        <li>当プラグイン以外の支払いモジュールはすべてアンインストールすることを推奨しています。</li>
-        <li>配送モジュールを使用したい場合は送料は商品の方に上乗せし、モジュールの送料設定では0円にしてください。</li>
-		<li>商品をカートに入れる際、商品は必ず一個のみになりますので、公開側の商品詳細ページのテンプレートで数量指定のフォームは設置しないでください。</li>
-    </ul>
-</div>
+<h4>このプラグインを使用するにあたって</h4>
+<ul style="list-style-type: decimal;margin-bottom:10px;">
+    <li>当プラグイン以外の支払いモジュールはすべてアンインストールすることを推奨しています。</li>
+    <li>配送モジュールを使用したい場合は送料は商品の方に上乗せし、モジュールの送料設定では0円にしてください。</li>
+	<li>商品をカートに入れる際、商品は必ず一個のみになりますので、公開側の商品詳細ページのテンプレートで数量指定のフォームは設置しないでください。</li>
+</ul>
 
 <br>

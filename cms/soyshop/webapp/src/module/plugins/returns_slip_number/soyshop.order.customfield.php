@@ -70,7 +70,7 @@ class ReturnsSlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 		if(!is_null($attr->getOrderId())){
 			return array(array(
 				"label" => "返送伝票番号",
-				"form" => "<input type=\"text\" class=\"text\" name=\"Customfield[ReturnsSlipNumber]\" value=\"" . htmlspecialchars($attr->getValue1(), ENT_QUOTES, "UTF-8") . "\" style=\"width:95%;\">"
+				"form" => "<input type=\"text\" class=\"form-control\" name=\"Customfield[ReturnsSlipNumber]\" value=\"" . htmlspecialchars($attr->getValue1(), ENT_QUOTES, "UTF-8") . "\" style=\"width:95%;\">"
 			));
 		}
 

@@ -2,13 +2,13 @@
 class CommonBreadcrumbCustomField extends SOYShopItemCustomFieldBase{
 
 	function doPost(SOYShop_Item $item){
-		
+
 		if(isset($_POST["breadcrumb"])){
 			$pageId = $_POST["breadcrumb"];
 			$itemId = $item->getId();
-			
+
 			$logic = SOY2Logic::createInstance("module.plugins.common_breadcrumb.logic.BreadcrumbLogic");
-			
+
 			$res = $logic->insert($itemId, $pageId);
 		}
 	}
@@ -17,13 +17,13 @@ class CommonBreadcrumbCustomField extends SOYShopItemCustomFieldBase{
 
 		$logic = SOY2Logic::createInstance("module.plugins.common_breadcrumb.logic.BreadcrumbLogic");
 		$pages = $logic->getPages();
-		
+
 		$pageId = $logic->getListPageId($item->getId());
 
 		$html = array();
-		
-		$html[] = "<dt><label for=\"breadcrumb\">商品一覧ページ用のパンくず設定</label></dt>";
-		$html[] = "<dd>";
+
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label for=\"breadcrumb\">商品一覧ページ用のパンくず設定</label><br>";
 		$html[] = "<select name=\"breadcrumb\">";
 
 		foreach($pages as $page){
@@ -33,9 +33,9 @@ class CommonBreadcrumbCustomField extends SOYShopItemCustomFieldBase{
 				$html[] = "<option value=\"" . $page->getId() . "\">" . $page->getName() . "</option>";
 			}
 		}
-		
+
 		$html[] = "</select>";
-		$html[] = "</dd>";
+		$html[] = "</div>";
 
 		return implode("\n", $html);
 	}
@@ -46,4 +46,3 @@ class CommonBreadcrumbCustomField extends SOYShopItemCustomFieldBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.item.customfield", "common_breadcrumb", "CommonBreadcrumbCustomField");
-?>

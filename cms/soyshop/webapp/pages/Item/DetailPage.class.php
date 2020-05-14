@@ -560,13 +560,6 @@ class DetailPage extends WebPage{
 			"id" => "open_period_end",
 			"readonly" => true
 		));
-
-		$histories = $this->getHistories($item);
-		DisplayPlugin::toggle("change_history", count($histories));
-
-		$this->createAdd("history_list", "_common.Item.ChangeHistoryListComponent", array(
-			"list" => $histories
-		));
 	}
 
 	//入荷通知周り
@@ -654,36 +647,22 @@ class DetailPage extends WebPage{
 		return $ids;
 	}
 
-	//拡張ポイントのsoyshop.item.update関連の処理
-	function getHistories(SOYShop_Item $item){
-		SOYShopPlugin::load("soyshop.item.update");
-		$delegate = SOYShopPlugin::invoke("soyshop.item.update", array(
-			"item" => $item
-		));
-
-		$histories = array();
-		if(is_array($delegate->getList()) && count($delegate->getList()) > 0){
-			foreach($delegate->getList() as $key => $values){
-				if(isset($values)){
-					foreach($values as $value){
-						$array = array("date" => $value->getCreateDate(), "content" => $value->getMemo());
-						$histories[] = $array;
-					}
-				}
-			}
+	function getSubMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Item.SubMenu.DetailMenuPage", array(
+				"arguments" => array($this->id)
+			))->getObject();
+		}catch(Exception $e){
+			//
+			return null;
 		}
-
-		return $histories;
 	}
 
-	function getSubMenu(){
-		$key = "Item.SubMenu.DetailMenuPage";
-
+	function getFooterMenu(){
 		try{
-			$subMenuPage = SOY2HTMLFactory::createInstance($key, array(
+			return SOY2HTMLFactory::createInstance("Item.FooterMenu.DetailFooterMenuPage", array(
 				"arguments" => array($this->id)
-			));
-			return $subMenuPage->getObject();
+			))->getObject();
 		}catch(Exception $e){
 			//
 			return null;

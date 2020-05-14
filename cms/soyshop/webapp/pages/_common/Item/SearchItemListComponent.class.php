@@ -1,7 +1,7 @@
 <?php
 
 class SearchItemListComponent extends HTMLList{
-	
+
 	private $detailLink;
 	private $categories;
 	private $orderDAO;
@@ -21,6 +21,16 @@ class SearchItemListComponent extends HTMLList{
 		$this->addLabel("item_publish", array(
 			"text" => $item->getPublishText()
 		));
+
+		$imagePath = soyshop_convert_file_path_on_admin($item->getAttribute("image_small"));
+		if(!strlen($imagePath)) $imagePath = soyshop_get_item_sample_image();
+		$this->addImage("item_small_image", array(
+            //"src" => "/" . SOYSHOP_ID . "/im.php?src=" . $imagePath . "&width=60",	//im.phpが使えなくなった
+			"src" => $imagePath,
+			"attr:style" => "width:60px;"
+
+        ));
+
 		$this->addLabel("sale_text", array(
 			"text" => " ".MessageManager::get("ITEM_ON_SALE"),
 			"visible" => $item->isOnSale()

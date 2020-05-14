@@ -61,7 +61,9 @@ class SettingPage extends WebPage{
 
         parent::__construct();
 
-        DisplayPlugin::toggle("updated", isset($_GET["updated"]));
+		$this->addLabel("nav", array(
+			"html" => LinkNaviAreaComponent::build()
+		));
 
         self::buildLanguageForm();
         self::buildSearchForm();

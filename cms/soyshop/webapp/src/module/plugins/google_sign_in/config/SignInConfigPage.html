@@ -1,10 +1,10 @@
-<p class="notice" soy:display="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 	<dl>
 		<dt>クライアントID</dt>
 		<dd>
-			<input type="text" class="text" soy:id="client_id" style="width:90%;" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com">
+			<input type="text" class="form-control" soy:id="client_id" style="width:90%;" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com">
 		</dd>
 
 		<dt>仮登録モード</dt>
@@ -15,8 +15,8 @@
 
 		<dt>
 			ボタンのカスタマイズ
-			<a soy:id="return_link" class="button" onclick="return confirm('HTMLを戻しますか？');">戻す</a>
-			<a soy:id="sample_link" class="button" onclick="return confirm('HTMLをサンプルに変更しますか？');">サンプル</a>
+			<a soy:id="return_link" class="btn btn-default" onclick="return confirm('HTMLを戻しますか？');">戻す</a>
+			<a soy:id="sample_link" class="btn btn-default" onclick="return confirm('HTMLをサンプルに変更しますか？');">サンプル</a>
 			<a href="https://developers.google.com/identity/sign-in/web/reference#gapisignin2renderid-options" target="_blank">説明ページへ(英語)</a>
 		</dt>
 		<dd>
@@ -25,9 +25,9 @@
 		</dd>
 	</dl>
 
-	<p class="pageBtn">
-		<input type="submit" class="submit_button" value="変更" />
-	</p>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>
 
 <h3>Google Sign-In For Websiteプラグインの使用方法</h3>

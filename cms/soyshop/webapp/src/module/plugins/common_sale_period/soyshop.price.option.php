@@ -20,7 +20,7 @@ class SalePeriodPriceOption extends SOYShopPriceOptionBase{
 
 		$html[] = "<input type=\"text\" name=\"" . self::PLUGIN_ID . "_start\" id=\"sale_period_start\" class=\"date_picker_start\" value=\"" . soyshop_convert_date_string($obj->getSalePeriodStart()) . "\" style=\"width:30%;\" readonly>～";
 		$html[] = "<input type=\"text\" name=\"" . self::PLUGIN_ID . "_end\" id=\"sale_period_end\" class=\"date_picker_end\" value=\"" . soyshop_convert_date_string($obj->getSalePeriodEnd()) . "\" style=\"width:30%;\" readonly>";
-		$html[] = " <a href=\"javascript:void(0)\" id=\"period_clear_button\" class=\"button\">クリア</a>";
+		$html[] = " <a href=\"javascript:void(0)\" id=\"period_clear_button\" class=\"btn btn-default\">クリア</a>";
 		$html[] = "<br>※セール期間を設定する場合はセール中に設定するにチェックを入れてください。";
 		$html[] = "<script>" . file_get_contents(dirname(__FILE__) . "/js/script.js") . "</script>";
 

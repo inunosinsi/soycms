@@ -211,4 +211,20 @@ class UserPage extends WebPage{
 		$configs = AddMailTypeUtil::getConfig(AddMailTypeUtil::MAIL_TYPE_USER);
 		return (isset($configs[$type])) ? $configs[$type]["title"] . "雛形設定" : "注文受付メール設定(自動送信)";
 	}
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Config.FooterMenu.MailTemplateFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
+
+	function getScripts(){
+		$root = SOY2PageController::createRelativeLink("./js/");
+		return array(
+			$root . "main.pack.js",
+		);
+	}
 }

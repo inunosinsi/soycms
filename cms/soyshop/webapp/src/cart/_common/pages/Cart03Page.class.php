@@ -263,7 +263,8 @@ class Cart03Page extends MainCartPageBase{
 		));
 		$this->createAdd("delivery_method_list", "_common.DeliveryMethodListComponent", array(
 			"list" => $deliveryMethodList,
-			"selected" => $cart->getAttribute("delivery_module")
+			"selected" => $cart->getAttribute("delivery_module"),
+			"cart" => $cart
 		));
 
 		//割引モジュール

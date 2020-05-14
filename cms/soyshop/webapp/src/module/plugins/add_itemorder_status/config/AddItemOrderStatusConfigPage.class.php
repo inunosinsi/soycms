@@ -51,8 +51,9 @@ class AddItemOrderStatusConfigPage extends WebPage{
 
 		$html = array();
 		if(count($statusList)){
-			$html[] = "<table class=\"form_list\" style=\"width:50%;float:left;\">";
-			$html[] = "<tr><th>注文状態ID</th><th>ラベル</th></tr>";
+			$html[] = "<table class=\"table table-striped\" style=\"width:50%;\">";
+			$html[] = "<caption>状態の設定状況</caption>";
+			$html[] = "<tr><th class=\"col-lg-2\">状態ID</th><th>ラベル</th></tr>";
 			foreach($statusList as $key => $label){
 				$html[] = "<tr><td>" . $key . "</td><td>" . $label . "</td></tr>";
 			}

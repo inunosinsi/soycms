@@ -49,9 +49,23 @@ class ItemOrderListComponent extends HTMLList {
 			"onchange" => '$(\'#confirm_operation\').show();'
 		));
 
+		//状態のセレクトボックス 状態が2個以上の場合にセレクトボックスを出力する
+		$flagList = SOYShop_ItemOrder::getFlagList();
+		$this->addModel("is_flag", array(
+			"visible" => (count($flagList) > 1)
+		));
+
+		$this->addSelect("flag", array(
+			"name" => "Flag[" . $itemOrder->getId() . "]",
+			"options" => $flagList,
+			"selected" => $itemOrder->getFlag(),
+			"indexOrder" => true,
+			"onchange" => '$(\'#confirm_operation\').show();'
+		));
+
 
 		$this->addLabel("item_option", array(
-			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? soyshop_build_item_option_html_on_item_order($itemOrder) : ""
+			"html" => ($itemOrder instanceof SOYShop_ItemOrder) ? "<br>" . soyshop_build_item_option_html_on_item_order($itemOrder) : ""
 		));
 
 		$this->addLabel("item_price", array(

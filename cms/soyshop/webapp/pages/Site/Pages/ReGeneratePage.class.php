@@ -9,17 +9,15 @@ class ReGeneratePage extends WebPage{
 
 		if($this->id){
 
-			$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-			$logic = SOY2Logic::createInstance("logic.site.page.PageLogic");
+			try{
+				$page = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getById($this->id);
+				//強制再生成
+				SOY2Logic::createInstance("logic.site.page.PageLogic")->generatePageDirectory($page, true);
+			}catch(Exception $e){
 
-			$page = $dao->getById($this->id);
-
-			//強制再生成
-			$logic->generatePageDirectory($page,true);
-
+			}
 		}
 
 		SOY2PageController::jump("Site.Pages.Detail." . $this->id . "?updated=regenerated");
     }
 }
-?>

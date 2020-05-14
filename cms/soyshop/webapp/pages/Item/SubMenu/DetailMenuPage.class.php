@@ -92,5 +92,9 @@ class DetailMenuPage extends HTMLPage{
 			"link" => ($prevItem && $prevItem->getIsDisabled()!=1) ? $detailLink ."/". $prevItem->getId() : "javascript:void(0)",
 			"text" => ($prevItem && $prevItem->getIsDisabled()!=1) ? $prevItem->getName() : "-"
 		));
+
+		$this->addModel("file_manager_url", array(
+			"attr:src" => SOY2PageController::createLink("Site.File?display_mode=free")
+		));
 	}
 }

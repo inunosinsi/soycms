@@ -26,10 +26,6 @@ class CommonAdditionOptionConfigFormPage extends WebPage{
 
     	$this->addForm("form");
 
-    	$this->addModel("updated", array(
-			"visible" => (isset($_GET["updated"]))
-    	));
-
     	$this->addInput("addition_name", array(
     		"name" => "Config[name]",
     		"value" => (isset($config["name"])) ? $config["name"] : ""

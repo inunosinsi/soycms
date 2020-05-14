@@ -1,54 +1,57 @@
-<p class="notice" soy:display="updated">ファイルのアップロードに成功しました。</p>
-<p class="notice" soy:display="extension">ファイル形式が不正です。</p>
-<p class="notice" soy:display="repetition">ファイルがすでに存在するためアップロードすることができません。</p>
-<p class="notice" soy:display="motion">ファイルの移動に失敗しました。</p>
-<p class="notice" soy:display="deleted">ファイルの削除に成功しました。</p>
+<div class="alert alert-success" soy:display="updated">ファイルのアップロードに成功しました。</div>
+<div class="alert alert-success" soy:display="extension">ファイル形式が不正です。</div>
+<div class="alert alert-success" soy:display="repetition">ファイルがすでに存在するためアップロードすることができません。</div>
+<div class="alert alert-success" soy:display="motion">ファイルの移動に失敗しました。</div>
+<div class="alert alert-success" soy:display="deleted">ファイルの削除に成功しました。</div>
 
-<div class="table_container">
-	<dl>
-		<form soy:id="form" enctype="multipart/form-data">
-		<dt>登録されているアイコン</dt>
-		<dd>
-			<!-- soy:id="custom_icon_field" /-->
-			<p><span>チェックを入れたものを</span><input type="submit" name="delete" onclick="return confirm('削除してもよろしいですか？');" value="削除" class="submit_button" /></p>
-		</dd>
-		<dt>アイコンを登録する</dt>
-		<dd>
+<form soy:id="form" enctype="multipart/form-data">
+	<div class="form-group">
+		<label>登録されているアイコン</label><br>
+		<!-- soy:id="custom_icon_field" /-->
+		<p><span>チェックを入れたものを</span><input type="submit" name="delete" onclick="return confirm('削除してもよろしいですか？');" value="削除" class="btn btn-primary btn-sm"></p>
+	</div>
 
-				<p style="padding: 0 0 0 20px;">
-					<input type="file" name="file" id="file">を<input type="submit" value="アップロード" class="submit_button" />
-				</p>
-		</dd>
-		</form soy:id="form">
-		<dt>アイコンの配置ディレクトリ</dt>
-		<dd><!-- soy:id="custom_icon_directory" /--></dd>
-		<dt>カスタムアイコンフィールドの記述例</dt>
-		<dd>
-<pre style="border:1px solid #000000;padding:5px;width:700px;">
-<b>&lt;!-- block:id="item_list" --&gt;</b>
+	<div class="form-group">
+		<label>アイコンを登録する</label>
+		<div class="form-inline">
+			<input type="file" name="file" id="file">を<input type="submit" value="アップロード" class="btn btn-primary">
+		</div>
+	</div>
+</form>
+
+<div class="form-group">
+	<label>アイコンの配置ディレクトリ</label><br>
+	<!-- soy:id="custom_icon_directory" /-->
+</div>
+
+<h4>カスタムアイコンフィールドの記述例</h4>
+<pre>
+<strong>&lt;!-- block:id="item_list" --&gt;</strong>
 	&lt;div class="itemlist"&gt;
 		&lt;dl&gt;
-			&lt;dt&gt;<b>&lt;!-- cms:id="<!-- soy:id="plugin_id" /-->" /--&gt;</b>&lt;/dt&gt;
+			&lt;dt&gt;<strong>&lt;!-- cms:id="<!-- soy:id="plugin_id" /-->" /--&gt;</strong>&lt;/dt&gt;
 			&lt;dt cms:id="item_name"&gt;ダイズ&lt;/dt&gt;
 			&lt;dd class="price" cms:id="item_price"&gt;1000円/100g&lt;/dd&gt;
 		&lt;/dl&gt;
 		&lt;p class="cart_btn"&gt;&lt;a cms:id="item_cart_link"&gt;カートに入れる&lt;/a&gt;&lt;/p&gt;
 	&lt;/div&gt;
-<b>&lt;!-- /block:id="item_list" --&gt;</b>
+<strong>&lt;!-- /block:id="item_list" --&gt;</strong>
 </pre>
-		</dd>
-		<dt>表示されるアイコンのソースコード</dt>
-		<dd>&lt;img src="アイコンのパス" <b>class="<!-- soy:id="plugin_id*" /-->"</b>&gt;</dd>
-		<dt>商品情報のCSVインポート・エクスポート時のアイコン</dt>
-		<dd>
-			エクスポートCSVには、アイコン画像のファイル名のみ出力されます。画像ファイルはエクスポートされません。<br />
-			インポート時には、アイコン画像のファイル名のみ登録されます。画像ファイルはインポートされませんので、<br />
-			インポート先に配置ディレクトリ以下の画像をコピーしてください。
-		</dd>
-		<dt>多言語設定</dt>
-		<dd>
-			{ファイル名.拡張子}のアイコンの多言語化の場合、{ファイル名_多言語のプレフィックス.拡張子}のファイルを用意しておくと、{ファイル名.拡張子}を選択した際に多言語サイトを開いたら、{ファイル名_多言語のプレフィックス.拡張子}にリネームされます。<br>
-			例:icon.jpgの英語対応の場合、icon_en.jpgになります。
-		</dd>
-	</dl>
+
+<div class="form-group">
+	<label>表示されるアイコンのソースコード</label><br>
+	&lt;img src="アイコンのパス" <strong>class="<!-- soy:id="plugin_id*" /-->"</strong>&gt;
+</div>
+
+<div class="form-group">
+	<label>商品情報のCSVインポート・エクスポート時のアイコン</label><br>
+	エクスポートCSVには、アイコン画像のファイル名のみ出力されます。画像ファイルはエクスポートされません。<br />
+	インポート時には、アイコン画像のファイル名のみ登録されます。画像ファイルはインポートされませんので、<br />
+	インポート先に配置ディレクトリ以下の画像をコピーしてください。
+</div>
+
+<div class="form-group">
+	<label>多言語設定</label><br>
+	{ファイル名.拡張子}のアイコンの多言語化の場合、{ファイル名_多言語のプレフィックス.拡張子}のファイルを用意しておくと、{ファイル名.拡張子}を選択した際に多言語サイトを開いたら、{ファイル名_多言語のプレフィックス.拡張子}にリネームされます。<br>
+	例:icon.jpgの英語対応の場合、icon_en.jpgになります。
 </div>

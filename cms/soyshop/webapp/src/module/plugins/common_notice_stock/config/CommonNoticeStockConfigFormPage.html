@@ -1,4 +1,4 @@
-<p class="notice" soy:id="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 <dl>
@@ -6,30 +6,30 @@
 	<dd>
 		<input type="text" soy:id="stock" name="" value="" style="text-align:right;ime-mode:inactive;" />個
 	</dd>
-	
+
 	<dt>通常の文言</dt>
 	<dd>
 		<textarea soy:id="has_stock_text"></textarea>
 		<p>※##COUNT##は残りの在庫数に置換されます</p>
 	</dd>
-	
+
 	<dt>在庫数残りわずかの文言</dt>
 	<dd>
 		<textarea soy:id="notice_stock_text"></textarea>
 		<p>※##COUNT##は残りの在庫数に置換されます</p>
 	</dd>
-	
+
 	<dt>在庫切れの文言</dt>
 	<dd>
 		<textarea soy:id="no_stock_text"></textarea>
 	</dd>
 </dl>
-<p class="pageBtn">
-	<input type="submit" name="update" value="更新" />
-</p>
-</form soy:id="form">
+<div class="text-center">
+	<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+</div>
+</form>
 
-<h3>テンプレートへの記述例</h3>
+<h4>テンプレートへの記述例</h4>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
 <strong>&lt;!-- cms:id="notice_stock" --&gt;</strong>
 	<strong>&lt;!-- cms:id="notice_stock_text" --&gt;</strong>在庫残りわずか！<strong>&lt;!-- /cms:id="notice_stock_text" --&gt;</strong>

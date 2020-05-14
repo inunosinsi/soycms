@@ -201,7 +201,7 @@ class CustomConfigFormPage extends WebPage{
         }catch(Exception $e){
             $field = new SOYShop_ItemAttribute();
         }
-        $html[] = "<input name=\"LanguageConfig[" . $key . "]\" value=\"" . $field->getValue() . "\" type=\"text\" class=\"text\">";
+        $html[] = "<input name=\"LanguageConfig[" . $key . "]\" value=\"" . $field->getValue() . "\" type=\"text\" class=\"form-control\">";
         $html[] = "</dd>";
 
         $config = UtilMultiLanguageUtil::getConfig();

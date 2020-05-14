@@ -272,4 +272,13 @@ class ImportPage extends WebPage{
 		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
 		return UserCustomSearchFieldUtil::getConfig();
 	}
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("User.FooterMenu.UserFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
 }

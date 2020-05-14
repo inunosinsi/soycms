@@ -1,34 +1,32 @@
-<p class="notice" soy:display="updated">更新しました</p>
-<p class="error" soy:display="error">失敗しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+<div class="alert alert-danger" soy:display="error">失敗しました</div>
 
 <form soy:id="form">
-
-<dl>
-	<dt>ポイント加算の設定</dt>
-	<dd>
-		購入金額の<input type="text" soy:id="point_percentage" size="4" />&nbsp;%&nbsp;
+	<div class="form-group">
+		<label>ポイント加算の設定</label><br>
+		購入金額の<input type="number" soy:id="point_percentage" size="8" /><br>
 		<label><input type="checkbox" name="all_change">個々の商品のポイント設定に反映する</label>
 		<p>※各商品毎でポイント加算の割合を変更できます。</p>
-	</dd>
-	<dt>セール商品のポイント設定</dt>
-	<dd>
+	</div>
+
+	<div class="form-group">
+		<label>セール商品のポイント設定</label><br>
 		<input type="checkbox" soy:id="sale_point_double_on">&nbsp;
 		セール商品のポイント付与率を<input type="number" soy:id="sale_point_double">倍にする
-	</dd>
-	<dt>購入者の誕生月購入特典</dt>
-	<dd>
+	</div>
+
+	<div class="form-group">
+		<label>購入者の誕生月購入特典</label><br>
 		<input type="number" soy:id="point_birthday_present">&nbsp;ポイント<br>
 		※1以上の値が設定されている場合、購入者の誕生月であった場合は設定したポイントをプレゼント
-	</dd>
-</dl>
+	</div>
 
-<p class="pageBtn" style="clear:both;">
-	<input type="submit" class="submit_button" value="変更" />
-</p>
-
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>
 
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 20px 0;">
+<pre>
 &lt;!-- block:id="item" --&gt;
 
 ポイント付与:&lt;!-- cms:id="item_point_grant_percentage" /--&gt;%

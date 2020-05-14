@@ -96,6 +96,10 @@ class CustomSearchFieldConfigFormPage extends WebPage{
     function execute(){
         parent::__construct();
 
+		$this->addLabel("nav", array(
+			"html" => LinkNaviAreaComponent::build()
+		));
+
         foreach(array("error", "deleted") as $t){
             DisplayPlugin::toggle($t, isset($_GET[$t]));
         }

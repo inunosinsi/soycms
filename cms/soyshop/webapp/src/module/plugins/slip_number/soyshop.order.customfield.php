@@ -69,7 +69,7 @@ class SlipNumberOrderCustomfield extends SOYShopOrderCustomfield{
 		if(!is_null($attr->getOrderId())){
 			return array(array(
 				"label" => "伝票番号",
-				"form" => "<input type=\"text\" class=\"text\" name=\"Customfield[SlipNumber]\" value=\"" . htmlspecialchars($attr->getValue1(), ENT_QUOTES, "UTF-8") . "\" style=\"width:95%;\">"
+				"form" => "<input type=\"text\" class=\"form-control\" name=\"Customfield[SlipNumber]\" value=\"" . htmlspecialchars($attr->getValue1(), ENT_QUOTES, "UTF-8") . "\" style=\"width:95%;\">"
 			));
 		}
 

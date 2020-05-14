@@ -1,24 +1,22 @@
-<p class="notice" soy:id="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
-<dl>
-	<dt>子商品の表示設定</dt>
-	<dd>
+	<div class="form-group">
+		<label>子商品の表示設定</label><br>
 		<input type="checkbox" soy:id="display_child">
-	</dd>
-</dl>
-<p class="pageBtn">
-	<input type="submit" name="update" value="更新" />
-</p>
+	</div>
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
 </form>
 
-<h3>テンプレートへの記述例(商品一覧)</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<h4>テンプレートへの記述例(商品一覧)</h4>
+<pre>
 &lt;!-- shop:module="common.breadcrumb_navigation" --&gt;
 &lt;p id="pankuzu"&gt;
   &lt;a href="/"&gt;トップ&lt;/a&gt;
   &lt;!-- block:id="breadcrumb" --&gt;
-  &nbsp;&gt;&nbsp; 
+  &nbsp;&gt;&nbsp;
   &lt;a cms:id="breadcrumb_link"&gt;インテリア&lt;/a&gt;
   &lt;!-- /block:id="breadcrumb" --&gt;
   &nbsp;&gt;&nbsp;
@@ -28,14 +26,14 @@
 &lt;/p&gt;
 &lt;!-- /shop:module="common.breadcrumb_navigation" --&gt;
 </pre>
-
-<h3>テンプレートへの記述例(商品詳細)</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<br>
+<h4>テンプレートへの記述例(商品詳細)</h4>
+<pre>
 &lt;!-- shop:module="common.breadcrumb_navigation" --&gt;
 &lt;p id="pankuzu"&gt;
   &lt;a href="/"&gt;トップ&lt;/a&gt;
   &lt;!-- block:id="breadcrumb" --&gt;
-  &nbsp;&gt;&nbsp; 
+  &nbsp;&gt;&nbsp;
   &lt;a cms:id="breadcrumb_link"&gt;インテリア&lt;/a&gt;
   &lt;!-- /block:id="breadcrumb" --&gt;
   &nbsp;&gt;&nbsp;
@@ -47,9 +45,9 @@
 &lt;/p&gt;
 &lt;!-- /shop:module="common.breadcrumb_navigation" --&gt;
 </pre>
-
-<h3>テンプレートへの記述例(フリーページ)</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<br>
+<h4>テンプレートへの記述例(フリーページ)</h4>
+<pre>
 &lt;!-- shop:module="common.breadcrumb_navigation" --&gt;
 &lt;p id="pankuzu"&gt;
   &lt;a href="/"&gt;トップ&lt;/a&gt;
@@ -60,9 +58,9 @@
 &lt;/p&gt;
 &lt;!-- /shop:module="common.breadcrumb_navigation" --&gt;
 </pre>
-
-<h3>テンプレートへの記述例(検索結果)</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 15px;">
+<br>
+<h4>テンプレートへの記述例(検索結果)</h4>
+<pre>
 &lt;!-- shop:module="common.breadcrumb_navigation" --&gt;
 &lt;p id="pankuzu"&gt;
   &lt;a href="/"&gt;トップ&lt;/a&gt;

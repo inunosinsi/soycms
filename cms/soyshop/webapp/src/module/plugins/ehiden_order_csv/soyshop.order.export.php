@@ -18,7 +18,7 @@ class EhidenOrderCSV extends SOYShopOrderExportBase{
 	 * 検索結果一覧に表示するメニューの説明
 	 */
 	function getMenuDescription(){
-		return 'e飛伝形式のCSVを出力します。&nbsp;&nbsp;(<b>文字コード=</b>
+		return 'e飛伝形式のCSVを出力します。&nbsp;&nbsp;(<strong>文字コード=</strong>
 			<input id="charset_shit_jis" type="radio" name="charset" value="Shift-JIS" checked />
 			<label for="charset_shit_jis">Shift-JIS</label>		
 			<input id="charset_utf_8" type="radio" name="charset" value="UTF-8" />

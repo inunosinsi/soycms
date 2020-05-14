@@ -5,9 +5,9 @@
 class NotationPage extends WebPage{
 
 	function __construct(){
-		parent::__construct();
+		SOY2PageController::jump("Site");
+		exit;
+//		parent::__construct();
 	}
-	
-}
 
-?>
+}

@@ -15,7 +15,7 @@ class ItemOrderPriceBulkChangeOrderEdit extends SOYShopOrderEditBase{
 
 		$html = array();
 
-		$html[] = "<table class=\"form_list\" style=\"width:80%;\">";
+		$html[] = "<table class=\"table table-striped\" style=\"width:80%;\">";
 		$html[] = "<tr>";
 		$html[] = "<th class=\"alC\">単価の一括変更</th>";
 		$html[] = "<td style=\"text-align:center;\">";
@@ -41,7 +41,7 @@ class ItemOrderPriceBulkChangeOrderEdit extends SOYShopOrderEditBase{
 		}
 
 		$html[] = "</span>";
-		$html[] = "&nbsp;&nbsp;<a href=\"javascript:void(0);\" id=\"itemorder_price_bulk_change_button\" class=\"button\">一括変更</a>";
+		$html[] = "&nbsp;&nbsp;<a href=\"javascript:void(0);\" id=\"itemorder_price_bulk_change_button\" class=\"btn btn-default\">一括変更</a>";
 		$html[] = "</td>";
 		$html[] = "</tr>";
 		$html[] = "</table>";

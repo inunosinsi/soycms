@@ -1,21 +1,16 @@
-<p class="error always" soy:display="uninstalled_point_base_plugin">ポイント制設定プラグインをインストールしてください</p>
-<p class="error always" soy:display="installed_point_grant_plugin">簡易ポイント付与プラグインと併用できません</p>
+<div class="alert alert-danger" soy:display="uninstalled_point_base_plugin">ポイント制設定プラグインをインストールしてください</div>
+<div class="alert alert-danger" soy:display="installed_point_grant_plugin">簡易ポイント付与プラグインと併用できません</div>
 
-<p class="notice" soy:display="updated">更新しました</p>
-<p class="error" soy:display="error">失敗しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+<div class="alert alert-danger" soy:display="error">失敗しました</div>
 
 <form soy:id="form">
-
-<dl>
-	<dt>ポイント加算の設定</dt>
-	<dd>
+	<div class="form-group">
+		<label>ポイント加算の設定</label><br>
 		標準の固定ポイント：<input type="number" soy:id="fixed_point">&nbsp;ポイント
 		<p>※各商品毎で固定ポイント加算値を変更できます。</p>
-	</dd>
-</dl>
-
-<p class="pageBtn" style="clear:both;">
-	<input type="submit" class="submit_button" value="変更" />
-</p>
-
+	</div>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>

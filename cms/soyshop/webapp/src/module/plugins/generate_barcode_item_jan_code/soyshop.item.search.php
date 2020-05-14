@@ -14,7 +14,7 @@ class GenerateBarcodeItemJanCodeItemSearch extends SOYShopItemSearch{
 
 	function searchItems($params){
 		$v = (isset($params) && is_string($params)) ? $params : "";
-		$form = "<input type=\"text\" class=\"text\" name=\"SearchForm[customs][generate_barcode_item_jan_code]\" value=\"" . $v . "\">";
+		$form = "<input type=\"text\" class=\"form-control\" name=\"SearchForm[customs][generate_barcode_item_jan_code]\" value=\"" . $v . "\">";
 		return array("label" => "JANコード", "form" => $form);
 	}
 }

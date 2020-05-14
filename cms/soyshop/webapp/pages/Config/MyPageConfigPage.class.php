@@ -92,12 +92,9 @@ class MyPageConfigPage extends WebPage{
 
 		//携帯自動振り分けプラグインが有効かどうか
 		$isEnabledUtilMobileCheck = class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("util_mobile_check"));
-		$this->addModel("is_enabled_util_mobile_check", array(
-				"visible" => $isEnabledUtilMobileCheck,
-		));
-		$this->addModel("is_not_enabled_util_mobile_check", array(
-				"visible" => ! $isEnabledUtilMobileCheck,
-		));
+		DisplayPlugin::toggle("is_enabled_util_mobile_check", $isEnabledUtilMobileCheck);
+		DisplayPlugin::toggle("is_enabled_util_mobile_check_1", $isEnabledUtilMobileCheck);
+		DisplayPlugin::toggle("is_not_enabled_util_mobile_check", !$isEnabledUtilMobileCheck);
 
 		$this->addInput("mypage_url", array(
 			"name" => "mypage_url",

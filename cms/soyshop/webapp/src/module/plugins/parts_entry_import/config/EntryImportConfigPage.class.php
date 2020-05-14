@@ -39,7 +39,7 @@ class EntryImportConfigPage extends WebPage{
 		parent::__construct();
 
 		DisplayPlugin::toggle("example", isset($config["blogId"]));
-		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
+		
 		DisplayPlugin::toggle("error", isset($_GET["error"]));
 
 		$old = SOYAppUtil::switchAdminDsn();

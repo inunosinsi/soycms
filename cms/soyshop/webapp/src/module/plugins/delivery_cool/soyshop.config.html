@@ -1,18 +1,18 @@
-<p class="notice" soy:id="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
 <h3>都道府県別料金</h3>
-<div class="table_container">
-		
+<div class="table-responsive">
+
 	<form method="post" soy:id="price_form">
-		
-		<table class="form_table" style="width:80%;">
+
+		<table class="table table-striped" style="width:80%;">
 			<tr>
 				<th style="width:20%;">
 					<input type="checkbox" id="toggle_checkbox" onclick="toggle_check(this);return true;" />
 					<label for="toggle_checkbox">一括設定</label>
 				</th>
 				<td style="text-align:center;">
-					<input class="text" style="text-align:right;width:30%;" id="toggle_price" value="" />
+					<input class="form-control" style="text-align:right;width:30%;" id="toggle_price" value="" />
 					<button type="button" onclick="toggle_all();">設定する</button>
 				</td>
 				<td>
@@ -21,24 +21,24 @@
 			</tr>
 		</table>
 
-		<table class="form_table" style="width:35%;float:left;margin-left:10%;">
+		<table class="table table-striped" style="width:35%;float:left;margin-left:10%;">
 			<tr>
 				<th style="width:5em;">県名</th>
 				<th style="width:5em;">送料</th>
 			</tr>
 			<!--  soy:id="prices" -->
 			<tr>
-			<th class="alC">
+			<th >
 				<input type="checkbox" class="price_input_check" soy:id="area_check" />
 			</th>
 			<td>
 				<input class="alR text" style="width: 100px;" type="text" soy:id="price" /> 円
 			</td>
 			</tr>
-	
+
 		<!--  soy:id="second_table" -->
 		</table>
-		<table class="form_table" style="width:35%;float:left;margin-left:5%;" >
+		<table class="table table-striped" style="width:35%;float:left;margin-left:5%;" >
 			<tr>
 				<th style="width:5em;">県名</th>
 				<th style="width:5em;">送料</th>
@@ -48,19 +48,18 @@
 			<!--  /soy:id="prices" -->
 
 		</table>
-		
-		<p class="pageBtn" style="clear:both;">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
-	
-	</form soy:id="price_form">
+
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="変更">
+		</div>
+	</form>
 </div>
 
 <h3>配達時間帯</h3>
-<div class="table_container" style="width: 100%">
+<div class="table-responsive" style="width: 100%">
 	<form method="post" soy:id="time_form">
-	
-		<table class="form_table alC" style="width:480px;margin: 1ex auto;" id="delivery_time_config_table">
+
+		<table class="table table-striped alC" style="width:480px;margin: 1ex auto;" id="delivery_time_config_table">
 		<thead>
 			<tr>
 				<th>配達時間帯希望の選択肢</th>
@@ -69,7 +68,7 @@
 		<tfoot>
 			<tr>
 				<td>
-					<a class="button" href="javascript:void(0);" onclick="add_time_form();">入力欄の追加</a>
+					<a class="btn btn-default" href="javascript:void(0);" onclick="add_time_form();">入力欄の追加</a>
 				</td>
 			</tr>
 		</tfoot>
@@ -77,19 +76,19 @@
 			<!-- soy:id="delivery_time_config" -->
 			<tr>
 				<td>
-					<input class="text" value="" soy:id="delivery_time" />
-					<a class="button" href="javascript:void(0);" onclick="delete_time_form(this);">削除</a>
+					<input class="form-control" value="" soy:id="delivery_time" />
+					<a class="btn btn-default" href="javascript:void(0);" onclick="delete_time_form(this);">削除</a>
 				</td>
 			</tr>
 			<!-- /soy:id="delivery_time_config" -->
 		</tbody>
 		</table>
-		
-		<p class="pageBtn" style="clear:both;">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
-	
-	</form soy:id="time_form">
+
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="変更">
+		</div>
+
+	</form>
 </div>
 
 <script type="text/javascript">

@@ -59,7 +59,7 @@ class DeliveryAdminDummyModule extends SOYShopDelivery{
 
 		$html =<<<"HTML"
 <table>
-<tr><th style="width:5ex">送料</th><td><input class="alR" type="text" name="delivery_admin_dummy_price" value="{$hPrice}" style="" onfocus="this.select()"> 円</td></tr>
+<tr><th style="width:5ex">送料</th><td><input class="text-right" type="text" name="delivery_admin_dummy_price" value="{$hPrice}" style="" onfocus="this.select()"> 円</td></tr>
 <tr><th style="width:5ex">メモ</th><td><textarea name="delivery_admin_dummy_memo">
 {$hMemo}</textarea></td></tr>
 </table>

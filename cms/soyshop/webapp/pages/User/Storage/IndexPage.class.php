@@ -19,7 +19,7 @@ class IndexPage extends WebPage{
 		parent::__construct();
 
 		$activedPointPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("store_user_folder")));
-		DisplayPlugin::toggle("is_storage", $activedPointPlugin);
+		DisplayPlugin::toggle("storage", $activedPointPlugin);
 
 		if($activedPointPlugin){
 			$files = SOY2Logic::createInstance("module.plugins.store_user_folder.logic.StorageLogic")->getFiles($this->userId);

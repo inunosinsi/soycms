@@ -5,7 +5,7 @@
  * @author SOY2HTMLFactory
  */
 class DetailPage extends WebPage{
-	
+
 	function doPost(){
 		if(soy2_check_token()){
 
@@ -34,18 +34,18 @@ class DetailPage extends WebPage{
 
     function __construct($args) {
     	$this->id = $args[0];
-    	
+
     	parent::__construct();
 
 		$this->createAdd("detail_page_link","HTMLLink", array(
 			"link" => SOY2PageController::createLink("Site.Pages.Detail." . $this->id)
 		));
-		
+
 		$this->buildForm();
     }
-    
+
     function buildForm(){
-    	
+
     	$logic = SOY2Logic::createInstance("logic.site.page.PageLogic");
 		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 
@@ -78,7 +78,7 @@ class DetailPage extends WebPage{
 			"value" => "item_code",
 			"label" => "商品コード",
 		));
-    	
+
     	$this->createAdd("sort_normal","HTMLCheckbox", array(
 			"name" => "Page[sortOrder]",
 			"selected" => (!$obj->getSortOrder()),
@@ -93,5 +93,14 @@ class DetailPage extends WebPage{
 			"label" => "降順",
 		));
     }
+
+	function getSubMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Site.Pages.SubMenu.SubMenuPage", array(
+				"arguments" => array($this->id,$this->page)
+			))->getObject();
+		}catch(Exception $e){
+			return null;
+		}
+	}
 }
-?>

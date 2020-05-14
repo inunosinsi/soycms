@@ -19,9 +19,11 @@ function register_item($stmt){
 			$stmt->execute(array(
 				":id" => $item->getId(),
 				":item_name" => $item->getName(),
+				":item_subtitle" => $item->getSubtitle(),
 				":item_code" => $item->getCode(),
 				":item_alias" => $item->getAlias(),
 				":item_price" => $item->getPrice(),
+				":item_purchase_price" => $item->getPurchasePrice(),
 				":item_sale_price" => $item->getSalePrice(),
 				":item_selling_price" => $item->getSellingPrice(),
 				":item_sale_flag" => $item->getSaleFlag(),
@@ -36,9 +38,9 @@ function register_item($stmt){
 				":order_period_end" => $item->getOrderPeriodEnd(),
 				":open_period_start" => $item->getOpenPeriodStart(),
 				":open_period_end" => $item->getOpenPeriodEnd(),
-				":detail_page_id" => $item->getDetailPageId(),
-				":item_is_open" => $item->getIsOpen(),
-				":is_disabled" => $item->getIsDisabled()
+				":detail_page_id" => (int)$item->getDetailPageId(),
+				":item_is_open" => (int)$item->getIsOpen(),
+				":is_disabled" => (int)$item->getIsDisabled()
 			));
 		}
 	}

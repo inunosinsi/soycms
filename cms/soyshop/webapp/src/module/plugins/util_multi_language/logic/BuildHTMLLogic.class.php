@@ -51,7 +51,7 @@ class BuildHTMLLogic extends SOY2LogicBase{
 		$htmls[] = "</dd>";
 		$htmls[] = "</dl>";
 
-		$htmls[] = "<table class=\"form_table\" style=\"table-layout:auto;\">";
+		$htmls[] = "<table class=\"table table-striped\" style=\"table-layout:auto;\">";
 		$htmls[] = "<caption>本文</caption>";
 
 		$array = array("header" => "ヘッダー", "footer" => "フッター");
@@ -79,7 +79,7 @@ class BuildHTMLLogic extends SOY2LogicBase{
 
 	private function convertListHTML($lang, $pos){
 		$htmls = array();
-		$htmls[] = "<a href=\"javascript:void(0);\" class=\"button\" onclick=\"$(this).parent().addClass('actived');$(this).hide();\">&lt;&lt;</a>";
+		$htmls[] = "<a href=\"javascript:void(0);\" class=\"btn btn-default\" onclick=\"$(this).parent().addClass('actived');$(this).hide();\">&lt;&lt;</a>";
 		$htmls[] = "<div class=\"word_list\">";
 		$htmls[] = "<h5>置換文字列</h5>";
 		$htmls[] = "<ul>";

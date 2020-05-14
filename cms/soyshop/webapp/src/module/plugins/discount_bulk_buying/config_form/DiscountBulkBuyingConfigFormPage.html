@@ -1,4 +1,4 @@
-<p class="notice" soy:id="notice_updated">変更しました</p>
+<p class="alert alert-success" soy:id="notice_updated">変更しました</p>
 
 <h1>まとめ買い割引 設定</h1>
 <form soy:id="discount_form">
@@ -38,9 +38,9 @@
 
 </dl>
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" value="設定変更" name="submit_discount" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="設定変更" name="submit_discount">
+</div>
 
 </form>
 
@@ -85,7 +85,7 @@
 		<span class="condition_amount_area">
 			[合計商品数]&nbsp;
 		</span>
-		
+
 		<span id="condition_combination_area">
 			<input type="radio" soy:id="condition_combination_all" ><label for="condition_combination_all">両方の条件に一致</label>&nbsp;
 			<input type="radio" soy:id="condition_combination_any" ><label for="condition_combination_any">片方の条件に一致</label>
@@ -93,9 +93,9 @@
 	</dd>
 </dl>
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" value="条件変更" name="submit_condition" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="条件変更" name="submit_condition">
+</div>
 
 </form>
 <script>
@@ -126,7 +126,7 @@ function display_condition_area(){
 	}else{
 		$(".condition_price_area").fadeOut("slow")
 	}
-	
+
 	//合計商品数
 	amount = $("#condition_amount_checkbox").prop("checked");
 	if(amount){
@@ -134,15 +134,15 @@ function display_condition_area(){
 	}else{
 		$(".condition_amount_area").fadeOut("slow")
 	}
-	
+
 	//条件組み合わせ
 	if(price && amount){
 		$("#condition_combination_area").fadeIn("slow");
 	}else{
 		$("#condition_combination_area").fadeOut("slow");
 	}
-	
-}	
+
+}
 
 $("#condition_price_checkbox").bind("click", display_condition_area);
 $("#condition_amount_checkbox").bind("click", display_condition_area);

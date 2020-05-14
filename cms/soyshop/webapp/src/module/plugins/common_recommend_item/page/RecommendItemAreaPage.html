@@ -1,42 +1,42 @@
 <!-- soy:display="has_recommend" -->
-<table class="form_list">
-	<caption>おすすめ商品</caption>
-	<thead>
-		<tr class="alC">
-			<th>更新日時</th>
-			<th>公開状況</th>
-			<th>商品名</th>
-			<th>商品コード</th>
-			<th>価格</th>
-			<th>在庫数</th>
-			<th>&nbsp;</th>
-		</tr>
-	</thead>
-	<tbody>
-		<!-- soy:id="recommend_list" -->
-		<tr>
-			<td class="alC"><!-- soy:id="update_date" /--></td>
-			<td class="alC" soy:id="item_publish">公開</td>
-			<td soy:id="item_name">大豆</td>
-			<td soy:id="item_code">ITEM_001</td>
-			<td class="alR"><span soy:id="item_price">1000</span> 円</td>
-			<!-- soy:id="ignore_stock" -->
-            <td class="alC">-----</td>
-            <!-- /soy:id="ignore_stock" -->
-            <!-- soy:id="display_stock" -->
-            <td class="alR"><span soy:id="item_stock">0</span> 点</td>
-            <!-- /soy:id="display_stock" -->
-			<td class="operation">
-				<a soy:id="detail_link" class="button">詳細</a>
-			</td>
-		</tr>
-		<!-- /soy:id="recommend_list" -->
-	</tbody>
-</table>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<caption>おすすめ商品</caption>
+		<thead>
+			<tr >
+				<th>更新日時</th>
+				<th>公開状況</th>
+				<th>商品名</th>
+				<th>商品コード</th>
+				<th>価格</th>
+				<th>在庫数</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="recommend_list" -->
+			<tr>
+				<td ><!-- soy:id="update_date" /--></td>
+				<td soy:id="item_publish">公開</td>
+				<td soy:id="item_name">大豆</td>
+				<td soy:id="item_code">ITEM_001</td>
+				<td><span soy:id="item_price">1000</span> 円</td>
+				<!-- soy:id="ignore_stock" -->
+	            <td >-----</td>
+	            <!-- /soy:id="ignore_stock" -->
+	            <!-- soy:id="display_stock" -->
+	            <td><span soy:id="item_stock">0</span> 点</td>
+	            <!-- /soy:id="display_stock" -->
+				<td class="operation">
+					<a soy:id="detail_link" class="btn btn-default">詳細</a>
+				</td>
+			</tr>
+			<!-- /soy:id="recommend_list" -->
+		</tbody>
+	</table>
+</div>
 <!-- /soy:display="has_recommend" -->
 
 <!-- soy:display="no_recommend" -->
-<p class="notice always">
-	おすすめ設定の商品はありません
-</p>
+<div class="alert alert-info">おすすめ設定の商品はありません</div>
 <!-- /soy:display="no_recommend" -->

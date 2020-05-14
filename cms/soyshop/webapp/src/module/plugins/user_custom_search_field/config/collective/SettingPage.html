@@ -1,12 +1,12 @@
-<div class="alR">
-	<a class="button" soy:link="Config.Detail?plugin=user_custom_search_field">ユーザーカスタムサーチフィールド一覧</a>
+<div class="text-right">
+	<a class="btn btn-default" soy:link="Config.Detail?plugin=user_custom_search_field">ユーザーカスタムサーチフィールド一覧</a>
 </div>
 
 <br>
 
-<div class="block_body clearfix">
+<div class="panel-body">
 
-	<p class="notice" soy:display="updated">
+	<p class="alert alert-success" soy:display="updated">
 		更新しました
 	</p>
 
@@ -16,7 +16,7 @@
 		</dt>
 		<div class="search_area_dd" soy:id="search_area">
 			<form soy:id="search_form">
-				<table class="form_table">
+				<table class="table table-striped">
 					<tr>
 						<th nowrap><!-- soy:id="csf_label" /--></th>
 						<td colspan="3"><input type="checkbox" soy:id="nothing_check">
@@ -29,9 +29,9 @@
 						<td><input type="search" soy:id="search_reading"></td>
 					</tr>
 				</table>
-				<p class="pageBtn">
-					<input type="submit" name="search" value="検索">
-				</p>
+				<div class="text-center">
+					<input type="submit" name="search" class="btn btn-primary btn-lg" value="検索">
+				</div>
 			</form>
 
 		</div>
@@ -53,12 +53,12 @@
 			</dd>
 		</dl>
 
-		<table class="form_list">
+		<table class="table table-striped">
 			<caption>
 				顧客一覧
 			</caption>
 			<thead>
-				<tr class="alC">
+				<tr >
 					<th>
 					<input id="user_checkbox" class="user_checkbox" type="checkbox" onclick="changeCheckBoxAuto();" />
 					</th>
@@ -86,17 +86,16 @@
 					<td class="middle"><span soy:id="attribute2">属性２</span></td>
 					<td class="middle"><span soy:id="attribute3">属性３</span></td>
 					<td class="operation" nowrap>
-						<a class="button" soy:id="edit_link*">編集</a>
+						<a class="btn btn-default" soy:id="edit_link*">編集</a>
 					</td>
 				</tr>
 				<!-- /soy:id="user_list" -->
 			</tbody>
 		</table>
 
-		<p class="pageBtn">
-			<input type="submit" name="set" value="設定する">
-		</p>
-
+		<div class="text-center">
+			<input type="submit" name="set" class="btn btn-primary btn-lg" value="設定する">
+		</div>
 	</form>
 </div>
 

@@ -30,7 +30,7 @@ class SalePeriodOptionConfigFormPage extends WebPage{
 		
 		$config = SalePeriodUtil::getConfig();
 		
-		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
+		
 		
 		$this->addForm("form");
 		

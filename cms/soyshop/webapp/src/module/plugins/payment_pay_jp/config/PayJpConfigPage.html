@@ -1,45 +1,50 @@
-<p class="notice" soy:display="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
 <form soy:id="form">
-
-<dl>
-	<dt>テストモード</dt>
-	<dd>
+	<div class="form-group">
+		<label>テストモード</label><br>
 		<input type="checkbox" soy:id="sandbox"><br>
 		テストモードを利用する際は事前に下記のページをご確認ください。<br>
-		<a href="https://pay.jp/docs/testcard" target="_blank">テストカード | PAY.JP</a>
-	</dd>
+		<a href="https://pay.jp/docs/testcard" target="_blank" rel="noopener">テストカード | PAY.JP</a>
+	</div>
 
-	<dt>テスト秘密鍵</dt>
-	<dd><input type="text" class="text" soy:id="test_secret_key" /></dd>
+	<div class="form-group">
+		<label>テスト秘密鍵</label>
+		<input type="text" class="form-control" soy:id="test_secret_key" />
+	</div>
 
-	<dt>テスト公開鍵</dt>
-	<dd><input type="text" class="text" soy:id="test_public_key" /></dd>
+	<div class="form-group">
+		<label>テスト公開鍵</label>
+		<input type="text" class="form-control" soy:id="test_public_key" />
+	</div>
 
-	<dt>本番秘密鍵</dt>
-	<dd><input type="text" class="text" soy:id="production_secret_key" /></dd>
+	<div class="form-group">
+		<label>本番秘密鍵</label>
+		<input type="text" class="form-control" soy:id="production_secret_key" />
+	</div>
 
-	<dt>本番公開鍵</dt>
-	<dd><input type="text" class="text" soy:id="production_public_key" /></dd>
+	<div class="form-group">
+		<label>本番公開鍵</label>
+		<input type="text" class="form-control" soy:id="production_public_key" />
+	</div>
 
-	<dt>支払い時の売上処理</dt>
-	<dd>
+	<div class="form-group">
+		<label>支払い時の売上処理</label><br>
 		<input type="checkbox" soy:id="capture">
-	</dd>
+	</div>
 
-	<!--dt>二回目の購入</dt>
-	<dd>
-		<input type="checkbox" soy:id="repeat">
-	</dd>
+		<!--dt>二回目の購入</dt>
 
-	<dt>二回目の購入(支払い方法選択時)</dt>
-	<dd>
-		<input type="checkbox" soy:id="select">
-	</dd-->
-</dl>
+			<input type="checkbox" soy:id="repeat">
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" value="変更" />
-</p>
+
+		<dt>二回目の購入(支払い方法選択時)</dt>
+
+			<input type="checkbox" soy:id="select">
+		</dd-->
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 
 </form>

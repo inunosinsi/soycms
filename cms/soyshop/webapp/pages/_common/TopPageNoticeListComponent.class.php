@@ -9,7 +9,7 @@ class TopPageNoticeListComponent extends HTMLList {
 			"html" => (isset($entity["wording"])) ? $entity["wording"] : ""
 		));
 
-		$class = $this->mode;
+		$class = "alert alert-" . $this->mode;
 		if(isset($entity["always"]) && is_bool($entity["always"]) && $entity["always"] == true) $class .= " always";
 		$this->addLabel("always", array(
 			"text" => $class

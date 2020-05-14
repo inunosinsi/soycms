@@ -1,128 +1,140 @@
-<h1>
-	注文を追加する
-	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt;
-		<a soy:link="Order">注文管理</a> &gt;
-		<a soy:link="Order.Register">注文を追加する</a> &gt;
-		商品を追加する
-	</span>
-</h1>
+<h2>商品を追加する</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="">ショップ管理</a></li>
+		<li><a soy:link="Order">注文管理</a></li>
+		<li><a soy:link="Order.Register">注文を追加する</a></li>
+		<li class="active">商品を追加する</li>
+	</ol>
+</nav>
 
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				注文の追加
+				<small class="pull-right">
+					<a class="btn btn-default btn-xs" id="back_link" soy:link="Order.Register">戻る</a>
+				</small>
+			</div>
 
-<div class="block">
-	<div class="block_title">
-		<h2>注文の追加</h2>
+			<div class="panel-body">
+				<div class="alert alert-info" soy:display="restore">前の作業のバックアップがあります。<a soy:id="restore_link" class="btn btn-default">復元</a></div>
+				<div class="alert alert-success" soy:display="successed">バックアップを復元しました。</div>
+				<div class="alert alert-danger" soy:display="failed">バックアップを復元に失敗しました。</div>
+				<div class="alert alert-success" soy:display="drafted">下書き保存をしました。</div>
+				<div class="alert alert-danger" soy:display="undrafted">下書き保存を失敗しました。</div>
 
-		<div class="block_title_right">
-			<a class="button" id="back_link" soy:link="Order.Register">戻る</a>
+				<form soy:id="form">
+					<table class="table table-striped" id="order_content">
+						<caption>商品 ※ドラックドロップで商品の並べ替えが可能です</caption>
+						<thead>
+							<tr>
+								<th class="text-center">削除</th>
+								<th class="text-center">商品コード</th>
+								<th class="text-left">商品名</th>
+								<th class="text-right">単価<!-- soy:id="is_purchase_price" -->(仕入値)<!-- /soy:id="is_purchase_price" --></th>
+								<th class="text-right">注文数</th>
+								<th class="text-right">代金小計</th>
+							</tr>
+						</thead>
+
+						<tbody id="sortdata">
+							<!--  soy:id="item_list" -->
+							<tr>
+								<td class="text-center"><input soy:id="item_delete" type="checkbox" /></td>
+								<td class="text-center"><a soy:id="item_id" target="_blank">11</a></td>
+								<td>
+									<p>
+										<!-- soy:id="item_name_text" -->商品名<!-- /soy:id="item_name_text" -->&nbsp;
+										<!-- soy:id="display_price_list_link" --><a class="btn btn-default" soy:id="price_list_link">価格一覧</a>&nbsp;<!-- /soy:id="display_price_list_link" -->
+										<a class="btn btn-primary btn-xs" soy:id="change_link">変更</a>
+									</p>
+									<!-- soy:id="item_option_list" -->
+									<p soy:id="is_option"><!-- soy:id="label" /-->:<!-- soy:id="option_form" /--></p>
+									<!-- /soy:id="item_option_list" -->
+									<!-- soy:id="option_pluign_active" --><div class="text-center" style="margin:5px 0;"><a soy:id="item_edit_link" class="btn btn-default">オプションの追加</a></div><!-- /soy:id="option_pluign_active" -->
+								</td>
+								<td class="text-right">
+									<input type="text" soy:id="item_price" style="width:70px;ime-mode:inactive;" class="text-right"> 円
+									<!-- soy:id="is_purchase_price" -->(<!-- soy:id="purchase_price" /-->)<!-- /soy:id="is_purchase_price" -->
+								</td>
+								<td class="text-right">
+									<p class="error always alC" soy:id="out_of_stock">在庫切れ</p>
+									<input type="text" soy:id="item_count" style="width:40px;ime-mode:inactive;" class="text-right"> 点
+								</td>
+								<td class="text-right"><!-- soy:id="item_total_price" /--> 円</td>
+							</tr>
+							<!--  /soy:id="item_list" -->
+
+							<tr id="add_item_by_code_template" style="display:none;">
+								<td class="text-center">&nbsp;</td>
+								<td class="text-center"><input name="AddItemByCode[code][]" type="text" /></td>
+								<td class="text-center">&nbsp;</td>
+								<td class="text-right"></td>
+								<td class="text-right"><input name="AddItemByCode[count][]" type="text" style="width:40px;" class="text-right" /> 点</td>
+								<td class="text-right">&nbsp;</td>
+							</tr>
+
+							<tr id="add_item_by_name_template" style="display:none">
+								<td class="text-center">&nbsp;</td>
+								<td class="text-center">&nbsp;</td>
+								<td class="text-center"><input name="AddItemByName[name][]" type="text" style="width:320px;" /></td>
+								<td class="text-right"><input name="AddItemByName[price][]" type="text" style="width:60px;" /> 円</td>
+								<td class="text-right"><input name="AddItemByName[count][]" type="text" style="width:40px;" class="text-right" /> 点</td>
+								<td class="text-right">&nbsp;</td>
+							</tr>
+
+							<tr>
+								<td class="text-center">&nbsp;</td>
+								<td colspan="4" class="text-center">
+									<a class="btn btn-primary" href="javascript:void(0);" onclick="open_window_with_add();">商品検索して選ぶ</a>&nbsp;
+									<a class="btn btn-success" id="add_item_by_code_button">登録済み商品から選ぶ</a>&nbsp;
+									<!-- soy:display="allow_add_unregistered_item" -->
+									<a class="btn btn-warning" id="add_item_by_name_button">未登録商品を指定する</a>
+									<!-- /soy:display="allow_add_unregistered_item" -->
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+
+							<tr>
+								<th colspan="5" class="text-right" style="font-weight:bold;padding-right:1em;">代金合計</th>
+								<td class="text-right">
+									<!-- soy:id="total_item_price" /--> 円
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<!-- soy:id="item_edit_add_func" /-->
+
+					<div class="text-center">
+						<input type="hidden" id="change_item_index" name="Change[index]" value="">
+						<input type="hidden" id="change_item_code" name="Change[code]" value="">
+						<input type="hidden" id="sort" name="Sort" value="0">
+						<input type="submit" name="do_open" id="do_open" class="btn btn-primary btn-lg" value="変更" style="width:180px;margin-right:50px;" />&nbsp;
+						<a soy:id="draft_link" class="btn btn-success btn-lg">下書き保存</a>
+					</div>
+				</form>
+			</div>
 		</div>
-	</div>
-
-	<div class="block_body">
-
-		<p class="notice always" soy:display="restore">前の作業のバックアップがあります。<a soy:id="restore_link" class="button">復元</a></p>
-		<p class="notice" soy:display="successed">バックアップを復元しました。</p>
-		<p class="error" soy:display="failed">バックアップを復元に失敗しました。</p>
-		<p class="notice" soy:display="drafted">下書き保存をしました。</p>
-		<p class="error" soy:display="undrafted">下書き保存を失敗しました。</p>
-
-		<form soy:id="form">
-			<h3>商品 ※ドラックドロップで商品の並べ替えが可能です</h3>
-			<table class="form_list" id="order_content">
-				<thead>
-					<tr class="alC">
-						<th>削除</th>
-						<th>商品コード</th>
-						<th>商品名</th>
-						<th>単価<!-- soy:id="is_purchase_price" -->(仕入値)<!-- /soy:id="is_purchase_price" --></th>
-						<th>注文数</th>
-						<th>代金小計</th>
-					</tr>
-				</thead>
-
-				<tbody id="sortdata">
-					<!--  soy:id="item_list" -->
-					<tr>
-						<td class="alC"><input soy:id="item_delete" type="checkbox" /></td>
-						<td class="alC"><a soy:id="item_id" target="_blank">11</a></td>
-						<td>
-							<p>
-								<!-- soy:id="item_name_text" -->商品名<!-- /soy:id="item_name_text" -->&nbsp;
-								<!-- soy:id="display_price_list_link" --><a class="button" soy:id="price_list_link">価格一覧</a>&nbsp;<!-- /soy:id="display_price_list_link" -->
-								<a class="button" soy:id="change_link">変更</a>
-							</p>
-							<!-- soy:id="item_option_list" -->
-							<p soy:id="is_option"><!-- soy:id="label" /-->:<!-- soy:id="option_form" /--></p>
-							<!-- /soy:id="item_option_list" -->
-							<!-- soy:id="option_pluign_active" --><div class="alC" style="margin:5px 0;"><a soy:id="item_edit_link" class="button">オプションの追加</a></div><!-- /soy:id="option_pluign_active" -->
-						</td>
-						<td class="alR">
-							<input type="text" soy:id="item_price" style="width:70px;ime-mode:inactive;" class="alR"> 円
-							<!-- soy:id="is_purchase_price" -->(<!-- soy:id="purchase_price" /-->)<!-- /soy:id="is_purchase_price" -->
-						</td>
-						<td class="alR">
-							<p class="error always alC" soy:id="out_of_stock">在庫切れ</p>
-							<input type="text" soy:id="item_count" style="width:40px;ime-mode:inactive;" class="alR"> 点
-						</td>
-						<td class="alR"><!-- soy:id="item_total_price" /--> 円</td>
-					</tr>
-					<!--  /soy:id="item_list" -->
-
-					<tr id="add_item_by_code_template" style="display:none;">
-						<td class="alC">&nbsp;</td>
-						<td class="alC"><input name="AddItemByCode[code][]" type="text" /></td>
-						<td class="alC">&nbsp;</td>
-						<td class="alR"></td>
-						<td class="alR"><input name="AddItemByCode[count][]" type="text" style="width:40px;" class="alR" /> 点</td>
-						<td class="alR">&nbsp;</td>
-					</tr>
-
-					<tr id="add_item_by_name_template" style="display:none">
-						<td class="alC">&nbsp;</td>
-						<td class="alC">&nbsp;</td>
-						<td class="alC"><input name="AddItemByName[name][]" type="text" style="width:320px;" /></td>
-						<td class="alR"><input name="AddItemByName[price][]" type="text" style="width:60px;" /> 円</td>
-						<td class="alR"><input name="AddItemByName[count][]" type="text" style="width:40px;" class="alR" /> 点</td>
-						<td class="alR">&nbsp;</td>
-					</tr>
-
-					<tr>
-						<td class="alC">&nbsp;</td>
-						<td colspan="4" class="alC">
-							<a class="button" href="javascript:void(0);" onclick="open_window_with_add();">商品検索して選ぶ</a>
-							<a class="button" id="add_item_by_code_button">登録済み商品から選ぶ</a>
-							<!-- soy:display="allow_add_unregistered_item" -->
-							<a class="button" id="add_item_by_name_button">未登録商品を指定する</a>
-							<!-- /soy:display="allow_add_unregistered_item" -->
-						</td>
-						<td>&nbsp;</td>
-					</tr>
-
-					<tr>
-						<th colspan="5" class="alR" style="font-weight:bold;padding-right:1em;">代金合計</th>
-						<td class="alR">
-							<!-- soy:id="total_item_price" /--> 円
-						</td>
-					</tr>
-				</tbody>
-			</table>
-
-			<!-- soy:id="item_edit_add_func" /-->
-
-			<p class="pageBtn">
-				<input type="hidden" id="change_item_index" name="Change[index]" value="">
-				<input type="hidden" id="change_item_code" name="Change[code]" value="">
-				<input type="hidden" id="sort" name="Sort" value="0">
-				<input type="submit" name="do_open" id="do_open" value="変更" style="width:180px;margin-right:50px;" />&nbsp;
-				<a soy:id="draft_link" class="button">下書き保存</a>
-			</p>
-		</form>
 	</div>
 </div>
 
-<div id="option_window_el" class="popup" style="display:none;">
-	<iframe id="item_search_window" soy:src="Order.Register.Item.Search"></iframe>
-	<p class="close"></p>
+<div class="modal" tabindex="-1" role="dialog" id="itemSelectModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">商品の選択</h5>
+			</div>
+			<div class="modal-body">
+				<iframe id="item_search_window" soy:src="Order.Register.Item.Search" style="width:100%;height:500px;"></iframe>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="itemSelectModalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <script type="text/javascript">
@@ -155,7 +167,7 @@ function open_window_with_add(){
 	var $src = $searchWindow.prop("src");
 	if($src.indexOf("?") > 0) $src = $src.substr(0, $src.indexOf("?"));
 	$searchWindow.prop("src", $src);
-	OptionWindow.popup();
+	$("#itemSelectModal").modal();
 }
 function open_window_with_change(idx){
 	var $searchWindow = $("#item_search_window");
@@ -163,7 +175,8 @@ function open_window_with_change(idx){
 	if($src.indexOf("?") > 0) $src = $src.substr(0, $src.indexOf("?"));
 	var $src = $src + "?change=" + idx;
 	$searchWindow.prop("src", $src);
-	OptionWindow.popup();
+	$("#itemSelectModal").modal();
+	//OptionWindow.popup();
 }
 
 function open_window_item_price(itemId){
@@ -172,7 +185,7 @@ function open_window_item_price(itemId){
 	if($src.indexOf("?") > 0) $src = $src.substr(0, $src.indexOf("?"));
 	var $src = $src + "?price=" + itemId;	//一旦検索ページを開き、iframe内でリダイレクト
 	$searchWindow.prop("src", $src);
-	OptionWindow.popup();
+	$("#itemSelectModal").modal();
 }
 
 $(function(){

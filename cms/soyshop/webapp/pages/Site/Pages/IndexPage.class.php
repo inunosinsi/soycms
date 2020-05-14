@@ -19,7 +19,7 @@ class IndexPage extends WebPage{
 		parent::__construct();
 
 		//すべてのページを取得
-		$this->all = $this->getPages();
+		$this->all = self::_getPages();
 		$pageCount = (count($this->all));
 
 		$this->addActionLink("page_ini_button", array(
@@ -29,18 +29,15 @@ class IndexPage extends WebPage{
 		));
 
 		$this->createAdd("page_type_list", "_common.PagePluginTypeListComponent", array(
-			"list" => $this->getPageList(),
+			"list" => self::_getPageList(),
 		));
 
-		$this->addModel("no_page", array(
-			"visible" => ($pageCount === 0)
-		));
+		DisplayPlugin::toggle("no_page", $pageCount === 0);
 	}
 
-	function getPages(){
-
-		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		$pages = $dao->get();
+	private function _getPages(){
+		$pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
+		if(!count($pages)) return array();
 
 		$res = array();
 		foreach($pages as $page){
@@ -48,12 +45,11 @@ class IndexPage extends WebPage{
 		}
 
 		ksort($res);
-
 		return $res;
 	}
 
 	//タイプ別のページリストを取得
-	function getPageList(){
+	private function _getPageList(){
 
 		$configs = array();
 		$list = array();

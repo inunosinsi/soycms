@@ -2,8 +2,7 @@
 class ArrivalUpdatePageAdminTop extends SOYShopAdminTopBase{
 
 	function allowDisplay(){
-		$session = SOY2ActionSession::getUserSession();
-		return $session->getAttribute("app_shop_auth_limit");
+		return AUTH_SITE;
 	}
 
 	function getLink(){

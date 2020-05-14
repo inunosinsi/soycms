@@ -1,4 +1,4 @@
-<p class="notice" soy:display="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 <dl>
@@ -16,9 +16,9 @@
 <dl>
   <dt>登録済み置換文字列</dt>
   <dd>
-    <table class="form_list">
+    <table class="table table-striped">
   		<thead>
-  			<tr class="alC">
+  			<tr >
   				<th style="width:30%;">置換文字列</th>
   				<th style="width:50%;">変換する文字列</th>
   				<th class="operation">&nbsp;</th>
@@ -27,13 +27,13 @@
   		<tbody>
   			<!-- soy:id="string_list" -->
   			<tr>
-  				<td class="alC" soy:id="symbol"></td>
+  				<td  soy:id="symbol"></td>
   				<td>
-  					<input type="text" class="text" soy:id="string_input">&nbsp;
+  					<input type="text" class="form-control" soy:id="string_input">&nbsp;
   				</td>
   				<td class="operation">
             <input type="submit" name="change" value="変更">&nbsp;
-            <a class="button" soy:id="remove_link">削除</a>
+            <a class="btn btn-default" soy:id="remove_link">削除</a>
           </td>
   			</tr>
   			<!-- /soy:id="string_list" -->

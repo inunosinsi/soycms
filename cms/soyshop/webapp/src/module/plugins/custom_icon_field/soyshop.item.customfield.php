@@ -57,8 +57,8 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 
 		$html = array();
 		$html[] = "\n";
-		$html[] = "<dt><label for=\"" . self::PLUGIN_ID . "\">カスタムアイコンフィールド (cms:id=\"" . self::PLUGIN_ID . "\")</label></dt>\n";
-		$html[] = "<dd>\n";
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label for=\"" . self::PLUGIN_ID . "\">カスタムアイコンフィールド (cms:id=\"" . self::PLUGIN_ID . "\")</label>\n";
 		$html[] = "<p class=\"mb\" id=\"" . self::PLUGIN_ID . "_text\">";
 
 		$icons = array();
@@ -74,7 +74,7 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 			$html[] = implode(" ", $image);
 		}
 
-		$html[] = "</p>\n";
+		$html[] = "\n";
 
 		if(count($icons)){
 			$html[] = "<input name=\"" . self::PLUGIN_ID . "\" id=\"" . self::PLUGIN_ID . "\" type=\"hidden\" value=\"" . implode(",", $icons) . "\" />\n";
@@ -82,7 +82,7 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 			$html[] = "<input name=\"" . self::PLUGIN_ID . "\" id=\"" . self::PLUGIN_ID . "\" type=\"hidden\" value=\"\" />\n";
 		}
 
-		$html[] = "<a class=\"button\" href=\"javascript:void(0);\" onclick=\"$(this).hide();$('#icon_list').show();\">選択する</a>\n";
+		$html[] = "<a class=\"btn btn-primary btn-sm\" href=\"javascript:void(0);\" onclick=\"$(this).hide();$('#icon_list').show();\">選択する</a>\n";
 		$html[] = "<ul id=\"icon_list\" style=\"display:none;\">\n";
 
 		$files = @scandir(CustomIconFieldUtil::getIconDirectory());
@@ -101,7 +101,7 @@ class CustomIconField extends SOYShopItemCustomFieldBase{
 		}
 
 		$html[] = "</ul>\n";
-		$html[] = "</dd>\n";
+		$html[] = "</div>\n";
 
 		$html[] = "<script>\n";
 

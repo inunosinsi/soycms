@@ -14,7 +14,7 @@ class UtilMultiLanguageCategoryName extends SOYShopCategoryNameBase{
 			$categoryName = self::getCategoryAttribute($category->getId(), $lang)->getValue();
 
 			$html[] = "<h4>カテゴリ名(" . $lang . ")</h4>";
-			$html[] = "<input name=\"LanguageConfig[category_name_" . $lang . "]\" value=\"" . $categoryName . "\" type=\"text\" class=\"text\">";
+			$html[] = "<input name=\"LanguageConfig[category_name_" . $lang . "]\" value=\"" . $categoryName . "\" type=\"text\" class=\"form-control\">";
 		}
 
 		return implode("\n", $html);

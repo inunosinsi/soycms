@@ -1,77 +1,69 @@
-<div class="table_container">
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
-	<p class="notice" soy:display="updated">更新しました</p>
+<form soy:id="form">
+	<div class="form-group">
+		<label>送信設定</label><br>
+		<input type="checkbox" soy:id="send_mail">
+	</div>
 
-	<form soy:id="form">
+	<div class="form-group">
+		<label>件名</label>
+		<input soy:id="mail_title" class="form-control">
+		※#ITEM_NAME#、#ITEM_CODE#と#SHOP_NAME#が使用できます。
+	</div>
 
-	<dl>
-		<dt>送信設定</dt>
-		<dd><input type="checkbox" soy:id="send_mail"></dd>
-		
-		<dt>件名</dt>
-		<dd>
-			<input soy:id="mail_title" class="title"><br>
-			※#ITEM_NAME#、#ITEM_CODE#と#SHOP_NAME#が使用できます。
-		</dd>
-	</dl>
+	<div class="table-responsive">
+		<table class="table table-striped" style="table-layout:auto;">
+			<caption>本文</caption>
+			<tr class="last_row">
+				<td>
+					<textarea id="mail_content" soy:id="mail_content" class="editor form-control" style="height:400px;"></textarea>
+				</td>
+				<td class="mail_replace_word_panel">
+					<a href="javascript:void(0);" class="btn btn-default" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
+					<div class="word_list">
+						<h5>置換文字列</h5>
+						<ul>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#ITEM_CODE#');">商品コード</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#ITEM_NAME#');">商品名</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#NAME#');">氏名</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#READING#');">フリガナ</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#MAILADDRESS#');">メールアドレス</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_YEAR#');">誕生日(年)</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_MONTH#');">誕生日(月)</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_DAY#');">誕生日(日)</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#SHOP_NAME#');">ショップ名</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_NAME#');">会社名</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_ADDRESS1#');">会社郵便番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_ADDRESS2#');">会社住所</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_TELEPHONE#');">会社電話番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_FAX#');">会社FAX番号</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_MAILADDRESS#');">会社メールアドレス</a></li>
+							<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#SITE_URL#');">サイトURL</a></li>
+						</ul>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
 
-	<table class="form_table" style="table-layout:auto;">
-		<caption>本文</caption>
-		<tr class="last_row">
-			<td>
-				<textarea id="mail_content" soy:id="mail_content" class="editor" style="height:400px;"></textarea>
-			</td>
-			<td class="mail_replace_word_panel">
-				<a href="javascript:void(0);" class="button" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
-				<div class="word_list">
-					<h5>置換文字列</h5>
-					<ul>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#ITEM_CODE#');">商品コード</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#ITEM_NAME#');">商品名</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#NAME#');">氏名</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#READING#');">フリガナ</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#MAILADDRESS#');">メールアドレス</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_YEAR#');">誕生日(年)</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_MONTH#');">誕生日(月)</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#BIRTH_DAY#');">誕生日(日)</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#SHOP_NAME#');">ショップ名</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_NAME#');">会社名</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_ADDRESS1#');">会社郵便番号</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_ADDRESS2#');">会社住所</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_TELEPHONE#');">会社電話番号</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_FAX#');">会社FAX番号</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#COMPANY_MAILADDRESS#');">会社メールアドレス</a></li>
-						<li><a href="javascript:void(0);" onclick="$('#mail_content').textarea().insertHTML('#SITE_URL#');">サイトURL</a></li>
-					</ul>
-				</div>
-			</td>
-		</tr>
-	</table>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
 
-	<p class="pageBtn">
-		<input type="submit" class="submit_button" value="更新" />
-	</p>
-
-	</form soy:id="form">
-</div>
-
-<section>
-	<h1>テンプレートへの記述</h1>
-	
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;">
+<h4>テンプレートへの記述</h4>
+<pre>
 &lt;!-- block:id="item" --&gt;
 
 &lt;a <strong>cms:id="notice_arrival_register_link"</strong>&gt;入荷通知登録&lt;/a&gt;
 
-&lt;!-- /block:id="item" --&gt;</pre>	
-</section>
+&lt;!-- /block:id="item" --&gt;</pre>
 
-<section>
-	<h1>商品規格プラグインとの連携</h1>
-
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 10px;">
+<h4>商品規格プラグインとの連携</h4>
+<pre>
 &lt;!-- block:id="item" --&gt;
-	
+
 &lt;!-- cms:id="has_no_stock_child" --&gt;
 &lt;div&gt;在庫切れ商品の規格&lt;/div&gt;
 &lt;ul&gt;
@@ -82,9 +74,8 @@
 	&lt;!-- /block:id="child_item_list" --&gt;
 &lt;/ul&gt;
 &lt;!-- /cms:id="has_no_stock_child" --&gt;
-	
-&lt;!-- /block:id="item" --&gt;</pre>	
-</section>
+
+&lt;!-- /block:id="item" --&gt;</pre>
 
 
 <style type="text/css">
@@ -99,6 +90,6 @@
 }
 .actived .word_list{
 	display:block;
-	width:100px;
+	width:180px;
 }
 </style>

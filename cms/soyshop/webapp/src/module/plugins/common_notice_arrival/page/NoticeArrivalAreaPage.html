@@ -1,30 +1,30 @@
 <!-- soy:display="has_notice_arrival" -->
-<table class="form_list">
-	<caption>入荷通知希望顧客</caption>
-	<thead>
-		<tr class="alC">
-			<th>登録日</th>
-			<th>商品名</th>
-			<th>姓名</th>
-			<th>メールアドレス</th>
-			
-		</tr>
-	</thead>
-	<tbody>
-		<!-- soy:id="notice_arrival_list" -->
-		<tr>
-			<td class="alC" soy:id="create_date">2014-08-08</td>
-			<td><a soy:id="item_name_link">大豆</a></td>
-			<td><a soy:id="user_name_link">まめくらまめぞう</a></td>
-			<td soy:id="mail_address">mamezo@omame.ma.me</td>
-		</tr>
-		<!-- /soy:id="notice_arrival_list" -->
-	</tbody>
-</table>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<caption>入荷通知希望顧客</caption>
+		<thead>
+			<tr >
+				<th>登録日</th>
+				<th>商品名</th>
+				<th>姓名</th>
+				<th>メールアドレス</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="notice_arrival_list" -->
+			<tr>
+				<td  soy:id="create_date">2014-08-08</td>
+				<td><a soy:id="item_name_link">大豆</a></td>
+				<td><a soy:id="user_name_link">まめくらまめぞう</a></td>
+				<td soy:id="mail_address">mamezo@omame.ma.me</td>
+			</tr>
+			<!-- /soy:id="notice_arrival_list" -->
+		</tbody>
+	</table>
+</div>
 <!-- /soy:display="has_notice_arrival" -->
-		
+
 <!-- soy:display="no_notice_arrival" -->
-<p class="notice always">
-	入荷通知希望者はいません。
-</p>
+<div class="alert alert-info">入荷通知希望者はいません。</div>
 <!-- /soy:display="no_notice_arrival" -->

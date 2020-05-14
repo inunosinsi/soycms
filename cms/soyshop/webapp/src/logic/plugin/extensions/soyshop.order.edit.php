@@ -1,8 +1,15 @@
 <?php
 class SOYShopOrderEditBase implements SOY2PluginAction{
 
+	private $orderId;
+
 	//HTMLを自由に記述出来るスペース
 	function html(){
+		return "";
+	}
+
+	//注文詳細(Detailの方)ページでHTMLを自由に記述できるスペース
+	function html_on_detail(){
 		return "";
 	}
 
@@ -19,6 +26,13 @@ class SOYShopOrderEditBase implements SOY2PluginAction{
 	 */
 	function addAttributes(){
 		return array();
+	}
+
+	function getOrderId(){
+		return $this->orderId;
+	}
+	function setOrderId($orderId){
+		$this->orderId = $orderId;
 	}
 }
 
@@ -44,8 +58,13 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 					$this->_attributes[$moduleId] = $attrs;
 				}
 				break;
+			case "html_on_detail":
+				$action->setOrderId($this->orderId);	//使うかもしれない
+				$html = $action->html_on_detail();
+				break;
 			case "html":	//注文詳細画面でjavascriptの記述等を追加する時に使用する
 			default:
+				$action->setOrderId($this->orderId);
 				$html = $action->html();
 		}
 

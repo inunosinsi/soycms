@@ -2,14 +2,14 @@
 <h3>支払詳細</h3>
 
 <form soy:id="form">
-	<table class="form_table">
+	<table class="table table-striped">
 		<col style="width:130px;" />
 		<tbody>
 			<tr>
 				<th>支払い処理確定日</th>
 				<td soy:id="captured_at"></td>
 				<td style="text-align:center;vertical-align:middle;">
-					<input name="cancel" type="submit" class="submit_button" value="支払いを返金" onclick="return confirm('返金処理を実行してもよろしいですか？');">&nbsp;
+					<input name="cancel" type="submit" class="btn btn-primary" value="支払いを返金" onclick="return confirm('返金処理を実行してもよろしいですか？');">&nbsp;
 				</td>
 			</tr>
 		</tbody>
@@ -17,4 +17,4 @@
 </form>
 <!-- /soy:display="no_refunded" -->
 
-<p class="notice always" soy:display="refunded">この注文は返金済みです</p>
+<p class="alert alert-info" soy:display="refunded">この注文は返金済みです</p>

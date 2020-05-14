@@ -101,7 +101,8 @@ class GroupFieldFormComponent {
 				$html = array();
 				if(strlen($value)){
 					$path = UserGroupCustomSearchFieldUtil::getFilePath($groupId, $value);
-					$html[] = "<a href=\"" . $path . "\" target=\"_blank\"><img src=\"" . SOYSHOP_SITE_URL . "im.php?src=" . $path . "&width=150" . "\"></a>";
+					//$html[] = "<a href=\"" . $path . "\" target=\"_blank\"><img src=\"" . SOYSHOP_SITE_URL . "im.php?src=" . $path . "&width=150" . "\"></a>";
+					$html[] = "<a href=\"" . $path . "\" target=\"_blank\"><img src=\"" . $path . "\"></a>";
 					$html[] = "<input type=\"hidden\" name=\"" . $nameProperty . "\" value=\"" . $value . "\">";
 					$html[] = "<label><input type=\"checkbox\" name=\"image_delete[" . $fieldId . "]\">削除</label>";
 				}

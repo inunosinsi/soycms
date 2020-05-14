@@ -1,22 +1,22 @@
-<div class="notice" soy:display="successed">出力しました。</div>
+<div class="alert alert-success" soy:display="successed">出力しました。</div>
 <div class="error" soy:display="failed">失敗しました。</div>
 
 <form soy:id="form" target="_blank">
 	<select soy:id="year"></select>年
 	<select soy:id="month"></select>月
-	
+
 	<!-- soy:id="calendar" /-->
-	
-	<p class="pageBtn">
+
+	<div class="text-center">
 		CSV種別：
 		<label><input type="radio" name="csv" value="tokdai" checked="checked">得意先台帳</label>&nbsp;
 		<label><input type="radio" name="csv" value="uriage">売上</label><br><br>
-		
-		<input type="submit" value="出力">
-	</p>	
+
+		<input type="submit" class="btn btn-primary btn-lg" value="出力">
+	</div>
 </form>
 
-<table class="form_table">
+<table class="table table-striped">
 	<caption>出力履歴</caption>
 	<thead>
 		<tr>
@@ -65,7 +65,7 @@ table th.sat,table td.sat{
 table th.sun,table td.sun{
 	color:#990000;
 	}
-	
+
 /*= 本日の色 =*/
 table td.today{
 	background-color:#FEFEFE;
@@ -75,13 +75,13 @@ table td.today{
 table th.close,table td.close{
 	background-color:#FFCCCC;
 	}
-	
+
 /*= その他の日の背景色 =*/
 table th.event,table td.other{
 	background-color:#BCBCBC;
 	}
 
-table.form_table tbody tr td{
+table.table table-striped tbody tr td{
 	text-align:center;
 }
 </style>

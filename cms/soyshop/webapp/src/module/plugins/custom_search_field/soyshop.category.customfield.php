@@ -18,12 +18,12 @@ class CustomSearchFieldCategory extends SOYShopCategoryCustomFieldBase{
 		self::prepare();
 
 		$values = $this->dbLogic->getByCategoryId($category->getId());
-		
+
 		$html = array();
 
 		SOY2::import("module.plugins." . self::FIELD_ID . ".component.FieldFormComponent");
 		foreach(CustomSearchFieldUtil::getCategoryConfig() as $key => $field){
-			$html[] = "<h4>" . $field["label"] . " (" . CustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")</h4>";
+			$html[] = "<label>" . $field["label"] . " (" . CustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")</label><br>";
 
 			$value = (isset($values[$key])) ? $values[$key] : null;
 			$html[] = FieldFormComponent::buildForm($key, $field, $value);

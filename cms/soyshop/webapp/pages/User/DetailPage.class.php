@@ -195,14 +195,12 @@ class DetailPage extends WebPage{
 		));
 
 		/* フォーム */
-    	self::buildForm($shopUser);		//共通など。
-		self::buildJobForm($shopUser);		//法人
-		self::buildProfileForm($shopUser);	//プロフィール
-		self::buildMailForm($shopUser);		//顧客宛メール
-		self::buildMailLogForm($shopUser);	//メールログ
-		self::buildPointForm($shopUser);	//ポイント
-		self::buildTicketForm($shopUser);	//チケット
-    	self::buildAddressForm($shopUser);	//お届け先
+    	self::_buildForm($shopUser);		//共通など。
+		self::_buildJobForm($shopUser);		//法人
+		self::_buildProfileForm($shopUser);	//プロフィール
+		self::_buildAddressForm($shopUser);	//お届け先
+		self::_buildPointForm($shopUser);	//ポイント
+		self::_buildTicketForm($shopUser);	//チケット
 
     	/**
     	 * ユーザカスタムフィールド
@@ -297,7 +295,7 @@ class DetailPage extends WebPage{
 	 * フォーム
 	 * @param SOYShop_User $user
 	 */
-   private function buildForm(SOYShop_User $user){
+   private function _buildForm(SOYShop_User $user){
 		//共通コンポーネントに移し替え  soyshop/component/UserComponent.class.php buildFrom()
 
 		//以前のフォーム 後方互換
@@ -392,7 +390,7 @@ class DetailPage extends WebPage{
 	 * 法人関連フォーム
 	 * @param SOYShop_User $user
 	 */
-	private function buildJobForm(SOYShop_User $user){
+	private function _buildJobForm(SOYShop_User $user){
 		/* 勤務先 */
 		DisplayPlugin::toggle("office_items", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
 
@@ -444,26 +442,13 @@ class DetailPage extends WebPage{
     		"value" => $user->getJobFaxNumber(),
     		"size" => 30
     	));
-
-		/*** カード会員操作 ***/
-		SOYShopPlugin::load("soyshop.operate.credit");
-		$delegate = SOYShopPlugin::invoke("soyshop.operate.credit", array(
-			"user" => $user,
-			"mode" => "user_detail",
-		));
-		$list = $delegate->getList();
-		DisplayPlugin::toggle("operate_credit_menu", (is_array($list) && count($list) > 0));
-
-		$this->createAdd("operate_list", "_common.User.OperateListComponent", array(
-			"list" => $list
-		));
 	}
 
 	/**
 	 * プロフィール関連フォーム
 	 * @param SOYShop_User $user
 	 */
-	private function buildProfileForm(SOYShop_User $user){
+	private function _buildProfileForm(SOYShop_User $user){
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		DisplayPlugin::toggle("profile_items", SOYShop_ShopConfig::load()->getDisplayUserProfileItems());
 
@@ -478,77 +463,29 @@ class DetailPage extends WebPage{
 	 * お届け先フォーム
 	 * @param SOYShop_User $user
 	 */
-	private function buildAddressForm(SOYShop_User $user){
-
+	private function _buildAddressForm(SOYShop_User $user){
 		$this->createAdd("address_list", "_common.User.AddressListComponent", array(
 			"list" => $user->getAddressListArray()
 		));
-	}
-
-	private function buildMailForm(SOYShop_User $user){
-		DisplayPlugin::toggle("mail", $user->isUsabledEmail());
-		$this->addLink("send_mail_link", array(
-			"link" => SOY2PageController::createLink("User.Mail." . $user->getId())
-		));
-
-		//メールの拡張
-		$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
-			"list" => self::_getMailPluginList(),
-			"userId" => $user->getId()
-		));
-	}
-
-	private function _getMailPluginList(){
-    	SOYShopPlugin::load("soyshop.order.detail.mail");
-    	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array("mode" => "user"))->getList();
-		if(!count($mailList)) return array();
-
-    	$list = array();
-    	foreach($mailList as $values){
-    		if(!is_array($values)) continue;
-   			foreach($values as $value){
-   				$list[] = $value;
-   			}
-    	}
-    	return $list;
-    }
-
-	private function buildMailLogForm(SOYShop_User $user){
-		$mailLogDao = SOY2DAOFactory::create("logging.SOYShop_MailLogDAO");
-		$mailLogDao->setLimit(10);
-		try{
-			$mailLogs = $mailLogDao->getByUserId($user->getId());
-		}catch(Exception $e){
-			$mailLogs = array();
-		}
-
-		DisplayPlugin::toggle("display_mail_history", count($mailLogs));
-		$this->createAdd("mail_history_list", "_common.Order.MailHistoryListComponent", array(
-    		"list" => $mailLogs
-    	));
 	}
 
 	/**
 	 * ポイントフォーム
 	 * @param SOYShop_User $user
 	 */
-	private function buildPointForm(SOYShop_User $user){
-
+	private function _buildPointForm(SOYShop_User $user){
 		//ポイント
     	$activedPointPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_point_base")));
     	DisplayPlugin::toggle("point", $activedPointPlugin);
 
 		$point = 0;
 		$timeLimit = null;
-		$histories = array();
 
 		/* ここ以下はポイント有効時 */
 		if($activedPointPlugin){
 			SOY2::imports("module.plugins.common_point_base.domain.*");
 			$point = $user->getPoint();
-
-	    	$timeLimit = self::getTimeLimit($user->getId());
-	    	$histories = self::getPointHistories($user->getId());
+	    	$timeLimit = self::_getTimeLimit($user->getId());
 		}
 
 		//ポイントプラグインを無効にしていても下記の処理は行う
@@ -561,47 +498,30 @@ class DetailPage extends WebPage{
 		$this->addLabel("time_limit", array(
 			"text" => (isset($timeLimit)) ? date("Y-m-d H:i:s", $timeLimit) : "無期限"
 		));
-
-		DisplayPlugin::toggle("point_history", (count($histories) > 0));
-		$this->createAdd("point_history_list", "_common.User.PointHistoryListComponent", array(
-			"list" => $histories
-		));
 	}
 
-	private function getTimeLimit($userId){
+	private function _getTimeLimit($userId){
 		return SOYShopPlugin::invoke("soyshop.point", array("userId" => $userId))->getTimeLimit();
-	}
-
-	private function getPointHistories($userId){
-		try{
-			return SOY2DAOFactory::create("SOYShop_PointHistoryDAO")->getByUserId($userId);
-		}catch(Exception $e){
-			return array();
-		}
 	}
 
 	/**
 	 * チケットフォーム
 	 * @param SOYShop_User $user
 	 */
-	private function buildTicketForm(SOYShop_User $user){
-
+	private function _buildTicketForm(SOYShop_User $user){
 		//チケット
     	$activedTicketPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_ticket_base")));
     	DisplayPlugin::toggle("ticket", $activedTicketPlugin);
 
 		/* ここ以下はチケット有効時 */
 		if($activedTicketPlugin){
-			SOY2::imports("module.plugins.common_ticket_base.domain.*");
-			$count = self::getTicketCountByUserId($user->getId());
-			$histories = self::getTicketHistories($user->getId());
+			$count = self::_getTicketCountByUserId($user->getId());
 			SOY2::import("module.plugins.common_ticket_base.util.TicketBaseUtil");
 			$config = TicketBaseUtil::getConfig();
 			$label = $config["label"];
 			$unit = $config["unit"];
 		}else{
 			$count = 0;
-			$histories = array();
 			$label = "チケット";
 			$unit = "枚";
 		}
@@ -620,14 +540,10 @@ class DetailPage extends WebPage{
     		"value" => $count,
     		"style" => "ime-mode:inactive;"
     	));
-
-    	DisplayPlugin::toggle("ticket_history", (count($histories) > 0));
-    	$this->createAdd("ticket_history_list", "_common.User.TicketHistoryListComponent", array(
-    		"list" => $histories
-    	));
 	}
 
-	private function getTicketCountByUserId($userId){
+	private function _getTicketCountByUserId($userId){
+		SOY2::imports("module.plugins.common_ticket_base.domain.*");
 		try{
 			return SOY2DAOFactory::create("SOYShop_TicketDAO")->getByUserId($userId)->getCount();
 		}catch(Exception $e){
@@ -635,11 +551,13 @@ class DetailPage extends WebPage{
 		}
 	}
 
-	private function getTicketHistories($userId){
+	function getFooterMenu(){
 		try{
-			return SOY2DAOFactory::create("SOYShop_TicketHistoryDAO")->getByUserId($userId);
+			return SOY2HTMLFactory::createInstance("User.FooterMenu.DetailFooterMenuPage", array(
+				"arguments" => array($this->id)
+			))->getObject();
 		}catch(Exception $e){
-			return array();
+			return null;
 		}
 	}
 

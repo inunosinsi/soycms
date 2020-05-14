@@ -1,43 +1,41 @@
 <form soy:id="form">
-	<dl>
-		<dt>
-			ソート順の設定
-		</dt>
-		<dd>
-			<!-- soy:id="sort_list" -->
-			<input type="radio" soy:id="sort_input" />
-			<!-- /soy:id="sort_list" -->
+	<div class="form-group">
+		<label>ソート順の設定</label><br>
+		<!-- soy:id="sort_list" -->
+		<input type="radio" soy:id="sort_input" />
+		<!-- /soy:id="sort_list" -->
+	</div>
 
-			<h4>昇順・降順</h4>
-			<input type="radio" soy:id="sort_normal" />
-			<input type="radio" soy:id="sort_reverse" />
-		</dd>
-	</dl>
+	<div class="form-group">
+		<label>昇順・降順</label><br>
+		<input type="radio" soy:id="sort_normal" />
+		<input type="radio" soy:id="sort_reverse" />
+	</div>
 
-	<p class="pageBtn">
-		<input type="submit" value="更新" />
-	</p>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="更新" />
+	</div>
 </form>
 
-<h3>テンプレートへの記述例</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
-<b>&lt;!-- shop:module="common.recommend_items" --&gt;</b>
+<h4>テンプレートへの記述例</h4>
+<pre>
+<strong>&lt;!-- shop:module="common.recommend_items" --&gt;</strong>
 &lt;h3&gt;おすすめ商品&lt;/h3&gt;
-<b>&lt;!-- block:id="recommend_item_list" cms:count="3" --&gt;</b>&lt;!-- ←cms:countで表示数を指定できます。 --&gt;
+<strong>&lt;!-- block:id="recommend_item_list" cms:count="3" --&gt;</strong>&lt;!-- ←cms:countで表示数を指定できます。 --&gt;
 &lt;div&gt;
-	&lt;p&gt;&lt;a <b>cms:id="item_link*"</b>&gt;&lt;img <b>cms:id="item_small_image"</b> /&gt;&lt;/a&gt;&lt;/p&gt;
+	&lt;p&gt;&lt;a <strong>cms:id="item_link*"</strong>&gt;&lt;img <strong>cms:id="item_small_image"</strong> /&gt;&lt;/a&gt;&lt;/p&gt;
 	&lt;dl&gt;
 		&lt;dt&gt;
-			&lt;a <b>cms:id="item_link"</b>&gt;
-				<b>&lt;!-- cms:id="item_name" --&gt;</b>ここに商品名が入ります<b>&lt;!-- /cms:id="item_name" --&gt;</b>
+			&lt;a <strong>cms:id="item_link"</strong>&gt;
+				<strong>&lt;!-- cms:id="item_name" --&gt;</strong>ここに商品名が入ります<strong>&lt;!-- /cms:id="item_name" --&gt;</strong>
 			&lt;/a&gt;
 		&lt;/dt&gt;
-		&lt;dd <b>cms:id="item_description"</b>&gt;商品説明&lt;/dd&gt;
-		&lt;dd <b>cms:id="item_price"</b>&gt;1000円/100g&lt;/dd&gt;
+		&lt;dd <strong>cms:id="item_description"</strong>&gt;商品説明&lt;/dd&gt;
+		&lt;dd <strong>cms:id="item_price"</strong>&gt;1000円/100g&lt;/dd&gt;
 	&lt;/dl&gt;
-<b>&lt;!-- /block:id="recommend_item_list" --&gt;</b>
+<strong>&lt;!-- /block:id="recommend_item_list" --&gt;</strong>
 &lt;/div&gt;
-<b>&lt;!-- /shop:module="common.recommend_items" --&gt;</b>
+<strong>&lt;!-- /shop:module="common.recommend_items" --&gt;</strong>
 </pre>
 
  <br />

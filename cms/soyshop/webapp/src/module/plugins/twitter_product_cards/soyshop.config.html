@@ -1,4 +1,4 @@
-<p class="notice" soy:id="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 
@@ -14,20 +14,20 @@
 </dl>
 <p style="padding:0 20px;">※siteとcreaterは同じアカウントでも問題ありません</p>
 
-<p class="pageBtn" style="clear:both;">
-	<input type="submit" class="submit_button" value="変更" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="変更">
+</div>
 
-</form soy:id="form">
+</form>
 
-<h3>テンプレートへの記述例</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<h4>テンプレートへの記述例</h4>
+<pre>
 &lt;!-- ヘッダ内 --&gt;
 <strong>&lt;!-- block:id="twitter_product_cards_meta" /--&gt;</strong>
 </pre>
 
 <h3>出力されるメタタグ</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<pre>
 &lt;meta name="twitter:card" content="product"&gt;
 &lt;meta name="twitter:url" content="https://twitter.siglercompanies.com"&gt;
 &lt;meta name="twitter:site" content="****"&gt;
@@ -44,7 +44,7 @@
 <p style="padding:3px 40px">※****の部分には自動で値が入ります</p>
 
 <h3>メタタグ表示後の設定</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<pre>
 <p>下記のURLのCard Validatorでメタタグで表示される値が正しいかを確認した後、サイトを登録してください<br />
-<a href="https://dev.twitter.com/docs/cards/validation/validator" target="_blank">https://dev.twitter.com/docs/cards/validation/validator</a></p>
+<a href="https://dev.twitter.com/docs/cards/validation/validator" target="_blank" rel="noopener">https://dev.twitter.com/docs/cards/validation/validator</a></p>
 </pre>

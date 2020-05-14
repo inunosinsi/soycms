@@ -1,10 +1,10 @@
 <div>
-	<a class="button" soy:link="Extension.user_group">グループ一覧</a>
+	<a class="btn btn-default" soy:link="Extension.user_group">グループ一覧</a>
 </div>
 
 <br>
 
-<div class="block_body clearfix">
+<div class="panel-body">
 	<h3>CSVエクスポート</h3>
 	<form soy:id="csv_form" id="export_form">
 		<dl>
@@ -13,7 +13,7 @@
 				現在登録されている顧客グループのCSVを出力します。<br>
 				<label><input type="radio" name="charset" value="Shift-JIS" checked="checked">Shift-JIS</label>&nbsp;
 				<label><input type="radio" name="charset" value="UTF-8">UTF-8</label>
-				<input type="submit" name="export" class="submit_button" value="CSV出力">
+				<input type="submit" name="export" class="btn btn-primary" value="CSV出力">
 			</dd>
 		</dl>
 	</form>

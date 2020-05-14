@@ -45,7 +45,7 @@ class ComplexPage extends WebPage{
 				$block = $blocks[$blockId];
 
 				if(!isset($array["params"])) $array["params"] = array();
-				
+
 				SOY2::cast($block,(object)$array);
 				$obj->setBlock($blockId,$block);
 			}

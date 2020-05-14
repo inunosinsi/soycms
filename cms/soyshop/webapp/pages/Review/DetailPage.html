@@ -1,105 +1,101 @@
-<h1>
-	レビュー詳細
-	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Review">レビュー管理</a> &gt; レビュー詳細
-	</span>
-</h1>
+<h2>レビュー詳細</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="">ショップ管理</a></li>
+		<li><a soy:link="Review">レビュー管理</a></li>
+		<li class="active">レビュー詳細</li>
+	</ol>
+</nav>
 
 
-<div class="block">
-	<div class="block_title">
-		<h2>レビュー詳細</h2>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">レビュー詳細</div>
+			<div class="panel-body">
+				<div class="alert alert-success" soy:display="updated">更新しました</div>
+				<form soy:id="detail_form">
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<tr>
+								<th class="col-lg-1">ID</th>
+								<td class="col-lg-11">
+									<!-- soy:id="id" /-->
+								</td>
+							</tr>
+							<tr>
+								<th>商品名</th>
+								<td>
+									<a soy:id="item_name">大豆</a>
+								</td>
+							</tr>
 
-		<!--div class="block_title_right">
-			<a soy:id="order_link" class="button">商品を注文する</a>
-		</div-->
+							<tr>
+								<th>投稿者名</th>
+								<td>
+									<input soy:id="nickname" type="text" name="" value="" class="form-control">
+								</td>
+							</tr>
+
+							<!-- soy:display="user_id" -->
+							<tr>
+								<th>ユーザ名</th>
+								<td>
+									<a soy:id="user_name">まめくらまめぞう</a>
+								</td>
+							</tr>
+							<!-- /soy:display="user_id" -->
+
+							<tr>
+								<th>タイトル</th>
+								<td>
+									<input type="text" soy:id="title" class="form-control">
+								</td>
+							</tr>
+							<tr>
+								<th>本文</th>
+								<td>
+									<textarea soy:id="content" class="form-control" style="height:200px;"></textarea>
+								</td>
+							</tr>
+
+							<tr>
+								<th>評価</th>
+								<td>
+									<select soy:id="evaluation"></select>
+								</td>
+							</tr>
+
+							<tr>
+								<th>承認</th>
+								<td>
+									<!-- soy:id="is_approved" /-->
+								</td>
+							</tr>
+
+							<tr>
+								<th>投稿日時</th>
+								<td>
+									<!-- soy:id="create_date" /-->
+								</td>
+							</tr>
+
+							<tr>
+								<th>更新日時</th>
+								<td>
+									<!-- soy:id="update_date" /-->
+								</td>
+							</tr>
+
+						</table>
+					</div>
+
+					<div class="text-center">
+						<input type="submit" name="do_open" value="変更(許可)" class="btn btn-primary btn-lg">&nbsp;
+						<input type="submit" name="do_close" value="変更(拒否)" class="btn btn-warning btn-lg">
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
-
-	<div class="block_body">
-
-	<p class="notice" soy:display="updated">更新しました</p>
-
-	<form soy:id="detail_form">
-
-		<table class="form_table">
-			<tr>
-				<th>ID</th>
-				<td>
-					<!-- soy:id="id" /-->
-				</td>
-			</tr>
-			<tr>
-				<th>商品名</th>
-				<td>
-					<a soy:id="item_name">大豆</a>
-				</td>
-			</tr>
-
-			<tr>
-				<th>投稿者名</th>
-				<td>
-					<input soy:id="nickname" type="text" name="" value="" />
-				</td>
-			</tr>
-
-			<!-- soy:id="is_user_id" -->
-			<tr>
-				<th>ユーザ名</th>
-				<td>
-					<a soy:id="user_name">まめくらまめぞう</a>
-				</td>
-			</tr>
-			<!-- /soy:id="is_user_id" -->
-
-			<tr>
-				<th>タイトル</th>
-				<td>
-					<input type="text" soy:id="title" />
-				</td>
-			</tr>
-			<tr>
-				<th>本文</th>
-				<td>
-					<textarea soy:id="content"></textarea>
-				</td>
-			</tr>
-
-			<tr>
-				<th>評価</th>
-				<td>
-					<select soy:id="evaluation"></select>
-				</td>
-			</tr>
-
-			<tr>
-				<th>承認</th>
-				<td>
-					<!-- soy:id="is_approved" /-->
-				</td>
-			</tr>
-
-			<tr>
-				<th>投稿日時</th>
-				<td>
-					<!-- soy:id="create_date" /-->
-				</td>
-			</tr>
-
-			<tr>
-				<th>更新日時</th>
-				<td>
-					<!-- soy:id="update_date" /-->
-				</td>
-			</tr>
-
-		</table>
-
-		<p class="pageBtn">
-			<input type="submit" name="do_open" value="変更(許可)" style="width:180px;margin-right:50px;" />
-			<input type="submit" name="do_close" value="変更(拒否)" style="width:180px;" />
-		</p>
-
-
-		</form soy:id="detail_form">
-	</div><!-- /block_body -->
-</div><!-- /block -->
+</div>

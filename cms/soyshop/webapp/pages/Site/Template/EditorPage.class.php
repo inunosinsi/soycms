@@ -25,12 +25,12 @@ class EditorPage extends WebPage{
 	private $value;
 
 	function __construct($args){
-		
+
 		SOY2::import("domain.site.SOYShop_Page");
-		
+
 		$value = implode("/", $args);
 		$this->value = $value;
-		
+
 		//フォームのHTMLの外出し
 		if(isset($_GET["create"])){
 			$appId = str_replace(".html", "", $args[1]);
@@ -50,7 +50,7 @@ class EditorPage extends WebPage{
 		$this->iniFilepath = $iniFilepath;
 
 		parent::__construct();
-		
+
 		DisplayPlugin::toggle("success", (isset($_GET["success"])));
 
 		if(preg_match('/(.*)\.html$/', $file, $tmp)){
@@ -76,22 +76,20 @@ class EditorPage extends WebPage{
 		$this->addLink("page_link", array(
 			"link" => (isset($array["id"])) ? SOY2PageController::createLink("Site.Pages.Detail." . $array["id"]) : "",
 		));
-		$this->addModel("is_custom_template", array(
-			"visible" => (isset($array["id"]))
-		));
+		DisplayPlugin::toggle("custom_template", isset($array["id"]));
 
 		$this->addForm("update_form");
-		
+
 		$this->addInput("template_name_input", array(
 			"name" => "template_name",
 			"value" => (isset($array["name"])) ? $array["name"] : ""
 		));
-		
+
 		$this->addLink("copy_template", array(
 			"link" => SOY2PageController::createLink("Site.Template.Editor.-.") . $value . "?create",
 			"visible" => (isset($_GET["developer"]) && ($args[0] == SOYShop_Page::TYPE_CART || $args[0] == SOYShop_Page::TYPE_MYPAGE))
 		));
-		
+
 		//template保存のボタン追加
     	$this->addLink("save_template_button", array(
     		"link" => "javascript:void(0);",
@@ -101,7 +99,7 @@ class EditorPage extends WebPage{
     	));
 
 		$this->addLabel("template_path", array(
-			"text" => $value
+			"text" => (strlen($value)) ? SOYSHOP_SITE_DIRECTORY . ".template/" . $value : ""
 		));
 
 		$this->addLabel("template_name", array(
@@ -112,7 +110,7 @@ class EditorPage extends WebPage{
 			"name" => "template_content",
 			"value" => file_get_contents($filepath)
 		));
-		
+
 		/** タグサンプル **/
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$config = SOYShop_ShopConfig::load();
@@ -123,18 +121,15 @@ class EditorPage extends WebPage{
 		}else{
 			$tagList = array();
 		}
-		
-		$this->addModel("show_tag_sample_list", array(
-			"visible" => (count($tagList) > 0)
-		));
-		
+
+		DisplayPlugin::toggle("show_tag_sample_list", count($tagList));
+
 		$this->createAdd("tag_sample_list", "_common.Site.TemplateTagSampleComponent", array(
 			"list" => $tagList
 		));
 	}
-	
+
 	private function getRedirectUrl(){
 		return SOY2PageController::createLink("Site.Template.Editor") . "/-/" . $this->value;
 	}
 }
-?>

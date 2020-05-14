@@ -1,158 +1,163 @@
-<h1>
-	注文を追加する
-	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt;
-		<a soy:link="Order">注文管理</a> &gt;
-		<a soy:link="Order.Register">注文を追加する</a> &gt;
-		注文者を指定する
-	</span>
-</h1>
+<h2>注文者を指定する</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="">ショップ管理</a></li>
+		<li><a soy:link="Order">注文管理</a></li>
+		<li><a soy:link="Order.Register">注文を追加する</a></li>
+		<li class="active">注文者を指定する</li>
+	</ol>
+</nav>
 
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				注文の追加
+				<small class="pull-right">
+					<a class="btn btn-default btn-xs" soy:link="Order.Register">戻る</a>
+				</small>
+			</div>
+			<div class="panel-body">
+				<h3>1. 注文者</h3>
+				<div class="alert alert-info">IDで検索</div>
+				<div soy:id="search_by_id_error" class="alert alert-dange">エラー</div>
+				<div class="form-group">
+					<form soy:id="user_search_by_id_form">
+						<input type="text" soy:id="search_by_id" name="" value="" size="20" />
+						<input type="submit" id="search_by_id_button" class="btn btn-primary btn-sm" value="決定">
+					</form>
+				</div>
 
-<div class="block">
-	<div class="block_title">
-		<h2>注文の追加</h2>
+				<div class="alert alert-info">顧客コードで検索</div>
+				<div soy:id="search_by_user_code_error" class="alert alert-dange">エラー</div>
+				<div class="form-group">
+					<form soy:id="user_search_by_user_code_form">
+						<input type="text" soy:id="search_by_user_code" name="" value="" size="20" />
+						<input type="submit" id="search_by_user_code_button" class="btn btn-primary btn-sm" value="決定">
+					</form>
+				</div>
 
-		<div class="block_title_right">
-			<a class="button" soy:link="Order.Register">戻る</a>
+				<div class="alert alert-info">メールアドレスで検索</div>
+				<div soy:id="search_by_email_error" class="alert alert-dange">エラー</div>
+				<div class="form-group">
+					<form soy:id="user_search_by_email_form">
+						<input type="text" soy:id="search_by_email" name="" value="" size="60" />
+						<input type="submit" id="search_by_email_button" class="btn btn-primary btn-sm" value="決定">
+					</form>
+				</div>
+
+				<div class="alert alert-info">電話番号で検索</div>
+				<div soy:id="search_by_tell_error" class="alert alert-dange">エラー</div>
+				<div class="form-group">
+					<form soy:id="user_search_by_tell_form">
+						<input type="text" soy:id="search_by_tell" name="" value="" size="60" />
+						<input type="submit" id="search_by_tell_button" class="btn btn-primary btn-sm" value="決定">
+					</form>
+				</div>
+
+				<div class="alert alert-info">顧客名で検索</div>
+				<div soy:id="search_by_name_error" class="alert alert-dange">エラー</div>
+				<div class="form-group">
+					<form soy:id="user_search_by_name_form">
+						<input type="text" soy:id="search_by_name" name="" value="" size="60" />
+						<input type="submit" id="search_by_name_button" class="btn btn-primary btn-sm" value="決定"><br>
+						※苗字と名前の間に必ずスペースを入れてから検索してください。
+					</form>
+				</div>
+
+				<div class="alert alert-info">フリガナで検索</div>
+				<div soy:id="search_by_reading_error" class="alert alert-dange">エラー</div>
+				<div class="form-group">
+					<form soy:id="user_search_by_reading_form">
+						<input type="text" soy:id="search_by_reading" name="" value="" size="60" />
+						<input type="submit" id="search_by_reading_button" class="btn btn-primary btn-sm" value="決定"><br>
+						※苗字と名前の間に必ずスペースを入れてから検索してください。
+					</form>
+				</div>
+
+				<div class="alert alert-info">新規登録<!-- soy:display="dummy_address_button" -->&nbsp;<a href="javascript:void(0);" class="btn btn-default" id="insert_dummy_address">ダミーの住所を挿入</a><!-- /soy:display="dummy_address_button" --></div>
+				<div soy:id="register_user_error" class="require ml20 mb">エラー</div>
+				<div class="form-group">
+					<form soy:id="user_create_form">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<tr>
+									<th>メールアドレス</th>
+									<td><input type="text" soy:id="mail_address" name="" value="" size="60" /></td>
+								</tr>
+								<tr soy:display="userCode">
+									<th>顧客コード</th>
+									<td>
+										<input soy:id="user_code" type="text" style="width:50%;">
+									</td>
+								</tr>
+								<tr soy:display="name">
+									<th>氏名</th>
+									<td><input type="text" soy:id="name" name="" value="" size="60" /></td>
+								</tr>
+								<tr soy:display="reading">
+									<th>フリガナ</th>
+									<td><input type="text" soy:id="reading" name="" value="" size="60" /></td>
+								</tr>
+								<tr soy:display="honorific">
+									<th>敬称</th>
+									<td><input type="text" soy:id="honorific" name="" value="" size="60" /></td>
+								</tr>
+								<tr soy:display="zipCode">
+									<th>郵便番号</th>
+									<td>
+										<input type="text" soy:id="post_number" name="" value="" size="20" class="input-zip" id="zipcode">
+										<a href="javascript:void(0);" class="search-btn btn btn-primary btn-sm">検索</a>
+									</td>
+								</tr>
+								<tr soy:display="address">
+									<th>住所</th>
+									<td>
+										<select soy:id="area" class="input-pref" id="pref">
+											<option value="">▼選択</option>
+										</select>
+										<input type="text" name="" value="" soy:id="address1" size="40" class="input-city" id="address"><br>
+										<input type="text" name="" value="" soy:id="address2" size="60" class="input-town">
+									</td>
+								</tr>
+								<tr soy:display="telephoneNumber">
+									<th>電話番号</th>
+									<td><input type="text" name="" value="" soy:id="tel_number" size="30" id="telephone_number" /></td>
+								</tr>
+								<tr soy:display="faxNumber">
+									<th>FAX番号</th>
+									<td><input type="text" name="" value="" soy:id="fax_number" size="30" /></td>
+								</tr>
+								<tr soy:display="cellphoneNumber">
+									<th>携帯電話番号</th>
+									<td><input type="text" name="" value="" soy:id="ketai_number" size="30" /></td>
+								</tr>
+								<tr soy:display="office_item">
+									<th>勤務先名称・職種</th>
+									<td><input type="text" name="" value="" soy:id="office" size="60" /></td>
+								</tr>
+								<!-- soy:id="has_user_customfield" -->
+								<!-- soy:id="user_customfield_list" -->
+								<tr>
+									<th nowrap scope="row"><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></th>
+									<td>
+										<!-- soy:id="has_customfield_error" -->
+										<div class="alert alert-danger" soy:id="customfield_error"></div>
+										<!-- /soy:id="has_customfield_error" -->
+										<!-- soy:id="customfield_form" /-->
+									</td>
+								</tr>
+								<!-- /soy:id="user_customfield_list" -->
+								<!-- /soy:id="has_user_customfield" -->
+							</table>
+						</div>
+						<div class="text-center">
+							<input type="submit" id="new_customer_register_button" value="決定" class="btn btn-primary btn-lg">
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
-	</div>
-
-
-	<div class="block_body">
-		<h3>1. 注文者</h3>
-		<dl>
-		<dt>IDで検索</dt>
-		<dd>
-			<p soy:id="search_by_id_error" class="require">エラー</p>
-			<form soy:id="user_search_by_id_form">
-				<input type="text" soy:id="search_by_id" name="" value="" size="20" />
-				<input type="submit" id="search_by_id_button" value="決定">
-			</form>
-		</dd>
-		<dt>顧客コードで検索</dt>
-		<dd>
-			<p soy:id="search_by_user_code_error" class="require">エラー</p>
-			<form soy:id="user_search_by_user_code_form">
-				<input type="text" soy:id="search_by_user_code" name="" value="" size="20" />
-				<input type="submit" id="search_by_user_code_button" value="決定">
-			</form>
-		</dd>
-		<dt>メールアドレスで検索</dt>
-		<dd>
-			<p soy:id="search_by_email_error" class="require">エラー</p>
-			<form soy:id="user_search_by_email_form">
-				<input type="text" soy:id="search_by_email" name="" value="" size="60" />
-				<input type="submit" id="search_by_email_button" value="決定">
-			</form>
-		</dd>
-		<dt>電話番号で検索</dt>
-		<dd>
-			<p soy:id="search_by_tell_error" class="require">エラー</p>
-			<form soy:id="user_search_by_tell_form">
-				<input type="text" soy:id="search_by_tell" name="" value="" size="60" />
-				<input type="submit" id="search_by_tell_button" value="決定">
-			</form>
-		</dd>
-		<dt>顧客名で検索</dt>
-		<dd>
-			<p soy:id="search_by_name_error" class="require">エラー</p>
-			<form soy:id="user_search_by_name_form">
-				<input type="text" soy:id="search_by_name" name="" value="" size="60" />
-				<input type="submit" id="search_by_name_button" value="決定"><br>
-				※苗字と名前の間に必ずスペースを入れてから検索してください。
-			</form>
-		</dd>
-		<dt>フリガナで検索</dt>
-		<dd>
-			<p soy:id="search_by_reading_error" class="require">エラー</p>
-			<form soy:id="user_search_by_reading_form">
-				<input type="text" soy:id="search_by_reading" name="" value="" size="60" />
-				<input type="submit" id="search_by_reading_button" value="決定"><br>
-				※苗字と名前の間に必ずスペースを入れてから検索してください。
-			</form>
-		</dd>
-		<dt>新規登録<!-- soy:display="dummy_address_button" -->&nbsp;<a href="javascript:void(0);" class="button" id="insert_dummy_address">ダミーの住所を挿入</a><!-- /soy:display="dummy_address_button" --></dt>
-		<dd>
-			<p soy:id="register_user_error" class="require ml20 mb">エラー</p>
-			<form soy:id="user_create_form">
-			<table class="form_table">
-				<tr>
-					<th>メールアドレス</th>
-					<td><input type="text" soy:id="mail_address" name="" value="" size="60" /></td>
-				</tr>
-				<tr soy:display="userCode">
-					<th>顧客コード</th>
-					<td>
-						<input soy:id="user_code" type="text" style="width:50%;">
-					</td>
-				</tr>
-				<tr soy:display="name">
-					<th>氏名</th>
-					<td><input type="text" soy:id="name" name="" value="" size="60" /></td>
-				</tr>
-				<tr soy:display="reading">
-					<th>フリガナ</th>
-					<td><input type="text" soy:id="reading" name="" value="" size="60" /></td>
-				</tr>
-				<tr soy:display="honorific">
-					<th>敬称</th>
-					<td><input type="text" soy:id="honorific" name="" value="" size="60" /></td>
-				</tr>
-				<tr soy:display="zipCode">
-					<th>郵便番号</th>
-					<td>
-						<input type="text" soy:id="post_number" name="" value="" size="20" class="input-zip" id="zipcode">
-						<a href="javascript:void(0);" class="search-btn button">検索</a>
-					</td>
-				</tr>
-				<tr soy:display="address">
-					<th>住所</th>
-					<td>
-						<select soy:id="area" class="input-pref" id="pref">
-							<option value="">▼選択</option>
-						</select>
-						<input type="text" name="" value="" soy:id="address1" size="40" class="input-city" id="address"><br>
-						<input type="text" name="" value="" soy:id="address2" size="60" class="input-town">
-					</td>
-				</tr>
-				<tr soy:display="telephoneNumber">
-					<th>電話番号</th>
-					<td><input type="text" name="" value="" soy:id="tel_number" size="30" id="telephone_number" /></td>
-				</tr>
-				<tr soy:display="faxNumber">
-					<th>FAX番号</th>
-					<td><input type="text" name="" value="" soy:id="fax_number" size="30" /></td>
-				</tr>
-				<tr soy:display="cellphoneNumber">
-					<th>携帯電話番号</th>
-					<td><input type="text" name="" value="" soy:id="ketai_number" size="30" /></td>
-				</tr>
-				<tr soy:display="office_item">
-					<th>勤務先名称・職種</th>
-					<td><input type="text" name="" value="" soy:id="office" size="60" /></td>
-				</tr>
-				<!-- soy:id="has_user_customfield" -->
-				<!-- soy:id="user_customfield_list" -->
-				<tr>
-					<th nowrap scope="row"><!-- soy:id="customfield_name" /--><span soy:id="customfield_is_required">（必須）</span></th>
-					<td>
-						<!-- soy:id="has_customfield_error" -->
-						<p class="error" soy:id="customfield_error"></p>
-						<!-- /soy:id="has_customfield_error" -->
-						<!-- soy:id="customfield_form" /-->
-					</td>
-				</tr>
-				<!-- /soy:id="user_customfield_list" -->
-				<!-- /soy:id="has_user_customfield" -->
-			</table>
-			<p class="pageBtn">
-				<input type="submit" id="new_customer_register_button" value="決定" class="button">
-			</p>
-			</form>
-		</dd>
-		</dl>
-
 	</div>
 </div>
 

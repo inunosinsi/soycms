@@ -46,6 +46,14 @@ class SOYShopDelivery implements SOY2PluginAction{
 	}
 
 	/**
+	 * @return boolen
+	 * Cartの支払い方法選択画面で選択項目として表示するか？
+	 */
+	function getMethod(CartLogic $cart, $moduleId){
+		return true;
+	}
+
+	/**
 	 * @return array(array("label" => "", "form" => "")...)
 	 * マイページの注文詳細編集画面でフォームを出力
 	 */
@@ -84,11 +92,13 @@ class SOYShopDelivery implements SOY2PluginAction{
 class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 
 	private $_list = array();
+	private $_method = true;
 	private $mode = "list";
 	private $cart;
 	private $order;
 	private $_changes = array();
 	private $_config;	//HTML
+	private $moduleId;
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 
@@ -109,6 +119,9 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 						"price" => $action->getPrice()
 					);
 				}
+				break;
+			case "method":	//支払い方法のリストの表示のルールを決める
+				$this->_method = $action->getMethod($this->getCart(), $this->getModuleId());
 				break;
 			case "select":
 				//念の為、ここでも再度調べる
@@ -135,6 +148,9 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 	function getList(){
 		return $this->_list;
 	}
+	function getMethod(){
+		return $this->_method;
+	}
 	function getMode() {
 		return $this->mode;
 	}
@@ -160,6 +176,13 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 
 	function getConfig(){
 		return $this->_config;
+	}
+
+	function getModuleId(){
+		return $this->moduleId;
+	}
+	function setModuleId($moduleId){
+		$this->moduleId = $moduleId;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.delivery","SOYShopDeliveryDeletageAction");

@@ -39,8 +39,6 @@ class RecentlyCheckedItemsConfigFormPage extends WebPage{
 
 		parent::__construct();
 
-//		$this->addModel("updated", array("visible" => isset($_GET["updated"])));
-
 		$config = SOYShop_DataSets::get(self::KEY, array(
 			"max_display_number" => 10,
 		));

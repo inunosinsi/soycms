@@ -91,7 +91,7 @@ class UserGroupCustomSearchFieldConfigPage extends WebPage{
 		SOY2::import("util.SOYShopPluginUtil");
 		DisplayPlugin::toggle("no_install_user_custom_field", !SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
 
-		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
+		
 		DisplayPlugin::toggle("error", isset($_GET["error"]));
 		DisplayPlugin::toggle("deleted", isset($_GET["deleted"]));
 

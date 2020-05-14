@@ -1,4 +1,4 @@
-<p class="notice" soy:display="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 
@@ -13,7 +13,7 @@
 			※exe.phpと<!-- soy:id="site_id" /-->の間には半角スペースが必要です
 		</div>
 	</dd>
-	
+
 	<dt>セール終了前通知メール件名</dt>
 	<dd>
 		<input soy:id="mail_end_title" class="title"><br>
@@ -21,14 +21,14 @@
 	</dd>
 </dl>
 
-<table class="form_table" style="table-layout:auto;">
+<table class="table table-striped" style="table-layout:auto;">
 	<caption>セール終了前通知メール本文</caption>
 	<tr class="last_row">
 		<td>
 			<textarea id="mail_content" soy:id="mail_end_content" class="editor" style="height:400px;"></textarea>
 		</td>
 		<td class="mail_replace_word_panel">
-			<a href="javascript:void(0);" class="button" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
+			<a href="javascript:void(0);" class="btn btn-default" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
 			<div class="word_list">
 				<h5>置換文字列</h5>
 				<ul>
@@ -54,14 +54,14 @@
 	</tr>
 </table>
 
-<p class="pageBtn" style="clear:both;">
-	<input type="submit" class="submit_button" value="変更" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="変更">
+</div>
 
 </form>
 
 <h3>block&#58;id="item"内で使用できるcms&#58;id</h3>
-<table class="form_list">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			<th>cms&#58;id</th>

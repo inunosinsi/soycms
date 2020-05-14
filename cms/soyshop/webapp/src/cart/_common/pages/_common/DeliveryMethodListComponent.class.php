@@ -5,6 +5,7 @@
  */
 class DeliveryMethodListComponent extends HTMLList{
 	private $selected;
+	private $cart;
 
 	protected function populateItem($entity, $key, $counter, $length){
 		$this->addCheckBox("delivery_method", array(
@@ -25,6 +26,9 @@ class DeliveryMethodListComponent extends HTMLList{
 		$this->addLabel("delivery_charge", array(
 			"text" => strlen($entity["price"]) ? MessageManager::get("LABEL_PRICE", array("price" => number_format($entity["price"]))) : "",
 		));
+
+		//falseを返すことができる拡張ポイント
+		return SOYShopPlugin::invoke("soyshop.delivery", array("mode" => "method", "moduleId" => $key, "cart" => $this->getCart()))->getMethod();
 	}
 
 	function getSelected() {
@@ -34,5 +38,12 @@ class DeliveryMethodListComponent extends HTMLList{
 		if(strlen($selected)){
 			$this->selected = $selected;
 		}
+	}
+
+	function getCart(){
+		return $this->cart;
+	}
+	function setCart($cart){
+		$this->cart = $cart;
 	}
 }

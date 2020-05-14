@@ -1,64 +1,66 @@
-<h1>
-	メール設定
-	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Config">設定</a> &gt; メール設定</span>
-</h1>
+<h2>メール設定</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="">ショップ管理</a></li>
+		<li><a soy:link="Config">設定</a></li>
+		<li class="active">メール設定</li>
+	</ol>
+</nav>
 
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">メール設定</div>
 
-<div class="block">
-	<div class="block_title">
-		<h2>メール設定</h2>
+			<div class="panel-body">
+				<dl>
+					<dt>基本設定</dt>
+					<dd>
+						<ul>
+							<li><a soy:link="Config.Mail.ServerConfig">メールサーバ・メールアドレス設定</a></li>
+						</ul>
+					</dd>
+
+					<dt>管理者向けメール文面</dt>
+					<dd>
+						<ul class="list ml20">
+							<li><a soy:link="Config.Mail.Admin">注文受付メール（自動送信）</a></li>
+							<li><a soy:link="Config.Mail.Admin?type=payment">支払通知メール（自動送信）</a></li>
+						</ul>
+					</dd>
+
+					<dt>ユーザ向けメール文面</dt>
+					<dd style="margin-left:20px;">
+						<div>注文関連</div>
+						<ul>
+							<li><a soy:link="Config.Mail.User">注文受付メール（自動送信）</a></li>
+							<li><a soy:link="Config.Mail.User?type=confirm">注文確定メール</a></li>
+							<li><a soy:link="Config.Mail.User?type=payment">支払確認メール（支払い方法により自動送信）</a></li>
+							<li><a soy:link="Config.Mail.User?type=delivery">配送連絡メール</a></li>
+							<li><a soy:link="Config.Mail.User?type=other">その他のメール</a></li>
+							<!-- soy:id="mail_plugin_list" -->
+							<li><a soy:id="mail_link">メールタイトル</a></li>
+							<!-- /soy:id="mail_plugin_list" -->
+						</ul>
+
+						<div>ユーザー登録関連</div>
+						<ul>
+							<li><a soy:link="Config.Mail.Mypage?type=tmp_register">仮登録完了メール（自動送信）</a></li>
+							<li><a soy:link="Config.Mail.Mypage?type=register">登録完了メール（自動送信）</a></li>
+							<li><a soy:link="Config.Mail.Mypage">パスワード再設定（自動送信）</a></li>
+							<li><a soy:link="Config.Mail.Mypage?type=edit">顧客情報の変更の確認メール（自動送信）</a></li>
+						</ul>
+
+						<div>顧客詳細画面からのメール送信</div>
+						<ul>
+							<li><a soy:link="Config.Mail.User?type=user">顧客宛メール</a></li>
+							<!-- soy:id="user_mail_plugin_list" -->
+							<li><a soy:id="mail_link">メールタイトル</a></li>
+							<!-- /soy:id="user_mail_plugin_list" -->
+						</ul>
+					</dd>
+				</dl>
+			</div>
+		</div>
 	</div>
-
-	<div class="block_body">
-		<dl>
-			<dt>基本設定</dt>
-			<dd>
-				<ul class="list ml20">
-					<li><a soy:link="Config.Mail.ServerConfig">メールサーバ・メールアドレス設定</a></li>
-				</ul>
-			</dd>
-
-			<dt>管理者向けメール文面</dt>
-			<dd>
-				<ul class="list ml20">
-					<li><a soy:link="Config.Mail.Admin">注文受付メール（自動送信）</a></li>
-					<li><a soy:link="Config.Mail.Admin?type=payment">支払通知メール（自動送信）</a></li>
-				</ul>
-			</dd>
-
-			<dt>ユーザ向けメール文面</dt>
-			<dd>
-				<h4>注文関連</h4>
-				<ul class="list ml20">
-					<li><a soy:link="Config.Mail.User">注文受付メール（自動送信）</a></li>
-					<li><a soy:link="Config.Mail.User?type=confirm">注文確定メール</a></li>
-					<li><a soy:link="Config.Mail.User?type=payment">支払確認メール（支払い方法により自動送信）</a></li>
-					<li><a soy:link="Config.Mail.User?type=delivery">配送連絡メール</a></li>
-					<li><a soy:link="Config.Mail.User?type=other">その他のメール</a></li>
-					<!-- soy:id="mail_plugin_list" -->
-					<li><a soy:id="mail_link">メールタイトル</a></li>
-					<!-- /soy:id="mail_plugin_list" -->
-				</ul>
-				<br>
-				<h4>ユーザー登録関連</h4>
-				<ul class="list ml20">
-					<li><a soy:link="Config.Mail.Mypage?type=tmp_register">仮登録完了メール（自動送信）</a></li>
-					<li><a soy:link="Config.Mail.Mypage?type=register">登録完了メール（自動送信）</a></li>
-					<li><a soy:link="Config.Mail.Mypage">パスワード再設定（自動送信）</a></li>
-					<li><a soy:link="Config.Mail.Mypage?type=edit">顧客情報の変更の確認メール（自動送信）</a></li>
-				</ul>
-				<br>
-				<h4>顧客詳細画面からのメール送信</h4>
-				<ul class="list ml20">
-					<li><a soy:link="Config.Mail.User?type=user">顧客宛メール</a></li>
-					<!-- soy:id="user_mail_plugin_list" -->
-					<li><a soy:id="mail_link">メールタイトル</a></li>
-					<!-- /soy:id="user_mail_plugin_list" -->
-				</ul>
-			</dd>
-		</dl>
-
-	</div>
-
 </div>

@@ -24,10 +24,13 @@ function register_orders($stmt){
 				":item_price" => $itemOrder->getItemPrice(),
 				":total_price" => $itemOrder->getTotalPrice(),
 				":item_name" => $itemOrder->getItemName(),
+				":status" => $itemOrder->getStatus(),
+				":flag" => $itemorder->getFlag(),
 				":cdate" => $itemOrder->getCdate(),
 				":is_sended" => $itemOrder->getIsSended(),
 				":attributes" => $itemOrder->getAttributes(),
 				":is_addition" => $itemOrder->getIsAddition(),
+				":is_confirm" => $itemOrder->getIsConfirm(),
 				":display_order" => $itemOrder->getDisplayOrder()
 			));
 		}

@@ -1,6 +1,6 @@
-<p class="notice" soy:display="registerd">案内文のテンプレートを登録しました。</p>
-<p class="notice" soy:display="updated">更新しました。</p>
-<p class="notice" soy:display="removed">削除しました。</p>
+<p class="alert alert-success" soy:display="registerd">案内文のテンプレートを登録しました。</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+<p class="alert alert-success" soy:display="removed">削除しました。</p>
 <p class="error" soy:display="error">失敗しました。</p>
 
 <!-- soy:display="template" -->
@@ -12,7 +12,7 @@
 		<dl class="template_area" soy:id="field_id_dl">
 			<dt>
 				<!-- soy:id="field_id" --><!-- /soy:id="field_id" -->
-				<a href="" soy:id="remove_link" class="button">削除</a>
+				<a href="" soy:id="remove_link" class="btn btn-default">削除</a>
 			</dt>
 			<dd>
 				<textarea soy:id="content"></textarea>
@@ -20,9 +20,9 @@
 		</dl><br>
 		<!-- /soy:id="template_list" -->
 
-		<p class="pageBtn">
-			<input type="submit" value="更新">
-		</p>
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="更新">
+		</div>
 	</section>
 </form>
 <!-- /soy:display="template" -->
@@ -31,8 +31,8 @@
 	<section>
 		<h1>定形文の新規登録</h1>
 		<div style="margin:20px;">
-			ID：<input type="text" class="text" name="add[id]" value="" placeholder="field0(半角英数字)" pattern="^[a-zA-Z0-9]+$" required="required">&nbsp;
-			テンプレート名：<input type="text" class="text" name="add[label]" value="" placeholder="商品の取扱に関して" required="required">&nbsp;
+			ID：<input type="text" class="form-control" name="add[id]" value="" placeholder="field0(半角英数字)" pattern="^[a-zA-Z0-9]+$" required="required">&nbsp;
+			テンプレート名：<input type="text" class="form-control" name="add[label]" value="" placeholder="商品の取扱に関して" required="required">&nbsp;
 			<input type="submit" value="登録">
 		</div>
 	</section>

@@ -45,16 +45,6 @@ class IndexPage extends WebPage{
 			SOY2PageController::jump("");
 		}
 
-		if(isset($_GET["clear_cache"])){
-			$dir = SOYSHOP_SITE_DIRECTORY . "/.cache/";
-			$files = scandir($dir);
-			foreach($files as $file){
-				if($file[0] == ".") continue;
-				@unlink($dir . $file);
-			}
-			SOY2PageController::jump("");
-		}
-
 		//upgrade
 		if(isset($_GET["upgrade"])){
 			SOY2::import("logic.upgrade.UpgradeLogic");
@@ -101,7 +91,7 @@ class IndexPage extends WebPage{
 
 		$this->createAdd("notice_list", "_common.TopPageNoticeListComponent", array(
 			"list" => $notices,
-			"mode" => "notice"
+			"mode" => "success"
 		));
 
 		//errorの拡張ポイント
@@ -110,7 +100,7 @@ class IndexPage extends WebPage{
 
 		$this->createAdd("error_list", "_common.TopPageNoticeListComponent", array(
 			"list" => $errors,
-			"mode" => "error"
+			"mode" => "danger"
 		));
 
 		$this->action();
@@ -118,11 +108,8 @@ class IndexPage extends WebPage{
 
 		self::buildPluginArea();
 
-		$this->addModel("init_link", array(
-			"visible" => DEBUG_MODE
-		));
-
 		//便利な機能
+		DisplayPlugin::toggle("init_link", DEBUG_MODE);
 		$this->createAdd("init_link_list", "_common.InitLinkListComponent", array(
 			"list" => self::getInitLinks()
 		));

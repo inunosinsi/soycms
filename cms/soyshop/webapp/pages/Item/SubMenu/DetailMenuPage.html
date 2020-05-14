@@ -1,4 +1,3 @@
-<h3>その他</h3>
 <ul>
 	<li soy:display="is_open">
 		<a soy:id="item_site_link" target="_blank">確認ページ</a>
@@ -7,7 +6,7 @@
 		<a soy:id="item_confirm_link" target="_blank">非公開商品のプレビュー</a>
 	</li>
 	<li>
-		<a soy:id="item_attachment_link">商品画像の管理</a>
+		<a href="javascript:void(0);" data-toggle="modal" data-target="#filemanagerModal">ファイルマネージャ</a>
 	</li>
 	<li>
 		前の商品:<a soy:id="prev_item_link">商品名</a><br />
@@ -23,3 +22,19 @@
 		<a onclick="return confirm('この商品を削除しますか？')" soy:id="item_remove_link">この商品を削除する</a>
 	</li>
 </ul>
+
+<div class="modal" tabindex="-1" role="dialog" id="filemanagerModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">ファイルマネージャ</h5>
+			</div>
+			<div class="modal-body">
+				<iframe soy:id="file_manager_url" style="width:100%;height:428px;"></iframe>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

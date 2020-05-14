@@ -85,8 +85,6 @@ class IndexPage extends WebPage{
             "name" => "Parent",
             "options" => soyshop_get_category_list()
         ));
-
-        DisplayPlugin::toggle("custom_plugin", SOYShopPluginUtil::checkIsActive("common_category_customfield"));
     }
 
     private function getCategories($selectParent){
@@ -131,4 +129,13 @@ class IndexPage extends WebPage{
     private function setParameter($key,$value){
         SOY2ActionSession::getUserSession()->setAttribute("Item.Category.Setting.Search:" . $key, $value);
     }
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Item.FooterMenu.CategoryFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
 }

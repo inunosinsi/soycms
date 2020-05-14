@@ -2,15 +2,15 @@
 	<div class="block_title">
 		<h2>伝票番号一覧</h2>
 
-		<div class="block_title_right"></div>
+		<div class="pull-right"></div>
 	</div>
 
-	<div class="block_body">
+	<div class="panel-body">
 
-		<p class="notice" soy:display="updated">更新しました</p>
-		<p class="notice" soy:display="successed">変更しました。</p>
-		<p class="notice" soy:display="removed">削除しました。</p>
-		<p class="error" soy:display="failed">失敗しました</p>
+		<div class="alert alert-success" soy:display="updated">更新しました</div>
+		<p class="alert alert-success" soy:display="successed">変更しました。</p>
+		<p class="alert alert-success" soy:display="removed">削除しました。</p>
+		<div class="error" soy:display="failed">失敗しました</div>
 		<p class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
 
 		<dl>
@@ -20,7 +20,7 @@
 		</dl>
 		<div class="search_area_dd" soy:id="search_area">
 			<form soy:id="search_form">
-				<table class="form_table">
+				<table class="table table-striped">
 					<tr>
 						<th>状態</th>
 						<td colspan="3">
@@ -30,43 +30,43 @@
 					</tr>
 				</table>
 
-				<p class="pageBtn">
-					<input type="submit" name="search" value="検索">&nbsp;&nbsp;
-					<input type="submit" name="reset" value="リセット">
-				</p>
+				<div class="text-center">
+					<input type="submit" name="search" class="btn btn-primary btn-lg" value="検索">&nbsp;&nbsp;
+					<input type="submit" name="reset" class="btn btn-warning btn-lg" value="リセット">
+				</div>
 			</form>
 		</div>
 
 		<!-- soy:display="no_slip_number" -->
-		<p class="notice always">返送待ちの伝票はありません。</p>
+		<p class="alert alert-info">返送待ちの伝票はありません。</p>
 		<!-- /soy:display="no_slip_number" -->
 
 		<!-- soy:display="is_slip_number" -->
-		<table class="form_list">
+		<table class="table table-striped">
 			<caption>伝票番号一覧</caption>
 			<thead>
-				<tr class="alC">
+				<tr >
 					<th>伝票番号</th>
 					<th>注文日時</th>
 					<th>注文番号</th>
 					<th>顧客名</th>
 					<th>状態</th>
 					<th>
-						<a class="button fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+						<a class="btn btn-default fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
 					</th>
 				</tr>
 			</thead>
 			<tbody>
 				<!-- soy:id="slip_number_list" -->
 				<tr>
-					<td soy:id="slip_number" class="alC"></td>
-					<td soy:id="order_date" class="alC"></td>
-					<td class="alC"><a soy:id="tracking_number"></a></td>
-					<td class="alC"><a soy:id="user_name"></a></td>
-					<td soy:id="status" class="alC"></td>
+					<td soy:id="slip_number" ></td>
+					<td soy:id="order_date" ></td>
+					<td ><a soy:id="tracking_number"></a></td>
+					<td ><a soy:id="user_name"></a></td>
+					<td soy:id="status" ></td>
 					<td class="operation">
-						<a soy:id="delivery_link" class="button">発送</a>
-						<a soy:id="remove_link" class="button delete_btn">削除</a>
+						<a soy:id="delivery_link" class="btn btn-default">発送</a>
+						<a soy:id="remove_link" class="btn btn-default delete_btn">削除</a>
 					</td>
 				</tr>
 				<!-- /soy:id="slip_number_list" -->

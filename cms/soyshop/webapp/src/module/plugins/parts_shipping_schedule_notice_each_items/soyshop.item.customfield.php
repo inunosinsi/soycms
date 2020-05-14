@@ -12,7 +12,7 @@ class ShippingSchuduleNoticeEachItemsCustomField extends SOYShopItemCustomFieldB
 		//リンクを表示
 		$html = array();
 		$html[] = "<dt>出荷予定日の設定</dt>";
-		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=parts_shipping_schedule_notice_each_items&item_id=" . $item->getId()) . "\" class=\"button\">出荷予定日の設定を開く</a></dd>";
+		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=parts_shipping_schedule_notice_each_items&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">出荷予定日の設定を開く</a></dd>";
 		return implode("\n", $html);
 	}
 

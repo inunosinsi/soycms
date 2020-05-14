@@ -9,8 +9,7 @@ class ImportPage extends WebPage{
 
         DisplayPlugin::toggle("fail", isset($_GET["fail"]));
         DisplayPlugin::toggle("invalid", isset($_GET["invalid"]));
-        DisplayPlugin::toggle("custom_plugin", SOYShopPluginUtil::checkIsActive("common_category_customfield"));
-
+        
         self::buildForm();
     }
 
@@ -185,4 +184,13 @@ class ImportPage extends WebPage{
         $config = SOYShop_CategoryAttributeConfig::load($flag);
         return $config;
     }
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Item.FooterMenu.CategoryFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
 }

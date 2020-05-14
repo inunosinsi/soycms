@@ -3,7 +3,7 @@
 class IndexPage extends WebPage{
 
     function __construct() {
-    	parent::__construct();
+		SOY2PageController::jump("Site.Pages");
+    	//parent::__construct();
     }
 }
-?>

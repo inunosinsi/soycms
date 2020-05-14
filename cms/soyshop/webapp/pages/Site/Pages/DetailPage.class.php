@@ -211,4 +211,3 @@ class DetailPage extends WebPage{
         }
     }
 }
-?>

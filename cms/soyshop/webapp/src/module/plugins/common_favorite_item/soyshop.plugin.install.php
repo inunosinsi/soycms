@@ -36,4 +36,3 @@ class CommonFavoriteItemInstall extends SOYShopPluginInstallerBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.plugin.install","common_favorite_item","CommonFavoriteItemInstall");
-?>

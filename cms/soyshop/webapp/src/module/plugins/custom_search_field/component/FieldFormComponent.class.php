@@ -85,7 +85,7 @@ class FieldFormComponent {
 				$html = array();
                 $html[] = "<input type=\"text\" name=\"custom_search[" . $fieldId . "]\" value=\"" . $value . "\" style=\"width:80%;\">";
 				if(strlen($value) && strpos($value, "http") === 0){
-					$html[] = " <a href=\"" . $value . "\" target=\"_blank\" class=\"button\">確認</a>";
+					$html[] = " <a href=\"" . $value . "\" target=\"_blank\" class=\"btn btn-default\">確認</a>";
 				}
 				return implode("\n", $html);
         }

@@ -1,46 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<base href="<?php echo SOYSHOP_BASE_URL; ?>">
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<link rel="stylesheet" href="./css/soy2/style.css?<?php echo SOYSHOP_BUILD_TIME; ?>">
-<link rel="stylesheet" href="./css/admin/style.css?<?php echo SOYSHOP_BUILD_TIME; ?>">
-<link rel="stylesheet" href="./css/jquery-ui/themes/base/jquery-ui.css?<?php echo SOYSHOP_BUILD_TIME; ?>" charset="utf-8">
-<script type="text/javascript" src="./js/jquery.js?<?php echo SOYSHOP_BUILD_TIME; ?>" charset="utf-8"></script>
-<script type="text/javascript" src="./js/jquery-ui.min.js?<?php echo SOYSHOP_BUILD_TIME; ?>" charset="utf-8"></script>
-<script type="text/javascript" src="./js/main.pack.js?<?php echo SOYSHOP_BUILD_TIME; ?>" charset="utf-8"></script>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="robots" content="noindex">
+	<base href="<?php echo SOYSHOP_BASE_URL; ?>">
+	<title><?php echo htmlspecialchars($title,ENT_QUOTES,"UTF-8"); ?></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+	<![endif]-->
+
+<?php
+	$soycmsDir = rtrim(dirname(SOY2PageController::createRelativeLink("./")), "/") . "/soycms";
+	$hideSideMenu = ( isset($_COOKIE["soyshop-hide-side-menu"]) && $_COOKIE["soyshop-hide-side-menu"] == "true" );
+	$time = SOYSHOP_BUILD_TIME;
+	$isSubMenu = (strlen($subMenu) > 0);
+?>
+
+<link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/css/dashboard.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/bootstrap/css/bootstrap.min.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/metisMenu/metisMenu.min.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/dist/css/sb-admin-2.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/dist/css/soycms_cp.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/morrisjs/morris.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/font-awesome/css/font-awesome.min.css?<?php echo $time;?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.css?<?php echo $time;?>">
+<style>.navbar-static-top{background: linear-gradient(#cdcdcd,#ffffff);}</style>
+<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery/jquery.min.js?<?php echo $time; ?>" type="text/JavaScript" charset="utf-8"></script>
+<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.js?<?php echo $time; ?>" type="text/JavaScript" charset="utf-8"></script>
+<?php if(false){ ?>
+<script type="text/javascript" src="./js/main.pack.js?<?php echo $time; ?>" charset="utf-8"></script>
+<?php } ?>
 <?php
 foreach($css as $link){
-	echo '<link rel="stylesheet" href="'.htmlspecialchars($link,ENT_QUOTES,"UTF-8").'?'.SOYSHOP_BUILD_TIME.'" />';
+	echo '<link rel="stylesheet" href="' . htmlspecialchars($link,ENT_QUOTES,"UTF-8"). '?' . $time . '" charset="utf-8">';
 	echo "\n";
 }
 foreach($scripts as $script){
-	echo '<script type="text/javascript" src="' . htmlspecialchars($script,ENT_QUOTES,"UTF-8"). '?'.SOYSHOP_BUILD_TIME.'" charset="utf-8"></script>';
+	//$script = str_replace(".pack","",$script);
+	echo '<script type="text/javascript" src="' . htmlspecialchars($script,ENT_QUOTES,"UTF-8"). '?' . $time . '" charset="utf-8"></script>';
 	echo "\n";
 }
 ?>
+<?php if($hideSideMenu) { ?>
 <style type="text/css">
-#main{
-	margin:0 !important;
-	padding:10px;
-}
-.block {
-	margin:0;
+@media (min-width: 768px) {
+	#page-wrapper{
+		margin-left: 50px;
+	}
 }
 </style>
-<title><?php echo htmlspecialchars($title,ENT_QUOTES,"UTF-8"); ?></title>
+<?php } ?>
 </head>
-<body class="layout_full">
-<div id="wrapper" class="">
-
-	<div id="main">
+<body>
+	<div id="wrapper">
 		<?php echo $html; ?>
-	</div>
-
-	<div id="account_form_el" class="popup" style="display:none;">
-		<iframe src="<?php echo SOYCMS_ADMIN_URL; ?>/index.php/Account"></iframe>
-		<p class="close"></p>
 	</div>
 </div>
 </body>

@@ -1,18 +1,18 @@
-<p class="notice" soy:display="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <dl>
 	<dt>商品ブロックの生成個数</dt>
 	<dd>
 		<form soy:id="form">
 			<input type="number" soy:id="count">&nbsp;個&nbsp;
-			<input type="submit" value="更新">
+			<input type="submit" class="btn btn-primary btn-lg" value="更新">
 		</form>
 	</dd>
 </dl>
 
 <!-- soy:display="module_description" -->
-<p class="notice always">当プラグインは商品一覧ページと検索結果ページ以外でご利用下さい。</p>
-<h3>テンプレートへの記述例</h3>
+<p class="alert alert-info">当プラグインは商品一覧ページと検索結果ページ以外でご利用下さい。</p>
+<h4>テンプレートへの記述例</h4>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;overflow-x:scroll;">&lt;!-- shop:module="parts.item_block_plugin_{数字}" --&gt;
 &lt;!-- block:id="item_list" category="{カテゴリID}" csf:column="{カスタムサーチフィールドのフィールドID}" csf:value="{フィールドIDと対になる値}" count="{件数}" --&gt;
 商品一覧や商品詳細と同様のcms:idが使えます

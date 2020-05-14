@@ -1,11 +1,11 @@
-<p class="notice" soy:display="saved">保存しました</p>
-<p class="notice" soy:display="successed">実行しました</p>
-<p class="error" soy:display="failed">失敗しました</p>
-<p class="error always" soy:display="defect">データベースの設定に不備があります</p>
+<p class="alert alert-success" soy:display="saved">保存しました</p>
+<p class="alert alert-success" soy:display="successed">実行しました</p>
+<div class="error" soy:display="failed">失敗しました</div>
+<p class="alert alert-danger" soy:display="defect">データベースの設定に不備があります</p>
 
 <h1>EC CUBE データインポート</h1>
 
-<p class="error always" soy:display="point_plugin_inactive">ポイント制設定プラグインをインストールしてください</p>
+<p class="alert alert-danger" soy:display="point_plugin_inactive">ポイント制設定プラグインをインストールしてください</p>
 
 <form soy:id="dump_form">
 <dl>
@@ -22,14 +22,14 @@
 		※実行後、保存した設定は削除されます<br>
 		※パスワードは保持せず、実行前に必ず入力してください
 	</dd>
-</dl>	
+</dl>
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" name="save" value="保存" />
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" name="save" value="保存">
 	<!-- soy:display="display_exe_button" -->
-	&nbsp;&nbsp;<input type="submit" class="submit_button" name="execute" value="実行" />
+	&nbsp;&nbsp;<input type="submit" class="btn btn-success btn-lg" name="execute" value="実行">
 	<!-- /soy:display="display_exe_button" -->
-</p>
+</div>
 </form>
 
 <form soy:id="conf_form">
@@ -87,7 +87,7 @@
 		<div style="margin-left:10px;">
 			※メール文面は下記のものを使用します
 		</div>
-		
+
 	</dd>
 </dl>
 </form>
@@ -97,14 +97,14 @@
 	<dt>メールタイトル</dt>
 	<dd><input type="text" class="title" soy:id="mail_title"></dd>
 </dl>
-<table class="form_table" style="table-layout:auto;">
+<table class="table table-striped" style="table-layout:auto;">
 	<caption>メール本文</caption>
 	<tr class="last_row">
 		<td>
 			<textarea id="mail_content" soy:id="mail_content" class="editor" style="height:400px;"></textarea>
 		</td>
 		<td class="mail_replace_word_panel">
-			<a href="javascript:void(0);" class="button" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
+			<a href="javascript:void(0);" class="btn btn-default" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
 			<div class="word_list">
 				<h5>置換文字列</h5>
 				<ul>
@@ -129,9 +129,9 @@
 	</tr>
 </table>
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" name="mail_save" value="保存" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" name="mail_save" value="保存">
+</div>
 </form>
 
 
@@ -142,32 +142,32 @@
 		<input type="file" name="CSV[customer]"><input type="submit" value="アップロード"><br>
 		※customer_{日時}.csvのファイルをインポートします。
 	</dd>
-	
+
 	<dt>2.ポイントのインポート(会員情報のインポート後に実行してください。会員情報と同じCSVファイルです)</dt>
 	<dd>
 		<input type="file" name="CSV[point]"><input type="submit" value="アップロード"><br>
 		※customer_{日時}.csvのファイルをインポートします。
 	</dd>
-	
+
 	<dt>3.カテゴリ情報のインポート</dt>
 	<dd>
 		<input type="file" name="CSV[category]"><input type="submit" value="アップロード"><br>
 		※category_{日時}.csvのファイルをインポートします。
 	</dd>
-	
+
 	<dt>4.商品情報のインポート(カテゴリ情報のインポート後に実行してください。)</dt>
 	<dd>
 		<input type="file" name="CSV[product]"><input type="submit" value="アップロード"><br>
 		※product_{日時}.csvのファイルをインポートします。<br>
 		※詳細の項目はインポート終了後にSOY ShopのCSV<a soy:link="Item.Export">エクスポート</a>・<a soy:link="Item.Import">インポート</a>機能で登録してください。
 	</dd>
-	
+
 	<dt>5.商品毎の付与ポイントのインポート(商品情報のインポート後に実行してください。商品情報と同じCSVファイルです)</dt>
 	<dd>
 		<input type="file" name="CSV[grant]"><input type="submit" value="アップロード"><br>
 		※product_{日時}.csvのファイルをインポートします。
 	</dd>
-	
+
 	<dt>6.受注情報のインポート(会員情報と商品情報のインポート後に実行してください)</dt>
 	<dd>
 		※未対応

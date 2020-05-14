@@ -166,4 +166,20 @@ class AdminPage extends WebPage{
 
 		return (isset($array[$type])) ? $array[$type] : "注文受付メール雛型（管理者向け）";
 	}
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Config.FooterMenu.MailTemplateFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
+
+	function getScripts(){
+		$root = SOY2PageController::createRelativeLink("./js/");
+		return array(
+			$root . "main.pack.js",
+		);
+	}
 }

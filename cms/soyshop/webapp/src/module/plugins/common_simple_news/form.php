@@ -1,107 +1,102 @@
-<form method="post">
-
 <?php if(isset($_GET["updated"])){ ?>
-<p class="notice">更新しました</p>
+<div class="alert alert-success">更新しました</div>
 <?php } ?>
 
+<form method="post">
+	<div class="table-responsive">
+		<table id="news_table" class="table table-striped">
+			<caption>新着情報</caption>
+			<tbody>
+				<tr>
+					<th>&nbsp;</th>
+					<th>日時</th>
+					<th>テキスト</th>
+					<th>リンク先</th>
+					<th>&nbsp;</th>
+				</tr>
 
-<table id="news_table" class="form_list">
+				<!--
+				<tr>
+					<td>
+						<a onlick="news_move_up($(this));">▲</a>
+						<a onlick="news_move_down($(this));">▼</a>
+					</td>
+					<td>
+						<input type="text" style="width:90%;" name="news[][create_date]" />
+					</td>
+					<th>
+						<input type="text" style="width:90%;" name="news[][text]" />
+					</th>
+					<th>
+						<input type="text" style="width:90%;" name="news[][url]" />
+					</th>
+					<th>
+						<a class="btn btn-default" href="javascript:void(0);" onlick="news_clear($(this));">Clear</a>
+					</th>
+				</tr>
+				-->
 
-	<caption>新着情報</caption>
-	<tbody>
-		<tr>
-			<th>&nbsp;</th>
-			<th>日時</th>
-			<th>テキスト</th>
-			<th>リンク先</th>
-			<th>&nbsp;</th>
-		</tr>
+				<?php foreach($news as $key => $array){
+					$key = htmlspecialchars($key);
+					if(!isset($array["text"]) || strlen($array["text"]) < 1)continue;
+				?>
+				<tr>
+					<td>
+						<a href="javascript:void(0);" onclick="news_move_up($(this));">▲</a>
+						<a href="javascript:void(0);" onclick="news_move_down($(this));">▼</a>
+					</td>
+					<td>
+						<input type="text" style="width:90%;" name="news[<?php echo $key; ?>][create_date]" value="<?php echo htmlspecialchars(@$array["create_date"],ENT_QUOTES); ?>" />
+					</td>
+					<th>
+						<input type="text" style="width:90%;" name="news[<?php echo $key; ?>][text]" value="<?php echo htmlspecialchars(@$array["text"],ENT_QUOTES); ?>" />
+					</th>
+					<th>
+						<input type="text" style="width:90%;" name="news[<?php echo $key; ?>][url]" value="<?php echo htmlspecialchars(@$array["url"],ENT_QUOTES); ?>" />
+					</th>
+					<th>
+						<a class="btn btn-default" href="javascript:void(0);" onclick="news_clear($(this));">Clear</a>
+					</th>
+				</tr>
 
-		<!--
-		<tr>
-			<td>
-				<a onlick="news_move_up($(this));">▲</a>
-				<a onlick="news_move_down($(this));">▼</a>
-			</td>
-			<td>
-				<input type="text" style="width:90%;" name="news[][create_date]" />
-			</td>
-			<th>
-				<input type="text" style="width:90%;" name="news[][text]" />
-			</th>
-			<th>
-				<input type="text" style="width:90%;" name="news[][url]" />
-			</th>
-			<th>
-				<a class="button" href="javascript:void(0);" onlick="news_clear($(this));">Clear</a>
-			</th>
-		</tr>
-		-->
+				<?php } ?>
+			</tbody>
 
-		<?php foreach($news as $key => $array){
-			$key = htmlspecialchars($key);
-			if(!isset($array["text"]) || strlen($array["text"]) < 1)continue;
-		?>
-		<tr>
-			<td>
-				<a href="javascript:void(0);" onclick="news_move_up($(this));">▲</a>
-				<a href="javascript:void(0);" onclick="news_move_down($(this));">▼</a>
-			</td>
-			<td>
-				<input type="text" style="width:90%;" name="news[<?php echo $key; ?>][create_date]" value="<?php echo htmlspecialchars(@$array["create_date"],ENT_QUOTES); ?>" />
-			</td>
-			<th>
-				<input type="text" style="width:90%;" name="news[<?php echo $key; ?>][text]" value="<?php echo htmlspecialchars(@$array["text"],ENT_QUOTES); ?>" />
-			</th>
-			<th>
-				<input type="text" style="width:90%;" name="news[<?php echo $key; ?>][url]" value="<?php echo htmlspecialchars(@$array["url"],ENT_QUOTES); ?>" />
-			</th>
-			<th>
-				<a class="button" href="javascript:void(0);" onclick="news_clear($(this));">Clear</a>
-			</th>
-		</tr>
-
-		<?php } ?>
-
-
-	</tbody>
-
-	<tfoot>
-		<tr>
-			<td colspan="2">&nbsp;</td>
-			<td>
-				<input type="text" id="news_text" style="width:90%;" />
-			</td>
-			<td>
-				<input type="text" id="news_link" style="width:90%;" value="http://" />
-			</td>
-			<td>
-				<a class="button" href="javascript:void(0);"
-					onclick="add_news();">追加</a>
-			</td>
-		</tr>
-	</tfoot>
-</table>
-
-<p class="pageBtn">
-	<input type="submit" name="update" value="更新" />
-</p>
-
+			<tfoot>
+				<tr>
+					<td colspan="2">&nbsp;</td>
+					<td>
+						<input type="text" id="news_text" style="width:90%;" />
+					</td>
+					<td>
+						<input type="text" id="news_link" style="width:90%;" value="http://" />
+					</td>
+					<td>
+						<a class="btn btn-primary" href="javascript:void(0);"
+							onclick="add_news();">追加</a>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
 </form>
 
-<h3><a href="javascript:void(0);" onclick="$('.html_example').toggle();">テンプレートへの記述例</a></h3>
-<pre style="display:none;border:1px solid #000000;padding:5px 20px;margin:0 35px;" class="html_example">
-<b>&lt;!-- shop:module="common.simple_news" --&gt;</b>
+<h4><a href="javascript:void(0);" onclick="$('#html_example').toggle();">テンプレートへの記述例</a></h4>
+<pre id="html_example" style="display:none;">
+<strong>&lt;!-- shop:module="common.simple_news" --&gt;</strong>
 &lt;h3&gt;新着情報&lt;/h3&gt;
 &lt;div&gt;
 	&lt;dl&gt;
-		<b>&lt;!-- cms:id="news_list" --&gt;</b>
-		&lt;dt <b>cms:id="create_date"</b>&gt;2009.7.29&lt;/dt&gt;
-		&lt;dd <b>cms:id="title"</b>&gt;新着テキスト&lt;/dd&gt;
-		<b>&lt;!-- /cms:id="news_list" --&gt;</b>
+		<strong>&lt;!-- cms:id="news_list" --&gt;</strong>
+		&lt;dt <strong>cms:id="create_date"</strong>&gt;2009.7.29&lt;/dt&gt;
+		&lt;dd <strong>cms:id="title"</strong>&gt;新着テキスト&lt;/dd&gt;
+		<strong>&lt;!-- /cms:id="news_list" --&gt;</strong>
 	&lt;/dl&gt;
 &lt;/div&gt;
-<b>&lt;!-- /shop:module="common.simple_news" --&gt;</b>
+<strong>&lt;!-- /shop:module="common.simple_news" --&gt;</strong>
 </pre>
 
 <br />
@@ -110,7 +105,6 @@
 var add_news = function(){
 
 	var tbody = $("#news_table tbody");
-
 	var key = (new Date()).getTime() +"_"+ (new Date()).getMilliseconds();
 
 	var url = $("#news_link").val();
@@ -152,8 +146,8 @@ var add_news = function(){
 	td.append(input);
 	tr.append(td);
 
-	//<a class="button" href="javascript:void(0);" onlick="news_clear($(this));">Clear</a>
-	var td = $('<td><a class="button" href="javascript:void(0);" onclick="news_clear($(this));">Clear</a></td>');
+	//<a class="btn btn-default" href="javascript:void(0);" onlick="news_clear($(this));">Clear</a>
+	var td = $('<td><a class="btn btn-default" href="javascript:void(0);" onclick="news_clear($(this));">Clear</a></td>');
 	tr.append(td);
 
 	$("#news_link").val("http://");

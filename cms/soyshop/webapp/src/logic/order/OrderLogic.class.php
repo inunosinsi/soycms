@@ -437,6 +437,26 @@ class OrderLogic extends SOY2LogicBase{
 		return $changes;
 	}
 
+	function changeItemOrdersFlag($orderId, $flags){
+		if(!is_array($flags) || !count($flags)) return array();
+		$itemOrders = self::_getItemsByOrderId($orderId);
+		if(!count($itemOrders)) return array();
+
+		$changes = array();
+		foreach($flags as $itemOrderId => $newFlag){
+			if(!isset($itemOrders[$itemOrderId])) continue;
+			$itemOrder = $itemOrders[$itemOrderId];
+			$oldFlag = $itemOrder->getFlag();
+			if($oldFlag != $newFlag){
+				$itemOrder->setFlag($newFlag);
+				self::itemOrderDao()->update($itemOrder);
+				$changes[] = "「" . $itemOrder->getItemName() . "」のフラグを「" . SOYShop_ItemOrder::getFlagText($oldFlag) . "」から「" . SOYShop_ItemOrder::getFlagText($newFlag) . "」に変更しました。";
+			}
+		}
+
+		return $changes;
+	}
+
 	private function _getItemsByOrderId($orderId) {
     	try{
 			return self::itemOrderDao()->getByOrderId($orderId);

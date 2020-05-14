@@ -8,6 +8,7 @@ class SOYShop_ItemOrder {
 	const NO_CONFIRM = 0;
 
 	const STATUS_NONE = 0;	//何もない
+	const FLAG_NONE = 0;	//何もない
 
 	/**
 	 * @id
@@ -44,6 +45,7 @@ class SOYShop_ItemOrder {
      */
     private $itemName;
 	private $status = 0;	//商品毎に何らかの状態を保持する
+	private $flag = 0;		//使いみちはstatusと同じ
 
     private $cdate;
 
@@ -116,6 +118,12 @@ class SOYShop_ItemOrder {
 	}
 	function setStatus($status){
 		$this->status = $status;
+	}
+	function getFlag(){
+		return $this->flag;
+	}
+	function setFlag($flag){
+		$this->flag = $flag;
 	}
     function getCdate() {
     	if(!$this->cdate) $this->cdate = time();
@@ -246,6 +254,35 @@ class SOYShop_ItemOrder {
 		$statusList = self::getStatusList();
 		if(!isset($statusList[$status])) $status = self::STATUS_NONE;
 		return $statusList[$status];
+	}
+
+	public static function getFlagList(){
+		static $list;
+		if(is_null($list)){
+			$list[self::FLAG_NONE] = "";
+
+			//拡張ポイント
+			SOYShopPlugin::load("soyshop.itemorder.flag");
+			$adds = SOYShopPlugin::invoke("soyshop.itemorder.flag")->getList();
+
+			if(is_array($adds) && count($adds)){
+				foreach($adds as $add){
+					if(!is_array($add) || !count($add)) continue;
+					foreach($add as $key => $label){
+						if(isset($add[$key])) $list[$key] = $label;
+					}
+				}
+			}
+
+			ksort($list);
+		}
+		return $list;
+	}
+
+	public static function getFlagText($flag){
+		$flagList = self::getFlagList();
+		if(!isset($flagList[$flag])) $flagList = self::FLAG_NONE;
+		return $flagList[$flag];
 	}
 
     /**

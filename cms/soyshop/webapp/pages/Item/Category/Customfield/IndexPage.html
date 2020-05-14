@@ -1,156 +1,134 @@
-<h1>
-    カテゴリのカスタム項目管理
-    <span class="navi">
-        <a soy:link="">ショップ管理</a> &gt; <a soy:link="Item">商品管理</a> &gt; <a soy:link="Item.Category">カテゴリ管理</a> &gt; カスタム項目管理</span>
-</h1>
+<h2>カテゴリのカスタム項目管理</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="">ショップ管理</a></li>
+		<li><a soy:link="Item">商品管理</a></li>
+		<li><a soy:link="Item.Category">カテゴリ管理</a></li>
+		<li class="active">カスタム項目管理</li>
+	</ol>
+</nav>
 
+<div class="row" id="category">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				カテゴリのカスタム項目設定
+				<small class="pull-right">
+					<a class="btn btn-primary btn-xs" href="javascript:void(0);" data-toggle="modal" data-target="#customfieldModal">項目の追加</a>
+				</small>
+			</div>
 
-<div id="category" class="block">
-    <div class="block_title">
-        <h2>カテゴリのカスタム項目設定</h2>
+    		<div class="panel-body">
+        		<div class="alert alert-success" soy:display="updated">更新しました</div>
+        		<div class="alert alert-success" soy:display="error">入力したIDは使用できません</div>
 
-        <div class="block_title_right">
-            <a class="button" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
-        </div>
-    </div>
+				<div class="table-responsive">
+			        <table class="table table-striped">
+			            <caption>カスタム項目</caption>
+			            <tr>
+			                <td>ID</td>
+			                <td>フィールド名</td>
+			                <td>タイプ</td>
+			                <td>操作</td>
+			                <td>表示順</td>
+			                <td>表示のさせ方</td>
+			                <td>&nbsp;</td>
+			            </tr>
 
-    <div class="block_body clearfix">
+			            <!-- soy:id="field_list" -->
+			            <tr>
+			                <form method="post">
+			                    <td soy:id="field_text">ID</td>
+			                    <td>
+			                        <span soy:id="label">説明</span>
+			                        <input soy:id="label_input" style="display:none;" />
+			                    </td>
+			                    <td>
+			                        <span soy:id="type">input</span>
+			                        <select soy:id="type_select" style="display:none;" />
+			                    </td>
+			                    <td>
+			                        <a soy:id="toggle_update" class="btn btn-primary btn-sm">設定変更</a>
+			                        <a soy:id="update_link" class="btn btn-primary btn-sm" style="display:none;">変更を保存する</a>
 
-        <p class="notice" soy:display="updated">更新しました</p>
-        <p class="notice" soy:display="error">入力したIDは使用できません</p>
+			                        <input type="submit" soy:id="update_submit" style="display:none;" />
+			                    </td>
+			                    <td style="text-align:center;">
+			                        <input type="hidden" soy:id="field_id" />
+			                        <input type="submit" name="move_up" class="btn btn-default" value="△" />
+			                        <input type="submit" name="move_down" class="btn btn-default" value="▽" />
+			                    </td>
+			                    <td soy:id="display_form">表示のさせ方</td>
+			                    <td>
+			                        <a soy:id="toggle_config" class="btn btn-warning btn-sm">Detail</a>
 
-        <table class="form_list">
-            <caption>カスタム項目</caption>
-            <tr>
-                <td>ID</td>
-                <td>フィールド名</td>
-                <td>タイプ</td>
-                <td>操作</td>
-                <td>表示順</td>
-                <td>表示のさせ方</td>
-                <td>&nbsp;</td>
-            </tr>
+			                        <a soy:id="delete" class="btn btn-danger btn-sm">Delete</a>
 
-            <!-- soy:id="field_list" -->
-            <tr>
-                <form method="post">
-                    <td soy:id="field_text">ID</td>
-                    <td>
-                        <span soy:id="label">説明</span>
-                        <input soy:id="label_input" style="display:none;" />
-                    </td>
-                    <td>
-                        <span soy:id="type">input</span>
-                        <select soy:id="type_select" style="display:none;" />
-                    </td>
-                    <td>
-                        <a soy:id="toggle_update">設定変更</a>
-                        <a soy:id="update_link" class="button" style="display:none;">変更を保存する</a>
+			                        <input type="submit" soy:id="delete_submit" style="display:none;" />
+			                    </td>
+			                </form>
+			            </tr>
+			            <tr soy:id="field_config" style="display:none;">
+			                <td colspan="2"></td>
+			                <td colspan="5">
+			                    <h5 style="margin-bottom:0;">高度な設定</h5>
+			                    <form method="post">
+			                        <div class="form-group">
+			                            <label for="">初期値</label>
+			                            <input type="text" class="form-control" soy:id="default_value" />
+									</div>
 
-                        <input type="submit" soy:id="update_submit" style="display:none;" />
-                    </td>
-                    <td style="text-align:center;">
-                        <input type="hidden" soy:id="field_id" />
-                        <input type="submit" name="move_up" value="△" />
-                        <input type="submit" name="move_down" value="▽" />
-                    </td>
-                    <td soy:id="display_form">表示のさせ方</td>
-                    <td>
-                        <a soy:id="toggle_config">Detail</a>
+									<div class="form-group">
+			                            <label for="">空の時の動作：</label>
+			                            <div class="form-inline">
+			                                <input type="radio" soy:id="empty_show" id="radio_empty_show" /><label for="">指定の値を出力</label><input type="text" class="form-control" soy:id="empty_value" /><br/>
+			                                <input type="radio" soy:id="empty_hide" id="radio_empty_hide" /><label for="radio_empty_hide">表示しない</label>
+			                            </div>
+									</div>
 
-                        <a soy:id="delete">Delete</a>
+									<div class="form-group">
+			                            <label for="">指定の属性に出力</label>
+		                                <input type="text" class="form-control" soy:id="output" size="20" />
+									</div>
 
-                        <input type="submit" soy:id="delete_submit" style="display:none;" />
-                    </td>
-                </form>
-            </tr>
-            <tr soy:id="field_config" style="display:none;">
-                <td colspan="2"></td>
-                <td colspan="5">
-                    <h5 style="margin-bottom:0;">高度な設定</h5>
-                    <form method="post">
-                        <dl>
-                            <dt>初期値</dt>
-                            <dd>
-                                <input type="text" class="text" soy:id="default_value" />
-                            </dd>
+									<div class="form-group">
+			                            <label for="">フォームの説明</label>
+		                                <input type="text" class="form-control" soy:id="description" size="20" />
+									</div>
 
-                            <dt>空の時の動作：</dt>
-                            <dd>
-                                <input type="radio" soy:id="empty_show" id="radio_empty_show" /><label for="">指定の値を出力</label><input type="text" class="text" soy:id="empty_value" /><br/>
-                                <input type="radio" soy:id="empty_hide" id="radio_empty_hide" /><label for="radio_empty_hide">表示しない</label>
-                            </dd>
+									<div class="form-group">
+			                            <label for="">ソートに使用する</label><br>
+			                                <input type="hidden" soy:id="not_index" />
+			                                <input type="checkbox" soy:id="is_index" />
+									</div>
 
-                            <dt>指定の属性に出力</dt>
-                            <dd>
-                                <input type="text" class="text" soy:id="output" size="20" />
-                            </dd>
+		                            <!-- soy:id="with_options" -->
+									<div class="form-group">
+			                            <label for="">選択項目<span class="option">(項目を改行で区切ってください)</span></label><br>
+		                                <textarea soy:id="option" class="form-control"></textarea>
+									</div>
+		                            <!-- /soy:id="with_options" -->
 
-                            <dt>フォームの説明</dt>
-                            <dd>
-                                <input type="text" class="text" soy:id="description" size="20" />
-                            </dd>
+			                        <div style="margin:10px 1em 2em;text-align:right;">
+			                            <input type="button" soy:id="update_advance" class="btn btn-primary btn-lg" value="設定保存">
+			                        </div>
 
-                            <dt>ソートに使用する</dt>
-                            <dd>
-                                <input type="hidden" soy:id="not_index" />
-                                <input type="checkbox" soy:id="is_index" />
-                            </dd>
+			                        <input type="submit" style="display:none;" soy:id="update_advance_submit" />
 
-                            <!-- soy:id="with_options" -->
-                            <dt>選択項目<span class="option">(項目を改行で区切ってください)</span></dt>
-                            <dd>
-                                <textarea soy:id="option"></textarea>
-                            </dd>
-                            <!-- /soy:id="with_options" -->
-
-                        </dl>
-
-                        <div style="margin:10px 1em 2em;text-align:right;">
-                            <input type="button" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
-                        </div>
-
-                        <input type="submit" style="display:none;" soy:id="update_advance_submit" />
-
-                    </form>
-                </td>
-            </tr>
-            <!-- /soy:id="field_list" -->
-        </table>
-
-        <div id="append_form_el" class="popup" style="display:none;">
-            <form soy:id="create_form" id="create_form">
-                <input type="hidden" name="create" value="create" /> 項目名
-                <div class="alL">
-                    <input id="custom_new_name" name="custom_new_name" type="text" class="text validate">
-                    <p class="require" id="custom_new_name_error" style="display:none;">必須項目を入力してください</p>
-                </div>
-
-                項目ID
-                <div class="alL">
-                    <input id="custom_id" name="custom_id" type="text" class="text validate">
-                    <p class="require" id="custom_id_error" style="display:none;">必須項目を入力してください</p>
-                </div>
-
-                項目種別
-                <div class="alL">
-                    <select name="custom_type" soy:id="custom_type_select"></select>
-                </div>
-
-                <p class="alC">
-                    <a class="button" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
-                </p>
-                <p class="close"></p>
-            </form>
-        </div>
-
+			                    </form>
+			                </td>
+			            </tr>
+			            <!-- /soy:id="field_list" -->
+			        </table>
+				</div>
 		<div style="margin:5px 25px;">
-			<h2>フィールドID_visible</h2>
+			<h4>フィールドID_visible</h4>
 			<p>cms:id="<strong>フィールドID_visible</strong>"またはcms:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空の時に表示されなくなります。<br>
 			cms:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空ではない時に表示されます。</p>
 			<br>
 			<span>例:フィールドIDがsampleの時</span>
-<pre style="border:1px solid #000000;padding:3px 5px;">&lt;div <strong>cms:id="sample_visible"</strong>&gt;
+<pre>
+&lt;div <strong>cms:id="sample_visible"</strong>&gt;
 	カスタムフィールドの値は<strong>&lt;!-- cms:id="sample" /--&gt;</strong>です。
 &lt;/div&gt;
 &lt;div <strong>cms:id="sample_is_empty"</strong>&gt;
@@ -161,32 +139,39 @@
     <!-- /block_body -->
 </div>
 
-<div class="block">
-    <div class="block_title">
-        <h2>その他</h2>
-    </div>
+<div class="modal" tabindex="-1" role="dialog" id="customfieldModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">項目の追加</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+	                <input type="hidden" name="create" value="create" /> 項目名
+	                <div class="alL">
+	                    <input id="custom_new_name" name="custom_new_name" type="text" class="text validate">
+	                    <p class="require" id="custom_new_name_error" style="display:none;">必須項目を入力してください</p>
+	                </div>
 
-    <div class="block_body">
+	                項目ID
+	                <div class="alL">
+	                    <input id="custom_id" name="custom_id" type="text" class="text validate">
+	                    <p class="require" id="custom_id_error" style="display:none;">必須項目を入力してください</p>
+	                </div>
 
-        <dl>
-            <dt><a soy:link="Item.Category">カテゴリ管理</a></dt>
-            <dd>カテゴリ一覧を表示します。</dd>
+	                項目種別
+	                <div class="alL">
+	                    <select name="custom_type" soy:id="custom_type_select"></select>
+	                </div>
 
-            <!-- soy:display="custom_plugin" -->
-            <dt><a soy:link="Item.Category.Customfield">カスタム項目設定</a></dt>
-            <dd>カテゴリの追加項目を編集します</dd>
-            <!-- /soy:display="custom_plugin" -->
-
-            <dt><a soy:link="Item.Category.Setting">カテゴリの一括設定</a></dt>
-            <dd>カテゴリを一括で設定します</dd>
-
-            <dt><a soy:link="Item.Category.Import">カテゴリCSVインポート</a></dt>
-            <dd>カテゴリ情報をCSVから入力します。</dd>
-
-            <dt><a soy:link="Item.Category.Export">カテゴリCSVエクスポート</a></dt>
-            <dd>カテゴリをCSV出力します。</dd>
-        </dl>
-
-    </div>
-    <!-- /block_body -->
+	                <div class="text-right">
+	                    <a class="btn btn-primary btn-lg" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+	                </div>
+	            </form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="imageSelectModalClose" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
 </div>

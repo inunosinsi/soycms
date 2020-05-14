@@ -4,14 +4,13 @@
  *
  */
 function soyshop_category_navigation(){
-
-	$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
 	try{
-		$categories = $dao->getByIsOpen(SOYShop_Category::IS_OPEN);
+		$categories = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO")->getByIsOpen(SOYShop_Category::IS_OPEN);
 	}catch(Exception $e){
 		$categories = array();
 	}
 
+	if(!count($categories)) return "";
 
 	$tree = array();
 	$root = array();
@@ -27,17 +26,12 @@ function soyshop_category_navigation(){
 	}
 
 	//設定の読み込み
-	$config = SOYShop_DataSets::get("common.category_navigation", array());
-	$urls = SOYShop_DataSets::get("site.url_mapping", array());
-
 	$args = array(
-		"config" => $config,
-		"urls" => $urls
+		"config" => SOYShop_DataSets::get("common.category_navigation", array()),
+		"urls" => SOYShop_DataSets::get("site.url_mapping", array())
 	);
 
-	$html = soyshop_category_navigation_build_tree($args,$root,$tree);
-
-	return $html;
+	return soyshop_category_navigation_build_tree($args,$root,$tree);
 
 }
 
@@ -56,7 +50,6 @@ function soyshop_category_navigation_build_tree($args,$array,$tree){
 	}
 
 	foreach($array as $obj){
-
 		$id = (isset($config[$obj->getId()])) ? $config[$obj->getId()]["id"] : null;
 		$parameter = (isset($config[$obj->getId()])) ? $config[$obj->getId()]["parameter"] : null;
 

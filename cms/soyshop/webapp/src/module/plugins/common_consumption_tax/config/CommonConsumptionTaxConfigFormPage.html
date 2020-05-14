@@ -1,51 +1,49 @@
-<div class="block_body clearfix">
-	<p class="notice always">消費税開始日を登録後、必ずショップの基本設定の消費税設定で<strong>税別価格(外税)を表示する</strong>にチェックを入れてください。</p>
-	<p class="notice" soy:display="updated">更新しました</p>
-	<p class="error" soy:display="failed">登録に失敗しました</p>
-	<p class="notice" soy:display="success">削除しました</p>
-	<p class="error" soy:display="delete_failed">削除に失敗しました</p>
+<div class="panel-body">
+	<div class="alert alert-info">消費税開始日を登録後、必ずショップの基本設定の消費税設定で<strong>税別価格(外税)を表示する</strong>にチェックを入れてください。</div>
+	<div class="alert alert-success" soy:display="updated">更新しました</div>
+	<div class="error" soy:display="failed">登録に失敗しました</div>
+	<div class="alert alert-success" soy:display="success">削除しました</div>
+	<div class="error" soy:display="delete_failed">削除に失敗しました</div>
 
 	<form soy:id="time_confirm_form">
-		<h3>サーバに設定されている時刻の確認</h3>
-		<div class="table_container">
-			<dl>
-				<dd>
-					<input type="submit" name="confirm" value="今の時間を確認する">&nbsp;&nbsp;&nbsp;&nbsp;
-					<span soy:id="confirm_time"></span>
-				</dd>
-			</dl>
+		<div class="form-group">
+			<label for="">サーバに設定されている時刻の確認</label>
+			<input type="submit" name="confirm" class="btn btn-primary" value="今の時間を確認する">&nbsp;&nbsp;&nbsp;&nbsp;
+			<span soy:id="confirm_time"></span>
 		</div>
 	</form>
 
 	<!-- soy:display="schedule_list" -->
-	<h3>登録済み開始日</h3>
 	<form soy:id="form">
-		<table class="form_table" style="width:60%;">
-			<thead>
-				<tr>
-					<th style="width:50%;">開始日</th>
-					<th style="width:20%;">消費税率</th>
-					<th style="width:30%;">&nbsp;</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- soy:id="schedule_list" -->
-				<tr>
-					<td soy:id="start_date" class="alC">2014-04-01</td>
-					<td soy:id="tax_rate" class="alR">8%</td>
-					<td class="operation">
-						<a class="button" soy:id="remove_link">削除</a>
-					</td>
-				</tr>
-				<!-- /soy:id="schedule_list" -->
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-striped" style="width:60%;">
+				<caption>登録済み開始日</caption>
+				<thead>
+					<tr>
+						<th style="width:50%;">開始日</th>
+						<th style="width:20%;">消費税率</th>
+						<th style="width:30%;">&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- soy:id="schedule_list" -->
+					<tr>
+						<td soy:id="start_date" >2014-04-01</td>
+						<td soy:id="tax_rate" class="text-right">8%</td>
+						<td class="operation">
+							<a class="btn btn-default" soy:id="remove_link">削除</a>
+						</td>
+					</tr>
+					<!-- /soy:id="schedule_list" -->
+				</tbody>
+			</table>
+		</div>
 	</form>
 	<!-- /soy:display="schedule_list" -->
 
-	<h3>消費税開始日の設定</h3>
 	<form soy:id="register_form">
-		<table class="form_table" style="width:50%;">
+		<table class="table table-striped" style="width:50%;">
+			<caption>消費税開始日の設定</caption>
 			<tr>
 				<th nowrap>開始日</th>
 				<td>
@@ -58,42 +56,36 @@
 			</tr>
 		</table>
 
-		<p class="pageBtn" style="clear:both;">
-			<input type="submit" class="submit_button" value="登録" />
-		</p>
+		<div class="text-center" style="clear:both;">
+			<input type="submit" class="btn btn-primary btn-lg" value="登録" />
+		</div>
 	</form>
 
-	<h3>軽減税率</h3>
 	<form soy:id="reduced_tax_form">
-		<div class="table_container">
-			<dl>
-				<dd>
-					<!--開始日：<input type="" class="date_picker_start text" soy:id="reduced_tax_rate_start_date" style="width:90px;">-->
-					<input type="number" class="alR" soy:id="reduced_tax_rate">&nbsp;%&nbsp;
-					<input type="submit" value="更新"><br>
-					<strong>※軽減税率の対象商品の設定は各商品の編集画面で行います</strong><br>
-					<a soy:link="Config.Detail?plugin=common_consumption_tax&list" class="button">軽減税率対象商品一覧</a>
-				</dd>
-			</dl>
+		<div class="form-group">
+			<label for="">軽減税率</label>
+				<!--開始日：<input type="" class="date_picker_start text" soy:id="reduced_tax_rate_start_date" style="width:90px;">-->
+				<input type="number" class="text-right" soy:id="reduced_tax_rate">&nbsp;%&nbsp;
+				<input type="submit" class="btn btn-primary btn-lg" value="更新"><br>
+				<strong>※軽減税率の対象商品の設定は各商品の編集画面で行います</strong><br>
+				<a soy:link="Config.Detail?plugin=common_consumption_tax&list" class="btn btn-default">軽減税率対象商品一覧</a>
 		</div>
 	</form>
 
-	<h3>税額の端数の対応設定</h3>
+	<br>
+
 	<form soy:id="method_form">
-		<div class="table_container">
-			<dl>
-				<dt>税金の額に小数点がある場合</dt>
-				<dd>
-					<input type="radio" soy:id="method_floor">
-					<input type="radio" soy:id="method_round">
-					<input type="radio" soy:id="method_ceil">&nbsp;
-					<input type="submit" name="Update" value="設定">
-				</dd>
-			</dl>
+		<div class="form-group">
+			<label for="">税額の端数の対応設定</label><br>
+			<strong>・税金の額に小数点がある場合</strong><br>
+			<input type="radio" soy:id="method_floor">
+			<input type="radio" soy:id="method_round">
+			<input type="radio" soy:id="method_ceil">&nbsp;
+			<input type="submit" name="Update" class="btn btn-primary" value="設定">
 		</div>
 	</form>
 
-<h3>テンプレートへの記述例</h3>
+<h4>テンプレートへの記述例</h4>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:5px 35px 10px 0;">
 &lt;!-- block:id="entry" --&gt;
 &lt;h3 cms:id="item_name"&gt;商品名&lt;/h3&gt;
@@ -110,7 +102,7 @@
 &lt;!-- /block:id="entry" --&gt;
 </pre>
 
-</div><!-- /block_body -->
+</div>
 
 <link rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink('./js/tools/soy2_date_picker.css');?>" />
 <script type="text/javascript" src="<?php echo SOY2PageController::createRelativeLink('./js/tools/soy2_date_picker.pack.js');?>" charset="utf-8"></script>

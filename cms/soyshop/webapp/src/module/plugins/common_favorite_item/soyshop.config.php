@@ -21,4 +21,3 @@ class CommonFavoriteItemConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "common_favorite_item", "CommonFavoriteItemConfig");
-?>

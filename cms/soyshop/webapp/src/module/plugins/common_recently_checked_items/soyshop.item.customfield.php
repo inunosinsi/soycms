@@ -4,7 +4,6 @@
 class RecentlyCheckedItemsCustomField extends SOYShopItemCustomFieldBase{
 
 	var $itemDAO;
-
 	const MAX = 50;
 
 	/**
@@ -59,10 +58,7 @@ class RecentlyCheckedItemsCustomField extends SOYShopItemCustomFieldBase{
 
 		//保存
 		$userSession->setAttribute($sessionKey, $itemIds);
-
 	}
-
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield","common_recently_checked_items","RecentlyCheckedItemsCustomField");
-?>

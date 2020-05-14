@@ -1,7 +1,7 @@
-<div class="table_container">
+<div class="table-responsive">
 	
 	<form soy:id="form">
-		<table class="form_table alC ml20" id="change_user_config_table" style="width:60%;">
+		<table class="table table-striped alC ml20" id="change_user_config_table" style="width:60%;">
 			<caption>値引き</caption>
 			<thead>
 				<tr>
@@ -11,7 +11,7 @@
 			<tfoot>
 				<tr>
 					<td colspan="2">
-						<a class="button" href="javascript:void(0);" onclick="add_time_form();">入力欄の追加</a>
+						<a class="btn btn-default" href="javascript:void(0);" onclick="add_time_form();">入力欄の追加</a>
 					</td>
 				</tr>
 			</tfoot>
@@ -20,12 +20,12 @@
 				<tr>
 					<td>
 						在庫数&nbsp;:&nbsp;
-						<input class="text" soy:id="stock">
+						<input class="form-control" soy:id="stock">
 					</td>
 					<td>
 						値引き率&nbsp;:&nbsp;
-						<input class="text" soy:id="discount">
-						<a class="button" href="javascript:void(0);" onclick="delete_time_form(this);">削除</a>
+						<input class="form-control" soy:id="discount">
+						<a class="btn btn-default" href="javascript:void(0);" onclick="delete_time_form(this);">削除</a>
 					</td>
 				</tr>
 				<!-- /soy:id="plan_list" -->
@@ -37,8 +37,8 @@
 			<span style="color:#FF0000;">※各商品で在庫数割引の対象商品にチェックをしないと値引きされません。</span>
 		</div>
 			
-		<p class="pageBtn" style="clear:both;margin-top:10px;">
-			<input type="submit" class="submit_button" value="設定" />
+		<p class="text-center" style="clear:both;margin-top:10px;">
+			<input type="submit" class="btn btn-primary" value="設定" />
 		</p>
 	</form>
 </div>

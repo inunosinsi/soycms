@@ -1,10 +1,10 @@
-<p class="notice always" soy:display="no_installed_slip_number_plugin">このプラグインを使用する場合は伝票番号プラグインを有効にする必要があります。</p>
-<p class="notice" soy:display="updated">更新しました。</p>
+<p class="alert alert-info" soy:display="no_installed_slip_number_plugin">このプラグインを使用する場合は伝票番号プラグインを有効にする必要があります。</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 	<section>
 		<h1>共通設定</h1>
-		<p class="notice always">API版を使用する場合は、cronでjobの実行の登録を行う必要があります。</p>
+		<p class="alert alert-info">API版を使用する場合は、cronでjobの実行の登録を行う必要があります。</p>
 		<dl>
 			<dt>API key</dt>
 			<dd>
@@ -59,7 +59,7 @@
 		</dl>
 	</section>
 
-	<p class="pageBtn">
-		<input type="submit" class="submit_button" value="変更" />
-	</p>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>

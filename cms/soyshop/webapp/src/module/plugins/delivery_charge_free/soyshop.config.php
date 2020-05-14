@@ -107,21 +107,21 @@ class DeliveryChargeFreeConfigFormPage extends WebPage{
 			"value" => $price["default_shipping_fee"],
 			"name"  => "price[default_shipping_fee]"
 		));
-		
+
 		$notification = DeliveryChargeFreeConfigUtil::getNotification();
-		
+
 		$this->addCheckBox("notification_check", array(
 			"name" => "notification[check]",
 			"value" => 1,
 			"selected" => (isset($notification["check"]) && $notification["check"] == 1),
 			"label" => "カートの商品確認画面で通知を表示"
 		));
-		
+
 		$this->addTextArea("notification_text", array(
 			"name" => "notification[text]",
 			"value" => (isset($notification["text"])) ? $notification["text"] : ""
 		));
-		
+
 		$this->addInput("title", array(
 			"value" => DeliveryChargeFreeConfigUtil::getTitle(),
 			"name"  => "title"
@@ -142,12 +142,6 @@ class DeliveryChargeFreeConfigFormPage extends WebPage{
 		$this->createAdd("discount_list", "DeliveryChargeFreeDiscountList", array(
 			"list" => DeliveryChargeFreeConfigUtil::getDiscountSetting(),
 		));
-
-
-		$this->addModel("updated", array(
-			"visible" => isset($_GET["updated"])
-		));
-
 	}
 
 	function getTemplateFilePath(){

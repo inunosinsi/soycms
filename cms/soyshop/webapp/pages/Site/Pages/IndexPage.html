@@ -1,78 +1,76 @@
-<h1>
-	ページ管理
-	<span class="navi">
-		<a soy:link="Site">サイト管理</a> &gt; ページ管理</span>
-</h1>
+<h2>ページ管理</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="Site">サイト管理</a></li>
+		<li class="active">ページ管理</li>
+	</ol>
+</nav>
 
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				ページ一覧
+				<small class="pull-right">
+					<a soy:link="Site.Pages.Create" class="btn btn-primary btn-xs">ページの追加</a>
+					<a class="btn btn-default btn-xs" soy:id="page_ini_button">初期化</a>
+				</small>
+			</div>
+			<div class="panel-body">
+				<div class="alert alert-success" soy:display="deleted">削除しました</div>
 
-<div class="block">
-	<div class="block_title">
-		<h2>ページ一覧</h2>
+				<!-- soy:id="page_type_list" -->
+				<div class="table-responsive">
+					<table class="table table-striped">
+					<caption>ページ一覧<!-- soy:id="prefix" /--></caption>
+						<tr>
+							<th>名前</th>
+							<th>URL</th>
+							<th>種類</th>
+							<th>
+								操作&nbsp;
+								<a class="btn btn-default btn-xs" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+							</th>
+						</tr>
+						<!-- soy:id="page_list" -->
+						<tr>
+							<td>
+								<span soy:id="name">あああああ</span>
+							</td>
+							<td>
+								<a soy:id="uri">あああああ</a>
+							</td>
+							<td>
+								<span soy:id="type_text">トップページ</span>
+							</td>
+							<td>
+								<a soy:id="detail_link" href="#" class="btn btn-primary">編集</a>&nbsp;
+								<a soy:id="remove_link" href="#" class="btn btn-danger" onclick="return confirm('削除してもよろしいですか？')">削除</a>
+							</td>
+						</tr>
+						<!-- /soy:id="page_list" -->
+						<tfoot>
+							<tr>
+								<td colspan="4" class="text-right">
+									<a soy:id="create_link" class="btn btn-primary">ページの追加</a>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				<!-- /soy:id="page_type_list" -->
 
-		<div class="block_title_right">
-			<a soy:link="Site.Pages.Create" class="button">ページの追加</a>
-			<a class="button" soy:id="page_ini_button">初期化</a>
+				<!-- soy:display="no_page" -->
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<caption>ページ一覧</caption>
+						<tr>
+							<td colspan="4">ページはありません</td>
+						</tr>
+					</table>
+				</div>
+				<!-- /soy:display="no_page" -->
+			</div>
 		</div>
 	</div>
-
-	<div class="block_body">
-
-		<p class="notice" soy:display="deleted">削除しました</p>
-
-		<!-- soy:id="page_type_list" -->
-		<table class="form_list">
-		<caption>ページ一覧<!-- soy:id="prefix" /--></caption>
-			<tr>
-				<th>名前</th>
-				<th>URL</th>
-				<th>種類</th>
-				<th>
-					操作
-					<a class="button fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
-				</th>
-			</tr>
-			<!-- soy:id="page_list" -->
-			<tr>
-				<td>
-					<span soy:id="name">あああああ</span>
-				</td>
-				<td>
-					<a soy:id="uri">あああああ</a>
-				</td>
-				<td>
-					<span soy:id="type_text">トップページ</span>
-				</td>
-				<td>
-					<a soy:id="detail_link" href="#" class="button fl">編集</a>
-					<a soy:id="remove_link" href="#" class="button fr delete_btn" onclick="return confirm('削除してもよろしいですか？')">削除</a>
-				</td>
-			</tr>
-			<!-- /soy:id="page_list" -->
-			<tfoot>
-				<tr>
-					<td colspan="4" class="alR">
-						<a soy:id="create_link" class="button">ページの追加</a>
-					</td>
-				</tr>
-			</tfoot>
-		</table>
-		<!-- /soy:id="page_type_list" -->
-
-		<!-- soy:id="no_page" -->
-		<table class="form_list">
-			<caption>ページ一覧</caption>
-			<tr>
-				<td colspan="4">ページはありません</td>
-			</tr>
-		</table>
-		<!-- /soy:id="no_page" -->
-
-	</div>
-
 </div>
-
-<style type="text/css">
-.delete_btn{
-	visibility:hidden;
-}
-</style>

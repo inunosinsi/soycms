@@ -7,7 +7,7 @@ class DeliveryEachProductInfo extends SOYShopInfoPageBase{
         if(!self::checkInstalledOtherDeliveryModule()){
           return '<a href="'.SOY2PageController::createLink("Config.Detail?plugin=delivery_each_product").'">配送料の設定</a>';
         }else{
-          return '<p class="error always">他の配送モジュールと併用できません。</p>';
+          return '<p class="alert alert-danger">他の配送モジュールと併用できません。</p>';
         }
 
       }else{

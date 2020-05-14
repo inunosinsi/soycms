@@ -202,6 +202,9 @@ class IndexPage extends WebPage{
 
 		parent::__construct();
 
+		//エラー
+		DisplayPlugin::toggle("order_error", count($this->cart->getErrorMessages()));
+
 		$this->itemInfo();
 		$this->dateInfo();
 		$this->userInfo();
@@ -213,8 +216,6 @@ class IndexPage extends WebPage{
 		$this->pointForm();
 		$this->orderCustomForm();
 		$this->confirmForm();
-
-		self::displayErrors();
 
 		//リセットボタンの表示
 		$items = $this->cart->getItems();
@@ -641,16 +642,6 @@ class IndexPage extends WebPage{
 		include_once(dirname(__FILE__) . "/component/CustomfieldMethodListComponent.class.php");
 		$this->createAdd("customfield_method_list", "CustomfieldMethodListComponent", array(
 			"list" => $list,
-		));
-	}
-
-	/**
-	 * エラー
-	 */
-	private function displayErrors(){
-		$this->addLabel("order_error",array(
-				"text" => "エラーにより注文を進めることができませんでした。",
-				"visible" => count($this->cart->getErrorMessages()),
 		));
 	}
 }

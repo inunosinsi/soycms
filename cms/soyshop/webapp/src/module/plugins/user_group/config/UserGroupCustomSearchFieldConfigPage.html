@@ -1,18 +1,18 @@
-<div class="alR">
-	<a class="button" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
+<div class="text-right">
+	<a class="btn btn-default" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
 </div>
 
 <br />
 
-<div class="block_body clearfix">
+<div class="panel-body">
 
-	<p class="error always" soy:display="no_install_user_custom_field">顧客グループプラグインを使用する際は必ずユーザーカスタムサーチフィールドをインストールしてください。</p>
+	<p class="alert alert-danger" soy:display="no_install_user_custom_field">顧客グループプラグインを使用する際は必ずユーザーカスタムサーチフィールドをインストールしてください。</p>
 
-	<p class="notice" soy:display="updated">更新しました</p>
-	<p class="notice" soy:display="deleted">削除しました</p>
-	<p class="error" soy:display="error">失敗しました</p>
+	<div class="alert alert-success" soy:display="updated">更新しました</div>
+	<div class="alert alert-success" soy:display="deleted">削除しました</div>
+	<div class="alert alert-danger" soy:display="error">失敗しました</div>
 
-	<table class="form_list">
+	<table class="table table-striped">
 		<caption>サーチフィールド</caption>
 		<tr>
 			<th>ID</th>
@@ -31,8 +31,8 @@
 			<td style="text-align:center;">
 					<form method="post">
 						<input type="hidden" soy:id="field_id" />
-						<input type="submit" name="move_up" value="△" />
-						<input type="submit" name="move_down" value="▽" />
+						<input type="submit" name="move_up" class="btn btn-default" value="△" />
+						<input type="submit" name="move_down" class="btn btn-default" value="▽" />
 					</form>
 			</td>
 			<td soy:id="display"></td>
@@ -72,8 +72,8 @@
 						</dd-->
 					</dl>
 
-					<div style="margin:10px 1em 2em;text-align:right;">
-						<input type="button" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
+					<div class="text-right">
+						<input type="button" soy:id="update_advance" class="btn btn-primary btn-lg" value="設定保存">
 					</div>
 
 					<input type="submit" style="display:none;" soy:id="update_advance_submit" />
@@ -110,8 +110,8 @@
 				</div>
 
 			</p>
-			<p class="alC">
-				<a class="button" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+			<p >
+				<a class="btn btn-default" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
 			</p>
 			<p class="close"></p>
 		</form>

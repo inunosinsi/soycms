@@ -243,7 +243,7 @@ class SOYShop_CategoryAttributeConfig{
         return 'custom_field_'.$this->getFieldId();
     }
     function isIndex(){
-        return (boolean)$this->config["isIndex"];
+        return (isset($this->config["isIndex"])) ? (boolean)$this->config["isIndex"] : false;
     }
 
     function getForm($value,$value2){
@@ -252,11 +252,11 @@ class SOYShop_CategoryAttributeConfig{
         $h_formNameOption = str_replace("]","_option]",$h_formName);
         $h_formID = htmlspecialchars($this->getFormId(), ENT_QUOTES, "UTF-8");
 
-        $title = '<h4>'
+        $title = '<label for="">'
                  .''
                  .htmlspecialchars($this->getLabel(), ENT_QUOTES, "UTF-8");
         $title .= (strlen($this->getDescription())) ? "<span class=\"option\">(" . $this->getDescription() . ")</span>" : "";
-        $title .= '</h4>';
+        $title .= '</label><br>';
 
         switch($this->getType()){
             case "checkbox":
@@ -364,10 +364,10 @@ class SOYShop_CategoryAttributeConfig{
                 $html[] = '<div class="image_select" id="image_select_wrapper_'.$h_formID.'">';
 
                 //選択ボタン
-                $html[] = '<a class="button" href="javascript:void(0);" onclick="return ImageSelect.popup(\''.$h_formID.'\');">Select</a>';
+                $html[] = '<a class="btn btn-default" href="javascript:void(0);" onclick="return ImageSelect.popup(\''.$h_formID.'\');">Select</a>';
 
                 //クリアボタン
-                $html[] = '<a class="button" href="javascript:void(0);" onclick="return ImageSelect.clear(\''.$h_formID.'\');">Clear</a>';
+                $html[] = '<a class="btn btn-default" href="javascript:void(0);" onclick="return ImageSelect.clear(\''.$h_formID.'\');">Clear</a>';
 
                 //プレビュー画像
                 $html[] = '<a id="image_select_preview_link_'.$h_formID.'" href="'.$h_value.'" onclick="return common_click_image_to_layer(this);" target="_blank">';
@@ -411,7 +411,7 @@ class SOYShop_CategoryAttributeConfig{
                 break;
         }
 
-        $return = $title .  $body . "\n";
+        $return = "<div class=\"form-group\">" . $title .  $body . "</div>\n";
 
         return $return;
     }

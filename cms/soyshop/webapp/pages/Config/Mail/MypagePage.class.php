@@ -147,5 +147,20 @@ class MypagePage extends WebPage{
 
 		return (isset($array[$type])) ? $array[$type] : "パスワード再設定メール";
 	}
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Config.FooterMenu.MailTemplateFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
+
+	function getScripts(){
+		$root = SOY2PageController::createRelativeLink("./js/");
+		return array(
+			$root . "main.pack.js",
+		);
+	}
 }
-?>

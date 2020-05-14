@@ -2,18 +2,18 @@
 	<div class="block_title">
 		<h2>予約</h2>
 
-		<div class="block_title_right">
+		<div class="pull-right">
 		</div>
 	</div>
 
-	<div class="block_body">
-		<p class="notice" soy:display="updated">更新しました。</p>
-		<p class="notice" soy:display="registration">本登録にしました。</p>
-		<p class="notice" soy:display="canceled">キャンセルしました。</p>
+	<div class="panel-body">
+		<div class="alert alert-success" soy:display="updated">更新しました</div>
+		<p class="alert alert-success" soy:display="registration">本登録にしました。</p>
+		<p class="alert alert-success" soy:display="canceled">キャンセルしました。</p>
 		<p class="error" soy:display="error">失敗しました。</p>
 
-		<div class="table_container">
-			<table class="form_table short_table">
+		<div class="table-responsive">
+			<table class="table table-striped short_table">
 				<caption>スケジュール詳細</caption>
 				<tr>
 					<th style="width:20%;">カレンダー名</th>
@@ -37,7 +37,7 @@
 					<th>予約人数</th>
 					<td>
 						<!-- soy:id="reserved_count" /--> / <!-- soy:id="seat" /-->&nbsp;&nbsp;
-						<a href="javascript:void(0);" class="button" id="show_change_button">上限を変更する</a>&nbsp;
+						<a href="javascript:void(0);" class="btn btn-default" id="show_change_button">上限を変更する</a>&nbsp;
 						<span id="change_seat">
 							<form soy:id="change_form">
 								<input type="number" soy:id="unsold_seat_change">&nbsp;
@@ -49,10 +49,10 @@
 			</table>
 
 			<!-- soy:display="has_reserved" -->
-			<table class="form_list">
+			<table class="table table-striped">
 				<caption>予約状況</caption>
 				<thead>
-					<tr class="alC">
+					<tr >
 						<th>予約日時</th>
 						<th>席数</th>
 						<th>顧客名</th>
@@ -64,13 +64,13 @@
 				<tbody>
 					<!-- soy:id="reserved_list" -->
 					<tr>
-						<td class="alC"><a soy:id="reserve_date"></a></td>
-						<td class="alC" soy:id="seat"></td>
-						<td class="alC"><a soy:id="user_name"></a></td>
+						<td ><a soy:id="reserve_date"></a></td>
+						<td  soy:id="seat"></td>
+						<td ><a soy:id="user_name"></a></td>
 						<td><a soy:id="mail_address"></a></td>
 						<td soy:id="telephone_number"></td>
 						<td class="operation">
-							<a soy:id="cancel_link" class="button">キャンセル</a>
+							<a soy:id="cancel_link" class="btn btn-default">キャンセル</a>
 						</td>
 					</tr>
 					<!-- /soy:id="reserved_list" -->
@@ -80,10 +80,10 @@
 			<!-- /soy:display="has_reserved" -->
 
 			<!-- soy:display="has_tmp_reserved" -->
-			<table class="form_list">
+			<table class="table table-striped">
 				<caption>仮予約</caption>
 				<thead>
-					<tr class="alC">
+					<tr >
 						<th>予約日時</th>
 						<th>席数</th>
 						<th>顧客名</th>
@@ -95,13 +95,13 @@
 				<tbody>
 					<!-- soy:id="tmp_reserved_list" -->
 					<tr>
-						<td class="alC"><a soy:id="reserve_date"></a></td>
-						<td class="alC" soy:id="seat"></td>
-						<td class="alC"><a soy:id="user_name"></a></td>
+						<td ><a soy:id="reserve_date"></a></td>
+						<td  soy:id="seat"></td>
+						<td ><a soy:id="user_name"></a></td>
 						<td><a soy:id="mail_address"></a></td>
 						<td soy:id="telephone_number"></td>
 						<td class="operation">
-							<a soy:id="reserve_link" class="button">本登録</a>
+							<a soy:id="reserve_link" class="btn btn-default">本登録</a>
 						</td>
 					</tr>
 					<!-- /soy:id="tmp_reserved_list" -->
@@ -114,7 +114,7 @@
 			<table class="form_list cancel_table">
 				<caption>キャンセル</caption>
 				<thead>
-					<tr class="alC">
+					<tr >
 						<th>キャンセル日時</th>
 						<th>顧客名</th>
 						<th>メールアドレス</th>
@@ -125,8 +125,8 @@
 				<tbody>
 					<!-- soy:id="cancel_list" -->
 					<tr>
-						<td soy:id="cancel_date" class="alC"></td>
-						<td class="alC"><a soy:id="user_name"></a></td>
+						<td soy:id="cancel_date" ></td>
+						<td ><a soy:id="user_name"></a></td>
 						<td><a soy:id="mail_address"></a></td>
 						<td soy:id="telephone_number"></td>
 						<td class="operation">
@@ -140,33 +140,33 @@
 
 			<!-- soy:display="display_register_form" -->
 			<form soy:id="form">
-				<table class="form_table short_table">
+				<table class="table table-striped short_table">
 					<caption>予約する</caption>
 					<tr>
 						<th>お名前</th>
-						<td><input type="text" class="text" soy:id="name" required="required"></td>
+						<td><input type="text" class="form-control" soy:id="name" required="required"></td>
 					</tr>
 					<tr>
 						<th>フリガナ</th>
-						<td><input type="text" class="text" soy:id="reading"></td>
+						<td><input type="text" class="form-control" soy:id="reading"></td>
 					</tr>
 					<tr>
 						<th>メールアドレス</th>
-						<td><input type="email" class="text" soy:id="mail_address"></td>
+						<td><input type="email" class="form-control" soy:id="mail_address"></td>
 					</tr>
 					<tr>
 						<th>電話番号</th>
-						<td><input type="text" class="text" soy:id="telephone_number"></td>
+						<td><input type="text" class="form-control" soy:id="telephone_number"></td>
 					</tr>
 					<tr>
 						<th>席数</th>
-						<td><input type="number" class="text" soy:id="seat_input" min="1"></td>
+						<td><input type="number" class="form-control" soy:id="seat_input" min="1"></td>
 					</tr>
 				</table>
 
-				<p class="pageBtn">
-					<input type="submit" value="登録する">
-				</p>
+				<div class="text-center">
+					<input type="submit" class="btn btn-primary btn-lg" value="登録する">
+				</div>
 			</form>
 			<!-- /soy:display="display_register_form" -->
 		</div>

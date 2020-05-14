@@ -44,19 +44,20 @@ class DetailPage extends WebPage{
     	if(!isset($args[0])){
     		SOY2PageController::jump("Review");
     	}
-    	$this->id = (isset($args[0])) ? $args[0] : null;
-    	$id = $this->id;
+    	$this->id = (int)$args[0];
 
-    	parent::__construct();
+		parent::__construct();
 
-    	$this->addForm("detail_form");
-    	self::buildForm($this->getReview($id));
+    	self::_buildForm();
     }
 
-    private function buildForm(SOYShop_ItemReview $review){
+    private function _buildForm(){
+		$review = self::_getReview($this->id);
 
     	$item = soyshop_get_item_object($review->getItemId());
-    	$user = self::getUser($review->getUserId());
+    	$user = soyshop_get_user_object($review->getUserId());
+
+		$this->addForm("detail_form");
 
     	$this->addLabel("id", array(
     		"text" => $review->getId()
@@ -73,9 +74,7 @@ class DetailPage extends WebPage{
     		"size" => 40
     	));
 
-    	$this->addModel("is_user_id", array(
-    		"visible" => ($user->getId())
-    	));
+		DisplayPlugin::toggle("user_id", !is_null($user->getId()));
 
     	$this->addInput("title", array(
     		"name" => "Review[title]",
@@ -111,20 +110,11 @@ class DetailPage extends WebPage{
     	));
     }
 
-    private function getReview($id){
+    private function _getReview($id){
     	try{
     		return SOY2DAOFactory::create("SOYShop_ItemReviewDAO")->getById($id);
     	}catch(Exception $e){
-    		SOY2PageController::jump("Review");
-			exit;
-    	}
-    }
-
-    private function getUser($userId){
-    	try{
-    		return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($userId);
-    	}catch(Exception $e){
-    		return new SOYShop_User();
+    		return new SOYShop_ItemReview();
     	}
     }
 }

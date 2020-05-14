@@ -1,12 +1,12 @@
-<p class="notice" soy:display="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 
 <dl>
 	<dt>購入金額による属性名の区分</dt>
 	<dd>
-		<div class="notice always" soy:display="notice_zero_orders">※0円で登録すると、購入履歴なしの顧客が対象になります。</div>
-		<table class="form_table">
+		<div class="alert alert-info" soy:display="notice_zero_orders">※0円で登録すると、購入履歴なしの顧客が対象になります。</div>
+		<table class="table table-striped">
 			<thead>
 				<tr>
 					<th>購入金額</th>
@@ -18,7 +18,7 @@
 				<!-- soy:id="attribute_list" -->
 				<tr>
 					<td><input type="number" soy:id="total">&nbsp;円以下</td>
-					<td><input type="text" class="text" soy:id="label"></td>
+					<td><input type="text" class="form-control" soy:id="label"></td>
 					<td class="operation">
 						<input type="submit" name="register" value="更新">
 					</td>
@@ -27,7 +27,7 @@
 				<!-- soy:display="over_orders" -->
 				<tr>
 					<td>上の条件より上</td>
-					<td><input type="text" class="text" soy:id="last_label"></td>
+					<td><input type="text" class="form-control" soy:id="last_label"></td>
 					<td class="operation">
 						<input type="submit" name="register" value="更新">
 					</td>
@@ -35,7 +35,7 @@
 				<!-- /soy:display="over_orders" -->
 				<tr>
 					<td><input type="number" soy:id="order_total">&nbsp;円以下</td>
-					<td><input type="text" class="text" soy:id="order_label"></td>
+					<td><input type="text" class="form-control" soy:id="order_label"></td>
 					<td class="operation">
 						<input type="submit" name="register" value="登録">
 					</td>

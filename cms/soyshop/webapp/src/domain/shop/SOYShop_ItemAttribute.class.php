@@ -310,15 +310,14 @@ class SOYShop_ItemAttributeConfig{
 		$h_formName = htmlspecialchars($this->getFormName(), ENT_QUOTES, "UTF-8");
 		$h_formID = htmlspecialchars($this->getFormId(), ENT_QUOTES, "UTF-8");
 
-		$title = '<dt id="' . $h_formID . '_dt"><label for="'.$h_formID.'_dd">'
+		$title = '<label for="">'
 		         .''
 		         .htmlspecialchars($this->getLabel(), ENT_QUOTES, "UTF-8")
 		         //.' ('.htmlspecialchars($this->getFieldId(), ENT_QUOTES, "UTF-8").')'
-						 .' (cms:id="' . htmlspecialchars($this->getFieldId(), ENT_QUOTES, "UTF-8") . '")'
-		         .'</label>';
+						 .' (cms:id="' . htmlspecialchars($this->getFieldId(), ENT_QUOTES, "UTF-8") . '")';
 
 		$title .= (strlen($this->getDescription())) ? "<span class=\"option\">(" . $this->getDescription() . ")</span><br>" : "";
-		$title .= '</dt>' . "\n";
+		$title .= '</label><br>' . "\n";
 
 		switch($this->getType()){
 			case "checkbox":
@@ -428,7 +427,7 @@ class SOYShop_ItemAttributeConfig{
 				$html[] = '<div><input type="file" id="'.$h_formID.'_upload"'
 				       .' name="'.$h_formName.'"'
 				       .' value="" /></div>';
-				$html[] = '<p><a class="button" href="javascript:void(0);" onclick="return doFileUpload(\''.$h_formID.'_upload\',\''.$h_formID.'\');">Upload</a></p>';
+				$html[] = '<p><a class="btn btn-default" href="javascript:void(0);" onclick="return doFileUpload(\''.$h_formID.'_upload\',\''.$h_formID.'\');">Upload</a></p>';
 
 				$html[] = '<p>';
 				$html[] = '<input type="text" id="'.$h_formID.'"'
@@ -436,7 +435,7 @@ class SOYShop_ItemAttributeConfig{
 				       .' value="'.$h_value.'" size="50" style="'.(((strlen($h_value) > 0)) ? "" : "display:none;").'" />';
 				if(strlen($h_value) > 0){
 					$html[] = ' <a href="' . $h_value . '" target="_blank">確認</a>';
-					$html[] = ' <a class="button" href="javascript:void(0);" onclick="$(\'#'.$h_formID.'\').val(\'\');">Clear</a>';
+					$html[] = ' <a class="btn btn-default" href="javascript:void(0);" onclick="$(\'#'.$h_formID.'\').val(\'\');">Clear</a>';
 				}
 				$html[] = '</p>';
 
@@ -452,10 +451,10 @@ class SOYShop_ItemAttributeConfig{
 				$html[] = '<div class="image_select" id="image_select_wrapper_'.$h_formID.'">';
 
 				//選択ボタン
-				$html[] = '<a class="button" href="javascript:void(0);" onclick="return ImageSelect.popup(\''.$h_formID.'\');">Select</a>';
+				$html[] = '<a class="btn btn-default" href="javascript:void(0);" onclick="return ImageSelect.popup(\''.$h_formID.'\');">Select</a>';
 
 				//クリアボタン
-				$html[] = '<a class="button" href="javascript:void(0);" onclick="return ImageSelect.clear(\''.$h_formID.'\');">Clear</a>';
+				$html[] = '<a class="btn btn-default" href="javascript:void(0);" onclick="return ImageSelect.clear(\''.$h_formID.'\');">Clear</a>';
 
 				//プレビュー画像
 				$html[] = '<a id="image_select_preview_link_'.$h_formID.'" href="'.$h_value.'" onclick="return common_click_image_to_layer(this);" target="_blank">';
@@ -519,6 +518,6 @@ class SOYShop_ItemAttributeConfig{
 				break;
 		}
 
-		return $title . "<dd id=\"" . $h_formID . "_dd\">" . $body . "</dd>\n";
+		return "<div class=\"form-group\" id=\"" . $h_formID ."_group\">" . $title . $body . "</div>\n";
 	}
 }

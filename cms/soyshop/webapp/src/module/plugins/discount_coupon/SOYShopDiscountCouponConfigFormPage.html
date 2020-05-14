@@ -5,10 +5,10 @@
 
 
 
-<p class="notice always" soy:id="issued">発行しました。</p>
-<p class="notice always" soy:id="updated">変更しました。</p>
-<p class="error always" soy:id="error">保存に失敗しました。</p>
-<p class="error always" soy:id="issue_error">発行できません。必須項目を確認してください。</p>
+<p class="alert alert-info" soy:id="issued">発行しました。</p>
+<p class="alert alert-info" soy:display="updated">変更しました。</p>
+<p class="alert alert-danger" soy:id="error">保存に失敗しました。</p>
+<p class="alert alert-danger" soy:id="issue_error">発行できません。必須項目を確認してください。</p>
 
 <form method="post" soy:id="discount_coupon_config_form">
 
@@ -16,7 +16,7 @@
 
 	<div>
 		<h3>クーポンの設定</h3>
-		
+
 		<dl id="coupon_config">
 			<dt>使用枚数制限&nbsp;<span class="option">１回の購入時に使えるクーポンの枚数</span></dt>
 			<dd>
@@ -29,18 +29,18 @@
 				<input type="text" soy:id="config_enable_amount_max" />
 			</dd>
 		</dl>
-	
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="設定" />
-		</p>
+
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="設定">
+		</div>
 	</div>
-	
+
 <!-- /soy:id="config" -->
 
 
 <!-- soy:id="list" -->
 
-	<table id="coupon_list_table" class="form_table alC">
+	<table id="coupon_list_table" class="table table-striped alC">
 		<caption>クーポン</caption>
 		<thead>
 			<tr>
@@ -64,8 +64,8 @@
 				<td><input soy:id="search_expire_start" class="date_picker_start"/>～<input soy:id="search_expire_end" class="date_picker_end"/></td>
 				<td>&nbsp;</td>
 				<td>
-					<input type="submit" name="search_button" value="絞込" class="button"/>
-					<input type="submit" name="download_list" value="CSV" class="button"/>
+					<input type="submit" name="search_button" value="絞込" class="btn btn-default"/>
+					<input type="submit" name="download_list" value="CSV" class="btn btn-default"/>
 					<input type="hidden" name="plugin" value="discount_coupon"/>
 					<input type="hidden" name="action" value="list"/>
 				</td>
@@ -85,7 +85,7 @@
 			</tr>
 			<!-- /soy:id="coupon_list" -->
 		</tbody>
-	
+
 	</table>
 
 <!-- /soy:id="list" -->
@@ -93,7 +93,7 @@
 
 <!-- soy:id="coupon_code" -->
 
-	<table id="coupon_code_list_table" class="form_table alC">
+	<table id="coupon_code_list_table" class="table table-striped alC">
 		<caption>クーポンコード</caption>
 		<thead>
 			<tr>
@@ -128,11 +128,11 @@
 		</tbody>
 	</table>
 
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="設定" />
-			<input type="submit" class="submit_button" name="download_code" value="CSV" />
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="設定">&nbsp;
+			<input type="submit" class="btn btn-warning btn-lg" name="download_code" value="CSV">
 			<input type="hidden" soy:id="coupon_id" />
-		</p>
+		</div>
 
 <!-- /soy:id="coupon_code" -->
 
@@ -156,11 +156,11 @@
 			<dt>有効期限&nbsp;<span class="option">必須、例）yyyy-mm-dd</span></dt>
 			<dd><input type="text" soy:id="input_expiration_date" size="20" /></dd>
 		</dl>
-	
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="設定" />
-		</p>
-		
+
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="設定">
+		</div>
+
 	</div>
 
 <!-- /soy:id="edit" -->

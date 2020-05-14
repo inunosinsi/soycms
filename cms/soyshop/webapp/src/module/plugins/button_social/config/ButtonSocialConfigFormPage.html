@@ -1,4 +1,4 @@
-<p class="notice" soy:id="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 
@@ -20,7 +20,7 @@
 		<h4>check_key</h4>
 		<input type="text" soy:id="check_key" size="20">
 	</dd>
-	
+
 	<dt>ページ別設定</dt>
 	<dd>
 		<div>ページ毎にトラックコードを挿入するかしないかを設定します。(カートとマイページには必ず挿入されます)</div>
@@ -32,13 +32,13 @@
 	</dd>
 </dl>
 
-<p class="pageBtn" style="clear:both;">
-	<input type="submit" class="submit_button" value="変更">
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="変更">
+</div>
 
-</form soy:id="form">
+</form>
 
-<h3>テンプレートへの記述例</h3>
+<h4>テンプレートへの記述例</h4>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
 &lt;!-- ヘッダ内 --&gt;
 <strong>&lt;!-- block:id="og_meta" /--&gt;</strong>

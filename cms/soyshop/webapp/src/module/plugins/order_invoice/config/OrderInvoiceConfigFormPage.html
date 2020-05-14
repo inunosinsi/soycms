@@ -1,48 +1,49 @@
-<p class="notice" soy:id="updated">更新しました。</p>
+<div class="alert alert-success" soy:display="updated">更新しました。</div>
 
-<div class="block_body clearfix">
-	
-	<form soy:id="form">
-		<dl>
-			<dt>テンプレート </dt>
-			<dd><select soy:id="template"></select></dd>
-			
-			<dt>ロゴの登録</dt>
-			<dd>
-				<!-- soy:display="no_logo" --><input type="file" name="logo"><!-- /soy:display="no_logo" -->
-				<!-- soy:display="is_logo" -->
-				<img soy:id="logo">
-				<input type="hidden" soy:id="logo_hidden">
-				<input type="checkbox" soy:id="logo_delete">
-				<!-- /soy:display="is_logo" -->
-			</dd>
-			
-			<dt>社印の登録</dt>
-			<dd>
-				<!-- soy:display="no_stamp" --><input type="file" name="stamp"><!-- /soy:display="no_stamp" -->
-				<!-- soy:display="is_stamp" -->
-				<img soy:id="stamp">
-				<input type="hidden" soy:id="stamp_hidden">
-				<input type="checkbox" soy:id="stamp_delete">
-				<!-- /soy:display="is_stamp" -->
-			</dd>
-		
-			<dt>振込先</dt>
-			<dd><input type="checkbox" soy:id="payment"></dd>
-			
-			<dt>初回購入であることを表示する</dt>
-			<dd><input type="checkbox" soy:id="first_order"></dd>
-			
-			<dt>その他メッセージ</dt>
-			<dd>
-				<input type="text" soy:id="title">
-				<textarea soy:id="content"></textarea><br>
-				※両方のフォームに入力することで、納品書の末尾に入力内容が追加されます。
-			</dd>
-		</dl>
-		
-		<div class="alC">
-			<p class="pageBtn"><input type="submit" value="更新" /></p>
-		</div>
-	</form>
-</div>
+<form soy:id="form">
+	<div class="form-group">
+		<label>テンプレート </label><br>
+		<select soy:id="template"></select>
+	</div>
+
+	<div class="form-group">
+		<label>ロゴの登録</label>
+		<!-- soy:display="no_logo" --><input type="file" class="btn btn-default" name="logo"><!-- /soy:display="no_logo" -->
+		<!-- soy:display="is_logo" -->
+		<img soy:id="logo">
+		<input type="hidden" soy:id="logo_hidden">
+		<input type="checkbox" soy:id="logo_delete">
+		<!-- /soy:display="is_logo" -->
+	</div>
+
+	<div class="form-group">
+		<label>社印の登録</label>
+		<!-- soy:display="no_stamp" --><input type="file" class="btn btn-default" name="stamp"><!-- /soy:display="no_stamp" -->
+		<!-- soy:display="is_stamp" -->
+		<img soy:id="stamp">
+		<input type="hidden" soy:id="stamp_hidden">
+		<input type="checkbox" soy:id="stamp_delete">
+		<!-- /soy:display="is_stamp" -->
+	</div>
+
+	<div class="form-group">
+		<label>振込先</label><br>
+		<input type="checkbox" soy:id="payment">
+	</div>
+
+	<div class="form-group">
+		<label>初回購入であることを表示する</label><br>
+		<input type="checkbox" soy:id="first_order">
+	</div>
+
+	<div class="form-group">
+		<label>その他メッセージ</label>
+		<input type="text" class="form-control" soy:id="title"><br>
+		<textarea soy:id="content" class="form-control"></textarea>
+		※両方のフォームに入力することで、納品書の末尾に入力内容が追加されます。
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>

@@ -12,10 +12,10 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 		//リンクを表示
 		$html = array();
 		$html[] = "<dt>予約カレンダースケジュール</dt>";
-		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&calendar&item_id=" . $item->getId()) . "\" class=\"button\">予約カレンダーを開く</a></dd>";
-		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&holiday&item_id=" . $item->getId()) . "\" class=\"button\">定休日の設定を開く</a></dd>";
-		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&label&item_id=" . $item->getId()) . "\" class=\"button\">予定で使用するラベル設定を開く</a></dd>";
-		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&tag&item_id=" . $item->getId()) . "\" class=\"button\">テンプレートへの記述例</a></dd>";
+		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&calendar&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">予約カレンダーを開く</a></dd>";
+		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&holiday&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">定休日の設定を開く</a></dd>";
+		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&label&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">予定で使用するラベル設定を開く</a></dd>";
+		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&tag&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">テンプレートへの記述例</a></dd>";
 		return implode("\n", $html);
 	}
 

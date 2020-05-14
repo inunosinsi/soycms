@@ -96,6 +96,3 @@ class FreePage extends WebPage{
 		}
 	}
 }
-
-
-?>

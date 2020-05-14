@@ -1,27 +1,27 @@
 <!-- soy:display="has_news" -->
-<table class="form_list">
-	<caption>現在表示している新着情報</caption>
-	<thead>
-		<tr class="alC">
-			<th>日時</th>
-			<th>テキスト</th>
-			<th>リンク先</th>
-		</tr>
-	</thead>
-	<tbody>
-		<!-- soy:id="news_list" -->
-		<tr>
-			<td><!-- soy:id="create_date" -->2010-10-21<!-- /soy:id="create_date" --></td>
-			<td><!-- soy:id="text" -->新着情報テキスト<!-- /soy:id="text" --></td>
-			<td><!-- soy:id="url" -->新着情報リンク<!-- /soy:id="url" --></td>
-		</tr>
-		<!-- /soy:id="news_list" -->
-	</tbody>
-</table>
+<div class="table-responsive">
+	<table class="table table-striped">
+		<caption>現在表示している新着情報</caption>
+		<thead>
+			<tr >
+				<th>日時</th>
+				<th>テキスト</th>
+				<th>リンク先</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="news_list" -->
+			<tr>
+				<td><!-- soy:id="create_date" -->2010-10-21<!-- /soy:id="create_date" --></td>
+				<td><!-- soy:id="text" -->新着情報テキスト<!-- /soy:id="text" --></td>
+				<td><!-- soy:id="url" -->新着情報リンク<!-- /soy:id="url" --></td>
+			</tr>
+			<!-- /soy:id="news_list" -->
+		</tbody>
+	</table>
+</div>
 <!-- /soy:display="has_news" -->
 
 <!-- soy:display="no_news" -->
-<p class="notice always">
-	設定している新着情報はありません。
-</p>
+<div class="alert alert-info">設定している新着情報はありません。</div>
 <!-- /soy:display="no_news" -->

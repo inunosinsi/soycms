@@ -75,9 +75,11 @@ class MigrateLogic extends SOY2LogicBase {
 							if(isset($pluginId) && !SOYShopPluginUtil::checkIsActive($pluginId)){	//プラグインが持つテーブルの場合は移行せずにテーブルを削除することがある
 								self::dropTable("soyshop_" . $label);
 							}else{
-								include_once(dirname(__FILE__) . "/table/" . $label . ".php");
-								$func = "register_" . $label;
-								$func(self::buildStatememt($sql));
+								if(file_exists(dirname(__FILE__) . "/table/" . $label . ".php")){
+									include_once(dirname(__FILE__) . "/table/" . $label . ".php");
+									$func = "register_" . $label;
+									$func(self::buildStatememt($sql));
+								}
 							}
 						}
 					}

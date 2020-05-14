@@ -1,5 +1,5 @@
-<p class="notice" soy:display="updated">更新しました</p>
-<p class="error" soy:display="error">失敗しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+<div class="alert alert-danger" soy:display="error">失敗しました</div>
 
 <form soy:id="form">
 	<dl>
@@ -8,10 +8,10 @@
 			<ul>
 				<!-- soy:id="url_list" -->
 				<li class="urllist">
-					<a soy:id="url"></a>&nbsp;<a soy:id="remove_link" class="button">削除</a>
+					<a soy:id="url"></a>&nbsp;<a soy:id="remove_link" class="btn btn-default">削除</a>
 					<ul class="language">
 						<!-- soy:id="language_list" -->
-						<li><!-- soy:id="lang" /-->: <input type="url" class="urlform" soy:id="lang_url">&nbsp;<input type="submit" name="update" value="更新"></li>
+						<li><!-- soy:id="lang" /-->: <input type="url" class="urlform" soy:id="lang_url">&nbsp;<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新"></li>
 						<!-- /soy:id="language_list" -->
 					</ul>
 				</li>

@@ -1,114 +1,106 @@
-<h1>
-	ページ管理
-	<span class="navi">
-		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Pages">ページ管理</a> &gt; <a soy:id="detail_page_link">ページ設定</a> &gt; 商品一覧ページ設定</span>
-</h1>
+<h2>商品一覧ページ設定</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="Site">サイト管理</a></li>
+		<li><a soy:link="Site.Pages">ページ管理</a></li>
+		<li><a soy:id="detail_page_link">ページ設定</a></li>
+		<li class="active">商品一覧ページ設定</li>
+	</ol>
+</nav>
 
 
-<div class="block">
-	<div class="block_title">
-		<h2><span soy:id="page_name"></span> | 商品一覧ページの設定</h2>
+<div class="row">
+	<div class="col-lg-8">
+		<div class="panel panel-default">
+			<div class="panel-heading"><span soy:id="page_name"></span> | 商品一覧ページの設定</div>
+
+			<div class="panel-body">
+				<form soy:id="update_form">
+					<div class="form-group">
+						<label for="">商品一覧の種別</label><br>
+						<input type="radio" soy:id="radio_use_category" /><br />
+						<input type="radio" soy:id="radio_use_field" /><br />
+						<input type="radio" soy:id="radio_use_custom" />
+					</div>
+
+					<div class="form-group"><br>
+						<label for="">表示件数</label><br>
+						<select soy:id="limit"></select>
+					</div>
+
+					<div soy:id="config_type_category" class="config">
+						<div class="form-group">
+							<label for="">特定のカテゴリのみこの商品一覧ページを使用</label>
+							<p class="mb" soy:id="categories_choice"></p>
+							<input type="hidden" soy:id="categories" />
+							<a class="btn btn-default" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
+							<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
+						</div>
+
+						<div class="form-group">
+							<label for="">初期状態で表示するカテゴリ</label>
+							<p class="mb" soy:id="default_categories_choice"></p>
+							<input type="hidden" soy:id="default_categories" />
+							<a class="btn btn-default" href="javascript:void(0);" onclick="$(this).hide();$('#default_category_tree').show();">選択する</a>
+							<ul id="default_category_tree" class="category_tree" soy:id="default_category_tree" style="display:none;"></ul>
+						</div>
+					</div soy:id="config_type_category">
+
+					<div soy:id="config_type_field" class="config">
+						<div class="form-group">
+							<label for="">カスタムフィールドの選択</label>
+							<table>
+								<tr>
+									<td>
+										<select soy:id="custom_field_list"></select>
+									</td>
+
+									<td style="vertical-align:middle;">
+										の値が
+									</td>
+
+									<td>
+										<input type="radio" soy:id="not_use_parameter">
+										<input type="text" soy:id="field_value" />の商品一覧<br />
+										<input type="radio" soy:id="use_parameter" />
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div soy:id="config_type_field">
+
+					<div soy:id="config_type_custom" class="config">
+						<div class="form-group">
+							<label for="">モジュール名を選択してください</label>
+							<select soy:id="module_name">
+								<option value="">選択してください</option>
+							</select><br>
+							<!-- soy:id="module_config" /-->
+						</div>
+					</div soy:id="config_type_custom">
+
+					<div class="form-group">
+						<label for="">ソート順の設定</label><br>
+						<!-- soy:id="sort_list" -->
+						<input type="radio" soy:id="sort_input" />
+						<!-- /soy:id="sort_list" -->
+
+						<br />
+						<input type="radio" soy:id="sort_custom" />
+						<select soy:id="sort_custom_field_list"><option value="">----</option></select><br>
+						<br>
+						<label for="">昇順・降順</label><br>
+						<input type="radio" soy:id="sort_normal" />
+						<input type="radio" soy:id="sort_reverse" />
+					</div>
+
+					<div class="text-center">
+						<input type="submit" class="btn btn-primary btn-lg" value="更新">
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
-
-	<div class="block_body">
-		<form soy:id="update_form">
-
-			<dl>
-				<dt>商品一覧の種別</dt>
-				<dd>
-					<input type="radio" soy:id="radio_use_category" /><br />
-					<input type="radio" soy:id="radio_use_field" /><br />
-					<input type="radio" soy:id="radio_use_custom" />
-				</dd>
-				<dt>表示件数</dt>
-				<dd>
-					<select soy:id="limit"></select>
-				</dd>
-			</dl>
-
-			<dl soy:id="config_type_category" class="form center config">
-				<dt>
-					特定のカテゴリのみこの商品一覧ページを使用
-				</dt>
-				<dd>
-					<p class="mb" soy:id="categories_choice"></p>
-					<input type="hidden" soy:id="categories" />
-					<a class="button" href="javascript:void(0);" onclick="$(this).hide();$('#category_tree').show();">選択する</a>
-					<ul id="category_tree" soy:id="category_tree" style="display:none;"></ul>
-				</dd>
-
-				<dt>
-					初期状態で表示するカテゴリ
-				</dt>
-				<dd>
-					<p class="mb" soy:id="default_categories_choice"></p>
-					<input type="hidden" soy:id="default_categories" />
-					<a class="button" href="javascript:void(0);" onclick="$(this).hide();$('#default_category_tree').show();">選択する</a>
-					<ul id="default_category_tree" class="category_tree" soy:id="default_category_tree" style="display:none;"></ul>
-				</dd>
-			</dl>
-
-			<dl soy:id="config_type_field" class="form center config clearfix">
-				<dt>
-					カスタムフィールドの選択
-				</dt>
-				<dd>
-					<table>
-					<tr>
-
-					<td>
-						<select soy:id="custom_field_list"></select>
-					</td>
-
-					<td style="vertical-align:middle;">
-						の値が
-					</td>
-
-					<td>
-						<input type="radio" soy:id="not_use_parameter">
-						<input type="text" soy:id="field_value" />の商品一覧<br />
-						<input type="radio" soy:id="use_parameter" />
-					</td>
-
-					</tr>
-					</table>
-				</dd>
-			</dl>
-
-			<dl soy:id="config_type_custom" class="form center config">
-				<dt>
-					モジュール名を選択してください
-				</dt>
-				<dd>
-					<select soy:id="module_name">
-						<option value="">選択してください</option>
-					</select><br>
-					<!-- soy:id="module_config" /-->
-				</dd>
-			</dl>
-						
-			<dl>
-				<dt>ソート順の設定</dt>
-				<dd>
-					<!-- soy:id="sort_list" -->
-					<input type="radio" soy:id="sort_input" />
-					<!-- /soy:id="sort_list" -->
-
-					<br />
-					<input type="radio" soy:id="sort_custom" />
-					<select soy:id="sort_custom_field_list"><option value="">----</option></select>
-
-					<h4>昇順・降順</h4>
-					<input type="radio" soy:id="sort_normal" />
-					<input type="radio" soy:id="sort_reverse" />
-				</dd>
-			</dl>
-
-			<p class="pageBtn"><input type="submit" value="更新" /></p>
-
-		</form soy:id="update_form">
-	</div><!-- /block_body -->
-</div>
 
 <script type="text/javascript">
 function onClickLeaf(id,ele){
@@ -128,14 +120,14 @@ function onClickDefaultLeaf(id,ele){
 	if($(ele).hasClass("selected_category")){
 		$("#default_categories_input").val("");
 		$("#default_categories_text").text("");
-		
+
 		$(ele).removeClass("selected_category");
 	}else{
 		$("#default_categories_input").val(id);
 		$("#default_categories_text").text($(ele).text());
-	
+
 		$("#default_category_tree .selected_category").removeClass("selected_category");
-	
+
 		$(ele).addClass("selected_category");
 	}
 }

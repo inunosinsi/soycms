@@ -1,5 +1,5 @@
-<p class="notice" soy:id="updated">変更しました。</p>
-<p class="notice" soy:id="error">保存に失敗しました。</p>
+<p class="alert alert-success" soy:display="updated">変更しました。</p>
+<p class="alert alert-success" soy:id="error">保存に失敗しました。</p>
 
 <form method="post" soy:id="config_form">
 
@@ -32,7 +32,7 @@
 			<li>※##PRICE##はメール送信時に手数料に置換されます。</li>
 		</ul>
 	</dd>
-	
+
 	<dt>支払状況の設定</dt>
 	<dd>
 		<!-- soy:id="payment_status_list" -->
@@ -41,8 +41,8 @@
 	</dd>
 </dl>
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" value="変更" tabindex="400" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="変更" tabindex="400" />
+</div>
 
-</form soy:id="config_form">
+</form>

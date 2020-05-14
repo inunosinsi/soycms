@@ -342,13 +342,13 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 		$this->addInput("config_code_disits_min", array(
 			"name" => "Config[disitsMin]",
 			"value" => DiscountFreeCouponUtil::getDisitsMin(),
-			"style" => "ime-mode:inactive;width:40px;"
+			"style" => "ime-mode:inactive;width:80px;"
 		));
 
 		$this->addInput("config_code_disits_max", array(
 			"name" => "Config[disitsMax]",
 			"value" => DiscountFreeCouponUtil::getDisitsMax(),
-			"style" => "ime-mode:inactive;width:40px;"
+			"style" => "ime-mode:inactive;width:80px;"
 		));
 	}
 

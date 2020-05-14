@@ -36,6 +36,14 @@ class DetailPage extends WebPage{
 				}
 			}
 
+			//フラグ
+			if(isset($_POST["Flag"]) && is_array($_POST["Flag"]) && count($_POST["Flag"])){
+				$hists = $orderLogic->changeItemOrdersFlag($order->getId(), $_POST["Flag"]);
+				if(is_array($hists) && count($hists)){
+					$historyContents = array_merge($historyContents, $hists);
+				}
+			}
+
 			if (isset($_POST["Comment"]) && strlen($_POST["Comment"])) {
 				$historyContents[] = $_POST["Comment"];
 			}
@@ -116,8 +124,7 @@ class DetailPage extends WebPage{
 		DisplayPlugin::toggle("sended", isset($_GET["sended"]));
 		DisplayPlugin::toggle("copy", isset($_GET["copy"]));
 
-		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-		$order = $logic->getById($this->id);
+		$order = soyshop_get_order_object($this->id);
 		if(!$order) SOY2PageController::jump("Order");
 
 		$user = soyshop_get_user_object($order->getUserId());
@@ -254,7 +261,7 @@ class DetailPage extends WebPage{
     	}
 
     	$this->addLabel("claimed_customerinfo", array(
-    		"html" => nl2br(htmlspecialchars($customerHTML, ENT_QUOTES, "UTF-8"))
+    		"html" => nl2br(htmlspecialchars(trim($customerHTML), ENT_QUOTES, "UTF-8"))
     	));
 
     	$address = $order->getAddressArray();
@@ -275,7 +282,7 @@ class DetailPage extends WebPage{
     	}
 
     	$this->addLabel("order_customerinfo", array(
-    		"html" => nl2br(htmlspecialchars($customerHTML, ENT_QUOTES, "UTF-8"))
+    		"html" => nl2br(htmlspecialchars(trim($customerHTML), ENT_QUOTES, "UTF-8"))
     	));
 
 		$this->addLink("order_link", array(
@@ -283,7 +290,7 @@ class DetailPage extends WebPage{
 			"style" => "font-weight:normal !important;"
 		));
 
-		$itemOrders = $logic->getItemsByOrderId($this->id);
+		$itemOrders = SOY2Logic::createInstance("logic.order.OrderLogic")->getItemsByOrderId($this->id);
 
         /*** 注文商品 ***/
 		$this->addForm("confirm_form");
@@ -319,24 +326,6 @@ class DetailPage extends WebPage{
 			$this->buildFileList($itemOrders, $order);
 		}
 
-		/*** 注文状態変更の履歴 ***/
-		try{
-			$histories = $logic->getOrderHistories($order->getId());
-		}catch(Exception $e){
-			$histories = array();
-		}
-
-    	$this->createAdd("history_list", "_common.Order.HistoryListComponent", array(
-    		"list" => $histories
-    	));
-
-    	/*** メールの送信履歴 ***/
-		$mailLogs = ($user->isUsabledEmail()) ? self::_getMailHistories($order->getId()) : array();
-		DisplayPlugin::toggle("mail_history", count($mailLogs));
-		$this->createAdd("mail_history_list", "_common.Order.MailHistoryListComponent", array(
-    		"list" => $mailLogs
-    	));
-
 		/*** 状態変更フォームの生成 ***/
     	$this->addForm("update_form");
 
@@ -366,53 +355,18 @@ class DetailPage extends WebPage{
 			"html" => SOYShopPlugin::display("soyshop.comment.form", array("order" => $order))
 		));
 
-    	/*** メール送信フォームの生成 ***/
-		DisplayPlugin::toggle("mail", $user->isUsabledEmail());
-
-    	$mailTypes = ($user->isUsabledEmail()) ? SOYShop_Order::getMailTypes() : array();
-		if(is_array($mailTypes) && count($mailTypes)){
-			$mailStatus = $order->getMailStatusList();
-			foreach($mailTypes as $type){
-		    	$this->addLabel($type . "_mail_status", array(
-		    		"text" => (isset($mailStatus[$type])) ? date("Y-m-d H:i:s", $mailStatus[$type]) : "未送信"
-		    	));
-
-		    	$this->addLink($type . "_mail_link", array(
-		    		"link" => SOY2PageController::createLink("Order.Mail." . $order->getId() . "?type=" . $type)
-		    	));
-	    	}
-
-			$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
-	    		"list" => self::getMailPluginList(),
-	    		"status" => $mailStatus,
-	    		"orderId" => $order->getId()
-	    	));
-		}
-
     	/*** Output Action　***/
     	self::_outputActions();
 
-		/*** カード決済操作 ***/
-		SOYShopPlugin::load("soyshop.operate.credit");
-		$delegate = SOYShopPlugin::invoke("soyshop.operate.credit", array(
-			"order" => $order,
-			"mode" => "order_detail",
-		));
-		$list = $delegate->getList();
-		DisplayPlugin::toggle("operate_credit_menu", (is_array($list) && count($list) > 0));
-
-		$this->createAdd("operate_list", "_common.Order.OperateListComponent", array(
-			"list" => $list
+		//HTMLの自由記述
+		SOYShopPlugin::load("soyshop.order.edit");
+		$this->addLabel("extension_html", array(
+			"html" => SOYShopPlugin::invoke("soyshop.order.edit", array(
+				"mode" => "html_on_detail",
+				"orderId" => $order->getId()
+			))->getHTML()
 		));
     }
-
-	private function _getMailHistories($orderId){
-		try{
-			return SOY2DAOFactory::create("logging.SOYShop_MailLogDAO")->getByOrderId($orderId);
-		}catch(Exception $e){
-			return array();
-		}
-	}
 
     /**
      * Action
@@ -472,21 +426,6 @@ class DetailPage extends WebPage{
     	return $list;
     }
 
-    private function getMailPluginList(){
-    	SOYShopPlugin::load("soyshop.order.detail.mail");
-    	$mailList = SOYShopPlugin::invoke("soyshop.order.detail.mail", array())->getList();
-		if(!count($mailList)) return array();
-
-    	$list = array();
-    	foreach($mailList as $values){
-    		if(!is_array($values)) continue;
-   			foreach($values as $value){
-   				$list[] = $value;
-   			}
-    	}
-    	return $list;
-    }
-
     //ダウンロードファイルリストを取得
     function buildFileList($itemOrders, SOYShop_Order $order){
     	$files = array();
@@ -526,4 +465,16 @@ class DetailPage extends WebPage{
 			"order" => $order
 		));
     }
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Order.FooterMenu.DetailFooterMenuPage", array(
+				"arguments" => array($this->id)
+			))->getObject();
+		}catch(Exception $e){
+			var_dump($e);
+			//
+			return null;
+		}
+	}
 }

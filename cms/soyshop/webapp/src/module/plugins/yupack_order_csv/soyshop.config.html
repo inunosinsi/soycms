@@ -1,39 +1,39 @@
-<p class="notice" soy:display="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<div class="table_container">
+<div class="table-responsive">
 	<form method="post" soy:id="form">
 
 		<dl>
 			<dt>送り状に記載の商品名</dt>
-			<dd><input class="text" value="" soy:id="object_name" style="width: 600px;"/></dd>
+			<dd><input class="form-control" value="" soy:id="object_name" style="width: 600px;"/></dd>
 			<dt>送付元名称</dt>
-			<dd><input class="text" value="" soy:id="shop_name" style="width: 600px;"/></dd>
+			<dd><input class="form-control" value="" soy:id="shop_name" style="width: 600px;"/></dd>
 
 			<dt>送付元住所</dt>
 			<dd>
 				<h4>郵便番号</h4>
-				<input class="text" value="" soy:id="zipcode" />半角数字
+				<input class="form-control" value="" soy:id="zipcode" />半角数字
 				<h4>都道府県</h4>
-				<input class="text" value="" soy:id="address_pref" />
+				<input class="form-control" value="" soy:id="address_pref" />
 				<h4>市区町村～番地</h4>
-				<input class="text" value="" soy:id="address1" style="width: 600px;"/>
+				<input class="form-control" value="" soy:id="address1" style="width: 600px;"/>
 				<h4>マンション名など</h4>
-				<input class="text" value="" soy:id="address2" style="width: 600px;"/>
+				<input class="form-control" value="" soy:id="address2" style="width: 600px;"/>
 			</dd>
 			<dt>送付元情報</dt>
 			<dd>
 				<h4>電話番号</h4>
-				<input class="text" value="" soy:id="telephone" />半角数字
+				<input class="form-control" value="" soy:id="telephone" />半角数字
 				<h4>FAX</h4>
-				<input class="text" value="" soy:id="fax" />半角数字
+				<input class="form-control" value="" soy:id="fax" />半角数字
 				<h4>メールアドレス</h4>
-				<input class="text" value="" soy:id="mailaddress" style="width: 600px;"/>
+				<input class="form-control" value="" soy:id="mailaddress" style="width: 600px;"/>
 			</dd>
 		</dl>
 
-		<p class="pageBtn" style="clear:both;">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="変更">
+		</div>
 
-	</form soy:id="form">
+	</form>
 </div>

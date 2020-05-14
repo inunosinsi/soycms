@@ -8,9 +8,7 @@ class IndexPage extends WebPage{
 	function doPost(){
 
 		if(soy2_check_token()){
-			if(count($_POST["items"])){
-
-
+			if(isset($_POST["items"]) && count($_POST["items"])){
 				foreach($_POST["items"] as $itemId){
 					try{
 						$item = $this->itemDao->getById($itemId);
@@ -136,6 +134,17 @@ class IndexPage extends WebPage{
 		}
 
 		return $list + soyshop_get_category_list();
+	}
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Item.FooterMenu.ItemFooterMenuPage", array(
+				"arguments" => array(null)
+			))->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
 	}
 
 	private function getParameter($key){

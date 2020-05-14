@@ -30,8 +30,8 @@ class IndexPage extends WebPage{
 		$searchLogic->setSearchCondition($search);
 
 		//データ取得
-		$total = $searchLogic->getTotalCount();
-		$users = $searchLogic->getUsers();
+		$total = (int)$searchLogic->getTotalCount();
+		$users = ($total > 0) ? $searchLogic->getUsers() : array();
 
 		/*表示*/
 
@@ -65,35 +65,6 @@ class IndexPage extends WebPage{
 		$pager->setLimit($limit);
 
 		$this->buildPager($pager);
-
-
-		DisplayPlugin::toggle("custom_plugin", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_user_customfield"))));
-
-		//user.function
-		$this->createAdd("function_list", "_common.User.FunctionListComponent", array(
-			"list" => $this->getFunctionList()
-		));
-
-		//user.info
-		$this->createAdd("info_list", "_common.User.InfoListComponent", array(
-			"list" => $this->getInfoList()
-		));
-
-	}
-
-	function getFunctionList(){
-		SOYShopPlugin::load("soyshop.user.function");
-		$delegate = SOYShopPlugin::invoke("soyshop.user.function", array(
-			"mode" => "list"
-		));
-
-		return $delegate->getList();
-	}
-
-	function getInfoList(){
-		SOYShopPlugin::load("soyshop.user.info");
-		$delegate = SOYShopPlugin::invoke("soyshop.user.info");
-		return $delegate->getList();
 	}
 
 	function doPost(){
@@ -222,4 +193,13 @@ class IndexPage extends WebPage{
 			return null;
 		}
 	}*/
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("User.FooterMenu.UserFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
 }

@@ -1,8 +1,7 @@
-<p class="notice" soy:display="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<div class="table_container">
+<div class="table-responsive">
 	<form soy:id="form">
-	
 		<dl>
 			<dt>ページ別設定</dt>
 			<dd>
@@ -14,16 +13,16 @@
 				</ul>
 			</dd>
 		</dl>
-	
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
-		
+
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="変更">
+		</div>
+
 	</form>
 </div>
 
 
-<h3>テンプレートへの記述例</h3>
+<h4>テンプレートへの記述例</h4>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
 &lt;!-- block:id="item" --&gt;
 
@@ -40,7 +39,7 @@
 <br>
 
 <h3>カートの中身の非同期更新の設定</h3>
-<section class="block_body" style="margin:0px 35px 10px 35px;">
+<section class="panel-body" style="margin:0px 35px 10px 35px;">
 	<img soy:id="img_cart">
 	<ul style="margin:0 20px;list-style-type: decimal">
 		<li>商品点数を非同期更新に対応する場合は、数字をid="soyshop_cart_item_count"を含んだタグで囲みます。</li>

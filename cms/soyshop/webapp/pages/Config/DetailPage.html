@@ -1,18 +1,19 @@
-<h1>
-	<!-- soy:id="plugin_title*" /-->
-	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Config">設定</a> &gt; <!-- soy:id="plugin_title*" /--></span>
-</h1>
+<h2><!-- soy:id="plugin_title*" /--></h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="">ショップ管理</a></li>
+		<li><a soy:link="Config">設定</a></li>
+		<li class="active"><!-- soy:id="plugin_title*" /--></li>
+	</ol>
+</nav>
 
-
-<div class="block">
-	<div class="block_title">
-		<h2><!-- soy:id="plugin_title*" /--></h2>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading"><!-- soy:id="plugin_title*" /--></div>
+			<div class="panel-body">
+				<!-- soy:id="plugin_config" /-->
+			</div>
+		</div>
 	</div>
-
-	<div class="block_body">
-
-		<!-- soy:id="plugin_config" /-->
-
-	</div><!-- /block_body -->
-</div><!-- /block -->
+</div>

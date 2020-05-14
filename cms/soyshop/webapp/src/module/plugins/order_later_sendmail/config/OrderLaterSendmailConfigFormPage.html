@@ -1,4 +1,4 @@
-<p class="notice" soy:id="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 
@@ -24,14 +24,14 @@
 	</dd>
 </dl>
 
-<table class="form_table" style="table-layout:auto;">
+<table class="table table-striped" style="table-layout:auto;">
 	<caption>メール本文</caption>
 	<tr class="last_row">
 		<td>
 			<textarea id="mail_content" soy:id="mail_content" class="editor" style="height:400px;"></textarea>
 		</td>
 		<td class="mail_replace_word_panel">
-			<a href="javascript:void(0);" class="button" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
+			<a href="javascript:void(0);" class="btn btn-default" onclick="$(this).parent().addClass('actived');$(this).hide();">&lt;&lt;</a>
 			<div class="word_list">
 				<h5>置換文字列</h5>
 				<ul>
@@ -57,11 +57,11 @@
 	</tr>
 </table>
 
-<p class="pageBtn" style="clear:both;">
-	<input type="submit" class="submit_button" value="変更" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="変更">
+</div>
 
-</form soy:id="form">
+</form>
 
 <style type="text/css">
 .mail_replace_word_panel{

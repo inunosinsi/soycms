@@ -42,7 +42,7 @@ class CreatePage extends WebPage{
 	function buildForm(){
 		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 		$obj = ($this->obj) ? $this->obj : $this->getNewPageObject();
-		
+
 		//携帯自動振り分けプラグインや多言語化サイトプラグインから作成するページの場合はuriを予め入れておく
 		if(preg_match('/^newpage_(.*).html/', $obj->getUri()) && isset($_GET["uri"])){
 			$obj->setUri($_GET["uri"] . "/");
@@ -79,7 +79,6 @@ class CreatePage extends WebPage{
 				"visible" => (isset($this->errors[$key]) && strlen($this->errors[$key]))
 			));
 		}
-
 	}
 
 	function getPageTypeList(){
@@ -90,11 +89,11 @@ class CreatePage extends WebPage{
 			SOYShop_Page::TYPE_COMPLEX => "ナビゲーションページ",
 			SOYShop_Page::TYPE_SEARCH => "検索結果ページ"
 		);
-		
+
 		if(soyshop_get_mypage_id() == "none"){
 			$list[SOYShop_Page::TYPE_MEMBER] = "会員詳細ページ";
 		}
-		
+
 		return $list;
 	}
 
@@ -108,4 +107,3 @@ class CreatePage extends WebPage{
 		return $obj;
 	}
 }
-?>

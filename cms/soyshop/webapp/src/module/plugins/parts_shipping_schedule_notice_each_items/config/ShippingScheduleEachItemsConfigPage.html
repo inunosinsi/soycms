@@ -1,13 +1,13 @@
 <div style="margin-bottom:20px;">
-	<a soy:id="back_link" class="button"></a>
+	<a soy:id="back_link" class="btn btn-default"></a>
 </div>
 
 <!-- soy:display="no_installed_calendar_plugin" -->
-<p class="error always">このプラグインを使用する場合は営業日カレンダープラグインを有効にしてください。</p>
+<p class="alert alert-danger">このプラグインを使用する場合は営業日カレンダープラグインを有効にしてください。</p>
 <!-- /soy:display="no_installed_calendar_plugin" -->
 
 <!-- soy:display="installed_calendar_plugin" -->
-<p class="notice always">
+<p class="alert alert-info">
 	営業日カレンダーの営業日や定休日に合わせて、公開側で出力する文言を設定します。<br>
 	<a soy:link="Config.Detail?plugin=parts_calendar">営業日カレンダーの詳細ページを開く</a><br>
 	<br>
@@ -16,7 +16,7 @@
 	##SCH_Y##年##SCH_M##月##SCH_D##日（##SCH_W##）の発送予定です。<br>
 	/** サンプルここまで **/
 </p>
-<p class="notice" soy:display="updated">更新しました。</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 <div style="border:1px solid #ABABAB;margin:7px 0;padding:5px;">
 	<!-- soy:id="replace_words_list" /-->
 </div>
@@ -28,7 +28,7 @@
 		<dt soy:id="label"></dt>
 		<dd>
 			<!-- soy:id="is_consecutive_holidays" -->
-			<input type="text" class="text" style="width:95%;" soy:id="consecutive_holidays"><br>
+			<input type="text" class="form-control" style="width:95%;" soy:id="consecutive_holidays"><br>
 			<span style="font-size:0.9em; color:#787878;">※12月29日〜1月3日まで休みにする場合は「12/29〜1/3」のように登録します。</span><br>
 			<span style="font-size:0.9em; color:#ff0000;">※2ヶ月以上の連休の設定は登録できません</span><br>
 			<!-- /soy:id="is_consecutive_holidays" -->
@@ -42,13 +42,13 @@
 		<!-- /soy:id="notice_list" -->
 	</dl>
 
-	<p class="pageBtn">
-		<input type="submit" class="submit_button" value="更新">
-	</p>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="更新">
+	</div>
 </form>
 
 <div style="margin-bottom:20px;">
-	<a soy:id="back_link*" class="button"></a>
+	<a soy:id="back_link*" class="btn btn-default"></a>
 </div>
 
 <!-- /soy:display="installed_calendar_plugin" -->

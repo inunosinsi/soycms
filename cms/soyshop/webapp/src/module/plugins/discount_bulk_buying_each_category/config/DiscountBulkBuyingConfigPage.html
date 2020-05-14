@@ -1,5 +1,5 @@
-<p class="error always" soy:display="installed_discount_bulk_buying">まとめ買いプラグインとの併用は出来ません</p>
-<p class="notice" soy:display="updated">更新しました</p>
+<p class="alert alert-danger" soy:display="installed_discount_bulk_buying">まとめ買いプラグインとの併用は出来ません</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 	<section>
@@ -25,9 +25,9 @@
 				カテゴリ毎の設定
 			</dt>
 			<dd>
-				<table class="form_list">
+				<table class="table table-striped">
 					<thead>
-						<tr class="alC" style="font-size:0.9em;">
+						<tr  style="font-size:0.9em;">
 							<th>対象商品の<br>カテゴリ</th>
 							<th>割引種別</th>
 							<th>割引設定</th>
@@ -103,9 +103,9 @@
 		</dl>
 	</section>
 
-	<p class="pageBtn">
-		<input type="submit" name="update" class="submit_button" value="設定変更">
-	</p>
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="設定変更">
+	</div>
 </form>
 
 <style>

@@ -10,21 +10,21 @@
 	<div class="block_title">
 		<h2>メールアドレス変更</h2>
 
-		<div class="block_title_right">
-			<a soy:id="detail_link*" class="button">戻る</a>
+		<div class="pull-right">
+			<a soy:id="detail_link*" class="btn btn-default">戻る</a>
 		</div>
 	</div>
 
-	<div class="block_body">
+	<div class="panel-body">
 
 	<p class="notice always" soy:display="updated">メールアドレスを変更しました。</p>
-	<p class="error always" soy:display="failed">メールアドレスの変更に失敗しました。</p>
-	<p class="error always" soy:display="wrong_email">メールアドレスを正しく入力してください。</p>
-	<p class="error always" soy:display="used_email">そのメールアドレスはすでに他のユーザーが使用しています。</p>
+	<p class="alert alert-danger" soy:display="failed">メールアドレスの変更に失敗しました。</p>
+	<p class="alert alert-danger" soy:display="wrong_email">メールアドレスを正しく入力してください。</p>
+	<p class="alert alert-danger" soy:display="used_email">そのメールアドレスはすでに他のユーザーが使用しています。</p>
 
 	<form soy:id="detail_form">
 
-		<table class="form_table">
+		<table class="table table-striped">
 			<tr>
 				<th>ID</th>
 				<td>
@@ -69,7 +69,7 @@
 
 		</table>
 
-		<p class="pageBtn">
+		<p class="text-center">
 			<input type="submit" name="conduct" value="変更" />
 		</p>
 

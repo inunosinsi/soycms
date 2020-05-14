@@ -45,7 +45,7 @@ class SettingPage extends WebPage{
 
 		parent::__construct();
 
-		DisplayPlugin::toggle("updated", isset($_GET["updated"]));
+		
 
 		self::buildSearchForm();
 

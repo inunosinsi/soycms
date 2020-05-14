@@ -1,81 +1,80 @@
-<h1>
-	商品詳細
-	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt; <a soy:link="Item">商品管理</a> &gt; <a soy:id="item_detail_link">商品の詳細</a> &gt; 商品画像の管理</span>
-</h1>
+<h2>商品画像の管理</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="">ショップ管理</a></li>
+		<li><a soy:link="Item">商品管理</a></li>
+		<li><a soy:id="item_detail_link">商品の詳細</a></li>
+		<li class="active">商品画像の管理</li>
+	</ol>
+</nav>
 
-<div class="block">
-	<div class="block_title">
-		<h2>商品画像管理 - <!-- soy:id="item_name_text"  /--></h2>
-	</div>
+<div class="row">
+	<div class="col-lg-7">
+		<div class="panel panel-default">
+			<div class="panel-heading">商品画像管理 - <!-- soy:id="item_name_text"  /--></div>
+			<div class="panel-body">
+				<!-- upload -->
+				<form soy:id="upload_form" id="upload_form" enctype="multipart/form-data">
+					<div class="form-group">
+						<div class="form-inline">
+							<input id="upload_input" name="upload[]" type="file" multiple="true" />
+							<a class="btn btn-default" href="javascript:void(0);" onclick="$('#upload_form').trigger('submit');">Upload</a>
+						</div>
+					</div>
+				</form>
+				<!-- /upload -->
 
-	<div class="block_body">
+				<hr />
 
-		<!-- upload -->
-		<form soy:id="upload_form" id="upload_form" enctype="multipart/form-data">
-			<p>
-				<span>
-				<input id="upload_input" name="upload[]" type="file" multiple="true" />
-				</span>
-				<a class="button" href="javascript:void(0);" onclick="$('#upload_form').trigger('submit');">Upload</a>
-			</p>
-		</form soy:id="upload_form">
-		<!-- /upload -->
-	
-		<hr />
-	
-		<!-- image_select -->
-		<form soy:id="remove_form" id="remove_form">
-			<input type="hidden" id="remove_image" name="target_image" value="" />
-			<div id="select_image_list" class="image_list form_2col">
-				<!-- soy:id="image_list" -->
-				<div class="image_wrapper fl">
-					<img soy:id="image" class="image_list_image" />
-					<a class="button remove_button" href="javascript:void(0);">Delete</a>
-					<a class="button thumbnail_button" title="コピーしてリサイズ" href="javascript:void(0);" onclick="return showMakeThumbnailForm(this);"><b>＊</b></a>
+				<!-- image_select -->
+				<form soy:id="remove_form" id="remove_form">
+					<input type="hidden" id="remove_image" name="target_image" value="" />
+					<div id="select_image_list" class="image_list form_2col">
+						<!-- soy:id="image_list" -->
+						<div class="image_wrapper fl">
+							<img soy:id="image" class="image_list_image" />
+							<a class="button remove_button" href="javascript:void(0);">Delete</a>
+							<a class="button thumbnail_button" title="コピーしてリサイズ" href="javascript:void(0);" onclick="return showMakeThumbnailForm(this);"><b>＊</b></a>
+						</div>
+						<!-- /soy:id="image_list" -->
+					</div>
+				</form>
+				<!-- /image_select -->
+
+				<!-- make_thumbnail -->
+				<div id="thumbnail_form_el" class="popup" style="display:none;">
+					<form soy:id="thumbnail_form" id="thumbnail_form">
+					<input type="hidden" id="resize_image" name="thumbnail[target_image]" />
+
+					<h3 style="display:none">コピーしてリサイズ</h3>
+
+					<div class="text-center" style="display:none">
+
+						<table class="table table-striped">
+							<tr>
+								<th>幅&times;高さ</th>
+								<td>
+									<span id="original_width"></span>&times;<span id="original_height"></span>
+									→
+									<input id="thumbnail_size_width" name="thumbnail[width]" type="text" size="5" class="text-right" />&times;<input id="thumbnail_size_height" name="thumbnail[height]" type="text" size="5" class="text-right" />
+								</td>
+							</tr>
+						</table>
+
+						<a class="btn btn-default" href="javascript:void(0);" onclick="$('#thumbnail_form').trigger('submit');">Create</a>
+					</div>
+
+					<h3>プレビュー</h3>
+					<div id="thumbnail_preview" class="text-center">
+						<img src="" />
+					</div>
+
+					<p class="close"></p>
+					</form>
 				</div>
-				<!-- /soy:id="image_list" -->
-				<br style="clear:both;" />
 			</div>
-		</form soy:id="remove_form">
-		<!-- /image_select -->
-	
-		<!-- make_thumbnail -->
-		<div id="thumbnail_form_el" class="popup" style="display:none;">
-			<form soy:id="thumbnail_form" id="thumbnail_form">
-			<input type="hidden" id="resize_image" name="thumbnail[target_image]" />
-
-			<h3 style="display:none">コピーしてリサイズ</h3>
-	
-			<div class="alC" style="display:none">
-	
-				<table class="form_list">
-					<tr>
-						<th>幅&times;高さ</th>
-						<td>
-							<span id="original_width"></span>&times;<span id="original_height"></span>
-							→
-							<input id="thumbnail_size_width" name="thumbnail[width]" type="text" size="5" class="alR" />&times;<input id="thumbnail_size_height" name="thumbnail[height]" type="text" size="5" class="alR" />
-						</td>
-					</tr>
-				</table>
-		
-				<a class="button" href="javascript:void(0);" onclick="$('#thumbnail_form').trigger('submit');">Create</a>
-			</div>
-	
-			<h3>プレビュー</h3>
-			<div id="thumbnail_preview" class="alC">
-				<img src="" />
-			</div>
-	
-			<p class="close"></p>
-			</form soy:id="thumbnail_form">
 		</div>
-		<!-- /make_thumbnail -->
-
-	<br style="clear:both;" />
-
-	</div><!-- /block_body -->
+	</div>
 </div>
 
 <script type="text/javascript">
@@ -104,7 +103,7 @@ function showMakeThumbnailForm(ele){
 	$("#thumbnail_size_width").val(width);
 	$("#thumbnail_size_height").val(height);
 	showThumbnailPreview();
-	
+
 	$("#thumbnail_form_el").trigger("popup",{
 		width:640,
 		height:480
@@ -114,7 +113,7 @@ function showMakeThumbnailForm(ele){
 function showThumbnailPreview(){
 	width = parseInt($("#thumbnail_size_width").val());
 	height = parseInt($("#thumbnail_size_height").val());
-	
+
 	if(width==0 || height==0){
 		return;
 	}

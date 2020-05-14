@@ -1,8 +1,8 @@
-<p class="notice" soy:id="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<div class="table_container">
+<div class="table-responsive">
 	<form method="post">
-	
+
 		<dl>
 			<dt>振込先情報<span class="option">（#ACCOUNT#で他で使用可能）</span></dt>
 			<dd>
@@ -17,10 +17,10 @@
 				<textarea class="editor" soy:id="mail"></textarea>
 			</dd>
 		</dl>
-	
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
-		
+
+		<div class="text-center">
+			<input type="submit" class="btn btn-primary btn-lg" value="変更">
+		</div>
+
 	</form>
 </div>

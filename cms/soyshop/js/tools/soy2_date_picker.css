@@ -7,6 +7,7 @@
 	text-align:center !important;
 
 	position:absolute !important;
+	z-index:10;
 
 	margin-top:5px;
 }

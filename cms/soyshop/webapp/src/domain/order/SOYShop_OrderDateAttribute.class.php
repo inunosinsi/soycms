@@ -194,19 +194,19 @@ class SOYShop_OrderDateAttributeConfig{
 		$this->attributeName = $attributeName;
 	}
 	function getAttributeDescription(){
-		return $this->config["attributeDescription"];
+		return (isset($this->config["attributeDescription"])) ? $this->config["attributeDescription"] : null;
 	}
 	function setAttributeDescription($attributeDescription){
 		$this->attributeDescription = $attributeDescription;
 	}
 	function getAttributeYearStart(){
-		return $this->config["attributeYearStart"];
+		return (isset($this->config["attributeYearStart"])) ? $this->config["attributeYearStart"] : null;
 	}
 	function setAttributeYearStart($attributeYearStart){
 		$this->attributeYearStart = $attributeYearStart;
 	}
 	function getAttributeYearEnd(){
-		return $this->config["attributeYearEnd"];
+		return (isset($this->config["attributeYearEnd"])) ? $this->config["attributeYearEnd"] : null;
 	}
 	function setAttributeYearEnd($attributeYearEnd){
 		$this->attributeYearEnd = $attributeYearEnd;

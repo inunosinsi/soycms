@@ -1,5 +1,5 @@
-<p class="notice" soy:display="updated">変更しました</p>
-<p class="notice" soy:display="created">実行しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
+<p class="alert alert-success" soy:display="created">実行しました</p>
 
 <form soy:id="form">
 
@@ -7,7 +7,7 @@
 		<dt>プリフィックスの設定</dt>
 		<dd>
 			<input type="text" soy:id="prefix" />&nbsp;&nbsp;
-			<a soy:id="create_m_page_link" class="button">ページの追加</a><br />
+			<a soy:id="create_m_page_link" class="btn btn-default">ページの追加</a><br />
 			※http://<!-- soy:id="domain" /--><!-- soy:id="shop_id" /-->の場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br />
 			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/item/listの場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_text*" /--></strong>/item/listにリダイレクトします
 		</dd>
@@ -15,7 +15,7 @@
 		<dt>スマートフォン用プリフィックスの設定</dt>
 		<dd>
 			<input type="text" soy:id="prefix_i" />&nbsp;&nbsp;
-			<a soy:id="create_i_page_link" class="button">ページの追加</a><br />
+			<a soy:id="create_i_page_link" class="btn btn-default">ページの追加</a><br />
 			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->の場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_i_text" /--></strong>にリダイレクトします<br />
 			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/item/listの場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_i_text*" /--></strong>/item/listにリダイレクトします<br>
 			<input type="checkbox" soy:id="prefix_i_alternate">
@@ -81,8 +81,7 @@
 		</dd>
 	</dl>
 
-	<p class="pageBtn">
-		<input type="submit" class="submit_button" value="変更" />
-	</p>
-
-</form soy:id="form">
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>

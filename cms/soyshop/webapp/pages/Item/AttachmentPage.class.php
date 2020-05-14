@@ -26,9 +26,9 @@ class AttachmentPage extends DetailPage{
 			$filepath = str_replace(soyshop_get_site_url(), SOYSHOP_SITE_DIRECTORY, $url);
 			$width = $_POST["thumbnail"]["width"];
 			$height = $_POST["thumbnail"]["height"];
-			
+
 			$savepath = dirname($filepath)."/thumb-".basename($filepath);
-			
+
 			if(file_exists($filepath)){
 				copy($filepath, $savepath);
 				//soy2_resize_image($filepath, $savepath,$width, $height);
@@ -60,9 +60,9 @@ class AttachmentPage extends DetailPage{
 		));
 
 		$this->addForm("remove_form");
-		
+
 		$this->addForm("thumbnail_form");
-		
+
 	}
 
 	/**
@@ -84,4 +84,3 @@ class AttachmentPage extends DetailPage{
     	return (@filemtime($file1) <= @filemtime($file2));
     }
 }
-?>

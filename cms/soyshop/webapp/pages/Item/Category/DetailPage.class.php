@@ -254,6 +254,15 @@ class DetailPage extends WebPage{
     	return $category->getAttachments();
     }
 
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Item.FooterMenu.CategoryFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
+
     function getScripts(){
 		$root = SOY2PageController::createRelativeLink("./js/");
 		return array(

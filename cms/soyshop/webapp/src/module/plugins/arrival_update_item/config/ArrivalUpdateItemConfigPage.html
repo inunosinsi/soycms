@@ -1,18 +1,9 @@
-<p class="notice" soy:display="updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
+<form soy:id="form">
+	<label for="">表示件数設定</label><br>
+	<input type="number" soy:id="count">&nbsp;件
 
-<div class="table_container">
-	<form soy:id="form">
-
-		<dl>
-			<dt>表示件数設定</dt>
-			<dd>
-				<input type="number" soy:id="count">&nbsp;件
-			</dd>
-		</dl>
-
-		<p class="pageBtn">
-			<input type="submit" class="submit_button" value="変更" />
-		</p>
-
-	</form>
-</div>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更" />
+	</div>
+</form>

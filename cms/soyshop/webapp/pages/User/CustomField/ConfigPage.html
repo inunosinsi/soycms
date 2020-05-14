@@ -1,42 +1,38 @@
-<h1>
-	カスタム項目管理
-	<span class="navi">
-		<a soy:link="">ショップ管理</a> &gt; <a soy:link="User">顧客管理</a> &gt; <a soy:link="User.CustomField">ユーザカスタム項目管理</a> &gt; インポート・エクスポート</span>
-</h1>
+<h2>インポート・エクスポート</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="">ショップ管理</a></li>
+		<li><a soy:link="User">顧客管理</a></li>
+		<li><a soy:link="User.CustomField">ユーザカスタム項目管理</a></li>
+		<li class="active">インポート・エクスポート</li>
+	</ol>
+</nav>
 
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">ユーザカスタム項目設定のインポート・エクスポート</div>
+			<div class="panel-body">
+				<div class="alert alert-danger" soy:display="failed">インポートに失敗しました</div>
 
-<div id="category" class="block">
-	<div class="block_title">
-		<h2>ユーザカスタム項目設定のインポート・エクスポート</h2>
+				<h4>設定のエクスポート(この設定項目をコピーしてインポート先に貼り付けてください)</h4>
+				<div class="form-group">
+					<textarea soy:id="export_value" class="form-control"></textarea>
+				</div>
+
+				<h4>設定のインポート(ここに設定項目を張り付けてインポートを押してください)</h4>
+				<form soy:id="import_form">
+					<div class="form-group">
+						<div class="alert alert-info">すべての項目がインポートの設定に上書きされます。</div>
+						<textarea soy:id="import_value" class="form-control"></textarea>
+					</div>
+
+					<div class="text-center">
+						<input type="submit" name="import" class="btn btn-primary btn-lg" value="インポート">
+					</div>
+				</form>
+
+			</div>
+		</div>
 	</div>
-
-	<div class="block_body clearfix">
-	
-	
-		<p class="error" soy:display="failed">インポートに失敗しました</p>
-
-		<h3>設定のエクスポート(この設定項目をコピーしてインポート先に貼り付けてください)</h3>
-		
-		<dl>
-			<dd>
-				<textarea soy:id="export_value"></textarea>
-			</dd>
-		</dl>
-		
-		<h3>設定のインポート(ここに設定項目を張り付けてインポートを押してください)</h3>
-		<form soy:id="import_form">
-		
-		<dl>
-			<dd>
-				<p style="color:red;">すべての項目がインポートの設定に上書きされます。</p>
-				<textarea soy:id="import_value"></textarea>
-			</dd>
-		</dl>
-		
-		<p class="pageBtn">
-			<input type="submit" name="import" value="インポート" />
-		</p>
-		</form soy:id="import_form">
-
-	</div><!-- /block_body -->
 </div>

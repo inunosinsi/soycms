@@ -82,8 +82,8 @@ class IndexPage extends WebPage{
 		$searchLogic->setOrder($sort);
 
 		//データ取得
-		$total = $searchLogic->getTotalCount();
-		$items = $searchLogic->getItems();
+		$total = (int)$searchLogic->getTotalCount();
+		$items = ($total > 0) ? $searchLogic->getItems() : array();
 
 		/*表示*/
 
@@ -150,6 +150,17 @@ class IndexPage extends WebPage{
 				"title" => $title,
 				"class" => ($sort === $key) ? "sorter_selected" : "sorter"
 			));
+		}
+	}
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Item.FooterMenu.ItemFooterMenuPage", array(
+				"arguments" => array(null)
+			))->getObject();
+		}catch(Exception $e){
+			//
+			return null;
 		}
 	}
 }

@@ -23,10 +23,6 @@ class CommonNoticeStockConfigFormPage extends WebPage{
 
     	$config = CommonNoticeStockCommon::getConfig();
 
-  		$this->addModel("updated", array(
-    		"visible" => (isset($_GET["updated"]))
-    	));
-
     	$this->addForm("form");
 
     	$this->addInput("stock", array(

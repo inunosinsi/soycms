@@ -13,18 +13,18 @@
 	<div class="block_title">
 		<h2>注文の追加</h2>
 
-		<div class="block_title_right">
-			<a class="button" soy:link="Order.Register">戻る</a>
+		<div class="pull-right">
+			<a class="btn btn-default" soy:link="Order.Register">戻る</a>
 		</div>
 	</div>
 	
-	<div class="block_body">
+	<div class="panel-body">
 		<h3>支払方法</h3>
 		<p soy:id="error" class="require ml20 mb">エラー</p>
 
 		<form soy:id="form">
 			
-			<table class="form_table">
+			<table class="table table-striped">
 				<thead>
 					<tr>
 						<th>支払方法</th>
@@ -44,13 +44,13 @@
 								<!-- soy:id="payment_description" /-->
 							</div>
 						</td>
-						<td class="alC"><!--  soy:id="payment_charge" /--></td>
+						<td class="text-center"><!--  soy:id="payment_charge" /--></td>
 					</tr>
 					<!-- /soy:id="payment_method_list" -->
 				</tbody>
 			</table>
 	
-			<div class="pageBtn">
+			<div class="text-center">
 			<input type="submit" name="register" value="決定" />
 			</div>
 

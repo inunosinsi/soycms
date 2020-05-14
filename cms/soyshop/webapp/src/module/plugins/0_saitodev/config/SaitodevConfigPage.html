@@ -1,24 +1,26 @@
-<p class="notice" soy:display="updated">更新しました。</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
-	<table class="form_table" style="width:30%;">
-		<thead>
-			<tr class="alC">
-				<th>権限名</th>
-				<th>新機能紹介の表示の有無</th>
-			</tr>
-		</thead>
-		<tbody>
-			<!-- soy:id="role_list" -->
-			<tr>
-				<td soy:id="label"></td>
-				<td class="alC"><select soy:id="role"></select></td>
-			</tr>
-			<!-- /soy:id="role_list" -->
-		</tbody>
-	</table>
+	<div class="table-responsive">
+		<table class="table table-striped" style="width:30%;">
+			<thead>
+				<tr >
+					<th>権限名</th>
+					<th>新機能紹介の表示の有無</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="role_list" -->
+				<tr>
+					<td soy:id="label"></td>
+					<td ><select soy:id="role"></select></td>
+				</tr>
+				<!-- /soy:id="role_list" -->
+			</tbody>
+		</table>
+	</div>
 
-	<p class="pageBtn">
-		<input type="submit" name="update" value="更新">
-	</p>
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
 </form>

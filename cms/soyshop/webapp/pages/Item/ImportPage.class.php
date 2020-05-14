@@ -153,7 +153,7 @@ class ImportPage extends WebPage{
                 if($deleted){
                     $this->deleteItem($item);
                 }else{
-                    $pageId = $this->getDetailPage($item->getDetailPageId());
+                    $pageId = self::_getDetailPage($item->getDetailPageId());
                     $item->setDetailPageId($pageId);
 
                     $id = $this->insertOrUpdate($item);
@@ -268,11 +268,10 @@ class ImportPage extends WebPage{
      */
     function insert(SOYShop_Item $item){
         try{
-            $id = $this->dao->insert($item);
+            return $this->dao->insert($item);
         }catch(Exception $e){
-            var_dump($e);
+            return null;
         }
-        return $id;
     }
 
     /**
@@ -280,11 +279,10 @@ class ImportPage extends WebPage{
      * @param SOYShop_Item
      */
     function update(SOYShop_Item $item){
-
         try{
             $this->dao->update($item);
         }catch(Exception $e){
-
+			//
         }
     }
 
@@ -338,21 +336,22 @@ class ImportPage extends WebPage{
         /**
      * 商品詳細ページがひとつしかなかった場合に挿入する
      */
-    function getDetailPage($id){
-        if(empty($this->detailPage)){
-            //指定されているページIDが詳細ページとして存在しているか？
-            try{
-                $res = $this->pageDao->executeQuery("SELECT id FROM soyshop_page WHERE id = :id AND type = 'detail' LIMIT 1;", array(":id" => $id));
-                if(isset($res[0]["id"])) return $res[0]["id"];
-            }catch(Exception $e){
-                $res = array();
-            }
+    private function _getDetailPage($id){
+		static $pageIds;
+		if(is_null($pageIds)) $pageIds = array();
+		if(is_null($id) || !is_numeric($id)) return null;
+		if(isset($pageIds[$id])) return $pageIds[$id];
 
-            //IDの一番小さいページを取得する
-            return $this->getDefaultDetailPage();
-        }else{
-            return $this->detailPage;
+        //指定されているページIDが詳細ページとして存在しているか？
+        try{
+            $res = $this->pageDao->executeQuery("SELECT id FROM soyshop_page WHERE id = :id AND type = 'detail' LIMIT 1;", array(":id" => $id));
+        }catch(Exception $e){
+            $res = array();
         }
+		//IDの一番小さいページを取得する
+		$paegIds[$id] = (isset($res[0]["id"])) ? (int)$res[0]["id"] : self::_getDefaultDetailPage();
+		
+		return $pageIds[$id];
     }
 
     /**
@@ -373,7 +372,7 @@ class ImportPage extends WebPage{
     /**
      * IDが一番小さいdetailページを取得する
      */
-    function getDefaultDetailPage(){
+    private function _getDefaultDetailPage(){
         static $pageId;
 
         if(is_null($pageId)){
@@ -387,4 +386,15 @@ class ImportPage extends WebPage{
 
         return ($pageId > 0) ? $pageId : null;
     }
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Item.FooterMenu.ItemFooterMenuPage", array(
+				"arguments" => array(null)
+			))->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
 }

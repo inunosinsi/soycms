@@ -125,11 +125,13 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 			$html[] = '}';
 
 			$html[] = 'if(isCategory){';
-			$html[] = '	$("#custom_field_' . $config->getFieldId() . '_dt").show();';
-			$html[] = '	$("#custom_field_' . $config->getFieldId() . '").show();';
+			// $html[] = '	$("#custom_field_' . $config->getFieldId() . '_dt").show();';
+			// $html[] = '	$("#custom_field_' . $config->getFieldId() . '").show();';
+			$html[] = '	$("#custom_field_' . $config->getFieldId() . '_group").show();';
 			$html[] = '}else{';
-			$html[] = '	$("#custom_field_' . $config->getFieldId() . '_dt").hide();';
-			$html[] = '	$("#custom_field_' . $config->getFieldId() . '").hide();';
+			//$html[] = '	$("#custom_field_' . $config->getFieldId() . '_dt").hide();';
+			//$html[] = '	$("#custom_field_' . $config->getFieldId() . '").hide();';
+			$html[] = '	$("#custom_field_' . $config->getFieldId() . '_group").hide();';
 			$html[] = '}';
 		}
 		$html[] = "}, 1000);";

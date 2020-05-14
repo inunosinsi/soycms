@@ -72,24 +72,16 @@ class IndexPage extends WebPage{
 		$pager->buildPager($this);
 
 		//ItemListの準備
-    	$categories = soyshop_get_category_objects();
-
-		$orderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-
 		$this->createAdd("item_list", "_common.Item.SearchItemListComponent", array(
 			"list" => $items,
-			"orderDAO" => $orderDAO,
+			"orderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO"),
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
-			"categories" => $categories
+			"categories" => soyshop_get_category_objects()
 		));
 
-		$this->addModel("search_result", array(
-			"visible" => (count($items) > 0)
-		));
-
-		$this->addModel("no_result", array(
-			"visible" => ($this->getParameter("search") && count($items) == 0)
-		));
+		$itemCnt = count($items);
+		DisplayPlugin::toggle("search_result", $itemCnt > 0);
+		DisplayPlugin::toggle("no_result", ($this->getParameter("search") && $itemCnt === 0));
 
 		$this->addLink("reset_link", array(
 			"link" => SOY2PageController::createLink("Item.Search") . "?reset",
@@ -169,12 +161,11 @@ class IndexPage extends WebPage{
 		));
 
 		//カテゴリ
-		$categories = soyshop_get_category_objects();
 
 		$selected_categories = (strlen(@$form["categories"]) > 0) ? explode(" ", trim(@$form["categories"])) : array();
 
 		$this->createAdd("category_tree","_base.MyTreeComponent", array(
-			"list" => $categories,
+			"list" => soyshop_get_category_objects(),
 			"root" => (count($selected_categories) > 0) ? "<b>カテゴリ(<span id=\"category_count\">".count($selected_categories)."</span>)</b>" : "カテゴリ",
 			"expand" => (count($selected_categories) > 0),
 			"selected" => $selected_categories

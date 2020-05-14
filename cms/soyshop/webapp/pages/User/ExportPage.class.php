@@ -191,4 +191,13 @@ class ExportPage extends WebPage{
 			echo "\r\n";
 		}
 	}
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("User.FooterMenu.UserFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
 }

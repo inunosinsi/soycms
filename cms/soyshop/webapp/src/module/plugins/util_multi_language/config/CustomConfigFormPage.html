@@ -1,14 +1,14 @@
 <form soy:id="form">
     <p style="margin:5px 10px;">
         <span style="float:left;">■&nbsp;日本語：<a soy:id="item_name_link"></a></span>
-        <span style="float:right;"><a soy:id="confirm_link" class="button">表示の確認</a></span>
+        <span style="float:right;"><a soy:id="confirm_link" class="btn btn-default">表示の確認</a></span>
     </p>
 
     <br style="clear:both;line-height:2.5em;">
 
-    <div class="block_body">
+    <div class="panel-body">
 
-        <p class="notice" soy:display="updated">更新しました</p>
+        <div class="alert alert-success" soy:display="updated">更新しました</div>
 
         <section soy:display="customfield">
             <h1>カスタムフィールドの値</h1>
@@ -31,9 +31,9 @@
             </dl>
         </section>
 
-        <p class="pageBtn">
-            <input type="submit" value="変更" style="width:180px;margin-right:50px;" />
-        </p>
+        <div class="text-center">
+            <input type="submit" class="btn btn-primary btn-lg" value="変更">
+        </div>
     </div>
 </form>
 
@@ -46,7 +46,7 @@
             <span>
         <input id="upload_input" name="upload_file[]" type="file" multiple="true" />
         </span>
-            <a class="button" href="javascript:void(0);" onclick="$('#upload_form').trigger('submit');">Upload</a>
+            <a class="btn btn-default" href="javascript:void(0);" onclick="$('#upload_form').trigger('submit');">Upload</a>
         </p>
         <hr />
         <div id="select_image_list" class="image_list">

@@ -19,11 +19,13 @@ function register_user($stmt){
 			$stmt->execute(array(
 				":id" => $user->getId(),
 				":mail_address" => $user->getMailAddress(),
+				":user_code" => $user->getUserCode(),
 				":attribute1" => $user->getAttribute1(),
 				":attribute2" => $user->getAttribute2(),
 				":attribute3" => $user->getAttribute3(),
 				":name" => $user->getName(),
 				":reading" => $user->getReading(),
+				":honorific" => $user->getHonorific(),
 				":nickname" => $user->getNickName(),
 				":account_id" => $user->getAccountId(),
 				":profile_id" => $user->getProfileId(),

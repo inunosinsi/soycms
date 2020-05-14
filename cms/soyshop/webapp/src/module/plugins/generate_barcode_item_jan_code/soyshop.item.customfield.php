@@ -21,7 +21,7 @@ class GenerateBarcodeItemJanCodeItemCustomField extends SOYShopItemCustomFieldBa
 		$jancodeJpg = GenerateJancodeUtil::getJancodeImagePath($jancode . ".jpg", $item->getCode());
 		if(strlen($jancodeJpg)){
 			$html[] = "<img src=\"" . $jancodeJpg . "\">";
-			$html[] = "&nbsp;<a href=\"" . $jancodeJpg . "\" download=\"" . $jancode . ".jpg\" class=\"button\">ダウンロード</a>";
+			$html[] = "&nbsp;<a href=\"" . $jancodeJpg . "\" download=\"" . $jancode . ".jpg\" class=\"btn btn-default\">ダウンロード</a>";
 			$html[] = "<br>";
 		}
 

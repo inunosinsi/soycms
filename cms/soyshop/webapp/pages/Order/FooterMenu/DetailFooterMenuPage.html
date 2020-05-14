@@ -1,0 +1,143 @@
+<!-- soy:display="mail" -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">メール送信</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+			  		<table class="table table-striped">
+					<caption>メール送信</caption>
+					<tbody>
+						<tr>
+							<th>注文受付メール</th>
+							<td><!-- soy:id="order_mail_status" /--></td>
+							<td>
+								<a soy:id="order_mail_link">送信（編集）</a>
+							</td>
+			  			</tr>
+
+			  			<tr>
+							<th>注文確定メール</th>
+							<td><!-- soy:id="confirm_mail_status" /--></td>
+							<td>
+								<a soy:id="confirm_mail_link">送信（編集）</a>
+							</td>
+			  			</tr>
+
+			  			<tr>
+							<th>支払確認メール</th>
+							<td><!-- soy:id="payment_mail_status" /--></td>
+							<td>
+								<a soy:id="payment_mail_link">送信（編集）</a>
+							</td>
+			  			</tr>
+
+			  			<tr>
+							<th>配送確認メール</th>
+							<td><!-- soy:id="delivery_mail_status" /--></td>
+							<td>
+								<a soy:id="delivery_mail_link">送信（編集）</a>
+							</td>
+			  			</tr>
+
+						<tr>
+							<th>その他のメール</th>
+							<td><!-- soy:id="other_mail_status" /--></td>
+							<td>
+								<a soy:id="other_mail_link">送信（編集）</a>
+							</td>
+			  			</tr>
+			  			<!-- soy:id="mail_plugin_list" -->
+			  			<tr>
+			  				<th soy:id="mail_title"></th>
+			  				<td soy:id="mail_status"></td>
+			  				<td>
+			  					<a soy:id="mail_send_link">送信（編集）</a>
+			  				</td>
+			  			</tr>
+			  			<!-- /soy:id="mail_plugin_list" -->
+			  		</tbody>
+			  		</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /soy:display="mail" -->
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">注文状態の変更履歴</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<caption>注文状態の変更履歴</caption>
+						<thead>
+							<tr>
+								<th>日時</th>
+								<th class="short">対応者ID</th>
+								<th>変更内容</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!--  soy:id="history_list" -->
+							<tr>
+								<td nowrap><!-- soy:id="history_date" /--></td>
+								<td><!-- soy:id="history_author" /--></td>
+								<td><!-- soy:id="history_content" /--></td>
+							</tr>
+							<!--  /soy:id="history_list" -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- soy:display="mail_history" -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">メールの送信履歴</div>
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-striped">
+					<caption>メールの送信履歴</caption>
+					<thead>
+						<tr>
+							<th>日時</th>
+							<th>タイトル</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!--  soy:id="mail_history_list" -->
+						<tr>
+							<td nowrap><!-- soy:id="send_date" /--></td>
+							<td><a soy:id="mail_title"></a></td>
+						</tr>
+						<!--  /soy:id="mail_history_list" -->
+					</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /soy:display="mail_history" -->
+
+<!-- soy:display="operate_credit_menu" -->
+<!-- soy:id="operate_list" -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading"><!-- soy:id="operate_credit_title" /--></div>
+			<div class="panel-body">
+				<!-- soy:id="operate_credit_content" /-->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /soy:id="operate_list" -->
+<!-- /soy:display="operate_credit_menu" -->

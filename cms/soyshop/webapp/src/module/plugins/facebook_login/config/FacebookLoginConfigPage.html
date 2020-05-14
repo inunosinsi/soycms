@@ -1,25 +1,25 @@
-<p class="notice" soy:display="updated">更新しました</p>
+<div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 	<dl>
 		<dt>APIバージョン</dt>
 		<dd>
-			<input type="text" class="text" soy:id="api_version" placeholder="v2.10">
+			<input type="text" class="form-control" soy:id="api_version" placeholder="v2.10">
 		</dd>
 		<dt>アプリID</dt>
 		<dd>
-			<input type="text" class="text" soy:id="app_id">
+			<input type="text" class="form-control" soy:id="app_id">
 		</dd>
 
 		<dt>app secret</dt>
 		<dd>
-			<input type="text" class="text" soy:id="app_secret">
+			<input type="text" class="form-control" soy:id="app_secret">
 		</dd>
 	</dl>
 
-	<p class="pageBtn">
-		<input type="submit" class="submit_button" value="変更" />
-	</p>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>
 
 <h3>Facebookログインプラグインの使用方法</h3>

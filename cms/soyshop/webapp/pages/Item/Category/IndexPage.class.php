@@ -87,9 +87,16 @@ class IndexPage extends WebPage{
         $this->createAdd("category_tree","MyTree", array(
             "list" => soyshop_get_category_objects()
         ));
-
-        DisplayPlugin::toggle("custom_plugin", SOYShopPluginUtil::checkIsActive("common_category_customfield"));
     }
+
+	function getFooterMenu(){
+		try{
+			return SOY2HTMLFactory::createInstance("Item.FooterMenu.CategoryFooterMenuPage")->getObject();
+		}catch(Exception $e){
+			//
+			return null;
+		}
+	}
 
     function getScripts(){
         $root = SOY2PageController::createRelativeLink("./js/");

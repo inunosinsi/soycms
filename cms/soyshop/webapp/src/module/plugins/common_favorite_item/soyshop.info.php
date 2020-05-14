@@ -10,7 +10,5 @@ class CommonFavoriteItemInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info", "common_favorite_item", "CommonFavoriteItemInfo");
-?>

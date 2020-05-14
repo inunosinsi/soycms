@@ -39,8 +39,13 @@ class ItemListComponent extends HTMLList{
 			"text" => $item->getOpenItemName(),
 		));
 
-		$this->createAdd("item_price", "NumberFormatLabel", array(
-			"text" => $entity->getItemPrice(),
+		$this->addLabel("item_price", array(
+			"text" => (is_numeric($entity->getItemPrice())) ? number_format($entity->getItemPrice()) : 0,
+		));
+
+		//上のタグがなぜか使えないので予備でもう一つ
+		$this->addLabel("item_price_yobi", array(
+			"text" => (is_numeric($entity->getItemPrice())) ? number_format($entity->getItemPrice()) : 0,
 		));
 
 		$this->addLabel("item_id", array(

@@ -193,7 +193,7 @@ class SettingPage extends WebPage{
 		$this->addSelect("search_item_category", array(
 			"name" => "search_condition[item_category]",
 			"options" => soyshop_get_category_list(),
-			"selected" => $cnd["item_category"]
+			"selected" => (isset($cnd["item_category"])) ? $cnd["item_category"] : null
 		));
 
 		$this->addCheckBox("search_item_is_open", array(

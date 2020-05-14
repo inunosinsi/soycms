@@ -1,32 +1,31 @@
-<h1>
-	ページ管理
-	<span class="navi">
-		<a soy:link="Site">サイト管理</a> &gt; <a soy:link="Site.Pages">ページ管理</a> &gt; <a soy:id="detail_page_link">ページ設定</a> &gt; フリーページ設定</span>
-</h1>
+<h2>フリーページ設定</h2>
+<nav>
+	<ol class="breadcrumb">
+		<li><a soy:link="Site">サイト管理</a></li>
+		<li><a soy:link="Site.Pages">ページ管理</a></li>
+		<li><a soy:id="detail_page_link">ページ設定</a></li>
+		<li class="active">フリーページ設定</li>
+	</ol>
+</nav>
 
-
-<div class="block">
-	<div class="block_title">
-		<h2><span soy:id="page_name"></span> | コンテンツ設定</h2>
+<div class="row">
+	<div class="col-lg-8">
+		<div class="panel panel-default">
+			<div class="panel-heading"><span soy:id="page_name"></span> | コンテンツ設定</div>
+			<div class="panel-body">
+				<form soy:id="update_form">
+					<div class="form-group">
+						<dt>タイトル</dt>
+						<input class="form-control" type="text" soy:id="title">
+					</div>
+					<div class="form-group">
+						<dt>本文</dt>
+						<textarea class="mceEditor editor form-control" soy:id="content" style="height:400px;"></textarea>
+					</div>
+					<div class="text-center">
+						<input type="submit" class="btn btn-primary btn-lg" value="更新" />
+					</div>
+				</form>
+			</div>
+		</div>
 	</div>
-
-	<div class="block_body">
-		<form soy:id="update_form">
-
-			<dl class="form center">
-				<dt>タイトル</dt>
-				<dd>
-					<input class="title" type="text" soy:id="title" />
-				</dd>
-				<dt>
-					本文
-				</dt>
-				<dd>
-					<textarea class="mceEditor editor" soy:id="content" style="height:400px;"></textarea>
-				</dd>
-			</dl>
-			<p class="pageBtn"><input type="submit" value="更新" /></p>
-
-		</form soy:id="update_form">
-	</div>
-</div>

@@ -45,4 +45,11 @@ class DetailPage extends WebPage{
 			"html" => $delegate->getConfigPage()
 		));
 	}
+
+	function getScripts(){
+		$root = SOY2PageController::createRelativeLink("./js/");
+		return array(
+			$root . "main.pack.js",
+		);
+	}
 }

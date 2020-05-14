@@ -1,5 +1,5 @@
-<p class="notice" soy:display="updated">変更しました</p>
-<p class="notice" soy:display="created">実行しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
+<p class="alert alert-success" soy:display="created">実行しました</p>
 
 <form soy:id="form">
 
@@ -12,8 +12,8 @@
         </dd>
         <dd>
             <input type="text" soy:id="prefix_input" />&nbsp;&nbsp;
-            <a soy:id="create_pc_page_link" class="button">PC版ページの追加</a>&nbsp;&nbsp;
-            <a soy:id="create_i_page_link" class="button">スマホ版ページの追加</a>
+            <a soy:id="create_pc_page_link" class="btn btn-default">PC版ページの追加</a>&nbsp;&nbsp;
+            <a soy:id="create_i_page_link" class="btn btn-default">スマホ版ページの追加</a>
             <br />
             <div>
                 <h2>▶&nbsp;PC</h2>
@@ -68,13 +68,13 @@
         </dd>
     </dl>
 
-    <p class="pageBtn">
-        <input type="submit" class="submit_button" value="変更" />
-    </p>
+    <div class="text-center">
+        <input type="submit" class="btn btn-primary btn-lg" value="変更">
+    </div>
 
 </form>
 
-<h3>テンプレートへの記述例</h3>
+<h4>テンプレートへの記述例</h4>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px　20px 0;">
 &lt;a cms:id="language_jp_link"&gt;日本語サイト&lt;/a&gt;
 &lt;a cms:id="language_en_link"&gt;英語サイト&lt;/a&gt;

@@ -8,16 +8,17 @@ var ImageSelect = {
 
 		this.id = id;
 
+		$("#imageSelectModal").modal();
+
 		//if onPopup
-		if (window.onPopup) {
-			window.onPopup();
-		}
-
-		$("#upload_form_el").trigger("popup", {
-			width: 640,
-			height: 480
-		});
-
+		// if (window.onPopup) {
+		// 	window.onPopup();
+		// }
+		//
+		// $("#upload_form_el").trigger("popup", {
+		// 	width: 640,
+		// 	height: 480
+		// });
 	},
 
 
@@ -181,8 +182,8 @@ var ImageSelect = {
 
 		$(image).css(size);
 
-
-		$("#upload_form_el").trigger("close");
+		$("#imageSelectModalClose").click();
+		//$("#upload_form_el").trigger("close");
 	},
 
 	loadImage: function(abspath, onLoad, onError, delay, timeout) {

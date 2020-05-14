@@ -1,7 +1,7 @@
 <!-- soy:display="has_campaign" -->
-<table class="form_table">
+<table class="table table-striped">
 	<thead>
-		<tr class="alC">
+		<tr >
 			<th>タイトル</th>
 			<th>掲載期間</th>
 			<th>公開状態</th>
@@ -15,7 +15,7 @@
 			<td soy:id="post_period"></td>
 			<td class="short alC" soy:id="is_open"></td>
 			<td class="operation">
-				<a soy:id="detail_link*" class="button">詳細</a>
+				<a soy:id="detail_link*" class="btn btn-default">詳細</a>
 			</td>
 		</tr>
 		<!-- /soy:id="campaign_list" -->
@@ -24,7 +24,7 @@
 <!-- /soy:display="has_campaign" -->
 
 <!-- soy:display="no_campaign" -->
-<p class="notice always">
+<p class="alert alert-info">
 	現在公開、もしくは公開待ちのキャンペーンはありません。
 </p>
 <!-- /soy:display="no_campaign" -->
