@@ -69,8 +69,9 @@ class SearchFormComponent extends SOYBodyComponentBase{
 		));
 
 		//複数選択モードを表示
-		DisplayPlugin::toggle("status_single_select_mode", !$config->getMultiSelectStatusMode());
-		DisplayPlugin::toggle("status_multi_select_mode", $config->getMultiSelectStatusMode());
+		$isStatusMode = (int)$config->getMultiSelectStatusMode();
+		DisplayPlugin::toggle("status_single_select_mode", $isStatusMode === 0);
+		DisplayPlugin::toggle("status_multi_select_mode", $isStatusMode === 1);
 
 		$this->addCheckBox("no_delivery", array(
 			"name" => "search[noDelivery]",
