@@ -27,35 +27,40 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * エントリーを新規作成
 	 */
-	function create($bean){
+	 /**
+ 	 * エントリーを新規作成
+ 	 */
+ 	function create(Entry $bean){
 
-		$dao = self::entryDao();
+ 		$dao = self::entryDao();
 
-		$bean->setContent($this->cleanupMCETags($bean->getContent()));
-		$bean->setMore($this->cleanupMCETags($bean->getMore()));
+ 		$bean->setContent($this->cleanupMCETags($bean->getContent()));
+ 		$bean->setMore($this->cleanupMCETags($bean->getMore()));
 
-		//数値以外（空文字列を含む）がcdateに入っていれば現在時刻を作成日時にする
-		if(!is_numeric($bean->getCdate())){
-			$bean->setCdate(SOYCMS_NOW);
-		}
+ 		//数値以外（空文字列を含む）がcdateに入っていれば現在時刻を作成日時にする
+ 		if(!is_numeric($bean->getCdate())){
+ 			$bean->setCdate(SOYCMS_NOW);
+ 		}
 
-		if(UserInfoUtil::hasEntryPublisherRole() != true){
-			$bean->setOpenPeriodEnd(CMSUtil::encodeDate(null,false));
-			$bean->setOpenPeriodStart(CMSUtil::encodeDate(null,true));
+ 		if(UserInfoUtil::hasEntryPublisherRole() != true){
+ 			$bean->setOpenPeriodEnd(CMSUtil::encodeDate(null,false));
+ 			$bean->setOpenPeriodStart(CMSUtil::encodeDate(null,true));
 
-			$bean->setIsPublished(false);
-		}
+ 			$bean->setIsPublished(false);
+ 		}
 
-		$id = $dao->insert($bean);
+ 		//仮で今の時間を入れておく カスタムエイリアス　SQLite対策
+ 		if($bean->getId() == $bean->getAlias()) $bean->setAlias(time());
+ 		$id = $dao->insert($bean);
 
-		if($bean->isEmptyAlias()){
-			$bean->setId($id);//updateを実行するため
-			$bean->setAlias($this->getUniqueAlias($id,$bean->getTitle()));
-			$dao->update($bean);
-		}
+ 		if($bean->isEmptyAlias()){
+ 			$bean->setId($id);//updateを実行するため
+ 			$bean->setAlias($this->getUniqueAlias($id,$bean->getTitle()));
+ 			$dao->update($bean);
+ 		}
 
-		return $id;
-	}
+ 		return $id;
+ 	}
 
 	/**
 	 * エントリーを更新

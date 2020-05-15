@@ -21,7 +21,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.10"
+			"version"=>"1.10.1"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -49,7 +49,7 @@ class CustomAliasPlugin{
 			case CustomAliasUtil::MODE_HASH:
 				$newId = $ids[1];
 				$entry = CustomAliasUtil::getEntryById($newId);
-				$alias = self::_generateAlias($entry, $mode);
+				$alias = self::_generateAlias($entry, $mode, $newId);
 				if(strlen($alias)){
 					$entry->setAlias($alias);
 					$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
@@ -79,11 +79,12 @@ class CustomAliasPlugin{
 		}
 	}
 
-	private function _generateAlias(Entry $entry, $mode){
+	private function _generateAlias(Entry $entry, $mode, $newId=null){
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
 				$cnf = CustomAliasUtil::getAdvancedConfig(CustomAliasUtil::MODE_ID);
-				$alias = $entry->getId();
+				//記事複製時を加味
+				$alias = (is_numeric($newId) && $newId > 0) ? $newId : $entry->getId();
 				if(isset($cnf["prefix"]) && strlen($cnf["prefix"])){
 					$alias = $cnf["prefix"] . $alias;
 				}
