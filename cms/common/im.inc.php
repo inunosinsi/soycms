@@ -148,7 +148,7 @@
 		_redirect();
 	}
 	$cache = $cache_dir . "/" . $cache_file;
-	
+
 	//すでにキャッシュがあればそれを返す（$_GET["force"]があればキャッシュを無視して再変換）
 	if(is_readable($cache) && !isset($_GET["force"])){
 		/* 変更がなければ304を返す（If-Modified-Since） */
@@ -179,6 +179,7 @@
 		header($data["mime"]);
 		header("Last-Modified: ".gmdate("D, d M Y H:i:s T", filemtime($cache)));
 		readfile($cache);
+
 	}else{
 		//変換失敗
 		_redirect();
@@ -362,7 +363,7 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 	/* 読み込み */
 	$filetype = _get_extension($filepath);
 	if($filetype == "jpg")$filetype = "jpeg";
-	
+
 	//読み込み関数
 	$from = "imagecreatefrom" . $filetype;
 	if(!function_exists($from)){
@@ -377,7 +378,7 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 
 	//source
 	$srcImage = $from($filepath);
-	
+
 	/* 出力サイズ */
 	$imageSize = getimagesize($filepath);
 	if(is_null($width) && is_null($height)){
@@ -402,13 +403,13 @@ function _soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = 
 
 	/* 変換 */
 	$dstImage = imagecreatetruecolor($width,$height);
-	
+
 	//PNGの場合で画像に透過が入っている場合、透過の箇所を黒にしない
 	if($filetype == "png"){
 		imagealphablending($dstImage, false);
 		imagesavealpha($dstImage, true);
 	}
-	
+
 	imagecopyresampled(
 		$dstImage,$srcImage,
 		0, 0, 0, 0,

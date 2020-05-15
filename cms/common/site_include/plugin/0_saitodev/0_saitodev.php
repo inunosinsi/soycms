@@ -72,7 +72,7 @@ class ZeroSaitodevPlugin{
 		}
 
 		//記事一覧へのリンク
-		$html[] = "<div class=\"soycms_news text-right\"><a href=\"https://saitodev.co/category/SOY_CMS\" target=\"_blank\">SOY CMSの記事をもっと読む</a></div>";
+		$html[] = "<div class=\"soycms_news text-center\"><a href=\"https://saitodev.co/category/SOY_CMS\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-default\">SOY CMSの記事をもっと読む</a></div>";
 		$html[] = "<style>" . file_get_contents(dirname(__FILE__) . "/css/style.css") . "</style>";
 
 		return array("title" => $title, "content" => implode("\n", $html));

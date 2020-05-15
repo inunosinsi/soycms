@@ -5,6 +5,7 @@
 
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<?php SOY2::import("util.CMSUtil"); ?>
 <title><?php echo CMSUtil::getCMSName(); ?></title>
 
 <link rel="stylesheet" href="<?php echo SOY2PageController::createRelativeLink("../admin/css/"); ?>style.css"/>
