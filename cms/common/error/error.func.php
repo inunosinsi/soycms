@@ -154,9 +154,12 @@ function get_trace_report($trace,$index){
 	$str = array();
 	$str[] = '-----------------------';
 	@$str[] = $index. ":".$trace["class"].$trace["type"].$trace["function"];
-	for($i = 0; $i<count(@$trace["args"]); $i++){
-		$str[] = "\t".'argument['.$i.']: '.get_argument_string($trace["args"][$i]);
+	if(isset($trace["args"]) && is_array($trace["args"]) && count($trace["args"])){
+		for($i = 0; $i < count($trace["args"]); $i++){
+			$str[] = "\t".'argument['.$i.']: '.get_argument_string($trace["args"][$i]);
+		}
 	}
+
 	$str[] = '';
 	@$str[] = "\t".''.$file."(".$trace["line"].")";
 
