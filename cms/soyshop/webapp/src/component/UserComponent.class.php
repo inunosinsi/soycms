@@ -52,7 +52,7 @@ class UserComponent {
 		//必須項目に関して
 		foreach($requiredConfig as $key => $boolean){
 			$page->addLabel($key . "_required", array(
-				"text" => ($boolean) ? $this->config->getRequireText() : "",
+				"html" => ($boolean) ? $this->config->getRequireText() : "",
 				"attr:class" => ($boolean) ? "require" : ""
 			));
 		}
