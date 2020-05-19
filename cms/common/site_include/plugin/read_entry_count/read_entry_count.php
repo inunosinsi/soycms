@@ -18,7 +18,7 @@ class ReadEntryCountPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -130,8 +130,10 @@ class ReadEntryCountPlugin{
 	}
 
 	private function get(){
+		//無駄な処理になるけれども、直前で再度DAOクラスを読み込むことにした
+		SOY2::imports("site_include.plugin.read_entry_count.domain.*");
 		try{
-			return self::dao()->getRanking($this->limit);
+			return SOY2DAOFactory::create("ReadEntryCountDAO")->getRanking($this->limit);
 		}catch(Exception $e){
 			return array();
 		}
@@ -140,7 +142,7 @@ class ReadEntryCountPlugin{
 	private function getByLabelIds($labelIds, $blogPageId){
 		if(!count($labelIds)) return self::get();
 		try{
-			return self::dao()->getRankingByLabelIds($labelIds, $blogPageId, $this->limit);
+			return SOY2DAOFactory::create("ReadEntryCountDAO")->getRankingByLabelIds($labelIds, $blogPageId, $this->limit);
 		}catch(Exception $e){
 			return array();
 		}
