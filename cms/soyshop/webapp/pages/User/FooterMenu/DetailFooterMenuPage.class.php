@@ -15,6 +15,15 @@ class DetailFooterMenuPage extends HTMLPage{
 		self::_buildPointForm($user);	//ポイント
 		self::_buildTicketForm($user);	//チケット
 		self::_buildOperateForm($user);	//カード会員操作
+
+		//ノートパッド
+		SOYShopPlugin::load("soyshop.notepad");
+		$this->addLabel("notepad_extension", array(
+			"html" => SOYShopPlugin::invoke("soyshop.notepad", array(
+				"mode" => "user",
+				"id" => $user->getId()
+			))->getHtml()
+		));
 	}
 
 	private function _buildMailForm(SOYShop_User $user){

@@ -9,7 +9,7 @@
 
 	<div class="panel-body">
 		<div class="alert alert-success" soy:display="updated">更新しました</div>
-		<p class="alert alert-success" soy:display="removed">削除しました</p>
+		<div class="alert alert-success" soy:display="removed">削除しました</div>
 
 		<form soy:id="form">
 			<table class="table table-striped">
@@ -43,7 +43,7 @@
 						<td >
 							<input type="number" soy:id="display_order">
 						</td>
-						<td class="operation">
+						<td>
 							<a soy:id="detail_link*" class="btn btn-default">詳細</a>&nbsp;
 							<a soy:id="remove_link" class="btn btn-default fr delete_btn">削除</a>
 						</td>

@@ -1,5 +1,5 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
-<p class="alert alert-success" soy:display="removed">削除しました</p>
+<div class="alert alert-success" soy:display="removed">削除しました</div>
 <div class="alert alert-danger" soy:display="error">失敗しました</div>
 
 <div style="margin-bottom:10px;">
@@ -24,7 +24,7 @@
 				<tr>
 					<td><input type="text" class="form-control" soy:id="label"></td>
 					<td><input type="number" soy:id="display_order"></td>
-					<td class="operation">
+					<td>
 						<input type="submit" class="btn btn-primary btn-lg" value="更新">&nbsp;
 						<a soy:id="remove_link">削除</a>
 					</td>
@@ -33,7 +33,7 @@
 				<tr>
 					<td><input type="text" class="form-control" name="new_label"></td>
 					<td><input type="number" name="new_display_order"></td>
-					<td class="operation">
+					<td>
 						<input type="submit" value="登録">
 					</td>
 				</tr>

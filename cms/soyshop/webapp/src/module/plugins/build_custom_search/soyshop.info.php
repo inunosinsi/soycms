@@ -13,4 +13,3 @@ class BuildCustomSearchInfo extends SOYShopInfoPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.info", "build_custom_search", "BuildCustomSearchInfo");
-?>

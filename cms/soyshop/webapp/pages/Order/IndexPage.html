@@ -30,9 +30,10 @@
 							<tr>
 								<th>注文番号</th>
 								<td colspan="3">
-									<input type="text" soy:id="order_tracking_number" class="form-control">
-
-									<a soy:id="reset_link" class="btn btn-warning btn-sm" style="margin-top:3px;">検索条件のクリア</a>
+									<div class="form-inline">
+										<input type="text" soy:id="order_tracking_number" class="form-control" style="width:40%;">
+										<a soy:id="reset_link" class="btn btn-warning btn-sm" style="margin-top:3px;">検索条件のクリア</a>
+									</div>
 								</td>
 							</tr>
 							<tr>
@@ -254,7 +255,7 @@
 								<!-- 注文の数だけ表示を繰り返すところ -->
 								<!-- soy:id="order_list" -->
 								<tr>
-									<td class="text-center"><input soy:id="order_check" class="order_checkbox" type="checkbox" /></td>
+									<td><input soy:id="order_check" class="order_checkbox" type="checkbox" /></td>
 									<td soy:id="orderId_form_show"><a soy:id="detail_link"><!-- soy:id="id" /--></a></td>
 									<td class="text-left" soy:id="trackingNumber_form_show"><nobr><a soy:id="order_id_link">1</a></nobr></td>
 									<td soy:id="orderDate_form_show"><nobr><span soy:id="order_date">2009-10-10 10:10:10</span></nobr></td>

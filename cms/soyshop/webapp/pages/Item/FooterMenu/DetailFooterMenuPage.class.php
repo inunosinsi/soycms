@@ -18,6 +18,14 @@ class DetailFooterMenuPage extends HTMLPage{
 		$this->createAdd("history_list", "_common.Item.ChangeHistoryListComponent", array(
 			"list" => $hists
 		));
+
+		SOYShopPlugin::load("soyshop.notepad");
+		$this->addLabel("notepad_extension", array(
+			"html" => SOYShopPlugin::invoke("soyshop.notepad", array(
+				"mode" => "item",
+				"id" => $this->id
+			))->getHtml()
+		));
 	}
 
 	//拡張ポイントのsoyshop.item.update関連の処理

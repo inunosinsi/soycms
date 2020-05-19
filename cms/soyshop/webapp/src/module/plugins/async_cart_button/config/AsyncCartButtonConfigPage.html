@@ -1,29 +1,24 @@
 <div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<div class="table-responsive">
-	<form soy:id="form">
-		<dl>
-			<dt>ページ別設定</dt>
-			<dd>
-				<div>ページ毎に非同期カートボタンを使用するか設定します。</div>
-				<ul>
-					<!-- soy:id="page_list" -->
-					<li><input type="checkbox" soy:id="page"></li>
-					<!-- /soy:id="page_list" -->
-				</ul>
-			</dd>
-		</dl>
+<form soy:id="form">
+	<div class="form-group">
+		<label>ページ別設定</label>
+		<div class="alert alert-info">ページ毎に非同期カートボタンを使用するか設定します。</div>
+		<ul>
+			<!-- soy:id="page_list" -->
+			<li><input type="checkbox" soy:id="page"></li>
+			<!-- /soy:id="page_list" -->
+		</ul>
+	</div>
 
-		<div class="text-center">
-			<input type="submit" class="btn btn-primary btn-lg" value="変更">
-		</div>
-
-	</form>
-</div>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>
 
 
 <h4>テンプレートへの記述例</h4>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<pre>
 &lt;!-- block:id="item" --&gt;
 
 &lt;form cms:id="async_cart_form"&gt;&lt;!-- レガシーなブラウザ対策のために同期用のformタグも設置しておく --&gt;
@@ -38,17 +33,19 @@
 </pre>
 <br>
 
-<h3>カートの中身の非同期更新の設定</h3>
-<section class="panel-body" style="margin:0px 35px 10px 35px;">
+<h4>カートの中身の非同期更新の設定</h4>
+<section>
 	<img soy:id="img_cart">
-	<ul style="margin:0 20px;list-style-type: decimal">
+	<ul style="margin-top:10px;list-style-type: decimal">
 		<li>商品点数を非同期更新に対応する場合は、数字をid="soyshop_cart_item_count"を含んだタグで囲みます。</li>
 		<li>小計を非同期更新に対応する場合は、数字をid="soyshop_cart_sub_total"を含んだタグで囲みます。</li>
 	</ul>
 </section>
 
-<h3>カートのHTMLの変更例</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<br>
+
+<h4>カートのHTMLの変更例</h4>
+<pre>
 &lt;!-- shop:module="common.parts.cart" --&gt;
 &lt;section id="head_cart"&gt;
 	&lt;p class="head_btn"&gt;

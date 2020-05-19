@@ -1,17 +1,15 @@
-<div class="block">
-	<div class="block_title">
-		<h2>伝票番号一覧</h2>
-
-		<div class="pull-right"></div>
-	</div>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">伝票番号一覧</div>
 
 	<div class="panel-body">
 
 		<div class="alert alert-success" soy:display="updated">更新しました</div>
-		<p class="alert alert-success" soy:display="successed">変更しました。</p>
-		<p class="alert alert-success" soy:display="removed">削除しました。</p>
-		<div class="error" soy:display="failed">失敗しました</div>
-		<p class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
+		<div class="alert alert-success" soy:display="successed">変更しました。</div>
+		<div class="alert alert-success" soy:display="removed">削除しました。</div>
+		<div class="alert alert-danger" soy:display="failed">失敗しました</div>
+		<div class="alert alert-danger" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</div>
 
 		<dl>
 			<dt class="search_btn_dt">
@@ -20,15 +18,17 @@
 		</dl>
 		<div class="search_area_dd" soy:id="search_area">
 			<form soy:id="search_form">
-				<table class="table table-striped">
-					<tr>
-						<th>状態</th>
-						<td colspan="3">
-							<input type="checkbox" soy:id="no_delivery">&nbsp;
-							<input type="checkbox" soy:id="is_delivery">
-						</td>
-					</tr>
-				</table>
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<tr>
+							<th>状態</th>
+							<td colspan="3">
+								<input type="checkbox" soy:id="no_delivery">&nbsp;
+								<input type="checkbox" soy:id="is_delivery">
+							</td>
+						</tr>
+					</table>
+				</div>
 
 				<div class="text-center">
 					<input type="submit" name="search" class="btn btn-primary btn-lg" value="検索">&nbsp;&nbsp;
@@ -38,47 +38,49 @@
 		</div>
 
 		<!-- soy:display="no_slip_number" -->
-		<p class="alert alert-info">返送待ちの伝票はありません。</p>
+		<div class="alert alert-info">返送待ちの伝票はありません。</div>
 		<!-- /soy:display="no_slip_number" -->
 
 		<!-- soy:display="is_slip_number" -->
-		<table class="table table-striped">
-			<caption>伝票番号一覧</caption>
-			<thead>
-				<tr >
-					<th>伝票番号</th>
-					<th>注文日時</th>
-					<th>注文番号</th>
-					<th>顧客名</th>
-					<th>状態</th>
-					<th>
-						<a class="btn btn-default fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- soy:id="slip_number_list" -->
-				<tr>
-					<td soy:id="slip_number" ></td>
-					<td soy:id="order_date" ></td>
-					<td ><a soy:id="tracking_number"></a></td>
-					<td ><a soy:id="user_name"></a></td>
-					<td soy:id="status" ></td>
-					<td class="operation">
-						<a soy:id="delivery_link" class="btn btn-default">発送</a>
-						<a soy:id="remove_link" class="btn btn-default delete_btn">削除</a>
-					</td>
-				</tr>
-				<!-- /soy:id="slip_number_list" -->
-			</tbody>
-		</table>
+		<div class="table-responsive">
+			<table class="table table-striped">
+				<caption>伝票番号一覧</caption>
+				<thead>
+					<tr >
+						<th>伝票番号</th>
+						<th>注文日時</th>
+						<th>注文番号</th>
+						<th>顧客名</th>
+						<th>状態</th>
+						<th>
+							<a class="btn btn-default fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- soy:id="slip_number_list" -->
+					<tr>
+						<td soy:id="slip_number" ></td>
+						<td soy:id="order_date" ></td>
+						<td ><a soy:id="tracking_number"></a></td>
+						<td ><a soy:id="user_name"></a></td>
+						<td soy:id="status" ></td>
+						<td>
+							<a soy:id="delivery_link" class="btn btn-default">発送</a>
+							<a soy:id="remove_link" class="btn btn-default delete_btn">削除</a>
+						</td>
+					</tr>
+					<!-- /soy:id="slip_number_list" -->
+				</tbody>
+			</table>
+		</div>
 
-		<h3>CSVエクスポート</h3>
+		<h4>CSVエクスポート</h4>
 		<form soy:id="export_form" id="export_form">
 			<p class="content">未発送分のCSVエクスポート&nbsp;<input type="submit" name="export" value="出力"></p>
 		</form>
 
-		<h3>CSVインポート</h3>
+		<h4>CSVインポート</h4>
 		<form soy:id="import_form">
 			<p class="content">
 				未発送分の一括変更<br>

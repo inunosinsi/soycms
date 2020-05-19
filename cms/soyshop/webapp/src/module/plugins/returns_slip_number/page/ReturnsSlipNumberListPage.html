@@ -1,105 +1,109 @@
-<div class="block">
-	<div class="block_title">
-		<h2>返送伝票番号一覧</h2>
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">返送伝票番号一覧</div>
+			<div class="panel-body">
+				<div class="alert alert-success" soy:display="updated">更新しました</div>
+				<div class="alert alert-success" soy:display="successed">変更しました。</div>
+				<div class="alert alert-success" soy:display="removed">削除しました。</div>
+				<div class="alert alert-danger" soy:display="failed">失敗しました</div>
+				<div class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</div>
 
-		<div class="pull-right"></div>
-	</div>
+				<div class="search_area_dd" soy:id="search_area">
+					<form soy:id="search_form">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<caption>検索</caption>
+								<tr>
+									<th>商品名</th>
+									<td><input type="search" class="form-control" soy:id="search_item_name"></td>
+									<th>顧客名</th>
+									<td><input type="search" class="form-control" soy:id="search_user_name"></td>
+								</tr>
+								<tr>
+									<th>状態</th>
+									<td colspan="3">
+										<input type="checkbox" soy:id="no_return">&nbsp;
+										<input type="checkbox" soy:id="is_return">
+									</td>
+								</tr>
+								<!-- soy:id="custom_search_item_list" -->
+								<tr>
+									<th soy:id="label">拡張ポイントからラベルを出力</th>
+									<td soy:id="form" colspan="3">拡張ポイントからフォームを出力</td>
+								</tr>
+								<!-- /soy:id="custom_search_item_list" -->
+							</table>
+						</div>
 
-	<div class="panel-body">
-
-		<div class="alert alert-success" soy:display="updated">更新しました</div>
-		<p class="alert alert-success" soy:display="successed">変更しました。</p>
-		<p class="alert alert-success" soy:display="removed">削除しました。</p>
-		<div class="error" soy:display="failed">失敗しました</div>
-		<p class="error" soy:display="invalid">不正なCSV/TSVファイルです。ファイルをご確認下さい。</p>
-
-		<div class="search_area_dd" soy:id="search_area">
-			<form soy:id="search_form">
-				<table class="table table-striped">
-					<caption>検索</caption>
-					<tr>
-						<th>商品名</th>
-						<td><input type="search" class="form-control" soy:id="search_item_name"></td>
-						<th>顧客名</th>
-						<td><input type="search" class="form-control" soy:id="search_user_name"></td>
-					</tr>
-					<tr>
-						<th>状態</th>
-						<td colspan="3">
-							<input type="checkbox" soy:id="no_return">&nbsp;
-							<input type="checkbox" soy:id="is_return">
-						</td>
-					</tr>
-					<!-- soy:id="custom_search_item_list" -->
-					<tr>
-						<th soy:id="label">拡張ポイントからラベルを出力</th>
-						<td soy:id="form" colspan="3">拡張ポイントからフォームを出力</td>
-					</tr>
-					<!-- /soy:id="custom_search_item_list" -->
-				</table>
-
-				<div class="text-center">
-					<input type="submit" name="execute" class="btn btn-primary btn-lg" value="検索">&nbsp;&nbsp;
-					<input type="submit" name="reset" class="btn btn-warning btn-lg" value="リセット">
+						<div class="text-center">
+							<input type="submit" name="execute" class="btn btn-primary btn-lg" value="検索">&nbsp;&nbsp;
+							<input type="submit" name="reset" class="btn btn-warning btn-lg" value="リセット">
+						</div>
+					</form>
 				</div>
-			</form>
+
+				<br>
+
+				<!-- soy:display="no_slip_number" -->
+				<div class="alert alert-info">返送待ちの伝票はありません。</div>
+				<!-- /soy:display="no_slip_number" -->
+
+				<!-- soy:display="is_slip_number" -->
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<caption>返送伝票番号一覧</caption>
+						<thead>
+							<tr >
+								<th>伝票番号</th>
+								<th>注文日時</th>
+								<th>注文番号</th>
+								<th>顧客名</th>
+								<th>状態</th>
+								<th>
+									<a class="btn btn-default fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="slip_number_list" -->
+							<tr>
+								<td soy:id="slip_number" ></td>
+								<td soy:id="order_date" ></td>
+								<td ><a soy:id="tracking_number"></a></td>
+								<td ><a soy:id="user_name"></a></td>
+								<td soy:id="status" ></td>
+								<td>
+									<a soy:id="return_link" class="btn btn-default">返送</a>
+									<a soy:id="remove_link" class="btn btn-default delete_btn">削除</a>
+								</td>
+							</tr>
+							<!-- /soy:id="slip_number_list" -->
+						</tbody>
+					</table>
+				</div>
+
+				<h4>CSVエクスポート</h4>
+				<form soy:id="export_form" id="export_form">
+					<p class="content">未返送分のCSVエクスポート&nbsp;<input type="submit" name="export" value="出力"></p>
+				</form>
+
+				<h4>CSVインポート</h4>
+				<form soy:id="import_form">
+					<p class="content">
+						未返送分の一括変更<br>
+						<input type="file" name="csv">&nbsp;
+						<label><input type="radio" name="charset" value="Shift_JIS" checked="checked">Shift_JIS</label>&nbsp;
+						<label><input type="radio" name="charset" value="UTF-8">UTF-8</label>&nbsp;
+						<input type="submit" name="import" value="一括変更">
+					</p>
+				</form>
+
+				<!-- soy:id="extension_html" /-->
+
+				<!-- /soy:display="is_slip_number" -->
+			</div>
 		</div>
-
-		<!-- soy:display="no_slip_number" -->
-		<div class="alert alert-info">返送待ちの伝票はありません。</div>
-		<!-- /soy:display="no_slip_number" -->
-
-		<!-- soy:display="is_slip_number" -->
-		<table class="table table-striped">
-			<caption>返送伝票番号一覧</caption>
-			<thead>
-				<tr >
-					<th>伝票番号</th>
-					<th>注文日時</th>
-					<th>注文番号</th>
-					<th>顧客名</th>
-					<th>状態</th>
-					<th>
-						<a class="btn btn-default fr" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- soy:id="slip_number_list" -->
-				<tr>
-					<td soy:id="slip_number" ></td>
-					<td soy:id="order_date" ></td>
-					<td ><a soy:id="tracking_number"></a></td>
-					<td ><a soy:id="user_name"></a></td>
-					<td soy:id="status" ></td>
-					<td class="operation">
-						<a soy:id="return_link" class="btn btn-default">返送</a>
-						<a soy:id="remove_link" class="btn btn-default delete_btn">削除</a>
-					</td>
-				</tr>
-				<!-- /soy:id="slip_number_list" -->
-			</tbody>
-		</table>
-
-		<h3>CSVエクスポート</h3>
-		<form soy:id="export_form" id="export_form">
-			<p class="content">未返送分のCSVエクスポート&nbsp;<input type="submit" name="export" value="出力"></p>
-		</form>
-
-		<h3>CSVインポート</h3>
-		<form soy:id="import_form">
-			<p class="content">
-				未返送分の一括変更<br>
-				<input type="file" name="csv">&nbsp;
-				<label><input type="radio" name="charset" value="Shift_JIS" checked="checked">Shift_JIS</label>&nbsp;
-				<label><input type="radio" name="charset" value="UTF-8">UTF-8</label>&nbsp;
-				<input type="submit" name="import" value="一括変更">
-			</p>
-		</form>
-
-		<!-- soy:id="extension_html" /-->
-
-		<!-- /soy:display="is_slip_number" -->
 	</div>
 </div>
 

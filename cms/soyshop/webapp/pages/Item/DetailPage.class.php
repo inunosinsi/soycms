@@ -245,14 +245,6 @@ class DetailPage extends WebPage{
 		//入荷通知周り
 		self::buildNoticeButton();
 		self::buildFavoriteButton();
-
-		SOYShopPlugin::load("soyshop.notepad");
-		$this->addLabel("notepad_extension", array(
-			"html" => SOYShopPlugin::invoke("soyshop.notepad", array(
-				"mode" => "item",
-				"id" => $this->id
-			))->getHtml()
-		));
 	}
 
 	private function _buildForm($id){

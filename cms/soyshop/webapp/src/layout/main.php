@@ -130,9 +130,11 @@ foreach($scripts as $script){
 						<?php }?>
 						<?php if(AUTH_EXTENSION && count($extConts)) {
 							foreach($extConts as $plgId => $cont){
-								echo "<li class=\"extention\">";
-								echo "<a href=\"" . SOYSHOP_ADMIN_URL . "/Extension/" . $plgId . "\"><i class=\"fa puzzle-piece fa-fw\"></i><span>" . $cont["tab"] . "</span></a>";
-								echo "</li>";
+								if(isset($cont["tab"]) && strlen($cont["tab"])){
+									echo "<li class=\"extention\">";
+									echo "<a href=\"" . SOYSHOP_ADMIN_URL . "/Extension/" . $plgId . "\"><i class=\"fa puzzle-piece fa-fw\"></i><span>" . $cont["tab"] . "</span></a>";
+									echo "</li>";
+								}
 							}
 						}?>
 						<?php if(AUTH_ORDER){?>

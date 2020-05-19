@@ -7,13 +7,13 @@
  */
 
 class BlackCustomerListOrderCustomfield extends SOYShopOrderCustomfield{
-		
-	function clear(CartLogic $cart){}	
+
+	function clear(CartLogic $cart){}
 	function doPost($param){}
 	function order(CartLogic $cart){}
 	function hasError($param){}
 	function getForm(CartLogic $cart){}
-	
+
 	function display($orderId){
 		$userId = self::getLogic()->getUserIdByOrderId($orderId);
 		$attr = self::getLogic()->getAttribute($userId);
@@ -24,13 +24,13 @@ class BlackCustomerListOrderCustomfield extends SOYShopOrderCustomfield{
 				"style" => "font-weight:bold;color:#FF0000;"
 			));
 		}
-		
+
 		return array();
 	}
-	
-	function edit($orderId){}	
+
+	function edit($orderId){}
 	function config($orderId){}
-	
+
 	private function getLogic(){
 		static $logic;
 		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.black_customer_list.logic.BlackListLogic");
@@ -38,4 +38,3 @@ class BlackCustomerListOrderCustomfield extends SOYShopOrderCustomfield{
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "black_customer_list", "BlackCustomerListOrderCustomfield");
-?>

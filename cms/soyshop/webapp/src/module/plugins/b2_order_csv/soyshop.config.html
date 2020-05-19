@@ -1,22 +1,20 @@
 <div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<div class="table-responsive">
-	<form method="post" soy:id="form">
+<form method="post" soy:id="form">
+	<div class="form-group">
+		<label>お客様管理番号</label>
+		<input class="form-control" value="" soy:id="b2_customer_number" />
+	</div>
 
-		<dl>
-			<dt>お客様管理番号</dt>
-			<dd><input class="form-control" value="" soy:id="b2_customer_number" /></dd>
+	<div class="form-group">
+		<label>印刷時に記載したい商品名</label>
+		<input class="form-control" value="" soy:id="b2_item_name" />
+	</div>
 
-			<dt>印刷時に記載したい商品名</dt>
-			<dd><input class="form-control" value="" soy:id="b2_item_name" /></dd>
-		</dl>
-
-		<div class="text-center">
-			<input type="submit" class="btn btn-primary btn-lg" value="変更">
-		</div>
-
-	</form>
-</div>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>
 
 <script type="text/javascript">
 <!--

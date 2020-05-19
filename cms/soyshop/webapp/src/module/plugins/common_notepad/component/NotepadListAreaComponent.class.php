@@ -9,16 +9,20 @@ class NotepadListAreaComponent {
 
 	function buildBlock(){
 		$html = array();
-		$html[] = "<div class=\"block\">";
+		$html[] = "<div class=\"row\">";
+		$html[] = "	<div class=\"col-lg-12\">";
+		$html[] = "		<div class=\"panel panel-default\">";
 		$html[] = self::_titleblock();
 		$html[] = self::_bodyblock();
+		$html[] = "		</div>";
+		$html[] = "	</div>";
 		$html[] = "</div>";
 		return implode("\n", $html);
 	}
 
 	private function _titleblock(){
 		$html = array();
-		$html[] = "<div class=\"block_title\" id=\"notepad_section\">";
+		$html[] = "<div class=\"panel-heading\">";
 
 		if(!is_null($this->item) && $this->item instanceof SOYShop_Item){
 			$title = $this->item->getName();
@@ -28,22 +32,23 @@ class NotepadListAreaComponent {
 			$title = $this->user->getName();
 		}
 
-		$html[] = "<h2>" . $title . "のメモ</h2>";
-		$html[] = "<div class=\"block_title_right\">";
-		$html[] = "<a href=\"" . self::_buildLink() . "\" class=\"btn btn-default\">新規作成</a>";
+		$html[] = "	" . $title . "のメモ";
+		$html[] = "	<small class=\"pull-right\">";
+		$html[] = "		<a href=\"" . self::_buildLink() . "\" class=\"btn btn-default btn-xs\">新規作成</a>";
+		$html[] = "	</small>";
 		$html[] = "</div>";
-		$html[] = "</div>";
+
 		return implode("\n", $html);
 	}
 
 	private function _bodyblock(){
 		$html = array();
-		$html[] = "<div class=\"block_body\">";
+		$html[] = "<div class=\"panel-body\">";
 
 		$notepads = self::_getNotepads();
 		$noteCnt = count($notepads);
 
-		if($noteCnt === 0) $html[] = "<p class=\"notice always\">メモはありません。<a href=\"" . self::_buildLink() . "\">メモを新規作成する</a></p>";
+		if($noteCnt === 0) $html[] = "<div class=\"alert alert-info\">メモはありません。<a href=\"" . self::_buildLink() . "\" class=\"btn btn-default\">メモを新規作成する</a></div>";
 
 		//jqueryで一覧を組み立てる
 		if($noteCnt){

@@ -12,4 +12,3 @@ class BlackCustomerListInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "black_customer_list", "BlackCustomerListInfo");
-?>
