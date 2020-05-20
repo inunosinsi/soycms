@@ -1,16 +1,24 @@
-<div>
-	<p>検索結果に表示されている顧客に対して属性の設定を一括で行います。</p>
-	<h2>設定する属性</h2>
-	<div>
+<br>
+<div class="alert alert-info">検索結果に表示されている顧客に対して属性の設定を一括で行います。</div>
+<div class="form-group">
+	<label>設定する属性</label>
+	<div class="form-inline">
 		<input type="radio" soy:id="user_attribute_1">&nbsp;
 		<input type="radio" soy:id="user_attribute_2">&nbsp;
 		<input type="radio" soy:id="user_attribute_3">
 	</div>
 </div>
-<div>
-	<h2>顧客の属性設定</h2>
-	<div>
+<div class="form-group">
+	<label>顧客の属性設定</label>
+	<div class="form-inline">
 		<input type="checkbox" soy:id="clear_value_before_setting">
 	</div>
 </div>
-<div>設定する値：<input type="text" soy:id="set_value"></div>
+
+<br>
+
+<div class="form-group">
+	<div class="form-inline">
+		設定する値：<input type="text" soy:id="set_value">
+	</div>
+</div>

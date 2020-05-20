@@ -47,9 +47,11 @@ class FbCatalogCustomfieldFormPage extends WebPage {
 			"value" => (isset($itemCnf["image"]) && strlen($itemCnf["image"])) ? soyshop_convert_file_path_on_admin($itemCnf["image"]) : ""
 		));
 
+		$brand = (isset($itemCnf["brand"])) ? $itemCnf["brand"] : null;
+		if(is_null($brand) && isset($cnf["brand"])) $brand = $cnf["brand"];
 		$this->addInput("brand", array(
 			"name" => "FbCatalogManager[" . FbCatalogManagerUtil::FIELD_ID_ITEM_INFO . "][brand]",
-			"value" => (isset($itemCnf["brand"])) ? $itemCnf["brand"] : $cnf["brand"]
+			"value" => $brand
 		));
 
 		$this->addSelect("condition", array(

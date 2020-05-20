@@ -1,28 +1,27 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
-	<dl>
-		<dt>APIバージョン</dt>
-		<dd>
-			<input type="text" class="form-control" soy:id="api_version" placeholder="v2.10">
-		</dd>
-		<dt>アプリID</dt>
-		<dd>
-			<input type="text" class="form-control" soy:id="app_id">
-		</dd>
+	<div class="form-group">
+		<label>APIバージョン</label>
+		<input type="text" class="form-control" soy:id="api_version" placeholder="v2.10">
+	</div>
 
-		<dt>app secret</dt>
-		<dd>
-			<input type="text" class="form-control" soy:id="app_secret">
-		</dd>
-	</dl>
+	<div class="form-group">
+		<label>アプリID</label>
+		<input type="text" class="form-control" soy:id="app_id">
+	</div>
+
+	<div class="form-group">
+		<label>app secret</label>
+		<input type="text" class="form-control" soy:id="app_secret">
+	</div>
 
 	<div class="text-center">
 		<input type="submit" class="btn btn-primary btn-lg" value="変更">
 	</div>
 </form>
 
-<h3>Facebookログインプラグインの使用方法</h3>
+<h4>Facebookログインプラグインの使用方法</h4>
 <dl>
 	<dt>facebook for developersにログイン</dt>
 	<dd><a href="https://developers.facebook.com/" target="_blank">facebook for developers</a>を開き、マイアプリで今回のサイト用に新しいアプリを作成します。</dd>
