@@ -5,44 +5,45 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
+	<div class="form-group">
+		<label>タイトル</label>
+		<input type="text" soy:id="title" id="title" class="form-control">
+	</div>
 
-<dl>
-	<dt>タイトル</dt>
-	<dd><input type="text" soy:id="title" id="title" class="title"></dd>
-
-	<dt>本文</dt>
-	<dd>
-		<textarea soy:id="content" id="main_content" class="mceEditor" style="height:400px;"></textarea>
-
-		<div>
+	<div class="form-group">
+		<label>本文</label>
+		<textarea soy:id="content" id="main_content" class="mceEditor form-control" style="height:400px;"></textarea>
+		<div class="alert alert-info" style="margin-top:10px;">
 			<!-- soy:display="show_auto_load_button" -->
 			<span id="restoratoin_area">記事を復元する:<input type="button" id="restore_from_backup" value="復元"></span>
 			<!-- /soy:display="show_auto_load_button" -->
 			<span id="auto_save_entry_message">記事のバックアップは実行されていません。</span>
 		</div>
-	</dd>
+	</div>
 
-	<dt>公開条件</dt>
-	<dd>
+	<div class="form-group">
+		<label>公開条件</label><br>
 		<input type="checkbox" soy:id="is_logged_in">
-	</dd>
+	</div>
 
-	<dt>公開期限</dt>
-	<dd>
-		<input type="text" class="date_picker_start" soy:id="post_period_start" />～<input type="text" class="date_picker_end" soy:id="post_period_end" />
-	</dd>
+	<div class="form-group">
+		<label>公開期限</label>
+		<div class="form-inline">
+			<input type="text" class="date_picker_start" soy:id="post_period_start" />～<input type="text" class="date_picker_end" soy:id="post_period_end" />
+		</div>
+	</div>
 
-	<dt>公開状況</dt>
-	<dd>
-		<input type="radio" soy:id="no_open">
-		<input type="radio" soy:id="is_open">
-	</dd>
-</dl>
+	<div class="form-group">
+		<label>公開状況</label>
+		<div class="form-inline">
+			<input type="radio" soy:id="no_open">
+			<input type="radio" soy:id="is_open">
+		</div>
+	</div>
 
-<div class="text-center">
-	<input type="submit" id="update_button" name="do_open" value="更新" class="btn btn-primary btn-lg">
-</div>
-
+	<div class="text-center">
+		<input type="submit" id="update_button" name="do_open" value="更新" class="btn btn-primary btn-lg">
+	</div>
 </form>
 
 <script soy:src="../soycms/js/tinymce/tinymce.min.js"></script>

@@ -16,10 +16,10 @@ class FixedFormModuleCustomField extends SOYShopItemCustomFieldBase{
 		$label = (isset($cnf["form_name"]) && strlen($cnf["form_name"])) ? $cnf["form_name"] : "shop:module=\"fixed_form_module\"内で実行するモジュールの選択";
 
 		$html = array();
-		$html[] = "<dt>" . $label . "</dt>";
-		$html[] = "<dd>";
-		$html[] = "<select name=\"" . FixedFormModuleUtil::PLUGIN_ID . "\">";
-		$html[] = "<option></option>";
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "	<label>" . $label . "</label><br>";
+		$html[] = "	<select name=\"" . FixedFormModuleUtil::PLUGIN_ID . "\">";
+		$html[] = "		<option></option>";
 		foreach($list as $moduleId => $name){
 			if(strlen($selected) && $moduleId == $selected){
 				$html[] = "<option value=\"" . $moduleId . "\" selected=\"selected\">" . $name . "</option>";
@@ -27,7 +27,7 @@ class FixedFormModuleCustomField extends SOYShopItemCustomFieldBase{
 				$html[] = "<option value=\"" . $moduleId . "\">" . $name . "</option>";
 			}
 		}
-		$html[] = "</select>";
+		$html[] = "	</select>";
 		//$html[] = "  <a href=\"" . SOY2PageController::createLink("Site.Template#html_module_list") . "\" class=\"btn btn-default\">モジュールの作成</a><br>";
 		// $html[] = "<table style=\"margin-top:5px;\">";
 		// $html[] = "<tr>";
@@ -38,7 +38,7 @@ class FixedFormModuleCustomField extends SOYShopItemCustomFieldBase{
 		// $html[] = "</td>";
 		// $html[] = "</tr>";
 		// $html[] = "</table>";
-		$html[] = "</dd>";
+		$html[] = "</div>";
 		return implode("\n", $html);
 	}
 

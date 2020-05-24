@@ -137,7 +137,7 @@ class CalendarFormPage extends WebPage{
 		$this->addForm("form");
 
 		$this->addLabel("calendar", array(
-			"html" => SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Config.CalendarLogic", array("itemId" => $this->itemId))->build($this->y, $this->m)
+			"html" => str_replace("<table>", "<table class=\"table\">", SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Config.CalendarLogic", array("itemId" => $this->itemId))->build($this->y, $this->m))
 		));
 
 		$this->addLink("holiday_link", array(
@@ -208,15 +208,15 @@ class CalendarFormPage extends WebPage{
 		));
 
 		$this->addLabel("label_list_string", array(
-			"html" => self::buildLabelListTable()
+			"html" => self::_buildLabelListTable()
 		));
 	}
 
-	private function buildLabelListTable(){
+	private function _buildLabelListTable(){
 		if(!is_array($GLOBALS["labelList"]) || !count($GLOBALS["labelList"])) return "";
 
 		$html = array();
-		$html[] = "<table class=\"form-table\" style=\"margin-top:10px;width:20%;float:left;\">";
+		$html[] = "<table class=\"table table-striped\" style=\"width:300px;float:left;\">";
 		$html[] = "<thead>";
 		$html[] = "<tr>";
 		$html[] = "<th>ラベルID</th>";

@@ -48,36 +48,39 @@ class SearchLogic extends SOY2LogicBase{
 	}
 
 	function setCondition($conditions){
-		if(count($conditions)) foreach($conditions as $key => $value){
-			switch($key){
-				//カテゴリーの場合は数字を直接指定
-				case "item_category":
-					$this->where[] = $key . " = :" . $key;
-					$this->binds[":" . $key] = (int)$value;
-					break;
-				case "item_is_open":
-					if(count($value)){
-						$this->where[] = $key . " IN (" . implode(",", $value) . ") ";
-					}
-					break;
-				case "item_type":
-					//何もしない
-					break;
-				default:
-					$this->where[] = $key . " LIKE :" . $key;
-					$this->binds[":" . $key] = "%" . trim($value) . "%";
+		if(is_array($conditions) && count($conditions)) {
+			foreach($conditions as $key => $value){
+				switch($key){
+					//カテゴリーの場合は数字を直接指定
+					case "item_category":
+						$this->where[] = $key . " = :" . $key;
+						$this->binds[":" . $key] = (int)$value;
+						break;
+					case "item_is_open":
+						if(count($value)){
+							$this->where[] = $key . " IN (" . implode(",", $value) . ") ";
+						}
+						break;
+					case "item_type":
+						//何もしない
+						break;
+					default:
+						$this->where[] = $key . " LIKE :" . $key;
+						$this->binds[":" . $key] = "%" . trim($value) . "%";
+				}
 			}
 		}
 
 		//通常商品の扱い
-		if(is_null($conditions["item_type"]["parent"]) || (isset($conditions["item_type"]["parent"]) && $conditions["item_type"]["parent"] == 1)){
+		$itemTypeCnd = (isset($conditions["item_type"])) ? $conditions["item_type"] : array();
+		if(!isset($itemTypeCnd["parent"]) || (isset($itemTypeCnd["parent"]) && $itemTypeCnd["parent"] == 1)){
 			//何もしない
 		}else{
 			$this->where[] = "item_type NOT IN (\"" . SOYShop_Item::TYPE_SINGLE ."\",\"" . SOYShop_Item::TYPE_GROUP . "\",\"" . SOYShop_Item::TYPE_DOWNLOAD . "\")";
 		}
 
 		//子商品の扱い
-		if(isset($conditions["item_type"]["child"])){
+		if(isset($itemTypeCnd["child"])){
 			//何もしない
 		}else{
 			$this->where[] = "item_type IN (\"" . SOYShop_Item::TYPE_SINGLE ."\",\"" . SOYShop_Item::TYPE_GROUP . "\",\"" . SOYShop_Item::TYPE_DOWNLOAD . "\")";

@@ -57,7 +57,7 @@ class ReserveCalendarListPage extends WebPage{
 		));
 
 		$this->addLabel("calendar", array(
-			"html" => SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.CalendarLogic", array("itemId" => $this->itemId))->build($this->y, $this->m)
+			"html" => str_replace("<table>", "<table class=\"table\">", SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.CalendarLogic", array("itemId" => $this->itemId))->build($this->y, $this->m))
 		));
 
 		$this->addLabel("calendar_css", array(

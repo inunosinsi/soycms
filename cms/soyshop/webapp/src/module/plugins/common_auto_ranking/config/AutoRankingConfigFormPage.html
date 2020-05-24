@@ -1,23 +1,27 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
-<div class="form-group">
-	<dt>ランキング商品表示件数</dt>
-	<dd>
-		<input type="number" soy:id="count">&nbsp;件
-	</dd>
+	<div class="form-group">
+		<label>ランキング商品表示件数</label>
+		<div class="form-inline">
+			<input type="number" soy:id="count">&nbsp;件
+		</div>
+	</div>
 
-	<dt>集計期間</dt>
-	<dd>
-		<input type="number" soy:id="period">&nbsp;日間
-	</dd>
-</div>
-<div class="text-center">
-	<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
-</div>
+	<div class="form-group">
+		<label>集計期間</label>
+		<div class="form-inline">
+			<input type="number" soy:id="period">&nbsp;日間
+		</div>
+	</div>
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
 </form>
 
-<h3>ジョブの設定</h3>
+<br>
+
+<h4>ジョブの設定</h4>
 <div class="section">
 	<h4>jobの実行</h4>
 	<p class="ml20">php <!-- soy:id="job_path" /--></p>
@@ -42,4 +46,4 @@
 &lt;/section&gt;
 &lt;!-- /shop:module="common.auto_ranking" --&gt;
 </pre>
-<p class="ml40 mb">※block:id="ranking_item_list"内では、block:id="item"やblock:id="item_list"で使用できるcms:idを使用できます。</p>
+<div class="alert alert-info">※block:id="ranking_item_list"内では、block:id="item"やblock:id="item_list"で使用できるcms:idを使用できます。</div>

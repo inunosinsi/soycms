@@ -1,160 +1,153 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
-<section>
-	<h1>プラグインの設定</h1>
-	<form soy:id="form">
-		<dl>
-			<dt>注文の手続き</dt>
-			<dd>
-				<input type="radio" soy:id="no_tmp_order">&nbsp;
-				<input type="radio" soy:id="is_tmp_order">
-			</dd>
-
-			<dt>注文個数</dt>
-			<dd>
-				<input type="checkbox" soy:id="only">
-			</dd>
-
-			<dt>価格の表示</dt>
-			<dd>
-				<input type="checkbox" soy:id="show_price">
-			</dd>
-
-			<dt>管理画面からの予約</dt>
-			<dd>
-				<input type="checkbox" soy:id="ignore">
-			</dd>
-		</dl>
-
-		<div class="text-center">
-			<input type="submit" class="btn btn-primary btn-lg" value="変更">
+<h4>プラグインの設定</h4>
+<form soy:id="form">
+	<div class="form-group">
+		<label>注文の手続き</label>
+		<div class="form-inline">
+			<input type="radio" soy:id="no_tmp_order">&nbsp;
+			<input type="radio" soy:id="is_tmp_order">
 		</div>
-	</form>
-</section>
-<section>
-	<h1>共通</h1>
-	<p class="alert alert-info" soy:display="recommend">カートとマイページはbootstrapにすることをオススメします。</p>
-	<dl>
-		<dt><strong>使用前の注意事項</strong></dt>
-		<dd>
-			予約受付時に支払い方法の指定が無い場合は<strong>ダミー支払モジュール</strong>を必ず有効にしてください。<br>
-			設定の基本設定で<strong>在庫数</strong>は必ず<strong>無視</strong>にしてください。
-		</dd>
-		<dt>予約時の顧客情報入力画面の設定</dt>
-		<dd>
-			公開側で予約時の顧客情報の入力画面の項目を設定します。
-			<ul class="reserve_calendar_ul">
-				<li>ショップ管理 &gt; 設定 &gt; 基本設定を開きます。</li>
-				<li>顧客情報の入力フォームの設定で不必要な項目のチェックを外します。</li>
-			</ul>
-		</dd>
+	</div>
 
-		<dt>カレンダーの作成</dt>
-		<dd>
-			予約カレンダーは商品に日付情報を持たせて扱います。下記の手順に従ってカレンダー用の商品を作成します。
-			<ul class="reserve_calendar_ul">
-				<li>現在登録されている商品をすべて削除します。(推奨)</li>
-				<li>カレンダー用の商品を登録します。</li>
-				<li>カレンダー表示用のテンプレートをナビゲーションページとして作成します。</li>
-				<li>カレンダー表示用のページをナビゲーションページとして作成します。</li>
-				<li>カレンダー用の商品の詳細画面に表示されているテンプレート記述例を開きます。</li>
-				<li>作成したページのテンプレートにテンプレートの記述例に記載されているタグを貼り付けます。</li>
-			</ul>
-		</dd>
-	</dl>
-	<p class="alert alert-info">カレンダーの拡張プラグインを利用する場合は簡易予約カレンダーの表示順をカレンダーの拡張プラグインよりも小さい数字で登録しましょう<br>
-	拡張プラグインの例：<a href="https://saitodev.co/article/2428" target="_blank">SOY Shopの予約カレンダーでレスポンシブ対応 - saitodev.co</a></p>
-</section>
+	<div class="form-group">
+		<label>注文個数</label><br>
+		<input type="checkbox" soy:id="only">
+	</div>
 
-<section>
-	<h1>診察等の毎週スケジュールが決まっている予約カレンダーの設定</h1>
-	<dl>
-		<dt>スケジュールの自動登録の設定</dt>
-		<dd>
-			病院の診察予約や教室の予約等の予約カレンダーでは、毎月すべての日を手動で登録することは大変です。<br>スケジュールの自動登録を利用しましょう。
-			<ul class="reserve_calendar_ul">
-				<li>カレンダー商品の詳細画面にある定休日の設定を開きます。</li>
-				<li><strong>定休日(必要に応じて営業日)を設定します。</strong></li>
-				<li>定休日の設定後、予約で使用するラベル設定を開きます。</li>
-				<li>ラベルの設定はカレンダーに表示したい文言の設定です。<br>※予約であれば時間帯や「午前」、「午後」や「夜間」といったわかりやすいものが良いです。</li>
-				<li>ラベルの設定後、商品の詳細画面で予約カレンダーを開きます。</li>
-				<li>画面下にあるスケジュールの自動登録で残席数を指定してチェックボックスにチェックを入れて登録ボタンを押します。</li>
-				<li>カレンダーが表示される度に指定の年月でスケジュールが一つも登録されていなければ、定休日設定とラベル設定に従ってスケジュールが自動で登録されます。</li>
-				<li>定休日の設定では対応できない細かいスケジュールの登録は手動で削除しましょう。<br>※良い仕様が思いつけば実装します。</li>
-			</ul>
-		</dd>
-	</dl>
-</section>
+	<div class="form-group">
+		<label>価格の表示</label><br>
+		<input type="checkbox" soy:id="show_price">
+	</div>
 
-<section>
-<h1>カレンダーで出力されるカラムのクラス</h1>
-<table class="form_list class_example">
-	<thead>
-		<tr>
-			<th>クラス名</th><th>箇所</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>sun</td><td>日曜日</td>
-		</tr>
-		<tr>
-			<td>sat</td><td>土曜日</td>
-		</tr>
-		<tr>
-			<td>today</td><td>本日</td>
-		</tr>
-		<tr>
-			<td>reg</td><td>定休日</td>
-		</tr>
-		<tr>
-			<td>added</td><td>カートに入れた(非同期ボタン設置時で使用)</td>
-		</tr>
-	</tbody>
-</table>
-</section>
+	<div class="form-group">
+		<label>管理画面からの予約</label><br>
+		<input type="checkbox" soy:id="ignore">
+	</div>
 
-<section>
-<h1>block:id="item_list"もしくはblock:id="item"内で使用できるcms:id</h1>
-<table class="form_list class_example">
-	<thead>
-		<tr>
-			<th>cms:id</th>
-			<th>タグ</th>
-			<th>内容</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>schedule_price_min</td>
-			<td>すべて</td>
-			<td>プランの最安値</td>
-		</tr>
-		<tr>
-			<td>schedule_price_max</td>
-			<td>すべて</td>
-			<td>プランの最高値</td>
-		</tr>
-		<tr>
-			<td>schedule_date_start</td>
-			<td>すべて</td>
-			<td>予約可能な日で最も近い日</td>
-		</tr>
-		<tr>
-			<td>schedule_date_end</td>
-			<td>すべて</td>
-			<td>予約可能な日で最も遠い日</td>
-		</tr>
-	</tbody>
-</table>
-</section>
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>
+
+<h4>共通</h4>
+<div class="alert alert-info" soy:display="recommend">カートとマイページはbootstrapにすることをオススメします。</div>
+<div class="form-group">
+	<label>使用前の注意事項</label><br>
+	予約受付時に支払い方法の指定が無い場合は<strong>ダミー支払モジュール</strong>を必ず有効にしてください。<br>
+	設定の基本設定で<strong>在庫数</strong>は必ず<strong>無視</strong>にしてください。
+</div>
+
+<div class="form-group">
+	<label>予約時の顧客情報入力画面の設定</label><br>
+	公開側で予約時の顧客情報の入力画面の項目を設定します。
+	<ul class="reserve_calendar_ul">
+		<li>ショップ管理 &gt; 設定 &gt; 基本設定を開きます。</li>
+		<li>顧客情報の入力フォームの設定で不必要な項目のチェックを外します。</li>
+	</ul>
+</div>
+
+<div class="form-group">
+	<label>カレンダーの作成</label><br>
+	予約カレンダーは商品に日付情報を持たせて扱います。下記の手順に従ってカレンダー用の商品を作成します。
+	<ul class="reserve_calendar_ul">
+		<li>現在登録されている商品をすべて削除します。(推奨)</li>
+		<li>カレンダー用の商品を登録します。</li>
+		<li>カレンダー表示用のテンプレートをナビゲーションページとして作成します。</li>
+		<li>カレンダー表示用のページをナビゲーションページとして作成します。</li>
+		<li>カレンダー用の商品の詳細画面に表示されているテンプレート記述例を開きます。</li>
+		<li>作成したページのテンプレートにテンプレートの記述例に記載されているタグを貼り付けます。</li>
+	</ul>
+</div>
+<div class="alert alert-info">カレンダーの拡張プラグインを利用する場合は簡易予約カレンダーの表示順をカレンダーの拡張プラグインよりも小さい数字で登録しましょう<br>
+拡張プラグインの例：<a href="https://saitodev.co/article/2428" target="_blank" rel="noopener">SOY Shopの予約カレンダーでレスポンシブ対応 - saitodev.co</a></div>
+
+<br>
+
+<h4>診察等の毎週スケジュールが決まっている予約カレンダーの設定</h4>
+<div class="form-group">
+	<label>スケジュールの自動登録の設定</label>
+	<div class="alert alert-info">
+		病院の診察予約や教室の予約等の予約カレンダーでは、毎月すべての日を手動で登録することは大変です。<br>
+		スケジュールの自動登録を利用しましょう。
+	</div>
+	<ul class="reserve_calendar_ul">
+		<li>カレンダー商品の詳細画面にある定休日の設定を開きます。</li>
+		<li><strong>定休日(必要に応じて営業日)を設定します。</strong></li>
+		<li>定休日の設定後、予約で使用するラベル設定を開きます。</li>
+		<li>ラベルの設定はカレンダーに表示したい文言の設定です。<br>※予約であれば時間帯や「午前」、「午後」や「夜間」といったわかりやすいものが良いです。</li>
+		<li>ラベルの設定後、商品の詳細画面で予約カレンダーを開きます。</li>
+		<li>画面下にあるスケジュールの自動登録で残席数を指定してチェックボックスにチェックを入れて登録ボタンを押します。</li>
+		<li>カレンダーが表示される度に指定の年月でスケジュールが一つも登録されていなければ、定休日設定とラベル設定に従ってスケジュールが自動で登録されます。</li>
+		<li>定休日の設定では対応できない細かいスケジュールの登録は手動で削除しましょう。<br>※良い仕様が思いつけば実装します。</li>
+	</ul>
+</div>
+
+<div class="table-responsive">
+	<table class="table table-striped class_example">
+		<caption>カレンダーで出力されるカラムのクラス</caption>
+		<thead>
+			<tr>
+				<th class="col-lg-2">クラス名</th><th>箇所</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>sun</td><td>日曜日</td>
+			</tr>
+			<tr>
+				<td>sat</td><td>土曜日</td>
+			</tr>
+			<tr>
+				<td>today</td><td>本日</td>
+			</tr>
+			<tr>
+				<td>reg</td><td>定休日</td>
+			</tr>
+			<tr>
+				<td>added</td><td>カートに入れた(非同期ボタン設置時で使用)</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<div class="table-responsive">
+	<table class="table table-striped class_example">
+		<caption>block:id="item_list"もしくはblock:id="item"内で使用できるcms:id</caption>
+		<thead>
+			<tr>
+				<th class="col-lg-2">cms:id</th>
+				<th class="col-lg-1">タグ</th>
+				<th>内容</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>schedule_price_min</td>
+				<td>すべて</td>
+				<td>プランの最安値</td>
+			</tr>
+			<tr>
+				<td>schedule_price_max</td>
+				<td>すべて</td>
+				<td>プランの最高値</td>
+			</tr>
+			<tr>
+				<td>schedule_date_start</td>
+				<td>すべて</td>
+				<td>予約可能な日で最も近い日</td>
+			</tr>
+			<tr>
+				<td>schedule_date_end</td>
+				<td>すべて</td>
+				<td>予約可能な日で最も遠い日</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 
 <style>
 ul.reserve_calendar_ul{
-	margin: 5px 0 0 20px;
 	list-style-type:decimal;
-}
-ul.reserve_calendar_ul li{
-	padding:3px;
 }
 </style>

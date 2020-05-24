@@ -46,6 +46,7 @@ class ReserveCalendarConfig extends SOYShopConfigPageBase{
 			if(isset($_GET["calendar"])) return "予約カレンダーの設定";
 			if(isset($_GET["holiday"])) return "予約カレンダーの定休日設定";
 			if(isset($_GET["label"])) return "予約カレンダーのラベル設定";
+			if(isset($_GET["tag"])) return "予約カレンダー - テンプレートへの記述例";
 		}else{
 			return "予約カレンダーの設定";
 		}

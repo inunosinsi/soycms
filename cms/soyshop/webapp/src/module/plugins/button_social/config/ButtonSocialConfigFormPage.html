@@ -1,45 +1,43 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
+	<div class="form-group">
+		<h4>facebook</h4>
+		<div class="form-inline">
+			<label>fb:app_id</label><br>
+			<input type="text" soy:id="app_id" class="form-control" size="20" /><br>
+			<label>fb:admins</label><br>
+			<input type="text" soy:id="admins" class="form-control" size="20" /><br>
+			<label>サムネイルのパス(例:http://ドメイン名/image/***.jpg)</label><br>
+			<input type="text" soy:id="image" class="form-control" size="80" />
+		</div>
+	</div>
 
-<dl>
-	<dt>facebook</dt>
-	<dd>
-		<h4>fb:app_id</h4>
-		<input type="text" soy:id="app_id" size="20" />
-		<h4>fb:admins</h4>
-		<input type="text" soy:id="admins" size="20" />
-		<h4>サムネイルのパス(例:http://ドメイン名/image/***.jpg)</h4>
-		<input type="text" soy:id="image" size="80" />
-	</dd>
-</dl>
+	<div class="form-group">
+		<h4>mixi</h4>
+		<div class="form-inline">
+			<label>check_key</label>
+			<input type="text" soy:id="check_key" class="form-control" size="20">
+		</div>
+	</div>
 
-<dl>
-	<dt>mixi</dt>
-	<dd>
-		<h4>check_key</h4>
-		<input type="text" soy:id="check_key" size="20">
-	</dd>
-
-	<dt>ページ別設定</dt>
-	<dd>
-		<div>ページ毎にトラックコードを挿入するかしないかを設定します。(カートとマイページには必ず挿入されます)</div>
+	<div class="form-group">
+		<label>ページ別設定</label>
+		<div class="alert alert-info">ページ毎にトラックコードを挿入するかしないかを設定します。(カートとマイページには必ず挿入されます)</div>
 		<ul>
 			<!-- soy:id="page_list" -->
 			<li><input type="checkbox" soy:id="page"></li>
 			<!-- /soy:id="page_list" -->
 		</ul>
-	</dd>
-</dl>
+	</div>
 
-<div class="text-center">
-	<input type="submit" class="btn btn-primary btn-lg" value="変更">
-</div>
-
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>
 
 <h4>テンプレートへの記述例</h4>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<pre>
 &lt;!-- ヘッダ内 --&gt;
 <strong>&lt;!-- block:id="og_meta" /--&gt;</strong>
 <strong>&lt;!-- block:id="facebook_meta" /--&gt;</strong>
@@ -60,8 +58,10 @@
 <strong>&lt;a cms:id="twitter_button_mobile"&gt;ツイートする&lt;/a&gt;</strong>
 </pre>
 
-<h3>出力されるメタタグ</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<br>
+
+<h4>出力されるメタタグ</h4>
+<pre>
 &lt;meta property="og:title" content="**************" /&gt;
 &lt;meta property="og:site_name" content="**************" /&gt;
 &lt;meta property="og:url" content="**************" /&gt;
@@ -71,4 +71,4 @@
 &lt;meta property="fb:app_id" content="**************" /&gt;
 &lt;meta property="fb:admins" content="**************" /&gt;
 </pre>
-<p style="padding:3px 40px">※****の部分には自動で値が入ります</p>
+<div class="alert alert-info">※****の部分には自動で値が入ります</div>

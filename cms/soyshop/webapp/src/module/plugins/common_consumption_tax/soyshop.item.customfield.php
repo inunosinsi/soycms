@@ -31,15 +31,16 @@ class CommonConsumptionTaxCustomField extends SOYShopItemCustomFieldBase{
 			SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");
 			$config = ConsumptionTaxUtil::getConfig();
 			if(isset($config["reduced_tax_rate"]) && (int)$config["reduced_tax_rate"] > 0){
-				$html[] = "<dt>軽減税率対象商品</dt>";
-				$html[] = "<dd><label>";
+				$html[] = "<div class=\"form-group\">";
+				$html[] = "<label>軽減税率対象商品</label><br>";
+				$html[] = "<label>";
 				if(self::getAttr($item->getId())->getValue() == 1){
 					$html[] = "<input type=\"checkbox\" name=\"ReducedTaxRate\" value=\"1\" checked=\"checked\">";
 				}else{
 					$html[] = "<input type=\"checkbox\" name=\"ReducedTaxRate\" value=\"1\">";
 				}
 				$html[] = $item->getName() . "を軽減税率の対象商品として扱う";
-				$html[] = "</label></dd>";
+				$html[] = "</label>";
 			}
 		}
 
@@ -88,7 +89,7 @@ class CommonConsumptionTaxCustomField extends SOYShopItemCustomFieldBase{
 				}
 			}
 		}
-		
+
 		$htmlObj->addLabel("post_tax_price", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => number_format($prices[0])

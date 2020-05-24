@@ -11,11 +11,14 @@ class ReserveCalendarCustomField extends SOYShopItemCustomFieldBase{
 	function getForm(SOYShop_Item $item){
 		//リンクを表示
 		$html = array();
-		$html[] = "<dt>予約カレンダースケジュール</dt>";
-		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&calendar&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">予約カレンダーを開く</a></dd>";
-		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&holiday&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">定休日の設定を開く</a></dd>";
-		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&label&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">予定で使用するラベル設定を開く</a></dd>";
-		$html[] = "<dd><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&tag&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">テンプレートへの記述例</a></dd>";
+		$html[] = "<div class=\"alert alert-info\">予約カレンダースケジュール</div>";
+		$html[] = "<ul style=\"list-style-type:none;\">";
+		$html[] = "	<li><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&calendar&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">予約カレンダーを開く</a></li>";
+		$html[] = "	<li style=\"margin:12px 0;\"><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&holiday&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">定休日の設定を開く</a></li>";
+		$html[] = "	<li style=\"margin:12px 0;\"><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&label&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">予定で使用するラベル設定を開く</a></li>";
+		$html[] = "	<li style=\"margin:12px 0;\"><a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=reserve_calendar&tag&item_id=" . $item->getId()) . "\" class=\"btn btn-default\">テンプレートへの記述例</a></li>";
+		$html[] = "</ul>";
+		$html[] = "<div class=\"alert alert-info\">予約カレンダースケジュールここまで</div>";
 		return implode("\n", $html);
 	}
 

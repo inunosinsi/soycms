@@ -5,10 +5,15 @@ class CalendarExpandSeatAddPriceOnCalendar extends SOYShopAddPriceOnCalendarBase
 	 * @return string
 	 */
 	function getForm(){
-		$form = "子供料金：";
-		$form .= "<input type=\"number\" name=\"ChildPrice\" value=\"\" style=\"width:90px;\"> 円";
-		$form .= "<br>※無記入の場合は料金と同じになります";
-		return $form;
+		$html = array();
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label>子供料金</label>";
+		$html[] = "<div class=\"form-inline\">";
+		$html[] = "<input type=\"number\" name=\"ChildPrice\" value=\"\" style=\"width:90px;\"> 円";
+		$thml[] = "<br>※無記入の場合は料金と同じになります";
+		$html[] = "</div>";
+		$html[] = "</div>";
+		return implode("\n", $html);
 	}
 
 	function doPost($scheduleId){

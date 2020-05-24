@@ -1,10 +1,10 @@
-<div style="margin-bottom:10px;">
+<div class="text-left" style="margin-bottom:10px;">
 	<a soy:id="back_link" class="btn btn-default"></a>
 </div>
 
-<div class="table-responsive">
-	<h3>シンプルカレンダー</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px 5px 0;">&lt;!-- shop:module="reserve.simple_calendar" --&gt;
+<h4>シンプルカレンダー</h4>
+<pre>
+&lt;!-- shop:module="reserve.simple_calendar" --&gt;
 
 &lt;form cms:id="schedule_calendar_form"&gt;
 	&lt;select cms:id="schedule_year_select"&gt;&lt;/select&gt;年
@@ -19,6 +19,7 @@
 &lt;script cms:id="async_js"&gt;&lt;/script&gt;
 
 &lt;!-- /shop:module="reserve.simple_calendar" --&gt;</pre>
-<span>※他の商品で設定したカレンダーを表示したい場合は、&lt;!-- shop:module="reserve.simple_calendar" /--&gt;内に追加します。</span><br>
-<span>※非同期ボタンを利用する場合はcms:asyncの値を1にします。</span>
+<div class="alert alert-info">
+	※他の商品で設定したカレンダーを表示したい場合は、&lt;!-- shop:module="reserve.simple_calendar" /--&gt;内に追加します。<br>
+	※非同期ボタンを利用する場合はcms:asyncの値を1にします。
 </div>
