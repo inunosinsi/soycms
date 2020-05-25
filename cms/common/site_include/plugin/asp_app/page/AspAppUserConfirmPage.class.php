@@ -64,8 +64,14 @@ class AspAppUserConfirmPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
+		$mode = AspAppUtil::getSession("hidden_mode");
+
 		$admin = AspAppUtil::get();
-		if(!strlen($admin->getEmail())) self::back();	//メールアドレスがない場合は確認画面を表示させない
+		if(isset($mode) && strlen($mode)){	//メールアドレス不要モード
+			if(!strlen($admin->getUserId())) self::back();	//ログインIDがない場合は確認画面を表示させない
+		}else{								//通常モード
+			if(!strlen($admin->getEmail())) self::back();	//メールアドレスがない場合は確認画面を表示させない
+		}
 
 		$this->addForm("form");
 

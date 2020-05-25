@@ -45,17 +45,21 @@ class AspAppUserRegisterPage extends WebPage {
 			"attr:pattern" => "^[a-zA-Z0-9]+$"
 		));
 
+		//モードに文字列がある場合はメールアドレスを必須にしない
+		$mode = AspAppUtil::getSession("hidden_mode");
+		$isRequiredMailAddress = (is_null($mode) || !strlen($mode));
+
 		//登録時はuser_idにも同じ値を入れる
 		$this->addInput("mail_address", array(
 			"name" => "User[email]",
 			"value" => $admin->getEmail(),
-			"attr:required" => "required"
+			"attr:required" => ($isRequiredMailAddress) ? "required" : ""
 		));
 
 		$this->addInput("mail_address_confirm", array(
 			"name" => "confirm",
 			"value" => (!isset($this->errors["mail_address_confirm_error"])) ? $admin->getEmail() : "",
-			"attr:required" => "required"
+			"attr:required" => ($isRequiredMailAddress) ? "required" : ""
 		));
 
 		$this->addInput("password", array(
@@ -77,9 +81,12 @@ class AspAppUserRegisterPage extends WebPage {
 
 	private function validate(){
 		$admin = AspAppUtil::get(true);
-		if($admin["email"] != $_POST["confirm"]){
-			$this->errors["mail_address_confirm_error"] = true;
+		if(strlen($admin["email"])){
+			if($admin["email"] != $_POST["confirm"]){
+				$this->errors["mail_address_confirm_error"] = true;
+			}
 		}
+
 
 		if(strlen($admin["userPassword"]) < 8){
 			$this->errors["password_error"] = true;
@@ -99,11 +106,13 @@ class AspAppUserRegisterPage extends WebPage {
 		}
 
 		//既に登録されているメールアドレスか？
-		try{
-			$obj = $adminDao->getByEmail($admin["email"]);
-			$this->errors["mail_address_duplicate_error"] = true;
-		}catch(Exception $e){
-			//
+		if(strlen($admin["email"])){
+			try{
+				$obj = $adminDao->getByEmail($admin["email"]);
+				$this->errors["mail_address_duplicate_error"] = true;
+			}catch(Exception $e){
+				//
+			}
 		}
 
 		CMSUtil::resetDsn($old);
