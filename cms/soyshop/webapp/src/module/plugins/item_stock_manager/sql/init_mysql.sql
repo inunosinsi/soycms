@@ -3,4 +3,4 @@ create table soyshop_stock_history(
 	update_stock integer not null default 0,
 	memo varchar(512),
 	create_date integer not null
-)ENGINE = Archive;
+)ENGINE = InnoDB;

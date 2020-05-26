@@ -15,12 +15,13 @@ class ItemOrderPriceBulkChangeOrderEdit extends SOYShopOrderEditBase{
 
 		$html = array();
 
+		$html[] = "<div class=\"table-responsive text-center\">";
 		$html[] = "<table class=\"table table-striped\" style=\"width:80%;\">";
 		$html[] = "<tr>";
-		$html[] = "<th class=\"alC\">単価の一括変更</th>";
-		$html[] = "<td style=\"text-align:center;\">";
+		$html[] = "<th class=\"text-cente\">単価の一括変更</th>";
+		$html[] = "<td class=\"text-center;\">";
 		$html[] = "<input type=\"number\" id=\"itemorder_price_bulk_change\" step=\"0.01\" style=\"width:80px;\">&nbsp;%";
-		$html[] = "<span style=\"border:1px solid #ABABAB;padding:2px 3px;\">";
+		$html[] = "<span style=\"border:1px solid #ABABAB;padding:8px 10px;\">";
 
 		foreach(BulkChangeUtil::getModeList() as $t){
 			if($config["mode"] == $t){
@@ -31,7 +32,7 @@ class ItemOrderPriceBulkChangeOrderEdit extends SOYShopOrderEditBase{
 		}
 
 		$html[] = "</span>";
-		$html[] = "<span style=\"border:1px solid #ABABAB;padding:2px 3px;margin-left:3px;\">";
+		$html[] = "<span style=\"border:1px solid #ABABAB;padding:8px 10px;margin-left:3px;\">";
 		foreach(BulkChangeUtil::getMethodList() as $t){
 			if($config["method"] == $t){
 				$html[] = "<label><input type=\"radio\" name=\"itemorder_price_bulk_change_method\" value=\"" . $t . "\" checked=\"checked\">" . BulkChangeUtil::getMethodText($t) . "</label>";
@@ -41,10 +42,11 @@ class ItemOrderPriceBulkChangeOrderEdit extends SOYShopOrderEditBase{
 		}
 
 		$html[] = "</span>";
-		$html[] = "&nbsp;&nbsp;<a href=\"javascript:void(0);\" id=\"itemorder_price_bulk_change_button\" class=\"btn btn-default\">一括変更</a>";
+		$html[] = "&nbsp;&nbsp;<a href=\"javascript:void(0);\" id=\"itemorder_price_bulk_change_button\" class=\"btn btn-info btn-sm\">一括変更</a>";
 		$html[] = "</td>";
 		$html[] = "</tr>";
 		$html[] = "</table>";
+		$html[] = "</div>";
 		$html[] = "<script>";
 		$html[] = file_get_contents(dirname(__FILE__) . "/js/edit.js");
 		$html[] = "</script>";

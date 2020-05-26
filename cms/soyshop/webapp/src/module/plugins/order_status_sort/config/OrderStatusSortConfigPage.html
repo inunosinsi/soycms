@@ -1,32 +1,30 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
+	<div class="form-group">
+		<label>注文状態の並び順</label>
+		<div class="table-responsive">
+			<table class="table table-striped" style="width:300px;">
+				<col>
+				<thead>
+					<tr>
+						<th>状態名</th>
+						<th>並び順</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- soy:id="order_status_list" -->
+					<tr>
+						<td soy:id="label"></td>
+						<td><input type="number" soy:id="sort"></td>
+					</tr>
+					<!-- /soy:id="order_status_list" -->
+				</tbody>
+			</table>
+		</div>
+	</div>
 
-<dl>
-	<dt>注文状態の並び順</dt>
-	<dd>
-		<table>
-			<col width="120px">
-			<thead>
-				<tr>
-					<th>状態名</th>
-					<th>並び順</th>
-				</tr>
-			</thead>
-			<tbody>
-				<!-- soy:id="order_status_list" -->
-				<tr>
-					<td soy:id="label"></td>
-					<td><input type="number" soy:id="sort"></td>
-				</tr>
-				<!-- /soy:id="order_status_list" -->
-			</tbody>
-		</table>
-	</dd>
-</dl>
-
-<div class="text-center">
-	<input type="submit" class="btn btn-primary btn-lg" value="変更">
-</div>
-
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>

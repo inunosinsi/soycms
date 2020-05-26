@@ -1,53 +1,69 @@
-<div>
-	<h4>集計種目</h4>
-	<input type="radio" soy:id="type_month">&nbsp;
-	<input type="radio" soy:id="type_day">&nbsp;
-	<input type="radio" soy:id="type_itemrate">&nbsp;
-	<input type="radio" soy:id="type_age"><br>
-	<input type="radio" soy:id="type_customer">
-	
-	<h4>集計方法(月次、日次売上集計で使用します)</h4>
-	<input type="checkbox" soy:id="method_include_tax">
-	<input type="checkbox" soy:id="method_include_commission">
-	<input type="checkbox" soy:id="method_include_point">
-	<input type="checkbox" soy:id="method_include_discount">
+<br>
+
+<div class="form-group">
+	<label>集計種目</label>
+	<div class="form-inline">
+		<input type="radio" soy:id="type_month">&nbsp;
+		<input type="radio" soy:id="type_day">&nbsp;
+		<input type="radio" soy:id="type_itemrate">&nbsp;
+		<input type="radio" soy:id="type_age">&nbsp;
+		<input type="radio" soy:id="type_customer">
+	</div>
 </div>
 
-<div>
-	<div id="calendar_area">
-		<h4>期間</h4>
-		<input type="text" class="date_picker_start aggregate_date_picker" soy:id="aggregate_period_start">&nbsp;～&nbsp;
-		<input type="text" class="date_picker_end aggregate_date_picker" soy:id="aggregate_period_end">&nbsp;
-		<input type="button" id="clear_button" value="クリア"><br>
-		※<strong soy:id="aggregate_label_month">売上</strong>と<strong soy:id="aggregate_label_day">新規注文</strong>の場合は日は考慮されません<br>
-		※顧客毎の売上集計では利用しません。
+<div class="form-group">
+	<label>集計方法(月次、日次売上集計で使用します)</label>
+	<div class="form-inline">
+		<input type="checkbox" soy:id="method_include_tax">
+		<input type="checkbox" soy:id="method_include_commission">
+		<input type="checkbox" soy:id="method_include_point">
+		<input type="checkbox" soy:id="method_include_discount">
 	</div>
-	
-	<div id="date_form_area">
-		<h4>期間</h4>
+</div>
+
+<div id="calendar_area" class="form-group">
+	<label>期間</label>
+	<input type="text" class="date_picker_start aggregate_date_picker" soy:id="aggregate_period_start">&nbsp;～&nbsp;
+	<input type="text" class="date_picker_end aggregate_date_picker" soy:id="aggregate_period_end">&nbsp;
+	<input type="button" id="clear_button" value="クリア"><br>
+	※<strong soy:id="aggregate_label_month">売上</strong>と<strong soy:id="aggregate_label_day">新規注文</strong>の場合は日は考慮されません<br>
+	※顧客毎の売上集計では利用しません。
+</div>
+
+<div id="date_form_area" class="form-group">
+	<label>期間</label>
+	<div class="form-inline">
 		<select soy:id="select_start_year"></select>年
 		<select soy:id="select_start_month"><option></option></select>月
 		<select soy:id="select_start_day"><option></option></select>日〜
 		<select soy:id="select_end_year"></select>年
 		<select soy:id="select_end_month"><option></option></select>月
 		<select soy:id="select_end_day"><option></option></select>日
-		<h4>フィルター</h4>
+	</div>
+	<br>
+	<label>フィルター</label>
+	<div class="form-inline">
 		<div>顧客名：<input type="text" soy:id="aggregate_filter_customer_name">※フリガナも可</div>
 		<div>商品名：<input type="text" soy:id="aggregate_filter_item_name">※送料や手数料分は含まれません</div>
 		<div>合計金額：<input type="number" soy:id="aggregate_filter_price_min">〜<input type="number" soy:id="aggregate_filter_price_max"></div>
-		
-		<div><input type="checkbox" soy:id="aggregate_filter_order_price_max"></div>
 	</div>
-		
-	
-	<h4>件数</h4>
-	<input type="number" soy:id="aggregate_limit"><br>
-	
-	<h4>文字コード</h4>
-	<input id="charset_shit_jis" type="radio" name="charset" value="Shift-JIS" />
-	<label for="charset_shit_jis">Shift-JIS</label>		
-	<input id="charset_utf_8" type="radio" name="charset" value="UTF-8" checked="checked" />
-	<label for="charset_utf_8">UTF-8</label>
+
+	<div><input type="checkbox" soy:id="aggregate_filter_order_price_max"></div>
+</div>
+
+<div class="form-group">
+	<label>件数</label><br>
+	<input type="number" soy:id="aggregate_limit">
+</div>
+
+<div class="form-group">
+	<label>文字コード</label>
+	<div class="form-inline">
+		<input id="charset_shit_jis" type="radio" name="charset" value="Shift-JIS" />
+		<label for="charset_shit_jis">Shift-JIS</label>
+		<input id="charset_utf_8" type="radio" name="charset" value="UTF-8" checked="checked" />
+		<label for="charset_utf_8">UTF-8</label>
+	</div>
 </div>
 
 <script>
@@ -59,13 +75,13 @@
 			forms[i].value = "";
 		}
 	});
-	
+
 	//date_formは最初は非表示にしておく
 	var calendar = document.querySelector("#calendar_area");
 	var date_form = document.querySelector("#date_form_area");
-	
+
 	date_form.style.display = "none";
-	
+
 	var cals = document.querySelectorAll(".use_calendar");
 	for (var i = 0; i < cals.length; i++) {
 		cals[i].addEventListener("change", function(){
@@ -73,7 +89,7 @@
 			date_form.style.display = "none";
 		});
 	}
-	
+
 	var forms = document.querySelectorAll(".use_date_form");
 	for (var j = 0; j < forms.length; j++) {
 		forms[j].addEventListener("change", function(){

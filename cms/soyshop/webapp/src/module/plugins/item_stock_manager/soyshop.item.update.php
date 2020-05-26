@@ -18,6 +18,7 @@ class ItemStockManagerUpdate extends SOYShopItemUpdateBase{
 			try{
 				$dao->insert($obj);
 			}catch(Exception $e){
+				var_dump($e);
 				//
 			}
 		}

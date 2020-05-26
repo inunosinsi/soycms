@@ -1,19 +1,22 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
-<dl>
-	<dt>金額変更方法の標準設定</dt>
-	<dd>
-		<input type="radio" soy:id="mode_up">
-		<input type="radio" soy:id="mode_down">
-	</dd>
-	<dt>金額の加工方法の標準設定</dt>
-	<dd>
-		<input type="radio" soy:id="method_floor">
-		<input type="radio" soy:id="method_ceil">
-		<input type="radio" soy:id="method_round">
-	</dd>
-</dl>
+	<div class="form-group">
+		<label>金額変更方法の標準設定</label>
+		<div class="form-inline">
+			<input type="radio" soy:id="mode_up">
+			<input type="radio" soy:id="mode_down">
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label>金額の加工方法の標準設定</label>
+		<div class="form-inline">
+			<input type="radio" soy:id="method_floor">
+			<input type="radio" soy:id="method_ceil">
+			<input type="radio" soy:id="method_round">
+		</div>
+	</div>
 
 	<div class="text-center">
 		<input type="submit" class="btn btn-primary btn-lg" value="更新">

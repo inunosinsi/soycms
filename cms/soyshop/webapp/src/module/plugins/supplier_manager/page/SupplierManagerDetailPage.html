@@ -1,0 +1,126 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">仕入先詳細</div>
+
+			<div class="panel-body">
+				<div class="alert alert-success" soy:display="updated">更新しました</div>
+
+				<form soy:id="form" enctype="multipart/form-data">
+					<div class="form-group">
+						<label>仕入先名</label>
+						<input type="text" class="form-control" soy:id="name">
+					</div>
+
+					<div class="form-group">
+						<label>住所</label>
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<tbody>
+									<tr>
+										<th>郵便番号</th>
+										<td>
+											<input soy:id="zip_code1" type="text" size="4" class="input-zip1">-
+											<input soy:id="zip_code2" type="text" size="5" class="input-zip2">
+											<a href="javascript:void(0);" class="search-btn btn btn-primary btn-sm">検索</a>
+										</td>
+									</tr>
+									<tr>
+										<th>住所</th>
+										<td>
+											<select soy:id="area" id="area" class="input-pref">
+												<option value="">▼選択</option>
+											</select><br>
+											<input soy:id="address1" type="text" size="40" id="address1" class="input-city" /><br>
+											<input soy:id="address2" type="text" style="width:95%;" id="address2" class="input-town" /><br>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label>電話番号</label>
+						<input type="text" class="form-control" soy:id="telephone_number">
+					</div>
+
+					<div class="form-group">
+						<label>FAX番号</label>
+						<input type="text" class="form-control" soy:id="fax_number">
+
+					</div>
+
+					<div class="form-group">
+						<label>携帯電話番号</label>
+						<input type="text" class="form-control" soy:id="cellphone_number">
+					</div>
+
+					<div class="form-group">
+						<label>メールアドレス</label>
+						<input type="email" class="form-control" soy:id="mail_address">
+					</div>
+
+					<div class="form-group">
+						<label>URL</label>
+						<div class="form-inline">
+							<input type="text" class="form-control" soy:id="url">
+							<!-- soy:display="url" -->&nbsp;<a soy:id="url_link" class="btn btn-default">確認</a><!-- /soy:display="url" -->
+						</div>
+					</div>
+
+					<div class="text-center">
+						<input type="submit" class="btn btn-primary btn-lg" value="更新">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">仕入状況</div>
+
+			<div class="panel-body">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<tr>
+							<th style="width:180px;">未支払額</th>
+							<td><!-- soy:id="unpaid_total" /-->&nbsp;円</td>
+							<th style="width:180px;">支払い済み</th>
+							<td><!-- soy:id="paid_total" /-->&nbsp;円</td>
+						</tr>
+					</table>
+				</div>
+
+				<!-- soy:display="purchase_history" -->
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<caption>仕入履歴</caption>
+						<thead>
+							<tr >
+								<th>日付</th>
+								<th>商品名</th>
+								<th>仕入個数</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="purchase_history_list" -->
+							<tr>
+								<td  soy:id="log_date"></td>
+								<td><a soy:id="item_name"></a></td>
+								<td  soy:id="stock"></td>
+							</tr>
+							<!-- /soy:id="purchase_history_list" -->
+						</tbody>
+					</table>
+				</div>
+				<!-- /soy:display="purchase_history" -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" soy:id="zip2address_js"></script><!--住所検索-->
