@@ -262,7 +262,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	private function addOrder($sort="ASC", $labelIds){
 		if(!is_array($labelIds) || !count($labelIds)) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;
 		$labelId = (int)$labelIds[count($labelIds) - 1];	//末尾のラベルID
-		if($labelId === 0) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;
+		if(count($labelIds) === 1 && $labelId === 0) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;	//記事毎の表示順が使えるブロックはラベルブロックのみ
 		return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $labelId . " AND entry_id = entry.id), entry.cdate " . $sort . ", entry.id " . $sort;
 	}
 
