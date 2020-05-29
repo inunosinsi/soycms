@@ -422,6 +422,20 @@ function soyshop_conver_kana($str){
     return mb_convert_kana($str, "CK", "UTF-8");
 }
 
+/**
+ * カスタムフィールドのテキストフィールドでHTMLを使った箇所の\nを<br />に変換しない
+ * @param string $html
+ * @return string
+ */
+function soyshop_customfield_nl2br($html){
+	$html = nl2br($html);
+	preg_match_all('/><br.*?>/', $html, $tmp);
+	if(isset($tmp[0]) && count($tmp[0])){
+		$html = preg_replace('/><br.*?>/', ">\n", $html);
+	}
+	return $html;
+}
+
 
 /**
  * マイページのID取得

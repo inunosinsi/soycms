@@ -89,7 +89,7 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	            //多言語化対応はデータベースから値を取得した時点で行っている
 	            $csfValue = (isset($values[$key])) ? $values[$key] : null;
 				if(isset($csfValue) && $field["type"] == CustomSearchFieldUtil::TYPE_TEXTAREA){
-					$csfValue = nl2br($csfValue);
+					$csfValue = soyshop_customfield_nl2br($csfValue);
 				}
 
 				$csfValueLength = strlen(trim(strip_tags($csfValue)));

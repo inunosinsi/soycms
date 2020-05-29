@@ -225,12 +225,12 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 				case "textarea":
 					if(strlen($config->getOutput()) > 0){
 						$htmlObj->addModel($config->getFieldId(), array(
-							"attr:" . htmlspecialchars($config->getOutput()) => nl2br($value),
+							"attr:" . htmlspecialchars($config->getOutput()) => soyshop_customfield_nl2br($value),
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}else{
 						$htmlObj->addLabel($config->getFieldId(), array(
-							"html" => nl2br($value),
+							"html" => soyshop_customfield_nl2br($value),
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}
@@ -238,12 +238,12 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 				case "link":
 					if(strlen($config->getOutput()) > 0){
 						$htmlObj->addModel($config->getFieldId(), array(
-							"attr:" . htmlspecialchars($config->getOutput()) => nl2br($value),
+							"attr:" . htmlspecialchars($config->getOutput()) => $value,
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}else{
 						$htmlObj->addLink($config->getFieldId(), array(
-							"link" => nl2br($value),
+							"link" => $value,
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}

@@ -146,12 +146,12 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 				case "textarea":
 					if(strlen($config->getOutput()) > 0){
 						$page->addModel($config->getFieldId(), array(
-							"attr:" . htmlspecialchars($config->getOutput()) => nl2br($value),
+							"attr:" . htmlspecialchars($config->getOutput()) => soyshop_customfield_nl2br($value),
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}else{
 						$page->addLabel($config->getFieldId(), array(
-							"html" => nl2br($value),
+							"html" => soyshop_customfield_nl2br($value),
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}
