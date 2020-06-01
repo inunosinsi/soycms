@@ -439,6 +439,21 @@ class SearchItemUtil extends SOY2LogicBase{
 	    	}
 		}
 
+		//append plugin
+		if(get_class($this->sort->getObject()) == "SOYShop_ListPage" && $this->sort->getObject()->getType() == "custom"){
+			if(count($params)){
+				foreach($params as $column => $value){
+					switch($column){
+						case "is_parent":
+							$parentqueries[] = "(soyshop_item.item_type = \"" . SOYShop_Item::TYPE_SINGLE . "\" OR soyshop_item.item_type = \"" . SOYShop_Item::TYPE_GROUP . "\" OR soyshop_item.item_type = \"" . SOYShop_Item::TYPE_DOWNLOAD . "\")";
+							break;
+						case "is_child":
+							break;
+					}
+				}
+			}
+		}
+
 		if($isChild){
 			$childquery = "SELECT soyshop_item.id FROM soyshop_item LEFT OUTER JOIN soyshop_item_attribute ON (soyshop_item.id = soyshop_item_attribute.item_id) WHERE " . implode(" AND ", $childqueries);
 			//if(count($childwhere)) $childquery .= " HAVING count(item_field_id) = " . count($childwhere);
