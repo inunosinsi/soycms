@@ -86,6 +86,13 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 			"label" => "</body>タグの直前に挿入する"
 		));
 
+		$this->createAdd("insert_into_the_end_of_html","HTMLCheckBox",array(
+			"value" => GoogleAnalytics::INSERT_INTO_THE_END_OF_HTML,
+			"selected" => ($this->pluginObj->position == GoogleAnalytics::INSERT_INTO_THE_END_OF_HTML),
+			"name"  => "google_analytics_position",
+			"label" => "HTMLの末尾に追加"
+		));
+
 		//挿入するページの指定
 		SOY2::import('site_include.CMSPage');
 		SOY2::import('site_include.CMSBlogPage');

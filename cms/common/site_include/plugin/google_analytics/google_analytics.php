@@ -13,6 +13,7 @@ class GoogleAnalytics{
 	const INSERT_INTO_THE_END_OF_HEAD = 2;
 	const INSERT_INTO_THE_BEGINNING_OF_BODY = 1;
 	const INSERT_INTO_THE_END_OF_BODY = 0;
+	const INSERT_INTO_THE_END_OF_HTML = 3;
 
 	//コード
 	var $google_analytics_track_code;
@@ -49,10 +50,10 @@ class GoogleAnalytics{
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
-			
+
 			CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 				$this,"config"));
-	
+
 			CMSPlugin::setEvent('onOutput',self::PLUGIN_ID,array($this,"onOutput"),array("filter"=>"all"));
 		}
 	}
@@ -185,8 +186,11 @@ class GoogleAnalytics{
 				$html = $code.$html;
 			}
 
+		//意図的に末尾
+		}elseif($this->position == self::INSERT_INTO_THE_END_OF_HTML){
+			$html = $html.$code;
+
 		//末尾
-		//}elseif($this->position == self::INSERT_INTO_THE_END_OF_BODY){
 		}else{
 			if(stripos($html,'</body>') !== false){
 				$html = str_ireplace('</body>',$code."\n".'</body>',$html);
