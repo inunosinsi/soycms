@@ -47,9 +47,19 @@ function soyshop_breadcrumb_navigation($html, $page){
 					$alias = "";
 					if(isset($current)){
 						$uri = $pageObject->getUri();
-						$categories = $dao->getAncestry($current, false);
-						$name = $current->getOpenCategoryName();
-						$alias = $current->getAlias();
+						$args = $page->getArguments();
+						$name = null;
+						//下記のif文で商品一覧ページのuriを_homeにした時にカテゴリ未選択でページを開いた場合にパンくずを表示しないことを実現する
+						if($uri == SOYSHOP_TOP_PAGE_MARKER && count($args) == 0){
+							//何もしない
+						}else{
+							//argsにaliasが含まれているか？確認する
+							$alias = $current->getAlias();
+							if(is_numeric(array_search($alias, $args))){
+								$categories = $dao->getAncestry($current, false);
+								$name = $current->getOpenCategoryName();
+							}
+						}
 					}else{
 						//カスタムフィールドの場合
 						if($pageObject->getObject()->getType() == "field"){
@@ -241,6 +251,12 @@ function soyshop_breadcrumb_navigation($html, $page){
 			"list" => $categories,
 			"uri" => $uri,
 			"soy2prefix" => "block"
+		));
+
+		//隠しモード
+		$obj->addModel("is_current_name", array(
+			"visible" => (!is_null($name)),
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		));
 
 		//表示中のカテゴリ名
