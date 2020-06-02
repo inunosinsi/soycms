@@ -18,9 +18,9 @@ class CompressorPlugin{
 			"name"=>"HTML圧縮プラグイン",
 			"description"=>"HTMLを圧縮して、サーバ間のデータ転送を高速化する",
 			"author"=>"齋藤毅",
-			"url"=>"https://saitodev.co/",
+			"url"=>"https://saitodev.co/article/3193",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -74,6 +74,7 @@ class CompressorPlugin{
 		if($lineCnt === 0) return $html;
 
 		$isHTML5 = false;
+		$isPre = false;
 
 		$htmls = array();
 		for($i = 0; $i < $lineCnt; $i++){
@@ -98,6 +99,22 @@ class CompressorPlugin{
 			//半角スペースが２つ続く場合は一つのする
 			$line = self::_deleteSpace($line);
 			if(!strlen($line)) continue;
+
+			//preタブであった場合 様々なパターンのpreがあるので要検討
+			if(stripos($line, "<pre>") !== false){
+				$pre = array();
+				$pre[] = $line;
+				for(;;){
+					$i++;
+					$line = $lines[$i];
+					if(stripos($line, "</pre>") !== false){
+						$pre[] = $line;
+						break;
+					}
+					$pre[] = $line;
+				}
+				$line = rtrim(implode("\n", $pre), "\n");
+			}
 
 			$h[] = $line;
 		}
