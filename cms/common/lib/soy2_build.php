@@ -7141,12 +7141,19 @@ class HTMLPage extends SOYBodyComponentBase{
 			$dir = str_replace($pageDir,$templateDir,$dir);
 		}
 		$lang = SOY2HTMLConfig::Language();
-		$lang_html = $dir . get_class($this) . "_" . $lang . ".html";
-		$default_html = $dir . get_class($this) . ".html";
-		if(strlen($lang)>0 && file_exists($lang_html)){
-			return $lang_html;
+		if(strlen($lang) > 0){
+			$lang_html = $dir . get_class($this) . "_" . $lang . ".html";
+			if(file_exists($lang_html)){
+				return $lang_html;
+			}
 		}
-		return $default_html;
+		//隠しモード：同名のHTMLファイルのファイル名の頭に_(アンダースコア)を付与すると優先的に読み込む
+		$hidden_mode_html = $dir . "_" . get_class($this) . ".html";
+		if(file_exists($hidden_mode_html)){
+			return $hidden_mode_html;
+		}
+
+		return $dir . get_class($this) . ".html";
 	}
 	/**
 	 * キャッシュファイルのパス
