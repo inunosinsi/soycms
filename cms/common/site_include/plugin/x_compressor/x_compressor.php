@@ -104,16 +104,19 @@ class CompressorPlugin{
 			if(stripos($line, "<pre>") !== false){
 				$pre = array();
 				$pre[] = $line;
-				for(;;){
-					$i++;
-					$line = $lines[$i];
-					if(stripos($line, "</pre>") !== false){
+				if(strpos($line, "</pre>") === false) {	//同じ行に</pre>がある場合はおかしくなるのでチェックしておく
+					for(;;){
+						$i++;
+						$line = $lines[$i];
+						if(stripos($line, "</pre>") !== false){
+							$pre[] = $line;
+							break;
+						}
 						$pre[] = $line;
-						break;
 					}
-					$pre[] = $line;
 				}
-				$line = rtrim(implode("\n", $pre), "\n");
+
+				$line = "\n" . rtrim(implode("\n", $pre), "\n") ."\n";
 			}
 
 			$h[] = $line;
