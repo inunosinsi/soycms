@@ -120,13 +120,13 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 
 			$html = array();
 
-			$html[] = "<h1>ダウンロード販売用設定</h1>";
-			$html[] = "<dt><label for=\"download_field\">ダウンロード販売商品登録&nbsp;(半角英数字)</label><br />";
-			$html[] = "<span style=\"font-size:0.9em;\">※登録可能なファイルの拡張子：</span>&nbsp;" . $commonLogic->allowExtension() . "</dt>";
-			$html[] = "<dd>";
+			$html[] = "<div class=\"alert alert-info\">ダウンロード販売用設定</div>";
+			$html[] = "<label for=\"download_field\">ダウンロード販売商品登録&nbsp;(半角英数字)</label><br />";
+			$html[] = "<span style=\"font-size:0.9em;\">※登録可能なファイルの拡張子：</span>&nbsp;" . $commonLogic->allowExtension() . "<br>";
+			$html[] = "<div class=\"form-inline\">";
 			$html[] = "<input type=\"file\" name=\"file\" id=\"file\" />";
 			$html[] = "<p style=\"font-size:0.9em;padding:5px 0;\">※ファイルを直接サーバに配置することも可能です</p>";
-			$html[] = "<p>ファイルの配置ディレクトリ&nbsp;:&nbsp;<strong>" . $dir."</strong></p>";
+			$html[] = "<div class=\"alert alert-warning\">ファイルの配置ディレクトリ&nbsp;:&nbsp;<strong>" . $dir."</strong></div>";
 			$html[] = "<br />";
 
 			//削除ボタン用のフラグ
@@ -137,7 +137,7 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 			while($file = readdir($files)){
 				if($commonLogic->checkFileType($file) === true && preg_match("/^[0-9A-Za-z%&+\-\^_`{|}~.]+$/", $file)){
 					if($deleteFlag == false){
-						$html[] = "<h3>登録されているファイル</h3>";
+						$html[] = "<div class=\"alert alert-success\">登録されているファイル</div>";
 					}
 					$html[] = "<input type=\"checkbox\" name=\"download_assistant_delete[]\" value=\"" . $file . "\" id=\"download_assistant_" . $file."\" />";
 					$html[] = "<label for=\"download_assistant_" . $file . "\">" . $file . "&nbsp;" . $commonLogic->getFileSize(filesize($dir . $file)) . "</label>";
@@ -151,19 +151,17 @@ class DownloadAssistantCustomField extends SOYShopItemCustomFieldBase{
 				$html[] = "<p style=\"font-size:0.9em;padding:5px 0;\">※チェックしたファイルは商品情報更新時に削除されます</p>";
 			}
 
-			$html[] = "</dd>";
+			$html[] = "</div>";
 
-			$html[] = "<dt><label for=\"download_field\">ダウンロード期間日数</label></dt>";
-			$html[] = "<dd>";
+			$html[] = "<label for=\"download_field\">ダウンロード期間日数</label><br>";
 			$html[] = "<input type=\"text\" name=\"download_assistant_time\" value=\"" . $time."\" " . $style." />&nbsp;日";
 			$html[] = "<p>※値がない場合は無期限</p>";
-			$html[] = "</dd>";
 
-			$html[] = "<dt><label for=\"download_field\">ダウンロード回数</label></dt>";
-			$html[] = "<dd>";
+			$html[] = "<label for=\"download_field\">ダウンロード回数</label><br>";
 			$html[] = "<input type=\"text\" name=\"download_assistant_count\" value=\"" . $count."\" " . $style." />&nbsp;回";
 			$html[] = "<p>※値がない場合は無制限</p>";
-			$html[] = "</dd>";
+
+			$html[] = "<div class=\"alert alert-info\">ダウンロード販売用設定ここまで</div>";
 
 			return implode("\n", $html);
 		}
