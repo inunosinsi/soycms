@@ -59,7 +59,7 @@
 				</h3>
 				<ul>
 					<li class="cart_itemid" soy:id="item_id">dummy-001</li>
-					<li class="cart_itemprice"><!-- soy:id="item_price_on_cart" /-->円</li>					
+					<li class="cart_itemprice"><!-- soy:id="item_price_on_cart" /-->円</li>
 					<li class="cart_itemnum">
 						<p class="error" soy:id="item_stock_error"></p>
 						<input name="ItemCount[0]" type="text" class="alR" size="2" value="" soy:id="order_number" />個
@@ -96,7 +96,7 @@
 	</div>
 
 	<p class="resum">数量を変更された場合はボタンを押して合計金額の再計算をしてください。<input type="image" name="modify" width="164" height="30" alt="合計料金の再計算" soy:src="themes/common/images/cart/btn_resum_off.png" /></p>
-	<p class="another_btn"><img width="152" height="37" onclick="history.back()" alt="お買い物を続ける" soy:src="themes/common/images/cart/btn_continue_shop_off.png" /></p>
+	<p class="another_btn"><a soy:id="back_link"><img width="152" height="37" alt="お買い物を続ける" soy:src="themes/common/images/cart/btn_continue_shop_off.png" /></a></p>
 </section>
 
 <section id="cart_procedure">
