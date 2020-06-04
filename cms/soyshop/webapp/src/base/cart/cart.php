@@ -39,6 +39,7 @@ if(isset($_REQUEST["a"])) {
 
 	switch($_REQUEST["a"]) {
 		case "add":
+			$lastInsertedItemId = null;
 			foreach($_item as $key => $item){
 				$count = isset($_count[$key]) ? $_count[$key] : 1 ;
 				//個数は-1以上の整数
@@ -52,7 +53,12 @@ if(isset($_REQUEST["a"])) {
 						"cart" => $cart
 					));
 				}
+
+				$lastInsertedItemId = $item;
 			}
+
+			//最後にカートに入れた商品の情報を保持する
+			if(is_numeric($lastInsertedItemId)) $cart->setAttribute("last_insert_item", $lastInsertedItemId);
 			break;
 
 		case "remove":
@@ -64,6 +70,7 @@ if(isset($_REQUEST["a"])) {
 					"cart" => $cart
 				));
 			}
+			$cart->setAttribute("last_insert_item", null);
 			break;
 
 		case "update":
@@ -107,11 +114,6 @@ if(isset($_REQUEST["a"])) {
 		"mode" => "afterOperation",
 		"cart" => $cart
 	));
-
-	//最後にカートに入れた商品の情報を保持する
-	if(count($_item) === 1){
-		$cart->setAttribute("last_insert_item", $_item[0]);
-	}
 
 	$cart->save();
 }
