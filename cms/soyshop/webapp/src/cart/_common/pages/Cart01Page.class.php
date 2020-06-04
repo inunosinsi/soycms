@@ -247,7 +247,10 @@ class Cart01Page extends MainCartPageBase{
 			"value" => ($user) ? $user->getMailAddress() : ""
 		));
 
-
+		$lastInsertedItemId = $cart->getAttribute("last_insert_item");
+		$this->addLink("back_link", array(
+			"link" => (is_numeric($lastInsertedItemId)) ? soyshop_get_item_detail_link(soyshop_get_item_object($lastInsertedItemId)) : soyshop_get_site_url()
+		));
 
 		$this->addExtensions($cart);
 

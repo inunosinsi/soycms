@@ -108,6 +108,11 @@ if(isset($_REQUEST["a"])) {
 		"cart" => $cart
 	));
 
+	//最後にカートに入れた商品の情報を保持する
+	if(count($_item) === 1){
+		$cart->setAttribute("last_insert_item", $_item[0]);
+	}
+
 	$cart->save();
 }
 

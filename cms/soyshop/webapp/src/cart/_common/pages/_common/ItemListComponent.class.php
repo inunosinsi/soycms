@@ -48,6 +48,10 @@ class ItemListComponent extends HTMLList{
 			"text" => (is_numeric($entity->getItemPrice())) ? number_format($entity->getItemPrice()) : 0,
 		));
 
+		$this->addLabel("item_price_on_cart", array(
+			"text" => (is_numeric($entity->getItemPrice())) ? number_format($entity->getItemPrice()) : 0,
+		));
+
 		$this->addLabel("item_id", array(
 			"text" => $item->getCode(),
 		));

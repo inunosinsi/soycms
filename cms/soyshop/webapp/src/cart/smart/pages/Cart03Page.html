@@ -10,7 +10,7 @@
 		</div>
 
 		<h1 class="cart_txt">カートに入っている商品</h1>
-		
+
 		<div class="cart_detail_dl">
 			<div class="cart_li title">
 				<div class="cart_itemthumb">&nbsp;</div>
@@ -33,7 +33,7 @@
 					</h3>
 					<ul>
 						<li class="cart_itemid" soy:id="item_id">dummy-001</li>
-						<li class="cart_itemprice"><!-- soy:id="item_price" /-->円</li>					
+						<li class="cart_itemprice"><!-- soy:id="item_price_on_cart" /-->円</li>					
 						<li class="cart_itemnum">
 							<p class="error" soy:id="item_stock_error"></p>
 							<input name="ItemCount[0]" type="text" class="alR" size="2" value="" soy:id="order_number" />個
@@ -44,14 +44,14 @@
 				</div>
 			</div>
 			<!-- /soy:id="item_list" -->
-			
+
 			<div class="sumelse" soy:id="is_subtotal">
 				<ul>
 					<li class="sumtitle">小計</li>
 					<li class="sumprice"><!-- soy:id="total_item_price" /-->円</li>
 				</ul>
 			</div>
-		
+
 			<!-- soy:id="module_list" -->
 			<div class="sumelse">
 				<ul>
@@ -60,7 +60,7 @@
 				</ul>
 			</div>
 			<!-- /soy:id="module_list" -->
-			
+
 			<div class="sumarea">
 				<ul>
 					<li class="sumtitle">合計金額</li>
@@ -69,7 +69,7 @@
 			</div>
 		</div>
 	</section>
-	
+
 	<section>
 		<!-- soy:id="has_payment_method" -->
 		<h1 class="cart_txt">お支払・配送方法の選択</h1>
@@ -92,7 +92,7 @@
 			</dl>
 		</div>
 		<!-- /soy:id="has_payment_method" -->
-		
+
 		<!-- soy:id="has_delivery_method" -->
 		<h2>配送方法の選択</h2>
 		<!-- soy:display="has_delivery_error" -->
@@ -113,7 +113,7 @@
 			</dl>
 		</div>
 		<!-- /soy:id="has_delivery_method" -->
-		
+
 		<!-- soy:id="has_discount_method" -->
 		<h2>クーポン</h2>
 
@@ -131,7 +131,7 @@
 			</dl>
 		</div>
 		<!-- /soy:id="has_discount_method" -->
-		
+
 		<!-- soy:id="has_point_method" -->
 		<h2>ポイント支払</h2>
 		<!-- soy:display="has_point_error" -->
@@ -139,7 +139,7 @@
 			<p soy:id="point_error">ポイントエラー</p>
 		</div>
 		<!-- /soy:display="has_point_error" -->
-	
+
 		<div class="cart_detail_dl">
 			<dl>
 				<!-- soy:id="point_method_list" -->
@@ -150,12 +150,12 @@
 					<!-- /soy:id="has_point_error" -->
 					<!-- soy:id="point_description" /-->
 				</dd>
-			
+
 				<!-- /soy:id="point_method_list" -->
 			</dl>
 		</div>
 		<!-- /soy:id="has_point_method" -->
-		
+
 		<!-- soy:id="has_customfield_method" -->
 		<h2>その他</h2>
 
@@ -170,12 +170,12 @@
 					<!-- soy:id="customfield_description" /-->
 				</dd>
 				<!-- /soy:id="customfield_method_list" -->
-			</dl>			
+			</dl>
 		</div>
 		<!-- /soy:id="has_customfield_method" -->
 
 		<!--変更なし-->
-		
+
 		<p class="btn"><input type="image" name="next" alt="次へ（ご注文内容の確認）" soy:src="themes/common/images/cart/btn_next_confirm_off.png"></p>
 		<p class="textcenter"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
 
