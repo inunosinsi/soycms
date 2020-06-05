@@ -6,26 +6,13 @@
 class ItemListComponent extends HTMLList{
 
 	private $DAO;
-	private $pageDAO;
 
 	private $ignoreStock;
 
 	protected function populateItem($entity, $key){
 
-		try{
-			$item = $this->getDAO()->getById($entity->getItemId());
-		}catch(Exception $e){
-			$item = new SOYShop_Item();
-		}
-
-		$pageDAO = $this->getPageDAO();
-		$detailPageId = $item->getDetailPageId();
-		try{
-			$page = $pageDAO->getById($detailPageId);
-			$url = soyshop_get_page_url($page->getUri(), $item->getAlias()) . "?index=" . $key; //末尾にindexを付けておく
-		}catch(Exception $e){
-			$url = null;
-		}
+		$item = soyshop_get_item_object($entity->getItemId());
+		$url = soyshop_get_page_url(soyshop_get_page_object($item->getDetailPageId())->getUri(), $item->getAlias()) . "?index=" . $key; //末尾にindexを付けておく
 
 		$this->addLink("item_link", array(
 			"link" => $url
@@ -61,11 +48,11 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addImage("item_small_image", array(
-			"src" => soyshop_convert_file_path($item->getAttribute("image_small"), $item)
+			"src" => (!is_null($item->getId())) ? self::_getParentAndChildImage($item->getId(), "image_small") : ""
 		));
 
 		$this->addImage("item_large_image", array(
-			"src" => soyshop_convert_file_path($item->getAttribute("image_large"), $item)
+			"src" => (!is_null($item->getId())) ? self::_getParentAndChildImage($item->getId(), "image_large") : ""
 		));
 
 		SOYShopPlugin::invoke("soyshop.item.customfield", array(
@@ -103,7 +90,7 @@ class ItemListComponent extends HTMLList{
 
 		//子商品
 		if(is_numeric($item->getType())){
-			$parent = self::getParentItem($item->getType());
+			$parent = soyshop_get_item_object($item->getType());
 
 			//子商品の在庫管理設定をオン(子商品購入時に親商品の在庫数で購入できるか判断する)
 			if(self::getShopConfig()->getChildItemStock()){
@@ -178,12 +165,23 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addImage("parent_small_image", array(
-			"src" => soyshop_convert_file_path($parent->getAttribute("image_small"), $parent)
+			"src" => (!is_null($parent->getId())) ? self::_getParentAndChildImage($parent->getId(), "image_small") : ""
 		));
 
 		$this->addImage("parent_large_image", array(
-			"src" => soyshop_convert_file_path($parent->getAttribute("image_large"), $parent)
+			"src" => (!is_null($parent->getId())) ? self::_getParentAndChildImage($parent->getId(), "image_large") : ""
 		));
+	}
+
+	private function _getParentAndChildImage($itemId, $key){
+		$item = soyshop_get_item_object($itemId);
+		if(strlen($item->getAttribute($key))) return soyshop_convert_file_path($item->getAttribute($key), $item);
+
+		if(!is_numeric($item->getId())) return null;
+
+		//親商品を取得してみる
+		$parent = soyshop_get_item_object($item->getType());
+		return soyshop_convert_file_path($parent->getAttribute($key), $parent);
 	}
 
 	private function getItemOptionHtml($key){
@@ -236,34 +234,12 @@ class ItemListComponent extends HTMLList{
 
 		return $itemCount;
 	}
-	private function getParentItem($itemId){
-		try{
-			return $this->getDAO()->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
-	}
+
 
 	private function getShopConfig(){
 		static $config;
 		if(is_null($config)) $config = SOYShop_ShopConfig::load();
 		return $config;
-	}
-
-	function getDAO() {
-		if(is_null($this->DAO)){
-			$this->DAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		}
-		return $this->DAO;
-	}
-	function setDAO($DAO) {
-		$this->DAO = $DAO;
-	}
-	function getPageDAO(){
-		if(!$this->pageDAO){
-			$this->pageDAO = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		}
-		return $this->pageDAO;
 	}
 
 	function setIgnoreStock($ignoreStock){

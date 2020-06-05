@@ -10,7 +10,5 @@ class B2OrderCSVInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info","b2_order_csv","B2OrderCSVInfo");
-?>

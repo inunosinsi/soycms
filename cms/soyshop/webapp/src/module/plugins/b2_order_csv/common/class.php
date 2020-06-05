@@ -1,12 +1,6 @@
 <?php
-SOY2::import("domain.config.SOYShop_ShopConfig");
 class B2OutputCSV{
-	
-	private $orderId;
-	private $orderDAO;
-	private $itemOrderDAO;
-	private $orderLogic;
-	
+
 	private $prefecture = array(
 		"1" => "北海道",
 		"2" => "青森県",
@@ -68,109 +62,104 @@ class B2OutputCSV{
 		"18時～20時" => "1820",
 		"20時～21時" => "2021"
 	);
-	
+
+	function __construct(){
+		SOY2::import("module.plugins.b2_order_csv.util.B2OrderCsvUtil");
+	}
+
 	function getCSVLine($orderId){
-		
-		if(!$this->orderDAO)$this->orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		try{
-			$dao = $this->orderDAO;
-			$order = $dao->getById($orderId);
-		}catch(Exception $e){
-			return;
-		}
+
+		$order = soyshop_get_order_object($orderId);
+		if(is_null($order->getId())) return;
+
 		$methodDelivery = $order->getAttributeList();
-		
-		$index = "";
-		foreach($methodDelivery as $key => $value){
-			if(preg_match('/delivery.*/',$key)){
-				$index = $key;
-				break;
-			}
-		}
-		$deliveryValue = $methodDelivery[$index.".time"]["value"];
-		
-		$deliveryCode = (isset($this->deliveryTime[$deliveryValue])) ? "\"" . $this->deliveryTime[$deliveryValue]."\"" : ""; 
+
+		$idx = B2OrderCsvUtil::getSelectedDeliveryMethod($order->getId());
+		$deliveryValue = (strlen($idx) && isset($methodDelivery[$idx.".time"]["value"])) ? $methodDelivery[$idx.".time"]["value"] : "";
+		$deliveryCode = (isset($this->deliveryTime[$deliveryValue])) ? "\"" . $this->deliveryTime[$deliveryValue]."\"" : "";
 
 		//送付先を取得する
 		$address = $order->getAddressArray();
-				
+
 		//ショップ情報を取得
-		$shop = SOYShop_ShopConfig::load();
-		$company = $shop->getCompanyInformation();
-		
-		$items = $this->getOrderItems($orderId);
-		$item = array_shift($items);
-		
-		$daibiki = false;
-		foreach($methodDelivery as $key => $value){
-			if(preg_match('/payment_daibiki/',$key)){
-				$daibiki = true;
-				break;
-			}
-		}
-		
-		$config = $this->getConfig();	
-		
+		$company = B2OrderCsvUtil::getCompanyInfomation();
+
+		//使ってない？
+		// $itemOrders = B2OrderCsvUtil::getOrderItemsByOrderId($orderId);
+		// $itemOrder = array_shift($itemOrders);
+
+		//代引きか？
+		$isDaibiki = B2OrderCsvUtil::isDaibiki($order->getId());
+
+		$config = B2OrderCsvUtil::getConfig();
+
 		$customerAddress = $this->prefecture[$address["area"]].$address["address1"].$address["address2"];
 		$customerReading = (isset($address["reading"])) ? mb_convert_kana($address["reading"],"k") : "";
-		
+
 		$csv = array();
 		$csv[] = $config["number"];												//お客様管理番号
-		$csv[] = ($daibiki==true) ? 2 : 0;										//送り状種類
+
+		//送り状 代引き:2、それ以外:0、ネコポス:7
+		if(isset($config["neko_post"]) && $config["neko_post"] == 1){
+			$invoice = 7;
+		}else{
+			$invoice = ($isDaibiki) ? 2 : 0;
+		}
+
+		$csv[] = $invoice;														//送り状種類
 		$csv[] = "";															//クール区分
 		$csv[] = "";															//伝票番号
-		$csv[] = "";															//出荷予定日
-		
+
+		//出荷予定日
+		$csv[] = (isset($config["auto_insert_shipping_date"]) && $config["auto_insert_shipping_date"] == 1) ? date("Y/m/d") : "";
 		$csv[] = "";															//お届け予定日
 		$csv[] = $deliveryCode;													//配達時間帯
 		$csv[] = "";															//お届け先コード
-		$csv[] = $this->mbConvertKana($address["telephoneNumber"]);				//お届け先電話番号
+		$csv[] = B2OrderCsvUtil::mbConvertKana($address["telephoneNumber"]);	//お届け先電話番号
 		$csv[] = "";															//お届け先電話番号枝番
-		
-		$csv[] = $this->removeHyphen($address["zipCode"]);						//お届け先郵便番号
-		$csv[] = $this->convertSpace($customerAddress);							//お届け先住所
+
+		$csv[] = B2OrderCsvUtil::removeHyphen($address["zipCode"]);				//お届け先郵便番号
+		$csv[] = B2OrderCsvUtil::convertSpace($customerAddress);				//お届け先住所
 		$csv[] = "";															//お届け先建物名
 		$csv[] = "";															//お届け先会社・部門１
 		$csv[] = "";															//お届け先会社・部門２
-		
-		$csv[] = $this->convertSpace($address["name"]);							//お届け先名
-		$csv[] = $this->convertSpace($customerReading);	//お届け先名略称カナ
+
+		$csv[] = B2OrderCsvUtil::convertSpace($address["name"]);				//お届け先名
+		$csv[] = B2OrderCsvUtil::convertSpace($customerReading);				//お届け先名略称カナ
 		$csv[] = "";															//敬称
 		$csv[] = "";															//ご依頼主コード
 		$csv[] = $company["telephone"];											//ご依頼主電話番号
-		
+
 		$csv[] = "";															//ご依頼主電話番号枝番
 		$csv[] = $company["address1"];											//ご依頼主郵便番号
 		$csv[] = $company["address2"];											//ご依頼主住所
 		$csv[] = "";															//ご依頼主建物名
 		$csv[] = $company["name"];												//ご依頼主名
-		
+
 		$csv[] = "";															//ご依頼主名略称カナ
 		$csv[] = "";															//品名コード１
 		$csv[] = $config["name"];												//品名１
 		$csv[] = "";															//品名コード２
 		$csv[] = "";															//品名２
-		
+
 		$csv[] = "";															//荷扱い１
 		$csv[] = "";															//荷扱い２
 		$csv[] = "";															//記事
-		$csv[] = ($daibiki==true) ? $order->getPrice() : "";					//コレクト代金引換額
-		$csv[] = ($daibiki==true) ? 0 : "";										//コレクト内消費税
-		
+		$csv[] = ($isDaibiki) ? $order->getPrice() : "";						//コレクト代金引換額
+		$csv[] = ($isDaibiki) ? 0 : "";											//コレクト内消費税
+
 		$csv[] = "";															//営業所止置き
 		$csv[] = "";															//営業所コード
 		$csv[] = "";															//発行枚数
 		$csv[] = 2;																//個数口枠の印字
-		$csv[] = "";															//ご請求先顧客コード
-		
+		$csv[] = (isset($config["customer_code"])) ? "=\"" . trim($config["customer_code"]) ."\"" : "";	//ご請求先顧客コード
 		$csv[] = "";															//運賃管理番号
-		
-			
-		$line = implode(",",$csv);	
-			
+
+		$line = implode(",",$csv);
+
 		return $line;
 	}
-	
+
 	function getLabels(){
 		$label = array();
 		$label[] = "お客様管理番号";
@@ -178,91 +167,51 @@ class B2OutputCSV{
 		$label[] = ""; //クール区分
 		$label[] = ""; //伝票番号
 		$label[] = "出荷予定日"; // YYYY/MM/DD
-		
+
 		$label[] = "お届け予定日"; // YYYY/MM/DD
 		$label[] = "配達時間帯";
 		$label[] = "お届け先コード"; //ここは空欄になってる
 		$label[] = "お届け先電話番号"; //ハイフンを含む
 		$label[] = "お届け先電話番号枝番";
-		
+
 		$label[] = "お届け先郵便番号"; //ハイフンなし可
 		$label[] = "お届け先住所";
 		$label[] = "お届け先建物名";
 		$label[] = "お届け先会社・部門１";
 		$label[] = "お届け先会社・部門２";
-		
+
 		$label[] = "お届け先名";
 		$label[] = "お届け先名略称カナ";
 		$label[] = ""; //敬称
 		$label[] = "ご依頼主コード";
 		$label[] = "ご依頼主電話番号";
-		
+
 		$label[] = "ご依頼主電話番号枝番";
 		$label[] = "ご依頼主郵便番号";
 		$label[] = "ご依頼主住所";
 		$label[] = "ご依頼主建物名";
 		$label[] = "ご依頼主名";
-		
+
 		$label[] = "ご依頼主名略称カナ";
 		$label[] = "品名コード１";
 		$label[] = "品名１";
 		$label[] = "品名コード２";
 		$label[] = "品名２";
-		
+
 		$label[] = "荷扱い１";
 		$label[] = "荷扱い２";
 		$label[] = "記事";
 		$label[] = "コレクト代金引換額";
 		$label[] = "コレクト内消費税";
-		
+
 		$label[] = "営業所止置き";
 		$label[] = "営業所コード";
 		$label[] = "発行枚数";
 		$label[] = "個数口枠の印字";
 		$label[] = "ご請求先顧客コード";
-		
+
 		$label[] = "運賃管理番号";
-		
+
 		return $label;
 	}
-	
-	function mbConvertKana($str){
-		$str = mb_convert_kana($str, "a");
-		$str = str_replace(array("ー","－","ｰ"),"-",$str);
-		return $str;
-	}
-	
-	function removeHyphen($str){
-		$str = mb_convert_kana($str, "a");
-		$str = str_replace(array("ー","－","ｰ"),"",$str);
-		return $str;	
-	}
-	
-	function convertSpace($str){
-		$str = str_replace("　"," ",$str);
-		return $str;
-	}
-	
-	function getOrderItems($orderId){
-		if(!$this->itemOrderDAO){
-			$this->itemOrderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		}
-		
-		try{
-			$items = $this->itemOrderDAO->getByOrderId($orderId);
-		}catch(Exception $e){
-			$items = array();
-		}
-		
-		return $items;
-		
-	}
-	
-	function getConfig(){
-		return SOYShop_DataSets::get("b2_order_csv", array(
-				"number" => "",
-				"name" => ""
-		));
-	}
 }
-?>
