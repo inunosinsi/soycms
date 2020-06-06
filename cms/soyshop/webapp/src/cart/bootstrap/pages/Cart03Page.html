@@ -88,7 +88,7 @@
     <p soy:id="payment_error" class="alert alert-danger" role="alert">お支払い方法が入力されていません。</p>
     <!-- /soy:display="has_payment_error" -->
 
-	<table class="table">
+	<table class="table method-select-table">
 		<col width="150px">
         <!-- soy:id="payment_method_list" -->
         <tr onclick="$('input[name=payment_module][type=radio]',this).attr('checked',true);">
@@ -99,7 +99,6 @@
             </td>
             <td>
                 <!-- soy:id="payment_description" /-->&nbsp;
-                <!-- soy:id="payment_charge" /-->
             </td>
         </tr>
         <!-- /soy:id="payment_method_list" -->
@@ -114,7 +113,7 @@
     <p soy:id="delivery_error" class="alert alert-danger" role="danger">配送方法が入力されていません。</p>
     <!-- /soy:display="has_delivery_error" -->
 
-    <table class="table">
+    <table class="table method-select-table">
 		<col width="150px">
         <!-- soy:id="delivery_method_list" -->
         <tr onclick="$('input[name=delivery_module][type=radio]',this).attr('checked',true);">
@@ -125,7 +124,6 @@
             </td>
             <td>
                 <!-- soy:id="delivery_description" /-->&nbsp;
-                <!-- soy:id="delivery_charge" /-->
             </td>
         </tr>
         <!-- /soy:id="delivery_method_list" -->
@@ -139,7 +137,7 @@
 	<p soy:id="payment_error" class="alert alert-danger" role="alert">お支払い方法が入力されていません。</p>
 	<!-- /soy:display="has_payment_error" -->
 
-    <table class="table">
+    <table class="table method-select-table">
 		<col width="150px">
         <!-- soy:id="discount_method_list" -->
         <tr>
@@ -164,7 +162,7 @@
     <p soy:id="point_error" class="alert alert-danger" role="alert">ポイントエラー</p>
     <!-- /soy:display="has_point_error" -->
 
-    <table class="table">
+    <table class="table method-select-table">
 		<col width="150px">
         <!-- soy:id="point_method_list" -->
         <tr>
@@ -185,7 +183,7 @@
 	<!-- soy:id="has_customfield_method" -->
     <p class="alert alert-info" role="alert">その他</p>
 
-    <table class="table">
+    <table class="table method-select-table">
 		<col width="150px">
         <!-- soy:id="customfield_method_list" -->
         <tr>
@@ -217,3 +215,13 @@
 <!-- /soy:id="cart_plugin_list" -->
 
 <!-- /soy:id="has_cart_plugin" -->
+
+<style>
+@media screen and (max-width: 600px) {
+	table.method-select-table tr th,
+	table.method-select-table tr td {
+		display: block;
+		width: 100%;
+	}
+}
+</style>

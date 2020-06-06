@@ -152,7 +152,7 @@ class B2OutputCSV{
 		$csv[] = "";															//営業所コード
 		$csv[] = "";															//発行枚数
 		$csv[] = 2;																//個数口枠の印字
-		$csv[] = (isset($config["customer_code"])) ? "=\"" . trim($config["customer_code"]) ."\"" : "";	//ご請求先顧客コード
+		$csv[] = (isset($config["customer_code"])) ? "\"" . trim($config["customer_code"]) ."\"" : "";	//ご請求先顧客コード
 		$csv[] = "";															//運賃管理番号
 
 		$line = implode(",",$csv);
