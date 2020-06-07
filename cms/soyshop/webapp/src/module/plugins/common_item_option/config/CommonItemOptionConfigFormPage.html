@@ -1,15 +1,12 @@
 <div class="text-right">
 	<a class="btn btn-default" soy:link="Config.Detail?plugin=common_item_option&import">設定のインポート・エクスポート</a>
-	<a class="btn btn-default" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
+	<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#optionModal">項目の追加</a>
 </div>
 
-<br />
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+<p class="alert alert-danger" soy:display="error">入力したIDは使用できません</p>
 
-<div class="panel-body">
-
-	<div class="alert alert-success" soy:display="updated">更新しました</div>
-	<p class="alert alert-danger" soy:display="error">入力したIDは使用できません</p>
-
+<div class="table-responsive">
 	<table class="table table-striped">
 		<caption>オプション項目</caption>
 		<tr>
@@ -35,8 +32,8 @@
 				<select soy:id="type_select" style="display:none;"></select>
 			</td>
 			<td>
-				<a soy:id="toggle_update">設定変更</a>
-				<a soy:id="update_link" class="btn btn-default" style="display:none;">変更を保存する</a>
+				<a soy:id="toggle_update" class="btn btn-primary btn-sm">設定変更</a>
+				<a soy:id="update_link" class="btn btn-primary btn-sm" style="display:none;">変更を保存する</a>
 				<input type="submit" soy:id="update_submit" style="display:none;" />
 			</td>
 			<td style="text-align:center;">
@@ -47,8 +44,8 @@
 			<td soy:id="display_form">表示のさせ方</td>
 			<td>
 
-				<a soy:id="toggle_config">Detail</a>
-				<a soy:id="delete">Delete</a>
+				<a soy:id="toggle_config" class="btn btn-warning btn-sm">Detail</a>
+				<a soy:id="delete" class="btn btn-danger btn-sm">Delete</a>
 				<input type="submit" soy:id="delete_submit" style="display:none;" />
 			</td>
 			</form>
@@ -58,14 +55,12 @@
 				<td colspan="5">
 					<h5 style="margin-bottom:0;">高度な設定</h5>
 					<form method="post">
-						<dl>
+						<div class="form-group">
 							<!-- soy:id="language_label_list" -->
-							<dt soy:id="label">ラベル</dt>
-							<dd>
-								<input type="text" class="form-control" soy:id="label_input" />
-							</dd>
+							<label soy:id="label">ラベル</label>
+							<input type="text" class="form-control" soy:id="label_input" />
 							<!-- /soy:id="language_label_list" -->
-						</dl>
+						</div>
 
 						<input type="hidden" soy:id="label_jp_input">
 						<input type="hidden" soy:id="option_type">
@@ -75,75 +70,80 @@
 						</div>
 
 						<input type="submit" style="display:none;" soy:id="update_advance_submit" />
-
 					</form>
 				</td>
 			</tr>
 		<!-- /soy:id="option_list" -->
 	</table>
-
-	<div id="append_form_el" class="popup" style="display:none;">
-		<form soy:id="create_form" id="create_form">
-			<input type="hidden" name="create" value="create" />
-			<p>
-				項目名
-				<div class="alL">
-				<input id="custom_new_name" name="option_new_name" type="text" class="text validate">
-				<p class="alert alert-danger" id="option_new_name_error" style="display:none;">必須項目を入力してください</p>
-				</div>
-
-				項目ID
-				<div class="alL">
-				<input id="custom_id" name="option_id" type="text" class="text validate">
-				<p class="alert alert-danger" id="option_id_error" style="display:none;">必須項目を入力してください</p>
-				</div>
-
-				項目種別
-				<div class="alL">
-					<select name="option_type" soy:id="option_type_select"></select>
-				</div>
-
-			</p>
-			<p >
-				<a class="btn btn-default" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
-			</p>
-			<p class="close"></p>
-		</form soy:id="create_form">
-	</div>
-</div><!-- /block_body -->
+</div>
 
 <br>
 
-<div class="panel-body">
-	<h4>テンプレートへの記述例</h4>
-	<pre>
+<h4>テンプレートへの記述例</h4>
+<pre>
 &lt;-- block:id="item" --&gt;
 
 <strong>&lt;!-- cms:id="***_visible" --&gt;</strong>
 &lt;tr&gt;
-	&lt;th&gt;オプション名：&lt;/th&gt;
-    &lt;td&gt;<strong>&lt;!-- cms:id="***" /--&gt;</strong>&lt;/td&gt;
+&lt;th&gt;オプション名：&lt;/th&gt;
+&lt;td&gt;<strong>&lt;!-- cms:id="***" /--&gt;</strong>&lt;/td&gt;
 &lt;/tr&gt;
 <strong>&lt;!-- /cms:id="***_visible" --&gt;</strong>
 
 &lt;-- /block:id="item" --&gt;
 </pre>
 
-<p style="margin:20px 0 20px 35px;">
+<div class="alert alert-warning">
 <strong>***</strong>にはオプションごとのIDが入ります。<br />
 <strong>&lt;!-- cms:id="***_visible" --&gt;</strong>で囲んだ箇所は商品情報の設定時にoptionの設定があった場合に表示されます。<br />
 <strong>&lt;!-- cms:id="***" /--&gt;</strong>の箇所にセレクトボックスが表示されます。
-</p>
-</div><!-- /block_body -->
-
-<br>
-
-<div class="panel-body" style="margin:10px 0 10px 0;">
-	<h3>CSVインポートとエクスポート</h3>
-	<p style="margin:0 0 20px 35px;">
-	CSVで商品情報を登録する時は、項目の値を改行ではなく、カンマ区切りでカラムに入力しておきます。<br />
-	例:色 "赤,青,黄"
-	</p>
 </div>
 
 <br>
+
+<h4>CSVインポートとエクスポート</h4>
+<div class="alert alert-info">
+CSVで商品情報を登録する時は、項目の値を改行ではなく、カンマ区切りでカラムに入力しておきます。<br />
+例:色 "赤,青,黄"
+</div>
+
+<br>
+
+<div class="modal" tabindex="-1" role="dialog" id="optionModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">項目の追加</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+					<input type="hidden" name="create" value="create" />
+					<div>
+						項目名
+						<div class="alL">
+						<input id="custom_new_name" name="option_new_name" type="text" class="text validate">
+						<p class="alert alert-danger" id="option_new_name_error" style="display:none;">必須項目を入力してください</p>
+						</div>
+
+						項目ID
+						<div class="alL">
+						<input id="custom_id" name="option_id" type="text" class="text validate">
+						<p class="alert alert-danger" id="option_id_error" style="display:none;">必須項目を入力してください</p>
+						</div>
+
+						項目種別
+						<div class="alL">
+							<select name="option_type" soy:id="option_type_select"></select>
+						</div>
+					</div>
+					<div class="text-right">
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="optionModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

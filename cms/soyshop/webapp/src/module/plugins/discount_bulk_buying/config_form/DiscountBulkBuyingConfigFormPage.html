@@ -1,47 +1,51 @@
-<p class="alert alert-success" soy:id="notice_updated">変更しました</p>
+<div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<h1>まとめ買い割引 設定</h1>
+<h4>まとめ買い割引 設定</h4>
 <form soy:id="discount_form">
-<dl>
-	<dt>割引名</dt>
-	<dd>
-		<input type="text" soy:id="discount_name"><br />
+	<div class="form-group">
+		<label>割引名</label>
+		<input type="text" soy:id="discount_name" class="form-control"><br />
 		※カートとメール文面に表示されます。
-	</dd>
-	<dt>割引の説明</dt>
-	<dd>
-		<textarea soy:id="discount_description"></textarea><br />
+	</div>
+
+	<div class="form-group">
+		<label>割引の説明</label>
+		<textarea soy:id="discount_description" class="form-control"></textarea><br />
 		※カートに表示されます。
-	</dd>
+	</div>
 
-	<dt>割引額</dt>
-	<dd>
-		<input type="radio" soy:id="discount_type_amount" ><label for="discount_type_amount">割引額を適用する</label>
-		<div id="discount_type_amount_area">
-			<input type="text" style="width:10%;" soy:id="discount_amount">&nbsp;円割り引く
+	<div class="form-group">
+		<label>割引額</label>
+		<div class="form-inline">
+			<input type="radio" soy:id="discount_type_amount" ><label for="discount_type_amount">割引額を適用する</label>
+			<div id="discount_type_amount_area">
+				<input type="number" style="width:10%;" soy:id="discount_amount">&nbsp;円割り引く
+			</div>
 		</div>
-	</dd>
-	<dt>割引率</dt>
-	<dd>
-		<input type="radio" soy:id="discount_type_percent"><label for="discount_type_percent">割引率を適用する</label>
-		<div id="discount_type_percent_area">
-			<input type="text" style="width:5%;" soy:id="discount_percent">&nbsp;%割り引く<br />
-			※小数点以下は切り捨てとなります。
+	</div>
+
+	<div class="form-group">
+		<label>割引率</label>
+		<div class="form-inline">
+			<input type="radio" soy:id="discount_type_percent"><label for="discount_type_percent">割引率を適用する</label>
+			<div id="discount_type_percent_area">
+				<input type="number" style="width:5%;" soy:id="discount_percent">&nbsp;%割り引く<br />
+				※小数点以下は切り捨てとなります。
+			</div>
 		</div>
-	</dd>
+	</div>
 
-	<dt>公開状態</dt>
-	<dd>
-		<input type="radio" soy:id="status_type_inactive" ><label for="status_type_inactive">非公開（まとめ買い割引を無効）</label><br />
-		<input type="radio" soy:id="status_type_active" ><label for="status_type_active">公開（まとめ買い割引を有効）</label><br />
-	</dd>
+	<div class="form-group">
+		<label>公開状態</label>
+		<div class="form-inline">
+			<input type="radio" soy:id="status_type_inactive" ><label for="status_type_inactive">非公開（まとめ買い割引を無効）</label><br />
+			<input type="radio" soy:id="status_type_active" ><label for="status_type_active">公開（まとめ買い割引を有効）</label><br />
+		</div>
+	</div>
 
-</dl>
-
-<div class="text-center">
-	<input type="submit" class="btn btn-primary btn-lg" value="設定変更" name="submit_discount">
-</div>
-
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="設定変更" name="submit_discount">
+	</div>
 </form>
 
 <style type="text/css">
@@ -51,52 +55,52 @@
 </style>
 
 
-<h1>まとめ買い割引 条件</h1>
+<h4>まとめ買い割引 条件</h4>
 <form soy:id="condition_form">
-<dl>
-	<dt>合計金額</dt>
-	<dd>
-		<div class="mb10">
-			<input type="checkbox" soy:id="condition_price_checkbox" ><label for="condition_price_checkbox">合計金額&nbsp;を条件に含める</label>
+	<div class="form-group">
+		<label>合計金額</label>
+		<div class="form-inline">
+			<div class="mb10">
+				<input type="checkbox" soy:id="condition_price_checkbox" ><label for="condition_price_checkbox">合計金額&nbsp;を条件に含める</label>
+			</div>
+			<div class="condition_price_area">
+				<input type="number" style="width:10%;" soy:id="condition_price_value">&nbsp;円以上の合計金額
+			</div>
 		</div>
-		<div class="condition_price_area">
-			<input type="text" style="width:10%;" soy:id="condition_price_value">&nbsp;円以上の合計金額
+	</div>
+
+	<div class="form-group">
+		<label>合計商品数</label>
+		<div class="form-inline">
+			<div class="mb10">
+				<input type="checkbox" soy:id="condition_amount_checkbox" ><label for="condition_amount_checkbox">合計商品数&nbsp;を条件に含める</label>
+			</div>
+			<div class="condition_amount_area">
+				<input type="text" style="width:5%;" soy:id="condition_amount_value">&nbsp;個以上の合計商品数
+			</div>
 		</div>
-	</dd>
-</dl>
-<dl>
-	<dt>合計商品数</dt>
-	<dd>
-		<div class="mb10">
-			<input type="checkbox" soy:id="condition_amount_checkbox" ><label for="condition_amount_checkbox">合計商品数&nbsp;を条件に含める</label>
+	</div>
+
+	<div class="form-group">
+		<label>条件の適用</label>
+		<div class="form-inline">
+			<span class="condition_price_area">
+				[合計金額]&nbsp;
+			</span>
+			<span class="condition_amount_area">
+				[合計商品数]&nbsp;
+			</span>
+
+			<span id="condition_combination_area">
+				<input type="radio" soy:id="condition_combination_all" ><label for="condition_combination_all">両方の条件に一致</label>&nbsp;
+				<input type="radio" soy:id="condition_combination_any" ><label for="condition_combination_any">片方の条件に一致</label>
+			</span>
 		</div>
-		<div class="condition_amount_area">
-			<input type="text" style="width:5%;" soy:id="condition_amount_value">&nbsp;個以上の合計商品数
-		</div>
-	</dd>
-</dl>
+	</div>
 
-<dl>
-	<dt>条件の適用</dt>
-	<dd>
-		<span class="condition_price_area">
-			[合計金額]&nbsp;
-		</span>
-		<span class="condition_amount_area">
-			[合計商品数]&nbsp;
-		</span>
-
-		<span id="condition_combination_area">
-			<input type="radio" soy:id="condition_combination_all" ><label for="condition_combination_all">両方の条件に一致</label>&nbsp;
-			<input type="radio" soy:id="condition_combination_any" ><label for="condition_combination_any">片方の条件に一致</label>
-		</span>
-	</dd>
-</dl>
-
-<div class="text-center">
-	<input type="submit" class="btn btn-primary btn-lg" value="条件変更" name="submit_condition">
-</div>
-
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="条件変更" name="submit_condition">
+	</div>
 </form>
 <script>
 

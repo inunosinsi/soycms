@@ -1,30 +1,29 @@
-<p class="alert alert-danger" soy:display="installed_discount_bulk_buying">まとめ買いプラグインとの併用は出来ません</p>
+<div class="alert alert-danger" soy:display="installed_discount_bulk_buying">まとめ買いプラグインとの併用は出来ません</div>
 <div class="alert alert-success" soy:display="updated">更新しました</div>
 
 <form soy:id="form">
 	<section>
-		<h1>まとめ買い割引　設定</h1>
-		<dl>
-			<dt>割引名</dt>
-			<dd>
-				<input type="text" soy:id="discount_name"><br />
-				※カートとメール文面に表示されます。
-			</dd>
-			<dt>割引の説明</dt>
-			<dd>
-				<textarea soy:id="discount_description"></textarea><br />
-				※カートに表示されます。
-			</dd>
-		</dl>
+		<div class="alert alert-info">まとめ買い割引　設定</div>
+		<div class="form-group">
+			<label>割引名</label>
+			<input type="text" soy:id="discount_name" class="form-control">
+			※カートとメール文面に表示されます。
+		</div>
+
+		<div class="form-group">
+			<label>割引の説明</label>
+			<textarea soy:id="discount_description" class="form-control"></textarea>
+			※カートに表示されます。
+		</div>
 	</section>
 
 	<section>
-		<h1>まとめ買い割引　条件設定</h1>
-		<dl>
-			<dt>
+		<div class="alert alert-info">まとめ買い割引　条件設定</div>
+		<div class="form-group">
+			<label>
 				カテゴリ毎の設定
-			</dt>
-			<dd>
+			</label>
+			<div class="table-responsive">
 				<table class="table table-striped">
 					<thead>
 						<tr  style="font-size:0.9em;">
@@ -90,17 +89,17 @@
 				※親カテゴリを条件に加えた場合、子カテゴリの商品も割引の対象となります。<br>
 				注）親カテゴリを設定した後、設定した親に紐付いた子で別途設定を行った場合、子の方の設定は使用されず親カテゴリの設定と統合されます
 				</div>
-			</dd>
+			</div>
 
 			<!-- soy:display="huga" -->
-			<dt>条件の適用</dt>
-			<dd>
+			<label>条件の適用</label>
+			<div class="form-inline">
 				上記のカテゴリの条件の&nbsp;
 				<input type="radio" soy:id="category_condition_all">&nbsp;
 				<input type="radio" soy:id="category_condition_any">
-			</dd>
+			</div>
 			<!-- /soy:display="huga" -->
-		</dl>
+		</div>
 	</section>
 
 	<div class="text-center">
