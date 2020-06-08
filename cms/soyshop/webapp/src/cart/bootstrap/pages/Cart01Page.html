@@ -47,7 +47,7 @@
 
 		<tbody>
 			<!-- soy:id="item_list" -->
-			<tr>
+			<tr<!-- soy:id="item_stock_error_tr" --> class="bg-stock-error"<!-- /soy:id="item_stock_error_tr" -->>
 				<td>
 					<a soy:id="item_delete">
 						<svg class="bi bi-x-circle" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -65,9 +65,9 @@
 				</td>
 				<td><!-- soy:id="item_price_on_cart" -->2,100<!-- /soy:id="item_price_on_cart" -->円</td>
 				<td class="w-25">
-					<p class="alert alert-danger" soy:id="item_stock_error"></p>
-					<p class="alert alert-danger" soy:id="item_order_error"></p>
-					<input name="" type="number" class="form-control" soy:id="order_number" style="width:50px;">
+					<p class="alert alert-danger stock-error" soy:id="item_stock_error"></p>
+					<p class="alert alert-danger stock-error" soy:id="item_order_error"></p>
+					<input name="" type="number" class="form-control" soy:id="order_number" style="width:80px;">
 				</td>
 				<td><!-- soy:id="item_total" -->2,100<!-- /soy:id="item_total" -->円</td>
 			</tr>
@@ -116,3 +116,15 @@
 <!-- /soy:id="cart_plugin_list" -->
 
 <!-- /soy:id="has_cart_plugin" -->
+
+<style>
+	@media screen and (max-width: 690px) {
+		.bg-stock-error {
+			background-color: #f8d7da !important;
+		}
+
+		.stock-error {
+			display: none;
+		}
+	}
+</style>

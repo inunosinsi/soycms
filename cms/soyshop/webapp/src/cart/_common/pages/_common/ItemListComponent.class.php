@@ -129,6 +129,11 @@ class ItemListComponent extends HTMLList{
 			$isItemStockError = (strlen($itemStockErrorMessage));
 		}
 
+		//背景色の変更用
+		$this->addModel("item_stock_error_tr", array(
+			($isItemStockError || !$item->checkAcceptOrder())
+		));
+
 		$this->addLabel("item_stock_error", array(
 			"visible" => $isItemStockError,
 			"text" => $itemStockErrorMessage
