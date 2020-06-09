@@ -93,6 +93,7 @@ class ShopConfigPage extends WebPage{
 		));
 
 		$company = $config->getCompanyInformation();
+		if(!isset($company["building"])) $company["building"] = "";
 
 		foreach($company as $key => $value){
 			$this->addInput("company_" . $key, array(
