@@ -67,7 +67,7 @@ class B2OutputCSV{
 		SOY2::import("module.plugins.b2_order_csv.util.B2OrderCsvUtil");
 	}
 
-	function getCSVLine($orderId){
+	function getCSVLine($orderId, $slipNumber = null){
 
 		$order = soyshop_get_order_object($orderId);
 		if(is_null($order->getId())) return;
@@ -93,22 +93,29 @@ class B2OutputCSV{
 
 		$config = B2OrderCsvUtil::getConfig();
 
-		$customerAddress = $this->prefecture[$address["area"]].$address["address1"].$address["address2"];
+		$customerAddress = (isset($address["area"]) && strlen($address["area"])) ? $this->prefecture[$address["area"]].$address["address1"].$address["address2"] : "";
 		$customerReading = (isset($address["reading"])) ? mb_convert_kana($address["reading"],"k") : "";
 
 		$csv = array();
-		$csv[] = $config["number"];												//お客様管理番号
+		if(strlen($config["number"]) && $config["number"] == "##TRACKING_NUMBER##"){
+			$customerNumber = $order->getTrackingNumber();
+		}else{
+			$customerNumber = $config["number"];
+		}
+		$csv[] = $customerNumber;												//お客様管理番号
 
-		//送り状 代引き:2、それ以外:0、ネコポス:7
-		if(isset($config["neko_post"]) && $config["neko_post"] == 1){
+		//送り状 代引き:2、それ以外:0、ネコポス:7	//代引きを最優先にする
+		if($isDaibiki){
+			$invoice = 2;
+		} else if(isset($config["neko_pos"]) && $config["neko_pos"] == 1){
 			$invoice = 7;
 		}else{
-			$invoice = ($isDaibiki) ? 2 : 0;
+			$invoice = 0;
 		}
 
 		$csv[] = $invoice;														//送り状種類
 		$csv[] = "";															//クール区分
-		$csv[] = "";															//伝票番号
+		$csv[] = $slipNumber;													//伝票番号
 
 		//出荷予定日
 		$csv[] = (isset($config["auto_insert_shipping_date"]) && $config["auto_insert_shipping_date"] == 1) ? date("Y/m/d") : "";
@@ -133,8 +140,8 @@ class B2OutputCSV{
 		$csv[] = "";															//ご依頼主電話番号枝番
 		$csv[] = $company["address1"];											//ご依頼主郵便番号
 		$csv[] = $company["address2"];											//ご依頼主住所
-		$csv[] = "";															//ご依頼主建物名
-		$csv[] = $company["name"];												//ご依頼主名
+		$csv[] = $company["building"];											//ご依頼主建物名
+		$csv[] = $company["shop_name"];											//ご依頼主名
 
 		$csv[] = "";															//ご依頼主名略称カナ
 		$csv[] = "";															//品名コード１
@@ -152,8 +159,22 @@ class B2OutputCSV{
 		$csv[] = "";															//営業所コード
 		$csv[] = "";															//発行枚数
 		$csv[] = 2;																//個数口枠の印字
-		$csv[] = (isset($config["customer_code"])) ? "\"" . trim($config["customer_code"]) ."\"" : "";	//ご請求先顧客コード
+		$csv[] = "";															//ご請求先顧客コード
+		$csv[] = (isset($config["customer_code"])) ? "\"" . trim($config["customer_code"]) ."\"" : "";
 		$csv[] = "";															//運賃管理番号
+
+		//隠し機能　運賃管理番号よりも後に値を追加したい場合　詳しくは extends/readme.txtに記載
+		$n = B2OrderCsvUtil::getExtInsertNumber();
+		$csvLineCnt = count($csv);
+		if($n > $csvLineCnt){
+			for($i = $csvLineCnt + 1; $i <= $n; $i++){
+				if(file_exists(B2OrderCsvUtil::getExtendDir() . $i . ".php")){
+					include(B2OrderCsvUtil::getExtendDir() . $i . ".php");
+				}else{
+					$csv[] = "";
+				}
+			}
+		}
 
 		$line = implode(",",$csv);
 
@@ -209,8 +230,22 @@ class B2OutputCSV{
 		$label[] = "発行枚数";
 		$label[] = "個数口枠の印字";
 		$label[] = "ご請求先顧客コード";
+		$label[] = "ご請求先分類コード";
 
 		$label[] = "運賃管理番号";
+
+		//隠し機能　運賃管理番号よりも後に値を追加したい場合　詳しくは extends/readme.txtに記載
+		$n = B2OrderCsvUtil::getExtInsertNumber();
+		$labelLineCnt = (count($label));
+		if($n > $labelLineCnt){
+			for($i = $labelLineCnt + 1; $i <= $n; $i++){
+				if(file_exists(B2OrderCsvUtil::getExtendDir() . $i . "_label.php")){
+					include(B2OrderCsvUtil::getExtendDir() . $i . "_label.php");
+				}else{
+					$label[] = "";
+				}
+			}
+		}
 
 		return $label;
 	}

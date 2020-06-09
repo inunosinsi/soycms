@@ -20,7 +20,11 @@ class B2OrderCsvUtil {
 		static $info;
 		if(is_null($info)) {
 			SOY2::import("domain.config.SOYShop_ShopConfig");
-			$info = SOYShop_ShopConfig::load()->getCompanyInformation();
+			$cnf = SOYShop_ShopConfig::load();
+			$info = $cnf->getCompanyInformation();
+
+			//ショップ名も格納しておく
+			$info["shop_name"] = $cnf->getShopName();
 		}
 		return $info;
 	}
@@ -74,5 +78,35 @@ class B2OrderCsvUtil {
 		}catch(Exception $e){
 			return array();
 		}
+	}
+
+	/** 隠しモードの拡張機能 **/
+
+	//どの列に拡張機能を追加するか？
+	public static function getExtInsertNumber(){
+		static $n;
+		if(is_null($n)){
+			$n = 42;	//標準
+			$dir = self::_extendDir();
+			if(is_dir($dir) && $handle = opendir($dir)) {
+				while(($file = readdir($handle)) !== false) {
+					preg_match('/(\d*).php/', $file, $tmp);
+					if(isset($tmp[1]) && is_numeric($tmp[1]) && (int)$tmp[1] > $n){
+						$n = (int)$tmp[1];
+					}
+				}
+			}
+		}
+		return $n;
+	}
+
+	public static function getExtendDir(){
+		return self::_extendDir();
+	}
+
+	private static function _extendDir(){
+		static $dir;
+		if(is_null($dir)) $dir = dirname(dirname(__FILE__)) . "/extends/";
+		return $dir;
 	}
 }

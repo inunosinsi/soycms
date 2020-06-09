@@ -38,9 +38,12 @@ class SOYShopB2OrderCSV extends SOYShopOrderExportBase{
 
 		foreach($orders as $order){
 			$orderId = $order->getId();
-			$line = $this->csvLogic->getCSVLine($orderId);
-			if(!is_null($line)){
-				$lines[] = $line;
+			//伝票番号登録分だけCSVを出力する
+			$slipNumbers = explode(",", self::_slipLogic()->getAttribute($orderId)->getValue1());
+			if(!count($slipNumbers)) $slipNumbers[] = null;
+			foreach($slipNumbers as $slipNumber){
+				$line = $this->csvLogic->getCSVLine($orderId, $slipNumber);
+				if(!is_null($line)) $lines[] = $line;
 			}
 		}
 
@@ -61,7 +64,12 @@ class SOYShopB2OrderCSV extends SOYShopOrderExportBase{
 		echo mb_convert_encoding($csv,$charset,"UTF-8");
 
 		exit;	//csv output
+	}
 
+	private function _slipLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic");
+		return $logic;
 	}
 }
 

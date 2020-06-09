@@ -22,7 +22,11 @@ class SOYShopB2OrderFunction extends SOYShopOrderFunction{
 		set_time_limit(0);
 
 		$orderId = $this->getOrderId();
-		$line = $this->csvLogic->getCSVLine($orderId);
+		$slipNumbers = explode(",", self::_slipLogic()->getAttribute($orderId)->getValue1());
+		if(!count($slipNumbers)) $slipNumbers[] = null;
+		foreach($slipNumbers as $slipNumber){
+			$line = $this->csvLogic->getCSVLine($orderId, $slipNumber);
+		}
 		$user = soyshop_get_user_object(soyshop_get_order_object($orderId)->getUserId());
 
 		$charset = (isset($_REQUEST["charset"])) ? $_REQUEST["charset"] : "Shift-JIS";
@@ -61,6 +65,12 @@ class SOYShopB2OrderFunction extends SOYShopOrderFunction{
 		}
 
 		$this->charset = $charset;
+	}
+
+	private function _slipLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic");
+		return $logic;
 	}
 }
 
