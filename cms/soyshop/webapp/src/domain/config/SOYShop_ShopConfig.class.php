@@ -79,6 +79,7 @@ class SOYShop_ShopConfig {
 		"name" => "",
 		"address1" => "",
 		"address2" => "",
+		"building" => "",	//建物名
 		"telephone" => "",
 		"fax" => "",
 		"mailaddress" => "",
@@ -388,6 +389,7 @@ class SOYShop_ShopConfig {
 			"name" => "",
 			"address1" => "",
 			"address2" => "",
+			"building" => "",
 			"telephone" => "",
 			"fax" => "",
 			"mailaddress" => "",
