@@ -104,16 +104,7 @@ class B2OutputCSV{
 		}
 		$csv[] = $customerNumber;												//お客様管理番号
 
-		//送り状 代引き:2、それ以外:0、ネコポス:7	//代引きを最優先にする
-		if($isDaibiki){
-			$invoice = 2;
-		} else if(isset($config["neko_pos"]) && $config["neko_pos"] == 1){
-			$invoice = 7;
-		}else{
-			$invoice = 0;
-		}
-
-		$csv[] = $invoice;														//送り状種類
+		$csv[] = B2OrderCsvUtil::getInvoiceType();								//送り状種類
 		$csv[] = "";															//クール区分
 		$csv[] = $slipNumber;													//伝票番号
 

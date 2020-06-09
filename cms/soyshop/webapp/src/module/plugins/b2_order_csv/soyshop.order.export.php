@@ -18,12 +18,10 @@ class SOYShopB2OrderCSV extends SOYShopOrderExportBase{
 	 * 検索結果一覧に表示するメニューの説明
 	 */
 	function getMenuDescription(){
-		return 'B2形式のCSVを出力します。&nbsp;&nbsp;(<strong>文字コード=</strong>
-			<input id="charset_shit_jis" type="radio" name="charset" value="Shift-JIS" />
-			<label for="charset_shit_jis">Shift-JIS</label>
-			<input id="charset_utf_8" type="radio" name="charset" value="UTF-8" />
-			<label for="charset_utf_8">UTF-8</label>
-		)';
+		SOY2::import("module.plugins.b2_order_csv.form.B2ExportFormPage");
+		$form = SOY2HTMLFactory::createInstance("B2ExportFormPage");
+		$form->execute();
+		return $form->getObject();
 	}
 
 	/**

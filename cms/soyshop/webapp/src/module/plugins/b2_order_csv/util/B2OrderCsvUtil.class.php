@@ -3,13 +3,21 @@
 class B2OrderCsvUtil {
 
 	public static function getConfig(){
-		return SOYShop_DataSets::get("b2_order_csv", array(
-				"number" => "",
-				"name" => "",
-				"auto_insert_shipping_date" => 0,	//出荷予定日
-				"neko_pos" => 0,	//ネコポス
-				"customer_code" => ""	//ご請求先顧客コード
-		));
+		return self::_getConfig();
+	}
+
+	private static function _getConfig(){
+		static $cnf;
+		if(is_null($cnf)){
+			$cnf = SOYShop_DataSets::get("b2_order_csv", array(
+					"number" => "",
+					"name" => "",
+					"auto_insert_shipping_date" => 0,	//出荷予定日
+					"neko_pos" => 0,	//ネコポス
+					"customer_code" => ""	//ご請求先顧客コード
+			));
+		}
+		return $cnf;
 	}
 
 	public static function saveConfig($values){
@@ -43,6 +51,10 @@ class B2OrderCsvUtil {
 	}
 
 	public static function isDaibiki($orderId){
+		return self::_isDaibiki($orderId);
+	}
+
+	private static function _isDaibiki($orderId){
 		$attrs = soyshop_get_order_object($orderId)->getAttributeList();
 		if(!count($attrs)) return false;
 
@@ -53,6 +65,22 @@ class B2OrderCsvUtil {
 		}
 
 		return false;
+	}
+
+	public static function getInvoiceType(){
+
+		//隠し機能 $_POST["invoice"]がある場合はそれを利用する
+		if(isset($_POST["invoice"]) && is_numeric($_POST["invoice"])) return (int)$_POST["invoice"];
+
+		//送り状 代引き:2、それ以外:0、ネコポス:7	//代引きを最優先にする
+		if(self::_isDaibiki($orderId)) return 2;
+
+		$cnf = self::_getConfig();
+		if(isset($cnf["neko_pos"]) && $cnf["neko_pos"] == 1){
+			return 7;
+		}else{
+			return 0;
+		}
 	}
 
 	public static function mbConvertKana($str){
