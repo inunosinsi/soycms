@@ -12,8 +12,11 @@ class reCAPTCHAv3OnOutput extends SOYShopSiteOnOutputAction{
 	function onOutput($html){
 		SOY2::import("module.plugins.reCAPTCHAv3.util.reCAPTCHAUtil");
 		$config = reCAPTCHAUtil::getConfig();
+		if(!isset($config["page_id"]) || !is_numeric($config["page_id"]) || (int)$config["page_id"] != (int)SOYSHOP_PAGE_ID) return $html;
+
 		if(!isset($config["site_key"]) || !isset($config["secret_key"])) return $html;
 		if(!strlen($config["site_key"]) || !strlen($config["secret_key"])) return $html;
+
 
 		//URLの末尾が.xmlだった時は以下の処理を行わない
 		if(strpos($_SERVER["REQUEST_URI"], ".xml") !== false) return $html;
