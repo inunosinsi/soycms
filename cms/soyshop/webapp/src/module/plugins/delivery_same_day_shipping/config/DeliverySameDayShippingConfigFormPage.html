@@ -1,139 +1,149 @@
 <div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<p class="alert alert-info">
+<div class="alert alert-info">
 	このプラグインは営業日カレンダープラグインと連携します。
 	<!-- soy:display="installed_calendar_plugin" --><a soy:id="calendar_config_link">営業日の設定画面を開く</a><!-- /soy:display="installed_calendar_plugin" -->
 	<!-- soy:display="no_installed_calendar_plugin" -->営業日カレンダープラグインをインストールしてください。<!-- /soy:display="no_installed_calendar_plugin" -->
-</p>
+</div>
 
 <form soy:id="form">
-<h3>タイトル</h3>
-<dl>
-	<dd><input type="text" class="form-control" soy:id="title"></dd>
-</dl>
+	<div class="form-group">
+		<label>タイトル</label>
+		<input type="text" class="form-control" soy:id="title">
+	</div>
 
-<h3>定休日設定</h3>
-<dl>
-	<dd><a soy:id="calendar_config_link*">営業日カレンダーの設定画面を開く</a></dd>
-</dl>
+	<div class="form-group">
+		<label>定休日設定</label><br>
+		<a soy:id="calendar_config_link*" class="btn btn-primary">営業日カレンダーの設定画面を開く</a>
+	</div>
 
-<h3>営業時間設定</h3>
-<dl>
-	<dd>
-		<select soy:id="business_hour_start_hour"></select>:<select soy:id="business_hour_start_min"></select>〜
-		<select soy:id="business_hour_end_hour"></select>:<select soy:id="business_hour_end_min"></select>
-	</dd>
-</dl>
+	<div class="form-group">
+		<label>営業時間設定</label>
+		<div class="form-inline">
+			<select soy:id="business_hour_start_hour"></select>:<select soy:id="business_hour_start_min"></select>〜
+			<select soy:id="business_hour_end_hour"></select>:<select soy:id="business_hour_end_min"></select>
+		</div>
+	</div>
 
-<h3>午前の注文時の設定</h3>
-<dl>
-	<dd>
-		<input type="number" soy:id="delivery_after_day_am">日後に納品
-		<h2>カートに表示する文言</h2>
-		<textarea soy:id="delivery_after_description_am"></textarea><br>
-		※発送日の#SHIPPING_YEAR#、#SHIPPING_MONTH#と#SHIPPING_DAY#が使用できます。<br>
-		※到着予定日の#ARRIVAL_YEAR#、#ARRIVAL_MONTH#と#ARRIVAL_DAY#も使用できます。
+	<div class="form-group">
+		<label>午前の注文時の設定</label>
+		<div class="form-inline">
+			<input type="number" soy:id="delivery_after_day_am">日後に納品
+			<h4>カートに表示する文言</h4>
+			<textarea soy:id="delivery_after_description_am" class="form-control"></textarea>
+			<div class="alert alert-warning">
+				※発送日の#SHIPPING_YEAR#、#SHIPPING_MONTH#と#SHIPPING_DAY#が使用できます。<br>
+				※到着予定日の#ARRIVAL_YEAR#、#ARRIVAL_MONTH#と#ARRIVAL_DAY#も使用できます。
+			</div>
+		</div>
+	</div>
 
-	</dd>
-</dl>
+	<div class="form-group">
+		<label>午後の注文時の設定</label>
+		<div class="form-inline">
+			<input type="number" soy:id="delivery_after_day_pm">日後に納品
+			<h4>カートに表示する文言</h4>
+			<textarea soy:id="delivery_after_description_pm" class="form-control"></textarea>
+			<div class="alert alert-warning">
+				※発送日の#SHIPPING_YEAR#、#SHIPPING_MONTH#と#SHIPPING_DAY#が使用できます。<br>
+				※到着予定日の#ARRIVAL_YEAR#、#ARRIVAL_MONTH#と#ARRIVAL_DAY#も使用できます。
+			</div>
+		</div>
+	</div>
 
-<h3>午後の注文時の設定</h3>
-<dl>
-	<dd>
-		<input type="number" soy:id="delivery_after_day_pm">日後に納品
-		<h2>カートに表示する文言</h2>
-		<textarea soy:id="delivery_after_description_pm"></textarea><br>
-		※発送日の#SHIPPING_YEAR#、#SHIPPING_MONTH#と#SHIPPING_DAY#が使用できます。<br>
-		※到着予定日の#ARRIVAL_YEAR#、#ARRIVAL_MONTH#と#ARRIVAL_DAY#も使用できます。
-	</dd>
-</dl>
-
-<h3>営業時間外、定休日の注文時の設定</h3>
-<dl>
-	<dd>
-		翌営業日の<input type="number" soy:id="delivery_after_day_regular">日後に納品
-		<h2>カートに表示する文言</h2>
-		<textarea soy:id="delivery_after_description_regular"></textarea><br>
-		※翌営業日の表示として#SHIPPING_YEAR#、#SHIPPING_MONTH#と#SHIPPING_DAY#が使用できます。<br>
-		※到着予定日の#ARRIVAL_YEAR#、#ARRIVAL_MONTH#と#ARRIVAL_DAY#も使用できます。
-	</dd>
-</dl>
-
-<div class="text-center">
-	<input type="submit" class="btn btn-primary btn-lg" value="変更">
-</div>
-
-<h3>配送料無料設定</h3>
-<table class="table table-striped" style="">
-	<tr>
-		<th style="width:20%;">購入金額</th>
-		<td>
-			<input type="number" class="alR text" name="" soy:id="price_free" style="text-align:right;ime-mode:inactive;width:30%;"/>
-			&nbsp;円以上お買い上げの方は配送料無料
-		</td>
-	</tr>
-</table>
-
-<div class="text-center">
-	<input type="submit" class="btn btn-primary btn-lg" value="変更">
-</div>
-
-<h3>都道府県別料金</h3>
-<div class="table-responsive">
-
-	<table class="table table-striped" style="">
-		<tr>
-			<th style="width:20%;">
-				<input type="checkbox" id="toggle_checkbox" onclick="toggle_check(this);return true;" />
-				<label for="toggle_checkbox">一括設定</label>
-			</th>
-			<td>
-				<input class="form-control" type="number" style="text-align:right;width:30%;" id="toggle_price" value="" />
-				<button type="button" onclick="toggle_all();">設定する</button>
-			</td>
-		</tr>
-	</table>
-
-	<table class="table table-striped" style="width:35%;float:left;margin-left:10%;">
-		<tr>
-			<th style="width:5em;">県名</th>
-			<th style="width:5em;">送料</th>
-		</tr>
-		<!--  soy:id="prices" -->
-		<tr>
-		<th >
-			<input type="checkbox" class="price_input_check" soy:id="area_check" />
-		</th>
-		<td>
-			<input class="alR text" style="width: 100px;" type="number" soy:id="price" /> 円
-		</td>
-		</tr>
-
-		<!--  soy:id="second_table" -->
-		</table>
-		<table class="table table-striped" style="width:35%;float:left;margin-left:5%;" >
-			<tr>
-				<th style="width:5em;">県名</th>
-				<th style="width:5em;">送料</th>
-			</tr>
-		<!--  /soy:id="second_table" -->
-
-		<!--  /soy:id="prices" -->
-
-	</table>
+	<div class="form-group">
+		<label>営業時間外、定休日の注文時の設定</label>
+		<div class="form-inline">
+			翌営業日の<input type="number" soy:id="delivery_after_day_regular">日後に納品
+			<h4>カートに表示する文言</h4>
+			<textarea soy:id="delivery_after_description_regular" class="form-control"></textarea>
+			<div class="alert alert-warning">
+				※翌営業日の表示として#SHIPPING_YEAR#、#SHIPPING_MONTH#と#SHIPPING_DAY#が使用できます。<br>
+				※到着予定日の#ARRIVAL_YEAR#、#ARRIVAL_MONTH#と#ARRIVAL_DAY#も使用できます。
+			</div>
+		</div>
+	</div>
 
 	<div class="text-center">
 		<input type="submit" class="btn btn-primary btn-lg" value="変更">
 	</div>
 
-</div>
+	<h4>配送料無料設定</h4>
+	<div class="table-responsive">
+		<table class="table table-striped" style="">
+			<tr>
+				<th style="width:20%;">購入金額</th>
+				<td>
+					<input type="number" class="alR text" name="" soy:id="price_free" style="text-align:right;ime-mode:inactive;width:30%;"/>
+					&nbsp;円以上お買い上げの方は配送料無料
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+
+	<br>
+
+	<h4>都道府県別料金</h4>
+	<div class="table-responsive">
+		<table class="table table-striped" style="">
+			<tr>
+				<th style="width:20%;">
+					<input type="checkbox" id="toggle_checkbox" onclick="toggle_check(this);return true;" />
+					<label for="toggle_checkbox">一括設定</label>
+				</th>
+				<td>
+					<div class="form-inline">
+						<input class="form-control" type="number" style="text-align:right;width:30%;" id="toggle_price" value="" />
+						<button type="button" class="btn btn-primary" onclick="toggle_all();">設定する</button>
+					</div>
+				</td>
+			</tr>
+		</table>
+
+		<table class="table table-striped" style="width:35%;float:left;margin-left:10%;">
+			<tr>
+				<th style="width:5em;">県名</th>
+				<th style="width:5em;">送料</th>
+			</tr>
+			<!--  soy:id="prices" -->
+			<tr>
+			<th >
+				<input type="checkbox" class="price_input_check" soy:id="area_check" />
+			</th>
+			<td>
+				<input class="alR text" style="width: 100px;" type="number" soy:id="price" /> 円
+			</td>
+			</tr>
+
+			<!--  soy:id="second_table" -->
+			</table>
+			<table class="table table-striped" style="width:35%;float:left;margin-left:5%;" >
+					<tr>
+						<th style="width:5em;">県名</th>
+						<th style="width:5em;">送料</th>
+					</tr>
+				<!--  /soy:id="second_table" -->
+
+				<!--  /soy:id="prices" -->
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
 </form>
 
-<section>
-	<h4>テンプレートへの記述</h4>
+<br>
 
-	<h3>使用できるタグ</h3>
+<h4>テンプレートへの記述</h4>
+
+<div class="table-responsive">
 	<table class="table table-striped">
+		<caption>使用できるタグ</caption>
 		<thead>
 			<tr>
 				<th>dsd&#58;id</th>
@@ -179,9 +189,9 @@
 			</tr>
 		</tbody>
 	</table>
-</section>
+</div>
 
-<pre style="border:1px solid #000000;padding:5px 20px;margin:5px 35px; overflow-x: auto;">
+<pre>
 &lt;!-- dsd:id="description" /--&gt;
 
 発送日:
@@ -206,7 +216,6 @@ function toggle_check(all){
 		}
 
 	});
-
 }
 
 function toggle_all(){
@@ -217,7 +226,6 @@ function toggle_all(){
 		if(ele.attr("checked")){
 			$("#" + ele.attr("targetId")).val(price);
 		}
-
 	});
 }
 </script>
