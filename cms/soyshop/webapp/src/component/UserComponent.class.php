@@ -172,10 +172,8 @@ class UserComponent {
 			"selected" => ($user->getGender() === 1 || $user->getGender() === "1")
 		));
 
-		$gender = $user->getGender();
 		$page->addLabel("gender_text", array(
-			"text" => ($gender == SOYShop_User::USER_SEX_MALE) ? MessageManager::get("SEX_MALE") :
-					( ($gender == SOYShop_User::USER_SEX_FEMALE) ? MessageManager::get("SEX_FEMALE") : "" )
+			"text" => self::_genderText($user->getGender())
 		));
 
 		//生年月日 年
@@ -758,6 +756,13 @@ class UserComponent {
 		}
 
 		return $res;
+	}
+
+	private function _genderText($gender){
+		if(is_null($gender)) return "";
+		if($gender == SOYShop_User::USER_SEX_MALE) return MessageManager::get("SEX_MALE");
+		if($gender == SOYShop_User::USER_SEX_FEMALE) return MessageManager::get("SEX_FEMALE");
+		return "";
 	}
 
 	/**
