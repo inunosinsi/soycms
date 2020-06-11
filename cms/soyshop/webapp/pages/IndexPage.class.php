@@ -141,15 +141,4 @@ class IndexPage extends WebPage{
 			"list" => $contents
 		));
 	}
-
-	function getSubMenu(){
-		$key = "_common.TopPageSubMenu";
-
-		try{
-			$subMenuPage = SOY2HTMLFactory::createInstance($key, array());
-			return $subMenuPage->getObject();
-		}catch(Exception $e){
-			return null;
-		}
-	}
 }
