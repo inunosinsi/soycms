@@ -131,7 +131,7 @@ class ItemListComponent extends HTMLList{
 
 		//背景色の変更用
 		$this->addModel("item_stock_error_tr", array(
-			($isItemStockError || !$item->checkAcceptOrder())
+			"visible" => ($isItemStockError || !$item->checkAcceptOrder())
 		));
 
 		$this->addLabel("item_stock_error", array(
