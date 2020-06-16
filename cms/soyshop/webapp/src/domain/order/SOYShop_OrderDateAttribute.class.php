@@ -156,6 +156,8 @@ class SOYShop_OrderDateAttributeConfig{
 	private $attributeYearStart;
 	private $attributeYearEnd;
 
+	private $orderSearchItem;	//管理画面の注文一覧の検索項目として追加する
+
 	private $defaultValue;
 	private $emptyValue;
 	private $config;
@@ -211,6 +213,14 @@ class SOYShop_OrderDateAttributeConfig{
 	function setAttributeYearEnd($attributeYearEnd){
 		$this->attributeYearEnd = $attributeYearEnd;
 	}
+
+	function getOrderSearchItem(){
+		return (isset($this->config["orderSearchItem"])) ? $this->config["orderSearchItem"] : null;
+	}
+	function setOrderSearchItem($orderSearchItem){
+		$this->orderSearchItem = $orderSearchItem;
+	}
+
 	function getFormName(){
 		return 'customfield_module[' . $this->getFieldId() . ']';
 	}

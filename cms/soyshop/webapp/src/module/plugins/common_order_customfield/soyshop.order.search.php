@@ -4,17 +4,13 @@ SOY2::import("module.plugins.common_order_date_customfield.component.Customfield
 class OrderCustomfieldOrderSearch extends SOYShopOrderSearch{
 
 	private $dao;
-	private $list;
+	private $list = array();
 
 	private function prepare(){
 		if(!$this->dao){
 			$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
 			foreach(SOYShop_OrderAttributeConfig::load() as $config){
-				//管理画面側なら必ずフォームを表示する or 公開側の場合はisAdminOnlyが0であれば表示する
-				if(
-					(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE) ||
-					($config->getIsAdminOnly() != SOYShop_OrderAttribute::DISPLAY_ADMIN_ONLY)
-				) {
+				if((int)$config->getOrderSearchItem() === 1){
 					$this->list[] = $config;
 				}
 			}
@@ -53,8 +49,6 @@ class OrderCustomfieldOrderSearch extends SOYShopOrderSearch{
 		if(count($this->list)){
 			$array = array();
 			foreach($this->list as $field){
-				//セレクトボックス以外は今の所なし
-				if($field->getType() != SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT) continue;
 
 				$html = array();
 				switch($field->getType()){

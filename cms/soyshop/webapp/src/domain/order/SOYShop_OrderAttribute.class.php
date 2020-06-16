@@ -208,6 +208,8 @@ class SOYShop_OrderAttributeConfig{
 	private $attributeOther;
 	private $attributeOtherText;
 
+	private $orderSearchItem;	//管理画面の注文一覧の検索項目として追加する
+
 	private $defaultValue;
 	private $emptyValue;
 
@@ -256,6 +258,13 @@ class SOYShop_OrderAttributeConfig{
 	}
 	function setAttributeOtherText($attributeOtherText){
 		$this->attributeOtherText = $attributeOtherText;
+	}
+
+	function getOrderSearchItem(){
+		return (isset($this->config["orderSearchItem"])) ? $this->config["orderSearchItem"] : null;
+	}
+	function setOrderSearchItem($orderSearchItem){
+		$this->orderSearchItem = $orderSearchItem;
 	}
 
 	function getOption() {

@@ -153,6 +153,18 @@ class FieldListComponent extends HTMLList{
 			"value" => $entity->getAttributeOtherText()
 		));
 
+		//許可するのはセレクトボックスのみ　@ToDo 後々項目は追加していきたい
+		$this->addModel("is_order_search", array(
+			"visible" => ($entity->getType() == SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT)
+		));
+
+		$this->addCheckBox("add_order_search_item", array(
+			"name" => "config[orderSearchItem]",
+			"value" => 1,
+			"selected" => $entity->getOrderSearchItem(),
+			"label" => "検索項目として追加する"
+		));
+
 		$this->addModel("with_file_options", array(
 			"visible" => $entity->hasFileOption()
 		));

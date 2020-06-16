@@ -124,6 +124,18 @@ class FieldListComponent extends HTMLList{
 			"size" => 5
 		));
 
+		//許可するのは日付のみ　@ToDo 後々項目は追加していきたい
+		$this->addModel("is_order_search", array(
+			"visible" => ($entity->getType() == SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE)
+		));
+
+		$this->addCheckBox("add_order_search_item", array(
+			"name" => "config[orderSearchItem]",
+			"value" => 1,
+			"selected" => $entity->getOrderSearchItem(),
+			"label" => "検索項目として追加する"
+		));
+
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
 			"onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'

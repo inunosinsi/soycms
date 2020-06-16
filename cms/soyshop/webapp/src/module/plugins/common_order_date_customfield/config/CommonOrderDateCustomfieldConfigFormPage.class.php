@@ -45,7 +45,7 @@ class CommonOrderDateCustomfieldConfigFormPage extends WebPage{
 
 			$configs = SOYShop_OrderDateAttributeConfig::load(true);
 			$config = $configs[$fieldId];
-			$value = self::checkValidate($_POST["config"]);
+			$value = self::_checkValidate($_POST["config"]);
 			$config->setConfig($value);
 
 			SOYShop_OrderDateAttributeConfig::save($configs);
@@ -87,7 +87,7 @@ class CommonOrderDateCustomfieldConfigFormPage extends WebPage{
 		SOY2PageController::jump("Config.Detail?plugin=common_order_date_customfield&updated");
     }
 
-    private function checkValidate($value){
+    private function _checkValidate($value){
 
     	$start = $value["attributeYearStart"];
     	$end = $value["attributeYearEnd"];
@@ -108,6 +108,7 @@ class CommonOrderDateCustomfieldConfigFormPage extends WebPage{
 
     	$value["attributeYearStart"] = $start;
     	$value["attributeYearEnd"] = $end;
+		$value["orderSearchItem"] = (isset($value["orderSearchItem"])) ? 1 : 0;
 
     	return $value;
     }

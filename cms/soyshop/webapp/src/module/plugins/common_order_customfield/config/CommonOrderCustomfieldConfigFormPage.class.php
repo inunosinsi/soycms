@@ -44,7 +44,7 @@ class CommonOrderCustomfieldConfigFormPage extends WebPage{
 
 			$configs = SOYShop_OrderAttributeConfig::load(true);
 			$config = $configs[$fieldId];
-			$value = self::checkValidate($_POST["config"]);
+			$value = self::_checkValidate($_POST["config"]);
 			$config->setConfig($value);
 
 			SOYShop_OrderAttributeConfig::save($configs);
@@ -88,7 +88,8 @@ class CommonOrderCustomfieldConfigFormPage extends WebPage{
 		SOY2PageController::jump("Config.Detail?plugin=common_order_customfield&updated");
     }
 
-    private function checkValidate($value){
+    private function _checkValidate($value){
+		$value["orderSearchItem"] = (isset($value["orderSearchItem"])) ? 1 : 0;
     	$value["attributeOther"] = (isset($value["attributeOther"])) ? 1 : 0;
     	return $value;
     }
