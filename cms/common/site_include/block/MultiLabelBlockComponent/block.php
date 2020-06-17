@@ -153,6 +153,16 @@ class MultiLabelBlockComponent implements BlockComponent{
 			//do nothing
 		}
 
+		//最後に無理やりソートする
+		if(count($array)){
+			$sort = array();
+			foreach($array as $idx => $obj){
+				$sort[$idx] = $obj->getCdate();
+			}
+			$o = ($this->order == self::ORDER_ASC) ? SORT_ASC : SORT_DESC;
+			array_multisort($sort, $o, $array);
+		}
+
 		SOY2::import("site_include.block._common.MultiEntryListComponent");
 		$inst = SOY2HTMLFactory::createInstance("MultiEntryListComponent",array(
 			"list" => $array,
