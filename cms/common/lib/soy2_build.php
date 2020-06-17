@@ -7072,16 +7072,21 @@ class HTMLPage extends SOYBodyComponentBase{
 		$filePath = $this->getCacheFilePath();
 		$this->createCacheFile();
 		$this->createPermanentAttributesCache();
-		$page = &HTMLPage::getPage();
-		if($this->getId()){
-			$page[$this->getId()] = $this->_soy2_page;
+		if(file_exists($filePath)){	//キャッシュファイルを作成できなかった場合
+			$page = &HTMLPage::getPage();
+			if($this->getId()){
+				$page[$this->getId()] = $this->_soy2_page;
+			}else{
+				$page = $this->_soy2_page;
+			}
+			ob_start();
+			include($filePath);
+			$html = ob_get_contents();
+			ob_end_clean();
 		}else{
-			$page = $this->_soy2_page;
+			$html = "";
 		}
-		ob_start();
-		include($filePath);
-		$html = ob_get_contents();
-		ob_end_clean();
+
 		$layoutDir = SOY2HTMLConfig::LayoutDir();
 		$layout = $this->getLayout();
 		if($layoutDir && is_file($layoutDir . $layout)){

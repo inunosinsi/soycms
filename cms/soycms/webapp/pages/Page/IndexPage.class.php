@@ -6,5 +6,4 @@ class IndexPage extends CMSWebPageBase{
 		parent::__construct();
 		SOY2HTMLFactory::createInstance("Page.List.TreePage")->display();
 	}
-
 }
