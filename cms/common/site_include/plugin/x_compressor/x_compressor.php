@@ -20,7 +20,7 @@ class CompressorPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3193",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.3"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -101,10 +101,11 @@ class CompressorPlugin{
 			if(!strlen($line)) continue;
 
 			//preタブであった場合 様々なパターンのpreがあるので要検討
-			if(stripos($line, "<pre>") !== false){
+			preg_match('/<pre.*?>/', $line, $res);
+			if(isset($res[0])){
 				$pre = array();
 				$pre[] = $line;
-				if(strpos($line, "</pre>") === false) {	//同じ行に</pre>がある場合はおかしくなるのでチェックしておく
+				if(stripos($line, "</pre>") === false) {	//同じ行に</pre>がある場合はおかしくなるのでチェックしておく
 					for(;;){
 						$i++;
 						$line = $lines[$i];

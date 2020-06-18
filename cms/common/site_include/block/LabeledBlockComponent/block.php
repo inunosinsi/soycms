@@ -34,6 +34,7 @@ class LabeledBlockComponent implements BlockComponent{
 	 */
 	public function getViewPage($page){
 		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+		$logic->setBlockClass(get_class($this));
 
 		$this->displayCountFrom = max($this->displayCountFrom,1);//0件目は認めない→１件目に変更
 

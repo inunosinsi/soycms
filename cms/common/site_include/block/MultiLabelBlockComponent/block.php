@@ -102,6 +102,7 @@ class MultiLabelBlockComponent implements BlockComponent{
 			}
 
 			$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+			$logic->setBlockClass(get_class($this));
 
 			$this->displayCountFrom = max($this->displayCountFrom, 1);//0件目は認めない→１件目に変更
 
@@ -151,16 +152,6 @@ class MultiLabelBlockComponent implements BlockComponent{
 			$blogPageDAO = null;
 		}catch(Exception $e){
 			//do nothing
-		}
-
-		//最後に無理やりソートする
-		if(count($array)){
-			$sort = array();
-			foreach($array as $idx => $obj){
-				$sort[$idx] = $obj->getCdate();
-			}
-			$o = ($this->order == self::ORDER_ASC) ? SORT_ASC : SORT_DESC;
-			array_multisort($sort, $o, $array);
 		}
 
 		SOY2::import("site_include.block._common.MultiEntryListComponent");

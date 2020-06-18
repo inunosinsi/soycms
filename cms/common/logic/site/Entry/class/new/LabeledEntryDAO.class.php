@@ -8,6 +8,12 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	const ORDER_ASC = 1;
 	const ORDER_DESC = 2;
 
+	private $blockClass;
+
+	function setBlockClass($blockClass){
+		$this->blockClass =$blockClass;
+	}
+
 	/**
 	 * @index id
 	 * @order EntryLabel.display_order ,Entry.id
@@ -34,9 +40,9 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		//Order
 		if($orderReverse){
-			$sql .= self::addOrder("ASC", $labelIds);
+			$sql .= self::_addOrder("ASC", $labelIds);
 		}else{
-			$sql .= self::addOrder("DESC", $labelIds);
+			$sql .= self::_addOrder("DESC", $labelIds);
 		}
 
 		if(is_numeric($limit)) $sql .= " LIMIT " . $limit;
@@ -156,9 +162,9 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		//Order
 		if($orderReverse){
-			$sql .= self::addOrder("ASC", $labelIds);
+			$sql .= self::_addOrder("ASC", $labelIds);
 		}else{
-			$sql .= self::addOrder("DESC", $labelIds);
+			$sql .= self::_addOrder("DESC", $labelIds);
 		}
 
 		if(is_numeric($limit)) {
@@ -259,10 +265,14 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 	abstract function getOpenEntryCountByLabelIds($labelids,$now);
 
 	//ソート
-	private function addOrder($sort="ASC", $labelIds){
+	private function _addOrder($sort="ASC", $labelIds){
 		if(!is_array($labelIds) || !count($labelIds)) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;
 		$labelId = (int)$labelIds[count($labelIds) - 1];	//末尾のラベルID
 		if(count($labelIds) === 1 && $labelId === 0) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;	//記事毎の表示順が使えるブロックはラベルブロックのみ
+
+		//ブログリンクブロックの場合
+		if(isset($this->blockClass) && strpos($this->blockClass, "Multi") !== false) return " Order By entry.cdate " . $sort . ", entry.id " . $sort;
+
 		return " Order By (SELECT display_order FROM EntryLabel WHERE label_id = " . $labelId . " AND entry_id = entry.id), entry.cdate " . $sort . ", entry.id " . $sort;
 	}
 
