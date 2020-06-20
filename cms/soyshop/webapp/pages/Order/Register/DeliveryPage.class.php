@@ -27,8 +27,7 @@ class DeliveryPage extends WebPage{
 			$moduleId = @$_POST["delivery_module"];
 			$cart->setAttribute("delivery_module", $moduleId);
 
-			$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-			$deliveryModule = $moduleDAO->getByPluginId($moduleId);
+			$deliveryModule = soyshop_get_plugin_object($moduleId);
 			SOYShopPlugin::load("soyshop.delivery", $deliveryModule);
 
 			SOYShopPlugin::invoke("soyshop.delivery", array(
@@ -95,10 +94,10 @@ class Delivery_methodList extends HTMLList{
 		$this->addLabel("delivery_description", array(
 			"html" => (isset($entity["description"])) ? $entity["description"] : ""
 		));
-		
+
 		$this->addLabel("delivery_charge", array(
 			"text" => (isset($entity["price"]) && strlen($entity["price"])) ? number_format($entity["price"]) . " 円" : ""
-		));		
+		));
 	}
 
 	function getSelected() {

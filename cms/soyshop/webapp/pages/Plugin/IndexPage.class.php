@@ -16,12 +16,8 @@ class IndexPage extends WebPage{
 			if(isset($_POST["Plugin"])){
 				foreach($_POST["Plugin"] as $pluginId => $int){
 					if((int)$int < 1) $int = SOYShop_PluginConfig::DISPLAY_ORDER_MAX;
-
-					try{
-						$plugin = $pluginDao->getById($pluginId);
-					}catch(Exception $e){
-						continue;
-					}
+					$plugin = soyshop_get_plugin_object($pluginId);
+					if(is_null($plugin->getId())) continue;
 
 					if($int != $plugin->getDisplayOrder()){
 						$plugin->setDisplayOrder($int);
@@ -71,5 +67,3 @@ class IndexPage extends WebPage{
 function my_sort_by_type($a, $b){
 	return ($a->getType() >= $b->getType());
 }
-
-?>

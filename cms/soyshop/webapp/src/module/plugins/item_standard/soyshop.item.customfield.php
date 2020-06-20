@@ -9,7 +9,6 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 	private $itemDao;
 
 	function doPost(SOYShop_Item $item){
-
 		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 
 		if(isset($_POST["Standard"])){
@@ -76,7 +75,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 					//
 				}
 
-				//SINGLE(またはDOWNLOAD)に戻すとき、小商品をすべて削除したい
+				//SINGLE(またはDOWNLOAD)に戻すとき、子商品をすべて削除したい
 				if($item->getType() == SOYShop_Item::TYPE_SINGLE || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD){
 					$children = soyshop_get_item_children($item->getId());
 					if(!count($children)) return;
@@ -107,7 +106,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 				foreach($cands as $cand){
 					if(strpos($child->getName(), $cand)) $hit = true;
 				}
-
+				
 				if($hit){
 					$child->setIsOpen(SOYShop_Item::IS_OPEN);
 				}else{

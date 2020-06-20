@@ -68,7 +68,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
         $page = $this->getPageObject();
         $obj = $page->getPageObject();
-		
+
         //SearchItemUtilの作成。ソート順作成のためlistPageオブジェクトを渡す
         $logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array(
             "sort" => $obj
@@ -176,28 +176,20 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
         $res = array();
         $total = 0;
 
-        try{
-            $dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-            try{
-                $module = $dao->getByPluginId($obj->getModuleId());
-            }catch(Exception $e){
-                $module = new SOYShop_PluginConfig();
-            }
+		$plugin = soyshop_get_plugin_object($obj->getModuleId());
+		if(!is_numeric($plugin->getId())){
+			SOYShopPlugin::load("soyshop.item.list", $plugin);
+			$delegete = SOYShopPlugin::invoke("soyshop.item.list", array(
+				"mode" => "search"
+			));
 
-            SOYShopPlugin::load("soyshop.item.list", $module);
-            $delegetor = SOYShopPlugin::invoke("soyshop.item.list", array(
-                "mode" => "search"
-            ));
-
-            $limit = $this->limit;
+			$limit = $this->limit;
             $offset = $limit * ($this->currentPage - 1);
 
-            $res = $delegetor->getItems($obj, $offset, $limit);
-            $total = $delegetor->getTotal($obj);
-        }catch(Exception $e){
-            //
-        }
-
+            $res = $delegete->getItems($obj, $offset, $limit);
+            $total = $delegete->getTotal($obj);
+		}
+		
         return array($res, $total);
     }
 

@@ -6,35 +6,22 @@
  */
 class DetailPage extends WebPage{
 
-	public $module;
-
 	function __construct(){
+		if(!isset($_GET["plugin"])) SOY2PageController::jump("Config");
 
-		if(!isset($_GET["plugin"])){
-			SOY2PageController::jump("Config");
-		}
-
-		$plugin = $_GET["plugin"];
-
-
-		$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-    	$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
-
-		try{
-    		$this->module = $dao->getByPluginId($plugin);
-		}catch(Exception $e){
-			SOY2PageController::jump("Config");
-		}
+		$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
+		$plugin = soyshop_get_plugin_object($_GET["plugin"]);
+		if(is_null($plugin->getId())) SOY2PageController::jump("Config");
 
 		parent::__construct();
 
-		SOYShopPlugin::load("soyshop.config",$this->module);
+		SOYShopPlugin::load("soyshop.config",$plugin);
 		$delegate = SOYShopPlugin::invoke("soyshop.config", array(
 			"mode" => "config"
 		));
 
 		$this->addLink("plugin_detail_link", array(
-			"link" => SOY2PageController::createLink("Plugin.Detail." . $this->module->getId())
+			"link" => SOY2PageController::createLink("Plugin.Detail." . $plugin->getId())
 		));
 
 		$this->addLabel("plugin_title", array(

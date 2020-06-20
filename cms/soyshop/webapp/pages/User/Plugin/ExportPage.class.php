@@ -3,7 +3,7 @@
 class ExportPage extends WebPage{
 
     function __construct() {
-    	
+
     	//ログインチェック	ログインしていなければ強制的に止める
 		if(!soyshop_admin_login()){
 			echo "invalid plugin id";
@@ -15,35 +15,26 @@ class ExportPage extends WebPage{
 			echo "invalid plugin id";
 			exit;
 		}
-		
+
 		$search = array();
 		if(isset($_POST["search"])){
 			parse_str($_POST["search"], $search);
-		}			
+		}
 		$_POST["search"] = $search;
-		
 
-		$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-    	$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
 
-		try{
-	    	$this->module = $dao->getByPluginId($plugin);
-
-			SOYShopPlugin::load("soyshop.user.export", $this->module);
-			$delegate = SOYShopPlugin::invoke("soyshop.user.export", array(
+		$plugin = soyshop_get_plugin_object($plugin);
+		if(!is_null($plugin->getId())){
+			SOYShopPlugin::load("soyshop.user.export", $plugin);
+			SOYShopPlugin::invoke("soyshop.user.export", array(
 				"mode" => "export"
-			));
-
-			$delegate->export(self::getUsers());
-
-		}catch(Exception $e){
-			//
+			))->export(self::_getUsers());
 		}
 
 		exit;
     }
 
-	private function getUsers(){
+	private function _getUsers(){
 		//検索用のロジック作成
 		$searchLogic = SOY2Logic::createInstance("logic.user.SearchUserLogic");
 
@@ -54,4 +45,3 @@ class ExportPage extends WebPage{
 		return $searchLogic->getUsers();
 	}
 }
-?>

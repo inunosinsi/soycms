@@ -108,10 +108,8 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	function getItemsByCustom($obj){
 		$res = array();
 
-		try{
-			$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-			$module = $dao->getByPluginId($obj->getModuleId());
-
+		$module = soyshop_get_plugin_object($obj->getModuleId());
+		if(!is_null($module->getId())){
 			SOYShopPlugin::load("soyshop.item.list", $module);
 			$delegetor = SOYShopPlugin::invoke("soyshop.item.list", array(
 				"mode" => "search"
@@ -121,8 +119,6 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			$limit = $config["count"];
 
 			$res = $delegetor->getItems($obj, 0, $limit);
-		}catch(Exception $e){
-			//
 		}
 
 		return $res;
@@ -200,4 +196,3 @@ class GoogleShoppingRssBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	}
 }
 SOYShopPlugin::extension("soyshop.site.beforeoutput", "google_shopping_rss", "GoogleShoppingRssBeforeOutput");
-?>

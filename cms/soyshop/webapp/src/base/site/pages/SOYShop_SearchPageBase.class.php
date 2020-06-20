@@ -30,16 +30,13 @@ class SOYShop_SearchPageBase extends SOYShopPageBase{
 		/**
 		 * 検索モジュールの読み込み
 		 */
-		try{
-			$moduleId = $obj->getModule();
-			$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-			$module = $moduleDAO->getByPluginId($moduleId);
-			SOYShopPlugin::load("soyshop.search", $module);
+		$plugin = soyshop_get_plugin_object($moduleId);
+		if(!is_null($plugin->getId())){
+			SOYShopPlugin::load("soyshop.search", $plugin);
 			$delegate = SOYShopPlugin::invoke("soyshop.search", array(
 				"page" => $page
 			));
-
-		}catch(Exception $e){
+		}else{
 			SOYShopPlugin::load("soyshop.search");
 			$delegate = new SOYShopSearchModule();
 		}

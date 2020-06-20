@@ -3,11 +3,7 @@
 class SOYShopPluginUtil {
 
     public static function checkIsActive($pluginId){
-		try{
-			return (SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId($pluginId)->getIsActive() == SOYShop_PluginConfig::PLUGIN_ACTIVE);
-		}catch(Exception $e){
-			return false;
-		}
+		return (soyshop_get_plugin_object($pluginId)->getIsActive() == SOYShop_PluginConfig::PLUGIN_ACTIVE);
     }
 
     public static function checkPluginListFile(){
@@ -15,17 +11,6 @@ class SOYShopPluginUtil {
 	}
 
 	public static function getPluginById($pluginId){
-		static $dao, $plugins;
-		if(isset($plugins[$pluginId])) return $plugins[$pluginId];
-
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-
-		try{
-			$plugins[$pluginId] = $dao->getByPluginId($pluginId);
-		}catch(Exception $e){
-			$plugins[$pluginId] = new SOYShop_PluginConfig();
-		}
-
-		return $plugins[$pluginId];
+		return soyshop_get_plugin_object($pluginId);
 	}
 }

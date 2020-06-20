@@ -9,11 +9,9 @@ class Cart05Page extends MainCartPageBase{
 	function doPost(){
 
 		$cart = CartLogic::getCart();
-		$paymentModuleId = $cart->getAttribute("payment_module");
 
-		$paymentModule = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId($paymentModuleId);
+		$paymentModule = soyshop_get_plugin_object($cart->getAttribute("payment_module"));
 		SOYShopPlugin::load("soyshop.payment", $paymentModule);
-
 		SOYShopPlugin::invoke("soyshop.payment.option", array(
 			"cart" => $cart,
 			"mode" => "post"
@@ -37,9 +35,7 @@ class Cart05Page extends MainCartPageBase{
 			exit;
 		}
 
-		$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-		$paymentModule = $moduleDAO->getByPluginId($paymentModule);
-
+		$paymentModule = soyshop_get_plugin_object($paymentModule);
 		SOYShopPlugin::load("soyshop.payment", $paymentModule);
 
 		$this->addLabel("option_page", array(

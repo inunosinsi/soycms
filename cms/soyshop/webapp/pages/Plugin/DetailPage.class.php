@@ -1,8 +1,7 @@
 <?php
 class DetailPage extends WebPage{
 
-	var $id;
-	private $module;
+	private $id;
 
 	function doPost(){
 
@@ -10,10 +9,12 @@ class DetailPage extends WebPage{
 
 	    	$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
 	    	$logic->prepare();
-			if($this->module->getIsActive()) {
-				$logic->uninstallModule($this->module->getId());
+
+			$module = soyshop_get_plugin_object($this->id);
+			if($module->getIsActive()) {
+				$logic->uninstallModule($module->getId());
 			}else{
-				$logic->installModule($this->module->getId());
+				$logic->installModule($module->getId());
 			}
 
     	}
@@ -24,13 +25,8 @@ class DetailPage extends WebPage{
 
     function __construct($args) {
     	$this->id = (isset($args[0])) ? (int)$args[0] : "";
-    	$dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-
-    	try{
-    		$this->module = $dao->getById($this->id);
-    	}catch(Exception $e){
-    		SOY2PageController::jump("Plugin");
-    	}
+    	$module = soyshop_get_plugin_object($this->id);
+		if(is_null($module->getId())) SOY2PageController::jump("Plugin");
 
     	parent::__construct();
 
@@ -38,35 +34,35 @@ class DetailPage extends WebPage{
 
     	$this->addInput("button", array(
     		"name" => "change_status",
-    		"value" => ($this->module->getIsActive()) ? "アンインストール":"インストール" ,
+    		"value" => ($module->getIsActive()) ? "アンインストール":"インストール" ,
     		"type" => "submit"
     	));
 
     	$this->addLabel("module_name_text", array(
-			"text" => $this->module->getName()
+			"text" => $module->getName()
 		));
     	$this->addLabel("module_name", array(
-			"text" => $this->module->getName()
+			"text" => $module->getName()
 		));
 
     	$this->addLabel("module_id", array(
-			"text" => $this->module->getPluginId()
+			"text" => $module->getPluginId()
 		));
 		$this->addLabel("module_version", array(
-			"text" => $this->module->getVersion()
+			"text" => $module->getVersion()
 		));
 		$this->addLabel("module_status", array(
-			"text" => (($this->module->isActive()) ? "インストール済み" : "未インストール")
+			"text" => (($module->isActive()) ? "インストール済み" : "未インストール")
 		));
 		$this->addLabel("module_description", array(
-			"text" => $this->module->getDescription()
+			"text" => $module->getDescription()
 		));
 
 		/** 詳細説明があるプラグインの場合は、説明のURLを記載する **/
-		DisplayPlugin::toggle("display_module_detail_link", (!is_null($this->module->getLink()) && strlen($this->module->getLink()) > 0));
+		DisplayPlugin::toggle("display_module_detail_link", (!is_null($module->getLink()) && strlen($module->getLink()) > 0));
 		$this->addLink("module_detail_link", array(
-			"link" => $this->module->getLink(),
-			"text" => (!is_null($this->module->getLabel()) && strlen($this->module->getLabel()) > 0) ? $this->module->getLabel() : $this->module->getLink()
+			"link" => $module->getLink(),
+			"text" => (!is_null($module->getLabel()) && strlen($module->getLabel()) > 0) ? $module->getLabel() : $module->getLink()
 		));
  		$html = $this->getPluginInfo($this->id);
     	$this->addLabel("plugin_info", array(
@@ -79,11 +75,11 @@ class DetailPage extends WebPage{
     /**
      * @return html
      */
-    function getPluginInfo($pluginId){
-		SOYShopPlugin::load("soyshop.info", $this->module);
-
+	 function getPluginInfo($pluginId){
+	 	$module = soyshop_get_plugin_object($pluginId);
+		SOYShopPlugin::load("soyshop.info", $module);
 		return SOYShopPlugin::display("soyshop.info", array(
-			"active" => $this->module->isActive()
+			"active" => $module->isActive()
 		));
     }
 }

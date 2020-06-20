@@ -200,12 +200,7 @@ class MainMyPagePageBase extends WebPage{
 					break;
 				}
 			}
-
-			try{
-				$module = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByPluginId($moduleId);
-			}catch(Exception $e){
-				$module = new SOYShop_PluginConfig();
-			}
+			$module = soyshop_get_plugin_object($moduleId);
 		}
 		return $module;
 	}

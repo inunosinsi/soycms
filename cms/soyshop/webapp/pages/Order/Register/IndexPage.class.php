@@ -64,8 +64,7 @@ class IndexPage extends WebPage{
 			$cart->setAttribute("payment_module", $moduleId);
 
 			//選択されたプラグインのみを読み込む：plugins/$moduleId/soyshop.payment.php
-			$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-			$paymentModule = $moduleDAO->getByPluginId($moduleId);
+			$paymentModule = soyshop_get_plugin_object($moduleId);
 			SOYShopPlugin::load("soyshop.payment", $paymentModule);
 
 			//選択されたプラグインを実行
@@ -81,8 +80,7 @@ class IndexPage extends WebPage{
 			$cart->setAttribute("delivery_module",$moduleId);
 
 			//選択されたプラグインのみを読み込む
-			$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-			$deliveryModule = $moduleDAO->getByPluginId($moduleId);
+			$deliveryModule = soyshop_get_plugin_object($moduleId);
 			SOYShopPlugin::load("soyshop.delivery", $deliveryModule);
 
 			//選択されたプラグインを実行

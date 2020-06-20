@@ -30,8 +30,7 @@ class PaymentPage extends WebPage{
 			$cart->setAttribute("payment_module",$moduleId);
 
 			//特定のプラグインのみを読み込む：plugins/$moduleId/soyshop.payment.php
-			$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-			$paymentModule = $moduleDAO->getByPluginId($moduleId);
+			$paymentModule = soyshop_get_plugin_object($moduleId);
 			SOYShopPlugin::load("soyshop.payment",$paymentModule);
 
 			//実行

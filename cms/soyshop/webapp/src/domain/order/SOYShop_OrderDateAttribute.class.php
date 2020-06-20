@@ -235,69 +235,77 @@ class SOYShop_OrderDateAttributeConfig{
 
 		switch($this->getType()){
 			case "date":
-				$date = $values["date"];
+				$date = (isset($values["date"])) ? $values["date"] : null;
+				$year = (isset($values["year"])) ? (int)$values["year"] : null;
+				$month = (isset($values["month"])) ? (int)$values["month"] : null;
+				$day = (isset($values["day"])) ? (int)$values["day"] : null;
+
 
 				$body = '<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[date][year]"'
 					   .'>' . "\n"
-					   .$this->getYearForm($date["year"]) . "\n"
+					   .$this->getYearForm($year) . "\n"
 					   .'</select>年' . "\n"
 					   .'<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[date][month]"'
 					   .'>' . "\n"
-					   .$this->getMonthForm($date["month"]) . "\n"
+					   .$this->getMonthForm($month) . "\n"
 					   .'</select>月' . "\n"
 					   .'<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[date][day]"'
 					   .'>' . "\n"
-					   .$this->getDayForm($date["day"]) . "\n"
+					   .$this->getDayForm($day) . "\n"
 					   .'</select>日' . "\n";
 
 				break;
 
 			case "period":
-				$start = $values["start"];
-				$end = $values["end"];
+				$startYear = (isset($values["start"]["year"])) ? $values["start"]["year"] : null;
+				$startMonth = (isset($values["start"]["month"])) ? $values["start"]["month"] : null;
+				$startDay = (isset($values["start"]["day"])) ? $values["start"]["day"] : null;
+				$endYear = (isset($values["end"]["year"])) ? $values["end"]["year"] : null;
+				$endMonth = (isset($values["end"]["month"])) ? $values["end"]["month"] : null;
+				$endDay = (isset($values["end"]["day"])) ? $values["end"]["day"] : null;
 
 				$body = '<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[start][year]"'
 					   .'>' . "\n"
-					   .$this->getYearForm($start["year"]) . "\n"
+					   .$this->getYearForm($startYear) . "\n"
 					   .'</select>年' . "\n"
 					   .'<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[start][month]"'
 					   .'>' . "\n"
-					   .$this->getMonthForm($start["month"]) . "\n"
+					   .$this->getMonthForm($startMonth) . "\n"
 					   .'</select>月' . "\n"
 					   .'<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[start][day]"'
 					   .'>' . "\n"
-					   .$this->getDayForm($start["day"]) . "\n"
+					   .$this->getDayForm($startDay) . "\n"
 					   .'</select>日' . "\n"
 					   .'～'
 					   .'<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[end][year]"'
 					   .'>' . "\n"
-					   .$this->getYearForm($end["year"]) . "\n"
+					   .$this->getYearForm($endYear) . "\n"
 					   .'</select>年' . "\n"
 					   .'<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[end][month]"'
 					   .'>' . "\n"
-					   .$this->getMonthForm($end["month"]) . "\n"
+					   .$this->getMonthForm($endMonth) . "\n"
 					   .'</select>月' . "\n"
 					   .'<select'
 					   .' id="' . $h_formID . '"'
 					   .' name="' . $h_formName . '[end][day]"'
 					   .'>' . "\n"
-					   .$this->getDayForm($end["day"]) . "\n"
+					   .$this->getDayForm($endDay) . "\n"
 					   .'</select>日' . "\n";
 				break;
 			default:

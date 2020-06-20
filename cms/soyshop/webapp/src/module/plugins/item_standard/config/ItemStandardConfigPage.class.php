@@ -1,27 +1,27 @@
 <?php
 
 class ItemStandardConfigPage extends WebPage{
-	
+
 	private $configObj;
-	
+
 	function __construct(){
 		SOY2::import("module.plugins.item_standard.util.ItemStandardUtil");
 		SOY2::import("module.plugins.item_standard.component.StandardListComponent");
 	}
-	
+
 	function doPost(){
-		
+
 		if(soy2_check_token()){
-			
+
 			if(isset($_POST["id"]) && strlen($_POST["id"]) && isset($_POST["standard"]) && strlen($_POST["standard"])){
 				$config = array("id" => trim($_POST["id"]), "standard" => trim($_POST["standard"]), "order" => null);
 				$configs = ItemStandardUtil::getConfig();
 				$configs[] = $config;
-				
+
 				ItemStandardUtil::saveConfig($configs);
 				$this->configObj->redirect("created");
 			}
-			
+
 			if(isset($_POST["update"])){
 				$configs = $_POST["Config"];
 				$orders = array();
@@ -34,26 +34,26 @@ class ItemStandardConfigPage extends WebPage{
 			}
 		}
 	}
-	
+
 	function execute(){
 		if(isset($_GET["remove"])) self::remove();
-		
+
 		parent::__construct();
-		
+
 		DisplayPlugin::toggle("created", isset($_GET["created"]));
 		DisplayPlugin::toggle("removed", isset($_GET["removed"]));
-				
+
 		$this->addForm("form");
-		
+
 		$this->createAdd("standard_list", "StandardListComponent", array(
 			"list" => ItemStandardUtil::getConfig()
 		));
-		
+
 		$this->addLabel("sample", array(
 			"text" => self::buildSample()
 		));
 	}
-	
+
 	private function remove(){
 		if(soy2_check_token()){
 			$configs = ItemStandardUtil::getConfig();
@@ -63,7 +63,7 @@ class ItemStandardConfigPage extends WebPage{
 			$this->configObj->redirect("removed");
 		}
 	}
-	
+
 	private function buildSample(){
 		$html = array();
 		$html[] = "<!-- block:id=\"item\" -->";
@@ -77,9 +77,8 @@ class ItemStandardConfigPage extends WebPage{
 		$html[] = "<!-- /block:id=\"item\" -->";
 		return implode("\n", $html);
 	}
-	
+
 	function setConfigObj($configObj) {
 		$this->configObj = $configObj;
 	}
 }
-?>

@@ -4,7 +4,6 @@ SOY2::import("domain.config.SOYShop_ShopConfig");
 class ShopConfigPage extends WebPage{
 
 	private $config;
-	private $pluginDao;
 
 	function doPost(){
 		$config = $this->config;
@@ -64,7 +63,6 @@ class ShopConfigPage extends WebPage{
 
 	function __construct() {
 		$this->config = SOYShop_ShopConfig::load();
-		$this->pluginDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 
 		parent::__construct();
 
@@ -543,9 +541,8 @@ class ShopConfigPage extends WebPage{
 	}
 
 	private function getTaxModuleList(){
-
 		try{
-			$plugins = $this->pluginDao->getByType("tax");
+			$plugins = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO")->getByType("tax");
 		}catch(Exception $e){
 			return array();
 		}
@@ -562,13 +559,8 @@ class ShopConfigPage extends WebPage{
 	}
 
 	private function buildTaxModuleLink($pluginId){
-		try{
-			$plugin = $this->pluginDao->getByPluginId($pluginId);
-		}catch(Exception $e){
-			return "";
-		}
-
-		if($plugin->getIsActive() == SOYShop_PluginConfig::PLUGIN_INACTIVE) return "";
+		$plugin = soyshop_get_plugin_object($pluginId);
+		if(is_null($plugin->getId()) || $plugin->getIsActive() == SOYShop_PluginConfig::PLUGIN_INACTIVE) return "";
 
 		return SOY2PageController::createLink("Config.Detail?plugin=" . $pluginId);
 	}

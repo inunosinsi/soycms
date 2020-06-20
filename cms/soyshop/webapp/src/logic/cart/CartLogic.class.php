@@ -93,8 +93,7 @@ class CartLogic extends SOY2LogicBase{
 	function addItem($itemId, $count = 1){
 
 		try{
-			$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-			$item = $itemDAO->getById($itemId);
+			$item = soyshop_get_item_object($itemId);
 
 			//追加不可能
 			if(false == $item->isOrderable()){
@@ -336,15 +335,8 @@ class CartLogic extends SOY2LogicBase{
 
 		if(!isset($pluginId)) return false;
 
-   		$pluginDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-
-   		try{
-   			$plugin = $pluginDao->getByPluginId($pluginId);
-   		}catch(Exception $e){
-   			return false;
-   		}
-
-   		if($plugin->getIsActive() == SOYShop_PluginConfig::PLUGIN_INACTIVE) return false;
+		$plugin = soyshop_get_plugin_object($pluginId);
+   		if(is_null($plugin->getId()) || $plugin->getIsActive() == SOYShop_PluginConfig::PLUGIN_INACTIVE) return false;
 
    		SOYShopPlugin::load("soyshop.tax.calculation", $plugin);
 		SOYShopPlugin::invoke("soyshop.tax.calculation", array(
@@ -852,18 +844,15 @@ class CartLogic extends SOY2LogicBase{
 
 		SOY2::import("util.SOYShopPluginUtil");
 		$reserveCalendarMode = SOYShopPluginUtil::checkIsActive("reserve_calendar");
-		if($reserveCalendarMode){
-			SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
-		}
+		if($reserveCalendarMode) SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+
 		foreach($items as $index => $itemOrder){
 			$itemId = $itemOrder->getItemId();
 
 			//管理画面から購入時の未登録商品の購入
-			if($itemId < 1){
-				continue;
-			}
+			if($itemId < 1) continue;
 
-			$item = $itemDAO->getById($itemId);
+			$item = soyshop_get_item_object($itemId);
 
 			//非公開
 			if(false == $item->isPublished()){
@@ -888,7 +877,7 @@ class CartLogic extends SOY2LogicBase{
 				$childItemStock = $config->getChildItemStock();
 				if($childItemStock && is_numeric($item->getType())){
 					//親商品の残り在庫数を取得
-					$parent = $this->getParentOpenStock($item->getType());
+					$parent = soyshop_get_item_object($item->getType());
 					$openStock = $parent->getStock();
 
 					//子商品の注文数の合計を取得
@@ -930,18 +919,6 @@ class CartLogic extends SOY2LogicBase{
 		if(count($items) === 0){
 			throw new SOYShop_EmptyCartException("");
 		}
-	}
-
-	//親商品の在庫数
-	function getParentOpenStock($itemId){
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		try{
-			$parent = $itemDAO->getById($itemId);
-		}catch(Exception $e){
-			$parent = new SOYShop_Item();
-		}
-
-		return $parent;
 	}
 
 	//子商品の注文数の合計
@@ -1135,17 +1112,15 @@ class CartLogic extends SOY2LogicBase{
 			if($item->getItemId() > 0){
 				//子商品の在庫管理設定をオン(子商品購入時に在庫を減らさない)
 				$noChildItemStock = $config->getNoChildItemStock();
-				if(!$noChildItemStock){
-					$itemDAO->orderItem($item->getItemId(), $item->getItemCount());
-				}
+				if(!$noChildItemStock) $itemDAO->orderItem($item->getItemId(), $item->getItemCount());
 
 				//子商品の在庫管理設定をオン(子商品購入時に親商品の在庫も減らす)
 				$childItemStock = $config->getChildItemStock();
 				if($childItemStock){
 					//SOYShop_Item
-					$itemObj = $itemDAO->getById($item->getItemId());
+					$itemObj = soyshop_get_item_object($item->getItemId());
 					if(is_numeric($itemObj->getType())){
-						$parent = $itemDAO->getById($itemObj->getType());
+						$parent = soyshop_get_item_object($itemObj->getType());
 						$itemDAO->orderItem($parent->getId(), $item->getItemCount());
 					}
 				}
@@ -1167,6 +1142,8 @@ class CartLogic extends SOY2LogicBase{
 			))->getAddition();
 			$item->setIsAddition($add);
 
+			//どこかで商品名がnullになる場合があるのでその対処
+			if(is_null($item->getItemName())) $item->setItemName(soyshop_get_item_object($item->getItemId())->getName());
 			$itemOrderId = $itemOrderDAO->insert($item);
 
 			// SOYShop_ItemOrderに関することなら何でもできる

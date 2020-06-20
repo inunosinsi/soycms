@@ -175,6 +175,28 @@ function soyshop_get_order_object($orderId){
 	return $orders[$orderId];
 }
 
+/** IDもしくはプラグインIDからプラグインオブジェクトを取得する **/
+function soyshop_get_plugin_object($pluginId){
+	static $plugins, $dao;
+	if(is_null($plugins)) $plugins = array();
+	if(is_null($dao)) $dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
+	if(is_numeric($pluginId)){	//数字のIDの場合
+		try{
+			$plugins[$pluginId] = $dao->getById($pluginId);
+		}catch(Exception $e){
+			$plugins[$pluginId] = new SOYShop_PluginConfig();
+		}
+	}else{	//プラグインIDの場合
+		try{
+			$plugins[$pluginId] = $dao->getByPluginId($pluginId);
+		}catch(Exception $e){
+			$plugins[$pluginId] = new SOYShop_PluginConfig();
+		}
+	}
+
+	return $plugins[$pluginId];
+}
+
 /**
  * 商品一覧のURLを取得する
  */

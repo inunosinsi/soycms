@@ -15,21 +15,15 @@ class FunctionPage extends WebPage{
 
 		error_reporting(E_ALL ^ E_NOTICE);
 
-		$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-		try{
-			$module = $moduleDAO->getByPluginId($moduleId);
-		}catch(Exception $e){
-			SOY2PageController::jump("Order");
-		}
+		$module = soyshop_get_plugin_object($moduleId);
+		if(is_null($module->getId())) SOY2PageController::jump("Order");
 
 		SOYShopPlugin::load("soyshop.order.function", $module);
-
-		$html = SOYShopPlugin::display("soyshop.order.function", array(
+		echo SOYShopPlugin::display("soyshop.order.function", array(
 			"orderId" => $id,
 			"mode" => "select"
 		));
 
-		echo $html;
 		exit;
 	}
 }

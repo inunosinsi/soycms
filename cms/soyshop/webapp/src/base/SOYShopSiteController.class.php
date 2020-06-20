@@ -371,16 +371,11 @@ class SOYShopSiteController extends SOY2PageController{
      * @param string $pluginId $_GET["soyshop_notification"]
      */
     private function executeNotificationAction($pluginId){
-
-        try{
-            $moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-            $paymentModule = $moduleDAO->getByPluginId($pluginId);
-
-            SOYShopPlugin::load("soyshop.notification", $paymentModule);
+		$paymentModule = soyshop_get_plugin_object($pluginId);
+		if(!is_null($paymentModule->getId())){
+			SOYShopPlugin::load("soyshop.notification", $paymentModule);
             SOYShopPlugin::invoke("soyshop.notification");
-        }catch(Exception $e){
-            //
-        }
+		}
     }
 
 	/**
@@ -428,15 +423,11 @@ class SOYShopSiteController extends SOY2PageController{
      * ダウンロード販売
      */
     private function executeDownloadAction($pluginId){
-        try{
-            $moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-            $downloadModule = $moduleDAO->getByPluginId($pluginId);
-
-            SOYShopPlugin::load("soyshop.download",$downloadModule);
+		$downloadModule = soyshop_get_plugin_object($pluginId);
+		if(!is_null($downloadModule->getId())){
+			SOYShopPlugin::load("soyshop.download",$downloadModule);
             SOYShopPlugin::invoke("soyshop.download");
-        }catch(Exception $e){
-            //
-        }
+		}
     }
 
     /**

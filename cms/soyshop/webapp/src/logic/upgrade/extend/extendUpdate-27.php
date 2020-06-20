@@ -13,14 +13,10 @@ for($i = 0; $i < count($plIds); $i++){
 	$pluginId = "arrival_" . $plIds[$i];
 	$logic->installModule($pluginId);
 
-	//順番の登録
-	try{
-		$plugin = $pluginDao->getByPluginId($pluginId);
-	}catch(Exception $e){
-		var_dump($e);
-		continue;
-	}
+	$plugin = soyshop_get_plugin_object($pluginId);
+	if(is_null($plugin->getId())) continue;
 
+	//順番の登録
 	$displayOrder = ($i === 0) ? 1 : 10 + $i;
 	$plugin->setDisplayOrder($displayOrder);
 

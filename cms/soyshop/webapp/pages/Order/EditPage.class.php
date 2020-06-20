@@ -248,7 +248,6 @@ class EditPage extends WebPage{
 				//モジュール分の加算
 				$modulePrice = 0;
 
-				$moduleDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 				foreach($modules as $moduleId => $module){
 
 					//税金関係の場合はモジュールから削除して、後で再計算して登録
@@ -258,13 +257,8 @@ class EditPage extends WebPage{
 					}
 
 					//モジュールの再計算のための拡張ポイントを利用する
-					try{
-						$moduleObj = $moduleDao->getByPluginId($moduleId);
-					}catch(Exception $e){
-						$moduleObj = null;
-					}
-
-					if(isset($moduleObj)){
+					$moduleObj = soyshop_get_plugin_object($moduleId);
+					if(!is_null($moduleObj->getId())){
 						SOYShopPlugin::load("soyshop.order.module", $moduleObj);
 						$delegate = SOYShopPlugin::invoke("soyshop.order.module", array(
 							"mode" => "edit",
@@ -388,18 +382,10 @@ class EditPage extends WebPage{
 	//外税 $reducedRateTotalは軽減税率商品金額の合算
 	private function setConsumptionTax($config, $total, $reducedRateTotal){
 		$pluginId = $config->getConsumptionTaxModule();
-
 		if(!isset($pluginId)) return null;
 
-   		$pluginDao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-
-   		try{
-   			$plugin = $pluginDao->getByPluginId($pluginId);
-   		}catch(Exception $e){
-   			return null;
-   		}
-
-   		if($plugin->getIsActive() == SOYShop_PluginConfig::PLUGIN_INACTIVE) return null;
+		$plugin = soyshop_get_plugin_object($pluginId);
+   		if(is_null($plugin->getId()) || $plugin->getIsActive() == SOYShop_PluginConfig::PLUGIN_INACTIVE) return null;
 
    		SOYShopPlugin::load("soyshop.tax.calculation", $plugin);
 		return SOYShopPlugin::invoke("soyshop.tax.calculation", array(
