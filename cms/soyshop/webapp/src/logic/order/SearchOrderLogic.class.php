@@ -41,7 +41,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 	protected function getSearchSQL(){
 		$table = $this->getTable();
 
-		$sql = "select ".SOYShop_Order::getTableName() . ".*"." from " . $table . " ";
+		$sql = "select DISTINCT ".SOYShop_Order::getTableName() . ".*"." from " . $table . " ";
 		if(count($this->where) > 0){
 			$sql .= " where ".implode(" and ", $this->where);
 		}
