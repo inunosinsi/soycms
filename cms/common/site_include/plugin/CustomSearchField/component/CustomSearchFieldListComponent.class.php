@@ -63,7 +63,18 @@ class CustomSearchFieldListComponent extends HTMLList{
         $this->addInput("update_advance", array(
             "value"=>"設定保存",
             "onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'
+		));
+
+		$this->addModel("checkbox_admin_br_area", array(
+            "visible" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX)
         ));
+		
+		$this->addCheckBox("checkbox_admin_br", array(
+			"name" => "config[br]",
+			"value" => 1,
+			"selected" => (isset($entity["br"]) && $entity["br"] == 1),
+            "label" => "各項目毎に改行コードを追加する"
+		));
 
         $this->addModel("radio_search_form_default_area", array(
             "visible" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_RADIO)

@@ -19,7 +19,8 @@ class FieldFormComponent {
                 return "<input type=\"number\" name=\"custom_search[" . $fieldId . "]\" value=\"" . $value . "\" class=\"form-control\" style=\"width:150px;\">";
 
             case CustomSearchFieldUtil :: TYPE_CHECKBOX :
-                $html = array();
+			    $html = array();
+				$isBr = (isset($field["br"]) && $field["br"] == 1);
 
 				$opt = $field["option"];
                 if (strlen($opt) > 0) {
@@ -29,10 +30,11 @@ class FieldFormComponent {
                     foreach ($options as $option) {
                         $oVal = trim($option);
                         if (in_array($oVal, $chks)) {
-                            $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
+                            $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\" checked=\"\"> " . $oVal . "</label>";
                         } else {
-                            $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
+                            $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\"> " . $oVal . "</label>";
                         }
+						if($isBr) $html[] = "<br>";
                     }
 					$html[] = "</div>";
                 }
