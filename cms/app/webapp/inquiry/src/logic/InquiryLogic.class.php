@@ -98,7 +98,7 @@ class InquiryLogic extends SOY2LogicBase{
     	$inquiry->setFormUrl($url);
 
     	//問い合わせ番号生成->保存
-    	$inquiry->setTrackingNumber($this->getTrackingNumber($inquiry));
+    	if(is_null($inquiry->getTrackingNumber()))$inquiry->setTrackingNumber($this->getTrackingNumber($inquiry));
 
     	$inquiryDao->update($inquiry);
     	return true;
