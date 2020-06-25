@@ -28,7 +28,7 @@ function soycms_tag_cloud($html, $page){
 				$dao = new SOY2DAO();
 
 				//タグを設定した記事が公開であること。記事が任意のラベルと紐付いていること
-				$sql = "SELECT lnk.word_id, dic.word, COUNT(lnk.word_id) AS word_id_count FROM TagCloudLinking lnk ".
+				$sql = "SELECT lnk.word_id, dic.word, dic.hash, COUNT(lnk.word_id) AS word_id_count FROM TagCloudLinking lnk ".
 						"INNER JOIN TagCloudDictionary dic ".
 						"ON lnk.word_id = dic.id ".
 						"INNER JOIN Entry ent ".
@@ -63,7 +63,7 @@ function soycms_tag_cloud($html, $page){
 				}catch(Exception $e){
 					//
 				}
-
+				
 				//ページのURLを調べる
 				if(count($words)){
 					$url = TagCloudUtil::getUrlByPageId($pageId);

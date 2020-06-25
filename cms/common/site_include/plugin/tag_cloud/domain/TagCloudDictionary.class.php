@@ -9,6 +9,7 @@ class TagCloudDictionary {
 	 */
 	private $id;
 	private $word;
+	private $hash;
 
 	function getId(){
 		return $this->id;
@@ -22,5 +23,12 @@ class TagCloudDictionary {
 	}
 	function setWord($word){
 		$this->word = $word;
+	}
+
+	function getHash(){
+		return $this->hash;
+	}
+	function setHash($hash){
+		$this->hash = $hash;
 	}
 }

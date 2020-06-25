@@ -59,15 +59,31 @@ class MPFRouteUtil {
 					if(isset($param["next"])) $next = $cnf["next"];
 
 					break;
-				case MultiplePageFormUtil::TYPE_CONFIRM:
-					// SOY Inqiuryと連携している場合はデータベースに値を格納する
-					SOY2::import("site_include.plugin.multiple_page_form.util.SOYInquiryConnectUtil");
-					$conCnf = SOYInquiryConnectUtil::getConfig();
-					if(isset($conCnf["form_id"]) && strlen($conCnf["form_id"])){
-						SOYInquiryConnectUtil::connect($conCnf["form_id"]);
-					}
+				case MultiplePageFormUtil::TYPE_EXTEND:
+					SOY2::import("site_include.plugin.multiple_page_form.util.MPFTypeExtendUtil");
+					if(!isset($cnf["extend"]) || !strlen($cnf["extend"])) multiple_page_form_empty_echo();
+
+					$classFilePath = MPFTypeExtendUtil::getPageDir() . $cnf["extend"] . ".class.php";
+					if(!file_exists($classFilePath)) multiple_page_form_empty_echo();
+
+					include_once($classFilePath);
+					$form = SOY2HTMLFactory::createInstance($cnf["extend"]);
+					$form->setHash($hash);
+					$form->doPost();
 
 					if(isset($param["next"])) $next = $cnf["next"];
+
+					break;
+				case MultiplePageFormUtil::TYPE_CONFIRM:
+					// SOY Inqiuryと連携している場合はデータベースに値を格納する
+					if(isset($param["next"])){
+						SOY2::import("site_include.plugin.multiple_page_form.util.SOYInquiryConnectUtil");
+						$conCnf = SOYInquiryConnectUtil::getConfig();
+						if(isset($conCnf["form_id"]) && strlen($conCnf["form_id"])){
+							SOYInquiryConnectUtil::connect($conCnf["form_id"]);
+						}
+						$next = $cnf["next"];
+					}
 					break;
 			}
 
@@ -87,6 +103,12 @@ class MPFRouteUtil {
 	public static function getValues($hash){
 		$values = self::_getValues();
 		return isset($values[$hash]) ? $values[$hash] : array();
+	}
+
+	public static function save($hash, $v){
+		$values = self::_getValues();
+		$values[$hash] = $v;
+		self::_save($values);
 	}
 
 	//確認用

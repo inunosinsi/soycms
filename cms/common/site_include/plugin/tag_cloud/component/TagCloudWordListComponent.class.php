@@ -13,6 +13,12 @@ class TagCloudWordListComponent extends HTMLList {
 			"attr:class" => self::_buildClass($rank)
 		));
 
+		$this->addLink("tag_hash_link", array(
+			"soy2prefix" => "cms",
+			"link" => (isset($entity["hash"]) && is_string($entity["hash"])) ? $this->url . "?tagcloud=" . $entity["hash"] : "",
+			"attr:class" => self::_buildClass($rank)
+		));
+
 		$this->addLabel("tag", array(
 			"soy2prefix" => "cms",
 			"text" => (isset($entity["word"])) ? $entity["word"] : ""

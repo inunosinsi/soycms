@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.2"
+			"version"=>"1.3"
 		));
 
 		//active or non active
@@ -23,6 +23,10 @@ class TagCloudPlugin{
 			));
 
 			if(!defined("_SITE_ROOT_")){	//管理画面側
+				//ハッシュ値が登録されているか？調べる
+				SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
+				TagCloudUtil::setHash();
+
 				CMSPlugin::setEvent("onEntryCreate", self::PLUGIN_ID, array($this, "onEntryUpdate"));
 				CMSPlugin::setEvent("onEntryUpdate", self::PLUGIN_ID, array($this, "onEntryUpdate"));
 
@@ -128,7 +132,6 @@ class TagCloudPlugin{
 					}
 				}
 			}
-
 		}
 	}
 
@@ -145,8 +148,22 @@ class TagCloudPlugin{
 	}
 
 	function onLoad(){
-		if(!isset($_GET["tagcloud"]) || !is_numeric($_GET["tagcloud"])) return array();
-		$wordId = (int)$_GET["tagcloud"];
+		$wordId = null;
+		if(isset($_GET["tagcloud"])){
+			if(is_numeric($_GET["tagcloud"])){
+				$wordId = (int)$_GET["tagcloud"];
+			//ハッシュ値の場合
+			}else{
+				SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
+				try{
+					$wordId = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getByHash($_GET["tagcloud"])->getId();
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+
+		if(is_null($wordId)) return array();
 
 		//検索結果ブロックプラグインのUTILクラスを利用する
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
@@ -199,10 +216,14 @@ class TagCloudPlugin{
 
 	function onPageOutput($obj){
 		$tag = "";
-		if(isset($_GET["tagcloud"]) && is_numeric($_GET["tagcloud"]) && (int)$_GET["tagcloud"] > 0){
+		if(isset($_GET["tagcloud"])){
 			SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
 			try{
-				$tag = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getById($_GET["tagcloud"])->getWord();
+				if(is_numeric($_GET["tagcloud"])){
+					$tag = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getById($_GET["tagcloud"])->getWord();
+				}else{
+					$tag = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getByHash($_GET["tagcloud"])->getWord();
+				}
 			}catch(Exception $e){
 				//
 			}
@@ -244,10 +265,7 @@ class TagCloudPlugin{
 
 	public static function register(){
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new TagCloudPlugin();
-		}
-
+		if(is_null($obj)) $obj = new TagCloudPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }

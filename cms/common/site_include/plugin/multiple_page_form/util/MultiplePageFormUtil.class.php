@@ -120,7 +120,7 @@ class MultiplePageFormUtil {
 		return array(
 			self::TYPE_CHOICE => "選択式",
 			self::TYPE_FORM => "入力フォーム",
-			//self::TYPE_EXTEND => "高度なページ",	//一旦封じておく
+			self::TYPE_EXTEND => "高度なページ",
 			self::TYPE_CONFIRM => "確認画面",
 			self::TYPE_COMPLETE => "完了画面"
 		);

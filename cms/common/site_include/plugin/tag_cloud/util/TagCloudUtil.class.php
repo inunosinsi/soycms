@@ -91,6 +91,25 @@ class TagCloudUtil {
 		return $tags[$entryId];
 	}
 
+	public static function setHash(){
+		$wordIds = self::_dicDao()->getNoHashWordIds();
+		if(!count($wordIds)) return "";
+
+		foreach($wordIds as $id){
+			try{
+				//下記二行でhashの自動生成
+				$obj = self::_dicDao()->getById($id);
+				self::_dicDao()->update($obj);
+			}catch(Exception $e){
+				//
+			}
+		}
+	}
+
+	public static function generateHash($str){
+		return substr(md5($str), 0, 16);
+	}
+
 	private static function _linkDao(){
 		static $dao;
 		if(is_null($dao)) {

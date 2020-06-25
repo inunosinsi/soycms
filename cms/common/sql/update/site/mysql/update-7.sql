@@ -1,0 +1,1 @@
+ALTER TABLE TagCloudDictionary ADD COLUMN hash CHAR(16) UNIQUE;

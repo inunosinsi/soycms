@@ -73,7 +73,7 @@ class SOYInquiryConnectUtil {
 
 			//管理者用メールボディ
 			$mailBody = self::_convertString($body, $replaceList);
-    		if($form->getConfigObject()->getIsIncludeAdminURL()){
+			if($form->getConfigObject()->getIsIncludeAdminURL()){
 				//$mailBody[0] .= "\r\n\r\n-- \r\n問い合わせへのリンク:\r\n" . $this->getInquiryLink($inquiry, $this->serverConfig) . "\r\n";
     		}
 
@@ -110,14 +110,19 @@ class SOYInquiryConnectUtil {
 					ob_end_clean();
 				}
 
-				$mailLogic->sendMail(
-					$mailAddress,
-					self::_convertString($mailCnf["title"], $replaceList),
-					$mailBody,
-					$serverConfig->getAdministratorName(),
-					$serverConfig->getReturnMailAddress(),
-					$serverConfig->getReturnName()
-				);
+				try{
+					$mailLogic->sendMail(
+						$mailAddress,
+						self::_convertString($mailCnf["title"], $replaceList),
+						$mailBody,
+						$serverConfig->getAdministratorName(),
+						$serverConfig->getReturnMailAddress(),
+						$serverConfig->getReturnName()
+					);
+				}catch(Exception $e){
+					var_dump($e);
+				}
+
 			}
 		}
 
