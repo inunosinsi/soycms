@@ -20,7 +20,7 @@ class CompressorPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3193",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.3"
+			"version"=>"0.4"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -118,6 +118,21 @@ class CompressorPlugin{
 				}
 
 				$line = "\n" . rtrim(implode("\n", $pre), "\n") ."\n";
+			}
+
+			//リンクでhttpから始まる絶対パスの場合、スラッシュから始まる絶対パスに変更
+			if(stripos($line, "<a") !== false){
+				preg_match_all('/href=\"(.*?)\"/', $line, $tmp);
+				if(isset($tmp[1]) && is_array($tmp[1])){
+					foreach($tmp[1] as $old){
+						if(preg_match('/https?:\/\/' . $_SERVER["HTTP_HOST"] . '\//', $old, $tmp2)){
+							$new = str_replace("https://", "", $old);
+							$new = str_replace("http://", "", $new);
+							$new = str_replace($_SERVER["HTTP_HOST"], "", $new);
+							$line = str_replace($old, $new, $line);
+						}
+					}
+				}
 			}
 
 			$h[] = $line;
