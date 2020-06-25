@@ -1,0 +1,144 @@
+<div class="text-left">
+	<a soy:link="Plugin.Config?multiple_page_form" class="btn btn-primary">一覧ページに戻る</a>
+</div>
+
+<br>
+
+<h4 soy:id="page_name">最初のページ</h4>
+
+<form soy:id="form">
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+				<th class="col-lg-1">ページ種別</th>
+				<td soy:id="page_type"></td>
+			</tr>
+			<tr>
+				<th>説明</th>
+				<td><textarea soy:id="page_description" class="form-control"></textarea></td>
+			</tr>
+			<tr>
+				<th>項目</th>
+				<td>
+					<div class="text-left">
+						<a href="javascript:void(0);" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#itemModal">項目の追加</a>
+					</div>
+					<!-- soy:display="form" -->
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>項目名</th>
+								<th>種別</th>
+								<th class="col-lg-1">並び順</th>
+								<th class="col-lg-1 text-center">必須</th>
+								<th class="col-lg-2"><a href="javascript:void(0);" class="btn btn-default btn-sm" id="show_remove_btn">削除</a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="form_item_list" -->
+							<tr>
+								<td soy:id="name"></td>
+								<td soy:id="type"></td>
+								<td><input type="number" soy:id="order" class="form-control"></td>
+								<td class="text-center"><input type="checkbox" soy:id="required"></td>
+								<td>
+									<a href="javascript:void(0);" class="btn btn-warning btn-sm" soy:id="advance_link">高度な設定</a>&nbsp;&nbsp;
+									<span class="remove_btn"><a href="javascript:void(0);" class="btn btn-danger btn-sm" soy:id="remove_link">削除</a></span>
+								</td>
+							</tr>
+							<tr soy:id="advance_tr">
+								<td>&nbsp;</td>
+								<td colspan="4">
+									<div class="form-group">
+										<label>メール送信時に使用する置換文字列</label>
+										<div class="form-inline">
+											<input type="text" class="form-control" soy:id="replacement">
+										</div>
+									</div>
+									<!-- soy:id="is_advance_config" -->
+									<div class="form-group">
+										<label>項目を1行ずつを設定して下さい</label>
+										<textarea class="form-control" soy:id="option"></textarea>
+										<small>初期値として選択される項目がある場合、項目の前に[*]を入力して下さい。</small>
+									</div>
+									<!-- /soy:id="is_advance_config" -->
+								</td>
+							</tr>
+							<!-- /soy:id="form_item_list" -->
+						</tbody>
+					</table>
+					<!-- /soy:display="form" -->
+				</td>
+			</tr>
+			<tr>
+				<th>次のページ</th>
+				<td>
+					<select soy:id="next_page_type">
+						<option></option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
+
+<div class="modal" tabindex="-1" role="dialog" id="itemModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">項目の追加</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="add_form">
+					<div class="form-group">
+						<label>項目名</label>
+						<input type="text" soy:id="item_name" class="form-control">
+					</div>
+					<div class="form-group">
+						<label>項目種別</label>
+						<select soy:id="item_type" class="form-control"><option></option></select>
+					</div>
+					<div class="text-center">
+						<input type="submit" name="add" class="btn btn-primary" value="追加">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="customfieldModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<input type="hidden" soy:id="item_count_hidden">
+
+<style>
+.remove_btn{
+	display:none;
+}
+</style>
+<script>
+$("#show_remove_btn").on("click", function(){
+	$(".remove_btn").css("display", "inline");
+	$(this).remove();
+});
+
+//高度な設定は最初は非表示にしておく
+var itemCnt = $("#item_count").val();
+if(itemCnt > 0){
+	for(var i = 0; i < itemCnt; i++){
+		if($("#advance_tr_" + i)){
+			$("#advance_tr_" + i).css("display", "none");
+			$("#advance_link_" + i).on("click", function(){
+				var idx = $(this).prop("id").replace("advance_link_", "");
+				$("#advance_tr_" + idx).toggle();
+			});
+		}
+	}
+}
+
+</script>

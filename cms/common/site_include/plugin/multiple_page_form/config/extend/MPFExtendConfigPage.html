@@ -1,0 +1,56 @@
+<div class="text-left">
+	<a soy:link="Plugin.Config?multiple_page_form" class="btn btn-primary">一覧ページに戻る</a>
+</div>
+
+<br>
+
+<h4 soy:id="page_name">最初のページ</h4>
+
+<div class="alert alert-info">
+	<strong soy:id="page_class_dir"></strong>以下にSOY2HTMLで記述されたクラスファイルを設置することで高度なページが使用できるようになります。<br>
+	<a href="https://saitodev.co/article/1813" target="_blank" rel="noopener">SOY CMSを介さずにSOY2HTMLを使ってみる - saitodev.co</a>
+</div>
+
+<form soy:id="form">
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+				<th class="col-lg-1">ページ種別</th>
+				<td soy:id="page_type"></td>
+			</tr>
+			<tr>
+				<th>説明</th>
+				<td><textarea soy:id="page_description" class="form-control"></textarea></td>
+			</tr>
+			<tr>
+				<th>クラス</th>
+				<td>
+					<select soy:id="extend">
+						<option></option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>次のページ</th>
+				<td>
+					<select soy:id="next_page_type">
+						<option></option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
+
+<script>
+$("#add").on("click", function(){
+	var $clone = $("#clone").clone();
+	//追加ボタンをなくす
+	$clone.children()[2].innerHTML = "";
+	$("#clone").before($clone);
+});
+</script>

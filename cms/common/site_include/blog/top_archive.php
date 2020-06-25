@@ -198,7 +198,7 @@ function soy_cms_blog_output_entry_list($page,$entries){
                     "soy2prefix"=>"cms"
                 ));
 
-                $link = $this->entryPageUrl . rawurlencode($entry->getAlias()) ;
+				$link = $this->entryPageUrl . rawurlencode($entry->getAlias()) ;
 
                 $this->createAdd("title","CMSLabel",array(
                     "html"=> "<a href=\"$link\">".htmlspecialchars($entry->getTitle(), ENT_QUOTES, "UTF-8")."</a>",

@@ -1,0 +1,24 @@
+<div class="text-left">
+	<a soy:link="Plugin.Config?multiple_page_form" class="btn btn-primary">一覧ページに戻る</a>
+</div>
+
+<br>
+
+<div class="alert alert-info">
+	SOY Inquiryと連携することで当プラグインで設置したフォームで送信後にSOY Inquiryのデータベースで送信内容が管理できます。<br>
+	SOY Inquiryを介してメールも送信します。
+</div>
+<h4>連携手順</h4>
+<ul>
+	<li>SOY Inquiryの方でフォームを作成します。フォームのカラムは空にしておきます。</li>
+	<li>下記のセレクトボックスで連携するフォームIDを指定します。</li>
+</ul>
+
+<div style="margin-left:25px;">
+	<form soy:id="form">
+		<select soy:id="form_id">
+			<option></option>
+		</select>&nbsp;
+		<input type="submit" class="btn btn-primary" value="変更">
+	</form>
+</div>

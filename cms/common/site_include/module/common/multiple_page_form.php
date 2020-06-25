@@ -2,29 +2,17 @@
 
 function soycms_multiple_page_form($html, $page){
 
+	SOY2::import("site_include.plugin.multiple_page_form.util.MPFRouteUtil");
+	MPFRouteUtil::doPost();	//GETの方も同時に調べる
+
+	$hash = MPFRouteUtil::getPageHash();
+	if($hash == "error") multiple_page_form_empty_echo();
+
+	//前のページがある場合
+	$prev = MPFRouteUtil::getPrevPageHash();
+	MPFRouteUtil::getReplacementStringList();
+
 	SOY2::import("site_include.plugin.multiple_page_form.util.MultiplePageFormUtil");
-
-	//soy2_tokenがある場合は次のページを調べてリダイレクト GET版
-	if(isset($_GET["soy2_token"]) && soy2_check_token()){
-		$nextToken = $_GET["next"];
-		// @ToDo routeを記録
-		header("Location:" . $_SERVER["REDIRECT_URL"]);	//とりあえずGETパラメータ付きのページは禁止
-		exit;
-	}
-
-	//@ToDo セッションに何も値がない場合は1ページ目を表示する　1ページ目を取得する方法は要検討
-	if(true){
-		$pages = MultiplePageFormUtil::getPageList();
-		if(!count($pages)) multiple_page_form_empty_echo();
-
-		$hash = array_keys($pages)[0];
-	}else{	//2ページ目以降
-
-	}
-
-	//@ToDo 前のページがある場合
-	$prev = null;
-
 	$cnf = MultiplePageFormUtil::readJson($hash);
 	switch($cnf["type"]){
 		case MultiplePageFormUtil::TYPE_CHOICE:
@@ -33,11 +21,23 @@ function soycms_multiple_page_form($html, $page){
 			$description = htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8");
 			$items = MultiplePageFormUtil::sortItems($cnf["choice"]);	//項目
 
-			$templateDir = MultiplePageFormUtil::getTemplateDir() . "choice/";
+			$values = MPFRouteUtil::getValues($hash);
+
+			$templateDir = MultiplePageFormUtil::getTemplateDir() . $cnf["type"] . "/";
 			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
 			exit;
 		case MultiplePageFormUtil::TYPE_FORM:
-			break;
+			if(!isset($cnf["item"]) || !is_array($cnf["item"]) || !count($cnf["item"])) multiple_page_form_empty_echo();
+
+			$description = htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8");
+			$items = MultiplePageFormUtil::sortItems($cnf["item"]);	//項目
+
+			$values = MPFRouteUtil::getValues($hash);
+			$isFirstView = (!count($values));	//はじめてフォームのページを開いた時
+
+			$templateDir = MultiplePageFormUtil::getTemplateDir() . "form/";
+			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
+			exit;
 		case MultiplePageFormUtil::TYPE_EXTEND:
 			SOY2::import("site_include.plugin.multiple_page_form.util.MPFTypeExtendUtil");
 			if(!isset($cnf["extend"]) || !strlen($cnf["extend"])) multiple_page_form_empty_echo();
@@ -47,11 +47,21 @@ function soycms_multiple_page_form($html, $page){
 
 			include_once($classFilePath);
 			$form = SOY2HTMLFactory::createInstance($cnf["extend"]);
+			$form->setHash($hash);
 			$form->execute();
 			echo $form->getObject();
 			exit;
-		default:	//確認用のページを出力する
-			echo "";
+		case MultiplePageFormUtil::TYPE_CONFIRM:
+			$description = htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8");
+			$templateDir = MultiplePageFormUtil::getTemplateDir() . $cnf["type"] . "/";
+			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
+			exit;
+		case MultiplePageFormUtil::TYPE_COMPLETE:
+			MPFRouteUtil::clear();	//ルート等を削除
+
+			$description = (isset($cnf["description"])) ? htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8") : "";
+			$templateDir = MultiplePageFormUtil::getTemplateDir() . $cnf["type"] . "/";
+			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
 			exit;
 	}
 }
