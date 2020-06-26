@@ -22,7 +22,7 @@ foreach($items as $idx => $item){
 
 //戻るがある場合
 if(isset($prev) && strlen($prev)){
-	$html[] = "<a href=\"" . $url . "?prev=" . $prev . "&soy2_token=" . $token . "\">戻る</a>";
+	$html[] = "<br><a href=\"" . $url . "?prev=" . $prev . "&soy2_token=" . $token . "\">戻る</a>";
 }
 
 

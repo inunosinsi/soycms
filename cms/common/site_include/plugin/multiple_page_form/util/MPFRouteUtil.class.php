@@ -27,6 +27,9 @@ class MPFRouteUtil {
 
 			$next = null;
 			switch($cnf["type"]){
+				case MultiplePageFormUtil::TYPE_TEXT:
+					if(isset($param["next"])) $next = $cnf["next"];
+				 	break;
 				case MultiplePageFormUtil::TYPE_CHOICE:
 					if(isset($param["idx"]) && isset($cnf["choice"][$param["idx"]])){	//何らを選択している場合
 						$selected = $cnf["choice"][$param["idx"]];

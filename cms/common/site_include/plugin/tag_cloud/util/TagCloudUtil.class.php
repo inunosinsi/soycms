@@ -82,7 +82,8 @@ class TagCloudUtil {
 
 		foreach($links as $link){
 			try{
-				$tags[$entryId][$link->getWordId()] = self::_dicDao()->getById($link->getWordId())->getWord();
+				$obj = self::_dicDao()->getById($link->getWordId());
+				$tags[$entryId][$link->getWordId()] = array("word" => $obj->getWord(), "hash" => $obj->getHash());
 			}catch(Exception $e){
 				//
 			}

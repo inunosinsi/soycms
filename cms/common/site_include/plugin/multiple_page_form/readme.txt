@@ -25,7 +25,8 @@ jsonのフォーマット
 ページ名
 
 ○type
-choice(選択式)、form(入力フォームの羅列)、extend(自作のSOY2HTMLページ)
+text(文字ページ)、choice(選択式)、form(入力フォームの羅列)、extend(自作のSOY2HTMLページ)
+※文字ページは説明文のみを表示し、戻る(prev)と次へ(next)のみのページとなる
 
 ○description
 ページの説明文

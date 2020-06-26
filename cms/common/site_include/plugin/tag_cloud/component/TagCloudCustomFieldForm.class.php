@@ -5,7 +5,8 @@ class TagCloudCustomFieldForm {
 	public static function buildForm($entryId){
 		SOY2::import("site_include.plugin.tag_cloud.util.TagCloudUtil");
 		$tags = TagCloudUtil::getRegisterdTagsByEntryId($entryId);
-		$tagValue = (count($tags)) ? implode(",", $tags) : "";
+
+		$tagValue = (count($tags)) ? self::_tagValue($tags) : "";
 
 		$html = array();
 		$html[] = "<div class=\"form-group\">";
@@ -31,5 +32,14 @@ class TagCloudCustomFieldForm {
 		$html[] = "</style>";
 
 		return implode("\n", $html);
+	}
+
+	private function _tagValue($tags){
+		$list = array();
+		foreach($tags as $tag){
+			if(!isset($tag["word"]) || !strlen($tag["word"])) continue;
+			$list[] = $tag["word"];
+		}
+		return implode(",", $list);
 	}
 }

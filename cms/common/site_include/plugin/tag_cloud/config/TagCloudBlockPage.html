@@ -60,7 +60,7 @@
 ※cms:countの指定がなくても動作します。<br>
 cms:random="on"でタグの表示順をランダムにします。<br>
 ※cms:randomがない場合はタグが付いた記事が多い順になります<br>
-※cms:id="tag_link"を<strong>cms:id="tag_hash_link"</strong>に代えると別サイトで同じタグがある場合でも使用可能になります</p>
+※cms:id="tag_link"を<strong>cms:id="tag_hash_link"</strong>に代えるとハッシュ値版のパラメータに代わります</p>
 <br>
 <h4>ブロック内でのタグ一覧の出力の記述例</h4>
 <pre>&lt;!-- b_block:id="entry" --&gt;
@@ -73,3 +73,4 @@ cms:random="on"でタグの表示順をランダムにします。<br>
 <strong>&lt;!-- cms:id="no_tag_cloud" --&gt;</strong>記事に登録されているタグが無い時に出力されます<strong>&lt;!-- /cms:id="no_tag_cloud" --&gt;</strong>
 
 &lt;!-- /b_block:id="entry" --&gt;</pre>
+<p>※cms:id="tag_cloud_tag_link"を<strong>cms:id="tag_cloud_tag_hash_link"</strong>に代えるとハッシュ値版のパラメータに代わります</p>

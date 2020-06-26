@@ -15,6 +15,11 @@ function soycms_multiple_page_form($html, $page){
 	SOY2::import("site_include.plugin.multiple_page_form.util.MultiplePageFormUtil");
 	$cnf = MultiplePageFormUtil::readJson($hash);
 	switch($cnf["type"]){
+		case MultiplePageFormUtil::TYPE_TEXT:
+			$description = htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8");
+			$templateDir = MultiplePageFormUtil::getTemplateDir() . $cnf["type"] . "/";
+			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
+			exit;
 		case MultiplePageFormUtil::TYPE_CHOICE:
 			if(!isset($cnf["choice"]) || !is_array($cnf["choice"]) || !count($cnf["choice"])) multiple_page_form_empty_echo();
 

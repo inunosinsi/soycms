@@ -2,6 +2,7 @@
 
 class MultiplePageFormUtil {
 
+	const TYPE_TEXT = "text";	//文章のみページ
 	const TYPE_CHOICE = "choice";
 	const TYPE_FORM = "form";
 	const TYPE_EXTEND = "extend";
@@ -118,6 +119,7 @@ class MultiplePageFormUtil {
 
 	private static function _types(){
 		return array(
+			self::TYPE_TEXT => "テキストのみ",
 			self::TYPE_CHOICE => "選択式",
 			self::TYPE_FORM => "入力フォーム",
 			self::TYPE_EXTEND => "高度なページ",

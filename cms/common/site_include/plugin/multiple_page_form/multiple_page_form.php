@@ -39,6 +39,10 @@ class MultiplePageFormPlugin{
 			if(!isset($cnf["type"])) SOY2PageController::jump("Plugin.Config?multiple_page_form");
 
 			switch($cnf["type"]){
+				case MultiplePageFormUtil::TYPE_TEXT:
+					SOY2::import("site_include.plugin." . self::PLUGIN_ID . ".config." . $cnf["type"] . ".MPFTextConfigPage");
+					$form = SOY2HTMLFactory::createInstance("MPFTextConfigPage");
+					break;
 				case MultiplePageFormUtil::TYPE_CHOICE:
 					SOY2::import("site_include.plugin." . self::PLUGIN_ID . ".config." . $cnf["type"] . ".MPFChoiceConfigPage");
 					$form = SOY2HTMLFactory::createInstance("MPFChoiceConfigPage");
@@ -52,7 +56,8 @@ class MultiplePageFormPlugin{
 					$form = SOY2HTMLFactory::createInstance("MPFExtendConfigPage");
 					break;
 				case MultiplePageFormUtil::TYPE_CONFIRM:
-					SOY2::import("site_include.plugin." . self::PLUGIN_ID . ".config." . $cnf["type"] . ".MPFConfirmConfigPage");
+					$type = "confirm";
+					SOY2::import("site_include.plugin." . self::PLUGIN_ID . ".config." . $type . ".MPFConfirmConfigPage");
 					$form = SOY2HTMLFactory::createInstance("MPFConfirmConfigPage");
 					break;
 				case MultiplePageFormUtil::TYPE_COMPLETE:
