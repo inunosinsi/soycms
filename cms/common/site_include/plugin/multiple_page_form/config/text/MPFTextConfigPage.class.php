@@ -14,6 +14,7 @@ class MPFTextConfigPage extends WebPage {
 			$cnf["next"] = (isset($_POST["Config"]["next"])) ? $_POST["Config"]["next"] : "";
 			$cnf["description"] = (isset($_POST["Config"]["description"])) ? $_POST["Config"]["description"] : "";
 			$cnf["button"] = (isset($_POST["Config"]["button"])) ? $_POST["Config"]["button"] : "";
+			$cnf["template"] = (isset($_POST["Config"]["template"])) ? $_POST["Config"]["template"] : "default";
 
 			MultiplePageFormUtil::savePageConfig($this->hash, $cnf);
 
@@ -55,6 +56,20 @@ class MPFTextConfigPage extends WebPage {
 			"name" => "Config[button]",
 			"value" => (isset($cnf["button"])) ? $cnf["button"] : "",
 			"attr:placeholder" => "次へ"
+		));
+
+		$this->addSelect("page_template", array(
+			"name" => "Config[template]",
+			"options" => MultiplePageFormUtil::getTemplateList($cnf["type"]),
+			"selected" => (isset($cnf["template"])) ? $cnf["template"] : null
+		));
+
+		$this->addLabel("template_dir", array(
+			"text" => dirname(MultiplePageFormUtil::getTemplateFilePath($cnf)) . "/"
+		));
+
+		$this->addLabel("default_template_file_path", array(
+			"text" => MultiplePageFormUtil::getDefaultTemplateFilePath($cnf["type"])
 		));
 	}
 

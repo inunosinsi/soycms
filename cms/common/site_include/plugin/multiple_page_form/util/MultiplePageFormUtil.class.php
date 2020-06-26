@@ -115,6 +115,35 @@ class MultiplePageFormUtil {
 		return self::_jsonDir();
 	}
 
+	public static function getTemplateList($type){
+		$list = array();
+		$list[] = "default";
+
+		$tmpDir = self::_templateDir($type);
+		$files = soy2_scanfiles($tmpDir);
+		if(!count($files)) return $list;
+
+		foreach($files as $file){
+			$filename = trim(substr($file, strrpos($file, "/")), "/");
+			if(!strpos($filename, ".php")) continue;
+			$list[] = str_replace(".php", "", $filename);
+		}
+		return $list;
+	}
+
+	public static function getTemplateFilePath($cnf){
+		$tmp = (isset($cnf["template"]) && strlen($cnf["template"])) ? $cnf["template"] : "default";
+		if($tmp == "default"){
+			return self::_defaultTemplateDir() . $cnf["type"] . "/default.php";
+		}else{
+			return self::_templateDir($cnf["type"]) . $tmp . ".php";
+		}
+	}
+
+	public static function getDefaultTemplateFilePath($type){
+		return self::_defaultTemplateDir() . $type . "/default.php";
+	}
+
 	/** private method **/
 
 	private static function _types(){
@@ -169,6 +198,26 @@ class MultiplePageFormUtil {
 		return $dir;
 	}
 
+	private static function _templateDir($type){
+		//公開側と管理画面側で使用する関数が異なる
+		if(defined("_SITE_ROOT_")){
+			$dir = _SITE_ROOT_ . "/";
+		}else{
+			$dir = UserInfoUtil::getSiteDirectory();
+		}
+
+		$dir .= ".multiPageForm/";
+		self::_createDir($dir);
+
+		$dir .= "tempate/";
+		self::_createDir($dir);
+
+		$dir .= $type . "/";
+		self::_createDir($dir);
+
+		return $dir;
+	}
+
 	private function _createDir($dir){
 		if(!file_exists($dir)) mkdir($dir);
 		if(!file_exists($dir . ".htaccess")) {
@@ -176,7 +225,7 @@ class MultiplePageFormUtil {
 		}
 	}
 
-	public static function getTemplateDir(){
+	private static function _defaultTemplateDir(){
 		return dirname(dirname(__FILE__)) . "/template/";
 	}
 }

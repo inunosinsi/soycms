@@ -13,6 +13,7 @@ class MPFConfirmConfigPage extends WebPage {
 
 			$cnf["next"] = (isset($_POST["Config"]["next"])) ? $_POST["Config"]["next"] : "";
 			$cnf["description"] = (isset($_POST["Config"]["description"])) ? $_POST["Config"]["description"] : "";
+			$cnf["template"] = (isset($_POST["Config"]["template"])) ? $_POST["Config"]["template"] : "default";
 
 			MultiplePageFormUtil::savePageConfig($this->hash, $cnf);
 
@@ -48,6 +49,20 @@ class MPFConfirmConfigPage extends WebPage {
 			"name" => "Config[next]",
 			"options" => MultiplePageFormUtil::getPageItemList($this->hash),
 			"selected" => (isset($cnf["next"])) ? $cnf["next"] : ""
+		));
+
+		$this->addSelect("page_template", array(
+			"name" => "Config[template]",
+			"options" => MultiplePageFormUtil::getTemplateList($cnf["type"]),
+			"selected" => (isset($cnf["template"])) ? $cnf["template"] : null
+		));
+
+		$this->addLabel("template_dir", array(
+			"text" => dirname(MultiplePageFormUtil::getTemplateFilePath($cnf)) . "/"
+		));
+
+		$this->addLabel("default_template_file_path", array(
+			"text" => MultiplePageFormUtil::getDefaultTemplateFilePath($cnf["type"])
 		));
 	}
 

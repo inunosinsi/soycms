@@ -18,7 +18,8 @@ jsonのフォーマット
 		"item":{
 
 		},
-		"extend":""
+		"extend":"",
+		"template":""
 }
 
 ○name
@@ -53,3 +54,7 @@ item内の配列array(array("item" => "項目名", "type" => "項目種別", "or
 
 ○extend
 typeでextendを指定した時に使う。読み込むファイルのパス ○○Page.class.phpの方のパスを記載
+
+○template
+テンプレートを指定します。
+テンプレートのディレクトリは/サイトID/.multiPageForm/template/以下

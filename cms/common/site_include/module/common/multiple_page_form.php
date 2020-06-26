@@ -15,34 +15,6 @@ function soycms_multiple_page_form($html, $page){
 	SOY2::import("site_include.plugin.multiple_page_form.util.MultiplePageFormUtil");
 	$cnf = MultiplePageFormUtil::readJson($hash);
 	switch($cnf["type"]){
-		case MultiplePageFormUtil::TYPE_TEXT:
-			$description = htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8");
-			$templateDir = MultiplePageFormUtil::getTemplateDir() . $cnf["type"] . "/";
-			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
-			exit;
-		case MultiplePageFormUtil::TYPE_CHOICE:
-			if(!isset($cnf["choice"]) || !is_array($cnf["choice"]) || !count($cnf["choice"])) multiple_page_form_empty_echo();
-
-			$description = htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8");
-			$items = MultiplePageFormUtil::sortItems($cnf["choice"]);	//項目
-
-			$values = MPFRouteUtil::getValues($hash);
-
-			$templateDir = MultiplePageFormUtil::getTemplateDir() . $cnf["type"] . "/";
-			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
-			exit;
-		case MultiplePageFormUtil::TYPE_FORM:
-			if(!isset($cnf["item"]) || !is_array($cnf["item"]) || !count($cnf["item"])) multiple_page_form_empty_echo();
-
-			$description = htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8");
-			$items = MultiplePageFormUtil::sortItems($cnf["item"]);	//項目
-
-			$values = MPFRouteUtil::getValues($hash);
-			$isFirstView = (!count($values));	//はじめてフォームのページを開いた時
-
-			$templateDir = MultiplePageFormUtil::getTemplateDir() . "form/";
-			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
-			exit;
 		case MultiplePageFormUtil::TYPE_EXTEND:
 			SOY2::import("site_include.plugin.multiple_page_form.util.MPFTypeExtendUtil");
 			if(!isset($cnf["extend"]) || !strlen($cnf["extend"])) multiple_page_form_empty_echo();
@@ -56,17 +28,27 @@ function soycms_multiple_page_form($html, $page){
 			$form->execute();
 			echo $form->getObject();
 			exit;
-		case MultiplePageFormUtil::TYPE_CONFIRM:
+		default:
+			switch($cnf["type"]){
+				case MultiplePageFormUtil::TYPE_CHOICE:
+					if(!isset($cnf["choice"]) || !is_array($cnf["choice"]) || !count($cnf["choice"])) multiple_page_form_empty_echo();
+					$items = MultiplePageFormUtil::sortItems($cnf["choice"]);	//項目
+					$values = MPFRouteUtil::getValues($hash);
+					break;
+				case MultiplePageFormUtil::TYPE_FORM:
+					if(!isset($cnf["item"]) || !is_array($cnf["item"]) || !count($cnf["item"])) multiple_page_form_empty_echo();
+					$items = MultiplePageFormUtil::sortItems($cnf["item"]);	//項目
+					$values = MPFRouteUtil::getValues($hash);
+					$isFirstView = (!count($values));	//はじめてフォームのページを開いた時
+					break;
+				case MultiplePageFormUtil::TYPE_COMPLETE:
+					MPFRouteUtil::clear();	//ルート等を削除
+					break;
+				default:
+					//何もしない
+			}
 			$description = htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8");
-			$templateDir = MultiplePageFormUtil::getTemplateDir() . $cnf["type"] . "/";
-			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
-			exit;
-		case MultiplePageFormUtil::TYPE_COMPLETE:
-			MPFRouteUtil::clear();	//ルート等を削除
-
-			$description = (isset($cnf["description"])) ? htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8") : "";
-			$templateDir = MultiplePageFormUtil::getTemplateDir() . $cnf["type"] . "/";
-			include_once($templateDir . "default.php");	//@ToDo テンプレートの差し替えをできるようにしたい
+			include_once(MultiplePageFormUtil::getTemplateFilePath($cnf));
 			exit;
 	}
 }

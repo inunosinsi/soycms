@@ -12,6 +12,7 @@ class MPFCompleteConfigPage extends WebPage {
 			$cnf = MultiplePageFormUtil::readJson($this->hash);
 
 			$cnf["description"] = (isset($_POST["Config"]["description"])) ? $_POST["Config"]["description"] : "";
+			$cnf["template"] = (isset($_POST["Config"]["template"])) ? $_POST["Config"]["template"] : "default";
 
 			MultiplePageFormUtil::savePageConfig($this->hash, $cnf);
 
@@ -41,6 +42,20 @@ class MPFCompleteConfigPage extends WebPage {
 		$this->addTextArea("page_description", array(
 			"name" => "Config[description]",
 			"value" => (isset($cnf["description"])) ? $cnf["description"] : ""
+		));
+
+		$this->addSelect("page_template", array(
+			"name" => "Config[template]",
+			"options" => MultiplePageFormUtil::getTemplateList($cnf["type"]),
+			"selected" => (isset($cnf["template"])) ? $cnf["template"] : null
+		));
+
+		$this->addLabel("template_dir", array(
+			"text" => dirname(MultiplePageFormUtil::getTemplateFilePath($cnf)) . "/"
+		));
+
+		$this->addLabel("default_template_file_path", array(
+			"text" => MultiplePageFormUtil::getDefaultTemplateFilePath($cnf["type"])
 		));
 	}
 
