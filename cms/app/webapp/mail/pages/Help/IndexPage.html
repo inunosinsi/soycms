@@ -1,0 +1,202 @@
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-green" id="top">
+			<div class="panel-heading">目次</div>
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<ul>
+						<li><a href="#about">このアプリケーションについて</a></li>
+						<li><a href="#mail">メールを配信する</a></li>
+						<li><a href="#server_config">サーバの設定を行う</a></li>
+						<li><a href="#job">予約ジョブ配信について</a></li>
+						<li>SOY CMSとの連携
+							<ul>
+								<li><a href="#soycms_1">登録フォーム、解除フォームの表示</a></li>
+								<li><a href="#soycms_2">SOYAppページの基本テンプレート</a></li>
+								<li><a href="#soycms_3">属性の変更</a></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-green" id="about">
+			<div class="panel-heading">このアプリケーションについて</div>
+			<div class="panel-collapse collapse in" id="panel_2">
+				<div class="panel-body">
+					<p>
+					SOY Mailはメール配信を行うアプリケーションです。<br>
+					SOY CMSと連携してユーザ登録・解除を行います。<br>
+					<br>
+					メール配信は「即時配信」と「予約配信」があります。
+					</p>
+					<div style="text-align:right;margin:10px;">
+						<a href="#top">▲</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-green" id="mail">
+			<div class="panel-heading">メールを配信する</div>
+			<div class="panel-collapse collapse in" id="panel_3">
+				<div class="panel-body">
+					<p>メールは<a soy:link="mail.Mail">メールの作成</a>から作成し、[送信]ボタンを押すことで
+					送信トレイに入ります。</p>
+					<p>送信トレイに入ったメールは予約が設定されていれば予約ジョブによって配信されます。<br>
+					また、<a soy:link="mail.Mail.SendMailBox">送信メールトレイ</a>から[配信]を押すことで
+					即時に配信されます。</p>
+					<div style="text-align:right;margin:10px;">
+						<a href="#top">▲</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-green" id="server_config">
+			<div class="panel-heading">サーバの設定を行う</div>
+			<div class="panel-collapse collapse in" id="panel_4">
+				<div class="panel-body">
+					<p><a soy:link="mail.Config">サーバの設定</a>からお使いのメールサーバに
+					合わせた設定を行ってください。</p>
+					<p>受信設定はPOP設定を行うと、受信されたメールはサーバから削除されてしまう場合があることに注意してください。<br>
+					受信設定はエラーメールの感知に使用されます。
+					</p>
+					<div style="text-align:right;margin:10px;">
+						<a href="#top">▲</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-green" id="job">
+			<div class="panel-heading">予約ジョブ配信について</div>
+			<div class="panel-collapse collapse in" id="panel_5">
+				<div class="panel-body">
+					<p>予約ジョブ配信はサーバのcrontabを使用して実行します。<br />
+					以下のパスをcrontabで登録してください。</p>
+					<input type="text" style="width:90%;font-size:100%;" soy:id="crontab_exe_path" -->
+					<p  style="margin-top:20px;">例) /usr/local/bin/php <!-- soy:id="crontab_exe_path_2" /--> 1> /dev/null 2> /dev/null</p>
+					<p>メール送信に実行権限の問題などが無いか、crontabの設定後、実際の送信を行う前に必ず動作確認を行ってください。</p>
+					<div style="text-align:right;margin:10px;">
+						<a href="#top">▲</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-green" id="soycms_1">
+			<div class="panel-heading">SOY CMSとの連携 - 登録フォーム、解除フォームの表示</div>
+			<div class="panel-collapse collapse in" id="panel_6">
+				<div class="panel-body">
+					<p>SOY CMSで管理されているサイト上に登録フォームを設置できます。<br>
+					ページの新規作成からページの種類に「SOY Appページ」を選択して下さい。
+					</p>
+					<p>SOY AppページはSOY CMSの基本機能(ブロック、プラグイン）も使えます。</p>
+					<p>テンプレートを変更することで、デザインや表示するメッセージを変更できます。</p>
+					<p><a href="#soycms_2">基本テンプレート</a>をカスタマイズして使用して下さい。<br>
+
+					SOY MailのSOY Appページは以下の特殊なタグを記述することで動作します。</p>
+
+					<dl>
+						<dt>register_form</dt>
+						<dd>登録フォームを表示します</dd>
+						<dt>unregister_form</dt>
+						<dd>解除フォームを表示します</dd>
+						<dt>register_message</dt>
+						<dd>登録後メッセージを表示します。</dd>
+						<dt>unregister_message</dt>
+						<dd>解除後メッセージを表示します。</dd>
+					</dl>
+					<div style="text-align:right;margin:10px;">
+						<a href="#top">▲</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-green" id="soycms_2">
+			<div class="panel-heading">SOY CMSとの連携 - SOYAppページの基本テンプレート</div>
+			<div class="panel-collapse collapse in" id="panel_6">
+				<div class="panel-body">
+					<p>SOYAppページの基本テンプレートを表示します。<br>
+					コピーアンドペーストして、ご使用ください。</p>
+
+<pre>
+&lt;!-- app:id="register_form" --&gt;
+&lt;div&gt;
+	&lt;h1&gt;登録フォーム&lt;/h1&gt;
+
+	&lt;!-- 入力内容に間違いがあった場合のみ表示されます --&gt;
+	&lt;p cms:id="error_message"&gt;入力内容に誤りがあります&lt;/p&gt;
+
+	&lt;p&gt;メールアドレスを入力して、[登録]を押してください&lt;/p&gt;
+
+	&lt;input cms:id="mailaddress" /&gt;
+	&lt;input type="submit" value="登録"&gt;
+&lt;/div&gt;
+&lt;!-- /app:id="register_form" --&gt;
+
+&lt;!-- app:id="register_message" --&gt;
+&lt;p&gt;ご登録ありがとうございました。下記のメールアドレスを登録いたしました。&lt;/p&gt;
+	&lt;p cms:id="mailaddress"&gt;ここに入力されたメールアドレスが入ります&lt;/p&gt;
+&lt;!-- /app:id="register_message" --&gt;
+
+&lt;!-- app:id="unregister_form" --&gt;
+&lt;div&gt;
+	&lt;h1&gt;解除フォーム&lt;/h1&gt;
+
+	&lt;p&gt;メールアドレスを入力して、[解除]を押してください&lt;/p&gt;
+
+	&lt;input cms:id="mailaddress" /&gt;
+	&lt;input type="submit" value="解除"&gt;
+&lt;/div&gt;
+&lt;!-- /app:id="unregister_form" --&gt;
+
+&lt;!-- app:id="unregister_message" --&gt;
+&lt;p&gt;下記のメールアドレスの登録を解除いたしました。&lt;/p&gt;
+	&lt;p cms:id="mailaddress"&gt;ここに入力されたメールアドレスが入ります&lt;/p&gt;
+&lt;!-- /app:id="unregister_message" --&gt;
+</pre>
+					<div style="text-align:right;margin:10px;">
+						<a href="#top">▲</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="panel panel-green" id="soycms_3">
+			<div class="panel-heading">SOY CMSとの連携 - 属性の変更(応用)</div>
+			<div class="panel-collapse collapse in" id="panel_8">
+				<div class="panel-body">
+					<p>応用例として、複数の登録フォームそれぞれについて、登録時に異なる
+					属性を切り替えて保存する手法を解説します。</p>
+
+					<p>例えば、あるSOYAppページで登録した場合は属性１に「PC」と入る様に設定したい
+					場合、次のようにテンプレートに記述します。</p>
+
+<pre>
+&lt;!-- app:id="register_form" --&gt;
+&lt;div&gt;
+	&lt;h1&gt;登録フォーム&lt;/h1&gt;
+
+	&lt;p&gt;メールアドレスを入力して、[登録]を押してください&lt;/p&gt;
+
+	&lt;input cms:id="mailaddress" /&gt;
+	&lt;input type="hidden" name="attribute1" value="PC" /&gt;
+	&lt;input type="submit" value="登録"&gt;
+&lt;/div&gt;
+&lt;!-- /app:id="register_form" --&gt;
+</pre>
+
+					<p>inputの名前(name)を「attribute2」にすれば属性2を、「attribute3」にすれば属性3を設定できます。</p>
+					<p>また、種別(type)を「hidden」から「text」にすることでユーザに入力してもらうことも出来ます。</p>
+					<div style="text-align:right;margin:10px;">
+						<a href="#top">▲</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

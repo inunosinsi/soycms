@@ -1,0 +1,47 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">レポート</h1>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<!-- soy:display="do_update" -->
+<div class="row">
+	<div class="col-lg-12">
+		<p class="alert-success" soy:display="do_db_update">データベースの変更を行いました。</p>
+		<p class="alert alert-info" soy:display="has_db_update">データベースの変更があります&nbsp;→&nbsp;<a soy:link="mail.Update">データベースのバージョンアップを行う</a></p>
+	</div>
+</div>
+<!-- /soy:display="do_update" -->
+
+<div class="row">
+	<div class="col-lg-5">
+		<div class="panel panel-green">
+			<div class="panel-heading">メール</div>
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<h3>未送信メール数</h3>
+					<p><!-- soy:id="unsend_mail" -->10<!-- /soy:id="unsend_mail" -->通</p>
+				</div>
+			</div>
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<h3>エラーメール数</h3>
+					<p><!-- soy:id="error_mail" -->>10<!-- /soy:id="error_mail" -->通</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-lg-5">
+		<div class="panel panel-green">
+			<div class="panel-heading">ユーザ</div>
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<h3>ユーザ登録数</h3>
+					<p><!-- soy:id="user_count" -->10<!-- /soy:id="user_count" -->人</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

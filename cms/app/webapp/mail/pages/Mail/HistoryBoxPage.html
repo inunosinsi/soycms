@@ -1,0 +1,67 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">送信履歴</h1>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="mail.Mail">メールの作成</a>
+				<a class="btn btn-default" soy:link="mail.Mail.DraftBox">下書きトレイ</a>
+				<a class="btn btn-default" soy:link="mail.Mail.SendBox">送信トレイ</a>
+				<a class="btn btn-default active" soy:link="mail.Mail.HistoryBox">送信履歴</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<div class="table-responsive">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th class="middle">件名</th>
+									<th class="middle">配信開始時刻</th>
+									<th class="middle">配信完了時刻</th>
+									<th class="short">件数</th>
+									<th class="short"><nobr>エラー</nobr></th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- soy:id="mail_list" -->
+								<tr>
+									<td><a soy:id="title">件名</a></td>
+									<td><nobr soy:id="send_start_date"></nobr></td>
+									<td><nobr soy:id="send_end_date"></nobr></td>
+									<td class="short"><span soy:id="mail_count"></span></td>
+									<td class="short"><span soy:id="error_count"></span></td>
+								</tr>
+								<!-- /soy:id="mail_list" -->
+							</tbody>
+						</table>
+					</div>
+					<div class="pull-right">
+						<div class="pager_item">
+							<span soy:id="count_start">1</span> - <span soy:id="count_end">20</span> / <span soy:id="count_max">100000</span>
+						</div>
+						<div class="pager_item">
+							<a soy:id="prev_pager">&lt;</a>
+							<!-- soy:id="pager_list" -->
+							<a soy:id="target_link">1</a>
+							<!-- /soy:id="pager_list" -->
+							<a soy:id="next_pager">&gt;</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

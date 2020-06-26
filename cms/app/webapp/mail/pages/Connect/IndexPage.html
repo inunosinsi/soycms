@@ -1,0 +1,40 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">SOY Shop連携の設定</h1>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<p class="alert alert-info" soy:display="check_version">SOYShopがインストールされていないか、バージョンが1.8.0より古いため、連携機能は使えません</p>
+		<!-- soy:display="edit" -->
+		<div class="panel panel-default">
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<div class="alert alert-success" soy:display="updated">保存しました。</div>
+					<form soy:id="form">
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th>SOY Shopの連携</th>
+									<td>
+										ショップ名 :
+										<select soy:id="sites">
+											<option value="0">連携しない</option>
+										</select><br />
+										※SOY Shopの顧客名簿を利用できる様になります。
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div style="text-align:center;">
+							<input type="submit" class="btn btn-primary btn-lg btn-block" value="変更" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- /soy:display="edit" -->
+	</div>
+</div>

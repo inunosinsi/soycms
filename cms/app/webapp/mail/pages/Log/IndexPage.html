@@ -1,0 +1,52 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">ログ(最新の30件まで保存)</h1>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="alert alert-info" soy:display="message">ログはありません</div>
+
+		<!-- soy:display="is_log" -->
+		<div class="panel panel-default">
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<form soy:id="log_form" style="text-align:right;padding:5px;">
+						<input type="submit" name="clear" value="ログのクリア" />
+					</form>
+
+					<ul>
+						<!-- soy:id="log_list" -->
+						<li>
+							<a soy:id="log_time" >2009-09-09 09:09:09</a>
+							<div class="log_content" soy:id="log_content" style="display:none;"></div>
+						</li>
+						<!-- /soy:id="log_list" -->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- /soy:display="is_log" -->
+	</div>
+</div>
+
+
+<script type="text/javascript">
+function toggle_content(ele){
+    $("#" + ele).toggle();
+}
+</script>
+
+<style type="text/css">
+.log_content{
+	background-color:#EEEEEE;
+	border:1px solid #CCCCCC;
+	font-size:12px;
+	margin-left:20px;
+	margin-top:10px;
+	overflow:auto;
+	padding:5px 10px;
+}
+</style>

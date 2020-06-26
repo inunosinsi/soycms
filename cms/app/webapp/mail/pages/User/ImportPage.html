@@ -1,0 +1,94 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">エクスポート</h1>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="mail.User">一覧</a>
+				<!-- soy:display="no_connect_btn" -->
+				<a class="btn btn-default" soy:link="mail.User.Detail">新規登録</a>
+				<a class="btn btn-default" soy:link="mail.User.Export">エクスポート</a>
+				<a class="btn btn-default active" soy:link="mail.User.Import">インポート</a>
+				<!-- /soy:display="no_connect_btn" -->
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<form soy:id="form">
+						<div class="table-responsive">
+							<table class="table">
+								<tr>
+									<th style="text-align:center;">CSVファイル指定（UTF-8）</th>
+									<td>
+										<input type="file" name="import_file" />
+									</td>
+								</tr>
+								<tr>
+									<th style="text-align:center;">フォーマット</th>
+									<td>
+										フォーマット指定<br>
+					                    <input name="format[label]" value="checked" checked="checked" type="checkbox" id="format[label]_id"><label for="format[label]_id">先頭のレコードはデータに含めない</label><br/>
+					                    <input name="format[quote]" value="checked" checked="checked" type="checkbox" id="format[quote]_id"><label for="format[quote]_id">データをダブルクォーテーションで括る</label><br/>
+					                    <input name="format[separator]" value="comma" type="radio" id="format[separator]_comma_id" checked="checked"><label for="format[separator]_comma_id">カンマ区切り</label>
+					                    <input name="format[separator]" value="tab"   type="radio" id="format[separator]_tab_id"><label for="format[separator]_tab_id">タブ区切り</label><br/>
+					                    <input name="format[charset]" value="Shift_JIS" type="radio" id="format[charset]_shift_jis_id" checked="checked"><label for="format[charset]_shift_jis_id">SHIFT_JIS</label>
+					                    <input name="format[charset]" value="UTF-8"     type="radio" id="format[charset]_utf-8_id"><label for="format[charset]_utf-8_id">UTF-8</label>
+									</td>
+								</tr>
+								<tr>
+									<th style="text-align:center;">入力項目</th>
+									<td>
+					                    <input type="checkbox" checked="checked" name="item[id]" value="checked" id="item[id]_id" /><label for="item[id]_id">メールID (id)</label><br/>
+					                    <input type="hidden" name="item[mailAddress]" value="checked" />
+					                    <input type="checkbox" checked="checked" name="item[mailAddress]_dummy" disabled="disabled" value="checked" id="item[mailAddress]_id" /><label for="item[mailAddress]_id">メールアドレス (mailAddress)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[name]" value="checked" id="item[name]_id" /><label for="item[name]_id">名前 (name)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[reading]" value="checked" id="item[reading]_id" /><label for="item[reading]_id">フリガナ (reading)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[gender]" value="checked" id="item[gender]_id" /><label for="item[gender]_id">性別 (gender)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[birthday]" value="checked" id="item[birthday]_id" /><label for="item[birthday]_id">生年月日 (birthday)</label><br/>
+
+					                    <input type="checkbox" checked="checked" name="item[zipCode]" value="checked" id="item[zipCode]_id" /><label for="item[zipCode]_id">郵便番号 (zipCode)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[area]" value="checked" id="item[area]_id" /><label for="item[area]_id">住所（都道府県） (area)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[address1]" value="checked" id="item[address1]_id" /><label for="item[address1]_id">住所１ (address1)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[address2]" value="checked" id="item[address2]_id" /><label for="item[address2]_id">住所２ (address2)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[telephoneNumber]" value="checked" id="item[telephoneNumber]_id" /><label for="item[telephoneNumber]_id">電話番号 (telephoneNumber)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[faxNumber]" value="checked" id="item[faxNumber]_id" /><label for="item[faxNumber]_id">FAX番号 (faxNumber)</label><br/>
+
+					                    <input type="checkbox" checked="checked" name="item[cellphoneNumber]" value="checked" id="item[cellphoneNumber]_id" /><label for="item[cellphoneNumber]_id">携帯電話 (cellphoneNumber)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[jobName]" value="checked" id="item[jobName]_id" /><label for="item[jobName]_id">勤務先名称・職種 (jobName)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[jobZipCode]" value="checked" id="item[jobZipCode]_id" /><label for="item[jobZipCode]_id">勤務先郵便番号 (jobZipCode)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[jobArea]" value="checked" id="item[jobArea]_id" /><label for="item[jobArea]_id">勤務先住所（都道府県） (jobArea)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[jobAddress1]" value="checked" id="item[jobAddress1]_id" /><label for="item[jobAddress1]_id">勤務先住所１ (jobAddress1)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[jobAddress2]" value="checked" id="item[jobAddress2]_id" /><label for="item[jobAddress2]_id">勤務先住所２ (jobAddress2)</label><br/>
+
+					                    <input type="checkbox" checked="checked" name="item[jobTelephoneNumber]" value="checked" id="item[jobTelephoneNumber]_id" /><label for="item[jobTelephoneNumber]_id">勤務先電話番号 (jobTelephoneNumber)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[jobFaxNumber]" value="checked" id="item[jobFaxNumber]_id" /><label for="item[jobFaxNumber]_id">勤務先FAX番号 (jobFaxNumber)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[notSend]" value="checked" id="item[notSend]_id" /><label for="item[notSend]_id">メール配信可否 (notSend)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[attribute1]" value="checked" id="item[attribute1]_id" /><label for="item[attribute1]_id">属性１ (attribute1)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[attribute2]" value="checked" id="item[attribute2]_id" /><label for="item[attribute2]_id">属性２ (attribute2)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[attribute3]" value="checked" id="item[attribute3]_id" /><label for="item[attribute3]_id">属性３ (attribute3)</label><br/>
+					                    <input type="checkbox" checked="checked" name="item[memo]" value="checked" id="item[memo]_id" /><label for="item[memo]_id">備考 (memo)</label><br/>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="text-center">
+							<input type="submit" name="submit" class="btn btn-primary btn-block" value="インポート" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,205 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h1 class="page-header">メールの<span soy:id="mode_text"></span></h1>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<a class="btn btn-default" soy:link="mail.Mail">メールの作成</a>
+				<a class="btn btn-default" soy:link="mail.Mail.DraftBox">下書きトレイ</a>
+				<a class="btn btn-default active" soy:link="mail.Mail.SendBox">送信トレイ</a>
+				<a class="btn btn-default" soy:link="mail.Mail.HistoryBox">送信履歴</a>
+			</div>
+		</div>
+	</div>
+	<!-- /.col-lg-12 -->
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-collapse collapse in" id="panel_1">
+				<div class="panel-body">
+					<p class="notice" soy:id="copy_message">複製しました</p>
+					<input type="hidden" soy:id="mail_id" />
+					<table class="table">
+						<thead>
+							<tr>
+								<td>宛先</td>
+								<td style="text-align:right;">
+									<a soy:id="sendto_detail" onclick="new soycms.UI.TargetWindow(this);return false;">宛先確認</a>
+								</td>
+							</tr>
+						</thead>
+						<tr>
+							<th>性別</th>
+							<td>
+								<span soy:id="selector_gender_male">aaa</span>
+								<span soy:id="selector_gender_female">aaa</span>
+								<span soy:id="selector_gender_other">aaa</span>
+							</td>
+						</tr>
+						<tr>
+							<th>年齢</th>
+							<td>
+								<span soy:id="selected_age"></span>
+							</td>
+						</tr>
+						<tr>
+							<th>都道府県</th>
+							<td>
+								<span soy:id="selected_area"></span>
+							</td>
+						</tr>
+						<!-- soy:display="display_birthday_form" -->
+						<tr>
+							<th>誕生日</th>
+							<td><span soy:id="selector_birthday"></span></td>
+						</tr>
+						<!-- /soy:display="display_birthday_form" -->
+						<tr>
+							<th>属性１</th>
+							<td>
+								<span soy:id="selector_attribute1">aaa</span>
+							</td>
+						</tr>
+						<tr>
+							<th>属性２</th>
+							<td>
+								<span soy:id="selector_attribute2">aaa</span>
+							</td>
+						</tr>
+						<tr>
+							<th>属性３</th>
+							<td>
+								<span soy:id="selector_attribute3">aaa</span>
+							</td>
+						</tr>
+						<tr>
+							<th>送信キャリア</th>
+							<td>
+								<span soy:id="selector_carrier_pc">carrier</span>
+								<span soy:id="selector_carrier_docomo">carrier</span>
+								<span soy:id="selector_carrier_au">carrier</span>
+								<span soy:id="selector_carrier_softbank">carrier</span>
+								<span soy:id="selector_carrier_willcom">carrier</span>
+
+								<span soy:id="selector_carrier_other">aaa</span>
+							</td>
+						</tr>
+						<tr>
+							<th>備考欄</th>
+							<td>
+								<span soy:id="selected_memo"></span>
+							</td>
+						</tr>
+					</table>
+
+					<table class="table">
+						<thead>
+							<tr>
+								<td colspan="2">送信設定</td>
+							</tr>
+						</thead>
+						<!--
+						<tr>
+							<th>速度調節</th>
+							<td>
+								<select soy:id="config_speed_adjust">
+									<option>速度調節をしない</option>
+								</select>
+							</td>
+						</tr>
+						-->
+						<tr>
+							<th>送信予定時刻</th>
+							<td>
+								<span soy:id="mail_schedule">予定時刻</span>
+							</td>
+						</tr>
+					</table>
+
+					<table class="table">
+						<thead>
+							<tr>
+								<td colspan="2">メール</td>
+							</tr>
+						</thead>
+						<tr>
+							<th>件名</th>
+							<td>
+								<span soy:id="mail_title">aaa</span>
+							</td>
+						</tr>
+						<tr>
+							<th>差出人名称</th>
+							<td>
+								<span soy:id="mail_sender_name">bbb</span>
+							</td>
+						</tr>
+						<tr>
+							<th>差出人メールアドレス</th>
+							<td>
+								<span soy:id="mail_sender_address">aaa</span>
+							</td>
+						</tr>
+						<tr>
+							<th>返信先メールアドレス</th>
+							<td>
+								<span soy:id="mail_return_address">aaaa</span>
+							</td>
+						</tr>
+						<tr>
+							<th>返信先名称</th>
+							<td>
+								<span soy:id="mail_return_name">return name</span>
+							</td>
+						</tr>
+					</table>
+					<table class="table">
+						<tr>
+							<th colspan="2">本文</th>
+						</tr>
+
+						<tr>
+							<td colspan="2">
+								<textarea soy:id="mail_content" style="width:96%;padding:5px 2%" readonly="readonly"></textarea>
+							</td>
+						</tr>
+
+						<!--
+						<tr>
+							<td colspan="2">
+								<input soy:id="config_is_html" type="checkbox" id="config_is_html" />
+								<label for="config_is_html">HTMLメールとして送信</label>
+							</td>
+						</tr>
+						-->
+					</table>
+
+					<form soy:id="form">
+						<div style="text-align:center;">
+							<!-- soy:display="button_validate_wrapper" --><input type="submit" class="btn btn-primary" soy:id="button_validate">&nbsp;<!-- /soy:display="button_validate_wrapper" -->
+							<!-- soy:display="button_copy_wrapper" --><input type="submit" class="btn btn-primary" soy:id="button_copy">&nbsp;<!-- /soy:display="button_copy_wrapper" -->
+							<!-- soy:display="editable_mail_button" -->
+							<input type="submit" class="btn btn-primary" soy:id="button_sendnow">&nbsp;
+							<input type="submit" class="btn btn-primary" soy:id="button_movetodraft">&nbsp;
+							<input type="submit" class="btn btn-primary" soy:id="button_remove">
+							<!-- /soy:display="editable_mail_button" -->
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+th{
+	width:200px;
+}
+</style>
