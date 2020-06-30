@@ -563,11 +563,18 @@ class CustomFieldPluginAdvanced{
 
 		if(is_null($labelIdWithBlock)){
 			$customFields = $this->customFields;
-			try{
-				$entryAttributes = $dao->getByEntryId($entryId);
-			}catch(Exception $e){
-				return array();
+			if(!count($customFields)) return array();
+			$fieldIds = array();
+			foreach($customFields as $fieldId => $field){
+				$fieldIds[] = $fieldId;
 			}
+
+			try{
+				$attrs = $dao->getByEntryIdCustom($entryId, $fieldIds);
+			}catch(Exception $e){
+				$attrs = array();
+			}
+
 		}else{
 			$fieldIds = $this->prevFieldIds;
 
@@ -596,8 +603,17 @@ class CustomFieldPluginAdvanced{
 				$customFields = $this->advancedCustomFields;
 			}
 
-			$entryAttributes = $dao->getByEntryIdCustom($entryId, $fieldIds);
+			$attrs = $dao->getByEntryIdCustom($entryId, $fieldIds);
 			$this->prevLabelId = $labelIdWithBlock;
+		}
+
+		//値がない場合は満たす
+		foreach($fieldIds as $fieldId){
+			if(!isset($attrs[$fieldId])) {
+				$attr = new EntryAttribute();
+				$attr->setFieldId($fieldId);
+				$attrs[$fieldId] = $attr;
+			}
 		}
 
 		/*
@@ -615,10 +631,9 @@ class CustomFieldPluginAdvanced{
 			$added->setId($fieldId);
 
 			//カスタムフィールドのデータがある場合
-			if(isset($entryAttributes[$fieldId])
-			&& $entryAttributes[$fieldId] instanceof EntryAttribute){
+			if(isset($attrs[$fieldId]) && $attrs[$fieldId] instanceof EntryAttribute){
 				//do nothing
-				$attr = $entryAttributes[$fieldId];
+				$attr = $attrs[$fieldId];
 				$added->setValue($attr->getValue());
 				$added->setExtraValues($attr->getExtraValuesArray());
 				$list[] = $added;
