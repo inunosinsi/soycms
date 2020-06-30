@@ -56,12 +56,12 @@
 									<!-- soy:id="option_pluign_active" --><div class="text-center" style="margin:5px 0;"><a soy:id="item_edit_link" class="btn btn-default">オプションの追加</a></div><!-- /soy:id="option_pluign_active" -->
 								</td>
 								<td class="text-right">
-									<input type="text" soy:id="item_price" style="width:70px;ime-mode:inactive;" class="text-right"> 円
+									<input type="number" soy:id="item_price" style="width:70px;ime-mode:inactive;" class="text-right"> 円
 									<!-- soy:id="is_purchase_price" -->(<!-- soy:id="purchase_price" /-->)<!-- /soy:id="is_purchase_price" -->
 								</td>
 								<td class="text-right">
 									<p class="error always alC" soy:id="out_of_stock">在庫切れ</p>
-									<input type="text" soy:id="item_count" style="width:40px;ime-mode:inactive;" class="text-right"> 点
+									<input type="number" soy:id="item_count" style="width:60px;ime-mode:inactive;" class="text-right"> 点
 								</td>
 								<td class="text-right"><!-- soy:id="item_total_price" /--> 円</td>
 							</tr>
@@ -72,16 +72,16 @@
 								<td class="text-center"><input name="AddItemByCode[code][]" type="text" /></td>
 								<td class="text-center">&nbsp;</td>
 								<td class="text-right"></td>
-								<td class="text-right"><input name="AddItemByCode[count][]" type="text" style="width:40px;" class="text-right" /> 点</td>
+								<td class="text-right"><input name="AddItemByCode[count][]" type="number" style="width:60px;" class="text-right" /> 点</td>
 								<td class="text-right">&nbsp;</td>
 							</tr>
 
 							<tr id="add_item_by_name_template" style="display:none">
 								<td class="text-center">&nbsp;</td>
 								<td class="text-center">&nbsp;</td>
-								<td class="text-center"><input name="AddItemByName[name][]" type="text" style="width:320px;" /></td>
-								<td class="text-right"><input name="AddItemByName[price][]" type="text" style="width:60px;" /> 円</td>
-								<td class="text-right"><input name="AddItemByName[count][]" type="text" style="width:40px;" class="text-right" /> 点</td>
+								<td class="text-left"><input name="AddItemByName[name][]" type="text" style="width:320px;" /></td>
+								<td class="text-right"><input name="AddItemByName[price][]" type="number" style="width:80px;" /> 円</td>
+								<td class="text-right"><input name="AddItemByName[count][]" type="number" style="width:60px;" class="text-right" /> 点</td>
 								<td class="text-right">&nbsp;</td>
 							</tr>
 

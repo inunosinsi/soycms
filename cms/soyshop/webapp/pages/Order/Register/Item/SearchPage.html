@@ -133,6 +133,16 @@ function addItem(code){
 		}
 	}
 
+	var forms = $('input[type=number]', parent.document);
+	for (var i = 0; i < forms.length; i++) {
+		$form = $(forms[i]);
+		if($form.prop("name").indexOf("AddItemByCode[code]") >= 0){
+			codeForms.push($form);
+		} else if($form.prop("name").indexOf("AddItemByCode[count]") >= 0){
+			countForms.push($form);
+		}
+	}
+
 	//最後の要素にコードを追加する
 	codeForms[codeForms.length - 1].val(code);
 	countForms[countForms.length - 1].val(1);
