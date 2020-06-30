@@ -62,8 +62,8 @@ class PluginBlockComponent implements BlockComponent{
 			}
 		}
 
-		SOY2::import("site_include.block._common.EntryListComponent");
-		return SOY2HTMLFactory::createInstance("EntryListComponent",array(
+		SOY2::import("site_include.block._common.BlockEntryListComponent");
+		return SOY2HTMLFactory::createInstance("BlockEntryListComponent",array(
 			"list" => $array,
 			"isStickUrl" => $this->isStickUrl,
 			"articlePageUrl" => (isset($articlePageUrl)) ? $articlePageUrl : null,

@@ -4,7 +4,6 @@
 
 記事毎ページの該当記事の内容を出力する際に用いることができます。
 
-
 <!-- b_block:id="entry" -->
 	<div>
 		<h2 cms:id="title">ここにはタイトルが入ります。</h2>
@@ -28,387 +27,11 @@
  */
 function soy_cms_blog_output_entry($page,$entry){
 
-	if(!class_exists("BlogPage_Entry_CategoryList")){
-		class BlogPage_Entry_CategoryList extends HTMLList{
-			var $categoryPageUri;
-			var $entryCount;
+	if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
+	if(!class_exists("PagerListComponent")) SOY2::import("site_include.blog.component.PagerListComponent");
+	if(!class_exists("EntryComponent")) SOY2::import("site_include.blog.component.EntryComponent");
 
-			function setCategoryPageUri($uri){
-				$this->categoryPageUri = $uri;
-			}
-
-			function setEntryCount($entryCount){
-				$this->entryCount = $entryCount;
-			}
-
-			protected function populateItem($entry){
-
-				$this->createAdd("category_link","HTMLLink",array(
-					"link"=>$this->categoryPageUri . rawurlencode($entry->getAlias()),
-					"soy2prefix"=>"cms"
-				));
-
-				$this->createAdd("category_name","CMSLabel",array(
-					"text"=>$entry->getBranchName(),
-					"soy2prefix"=>"cms"
-				));
-
-				$this->createAdd("label_id","CMSLabel",array(
-                    "text"=>$entry->getId(),
-                    "soy2prefix"=>"cms"
-                ));
-
-				$this->createAdd("category_alias", "CMSLabel", array(
-					"text" => $entry->getAlias(),
-					"soy2prefix" => "cms"
-				));
-
-				$this->createAdd("category_description", "CMSLabel", array(
-					"text" => $entry->getDescription(),
-					"soy2prefix" => "cms"
-				));
-
-				$this->addLabel("category_description_raw", array(
-					"html" => $entry->getDescription(),
-					"soy2prefix" => "cms"
-				));
-
-				$arg = substr(rtrim($_SERVER["REQUEST_URI"], "/"), strrpos(rtrim($_SERVER["REQUEST_URI"], "/"), "/") + 1);
-				$alias = rawurlencode($entry->getAlias());
-				$this->createAdd("is_current_category", "HTMLModel", array(
-					"visible" => ($arg === $alias),
-					"soy2prefix" => "cms"
-				));
-				$this->createAdd("no_current_category", "HTMLModel", array(
-					"visible" => ($arg !== $alias),
-					"soy2prefix" => "cms"
-				));
-
-				$this->addLabel("color", array(
-					"text" => sprintf("%06X",$entry->getColor()),
-					"soy2prefix" => "cms"
-				));
-
-				$this->addLabel("background_color", array(
-					"text" => sprintf("%06X",$entry->getBackGroundColor()),
-					"soy2prefix" => "cms"
-				));
-
-				$this->addLabel("entry_count", array(
-					"text" => (isset($this->entryCount[$entry->getId()])) ? $this->entryCount[$entry->getId()] : 0,
-					"soy2prefix" => "cms"
-				));
-			}
-		}
-	}
-
-	if(!class_exists("BlogPage_EntryComponent")){
-		/**
-		 * 記事を表示するコンポーネント
-		 */
-		class BlogPage_EntryComponent extends SOYBodyComponentBase{
-
-			var $entryPageUri;
-			var $categoryPageUri;
-			var $blogLabelId;
-			var $categoryLabelList;
-			var $labels;
-			var $entryLogic;
-
-			function setCategoryPageUri($uri){
-				$this->categoryPageUri = $uri;
-			}
-
-			function setEntryPageUri($uri){
-				$this->entryPageUri = $uri;
-			}
-
-			function setBlogLabelId($blogLabelId){
-				$this->blogLabelId = $blogLabelId;
-			}
-
-			function setCategoryLabelList($categoryLabelList){
-				$this->categoryLabelList = $categoryLabelList;
-			}
-
-			function setLabels($labels){
-				$this->labels = $labels;
-			}
-			function setEntryLogic($entryLogic){
-				$this->entryLogic = $entryLogic;
-			}
-
-			function setEntry($entry){
-				$link = $this->entryPageUri . rawurlencode($entry->getAlias());
-
-				$this->createAdd("entry_id","CMSLabel",array(
-					"text"=>$entry->getId(),
-					"soy2prefix"=>"cms"
-				));
-
-				$this->createAdd("title","CMSLabel",array(
-					"html"=> "<a href=\"$link\">".htmlspecialchars($entry->getTitle(), ENT_QUOTES, "UTF-8")."</a>",
-					"soy2prefix"=>"cms"
-				));
-
-				$this->createAdd("title_plain","CMSLabel",array(
-					"text"=> $entry->getTitle(),
-					"soy2prefix"=>"cms"
-				));
-
-				//本文
-				$content = $entry->getContent();
-
-				$this->createAdd("content","CMSLabel",array(
-					"html"=> $content,
-					"soy2prefix"=>"cms"
-				));
-				/** 一度目でcms:id="content" cms:length="*"を使用してしまうと、以後もcms:lengthに引き連れてしまうため、予備でcms:id="contents"を設ける **/
-				$this->createAdd("content2","CMSLabel",array(
-					"html"=> $content,
-					"soy2prefix"=>"cms"
-				));
-				$this->addModel("has_content",array(
-					"visible"=> strlen(trim($content)),
-					"soy2prefix"=>"cms",
-				));
-
-				$more = $entry->getMore();
-
-				$this->createAdd("more","CMSLabel",array(
-					"html"=> '<a name="more"></a>'.$more,
-					"soy2prefix"=>"cms",
-				));
-
-				// 2015-07-09追加 1.8.13以降
-				$this->addLabel("more_only",array(
-					"html"=> $more,
-					"soy2prefix"=>"cms",
-				));
-				$this->addModel("has_more",array(
-					"visible"=> strlen(trim($more)),
-					"soy2prefix"=>"cms",
-				));
-
-				//ページ分割 3.0.1-
-				$currentPage = isset($_GET["p"]) && is_numeric($_GET["p"]) && $_GET["p"] > 0 ? $_GET["p"] : 1 ;
-				$numberOfPages = 1;
-
-				$contentIsPaginated = ( strpos($content, '<!--nextpage-->') !== false );
-				if($contentIsPaginated){
-					$paginatedContents = explode('<!--nextpage-->', $content);
-					$numberOfPages = count($paginatedContents);
-				}else{
-					$paginatedContents = array($content);
-				}
-
-				$moreIsPaginated = ( strpos($more, '<!--nextpage-->') !== false );
-				if($moreIsPaginated){
-					$paginatedMores = explode('<!--nextpage-->', $more);
-					$numberOfPages = max($numberOfPages, count($paginatedContents));
-				}else{
-					$paginatedMores = array($more);
-				}
-
-				$this->addModel("content_is_paginated",array(
-						"visible"=>$contentIsPaginated,
-						"soy2prefix"=>"cms"
-				));
-				$this->addModel("content_is_not_paginated",array(
-						"visible"=>!$contentIsPaginated,
-						"soy2prefix"=>"cms"
-				));
-				$this->addLabel("paginated_content",array(
-						"html"=>isset($paginatedContents[$currentPage -1]) ? $paginatedContents[$currentPage -1] : "",
-						"soy2prefix"=>"cms"
-				));
-
-				$this->addModel("more_is_paginated",array(
-						"visible"=>$moreIsPaginated,
-						"soy2prefix"=>"cms",
-				));
-				$this->addModel("more_is_not_paginated",array(
-						"visible"=>!$moreIsPaginated,
-						"soy2prefix"=>"cms",
-				));
-				$this->addLabel("paginated_more",array(
-						"html"=>isset($paginatedMores[$currentPage -1]) ? $paginatedMores[$currentPage -1] : "",
-						"soy2prefix"=>"cms"
-				));
-
-				$this->addModel("entry_is_paginated",array(
-						"visible"=>$contentIsPaginated || $moreIsPaginated,
-						"soy2prefix"=>"cms"
-				));
-				$this->addModel("entry_is_not_paginated",array(
-						"visible"=>!( $contentIsPaginated || $moreIsPaginated ),
-						"soy2prefix"=>"cms"
-				));
-				$this->addLabel("current_page",array(
-						"text"=> $currentPage,
-						"soy2prefix"=>"cms"
-				));
-				$this->addLabel("pages",array(
-						"text"=> $numberOfPages,
-						"soy2prefix"=>"cms"
-				));
-				$this->addLabel("total_pages",array(
-						"text"=> $numberOfPages,
-						"soy2prefix"=>"cms"
-				));
-				$this->addModel("is_first_page",array(
-						"visible"=> $currentPage == 1,
-						"soy2prefix"=>"cms"
-				));
-				$this->addModel("is_middle_page",array(
-						"visible"=> 1 < $currentPage && $currentPage < $numberOfPages,
-						"soy2prefix"=>"cms"
-				));
-				$this->addModel("is_last_page",array(
-						"visible"=> $currentPage == $numberOfPages,
-						"soy2prefix"=>"cms"
-				));
-
-				$this->addLink("next_page_link",array(
-					"link"=> ( $currentPage < $numberOfPages ? $link."?p=".($currentPage +1) : ""),
-					"soy2prefix"=>"cms"
-				));
-				$this->addModel("has_next_page",array(
-					"visible"=> ($currentPage < $numberOfPages),
-					"soy2prefix"=>"cms"
-				));
-
-				$this->addLink("prev_page_link",array(
-					"link"=> ( $currentPage > 1 ? $link."?p=".($currentPage -1) : ""),
-					"soy2prefix"=>"cms"
-				));
-				$this->addModel("has_prev_page",array(
-					"visible"=> ($currentPage > 1),
-					"soy2prefix"=>"cms"
-				));
-
-				$this->createAdd("page_list","BlogPage_PagerList",array(
-					"list"=> range(1,$numberOfPages),
-					"current" => $currentPage,
-					"url" => $link,
-					"soy2prefix"=>"cms"
-				));
-
-
-				$this->createAdd("create_date","DateLabel",array(
-					"text"=>$entry->getCdate(),
-					"soy2prefix"=>"cms"
-				));
-
-				$this->createAdd("create_time","DateLabel",array(
-					"text"=>$entry->getCdate(),
-					"soy2prefix"=>"cms",
-					"defaultFormat"=>"H:i"
-				));
-
-				$this->addLink("entry_link", array(
-					"soy2prefix"=>"cms",
-					"link" => $link
-				));
-
-				$this->addLink("entry_link_id_ed", array(
-					"soy2prefix"=>"cms",
-					"link" => $this->entryPageUri . $entry->getId()
-				));
-
-				$this->addLabel("entry_link_text_id_ed", array(
-					"soy2prefix"=>"cms",
-					"text" => $this->entryPageUri . $entry->getId()
-				));
-
-				$this->addLink("more_link", array(
-					"soy2prefix"=>"cms",
-					"link" => $link ."#more",
-					"visible"=>(strlen($entry->getMore()) != 0)
-				));
-
-				$this->addLink("more_link_no_anchor", array(
-					"soy2prefix"=>"cms",
-					"link" => $link,
-					"visible"=>(strlen($entry->getMore()) != 0)
-				));
-
-				$this->addLink("trackback_link", array(
-					"soy2prefix"=>"cms",
-					"link" => $link ."#trackback_list"
-				));
-
-				$this->createAdd("trackback_count","CMSLabel",array(
-					"soy2prefix"=>"cms",
-					"text" => $entry->getTrackbackCount()
-				));
-
-				$this->addLink("comment_link", array(
-					"soy2prefix"=>"cms",
-					"link" => $link ."#comment_list"
-				));
-
-				$this->createAdd("comment_count","CMSLabel",array(
-					"soy2prefix"=>"cms",
-					"text" => $entry->getCommentCount()
-				));
-
-				$categoryLabel = array();
-				$entryCount = array();
-				foreach($this->labels as $labelId => $label){
-					if(in_array($labelId, $this->categoryLabelList)){
-						$categoryLabel[] =  $label;
-						try{
-							//記事の数を数える。
-							$counts = $this->entryLogic->getOpenEntryCountByLabelIds(array_unique(array($this->blogLabelId,$labelId)));
-						}catch(Exception $e){
-							$counts= 0;
-						}
-						$entryCount[$labelId] = $counts;
-					}
-				}
-
-				//カテゴリリンク
-				$this->createAdd("category_list","BlogPage_Entry_CategoryList",array(
-					"list" => $entry->getLabels(),
-					"categoryPageUri" => $this->categoryPageUri,
-					"entryCount" => $entryCount,
-					"soy2prefix" => "cms"
-				));
-
-				$this->createAdd("entry_url", "HTMLLabel", array(
-					"text" => $link,
-					"soy2prefix" => "cms",
-				));
-
-
-				CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entry));
-
-				//Messageの追加
-				$this->addMessageProperty("entry_id",'<?php echo $'.$this->_soy2_id.'["entry_id"]; ?>');
-				$this->addMessageProperty("title",'<?php echo $'.$this->_soy2_id.'["title_plain"]; ?>');
-				$this->addMessageProperty("content",'<?php echo $'.$this->_soy2_id.'["content"]; ?>');
-				$this->addMessageProperty("more",'<?php echo $'.$this->_soy2_id.'["more"]; ?>');
-				$this->addMessageProperty("create_date",'<?php echo $'.$this->_soy2_id.'["create_date"]; ?>');
-				$this->addMessageProperty("entry_link",'<?php echo $'.$this->_soy2_id.'["entry_link_attribute"]["href"]; ?>');
-				$this->addMessageProperty("more_link",'<?php echo $'.$this->_soy2_id.'["more_link_attribute"]["href"]; ?>');
-				$this->addMessageProperty("trackback_link",'<?php echo $'.$this->_soy2_id.'["trackback_link_attribute"]["href"]; ?>');
-				$this->addMessageProperty("comment_link",'<?php echo $'.$this->_soy2_id.'["comment_link_attribute"]["href"]; ?>');
-			}
-
-			function getStartTag(){
-
-				if(defined("CMS_PREVIEW_MODE")){
-					return parent::getStartTag() . CMSUtil::getEntryHiddenInputHTML('<?php echo $'.$this->_soy2_pageParam.'["'.$this->_soy2_id.'"]["entry_id"]; ?>','<?php echo strip_tags($'.$this->_soy2_pageParam.'["'.$this->_soy2_id.'"]["title"]); ?>');
-				}else{
-					return parent::getStartTag();
-				}
-			}
-
-		}
-	}
-
-	$page->createAdd("entry","BlogPage_EntryComponent",array(
+	$page->createAdd("entry","EntryComponent",array(
 		"soy2prefix" => "b_block",
 		"entryPageUri"=> $page->getEntryPageURL(true),
 		"categoryPageUri" => $page->getCategoryPageURL(true),
@@ -435,52 +58,22 @@ function soy_cms_blog_output_entry($page,$entry){
  */
 function soy_cms_blog_output_entry_navi($page,$next,$prev){
 
-	if(!class_exists("BlogPage_Entry_Navigation")){
-		class BlogPage_Entry_Navigation extends SOYBodyComponentBase{
+	if(!class_exists("EntryNavigationComponent")) SOY2::import("site_include.blog.component.EntryNavigationComponent");
 
-			var $entryPageUri;
-
-			function setEntryPageUri($uri){
-				$this->entryPageUri = $uri;
-			}
-
-			function setEntry($entry){
-				$this->createAdd("title","CMSLabel",array(
-					"text" => $entry->getTitle(),
-					"soy2prefix" => "cms"
-				));
-
-				//同じ意味だけど、他のブロックと合わせてtitle_plainを追加しておく
-				$this->createAdd("title_plain","CMSLabel",array(
-					"text" => $entry->getTitle(),
-					"soy2prefix" => "cms"
-				));
-
-				$this->createAdd("entry_link","HTMLLink",array(
-					"link" => $this->entryPageUri . rawurlencode($entry->getAlias()),
-					"soy2prefix" => "cms"
-				));
-			}
-		}
-	}
-
-	$page->createAdd("next_entry","BlogPage_Entry_Navigation",array(
+	$page->createAdd("next_entry","EntryNavigationComponent",array(
 		"entryPageUri"=> $page->getEntryPageURL(true),
 		"entry" => $next,
 		"soy2prefix" => "b_block",
 		"visible" => $next->getId()
 	));
 
-	$page->createAdd("prev_entry","BlogPage_Entry_Navigation",array(
+	$page->createAdd("prev_entry","EntryNavigationComponent",array(
 		"entryPageUri"=> $page->getEntryPageURL(true),
 		"entry" => $prev,
 		"soy2prefix" => "b_block",
 		"visible" => $prev->getId()
 	));
-
 }
-
-
 
 
 /*
@@ -503,63 +96,8 @@ function soy_cms_blog_output_entry_navi($page,$next,$prev){
  */
 function soy_cms_blog_output_comment_form($page,$entry,$entryComment){
 
-	if(!class_exists("BlogPage_CommentForm")){
-		class BlogPage_CommentForm extends HTMLForm{
-
-			const SOY_TYPE = SOY2HTML::HTML_BODY;
-
-			private $entryComment;
-
-			function execute(){
-
-				//cookieから読みだす：高速化キャッシュ対応のため廃止
-				$array = array();
-				//@parse_str($_COOKIE["soycms_comment"],$array);
-
-				$this->createAdd("title","HTMLInput",array(
-					"name" => "title",
-					"value" => $this->entryComment->getTitle(),
-					"soy2prefix" => "cms"
-				));
-
-				$this->createAdd("author","HTMLInput",array(
-					"name" => "author",
-					"value" => (strlen($this->entryComment->getAuthor()) > 0) ? $this->entryComment->getAuthor() : @$array["author"],
-					"soy2prefix" => "cms"
-				));
-
-				$this->createAdd("body","HTMLTextArea",array(
-					"name" => "body",
-					"value" => $this->entryComment->getBody(),
-					"soy2prefix" => "cms"
-				));
-
-				$this->createAdd("mail_address","HTMLInput",array(
-					"name" => "mail_address",
-					"value" => (strlen($this->entryComment->getMailAddress()) > 0) ? $this->entryComment->getMailAddress() : @$array["mailaddress"],
-					"soy2prefix" => "cms"
-				));
-
-				$this->createAdd("url","HTMLInput",array(
-					"name" => "url",
-					"value" => (strlen($this->entryComment->getUrl()) > 0) ? $this->entryComment->getUrl() : @$array["url"],
-					"soy2prefix" => "cms"
-				));
-
-				parent::execute();
-			}
-
-
-			function getEntryComment() {
-				return $this->entryComment;
-			}
-			function setEntryComment($entryComment) {
-				$this->entryComment = $entryComment;
-			}
-		}
-	}
-
-	$page->createAdd("comment_form","BlogPage_CommentForm",array(
+	if(!class_exists("CommentFormComponent")) SOY2::import("site_include.blog.component.CommentFormComponent");
+	$page->createAdd("comment_form","CommentFormComponent",array(
 		"action" => $page->getEntryPageURL(true) . $entry->getId() ."?comment",
 		"soy2prefix" => "b_block",
 		"entryComment" => (is_null($entryComment)) ? new EntryComment() : $entryComment,
@@ -589,60 +127,11 @@ function soy_cms_blog_output_comment_form($page,$entry,$entryComment){
 */
 function soy_cms_blog_output_comment_list($page,$entry){
 
-	if(!class_exists("Blog_CommentList")){
-		class Blog_CommentList extends HTMLList{
+	if(!class_exists("CommentListComponent")) SOY2::import("site_include.blog.component.CommentListComponent");
 
-			function getStartTag(){
-				return '<a name="comment_list"></a>'.parent::getStartTag();
-			}
+	$commentList = SOY2DAOFactory::create("cms.EntryCommentDAO")->getApprovedCommentByEntryId($entry->getId());
 
-			function populateItem($comment){
-
-				$this->createAdd("title","CMSLabel",array(
-					"text" => $comment->getTitle(),
-					"soy2prefix" => "cms"
-				));
-				$this->createAdd("author","CMSLabel",array(
-					"text" => $comment->getAuthor(),
-					"soy2prefix" => "cms"
-				));
-
-				$comment_body = str_replace("\n","@@@@__BR__MARKER__@@@@",$comment->getBody());
-				$comment_body = htmlspecialchars($comment_body, ENT_QUOTES, "UTF-8");
-				$comment_body = str_replace("@@@@__BR__MARKER__@@@@","<br>",$comment_body);
-
-				$this->createAdd("body","CMSLabel",array(
-					"html" => $comment_body,
-					"soy2prefix" => "cms"
-				));
-
-
-
-				$this->createAdd("submit_date","DateLabel",array(
-					"text" => $comment->getSubmitDate(),
-					"soy2prefix" => "cms"
-				));
-				$this->createAdd("submit_time","DateLabel",array(
-					"text"=>$comment->getSubmitDate(),
-					"soy2prefix"=>"cms",
-					"defaultFormat"=>"H:i"
-				));
-				$this->createAdd("url","HTMLLink",array(
-					"link" => $comment->getUrl(),
-					"soy2prefix" => "cms"
-				));
-				$this->createAdd("mail_address","HTMLLink",array(
-					"link" => "mailto:".$comment->getMailAddress(),
-					"soy2prefix" => "cms"
-				));
-			}
-		}
-	}
-
-	$dao = SOY2DAOFactory::create("cms.EntryCommentDAO");
-	$commentList = $dao->getApprovedCommentByEntryId($entry->getId());
-
-	$page->createAdd("comment_list","Blog_CommentList",array(
+	$page->createAdd("comment_list","CommentListComponent",array(
 		"list" => $commentList,
 		"soy2prefix" => "b_block",
 		"visible" => ($entry->getId())
@@ -652,7 +141,6 @@ function soy_cms_blog_output_comment_list($page,$entry){
 		"visible" => count($commentList),
 		"soy2prefix" => "b_block",
 	));
-
 }
 
 /*
@@ -677,49 +165,11 @@ function soy_cms_blog_output_comment_list($page,$entry){
 */
 function soy_cms_blog_output_trackback_list($page,$entry){
 
-	if(!class_exists("Blog_TrackbackList")){
-		class Blog_TrackbackList extends HTMLList{
+	if(!class_exists("TrackbackListComponent")) SOY2::import("site_include.blog.component.TrackbackListComponent");
 
-			function getStartTag(){
-				return '<a name="trackback_list"></a>'.parent::getStartTag();
-			}
+	$trackbackList = SOY2DAOFactory::create("cms.EntryTrackbackDAO")->getCertificatedTrackbackByEntryId($entry->getId());
 
-			function populateItem($trackback){
-
-				$this->createAdd("title","CMSLabel",array(
-					"text"=>$trackback->getTitle(),
-					"soy2prefix" => "cms"
-				));
-				$this->createAdd("url","HTMLLink",array(
-					"link"=>$trackback->getUrl(),
-					"soy2prefix" => "cms"
-				));
-				$this->createAdd("blog_name","CMSLabel",array(
-					"text"=>$trackback->getBlogName(),
-					"soy2prefix" => "cms"
-				));
-				$this->createAdd("excerpt","CMSLabel",array(
-					"html"=> str_replace("\n","<br>", htmlspecialchars($trackback->getExcerpt(), ENT_QUOTES, "UTF-8")),
-					"soy2prefix" => "cms"
-				));
-				$this->createAdd("submit_date","DateLabel",array(
-					"text"=>$trackback->getSubmitdate(),
-					"soy2prefix" => "cms"
-				));
-				$this->createAdd("submit_time","DateLabel",array(
-					"text"=>$trackback->getSubmitdate(),
-					"soy2prefix"=>"cms",
-					"defaultFormat"=>"H:i"
-				));
-
-			}
-		}
-	}
-
-	$dao = SOY2DAOFactory::create("cms.EntryTrackbackDAO");
-	$trackbackList = $dao->getCertificatedTrackbackByEntryId($entry->getId());
-
-	$page->createAdd("trackback_list","Blog_TrackbackList",array(
+	$page->createAdd("trackback_list","TrackbackListComponent",array(
 		"list" => $trackbackList,
 		"soy2prefix" => "b_block",
 		"visible" => ($entry->getId())
@@ -729,7 +179,6 @@ function soy_cms_blog_output_trackback_list($page,$entry){
 		"visible" => count($trackbackList),
 		"soy2prefix" => "b_block",
 	));
-
 }
 
 
@@ -749,100 +198,11 @@ function soy_cms_blog_output_trackback_link($page,$entry){
 	 */
 	$trackbackUrl = $page->getEntryPageURL(true) . $entry->getId() ."?trackback";
 
-	if(!class_exists("Blog_TrackbackURL")){
-		class Blog_TrackbackURL extends HTMLLabel{
-
-			function execute(){
-
-				parent::execute();
-
-				if($this->tag == "input"){
-					$this->setInnerHTML("");
-				}else{
-					$this->clearAttribute("value");
-				}
-			}
-		}
-	}
-
-	$page->createAdd("trackback_link","Blog_TrackbackURL",array(
+	if(!class_exists("TrackbackURLComponent")) SOY2::import("site_include.blog.component.TrackbackURLComponent");
+	$page->createAdd("trackback_link","TrackbackURLComponent",array(
 		"value" => $trackbackUrl,
 		"text" => $trackbackUrl,
 		"soy2prefix" => "b_block",
 		"type"=>"text"
 	));
-}
-
-class BlogPage_PagerList extends HTMLList{
-
-	//今のページ番号
-	var $current;
-	//最大ページ数
-	var $last;
-	//ベースURL=最初のページのURL
-	var $url;
-	function setCurrent($current){
-		$this->current = $current;
-	}
-	function setUrl($url){
-		$this->url = $url;
-	}
-
-	protected function populateItem($page_num){
-
-		$this->last = count($this->list);
-
-		$url = $this->url;
-		if($page_num >1){
-			$url = $url."?p=".$page_num;
-		}
-		if($page_num == $this->current){
-			$url = "";
-		}
-
-		$class = array();
-		if($page_num == $this->current) $class[] = "current_page_number";
-		if($page_num == 1) $class[] = "first_page_number";
-		if($page_num == $this->last) $class[] = "last_page_number";
-
-		$html = "";
-		if(strlen($url)){
-			$html .= "<a href=\"".htmlspecialchars($url, ENT_QUOTES, "UTF-8")."\"";
-			if(count($class)) $html .= " class=\"".implode(" ",$class)."\"";
-			$html .= ">";
-		}
-		$html .= htmlspecialchars($page_num, ENT_QUOTES, "UTF-8");
-		if(strlen($url)) $html .= "</a>";
-
-		$this->createAdd("pager_item","HTMLLabel",array(
-				"html" => $html,
-				"soy2prefix" => "cms"
-		));
-		$this->createAdd("pager_item_link", "HTMLLink", array(
-				"link" => $url,
-				"soy2prefix" => "cms"
-		));
-		$this->createAdd("pager_item_number", "HTMLLabel", array(
-				"text" => $page_num,
-				"soy2prefix" => "cms"
-		));
-
-		$this->createAdd("is_first","HTMLModel",array(
-				"visible" => ($page_num == 1),
-				"soy2prefix" => "cms"
-		));
-		$this->createAdd("is_last","HTMLModel",array(
-				"visible" => ($page_num == $this->last),
-				"soy2prefix" => "cms"
-		));
-		$this->createAdd("is_middle","HTMLModel",array(
-				"visible" => ($page_num > 1 && $page_num < $this->last),
-				"soy2prefix" => "cms"
-		));
-		$this->createAdd("is_current","HTMLModel",array(
-				"visible" => ($page_num == $this->current),
-				"soy2prefix" => "cms"
-		));
-	}
-
 }
