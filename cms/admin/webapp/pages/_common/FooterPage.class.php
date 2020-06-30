@@ -40,6 +40,11 @@ class FooterPage extends CMSWebPageBase{
 			"text" => CMSUtil::getDeveloperName()
 		));
 
+		include_once(dirname(__FILE__) . "/Widget/MemoWidgetComponent.class.php");
+		$this->addLabel("memo_widget", array(
+			"html" => MemoWidgetComponent::buildWidget()
+		));
+
 		$this->addLabel("jQuery", array(
 			"src" => SOY2PageController::createRelativeLink("./webapp/pages/files/vendor/jquery/jquery.min.js") . "?" . SOYCMS_BUILD_TIME
 		));

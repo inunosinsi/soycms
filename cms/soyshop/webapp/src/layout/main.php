@@ -226,6 +226,13 @@ foreach($scripts as $script){
 
 <script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js?<?php echo $time;?>" type="text/javascript"></script>
 
+<!-- widget -->
+<?php
+SOY2::import("component.Widget.MemoWidgetComponent");
+$widget = new MemoWidgetComponent();
+echo $widget->buildWidget();
+?>
+
 <!-- モーダル -->
 <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="AccountLabel" aria-hidden="true">
 <div class="modal-dialog" role="document">

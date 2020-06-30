@@ -80,3 +80,10 @@ CREATE TABLE AutoLogin (
 	time_limit INTEGER,
 	UNIQUE(user_id, session_token)
 );
+
+CREATE TABLE Memo(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	content TEXT,
+	create_date INTEGER NOT NULL,
+	update_date INTEGER NOT NULL
+);

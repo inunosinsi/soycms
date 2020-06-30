@@ -133,6 +133,13 @@ create table SiteConfig(
 	charset integer default 1
 )ENGINE = InnoDB;
 
+CREATE TABLE CmsMemo(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	content TEXT,
+	create_date INTEGER NOT NULL,
+	update_date INTEGER NOT NULL
+) ENGINE=InnoDB;
+
 create index entry_udate on Entry(udate desc);
 
 create table soycms_data_sets(

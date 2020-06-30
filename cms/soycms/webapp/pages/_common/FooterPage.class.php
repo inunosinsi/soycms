@@ -23,5 +23,10 @@ class FooterPage extends CMSHTMLPageBase{
 		$this->addLabel("developer_name", array(
 			"text" => CMSUtil::getDeveloperName()
 		));
+
+		include_once(dirname(__FILE__) . "/Widget/MemoWidgetComponent.class.php");
+		$this->addLabel("memo_widget", array(
+			"html" => MemoWidgetComponent::buildWidget()
+		));
 	}
 }

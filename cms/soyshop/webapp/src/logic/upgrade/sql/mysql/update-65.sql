@@ -1,0 +1,6 @@
+CREATE TABLE soyshop_memo(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	content TEXT,
+	create_date INTEGER NOT NULL,
+	update_date INTEGER NOT NULL
+) ENGINE=InnoDB;

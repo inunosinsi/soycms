@@ -277,3 +277,10 @@ create table soyshop_favorite_item(
 	update_date INTEGER,
 	unique(item_id, user_id, purchased)
 ) ENGINE=InnoDB;
+
+CREATE TABLE soyshop_memo(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	content TEXT,
+	create_date INTEGER NOT NULL,
+	update_date INTEGER NOT NULL
+) ENGINE=InnoDB;

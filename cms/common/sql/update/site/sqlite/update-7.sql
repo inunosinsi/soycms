@@ -1,1 +1,1 @@
-ALTER TABLE TagCloudDictionary ADD COLUMN hash VARCHAR UNIQUE;
+ALTER TABLE TagCloudDictionary ADD COLUMN hash VARCHAR;
