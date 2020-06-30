@@ -52,7 +52,7 @@ class CustomFieldPlugin{
 		$htmlObj = $arg["SOY2HTMLObject"];
 
 		$fields = $this->getCustomFields($entryId);
-
+		
 		foreach($fields as $field){
 
 			//設定を取得
