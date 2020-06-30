@@ -35,7 +35,7 @@ class BlogEntrySerialNumberPlugin {
 		$htmlObj = &$arg["SOY2HTMLObject"];
 
 		$className = get_class($htmlObj);
-		$serialNumber = ($className == "BlogPage_EntryList") ? self::_counter($className) + self::_offset($className) : 0;
+		$serialNumber = ($className == "EntryListComponent") ? self::_counter($className) + self::_offset($className) : 0;
 
 		$htmlObj->addLabel("blog_entry_serial_number", array(
 			"soy2prefix" => "cms",
