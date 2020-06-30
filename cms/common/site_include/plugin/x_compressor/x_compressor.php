@@ -20,7 +20,7 @@ class CompressorPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3193",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.4"
+			"version"=>"0.5"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -125,6 +125,8 @@ class CompressorPlugin{
 				preg_match_all('/href=\"(.*?)\"/', $line, $tmp);
 				if(isset($tmp[1]) && is_array($tmp[1])){
 					foreach($tmp[1] as $old){
+						if(strpos($old, "http://www.facebook.com") === 0 || strpos($old, "https://www.facebook.com") === 0) continue;
+						if(strpos($old, "http://twitter.com") === 0 || strpos($old, "https://twitter.com") === 0) continue;
 						if(preg_match('/https?:\/\/' . $_SERVER["HTTP_HOST"] . '\//', $old, $tmp2)){
 							$new = str_replace("https://", "", $old);
 							$new = str_replace("http://", "", $new);
@@ -133,6 +135,11 @@ class CompressorPlugin{
 						}
 					}
 				}
+			}
+
+			//コメントをなくす
+			if(preg_match('/<!--[\s\S]*?-->/', $line, $tmp)){
+				$line = preg_replace('/<!--[\s\S]*?-->/', '', $line);
 			}
 
 			$h[] = $line;
