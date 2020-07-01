@@ -41,8 +41,9 @@ class FooterPage extends CMSWebPageBase{
 		));
 
 		include_once(dirname(__FILE__) . "/Widget/MemoWidgetComponent.class.php");
+		$component = new MemoWidgetComponent();
 		$this->addLabel("memo_widget", array(
-			"html" => MemoWidgetComponent::buildWidget()
+			"html" => $component->buildWidget()
 		));
 
 		$this->addLabel("jQuery", array(
