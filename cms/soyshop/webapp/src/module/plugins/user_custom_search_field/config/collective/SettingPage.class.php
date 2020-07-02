@@ -45,7 +45,7 @@ class SettingPage extends WebPage{
 
 		parent::__construct();
 
-		
+
 
 		self::buildSearchForm();
 
@@ -74,11 +74,14 @@ class SettingPage extends WebPage{
 			"detailLink" => SOY2PageController::createLink("User.Detail."),
 		));
 
-		$this->addModel("datapicker_css", array(
-			"href" => SOY2PageController::createRelativeLink("./js/") . "tools/soy2_date_picker.css"
+		// $this->addModel("datapicker_css", array(
+		// 	"href" => SOY2PageController::createRelativeLink("./js/") . "tools/soy2_date_picker.css"
+		// ));
+		$this->addModel("datapicker_ja_js", array(
+			"src" => SOY2PageController::createRelativeLink("./js/") . "tools/datepicker-ja.js"
 		));
 		$this->addModel("datapicker_js", array(
-			"src" => SOY2PageController::createRelativeLink("./js/") . "tools/soy2_date_picker.pack.js"
+			"src" => SOY2PageController::createRelativeLink("./js/") . "tools/datepicker.js"
 		));
 	}
 

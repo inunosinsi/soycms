@@ -2,7 +2,7 @@
 /*
  */
 class AggregateExport extends SOYShopOrderExportBase{
-	
+
 	private $csvLogic;
 
 	/**
@@ -16,7 +16,7 @@ class AggregateExport extends SOYShopOrderExportBase{
 	 * 検索結果一覧に表示するメニューの説明
 	 */
 	function getMenuDescription(){
-		include_once(dirname(__FILE__) . "/form/AggregateFormPage.class.php");
+		SOY2::import("module.plugins.common_aggregate.form.AggregateFormPage");
 		$form = SOY2HTMLFactory::createInstance("AggregateFormPage");
 		$form->setConfigObj($this);
 		$form->execute();
@@ -27,12 +27,14 @@ class AggregateExport extends SOYShopOrderExportBase{
 	 * export エクスポート実行
 	 */
 	function export($orders){
-		
+
 		set_time_limit(0);
 		SOY2::import("module.plugins.common_aggregate.util.AggregateUtil");
-		
+
 		$mode = (isset($_POST["Aggregate"]["type"])) ? $_POST["Aggregate"]["type"] : AggregateUtil::MODE_MONTH;
-		
+		$label = "";
+		$lines = array();
+
 		switch($mode){
 			case AggregateUtil::MODE_ITEMRATE:
 				$label = AggregateUtil::MODE_ITEMRATE;
@@ -59,24 +61,39 @@ class AggregateExport extends SOYShopOrderExportBase{
 				$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.CustomerLogic");
 				$lines = $logic->calc();
 				break;
+
+			/** 隠しモード **/
+			//オーダーカスタムフィールド(日付)で集計
+			case AggregateUtil::MODE_ORDER_DATE_CUSTOMFIELD:
+				if(isset($_POST["AggregateHiddenValue"])){
+					$v = $_POST["AggregateHiddenValue"];
+					$label = (isset($v["label"])) ? $v["label"] : "error";
+					if(isset($v["field_id"])){
+						$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.OrderDateCustomFieldLogic", array("fieldId" => $v["field_id"]));
+						$lines = $logic->calc();
+					}
+				}
+				break;
+
+
 		}
 
 		$charset = (isset($_REQUEST["charset"])) ? $_REQUEST["charset"] : "Shift-JIS";
-		
+
 		header("Cache-Control: public");
 		header("Pragma: public");
     	header("Content-Disposition: attachment; filename=" . $label . "_" . date("YmdHis") . ".csv");
 		header("Content-Type: text/csv; charset=" . htmlspecialchars($charset) . ";");
-		
+
 		ob_start();
 		echo implode("," , $logic->getLabels());
 		echo "\r\n";
 		echo implode("\r\n",$lines);
 		$csv = ob_get_contents();
 		ob_end_clean();
-		
+
 		echo mb_convert_encoding($csv,$charset,"UTF-8");
-		
+
 		exit;	//csv output
 	}
 }

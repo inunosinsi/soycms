@@ -17,15 +17,17 @@ class UserGroupAdminDetail extends SOYShopAdminDetailBase{
 	function getScripts(){
 		$root = SOY2PageController::createRelativeLink("./js/");
 		return array(
-			$root . "tools/soy2_date_picker.pack.js"
+			//$root . "tools/soy2_date_picker.pack.js"
+			$root . "tools/datepicker-ja.js",
+			$root . "tools/datepicker.js"
 		);
 	}
 
 	function getCSS(){
-		$root = SOY2PageController::createRelativeLink("./js/");
+		//$root = SOY2PageController::createRelativeLink("./js/");
 		return array(
 			"./css/admin/user_detail.css",
-			$root . "tools/soy2_date_picker.css"
+			//$root . "tools/soy2_date_picker.css"
 		);
 	}
 }

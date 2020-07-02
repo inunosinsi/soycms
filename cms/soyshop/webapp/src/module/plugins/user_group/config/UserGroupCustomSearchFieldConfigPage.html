@@ -1,5 +1,5 @@
 <div class="text-right">
-	<a class="btn btn-default" href="javascript:void(0);" onclick="$('#append_form_el').trigger('popup',{height:300});">項目の追加</a>
+	<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#customfieldModal">項目の追加</a>
 </div>
 
 <br />
@@ -37,16 +37,16 @@
 			</td>
 			<td soy:id="display"></td>
 			<td>
-				<a soy:id="toggle_config">Detail</a>&nbsp;
+				<a soy:id="toggle_config" class="btn btn-warning">Detail</a>&nbsp;
 
-				<a soy:id="delete">Delete</a>
+				<a soy:id="delete" class="btn btn-danger">Delete</a>
 				<form method="post">
 					<input type="submit" soy:id="delete_submit" style="display:none;" />
 				</form>
 			</td>
 		</tr>
 		<tr soy:id="field_config" style="display:none;">
-			<td colspan="2"></td>
+			<td colspan="3"></td>
 			<td colspan="3">
 				<h5 style="margin-bottom:0;">詳細設定</h5>
 
@@ -55,14 +55,14 @@
 						<!-- soy:id="with_options" -->
 						<dt>選択項目<span class="option">(項目を改行で区切ってください)</span></dt>
 						<dd>
-							<textarea soy:id="option"></textarea>
+							<textarea soy:id="option" class="form-control"></textarea>
 						</dd>
 						<!-- /soy:id="with_options" -->
 
 						<!-- soy:id="with_map_key" -->
 						<dt>Google Maps APIのKEY</dt>
 						<dd>
-							<input type="text" soy:id="map_key">
+							<input type="text" soy:id="map_key" class="form-control">
 						</dd>
 						<!-- /soy:id="with_map_key" -->
 
@@ -85,37 +85,6 @@
 	</table>
 	<span style="margin:0 0 0 20px;">※地図付き住所を使用する場合、フィールドの作成は一つまでです。</span><br>
 	<span style="margin:0 0 0 20px;">※フィールド作成後は詳細設定でGoogle Maps API Keyを登録することで使用できるようになります。</span>
-
-	<div id="append_form_el" class="popup" style="display:none;">
-		<form soy:id="create_form" id="create_form">
-			<input type="hidden" name="create" value="create" />
-			<p>
-				ID
-				<div class="alL">
-				<input id="custom_key" name="custom_key" type="text" class="text validate">
-				<p class="alert alert-danger" id="custom_key_error" style="display:none;">必須項目を入力してください</p>
-				</div>
-
-				ラベル
-
-				<div class="alL">
-				<input id="custom_label" name="custom_label" type="text" class="text validate">
-				<p class="alert alert-danger" id="custom_label_error" style="display:none;">必須項目を入力してください</p>
-				</div>
-
-
-				項目種別
-				<div class="alL">
-					<select name="custom_type" soy:id="custom_type_select"></select>
-				</div>
-
-			</p>
-			<p >
-				<a class="btn btn-default" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
-			</p>
-			<p class="close"></p>
-		</form>
-	</div>
 </div><!-- /block_body -->
 
 <h3 style="margin:10px 0;">テンプレートへの記述例 ※未実装</h3>
@@ -137,3 +106,46 @@
 &lt;/form&gt;
 &lt;!-- /shop:module="user.group.g_search_field" --&gt;
 </pre>
+
+<div class="modal" tabindex="-1" role="dialog" id="customfieldModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">項目の追加</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+					<input type="hidden" name="create" value="create" />
+					<div>
+						ID
+						<div class="alL">
+						<input id="custom_key" name="custom_key" type="text" class="text validate">
+						<p class="alert alert-danger" id="custom_key_error" style="display:none;">必須項目を入力してください</p>
+						</div>
+
+						ラベル
+
+						<div class="alL">
+						<input id="custom_label" name="custom_label" type="text" class="text validate">
+						<p class="alert alert-danger" id="custom_label_error" style="display:none;">必須項目を入力してください</p>
+						</div>
+
+
+						項目種別
+						<div class="alL">
+							<select name="custom_type" soy:id="custom_type_select"></select>
+						</div>
+
+					</div>
+					<div class="text-right">
+						<a class="btn btn-default" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+					</div>
+					<p class="close"></p>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="customfieldModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
