@@ -81,12 +81,17 @@ class CampaignEntryPage extends WebPage{
 			"html" => "\n" . file_get_contents(dirname(dirname(__FILE__)) . "/js/post.js") . "\n"
 		));
 
+		$this->addModel("data_picker_ja_js", array(
+			"src" => SOY2PageController::createRelativeLink("./js/tools/datepicker-ja.js")
+		));
+
 		$this->addModel("data_picker_js", array(
-			"src" => SOY2PageController::createRelativeLink("./js/tools/soy2_date_picker.pack.js")
+			//"src" => SOY2PageController::createRelativeLink("./js/tools/soy2_date_picker.pack.js")
+			"src" => SOY2PageController::createRelativeLink("./js/tools/datepicker.js")
 		));
-		$this->addModel("data_picker_css", array(
-			"href" => SOY2PageController::createRelativeLink("./js/tools/soy2_date_picker.css")
-		));
+		// $this->addModel("data_picker_css", array(
+		// 	"href" => SOY2PageController::createRelativeLink("./js/tools/soy2_date_picker.css")
+		// ));
 	}
 
 	private function buildForm(){

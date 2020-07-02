@@ -20,21 +20,22 @@ class FieldFormComponent {
 
             case CustomSearchFieldUtil :: TYPE_CHECKBOX :
                 $html = array();
-
-                $opt = self::getFieldOption($field["option"], $lang);
-				if (strlen($opt) > 0) {
-                    $chks = (isset($value)) ? explode(",", $value) : array(); //valuesを配列化
-					$options = explode("\n", $opt);
-                    foreach ($options as $option) {
-                        $oVal = trim($option);
-						if(strlen($oVal) && $oVal[0] == "*") $oVal = substr($oVal, 1);	//先頭の*を除く
-                        if (in_array($oVal, $chks)) {
-                            $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
-                        } else {
-                            $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
-                        }
-                    }
-                }
+				if(isset($field["option"])){
+					$opt = self::getFieldOption($field["option"], $lang);
+					if (strlen($opt) > 0) {
+	                    $chks = (isset($value)) ? explode(",", $value) : array(); //valuesを配列化
+						$options = explode("\n", $opt);
+	                    foreach ($options as $option) {
+	                        $oVal = trim($option);
+							if(strlen($oVal) && $oVal[0] == "*") $oVal = substr($oVal, 1);	//先頭の*を除く
+	                        if (in_array($oVal, $chks)) {
+	                            $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
+	                        } else {
+	                            $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
+	                        }
+	                    }
+	                }
+				}
                 return implode("\n", $html);
 
             case CustomSearchFieldUtil :: TYPE_RADIO :

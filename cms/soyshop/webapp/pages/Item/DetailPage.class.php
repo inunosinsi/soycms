@@ -666,7 +666,9 @@ class DetailPage extends WebPage{
 		return array(
 			$root . "ImageSelect.js",
 			$root . "jquery/treeview/jquery.treeview.pack.js",
-			$root . "tools/soy2_date_picker.pack.js"
+			//$root . "tools/soy2_date_picker.pack.js"
+			$root . "tools/datepicker-ja.js",
+			$root . "tools/datepicker.js"
 		);
 	}
 
@@ -675,7 +677,7 @@ class DetailPage extends WebPage{
 		return array(
 			$root . "jquery/treeview/jquery.treeview.css",
 			$root . "tree.css",
-			$root . "tools/soy2_date_picker.css"
+			//$root . "tools/soy2_date_picker.css"
 		);
 	}
 

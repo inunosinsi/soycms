@@ -229,13 +229,16 @@ class IndexPage extends WebPage{
 		return array(
 			"./css/admin/user_detail.css",
 			"./css/admin/order_register.css",
-			"./js/tools/soy2_date_picker.css",
+			//"./js/tools/soy2_date_picker.css",
 		);
 	}
 
 	function getScripts(){
+		$root = SOY2PageController::createRelativeLink("./js/");
 		return array(
-			"./js/tools/soy2_date_picker.pack.js"
+			//"./js/tools/soy2_date_picker.pack.js"
+			$root . "tools/datepicker-ja.js",
+			$root . "tools/datepicker.js"
 		);
 	}
 
@@ -289,6 +292,7 @@ class IndexPage extends WebPage{
 		$this->addInput("order_date", array(
 				"name" => "order_date",
 				"value" => $this->cart->getOrderDateText(),
+				"readonly" => true
 		));
 
 		DisplayPlugin::toggle("no_order_date", !strlen($this->cart->getOrderDateText()));
