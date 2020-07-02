@@ -628,6 +628,9 @@ function soyshop_add_get_value($url){
         }
     }
 
+	//ページャのURLの整形
+	if(strpos($url, "//page-")) $url = str_replace("//page-", "/page-", $url);
+
     return $url;
 }
 

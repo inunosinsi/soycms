@@ -30,8 +30,8 @@ function soyshop_pager_navigation($html, $page){
 		"visible" => ($total_page < 2)
 	));
 
-	$next_link = $pager->getNextPageUrl();
-	$prev_link = $pager->getPrevPageUrl();
+	$next_link = soyshop_add_get_value($pager->getNextPageUrl());
+	$prev_link = soyshop_add_get_value($pager->getPrevPageUrl());
 
 	$pager->execute();
 
@@ -192,7 +192,7 @@ class PagingList extends HTMLList{
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"link" => soyshop_add_get_value($this->url . "/page-" . $entity . ".html"),
 			"text" => $entity,
-			"class" => ($entity === $this->current) ? "current-page" : "",
+			"class" => ($entity === $this->current) ? "page-link current-page" : "page-link",
 		));
 	}
 
