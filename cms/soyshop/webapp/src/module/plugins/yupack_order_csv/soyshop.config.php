@@ -27,7 +27,7 @@ class YupackOrderCSVConfigFormPage extends WebPage{
 
 	private $config;
 
-	function YupackOrderCSVConfigFormPage(){
+	function __construct(){
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 	}
 

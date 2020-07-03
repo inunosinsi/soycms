@@ -20,7 +20,7 @@ CREATE TABLE soyinquiry_inquiry (
   id INTEGER primary key AUTO_INCREMENT,
   tracking_number VARCHAR(255),
   form_id VARCHAR(255),
-  ip_address VARCHAR(15) NOT NULL,
+  ip_address VARCHAR(40) NOT NULL,
   content TEXT,
   data TEXT,
   flag TINYINT default 1,
@@ -52,6 +52,6 @@ CREATE TABLE soyinquiry_data_sets(
 ) ENGINE=InnoDB;
 
 CREATE TABLE soyinquiry_ban_ip_address(
-	ip_address VARCHAR(15) NOT NULL UNIQUE,
+	ip_address VARCHAR(40) NOT NULL UNIQUE,
 	log_date INTEGER
 ) ENGINE=InnoDB;
