@@ -1,5 +1,10 @@
+<div class="alert alert-success">関連商品</div>
+
 <div class="form-group">
-	<label>関連商品</label>
+	<label>関連商品の追加</label><br>
+	商品コード:<select id="relative_item_add" soy:id="relative_item_select"></select>
+	<a class="btn btn-primary btn-sm" href="javascript:void(0);" onclick="return add_relative_item();">追加</a>
+
 	<div id="relative_items_wrapper">
 	<!-- soy:id="relative_item_list" -->
 	<p>
@@ -8,12 +13,6 @@
 	</p>
 	<!-- /soy:id="relative_item_list" -->
 	</div>
-</div>
-
-<div class="form-group">
-	<label>関連商品の追加</label><br>
-	商品コード:<select id="relative_item_add" soy:id="relative_item_select"></select>
-	<a class="btn btn-primary btn-sm" href="javascript:void(0);" onclick="return add_relative_item();">追加</a>
 </div>
 
 <script type="text/javascript">
