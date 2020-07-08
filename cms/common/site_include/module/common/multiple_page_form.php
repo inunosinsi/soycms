@@ -6,7 +6,10 @@ function soycms_multiple_page_form($html, $page){
 	MPFRouteUtil::doPost();	//GETの方も同時に調べる
 
 	$hash = MPFRouteUtil::getPageHash();
-	if($hash == "error") multiple_page_form_empty_echo();
+	if($hash == "error") {
+		multiple_page_form_empty_echo();
+		return;
+	}
 
 	//前のページがある場合
 	$prev = MPFRouteUtil::getPrevPageHash();
@@ -17,26 +20,38 @@ function soycms_multiple_page_form($html, $page){
 	switch($cnf["type"]){
 		case MultiplePageFormUtil::TYPE_EXTEND:
 			SOY2::import("site_include.plugin.multiple_page_form.util.MPFTypeExtendUtil");
-			if(!isset($cnf["extend"]) || !strlen($cnf["extend"])) multiple_page_form_empty_echo();
+			if(!isset($cnf["extend"]) || !strlen($cnf["extend"])) {
+				multiple_page_form_empty_echo();
+				return;
+			}
 
 			$classFilePath = MPFTypeExtendUtil::getPageDir() . $cnf["extend"] . ".class.php";
-			if(!file_exists($classFilePath)) multiple_page_form_empty_echo();
+			if(!file_exists($classFilePath)) {
+				multiple_page_form_empty_echo();
+				return;
+			}
 
 			include_once($classFilePath);
 			$form = SOY2HTMLFactory::createInstance($cnf["extend"]);
 			$form->setHash($hash);
 			$form->execute();
 			echo $form->getObject();
-			exit;
+			return;
 		default:
 			switch($cnf["type"]){
 				case MultiplePageFormUtil::TYPE_CHOICE:
-					if(!isset($cnf["choice"]) || !is_array($cnf["choice"]) || !count($cnf["choice"])) multiple_page_form_empty_echo();
+					if(!isset($cnf["choice"]) || !is_array($cnf["choice"]) || !count($cnf["choice"])) {
+						multiple_page_form_empty_echo();
+						return;
+					}
 					$items = MultiplePageFormUtil::sortItems($cnf["choice"]);	//項目
 					$values = MPFRouteUtil::getValues($hash);
 					break;
 				case MultiplePageFormUtil::TYPE_FORM:
-					if(!isset($cnf["item"]) || !is_array($cnf["item"]) || !count($cnf["item"])) multiple_page_form_empty_echo();
+					if(!isset($cnf["item"]) || !is_array($cnf["item"]) || !count($cnf["item"])) {
+						multiple_page_form_empty_echo();
+						return;
+					}
 					$items = MultiplePageFormUtil::sortItems($cnf["item"]);	//項目
 					$values = MPFRouteUtil::getValues($hash);
 					$isFirstView = (!count($values));	//はじめてフォームのページを開いた時
@@ -47,14 +62,14 @@ function soycms_multiple_page_form($html, $page){
 				default:
 					//何もしない
 			}
-			$description = htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8");
+			
+			$description = (isset($cnf["description"])) ? htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8") : "";
 			include_once(MultiplePageFormUtil::getTemplateFilePath($cnf));
-			exit;
+			return;
 	}
 }
 
 //終了の際に使用する
 function multiple_page_form_empty_echo(){
 	echo "error";
-	exit;
 }
