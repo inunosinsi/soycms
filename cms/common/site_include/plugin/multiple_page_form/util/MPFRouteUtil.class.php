@@ -64,10 +64,10 @@ class MPFRouteUtil {
 					break;
 				case MultiplePageFormUtil::TYPE_EXTEND:
 					SOY2::import("site_include.plugin.multiple_page_form.util.MPFTypeExtendUtil");
-					if(!isset($cnf["extend"]) || !strlen($cnf["extend"])) multiple_page_form_empty_echo();
+					if(!isset($cnf["extend"]) || !strlen($cnf["extend"])) break;
 
 					$classFilePath = MPFTypeExtendUtil::getPageDir() . $cnf["extend"] . ".class.php";
-					if(!file_exists($classFilePath)) multiple_page_form_empty_echo();
+					if(!file_exists($classFilePath)) break;
 
 					include_once($classFilePath);
 					$form = SOY2HTMLFactory::createInstance($cnf["extend"]);

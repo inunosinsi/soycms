@@ -67,7 +67,7 @@ class MultiplePageFormUtil {
 		}
 
 		//並び順の変更
-		array_multisort($sort, SORT_ASC, $list);
+		if(count($list)) array_multisort($sort, SORT_ASC, $list);
 
 		return $list;
 	}
