@@ -12,7 +12,7 @@ class CMSPageModulePlugin extends PluginBase{
 			unset($array[0]);
 		}
 		$func = "soycms_" . implode("_", $array);
-
+		
 		//ダイナミック編集のためにここで定義を確認しておく
 		if(!defined("_SITE_ROOT_")) define("_SITE_ROOT_", UserInfoUtil::getSiteDirectory());
 		$modulePath = soy2_realpath(_SITE_ROOT_) . ".module/" . str_replace(".", "/", $soyValue) . ".php";
