@@ -7,7 +7,7 @@ var editor_mode = "editor";
 
 $(function(){
 	PanelManager.init("template_wrapper");
-	
+
 	//ブロックリスト
 	if($("#block_list").length>0){
 		PanelManager.getPanel("west").addTab(soycms.lang.template_editor.block_list_tab_name,$("#block_list"),{deletable : false});
@@ -34,7 +34,8 @@ $(function(){
 	//クッキーからエディターの状態の取得
 	var regexp = new RegExp('; editor_mode=(.*?);');
 	var match  = ('; ' + document.cookie + ';').match(regexp);
-	editor_mode = (match) ? match[1] : 'editor';
+	//editor_mode = (match) ? match[1] : 'editor';
+	editor_mode = (match) ? match[1] : 'textarea';
 
 	//テキストエリアの初期化
 	var textarea = $("#template_content").css({
@@ -56,7 +57,7 @@ $(function(){
 	if(getStyleSheet().length == 0 && $("#cssButton")){
 		$("#cssButton").hide();
 	}
-	
+
 	//tabキーの実行
 	textarea.keydown(function(e){
 		// キーコードが Tabキー押下時と一致した場合
@@ -65,13 +66,13 @@ $(function(){
             //var end_position = this.selectionEnd;	//end_positionの取得が無くてもtext2のsubstrは動く
             var text1 = $(this).val().substr(0, current_position);
             var text2 = $(this).val().substr(current_position);
-            
+
             // タブを挿入
             var value = text1 + '\t' + text2;
             $(this).val(value);
             this.selectionStart = current_position + 1;
             this.selectionEnd = current_position + 1;
-            
+
             // Tabキー押下時の通常の動作を無効化
             return false;
         }
@@ -115,6 +116,8 @@ function toggle_editor(){
 		editor_mode = "editor";
 	}
 
+	editor_mode = "textarea";	// @色付きエディタの廃止
+
 	document.cookie = 'editor_mode=' + editor_mode + '; expires=' + new Date(2030, 1).toUTCString();
 
 	$("#template_content").toggle();
@@ -125,6 +128,7 @@ function toggle_editor(){
  *	HTMLコードの同期を取る
  */
 function sync_code(){
+	editor_mode = "textarea";		// @色付きエディタの廃止
 
 	if(editor_mode == "editor"){
 		$("#template_content").val(template_editor_get_code());
@@ -162,7 +166,7 @@ function showPreview(){
 		});
 
 		var $iframeWrapper = $("<div>", {id: "template_content_preview_wrapper"}).append($iframe);
-			
+
 		$("body").append($iframeWrapper);
 
 		if($("#block_list")){
@@ -243,7 +247,7 @@ function showPreview(){
 		}
 	}catch(e){
 	}
-	
+
 	//編集中のCSSを反映
 	if($("#css_list").length>0 && $("#css_list").val() != "none"){
 		content += "<style type=\"text/css\">"+$("#css_editor").val()+"</style>";
@@ -253,14 +257,14 @@ function showPreview(){
 	var $iframe = $("#template_content_preview");
 	if($iframe.length>0){
 		$iframe.hide();
-	
+
 		var d = $iframe.get(0).contentWindow.document;
 		d.clear();
 		d.write(content);
 		d.close();
-	
+
 		$iframe.show();
-	
+
 		$iframe.get(0).contentWindow.document.onclick = function(){
 			showPreview();
 		}
@@ -275,7 +279,7 @@ function scrollTextArea(line, pos){
 	PanelManager.getPanel(panel_pos).activeTab(tab_id);
 
 	var $textarea = $("#template_content");
-		
+
 	$textarea.scrollTop(line * 12);
 
 	$textarea[0].focus();
@@ -305,7 +309,7 @@ function scrollTextArea(line, pos){
 function resizeTextArea($wrapper, $container){
 
 	var $textarea = $("#template_content");
-		
+
 	if($textarea.length == 0) return;
 	if($wrapper.length == 0) return;
 
@@ -367,7 +371,7 @@ function showCSSEditor(){
 		$option.html(href);
 		$cssList.append($option);
 	});
-	
+
 	if($cssEditArea.hasClass("active")) return;
 
 	$cssEditArea.show();
@@ -414,9 +418,9 @@ function getStyleSheet(){
 	sync_code();
 
 	var content = $("#template_content").val();
-	
+
 	var $iframe = $("#getstylesheet_iframe").contents().length ? $("#getstylesheet_iframe") : null;
-	
+
 	if(!$iframe){
 		$iframe = $("<iframe>");
 		$iframe.attr("id", "getstylesheet_iframe");
@@ -485,13 +489,14 @@ function saveCSS(){
 }
 
 function insertHTML(code){
-	
+	editor_mode = "textarea";	//エディタは常にtextarea
+
 	if(editor_mode == "editor"){
 		var frame = $("#template_editor_frame");
 		frame.get(0).contentWindow.TemplateEditor.insertCode(code);
 
 
-	}else{		
+	}else{
 		textarea = $("#template_content");
 		var text = textarea.val()+ "\n\n" + code;
 		textarea.val(text);
@@ -503,13 +508,13 @@ function init_template_editor(){
 
 	var textarea = $("#template_content");
 	var frame = $("#template_editor_frame");
-	
+
 	if(!frame.get(0).contentWindow || !frame.get(0).contentWindow.TemplateEditor){
 		return;
 	}
 
 	var ua = navigator.userAgent;
-	
+
 	try{
 		if(ua.match('MSIE')){
 			frame.get(0).contentWindow.document.getElementById("main").contentEditable = true;
@@ -563,7 +568,7 @@ function activeTemplateEditor(){
 //エディタからHTMLを取得
 function template_editor_get_code(){
 	var frame = $("#template_editor_frame");
-	
+
 	if(!frame.get(0).contentWindow || !frame.get(0).contentWindow.TemplateEditor){
 		return $("#template_content").val();
 	}
@@ -577,35 +582,35 @@ function save_template(url,ele){
 	var toolbox = $("#template_toolbox");
 
 	var loading;
-	
+
 	//ローディング
 	if(ele != null){
 		ele = $(ele);
-		
+
 		loading = $("<span/>");
 		loading.attr("class","loading");
 		loading.html("&nbsp;&nbsp;&nbsp;&nbsp;");
-		
+
 		ele.prop("disabled", true);
 		ele.after(loading);
 	}
-	
+
 	//AJAXで保存：soy2_tokenでこけたら5回までやり直す
-	save_template_ajax(url,5,loading,ele);	
+	save_template_ajax(url,5,loading,ele);
 }
 
 function save_template_ajax(url,trials,loading,ele){
 	var content = sync_code();
-	
+
 	if(trials>0){
 		$.ajax({
 			url: url,
 			type : "post",
 			data : "template=" + encodeURIComponent(content) + "&soy2_token=" + $("#main_form").children('input[name=soy2_token]').val(),
 			success : function(data){
-				
+
 					var res = eval("array="+data);
-					
+
 					if($("#main_form")){
 						$("#main_form").children('input[name=soy2_token]').val(res.soy2_token);
 					}
@@ -615,10 +620,10 @@ function save_template_ajax(url,trials,loading,ele){
 						save_template_ajax(url,trials,loading,ele);
 					}else{
 						if($("#block_list")) $("#block_list").html(res.text);
-												
+
 						$(".loading").remove();
 						ele.prop("disabled", false);
-						
+
 						//CSSが追加されたらCSS編集ボタンを表示する
 						if(getStyleSheet().length != 0 && $("#cssButton")){
 							$("#cssButton").show();
@@ -657,6 +662,6 @@ function changeImageIcon(id){
 function setChangeLabelIcon(filename,fileAddress){
 	$("#page_icon").val(filename);
 	$("#page_icon_show").attr("src",fileAddress);
-	
+
 	common_close_layer_by_targetId("image_list_layer");
 }
