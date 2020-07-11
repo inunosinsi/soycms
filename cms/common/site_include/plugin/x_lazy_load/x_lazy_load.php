@@ -17,7 +17,7 @@ class XLazyLoadPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3278",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.5"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -50,7 +50,7 @@ class XLazyLoadPlugin{
 				$html = array();
 				$imgTagCnt = 0;	//imgタグが何回出現したか？
 				foreach($lines as $line){
-					$line = trim($line);
+					//$line = trim($line);
 					if(is_numeric(stripos($line, "<img"))){
 						//alt=""があれば消しておく
 						if(strpos($line, "alt=\"\"")){
