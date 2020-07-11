@@ -30,6 +30,16 @@ class MPFFormConfigPage extends WebPage {
 					$items[$idx]["order"] = (is_numeric($order)) ? (int)$order : 999;
 					$items[$idx]["required"] = (isset($_POST["Config"]["Required"][$idx]) && (int)$_POST["Config"]["Required"][$idx] === 1) ? 1 : 0;
 
+					//type属性
+					if(isset($_POST["Config"]["InputType"][$idx])){
+						$items[$idx]["inputType"] = trim($_POST["Config"]["InputType"][$idx]);
+					}
+
+					//属性値
+					if(isset($_POST["Config"]["Attribute"][$idx])){
+						$items[$idx]["attribute"] = trim($_POST["Config"]["Attribute"][$idx]);
+					}
+
 					//置換文字列
 					if(isset($_POST["Config"]["Replacement"][$idx])){
 						$items[$idx]["replacement"] = trim($_POST["Config"]["Replacement"][$idx]);

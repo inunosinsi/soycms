@@ -46,6 +46,7 @@ class MPFTypeFormUtil {
 	public static function getForm($idx, $cnf, $value, $isFirstView=false){
 		$html = array();
 		$isReq = (isset($cnf["required"]) && (int)$cnf["required"]);
+		$attr = (isset($cnf["attribute"])) ? $cnf["attribute"] : "";
 		$reqProp = ($isReq) ? "required=\"required\"" : "";
 
 		$name = "MPF[form_" . $idx . "]";
@@ -53,10 +54,11 @@ class MPFTypeFormUtil {
 		//$value = null;
 		switch($cnf["type"]){
 			case self::TYPE_INPUT:
-				$html[] = "<input type=\"text\" name=\"" . $name . "\" value=\"" . $value . "\" " . $reqProp . ">";
+				$typeProp = (isset($cnf["inputType"]) && strlen($cnf["inputType"])) ? htmlspecialchars($cnf["inputType"], ENT_QUOTES, "UTF-8") : "text";
+				$html[] = "<input type=\"" . $typeProp . "\" name=\"" . $name . "\" value=\"" . $value . "\" " . $attr . " " . $reqProp . ">";
 				break;
 			case self::TYPE_TEXTAREA:
-				$html[] = "<textarea name=\"" . $name . "\" " . $reqProp . ">" . $value . "</textarea>";
+				$html[] = "<textarea name=\"" . $name . "\" " . $attr . " " . $reqProp . ">" . $value . "</textarea>";
 				break;
 			case self::TYPE_CHECKBOX:
 				$opts = self::_getOpts($cnf);
@@ -76,10 +78,16 @@ class MPFTypeFormUtil {
 						$fn = "";
 					}
 					foreach($opts as $opt){
-						if(count($checked) && is_numeric(array_search($opt, $checked))){
-							$html[] = "<label><input type=\"checkbox\" name=\"" . $name . "[]\" value=\"" . $opt . "\" class=\"mpf_form_" . $idx . "\" " . $fn . " checked=\"checked\"> " . $opt . "</label>";
+						if(strpos($attr, "class=\"") !== false){
+							$chkAttr = str_replace("class=\"", "class=\"mpf_form_" . $idx . " ", $attr);
 						}else{
-							$html[] = "<label><input type=\"checkbox\" name=\"" . $name . "[]\" value=\"" . $opt . "\" class=\"mpf_form_" . $idx . "\" " . $fn . "> " . $opt . "</label>";
+							$chkAttr .= " class=\"mpf_form_" . $idx . "\"";
+						}
+						
+						if(count($checked) && is_numeric(array_search($opt, $checked))){
+							$html[] = "<label><input type=\"checkbox\" name=\"" . $name . "[]\" value=\"" . $opt . "\" " . $chkAttr . " " . $fn . " checked=\"checked\"> " . $opt . "</label>";
+						}else{
+							$html[] = "<label><input type=\"checkbox\" name=\"" . $name . "[]\" value=\"" . $opt . "\" " . $chkAttr . " " . $fn . "> " . $opt . "</label>";
 						}
 					}
 				}
@@ -116,7 +124,7 @@ class MPFTypeFormUtil {
 				}
 				break;
 			case self::TYPE_SELECT:
-				$html[] = "<select name=\"" . $name . "\" " . $reqProp . ">";
+				$html[] = "<select name=\"" . $name . "\" " . $attr . " " . $reqProp . ">";
 				$html[] = "<option></option>";
 				$opts = self::_getOpts($cnf);
 				if(count($opts)){
@@ -137,7 +145,7 @@ class MPFTypeFormUtil {
 				$html[] = "</select>";
 				break;
 			case self::TYPE_EMAIL:
-				$html[] = "<input type=\"email\" name=\"" . $name . "\" value=\"" . $value . "\" " . $reqProp . ">";
+				$html[] = "<input type=\"email\" name=\"" . $name . "\" value=\"" . $value . "\" " . $attr . " " . $reqProp . ">";
 				break;
 		}
 		return implode("\n", $html);

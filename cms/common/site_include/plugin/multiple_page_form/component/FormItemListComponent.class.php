@@ -24,6 +24,22 @@ class FormItemListComponent extends HTMLList {
 			"selected" => (isset($entity["required"]) && (int)$entity["required"])
 		));
 
+		//入力フォームの高度な設定
+		$this->addModel("is_input_config", array(
+			"visible" => (isset($entity["type"]) && ($entity["type"] == MPFTypeFormUtil::TYPE_INPUT))
+		));
+
+		$this->addInput("input_type", array(
+			"name" => "Config[InputType][" . $idx . "]",
+			"value" => (isset($entity["inputType"])) ? $entity["inputType"] : "text"
+		));
+
+		$this->addInput("attribute", array(
+			"name" => "Config[Attribute][" . $idx . "]",
+			"value" => (isset($entity["attribute"])) ? $entity["attribute"] : "",
+			"attr:placeholder" => "class=\"sample\" title=\"サンプル\" placeholder=\"\" pattern=\"\""
+		));
+
 		$this->addModel("is_advance_config", array(
 			"visible" => (isset($entity["type"]) && ($entity["type"] == MPFTypeFormUtil::TYPE_CHECKBOX || $entity["type"] == MPFTypeFormUtil::TYPE_RADIO || $entity["type"] == MPFTypeFormUtil::TYPE_SELECT))
 		));
