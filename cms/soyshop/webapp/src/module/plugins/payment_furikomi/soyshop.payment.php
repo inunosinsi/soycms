@@ -36,10 +36,9 @@ class FurikomiPaymentModule extends SOYShopPayment{
 		if(isset($array["account"])){
 			$res = str_replace("#ACCOUNT#", $array["account"], $res);
 		}
-		
+
 		return $res;
 	}
 
 }
 SOYShopPlugin::extension("soyshop.payment", "payment_furikomi", "FurikomiPaymentModule");
-?>

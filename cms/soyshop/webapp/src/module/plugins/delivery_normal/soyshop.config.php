@@ -5,8 +5,7 @@ class DeliveryNormalConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-		
-		include_once(dirname(__FILE__) ."/config/DeliveryNormalConfigFormPage.class.php");
+		SOY2::import("module.plugins.delivery_normal.config.DeliveryNormalConfigFormPage");
 		$form = SOY2HTMLFactory::createInstance("DeliveryNormalConfigFormPage");
 		$form->setConfigObj($this);
 		$form->execute();
@@ -21,9 +20,3 @@ class DeliveryNormalConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config","delivery_normal","DeliveryNormalConfig");
-
-
-
-
-
-
