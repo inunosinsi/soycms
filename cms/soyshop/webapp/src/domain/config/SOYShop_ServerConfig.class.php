@@ -324,4 +324,3 @@ class SOYShop_ServerConfig {
     	$this->additionalMailAddressForAdminMail = $additionalMailAddressForAdminMail;
     }
 }
-?>
