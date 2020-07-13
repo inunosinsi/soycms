@@ -13,7 +13,7 @@ class OrderDateCustomFieldLogic extends SOY2LogicBase{
 		$this->dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 	}
 
-	function calc(){
+	function calc($orders){
 		//パラメータのセット
 		if(strlen($this->dateFieldId)) $this->binds[":dateFieldId"] = $this->dateFieldId;
 		if(isset($_POST["AggregateHiddenValue"]["field_value"]) && strlen($_POST["AggregateHiddenValue"]["field_value"])){

@@ -68,10 +68,10 @@ class AggregateExport extends SOYShopOrderExportBase{
 				if(isset($_POST["AggregateHiddenValue"])){
 					$v = $_POST["AggregateHiddenValue"];
 					$label = (isset($v["label"])) ? $v["label"] : "error";
-					if(isset($v["field_id"])){
-						$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.OrderDateCustomFieldLogic", array("fieldId" => $v["field_id"]));
-						$lines = $logic->calc();
-					}
+					$fieldId = (isset($v["field_id"])) ? $v["field_id"] : null;
+					$dateFieldId = (isset($v["date_field_id"])) ? $v["date_field_id"] : null;
+					$logic = SOY2Logic::createInstance("module.plugins.common_aggregate.logic.OrderDateCustomFieldLogic", array("fieldId" => $fieldId, "dateFieldId" => $dateFieldId));
+					$lines = $logic->calc();
 				}
 				break;
 

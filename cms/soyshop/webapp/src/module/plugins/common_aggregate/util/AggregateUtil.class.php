@@ -11,7 +11,8 @@ class AggregateUtil{
 
 	/**
 	 * 隠しモードの使い方
-	 * name属性でAggregateHiddenValue[label]、AggregateHiddenValue[field_id]とAggregateHiddenValue[first_column]を渡す
+	 * name属性でAggregateHiddenValue[label]、AggregateHiddenValue[date_field_id]とAggregateHiddenValue[first_column]を渡す
+	 * オーダーカスタムフィールドの値も使用したい場合はAggregateHiddenValue[field_id]とAggregateHiddenValue[field_value]で使用可
 	 */
 
 	const TYPE_MONTH 		= 	"月次売上集計";

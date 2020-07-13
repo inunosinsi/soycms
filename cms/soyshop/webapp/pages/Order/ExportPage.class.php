@@ -23,7 +23,7 @@ class ExportPage extends WebPage{
 		$_POST["search"] = $search;
 
 		//統計、集計プラグインの場合は、注文一覧の検索を無視する
-		if(strpos($plugin, "aggregate") !== false || strpos($plugin, "analytics") !== false ){
+		if(strpos($plugin, "common_aggregate") !== false || strpos($plugin, "analytics") !== false ){
 			$orders = array();
 		}else{
 			$orders = self::_getOrders();

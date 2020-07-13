@@ -70,7 +70,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 
 		if(isset($search["noDelivery"]) && $search["noDelivery"] == 1){
 			$where[] = "order_status in (".SOYShop_Order::ORDER_STATUS_REGISTERED.",".SOYShop_Order::ORDER_STATUS_RECEIVED.")";
-		}else if(isset($search["orderStatus"])){
+		}else if(isset($search["orderStatus"]) && strlen($search["orderStatus"]) && is_numeric($search["orderStatus"])){
 			//注文状態を配列で渡す場合(チェックボックス式)
 			if(is_array($search["orderStatus"]) && count($search["orderStatus"])){
 				$where[] = "order_status IN (" . implode(",", $search["orderStatus"]) . ")";
