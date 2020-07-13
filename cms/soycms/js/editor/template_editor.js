@@ -3,7 +3,7 @@ function setConfig(config){
 	template_editor_configuration = config;
 }
 
-var editor_mode = "editor";
+var editor_mode = "textarea";
 
 $(function(){
 	PanelManager.init("template_wrapper");
@@ -106,15 +106,15 @@ function debug(str,flag){
  */
 function toggle_editor(){
 
-	if(editor_mode == "editor"){
-		sync_code();
-		editor_mode = "textarea";
-	}else{
-		var code = $("#template_content").val();
-		if(code.length < 1)code = "\n";
-		$("#template_editor_frame").get(0).contentWindow.TemplateEditor.setCode(code);
-		editor_mode = "editor";
-	}
+	// if(editor_mode == "editor"){
+	// 	sync_code();
+	// 	editor_mode = "textarea";
+	// }else{
+	// 	var code = $("#template_content").val();
+	// 	if(code.length < 1)code = "\n";
+	// 	$("#template_editor_frame").get(0).contentWindow.TemplateEditor.setCode(code);
+	// 	editor_mode = "editor";
+	// }
 
 	editor_mode = "textarea";	// @色付きエディタの廃止
 
@@ -531,7 +531,7 @@ function init_template_editor(){
 	frame.get(0).contentWindow.TemplateEditor.setCode(code);
 
 	if(editor_mode != "editor"){
-		editor_mode = "editor";
+		//editor_mode = "editor";
 		toggle_editor();
 	}
 
