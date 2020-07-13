@@ -180,15 +180,14 @@ class OrderLogic extends SOY2LogicBase{
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$isDestroyTrackingNumber = SOYShop_ShopConfig::load()->getDestroyTrackingNumberOnCancelOrder();
 
+		SOYShopPlugin::load("soyshop.order.status.update");
+
     	$dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
     	$dao->begin();
 
     	foreach($orderIds as $id){
-    		try{
-    			$order = $dao->getById($id);
-    		}catch(Exception $e){
-    			continue;
-    		}
+			$order = soyshop_get_order_object($id);
+			if(is_null($order->getId())) continue;
 
 			//ステータスが異なる場合
 			$oldStatus = $order->getStatus();
@@ -226,7 +225,13 @@ class OrderLogic extends SOY2LogicBase{
 					self::_changeItemStock($order->getId(), self::CHANGE_STOCK_MODE_RETURN);
 				}
 
-	    		self::_addHistory($id, $historyContent, "", $author);
+	    		self::_addHistory($order->getId(), $historyContent, "", $author);
+
+				//拡張ポイント
+				SOYShopPlugin::invoke("soyshop.order.status.update", array(
+	    			"order" => $order,
+	    			"mode" => "status"
+	    		));
 			}
     	}
 
