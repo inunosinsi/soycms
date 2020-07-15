@@ -8,4 +8,3 @@ class CommonBreadcrumbPageUpdate extends SOYShopPageUpdate{
 }
 
 SOYShopPlugin::extension("soyshop.page.update", "common_breadcrumb", "CommonBreadcrumbPageUpdate");
-?>

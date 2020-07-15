@@ -4,11 +4,9 @@
 
 class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
 
-	function doPost(SOYShop_Item $item){
-	}
+	function doPost(SOYShop_Item $item){}
 
-	function getForm(SOYShop_Item $item){
-	}
+	function getForm(SOYShop_Item $item){}
 
 	/**
 	 * onOutput
@@ -46,15 +44,14 @@ class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function onDelete($id){
-	}
+	function onDelete($id){}
 
 	function getFbButton(SOYShop_Item $item){
-		return "<div class=\"fb-like fb-like-comment\" data-href=\"" . $this->getPageUrl($item) . "\" data-send=\"false\" data-layout=\"button_count\" data-width=\"450\" data-show-faces=\"false\"></div>";
+		return "<div class=\"fb-like fb-like-comment\" data-href=\"" . self::_getPageUrl($item) . "\" data-send=\"false\" data-layout=\"button_count\" data-width=\"450\" data-show-faces=\"false\"></div>";
 	}
 
 	function getTwitterButton(SOYShop_Item $item){
-		$url = $this->getPageUrl($item);
+		$url = self::_getPageUrl($item);
 
 		return "<a href=\"https://twitter.com/share\" " .
 				"class=\"twitter-share-button\" " .
@@ -65,14 +62,14 @@ class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
 	}
 
 	function getTwitterButtonMobile(SOYShop_Item $item){
-		$url = rawurlencode($this->getPageUrl($item));
+		$url = rawurlencode(self::_getPageUrl($item));
 		$itemName = rawurlencode($item->getName());
 
 		return "http://twtr.jp/share?url=" . $url . "&text=" . $itemName;
 	}
 
 	function getHatenaButton(SOYShop_Item $item){
-		$url = $this->getPageUrl($item);
+		$url = self::_getPageUrl($item);
 
 		return "<a href=\"https://b.hatena.ne.jp/entry/" . $url . "\" " .
 				"class=\"hatena-bookmark-button\" " .
@@ -105,25 +102,11 @@ class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
 				"</script>";
 	}
 
-	private $pageDao;
-
-	function getPageUrl(SOYShop_Item $item){
-		if(!$this->pageDao){
-			$this->pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		}
-
-		try{
-			$page = $this->pageDao->getById($item->getDetailPageId());
-		}catch(Exception $e){
-			$page = new SOYShop_Page();
-		}
-
+	private function _getPageUrl(SOYShop_Item $item){
 		$url = soyshop_get_site_url(true);
 
-		$uri = $page->getUri();
-		if(isset($uri)){
-			$url = $url.$page->getUri() . "/" . $item->getAlias();
-		}
+		$uri = soyshop_get_page_object($item->getDetailPageId())->getUri();
+		if(isset($uri)) $url = $url.$page->getUri() . "/" . $item->getAlias();
 
 		return $url;
 	}
