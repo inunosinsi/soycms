@@ -131,7 +131,7 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
 
             switch($field["type"]){
                 case CustomSearchFieldUtil::TYPE_CHECKBOX:
-                    if(strlen($field["option"][SOYSHOP_PUBLISH_LANGUAGE])){
+                    if(isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE]) && strlen($field["option"][SOYSHOP_PUBLISH_LANGUAGE])){
                         $vals = explode(",", $csfValue);
                         $opts = explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]);
                         foreach($opts as $i => $opt){
