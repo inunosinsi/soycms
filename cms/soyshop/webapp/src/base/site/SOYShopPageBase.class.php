@@ -129,8 +129,7 @@ class SOYShopPageBase extends WebPage{
      * shop:moduleの実行
      */
     function buildModules(){
-
-        $plugin = new SOYShopPageModulePlugin();
+		$plugin = new SOYShopPageModulePlugin();
 
         while(true){
             list($tag, $line, $innerHTML, $outerHTML, $value, $suffix, $skipendtag) =

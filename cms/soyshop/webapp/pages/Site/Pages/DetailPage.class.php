@@ -25,6 +25,12 @@ class DetailPage extends WebPage{
                 if(is_null($page->getUri())) $page->setUri(SOYShop_Page::URI_HOME);
 
                 $logic->update($page);
+
+				SOYShopPlugin::load("soyshop.page.update");
+				SOYShopPlugin::invoke("soyshop.page.update", array(
+					"pageId" => $page->getId()
+				));
+
                 SOY2PageController::jump("Site.Pages.Detail." . $this->id . "?updated");
             }
 

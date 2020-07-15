@@ -182,6 +182,17 @@ class CartLogic extends SOY2LogicBase{
 		}
 	}
 
+	function countItems(){
+		$items = $this->getItems();
+		if(!count($items)) return 0;
+
+		$count = 0;
+		foreach($items as $item){
+			$count += (int)$item->getItemCount();
+		}
+		return $count;
+	}
+
 	function setItemOrder(SOYShop_Item $item, $count){
 		SOYShopPlugin::load("soyshop.cart.set.itemorder");
 		$delegate = SOYShopPlugin::invoke("soyshop.cart.set.itemorder", array(

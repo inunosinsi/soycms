@@ -189,7 +189,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
             $res = $delegete->getItems($obj, $offset, $limit);
             $total = $delegete->getTotal($obj);
 		}
-		
+
         return array($res, $total);
     }
 

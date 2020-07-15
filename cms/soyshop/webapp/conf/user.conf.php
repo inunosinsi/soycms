@@ -50,9 +50,6 @@ SOY2::import("base.SOYShopSiteController");
 SOY2::import("base.define", ".php");
 SOY2::import("base.func.common", ".php");
 SOY2::import("logic.plugin.SOYShopPlugin");
-SOY2::imports("base.site.*");
-SOY2::imports("base.site.pages.*");
-SOY2::imports("base.site.classes.*");
 
 //init controller
 SOY2PageController::init("SOYShopSiteController");

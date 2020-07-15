@@ -264,7 +264,7 @@ class DetailPage extends WebPage{
 			"link" => SOY2PageController::createLink("Order.Register.User." . $shopUser->getId())
 		));
 		$this->addLink("order_cart_link", array(
-			"link" => soyshop_get_site_url(true) . "?purchase=proxy&user_id=" . $shopUser->getId(),
+			"link" => soyshop_get_mypage_url(true) . "/login?purchase=proxy&user_id=" . $shopUser->getId(),
 			"target" => "_blank"
 		));
 

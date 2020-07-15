@@ -135,12 +135,14 @@ class SOYShopPageController extends SOY2PageController{
 	}
 
 	private function _clearCache(){
-		$dir = SOYSHOP_SITE_DIRECTORY . "/.cache/";
-		$files = scandir($dir);
-		foreach($files as $file){
-			if($file[0] == ".") continue;
-			@unlink($dir . $file);
+		$files = soy2_scanfiles(SOYSHOP_SITE_DIRECTORY . "/.cache/");
+		if(count($files)){
+			foreach($files as $file){
+				@unlink($dir . $file);
+			}
 		}
+		header("Location:" . $_SERVER["HTTP_REFERER"]);
+		exit;
 	}
 
     /**

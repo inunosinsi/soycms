@@ -56,7 +56,7 @@ class SOYShop_AppContainer extends SOY2HTML{
 			//読み込み
 			include_once(CMS_COMMON . "soycms.config.php");
 			include_once(CMS_APPLICATION_ROOT_DIR . "webapp/base/CMSApplication.class.php");
-			
+
 			//MySQL版の場合はCMS本体のmysqlの設定ファイルを確認する必要がある
 			if(SOYCMS_DB_TYPE == "mysql" && !defined("ADMIN_DB_DSN")){
 				$mysqlFilePath = CMS_COMMON . "config/db/mysql.php";

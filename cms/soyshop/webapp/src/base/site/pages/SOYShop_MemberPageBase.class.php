@@ -9,12 +9,12 @@ class SOYShop_MemberPageBase extends SOYShopPageBase{
 	private $totalUserCount = 0;
 
 	function build($args){
-	
+
 		$page = $this->getPageObject();
 		$obj = $page->getPageObject();
 
 		$alias = implode("/", $args);
-		
+
 		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		try{
 			$user = $userDAO->getByAccountId($alias);
@@ -31,13 +31,13 @@ class SOYShop_MemberPageBase extends SOYShopPageBase{
 				}
 			}
 		}
-		
+
 		$this->setUser($user);
 
 		//現在の商品を保存
 		$obj->setCurrentUser($user);
 
-		
+
 //		try{
 //			$logic = SOY2Logic::createInstance("logic.user.SearchUserUtil");
 //			list($items, $total) = $logic->getById($item->getCategory());
@@ -200,4 +200,3 @@ class SOYShop_MemberPagePager extends SOYShop_PagerBase{
 		return ($this->page->getPrevUser()) ? true : false;
 	}
 }
-?>

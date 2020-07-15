@@ -28,12 +28,8 @@ function soyshop_parts_cart($html, $page){
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 
-	$count = 0;
-	foreach($items as $item){
-		$count = $count + (int)$item->getItemCount();
-	}
 	$obj->addLabel("item_total", array(
-		"text" => $count,
+		"text" => $cart->countItems(),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 

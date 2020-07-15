@@ -1,6 +1,10 @@
 <?php
 class SOYShopPageUpdate implements SOY2PluginAction{
 
+	function onUpdate($pageId){
+
+	}
+
 	/**
 	 * @onDelete
 	 */
@@ -10,22 +14,26 @@ class SOYShopPageUpdate implements SOY2PluginAction{
 }
 class SOYShopPageUpdateDeletageAction implements SOY2PluginDelegateAction{
 
+	private $pageId;
 	private $deletePageId;
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
-		if($this->deletePageId){
+		if(is_numeric($this->pageId)){
+			$action->onUpdate($this->pageId);
+		}
+
+		if(is_numeric($this->deletePageId)){
 			$action->onDelete($this->deletePageId);
 		}
 	}
-	
-	function getDeletePageId() {
-		return $this->deletePageId;
+
+	function setPageId($pageId){
+		$this->pageId = $pageId;
 	}
 	function setDeletePageId($deletePageId) {
 		$this->deletePageId = $deletePageId;
 	}
-	
-	
+
+
 }
-SOYShopPlugin::registerExtension("soyshop.page.update","SOYShopPageUpdateDeletageAction");
-?>
+SOYShopPlugin::registerExtension("soyshop.page.update", "SOYShopPageUpdateDeletageAction");
