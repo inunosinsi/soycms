@@ -28,6 +28,10 @@ class LazyLoadConfigPage extends WebPage{
 			"value" => (int)$cnf["count"],
 			"style" => "width:100px"
 		));
+
+		$this->addLabel("shop_id", array(
+			"text" => SOYSHOP_ID
+		));
 	}
 
 
