@@ -1,0 +1,100 @@
+<div class="text-left">
+	<a soy:link="Plugin.Config?multiple_page_form" class="btn btn-primary">一覧ページに戻る</a>
+</div>
+
+<br>
+
+<h4 soy:id="page_name_text">最初のページ</h4>
+
+<form soy:id="form">
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+				<th class="col-lg-1">ページ名</th>
+				<td>
+					<input type="text" soy:id="page_name" class="form-control">
+				</td>
+			</tr>
+			<tr>
+				<th>ページ種別</th>
+				<td soy:id="page_type"></td>
+			</tr>
+			<tr>
+				<th>説明</th>
+				<td><textarea soy:id="page_description" class="form-control"></textarea></td>
+			</tr>
+			<tr>
+				<th>確認ページで<br>表示する項目名</th>
+				<td>
+					<input type="text" soy:id="label" class="form-control">
+					<div class="alert alert-warning">値が空の場合は公開側の確認画面で選択した値が出力されません</div>
+				</td>
+			</tr>
+			<tr>
+				<th>項目</th>
+				<td>
+					<table class="table">
+						<thead>
+							<tr>
+								<th class="col-lg-7">選択肢</th>
+								<th class="col-lg-1">並び順</th>
+								<th>次のページ</th>
+								<th>&nbsp;</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- soy:id="choice_item_list" -->
+							<tr>
+								<td><input type="text" soy:id="item" class="form-control"></td>
+								<td><input type="number" soy:id="order" class="form-control"></td>
+								<td>
+									<select soy:id="page_type">
+										<option></option>
+									</select>
+								</td>
+								<td>&nbsp;</td>
+							</tr>
+							<!-- /soy:id="choice_item_list" -->
+							<tr id="clone">
+								<td><input type="text" soy:id="add_item" class="form-control"></td>
+								<td><input type="number" soy:id="add_order" class="form-control"></td>
+								<td>
+									<select soy:id="add_page_type">
+										<option></option>
+									</select>
+								</td>
+								<td>
+									<a href="javascript:void(0);" class="btn btn-warning" id="add">追加</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="alert alert-info">※項目を削除する場合は選択肢の値を空にして更新してください。</div>
+				</td>
+			</tr>
+			<tr>
+				<th>テンプレート</th>
+				<td>
+					<select soy:id="page_template"></select><br>
+					<div class="alert alert-info">
+						新たにテンプレートを追加する場合は、<strong soy:id="template_dir"></strong>以下にPHPファイルを配置してください。<br>
+						PHPファイルでの書き方は、<strong soy:id="default_template_file_path"></strong>を参考にしてください。
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
+
+<script>
+$("#add").on("click", function(){
+	var $clone = $("#clone").clone();
+	//追加ボタンをなくす
+	$clone.children()[2].innerHTML = "";
+	$("#clone").before($clone);
+});
+</script>

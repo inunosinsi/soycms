@@ -52,6 +52,7 @@ class MPFFormConfigPage extends WebPage {
 				}
 
 				$cnf["item"] = $items;
+				$cnf["name"] = (isset($_POST["Config"]["name"])) ? $_POST["Config"]["name"] : "";
 				$cnf["next"] = (isset($_POST["Config"]["next"])) ? $_POST["Config"]["next"] : "";
 				$cnf["description"] = (isset($_POST["Config"]["description"])) ? $_POST["Config"]["description"] : "";
 				$cnf["template"] = (isset($_POST["Config"]["template"])) ? $_POST["Config"]["template"] : "default";
@@ -71,10 +72,6 @@ class MPFFormConfigPage extends WebPage {
 
 		parent::__construct();
 
-		$this->addLabel("page_name", array(
-			"text" => MultiplePageFormUtil::getPageName($this->hash)
-		));
-
 		self::_buildConfigForm();
 		self::_buildAddItemForm();
 	}
@@ -83,6 +80,12 @@ class MPFFormConfigPage extends WebPage {
 		$cnf = MultiplePageFormUtil::readJson($this->hash);
 
 		$this->addForm("form");
+
+		$this->addInput("page_name", array(
+			"name" => "Config[name]",
+			"value" => MultiplePageFormUtil::getPageName($this->hash),
+			"attr:required" => "required"
+		));
 
 		$this->addLabel("page_type", array(
 			"text" => MultiplePageFormUtil::getTypeText($cnf["type"])

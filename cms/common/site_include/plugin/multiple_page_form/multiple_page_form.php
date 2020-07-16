@@ -60,6 +60,10 @@ class MultiplePageFormPlugin{
 					SOY2::import("site_include.plugin." . self::PLUGIN_ID . ".config." . $type . ".MPFConfirmConfigPage");
 					$form = SOY2HTMLFactory::createInstance("MPFConfirmConfigPage");
 					break;
+				case MultiplePageFormUtil::TYPE_CONFIRM_CHOICE:
+					SOY2::import("site_include.plugin." . self::PLUGIN_ID . ".config." . $cnf["type"] . ".MPFConfirmAndChoiceConfigPage");
+					$form = SOY2HTMLFactory::createInstance("MPFConfirmAndChoiceConfigPage");
+					break;
 				case MultiplePageFormUtil::TYPE_COMPLETE:
 					SOY2::import("site_include.plugin." . self::PLUGIN_ID . ".config." . $cnf["type"] . ".MPFCompleteConfigPage");
 					$form = SOY2HTMLFactory::createInstance("MPFCompleteConfigPage");

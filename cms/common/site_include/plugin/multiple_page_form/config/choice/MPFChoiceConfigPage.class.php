@@ -27,6 +27,7 @@ class MPFChoiceConfigPage extends WebPage {
 			}
 
 			$cnf["choice"] = $items;
+			$cnf["name"] = (isset($_POST["Config"]["name"])) ? $_POST["Config"]["name"] : "";
 			$cnf["description"] = (isset($_POST["Config"]["description"])) ? $_POST["Config"]["description"] : "";
 			$cnf["label"] = (isset($_POST["Config"]["label"])) ? $_POST["Config"]["label"] : "";
 			$cnf["template"] = (isset($_POST["Config"]["template"])) ? $_POST["Config"]["template"] : "default";
@@ -40,10 +41,6 @@ class MPFChoiceConfigPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
-		$this->addLabel("page_name", array(
-			"text" => MultiplePageFormUtil::getPageName($this->hash)
-		));
-
 		self::_buildConfigForm();
 	}
 
@@ -51,6 +48,12 @@ class MPFChoiceConfigPage extends WebPage {
 		$cnf = MultiplePageFormUtil::readJson($this->hash);
 
 		$this->addForm("form");
+
+		$this->addInput("page_name", array(
+			"name" => "Config[name]",
+			"value" => MultiplePageFormUtil::getPageName($this->hash),
+			"attr:required" => "required"
+		));
 
 		$this->addLabel("page_type", array(
 			"text" => MultiplePageFormUtil::getTypeText($cnf["type"])

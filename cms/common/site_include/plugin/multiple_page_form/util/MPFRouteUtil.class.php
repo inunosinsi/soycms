@@ -22,6 +22,11 @@ class MPFRouteUtil {
 
 			SOY2::import("site_include.plugin.multiple_page_form.util.MultiplePageFormUtil");
 			$cnf = MultiplePageFormUtil::readJson($hash);
+			if(!count($cnf)){
+				$basisHash = self::getBasisHashByRepeatHash($hash);
+				$cnf = MultiplePageFormUtil::readJson($basisHash);
+			}
+			//var_dump($cnf);exit;
 
 			$values = self::_getValues();
 
@@ -31,6 +36,7 @@ class MPFRouteUtil {
 					if(isset($param["next"])) $next = $cnf["next"];
 				 	break;
 				case MultiplePageFormUtil::TYPE_CHOICE:
+				case MultiplePageFormUtil::TYPE_CONFIRM_CHOICE:
 					if(isset($param["idx"]) && isset($cnf["choice"][$param["idx"]])){	//何らを選択している場合
 						$selected = $cnf["choice"][$param["idx"]];
 						if(isset($cnf["label"]) && strlen($cnf["label"])){
@@ -92,7 +98,9 @@ class MPFRouteUtil {
 
 			// routeを記録
 			if(isset($next) && strlen($next)){
-				// @ToDo 存在していないページハッシュを手動で挿入される可能性もある
+				//同じページを繰り返す場合はrepeatハッシュを設けて、別ページとして認識させる
+				$next = self::_repeatHash($next);
+
 				self::_saveRoute($next);
 			}else{	//戻る
 				self::_backRoute();
@@ -195,6 +203,37 @@ class MPFRouteUtil {
 		return $route[$last];
 	}
 
+	//リピートハッシュの基のページのハッシュを探す
+	public static function getBasisHashByRepeatHash($hash){
+		return self::_getBasisHashByRepeatHash($hash);
+	}
+
+	//任意のハッシュを含むレピートハッシュテーブルを返す
+	public static function getRepeatHashListByHash($hash){
+		$table = self::_repeatHashTable();
+		if(!count($table)) return array();
+
+		//繰り返し一ページ目
+		if(isset($table[$hash])){
+			return self::_createHashList($hash);
+
+		//繰り返しの中に含まれている場合
+		}else{
+			$targetHash = null;
+			foreach($table as $basisHash => $repeatHashes){
+				if(count($repeatHashes)){
+					foreach($repeatHashes as $repeatHash){
+						if($hash == $repeatHash){
+							return self::_createHashList($basisHash);
+						}
+					}
+				}
+			}
+		}
+
+		return array();
+	}
+
 	/** private method **/
 	private static function _getValues(){
 		$values = self::_get("mpf_values");
@@ -216,7 +255,105 @@ class MPFRouteUtil {
 
 		//一番最後の値を取得
 		$last = count($route) - 1;
-		return $route[$last];
+
+		//リピートハッシュテーブル
+		$table = self::_repeatHashTable();
+
+		//ハッシュが存在しているか？調べる
+		SOY2::import("site_include.plugin.multiple_page_form.util.MultiplePageFormUtil");
+		$jsonDir = MultiplePageFormUtil::jsonDir();
+		for(;;){
+			if($last < 0) break;
+			$hash = $route[$last--];
+			if(file_exists($jsonDir . $hash . ".json")) return $hash;
+
+			//リピートハッシュを探す→あればリピートハッシュを返す
+			$basisHash = self::_getBasisHashByRepeatHash($hash);
+			if(isset($basisHash)) return $hash;
+		}
+
+		//最初のページまで戻す
+		$route = array();
+		$route[] = self::_getFirstPageHash();
+		self::_set("mpf_route", $route);
+	}
+
+	private static function _getBasisHashByRepeatHash($hash){
+		//リピートハッシュテーブル
+		$table = self::_repeatHashTable();
+		foreach($table as $basisHash => $repeatHashTable){
+			foreach($repeatHashTable as $repeatHash){
+				if($hash == $repeatHash){	//繰り返しページであることがわかればハッシュを返す
+					return $basisHash;
+				}
+			}
+		}
+		return null;
+	}
+
+	//今まで辿ってきたルートの中に同じハッシュがある場合は繰り返しハッシュを設ける
+	private function _repeatHash($hash){
+		$route = self::_get("mpf_route");
+		if(is_null($route) || !is_array($route) || !count($route)) return $hash;
+
+		$flg = false;
+		foreach($route as $prevHash){
+			if($hash == $prevHash) $flg = true;
+		}
+
+		//同じハッシュがなかったのでそのまま返す
+		if(!$flg) return $hash;
+
+		//以前戻るボタンを押した時のバックアップがある場合はリピートテーブルから調べてみる
+		$backupHash = self::_get("mpf_route_next_hash");
+		if(strlen($backupHash)){
+			$table = self::_repeatHashTable();
+			if(isset($table[$hash])){
+				$idx = array_search($backupHash, $table[$hash]);
+				if(is_numeric($idx)) {
+					self::_set("mpf_route_next_hash", null);
+					return $table[$hash][$idx];
+				}
+			}
+		}
+
+		//繰り返してきたページを調べて、何回目の繰り返しかを調べる
+		$hashList = self::_createHashList($hash);
+		if(is_array($hashList) && count($hashList)){
+			foreach($hashList as $prevHash){
+				if(is_numeric(array_search($prevHash, $route)))continue;
+				return $prevHash;
+			}
+		}
+
+		//repeatHashの生成
+		return self::_generateRepeatHash($hash);
+	}
+
+	private function _generateRepeatHash($hash){
+		$table = self::_repeatHashTable();
+		if(!isset($table[$hash])) $table[$hash] = array();
+
+		SOY2::import("site_include.plugin.multiple_page_form.util.MultiplePageFormUtil");
+		$repeatHash = MultiplePageFormUtil::createHash();
+
+		$table[$hash][] = $repeatHash;
+		self::_set("mpf_repeat_hash_table", $table);
+		return $repeatHash;
+	}
+
+	private function _repeatHashTable(){
+		$table = self::_get("mpf_repeat_hash_table");
+		if(is_null($table)) $table = array();
+		return $table;
+	}
+
+	private function _createHashList($hash){
+		$table = self::_repeatHashTable();
+		$list = array();
+		$list[] = $hash;
+		$list = array_merge($list, $table[$hash]);
+		return $list;
 	}
 
 	private static function _saveRoute($hash){
@@ -232,7 +369,8 @@ class MPFRouteUtil {
 	private static function _backRoute(){
 		$route = self::_get("mpf_route");
 		if(count($route) > 0){
-			array_pop($route);
+			$next = array_pop($route);
+			self::_set("mpf_route_next_hash", $next);	//戻るを押した時に今いたページのバックアップをとっておく
 		}
 		self::_set("mpf_route", $route);
 	}

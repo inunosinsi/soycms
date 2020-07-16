@@ -17,6 +17,12 @@ function soycms_multiple_page_form($html, $page){
 
 	SOY2::import("site_include.plugin.multiple_page_form.util.MultiplePageFormUtil");
 	$cnf = MultiplePageFormUtil::readJson($hash);
+
+	//リピートハッシュを試す→同じページを何度も表示することが可能となる。
+	if(!count($cnf)){
+		$basisHash = MPFRouteUtil::getBasisHashByRepeatHash($hash);
+		$cnf = MultiplePageFormUtil::readJson($basisHash);
+	}
 	switch($cnf["type"]){
 		case MultiplePageFormUtil::TYPE_EXTEND:
 			SOY2::import("site_include.plugin.multiple_page_form.util.MPFTypeExtendUtil");
@@ -40,6 +46,7 @@ function soycms_multiple_page_form($html, $page){
 		default:
 			switch($cnf["type"]){
 				case MultiplePageFormUtil::TYPE_CHOICE:
+				case MultiplePageFormUtil::TYPE_CONFIRM_CHOICE:
 					if(!isset($cnf["choice"]) || !is_array($cnf["choice"]) || !count($cnf["choice"])) {
 						multiple_page_form_empty_echo();
 						return;
@@ -62,7 +69,7 @@ function soycms_multiple_page_form($html, $page){
 				default:
 					//何もしない
 			}
-			
+
 			$description = (isset($cnf["description"])) ? htmlspecialchars($cnf["description"], ENT_QUOTES, "UTF-8") : "";
 			include_once(MultiplePageFormUtil::getTemplateFilePath($cnf));
 			return;

@@ -4,13 +4,19 @@
 
 <br>
 
-<h4 soy:id="page_name">最初のページ</h4>
+<h4 soy:id="page_name_text">最初のページ</h4>
 
 <form soy:id="form">
 	<div class="table-responsive">
 		<table class="table table-striped">
 			<tr>
-				<th class="col-lg-1">ページ種別</th>
+				<th class="col-lg-1">ページ名</th>
+				<td>
+					<input type="text" soy:id="page_name" class="form-control">
+				</td>
+			</tr>
+			<tr>
+				<th>ページ種別</th>
 				<td soy:id="page_type"></td>
 			</tr>
 			<tr>

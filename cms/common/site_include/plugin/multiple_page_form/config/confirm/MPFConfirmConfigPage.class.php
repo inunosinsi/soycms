@@ -11,6 +11,7 @@ class MPFConfirmConfigPage extends WebPage {
 		if(soy2_check_token()){
 			$cnf = MultiplePageFormUtil::readJson($this->hash);
 
+			$cnf["name"] = (isset($_POST["Config"]["name"])) ? $_POST["Config"]["name"] : "";
 			$cnf["next"] = (isset($_POST["Config"]["next"])) ? $_POST["Config"]["next"] : "";
 			$cnf["description"] = (isset($_POST["Config"]["description"])) ? $_POST["Config"]["description"] : "";
 			$cnf["template"] = (isset($_POST["Config"]["template"])) ? $_POST["Config"]["template"] : "default";
@@ -24,10 +25,6 @@ class MPFConfirmConfigPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
-		$this->addLabel("page_name", array(
-			"text" => MultiplePageFormUtil::getPageName($this->hash)
-		));
-
 		self::_buildConfigForm();
 	}
 
@@ -35,6 +32,12 @@ class MPFConfirmConfigPage extends WebPage {
 		$cnf = MultiplePageFormUtil::readJson($this->hash);
 
 		$this->addForm("form");
+
+		$this->addInput("page_name", array(
+			"name" => "Config[name]",
+			"value" => MultiplePageFormUtil::getPageName($this->hash),
+			"attr:required" => "required"
+		));
 
 		$this->addLabel("page_type", array(
 			"text" => MultiplePageFormUtil::getTypeText($cnf["type"])

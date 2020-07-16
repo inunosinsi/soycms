@@ -13,6 +13,7 @@ class MPFExtendConfigPage extends WebPage {
 		if(soy2_check_token()){
 			$cnf = MultiplePageFormUtil::readJson($this->hash);
 
+			$cnf["name"] = (isset($_POST["Config"]["name"])) ? $_POST["Config"]["name"] : "";
 			$cnf["next"] = (isset($_POST["Config"]["next"])) ? $_POST["Config"]["next"] : "";
 			$cnf["extend"] = (isset($_POST["Config"]["extend"])) ? $_POST["Config"]["extend"] : "";
 			$cnf["description"] = (isset($_POST["Config"]["description"])) ? $_POST["Config"]["description"] : "";
@@ -25,10 +26,6 @@ class MPFExtendConfigPage extends WebPage {
 
 	function execute(){
 		parent::__construct();
-
-		$this->addLabel("page_name", array(
-			"text" => MultiplePageFormUtil::getPageName($this->hash)
-		));
 
 		$this->addLabel("page_class_dir", array(
 			"text" => MPFTypeExtendUtil::getPageDir()
@@ -43,6 +40,12 @@ class MPFExtendConfigPage extends WebPage {
 		$cnf = MultiplePageFormUtil::readJson($this->hash);
 
 		$this->addForm("form");
+
+		$this->addInput("page_name", array(
+			"name" => "Config[name]",
+			"value" => MultiplePageFormUtil::getPageName($this->hash),
+			"attr:required" => "required"
+		));
 
 		$this->addLabel("page_type", array(
 			"text" => MultiplePageFormUtil::getTypeText($cnf["type"])

@@ -7,6 +7,7 @@ class MultiplePageFormUtil {
 	const TYPE_FORM = "form";
 	const TYPE_EXTEND = "extend";
 	const TYPE_CONFIRM = "confirm";
+	const TYPE_CONFIRM_CHOICE = "confirm_choice";	//確認 + 選択肢ページ
 	const TYPE_COMPLETE = "complete";	//ラストページ
 
 	public static function getTypeList(){
@@ -153,6 +154,7 @@ class MultiplePageFormUtil {
 			self::TYPE_FORM => "入力フォーム",
 			self::TYPE_EXTEND => "高度なページ",
 			self::TYPE_CONFIRM => "確認画面",
+			self::TYPE_CONFIRM_CHOICE => "確認 + 選択肢",
 			self::TYPE_COMPLETE => "完了画面"
 		);
 	}
@@ -173,6 +175,7 @@ class MultiplePageFormUtil {
 	}
 
 	private static function _readJson($hash){
+		if(!file_exists(self::_jsonDir() . $hash . ".json")) return array();
 		$json = file_get_contents(self::_jsonDir() . $hash . ".json");
 		return json_decode($json, true);
 	}
