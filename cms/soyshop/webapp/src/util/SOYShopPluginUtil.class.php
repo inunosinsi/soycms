@@ -3,6 +3,7 @@
 class SOYShopPluginUtil {
 
     public static function checkIsActive($pluginId){
+		if(!function_exists("soyshop_get_plugin_object")) SOY2::import("base.func.common", ".php");
 		return (soyshop_get_plugin_object($pluginId)->getIsActive() == SOYShop_PluginConfig::PLUGIN_ACTIVE);
     }
 
@@ -11,6 +12,7 @@ class SOYShopPluginUtil {
 	}
 
 	public static function getPluginById($pluginId){
+		if(!function_exists("soyshop_get_plugin_object")) SOY2::import("base.func.common", ".php");
 		return soyshop_get_plugin_object($pluginId);
 	}
 }

@@ -27,8 +27,8 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
         switch($type){
 
             case SOYShop_ListPage::TYPE_CUSTOM:
-                list($items, $total) = $this->getItemsByCustom($obj, $args);
-                break;
+			    list($items, $total) = $this->getItemsByCustom($obj, $args);
+				break;
 
             case SOYShop_ListPage::TYPE_FIELD:
                 list($items, $total) = $this->getItemsByField($args);
@@ -177,7 +177,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
         $total = 0;
 
 		$plugin = soyshop_get_plugin_object($obj->getModuleId());
-		if(!is_numeric($plugin->getId())){
+		if(is_numeric($plugin->getId())){
 			SOYShopPlugin::load("soyshop.item.list", $plugin);
 			$delegete = SOYShopPlugin::invoke("soyshop.item.list", array(
 				"mode" => "search"
