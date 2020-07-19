@@ -13,7 +13,7 @@ class MultiplePageFormPlugin{
 			"name" => "複数ページフォームプラグイン",
 			"description" => "複数ページにまたがるフォームページを設置します",
 			"author"=>"齋藤毅",
-			"url"=>"",
+			"url"=>"https://saitodev.co/article/3302",
 			"mail"=>"tsuyoshi@saitodev.co",
 			"version"=>"0.5"
 		));

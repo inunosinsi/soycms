@@ -19,7 +19,7 @@ $html[] = "<input type=\"hidden\" name=\"soy2_token\" value=\"" . soy2_get_token
 foreach($items as $idx => $item){
 	if(!isset($item["type"])) continue;
 	$html[] = "<div>";
-	$html[] = "<label>" . $item["name"] . "</label>";
+	$html[] = "<label>" . $item["name"] . "</label><br>";
 
 	$v = (isset($values[$idx]["value"])) ? $values[$idx]["value"] : "";
 	$html[] = MPFTypeFormUtil::getForm($idx, $item, $v, $isFirstView);
