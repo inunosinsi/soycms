@@ -34,7 +34,7 @@ class TagCloudCustomFieldForm {
 		return implode("\n", $html);
 	}
 
-	private function _tagValue($tags){
+	private static function _tagValue($tags){
 		$list = array();
 		foreach($tags as $tag){
 			if(!isset($tag["word"]) || !strlen($tag["word"])) continue;
