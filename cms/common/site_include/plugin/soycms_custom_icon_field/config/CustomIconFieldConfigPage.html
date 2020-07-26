@@ -1,0 +1,85 @@
+<div class="alert alert-danger" soy:display="error"><!-- soy:id="error_message" /--></div>
+
+<h4>使用方法</h4>
+<pre>&lt;!-- cms:id="custom_icon_field" /--&gt;</pre>
+<p>記事を表示するブロック内に上記のコードを加えると、記事を投稿したときに設定したアイコンを表示することが出来ます</p>
+
+<br>
+
+<form soy:id="form">
+<div class="alert alert-info">設定</div>
+	<div class="table-responsive">
+		<table class="table">
+			<tr>
+				<th class="icon_table_td">アイコンディレクトリ</th>
+				<td class="icon_table_td" soy:id="icon_dir"></td>
+			</tr>
+			<tr>
+				<th>登録アイコン一覧</th>
+				<td>
+					<!-- soy:id="icon_list" -->
+					<label>
+						<img soy:id="icon">
+						<input type="checkbox" soy:id="delete">
+					</label>
+					<!-- /soy:id="icon_list" -->
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<!-- soy:display="files" -->
+	<p><span>チェックを入れたものを削除する</span><input type="submit" name="delete" onclick="return confirm('削除してもよろしいですか？');" value="削除"/></p><br />
+	<!-- /soy:display="files" -->
+
+	<h4>アイコンの追加</h4>
+	<div style="padding: 0 0 0 20px;">
+		<input type="file" name="file" id="file" style="display:inline-block"> <input type="submit" value="アップロード" class="btn btn-primary">
+	</div>
+
+	<br>
+
+	<div class="alert alert-info">高度な設定</div>
+	<h4>ラベル毎の使用設定(すべてのラベルにチェックが付いていない場合はアイコンフィールドプラグインは常に使用可)</h4>
+	<!-- soy:id="label_list" -->
+	<input type="checkbox" soy:id="label">&nbsp;
+	<!-- /soy:id="label_list" -->
+	<input type="submit" class="btn btn-primary" value="更新">
+</form>
+
+<style>
+.src_display{
+	border: #000000 solid 1px;
+	padding: 2px;
+	width: 300px;
+}
+
+.icon_table{
+
+}
+.icon_table tr th{
+	padding: 10px;
+	width: 125px;
+	height: auto;
+	border-left: #000000 solid 1px;
+	border-bottom: #000000 solid 1px;
+}
+
+
+.icon_table tr td{
+	padding: 10px;
+	border-left: #000000 solid 1px;
+	border-bottom: #000000 solid 1px;
+	border-right: #000000 solid 1px;
+	width: auto;
+	height: auto;
+}
+
+.icon_table_td{
+	border-top: #000000 solid 1px;
+}
+
+.icon_table tr td input{
+	margin: 0 18px 0 2px;
+}
+</style>

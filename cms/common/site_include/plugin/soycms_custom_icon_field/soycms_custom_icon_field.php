@@ -3,9 +3,9 @@ CustomIconFieldPlugin::registerPlugin();
 
 class CustomIconFieldPlugin{
 
-	var $label = "アイコンフィールド";
-	var $iconDirecotry = "icons";
-	var $customFields = array();
+	private $label = "アイコンフィールド";
+ 	private $iconDirectory = "icons";
+	private $labels = array();	//記事投稿画面でのフォームの表示の有無用
 
 	function getId(){
 		return SOYCMS_CUSTOM_ICON_FIELD_PLUGIN;
@@ -13,12 +13,12 @@ class CustomIconFieldPlugin{
 
 	function init(){
 		CMSPlugin::addPluginMenu($this->getId(),array(
-			"name"=>"アイコンフィールド追加プラグイン",
-			"description"=>"エントリー編集画面にアイコン編集フィールドを追加します。",
-			"author"=>"株式会社Brassica",
-			"url"=>"https://brassica.jp/",
-			"mail"=>"soycms@soycms.net",
-			"version"=>"1.3"
+			"name" => "アイコンフィールド追加プラグイン",
+			"description" => "記事編集画面にアイコン編集フィールドを追加します。",
+			"author" => "株式会社Brassica",
+			"url" => "https://brassica.jp/",
+			"mail" => "soycms@soycms.net",
+			"version" => "1.4"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(), array(
 			$this, "config_page"
@@ -69,64 +69,12 @@ class CustomIconFieldPlugin{
 	}
 
 	function config_page($message = "")	{
-
-		//アップロードを押したとき
-		if($_SERVER["REQUEST_METHOD"] == "POST"){
-
-			//$_FILES["type"]が存在する場合は何らかのファイルがアップロードされたことになる
-			if(strlen($_FILES["file"]["type"]) > 0){
-
-				//ファイルの拡張子をチェックする
-				if(!preg_match('/(jpg|jpeg|gif|png)$/', $_FILES["file"]["name"])){
-					CMSPlugin::redirectConfigPage("ファイル形式が不正です。");
-				}
-
-				$fname = $_FILES["file"]["name"];
-
-				$dest_name = $this->getIconDirectory() . "/" . $fname;
-
-				//iconsディレクトリの中にすでにファイルがないかチェックする
-				if(file_exists($dest_name)){
-					CMSPlugin::redirectConfigPage("ファイルがすでに存在するためアップロードすることができません。");
-				}
-
-				//ファイルの移動が失敗していないかどうかをチェック
-				if(@move_uploaded_file($_FILES["file"]["tmp_name"], $dest_name) === false){
-					CMSPlugin::redirectConfigPage("ファイルの移動に失敗しました。");
-				}
-
-				CMSPlugin::redirectConfigPage("ファイルのアップロードに成功しました。");
-
-			}else{
-				//
-			}
-		}
-
-		//削除を押したとき
-		if(isset($_POST["delete"])){
-			$deletes = (isset($_POST["deletes"])) ? $_POST["deletes"] : null;
-
-			//一応確認
-			if(is_null($deletes)){
-				CMSPlugin::redirectConfigPage("削除するファイルがありません");
-			}
-
-			//チェックしたアイコンを削除する
-			foreach($deletes as $fname){
-				if(strpos($fname, "/")===false && strpos($fname, ".")!==0 && file_exists($this->getIconDirectory() . "/" . $fname)){
-					@unlink($this->getIconDirectory() . "/" . $fname);
-				}
-			}
-
-			CMSPlugin::redirectConfigPage();
-		}
-
-		ob_start();
-		include_once(dirname(__FILE__) . "/form.php");
-		$html = ob_get_contents();
-		ob_end_clean();
-
-		return $html;
+		SOY2::import("site_include.plugin.soycms_custom_icon_field.config.CustomIconFieldConfigPage");
+		$form = SOY2HTMLFactory::createInstance("CustomIconFieldConfigPage");
+		$form->setPluginObj($this);
+		$form->setMessage($message);
+		$form->execute();
+		return $form->getObject();
 	}
 
 	function onEntryUpdate($arg){
@@ -155,67 +103,16 @@ class CustomIconFieldPlugin{
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[0])) ? $arg[0] : null;
 
-		return self::getForm($entryId);
+		SOY2::import("site_include.plugin.soycms_custom_icon_field.component.IconFieldComponent");
+		return IconFieldComponent::buildForm($entryId, $this->iconDirectory, $this->label, $this->labels);
 	}
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[1])) ? $arg[1] : null;
 
-		return self::getForm($entryId);
-	}
-
-	private function getForm($entryId){
-		$dao = new SOY2DAO();
-
-		try{
-			$result = $dao->executeQuery("select custom_icon_field from Entry where id = :id", array(":id" => $entryId));
-		}catch(Exception $e){
-			$result = array();
-		}
-
-		$icons = (isset($result[0]["custom_icon_field"])) ? $result[0]["custom_icon_field"] : null;
-
-		$files = @scandir(UserInfoUtil::getSiteDirectory() . $this->iconDirecotry);
-		if(!$files) $files = array();
-
-		$html = array();
-
-		$html[] = '<div class="section">';
-		$html[] = '<p class="sub">' . htmlspecialchars($this->label) . '</p>';
-
-		$icons_array = explode(",", $icons);
-		$html []= '<div id="custom_icon_field_current">';
-		foreach($icons_array as $str){
-			$str = str_replace(CMSUtil::getSiteUrl(), "", $str);
-			if(strlen($str)){
-				$tmpStr = str_replace($this->iconDirecotry, "", $str);
-				$html[] = '<img id="custom_icon_field_hidden_' . str_replace(".", "_", substr($tmpStr, strrpos("/", $tmpStr) + 1)) . '" src="' . htmlspecialchars(UserInfoUtil::getSiteURL() . $str, ENT_QUOTES) . '" />';
-			}
-		}
-		$html[] = '</div>';
-
-		$html[] = '<input type="hidden" name="custom_icon_field" id="custom_icon_field_hidden" value="' . htmlspecialchars($icons, ENT_QUOTES) . '">';
-		$html[] = '<div id="custom_icon_field_icon_list" style="">';
-		foreach($files as $file){
-			if($file[0] == ".") continue;
-			$html[] = '<img onclick="add_custom_icon_field(this.src);" src="' . htmlspecialchars(UserInfoUtil::getSiteURL() . $this->iconDirecotry . "/" . $file, ENT_QUOTES) . '" />';
-		}
-		$html[] = '</div>';
-		$html[] = '</div>';
-
-		$script = file_get_contents(dirname(__FILE__) . "/soycms_custom_icon_field.js");
-		$script = str_replace("@@SITE_URL@@", UserInfoUtil::getSiteURL(), $script);
-		$html[] = '<script type="text/javascript">' . $script . '</script>';
-
-		return implode("\n", $html);
-	}
-
-	/**
-	 * アイコンディレクトリを取得
-	 */
-	function getIconDirectory(){
-		return UserInfoUtil::getSiteDirectory() . "icons";
+		SOY2::import("site_include.plugin.soycms_custom_icon_field.component.IconFieldComponent");
+		return IconFieldComponent::buildForm($entryId, $this->iconDirectory, $this->label, $this->labels);
 	}
 
 	/**
@@ -239,21 +136,28 @@ class CustomIconFieldPlugin{
 		}
 
 		//アイコン用のディレクトリを作成
-		$getDir = UserInfoUtil::getSiteDirectory(). "icons";
-		mkdir($getDir);
+		$dir = UserInfoUtil::getSiteDirectory(). "icons";
+		if(!file_exists($dir)) mkdir($dir);
 
 		return;
+	}
+
+	function getIconDirecotry(){
+		return $this->iconDirectory;
+	}
+
+	function getLabels(){
+		return $this->labels;
+	}
+	function setLabels($labels){
+		$this->labels = $labels;
 	}
 
 	public static function registerPlugin(){
 		define('SOYCMS_CUSTOM_ICON_FIELD_PLUGIN', "SOYCMS_CUSTOM_ICON_FIELD_PLUGIN");
 
 		$obj = CMSPlugin::loadPluginConfig(SOYCMS_CUSTOM_ICON_FIELD_PLUGIN);
-		if(is_null($obj)){
-			$obj = new CustomIconFieldPlugin();
-		}
-
+		if(is_null($obj)) $obj = new CustomIconFieldPlugin();
 		CMSPlugin::addPlugin(SOYCMS_CUSTOM_ICON_FIELD_PLUGIN, array($obj, "init"));
 	}
 }
-?>
