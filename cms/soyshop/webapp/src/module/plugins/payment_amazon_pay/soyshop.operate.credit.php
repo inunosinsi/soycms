@@ -17,7 +17,7 @@ class AmazonPayOperateCredit extends SOYShopOperateCreditBase{
 
 	function getFormOnOrderDetailPageTitle(SOYShop_Order $order){
 		if(array_key_exists("payment_amazon_pay", $order->getModuleList())){
-			return "クレジット決済";
+			return "Amazon Pay";
 		}else{
 			return null;
 		}

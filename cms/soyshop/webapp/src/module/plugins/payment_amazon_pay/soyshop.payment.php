@@ -92,7 +92,7 @@ class AmazonPayPayment extends SOYShopPayment{
 			"hidden" => true,
 		));
 
-		//支払いステータスの変更。現時点ではCoineyペイジの方はopenしかない
+		//支払いステータスの変更。
 		$order->setPaymentStatus(SOYShop_Order::PAYMENT_STATUS_CONFIRMED);
 		SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
 		$cart->setAttribute("page", "Complete");

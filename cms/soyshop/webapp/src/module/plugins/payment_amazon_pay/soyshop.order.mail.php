@@ -1,6 +1,6 @@
 <?php
 
-class PayJpMail extends SOYShopOrderMail{
+class AmazonPayOrderMail extends SOYShopOrderMail{
 
 	/**
 	 * メール本文を取得
@@ -8,7 +8,7 @@ class PayJpMail extends SOYShopOrderMail{
 	 */
 	function getMailBody(SOYShop_Order $order){
 		if($this->isUse()){
-			$mail = "支払方法：クレジット決済";
+			$mail = "支払方法：Amazon Pay";
 
 			return $mail;
 		}
@@ -21,6 +21,6 @@ class PayJpMail extends SOYShopOrderMail{
 	}
 }
 
-SOYShopPlugin::extension("soyshop.order.mail.user", "payment_pay_jp", "PayJpMail");
-SOYShopPlugin::extension("soyshop.order.mail.confirm", "payment_pay_jp", "PayJpMail");
-SOYShopPlugin::extension("soyshop.order.mail.admin", "payment_pay_jp", "PayJpMail");
+SOYShopPlugin::extension("soyshop.order.mail.user", 	"payment_amazon_pay", "AmazonPayOrderMail");
+SOYShopPlugin::extension("soyshop.order.mail.confirm", 	"payment_amazon_pay", "AmazonPayOrderMail");
+SOYShopPlugin::extension("soyshop.order.mail.admin", 	"payment_amazon_pay", "AmazonPayOrderMail");
