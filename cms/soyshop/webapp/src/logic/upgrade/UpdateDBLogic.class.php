@@ -38,9 +38,14 @@ class UpdateDBLogic extends SOY2LogicBase{
 		$sql_files = $logic->getUpdateFiles();
 
 		//現在のデータベースのバージョンより上のupdateを実行する
-		foreach($sql_files as $version => $sql_file){
+		foreach($sql_files as $sql_file){
+			//ファイル名からバージョンを取得するように変更→環境によってはupdate-n.sql以外のファイルが混じっていることがあるため
+			preg_match('/update-(\d*).sql/', $sql_file, $tmp);
+			if(!isset($tmp[1]) || !is_numeric($tmp[1])) continue;
+			$version = (int)$tmp[1];
+
 			if($version > $current && strpos($sql_file, ".sql") !== false){
-				self::executeSqlFile($sql_file, $version);
+				self::_executeSqlFile($sql_file, $version);
 				$this->registerVersion($version);
 			}
 		}
@@ -49,7 +54,7 @@ class UpdateDBLogic extends SOY2LogicBase{
 	/**
 	 * 指定したファイルのSQL文を実行
 	 */
-	private function executeSqlFile($file,$version=1){
+	private function _executeSqlFile($file,$version=1){
 
 		$sqls = self::getSqlQuery($file);
 		foreach($sqls as $sql){

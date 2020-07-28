@@ -18,13 +18,11 @@ class CheckVersionLogic extends SOY2LogicBase{
 	 * return boolean
 	 */
 	function checkVersion(){
-		$res = true;
-
 		//現在のバージョンを取得し、値がなければ1を返す
 		$version = $this->getUpdateVersion();
 		$current = $this->getCurrentVersion();
-
-		return ($current < $version) ? true : false;
+		
+		return ($current < $version);
 	}
 
 	function getCurrentVersion(){
