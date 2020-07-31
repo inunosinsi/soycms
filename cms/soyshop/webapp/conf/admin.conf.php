@@ -78,3 +78,8 @@ define("COMPOSER_LIB_DIR", SOYSHOP_WEBAPP . "lib/vendor/");
 
 //ダミーのメールアドレス用のドメイン(管理画面用:一応、公開側と分けておく)
 if(!defined("DUMMY_MAIL_ADDRESS_DOMAIN")) define("DUMMY_MAIL_ADDRESS_DOMAIN", "dummy.soyshop.net");
+
+//CartLogicの内容の一部をSQLite DBに移行するモード
+//define("SOYSHOP_USE_CART_TABLE_MODE", false && extension_loaded("sqlite3") && extension_loaded("pdo_sqlite"));
+define("SOYSHOP_USE_CART_TABLE_MODE", false);
+if(SOYSHOP_USE_CART_TABLE_MODE) SOY2::import("base.cart.db", ".php");

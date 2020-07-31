@@ -29,7 +29,7 @@ function soyshop_parts_cart($html, $page){
 	));
 
 	$obj->addLabel("item_total", array(
-		"text" => $cart->countItems(),
+		"text" => $cart->getOrderItemCount(),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 

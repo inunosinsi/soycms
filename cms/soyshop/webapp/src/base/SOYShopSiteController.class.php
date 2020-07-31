@@ -4,13 +4,10 @@
  */
 class SOYShopSiteController extends SOY2PageController{
 
-    private $timer = array();
-    private $startTime;
-
     function execute(){
-		include_once("controller/debug.php");
 
-		count_timer("Start");
+		if(DEBUG_MODE) include_once("controller/debug.php");
+		if(DEBUG_MODE) count_timer("Start");
 
         SOY2::import("logic.cart.CartLogic");
         SOY2::import("logic.mypage.MyPageLogic");

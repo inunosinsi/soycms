@@ -54,9 +54,17 @@ SOY2::import("logic.plugin.SOYShopPlugin");
 //init controller
 SOY2PageController::init("SOYShopSiteController");
 
-//debug switch
-define("SOYSHOP_"."DEVELOPING_MODE", false);
-define("DEBUG_MODE", false);
+//SOY Shopのバージョン
+define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
+if(preg_match('/^\d/', SOYSHOP_VERSION)){	//本番環境
+	define("false", false);
+	define("DEBUG_MODE", false);
+}else{
+	//debug switch
+	define("false", true);
+	define("DEBUG_MODE", true);
+}
+
 define("SOY2HTML_AUTO_GENERATE", false);
 
 if(DEBUG_MODE){
@@ -101,3 +109,7 @@ if(defined("SOYCMS_ALLOW_PHP_SCRIPT")){
 }else{
 	define("SOY2HTML_ALLOW_PHP_SCRIPT",false);
 }
+
+//CartLogicの内容の一部をSQLite DBに移行するモード
+define("SOYSHOP_USE_CART_TABLE_MODE", false && extension_loaded("sqlite3") && extension_loaded("pdo_sqlite"));
+if(SOYSHOP_USE_CART_TABLE_MODE) SOY2::import("base.cart.db", ".php");

@@ -42,6 +42,15 @@ class CartLogic extends SOY2LogicBase{
 	protected $errorMessage = array();
 	protected $noticeMessage = array();
 
+	protected $db;	//CartLogic内の値を格納するためのdbファイル名
+
+	/**
+	 * construct
+	 */
+	function __construct($cartId = null){
+		$this->id = $cartId;
+	}
+
 	/**
 	 * カートを取得
 	 */
@@ -81,13 +90,6 @@ class CartLogic extends SOY2LogicBase{
 	}
 
 	/**
-	 * construct
-	 */
-	function __construct($cartId = null){
-		$this->id = $cartId;
-	}
-
-	/**
 	 * カートに商品を追加
 	 */
 	function addItem($itemId, $count = 1){
@@ -114,6 +116,8 @@ class CartLogic extends SOY2LogicBase{
 				if(SOYShopPluginUtil::checkIsActive("common_item_option")) $resOpts = array("dummy" => null);
 			}
 
+			$items = self::getItems();
+
 			if(count($resOpts)){
 				$cart = $this->getCart();
 
@@ -122,7 +126,7 @@ class CartLogic extends SOY2LogicBase{
 
 				//すでにカートの中に商品が入っていないかチェック
 				$res = false;
-				foreach($this->items as $key => $obj){
+				foreach($items as $key => $obj){
 					if($itemId == $obj->getItemId()){
 						$res = true;
 						break;
@@ -139,7 +143,7 @@ class CartLogic extends SOY2LogicBase{
 						"option" => $resOpts
 					))->getCartOrderId();
 
-					if(isset($this->items[$result]) && $this->items[$result]->getItemId() == $itemId){
+					if(isset($items[$result]) && $items[$result]->getItemId() == $itemId){
 						//
 					}else{
 						$result = null;
@@ -148,17 +152,18 @@ class CartLogic extends SOY2LogicBase{
 
 				//配列が一致しなかった場合は新しい商品として追加
 				if(is_null($result)){
-					$this->items[] = $this->setItemOrder($item, $count);
+					$items[] = $this->setItemOrder($item, $count);
+					self::setItems($items);
 					return true;
 				}else{
-					$this->updateItem($result, $count + $this->items[$result]->getItemCount());
+					self::updateItem($result, $count + $items[$result]->getItemCount());
 					return false;
 				}
 
 			//商品オプションの値がポストされていない場合
 			}else{
 				$index = null;
-				foreach($this->items as $key => $obj){
+				foreach($items as $key => $obj){
 					if($obj->getItemId() == $item->getId()){
 						$index = $key;
 						break;
@@ -166,11 +171,12 @@ class CartLogic extends SOY2LogicBase{
 				}
 
 				if(isset($index)){
-					$this->updateItem($index, $count + $this->items[$index]->getItemCount());
+					self::updateItem($index, $count + $items[$index]->getItemCount());
 				}else{
 					//1個以上ならカートに入れる
 					if($count > 0){
-						$this->items[] = $this->setItemOrder($item, $count);
+						$items[] = $this->setItemOrder($item, $count);
+						self::setItems($items);
 					}
 			   	}
 
@@ -183,7 +189,7 @@ class CartLogic extends SOY2LogicBase{
 	}
 
 	function countItems(){
-		$items = $this->getItems();
+		$items = self::getItems();
 		if(!count($items)) return 0;
 
 		$count = 0;
@@ -195,12 +201,11 @@ class CartLogic extends SOY2LogicBase{
 
 	function setItemOrder(SOYShop_Item $item, $count){
 		SOYShopPlugin::load("soyshop.cart.set.itemorder");
-		$delegate = SOYShopPlugin::invoke("soyshop.cart.set.itemorder", array(
+		$obj = SOYShopPlugin::invoke("soyshop.cart.set.itemorder", array(
 			"item" => $item,
 			"count" => $count
-		));
+		))->getObject();
 
-		$obj = $delegate->getObject();
 		if(!is_null($obj) && $obj instanceof SOYShop_ItemOrder){
 			return $obj;
 		}
@@ -219,9 +224,11 @@ class CartLogic extends SOY2LogicBase{
 	 * カートから商品を削除
 	 */
 	function removeItem($index){
-		if(isset($this->items[$index])){
-			$this->items[$index] = null;
-			unset($this->items[$index]);
+		$items = self::getItems();
+		if(isset($items[$index])){
+			$items[$index] = null;
+			unset($items[$index]);
+			self::setItems($items);
 		}
 	}
 
@@ -230,19 +237,21 @@ class CartLogic extends SOY2LogicBase{
 	 */
 	function updateItem($index, $count){
 		if($count > 0){
-			if(isset($this->items[$index])){
-				$item = $this->items[$index];
-				$item->setItemCount($count);
-				$item->setTotalPrice($item->getItemPrice() * $count);
+			$items = self::getItems();
+			if(isset($items[$index])){
+				$items[$index]->setItemCount($count);
+				$items[$index]->setTotalPrice($items[$index]->getItemPrice() * $count);
 
 				SOYShopPlugin::load("soyshop.item.order");
 				SOYShopPlugin::invoke("soyshop.item.order", array(
 					"mode" => "update",
-					"itemOrder" => $item
+					"itemOrder" => $items[$index]
 				));
+
+				self::setItems($items);
 			}
 		}else{
-			$this->removeItem($index);
+			self::removeItem($index);
 		}
 	}
 
@@ -251,31 +260,45 @@ class CartLogic extends SOY2LogicBase{
 	 * @return number
 	 */
 	function getItemPrice(){
-		$total = 0;
-		foreach($this->items as $item){
-			$total += $item->getTotalPrice();
-		}
+		if(SOYSHOP_USE_CART_TABLE_MODE){
+			return soyshop_cart_get_item_price($this->db);
+		}else{
+			$items = self::getItems();
+			if(!count($items)) return 0;
 
-		return $total;
+			$total = 0;
+			foreach($items as $item){
+				$total += $item->getTotalPrice();
+			}
+
+			return $total;
+		}
 	}
 
 	/**
 	 * @return integer 商品数を取得
 	 */
-	function getItemCount(){
-		return count($this->items);
-	}
+	// function getItemCount(){
+	// 	return count(self::getItems());
+	// }
 
 	/**
 	 * @return integer 商品の個数の合計
 	 */
 	function getOrderItemCount(){
-		$total = 0;
-		foreach($this->items as $item){
-			$total += $item->getItemCount();
-		}
+		if(SOYSHOP_USE_CART_TABLE_MODE){
+			return soyshop_cart_get_item_count($this->db);
+		}else{
+			$items = self::getItems();
+			if(!count($items)) return 0;
 
-		return $total;
+			$total = 0;
+			foreach($items as $item){
+				$total += $item->getItemCount();
+			}
+
+			return $total;
+		}
 	}
 
 	/**
@@ -362,7 +385,7 @@ class CartLogic extends SOY2LogicBase{
 	function setConsumptionTaxInclusivePricing(){
 		$this->removeModule("consumption_tax");
 
-		$items = $this->getItems();
+		$items = self::getItems();
 		if(count($items) === 0) return;
 
 		$totalPrice = 0;
@@ -501,10 +524,15 @@ class CartLogic extends SOY2LogicBase{
 		$this->id = $id;
 	}
 	function getItems() {
-		return $this->items;
+		return (SOYSHOP_USE_CART_TABLE_MODE) ? soyshop_cart_get_items($this->db) : $this->items;
 	}
 	function setItems($items) {
-		$this->items = $items;
+		if(SOYSHOP_USE_CART_TABLE_MODE){
+			// @ToDo データベースインサートモード
+			$this->db = soyshop_cart_set_items($this->db, $items);
+		}else{
+			$this->items = $items;
+		}
 	}
 	function getOrder(){
 		return $this->order;
@@ -775,6 +803,12 @@ class CartLogic extends SOY2LogicBase{
 			}
 		}else{
 			$orderLogic->addHistory($this->getAttribute("order_id"), "注文受付メールの送信はスキップされました。");
+		}
+
+		//CartLogicの内容の一部をSQLite DBに移行するモードの場合はデータベースを削除する
+		if(SOYSHOP_USE_CART_TABLE_MODE){
+			soyshop_cart_delete_db($this->db);
+			soyshop_cart_routine_delete_db();
 		}
 
 		return true;
@@ -1363,6 +1397,14 @@ class CartLogic extends SOY2LogicBase{
 	 */
 	function clearNoticeMessage(){
 		$this->noticeMessage = array();
+	}
+
+	function getDb(){
+		return $this->db;
+	}
+
+	function setDb($db){
+		$this->db = $db;
 	}
 
 	/** カートをIPアドレスで制限 **/
