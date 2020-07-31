@@ -1,14 +1,13 @@
 <?php
-
 /**
  * タイマーに記録する（デバッグモードのみ）
  * @param String $label
  */
 function count_timer($label){
 	if(DEBUG_MODE){
-		$this->timer[$label] = microtime(true);
-		if(!$this->startTime){
-			$this->startTime = $this->timer[$label];
+		$GLOBALS["debug_timer"][$label] = microtime(true);
+		if(!isset($GLOBALS["debug_timer_start_time"])){
+			$GLOBALS["debug_timer_start_time"] = $GLOBALS["debug_timer"][$label];
 		}
 	}
 }
@@ -19,22 +18,24 @@ function count_timer($label){
  */
 function append_debug_info($webPage){
 	if(DEBUG_MODE){
-		$debugInfo = "";
+		if(isset($GLOBALS["debug_timer"]) && is_array($GLOBALS["debug_timer"]) && count($GLOBALS["debug_timer"])){
+			$debugInfo = "";
 
-		$previous = null;
-		foreach($this->timer as $label => $time){
-			if(!$previous){
+			$previous = null;
+			foreach($GLOBALS["debug_timer"] as $label => $time){
+				if(!$previous){
+					$previous = $time;
+					continue;
+				}
+				$debugInfo .= "<p>".$label.": " . ($time - $previous) . " 秒</p>";
 				$previous = $time;
-				continue;
 			}
-			$debugInfo .= "<p>".$label.": " . ($time - $previous) . " 秒</p>";
-			$previous = $time;
-		}
-		$debugInfo .= "<p><b>Total: " . ($previous - $this->startTime) . " 秒</b></p>";
-		$debugInfo .= "<p>Render: ##########RENDER_TIME######### 秒</p>";
+			$debugInfo .= "<p><b>Total: " . ($previous - $GLOBALS["debug_timer_start_time"]) . " 秒</b></p>";
+			$debugInfo .= "<p>Render: ##########RENDER_TIME######### 秒</p>";
 
-		$ele = $webPage->getBodyElement();
-		$ele->appendHTML($debugInfo);
+			$ele = $webPage->getBodyElement();
+			$ele->appendHTML($debugInfo);
+		}
 	}
 }
 
@@ -44,6 +45,8 @@ function append_debug_info($webPage){
  */
 function replace_render_time(&$html){
 	if(DEBUG_MODE){
-		$html = str_replace("##########RENDER_TIME#########", $this->timer["Render"] - $this->timer["Main"], $html);
+		if(isset($GLOBALS["debug_timer"]) && is_array($GLOBALS["debug_timer"]) && count($GLOBALS["debug_timer"])){
+			$html = str_replace("##########RENDER_TIME#########", $GLOBALS["debug_timer"]["Render"] - $GLOBALS["debug_timer"]["Main"], $html);
+		}
 	}
 }

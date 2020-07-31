@@ -6,7 +6,7 @@
  * @param WebPage $page
  */
 function output_page($uri, $args, $page){
-    count_timer("Search");
+    if(DEBUG_MODE) count_timer("Search");
 
     $webPage = $page->getWebPageObject($args);
     $webPage->setArguments($args);
@@ -16,13 +16,13 @@ function output_page($uri, $args, $page){
     SOYShopPlugin::invoke("soyshop.site.onload", array("page" => $webPage));
 
     $webPage->build($args);
-    count_timer("Build");
+    if(DEBUG_MODE) count_timer("Build");
 
     $webPage->main($args);
     $webPage->common_execute();
 
-    count_timer("Main");
-    append_debug_info($webPage);
+    if(DEBUG_MODE) count_timer("Main");
+    if(DEBUG_MODE) append_debug_info($webPage);
 
     /* Event BeforeOutput */
     SOYShopPlugin::load("soyshop.site.beforeoutput");
@@ -33,8 +33,8 @@ function output_page($uri, $args, $page){
     $html = ob_get_contents();
     ob_end_clean();
 
-    count_timer("Render");
-    replace_render_time($html);
+    if(DEBUG_MODE) count_timer("Render");
+    if(DEBUG_MODE) replace_render_time($html);
 
     /* EVENT onOutput */
     SOYShopPlugin::load("soyshop.site.onoutput");

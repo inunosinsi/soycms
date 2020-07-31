@@ -69,7 +69,7 @@ function generate_application_page_situation_json(){
 	if(defined("SOYSHOP_CART_MODE") && SOYSHOP_CART_MODE){
 		$cart = CartLogic::getCart();
 		$array = array(
-			"count" => $cart->countItems(),
+			"count" => $cart->getOrderItemCount(),
 			"total" => $cart->getItemPrice()
 		);
 		echo json_encode($array);
