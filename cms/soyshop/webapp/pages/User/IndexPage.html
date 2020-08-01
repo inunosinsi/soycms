@@ -34,9 +34,10 @@
 						</caption>
 						<thead>
 							<tr>
-								<th>ID <a soy:id="sort_id">↓</a> <a soy:id="sort_id_desc">↑</a></th>
+								<th nowrap>ID <a soy:id="sort_id">↓</a> <a soy:id="sort_id_desc">↑</a></th>
 								<th>姓名 <a soy:id="sort_name">↓</a> <a soy:id="sort_name_desc">↑</a></th>
 								<th>メールアドレス <a soy:id="sort_mail_address">↓</a> <a soy:id="sort_mail_address_desc">↑</a></th>
+								<!-- soy:id="show_account_id" --><th><!-- soy:id="account_id_item_name" -->ログインID<!-- /soy:id="account_id_item_name" --> <a soy:id="sort_account_id">↓</a> <a soy:id="sort_account_id_desc">↑</a></th><!-- /soy:id="show_account_id" -->
 								<th>属性１ <a soy:id="sort_attribute1">↓</a> <a soy:id="sort_attribute1_desc">↑</a></th>
 								<th>属性２ <a soy:id="sort_attribute2">↓</a> <a soy:id="sort_attribute2_desc">↑</a></th>
 								<th>属性３ <a soy:id="sort_attribute3">↓</a> <a soy:id="sort_attribute3_desc">↑</a></th>
@@ -52,6 +53,7 @@
 									<td>&nbsp;</td>
 									<td class="middle"><input soy:id="search_name" value=""/></td>
 									<td class="middle"><input soy:id="search_mail_address" value=""/></td>
+									<!-- soy:id="show_account_id*" --><td><input soy:id="search_account_id" value=""/></td><!-- /soy:id="show_account_id*" -->
 									<td><input soy:id="search_attribute1" value=""/></td>
 									<td><input soy:id="search_attribute2" value=""/></td>
 									<td><input soy:id="search_attribute3" value=""/></td>
@@ -67,18 +69,19 @@
 								<td class="alC short"><span soy:id="id"></span></td>
 								<td class="middle"><a soy:id="edit_link"><!-- soy:id="name" /--></a></td>
 								<td class="middle"><span soy:id="mailaddress">メールアドレス</span></td>
+								<!-- soy:id="show_account_id_item" --><td class="middle"><span soy:id="account_id">ログインID</span></td><!-- /soy:id="show_account_id_item" -->
 								<td class="middle"><span soy:id="attribute1">属性１</span></td>
 								<td class="middle"><span soy:id="attribute2">属性２</span></td>
 								<td class="middle"><span soy:id="attribute3">属性３</span></td>
-								<td class="operation">
-									<a class="btn btn-primary" soy:id="edit_link*">編集</a>
+								<td class="operation" nowrap>
+									<a class="btn btn-primary" soy:id="edit_link*">編集</a>&nbsp;
 									<a soy:id="remove_link" href="#" class="btn btn-danger delete_btn" onclick="return confirm('削除してもよろしいですか？')">削除</a>
 								</td>
 							</tr>
 							<!-- /soy:id="user_list" -->
 							<!-- soy:display="no_user" -->
 							<tr>
-								<td colspan="7">
+								<td colspan="8" soy:id="colspan">
 									<div class="alert alert-info">顧客情報が登録されていません</div>
 								</td>
 							</tr>

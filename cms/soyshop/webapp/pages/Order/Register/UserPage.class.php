@@ -270,6 +270,10 @@ class UserPage extends WebPage{
 
 		//項目の非表示用タグ
 		foreach(SOYShop_ShopConfig::load()->getCustomerAdminConfig() as $key => $bool){
+			if($key == "accountId" && $bool){
+				//ログインIDのみ、マイページでログインIDを使用する時だけtrueにする
+				$bool = (SOYShop_ShopConfig::load()->getAllowLoginIdLogin() != 0);
+			}
 			DisplayPlugin::toggle($key, $bool);
 		}
 

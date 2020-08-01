@@ -29,6 +29,11 @@ class SearchPage extends WebPage{
 
 		parent::__construct();
 
+		//一覧でログインIDを表示するか？
+		$cnf = SOYShop_ShopConfig::load();
+		$adminCnf = $cnf->getCustomerAdminConfig();
+		define("SHOW_ACCOUNT_ID_ITEM", ($adminCnf["accountId"] && $cnf->getAllowLoginIdLogin()));
+
 		$this->addForm("advanced_search_form");
 		$this->addForm("reset_form");
 
@@ -71,6 +76,19 @@ class SearchPage extends WebPage{
 
 		//表示順リンク
 		self::buildSortLink($searchLogic, $sort);
+
+		$this->addModel("show_account_id", array(
+			"visible" => SHOW_ACCOUNT_ID_ITEM
+		));
+
+		$this->addModel("colspan", array(
+			"attr:colspan" => (SHOW_ACCOUNT_ID_ITEM) ? 8 : 7
+		));
+
+		//ログインIDの名称変更
+		$this->addLabel("account_id_item_name", array(
+			"text" => (SHOW_ACCOUNT_ID_ITEM) ? $cnf->getAccountIdItemName() : ""
+		));
 
 		//ユーザ一覧
 		$this->createAdd("user_list","_common.User.UserListComponent", array(
@@ -132,15 +150,20 @@ class SearchPage extends WebPage{
 			"value" => (isset($search["id"])) ? $search["id"] : ""
 		));
 
+		$this->addInput("advanced_search_mail_address", array(
+			"name" => "search[mail_address]",
+			"value" => (isset($search["mail_address"])) ? $search["mail_address"] : "",
+		));
+
+		$this->addInput("advanced_search_account_id", array(
+			"name" => "search[account_id]",
+			"value" => (isset($search["account_id"])) ? $search["account_id"] : "",
+		));
+
 		DisplayPlugin::toggle("userCode", $config->getUseUserCode());
 		$this->addInput("advanced_search_user_code", array(
 			"name" => "search[user_code]",
 			"value" => (isset($search["user_code"])) ? $search["user_code"] : ""
-		));
-
-		$this->addInput("advanced_search_mail_address", array(
-			"name" => "search[mail_address]",
-			"value" => (isset($search["mail_address"])) ? $search["mail_address"] : "",
 		));
 
 		$this->addCheckBox("advanced_search_user_type_register", array(
@@ -466,6 +489,10 @@ class SearchPage extends WebPage{
 
 		//項目の非表示用タグ
 		foreach($config->getCustomerAdminConfig() as $key => $bool){
+			if($key == "accountId" && $bool){
+				//ログインIDのみ、マイページでログインIDを使用する時だけtrueにする
+				$bool = (SOYShop_ShopConfig::load()->getAllowLoginIdLogin() != 0);
+			}
 			DisplayPlugin::toggle($key, $bool);
 		}
 	}

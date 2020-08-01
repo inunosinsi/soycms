@@ -6,6 +6,11 @@ class IndexPage extends WebPage{
 
     	DisplayPlugin::toggle("registered", (isset($_GET["registered"])));
 
+		//一覧でログインIDを表示するか？
+		$cnf = SOYShop_ShopConfig::load();
+		$adminCnf = $cnf->getCustomerAdminConfig();
+		define("SHOW_ACCOUNT_ID_ITEM", ($adminCnf["accountId"] && $cnf->getAllowLoginIdLogin()));
+
 		/*引数など取得*/
 		//表示件数
 		$limit = 15;
@@ -43,6 +48,19 @@ class IndexPage extends WebPage{
 		$this->addForm("reset_form");
 		$this->addModel("reset_button", array(
 			"visible" => (!empty($search))
+		));
+
+		$this->addModel("show_account_id", array(
+			"visible" => SHOW_ACCOUNT_ID_ITEM
+		));
+
+		$this->addModel("colspan", array(
+			"attr:colspan" => (SHOW_ACCOUNT_ID_ITEM) ? 8 : 7
+		));
+
+		//ログインIDの名称変更
+		$this->addLabel("account_id_item_name", array(
+			"text" => (SHOW_ACCOUNT_ID_ITEM) ? $cnf->getAccountIdItemName() : ""
 		));
 
 		//ユーザ一覧
@@ -121,31 +139,31 @@ class IndexPage extends WebPage{
 		$this->addInput("search_name", array(
 			"name" => "search[name]",
 			"value" => (isset($search["name"])) ? $search["name"] : "",
-			"style" => "width:90%;",
 			"onclick" => "this.select()"
 		));
 		$this->addInput("search_mail_address", array(
 			"name" => "search[mail_address]",
 			"value" => (isset($search["mail_address"])) ? $search["mail_address"] : "",
-			"style" => "width:90%;",
+			"onclick" => "this.select()"
+		));
+		$this->addInput("search_account_id", array(
+			"name" => "search[account_id]",
+			"value" => (isset($search["account_id"])) ? $search["account_id"] : "",
 			"onclick" => "this.select()"
 		));
 		$this->addInput("search_attribute1", array(
 			"name" => "search[attribute1]",
 			"value" => (isset($search["attribute1"])) ? $search["attribute1"] : "",
-			"style" => "width:90%;",
 			"onclick" => "this.select()"
 		));
 		$this->addInput("search_attribute2", array(
 			"name" => "search[attribute2]",
 			"value" => (isset($search["attribute2"])) ? $search["attribute2"] : "",
-			"style" => "width:90%;",
 			"onclick" => "this.select()"
 		));
 		$this->addInput("search_attribute3", array(
 			"name" => "search[attribute3]",
 			"value" => (isset($search["attribute3"])) ? $search["attribute3"] : "",
-			"style" => "width:90%;",
 			"onclick" => "this.select()"
 		));
 	}

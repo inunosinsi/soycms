@@ -23,6 +23,7 @@
 								<th class="short">ID <a soy:id="sort_id">↓</a> <a soy:id="sort_id_desc">↑</a></th>
 								<th class="middle">姓名 <a soy:id="sort_name">↓</a> <a soy:id="sort_name_desc">↑</a></th>
 								<th class="middle">メールアドレス <a soy:id="sort_mail_address">↓</a> <a soy:id="sort_mail_address_desc">↑</a></th>
+								<!-- soy:id="show_account_id" --><th><!-- soy:id="account_id_item_name" -->ログインID<!-- /soy:id="account_id_item_name" --> <a soy:id="sort_account_id">↓</a> <a soy:id="sort_account_id_desc">↑</a></th><!-- /soy:id="show_account_id" -->
 								<th>属性１ <a soy:id="sort_attribute1">↓</a> <a soy:id="sort_attribute1_desc">↑</a></th>
 								<th>属性２ <a soy:id="sort_attribute2">↓</a> <a soy:id="sort_attribute2_desc">↑</a></th>
 								<th>属性３ <a soy:id="sort_attribute3">↓</a> <a soy:id="sort_attribute3_desc">↑</a></th>
@@ -38,11 +39,12 @@
 								<td class="alC short"><span soy:id="id"></span></td>
 								<td class="middle"><span soy:id="name"></span></td>
 								<td class="middle"><span soy:id="mailaddress">メールアドレス</span></td>
+								<!-- soy:id="show_account_id_item" --><td class="middle"><span soy:id="account_id">ログインID</span></td><!-- /soy:id="show_account_id_item" -->
 								<td class="middle"><span soy:id="attribute1">属性１</span></td>
 								<td class="middle"><span soy:id="attribute2">属性２</span></td>
 								<td class="middle"><span soy:id="attribute3">属性３</span></td>
-								<td class="operation">
-									<a class="btn btn-primary" soy:id="edit_link">編集</a>
+								<td class="operation" nowrap>
+									<a class="btn btn-primary" soy:id="edit_link">編集</a>&nbsp;
 									<a class="btn btn-danger delete_btn" soy:id="remove_link">削除</a>
 								</td>
 							</tr>
@@ -91,6 +93,7 @@
 					<div class="table-responsive">
 						<table class="table table-striped form_search">
 							<caption>顧客情報</caption>
+							<col style="width:250px;">
 							<tr>
 								<th>ID</th>
 								<td>
@@ -102,6 +105,13 @@
 								<th>メールアドレス</th>
 								<td>
 									<input soy:id="advanced_search_mail_address" type="text" value="" size="40" />
+								</td>
+							</tr>
+
+							<tr soy:display="accountId">
+								<th soy:id="account_id_item_name*">ログインID</th>
+								<td>
+									<input soy:id="advanced_search_account_id" type="text" value="" size="40" />
 								</td>
 							</tr>
 
@@ -149,6 +159,7 @@
 					<div class="table-responsive">
 						<table class="table table-striped form_search">
 							<caption>氏名、性別、生年月日</caption>
+							<col style="width:250px;">
 							<tr soy:display="name">
 								<th>氏名</th>
 								<td>
@@ -203,6 +214,7 @@
 					<div class="table-responsive">
 						<table class="table table-striped form_search">
 							<caption>住所</caption>
+							<col style="width:250px;">
 							<tr soy:display="zipCode">
 								<th>郵便番号</th>
 								<td>
@@ -247,6 +259,7 @@
 					<div class="table-responsive" soy:display="office_items">
 						<table class="table table-striped form_search">
 							<caption>勤務先</caption>
+							<col style="width:250px;">
 							<tr>
 								<th>勤務先名称・職種</th>
 								<td>
@@ -291,6 +304,7 @@
 					<div class="table-responsive">
 						<table class="table table-striped form_search">
 							<caption>属性</caption>
+							<col style="width:250px;">
 							<tr>
 								<th>属性</th>
 								<td>
@@ -344,6 +358,7 @@
 					<div class="table-responsive">
 						<table class="table table-striped form_search">
 							<caption>注文</caption>
+							<col style="width:250px;">
 							<tr>
 								<th>購入合計</th>
 								<td>

@@ -52,13 +52,18 @@
 									<a href="" soy:id="mail_edit_link" class="btn btn-default">変更</a>
 								</td>
 							</tr>
+							<tr soy:display="accountId">
+								<th soy:id="account_id_item_name">ログインID</th>
+								<td>
+									<input soy:id="account_id" type="text" style="width:95%;" />
+								</td>
+							</tr>
 							<tr soy:display="userCode">
 								<th>顧客コード</th>
 								<td>
 									<input soy:id="user_code" type="text" style="width:50%;">
 								</td>
 							</tr>
-
 							<tr>
 								<th>パスワード</th>
 								<td>
@@ -216,12 +221,6 @@
 					<div class="table-responsive">
 						<table class="table table-striped">
 							<col style="width:200px;" />
-							<tr soy:display="accountId">
-								<th>ログインID</th>
-								<td>
-									<input soy:id="account_id" type="text" style="width:95%;" />
-								</td>
-							</tr>
 							<tr soy:display="url">
 								<th>URL</th>
 								<td>

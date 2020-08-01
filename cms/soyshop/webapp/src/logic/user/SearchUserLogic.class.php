@@ -17,6 +17,8 @@ class SearchUserLogic extends SOY2LogicBase{
 	const SORT_READING_DESC	  = "reading_desc";
 	const SORT_MAIL_ADDRESS	  = "mail_address";
 	const SORT_MAIL_ADDRESS_DESC = "mail_address_desc";
+	const SORT_ACCOUNT_ID	  = "account_id";
+	const SORT_ACCOUNT_ID_DESC = "account_id_desc";
 	const SORT_ATTRIBUTE_1 = "attribute1";
 	const SORT_ATTRIBUTE_1_DESC = "attribute1_desc";
 	const SORT_ATTRIBUTE_2 = "attribute2";
@@ -37,6 +39,9 @@ class SearchUserLogic extends SOY2LogicBase{
 
 		"mail_address" =>  "mail_address",
 		"mail_address_desc" =>  "mail_address desc",
+
+		"account_id" =>  "account_id",
+		"account_id_desc" =>  "account_id desc",
 
 		"attribute1" => "attribute1",
 		"attribute1_desc" => "attribute1 desc",
@@ -92,6 +97,12 @@ class SearchUserLogic extends SOY2LogicBase{
 			case self::SORT_MAIL_ADDRESS_DESC :
 				$order = " order by mail_address desc ";
 				break;
+			case self::SORT_ACCOUNT_ID :
+				$order = " order by account_id ";
+				break;
+			case self::SORT_ACCOUNT_ID_DESC :
+				$order = " order by account_id desc ";
+				break;
 			case self::SORT_ATTRIBUTE_1 :
 				$order = " order by attribute1 ";
 				break;
@@ -134,6 +145,7 @@ class SearchUserLogic extends SOY2LogicBase{
 					case "name":
 					case "reading":
 					case "mail_address":
+					case "account_id":
 					case "user_code":
 					case "zip_code" :
 					case "address1" :

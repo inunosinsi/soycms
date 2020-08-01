@@ -192,7 +192,7 @@ class IndexPage extends WebPage{
 	function __construct() {
 		$this->cart = AdminCartLogic::getCart();
 		$this->cart->setAttribute("page", "start");
-
+		
 		//注文日のデフォルトは当日
 		if(!$this->cart->getOrderDate()){
 			$this->cart->setOrderDate(SOY2_NOW);

@@ -45,6 +45,7 @@ class SOYShop_ShopConfig {
 	private $displaySendInformationForm = 1;
 	private $allowMailAddressLogin = 1;
 	private $allowLoginIdLogin = 0;
+	private $accountIdItemName = "ログインID";
 	private $displayUsableTagList = 0;
 	private $useUserCode = 0;			//顧客コード
 	private $insertDummyMailAddress = 1;
@@ -610,6 +611,13 @@ class SOYShop_ShopConfig {
 	}
 	function setAllowLoginIdLogin($allowLoginIdLogin){
 		$this->allowLoginIdLogin = $allowLoginIdLogin;
+	}
+
+	function getAccountIdItemName(){
+		return $this->accountIdItemName;
+	}
+	function setAccountIdItemName($accountIdItemName){
+		$this->accountIdItemName = $accountIdItemName;
 	}
 
 	function getDisplayUsableTagList(){

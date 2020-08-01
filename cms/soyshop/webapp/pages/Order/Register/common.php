@@ -87,6 +87,12 @@ class AdminCartLogic extends CartLogic{
 			SOY2Logic::createInstance("logic.order.admin.AdminOrderLogic")->clear();	//バックアップの削除
 
 			$orderDAO->commit();
+
+			//CartLogicの内容の一部をSQLite DBに移行するモードの場合はデータベースを削除する
+			if(SOYSHOP_USE_CART_TABLE_MODE){
+				soyshop_cart_delete_db($this->db);
+				soyshop_cart_routine_delete_db();
+			}
 		}catch(SOYShop_EmptyStockException $e){
 			$this->log($e);
 			throw $e;
@@ -245,6 +251,14 @@ class AdminCartLogic extends CartLogic{
 		$obj->setTotalPrice($price * $count);
 		$obj->setItemName($name);
 
-		$this->items[] = $obj;
+		//CartLogicの内容の一部をSQLite DBに移行するモードの場合はデータベースを削除する
+		if(SOYSHOP_USE_CART_TABLE_MODE){
+			$items = soyshop_cart_get_items($this->db);
+			$items[] = $obj;
+			$this->db = soyshop_cart_set_items($this->db, $items);
+			$this->save();
+		}else{
+			$this->items[] = $obj;
+		}
 	}
 }

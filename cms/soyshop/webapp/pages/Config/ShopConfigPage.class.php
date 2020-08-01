@@ -210,6 +210,11 @@ class ShopConfigPage extends WebPage{
 			"label" => "ログインIDでログインを許可する",
 		));
 
+		$this->addInput("accountIdItemName", array(
+			"name" => "Config[accountIdItemName]",
+			"value" => $config->getAccountIdItemName()
+		));
+
 		//在庫無視モード
 		$this->addCheckBox("ignoreStock", array(
 			"selected" => $config->getIgnoreStock(),

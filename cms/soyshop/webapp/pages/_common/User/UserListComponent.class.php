@@ -29,6 +29,14 @@ class UserListComponent extends HTMLList{
 			"style" => (strpos($bean->getMailAddress(), DUMMY_MAIL_ADDRESS_DOMAIN) !== false) ? "color:#ABABAB !important" : null
 		));
 
+		$this->addLabel("account_id", array(
+			"text" => $bean->getAccountId()
+		));
+
+		$this->addModel("show_account_id_item", array(
+			"visible" => (defined("SHOW_ACCOUNT_ID_ITEM") && SHOW_ACCOUNT_ID_ITEM)
+		));
+
 		$this->addLabel("attribute1", array(
 			"text" => $bean->getAttribute1()
 		));

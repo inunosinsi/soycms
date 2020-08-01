@@ -105,6 +105,15 @@ class UserComponent {
 			"value" => $confirmMailAddress
 		));
 
+		$page->addLabel("account_id_item_name", array(
+			"text" => $this->config->getAccountIdItemName()
+		));
+
+		$page->addInput("account_id", array(
+			"name" => "Customer[accountId]",
+			"value" => $user->getAccountId()
+		));
+
 		//顧客コード
 		DisplayPlugin::toggle("userCode", $this->config->getUseUserCode());
 		$page->addInput("user_code", array(
