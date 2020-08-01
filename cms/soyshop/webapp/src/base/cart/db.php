@@ -104,6 +104,19 @@ function soyshop_cart_set_items($dbName = null, $items){
 	return $dbName;
 }
 
+/**
+ * 下記のSQL構文が自動生成される
+ * CREATE TABLE soyshop_orders(
+ *	idx integer not null UNIQUE,
+ *	item_id integer not null,
+ *	item_count integer not null,
+ *	item_price integer not null,
+ *	total_price integer not null,
+ *	item_name integer not null,
+ *	attributes varchar,
+ *	is_addition integer default 0
+ *);
+ */
 function soyshop_cart_build_table_sql(){
 	$schemas = file_get_contents(SOY2::RootDir() . "logic/init/sqlite.sql");
 	preg_match('/create table soyshop_orders([\s\S]*?);/', $schemas, $tmp);
@@ -120,8 +133,8 @@ function soyshop_cart_build_table_sql(){
 		if(is_numeric(stripos($line, "unique"))) continue;
 		if(stripos($line, "is_addition")) $line = str_replace(",", "", $line);
 		$sql .= $line . "\n";
-
 	}
+	$sql = str_replace("idx integer not null", "idx integer not null UNIQUE", $sql);
 	return trim($sql);
 }
 
