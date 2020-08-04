@@ -2,27 +2,29 @@
 
 class PasswordPage extends WebPage{
 
-	var $id;
-	var $session;
+	private $id;
+	private $session;
 
     function __construct($args) {
-    	$id = (isset($args[0])) ? $args[0] : null;
-    	$this->id = $id;
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+
+		if(!isset($args[0]) || !is_numeric($args[0])) SOY2PageController::jump("User");
+    	$this->id = (int)$args[0];
+
+		$user = soyshop_get_user_object($this->id);
+		if(is_null($user->getId())) SOY2PageController::jump("User");
 
     	$this->session = SOY2ActionSession::getUserSession();
 
     	parent::__construct();
 
-    	$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+		//パスワードの文字数
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$this->addLabel("password_count", array(
+			"text" => SOYShop_ShopConfig::load()->getPasswordCount()
+		));
 
-    	try{
-    		$shopUser = $dao->getById($id);
-    	}catch(Exception $e){
-    		SOY2PageController::jump("User.Detail." . $this->id);
-    		exit;
-    	}
-
-    	$this->buildForm($shopUser);
+    	self::_buildForm($user);
 
     	$this->addLink("detail_link", array(
     		"link" => SOY2PageController::createLink("User.Detail." . $this->id)
@@ -44,18 +46,16 @@ class PasswordPage extends WebPage{
 		/*
 		 * パスワードは８文字以上必須
 		 */
-		if(strlen($password) < 8){
+		if(strlen($password) < SOYShop_ShopConfig::load()->getPasswordCount()){
 			$this->session->setAttribute("user.edit.password.password",$password);
 			SOY2PageController::jump("User.Edit.Password." . $this->id."?too_short");
 		}
 
-
 		try{
 			//元のデータを読み込む
-			$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-			$user = $dao->getById($this->id);
+			$user = soyshop_get_user_object($this->id);
 			$user->setPassword($user->hashPassword($password));
-			$dao->update($user);
+			SOY2DAOFactory::create("user.SOYShop_UserDAO")->update($user);
 			SOY2PageController::jump("User.Edit.Password." . $this->id."?updated");
 		}catch(Exception $e){
 			SOY2PageController::jump("User.Edit.Password." . $this->id."?failed");
@@ -63,11 +63,7 @@ class PasswordPage extends WebPage{
 
 	}
 
-	function getCSS(){
-		return array("./css/admin/user_detail.css");
-	}
-
-   function buildForm(SOYShop_User $user){
+ 	private function _buildForm(SOYShop_User $user){
 
     	$this->addForm("detail_form");
 
@@ -103,5 +99,8 @@ class PasswordPage extends WebPage{
     		"size" => "60"
     	));
     }
+
+	function getCSS(){
+		return array("./css/admin/user_detail.css");
+	}
 }
-?>

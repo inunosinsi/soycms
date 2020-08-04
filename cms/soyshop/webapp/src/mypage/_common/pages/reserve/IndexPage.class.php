@@ -5,9 +5,9 @@ class IndexPage extends MainMyPagePageBase{
 	function __construct(){
 		$this->checkIsLoggedIn(); //ログインチェック
 
-		//予約カレンダーを有効にしていて、bootstrapテンプレートを使用している時のみ表示
+		//予約カレンダーを有効にしていて、bootstrapテンプレートを使用している時のみ表示。MYPAGE_EXTEND_BOOTSTRAPはpage.phpで定数の設定を行う
 		if(!SOYShopPluginUtil::checkIsActive("reserve_calendar")) $this->jumpToTop();
-		if(soyshop_get_mypage_id() != "bootstrap") $this->jumpToTop();
+		if(soyshop_get_mypage_id() != "bootstrap" && (!defined("MYPAGE_EXTEND_BOOTSTRAP") || !MYPAGE_EXTEND_BOOTSTRAP)) $this->jumpToTop();
 
 		parent::__construct();
 

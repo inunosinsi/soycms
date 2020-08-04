@@ -80,6 +80,6 @@ define("COMPOSER_LIB_DIR", SOYSHOP_WEBAPP . "lib/vendor/");
 if(!defined("DUMMY_MAIL_ADDRESS_DOMAIN")) define("DUMMY_MAIL_ADDRESS_DOMAIN", "dummy.soyshop.net");
 
 //CartLogicの内容の一部をSQLite DBに移行するモード
-define("SOYSHOP_USE_CART_TABLE_MODE", false && extension_loaded("sqlite3") && extension_loaded("pdo_sqlite"));
-//define("SOYSHOP_USE_CART_TABLE_MODE", false);
+//define("SOYSHOP_USE_CART_TABLE_MODE", false && extension_loaded("sqlite3") && extension_loaded("pdo_sqlite"));
+define("SOYSHOP_USE_CART_TABLE_MODE", false);
 if(SOYSHOP_USE_CART_TABLE_MODE) SOY2::import("base.cart.db", ".php");

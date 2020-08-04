@@ -59,6 +59,8 @@ class ResetPage extends MainMyPagePageBase{
 
     	parent::__construct();
 
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+
 		//display error message
 		DisplayPlugin::toggle("has_error", $this->mypage->hasError());
 		$this->createAdd("error_list","MainMyPageErrorList", array(
@@ -70,6 +72,10 @@ class ResetPage extends MainMyPagePageBase{
 
 		$this->addLink("remind_link", array(
 			"link" => soyshop_get_mypage_url() . "/remind/input"
+		));
+
+		$this->addLabel("password_count", array(
+			"text" => SOYShop_ShopConfig::load()->getPasswordCount()
 		));
 
 		$this->addForm("form", array(
@@ -125,12 +131,14 @@ class ResetPage extends MainMyPagePageBase{
     	$password = $_POST["password"];
     	$confirm = $_POST["confirm"];
 
+		$passCnt = SOYShop_ShopConfig::load()->getPasswordCount();
+
     	if(tstrlen($password) === 0){
 	    	// no input password
     		$this->mypage->addErrorMessage("remind_password_no_password", MessageManager::get("PASSWORD_NOT_INPUT"));
-    	}elseif(tstrlen($password) < 8){
+    	}elseif(tstrlen($password) < $passCnt){
     		// less password
-    		$this->mypage->addErrorMessage("remind_password_less_password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
+    		$this->mypage->addErrorMessage("remind_password_less_password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH", array("password_count" => $passCnt)));
     	}elseif(!preg_match("/^[a-zA-Z0-9]+$/",$password)){
     		$this->mypage->addErrorMessage("remind_password_string", MessageManager::get("PASSWORD_FALSE"));
     	}elseif($password !== $confirm){

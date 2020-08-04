@@ -11,14 +11,14 @@ class IndexPage extends MainMyPagePageBase{
 		$mypage = $this->getMyPage();
 
 		//ユーザカスタムフィールドの値をセッションに入れる
-		if(isset($_POST["user_customfield"])){
-			SOYShopPlugin::load("soyshop.user.customfield");
-			SOYShopPlugin::invoke("soyshop.user.customfield", array(
-				"mode" => "post",
-				"app" => $mypage,
-				"param" => $_POST["user_customfield"]
-			));
-		}
+		// if(isset($_POST["user_customfield"])){
+		// 	SOYShopPlugin::load("soyshop.user.customfield");
+		// 	SOYShopPlugin::invoke("soyshop.user.customfield", array(
+		// 		"mode" => "post",
+		// 		"app" => $mypage,
+		// 		"param" => $_POST["user_customfield"]
+		// 	));
+		// }
 
 		//郵便番号での住所検索
 		if(isset($_POST["user_zip_search"]) || isset($_POST["user_zip_search_x"])){

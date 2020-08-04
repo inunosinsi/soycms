@@ -63,9 +63,9 @@ class MessageManager{
             $tmpMsg = $instance->messageArray[$key];
             //メッセージの置き換え
             foreach($replace as $key => $value){
-                $tmpMsg = preg_replace('/%' . $key . '%/i', $value, $tmpMsg);
+				$tmpMsg = preg_replace('/%' . $key . '%/i', $value, $tmpMsg);
             }
-            return $tmpMsg;
+			return $tmpMsg;
         }else{
             //throw new Exception($key."に対応するメッセージがありません");
             if(SOYSHOP_PUBLISH_LANGUAGE == "jp"){

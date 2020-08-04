@@ -111,6 +111,6 @@ if(defined("SOYCMS_ALLOW_PHP_SCRIPT")){
 }
 
 //CartLogicの内容の一部をSQLite DBに移行するモード
-define("SOYSHOP_USE_CART_TABLE_MODE", false && extension_loaded("sqlite3") && extension_loaded("pdo_sqlite"));
-//define("SOYSHOP_USE_CART_TABLE_MODE", false);
+//define("SOYSHOP_USE_CART_TABLE_MODE", false && extension_loaded("sqlite3") && extension_loaded("pdo_sqlite"));
+define("SOYSHOP_USE_CART_TABLE_MODE", false);
 if(SOYSHOP_USE_CART_TABLE_MODE) SOY2::import("base.cart.db", ".php");

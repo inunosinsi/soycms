@@ -2,26 +2,20 @@
 
 class MailPage extends WebPage{
 
-	var $id;
+	private  $id;
 
     function __construct($args) {
-    	$id = @$args[0];
-    	$this->id = $id;
+		if(!isset($args[0]) || !is_numeric($args[0])) SOY2PageController::jump("User");
+    	$this->id = (int)$args[0];
+
+		$user = soyshop_get_user_object($this->id);
+		if(is_null($user->getId())) SOY2PageController::jump("User");
 
     	parent::__construct();
 
-    	$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+    	self::_buildForm($user);
 
-    	try{
-    		$shopUser = $dao->getById($id);
-    	}catch(Exception $e){
-    		SOY2PageController::jump("User.Detail." . $this->id);
-    		exit;
-    	}
-
-    	$this->buildForm($shopUser);
-
-    	$this->createAdd("detail_link","HTMLLink", array(
+    	$this->addLink("detail_link", array(
     		"link" => SOY2PageController::createLink("User.Detail." . $this->id)
     	));
 
@@ -42,7 +36,7 @@ class MailPage extends WebPage{
 		 * 元のデータを読み込む
 		 */
 		try{
-			$user = $dao->getById($this->id);
+			$user = soyshop_get_user_object($this->id);
 			$user->setMailAddress($new_email);
 		}catch(Exception $e){
 			SOY2PageController::jump("User.Edit.Mail." . $this->id."?failed");
@@ -77,11 +71,7 @@ class MailPage extends WebPage{
 
 	}
 
-	function getCSS(){
-		return array("./css/admin/user_detail.css");
-	}
-
-   function buildForm(SOYShop_User $user){
+	private function _buildForm(SOYShop_User $user){
 
     	$this->addForm("detail_form");
 
@@ -109,9 +99,9 @@ class MailPage extends WebPage{
     		"value" => "",
     		"size" => "60"
     	));
-
     }
 
-
+	function getCSS(){
+		return array("./css/admin/user_detail.css");
+	}
 }
-

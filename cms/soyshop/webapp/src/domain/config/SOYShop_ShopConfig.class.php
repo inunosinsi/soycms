@@ -46,6 +46,7 @@ class SOYShop_ShopConfig {
 	private $allowMailAddressLogin = 1;
 	private $allowLoginIdLogin = 0;
 	private $accountIdItemName = "ログインID";
+	private $passwordCount = 8;		//パスワードの最低文字数
 	private $displayUsableTagList = 0;
 	private $useUserCode = 0;			//顧客コード
 	private $insertDummyMailAddress = 1;
@@ -618,6 +619,13 @@ class SOYShop_ShopConfig {
 	}
 	function setAccountIdItemName($accountIdItemName){
 		$this->accountIdItemName = $accountIdItemName;
+	}
+
+	function getPasswordCount(){
+		return $this->passwordCount;
+	}
+	function setPasswordCount($passwordCount){
+		$this->passwordCount = $passwordCount;
 	}
 
 	function getDisplayUsableTagList(){

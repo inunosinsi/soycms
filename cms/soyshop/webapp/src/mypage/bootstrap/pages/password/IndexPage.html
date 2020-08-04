@@ -9,20 +9,20 @@
 	<div class="form-group">
 		<label for="password">前のパスワード<span class="require"></span></label>
 		<input name="" type="password" class="form-control" autocomplete="off" soy:id="old">
-		<small class="form-text text-muted">【半角英数・8文字以上】</small>
+		<small class="form-text text-muted">【半角英数・<!-- soy:id="password_count" -->8<!-- /soy:id="password_count" -->文字以上】</small>
 	</div>
 
 	<div class="form-group">
 		<label for="change">パスワードの変更<span class="require"></span></label>
 		<input name="" type="password" class="form-control" autocomplete="off" soy:id="password">
-		<small class="form-text text-muted">【半角英数・8文字以上】</small>
+		<small class="form-text text-muted">【半角英数・<!-- soy:id="password_count*" -->8<!-- /soy:id="password_count*" -->文字以上】</small>
 	</div>
 
 	<div class="form-group">
 		<label for="confirm">パスワードの変更再入力</label>
 		<p class="alert alert-danger" role="alert" soy:display="has_error">上と同じパスワードを正しく入力してください。</p>
 		<input name="" type="password" class="form-control" autocomplete="off" soy:id="confirm">
-		<small class="form-text text-muted">【半角英数・8文字以上】</small>
+		<small class="form-text text-muted">【半角英数・<!-- soy:id="password_count*" -->8<!-- /soy:id="password_count*" -->文字以上】</small>
 	</div>
 
 	<div class="text-center">

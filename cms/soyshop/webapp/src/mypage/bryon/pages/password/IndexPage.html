@@ -1,9 +1,9 @@
 <section id="cart_procedure">
 	<h1 class="cart_txt">パスワードの再設定</h1>
 	<section class="soycart_narrow">
-		
+
 		<form soy:id="form">
-			
+
 			<!-- soy:id="error_list" -->
     	  	<p class="error" soy:id="error_message">エラーがあります。</p>
     		<!-- /soy:id="error_list" -->
@@ -13,7 +13,7 @@
 					<th nowrap scope="row">前のパスワード<span class="require"></span></th>
 					<td>
 						<input name="" type="password" class="w200" autocomplete="off" soy:id="old">
-						<span class="note">【半角英数・8文字以上】</span>
+						<span class="note">【半角英数・<!-- soy:id="password_count" -->8<!-- /soy:id="password_count" -->文字以上】</span>
 					</td>
 				</tr>
 				<tr>
@@ -21,7 +21,7 @@
 					<td>
 						<!--p class="error">パスワードが正しく入力されていません。</p-->
 						<input name="" type="password" class="w200" autocomplete="off" soy:id="password">
-						<span class="note">【半角英数・8文字以上】</span>
+						<span class="note">【半角英数・<!-- soy:id="password_count*" -->8<!-- /soy:id="password_count*" -->文字以上】</span>
 					</td>
 				</tr>
 				<tr>
@@ -31,7 +31,7 @@
 						<p class="error">上と同じパスワードを正しく入力してください。</p>
 						<!-- /soy:display="has_error" -->
 						<input name="" type="password" class="w200" autocomplete="off" soy:id="confirm">
-						<span class="note">【半角英数・8文字以上】</span>
+						<span class="note">【半角英数・<!-- soy:id="password_count*" -->8<!-- /soy:id="password_count*" -->文字以上】</span>
 					</td>
 				</tr>
 			</table>

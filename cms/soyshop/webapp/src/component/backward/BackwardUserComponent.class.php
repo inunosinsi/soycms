@@ -249,6 +249,9 @@ class BackwardUserComponent {
 			$res = false;
 		}
 
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$passCnt = SOYShop_ShopConfig::load()->getPasswordCount();
+
 		//パスワード
 		if( $cart->getAttribute("logined") ){
 			//ログイン時：パスワード変更
@@ -264,8 +267,8 @@ class BackwardUserComponent {
 					$user = $userDAO->getById($cart->getAttribute("logined_userid"));
 
 					if( $user->checkPassword($old) ){
-						if( strlen($new) < 8 ){
-							$cart->addErrorMessage("password_error", MessageManager::get("NEW_PASSWORD_COUNT_NOT_ENOUGH"));
+						if( strlen($new) < $passCnt ){
+							$cart->addErrorMessage("password_error", MessageManager::get("NEW_PASSWORD_COUNT_NOT_ENOUGH", array("password_count" => $passCnt)));
 							$res = false;
 						}else{
 							$cart->setAttribute("new_password", $new);
@@ -281,8 +284,8 @@ class BackwardUserComponent {
 		}else{
 			//未ログイン時
 			if( tstrlen($cart->getCustomerInformation()->getPassword()) ){
-				if(tstrlen($cart->getCustomerInformation()->getPassword()) < 8){
-					$cart->addErrorMessage("password_error", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
+				if(tstrlen($cart->getCustomerInformation()->getPassword()) < $passCnt){
+					$cart->addErrorMessage("password_error", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH", array("password_count" => $passCnt)));
 					$res = false;
 				}
 			}
@@ -760,11 +763,14 @@ class BackwardUserComponent {
 		}
 
 		//パスワード
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$passCnt = SOYShop_ShopConfig::load()->getPasswordCount();
+
 		if(tstrlen($user->getPassword()) < 1){
 			$mypage->addErrorMessage("password", MessageManager::get("PASSWORD_EMPTY"));
 			$res = false;
-		}elseif(tstrlen($user->getPassword()) < 8){
-			$mypage->addErrorMessage("password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
+		}elseif(tstrlen($user->getPassword()) < $passCnt){
+			$mypage->addErrorMessage("password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH", $passCnt));
 			$res = false;
 		}elseif(!preg_match("/^[a-zA-Z0-9]+$/",$user->getPassword())){
     		$mypage->addErrorMessage("password", MessageManager::get("PASSWORD_FALSE"));

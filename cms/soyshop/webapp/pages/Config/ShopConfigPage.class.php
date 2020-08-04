@@ -19,6 +19,7 @@ class ShopConfigPage extends WebPage{
 			"displaySendInformationForm" => 0,
 			"allowMailAddressLogin" => 0,
 			"allowLoginIdLogin" => 0,
+			"passwordCount" => 8,
 			"displayUsableTagList" => 0,
 			"useUserCode" => 0,
 			"insertDummyMailAddress" => 0,
@@ -213,6 +214,12 @@ class ShopConfigPage extends WebPage{
 		$this->addInput("accountIdItemName", array(
 			"name" => "Config[accountIdItemName]",
 			"value" => $config->getAccountIdItemName()
+		));
+
+		$this->addInput("passwordCount", array(
+			"name" => "Config[passwordCount]",
+			"value" => $config->getPasswordCount(),
+			"style" => "width:60px;"
 		));
 
 		//在庫無視モード

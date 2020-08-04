@@ -34,6 +34,8 @@ class IndexPage extends MainMyPagePageBase{
 
 		$this->user = $this->getUser();
 
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+
     	parent::__construct();
 
 		//display error message
@@ -43,6 +45,10 @@ class IndexPage extends MainMyPagePageBase{
 		));
 
 		$this->addForm("form");
+
+		$this->addLabel("password_count", array(
+			"text" => SOYShop_ShopConfig::load()->getPasswordCount()
+		));
 
 		$this->addInput("old", array(
 			"name" => "old",
@@ -71,14 +77,16 @@ class IndexPage extends MainMyPagePageBase{
     	$password = $_POST["password"];
     	$confirm = $_POST["confirm"];
 
+		$passCnt = SOYShop_ShopConfig::load()->getPasswordCount();
+
     	if(!$this->user->checkPassword($old)){
     		$mypage->addErrorMessage("remind_password_no_old", MessageManager::get("OLD_PASSWORD_FALSE"));
     	}elseif(tstrlen($password) === 0){
 	    	// no input password
-    		$mypage->addErrorMessage("remind_password_no_password", MessageManager("PASSWORD_CHANGE_NOT_INPUT"));
-    	}elseif(tstrlen($password) < 8){
+    		$mypage->addErrorMessage("remind_password_no_password", MessageManager::get("PASSWORD_CHANGE_NOT_INPUT"));
+    	}elseif(tstrlen($password) < $passCnt){
     		// less password
-    		$mypage->addErrorMessage("remind_password_less_password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
+    		$mypage->addErrorMessage("remind_password_less_password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH", array("password_count" => $passCnt)));
     	}elseif(!preg_match("/^[a-zA-Z0-9]+$/", $password)){
     		$mypage->addErrorMessage("remind_password_string", MessageManager::get("PASSWORD_FALSE"));
     	}elseif($password !== $confirm){

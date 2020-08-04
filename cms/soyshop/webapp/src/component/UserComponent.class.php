@@ -139,6 +139,11 @@ class UserComponent {
 			"text" => $passText
 		));
 
+		//パスワードの文字数
+		$page->addLabel("password_count", array(
+			"text" => $this->config->getPasswordCount()
+		));
+
 		//氏名
 		$page->addInput("name", array(
 			"name" => "Customer[name]",
@@ -579,6 +584,7 @@ class UserComponent {
 		/* パスワード */
 		SOY2::import("util.SOYShopPluginUtil");
 		if(!SOYShopPluginUtil::checkIsActive("generate_password")){	//パスワード自動生成プラグインがアンインストールの時のみパスワードチェック
+			$passCnt = $this->config->getPasswordCount();
 			switch($mode){
 				/* カート 登録 */
 				case self::MODE_CART_REGISTER;
@@ -597,9 +603,9 @@ class UserComponent {
 								$oldUser = $userDAO->getById($app->getAttribute("logined_userid"));
 
 								if( $user->checkPassword($oldUser) ){
-									if( strlen($new) < 8 ){
+									if( strlen($new) < $passCnt ){
 										//新しいパスワード設定で文字数が足りない場合
-										$app->addErrorMessage("password_error", MessageManager::get("NEW_PASSWORD_COUNT_NOT_ENOUGH"));
+										$app->addErrorMessage("password_error", MessageManager::get("NEW_PASSWORD_COUNT_NOT_ENOUGH", array("password_count" => $passCnt)));
 										$res = false;
 									}else{
 										$app->setAttribute("new_password", $new);
@@ -616,9 +622,9 @@ class UserComponent {
 					}else{
 						//未ログイン時
 						if( tstrlen($user->getPassword()) ){
-							if(tstrlen($user->getPassword()) < 8){
+							if(tstrlen($user->getPassword()) < $passCnt){
 								//パスワード設定で文字数が足りない場合
-								$app->addErrorMessage("password_error", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
+								$app->addErrorMessage("password_error", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH", array("password_count" => $passCnt)));
 								$res = false;
 							}
 						}
@@ -638,9 +644,9 @@ class UserComponent {
 						//パスワードが入力されていない場合
 						$app->addErrorMessage("password", MessageManager::get("PASSWORD_EMPTY"));
 						$res = false;
-					}elseif(tstrlen($user->getPassword()) < 8){
+					}elseif(tstrlen($user->getPassword()) < $passCnt){
 						//パスワード設定で文字数が足りない場合
-						$app->addErrorMessage("password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH"));
+						$app->addErrorMessage("password", MessageManager::get("PASSWORD_COUNT_NOT_ENOUGH", array("password_count" => $passCnt)));
 						$res = false;
 					}elseif(!preg_match("/^[a-zA-Z0-9]+$/", $user->getPassword())){
 						//パスワードの書式に誤りがある場合
