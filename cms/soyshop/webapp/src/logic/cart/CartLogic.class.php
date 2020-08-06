@@ -90,9 +90,9 @@ class CartLogic extends SOY2LogicBase{
 	}
 
 	/**
-	 * カートに商品を追加
+	 * カートに商品を追加 replaceIdxに値がある場合は商品の差し替え
 	 */
-	function addItem($itemId, $count = 1){
+	function addItem($itemId, $count = 1, $replaceIdx=null){
 
 		try{
 			$item = soyshop_get_item_object($itemId);
@@ -105,6 +105,15 @@ class CartLogic extends SOY2LogicBase{
 			//個数は-1以上の整数
 			$count = max(-1, (int)$count);
 
+			$items = self::getItems();
+
+			//商品の差し替え
+			if(is_numeric($replaceIdx) && isset($items[$replaceIdx])){
+				$items[$replaceIdx] = $this->setItemOrder($item, $count);
+				self::setItems($items);
+				return true;
+			}
+
 			//在庫以上は入らない
 			//$count = min($item->getOpenStock(),$count);
 
@@ -116,8 +125,6 @@ class CartLogic extends SOY2LogicBase{
 				if(SOYShopPluginUtil::checkIsActive("common_item_option")) $resOpts = array("dummy" => null);
 			}
 
-			$items = self::getItems();
-
 			if(count($resOpts)){
 				$cart = $this->getCart();
 
@@ -126,7 +133,7 @@ class CartLogic extends SOY2LogicBase{
 
 				//すでにカートの中に商品が入っていないかチェック
 				$res = false;
-				foreach($items as $key => $obj){
+				foreach($items as $index => $obj){
 					if($itemId == $obj->getItemId()){
 						$res = true;
 						break;
