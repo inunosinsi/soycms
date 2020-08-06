@@ -919,3 +919,28 @@ function soyshop_file_put_contents($f, $v){
 	if(!file_exists($dir)) mkdir($dir);
 	file_put_contents($dir . $f . ".txt", var_export($v, true) . "\n", FILE_APPEND);
 }
+
+/**
+ * 顧客の年齢を調べる
+ * @param string $birthday
+ * @return integer
+ */
+function soyshop_get_user_age($birthday){
+	if(is_null($birthday)) return null;
+	preg_match('/^\d{4}-\d{1,}-\d{1,}/', $birthday, $tmp);
+	if(isset($tmp[0])){
+		$array = explode("-", $tmp[0]);
+		$y = (int)$array[0];
+		$m = (int)$array[1];
+		$d = (int)$array[2];
+	}else{	//birthdayの他の文字列の渡し方用
+		return null;
+	}
+
+	$age = date("Y") - $y;
+	if($m < date("n")) return $age;	//誕生月が今月よりも前の場合はそのまま返す
+	if($m > date("n")) return --$age;	//誕生月が今月よりも後の場合は-1で返す
+
+	//誕生月が今月の場合
+	return ($d <= date("j")) ? $age : --$age;
+}
