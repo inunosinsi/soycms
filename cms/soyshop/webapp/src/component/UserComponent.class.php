@@ -192,20 +192,32 @@ class UserComponent {
 
 		//生年月日 年
 		$page->addInput("birth_year", array(
+			"type" => "number",
 			"name" => "Customer[birthday][]",
 			"value" => $user->getBirthdayYear(),
+			"size" => 5,
+			"attr:min" => 1900,
+			"attr:max" => date("Y") + 10
 		));
 
 		//生年月日 月
 		$page->addInput("birth_month", array(
+			"type" => "number",
 			"name" => "Customer[birthday][]",
 			"value" => $user->getBirthdayMonth(),
+			"size" => 3,
+			"attr:min" => 1,
+			"attr:max" => 12
 		));
 
 		//生年月日 日
 		$page->addInput("birth_day", array(
+			"type" => "number",
 			"name" => "Customer[birthday][]",
 			"value" => $user->getBirthdayDay(),
+			"size" => 3,
+			"attr:min" => 1,
+			"attr:max" => 31
 		));
 
 		$page->addLabel("birthday_text", array(
