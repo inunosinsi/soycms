@@ -39,15 +39,16 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
     }
 
     function doPost($index, CartLogic $cart){
-
         if(isset($_REQUEST["item_option"]["schedule_id"])){
             $items = $cart->getItems();
-            if(isset($items[$index])){
+			if(isset($items[$index])){
                 $itemId = $items[$index]->getItemId();
 
                 $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId);
                 $cart->setAttribute($obj, $_REQUEST["item_option"]["schedule_id"]);
-            }
+            }else{	//存在していない時
+
+			}
         }
     }
 

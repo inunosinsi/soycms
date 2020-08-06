@@ -22,7 +22,7 @@ class CalendarExpandSmartOnOutput extends SOYShopSiteOnOutputAction{
 			if(stripos($html, "</html>")){
 				$html = str_ireplace("</html>", $js . "\n" . $css . "\n</html>", $html);
 			}else{
-				$html .= $js . "/n" . $css;
+				$html .= $js . "\n" . $css;
 			}
 		}
 

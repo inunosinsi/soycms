@@ -1,8 +1,8 @@
 <?php
-function soyshop_smart_calendar($html, $page){
+function soyshop_waffle_calendar($html, $page){
 
-	$obj = $page->create("soyshop_smart_calendar", "HTMLTemplatePage", array(
-		"arguments" => array("soyshop_smart_calendar", $html)
+	$obj = $page->create("soyshop_waffle_calendar", "HTMLTemplatePage", array(
+		"arguments" => array("soyshop_waffle_calendar", $html)
 	));
 
 	$year = (isset($_GET["y"]) && is_numeric($_GET["y"])) ? (int)$_GET["y"] : (int)date("Y");
@@ -97,7 +97,7 @@ function soyshop_smart_calendar($html, $page){
 
 		$obj->addLabel("calendar_" . $itemId, array(
 			"soy2prefix" => "block",
-			"html" => SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync))->build($year, $month)
+			"html" => SOY2Logic::createInstance("module.plugins.calendar_expand_waffle.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync))->build($year, $month)
 		));
 	}
 

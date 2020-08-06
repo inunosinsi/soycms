@@ -1,5 +1,4 @@
 <?php
-
 class ScheduleLogic extends SOY2LogicBase{
 
     function __construct(){
@@ -39,6 +38,10 @@ class ScheduleLogic extends SOY2LogicBase{
 
         return $schedules;
     }
+
+	function findLatestScheduleDate($year, $month){
+		return self::dao()->findLatestScheduleDate($year, $month);
+	}
 
     private function dao(){
         static $dao;
