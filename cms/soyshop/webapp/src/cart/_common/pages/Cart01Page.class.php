@@ -366,10 +366,7 @@ class Cart01Page extends MainCartPageBase{
 		if($mypage->getIsLoggedin()){
 			$userId = $mypage->getAttribute("userId");
 			try{
-				$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-				$user = $dao->getById($userId);
-
-				return $user;
+				return soyshop_get_user_object($userId);
 			}catch(Exception $e){
 				//do nothing
 			}
