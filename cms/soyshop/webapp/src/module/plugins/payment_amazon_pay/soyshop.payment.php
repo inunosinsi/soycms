@@ -60,8 +60,11 @@ class AmazonPayPayment extends SOYShopPayment{
 	}
 
 	function onPostOptionPage(){
+		//エラーがある場合
+		if(isset($_POST["amazonPayErrorMessage"]) && strlen($_POST["amazonPayErrorMessage"])){
+			//getOptionPageの方に処理を続けるようにここでは何もしない
 		//支払いのアクションを実行
-		if(isset($_POST["orderReferenceId"]) && strlen($_POST["orderReferenceId"])){
+		}else if(isset($_POST["orderReferenceId"]) && strlen($_POST["orderReferenceId"])){
 			self::orderComplete();
 		}
 	}
@@ -72,9 +75,11 @@ class AmazonPayPayment extends SOYShopPayment{
 
 		$order = soyshop_get_order_object($cart->getAttribute("order_id"));
 
-		list($orderReferenceId, $amazonAuthorizationId) = SOY2Logic::createInstance("module.plugins.payment_amazon_pay.logic.AmazonPayLogic")->pay($order);
-		if(is_null($amazonAuthorizationId)){	//エラーの場合
-			throw new Exception("Amazon Pay Failed.");
+		list($orderReferenceId, $amazonAuthorizationId, $err) = SOY2Logic::createInstance("module.plugins.payment_amazon_pay.logic.AmazonPayLogic")->pay($order);
+		if(isset($err) && strlen($err)){	//エラーの場合
+			$cart->addErrorMessage("amazon_pay_error", $err);
+			$cart->save();
+			soyshop_redirect_cart("select_card");
 		}
 
 		//支払を完了する

@@ -1,3 +1,6 @@
+<div class="error narrow" soy:display="error">
+	<p soy:id="error_message">エラーを出力します</p>
+</div>
 <div id="walletWidgetDiv" style="height:250px"></div>
 <script type='text/javascript'>
 // get access token
@@ -38,15 +41,20 @@ function showWalletWidget(orderReferenceId) {
 			// エラー処理
 			// エラーが発生した際にonErrorハンドラーを使って処理することをお勧めします。
 			// @see https://payments.amazon.com/documentation/lpwa/201954960
-			console.log('OffAmazonPayments.Widgets.Wallet', error.getErrorCode(), error.getErrorMessage());
+			//console.log('OffAmazonPayments.Widgets.Wallet', error.getErrorCode(), error.getErrorMessage());
+			document.getElementById("amazonPayErrorCode").value = error.getErrorCode();
+			document.getElementById("amazonPayErrorMessage").value = error.getErrorMessage();
 		}
 	}).bind("walletWidgetDiv");
 }
+
 </script>
 <script type="text/javascript" src="https://static-fe.payments-amazon.com/OffAmazonPayments/jp/sandbox/lpa/js/Widgets.js" async></script>
 
-<form soy:id="form" method="POST">
+<form soy:id="form" method="POST" id="amazon_pay_form">
+		<input type="hidden" id="amazonPayErrorCode" name="amazonPayErrorCode">
+		<input type="hidden" id="amazonPayErrorMessage" name="amazonPayErrorMessage">
 		<input type="hidden" id="orderReferenceId" name="orderReferenceId">
-		<input type="submit" value="購入する">&nbsp;
+		<input type="submit" value="購入する">
 	<a soy:id="back_link">戻る</a>
 </form>

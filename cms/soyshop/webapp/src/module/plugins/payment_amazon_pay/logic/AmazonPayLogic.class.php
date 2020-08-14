@@ -11,7 +11,6 @@ class AmazonPayLogic extends SOY2LogicBase {
 
 	function pay(SOYShop_Order $order){
 		$referenceId = $_REQUEST['orderReferenceId'];
-
 		$client = self::_client();
 
 		// (2) 注文情報をセット
@@ -25,14 +24,14 @@ class AmazonPayLogic extends SOY2LogicBase {
 			'store_name' => 'ショップ名',
 		));
 
-		if(!$client->success) return array(null, null);
+		if(!$client->success) return array(null, null, "UnknownError");
 
 		// (3) 注文情報を確定
 		$client->confirmOrderReference(array(
 			'amazon_order_reference_id' => $referenceId
 		));
 
-		if(!$client->success) return array(null, null);
+		if(!$client->success) return array(null, null, "PaymentMethodNotAllowed");
 
 		// (4) オーソリをリクエスト
 		$response = $client->authorize(array(
@@ -44,10 +43,10 @@ class AmazonPayLogic extends SOY2LogicBase {
 		));
 
 		$result = $response->response;
-		if($result["Status"] != 200) return array(null, null);
+		if($result["Status"] != 200) return array(null, null, "AmazonRejected");
 
 		preg_match('/<AmazonAuthorizationId>(.*)<\/AmazonAuthorizationId>/', $result["ResponseBody"], $tmp);
-		if(!isset($tmp[0])) return array(null, null);
+		if(!isset($tmp[0])) return array(null, null, "UnknownError");
 
 		// オーソリが成功したか確認
 		$amazonAuthorizationId = $tmp[1];
@@ -66,10 +65,10 @@ class AmazonPayLogic extends SOY2LogicBase {
 		// 注文の確定に失敗したらオーソリを取り消して、注文をクローズする
 		if($result['Status'] != 200) {
 			self::_cancel($client, $referenceId, $amazonAuthorizationId);
-			return array(null, null);
+			return array(null, null, "TransactionTimedOut or AmazonRejected");
 		}
 
-		return array($referenceId, $amazonAuthorizationId);
+		return array($referenceId, $amazonAuthorizationId, null);
 	}
 
 	function cancel($referenceId, $amazonAuthorizationId){

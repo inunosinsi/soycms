@@ -10,9 +10,17 @@ class AmazonPayCardSelectPage extends WebPage{
 
 	function execute(){
 		//念の為にアクセストークンを取得しておく
-		$_SESSION["access_token"] = $_GET["access_token"];
+		if(isset($_GET["access_token"])) $_SESSION["access_token"] = $_GET["access_token"];
 
 		parent::__construct();
+
+		//エラーメッセージ
+		$err = self::_getErrorMessage();
+
+		DisplayPlugin::toggle("error", strlen($err));
+		$this->addLabel("error_message", array(
+			"text" => $err
+		));
 
 		$cnf = AmazonPayUtil::getConfig(false);
 
@@ -33,5 +41,18 @@ class AmazonPayCardSelectPage extends WebPage{
 		$this->addLink("back_link", array(
 			"link" => AmazonPayUtil::getBackUrl()
 		));
+	}
+
+	private function _getErrorMessage(){
+		if(isset($_POST["amazonPayErrorMessage"]) && strlen($_POST["amazonPayErrorMessage"])) return $_POST["amazonPayErrorMessage"];
+
+		$cart = CartLogic::getCart();
+		$err = $cart->getErrorMessage("amazon_pay_error");
+		if(isset($err)) {
+			$cart->removeErrorMessage("amazon_pay_error");
+			$cart->save();
+			return $err;
+		}
+		return null;
 	}
 }
