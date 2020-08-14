@@ -299,7 +299,7 @@ class Cart04Page extends MainCartPageBase{
 		 */
 		$memo = $cart->getOrderAttribute("memo");
 		$this->addLabel("memo", array(
-			"html" => nl2br(htmlspecialchars($memo["value"])),
+			"html" => (isset($memo["value"])) ? nl2br(htmlspecialchars($memo["value"])) : "",
 		));
 
 		/*
