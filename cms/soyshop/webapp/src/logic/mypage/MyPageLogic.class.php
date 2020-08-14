@@ -254,6 +254,16 @@ class MyPageLogic extends SOY2LogicBase{
 	}
 
 	function getIsLoggedin(){
+		SOYShopPlugin::load("soyshop.mypage.login");
+		$extendIsLoggedIn = SOYShopPlugin::invoke("soyshop.mypage.login", array(
+			"mode" => "isLoggedIn"
+		))->getResult();
+
+		//拡張機能を介してログインしているか？
+		if(isset($extendIsLoggedIn) && is_bool($extendIsLoggedIn)){
+			return $extendIsLoggedIn;
+		}
+
 		$res = $this->getAttribute("loggedin");
 		return (isset($res) && $res);
 	}
@@ -362,6 +372,10 @@ class MyPageLogic extends SOY2LogicBase{
 	 * ログアウト
 	 */
 	function logout(){
+		SOYShopPlugin::load("soyshop.mypage.login");
+		SOYShopPlugin::invoke("soyshop.mypage.login", array(
+			"mode" => "loguot"
+		));
 
 		/* auto login */
 		$autoLoginSessionId = $this->getAttribute("autoLoginId");
@@ -377,57 +391,63 @@ class MyPageLogic extends SOY2LogicBase{
 	 * #error login_error
 	 */
 	function login($loginId, $password){
+		//プラグインのログイン周りの拡張ポイントを持つプラグインがあるか？
+		SOYShopPlugin::load("soyshop.mypage.login");
+		$isExtendLogin = SOYShopPlugin::invoke("soyshop.mypage.login")->getResult();
 
-		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		$hasRegister = true;
+		if(isset($isExtendLogin) && is_bool($isExtendLogin) && $isExtendLogin){	//ログインの拡張
+			SOYShopPlugin::invoke("soyshop.mypage.login", array(
+				"mode" => "login"
+			));
+		}else{	//通常ログイン
+			$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+			$hasRegister = true;
 
-		SOY2::import("domain.config.SOYShop_ShopConfig");
-		$config = SOYShop_ShopConfig::load();
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$config = SOYShop_ShopConfig::load();
 
-
-		//ログインIDでログインを試みる
-		if($config->getAllowLoginIdLogin() && !soyshop_valid_email($loginId)){
-			try{
-				$user = $userDAO->getByAccountId($loginId);
-			}catch(Exception $e){
+			//ログインIDでログインを試みる
+			if($config->getAllowLoginIdLogin() && !soyshop_valid_email($loginId)){
+				try{
+					$user = $userDAO->getByAccountId($loginId);
+				}catch(Exception $e){
+					$user = new SOYShop_User();
+				}
+			//メールアドレスでログインにを試みる
+			}elseif($config->getAllowMailAddressLogin()){
+				try{
+					$user = $userDAO->getByMailAddress($loginId);
+				}catch(Exception $e){
+					$user = new SOYShop_User();
+				}
+			//ログインを許可していない
+			}else{
 				$user = new SOYShop_User();
 			}
-		//メールアドレスでログインにを試みる
-		}elseif($config->getAllowMailAddressLogin()){
-			try{
-				$user = $userDAO->getByMailAddress($loginId);
-			}catch(Exception $e){
-				$user = new SOYShop_User();
+
+			//仮登録状態もしくは退会しているか調べる。パスワードが正しいかも調べる
+			if(
+				is_null($user->getUserType()) ||
+				$user->getUserType() != SOYShop_User::USERTYPE_REGISTER ||
+				$user->getIsDisabled() == SOYShop_User::USER_IS_DISABLED ||
+				!$user->checkPassword($password)
+			){
+				$hasRegister = false;
 			}
-		//ログインを許可していない
-		}else{
-			$user = new SOYShop_User();
-		}
 
-		//仮登録状態もしくは退会しているか調べる。パスワードが正しいかも調べる
-		if(
-			is_null($user->getUserType()) ||
-			$user->getUserType() != SOYShop_User::USERTYPE_REGISTER ||
-			$user->getIsDisabled() == SOYShop_User::USER_IS_DISABLED ||
-			!$user->checkPassword($password)
-		){
-			$hasRegister = false;
-		}
+			//登録されていないログインIDのエラー通知
+			if(!$hasRegister){
+				$this->addErrorMessage("login_error", MessageManager::get("LOGIN_NOT_REGISTER"));
+				$this->save();
+				return false;
+			}
 
-		//登録されていないログインIDのエラー通知
-		if(!$hasRegister){
-			$this->addErrorMessage("login_error", MessageManager::get("LOGIN_NOT_REGISTER"));
+			//セッションに追加
+			$this->setAttribute("userId", $user->getId());
+			$this->setAttribute("loggedin", true);
 			$this->save();
-			return false;
+			return true;
 		}
-
-
-		//セッションに追加
-		$this->setAttribute("loggedin", true);
-		$this->setAttribute("userId", $user->getId());
-
-		$this->save();
-		return true;
 	}
 
 	function noPasswordLogin($userId){
