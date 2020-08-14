@@ -93,106 +93,97 @@ class CartLogic extends SOY2LogicBase{
 	 * カートに商品を追加 replaceIdxに値がある場合は商品の差し替え
 	 */
 	function addItem($itemId, $count = 1, $replaceIdx=null){
+		$item = soyshop_get_item_object($itemId);
 
-		try{
-			$item = soyshop_get_item_object($itemId);
+		//追加不可能
+		if(is_null($item->getId()) || false == $item->isOrderable()){
+			throw new Exception("Can not orderable");
+		}
 
-			//追加不可能
-			if(false == $item->isOrderable()){
-				throw new Exception("Can not orderable");
+		//個数は-1以上の整数
+		$count = max(-1, (int)$count);
+		$items = self::getItems();
+
+		//商品の差し替え
+		if(is_numeric($replaceIdx) && isset($items[$replaceIdx])){
+			$items[$replaceIdx] = $this->setItemOrder($item, $count);
+			self::setItems($items);
+			return true;
+		}
+
+		//在庫以上は入らない
+		//$count = min($item->getOpenStock(),$count);
+
+		//商品オプションの値がポストされている場合。商品オプションプラグインに対応するため、管理画面での挙動を追加する
+		$resOpts = (isset($_REQUEST["item_option"]) && is_array($_REQUEST["item_option"])) ? $_REQUEST["item_option"] : array();
+		if(!count($resOpts) && (defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE)){
+			//@ToDo soyshop.item.option拡張ポイントを利用しているものであればすべて対象にしたい
+			SOY2::import("util.SOYShopPluginUtil");
+			if(SOYShopPluginUtil::checkIsActive("common_item_option")) $resOpts = array("dummy" => null);
+		}
+
+		if(count($resOpts)){
+
+			//商品オプションの配列を比較する
+			$result = null;
+
+			//すでにカートの中に商品が入っていないかチェック。商品差替モードの場合はカート内に既に同じ商品があっても別商品として扱う
+			$res = (is_null($replaceIdx)) ? is_numeric(self::_checkExistedIndex($items, $itemId)) : false;
+
+			//商品があればオプションも同じかどうかを調べる
+			if($res){
+				//すでにある商品と配列が一致したらtrueを返す
+				SOYShopPlugin::load("soyshop.item.option");
+				$result = SOYShopPlugin::invoke("soyshop.item.option", array(
+					"mode" => "compare",
+					"cart" => $this->getCart(),
+					"option" => $resOpts
+				))->getCartOrderId();
+
+				if(!isset($items[$result]) || $items[$result]->getItemId() != $itemId) $result = null;
 			}
 
-			//個数は-1以上の整数
-			$count = max(-1, (int)$count);
-
-			$items = self::getItems();
-
-			//商品の差し替え
-			if(is_numeric($replaceIdx) && isset($items[$replaceIdx])){
-				$items[$replaceIdx] = $this->setItemOrder($item, $count);
+			//配列が一致しなかった場合は新しい商品として追加
+			if(is_null($result)){
+				$items[] = $this->setItemOrder($item, $count);
 				self::setItems($items);
 				return true;
+			}else{
+				self::updateItem($result, $count + $items[$result]->getItemCount());
+				return false;
 			}
 
-			//在庫以上は入らない
-			//$count = min($item->getOpenStock(),$count);
+		//商品オプションの値がポストされていない場合
+		}else{
+			//商品差替モードの場合はカート内に既に同じ商品があっても別商品として扱う
+			$index = (is_null($replaceIdx)) ? self::_checkExistedIndex($items, $itemId) : null;
 
-			//商品オプションの値がポストされている場合。商品オプションプラグインに対応するため、管理画面での挙動を追加する
-			$resOpts = (isset($_REQUEST["item_option"]) && is_array($_REQUEST["item_option"])) ? $_REQUEST["item_option"] : array();
-			if(!count($resOpts) && (defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE)){
-				//@ToDo soyshop.item.option拡張ポイントを利用しているものであればすべて対象にしたい
-				SOY2::import("util.SOYShopPluginUtil");
-				if(SOYShopPluginUtil::checkIsActive("common_item_option")) $resOpts = array("dummy" => null);
-			}
-
-			if(count($resOpts)){
-				$cart = $this->getCart();
-
-				//商品オプションの配列を比較する
-				$result = null;
-
-				//すでにカートの中に商品が入っていないかチェック
-				$res = false;
-				foreach($items as $index => $obj){
-					if($itemId == $obj->getItemId()){
-						$res = true;
-						break;
-					}
-				}
-
-				//商品があればオプションも同じかどうかを調べる
-				if($res){
-					//すでにある商品と配列が一致したらtrueを返す
-					SOYShopPlugin::load("soyshop.item.option");
-					$result = SOYShopPlugin::invoke("soyshop.item.option", array(
-						"mode" => "compare",
-						"cart" => $cart,
-						"option" => $resOpts
-					))->getCartOrderId();
-
-					if(isset($items[$result]) && $items[$result]->getItemId() == $itemId){
-						//
-					}else{
-						$result = null;
-					}
-				}
-
-				//配列が一致しなかった場合は新しい商品として追加
-				if(is_null($result)){
+			if(isset($index)){
+				self::updateItem($index, $count + $items[$index]->getItemCount());
+			}else{
+				//1個以上ならカートに入れる
+				if($count > 0){
 					$items[] = $this->setItemOrder($item, $count);
 					self::setItems($items);
-					return true;
-				}else{
-					self::updateItem($result, $count + $items[$result]->getItemCount());
-					return false;
 				}
-
-			//商品オプションの値がポストされていない場合
-			}else{
-				$index = null;
-				foreach($items as $key => $obj){
-					if($obj->getItemId() == $item->getId()){
-						$index = $key;
-						break;
-					}
-				}
-
-				if(isset($index)){
-					self::updateItem($index, $count + $items[$index]->getItemCount());
-				}else{
-					//1個以上ならカートに入れる
-					if($count > 0){
-						$items[] = $this->setItemOrder($item, $count);
-						self::setItems($items);
-					}
-			   	}
-
-			   	//商品オプションがないから必ずfalseを返す
-			   	return false;
 			}
-		}catch(Exception $e){
-			return false;
+
+			//商品オプションがないから必ずfalseを返す
 		}
+
+		return false;
+	}
+
+	//カートに同じ商品があるか？
+	private function _checkExistedIndex($itemOrders, $itemId){
+		if(!count($itemOrders)) return null;
+
+		foreach($itemOrders as $index => $itemOrder){
+			if((int)$itemOrder->getItemId() === (int)$itemId){
+				return $index;
+			}
+		}
+		return null;
 	}
 
 	function countItems(){
@@ -728,7 +719,7 @@ class CartLogic extends SOY2LogicBase{
 			$module->setIsVisible(false);
 			$module->setIsInclude(false);
 			$this->addModule($module);
-		}else if(SOYShopPluginUtil::checkIsActive("payment_admin_dummy")){
+		}else if(SOYShopPluginUtil::checkIsActive("delivery_admin_dummy")){
 			$module = new SOYShop_ItemModule();
 			$module->setId("delivery_admin_dummy");
 			$module->setName("送料ダミー");
@@ -769,10 +760,8 @@ class CartLogic extends SOY2LogicBase{
 	function _orderComplete($sendMail = true){
 
 		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
-
 		try{
-			$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-			$order = $orderDAO->getById($this->getAttribute("order_id"));
+			$order = soyshop_get_order_object($this->getAttribute("order_id"));
 		}catch(Exception $e){
 			$orderLogic->addHistory($this->getAttribute("order_id"), "注文を完了することができませんでした。メールは送信されません。");
 			return false;
@@ -784,7 +773,7 @@ class CartLogic extends SOY2LogicBase{
 		}else{
 			$order->setStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
 			try{
-				$orderDAO->updateStatus($order);
+				SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
 			}catch(Exception $e){
 				$orderLogic->addHistory($this->getAttribute("order_id"), "注文を完了することができませんでした。メールは送信されません。");
 				return false;
@@ -835,8 +824,7 @@ class CartLogic extends SOY2LogicBase{
 		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 
 		try{
-			$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-			$order = $orderDAO->getById($this->getAttribute("order_id"));
+			$order = soyshop_get_order_object($this->getAttribute("order_id"));
 
 			//既に完了していた場合はtrueを返す
 			if($order->getPaymentStatus() == SOYShop_Order::PAYMENT_STATUS_CONFIRMED){
@@ -850,7 +838,7 @@ class CartLogic extends SOY2LogicBase{
 					$orderLogic->addHistory($this->getAttribute("order_id"), "支払を確認したので、注文状態を仮登録から新規受付に変更しました。");
 				}
 
-				$orderDAO->updateStatus($order);
+				SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
 				$orderLogic->addHistory($this->getAttribute("order_id"), "支払いを確認しました。");
 			}
 		}catch(Exception $e){
