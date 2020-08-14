@@ -3,12 +3,17 @@
 class CustomfieldListComponent extends HTMLList {
 
 	protected function populateItem($item, $key) {
+		$htmlMode = (isset($item["html"]) && is_bool($item["html"]) && $item["html"] == true);
 
 		$this->addLabel("customfield_title", array(
 			"text" => (isset($item["name"])) ? $item["name"] : ""
 		));
 
-		$val = (isset($item["value"])) ? nl2br(htmlspecialchars($item["value"], ENT_QUOTES, "UTF-8"))  : "";
+		if($htmlMode){
+			$val = (isset($item["value"])) ? $item["value"] : "";
+		}else{
+			$val = (isset($item["value"])) ? nl2br(htmlspecialchars($item["value"], ENT_QUOTES, "UTF-8"))  : "";
+		}
 		if(isset($item["style"])){
 			$val = "<span style=\"" . $item["style"] . "\">" . $val . "</span>";
 		}

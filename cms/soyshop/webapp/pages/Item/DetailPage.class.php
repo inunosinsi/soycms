@@ -457,8 +457,12 @@ class DetailPage extends WebPage{
 		$this->addLink("add_child_item", array(
 			"link" => SOY2PageController::createLink("Item.Create") . "?" . $getParam . "=" . $item->getId()
 		));
+
+		$children = soyshop_get_item_children($item->getId());
+		
+		DisplayPlugin::toggle("children", count($children));
 		$this->createAdd("child_item_list","HTMLList", array(
-			"list" => soyshop_get_item_children($item->getId()),
+			"list" => $children,
 			'populateItem:function($entity,$key)' => '$itemName = $entity->getName();'.
 				'if($entity->getIsOpen() != 1) $itemName = "(非公開)" . $itemName;'.
 				'if($entity->getIsDisabled() != 0) $itemName .= "(削除)" . $itemName;'.
