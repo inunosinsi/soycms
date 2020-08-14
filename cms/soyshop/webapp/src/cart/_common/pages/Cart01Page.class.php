@@ -40,7 +40,7 @@ class Cart01Page extends MainCartPageBase{
 		if(isset($_POST["login"]) || isset($_POST["login_x"])){
 
 			//ログイン
-			if( $user = $this->cartLogin($userArray) ){//代入
+			if( $user = self::_login($userArray) ){//代入
 				//ログイン情報
 				$cart->setCustomerInformation($user);
 				$cart->setAttribute("logined", true);
@@ -91,7 +91,7 @@ class Cart01Page extends MainCartPageBase{
 		if(isset($_POST["next"]) || isset($_POST["next_x"])){
 
 			//すでにマイページでログインしているならログインする
-			if( $user = self::getMyPageLoggedInUser() ){//代入
+			if( $user = self::_getMyPageLoggedInUser() ){//代入
 				//ログイン情報
 				$cart->setCustomerInformation($user);
 				$cart->setAttribute("logined", true);
@@ -341,7 +341,7 @@ class Cart01Page extends MainCartPageBase{
 	 * メールアドレスとパスワードでログイン
 	 * @return SOYShop_User
 	 */
-	private function cartLogin($userArray){
+	private function _login($userArray){
 		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
 		try{
@@ -361,12 +361,11 @@ class Cart01Page extends MainCartPageBase{
 	 * マイページでログイン済みかどうか
 	 * @return SOYShop_User
 	 */
-	private function getMyPageLoggedInUser(){
+	private function _getMyPageLoggedInUser(){
 		$mypage = MyPageLogic::getMyPage();
 		if($mypage->getIsLoggedin()){
-			$userId = $mypage->getAttribute("userId");
 			try{
-				return soyshop_get_user_object($userId);
+				return soyshop_get_user_object($mypage->getAttribute("userId"));
 			}catch(Exception $e){
 				//do nothing
 			}
