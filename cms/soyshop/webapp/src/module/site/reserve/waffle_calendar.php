@@ -1,5 +1,21 @@
 <?php
 function soyshop_waffle_calendar($html, $page){
+	//ログインチェック
+	if(!isset($_GET["output_css_mode"])){
+		if(!MyPageLogic::getMyPage()->getIsLoggedin()){
+			//ログイン後のリダイレクト用に今見ているページのURLを取得する
+			soyshop_redirect_login_form("r=redirect");
+		}
+
+		if(!isset($_GET["idx"]) || !is_numeric($_GET["idx"])){
+			header("Location:" . soyshop_get_cart_url(true));
+		}
+
+		//予防接種二回目の有無　無しでも必ず下記のパラーメータはある
+		if(!isset($_GET["secMode"]) || !is_numeric($_GET["secMode"])){
+			header("Location:" . soyshop_get_cart_url(true));
+		}
+	}
 
 	$obj = $page->create("soyshop_waffle_calendar", "HTMLTemplatePage", array(
 		"arguments" => array("soyshop_waffle_calendar", $html)
@@ -10,7 +26,7 @@ function soyshop_waffle_calendar($html, $page){
 
 	//直近の空き予約を調べる
 	if(!isset($_GET["y"]) || !isset($_GET["m"])){
-		list($year, $month) = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.ScheduleLogic")->findLatestScheduleDate($year, $month);
+		list($year, $month) = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.SmartScheduleLogic")->findLatestScheduleDate($year, $month);
 	}
 
 /**
@@ -65,7 +81,7 @@ function soyshop_waffle_calendar($html, $page){
 
 	$obj->addLink("prev_month_link", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"link" => $url . "?y=" . $prevY . "&m=" . $prevM
+		"link" => $url . "?y=" . $prevY . "&m=" . $prevM . "&idx=" . $_GET["idx"] . "&secMode=" . $_GET["secMode"]
 	));
 
 	$obj->addModel("next_month", array(
@@ -75,7 +91,7 @@ function soyshop_waffle_calendar($html, $page){
 
 	$obj->addLink("next_month_link", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"link" => $url . "?y=" . $nextY . "&m=" . $nextM
+		"link" => $url . "?y=" . $nextY . "&m=" . $nextM . "&idx=" . $_GET["idx"] . "&secMode=" . $_GET["secMode"]
 	));
 
 	$obj->addLabel("caption", array(
