@@ -52,7 +52,7 @@ if(isset($_REQUEST["a"])) {
 				if($res){
 					SOYShopPlugin::invoke("soyshop.item.option", array(
 						"mode" => "post",
-						"index" => max(array_keys($cart->getItems())),
+						"index" => (is_numeric($replaceIdx)) ? $replaceIdx : max(array_keys($cart->getItems())),
 						"cart" => $cart
 					));
 				}
