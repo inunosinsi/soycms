@@ -10,7 +10,7 @@ function soyshop_smart_calendar($html, $page){
 
 	//直近の空き予約を調べる
 	if(!isset($_GET["y"]) || !isset($_GET["m"])){
-		list($year, $month) = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.ScheduleLogic")->findLatestScheduleDate($year, $month);
+		list($year, $month) = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.SmartScheduleLogic")->findLatestScheduleDate($year, $month);
 	}
 
 /**

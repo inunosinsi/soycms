@@ -19,7 +19,7 @@ class CalendarLogic extends CalendarBaseComponent{
 		$this->year = $y;
 		$this->month = $m;
 
-		$this->schList = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.ScheduleLogic")->getScheduleList($this->itemId, $y, $m);
+		$this->schList = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.SmartScheduleLogic")->getScheduleList($this->itemId, $y, $m);
 		$this->labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($this->itemId);
 
 		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
@@ -60,7 +60,7 @@ class CalendarLogic extends CalendarBaseComponent{
 		$m = $this->month;
 
 		$isForceHidden = false;	//条件を満たしていてもボタンを表示しない
-		if($wc > 4){	//5週目以降かつ日付では10日以下であれば必ず次の月
+		if($wc > 4 && date("w", $cd) > 0){	//5週目以降かつ日付では10日以下であれば必ず次の月	ただし日曜日は除く date("w", $cd) > 0で日曜日になる
 			if($wc == 5 && $i > 23){
 				//何もしない
 			}else{
