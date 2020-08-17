@@ -21,7 +21,7 @@ class CheckVersionLogic extends SOY2LogicBase{
 		//現在のバージョンを取得し、値がなければ1を返す
 		$version = $this->getUpdateVersion();
 		$current = $this->getCurrentVersion();
-		
+
 		return ($current < $version);
 	}
 
@@ -31,7 +31,7 @@ class CheckVersionLogic extends SOY2LogicBase{
 
 	function getUpdateVersion(){
 		$files = $this->getUpdateFiles();
-		return count($files) + 1;
+		return count($files);
 	}
 
 	/**
