@@ -277,7 +277,23 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 	 * @final
 	 */
 	function onInsert($query, $binds){
+		static $i;
+		if(is_null($i)) $i = 0;
 		if(!isset($binds[":seat"]) || !is_numeric($binds[":seat"])) $binds[":seat"] = 1;
+
+		for(;;){
+			$i++;
+			try{
+				$res = $this->executeQuery("SELECT id FROM soyshop_reserve_calendar_reserve WHERE schedule_id = :scheduleId AND order_id = :orderId AND reserve_date = :reserveDate LIMIT 1;", array(":scheduleId" => $binds[":scheduleId"], ":orderId" => $binds[":orderId"], ":reserveDate" => $binds[":reserveDate"] + $i));
+			}catch(Exception $e){
+				var_dump($e);
+				$res = array();
+			}
+			
+			if(!count($res)) break;
+		}
+		$binds[":reserveDate"] += $i;
+
 		return array($query, $binds);
 	}
 }

@@ -33,7 +33,7 @@ CREATE TABLE soyshop_reserve_calendar_reserve(
 	temp TINYINT NOT NULL DEFAULT 0,
 	temp_date INTEGER,
 	reserve_date INTEGER,
-	UNIQUE(schedule_id, order_id)
+	UNIQUE(schedule_id, order_id, reserve_date)
 )ENGINE=InnoDB;
 
 CREATE TABLE soyshop_reserve_calendar_cancel(
