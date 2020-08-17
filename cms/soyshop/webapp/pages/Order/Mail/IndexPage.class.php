@@ -156,8 +156,8 @@ class IndexPage extends WebPage{
 	private function _checkLanguageConfig($order){
 		$attr = $order->getAttribute("util_multi_language");
 		if(isset($attr["value"]) && strlen($attr["value"])){
-			define("SOYSHOP_MAIL_LANGUAGE", $attr["value"]);
-			define("SOYSHOP_PUBLISH_LANGUAGE", $attr["value"]);
+			if(!defined("SOYSHOP_MAIL_LANGUAGE")) define("SOYSHOP_MAIL_LANGUAGE", $attr["value"]);
+			if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", $attr["value"]);
 		}
 		MessageManager::addMessagePath("admin");
 	}

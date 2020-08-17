@@ -29,6 +29,22 @@ function soyshop_waffle_calendar($html, $page){
 		list($year, $month) = SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Schedule.SmartScheduleLogic")->findLatestScheduleDate($year, $month);
 	}
 
+	//昨月
+	$prevY = $year;
+	$prevM = $month - 1;
+	if($prevM < 1){
+		$prevY -= 1;
+		$prevM = 12;
+	}
+
+	//次の月も調べる
+	$nextM = $month + 1;
+	$nextY = $year;
+	if($nextM > 12){
+		$nextM = 1;
+		$nextY += 1;
+	}
+
 /**
 	$obj->addForm("schedule_calendar_form", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -50,26 +66,8 @@ function soyshop_waffle_calendar($html, $page){
 	));
 **/
 
-	$reserved = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedSchedulesByPeriod($year, $month);
-
-	//昨月
-	$prevY = $year;
-	$prevM = $month - 1;
-	if($prevM < 1){
-		$prevY -= 1;
-		$prevM = 12;
-	}
-
-	//次の月も調べる
-	$nextM = $month + 1;
-	$nextY = $year;
-	if($nextM > 12){
-		$nextM = 1;
-		$nextY += 1;
-	}
-	$nextReserved = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedSchedulesByPeriod($nextY, $nextM);
-	if(count($nextReserved)) $reserved += $nextReserved;
-	$GLOBALS["reserved_schedules"] = $reserved;
+	SOY2::import("module.plugins.calendar_expand_waffle.util.WaffleCalendarUtil");
+	$GLOBALS["reserved_schedules"] = WaffleCalendarUtil::getReservationStatus($year, $month);
 
 	$url = soyshop_get_page_url($page->getPageObject()->getUri());
 
