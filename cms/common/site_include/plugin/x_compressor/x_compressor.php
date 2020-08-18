@@ -77,7 +77,7 @@ class CompressorPlugin{
 		$isPre = false;
 
 		$htmls = array();
-		for($i = 0; $i < $lineCnt; $i++){
+		for($i = 0; $i < $lineCnt; ++$i){
 			$line = trim($lines[$i]);
 			if(!strlen($line)) continue;
 			$line = str_replace("\t", "", $line);

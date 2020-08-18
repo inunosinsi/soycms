@@ -107,7 +107,7 @@ class HTMLCachePlugin{
 		}
 
 		$hash = md5($pathInfo);
-		for($i = 0; $i < 10; $i++){
+		for($i = 0; $i < 10; ++$i){
 			$dir .= substr($hash, 0, 1) . "/";
 			if(!file_exists($dir)) mkdir($dir);
 			$hash = substr($hash, 1);

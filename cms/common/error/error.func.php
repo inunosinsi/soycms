@@ -76,7 +76,8 @@ function get_exception_trace($e){
 	$str = array();
 
 	$trace = $e->getTrace();
-	for($i = 0; $i < min( 5 , count($e->getTrace()) ); $i++){
+	$traceCnt = count($trace);
+	for($i = 0; $i < min(5 , $traceCnt); ++$i){
 		$str[] = get_trace_report($trace[$i],$i);
 	}
 
@@ -155,7 +156,8 @@ function get_trace_report($trace,$index){
 	$str[] = '-----------------------';
 	@$str[] = $index. ":".$trace["class"].$trace["type"].$trace["function"];
 	if(isset($trace["args"]) && is_array($trace["args"]) && count($trace["args"])){
-		for($i = 0; $i < count($trace["args"]); $i++){
+		$traceCnt = count($trace["args"]);
+		for($i = 0; $i < $traceCnt; ++$i){
 			$str[] = "\t".'argument['.$i.']: '.get_argument_string($trace["args"][$i]);
 		}
 	}

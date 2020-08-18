@@ -40,14 +40,14 @@ function soycms_entry_calendar_after_next($html, $page){
 			}
 
 			//日付の範囲を取得。前の月の日付の場合はマイナスを付けておく
-			for($i = 1; $i <= $last; $i++){
+			for($i = 1; $i <= $last; ++$i){
 				$dateList[] = $i;
 			}
 
 			//来月のはじめの日付にもマイナスの値を付けておく
 			$lastW = date("w", $lastDate);
 			if($lastW < 6){
-				for($i = 1; $i <= 6 - $lastW; $i++){
+				for($i = 1; $i <= 6 - $lastW; ++$i){
 					$dateList[] = -1 * $i;
 				}
 			}

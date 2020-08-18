@@ -59,7 +59,8 @@ class ZeroSaitodevPlugin{
 				if(property_exists($entries, "entry") && count($entries->entry)){
 					$html[] = "<div class=\"alert alert-info\" style=\"margin:5px 20px;\">下記で紹介している機能を使用する場合はSOY CMSのバージョンアップを行って下さい。最新版のダウンロードは<a href=\"https://saitodev.co/soycms\" target=\"_blank\" style=\"text-decoration:underline;\">こちら</a>から</div>";
 					$html[] = "<ul class=\"soycms_news\">";
-					for($i = 0; $i < count($entries->entry); $i++){
+					$entCnt = count($entries->entry);
+					for($i = 0; $i < $entCnt; ++$i){
 						$entry = $entries->entry[$i];
 						$html[] = "<li>" . $entry->create_date . "&nbsp;&nbsp;&nbsp;<a href=\"" . $entry->url . "\" target=\"_blank\" rel=\"noopener\">" . $entry->entry_title . "</a></li>";
 					}

@@ -155,7 +155,7 @@ class SOYCMSOutputContents{
 			$this->saveHeaders($CMSPageController);
 
 			//生成中のマークを消す
-			unlink($this->cache_gen);
+			if(file_exists($this->cache_gen)) unlink($this->cache_gen);
 
 		}
 	}

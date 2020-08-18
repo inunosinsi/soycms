@@ -110,7 +110,8 @@ abstract class LabelDAO extends SOY2DAO{
 
 			//共通項目をピックアップする配列
 			$array = array();
-			for($i = 0; $i < count($labelIds); $i++){
+			$labelCnt = count($labelIds);
+			for($i = 0; $i < $labelCnt; ++$i){
 				if(!isset($list[$labelIds[$i]]) || !is_array($list[$labelIds[$i]])) continue;
 				if(!count($array)){
 					$array = $list[$labelIds[$i]];

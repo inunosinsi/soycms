@@ -169,7 +169,7 @@ class CMSUtil {
 			$list[] = $backup_filename_base;
 		}
 
-		for($i=1;$i<100;$i++){
+		for($i=1;$i<100;++$i){
 			$backup = sprintf("{$backup_filename_base}.%02d",$i);
 			if(file_exists($backup)){
 				$list[] = $backup;

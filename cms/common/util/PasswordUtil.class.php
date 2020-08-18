@@ -99,11 +99,11 @@ class PasswordUtil {
 		$hash = "";
 		if($algo == "md5"){
 			//md5はhashが使えないときための保険
-			for($i=0;$i<$stretch;$i++){
+			for($i=0;$i<$stretch;++$i){
 				$hash = md5($hash.$salt.$string);
 			}
 		}else{
-			for($i=0;$i<$stretch;$i++){
+			for($i=0;$i<$stretch;++$i){
 				$hash = hash($algo, $hash.$salt.$string);
 			}
 		}

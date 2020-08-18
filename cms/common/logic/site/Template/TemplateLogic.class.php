@@ -125,7 +125,7 @@ class TemplateLogic extends SOY2LogicBase{
 
 	    			while($counter > 0){
 	    				$tmpPath = $path;
-	    				for($i=0;$i<$counter;$i++){
+	    				for($i=0;$i<$counter;++$i){
 	    					$tmpPath = dirname($tmpPath);
 	    				}
 	    				mkdir($tmpPath);
@@ -204,7 +204,7 @@ class TemplateLogic extends SOY2LogicBase{
 
 	    			while($counter > 0){
 	    				$tmpPath = $path;
-	    				for($i=0;$i<$counter;$i++){
+	    				for($i=0;$i<$counter;++$i){
 	    					$tmpPath = dirname($tmpPath);
 	    				}
 	    				mkdir($tmpPath);
