@@ -330,7 +330,6 @@ class Cart02Page extends MainCartPageBase{
 	 * カートにPOSTされて顧客情報をセットする
 	 */
 	private function setCustomerInformation(CartLogic $cart){
-		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		$user = new SOYShop_User();
 
 		//POSTデータ
@@ -346,7 +345,7 @@ class Cart02Page extends MainCartPageBase{
 				 * ログインしている場合
 				 */
 				try{
-					$user = $userDAO->getById($cart->getAttribute("logined_userid"));
+					$user = soyshop_get_user_object($cart->getAttribute("logined_userid"));
 				}catch(Exception $e){
 					$user = $cart->getCustomerInformation();
 				}

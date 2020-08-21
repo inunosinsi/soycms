@@ -28,16 +28,7 @@ class CompletePage extends MainCartPageBase{
 			exit;
 		}
 
-		$id = $cart->getAttribute("order_id");
-
-		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-
-		try{
-			$order = $orderDAO->getById($id);
-		}catch(Exception $e){
-			$order = new SOYShop_Order();
-		}
-
+		$order = soyshop_get_order_object($cart->getAttribute("order_id"));
 
 		$this->addForm("order_form");
 
@@ -58,19 +49,17 @@ class CompletePage extends MainCartPageBase{
 		));
 
 		SOYShopPlugin::load("soyshop.cart");
-		$delegate = SOYShopPlugin::invoke("soyshop.cart", array(
+		$htmls = SOYShopPlugin::invoke("soyshop.cart", array(
 			"mode" => "complete",
 			"cart" => $cart
-		));
-
-		$html = $delegate->getHtml();
+		))->getHtml();
 
 		$this->addModel("has_cart_plugin", array(
-			"visible" => (count($html) > 0)
+			"visible" => (count($htmls) > 0)
 		));
 
 		$this->createAdd("cart_plugin_list","_common.CartPluginListComponent", array(
-			"list" => $html
+			"list" => $htmls
 		));
 
 		//カートのクリア
