@@ -132,7 +132,8 @@ class UserComponent {
 		));
 
 		$passText = "";
-		for($i = 0; $i < strlen($user->getPassword()); $i++){
+		$pwlen = strlen($user->getPassword());
+		for($i = 0; $i < $pwlen; ++$i){
 			$passText .= "*";
 		}
 		$page->addLabel("password_text", array(
