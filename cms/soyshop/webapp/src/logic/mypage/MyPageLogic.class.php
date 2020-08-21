@@ -254,18 +254,35 @@ class MyPageLogic extends SOY2LogicBase{
 	}
 
 	function getIsLoggedin(){
-		SOYShopPlugin::load("soyshop.mypage.login");
-		$extendIsLoggedIn = SOYShopPlugin::invoke("soyshop.mypage.login", array(
-			"mode" => "isLoggedIn"
-		))->getResult();
+		static $isLoggedIn, $try;
+		if(is_null($try)) $try = 0;
+		if(is_null($isLoggedIn)){
+			//最低3回確認する
+			if(++$try > 2) {
+				$isLoggedIn = false;
+				return $isLoggedIn;
+			}
 
-		//拡張機能を介してログインしているか？
-		if(isset($extendIsLoggedIn) && is_bool($extendIsLoggedIn)){
-			return $extendIsLoggedIn;
+			//一度もログイン関係の動作をしていない時は調べる前にfalseを返す→様々なマイページの処理を止めることができる
+			//ログインするとuser_idとloggedinの値を持つので、配列の値が2未満であればログインのフローは通過していないことになる
+			$attrs = $this->getAttributes();
+			if(!is_array($attrs) || count($attrs) < 2) return false;
+
+			//拡張機能を介してログインしているか？
+			SOYShopPlugin::load("soyshop.mypage.login");
+			$extendIsLoggedIn = SOYShopPlugin::invoke("soyshop.mypage.login", array(
+				"mode" => "isLoggedIn"
+			))->getResult();
+
+			if(is_bool($extendIsLoggedIn)){
+				$isLoggedIn = $extendIsLoggedIn;
+			}else{
+				$res = $this->getAttribute("loggedin");
+				$isLoggedIn = (is_bool($res) && $res);
+			}
 		}
 
-		$res = $this->getAttribute("loggedin");
-		return (isset($res) && $res);
+		return $isLoggedIn;
 	}
 
 	/**
@@ -306,7 +323,21 @@ class MyPageLogic extends SOY2LogicBase{
 	}
 
 	function getUserId(){
-		return $this->getAttribute("userId");
+		static $userId;
+		if($this->getIsLoggedin() && is_null($userId)){
+			SOYShopPlugin::load("soyshop.mypage.login");
+			$userId = SOYShopPlugin::invoke("soyshop.mypage.login", array(
+				"mode" => "user_id"
+			))->getUserId();
+
+			if(!is_numeric($userId)){
+				$userId = $this->getAttribute("userId");
+			}
+
+			if(is_null($userId)) $userId = 0;
+		}
+
+		return $userId;
 	}
 
 	/**
