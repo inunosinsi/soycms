@@ -9,7 +9,7 @@ class DetailPage extends MainMyPagePageBase{
 
 		//予約カレンダーを有効にしていて、bootstrapテンプレートを使用している時のみ表示
 		if(!SOYShopPluginUtil::checkIsActive("reserve_calendar")) $this->jumpToTop();
-		if(soyshop_get_mypage_id() != "bootstrap") $this->jumpToTop();
+		if(soyshop_get_mypage_id() != "bootstrap" && (!defined("MYPAGE_EXTEND_BOOTSTRAP") || !MYPAGE_EXTEND_BOOTSTRAP)) $this->jumpToTop();
 
 		$resId = (int)$args[0];
 		$user = $this->getUser();

@@ -16,8 +16,47 @@ class IndexPage extends MainMyPagePageBase{
             "text" => $user->getName()
         ));
 
-		$year = date("Y");
-		$month = date("n");
+		$year = (isset($_GET["y"]) && is_numeric($_GET["y"])) ? (int)$_GET["y"] : (int)date("Y");
+		$month = (isset($_GET["m"]) && is_numeric($_GET["m"])) ? (int)$_GET["m"] : (int)date("n");
+
+		//昨月
+		$prevY = $year;
+		$prevM = $month - 1;
+		if($prevM < 1){
+			$prevY -= 1;
+			$prevM = 12;
+		}
+
+		//次の月も調べる
+		$nextM = $month + 1;
+		$nextY = $year;
+		if($nextM > 12){
+			$nextM = 1;
+			$nextY += 1;
+		}
+
+		$url = soyshop_get_mypage_url() . "/reserve";
+
+		//リンク
+		$this->addModel("prev_month", array(
+			"visible" => (mktime(0, 0, 0, $prevM + 1, 1, $prevY) - 1 > time())
+		));
+
+		$this->addLink("prev_month_link", array(
+			"link" => $url . "?y=" . $prevY . "&m=" . $prevM
+		));
+
+		$this->addModel("next_month", array(
+			"visible" => true	//常にtrue
+		));
+
+		$this->addLink("next_month_link", array(
+			"link" => $url . "?y=" . $nextY . "&m=" . $nextM
+		));
+
+		$this->addLabel("caption", array(
+			"text" => $year . "年" . $month . "月"
+		));
 
 		$this->addLabel("calendar", array(
 			"html" => SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.Reserve.CalendarLogic", array("userId" => $user->getId()))->build($year, $month)
