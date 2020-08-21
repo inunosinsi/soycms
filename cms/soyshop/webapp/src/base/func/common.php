@@ -130,7 +130,7 @@ function soyshop_get_user_object($userId){
 	static $users, $dao;
 	if(is_null($users)) $users = array();
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-	if(is_null($userId) || !is_numeric($userId)) return new SOYShop_User();
+	if(is_null($userId) || !is_numeric($userId) || $userId == 0) return new SOYShop_User();
 	if(isset($users[$userId])) return $users[$userId];
 
 	try{
@@ -792,7 +792,7 @@ function soyshop_dummy_item_code(){
 function soyshop_create_random_string($n = 10){
 	$str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
 	$r_str = "";
-	for ($i = 0; $i < $n; $i++) {
+	for ($i = 0; $i < $n; ++$i) {
 		$r_str .= $str[rand(0, count($str) - 1)];
 	}
 	return $r_str;

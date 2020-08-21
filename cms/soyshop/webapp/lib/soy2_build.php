@@ -1166,7 +1166,7 @@ class SOY2Mail_POPLogic extends SOY2Mail implements SOY2Mail_ReceiverInterface{
 			$boundary = $tmp[1];
 			$bodies = explode("--". $boundary, $body);
 			$attachCount = count($bodies);
-			for($i=0;$i<$attachCount;$i++){
+			for($i=0;$i<$attachCount;++$i){
 				$tmpHeader = substr($bodies[$i], 0, strpos($bodies[$i], "\r\n\r\n"));
 				$tmpBody = substr($bodies[$i], strpos($bodies[$i], "\r\n\r\n")+4);
 				$tmpHeaders = $this->parseHeaders($tmpHeader);
@@ -3296,7 +3296,7 @@ class SOY2DAO{
 			}
 		}else{
 			if(!is_null($this->_offset)){
-				for($i=0; $i<$this->_offset; $i++){
+				for($i=0; $i<$this->_offset; ++$i){
 					if($stmt->fetch() == false)break;
 					$counter++;
 				}
@@ -4789,7 +4789,8 @@ class SOY2HTMLBase{
 		$argments = $func['args'];
 		$variant = "";
 		if(is_array($argments)){
-			for($i = 0; $i < count($argments); $i++){
+			$argsCnt = count($argments);
+			for($i = 0; $i < $argsCnt; ++$i){
 				$variant .= $argments[$i].' = $args['.$i.'];';
 			}
 		}
@@ -8590,7 +8591,8 @@ class SOY2Logger_RotationFileLogger extends SOY2Logger_FileLogger{
 			$logs[] = $nextFilePath;
 		}
 		$logs = array_reverse($logs);
-		for($i=0;$i<count($logs)-1;$i++){
+		$logsCnt = count($logs)-1;
+		for($i=0;$i<$logsCnt;++$i){
 			@unlink($dirname.$logs[$i]);
 			rename($dirname.$logs[($i+1)],$dirname.$logs[$i]);
 		}

@@ -50,7 +50,7 @@ class SOYShop_UserPage extends SOYShopPageBase{
 		//マイページのタイトルフォーマットで置換文字列を使用
 		$this->setTitle(soyshop_get_mypage_page_title($this->args));
 	}
-	
+
 	function display(){
 		ob_start();
     	parent::display();
@@ -70,7 +70,7 @@ class SOYShop_UserPage extends SOYShopPageBase{
 
 	function getTemplateFilePath(){
 		$templateDir = SOYSHOP_SITE_DIRECTORY . ".template/mypage/";
-		
+
 		//隠し機能 ログインしていない時に$this->getMyPageId() . "_no_login.ini"があればそちらを見る
 		if(!MyPageLogic::getMyPage()->getIsLoggedin() && file_exists($templateDir . $this->getMyPageId() . "_no_login.ini")){
 			return $templateDir . $this->getMyPageId() . "_no_login.html";
@@ -117,15 +117,16 @@ class SOYShop_UserPage extends SOYShopPageBase{
     function createPagePath($indexPage = false){
     	$res = array();
     	$args = $this->getArgs();
-    	
+
     	//argsの整理。最後が数字の場合は配列から除く
-    	for($i = 0; $i < count($args); $i++){
+		$argsCnt = count($args);
+    	for($i = 0; $i < $argsCnt; ++$i){
     		if(is_numeric($args[$i])) unset($args[$i]);
     	}
-    	
+
     	$count = count($args);
 
-    	for($i=0;$i<$count;$i++){
+    	for($i=0;$i<$count;++$i){
 
     		if(is_numeric($args[$i]))continue;//念の為、数字はスキップ
 
@@ -135,10 +136,10 @@ class SOYShop_UserPage extends SOYShopPageBase{
     			$res[] = strtolower($args[$i]);
     		}
     	}
-    	
+
     	//IndexPage
     	if($indexPage)$res[] = "Index";
-    	
+
     	return implode(".",$res);
     }
 
@@ -150,7 +151,7 @@ class SOYShop_UserPage extends SOYShopPageBase{
     	$args = $this->getArgs();
     	$count = count($args);
 
-    	for($i=0;$i<$count;$i++){
+    	for($i=0;$i<$count;++$i){
     		if(is_numeric($args[$i])){
     			$res[] = $args[$i];
 

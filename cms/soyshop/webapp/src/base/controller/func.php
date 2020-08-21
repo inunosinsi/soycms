@@ -70,7 +70,8 @@ function get_uri_and_args(){
 			$pcMyPageUri = SOYShop_DataSets::get("config.mypage.url", "user");
 			if(isset($args[0]) && ($args[0] == $pcCartUri || $args[0] == $pcMyPageUri)){
 				$uri .= "/" . trim($args[0]);
-				for($i = 0; $i < count($args); $i++){
+				$argsCnt = count($args);
+				for($i = 0; $i < $argsCnt; ++$i){
 					$args[$i] = (isset($args[$i + 1])) ? trim($args[$i + 1]) : null;
 					if(is_null($args[$i])) unset($args[$i]);
 				}
