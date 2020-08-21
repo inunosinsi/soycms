@@ -339,7 +339,7 @@ class SOYShop_OrderDateAttributeConfig{
 		$value = (isset($value)) ? $value : date("Y", time());
 
 		$html = array();
-		for($i=0; $i < $count; $i++){
+		for($i=0; $i < $count; ++$i){
 			$year = $start + $i;
 			if($year == $value){
 				$html[] = '<option value="' . $year . '" selected="selected">' . $year . '</option>';
@@ -356,7 +356,7 @@ class SOYShop_OrderDateAttributeConfig{
 		$value = (isset($value)) ? $value : date("n", time());
 
 		$html = array();
-		for($i=1; $i < 13; $i++){
+		for($i=1; $i <= 12; ++$i){
 			if($i == $value){
 				$html[] = '<option value="' . $i . '" selected="selected">' . $i . '</option>';
 			}else{
@@ -372,7 +372,7 @@ class SOYShop_OrderDateAttributeConfig{
 		$value = (isset($value)) ? $value : date("j", time());
 
 		$html = array();
-		for($i=1; $i < 32; $i++){
+		for($i=1; $i <= 31; ++$i){
 			if($i == $value){
 				$html[] = '<option value="' . $i . '" selected="selected">' . $i . '</option>';
 			}else{
