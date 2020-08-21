@@ -23,12 +23,21 @@ class SOYShopMypageLoginBase implements SOY2PluginAction{
 	function isLoggedIn(){
 
 	}
+
+	/**
+	 * 上のloginでマイページにログインしている場合のログインアカウントの顧客ID
+	 * @return int
+	 */
+	function getUserId(){
+
+	}
 }
 
 class SOYShopMypageLoginDeletageAction implements SOY2PluginDelegateAction{
 
 	private $mode;	//postがある
 	private $_result;
+	private $_userId;
 
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
 		switch($this->mode){
@@ -41,6 +50,8 @@ class SOYShopMypageLoginDeletageAction implements SOY2PluginDelegateAction{
 			case "isLoggedIn":
 				$action->isLoggedIn();
 				break;
+			case "user_id":
+				if(is_null($this->_userId)) $this->_userId = $action->getUserId();
 			default:
 				//一回でもここを通過すればtrueにする
 				$this->_result = true;
@@ -53,6 +64,10 @@ class SOYShopMypageLoginDeletageAction implements SOY2PluginDelegateAction{
 
 	function getResult(){
 		return $this->_result;
+	}
+
+	function getUserId(){
+		return $this->_userId;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.mypage.login", "SOYShopMypageLoginDeletageAction");
