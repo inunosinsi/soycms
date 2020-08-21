@@ -149,7 +149,7 @@ class OrderLogic extends SOY2LogicBase{
 
     	$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 
-    	for($i = 0;;$i++){
+    	for($i = 0;;++$i){
 	    	$seed = $order->getId() . $order->getOrderDate() . $i;
    	 		$hash = base_convert(md5($seed), 16, 10);
     		if($order->getId() < 100000){
