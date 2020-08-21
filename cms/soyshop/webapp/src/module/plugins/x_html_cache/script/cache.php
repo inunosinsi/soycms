@@ -2,7 +2,7 @@
 function static_cache_execute(){
 	//GETパラメータがある場合、読み込まないものがある
 	if(isset($_GET["captcha"])) return;
-	
+
 	$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : "_top";
 	$alias = trim(substr($pathInfo, strrpos($pathInfo, "/")), "/");
 
@@ -16,7 +16,7 @@ function static_cache_execute(){
 		if(!file_exists($dir)) mkdir($dir);
 
 		$hash = md5($pathInfo);
-		for($i = 0; $i < 10; $i++){
+		for($i = 0; $i < 10; ++$i){
 			$dir .= substr($hash, 0, 1) . "/";
 			if(!file_exists($dir)) mkdir($dir);
 			$hash = substr($hash, 1);
