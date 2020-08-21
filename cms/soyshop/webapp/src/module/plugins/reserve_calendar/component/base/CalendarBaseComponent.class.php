@@ -175,7 +175,7 @@ class CalendarBaseComponent extends SOY2LogicBase{
 		$today = date("j");
 
 		//カレンダの日付を作成する
-		for($i = 1; $i <= $last + $nextMonthLast; $i++){
+		for($i = 1; $i <= $last + $nextMonthLast; ++$i){
 			//次の月のカレンダー用に日付を書き換える
 			if($i > $last){
 				$ii = $i - $last;
