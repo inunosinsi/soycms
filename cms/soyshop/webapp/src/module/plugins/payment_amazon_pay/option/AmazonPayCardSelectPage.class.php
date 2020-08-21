@@ -41,6 +41,15 @@ class AmazonPayCardSelectPage extends WebPage{
 		$this->addLink("back_link", array(
 			"link" => AmazonPayUtil::getBackUrl()
 		));
+
+		if(isset($cnf["sandbox"]) && $cnf["sandbox"]){	//テスト
+			$widgetJs = "https://static-fe.payments-amazon.com/OffAmazonPayments/jp/sandbox/lpa/js/Widgets.js";
+		}else{	//本番
+			$widgetJs = "https://static-fe.payments-amazon.com/OffAmazonPayments/jp/lpa/js/Widgets.js";
+		}
+		$this->addModel("widget_js", array(
+			"attr:src" => $widgetJs
+		));
 	}
 
 	private function _getErrorMessage(){

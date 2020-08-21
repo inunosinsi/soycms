@@ -30,8 +30,14 @@ class AmazonPayUtil {
 
 		if($all) return $cnf;
 
-		$mode = (isset($cnd["sandbox"]) && (int)$cnd["sandbox"] == 0) ? "production" : "test";
-		return (isset($cnf[$mode])) ? $cnf[$mode] : array("merchant_id" => "", "client_id" => "");
+		$mode = (!isset($cnf["sandbox"]) || (int)$cnf["sandbox"] == 0) ? "production" : "test";
+		if(isset($cnf[$mode])){
+			$conf = $cnf[$mode];
+			$conf["sandbox"] = ($mode == "test");
+			return $conf;
+		}else{
+			return array("merchant_id" => "", "client_id" => "");
+		}
 	}
 
 	public static function saveConfig($values){

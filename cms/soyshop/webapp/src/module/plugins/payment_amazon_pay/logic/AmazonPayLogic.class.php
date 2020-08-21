@@ -76,9 +76,6 @@ class AmazonPayLogic extends SOY2LogicBase {
 	}
 
 	private function _client(){
-		$cnf = AmazonPayUtil::getConfig();
-		$sandbox = (isset($cnf["sandbox"]) && (int)$cnf["sandbox"]);
-
 		$cnf = AmazonPayUtil::getConfig(false);
 
 		//様々なところで使い回す
@@ -87,12 +84,12 @@ class AmazonPayLogic extends SOY2LogicBase {
 		// (1) Clientインスタンスを作成
 		return new Client(array(
 			'merchant_id' => AMAZON_PAY_MERCHANT_ID,
-			'access_key' => $cnf["access_key_id"],
-			'secret_key' => $cnf["secret_access_key"],
-			'client_id' => $cnf["client_id"],
+			'access_key' => (isset($cnf["access_key_id"])) ? $cnf["access_key_id"] : null,
+			'secret_key' => (isset($cnf["secret_access_key"])) ? $cnf["secret_access_key"] : null,
+			'client_id' => (isset($cnf["client_id"])) ? $cnf["client_id"] : null,
 			'currency_code' => 'jpy',
 			'region' => 'jp',
-			'sandbox' => $sandbox,
+			'sandbox' => (isset($cnf["sandbox"]) && is_bool($cnf["sandbox"])) ? $cnf["sandbox"] : false,
 		));
 	}
 
@@ -101,9 +98,13 @@ class AmazonPayLogic extends SOY2LogicBase {
 			'merchant_id' => AMAZON_PAY_MERCHANT_ID,
 			'amazon_order_reference_id' => $referenceId,
 		));
+		if(!$client->success) return false;
+
 		$client->closeAuthorization(array(
 			'merchant_id' => AMAZON_PAY_MERCHANT_ID,
 			'amazon_authorization_id' => $amazonAuthorizationId,
 		));
+		if(!$client->success) return false;
+		return true;
 	}
 }

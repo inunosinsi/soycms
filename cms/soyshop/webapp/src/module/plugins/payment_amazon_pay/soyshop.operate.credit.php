@@ -6,11 +6,16 @@ class AmazonPayOperateCredit extends SOYShopOperateCreditBase{
 		$orderReferenceId = self::_getAttrValue($order, "order_reference_id");
 		$amazonAuthorizationId = self::_getAttrValue($order, "amazon_authorization_id");
 
-		// @ToDo 返金
+		if(isset($orderReferenceId) && isset($amazonAuthorizationId)){
+			// @ToDo 返金
 
-		// @ToDo キャンセル
-		SOY2Logic::createInstance("module.plugins.payment_amazon_pay.logic.AmazonPayLogic")->cancel($orderReferenceId, $amazonAuthorizationId);
-		self::_insertHistory($order->getId(), "Amazon Pay ワンタイムペイメントで返金処理を行いました。");
+			// キャンセル
+			if($order->getStatus() == SOYShop_Order::ORDER_STATUS_CANCELED){
+				if(SOY2Logic::createInstance("module.plugins.payment_amazon_pay.logic.AmazonPayLogic")->cancel($orderReferenceId, $amazonAuthorizationId)){
+					self::_insertHistory($order->getId(), "Amazon Pay ワンタイムペイメントでキャンセル処理を行いました。");
+				}
+			}
+		}
 	}
 
 	function doPostOnUserDetailPage(SOYShop_User $user){}
