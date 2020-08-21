@@ -1013,7 +1013,8 @@ class CartLogic extends SOY2LogicBase{
 		//二回目以降のユーザ
 		if($tmpUser instanceof SOYShop_User){
 
-			if( $this->getAttribute("logined") ){
+			//ログインしていてもuser_idを持っていないことがある。→ soyshop.mypage.loginの拡張機能の影響
+			if( $this->getAttribute("logined") && !is_null($this->getAttribute("logined_userid"))){
 				$id = $this->getAttribute("logined_userid");
 				$newPassword = $this->getAttribute("new_password");
 
@@ -1058,6 +1059,12 @@ class CartLogic extends SOY2LogicBase{
 						$user->setPassword($user->hashPassword($user->getPassword()));
 					}else{
 						$user->setPassword($tmpUser->getPassword());
+					}
+
+					//本登録にしておく
+					if($user->getUserType() != SOYShop_User::USERTYPE_REGISTER){
+						$user->setRealRegisterDate(time());
+						$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 					}
 
 					//update
