@@ -10,7 +10,5 @@ class CustomModuleInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info","payment_custom","CustomModuleInfo");
-?>

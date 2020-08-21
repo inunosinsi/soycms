@@ -7,13 +7,11 @@ class PaymentCustomMailModule extends SOYShopOrderMail{
 	 */
 	function getMailBody(SOYShop_Order $order){
 		if($this->isUse()){
-			if(!class_exists("PaymentCustomCommon")){
-				include_once(dirname(__FILE__) . "/common.php");
-			}
-			$custom = PaymentCustomCommon::getCustomConfig();
-			$custom["mail"] = str_replace("##PRICE##", $custom["price"],$custom["mail"]);
+			SOY2::import("module.plugins.payment_custom.util.PaymentCustomUtil");
+			$cnf = PaymentCustomUtil::getConfig();
+			$cnf["mail"] = str_replace("##PRICE##", $cnf["price"], $cnf["mail"]);
 
-			return $custom["mail"];
+			return $cnf["mail"];
 		}
 
 		return false;

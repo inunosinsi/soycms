@@ -5,10 +5,8 @@ class PaymentCustomConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPage(){
-		SOY2DAOFactory::importEntity("SOYShop_DataSets");
-
-		include_once(dirname(__FILE__) . "/SOYShopPaymentCustomConfigFormPage.class.php");
-		$form = SOY2HTMLFactory::createInstance("SOYShopPaymentCustomConfigFormPage");
+		SOY2::import("module.plugins.payment_custom.config.PaymentCustomConfigPage");
+		$form = SOY2HTMLFactory::createInstance("PaymentCustomConfigPage");
 		$form->setConfigObj($this);
 		$form->execute();
 		return $form->getObject();
@@ -22,4 +20,3 @@ class PaymentCustomConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config","payment_custom","PaymentCustomConfig");
-?>

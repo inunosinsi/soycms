@@ -3,19 +3,13 @@ class CustomPaymentOrderComplete extends SOYShopOrderComplete{
 
 	function execute(SOYShop_Order $order){
 		if($this->isUse()){
-			
-			if(!class_exists("PaymentCustomCommon")){
-				include_once(dirname(__FILE__) . "/common.php");
-			}
-		
-			$custom = PaymentCustomCommon::getCustomConfig();
-			
+			SOY2::import("module.plugins.payment_custom.util.PaymentCustomUtil");
+			$cnf = PaymentCustomUtil::getConfig();
+
 			//支払いステータスを管理画面で設定したものにする
-			$dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-			
-			$order->setPaymentStatus($custom["status"]);
+			$order->setPaymentStatus($cnf["status"]);
 			try{
-				$dao->updateStatus($order);
+				SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
 			}catch(Exception $e){
 				//何もしない
 			}
@@ -24,4 +18,3 @@ class CustomPaymentOrderComplete extends SOYShopOrderComplete{
 }
 
 SOYShopPlugin::extension("soyshop.order.complete","payment_custom","CustomPaymentOrderComplete");
-?>

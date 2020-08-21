@@ -1,19 +1,14 @@
 <?php
-SOY2DAOFactory::importEntity("SOYShop_DataSets");
-include(dirname(__FILE__) . "/common.php");
 class CustomPaymentModule extends SOYShopPayment{
 
-	function onSelect(CartLogic $cart){
-		
-		$custom = PaymentCustomCommon::getCustomConfig();
+	function __construct(){
+		SOY2::import("module.plugins.payment_custom.util.PaymentCustomUtil");
+	}
 
-		if(isset($custom["price"]) && $custom["price"]> 0){
-			$price = $custom["price"];
-			$isVisible = true;
-		}else{
-			$price = 0;
-			$isVisible = false;
-		}
+	function onSelect(CartLogic $cart){
+
+		$price = self::getPrice();
+		$isVisible = ($price > 0);
 
 		$module = new SOYShop_ItemModule();
 		$module->setId("payment_custom");
@@ -25,24 +20,24 @@ class CustomPaymentModule extends SOYShopPayment{
 		$cart->addModule($module);
 
 		//属性の登録
-		$cart->setOrderAttribute("payment_custom","支払方法",$custom["name"]);
+		$cnf = PaymentCustomUtil::getConfig();
+		$cart->setOrderAttribute("payment_custom","支払方法", $cnf["name"]);
 	}
 
 	function getName(){
-		$custom = PaymentCustomCommon::getCustomConfig();
-		return $custom["name"];
+		$cnf = PaymentCustomUtil::getConfig();
+		return $cnf["name"];
 	}
 
 	function getDescription(){
-		$custom = PaymentCustomCommon::getCustomConfig();
-		$custom["description"] = str_replace("##PRICE##", $custom["price"],$custom["description"]);
-		return nl2br($custom["description"]);
+		$cnf = PaymentCustomUtil::getConfig();
+		$cnf["description"] = str_replace("##PRICE##", $cnf["price"], $cnf["description"]);
+		return nl2br($cnf["description"]);
 	}
-	
+
 	function getPrice(){
-		$custom = PaymentCustomCommon::getCustomConfig();
-		if(isset($custom["price"]) && $custom["price"]> 0)return $custom["price"];
+		$cnf = PaymentCustomUtil::getConfig();
+		return (isset($cnf["price"]) && is_numeric($cnf["price"])) ? $cnf["price"] : 0;
 	}
 }
 SOYShopPlugin::extension("soyshop.payment","payment_custom","CustomPaymentModule");
-?>
