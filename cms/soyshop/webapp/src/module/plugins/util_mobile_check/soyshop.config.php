@@ -1,6 +1,6 @@
 <?php
 class UtilMobileCheckConfig extends SOYShopConfigPageBase{
-	
+
 	/**
 	 * @return string
 	 */
@@ -11,7 +11,7 @@ class UtilMobileCheckConfig extends SOYShopConfigPageBase{
 		$form->execute();
 		return $form->getObject();
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -20,4 +20,3 @@ class UtilMobileCheckConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "util_mobile_check", "UtilMobileCheckConfig");
-?>

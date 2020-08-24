@@ -1,85 +1,109 @@
 <div class="alert alert-success" soy:display="updated">変更しました</div>
-<p class="alert alert-success" soy:display="created">実行しました</p>
+<div class="alert alert-success" soy:display="created">実行しました</div>
 
 <form soy:id="form">
-
-	<dl>
-		<dt>プリフィックスの設定</dt>
-		<dd>
+	<div class="form-group">
+		<label>プリフィックスの設定</label>
+		<div class="form-inline">
 			<input type="text" soy:id="prefix" />&nbsp;&nbsp;
-			<a soy:id="create_m_page_link" class="btn btn-default">ページの追加</a><br />
+			<a soy:id="create_m_page_link" class="btn btn-default">ページの追加</a>
+		</div>
+		<div class="alert alert-warning">
 			※http://<!-- soy:id="domain" /--><!-- soy:id="shop_id" /-->の場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br />
 			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/item/listの場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_text*" /--></strong>/item/listにリダイレクトします
-		</dd>
+		</div>
+	</div>
 
-		<dt>スマートフォン用プリフィックスの設定</dt>
-		<dd>
+	<div class="form-group">
+		<label>スマートフォン用プリフィックスの設定</label>
+		<div class="form-inline">
 			<input type="text" soy:id="prefix_i" />&nbsp;&nbsp;
-			<a soy:id="create_i_page_link" class="btn btn-default">ページの追加</a><br />
+			<a soy:id="create_i_page_link" class="btn btn-default">ページの追加</a>
+		</div>
+		<div class="alert alert-warning">
 			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->の場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_i_text" /--></strong>にリダイレクトします<br />
 			※http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/item/listの場合、http://<!-- soy:id="domain*" /--><!-- soy:id="shop_id*" /-->/<strong><!-- soy:id="prefix_i_text*" /--></strong>/item/listにリダイレクトします<br>
-			<input type="checkbox" soy:id="prefix_i_alternate">
-		</dd>
+		</div>
+		<input type="checkbox" soy:id="prefix_i_alternate">
+	</div>
 
-		<dt>DoCoMoの外部CSSに対応</dt>
-		<dd>
+	<div class="form-group">
+		<label>DoCoMoの外部CSSに対応</label>
+		<div class="form-inline">
 			<input type="checkbox" soy:id="docomo_css" />
 			<label for="docomo_css">有効にする</label>
-		</dd>
+		</div>
+	</div>
 
-		<!-- soy:id="is_docomo_css" -->
-		<dt>3キャリア対応Content-Type</dt>
-		<dd>&lt;meta cms:id="mobile_http_equiv" /&gt;</dd>
-		<!-- /soy:id="is_docomo_css" -->
+	<!-- soy:id="is_docomo_css" -->
+	<div class="form-group">
+		<label>3キャリア対応Content-Type</label><br>
+		&lt;meta cms:id="mobile_http_equiv" /&gt;
+	</div>
+	<!-- /soy:id="is_docomo_css" -->
 
-		<dt>クッキー非対応機種設定</dt>
-		<dd>セッションIDの値をGETで保持するため、セッションハイジャックの危険性があります。<br />
+	<div class="form-group">
+		<label>クッキー非対応機種設定</label>
+		<div class="form-inline">
+			セッションIDの値をGETで保持するため、セッションハイジャックの危険性があります。<br />
 			危険性を了解した上で、クッキー非対応機種を許可する&nbsp;<input type="checkbox" soy:id="cookie" />
-		</dd>
+		</div>
+	</div>
 
-		<dt>セッション保持時間の設定</dt>
-		<dd><input type="text" soy:id="session" size="3" style="text-align:right;ime-mode:inactive;"/>&nbsp;分</dd>
+	<div class="form-group">
+		<label>セッション保持時間の設定</label>
+		<div class="form-inline">
+			<input type="text" soy:id="session" size="3" style="text-align:right;ime-mode:inactive;"/>&nbsp;分
+		</div>
+	</div>
 
-		<dt>カート内のお買物に戻るリンクのURL設定</dt>
-		<dd>
+	<div class="form-group">
+		<label>カート内のお買物に戻るリンクのURL設定</label>
+		<div class="form-inline">
 			<input type="text" soy:id="url" size="60" />
-		</dd>
+		</div>
+	</div>
 
-		<dt>自動転送機能</dt>
-		<dd>
+	<div class="form-group">
+		<label>自動転送機能</label>
+		<div class="form-inline">
 			<input type="checkbox" soy:id="auto_redirect" />
 			<label for="auto_redirect">有効にする</label>
-		</dd>
+		</div>
+	</div>
 
-		<!-- soy:id="no_auto_redirect" -->
-		<dt>転送文言の設定</dt>
-		<dd>
-			<textarea soy:id="message"></textarea>
-		</dd>
-		<!-- /soy:id="no_auto_redirect" -->
+	<!-- soy:id="no_auto_redirect" -->
+	<div class="form-group">
+		<label>転送文言の設定</label>
+		<textarea soy:id="message" class="form-control"></textarea>
+	</div>
+	<!-- /soy:id="no_auto_redirect" -->
 
-		<!-- soy:id="is_auto_redirect" -->
-		<input type="hidden" soy:id="message_input" />
-		<!-- /soy:id="is_auto_redirect" -->
+	<!-- soy:id="is_auto_redirect" -->
+	<input type="hidden" soy:id="message_input" />
+	<!-- /soy:id="is_auto_redirect" -->
 
-		<dt>タブレットで表示するページ</dt>
-		<dd>
+	<div class="form-group">
+		<label>タブレットで表示するページ</label>
+		<div class="form-inline">
 			<input type="radio" soy:id="do_not_redirect_ipad" />
 			<label for="do_not_redirect_ipad">PC用ページを表示する</label>
 			<input type="radio" soy:id="redirect_ipad_smartphone" />
 			<label for="redirect_ipad_smartphone">スマートフォン用ページを表示する</label>
-		</dd>
+		</div>
+	</div>
 
-		<dt>スマートフォンで表示するページ</dt>
-		<dd>
+	<div class="form-group">
+		<label>スマートフォンで表示するページ</label>
+		<div class="form-inline">
 			<input type="radio" soy:id="do_not_redirect" />
 			<label for="do_not_redirect">PC用ページを表示する</label>
 			<input type="radio" soy:id="redirect_smartphone" />
 			<label for="redirect_smartphone">スマートフォン用ページを表示する</label>
 			<input type="radio" soy:id="redirect_mobile" />
 			<label for="redirect_mobile">モバイル用ページを表示する</label>
-		</dd>
-	</dl>
+		</div>
+	</div>
 
 	<div class="text-center">
 		<input type="submit" class="btn btn-primary btn-lg" value="変更">

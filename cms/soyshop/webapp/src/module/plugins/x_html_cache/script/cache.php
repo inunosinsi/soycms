@@ -1,7 +1,7 @@
 <?php
 function static_cache_execute(){
 	//GETパラメータがある場合、読み込まないものがある
-	if(isset($_GET["captcha"])) return;
+	if(isset($_GET["captcha"]) || isset($_GET["language"])) return;
 
 	$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : "_top";
 	$alias = trim(substr($pathInfo, strrpos($pathInfo, "/")), "/");
