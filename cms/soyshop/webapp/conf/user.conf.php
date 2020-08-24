@@ -57,11 +57,11 @@ SOY2PageController::init("SOYShopSiteController");
 //SOY Shopのバージョン
 define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
 if(preg_match('/^\d/', SOYSHOP_VERSION)){	//本番環境
-	define("false", false);
+	//define("false", false);
 	define("DEBUG_MODE", false);
 }else{
 	//debug switch
-	define("false", true);
+	//define("false", true);
 	define("DEBUG_MODE", true);
 }
 
