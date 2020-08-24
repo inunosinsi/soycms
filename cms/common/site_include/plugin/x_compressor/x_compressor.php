@@ -20,7 +20,7 @@ class CompressorPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3193",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -142,10 +142,10 @@ class CompressorPlugin{
 				$line = preg_replace('/<!--[\s\S]*?-->/', '', $line);
 			}
 
-			$h[] = $line;
+			$htmls[] = $line;
 		}
 
-		return implode("", $h);
+		return implode("", $htmls);
 	}
 
 	//半角スペースが２つ続いている場合は１つのする
