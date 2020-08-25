@@ -21,36 +21,33 @@ class SOYShopPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 		//先頭の「/」と末尾の「/」は取り除く
 		$pathInfo = preg_replace('/^\/|\/$/',"",$pathInfo);
 
-		list($this->path, $this->arguments) = $this->parsePath($pathInfo);
-
-
-
+		list($this->path, $this->arguments) = self::_parsePath($pathInfo);
 	}
 
 	/**
 	 * パスからページのURI部分とパラメータ部分を抽出する
 	 */
-	function parsePath($path){
+	private function _parsePath($path){
 
 		$_uri = explode("/", $path);
 
 		$uri = "";
 		$args = array();
 
-		//check cart application
-		if( count($_uri)>0 && $_uri[0] === soyshop_get_cart_uri() ){
-			$uri = soyshop_get_cart_uri();
-			$args = explode("/",str_replace($uri,"",$path));
-			$args = array_values(array_diff($args, array("")));
-			return array($uri,$args);
-		}
-
-		//check mypage application
-		if( count($_uri)>0 && $_uri[0] === soyshop_get_mypage_uri() ){
-			$uri = soyshop_get_mypage_uri();
-			$args = explode("/",str_replace($uri,"",$path));
-			$args = array_values(array_diff($args, array("")));
-			return array($uri,$args);
+		if(count($_uri)){
+			//check cart application
+			if(is_numeric(strpos($path, soyshop_get_cart_uri()))){
+				$uri = soyshop_get_cart_uri();
+				$args = explode("/",str_replace($uri,"",$path));
+				$args = array_values(array_diff($args, array("")));
+				return array($uri,$args);
+			//check mypage application
+			}else if(is_numeric(strpos($path, soyshop_get_mypage_uri()))){
+				$uri = soyshop_get_mypage_uri();
+				$args = explode("/",str_replace($uri,"",$path));
+				$args = array_values(array_diff($args, array("")));
+				return array($uri,$args);
+			}
 		}
 
 		while(count($_uri)){
@@ -58,21 +55,21 @@ class SOYShopPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 
 			$testUri = $baseuri;
 
-			if(false !== $this->checkUri($testUri)){
+			if(false !== self::_checkUri($testUri)){
 				$uri = $testUri;
 				break;
 			}
 
 			// path/index.htmlも試す
 			$testUri = $baseuri."/index.html";
-			if(false !== $this->checkUri($testUri)){
+			if(false !== self::_checkUri($testUri)){
 				$uri = $testUri;
 				break;
 			}
 
 			// path/index.htmも試す
 			$testUri = $baseuri."/index.htm";
-			if(false !== $this->checkUri($testUri)){
+			if(false !== self::_checkUri($testUri)){
 				$uri = $testUri;
 				break;
 			}
@@ -91,10 +88,9 @@ class SOYShopPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 	/**
 	 * mapping -> flag
 	 */
-	function checkUri($uri){
+	private function _checkUri($uri){
 
 		if($this->mappingMode){
-
 			//uri
 			if(isset($this->mapping[$uri])){
 				return $this->mapping[$uri];
@@ -105,7 +101,6 @@ class SOYShopPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 			if(!$dao) $dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 
 			return $dao->checkUri($uri);
-
 		}
 
 		return false;
@@ -167,8 +162,4 @@ class SOYShopPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 			return $url;
 		}
 	}
-
-
-
 }
-?>
