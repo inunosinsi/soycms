@@ -46,13 +46,13 @@ class AmazonPayPayment extends SOYShopPayment{
 			exit;
 		}
 
-		if(isset($_GET["select_card"])){
+		if(isset($_GET[AmazonPayUtil::REDIRECT_PARAM])){
 			//Amazonログイン 出力
-			SOY2::import("module.plugins.payment_amazon_pay.option.AmazonPayCardSelectPage");
+			SOY2::import("module.plugins.payment_amazon_pay.option.cart05.AmazonPayCardSelectPage");
 			$form = SOY2HTMLFactory::createInstance("AmazonPayCardSelectPage");
 		}else{
 			//Amazonログイン 出力
-			SOY2::import("module.plugins.payment_amazon_pay.option.AmazonPayLoginPage");
+			SOY2::import("module.plugins.payment_amazon_pay.option.cart05.AmazonPayLoginPage");
 			$form = SOY2HTMLFactory::createInstance("AmazonPayLoginPage");
 		}
 		$form->execute();

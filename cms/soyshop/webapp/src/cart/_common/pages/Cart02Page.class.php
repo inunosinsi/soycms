@@ -133,6 +133,22 @@ class Cart02Page extends MainCartPageBase{
 
 		parent::__construct();
 
+		$cart = CartLogic::getCart();
+		$items = $cart->getItems();
+
+		$html = SOYShopPlugin::invoke("soyshop.cart", array(
+			"mode" => "upper02",
+			"cart" => $cart
+		))->getHtml();
+
+		$this->addModel("has_cart_plugin_upper_parts", array(
+			"visible" => (count($html) > 0)
+		));
+
+		$this->createAdd("cart_plugin_upper_parts_list", "_common.CartPluginListComponent", array(
+			"list" => $html
+		));
+
 		$this->addForm("order_form", array(
 			"action" => soyshop_get_cart_url(false)
 		));
@@ -141,9 +157,6 @@ class Cart02Page extends MainCartPageBase{
 		$this->addForm("custom_order_form", array(
 			"action" => soyshop_get_cart_url(false)
 		));
-
-		$cart = CartLogic::getCart();
-		$items = $cart->getItems();
 
 		$this->createAdd("item_list", "_common.ItemListComponent", array(
 			"list" => $items
@@ -169,12 +182,11 @@ class Cart02Page extends MainCartPageBase{
 		//送付先フォーム
 		$this->buildSendForm($cart, $customer);
 
-		$delegate = SOYShopPlugin::invoke("soyshop.cart", array(
+		$html = SOYShopPlugin::invoke("soyshop.cart", array(
 			"mode" => "page02",
 			"cart" => $cart
-		));
+		))->getHtml();
 
-		$html = $delegate->getHtml();
 
 		$this->addModel("has_cart_plugin", array(
 			"visible" => (count($html) > 0)

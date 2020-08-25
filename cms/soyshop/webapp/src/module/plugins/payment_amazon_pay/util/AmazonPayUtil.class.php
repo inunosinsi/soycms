@@ -2,7 +2,7 @@
 
 class AmazonPayUtil {
 
-	const REDIRECT_PARAM = "select_card";
+	const REDIRECT_PARAM = "select";
 	const BACK_PARAM = "back";
 
 	public static function getConfig($all=true){

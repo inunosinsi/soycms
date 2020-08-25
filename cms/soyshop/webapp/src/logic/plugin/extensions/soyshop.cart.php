@@ -18,6 +18,10 @@ class SOYShopCartBase implements SOY2PluginAction{
 
 	}
 
+	function displayUpperParts02(CartLogic $cart){
+
+	}
+
 	function displayPage02(CartLogic $cart){
 
 	}
@@ -65,6 +69,11 @@ class SOYShopCartDeletageAction implements SOY2PluginDelegateAction{
 			case "page01":
 				$this->_html[$moduleId] = array(
 					"html" => $action->displayPage01($this->getCart())
+				);
+				break;
+			case "upper02":
+				$this->_html[$moduleId] = array(
+					"html" => $action->displayUpperParts02($this->getCart())
 				);
 				break;
 			case "page02":
