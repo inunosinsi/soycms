@@ -147,7 +147,6 @@ class CMSPageController extends SOY2PageController{
 				echo $html;
 
 			}catch(Exception $e){
-				var_dump($e);
 				$this->onNotFound();
 			}
 		}catch(Exception $e){
