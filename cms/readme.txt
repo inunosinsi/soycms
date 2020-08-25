@@ -11,7 +11,9 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 のように配置したら、インストールは完了です。
 
 /** リリース **/
-NEXT
+2.1.11
+	○追加
+	 - Login with Amazonプラグイン
 2.1.0
 	○追加
 	 - Amazon Pay ワンタイムペイメント支払いプラグイン

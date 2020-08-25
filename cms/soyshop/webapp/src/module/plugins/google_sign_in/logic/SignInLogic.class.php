@@ -18,7 +18,7 @@ class SignInLogic extends SOY2LogicBase {
 		}catch(Exception $e){
 			$user = new SOYShop_User();
 			$user->setMailAddress($mailAddress);
-				$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
+			$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 			return $user;
 		}
 	}
@@ -50,6 +50,14 @@ class SignInLogic extends SOY2LogicBase {
 	}
 
 	private function getAttributeObjectByUserId($userId){
+		//指定のユーザが削除されていれば、カスタムフィールドの値を削除
+		if(soyshop_get_user_object($userId)->getIsDisabled() == SOYShop_User::USER_IS_DISABLED){
+			try{
+				$this->userAttrDao->delete($userId, self::FIELD_ID);
+			}catch(Exception $e){
+				//
+			}
+		}
 		try{
 			return $this->userAttrDao->get($userId, self::FIELD_ID);
 		}catch(Exception $e){

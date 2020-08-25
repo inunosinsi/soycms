@@ -157,7 +157,21 @@ class LINELoginLogic extends SOY2LogicBase {
 			return null;
 		}
 
-		return (isset($res[0]["user_id"])) ? (int)$res[0]["user_id"] : null;
+		if(!isset($res[0]["user_id"])) return null;
+
+		//取得したユーザが削除されている場合はアマゾンIDを削除してnullを返す
+		$userId = (int)$res[0]["user_id"];
+		$user = soyshop_get_user_object($userId);
+		if($user->getIsDisabled() != SOYShop_User::USER_IS_DISABLED) return $userId;
+
+		//削除
+		try{
+			$attrDao->delete($userId, self::FIELD_ID);
+		}catch(Exception $e){
+			//
+		}
+
+		return null;
 	}
 
 	function getLINEIdByUserId($userId){
