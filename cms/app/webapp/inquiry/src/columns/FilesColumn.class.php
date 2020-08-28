@@ -153,6 +153,10 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 				//一時的にアップロードする
 				if(strlen($v["tmp_name"])) {	//エラーがなければtmp_nameには何らかの文字列が入っている
 					$path_to = SOY_INQUIRY_UPLOAD_TEMP_DIR . md5($v["name"] . time()) . "." . $pathinfo["extension"];
+					for(;;){	//複数フォームを設置して、同名のファイルを送信する際に以前アップロードしたものが上書きされないようにファイル名を変更する
+						if(!file_exists($path_to)) break;
+						$path_to = SOY_INQUIRY_UPLOAD_TEMP_DIR . md5($v["name"] . rand(1, 10) . time()) . "." . $pathinfo["extension"];
+					}
 					$result = move_uploaded_file($v["tmp_name"], $path_to);
 
 					if($result){
@@ -212,6 +216,15 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 				if(!isset($v["size"]) || $v["size"] == 0) continue;
 				$tmp_name = $v["tmp_name"];
 				$new_name = str_replace(SOY_INQUIRY_UPLOAD_TEMP_DIR, $new_dir, $tmp_name);
+				if(strpos($new_name, "//")) $new_name = str_replace("//", "/", $new_name);
+
+				//同名のファイルがある場合は名前を変更する
+				if(file_exists($new_name)){
+					//拡張子を抜いて、ファイル名を少し変更する
+					$ext = substr($new_name, strrpos($new_name, "."));
+					$new_name = substr($new_name, 0, strrpos($new_name, "."));
+					$new_name .= rand(100, 999) . $ext;
+				}
 
 				if(rename($tmp_name, $new_name)){
 					$v["filepath"] = str_replace("\\","/",realpath($new_name));
