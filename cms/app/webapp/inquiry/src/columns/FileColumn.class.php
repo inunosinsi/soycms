@@ -120,8 +120,14 @@ class FileColumn extends SOYInquiry_ColumnBase{
 				$content .= '<a href="'.htmlspecialchars($values["filepath"],ENT_QUOTES,"UTF-8").'">'.htmlspecialchars($values["name"],ENT_QUOTES,"UTF-8").'</a>';
 
 				$pathinfo = pathinfo($values["filepath"]);
-				if(in_array($pathinfo["extension"],array("jpg","jpeg","gif","png"))){
-					$content .= '<br/><img src="'.htmlspecialchars($values["filepath"],ENT_QUOTES,"UTF-8").'"/>';
+				$extensions = self::_shapeExtensions();
+				if(count($extensions)){
+					$res = false;
+					foreach($extensions as $ext){	//拡張子を大文字小文字関係なく調べる
+						if(!$res && is_numeric(stripos($pathinfo["extension"], $ext))) $res = true;
+					}
+
+					if($res) $content .= '<br/><img src="'.htmlspecialchars($values["filepath"],ENT_QUOTES,"UTF-8").'"/>';
 				}
 
 				$commentDAO = SOY2DAOFactory::create("SOYInquiry_CommentDAO");
@@ -177,14 +183,21 @@ class FileColumn extends SOYInquiry_ColumnBase{
 		//アップロードしていない場合は終了
 		if(strlen($name)<1)return;
 
-		$pathinfo = pathinfo($name);
-
 		//拡張子チェック
-		$extensions = explode(",", $this->extensions);
-		if(!in_array($pathinfo["extension"], $extensions)){
-			$this->setErrorMessage($this->getLabel()."の形式が不正です。");
-			return false;
+		$pathinfo = pathinfo($name);
+		$extensions = self::_shapeExtensions();
+		if(count($extensions)){
+			$res = false;
+			foreach($extensions as $ext){	//大文字小文字関係なく拡張子を確かめる
+				if(!$res && is_numeric(stripos($pathinfo["extension"], $ext))) $res = true;
+			}
+
+			if(!$res) {
+				$this->setErrorMessage($this->getLabel()."の形式が不正です。");
+				return false;
+			}
 		}
+
 
 		//ファイルサイズチェック
 		if(($this->uploadsize * self::KB_SIZE)< $size){
@@ -233,6 +246,19 @@ class FileColumn extends SOYInquiry_ColumnBase{
 
 		$new_value = base64_encode(serialize($this->getValue()));
 		$_POST["data"][$this->getColumnId()] = $new_value;
+	}
+
+	private function _shapeExtensions(){
+		$array = explode(",", $this->extensions);
+		if(!count($array)) return array();
+		$exts = array();
+
+		foreach($array as $ext){
+			$ext = trim($ext);
+			if(!strlen($ext)) continue;
+			$exts[] = $ext;
+		}
+		return $exts;
 	}
 
 	/**

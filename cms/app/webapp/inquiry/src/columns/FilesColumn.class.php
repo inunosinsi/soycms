@@ -133,10 +133,15 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 				//拡張子のチェック
 				$pathinfo = pathinfo($v["name"]);
-				$extensions = explode(",", $this->extensions);
-				if(!in_array($pathinfo["extension"], $extensions)){
+				$extensions = self::_shapeExtensions();
+				if(count($extensions)){
+					$res = false;
+					foreach($extensions as $ext){	//大文字小文字関係なく拡張子を確かめる
+						if(!$res && is_numeric(stripos($pathinfo["extension"], $ext))) $res = true;
+					}
+
 					// @ToDo 何らかのエラーを出力したい
-					$v = self::setError($v);
+					if(!$res) $v = self::setError($v);
 				}
 
 				//ファイルサイズチェック
@@ -218,8 +223,14 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 					$content .= '<a href="' . htmlspecialchars($v["filepath"], ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($v["name"], ENT_QUOTES, "UTF-8") . '</a>';
 
 					$pathinfo = pathinfo($v["filepath"]);
-					if(in_array($pathinfo["extension"], array("jpg", "jpeg", "gif", "png"))){
-						$content .= '<br/><img src="' . htmlspecialchars($v["filepath"], ENT_QUOTES, "UTF-8") . '"/>';
+					$extensions = self::_shapeExtensions();
+					if(count($extensions)){
+						$res = false;
+						foreach($extensions as $ext){	//拡張子を大文字小文字関係なく調べる
+							if(!$res && is_numeric(stripos($pathinfo["extension"], $ext))) $res = true;
+						}
+
+						if($res) $content .= '<br/><img src="' . htmlspecialchars($v["filepath"], ENT_QUOTES, "UTF-8") . '"/>';
 					}
 
 					$comment = new SOYInquiry_Comment();
@@ -234,6 +245,19 @@ class FilesColumn extends SOYInquiry_ColumnBase{
 
 			$this->setValue($values);
 		}
+	}
+
+	private function _shapeExtensions(){
+		$array = explode(",", $this->extensions);
+		if(!count($array)) return array();
+		$exts = array();
+
+		foreach($array as $ext){
+			$ext = trim($ext);
+			if(!strlen($ext)) continue;
+			$exts[] = $ext;
+		}
+		return $exts;
 	}
 
 	private function getValues(){
