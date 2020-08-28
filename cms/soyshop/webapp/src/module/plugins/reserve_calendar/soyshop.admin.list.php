@@ -16,5 +16,14 @@ class ReserveCalendarAdminList extends SOYShopAdminListBase{
         $form->execute();
         return $form->getObject();
     }
+
+	function getScripts(){
+		$root = SOY2PageController::createRelativeLink("./js/");
+		return array(
+			//$root . "tools/soy2_date_picker.pack.js",
+			$root . "tools/datepicker-ja.js",
+			$root . "tools/datepicker.js"
+		);
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.list", "reserve_calendar", "ReserveCalendarAdminList");

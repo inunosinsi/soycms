@@ -16,6 +16,11 @@ class ReserveCalendarListPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
+		self::_buildCalendarArea();
+		self::_buildExportModuleArea();
+	}
+
+	private function _buildCalendarArea(){
 		//再予約モード
 		if(soy2_check_token() && isset($_GET["re_reserve"]) && is_numeric($_GET["re_reserve"])){
 			ReserveCalendarUtil::saveSessionValue("user", (int)$_GET["re_reserve"]);
@@ -63,6 +68,27 @@ class ReserveCalendarListPage extends WebPage{
 		$this->addLabel("calendar_css", array(
 			"html" => file_get_contents(SOY2::RootDir() . "module/plugins/reserve_calendar/css/calendar.css")
 		));
+	}
+
+	private function _buildExportModuleArea(){
+		/* 出力用 */
+		$list = self::_getExportModuleList();
+		
+		DisplayPlugin::toggle("export_module_menu", (count($list) > 0));
+		$this->createAdd("module_list", "_common.Order.ExportModuleListComponent", array(
+			"list" => $list
+		));
+
+		$this->addForm("export_form", array(
+			"action" => SOY2PageController::createLink("Reserve.Export")
+		));
+	}
+
+	private function _getExportModuleList(){
+		SOYShopPlugin::load("soyshop.calendar.export");
+		return SOYShopPlugin::invoke("soyshop.calendar.export", array(
+			"mode" => "list"
+		))->getList();
 	}
 
 	function setConfigObj($configObj){

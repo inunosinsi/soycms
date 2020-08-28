@@ -944,3 +944,37 @@ function soyshop_get_user_age($birthday){
 	//誕生月が今月の場合
 	return ($d <= date("j")) ? $age : --$age;
 }
+
+/**
+ * 顧客の年齢の○ヶ月の方を調べる
+ * @param string $birthday
+ * @return integer
+ */
+function soyshop_get_user_age_month($birthday){
+	if(is_null($birthday)) return null;
+	preg_match('/^\d{4}-\d{1,}-\d{1,}/', $birthday, $tmp);
+	if(isset($tmp[0])){
+		$array = explode("-", $tmp[0]);
+		$m = (int)$array[1];
+		$d = (int)$array[2];
+	}else{	//birthdayの他の文字列の渡し方用
+		return null;
+	}
+
+	$diff = $m - date("n");
+	if($diff === 0){
+		//誕生日がきてない場合は11ヶ月で返す
+		if($d > date("j")){
+			return 11;
+		}else{
+			return 0;
+		}
+	// @ToDo 日付も合わせて厳密にカウントすべきか？
+	}else if($diff > 0){
+		return $diff;
+	}
+
+
+	//たとえば今が8月で誕生月が2月の場合(6ヶ月)
+	return 12 + $diff;
+}

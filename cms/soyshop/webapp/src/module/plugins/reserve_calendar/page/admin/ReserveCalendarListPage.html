@@ -20,8 +20,33 @@
 	</div>
 </div>
 
-<style type="text/css" soy:id="calendar_css"></style>
+<!-- soy:display="export_module_menu" -->
+<div class="row">
+	<div class="col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">予約状況をエクスポート</div>
 
+			<div class="panel-body">
+				<!-- soy:id="module_list" -->
+				<div class="form-group">
+					<form soy:id="export_form" target="_blank">
+						<label for="" soy:id="export_title*">エクスポートの種類を選択してください</label>&nbsp;&nbsp;
+						<!-- soy:id="display_button" -->
+						<input type="hidden" soy:id="query" />
+						<input type="submit" value="実行" class="btn btn-primary btn-sm">
+						<input type="hidden" soy:id="module_id"><br>
+						<!-- /soy:id="display_button" -->
+						<div soy:id="export_description"></div>
+					</form>
+				</div>
+				<!-- /soy:id="module_list" -->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- /soy:display="export_module_menu" -->
+
+<style type="text/css" soy:id="calendar_css"></style>
 <script>
 function redirectAfterSelectOfSch(){
 	var r = location.href;
