@@ -11,8 +11,11 @@ class OrderFooterMenuPage extends HTMLPage{
 
 	private function _buildExportModuleArea(){
 		/* 出力用 */
+		$list = self::_getExportModuleList();
+
+		DisplayPlugin::toggle("export_module_menu", (count($list) > 0));
 		$this->createAdd("module_list", "_common.Order.ExportModuleListComponent", array(
-			"list" => self::_getExportModuleList()
+			"list" => $list
 		));
 
 		$this->addForm("export_form", array(
@@ -22,13 +25,9 @@ class OrderFooterMenuPage extends HTMLPage{
 
 	private function _getExportModuleList(){
 		SOYShopPlugin::load("soyshop.order.export");
-		$list = SOYShopPlugin::invoke("soyshop.order.export", array(
+		return SOYShopPlugin::invoke("soyshop.order.export", array(
 			"mode" => "list"
 		))->getList();
-
-		DisplayPlugin::toggle("export_module_menu", (count($list) > 0));
-
-		return $list;
 	}
 
 	private function _buildExtensionArea(){

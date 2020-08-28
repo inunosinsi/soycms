@@ -29,10 +29,7 @@ class ExportPage extends WebPage{
 			$orders = self::_getOrders();
 		}
 
-
-		$logic = SOY2Logic::createInstance("logic.plugin.SOYShopPluginLogic");
 		$plugin = soyshop_get_plugin_object($plugin);
-
 		if(!is_null($plugin->getId())){
 			SOYShopPlugin::load("soyshop.order.export", $plugin);
 			SOYShopPlugin::invoke("soyshop.order.export", array(
