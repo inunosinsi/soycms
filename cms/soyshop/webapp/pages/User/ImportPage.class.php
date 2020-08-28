@@ -42,6 +42,11 @@ class ImportPage extends WebPage{
 
 		$config = SOYShop_ShopConfig::load();
 
+		//ログインIDの名称変更
+		$this->addLabel("account_id_item_name", array(
+			"text" => $config->getAccountIdItemName()
+		));
+
 		//項目の非表示用タグ
 		foreach($config->getCustomerAdminConfig() as $key => $bool){
 			DisplayPlugin::toggle($key, $bool);

@@ -25,6 +25,12 @@ class ExportPage extends WebPage{
 	private function buildForm(){
 		$this->addForm("export_form");
 
+		//ログインIDの名称変更
+		SOY2::import("domain.config.SOYShop_ShopConfig");
+		$this->addLabel("account_id_item_name", array(
+			"text" => SOYShop_ShopConfig::load()->getAccountIdItemName()
+		));
+
 		DisplayPlugin::toggle("user_custom_search_field", SOYShopPluginUtil::checkIsActive("user_custom_search_field"));
 		DisplayPlugin::toggle("point", SOYShopPluginUtil::checkIsActive("common_point_base"));
 
@@ -49,10 +55,12 @@ class ExportPage extends WebPage{
 	}
 
 	function getLabels(){
+		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$labels = array(
 			"id" => "ID",
 
 			"mailAddress" => "メールアドレス",
+			"accountId" => SOYShop_ShopConfig::load()->getAccountIdItemName(),	//ログインID
 			"userCode" => "顧客コード",
 			"name" => "名前",
 			"reading" => "フリガナ",
