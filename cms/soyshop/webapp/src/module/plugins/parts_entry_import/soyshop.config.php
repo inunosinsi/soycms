@@ -23,4 +23,3 @@ class EntryImportConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "parts_entry_import", "EntryImportConfig");
-?>

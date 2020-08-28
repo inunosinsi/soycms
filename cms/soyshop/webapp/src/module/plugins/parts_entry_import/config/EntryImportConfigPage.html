@@ -1,13 +1,13 @@
 <div class="alert alert-success" soy:display="updated">変更しました</div>
-<p class="alert alert-danger" soy:display="error">表示件数は半角数字で入力してください</p>
+<div class="alert alert-danger" soy:display="error">表示件数は半角数字で入力してください</div>
 
-<h1>取得するサイトIDの設定</h1>
+<div class="alert alert-info">取得するサイトIDの設定</div>
 <div class="table-responsive">
 	<form soy:id="form">
-		<h3>サイトIDの選択</h3>
-		<dl>
-		<dd><!-- soy:id="site" /--></dd>
-		</dl>
+		<label>サイトIDの選択</label>
+		<div class="form-inline">
+			<!-- soy:id="site" /-->
+		</div>
 		<div class="text-center">
 			<input type="submit" name="confirm" value="サイトの設定" class="btn btn-primary btn-lg">
 		</div>
@@ -15,21 +15,19 @@
 </div>
 
 <!-- soy:id="config" -->
-<h1>ブログ記事表示の詳細設定</h1>
+<div class="alert alert-info" style="margin-top:15px;">ブログ記事表示の詳細設定</div>
 <div class="table-responsive">
 	<form soy:id="config_form">
-	<h3>ページIDの選択</h3>
-	<dl>
-		<dd>
-			<input type="hidden" soy:id="site_id" />
-			<!-- soy:id="page" /-->
-		</dd>
-	</dl>
-
-	<h3>表示件数</h3>
-	<dl>
-		<dd><input type="text" soy:id="entry_count" />件</dd>
-	</dl>
+	<label>ページIDの選択</label>
+	<div class="form-inline">
+		<input type="hidden" soy:id="site_id" />
+		<!-- soy:id="page" /-->
+	</div>
+	<br>
+	<label>表示件数</label>
+	<div class="form-inline">
+		<input type="text" class="form-control" soy:id="entry_count">&nbsp;件
+	</div>
 	<div class="text-center">
 		<input type="submit" name="complete" value="記事の設定" class="btn btn-primary btn-lg">
 	</div>
@@ -38,14 +36,14 @@
 <!-- /soy:id="config" -->
 
 <!-- soy:display="example" -->
-<h4>テンプレートへの記述</h4>
+<div class="alert alert-info" style="margin-top:15px;">テンプレートへの記述</div>
 
-<h3>block&#58;id="entry_list"内で使用できるcms&#58;id</h3>
 <table class="table table-striped">
+	<caption>block&#58;id="entry_list"内で使用できるcms&#58;id</caption>
 	<thead>
 		<tr>
-			<th>cms&#58;id</th>
-			<th>使用できるタグ</th>
+			<th class="col-lg-2">cms&#58;id</th>
+			<th class="col-lg-2">使用できるタグ</th>
 			<th>詳細</th>
 		</tr>
 	</thead>
@@ -60,13 +58,21 @@
 	</tbody>
 </table>
 
-<h3><a href="javascript:void(0);" onclick="$('.template_example').toggle();">記述例を表示する</a></h3>
-<textarea class="template_example" style="display:none;height:200px;"  >
-<!-- block:id="entry_list" -->
-<h2 cms:id="title">タイトルを表示します</h2>
-<div cms:id="content">本文を表示します</div>
-<div cms:id="more">追記を表示します</div>
-<div cms:id="create_date" cms:format="Y-m-d">日付を表示します</div>
-<!-- /block:id="entry_list" -->
-</textarea>
+<br>
+<div><a href="javascript:void(0);" onclick="$('.template_example').toggle();" class="btn btn-default">記述例を表示する</a></div>
+<pre class="template_example">
+&lt;!-- block:id="entry_list" --&gt;
+&lt;h2 cms:id="title"&gt;タイトルを表示します&lt;/h2&gt;
+&lt;div cms:id="content"&gt;本文を表示します&lt;/div&gt;
+&lt;div cms:id="more"&gt;追記を表示します&lt;/div&gt;
+&lt;div cms:id="create_date" cms:format="Y-m-d"&gt;日付を表示します&lt;/div&gt;
+&lt;!-- /block:id="entry_list" --&gt;
+</pre>
 <!-- /soy:display="example" -->
+
+<style>
+.template_example{
+	display:none;
+	margin-top:5px;
+}
+</style>
