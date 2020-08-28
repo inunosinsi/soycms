@@ -1,22 +1,23 @@
+<section>
+	<div class="pconly">
+		<ul class="flow">
+			<li class="active">お客様情報の入力</li><!--
+			--><li>お支払・配送方法の選択</li><!--
+			--><li>ご注文内容の確認</li><!--
+			--><li>ご注文確定</li>
+		</ul>
+	</div>
+	<!-- soy:id="has_cart_plugin_upper_parts" -->
+
+	<!-- soy:id="cart_plugin_upper_parts_list" -->
+	<!-- soy:id="content" --><!-- /soy:id="content" -->
+	<!-- /soy:id="cart_plugin_upper_parts_list" -->
+
+	<!-- /soy:id="has_cart_plugin_upper_parts" -->
+</section>
+
 <form soy:id="order_form">
 	<section id="cart_detail">
-		<div class="pconly">
-			<ul class="flow">
-				<li class="active">お客様情報の入力</li><!--
-				--><li>お支払・配送方法の選択</li><!--
-				--><li>ご注文内容の確認</li><!--
-				--><li>ご注文確定</li>
-			</ul>
-		</div>
-
-		<!-- soy:id="has_cart_plugin_upper_parts" -->
-
-		<!-- soy:id="cart_plugin_upper_parts_list" -->
-		<!-- soy:id="content" --><!-- /soy:id="content" -->
-		<!-- /soy:id="cart_plugin_upper_parts_list" -->
-
-		<!-- /soy:id="has_cart_plugin_upper_parts" -->
-
 		<h1 class="cart_txt">お客様情報の登録</h1>
 
 		<!-- soy:display="has_error" -->
@@ -249,7 +250,7 @@
 		<p class="textcenter"><input type="image" name="next" soy:src="themes/common/images/cart/btn_next_payment_off.png" alt="次へ（お支払・配送方法の選択）"></p>
 		<p class="textcenter"><input type="submit" name="prev" value="&lt;&lt; 戻る"></p>
 	</section>
-</form soy:id="order_form">
+</form>
 <script type="text/javascript" soy:src="themes/common/js/zip2address.js"></script><!--住所検索-->
 
 <!-- soy:id="has_cart_plugin" -->

@@ -5,39 +5,80 @@ class SOYShopCartBase implements SOY2PluginAction{
 
 	}
 
+	/**
+	 * @param CartLogic
+	 */
 	function afterOperation(CartLogic $cart){
 
 	}
 
-	//@return boolean
+	/**
+	 * @param CartLogic
+	 * @return html
+	 */
 	function isUpdate(CartLogic $cart){
 
 	}
 
+	/**
+	 * @param CartLogic
+	 * @return html
+	 */
 	function displayPage01(CartLogic $cart){
 
 	}
 
+	/**
+	 * @param CartLogic
+	 * @return html
+	 */
 	function displayUpperParts02(CartLogic $cart){
 
 	}
 
+	/**
+	 * @param CartLogic
+	 */
+	function doPost02(CartLogic $cart){
+
+	}
+
+	/**
+	 * @param CartLogic
+	 * @return html
+	 */
 	function displayPage02(CartLogic $cart){
 
 	}
 
+	/**
+	 * @param CartLogic
+	 * @return html
+	 */
 	function displayPage03(CartLogic $cart){
 
 	}
 
+	/**
+	 * @param CartLogic
+	 * @return html
+	 */
 	function displayPage04(CartLogic $cart){
 
 	}
 
+	/**
+	 * @param CartLogic
+	 * @return html
+	 */
 	function displayPage05(CartLogic $cart){
 
 	}
 
+	/**
+	 * @param CartLogic
+	 * @return html
+	 */
 	function displayCompletePage(CartLogic $cart){
 
 	}
@@ -75,6 +116,9 @@ class SOYShopCartDeletageAction implements SOY2PluginDelegateAction{
 				$this->_html[$moduleId] = array(
 					"html" => $action->displayUpperParts02($this->getCart())
 				);
+				break;
+			case "doPost02":
+				$action->doPost02($this->getCart());
 				break;
 			case "page02":
 				$this->_html[$moduleId] = array(

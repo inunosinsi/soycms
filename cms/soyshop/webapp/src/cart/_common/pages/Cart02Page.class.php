@@ -13,6 +13,12 @@ class Cart02Page extends MainCartPageBase{
 
 		$cart = CartLogic::getCart();
 
+		//soyshop.cart.php拡張ポイント側でdoPost02を持つ
+		SOYShopPlugin::invoke("soyshop.cart", array(
+			"mode" => "doPost02",
+			"cart" => $cart
+		));
+
 		if(isset($_POST["next"]) || isset($_POST["next_x"])){
 
 			// 隠しモード クーポン

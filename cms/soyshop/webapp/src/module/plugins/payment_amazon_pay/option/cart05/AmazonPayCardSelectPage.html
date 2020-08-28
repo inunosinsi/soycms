@@ -28,8 +28,7 @@ function showWalletWidget(orderReferenceId) {
 		sellerId: '<!-- soy:id="merchant_id" /-->',
 		amazonOrderReferenceId: orderReferenceId,
 		onReady: function(orderReference) {
-			orderReferenceId = orderReference.getAmazonOrderReferenceId();
-			document.getElementById("orderReferenceId").value = orderReferenceId;
+			document.getElementById("orderReferenceId").value = orderReference.getAmazonOrderReferenceId();
 		},
 		onPaymentSelect: function() {
 			//console.log(arguments);

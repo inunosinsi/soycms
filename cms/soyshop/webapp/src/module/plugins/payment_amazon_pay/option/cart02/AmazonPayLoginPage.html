@@ -25,12 +25,6 @@ window.onAmazonPaymentsReady = function() {
 	showLoginButton();
 };
 
-document.getElementById('Logout').onclick = function() {
-	amazon.Login.logout();
-	document.cookie = "amazon_Login_accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-	window.location.href = '/';
-};
-
 function showLoginButton() {
 	var authRequest;
 	OffAmazonPayments.Button("AmazonPayButton", "<!-- soy:id="merchant_id" /-->", {

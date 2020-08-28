@@ -107,4 +107,17 @@ class AmazonPayLogic extends SOY2LogicBase {
 		if(!$client->success) return false;
 		return true;
 	}
+
+	/** 住所 **/
+	//ダメだったけど一応残す
+	function address($referenceId){
+		$client = self::_client();
+
+		// (2) 注文情報をセット
+		$client->SetOrderReferenceDetails(array(
+			'merchant_id' => AMAZON_PAY_MERCHANT_ID,
+			'amazon_order_reference_id' => $referenceId,
+		));
+
+	}
 }

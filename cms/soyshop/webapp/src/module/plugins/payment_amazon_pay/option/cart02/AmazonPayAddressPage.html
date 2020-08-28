@@ -1,4 +1,3 @@
-<div style="text-align: center; border: 1px solid #bbb;border-radius: 3px;padding:5px;margin:5px;"><div id="AmazonPayButton"></div></div>
 <div id="addressBookWidgetDiv" style="height:250px"></div>
 
 <script type='text/javascript'>
@@ -29,11 +28,7 @@ function showAddressBookWidget() {
 		sellerId: '<!-- soy:id="merchant_id" /-->',
 
 		onReady: function (orderReference) {
-			var orderReferenceId = orderReference.getAmazonOrderReferenceId();
-			var el;
-			if ((el = document.getElementById("orderReferenceId"))) {
-			el.value = orderReferenceId;
-			}
+			document.getElementById("orderReferenceId").value = orderReference.getAmazonOrderReferenceId();
 		},
 		onAddressSelect: function (orderReference) {
 			// do stuff here like recalculate tax and/or shipping
@@ -96,3 +91,10 @@ function showAddressBookWidget() {
 }
 </script>
 <script type="text/javascript"	soy:id="widget_js" async></script>
+
+<div style="text-align: center; padding:5px;margin:5px　5px 15px 5px;">
+	<form soy:id="form" method="POST" id="amazon_pay_form">
+		<input type="hidden" id="orderReferenceId" name="orderReferenceId">
+		<input type="submit" value="反映する">
+	</form>
+</div>
