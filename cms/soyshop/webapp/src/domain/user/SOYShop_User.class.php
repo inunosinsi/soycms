@@ -273,18 +273,18 @@ class SOYShop_User {
 		return $this->gender;
 	}
 	function setGender($gender) {
-		if(strlen($gender) == 0){
+		if(!isset($gender) || !strlen($gender)){
 			$this->gender = null;
-		}elseif(!is_numeric($gender)){
-			if(stripos($gender, "M") === 0 || strpos($gender, "男") === 0){
+		}else if(is_numeric($gender)){
+			$this->gender = (int)$gender;
+		}else{
+			if(is_numeric(stripos($gender, "M")) || is_numeric(strpos($gender, "男"))){
 				$this->gender = self::USER_SEX_MALE;
-			}elseif(stripos($gender, "F") === 0 || stripos($gender, "W") === 0 || strpos($gender, "女") === 0){
+			}else if(is_numeric(stripos($gender, "F")) || is_numeric(stripos($gender, "W")) || is_numeric(strpos($gender, "女"))){
 				$this->gender = self::USER_SEX_FEMALE;
 			}else{
-				$this->gender = null;
+				$this->gender = $gender;
 			}
-		}else{
-			$this->gender = $gender;
 		}
 	}
 

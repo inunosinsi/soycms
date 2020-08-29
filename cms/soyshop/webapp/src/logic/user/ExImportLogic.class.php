@@ -109,7 +109,18 @@ class ExImportLogic extends ExImportLogicBase{
 
 			}else{
 				$getter = "get" . ucwords($key);
-				$function[] = '$res[] = (method_exists($obj,"'.$getter.'")) ? $obj->' . $getter . '() : "";';
+				//電話番号等の場合
+				switch($key){
+					case "telephoneNumber":
+					case "faxNumber":
+					case "cellphoneNumber":
+					case "jobTelephoneNumber":
+					case "jobFaxNumber":
+						$function[] = '$res[] = (method_exists($obj,"'.$getter.'")) ? "=\"" . $obj->' . $getter . '() . "\"" : "";';
+						break;
+					default:
+						$function[] = '$res[] = (method_exists($obj,"'.$getter.'")) ? $obj->' . $getter . '() : "";';
+				}
 
 				$label = $labels[$key];
 			}
