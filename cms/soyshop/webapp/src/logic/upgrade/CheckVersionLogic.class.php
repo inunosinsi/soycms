@@ -31,7 +31,7 @@ class CheckVersionLogic extends SOY2LogicBase{
 
 	function getUpdateVersion(){
 		$files = $this->getUpdateFiles();
-		return count($files);
+		return array_key_last($files);
 	}
 
 	/**
