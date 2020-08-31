@@ -24,17 +24,12 @@ class CreateAction extends SOY2Action{
 		if(!UserInfoUtil::isDefaultUser()) return SOY2Action::FAILED;
 
 		//SOYCMSのシステムディレクトリだった場合はスキップ
-		if($this->isSoyCMSDir($form)) return SOY2Action::FAILED;
+		if(self::_isSoyCMSDir($form)) return SOY2Action::FAILED;
 
-		$logic = SOY2Logic::createInstance("logic.admin.Site.SiteLogic");
-		$result = $logic->createSite($form->siteId, $form->siteName, $form->encoding,$form->separate,$form->copyFrom);
+		$result = SOY2Logic::createInstance("logic.admin.Site.SiteLogic")->createSite($form->siteId, $form->siteName, $form->encoding,$form->separate,$form->copyFrom);
+		if(!$result) return SOY2Action::FAILED;
 
-		if(!$result){
-			return SOY2Action::FAILED;
-		}
-
-		$dao = SOY2DAOFactory::create("admin.SiteDAO");
-		$site = $dao->getById($result);
+		$site = SOY2DAOFactory::create("admin.SiteDAO")->getById($result);
 		$this->setAttribute("Site",$site);
 
 
@@ -57,7 +52,7 @@ class CreateAction extends SOY2Action{
 		return SOY2Action::SUCCESS;
     }
 
-    function isSoyCMSDir($form){
+    private function _isSoyCMSDir($form){
     	$targetDir = str_replace("\\","/",SOYCMS_TARGET_DIRECTORY .$form->siteId);
     	$soyDir = str_replace("\\","/",dirname(SOY2::RootDir()));
 

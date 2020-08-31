@@ -6,7 +6,7 @@ class CreatePage extends CMSUpdatePageBase{
 	function doPost(){
 
 		if(soy2_check_token()){
-			if($this->createSite()){
+			if(self::_createSite()){
 				$this->addMessage("CREATE_SUCCESS");
 				$this->jump("Site");
 			}else{
@@ -79,7 +79,6 @@ class CreatePage extends CMSUpdatePageBase{
 	 * 文字コードの種類を取得する
 	 */
 	function getEncordingList(){
-
 		return SiteConfig::getCharsetLists();
 	}
 
@@ -88,9 +87,8 @@ class CreatePage extends CMSUpdatePageBase{
 	 * サイトを作成します
 	 * @return boolean
 	 */
-	function createSite(){
-		$action = SOY2ActionFactory::createInstance("Site.CreateAction");
-		$result = $action->run();
+	private function _createSite(){
+		$result = SOY2ActionFactory::createInstance("Site.CreateAction")->run();
 
 		if($result->success()){
 			$site = $result->getAttribute("Site");
