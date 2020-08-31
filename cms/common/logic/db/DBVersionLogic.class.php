@@ -37,7 +37,7 @@ class DBVersionLogic extends SOY2LogicBase{
 	 */
 	public function getCurrentSQLVersion(){
 		$files = $this->getUpdateFiles();
-		return count($files) +1;
+		return key(end($files));
 	}
 
 	/**

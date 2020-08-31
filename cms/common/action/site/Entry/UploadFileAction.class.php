@@ -155,10 +155,10 @@ class UploadFileAction extends SOY2Action{
 								exec("jpegoptim --strip-all " . $file->getPath());
 							}
 
-							//guetzli
-							if(defined("GUETZLI_AUTO_OPTIMIZE") && GUETZLI_AUTO_OPTIMIZE){
-								exec("guetzli " . $file->getPath() . " " . $file->getPath());
-							}
+							//guetzli	廃止
+							// if(defined("GUETZLI_AUTO_OPTIMIZE") && GUETZLI_AUTO_OPTIMIZE){
+							// 	exec("guetzli " . $file->getPath() . " " . $file->getPath());
+							// }
 							break;
 						default:
 					}
