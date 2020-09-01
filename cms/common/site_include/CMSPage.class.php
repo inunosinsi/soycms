@@ -303,7 +303,7 @@ class CMSPage extends WebPage{
 
 		while(true){
 			list($tag, $line, $innerHTML, $outerHTML, $value, $suffix, $skipendtag) =
-				$plugin->parse("module", "[a-zA-Z0-9\.\_]+", $this->_soy2_content);
+				$plugin->parse("module", "[a-zA-Z0-9\.\_\{\}]+", $this->_soy2_content);
 
 			if(!strlen($tag)) break;
 
