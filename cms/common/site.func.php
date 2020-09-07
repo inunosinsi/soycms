@@ -43,9 +43,10 @@ function execute_site(){
 }
 
 function static_cache_execute(){
-	$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : "_top";
+	//トレイリングスラッシュ対策で末尾のスラッシュを抜いておく
+	$pathInfo = (isset($_SERVER["PATH_INFO"])) ? rtrim($_SERVER["PATH_INFO"], "/") : "_top";
 	$alias = trim(substr($pathInfo, strrpos($pathInfo, "/")), "/");
-
+	
 	$dir = _SITE_ROOT_ . "/.cache/static_cache/";
 	if(!file_exists($dir)) mkdir($dir);
 

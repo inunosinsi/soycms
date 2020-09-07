@@ -20,7 +20,7 @@ class CompressorPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3193",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -91,6 +91,11 @@ class CompressorPlugin{
 			//imgのaltの値が空である場合は削除
 			if(strpos($line, "alt=\"\"") !== false){
 				$line = str_replace("alt=\"\"", "", $line);
+			}
+
+			//<p></p>は<br>にする
+			if(strpos($line, "<p></p>") !== false){
+				$line = str_replace("<p></p>", "<br>", $line);
 			}
 
 			//xhtmlの記述をなくす

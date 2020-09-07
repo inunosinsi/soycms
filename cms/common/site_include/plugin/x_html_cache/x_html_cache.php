@@ -20,7 +20,7 @@ class HTMLCachePlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3096",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -92,7 +92,8 @@ class HTMLCachePlugin{
 
 	//HTMLCache
 	private function _generateStaticHTMLCacheFile($html){
-		$pathInfo = (isset($_SERVER["PATH_INFO"])) ? $_SERVER["PATH_INFO"] : "_top";
+		//トレイリングスラッシュ対策で末尾のスラッシュを抜いておく
+		$pathInfo = (isset($_SERVER["PATH_INFO"])) ? rtrim($_SERVER["PATH_INFO"], "/") : "_top";
 		$alias = trim(substr($pathInfo, strrpos($pathInfo, "/")), "/");
 
 		$dir = _SITE_ROOT_ . "/.cache/static_cache/";
