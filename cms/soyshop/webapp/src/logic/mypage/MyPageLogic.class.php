@@ -425,7 +425,7 @@ class MyPageLogic extends SOY2LogicBase{
 		//プラグインのログイン周りの拡張ポイントを持つプラグインがあるか？
 		SOYShopPlugin::load("soyshop.mypage.login");
 		$isExtendLogin = SOYShopPlugin::invoke("soyshop.mypage.login")->getResult();
-
+		
 		if(isset($isExtendLogin) && is_bool($isExtendLogin) && $isExtendLogin){	//ログインの拡張
 			SOYShopPlugin::invoke("soyshop.mypage.login", array(
 				"mode" => "login"

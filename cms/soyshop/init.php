@@ -1,7 +1,6 @@
 <?php
 
 function init_soyshop($siteId = null, $option = array(), $siteName=null, $redirect=true, $isOnlyAdmin=false){
-
 if(!soy2_check_token()) return false;
 
 if(strlen($siteId) > 0){
@@ -117,7 +116,6 @@ ob_end_clean();ob_start();
 echo "\n------------------------------------------------------\n";
 
 $initPageLogic = SOY2Logic::createInstance("logic.init.InitPageLogic");
-
 echo "init page";
 $res = $initPageLogic->initPage($isOnlyAdmin);
 echo "\n" . ( ($res) ? "success" : "failed");

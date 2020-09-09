@@ -596,12 +596,12 @@ function soyshop_is_login_mypage(){
  * ログイン後に指定したページにリダイレクトする
  */
 function soyshop_redirect_designated_page($param, $postfix = null){
-    $location = "Location: ". rawurldecode($param);
+	$location = "Location: ". rawurldecode($param);
 
     if(isset($postfix) && strlen($postfix)){
         $location .= "?" . $postfix;
     }
-    header($location);
+	header($location);
     exit;
 }
 
