@@ -6,7 +6,7 @@ class PageRemoveLogic extends PageLogic{
 	private $errors = array();
 
     function remove($id){
-    	$uri = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getById($id)->getUri();
+    	$uri = soyshop_get_page_object($id)->getUri();
     	$replace = str_replace(array("-", "/", "."), "_", $uri);
     	$page = SOYSHOP_SITE_DIRECTORY . ".page/" . $replace . "_page" ;
 
@@ -16,4 +16,3 @@ class PageRemoveLogic extends PageLogic{
     	SOY2DAOFactory::create("site.SOYShop_PageDAO")->delete($id);
     }
 }
-?>

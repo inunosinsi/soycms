@@ -5,8 +5,7 @@ class PageCreateLogic extends PageLogic{
 
 	private $errors = array();
 
-	function validate($obj){
-
+	function validate(SOYShop_Page $obj){
 		$errors = array();
 
 		if(strlen($obj->getName()) < 1){
@@ -24,8 +23,7 @@ class PageCreateLogic extends PageLogic{
 		}
 
 		//unique check
-		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		if(true == $dao->checkUri($obj->getUri())){
+		if(true == SOY2DAOFactory::create("site.SOYShop_PageDAO")->checkUri($obj->getUri())){
 			$errors["uri"] = MessageManager::get("ERROR_INVALID");
 		}
 
@@ -34,31 +32,35 @@ class PageCreateLogic extends PageLogic{
 		return (empty($errors));
 	}
 
-	function create($obj){
-		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		$id = $dao->insert($obj);
+	function create(SOYShop_Page $obj){
+		//canonical url
+		$cnf = $obj->getConfigObject();
+		$cnf["canonical_format"] = "%PERMALINK%";
+		$obj->setConfig($cnf);
+
+		$id = SOY2DAOFactory::create("site.SOYShop_PageDAO")->insert($obj);
 
 		$obj->setId($id);
 		$this->onUpdate($obj);
 
 		return $id;
 	}
-	
+
 	/**
 	 * ページの初期化。ファイルのチェックのみ。ファイルがあればinitPageが処理を行う
 	 */
 	function initPageByIniFile(){
 		$ini = SOY2::RootDir() . "logic/init/page/ini.csv";
-		
+
 		//念の為にiniファイルがあるか確認しておく
 		if(!file_exists($ini)) return;
-		
+
 		$this->initPage($ini);
 	}
-	
+
 	function initPage($ini){
 		$logic = SOY2Logic::createInstance("logic.csv.ExImportLogicBase");
-		
+
 		//データを行単位にばらす
 		$lines = $logic->GET_CSV_LINES(file_get_contents($ini));	//fix multiple lines
 		//先頭行削除
@@ -69,21 +71,28 @@ class PageCreateLogic extends PageLogic{
 		foreach($lines as $line){
 			//0.ページ名, 1.URL, 2.タイプ, 3.テンプレート, 4.カテゴリ(商品一覧のみ), 5.コンテンツ(フリーのみ), 6.モジュール(検索のみ)
 			$values = $logic->explodeLine($line);
-			
+
 			if((!isset($values[0]) || strlen($values[0]) === 0) || (!isset($values[1]) || strlen($values[1]) === 0)) continue;
-			
+
 			$page = new SOYShop_Page();
 			$page->setName(trim($values[0]));
 			$page->setUri(trim($values[1]));
 			$page->setType(trim($values[2]));
-						
+
 			$page->setTemplate((isset($values[3])) ? trim($values[3]) : "default.html");
+
+			//canonicalURL
+			$pageCnf = $page->getConfigObject();
+			$pageCnf["canonical_format"] = "%PERMALINK%";
+			$page->setConfig($pageCnf);
+
 			try{
 				$id = $this->create($page);
 			}catch(Exception $e){
 				continue;	//urlの重複で弾かれるので、ページのチェックは行わない
 			}
-			
+
+			$isContinue = false;
 			switch($values[2]){
 				case SOYShop_Page::TYPE_LIST:
 					if(isset($values[4]) && $values[4] == "category"){
@@ -95,7 +104,7 @@ class PageCreateLogic extends PageLogic{
 						try{
 							$this->updatePageObject($page);
 						}catch(Exeception $e){
-							continue;
+							//
 						}
 					}else{
 						/**
@@ -109,13 +118,13 @@ class PageCreateLogic extends PageLogic{
 						if(file_exists($contentsFile)){
 							$page->setId($id);
 							$freePage = $page->getPageObject();
-							$freePage->setTitle($values[0]);					
+							$freePage->setTitle($values[0]);
 							$freePage->setContent(file_get_contents($contentsFile));
 							$page->setPageObject($freePage);
 							try{
 								$this->updatePageObject($page);
 							}catch(Exeception $e){
-								continue;
+								//
 							}
 						}
 					}
@@ -130,7 +139,7 @@ class PageCreateLogic extends PageLogic{
 						try{
 							$this->updatePageObject($page);
 						}catch(Exeception $e){
-							continue;
+							//
 						}
 					}
 					break;
@@ -147,4 +156,3 @@ class PageCreateLogic extends PageLogic{
 		$this->errors = $errors;
 	}
 }
-?>

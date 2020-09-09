@@ -60,7 +60,6 @@ class IndexPage extends SOYShopWebPage{
 			include_once(dirname(CMS_COMMON) . "/soyshop/init.php");
 			$res = init_soyshop($siteId, $option, $siteName, false, $isOnlyAdmin);	//実行
 
-
 			if($res){
 				$path = soy2_realpath(SOYCMS_TARGET_DIRECTORY);
 				$path .= $siteId."/";
