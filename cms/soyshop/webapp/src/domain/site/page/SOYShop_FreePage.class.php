@@ -42,29 +42,24 @@ class SOYShop_FreePage extends SOYShop_PageBase{
     /* method */
 
     function getTitleFormatDescription(){
-    	$html = array();
-
-    	$html[] = "コンテンツのタイトル:%CONTENTS_TITLE%";
-
-    	return implode(" ", $html);
+		$html = array();
+		$html[] = "<table style=\"margin-top:5px;\">";
+    	$html[] = "<tr><td>ショップ名：</td><td><strong>%SHOP_NAME%</strong></td></tr>";
+    	$html[] = "<tr><td>ページ名：</td><td><strong>%PAGE_NAME%</strong></td></tr>";
+		$html[] = "<tr><td>コンテンツのタイトル：</td><td><strong>%CONTENTS_TITLE%</strong></td></tr>";
+		$html[] = "</table>";
+    	return implode("\n", $html);
     }
-    
+
     function getKeywordFormatDescription(){
-    	$html = array();
-    	$html[] = "ショップ名:%SHOP_NAME%";
-    	$html[] = "ページ名:%PAGE_NAME%";
-    	return implode("<br />", $html);
+    	return parent::getCommonFormat();
     }
-    
+
     function getDescriptionFormatDescription(){
-    	$html = array();
-    	$html[] = "ショップ名:%SHOP_NAME%";
-    	$html[] = "ページ名:%PAGE_NAME%";
-    	return implode("<br />", $html);
+    	return parent::getCommonFormat();
     }
 
     function convertPageTitle($title){
     	return str_replace("%CONTENTS_TITLE%", $this->getTitle(), $title);
     }
 }
-?>

@@ -9,10 +9,9 @@ class DetailPage extends WebPage{
     function doPost(){
 
         if(soy2_check_token()){
-            $dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
             $logic = SOY2Logic::createInstance("logic.site.page.PageLogic");
 
-            $page = $dao->getById($this->id);
+            $page = soyshop_get_page_object($this->id);
             $obj = (object)$_POST["Page"];
             SOY2::cast($page, $obj);
             if(isset($_POST["Page"]["uri"])){
@@ -54,15 +53,14 @@ class DetailPage extends WebPage{
 
         $this->addForm("update_form");
 
-        $this->buildForm();
+        self::_buildForm();
     }
 
-    function buildForm(){
+    private function _buildForm(){
         $logic = SOY2Logic::createInstance("logic.site.page.PageLogic");
-        $dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 
         try{
-            $obj = ($this->page) ? $this->page : $dao->getById($this->id);
+            $obj = ($this->page) ? $this->page : soyshop_get_page_object($this->id);
         }catch(Exception $e){
             SOY2PageController::jump("Site.Pages");
             exit;
@@ -162,7 +160,7 @@ class DetailPage extends WebPage{
         ));
 
         $this->addLabel("canonical_format_description", array(
-            "text" => $obj->getPageObject()->getCanonicalFormatDescription()
+            "html" => $obj->getPageObject()->getCanonicalFormatDescription()
         ));
 
         $this->addInput("title_format", array(
@@ -171,7 +169,7 @@ class DetailPage extends WebPage{
         ));
 
         $this->addLabel("title_format_description", array(
-            "text" => $obj->getPageObject()->getTitleFormatDescription()
+            "html" => $obj->getPageObject()->getTitleFormatDescription()
         ));
 
         $this->addSelect("charset_list", array(

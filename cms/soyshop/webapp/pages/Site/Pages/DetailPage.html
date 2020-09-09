@@ -24,8 +24,8 @@
 						<label for="">ページURL<span class="option">(半角英数字または「.」「/」「_」「-」)</span></label>
 						<input class="form-control" type="text" soy:id="uri" />
 						<div class="alert alert-danger" soy:id="error_uri"></div>
-						<p class="caution" soy:id="caution_for_home"><!-- soy:id="SOYSHOP_TOP_PAGE_MARKER" /-->はトップページのための特別なURLなので変更できません。<br>/や/index.htmlなどへのアクセスはこのページにへのアクセスとみなされます。</p>
-						<p class="caution" soy:id="caution_for_404"><!-- soy:id="SOYSHOP_404_PAGE_MARKER" /-->は存在しないURLにアクセスがあったときに表示されるページのためのURLなので変更できません。</p>
+						<div class="alert alert-warning" soy:id="caution_for_home"><!-- soy:id="SOYSHOP_TOP_PAGE_MARKER" /-->はトップページのための特別なURLなので変更できません。<br>/や/index.htmlなどへのアクセスはこのページにへのアクセスとみなされます。</div>
+						<div class="alert alert-warning" soy:id="caution_for_404"><!-- soy:id="SOYSHOP_404_PAGE_MARKER" /-->は存在しないURLにアクセスがあったときに表示されるページのためのURLなので変更できません。</div>
 					</div>
 
 					<div class="form-group">
@@ -36,19 +36,19 @@
 					<div class="form-group">
 						<label for="">キーワード (&lt;meta type="keywords"&gt;)</label>
 						<input class="form-control" type="text" soy:id="keyword" />
-						<p soy:id="keyword_format_description"></p>
+						<div soy:id="keyword_format_description"></div>
 					</div>
 
 					<div class="form-group">
 						<label for="">説明 (&lt;meta type="description"&gt;)</label>
 						<textarea soy:id="description" class="form-control"></textarea>
-						<p soy:id="description_format_description"></p>
+						<div soy:id="description_format_description"></div>
 					</div>
 
 					<div class="form-group">
 						<label for="">Canonical フォーマット</label>
-						<input class="form-control" soy:id="canonical_format" /><br />
-						<p soy:id="canonical_format_description"></p>
+						<input class="form-control" soy:id="canonical_format" />
+						<div soy:id="canonical_format_description"></div>
 					</div>
 
 					<div class="form-group">
@@ -58,8 +58,8 @@
 
 					<div class="form-group">
 						<label for="">タイトルフォーマット</label>
-						<input class="form-control" soy:id="title_format" /><br />
-						<p soy:id="title_format_description"></p>
+						<input class="form-control" soy:id="title_format" />
+						<div soy:id="title_format_description"></div>
 					</div>
 
 					<div class="form-group">

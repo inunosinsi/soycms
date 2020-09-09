@@ -9,31 +9,15 @@ class SOYShop_DetailPage extends SOYShop_PageBase{
     private $sortType = "id";
 
     function getTitleFormatDescription(){
-        $html = array();
-
-        $html[] = "商品名:%ITEM_NAME%";
-        $html[] = "商品コード:%ITEM_CODE%";
-        $html[] = "カテゴリ名:%CATEGORY_NAME%";
-
-        return implode(" ", $html);
+        return self::_getCommonFormat();
     }
 
     function getKeywordFormatDescription(){
-        $html = array();
-        $html[] = "ショップ名:%SHOP_NAME%";
-        $html[] = "商品名:%ITEM_NAME%";
-        $html[] = "商品コード:%ITEM_CODE%";
-        $html[] = "カテゴリ名:%CATEGORY_NAME%";
-        return implode("<br />", $html);
+        return self::_getCommonFormat();
     }
 
     function getDescriptionFormatDescription(){
-        $html = array();
-        $html[] = "ショップ名:%SHOP_NAME%";
-        $html[] = "商品名:%ITEM_NAME%";
-        $html[] = "商品コード:%ITEM_CODE%";
-        $html[] = "カテゴリ名:%CATEGORY_NAME%";
-        return implode("<br />", $html);
+        return self::_getCommonFormat();
     }
 
     function convertPageTitle($title){
@@ -44,6 +28,21 @@ class SOYShop_DetailPage extends SOYShop_PageBase{
         }
         return $title;
     }
+
+	/**
+	 * フォーマットが共通の時
+	 */
+	private function _getCommonFormat(){
+		$html = array();
+		$html[] = "<table style=\"margin-top:5px;\">";
+    	$html[] = "<tr><td>ショップ名：</td><td><strong>%SHOP_NAME%</strong></td></tr>";
+    	$html[] = "<tr><td>ページ名：</td><td><strong>%PAGE_NAME%</strong></td></tr>";
+		$html[] = "<tr><td>商品名：</td><td><strong>%ITEM_NAME%</strong></td></tr>";
+        $html[] = "<tr><td>商品コード：</td><td><strong>%ITEM_CODE%</strong></td></tr>";
+		$html[] = "<tr><td>カテゴリー名：</td><td><strong>%CATEGORY_NAME%</strong></td></tr>";
+		$html[] = "</table>";
+    	return implode("\n", $html);
+	}
 
     function getCurrentItem() {
         return $this->currentItem;
