@@ -16,6 +16,8 @@ class SOYShop_ShopConfig {
 
 	private $appName = "SOY Shop";
 	private $appLogoPath = "./img/logo.png";
+	private $isTrailingSlash = 1;	//カノニカルURLでトライリングスラッシュの有無
+	private $isDomainWww = 1;		//www.ありドメインの時のカノニカルURLの出力設定
 
 	private $consumptionTax = 0;
 	private $consumptionTaxModule;
@@ -426,6 +428,20 @@ class SOYShop_ShopConfig {
 	}
 	function setAppLogoPath($appLogoPath){
 		$this->appLogoPath = $appLogoPath;
+	}
+
+	function getIsTrailingSlash(){
+		return $this->isTrailingSlash;
+	}
+	function setIsTrailingSlash($isTrailingSlash){
+		$this->isTrailingSlash = $isTrailingSlash;
+	}
+
+	function getIsDomainWww(){
+		return $this->isDomainWww;
+	}
+	function setIsDomainWww($isDomainWww){
+		$this->isDomainWww = $isDomainWww;
 	}
 
 	function getConsumptionTax(){

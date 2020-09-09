@@ -9,6 +9,8 @@ class ShopConfigPage extends WebPage{
 		$config = $this->config;
 
 		foreach(array(
+			"isTrailingSlash" => 0,
+			"isDomainWww" => 0,
 			"consumptionTaxInclusivePricingRate" => SOYShop_ShopConfig::CONSUMPTION_TAX_RATE,
 			"consumptionTaxInclusiveCommission" => 0,
 			"isOrderListOneYearsWonth" => 0,
@@ -115,6 +117,35 @@ class ShopConfigPage extends WebPage{
 		//SOY Appのロゴ画像のパス
 		$this->addLabel("appLogoPathSample", array(
 			"text" => SOYAppUtil::getSOYAppLogoPath()
+		));
+
+		//カノニカルURL
+		$this->addCheckBox("is_trailing_slash", array(
+			"name" => "Config[isTrailingSlash]",
+			"value" => 1,
+			"selected" => ($config->getIsTrailingSlash() == 1),
+			"label" => "あり"
+		));
+
+		$this->addCheckBox("no_trailing_slash", array(
+			"name" => "Config[isTrailingSlash]",
+			"value" => 0,
+			"selected" => ($config->getIsTrailingSlash() == 0),
+			"label" => "なし"
+		));
+
+		$this->addCheckBox("is_domain_www", array(
+			"name" => "Config[isDomainWww]",
+			"value" => 1,
+			"selected" => ($config->getIsDomainWww() == 1),
+			"label" => "あり"
+		));
+
+		$this->addCheckBox("no_domain_www", array(
+			"name" => "Config[isDomainWww]",
+			"value" => 0,
+			"selected" => ($config->getIsDomainWww() == 0),
+			"label" => "なし"
 		));
 
 		//消費税別表示モード

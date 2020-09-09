@@ -195,18 +195,13 @@ class SOYShop_Page {
 	 * タイトルフォーマットで変換したタイトルを取得
 	 */
 	function getConvertedTitle(){
-		$title = $this->getPageObject()->getPageTitle();
-		return $title;
+		return $this->getPageObject()->getPageTitle();
 	}
 
 	function getConvertedCanonical(){
-
-		$url = $this->getCanonicalUrl();
-
-		$canonical = $this->getCanonicalFormat();
-		$url = str_replace("%PERMALINK%", $url, $canonical);
-
-		return $url;
+		$format = trim($this->getCanonicalFormat());
+		if(!strlen($format)) return "";
+		return str_replace("%PERMALINK%", $this->getCanonicalUrl(), $format);
 	}
 
 	function getCanonicalUrl(){
@@ -214,7 +209,6 @@ class SOYShop_Page {
 		if($this->getUri() != SOYSHOP_TOP_PAGE_MARKER){
 			$url .= $this->getUri();
 		}
-
 
 		switch($this->getType()){
 			case self::TYPE_LIST:
@@ -239,6 +233,22 @@ class SOYShop_Page {
 
 		//スラッシュのみエンコードされた文字列を戻す
 		if(strpos($url, "%2F")) $url = str_replace("%2F", "/", $url);
+
+		//カノニカルURLの設定
+		$url = rtrim($url, "/");
+
+		//トレイリングスラッシュ
+		preg_match('/.+\.(html|htm|php?)/i', $url, $tmp);
+		if(!count($tmp) && (int)SOYShop_ShopConfig::load()->getIsTrailingSlash() === 1){
+			 $url .= "/";
+		}
+
+		//wwwなし設定
+		preg_match('/^https?:\/\/www\./', $url, $tmp);
+		if(isset($tmp[0]) && (int)SOYShop_ShopConfig::load()->getIsDomainWww() === 0){
+			$url = str_replace("//www.", "//", $url);
+		}
+
 		return $url;
 	}
 
@@ -427,7 +437,21 @@ class SOYShop_PageBase{
 	 */
     function getCanonicalFormatDescription(){
     	$html = array();
-    	$html[] = "表示されるページのURL:%PERMALINK%";
-    	return implode("<br />", $html);
+		$html[] = "<table style=\"margin-top:5px;\">";
+    	$html[] = "<tr><td>表示されるページのURL：</td><td><strong>%PERMALINK%</strong></td></tr>";
+		$html[] = "</table>";
+    	return implode("\n", $html);
     }
+
+	/**
+	 * フォーマットが共通の時
+	 */
+	function getCommonFormat(){
+		$html = array();
+		$html[] = "<table style=\"margin-top:5px;\">";
+    	$html[] = "<tr><td>ショップ名：</td><td><strong>%SHOP_NAME%</strong></td></tr>";
+    	$html[] = "<tr><td>ページ名：</td><td><strong>%PAGE_NAME%</strong></td></tr>";
+		$html[] = "</table>";
+    	return implode("\n", $html);
+	}
 }
