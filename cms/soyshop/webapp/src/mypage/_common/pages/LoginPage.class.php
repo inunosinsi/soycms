@@ -37,11 +37,14 @@ class LoginPage extends MainMyPagePageBase{
 
 					//ログインできなかった時
 					}else{
+						$params = array();
 						if(isset($_GET["r"]) && strlen($_GET["r"])){
-							$param = soyshop_remove_get_value($_GET["r"]);
-							soyshop_redirect_designated_page($param, "login=error");
-							exit;
+							$params[] = "r=" . soyshop_remove_get_value($_GET["r"]);
 						}
+						$params[] = "login=error";
+
+						soyshop_redirect_login_form(implode("&", $params));
+						exit;
 					}
 				}
 			}
@@ -121,7 +124,8 @@ class LoginPage extends MainMyPagePageBase{
 	 * ログイン
 	 */
 	function login($userId, $password){
-		return $this->getMyPage()->login($userId, $password);
+		$res = $this->getMyPage()->login($userId, $password);
+		return $res;
 	}
 
 	/**
