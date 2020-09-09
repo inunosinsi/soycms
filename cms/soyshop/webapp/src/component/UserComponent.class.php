@@ -81,6 +81,7 @@ class UserComponent {
 		$page->addInput("mail_address", array(
 			"name" => "Customer[mailAddress]",
 			"value" => $mailAddress,
+			"attr:autocomplete" => "false"
 		));
 
 		$confirmMailAddress = null;
@@ -111,7 +112,8 @@ class UserComponent {
 
 		$page->addInput("account_id", array(
 			"name" => "Customer[accountId]",
-			"value" => $user->getAccountId()
+			"value" => $user->getAccountId(),
+			"attr:autocomplete" => "false"
 		));
 
 		//顧客コード
@@ -119,7 +121,8 @@ class UserComponent {
 		$page->addInput("user_code", array(
 			"name" => "Customer[userCode]",
 			"value" => $user->getUserCode(),
-			"attr:required" => "required"
+			"attr:required" => "required",
+			"attr:autocomplete" => "false"
 		));
 
 		SOY2::import("util.SOYShopPluginUtil");
@@ -129,6 +132,7 @@ class UserComponent {
 		$page->addInput("password", array(
 			"name" => "Customer[password]",
 			"value" => $user->getPassword(),
+			"attr:autocomplete" => "false"
 		));
 
 		$passText = "";
@@ -149,24 +153,28 @@ class UserComponent {
 		$page->addInput("name", array(
 			"name" => "Customer[name]",
 			"value" => $user->getName(),
+			"attr:autocomplete" => "false"
 		));
 
 		//フリガナ
 		$page->addInput("reading", array(
 			"name" => "Customer[reading]",
 			"value" => $user->getReading(),
+			"attr:autocomplete" => "false"
 		));
 
 		$page->addInput("honorific", array(
 			"name" => "Customer[honorific]",
 			"value" => $user->getHonorific(),
-			"attr:placeholder" => "様"
+			"attr:placeholder" => "様",
+			"attr:autocomplete" => "false"
 		));
 
 		//ニックネーム
 		$page->addInput("nickname", array(
 			"name" => "Customer[nickname]",
 			"value" => $user->getNickname(),
+			"attr:autocomplete" => "false"
 		));
 
 		//性別 男
@@ -198,7 +206,8 @@ class UserComponent {
 			"value" => $user->getBirthdayYear(),
 			"size" => 5,
 			"attr:min" => 1900,
-			"attr:max" => date("Y") + 10
+			"attr:max" => date("Y") + 10,
+			"attr:autocomplete" => "false"
 		));
 
 		//生年月日 月
@@ -208,7 +217,8 @@ class UserComponent {
 			"value" => $user->getBirthdayMonth(),
 			"size" => 3,
 			"attr:min" => 1,
-			"attr:max" => 12
+			"attr:max" => 12,
+			"attr:autocomplete" => "false"
 		));
 
 		//生年月日 日
@@ -218,7 +228,8 @@ class UserComponent {
 			"value" => $user->getBirthdayDay(),
 			"size" => 3,
 			"attr:min" => 1,
-			"attr:max" => 31
+			"attr:max" => 31,
+			"attr:autocomplete" => "false"
 		));
 
 		$page->addLabel("birthday_text", array(
@@ -228,19 +239,22 @@ class UserComponent {
 		//郵便番号
 		$page->addInput("zip_code", array(
 			"name" => "Customer[zipCode]",
-			"value" => $user->getZipCode()
+			"value" => $user->getZipCode(),
+			"attr:autocomplete" => "false"
 		));
 
 		//郵便番号をバラして使う
 		$zip = explode("-", $user->getZipCode());
 		$page->addInput("zip_code1", array(
 			"name" => "Customer[zipCode1]",
-			"value" => (isset($zip[0])) ? $zip[0] : null
+			"value" => (isset($zip[0])) ? $zip[0] : null,
+			"attr:autocomplete" => "false"
 		));
 
 		$page->addInput("zip_code2", array(
 			"name" => "Customer[zipCode2]",
-			"value" => (isset($zip[1])) ? $zip[1] : null
+			"value" => (isset($zip[1])) ? $zip[1] : null,
+			"attr:autocomplete" => "false"
 		));
 
 		//都道府県
@@ -258,36 +272,42 @@ class UserComponent {
 		$page->addInput("address1", array(
 			"name" => "Customer[address1]",
 			"value" => $user->getAddress1(),
+			"attr:autocomplete" => "false"
 		));
 
 		//住所入力2
 		$page->addInput("address2", array(
 			"name" => "Customer[address2]",
 			"value" => $user->getAddress2(),
+			"attr:autocomplete" => "false"
 		));
 
 		//電話番号
 		$page->addInput("telephone_number", array(
 			"name" => "Customer[telephoneNumber]",
 			"value" => $user->getTelephoneNumber(),
+			"attr:autocomplete" => "false"
 		));
 
 		//FAX番号
 		$page->addInput("fax_number", array(
 			"name" => "Customer[faxNumber]",
 			"value" => $user->getFaxNumber(),
+			"attr:autocomplete" => "false"
 		));
 
 		//携帯電話番号
 		$page->addInput("cellphone_number", array(
 			"name" => "Customer[cellphoneNumber]",
 			"value" => $user->getCellphoneNumber(),
+			"attr:autocomplete" => "false"
 		));
 
 		//URL
 		$page->addInput("url", array(
 			"name" => "Customer[url]",
 			"value" => $user->getUrl(),
+			"attr:autocomplete" => "false"
 		));
 
 		$activeSOYMail = (SOYShopPluginUtil::checkIsActive("soymail_connector"));
@@ -300,7 +320,8 @@ class UserComponent {
 
 		$page->addInput("mail_magazine_hidden", array(
 			"name" => "Customer[notSend]",
-			"value" => SOYShop_User::USER_NOT_SEND
+			"value" => SOYShop_User::USER_NOT_SEND,
+			"attr:autocomplete" => "false"
 		));
 		$page->addCheckBox("mail_magazine", array(
 			"name" => "Customer[notSend]",
@@ -331,6 +352,7 @@ class UserComponent {
 		$page->addInput("job_name", array(
 			"name" => "Customer[jobName]",
 			"value" => $user->getJobName(),
+			"attr:autocomplete" => "false"
 		));
 
 		/* ユーザカスタムフィールド */
