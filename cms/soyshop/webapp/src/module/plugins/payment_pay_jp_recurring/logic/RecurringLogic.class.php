@@ -34,13 +34,13 @@ class RecurringLogic extends SOY2LogicBase {
 		$err = null;
 		try{
 			$res = \Payjp\Customer::create($customer);
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -58,13 +58,13 @@ class RecurringLogic extends SOY2LogicBase {
 		$err = null;
 		try{
 			$res = \Payjp\Plan::create($plan);
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -82,13 +82,13 @@ class RecurringLogic extends SOY2LogicBase {
 		$err = null;
 		try{
 			$res = \Payjp\Subscription::create(array("customer" => $cusId, "plan" => $planId));
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -107,13 +107,13 @@ class RecurringLogic extends SOY2LogicBase {
 		try{
 			$su = \Payjp\Subscription::retrieve($subscribeId);
 			$res = $su->cancel();
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -132,13 +132,13 @@ class RecurringLogic extends SOY2LogicBase {
 		$err = null;
 		try{
 			$res = \Payjp\Subscription::retrieve($token);
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -158,13 +158,13 @@ class RecurringLogic extends SOY2LogicBase {
 			$su = \Payjp\Subscription::retrieve($subscribeToken);
 			$su->plan = $planToken;
 			$res = $su->save();
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -187,13 +187,13 @@ class RecurringLogic extends SOY2LogicBase {
 		$list = array();
 		try{
 			$res = \Payjp\Plan::all(array("limit" => 100));
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -244,13 +244,13 @@ class RecurringLogic extends SOY2LogicBase {
 		$err = null;
 		try{
 			$res = \Payjp\Customer::retrieve($token);
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -287,13 +287,13 @@ class RecurringLogic extends SOY2LogicBase {
 			$res = $cu->cards->create(array(
         		"card" => $cardToken
 			));
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();

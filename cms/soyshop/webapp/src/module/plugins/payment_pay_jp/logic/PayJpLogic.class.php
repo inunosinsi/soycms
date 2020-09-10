@@ -37,13 +37,13 @@ class PayJpLogic extends SOY2LogicBase {
 		$err = null;
 		try{
 			$res = \Payjp\Token::create($card);
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -61,13 +61,13 @@ class PayJpLogic extends SOY2LogicBase {
 		$err = null;
 		try{
 			$res = \Payjp\Charge::create($card);
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -85,13 +85,13 @@ class PayJpLogic extends SOY2LogicBase {
 		$err = null;
 		try{
 			$res = \Payjp\Customer::create($customer);
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
@@ -110,13 +110,13 @@ class PayJpLogic extends SOY2LogicBase {
 		$err = null;
 		try{
 			$res = \Payjp\Customer::retrieve($token);
-		} catch (Error\Card $e) {
+		} catch (\Payjp\Error\Card $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\InvalidRequest $e) {
+		} catch (\Payjp\Error\InvalidRequest $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Authentication $e) {
+		} catch (\Payjp\Error\Authentication $e) {
 			$err = $e->getJsonBody();
-		} catch (Error\Api $e) {
+		} catch (\Payjp\Error\Api $e) {
 			$err = $e->getJsonBody();
 		} catch (\Payjp\Error\Base $e) {
 			$err = $e->getJsonBody();
