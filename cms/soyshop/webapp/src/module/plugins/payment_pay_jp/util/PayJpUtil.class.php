@@ -86,6 +86,7 @@ class PayJpUtil {
 			"pg_wrong" => "決済代行会社のサーバー側でエラーが発生している",
 			"not_found" => "リクエスト先が存在しないことを示す",
 			"not_allowed_method" => "許可されていないHTTPメソッド",
+			"over_capacity" => "レートリミットに到達",
 			"other" => "その他のエラー"
 		);
 	}
