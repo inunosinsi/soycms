@@ -1,4 +1,5 @@
 <?php
+SOY2::import('site_include.CMSPage');
 class CMSMobilePage extends CMSPage{
 
 	var $virtualPageId;

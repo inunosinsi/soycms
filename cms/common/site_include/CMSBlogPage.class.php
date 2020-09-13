@@ -1,5 +1,5 @@
 <?php
-
+SOY2::import('site_include.CMSPage');
 class CMSBlogPage extends CMSPage{
 
 	const MODE_TOP = "_top_";
@@ -146,8 +146,7 @@ class CMSBlogPage extends CMSPage{
 		$this->arguments = $args[1];
 		$this->siteConfig = $args[2];
 
-		$pageDao = SOY2DAOFactory::create("cms.BlogPageDAO");
-		$this->page = $pageDao->getById($this->id);
+		$this->page = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($this->id);
 
 		//サイトのURL
 		$this->siteUrl = $this->getSiteUrl();
@@ -334,8 +333,8 @@ class CMSBlogPage extends CMSPage{
 				break;
 
 			case CMSBlogPage::MODE_TOP:
-				//ブログトップページでargsが２つ以上あるのはおかしい
-				if(count($this->arguments) >= 2){
+				//ブログトップページでargsが1つ以上あるのはおかしい。ただし、ページャの場合は除く
+				if(count($this->arguments) >= 1 && strpos($this->arguments[0], "page-") === false){
 					throw new Exception("Too Many Argument Values.");
 				}
 

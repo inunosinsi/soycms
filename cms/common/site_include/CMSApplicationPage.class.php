@@ -1,5 +1,5 @@
 <?php
-
+SOY2::import('site_include.CMSPage');
 class CMSApplicationPage extends CMSPage{
 
 	function __construct($args) {

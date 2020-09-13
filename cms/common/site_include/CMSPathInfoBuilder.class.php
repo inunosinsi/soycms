@@ -18,41 +18,40 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 	 * パスからページのURI部分とパラメータ部分を抽出する
 	 */
 	public static function parsePath($path){
-		static $dao;
-		if(!$dao) $dao = SOY2DAOFactory::create("cms.PageDAO");
-
-		$_uri = explode("/", $path);
-
 		$uri = "";
 		$args = array();
 
+		$_uri = explode("/", $path);
+		if(!count($_uri)) return array($uri, $args);
+
+		//$_uriからページの候補を挙げる $_uriの値が2個以上ある場合はブログページである可能性が高い
+		$candidateList = self::_getCandidatePageList($_uri[0]);
+		if(!count($candidateList) && count($_uri) === 1) return array($_uri[0], $args);
+
 		while(count($_uri)){
 			$baseuri = implode("/", $_uri);
-
-			$testUri = $baseuri;
-			if($dao->checkUri($testUri)){
-				$uri = $testUri;
+			if(is_numeric(array_search($baseuri, $candidateList))){
+				$uri = $baseuri;
 				break;
 			}
 
+			if(strlen($baseuri)) $baseuri .= "/";
+
 			// path/index.htmlも試す
-			$testUri = $baseuri."/index.html";
-			if($dao->checkUri($testUri)){
-				$uri = $testUri;
+			if(is_numeric(array_search($baseuri."index.html", $candidateList))){
+				$uri = $baseuri."index.html";
 				break;
 			}
 
 			// path/index.htmも試す
-			$testUri = $baseuri . "/index.htm";
-			if($dao->checkUri($testUri)){
-				$uri = $testUri;
+			if(is_numeric(array_search($baseuri."index.htm", $candidateList))){
+				$uri = $baseuri."index.htm";
 				break;
 			}
 
-			// path/index.phpも試す
-			$testUri = $baseuri . "/index.php";
-			if($dao->checkUri($testUri)){
-				$uri = $testUri;
+			// path/index.htmも試す
+			if(is_numeric(array_search($baseuri."index.php", $candidateList))){
+				$uri = $baseuri."index.php";
 				break;
 			}
 
@@ -60,23 +59,48 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 			array_unshift($args, array_pop($_uri));
 		}
 
+		//ブログページでuriが空の時対策 @ToDo ここのコードは必要か？
 		if(!strlen($uri)){
 			//uriが空の時でargsの値が1の時はargs[0]をuriに持ってくる。argsの値が2以上の場合はブログページである可能性が高い
-			if(count($args) === 1 && $args[0] != "feed" && strpos($args[0], "page-") === false) {
+			if(count($args) === 1 && $args[0] != "feed" && !is_numeric(strpos($args[0], "page-")) && strlen($args[0])) {
 				$uri = $args[0];
 
 				//まだuriが空の場合は、index.html、index.htmやindex.phpを試す
-				if($dao->checkUri("index.html")){
+				if(is_numeric(array_search("index.html", $candidateList))){
 					$uri = "index.html";
-				}else if($dao->checkUri("index.htm")){
+				}else if(is_numeric(array_search("index.htm", $candidateList))){
 					$uri = "index.htm";
-				}else if($dao->checkUri("index.php")){
+				}else if(is_numeric(array_search("index.php", $candidateList))){
 					$uri = "index.php";
 				}
 			}
 		}
 
 		return array($uri, $args);
+	}
+
+	//$_uriの0番目の引数から候補となるページ一覧を取得する
+	private function _getCandidatePageList($uri){
+		$dao = new SOY2DAO();
+
+		//トップページの場合
+		if(!strlen($uri) || is_numeric(stripos($uri, "index"))){
+			$res = $dao->executeQuery("SELECT uri FROM Page WHERE uri = '' OR uri LIKE :uri", array(":uri" => "index%"));
+		}else{
+			//uriが空のページは常に取得しておく
+			$res = $dao->executeQuery("SELECT uri FROM Page WHERE uri = '' OR uri LIKE :uri", array(":uri" => $uri . "%"));
+		}
+		
+		//候補ページを全て取得(indexから始まるページ以外)
+		if(!count($res)) $res = $dao->executeQuery("SELECT uri FROM Page WHERE uri NOT LIKE :uri", array(":uri" => "index%"));
+
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[] = $v["uri"];
+		}
+		return $list;
 	}
 
 	/**

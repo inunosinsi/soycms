@@ -68,11 +68,7 @@ define("_SITE_ID_",substr(_SITE_ROOT_,strrpos(_SITE_ROOT_,DIRECTORY_SEPARATOR)+1
 SOY2::import('util.CMSUtil');
 SOY2::import('util.CMSPlugin');
 
-//site_include
-SOY2::import('site_include.CMSPage');
-SOY2::import('site_include.CMSBlogPage');
-SOY2::import('site_include.CMSMobilePage');
-SOY2::import('site_include.CMSApplicationPage');
+//site_include CMSページ系はwebPageの作成の直前でimport
 SOY2::import('site_include.CMSPageLinkPlugin');
 SOY2::import('site_include.CMSPagePluginBase');
 SOY2::import('site_include.CMSLabel');
