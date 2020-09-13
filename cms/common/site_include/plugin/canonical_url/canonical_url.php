@@ -60,7 +60,7 @@ class CanonicalUrlPlugin{
 
 		//wwwなし設定
 		if((int)$this->isWww === 0){
-			preg_match('/https?:\/\/www\./', $canonicalUrl, $tmp);
+			preg_match('/^https?:\/\/www\./', $canonicalUrl, $tmp);
 			if(isset($tmp[0])){
 				$canonicalUrl = str_replace("//www.", "//", $canonicalUrl);
 			}
