@@ -1,0 +1,42 @@
+<div class="alert alert-info">
+	当プラグインはHTMLキャッシュプラグインか静的化プラグインと併用することで効果を発揮します。<br>
+	上記のプラグインと併用しなければ、表示速度の低速化を招きますので、ページの設定は上記のプラグインと合わせてご利用ください。<br>
+	HTML内でJavaScriptを直接記述する場合は、事前にコードの圧縮を行っておくことをオススメします。
+</div>
+<h4 class="mt-5">検索結果のページはチェックをいれても圧縮の対象外です</h4>
+<form soy:id="form">
+	<ul>
+		<li soy:id="page_list" style="list-style:none">
+			<input type="checkbox" soy:id="page_item">
+			<ul soy:id="for_blog_page" style="list-style:none">
+				<li><input type="checkbox" soy:id="blog_top"></li>
+				<li><input type="checkbox" soy:id="blog_month"></li>
+				<li><input type="checkbox" soy:id="blog_category"></li>
+				<li><input type="checkbox" soy:id="blog_entry"></li>
+			</ul soy:id="for_blog_page">
+		</li soy:id="page_list">
+	</ul>
+	<input type="submit" class="btn btn-primary" value="保存">
+</form>
+
+<script type="text/javascript">
+	function update_blog_pages(selfId){
+		if($("#"+selfId).prop("checked")){
+			$("#"+selfId+"-top").attr("disabled",false);
+			$("#"+selfId+"-month").attr("disabled",false);
+			$("#"+selfId+"-category").attr("disabled",false);
+			$("#"+selfId+"-entry").attr("disabled",false);
+		}else{
+			$("#"+selfId+"-top").attr("disabled",true);
+			$("#"+selfId+"-month").attr("disabled",true);
+			$("#"+selfId+"-category").attr("disabled",true);
+			$("#"+selfId+"-entry").attr("disabled",true);
+		}
+	}
+
+	window.onload = function(){
+		$.each($(".blog"), function(){
+			update_blog_pages(this.id);
+		});
+	};
+</script>
