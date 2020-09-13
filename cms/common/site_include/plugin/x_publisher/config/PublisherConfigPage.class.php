@@ -7,7 +7,7 @@ class PublisherConfigPage extends WebPage {
 	function __construct(){
 		SOY2::import("site_include.CMSPage");
 		//SOY2::import("site_include.CMSBlogPage");
-		SOY2::import("site_include.plugin.x_publisher.component.PageListComponent");
+		SOY2::import("site_include.plugin.x_html_cache.component.PageListComponent");
 	}
 
 	function doPost(){

@@ -50,7 +50,6 @@ class XLazyLoadPlugin{
 				$html = array();
 				$imgTagCnt = 0;	//imgタグが何回出現したか？
 				foreach($lines as $line){
-					//$line = trim($line);
 					if(is_numeric(stripos($line, "<img"))){
 						//alt=""があれば消しておく
 						if(strpos($line, "alt=\"\"")){
