@@ -128,7 +128,7 @@ class SOYInquiry_PageApplication{
 
 	    	//不正な書き換えでない場合のみ
 	    	if(md5($value) == $_POST["form_hash"]){
-	    		$_POST["data"] = unserialize($value);
+	    		$_POST["data"] = json_decode($value);
 	    	}
 	    }
 
@@ -275,8 +275,8 @@ class SOYInquiry_PageApplication{
 					$captcha_url = $this->pageUrl . "?captcha=" . $captcha_filename;
 				}
 
-				$hidden_hash = md5(serialize($_POST["data"]));
-				$hidden_value = base64_encode(serialize($_POST["data"]));
+				$hidden_hash = md5(json_encode($_POST["data"]));
+				$hidden_value = base64_encode(json_encode($_POST["data"]));
 
 				$hidden_forms = '<input type="hidden" name="form_hash" value="' . $hidden_hash . '" />';
 				$hidden_forms.= '<input type="hidden" name="form_value" value="' . $hidden_value . '" />';
