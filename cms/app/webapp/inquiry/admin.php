@@ -121,7 +121,7 @@ class SOYInquiryApplication{
 		}
 
 		if(!SOY2HTMLFactory::pageExists($classPath)){
-			return $classPath;
+			return "エラーが発生しました。";
 		}
 
 		$webPage = &SOY2HTMLFactory::createInstance($classPath, array(
