@@ -51,6 +51,12 @@ class EditPage extends WebPage{
   		
   		$content = file_get_contents($path);
   		
+
+  		$this->addInput("soy2_token", array(
+			"name" => "soy2_token",
+			"value" => soy2_get_token()
+		));
+
   		$this->createAdd("target","HTMLLabel",array(
   			"text" => $target
   		));
