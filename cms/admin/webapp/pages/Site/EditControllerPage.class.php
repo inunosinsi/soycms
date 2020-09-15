@@ -6,7 +6,20 @@ class EditControllerPage extends CMSUpdatePageBase {
 	var $id;
 
 	function doPost(){
-
+		// Referer, Token Check
+		$referer = parse_url($_SERVER['HTTP_REFERER']);
+		$_host = ($referer['host'] === $_SERVER['HTTP_HOST']);
+		if($_SERVER['QUERY_STRING']){                   
+			$_path = $referer["path"] . "?" . $_SERVER['QUERY_STRING'];
+		}else{
+			$_path = $referer["path"];
+		}
+		$_path = ($_path == $_SERVER['REQUEST_URI']);
+		$_token = soy2_check_token();
+		if(!($_host && $_path && $_token)){
+			$this->reload();
+			exit;
+		}
 		if(soy2_check_token()){
 			if($this->id == $_POST["site_id"] && $this->saveFile($_POST["contents"])){
 				$this->addMessage("UPDATE_SUCCESS");
