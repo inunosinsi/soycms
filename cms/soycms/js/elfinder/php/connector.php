@@ -153,7 +153,17 @@ $opts = array(
 			'uploadDeny'    => array('all'),                // All Mimetypes not allowed to upload
 			'uploadAllow'   => array('image', 'text/plain', 'text/css', 'application/zip', 'application/epub+zip','application/pdf'),// Mimetype `image` and `text/plain` allowed to upload
 			'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
-			'accessControl' => 'access'                     // disable and hide dot starting files (OPTIONAL)
+			'accessControl' => 'access',                     // disable and hide dot starting files (OPTIONAL)
+			'attributes' => array(
+                                //フロントコントローラー
+                                array(
+                                      	'pattern' => '/\\.php(\\.old(\\.[0-9][0-9])?)?$/',
+                                        'read' => false,
+                                        'write' => false,
+                                        'locked' => true,
+                                        'hidden' => true,
+                                ),
+                        )
 		),
 	)
 );
