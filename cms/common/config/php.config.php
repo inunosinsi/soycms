@@ -1,5 +1,9 @@
 <?php
 
+// Enforce HTTPOnly to PHPSESSID
+// XSS cannot get session id with this option
+ini_set('session.cookie_httponly', 1);
+
 ini_set("short_open_tag","Off");
 
 mb_language('Japanese');
