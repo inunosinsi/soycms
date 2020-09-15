@@ -27,8 +27,8 @@ class EditPage extends WebPage{
 	}
 	
     function __construct() {
-  		
   		$target = @$_GET["target"];
+  		$target = str_replace(Array("..", "\\"), "", $target);
   		$this->target = $target;
   		$dir = SOY2::RootDir() . "template/";
   		if(!file_exists($dir . $target) || !is_writable($dir.$target)){
