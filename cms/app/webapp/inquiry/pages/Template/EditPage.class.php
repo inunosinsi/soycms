@@ -5,7 +5,16 @@ class EditPage extends WebPage{
 	var $target;
 	
 	function doPost(){
-		
+		// Referer, Token Check
+		$referer = parse_url($_SERVER['HTTP_REFERER']);
+		$_host = ($referer['host'] === $_SERVER['HTTP_HOST']);
+		$_path = (($referer['path'] . "?" . $_SERVER['QUERY_STRING']) === $_SERVER['REQUEST_URI']);
+		$_token = soy2_check_token();
+		if(!($_host && $_path && $_token)){
+  			CMSApplication::jump("Template");
+			exit;
+		}
+
 		$target = $this->target;
   		$dir = SOY2::RootDir() . "template/";
   		if(!file_exists($dir . $target) || !is_writable($dir.$target)){
