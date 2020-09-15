@@ -20,14 +20,12 @@ class EditControllerPage extends CMSUpdatePageBase {
 			$this->reload();
 			exit;
 		}
-		if(soy2_check_token()){
-			if($this->id == $_POST["site_id"] && $this->saveFile($_POST["contents"])){
-				$this->addMessage("UPDATE_SUCCESS");
-			}
-
-			$this->reload();
-			exit;
+		if($this->id == $_POST["site_id"] && $this->saveFile($_POST["contents"])){
+			$this->addMessage("UPDATE_SUCCESS");
 		}
+
+		$this->reload();
+		exit;
 	}
 
 	function __construct($args) {
