@@ -333,9 +333,18 @@ class CMSBlogPage extends CMSPage{
 				break;
 
 			case CMSBlogPage::MODE_TOP:
+				//トップページURLが設定されているのに、argsが0の場合はおかしい
+				if(strlen($this->page->getTopPageUri()) && count($this->arguments) === 0){
+					throw new Exception("Argument Values Is None.");
+				}
+
 				//ブログトップページでargsが1つ以上あるのはおかしい。ただし、ページャの場合は除く
 				if(count($this->arguments) >= 1 && strpos($this->arguments[0], "page-") === false){
-					throw new Exception("Too Many Argument Values.");
+					//トップページのURLチェックを行う 下記の式はトップページURLが空で無い時のチェック
+					$argsError = true;
+					if(count($this->arguments) === 1 && $this->page->getTopPageUri() == $this->arguments[0]) $argsError = false;
+					if($argsError) throw new Exception("Too Many Argument Values.");
+					unset($argsError);
 				}
 
 				if(!$this->page->getGenerateTopFlag()){
