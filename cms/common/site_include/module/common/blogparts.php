@@ -54,6 +54,7 @@ function soycms_blogparts($html, $page){
 		}catch(Exception $e){
 			//
 		}
+		unset($dao);
 	}
 
 	//ブログページ
@@ -88,7 +89,8 @@ function soycms_blogparts($html, $page){
 		}
 	}
 
-	$obj->createAdd("category", "ModuleBlog_CategoryList", array(
+	if(!class_exists("CategoryListComponent")) SOY2::import("site_include.blog.component.CategoryListComponent");
+	$obj->createAdd("category", "CategoryListComponent", array(
 		"list" => $categoryLabel,
 		"entryCount" => $entryCount,
 		"categoryUrl" => convertUrlOnModuleBlogParts($blog->getCategoryPageURL(true)),
@@ -107,9 +109,11 @@ function soycms_blogparts($html, $page){
 		}
 	}
 
-	$obj->createAdd("archive","ModuleBlogPage_MonthArciveList",array(
+	if(!class_exists("MonthArciveListComponent")) SOY2::import("site_include.blog.component.MonthArciveListComponent");
+	$obj->createAdd("archive","MonthArciveListComponent",array(
 		"list" => $month_list,
 		"monthPageUri" => convertUrlOnModuleBlogParts($blog->getMonthPageURL(true)),
+		"secretMode" => true,
 		"soy2prefix" => "b_block"
 	));
 
@@ -121,7 +125,8 @@ function soycms_blogparts($html, $page){
 		}
 	}
 
-	$obj->createAdd("archive_every_year", "ModuleBlogPage_MonthArciveEveryYearList", array(
+	if(!class_exists("MonthArciveEveryYearListComponent")) SOY2::import("site_include.blog.component.MonthArciveEveryYearListComponent");
+	$obj->createAdd("archive_every_year", "MonthArciveEveryYearListComponent", array(
 		"list" => $month_every_year_list,
 		"monthPageUri" => convertUrlOnModuleBlogParts($blog->getMonthPageURL(true)),
 		"soy2prefix" => "b_block"
@@ -131,9 +136,10 @@ function soycms_blogparts($html, $page){
 	$logic->setLimit($blog->getRssDisplayCount());
 	$logic->setOffset(0);
 
-	$obj->createAdd("recent_entry_list","ModuleBlog_RecentEntryList",array(
+	if(!class_exists("EntryListComponent")) SOY2::import("site_include.blog.component.EntryListComponent");
+	$obj->createAdd("recent_entry_list","EntryListComponent",array(
 		"list" => $logic->getOpenEntryByLabelIds(array($blogLabelId)),
-		"entryPageUri"=> convertUrlOnModuleBlogParts($blog->getEntryPageURL(true)),
+		"entryPageUrl" => convertUrlOnModuleBlogParts($blog->getEntryPageURL(true)),
 		"soy2prefix" => "b_block"
 	));
 
@@ -144,7 +150,8 @@ function soycms_blogparts($html, $page){
 		$comments = array();
 	}
 
-	$obj->createAdd("recent_comment_list","ModuleBlog_RecentCommentList",array(
+	if(!class_exists("RecentCommentListComponent")) SOY2::import("site_include.blog.component.RecentCommentListComponent");
+	$obj->createAdd("recent_comment_list","RecentCommentListComponent",array(
 		"list" => $comments,
 		"entryPageUri" => convertUrlOnModuleBlogParts($blog->getEntryPageURL(true)),
 		"soy2prefix" => "b_block"
@@ -156,7 +163,8 @@ function soycms_blogparts($html, $page){
 		$trackbacks = array();
 	}
 
-	$obj->createAdd("recent_trackback_list","ModuleBlog_RecentTrackBackList",array(
+	if(!class_exists("RecentTrackBackListComponent")) SOY2::import("site_include.blog.component.RecentTrackBackListComponent");
+	$obj->createAdd("recent_trackback_list","RecentTrackBackListComponent",array(
 		"list" => $trackbacks,
 		"entryPageUri" => convertUrlOnModuleBlogParts($blog->getEntryPageURL(true)),
 		"soy2prefix" => "b_block"
@@ -190,308 +198,4 @@ function convertUrlOnModuleBlogParts($url){
 		if(!$site->getIsDomainRoot()) $siteUrl .= $site->getSiteId() . "/";
 	}
 	return $siteUrl . $url;
-}
-
-class ModuleBlog_CategoryList extends HTMLList{
-
-	private $categoryUrl;
-	private $entryCount = 0;
-
-	function setCategoryUrl($categoryUrl){
-		$this->categoryUrl = $categoryUrl;
-	}
-
-	protected function populateItem($entry){
-
-		$this->addLink("category_link", array(
-			"link"=>$this->categoryUrl . rawurlencode($entry->getAlias()),
-			"soy2prefix"=>"cms"
-		));
-
-		$this->createAdd("category_name","CMSLabel",array(
-			"text"=>$entry->getBranchName(),
-			"soy2prefix"=>"cms"
-		));
-
-		$this->createAdd("category_alias","CMSLabel",array(
-			"text"=>$entry->getAlias(),
-			"soy2prefix"=>"cms"
-		));
-
-		$this->createAdd("entry_count","CMSLabel",array(
-			"text"=>$this->entryCount[$entry->getid()],
-			"soy2prefix"=>"cms"
-		));
-
-		$this->createAdd("label_id","CMSLabel",array(
-			"text"=>$entry->getid(),
-			"soy2prefix"=>"cms"
-		));
-
-		$this->createAdd("category_description", "CMSLabel", array(
-			"text" => $entry->getDescription(),
-			"soy2prefix" => "cms"
-		));
-
-		$this->addLabel("category_description_raw", array(
-			"html" => $entry->getDescription(),
-			"soy2prefix" => "cms"
-		));
-
-
-		$arg = substr(rtrim($_SERVER["REQUEST_URI"], "/"), strrpos(rtrim($_SERVER["REQUEST_URI"], "/"), "/") + 1);
-		$alias = rawurlencode($entry->getAlias());
-		$this->addModel("is_current_category", array(
-			"visible" => ($arg === $alias),
-			"soy2prefix" => "cms"
-		));
-		$this->addModel("no_current_category", array(
-			"visible" => ($arg !== $alias),
-			"soy2prefix" => "cms"
-		));
-
-		$this->addLabel("color", array(
-			"text" => sprintf("%06X",$entry->getColor()),
-			"soy2prefix" => "cms"
-		));
-
-		$this->addLabel("background_color", array(
-			"text" => sprintf("%06X",$entry->getBackGroundColor()),
-			"soy2prefix" => "cms"
-		));
-	}
-
-	function getEntryCount() {
-		return $this->entryCount;
-	}
-	function setEntryCount($entryCount) {
-		$this->entryCount = $entryCount;
-	}
-}
-
-class ModuleBlogPage_MonthArciveList extends HTMLList{
-
- 	private $monthPageUri;
-	private	$format;
-
-	function setMonthPageUri($uri){
-		$this->monthPageUri = $uri;
-	}
-
-	function setFormat($format){
-		$this->format = $format;
-	}
-
-	protected function populateItem($count,$key){
-
-		$this->addLink("archive_link", array(
-			"link" => $this->monthPageUri . date('Y/m',$key),
-			"soy2prefix"=>"cms"
-		));
-
-		$this->createAdd("archive_month","DateLabel",array(
-			"text"=>$key,
-			"soy2prefix"=>"cms",
-			"defaultFormat"=>"Y年n月"
-		));
-		$this->createAdd("entry_count","CMSLabel",array(
-			"text"=>$count,
-			"soy2prefix"=>"cms"
-		));
-	}
-}
-
-class ModuleBlogPage_MonthArciveEveryYearList extends HTMLList{
-
-	private $monthPageUri;
-	private $format;
-
-	function setMonthPageUri($uri){
-		$this->monthPageUri = $uri;
-	}
-
-	function setFormat($format){
-		$this->format = $format;
-	}
-
-	protected function populateItem($month_list, $year){
-
-		$this->addLabel("year", array(
-			"text" => $year,
-			"soy2prefix" => "cms"
-		));
-
-		$this->createAdd("archive","ModuleBlogPage_MonthArciveList",array(
-			"list" => $month_list,
-			"monthPageUri" => $this->monthPageUri,
-			"secretMode" => false,
-			"soy2prefix" => "cms"
-		));
-	}
-}
-
-class ModuleBlog_RecentEntryList extends HTMLList{
-
-	private $entryPageUri;
-
-	function setEntryPageUri($uri){
-		$this->entryPageUri = $uri;
-	}
-
-	function populateItem($entry){
-
-		$link = $this->entryPageUri . rawurlencode($entry->getAlias());
-
-		$this->createAdd("entry_id","CMSLabel",array(
-			"text" => $entry->getId(),
-			"soy2prefix" => "cms"
-		));
-
-		$this->createAdd("title","CMSLabel",array(
-			"text" => $entry->getTitle(),
-			"soy2prefix" => "cms"
-		));
-
-		//同じ意味だけど、他のブロックと合わせてtitle_plainを追加しておく
-		$this->createAdd("title_plain","CMSLabel",array(
-			"text" => $entry->getTitle(),
-			"soy2prefix" => "cms"
-		));
-
-		$this->addLink("entry_link", array(
-			"link" => $link,
-			"soy2prefix" => "cms"
-		));
-
-		$this->createAdd("create_date","DateLabel",array(
-			"text"=>$entry->getCdate(),
-			"soy2prefix"=>"cms"
-		));
-
-		$this->createAdd("create_time","DateLabel",array(
-			"text"=>$entry->getCdate(),
-			"soy2prefix"=>"cms",
-			"defaultFormat"=>"H:i"
-		));
-	}
-
-	function getStartTag(){
-
-		if(defined("CMS_PREVIEW_MODE")){
-			return parent::getStartTag() . CMSUtil::getEntryHiddenInputHTML('<?php echo $'.$this->_soy2_id.'["entry_id"]; ?>','<?php echo strip_tags($'.$this->_soy2_id.'["title"]); ?>');
-		}else{
-			return parent::getStartTag();
-		}
-	}
-}
-
-class ModuleBlog_RecentCommentList extends HTMLList{
-
-	private $entryPageUri;
-
-	function setEntryPageUri($uri){
-		$this->entryPageUri = $uri;
-	}
-
-	function populateItem($comment){
-
-		$this->createAdd("entry_title","CMSLabel",array(
-			"text" => $comment->getEntryTitle(),
-			"soy2prefix" => "cms"
-		));
-
-		$this->createAdd("title","CMSLabel",array(
-			"text" => $comment->getTitle(),
-			"soy2prefix" => "cms"
-		));
-
-		$this->createAdd("author","CMSLabel",array(
-			"text" => $comment->getAuthor(),
-			"soy2prefix" => "cms"
-		));
-
-		$this->createAdd("submit_date","DateLabel",array(
-			"text" => $comment->getSubmitDate(),
-			"soy2prefix" => "cms"
-		));
-		$this->createAdd("submit_time","DateLabel",array(
-			"text"=>$comment->getSubmitDate(),
-			"soy2prefix"=>"cms",
-			"defaultFormat"=>"H:i"
-		));
-
-		$this->addLink("entry_link", array(
-			"link" => $this->entryPageUri . rawurlencode($comment->getAlias()),
-			"soy2prefix" => "cms"
-		));
-
-
-		/* 以下1.2.8～ */
-		$comment_body = str_replace("\n","@@@@__BR__MARKER__@@@@",$comment->getBody());
-		$comment_body = htmlspecialchars($comment_body, ENT_QUOTES, "UTF-8");
-		$comment_body = str_replace("@@@@__BR__MARKER__@@@@","<br>",$comment_body);
-
-		$this->createAdd("body","CMSLabel",array(
-			"html" => $comment_body,
-			"soy2prefix" => "cms"
-		));
-
-		$this->addLink("url", array(
-			"link" => $comment->getUrl(),
-			"soy2prefix" => "cms"
-		));
-
-		$this->addLink("mail_address", array(
-			"link" => "mailto:".$comment->getMailAddress(),
-			"soy2prefix" => "cms"
-		));
-	}
-}
-
-class ModuleBlog_RecentTrackBackList extends HTMLList{
-
-	private $entryPageUri;
-
-	function setEntryPageUri($uri){
-		$this->entryPageUri = $uri;
-	}
-
-	function populateItem($trackback){
-		$link = $this->entryPageUri . rawurlencode($trackback->getAlias());
-
-		$this->createAdd("title","CMSLabel",array(
-			"text"=>$trackback->getTitle(),
-			"soy2prefix" => "cms"
-		));
-		$this->addLink("url", array(
-			"link"=>$trackback->getUrl(),
-			"soy2prefix" => "cms"
-		));
-		$this->createAdd("blog_name","CMSLabel",array(
-			"text"=>$trackback->getBlogName(),
-			"soy2prefix" => "cms"
-		));
-		$this->createAdd("excerpt","CMSLabel",array(
-			"text"=>$trackback->getExcerpt(),
-			"soy2prefix" => "cms"
-		));
-		$this->createAdd("submit_date","DateLabel",array(
-			"text"=>$trackback->getSubmitdate(),
-			"soy2prefix" => "cms"
-		));
-		$this->createAdd("submit_time","DateLabel",array(
-			"text"=>$trackback->getSubmitdate(),
-			"soy2prefix"=>"cms",
-			"defaultFormat"=>"H:i"
-		));
-		$this->addLink("entry_link", array(
-			"link"=>$link,
-			"soy2prefix"=>"cms"
-		));
-
-		$this->createAdd("entry_title","CMSLabel",array(
-			"text"=>$trackback->getEntryTitle(),
-			"soy2prefix"=>"cms"
-		));
-	}
 }
