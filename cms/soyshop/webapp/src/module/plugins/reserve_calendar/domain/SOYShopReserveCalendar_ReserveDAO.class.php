@@ -273,6 +273,8 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 		return $tokens;
 	}
 
+	abstract function deleteByOrderId($orderId);
+
 	/**
 	 * @final
 	 */
@@ -289,7 +291,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 				var_dump($e);
 				$res = array();
 			}
-			
+
 			if(!count($res)) break;
 		}
 		$binds[":reserveDate"] += $i;

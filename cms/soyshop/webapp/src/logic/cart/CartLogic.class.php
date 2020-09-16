@@ -930,18 +930,21 @@ class CartLogic extends SOY2LogicBase{
 				}
 			}else{	//予約カレンダーモード
 				$schedule = ReserveCalendarUtil::getScheduleByItemIndexAndItemId($this, $index, $itemOrder->getItemId());
-				if(!is_null($schedule->getId())){
 
-					//定員数0
-					if(!ReserveCalendarUtil::checkIsUnsoldSeatByScheduleId($schedule->getId())){
-						throw new SOYShop_EmptyStockException($item->getName()." (".$item->getId().") is empty (stock is 0).");
-					}
+				//予約可のスケジュールがなくなった
+				if(is_null($schedule->getId())){
+					throw new SOYShop_EmptyStockException($item->getName()." (".$item->getId().") is none.");
+				}
 
-					//定員数オーバー @ToDo 仮登録を含めるか？
-					$unsoldSeat = ReserveCalendarUtil::getCountUnsoldSeat($schedule);
-					if($unsoldSeat < $itemCount){
-						throw new SOYShop_OverStockException($item->getName()." (".$item->getId().") is fewer (" . $unsoldSeat . ") than order (" . $itemCount . ").");
-					}
+				//定員数0
+				if(!ReserveCalendarUtil::checkIsUnsoldSeatByScheduleId($schedule->getId())){
+					throw new SOYShop_EmptyStockException($item->getName()." (".$item->getId().") is empty (stock is 0).");
+				}
+
+				//定員数オーバー @ToDo 仮登録を含めるか？
+				$unsoldSeat = ReserveCalendarUtil::getCountUnsoldSeat($schedule);
+				if($unsoldSeat < $itemCount){
+					throw new SOYShop_OverStockException($item->getName()." (".$item->getId().") is fewer (" . $unsoldSeat . ") than order (" . $itemCount . ").");
 				}
 			}
 
