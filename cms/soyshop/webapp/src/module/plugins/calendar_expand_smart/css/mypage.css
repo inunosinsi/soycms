@@ -19,11 +19,23 @@
 	#wrap {
 		padding: 0 5px;
 	}
+
+	.sp_pager{
+	   display:none;
+	}
+
+	td.empty{
+		display: none;
+	}
 }
 
 /* ========================================
  * #mini-calendar
  * ========================================*/
+ .sp_pager{
+    display:none;
+ }
+
 .calendar-year-month {
 	text-align: center;
 	font-size: 32px;
@@ -154,6 +166,9 @@ td.today {
 @media screen and (max-width: 600px) {
 	.pager{
 		display:none;
+	}
+	.sp_pager{
+		display:block;
 	}
 	thead {
 		display: none;
