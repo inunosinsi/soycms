@@ -969,12 +969,10 @@ function soyshop_get_user_age_month($birthday){
 		}else{
 			return 0;
 		}
-	// @ToDo 日付も合わせて厳密にカウントすべきか？
-	}else if($diff > 0){
-		return $diff;
 	}
 
+	//誕生日になっていない時はプラス1
+	if($d > date("j")) $diff++;
 
-	//たとえば今が8月で誕生月が2月の場合(6ヶ月)
-	return 12 + $diff;
+	return ($diff > 0) ? 12 - $diff : $diff * -1;
 }
