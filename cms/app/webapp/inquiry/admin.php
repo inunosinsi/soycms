@@ -121,11 +121,7 @@ class SOYInquiryApplication{
 		}
 
 		if(!SOY2HTMLFactory::pageExists($classPath)){
-<<<<<<< HEAD
 			return htmlspecialchars($classPath, ENT_QUOTES, "UTF-8");
-=======
-			return "エラーが発生しました。";
->>>>>>> 41ec431007b702e77fb1e73d28e2d147ef8c844e
 		}
 
 		$webPage = &SOY2HTMLFactory::createInstance($classPath, array(
