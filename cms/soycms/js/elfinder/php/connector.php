@@ -198,7 +198,6 @@ $opts = array(
 			'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
 			'accessControl' => 'access',                     // disable and hide dot starting files (OPTIONAL)
 			'attributes' => array(
-<<<<<<< HEAD
 					//フロントコントローラー
 					array(
 							'pattern' => '/\\.php(\\.old(\\.[0-9][0-9])?)?$/',
@@ -208,17 +207,6 @@ $opts = array(
 							'hidden' => true,
 					),
 			)
-=======
-                                //フロントコントローラー
-                                array(
-                                      	'pattern' => '/\\.php(\\.old(\\.[0-9][0-9])?)?$/',
-                                        'read' => false,
-                                        'write' => false,
-                                        'locked' => true,
-                                        'hidden' => true,
-                                ),
-                        )
->>>>>>> 41ec431007b702e77fb1e73d28e2d147ef8c844e
 		),
 		// Trash volume
 		array(
