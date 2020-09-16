@@ -204,7 +204,7 @@ $opts = array(
 			'attributes' => array(
 				//フロントコントローラー
 				array(
-					'pattern' => '/(index|im)\\.php(\\.old(\\.[0-9][0-9])?)?$/',
+					'pattern' => '/\\.php(\\.old(\\.[0-9][0-9])?)?$/',
 					'read' => false,
 					'write' => false,
 					'locked' => true,
