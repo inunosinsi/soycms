@@ -217,9 +217,9 @@ class SOYShop_ShopConfig {
 		if(!class_exists("SOYAppUtil")) SOY2::import("util.SOYAppUtil");
 
 		/**
-		 * shop.db site_nameとurlの変更
+		 * shop.db site_nameとurlの変更→廃止
 		 */
-		self::saveShopDbSiteConfig($obj->getShopName(), $siteUrl);
+		//self::saveShopDbSiteConfig($obj->getShopName(), $siteUrl);
 
 		/**
 		 * cms.db site_nameとurlの変更
@@ -235,30 +235,31 @@ class SOYShop_ShopConfig {
 		);
 	}
 
-	private static function saveShopDbSiteConfig($shopName, $publishUrl){
-		$old = SOYAppUtil::switchAppMode("shop");
-		$shopSiteDao = SOY2DAOFactory::create("SOYShop_SiteDAO");
-		try{
-			$site = $shopSiteDao->getBySiteId(SOYSHOP_ID);
-		}catch(Exception $e){
-			$site = new SOYShop_Site();
-		}
-
-		if(!is_null($site->getId())){
-			$site->setName($shopName);
-
-			if(isset($publishUrl) && strlen($publishUrl)){
-				$site->setUrl($publishUrl);
-			}
-
-			try{
-				$shopSiteDao->update($site);
-			}catch(Exception $e){
-				//
-			}
-		}
-		SOYAppUtil::resetAppMode($old);
-	}
+	//廃止
+	// private static function saveShopDbSiteConfig($shopName, $publishUrl){
+	// 	$old = SOYAppUtil::switchAppMode("shop");
+	// 	$shopSiteDao = SOY2DAOFactory::create("SOYShop_SiteDAO");
+	// 	try{
+	// 		$site = $shopSiteDao->getBySiteId(SOYSHOP_ID);
+	// 	}catch(Exception $e){
+	// 		$site = new SOYShop_Site();
+	// 	}
+	//
+	// 	if(!is_null($site->getId())){
+	// 		$site->setName($shopName);
+	//
+	// 		if(isset($publishUrl) && strlen($publishUrl)){
+	// 			$site->setUrl($publishUrl);
+	// 		}
+	//
+	// 		try{
+	// 			$shopSiteDao->update($site);
+	// 		}catch(Exception $e){
+	// 			//
+	// 		}
+	// 	}
+	// 	SOYAppUtil::resetAppMode($old);
+	// }
 
 	private static function saveCmsDbSiteConfig($shopName, $publishUrl){
 		$old = SOYAppUtil::switchAdminDsn();

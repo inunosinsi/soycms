@@ -11,28 +11,14 @@ class IndexPage extends SOYShopWebPage{
 		parent::__construct();
 
 		//soyshop site list
-		$sites = $this->getSites();
+		$sites = ShopUtil::getSites();
 		$this->createAdd("soyshop_list", "_common.SOYShop_SiteList",array(
 			"list" => $sites,
-			"logic" => SOY2Logic::createInstance("logic.ShopLogic")
+			"logic" => SOY2Logic::createInstance("logic.RootLogic")
 		));
 
-		DisplayPlugin::toggle("no_soyshop", (count($sites) === 0));
-		DisplayPlugin::toggle("is_soyshop", (count($sites) > 0));
-	}
-
-	/**
-	 * get SOY Shop Sites
-	 * @return Array Site
-	 */
-	function getSites(){
-		$dao = SOY2DAOFactory::create("SOYShop_SiteDAO");
-		try{
-			$sites = $dao->get();
-		}catch(Exception $e){
-			$sites = array();
-		}
-		return $sites;
+		$cnt = count($sites);
+		DisplayPlugin::toggle("no_soyshop", ($cnt === 0));
+		DisplayPlugin::toggle("is_soyshop", ($cnt > 0));
 	}
 }
-?>

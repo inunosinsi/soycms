@@ -31,6 +31,7 @@ if(!defined("SOYSHOP_COMMON_DIR")){
 
 SOY2::imports("domain.*");
 SOY2::imports("base.*");
+SOY2::import("util.ShopUtil");
 
 /**
  * Shopのアクセス権限をチェックする

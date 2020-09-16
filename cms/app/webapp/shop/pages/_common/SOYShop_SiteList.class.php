@@ -11,7 +11,7 @@ class SOYShop_SiteList extends HTMLList{
 
 		//site name
 		$this->addLabel("soyshop_site_name", array(
-			"text" => $entity->getName()
+			"text" => $entity->getSiteName()
 		));
 
 		//site url
