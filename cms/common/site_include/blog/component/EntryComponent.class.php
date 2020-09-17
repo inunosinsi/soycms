@@ -203,6 +203,17 @@ class EntryComponent extends SOYBodyComponentBase{
 			"defaultFormat"=>"H:i"
 		));
 
+		$this->createAdd("update_date","DateLabel",array(
+			"text"=>$entry->getUdate(),
+			"soy2prefix"=>"cms"
+		));
+
+		$this->createAdd("update_time","DateLabel",array(
+			"text"=>$entry->getUdate(),
+			"soy2prefix"=>"cms",
+			"defaultFormat"=>"H:i"
+		));
+
 		$this->addLink("entry_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $link
