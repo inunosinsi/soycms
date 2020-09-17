@@ -886,6 +886,8 @@ class CartLogic extends SOY2LogicBase{
 		$reserveCalendarMode = SOYShopPluginUtil::checkIsActive("reserve_calendar");
 		if($reserveCalendarMode) SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
 
+		//合算　予約で使う
+		$itemCountTotalList = array();
 		foreach($items as $index => $itemOrder){
 			$itemId = $itemOrder->getItemId();
 
@@ -943,8 +945,10 @@ class CartLogic extends SOY2LogicBase{
 
 				//定員数オーバー @ToDo 仮登録を含めるか？
 				$unsoldSeat = ReserveCalendarUtil::getCountUnsoldSeat($schedule);
-				if($unsoldSeat < $itemCount){
-					throw new SOYShop_OverStockException($item->getName()." (".$item->getId().") is fewer (" . $unsoldSeat . ") than order (" . $itemCount . ").");
+				if(!isset($itemCountTotalList[$schedule->getId()])) $itemCountTotalList[$schedule->getId()] = 0;
+				$itemCountTotalList[$schedule->getId()] += $itemCount;
+				if($unsoldSeat < $itemCountTotalList[$schedule->getId()]){
+					throw new SOYShop_OverStockException($item->getName()." (".$item->getId().") is fewer (" . $unsoldSeat . ") than order (" . $itemCountTotalList[$schedule->getId()] . ").");
 				}
 			}
 
