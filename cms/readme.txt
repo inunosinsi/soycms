@@ -11,6 +11,9 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 のように配置したら、インストールは完了です。
 
 /** リリース **/
+Next
+○追加
+	 - Cart05Pageで在庫数のチェックを追加
 2.2.0
 	○追加
 	 - Login with Amazonプラグイン
