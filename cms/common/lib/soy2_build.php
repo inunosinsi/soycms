@@ -9226,7 +9226,7 @@ function soy2_check_token(){
 function soy2_generate_token(){
 	return md5(mt_rand());
 }
-function soy2_refefer_check(){
+function soy2_check_referer(){
 	$referer = parse_url($_SERVER['HTTP_REFERER']);
 	$port = ($referer["port"] != 80 || $referer["port"] != 443) ? ":" . $referer["port"] : "";
 	if($referer['host'] . $port !== $_SERVER['HTTP_HOST']) return false;
