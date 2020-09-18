@@ -18,7 +18,7 @@ class DetailPage extends WebPage{
 		$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
 		//元のデータを読み込む：readonlyな値をからの値で上書きしないように
-		$user = $dao->getById($this->id);
+		$user = soyshop_get_user_object($this->id);
 
 		if(isset($_POST["Customer"])){
 			$detail = $_POST["Customer"];
@@ -153,14 +153,8 @@ class DetailPage extends WebPage{
 
 		DisplayPlugin::toggle("sended", isset($_GET["sended"]));
 
-    	$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-
-    	try{
-    		$shopUser = $dao->getById($id);
-    	}catch(Exception $e){
-    		SOY2PageController::jump("User");
-    		exit;
-    	}
+    	$shopUser = soyshop_get_user_object($id);
+		if(is_null($shopUser->getId())) SOY2PageController::jump("User");
 
 		//カートIDとマイページIDがnoneの場合は公開側からの注文ボタンを表示しない
 		DisplayPlugin::toggle("order_cart_link", (soyshop_get_cart_id() != "none" && soyshop_get_mypage_id() != "none"));
