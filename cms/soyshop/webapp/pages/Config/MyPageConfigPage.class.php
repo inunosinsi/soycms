@@ -19,6 +19,7 @@ class MyPageConfigPage extends WebPage{
 			$profile_resize = (isset($_POST["mypage_profile_resize"])) ? 1 : 0;
 
 			SOYShop_DataSets::put("config.mypage.title", $_POST["mypage_title"]);
+			SOYShop_DataSets::put("config.mypage.title.no_logged_in", $_POST["mypage_title_no_logged_in"]);
 
 			SOYShop_DataSets::put("config.mypage.use_ssl", (int)$_POST["mypage_ssl"]);
 			SOYShop_DataSets::put("config.mypage.ssl_url", self::checkSSLMyPageUrl($_POST["mypage_ssl_url"]));
@@ -78,6 +79,11 @@ class MyPageConfigPage extends WebPage{
 		$this->addInput("mypage_title", array(
 			"name" => "mypage_title",
 			"value" => $this->getMyPageTitle()
+		));
+
+		$this->addInput("mypage_title_no_logged_in", array(
+			"name" => "mypage_title_no_logged_in",
+			"value" => $this->getMyPageTitleNoLoggedIn()
 		));
 
 		//多言語化用の拡張ポイント
@@ -259,6 +265,10 @@ class MyPageConfigPage extends WebPage{
 
 	function getMyPageTitle(){
 		return SOYShop_DataSets::get("config.mypage.title", "マイページ");
+	}
+
+	function getMyPageTitleNoLoggedIn(){
+		return SOYShop_DataSets::get("config.mypage.title.no_logged_in", "マイページ");
 	}
 
 	private function getMyPageApplications(){

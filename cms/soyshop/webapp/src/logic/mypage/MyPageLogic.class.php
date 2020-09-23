@@ -305,7 +305,7 @@ class MyPageLogic extends SOY2LogicBase{
 		//ログインしていない時の表示
 		}elseif($args[0] === "login" || $args[0] === "logout" || $args[0] === "remind" || $args[0] === "register"){
 
-			$titleFormat = "マイページ";
+			$titleFormat = SOYShop_DataSets::get("config.mypage.title.no_logged_in", "マイページ");
 
 		//マイページにお客様の名前を挿入する
 		}else{
@@ -425,7 +425,7 @@ class MyPageLogic extends SOY2LogicBase{
 		//プラグインのログイン周りの拡張ポイントを持つプラグインがあるか？
 		SOYShopPlugin::load("soyshop.mypage.login");
 		$isExtendLogin = SOYShopPlugin::invoke("soyshop.mypage.login")->getResult();
-		
+
 		if(isset($isExtendLogin) && is_bool($isExtendLogin) && $isExtendLogin){	//ログインの拡張
 			SOYShopPlugin::invoke("soyshop.mypage.login", array(
 				"mode" => "login"
