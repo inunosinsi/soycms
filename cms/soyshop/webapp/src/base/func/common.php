@@ -964,7 +964,9 @@ function soyshop_get_user_age_month($birthday, $now=null){
 	//nowがない場合は通常計算、nowがある場合はdate("j")の箇所の値をnowに合わせる
 	$nowD = (isset($now) && is_numeric($now)) ? date("j", $now) : date("j");
 
-	$diff = $m - date("n");
+	if(is_null($now)) $now = time();
+	$diff = $m - date("n", $now);
+
 	if($diff === 0){
 		//誕生日がきてない場合は11ヶ月で返す
 		if($d > $nowD){
