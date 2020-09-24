@@ -7,7 +7,7 @@ class ItemPage extends MainMyPagePageBase{
 	private $userId;
 
 	function doPost(){
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 
 			if(isset($_POST["reset"])){
 				$mypage = $this->getMyPage();

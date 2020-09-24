@@ -3,7 +3,7 @@
 class IndexPage extends MainMyPagePageBase{
 
 	function doPost(){
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 			$mypage = $this->getMyPage();
 			$mypage->setAttribute(TransferInfoUtil::BANK_INFO, $_POST[TransferInfoUtil::BANK_INFO]);
 			$mypage->save();

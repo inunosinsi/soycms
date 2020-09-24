@@ -11,7 +11,7 @@ class Cart04Page extends MainCartPageBase{
 
 	function doPost(){
 
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 
 			$cart = CartLogic::getCart();
 			$cart->removeErrorMessage("order_confirm_error");

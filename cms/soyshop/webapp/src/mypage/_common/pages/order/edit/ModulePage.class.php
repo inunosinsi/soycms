@@ -7,7 +7,7 @@ class ModulePage extends MainMyPagePageBase{
 	private $moduleId;	//配送モジュールの選択
 
 	function doPost(){
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 
 			$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
 			$changes = SOYShopPlugin::invoke("soyshop.delivery", array(

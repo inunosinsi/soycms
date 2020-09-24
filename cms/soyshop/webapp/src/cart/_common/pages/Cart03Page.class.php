@@ -11,164 +11,166 @@ class Cart03Page extends MainCartPageBase{
 
 	function doPost(){
 
-		if(isset($_POST["next"]) || isset($_POST["next_x"])){
+		if(soy2_check_token() && soy2_check_referer()){
+			if(isset($_POST["next"]) || isset($_POST["next_x"])){
 
-			$cart = CartLogic::getCart();
+				$cart = CartLogic::getCart();
 
-			if(!$this->user){
-				$this->user = $cart->getCustomerInformation();
-			}
-			$user = $this->user;
-
-			//まずはエラーチェックのみ
-			self::checkError($cart);
-
-			$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-
-			/**
-			 * 古いのをクリア
-			 * ポイントとカスタムフィールドの値はプラグイン内で削除
-			 */
-			$cart->removeModule($cart->getAttribute("payment_module"));
-			$cart->removeModule($cart->getAttribute("delivery_module"));
-			$cart->clearAttribute("payment_module");
-			$cart->clearAttribute("delivery_module");
-
-			SOYShopPlugin::load("soyshop.discount");
-			SOYShopPlugin::invoke("soyshop.discount", array(
-				"mode" => "clear",
-				"cart" => $cart,
-			));
-
-			SOYShopPlugin::load("soyshop.point.payment");
-			SOYShopPlugin::invoke("soyshop.point.payment", array(
-				"mode" => "clear",
-				"cart" => $cart,
-			));
-
-			SOYShopPlugin::load("soyshop.order.customfield");
-			SOYShopPlugin::invoke("soyshop.order.customfield", array(
-				"mode" => "clear",
-				"cart" => $cart,
-			));
-
-			//支払
-			if(isset($_POST["payment_module"]) && !$cart->hasError("payment")){
-				//選択を保存
-				$moduleId = $_POST["payment_module"];
-				$cart->setAttribute("payment_module", $moduleId);
-
-				//選択されたプラグインのみを読み込む：plugins/$moduleId/soyshop.payment.php
-				$paymentModule = $moduleDAO->getByPluginId($moduleId);
-				SOYShopPlugin::load("soyshop.payment", $paymentModule);
-
-				//実行
-				$delegate = SOYShopPlugin::invoke("soyshop.payment", array(
-					"mode" => "select",
-					"cart" => $cart
-				));
-
-				//Cart05が必要かどうか引き継がれない時は再度調べる
-				if(is_null($cart->getAttribute("has_option"))){
-					$cart->setAttribute("has_option", $delegate->getHasOption());
+				if(!$this->user){
+					$this->user = $cart->getCustomerInformation();
 				}
-			}
+				$user = $this->user;
 
-			//配送
-			if(isset($_POST["delivery_module"]) && !$cart->hasError("delivery")){
-				$moduleId = $_POST["delivery_module"];
-				$cart->setAttribute("delivery_module", $moduleId);
+				//まずはエラーチェックのみ
+				self::checkError($cart);
 
-				//選択されたプラグインのみを読み込む
-				$deliveryModule = $moduleDAO->getByPluginId($moduleId);
-				SOYShopPlugin::load("soyshop.delivery", $deliveryModule);
+				$moduleDAO = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 
-				SOYShopPlugin::invoke("soyshop.delivery", array(
-					"mode" => "select",
+				/**
+				 * 古いのをクリア
+				 * ポイントとカスタムフィールドの値はプラグイン内で削除
+				 */
+				$cart->removeModule($cart->getAttribute("payment_module"));
+				$cart->removeModule($cart->getAttribute("delivery_module"));
+				$cart->clearAttribute("payment_module");
+				$cart->clearAttribute("delivery_module");
+
+				SOYShopPlugin::load("soyshop.discount");
+				SOYShopPlugin::invoke("soyshop.discount", array(
+					"mode" => "clear",
+					"cart" => $cart,
+				));
+
+				SOYShopPlugin::load("soyshop.point.payment");
+				SOYShopPlugin::invoke("soyshop.point.payment", array(
+					"mode" => "clear",
+					"cart" => $cart,
+				));
+
+				SOYShopPlugin::load("soyshop.order.customfield");
+				SOYShopPlugin::invoke("soyshop.order.customfield", array(
+					"mode" => "clear",
+					"cart" => $cart,
+				));
+
+				//支払
+				if(isset($_POST["payment_module"]) && !$cart->hasError("payment")){
+					//選択を保存
+					$moduleId = $_POST["payment_module"];
+					$cart->setAttribute("payment_module", $moduleId);
+
+					//選択されたプラグインのみを読み込む：plugins/$moduleId/soyshop.payment.php
+					$paymentModule = $moduleDAO->getByPluginId($moduleId);
+					SOYShopPlugin::load("soyshop.payment", $paymentModule);
+
+					//実行
+					$delegate = SOYShopPlugin::invoke("soyshop.payment", array(
+						"mode" => "select",
+						"cart" => $cart
+					));
+
+					//Cart05が必要かどうか引き継がれない時は再度調べる
+					if(is_null($cart->getAttribute("has_option"))){
+						$cart->setAttribute("has_option", $delegate->getHasOption());
+					}
+				}
+
+				//配送
+				if(isset($_POST["delivery_module"]) && !$cart->hasError("delivery")){
+					$moduleId = $_POST["delivery_module"];
+					$cart->setAttribute("delivery_module", $moduleId);
+
+					//選択されたプラグインのみを読み込む
+					$deliveryModule = $moduleDAO->getByPluginId($moduleId);
+					SOYShopPlugin::load("soyshop.delivery", $deliveryModule);
+
+					SOYShopPlugin::invoke("soyshop.delivery", array(
+						"mode" => "select",
+						"cart" => $cart
+					));
+				}
+
+				//割引
+				if(!$cart->hasError("discount") && isset($_POST["discount_module"])){
+					SOYShopPlugin::invoke("soyshop.discount", array(
+						"mode" => "select",
+						"cart" => $cart,
+						"param" => $_POST["discount_module"]
+					));
+				}
+
+				/**
+				 * ポイント
+				 * 念のため、顧客IDがあるかどうかですでに登録されているか？を見ておく
+				 */
+				if(!$cart->hasError("point") && (isset($_POST["point_module"])) && !is_null($user->getId())){
+					SOYShopPlugin::invoke("soyshop.point.payment", array(
+						"mode" => "select",
+						"cart" => $cart,
+						"param" => $_POST["point_module"],
+						"userId" => $user->getId()
+					));
+				}
+
+				//カスタムフィールド
+				if(isset($_POST["customfield_module"]) || (isset($_FILES["customfield_module"]["tmp_name"]))){
+					//ロードしない？
+	//				SOYShopPlugin::load("soyshop.order.customfield");
+					SOYShopPlugin::invoke("soyshop.order.customfield", array(
+						"mode" => "post",
+						"cart" => $cart,
+						"param" => $_POST["customfield_module"]
+					));
+				}
+
+				//備考 旧カートで使用していたことがあるため残しておく
+				if(isset($_POST["Attributes"]) && isset($_POST["Attributes"]["memo"])){
+					$cart->setOrderAttribute("memo", MessageManager::get("NOTE"), $_POST["Attributes"]["memo"]);
+				}
+
+
+				//上記の処理以外で行いたいことがあればここで行う
+				SOYShopPlugin::load("soyshop.order.process");
+				SOYShopPlugin::invoke("soyshop.order.process", array(
+					"mode" => "cart03post",
 					"cart" => $cart
 				));
+
+				//消費税の計算
+				SOY2::import("domain.config.SOYShop_ShopConfig");
+				$config = SOYShop_ShopConfig::load();
+				if($config->getConsumptionTaxInclusiveCommission()){
+					$cart->calculateConsumptionTax();
+				}
+
+				//エラーがなければ次へ
+				if($cart->hasError()){
+					$cart->setAttribute("page", "Cart03");
+				}else{
+					$cart->setAttribute("page", "Cart04");
+				}
+
+				$cart->save();
+
+				soyshop_redirect_cart();
 			}
 
-			//割引
-			if(!$cart->hasError("discount") && isset($_POST["discount_module"])){
-				SOYShopPlugin::invoke("soyshop.discount", array(
-					"mode" => "select",
-					"cart" => $cart,
-					"param" => $_POST["discount_module"]
-				));
+			if(isset($_POST["prev"]) || isset($_POST["prev_x"])){
+				$cart = CartLogic::getCart();
+				$cart->setAttribute("page", "Cart02");
+
+				//戻るときにモジュールを削除しない：入力内容を保持しておく
+	//			$cart->clearAttribute("payment_module");
+	//			$cart->clearAttribute("delivery_module");
+
+				$cart->clearErrorMessage();
+
+				$cart->save();
+
+				soyshop_redirect_cart();
 			}
-
-			/**
-			 * ポイント
-			 * 念のため、顧客IDがあるかどうかですでに登録されているか？を見ておく
-			 */
-			if(!$cart->hasError("point") && (isset($_POST["point_module"])) && !is_null($user->getId())){
-				SOYShopPlugin::invoke("soyshop.point.payment", array(
-					"mode" => "select",
-					"cart" => $cart,
-					"param" => $_POST["point_module"],
-					"userId" => $user->getId()
-				));
-			}
-
-			//カスタムフィールド
-			if(isset($_POST["customfield_module"]) || (isset($_FILES["customfield_module"]["tmp_name"]))){
-				//ロードしない？
-//				SOYShopPlugin::load("soyshop.order.customfield");
-				SOYShopPlugin::invoke("soyshop.order.customfield", array(
-					"mode" => "post",
-					"cart" => $cart,
-					"param" => $_POST["customfield_module"]
-				));
-			}
-
-			//備考 旧カートで使用していたことがあるため残しておく
-			if(isset($_POST["Attributes"]) && isset($_POST["Attributes"]["memo"])){
-				$cart->setOrderAttribute("memo", MessageManager::get("NOTE"), $_POST["Attributes"]["memo"]);
-			}
-
-
-			//上記の処理以外で行いたいことがあればここで行う
-			SOYShopPlugin::load("soyshop.order.process");
-			SOYShopPlugin::invoke("soyshop.order.process", array(
-				"mode" => "cart03post",
-				"cart" => $cart
-			));
-
-			//消費税の計算
-			SOY2::import("domain.config.SOYShop_ShopConfig");
-			$config = SOYShop_ShopConfig::load();
-			if($config->getConsumptionTaxInclusiveCommission()){
-				$cart->calculateConsumptionTax();
-			}
-
-			//エラーがなければ次へ
-			if($cart->hasError()){
-				$cart->setAttribute("page", "Cart03");
-			}else{
-				$cart->setAttribute("page", "Cart04");
-			}
-
-			$cart->save();
-
-			soyshop_redirect_cart();
 		}
-
-		if(isset($_POST["prev"]) || isset($_POST["prev_x"])){
-			$cart = CartLogic::getCart();
-			$cart->setAttribute("page", "Cart02");
-
-			//戻るときにモジュールを削除しない：入力内容を保持しておく
-//			$cart->clearAttribute("payment_module");
-//			$cart->clearAttribute("delivery_module");
-
-			$cart->clearErrorMessage();
-
-			$cart->save();
-
-			soyshop_redirect_cart();
-		}
-
+		soyshop_redirect_cart();
 	}
 
 	function __construct(){

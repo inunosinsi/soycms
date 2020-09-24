@@ -36,89 +36,91 @@ class Cart01Page extends MainCartPageBase{
 			soyshop_redirect_cart();
 		}
 
-		//ログインして次へ
-		if(isset($_POST["login"]) || isset($_POST["login_x"])){
+		if(soy2_check_token() && soy2_check_referer()){
+			//ログインして次へ
+			if(isset($_POST["login"]) || isset($_POST["login_x"])){
 
-			//ログイン
-			if( $user = self::_login($userArray) ){//代入
-				//ログイン情報
-				$cart->setCustomerInformation($user);
-				$cart->setAttribute("logined", true);
-				$cart->setAttribute("logined_userid", $user->getId());
+				//ログイン
+				if( $user = self::_login($userArray) ){//代入
+					//ログイン情報
+					$cart->setCustomerInformation($user);
+					$cart->setAttribute("logined", true);
+					$cart->setAttribute("logined_userid", $user->getId());
 
-				//マイページでもログイン
-				$mypage = MyPageLogic::getMyPage();
-				$mypage->setAttribute("loggedin", true);
-		    	$mypage->setAttribute("userId", $user->getId());
-			}else{
-				//ログイン失敗または登録なし
-				$user = new SOYShop_User();
-				$user->setMailAddress($userArray["mailAddress"]);
-				$cart->setCustomerInformation($user);
+					//マイページでもログイン
+					$mypage = MyPageLogic::getMyPage();
+					$mypage->setAttribute("loggedin", true);
+			    	$mypage->setAttribute("userId", $user->getId());
+				}else{
+					//ログイン失敗または登録なし
+					$user = new SOYShop_User();
+					$user->setMailAddress($userArray["mailAddress"]);
+					$cart->setCustomerInformation($user);
 
-				$cart->addErrorMessage("login_error", MessageManager::get("NOT_LOGIN"));
+					$cart->addErrorMessage("login_error", MessageManager::get("NOT_LOGIN"));
+
+					$cart->save();
+					soyshop_redirect_cart();
+				}
+
+				//プラグインでのカートチェック
+				SOYShopPlugin::load("soyshop.cart.check");
+				SOYShopPlugin::invoke("soyshop.cart.check", array(
+					"mode" => "page01",
+					"cart" => $cart,
+				));
+
+				//在庫エラーがなければ次へ
+				try{
+					$cart->checkOrderable();
+					$cart->checkItemCountInCart();
+					$cart->setAttribute("page", "Cart02");
+				}catch(SOYShop_StockException $e){
+					$cart->setAttribute("page", "Cart01");
+				}catch(SOYShop_CartException $e){
+					$cart->setAttribute("page", "Cart01");
+				}catch(Exception $e){
+					//DB error?
+				}
 
 				$cart->save();
 				soyshop_redirect_cart();
+				exit;
 			}
 
-			//プラグインでのカートチェック
-			SOYShopPlugin::load("soyshop.cart.check");
-			SOYShopPlugin::invoke("soyshop.cart.check", array(
-				"mode" => "page01",
-				"cart" => $cart,
-			));
+			//ログインしないで次へ
+			if(isset($_POST["next"]) || isset($_POST["next_x"])){
 
-			//在庫エラーがなければ次へ
-			try{
-				$cart->checkOrderable();
-				$cart->checkItemCountInCart();
-				$cart->setAttribute("page", "Cart02");
-			}catch(SOYShop_StockException $e){
-				$cart->setAttribute("page", "Cart01");
-			}catch(SOYShop_CartException $e){
-				$cart->setAttribute("page", "Cart01");
-			}catch(Exception $e){
-				//DB error?
+				//すでにマイページでログインしているならログインする
+				if( $user = self::_getMyPageLoggedInUser() ){//代入
+					//ログイン情報
+					$cart->setCustomerInformation($user);
+					$cart->setAttribute("logined", true);
+					$cart->setAttribute("logined_userid", $user->getId());
+				}
+
+				//プラグインでのカートチェック
+				SOYShopPlugin::load("soyshop.cart.check");
+				SOYShopPlugin::invoke("soyshop.cart.check", array(
+					"mode" => "page01",
+					"cart" => $cart,
+				));
+
+				//在庫エラーがなければ次へ
+				try{
+					$cart->checkOrderable();
+					$cart->checkItemCountInCart();
+					$cart->setAttribute("page", "Cart02");
+				}catch(SOYShop_StockException $e){
+					$cart->setAttribute("page", "Cart01");
+				}catch(Exception $e){
+					//DB error?
+				}
+
+				$cart->save();
+				soyshop_redirect_cart();
+				exit;
 			}
-
-			$cart->save();
-			soyshop_redirect_cart();
-			exit;
-		}
-
-		//ログインしないで次へ
-		if(isset($_POST["next"]) || isset($_POST["next_x"])){
-
-			//すでにマイページでログインしているならログインする
-			if( $user = self::_getMyPageLoggedInUser() ){//代入
-				//ログイン情報
-				$cart->setCustomerInformation($user);
-				$cart->setAttribute("logined", true);
-				$cart->setAttribute("logined_userid", $user->getId());
-			}
-
-			//プラグインでのカートチェック
-			SOYShopPlugin::load("soyshop.cart.check");
-			SOYShopPlugin::invoke("soyshop.cart.check", array(
-				"mode" => "page01",
-				"cart" => $cart,
-			));
-
-			//在庫エラーがなければ次へ
-			try{
-				$cart->checkOrderable();
-				$cart->checkItemCountInCart();
-				$cart->setAttribute("page", "Cart02");
-			}catch(SOYShop_StockException $e){
-				$cart->setAttribute("page", "Cart01");
-			}catch(Exception $e){
-				//DB error?
-			}
-
-			$cart->save();
-			soyshop_redirect_cart();
-			exit;
 		}
 
 		soyshop_redirect_cart();

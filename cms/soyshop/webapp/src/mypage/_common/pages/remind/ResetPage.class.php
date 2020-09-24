@@ -14,7 +14,7 @@ class ResetPage extends MainMyPagePageBase{
 			return false;
 		}
 
-		if(soy2_check_token() && $this->checkPassword() && $this->checkQuery($this->user)){
+		if(soy2_check_token() && soy2_check_referer() && $this->checkPassword() && $this->checkQuery($this->user)){
 			$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 
 			$this->user->setPassword($this->user->hashPassword($_POST["password"]));

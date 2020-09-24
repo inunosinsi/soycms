@@ -3,7 +3,7 @@
 class IndexPage extends MainMyPagePageBase{
 
 	function doPost(){
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 			$this->getMyPage()->setAttribute("inquiry.content", $_POST["Inquiry"]);
 			if(self::checkValidate()){
 				$this->jump("inquiry/confirm");

@@ -6,7 +6,7 @@ class PayJpPage extends MainMyPagePageBase{
 	private $payJpLogic;
 
 	function doPost(){
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 			//登録
 			if(isset($_POST["register"]) || isset($_POST["register_x"])){
 

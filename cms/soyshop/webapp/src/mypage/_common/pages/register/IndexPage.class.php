@@ -7,7 +7,7 @@ class IndexPage extends MainMyPagePageBase{
 	function doPost(){
 
 		//保存
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 
 			if(isset($_POST["confirm"]) || isset($_POST["confirm_x"])){
 

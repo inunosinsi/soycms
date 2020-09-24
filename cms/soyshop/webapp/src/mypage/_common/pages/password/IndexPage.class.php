@@ -10,7 +10,7 @@ class IndexPage extends MainMyPagePageBase{
 			$this->jump();
 		}
 
-		if(soy2_check_token() && $this->checkPassword()){
+		if(soy2_check_token() && soy2_check_referer() && $this->checkPassword()){
 
 			$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 

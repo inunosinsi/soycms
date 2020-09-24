@@ -5,7 +5,7 @@ class IndexPage extends MainMyPagePageBase{
 	const MODE_DELETE = "delete";
 
     function doPost(){
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 			$userId = $this->getUser()->getId();
 
 			$doExe = false;

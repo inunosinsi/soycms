@@ -5,7 +5,7 @@ class ConfirmPage extends EditPage{
 	function doPost(){
 
 		//保存
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 
 			if(isset($_POST["register"]) || isset($_POST["register_x"])){
 

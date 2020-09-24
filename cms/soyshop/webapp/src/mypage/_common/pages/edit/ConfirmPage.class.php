@@ -5,7 +5,7 @@ class ConfirmPage extends IndexPage{
 	function doPost(){
 
 		//保存
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 
 			$mypage = $this->getMyPage();
 

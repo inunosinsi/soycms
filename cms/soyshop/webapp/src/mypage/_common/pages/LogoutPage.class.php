@@ -15,4 +15,3 @@ class LogoutPage extends MainMyPagePageBase{
 		exit;
 	}
 }
-?>
