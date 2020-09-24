@@ -1119,7 +1119,7 @@ class CartLogic extends SOY2LogicBase{
 	function orderItems(){
 		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-
+		
 		$order = new SOYShop_Order();
 		$order->setOrderDate(time());
 		$order->setPrice($this->getTotalPrice());
