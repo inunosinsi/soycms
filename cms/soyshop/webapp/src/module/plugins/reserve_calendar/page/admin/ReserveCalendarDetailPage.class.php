@@ -62,13 +62,14 @@ class ReserveCalendarDetailPage extends WebPage{
 
 				/** 注文する **/
 				$orderId = ReserveCalendarUtil::getSessionValue("order");
-				$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 				try{
-					$order = $orderDao->getById($orderId);
+					$order = soyshop_get_order_object($orderId);
 					$order->setId(null);
 				}catch(Exception $e){
 					$order = new SOYShop_Order();
 				}
+
+				$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 
 				$order->setUserId($userId);
 				$order->setPrice($item->getPrice() * $seat);	/** @ToDo 消費税も考慮しないと **/
@@ -191,12 +192,13 @@ class ReserveCalendarDetailPage extends WebPage{
 			$this->tmpReservedCount = $resLogic->getReservedCountByScheduleId($this->schId, true);
 		}
 
-		parent::__construct();
-
 		//キャンセル
 		if(isset($_GET["cancel"]) && is_numeric($_GET["cancel"])){
-			SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.CancelLogic")->cancel($_GET["cancel"]);
-			SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?canceled");
+			if(SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.CancelLogic")->cancel($_GET["cancel"])){
+				SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?canceled");
+			}else{
+				SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?error");
+			}
 			exit;
 		}
 
@@ -206,6 +208,8 @@ class ReserveCalendarDetailPage extends WebPage{
 			SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?registration");
 			exit;
 		}
+
+		parent::__construct();
 
 		foreach(array("canceled", "error", "registration") as $t){
 			DisplayPlugin::toggle($t, isset($_GET[$t]));

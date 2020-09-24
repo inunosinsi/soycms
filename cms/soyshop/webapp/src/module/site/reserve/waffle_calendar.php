@@ -15,6 +15,11 @@ function soyshop_waffle_calendar($html, $page){
 		if(!isset($_GET["secMode"]) || !is_numeric($_GET["secMode"])){
 			header("Location:" . soyshop_get_cart_url(true));
 		}
+
+		//ユーザIDがない場合は表示しない
+		if(!isset($_GET["userId"]) || !is_numeric($_GET["userId"])){
+			header("Location:" . soyshop_get_cart_url(true));
+		}
 	}
 
 	$obj = $page->create("soyshop_waffle_calendar", "HTMLTemplatePage", array(
@@ -79,7 +84,7 @@ function soyshop_waffle_calendar($html, $page){
 
 	$obj->addLink("prev_month_link", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"link" => $url . "?y=" . $prevY . "&m=" . $prevM . "&idx=" . $_GET["idx"] . "&secMode=" . $_GET["secMode"]
+		"link" => $url . "?y=" . $prevY . "&m=" . $prevM . "&idx=" . $_GET["idx"] . "&secMode=" . $_GET["secMode"] . "&userId=" . $_GET["userId"]
 	));
 
 	$obj->addModel("next_month", array(
@@ -89,7 +94,7 @@ function soyshop_waffle_calendar($html, $page){
 
 	$obj->addLink("next_month_link", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
-		"link" => $url . "?y=" . $nextY . "&m=" . $nextM . "&idx=" . $_GET["idx"] . "&secMode=" . $_GET["secMode"]
+		"link" => $url . "?y=" . $nextY . "&m=" . $nextM . "&idx=" . $_GET["idx"] . "&secMode=" . $_GET["secMode"] . "&userId=" . $_GET["userId"]
 	));
 
 	$obj->addLabel("caption", array(

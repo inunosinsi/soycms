@@ -7,7 +7,7 @@
 				<div class="alert alert-success" soy:display="updated">更新しました</div>
 				<div class="alert alert-success" soy:display="registration">本登録にしました。</div>
 				<div class="alert alert-success" soy:display="canceled">キャンセルしました。</div>
-				<div class="error" soy:display="error">失敗しました。</div>
+				<div class="alert alert-danger" soy:display="error">失敗しました。</div>
 
 				<div class="table-responsive">
 					<table class="table table-striped short_table">
@@ -68,7 +68,7 @@
 								<td ><a soy:id="user_name"></a></td>
 								<td><a soy:id="mail_address"></a></td>
 								<td soy:id="telephone_number"></td>
-								<td>
+								<td soy:id="is_cancel_button">
 									<a soy:id="cancel_link" class="btn btn-warning">キャンセル</a>
 								</td>
 							</tr>

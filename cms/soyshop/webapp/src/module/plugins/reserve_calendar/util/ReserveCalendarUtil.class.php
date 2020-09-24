@@ -13,6 +13,8 @@ class ReserveCalendarUtil{
 
 	const RESERVE_LIMIT = 0;
 	const RESERVE_LIMIT_IGNORE = 1;	//管理画面で残席数以上の予約を行うことが出来る
+	const RESERVE_DISPLAY_CANCEL_BUTTON = 1;	//管理画面の予約詳細でキャンセルボタンを表示する
+
 
 /* sync customfield config */
 	const DELIVERY_TWO_DAYS = "1～2営業日";
@@ -39,7 +41,8 @@ class ReserveCalendarUtil{
 			"tmp" => self::NO_TMP,
 			"only" => self::NO_ONLY,
 			"show_price" => self::NO_SHOW,
-			"ignore" => self::RESERVE_LIMIT
+			"ignore" => self::RESERVE_LIMIT,
+			"cancel_button" => self::RESERVE_DISPLAY_CANCEL_BUTTON
 		));
 	}
 
@@ -47,6 +50,7 @@ class ReserveCalendarUtil{
 		$values["tmp"] = (isset($values["tmp"])) ? (int)$values["tmp"] : 0;
 		$values["only"] = (isset($values["only"])) ? (int)$values["only"] : self::NO_ONLY;
 		$values["ignore"] = (isset($values["ignore"])) ? (int)$values["ignore"] : self::RESERVE_LIMIT;
+		$values["cancel_button"] = (isset($values["cancel_button"])) ? (int)$values["cancel_button"] : self::RESERVE_DISPLAY_CANCEL_BUTTON;
 		SOYShop_DataSets::put("reserve_calendar.config", $values);
 	}
 
