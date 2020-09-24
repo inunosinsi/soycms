@@ -338,14 +338,24 @@ class CMSBlogPage extends CMSPage{
 					throw new Exception("Argument Values Is None.");
 				}
 
+				//argsが1つで、uriとページャが融合した値はおかしい
+				if(count($this->arguments) == 1 && strpos($this->arguments[0], $this->page->getTopPageUri() . "page-") === 0){
+					throw new Exception("Invalid Argument Value.");
+				}
+
 				//ブログトップページでargsが1つ以上あるのはおかしい。ただし、ページャの場合は除く
 				if(count($this->arguments) >= 1 && strpos($this->arguments[0], "page-") === false){
 					//トップページのURLチェックを行う 下記の式はトップページURLが空で無い時のチェック
 					$argsError = true;
 					if(count($this->arguments) === 1 && $this->page->getTopPageUri() == $this->arguments[0]) $argsError = false;
+
+					//ブログページのトップページのuriが有りでページャの場合も調べる
+					if(count($this->arguments) === 2 && strpos($this->arguments[0], "page-") === false) $argsError = false;
+
 					if($argsError) throw new Exception("Too Many Argument Values.");
 					unset($argsError);
 				}
+
 
 				if(!$this->page->getGenerateTopFlag()){
 					throw new Exception("TOPPageは表示できません");
