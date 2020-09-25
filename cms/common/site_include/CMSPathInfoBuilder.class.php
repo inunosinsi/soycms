@@ -58,7 +58,7 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 			//uriの末尾をargsに移す
 			array_unshift($args, array_pop($_uri));
 		}
-		
+
 		//ブログページでuriが空の時対策 @ToDo ここのコードは必要か？
 		// if(!strlen($uri)){
 		// 	//uriが空の時でargsの値が1の時はargs[0]をuriに持ってくる。argsの値が2以上の場合はブログページである可能性が高い
@@ -80,7 +80,7 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 	}
 
 	//$_uriの0番目の引数から候補となるページ一覧を取得する
-	private function _getCandidatePageList($uri){
+	private static function _getCandidatePageList($uri){
 		$dao = new SOY2DAO();
 
 		//トップページの場合
