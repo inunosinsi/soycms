@@ -3,7 +3,7 @@
  * PHP7.4から追加されたopcache.preloadの設定ファイルになります
  * https://www.php.net/manual/ja/opcache.configuration.php#ini.opcache.preload
  * このファイルをpreload.phpにリネームして、php.iniのopcache.preloadにリネームしたファイルのパスを登録することで使用できます
- * フロントコントローラ(/ルート/サイトID/index.php)やim.php(/ルート/サイトID/im.php)を登録すると更に速くなります
+ * commonディレクトリのコードをpreloadに登録してみます
  */
 
 function scandir_r($dir){
@@ -29,42 +29,7 @@ function scandir_r($dir){
 //soycms
 $tmp = scandir_r(dirname(dirname(__FILE__)));
 foreach($tmp as $path){
-	if(!strpos($path, ".php")) continue;
-	if(strpos($path, "preload")) continue;
-	if(strpos($path, "/action/")) continue;	//actionディレクトリは除く
-	if(stripos($path, "update") || strpos($path, "upgrade") || strpos($path, "config") || strpos($path, "/logic/db/")) continue;	//upgrade、config系は除く
-	if(strpos($path, "/lib/")) continue;	//libは除いて、後ほどsoy2を登録する
-	if(strpos($path, "/module/") || strpos($path, "/plugin/")) continue;	//moduleとpluginも除く
-	if(strpos($path, "/error/") || strpos($path, "/lang/")) continue;
-	if(strpos($path, "/domain/")){	//domainのうち、cms以外を除く
-		if(strpos($path, "/admin/") || strpos($path, "/service/")) continue;
-	}
-	if(strpos($path, "/logic")){	//logicのうち、管理画面のものを外す
-		if(strpos($path, "/admin/") || strpos($path, "/init/") || strpos($path, "/login/") || strpos($path, "/csv/") || strpos($path, "/old/") || strpos($path, "Create") || strpos($path, "Template")) continue;
-	}
-	if(strpos($path, "History")) continue;	//Historyの付くものはすべて除く
-
+	if(!strpos($path, ".php")) continue;	//PHPファイルでないものは除く
+	if(strpos($path, "preload")) continue;	//preloadディレクトリのコードも除く
 	opcache_compile_file($path);
 }
-
-//soy2
-opcache_compile_file(dirname(dirname(__FILE__)) . "/lib/soy2_build.php");
-
-//soyshop
-$soyshop_dir = dirname(dirname(dirname(__FILE__))) . "/soyshop/webapp/src/";
-if(file_exists($soyshop_dir) && is_dir($soyshop_dir)){
-	$tmp = scandir_r($soyshop_dir);
-	foreach($tmp as $path){
-		if(!strpos($path, ".php")) continue;
-		if(strpos($path, "/src/cart/")) continue;
-		if(strpos($path, "/src/mypage/")) continue;
-		if(strpos($path, "/upgrade")) continue;
-		if(strpos($path, "/layout/")) continue;
-		if(strpos($path, "/src/module/plugins/")) continue;
-		if(strpos($path, "/src/module/site/")) continue;
-		if(strpos($path, "/src/logic/init/")) continue;
-		opcache_compile_file($path);
-	}
-}
-//soy2
-opcache_compile_file(dirname($soyshop_dir) . "/lib/soy2_build.php");
