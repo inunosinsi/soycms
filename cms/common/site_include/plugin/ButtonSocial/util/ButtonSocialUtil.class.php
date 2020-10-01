@@ -59,6 +59,7 @@ class ButtonSocialUtil{
 
 		//ブログページのタイトルフォーマットの置換処理
 		if(get_class($obj) == "CMSBlogPage"){
+			SOY2::import('site_include.CMSBlogPage');
 			switch($obj->mode){
 				case CMSBlogPage::MODE_ENTRY:
 					//エントリ名を取得
