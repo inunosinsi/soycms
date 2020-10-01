@@ -339,7 +339,7 @@ class CMSBlogPage extends CMSPage{
 				}
 
 				//argsが1つで、uriとページャが融合した値はおかしい
-				if(count($this->arguments) == 1 && strpos($this->arguments[0], $this->page->getTopPageUri() . "page-") === 0){
+				if(count($this->arguments) == 1 && strlen($this->page->getTopPageUri()) && strpos($this->arguments[0], $this->page->getTopPageUri() . "page-")){
 					throw new Exception("Invalid Argument Value.");
 				}
 
