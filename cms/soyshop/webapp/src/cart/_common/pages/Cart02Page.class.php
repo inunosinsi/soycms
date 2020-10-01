@@ -371,6 +371,12 @@ class Cart02Page extends MainCartPageBase{
 				}catch(Exception $e){
 					$user = $cart->getCustomerInformation();
 				}
+
+				//もし、ログインしていたユーザとメールアドレスが異なる場合は別ユーザとして登録する
+				if($customer->mailAddress != $user->getMailAddress()){
+					$cart->clearAttribute("logined");
+					$cart->clearAttribute("logined_userid");
+				}
 			}else{
 				/*
 				 * ログインしていない場合：パスワードのチェックは不要

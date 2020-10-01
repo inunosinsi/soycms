@@ -11,13 +11,16 @@ class BackwardUserComponent {
 	 * @param SOYShop_User $user
 	 */
 	public function backwardCartRegister(MainCartPageBase $page, SOYShop_User $user){
+
+		$cart = CartLogic::getCart();
+
 		//メールアドレス
 		$page->addInput("mail_address", array(
     		"name" => "Customer[mailAddress]",
     		"value" => $user->getMailAddress(),
+			"readonly" => ($cart->getAttribute("logined"))
     	));
 
-		$cart = CartLogic::getCart();
 		$mypage = MyPageLogic::getMyPage();
 
     	$page->addModel("password_input", array(

@@ -132,6 +132,44 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 		return (isset($res[0]["SEAT"])) ? (int)$res[0]["SEAT"] : 0;
     }
 
+	function getReservedCountByItemId($itemId, $isTmp = false){	//isTmpで仮登録の予約を検索
+
+		//計算前に検索用のデータを必ず最新の状態にしておく schedule_dateを利用する
+		SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();
+
+        SOY2::import("domain.order.SOYShop_Order");
+
+        $sql = "SELECT SUM(res.seat) AS SEAT FROM soyshop_reserve_calendar_reserve res ".
+                "INNER JOIN soyshop_order o ".
+                "ON res.order_id = o.id ".
+				"INNER JOIN soyshop_reserve_calendar_schedule_search search ".
+				"ON res.schedule_id = search.schedule_id ".
+				"INNER JOIN soyshop_reserve_calendar_schedule sch ".
+				"ON search.schedule_id = sch.id ".
+                "WHERE sch.item_id = :itemId ".
+				"AND search.schedule_date >= :today ";
+
+		if($isTmp){	//仮登録モード
+			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
+			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP;
+		}else{	//本登録モード
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+		}
+
+		$binds = array(
+			":itemId" => $itemId,
+			":today" => soyshop_shape_timestamp(time())
+		);
+
+        try{
+			$res = $this->executeQuery($sql, $binds);
+        }catch(Exception $e){
+			$res = array();
+        }
+		
+		return (isset($res[0]["SEAT"])) ? (int)$res[0]["SEAT"] : 0;
+    }
+
     function getReservedSchedulesByPeriod($year, $month, $isTmp = false){	//isTmpで仮登録の予約を検索
         SOY2::import("domain.order.SOYShop_Order");
 

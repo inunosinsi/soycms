@@ -60,6 +60,34 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
         return $list;
     }
 
+	function getScheduleUnseatCountByItemId($itemId){
+
+		//計算前に検索用のデータを必ず最新の状態にしておく schedule_dateを利用する
+		SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();
+
+        $sql = "SELECT SUM(sch.unsold_seat) AS TOTAL FROM soyshop_reserve_calendar_schedule sch ".
+                "INNER JOIN soyshop_item item ".
+                "ON sch.item_id = item.id ".
+				"INNER JOIN soyshop_reserve_calendar_schedule_search search ".
+				"ON sch.id = search.schedule_id ".
+                "WHERE sch.item_id = :itemId ".
+				"AND search.schedule_date >= :today";
+		$binds = array(
+			":itemId" => $itemId,
+			":today" => soyshop_shape_timestamp(time())
+		);
+
+        try{
+            $res = $this->executeQuery($sql, $binds);
+        }catch(Exception $e){
+			return array();
+        }
+
+		if(!count($res)) return array();
+
+		return (isset($res[0]["TOTAL"])) ? (int)$res[0]["TOTAL"] : 0;
+    }
+
     function getScheduleByReserveId($reserveId){
         $sql = "SELECT sch.* FROM soyshop_reserve_calendar_schedule sch ".
                 "INNER JOIN soyshop_reserve_calendar_reserve res ".
