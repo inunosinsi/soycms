@@ -126,11 +126,7 @@ class ItemListComponent extends HTMLList{
 			}
         }
 
-        try{
-            return self::_itemOrderDao()->countByItemId($item->getId());
-        }catch(Exception $e){
-            return 0;
-        }
+		return number_format($item->getOrderCount());
     }
 
 	/** dao周り **/

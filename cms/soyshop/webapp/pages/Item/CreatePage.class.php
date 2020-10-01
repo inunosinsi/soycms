@@ -106,7 +106,8 @@ class CreatePage extends WebPage{
 		DisplayPlugin::toggle("item_stock", !$isIgnoreStock);
     	$this->addInput("item_stock", array(
     		"name" => "Item[stock]",
-    		"value" => $obj->getStock()
+    		"value" => $obj->getStock(),
+			"readonly" => (SOYShopPluginUtil::checkIsActive("reserve_calendar"))
     	));
 
 		$this->addInput("item_unit", array(
