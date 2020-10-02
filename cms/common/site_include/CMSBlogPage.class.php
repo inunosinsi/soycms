@@ -399,7 +399,8 @@ class CMSBlogPage extends CMSPage{
 			case CMSBlogPage::MODE_MONTH_ARCHIVE:
 			case CMSBlogPage::MODE_TOP:
 			case CMSBlogPage::MODE_RSS:
-				if(!$this->total || !is_array($this->entries) || !count($this->entries)){
+				//下記の条件でブログの新規作成時の確認の時は404を避けることができる
+				if($this->total > 0 && (!is_array($this->entries) || !count($this->entries))){
 					throw new Exception("HTTP/1.1 404 Not Found.");
 				}
 				break;
