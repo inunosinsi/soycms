@@ -394,20 +394,25 @@ class CMSBlogPage extends CMSPage{
 		}
 
 		//記事がなかったら404
-		switch($this->mode){
-			case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
-			case CMSBlogPage::MODE_MONTH_ARCHIVE:
-			case CMSBlogPage::MODE_TOP:
-			case CMSBlogPage::MODE_RSS:
-				//下記の条件でブログの新規作成時の確認の時は404を避けることができる
-				if($this->total > 0 && (!is_array($this->entries) || !count($this->entries))){
+		if($this->total > 0 && (!is_array($this->entries) || !count($this->entries))){
+			switch($this->mode){
+				case CMSBlogPage::MODE_TOP:
+					// countが0件の場合は特殊な設定をしている場合がある
+					if($this->page->getTopDisplayCount() > 0){
+						throw new Exception("HTTP/1.1 404 Not Found.");
+					}
+					break;
+				case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
+				case CMSBlogPage::MODE_MONTH_ARCHIVE:
+				case CMSBlogPage::MODE_RSS:
+					//下記の条件でブログの新規作成時の確認の時は404を避けることができる
 					throw new Exception("HTTP/1.1 404 Not Found.");
-				}
-				break;
-			case CMSBlogPage::MODE_ENTRY://記事ページは記事が取得できなければ例外となり404ページが表示される
-			case CMSBlogPage::MODE_POPUP:
-			default:
-				break;
+					break;
+				case CMSBlogPage::MODE_ENTRY://記事ページは記事が取得できなければ例外となり404ページが表示される
+				case CMSBlogPage::MODE_POPUP:
+				default:
+					break;
+			}
 		}
 
 		//カノニカルを組み立てる上で必要な値
