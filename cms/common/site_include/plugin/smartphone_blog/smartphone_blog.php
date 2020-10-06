@@ -16,17 +16,19 @@ class SmartphoneBlogPlugin{
 	    'image/png' => 'png'
 	);
 
+	private $maxWidth = 640;	//投稿した画像の幅のリサイズ
+
 	const MODE_CONTENT = 0;
 	const MODE_MORE = 1;
 
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID, array(
-			"name" => "スマホ対応プラグイン",
+			"name" => "スマホでブログ投稿プラグイン",
 			"description" => "スマホからブログを投稿できるようにする",
 			"author" => "齋藤毅",
-			"url" => "http://saitodev.co",
+			"url" => "https://saitodev.co/article/3472",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version" => "0.1"
+			"version" => "0.5"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -40,8 +42,6 @@ class SmartphoneBlogPlugin{
 
 	function onEntryUpdate($arg){
 		$entry = $arg["entry"];
-
-		$maxWidth = 480;	//仮
 
 		//本文と追記にあるbase64形式の画像を指定のサイズの画像に変換する
 		$isChange = false;
@@ -104,12 +104,13 @@ class SmartphoneBlogPlugin{
 						$w = $info[0];
 						$h = $info[1];
 
-						if($w > $maxWidth){
-							soy2_resizeimage($dist, $dist, $maxWidth);
-
-							//quetzli
-							exec("guetzli --quality 84 " . $dist . " " . $dist);
+						//リサイズ
+						if($w > $this->maxWidth){
+							soy2_resizeimage($dist, $dist, $this->maxWidth);
 						}
+
+						//quetzli
+						exec("guetzli --quality 84 " . $dist . " " . $dist);
 
 						$line = "<p><img src=\"/" . UserInfoUtil::getSite()->getSiteId() . "/" . $uploadDir . "/" . $filename . "\"></p>";
 
@@ -152,7 +153,18 @@ class SmartphoneBlogPlugin{
     }
 
 	function config_page(){
-		return "@ToDo リサイズの設定を追加したい。";
+		SOY2::import("site_include.plugin.smartphone_blog.config.SmaphoBlogFormPage");
+		$form = SOY2HTMLFactory::createInstance("SmaphoBlogFormPage");
+		$form->setPluginObj($this);
+		$form->execute();
+		return $form->getObject();
+	}
+
+	function getMaxWidth(){
+		return $this->maxWidth;
+	}
+	function setMaxWidth($maxWidth){
+		$this->maxWidth = $maxWidth;
 	}
 
 	public static function register(){
