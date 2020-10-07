@@ -68,7 +68,7 @@ class SmartphoneBlogPlugin{
 			$texts = array();
 			for($i = 0; $i < count($lines); $i++){
 				$line = trim($lines[$i]);
-
+				$txt = null;	//画像タグの横にテキストがある場合は次の行にする
 				// @ToDo base64形式の画像をjpgに変換する
 				if(strpos($line, "<img") !== false && strpos($line, "data:") !== false){
 
@@ -79,6 +79,20 @@ class SmartphoneBlogPlugin{
 					$enc = rtrim($enc, "/");
 					$enc = trim($enc);
 					$enc = trim($enc, "\"");
+
+					//もしスペーススラッシュがある場合はその後はテキストがある
+					if(strpos($enc, " /")){
+						$txt = substr($enc, strpos($enc, " /"));
+						$txt = str_replace(" /", "", $txt);
+						if(strpos($txt, "data:image")){	//同じ行に複数の画像がある場合
+							$txt = null;
+
+						}
+						$enc = substr($enc, 0, strpos($enc, " /"));
+						$enc = rtrim($enc, "/");
+						$enc = trim($enc);
+						$enc = trim($enc, "\"");
+					}
 
 					$mime_row = substr($enc, 0, strpos($enc, ";") + 1);
 					$enc = substr($enc, strpos($enc, ";") + 1);
@@ -119,6 +133,9 @@ class SmartphoneBlogPlugin{
 				}
 
 				$texts[] = $line;
+
+				//画像タグの横にテキストがある場合は次の行にする
+				if(isset($txt)) $texts[] = "<p>" . $txt . "</p>";
 			}
 
 			switch($mode){
