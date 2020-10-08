@@ -5,7 +5,7 @@ class IndexPage extends SOYShopWebPage{
 	function doPost(){
 
 		if(soy2_check_token()&&isset($_POST["Account"])){
-			if(SOY2Logic::createInstance("logic.ShopLogic")->updateAppRole($_POST["Account"])){
+			if(SOY2Logic::createInstance("logic.RoleLogic")->updateAppRole($_POST["Account"])){
 				CMSApplication::jump("Config?updated");
 			}else{
 				CMSApplication::jump("Config?error");
