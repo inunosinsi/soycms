@@ -10,11 +10,12 @@ SOYShopPlugin::load("soyshop.order.status.sort");
 class SOYShop_Order {
 
 	//注文ステータス
+	const ORDER_STATUS_INVALID = 0;		//仮登録した注文をそのまま破棄(クレジットカード周辺)
 	const ORDER_STATUS_INTERIM = 1;		//仮登録
-	const ORDER_STATUS_REGISTERED = 2; //新規受付
-	const ORDER_STATUS_RECEIVED = 3; //受付完了
-	const ORDER_STATUS_SENDED = 4; //発送済み
-	const ORDER_STATUS_CANCELED = 5; //キャンセル
+	const ORDER_STATUS_REGISTERED = 2; 	//新規受付
+	const ORDER_STATUS_RECEIVED = 3; 	//受付完了
+	const ORDER_STATUS_SENDED = 4; 		//発送済み
+	const ORDER_STATUS_CANCELED = 5; 	//キャンセル
 
 	//支払ステータス
 	const PAYMENT_STATUS_WAIT = 1; //支払待ち

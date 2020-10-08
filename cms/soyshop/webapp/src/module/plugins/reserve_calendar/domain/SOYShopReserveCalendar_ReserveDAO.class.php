@@ -41,7 +41,8 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
                 "INNER JOIN soyshop_user u ".
                 "ON o.user_id = u.id ".
                 "WHERE sch.year >= :y ".
-                "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ".
+                //"AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ".
+				"AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ".
                 "ORDER BY res.reserve_date DESC ".
                 "LIMIT " . $limit * 3;
 
@@ -94,7 +95,11 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
 			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP . " ";
 		}else{	//本登録モード
-			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+			//クレジットカード支払の前に予約座席数を確定したい場合
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+
+			//通常
+			//$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
 		}
 
 		//$sql .= "GROUP BY res.schedule_id";
@@ -120,7 +125,11 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
 			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP;
 		}else{	//本登録モード
-			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+			//クレジットカード支払の前に予約座席数を確定したい場合
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+
+			//通常
+			//$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
 		}
 
         try{
@@ -153,7 +162,11 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
 			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP;
 		}else{	//本登録モード
-			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+			//クレジットカード支払の前に予約座席数を確定したい場合
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+
+			//通常
+			//$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
 		}
 
 		$binds = array(
@@ -166,7 +179,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
         }catch(Exception $e){
 			$res = array();
         }
-		
+
 		return (isset($res[0]["SEAT"])) ? (int)$res[0]["SEAT"] : 0;
     }
 
@@ -186,7 +199,11 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
 			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP . " ";
 		}else{	//本登録モード
-			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+			//クレジットカード支払の前に予約座席数を確定したい場合
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+
+			//通常
+			//$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
 		}
 
 		$sql .=	"GROUP BY res.schedule_id";
@@ -225,7 +242,11 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
 			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP . " ";
 		}else{	//本登録モード
-			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+			//クレジットカード支払の前に予約座席数を確定したい場合
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+
+			//通常
+			//$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
 		}
 
 		$sql .=	"GROUP BY res.schedule_id";

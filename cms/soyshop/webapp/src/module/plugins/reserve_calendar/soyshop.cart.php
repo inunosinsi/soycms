@@ -72,5 +72,30 @@ class ReserveCalendarCart extends SOYShopCartBase{
 			}
 		}
 	}
+
+	function displayPage01(CartLogic $cart){
+		self::_changeStatusOlderOrder();
+	}
+
+	function displayPage02(CartLogic $cart){
+		self::_changeStatusOlderOrder();
+	}
+
+	function displayPage03(CartLogic $cart){
+		self::_changeStatusOlderOrder();
+	}
+
+	function displayPage04(CartLogic $cart){
+		self::_changeStatusOlderOrder();
+	}
+
+	function displayPage05(CartLogic $cart){
+		self::_changeStatusOlderOrder();
+	}
+
+	//古い仮登録注文を無効注文(STATUS_INVALID=0)に変更する
+	private function _changeStatusOlderOrder(){
+		ReserveCalendarUtil::changeInvalidStatusOlderOrder();
+	}
 }
 SOYShopPlugin::extension("soyshop.cart", "reserve_calendar", "ReserveCalendarCart");
