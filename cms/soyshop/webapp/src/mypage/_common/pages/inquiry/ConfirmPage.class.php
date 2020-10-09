@@ -4,7 +4,7 @@ class ConfirmPage extends IndexPage{
 
 	function doPost(){
 
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 			if(isset($_POST["send"]) || isset($_POST["send_x"])){
 				$inquiry = SOY2Logic::createInstance("module.plugins.inquiry_on_mypage.logic.InquiryLogic", array("user" => $this->getUser()))->addInquiry($this->getInquiryObject());
 				if(isset($inquiry)){

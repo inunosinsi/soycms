@@ -3,6 +3,7 @@ SOY2::import("domain.order.SOYShop_Order");
 
 class AutoDeleteLogic extends SOY2LogicBase {
 
+	const MODE_INVALID = SOYShop_Order::ORDER_STATUS_INVALID;	//無効注文
 	const MODE_CANCEL = SOYShop_Order::ORDER_STATUS_CANCELED;	//キャンセル注文
 	const MODE_INTERIM = SOYShop_Order::ORDER_STATUS_INTERIM;	//仮登録注文
 
@@ -12,7 +13,7 @@ class AutoDeleteLogic extends SOY2LogicBase {
 
 	function execute(){
 		$conf = AutoDeleteOrderUtil::getConfig();
-		
+
 		//自動キャンセル
 		if(isset($conf["auto_cancel"]) && $conf["auto_cancel"] == 1){
 			$timming = time() - (int)$conf["auto_cancel_timming"] * 31 * 24 * 60 * 60;
@@ -28,6 +29,9 @@ class AutoDeleteLogic extends SOY2LogicBase {
 		foreach(AutoDeleteOrderUtil::getTypes() as $t){
 			if(!isset($conf[$t]) || (int)$conf[$t] !== 1 || strpos($t, "auto") === 0) continue;	//自動キャンセルはここでは行わない
 			switch($t){
+				case "invalid":
+					$mode = self::MODE_INVALID:
+					break;
 				case "pre":
 					$mode = self::MODE_INTERIM;
 					break;

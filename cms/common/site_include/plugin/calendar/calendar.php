@@ -54,6 +54,7 @@ class CalendarPlugin{
 			@$mode = $page->webPage->mode;
 			@$args = $page->args;
 
+			SOY2::import('site_include.CMSBlogPage');
 			if($mode === CMSBlogPage::MODE_MONTH_ARCHIVE){
 				if($blog->getMonthPageUri() == ""){
 					$year  = @$args[0];

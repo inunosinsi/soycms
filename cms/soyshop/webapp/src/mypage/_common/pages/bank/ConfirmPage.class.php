@@ -3,7 +3,7 @@ SOY2HTMLFactory::importWebPage("bank.IndexPage");
 class ConfirmPage extends IndexPage{
 
 	function doPost(){
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 			if(isset($_POST["next"])){
 				SOY2::import("module.plugins.transfer_information.util.TransferInfoUtil");
 				$values = $this->getMypage()->getAttribute(TransferInfoUtil::BANK_INFO);

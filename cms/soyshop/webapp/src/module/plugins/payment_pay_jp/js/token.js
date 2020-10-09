@@ -2,6 +2,14 @@ const limitCnt = 10;	//上限
 var tryCnt = 0;			//挑戦回数
 
 function operateBefore(){
+	//ボタンを押せないようにする
+	document.getElementById("credit_button").disabled = true;
+
+	//Loadingの表示
+	document.getElementById("button_area").visibility = "hidden";
+	document.getElementById("loading_area").visibility = "visible";
+	console.log(document.getElementById("loading_area").visibility);
+
 	var cardForms = [];
 	var cardNum = "";
 	for (var i = 0; i < 4; i++) {
@@ -43,6 +51,13 @@ function operateBefore(){
 			var errMsgArea = document.getElementById("error_message_area");
 			errMsgArea.innerHTML = "失敗しました：" + errMsg;
 			errMsgArea.style.display = "block";
+
+			//ボタンの禁止を解除
+			document.getElementById("credit_button").disabled = false;
+
+			//ローディングの解除
+			document.getElementById("button_area").visibility = "visible";
+			document.getElementById("loading_area").visibility = "hidden";
 		} else {
 			var token = response.id;
 

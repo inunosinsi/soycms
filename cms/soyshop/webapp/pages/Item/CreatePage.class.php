@@ -12,6 +12,7 @@ class CreatePage extends WebPage{
 			$logic = SOY2Logic::createInstance("logic.shop.item.ItemLogic");
 
 			$item = SOY2::cast("SOYShop_Item",$item);
+			if(is_null($item->getStock())) $item->setStock(0);
 			$item->setType($_POST["ItemType"]);
 
 			//
@@ -100,9 +101,13 @@ class CreatePage extends WebPage{
     		"value" => $obj->getCode()
     	));
 
+		$cnf = SOYShop_ShopConfig::load();
+		$isIgnoreStock = ($cnf->getIgnoreStock() && $cnf->getIsHiddenStockCount());
+		DisplayPlugin::toggle("item_stock", !$isIgnoreStock);
     	$this->addInput("item_stock", array(
     		"name" => "Item[stock]",
-    		"value" => $obj->getStock()
+    		"value" => $obj->getStock(),
+			"readonly" => (SOYShopPluginUtil::checkIsActive("reserve_calendar"))
     	));
 
 		$this->addInput("item_unit", array(
@@ -117,7 +122,7 @@ class CreatePage extends WebPage{
     	));
 
 		SOY2::import("domain.config.SOYShop_ShopConfig");
-		DisplayPlugin::toggle("item_description", SOYShop_ShopConfig::load()->getDisplayItemDescription());
+		DisplayPlugin::toggle("item_description", $cnf->getDisplayItemDescription());
 
 		$config = $obj->getConfigObject();
     	$this->addTextArea("item_description", array(

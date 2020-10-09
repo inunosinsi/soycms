@@ -160,6 +160,4 @@ class SOYShop_UserPage extends SOYShopPageBase{
 
     	return $res;
     }
-
 }
-?>

@@ -30,6 +30,10 @@ class ReservedListComponent extends HTMLList{
 			"text" => (isset($entity["telephone_number"])) ? $entity["telephone_number"] : ""
 		));
 
+		$this->addModel("is_cancel_button", array(
+			"visible" => self::_checkCancelMode()
+		));
+
 		$this->addLink("cancel_link", array(
 			"link" => (!$this->tempMode && isset($entity["id"])) ? SOY2PageController::createLink("Extension.Detail.reserve_calendar." . $this->scheduleId . "?cancel=" . $entity["id"]) : "",
 			"onclick" => "return confirm('キャンセルしますか？');"
@@ -39,6 +43,16 @@ class ReservedListComponent extends HTMLList{
 			"link" => ($this->tempMode && isset($entity["id"])) ? SOY2PageController::createLink("Extension.Detail.reserve_calendar." . $this->scheduleId . "?reserve=" . $entity["id"]) : "",
 			"onclick" => "return confirm('本登録に変更しますか？');"
 		));
+	}
+
+	private function _checkCancelMode(){
+		static $on;
+		if(is_null($on)){
+			SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+			$cnf = ReserveCalendarUtil::getConfig();
+			$on = (isset($cnf["cancel_button"]) && (int)$cnf["cancel_button"] === ReserveCalendarUtil::RESERVE_DISPLAY_CANCEL_BUTTON);
+		}
+		return $on;
 	}
 
 	function setScheduleId($scheduleId){

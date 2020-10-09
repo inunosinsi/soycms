@@ -3,7 +3,7 @@
 class PaymentPage extends MainMyPagePageBase{
 
 	function doPost(){
-		if(soy2_check_token() && isset($_POST["Payment"])){
+		if(soy2_check_token() && soy2_check_referer() && isset($_POST["Payment"])){
 			//前の支払いデータと変更がある場合のみ入れ替え
 			$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
 			$moduleList = $order->getModuleList();

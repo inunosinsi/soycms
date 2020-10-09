@@ -9214,7 +9214,7 @@ function soy2_get_token(){
 	return $_SESSION["soy2_token"];
 }
 function soy2_check_token(){
-	if(!isset($_SESSION))@session_start();
+	if(!isset($_SESSION)) session_start();
 	if(isset($_SESSION["soy2_token"]) AND isset($_REQUEST["soy2_token"])){
 		if($_REQUEST["soy2_token"] === $_SESSION["soy2_token"]){
 			$_SESSION["soy2_token"] = soy2_generate_token();
@@ -9225,4 +9225,13 @@ function soy2_check_token(){
 }
 function soy2_generate_token(){
 	return md5(mt_rand());
+}
+function soy2_check_referer(){
+	$referer = parse_url($_SERVER['HTTP_REFERER']);
+	$port = (($referer["port"]) && ($referer["port"] != 80 || $referer["port"] != 443)) ? ":" . $referer["port"] : "";
+	if($referer['host'] . $port !== $_SERVER['HTTP_HOST']) return false;
+
+	$_path = $referer["path"];
+	if(isset($_SERVER['QUERY_STRING']) && strlen($_SERVER['QUERY_STRING']) && strpos($_SERVER['QUERY_STRING'], "pathinfo=") === false) $_path .= "?" . $_SERVER['QUERY_STRING'];
+	return ($_path == $_SERVER['REQUEST_URI']);
 }

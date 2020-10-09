@@ -116,7 +116,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         try{
             $resId = $resDao->insert($res);
         }catch(Exception $e){
-            var_dump($e);
+            //
         }
 
         //注文属性にも入れておく

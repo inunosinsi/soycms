@@ -8,18 +8,19 @@ class RemovePage extends SOYShopWebPage{
 
 		if(soy2_check_token() && isset($_POST["Check"])){
 
-			$site = self::getSite();
-			try{
-				self::dao()->delete($this->id);
-				$res = true;
-			}catch(Exception $e){
-				$res = false;
-			}
+			// $site = self::getSite();
+			// try{
+			// 	self::dao()->delete($this->id);
+			// 	$res = true;
+			// }catch(Exception $e){
+			// 	$res = false;
+			// }
+			$site = ShopUtil::getSiteById($this->id);
 
-			if($res){
-				$logic = SOY2Logic::createInstance("logic.ShopLogic")->remove($site);
-				CMSApplication::jump("Site");
-			}
+			//if($res){
+			SOY2Logic::createInstance("logic.ShopLogic")->remove($site);
+			CMSApplication::jump("Site");
+			//}
 		}
 
 		CMSApplication::jump("Site.Remove." . $this->id . "?error");
@@ -30,12 +31,13 @@ class RemovePage extends SOYShopWebPage{
 
     	parent::__construct();
 
-    	self::buildMessageForm();
-    	self::buildForm();
+		DisplayPlugin::toggle("error", isset($_GET["error"]));
+
+    	self::_buildForm();
     }
 
-    private function buildForm(){
-    	$site = self::getSite();
+    private function _buildForm(){
+    	$site = ShopUtil::getSiteById($this->id);
 
     	$this->addForm("form");
 
@@ -44,7 +46,7 @@ class RemovePage extends SOYShopWebPage{
     	));
 
     	$this->addLabel("site_name", array(
-    		"text" => $site->getName()
+    		"text" => $site->getSiteName()
     	));
 
     	$this->addLabel("site_db", array(
@@ -61,22 +63,4 @@ class RemovePage extends SOYShopWebPage{
     		"elementId" => "check_remove"
     	));
     }
-
-    private function buildMessageForm(){
-		DisplayPlugin::toggle("error", isset($_GET["error"]));
-    }
-
-    private function getSite(){
-    	try{
-    		return self::dao()->getById($this->id);
-    	}catch(Exception $e){
-    		return new SOYShop_Site();
-    	}
-    }
-
-	private function dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShop_SiteDAO");
-		return $dao;
-	}
 }

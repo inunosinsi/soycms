@@ -12,7 +12,7 @@ class CancelLogic extends SOY2LogicBase{
 		try{
 			$reserve = $resDao->getById($reserveId);
 		}catch(Exception $e){
-			return;
+			return false;
 		}
 
 
@@ -21,7 +21,7 @@ class CancelLogic extends SOY2LogicBase{
 		try{
 			$resDao->deleteById($reserveId);
 		}catch(Exception $e){
-			return;
+			return false;
 		}
 
 		$canDao = SOY2DAOFactory::create("SOYShopReserveCalendar_CancelDAO");
@@ -32,8 +32,7 @@ class CancelLogic extends SOY2LogicBase{
 		try{
 			$canDao->insert($cancel);
 		}catch(Exception $e){
-			var_dump($e);
-			return;
+			return false;
 		}
 
 		//予約に紐付いた注文をキャンセルにする
@@ -54,6 +53,7 @@ class CancelLogic extends SOY2LogicBase{
 		}
 
 		$resDao->commit();
+		return true;
 	}
 
 	function getCancelListByScheduleId($scheduleId){

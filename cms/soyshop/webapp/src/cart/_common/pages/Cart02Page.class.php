@@ -11,83 +11,85 @@ class Cart02Page extends MainCartPageBase{
 
 	function doPost(){
 
-		$cart = CartLogic::getCart();
+		if(soy2_check_token() && soy2_check_referer()){
+			$cart = CartLogic::getCart();
 
-		//soyshop.cart.php拡張ポイント側でdoPost02を持つ
-		SOYShopPlugin::invoke("soyshop.cart", array(
-			"mode" => "doPost02",
-			"cart" => $cart
-		));
-
-		if(isset($_POST["next"]) || isset($_POST["next_x"])){
-
-			// 隠しモード クーポン
-			SOYShopPlugin::load("soyshop.discount");
-			SOYShopPlugin::invoke("soyshop.discount", array(
-				"mode" => "clear",
-				"cart" => $cart,
-			));
-
-			//ユーザー情報
-			$this->setCustomerInformation($cart);
-
-			//ユーザカスタムフィールドの値をセッションに入れる
-			if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
-				SOYShopPlugin::load("soyshop.user.customfield");
-				SOYShopPlugin::invoke("soyshop.user.customfield",array(
-					"mode" => "post",
-					"app" => $cart,
-					"param" => $_POST["user_customfield"]
-				));
-			}
-
-			//宛先
-			$validAddress = $this->setAddress($cart);
-
-			//備考
-			if(isset($_POST["Attributes"]) && isset($_POST["Attributes"]["memo"])){
-				$cart->setOrderAttribute("memo", MessageManager::get("NOTE"), $_POST["Attributes"]["memo"]);
-			}
-
-			//割引 Cart02でもクーポンを使用できるようにする　Cart02でクーポンを使用したい場合はCart03でhiddenで渡す
-			if(!$cart->hasError("discount") && isset($_POST["discount_module"])){
-
-				//全部ロードする
-				SOYShopPlugin::load("soyshop.discount");
-				SOYShopPlugin::invoke("soyshop.discount", array(
-					"mode" => "select",
-					"cart" => $cart,
-					"param" => $_POST["discount_module"]
-				));
-			}
-
-			//エラーがなければ次へ
-			if($validAddress && self::checkError($cart)){
-				$cart->setAttribute("prev_page", "Cart02");
-				$cart->setAttribute("page", "Cart03");
-			}else{
-				$cart->setAttribute("page", "Cart02");
-			}
-
-			//宛先の情報を入れておく
-			$user = $cart->getCustomerInformation();
-
-			$address = (isset($_POST["Address"])) ? $_POST["Address"] : array();
-			$user->setAddressList(array($address));
-
-
-			$cart->save();
-			soyshop_redirect_cart();
-		}
-
-		if(isset($_POST["prev"]) || isset($_POST["prev_x"])){
+			//soyshop.cart.php拡張ポイント側でdoPost02を持つ
 			SOYShopPlugin::invoke("soyshop.cart", array(
-				"mode" => "afterOperation",
+				"mode" => "doPost02",
 				"cart" => $cart
 			));
 
-			$cart->setAttribute("page", "Cart01");
-			soyshop_redirect_cart();
+			if(isset($_POST["next"]) || isset($_POST["next_x"])){
+
+				// 隠しモード クーポン
+				SOYShopPlugin::load("soyshop.discount");
+				SOYShopPlugin::invoke("soyshop.discount", array(
+					"mode" => "clear",
+					"cart" => $cart,
+				));
+
+				//ユーザー情報
+				$this->setCustomerInformation($cart);
+
+				//ユーザカスタムフィールドの値をセッションに入れる
+				if(isset($_POST["user_customfield"]) || isset($_POST["user_custom_search"])){
+					SOYShopPlugin::load("soyshop.user.customfield");
+					SOYShopPlugin::invoke("soyshop.user.customfield",array(
+						"mode" => "post",
+						"app" => $cart,
+						"param" => $_POST["user_customfield"]
+					));
+				}
+
+				//宛先
+				$validAddress = $this->setAddress($cart);
+
+				//備考
+				if(isset($_POST["Attributes"]) && isset($_POST["Attributes"]["memo"])){
+					$cart->setOrderAttribute("memo", MessageManager::get("NOTE"), $_POST["Attributes"]["memo"]);
+				}
+
+				//割引 Cart02でもクーポンを使用できるようにする　Cart02でクーポンを使用したい場合はCart03でhiddenで渡す
+				if(!$cart->hasError("discount") && isset($_POST["discount_module"])){
+
+					//全部ロードする
+					SOYShopPlugin::load("soyshop.discount");
+					SOYShopPlugin::invoke("soyshop.discount", array(
+						"mode" => "select",
+						"cart" => $cart,
+						"param" => $_POST["discount_module"]
+					));
+				}
+
+				//エラーがなければ次へ
+				if($validAddress && self::checkError($cart)){
+					$cart->setAttribute("prev_page", "Cart02");
+					$cart->setAttribute("page", "Cart03");
+				}else{
+					$cart->setAttribute("page", "Cart02");
+				}
+
+				//宛先の情報を入れておく
+				$user = $cart->getCustomerInformation();
+
+				$address = (isset($_POST["Address"])) ? $_POST["Address"] : array();
+				$user->setAddressList(array($address));
+
+
+				$cart->save();
+				soyshop_redirect_cart();
+			}
+
+			if(isset($_POST["prev"]) || isset($_POST["prev_x"])){
+				SOYShopPlugin::invoke("soyshop.cart", array(
+					"mode" => "afterOperation",
+					"cart" => $cart
+				));
+
+				$cart->setAttribute("page", "Cart01");
+				soyshop_redirect_cart();
+			}
 		}
 
 		//郵便番号での住所検索
@@ -129,6 +131,8 @@ class Cart02Page extends MainCartPageBase{
 
 			soyshop_redirect_cart_with_anchor($anchor);
 		}
+
+		soyshop_redirect_cart();
 	}
 
 	function __construct(){
@@ -366,6 +370,12 @@ class Cart02Page extends MainCartPageBase{
 					$user = soyshop_get_user_object($cart->getAttribute("logined_userid"));
 				}catch(Exception $e){
 					$user = $cart->getCustomerInformation();
+				}
+
+				//もし、ログインしていたユーザとメールアドレスが異なる場合は別ユーザとして登録する
+				if($customer->mailAddress != $user->getMailAddress()){
+					$cart->clearAttribute("logined");
+					$cart->clearAttribute("logined_userid");
 				}
 			}else{
 				/*

@@ -1,4 +1,7 @@
 <?php
+// Enforce HTTPOnly to PHPSESSID
+// XSS cannot get session id with this option
+ini_set('session.cookie_httponly', 1);
 
 ini_set("short_open_tag","Off");
 
@@ -22,4 +25,3 @@ ini_set("log_errors",1);
 if(is_dir(dirname(dirname(__FILE__))."/log") && is_writable(dirname(dirname(__FILE__))."/log")){
 	ini_set("error_log",dirname(dirname(__FILE__))."/log/error-".date("Ym").".log");
 }
-

@@ -10,7 +10,7 @@ class DetailPage extends MainMyPagePageBase{
 
 	function doPost(){
 
-		if(soy2_check_token() && isset($_POST["Review"])){
+		if(soy2_check_token() && soy2_check_referer() && isset($_POST["Review"])){
 
 			try{
 				$oldReview = $this->reviewDao->getByIdAndUserId($this->id, $this->user->getId());

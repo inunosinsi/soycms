@@ -419,7 +419,7 @@ class SOYInquiry_PageApplication{
 
 			//管理者用メールボディ
 			$mailBody[0] = $inquiryMailBody;
-    		if($this->form->getConfigObject()->getIsIncludeAdminURL()){
+			if($this->form->getConfigObject()->getIsIncludeAdminURL()){
 				$mailBody[0] .= "\r\n\r\n-- \r\n問い合わせへのリンク:\r\n" . $this->getInquiryLink($inquiry, $this->serverConfig) . "\r\n";
     		}
 

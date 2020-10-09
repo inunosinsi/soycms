@@ -109,6 +109,7 @@ class BlogMenuPage extends CMSHTMLPageBase{
 		));
 
 		$pageUrl = CMSUtil::getSiteUrl() . ( (strlen($blog->getUri()) >0) ? $blog->getUri() ."/" : "" ) ;
+		if(strlen($blog->getTopPageUri())) $pageUrl = rtrim($pageUrl, "/") . "/" . $blog->getTopPageUri();
 		$this->createAdd("blog_confirm","HTMLLink",array(
 			"link" => $pageUrl,
 			"visible" => $blog->isActive()

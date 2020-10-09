@@ -7,6 +7,15 @@ class SOYShopApplication{
 		//設定の読み込み（ログイン権限チェック）
 		include_once(dirname(__FILE__) . "/config.php");
 
+		//権限があるか？調べる
+		if(!UserInfoUtil::isDefaultUser()){
+			$auth = CMSApplication::getAppAuthLevel();
+			if($auth == 0 || $auth == 2){	//権限なし
+				header("Location:" . rtrim(dirname(CMSApplication::getRoot()), "/") . "/admin/");
+				exit;
+			}
+		}
+
 		/**
 		 * タブの設定
 		 */

@@ -57,6 +57,13 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"label" => "残席以上の予約数があっても管理画面から予約を行うことができる"
 		));
 
+		$this->addCheckBox("cancel_button", array(
+			"name" => "Config[cancel_button]",
+			"value" => ReserveCalendarUtil::RESERVE_DISPLAY_CANCEL_BUTTON,
+			"selected" => (isset($config["cancel_button"]) && (int)$config["cancel_button"] === ReserveCalendarUtil::RESERVE_DISPLAY_CANCEL_BUTTON),
+			"label" => "キャンセルボタンを表示する"
+		));
+
 		//
 		$cartId = SOYShop_DataSets::get("config.cart.cart_id");
 		$mypageId = SOYShop_DataSets::get("config.mypage.id");

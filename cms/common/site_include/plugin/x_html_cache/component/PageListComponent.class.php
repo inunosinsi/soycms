@@ -1,5 +1,5 @@
 <?php
-
+SOY2::import("site_include.CMSBlogPage");
 class PageListComponent extends HTMLList{
 
 	private $pluginObj;

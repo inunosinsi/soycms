@@ -60,27 +60,27 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 		}
 
 		//ブログページでuriが空の時対策 @ToDo ここのコードは必要か？
-		if(!strlen($uri)){
-			//uriが空の時でargsの値が1の時はargs[0]をuriに持ってくる。argsの値が2以上の場合はブログページである可能性が高い
-			if(count($args) === 1 && $args[0] != "feed" && !is_numeric(strpos($args[0], "page-")) && strlen($args[0])) {
-				$uri = $args[0];
-
-				//まだuriが空の場合は、index.html、index.htmやindex.phpを試す
-				if(is_numeric(array_search("index.html", $candidateList))){
-					$uri = "index.html";
-				}else if(is_numeric(array_search("index.htm", $candidateList))){
-					$uri = "index.htm";
-				}else if(is_numeric(array_search("index.php", $candidateList))){
-					$uri = "index.php";
-				}
-			}
-		}
+		// if(!strlen($uri)){
+		// 	//uriが空の時でargsの値が1の時はargs[0]をuriに持ってくる。argsの値が2以上の場合はブログページである可能性が高い
+		// 	if(count($args) === 1 && $args[0] != "feed" && !is_numeric(strpos($args[0], "page-")) && strlen($args[0])) {
+		// 		$uri = $args[0];
+		//
+		// 		//まだuriが空の場合は、index.html、index.htmやindex.phpを試す
+		// 		if(is_numeric(array_search("index.html", $candidateList))){
+		// 			$uri = "index.html";
+		// 		}else if(is_numeric(array_search("index.htm", $candidateList))){
+		// 			$uri = "index.htm";
+		// 		}else if(is_numeric(array_search("index.php", $candidateList))){
+		// 			$uri = "index.php";
+		// 		}
+		// 	}
+		// }
 
 		return array($uri, $args);
 	}
 
 	//$_uriの0番目の引数から候補となるページ一覧を取得する
-	private function _getCandidatePageList($uri){
+	private static function _getCandidatePageList($uri){
 		$dao = new SOY2DAO();
 
 		//トップページの場合
@@ -90,7 +90,7 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 			//uriが空のページは常に取得しておく
 			$res = $dao->executeQuery("SELECT uri FROM Page WHERE uri = '' OR uri LIKE :uri", array(":uri" => $uri . "%"));
 		}
-		
+
 		//候補ページを全て取得(indexから始まるページ以外)
 		if(!count($res)) $res = $dao->executeQuery("SELECT uri FROM Page WHERE uri NOT LIKE :uri", array(":uri" => "index%"));
 

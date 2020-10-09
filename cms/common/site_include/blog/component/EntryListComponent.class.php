@@ -67,6 +67,17 @@ class EntryListComponent extends HTMLList{
 			"defaultFormat"=>"H:i"
 		));
 
+		$this->createAdd("update_date","DateLabel",array(
+			"text"=>$entry->getUdate(),
+			"soy2prefix"=>"cms",
+		));
+
+		$this->createAdd("update_time","DateLabel",array(
+			"text"=>$entry->getUdate(),
+			"soy2prefix"=>"cms",
+			"defaultFormat"=>"H:i"
+		));
+
 		$this->createAdd("entry_link","HTMLLink",array(
 			"soy2prefix"=>"cms",
 			"link" => $link

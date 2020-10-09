@@ -8,7 +8,7 @@ class IndexPage extends MainMyPagePageBase{
 
 	function doPost(){
 
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 
 			//メールの入力がなかった場合は処理を停止する
 			if(!isset($_POST["mail"])){

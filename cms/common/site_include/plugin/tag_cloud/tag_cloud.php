@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.4.2"
+			"version"=>"1.6"
 		));
 
 		//active or non active
@@ -148,66 +148,19 @@ class TagCloudPlugin{
 	}
 
 	function onLoad(){
-		$wordId = null;
-		if(isset($_GET["tagcloud"])){
-			if(is_numeric($_GET["tagcloud"])){
-				$wordId = (int)$_GET["tagcloud"];
-			//ハッシュ値の場合
-			}else{
-				SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
-				try{
-					$wordId = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getByHash($_GET["tagcloud"])->getId();
-				}catch(Exception $e){
-					//
-				}
-			}
-		}
-
+		$wordId = self::_getWordIdFromGetParam();
 		if(is_null($wordId)) return array();
 
 		//検索結果ブロックプラグインのUTILクラスを利用する
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
 
-        $pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
-
-        //ラベルIDを取得とデータベースから記事の取得件数指定
+		//ラベルIDを取得とデータベースから記事の取得件数指定
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
 		if(is_null($labelId)) return array();
 
-        $count = PluginBlockUtil::getLimitByPageId($pageId);
-        $entryDao = SOY2DAOFactory::create("cms.EntryDAO");
-        $sql = "SELECT ent.* FROM Entry ent ".
-             "JOIN EntryLabel lab ".
-             "ON ent.id = lab.entry_id ".
-			 "JOIN TagCloudLinking lnk ".
-			 "ON ent.id = lnk.entry_id ".
-             "WHERE ent.openPeriodStart < " . time() . " ".
-             "AND ent.openPeriodEnd >= " .time() . " ".
-             "AND ent.isPublished = " . Entry::ENTRY_ACTIVE . " ".
-			 "AND lab.label_id = :labelId ".
-			 "AND lnk.word_id = :wordId ".
-			 "GROUP BY ent.id ".
-			 "ORDER BY ent.cdate DESC ";
-        $binds = array(":labelId" => $labelId, ":wordId" => $wordId);
-
-        if(isset($count) && $count > 0) {
-            $sql .= "Limit " . $count;
-        }
-
-        try{
-            $res = $entryDao->executeQuery($sql, $binds);
-        }catch(Exception $e){
-            $res = array();
-        }
-
-        if(!count($res)) return array();
-
-        $entries = array();
-        foreach($res as $v){
-            $entries[] = $entryDao->getObject($v);
-        }
-
-        return $entries;
+		$count = PluginBlockUtil::getLimitByPageId($pageId);
+		return SOY2Logic::createInstance("site_include.plugin.tag_cloud.logic.TagCloudBlockEntryLogic")->search($labelId, $wordId, $count);
 	}
 
 	function returnPluginId(){
@@ -215,24 +168,105 @@ class TagCloudPlugin{
 	}
 
 	function onPageOutput($obj){
-		$tag = "";
-		if(isset($_GET["tagcloud"])){
-			SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
-			try{
-				if(is_numeric($_GET["tagcloud"])){
-					$tag = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getById($_GET["tagcloud"])->getWord();
-				}else{
-					$tag = SOY2DAOFactory::create("TagCloudDictionaryDAO")->getByHash($_GET["tagcloud"])->getWord();
-				}
-			}catch(Exception $e){
-				//
-			}
-		}
+		$wordId = self::_getWordIdFromGetParam();
+		$tag = (strlen($wordId)) ? self::_getTagByWordId($wordId) : "";
 
 		$obj->addLabel("tag_cloud_tag", array(
 			"soy2prefix" => "cms",
 			"text" => $tag
 		));
+
+
+		/** ページャ **/
+
+		//ブログページでトップページ以外では以下のコードを読み込まない
+		if(!strlen($tag)) return;
+
+		SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
+		$logic = SOY2Logic::createInstance("site_include.plugin.tag_cloud.logic.TagCloudBlockEntryLogic");
+
+		$url = (isset($_SERVER["REDIRECT_URL"])) ? $_SERVER["REDIRECT_URL"] : "";
+		if(strpos($url, "page-")){
+			$url = substr($url, 0, strpos($url, "/page-")) . "/";
+		}
+
+		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
+		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+		$limit = PluginBlockUtil::getLimitByPageId($pageId);
+		if(is_null($limit)) $limit = 100000;
+
+		$args = $logic->getArgs();
+		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
+		$current = (isset($args[0]) && strpos($args[0], "page-") === 0) ? (int)str_replace("page-", "", $args[0]) : 0;
+		$last_page_number = (int)ceil($logic->getTotal($labelId, $wordId) / $limit);
+
+		$obj->createAdd("s_pager", "BlockPluginPagerComponent", array(
+			"list" => array(),
+			"current" => $current,
+			"last"	 => $last_page_number,
+			"url"		=> $url,
+			"queries" => array("tagcloud" => $wordId),
+			"soy2prefix" => "p_block",
+		));
+
+		$obj->addModel("s_has_pager", array(
+			"soy2prefix" => "p_block",
+			"visible" => ($last_page_number >1)
+		));
+		$obj->addModel("s_no_pager", array(
+			"soy2prefix" => "p_block",
+			"visible" => ($last_page_number <2)
+		));
+
+		$obj->addLink("s_first_page", array(
+			"soy2prefix" => "p_block",
+			"link" => $url . "?tagcloud=" . $wordId,
+		));
+
+		$obj->addLink("s_last_page", array(
+			"soy2prefix" => "p_block",
+			"link" => $url . "page-" . ($last_page_number - 1) . "?tagcloud=" . $wordId,
+		));
+
+		$obj->addLabel("s_current_page", array(
+			"soy2prefix" => "p_block",
+			"text" => max(1, $current + 1),
+		));
+
+		$obj->addLabel("s_pages", array(
+			"soy2prefix" => "p_block",
+			"text" => $last_page_number,
+		));
+	}
+
+	private function _getWordIdFromGetParam(){
+		if(!isset($_GET["tagcloud"])) return null;
+		if(is_numeric($_GET["tagcloud"])){
+			return (int)$_GET["tagcloud"];
+		//ハッシュ値の場合
+		}else{
+			SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
+			try{
+				return SOY2DAOFactory::create("TagCloudDictionaryDAO")->getByHash($_GET["tagcloud"])->getId();
+			}catch(Exception $e){
+				//
+			}
+		}
+		return null;
+	}
+
+	private function _getTagByWordId($wordId){
+		SOY2::import("site_include.plugin.tag_cloud.domain.TagCloudDictionaryDAO");
+		try{
+			if(is_numeric($wordId)){
+				return SOY2DAOFactory::create("TagCloudDictionaryDAO")->getById($wordId)->getWord();
+			}else{	//ハッシュ値の場合
+				return SOY2DAOFactory::create("TagCloudDictionaryDAO")->getByHash($wordId)->getWord();
+			}
+		}catch(Exception $e){
+			//
+		}
+		return null;
 	}
 
 	/**

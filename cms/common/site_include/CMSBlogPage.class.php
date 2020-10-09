@@ -333,9 +333,34 @@ class CMSBlogPage extends CMSPage{
 				break;
 
 			case CMSBlogPage::MODE_TOP:
-				//ブログトップページでargsが1つ以上あるのはおかしい。ただし、ページャの場合は除く
-				if(count($this->arguments) >= 1 && strpos($this->arguments[0], "page-") === false){
-					throw new Exception("Too Many Argument Values.");
+				//トップページURLが設定されているのに、argsが0の場合はおかしい
+				if(strlen($this->page->getTopPageUri()) && count($this->arguments) === 0){
+					throw new Exception("Argument Values Is None.");
+				}
+
+				//argsが1つで、uriとページャが融合した値はおかしい
+				if(count($this->arguments) == 1 && strlen($this->page->getTopPageUri()) && strpos($this->arguments[0], $this->page->getTopPageUri()) === 0){
+					preg_match('/^' . $this->page->getTopPageUri() .  'page-[\d]+?/', $this->arguments[0], $tmp);
+					if(isset($tmp[0])){
+						throw new Exception("Invalid Argument Value.");
+					}
+				}
+
+				//ブログトップページでargsが1つ以上あるのはおかしい。
+				if(count($this->arguments) >= 1){
+					//ただし、ページャの場合は除く
+					preg_match('/page-[\d]+?$/', $this->arguments[0], $tmp);
+					if(!isset($tmp[0])){
+						//トップページのURLチェックを行う 下記の式はトップページURLが空で無い時のチェック
+						$argsError = true;
+						if(count($this->arguments) === 1 && $this->page->getTopPageUri() == $this->arguments[0]) $argsError = false;
+
+						//ブログページのトップページのuriが有りでページャの場合も調べる
+						if(count($this->arguments) === 2 && strpos($this->arguments[0], "page-") === false) $argsError = false;
+
+						if($argsError) throw new Exception("Too Many Argument Values.");
+						unset($argsError);
+					}
 				}
 
 				if(!$this->page->getGenerateTopFlag()){
@@ -348,6 +373,9 @@ class CMSBlogPage extends CMSPage{
 
 				//最新エントリーを取得
 				$this->entries = ($this->limit > 0) ? self::getEntries() : array();
+
+				//記事がなければ404
+
 
 				$pageFormat = $this->page->getTopTitleFormat();
 				$pageFormat = preg_replace('/%SITE%/',$this->siteConfig->getName(),$pageFormat);
@@ -366,17 +394,25 @@ class CMSBlogPage extends CMSPage{
 		}
 
 		//記事がなかったら404
-		switch($this->mode){
-			case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
-			case CMSBlogPage::MODE_MONTH_ARCHIVE:
-			case CMSBlogPage::MODE_TOP:
-			case CMSBlogPage::MODE_RSS:
-				if($this->total == 0) header("HTTP/1.1 404 Not Found");
-				break;
-			case CMSBlogPage::MODE_ENTRY://記事ページは記事が取得できなければ例外となり404ページが表示される
-			case CMSBlogPage::MODE_POPUP:
-			default:
-				break;
+		if($this->total > 0 && (!is_array($this->entries) || !count($this->entries))){
+			switch($this->mode){
+				case CMSBlogPage::MODE_TOP:
+					// countが0件の場合は特殊な設定をしている場合がある
+					if($this->page->getTopDisplayCount() > 0){
+						throw new Exception("HTTP/1.1 404 Not Found.");
+					}
+					break;
+				case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
+				case CMSBlogPage::MODE_MONTH_ARCHIVE:
+				case CMSBlogPage::MODE_RSS:
+					//下記の条件でブログの新規作成時の確認の時は404を避けることができる
+					throw new Exception("HTTP/1.1 404 Not Found.");
+					break;
+				case CMSBlogPage::MODE_ENTRY://記事ページは記事が取得できなければ例外となり404ページが表示される
+				case CMSBlogPage::MODE_POPUP:
+				default:
+					break;
+			}
 		}
 
 		//カノニカルを組み立てる上で必要な値

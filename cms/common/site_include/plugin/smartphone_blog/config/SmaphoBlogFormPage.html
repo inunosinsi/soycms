@@ -1,0 +1,12 @@
+<div class="alert alert-info">スマホから記事を投稿する時にアップロードする画像のサイズが大きいため、記事投稿時にアップロードされた画像のリサイズと最適化を行います。</div>
+<div class="alert alert-warning">スマホから記事を投稿する時、１段落で画像のアップロードは一ファイルのみです。２ファイル以上アップロードすると画像の横のテキストが削除される可能性があります。</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>画像ファイルの最大の横幅</label>
+		<div class="form-inline">
+			<input type="number" soy:id="max_width" style="width:100px;">&nbsp;px&nbsp;
+			<input type="submit" class="btn btn-primary" value="更新">
+		</div>
+	</div>
+</form>

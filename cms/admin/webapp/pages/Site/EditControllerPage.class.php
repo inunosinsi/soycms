@@ -7,7 +7,7 @@ class EditControllerPage extends CMSUpdatePageBase {
 
 	function doPost(){
 
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 			if($this->id == $_POST["site_id"] && $this->saveFile($_POST["contents"])){
 				$this->addMessage("UPDATE_SUCCESS");
 			}

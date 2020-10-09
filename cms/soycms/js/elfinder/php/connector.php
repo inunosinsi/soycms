@@ -8,50 +8,82 @@ SOY2::import("util.UserInfoUtil");
 
 if(!UserInfoUtil::isLoggined()) exit;
 
-// load composer autoload before load elFinder autoload If you need composer
-//require './vendor/autoload.php';
+// // Optional exec path settings (Default is called with command name only)
+// define('ELFINDER_TAR_PATH',      '/PATH/TO/tar');
+// define('ELFINDER_GZIP_PATH',     '/PATH/TO/gzip');
+// define('ELFINDER_BZIP2_PATH',    '/PATH/TO/bzip2');
+// define('ELFINDER_XZ_PATH',       '/PATH/TO/xz');
+// define('ELFINDER_ZIP_PATH',      '/PATH/TO/zip');
+// define('ELFINDER_UNZIP_PATH',    '/PATH/TO/unzip');
+// define('ELFINDER_RAR_PATH',      '/PATH/TO/rar');
+// define('ELFINDER_UNRAR_PATH',    '/PATH/TO/unrar');
+// define('ELFINDER_7Z_PATH',       '/PATH/TO/7za');
+// define('ELFINDER_CONVERT_PATH',  '/PATH/TO/convert');
+// define('ELFINDER_IDENTIFY_PATH', '/PATH/TO/identify');
+// define('ELFINDER_EXIFTRAN_PATH', '/PATH/TO/exiftran');
+// define('ELFINDER_JPEGTRAN_PATH', '/PATH/TO/jpegtran');
+// define('ELFINDER_FFMPEG_PATH',   '/PATH/TO/ffmpeg');
 
-// elFinder autoload
+// define('ELFINDER_CONNECTOR_URL', 'URL to this connector script');  // see elFinder::getConnectorUrl()
+
+// define('ELFINDER_DEBUG_ERRORLEVEL', -1); // Error reporting level of debug mode
+
+// // To Enable(true) handling of PostScript files by ImageMagick
+// // It is disabled by default as a countermeasure
+// // of Ghostscript multiple -dSAFER sandbox bypass vulnerabilities
+// // see https://www.kb.cert.org/vuls/id/332928
+// define('ELFINDER_IMAGEMAGICK_PS', true);
+// ===============================================
+
+// // load composer autoload before load elFinder autoload If you need composer
+// // You need to run the composer command in the php directory.
+is_readable('./vendor/autoload.php') && require './vendor/autoload.php';
+
+// // elFinder autoload
 require './autoload.php';
 // ===============================================
 
-// Enable FTP connector netmount
+// // Enable FTP connector netmount
 elFinder::$netDrivers['ftp'] = 'FTP';
 // ===============================================
 
 // // Required for Dropbox network mount
 // // Installation by composer
-// // `composer require kunalvarma05/dropbox-php-sdk`
+// // `composer require kunalvarma05/dropbox-php-sdk` on php directory
 // // Enable network mount
 // elFinder::$netDrivers['dropbox2'] = 'Dropbox2';
 // // Dropbox2 Netmount driver need next two settings. You can get at https://www.dropbox.com/developers/apps
-// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=dropbox2&host=1"
+// // AND require register redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=dropbox2&host=1"
+// // If the elFinder HTML element ID is not "elfinder", you need to change "host=1" to "host=ElementID"
 // define('ELFINDER_DROPBOX_APPKEY',    '');
 // define('ELFINDER_DROPBOX_APPSECRET', '');
 // ===============================================
 
 // // Required for Google Drive network mount
 // // Installation by composer
-// // `composer require google/apiclient:^2.0`
+// // `composer require google/apiclient:^2.0` on php directory
 // // Enable network mount
 // elFinder::$netDrivers['googledrive'] = 'GoogleDrive';
 // // GoogleDrive Netmount driver need next two settings. You can get at https://console.developers.google.com
-// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=googledrive&host=1"
+// // AND require register redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=googledrive&host=1"
+// // If the elFinder HTML element ID is not "elfinder", you need to change "host=1" to "host=ElementID"
 // define('ELFINDER_GOOGLEDRIVE_CLIENTID',     '');
 // define('ELFINDER_GOOGLEDRIVE_CLIENTSECRET', '');
-// // Required case of without composer
+// // Required case when Google API is NOT added via composer
 // define('ELFINDER_GOOGLEDRIVE_GOOGLEAPICLIENT', '/path/to/google-api-php-client/vendor/autoload.php');
 // ===============================================
 
 // // Required for Google Drive network mount with Flysystem
 // // Installation by composer
-// // `composer require nao-pon/flysystem-google-drive:~1.1 nao-pon/elfinder-flysystem-driver-ext`
+// // `composer require nao-pon/flysystem-google-drive:~1.1 nao-pon/elfinder-flysystem-driver-ext` on php directory
 // // Enable network mount
 // elFinder::$netDrivers['googledrive'] = 'FlysystemGoogleDriveNetmount';
 // // GoogleDrive Netmount driver need next two settings. You can get at https://console.developers.google.com
-// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=googledrive&host=1"
+// // AND require register redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=googledrive&host=1"
+// // If the elFinder HTML element ID is not "elfinder", you need to change "host=1" to "host=ElementID"
 // define('ELFINDER_GOOGLEDRIVE_CLIENTID',     '');
 // define('ELFINDER_GOOGLEDRIVE_CLIENTSECRET', '');
+// // And "php/.tmp" directory must exist and be writable by PHP.
 // ===============================================
 
 // // Required for One Drive network mount
@@ -60,7 +92,8 @@ elFinder::$netDrivers['ftp'] = 'FTP';
 // // Enable network mount
 // elFinder::$netDrivers['onedrive'] = 'OneDrive';
 // // GoogleDrive Netmount driver need next two settings. You can get at https://dev.onedrive.com
-// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL/netmount/onedrive/1"
+// // AND require register redirect url to "YOUR_CONNECTOR_URL/netmount/onedrive/1"
+// // If the elFinder HTML element ID is not "elfinder", you need to change "/1" to "/ElementID"
 // define('ELFINDER_ONEDRIVE_CLIENTID',     '');
 // define('ELFINDER_ONEDRIVE_CLIENTSECRET', '');
 // ===============================================
@@ -70,7 +103,8 @@ elFinder::$netDrivers['ftp'] = 'FTP';
 // // Enable network mount
 // elFinder::$netDrivers['box'] = 'Box';
 // // Box Netmount driver need next two settings. You can get at https://developer.box.com
-// // AND reuire regist redirect url to "YOUR_CONNECTOR_URL"
+// // AND require register redirect url to "YOUR_CONNECTOR_URL?cmd=netmount&protocol=box&host=1"
+// // If the elFinder HTML element ID is not "elfinder", you need to change "host=1" to "host=ElementID"
 // define('ELFINDER_BOX_CLIENTID',     '');
 // define('ELFINDER_BOX_CLIENTSECRET', '');
 // ===============================================
@@ -79,6 +113,17 @@ elFinder::$netDrivers['ftp'] = 'FTP';
 // // Zoho Office Editor APIKey
 // // https://www.zoho.com/docs/help/office-apis.html
 // define('ELFINDER_ZOHO_OFFICE_APIKEY', '');
+// ===============================================
+
+// // Online converter (online-convert.com) APIKey
+// // https://apiv2.online-convert.com/docs/getting_started/api_key.html
+// define('ELFINDER_ONLINE_CONVERT_APIKEY', '');
+// ===============================================
+
+// // Zip Archive editor
+// // Installation by composer
+// // `composer require nao-pon/elfinder-flysystem-ziparchive-netmount` on php directory
+// define('ELFINDER_DISABLE_ZIPEDITOR', false); // set `true` to disable zip editor
 // ===============================================
 
 /**
@@ -100,7 +145,6 @@ function access($attr, $path, $data, $volume, $isDir, $relpath) {
 		? !($attr == 'read' || $attr == 'write') // set read+write to false, other (locked+hidden) set to true
 		:  null;                                 // else elFinder decide it itself
 }
-
 if(isset($_GET["site_id"])){
 	//SOY CMSとの接続:サイトのパスを取得
 	SOY2::import("domain.admin.Site");
@@ -110,9 +154,8 @@ if(isset($_GET["site_id"])){
 	SOY2DAOConfig::Dsn(ADMIN_DB_DSN);
 	SOY2DAOConfig::user(ADMIN_DB_USER);
 	SOY2DAOConfig::pass(ADMIN_DB_PASS);
-	$siteDAO = SOY2DAOFactory::create("admin.SiteDAO");
 	try{
-		$site = $siteDAO->getBySiteId($_GET["site_id"]);
+		$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($_GET["site_id"]);
 	}catch(Exception $e){
 		exit;
 	}
@@ -129,7 +172,7 @@ if(isset($_GET["site_id"])){
 	$shopId = strtr($_GET["shop_id"], array("." => "", "/" => "", "\\" => "", "\0" => ""));//余計な文字列は削除
 	$shopConfigFilePath = preg_replace('/\/soycms$/', "/soyshop", dirname(dirname(dirname(dirname(__FILE__))))) . "/webapp/conf/shop/" . $shopId . ".conf.php";
 	if(!file_exists($shopConfigFilePath)) exit;
-	if(!file_exists(dirname(dirname(dirname(dirname($shopConfigFilePath))))."/SOYCMS_SYSTEM_DIRECTORY")) exit;//soyshop/webapp/conf/shop/shopid.conf.phpでなければ終了
+	//if(!file_exists(dirname(dirname(dirname(dirname($shopConfigFilePath)))). "/" . SOYCMS_SYSTEM_DIRECTORY")) exit;//soyshop/webapp/conf/shop/shopid.conf.phpでなければ終了
 
 	include_once($shopConfigFilePath);
 
@@ -146,14 +189,36 @@ $opts = array(
 		// Items volume
 		array(
 			'driver'        => 'LocalFileSystem',           // driver for accessing file system (REQUIRED)
-			'path'          => $path, 		                // path to files (REQUIRED)
-			'URL'           => $url, 						// URL to files (REQUIRED)
-			//'trashHash'     => 't1_Lw',                     // elFinder's hash of trash folder
+			'path'          => $path,                 // path to files (REQUIRED)
+			'URL'           => $url, // URL to files (REQUIRED)
+			'trashHash'     => 't1_Lw',                     // elFinder's hash of trash folder
 			'winHashFix'    => DIRECTORY_SEPARATOR !== '/', // to make hash same to Linux one on windows too
 			'uploadDeny'    => array('all'),                // All Mimetypes not allowed to upload
-			'uploadAllow'   => array('image', 'text/plain', 'text/css', 'application/zip', 'application/epub+zip','application/pdf'),// Mimetype `image` and `text/plain` allowed to upload
+			'uploadAllow'   => array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/x-icon', 'text/plain', "text/css", "application/pdf"), // Mimetype `image` and `text/plain` allowed to upload
 			'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
-			'accessControl' => 'access'                     // disable and hide dot starting files (OPTIONAL)
+			'accessControl' => 'access',                     // disable and hide dot starting files (OPTIONAL)
+			'attributes' => array(
+					//フロントコントローラー
+					array(
+							'pattern' => '/\\.php(\\.old(\\.[0-9][0-9])?)?$/',
+							'read' => false,
+							'write' => false,
+							'locked' => true,
+							'hidden' => true,
+					),
+			)
+		),
+		// Trash volume
+		array(
+			'id'            => '1',
+			'driver'        => 'Trash',
+			'path'          => '../files/.trash/',
+			'tmbURL'        => dirname($_SERVER['PHP_SELF']) . '/../files/.trash/.tmb/',
+			'winHashFix'    => DIRECTORY_SEPARATOR !== '/', // to make hash same to Linux one on windows too
+			'uploadDeny'    => array('all'),                // Recomend the same settings as the original volume that uses the trash
+			'uploadAllow'   => array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/x-icon', 'text/plain'), // Same as above
+			'uploadOrder'   => array('deny', 'allow'),      // Same as above
+			'accessControl' => 'access',                    // Same as above
 		),
 	)
 );

@@ -10,7 +10,7 @@ class addressPage extends MainMyPagePageBase{
 	private $userId;
 
 	function doPost(){
-		if(soy2_check_token()){
+		if(soy2_check_token() && soy2_check_referer()){
 
 			/*
 			 * 宛先の入力値

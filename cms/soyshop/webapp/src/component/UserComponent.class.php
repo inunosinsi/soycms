@@ -81,6 +81,7 @@ class UserComponent {
 		$page->addInput("mail_address", array(
 			"name" => "Customer[mailAddress]",
 			"value" => $mailAddress,
+			"readonly" => ($app instanceof CartLogic && $app->getAttribute("logined")),
 			"attr:autocomplete" => "false"
 		));
 

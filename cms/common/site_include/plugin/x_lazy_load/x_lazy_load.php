@@ -17,7 +17,7 @@ class XLazyLoadPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3278",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -62,6 +62,11 @@ class XLazyLoadPlugin{
 							if(!count($tmp)){
 								$line = str_replace("<img ", "<img loading=\"lazy\" ", $line);
 							}
+						}
+					}else if(is_numeric(stripos($line, "<iframe"))){	//iframeは必ずlazyload
+						preg_match('/<iframe.*?loading=\".*\".*?>/', $line, $tmp);
+						if(!count($tmp)){
+							$line = str_replace("<iframe ", "<iframe loading=\"lazy\" ", $line);
 						}
 					}
 					$html[] = $line;

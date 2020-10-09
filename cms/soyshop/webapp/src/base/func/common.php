@@ -947,10 +947,10 @@ function soyshop_get_user_age($birthday){
 
 /**
  * 顧客の年齢の○ヶ月の方を調べる
- * @param string $birthday
+ * @param string $birthday, timestamp $now
  * @return integer
  */
-function soyshop_get_user_age_month($birthday){
+function soyshop_get_user_age_month($birthday, $now=null){
 	if(is_null($birthday)) return null;
 	preg_match('/^\d{4}-\d{1,}-\d{1,}/', $birthday, $tmp);
 	if(isset($tmp[0])){
@@ -961,20 +961,44 @@ function soyshop_get_user_age_month($birthday){
 		return null;
 	}
 
-	$diff = $m - date("n");
+	//nowがない場合は通常計算、nowがある場合はdate("j")の箇所の値をnowに合わせる
+	$nowD = (isset($now) && is_numeric($now)) ? date("j", $now) : date("j");
+
+	if(is_null($now)) $now = time();
+	$diff = $m - date("n", $now);
+
 	if($diff === 0){
 		//誕生日がきてない場合は11ヶ月で返す
-		if($d > date("j")){
+		if($d > $nowD){
 			return 11;
 		}else{
 			return 0;
 		}
-	// @ToDo 日付も合わせて厳密にカウントすべきか？
-	}else if($diff > 0){
-		return $diff;
 	}
 
+	//誕生日になっていない時はプラス1
+	if($d > $nowD) $diff++;
 
-	//たとえば今が8月で誕生月が2月の場合(6ヶ月)
-	return 12 + $diff;
+	return ($diff > 0) ? 12 - $diff : $diff * -1;
+}
+/**
+ * 顧客の生後○日の方を調べる
+ * @param string $birthday, timestamp $now
+ * @return integer
+ */
+function soyshop_get_days_after_birth($birthday, $now=null){
+	if(is_null($birthday)) return null;
+ 	preg_match('/^\d{4}-\d{1,}-\d{1,}/', $birthday, $tmp);
+ 	if(!isset($tmp[0])) return null;
+	$array = explode("-", $tmp[0]);
+	$y = (int)$array[0];
+	$m = (int)$array[1];
+	$d = (int)$array[2];
+
+	if(is_null($now)) $now = time();
+
+	$time = mktime(0, 0, 0, $m, $d, $y);
+	$diff = $now - $time;
+
+	return (int)($diff / (24 * 60 * 60));
 }

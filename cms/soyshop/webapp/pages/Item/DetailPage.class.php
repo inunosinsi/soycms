@@ -295,7 +295,8 @@ class DetailPage extends WebPage{
 		DisplayPlugin::toggle("item_stock", !$isIgnoreStock);
 		$this->addInput("item_stock", array(
 			"name" => "Item[stock]",
-			"value" => $item->getStock()
+			"value" => $item->getStock(),
+			"readonly" => (SOYShopPluginUtil::checkIsActive("reserve_calendar"))
 		));
 
 		$this->addInput("item_unit", array(
@@ -459,7 +460,7 @@ class DetailPage extends WebPage{
 		));
 
 		$children = soyshop_get_item_children($item->getId());
-		
+
 		DisplayPlugin::toggle("children", count($children));
 		$this->createAdd("child_item_list","HTMLList", array(
 			"list" => $children,
@@ -470,6 +471,9 @@ class DetailPage extends WebPage{
 				'$this->createAdd("item_detail_link","HTMLLink", array(' .
 					'"link" => "'.SOY2PageController::createLink("Item.Detail").'/" . $entity->getId(),' .
 					'"html" => $itemName
+				));'.
+				'$this->createAdd("item_price","HTMLLabel", array(' .
+					'"text" => number_format($entity->getPrice())
 				));'
 		));
 
@@ -599,31 +603,26 @@ class DetailPage extends WebPage{
 
 	private function _getOrderCount(SOYShop_Item $item){
 
-		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
-		$childItemStock = $this->config->getChildItemStock();
+		if(!$this->config->getChildItemStock()) return $item->getOrderCount();
 
 		//子商品の在庫管理設定をオン(子商品の注文数合計を取得する)
-		if($childItemStock){
-			//子商品のIDを取得する
-			$ids = $this->getChildItemIds($item->getId());
-			$count = 0;
-			if(count($ids) > 0){
+		//子商品のIDを取得する
+		$ids = self::_getChildItemIds($item->getId());
+		if(!count($ids)) return 0;
 
-				foreach($ids as $id){
-					try{
-						$count = $count + $logic->getOrderCountByItemId($id);
-					}catch(Exception $e){
-
-					}
-				}
-				return $count;
+		$count = 0;
+		$logic = SOY2Logic::createInstance("logic.order.OrderLogic");
+		foreach($ids as $id){
+			try{
+				$count += $logic->getOrderCountByItemId($id);
+			}catch(Exception $e){
+				//
 			}
 		}
-
-		return $logic->getOrderCountByItemId($item->getId());
+		return $count;
 	}
 
-	function getChildItemIds($itemId){
+	private function _getChildItemIds($itemId){
 
 		$ids = array();
 

@@ -1,4 +1,6 @@
 <?php
+if(!class_exists("SOYShopPluginUtil")) SOY2::import("util.SOYShopPluginUtil");
+
 /**
  * @table soyshop_item
  */
@@ -206,7 +208,11 @@ class SOYShop_Item {
 		$this->purchasePrice = $purchasePrice;
 	}
     function getStock() {
-        return (int)$this->stock;
+		if(!SOYShopPluginUtil::checkIsActive("reserve_calendar")) return (int)$this->stock;
+
+		//予約カレンダーモード
+		$unseat = self::_scheduleDao()->getScheduleUnseatCountByItemId($this->getId()) - $this->getOrderCount();
+		return ($unseat >= 0) ? $unseat : 0;
     }
     function setStock($stock) {
         $this->stock = $stock;
@@ -251,7 +257,6 @@ class SOYShop_Item {
 
         $this->setConfig($array);
     }
-
 
     function getCategory() {
         return $this->category;
@@ -344,6 +349,21 @@ class SOYShop_Item {
         }
         return $this->name;
     }
+
+	//注文数
+	function getOrderCount(){
+		//予約カレンダーの場合
+		if(SOYShopPluginUtil::checkIsActive("reserve_calendar")){
+			return self::_reserveDao()->getReservedCountByItemId($this->getId());
+		//通常
+		}else{
+			try{
+				return self::_itemOrderDao()->countByItemId($this->getId());
+			}catch(Exception $e){
+				return 0;
+			}
+		}
+	}
 
 	function getCodeOnAdmin(){
 		if(!self::_isConvertParentNameConfig()) return $this->code;
@@ -503,4 +523,30 @@ class SOYShop_Item {
 
         return true;
     }
+
+	/** DAO **/
+
+	private function _itemOrderDao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		return $dao;
+	}
+
+	private function _reserveDao(){
+		static $dao;
+		if(is_null($dao)){
+			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ReserveDAO");
+			$dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ReserveDAO");
+		}
+		return $dao;
+	}
+
+	private function _scheduleDao(){
+		static $dao;
+		if(is_null($dao)){
+			SOY2::import("module.plugins.reserve_calendar.domain.SOYShopReserveCalendar_ScheduleDAO");
+			$dao = SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO");
+		}
+		return $dao;
+	}
 }

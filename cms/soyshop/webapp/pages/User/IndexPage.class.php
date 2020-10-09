@@ -81,8 +81,7 @@ class IndexPage extends WebPage{
 		$pager->setEnd($end);
 		$pager->setTotal($total);
 		$pager->setLimit($limit);
-
-		$this->buildPager($pager);
+		$pager->buildPager($this);
 	}
 
 	function doPost(){
@@ -165,37 +164,6 @@ class IndexPage extends WebPage{
 			"name" => "search[attribute3]",
 			"value" => (isset($search["attribute3"])) ? $search["attribute3"] : "",
 			"onclick" => "this.select()"
-		));
-	}
-
-	function buildPager(PagerLogic $pager){
-
-		//件数情報表示
-		$this->addLabel("count_start", array(
-			"text" => $pager->getStart()
-		));
-		$this->addLabel("count_end", array(
-			"text" => $pager->getEnd()
-		));
-		$this->addLabel("count_max", array(
-			"text" => $pager->getTotal()
-		));
-
-		//ページへのリンク
-		$this->addLink("next_pager", $pager->getNextParam());
-		$this->addLink("prev_pager", $pager->getPrevParam());
-		$this->createAdd("pager_list","SimplePager",$pager->getPagerParam());
-
-		//ページへジャンプ
-		$this->addForm("pager_jump", array(
-			"method" => "get",
-			"action" => $pager->getPageURL()
-		));
-		$this->addSelect("pager_select", array(
-			"name" => "page",
-			"options" => $pager->getSelectArray(),
-			"selected" => $pager->getPage(),
-			"onchange" => "location.href=this.parentNode.action+this.options[this.selectedIndex].value"
 		));
 	}
 

@@ -15,7 +15,7 @@ class IndexPage extends SOYShopWebPage{
 			$session->setAttribute("soyshop.shop.id", $siteId);
 
 			//サイトのチェック
-			self::checkSite($siteId, $siteName);
+			self::_checkSite($siteId, $siteName);
 
 			//テンプレートID
 			define("SOYSHOP_TEMPLATE_ID", "bryon");
@@ -45,9 +45,9 @@ class IndexPage extends SOYShopWebPage{
 				$option["dbtype"] = "mysql";
 
 				//エラーチェック
-				if(self::checkMySQLSetting($mysql)){
+				if(self::_checkMySQLSetting($mysql)){
 					//接続テスト
-					self::checkDB($option);
+					self::_checkDB($option);
 				}
 			}
 
@@ -61,28 +61,29 @@ class IndexPage extends SOYShopWebPage{
 			$res = init_soyshop($siteId, $option, $siteName, false, $isOnlyAdmin);	//実行
 
 			if($res){
-				$path = soy2_realpath(SOYCMS_TARGET_DIRECTORY);
-				$path .= $siteId."/";
-
-				$dsn = "";
-				if($option["dbtype"] == "mysql"){
-					$dsn = $option["dsn"];
-				}else{
-					$dsn = "sqlite:" . $path . ".db/sqlite.db";
-				}
-
-			   	$obj = new SOYShop_Site();
-		    	$obj->setSiteId($siteId);
-		    	$obj->setName($siteName);
-		    	$obj->setPath(SOYSHOP_SITE_DIRECTORY);
-		    	$obj->setUrl(SOYSHOP_SITE_URL);
-		    	$obj->setDsn($dsn);//DSNだけ入っていてもあまり意味がないかも
-
-		    	try{
-		    		$obj->save();
-		    	}catch(Exception $e){
-					$this->errors["init_failed"] = true;
-		    	}
+				// @ToDo 下記の処理はいずれは外したい
+				// $path = soy2_realpath(SOYCMS_TARGET_DIRECTORY);
+				// $path .= $siteId."/";
+				//
+				// $dsn = "";
+				// if($option["dbtype"] == "mysql"){
+				// 	$dsn = $option["dsn"];
+				// }else{
+				// 	$dsn = "sqlite:" . $path . ".db/sqlite.db";
+				// }
+				//
+			   	// $obj = new SOYShop_Site();
+		    	// $obj->setSiteId($siteId);
+		    	// $obj->setName($siteName);
+		    	// $obj->setPath(SOYSHOP_SITE_DIRECTORY);
+		    	// $obj->setUrl(SOYSHOP_SITE_URL);
+		    	// $obj->setDsn($dsn);//DSNだけ入っていてもあまり意味がないかも
+				//
+		    	// try{
+		    	// 	$obj->save();
+		    	// }catch(Exception $e){
+				// 	$this->errors["init_failed"] = true;
+		    	// }
 				$this->jump("");
 			}else{
 				$this->errors["init_failed"] = true;
@@ -93,15 +94,14 @@ class IndexPage extends SOYShopWebPage{
 	function __construct(){
 		parent::__construct();
 
-		self::checkDirectory();
+		self::_checkDirectory();
 
-		self::buildForm();
-		self::buildMySQLForm();
-
+		self::_buildForm();
+		self::_buildMySQLForm();
 	}
 
 
-	private function buildForm(){
+	private function _buildForm(){
 
 		$this->addForm("init_form", array(
 			"disabled" => $this->disabled
@@ -145,7 +145,7 @@ class IndexPage extends SOYShopWebPage{
 	/**
 	 * build form for MySQL
 	 */
-	private function buildMySQLForm(){
+	private function _buildMySQLForm(){
 
 		$host = "";
 		$port = "";
@@ -207,7 +207,7 @@ class IndexPage extends SOYShopWebPage{
 	/**
 	 * ディレクトリの書き込み権限チェック
 	 */
-	private function checkDirectory(){
+	private function _checkDirectory(){
 		$this->errors["error_soycms_site_dir"] = ( !file_exists(SOYCMS_TARGET_DIRECTORY) || !is_dir(SOYCMS_TARGET_DIRECTORY) || !is_writable(SOYCMS_TARGET_DIRECTORY) );
 
 		$soyshopConfDir = dirname(CMS_COMMON) . "/soyshop/webapp/conf/shop";
@@ -234,7 +234,7 @@ class IndexPage extends SOYShopWebPage{
 	 * @param siteName
 	 * @return Boolean
 	 */
-	private function checkSite($siteId, $siteName){
+	private function _checkSite($siteId, $siteName){
 		$dao = SOY2DAOFactory::create("SOYShop_SiteDAO");
 
 		//site id empty
@@ -243,15 +243,10 @@ class IndexPage extends SOYShopWebPage{
 		}
 
 		//site id unique
-		try{
-			$res = $dao->getBySiteId($siteId);
+		$site = ShopUtil::getSiteBySiteId($siteId);
+		if(is_numeric($site->getId())){
 			$this->errors["site_id_unique"] = true;
-		}catch(Exception $e){
-			//OK
 		}
-
-		//管理DBをみる
-		$this->checkAdminDB($siteId);
 
 		//site id format
 		if(!preg_match('/^[\-_a-zA-Z0-9]+$/', $siteId)){
@@ -268,17 +263,7 @@ class IndexPage extends SOYShopWebPage{
 		}
 	}
 
-	/**
-	 * 管理側のサイト
-	 * @param String siteId
-	 */
-	private function checkAdminDB($siteId){
-		CMSApplication::switchAdminMode();
-		$dao = SOY2DAOFactory::create("admin.SiteDAO");
-		CMSApplication::switchAppMode();
-	}
-
-	private function checkMySQLSetting($input){
+	private function _checkMySQLSetting($input){
 		$noError = true;
 		if(strlen($input["host"]) == 0){
 			$this->errors["mysql_host_empty"] = true;
@@ -295,7 +280,7 @@ class IndexPage extends SOYShopWebPage{
 	 * @param db datebase sessting
 	 * @return Boolean
 	 */
-	private function checkDB($db){
+	private function _checkDB($db){
 
 		try{
 			SOY2DAOConfig::setOption("connection_failure","throw");

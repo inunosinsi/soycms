@@ -25,11 +25,19 @@ body {
 	#wrap {
 		padding: 0 5px;
 	}
+
+	.sp_pager{
+	   display:none;
+	}
 }
 
 /* ========================================
  * #mini-calendar
  * ========================================*/
+ .sp_pager{
+ 	display:none;
+ }
+
 .calendar-year-month {
 	text-align: center;
 	font-size: 32px;
@@ -161,6 +169,9 @@ table.reserve_calendar tbody tr td.today {
 	.pager{
 		display:none;
 	}
+	.sp_pager{
+		display:block;
+	}
 	table.reserve_calendar thead {
 		display: none;
 	}
@@ -196,6 +207,10 @@ table.reserve_calendar tbody tr td.today {
 	table.reserve_calendar tbody tr.next{
 		display:block;
 	}
+	table.reserve_calendar thead tr.empty,
+	table.reserve_calendar tbody tr.empty{
+		display:none;
+	}
 
 	/* 日付 */
 	table.reserve_calendar tbody tr td .calendar-day-number {
@@ -219,6 +234,9 @@ table.reserve_calendar tbody tr td.today {
 	}
 	table.reserve_calendar tbody tr td.other{
 		color:#212529;
+	}
+	table.reserve_calendar tbody tr td.empty{
+		display:none !important;
 	}
 	table.reserve_calendar tbody tr td.holiday,
 	table.reserve_calendar tbody tr td.sun{

@@ -6,20 +6,21 @@ class DetailPage extends SOYShopWebPage{
 
 	function doPost(){
 
-		if(soy2_check_token() && isset($_POST["Site"])){
-			$site = SOY2::cast(self::getSite(), $_POST["Site"]);
-
-			/**
-			 * shopディレクトリにあるsqlite.dbのショップ名の書き換え
-			 * shop.dbの書き換え
-			 * cms.dbの書き換え
-			 */
-			if(SOY2Logic::createInstance("logic.ShopLogic")->updateShopSite($site)){
-				CMSApplication::jump("Site.Detail." . $this->id . "?updated");
-			}else{
-				CMSApplication::jump("Site.Detail." . $this->id . "?error");
-			}
-		}
+		//通過しない
+		// if(soy2_check_token() && isset($_POST["Site"])){
+		// 	$site = SOY2::cast(ShopUtil::getSiteById($this->id), $_POST["Site"]);
+		//
+		// 	/**
+		// 	 * shopディレクトリにあるsqlite.dbのショップ名の書き換え
+		// 	 * shop.dbの書き換え
+		// 	 * cms.dbの書き換え
+		// 	 */
+		// 	if(SOY2Logic::createInstance("logic.ShopLogic")->updateShopSite($site)){
+		// 		CMSApplication::jump("Site.Detail." . $this->id . "?updated");
+		// 	}else{
+		// 		CMSApplication::jump("Site.Detail." . $this->id . "?error");
+		// 	}
+		// }
 	}
 
     function __construct($args) {
@@ -27,12 +28,15 @@ class DetailPage extends SOYShopWebPage{
 
     	parent::__construct();
 
-    	self::buildMessageForm();
-    	self::buildForm();
+		foreach(array("success", "detach", "created", "updated", "error") as $t){
+			DisplayPlugin::toggle($t, isset($_GET[$t]));
+		}
+
+    	self::_buildForm();
     }
 
-    private function buildForm(){
-    	$site = self::getSite();
+    private function _buildForm(){
+    	$site = ShopUtil::getSiteById($this->id);
 
     	$this->addForm("form");
 
@@ -42,7 +46,7 @@ class DetailPage extends SOYShopWebPage{
 
     	$this->addInput("site_name", array(
     		"name" => "Site[name]",
-    		"value" => $site->getName(),
+    		"value" => $site->getSiteName(),
     		"style" => "width:95%",
 			"readonly" => true
     	));
@@ -51,20 +55,20 @@ class DetailPage extends SOYShopWebPage{
     		"text" => ($site->getIsMysql())? "MySQL": "SQLite"
     	));
 
-    	$logic = SOY2Logic::createInstance("logic.ShopLogic");
-		$checkHasRootSite = $logic->checkHasRootSite();
-    	$checkIsRootSite = $logic->checkIsRootSite($site->getSiteId());
+    	$logic = SOY2Logic::createInstance("logic.RootLogic");
+		$checkHasRootSite = $logic->checkHasRootSite();	//ルート設定されたサイトがあるか？
+		$checkIsRootSite = ($checkHasRootSite) ? $logic->checkIsRootSite($site->getId()) : false;
 
+
+		$rootUrl = self::_createRootLink($site);
     	$this->addLink("site_root_link", array(
-    		"link" => self::createRootLink($site),
-			"text" => self::createRootLink($site),
+    		"link" => $rootUrl,
+			"text" => $rootUrl,
 			"target" => "_blank",
 			"visible" => ($checkIsRootSite)
     	));
-    	$this->addModel("is_root", array(
-    		"visible" => ($checkIsRootSite)
-    	));
 
+		DisplayPlugin::toggle("is_root", $checkIsRootSite);
 		$this->addLink("site_url", array(
 			"link" => $site->getUrl(),
 			"text" => $site->getUrl(),
@@ -112,27 +116,8 @@ class DetailPage extends SOYShopWebPage{
 		));
     }
 
-    private function buildMessageForm(){
-		foreach(array("success", "detach", "created", "updated", "error") as $t){
-			DisplayPlugin::toggle($t, isset($_GET[$t]));
-		}
+    private function _createRootLink(Site $site){
+		$url = rtrim($site->getUrl(), "/");
+    	return str_replace($site->getSiteId(), "", $url);
     }
-
-    private function getSite(){
-    	try{
-    		return self::dao()->getById($this->id);
-    	}catch(Exception $e){
-    		return new SOYShop_Site();
-    	}
-    }
-
-    private function createRootLink($site){
-    	return str_replace($site->getSiteId() . "/", "", $site->getUrl());
-    }
-
-	private function dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYShop_SiteDAO");
-		return $dao;
-	}
 }

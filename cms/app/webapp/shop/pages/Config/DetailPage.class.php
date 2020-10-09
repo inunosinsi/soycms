@@ -7,35 +7,24 @@ class DetailPage extends SOYShopWebPage{
 
 	function doPost(){
 
-		if(soy2_check_token()&&isset($_POST["Account"])){
-			$accounts = $_POST["Account"];
-			$logic = SOY2Logic::createInstance("logic.ShopLogic");
-			$res = $logic->updateSiteRole($accounts, $this->siteId);
+		if(soy2_check_token() && isset($_POST["Account"])){
 
-			if($res){
+			if(SOY2Logic::createInstance("logic.RoleLogic")->updateSiteRole($_POST["Account"], $this->id)){
 				CMSApplication::jump("Config.Detail." . $this->id . "?updated");
-			}else{
-				CMSApplication::jump("Config.Detail." . $this->id . "?error");
 			}
 		}
+		CMSApplication::jump("Config.Detail." . $this->id . "?error");
 	}
 
     function __construct($args) {
     	$this->id = $args[0];
 
-    	$dao = SOY2DAOFactory::create("SOYShop_SiteDAO");
-    	try{
-    		$site = $dao->getById($this->id);
-    	}catch(Exception $e){
-    		$site = new SOYShop_Site();
-    	}
-
-    	$this->siteId = $site->getSiteId();
+		$site = ShopUtil::getSiteById($this->id);
 
     	parent::__construct();
 
     	$this->addLabel("site_name", array(
-    		"text" => $site->getName()
+    		"text" => $site->getSiteName()
     	));
 
 		foreach(array("updated", "error") as $t){
@@ -44,12 +33,11 @@ class DetailPage extends SOYShopWebPage{
 
     	$this->addForm("form");
 
-    	//Shop用サイトの管理権限はSiteRoleを使用する
-    	$logic = SOY2Logic::createInstance("logic.ShopLogic");
-    	$accounts = $logic->getAccounts("site", $this->siteId);
+		$logic = SOY2Logic::createInstance("logic.RoleLogic");
 
+    	//Shop用サイトの管理権限はSiteRoleを使用する
     	$this->createAdd("account_list", "_common.SOYShop_SiteAccountList", array(
-			"list" => $accounts,
+			"list" => $logic->getAccounts("site", $this->id),
 			"role" => $logic->getSiteRoleArray()
 		));
     }

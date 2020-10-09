@@ -58,6 +58,7 @@ class ReadEntryCountPlugin{
 	function onPageOutput($obj){
 
 		//ブログの記事ページを開いた時のみ集計
+		SOY2::import('site_include.CMSBlogPage');
 		if(($obj instanceof CMSBlogPage) && $obj->mode == CMSBlogPage::MODE_ENTRY && !is_null($obj->entry->getId())){
 			$cntObj = self::getReadEntryCountObject($obj->entry->getId());
 			$cnt = (int)$cntObj->getCount();
