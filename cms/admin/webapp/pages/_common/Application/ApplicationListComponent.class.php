@@ -34,5 +34,23 @@ class ApplicationListComponent extends HTMLList{
 		$this->addLink("auth_link", array(
 			"link" => SOY2PageController::createLink("Application.Role") . "?app_id=" . $key
 		));
+
+		//SOY Shopの場合はApp操作者の場合であればログインできないようにする
+		if(isset($entity["id"]) && $entity["id"] == "shop"){
+			if(!self::_checkShopAppAuth()) return false;
+		}
+	}
+
+	private function _checkShopAppAuth(){
+		//初期管理者の場合は必ずtrue
+		if(UserInfoUtil::isDefaultUser()) return true;
+
+		$roles = SOY2DAOFactory::create("admin.AppRoleDAO")->getByUserId(UserInfoUtil::getUserId());
+		if(!isset($roles["shop"])) return false;
+
+		$appRole = $roles["shop"]->getAppRole();
+		if($appRole == AppRole::APP_NO_ROLE || $appRole == AppRole::APP_USER) return false;
+
+		return true;
 	}
 }
