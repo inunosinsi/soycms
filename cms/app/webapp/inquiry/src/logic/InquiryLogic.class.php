@@ -23,7 +23,12 @@ class InquiryLogic extends SOY2LogicBase{
     		$column->setInquiry($inquiry);
 
     		$id = $column->getId();
-    		$label = $column->getLabel();
+			if($useMailBody){	//HTMLタグを除きたいが念の為に、メール送信時のみに限定する
+				$label = strip_tags($column->getLabel());
+			}else{
+				$label = $column->getLabel();
+			}
+
 
 			//連番の場合
 			if($column->getType() == "SerialNumber"){
