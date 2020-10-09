@@ -70,9 +70,13 @@ class SOYInquiryApplication{
 	function main(){
 
 		//アップグレードバッチ
-		if(isset($_GET["bat"]) && file_exists(dirname(__FILE__) . "/src/bat/" . $_GET["bat"] . ".php")){
-			include(dirname(__FILE__) . "/src/bat/" . $_GET["bat"] . ".php");
-			exit;
+		if(isset($_GET["bat"])){
+		     $bat = str_replace(Array("..", "/", "\\"), "_", $_GET["bat"]);
+		     $filename = dirname(__FILE__) . "/src/bat/" . $bat . ".php";
+		     if(file_exists($filename)){
+			  include($filename);
+			  exit;
+		     }
 		}
 
 		$arguments = CMSApplication::getArguments();
