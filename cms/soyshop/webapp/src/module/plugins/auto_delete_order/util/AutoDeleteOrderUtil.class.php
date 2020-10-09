@@ -4,6 +4,7 @@ class AutoDeleteOrderUtil {
 
 	private static function _types(){
 		return array(
+			"invalid",		//無効注文
 			"cancel",		//キャンセル注文
 			"pre",			//仮登録注文
 			"auto_cancel"	//自動キャンセル
