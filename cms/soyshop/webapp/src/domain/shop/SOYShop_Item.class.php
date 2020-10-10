@@ -433,7 +433,7 @@ class SOYShop_Item {
             $this->getOpenPeriodStart() <= SOY2_NOW &&
             $this->getOpenPeriodEnd() >= SOY2_NOW
         ){
-        return true;
+        	return true;
         }
 
         return false;

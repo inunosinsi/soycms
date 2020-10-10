@@ -3,7 +3,7 @@ SOY2::import("domain.config.SOYShop_ShopConfig");
 class DetailPage extends WebPage{
 
 	function doPost(){
-		if(!AUTH_OPERATE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
+		if(!AUTH_OPERATE || !AUTH_CHANGE) return;	//操作権限がないアカウントの場合は以後のすべての動作を封じる
 
 		if(!empty($_FILES) && empty($_POST)){
 			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
@@ -528,6 +528,9 @@ class DetailPage extends WebPage{
 		//管理制限の権限を取得し、権限がない場合は表示しない
 		foreach(range(1,4) as $i){
 			DisplayPlugin::toggle("app_limit_function_" . $i, AUTH_OPERATE);
+		}
+		foreach(range(1,2) as $i){
+			DisplayPlugin::toggle("app_limit_function_change_" . $i, AUTH_CHANGE);
 		}
 
 

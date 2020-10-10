@@ -18,6 +18,7 @@ class SOYShopAuthUtil {
 			"PLUGIN" => true,
 			"SITE" => true,		//ページの作成やテンプレートの編集等
 			"OPERATE" => true,	//更新の操作に関するもの,
+			"CHANGE" => true,	//更新の操作の内、公開に関するもの
 			"SOYAPP" => true	//SOY InquiryやSOY Mail
 		);
 	}
@@ -47,6 +48,7 @@ class SOYShopAuthUtil {
 					$authes["PLUGIN"] = false;
 					$authes["SITE"] = false;
 					$authes["OPERATE"] = false;
+					//$authes["CHANGE"] = false;
 					$authes["SOYAPP"] = false;
 					break;
 				case 10:	//商品管理制限者
