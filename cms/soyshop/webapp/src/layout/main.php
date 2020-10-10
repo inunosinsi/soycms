@@ -89,10 +89,10 @@ foreach($scripts as $script){
 				<?php }?>
 				<?php if(AUTH_SITE){?>
 				<li class="shop">
-					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Navigation"><i class="fa fa-list fa-fw"></i>ショップ管理</a>
+					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Navigation" id="shop_manager_link"><i class="fa fa-list fa-fw"></i>ショップ管理</a>
 				</li>
 				<li class="site">
-					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Site"><i class="fa fa-file fa-fw"></i>サイト管理</a>
+					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Site" id="site_manager_link"><i class="fa fa-file fa-fw"></i>サイト管理</a>
 				</li>
 				<li class="user">
 					<a href="javascript:void(0);" data-toggle="modal" data-target="#accountModal"><i class="fa fa-user fa-fw"></i>ユーザー情報</a>
