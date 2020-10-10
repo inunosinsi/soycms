@@ -43,10 +43,9 @@ function soyshop_simple_calendar($html, $page){
 		if(preg_match('/block:id=\"calendar_' . $itemId . '\".*cms:async=\"(.*?)\"/', $html, $tmp)){
 			if(isset($tmp[1]) && is_numeric($tmp[1]) && (int)$tmp[1] === 1) $sync = false;
 		}
-
 		$obj->addLabel("calendar_" . $itemId, array(
 			"soy2prefix" => "block",
-			"html" => SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync))->build($year, $month)
+			"html" => (soyshop_get_item_object($itemId)->isPublished()) ? SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync))->build($year, $month) : ""
 		));
 	}
 
