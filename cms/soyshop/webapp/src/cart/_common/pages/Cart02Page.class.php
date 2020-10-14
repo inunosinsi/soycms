@@ -192,6 +192,11 @@ class Cart02Page extends MainCartPageBase{
 		//送付先フォーム
 		$this->buildSendForm($cart, $customer);
 
+		//zip2address_js
+		$this->addModel("zip2address_js", array(
+			"src" => soyshop_get_zip_2_address_js_filepath()
+		));
+
 		$html = SOYShopPlugin::invoke("soyshop.cart", array(
 			"mode" => "page02",
 			"cart" => $cart
