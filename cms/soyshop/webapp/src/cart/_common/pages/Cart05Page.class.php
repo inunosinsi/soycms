@@ -10,14 +10,14 @@ class Cart05Page extends MainCartPageBase{
 
 		$cart = CartLogic::getCart();
 
-		//在庫の確認
-		if(!self::_checkStock($cart)){
-			$cart->clearAttribute("order_id");
-			$cart->setAttribute("page", "Cart01");
-			$cart->save();
-			soyshop_redirect_cart();
-			exit;
-		}
+		//在庫の確認←廃止
+		// if(!self::_checkStock($cart)){
+		// 	$cart->clearAttribute("order_id");
+		// 	$cart->setAttribute("page", "Cart01");
+		// 	$cart->save();
+		// 	soyshop_redirect_cart();
+		// 	exit;
+		// }
 
 		$paymentModule = soyshop_get_plugin_object($cart->getAttribute("payment_module"));
 		SOYShopPlugin::load("soyshop.payment", $paymentModule);
@@ -36,14 +36,14 @@ class Cart05Page extends MainCartPageBase{
 		//completeはCompletaPage.class.phpに移動
 		$cart = CartLogic::getCart();
 
-		//在庫の確認
-		if(!self::_checkStock($cart)){
-			$cart->clearAttribute("order_id");
-			$cart->setAttribute("page", "Cart01");
-			$cart->save();
-			soyshop_redirect_cart();
-			exit;
-		}
+		//在庫の確認←廃止
+		// if(!self::_checkStock($cart)){
+		// 	$cart->clearAttribute("order_id");
+		// 	$cart->setAttribute("page", "Cart01");
+		// 	$cart->save();
+		// 	soyshop_redirect_cart();
+		// 	exit;
+		// }
 
 		$paymentModule = $cart->getAttribute("payment_module");
 
@@ -84,7 +84,7 @@ class Cart05Page extends MainCartPageBase{
 	//在庫を確認して、必要であればCart01ページにリダイレクトする
 	private function _checkStock(CartLogic $cart){
 		try{
-			$cart->checkOrderable();
+			$cart->checkOrderable(false);
 			$cart->checkItemCountInCart();
 		}catch(SOYShop_StockException $e){
 			return false;

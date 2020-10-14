@@ -13,6 +13,11 @@ abstract class SOYShopReserveCalendar_ScheduleSearchDAO extends SOY2DAO{
     abstract function deleteById($id);
 
 	/**
+	 * @return object
+	 */
+	abstract function getByScheduleId($scheduleId);
+
+	/**
 	 * @final
 	 */
 	function getLastScheduleId(){

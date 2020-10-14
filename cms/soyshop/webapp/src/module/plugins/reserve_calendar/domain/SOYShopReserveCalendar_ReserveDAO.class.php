@@ -31,7 +31,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
         SOY2::import("domain.order.SOYShop_Order");
 
         $dateArray = explode("-", date("Y-n-j"));
-        $sql = "SELECT sch.*, res.id AS res_id, res.reserve_date, o.user_id, u.name AS user_name, i.item_name FROM soyshop_reserve_calendar_reserve res ".
+        $sql = "SELECT sch.*, res.id AS res_id, res.reserve_date, o.user_id, u.name AS user_name, i.item_name, o.order_status FROM soyshop_reserve_calendar_reserve res ".
                 "INNER JOIN soyshop_reserve_calendar_schedule sch ".
                 "ON res.schedule_id = sch.id ".
                 "INNER JOIN soyshop_item i ".
@@ -56,7 +56,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
         $list = array();
         $sort = array();
         foreach($res as $v){
-            $values = array();
+			$values = array();
             $t = mktime(0, 0, 0, $v["month"], $v["day"], $v["year"]);
             if($t < time()) continue;
 
@@ -67,6 +67,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
             $values["user_id"] = $v["user_id"];
             $values["user_name"] = $v["user_name"];
             $values["reserve_date"] = $v["reserve_date"];
+			$values["pre_reserve"] = (isset($v["order_status"]) && $v["order_status"] == SOYShop_Order::ORDER_STATUS_INTERIM);	//クレジットカードの入力時点で画面を離脱したか？
 
             $list[$v["res_id"]] = $values;
             $sort[$v["res_id"]] = $t;

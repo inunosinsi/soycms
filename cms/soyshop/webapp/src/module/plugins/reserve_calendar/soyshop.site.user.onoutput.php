@@ -11,11 +11,11 @@ class ReserveCalendarUserOutput extends SOYShopSiteUserOnOutputAction{
 		$replacements = array();
 
 		if(!defined("MYPAGE_EXTEND_BOOTSTRAP")){
-			if(SOYSHOP_CURRENT_CART_ID == "bootstrap") define("MYPAGE_EXTEND_BOOTSTRAP", true);
-			if(SOYSHOP_CURRENT_MYPAGE_ID == "bootstrap") define("MYPAGE_EXTEND_BOOTSTRAP", true);
+			if(defined("SOYSHOP_CART_MODE") && SOYSHOP_CART_MODE && SOYSHOP_CURRENT_CART_ID == "bootstrap") define("MYPAGE_EXTEND_BOOTSTRAP", true);
+			if(defined("SOYSHOP_MYPAGE_MODE") && SOYSHOP_MYPAGE_MODE && SOYSHOP_CURRENT_MYPAGE_ID == "bootstrap") define("MYPAGE_EXTEND_BOOTSTRAP", true);
 			if(!defined("MYPAGE_EXTEND_BOOTSTRAP")) define("MYPAGE_EXTEND_BOOTSTRAP", false);
 		}
-		
+
 		if(MYPAGE_EXTEND_BOOTSTRAP){
 			if(SOYSHOP_CART_MODE){	//カートモード
 				$replacements = array(

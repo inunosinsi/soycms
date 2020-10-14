@@ -235,7 +235,7 @@ class ReserveCalendarUtil{
 
 	//古い仮登録注文を無効注文(STATUS_INVALID=0)に変更する
 	public static function changeInvalidStatusOlderOrder(){
-		$timming = time() - 1/2 * 1 * 60 * 60;	//30分前
+		$timming = time() - 1/4 * 1 * 60 * 60;	//15分前
 
 		try{
 			SOY2DAOFactory::create("order.SOYShop_OrderDAO")->executeUpdateQuery("UPDATE soyshop_order SET order_status = " . SOYShop_Order::ORDER_STATUS_INVALID . " WHERE order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " AND order_date < " . $timming);

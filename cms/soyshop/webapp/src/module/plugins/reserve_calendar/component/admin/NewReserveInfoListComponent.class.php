@@ -5,12 +5,13 @@ class NewReserveInfoListComponent extends HTMLList{
 	private $labels;
 
 	function populateItem($entity, $i){
-
 		$labelList = (isset($entity["item_id"]) && isset($this->labels[$entity["item_id"]])) ? $this->labels[$entity["item_id"]] : array();
 
+		$itemName = (isset($entity["item_name"])) ? $entity["item_name"] : null;
+		if(isset($entity["pre_reserve"]) && is_bool($entity["pre_reserve"]) && $entity["pre_reserve"]) $itemName .= "(仮予約)";
 		$this->addLink("item_name", array(
 			"link" => (isset($entity["item_id"])) ? SOY2PageController::createLink("Item.Detail." . $entity["item_id"]) : null,
-			"text" => (isset($entity["item_name"])) ? $entity["item_name"] : null
+			"text" => $itemName
 		));
 
 		$this->addLabel("schedule_date", array(
