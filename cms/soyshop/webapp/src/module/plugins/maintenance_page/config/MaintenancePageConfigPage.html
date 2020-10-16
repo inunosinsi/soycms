@@ -1,0 +1,24 @@
+<div class="alert alert-success" soy:display="updated">更新しました。</div>
+
+<!-- soy:display="is_maintenance_page" -->
+<div class="alert alert-info">設定</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>表示設定</label><br>
+		<input type="checkbox" soy:id="maintenance_on">
+	</div>
+
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
+
+<br><br>
+<!-- /soy:display="is_maintenance_page" -->
+
+<div class="alert alert-info">設定方法</div>
+ページ設定でメンテナンスページ用のページを作成します。作成時のページURLを<strong>_maintenance</strong>にします。<br>
+※ページ種別には指定はありません。<br><br>
+ページの設定の手順は下記の記事をご覧ください。<br>
+<a href="https://saitodev.co/soycms/soyshop/tutorial/65" target="_blank" rel="noopener">商品一覧ページを追加する(テンプレートの追加とページの追加) - SOY Shopを使ってみよう</a>
