@@ -12,8 +12,9 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 
 /** リリース **/
 Next
-○追加
-	 - Cart05Pageで在庫数のチェックを追加
+	○追加
+	 - Cart05Pageで在庫数のチェックを追加→廃止
+	 - メンテナンスページ設置プラグイン
 2.2.0
 	○追加
 	 - Login with Amazonプラグイン
