@@ -76,7 +76,7 @@ class DetailPage extends WebPage{
         $this->addInput("uri", array(
             "name" => "Page[uri]",
             "value" => $obj->getUri(),
-            "disabled" => $obj->getUri() == SOYSHOP_TOP_PAGE_MARKER || $obj->getUri() == SOYSHOP_404_PAGE_MARKER,
+            "disabled" => ($obj->getUri() == SOYSHOP_TOP_PAGE_MARKER || $obj->getUri() == SOYSHOP_404_PAGE_MARKER || $obj->getUri() == SOYSHOP_MAINTENANCE_PAGE_MARKER),
         ));
 
         //_home
@@ -93,6 +93,14 @@ class DetailPage extends WebPage{
         ));
         $this->addLabel("SOYSHOP_404_PAGE_MARKER", array(
             "text" => SOYSHOP_404_PAGE_MARKER,
+        ));
+
+		//_maintenance
+        $this->addModel("caution_for_maintenance", array(
+            "visible" => $obj->getUri() == SOYSHOP_MAINTENANCE_PAGE_MARKER,
+        ));
+        $this->addLabel("SOYSHOP_MAINTENANCE_PAGE_MARKER", array(
+            "text" => SOYSHOP_MAINTENANCE_PAGE_MARKER,
         ));
 
         $this->addLabel("type_text", array(
