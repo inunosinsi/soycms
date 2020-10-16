@@ -79,17 +79,13 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
         $offset = $limit * ($this->currentPage - 1);
 
         try{
-            //指定している場合
+			//指定している場合
             if(count($args) > 0){
                 $categoryAlias = implode("/", $args);
 
                 //argsが存在しないカテゴリの場合、デフォルトのカテゴリを設定する
                 if(!is_null($obj->getDefaultCategory()) && !$categoryDAO->isAlias($categoryAlias)){
-                    try{
-                        $category = $categoryDAO->getById($obj->getDefaultCategory());
-                    }catch(Exception $e){
-                        $category = new SOYShop_Category();
-                    }
+					$category = soyshop_get_category_object($obj->getDefaultCategory());
                 }else{
                     try{
                         $category = $categoryDAO->getByAlias($categoryAlias);
@@ -100,7 +96,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
                 //カテゴリが非公開の場合は表示しない
                 if($category->getIsOpen() == SOYShop_Category::NO_OPEN){
-                    header("Location:" . soyshop_get_site_url());
+                    throw new Exception("Don't have public permission in the specified category.");
                 }
 
                 //現在のカテゴリを保存
@@ -111,7 +107,6 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
                     if(in_array($category->getId(), $obj->getCategories())){
                         list($res, $total) = $logic->getByCategoryIds($category->getId(), $offset, $limit);
                     }else{
-                        $itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
                         list($res, $total) = array(array(), 0);
                     }
                 }else{
@@ -120,18 +115,17 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
 
             }else{
-                list($res, $total) = $logic->getByCategoryIds($obj->getDefaultCategory(), $offset, $limit);
+				if(is_null($obj->getDefaultCategory())){	//404で返す
+					throw new Exception("There is no default category setting.");
+				}
+				list($res, $total) = $logic->getByCategoryIds($obj->getDefaultCategory(), $offset, $limit);
 
                 //現在のカテゴリを保存
-                try{
-                    $category = $categoryDAO->getById($obj->getDefaultCategory());
-                }catch(Exception $e){
-                    $category = new SOYShop_Category();
-                }
+				$category = soyshop_get_category_object($obj->getDefaultCategory());
                 $obj->setCurrentCategory($category);
             }
         }catch(Exception $e){
-            //
+			throw $e;
         }
 
         //keyword,descriptionの挿入

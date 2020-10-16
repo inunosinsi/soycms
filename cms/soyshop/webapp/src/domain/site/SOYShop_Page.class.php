@@ -17,6 +17,7 @@ class SOYShop_Page {
 
 	const URI_HOME = "_home";
 	const NOT_FOUND = "_404_not_found";
+	const MAINTENANCE = "_maintenance";
 
 	/**
 	 * @id

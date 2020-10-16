@@ -54,25 +54,31 @@ class SOYShopSiteController extends SOY2PageController{
             //ページIDを放り込んでおく
             define("SOYSHOP_PAGE_ID", $page->getId());
 
-            //404
-            if(SOYSHOP_404_PAGE_MARKER == $page->getUri()){
-                SOYShopPlugin::load("soyshop.site.404notfound");
-                SOYShopPlugin::invoke("soyshop.site.404notfound");
-                header("HTTP/1.0 404 Not Found");
-            }
+			//メンテナンス ここに入れるべきか？
+			if(SOYSHOP_MAINTENANCE_PAGE_MARKER == $page->getUri()){
+				header("HTTP/1.0 503 Service Temporarily Unavailable");
+			}
 
-			//ページ種別によって読み込むページクラスを変える
-			include_page_class($page->getType());
+			try{
+				//404
+	            if(SOYSHOP_404_PAGE_MARKER == $page->getUri()){
+					throw new Exception("404 Not Found.");
+	            }
 
-            /*
-             * 出力
-             * soyshop.site.onload
-             * soyshop.site.beforeoutput
-             * soyshop.site.onoutput
-             */
-			include_once("controller/output.php");
-            output_page($uri, $args, $page);
+				//ページ種別によって読み込むページクラスを変える
+				include_page_class($page->getType());
 
+	            /*
+	             * 出力
+	             * soyshop.site.onload
+	             * soyshop.site.beforeoutput
+	             * soyshop.site.onoutput
+	             */
+				include_once("controller/output.php");
+	            output_page($uri, $args, $page);
+			}catch(Exception $e){
+				self::_onNotFound();
+			}
         }catch(Exception $e){
 			header("HTTP/1.0 500 Internal Server Error");
 	        echo "<h1>500 Internal Server Error</h1>";
@@ -83,4 +89,17 @@ class SOYShopSiteController extends SOY2PageController{
 	        }
         }
     }
+
+	private function _onNotFound(){
+		SOYShopPlugin::load("soyshop.site.404notfound");
+		SOYShopPlugin::invoke("soyshop.site.404notfound");
+		header("HTTP/1.0 404 Not Found");
+
+		// 404ページを取得し直す
+		$page = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getByUri(SOYSHOP_404_PAGE_MARKER);
+
+		include_page_class($page->getType());
+		include_once("controller/output.php");
+		output_page(SOYShop_Page::NOT_FOUND, array(), $page);
+	}
 }

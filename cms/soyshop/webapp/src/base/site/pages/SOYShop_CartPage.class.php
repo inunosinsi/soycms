@@ -101,4 +101,3 @@ class SOYShop_CartPage extends SOYShopPageBase{
     	return soyshop_get_cart_url(false, true);
     }
 }
-?>

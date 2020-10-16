@@ -7,5 +7,6 @@ define("SOYSHOP_AUTOLOGIN_EXPIRE", 2592000);	//1 month 60*60*24*30 = 2592000
 
 define("SOYSHOP_TOP_PAGE_MARKER", "_home");
 define("SOYSHOP_404_PAGE_MARKER", "_404_not_found");
+define("SOYSHOP_MAINTENANCE_PAGE_MARKER", "_maintenance");
 
 ?>

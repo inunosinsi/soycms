@@ -79,23 +79,52 @@ function get_uri_and_args(){
 		}
 	}
 
+	//拡張ポイントでuriとargsを上書きできる
+	SOYShopPlugin::load("soyshop.uri.and.arguments");
+	$delegate = SOYShopPlugin::invoke("soyshop.uri.and.arguments", array(
+		"uri" => $uri,
+		"args" => $args
+	));
+
+	$newUri = $delegate->getUri();
+	if(strlen($newUri)) $uri = $newUri;
+
+	$newArgs = $delegate->getArgs();
+	if(isset($newArgs) && is_array($newArgs)) $args = $newArgs;
+
 	return array($uri, $args);
 }
 
 function get_page_object_on_controller($uri){
 	$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-	try{
-		return $dao->getByUri($uri);
-	}catch(Exception $e){
-		//
+	//ルートでページャ対策
+	if(strpos($uri, "page-") === 0) {
+		try{
+			$page = $dao->getByUri(SOYShop_Page::URI_HOME);
+			//ページのタイプが一覧もしくは検索結果ページの場合は返す
+			switch($page->getType()){
+				case SOYShop_Page::TYPE_LIST:
+				case SOYShop_Page::TYPE_SEARCH:
+					return $page;
+			}
+		}catch(Exception $e){
+			//
+		}
+	}else{
+		try{
+			return $dao->getByUri($uri);
+		}catch(Exception $e){
+			//
+		}
 	}
 
-	//ルートでページャ対策
+	//ページを取得できなければ404
 	try{
-		return $dao->getByUri(SOYShop_Page::URI_HOME);
-	}catch(Exception $e){
-		//ページが存在しない場合
 		return $dao->getByUri(SOYSHOP_404_PAGE_MARKER);
+	}catch(Exception $e){
+		$page = new SOYShop_Page();
+		$page->setUri(SOYShop_Page::NOT_FOUND);
+		return $page;
 	}
 }
 
