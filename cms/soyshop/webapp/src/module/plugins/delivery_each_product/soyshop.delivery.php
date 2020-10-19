@@ -62,7 +62,7 @@ class DeliveryEachProductModule extends SOYShopDelivery{
 
         SOY2::import("module.plugins.delivery_each_product.util.DeliveryEachProductUtil");
 
-        $user = $this->getCart()->getCustomerInformation();
+        $address = $this->getCart()->getAddress();
 
         $itemOrders = $this->getCart()->getItems();
         foreach($itemOrders as $itemOrder){
@@ -70,9 +70,9 @@ class DeliveryEachProductModule extends SOYShopDelivery{
             if(!isset($v) || is_null($v) || !strlen($v)) continue;
 
             $prices = soy2_unserialize($v);
-            if(!isset($prices[$user->getArea()])) continue;
+            if(!isset($prices[$address["area"]])) continue;
 
-            $price += (int)$prices[$user->getArea()];
+            $price += (int)$prices[$address["area"]];
         }
 
         return $price;
