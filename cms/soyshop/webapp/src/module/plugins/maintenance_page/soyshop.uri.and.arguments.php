@@ -9,6 +9,10 @@ class MaintenancePageUriAndArguments extends SOYShopUriAndArgumentsBase{
 		SOY2::import("module.plugins.maintenance_page.util.MaintenancePageUtil");
 		if(!MaintenancePageUtil::checkActive()) return array(null, null);
 
+		//取り急ぎ、同じブラウザ、別タブで管理画面にログインしている場合はnullを返す
+		$session = SOY2ActionSession::getUserSession();
+		if(!is_null($session->getAttribute("loginid"))) return array(null, null);
+
 		// @ToDo 表示設定のパターンを増やしたい
 
 		return array("_maintenance", array());
