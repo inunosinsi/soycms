@@ -66,6 +66,20 @@ function soyshop_get_image_full_path($imagePath){
 }
 
 /**
+ * 画像のディレクトリからのファイルパスを取得する
+ */
+ function soyshop_get_image_file_path($imagePath){
+ 	static $dir;
+ 	if(is_null($dir)){
+ 		$dir = SOYSHOP_SITE_DIRECTORY;
+ 		if(strpos($dir, "/" . SOYSHOP_ID . "/") !== false){
+ 			$dir = str_replace("/" . SOYSHOP_ID . "/", "", $dir);
+ 		}
+ 	}
+ 	return $dir . $imagePath;
+ }
+
+/**
  * サイトのURIを取得する
  */
 function soyshop_get_site_path(){
