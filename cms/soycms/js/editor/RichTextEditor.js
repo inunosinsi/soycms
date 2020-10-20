@@ -1,3 +1,4 @@
+//tinymce4
 tinymce.init({
 	mode : "specific_textareas",
 	editor_selector : "mceEditor",
@@ -28,6 +29,17 @@ tinymce.init({
 	entity_encoding : "named",
 	urlconverter_callback : common_convert_urls
 });
+
+//tinymce
+// tinymce.init({
+// 	selector:'textarea',
+// 	height: 400,
+// 	plugins: [
+//     	'advlist autolink lists link image charmap print preview anchor',
+//     	'searchreplace visualblocks code fullscreen',
+//     	'insertdatetime media table paste code help wordcount'
+//   ],
+// });
 
 function applyTemplate(){
 	var template = $("#list_templates").val();
