@@ -3,20 +3,16 @@
 class UserLogic extends SOY2LogicBase{
 
     function remove($userId){
-    	$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-
-    	try{
-    		$user = $userDao->getById($userId);
-    	}catch(Exception $e){
-    		return false;
-    	}
+		$user = soyshop_get_user_object($userId);
+		if(is_null($user->getId())) return false;
 
     	$mailAddress = $user->getMailAddress();
 
     	//ユーザが存在していた場合
+		$res = false;
     	if(isset($mailAddress)){
+			$userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 			$i = 0;
-			$res = false;
 			do{
 				try{
 					$deleteAddress = $mailAddress . "_delete_" . $i;
@@ -57,15 +53,14 @@ class UserLogic extends SOY2LogicBase{
     		}
     	}
 
-    	if($res){
-    		$loginDao = SOY2DAOFactory::create("user.SOYShop_AutoLoginSessionDAO");
-    		try{
-    			$loginDao->deleteByUserId($userId);
-    			return true;
-    		}catch(Exception $e){
-    			return false;
-    		}
-    	}
+		if(!$res) return false;
+
+		try{
+			SOY2DAOFactory::create("user.SOYShop_AutoLoginSessionDAO")->deleteByUserId($userId);
+			return true;
+		}catch(Exception $e){
+			return false;
+		}
     }
 
 	/** プロフィール **/
