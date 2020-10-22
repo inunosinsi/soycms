@@ -66,6 +66,10 @@ class LoginPage extends MainMyPagePageBase{
 			$mypage->save();
 		}
 
+		$this->addLabel("shop_id", array(
+			"text" => SOYSHOP_ID
+		));
+
 		$this->addForm("login_form");
 
 		$this->addInput("login_id", array(

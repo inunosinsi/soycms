@@ -104,6 +104,10 @@ function soyshop_parts_mypage_login($html, $page){
 		"link" => soyshop_get_mypage_url() . "/login",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
+	$obj->addLabel("login_link_text", array(
+		"text" => soyshop_get_mypage_url() . "/login",
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
 
 	//ログイン時に表示するリンク
 	$obj->addLink("top_link", array(

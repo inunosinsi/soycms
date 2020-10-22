@@ -302,7 +302,7 @@ class SOYShop_ShopConfig {
 		foreach($this->customerDisplayFormConfig as $key => $value){
 			$this->customerDisplayFormConfig[$key] = (boolean)@$array[$key];
 		}
-
+		
 		//mailAddres
 		//は必須
 		$this->customerDisplayFormConfig["mailAddress"] = true;
