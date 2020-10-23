@@ -243,6 +243,10 @@ class IndexPage extends WebPage{
 		}
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("商品検索", array("Item" => "商品管理"));
+	}
+
 	function getScripts(){
 		$root = SOY2PageController::createRelativeLink("./js/");
 		return array(

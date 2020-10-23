@@ -3,7 +3,7 @@
 class SOYShopPageController extends SOY2PageController{
 
 	function execute(){
-		
+
 		/* init event */
         SOYShopPlugin::load("soyshop.admin.prepare");
         SOYShopPlugin::invoke("soyshop.admin.prepare");
@@ -87,10 +87,25 @@ class SOYShopPageController extends SOY2PageController{
 			"arguments" => $args
 		));
 
+		//管理画面モード → カードIDがnoneであれば起動
+		define("SOYSHOP_ADMIN_MODE", (soyshop_get_cart_id() == "none"));
+		if(!SOYSHOP_ADMIN_MODE){
+			define("SHOP_MANAGER_LABEL", "ショップ");
+		}else{
+			define("SHOP_MANAGER_LABEL", "アプリ");
+		}
+
+		//ショップとサイトのどちらを開いているか？
+		define("ADMIN_PAGE_TYPE", $pageClass);
+
 		$shopConfig = SOYShop_ShopConfig::load();
 		$shopName = $shopConfig->getShopName();
 		$appName = trim(htmlspecialchars($shopConfig->getAppName(), ENT_QUOTES, "UTF-8"));
 		$appLogoPath = trim(htmlspecialchars($shopConfig->getAppLogoPath(), ENT_QUOTES, "UTF-8"));
+
+		//ぱんくず
+		SOY2::import("component.Breadcrumb.BreadcrumbComponent");
+		$breadcrumb = (method_exists($webPage, "getBreadcrumb")) ? $webPage->getBreadcrumb() : null;
 
 		$subMenu = (method_exists($webPage,"getSubMenu")) ? $webPage->getSubMenu() : null;
 		$footerMenu = (method_exists($webPage,"getFooterMenu")) ? $webPage->getFooterMenu() : null;
@@ -102,7 +117,7 @@ class SOYShopPageController extends SOY2PageController{
 
 		define("SOYAPP_LINK", SOYAppUtil::createAppLink());
 
-		$title = (method_exists($webPage,"getTitle")) ? $webPage->getTitle() . " | SOY Shop" : "SOY Shop" . " | ".$shopName;
+		$title = (method_exists($webPage,"getTitle")) ? $webPage->getTitle() . " | " . $appName : $appName . " | ".$shopName;
 		$css= (method_exists($webPage,"getCSS")) ? $webPage->getCSS() : array();
 		$scripts= (method_exists($webPage,"getScripts")) ? $webPage->getScripts() : array();
 

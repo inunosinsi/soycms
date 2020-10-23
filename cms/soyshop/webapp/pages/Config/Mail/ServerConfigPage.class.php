@@ -282,4 +282,8 @@ class ServerConfigPage extends WebPage{
     private function _isIMAPEnabled(){
     	return function_exists("imap_open");
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("サーバ・アドレス設定", array("Config" => "設定", "Config.Mail" => "メール設定"));
+	}
 }

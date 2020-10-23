@@ -624,6 +624,10 @@ class ShopConfigPage extends WebPage{
 		//テーブルが取得できた場合はfalseを返す
 		return (is_array($res)) ? false : true;
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("基本設定", array("Config" => "設定"));
+	}
 }
 
 

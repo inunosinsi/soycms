@@ -52,16 +52,8 @@ class SearchPage extends WebPage{
 	}
 
 	function buildForm(){
-
-		$logic = SOY2Logic::createInstance("logic.site.page.PageLogic");
-		$dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-
-		try{
-			$page = $dao->getById($this->id);
-		}catch(Exception $e){
-			SOY2PageController::jump("Site.Pages");
-			exit;
-		}
+		$page = soyshop_get_page_object($this->id);
+		if(is_null($page->getId())) SOY2PageController::jump("Site.Pages");
 
 		$obj = $page->getPageObject();
 		$this->page = $page;
@@ -84,7 +76,7 @@ class SearchPage extends WebPage{
 			"name" => "Page[displayCount]",
 			"value" => (is_numeric($obj->getDisplayCount())) ? $obj->getDisplayCount() : 10
 		));
-		
+
 		/* sort */
 		$this->createAdd("sort_list", "HTMLList", array(
 			"list" => array(
@@ -158,6 +150,10 @@ class SearchPage extends WebPage{
 		return $res;
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("検索ページ設定", array("Site.Pages" => "ページ管理", "Site.Pages.Detail." . $this->id => "ページ設定"));
+	}
+
 	function getSubMenu(){
 		$key = "Site.Pages.SubMenu.SubMenuPage";
 
@@ -171,4 +167,3 @@ class SearchPage extends WebPage{
 		}
 	}
 }
-?>

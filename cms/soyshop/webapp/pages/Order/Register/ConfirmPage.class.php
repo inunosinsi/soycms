@@ -75,6 +75,10 @@ class ConfirmPage extends IndexPage{
 		$this->orderForm();
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("確認", array("Order" => "注文管理", "Order.Register" => "注文を追加する"));
+	}
+
 	function getCSS(){
 		return array(
 			"./css/admin/user_detail.css",

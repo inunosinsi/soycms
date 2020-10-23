@@ -195,4 +195,8 @@ class RegisterPage extends WebPage{
     		"size" => 30
     	));
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("顧客の追加", array("User" => "顧客管理"));
+	}
 }

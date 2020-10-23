@@ -52,4 +52,8 @@ class OrderPage extends WebPage{
 			"list" => $logic->getItemsByOrderId($this->id)
 		));
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("注文の内訳の並び順の変更", array("Order" => "注文管理", "Order.Detail." . $this->id => "注文詳細", "Order.Edit." . $this->id => "注文編集"));
+	}
 }

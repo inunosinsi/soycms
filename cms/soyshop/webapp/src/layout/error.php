@@ -98,7 +98,7 @@ foreach($scripts as $script){
 				<?php }?>
 				<?php if(AUTH_SITE){?>
 				<li class="shop">
-					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Navigation">ショップ管理</a>
+					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Navigation"><?php echo SHOP_MANAGER_LABEL;?>管理</a>
 				</li>
 				<li class="site">
 					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Site">サイト管理</a>

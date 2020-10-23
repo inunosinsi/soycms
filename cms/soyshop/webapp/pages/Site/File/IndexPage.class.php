@@ -25,6 +25,10 @@ class IndexPage extends WebPage{
 		DisplayPlugin::toggle("free_template_area", (isset($_GET["display_mode"]) && $_GET["display_mode"] == "free"));
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("ファイル管理");
+	}
+
 	/** ここからelfinder **/
 	function getCSS(){
 		$root = $this->cmsElFinderPath;

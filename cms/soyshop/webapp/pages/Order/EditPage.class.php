@@ -1145,6 +1145,10 @@ class EditPage extends WebPage{
 		return $array;
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("注文編集", array("Order" => "注文管理", "Order.Detail." . $this->id => "注文詳細"));
+	}
+
 	// function getCSS(){
 	// 	$root = SOY2PageController::createRelativeLink("./js/");
 	// 	return array(

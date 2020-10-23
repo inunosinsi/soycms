@@ -148,6 +148,11 @@ class MypagePage extends WebPage{
 		return (isset($array[$type])) ? $array[$type] : "パスワード再設定メール";
 	}
 
+	function getBreadcrumb(){
+		$type = (isset($_GET["type"])) ? $_GET["type"] : "order";
+		return BreadcrumbComponent::build($this->getMailText($type), array("Config" => "設定", "Config.Mail" => "メール設定"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("Config.FooterMenu.MailTemplateFooterMenuPage")->getObject();

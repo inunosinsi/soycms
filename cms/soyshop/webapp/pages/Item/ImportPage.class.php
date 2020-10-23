@@ -350,7 +350,7 @@ class ImportPage extends WebPage{
         }
 		//IDの一番小さいページを取得する
 		$paegIds[$id] = (isset($res[0]["id"])) ? (int)$res[0]["id"] : self::_getDefaultDetailPage();
-		
+
 		return $pageIds[$id];
     }
 
@@ -386,6 +386,10 @@ class ImportPage extends WebPage{
 
         return ($pageId > 0) ? $pageId : null;
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("商品情報CSVインポート", array("Item" => "商品管理"));
+	}
 
 	function getFooterMenu(){
 		try{

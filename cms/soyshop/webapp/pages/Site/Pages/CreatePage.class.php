@@ -106,4 +106,8 @@ class CreatePage extends WebPage{
 
 		return $obj;
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("ページの作成", array("Site.Pages" => "ページ管理"));
+	}
 }

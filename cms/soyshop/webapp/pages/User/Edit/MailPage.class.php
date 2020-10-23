@@ -101,6 +101,10 @@ class MailPage extends WebPage{
     	));
     }
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("メールアドレス変更", array("User" => "顧客管理", "User.Detail." . $this->id => "顧客詳細"));
+	}
+
 	function getCSS(){
 		return array("./css/admin/user_detail.css");
 	}

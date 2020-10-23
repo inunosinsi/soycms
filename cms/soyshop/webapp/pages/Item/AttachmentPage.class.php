@@ -1,11 +1,6 @@
 <?php
 SOY2HTMLFactory::importWebPage("Item.DetailPage");
 
-/**
- * @class Item.AttachmentPage
- * @date 2009-12-21T00:09:51+09:00
- * @author SOY2HTMLFactory
- */
 class AttachmentPage extends DetailPage{
 
 	function doPost(){
@@ -83,4 +78,8 @@ class AttachmentPage extends DetailPage{
 		//filemtimeが使用出来ないサーバ対策
     	return (@filemtime($file1) <= @filemtime($file2));
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("商品画像の管理", array("Item" => "商品管理", "Item.Detail." . $this->id => "商品詳細"));
+	}
 }

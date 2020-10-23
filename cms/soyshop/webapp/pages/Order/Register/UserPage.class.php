@@ -400,4 +400,8 @@ class UserPage extends WebPage{
 		//全角スペースを半角スペースにする
 		return explode(" ", str_replace("　", " ", $str));
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("注文社を指定する", array("Order" => "注文管理", "Order.Register" => "注文を追加する"));
+	}
 }

@@ -71,6 +71,10 @@ class PaymentPage extends WebPage{
 
     }
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("支払方法を選択する", array("Order" => "注文管理", "Order.Register" => "注文を追加する"));
+	}
+
 	function getCSS(){
 		return array(
 			"./css/admin/order_register.css"

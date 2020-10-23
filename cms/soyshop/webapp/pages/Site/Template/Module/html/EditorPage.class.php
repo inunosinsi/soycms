@@ -100,4 +100,8 @@ class EditorPage extends WebPage{
 		$array = array();
 		return implode("\n", $array);
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("HTMLモジュールの編集", array("Site.Template#html_module_list" => "テンプレート管理"));
+	}
 }

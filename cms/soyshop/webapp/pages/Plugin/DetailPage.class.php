@@ -82,4 +82,8 @@ class DetailPage extends WebPage{
 			"active" => $module->isActive()
 		));
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("プラグイン詳細", array("Plugin" => "プラグイン管理"));
+	}
 }

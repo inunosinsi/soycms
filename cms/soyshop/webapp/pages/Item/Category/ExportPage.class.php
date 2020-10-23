@@ -137,6 +137,10 @@ class ExportPage extends WebPage{
         }
     }
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("カテゴリCSVエクスポート", array("Item" => "商品管理", "Item.Category" => "カテゴリ管理"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("Item.FooterMenu.CategoryFooterMenuPage")->getObject();

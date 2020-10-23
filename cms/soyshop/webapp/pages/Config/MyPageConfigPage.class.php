@@ -339,4 +339,8 @@ class MyPageConfigPage extends WebPage{
 	function getProfileResizeWidth(){
 		return SOYShop_DataSets::get("config.mypage.profile_resize_width", 120);
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("マイページの設定", array("Config" => "設定"));
+	}
 }

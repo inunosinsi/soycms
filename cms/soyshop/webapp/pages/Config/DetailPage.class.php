@@ -6,6 +6,8 @@
  */
 class DetailPage extends WebPage{
 
+	private $title;
+
 	function __construct(){
 		if(!isset($_GET["plugin"])) SOY2PageController::jump("Config");
 
@@ -24,13 +26,19 @@ class DetailPage extends WebPage{
 			"link" => SOY2PageController::createLink("Plugin.Detail." . $plugin->getId())
 		));
 
+		$this->title = $delegate->getTitle();
+
 		$this->addLabel("plugin_title", array(
-			"text" => $delegate->getTitle()
+			"text" => $this->title
 		));
 
 		$this->addLabel("plugin_config", array(
 			"html" => $delegate->getConfigPage()
 		));
+	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build($this->title, array("Config" => "設定"));
 	}
 
 	function getScripts(){

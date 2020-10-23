@@ -88,7 +88,7 @@ foreach($scripts as $script){
 				<?php }?>
 				<?php if(AUTH_SITE){?>
 				<li class="shop">
-					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Navigation" id="shop_manager_link"><i class="fa fa-list fa-fw"></i>ショップ管理</a>
+					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Navigation" id="shop_manager_link"><i class="fa fa-list fa-fw"></i><?php echo SHOP_MANAGER_LABEL;?>管理</a>
 				</li>
 				<li class="site">
 					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Site" id="site_manager_link"><i class="fa fa-file fa-fw"></i>サイト管理</a>
@@ -139,6 +139,8 @@ foreach($scripts as $script){
 		</nav>
 
 		<div id="page-wrapper" style="padding-top: 30px;">
+			<?php echo $breadcrumb; ?>
+
 			<?php echo $html; ?>
 
 			<?php if($isSubMenu){ ?>

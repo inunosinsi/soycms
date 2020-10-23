@@ -3,6 +3,7 @@
 class LogPage extends WebPage{
 
 	private $logId;
+	private $orderId;
 
 	function __construct($args){
 		$this->logId = (isset($args[0])) ? $args[0] : null;
@@ -14,6 +15,7 @@ class LogPage extends WebPage{
 		}catch(Exception $e){
 			SOY2PageController::jump("Order");
 		}
+		$this->orderId = $log->getOrderId();
 
 		$this->addLink("order_detail_link", array(
 			"link" => SOY2PageController::createLink("Order.Detail." . $log->getOrderId())
@@ -78,4 +80,8 @@ class LogPage extends WebPage{
     	}
     	return $list;
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("送信メール詳細", array("Order" => "注文管理", "Order.Detail." . $this->orderId => "注文詳細"));
+	}
 }

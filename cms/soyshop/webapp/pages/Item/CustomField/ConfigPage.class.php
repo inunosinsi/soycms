@@ -47,6 +47,10 @@ class ConfigPage extends WebPage{
 		));
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("インポート・エクスポート", array("Item" => "商品管理", "Item.CustomField" => "カスタム項目管理"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("Item.FooterMenu.ItemCustomfieldFooterMenuPage")->getObject();

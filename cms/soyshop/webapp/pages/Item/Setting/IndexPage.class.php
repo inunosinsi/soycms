@@ -136,6 +136,10 @@ class IndexPage extends WebPage{
 		return $list + soyshop_get_category_list();
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("商品のカテゴリ一括設定", array("Item" => "商品管理"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("Item.FooterMenu.ItemFooterMenuPage", array(

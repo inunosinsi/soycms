@@ -6,21 +6,16 @@ class IndexPage extends WebPage{
     function __construct() {
     	parent::__construct();
 
-    	//商品カスタムフィールドのリンクの表示
-    	$this->addModel("is_customfield", array(
-    		"visible" => class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_customfield"))
-    	));
-
-    	//ユーザカスタムフィールドのリンクの表示
-    	$this->addModel("is_user_customfield", array(
-    		"visible" => class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_user_customfield"))
-    	));
-
-    	//ダウンロード販売モードの時に表示する
-    	$this->addModel("is_download", array(
-    		"visible" => class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("download_assistant"))
-    	));
+    	//各リンクの出力設定
+		DisplayPlugin::toggle("category", AUTH_ITEM);
+		DisplayPlugin::toggle("customfield", SOYShopPluginUtil::checkIsActive("common_customfield"));
+		DisplayPlugin::toggle("user_customfield", SOYShopPluginUtil::checkIsActive("common_user_customfield"));
+		DisplayPlugin::toggle("download", SOYShopPluginUtil::checkIsActive("download_assistant"));
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("設定");
+	}
 
 	function getFooterMenu(){
 		try{

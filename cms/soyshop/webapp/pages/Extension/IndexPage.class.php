@@ -2,6 +2,8 @@
 
 class IndexPage extends WebPage{
 
+	private $title;
+
 	function doPost(){}
 
 	function __construct($args){
@@ -16,14 +18,15 @@ class IndexPage extends WebPage{
 
 		if(!isset($exts[$pluginId])) SOY2PageController::jump("");
 		$ext = $exts[$pluginId];
-
-		$this->addLabel("page_name", array(
-			"text" => (isset($ext["title"])) ? $ext["title"] : null
-		));
+		$this->title = (isset($ext["title"])) ? $ext["title"] : null;
 
 		$this->addLabel("page_content", array(
 			"html" => (isset($ext["content"])) ? $ext["content"] : null
 		));
+	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build($this->title);
 	}
 
 	function getScripts(){

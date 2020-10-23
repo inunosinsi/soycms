@@ -61,6 +61,10 @@ class IndexPage extends WebPage{
 		DisplayPlugin::toggle("all_uninstall_button", ((int)SOY2ActionSession::getUserSession()->getAttribute("isdefault") === 1) && SOYShopPluginUtil::checkPluginListFile());
 		$this->addForm("all_uninstall_form");
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("プラグイン管理");
+	}
 }
 
 

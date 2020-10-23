@@ -2,6 +2,8 @@
 
 class DetailPage extends WebPage{
 
+	private $parent;
+	private $title;
 	private $detailId;
 
 	function doPost(){}
@@ -20,23 +22,21 @@ class DetailPage extends WebPage{
 
 		if(!isset($exts[$pluginId])) SOY2PageController::jump("");
 		$ext = $exts[$pluginId];
-
-		$this->addLink("list_link", array(
-			"link" => SOY2PageController::createLink("Extension." . $pluginId),
-			"text" => (isset($ext["title"])) ? $ext["title"] : null
-		));
+		$this->parent["title"]= (isset($ext["title"])) ? $ext["title"] : null;
+		$this->parent["link"] = "Extension." . $pluginId;
 
 		//詳細用の拡張ポイント
 		SOYShopPlugin::load("soyshop.admin.detail", $plugin);
 		$detail = self::delegate($this->detailId)->getContent();
-
-		$this->addLabel("page_name", array(
-			"text" => (isset($detail["title"])) ? $detail["title"] : null
-		));
+		$this->title = (isset($detail["title"])) ? $detail["title"] : null;
 
 		$this->addLabel("page_content", array(
 			"html" => (isset($detail["content"])) ? $detail["content"] : null
 		));
+	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build($this->title, array($this->parent["link"] => $this->parent["title"]));
 	}
 
 	function getScripts(){

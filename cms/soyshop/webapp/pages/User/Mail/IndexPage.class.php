@@ -141,4 +141,8 @@ class IndexPage extends WebPage{
 		//convert
 		return $this->mailLogic->convertMailContent($mailBody, $user, new SOYShop_Order());
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("メール送信", array("User" => "顧客管理", "User.Detail." . $this->id => "顧客情報詳細"));
+	}
 }

@@ -212,6 +212,11 @@ class UserPage extends WebPage{
 		return (isset($configs[$type])) ? $configs[$type]["title"] . "雛形設定" : "注文受付メール設定(自動送信)";
 	}
 
+	function getBreadcrumb(){
+		$type = (isset($_GET["type"])) ? $_GET["type"] : "order";
+		return BreadcrumbComponent::build(self::_getMailText($type), array("Config" => "設定", "Config.Mail" => "メール設定"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("Config.FooterMenu.MailTemplateFooterMenuPage")->getObject();

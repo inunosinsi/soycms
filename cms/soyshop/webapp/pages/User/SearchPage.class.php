@@ -582,6 +582,10 @@ class SearchPage extends WebPage{
 		return $value;
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("顧客検索", array("User" => "顧客管理"));
+	}
+
 	function getScripts(){
 		$root = SOY2PageController::createRelativeLink("./js/");
 		return array(

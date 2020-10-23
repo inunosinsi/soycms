@@ -128,4 +128,8 @@ class IndexPage extends WebPage{
 		return $pageList;
 
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("ページ管理");
+	}
 }

@@ -240,4 +240,8 @@ class ItemPage extends WebPage{
 			return new SOYShop_Item();
 		}
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("商品を追加する", array("Order" => "注文管理", "Order.Register" => "注文を追加する"));
+	}
 }

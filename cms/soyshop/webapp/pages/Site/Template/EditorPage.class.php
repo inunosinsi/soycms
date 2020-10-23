@@ -132,4 +132,8 @@ class EditorPage extends WebPage{
 	private function getRedirectUrl(){
 		return SOY2PageController::createLink("Site.Template.Editor") . "/-/" . $this->value;
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("テンプレートの編集", array("Site.Template" => "テンプレート管理"));
+	}
 }

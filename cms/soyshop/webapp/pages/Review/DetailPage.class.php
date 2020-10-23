@@ -117,4 +117,8 @@ class DetailPage extends WebPage{
     		return new SOYShop_ItemReview();
     	}
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("レビュー詳細", array("Review" => "レビュー"));
+	}
 }

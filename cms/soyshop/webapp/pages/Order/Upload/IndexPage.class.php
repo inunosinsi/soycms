@@ -2,6 +2,8 @@
 
 class IndexPage extends WebPage{
 
+	private $title;
+
 	function doPost(){}
 
 	function __construct($args){
@@ -15,14 +17,21 @@ class IndexPage extends WebPage{
 		SOYShopPlugin::load("soyshop.order.upload", $plugin);
 		$detail = self::delegate($pluginId)->getContent();
 
+		$this->title = (isset($detail["title"])) ? $detail["title"] : null;
+
 		$this->addLabel("page_name", array(
-			"text" => (isset($detail["title"])) ? $detail["title"] : null
+			"text" => $this->title
 		));
 
 		$this->addLabel("page_content", array(
 			"html" => (isset($detail["content"])) ? $detail["content"] : null
 		));
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build($this->title, array("Order" => "注文管理"));
+	}
+
 
 	function getScripts(){
 		$scripts = self::delegate()->getScripts();

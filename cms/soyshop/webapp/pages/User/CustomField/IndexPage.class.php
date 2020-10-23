@@ -124,6 +124,10 @@ class IndexPage extends WebPage{
 		));
     }
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("ユーザカスタム項目管理", array("User" => "顧客管理"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("User.FooterMenu.UserFooterMenuPage")->getObject();

@@ -243,4 +243,8 @@ class CartConfigPage extends WebPage{
 		if(strlen($url) < 1) return $this->getSSLCartUrl();
 		return $url;
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("カートの設定", array("Config" => "設定"));
+	}
 }

@@ -224,4 +224,8 @@ class IndexPage extends WebPage{
 		//convert
 		return $this->mailLogic->convertMailContent($mailBody, $user, $order);
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("メール送信", array("Order" => "注文管理", "Order.Detail." . $this->id => "注文詳細"));
+	}
 }

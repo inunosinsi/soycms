@@ -130,6 +130,10 @@ class IndexPage extends WebPage{
         SOY2ActionSession::getUserSession()->setAttribute("Item.Category.Setting.Search:" . $key, $value);
     }
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("カテゴリ一括設定", array("Item" => "商品管理", "Item.Category" => "カテゴリ管理"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("Item.FooterMenu.CategoryFooterMenuPage")->getObject();

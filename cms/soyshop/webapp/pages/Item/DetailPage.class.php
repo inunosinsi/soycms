@@ -798,4 +798,8 @@ class DetailPage extends WebPage{
 
 		return $text;
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("商品詳細", array("Item" => "商品管理"));
+	}
 }

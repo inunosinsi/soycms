@@ -137,6 +137,10 @@ class IndexPage extends WebPage{
     	return (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("item_review")));
     }
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("レビュー");
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("Review.FooterMenu.ReviewFooterMenuPage", array(

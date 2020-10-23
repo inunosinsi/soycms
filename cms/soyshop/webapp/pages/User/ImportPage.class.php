@@ -278,6 +278,10 @@ class ImportPage extends WebPage{
 		return UserCustomSearchFieldUtil::getConfig();
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("顧客情報CSVインポート", array("User" => "顧客管理"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("User.FooterMenu.UserFooterMenuPage")->getObject();

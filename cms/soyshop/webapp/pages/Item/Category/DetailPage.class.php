@@ -254,6 +254,10 @@ class DetailPage extends WebPage{
     	return $category->getAttachments();
     }
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("カテゴリ詳細", array("Item" => "商品管理", "Item.Category" => "カテゴリ管理"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("Item.FooterMenu.CategoryFooterMenuPage")->getObject();

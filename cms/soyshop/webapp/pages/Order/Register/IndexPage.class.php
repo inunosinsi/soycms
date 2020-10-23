@@ -192,7 +192,7 @@ class IndexPage extends WebPage{
 	function __construct() {
 		$this->cart = AdminCartLogic::getCart();
 		$this->cart->setAttribute("page", "start");
-		
+
 		//注文日のデフォルトは当日
 		if(!$this->cart->getOrderDate()){
 			$this->cart->setOrderDate(SOY2_NOW);
@@ -645,5 +645,9 @@ class IndexPage extends WebPage{
 		$this->createAdd("customfield_method_list", "CustomfieldMethodListComponent", array(
 			"list" => $list,
 		));
+	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("注文を追加する", array("Order" => "注文管理"));
 	}
 }

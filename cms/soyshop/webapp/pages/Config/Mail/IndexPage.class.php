@@ -35,4 +35,8 @@ class IndexPage extends WebPage{
 
     	return $list;
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("メール設定", array("Config" => "設定"));
+	}
 }

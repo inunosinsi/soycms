@@ -466,6 +466,10 @@ class DetailPage extends WebPage{
 		));
     }
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("注文詳細", array("Order" => "注文管理"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("Order.FooterMenu.DetailFooterMenuPage", array(

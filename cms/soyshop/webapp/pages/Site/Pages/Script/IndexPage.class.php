@@ -88,5 +88,8 @@ class IndexPage extends WebPage{
 
 		file_put_contents($filePath, $content);
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("カスタムスクリプト", array("Site.Pages" => "ページ管理", "Site.Pages.Detail." . $this->pageId => "ページ設定"));
+	}
 }
-?>

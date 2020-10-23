@@ -68,4 +68,8 @@ class CreatePage extends WebPage{
 			"value" => $this->moduleName
 		));
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("モジュールの追加", array("Site.Template#module_list" => "テンプレート管理"));
+	}
 }

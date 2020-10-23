@@ -88,10 +88,6 @@ class ComplexPage extends WebPage{
 		$this->addForm("add_form");
 		$this->addForm("remove_form");
 
-		$this->addLink("detail_page_link", array(
-			"link" => SOY2PageController::createLink("Site.Pages.Detail." . $this->id)
-		));
-
 		self::buildForm();
 	}
 
@@ -139,5 +135,9 @@ class ComplexPage extends WebPage{
 		static $logic;
 		if(is_null($logic)) $logic = SOY2Logic::createInstance("logic.site.page.PageLogic");
 		return $logic;
+	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("商品ブロックの設定", array("Site.Pages" => "ページ管理", "Site.Pages.Detail." . $this->page->getId() => "ページ設定"));
 	}
 }

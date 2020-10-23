@@ -9,7 +9,7 @@ class ImportPage extends WebPage{
 
         DisplayPlugin::toggle("fail", isset($_GET["fail"]));
         DisplayPlugin::toggle("invalid", isset($_GET["invalid"]));
-        
+
         self::buildForm();
     }
 
@@ -184,6 +184,10 @@ class ImportPage extends WebPage{
         $config = SOYShop_CategoryAttributeConfig::load($flag);
         return $config;
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("カテゴリCSVインポート", array("Item" => "商品管理", "Item.Category" => "カテゴリ管理"));
+	}
 
 	function getFooterMenu(){
 		try{

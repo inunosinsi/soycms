@@ -541,6 +541,10 @@ class DetailPage extends WebPage{
 		}
 	}
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("顧客情報詳細", array("User" => "顧客管理"));
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("User.FooterMenu.DetailFooterMenuPage", array(

@@ -150,4 +150,8 @@ class IndexPage extends WebPage{
 	private function checkModuleDir($dir){
 		return (preg_match("/^common./", $dir) || preg_match("/^html./", $dir)) ? false : true;
 	}
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("テンプレート管理");
+	}
 }

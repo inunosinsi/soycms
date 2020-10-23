@@ -210,6 +210,10 @@ class DetailPage extends WebPage{
         }
     }
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("ページ設定", array("Site.Pages" => "ページ管理"));
+	}
+
     function getSubMenu(){
         $key = "Site.Pages.SubMenu.SubMenuPage";
 

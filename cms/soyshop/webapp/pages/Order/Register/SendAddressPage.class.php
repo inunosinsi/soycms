@@ -118,10 +118,14 @@ class SendAddressPage extends WebPage{
 		//法人名(勤務先など)
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		DisplayPlugin::toggle("office_item", SOYShop_ShopConfig::load()->getDisplayUserOfficeItems());
-		
+
     	$this->addInput("office", array(
     		"name" => "Address[office]",
     		"value" => (isset($address["office"])) ? $address["office"] : "",
     	));
     }
+
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("送付先を指定する", array("Order" => "注文管理", "Order.Register" => "注文を追加する"));
+	}
 }

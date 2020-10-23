@@ -180,6 +180,10 @@ class IndexPage extends WebPage{
 		}
 	}*/
 
+	function getBreadcrumb(){
+		return BreadcrumbComponent::build("顧客管理");
+	}
+
 	function getFooterMenu(){
 		try{
 			return SOY2HTMLFactory::createInstance("User.FooterMenu.UserFooterMenuPage")->getObject();
