@@ -1,17 +1,19 @@
 <h4>カスタムフィールド　<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#fieldModal">項目の追加</a>&nbsp;&nbsp;&nbsp;<a href="#" class="btn btn-info" onclick="$('#add_field_help').toggle();return false;">使い方</a></h4>
 
 <div id="add_field_help" style="display:none;margin:10px;">
-	<p>記事に対して、任意のフィールドを追加することができます。</p>
-	<p>例えば、IDに<b>「customer」</b>を設定し、フィールド名に「<b>連絡先</b>」を設定すると、エントリー編集画面に<b>カスタムフィールド：連絡先</b>と書かれた入力項目が追加されます。<br />
-	ここで入力したデータは <b>cms:id="customer"</b> で表示させることが可能です。</p>
-	<p>
-	チェックボックスではチェックされたときにフィールド名が値として保持されます（&lt;input type=&quot;checkbox&quot; value=&quot;[フィールド名]&quot;&gt;）。<br/>
-	ただし初期値が設定されている場合は初期値を値として使います（&lt;input type=&quot;checkbox&quot; value=&quot;[初期値]&quot;&gt;）。
-	</p>
+	<div class="alert alert-info">
+		<p>記事に対して、任意のフィールドを追加することができます。</p>
+		<p>例えば、IDに<b>「customer」</b>を設定し、フィールド名に「<b>連絡先</b>」を設定すると、エントリー編集画面に<b>カスタムフィールド：連絡先</b>と書かれた入力項目が追加されます。<br />
+			ここで入力したデータは <b>cms:id="customer"</b> で表示させることが可能です。</p>
+		<p>
+			チェックボックスではチェックされたときにフィールド名が値として保持されます（&lt;input type=&quot;checkbox&quot; value=&quot;[フィールド名]&quot;&gt;）。<br/>
+			ただし初期値が設定されている場合は初期値を値として使います（&lt;input type=&quot;checkbox&quot; value=&quot;[初期値]&quot;&gt;）。
+		</p>
+	</div>
 </div>
 
 <div id="abstract" soy:display="no_field">
-	<p>カスタムフィールドプラグインはエントリー編集画面に独自の要素を追加するプラグインです。</p>
+	<p class="alert alert-info">カスタムフィールドプラグインはエントリー編集画面に独自の要素を追加するプラグインです。</p>
 	<p>カスタムフィールドを活用することで、簡単なデータベースとして運用することができます。<br/>
 		※他サイトラベルブロックとブログリンクブロックでカスタムフィールドを使う場合、呼び出し側のサイト（ブロックを設定するサイト）でもカスタムフィールドを同じように設定しておく必要があります。</p>
 </div>
@@ -161,12 +163,11 @@
 </div>
 <!-- /soy:display="field_table" -->
 
-<div soy:id="add_field">
-	<div>
-		<p>
-			カスタムフィールドは作成されていません。<br />
-			上のフォームより、カスタムフィールドを追加して下さい。
-		</p>
+<!-- soy:display="add_field" -->
+<div>
+	<div class="alert alert-warning">
+		カスタムフィールドは作成されていません。<br />
+		上のフォームより、カスタムフィールドを追加して下さい。
 	</div>
 
 	<form soy:id="import_form">
@@ -176,7 +177,8 @@
 			</p>
 		</div>
 	</form>
-</div soy:id="add_field">
+</div>
+<!-- /soy:display="add_field" -->
 
 <form method="POST">
 	<h4>設定</h4>
@@ -209,16 +211,22 @@
 	</table>
 </form>
 
-<h4>フィールドID_visible</h4>
-<div>cms:id="<strong>フィールドID_visible</strong>"またはcms:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空の時に表示されなくなります。</div>
-<div>cms:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空ではない時に表示されます。</div>
-<div>例:フィールドIDがsampleの時</div>
+<div class="padding:0px 10px;">
+	<h4>フィールドID_visible</h4>
+	<div class="alert alert-info">
+		<div>cms:id="<strong>フィールドID_visible</strong>"またはcms:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空の時に表示されなくなります。</div>
+		<div>cms:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、cms:id="フィールドID"の値が空ではない時に表示されます。</div>
+	</div>
+	<div>例:フィールドIDがsampleの時</div>
 <pre>&lt;div <strong>cms:id="sample_visible"</strong>&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;カスタムフィールドの値は<strong>&lt;!-- cms:id="sample" /--&gt;</strong>です。
 &lt;/div&gt;
 &lt;div <strong>cms:id="sample_is_empty"</strong>&gt;
 &nbsp;&nbsp;&nbsp;&nbsp;カスタムフィールドの値は空です。
 &lt;/div&gt;</pre>
+</div>
+
+<br>
 
 <form id="export_form" method="post">
 	<h4>CSVエクスポートβ</h4>

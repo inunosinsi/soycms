@@ -38,7 +38,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.9.4"
+			"version"=>"1.9.5"
 		));
 
 		//プラグイン アクティブ
@@ -321,9 +321,9 @@ class CustomFieldPluginAdvanced{
 		$entry = $arg["entry"];
 
 		$arg = SOY2PageController::getArguments();
-		$entryId = @$arg[0];
-		$postFields = @$_POST["custom_field"];
-		$extraFields = @$_POST["custom_field_extra"];
+		$entryId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : null;
+		$postFields = (isset($_POST["custom_field"]) && is_array($_POST["custom_field"])) ? $_POST["custom_field"] : array();
+		$extraFields = (isset($_POST["custom_field_extra"]) && is_array($_POST["custom_field_extra"])) ? $_POST["custom_field_extra"] : array();
 
 		foreach($this->customFields as $key => $field){
 
@@ -338,19 +338,18 @@ class CustomFieldPluginAdvanced{
 				$dao->update($obj);
 				continue;
 			}catch(Exception $e){
+				//新規作成の場合
+				try{
+					$obj = new EntryAttribute();
+					$obj->setEntryId($entry->getId());
+					$obj->setFieldId($key);
+					$obj->setValue($value);
+					$obj->setExtraValuesArray($extra);
+					$dao->insert($obj);
+				}catch(Exception $e){
+					//
+				}
 
-			}
-
-			//新規作成の場合
-			try{
-				$obj = new EntryAttribute();
-				$obj->setEntryId($entry->getId());
-				$obj->setFieldId($key);
-				$obj->setValue($value);
-				$obj->setExtraValuesArray($extra);
-				$dao->insert($obj);
-			}catch(Exception $e){
-				//
 			}
 		}
 
@@ -490,7 +489,6 @@ class CustomFieldPluginAdvanced{
 	 * @return string HTMLコード
 	 */
 	function onCallCustomField(){
-
 		$arg = SOY2PageController::getArguments();
 		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
 		return self::buildFormOnEntryPage($entryId);
@@ -524,7 +522,9 @@ class CustomFieldPluginAdvanced{
 
 		foreach($this->customFields as $fieldId => $fieldObj){
 			if($fieldObj->getType() == "entry") $isEntryField = true;
-			$html .= $fieldObj->getForm($this, @$db_values[$fieldId], @$db_extra_values[$fieldId]);
+			$v = (isset($db_values[$fieldId])) ? $db_values[$fieldId] : null;
+			$extra = (isset($db_extra_values[$fieldId])) ? $db_extra_values[$fieldId] : null;
+			$html .= $fieldObj->getForm($this, $v, $extra);
 		}
 
 		$html .= '</div>';

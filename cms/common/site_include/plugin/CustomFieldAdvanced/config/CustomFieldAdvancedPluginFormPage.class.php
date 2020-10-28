@@ -85,10 +85,7 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 
 		DisplayPlugin::toggle("field_table", count($this->pluginObj->customFields));
 		DisplayPlugin::toggle("no_field", !count($this->pluginObj->customFields));
-
-		$this->createAdd("add_field","HTMLModel",array(
-			"visible"=> count($this->pluginObj->customFields)<1
-		));
+		DisplayPlugin::toggle("add_field", (count($this->pluginObj->customFields) < 1));
 
 		//カスタムフィールドから設定をインポート
 		$this->addForm("import_form");

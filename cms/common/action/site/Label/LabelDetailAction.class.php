@@ -21,4 +21,3 @@ class LabelDetailAction extends SOY2Action{
     	$this->id = $id;
     }
 }
-?>

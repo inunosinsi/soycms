@@ -39,6 +39,7 @@ class CMSPlugin {
 		"onLabelCreate"=>array(),		//ラベルが作成される直前			array(label)
 		"onLabelUpdate"=>array(),		//ラベルが更新される直前			array(new_label)
 		"onLabelRemove"=>array(),		//ラベルが削除される直前			array(labelId)
+		"onLabelOutput"=>array(),		//ラベルが呼び出された際に呼ばれる array(labelId,SOYHTMLObject,label)
 		"onLabelSetupWYSIWYG"=>array(),	//ラベル詳細でWYSIWYGエディタをセットアップしている時
 
 		//エントリーラベル関連

@@ -66,6 +66,8 @@ class CategoryListComponent extends HTMLList{
 			"text" => (isset($this->entryCount[$entry->getId()])) ? $this->entryCount[$entry->getId()] : 0,
 			"soy2prefix" => "cms"
 		));
+
+		CMSPlugin::callEventFunc('onLabelOutput',array("labelId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"label"=>$entry));
 	}
 
 	function setCategoryUrl($categoryUrl){
