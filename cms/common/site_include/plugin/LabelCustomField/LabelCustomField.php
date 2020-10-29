@@ -29,7 +29,7 @@ class LabelCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 
 		//プラグイン アクティブ
@@ -417,26 +417,26 @@ class LabelCustomFieldPlugin{
 	/**
 	 * プラグイン管理画面
 	 */
-	// function insertField(LabelCustomField $_field){
-	// 	if(isset($this->customFields[$_field->getId()])){
-	// 		return false;
-	// 	}
-	//
-	// 	$id_blacklist = array(
-	// 		"title", "content", "more", "id", "create_date",
-	// 	);
-	//
-	// 	if(in_array($_field->getId(),$id_blacklist)){
-	// 		return false;
-	// 	}
-	//
-	// 	if(preg_match('/_visible$/i',$_field->getId())){
-	// 		return false;
-	// 	}
-	//
-	// 	$this->customFields[$_field->getId()] = $_field;
-	// 	CMSPlugin::savePluginConfig(self::PLUGIN_ID, $this);
-	// }
+	function insertField(LabelCustomField $_field){
+		if(isset($this->customFields[$_field->getId()])){
+			return false;
+		}
+
+		$id_blacklist = array(
+			"title", "content", "more", "id", "create_date",
+		);
+
+		if(in_array($_field->getId(),$id_blacklist)){
+			return false;
+		}
+
+		if(preg_match('/_visible$/i',$_field->getId())){
+			return false;
+		}
+
+		$this->customFields[$_field->getId()] = $_field;
+		CMSPlugin::savePluginConfig(self::PLUGIN_ID, $this);
+	}
 
 	/**
 	 * ラベル編集画面
