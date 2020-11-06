@@ -2,7 +2,7 @@
 
 <form soy:id="form">
 	<div class="form-group">
-		<label>テストモード</label>
+		<label>テストモード</label><br>
 		<input type="checkbox" soy:id="sandbox"><br>
 		テストモードを利用する際は事前に下記のページをご確認ください。<br>
 		<a href="https://pay.jp/docs/testcard" target="_blank" rel="noopener">テストカード | PAY.JP</a>
@@ -34,10 +34,11 @@
 </form>
 
 <h4>このプラグインを使用するにあたって</h4>
-<ul style="list-style-type: decimal;margin-bottom:10px;">
-    <li>当プラグイン以外の支払いモジュールはすべてアンインストールすることを推奨しています。</li>
-    <li>配送モジュールを使用したい場合は送料は商品の方に上乗せし、モジュールの送料設定では0円にしてください。</li>
-	<li>商品をカートに入れる際、商品は必ず一個のみになりますので、公開側の商品詳細ページのテンプレートで数量指定のフォームは設置しないでください。</li>
-</ul>
-
+<div class="alert alert-warning">
+	<ul style="list-style-type: decimal;">
+	    <li>当プラグイン以外の支払いモジュールはすべてアンインストールすることを推奨しています。</li>
+	    <li>配送モジュールを使用したい場合は送料は商品の方に上乗せし、モジュールの送料設定では0円にしてください。</li>
+		<li>商品をカートに入れる際、商品は必ず一個のみになりますので、公開側の商品詳細ページのテンプレートで数量指定のフォームは設置しないでください。</li>
+	</ul>
+</div>
 <br>
