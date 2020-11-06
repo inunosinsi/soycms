@@ -11,7 +11,7 @@ class ZeroSaitodevPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"1.0"
+			"version"=>"1.0.1"
 		));
 
 		//二回目以降の動作
@@ -41,7 +41,7 @@ class ZeroSaitodevPlugin{
 		if(file_exists($cacheFile) && self::checkCacheOld($cacheFile)){
 			$contents = file_get_contents($cacheFile);
 		}else{
-			$contents = file_get_contents("https://saitodev.co/soycms.xml", false, $ctx = stream_context_create(array(
+			$contents = @file_get_contents("https://saitodev.co/soycms.xml", false, $ctx = stream_context_create(array(
 				'http' => array(
 					'timeout' => 3
 				)
