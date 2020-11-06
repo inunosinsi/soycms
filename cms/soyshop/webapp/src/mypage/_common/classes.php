@@ -94,7 +94,7 @@ class MainMyPagePageBase extends WebPage{
 		return self::getMyPage()->getUserId();
 	}
 
-	function jump($addr){
+	function jump($addr=""){
 		$url = soyshop_get_mypage_url() . "/" . $addr;
 		if(isset($_GET["r"])){
 			$url .= "?r=" . $_GET["r"];
