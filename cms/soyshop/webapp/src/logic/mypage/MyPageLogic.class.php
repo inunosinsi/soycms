@@ -280,6 +280,12 @@ class MyPageLogic extends SOY2LogicBase{
 				$res = $this->getAttribute("loggedin");
 				$isLoggedIn = (is_bool($res) && $res);
 			}
+
+			//ログインしているユーザが削除されている場合はログアウトにする
+			if($isLoggedIn && !$this->getUser()->isPublished()){
+				$this->logout();
+				$isLoggedIn = false;
+			}
 		}
 
 		return $isLoggedIn;
