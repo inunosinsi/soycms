@@ -42,9 +42,9 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
         $content = str_replace("#TRACKING_NUMBER#", $order->getTrackingNumber(), $content);
         $content = str_replace("#ORDER_DATE#", date("Y-m-d (D) H:i:s", $order->getOrderDate()), $content);
         $content = str_replace("#ITEM_ORDER_LIST#", $itemContent, $content);
-        $content = str_replace("#SUBTOTAL#", $subprice, $content);
+        $content = str_replace("#SUBTOTAL#", number_format($subprice), $content);
         $content = str_replace("#MODULE_LIST#", $moduleContent, $content);
-        $content = str_replace("#TOTAL#", $totalprice, $content);
+        $content = str_replace("#TOTAL#", number_format($totalprice), $content);
 
         $addressTypes = array("send", "claimed");
         foreach($addressTypes as $addressType){
