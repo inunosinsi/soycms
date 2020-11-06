@@ -798,6 +798,16 @@ class SOYShop_User {
 		return $isUse;
 	}
 
+	/**
+     * 公開ユーザであるかどうか
+     *
+     * @return boolean
+     */
+    function isPublished(){
+		if((int)$this->isDisabled === self::USER_IS_DISABLED || (int)$this->isPublish !== self::USER_IS_PUBLISH) return false;
+		return true;
+    }
+
 	/* パスワードの暗号化関連 */
 
 	/**
