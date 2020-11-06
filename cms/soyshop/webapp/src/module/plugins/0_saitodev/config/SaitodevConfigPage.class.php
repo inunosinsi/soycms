@@ -39,7 +39,7 @@ class SaitodevConfigPage extends WebPage{
 
 	private function _getRoles(){
 		$old = SOYAppUtil::switchAppMode("shop");
-		$roles = SOY2Logic::createInstance("logic.ShopLogic")->getSiteRoleArray();
+		$roles = SOY2Logic::createInstance("logic.RoleLogic")->getSiteRoleArray();
 		SOYAppUtil::resetAppMode($old);
 		return $roles;
 	}
