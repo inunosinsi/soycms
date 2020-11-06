@@ -30,7 +30,7 @@ class LoginPage extends CMSWebPageBase{
     	));
 
     	$result = $action->run();
-    	
+
     	//SOYShopの管理画面へ遷移する
     	if($res){
     		$session = SOY2ActionSession::getUserSession();
@@ -38,7 +38,7 @@ class LoginPage extends CMSWebPageBase{
     	}
 
     	if($result->success()){
-    		
+
     		//URLにappIdの値が存在している場合は直接SOY Appに
     		if(isset($_GET["appId"])){
     			SOY2PageController::redirect("../app/index.php/" . $_GET["appId"]);
@@ -51,12 +51,16 @@ class LoginPage extends CMSWebPageBase{
     			CMSMessageManager::save();
     		}
 
+			// SOY CMSの管理画面のURIを変更する
+			if(file_exists(SOY2::RootDir() . "config/admin.uri.config.php")) include(SOY2::RootDir() . "config/admin.uri.config.php");
+			if(!defined("SOYCMS_ADMIN_URI")) define("SOYCMS_ADMIN_URI", "soycms");
+
 			//転送先の指定があればそこへリダイレクト
 			$redirect = isset($_GET["r"]) ? $_GET["r"] : "" ;
-			if(strlen($redirect) > 0 && CMSAdminPageController::isAllowedPath($redirect, "../soycms/")){
+			if(strlen($redirect) > 0 && CMSAdminPageController::isAllowedPath($redirect, "../" . SOYCMS_ADMIN_URI . "/")){
 				SOY2PageController::redirect($redirect);
 			}else{
-				SOY2PageController::redirect("../soycms/");
+				SOY2PageController::redirect("../" . SOYCMS_ADMIN_URI . "/");
 			}
 
 			exit;
@@ -65,4 +69,3 @@ class LoginPage extends CMSWebPageBase{
     	SOY2PageController::jump("Site");
     }
 }
-?>

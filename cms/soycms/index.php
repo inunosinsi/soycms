@@ -8,6 +8,5 @@ try{
 	SOY2PageController::run();
 }catch(Exception $e){
 	$exception = $e;
-	include_once(SOY2::RootDir() . "error/admin.php");
-		
+	include_once(SOY2::RootDir() . "error/admin.php");		
 }

@@ -1,6 +1,6 @@
 <?php
 class Plugin{
-	
+
 	private $id;
 	private $name;
 	private $description;
@@ -12,7 +12,7 @@ class Plugin{
 	private $version;
 	private $url;
 	private $mail;
-	
+
 	function getId() {
 		return $this->id;
 	}
@@ -55,9 +55,9 @@ class Plugin{
 	function setCustom($custom) {
 		$this->custom = $custom;
 	}
-	
+
 	function setCategory($category){
-		
+
 		$this->category = $category;
 	}
 	function getCategory(){
@@ -99,22 +99,21 @@ class Plugin{
 	function setMail($mail) {
 		$this->mail = $mail;
 	}
-	
+
 	function getIcon(){
 		//アイコン設定
 		$prefix =  SOY2PageController::createRelativeLink("../common/site_include/plugin/".$this->getId()."/icon");
-		
+
 		$dir = SOY2::RootDir()."site_include/plugin/".$this->getId()."/icon";
-		
+
 		if(file_exists($dir.".jpg")){
 			return $prefix.".jpg";
 		}else if(file_exists($dir.".png")){
 			return $prefix.".png";
 		}else if(file_exists($dir.".gif")){
 			return $prefix.".gif";
-		}		
-		
-		return SOY2PageController::createRelativeLink("./image/icon/default_plugin_icon.png");
+		}
+
+		return SOY2PageController::createRelativeLink("../soycms/image/icon/default_plugin_icon.png");
 	}
 }
-?>

@@ -1,0 +1,31 @@
+<?php
+/**
+ * @usage
+ * /CMSインストールディレクトリ/以下に下記の定数で指定した名前のディレクトリを設けます。
+ * /CMSインストールディレクトリ/{SOYCMS_ADMIN_URI}/index.phpを用意して、index.phpは下記にします。
+ ********************************************************************************
+ * include_once("../common/common.inc.php");									*
+ * include_once('../soycms/webapp/config.inc.php');								*
+ *																				*
+ * try{																			*
+ * 	SOY2PageController::run();													*
+ * }catch(Exception $e){														*
+ * 	$exception = $e;															*
+ * 	include_once(SOY2::RootDir() . "error/admin.php");							*
+ * }																			*
+ ********************************************************************************
+ */
+define("SOYCMS_ADMIN_URI", "soycms");
+
+/**
+ * @usage
+ * /CMSインストールディレクトリ/以下に下記の定数で指定した名前のディレクトリを設けます。
+ * /CMSインストールディレクトリ/{SOYSHOP_ADMIN_URI}/index.phpを用意して、index.phpは下記にします。
+ ********************************************************************************
+ * <?php 																		*
+ * include(dirname(dirname(__FILE__)) . "/soyshop/webapp/conf/admin.conf.php"); *
+ * SOY2PageController::run();													*
+ * ?>																			*
+ ********************************************************************************
+ */
+define("SOYSHOP_ADMIN_URI", "soyshop");

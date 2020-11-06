@@ -11,9 +11,9 @@ SOY2DAOConfig::DaoCacheDir(dirname(dirname(__FILE__))."/cache/");
 
 //アイコンのディレクトリ
 define("CMS_LABEL_ICON_DIRECTORY",dirname(dirname(__FILE__))."/image/labelicon/");
-define("CMS_LABEL_ICON_DIRECTORY_URL",SOY2PageController::createRelativeLink("./image/labelicon/"));
+define("CMS_LABEL_ICON_DIRECTORY_URL",SOY2PageController::createRelativeLink("../soycms/image/labelicon/"));
 define("CMS_PAGE_ICON_DIRECTORY",dirname(dirname(__FILE__))."/image/pageicon/");
-define("CMS_PAGE_ICON_DIRECTORY_URL",SOY2PageController::createRelativeLink("./image/pageicon/"));
+define("CMS_PAGE_ICON_DIRECTORY_URL",SOY2PageController::createRelativeLink("../soycms/image/pageicon/"));
 
 //必須コンポーネントのimport
 SOY2::import("base.CMSWebPageBase");

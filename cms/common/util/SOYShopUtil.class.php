@@ -325,7 +325,11 @@ class SOYShopUtil {
 		}
 
 		$session->setAttribute("app_shop_auth_level", $level);
-		$url = SOY2PageController::createRelativeLink("../soyshop", true) . "?site_id=" . $siteId;
+
+		// SOY Shopの管理画面のURIを変更する
+		if(file_exists(SOY2::RootDir() . "config/admin.uri.config.php")) include(SOY2::RootDir() . "config/admin.uri.config.php");
+		if(!defined("SOYSHOP_ADMIN_URI")) define("SOYSHOP_ADMIN_URI", "soyshop");
+		$url = SOY2PageController::createRelativeLink("../" . SOYSHOP_ADMIN_URI, true) . "?site_id=" . $siteId;
 		header("Location:" . $url);
 		exit;
 	}
