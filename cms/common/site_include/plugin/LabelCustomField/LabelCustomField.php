@@ -29,7 +29,7 @@ class LabelCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.3"
 		));
 
 		//プラグイン アクティブ
@@ -296,6 +296,7 @@ class LabelCustomFieldPlugin{
 	 * ラベル更新時
 	 */
 	function onLabelUpdate($arg){
+		if(!isset($arg["label"])) return;
 		$dao = $this->dao;
 
 		$label = $arg["label"];
