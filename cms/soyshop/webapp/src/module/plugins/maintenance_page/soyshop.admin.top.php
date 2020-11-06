@@ -17,9 +17,9 @@ class MaintenancePageAdminTop extends SOYShopAdminTopBase{
 	function getContent(){
 		SOY2::import("module.plugins.maintenance_page.util.MaintenancePageUtil");
 		if(MaintenancePageUtil::checkActive()){
-			return "<div class=\"alert alert-info\">【実行中】メンテナンスページを表示中<br>メンテナンスページの表示はシークレットモードで確認できます。</a>";
+			return "<div class=\"alert alert-info\">【実行中】メンテナンスページを表示中<br>メンテナンスページの表示はシークレットモードで確認できます。</div>";
 		}else{
-			return "<div class=\"alert alert-warning\">【停止中】メンテナンスページは表示されていません</a>";
+			return "<div class=\"alert alert-warning\">【停止中】メンテナンスページは表示されていません</div>";
 		}
 	}
 }
