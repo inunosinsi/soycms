@@ -59,6 +59,12 @@ function do_application($uri, $args){
 			exit;
 		}
 
+		//上のdownload_eventのGETパラメータのキーだと紛らわしいので別のキーを用意
+		if(isset($_GET["soyshop_action"])){
+			execute_download_action($_GET["soyshop_action"]);
+			exit;
+		}
+
 		execute_mypage_application($args);
 		return true;
 	}
