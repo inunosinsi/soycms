@@ -16,6 +16,7 @@ class ButtonSocialConfigFormPage extends WebPage{
 			$this->pluginObj->setAdmins($_POST["Config"]["admins"]);
 			$this->pluginObj->setDescription($_POST["Config"]["description"]);
 			$this->pluginObj->setImage($_POST["Config"]["image"]);
+			$this->pluginObj->setFbAppVer($_POST["Config"]["app_ver"]);
 
 			//Twitter Card
 			$twCard = (isset($_POST["Config"]["tw_card"])) ? $_POST["Config"]["tw_card"] : "";
