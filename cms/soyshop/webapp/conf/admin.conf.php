@@ -3,6 +3,24 @@
 //Load SOY2 settings
 include(dirname(__FILE__) . "/common.conf.php");
 
+//管理画面URLの隠蔽
+$commonDir = dirname(dirname(dirname(dirname(__FILE__)))) . "/common/";
+if(!strpos($_SERVER["REQUEST_URI"], "index.php") && !defined("SOYSHOP_ADMIN_URI") && file_exists($commonDir . "config/admin.uri.config.php")){
+	include($commonDir . "config/admin.uri.config.php");
+	if(is_numeric(strpos($_SERVER["REQUEST_URI"], "soyshop")) && SOYSHOP_ADMIN_URI != "soyshop"){
+		$redirect = str_replace("/soyshop/", "/" . SOYSHOP_ADMIN_URI . "/", $_SERVER["REQUEST_URI"]);
+		header("Location:" . $redirect);
+		exit;
+	}
+}
+
+//CMS名の隠蔽
+if(!defined("SOYCMS_CMS_NAME") && file_exists($commonDir . "config/advanced.config.php")){
+	include($commonDir . "config/advanced.config.php");
+}
+
+unset($commonDir);
+
 //Load functions and utilily classes
 SOY2::import("base.func.admin",".php");
 SOY2::imports("util.*");
