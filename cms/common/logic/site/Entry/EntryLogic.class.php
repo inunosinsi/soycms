@@ -58,11 +58,11 @@ class EntryLogic extends SOY2LogicBase{
  		if($bean->getId() == $bean->getAlias()) $bean->setAlias(time());
  		$id = $dao->insert($bean);
 
- 		if($bean->isEmptyAlias()){
+ 		//if($bean->isEmptyAlias()){	//ここのif文は必要ない
  			$bean->setId($id);//updateを実行するため
  			$bean->setAlias($this->getUniqueAlias($id,$bean->getTitle()));
  			$dao->update($bean);
- 		}
+ 		//}
 
  		return $id;
  	}
