@@ -58,10 +58,21 @@ class CustomAliasUtil {
 		if(!strlen($chars)) return "";
 
         $charLen = strlen($chars);
-        $str = "";
-        for ($i = 0; $i < $len; $i++) {
-            $str .= $chars[rand(0, $charLen - 1)];
-        }
+		$str = "";
+		for(;;){
+			$str = "";
+	        for ($i = 0; $i < $len; $i++) {
+	            $str .= $chars[rand(0, $charLen - 1)];
+	        }
+
+			//生成したエイリアスが既に使用されていないか？確認する
+			try{
+				$entry = SOY2DAOFactory::create("cms.EntryDAO")->getByAlias($str);
+			}catch(Exception $e){
+				break;
+			}
+		}
+
         return $str;
 	}
 

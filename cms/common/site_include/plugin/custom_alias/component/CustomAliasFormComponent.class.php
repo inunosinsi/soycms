@@ -35,6 +35,12 @@ class CustomAliasFormComponent {
 					if(!strlen($alias)) $alias = CustomAliasUtil::generateRandomString();
 					$html[] = "<input value=\"".htmlspecialchars($alias, ENT_QUOTES, "UTF-8")."\" id=\"custom_alias_input\" name=\"alias\" type=\"text\" class=\"form-control\" style=\"width:40%;\">";
 				}
+
+				$html[] = "<script>";
+				$html[] = file_get_contents(dirname(dirname(__FILE__)) . "/js/generate.js");
+				$html[] = "</script>";
+				$html[] = "<input type=\"button\" class=\"btn btn-primary\" value=\"ランダムな値を挿入\" onclick=\"cusotm_alias_insert_generated_random_value('" . CustomAliasUtil::generateRandomString() . "');\">";
+
 				break;
 			default:
 				$html[] = "<input value=\"".htmlspecialchars($alias, ENT_QUOTES, "UTF-8")."\" id=\"custom_alias_input\" name=\"alias\" type=\"text\" class=\"form-control\" style=\"width:40%;\">";
