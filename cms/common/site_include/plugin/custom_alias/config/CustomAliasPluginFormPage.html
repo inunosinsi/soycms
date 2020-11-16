@@ -10,6 +10,7 @@
 <form method="post" soy:id="custom_alias_form">
 	<div class="form-group">
 		<label>モード</label>
+		<p class="alert alert-warning">モードの設定は、新規作成する記事に対して有効になります</p>
 		<p class="alert alert-info">IDモードとハッシュモードを選択した場合、記事投稿画面でエイリアス入力欄は表示されません</p>
 		<input soy:id="mode_manual" type="radio">
 		<span class="help"><i class="fa fa-question-circle fa-fw" data-toggle="tooltip" data-placement="right" title="エイリアスを手動で設定します"></i></span>&nbsp;
@@ -64,6 +65,7 @@
 
 <form soy:id="all_change_form">
 	<h4>エイリアスの一括変更</h4>
+	<div class="alert alert-warning">エイリアスの一括変更を実行すると、記事に設定されていたエイリアスの全てが変換されます</div>
 	過去に投稿した記事すべてのエイリアスをIDに変換：<input type="submit" name="all_change" class="btn btn-primary" value="実行" onclick="return confirm('実行しますか？');"><br>
 	過去に投稿した記事すべてのエイリアスを記事タイトルに変換：<input type="submit" name="all_restore" class="btn btn-primary" value="実行" onclick="return confirm('実行しますか？');">
 </form>

@@ -21,7 +21,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.11"
+			"version"=>"1.12"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
