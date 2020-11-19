@@ -7,6 +7,19 @@
 	<div class="form-group">
 		<label>表示設定</label><br>
 		<input type="checkbox" soy:id="maintenance_on">
+		<p class="alert alert-warning">
+			ブラウザで別タブで管理画面を開いている場合、公開側は通常の表示になります。<br>
+			メンテナンスページの動作確認を行う場合は、別ブラウザかシークレットモードで公開側ページにアクセスしてください。
+		</p>
+	</div>
+
+	<div class="form-group">
+		<label>時限設定(表示設定でチェックを入れていない場合に使用できます)</label>
+		<div class="form-inline">
+			<input type="checkbox" soy:id="maintenance_timming_set">&nbsp;
+			日付：<input type="date" soy:id="maintenance_timming_date">&nbsp;
+			時刻：<input type="time" soy:id="maintenance_timming_time">
+		</div>
 	</div>
 
 	<div class="text-center">

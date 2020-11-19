@@ -31,6 +31,24 @@ class MaintenancePageConfigPage extends WebPage {
 			"selected" => (isset($cnf["on"]) && is_numeric($cnf["on"]) && (int)$cnf["on"] === 1),
 			"label" => "公開側でメンテナンスページを設置する"
 		));
+
+		$timeCnf = (isset($cnf["timming"]) && is_array($cnf["timming"])) ? $cnf["timming"] : array();
+		$this->addCheckBox("maintenance_timming_set", array(
+			"name" => "Config[timming][on]",
+			"value" => 1,
+			"selected" => (isset($timeCnf["on"]) && is_numeric($timeCnf["on"]) && (int)$timeCnf["on"] === 1),
+			"label" => "時限設定を利用する"
+		));
+
+		$this->addInput("maintenance_timming_date", array(
+			"name" => "Config[timming][date]",
+			"value" => (isset($timeCnf["date"])) ? $timeCnf["date"] : ""
+		));
+
+		$this->addInput("maintenance_timming_time", array(
+			"name" => "Config[timming][time]",
+			"value" => (isset($timeCnf["time"])) ? $timeCnf["time"] : ""
+		));
 	}
 
 	function setConfigObj($configObj){
