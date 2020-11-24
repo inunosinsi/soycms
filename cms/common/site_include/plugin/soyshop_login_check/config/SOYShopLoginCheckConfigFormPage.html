@@ -1,29 +1,39 @@
 <form soy:id="form">
-	<h4>連携するSOY Shopのサイトを選択してください。</h4>
-	<p>
-		<select soy:id="shop_list">
-			<option></option>
-		</select>&nbsp;
-		<input type="submit" value="選択">
-	</p>
+	<div class="alert alert-info">連携するSOY Shopのサイトを選択してください。</div>
+	<div class="form-group">
+		<div class="form-inline">
+			<select soy:id="shop_list" class="form-control"><option></option></select>&nbsp;
+			<input type="submit" class="btn btn-primary btn-sm" value="選択">
+		</div>
+	</div>
 
-	<h4>コメントフォーム設定</h4>
-	<p>
+	<br>
+
+	<div class="alert alert-info">コメントフォーム設定</div>
+	<div>
 		<input type="checkbox" soy:id="is_insert_comment_form">
-	</p>
+	</div>
 
-	<h4>ログイン時のコメント投稿者へのポイント付与設定</h4>
-	<p>
-		<input type="text" soy:id="point">&nbsp;pt&nbsp;
-		<input type="submit" value="保存"><br />
-		<span>※一つの記事に対して一度だけポイントを付与します。</span><br />
-		<span>※値が0の時は動作しません。</span>
-	</p>
+	<br>
 
-	<h4>ログインフォームへの自動リダイレクト設定(ページを開いた直後)</h4>
-	<fieldset>
-		<legend>ページ別設定</legend>
-		<div>ページ毎にSOY Shopログインしていないでページを開いた時にフォームにリダイレクトの設定</div>
+	<div class="alert alert-info">ログイン時のコメント投稿者へのポイント付与設定</div>
+	<div class="form-group">
+		<div class="form-inline">
+			<input type="number" class="form-control" soy:id="point">&nbsp;pt&nbsp;
+			<input type="submit" class="btn btn-primary btn-sm" value="保存">
+		</div>
+		<div class="alert alert-warning">
+			※一つの記事に対して一度だけポイントを付与します。<br>
+			※値が0の時は動作しません。
+		</div>
+	</div>
+
+	<br>
+
+	<div class="alert alert-info">ログインフォームへの自動リダイレクト設定(ページを開いた直後)</div>
+	<div class="form-group">
+		<label>ページ別設定</label>
+		<div class="alert alert-warning">ページ毎にSOY Shopログインしていないでページを開いた時にフォームにリダイレクトの設定</div>
 		<ul>
 			<li soy:id="page_list" style="list-style:none">
 				<input type="hidden" soy:id="page_item_hidden" /><input type="checkbox" soy:id="page_item" />
@@ -36,40 +46,53 @@
 			</li soy:id="page_list">
 		</ul>
 
-		<input type="submit" style="padding:10px 20px;" value="保存" />
-	</fieldset>
+	</div>
 
-	<h4>ログイン後のページ遷移設定</h4>
-	<p>
-		<input type="hidden" soy:id="do_redirect_after_login_hidden">
-		<input type="checkbox" soy:id="do_redirect_after_login">&nbsp;
-		<input type="submit" value="保存">
-	</p>
+	<div>
+		<input type="submit" class="btn btn-primary btn-lg" value="保存">
+	</div>
 
-	<h4>ログアウト後のページ遷移設定</h4>
-	<p>
-		SOY Shopの設定にあるログアウト後に表示するページの設定と共有
-	</p>
+	<br>
 
-	<h4>パスワードリマインド設定</h4>
-	<p>
-		<input type="hidden" soy:id="do_redirect_after_remind_hidden">
-		<input type="checkbox" soy:id="do_redirect_after_remind">&nbsp;
-		<input type="submit" value="保存">
-	</p>
+	<div class="alert alert-info">ログイン後のページ遷移設定</div>
+	<div class="form-group">
+		<div class="form-inline">
+			<input type="hidden" soy:id="do_redirect_after_login_hidden">
+			<input type="checkbox" soy:id="do_redirect_after_login">&nbsp;
+			<input type="submit" class="btn btn-primary btn-sm" value="保存">
+		</div>
+	</div>
 
-	<h4>記事詳細の閲覧制限(SOY Shopの商品と紐づける)</h4>
-	<p>
-		<input type="checkbox" soy:id="allow_browse_entry_by_purchased">&nbsp;
-		<input type="submit" value="保存"><br>
-		※購入済み商品を含む注文のステータスを支払確認済みにした時に閲覧できるようになります。
-	</p>
+	<br>
+
+	<div class="alert alert-info">ログアウト後のページ遷移設定</div>
+	<div class="alert alert-warning">SOY Shopの設定にあるログアウト後に表示するページの設定と共有する</div>
+
+	<div class="form-group">
+		<div class="form-inline">
+			<input type="hidden" soy:id="do_redirect_after_remind_hidden">
+			<input type="checkbox" soy:id="do_redirect_after_remind">&nbsp;
+			<input type="submit" class="btn btn-primary btn-sm" value="保存">
+		</div>
+	</div>
+
+	<br>
+
+	<div class="alert alert-info">記事詳細の閲覧制限(SOY Shopの商品と紐づける)</div>
+	<div class="form-group">
+		<div class="form-inline">
+			<input type="checkbox" soy:id="allow_browse_entry_by_purchased">&nbsp;
+			<input type="submit" class="btn btn-primary btn-sm" value="保存">
+		</div>
+	</div>
+	<div class="alert alert-warning">※購入済み商品を含む注文のステータスを支払確認済みにした時に閲覧できるようになります。</div>
 </form>
 
-<h3>テンプレートへの記述例</h3>
-<pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
+<br>
+
+<h4>テンプレートへの記述例</h4>
 &lt;!-- ページ内 --&gt;
-<strong>&lt;!-- s_block:id="is_login" --&gt;</strong>
+<pre><strong>&lt;!-- s_block:id="is_login" --&gt;</strong>
 ログインしている時に表示する箇所
 <strong>&lt;!-- /s_block:id="is_login" --&gt;</strong>
 
@@ -78,11 +101,12 @@
 <strong>&lt;!-- /s_block:id="no_login" --&gt;</strong>
 
 <strong>&lt;a s_block:id="login_link"&gt;ログインページ&lt;/a&gt;</strong>
-<strong>&lt;a s_block:id="logout_link"&gt;ログアウト&lt;/a&gt;</strong>
+<strong>&lt;a s_block:id="logout_link"&gt;ログアウト&lt;/a&gt;</strong></pre>
 
+<br>
 
 &lt;!-- ログインフォームの設置 --&gt;
-&lt;form <strong>s_block:id="login_form"</strong>&gt;
+<pre>&lt;form <strong>s_block:id="login_form"</strong>&gt;
 	&lt;!-- <strong>s_block:id="login_error"</strong> --&gt;
 	ログインに失敗しました
 	&lt;!-- /<strong>s_block:id="login_error"</strong> --&gt;
@@ -90,11 +114,12 @@
 	password:&lt;input type="password" <strong>s_block:id="login_password"</strong>&gt;
 	&lt;input type="checkbox" <strong>s_block:id="auto_login"</strong>&gt; 自動ログイン
 	&lt;input type="submit" <strong>s_block:id="login_submit"</strong> value="login"&gt;
-&lt;/form&gt;
+&lt;/form&gt;</pre>
 
+<br>
 
 &lt;!-- パスワードリマインダのフォームの設置 --&gt;
-&lt;!-- <strong>s_block:id="remind_before"</strong> --&gt;
+<pre>&lt;!-- <strong>s_block:id="remind_before"</strong> --&gt;
 パスワードの再発行に関するメールをお送りいたします。
 &lt;form <strong>s_block:id="remind_form"</strong>&gt;
 	&lt;!-- <strong>s_block:id="remind_error"</strong> --&gt;
@@ -107,35 +132,36 @@
 
 &lt;!-- <strong>s_block:id="remind_after"</strong> --&gt;
 ご登録いただいたメールアドレスにパスワードの再設定に関するメールをお送りいたしました
-&lt;!-- <strong>/s_block:id="remind_after"</strong> --&gt;
+&lt;!-- <strong>/s_block:id="remind_after"</strong> --&gt;</pre>
 
-
+<br>
 
 &lt;!-- ブロックの記事の箇所(block:idやb_block:idで囲った箇所) --&gt;
-<strong>&lt;!-- cms:id="is_login" /--&gt;</strong>
+<pre><strong>&lt;!-- cms:id="is_login" /--&gt;</strong>
 <strong>&lt;!-- cms:id="no_login" /--&gt;</strong>
 <strong>&lt;a cms:id="login_link"&gt;ログインページ&lt;/a&gt;</strong>
-<strong>&lt;a cms:id="logout_link"&gt;ログアウト&lt;/a&gt;</strong>
+<strong>&lt;a cms:id="logout_link"&gt;ログアウト&lt;/a&gt;</strong></pre>
 
+<br>
 
 &lt;!-- ブロック内でのログインフォームの設置 --&gt;
-&lt;form <strong>cms:id="login_form"</strong>&gt;
+<pre>&lt;form <strong>cms:id="login_form"</strong>&gt;
 	email:&lt;input type="email" <strong>cms:id="login_id"</strong>&gt;
 	password:&lt;input type="password" <strong>cms:id="login_password"</strong>&gt;
 	&lt;input type="checkbox" <strong>cms:id="auto_login"</strong>&gt; 自動ログイン
 	&lt;input type="submit" <strong>cms:id="login_submit"</strong> value="login"&gt;
-&lt;/form&gt;
+&lt;/form&gt;</pre>
 
+<br>
 
 &lt;!-- コメントフォームの設置 --&gt;
-&lt;form b_block:id="comment_form"&gt;
+<pre>&lt;form b_block:id="comment_form"&gt;
 	name:&lt;input type="text" <strong>cms:id="author_login"</strong>&gt;
 	email:&lt;input type="email" <strong>cms:id="mail_address_login"</strong>&gt;
 	url:&lt;input type="text" <strong>cms:id="url_login"</strong>&gt;
 	content:&lt;textarea cms:id="body"&gt;&lt;/textarea&gt;
 	&lt;input type="submit" value="コメント投稿"&gt;
-&lt;/form&gt;
-</pre>
+&lt;/form&gt;</pre>
 
 <script type="text/javascript">
 	function update_blog_pages(selfId){
