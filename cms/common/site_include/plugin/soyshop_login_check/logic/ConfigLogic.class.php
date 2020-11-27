@@ -5,7 +5,7 @@ class ConfigLogic extends SOY2LogicBase{
 	function ConfigLogic(){}
 
 	function getList(){
-		$shops = self::getShopList();
+		$shops = self::_getShopList();
 
 		$list = array();
 		foreach($shops as $shop){
@@ -15,7 +15,7 @@ class ConfigLogic extends SOY2LogicBase{
 		return $list;
 	}
 
-	function getShopList(){
+	private function _getShopList(){
 		$old = CMSUtil::switchDsn();
 
 		try{

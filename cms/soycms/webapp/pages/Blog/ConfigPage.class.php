@@ -128,11 +128,11 @@ class ConfigPage extends CMSWebPageBase{
 
 		//公開期間フォームの表示
 		$form->addInput("start_date", array(
-			"value"=>(is_null($start)) ? "" : date('Y-m-d H:i:s',$start),
-			"name"=>"openPeriodStart"
+			"value" => (is_numeric($start)) ? date('Y-m-d H:i:s',$start) : "",
+			"name" => "openPeriodStart"
 		));
 		$form->addInput("end_date", array(
-			"value"=>(is_null($end)) ? "" : date('Y-m-d H:i:s',$end),
+			"value"=>(is_numeric($end)) ? date('Y-m-d H:i:s',$end) : "",
 			"name"=>"openPeriodEnd"
 		));
 		$form->addLabel("open_period_show", array(

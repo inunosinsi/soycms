@@ -270,39 +270,38 @@ class ScriptModuleBlockComponent_FormPage extends HTMLPage{
 			}
 		}
 
-		$this->createAdd("script_path_error","HTMLLabel",array(
+		$this->addLabel("script_path_error", array(
 			"text" => CMSMessageManager::get("SOYCMS_BLOCK_SCRIPT_NO_FILE"),
 			"visible" => !$pathExists
 		));
 
-		$this->createAdd("function_name_error","HTMLLabel",array(
+		$this->addLabel("function_name_error", array(
 			"text" => CMSMessageManager::get("SOYCMS_BLOCK_SCRIPT_NO_METHOD"),
 			"visible" => !$functionExists
 		));
 
-		$this->createAdd("site_hidden","HTMlInput",array(
+		$this->addInput("site_hidden", array(
 			"name" => "object[siteId]",
 			"value" => $this->entity->getSiteId()
 		));
 
 
-		$this->createAdd("script_path","HTMLInput",array(
+		$this->addInput("script_path", array(
 			"name" => "object[scriptPath]",
 			"value" => $this->entity->getScriptPath()
 		));
 
-		$this->createAdd("function_name","HTMLInput",array(
+		$this->addInput("function_name", array(
 			"name" => "object[functionName]",
 			"value" => $this->entity->getFunctionName()
 		));
-
 
 		$this->createAdd("no_stick_url","HTMLHidden",array(
 			"name" => "object[isStickUrl]",
 			"value" => 0,
 		));
 
-		$this->createAdd("stick_url","HTMLCheckBox",array(
+		$this->addCheckBox("stick_url", array(
 			"name" => "object[isStickUrl]",
 			"label" => CMSMessageManager::get("SOYCMS_BLOCK_ADD_ENTRY_LINK_TO_THE_TITLE"),
 			"value" => 1,
@@ -313,7 +312,7 @@ class ScriptModuleBlockComponent_FormPage extends HTMLPage{
 		$style = SOY2HTMLFactory::createInstance("SOY2HTMLStyle");
 		$style->display = ($this->entity->getIsStickUrl()) ? "" : "none";
 
-		$this->createAdd("blog_page_list","HTMLSelect",array(
+		$this->addSelect("blog_page_list", array(
 			"name" => "object[blogPageId]",
 			"selected" => $this->entity->getBlogPageId(),
 			"options" => $this->blogPages,
@@ -321,24 +320,23 @@ class ScriptModuleBlockComponent_FormPage extends HTMLPage{
 			"style" => $style
 		));
 
-		$this->createAdd("blog_page_list_label","HTMLLabel",array(
+		$this->addLabel("blog_page_list_label", array(
 			"text" => CMSMessageManager::get("SOYCMS_BLOCK_SELECT_BLOG_TITLE"),
 			"visible" => (count($this->blogPages) > 0),
 			"style" => $style
 		));
 
-		$this->createAdd("main_form","HTMLForm",array());
+		$this->addForm("main_form");
 
 
 		//サイト変更機能
-		$this->createAdd("sites_form","HTMLForm");
-		$this->createAdd("site","HTMLSelect",array(
+		$this->addForm("sites_form");
+		$this->addSelect("site", array(
 			"options" => $this->sites,
 			"property" => "siteName",
 			"name" => "object[siteId]",
 			"selected" => $this->entity->getSiteId()
 		));
-
 	}
 
 	/**

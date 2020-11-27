@@ -64,32 +64,32 @@ class EntryListPagerComponent extends HTMLList{
 		$html .= htmlspecialchars($pager_list["display_number"], ENT_QUOTES, "UTF-8");
 		$html .= "</a>";
 
-		$this->createAdd("pager_item_link", "HTMLLink", array(
+		$this->addLink("pager_item_link", array(
 			"link" => $pager_list["url"],
 			"text" => $pager_list["display_number"],
 			"soy2prefix" => "cms"
 		));
-		$this->createAdd("pager_item","HTMLLabel",array(
+		$this->addLabel("pager_item", array(
 			"html" => $html,
 			"soy2prefix" => "cms"
 		));
 
 		//1.2.8～
-		$this->createAdd("is_first","HTMLModel",array(
+		$this->addModel("is_first", array(
 			"visible" => ($pager_list["display_number"] == 1),
 			"soy2prefix" => "cms"
 		));
-		$this->createAdd("is_last","HTMLModel",array(
+		$this->addModel("is_last", array(
 			"visible" => ($pager_list["display_number"] == $this->last),
 			"soy2prefix" => "cms"
 		));
-		$this->createAdd("is_current","HTMLModel",array(
+		$this->addModel("is_current", array(
 			"visible" => ($pager_list["display_number"] == $this->current),
 			"soy2prefix" => "cms"
 		));
 
 		//3.0.1-
-		$this->createAdd("is_middle","HTMLModel",array(
+		$this->addModel("is_middle", array(
 				"visible" => ($pager_list["display_number"] > 1 && $pager_list["display_number"] < $this->last),
 				"soy2prefix" => "cms"
 		));

@@ -5,6 +5,7 @@ class ThumbnailPluginUtil {
 	public static function getThumbnailObjectsByEntryId($entryId){
 		static $objects;
 		if(is_null($objects)) $objects = array();
+		$entryId = (is_numeric($entryId)) ? (int)$entryId : 0;
 		if(!isset($objects[$entryId])){
 			$dao = self::_dao();
 			try{

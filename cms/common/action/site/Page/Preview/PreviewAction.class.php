@@ -1,6 +1,7 @@
 <?php
 //site_include
 SOY2::import('site_include.CMSPageController');
+SOY2::import('site_include.CMSPathInfoBuilder');
 SOY2::import('site_include.CMSPage');
 SOY2::import('site_include.CMSBlogPage');
 SOY2::import('site_include.CMSMobilePage');
@@ -23,34 +24,29 @@ class PreviewAction extends SOY2Action {
 
 	protected function execute(SOY2ActionRequest &$request,SOY2ActionForm &$form,SOY2ActionResponse &$response){
 
-		if(!defined("CMS_PREVIEW_MODE"))define("CMS_PREVIEW_MODE",true);
+		if(!defined("CMS_PREVIEW_MODE")) define("CMS_PREVIEW_MODE",true);
 
 		//非公開エントリーの表示
-		if($this->showAll){
-			define("CMS_PREVIEW_ALL",true);
-		}
+		if($this->showAll) define("CMS_PREVIEW_ALL",true);
 
 		//PHPの許可
-		if(defined("SOYCMS_ALLOW_PHP_SCRIPT")){
-			define("SOY2HTML_ALLOW_PHP_SCRIPT",SOYCMS_ALLOW_PHP_SCRIPT);
-		}
+		if(defined("SOYCMS_ALLOW_PHP_SCRIPT")) define("SOY2HTML_ALLOW_PHP_SCRIPT",SOYCMS_ALLOW_PHP_SCRIPT);
 
 		//デフォルトページ
-		$siteConfigDao = SOY2DAOFactory::create("cms.SiteConfigDAO");
-		$siteConfig = $siteConfigDao->get();
+		$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
 
 		//id　GETを優先する
 		if(isset($_GET["id"])){
 			$pageId = $_GET["id"];
 		}else{
-			$pageId = @$this->arg[0];
-			unset($this->arg[0]);
+			$pageId = (isset($this->arg[0])) ? (int)$this->arg[0] : 0;
+			if(isset($this->arg[0])) unset($this->arg[0]);
 		}
 
 		//URI 先頭のスラッシュは削る
 		$uri = $request->getParameter("uri");
 		$uri = preg_replace("/^\//","",$uri);
-		list($uri, $args) = CMS_PathInfoBuilder::parsePath($uri);
+		list($uri, $args) = CMSPathInfoBuilder::parsePath($uri);
 
 		$logic = SOY2Logic::createInstance("logic.site.Page.PageLogic");
 
@@ -169,4 +165,3 @@ class PreviewAction extends SOY2Action {
 		return SOY2Action::SUCCESS;
     }
 }
-?>

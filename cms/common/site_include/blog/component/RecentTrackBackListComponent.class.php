@@ -15,7 +15,7 @@ class RecentTrackBackListComponent extends HTMLList{
 			"text"=>$trackback->getTitle(),
 			"soy2prefix" => "cms"
 		));
-		$this->createAdd("url","HTMLLink",array(
+		$this->addLink("url", array(
 			"link"=>$trackback->getUrl(),
 			"soy2prefix" => "cms"
 		));
@@ -36,7 +36,7 @@ class RecentTrackBackListComponent extends HTMLList{
 			"soy2prefix"=>"cms",
 			"defaultFormat"=>"H:i"
 		));
-		$this->createAdd("entry_link","HTMLLink",array(
+		$this->addLink("entry_link", array(
 			"link"=>$link,
 			"soy2prefix"=>"cms"
 		));
@@ -45,6 +45,5 @@ class RecentTrackBackListComponent extends HTMLList{
 			"text"=>$trackback->getEntryTitle(),
 			"soy2prefix"=>"cms"
 		));
-
 	}
 }

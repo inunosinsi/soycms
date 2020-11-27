@@ -9,8 +9,7 @@ class SearchPage extends CMSWebPageBase{
 			switch($_POST['op_code']){
 				case 'delete':
 					//削除実行
-					$result = $this->run("Entry.RemoveAction");
-					if($result->success()){
+					if($this->run("Entry.RemoveAction")->success()){
 						$this->addMessage("ENTRY_REMOVE_SUCCESS");
 					}else{
 						$this->addErrorMessage("ENTRY_REMOVE_FAILED");
@@ -19,8 +18,7 @@ class SearchPage extends CMSWebPageBase{
 					break;
 				case 'copy':
 					//複製実行
-					$result = $this->run("Entry.CopyAction");
-					if($result->success()){
+					if($this->run("Entry.CopyAction")->success()){
 						$this->addMessage("ENTRY_COPY_SUCCESS");
 					}else{
 						$this->addErrorMessage("ENTRY_COPY_FAILED");
@@ -28,8 +26,7 @@ class SearchPage extends CMSWebPageBase{
 					break;
 				case 'setPublish':
 					//公開状態にする
-					$result =$this->run("Entry.PublishAction",array('publish'=>true));
-					if($result->success()){
+					if($this->run("Entry.PublishAction",array('publish'=>true))->success()){
 						$this->addMessage("ENTRY_PUBLISH_SUCCESS");
 					}else{
 						$this->addErrorMessage("ENTRY_PUBLISH_FAILED");
@@ -38,8 +35,7 @@ class SearchPage extends CMSWebPageBase{
 					break;
 				case 'setnonPublish':
 					//非公開状態にする
-					$result = $this->run("Entry.PublishAction",array('publish'=>false));
-					if($result->success()){
+					if($this->run("Entry.PublishAction",array('publish'=>false))->success()){
 						$this->addMessage("ENTRY_NONPUBLISH_SUCCESS");
 					}else{
 						$this->addErrorMessage("ENTRY_NONPUBLISH_FAILED");
@@ -48,9 +44,7 @@ class SearchPage extends CMSWebPageBase{
 					break;
 				case 'update_display':
 					//表示順が押された（と判断してるけど）
-					$result = $this->run("EntryLabel.UpdateDisplayOrderAction");
-
-					if($result->success()){
+					if($this->run("EntryLabel.UpdateDisplayOrderAction")->success()){
 						$this->addMessage("ENTRYLABEL_DISPLAYORDER_MODIFY_SUCCESS");
 						//$this->jump("Entry.".implode(".",$this->labelIds));
 					}else{
@@ -241,9 +235,7 @@ class SearchPage extends CMSWebPageBase{
 	}
 
 	private function getLabelList(){
-		$action = SOY2ActionFactory::createInstance("Label.LabelListAction");
-		$result = $action->run();
-
+		$result = SOY2ActionFactory::createInstance("Label.LabelListAction")->run();
 		if($result->success()){
 			$list = $result->getAttribute("list");
 			return $list;

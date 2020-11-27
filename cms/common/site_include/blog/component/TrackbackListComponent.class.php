@@ -12,7 +12,7 @@ class TrackbackListComponent extends HTMLList{
 			"text"=>$trackback->getTitle(),
 			"soy2prefix" => "cms"
 		));
-		$this->createAdd("url","HTMLLink",array(
+		$this->addLink("url", array(
 			"link"=>$trackback->getUrl(),
 			"soy2prefix" => "cms"
 		));
@@ -33,6 +33,5 @@ class TrackbackListComponent extends HTMLList{
 			"soy2prefix"=>"cms",
 			"defaultFormat"=>"H:i"
 		));
-
 	}
 }

@@ -44,7 +44,7 @@ class CurrentCategoryOrArchiveComponent extends SOYBodyComponentBase{
 				$link = $page->getMonthPageURL(true) . $link;
 				break;
 		}
-		$this->createAdd("archive_link","HTMLLink",array(
+		$this->addLink("archive_link", array(
 			"link"=> $link,
 			"soy2prefix"=>"cms"
 		));

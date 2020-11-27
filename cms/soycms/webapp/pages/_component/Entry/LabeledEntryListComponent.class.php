@@ -16,16 +16,17 @@ class LabeledEntryListComponent extends HTMLList{
 	}
 
 	public function populateItem($entity){
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 		$this->addInput("entry_check", array(
 			"type"=>"checkbox",
 			"name"=>"entry[]",
-			"value"=>$entity->getId()
+			"value"=>$id
 		));
 
 		$entity->setTitle(strip_tags($entity->getTitle()));
 		$title_link = SOY2HTMLFactory::createInstance("HTMLLink",array(
 			"text"=>((strlen($entity->getTitle())==0)?CMSMessageManager::get("SOYCMS_NO_TITLE"):$entity->getTitle()),
-			"link"=>SOY2PageController::createLink("Entry.Detail.".$entity->getId()),
+			"link"=>SOY2PageController::createLink("Entry.Detail.".$id),
 			"title"=>$entity->getTitle()
 		));
 
@@ -46,14 +47,14 @@ class LabeledEntryListComponent extends HTMLList{
 
 		$displayOrder = null;
 		if(strpos($_SERVER["REQUEST_URI"], "/Entry/List")){	//ラベル毎の記事一覧ページとコードを統合するための条件分岐
-			$displayOrder = self::logic()->getDisplayOrder($entity->getId(), $labelId);
+			$displayOrder = self::logic()->getDisplayOrder($id, $labelId);
 		}else if(method_exists($entity,'getDisplayOrder')){
 			$displayOrder = $entity->getDisplayOrder();
 		}
 
 		$this->addLabel("create_date", array(
 			"text" => CMSUtil::getRecentDateTimeText($entity->getCdate()),
-			"title"=> date("Y-m-d H:i:s",$entity->getCdate())
+			"title"=> (is_numeric($entity->getCdate())) ? date("Y-m-d H:i:s",$entity->getCdate()) : ""
 		));
 //		$this->addLabel("update_date", array(
 //			"text" => CMSUtil::getRecentDateTimeText($entity->getUdate()),
@@ -62,7 +63,7 @@ class LabeledEntryListComponent extends HTMLList{
 
 		$this->addInput("order", array(
 			"type"=>"text",
-			"name"=> (isset($labelId)) ? "displayOrder[".$entity->getId()."][". $labelId ."]" : "",
+			"name"=> (isset($labelId)) ? "displayOrder[".$id."][". $labelId ."]" : "",
 			"value"=> $displayOrder,
 			"size"=>"5",
 			"tabindex" => self::$tabIndex++

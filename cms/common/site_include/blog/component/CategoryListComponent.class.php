@@ -9,6 +9,7 @@ class CategoryListComponent extends HTMLList{
 	var $entryCount = 0;
 
 	protected function populateItem($entry){
+		$id = (is_numeric($entry->getId())) ? (int)$entry->getId() : 0;
 
 		$this->addLink("category_link", array(
 			"link"=>$this->categoryUrl . rawurlencode($entry->getAlias()),
@@ -63,11 +64,11 @@ class CategoryListComponent extends HTMLList{
 		));
 
 		$this->addLabel("entry_count", array(
-			"text" => (isset($this->entryCount[$entry->getId()])) ? $this->entryCount[$entry->getId()] : 0,
+			"text" => (isset($this->entryCount[$id])) ? $this->entryCount[$id] : 0,
 			"soy2prefix" => "cms"
 		));
 
-		CMSPlugin::callEventFunc('onLabelOutput',array("labelId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"label"=>$entry));
+		CMSPlugin::callEventFunc('onLabelOutput',array("labelId"=>$id,"SOY2HTMLObject"=>$this,"label"=>$entry));
 	}
 
 	function setCategoryUrl($categoryUrl){

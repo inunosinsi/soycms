@@ -72,6 +72,7 @@ class BlockEntryListComponent extends HTMLList{
 	}
 
 	protected function populateItem($entity){
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
 		$entryUrl = $this->articlePageUrl.($entity->getAlias());
@@ -81,7 +82,7 @@ class BlockEntryListComponent extends HTMLList{
 		}
 
 		$this->createAdd("entry_id","CMSLabel",array(
-			"text"=> $entity->getId(),
+			"text"=> $id,
 			"soy2prefix"=>"cms"
 		));
 
@@ -152,7 +153,7 @@ class BlockEntryListComponent extends HTMLList{
 		));
 
 		CMSPlugin::callEventFunc('onEntryOutput',array(
-			"entryId" => $entity->getId(),
+			"entryId" => $id,
 			"SOY2HTMLObject" => $this,
 			"entry" => $entity,
 			"blockId" => $this->blockId

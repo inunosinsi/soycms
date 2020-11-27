@@ -153,7 +153,7 @@ class EntryListPage extends CMSWebPageBase{
 		}
 
 		//記事一覧の表を作成
-		$this->createAdd("list","LabeledEntryList",array(
+		$this->createAdd("list","_component.Blog.LabeledEntryListComponent",array(
 				"labelIds"	=> $labelIds,
 				"labelList"   => $labelList,
 				"list"		=> $entries,
@@ -170,7 +170,7 @@ class EntryListPage extends CMSWebPageBase{
 			$url .= "/".$label->getId();
 			$labelState[] = "<a href=\"$url\">".$label->getDisplayCaption()."</a>";
 		}
-		$this->createAdd("label_state","HTMLLabel",array(
+		$this->addLabel("label_state", array(
 			"html" => implode("&nbsp;&gt;&nbsp;",$labelState)
 		));
 
@@ -181,7 +181,7 @@ class EntryListPage extends CMSWebPageBase{
 		))->getAttribute("labels");
 
 		//子ラベルボタンを作成
-		$this->createAdd("sublabel_list","SubLabelList",array(
+		$this->createAdd("sublabel_list","_component.Blog.SubLabelListComponent",array(
 			"list" => $labels,
 			"labelList" => $labelList,
 			"currentLink" => $currentLink,
@@ -190,7 +190,7 @@ class EntryListPage extends CMSWebPageBase{
 
 
 		//新規作成リンクを作成
-		$this->createAdd("create_link","HTMLLink",array(
+		$this->addLink("create_link", array(
 			"link" => SOY2PageController::createLink("Blog.Entry") . "/" . $id
 		));
 
@@ -216,26 +216,26 @@ class EntryListPage extends CMSWebPageBase{
 			"href" => SOY2PageController::createRelativeLink("./css/blog/entrylist.css")
 		));
 
-		$this->createAdd("showCount10" ,"HTMLLink",array("link"=> $currentLink ."?limit=10"));
-		$this->createAdd("showCount50","HTMLLink",array("link"=> $currentLink ."?limit=50"));
-		$this->createAdd("showCount100" ,"HTMLLink",array("link"=> $currentLink ."?limit=100"));
-		$this->createAdd("showCount500","HTMLLink",array("link"=> $currentLink ."?limit=500"));
+		$this->addLink("showCount10", array("link"=> $currentLink ."?limit=10"));
+		$this->addLink("showCount50", array("link"=> $currentLink ."?limit=50"));
+		$this->addLink("showCount100", array("link"=> $currentLink ."?limit=100"));
+		$this->addLink("showCount500", array("link"=> $currentLink ."?limit=500"));
 
 		/**
 		 * フォーム
 		 */
-		$this->createAdd("index_form","HTMLForm");
+		$this->addForm("index_form");
 
 		//表示順更新ボタンの追加
-		$this->createAdd("display_order_submit","HTMLInput",array(
+		$this->addInput("display_order_submit", array(
 			"name" => "display_order_submit",
 			"value"=>CMSMessageManager::get("SOYCMS_DISPLAYORDER"),
 			"type" => "submit",
-			"tabindex" => LabeledEntryList::$tabIndex++
+			"tabindex" => LabeledEntryListComponent::$tabIndex++
 		));
 
 		//削除ボタンの追加
-		$this->createAdd("remove_submit","HTMLInput",array(
+		$this->addInput("remove_submit", array(
 			"name" => "remove_submit",
 			"value"=>CMSMessageManager::get("SOYCMS_DELETE_ENTRY"),
 			"type" => "submit"
@@ -337,161 +337,5 @@ class EntryListPage extends CMSWebPageBase{
 		}else{
 			return array();
 		}
-	}
-
-}
-
-class LabeledEntryList extends HTMLList{
-
-	static $tabIndex = 0;
-
-	private $labelIds;
-	private $labelList;
-	private $pageId;
-	private $labelId;
-	private $page;
-
-	private $logic;
-
-	public function setLabelIds($labelIds){
-		$this->labelIds = $labelIds;
-	}
-
-	public function setLabelList($list){
-		$this->labelList = $list;
-	}
-
-	public function setPageId($pageId){
-		$this->pageId = $pageId;
-	}
-	public function setLabelId($labelId){
-		$this->labelId = $labelId;
-	}
-	public function setPage($page){
-		$this->page = $page;
-	}
-
-	protected function populateItem($entity){
-
-		$this->createAdd("entry_check","HTMLInput",array(
-			"type"=>"checkbox",
-			"name"=>"entry[]",
-			"value"=>$entity->getId()
-		));
-
-		$entity->setTitle(strip_tags($entity->getTitle()));
-		$title_link = SOY2HTMLFactory::createInstance("HTMLLink",array(
-			"text"  => ( (strlen($entity->getTitle())==0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle() ),
-			"link"  => SOY2PageController::createLink("Blog.Entry.".$this->pageId.".".$entity->getId()),
-			"title" => $entity->getTitle()
-		));
-
-		$this->add("title",$title_link);
-
-
-		$pageUrl = UserInfoUtil::getSiteUrl() . ( (strlen($this->page->getUri()) >0) ? $this->page->getUri() ."/" : "" ) ;
-		$this->createAdd("status", "HTMLLink", array(
-			"text" => $entity->getStateMessage(),
-			"link" => $pageUrl.$this->page->getEntryPageUri()."/".rawurlencode($entity->getAlias()),
-		));
-
-		$this->createAdd("content","HTMLLabel",array(
-			"text"  => mb_strimwidth(SOY2HTML::ToText($entity->getContent()),0,100,"..."),
-			"title" => mb_strimwidth(SOY2HTML::ToText($entity->getContent()),0,1000,"..."),
-		));
-
-		$this->createAdd("create_date","HTMLLabel",array(
-			"text"  => CMSUtil::getRecentDateTimeText($entity->getCdate()),
-			"title" => date("Y-m-d H:i:s",$entity->getCdate()),
-		));
-
-		if(!$this->logic) $this->logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-		$this->createAdd("order","HTMLInput",array(
-			"type"=>"text",
-			"name"=>"displayOrder[".$entity->getId()."][".$this->labelId."]",
-			"value"=> $this->logic->getDisplayOrder($entity->getId(),$this->labelId),
-			"size"=>"5",
-			"tabindex" => self::$tabIndex++
-		));
-
-		//ラベル表示部
-		$this->createAdd("label","LabelList",array(
-			"list" => $this->labelList,
-			"entryLabelIds"=>$entity->getLabels(),
-			"pageId"=>$this->pageId
-		));
-
-
-	}
-}
-
-class LabelList extends HTMLList{
-
-	private $pageId;
-	private$entryLabelIds = array();
-
-	public function setPageId($pageId){
-		$this->pageId = $pageId;
-	}
-
-	public function setEntryLabelIds($list){
-		if(is_array($list)){
-			$this->entryLabelIds = $list;
-		}
-	}
-
-	protected function populateItem($label){
-		$this->createAdd("entry_list_link","HTMLLink",array(
-			"link" => SOY2PageController::createLink("Blog.EntryList.".$this->pageId.".".$label->getId()),
-			"text" => $label->getCaption(),
-			"visible" => in_array($label->getId(), $this->entryLabelIds),
-			"style"=> "color:#" . sprintf("%06X",$label->getColor()).";"
-			."background-color:#" . sprintf("%06X",$label->getBackgroundColor()).";",
-		));
-	}
-}
-
-
-class SubLabelList extends HTMLList{
-	private $labelList;
-	private $currentLink;
-	private $pageId;
-
-	public function setCurrentLink($link){
-		$this->currentLink = $link;
-	}
-
-	public function setLabelList($list){
-		$this->labelList = $list;
-	}
-
-	public function setPageId($pageId){
-		$this->pageId = $pageId;
-	}
-
-	protected function populateItem($labelId){
-
-		$label = $this->labelList[$labelId];
-
-		if(!$label instanceof Label)$label = new Label();
-
-		$this->createAdd("label_icon","HTMLImage",array(
-				"src"=>$label->getIconUrl(),
-				"title" => $label->getBranchName(),
-				"alt" => "",
-		));
-		$this->createAdd("label_link","HTMLLink",array(
-				"link" => $this->currentLink ."/".$label->getId(),
-				"title" => $label->getCaption(),
-		));
-		$this->createAdd("label_name","HTMLLabel",array(
-				"text" => $label->getCaption(),
-				"title" => $label->getBranchName(),
-		));
-		$this->addLabel("label_entries_count",array(
-				"text" => ( (int)$label->getEntryCount())
-		));
-
-
 	}
 }

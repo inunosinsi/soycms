@@ -3800,7 +3800,8 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 		$params = array();
 		foreach($parameters as $param){
 			$str = "";
-			$class = $param->getClass();
+			$class = ($param->getType() && !$param->getType()->isBuiltin()) ? new ReflectionClass($param->getType()->getName()) : null;
+			//$class = $param->getClass();	//ReflectionParameter::getClass() is deprecated in PHP8
 			if($class){
 				$str .= $class->getName()." ";
 			}
@@ -6411,7 +6412,7 @@ class HTMLCheckBox extends HTMLInput {
 	function execute(){
 		parent::execute();
 		if(!$this->elementId){
-			$this->elementId = "label_" . @md5(crypt((string)$this->value));
+			$this->elementId = "label_" . @md5(crypt((string)$this->value, ""));	//Salt is now required in PHP8
 		}
 		$this->setAttribute("id",$this->elementId);
 		$checked = ($this->selected) ? "checked" : null;

@@ -14,10 +14,11 @@ class SubLabelListComponent extends HTMLList{
 	}
 
 	protected function populateItem($labelId){
+		$labelId = (is_numeric($labelId)) ? (int)$labelId : 0;
 
 		$visible = array_key_exists($labelId, $this->labelList);
 
-		if($visible) $label = $this->labelList[$labelId];
+		if($visible) $label = (isset($this->labelList[$labelId])) ? $this->labelList[$labelId] : new Label();
 
 		if(!$visible || !$label instanceof Label) $label = new Label();
 

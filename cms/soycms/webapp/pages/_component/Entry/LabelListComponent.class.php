@@ -3,7 +3,7 @@
 class LabelListComponent extends HTMLList{
 
 	function populateItem($entity){
-
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 		$this->addLabel("label_name", array(
 			"text"  =>  $entity->getBranchName(),
 // 			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";"
@@ -28,11 +28,11 @@ class LabelListComponent extends HTMLList{
 
 		$this->addLink("detail_link_01", array(
 			"title" => $entity->getCaption()." (".$entity->getEntryCount().")",
-			"link"  => SOY2PageController::createLink("Entry.List")."/".$entity->getId()
+			"link"  => SOY2PageController::createLink("Entry.List")."/".$id
 		));
 
 		$this->addLink("create_link",array(
-			"link" => SOY2PageController::createLink("Entry.Create") . "/" . $entity->getId()
+			"link" => SOY2PageController::createLink("Entry.Create") . "/" . $id
 		));
 	}
 

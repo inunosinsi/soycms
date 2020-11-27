@@ -18,7 +18,7 @@ class YearArciveListComponent extends HTMLList{
 
 	protected function populateItem($count,$key){
 
-		$this->createAdd("archive_link","HTMLLink",array(
+		$this->addLink("archive_link", array(
 			"link" => $this->yearPageUri . date('Y',$key),
 			"soy2prefix"=>"cms"
 		));

@@ -30,9 +30,10 @@ class EntryListComponent extends HTMLList{
 	}
 
 	protected function populateItem($entry){
+		$id = (is_numeric($entry->getId())) ? (int)$entry->getId() : 0;
 
 		$this->createAdd("entry_id","CMSLabel",array(
-			"text"=>$entry->getId(),
+			"text"=>$id,
 			"soy2prefix"=>"cms"
 		));
 
@@ -78,20 +79,20 @@ class EntryListComponent extends HTMLList{
 			"defaultFormat"=>"H:i"
 		));
 
-		$this->createAdd("entry_link","HTMLLink",array(
+		$this->addLink("entry_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $link
 		));
 
 		$more = trim($entry->getMore());
 
-		$this->createAdd("more_link","HTMLLink",array(
+		$this->addLink("more_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $link ."#more",
 			"visible"=>(strlen($more) != 0)
 		));
 
-		$this->createAdd("more_link_no_anchor", "HTMLLink", array(
+		$this->addLink("more_link_no_anchor", array(
 			"soy2prefix"=>"cms",
 			"link" => $link,
 			"visible"=>(strlen($more) != 0)
@@ -102,7 +103,7 @@ class EntryListComponent extends HTMLList{
 			"soy2prefix"=>"cms",
 		));
 
-		$this->createAdd("trackback_link","HTMLLink",array(
+		$this->addLink("trackback_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $link ."#trackback_list"
 		));
@@ -112,7 +113,7 @@ class EntryListComponent extends HTMLList{
 			"text" => $entry->getTrackbackCount()
 		));
 
-		$this->createAdd("comment_link","HTMLLink",array(
+		$this->addLink("comment_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $link ."#comment_list"
 		));
@@ -129,12 +130,12 @@ class EntryListComponent extends HTMLList{
 			"soy2prefix" => "cms"
 		));
 
-		$this->createAdd("entry_url", "HTMLLabel", array(
+		$this->addLabel("entry_url", array(
 			"text" => $link,
 			"soy2prefix" => "cms",
 		));
 
-		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entry));
+		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$id,"SOY2HTMLObject"=>$this,"entry"=>$entry));
 
 		//Messageの追加
 		/**
@@ -158,5 +159,4 @@ class EntryListComponent extends HTMLList{
 			return parent::getStartTag();
 		}
 	}
-
 }

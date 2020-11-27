@@ -44,8 +44,8 @@ class SearchAction extends SOY2Action{
     	$query->prefix = "select";
 		$query->distinct = true;
 		$query->sql = " id,alias,title,content,more,cdate,udate,openPeriodStart,openPeriodEnd,isPublished ";
-		$query->table = " Entry left outer join EntryLabel on(Entry.id = EntryLabel.entry_id) ";
-		$query->order = "udate desc";
+		$query->table = " Entry left outer join EntryLabel on (Entry.id = EntryLabel.entry_id) ";
+		$query->order = "Entry.udate desc";
 		$binds = array();
 		$where = array();
 
@@ -91,7 +91,7 @@ class SearchAction extends SOY2Action{
 			$labelQuery->sql = "EntryLabel.entry_id";
 			$labelQuery->table = "EntryLabel";
 			$labelQuery->distinct = true;
-			$labelQuery->where = 'EntryLabel.label_id IN (' . implode(",", $prohibitedLabelIds) . ')';
+			if(count($prohibitedLabelIds)) $labelQuery->where = 'EntryLabel.label_id IN (' . implode(",", $prohibitedLabelIds) . ')';
 			$where[] = 'Entry.id NOT IN ('.$labelQuery.')';
 		}
 
@@ -116,17 +116,22 @@ class SearchAction extends SOY2Action{
 		}
 
 		$query->where = implode(" AND ",$where);
-
-		$result = $dao->executeQuery($query,$binds);
+		try{
+			$results = $dao->executeQuery($query,$binds);
+		}catch(Exception $e){
+			var_dump($e);
+			$results = array();
+		}
 
 		$this->totalCount = $dao->getRowCount();
 
 		$ret_val = array();
-		foreach($result as $row){
-			$obj = $dao->getObject($row);
-			$obj->setLabels($logic->getLabelIdsByEntryId($obj->getId()));
-			$ret_val[] = $obj;
-
+		if(count($results)){
+			foreach($results as $row){
+				$obj = $dao->getObject($row);
+				$obj->setLabels($logic->getLabelIdsByEntryId($obj->getId()));
+				$ret_val[] = $obj;
+			}
 		}
 		return $ret_val;
     }

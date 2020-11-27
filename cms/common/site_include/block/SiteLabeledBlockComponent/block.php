@@ -252,23 +252,23 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 			"currentLabel"=>$this->entity->getLabelId()
 		));
 
-		$this->createAdd("display_number_start","HTMLInput",array(
+		$this->addInput("display_number_start", array(
 			"value"=>$this->entity->getDisplayCountFrom(),
 			"name"=>"object[displayCountFrom]"
 		));
-		$this->createAdd("display_number_end","HTMLInput",array(
+		$this->addInput("display_number_end", array(
 			"value"=>$this->entity->getDisplayCountTo(),
 			"name"=>"object[displayCountTo]"
 		));
 
-		$this->createAdd("display_order_asc","HTMLCheckBox",array(
+		$this->addCheckBox("display_order_asc", array(
 			"type"	  => "radio",
 			"name"	  => "object[order]",
 			"value"	 => BlockComponent::ORDER_ASC,
 			"selected"  => $this->entity->getOrder() == BlockComponent::ORDER_ASC,
 			"elementId" => "display_order_asc",
 		));
-		$this->createAdd("display_order_desc","HTMLCheckBox",array(
+		$this->addCheckBox("display_order_desc", array(
 			"type"	  => "radio",
 			"name"	  => "object[order]",
 			"value"	 => BlockComponent::ORDER_DESC,
@@ -280,7 +280,7 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 			"name" => "object[isStickUrl]",
 			"value" => 0,
 		));
-		$this->createAdd("stick_url","HTMLCheckBox",array(
+		$this->addCheckBox("stick_url", array(
 			"name" => "object[isStickUrl]",
 			"label" => CMSMessageManager::get("SOYCMS_BLOCK_ADD_ENTRY_LINK_TO_THE_TITLE"),
 			"value" => 1,
@@ -291,14 +291,14 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 		$style = SOY2HTMLFactory::createInstance("SOY2HTMLStyle");
 		$style->display = ($this->entity->getIsStickUrl()) ? "" : "none";
 
-		$this->createAdd("blog_page_list","HTMLSelect",array(
+		$this->addSelect("blog_page_list", array(
 			"name" => "object[blogPageId]",
 			"selected" => $this->entity->getBlogPageId(),
 			"options" => $this->blogPages,
 			"visible" => (count($this->blogPages) > 0),
 			"style" => $style
 		));
-		$this->createAdd("blog_page_list_label","HTMLLabel",array(
+		$this->addLabel("blog_page_list_label", array(
 			"text" => CMSMessageManager::get("SOYCMS_BLOCK_SELECT_BLOG_TITLE"),
 			"visible" => (count($this->blogPages) > 0),
 			"style" => $style
@@ -308,22 +308,21 @@ class SiteLabeledBlockComponent_FormPage extends HTMLPage{
 			DisplayPlugin::hide("blog_link");
 		}
 
-		$this->createAdd("site_hidden","HTMLInput",array(
+		$this->addInput("site_hidden", array(
 			"name" => "object[siteId]",
 			"value" => $this->siteId
 		));
 
-		$this->createAdd("main_form","HTMLForm",array());
+		$this->addForm("main_form");
 
 		//サイト変更機能
-		$this->createAdd("sites_form","HTMLForm");
-		$this->createAdd("site","HTMLSelect",array(
+		$this->addForm("sites_form");
+		$this->addSelect("site", array(
 			"options" => $this->sites,
 			"property" => "siteName",
 			"name" => "object[siteId]",
 			"selected" => $this->siteId
 		));
-
 	}
 
 	/**
@@ -380,26 +379,26 @@ class SiteLabelList extends HTMLList{
 
 	protected function populateItem($entity){
 
-		$elementID = "label_".$entity->getId();
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
+		$elementID = "label_".$id;
 
-		$this->createAdd("radio","HTMLCheckBox",array(
-			"value"	 => $entity->getId(),
-			"selected"  => ((string)$this->currentLabel == (string)$entity->getId()),
+		$this->addCheckBox("radio", array(
+			"value"	 => $id,
+			"selected"  => ((int)$this->currentLabel == $id),
 			"elementId" => $elementID
 		));
-		$this->createAdd("label","HTMLModel",array(
+		$this->addModel("label", array(
 			"for" => $elementID,
 		));
-		$this->createAdd("label_text","HTMLLabel",array(
+		$this->addLabel("label_text", array(
 			"text" => $entity->getCaption(),
 			"style"=> "color:#" . sprintf("%06X",$entity->getColor()).";"
 			         ."background-color:#" . sprintf("%06X",$entity->getBackgroundColor()).";",
 		));
 
-		$this->createAdd("label_icon","HTMLImage",array(
+		$this->addImage("label_icon", array(
 			"src" => $entity->getIconUrl()
 		));
-
 	}
 
 	public function getCurrentLabel() {

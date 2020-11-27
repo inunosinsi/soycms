@@ -77,11 +77,11 @@ class DetailPage extends CMSEntryEditorPageBase{
 		if(!preg_match('/^[0-9\.]*$/i',$backList)){
 			$backList = "";
 		}
-		$this->createAdd("back_entry_list","HTMLLink",array(
+		$this->addLink("back_entry_list", array(
 			"link"=>SOY2PageController::createLink("Entry.List".$backList)
 		));
 
-		$this->createAdd("page_title","HTMLLabel",array(
+		$this->addLabel("page_title", array(
 			"text" => ($this->id) ? CMSMessageManager::get("SOYCMS_ENTRY_DETAIL") : CMSMessageManager::get("SOYCMS_CREATE_NEW")
 		));
 
@@ -239,12 +239,12 @@ class DetailPage extends CMSEntryEditorPageBase{
 		//記事情報をフォームに格納
 		$entry = $this->getEntryInformation($id);
 
-		$this->createAdd("title","HTMLInput",array(
+		$this->addInput("title", array(
 			"value"=>$entry->getTitle(),
 			"name"=>"title"
 		));
 
-		$this->createAdd("content","HTMLTextArea",array(
+		$this->addTextArea("content", array(
 			"value"=>$entry->getContent(),
 			"name"=>"content",
 			"class"=>self::getEditorClass(),
@@ -252,14 +252,14 @@ class DetailPage extends CMSEntryEditorPageBase{
 		));
 
 
-		$this->createAdd("more","HTMLTextArea",array(
+		$this->addTextArea("more", array(
 			"value"=>$entry->getMore(),
 			"name"=>"more",
 			"class"=>self::getEditorClass(),
 			"rows" => max(3,count(explode("\n",$entry->getContent()))),
 		));
 
-		$this->createAdd("style","HTMLInput",array(
+		$this->addInput("style", array(
 			"value"=>$entry->getStyle(),
 			"name"=>"style",
 		));

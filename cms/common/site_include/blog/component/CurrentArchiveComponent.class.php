@@ -33,7 +33,7 @@ class CurrentArchiveComponent extends SOYBodyComponentBase{
 			"defaultFormat"=> "%Y:Y年%%M:n月%%D:j日%"
 		));
 
-		$this->createAdd("archive_link","HTMLLink",array(
+		$this->addLink("archive_link", array(
 			"link"=> $page->getMonthPageURL(true) . $link,
 			"soy2prefix"=>"cms"
 		));

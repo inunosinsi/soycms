@@ -108,7 +108,7 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 	private $entity;
 
 	public function execute(){
-		$this->createAdd("update_form", "HTMLForm", array("name" => "update_form"));
+		$this->addForm("update_form", array("name" => "update_form"));
 
 		$this->addScript("selector_js",array(
 			"script"=>file_get_contents(SOY2::RootDir() . "../soycms/js/entry_selector.js")
@@ -154,7 +154,7 @@ class EntryBlockComponent_FormPage extends HTMLPage{
 			"script"=>'var entry_form_address="'.SOY2PageController::createLink("Page.Preview.Entry").'?jumpTo='.$this->entity->blockId.'";'
 		));
 
-		$this->createAdd("labelList","HTMLSelect",array(
+		$this->addSelect("labelList", array(
 			"options"=>$this->getLabelCaptions(),
 			"indexOrder"=>true,
 			"property" => "caption"
@@ -253,10 +253,12 @@ class EntryBlockComponent_ViewPage extends HTMLList{
 
 
 	protected function populateItem($entity){
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
+
 		$title = $entity->getTitle();
 
 		$this->createAdd("entry_id","CMSLabel",array(
-			"text"=> $entity->getId(),
+			"text"=> $id,
 			"soy2prefix"=>"cms"
 		));
 
@@ -299,7 +301,7 @@ class EntryBlockComponent_ViewPage extends HTMLList{
 			"defaultFormat"=>"H:i"
 		));
 
-		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entity->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entity));
+		CMSPlugin::callEventFunc('onEntryOutput',array("entryId" => $id,"SOY2HTMLObject"=>$this,"entry"=>$entity));
 	}
 
 }
@@ -309,19 +311,21 @@ class EntryList extends HTMLList{
 	private $currentEntry;
 
 	protected function populateItem($entity){
-		$this->createAdd("radio","HTMLCheckBox",array(
-			"value"=>$entity->getId(),
-			"name"=>"object[entryId]",
-			"selected"=>((string)$this->currentEntry == (string)$entity->getId())
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
+
+		$this->addCheckBox("radio", array(
+			"value" => $id,
+			"name" => "object[entryId]",
+			"selected" => ((int)$this->currentEntry === $id)
 		));
-		$this->createAdd("title","HTMLLabel",array(
+		$this->addLabel("title", array(
 			"text"=>$entity->getTitle()
 		));
-		$this->createAdd("contents","HTMLLabel",array(
+		$this->addLabel("contents", array(
 			"text"=>substr($entity->getContent(),0,30)
 		));
-		$this->createAdd("create_time","HTMLLabel",array(
-			"text"=>date('Y-m-d H:i:s',$entity->getCdate()),
+		$this->addLabel("create_time", array(
+			"text"=> (is_numeric($entity->getCdate())) ? date('Y-m-d H:i:s',$entity->getCdate()) : "",
 		));
 	}
 

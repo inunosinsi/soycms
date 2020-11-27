@@ -22,7 +22,7 @@ class TrackbackListComponent extends HTMLList{
 		));
 		$this->addLabel("udate", array(
 			"text"  => CMSUtil::getRecentDateTimeText($entity->getSubmitDate()),
-			"title" => date("Y-m-d H:i:s", $entity->getSubmitDate())
+			"title" => (is_numeric($entity->getSubmitDate())) ? date("Y-m-d H:i:s", $entity->getSubmitDate()) : null
 		));
 	}
 

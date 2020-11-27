@@ -369,12 +369,13 @@ class LabeledBlock_LabelList extends HTMLList{
 	private $currentLabel;
 
 	protected function populateItem($entity){
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
-		$elementID = "label_".$entity->getId();
+		$elementID = "label_".$id;
 
 		$this->addCheckBox("radio", array(
-			"value"	 => $entity->getId(),
-			"selected"  => ((string)$this->currentLabel == (string)$entity->getId()),
+			"value"	 => $id,
+			"selected"  => ((int)$this->currentLabel === $id),
 			"elementId" => $elementID
 		));
 		$this->addModel("label", array(

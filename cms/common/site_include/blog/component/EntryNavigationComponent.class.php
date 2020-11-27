@@ -19,7 +19,7 @@ class EntryNavigationComponent extends SOYBodyComponentBase{
 			"soy2prefix" => "cms"
 		));
 
-		$this->createAdd("entry_link","HTMLLink",array(
+		$this->addLink("entry_link", array(
 			"link" => $this->entryPageUri . rawurlencode($entry->getAlias()),
 			"soy2prefix" => "cms"
 		));

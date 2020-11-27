@@ -212,4 +212,3 @@ class PageList extends HTMLList{
 		$this->pluginObj = $pluginObj;
 	}
 }
-?>

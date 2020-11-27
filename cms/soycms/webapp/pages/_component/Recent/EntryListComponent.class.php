@@ -35,7 +35,7 @@ class EntryListComponent extends HTMLList{
 
 		$this->addLabel("udate", array(
 			"text"  => CMSUtil::getRecentDateTimeText($entity->getUdate()),
-			"title" => date("Y-m-d H:i:s", $entity->getUdate())
+			"title" => (is_numeric($entity->getUdate())) ? date("Y-m-d H:i:s", $entity->getUdate()) : null
 		));
 	}
 }

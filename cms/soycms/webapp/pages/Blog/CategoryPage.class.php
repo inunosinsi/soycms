@@ -6,7 +6,6 @@ class CategoryPage extends CMSWebPageBase{
 
 	function doPost(){
 
-
 		if(soy2_check_token() && isset($_POST["caption"]) && strlen($_POST["caption"])){
 			$labelDao = SOY2DAOFactory::create("cms.LabelDAO");
 			$label = new Label();
@@ -64,33 +63,31 @@ class CategoryPage extends CMSWebPageBase{
 		parent::__construct();
 
 		$labels = $this->getLabelLists();
-		$this->createAdd("label_lists","LabelLists",array(
+		$this->createAdd("label_lists", "_component.Blog.LabelListsComponent", array(
 			"list" => $labels,
 			"pageId" => $this->pageId
 		));
 
-		$this->createAdd("update_display_order","HTMLInput",array(
+		$this->addInput("update_display_order", array(
 			"type" => "submit",
 			"name" => "update_display_order",
 			"value" => CMSMessageManager::get("SOYCMS_DISPLAYORDER"),
-			"tabindex" => LabelList::$tabIndex++
+			"tabindex" => CategoryListComponent::$tabIndex++
 		));
 
 		// $this->createAdd("no_label_message","Label._LabelBlankPage",array(
 		// 	"visible" => (count($labels)<1)
 		// ));
 
-		if(count($labels)<1){
-			DisplayPlugin::hide("must_exist_label");
-		}
+		if(count($labels) < 1) DisplayPlugin::hide("must_exist_label");
 
-		$this->createAdd("create_label","HTMLForm");
-		$this->addModel("create_label_caption",array(
+		$this->addForm("create_label");
+		$this->addModel("create_label_caption", array(
 			"placeholder" => $this->getMessage("SOYCMS_LABEL_CREATE_PLACEHOLDER"),//ラベル名 または 分類名/ラベル名
 		));
 
 
-		$this->createAdd("reNameForm","HTMLForm",array(
+		$this->addForm("reNameForm", array(
 			"action"=>SOY2PageController::createLink("Label.Rename")
 		));
 
@@ -106,12 +103,12 @@ class CategoryPage extends CMSWebPageBase{
 		));
 
 		//アイコンリスト
-		$this->createAdd("image_list","LabelIconList",array(
-			"list" => $this->getLabelIconList()
+		$this->createAdd("image_list", "_component.Blog.LabelIconListComponent",array(
+			"list" => self::_getLabelIconList()
 		));
 
 		//表示順更新フォーム
-		$this->createAdd("update_display_order_form","HTMLForm");
+		$this->addForm("update_display_order_form");
 
 		//CSS
 		HTMLHead::addLink("labelcss",array(
@@ -156,7 +153,7 @@ class CategoryPage extends CMSWebPageBase{
 	/**
 	 * ラベルに使えるアイコンの一覧を返す
 	 */
-	function getLabelIconList(){
+	private function _getLabelIconList(){
 
 		$dir = CMS_LABEL_ICON_DIRECTORY;
 
@@ -179,74 +176,3 @@ class CategoryPage extends CMSWebPageBase{
 		return $return;
 	}
 }
-
-class LabelLists extends HTMLList{
-
-	private $pageId;
-
-	function populateItem($entity, $key){
-		$this->addLabel("category_name", array(
-			"text" => $key,
-			"visible" => !is_int($key) && strlen($key),
-		));
-		$this->createAdd("list","LabelList",array(
-			"list" => $entity,
-			"pageId" => $this->pageId
-		));
-
-		return ( count($entity) > 0 );
-	}
-
-	function setPageId($pageId){
-		$this->pageId = $pageId;
-	}
-}
-
-class LabelList extends HTMLList{
-	public static $tabIndex = 0;
-	private $pageId;
-
-	function populateItem($entity){
-
-		$this->createAdd("label_icon","HTMLImage",array(
-			"src" => $entity->getIconUrl(),
-			"onclick" => "javascript:changeImageIcon(".$entity->getId().");"
-		));
-
-		$this->createAdd("label_name","HTMLLabel",array(
-			"text"=> $entity->getBranchName(),
-			"style"=> "cursor:pointer;color:#" . sprintf("%06X",$entity->getColor()).";background-color:#" . sprintf("%06X",$entity->getBackgroundColor()) . ";margin:5px",
-			"onclick"=>'postReName('.$entity->getId().',"'.addslashes($entity->getDescription()).'")'
-		));
-
-		$this->createAdd("remove_link","HTMLActionLink",array(
-			"link" => SOY2PageController::createLink("Blog.Remove." .$this->pageId . "." .$entity->getId()),
-			"visible" => UserInfoUtil::hasEntryPublisherRole(),
-		));
-
-		$this->createAdd("description","HTMLLabel",array(
-			"text"=> (trim($entity->getDescription())) ? $entity->getDescription() : CMSMessageManager::get("SOYCMS_CLICK_AND_EDIT"),
-			"onclick"=>'postDescription('.$entity->getId().',"'.addslashes($entity->getCaption()).'","'.addslashes($entity->getDescription()).'")'
-		));
-
-		//記事数
-//		$this->createAdd("entry_count","HTMLLabel",array(
-//			"text"=> $entity->getEntryCount(),
-//		));
-	}
-
-	function setPageId($pageId){
-		$this->pageId = $pageId;
-	}
-}
-
-class LabelIconList extends HTMLList{
-
-	function populateItem($entity){
-		$this->createAdd("image_list_icon","HTMLImage",array(
-			"src" => $entity->url,
-			"ondblclick" => "javascript:postChangeLabelIcon('".$entity->filename."');"
-		));
-	}
-}
-?>

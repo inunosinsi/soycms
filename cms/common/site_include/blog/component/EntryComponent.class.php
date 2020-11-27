@@ -36,10 +36,11 @@ class EntryComponent extends SOYBodyComponentBase{
 	}
 
 	function setEntry($entry){
+		$id = (is_numeric($entry->getId())) ? (int)$entry->getId() : 0;
 		$link = $this->entryPageUri . rawurlencode($entry->getAlias());
 
 		$this->createAdd("entry_id","CMSLabel",array(
-			"text"=>$entry->getId(),
+			"text" => $id,
 			"soy2prefix"=>"cms"
 		));
 
@@ -221,12 +222,12 @@ class EntryComponent extends SOYBodyComponentBase{
 
 		$this->addLink("entry_link_id_ed", array(
 			"soy2prefix"=>"cms",
-			"link" => $this->entryPageUri . $entry->getId()
+			"link" => $this->entryPageUri . $id
 		));
 
 		$this->addLabel("entry_link_text_id_ed", array(
 			"soy2prefix"=>"cms",
-			"text" => $this->entryPageUri . $entry->getId()
+			"text" => $this->entryPageUri . $id
 		));
 
 		$this->addLink("more_link", array(
@@ -284,12 +285,12 @@ class EntryComponent extends SOYBodyComponentBase{
 			"soy2prefix" => "cms"
 		));
 
-		$this->createAdd("entry_url", "HTMLLabel", array(
+		$this->addLabel("entry_url", array(
 			"text" => $link,
 			"soy2prefix" => "cms",
 		));
 
-		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entry));
+		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$id,"SOY2HTMLObject"=>$this,"entry"=>$entry));
 
 /**
 		//Messageの追加

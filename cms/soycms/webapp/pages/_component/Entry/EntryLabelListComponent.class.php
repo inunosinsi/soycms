@@ -11,8 +11,9 @@ class EntryLabelListComponent extends HTMLList{
 	}
 
 	protected function populateItem($label){
+		$id = (is_numeric($label->getId())) ? (int)$label->getId() : 0;
 		$this->addLink("entry_list_link", array(
-			"link" => SOY2PageController::createLink("Entry.List.".$label->getId()),
+			"link" => SOY2PageController::createLink("Entry.List.".$id),
 			"text" => $label->getCaption(),
 			"visible" => in_array($label->getId(), $this->entryLabelIds),
 			"style"=> "color:#" . sprintf("%06X",$label->getColor()).";"

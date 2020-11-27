@@ -8,8 +8,8 @@ class IndexPage extends CMSWebPageBase{
 
 		parent::__construct();
 
-		$this->createAdd("widgets","HTMLLabel",array(
-			"html" => $this->getWidgetsHTML()
+		$this->addLabel("widgets", array(
+			"html" => self::_getWidgetsHTML()
 		));
 
 		HTMLHead::addLink("avav",array(
@@ -18,20 +18,16 @@ class IndexPage extends CMSWebPageBase{
 			"href" => SOY2PageController::createRelativeLink("./css/dashboard.css")."?".SOYCMS_BUILD_TIME
 		));
 
-		$result = $this->run("Entry.RecentListAction",array(
-			"limit" => 10
-		));
-
-		$this->createAdd("recentEntries","RecentEntryList",array(
-			"list"   => $result->getAttribute("list"),
-			"labels" => $this->getLabelList(),
+		$this->createAdd("recentEntries","_component.Simple.RecentEntryListComponent",array(
+			"list"   => $this->run("Entry.RecentListAction",array("limit" => 10))->getAttribute("list"),
+			"labels" => self::_getLabelList(),
 		));
 
 
 		//最近のコメントを出力
 		SOY2::import("domain.cms.BlogPage");
-		$this->outputCommentList();
-		$this->outputTrackbackList();
+		self::_outputCommentList();
+		self::_outputTrackbackList();
 
 		//記事テーブルのCSS
 		HTMLHead::addLink("entrytree",array(
@@ -40,23 +36,19 @@ class IndexPage extends CMSWebPageBase{
 			"href" => SOY2PageController::createRelativeLink("./css/entry/entry.css")."?".SOYCMS_BUILD_TIME
 		));
 
-
 		//記事操作周りを出力
-		$this->outputEntryLink();
+		self::_outputEntryLink();
 	}
 
-
-
-	function getWidgetsHTML(){
-		$result = $this->run("Plugin.PluginListAction");
-		$list = $result->getAttribute("plugins");
+	private function _getWidgetsHTML(){
+		$list = $this->run("Plugin.PluginListAction")->getAttribute("plugins");
 
 		$box = array(array(),array(),array());
 
 		$counter = 0;
 		foreach($list as $plugin){
-			if(!$plugin->getCustom())continue;
-			if(!$plugin->isActive())continue;
+			if(!$plugin->getCustom()) continue;
+			if(!$plugin->isActive()) continue;
 
 			$customs = $plugin->getCustom();
 
@@ -93,52 +85,47 @@ class IndexPage extends CMSWebPageBase{
 		return $widgets;
 	}
 
-	function outputCommentList(){
+	private function _outputCommentList(){
 
-		$blogArray = $this->getBlogIds();
+		$blogArray = self::_getBlogIds();
 		$blogIds = array_keys($blogArray);
 
-		$commentListLogic = SOY2Logic::createInstance("logic.site.Entry.EntryCommentLogic");
-		$comments = $commentListLogic->getComments($blogIds,3,0);
+		$comments = SOY2Logic::createInstance("logic.site.Entry.EntryCommentLogic")->getComments($blogIds,3,0);
 
 		if(count($comments) == 0){
 			DisplayPlugin::hide("only_comment_exists");
 		}
 
 		foreach($comments as $key => $comment){
-			$comment->info = $this->getBlogId($comment->getEntryId());
+			$comment->info = self::_getBlogId($comment->getEntryId());
 		}
 
-		$this->createAdd("recentComment","RecentCommentList",array(
-			"list"=>$comments
+		$this->createAdd("recentComment","_component.Simple.RecentCommentListComponent",array(
+			"list" => $comments
 		));
-
-
 	}
 
-	function outputTrackbackList(){
+	private function _outputTrackbackList(){
 
-		$blogArray = $this->getBlogIds();
+		$blogArray = self::_getBlogIds();
 		$blogIds = array_keys($blogArray);
 
-		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryTrackbackLogic");
-
-		$trackbacks = $logic->getByLabelIds($blogIds,3,0);
+		$trackbacks = SOY2Logic::createInstance("logic.site.Entry.EntryTrackbackLogic")->getByLabelIds($blogIds,3,0);
 
 		if(count($trackbacks) == 0){
 			DisplayPlugin::hide("only_trackback_exists");
 		}
 
 		foreach($trackbacks as $key => $trackback){
-			$trackbacks[$key]->info = $this->getBlogId($trackback->getEntryId());
+			$trackbacks[$key]->info = self::_getBlogId($trackback->getEntryId());
 		}
 
-		$this->createAdd("recentTrackback","RecentTrackbackList",array(
-			"list"=>$trackbacks
+		$this->createAdd("recentTrackback","_component.Simple.RecentTrackbackListComponent",array(
+			"list" => $trackbacks
 		));
 	}
 
-	function getBlogIds(){
+	private function _getBlogIds(){
 		if(is_null($this->blogIds)){
 			$blogs = $this->run("Blog.BlogListAction")->getAttribute("list");
 			$this->blogIds = array();
@@ -153,26 +140,24 @@ class IndexPage extends CMSWebPageBase{
 		return $this->blogIds;
 	}
 
-	function getBlogId($entryId){
+	private function _getBlogId($entryId){
 
-		$blogIds = $this->getBlogIds();
+		$blogIds = self::_getBlogIds();
 
-		$entryLogic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-		$entry = $entryLogic->getById($entryId);
-
+		$entry = SOY2Logic::createInstance("logic.site.Entry.EntryLogic")->getById($entryId);
 		$labels = $entry->getLabels();
 
 		foreach(array_keys($blogIds) as $blogId){
-			if(in_array($blogId,$labels)){
-				return array("blog"=>$blogIds[$blogId],"entry"=>$entry);
+			if(in_array($blogId, $labels)){
+				return array("blog" => $blogIds[$blogId], "entry" => $entry);
 			}
 		}
 	}
 
-	function outputEntryLink(){
+	private function _outputEntryLink(){
 
 		//ラベル一覧を取得
-		$this->labelList = $this->getLabelList();
+		$this->labelList = self::_getLabelList();
 
 		$list = $this->run("Label.RecentLabelListAction")->getAttribute("list");
 		$recent = array();
@@ -180,184 +165,21 @@ class IndexPage extends CMSWebPageBase{
 			if(isset($this->labelList[$value]))$recent[$key] = $this->labelList[$value];
 		}
 
-		$this->createAdd("recent_labels","RecentLabelList",array(
+		$this->createAdd("recent_labels","_component.Simple.RecentLabelListComponent",array(
 			"list"=>$recent
 		));
-
 	}
 
 	/**
 	 * ラベルオブジェクト一覧を取得
 	 * page/Entry/IndexPage.class.phpからコピー
 	 */
-	function getLabelList(){
-		$action = SOY2ActionFactory::createInstance("Label.LabelListAction");
-		$result = $action->run();
-
+	private function _getLabelList(){
+		$result = SOY2ActionFactory::createInstance("Label.LabelListAction")->run();
 		if($result->success()){
 			return $result->getAttribute("list");
 		}else{
 			return array();
 		}
-	}
-}
-class RecentCommentList extends HTMLList{
-
-	protected function populateItem($entity){
-		$blog = @$entity->info["blog"];
-		$entry = @$entity->info["entry"];
-
-		if(is_null($blog)) $blog = new BlogPage();
-		if(is_null($entry)) $entry = new Entry();
-
-		$title = ((strlen($entity->getTitle())==0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle());
-		$title .= strlen($entity->getAuthor()) == 0  ? "" : " (".$entity->getAuthor().")";
-
-		$this->createAdd("title","HTMLLink",array(
-			"link"=>SOY2PageController::createLink("Blog.Comment.".$blog->getId()),
-			"text"=>$title
-
-		));
-
-		$this->createAdd("content","HTMLLabel",array(
-			"text"=>$entry->getTitle() . " (".$blog->getTitle().") "
-		));
-		$this->createAdd("udate","HTMLLabel",array(
-			"text"=>CMSUtil::getRecentDateTimeText($entity->getSubmitDate()),
-			"title" => date("Y-m-d H:i:s", $entity->getSubmitDate())
-		));
-	}
-}
-
-class RecentTrackbackList extends HTMLList{
-
-	protected function populateItem($entity){
-		$blog = @$entity->info["blog"];
-		$entry = @$entity->info["entry"];
-
-		if(is_null($blog)) $blog = new BlogPage();
-		if(is_null($entry)) $entry = new Entry();
-
-
-		$title = ((strlen($entity->getTitle())==0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle());
-		$title .= strlen($entity->getBlogName()) == 0  ? "" : " (".$entity->getBlogName().")";
-
-		$this->createAdd("title","HTMLLink",array(
-			"link"=>SOY2PageController::createLink("Blog.Trackback.".$blog->getId()),
-			"text"=>$title
-		));
-		$this->createAdd("content","HTMLLabel",array(
-			"text"=>$entry->getTitle() . " (" . $blog->getTitle() . ")"
-		));
-		$this->createAdd("udate","HTMLLabel",array(
-			"text"=>CMSUtil::getRecentDateTimeText($entity->getSubmitDate()),
-			"title" => date("Y-m-d H:i:s", $entity->getSubmitDate())
-		));
-	}
-
-}
-
-class RecentEntryList extends HTMLList{
-
-	private $labels = array();
-
-	public function setLabels($array){
-		if(is_array($array)){
-			$this->labels = $array;
-		}
-	}
-
-	protected function populateItem($entity){
-
-		$this->createAdd("title","HTMLLink",array(
-			"link" => SOY2PageController::createLink("Entry.Detail")."/".$entity->getId(),
-			"text" => (strlen($entity->getTitle())==0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle(),
-		));
-
-
-		//ラベルは３つまで表示
-		$selectedList = $entity->getLabels();
-		$labelText = "";
-		$strlen = 0;
-		$counter = 0;
-		foreach($this->labels as $label){
-			if(!in_array($label->getId(),$selectedList))continue;
-
-			if($counter>3){
-				$labelText .= "...";
-				break;
-			}
-
-			$attr = array();
-			$attr[] = 'href="'.htmlspecialchars(SOY2PageController::createLink("Entry.List")."/".$label->getId(),ENT_QUOTES,'UTF-8').'"';
-			$attr[] = 'class="label label-default label-soy"';
-			$attr[] = 'style="color:#' . sprintf("%06X",$label->getColor()).'; background-color:#' . sprintf("%06X",$label->getBackgroundColor()).'; margin-left:4px;"';
-
-			//ある文字数越えたら追加しない
-			if(($strlen+strlen($label->getCaption())) > 300){
-				continue;
-			}
-
-			$strlen .= strlen($label->getCaption()) + 2;
-			$labelText .= '<a '.implode(" ",$attr).'>'.$label->getDisplayCaption().'</a>';
-
-			$counter++;
-		}
-
-		$this->createAdd("content","HTMLLabel",array(
-			"html"=> $labelText
-		));
-
-
-
-		$this->createAdd("udate","HTMLLabel",array(
-			"text"=>CMSUtil::getRecentDateTimeText($entity->getUdate()),
-			"title" => date("Y-m-d H:i:s", $entity->getUdate())
-		));
-	}
-
-	function foldingDescription($description,$width = 20){
-		//折り返しありの場合
-		$tmp = "";
-		$strlen = 0;
-
-		$counter = mb_strlen($description) / $width + 1;
-
-		for($i=0;$i<$counter;$i++){
-			$str = mb_strimwidth($description,$strlen,$width);
-
-			if(strlen($str)<1)continue;
-
-			if($i != 0)$tmp .= "<br />";
-			$tmp .= htmlspecialchars($str);
-			$strlen += mb_strlen($str);
-		}
-
-		return $tmp;
-	}
-}
-
-
-/**
- * page/Entry/IndexPage.class.phpからコピー
- */
-class RecentLabelList extends HTMLList{
-
-	protected function populateItem($entity){
-
-		$this->createAdd("label_icon","HTMLImage",array(
-			"src"=>$entity->getIconUrl(),
-		));
-		$this->createAdd("label_link","HTMLLink",array(
-			"link"=>SOY2PageController::createLink("Entry.List.".$entity->getId())
-		));
-		$this->createAdd("label_title","HTMLLabel",array(
-			"text" => $entity->getDisplayCaption(),
-		));
-
-		$this->addLabel("label_entries_count", array(
-			"text" => $entity->getEntryCount()
-		));
-
 	}
 }

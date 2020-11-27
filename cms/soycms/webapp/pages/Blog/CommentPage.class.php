@@ -71,9 +71,9 @@ class CommentPage extends CMSWebPageBase{
 		/**
 		 * コメント受付の標準設定フォーム
 		 */
-		$this->createAdd("accept_form","HTMLForm");
+		$this->addForm("accept_form");
 
-		$this->createAdd("default_accept","HTMLSelect",array(
+		$this->addSelect("default_accept", array(
 			"indexOrder"=>true,
 			"options"=>array(
 				"0"=>CMSMessageManager::get("SOYCMS_WORD_DENY"),
@@ -87,7 +87,7 @@ class CommentPage extends CMSWebPageBase{
 		/**
 		 * 一括変更フォーム
 		 */
-		$this->createAdd("index_form","HTMLForm");
+		$this->addForm("index_form");
 
 		/**
 		 * コメントリスト
@@ -124,7 +124,7 @@ class CommentPage extends CMSWebPageBase{
 		}
 
 		$pageUrl = CMSUtil::getSiteUrl() . ( (strlen($page->getUri()) >0) ? $page->getUri() ."/" : "" ) ;
-		$this->createAdd("comment_list","CommentList",array(
+		$this->createAdd("comment_list","_component.Blog.CommentListComponent",array(
 			"list" => $list,
 			"url"  => $pageUrl.$page->getEntryPageUri()
 		));
@@ -137,9 +137,9 @@ class CommentPage extends CMSWebPageBase{
 			"arguments"=> array($offset, $limit, $count, $currentLink)
 		));
 
-		$this->createAdd("limit_10" ,"HTMLLink",array("link"=> $currentLink ."?limit=10"));
-		$this->createAdd("limit_50" ,"HTMLLink",array("link"=> $currentLink ."?limit=50"));
-		$this->createAdd("limit_100","HTMLLink",array("link"=> $currentLink ."?limit=100"));
+		$this->addLink("limit_10" , array("link"=> $currentLink ."?limit=10"));
+		$this->addLink("limit_50" , array("link"=> $currentLink ."?limit=50"));
+		$this->addLink("limit_100", array("link"=> $currentLink ."?limit=100"));
 
 		/**
 		 * ツールボックス
@@ -159,82 +159,5 @@ class CommentPage extends CMSWebPageBase{
 			"type" => "text/css",
 			"href" => SOY2PageController::createRelativeLink("./css/blog/comment_trackback.css")
 		));
-
-	}
-
-}
-
-class CommentList extends HTMLList{
-
-	private $url;
-
-	public function setUrl($url){
-		$this->url = $url;
-	}
-
-	public function populateItem($entry){
-
-		if(strlen($entry->getTitle()) == 0){
-			$title = CMSMessageManager::get("SOYCMS_NO_TITLE");
-		}else{
-			$title = $entry->getTitle();
-		}
-
-		$this->createAdd("submitdate","HTMLLink",array(
-			"text"	=> date('Y-m-d',$entry->getSubmitDate()),
-			"link"	=> SOY2PageController::createLink("Blog.CommentDetail.".$entry->getId()),
-			"title"   => date('Y-m-d H:i:s',$entry->getSubmitDate()),
-			"onclick" => "return common_click_to_layer(this,{header: 'コメント詳細 - ".$title."'});"
-		));
-
-		$this->createAdd("approved","HTMLLabel",array(
-				"text"=>($entry->getIsApproved() == 0)? CMSMessageManager::get("SOYCMS_WORD_DENY") : CMSMessageManager::get("SOYCMS_WORD_ALLOW"),
-		));
-
-		$this->createAdd("entry_title","HTMLLink",array(
-			"html" => $this->mb_cut_length_html($entry->getEntryTitle(),18),
-			"link" => $this->url."/".((strlen($entry->getAlias())) ? rawurlencode($entry->getAlias()) : $entry->getId())."#comment_list"
-		));
-
-		$hTtitle = $this->mb_cut_length_html($title,18);
-		if(strlen($entry->getUrl())){
-			$hTtitle = "<a href=\"".htmlspecialchars($entry->getUrl(), ENT_QUOTES, "UTF-8")."\" target=\"_blank\">{$hTtitle}</a>";
-		}
-		$this->createAdd("title","HTMLLabel",array(
-			"html" => $hTtitle
-		));
-
-		$hAuthor = $this->mb_cut_length_html($entry->getAuthor(),18);
-		if(strlen($entry->getMailAddress())){
-			$hAuthor = "<a href=\"".htmlspecialchars("mailto:".$entry->getMailAddress(), ENT_QUOTES, "UTF-8")."\" >{$hAuthor}</a>";
-		}
-		$this->createAdd("author","HTMLLabel",array(
-			"html" => $hAuthor
-		));
-
-		$this->createAdd("body","HTMLLink",array(
-			"html"=>$this->mb_cut_length_html($entry->getBody(),40),
-			"link"	=> SOY2PageController::createLink("Blog.CommentDetail.".$entry->getId()),
-			"onclick" => "return common_click_to_layer(this,{header: 'コメント詳細 - ".$title."'});"
-		));
-
-		$this->createAdd("comment_id","HTMLInput",array(
-			"value"=>$entry->getId(),
-			"name"=>"comment_id[]"
-		));
-
-	}
-
-	private function mb_cut_length_html($text,$length){
-		$hText = htmlspecialchars($text, ENT_QUOTES, "UTF-8");
-
-		if(mb_strwidth($text) > $length){
-			$sText = mb_strimwidth($text,0,$length);
-			$sText .= "...";
-
-			$hText = "<span title=\"{$hText}\">".htmlspecialchars($sText, ENT_QUOTES, "UTF-8")."</span>";
-		}
-
-		return $hText;
 	}
 }

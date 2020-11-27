@@ -55,35 +55,35 @@ class CommentDetailPage extends CMSWebPageBase{
 			$title = CMSMessageManager::get("SOYCMS_NO_TITLE");
 		}
 
-		$this->createAdd("title","HTMLLabel",array(
-			"text"=>$title
+		$this->addLabel("title", array(
+			"text" => $title
 		));
 
-		$this->createAdd("author","HTMLLabel",array(
-			"text"=>$author
+		$this->addLabel("author", array(
+			"text" => $author
 		));
 
-		$this->createAdd("entry_title","HTMLLabel",array(
-			"text"=>$entry->getTitle()
+		$this->addLabel("entry_title", array(
+			"text" => $entry->getTitle()
 		));
 
-		$this->createAdd("submit_date","HTMLLabel",array(
-			"text"=>date("Y-m-d H:i:s",$comment->getSubmitDate())
+		$this->addLabel("submit_date", array(
+			"text" => (is_numeric($comment->getSubmitDate())) ? date("Y-m-d H:i:s",$comment->getSubmitDate()) : ""
 		));
 
-		$this->createAdd("state","HTMLLabel",array(
-			"text"=>($comment->getIsApproved() == 0)? CMSMessageManager::get("SOYCMS_DENY") : CMSMessageManager::get("SOYCMS_ALLOW")
+		$this->addLabel("state", array(
+			"text" => ($comment->getIsApproved() == 0) ? CMSMessageManager::get("SOYCMS_DENY") : CMSMessageManager::get("SOYCMS_ALLOW")
 		));
 
-		$this->createAdd("content","HTMLLabel",array(
-			"text"=>$comment->getBody()
+		$this->addLabel("content", array(
+			"text" => $comment->getBody()
 		));
 
-		$this->createAdd("comment_form", "HTMLForm");
-		$this->createAdd("content_edit","HTMLTextArea",array(
+		$this->addForm("comment_form");
+
+		$this->addTextArea("content_edit", array(
 			"text"=>$comment->getBody(),
 			"name" => "content"
 		));
-
 	}
 }

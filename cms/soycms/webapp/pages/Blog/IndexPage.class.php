@@ -76,7 +76,7 @@ class IndexPage_EntryList extends HTMLList{
 	}
 
 	function populateItem($entity){
-		$this->createAdd("message","HTMLLink",array(
+		$this->addLink("message", array(
 			"text" => (strlen($entity->getTitle())==0) ? CMSMessageManager::get("SOYCMS_NO_TITLE") : $entity->getTitle(),
 			"link"=>SOY2PageController::createLink("Blog.Entry.".$this->pageId.".".$entity->getId())
 		));
@@ -94,11 +94,11 @@ class IndexPage_CommentList extends HTMLList{
 
 	function populateItem($entity){
 
-		$text = date("Y-m-d H:i:s",$entity->getSubmitDate()) . " - ";
+		$text = (is_numeric($entity->getSubmitDate())) ? date("Y-m-d H:i:s", $entity->getSubmitDate()) . " - " : "";
 		$text .= (strlen($entity->getTitle()) > 0 ) ? $entity->getTitle() : CMSMessageManager::get("SOYCMS_NO_TITLE");
 		$text .= ":" . $entity->getBody();
 
-		$this->createAdd("message","HTMLLink",array(
+		$this->addLink("message", array(
 			"text"=> $text,
 			"link"=>SOY2PageController::createLink("Blog.Comment.".$this->pageId)
 		));
@@ -115,7 +115,7 @@ class IndexPage_Trackback extends HTMLList{
 	}
 
 	function populateItem($entity){
-		$this->createAdd("message","HTMLLink",array(
+		$this->addLink("message", array(
 			"text"=>$entity->getTitle(),
 			"link"=>SOY2PageController::createLink("Blog.Trackback.".$this->pageId)
 		));

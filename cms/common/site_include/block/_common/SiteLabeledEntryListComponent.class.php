@@ -39,6 +39,7 @@ class SiteLabeledEntryListComponent extends HTMLList{
 
 
 	protected function populateItem($entity){
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
 		$entryUrl = $this->articlePageUrl.rawurlencode($entity->getAlias());
@@ -48,7 +49,7 @@ class SiteLabeledEntryListComponent extends HTMLList{
 		}
 
 		$this->createAdd("entry_id","CMSLabel",array(
-			"text"=> $entity->getId(),
+			"text"=> $id,
 			"soy2prefix"=>"cms"
 		));
 
@@ -76,7 +77,7 @@ class SiteLabeledEntryListComponent extends HTMLList{
 		));
 
 		//entry_link追加
-		$this->createAdd("entry_link","HTMLLink",array(
+		$this->addLink("entry_link", array(
 			"link" => $entryUrl,
 			"soy2prefix"=>"cms"
 		));
@@ -88,13 +89,13 @@ class SiteLabeledEntryListComponent extends HTMLList{
 		));
 
 		//1.2.7～
-		$this->createAdd("more_link","HTMLLink",array(
+		$this->addLink("more_link", array(
 			"soy2prefix"=>"cms",
 			"link" => $entryUrl ."#more",
 			"visible"=>(strlen($entity->getMore()) != 0)
 		));
 
-		$this->createAdd("more_link_no_anchor", "HTMLLink", array(
+		$this->addLink("more_link_no_anchor", array(
 			"soy2prefix"=>"cms",
 			"link" => $entryUrl,
 			"visible"=>(strlen($entity->getMore()) != 0)
@@ -112,12 +113,12 @@ class SiteLabeledEntryListComponent extends HTMLList{
 			"defaultFormat"=>"H:i"
 		));
 
-		$this->createAdd("entry_url","HTMLLabel",array(
+		$this->addLabel("entry_url", array(
 			"text"=>$entryUrl,
 			"soy2prefix"=>"cms",
 		));
 
-		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entity->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entity));
+		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$id,"SOY2HTMLObject"=>$this,"entry"=>$entity));
 	}
 
 

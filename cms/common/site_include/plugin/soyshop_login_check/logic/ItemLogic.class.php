@@ -24,79 +24,71 @@ class ItemLogic extends SOY2LogicBase{
 	}
 
 	function checkPurchasedSingle($itemCode){
-
-		if(!$this->userId){
-			$loginCheckLogic = SOY2Logic::createInstance("site_include.plugin.soyshop_login_check.logic.LoginCheckLogic", array("siteId" => $this->siteId));
-			$this->userId = $loginCheckLogic->getUserId();
-		}
-
+		if(!$this->userId) $this->userId = SOY2Logic::createInstance("site_include.plugin.soyshop_login_check.logic.LoginCheckLogic", array("siteId" => $this->siteId))->getUserId();
 		$userId = $this->userId;
 
-		if(isset($userId)){
-			$old = SOYShopUtil::switchShopMode($this->siteId);
-			if(!class_exists("SOYShop_Order")) SOY2::import("domain.order.SOYShop_Order");
+		if(!is_numeric($userId)) return false;
 
-			$dao = new SOY2DAO();
+		$old = SOYShopUtil::switchShopMode($this->siteId);
+		if(!class_exists("SOYShop_Order")) SOY2::import("domain.order.SOYShop_Order");
 
-			$sql = "SELECT * FROM soyshop_item item ".
-					"INNER JOIN soyshop_orders orders ".
-					"ON item.id = orders.item_id ".
-					"INNER JOIN soyshop_order o ".
-					"ON orders.order_id = o.id ".
-					"WHERE item.item_code = :code ".
-					"AND o.user_id = :userId ".
-					"AND o.order_status >= " . SOYShop_Order::ORDER_STATUS_REGISTERED . " ".
-					"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
-					"AND o.payment_status = " . SOYShop_Order::PAYMENT_STATUS_CONFIRMED . " ";
-			$binds = array(":userId" => $userId, ":code" => $itemCode);
+		$dao = new SOY2DAO();
 
-			try{
-				$results = $dao->executeQuery($sql, $binds);
-			}catch(Exception $e){
-				//適当な値を入れてしのぐ
-				$results = array("hoge");
-			}
+		$sql = "SELECT * FROM soyshop_item item ".
+				"INNER JOIN soyshop_orders orders ".
+				"ON item.id = orders.item_id ".
+				"INNER JOIN soyshop_order o ".
+				"ON orders.order_id = o.id ".
+				"WHERE item.item_code = :code ".
+				"AND o.user_id = :userId ".
+				"AND o.order_status >= " . SOYShop_Order::ORDER_STATUS_REGISTERED . " ".
+				"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
+				"AND o.payment_status = " . SOYShop_Order::PAYMENT_STATUS_CONFIRMED . " ";
+		$binds = array(":userId" => $userId, ":code" => $itemCode);
 
-			SOYShopUtil::resetShopMode($old);
-
-			//購入していなければ空の配列が返ってくるため、空だったらfalseを返す
-			return (count($results)  > 0);
+		try{
+			$results = $dao->executeQuery($sql, $binds);
+		}catch(Exception $e){
+			//適当な値を入れてしのぐ
+			$results = array("hoge");
 		}
+
+		SOYShopUtil::resetShopMode($old);
+
+		//購入していなければ空の配列が返ってくるため、空だったらfalseを返す
+		return (count($results)  > 0);
 	}
 
 	function checkPurchased($itemCodes){
 		$userId = SOY2Logic::createInstance("site_include.plugin.soyshop_login_check.logic.LoginCheckLogic", array("siteId" => $this->siteId))->getUserId();
+		if(!is_numeric($userId)) return false;
 
-		if(isset($userId)){
-			$old = SOYShopUtil::switchShopMode($this->siteId);
-			if(!class_exists("SOYShop_Order")) SOY2::import("domain.order.SOYShop_Order");
+		$old = SOYShopUtil::switchShopMode($this->siteId);
+		if(!class_exists("SOYShop_Order")) SOY2::import("domain.order.SOYShop_Order");
 
-			$dao = new SOY2DAO();
+		$dao = new SOY2DAO();
 
-			$sql = "SELECT distinct(item.item_code) FROM soyshop_item item ".
-					"INNER JOIN soyshop_orders orders ".
-					"ON item.id = orders.item_id ".
-					"INNER JOIN soyshop_order o ".
-					"ON orders.order_id = o.id ".
-					"WHERE item.item_code IN ('" . implode("', '", $itemCodes) ."') ".
-					"AND o.user_id = :userId ".
-					"AND o.order_status >= " . SOYShop_Order::ORDER_STATUS_REGISTERED . " ".
-					"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
-					"AND o.payment_status = " . SOYShop_Order::PAYMENT_STATUS_CONFIRMED . " ";
-			$binds = array(":userId" => $userId);
+		$sql = "SELECT distinct(item.item_code) FROM soyshop_item item ".
+				"INNER JOIN soyshop_orders orders ".
+				"ON item.id = orders.item_id ".
+				"INNER JOIN soyshop_order o ".
+				"ON orders.order_id = o.id ".
+				"WHERE item.item_code IN ('" . implode("', '", $itemCodes) ."') ".
+				"AND o.user_id = :userId ".
+				"AND o.order_status >= " . SOYShop_Order::ORDER_STATUS_REGISTERED . " ".
+				"AND o.order_status < " . SOYShop_Order::ORDER_STATUS_CANCELED . " ".
+				"AND o.payment_status = " . SOYShop_Order::PAYMENT_STATUS_CONFIRMED . " ";
+		$binds = array(":userId" => $userId);
 
-			try{
-				$results = $dao->executeQuery($sql, $binds);
-			}catch(Exception $e){
-				$results = array();
-			}
-
-			SOYShopUtil::resetShopMode($old);
-
-			return (count($results) > 0);
+		try{
+			$results = $dao->executeQuery($sql, $binds);
+		}catch(Exception $e){
+			$results = array();
 		}
 
-		return false;
+		SOYShopUtil::resetShopMode($old);
+
+		return (count($results) > 0);
 	}
 
 	function getItemDetailPageUrl($itemCode){

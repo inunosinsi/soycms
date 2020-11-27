@@ -238,15 +238,15 @@ class EntryPage extends CMSEntryEditorPageBase{
 
 		$this->createAdd("createdate","HTMLInput",array(
 			"name" =>"cdate",
-			"value" => date('Y-m-d H:i:s',$entry->getCdate())
+			"value" => (is_numeric($entry->getCdate())) ? date('Y-m-d H:i:s',$entry->getCdate()) : ""
 		));
 
 		$this->createAdd("createdate_show","HTMLLabel",array(
-			"text" => date('Y-m-d H:i:s',$entry->getCdate())
+			"text" => (is_numeric($entry->getCdate())) ? date('Y-m-d H:i:s',$entry->getCdate()) : ""
 		));
 
 		$this->createAdd("updatedate_show","HTMLLabel",array(
-			"text" => strlen($entry->getUdate()) ? date('Y-m-d H:i:s',$entry->getUdate()) : "-",
+			"text" => (is_numeric($entry->getUdate())) ? date('Y-m-d H:i:s',$entry->getUdate()) : "-",
 		));
 
 
@@ -255,11 +255,11 @@ class EntryPage extends CMSEntryEditorPageBase{
 
 		//公開期間フォームの表示
 		$this->createAdd("start_date","HTMLInput",array(
-			"value"=>(is_null($start)) ? "" : date('Y-m-d H:i:s',$start),
+			"value"=>(is_numeric($start)) ? date('Y-m-d H:i:s',$start) : "",
 			"name"=>"openPeriodStart"
 		));
 		$this->createAdd("end_date","HTMLInput",array(
-			"value"=>(is_null($end)) ? "" : date('Y-m-d H:i:s',$end),
+			"value"=>(is_numeric($end)) ? date('Y-m-d H:i:s',$end) : "",
 			"name"=>"openPeriodEnd"
 		));
 

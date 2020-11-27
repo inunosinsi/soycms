@@ -41,32 +41,32 @@ class PagerListComponent extends HTMLList{
 		$html .= htmlspecialchars($page_num, ENT_QUOTES, "UTF-8");
 		if(strlen($url)) $html .= "</a>";
 
-		$this->createAdd("pager_item","HTMLLabel",array(
+		$this->addLabel("pager_item", array(
 				"html" => $html,
 				"soy2prefix" => "cms"
 		));
-		$this->createAdd("pager_item_link", "HTMLLink", array(
+		$this->addLink("pager_item_link", array(
 				"link" => $url,
 				"soy2prefix" => "cms"
 		));
-		$this->createAdd("pager_item_number", "HTMLLabel", array(
+		$this->addLabel("pager_item_number", array(
 				"text" => $page_num,
 				"soy2prefix" => "cms"
 		));
 
-		$this->createAdd("is_first","HTMLModel",array(
+		$this->addModel("is_first", array(
 				"visible" => ($page_num == 1),
 				"soy2prefix" => "cms"
 		));
-		$this->createAdd("is_last","HTMLModel",array(
+		$this->addModel("is_last", array(
 				"visible" => ($page_num == $this->last),
 				"soy2prefix" => "cms"
 		));
-		$this->createAdd("is_middle","HTMLModel",array(
+		$this->addModel("is_middle", array(
 				"visible" => ($page_num > 1 && $page_num < $this->last),
 				"soy2prefix" => "cms"
 		));
-		$this->createAdd("is_current","HTMLModel",array(
+		$this->addModel("is_current", array(
 				"visible" => ($page_num == $this->current),
 				"soy2prefix" => "cms"
 		));

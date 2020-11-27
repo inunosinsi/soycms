@@ -126,8 +126,8 @@ class SiteLogic implements SOY2LogicInterface{
 		$dirAlreadyExists = file_exists(SOYCMS_TARGET_DIRECTORY . $siteId);
 		$logic = SOY2Logic::createInstance("logic.admin.Site.SiteCreateLogic");
 
+		//$dao->begin();
 		try{
-			$dao->begin();
 
 			if($flag){
 				//サイトのDBを作成する
@@ -173,7 +173,7 @@ class SiteLogic implements SOY2LogicInterface{
 				}
 			}
 
-			$dao->commit();
+			//$dao->commit();
 
 			return $id;
 		}catch(Exception $e){
@@ -181,7 +181,7 @@ class SiteLogic implements SOY2LogicInterface{
 
 			$logic->log(var_export($e,true));
 
-			$dao->rollback();
+			//$dao->rollback();
 
 			//新たにディレクトリを作ったときは削除する
 			if(!$dirAlreadyExists){

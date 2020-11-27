@@ -91,7 +91,7 @@ function get_environment_report(){
 	$str[] = '';
 	$str[] = 'PHP SAPI NAME:        '.php_sapi_name();
 	$str[] = 'PHP SAFE MODE:        '.(ini_get("safe_mode")? "Yes" : "No");
-	$str[] = 'MAGIC_QUOTE_GPC:      '.( get_magic_quotes_gpc() ? "Yes" : "No" );
+	//$str[] = 'MAGIC_QUOTE_GPC:      '.( get_magic_quotes_gpc() ? "Yes" : "No" );	//Abolished in PHP8
 	$str[] = 'SHORT_OPEN_TAG:       '.( ini_get("short_open_tag") ? "Yes" : "No" );
 	$str[] = '';
 	$str[] = 'MEMORY_LIMIT:         '.ini_get("memory_limit")." Bytes";
@@ -139,7 +139,7 @@ function get_environment_report(){
 }
 
 function get_exception_message($e){
-	if($e instanceof SOY2DAOException OR $e instanceof PDOException){
+	if(($e instanceof SOY2DAOException || $e instanceof PDOException) && method_exists("getPDOExceptionMessage", $e)){
 		return $e->getMessage()." (".$e->getPDOExceptionMessage().")";
 	}else{
 		return $e->getMessage();

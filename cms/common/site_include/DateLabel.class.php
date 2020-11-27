@@ -8,9 +8,8 @@ class DateLabel extends HTMLLabel{
 	private $time = null;
 
 	function execute(){
-
 		//日時データ：textまたはyear,month,dayで指定
-		if(strlen($this->time)==0){
+		if(is_null($this->time) || strlen($this->time) === 0){
 			if(strlen($this->text)){
 				$this->time = $this->text;
 				$this->year = date("Y",$this->time);
@@ -84,4 +83,3 @@ class DateLabel extends HTMLLabel{
 		return $format;
 	}
 }
-

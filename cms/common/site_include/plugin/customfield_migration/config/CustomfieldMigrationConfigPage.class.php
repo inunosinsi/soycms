@@ -56,15 +56,17 @@ class CustomfieldMigrationConfigPage extends WebPage {
 						}
 					}
 
+					//移行する値がなにもない場合は次の記事へ
+					if(!count($values) || !self::_checkIsValue($values)) continue;
+
 					// @ToDo カスタムサーチフィールド側のフィールドの型を調べて、その型に合うようにデータを整形する
 
 					$dbLogic->save($entryId, $values);
 				}
 
 				CMSPlugin::redirectConfigPage();
-			}
 
-			if(isset($_POST["update"])){
+			}else if(isset($_POST["update"])){
 				$cfCnf = (isset($_POST["CustomField"])) ? $_POST["CustomField"] : array();
 				$cfaCnf = (isset($_POST["CustomFieldAdvanced"])) ? $_POST["CustomFieldAdvanced"] : array();
 				CustomfieldMigrationUtil::saveConfig($cfCnf, $cfaCnf);
@@ -72,6 +74,13 @@ class CustomfieldMigrationConfigPage extends WebPage {
 				CMSPlugin::redirectConfigPage();
 			}
 		}
+	}
+
+	private function _checkIsValue($values){
+		foreach($values as $v){
+			if(strlen($v)) return true;
+		}
+		return false;
 	}
 
 	function execute(){

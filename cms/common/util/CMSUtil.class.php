@@ -183,6 +183,7 @@ class CMSUtil {
 	 * 12時間以内なら 時:分 を、半年以内なら 月/日 を、他は 年-月-日 を返す
 	 */
 	public static function getRecentDateTimeText($unixtime){
+		if(!is_numeric($unixtime)) $unixtime = 0;
 		$diff = abs(time() - $unixtime);
 		switch(true){
 			case $diff < 12*60*60:

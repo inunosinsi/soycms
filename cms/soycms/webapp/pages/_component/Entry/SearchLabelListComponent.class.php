@@ -11,13 +11,13 @@ class SearchLabelListComponent extends HTMLList{
 		}
 	}
 	protected function populateItem($entity){
-
-		$elementID = "label_".$entity->getId();
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
+		$elementID = "label_".$id;
 
 		$this->addCheckBox("label_check", array(
 			"name"=>"label[]",
-			"value"=>$entity->getId(),
-			"selected"=>in_array($entity->getId(),$this->selectedIds),
+			"value"=> $id,
+			"selected"=>in_array($id, $this->selectedIds),
 			"elementId" => $elementID,
 		));
 

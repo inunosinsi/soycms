@@ -37,11 +37,11 @@ class CommentListComponent extends HTMLList{
 			"soy2prefix"=>"cms",
 			"defaultFormat"=>"H:i"
 		));
-		$this->createAdd("url","HTMLLink",array(
+		$this->addLink("url", array(
 			"link" => $comment->getUrl(),
 			"soy2prefix" => "cms"
 		));
-		$this->createAdd("mail_address","HTMLLink",array(
+		$this->addLink("mail_address", array(
 			"link" => "mailto:".$comment->getMailAddress(),
 			"soy2prefix" => "cms"
 		));

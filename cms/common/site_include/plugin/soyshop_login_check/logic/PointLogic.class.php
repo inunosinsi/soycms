@@ -43,11 +43,10 @@ class PointLogic extends SOY2LogicBase{
 
 	//既にコメントを行い、ポイントを付与されているかを調べる
 	function checkPointHistory($userId){
-		$historyDao = SOY2DAOFactory::create("SOYShop_PointHistoryDAO");
 		try{
-			$histories = $historyDao->getByUserId($userId);
+			$histories = SOY2DAOFactory::create("SOYShop_PointHistoryDAO")->getByUserId($userId);
 		}catch(Exception $e){
-			return true;
+			$histories = array();
 		}
 
 		if(count($histories) === 0) return true;
@@ -64,8 +63,7 @@ class PointLogic extends SOY2LogicBase{
 
 	//コメント付加時に挿入されるメッセージ
 	function getHistoryMessage(){
-		$message = $this->entry->getTitle() . "にコメントして" . $this->point . "pt付与";
-		return $message;
+		return $this->entry->getTitle() . "にコメントして" . $this->point . "pt付与";
 	}
 
 	function getUserId(){
@@ -77,8 +75,7 @@ class PointLogic extends SOY2LogicBase{
 			SOY2::import("logic.mypage.MyPageLogic");
 		}
 
-		$mypage = MyPageLogic::getMyPage();
-		return $mypage->getUserId();
+		return MyPageLogic::getMyPage()->getUserId();
 	}
 
 	function setSiteId($siteId){
