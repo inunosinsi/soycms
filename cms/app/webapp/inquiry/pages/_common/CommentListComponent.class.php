@@ -17,7 +17,7 @@ class CommentListComponent extends HTMLList{
 		));
 
 		$this->addLabel("create_date", array(
-			"text" => date("Y-m-d H:i:s", $bean->getCreateDate())
+			"text" => (is_numeric($bean->getCreateDate())) ? date("Y-m-d H:i:s", $bean->getCreateDate()) : ""
 		));
 	}
 }

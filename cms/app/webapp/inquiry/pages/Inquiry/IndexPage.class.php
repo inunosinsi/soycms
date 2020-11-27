@@ -266,11 +266,11 @@ class InquiryList extends HTMLList{
 
 	protected function populateItem($entity){
 
-		$formId = $entity->getFormId();
+		$formId = (is_string($entity->getFormId()) || is_numeric($entity->getFormId())) ? $entity->getFormId() : "";
 		$detailLink = SOY2PageController::createLink(APPLICATION_ID . ".Inquiry.Detail." . $entity->getId());
 		$formLink = SOY2PageController::createLink(APPLICATION_ID . ".Inquiry?formId=" . $formId);
 
-		$this->createAdd("inquiry_check","HTMLCheckBox",array(
+		$this->addCheckBox("inquiry_check", array(
 			"type"=>"checkbox",
 			"name"=>"bulk_modify[inquiry][]",
 			"value"=>$entity->getId(),
@@ -278,48 +278,46 @@ class InquiryList extends HTMLList{
 		));
 
     	//フォームが一つしかないときとフォームが指定されているときはフォーム名は表示しない
-		$this->createAdd("form_name_td","HTMLModel",array(
+		$this->addModel("form_name_td", array(
 			"style"   => "cursor:pointer;". (($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "color:black;font-weight: bold;" : ""),
-    		"visible" => is_null($this->formId) AND count($this->forms) >= 2,
+    		"visible" => (is_null($this->formId) && count($this->forms) >= 2),
     		"onclick" => "location.href='{$detailLink}'"
 		));
-		$this->createAdd("form_name","HTMLLink",array(
+		$this->addLink("form_name", array(
 			"text" => ( (isset($this->forms[$formId])) ? $this->forms[$formId]->getName() : "" ),
 			//"link" => $formLink,
 			"title" => ( (isset($this->forms[$formId])) ? $this->forms[$formId]->getName() : "" ),
 		));
 
-
-		$this->createAdd("traking_number","HTMLLink",array(
+		$this->addLink("traking_number", array(
 			"text" => $entity->getTrackingNumber(),
 			"link" => $detailLink,
 			"style" => ($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "color:black;font-weight: bold;" : ""
 		));
 
 		//getContentの中身はhtmlspecialcharsがかかっている
-		$this->createAdd("content","HTMLLabel",array(
+		$this->addLabel("content", array(
 			"html"  => (mb_strlen($entity->getContent()) >= 80) ? mb_substr($entity->getContent(), 0, 80) . "..." : $entity->getContent(),
 			"style" => "cursor:pointer;". ( ($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "color:black;font-weight: bold;" : "" ),
 			"title" => $entity->getContent(),
 			"onclick" => "location.href='{$detailLink}'"
 		));
 
-		$this->createAdd("create_date","HTMLLabel",array(
-			"text" => date("Y-m-d H:i:s",$entity->getCreateDate()),
+		$this->addLabel("create_date", array(
+			"text" => (is_numeric($entity->getCreateDate())) ? date("Y-m-d H:i:s",$entity->getCreateDate()) : "",
 			"style" => "cursor:pointer;".( ($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "color:black;font-weight: bold;" : "" ),
 			"onclick" => "location.href='{$detailLink}'"
 		));
 
-		$this->createAdd("flag","HTMLLink",array(
+		$this->addLink("flag", array(
 			"text" => $entity->getFlagText(),
 			"link" => $detailLink,
 			"style" => ($entity->getFlag() == SOYInquiry_Inquiry::FLAG_NEW) ? "font-weight: bold;" : ""
 		));
 
-		$this->createAdd("traking_number_td","HTMLModel",array("onclick" => "location.href='{$detailLink}'","style" => "cursor:pointer;"));
-		$this->createAdd("create_date_td","HTMLModel",array("onclick" => "location.href='{$detailLink}'","style" => "cursor:pointer;"));
-		$this->createAdd("flag_td","HTMLModel",array("onclick" => "location.href='{$detailLink}'","style" => "cursor:pointer;"));
-
+		$this->addModel("traking_number_td", array("onclick" => "location.href='{$detailLink}'","style" => "cursor:pointer;"));
+		$this->addModel("create_date_td", array("onclick" => "location.href='{$detailLink}'","style" => "cursor:pointer;"));
+		$this->addModel("flag_td", array("onclick" => "location.href='{$detailLink}'","style" => "cursor:pointer;"));
 	}
 
 	function getForms() {

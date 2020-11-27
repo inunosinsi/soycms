@@ -5,41 +5,42 @@ class InquiryListComponent extends HTMLList{
 	private $forms;
 
 	protected function populateItem($entity){
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
-		$formId = $entity->getFormId();
-		$detailLink = SOY2PageController::createLink(APPLICATION_ID . ".Inquiry.Detail." . $entity->getId());
+		$formId = (is_string($entity->getFormId()) || is_numeric($entity->getFormId())) ? $entity->getFormId() : "";
+		$detailLink = SOY2PageController::createLink(APPLICATION_ID . ".Inquiry.Detail." . $id);
 
-		$this->createAdd("inquiry_item","HTMLModel",array(
+		$this->addModel("inquiry_item", array(
 			"style" => "cursor:pointer;",
 			"onclick" => "location.href='{$detailLink}'"
 		));
 
-		$this->createAdd("form_name_td","HTMLModel",array(
+		$this->addModel("form_name_td", array(
     		"visible" => count($this->forms) >= 2
 		));
-		$this->createAdd("form_name","HTMLLink",array(
+		$this->addLink("form_name", array(
 			"text" => (isset($this->forms[$formId])) ? $this->forms[$formId]->getName() : "",
 			//"link" => SOY2PageController::createLink(APPLICATION_ID . ".Inquiry?formId=" . $formId),
 		));
 
-		$this->createAdd("id","HTMLLink",array(
-			"text" => $entity->getId(),
+		$this->addLink("id", array(
+			"text" => $id,
 			"link" => $detailLink,
 		));
-		$this->createAdd("traking_number","HTMLLink",array(
+		$this->addLink("traking_number", array(
 			"text" => $entity->getTrackingNumber(),
 			"link" => $detailLink,
 		));
 
 		//getContentの中身はhtmlspecialcharsがかかっている
-		$this->createAdd("content","HTMLLink",array(
+		$this->addLink("content", array(
 			"html"  => (mb_strlen($entity->getContent()) >= 80) ? mb_substr($entity->getContent(), 0, 80) . "..." : $entity->getContent(),
 			"link"  => $detailLink,
 			"title" => $entity->getContent(),
 		));
 
-		$this->createAdd("create_date","HTMLLabel",array(
-			"text" => date("Y-m-d",$entity->getCreateDate())
+		$this->addLabel("create_date", array(
+			"text" => (is_numeric($entity->getCreateDate())) ? date("Y-m-d", $entity->getCreateDate()) : ""
 		));
 
 		$this->createAdd("flag","HTMLLink",array(
