@@ -39,11 +39,11 @@ class ReviewListComponent extends HTMLList{
 		));
 
 		$this->addLabel("create_date", array(
-			"text" => date("Y-m-d H:i", $entity->getCreateDate())
+			"text" => (is_numeric($entity->getCreateDate())) ? date("Y-m-d H:i", $entity->getCreateDate()) : ""
 		));
 
 		$this->addLabel("update_date", array(
-			"text" => date("Y-m-d H:i", $entity->getUpdateDate())
+			"text" => (is_numeric($entity->getUpdateDate())) ? date("Y-m-d H:i", $entity->getUpdateDate()) : ""
 		));
 
 		$this->addLink("detail_link", array(

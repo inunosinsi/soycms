@@ -75,17 +75,17 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
      * @columns item_id, sum(item_count) as item_count
      * @return column_item_count
      * @group item_id
-     * @query is_sended = 0 and #itemId# = :itemId and order_id in (select distinct id from soyshop_order where order_status != 1)
+     * @query is_sended = 0 and #itemId# = :itemId and order_id in (select distinct id from soyshop_order where order_status != 0 AND order_status != 1)
      */
     abstract function countByItemId($itemId);
 
 	/**
      * @columns sum(item_count) as item_count
      * @return column_item_count
-     * @query is_sended = 0 and #itemId# in (SELECT id FROM soyshop_item WHERE item_type = :itemId) and order_id in (select distinct id from soyshop_order where order_status != 1)
+     * @query is_sended = 0 and #itemId# in (SELECT id FROM soyshop_item WHERE item_type = :itemId) and order_id in (select distinct id from soyshop_order where order_status != 0 AND order_status != 1)
      */
 	abstract function countChildOrderTotalByItemId($itemId);
-	
+
 	/**
 	 * @columns #orderId#,#isSended#
 	 * @query #orderId# = :orderId

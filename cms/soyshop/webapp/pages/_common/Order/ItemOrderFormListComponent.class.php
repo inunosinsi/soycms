@@ -32,20 +32,20 @@ class ItemOrderFormListComponent extends HTMLList {
 
 		//仕入値
 		$this->addModel("is_purchase_price", array(
-			"visible" => self::_isPurchasePrice()
+			"visible" => (self::_isPurchasePrice())
 		));
 
 		$this->addLabel("purchase_price", array(
-			"text" => number_format($item->getPurchasePrice())
+			"text" => (is_numeric($item->getPurchasePrice())) ? number_format($item->getPurchasePrice()) : 0
 		));
 
 		$this->addInput("item_count", array(
 			"name" => "Item[$id][itemCount]",
-			"value" => $itemOrder->getItemCount()
+			"value" => $itemOrder->getItemCount())
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => number_format($itemOrder->getTotalPrice())
+			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
 		));
 
 

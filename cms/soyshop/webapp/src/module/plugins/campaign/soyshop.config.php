@@ -13,7 +13,7 @@ class CampaignConfig extends SOYShopConfigPageBase{
 			include_once(dirname(__FILE__) . "/config/CampaignConfigPage.class.php");
 			$form = SOY2HTMLFactory::createInstance("CampaignConfigPage");
 		}
-			
+
 		$form->setConfigObj($this);
 		$form->execute();
 		return $form->getObject();
@@ -32,4 +32,3 @@ class CampaignConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "campaign", "CampaignConfig");
-?>

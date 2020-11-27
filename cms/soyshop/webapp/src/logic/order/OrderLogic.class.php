@@ -329,8 +329,8 @@ class OrderLogic extends SOY2LogicBase{
 	private function _compareStatus($newStatus, $oldStatus, $mode=self::CHANGE_STOCK_MODE_CANCEL){
 		switch($mode){
 			case self::CHANGE_STOCK_MODE_CANCEL:
-				//キャンセルにする場合
-				if($newStatus == SOYShop_Order::ORDER_STATUS_CANCELED){
+				//キャンセルにする場合 無効注文も含む
+				if($newStatus == SOYShop_Order::ORDER_STATUS_CANCELED || $newStatus == SOYShop_Order::ORDER_STATUS_INVALID){
 					//前のステータスがキャンセルか返却(21)でないことを確認
 					return ($oldStatus != SOYShop_Order::ORDER_STATUS_CANCELED || $oldStatus != 21);
 				}

@@ -1,15 +1,15 @@
 <?php
-
 SOYShopPlugin::load("soyshop.item.option");
 class ItemOrderListComponent extends HTMLList {
 
 	protected function populateItem($itemOrder) {
 
+		$item = soyshop_get_item_object($itemOrder->getItemId());
+
 		//確認済みの時は背景色を変更する
 		$this->addModel("is_confirm_tr", array(
 			"style" => ($itemOrder->getIsConfirm()) ? "background-color:#cdcdcd;" : ""
 		));
-		$item = soyshop_get_item_object($itemOrder->getItemId());
 
 		$itemExists = ((int)$itemOrder->getItemId() > 0 && method_exists($item, "getCodeOnAdmin") && strlen($item->getCodeOnAdmin()) > 0);
 		$this->addLink("item_id", array(
@@ -69,7 +69,7 @@ class ItemOrderListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => is_numeric($itemOrder->getItemPrice()) ? number_format($itemOrder->getItemPrice()) : $itemOrder->getItemPrice()
+			"text" => (is_numeric($itemOrder->getItemPrice())) ? number_format($itemOrder->getItemPrice()) : 0
 		));
 
 		//仕入値
@@ -78,15 +78,15 @@ class ItemOrderListComponent extends HTMLList {
 		));
 
 		$this->addLabel("purchase_price", array(
-			"text" => number_format($item->getPurchasePrice())
+			"text" => (is_numeric($item->getPurchasePrice())) ? number_format($item->getPurchasePrice()) : 0
 		));
 
 		$this->addLabel("item_count", array(
-			"text" => number_format($itemOrder->getItemCount())
+			"text" => (is_numeric($itemOrder->getItemCount())) ? number_format($itemOrder->getItemCount()) : 0
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => number_format($itemOrder->getTotalPrice())
+			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
 		));
 	}
 

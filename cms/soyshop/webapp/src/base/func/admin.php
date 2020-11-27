@@ -30,6 +30,7 @@ function soyshop_admin_auth_level(){
 }
 
 function print_update_date($time){
+	if(!is_numeric($time)) $time = 0;
 	if(date("Ymd") == date("Ymd",$time)){
 		return date("H:i",$time);
 	}

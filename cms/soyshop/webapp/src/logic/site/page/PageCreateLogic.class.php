@@ -5,6 +5,9 @@ class PageCreateLogic extends PageLogic{
 
 	private $errors = array();
 
+	/**
+	 * @final
+	 */
 	function validate(SOYShop_Page $obj){
 		$errors = array();
 

@@ -4,7 +4,7 @@ class PageLogic extends SOY2LogicBase{
 
 	private $errors = array();
 
-    function validate($obj){
+    function validate(SOYShop_Page $obj){
 
 		$errors = array();
 

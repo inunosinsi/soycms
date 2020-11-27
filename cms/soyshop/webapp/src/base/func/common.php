@@ -925,6 +925,7 @@ function soyshop_shape_timestamp($timestamp, $mode="start"){
  * @return string
  */
 function soyshop_convert_date_string($timestamp){
+	if(!is_numeric($timestamp)) $timestamp = 0;
 	return ($timestamp == 0 || $timestamp == 2147483647) ? "" : date("Y-m-d", $timestamp);
 }
 
@@ -978,7 +979,7 @@ function soyshop_get_user_age_month($birthday, $now=null){
 	//nowがない場合は通常計算、nowがある場合はdate("j")の箇所の値をnowに合わせる
 	$nowD = (isset($now) && is_numeric($now)) ? date("j", $now) : date("j");
 
-	if(is_null($now)) $now = time();
+	if(is_null($now) || !is_numeric($now)) $now = time();
 	$diff = $m - date("n", $now);
 
 	if($diff === 0){

@@ -472,8 +472,8 @@ class DetailPage extends WebPage{
 					'"link" => "'.SOY2PageController::createLink("Item.Detail").'/" . $entity->getId(),' .
 					'"html" => $itemName
 				));'.
-				'$this->createAdd("item_price","HTMLLabel", array(' .
-					'"text" => number_format($entity->getPrice())
+				'$this->addLabel("item_price", array(' .
+					'"text" => (is_numeric($entity->getPrice())) ? number_format($entity->getPrice()) : 0
 				));'
 		));
 

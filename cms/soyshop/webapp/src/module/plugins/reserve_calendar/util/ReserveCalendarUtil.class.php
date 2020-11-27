@@ -233,17 +233,6 @@ class ReserveCalendarUtil{
 		return $schedule->getUnsoldSeat() - self::_reserveLogic()->getReservedCountByScheduleId($schedule->getId());
 	}
 
-	//古い仮登録注文を無効注文(STATUS_INVALID=0)に変更する
-	public static function changeInvalidStatusOlderOrder($min=5){
-		$timming = time() - ($min / 60) * 1 * 60 * 60;	//$min分前
-
-		try{
-			SOY2DAOFactory::create("order.SOYShop_OrderDAO")->executeUpdateQuery("UPDATE soyshop_order SET order_status = " . SOYShop_Order::ORDER_STATUS_INVALID . " WHERE order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " AND order_date < " . $timming);
-		}catch(Exception $e){
-			//
-		}
-	}
-
 	private static function _reserveLogic(){
 		static $logic;
 		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic");

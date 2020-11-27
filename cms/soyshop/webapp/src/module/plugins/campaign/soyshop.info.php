@@ -12,7 +12,5 @@ class CampaignInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info", "campaign", "CampaignInfo");
-?>

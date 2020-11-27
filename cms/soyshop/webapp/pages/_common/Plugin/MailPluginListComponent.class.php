@@ -20,7 +20,7 @@ class MailPluginListComponent extends HTMLList{
 		));
 
 		$this->addLabel("mail_status", array(
-	   		"text" => (isset($this->status[$mailId])) ? date("Y-m-d H:i:s", $this->status[$mailId]) : "未送信"
+	   		"text" => (isset($this->status[$mailId]) && is_numeric($this->status[$mailId])) ? date("Y-m-d H:i:s", $this->status[$mailId]) : "未送信"
 	   	));
 
 	   	$this->addLink("mail_send_link", array(

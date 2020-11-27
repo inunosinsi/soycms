@@ -86,17 +86,17 @@ class SOYShop_CartItemList extends HTMLList{
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => number_format($entity->getItemPrice()),
+			"text" => (is_numeric($entity->getItemPrice())) ? number_format($entity->getItemPrice()) : 0,
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
 		$this->addLabel("item_count", array(
-			"text" => number_format($entity->getItemCount()),
+			"text" => (is_numeric($entity->getItemCount())) ? number_format($entity->getItemCount()) : 0,
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => number_format($entity->getTotalPrice()),
+			"text" => (is_numeric($entity->getTotalPrice())) ? number_format($entity->getTotalPrice()) : 0,
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 	}

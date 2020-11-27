@@ -32,7 +32,7 @@ class OrderListComponent extends HTMLList{
 		));
 
 		$this->addLabel("order_date", array(
-			"text" => date('Y-m-d H:i', $order->getOrderDate())
+			"text" => (is_numeric($order->getOrderDate())) ? date('Y-m-d H:i', $order->getOrderDate()) : ""
 		));
 
 		$this->addLink("detail_link", array(
@@ -69,7 +69,7 @@ class OrderListComponent extends HTMLList{
 		));
 
 		$this->addLabel("order_price", array(
-			"text" => number_format($order->getPrice())
+			"text" => (is_numeric($order->getPrice())) ? number_format($order->getPrice()) : 0
 		));
 	}
 

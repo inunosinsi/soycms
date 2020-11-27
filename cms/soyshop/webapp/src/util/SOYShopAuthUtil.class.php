@@ -6,7 +6,7 @@ class SOYShopAuthUtil {
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 	}
 
-	private function _authes(){
+	private static function _authes(){
 		return array(
 			"HOME" => true,
 			"EXTENSION" => true,

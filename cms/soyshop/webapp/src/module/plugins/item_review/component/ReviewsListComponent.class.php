@@ -27,7 +27,7 @@ class ReviewsListComponent extends HTMLList{
 
 		$this->addLabel("update_date", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => date("Y年m月d日", $entity->getUpdateDate())
+			"text" => (is_numeric($entity->getUpdateDate())) ? date("Y年m月d日", $entity->getUpdateDate()) : ""
 		));
 
 		$this->addLabel("item_name", array(
