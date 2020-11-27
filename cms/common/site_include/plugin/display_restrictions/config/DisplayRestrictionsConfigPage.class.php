@@ -50,12 +50,13 @@ class PageList extends HTMLList{
 	private $pluginObj;
 
 	function populateItem($entity){
+		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
-		$this->createAdd("page_item","HTMLCheckBox",array(
+		$this->addCheckBox("page_item", array(
 			"type"     => "checkbox",
-			"name"     => "config_per_page[".$entity->getId()."]",
+			"name"     => "config_per_page[".$id."]",
 			"value"    => 1,
-			"selected" => (isset($this->pluginObj->config_per_page[$entity->getId()])),
+			"selected" => (isset($this->pluginObj->config_per_page[$id])),
 			"label"    => $entity->getTitle() . " (/{$entity->getUri()})"
 		));
 	}

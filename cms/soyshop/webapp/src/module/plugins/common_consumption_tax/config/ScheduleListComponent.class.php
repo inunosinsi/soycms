@@ -5,7 +5,7 @@ class ScheduleListComponent extends HTMLList{
 	function populateItem($entity, $key, $index){
 
 		$this->addLabel("start_date", array(
-			"text" => date("Y-m-d", $entity->getStartDate())
+			"text" => (is_numeric($entity->getStartDate())) ? date("Y-m-d", $entity->getStartDate()) : ""
 		));
 
 		$this->addLabel("tax_rate", array(

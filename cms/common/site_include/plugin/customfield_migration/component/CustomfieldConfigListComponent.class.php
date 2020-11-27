@@ -17,7 +17,7 @@ class CustomfieldConfigListComponent extends HTMLList {
 		));
 
 		$this->addLabel("type", array(
-			"text" => (isset(CustomField::$TYPES[$entity->getType()])) ? CustomField::$TYPES[$entity->getType()] : ""
+			"text" => (is_string($entity->getType()) && isset(CustomField::$TYPES[$entity->getType()])) ? CustomField::$TYPES[$entity->getType()] : ""
 		));
 
 		$this->addSelect("csf_select", array(

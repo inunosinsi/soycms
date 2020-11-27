@@ -144,7 +144,7 @@ class FieldList extends HTMLList{
 		));
 
 		$this->createAdd("type","HTMLLabel",array(
-			"text"=> (isset(CustomField::$TYPES[$entity->getType()])) ? CustomField::$TYPES[$entity->getType()] : "",
+			"text"=> (is_string($entity->getType()) && isset(CustomField::$TYPES[$entity->getType()])) ? CustomField::$TYPES[$entity->getType()] : "",
 			"id" => "type_text_" . $i,
 		));
 

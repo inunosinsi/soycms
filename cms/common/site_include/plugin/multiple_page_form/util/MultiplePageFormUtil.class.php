@@ -221,7 +221,7 @@ class MultiplePageFormUtil {
 		return $dir;
 	}
 
-	private function _createDir($dir){
+	private static function _createDir($dir){
 		if(!file_exists($dir)) mkdir($dir);
 		if(!file_exists($dir . ".htaccess")) {
 			file_put_contents($dir . ".htaccess", "Deny from all");
