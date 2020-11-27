@@ -45,21 +45,21 @@ class SearchItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => number_format($item->getPrice())
+			"text" => (is_numeric($item->getPrice())) ? number_format($item->getPrice()) : 0
 		));
 		$this->addModel("is_sale", array(
 			"visible" => $item->isOnSale()
 		));
 		$this->addLabel("sale_price", array(
-			"text" => number_format($item->getSalePrice())
+			"text" => (is_numeric($item->getSalePrice())) ? number_format($item->getSalePrice()) : 0
 		));
 
 		$this->addLabel("item_stock", array(
-			"text" => number_format($item->getStock())
+			"text" => (is_numeric($item->getStock())) ? number_format($item->getStock()) : 0
 		));
 
 		$this->addLabel("item_category", array(
-			"text" => (isset($this->categories[$item->getCategory()])) ? $this->categories[$item->getCategory()]->getName() : "-"
+			"text" => (is_numeric($item->getCategory()) && isset($this->categories[$item->getCategory()])) ? $this->categories[$item->getCategory()]->getName() : "-"
 		));
 
 		$detailLink = $this->getDetailLink() . $item->getId();
@@ -67,8 +67,9 @@ class SearchItemListComponent extends HTMLList{
 			"link" => $detailLink
 		));
 
+		$orderCount = self::_getOrderCount($item->getId());
 		$this->addLabel("order_count", array(
-			"text" => number_format($this->getOrderCount($item->getId()))
+			"text" => number_format($orderCount)
 		));
 	}
 
@@ -94,7 +95,8 @@ class SearchItemListComponent extends HTMLList{
 		$this->orderDAO = $orderDAO;
 	}
 
-	function getOrderCount($id){
+	private function _getOrderCount($id){
+		if(!is_numeric($id)) return 0;
 		try{
 			return $this->orderDAO->countByItemId($id);
 		}catch(Exception $e){
@@ -102,4 +104,3 @@ class SearchItemListComponent extends HTMLList{
 		}
 	}
 }
-?>

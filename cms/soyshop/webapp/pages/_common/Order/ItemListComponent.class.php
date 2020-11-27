@@ -32,21 +32,21 @@ class ItemListComponent extends HTMLList{
 
 		$categories = soyshop_get_category_list(true);
 		$this->addLabel("item_category", array(
-            "text" => (is_array($categories) && isset($categories[$item->getCategory()])) ? $categories[$item->getCategory()] : "-"
+            "text" => (is_numeric($item->getCategory()) && is_array($categories) && isset($categories[$item->getCategory()])) ? $categories[$item->getCategory()] : "-"
         ));
 
 		//親商品であるか？
 		$isParent = ($item instanceof SOYShop_Item && $item->getType() == SOYShop_Item::TYPE_GROUP);
         $this->addLabel("item_price", array(
-            "text" => (!$isParent) ? number_format((int)$item->getPrice()) . " 円" : ""
+            "text" => (!$isParent && is_numeric($item->getPrice())) ? number_format((int)$item->getPrice()) . " 円" : ""
         ));
 
 		$this->addLabel("purchase_price", array(
-			"text" => number_format($item->getPurchasePrice())
+			"text" => (is_numeric($item->getPurchasePrice())) ? number_format($item->getPurchasePrice()) : 0
 		));
 
         $this->addLabel("item_stock", array(
-            "text" => (!$isParent) ? number_format($item->getStock()) : ""
+            "text" => (!$isParent && is_numeric($item->getStock())) ? number_format($item->getStock()) : ""
         ));
 
         $this->addLink("detail_link", array(
@@ -61,7 +61,7 @@ class ItemListComponent extends HTMLList{
 		));
 
 		//子商品の表
-		$children = ($isParent) ? self::_getChildrenByParentId($item->getId()) : array();
+		$children = ($isParent && is_numeric($item->getId())) ? self::_getChildrenByParentId($item->getId()) : array();
 		$childrenCount = count($children);
 		$this->addModel("show_child_table", array(
 			"visible" => $childrenCount

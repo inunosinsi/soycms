@@ -6,11 +6,11 @@ class ItemOrderFormListComponent extends HTMLList {
 
 	protected function populateItem($itemOrder) {
 
-		$id = $itemOrder->getId();
+		$id = (is_numeric($itemOrder->getId())) ? (int)$itemOrder->getId() : 0;
 		$item = soyshop_get_item_object($itemOrder->getItemId());
 
 		$this->addInput("item_delete", array(
-			"name" => "Item[$id][itemDelete]",
+			"name" => "Item[" . $id . "][itemDelete]",
 			"value" => 1
 		));
 
@@ -21,12 +21,12 @@ class ItemOrderFormListComponent extends HTMLList {
 		));
 
 		$this->addInput("item_name", array(
-			"name" => "Item[$id][itemName]",
+			"name" => "Item[" . $id . "][itemName]",
 			"value" => $itemOrder->getItemName()
 		));
 
 		$this->addInput("item_price", array(
-			"name" => "Item[$id][itemPrice]",
+			"name" => "Item[" . $id . "][itemPrice]",
 			"value" => $itemOrder->getItemPrice()
 		));
 
@@ -40,8 +40,8 @@ class ItemOrderFormListComponent extends HTMLList {
 		));
 
 		$this->addInput("item_count", array(
-			"name" => "Item[$id][itemCount]",
-			"value" => $itemOrder->getItemCount())
+			"name" => "Item[" . $id . "][itemCount]",
+			"value" => $itemOrder->getItemCount()
 		));
 
 		$this->addLabel("item_total_price", array(

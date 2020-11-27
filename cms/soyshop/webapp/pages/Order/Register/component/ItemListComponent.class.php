@@ -58,7 +58,7 @@ class ItemListComponent extends HTMLList {
 			"value" => $entity->getItemPrice(),
 		));
 		$this->addLabel("item_price_text", array(
-			"text" => number_format($entity->getItemPrice()),
+			"text" => (is_numeric($entity->getItemPrice())) ? number_format($entity->getItemPrice()) : 0,
 		));
 
 		//仕入値
@@ -67,7 +67,7 @@ class ItemListComponent extends HTMLList {
 		));
 
 		$this->addLabel("purchase_price", array(
-			"text" => number_format($item->getPurchasePrice())
+			"text" => (is_numeric($item->getPurchasePrice())) ? number_format($item->getPurchasePrice()) : 0
 		));
 
 		$this->addInput("item_count", array(
@@ -75,11 +75,11 @@ class ItemListComponent extends HTMLList {
 			"value" => $entity->getItemCount(),
 		));
 		$this->addLabel("item_count_text", array(
-			"text" => number_format($entity->getItemCount()),
+			"text" => (is_numeric($entity->getItemCount())) ? number_format($entity->getItemCount()) : 0,
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => number_format($entity->getTotalPrice())
+			"text" => (is_numeric($entity->getTotalPrice())) ? number_format($entity->getTotalPrice()) : 0
 		));
 
 		$opts = (get_class($entity) == "SOYShop_ItemOrder") ? self::getOptionList($entity) : array();
