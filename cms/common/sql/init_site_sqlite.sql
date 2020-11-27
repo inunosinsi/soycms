@@ -55,7 +55,7 @@ create table EntryTrackback(
 	blog_name varchar(255),
 	excerpt varchar(4000),
 	submitdate date,
-	certification number default 0
+	certification integer default 0
 );
 
 create table EntryAttribute(

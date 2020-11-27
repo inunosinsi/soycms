@@ -45,8 +45,7 @@ class IndexPage extends CMSWebPageBase{
 
 		parent::__construct();
 
-		$siteConfig = $this->getSiteConfig();
-		if($siteConfig->isShowOnlyAdministrator()){
+		if(self::_getSiteConfig()->isShowOnlyAdministrator()){
 			$this->addMessage("SOYCMS_CONFIG_SHOW_ONLY_ADMINISTRATOR");
 		}
 
@@ -66,7 +65,7 @@ class IndexPage extends CMSWebPageBase{
 		));
 
 		$this->addLabel("widgets", array(
-			"html" => $this->getWidgetsHTML()
+			"html" => self::_getWidgetsHTML()
 		));
 
 		HTMLHead::addLink("dashboard", array(
@@ -104,11 +103,11 @@ class IndexPage extends CMSWebPageBase{
 
 		//最近のコメントを出力
 		SOY2::import("domain.cms.BlogPage");
-		$this->outputCommentList();
-		$this->outputTrackbackList();
+		self::_outputCommentList();
+		self::_outputTrackbackList();
 	}
 
-	function getWidgetsHTML(){
+	private function _getWidgetsHTML(){
 		$result = $this->run("Plugin.PluginListAction");
 		$list = $result->getAttribute("plugins");
 
@@ -154,9 +153,9 @@ class IndexPage extends CMSWebPageBase{
 		return $widgets;
 	}
 
-	function outputCommentList(){
+	private function _outputCommentList(){
 
-		$blogArray = $this->getBlogIds();
+		$blogArray = self::_getBlogIds();
 		$blogIds = array_keys($blogArray);
 
 		$commentListLogic = SOY2Logic::createInstance("logic.site.Entry.EntryCommentLogic");
@@ -167,7 +166,7 @@ class IndexPage extends CMSWebPageBase{
 		}
 
 		foreach($comments as $key => $comment){
-			$comment->info = $this->getBlogId($comment->getEntryId());
+			$comment->info = self::_getBlogId($comment->getEntryId());
 		}
 
 		$this->createAdd("recentComment", "_component.Recent.CommentListComponent", array(
@@ -175,9 +174,9 @@ class IndexPage extends CMSWebPageBase{
 		));
 	}
 
-	function outputTrackbackList(){
+	private function _outputTrackbackList(){
 
-		$blogArray = $this->getBlogIds();
+		$blogArray = self::_getBlogIds();
 		$blogIds = array_keys($blogArray);
 
 		$logic = SOY2Logic::createInstance("logic.site.Entry.EntryTrackbackLogic");
@@ -189,7 +188,7 @@ class IndexPage extends CMSWebPageBase{
 		}
 
 		foreach($trackbacks as $key => $trackback){
-			$trackbacks[$key]->info = $this->getBlogId($trackback->getEntryId());
+			$trackbacks[$key]->info = self::_getBlogId($trackback->getEntryId());
 		}
 
 		$this->createAdd("recentTrackback", "_component.Recent.TrackbackListComponent", array(
@@ -197,7 +196,7 @@ class IndexPage extends CMSWebPageBase{
 		));
 	}
 
-	function getBlogIds(){
+	private function _getBlogIds(){
 		if(is_null($this->blogIds)){
 			$blogs = $this->run("Blog.BlogListAction")->getAttribute("list");
 			$this->blogIds = array();
@@ -212,9 +211,9 @@ class IndexPage extends CMSWebPageBase{
 		return $this->blogIds;
 	}
 
-	function getBlogId($entryId){
+	private function _getBlogId($entryId){
 
-		$blogIds = $this->getBlogIds();
+		$blogIds = self::_getBlogIds();
 
 		$entryLogic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 		$entry = $entryLogic->getById($entryId);
@@ -228,8 +227,7 @@ class IndexPage extends CMSWebPageBase{
 		}
 	}
 
-	private function getSiteConfig(){
-		$result = SOY2ActionFactory::createInstance("SiteConfig.DetailAction")->run();
-		return $result->getAttribute("entity");
+	private function _getSiteConfig(){
+		return SOY2ActionFactory::createInstance("SiteConfig.DetailAction")->run()->getAttribute("entity");
 	}
 }

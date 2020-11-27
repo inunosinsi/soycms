@@ -49,7 +49,8 @@ class CMSBlogPage extends CMSPage{
 			}catch(Exception $e){
 				$accept = 0;
 			}
-			$entryComment->setIsApproved((boolean)$accept);
+			//$entryComment->setIsApproved((boolean)$accept);
+			$entryComment->setIsApproved($accept);	//型はinteger
 
 			$this->entryComment = $entryComment;
 
@@ -111,8 +112,8 @@ class CMSBlogPage extends CMSPage{
 			}catch(Exception $e){
 				$accept = 0;
 			}
-			$trackback->setCertification((boolean)$accept);
-
+			//$trackback->setCertification((boolean)$accept);
+			$trackback->setCertification($accept);	//型はinteger
 			try{
 				//CMS:PLUGIN callEventFunction
 				$res = CMSPlugin::callEventFunc('onSubmitTrackback',array("trackback"=>$trackback,"page" => $this),true);
@@ -137,7 +138,6 @@ class CMSBlogPage extends CMSPage{
 			echo $replyData;
 			exit;
 		}
-
 	}
 
 	function __construct($args){

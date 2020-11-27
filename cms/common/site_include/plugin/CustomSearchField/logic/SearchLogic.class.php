@@ -34,6 +34,9 @@ class SearchLogic extends SOY2LogicBase{
 		if(isset($limit) && is_numeric($limit) && $limit > 0){
 			$sql .= " LIMIT " . (int)$limit;
 
+
+			$current = 1;
+
 			//OFFSET
 	        $offset = $limit * ($current - 1);
 	        if($offset > 0) $sql .= " OFFSET " . $offset;
@@ -276,9 +279,15 @@ class SearchLogic extends SOY2LogicBase{
 		if(isset($limit) && is_numeric($limit) && $limit > 0){
 			$sql .= " LIMIT " . $limit;
 
-	        //OFFSET
-	        $offset = $limit * ($current - 1);
-	        if($offset > 0) $sql .= " OFFSET " . $offset;
+			//ページャ
+			$args = self::__getArgs();
+			if(isset($args[0]) && strpos($args[0], "page-") === 0){
+				$pageNumber = (int)str_replace("page-", "", $args[0]);
+				if($pageNumber > 0){
+					$offset = $limit * $pageNumber;
+					$sql .= " OFFSET " . $offset;
+				}
+			}
 		}
 
         try{
@@ -302,5 +311,20 @@ class SearchLogic extends SOY2LogicBase{
 		return "WHERE ent.openPeriodStart < :now ".
 			"AND ent.openPeriodEnd > :now ".
 			"AND ent.isPublished = 1 ";
+    }
+
+	function getArgs(){
+        return self::__getArgs();
+    }
+
+    private function __getArgs(){
+        if(!isset($_SERVER["PATH_INFO"])) return array();
+        //末尾にスラッシュがない場合はスラッシュを付ける
+        $pathInfo = $_SERVER["PATH_INFO"];
+        if(strrpos($pathInfo, "/") !== strlen($pathInfo) - 1){
+            $pathInfo .= "/";
+        }
+        $argsRaw = rtrim(str_replace("/" . $_SERVER["SOYCMS_PAGE_URI"] . "/", "", $pathInfo), "/");
+        return explode("/", $argsRaw);
     }
 }
