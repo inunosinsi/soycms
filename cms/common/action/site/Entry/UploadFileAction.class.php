@@ -117,7 +117,6 @@ class UploadFileAction extends SOY2Action{
     		$responseObject->message = "すでにファイルが存在します";
     		$responseObject->errorCode = 1;
     	}else{
-
 	    	$file = CMSFileManager::get(UserInfoUtil::getSiteDirectory(),dirname($filepath));
 
 	    	//サイトの情報を設定

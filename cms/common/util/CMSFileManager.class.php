@@ -301,7 +301,7 @@ class CMSFileManager{
 
 		if(!$file) throw new Exception("");
 
-		if(strstr($file->getPath(),$root) != 0){
+		if(strpos($file->getPath(),$root) != 0){
 			throw new Exception("Wrong path");
 		}
 
