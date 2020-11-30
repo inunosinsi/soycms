@@ -71,7 +71,17 @@ class DataBaseLogic extends SOY2LogicBase{
                     break;
                 case CustomSearchFieldUtil::TYPE_CHECKBOX:
                     if(is_array($values[$key]) && count($values[$key])){
-                        $sets[$key] = implode(",", $values[$key]);
+						//空の値を消す
+						for($i = 0; $i < count($values[$key]); $i++){
+							if(!strlen($values[$key][$i])){
+								unset($values[$key][$i]);
+							}
+						}
+						if(count($values[$key])){
+							$sets[$key] = implode(",", $values[$key]);
+						}else {
+							$sets[$key] = null;
+						}
 
                     //一括更新の際は、そのまま値を入れなければならない 一応条件分岐は残しておく
                     }elseif(strpos($values[$key], ",")){
@@ -112,7 +122,7 @@ class DataBaseLogic extends SOY2LogicBase{
                 "VALUES (" . implode(",", $values) . ")";
 
         $dao = new SOY2DAO();
-		
+
         try{
             $dao->executeQuery($sql, $binds);
         }catch(Exception $e){

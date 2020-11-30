@@ -6411,9 +6411,7 @@ class HTMLCheckBox extends HTMLInput {
 	}
 	function execute(){
 		parent::execute();
-		if(!$this->elementId){
-			$this->elementId = "label_" . @md5(crypt((string)$this->value, ""));	//Salt is now required in PHP8
-		}
+		if(!$this->elementId) $this->elementId = "label_" . md5((string)$this->value.(string)$this->name.(string)rand(0,1));
 		$this->setAttribute("id",$this->elementId);
 		$checked = ($this->selected) ? "checked" : null;
 		$this->setAttribute("checked",$checked, false);

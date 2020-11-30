@@ -16,7 +16,7 @@ class CustomSearchFieldListComponent extends HTMLList{
         ));
 
         $this->addLabel("display", array(
-            "text" => self::getPrefix() . ":id=\"" . $key . "\""
+            "text" => self::_getPrefix() . ":id=\"" . $key . "\""
         ));
 
         /* 高度な設定 */
@@ -51,7 +51,7 @@ class CustomSearchFieldListComponent extends HTMLList{
         ));
 
         $this->addModel("with_options", array(
-            "visible" => (isset($entity["type"])) ? self::checkDisplayOptionsForm($entity["type"]) : false
+            "visible" => (isset($entity["type"])) ? self::_checkDisplayOptionsForm($entity["type"]) : false
         ));
 
 		//選択項目
@@ -60,24 +60,36 @@ class CustomSearchFieldListComponent extends HTMLList{
 			"value" => (isset($entity["option"])) ? $entity["option"] : ""
 		));
 
+		//その他の項目
+		$this->addModel("with_other_item", array(
+            "visible" => (isset($entity["type"])) ? self::_checkDisplayOtherItemForm($entity["type"]) : false
+        ));
+
+		$this->addCheckBox("use_other_item", array(
+			"name" => "config[other]",
+			"value" => 1,
+			"selected" => (isset($entity["other"]) && is_numeric($entity["other"]) && (int)$entity["other"] === 1),
+			"label" => "その他の項目を追加する"
+		));
+
         $this->addInput("update_advance", array(
             "value"=>"設定保存",
             "onclick"=>'$(\'#update_advance_submit_' . $key . '\').click();return false;'
 		));
 
 		$this->addModel("checkbox_admin_br_area", array(
-            "visible" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX)
+            "visible" => (isset($entity["type"])) ? self::_checkInsertBrCheckBox($entity["type"]) : false
         ));
-		
+
 		$this->addCheckBox("checkbox_admin_br", array(
 			"name" => "config[br]",
 			"value" => 1,
 			"selected" => (isset($entity["br"]) && $entity["br"] == 1),
-            "label" => "各項目毎に改行コードを追加する"
+			"label" => "各項目毎に改行コードを追加する"
 		));
 
         $this->addModel("radio_search_form_default_area", array(
-            "visible" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_RADIO)
+            "visible" => (isset($entity["type"])) ? self::_checkRadioDefaultValueCheckBox($entity["type"]) : false
         ));
 
         $this->addCheckBox("radio_search_form_default", array(
@@ -96,7 +108,7 @@ class CustomSearchFieldListComponent extends HTMLList{
         ));
 
         $this->addLabel("checkbox_tag_supple", array(
-            "html" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX && isset($entity["option"])) ? self::buildCheckBoxSuppleTag($key, $entity["option"]) : ""
+            "html" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX && isset($entity["option"])) ? self::_buildCheckBoxSuppleTag($key, $entity["option"]) : ""
         ));
 
         $this->addInput("update_advance_submit", array(
@@ -110,13 +122,13 @@ class CustomSearchFieldListComponent extends HTMLList{
 		));
     }
 
-    private function getPrefix(){
+    private function _getPrefix(){
 		return CustomSearchFieldUtil::PLUGIN_PREFIX;
     }
 
-    private function buildCheckBoxSuppleTag($key, $options){
+    private function _buildCheckBoxSuppleTag($key, $options){
 		if(!strlen($options)) return "";
-        $prefix = self::getPrefix();
+        $prefix = self::_getPrefix();
 
         $text = "";
 		$opts = explode("\n", $options);
@@ -131,7 +143,19 @@ class CustomSearchFieldListComponent extends HTMLList{
         return $text;
     }
 
-    private function checkDisplayOptionsForm($type){
+    private function _checkDisplayOptionsForm($type){
         return ($type === CustomSearchFieldUtil::TYPE_RADIO || $type === CustomSearchFieldUtil::TYPE_CHECKBOX || $type === CustomSearchFieldUtil::TYPE_SELECT);
     }
+
+	private function _checkDisplayOtherItemForm($type){
+		return ($type === CustomSearchFieldUtil::TYPE_RADIO || $type === CustomSearchFieldUtil::TYPE_CHECKBOX);
+	}
+
+	private function _checkInsertBrCheckBox($type){
+		return ($type === CustomSearchFieldUtil::TYPE_RADIO || $type === CustomSearchFieldUtil::TYPE_CHECKBOX);
+	}
+
+	private function _checkRadioDefaultValueCheckBox($type){
+		return ($type === CustomSearchFieldUtil::TYPE_RADIO);
+	}
 }

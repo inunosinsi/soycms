@@ -17,7 +17,7 @@ class CustomSearchFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.8"
 		));
 
 		//プラグイン アクティブ

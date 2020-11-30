@@ -18,7 +18,7 @@ class CustomSearchFieldUtil{
     }
 
     public static function saveConfig($values){
-        return DataSets::put("custom_search.config", $values);
+		return DataSets::put("custom_search.config", $values);
     }
 
     public static function getTypeList(){
