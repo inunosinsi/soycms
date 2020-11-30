@@ -618,10 +618,7 @@ function soycms_check_site(id, url){
 			url: url,
 			type: 'get',
 			success: function(data, req){
-				if (parseInt(data) == parseInt(id)) {
-
-				}
-				else {
+				if (parseInt(data) != parseInt(id)) {
 					alert(soycms.lang.common.double_login);
 				}
 			}
