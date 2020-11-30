@@ -63,7 +63,7 @@ class IndexPage extends MainMyPagePageBase{
 			"visible" => (count($histories) > 0)
 		));
 
-		$this->createAdd("point_history_list", "PointHistoryList", array(
+		$this->createAdd("point_history_list", "_common.point.PointHistoryListComponent", array(
 			"list" => $histories
 		));
 
@@ -79,7 +79,7 @@ class IndexPage extends MainMyPagePageBase{
 		));
 
 		$point = $user->getPoint();
-		$limit = $point ? $user->getPointTimeLimit(): null ;
+		$limit = ($point) ? $user->getPointTimeLimit(): null ;
 		$expiredPoint = 0;
 		$isExpired = false;
 
@@ -108,24 +108,5 @@ class IndexPage extends MainMyPagePageBase{
 			"text" => $expiredPoint,
 		));
 
-	}
-
-}
-
-class PointHistoryList extends HTMLList{
-
-	protected function populateItem($entity){
-
-		$this->addLabel("create_date", array(
-			"text" => date("Y/m/d H:i:s", $entity->getCreateDate())
-		));
-
-		$this->addLink("order_link", array(
-			"link" => (!is_null($entity->getOrderId())) ? soyshop_get_mypage_url() . "/order/detail/" . $entity->getOrderId() : null
-		));
-
-		$this->addLabel("content", array(
-			"text" => $entity->getContent()
-		));
 	}
 }

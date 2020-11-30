@@ -78,7 +78,6 @@ class IndexPage extends MainMyPagePageBase{
 
 		$this->createAdd("reviews_list", "_common.review.MypageReviewsListComponent", array(
 			"list" => $reviews,
-			"itemDao" => SOY2DAOFactory::create("shop.SOYShop_ItemDAO"),
 			"config" => ItemReviewUtil::getConfig()
 		));
 

@@ -150,14 +150,8 @@ class MainMyPagePageBase extends WebPage{
 	}
 
 	function getOrderByIdAndUserId($orderId, $userId){
-		static $order;
-		if(is_null($order)){
-			try{
-				$order = SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getForOrderDisplay($orderId, $userId);
-			}catch(Exception $e){
-				$order = new SOYShop_Order();
-			}
-		}
+		$order = soyshop_get_order_object($orderId);
+		if((int)$order->getUserId() !== (int)$userId) $order = new SOYShop_Order();
 		return $order;
 	}
 
@@ -173,21 +167,8 @@ class MainMyPagePageBase extends WebPage{
 		return $itemOrders;
 	}
 
-	function getItemById($itemId){
-		static $items, $dao;
-		if(is_null($items)) $items = array();
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		if(isset($items[$itemId])) return $items[$itemId];
-		try{
-			$items[$itemId] = $dao->getById($itemId);
-		}catch(Exception $e){
-			$items[$itemId] = new SOYShop_Item();
-		}
-		return $items[$itemId];
-	}
-
 	function getItemCodeByItemId($itemId){
-		return self::getItemById($itemId)->getCode();
+		return soyshop_get_item_object($itemId)->getCode();
 	}
 
 	function getModuleByOrderIdAndUserId($orderId, $userId){

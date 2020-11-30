@@ -13,11 +13,11 @@ class ItemOrderListComponent extends HTMLList{
 		));
 
 		$this->addLink("item_code", array(
-			"text" => (strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemOrder->getItemId(),
+			"text" => (is_string($item->getCode()) && strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemOrder->getItemId(),
 		));
 
 		$this->addLabel("item_code_plain", array(
-			"text" => (strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemOrder->getItemId()
+			"text" => (is_string($item->getCode()) && strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemOrder->getItemId()
 		));
 
 		$this->addImage("item_small_image", array(
@@ -38,11 +38,11 @@ class ItemOrderListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => number_format($itemOrder->getItemPrice())
+			"text" => (is_numeric($itemOrder->getItemPrice())) ? number_format($itemOrder->getItemPrice()) : 0
 		));
 
 		$this->addLabel("item_count", array(
-			"text" => number_format($itemOrder->getItemCount())
+			"text" => (is_numeric($itemOrder->getItemCount())) ? number_format($itemOrder->getItemCount()) : 0
 		));
 
 		$this->addInput("item_count_input", array(
@@ -63,7 +63,7 @@ class ItemOrderListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => number_format($itemOrder->getTotalPrice())
+			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
 		));
 
 		//子商品

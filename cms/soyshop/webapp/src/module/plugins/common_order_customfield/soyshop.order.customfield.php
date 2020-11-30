@@ -247,14 +247,18 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 				switch($obj["type"]){
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_INPUT:
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_TEXTAREA:
-						if(strlen($obj["value"]) === 0){
+						if(!isset($obj["value"]) || !strlen($obj["value"])){
 							$error = "値が入力されていません。";
 						}
 						break;
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
 					case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_SELECT:
-						if(strlen($obj["value"]) === 0){
+						if(
+							!isset($obj["value"]) ||
+							(is_array($obj["value"]) && !count($obj["value"])) ||
+							(is_string($obj["value"]) && !strlen($obj["value"]))
+						){
 							$error = "選択されていません。";
 						}
 						break;

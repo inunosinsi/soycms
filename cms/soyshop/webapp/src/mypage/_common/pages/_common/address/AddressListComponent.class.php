@@ -65,4 +65,3 @@ class AddressListComponent extends HTMLList{
 		   isset($entity["area"]) && (int)$entity["area"] === 0) return false;
 	}
 }
-?>

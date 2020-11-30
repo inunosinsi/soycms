@@ -2,15 +2,14 @@
 
 class PurchaseItemListComponent extends HTMLList {
 
-	private $itemDao;
-
 	protected function populateItem($itemOrder) {
-		
-		$item = $this->getItem($itemOrder->getItemId());
+
+		$itemId = (is_numeric($itemOrder->getItemId())) ? (int)$itemOrder->getItemId() : 0;
+		$item = soyshop_get_item_object($itemId);
 
 		$this->addLink("item_id", array(
-			"text" => (strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemOrder->getItemId(),
-			"link" => SOY2PageController::createLink("Item.Detail." . $itemOrder->getItemId())
+			"text" => (strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemId,
+			"link" => SOY2PageController::createLink("Item.Detail." . $itemId)
 		));
 
 		$this->addLabel("item_code", array(
@@ -20,48 +19,30 @@ class PurchaseItemListComponent extends HTMLList {
 		$this->addLabel("item_name", array(
 			"text" => $itemOrder->getItemName()
 		));
-		
+
 		SOYShopPlugin::load("soyshop.item.option");
 		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "display",
 			"item" => $itemOrder,
 		));
-		
+
 		$this->addLabel("item_option", array(
 			"html" => $delegate->getHtmls()
 		));
 
 		$this->addLabel("item_count", array(
-			"text" => $itemOrder->getItemCount()
+			"text" => (is_numeric($itemOrder->getItemCount())) ? (int)$itemOrder->getItemCount() : ""
 		));
 
 		$this->addModel("is_item_price", array(
-			"visible" => (!is_null($itemOrder->getItemPrice()) && (int)$itemOrder->getItemPrice() > 0)
+			"visible" => (is_numeric($itemOrder->getItemPrice()) && (int)$itemOrder->getItemPrice() > 0)
 		));
 		$this->addLabel("item_price", array(
-			"text" => number_format($itemOrder->getItemPrice())
+			"text" => (is_numeric($itemOrder->getItemPrice())) ? number_format($itemOrder->getItemPrice()) : 0
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => number_format($itemOrder->getTotalPrice())
+			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
 		));
 	}
-
-	/**
-	 * @return object#SOYShop_Item
-	 * @param itemId
-	 */
-	function getItem($itemId){
-		
-		try{
-			return $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
-	}
-	
-	function setItemDao($itemDao){
-		$this->itemDao = $itemDao;
-	}
 }
-?>

@@ -30,7 +30,7 @@ class PaymentMethodListComponent extends HTMLList{
 		));
 
 		$this->addLabel("payment_charge", array(
-			"text" => strlen($entity["price"]) ? MessageManager::get("LABEL_PRICE", array("price" => number_format($entity["price"]))) : "",
+			"text" => (isset($entity["price"]) && is_numeric($entity["price"])) ? MessageManager::get("LABEL_PRICE", array("price" => number_format($entity["price"]))) : "",
 		));
 
 		//falseを返すことができる拡張ポイント

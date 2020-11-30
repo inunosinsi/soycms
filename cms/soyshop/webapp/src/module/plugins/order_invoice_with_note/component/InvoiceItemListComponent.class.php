@@ -3,11 +3,12 @@
 class InvoiceItemListComponent extends HTMLList {
 
 	protected function populateItem($itemOrder) {
-		$item = self::getItem($itemOrder->getItemId());
+		$itemId = (is_numeric($itemOrder->getItemId())) ? (int)$itemOrder->getItemId() : 0;
+		$item = soyshop_get_item_object($itemId);
 
 		$this->addLink("item_id", array(
-			"text" => (strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemOrder->getItemId(),
-			"link" => SOY2PageController::createLink("Item.Detail." . $itemOrder->getItemId())
+			"text" => (strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemId,
+			"link" => SOY2PageController::createLink("Item.Detail." . $itemId)
 		));
 
 		$this->addLabel("item_code", array(
@@ -29,41 +30,22 @@ class InvoiceItemListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_count", array(
-			"text" => $itemOrder->getItemCount()
+			"text" => (is_numeric($itemOrder->getItemCount())) ? number_format($itemOrder->getItemCount()) : ""
 		));
 
 		$this->addModel("is_item_price", array(
-			"visible" => (!is_null($itemOrder->getItemPrice()) && (int)$itemOrder->getItemPrice() > 0)
+			"visible" => (is_numeric($itemOrder->getItemPrice()) && (int)$itemOrder->getItemPrice() > 0)
 		));
 		$this->addModel("is_total_price", array(
-			"visible" => (!is_null($itemOrder->getTotalPrice()) && (int)$itemOrder->getTotalPrice() > 0)
+			"visible" => (is_numeric($itemOrder->getTotalPrice()) && (int)$itemOrder->getTotalPrice() > 0)
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => number_format($itemOrder->getItemPrice())
+			"text" => (is_numeric($itemOrder->getItemPrice())) ? number_format($itemOrder->getItemPrice()) : 0
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => number_format($itemOrder->getTotalPrice())
+			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
 		));
-	}
-
-	/**
-	 * @return object#SOYShop_Item
-	 * @param itemId
-	 */
-	private function getItem($itemId){
-
-		try{
-			return self::itemDao()->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
-	}
-
-	private function itemDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-		return $dao;
 	}
 }

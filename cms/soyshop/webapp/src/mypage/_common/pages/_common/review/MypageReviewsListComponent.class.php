@@ -2,21 +2,20 @@
 
 class MypageReviewsListComponent extends HTMLList{
 
-	private $itemDao;
 	private $config;
 
 	protected function populateItem($entity){
 
 		$config = $this->config;
 
-		$item = $this->getItem($entity->getItemId());
+		$item = soyshop_get_item_object($entity->getItemId());
 
 		$this->addLabel("create_date", array(
-			"text" => date("Y年n月j日 H:i", $entity->getCreateDate())
+			"text" => (is_numeric($entity->getCreateDate())) ? date("Y年n月j日 H:i", $entity->getCreateDate()) : ""
 		));
 
 		$this->addLabel("update_date", array(
-			"text" => date("Y年n月j日 H:i", $entity->getUpdateDate())
+			"text" => (is_numeric($entity->getUpdateDate())) ? date("Y年n月j日 H:i", $entity->getUpdateDate()) : ""
 		));
 
 		$this->addLink("item_link", array(
@@ -43,21 +42,6 @@ class MypageReviewsListComponent extends HTMLList{
 		$this->addActionLink("remove_link", array(
 			"link" => soyshop_get_mypage_url() . "/review/remove/" . $entity->getId()
 		));
-	}
-
-	function getItem($itemId){
-
-		try{
-			$item = $this->itemDao->getById($itemId);
-		}catch(Exception $e){
-			$item = new SOYShop_Item();
-		}
-
-		return $item;
-	}
-
-	function setItemDao($itemDao){
-		$this->itemDao = $itemDao;
 	}
 
 	function setConfig($config){

@@ -1,4 +1,5 @@
 <?php
+SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_Coupon");
 /**
  * @entity SOYShop_Coupon
  */

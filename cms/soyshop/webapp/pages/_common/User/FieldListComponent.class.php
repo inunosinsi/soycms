@@ -5,6 +5,7 @@ class FieldListComponent extends HTMLList{
 	private $types;
 
 	protected function populateItem($entity,$key){
+		$fieldType = (is_string($entity->getType())) ? $entity->getType() : "";
 
 		/* 情報表示用 */
 
@@ -21,7 +22,7 @@ class FieldListComponent extends HTMLList{
 
 		//タイプ
 		$this->addLabel("type", array(
-			"text"=> $this->types[$entity->getType()],
+			"text"=> (isset($this->types[$fieldType])) ? $this->types[$fieldType] : "",
 			"attr:id" => "type_text_" . $key,
 		));
 
@@ -69,7 +70,7 @@ class FieldListComponent extends HTMLList{
 			"name" => "obj[type]",
 			"options" => $this->types,
 			"attr:id" => "type_select_" . $key,
-			"selected" => $entity->getType(),
+			"selected" => $fieldType,
 		));
 
 		/* 順番変更用 */
@@ -107,7 +108,7 @@ class FieldListComponent extends HTMLList{
 		$this->addModel("field_config", array(
 			"attr:id" => "field_config_" . $key
 		));
-		
+
 		//必須項目
 		$this->addCheckBox("is_required", array(
 			"name" => "config[isRequired]",
@@ -115,17 +116,17 @@ class FieldListComponent extends HTMLList{
 			"selected" => ($entity->getIsRequired() == SOYShop_UserAttribute::IS_REQUIRED),
 			"label" => "このカスタムフィールドを必須項目にする"
 		));
-		
+
 		//初期値
 		$this->addInput("default_value", array(
 			"name" => "config[defaultValue]",
 			"value" => $entity->getDefaultValue()
 		));
-		
+
 		$this->addModel("display_description_type_checkbox", array(
-			"visible" => ($entity->getType() == SOYShop_UserAttribute::CUSTOMFIELD_TYPE_CHECKBOX)
+			"visible" => ($fieldType == SOYShop_UserAttribute::CUSTOMFIELD_TYPE_CHECKBOX)
 		));
-		
+
 		$this->addTextArea("attribute_description", array(
 			"name" => "config[attributeDescription]",
 			"value" => $entity->getAttributeDescription()
@@ -141,7 +142,7 @@ class FieldListComponent extends HTMLList{
 		$this->addModel("with_options", array(
 			"visible" => $entity->hasOption()
 		));
-		
+
 
 		//設定保存 ボタン
 		$this->addInput("update_advance", array(
@@ -155,7 +156,7 @@ class FieldListComponent extends HTMLList{
 			"value" => $entity->getFieldId(),
 			"attr:id" => "update_advance_submit_" . $key
 		));
-		
+
 	}
 
 	function getTypes() {

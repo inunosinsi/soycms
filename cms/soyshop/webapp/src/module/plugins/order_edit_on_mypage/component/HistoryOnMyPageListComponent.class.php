@@ -9,10 +9,10 @@ class HistoryOnMyPageListComponent extends HTMLList {
 		));
 
 		$this->addLabel("date", array(
-			"text" => date("Y-m-d H:i:s", $entity->getDate())
+			"text" => (is_numeric($entity->getDate())) ? date("Y-m-d H:i:s", $entity->getDate()) : ""
 		));
 
-		$userId = (!is_null($entity->getOrderId())) ? self::getUserIdByOrderId($entity->getOrderId()) : null;
+		$userId = (is_numeric($entity->getOrderId())) ? self::_getUserIdByOrderId($entity->getOrderId()) : null;
 		$this->addLink("user_link", array(
 			"link" => SOY2PageController::createLink("User.Detail." . $userId)
 		));
@@ -26,7 +26,7 @@ class HistoryOnMyPageListComponent extends HTMLList {
 		));
 	}
 
-	private function getUserIdByOrderId($orderId){
+	private function _getUserIdByOrderId($orderId){
 		static $userIds, $dao;
 		if(is_null($userIds)){
 			$userIds[] = array();

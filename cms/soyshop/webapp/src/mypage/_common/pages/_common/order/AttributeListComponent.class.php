@@ -23,7 +23,7 @@ class AttributeListComponent extends HTMLList{
 			"link" => soyshop_get_mypage_url() . "/order/edit/payment/" . $this->orderId
 		));
 
-		if(isset($item["hidden"]) && $item["hidden"])return false;
+		if(isset($item["hidden"]) && $item["hidden"]) return false;
 	}
 
 	private function isPaymentEditable($moduleId){

@@ -5,6 +5,7 @@ class FieldListComponent extends HTMLList{
 	private $types;
 
 	protected function populateItem($entity,$key){
+		$fieldType = (is_string($entity->getType())) ? $entity->getType() : "";
 
 		/* 情報表示用 */
 		$this->addLabel("label", array(
@@ -17,7 +18,7 @@ class FieldListComponent extends HTMLList{
 		));
 
 		$this->addLabel("type", array(
-			"text"=> $this->types[$entity->getType()],
+			"text"=> (isset($this->types[$fieldType])) ? $this->types[$fieldType] : "",
 			"attr:id" => "type_text_" . $key,
 		));
 
@@ -59,7 +60,7 @@ class FieldListComponent extends HTMLList{
 			"name" => "obj[type]",
 			"options" => $this->types,
 			"attr:id" => "type_select_" . $key,
-			"selected" => $entity->getType(),
+			"selected" => $fieldType,
 		));
 
 		/* 順番変更用 */
@@ -126,7 +127,7 @@ class FieldListComponent extends HTMLList{
 
 		//許可するのは日付のみ　@ToDo 後々項目は追加していきたい
 		$this->addModel("is_order_search", array(
-			"visible" => ($entity->getType() == SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE)
+			"visible" => ($fieldType == SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE)
 		));
 
 		$this->addCheckBox("add_order_search_item", array(

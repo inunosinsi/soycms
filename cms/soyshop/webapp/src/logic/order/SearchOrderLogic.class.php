@@ -84,9 +84,9 @@ class SearchOrderLogic extends SOY2LogicBase{
 			//注文一覧でキャンセルを含むか？
 			SOY2::import("domain.config.SOYShop_ShopConfig");
 			if(SOYShop_ShopConfig::load()->getDisplayCancelOrder()){
-				$where[] = "order_status not in (".SOYShop_Order::ORDER_STATUS_INTERIM.")";
+				$where[] = "order_status not in (".SOYShop_Order::ORDER_STATUS_INTERIM.",".SOYShop_Order::ORDER_STATUS_INVALID.")";
 			}else{
-				$where[] = "order_status not in (".SOYShop_Order::ORDER_STATUS_INTERIM.",".SOYShop_Order::ORDER_STATUS_CANCELED.")";
+				$where[] = "order_status not in (".SOYShop_Order::ORDER_STATUS_INTERIM.",".SOYShop_Order::ORDER_STATUS_INVALID.",".SOYShop_Order::ORDER_STATUS_CANCELED.")";
 			}
 		}
 

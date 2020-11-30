@@ -10,7 +10,7 @@ class BonusListComponent extends HTMLList{
 		));
 
 		$this->addLabel("time_limit", array(
-			"text" => ((isset($entity["timelimit"]))) ? date("Y年m月d日", $entity["timelimit"]) : MessageManager::get("FREEUNLIMITED")
+			"text" => ((isset($entity["timelimit"])) && is_numeric($entity["timelimit"])) ? date("Y年m月d日", $entity["timelimit"]) : MessageManager::get("FREEUNLIMITED")
 		));
 
 
@@ -27,11 +27,11 @@ class BonusListComponent extends HTMLList{
 		));
 
 		$this->addLabel("no_download_message", array(
-			"text" => $this->getBonusMessage($paymentFlag)
+			"text" => self::_getBonusMessage($paymentFlag)
 		));
 	}
 
-	function getBonusMessage($paymentFlag){
-		if(!$paymentFlag) return MessageManager::get("WAITING_FOR_PAYMENT");
+	private function _getBonusMessage($paymentFlag){
+		return (!$paymentFlag) ? MessageManager::get("WAITING_FOR_PAYMENT") : "";
 	}
 }

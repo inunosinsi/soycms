@@ -1,22 +1,20 @@
 <?php
 
 class PurchaseListComponent extends HTMLList{
-	
+
 	private $itemOrderDao;
-	private $userDao;
-	private $itemDao;
 	private $config;
-	
+
 	protected function populateItem($order){
-		
+
 		/*** 注文概要 ***/
-		$this->buildOrderArea($order);	
-		
+		$this->buildOrderArea($order);
+
 		/*** 支払い配送情報 ***/
 		$this->createAdd("module_list", "PurchaseModuleListComponent", array(
 			"list" => $order->getModuleList()
 		));
-		
+
 		$this->addLabel("document_label", array(
 			"text" => (defined("ORDER_DOCUMENT_LABEL")) ? ORDER_DOCUMENT_LABEL : "納品書"
 		));
@@ -26,7 +24,7 @@ class PurchaseListComponent extends HTMLList{
 
 		/*** 顧客情報 ***/
 		$this->buildClaimedArea($order);
-		
+
 		/*** 注文商品 ***/
 		$items = $this->getItemOrders($order->getItems(), $order->getId());
 		if(ORDER_TEMPLATE !== "jungle" && count($items) < 10){
@@ -36,57 +34,56 @@ class PurchaseListComponent extends HTMLList{
 		}
 	   	$this->createAdd("item_detail", "PurchaseItemListComponent", array(
 			"list" => $items,
-			"itemDao" => $this->itemDao
 		));
-		
+
 		/*** ショップ情報 ***/
 		$this->buildCompanyArea();
-		
+
 		/*** 振り込み情報 ***/
 //		$this->buildPaymentArea($order);
-		
+
 		/*** その他メッセージ ***/
 //		$this->buildMessageArea();
 	}
-	
+
 	/*** 注文概要 ***/
 	protected function buildOrderArea($order){
 		$this->addLabel("order_id", array(
 			"text" => $order->getTrackingNumber()
 		));
-		
+
 		$this->addLabel("order_date", array(
 			"text" => date('Y-m-d', $order->getOrderDate())
 		));
-		
+
 		$this->addLabel("order_time", array(
 			"text" => date("H:i", $order->getOrderDate())
 		));
-		
+
 		$this->addLabel("create_date", array(
 			"text" => date('Y-m-d', time())
 		));
-		
+
 		$this->addLabel("create_date", array(
 			"text" => date('Y-m-d', time())
 		));
-		
+
 		$this->addLabel("subtotal_price", array(
 			"text" => number_format($this->getTotalPrice($order->getId()))
 		));
-		
+
 		$this->addLabel("order_total_price", array(
 			"text" => number_format($order->getPrice())
 		));
-		
+
 		$this->addModel("order_first_order", array(
 			"visible" => (isset($this->config["firstOrder"]) && $this->config["firstOrder"] == 1 && array_key_exists("order_first_order", $order->getAttributeList()))
 		));
 	}
-	
+
 	/*** お届け先 ***/
 	protected function buildSendArea($order){
-		$customer = $this->getCustomer($order->getUserId());
+		$customer = soyshop_get_user_object($order->getUserId());
 		$address = $order->getAddressArray();
 
 		//お届け先の郵便番号
@@ -119,16 +116,16 @@ class PurchaseListComponent extends HTMLList{
 			"text" => (isset($address["name"])) ? $address["name"] : ""
 		));
 	}
-	
+
 	/*** 顧客情報 ***/
 	protected function buildClaimedArea($order){
 		$claimedAddress = $order->getClaimedAddressArray();
-		
+
 		//注文者住所の郵便番号
 		$this->addLabel("zip_code", array(
 			"text" => (isset($claimedAddress["zipCode"])) ? $claimedAddress["zipCode"] : ""
 		));
-		
+
 		//注文者住所の都道府県
 		$this->addLabel("area", array(
 			"text" => (isset($claimedAddress["area"])) ? SOYShop_Area::getAreaText($claimedAddress["area"]) : ""
@@ -154,12 +151,12 @@ class PurchaseListComponent extends HTMLList{
 			"text" => (isset($claimedAddress["name"])) ? $claimedAddress["name"] : ""
 		));
 	}
-	
+
 	/*** ショップ情報 ***/
 	protected function buildCompanyArea(){
 		$config = SOYShop_ShopConfig::load();
 		$company = $config->getCompanyInformation();
-		
+
 		/** 画像 **/
 		//$fDir = OrderInvoiceCommon::getFileDirectory();
 		//$fUrl = OrderInvoiceCommon::getFileUrl();
@@ -167,11 +164,11 @@ class PurchaseListComponent extends HTMLList{
 //			$this->addModel("is_" . $t, array(
 //				"visible" => (isset($this->config[$t]) && file_exists($fDir . $this->config[$t]))
 //			));
-//			
+//
 //			$this->addModel("no_" . $t, array(
 //				"visible" => (!isset($this->config[$t]) || !file_exists($fDir . $this->config[$t]))
 //			));
-//			
+//
 //			$this->addImage($t, array(
 //				"src" => (isset($this->config[$t])) ? $fUrl . $this->config[$t] : null
 //			));
@@ -184,7 +181,7 @@ class PurchaseListComponent extends HTMLList{
 		$this->addLabel("shop_url", array(
 			"text" => soyshop_get_site_url(true)
 		));
-		
+
 		$this->addLabel("company_name", array(
 			"text" => (isset($company["name"])) ? $company["name"] : ""
 		));
@@ -217,7 +214,7 @@ class PurchaseListComponent extends HTMLList{
 		$this->addLabel("company_fax", array(
 			"text" => (isset($company["fax"])) ? $company["fax"] : ""
 		));
-		
+
 		$this->addModel("is_campany_mailaddress", array(
 			"visible" => (isset($company["mailaddress"]) && strlen($company["mailaddress"]))
 		));
@@ -226,11 +223,11 @@ class PurchaseListComponent extends HTMLList{
 			"text" => (isset($company["mailaddress"])) ? $company["mailaddress"] : ""
 		));
 	}
-	
+
 //	/*** 振込先情報 ***/
 //	protected function buildPaymentArea($order){
 //		list($paymentId, $deliveryId) = $this->getPluginIds($order);
-//		
+//
 //		if(isset($this->config["payment"]) && $this->config["payment"] == 1){
 //			//振込先情報の取得
 //			$paymentCofig = SOYShop_DataSets::get($paymentId . ".text", array());
@@ -238,59 +235,59 @@ class PurchaseListComponent extends HTMLList{
 //		}else{
 //			$account = "";
 //		}
-//		
+//
 //		$this->addModel("display_payment", array(
 //			"visible" => (strlen($account) > 0)
 //		));
-//		
+//
 //		$this->addLabel("payment", array(
 //			"html" => nl2br($account)
 //		));
 //	}
-//	
+//
 //	/*** その他メッセージ ***/
 //	protected function buildMessageArea(){
 //		$title = (isset($this->config["title"])) ? $this->config["title"] : "";
 //		$content = (isset($this->config["content"])) ? $this->config["content"] : "";
-//				
+//
 //		$this->addModel("display_content", array(
 //			"visible" => (strlen($title) > 0 && strlen($content) > 0)
 //		));
-//		
+//
 //		$this->addLabel("title", array(
 //			"text" => $title
 //		));
-//				
+//
 //		$this->addLabel("content", array(
 //			"html" => nl2br($content)
 //		));
 //	}
-	
+
 	protected function getPluginIds($order){
 		$attributes = $order->getAttributeList();
-		
+
 		$paymentId = null;
 		$deliveryId = null;
-		
+
 		foreach($attributes as $key => $attribute){
 			if(strpos($key, "payment_") !== false){
 				$paymentId = $key;
 				continue;
 			}
-			
+
 			if(strpos($key, "delivery_") !== false && strpos($key, ".") === false){
 				$deliveryId = $key;
 				continue;
 			}
-			
+
 			if(isset($paymentId) && (isset($deliveryId))) break;
 		}
-		
+
 		return array($paymentId, $deliveryId);
 	}
-	
+
 	protected function getItemOrders($itemOrders, $orderId){
-		
+
 		//ordersが空の時は再度取得する
 		if(count($itemOrders) === 0){
 			try{
@@ -300,48 +297,27 @@ class PurchaseListComponent extends HTMLList{
 				$itemOrders = array();
 			}
 		}
-		
+
 		return $itemOrders;
 	}
-	
-	protected function getCustomer($id){
-		SOY2DAOFactory::importEntity("user.SOYShop_User");
-		SOY2DAOFactory::importEntity("config.SOYShop_Area");
 
-		try{
-			$customer = $this->userDao->getById($id);
-		}catch(Exception $e){
-			$customer = new SOYShop_User();
-			$customer->setName("[deleted]");
-		}
-		
-		return $customer;
-	}
-	
 	/**
 	 * @return object#SOYShop_ItemOrder
 	 * @param orderId
 	 */
 	function getTotalPrice($orderId){
-		
+
 		try{
 			return $this->itemOrderDao->getTotalPriceByOrderId($orderId);
 		}catch(Exception $e){
 			return 0;
 		}
 	}
-	
+
 	function setItemOrderDao($itemOrderDao){
 		$this->itemOrderDao = $itemOrderDao;
-	}
-	function setUserDao($userDao){
-		$this->userDao = $userDao;
-	}
-	function setItemDao($itemDao){
-		$this->itemDao = $itemDao;
 	}
 	function setConfig($config){
 		$this->config = $config;
 	}
 }
-?>

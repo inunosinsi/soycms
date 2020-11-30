@@ -2,7 +2,6 @@
 
 class CouponListComponent extends HTMLList{
 
-	private $dao;
 	private $categoryList;
 
 	function populateItem($entity, $key, $index){
@@ -19,38 +18,27 @@ class CouponListComponent extends HTMLList{
 			"text" => $entity->getName()
 		));
 
+		$cnt = (is_numeric($entity->getCount())) ? (int)$entity->getCount() : 0;
 		$this->addLabel("count", array(
-			"text" => ($entity->getCount() > 900000) ? "無制限" : number_format($entity->getCount()) . " 回"
+			"text" => ($cnt > 900000) ? "無制限" : number_format($cnt) . " 回"
 		));
 
 		//使用された回数を表示する
-		try{
-			$usedCount = $this->dao->countByCouponId($entity->getId());
-		}catch(Exception $e){
-			$usedCount = 0;
-		}
-
 		$this->addLabel("used_count", array(
-			"text" => number_format($usedCount)
+			"text" => number_format(self::_getUsedCount($entity->getId()))
 		));
 
 		//クーポンタイプが値引き額の場合は値引きの金額を表示する
-		if($entity->getCouponType() == SOYShop_Coupon::TYPE_PRICE){
-			$couponValue = number_format($entity->getDiscount()) . " 円";
-		}else{
-			$couponValue = $entity->getDiscountPercent() . " ％";
-		}
-
 		$this->addLabel("discount", array(
-			"text" => $couponValue
+			"text" => ($entity instanceof SOYShop_Coupon) ? self::_getDiscountAmount($entity) : 0
 		));
 
 		$this->addLabel("price_limit", array(
-			"text" => self::convertPrice($entity->getPriceLimitMin()) . " ～ " . $this->convertPrice($entity->getPriceLimitMax(), true)
+			"text" => self::_convertPrice($entity->getPriceLimitMin()) . " ～ " . self::_convertPrice($entity->getPriceLimitMax(), true)
 		));
 
 		$this->addLabel("time_limit", array(
-			"text" => self::convertDate($entity->getTimeLimitStart(), true) . " ～ " . $this->convertDate($entity->getTimeLimitEnd(), true)
+			"text" => self::_convertDate($entity->getTimeLimitStart(), true) . " ～ " . self::_convertDate($entity->getTimeLimitEnd(), true)
 		));
 
 		$this->addLink("detail_link", array(
@@ -135,34 +123,57 @@ class CouponListComponent extends HTMLList{
 
 		$this->addInput("input_time_limit_start", array(
 			"name" => "Edit[timeLimitStart]",
-			"value" => self::convertDate($entity->getTimeLimitStart())
+			"value" => self::_convertDate($entity->getTimeLimitStart())
 		));
 
 		$this->addInput("input_time_limit_end", array(
 			"name" => "Edit[timeLimitEnd]",
-			"value" => self::convertDate($entity->getTimeLimitEnd())
+			"value" => self::_convertDate($entity->getTimeLimitEnd())
 		));
 	}
 
-	private function convertPrice($value, $max = false){
-		if(isset($value) && (int)$value > 0){
+	private function _getUsedCount($id){
+		if(!is_numeric($id)) return 0;
+		try{
+			return self::_dao()->countByCouponId($id);
+		}catch(Exception $e){
+			return 0;
+		}
+	}
+
+	private function _getDiscountAmount(SOYShop_Coupon $coupon){
+		if($coupon->getCouponType() == SOYShop_Coupon::TYPE_PRICE){
+			return (is_numeric($coupon->getDiscount())) ? number_format($coupon->getDiscount()) . " 円" : "";
+		}else{
+			return (is_numeric($coupon->getDiscountPercent())) ? $coupon->getDiscountPercent() . " ％" : "";
+		}
+	}
+
+	private function _convertPrice($value, $max = false){
+		if(is_numeric($value) && (int)$value > 0){
 			return number_format($value) . "　円";
 		}else{
 			return ($max === true) ? "無制限" : 0 . "　円";
 		}
 	}
 
-	private function convertDate($value, $flag = false){
+	private function _convertDate($value, $flag = false){
 		if($value == 2147483647){
 			return ($flag) ? "無制限" : "";
 		}else{
-			return date("Y-m-d", $value);
+			return (is_numeric($value)) ? date("Y-m-d", $value) : "";
 		}
 	}
 
-	function setDao($dao){
-		$this->dao = $dao;
+	private function _dao(){
+		static $dao;
+		if(is_null($dao)) {
+			SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_CouponHistoryDAO");
+			$dao = SOY2DAOFactory::create("SOYShop_CouponHistoryDAO");
+		}
+		return $dao;
 	}
+
 	function setCategoryList($categoryList){
 		$this->categoryList = $categoryList;
 	}

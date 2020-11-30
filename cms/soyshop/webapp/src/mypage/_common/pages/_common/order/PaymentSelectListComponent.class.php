@@ -21,12 +21,13 @@ class PaymentSelectListComponent extends HTMLList {
 			"html" => (isset($entity["description"])) ? $entity["description"] : ""
 		));
 
+		$price = (isset($entity["price"]) && is_numeric($entity["price"])) ? (int)$entity["price"] : 0;
 		$this->addModel("is_price", array(
-			"visible" => ((int)$entity["price"] > 0)
+			"visible" => ($price > 0)
 		));
 
 		$this->addLabel("price", array(
-			"text" => number_format($entity["price"])
+			"text" => number_format($price)
 		));
 	}
 

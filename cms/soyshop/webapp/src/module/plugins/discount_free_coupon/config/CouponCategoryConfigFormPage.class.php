@@ -6,7 +6,7 @@ class CouponCategoryConfigFormPage extends WebPage {
 	private $dao;
 
 	function __construct(){
-		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
+		SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_CouponCategoryDAO");
 		SOY2::import("module.plugins.discount_free_coupon.component.CategoryListComponent");
 		$this->dao = SOY2DAOFactory::create("SOYShop_CouponCategoryDAO");
 	}

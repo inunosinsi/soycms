@@ -24,5 +24,4 @@ class ContinuousPage extends HTMLTemplatePage{
 			$logic->save($order);
 		}
 	}
-
 }

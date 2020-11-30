@@ -105,7 +105,7 @@ class InvoiceListComponent extends HTMLList{
 
 	/*** お届け先 ***/
 	private function buildSendArea(SOYShop_Order $order){
-		$customer = self::getCustomer($order->getUserId());
+		$customer = soyshop_get_user_object($order->getUserId());
 		$address = $order->getAddressArray();
 
 		//お届け先の郵便番号
@@ -386,23 +386,6 @@ class InvoiceListComponent extends HTMLList{
 		}
 
 		return $itemOrders;
-	}
-
-	private function getCustomer($id){
-		static $dao;
-		if(is_null($dao)){
-			SOY2DAOFactory::importEntity("user.SOYShop_User");
-			SOY2DAOFactory::importEntity("config.SOYShop_Area");
-			$dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		}
-
-		try{
-			return $dao->getById($id);
-		}catch(Exception $e){
-			$customer = new SOYShop_User();
-			$customer->setName("[deleted]");
-			return $customer;
-		}
 	}
 
 	/**

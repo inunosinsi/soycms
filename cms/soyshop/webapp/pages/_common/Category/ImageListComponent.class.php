@@ -7,4 +7,3 @@ class ImageListComponent extends HTMLList{
 		));
 	}
 }
-?>

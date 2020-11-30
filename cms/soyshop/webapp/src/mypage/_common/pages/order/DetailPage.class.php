@@ -364,7 +364,7 @@ class DetailPage extends MainMyPagePageBase{
     }
 
 	private function _cancel(){
-		if(!soy2_check_token() || !soy2_check_referer()) $this->jump("order");
+		if(!soy2_check_token()) $this->jump("order");
 		$order = $this->getOrderByIdAndUserId($this->orderId, $this->userId);
 		SOY2Logic::createInstance("logic.order.OrderLogic")->changeOrderStatus(array($order->getId()), SOYShop_Order::ORDER_STATUS_CANCELED, $this->getUser()->getName());
 

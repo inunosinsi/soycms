@@ -7,7 +7,7 @@ class PurchaseListComponent extends HTMLList{
     function populateItem($entity){
         //受付時刻
         $this->addLabel("log_date", array(
-            "text" => (isset($entity["log_date"])) ? date("Y年m月d日 H:i", $entity["log_date"]) : ""
+            "text" => (isset($entity["log_date"]) && is_numeric($entity["log_date"])) ? date("Y年m月d日 H:i", $entity["log_date"]) : ""
         ));
 
         //買取番号

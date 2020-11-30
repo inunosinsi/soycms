@@ -135,11 +135,11 @@ class DetailPage extends MainMyPagePageBase{
     	));
 
     	$this->addLabel("create_date", array(
-			"text" => date("Y年n月j日 H:i", $review->getCreateDate())
+			"text" => (is_numeric($review->getCreateDate())) ? date("Y年n月j日 H:i", $review->getCreateDate()) : ""
 		));
 
 		$this->addLabel("update_date", array(
-			"text" => date("Y年n月j日 H:i", $review->getUpdateDate())
+			"text" => (is_numeric($review->getUpdateDate())) ? date("Y年n月j日 H:i", $review->getUpdateDate()) : ""
 		));
     }
 }

@@ -102,17 +102,24 @@ class SOYShopPointPaymentDeletageAction implements SOY2PluginDelegateAction{
 
 			//ページのdoPost内で
 			case "checkError":
-
-				if($action->hasError(@$this->param[$moduleId])){
-					$this->hasError = true;
-				}else{
-					//do nothing
+				if(is_array($this->param) && is_string($moduleId) && isset($this->param[$moduleId])){
+					if($action->hasError($this->param[$moduleId])){
+						$this->hasError = true;
+					}else{
+						//do nothing
+					}
 				}
+
 				break;
 
 			//ページのdoPost内でエラーのないとき
 			case "select":
-				$action->doPost(@$this->param[$moduleId], $this->userId);
+				if(is_numeric($this->param) || is_string($this->param)){
+					$param = $this->param;
+				}else if(is_array($this->param) && is_string($moduleId) && isset($this->param[$moduleId])){
+					$param = $this->param[$moduleId];
+				}
+				$action->doPost($param, $this->userId);
 				break;
 
 			case "clear":

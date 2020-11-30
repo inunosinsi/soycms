@@ -13,15 +13,15 @@ class DownloadListComponent extends HTMLList{
 		));
 
 		$this->addLabel("download_order_date", array(
-			"text" => date("Y年m月d日", $entity->getOrderDate())
+			"text" => (is_numeric($entity->getOrderDate())) ? date("Y年m月d日", $entity->getOrderDate()) : ""
 		));
 
 		$this->addLabel("time_limit", array(
-			"text" => (!is_null($entity->getTimeLimit())) ? date("Y年m月d日", $entity->getTimeLimit() - 1) : MessageManager::get("FREEUNLIMITED")
+			"text" => (is_numeric($entity->getTimeLimit())) ? date("Y年m月d日", $entity->getTimeLimit() - 1) : MessageManager::get("FREEUNLIMITED")
 		));
 
 		$this->addLabel("count", array(
-			"text" => (!is_null($entity->getCount())) ? MessageManager::get("COUNT", array("count" => $entity->getCount())) : MessageManager::get("FREEUNLIMITED")
+			"text" => (is_numeric($entity->getCount())) ? MessageManager::get("COUNT", array("count" => $entity->getCount())) : MessageManager::get("FREEUNLIMITED")
 		));
 
 		$this->addModel("is_download", array(
@@ -37,11 +37,11 @@ class DownloadListComponent extends HTMLList{
 		));
 
 		$this->addLabel("no_download_message", array(
-			"text" => $this->getNoDownloadMessage($paymentFlag,$entity)
+			"text" => self::_getNoDownloadMessage($paymentFlag,$entity)
 		));
 	}
 
-	function getNoDownloadMessage($paymentFlag, $entity){
+	private function _getNoDownloadMessage($paymentFlag, $entity){
 
 		$message = "";
 

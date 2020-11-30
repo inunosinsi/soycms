@@ -6,7 +6,7 @@ class OrderListComponent extends HTMLList{
 
         //注文時刻
         $this->addLabel("order_date", array(
-            "text" => date("Y年m月d日 H:i", $entity->getOrderDate())
+            "text" => (is_numeric($entity->getOrderDate())) ? date("Y年m月d日 H:i", $entity->getOrderDate()) : ""
         ));
 
         //注文番号

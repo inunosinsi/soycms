@@ -9,8 +9,8 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 	private $categoryLogic;
 
 	function __construct() {
-		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
-		SOY2::imports("module.plugins.discount_free_coupon.util.*");
+		SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_CouponDAO");
+		SOY2::import("module.plugins.discount_free_coupon.util.DiscountFreeCouponUtil");
 		SOY2::import("module.plugins.discount_free_coupon.component.CouponListComponent");
 		$this->dao = SOY2DAOFactory::create("SOYShop_CouponDAO");
 		$this->categoryLogic = SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.CouponCategoryLogic");
@@ -175,7 +175,7 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 			"link" => SOY2PageController::createLink("Config.Detail?plugin=discount_free_coupon&category")
 		));
 
-		self::buildList();
+		self::_buildList();
 
 		$this->addForm("form", array(
 			"action" => SOY2PageController::createLink("Config.Detail?plugin=discount_free_coupon"),
@@ -200,9 +200,9 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 		));
 	}
 
-	private function buildList(){
+	private function _buildList(){
 
-		$coupons = self::getCoupons();
+		$coupons = self::_getCoupons();
 		DisplayPlugin::toggle("has_coupon", (count($coupons) > 0));
 
 		/** CSVフォーム **/
@@ -225,12 +225,11 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 
 		$this->createAdd("coupon_list", "CouponListComponent", array(
 			"list" => $coupons,
-			"dao" => SOY2DAOFactory::create("SOYShop_CouponHistoryDAO"),
 			"categoryList" => $this->categoryLogic->getCategoryList()
 		));
 	}
 
-	private function getCoupons(){
+	private function _getCoupons(){
 		try{
 			return $this->dao->getNotDeleted();
 		}catch(Exception $e){

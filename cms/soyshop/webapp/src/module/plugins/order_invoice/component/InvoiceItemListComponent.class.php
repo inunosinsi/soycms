@@ -6,7 +6,8 @@ class InvoiceItemListComponent extends HTMLList {
 
 	protected function populateItem($itemOrder) {
 
-		$item = self::getItem($itemOrder->getItemId());
+		$itemId = (is_numeric($itemOrder->getItemId())) ? (int)$itemOrder->getItemId() : 0;
+		$item = soyshop_get_item_object($itemId);
 
 		$this->addLink("item_id", array(
 			"text" => (strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemOrder->getItemId(),
@@ -14,7 +15,7 @@ class InvoiceItemListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_code", array(
-			"text" => ((int)$itemOrder->getItemId() > 0) ? $item->getCodeOnAdmin() : ""
+			"text" => ($itemId > 0) ? $item->getCodeOnAdmin() : ""
 		));
 
 		$itemName = $itemOrder->getItemNameOnAdmin();
@@ -25,7 +26,7 @@ class InvoiceItemListComponent extends HTMLList {
 
 		//軽減税率の区分
 		$this->addLabel("reduced_tax_rate_item", array(
-			"text" => ($this->reducedTaxRateMode && ConsumptionTaxUtil::isReducedTaxRateItem($itemOrder->getItemId())) ? "*" : ""
+			"text" => ($this->reducedTaxRateMode && ConsumptionTaxUtil::isReducedTaxRateItem($itemId)) ? "*" : ""
 		));
 
 		$this->addLabel("item_option", array(
@@ -33,34 +34,19 @@ class InvoiceItemListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_count", array(
-			"text" => $itemOrder->getItemCount()
+			"text" => (is_numeric($itemOrder->getItemCount())) ? number_format($itemOrder->getItemCount()) : ""
 		));
 
 		$this->addModel("is_item_price", array(
-			"visible" => (!is_null($itemOrder->getItemPrice()) && (int)$itemOrder->getItemPrice() > 0)
+			"visible" => (is_numeric($itemOrder->getItemPrice()) && (int)$itemOrder->getItemPrice() > 0)
 		));
 		$this->addLabel("item_price", array(
-			"text" => number_format($itemOrder->getItemPrice())
+			"text" => (is_numeric($itemOrder->getItemPrice())) ? number_format($itemOrder->getItemPrice()) : 0
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => number_format($itemOrder->getTotalPrice())
+			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
 		));
-	}
-
-	/**
-	 * @return object#SOYShop_Item
-	 * @param itemId
-	 */
-	private function getItem($itemId){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-
-		try{
-			return $dao->getById($itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
 	}
 
 	function setReducedTaxRateMode($reducedTaxRateMode){

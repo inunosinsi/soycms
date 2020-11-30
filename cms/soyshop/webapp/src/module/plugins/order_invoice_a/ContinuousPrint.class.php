@@ -4,14 +4,14 @@ class Print_IndexPage extends HTMLTemplatePage{
 
 	private $orders;
 	private $logic;
-	
+
 	function setOrders($orders){
 		$this->orders = $orders;
 	}
-	
+
 	function build_print(){
 		$orders = $this->orders;
-		
+
 		$this->createAdd("continuous_print","ContinuousPrint", array(
 			"list" => $orders
 		));
@@ -20,29 +20,29 @@ class Print_IndexPage extends HTMLTemplatePage{
 }
 
 class ContinuousPrint extends HTMLList{
-	
+
 	private $orderDAO;
-	
+
 	protected function populateItem($entity){
-		
+
 		$id = $entity->getId();
-		
+
 		$this->createAdd("order_id","HTMLLabel", array(
 			"text" => $entity->getTrackingNumber()
 		));
-		
+
 		$this->createAdd("order_date","HTMLLabel", array(
 			"text" => date('Y-m-d', $entity->getOrderDate())
 		));
-		
+
 		$this->createAdd("create_date","HTMLLabel", array(
 			"text" => date('Y-m-d', time())
 		));
-		
+
 		$this->createAdd("create_date","HTMLLabel", array(
 			"text" => date('Y-m-d', time())
 		));
-		
+
 		$this->createAdd("subtotal_price","HTMLLabel", array(
 			"text" => number_format($this->getTotalPrice($id))
 		));
@@ -51,14 +51,14 @@ class ContinuousPrint extends HTMLList{
 		$this->createAdd("order_total_price","HTMLLabel", array(
 			"text" => number_format($entity->getPrice($id))
 		));
-		
+
     	$this->createAdd("module_list","Invoice_ModuleList", array(
     		"list" => $entity->getModuleList()
     	));
 
         /*** お届け先 ***/
         // customer_xx
-        
+
         $customer = $this->getCustomer($entity->getUserId());
 
 		$address = $entity->getAddressArray();
@@ -94,12 +94,12 @@ class ContinuousPrint extends HTMLList{
 		));
 
         /*** 顧客情報 ***/
-		
+
 		//注文者住所の郵便番号
 		$this->createAdd("zip_code","HTMLLabel", array(
 			"text" => $customer->getZipCode()
 		));
-		
+
 		//注文者住所の都道府県
 		$this->createAdd("area","HTMLLabel", array(
 			"text" => SOYShop_Area::getAreaText($customer->getArea())
@@ -124,13 +124,14 @@ class ContinuousPrint extends HTMLList{
 		$this->createAdd("name","HTMLLabel", array(
 			"text" => $customer->getName()
 		));
-    	
-    	
+
+
         /*** 注文商品 ***/
-	   	$this->createAdd("item_detail","Invoice_ItemList", array(
+		SOY2::imports("module.plugins.order_invoice.component.*");
+	   	$this->createAdd("item_detail","InvoiceItemListComponent", array(
     		"list" => $entity->getItems()
     	));
-    	
+
 		/*** ショップ情報 ***/
 		// shop_xx
 	   	$config = SOYShop_ShopConfig::load();
@@ -176,7 +177,7 @@ class ContinuousPrint extends HTMLList{
     		"text" => $company["mailaddress"]
     	));
 	}
-    
+
     protected function getCustomer($id){
         SOY2DAOFactory::importEntity("user.SOYShop_User");
         SOY2DAOFactory::importEntity("config.SOYShop_Area");
@@ -187,10 +188,10 @@ class ContinuousPrint extends HTMLList{
 			$customer = new SOYShop_User();
 			$customer->setName("[deleted]");
 		}
-		
+
 		return $customer;
     }
-    
+
 	/**
 	 * @return object#SOYShop_ItemOrder
 	 * @param orderId
@@ -228,13 +229,13 @@ class Invoice_ItemList extends HTMLList {
 		$this->createAdd("item_name","HTMLLabel", array(
 			"text" => $itemOrder->getItemName()
 		));
-		
+
 		SOYShopPlugin::load("soyshop.item.option");
 		$delegate = SOYShopPlugin::invoke("soyshop.item.option", array(
 			"mode" => "display",
 			"item" => $itemOrder,
 		));
-		
+
 		$this->createAdd("item_option","HTMLLabel", array(
 			"text" => $delegate->getHtmls()
 		));
