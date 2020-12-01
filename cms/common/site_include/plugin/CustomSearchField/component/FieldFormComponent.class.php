@@ -80,7 +80,6 @@ class FieldFormComponent {
 						}
 						$html[] = "その他 <input type=\"text\" value=\"" . $otherValue . "\" onchange=\"$('#" . $fieldId . "_other').val($(this).val());\">";
 						$html[] = "</label>";
-
 					}
                 }
 

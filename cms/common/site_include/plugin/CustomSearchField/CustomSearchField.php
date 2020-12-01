@@ -17,7 +17,7 @@ class CustomSearchFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.8.1"
 		));
 
 		//プラグイン アクティブ
@@ -69,14 +69,31 @@ class CustomSearchFieldPlugin{
 					$csfValue = nl2br($csfValue);
 				}
 
+				$csfValueLength = strlen(trim(strip_tags($csfValue)));
+
 				$htmlObj->addModel($key . "_visible", array(
 					"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-					"visible" => (strlen($csfValue))
+					"visible" => ($csfValueLength > 0)
+				));
+
+				$htmlObj->addModel($key . "_is_not_empty", array(
+					"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+					"visible" => ($csfValueLength > 0)
+				));
+
+				$htmlObj->addModel($key . "_is_empty", array(
+					"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+					"visible" => ($csfValueLength === 0)
 				));
 
 				$htmlObj->addLabel($key, array(
 					"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
 					"html" => (isset($csfValue)) ? $csfValue : null
+				));
+
+				$htmlObj->addLabel($key . "_link", array(
+					"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+					"link" => (isset($csfValue) && strlen($csfValue)) ? $csfValue : null
 				));
 
 				switch($field["type"]){
