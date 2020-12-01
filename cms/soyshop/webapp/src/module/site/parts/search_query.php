@@ -11,28 +11,28 @@ $html = array();
 
 SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 $config = CustomSearchFieldUtil::getConfig();
-$keys = (isset($_GET["c_search"]) && count($_GET["c_search"])) ? array_keys($_GET["c_search"]) : array();
+$keys = (isset($_GET["c_search"]) && is_array($_GET["c_search"]) && count($_GET["c_search"])) ? array_keys($_GET["c_search"]) : array();
 if(count($keys)){
 	for($i = 0; $i < count($keys); $i++){
 		$csfId = $keys[$i];
 		$v = $_GET["c_search"][$csfId];
-	
+
 		//文字列の場合の処理
 		if(!is_array($v)){
 			$v = htmlspecialchars(trim($v), ENT_QUOTES, "UTF-8");
 			if(!strlen($v)) continue;
-		
+
 			if(isset($config[$csfId]) && strlen($config[$csfId]["label"])){
 				$html[] =  "<li>" . $config[$csfId]["label"] . "：" . $v . "</li>";
 				continue;
 			}
-		
+
 			//商品名
 			if($csfId == "item_name" && strlen($v)){
 				$html[] = "<li>商品名：" . $v . "</li>";
 			}
-		
-		
+
+
 			//価格
 			if(strpos($csfId, "_min")){
 				$max = (int)$_GET["c_search"]["item_price_max"];
@@ -44,7 +44,7 @@ if(count($keys)){
 				$html[] = "<li>商品価格：0〜" . number_format((int)$v) . "</li>";
 				continue;
 			}
-		
+
 			//最小
 			if(strpos($csfId, "_start")){
 				$csfId = str_replace("_start", "", $csfId);
@@ -52,7 +52,7 @@ if(count($keys)){
 					$end = (int)$_GET["c_search"][$csfId . "_end"];
 					$end = ($end > 0) ? number_format($end) : "";
 					$html[] = "<li>" . $config[$csfId]["label"] . "：" . $v . "〜" . $end . "</li>";
-				
+
 				}
 				$i++;
 				continue;
@@ -70,9 +70,9 @@ if(count($keys)){
 				if(!strlen(trim($val))) continue;
 				$arr[] = $val;
 			}
-		
+
 			if(!count($arr)) continue;
-		
+
 			if(isset($config[$csfId]) && strlen($config[$csfId]["label"])){
 				$html[] = "<li>" . $config[$csfId]["label"] . "：" . implode(",", $arr) . "</li>";
 			}
