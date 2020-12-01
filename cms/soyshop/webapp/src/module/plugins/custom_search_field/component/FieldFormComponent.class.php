@@ -34,6 +34,11 @@ class FieldFormComponent {
 	                            $html[] = "<label><input type=\"checkbox\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
 	                        }
 	                    }
+
+						//その他
+						if(isset($field["other"]) && (int)$field["other"] === 1){
+							$html[] = "<label>その他：<input type=\"text\" name=\"custom_search[" . $fieldId . "][]\" value=\"" . self::_getOtherValue($chks, $options) . "\"></label>";
+						}
 	                }
 				}
                 return implode("\n", $html);
@@ -42,6 +47,7 @@ class FieldFormComponent {
               if(!isset($field["option"])) return "";
 
                 $html = array();
+				$isOptMatch = false;	//選択した値があって、optionsの方で一致したものがあればtrue、なければotherの値にする
 
                 $opt = self::getFieldOption($field["option"], $lang);
                 if (strlen($opt) > 0) {
@@ -51,10 +57,24 @@ class FieldFormComponent {
 						if(strlen($oVal) && $oVal[0] == "*") $oVal = substr($oVal, 1);	//先頭の*を除く
                         if (isset($value) && $oVal === $value) {
                             $html[] = "<label><input type=\"radio\" name=\"custom_search[" . $fieldId . "]\" value=\"" . $oVal . "\" checked=\"\">" . $oVal . "</label>";
+							$isOptMatch = true;
                         } else {
                             $html[] = "<label><input type=\"radio\" name=\"custom_search[" . $fieldId . "]\" value=\"" . $oVal . "\">" . $oVal . "</label>";
                         }
                     }
+
+					//その他
+					if(isset($field["other"]) && (int)$field["other"] === 1){
+						$otherValue = (strlen($value) && !$isOptMatch) ? htmlspecialchars($value, ENT_QUOTES, "UTF-8") : "";
+						$html[] = "<label>";
+						if(strlen($otherValue)){
+							$html[] = "<input type=\"radio\" name=\"custom_search[" . $fieldId . "]\" value=\"" . $otherValue . "\" id=\"" . $fieldId . "_other\" checked=\"checked\">";
+						}else{
+							$html[] = "<input type=\"radio\" name=\"custom_search[" . $fieldId . "]\" value=\"\" id=\"" . $fieldId . "_other\">";
+						}
+						$html[] = "その他 <input type=\"text\" value=\"" . $otherValue . "\" onchange=\"$('#" . $fieldId . "_other').val($(this).val());\">";
+						$html[] = "</label>";
+					}
                 }
 
                 return implode("\n", $html);
@@ -100,6 +120,22 @@ class FieldFormComponent {
 
         return null;
     }
+
+	//その他の値を取得する
+	private static function _getOtherValue($chks, $opts){
+		foreach($chks as $chk){
+			//チェックした値がoptionsの中になければ空の値とする
+			$isOpt = false;
+			foreach($opts as $opt){
+				if($chk == trim($opt)){
+					$isOpt = true;
+					break;
+				}
+			}
+			if(!$isOpt) return htmlspecialchars($chk, ENT_QUOTES, "UTF-8");
+		}
+		return "";
+	}
 
     public static function buildSearchConditionForm($fieldId, $field, $cnd, $lang = UtilMultiLanguageUtil::LANGUAGE_JP) {
         $form = self::buildForm($fieldId, $field, null, $lang);

@@ -43,7 +43,7 @@ class CustomSearchFieldConfigFormPage extends WebPage{
         if(isset($_POST["update_advance"])){
             $key = $_POST["update_advance"];
             $config = CustomSearchFieldUtil::getConfig();
-			foreach(array("showInput", "detail", "option", "default", "sitemap") as $t){
+			foreach(array("showInput", "detail", "option", "other", "default", "sitemap") as $t){
 				$config[$key][$t] = (isset($_POST["config"][$t])) ? $_POST["config"][$t] : null;
 			}
             CustomSearchFieldUtil::saveConfig($config);

@@ -20,7 +20,7 @@ class CustomSearchFieldListComponent extends HTMLList{
         ));
 
         $this->addLabel("display", array(
-            "text" => self::getPrefix() . ":id=\"" . $key . "\""
+            "text" => self::_getPrefix() . ":id=\"" . $key . "\""
         ));
 
         /* 高度な設定 */
@@ -74,11 +74,23 @@ class CustomSearchFieldListComponent extends HTMLList{
 		));
 
         $this->addModel("with_options", array(
-            "visible" => (isset($entity["type"])) ? self::checkDisplayOptionsForm($entity["type"]) : false
+            "visible" => (isset($entity["type"])) ? self::_checkDisplayOptionsForm($entity["type"]) : false
         ));
 
+		//その他の項目
+		$this->addModel("with_other_item", array(
+            "visible" => (isset($entity["type"])) ? self::_checkDisplayOtherItemForm($entity["type"]) : false
+        ));
+
+		$this->addCheckBox("use_other_item", array(
+			"name" => "config[other]",
+			"value" => 1,
+			"selected" => (isset($entity["other"]) && is_numeric($entity["other"]) && (int)$entity["other"] === 1),
+			"label" => "その他の項目を追加する"
+		));
+
         $this->addModel("sitemap_option_area", array(
-            "visible" => (isset($entity["type"])) ? self::checkDisplaySiteMapOptionsForm($entity["type"]) : false
+            "visible" => (isset($entity["type"])) ? self::_checkDisplaySiteMapOptionsForm($entity["type"]) : false
         ));
 
         $this->addSelect("custom_search_item_list_page", array(
@@ -118,7 +130,7 @@ class CustomSearchFieldListComponent extends HTMLList{
         ));
 
         $this->addLabel("checkbox_tag_supple", array(
-            "html" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX && isset($entity["option"])) ? self::buildCheckBoxSuppleTag($key, $entity["option"]) : ""
+            "html" => (isset($entity["type"]) && $entity["type"] == CustomSearchFieldUtil::TYPE_CHECKBOX && isset($entity["option"])) ? self::_buildCheckBoxSuppleTag($key, $entity["option"]) : ""
         ));
 
         $this->addInput("update_advance_submit", array(
@@ -137,18 +149,18 @@ class CustomSearchFieldListComponent extends HTMLList{
 		));
     }
 
-    private function getPrefix(){
-      switch($this->mode){
-        case "category":
-          return CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX;
-        default:
-          return CustomSearchFieldUtil::PLUGIN_PREFIX;
-      }
+    private function _getPrefix(){
+		switch($this->mode){
+			case "category":
+				return CustomSearchFieldUtil::PLUGIN_CATEGORY_PREFIX;
+			default:
+				return CustomSearchFieldUtil::PLUGIN_PREFIX;
+			}
     }
 
-    private function buildCheckBoxSuppleTag($key, $options){
+    private function _buildCheckBoxSuppleTag($key, $options){
 //        if(!strlen($options)) return "";
-        $prefix = self::getPrefix();
+        $prefix = self::_getPrefix();
 
         $text = "";
         foreach($options as $lang => $option){
@@ -166,13 +178,17 @@ class CustomSearchFieldListComponent extends HTMLList{
         return $text;
     }
 
-    private function checkDisplayOptionsForm($type){
+    private function _checkDisplayOptionsForm($type){
         return ($type === CustomSearchFieldUtil::TYPE_RADIO || $type === CustomSearchFieldUtil::TYPE_CHECKBOX || $type === CustomSearchFieldUtil::TYPE_SELECT);
     }
 
-    private function checkDisplaySiteMapOptionsForm($type){
+	private function _checkDisplayOtherItemForm($type){
+		return ($type === CustomSearchFieldUtil::TYPE_RADIO || $type === CustomSearchFieldUtil::TYPE_CHECKBOX);
+	}
+
+    private function _checkDisplaySiteMapOptionsForm($type){
       if(!SOYShopPluginUtil::checkIsActive("common_sitemap_xml")) return false;
-      return self::checkDisplayOptionsForm($type);
+      return self::_checkDisplayOptionsForm($type);
     }
 
     function setLanguages($languages){
