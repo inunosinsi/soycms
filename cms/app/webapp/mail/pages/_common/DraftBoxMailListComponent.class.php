@@ -4,17 +4,17 @@ class DraftBoxMailListComponent extends HTMLList{
 
 	protected function populateItem($bean){
 
-		$this->createAdd("title","HTMLLink",array(
+		$this->addLink("title", array(
 			"text" => $bean->getTitle(),
 			"link" => SOY2PageController::createLink("mail.Mail") . "/" . $bean->getId()
 		));
 
-		$this->createAdd("content","HTMLLabel",array(
+		$this->addLabel("content", array(
 			"text" => $bean->getMailContent()
 		));
 
-		$this->createAdd("update_date","HTMLLabel",array(
-			"text" => date("Y-m-d", $bean->getUpdateDate())
+		$this->addLabel("update_date", array(
+			"text" => (is_numeric($bean->getUpdateDate())) ? date("Y-m-d", $bean->getUpdateDate()) : ""
 		));
 
 

@@ -2,57 +2,55 @@
 
 class HistoryBoxMailListComponent extends HTMLList{
 
-	var $errorMailDAO;
-
-	function getErrorMail($id){
-		if(!$this->errorMailDAO)$this->errorMailDAO = SOY2DAOFactory::create("ErrorMailDAO");
-		try{
-			return $this->errorMailDAO->getErrorMailCountByMailId((int)$id);
-		}catch(Exception $e){
-			return "-";
-		}
-	}
-
 	protected function populateItem($bean){
 
-		$this->createAdd("title","HTMLLink",array(
+		$this->addLink("title", array(
 			"text" => $bean->getTitle(),
 			"link" => SOY2PageController::createLink("mail.Mail.MailDetail") . "/" . $bean->getId()
 		));
 
-		$this->createAdd("content","HTMLLabel",array(
+		$this->addLabel("content", array(
 			"text" => $bean->getMailContent()
 		));
 
-		$this->createAdd("update_date","HTMLLabel",array(
-			"text" => date("Y-m-d", $bean->getUpdateDate())
+		$this->addLabel("update_date", array(
+			"text" => (is_numeric($bean->getUpdateDate())) ? date("Y-m-d", $bean->getUpdateDate()) : ""
 		));
 
-		$this->createAdd("send_start_date","HTMLLabel",array(
-			"text" => date("Y-m-d H:i:s",$bean->getSendDate())
+		$this->addLabel("send_start_date", array(
+			"text" => (is_numeric($bean->getSendDate())) ? date("Y-m-d H:i:s", $bean->getSendDate()) : ""
 		));
 
-		$this->createAdd("send_end_date","HTMLLabel",array(
-			"text" => date("Y-m-d H:i:s",$bean->getSendedDate())
+		$this->addLabel("send_end_date", array(
+			"text" => (is_numeric($bean->getSendedDate())) ? date("Y-m-d H:i:s", $bean->getSendedDate()) : ""
 		));
 
-		$this->createAdd("mail_count","HTMLLabel",array(
+		$this->addLabel("mail_count", array(
 			"text" => $bean->getMailCount()
 		));
 
-		$this->createAdd("error_count","HTMLLabel",array(
-			"text" => $this->getErrorMail($bean->getId())
+		$this->addLabel("error_count", array(
+			"text" => self::_getErrorMail($bean->getId())
 		));
 
-		$this->createAdd("edit_link","HTMLLink",array(
+		$this->addLink("edit_link", array(
 			"link" => SOY2PageController::createLink("mail.Mail") . "/" . $bean->getId()
 		));
 
-		$this->createAdd("remove_link","HTMLLink",array(
+		$this->addLink("remove_link", array(
 			"link" => SOY2PageController::createLink("mail.Mail.Remove") . "/" . $bean->getId(),
 			"onclick" => "削除してもよろしいですか？",
 		));
 	}
-}
 
-?>
+	private function _getErrorMail($id){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("ErrorMailDAO");
+		if(!is_numeric($id)) return "-";
+		try{
+			return $dao->getErrorMailCountByMailId((int)$id);
+		}catch(Exception $e){
+			return "-";
+		}
+	}
+}

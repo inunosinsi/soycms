@@ -6,36 +6,36 @@ class UserListComponent extends HTMLList{
 
 	protected function populateItem($bean){
 
-		$this->createAdd("id","HTMLLabel",array(
+		$this->addLabel("id", array(
 			"text" => $bean->getId()
 		));
 
-		$this->createAdd("name","HTMLLabel",array(
+		$this->addLabel("name", array(
 			"text" => $bean->getName()
 		));
 
-		$this->createAdd("mailaddress","HTMLLabel",array(
+		$this->addLabel("mailaddress", array(
 			"text" => $bean->getMailAddress(),
 			"title" => $bean->getMailAddress()
 		));
 
-		$this->createAdd("not_send","HTMLLabel",array(
-			"text" => ($bean->getNotSend()==0) ? "許可" : "拒否"
+		$this->addLabel("not_send", array(
+			"text" => (is_numeric($bean->getNotSend()) && $bean->getNotSend() == 0) ? "許可" : "拒否"
 		));
 
-		$this->createAdd("attribute1","HTMLLabel",array(
+		$this->addLabel("attribute1", array(
 			"text" => $bean->getAttribute1()
 		));
 
-		$this->createAdd("attribute2","HTMLLabel",array(
+		$this->addLabel("attribute2", array(
 			"text" => $bean->getAttribute2()
 		));
 
-		$this->createAdd("attribute3","HTMLLabel",array(
+		$this->addLabel("attribute3", array(
 			"text" => $bean->getAttribute3()
 		));
 
-		$this->createAdd("edit_link","HTMLLink",array(
+		$this->addLink("edit_link", array(
 			"link" => SOY2PageController::createLink("mail.User.Detail") . "/" . $bean->getId()
 		));
 
