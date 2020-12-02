@@ -10,12 +10,14 @@ function soyshop_search_query($html,$htmlObj){
 $html = array();
 
 SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
+$params = CustomSearchFieldUtil::getParameter("c_search");
+
 $config = CustomSearchFieldUtil::getConfig();
-$keys = (isset($_GET["c_search"]) && is_array($_GET["c_search"]) && count($_GET["c_search"])) ? array_keys($_GET["c_search"]) : array();
+$keys = (is_array($params) && count($params)) ? array_keys($params) : array();
 if(count($keys)){
 	for($i = 0; $i < count($keys); $i++){
 		$csfId = $keys[$i];
-		$v = $_GET["c_search"][$csfId];
+		$v = (isset($params[$csfId])) ? $params[$csfId] : null;
 
 		//文字列の場合の処理
 		if(!is_array($v)){

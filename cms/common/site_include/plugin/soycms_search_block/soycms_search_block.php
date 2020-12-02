@@ -47,9 +47,7 @@ class SOYCMS_Search_Block_Plugin{
 		$logic = SOY2Logic::createInstance("site_include.plugin.soycms_search_block.logic.SearchBlockEntryLogic");
 
 		$url = (isset($_SERVER["REDIRECT_URL"])) ? $_SERVER["REDIRECT_URL"] : "";
-		if(strpos($url, "page-")){
-			$url = substr($url, 0, strpos($url, "/page-")) . "/";
-		}
+		if(strpos($url, "page-")) $url = substr($url, 0, strpos($url, "/page-")) . "/";
 
 		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
@@ -93,7 +91,7 @@ class SOYCMS_Search_Block_Plugin{
 
 		$obj->addLink("s_last_page", array(
 			"soy2prefix" => "p_block",
-			"link" => $url . "page-" . ($last_page_number - 1) . "?q=" . $query,
+			"link" => ($last_page_number > 0) ? $url . "page-" . ($last_page_number - 1) . "?q=" . $query : null,
 		));
 
 		$obj->addLabel("s_current_page", array(

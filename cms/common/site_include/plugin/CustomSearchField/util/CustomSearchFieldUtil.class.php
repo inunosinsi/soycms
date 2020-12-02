@@ -43,4 +43,26 @@ class CustomSearchFieldUtil{
         $list = self::getTypeList();
         return (isset($list[$type]));
     }
+
+	public static function getParameter($key){
+		$session = SOY2ActionSession::getUserSession();
+		if(isset($_GET[$key])){
+			$session->setAttribute("soycms_custom_search:" . $key, $_GET[$key]);
+			$params = $_GET[$key];
+		}else if(isset($_GET["reset"])){
+			$session->setAttribute("soycms_custom_search:" . $key, array());
+			if(!defined("CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY")) define("CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY", true);	//リセットのときも初回表示として扱う
+			$params = array();
+		}else{
+			$params = $session->getAttribute("soycms_custom_search:" . $key);
+			if(is_null($params)) {
+				if(!defined("CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY")) define("CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY", true);	//検索フォームを初めて表示したときの定数
+				$params = array();
+			}
+		}
+		
+		if(!defined("CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY")) define("CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY", false);	//検索フォームの初回表示でないとき
+
+		return $params;
+	}
 }

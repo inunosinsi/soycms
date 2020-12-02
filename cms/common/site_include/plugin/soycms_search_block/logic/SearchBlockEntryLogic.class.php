@@ -28,10 +28,7 @@ class SearchBlockEntryLogic extends SOY2LogicBase {
                 $args = self::__getArgs();
                 if(isset($args[0]) && strpos($args[0], "page-") === 0){
                     $pageNumber = (int)str_replace("page-", "", $args[0]);
-                    if($pageNumber > 0){
-                        $offset = $count * $pageNumber;
-                        $sql .= " OFFSET " . $offset;
-                    }
+                    if($pageNumber > 0) $sql .= " OFFSET " . (($count * $pageNumber) - 1);
                 }
             }
 

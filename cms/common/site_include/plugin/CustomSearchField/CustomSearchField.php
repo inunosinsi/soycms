@@ -11,50 +11,51 @@ class CustomSearchFieldPlugin{
 	}
 
 	function init(){
-		CMSPlugin::addPluginMenu(CustomSearchFieldPlugin::PLUGIN_ID,array(
+		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name" => "カスタムサーチフィールド",
 			"description" => "",
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.8.1"
+			"version"=>"0.9"
 		));
 
 		//プラグイン アクティブ
-		if(CMSPlugin::activeCheck(CustomSearchFieldPlugin::PLUGIN_ID)){
+		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
 
 			//管理側
 			if(!defined("_SITE_ROOT_")){
 				self::_ajust();
 
-				CMSPlugin::addPluginConfigPage(CustomSearchFieldPlugin::PLUGIN_ID, array(
+				CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
 					$this,"config_page"
 				));
 
-				CMSPlugin::setEvent('onEntryUpdate', CustomSearchFieldPlugin::PLUGIN_ID, array($this, "onEntryUpdate"));
-				CMSPlugin::setEvent('onEntryCreate', CustomSearchFieldPlugin::PLUGIN_ID, array($this, "onEntryUpdate"));
-				CMSPlugin::setEvent('onEntryRemove', CustomSearchFieldPlugin::PLUGIN_ID, array($this, "onEntryRemove"));
+				CMSPlugin::setEvent('onEntryUpdate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
+				CMSPlugin::setEvent('onEntryCreate', self::PLUGIN_ID, array($this, "onEntryUpdate"));
+				CMSPlugin::setEvent('onEntryRemove', self::PLUGIN_ID, array($this, "onEntryRemove"));
 
-				CMSPlugin::addCustomFieldFunction(CustomSearchFieldPlugin::PLUGIN_ID, "Entry.Detail", array($this, "onCallCustomField"));
-				CMSPlugin::addCustomFieldFunction(CustomSearchFieldPlugin::PLUGIN_ID, "Blog.Entry", array($this, "onCallCustomField_inBlog"));
+				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Entry.Detail", array($this, "onCallCustomField"));
+				CMSPlugin::addCustomFieldFunction(self::PLUGIN_ID, "Blog.Entry", array($this, "onCallCustomField_inBlog"));
 
 			//公開側
 			}else{
-				CMSPlugin::setEvent('onEntryOutput', CustomSearchFieldPlugin::PLUGIN_ID, array($this, "display"));
+				CMSPlugin::setEvent('onEntryOutput', self::PLUGIN_ID, array($this, "onEntryOutput"));
+				CMSPlugin::setEvent('onPageOutput', self::PLUGIN_ID, array($this, "onPageOutput"));
 			}
 
-			CMSPlugin::setEvent('onPluginBlockLoad',CustomSearchFieldPlugin::PLUGIN_ID, array($this, "onLoad"));
-			CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',CustomSearchFieldPlugin::PLUGIN_ID, array($this, "returnPluginId"));
+			CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
+			CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
 
 		}else{
-			CMSPlugin::setEvent('onActive', CustomSearchFieldPlugin::PLUGIN_ID, array($this, "createTable"));
+			CMSPlugin::setEvent('onActive', self::PLUGIN_ID, array($this, "createTable"));
 		}
 	}
 
 	/**
 	 * onEntryOutput
 	 */
-	function display($arg){
+	function onEntryOutput($arg){
 		$entryId = $arg["entryId"];
 		$htmlObj = $arg["SOY2HTMLObject"];
 
@@ -120,15 +121,66 @@ class CustomSearchFieldPlugin{
 		}
 	}
 
-	/**
-	 * プラグイン管理画面の表示
-	 */
-	function config_page($message){
-		SOY2::import("site_include.plugin.CustomSearchField.config.CustomSearchFieldConfigPage");
-		$form = SOY2HTMLFactory::createInstance("CustomSearchFieldConfigPage");
-		$form->setPluginObj($this);
-		$form->execute();
-		return $form->getObject();
+	function onPageOutput($obj){
+		//ブログページでトップページ以外では以下のコードを読み込まない
+		if(get_class($obj) == "CMSBlogPage" && ($obj->mode == "_entry_" || $obj->mode == "_month_" || $obj->mode == "_category_")) return;
+
+		SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
+		$logic = SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.SearchLogic");
+
+		$url = (isset($_SERVER["REDIRECT_URL"])) ? $_SERVER["REDIRECT_URL"] : "";
+		if(strpos($url, "page-")) $url = substr($url, 0, strpos($url, "/page-")) . "/";
+
+		//末尾にスラッシュがない場合はスラッシュを付ける
+		$url = rtrim($url, "/") . "/";
+
+		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
+		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+		$limit = PluginBlockUtil::getLimitByPageId($pageId);
+		if(is_null($limit)) $limit = 100000;
+
+		$args = $logic->getArgs();
+		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
+		$current = (isset($args[0]) && strpos($args[0], "page-") === 0) ? (int)str_replace("page-", "", $args[0]) : 0;
+		$last_page_number = (int)ceil($logic->getTotal($labelId) / $limit);
+
+		$obj->createAdd("s_pager", "BlockPluginPagerComponent", array(
+			"list" => array(),
+			"current" => $current,
+			"last"	 => $last_page_number,
+			"url"		=> $url,
+			//"queries" => array("q" => $query),
+			"soy2prefix" => "p_block",
+		));
+
+		$obj->addModel("s_has_pager", array(
+			"soy2prefix" => "p_block",
+			"visible" => ($last_page_number >1)
+		));
+		$obj->addModel("s_no_pager", array(
+			"soy2prefix" => "p_block",
+			"visible" => ($last_page_number <2)
+		));
+
+		$obj->addLink("s_first_page", array(
+			"soy2prefix" => "p_block",
+			"link" => $url,
+		));
+
+		$obj->addLink("s_last_page", array(
+			"soy2prefix" => "p_block",
+			"link" => ($last_page_number > 0) ? $url . "page-" . ($last_page_number - 1) : null,
+		));
+
+		$obj->addLabel("s_current_page", array(
+			"soy2prefix" => "p_block",
+			"text" => max(1, $current + 1),
+		));
+
+		$obj->addLabel("s_pages", array(
+			"soy2prefix" => "p_block",
+			"text" => $last_page_number,
+		));
 	}
 
 	/**
@@ -263,12 +315,23 @@ class CustomSearchFieldPlugin{
 		}
 	}
 
+	/**
+	 * プラグイン管理画面の表示
+	 */
+	function config_page($message){
+		SOY2::import("site_include.plugin.CustomSearchField.config.CustomSearchFieldConfigPage");
+		$form = SOY2HTMLFactory::createInstance("CustomSearchFieldConfigPage");
+		$form->setPluginObj($this);
+		$form->execute();
+		return $form->getObject();
+	}
+
 	public static function register(){
-		$obj = CMSPlugin::loadPluginConfig(CustomSearchFieldPlugin::PLUGIN_ID);
+		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
 		if(is_null($obj)){
 			$obj = new CustomSearchFieldPlugin();
 		}
 
-		CMSPlugin::addPlugin(CustomSearchFieldPlugin::PLUGIN_ID, array($obj, "init"));
+		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }

@@ -95,12 +95,15 @@
 <!-- /soy:id="example_tag_list" -->
 
     &lt;input type="submit" value="検索する"&gt;
+	&lt;a csf:id="reset_link"&gt;リセット&lt;/a&gt;
 &lt;/form&gt;
 &lt;!-- /cms:module="common.custom_search_field" --&gt;
 </pre>
 
+<br>
+
 <h3>検索結果ページの設定</h3>
-<p>テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>CustomSearchField</strong>を選びます。</p>
+<div class="alert alert-info">テンプレートのブロック設定でプラグインブロックを選び、プラグインのセレクトボックスで<strong>CustomSearchField</strong>を選びます。</div>
 
 <h3>タグの記述例</h3>
 <p>他のブロックの時と同じですが、block:id="***"の記述の時に、ラベルIDと表示件数を指定することができます</p>
@@ -108,13 +111,53 @@
 <pre>&lt;!-- block:id="***" cms:label="1" cms:count="10" --&gt;
 表示したい内容のcms:idを追加
 &lt;!-- /block:id="***" --&gt;</pre>
-<p>
+<div class="alert alert-warning">
     ***の箇所は任意の値です。<br>
     cms:labelでどのラベルが設定されている記事一覧を取得するかを決めることができます。<br>
     ※cms:labelの指定がないと動きません<br>
     cms:countで検索結果を何件表示するか決めることができます。<br>
     ※cms:countの指定がなくても動作します。
-</p>
+</div>
+
+<h3>ページャの設置</h3>
+<p>下記のコードをプラグインブロックの外に記述します。</p>
+<pre>&lt;a p_block:id="s_first_page"&gt;最初のページへ&lt;/a&gt;
+
+&lt;!-- p_block:id="s_pager" cms:pager_num="10" --&gt;
+&lt;span class="pager_item" cms:id="pager_item"&gt;&lt;a href="#"&gt;1&lt;/a&gt;&lt;/span&gt;
+&lt;!-- /p_block:id="s_pager" --&gt;
+
+&lt;a p_block:id="s_last_page"&gt;最後のページへ&lt;/a&gt;
+
+&lt;!-- p_block:id="s_pages" /--&gt;ページ中&lt;!-- p_block:id="s_current_page" /--&gt;ページ目</pre>
+
+<br>
+
+<h3>フィールドID_visible</h3>
+<div class="alert alert-info">
+	<div>csf:id="<strong>フィールドID_visible</strong>"またはcsf:id="<strong>フィールドID_is_not_empty</strong>"で囲った箇所は、csf:id="フィールドID"の値が空の時に表示されなくなります。</div>
+	<div>csf:id="<strong>フィールドID_is_empty</strong>"で囲った箇所は、csf:id="フィールドID"の値が空ではない時に表示されます。</div>
+</div>
+
+<div>例:フィールドIDがsampleの時</div>
+<pre>&lt;div <strong>csf:id="sample_visible"</strong>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;カスタムフィールドの値は<strong>&lt;!-- csf:id="sample" /--&gt;</strong>です。
+&lt;/div&gt;
+&lt;div <strong>csf:id="sample_is_empty"</strong>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;カスタムフィールドの値は空です。
+&lt;/div&gt;</pre>
+
+<br>
+
+<h3>cms:module=“parts.search_query"について</h3>
+<div class="alert alert-info">検索結果ページで使います。cms:module="parts.search_query"で囲った箇所は、検索を行った項目と結果が一組で出力されます。</div>
+
+<div>例</div>
+<pre>&lt;ul&gt;
+&lt!-- cms:module="parts.search_query" --&gt;
+&lt;li&gt;検索項目と結果がタグ付きで表示されます。&lt;/li&gt;
+&lt!-- /cms:module="parts.search_query" --&gt;
+&lt;/ul&gt;</pre>
 
 <!-- モーダル -->
 <div class="modal fade" id="fieldModal" tabindex="-1" role="dialog" aria-labelledby="fieldLabel" aria-hidden="true">

@@ -11,12 +11,16 @@ $html = array();
 
 SOY2::import("site_include.plugin.CustomSearchField.util.CustomSearchFieldUtil");
 $config = CustomSearchFieldUtil::getConfig();
-$keys = (isset($_GET["c_search"]) && is_array($_GET["c_search"]) && count($_GET["c_search"])) ? array_keys($_GET["c_search"]) : array();
-if(isset($_GET["q"]) && is_string($_GET["q"]) && strlen($_GET["q"])) $keys[] = "q";
+
+$q = CustomSearchFieldUtil::getParameter("q");
+$params = CustomSearchFieldUtil::getParameter("c_search");
+
+$keys = (is_array($params) && count($params)) ? array_keys($params) : array();
+if(is_string($q) && strlen($q)) $keys[] = "q";
 if(count($keys)){
 	for($i = 0; $i < count($keys); $i++){
 		$csfId = $keys[$i];
-		$v = ($csfId == "q") ? $_GET["q"] : $_GET["c_search"][$csfId];
+		$v = ($csfId == "q") ? $q : $params[$csfId];
 
 		//文字列の場合の処理
 		if(!is_array($v)){
@@ -32,12 +36,12 @@ if(count($keys)){
 			if($csfId == "q"){
 				$html[] = "<li>記事検索：" . $v . "</li>";
 			}
-			
+
 			//最小
 			if(strpos($csfId, "_start")){
 				$csfId = str_replace("_start", "", $csfId);
 				if(isset($config[$csfId]) && strlen($config[$csfId]["label"])){
-					$end = (int)$_GET["c_search"][$csfId . "_end"];
+					$end = (int)$params[$csfId . "_end"];
 					$end = ($end > 0) ? number_format($end) : "";
 					$html[] = "<li>" . $config[$csfId]["label"] . "：" . $v . "〜" . $end . "</li>";
 

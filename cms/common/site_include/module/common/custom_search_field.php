@@ -10,7 +10,8 @@ function soycms_custom_search_field($html, $htmlObj){
 		SOY2::import("site_include.plugin.CustomSearchField.util.CustomSearchFieldUtil");
 
         //GETの値を変数に入れておく。そのうちページャ対応を行わなければならないため
-        $params = (isset($_GET["c_search"])) ? $_GET["c_search"] : array();
+		$q = CustomSearchFieldUtil::getParameter("q");
+        $csfParams = CustomSearchFieldUtil::getParameter("c_search");
 
 		//記事検索
         $obj->addInput("custom_search_entry", array(
@@ -33,7 +34,7 @@ function soycms_custom_search_field($html, $htmlObj){
                                 "soy2prefix" => $prefix,
                                 "type" => "number",
                                 "name" => $name . "[" . $key . "_" . $t . "]",
-                                "value" => (isset($params[$key . "_" . $t]) && strlen($params[$key . "_" . $t])) ? (int)$params[$key . "_" . $t] : null
+                                "value" => (isset($csfParams[$key . "_" . $t]) && strlen($csfParams[$key . "_" . $t])) ? (int)$csfParams[$key . "_" . $t] : null
                             ));
                         }
                         break;
@@ -45,16 +46,29 @@ function soycms_custom_search_field($html, $htmlObj){
 
                         if(strlen($field["option"])){
                             $opt = array();
+							$defaultSelectedIndex = null;	//セレクトボックス用
                             foreach(explode("\n", $field["option"]) as $i => $o){
-                                $o = trim($o);    //改行を除く
-                                if(!strlen($o)) continue;
-                                $opt[] = $o;
+								$defaultSelected = false;
+								$o = trim($o);	//改行を除く
+								if(strlen($o) && $o[0] == "*") {
+									$o = substr($o, 1);	//先頭の*を除く
+									$defaultSelected = true;
+									$defaultSelectedIndex = $i;
+								}
+								if(!strlen($o)) continue;
+								$opt[] = $o;
+								if(CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY){ 	// 初回の検索で項目名の頭に*が付いているものは選択済みにする
+									$selected = $defaultSelected;
+								}else{
+									$selected = (isset($csfParams[$key]) && is_array($csfParams[$key]) && in_array($o, $csfParams[$key]));
+								}
+
                                 $obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
                                     "soy2prefix" => $prefix,
                                     "type" => "checkbox",
                                     "name" => $name . "[" . $key . "][]",
                                     "value" => $o,
-                                    "selected" => (isset($params[$key]) && is_array($params[$key]) && in_array($o, $params[$key])),
+                                    "selected" => $selected,
                                     "label" => $o,
                                     "elementId" => "custom_search_" . $key . "_" . $i
                                 ));
@@ -63,11 +77,17 @@ function soycms_custom_search_field($html, $htmlObj){
                             /**
                              * セレクトボックスバージョン
                              */
+							if(CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY){
+								$selected = (isset($opt[$defaultSelectedIndex])) ? $opt[$defaultSelectedIndex] : null;
+							}else{	// 初回の検索で項目名の頭に*が付いているものは選択済みにする
+								$selected = (isset($csfParams[$key][0])) ? $csfParams[$key][0] : null;
+							}
+
                             $obj->addSelect("custom_search_" . $key . "_select", array(
                                 "soy2prefix" => $prefix,
                                 "name" => $name . "[" . $key . "][]",
                                 "options" => $opt,
-                                "selected" => (isset($params[$key][0])) ? $params[$key][0] : null
+                                "selected" => $selected
                             ));
                         }
                         break;
@@ -76,14 +96,23 @@ function soycms_custom_search_field($html, $htmlObj){
 
                         if(strlen($field["option"])){
                             foreach(explode("\n", $field["option"]) as $i => $o){
-                                $o = trim($o);    //改行を除く
-                                if(!strlen($o)) continue;
+								$defaultSelected = false;
+								$o = trim($o);	//改行を除く
+								if(strlen($o) && $o[0] == "*") {
+									$o = substr($o, 1);	//先頭の*を除く
+									$defaultSelected = true;
+								}
+								if(!strlen($o)) continue;
 
-                                if(isset($field["default"]) && $field["default"] == 1){
-                                    $selected = ((!isset($params[$key]) && $i === 0) || (isset($params[$key]) && $o === $params[$key]));
-                                }else{
-                                    $selected = (isset($params[$key]) && $o === $params[$key]);
-                                }
+								if(CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY){
+									if(isset($field["default"]) && $field["default"] == 1){
+										$selected = ((!isset($csfParams[$key]) && $i === 0) || (isset($csfParams[$key]) && $o === $csfParams[$key]));
+									}else{
+										$selected = $defaultSelected;
+									}
+								}else{
+									$selected = (isset($csfParams[$key]) && $o === $csfParams[$key]);
+								}
 
                                 $obj->addCheckBox("custom_search_" . $key . "_" . $i, array(
                                     "soy2prefix" => $prefix,
@@ -94,6 +123,21 @@ function soycms_custom_search_field($html, $htmlObj){
                                     "label" => $o,
                                     "elementId" => "custom_search_" . $key . "_" . $i
                                 ));
+
+								if(CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY){
+									$selected = $defaultSelected;
+								}else{
+									$selected = (isset($csfParams[$key]) && is_array($csfParams[$key]) && in_array($o, $csfParams[$key]));
+								}
+								$obj->addCheckBox("custom_search_" . $key . "_checkbox_" .$i, array(
+									"soy2prefix" => $prefix,
+									"type" => "checkbox",
+									"name" => $name . "[" . $key . "][]",
+									"value" => $o,
+									"selected" => $selected,
+									"label" => $o,
+									"elementId" => "custom_search_" . $key . "_" . $i
+								));
                             }
                         }
                         break;
@@ -104,26 +148,49 @@ function soycms_custom_search_field($html, $htmlObj){
 						};
 
                         $options = array();
+						$defaultSelected = null;
                         foreach(explode("\n", $field["option"]) as $o){
-                            $options[trim($o)] = trim($o);
+							$o = trim($o);	//改行を除く
+							if(strlen($o) && $o[0] == "*") {
+								$o = substr($o, 1);	//先頭の*を除く
+								$defaultSelected = $o;
+							}
+							$options[$o] = $o;
                         }
+
+						if(CMS_CUSTOM_SEARCH_FIRST_TIME_DISPLAY){
+							$selected = $defaultSelected;
+						}else{
+							$selected = (isset($csfParams[$key])) ? $csfParams[$key] : false;
+						}
                         $obj->addSelect("custom_search_" . $key, array(
                             "soy2prefix" => $prefix,
                             "name" => $name . "[" . $key . "]",
                             "options" => $options,
-                            "selected" => (isset($params[$key])) ? $params[$key] : false
+                            "selected" => $selected
                         ));
                         break;
                     default:
                         $obj->addInput("custom_search_" . $key, array(
                             "soy2prefix" => $prefix,
                             "name" => $name . "[" . $key . "]",
-                            "value" => (isset($params[$key])) ? $params[$key] : null
+                            "value" => (isset($csfParams[$key])) ? $csfParams[$key] : null
                         ));
                 }
 				if(!$isContinue) continue;
             }
 		}
+
+		$reqUri = $_SERVER["REQUEST_URI"];
+		if(strpos($reqUri, "?") !== false){
+			$reqUri = substr($reqUri, 0, strpos($reqUri, "?"));
+		}
+
+		//リセットボタン
+		$obj->addLink("reset_link", array(
+			"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+			"link" => $reqUri . "?reset"
+		));
     }
 
     $obj->display();
