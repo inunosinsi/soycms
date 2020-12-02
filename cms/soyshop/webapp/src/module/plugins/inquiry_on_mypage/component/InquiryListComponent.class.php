@@ -9,7 +9,7 @@ class InquiryListComponent extends HTMLList {
 		));
 
 		$this->addLabel("create_date", array(
-			"text" => date("Y-m-d H:i:s", $entity->getCreateDate())
+			"text" => (is_numeric($entity->getCreateDate())) ? date("Y-m-d H:i:s", $entity->getCreateDate()) : ""
 		));
 
 		$this->addLink("user_link", array(

@@ -35,7 +35,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1"
+			"version"=>"1.1"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -302,7 +302,7 @@ class SitemapPlugin{
 		return array($first, $last);
 	}
 
-	private function buildColumn($url, $priority = 0.5, $lastmod = null){
+	private function buildColumn($url, $priority = 0.5, $lastmod = 0){
 		if(is_null($lastmod)) $lastmod = time();
 		$cols = array();
 		$cols[] = "<url>";

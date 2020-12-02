@@ -219,7 +219,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		));
 	}
 
-	private function buildUrlTag($url, $uri, $alias, $priority = 0.8, $updateDate){
+	private function buildUrlTag($url, $uri, $alias, $priority = 0.8, $updateDate = 0){
 		if(strlen($alias)) $alias = "/" . $alias;
 		$uriConcatedAlias = $uri . $alias;
 		if(strpos($uriConcatedAlias, "//")) $uriConcatedAlias = str_replace("//", "/", $uriConcatedAlias);
