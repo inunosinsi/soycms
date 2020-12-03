@@ -13,7 +13,7 @@ class LanguageListComponent extends HTMLList{
 
         $this->addInput("lang_url", array(
             "name" => "config[" . $this->index . "][" . $key . "]",
-            "value" => (isset($this->values[$key])) ? $this->values[$key] : null
+            "value" => (!is_null($key) && isset($this->values[$key])) ? $this->values[$key] : null
         ));
 
         if($key == UtilMultiLanguageUtil::LANGUAGE_JP) return false;
