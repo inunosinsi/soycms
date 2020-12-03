@@ -8,7 +8,7 @@ class GenerateBarcodeLogic extends SOY2LogicBase {
 
 	function generate($orderId){
 		$dir = GenerateBarcodeUtil::getBarcodeDirectory();
-
+		
 		$trackingNumber = SOY2Logic::createInstance("logic.order.OrderLogic")->getById($orderId)->getTrackingNumber();
 		$jpgFile = $dir . $trackingNumber . ".jpg";
 

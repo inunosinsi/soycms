@@ -18,7 +18,6 @@ class GenerateBarcodeItemJanCodeItem extends SOYShopItemBase{
 			}catch(Exception $e){
 				//
 			}
-
 		}
 	}
 }
