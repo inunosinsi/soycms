@@ -21,7 +21,7 @@ class CustomAliasPlugin{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.12"
+			"version"=>"1.12.1"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID, array(
@@ -63,19 +63,21 @@ class CustomAliasPlugin{
 
 	function onEntryUpdate($arg){
 		$mode = self::_mode();
+		$alias = null;
+		$entry = &$arg["entry"];
 		switch($mode){
 			case CustomAliasUtil::MODE_ID:
 			case CustomAliasUtil::MODE_HASH:
-				$entry = &$arg["entry"];
 				$alias = self::_generateAlias($entry, $mode);
-				if(strlen($alias)){
-					$entry->setAlias($alias);
-					$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
-					$logic->update($entry);
-				}
 				break;
 			default:
-				//何もしない
+				if(isset($_POST["alias"]) && strlen($_POST["alias"])) $alias = trim($_POST["alias"]);
+		}
+
+		if(isset($alias) && strlen($alias)){
+			$entry->setAlias($alias);
+			$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
+			$logic->update($entry);
 		}
 	}
 
