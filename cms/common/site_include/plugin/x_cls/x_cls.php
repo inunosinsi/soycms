@@ -20,7 +20,7 @@ class CLSPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -94,6 +94,9 @@ class CLSPlugin{
 						}
 					}
 				}
+
+				// @ToDo 設定画面を設ける
+				//$line = self::_setPictureElement($line, $info);
 			}
 
 			$htmls[] = $line;
@@ -134,6 +137,66 @@ class CLSPlugin{
 
 		$info = getimagesize($path);
 		return array("width" => $info[0], "height" => $info[1]);
+	}
+
+	private function _setPictureElement($line, $info){
+		if(!isset($info["width"]) || $info["width"] < 400) return $line;
+		preg_match('/<img.*?>/', $line, $tmp);
+		if(isset($tmp[0])){
+			//画像のリサイズをかます
+			$src = self::_getSrc($line);
+			if(is_null($src)) return $line;
+
+			$src = self::_autoGenerateMiniImageFile($src);
+			if(is_null($src)) return $line;
+
+			$tag = "<picture><source srcset=\"" . $src . "\" media=\"(max-width:400px)\">";
+			$line = str_replace($tmp[0], $tag . $tmp[0] . "</picture>", $line);
+		}
+		return $line;
+	}
+
+	private function _getSrc($line){
+		preg_match('/<img(.*?)>/i', $line, $tmp);
+		if(!isset($tmp[1])) return null;
+		$p = trim(trim($tmp[1], "/"));
+		if(!strlen($p)) return null;
+
+		$props = explode(" ", $p);
+		if(!count($props)) return array();
+
+		foreach($props as $p){
+			$prop = explode("=", $p);
+			if(!isset($prop[1])) continue;
+
+			$idx = trim($prop[0]);
+			if($idx == "src") {
+				return trim(trim($prop[1], "\""));
+			}
+		}
+
+		return null;
+	}
+
+	private function _autoGenerateMiniImageFile($path){
+		//スラッシュから始まらない場合は何もしない
+		if(strpos($path, "/") !== 0) return null;
+
+		$fullpath = $_SERVER["DOCUMENT_ROOT"] . $path;
+		if(strpos($fullpath, "//")) $fullpath = str_replace("//", "/", $fullpath);
+		if(!file_exists($fullpath)) return null;
+
+		$dir = rtrim(substr($fullpath, 0, strrpos($fullpath, "/")), "/") . "/pic/";
+		if(!file_exists($dir)) mkdir($dir);
+
+		$filename = ltrim(substr($fullpath, strrpos($fullpath, "/")), "/");
+		$newFullpath = $dir . $filename;
+		if(!file_exists($newFullpath)){
+			soy2_resizeimage($fullpath, $newFullpath, 360);
+			exec("guetzli --quality 84 " . $newFullpath . " " . $newFullpath);
+		}
+
+		return rtrim(substr($path, 0, strrpos($path, "/")), "/") . "/pic/" . $filename;
 	}
 
 	function config_page(){

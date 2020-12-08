@@ -17,7 +17,7 @@ class XLazyLoadPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3278",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -49,20 +49,32 @@ class XLazyLoadPlugin{
 			if(count($lines)){
 				$html = array();
 				$imgTagCnt = 0;	//imgタグが何回出現したか？
-				foreach($lines as $line){
+				foreach($lines as $idx => $line){
+					//if($idx === 10) $html[] = "<div style=\"content-visibility:auto;\">";
+
 					if(is_numeric(stripos($line, "<img"))){
 						//alt=""があれば消しておく
 						if(strpos($line, "alt=\"\"")){
 							$line = str_replace("alt=\"\"", "", $line);
 						}
 
-						//imgタグ2回目からloading="lazy"を追加する
-						if($imgTagCnt++ > 1){
-							preg_match('/<img.*?loading=\".*\".*?>/', $line, $tmp);
-							if(!count($tmp)){
-								$line = str_replace("<img ", "<img loading=\"lazy\" ", $line);
-							}
+						switch($imgTagCnt){
+							case 0:	//最初の画像は必ずloading="eager"
+								$loadProp = "eager";
+								break;
+							case 1:	//2番目の画像は必ずloading="auto"
+								$loadProp = "auto";
+								break;
+							default://残りはすべてloading="lazy"
+								$loadProp = "lazy";
+								break;
 						}
+						$imgTagCnt++;
+						preg_match('/<img.*?loading=\".*\".*?>/', $line, $tmp);
+						if(!count($tmp)){
+							$line = str_replace("<img ", "<img loading=\"" . $loadProp . "\" ", $line);
+						}
+
 					}else if(is_numeric(stripos($line, "<iframe"))){	//iframeは必ずlazyload
 						preg_match('/<iframe.*?loading=\".*\".*?>/', $line, $tmp);
 						if(!count($tmp)){
@@ -71,6 +83,8 @@ class XLazyLoadPlugin{
 					}
 					$html[] = $line;
 				}
+
+				//if(count($lines) > 10) $html[] = "</div>";
 
 				$content = implode("\n", $html);
 			}
