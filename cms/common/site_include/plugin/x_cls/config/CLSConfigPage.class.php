@@ -14,6 +14,9 @@ class CLSConfigPage extends WebPage {
 		if(soy2_check_token()){
 			$this->pluginObj->config_per_page = (isset($_POST["config_per_page"])) ? $_POST["config_per_page"] : array();
 			$this->pluginObj->config_per_blog = (isset($_POST["config_per_blog"])) ? $_POST["config_per_blog"] : array();
+			$this->pluginObj->setMode((int)$_POST["mode"]);
+			$this->pluginObj->setMinWidth((int)$_POST["minWidth"]);
+			$this->pluginObj->setResizeWidth((int)$_POST["resizeWidth"]);
 
 			CMSUtil::notifyUpdate();
 			CMSPlugin::savePluginConfig($this->pluginObj->getId(), $this->pluginObj);
@@ -24,11 +27,39 @@ class CLSConfigPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
-		$this->addLabel("page_controller_path", array(
-			"text" => UserInfoUtil::getSiteDirectory() . "index.php"
+		$this->addForm("form");
+
+		$this->addCheckBox("mode_property", array(
+			"name" => "mode",
+			"value" => CLSPlugin::MODE_PROPERTY,
+			"selected" => $this->pluginObj->getMode() == CLSPlugin::MODE_PROPERTY,
+			"label" => "<img>の属性値にwidthとheightを挿入",
+			"onclick" => "toggleResizeConfig();"
 		));
 
-		$this->addForm("form");
+		$this->addCheckBox("mode_picture", array(
+			"name" => "mode",
+			"value" => CLSPlugin::MODE_PICTURE,
+			"selected" => $this->pluginObj->getMode() == CLSPlugin::MODE_PICTURE,
+			"label" => "<img>を<picture>タグで囲う",
+			"onclick" => "toggleResizeConfig();"
+		));
+
+		$this->addInput("min_width", array(
+			"name" => "minWidth",
+			"value" => $this->pluginObj->getMinWidth(),
+			"style" => "width:100px;"
+		));
+
+		$this->addInput("resize_width", array(
+			"name" => "resizeWidth",
+			"value" => $this->pluginObj->getResizeWidth(),
+			"style" => "width:100px;"
+		));
+
+		$this->addLabel("resize_dir", array(
+			"text" => $this->pluginObj->getResizeDir()
+		));
 
 		//挿入するページの指定
 		$this->createAdd("page_list","PageListComponent",array(

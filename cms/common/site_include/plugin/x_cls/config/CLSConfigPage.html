@@ -3,8 +3,39 @@
 	上記のプラグインと併用しなければ、表示速度の低速化を招きますので、ページの設定は上記のプラグインと合わせてご利用ください。<br>
 	HTML内でJavaScriptを直接記述する場合は、事前にコードの圧縮を行っておくことをオススメします。
 </div>
-<h4 class="mt-5">検索結果のページはチェックをいれても圧縮の対象外です</h4>
 <form soy:id="form">
+	<h4 class="mt-5">モード</h4>
+	<div class="form-group">
+		<input type="radio" soy:id="mode_property">
+		<div class="alert alert-warning">
+			ページ読み込み時に&lt;img src="/site/files/sample.jpg"&gt;があった場合、画像のサイズを自動で取得して&lt;img src="/site/files/sample.jpg" <strong>width="XXX"</strong> <strong>height="YYY"</strong>&gt;に自動変換します。<br>
+			※CSSのメディアクエリで出力を制御する場合にwidthとheightの値を利用します。
+		</div>
+	</div>
+	<div class="form-group">
+		<input type="radio" soy:id="mode_picture">
+		<div class="alert alert-warning">
+			ページ読み込み時に&lt;img src="/site/files/sample.jpg"&gt;があった場合、スマホ用にリサイズした画像を自動生成して、タグを<br>
+			&lt;picture&gt;<br>
+			&lt;source srcset="/site/files/sample.jpg" media="(min-width:<!-- soy:id="min_width_text" /-->px)"&gt;<br>
+			&lt;img src="/site/files/<!-- soy:id="resize_dir" /-->/sample.jpg"&gt;<br>
+			&lt;/picture&gt;<br>
+			に自動変換します。<br>
+			<strong>※リサイズする必要がない画像の場合は&lt;img&gt;の属性値にwidthとheightを挿入します。</strong>
+		</div>
+	</div>
+	<div class="form-group" id="resize_config">
+		<label>リサイズ設定</label>
+		<div class="form-inline">
+			<label>min-width：</label>
+			<input type="number" class="form-control" soy:id="min_width">&nbsp;px&nbsp;&nbsp;
+			<label>widthのリサイズ後のサイズ：</label>
+			<input type="number" class="form-control" soy:id="resize_width">&nbsp;px
+		</div>
+	</div>
+
+	<h4 class="mt-5">出力設定</h4>
+	<div class="alert alert-warning">検索結果のページはチェックをいれても圧縮の対象外です</div>
 	<ul>
 		<li soy:id="page_list" style="list-style:none">
 			<input type="checkbox" soy:id="page_item">
@@ -34,9 +65,27 @@
 		}
 	}
 
+	function toggleResizeConfig(){
+		$('input[name="mode"]').each(function(){
+			if($(this).prop("checked")){
+				if($(this).val() == 1){
+					$("#resize_config").css("display", "block");
+				}else{
+					$("#resize_config").css("display", "none");
+				}
+			}
+		});
+
+	}
+
 	window.onload = function(){
 		$.each($(".blog"), function(){
 			update_blog_pages(this.id);
 		});
+
+		var $cnfArea = $("#resize_config");
+		$cnfArea.css("display", "none");
+
+		toggleResizeConfig();
 	};
 </script>

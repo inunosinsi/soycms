@@ -5,9 +5,17 @@ class CLSPlugin{
 
 	const PLUGIN_ID = "x_cls";
 
+	const MODE_PROPERTY = 0;
+	const MODE_PICTURE = 1;
+
 	//挿入するページ
 	var $config_per_page = array();
 	var $config_per_blog = array();
+
+	private $mode = self::MODE_PROPERTY;
+	private $resizeDir = "cls";
+	private $minWidth = 400;
+	private $resizeWidth = 320;
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -20,13 +28,15 @@ class CLSPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.2"
-		));
-		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
-			$this,"config_page"
+			"version"=>"0.5"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
+			SOY2::import("site_include.plugin.x_cls.util.CLSUtil");
+			CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
+				$this,"config_page"
+			));
+
 			//公開側
 			if(defined("_SITE_ROOT_")){
 				CMSPlugin::setEvent('onOutput',self::PLUGIN_ID, array($this,"onOutput"), array("filter"=>"all"));
@@ -79,24 +89,15 @@ class CLSPlugin{
 				if(count($props) && isset($props["src"])){
 					//画像のサイズを取得
 					$info = self::_getImageInfo($props["src"]);
-					if(count($info)){
-						foreach($info as $idx => $v){
-							$props[$idx] = $v;
-						}
 
-						if(count($props)){
-							$imgTag = "<img";
-							foreach($props as $idx => $v){
-								$imgTag .= " " . $idx . "=\"" . $v . "\"";
-							}
-							$imgTag .= ">";
-							$line = preg_replace('/<img(.*?)>/i', $imgTag, $line);
-						}
+					// pictureモード
+					if($this->mode == self::MODE_PICTURE) {
+						$line = self::_setPictureElement($line, $info, $props);
+					}else{
+						if($this->mode == self::MODE_PROPERTY && count($info)) $props = self::_mergeProps($info, $props);
+						if(count($props)) $line = self::_rebuildImgTag($line, $props);
 					}
 				}
-
-				// @ToDo 設定画面を設ける
-				//$line = self::_setPictureElement($line, $info);
 			}
 
 			$htmls[] = $line;
@@ -139,18 +140,45 @@ class CLSPlugin{
 		return array("width" => $info[0], "height" => $info[1]);
 	}
 
-	private function _setPictureElement($line, $info){
-		if(!isset($info["width"]) || $info["width"] < 400) return $line;
+	private function _mergeProps($props, $info){
+		foreach($info as $idx => $v){
+			$props[$idx] = $v;
+		}
+		return $props;
+	}
+
+	private function _rebuildImgTag($line, $props){
+		if(!is_array($props) || !count($props)) return $line;
+		$imgTag = "<img";
+		foreach($props as $idx => $v){
+			$imgTag .= " " . $idx . "=\"" . $v . "\"";
+		}
+		$imgTag .= ">";
+		return preg_replace('/<img(.*?)>/i', $imgTag, $line);
+	}
+
+	private function _setPictureElement($line, $info, $props){
+		//小さい画像はMODE_PROPERTY対応
+		if(!isset($info["width"]) || $info["width"] < $this->resizeWidth) return self::_rebuildImgTag($line, self::_mergeProps($info, $props));
+
 		preg_match('/<img.*?>/', $line, $tmp);
 		if(isset($tmp[0])){
 			//画像のリサイズをかます
 			$src = self::_getSrc($line);
 			if(is_null($src)) return $line;
 
-			$src = self::_autoGenerateMiniImageFile($src);
-			if(is_null($src)) return $line;
+			$newSrc = self::_autoGenerateMiniImageFile($src);
+			if(is_null($newSrc)) return $line;
 
-			$tag = "<picture><source srcset=\"" . $src . "\" media=\"(max-width:400px)\">";
+			//imgタグを書き換える
+			$line = str_replace($src, $newSrc, $line);
+
+			/** ダメだったコードを残しておく **/
+			//$line = self::_rebuildImgTag($line, self::_mergeProps(self::_getImageInfo($newSrc), self::_getProps($line)));
+			/** ダメだったコードを残しておく **/
+
+			$tag = "<picture><source srcset=\"" . $src . "\" media=\"(min-width:" . $this->minWidth . "px)\">";
+			preg_match('/<img.*?>/', $line, $tmp);	//新しくなったimgタグを再び正規表現で調べる
 			$line = str_replace($tmp[0], $tag . $tmp[0] . "</picture>", $line);
 		}
 		return $line;
@@ -186,17 +214,17 @@ class CLSPlugin{
 		if(strpos($fullpath, "//")) $fullpath = str_replace("//", "/", $fullpath);
 		if(!file_exists($fullpath)) return null;
 
-		$dir = rtrim(substr($fullpath, 0, strrpos($fullpath, "/")), "/") . "/pic/";
+		$dir = rtrim(substr($fullpath, 0, strrpos($fullpath, "/")), "/") . "/" . $this->resizeDir . "/";
 		if(!file_exists($dir)) mkdir($dir);
 
 		$filename = ltrim(substr($fullpath, strrpos($fullpath, "/")), "/");
 		$newFullpath = $dir . $filename;
 		if(!file_exists($newFullpath)){
-			soy2_resizeimage($fullpath, $newFullpath, 360);
+			soy2_resizeimage($fullpath, $newFullpath, $this->resizeWidth);
 			exec("guetzli --quality 84 " . $newFullpath . " " . $newFullpath);
 		}
 
-		return rtrim(substr($path, 0, strrpos($path, "/")), "/") . "/pic/" . $filename;
+		return rtrim(substr($path, 0, strrpos($path, "/")), "/") . "/" . $this->resizeDir . "/" . $filename;
 	}
 
 	function config_page(){
@@ -205,6 +233,31 @@ class CLSPlugin{
 		$form->setPluginObj($this);
 		$form->execute();
 		return $form->getObject();
+	}
+
+	function getMode(){
+		return $this->mode;
+	}
+	function setMode($mode){
+		$this->mode = $mode;
+	}
+
+	function getMinWidth(){
+		return $this->minWidth;
+	}
+	function setMinWidth($minWidth){
+		$this->minWidth = $minWidth;
+	}
+
+	function getResizeWidth(){
+		return $this->resizeWidth;
+	}
+	function setResizeWidth($resizeWidth){
+		$this->resizeWidth = $resizeWidth;
+	}
+
+	function getResizeDir(){
+		return $this->resizeDir;
 	}
 
 	public static function register(){
