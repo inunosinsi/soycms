@@ -85,6 +85,12 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 			"name"  => "google_analytics_position",
 			"label" => "</body>タグの直前に挿入する"
 		));
+		$this->createAdd("insert_after_the_end_of_body","HTMLCheckBox",array(
+			"value" => GoogleAnalytics::INSERT_AFTER_THE_END_OF_BODY,
+			"selected" => ($this->pluginObj->position == GoogleAnalytics::INSERT_AFTER_THE_END_OF_BODY),
+			"name"  => "google_analytics_position",
+			"label" => "</body>タグの直後に挿入する"
+		));
 
 		$this->createAdd("insert_into_the_end_of_html","HTMLCheckBox",array(
 			"value" => GoogleAnalytics::INSERT_INTO_THE_END_OF_HTML,

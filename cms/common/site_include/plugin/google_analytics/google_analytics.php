@@ -10,10 +10,11 @@ class GoogleAnalytics{
 	const PLUGIN_ID = "google_analytics";
 
 	//挿入箇所
-	const INSERT_INTO_THE_END_OF_HEAD = 2;
-	const INSERT_INTO_THE_BEGINNING_OF_BODY = 1;
-	const INSERT_INTO_THE_END_OF_BODY = 0;
-	const INSERT_INTO_THE_END_OF_HTML = 3;
+	const INSERT_INTO_THE_END_OF_HEAD = 2;	//</head>直前に挿入
+	const INSERT_INTO_THE_BEGINNING_OF_BODY = 1;	//<body>直後に挿入
+	const INSERT_INTO_THE_END_OF_BODY = 0;	//</body>直前に挿入
+	const INSERT_AFTER_THE_END_OF_BODY = 4;	//</body>直後に挿入
+	const INSERT_INTO_THE_END_OF_HTML = 3;	//HTMLの末尾に挿入
 
 	//コード
 	var $google_analytics_track_code;
@@ -184,6 +185,15 @@ class GoogleAnalytics{
 				$html = preg_replace('/(<html\\s[^>]+>)/',"\$0\n".$code,$html);
 			}else{
 				$html = $code.$html;
+			}
+		//</body>の直後
+		}elseif($this->position == self::INSERT_AFTER_THE_END_OF_BODY){
+			if(stripos($html,'</body>') !== false){
+				$html = str_ireplace('</body>','</body>'."\n".$code,$html);
+			}elseif(preg_match('/</body\\s[^>]+>/',$html)){
+				$html = preg_replace('/(</body\\s[^>]+>)/',"\$0\n".$code,$html);
+			}else{
+				$html = $html.$code;
 			}
 
 		//意図的に末尾
