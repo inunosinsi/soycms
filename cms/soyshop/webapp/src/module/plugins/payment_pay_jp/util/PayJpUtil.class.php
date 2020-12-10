@@ -4,6 +4,7 @@ class PayJpUtil {
 
 	private static function _errorMessageList(){
 		return array(
+			"incorrect_card_data" => "カード番号が正しくありません",	//新設されたエラー
 			"invalid_number" => "不正なカード番号",
 			"invalid_cvc" => "不正なCVC",
 			"invalid_expiration_date" => "不正な有効期限年、または月",
