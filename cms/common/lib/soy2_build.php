@@ -3800,8 +3800,11 @@ class SOY2DAOFactoryImpl extends SOY2DAOFactory {
 		$params = array();
 		foreach($parameters as $param){
 			$str = "";
-			$class = ($param->getType() && !$param->getType()->isBuiltin()) ? new ReflectionClass($param->getType()->getName()) : null;
-			//$class = $param->getClass();	//ReflectionParameter::getClass() is deprecated in PHP8
+			if(method_exists($param, "getType")){
+				$class = (!is_null($param->getType()) && !$param->getType()->isBuiltin()) ? new ReflectionClass($param->getType()->getName()) : null;
+			}else{
+				$class = (method_exists($param, "getClass")) ? $param->getClass() : "";	//ReflectionParameter::getClass() is deprecated in PHP8
+			}
 			if($class){
 				$str .= $class->getName()." ";
 			}
