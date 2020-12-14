@@ -195,7 +195,7 @@ class SOYShop_ItemOrder {
 	function getOpenItemName(){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		if(!defined("SOYSHOP_MAIL_LANGUAGE"))　define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
+		if(!defined("SOYSHOP_MAIL_LANGUAGE")) define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
 
 		if(SOYSHOP_MAIL_LANGUAGE != "jp"){
 			try{
