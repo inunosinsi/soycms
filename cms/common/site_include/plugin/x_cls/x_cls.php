@@ -24,11 +24,11 @@ class CLSPlugin{
 	function init(){
 		CMSPlugin::addPluginMenu(self::PLUGIN_ID,array(
 			"name"=>"Cumulative Layout Shiftプラグイン",
-			"description"=>"Cumulative Layout Shift対策で画像のサイズを取得してHTMLタグを生成しなおす。(注)一行一画像の状態のみ対応",
+			"description"=>"Cumulative Layout Shift対策で画像のサイズを取得してHTMLタグを生成しなおす。",
 			"author"=>"齋藤毅",
 			"url"=>"",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -79,23 +79,33 @@ class CLSPlugin{
 		$lines = explode("\n", $html);
 		if(!count($lines)) return $html;
 
-		// @ToDo 一行に複数画像を取得する方法を考える
 		$htmls = array();
 		foreach($lines as $line){
 			//画像ファイルのある行を探す
 			if(is_numeric(stripos($line, "<img"))){
-				//属性を全て取得
-				$props = self::_getProps($line);
-				if(count($props) && isset($props["src"])){
-					//画像のサイズを取得
-					$info = self::_getImageInfo($props["src"]);
+				//一行に複数のimgタグ対応
+				preg_match_all('/<img.*?>/', $line, $tmp);
+				if(isset($tmp[0]) && is_array($tmp[0]) && count($tmp[0])){
+					foreach($tmp[0] as $imgTag){
+						$props = self::_getProps($imgTag);
+						if(count($props) && isset($props["src"])){
+							//画像のサイズを取得
+							$info = self::_getImageInfo($props["src"]);
 
-					// pictureモード
-					if($this->mode == self::MODE_PICTURE) {
-						$line = self::_setPictureElement($line, $info, $props);
-					}else{
-						if($this->mode == self::MODE_PROPERTY && count($info)) $props = self::_mergeProps($info, $props);
-						if(count($props)) $line = self::_rebuildImgTag($line, $props);
+							$newTag = null;
+
+							// pictureモード
+							if($this->mode == self::MODE_PICTURE) {
+								$newTag = self::_setPictureElement($imgTag, $info, $props);
+							}else{
+								if($this->mode == self::MODE_PROPERTY && count($info)) $props = self::_mergeProps($info, $props);
+								if(count($props)) $newTag = self::_rebuildImgTag($imgTag, $props);
+							}
+
+							if(strlen($newTag)){
+								$line = str_replace($imgTag, $newTag, $line);
+							}
+						}
 					}
 				}
 			}
@@ -106,23 +116,33 @@ class CLSPlugin{
 		return implode("\n", $htmls);
 	}
 
-	private function _getProps($line){
-		preg_match('/<img(.*?)>/i', $line, $tmp);
-		if(!isset($tmp[1])) return array();
-		$p = trim(trim($tmp[1], "/"));
-		if(!strlen($p)) return array();
-
-		$props = explode(" ", $p);
-		if(!count($props)) return array();
-
+	private function _getProps($imgTag){
 		$list = array();
-		foreach($props as $p){
-			$prop = explode("=", $p);
-			if(!isset($prop[1])) continue;
-			$v = trim(trim($prop[1], "\""));
-			if(!strlen($v)) continue;
-			$idx = trim($prop[0]);
-			$list[$idx] = $v;
+
+		// prop="***"の方を調べる
+		preg_match_all('/[a-zA-Z_0-9\-]*?=\".*?\"/', $imgTag, $tmp);
+		if(isset($tmp[0]) && is_array($tmp[0]) && count($tmp[0])){
+			foreach($tmp[0] as $p){
+				$prop = explode("=", $p);
+				if(!isset($prop[1])) continue;
+				$v = trim(trim($prop[1], "\""));
+				if(!strlen($v)) continue;
+				$idx = trim($prop[0]);
+				$list[$idx] = $v;
+			}
+		}
+
+		// prop='***'の方を調べる
+		preg_match_all("/[a-zA-Z_0-9\-]*?='.*?'/", $imgTag, $tmp);
+		if(isset($tmp[0]) && is_array($tmp[0]) && count($tmp[0])){
+			foreach($tmp[0] as $p){
+				$prop = explode("=", $p);
+				if(!isset($prop[1])) continue;
+				$v = trim(trim($prop[1], "'"));
+				if(!strlen($v)) continue;
+				$idx = trim($prop[0]);
+				$list[$idx] = $v;
+			}
 		}
 
 		return $list;
@@ -147,41 +167,37 @@ class CLSPlugin{
 		return $props;
 	}
 
-	private function _rebuildImgTag($line, $props){
-		if(!is_array($props) || !count($props)) return $line;
-		$imgTag = "<img";
+	private function _rebuildImgTag($oldTag, $props){
+		if(!is_array($props) || !count($props)) return $oldTag;
+		$newTag = "<img";
 		foreach($props as $idx => $v){
-			$imgTag .= " " . $idx . "=\"" . $v . "\"";
+			$newTag .= " " . $idx . "=\"" . $v . "\"";
 		}
-		$imgTag .= ">";
-		return preg_replace('/<img(.*?)>/i', $imgTag, $line);
+		$newTag .= ">";
+		return $newTag;
 	}
 
-	private function _setPictureElement($line, $info, $props){
+	private function _setPictureElement($newTag, $info, $props){
 		//小さい画像はMODE_PROPERTY対応
-		if(!isset($info["width"]) || $info["width"] < $this->resizeWidth) return self::_rebuildImgTag($line, self::_mergeProps($info, $props));
+		if(!isset($info["width"]) || $info["width"] < $this->resizeWidth)  return self::_rebuildImgTag($newTag, self::_mergeProps($info, $props));
 
-		preg_match('/<img.*?>/', $line, $tmp);
-		if(isset($tmp[0])){
-			//画像のリサイズをかます
-			$src = self::_getSrc($line);
-			if(is_null($src)) return $line;
+	 	//画像のリサイズをかます
+		$src = self::_getSrc($newTag);
+		if(is_null($src)) return $newTag;
 
-			$newSrc = self::_autoGenerateMiniImageFile($src);
-			if(is_null($newSrc)) return $line;
+		$newSrc = self::_autoGenerateMiniImageFile($src);
+		if(is_null($newSrc)) return $newTag;
 
-			//imgタグを書き換える
-			$line = str_replace($src, $newSrc, $line);
+		//imgタグを書き換える
+		$newTag = str_replace($src, $newSrc, $newTag);
 
-			/** ダメだったコードを残しておく **/
-			//$line = self::_rebuildImgTag($line, self::_mergeProps(self::_getImageInfo($newSrc), self::_getProps($line)));
-			/** ダメだったコードを残しておく **/
+		/** ダメだったコードを残しておく **/
+		//$line = self::_rebuildImgTag($line, self::_mergeProps(self::_getImageInfo($newSrc), self::_getProps($line)));
+		/** ダメだったコードを残しておく **/
 
-			$tag = "<picture><source srcset=\"" . $src . "\" media=\"(min-width:" . $this->minWidth . "px)\">";
-			preg_match('/<img.*?>/', $line, $tmp);	//新しくなったimgタグを再び正規表現で調べる
-			$line = str_replace($tmp[0], $tag . $tmp[0] . "</picture>", $line);
-		}
-		return $line;
+		$tag = "<picture><source srcset=\"" . $src . "\" media=\"(min-width:" . $this->minWidth . "px)\">";
+		preg_match('/<img.*?>/', $newTag, $tmp);	//新しくなったimgタグを再び正規表現で調べる
+		return str_replace($tmp[0], $tag . $tmp[0] . "</picture>", $newTag);
 	}
 
 	private function _getSrc($line){
