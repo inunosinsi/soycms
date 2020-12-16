@@ -247,7 +247,7 @@ class ItemOptionUtil {
 		return $str;
 	}
 
-	private function itemOrderDao(){
+	private static function itemOrderDao(){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 		return $dao;
