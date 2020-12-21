@@ -37,7 +37,7 @@
 							</td>
 							<td>
 								<a soy:id="detail_link" href="#" class="btn btn-primary">編集</a>&nbsp;
-								<a soy:id="remove_link" href="#" class="btn btn-danger" onclick="return confirm('削除してもよろしいですか？')">削除</a>
+								<a soy:id="remove_link" href="#" class="btn btn-danger delete_btn" onclick="return confirm('削除してもよろしいですか？')">削除</a>
 							</td>
 						</tr>
 						<!-- /soy:id="page_list" -->
@@ -66,3 +66,9 @@
 		</div>
 	</div>
 </div>
+
+<style>
+.delete_btn{
+	visibility: hidden;
+}
+</style>
