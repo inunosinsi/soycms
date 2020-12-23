@@ -220,7 +220,7 @@ class SOYShop_ReviewPagePager extends SOYShop_PagerBase{
     function getPagerUrl(){
         if(!$this->_pagerUrl){
 			$url = soyshop_get_page_url($this->page->getUri());
-			$url .= "/" . implode($this->args, "/");
+			$url .= "/" . implode("/", $this->args);
             if($url[strlen($url) - 1] == "/")$url = substr($url, 0, strlen($url) - 1);
             $this->_pagerUrl = $url;
         }

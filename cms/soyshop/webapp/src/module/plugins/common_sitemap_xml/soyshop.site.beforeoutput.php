@@ -22,7 +22,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$pageType = $pageObj->getType();
 		if($pageType != SOYShop_Page::TYPE_FREE) return;
 
-		$pages = self::getPages();
+		$pages = self::_getPages();
 		if(count($pages) == 0) return;
 
 		//多言語プラグイン
@@ -49,7 +49,6 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 
 		foreach($pages as $obj){
-
 			$uri = $obj->getUri();
 
 			//多言語化プラグインで無視するurl
@@ -64,8 +63,8 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			if($uri==SOYSHOP_TOP_PAGE_MARKER){
 				$uri = "";
 
-			//404の場合はスルー
-			}else if($uri == SOYSHOP_404_PAGE_MARKER){
+			//404 or メンテナンスの場合はスルー
+			}else if($uri == SOYSHOP_404_PAGE_MARKER || $uri == SOYSHOP_MAINTENANCE_PAGE_MARKER){
 				continue;
 			}
 
@@ -77,20 +76,20 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 						case SOYShop_ListPage::TYPE_CATEGORY:
 							//ディフォルトカテゴリがある場合
 							if(!is_null($pageObject->getDefaultCategory())){
-								$html[] = self::buildUrlTag($url, $uri . "/", "", 0.8, $obj->getUpdateDate());
+								$html[] = self::_buildUrlTag($url, $uri . "/", "", 0.8, $obj->getUpdateDate());
 							}
 
 							$categoryIds = $pageObject->getCategories();
 							foreach($categoryIds as $categoryId){
 								$category = soyshop_get_category_object($categoryId);
-								$html[] = self::buildUrlTag($url, $uri, $category->getAlias(), 0.5, $obj->getUpdateDate());
+								$html[] = self::_buildUrlTag($url, $uri, $category->getAlias(), 0.5, $obj->getUpdateDate());
 							}
 							break;
 						case SOYShop_ListPage::TYPE_FIELD:
 							/**
 							 * @ToDo 引数の設定の方は未着手
 							 */
-							$html[] = self::buildUrlTag($url, $uri . "/", "", 0.5, $obj->getUpdateDate());
+							$html[] = self::_buildUrlTag($url, $uri . "/", "", 0.5, $obj->getUpdateDate());
 							break;
 						case SOYShop_ListPage::TYPE_CUSTOM:
 							$moduleId = $pageObject->getModuleId();
@@ -115,17 +114,17 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 												//多言語化
 												if(count($this->languages)){
 													foreach($this->languages as $lang){
-														if(!self::isMultiLanguagePage($uri, $lang)) continue;
+														if(!self::_isMultiLanguagePage($uri, $lang)) continue;
 														if($lang == UtilMultiLanguageUtil::LANGUAGE_JP || !isset($config["option"][$lang]) || !strlen($config["option"][$lang])) continue;
 														$multiOpts = explode("\n", $config["option"][$lang]);
 														if(!isset($multiOpts[$index])) continue;
 														$multiOpt = trim($multiOpts[$index]);
 														if(!strlen($multiOpt)) continue;
-														$html[] = self::buildMultiLangagePageUrl($url, $uri . "/" . $fieldId . "/" . $multiOpt, $lang);
+														$html[] = self::_buildMultiLangagePageUrl($url, $uri . "/" . $fieldId . "/" . $multiOpt, $lang);
 													}
 												}
 		 										$html[] = "		<priority>0.5</priority>";
-		 										$html[] = "		<lastmod>" . self::getDate($obj->getUpdateDate()) . "</lastmod>";
+		 										$html[] = "		<lastmod>" . self::_getDate($obj->getUpdateDate()) . "</lastmod>";
 		 										$html[] = "	</url>";
 											}
 										}
@@ -137,13 +136,13 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 					break;
 				case SOYShop_Page::TYPE_DETAIL:
 					$value = array();
-					$items = self::getItems($obj->getId());
+					$items = self::_getItems($obj->getId());
 					if(count($items)){
 						foreach($items as $item){
 							if(!$item->isPublished()) continue;	//非公開の商品は除く
 							if(!$isDisplayChildItem && is_numeric($item->getType())) continue;	//子商品を表示しないモードの場合は除く
 
-							$html[] = self::buildUrlTag($url, $uri, $item->getAlias(), 0.8, $item->getUpdateDate());
+							$html[] = self::_buildUrlTag($url, $uri, $item->getAlias(), 0.8, $item->getUpdateDate());
 						}
 					}
 					break;
@@ -152,34 +151,18 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				case SOYShop_Page::TYPE_FREE:
 				case SOYShop_Page::TYPE_SEARCH:
 				default:
+					//レビュープラグインが有効であり、レビュープラグイン用のページであれば除く
+					if(SOYShopPluginUtil::checkIsActive("item_review")){
+						SOY2::import("module.plugins.item_review.util.ItemReviewSitemapUtil");
+						if(ItemReviewSitemapUtil::checkReviewPageId($obj->getId())) break;
+					}
 					if(strpos($uri, ".xml") !== false) break;
 					if(strpos($uri, ".html") == false && strlen($uri) > 1){
 						$uri = $uri . "/";
 					}
+
 					$priority = (!strlen($uri)) ? "1.0" : "0.8";
-
-					/** レビュープラグインからの自動出力 **/
-					if(self::_isReviewPage() && self::_checkReviewPageId($obj->getId())){
-
-
-						$reviews = self::_getReviewCountListEarchItems();
-						if(count($reviews)){
-							$div = self::_getDivideReviewCount();
-							if($div > 0){
-								foreach($reviews as $itemId => $cnt){
-									$pageCnt = (int)max(1, ceil($cnt / $div));
-									if($pageCnt > 0){
-										for($pi = 1; $pi <= $pageCnt; $pi++){
-											$html[] = self::buildUrlTag($url, $uri . "/" . $itemId . "/page-" . $pi . ".html", "", "0.5", $obj->getUpdateDate());
-										}
-									}
-								}
-							}
-						}
-					}else{
-						$html[] = self::buildUrlTag($url, $uri, "", $priority, $obj->getUpdateDate());
-					}
-
+					$html[] = self::_buildUrlTag($url, $uri, "", $priority, $obj->getUpdateDate());
 					break;
 			}
 		}
@@ -204,9 +187,22 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 					}
 
 					$html[] = "		<priority>0.5</priority>";
-					$html[] = "		<lastmod>" . self::getDate($config["lastmod"]) . "</lastmod>";
+					$html[] = "		<lastmod>" . self::_getDate($config["lastmod"]) . "</lastmod>";
 					$html[] = "	</url>";
 				}
+			}
+		}
+
+		// 拡張ポイントを追加
+		SOYShopPlugin::load("soyshop.sitemap");
+		$urlItems = SOYShopPlugin::invoke("soyshop.sitemap")->getItems();
+		if(is_array($urlItems) && count($urlItems)){
+			foreach($urlItems as $urlItem){
+				if(!isset($urlItem["loc"])) continue;
+				$uri = $urlItem["loc"];
+				$priority = (isset($urlItem["priority"]) && is_numeric($urlItem["priority"])) ? $urlItem["priority"] : 0.1;
+				$lastmod = (isset($urlItem["lastmod"]) && is_numeric($urlItem["lastmod"])) ? $urlItem["lastmod"] : time();
+				$html[] = self::_buildUrlTag($url, $uri, "", $priority, $lastmod);
 			}
 		}
 
@@ -219,7 +215,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		));
 	}
 
-	private function buildUrlTag($url, $uri, $alias, $priority = 0.8, $updateDate = 0){
+	private function _buildUrlTag($url, $uri, $alias, $priority = 0.8, $updateDate = 0){
 		if(strlen($alias)) $alias = "/" . $alias;
 		$uriConcatedAlias = $uri . $alias;
 		if(strpos($uriConcatedAlias, "//")) $uriConcatedAlias = str_replace("//", "/", $uriConcatedAlias);
@@ -230,33 +226,33 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		//多言語化
 		if(count($this->languages)){
 			foreach($this->languages as $lang){
-				if(self::isMultiLanguagePage($uri, $lang)){
-					$html[] = self::buildMultiLangagePageUrl($url, $uriConcatedAlias, $lang);
+				if(self::_isMultiLanguagePage($uri, $lang)){
+					$html[] = self::_buildMultiLangagePageUrl($url, $uriConcatedAlias, $lang);
 				}
 			}
 		}
 		$html[] = "		<priority>" . $priority . "</priority>";
-		$html[] = "		<lastmod>" . self::getDate($updateDate) . "</lastmod>";
+		$html[] = "		<lastmod>" . self::_getDate($updateDate) . "</lastmod>";
 		$html[] = "	</url>";
 		return implode("\n", $html);
 	}
 
-	private function isMultiLanguagePage($uri, $lang){
+	private function _isMultiLanguagePage($uri, $lang){
 		if(!count($this->languages) || !array_search($lang, $this->languages)) return false;
 		$filename = $lang . "_" . str_replace(array("/", "."), "_", $uri) . "_page.php";
 		$filename = str_replace("__", "_", $filename);
 		return file_exists(SOYSHOP_SITE_DIRECTORY . ".page/" . $filename);
 	}
 
-	private function buildMultiLangagePageUrl($url, $uri, $lang){
+	private function _buildMultiLangagePageUrl($url, $uri, $lang){
 		return '		<xhtml:link rel="alternate" hreflang="' . $lang . '" href="' . $url . $lang . "/" . $uri . '" />';
 	}
 
-	private function getDate($time){
+	private function _getDate($time){
 		return date("Y", $time) . "-" . date("m", $time) . "-" . date("d", $time) . "T" . date("H", $time) . ":" . date("i", $time) . ":" . date("s", $time) . "+09:00";
 	}
 
-	private function getPages(){
+	private function _getPages(){
 		try{
 			return SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
 		}catch(Exception $e){
@@ -264,7 +260,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
 	}
 
-	private function getItems($pageId){
+	private function _getItems($pageId){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 
@@ -273,79 +269,6 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}catch(Exception $e){
 			return array();
 		}
-	}
-
-	/** レビュープラグイン **/
-	private function _isReviewPage(){
-		static $isActive;
-		if(is_null($isActive)){
-			$isActive = false;
-			if(SOYShopPluginUtil::checkIsActive("item_review")){
-				$config = self::_reviewConfig();
-				$isActive = (isset($config["active_other_page"]) && (int)$config["active_other_page"] === 1);
-			}
-		}
-		return $isActive;
-	}
-
-	private function _checkReviewPageId($pageId){
-		$reviewPageId = self::_getReviewPageId();
-		if($reviewPageId == $pageId) return true;
-
-		//@ToDo スマホページを開いている場合
-		SOY2::import("util.SOYShopPluginUtil");
-		if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
-			SOY2::import("module.plugins.util_mobile_check.util.UtilMobileCheckUtil");
-			$mbCnf = UtilMobileCheckUtil::getConfig();
-			if(isset($mbCnf["prefix_i"]) && strlen($mbCnf["prefix_i"])){
-				return (self::_getMbReviewPageId($mbCnf["prefix_i"]) == $pageId);
-			}
-		}
-
-		return false;
-	}
-
-	private function _getReviewPageId(){
-		static $id, $pageDao;
-		if(is_null($id)){
-			$config = self::_reviewConfig();
-			$id = (isset($config["review_page_id"]) && is_numeric($config["review_page_id"])) ? (int)$config["review_page_id"] : nul;
-		}
-		return $id;
-	}
-
-	private function _getMbReviewPageId($prefix){
-		static $ids, $pageDao;
-		if(isset($ids[$prefix])) return $ids[$prefix];
-		if(is_null($pageDao)) $pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-
-		$mbPageUri = $prefix . "/" . soyshop_get_page_object(self::_getReviewPageId())->getUri();
-		try{
-			$ids[$prefix] = $pageDao->getByUri($mbPageUri)->getId();
-		}catch(Exception $e){
-			$ids[$prefix] = null;
-		}
-		return $ids[$prefix];
-	}
-
-	private function _getReviewCountListEarchItems(){
-		SOY2::import("module.plugins.item_review.domain.SOYShop_ItemReviewDAO");
-		return SOY2DAOFactory::create("SOYShop_ItemReviewDAO")->getReviewCountListEarchItems();
-	}
-
-	//1ページあたり何個レビューを表示するか？
-	private function _getDivideReviewCount(){
-		$config = self::_reviewConfig();
-		return (isset($config["review_count"]) && is_numeric($config["review_count"]) && $config["review_count"] > 0) ? (int)$config["review_count"] : null;
-	}
-
-	private function _reviewConfig(){
-		static $cnf;
-		if(is_null($cnf)){
-			SOY2::import("module.plugins.item_review.util.ItemReviewUtil");
-			$cnf = ItemReviewUtil::getConfig();
-		}
-		return $cnf;
 	}
 }
 

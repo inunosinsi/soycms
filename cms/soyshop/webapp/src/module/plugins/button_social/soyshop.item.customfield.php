@@ -106,7 +106,7 @@ class ButtonSocialCustomField extends SOYShopItemCustomFieldBase{
 		$url = soyshop_get_site_url(true);
 
 		$uri = soyshop_get_page_object($item->getDetailPageId())->getUri();
-		if(isset($uri)) $url = $url.$page->getUri() . "/" . $item->getAlias();
+		if(isset($uri)) $url = $url.$uri . "/" . $item->getAlias();
 
 		return $url;
 	}

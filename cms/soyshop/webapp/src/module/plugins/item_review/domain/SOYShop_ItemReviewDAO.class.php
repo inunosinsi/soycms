@@ -68,7 +68,7 @@ abstract class SOYShop_ItemReviewDAO extends SOY2DAO{
 	/**
 	 * @final
 	 */
-	function getReviewCountListEarchItems(){
+	function getReviewCountListEachItems(){
 		$sql = "SELECT item_id, COUNT(item_id) AS CNT FROM soyshop_item_review ".
 				"WHERE is_approved = " . SOYShop_ItemReview::REVIEW_IS_APPROVED . " ".
 				"GROUP BY item_id";
@@ -85,6 +85,18 @@ abstract class SOYShop_ItemReviewDAO extends SOY2DAO{
 		}
 
 		return $list;
+	}
+
+	/**
+	 * @final
+	 */
+	function getLastReviewDate($itemId){
+		try{
+			$res = $this->executeQuery("SELECT create_date FROM soyshop_item_review WHERE item_id = :itemId AND is_approved = " . SOYShop_ItemReview::REVIEW_IS_APPROVED . " ORDER BY create_date DESC LIMIT 1", array(":itemId" => $itemId));
+		}catch(Exception $e){
+			$res = array();
+		}
+		return (isset($res[0]["create_date"])) ? (int)$res[0]["create_date"] : time();
 	}
 
    	/**

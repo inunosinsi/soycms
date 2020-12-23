@@ -100,6 +100,10 @@ function soyshop_parts_mypage_login($html, $page){
 		"link" => soyshop_get_mypage_url() . "/register",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
+	$obj->addModel("is_login_link", array(
+		"visible" => (SOYShop_DataSets::get("config.mypage.id") != "none"),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
 	$obj->addLink("login_link", array(
 		"link" => soyshop_get_mypage_url() . "/login",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
@@ -215,6 +219,11 @@ function soyshop_parts_mypage_login($html, $page){
 	));
 
 
+	$obj->addModel("is_cart_link", array(
+		"visible" => (SOYShop_DataSets::get("config.cart.cart_id") != "none"),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
 	//ログインしている時だけカートを表示したい場合用
 	$obj->addLink("cart_link", array(
 		"link" => soyshop_get_cart_url(),
@@ -239,6 +248,11 @@ function soyshop_parts_mypage_login($html, $page){
 
 	$obj->addLink("card_link", array(
 		"link" => soyshop_get_mypage_url() . "/card",
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$obj->addLabel("board_link_text", array(
+		"text" => soyshop_get_mypage_url() . "/board",
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 
