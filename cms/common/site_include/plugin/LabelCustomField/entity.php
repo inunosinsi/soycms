@@ -8,7 +8,7 @@ class LabelCustomField{
 		"checkbox" => "チェックボックス",
 		"radio" => "ラジオボタン",
 		"select" => "セレクトボックス",
-		//"image" => "画像",
+		"image" => "画像",
 		//"file" => "ファイル",
 		//"richtext" => "リッチテキスト",
 		//"link" => "リンク",
@@ -236,11 +236,11 @@ class LabelCustomField{
  				       .' name="'.$h_formName.'"'
  				       .' value="'.$h_value.'"'
  				       .' />'
- 				       .' <button type="button" onclick="open_customfield_filemanager($(\'#'.$h_formID.'\'));" style="margin-right:10px;">ファイルを指定する</button>';
+ 				       .' <button type="button" class="btn btn-primary btn-sm" onclick="open_customfield_filemanager($(\'#'.$h_formID.'\'));" style="margin-right:10px;">ファイルを指定する</button>';
 
  				if($h_value){
  					if($this->getType() == "image"){
- 						$body .= '<a href="#" onclick="return preview_customfield($(\'#'.$h_formID.'\'));">Preview</a>';
+ 						$body .= '<a href="#" class="btn btn-warning btn-sm" onclick="return preview_customfield($(\'#'.$h_formID.'\'));">Preview</a>';
  					}
  					if($this->getType() == "file"){
  						$body .= '<a href="'.$h_value.'" target="_blank" class="btn btn-default">'.basename($h_value).'</a>';

@@ -84,9 +84,10 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 		$dao = new SOY2DAO();
 
 		//トップページの場合
-		if(!strlen($uri) || is_numeric(stripos($uri, "index"))){
+		$pos = stripos($uri, "index");
+		if(!strlen($uri) || is_numeric($pos)){
 			// _index***の可能性を加味する	高速化の為に条件によってbindを分ける
-			$bind = (strpos($uri, "index") > 0) ? "%index%" : "index%";
+			$bind = ($pos > 0) ? "%index%" : "index%";
 			$res = $dao->executeQuery("SELECT uri FROM Page WHERE uri = '' OR uri LIKE :uri", array(":uri" => $bind));
 		}else{
 			//uriが空のページは常に取得しておく

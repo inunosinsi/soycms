@@ -1,4 +1,4 @@
-<?php
+4<?php
 
 LabelCustomFieldPlugin::register();
 
@@ -27,9 +27,9 @@ class LabelCustomFieldPlugin{
 			"name" => "ラベルカスタムフィールド",
 			"description" => "",
 			"author" => "齋藤毅",
-			"url" => "https://saitodev.co",
+			"url" => "https://saitodev.co/article/3532",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.3"
+			"version"=>"0.5"
 		));
 
 		//プラグイン アクティブ
@@ -87,7 +87,6 @@ class LabelCustomFieldPlugin{
 
 				//カスタムフィールドの設定が取れるときの動作（たとえば同じサイト内の場合）
 				if($master){
-
 					//$attr["html"]に改めて値を入れ直す時に使用するフラグ
 					$resetFlag = true;
 
@@ -450,7 +449,7 @@ class LabelCustomFieldPlugin{
 	}
 
 	private function buildFormOnLabelPage($labelId){
-		$html = "";
+		$html = self::_getScripts();
 		$db_arr = $this->getCustomFields($labelId);
 
 		$db_values = array();
@@ -477,6 +476,23 @@ class LabelCustomFieldPlugin{
 		// }
 
 		return $html;
+	}
+
+	/**
+	 * ラベル詳細画面でのJavaScriptファイル
+	 * @return string
+	 */
+	private function _getScripts(){
+
+		$script = '<script type="text/javascript">';
+		$script .= file_get_contents(dirname(__FILE__) . "/js/custom_field.js");
+		$script .= '</script>';
+		$script = str_replace("#FILE_UPLOAD_LINK#", SOY2PageController::createLink("Page.Editor.FileUpload"), $script);
+		$script = str_replace("#PUBLIC_URL#", UserInfoUtil::getSiteURLBySiteId(""), $script);
+		$script = str_replace("#SITE_URL#", UserInfoUtil::getSiteURL(), $script);
+		$script = str_replace("#SITE_ID#", UserInfoUtil::getSite()->getSiteId(), $script);
+
+		return $script;
 	}
 
 	/**
