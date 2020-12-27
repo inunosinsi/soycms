@@ -82,26 +82,26 @@ class LabelCustomFieldFormPage extends WebPage{
 		));
 
 		/* カスタムフィールド全体の設定変更用 */
-		$this->createAdd("config_display_title","HTMLCheckBox",array(
-			"type"     => "checkbox",
-			"name"     => "display_config[display_title]",
-			"value"    => 1,
-			"selected" => $this->pluginObj->displayTitle,
-			"isBoolean"=> true,
-			"elementId"=> "config_display_title",
-			"label"    => "「カスタムフィールド」を表示する",
-			"onclick"  => "update_display_sample()"
-		));
-		$this->createAdd("config_display_id","HTMLCheckBox",array(
-			"type"     => "checkbox",
-			"name"     => "display_config[display_id]",
-			"value"    => 1,
-			"selected" => $this->pluginObj->displayID,
-			"isBoolean" => true,
-			"elementId"=> "config_display_id",
-			"label"    => "IDを表示する",
-			"onclick"  => "update_display_sample()"
-		));
+		// $this->createAdd("config_display_title","HTMLCheckBox",array(
+		// 	"type"     => "checkbox",
+		// 	"name"     => "display_config[display_title]",
+		// 	"value"    => 1,
+		// 	"selected" => $this->pluginObj->displayTitle,
+		// 	"isBoolean"=> true,
+		// 	"elementId"=> "config_display_title",
+		// 	"label"    => "「カスタムフィールド」を表示する",
+		// 	"onclick"  => "update_display_sample()"
+		// ));
+		// $this->createAdd("config_display_id","HTMLCheckBox",array(
+		// 	"type"     => "checkbox",
+		// 	"name"     => "display_config[display_id]",
+		// 	"value"    => 1,
+		// 	"selected" => $this->pluginObj->displayID,
+		// 	"isBoolean" => true,
+		// 	"elementId"=> "config_display_id",
+		// 	"label"    => "IDを表示する",
+		// 	"onclick"  => "update_display_sample()"
+		// ));
 	}
 
 	private function buildCreateForm(){
