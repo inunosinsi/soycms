@@ -25,7 +25,7 @@ class UserCustomSearchFieldListComponent extends HTMLList{
 			"link" => "javascript:void(0)",
 			"text" => "詳細設定",
 			"onclick" => '$(\'#field_config_' . $key . '\').toggle();',
-			"style" => (isset($entity["option"]) && strlen($entity["option"])) ? "background-color:yellow;" : ""
+			"style" => ( (isset($entity["option"]) && strlen($entity["option"])) || (isset($entity["is_admin_only"]) && $entity["is_admin_only"] == UserCustomSearchFieldUtil::DISPLAY_ADMIN_ONLY)) ? "background-color:yellow;" : ""
 		));
 
 		/* 順番変更用 */
@@ -73,6 +73,14 @@ class UserCustomSearchFieldListComponent extends HTMLList{
 			"name" => "update_advance",
 			"value" => $key,
 			"attr:id" => "update_advance_submit_" . $key
+		));
+
+		//表示範囲
+		$this->addCheckBox("admin_only", array(
+			"name" => "config[is_admin_only]",
+			"value" => UserCustomSearchFieldUtil::DISPLAY_ADMIN_ONLY,
+			"selected" => (isset($entity["is_admin_only"]) && $entity["is_admin_only"] == UserCustomSearchFieldUtil::DISPLAY_ADMIN_ONLY),
+			"label" => "管理画面側のみフォームを表示する"
 		));
 	}
 

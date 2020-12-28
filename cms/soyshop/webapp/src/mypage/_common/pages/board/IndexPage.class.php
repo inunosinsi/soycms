@@ -10,6 +10,9 @@ class IndexPage extends MainMyPagePageBase{
 
 		parent::__construct();
 
-		$user = $this->getUser();
+		$groups = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.GroupLogic")->get();
+		$this->createAdd("group_list", "_common.board.topic.GroupListComponent", array(
+			"list" => $groups
+		));
 	}
 }

@@ -14,6 +14,10 @@ class UserCustomSearchFieldUtil{
 	const TYPE_SELECT = "select";
 	const TYPE_DATE = "date";
 
+	//フォームの設置箇所
+	const DISPLAY_ALL = 0;
+	const DISPLAY_ADMIN_ONLY = 1;
+
 	public static function getConfig(){
 		return SOYShop_DataSets::get("user_custom_search.config", array());
 	}

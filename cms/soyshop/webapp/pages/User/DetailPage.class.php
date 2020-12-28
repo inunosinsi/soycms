@@ -225,19 +225,7 @@ class DetailPage extends WebPage{
 
 
 		//注文
-		$orderDao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		$count = $orderDao->countByUserIdIsRegistered($id);
-		$cancelCount = $orderDao->countByUserIdIsCanceled($id);
-
-		//1つしかなければそこにリンクする
-		// if($count == 1){
-		// 	try{
-		// 		$orders = $orderDao->getByUserIdIsRegistered($id);
-		// 		$order = $orders[0];
-		// 	}catch(Exception $e){
-		// 		//
-		// 	}
-		// }
+		list($count, $cancelCount) = self::_getOrderCountByUserId($id);
 
 		$this->addLabel("order_count", array(
 			"text" => $count,
@@ -275,6 +263,18 @@ class DetailPage extends WebPage{
 		$this->addModel("zip2address_js", array(
 			"src" => soyshop_get_zip_2_address_js_filepath()
 		));
+   }
+
+   private function _getOrderCountByUserId($userId){
+	   $dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
+	   try{
+		   $count = $dao->countByUserIdIsRegistered($userId);
+		   $cancelCount = $dao->countByUserIdIsCanceled($userId);
+	   }catch(Exception $e){
+		   $count = 0;
+		   $cancelCount = 0;
+	   }
+	   return array($count, $cancelCount);
    }
 
 	/**
@@ -468,15 +468,7 @@ class DetailPage extends WebPage{
     	$activedPointPlugin = (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_point_base")));
     	DisplayPlugin::toggle("point", $activedPointPlugin);
 
-		$point = 0;
-		$timeLimit = null;
-
-		/* ここ以下はポイント有効時 */
-		if($activedPointPlugin){
-			SOY2::imports("module.plugins.common_point_base.domain.*");
-			$point = $user->getPoint();
-	    	$timeLimit = self::_getTimeLimit($user->getId());
-		}
+		list($point, $timeLimit) = ($activedPointPlugin) ? self::_getPointAndTimeLimitByUserId($user) : array(0, null);
 
 		//ポイントプラグインを無効にしていても下記の処理は行う
 		$this->addInput("point", array(
@@ -486,12 +478,15 @@ class DetailPage extends WebPage{
 		));
 
 		$this->addLabel("time_limit", array(
-			"text" => (isset($timeLimit)) ? date("Y-m-d H:i:s", $timeLimit) : "無期限"
+			"text" => (is_numeric($timeLimit)) ? date("Y-m-d H:i:s", $timeLimit) : "無期限"
 		));
 	}
 
-	private function _getTimeLimit($userId){
-		return SOYShopPlugin::invoke("soyshop.point", array("userId" => $userId))->getTimeLimit();
+	private function _getPointAndTimeLimitByUserId(SOYShop_User $user){
+		SOY2::imports("module.plugins.common_point_base.domain.*");
+		$point = $user->getPoint();
+		$timeLimit = SOYShopPlugin::invoke("soyshop.point", array("userId" => $user->getId()))->getTimeLimit();
+		return array($point, $timeLimit);
 	}
 
 	/**

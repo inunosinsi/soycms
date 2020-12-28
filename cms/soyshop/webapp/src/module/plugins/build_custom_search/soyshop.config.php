@@ -20,4 +20,3 @@ class BuildCustomSearchConfig extends SOYShopConfigPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "build_custom_search", "BuildCustomSearchConfig");
-?>

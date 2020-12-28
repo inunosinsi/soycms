@@ -11,7 +11,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	private $dbLogic;
 
 	function clear($app){
-		self::prepare();
+		self::_prepare();
 
 		foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
 			$attributeKey = self::getAttributeKey($key);
@@ -25,7 +25,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	function doPost($param){
 
 		if(isset($_POST["user_custom_search"])){
-			self::prepare();
+			self::_prepare();
 			$app = $this->getApp();
 
 			foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
@@ -46,7 +46,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	function getForm($app, $userId){
 		// 現時点では管理画面のみ
 		//if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
-			self::prepare();
+			self::_prepare();
 
 			$values = $this->dbLogic->getByUserId($userId);
 
@@ -57,15 +57,12 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 			if(count($configs)){
 				SOY2::import("module.plugins.user_custom_search_field.component.FieldFormComponent");
 				foreach($configs as $key => $field){
+					//公開側で項目を出力するか？
+					if(!SOYSHOP_ADMIN_PAGE && isset($field["is_admin_only"]) && $field["is_admin_only"] == UserCustomSearchFieldUtil::DISPLAY_ADMIN_ONLY) continue;
 
 					$obj = array();
-					$name = htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8");
-
-					if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
-						$obj["name"] = $name . " (" . UserCustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")";
-					}else{
-						$obj["name"] = $name;
-					}
+					$obj["name"] = htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8");
+					if(SOYSHOP_ADMIN_PAGE) $obj["name"] .= " (" . UserCustomSearchFieldUtil::PLUGIN_PREFIX . ":id=\"" . $key . "\")";
 
 					$value = (isset($values[$key])) ? $values[$key] : null;
 					if(is_null($value)){
@@ -90,7 +87,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 * @param integer $userId
 	 */
 	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){
-		self::prepare();
+		self::_prepare();
 		$values = $this->dbLogic->getByUserId($userId);
 
 		//マイページとカートで動作 URLで判断
@@ -238,9 +235,11 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 		//出力する内容を格納する
 		$array = array();
 
-		self::prepare();
+		self::_prepare();
 
 		foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
+			//公開側の対応
+			if(!SOYSHOP_ADMIN_PAGE && isset($field["is_admin_only"]) && $field["is_admin_only"] == UserCustomSearchFieldUtil::DISPLAY_ADMIN_ONLY) continue;
 
 			$obj = array();
 			$obj["name"] = $field["label"];
@@ -261,13 +260,13 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 * @param integer $userId
 	 */
 	function register($app, $userId){
-		self::prepare();
+		self::_prepare();
 
 		//登録用の配列
 		$values = array();
 
 		//管理画面側での登録処理
-		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+		if(SOYSHOP_ADMIN_PAGE){
 			if(isset($_POST["user_custom_search"])){
 				$values = $_POST["user_custom_search"];
 			}
@@ -279,7 +278,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 				$app->clearAttribute($attributeKey);
 			}
 		}
-
+		
 		$this->dbLogic->save($userId, $values);
 	}
 
@@ -291,11 +290,12 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 		return "user_custom_search_field_" . SOYSHOP_ID . "_" . $fieldId . ".value";
 	}
 
-	private function prepare(){
+	private function _prepare(){
 		if(!$this->dbLogic){
 			$this->dbLogic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic");
 			SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
 		}
+		if(!defined("SOYSHOP_ADMIN_PAGE")) define("SOYSHOP_ADMIN_PAGE", false);
 	}
 }
 SOYShopPlugin::extension("soyshop.user.customfield","user_custom_search_field","UserCustomSearchFieldModule");

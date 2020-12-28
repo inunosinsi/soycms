@@ -18,14 +18,14 @@ class UserCustomSearchFieldConfigFormPage extends WebPage{
 
 				//DBへカラムを追加する
 				if(SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic")->addColumn($key, $_POST["custom_type"])){
-					$config = UserCustomSearchFieldUtil::getConfig();
+					$configs = UserCustomSearchFieldUtil::getConfig();
 
-					$config[$key] = array(
+					$configs[$key] = array(
 						"label" => trim($_POST["custom_label"]),
 						"type" => $_POST["custom_type"]
 					);
 
-					UserCustomSearchFieldUtil::saveConfig($config);
+					UserCustomSearchFieldUtil::saveConfig($configs);
 					$this->configObj->redirect("updated");
 				}
 			}
@@ -34,11 +34,12 @@ class UserCustomSearchFieldConfigFormPage extends WebPage{
 		//advanced config
 		if(isset($_POST["update_advance"])){
 			$key = $_POST["update_advance"];
-			$config = UserCustomSearchFieldUtil::getConfig();
-			$config[$key]["option"] = $_POST["config"]["option"];
-			$config[$key]["default"] = (isset($_POST["config"]["default"])) ? $_POST["config"]["default"] : null;
-
-			UserCustomSearchFieldUtil::saveConfig($config);
+			$configs = UserCustomSearchFieldUtil::getConfig();
+			$configs[$key]["option"] = $_POST["config"]["option"];
+			$configs[$key]["default"] = (isset($_POST["config"]["default"])) ? $_POST["config"]["default"] : null;
+			$configs[$key]["is_admin_only"] = (isset($_POST["config"]["is_admin_only"]) && $_POST["config"]["is_admin_only"] == UserCustomSearchFieldUtil::DISPLAY_ADMIN_ONLY) ? UserCustomSearchFieldUtil::DISPLAY_ADMIN_ONLY : UserCustomSearchFieldUtil::DISPLAY_ALL;
+			
+			UserCustomSearchFieldUtil::saveConfig($configs);
 			$this->configObj->redirect("updated");
 		}
 
@@ -49,10 +50,10 @@ class UserCustomSearchFieldConfigFormPage extends WebPage{
 			//カラムの削除を試みる:SQLiteではカラムを削除できない
 			SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic")->deleteColumn($key);
 
-			$config = UserCustomSearchFieldUtil::getConfig();
-			unset($config[$key]);
+			$configs = UserCustomSearchFieldUtil::getConfig();
+			if(isset($configs[$key])) unset($configs[$key]);
 
-			UserCustomSearchFieldUtil::saveConfig($config);
+			UserCustomSearchFieldUtil::saveConfig($configs);
 			$this->configObj->redirect("deleted");
 		}
 
@@ -88,7 +89,7 @@ class UserCustomSearchFieldConfigFormPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		
+
 		DisplayPlugin::toggle("error", isset($_GET["error"]));
 		DisplayPlugin::toggle("deleted", isset($_GET["deleted"]));
 

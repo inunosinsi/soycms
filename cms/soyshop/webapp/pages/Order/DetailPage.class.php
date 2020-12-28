@@ -216,12 +216,9 @@ class DetailPage extends WebPage{
         SOY2DAOFactory::importEntity("user.SOYShop_User");
         SOY2DAOFactory::importEntity("config.SOYShop_Area");
 
-		try{
-    		$customer = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
-		}catch(Exception $e){
-			$customer = new SOYShop_User();
-			$customer->setName("[deleted]");
-		}
+		$customer = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
+		if(is_null($customer->getId())) $customer->setName("[deleted]");
+
     	$this->addLink("customer", array(
     		"text" => $customer->getName(),
     		"link" => SOY2PageController::createLink("User.Detail." . $customer->getId())

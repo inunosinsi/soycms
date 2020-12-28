@@ -25,6 +25,8 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$pages = self::_getPages();
 		if(count($pages) == 0) return;
 
+		SOY2::import("module.plugins.common_sitemap_xml.util.SitemapXMLUtil");
+
 		//多言語プラグイン
 		SOY2::import("util.SOYShopPluginUtil");
 		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
@@ -151,15 +153,15 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				case SOYShop_Page::TYPE_FREE:
 				case SOYShop_Page::TYPE_SEARCH:
 				default:
+					//トップページをリダイレクト専用にしている場合がある。その場合はテンプレートにbodyがない
+					if(!strlen($uri) && $obj instanceof SOYShop_Page && !SitemapXMLUtil::checkIsBodyTag($obj)) break;
+
 					//レビュープラグインが有効であり、レビュープラグイン用のページであれば除く
 					if(SOYShopPluginUtil::checkIsActive("item_review")){
 						SOY2::import("module.plugins.item_review.util.ItemReviewSitemapUtil");
 						if(ItemReviewSitemapUtil::checkReviewPageId($obj->getId())) break;
 					}
 					if(strpos($uri, ".xml") !== false) break;
-					if(strpos($uri, ".html") == false && strlen($uri) > 1){
-						$uri = $uri . "/";
-					}
 
 					$priority = (!strlen($uri)) ? "1.0" : "0.8";
 					$html[] = self::_buildUrlTag($url, $uri, "", $priority, $obj->getUpdateDate());
@@ -168,7 +170,6 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
 
 		//管理画面で手動で追加したURL分
-		SOY2::import("module.plugins.common_sitemap_xml.util.SitemapXMLUtil");
 		$configs = SitemapXMLUtil::getConfig();
 		if(count($configs)){
 			foreach($configs as $config){
@@ -216,9 +217,12 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	}
 
 	private function _buildUrlTag($url, $uri, $alias, $priority = 0.8, $updateDate = 0){
+		if(strpos($uri, ".html") == false && strlen($uri) > 1) $uri = $uri . "/";
+
 		if(strlen($alias)) $alias = "/" . $alias;
-		$uriConcatedAlias = $uri . $alias;
-		if(strpos($uriConcatedAlias, "//")) $uriConcatedAlias = str_replace("//", "/", $uriConcatedAlias);
+		$uriConcatedAlias = ltrim($uri . $alias, "/");
+		if(is_numeric(strpos($uriConcatedAlias, "//"))) $uriConcatedAlias = str_replace("//", "/", $uriConcatedAlias);
+
 
 		$html = array();
 		$html[] = "	<url>";
