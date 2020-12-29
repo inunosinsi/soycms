@@ -66,12 +66,10 @@ abstract class EntryDAO extends SOY2DAO{
 	 * @final
 	 */
 	function onUpdate($query,$binds){
-		static $i;
-		if(is_null($i)) $i = 0;
+		$i = 0;
 
-		//記事表示の高速化 @ToDo 記事を更新する度に作成日に1秒ずつ加算される問題をどうにかしたい
+		//記事表示の高速化
 		for(;;){
-			$i++;
 			try{
 				$res = $this->executeQuery("SELECT id FROM Entry WHERE cdate = :cdate LIMIT 1;", array(":cdate" => $binds[":cdate"] + $i));
 			}catch(Exception $e){
@@ -79,16 +77,17 @@ abstract class EntryDAO extends SOY2DAO{
 			}
 
 			if(!count($res)) break;
+			$i++;
 		}
 		$binds[":cdate"] += $i;
 
 		//プラグインによっては読み込まれていないことがある
 		if(!class_exists("UserInfoUtil")) SOY2::import("util.UserInfoUtil");
-		$binds[':author'] = UserInfoUtil::getUserName();
-		$binds[':udate'] = time();
+		if(!isset($binds[':author'])) $binds[':author'] = UserInfoUtil::getUserName();
+		if(!isset($binds[':udate'])) $binds[':udate'] = time();
 
-		if($binds[":openPeriodStart"] == null)$binds[":openPeriodStart"] = self::DATE_MIN;
-		if($binds[":openPeriodEnd"] == null)$binds[":openPeriodEnd"] = self::DATE_MAX;
+		if(!isset($binds[":openPeriodStart"])) $binds[":openPeriodStart"] = self::DATE_MIN;
+		if(!isset($binds[":openPeriodEnd"])) $binds[":openPeriodEnd"] = self::DATE_MAX;
 
 		return array($query,$binds);
 	}
