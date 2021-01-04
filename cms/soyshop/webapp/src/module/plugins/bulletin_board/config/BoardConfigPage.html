@@ -1,0 +1,77 @@
+<div class="alert alert-success" soy:display="updated">更新しました。</div>
+<div class="alert alert-danger" soy:display="failed">失敗しました。</div>
+
+<div class="alert alert-info">トピックをまとめるグループを作成します。</div>
+
+<div class="text-left">
+	<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#groupModal">グループの新規作成</a>
+</div>
+
+<!-- soy:display="groups" -->
+<br>
+
+<form soy:id="edit_form">
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<caption>グループ</caption>
+			<thead>
+				<tr>
+					<th>グループ名</th>
+					<th>トピック数</th>
+					<th>表示順</th>
+					<th>
+						編集&nbsp;
+						<a class="btn btn-default btn-sm" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- soy:id="group_list" -->
+				<tr>
+					<td soy:id="name"></td>
+					<td soy:id="topic_count"></td>
+					<td><input type="number" soy:id="display_order"></td>
+					<td>
+						<a soy:id="remove_link" class="btn btn-danger delete_btn">削除</a>
+					</td>
+				</tr>
+				<!-- /soy:id="group_list" -->
+			</tbody>
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" name="sort" class="btn btn-primary btn-lg" value="並び順の変更">
+	</div>
+</form>
+<!-- /soy:display="groups" -->
+
+<div class="modal" tabindex="-1" role="dialog" id="groupModal">
+	<div class="modal-dialog modal-sm" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">グループの追加</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+					<label>グループ名</label>
+					<input type="text" name="Group[name]" class="form-control">
+
+			        <input type="hidden" name="create" value="create">
+			        <div class="text-right" style="margin-top:15px;">
+			            <a class="btn btn-primary" href="javascript:void(0);" onclick="$('#create_form').trigger('submit');">追加</a>
+			        </div>
+			    </form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" id="groupModal" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.delete_btn{
+	visibility:hidden;
+}
+</style>

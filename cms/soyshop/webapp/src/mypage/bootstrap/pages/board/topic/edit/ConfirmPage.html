@@ -1,0 +1,24 @@
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a soy:id="top_link">ホーム</a></li>
+		<li class="breadcrumb-item"><a soy:id="group_link"><!-- soy:id="group_name" -->グループ名<!-- /soy:id="group_name" -->の掲示板</a></li>
+		<li class="breadcrumb-item"><a soy:id="topic_link"><!-- soy:id="topic_label" -->トピックラベル<!-- /soy:id="topic_label" --></a></li>
+		<li class="breadcrumb-item active" aria-current="page">確認</li>
+	</ol>
+</nav>
+
+<h2>投稿内容の確認</h2>
+<div class="alert alert-danger" soy:display="failed">失敗しました。</div>
+<div class="card">
+	<div class="card-header">&nbsp;</div>
+	<div class="card-body">
+		<!-- soy:id="content" /-->
+	</div>
+</div>
+
+<div class="text-center mt-3">
+	<form soy:id="form">
+		<input type="submit" class="btn btn-warning btn-lg" name="back" value="戻る">&nbsp;&nbsp;
+		<input type="submit" class="btn btn-primary btn-lg" name="post" value="投稿する">
+	</form>
+</div>

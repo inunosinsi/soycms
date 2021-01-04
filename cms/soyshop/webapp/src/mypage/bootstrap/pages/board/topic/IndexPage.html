@@ -14,12 +14,15 @@
 <div class="alert alert-warning mt-3" soy:display="no_topic">トピックは作成されていません。</div>
 
 <!-- soy:id="topic_list" -->
-<div class="card mt-5">
-	<div class="card-header"><a soy:id="topic_detail_link"><!-- soy:id="label" -->トピック名<!-- /soy:id="label" --></a></div>
+<div class="card mt-3">
 	<div class="card-body">
-		<h5 class="card-title">Special title treatment</h5>
-		<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-		<a href="#" class="btn btn-primary" soy:id="topic_detail_link*">Go somewhere</a>
+		<h5 class="card-title"><a soy:id="topic_detail_link"><!-- soy:id="label" -->トピック名<!-- /soy:id="label" --> (<!-- soy:id="post_count" -->3<!-- /soy:id="post_count" -->)</a></h5>
+		<p class="card-text">
+			初回投稿者：<a soy:id="first_post_user">最初の投稿者</a>&nbsp;
+			最終投稿者：<a soy:id="last_post_user">最初の投稿者</a>&nbsp;
+			最終投稿日時：<!-- soy:id="last_post_date" -->2021-01-01 00:00:00<!-- /soy:id="last_post_date" -->
+		</p>
+		<div class="text-center"><a href="#" class="btn btn-primary" soy:id="topic_detail_link*">トピック詳細を開く</a></div>
 	</div>
 </div>
 <!-- /soy:id="topic_list" -->

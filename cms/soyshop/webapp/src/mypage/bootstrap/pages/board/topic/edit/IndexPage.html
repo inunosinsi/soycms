@@ -1,0 +1,20 @@
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a soy:id="top_link">ホーム</a></li>
+		<li class="breadcrumb-item"><a soy:id="group_link"><!-- soy:id="group_name" -->グループ名<!-- /soy:id="group_name" -->の掲示板</a></li>
+		<li class="breadcrumb-item"><a soy:id="topic_link"><!-- soy:id="topic_label" -->トピックラベル<!-- /soy:id="topic_label" --></a></li>
+		<li class="breadcrumb-item active" aria-current="page">編集</li>
+	</ol>
+</nav>
+
+<form soy:id="post_form" id="post_form">
+	<div class="form-group mt-3">
+		<textarea class="form-control" soy:id="content" style="height:200px;" required="required"></textarea>
+		<div class="alert alert-info" style="margin-top:2px;">
+			使用不可のHTMLタグ：<!-- soy:id="usage_prohibited_html_tags" /-->
+		</div>
+	</div>
+	<div class="text-right">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更内容の確認">
+	</div>
+</form>

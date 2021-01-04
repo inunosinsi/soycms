@@ -726,12 +726,7 @@ class SOYShop_User {
 	}
 
 	function getDisplayName(){
-		$display = $this->getNickname();
-		if(strlen($display) == 0){
-			$display = $this->getName();
-		}
-
-		return $display;
+		return (strlen($this->getNickname())) ? $this->getNickname() : $this->getName();
 	}
 
 	//一覧に表示させる時のメソッド

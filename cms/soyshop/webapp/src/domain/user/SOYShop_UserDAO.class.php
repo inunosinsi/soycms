@@ -70,6 +70,12 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
      */
     abstract function getByNotDisabled();
 
+	/**
+     * @return list
+     * @query is_disabled = 0 AND is_publish = 1
+     */
+    abstract function getISpublishUsers();
+
     /**
 	 * @return object
 	 */
