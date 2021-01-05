@@ -22,7 +22,7 @@ class CompletePage extends MainMyPagePageBase{
 		parent::__construct();
 
 		$this->addLink("back_link", array(
-			"link" => soyshop_get_mypage_url() . "/board/topic/detail/" . $post->getTopicId()
+			"link" => soyshop_get_mypage_url() . "/board/topic/detail/" . $post->getTopicId() . "#" . $post->getId()
 		));
 
 		$mypage->clearAttribute("soyboard_post_content");

@@ -9,6 +9,10 @@ class PostListComponent extends HTMLList {
 		$userId = (is_numeric($entity->getUserId())) ? (int)$entity->getUserId() : 0;
 		$user = soyshop_get_user_object($userId);
 
+		$this->addModel("post_id", array(
+			"attr:id" => $id
+		));
+
 		$this->addLink("user_detail_link", array(
 			"link" => ($user->getIsPublish()) ? soyshop_get_mypage_url() . "/board/user/detail/" . $user->getId() : null,
 			"text" => ($user->getIsPublish()) ? $user->getDisplayName() : "退会したユーザ"

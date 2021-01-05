@@ -297,31 +297,42 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @return titleFormat
 	 */
 	function getTitleFormat($args){
-		if(!isset($args[0])) return SOYShop_DataSets::get("config.mypage.title", "マイページ");
-		if($args[0] === "profile"){
-			if(isset($args[1]) && strlen($args[1]) > 0){
-				$user = $this->getProfileUser($args[1]);
-				if(strlen($user->getDisplayName()) > 0){
-					$titleFormat = $user->getDisplayName() . "さんのプロフィール";
+		SOYShopPlugin::load("soyshop.mypage");
+		$titleFormat = SOYShopPlugin::invoke("soyshop.mypage", array(
+			"mode" => "title"
+		))->getTitleFormat();
+		
+		if(is_null($titleFormat)){
+			if(isset($args[0])){
+				switch($args[0]){
+					case "profile":
+						if(isset($args[1]) && strlen($args[1]) > 0){
+							$user = $this->getProfileUser($args[1]);
+							if(strlen($user->getDisplayName()) > 0) $titleFormat = $user->getDisplayName() . "さんのプロフィール";
+						}
+						if(is_null($titleFormat)) $titleFormat = "プロフィール";
+						break;
+					//ログインしていない時の表示
+					case "login":
+					case "logout":
+					case "remind":
+					case "register":
+						$titleFormat = SOYShop_DataSets::get("config.mypage.title.no_logged_in", "マイページ");
+						break;
+					//マイページにお客様の名前を挿入する
+					default:
+						$titleFormat = SOYShop_DataSets::get("config.mypage.title", "マイページ");
+						if(strpos($titleFormat, "#") !== false){
+							if(strpos($titleFormat, "#USERNAME#") !== false){
+								$titleFormat = str_replace("#USERNAME#", $this->getUser()->getName(), $titleFormat);
+							}elseif(strpos($titleFormat, "#NICKNAME#") !== false){
+								$titleFormat = str_replace("#NICKNAME#", $this->getUser()->getDisplayName(), $titleFormat);
+							}
+						}
+						break;
 				}
-			}
-
-			if(!isset($titleFormat)) $titleFormat = "プロフィール";
-
-		//ログインしていない時の表示
-		}elseif($args[0] === "login" || $args[0] === "logout" || $args[0] === "remind" || $args[0] === "register"){
-
-			$titleFormat = SOYShop_DataSets::get("config.mypage.title.no_logged_in", "マイページ");
-
-		//マイページにお客様の名前を挿入する
-		}else{
-			$titleFormat = SOYShop_DataSets::get("config.mypage.title", "マイページ");
-			if(strpos($titleFormat, "#") !== false){
-				if(strpos($titleFormat, "#USERNAME#") !== false){
-					$titleFormat = str_replace("#USERNAME#", $this->getUser()->getName(), $titleFormat);
-				}elseif(strpos($titleFormat, "#NICKNAME#") !== false){
-					$titleFormat = str_replace("#NICKNAME#", $this->getUser()->getDisplayName(), $titleFormat);
-				}
+			}else{
+				$titleFormat = SOYShop_DataSets::get("config.mypage.title", "マイページ");
 			}
 		}
 
@@ -382,7 +393,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @param string profileId
 	 * @return object SOYShop_User
 	 */
-	function getProfileUser($profileId){
+	private function getProfileUser($profileId){
 		try{
 			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByProfileId($profileId);
 		}catch(Exception $e){

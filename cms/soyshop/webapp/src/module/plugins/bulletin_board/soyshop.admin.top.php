@@ -14,7 +14,10 @@ class BulletinBoardTop extends SOYShopAdminTopBase{
 	}
 
 	function getContent(){
-		return "<div class=\"alert alert-warning\">@ToDo 新着</div>";
+		SOY2::import("module.plugins.bulletin_board.page.BoardTopPage");
+		$form = SOY2HTMLFactory::createInstance("BoardTopPage");
+		$form->execute();
+		return $form->getObject();
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "bulletin_board", "BulletinBoardTop");

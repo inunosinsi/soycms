@@ -68,6 +68,7 @@ abstract class SOYBoard_TopicDAO extends SOY2DAO {
 		foreach($res as $v){
 			$topics[] = $this->getObject($v);
 		}
+
 		return $topics;
 	}
 

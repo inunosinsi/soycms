@@ -16,7 +16,7 @@ class BulletinBoardConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPageTitle(){
-		return "掲示板アプリ";
+		return "SOY Board on SOY Shop";
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "bulletin_board", "BulletinBoardConfig");

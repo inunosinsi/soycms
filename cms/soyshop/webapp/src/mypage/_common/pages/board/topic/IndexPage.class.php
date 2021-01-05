@@ -43,7 +43,7 @@ class IndexPage extends MainMyPagePageBase{
 		$this->addForm("create_form");
 
 		//トピック
-		$topics = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.TopicLogic")->getByGroupId($group->getId(), true);
+		$topics = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.TopicLogic")->getByGroupId($group->getId(), true, true);
 		DisplayPlugin::toggle("no_topic", !count($topics));
 		$this->createAdd("topic_list", "_common.board.topic.TopicListComponent", array(
 			"list" => $topics

@@ -26,17 +26,31 @@ class TopicLogic extends SOY2LogicBase {
 		}
 	}
 
-	function getByGroupId($groupId, $notDisabledGroup=false){
-		if($notDisabledGroup){
-			return self::_dao()->getByGroupIdWithNotDisabledGroup($groupId);
+	function getByGroupId($groupId, $notDisabledGroup=false, $sortMode=false){
+		if($sortMode){
+			SOY2::import("module.plugins.bulletin_board.domain.SOYBoard_PostDAO");
+			$res = SOY2DAOFactory::create("SOYBoard_PostDAO")->getCreateDateListByGroupId($groupId);
+
+			//富豪プログラミングになるが、一回ずつ取得	→　@ToDo いずれページャに置き換える
+			$topics = array();
+			foreach($res as $topicId => $createDate){
+				$topic = self::_dao()->getByIdWithNotDisabledGroup($topicId);
+				if(is_null($topic->getId())) continue;
+				$topics[$createDate] = $topic;
+			}
+
+			return $topics;
 		}else{
-			try{
-				return self::_dao()->getByGroupId($groupId);
-			}catch(Exception $e){
-				return array();
+			if($notDisabledGroup){
+				return self::_dao()->getByGroupIdWithNotDisabledGroup($groupId);
+			}else{
+				try{
+					return self::_dao()->getByGroupId($groupId);
+				}catch(Exception $e){
+					return array();
+				}
 			}
 		}
-
 	}
 
 	function insert($values){

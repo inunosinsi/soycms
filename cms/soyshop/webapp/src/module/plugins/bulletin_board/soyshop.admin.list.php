@@ -10,7 +10,10 @@ class BulletinBoardAdminList extends SOYShopAdminListBase{
     }
 
     function getContent(){
-		return "新着等";
+		SOY2::import("module.plugins.bulletin_board.page.BoardListPage");
+		$form = SOY2HTMLFactory::createInstance("BoardListPage");
+		$form->execute();
+		return $form->getObject();
     }
 }
 SOYShopPlugin::extension("soyshop.admin.list", "bulletin_board", "BulletinBoardAdminList");

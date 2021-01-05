@@ -16,6 +16,8 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 	 */
 	abstract function update(SOYBoard_Post $bean);
 
+	abstract function get();
+
 	/**
 	 * @return object
 	 */
@@ -60,6 +62,56 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 		$last = end($res);
 
 		return array($first["id"], $last["id"]);
+	}
+
+	/**
+	 * @final
+	 */
+	function getCreateDateListByGroupId($groupId){
+		if(!is_numeric($groupId) || $groupId == 0) return array();
+
+		$topicIds = self::_getTopicIdsByGroupId($groupId);
+		if(!count($topicIds)) return array();
+
+		$sql = "SELECT topic_id, MAX(create_date) AS cdate FROM soyboard_post ".
+				"WHERE topic_id IN (" . implode(",", $topicIds) . ") ".
+				"AND is_open = " . SOYBoard_Post::IS_OPEN . " ".
+				"GROUP BY topic_id ";
+		try{
+			$res = $this->executeQuery($sql);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[$v["topic_id"]] = (int)$v["cdate"];
+		}
+
+		foreach($topicIds as $topicId){
+			if(!isset($list[$topicId])) $list[$topicId] = 0;
+		}
+
+		return $list;
+	}
+
+	private function _getTopicIdsByGroupId($groupId){
+		$sql = "SELECT id FROM soyboard_topic ".
+				"WHERE group_id = :groupId";
+		try{
+			$res = $this->executeQuery($sql, array(":groupId" => $groupId));
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$ids = array();
+		foreach($res as $v){
+			$ids[] = $v["id"];
+		}
+
+		return $ids;
 	}
 
 	/**

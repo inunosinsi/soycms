@@ -7,7 +7,11 @@ class BulletinBoardAdminDetail extends SOYShopAdminDetailBase{
 	}
 
 	function getContent(){
-		//
+		SOY2::import("module.plugins.bulletin_board.page.BoardDetailPage");
+		$form = SOY2HTMLFactory::createInstance("BoardDetailPage");
+		$form->setPostId($this->getDetailId());
+		$form->execute();
+		return $form->getObject();
 	}
 }
 SOYShopPlugin::extension("soyshop.admin.detail", "bulletin_board", "BulletinBoardAdminDetail");
