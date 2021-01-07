@@ -35,6 +35,10 @@ class HTMLCacheConfigPage extends WebPage {
 			"list"  => self::getPages(),
 			"pluginObj" => $this->pluginObj
 		));
+
+		$this->addLabel("job_path", array(
+			"text" => dirname(dirname(__FILE__)) . "/job/clear.php"
+		));
 	}
 
 	function getPluginObj() {

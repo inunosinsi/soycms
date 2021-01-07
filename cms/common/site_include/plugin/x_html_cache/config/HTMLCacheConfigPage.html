@@ -1,7 +1,9 @@
 <h4>プラグインの使い方</h4>
 <!-- soy:id="page_controller_path" /-->のexecute_site();をexecute_site_static_cache();に変更するとブログページの記事詳細も静的化の対象になります。
 
-<h4 class="mt-5">ページ毎のキャッシュの設定(検索結果のページはチェックをいれてもキャッシュ化の対象外です)</h4>
+<br><br>
+
+<h4>ページ毎のキャッシュの設定(検索結果のページはチェックをいれてもキャッシュ化の対象外です)</h4>
 <form soy:id="form">
 	<ul>
 		<li soy:id="page_list" style="list-style:none">
@@ -38,3 +40,9 @@
 		});
 	};
 </script>
+
+<br>
+
+<div class="alert alert-info">キャッシュの自動削除設定</div>
+<p>crontabに下記のコマンドを登録します。</p>
+<pre>php <!-- soy:id="job_path" /--></pre>

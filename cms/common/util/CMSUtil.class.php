@@ -93,14 +93,17 @@ class CMSUtil {
 	public static function unlinkAllIn($dir, $recursive = false, $rmdir = false){
 		if(file_exists($dir) && is_dir($dir)){
 			if($dir[strlen($dir)-1] != "/") $dir .= "/";
-			foreach(scandir($dir) as $file){
-				if(!is_file($dir.$file) && !is_dir($dir.$file))continue;
-				if($file[0] == ".")continue;
-				if(is_dir($dir.$file) && $recursive){
-					self::unlinkAllIn($dir.$file, $recursive, $rmdir);
-					if($rmdir) @rmdir($dir.$file);
-				}else{
-					@unlink($dir.$file);
+			$files = @scandir($dir);
+			if(is_array($files) && count($files)){
+				foreach($files as $file){
+					if(!is_file($dir.$file) && !is_dir($dir.$file)) continue;
+					if($file[0] == ".") continue;
+					if(is_dir($dir.$file) && $recursive){
+						self::unlinkAllIn($dir.$file, $recursive, $rmdir);
+						if($rmdir) @rmdir($dir.$file);
+					}else{
+						@unlink($dir.$file);
+					}
 				}
 			}
 		}

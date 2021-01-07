@@ -59,22 +59,15 @@ class CMSPathInfoBuilder extends SOY2_PathInfoPathBuilder{
 			array_unshift($args, array_pop($_uri));
 		}
 
-		//ブログページでuriが空の時対策 @ToDo ここのコードは必要か？
-		// if(!strlen($uri)){
-		// 	//uriが空の時でargsの値が1の時はargs[0]をuriに持ってくる。argsの値が2以上の場合はブログページである可能性が高い
-		// 	if(count($args) === 1 && $args[0] != "feed" && !is_numeric(strpos($args[0], "page-")) && strlen($args[0])) {
-		// 		$uri = $args[0];
-		//
-		// 		//まだuriが空の場合は、index.html、index.htmやindex.phpを試す
-		// 		if(is_numeric(array_search("index.html", $candidateList))){
-		// 			$uri = "index.html";
-		// 		}else if(is_numeric(array_search("index.htm", $candidateList))){
-		// 			$uri = "index.htm";
-		// 		}else if(is_numeric(array_search("index.php", $candidateList))){
-		// 			$uri = "index.php";
-		// 		}
-		// 	}
-		// }
+		//uriとargsを書き換える拡張ポイント
+		$onLoad = CMSPlugin::getEvent('onPathInfoBuilder');
+		foreach($onLoad as $plugin){
+			$func = $plugin[0];
+			$res = call_user_func($func, array('uri' => $uri, 'args' => $args));
+
+			if(isset($res["uri"])) $uri = $res["uri"];
+			if(isset($res["args"])) $args = $res["args"];
+		}
 
 		return array($uri, $args);
 	}

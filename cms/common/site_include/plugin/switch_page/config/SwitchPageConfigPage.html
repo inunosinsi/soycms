@@ -1,0 +1,93 @@
+<div class="alert alert-info">
+	任意の期間内、指定した別のページを表示します。<br>
+	切り替え先のページに指定したページは、切り替え期間に該当していなくても、公開側でページにアクセスした時に切り替え元ページにリダイレクトされます。<br>
+	※ただし、同一ブラウザの別タブで管理画面を開いている場合は除く
+</div>
+
+<!-- soy:display="is_cnf" -->
+<div class="table-responsive">
+	<table class="table table-striped">
+		<caption>設定内容</caption>
+		<thead>
+			<tr>
+				<th colspan="3" class="text-center">切り替え期間</th>
+				<th colspan="3" class="text-center">切り替え先</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="cnf_list" -->
+			<tr>
+				<td style="width:160px;" class="text-center"><!-- soy:id="start" /--></td>
+				<td style="width:20px;">〜</td>
+				<td style="width:160px;" class="text-center"><!-- soy:id="end" /--></td>
+				<td class="text-center"><!-- soy:id="from" /--></td>
+				<td style="width:20px;" class="text-center">-&gt;</td>
+				<td class="text-center"><!-- soy:id="to" /--></td>
+				<td class="text-center">
+					<a soy:id="remove_link" class="btn btn-danger btn-sm">削除</a>
+				</td>
+			</tr>
+			<!-- /soy:id="cnf_list" -->
+		</tbody>
+	</table>
+</div>
+<!-- /soy:display="is_cnf" -->
+
+<form soy:id="form">
+	<div class="table-responsive">
+		<table>
+			<tfoot>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<div style="font-size:10px;margin-top:5px;margin-left:5px;">
+							<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,0,0,0,0,0),true,false));return false;">今日</a><br/>
+							<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,0,1,0,0,0),true,false));return false;">明日</a><br/>
+							<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,0,7,0,0,0),true,false));return false;">来週</a><br/>
+							<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,1,0,0,0,0),true,false));return false;">来月</a><br/>
+							<a href="#" onclick="$('#start_date').val(buildDateString(movedate(new Date,0,0,0,0,0,0),false,false));return false;">現在の時刻</a><br/>
+							<a href="#" onclick="$('#start_date').val('');return false;">日時のクリア</a>
+						</div>
+					</td>
+					<td>&nbsp;</td>
+					<td>
+						<div style="font-size:10px;margin-top:5px;margin-left:5px;">
+							<a href="#" onclick="$('#end_date').val(buildDateString(movedate(new Date,0,0,0,0,0,0),true,false));return false;">今日</a><br/>
+							<a href="#" onclick="$('#end_date').val(buildDateString(movedate(new Date,0,0,1,0,0,0),true,false));return false;">明日</a><br/>
+							<a href="#" onclick="$('#end_date').val(buildDateString(movedate(new Date,0,0,7,0,0,0),true,false));return false;">来週</a><br/>
+							<a href="#" onclick="$('#end_date').val(buildDateString(movedate(new Date,0,1,0,0,0,0),true,false));return false;">来月</a><br/>
+							<a href="#" onclick="$('#end_date').val(buildDateString(movedate(new Date,0,0,0,0,0,0),false,false));return false;">現在の時刻</a><br/>
+							<a href="#" onclick="$('#end_date').val('');return false;">日時のクリア</a>
+						</div>
+					</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+			</tfoot>
+			<tbody>
+				<tr>
+					<th>期間：</th>
+					<td><input type="text" class="form-control" name="Config[start]" id="start_date" style="width:160px;"></td>
+					<td>&nbsp;から&nbsp;</td>
+					<td><input type="text" class="form-control" name="Config[end]" id="end_date" style="width:160px;"></td>
+					<th>&nbsp;&nbsp;&nbsp;&nbsp;ページ：</th>
+					<td><select soy:id="uri_from"><option></option></select></td>
+					<td>&nbsp;-&gt;&nbsp;</td>
+					<td><select soy:id="uri_to"><option></option></select></td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" class="btn btn-primary btn-sm" name="Add" value="登録"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</form>
+
+<br>
+
+<div class="alert alert-warning">
+	HTMLキャッシュプラグインを利用している場合は、HTMLキャッシュの自動削除設定を行ってください。<br>
+	HTMLキャッシュに関する記事 → <a href="https://saitodev.co/article/3120" target="_blank" rel="noopener">SOY CMSのHTMLキャッシュプラグインで高速化 - saitodev.co</a>
+</div>
