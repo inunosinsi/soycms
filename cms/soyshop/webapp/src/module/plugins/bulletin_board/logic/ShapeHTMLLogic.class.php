@@ -45,6 +45,12 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		$this->html = trim($this->html);
 		if(!strlen($this->html)) return "";
 
+		//preとcode
+		self::_shapeHTMLInAnyTags();
+
+		//HTMLのコメントを削除
+		self::_removeCommentTag();
+
 		//JavaScriptのイベントやclass属性を削除
 		foreach(array("on", "data", "class", "id", "style") as $t){
 			self::_removeProperties($t);
@@ -127,8 +133,11 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 			}
 		}
 
-		//preとcode
-		self::_shapeHTMLInAnyTags();
+		//<?php>がある場合
+		self::_removePhpTag();
+
+		// ->を-&gt;に変換する
+		self::_shapeAllow();
 
 		return $this->html;
 	}
@@ -234,6 +243,13 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		}
 	}
 
+	private function _shapeAllow(){
+		if(is_numeric(strpos($this->html, "->"))) $this->html = str_replace("->", "-&gt;", $this->html);
+		if(is_numeric(strpos($this->html, "=>"))) $this->html = str_replace("=>", "=&gt;", $this->html);
+		if(is_numeric(strpos($this->html, "<-"))) $this->html = str_replace("<-", "&lt;-", $this->html);
+		if(is_numeric(strpos($this->html, "<="))) $this->html = str_replace("<=", "&lt;=", $this->html);
+	}
+
 	private function _removeProperties($prop="class"){
 		for(;;){
 			preg_match('/ ' . $prop . '.*?=\".*?\"/ims', $this->html, $tmp);
@@ -260,6 +276,19 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 			$this->html = str_replace(" " . $tmp[1] . ">", ">", $this->html);
 			self::_removeSpace(1);
 		}
+	}
+
+	private function _removeCommentTag(){
+		for(;;){
+			preg_match('/<!--.*?-->/', $this->html, $tmp);
+			if(!isset($tmp[0])) break;
+			$this->html = str_replace($tmp[0], "", $this->html);
+		}
+	}
+
+	private function _removePhpTag(){
+		if(is_bool(strpos($this->html, "<?php>"))) return;
+		$this->html = str_replace("<?php>", "", $this->html);
 	}
 
 	private function _removeSpace($try=5){

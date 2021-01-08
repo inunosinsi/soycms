@@ -11,7 +11,7 @@ class GroupListComponent extends HTMLList {
 
 		// @ToDo トピック数
 		$this->addLabel("topic_count", array(
-			"text" => 0
+			"text" => (is_numeric($entity->getId())) ? self::_dao()->countByGroupId($entity->getId()) : 0
 		));
 
 		$this->addInput("display_order", array(
@@ -24,5 +24,14 @@ class GroupListComponent extends HTMLList {
 			"link" => SOY2PageController::createLink("Config.Detail?plugin=bulletin_board&remove=" . $id),
 			"onclick" => "return confirm('削除しますがよろしいですか？')"
 		));
+	}
+
+	private function _dao(){
+		static $dao;
+		if(is_null($dao)){
+			SOY2::import("module.plugins.bulletin_board.domain.SOYBoard_TopicDAO");
+			$dao = SOY2DAOFactory::create("SOYBoard_TopicDAO");
+		}
+		return $dao;
 	}
 }

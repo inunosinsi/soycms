@@ -27,8 +27,8 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 		$cnf->setAppLogoPath(dirname(SOY2PageController::createLink("")) . "/app/css/images/main/logo.png");	//ロゴ画像の変更
 		$cnf->setDisplayOrderAdminPage(0);	//注文ページを非表示
 		$cnf->setDisplayItemAdminPage(0);	//商品ページを非表示
-		$cnf->setAllowMailAddressLogin(0);	//メールアドレスでマイページにログインすることを禁止する
-		$cnf->setAllowLoginIdLogin(1);		//ログインIDでマイページにログインすることを許可する
+		$cnf->setAllowMailAddressLogin(1);	//メールアドレスでマイページにログインすることを禁止する
+		$cnf->setAllowLoginIdLogin(2);		//ログインIDでマイページにログインすることを許可する
 		$cnf->setDisplayUserOfficeItems(0);	//勤務先情報を非表示
 		$cnf->setDisplayOrderButtonOnUserAdminPage(0);	//顧客詳細のページで注文ボタンを非表示
 		//$cnf->setInsertDummyMailAddressOnAdminRegister(1);	//ダミーメールアドレスを許可する
@@ -39,11 +39,15 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 		foreach($items as $key => $item){
 			$items[$key] = false;
 		}
-		foreach(array("name", "mailAddress", "nickname", "accountId", "url") as $key => $v){
+		foreach(array("name", "mailAddress", "nickname", "url") as $key => $v){
 			$items[$v] = true;
 		}
 		$cnf->setCustomerAdminConfig($items);
 		$cnf->setCustomerDisplayFormConfig($items);
+
+		//下記を必須項目から外す
+		$items["nickname"] = false;
+		$items["url"] = false;
 		$cnf->setCustomerInformationConfig($items);
 
 		SOYShop_ShopConfig::save($cnf);
@@ -53,18 +57,22 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 		SOYShop_DataSets::put("config.cart.cart_id", "none");
 
 		//MyPageに関する設定もしておきたい
-		$mypageDir = SOY2::RootDir() . "mypage/bootstrap/";
-		if(!file_exists($mypageDir)) mkdir($mypageDir);
-		SOYShop_DataSets::put("config.mypage.id", "bootstrap");
-		SOYShop_DataSets::put("config.mypage.title", "SOY Board");
-		SOYShop_DataSets::put("config.mypage.title.no_logged_in", "ログイン - SOY Board");
+		if(!file_exists(SOYSHOP_SITE_DIRECTORY . ".template/mypage/board.html")){
+			$mypageDir = SOY2::RootDir() . "mypage/bootstrap/";
+			if(!file_exists($mypageDir)) mkdir($mypageDir);
+			SOYShop_DataSets::put("config.mypage.id", "board");
+			SOYShop_DataSets::put("config.mypage.title", "SOY Board");
+			SOYShop_DataSets::put("config.mypage.title.no_logged_in", "ログイン - SOY Board");
 
-		//テンプレート
-		$html = file_get_contents(SOY2::RootDir() . "/logic/init/template/bryon/mypage/bootstrap.html");
-		$html = str_replace("@@SOYSHOP_URI@@/", "/" . SOYSHOP_ID . "/", $html);
-		file_put_contents(SOYSHOP_SITE_DIRECTORY . ".template/mypage/bootstrap.html", $html);
+			//テンプレート
+			$html = file_get_contents(SOY2::RootDir() . "/logic/init/template/bryon/mypage/bootstrap.html");
+			$html = str_replace("@@SOYSHOP_URI@@/", "/" . SOYSHOP_ID . "/", $html);
+			$html = str_replace("マイページ", "掲示板", $html);
+			file_put_contents(SOYSHOP_SITE_DIRECTORY . ".template/mypage/board.html", $html);
 
-		copy(SOY2::RootDir() . "/logic/init/template/bryon/mypage/bootstrap.ini", SOYSHOP_SITE_DIRECTORY . ".template/mypage/bootstrap.ini");
+			file_put_contents(SOYSHOP_SITE_DIRECTORY . ".template/mypage/board.ini", "name = \"board - 掲示板用マイページ\"");
+		}
+
 
 		//ログイン後のURLの設定
 		SOYShop_DataSets::put("config.mypage.url", "bulletin");
@@ -72,36 +80,41 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 
 		//トップページ
 		//マイページへのログインページへのリダイレクト
-		copy(dirname(__FILE__) . "/template/complex/home.html", SOYSHOP_SITE_DIRECTORY . ".template/complex/home.html");
-		copy(dirname(__FILE__) . "/template/complex/home.ini", SOYSHOP_SITE_DIRECTORY . ".template/complex/home.ini");
+		if(!file_exists(SOYSHOP_SITE_DIRECTORY . ".template/complex/home.html")){
+			copy(dirname(__FILE__) . "/template/complex/home.html", SOYSHOP_SITE_DIRECTORY . ".template/complex/home.html");
+			copy(dirname(__FILE__) . "/template/complex/home.ini", SOYSHOP_SITE_DIRECTORY . ".template/complex/home.ini");
 
-		//ページの作成
-		$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		try{
-			$page = $pageDao->getByUri(SOYShop_Page::URI_HOME);
-		}catch(Exception $e){
-			$page = new SOYShop_Page();
-			$page->setName("リダイレクト");
-			$page->setUri(SOYShop_Page::URI_HOME);
-			$page->setType(SOYShop_Page::TYPE_COMPLEX);
-			$page->setTemplate("home.html");
-			SOY2Logic::createInstance("logic.site.page.PageCreateLogic")->create($page);
+			//ページの作成
+			$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
+			try{
+				$page = $pageDao->getByUri(SOYShop_Page::URI_HOME);
+			}catch(Exception $e){
+				$page = new SOYShop_Page();
+				$page->setName("リダイレクト");
+				$page->setUri(SOYShop_Page::URI_HOME);
+				$page->setType(SOYShop_Page::TYPE_COMPLEX);
+				$page->setTemplate("home.html");
+				SOY2Logic::createInstance("logic.site.page.PageCreateLogic")->create($page);
+			}
 		}
 
 		//サイトマップ
-		copy(dirname(__FILE__) . "/template/free/sitemap.html", SOYSHOP_SITE_DIRECTORY . ".template/free/sitemap.html");
-		copy(dirname(__FILE__) . "/template/free/sitemap.ini", SOYSHOP_SITE_DIRECTORY . ".template/free/sitemap.ini");
+		if(!file_exists(SOYSHOP_SITE_DIRECTORY . ".template/free/sitemap.html")){
+			copy(dirname(__FILE__) . "/template/free/sitemap.html", SOYSHOP_SITE_DIRECTORY . ".template/free/sitemap.html");
+			copy(dirname(__FILE__) . "/template/free/sitemap.ini", SOYSHOP_SITE_DIRECTORY . ".template/free/sitemap.ini");
 
-		try{
-			$page = $pageDao->getByUri("sitemap.xml");
-		}catch(Exception $e){
-			$page = new SOYShop_Page();
-			$page->setName("サイトマップ");
-			$page->setUri("sitemap.xml");
-			$page->setType(SOYShop_Page::TYPE_FREE);
-			$page->setTemplate("sitemap.html");
-			SOY2Logic::createInstance("logic.site.page.PageCreateLogic")->create($page);
+			try{
+				$page = $pageDao->getByUri("sitemap.xml");
+			}catch(Exception $e){
+				$page = new SOYShop_Page();
+				$page->setName("サイトマップ");
+				$page->setUri("sitemap.xml");
+				$page->setType(SOYShop_Page::TYPE_FREE);
+				$page->setTemplate("sitemap.html");
+				SOY2Logic::createInstance("logic.site.page.PageCreateLogic")->create($page);
+			}
 		}
+
 
 		//ユーザーカスタムサーチフィールドの初期化
 		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");

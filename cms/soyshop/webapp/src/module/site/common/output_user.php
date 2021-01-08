@@ -25,6 +25,11 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 		"text" => $user->getNickname(),
 	));
 
+	//ニックネーム or ネーム
+	$htmlObj->addLabel("display_name", array(
+		"text" => $user->getDisplayName()
+	));
+
 	//プロフィールID
 	$htmlObj->addLabel("profile_id", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,

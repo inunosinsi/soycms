@@ -12,5 +12,11 @@ class IndexPage extends MainMyPagePageBase{
 		$this->addLink("top_link", array(
 			"link" => soyshop_get_mypage_url() . "/board/"
 		));
+
+		$users = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getISpublishUsers();
+
+		$this->createAdd("user_list", "_common.board.user.UserListComponent", array(
+			"list" => $users
+		));
 	}
 }

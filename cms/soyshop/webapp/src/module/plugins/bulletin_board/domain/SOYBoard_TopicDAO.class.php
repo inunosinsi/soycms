@@ -24,6 +24,13 @@ abstract class SOYBoard_TopicDAO extends SOY2DAO {
 	abstract function getByGroupId($groupId);
 
 	/**
+	 * @return column_count_topic
+	 * @columns count(id) as count_topic
+	 * @query group_id = :groupId
+	 */
+	abstract function countByGroupId($groupId);
+
+	/**
 	 * @final
 	 */
 	function getWithNotDisabledGroup(){

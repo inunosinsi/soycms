@@ -38,6 +38,13 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 	abstract function countByTopicIdAndIsOpen($topicId);
 
 	/**
+	 * @return column_count_post
+	 * @columns count(id) as count_post
+ 	 * @query user_id = :userId AND is_open = 1
+	 */
+	abstract function countByUserIdAndIsOpen($userId);
+
+	/**
 	 * @final
 	 */
 	function getFirstAndLastPostByTopicId($topicId){

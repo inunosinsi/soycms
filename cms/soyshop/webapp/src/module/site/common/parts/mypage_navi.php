@@ -18,6 +18,7 @@ function soyshop_parts_mypage_navi($html, $page){
 		$pages = array(
 			"profile" => "プロフィール",
 			"order" => "注文履歴",
+			"board" => "掲示板",
 			//"reserve" => "予約の変更",	//隠しモード 仕様が決まるまで
 			"mail" => "メールボックス",
 			"edit" => "登録情報の変更",
@@ -40,6 +41,15 @@ function soyshop_parts_mypage_navi($html, $page){
 			switch($type){
 				case "profile":
 					if($user->getIsProfileDisplay() != SOYShop_User::PROFILE_IS_DISPLAY || !strlen($user->getProfileId())) $isThrow = true;
+					break;
+				case "order":
+				case "mail":
+				case "mailaddress":
+				case "withdraw":
+					if(SOYShopPluginUtil::checkIsActive("bulletin_board")) $isThrow = true;
+					break;
+				case "board":
+					if(!SOYShopPluginUtil::checkIsActive("bulletin_board")) $isThrow = true;
 					break;
 				case "review":
 					if(!SOYShopPluginUtil::checkIsActive("item_review")) $isThrow = true;
