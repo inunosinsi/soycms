@@ -3,6 +3,7 @@ if(!class_exists("BulletinBoardUtil")) SOY2::import("module.plugins.bulletin_boa
 class PostListComponent extends HTMLList {
 
 	private $currentLoggedInUserId;
+	private $uploadLogic;
 
 	protected function populateItem($entity, $key){
 		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
@@ -32,9 +33,22 @@ class PostListComponent extends HTMLList {
 		$this->addLabel("content", array(
 			"html" => BulletinBoardUtil::nl2br(BulletinBoardUtil::shapeHTML($entity->getContent()))
 		));
+
+		//画像ファイル
+		$imgFiles = ($id > 0) ? $this->uploadLogic->getFilePathes($id) : array();
+		$this->addModel("is_images", array(
+			"visible" => (is_array($imgFiles) && count($imgFiles))
+		));
+		$this->createAdd("image_list", "_common.board.topic.ImageListComponent", array(
+			"list" => BulletinBoardUtil::pushEmptyValues($imgFiles)
+		));
 	}
 
 	function setCurrentLoggedInUserId($currentLoggedInUserId){
 		$this->currentLoggedInUserId = $currentLoggedInUserId;
+	}
+
+	function setUploadLogic($uploadLogic){
+		$this->uploadLogic = $uploadLogic;
 	}
 }

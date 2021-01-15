@@ -74,6 +74,20 @@ class ConfirmPage extends MainMyPagePageBase{
 			"html" => BulletinBoardUtil::nl2br($content)
 		));
 
+		//仮ディレクトリの画像一覧
+		$tmpFiles = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.UploadLogic", array("topicId" => $this->id, "mypage" => $this->getMyPage()))->getTmpFilePathes();
+		DisplayPlugin::toggle("image", count($tmpFiles));
+
+		$this->createAdd("image_list", "_common.board.topic.ImageListComponent", array(
+			"list" => BulletinBoardUtil::pushEmptyValues($tmpFiles)
+		));
+
+		//アップロードした画像の確認用のモーダル
+		SOY2::import("mypage._common.pages._common.board.image.ImageModalComponent");
+		$this->addLabel("image_modal", array(
+			"html" => ImageModalComponent::build()
+		));
+
 		$this->addForm("form");
 	}
 }

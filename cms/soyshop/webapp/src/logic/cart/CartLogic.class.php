@@ -63,7 +63,12 @@ class CartLogic extends SOY2LogicBase{
 			$cart = soy2_unserialize($cart);
 		}
 
-		return (!is_null($cart)) ? $cart : new CartLogic($cartId);
+		if(!is_null($cart)){
+			SOY2ActionSession::regenerateSessionId();
+			return $cart;
+		}
+
+		return new CartLogic($cartId);
 	}
 
 	/**
@@ -72,6 +77,8 @@ class CartLogic extends SOY2LogicBase{
 	public static function saveCart(CartLogic $cart){
 		$userSession = SOY2ActionSession::getUserSession();
 		$userSession->setAttribute("soyshop_" . SOYSHOP_ID . $cart->getId(), soy2_serialize($cart));
+
+
 	}
 	function save(){
 		CartLogic::saveCart($this);

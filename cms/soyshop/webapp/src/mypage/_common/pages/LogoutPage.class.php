@@ -2,6 +2,9 @@
 class LogoutPage extends MainMyPagePageBase{
 
 	function __construct(){
+		//公開画面から直接ログアウトボタンを押さない限りログアウトさせない
+		if(!soy2_check_token()) $this->jumpToTop();
+
 		parent::__construct();
 		$this->getMyPage()->logout();
 

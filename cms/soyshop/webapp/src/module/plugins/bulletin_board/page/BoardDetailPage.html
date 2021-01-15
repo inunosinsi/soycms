@@ -34,9 +34,39 @@
 						<th>投稿内容</th>
 						<td soy:id="content"></td>
 					</tr>
+					<!-- soy:display="image" -->
+					<tr>
+						<th>画像</th>
+						<td>
+							<!-- soy:id="image_list" -->
+							<a href="javascript:void(0)" soy:id="modal_link"><img soy:id="image"></a>
+							<!-- /soy:id="image_list" -->
+						</td>
+					</tr>
+					<!-- /soy:display="image" -->
+					<tr>
+						<td colspan="2">
+							<div class="text-center" style="margin-top:15px;">
+								<a href="javascript:void(0);" class="btn btn-primary btn-lg" soy:id="login_link">代わりにログインして編集</a>
+							</div>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
-		<div class="alert alert-warning">@ToDo 詳細を更新できるようにする</div>
 	</div>
 </div>
+
+<div class="modal fade" id="image-modal">
+	<div class="modal-dialog">
+		<div class="modal-body">
+			<img id="modal-img" src="" class="aligncenter">
+		</div>
+	</div>
+</div>
+<script>
+function openModal(src){
+	$("#modal-img").prop("src", src);
+	$("#image-modal").modal();
+}
+</script>

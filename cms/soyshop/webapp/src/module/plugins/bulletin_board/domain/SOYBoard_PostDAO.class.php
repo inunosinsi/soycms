@@ -89,11 +89,12 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 		}catch(Exception $e){
 			$res = array();
 		}
-		if(!count($res)) return array();
 
 		$list = array();
-		foreach($res as $v){
-			$list[$v["topic_id"]] = (int)$v["cdate"];
+		if(count($res)){
+			foreach($res as $v){
+				$list[$v["topic_id"]] = (int)$v["cdate"];
+			}
 		}
 
 		foreach($topicIds as $topicId){
@@ -119,6 +120,57 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 		}
 
 		return $ids;
+	}
+
+	/**
+	 * @final
+	 */
+	function getNewPosts($periodStart=null){
+		if(is_null($periodStart)) $periodStart = strtotime("-7 day");
+
+		$sql = "SELECT id, topic_id, create_date FROM soyboard_post ".
+				"WHERE is_open = " . SOYBoard_Post::IS_OPEN . " ".
+				"AND create_date > :start ".
+				"ORDER BY create_date DESC";
+		try{
+			$res = $this->executeQuery($sql, array(":start" => $periodStart));
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		//各トピックの最新を取得する
+		$posts = array();
+		$list = array();	//トピックIDの重複を避ける為に、同一トピックの投稿を避ける
+		foreach($res as $v){
+			if(count($list) && is_numeric(array_search($v["topic_id"], $list))) continue;
+			$list[] = $v["topic_id"];
+			$posts[] = $this->getObject($v);
+		}
+
+		return $posts;
+	}
+
+	/**
+	 * @final
+	 */
+	function getLatestPostByGroupId($groupId){
+		if(!is_numeric($groupId)) return new SOYBoard_Post();
+
+		$sql = "SELECT p.* FROM soyboard_post p ".
+				"INNER JOIN soyboard_topic t ".
+				"ON p.topic_id = t.id ".
+				"WHERE t.group_id = :groupId ".
+				"AND p.is_open = " . SOYBoard_Post::IS_OPEN . " ".
+				"ORDER BY p.create_date DESC ".
+				"LIMIT 1";
+		try{
+			$res = $this->executeQuery($sql, array(":groupId" => $groupId));
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		return (isset($res[0])) ? $this->getObject($res[0]) : new SOYBoard_Post();
 	}
 
 	/**

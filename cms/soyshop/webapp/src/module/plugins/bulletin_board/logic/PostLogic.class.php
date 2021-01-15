@@ -37,6 +37,15 @@ class PostLogic extends SOY2LogicBase {
 		return null;
 	}
 
+	function update(SOYBoard_Post $post){
+		try{
+			self::_dao()->update($post);
+			return $post->getId();
+		}catch(Exception $e){
+			return null;
+		}
+	}
+
 	function getById($postId, $currentLoggedInUserId=null){
 		$post = self::_getById($postId);
 
@@ -71,6 +80,16 @@ class PostLogic extends SOY2LogicBase {
 		}catch(Exception $e){
 			return 0;
 		}
+	}
+
+	//新着情報 とりあえず1週間以内の投稿
+	function getNewPosts(){
+		return self::_dao()->getNewPosts();
+	}
+
+	function getLatestPostTopicIdByGroupId($groupId){
+		if(!is_numeric($groupId)) return null;
+		return self::_dao()->getLatestPostByGroupId($groupId)->getTopicId();
 	}
 
 	private function _getById($postId){

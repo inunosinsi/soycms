@@ -26,5 +26,8 @@ class CompletePage extends MainMyPagePageBase{
 		));
 
 		$mypage->clearAttribute("soyboard_post_content");
+
+		//画像のアップロード周り
+		SOY2Logic::createInstance("module.plugins.bulletin_board.logic.UploadLogic", array("topicId" => $post->getTopicId(), "mypage" => $this->getMyPage()))->move($post->getId());
 	}
 }

@@ -67,6 +67,8 @@ class MyPageLogic extends SOY2LogicBase{
 			}
 		}
 
+		SOY2ActionSession::regenerateSessionId();
+
 		return $myPage;
 	}
 
@@ -301,7 +303,7 @@ class MyPageLogic extends SOY2LogicBase{
 		$titleFormat = SOYShopPlugin::invoke("soyshop.mypage", array(
 			"mode" => "title"
 		))->getTitleFormat();
-		
+
 		if(is_null($titleFormat)){
 			if(isset($args[0])){
 				switch($args[0]){

@@ -11,9 +11,9 @@ class LoginPage extends MainMyPagePageBase{
 					$loginId = (isset($_POST["loginId"])) ? trim($_POST["loginId"]) : null;
 					if(is_null($loginId)) $loginId = (isset($_POST["mail"])) ? trim($_POST["mail"]) : null;
 
-					if($this->login($loginId, trim($_POST["password"]))){
+					if(self::_login($loginId, trim($_POST["password"]))){
 						//auto login
-						if(isset($_POST["login_memory"])) $this->autoLogin();
+						if(isset($_POST["login_memory"])) self::_autoLogin();
 
 						//リダイレクト
 						if(isset($_GET["r"]) && strlen($_GET["r"])){
@@ -135,15 +135,14 @@ class LoginPage extends MainMyPagePageBase{
 	/**
 	 * ログイン
 	 */
-	function login($userId, $password){
-		$res = $this->getMyPage()->login($userId, $password);
-		return $res;
+	private function _login($userId, $password){
+		return $this->getMyPage()->login($userId, $password);
 	}
 
 	/**
 	 * 自動ログイン
 	 */
-	function autoLogin(){
+	private function _autoLogin(){
 		$this->getMyPage()->autoLogin();
 	}
 }

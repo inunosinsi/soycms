@@ -73,10 +73,17 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 			file_put_contents(SOYSHOP_SITE_DIRECTORY . ".template/mypage/board.ini", "name = \"board - 掲示板用マイページ\"");
 		}
 
+		//Advanced Textarea Javascript code.
+		if(!file_exists(SOYSHOP_SITE_DIRECTORY . "js/")) mkdir(SOYSHOP_SITE_DIRECTORY . "js/");
+		copy(dirname(__FILE__) . "/template/js/textarea.js", SOYSHOP_SITE_DIRECTORY . "js/textarea.js");
+
 
 		//ログイン後のURLの設定
 		SOYShop_DataSets::put("config.mypage.url", "bulletin");
 		SOYShop_DataSets::put("config.mypage.top", "board");
+
+		//ページの作成
+		$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 
 		//トップページ
 		//マイページへのログインページへのリダイレクト
@@ -85,7 +92,6 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 			copy(dirname(__FILE__) . "/template/complex/home.ini", SOYSHOP_SITE_DIRECTORY . ".template/complex/home.ini");
 
 			//ページの作成
-			$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 			try{
 				$page = $pageDao->getByUri(SOYShop_Page::URI_HOME);
 			}catch(Exception $e){
@@ -115,6 +121,22 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 			}
 		}
 
+		//新着情報用XML
+		if(!file_exists(SOYSHOP_SITE_DIRECTORY . ".template/free/news_xml.html")){
+			copy(dirname(__FILE__) . "/template/free/news_xml.html", SOYSHOP_SITE_DIRECTORY . ".template/free/news_xml.html");
+			copy(dirname(__FILE__) . "/template/free/news_xml.ini", SOYSHOP_SITE_DIRECTORY . ".template/free/news_xml.ini");
+
+			try{
+				$page = $pageDao->getByUri("news.xml");
+			}catch(Exception $e){
+				$page = new SOYShop_Page();
+				$page->setName("新着情報XML");
+				$page->setUri("news.xml");
+				$page->setType(SOYShop_Page::TYPE_FREE);
+				$page->setTemplate("news_xml.html");
+				SOY2Logic::createInstance("logic.site.page.PageCreateLogic")->create($page);
+			}
+		}
 
 		//ユーザーカスタムサーチフィールドの初期化
 		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");

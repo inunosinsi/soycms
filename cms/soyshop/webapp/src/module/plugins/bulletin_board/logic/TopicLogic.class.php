@@ -53,6 +53,15 @@ class TopicLogic extends SOY2LogicBase {
 		}
 	}
 
+	function countByGroupId($groupId){
+		if(!is_numeric($groupId)) return 0;
+		try{
+			return self::_dao()->countByGroupId($groupId);
+		}catch(Exception $e){
+			return 0;
+		}
+	}
+
 	function insert($values){
 		$dao = self::_dao();
 		$topic = SOY2::cast("SOYBoard_Topic", $values);

@@ -2,6 +2,8 @@
 
 class BulletinBoardUtil {
 
+	const UPLOAD_KEY = "soyboard_post_image_";
+
 	public static function getUsageProhibitedHtmlTagList(){
 		return SOY2Logic::createInstance("module.plugins.bulletin_board.logic.ShapeHTMLLogic")->usageProhibitedHtmlTagList();
 	}
@@ -20,7 +22,16 @@ class BulletinBoardUtil {
 		$noBrMode = false;
 		$lastLine = count($lines);
 		for($i = 0; $i < $lastLine; $i++){
-			$line = trim($lines[$i]);
+			$line = $lines[$i];
+
+			//タブスペースの振る舞い
+			if(is_numeric(strpos($line, "    "))) $line = str_replace("    ", "\t", $line);
+			if(is_numeric(strpos($line, "  "))) $line = str_replace("  ", "\t", $line);
+
+			//<code>タグの場合は<pre><code>にする
+			if(is_numeric(strpos($line, "<code>")) && is_bool(strpos($line, "<pre><code>"))) $line = "<pre><code>";
+			if(is_numeric(strpos($line, "</code>")) && is_bool(strpos($line, "</code></pre>"))) $line = "</code></pre>";
+
 			$html .= $line;
 
 			//<pre>内は改行なし
@@ -39,10 +50,37 @@ class BulletinBoardUtil {
 		//</code>
 		$html = str_replace("<br>\n</code>", "</code>", $html);
 
+		$html = str_replace("<code>\n", "<code>", $html);
+		$html = str_replace("\n</code>", "</code>", $html);
+
 		return trim($html);
 	}
 
 	public static function returnHTML($html){
 		return SOY2Logic::createInstance("module.plugins.bulletin_board.logic.ShapeHTMLLogic", array("html" => $html))->return();
+	}
+
+
+	/** 画像のアップロード周り **/
+	public static function getUploadSessionKey($topicId, $userId){
+		return self::UPLOAD_KEY . $topicId . "_" . $userId;
+	}
+
+	public static function getEditUploadSessionKey($postId, $topicId, $userId){
+		return self::UPLOAD_KEY . "edit_" . $postId . "_" . $topicId . "_" . $userId;
+	}
+
+	public static function pushEmptyValues($array){
+		$cnt = count($array);
+		$diff = 12 - $cnt;
+		for($i = 0; $i < $diff; $i++){
+			$array[] = "";
+		}
+		return $array;
+	}
+
+	//画像のパスからファイル名を取得
+	public static function path2filename($path){
+		return trim(trim(substr($path, strrpos($path, "/")), "/"));
 	}
 }

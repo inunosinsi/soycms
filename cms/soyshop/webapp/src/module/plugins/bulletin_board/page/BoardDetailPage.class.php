@@ -35,6 +35,28 @@ class BoardDetailPage extends WebPage {
 		$this->addLabel("content", array(
 			"html" => BulletinBoardUtil::nl2br(trim(BulletinBoardUtil::shapeHTML($post->getContent())))
 		));
+
+		//処理的には無駄だけどマイページを読み込む
+		$mypageId = SOYShop_DataSets::get("config.mypage.id");
+		SOY2::import("logic.mypage.MyPageLogic");
+		$mypage = MyPageLogic::getMyPage($mypageId);
+		$mypage->setUserInfo($user);
+		$uploadLogic = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.UploadLogic", array("postId" => $post->getId(), "topicId" => $topic->getId(), "mypage" => $mypage));
+		$files = $uploadLogic->getFilePathes($post->getId());
+
+		DisplayPlugin::toggle("image", count($files));
+
+		SOY2::import("module.plugins.bulletin_board._component.ImageListComponent");
+		$this->createAdd("image_list", "ImageListComponent", array(
+			"list" => $files
+		));
+
+		//代わりにログイン
+		$this->addLink("login_link", array(
+			"link" => soyshop_get_mypage_url() . "/login?purchase=proxy&user_id=" . $user->getId() . "&r=" . soyshop_get_mypage_url() . "/board/topic/edit/" . $post->getId(),
+			"target"=> "_blank",
+			"attr:rel" => "noopener"
+		));
 	}
 
 	function setPostId($postId){

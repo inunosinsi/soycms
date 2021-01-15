@@ -213,7 +213,7 @@ function soyshop_parts_mypage_login($html, $page){
 		$logoutLink .= "?r=" . soyshop_remove_get_value(rawurldecode($_SERVER["REQUEST_URI"]));
 	}
 
-	$obj->addLink("logout_link", array(
+	$obj->addActionLink("logout_link", array(
 		"link" => $logoutLink,
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));

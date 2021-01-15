@@ -9,6 +9,13 @@ function purchase_proxy_login(){
 		if(!is_null($session->getAttribute("loginid"))){
 			$mypage = MyPageLogic::getMyPage();
 			$mypage->noPasswordLogin(trim($_GET["user_id"]));
+
+			//GETパラメータにrの値がある場合はリダイレクト
+			if(isset($_GET["r"]) && strlen($_GET["r"])){
+				$param = soyshop_remove_get_value(htmlspecialchars($_GET["r"], ENT_QUOTES, "UTF-8"));
+				soyshop_redirect_designated_page($param, "login=complete");
+				exit;
+			}
 		}
 	}
 }

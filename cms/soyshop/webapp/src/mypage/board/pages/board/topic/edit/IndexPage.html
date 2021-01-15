@@ -1,0 +1,45 @@
+<nav aria-label="breadcrumb">
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a soy:id="top_link">ホーム</a></li>
+		<li class="breadcrumb-item"><a soy:id="group_link"><!-- soy:id="group_name" -->グループ名<!-- /soy:id="group_name" -->の掲示板</a></li>
+		<li class="breadcrumb-item"><a soy:id="topic_link"><!-- soy:id="topic_label" -->トピックラベル<!-- /soy:id="topic_label" --></a></li>
+		<li class="breadcrumb-item active" aria-current="page">編集</li>
+	</ol>
+</nav>
+
+<form soy:id="post_form" id="post_form">
+	<div class="card mt-3">
+		<div class="card-header text-right">
+			<a href="javascript:void(0);" class="btn btn-danger btn-sm" soy:id="remove_link">削除</a>
+		</div>
+		<div class="card-body">
+			<textarea class="editor form-control" soy:id="content" style="height:200px;" required="required"></textarea>
+			<script soy:id="advanced_textarea_js"></script>
+			<div class="alert alert-info" style="margin-top:2px;">
+				使用不可のHTMLタグ：<!-- soy:id="usage_prohibited_html_tags" /-->
+			</div>
+		</div>
+		<div class="card-footer">
+			<!-- soy:display="image" -->
+			<div class="row align-items-start mb-3">
+				<!-- soy:id="image_list" -->
+				<div class="col upload-image">
+					<!-- soy:id="is_image" -->
+					<a soy:id="modal_link"><img soy:id="image"></a>
+					<button type="button" class="close" aria-label="Close" soy:id="remove_onclick">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<!-- /soy:id="is_image" -->
+				</div>
+				<!-- /soy:id="image_list" -->
+			</div>
+			<!-- /soy:display="image" -->
+			<!-- soy:id="upload_form_component" /-->
+		</div>
+	</div>
+	<div class="text-right mt-3">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更内容の確認">
+	</div>
+</form>
+
+<!-- soy:id="image_modal" /-->

@@ -76,7 +76,7 @@ class TopPage extends MainMyPagePageBase{
 		$this->addLink("withdraw_link", array(
 			"link" => soyshop_get_mypage_url() . "/withdraw",
 		));
-		$this->addLink("logout_link", array(
+		$this->addActionLink("logout_link", array(
 			"link" => soyshop_get_mypage_url() . "/logout",
 		));
 

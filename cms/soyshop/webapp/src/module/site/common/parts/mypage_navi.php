@@ -90,8 +90,8 @@ function soyshop_parts_mypage_navi($html, $page){
 				case "profile":
 					$html[] = "		<a class=\"" . $cls . "\" href=\"" . soyshop_get_mypage_url() . "/" . $type . "/" . $user->getProfileId() . "\">" . $label . "</a>";
 					break;
-				case "logout":
-					$html[] = "		<a class=\"" . $cls . "\" href=\"" . soyshop_get_mypage_url() . "/" . $type . "\" onclick=\"return confirm('ログアウトしますか？');\">" . $label . "</a>";
+				case "logout":	//soy2_check_tokenを追加
+					$html[] = "		<a class=\"" . $cls . "\" href=\"" . soyshop_get_mypage_url() . "/" . $type . "\?soy2_token=" . soy2_get_token() . "\" onclick=\"return confirm('ログアウトしますか？');\">" . $label . "</a>";
 					break;
 				case "payjp":
 				$html[] = "		<a class=\"" . $cls . "\" href=\"" . soyshop_get_mypage_url() . "/credit/payJp\">" . $label . "</a>";
@@ -299,7 +299,7 @@ function soyshop_parts_mypage_navi($html, $page){
 	// 	$logoutLink .= "?r=" . soyshop_remove_get_value(rawurldecode($_SERVER["REQUEST_URI"]));
 	// }
 	//
-	// $obj->addLink("logout_link", array(
+	// $obj->addActionLink("logout_link", array(
 	// 	"link" => $logoutLink,
 	// 	"soy2prefix" => SOYSHOP_SITE_PREFIX
 	// ));

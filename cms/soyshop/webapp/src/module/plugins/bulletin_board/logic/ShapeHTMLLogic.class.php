@@ -139,6 +139,9 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		// ->を-&gt;に変換する
 		self::_shapeAllow();
 
+		//シングルクオート、ダブルクオートや&を変換する
+		self::_escapeHTMLTag();
+
 		return $this->html;
 	}
 
@@ -250,6 +253,12 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		if(is_numeric(strpos($this->html, "<="))) $this->html = str_replace("<=", "&lt;=", $this->html);
 	}
 
+	private function _escapeHTMLTag(){
+		$this->html = str_replace("'", "&#039;", $this->html);
+		//$this->html = str_replace("\"", "&quot;", $this->html);
+		$this->html = str_replace("&", "&amp;", $this->html);
+	}
+
 	private function _removeProperties($prop="class"){
 		for(;;){
 			preg_match('/ ' . $prop . '.*?=\".*?\"/ims', $this->html, $tmp);
@@ -291,11 +300,18 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		$this->html = str_replace("<?php>", "", $this->html);
 	}
 
+	//スペースの削除はHTMLタグ内だけにする
 	private function _removeSpace($try=5){
 		$i = 0;
 		for(;;){
 			if($i++ > $try || is_bool(strpos($this->html, " >"))) break;
 			$this->html = str_replace(" >", ">", $this->html);
+		}
+
+		$i = 0;
+		for(;;){
+			if($i++ > $try || is_bool(strpos($this->html, "> "))) break;
+			$this->html = str_replace("> ", ">", $this->html);
 		}
 	}
 
@@ -327,7 +343,15 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 			self::_removeProperties($t);
 		}
 
+		self::_returnEscapedHTMLTag();
+
 		return $this->html;
+	}
+
+	private function _returnEscapedHTMLTag(){
+		$this->html = str_replace("&#039;", "'", $this->html);
+		//$this->html = str_replace("&quot;", "\"", $this->html);
+		$this->html = str_replace("&amp;", "&", $this->html);
 	}
 
 	function setHtml($html){
