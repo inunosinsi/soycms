@@ -82,7 +82,7 @@ class DetailPage extends MainMyPagePageBase{
 		/** ログインしていない時 **/
 		DisplayPlugin::toggle("no_logged_in", !$this->getMyPage()->getIsLoggedIn());
 		$this->addLink("login_page_link", array(
-			"link" => soyshop_get_mypage_url() . "/login?=r=" . rawurldecode($_SERVER["REQUEST_URI"])
+			"link" => soyshop_get_mypage_login_url(false, true)
 		));
 
 		/** ログインしている時 **/

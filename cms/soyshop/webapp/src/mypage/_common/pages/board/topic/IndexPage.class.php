@@ -40,6 +40,15 @@ class IndexPage extends MainMyPagePageBase{
 			"text" => $group->getName()
 		));
 
+		/** ログインしていない時 **/
+		DisplayPlugin::toggle("no_logged_in", !$this->getMyPage()->getIsLoggedIn());
+		$this->addLink("login_page_link", array(
+			"link" => soyshop_get_mypage_login_url(false, true)
+		));
+
+		/** ログインしている時 **/
+		DisplayPlugin::toggle("is_logged_in", $this->getMyPage()->getIsLoggedIn());
+
 		$this->addForm("create_form");
 
 		//トピック

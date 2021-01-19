@@ -558,6 +558,15 @@ function soyshop_get_mypage_top_url($isAbsolute = false){
 }
 
 /**
+ * マイページのログインページ
+ */
+function soyshop_get_mypage_login_url($isAbsolute=false, $isRedirectParam=false){
+	$url = soyshop_get_mypage_url($isAbsolute) . "/login";
+	if($isRedirectParam) $url .= "?r=" . rawurldecode($_SERVER["REQUEST_URI"]);
+	return $url;
+}
+
+/**
  * マイページのページタイトルを取得
  */
 function soyshop_get_mypage_page_title($args){

@@ -8,7 +8,12 @@
 <h2><!-- soy:id="name*" -->グループ名<!-- /soy:id="name*" -->の掲示板</h2>
 
 <div class="text-left mt-3">
+	<!-- soy:display="no_logged_in" -->
+	<a class="btn btn-info" href="javascript:void(0);" soy:id="login_page_link">ログインしてトピックの新規作成</a>
+	<!-- /soy:display="no_logged_in" -->
+	<!-- soy:display="is_logged_in" -->
 	<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#topicModal">トピックの新規作成</a>
+	<!-- /soy:display="is_logged_in" -->
 </div>
 
 <div class="alert alert-warning mt-3" soy:display="no_topic">トピックは作成されていません。</div>

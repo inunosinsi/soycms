@@ -14,8 +14,9 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 		if(soy2_check_token()){
 			if(isset($_POST["google_analytics"])){
 				GoogleAnalyticsUtil::saveConfig($_POST["google_analytics"]);
-				
-				GoogleAnalyticsUtil::savePageDisplayConfig($_POST["display_config"]);
+
+				$cnfs = (isset($_POST["display_config"])) ? $_POST["display_config"] : array();
+				GoogleAnalyticsUtil::savePageDisplayConfig($cnfs);
 				$this->config->redirect("updated");
 			}
 		}
@@ -25,7 +26,7 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 		parent::__construct();
 
 		$code = GoogleAnalyticsUtil::getConfig();
-		
+
 		$this->addForm("form");
 
 		$this->addTextArea("tracking_code", array(
@@ -54,22 +55,22 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 			"name"  => "google_analytics[insert_to_head]",
 			"label" => "</body>タグの直前に挿入する"
 		));
-		
+
 		SOY2::import("module.plugins.parts_google_analytics.component.PageListComponent");
 		$this->createAdd("page_list", "PageListComponent", array(
 			"list" => $this->getPageList(),
 			"displayConfig" => GoogleAnalyticsUtil::getPageDisplayConfig()
 		));
 	}
-	
+
 	function getPageList(){
 		$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 		try{
 			$pages = $pageDao->get();
 		}catch(Exception $e){
-			return array();	
+			return array();
 		}
-		
+
 		$list = array();
 		foreach($pages as $page){
 			if(is_null($page->getId())) continue;
@@ -82,4 +83,3 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 		$this->config = $obj;
 	}
 }
-?>
