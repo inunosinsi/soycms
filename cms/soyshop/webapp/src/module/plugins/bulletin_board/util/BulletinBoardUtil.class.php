@@ -8,6 +8,30 @@ class BulletinBoardUtil {
 		return SOY2Logic::createInstance("module.plugins.bulletin_board.logic.ShapeHTMLLogic")->usageProhibitedHtmlTagList();
 	}
 
+	public static function getUsagableHtmlTagList(){
+		return SOYShop_DataSets::get("bulletin_board_usage_html_tag.config", array(
+			"a",
+			"b",
+			"code",
+			"font",
+			"h1",
+			"h2",
+			"h3",
+			"h4",
+			"h5",
+			"h6",
+			"hr",
+			"i",
+			"pre",
+			"q",
+			"s",
+			"strong",
+			"sub",
+			"sup",
+			"u"
+		));
+	}
+
 	public static function shapeHTML($html){
 		return SOY2Logic::createInstance("module.plugins.bulletin_board.logic.ShapeHTMLLogic", array("html" => $html))->shape();
 	}

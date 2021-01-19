@@ -104,8 +104,12 @@ class DetailPage extends MainMyPagePageBase{
 			"attr:src" => soyshop_get_site_url() . "js/textarea.js"
 		));
 
-		$this->addLabel("usage_prohibited_html_tags", array(
-			"html" => self::_getUsageProhibitedHtmlTagList()
+		// $this->addLabel("usage_prohibited_html_tags", array(
+		// 	"html" => self::_getUsageProhibitedHtmlTagList()
+		// ));
+
+		$this->addLabel("usage_html_tags", array(
+			"html" => self::_getUsageHtmlTagList()
 		));
 
 		//アップロードフォーム
@@ -129,8 +133,17 @@ class DetailPage extends MainMyPagePageBase{
 		));
 	}
 
-	private function _getUsageProhibitedHtmlTagList(){
-		$list = BulletinBoardUtil::getUsageProhibitedHtmlTagList();
+	// private function _getUsageProhibitedHtmlTagList(){
+	// 	$list = BulletinBoardUtil::getUsageProhibitedHtmlTagList();
+	// 	$str = "";
+	// 	foreach($list as $tag){
+	// 		$str .= "&lt;" . $tag . "&gt; ";
+	// 	}
+	// 	return trim($str);
+	// }
+
+	private function _getUsageHtmlTagList(){
+		$list = BulletinBoardUtil::getUsagableHtmlTagList();
 		$str = "";
 		foreach($list as $tag){
 			$str .= "&lt;" . $tag . "&gt; ";

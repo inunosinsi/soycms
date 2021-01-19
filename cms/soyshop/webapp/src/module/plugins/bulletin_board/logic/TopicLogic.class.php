@@ -36,7 +36,12 @@ class TopicLogic extends SOY2LogicBase {
 			foreach($res as $topicId => $createDate){
 				$topic = self::_dao()->getByIdWithNotDisabledGroup($topicId);
 				if(is_null($topic->getId())) continue;
-				$topics[$createDate] = $topic;
+				$d = $createDate;
+				for(;;){
+					if(!isset($topics[$d])) break;
+					$d++;
+				}
+				$topics[$d] = $topic;
 			}
 
 			return $topics;

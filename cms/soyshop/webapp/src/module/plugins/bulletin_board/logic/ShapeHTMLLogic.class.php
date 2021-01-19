@@ -5,13 +5,14 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 	private $html;
 
 	function __construct(){
-
+		SOY2::import("module.plugins.bulletin_board.util.BulletinBoardUtil");
 	}
 
 	private function _usageProhibitedHtmlTagList(){
 		return array(
 			"applet",
 			"area",
+			"div",
 			"frame",
 			"iframe",
 			"img",
@@ -19,6 +20,7 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 			"noscript",
 			"object",
 			"script",
+			"span",
 			"style"
 		);
 	}
@@ -57,7 +59,8 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		}
 		self::_removeNoValuePropeties();
 
-		$list = self::_usageProhibitedHtmlTagList();
+		//$list = self::_usageProhibitedHtmlTagList();
+		$list = array("script", "style");	//許可されていないタグから許可されているタグ以外に変更　許可されているタグ以外は後回しにする
 		$list = array_merge($list, self::_usageProhibitedMetaTagList());
 		$list = array_merge($list, self::_usageProhibitedInputTagList());
 		$list = array_merge($list, self::_otherTagList());
@@ -132,6 +135,9 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 					}
 			}
 		}
+
+		//許可されているタグ以外を削除
+		self::_removeUsageProhibitedHtmlTags();
 
 		//<?php>がある場合
 		self::_removePhpTag();
@@ -256,7 +262,7 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 	private function _escapeHTMLTag(){
 		$this->html = str_replace("'", "&#039;", $this->html);
 		//$this->html = str_replace("\"", "&quot;", $this->html);
-		$this->html = str_replace("&", "&amp;", $this->html);
+		//$this->html = str_replace("&", "&amp;", $this->html);
 	}
 
 	private function _removeProperties($prop="class"){
@@ -295,9 +301,44 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		}
 	}
 
+	private function _removeUsageProhibitedHtmlTags(){
+		preg_match_all('/<.*?>/', $this->html, $tmps);
+		if(!count($tmps) || !isset($tmps[0]) || !count($tmps[0])) return;
+
+		foreach($tmps[0] as $tmp){
+			if(is_numeric(strpos($tmp, "</"))) continue;	//閉じタグは処理をしない
+			if(!self::_checkIsRemoveTag($tmp)) continue;
+
+			//開始タグ
+			$this->html = str_replace($tmp, "", $this->html);
+
+			//閉じタグ
+			$endTag = self::_getEndTag($tmp);
+			if(is_numeric(strpos($this->html, $endTag))) $this->html = $this->html = str_replace($endTag, "", $this->html);
+		}
+	}
+
+	private function _checkIsRemoveTag($tag){
+		static $tagList;
+		if(is_null($tagList)) $tagList = BulletinBoardUtil::getUsagableHtmlTagList();
+
+		foreach($tagList as $t){
+			if(is_numeric(strpos($tag, "<" . $t)) && (is_numeric(strpos($tag, "<" . $t . ">")) || is_numeric(strpos($tag, "<" . $t . " ")))) return false;
+		}
+
+		return true;
+	}
+
+	private function _getEndTag($tag){
+		$tag = trim(trim(trim(str_replace(array("<", ">"), "", $tag)), "/"));
+		if(is_numeric(strpos($tag, " "))) $tag = trim(substr($tag, 0, strpos($tag, " ")));
+		return "</" . $tag . ">";
+	}
+
 	private function _removePhpTag(){
-		if(is_bool(strpos($this->html, "<?php>"))) return;
 		$this->html = str_replace("<?php>", "", $this->html);
+		$this->html = str_replace("<?php", "", $this->html);
+		$this->html = str_replace("?>", "", $this->html);
 	}
 
 	//スペースの削除はHTMLタグ内だけにする
@@ -312,6 +353,12 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		for(;;){
 			if($i++ > $try || is_bool(strpos($this->html, "> "))) break;
 			$this->html = str_replace("> ", ">", $this->html);
+		}
+
+		$i = 0;
+		for(;;){
+			if($i++ > $try || is_bool(strpos($this->html, "< "))) break;
+			$this->html = str_replace("< ", "<", $this->html);
 		}
 	}
 

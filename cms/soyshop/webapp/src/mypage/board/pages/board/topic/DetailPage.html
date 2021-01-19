@@ -21,7 +21,7 @@
 		</small>
 	</div>
 	<div class="card-body">
-		<p class="card-text" soy:id="content">With supporting text below as a natural lead-in to additional content.</p>
+		<div class="card-text" soy:id="content">With supporting text below as a natural lead-in to additional content.</div>
 	</div>
 	<!-- soy:id="is_images" -->
 	<div class="card-footer">
@@ -50,7 +50,8 @@
 			<textarea class="editor form-control" soy:id="content" style="height:200px;" required="required"></textarea>
 			<script soy:id="advanced_textarea_js"></script>
 			<div class="alert alert-info">
-				使用不可のHTMLタグ：<!-- soy:id="usage_prohibited_html_tags" /-->
+				使用可のHTMLタグ：<!-- soy:id="usage_html_tags" /--><br>
+				HTMLタグの使用方法については<a href="https://developer.mozilla.org/ja/docs/Web/HTML" target="_blank">HTML: HyperText Markup Language | MDN</a>をご覧ください。
 			</div>
 		</div>
 		<div class="card-footer">
@@ -72,7 +73,7 @@
 		</div>
 	</div>
 	<div class="text-right mt-3">
-		<input type="submit" class="btn btn-primary btn-lg" value="投稿内容の確認">
+		<input type="submit" class="btn btn-primary btn-lg" name="confirm" value="投稿内容の確認">
 	</div>
 </form>
 <!-- /soy:display="is_logged_in" -->
