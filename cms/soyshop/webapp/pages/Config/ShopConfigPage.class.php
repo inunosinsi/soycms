@@ -69,6 +69,8 @@ class ShopConfigPage extends WebPage{
 
 		parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
 		error_reporting(E_ALL ^ E_NOTICE);
 		$this->buildForm();
 
@@ -382,7 +384,7 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[useUserCode]",
 			"value" => 1,
 			"selected" => $config->getUseUserCode(),
-			"label" => "顧客コードを使用する"
+			"label" => SHOP_USER_LABEL . "コードを使用する"
 		));
 
 		$this->addCheckBox("insertDummyMailAddress", array(
@@ -396,21 +398,21 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[insertDummyMailAddressOnAdmin]",
 			"value" => 1,
 			"selected" => $config->getInsertDummyMailAddressOnAdmin(),
-			"label" => "管理画面からの注文時、顧客のメールアドレスにダミーのメールアドレスを挿入する"
+			"label" => "管理画面からの注文時、" . SHOP_USER_LABEL . "のメールアドレスにダミーのメールアドレスを挿入する"
 		));
 
 		$this->addCheckBox("insertDummyMailAddressOnAdminRegister", array(
 			"name" => "Config[insertDummyMailAddressOnAdminRegister]",
 			"value" => 1,
 			"selected" => $config->getInsertDummyMailAddressOnAdminRegister(),
-			"label" => "管理画面からの顧客登録時、メールアドレスにダミーのメールアドレスを挿入する"
+			"label" => "管理画面からの" . SHOP_USER_LABEL . "登録時、メールアドレスにダミーのメールアドレスを挿入する"
 		));
 
 		$this->addCheckBox("insertDummyAddressOnAdmin", array(
 			"name" => "Config[insertDummyAddressOnAdmin]",
 			"value" => 1,
 			"selected" => $config->getInsertDummyAddressOnAdmin(),
-			"label" => "管理画面からの注文時、顧客の住所にダミーの値を挿入できるボタンを表示する"
+			"label" => "管理画面からの注文時、" . SHOP_USER_LABEL . "の住所にダミーの値を挿入できるボタンを表示する"
 		));
 
 		// $this->addCheckBox("isChildItemOnAdminOrder", array(
@@ -466,14 +468,14 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[displayUserAdminPage]",
 			"value" => 1,
 			"selected" => $config->getDisplayUserAdminPage(),
-			"label" => "管理画面で顧客タブを表示する"
+			"label" => "管理画面で" . SHOP_USER_LABEL . "タブを表示する"
 		));
 
 		$this->addCheckBox("displayOrderButtonOnUserAdminPage", array(
 			"name" => "Config[displayOrderButtonOnUserAdminPage]",
 			"value" => 1,
 			"selected" => $config->getDisplayOrderButtonOnUserAdminPage(),
-			"label" => "管理画面の顧客詳細で注文関連のボタンを表示する"
+			"label" => "管理画面の" . SHOP_USER_LABEL . "詳細で注文関連のボタンを表示する"
 		));
 
 		$this->addInput("autoOperateAuthorId", array(
@@ -494,14 +496,14 @@ class ShopConfigPage extends WebPage{
 			"name" => "Config[displayUserOfficeItems]",
 			"value" => 1,
 			"selected" => $config->getDisplayUserOfficeItems(),
-			"label" => "勤務先関連の項目を表示する(顧客詳細他、注文時のお届け先等)"
+			"label" => "勤務先関連の項目を表示する(" . SHOP_USER_LABEL . "詳細他、注文時のお届け先等)"
 		));
 
 		$this->addCheckBox("displayUserProfileItems", array(
 			"name" => "Config[displayUserProfileItems]",
 			"value" => 1,
 			"selected" => $config->getDisplayUserProfileItems(),
-			"label" => "顧客詳細の編集画面でプロフィール関連の項目を表示する"
+			"label" => SHOP_USER_LABEL . "詳細の編集画面でプロフィール関連の項目を表示する"
 		));
 
 		$this->addCheckBox("insertDummyItemCode", array(

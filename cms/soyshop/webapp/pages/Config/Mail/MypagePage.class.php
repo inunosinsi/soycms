@@ -30,8 +30,10 @@ class MypagePage extends WebPage{
 	function __construct(){
 		parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
 		//メール文面の初期化
-		if(isset($_GET["init"]))$this->initText();
+		if(isset($_GET["init"]))	self::_initText();
 
 		$type = (isset($_GET["type"])) ? $_GET["type"] : "remind";
 		$this->buildForm($type);
@@ -114,7 +116,7 @@ class MypagePage extends WebPage{
 	/**
 	 * 仮登録メール　文面の追加
 	 */
-	function initText(){
+	private function _initText(){
 
 		preg_match('/type=(.*)/', $_SERVER["HTTP_REFERER"], $types);
     	if(strpos($types[1], "&") != false){
@@ -142,7 +144,7 @@ class MypagePage extends WebPage{
 			"tmp_register" => "仮登録メール",
 			"register" => "登録完了メール",
 			"remind" => "パスワード再設定メール",
-			"edit" => "顧客情報の変更の確認メール"
+			"edit" => SHOP_USER_LABEL . "情報の変更の確認メール"
 		);
 
 		return (isset($array[$type])) ? $array[$type] : "パスワード再設定メール";

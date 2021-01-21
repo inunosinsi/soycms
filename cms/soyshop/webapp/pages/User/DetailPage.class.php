@@ -151,6 +151,8 @@ class DetailPage extends WebPage{
 
     	parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
 		DisplayPlugin::toggle("sended", isset($_GET["sended"]));
 
     	$shopUser = soyshop_get_user_object($id);
@@ -537,7 +539,7 @@ class DetailPage extends WebPage{
 	}
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("顧客情報詳細", array("User" => "顧客管理"));
+		return BreadcrumbComponent::build(SHOP_USER_LABEL . "情報詳細", array("User" => SHOP_USER_LABEL . "管理"));
 	}
 
 	function getFooterMenu(){

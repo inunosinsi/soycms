@@ -12,6 +12,8 @@ class ExportPage extends WebPage{
 
 		parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
 		self::buildForm();
 
 		DisplayPlugin::toggle("retry", isset($_GET["retry"]));
@@ -61,7 +63,7 @@ class ExportPage extends WebPage{
 
 			"mailAddress" => "メールアドレス",
 			"accountId" => SOYShop_ShopConfig::load()->getAccountIdItemName(),	//ログインID
-			"userCode" => "顧客コード",
+			"userCode" => SHOP_USER_LABEL . "コード",
 			"name" => "名前",
 			"reading" => "フリガナ",
 			"honorific" => "敬称",
@@ -201,7 +203,7 @@ class ExportPage extends WebPage{
 	}
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("顧客情報CSVエクスポート", array("User" => "顧客管理"));
+		return BreadcrumbComponent::build(SHOP_USER_LABEL . "情報CSVエクスポート", array("User" => SHOP_USER_LABEL . "管理"));
 	}
 
 	function getFooterMenu(){

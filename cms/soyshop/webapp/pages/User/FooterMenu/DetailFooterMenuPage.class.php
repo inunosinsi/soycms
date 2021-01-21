@@ -8,6 +8,8 @@ class DetailFooterMenuPage extends HTMLPage{
 		$this->id = (isset($args[0])) ? (int)$args[0] : null;
 		parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
 		$user = soyshop_get_user_object($this->id);
 
 		self::_buildMailForm($user);		//顧客宛メール

@@ -13,6 +13,9 @@ class ImportPage extends WebPage{
 		if(!AUTH_OPERATE) SOY2PageController::jump("User");
 
     	parent::__construct();
+
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
     	self::buildForm();
 
 		DisplayPlugin::toggle("fail", (isset($_GET["fail"])));
@@ -279,7 +282,7 @@ class ImportPage extends WebPage{
 	}
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("顧客情報CSVインポート", array("User" => "顧客管理"));
+		return BreadcrumbComponent::build(SHOP_USER_LABEL . "情報CSVインポート", array("User" => SHOP_USER_LABEL . "管理"));
 	}
 
 	function getFooterMenu(){

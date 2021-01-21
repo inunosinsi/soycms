@@ -20,6 +20,16 @@ class SOYShopPageController extends SOY2PageController{
 		define("USE_INQUIRY_SITE_DB", SOYAppUtil::checkAppAuth("inquiry"));
 		define("USE_MAIL_SITE_DB", SOYAppUtil::checkAppAuth("mail"));
 
+		//管理画面モード → カードIDがnoneであれば起動
+		define("SOYSHOP_ADMIN_MODE", (soyshop_get_cart_id() == "none"));
+		if(!SOYSHOP_ADMIN_MODE){
+			define("SHOP_MANAGER_LABEL", "ショップ");
+			define("SHOP_USER_LABEL", "顧客");
+		}else{
+			define("SHOP_MANAGER_LABEL", "アプリ");
+			define("SHOP_USER_LABEL", "アカウント");
+		}
+
 		$template = "main";
 
 		//Pathを作成
@@ -86,14 +96,6 @@ class SOYShopPageController extends SOY2PageController{
 		$webPage = &SOY2HTMLFactory::createInstance($classPath, array(
 			"arguments" => $args
 		));
-
-		//管理画面モード → カードIDがnoneであれば起動
-		define("SOYSHOP_ADMIN_MODE", (soyshop_get_cart_id() == "none"));
-		if(!SOYSHOP_ADMIN_MODE){
-			define("SHOP_MANAGER_LABEL", "ショップ");
-		}else{
-			define("SHOP_MANAGER_LABEL", "アプリ");
-		}
 
 		//ショップとサイトのどちらを開いているか？
 		define("ADMIN_PAGE_TYPE", $pageClass);

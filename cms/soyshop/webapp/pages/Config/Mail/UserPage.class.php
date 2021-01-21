@@ -135,7 +135,7 @@ class UserPage extends WebPage{
 	}
 
 	private function _isSystemMailActive($type){
-		//顧客宛メールのみfalse
+		//顧客(アカウント)宛メールのみfalse
 		if(in_array($type, array("user"))) return false;
 
 		//拡張ポイントからも調べる
@@ -194,7 +194,7 @@ class UserPage extends WebPage{
 			"payment" => "支払確認メール雛型設定",
 			"delivery" => "配送連絡メール雛型設定",
 			"other" => "その他のメール雛形設定",
-			"user" => "顧客宛メール雛形設定"
+			"user" => SHOP_USER_LABEL . "宛メール雛形設定"
 		);
 
 		if(isset($array[$type])) return $array[$type];

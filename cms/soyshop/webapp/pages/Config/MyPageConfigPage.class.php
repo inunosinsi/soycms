@@ -74,6 +74,8 @@ class MyPageConfigPage extends WebPage{
 	function __construct(){
 		parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
 		$this->addForm("update_form");
 
 		$this->addInput("mypage_title", array(

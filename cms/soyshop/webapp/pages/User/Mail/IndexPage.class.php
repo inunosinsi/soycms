@@ -143,6 +143,6 @@ class IndexPage extends WebPage{
 	}
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("メール送信", array("User" => "顧客管理", "User.Detail." . $this->id => "顧客情報詳細"));
+		return BreadcrumbComponent::build("メール送信", array("User" => SHOP_USER_LABEL . "管理", "User.Detail." . $this->id => SHOP_USER_LABEL . "情報詳細"));
 	}
 }

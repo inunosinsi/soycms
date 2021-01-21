@@ -215,7 +215,7 @@ class IndexPage extends WebPage{
 	}
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("顧客属性の一括設定", array("User" => "顧客管理"));
+		return BreadcrumbComponent::build(SHOP_USER_LABEL . "属性の一括設定", array("User" => SHOP_USER_LABEL . "管理"));
 	}
 
 	function getFooterMenu(){

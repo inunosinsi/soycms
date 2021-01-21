@@ -102,7 +102,7 @@ class MailPage extends WebPage{
     }
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("メールアドレス変更", array("User" => "顧客管理", "User.Detail." . $this->id => "顧客詳細"));
+		return BreadcrumbComponent::build("メールアドレス変更", array("User" => SHOP_USER_LABEL . "管理", "User.Detail." . $this->id => SHOP_USER_LABEL . "詳細"));
 	}
 
 	function getCSS(){

@@ -4,6 +4,8 @@ class IndexPage extends WebPage{
 	function __construct($args) {
 		parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
     	DisplayPlugin::toggle("registered", (isset($_GET["registered"])));
 
 		//一覧でログインIDを表示するか？
@@ -181,7 +183,7 @@ class IndexPage extends WebPage{
 	}*/
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("顧客管理");
+		return BreadcrumbComponent::build(SHOP_USER_LABEL . "管理");
 	}
 
 	function getFooterMenu(){

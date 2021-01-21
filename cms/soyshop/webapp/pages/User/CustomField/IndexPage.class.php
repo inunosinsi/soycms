@@ -125,7 +125,7 @@ class IndexPage extends WebPage{
     }
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("ユーザカスタム項目管理", array("User" => "顧客管理"));
+		return BreadcrumbComponent::build("ユーザカスタム項目管理", array("User" => SHOP_USER_LABEL . "管理"));
 	}
 
 	function getFooterMenu(){

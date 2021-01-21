@@ -9,6 +9,8 @@ class IndexPage extends WebPage{
 	function __construct(){
 		parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
 		$this->createAdd("mail_plugin_list", "_common.Plugin.MailPluginListComponent", array(
     		"list" => self::_getMailPluginList("order"),
 			"mode" => "order"

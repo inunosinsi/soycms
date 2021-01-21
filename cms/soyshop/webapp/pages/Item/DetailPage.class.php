@@ -225,6 +225,8 @@ class DetailPage extends WebPage{
 
 		parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
 		//詳細ページを開いた時に何らかの処理をする
 		SOYShopPlugin::load("soyshop.item");
 		SOYShopPlugin::invoke("soyshop.item", array(

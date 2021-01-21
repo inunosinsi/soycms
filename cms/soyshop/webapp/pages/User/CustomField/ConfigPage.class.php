@@ -54,6 +54,6 @@ class ConfigPage extends WebPage{
 	}
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("インポート・エクスポート", array("User" => "顧客管理", "User.CustomField" => "ユーザカスタム項目管理"));
+		return BreadcrumbComponent::build("インポート・エクスポート", array("User" => SHOP_USER_LABEL . "管理", "User.CustomField" => "ユーザカスタム項目管理"));
 	}
 }

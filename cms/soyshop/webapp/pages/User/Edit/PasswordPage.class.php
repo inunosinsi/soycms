@@ -89,7 +89,7 @@ class PasswordPage extends WebPage{
     	$this->addModel("password_is_registered", array(
     		"visible" => strlen($user->getPassword())
     	));
-    	$this->createAdd("password_is_not_registered","HTMLModel", array(
+    	$this->addModel("password_is_not_registered", array(
     		"visible" => !strlen($user->getPassword())
     	));
 
@@ -101,7 +101,7 @@ class PasswordPage extends WebPage{
     }
 
 	function getBreadcrumb(){
-		return BreadcrumbComponent::build("パスワード変更", array("User" => "顧客管理", "User.Detail." . $this->id => "顧客詳細"));
+		return BreadcrumbComponent::build("パスワード変更", array("User" => SHOP_USER_LABEL . "管理", "User.Detail." . $this->id => SHOP_USER_LABEL . "詳細"));
 	}
 
 	function getCSS(){

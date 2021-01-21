@@ -136,7 +136,7 @@ foreach($scripts as $script){
 						<?php }?>
 						<?php if(AUTH_USER){?>
 						<li class="user">
-							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/User"><i class="fa fa-group fa-fw"></i><span>顧客</span></a>
+							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/User"><i class="fa fa-group fa-fw"></i><span><?php echo SHOP_USER_LABEL; ?></span></a>
 						</li>
 						<?php }?>
 						<?php if(AUTH_ITEM){?>

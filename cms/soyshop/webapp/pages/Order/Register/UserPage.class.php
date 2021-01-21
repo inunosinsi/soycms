@@ -47,12 +47,12 @@ class UserPage extends WebPage{
 					$next = true;
 				}else{
 					//NG
-					$this->session->setAttribute("order_register.error.user_code", "入力された顧客コードに該当するユーザーが見つかりません。");
+					$this->session->setAttribute("order_register.error.user_code", "入力された" . SHOP_USER_LABEL . "コードに該当するユーザーが見つかりません。");
 					$this->session->setAttribute("order_register.input.user_code", $_POST["search_by_user_code"]);
 				}
 			}else{
 				//NG
-				$this->session->setAttribute("order_register.error.user_code", "顧客コードを入力してください。");
+				$this->session->setAttribute("order_register.error.user_code", SHOP_USER_LABEL . "コードを入力してください。");
 				$this->session->setAttribute("order_register.input.user_code", $_POST["search_by_user_code"]);
 			}
 		}else if(isset($_POST["search_by_email"])){
@@ -98,12 +98,12 @@ class UserPage extends WebPage{
 					$next = true;
 				}else{
 					//NG
-					$this->session->setAttribute("order_register.error.name", "入力された顧客名に該当するユーザーが見つかりません。");
+					$this->session->setAttribute("order_register.error.name", "入力された" . SHOP_USER_LABEL . "名に該当するユーザーが見つかりません。");
 					$this->session->setAttribute("order_register.input.name", $_POST["search_by_name"]);
 				}
 			}else{
 				//NG
-				$this->session->setAttribute("order_register.error.name", "顧客名を入力してください。");
+				$this->session->setAttribute("order_register.error.name", SHOP_USER_LABEL . "名を入力してください。");
 				$this->session->setAttribute("order_register.input.name", $_POST["search_by_name"]);
 			}
 		}else if(isset($_POST["search_by_reading"])){

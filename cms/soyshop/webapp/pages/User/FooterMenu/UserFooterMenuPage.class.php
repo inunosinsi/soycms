@@ -5,6 +5,8 @@ class UserFooterMenuPage extends HTMLPage{
 	function __construct(){
 		parent::__construct();
 
+		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
+
 		DisplayPlugin::toggle("app_limit_function", AUTH_OPERATE);
 
 		DisplayPlugin::toggle("custom_plugin", (class_exists("SOYShopPluginUtil") && (SOYShopPluginUtil::checkIsActive("common_user_customfield"))));
