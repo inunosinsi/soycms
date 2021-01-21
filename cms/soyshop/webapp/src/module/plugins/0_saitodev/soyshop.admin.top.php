@@ -67,7 +67,11 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 		}
 
 		//記事一覧へのリンク
-		$html[] = "<div class=\"soyshop_news text-center\"><a href=\"https://saitodev.co/category/SOY_Shop\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-default\">SOY Shopの記事をもっと読む</a></div>";
+		$html[] = "<div class=\"soyshop_news text-center\">";
+		$html[] = "<a href=\"https://saitodev.co/category/SOY_Shop\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-info\">SOY Shopの記事をもっと読む</a>";
+		$html[] = "&nbsp;&nbsp;";
+		$html[] = "<a href=\"https://saitodev.co/app/bulletin/board/topic/4\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-warning\">SOY Shopの掲示板を開く</a>";
+		$html[] = "</div>";
 		$html[] = "<style>" . file_get_contents(dirname(__FILE__) . "/css/style.css") . "</style>";
 
 		return implode("\n", $html);
