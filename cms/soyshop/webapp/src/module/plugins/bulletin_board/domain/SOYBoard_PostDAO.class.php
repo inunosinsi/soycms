@@ -176,6 +176,29 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 	/**
 	 * @final
 	 */
+	function getUserIdsWithinSameTopicByPostId($postId){
+		$sql = "SELECT DISTINCT user_id FROM soyboard_post ".
+				"WHERE topic_id = (".
+					"SELECT topic_id FROM soyboard_post WHERE id = :postId".
+				") ".
+				"AND is_open = 1";
+		try{
+			$res = $this->executeQuery($sql, array(":postId" => $postId));
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$ids = array();
+		foreach($res as $v){
+			$ids[] = (int)$v["user_id"];
+		}
+		return $ids;
+	}
+
+	/**
+	 * @final
+	 */
 	function onInsert($query, $binds){
 		if(!isset($binds[":isOpen"]) || !is_numeric($binds[":isOpen"])) $binds[":isOpen"] = SOYBoard_Post::NO_OPEN;
 		$binds[":createDate"] = time();

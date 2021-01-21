@@ -8,6 +8,8 @@ class BulletinBoardMypage extends SOYShopMypageBase{
 		$format = $appName;
 
 		$args = self::_args();
+		if(!count($args)) return $format;
+		
 		switch($args[0]){
 			case "topic":
 				if(isset($args[1]) && is_numeric($args[1])){ //トピックトップ
@@ -51,7 +53,9 @@ class BulletinBoardMypage extends SOYShopMypageBase{
 		$uri = rtrim($_SERVER["PATH_INFO"], "/");
 		$uri = str_replace("/" . SOYSHOP_ID . "/", "/", $uri);
 		$uri = str_replace("/" . SOYShop_DataSets::get("config.mypage.url") . "/", "", $uri);
-		return explode("/", $uri);
+		$args = explode("/", $uri);
+		if(count($args) && $args[0] == "board") array_shift($args);
+		return $args;
 	}
 }
 SOYShopPlugin::extension("soyshop.mypage", "bulletin_board", "BulletinBoardMypage");

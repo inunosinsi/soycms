@@ -92,6 +92,11 @@ class PostLogic extends SOY2LogicBase {
 		return self::_dao()->getLatestPostByGroupId($groupId)->getTopicId();
 	}
 
+	//投稿後に投稿したトピック内で何人のアカウントが投稿したか？投稿したアカウントのIDを返す
+	function getUserIdsWithinSameTopicByPostId($postId){
+		return self::_dao()->getUserIdsWithinSameTopicByPostId($postId);
+	}
+
 	private function _getById($postId){
 		$dao = self::_dao();
 		if($postId === 0) return new SOYBoard_Post();

@@ -23,7 +23,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 			return $html;
 		}
 
-		//アナリティクスタグの挿入設定　カートとマイページは無条件で挿入
+		//アナリティクスタグの挿入設定　カートとマイページは無条件で挿入→マイページはログインが必要なページは除く
 		if(defined("SOYSHOP_PAGE_ID")){
 			$displayConfig = GoogleAnalyticsUtil::getPageDisplayConfig();
 			if(isset($displayConfig[SOYSHOP_PAGE_ID]) && $displayConfig[SOYSHOP_PAGE_ID] == GoogleAnalyticsUtil::INSERT_TAG_NOT_DISPLAY){
@@ -31,6 +31,9 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 			}
 		}
 
+		if(defined("SOYSHOP_MYPAGE_MODE") && SOYSHOP_MYPAGE_MODE){
+			if(!self::_checkInsertTagOnMypage()) return $html;
+		}
 
 		//XHTMLではないXMLでは出力しない
 		if(
@@ -55,53 +58,49 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		//現在のページがカートページであるか？をチェック
 		if(isset($_SERVER["REDIRECT_URL"]) && strpos(soyshop_get_cart_url(), $_SERVER["REDIRECT_URL"]) !== false){
 			$query = "_gaq.push(['_trackPageview', '" . $_SERVER["REDIRECT_URL"] . "/complete/']);";
-			if(strpos($html,$query) !== false){
-				$completePage = true;	//注文完了画面ならばtrue
-			}
+			if(is_numeric(strpos($html,$query))) $completePage = true;	//注文完了画面ならばtrue
 		}
 
 		//完了ページならば、eコマーストラッキングを挿入する
-		if($completePage === true){
-			$code = $this->convertTrackingCode($html, $code);
-		}
+		if($completePage === true) $code = self::_convertTrackingCode($html, $code);
 
 		//</head>の直前
 		if($config["insert_to_head"] == self::INSERT_INTO_THE_END_OF_HEAD){
-			if(stripos($html,'</head>') !== false){
+			if(is_numeric(stripos($html,'</head>'))){
 				$html = str_ireplace('</head>', $code . "\n" . '</head>', $html);
-			}elseif(stripos($html, '<body>') !== false){
+			}else if(is_numeric(stripos($html, '<body>'))){
 				$html = str_ireplace('<body>', '<body>' . "\n" . $code, $html);
-			}elseif(preg_match('/<body\\s[^>]+>/', $html)){
+			}else if(preg_match('/<body\\s[^>]+>/', $html)){
 				$html = preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . $code, $html);
-			}elseif(stripos($html, '<head>') !== false){
+			}else if(is_numeric(stripos($html, '<head>'))){
 				$html = str_ireplace('<head>', '<head>' . "\n" . $code, $html);
-			}elseif(stripos($html, '<html>') !== false){
+			}else if(is_numeric(stripos($html, '<html>'))){
 				$html = str_ireplace('<html>', '<html>' . "\n" . $code, $html);
-			}elseif(preg_match('/<html\\s[^>]+>/', $html)){
+			}else if(preg_match('/<html\\s[^>]+>/', $html)){
 				$html = preg_replace('/(<html\\s[^>]+>)/', "\$0\n" . $code, $html);
 			}
 
 		//<body>の直後
 		}elseif($config["insert_to_head"] == self::INSERT_INTO_THE_BEGINNING_OF_BODY){
-			if(stripos($html, '<body>') !== false){
+			if(is_numeric(stripos($html, '<body>'))){
 				$html = str_ireplace('<body>', '<body>' . "\n" . $code, $html);
-			}elseif(preg_match('/<body\\s[^>]+>/', $html)){
+			}else if(preg_match('/<body\\s[^>]+>/', $html)){
 				$html = preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . $code, $html);
-			}elseif(stripos($html, '</head>') !== false){
+			}else if(is_numeric(stripos($html, '</head>'))){
 				$html = str_ireplace('</head>', $code . "\n" . '</head>', $html);
-			}elseif(stripos($html, '<head>') !== false){
+			}else if(is_numeric(stripos($html, '<head>'))){
 				$html = str_ireplace('<head>', '<head>' . "\n" . $code, $html);
-			}elseif(stripos($html, '<html>') !== false){
+			}else if(is_numeric(stripos($html, '<html>'))){
 				$html = str_ireplace('<html>', '<html>' . "\n" . $code, $html);
-			}elseif(preg_match('/<html\\s[^>]+>/', $html)){
+			}else if(preg_match('/<html\\s[^>]+>/', $html)){
 				$html = preg_replace('/(<html\\s[^>]+>)/', "\$0\n" . $code, $html);
 			}
 
 		//末尾
 		}else{
-			if(stripos($html, '</body>') !== false){
+			if(is_numeric(stripos($html, '</body>'))){
 				$html = str_ireplace('</body>', $code . '</body>', $html);
-			}elseif(stripos($html, '</html>') !== false){
+			}else if(is_numeric(stripos($html, '</html>'))){
 				$html = str_ireplace('</html>', $code . '</html>', $html);
 			}
 		}
@@ -109,7 +108,35 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		return $html;
 	}
 
-	function convertTrackingCode($html, $code){
+	//マイページでanalyticsタグを挿入するか？
+	private function _checkInsertTagOnMypage(){
+		if(!isset($_SERVER["REQUEST_URI"])) return false;
+
+		//トラッキングタグを出力しないページ
+		$uri = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], SOYSHOP_MYPAGE_URI));
+		$uri = substr($uri, strpos($uri, "/") + 1);
+
+		//uriに下記の文字列があればtrue
+		$types = array("login", "logout", "register", "remind");
+		foreach($types as $t){
+			if(is_numeric(strpos($uri, $t))) return true;
+		}
+
+		//boardの場合のみ特殊
+		if(is_numeric(strpos($uri, "board"))){
+			//uriに下記の文字列があればfalse
+			$types = array("edit", "confirm", "complete", "remove");
+			foreach($types as $t){
+				if(is_numeric(strpos($uri, $t))) return false;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private function _convertTrackingCode($html, $code){
 		/**
 		 * 注文情報取得で良い方法が思いつかないので、htmlからトラッキングナンバーを取得する
 		 */
@@ -148,21 +175,20 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		//注文された商品が一つでもあったか？
 		if(count($items) === 0) return $code;
 
-		$insertCode = $this->buildInsertCode($order, $items);
+		$insertCode = self::_buildInsertCode($order, $items);
 		$changeCode = $query . "\n" . $insertCode;
 
 		return str_replace($query, "$changeCode", $code);
 	}
 
-	function buildInsertCode($order, $items){
-		$insertOrderCode = $this->buildInsertOrderCode($order);
-		$insertItemCode = $this->buildInsertItemCode($items, $order->getTrackingNumber());
-
-		return $insertOrderCode . "\n\n" . $insertItemCode . "\n\n" . "  _gaq.push(['_trackTrans']);";
+	private function _buildInsertCode(SOYShop_Order $order, $items){
+		return self::_buildInsertOrderCode($order) . "\n\n" .
+				self::_buildInsertItemCode($items, $order->getTrackingNumber()) . "\n\n" .
+				"  _gaq.push(['_trackTrans']);";
 	}
 
 	//店舗情報と注文の総額
-	function buildInsertOrderCode($order){
+	private function _buildInsertOrderCode(SOYShop_Order $order){
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 		$config = SOYShop_ShopConfig::load();
 
@@ -210,7 +236,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 	}
 
 	//各商品の情報
-	function buildInsertItemCode($items, $trackingNumber){
+	private function _buildInsertItemCode($items, $trackingNumber){
 
 		$s = "  ";	//表示の調整用
 

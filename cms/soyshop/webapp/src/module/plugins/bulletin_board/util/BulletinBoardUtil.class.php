@@ -2,7 +2,17 @@
 
 class BulletinBoardUtil {
 
+	const FIELD_ID_MANAGER_SIDE = "management_side";
+	const FIELD_ID_PROFILE = "profile";
 	const UPLOAD_KEY = "soyboard_post_image_";
+
+	public static function getFieldList(){
+		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
+		return array(
+			self::FIELD_ID_MANAGER_SIDE => array("label" => "運営側アカウント", "type" => UserCustomSearchFieldUtil::TYPE_CHECKBOX, "option" => "運営側", "is_admin_only" => 1),
+			self::FIELD_ID_PROFILE => array("label" => "紹介文", "type" => UserCustomSearchFieldUtil::TYPE_TEXTAREA),
+		);
+	}
 
 	public static function getUsageProhibitedHtmlTagList(){
 		return SOY2Logic::createInstance("module.plugins.bulletin_board.logic.ShapeHTMLLogic")->usageProhibitedHtmlTagList();

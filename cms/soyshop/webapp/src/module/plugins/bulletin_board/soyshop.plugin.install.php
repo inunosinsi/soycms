@@ -152,10 +152,8 @@ class BulletinBoardInstall extends SOYShopPluginInstallerBase{
 			$cnfs = array();
 
 			$logic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic");
-			$fields = array(
-				"management_side" => array("label" => "運営側アカウント", "type" => UserCustomSearchFieldUtil::TYPE_CHECKBOX, "option" => "運営側", "is_admin_only" => 1),
-				"profile" => array("label" => "紹介文", "type" => UserCustomSearchFieldUtil::TYPE_TEXTAREA),
-			);
+			SOY2::import("module.plugins.bulletin_board.util.BulletinBoardUtil");
+			$fields = BulletinBoardUtil::getFieldList();
 
 			foreach($fields as $fieldId => $field){
 				$logic->addColumn($fieldId, $field["type"]);

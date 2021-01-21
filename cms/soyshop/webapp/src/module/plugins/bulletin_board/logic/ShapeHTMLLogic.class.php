@@ -267,7 +267,12 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 
 	private function _removeProperties($prop="class"){
 		for(;;){
-			preg_match('/ ' . $prop . '.*?=\".*?\"/ims', $this->html, $tmp);
+			if($prop=="on"){
+				preg_match('/ ' . $prop . '[a-zA-Z].*?=\".*?\"/ims', $this->html, $tmp);
+			}else{
+				preg_match('/ ' . $prop . '.*?=\".*?\"/ims', $this->html, $tmp);
+			}
+
 			if(!isset($tmp[0])) break;
 
 			$this->html = str_replace($tmp[0], "", $this->html);
@@ -285,10 +290,14 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 
 	//prop="***"ではない形の属性値
 	private function _removeNoValuePropeties(){
-		for(;;){
-			preg_match('/<.* ([^=]*?)>/i', $this->html, $tmp);
-			if(!isset($tmp[1])) break;
-			$this->html = str_replace(" " . $tmp[1] . ">", ">", $this->html);
+		self::_removeSpace(3);
+		preg_match_all('/<.* ([^=]*?)>/i', $this->html, $tmps);
+		if(!isset($tmps[1]) || !is_array($tmps[1]) || !count($tmps[1])) return;
+
+		for($i = 0; $i < count($tmps[0]); $i++){
+			if(substr_count($tmps[0][$i], ">") > 1) continue;
+			$tmp = $tmps[1][$i];
+			$this->html = str_replace(" " . $tmp . ">", ">", $this->html);
 			self::_removeSpace(1);
 		}
 	}
@@ -337,8 +346,13 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 
 	private function _removePhpTag(){
 		$this->html = str_replace("<?php>", "", $this->html);
+		self::_removeSpace(1);
 		$this->html = str_replace("<?php", "", $this->html);
+		self::_removeSpace(1);
 		$this->html = str_replace("?>", "", $this->html);
+		self::_removeSpace(1);
+		$this->html = str_replace(";>", "", $this->html);
+		self::_removeSpace(1);
 	}
 
 	//スペースの削除はHTMLタグ内だけにする
