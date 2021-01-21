@@ -11,7 +11,7 @@ class ZeroSaitodevPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"1.0.1"
+			"version"=>"1.1"
 		));
 
 		//二回目以降の動作
@@ -73,7 +73,11 @@ class ZeroSaitodevPlugin{
 		}
 
 		//記事一覧へのリンク
-		$html[] = "<div class=\"soycms_news text-center\"><a href=\"https://saitodev.co/category/SOY_CMS\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-default\">SOY CMSの記事をもっと読む</a></div>";
+		$html[] = "<div class=\"soycms_news text-center\">";
+		$html[] = "<a href=\"https://saitodev.co/category/SOY_CMS\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-info\">SOY CMSの記事をもっと読む</a>";
+		$html[] = "&nbsp;&nbsp;";
+		$html[] = "<a href=\"https://saitodev.co/app/bulletin/board/topic/1\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-warning\">SOY CMSの掲示板を開く</a>";
+		$html[] = "</div>";
 		$html[] = "<style>" . file_get_contents(dirname(__FILE__) . "/css/style.css") . "</style>";
 
 		return array("title" => $title, "content" => implode("\n", $html));

@@ -141,7 +141,7 @@ class SOYShopLoginCheckPlugin{
 		));
 
 		//ログアウトリンク
-		$htmlObj->addLink("logout_link", array(
+		$htmlObj->addActionLink("logout_link", array(
 			"soy2prefix" => "cms",
 			"link" => $this->logoutPageUrl
 		));
@@ -274,7 +274,7 @@ class SOYShopLoginCheckPlugin{
 			"name" => "login_memory"
 		));
 
-		$obj->addLink("logout_link", array(
+		$obj->addActionLink("logout_link", array(
 			"soy2prefix" => "s_block",
 			"link" => $this->logoutPageUrl
 		));
