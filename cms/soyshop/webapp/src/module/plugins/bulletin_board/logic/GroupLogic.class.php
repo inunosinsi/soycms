@@ -77,7 +77,6 @@ class GroupLogic extends SOY2LogicBase {
 			try{
 				self::_attrDao()->insert($attr);
 			}catch(Exception $e){
-				var_dump($e);
 				try{
 					self::_attrDao()->update($attr);
 				}catch(Exception $e){
