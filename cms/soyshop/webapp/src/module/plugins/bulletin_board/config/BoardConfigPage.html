@@ -32,6 +32,7 @@
 					<td soy:id="topic_count"></td>
 					<td><input type="number" soy:id="display_order"></td>
 					<td>
+						<a soy:id="detail_link" class="btn btn-primary">編集</a>&nbsp;
 						<a soy:id="remove_link" class="btn btn-danger delete_btn">削除</a>
 					</td>
 				</tr>
@@ -87,7 +88,7 @@
 <div class="form-group">
 	<label>Google Analyticsに登録</label><br>
 	Google Analyticsプラグインを有効にして、各種設定を行ってください。
-	<!-- soy:display="google_analytics" --><a class="btn btn-info btn-xs" soy:id="google_analytics_link">インストール済み</a><!-- /soy:display="google_analytics" -->
+	<!-- soy:display="google_analytics" --><a class="btn btn-info btn-xs" soy:id="google_analytics_link" style="pointer-events: none;">インストール済み</a><!-- /soy:display="google_analytics" -->
 </div>
 
 <div class="modal" tabindex="-1" role="dialog" id="groupModal">

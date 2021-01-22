@@ -1,4 +1,6 @@
 <?php
+
+SOY2::import("module.plugins.bulletin_board.util.BulletinBoardUtil");
 class IndexPage extends MainMyPagePageBase{
 
 	private $id;
@@ -28,7 +30,8 @@ class IndexPage extends MainMyPagePageBase{
 		if(!isset($args[0]) && !is_numeric($args[0])) $this->jumpToTop();
 		$this->id = (int)$args[0];
 
-		$group = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.GroupLogic")->getById($this->id);
+		$groupLogic = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.GroupLogic");
+		$group = $groupLogic->getById($this->id);
 		if(is_null($group->getId())) $this->jumpToTop();
 		// ログインチェックは不要
 
@@ -40,6 +43,13 @@ class IndexPage extends MainMyPagePageBase{
 
 		$this->addLabel("name", array(
 			"text" => $group->getName()
+		));
+
+		//グループの説明文
+		$groupDesp = trim($groupLogic->getGroupDescriptionById($group->getId()));
+		DisplayPlugin::toggle("group_description", strlen($groupDesp));
+		$this->addLabel("group_description", array(
+			"html" => BulletinBoardUtil::nl2br(BulletinBoardUtil::autoInsertAnchorTag(BulletinBoardUtil::shapeHTML($groupDesp)))
 		));
 
 		/** ログインしていない時 **/

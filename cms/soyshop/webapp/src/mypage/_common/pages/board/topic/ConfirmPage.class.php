@@ -21,7 +21,7 @@ class ConfirmPage extends MainMyPagePageBase{
 					//同一トピック内で二人以上のアカウントが居る場合は通知メールを送信
 					$userIds = $postLogic->getUserIdsWithinSameTopicByPostId($postId);
 					if(count($userIds) > 1){
-						SOY2Logic::createInstance("module.plugins.bulletin_board.logic.SendMailLogic")->sendTopicNotice($postId, $userIds, $this->getUserId());
+						SOY2Logic::createInstance("module.plugins.bulletin_board.logic.SendMailLogic")->sendPostNotice($postId, $userIds, $this->getUserId());
 					}
 
 					$this->jump("board/topic/complete/" . $postId);

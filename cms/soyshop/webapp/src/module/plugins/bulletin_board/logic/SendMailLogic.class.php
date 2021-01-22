@@ -77,7 +77,7 @@ class SendMailLogic extends SOY2LogicBase {
 		$list = array();
 		foreach($res as $v){
 			if(!isset($v["user_id"]) || !is_numeric($v["user_id"])) continue;
-			if($v["user_id"] != $excludeUserId) continue;
+			if($v["user_id"] == $excludeUserId) continue;
 			$list[] = trim(soyshop_get_user_object($v["user_id"])->getMailAddress());
 		}
 

@@ -23,3 +23,11 @@ CREATE TABLE soyboard_post (
 	create_date INTEGER NOT NULL,
 	update_date INTEGER NOT NULL
 );
+
+CREATE TABLE soyboard_group_attribute (
+	group_id INTEGER,
+	group_field_id VARCHAR,
+	group_value VARCHAR,
+	group_extra_values VARCHAR,
+	UNIQUE(group_id,group_field_id)
+);

@@ -20,6 +20,10 @@ class GroupListComponent extends HTMLList {
 			"style" => "width:80px;"
 		));
 
+		$this->addLink("detail_link", array(
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=bulletin_board&group_id=" . $id),
+		));
+
 		$this->addActionLink("remove_link", array(
 			"link" => SOY2PageController::createLink("Config.Detail?plugin=bulletin_board&remove=" . $id),
 			"onclick" => "return confirm('削除しますがよろしいですか？')"

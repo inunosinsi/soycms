@@ -2,6 +2,8 @@
 
 class GroupLogic extends SOY2LogicBase {
 
+	const FIELD_ID = "desp";	//グループの説明文用
+
 	function __construct(){
 		SOY2::import("module.plugins.bulletin_board.domain.SOYBoard_GroupDAO");
 	}
@@ -61,6 +63,49 @@ class GroupLogic extends SOY2LogicBase {
 		}
 	}
 
+	function getGroupDescriptionById($groupId){
+		return self::_groupAttr($groupId, self::FIELD_ID)->getValue();
+	}
+
+	function saveGroupDescription($groupId, $content){
+		$content = trim($content);
+		if(!strlen($content)){
+			self::_deleteAttr($groupId, self::FIELD_ID);
+		}else{
+			$attr = self::_groupAttr($groupId, self::FIELD_ID);
+			$attr->setValue($content);
+			try{
+				self::_attrDao()->insert($attr);
+			}catch(Exception $e){
+				var_dump($e);
+				try{
+					self::_attrDao()->update($attr);
+				}catch(Exception $e){
+					//
+				}
+			}
+		}
+	}
+
+	private function _groupAttr($groupId, $fieldId){
+		try{
+			return self::_attrDao()->get($groupId, $fieldId);
+		}catch(Exception $e){
+			$attr = new SOYBoard_GroupAttribute();
+			$attr->setGroupId($groupId);
+			$attr->setFieldId($fieldId);
+			return $attr;
+		}
+	}
+
+	private function _deleteAttr($groupId, $fieldId){
+		try{
+			self::_attrDao()->delete($groupId, $fieldId);
+		}catch(Exception $e){
+			//
+		}
+	}
+
 	private function _getById($groupId){
 		try{
 			return self::_dao()->getById($groupId);
@@ -72,6 +117,15 @@ class GroupLogic extends SOY2LogicBase {
 	private function _dao(){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("SOYBoard_GroupDAO");
+		return $dao;
+	}
+
+	private function _attrDao(){
+		static $dao;
+		if(is_null($dao)){
+			SOY2::import("module.plugins.bulletin_board.domain.SOYBoard_GroupAttributeDAO");
+			$dao = SOY2DAOFactory::create("SOYBoard_GroupAttributeDAO");
+		}
 		return $dao;
 	}
 }
