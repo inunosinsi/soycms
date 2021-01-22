@@ -5,6 +5,7 @@ class BoardConfigPage extends WebPage {
 	private $configObj;
 
 	function __construct(){
+		SOY2::import("module.plugins.bulletin_board.util.BulletinBoardUtil");
 		SOY2::import("module.plugins.bulletin_board._component.GroupListComponent");
 	}
 
@@ -22,8 +23,10 @@ class BoardConfigPage extends WebPage {
 					self::_logic()->setDisplayOrder($groupId, $displayOrder);
 				}
 				$this->configObj->redirect("updated");
+			} else if(isset($_POST["Mail"])){
+				BulletinBoardUtil::saveMailConfig($_POST["Mail"]);
+				$this->configObj->redirect("updated");
 			}
-
 		}
 		$this->configObj->redirect("failed");
 	}
@@ -39,8 +42,21 @@ class BoardConfigPage extends WebPage {
 
 		DisplayPlugin::toggle("failed", isset($_GET["failed"]));
 
-		$this->addForm("create_form");
+		self::_buildCreateForm();
+		self::_buildEditForm();
+		self::_buildMailForm();
+		self::_buildAnalyticsInfoArea();
+	}
 
+	private function _remove($groupId){
+		self::_logic()->delete($groupId);
+	}
+
+	private function _buildCreateForm(){
+		$this->addForm("create_form");
+	}
+
+	private function _buildEditForm(){
 		$groups = self::_logic()->get();
 		$cnt = count($groups);
 
@@ -52,8 +68,23 @@ class BoardConfigPage extends WebPage {
 		));
 	}
 
-	private function _remove($groupId){
-		self::_logic()->delete($groupId);
+	private function _buildMailForm(){
+		$cnf = BulletinBoardUtil::getMailConfig();
+
+		$this->addForm("mail_form");
+
+		$this->addTextArea("mail_footer", array(
+			"name" => "Mail[footer]",
+			"value" => (isset($cnf["footer"])) ? $cnf["footer"] : ""
+		));
+	}
+
+	private function _buildAnalyticsInfoArea(){
+		$this->addLabel("sitemap_xml", array(
+			"text" => soyshop_get_site_url(true) . "sitemap.xml"
+		));
+
+		DisplayPlugin::toggle("google_analytics", SOYShopPluginUtil::checkIsActive("parts_google_analytics"));
 	}
 
 	function _logic(){

@@ -20,9 +20,13 @@ class SendMailLogic extends SOY2LogicBase {
 		$title = $group->getName() . "に新しいトピックが作成されました。";
 		$body = "トピック名：" . $topic->getLabel() . "\n";
 		$body .= "作成者：" . soyshop_get_user_object($userId)->getDisplayName() . "\n";
-		$body .= self::_getTopicDetailLink($topic->getId());	// URLを入れる
+		$body .= self::_getTopicDetailLink($topic->getId()) . "\n";	// URLを入れる
 
-		// @ToDo footer
+		// footer
+		$cnf = BulletinBoardUtil::getMailConfig();
+		if(isset($cnf["footer"])) $body .= $cnf["footer"];
+
+		$body = trim($body);
 
 		//MailLogicの呼び出し
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
@@ -41,9 +45,11 @@ class SendMailLogic extends SOY2LogicBase {
 		$title = $topic->getLabel() . "に新しい投稿がありました。";
 		$body = "トピック名：" . $topic->getLabel() . "\n";
 		$body .= "投稿者：" . soyshop_get_user_object($loggedInUserId)->getDisplayName() . "\n";
-		$body .= self::_getTopicDetailLink($topic->getId()) . "#" . $post->getId();	// URLを入れる
+		$body .= self::_getTopicDetailLink($topic->getId()) . "#" . $post->getId() . "\n";	// URLを入れる
 
-		// @ToDo footer
+		// footer
+		$cnf = BulletinBoardUtil::getMailConfig();
+		if(isset($cnf["footer"])) $body .= $cnf["footer"];
 
 		//MailLogicの呼び出し
 		$mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");

@@ -24,7 +24,7 @@ class DetailPage extends MainMyPagePageBase{
 		));
 
 		$this->addLabel("user_name", array(
-			"text" => $user->getName()
+			"text" => $user->getDisplayName()
 		));
 
 		DisplayPlugin::toggle("url", strlen($user->getUrl()));

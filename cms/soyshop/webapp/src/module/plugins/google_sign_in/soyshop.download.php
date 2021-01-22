@@ -27,6 +27,7 @@ class GoogleSignInDownload extends SOYShopDownload{
 			if($user->getUserType() == SOYShop_User::USERTYPE_REGISTER){
 				$mypage = MyPageLogic::getMyPage();
 				$mypage->noPasswordLogin($user->getId());
+				$mypage->autoLogin();
 
 				//成功
 				self::sendResult(1);

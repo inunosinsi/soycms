@@ -31,7 +31,7 @@ class PostListComponent extends HTMLList {
 		));
 
 		$this->addLabel("content", array(
-			"html" => BulletinBoardUtil::nl2br(BulletinBoardUtil::shapeHTML($entity->getContent()))
+			"html" => BulletinBoardUtil::nl2br(BulletinBoardUtil::autoInsertAnchorTag(BulletinBoardUtil::shapeHTML($entity->getContent())))
 		));
 
 		//画像ファイル

@@ -78,7 +78,7 @@ class ConfirmPage extends MainMyPagePageBase{
 
 		//内容の確認
 		$this->addLabel("content", array(
-			"html" => BulletinBoardUtil::nl2br($content)
+			"html" => BulletinBoardUtil::nl2br(BulletinBoardUtil::autoInsertAnchorTag($content))
 		));
 
 		$uploadLogic = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.UploadLogic", array("postId" => $this->id, "topicId" => $topic->getId(), "mypage" => $this->getMyPage()));

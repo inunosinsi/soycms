@@ -78,7 +78,7 @@ class ConfirmPage extends MainMyPagePageBase{
 
 		//内容の確認
 		$this->addLabel("content", array(
-			"html" => BulletinBoardUtil::nl2br($content)
+			"html" => BulletinBoardUtil::nl2br(BulletinBoardUtil::autoInsertAnchorTag($content))
 		));
 
 		//仮ディレクトリの画像一覧

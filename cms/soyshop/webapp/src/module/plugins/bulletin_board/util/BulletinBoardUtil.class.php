@@ -90,6 +90,28 @@ class BulletinBoardUtil {
 		return trim($html);
 	}
 
+	public static function autoInsertAnchorTag($html){
+		//手動でアンカータグを入れている場合は、アンカータグの自動挿入はなし
+		preg_match('/<a .*?>/', $html, $tmp);
+		if(isset($tmp[0]) && strlen($tmp[0])) return $html;
+
+		preg_match_all('/https?:\/{2}[\w\/:%#\$&\?\(\)~\.=\+\-]+/', $html, $tmps);
+		if(!isset($tmps[0]) || !count($tmps[0])) return $html;
+
+		foreach($tmps[0] as $url){
+			//src="***"とhref="***"形式でないか？調べておく
+			if(is_numeric(strpos($html, "src=\"" . $url))) continue;
+			if(is_numeric(strpos($html, "href=\"" . $url))) continue;
+			if(is_numeric(strpos($html, "src='" . $url))) continue;
+			if(is_numeric(strpos($html, "href='" . $url))) continue;
+
+			$new = "<a href=\"" . htmlspecialchars($url, ENT_QUOTES, "UTF-8") . "\" target=\"_blank\" rel=\"noopener\">" . $url . "</a>";
+			$html = str_replace($url, $new, $html);
+		}
+
+		return $html;
+	}
+
 	public static function returnHTML($html){
 		return SOY2Logic::createInstance("module.plugins.bulletin_board.logic.ShapeHTMLLogic", array("html" => $html))->return();
 	}
@@ -116,5 +138,16 @@ class BulletinBoardUtil {
 	//画像のパスからファイル名を取得
 	public static function path2filename($path){
 		return trim(trim(substr($path, strrpos($path, "/")), "/"));
+	}
+
+	/** 通知メール周り **/
+	public static function getMailConfig(){
+		return SOYShop_DataSets::get("bulletin_board_mail.config", array(
+			"footer" => "SOY Board on SOY Shop"
+		));
+	}
+
+	public static function saveMailConfig($values){
+		SOYShop_DataSets::put("bulletin_board_mail.config", $values);
 	}
 }
