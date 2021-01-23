@@ -36,12 +36,43 @@ class PostListComponent extends HTMLList {
 
 		//画像ファイル
 		$imgFiles = ($id > 0) ? $this->uploadLogic->getFilePathes($id) : array();
+		$isImage = (is_array($imgFiles) && count($imgFiles));
+
+		//署名
+		$sign = self::_getSignByUserId($userId);
+		$isSign = (strlen($sign));
+
+		$this->addModel("is_card_footer", array(
+			"visible" => ($isImage || $isSign)
+		));
+
 		$this->addModel("is_images", array(
-			"visible" => (is_array($imgFiles) && count($imgFiles))
+			"visible" => $isImage
 		));
 		$this->createAdd("image_list", "_common.board.topic.ImageListComponent", array(
-			"list" => BulletinBoardUtil::pushEmptyValues($imgFiles)
+			"list" => ($isImage) ? BulletinBoardUtil::pushEmptyValues($imgFiles) : array()
 		));
+
+		$this->addModel("is_signature", array(
+			"visible" => $isSign
+		));
+
+		$this->addLabel("signature", array(
+			"html" => ($isSign) ? BulletinBoardUtil::nl2br(BulletinBoardUtil::autoInsertAnchorTag(BulletinBoardUtil::shapeHTML($sign))) : ""
+		));
+	}
+
+	private function _getSignByUserId($userId){
+		static $signs;
+		if(is_null($signs)) $signs = array();
+		if(!isset($signs[$userId])) $signs[$userId] = self::_usfLogic()->get($userId, BulletinBoardUtil::FIELD_ID_SIGNATURE);
+		return $signs[$userId];
+	}
+
+	private function _usfLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic");
+		return $logic;
 	}
 
 	function setCurrentLoggedInUserId($currentLoggedInUserId){

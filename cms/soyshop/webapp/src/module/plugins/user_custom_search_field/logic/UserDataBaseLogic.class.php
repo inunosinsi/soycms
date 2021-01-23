@@ -51,10 +51,15 @@ class UserDataBaseLogic extends SOY2LogicBase{
 	 * @params itemId integer, values array(array("field_id" => string))
 	 */
 	function save($userId, $values){
+		if(!defined("SOYSHOP_ADMIN_PAGE")) define("SOYSHOP_ADMIN_PAGE", false);
 
-		$sets = array();
+		$sets = self::getByUserId($userId);
 
-		foreach(UserCustomSearchFieldUtil::getConfig() as $key => $field){
+		$cnfs = UserCustomSearchFieldUtil::getConfig();
+		foreach($cnfs as $key => $field){
+			// 管理画面のみ編集可の対応
+			if(!SOYSHOP_ADMIN_PAGE && isset($field["is_admin_only"]) && (int)$field["is_admin_only"] === 1) continue;
+
 			if(!isset($values[$key])) {
 				$sets[$key] = null;
 				continue;
@@ -134,8 +139,12 @@ class UserDataBaseLogic extends SOY2LogicBase{
 			$first = false;
 			$sql .= $column . " = " . $values[$i];
 		}
-		$sql .= " WHERE user_id = " . $userId;
+		$sql .= " WHERE user_id = :user_id";
 		$dao = new SOY2DAO();
+
+		//念の為
+		$binds[":user_id"] = $userId;
+
 		try{
 			$dao->executeUpdateQuery($sql, $binds);
 		}catch(Exception $e){
@@ -220,5 +229,16 @@ class UserDataBaseLogic extends SOY2LogicBase{
 
 		return (isset($res[0])) ? $res[0] : array();
 	}
+
+	function get($userId, $fieldId){
+		$dao = new SOY2DAO();
+		try{
+			$res = $dao->executeQuery("SELECT " . $fieldId . " FROM soyshop_user_custom_search WHERE user_id = :user_id LIMIT 1", array(":user_id" => $userId));
+		}catch(Exception $e){
+			return "";
+		}
+
+		// @ToDo チェックボックスのような値が複数ある場合はどうする？
+		return (isset($res[0][$fieldId])) ? $res[0][$fieldId] : "";
+	}
 }
-?>
