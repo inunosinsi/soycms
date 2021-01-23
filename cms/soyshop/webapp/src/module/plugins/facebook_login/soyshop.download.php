@@ -46,6 +46,8 @@ class FacebookLoginDownload extends SOYShopDownload{
 				//ログイン
 				$mypage = MyPageLogic::getMyPage();
 				$mypage->noPasswordLogin($user->getId());
+				$mypage->autoLogin();
+				$mypage->save();
 
 				//成功
 				self::sendResult("OK", 1);

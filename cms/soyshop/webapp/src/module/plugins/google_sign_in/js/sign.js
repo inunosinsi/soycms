@@ -40,7 +40,11 @@ function onSignIn(googleUser) {
 			if(resp){
 				var res = JSON.parse(resp);
 				if(res.result == 1){
-					location.href = location.pathname;
+					if(location.search.length > 0 && location.search.indexOf("?r=") >= 0){
+						location.href = location.search.replace("?r=", "");
+					}else{
+						location.href = location.pathname;
+					}
 				}
 
 				// 仮登録モードの場合は他の場所に飛ばす result == 2で返ってくる

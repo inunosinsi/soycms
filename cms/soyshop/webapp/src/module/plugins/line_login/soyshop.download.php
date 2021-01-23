@@ -21,6 +21,18 @@ class LINELoginDownload extends SOYShopDownload{
 								//ログインする
 								$mypage = MyPageLogic::getMyPage();
 				                $mypage->noPasswordLogin($userId);
+								$mypage->autoLogin();
+
+								// jump
+								$r = $mypage->getAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
+								$mypage->clearAttribute(MyPageLogic::REGISTER_REDIRECT_KEY);
+								$mypage->save();
+
+								if(isset($r)){
+									$param = soyshop_remove_get_value($r);
+									soyshop_redirect_designated_page($param, "login=complete");
+									exit;
+								}
 							}
 						}
 					}
