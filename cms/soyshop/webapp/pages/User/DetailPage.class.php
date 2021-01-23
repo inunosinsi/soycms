@@ -32,7 +32,7 @@ class DetailPage extends WebPage{
 			}
 
 			//ログインIDの重複チェック
-			if(strlen($_POST["Customer"]["accountId"])){
+			if(isset($_POST["Customer"]["accountId"]) && strlen($_POST["Customer"]["accountId"])){
 				//重複している場合は元の値を上書き
 				try{
 					$oldUser = $dao->getByAccountIdAndNotId($_POST["Customer"]["accountId"], $this->id);
