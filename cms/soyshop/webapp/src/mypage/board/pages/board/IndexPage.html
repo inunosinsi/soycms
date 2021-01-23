@@ -9,11 +9,12 @@
 <!-- soy:id="group_list" -->
 <div class="card mt-3">
 	<div class="card-body">
-		<h5 class="card-title"><a soy:id="group_detail_link"><!-- soy:id="name" -->グループ名<!-- /soy:id="name" --></a></h5>
-		<p class="card-text">
+		<div class="card-title"><a soy:id="group_detail_link"><!-- soy:id="name" -->グループ名<!-- /soy:id="name" --></a></div>
+		<div class="card-text">
+			<!-- soy:id="is_abstract" --><hr><!-- soy:id="abstract" -->概要<!-- /soy:id="abstract" --><hr><!-- /soy:id="is_abstract" -->
 			トピック数：<!-- soy:id="topic_count" /-->&nbsp;
 			最近投稿されたトピック：<a soy:id="latest_post_topic_link">---</a>
-		</p>
+		</div>
 	</div>
 </div>
 <!-- /soy:id="group_list" -->

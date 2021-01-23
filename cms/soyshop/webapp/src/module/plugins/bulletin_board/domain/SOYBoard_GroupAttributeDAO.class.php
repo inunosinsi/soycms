@@ -18,6 +18,11 @@ abstract class SOYBoard_GroupAttributeDAO extends SOY2DAO{
     abstract function getByGroupId($groupId);
 
 	/**
+	 * @index groupId
+	 */
+	abstract function getByFieldId($fieldId);
+
+	/**
 	 * @return object
 	 * @query #groupId# = :groupId AND #fieldId# = :fieldId
 	 */

@@ -13,6 +13,15 @@ class GroupListComponent extends HTMLList {
 			"link" => soyshop_get_mypage_url() . "/board/topic/" . $id
 		));
 
+		$abst = (is_array($this->abstracts) && isset($this->abstracts[$id])) ? trim(BulletinBoardUtil::nl2br(BulletinBoardUtil::autoInsertAnchorTag(BulletinBoardUtil::shapeHTML($this->abstracts[$id])))) : "";
+		$isAbst = (strlen($abst));
+		$this->addModel("is_abstract", array(
+			"visible" => ($isAbst)
+		));
+		$this->addLabel("abstract", array(
+			"html" => ($isAbst) ? $abst : ""
+		));
+
 		$this->addLabel("topic_count", array(
 			"text" => number_format(self::_topicLogic()->countByGroupId($id))
 		));
@@ -34,5 +43,9 @@ class GroupListComponent extends HTMLList {
 		static $logic;
 		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.PostLogic");
 		return $logic;
+	}
+
+	function setAbstracts($abstracts){
+		$this->abstracts = $abstracts;
 	}
 }

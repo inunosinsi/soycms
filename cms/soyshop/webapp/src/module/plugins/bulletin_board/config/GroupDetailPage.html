@@ -4,10 +4,16 @@
 	<a soy:id="back_link" class="btn btn-default">戻る</a>
 </div>
 
-<h3><!-- soy:id="group_name" /-->の説明</h3>
+<h3><!-- soy:id="group_name" /-->の編集</h3>
 
 <form soy:id="form">
 	<div class="form-group">
+		<label>概要(一覧ページで表示)</label>
+		<textarea class="form-control" soy:id="group_abstract"></textarea>
+	</div>
+
+	<div class="form-group">
+		<label>説明(詳細ページで表示)</label>
 		<textarea class="form-control" soy:id="group_description"></textarea>
 	</div>
 

@@ -2,7 +2,8 @@
 
 class GroupLogic extends SOY2LogicBase {
 
-	const FIELD_ID = "desp";	//グループの説明文用
+	const DESCRIPTION_FIELD_ID = "desp";	//グループの説明文用
+	const ABSTRACT_FIELD_ID = "abst";
 
 	function __construct(){
 		SOY2::import("module.plugins.bulletin_board.domain.SOYBoard_GroupDAO");
@@ -64,15 +65,44 @@ class GroupLogic extends SOY2LogicBase {
 	}
 
 	function getGroupDescriptionById($groupId){
-		return self::_groupAttr($groupId, self::FIELD_ID)->getValue();
+		return self::_groupAttr($groupId, self::DESCRIPTION_FIELD_ID)->getValue();
+	}
+
+	function getGroupAbstractById($groupId){
+		return self::_groupAttr($groupId, self::ABSTRACT_FIELD_ID)->getValue();
+	}
+
+	function getGroupAbstracts(){
+		try{
+			$attrs = self::_attrDao()->getByFieldId(self::ABSTRACT_FIELD_ID);
+		}catch(Exception $e){
+			$attrs = array();
+		}
+		if(!count($attrs)) return array();
+
+		$list = array();
+		foreach($attrs as $attr){
+			$v = trim($attr->getValue());
+			if(!strlen($v)) continue;
+			$list[(int)$attr->getGroupId()] = $v;
+		}
+		return $list;
 	}
 
 	function saveGroupDescription($groupId, $content){
+		self::_save($groupId, self::DESCRIPTION_FIELD_ID, $content);
+	}
+
+	function saveGroupAbstract($groupId, $content){
+		self::_save($groupId, self::ABSTRACT_FIELD_ID, $content);
+	}
+
+	private function _save($groupId, $fieldId, $content){
 		$content = trim($content);
 		if(!strlen($content)){
-			self::_deleteAttr($groupId, self::FIELD_ID);
+			self::_deleteAttr($groupId, $fieldId);
 		}else{
-			$attr = self::_groupAttr($groupId, self::FIELD_ID);
+			$attr = self::_groupAttr($groupId, $fieldId);
 			$attr->setValue($content);
 			try{
 				self::_attrDao()->insert($attr);

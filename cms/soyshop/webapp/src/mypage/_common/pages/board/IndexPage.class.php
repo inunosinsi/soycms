@@ -1,4 +1,6 @@
 <?php
+
+SOY2::import("module.plugins.bulletin_board.util.BulletinBoardUtil");
 class IndexPage extends MainMyPagePageBase{
 
 	function __construct(){
@@ -10,9 +12,10 @@ class IndexPage extends MainMyPagePageBase{
 
 		parent::__construct();
 
-		$groups = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.GroupLogic")->get();
+		$logic = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.GroupLogic");
 		$this->createAdd("group_list", "_common.board.topic.GroupListComponent", array(
-			"list" => $groups
+			"list" => $logic->get(),
+			"abstracts" => $logic->getGroupAbstracts()
 		));
 	}
 }

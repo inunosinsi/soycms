@@ -64,7 +64,8 @@ class BoardConfigPage extends WebPage {
 
 		DisplayPlugin::toggle("groups", $cnt > 0);
 		$this->createAdd("group_list", "GroupListComponent", array(
-			"list" => $groups
+			"list" => $groups,
+			"abstracts" => SOY2Logic::createInstance("module.plugins.bulletin_board.logic.GroupLogic")->getGroupAbstracts()
 		));
 	}
 

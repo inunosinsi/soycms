@@ -2,6 +2,8 @@
 
 class GroupListComponent extends HTMLList {
 
+	private $abstracts;
+
 	protected function populateItem($entity, $key){
 		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
@@ -12,6 +14,10 @@ class GroupListComponent extends HTMLList {
 		// @ToDo トピック数
 		$this->addLabel("topic_count", array(
 			"text" => (is_numeric($entity->getId())) ? self::_dao()->countByGroupId($entity->getId()) : 0
+		));
+
+		$this->addLabel("abstract", array(
+			"text" => (is_array($this->abstracts) && isset($this->abstracts[$id])) ? self::_convert($this->abstracts[$id]) : ""
 		));
 
 		$this->addInput("display_order", array(
@@ -30,6 +36,15 @@ class GroupListComponent extends HTMLList {
 		));
 	}
 
+	private function _convert($abst){
+		$lines = explode("\n", $abst);
+		if(!isset($lines)) return "";
+
+		$line = $lines[0];
+		if(mb_strlen($line) > 20) $line = mb_substr($line, 0, 20) . "...";
+		return $line;
+	}
+
 	private function _dao(){
 		static $dao;
 		if(is_null($dao)){
@@ -37,5 +52,9 @@ class GroupListComponent extends HTMLList {
 			$dao = SOY2DAOFactory::create("SOYBoard_TopicDAO");
 		}
 		return $dao;
+	}
+
+	function setAbstracts($abstracts){
+		$this->abstracts = $abstracts;
 	}
 }

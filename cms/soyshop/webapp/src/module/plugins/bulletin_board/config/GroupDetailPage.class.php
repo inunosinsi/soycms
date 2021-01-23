@@ -11,7 +11,9 @@ class GroupDetailPage extends WebPage {
 
 	function doPost(){
 		if(soy2_check_token()){
-			SOY2Logic::createInstance("module.plugins.bulletin_board.logic.GroupLogic")->saveGroupDescription($this->groupId, $_POST["Group"]["description"]);
+			$logic = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.GroupLogic");
+			$logic->saveGroupAbstract($this->groupId, $_POST["Group"]["abstract"]);
+			$logic->saveGroupDescription($this->groupId, $_POST["Group"]["description"]);
 			$this->configObj->redirect("updated&group_id=" . $this->groupId);
 		}
 		$this->configObj->redirect("failed&group_id=" . $this->groupId);
@@ -39,6 +41,12 @@ class GroupDetailPage extends WebPage {
 		));
 
 		$this->addForm("form");
+
+		$this->addTextArea("group_abstract", array(
+			"name" => "Group[abstract]",
+			"value" => $logic->getGroupAbstractById($group->getId()),
+			"style" => "height:60px;"
+		));
 
 		$this->addTextArea("group_description", array(
 			"name" => "Group[description]",
