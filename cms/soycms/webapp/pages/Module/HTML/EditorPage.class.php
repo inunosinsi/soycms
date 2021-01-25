@@ -83,6 +83,14 @@ class EditorPage extends CMSWebPageBase{
 		$this->addLabel("module_example", array(
 			"text" => "<!-- cms:module=\"html." . $this->moduleId."\" -->\n" . @$ini["name"] . "のモジュールを読み込みます。\n<!-- /cms:module=\"html." . $this->moduleId."\" -->",
 		));
+
+		//advanced_textarea
+		$this->addModel("advenced_textarea", array(
+			"attr:src" => SOY2PageController::createRelativeLink("js/tools/advanced_textarea.js") . "?" . SOYCMS_BUILD_TIME
+		));
+		$this->addModel("insert_tab", array(
+			"attr:src" => SOY2PageController::createRelativeLink("js/tools/insert_tab.js") . "?" . SOYCMS_BUILD_TIME
+		));
 	}
 
 	private function getModuleContent($ini, $str){
