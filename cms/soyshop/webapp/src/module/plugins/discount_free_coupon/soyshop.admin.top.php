@@ -20,5 +20,9 @@ class DiscountFreeCouponAdminTop extends SOYShopAdminTopBase{
 		$form->execute();
 		return $form->getObject();
 	}
+
+	function allowDisplay(){
+		return (SOYShopAuthUtil::getAuth() != SOYShopAuthUtil::AUTH_STORE_OWNER);
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "discount_free_coupon", "DiscountFreeCouponAdminTop");

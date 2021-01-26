@@ -30,5 +30,9 @@ class PayJpAdminRecurringTop extends SOYShopAdminTopBase {
 
 		return $on;
 	}
+
+	function allowDisplay(){
+		return AUTH_PLUGIN;
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "payment_pay_jp_recurring", "PayJpAdminRecurringTop");

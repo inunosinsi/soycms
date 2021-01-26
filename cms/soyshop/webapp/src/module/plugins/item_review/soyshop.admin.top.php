@@ -19,5 +19,9 @@ class ItemReviewAdminTop extends SOYShopAdminTopBase{
 		$form->execute();
 		return $form->getObject();
 	}
+
+	function allowDisplay(){
+		return AUTH_REVIEW;
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "item_review", "ItemReviewAdminTop");

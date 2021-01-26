@@ -20,5 +20,9 @@ class ItemStockManagerAdminTop extends SOYShopAdminTopBase{
 //		$form->execute();
 //		return $form->getObject();
 	}
+
+	function allowDisplay(){
+		return (SOYShopAuthUtil::getAuth() != SOYShopAuthUtil::AUTH_STORE_OWNER);
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "item_stock_manager", "ItemStockManagerAdminTop");

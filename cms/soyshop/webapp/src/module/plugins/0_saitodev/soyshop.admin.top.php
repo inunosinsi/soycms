@@ -109,5 +109,9 @@ class SaitodevAdminTop extends SOYShopAdminTopBase{
 
 		return $auth;
 	}
+
+	function allowDisplay(){
+		return (SOYShopAuthUtil::getAuth() != SOYShopAuthUtil::AUTH_STORE_OWNER);
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "0_saitodev", "SaitodevAdminTop");

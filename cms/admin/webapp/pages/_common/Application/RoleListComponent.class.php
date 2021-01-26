@@ -6,15 +6,13 @@ class RoleListComponent extends HTMLList{
 	private $application;
 
 	protected function populateItem($entity, $key){
-
-		$userId = $entity->getId();
+		$userId = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
 		$this->addLabel("user_name", array(
 			"text" => (strlen($entity->getName())) ? $entity->getName() . " (".$entity->getUserId().")" : $entity->getUserId()
 		));
 
-
-		if(isset($this->roles[$userId])){
+		if(is_array($this->roles) && isset($this->roles[$userId])){
 			$role = $this->roles[$userId];
 			$roleValeu = $role->getAppRole();
 		}else{

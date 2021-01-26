@@ -48,14 +48,26 @@ class RoleLogic extends SOY2LogicBase {
 	}
 
 	//ショップ用に特別に配列を準備
-	function getSiteRoleArray(){
-		return array(
+	function getSiteRoleArray(Site $site){
+		$old = ShopUtil::switchConfig();
+		ShopUtil::setShopSiteDsn($site);
+
+		$roles = array(
 			"0" => "権限なし",
 			"1" => "一般管理者",
 			"2" => "受注管理者",
 			"3" => "管理制限者",
 			"10" => "商品管理のみ"
 		);
+
+		// @ToDo ショッピングモール運営プラグインを有効にしている時のみ
+		SOY2::import("util.SOYShopPluginUtil");
+		if(SOYShopPluginUtil::checkIsActive("shopping_mall")){
+			$roles[20] = "出店者";	//モール形式のショップサイトを運営した際に利用する→専用の各種画面を用意
+		}
+
+		ShopUtil::resetConfig($old);
+		return $roles;
 	}
 
 	function getAppRoleArray(){

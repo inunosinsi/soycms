@@ -6,5 +6,9 @@ class OrderTableIndexAdminTop extends SOYShopAdminTopBase{
 		$wording .= "最適化についての詳しい記載は<a href=\"" . SOY2PageController::createLink("Config.Detail?plugin=order_table_index") . "\">こちら</a>をご覧ください。";
 		return $wording;
 	}
+
+	function allowDisplay(){
+		return AUTH_OPERATE;
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "order_table_index", "OrderTableIndexAdminTop");

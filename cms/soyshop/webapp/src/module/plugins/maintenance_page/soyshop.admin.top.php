@@ -22,5 +22,9 @@ class MaintenancePageAdminTop extends SOYShopAdminTopBase{
 			return "<div class=\"alert alert-warning\">【停止中】メンテナンスページは表示されていません</div>";
 		}
 	}
+
+	function allowDisplay(){
+		return AUTH_SITE;
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "maintenance_page", "MaintenancePageAdminTop");

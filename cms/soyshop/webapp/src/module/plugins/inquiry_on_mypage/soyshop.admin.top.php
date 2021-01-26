@@ -20,5 +20,9 @@ class InquiryOnMypageAdminTop extends SOYShopAdminTopBase{
 		$form->execute();
 		return $form->getObject();
 	}
+
+	function allowDisplay(){
+		return (SOYShopAuthUtil::getAuth() != SOYShopAuthUtil::AUTH_STORE_OWNER);
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "inquiry_on_mypage", "InquiryOnMypageAdminTop");

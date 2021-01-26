@@ -13,5 +13,9 @@ class ArrivalNoticeDraftAdminTop extends SOYShopAdminTopBase{
 		if(is_null($isDraft)) $isDraft = SOY2Logic::createInstance("logic.order.admin.AdminOrderLogic")->isBackupJsonFile();
 		return $isDraft;
 	}
+
+	function allowDisplay(){
+		return (SOYShopAuthUtil::getAuth() != SOYShopAuthUtil::AUTH_STORE_OWNER);
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "arrival_notice_draft", "ArrivalNoticeDraftAdminTop");

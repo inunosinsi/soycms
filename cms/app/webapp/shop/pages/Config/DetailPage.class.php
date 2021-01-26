@@ -38,7 +38,7 @@ class DetailPage extends SOYShopWebPage{
     	//Shop用サイトの管理権限はSiteRoleを使用する
     	$this->createAdd("account_list", "_common.SOYShop_SiteAccountList", array(
 			"list" => $logic->getAccounts("site", $this->id),
-			"role" => $logic->getSiteRoleArray()
+			"role" => $logic->getSiteRoleArray($site)
 		));
     }
 }

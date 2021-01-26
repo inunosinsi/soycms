@@ -15,5 +15,9 @@ class AdminTopDescriptionAdminTop extends SOYShopAdminTopBase{
 		$html[] = "この表示を消したい場合は<strong>管理画面の新着ページの説明プラグイン</strong>をアンインストールしましょう。";
 		return implode("<br>", $html);
 	}
+
+	function allowDisplay(){
+		return (SOYShopAuthUtil::getAuth() != SOYShopAuthUtil::AUTH_STORE_OWNER);
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "admin_top_description", "AdminTopDescriptionAdminTop");

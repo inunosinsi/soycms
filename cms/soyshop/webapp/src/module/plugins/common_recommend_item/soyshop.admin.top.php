@@ -4,7 +4,7 @@ class RecommendItemAdminTop extends SOYShopAdminTopBase{
 	function getLink(){
 		return SOY2PageController::createLink("Item");
 	}
-	
+
 	function getLinkTitle(){
 		return "商品管理";
 	}
@@ -20,6 +20,9 @@ class RecommendItemAdminTop extends SOYShopAdminTopBase{
 		$form->execute();
 		return $form->getObject();
 	}
+
+	function allowDisplay(){
+		return (SOYShopAuthUtil::getAuth() != SOYShopAuthUtil::AUTH_STORE_OWNER);
+	}
 }
 SOYShopPlugin::extension("soyshop.admin.top", "common_recommend_item", "RecommendItemAdminTop");
-?>

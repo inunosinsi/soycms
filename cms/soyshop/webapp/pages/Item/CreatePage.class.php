@@ -64,12 +64,12 @@ class CreatePage extends WebPage{
 
     	parent::__construct();
 
-		$this->addForm("create_form");
-
-    	self::buildForm();
+    	self::_buildForm();
     }
 
-    private function buildForm(){
+    private function _buildForm(){
+
+		$this->addForm("create_form");
 
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$obj = ($this->obj) ? $this->obj : new SOYShop_Item();

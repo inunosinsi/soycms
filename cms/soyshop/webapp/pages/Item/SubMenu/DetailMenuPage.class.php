@@ -12,14 +12,12 @@ class DetailMenuPage extends HTMLPage{
 		$this->id = (isset($arg[0])) ? (int)$arg[0] : null;
 		parent::__construct();
 
+		DisplayPlugin::toggle("filemanager", !SOYMALL_SELLER_ACCOUNT);
+
 		$item = soyshop_get_item_object($this->id);
 
 		$page = soyshop_get_page_object($item->getDetailPageId());
-		if(!is_null($page->getId())){
-			$url = soyshop_get_page_url($page->getUri(), $item->getAlias());
-		}else{
-			$url = null;
-		}
+		$url = (!is_null($page->getId())) ? soyshop_get_page_url($page->getUri(), $item->getAlias()) : null;
 
 		//
 		DisplayPlugin::toggle("is_open", $item->isPublished());
@@ -32,7 +30,7 @@ class DetailMenuPage extends HTMLPage{
 
 		//確認ページ
 		$this->addLink("item_confirm_link", array(
-			"link" => $url . "?foradminonly",
+			"link" => (strlen($url)) ? $url . "?foradminonly" : null,
 		));
 
 		//削除リンク
@@ -50,7 +48,7 @@ class DetailMenuPage extends HTMLPage{
 			"link" => SOY2PageController::createLink("Order.Register.Item." . $this->id)
 		));
 
-		DisplayPlugin::toggle("can_copy", ($item->getType() == SOYShop_Item::TYPE_SINGLE || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD));
+		DisplayPlugin::toggle("can_copy", (($item->getType() == SOYShop_Item::TYPE_SINGLE || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD)) && !SOYMALL_SELLER_ACCOUNT);
 
 		$this->addActionLink("copy_link", array(
 			"link" => SOY2PageController::createLink("Item.Copy." . $this->id)
@@ -71,13 +69,11 @@ class DetailMenuPage extends HTMLPage{
 			":category" => $item->getCategory()
 		));
 
-		if(count($res) > 0){
-			$nextItem = soyshop_get_item_object($res[0]["id"]);
-		}
+		if(count($res) > 0) $nextItem = soyshop_get_item_object($res[0]["id"]);
 
 		$this->addLink("next_item_link", array(
-			"link" => ($nextItem && $nextItem->getIsDisabled()!=1) ? $detailLink ."/". $nextItem->getId() : "javascript:void(0)",
-			"text" => ($nextItem && $nextItem->getIsDisabled()!=1) ? $nextItem->getName() : "-"
+			"link" => (!SOYMALL_SELLER_ACCOUNT && $nextItem && $nextItem->getIsDisabled()!=1) ? $detailLink ."/". $nextItem->getId() : "javascript:void(0)",
+			"text" => (!SOYMALL_SELLER_ACCOUNT && $nextItem && $nextItem->getIsDisabled()!=1) ? $nextItem->getName() : "-"
 		));
 
 		$sql = "select id from " . SOYShop_Item::getTableName() . " where id < :id and item_category = :category order by id desc";
@@ -89,8 +85,8 @@ class DetailMenuPage extends HTMLPage{
 		if(count($res) > 0) $prevItem = soyshop_get_item_object($res[0]["id"]);
 
 		$this->addLink("prev_item_link", array(
-			"link" => ($prevItem && $prevItem->getIsDisabled()!=1) ? $detailLink ."/". $prevItem->getId() : "javascript:void(0)",
-			"text" => ($prevItem && $prevItem->getIsDisabled()!=1) ? $prevItem->getName() : "-"
+			"link" => (!SOYMALL_SELLER_ACCOUNT && $prevItem && $prevItem->getIsDisabled()!=1) ? $detailLink ."/". $prevItem->getId() : "javascript:void(0)",
+			"text" => (!SOYMALL_SELLER_ACCOUNT && $prevItem && $prevItem->getIsDisabled()!=1) ? $prevItem->getName() : "-"
 		));
 
 		$this->addModel("file_manager_url", array(

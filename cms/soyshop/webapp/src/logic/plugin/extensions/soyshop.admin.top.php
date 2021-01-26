@@ -103,7 +103,6 @@ class SOYShopAdminTopDeletageAction implements SOY2PluginDelegateAction{
 					$this->_contents[$moduleId] = $array;
 				}
 		}
-
 	}
 
 	function setMode($mode){

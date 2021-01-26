@@ -138,14 +138,14 @@ class InitLogic extends SOY2LogicBase{
 		$config = array();
 		$config[] = "<?php";
 		$config[] ='include(dirname(__FILE__)."/'.$siteId. '.admin.conf.php");';
-		$config[] = 'define("SOYSHOP_ID", '.$siteId.'_SOYSHOP_ID);';
-		$config[] = 'define("SOYSHOP_SITE_DIRECTORY", '. $siteId .'_SOYSHOP_SITE_DIRECTORY);';
-		$config[] = 'define("SOYSHOP_SITE_URL", '.$siteId.'_SOYSHOP_SITE_URL);';
+		$config[] = 'if(!defined("SOYSHOP_ID")) define("SOYSHOP_ID", '.$siteId.'_SOYSHOP_ID);';
+		$config[] = 'if(!defined("SOYSHOP_SITE_DIRECTORY")) define("SOYSHOP_SITE_DIRECTORY", '. $siteId .'_SOYSHOP_SITE_DIRECTORY);';
+		$config[] = 'if(!defined("SOYSHOP_SITE_URL")) define("SOYSHOP_SITE_URL", '.$siteId.'_SOYSHOP_SITE_URL);';
 		if(defined("SOYSHOP_SITE_DSN")){
 			$config[] = '/* configure for mysql */';
-			$config[] = 'define("SOYSHOP_SITE_DSN", '. $siteId. '_SOYSHOP_SITE_DSN);';
-			$config[] = 'define("SOYSHOP_SITE_USER", '. $siteId. '_SOYSHOP_SITE_USER);';
-			$config[] = 'define("SOYSHOP_SITE_PASS", '. $siteId. '_SOYSHOP_SITE_PASS);';
+			$config[] = 'if(!defined("SOYSHOP_SITE_DSN")) define("SOYSHOP_SITE_DSN", '. $siteId. '_SOYSHOP_SITE_DSN);';
+			$config[] = 'if(!defined("SOYSHOP_SITE_USER")) define("SOYSHOP_SITE_USER", '. $siteId. '_SOYSHOP_SITE_USER);';
+			$config[] = 'if(!defined("SOYSHOP_SITE_PASS")) define("SOYSHOP_SITE_PASS", '. $siteId. '_SOYSHOP_SITE_PASS);';
 		}
 		$config[] = '?>';
 
