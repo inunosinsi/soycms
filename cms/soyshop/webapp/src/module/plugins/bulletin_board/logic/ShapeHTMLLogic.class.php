@@ -15,7 +15,7 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 			"div",
 			"frame",
 			"iframe",
-			"img",
+			//"img",
 			"map",
 			"noscript",
 			"object",
@@ -148,6 +148,9 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		//シングルクオート、ダブルクオートや&を変換する
 		self::_escapeHTMLTag();
 
+		//imgタグの使用方法に問題がないか？あれば消す
+		self::_checkImgTag();
+
 		return $this->html;
 	}
 
@@ -263,6 +266,49 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		$this->html = str_replace("'", "&#039;", $this->html);
 		//$this->html = str_replace("\"", "&quot;", $this->html);
 		//$this->html = str_replace("&", "&amp;", $this->html);
+	}
+
+	private function _checkImgTag(){
+		preg_match_all('/<.*img.*src=\"(.*?)\".*>/ims', $this->html, $tmps);
+		if(!isset($tmps[1]) || !count($tmps[1])) return;
+
+		//srcのURLを確認
+		$cnt = count($tmps[1]);
+		for($i = 0; $i < $cnt; $i++){
+			$path = $tmps[1][$i];
+
+			//拡張子がないものはダメ
+			if(is_bool(strpos($path, "."))){
+				$this->html = str_replace($tmps[0][$i], "", $this->html);
+				continue;
+			}
+
+			//拡張子がjpgでないものはダメ
+			$ext = substr($path, strrpos($path, ".") + 1);
+			if(is_bool(stripos($ext, "jpg")) && is_bool(stripos($ext, "jpeg"))){
+				$this->html = str_replace($tmps[0][$i], "", $this->html);
+				continue;
+			}
+
+			//パスが当サイトのものか？
+			if(is_bool(strpos($path, "/" . SOYSHOP_ID . "/.tmp/")) && is_bool(strpos($path, "/" . SOYSHOP_ID . "/files/board/"))){
+				$this->html = str_replace($tmps[0][$i], "", $this->html);
+				continue;
+			}
+
+			//httpから始まるURLの場合
+			if(strpos($path, "http") === 0){
+				if(is_bool(strpos($path, $_SERVER["HTTP_HOST"]))){
+					$this->html = str_replace($tmps[0][$i], "", $this->html);
+					continue;
+				}
+			}else{	// スラッシュから始まる絶対パスの場合
+				if(is_bool(strpos($path, "/" . SOYSHOP_ID . "/"))){
+					$this->html = str_replace($tmps[0][$i], "", $this->html);
+					continue;
+				}
+			}
+		}
 	}
 
 	private function _removeProperties($prop="class"){

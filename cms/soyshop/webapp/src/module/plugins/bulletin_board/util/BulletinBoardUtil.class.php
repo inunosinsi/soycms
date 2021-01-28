@@ -34,6 +34,7 @@ class BulletinBoardUtil {
 			"h6",
 			"hr",
 			"i",
+			"img",
 			"pre",
 			"q",
 			"s",
