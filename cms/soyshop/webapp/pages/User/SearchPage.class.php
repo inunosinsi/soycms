@@ -59,7 +59,7 @@ class SearchPage extends WebPage{
 
 		SOY2::import("domain.config.SOYShop_Area");
 		self::buildAdvancedSearchForm($search);
-		self::buildCustomSearchForm($customSearch);
+		self::buildCustomSearchForm($search, $customSearch);
 
 		/*データ*/
 		$searchLogic = SOY2Logic::createInstance("logic.user.SearchUserLogic");
@@ -497,18 +497,19 @@ class SearchPage extends WebPage{
 		}
 	}
 
-	private function buildCustomSearchForm($custom){
-		$installedUserCustomSearch = SOYShopPluginUtil::checkIsActive("user_custom_search_field");
-		DisplayPlugin::toggle("installed_user_custom_search_field", $installedUserCustomSearch);
+	private function buildCustomSearchForm($search, $custom){
+		$searchItemList = self::getCustomSearchItems($search);
+		$isUcsf = SOYShopPluginUtil::checkIsActive("user_custom_search_field");
+		DisplayPlugin::toggle("installed_user_custom_search_field", ($searchItemList || $isUcsf));
 
 		$html = array();
 
-		if($installedUserCustomSearch){
+		if($isUcsf){
 			SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
-			$configs = UserCustomSearchFieldUtil::getConfig();
-			if(count($configs)){
+			$cnfs = UserCustomSearchFieldUtil::getConfig();
+			if(count($cnfs)){
 				SOY2::import("module.plugins.user_custom_search_field.component.FieldFormComponent");
-				foreach($configs as $key => $field){
+				foreach($cnfs as $key => $field){
 					$html[] = "<tr>";
 					$html[] = "<th>" . htmlspecialchars($field["label"], ENT_QUOTES, "UTF-8") . "</th>";
 					$html[] = "<td>" . FieldFormComponent::buildSearchConditionForm($key, $field, $custom) . "</td>";
@@ -520,6 +521,37 @@ class SearchPage extends WebPage{
 		$this->addLabel("user_custom_search_field_form_area", array(
 			"html" => implode("\n", $html)
 		));
+
+		// Itemの方のコンポーネントを使い回す
+		$this->createAdd("custom_search_item_list", "_common.Item.CustomSearchItemListComponent", array(
+			"list" => $searchItemList
+		));
+	}
+
+	private function getCustomSearchItems($cnds){
+		//検索フォームの拡張ポイント
+		SOYShopPlugin::load("soyshop.user.search");
+		$items = SOYShopPlugin::invoke("soyshop.user.search", array(
+			"mode" => "form",
+			"params" => (isset($cnds["customs"])) ? $cnds["customs"] : array()
+		))->getSearchItems();
+
+		//再配列
+		$list = array();
+		foreach($items as $item){
+			if(is_null($item)) continue;
+			$key = key($item);
+			if($key == "label"){
+				$list[] = $item;
+			//複数の項目が入っている
+			}else{
+				foreach($item as $v){
+					$list[] = $v;
+				}
+			}
+		}
+
+		return $list;
 	}
 
 	private function buildSortLink(SearchUserLogic $logic, $sort){

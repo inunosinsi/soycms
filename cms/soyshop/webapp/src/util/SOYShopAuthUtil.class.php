@@ -21,6 +21,8 @@ class SOYShopAuthUtil {
 			"SITE" => true,		//ページの作成やテンプレートの編集等
 			"OPERATE" => true,	//更新の操作に関するもの,
 			"CHANGE" => true,	//更新の操作の内、公開に関するもの
+			"ADMINORDER" => true,	//管理画面から注文を追加する
+			"CSV" => true, 	// CSVの操作周り
 			"SOYAPP" => true	//SOY InquiryやSOY Mail
 		);
 	}
@@ -42,6 +44,7 @@ class SOYShopAuthUtil {
 				$authes["PLUGIN"] = false;
 				$authes["SITE"] = false;
 				$authes["OPERATE"] = false;
+				$authes["CSV"] = false;
 				//$authes["CHANGE"] = false;
 				$authes["SOYAPP"] = false;
 				break;
@@ -58,6 +61,9 @@ class SOYShopAuthUtil {
 				}
 				$authes["HOME"] = true;
 				$authes["EXTENSION"] = true;
+				$authes["ITEM"] = true;
+				$authes["ORDER"] = true;	//もしかしたらExtension方式に切り替えるかも
+				$authes["USER"] = true;
 				$authes["OPERATE"] = true;
 				$authes["CHANGE"] = true;
 				if(!defined("SOYMALL_SELLER_ACCOUNT")) define("SOYMALL_SELLER_ACCOUNT", true);

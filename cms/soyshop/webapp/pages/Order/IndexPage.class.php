@@ -43,6 +43,11 @@ class IndexPage extends WebPage{
 			self::setParameter("search", array());
 		}
 
+		$this->addLink("order_register_link", array(
+			"link" => (AUTH_ADMINORDER) ? SOY2PageController::createLink("Order.Register") : null,
+			"visible" => AUTH_ADMINORDER
+		));
+
 		/*引数など取得*/
 		//表示件数
 		$limit = 15;

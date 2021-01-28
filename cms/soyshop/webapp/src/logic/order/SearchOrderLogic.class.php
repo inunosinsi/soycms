@@ -52,33 +52,33 @@ class SearchOrderLogic extends SOY2LogicBase{
 	/**
 	 * 検索条件からSQLを構築
 	 */
-	function setSearchCondition($search){
+	function setSearchCondition($cnds){
 		$table = $this->getTable();
 		$where = array();
 		$binds = array();
 
-		if(isset($search["userId"]) && strlen($search["userId"]) > 0){
+		if(isset($cnds["userId"]) && strlen($cnds["userId"]) > 0){
 			$where[] = "user_id = :user_id";
-			$binds[":user_id"] = (int)$search["userId"];
+			$binds[":user_id"] = (int)$cnds["userId"];
 		}
 
-		if(isset($search["userArea"]) && strlen($search["userArea"]) > 0){
+		if(isset($cnds["userArea"]) && strlen($cnds["userArea"]) > 0){
 			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");
 			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where area LIKE :user_area)";
-			$binds[":user_area"] = (int)$search["userArea"];
+			$binds[":user_area"] = (int)$cnds["userArea"];
 		}
 
-		if(isset($search["noDelivery"]) && $search["noDelivery"] == 1){
+		if(isset($cnds["noDelivery"]) && $cnds["noDelivery"] == 1){
 			$where[] = "order_status in (".SOYShop_Order::ORDER_STATUS_REGISTERED.",".SOYShop_Order::ORDER_STATUS_RECEIVED.")";
-		}else if(isset($search["orderStatus"])){
+		}else if(isset($cnds["orderStatus"])){
 			//注文状態を配列で渡す場合(チェックボックス式)
-			if(is_array($search["orderStatus"]) && count($search["orderStatus"])){
-				$where[] = "order_status IN (" . implode(",", $search["orderStatus"]) . ")";
+			if(is_array($cnds["orderStatus"]) && count($cnds["orderStatus"])){
+				$where[] = "order_status IN (" . implode(",", $cnds["orderStatus"]) . ")";
 
 			//注文状態を文字列で渡す場合(セレクトボックス式)
-			}else if(is_string($search["orderStatus"]) && strlen($search["orderStatus"]) > 0){
+			}else if(is_string($cnds["orderStatus"]) && strlen($cnds["orderStatus"]) > 0){
 				$where[] = "order_status = :order_status";
-				$binds[":order_status"] = (int)$search["orderStatus"];
+				$binds[":order_status"] = (int)$cnds["orderStatus"];
 			}
 		}else{
 			//注文一覧でキャンセルを含むか？
@@ -90,49 +90,49 @@ class SearchOrderLogic extends SOY2LogicBase{
 			}
 		}
 
-		if(isset($search["noPayment"]) && $search["noPayment"] == 1){
+		if(isset($cnds["noPayment"]) && $cnds["noPayment"] == 1){
 			$where[] = "payment_status in (".SOYShop_Order::PAYMENT_STATUS_WAIT.",".SOYShop_Order::PAYMENT_STATUS_ERROR.",".SOYShop_Order::PAYMENT_STATUS_DIRECT.")";
-		}else if(isset($search["paymentStatus"])){
+		}else if(isset($cnds["paymentStatus"])){
 			//支払い状況を配列で渡す場合(チェックボックス式)
-			if(is_array($search["paymentStatus"]) && count($search["paymentStatus"])){
-				$where[] = "payment_status IN (" . implode(",", $search["paymentStatus"]) . ")";
+			if(is_array($cnds["paymentStatus"]) && count($cnds["paymentStatus"])){
+				$where[] = "payment_status IN (" . implode(",", $cnds["paymentStatus"]) . ")";
 
 			//支払い状況を文字列で渡す場合(セレクトボックス式)
-			}else if(is_string($search["paymentStatus"]) && strlen($search["paymentStatus"]) > 0){
+			}else if(is_string($cnds["paymentStatus"]) && strlen($cnds["paymentStatus"]) > 0){
 				$where[] = "payment_status = :payment_status";
-				$binds[":payment_status"] = (int)$search["paymentStatus"];
+				$binds[":payment_status"] = (int)$cnds["paymentStatus"];
 			}
 		}
 
 		//合計金額
-		if(isset($search["totalPriceMin"]) && (int)$search["totalPriceMin"] > 0){
+		if(isset($cnds["totalPriceMin"]) && (int)$cnds["totalPriceMin"] > 0){
 			$where[] = "price >= :total_price_min";
-			$binds[":total_price_min"] = (int)$search["totalPriceMin"];
+			$binds[":total_price_min"] = (int)$cnds["totalPriceMin"];
 		}
 
-		if(isset($search["totalPriceMax"]) && (int)$search["totalPriceMax"] > 0){
+		if(isset($cnds["totalPriceMax"]) && (int)$cnds["totalPriceMax"] > 0){
 			$where[] = "price <= :total_price_max";
-			$binds[":total_price_max"] = (int)$search["totalPriceMax"];
+			$binds[":total_price_max"] = (int)$cnds["totalPriceMax"];
 		}
 
-		if(isset($search["orderDateStart"]) && strlen($search["orderDateStart"]) > 0 && strtotime($search["orderDateStart"])){
+		if(isset($cnds["orderDateStart"]) && strlen($cnds["orderDateStart"]) > 0 && strtotime($cnds["orderDateStart"])){
 			$where[] = "order_date >= :order_date_start";
-			$binds[":order_date_start"] = strtotime($search["orderDateStart"]);
+			$binds[":order_date_start"] = strtotime($cnds["orderDateStart"]);
 		}
 
-		if(isset($search["orderDateEnd"]) && strlen($search["orderDateEnd"]) > 0 && strtotime($search["orderDateEnd"])){
+		if(isset($cnds["orderDateEnd"]) && strlen($cnds["orderDateEnd"]) > 0 && strtotime($cnds["orderDateEnd"])){
 			$where[] = "order_date <= :order_date_end";
-			$order_date_end_time = strtotime($search["orderDateEnd"]);
+			$order_date_end_time = strtotime($cnds["orderDateEnd"]);
 			if(date("H:i:s", $order_date_end_time) === "00:00:00"){
-				$order_date_end_time = strtotime($search["orderDateEnd"]." 23:59:59");
+				$order_date_end_time = strtotime($cnds["orderDateEnd"]." 23:59:59");
 			}
 			$binds[":order_date_end"] = $order_date_end_time;
 		}
 
 		//備考　SQLだけでは取得できないのでデータを取得直後に更に加工を行う
-		if(isset($search["orderMemo"]) && strlen($search["orderMemo"])){
+		if(isset($cnds["orderMemo"]) && strlen($cnds["orderMemo"])){
 			//検索ワードをスペースやカンマで配列にする
-			$words = self::getOrderMemoWords($search["orderMemo"]);
+			$words = self::getOrderMemoWords($cnds["orderMemo"]);
 			if(count($words)){
 				$memoWhere = array();
 				for($i = 0; $i < count($words); $i++){
@@ -142,16 +142,16 @@ class SearchOrderLogic extends SOY2LogicBase{
 				}
 
 				if(count($memoWhere)){
-					$cnd = ((int)$search["orderMemoAndOr"] === 1) ? " OR " : " AND ";
+					$cnd = ((int)$cnds["orderMemoAndOr"] === 1) ? " OR " : " AND ";
 					$where[] = "(" . implode($cnd, $memoWhere) . ")";
 				}
 			}
 		}
 
 		//コメント
-		if(isset($search["orderComment"]) && strlen($search["orderComment"])){
+		if(isset($cnds["orderComment"]) && strlen($cnds["orderComment"])){
 			//検索ワードをスペースやカンマで配列にする
-			$words = self::getOrderMemoWords($search["orderComment"]);
+			$words = self::getOrderMemoWords($cnds["orderComment"]);
 			if(count($words)){
 				$commentWhere = array();
 				for($i = 0; $i < count($words); $i++){
@@ -161,58 +161,58 @@ class SearchOrderLogic extends SOY2LogicBase{
 				}
 
 				if(count($commentWhere)){
-					$cnd = ((int)$search["orderCommentAndOr"] === 1) ? " OR " : " AND ";
+					$cnd = ((int)$cnds["orderCommentAndOr"] === 1) ? " OR " : " AND ";
 					$where[] = "id IN (SELECT order_id FROM soyshop_order_state_history WHERE ". implode($cnd, $commentWhere) . ")";
 				}
 			}
 		}
 
 		//更新日
-		if(isset($search["updateDateStart"]) && strlen($search["updateDateStart"]) > 0 && strtotime($search["updateDateStart"])){
+		if(isset($cnds["updateDateStart"]) && strlen($cnds["updateDateStart"]) > 0 && strtotime($cnds["updateDateStart"])){
 			$where[] = "id IN (SELECT order_id FROM soyshop_order_state_history WHERE order_date >= :update_date_start)";
-			$binds[":update_date_start"] = strtotime($search["updateDateStart"]);
+			$binds[":update_date_start"] = strtotime($cnds["updateDateStart"]);
 		}
 
-		if(isset($search["updateDateEnd"]) && strlen($search["updateDateEnd"]) > 0 && strtotime($search["updateDateEnd"])){
+		if(isset($cnds["updateDateEnd"]) && strlen($cnds["updateDateEnd"]) > 0 && strtotime($cnds["updateDateEnd"])){
 			$where[] = "id IN (SELECT order_id FROM soyshop_order_state_history WHERE order_date <= :update_date_end)";
-			$update_date_end_time = strtotime($search["updateDateEnd"]);
+			$update_date_end_time = strtotime($cnds["updateDateEnd"]);
 			if(date("H:i:s", $update_date_end_time) === "00:00:00"){
-				$update_date_end_time = strtotime($search["updateDateEnd"]." 23:59:59");
+				$update_date_end_time = strtotime($cnds["updateDateEnd"]." 23:59:59");
 			}
 			$binds[":update_date_end"] = $update_date_end_time;
 		}
 
-		if(isset($search["trackingNumber"]) && strlen(trim($search["trackingNumber"])) > 0){
+		if(isset($cnds["trackingNumber"]) && strlen(trim($cnds["trackingNumber"])) > 0){
 			$where[] = "tracking_number LIKE :tracking_number";
-			$binds[":tracking_number"] = "%" . trim($search["trackingNumber"]) . "%";
+			$binds[":tracking_number"] = "%" . trim($cnds["trackingNumber"]) . "%";
 		}
-		if(isset($search["orderId"]) && strlen($search["orderId"]) > 0){
+		if(isset($cnds["orderId"]) && strlen($cnds["orderId"]) > 0){
 			$where[] = "id LIKE :order_id";
-			$binds[":order_id"] = "%" . $search["orderId"] . "%";
+			$binds[":order_id"] = "%" . $cnds["orderId"] . "%";
 		}
 
-		if(isset($search["orderIdStart"]) && strlen($search["orderIdStart"]) > 0){
+		if(isset($cnds["orderIdStart"]) && strlen($cnds["orderIdStart"]) > 0){
 			$where[] = "id >= :order_id_start";
-			$binds[":order_id_start"] = $search["orderIdStart"];
+			$binds[":order_id_start"] = $cnds["orderIdStart"];
 		}
 
-		if(isset($search["orderIdEnd"]) && strlen($search["orderIdEnd"]) > 0){
+		if(isset($cnds["orderIdEnd"]) && strlen($cnds["orderIdEnd"]) > 0){
 			$where[] = "id <= :order_id_end";
-			$binds[":order_id_end"] = $search["orderIdEnd"];
+			$binds[":order_id_end"] = $cnds["orderIdEnd"];
 		}
 
-		if(isset($search["userName"]) && strlen($search["userName"]) > 0){
+		if(isset($cnds["userName"]) && strlen($cnds["userName"]) > 0){
 			if(!class_exists("SOYShop_User")) SOY2::import("domain.SOYShop_User");
 			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where name LIKE :user_name)";
-			$binds[":user_name"] = "%" . $search["userName"] . "%";
+			$binds[":user_name"] = "%" . $cnds["userName"] . "%";
 		}
 
-		if(isset($search["userReading"]) && strlen($search["userReading"]) > 0){
+		if(isset($cnds["userReading"]) && strlen($cnds["userReading"]) > 0){
 			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");
 
 			//全角カナであろうデータ
-			$katakana = mb_convert_kana($search["userReading"],"c");
-			$hiragana = mb_convert_kana($search["userReading"],"C");
+			$katakana = mb_convert_kana($cnds["userReading"],"c");
+			$hiragana = mb_convert_kana($cnds["userReading"],"C");
 
 			//SQLiteで文字列の全角半角を無視して検索する関数が見つからないので、一つ一つ丁寧にSQL構文を発行する
 			$where[] = "user_id in (select id from ". SOYShop_User::getTableName().	" where " .
@@ -225,19 +225,19 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$binds[":user_reading_k"] = "%" . mb_convert_kana($hiragana,"k") . "%";
 		}
 
-		if(isset($search["userMailAddress"]) && strlen($search["userMailAddress"]) > 0){
+		if(isset($cnds["userMailAddress"]) && strlen($cnds["userMailAddress"]) > 0){
 			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");
 			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where mail_address LIKE :mail_address)";
-			$binds[":mail_address"] = "%" . $search["userMailAddress"] . "%";
+			$binds[":mail_address"] = "%" . $cnds["userMailAddress"] . "%";
 		}
 
-		if(isset($search["userGender"]) && count($search["userGender"])){
+		if(isset($cnds["userGender"]) && count($cnds["userGender"])){
 			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");
-			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where gender IN (" . implode(",", $search["userGender"]) . "))";
+			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where gender IN (" . implode(",", $cnds["userGender"]) . "))";
 		}
 
-		if(isset($search["userBirthday"]) && count($search["userBirthday"])){
-			$birthArray = $search["userBirthday"];
+		if(isset($cnds["userBirthday"]) && count($cnds["userBirthday"])){
+			$birthArray = $cnds["userBirthday"];
 			$birth_where = array();
 			//年
 			if(isset($birthArray[0]) && strlen($birthArray[0])){
@@ -277,8 +277,8 @@ class SearchOrderLogic extends SOY2LogicBase{
 		}
 
 		//電話番号 Faxと携帯も同時検索　出来れば全角数字にも対応したい
-		if(isset($search["userTelephoneNumber"]) && count($search["userTelephoneNumber"])){
-			$tellArray = $search["userTelephoneNumber"];
+		if(isset($cnds["userTelephoneNumber"]) && count($cnds["userTelephoneNumber"])){
+			$tellArray = $cnds["userTelephoneNumber"];
 			$tell_where = array();
 			foreach(array("telephone", "fax", "cellphone") as $tellType){
 				$w = array();	//半角版
@@ -304,8 +304,8 @@ class SearchOrderLogic extends SOY2LogicBase{
 		}
 
 		if(
-			(isset($search["itemName"]) && strlen($search["itemName"])) > 0 ||
-			(isset($search["itemCode"]) && strlen($search["itemCode"]) > 0)
+			(isset($cnds["itemName"]) && strlen($cnds["itemName"])) > 0 ||
+			(isset($cnds["itemCode"]) && strlen($cnds["itemCode"]) > 0)
 		){
 			SOY2DAOFactory::importEntity("shop.SOYShop_Item");
 
@@ -315,21 +315,21 @@ class SearchOrderLogic extends SOY2LogicBase{
 			$table .= " on (".SOYShop_Item::getTableName() . ".id = ".SOYShop_ItemOrder::getTableName() . ".item_id)";
 
 
-			if(isset($search["itemName"]) && strlen($search["itemName"])){
+			if(isset($cnds["itemName"]) && strlen($cnds["itemName"])){
 				$where[] = SOYShop_Item::getTableName() . ".item_name like :item_name";
-				$binds[":item_name"] = "%" . $search["itemName"] . "%";
+				$binds[":item_name"] = "%" . $cnds["itemName"] . "%";
 			}
 
-			if(isset($search["itemCode"]) && strlen($search["itemCode"])){
+			if(isset($cnds["itemCode"]) && strlen($cnds["itemCode"])){
 				$where[] = SOYShop_Item::getTableName() . ".item_code like :item_code";
-				$binds[":item_code"] = "%" . $search["itemCode"] . "%";
+				$binds[":item_code"] = "%" . $cnds["itemCode"] . "%";
 			}
 		}
 
 		//支払方法
-		if(isset($search["paymentMethod"]) && count($search["paymentMethod"])){
+		if(isset($cnds["paymentMethod"]) && count($cnds["paymentMethod"])){
 			$attr_where = array();
-			foreach($search["paymentMethod"] as $p){
+			foreach($cnds["paymentMethod"] as $p){
 				$attr_where[] = "attributes LIKE '%" . $p . "%'";
 			}
 			$where[] = "(" . implode(" OR ", $attr_where) . ")";
@@ -339,14 +339,16 @@ class SearchOrderLogic extends SOY2LogicBase{
 		SOYShopPlugin::load("soyshop.order.search");
 		$queries = SOYShopPlugin::invoke("soyshop.order.search", array(
 			"mode" => "search",
-			"params" => (isset($search["customs"])) ? $search["customs"] : array()
+			"params" => (isset($cnds["customs"])) ? $cnds["customs"] : array()
 		))->getQueries();
 
-		foreach($queries as $moduleId => $values){
-			if(!isset($values["queries"])) continue;
-			if(!is_array($values["queries"]) || !count($values["queries"])) continue;
-			$where = array_merge($where, $values["queries"]);
-			if(isset($values["binds"])) $binds = array_merge($binds, $values["binds"]);
+		if(is_array($queries) && count($queries)){
+			foreach($queries as $moduleId => $values){
+				if(!isset($values["queries"])) continue;
+				if(!is_array($values["queries"]) || !count($values["queries"])) continue;
+				$where = array_merge($where, $values["queries"]);
+				if(isset($values["binds"])) $binds = array_merge($binds, $values["binds"]);
+			}
 		}
 
 		$this->where = $where;
@@ -357,8 +359,8 @@ class SearchOrderLogic extends SOY2LogicBase{
 	/**
 	 * マイページの購入履歴一覧で使う
 	 */
-	public function setSearchConditionForMyPage($userId, $search = array()){
-		$this->setSearchCondition($search);
+	public function setSearchConditionForMyPage($userId, $cnds = array()){
+		$this->setSearchCondition($cnds);
 
 		//現在のユーザーの注文のみ
 		$this->where[] = SOYShop_Order::getTableName() . ".user_id = :mypage_user_id";

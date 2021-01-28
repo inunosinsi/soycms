@@ -153,6 +153,13 @@ class DetailPage extends WebPage{
 
 		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
 
+		//詳細ページを開いた時に何らかの処理をする
+		SOYShopPlugin::load("soyshop.user");
+		SOYShopPlugin::invoke("soyshop.user", array(
+			"mode" => "detail",
+			"userId" => $this->id
+		));
+
 		DisplayPlugin::toggle("sended", isset($_GET["sended"]));
 
     	$shopUser = soyshop_get_user_object($id);
@@ -242,18 +249,22 @@ class DetailPage extends WebPage{
 		// 		: SOY2PageController::createLink("Order?search[userId]=" . $shopUser->getId()),
 		// ));
 		$this->addLink("order_list_link", array(
-				"link" => SOY2PageController::createLink("Order?search[userId]=" . $shopUser->getId()),
+			"link" => SOY2PageController::createLink("Order?search[userId]=" . $shopUser->getId()),
+			"visible" => AUTH_ADMINORDER
 		));
 		$this->addLink("order_register_link", array(
-			"link" => SOY2PageController::createLink("Order.Register.User." . $shopUser->getId())
+			"link" => SOY2PageController::createLink("Order.Register.User." . $shopUser->getId()),
+			"visible" => AUTH_ADMINORDER
 		));
 		$this->addLink("order_cart_link", array(
 			"link" => soyshop_get_mypage_url(true) . "/login?purchase=proxy&user_id=" . $shopUser->getId(),
+			"visible" => AUTH_ADMINORDER,
 			"target" => "_blank"
 		));
 
 		$this->addLink("mypage_login_link", array(
 			"link" => soyshop_get_mypage_url(true) . "/login?purchase=proxy&user_id=" . $shopUser->getId(),
+			"visible" => AUTH_ADMINORDER,
 			"target" => "_blank"
 		));
 
@@ -314,7 +325,8 @@ class DetailPage extends WebPage{
 
 		//メールアドレス 変更リンク
     	$this->addLink("mail_edit_link", array(
-    		"link" => SOY2PageController::createLink("User.Edit.Mail." . $this->id)
+    		"link" => SOY2PageController::createLink("User.Edit.Mail." . $this->id),
+			"visible" => AUTH_ADMINORDER
     	));
 
 		//パスワード 登録済みの場合 表示
@@ -329,7 +341,8 @@ class DetailPage extends WebPage{
 
     	//パスワード 変更リンク
     	$this->addLink("password_edit_link", array(
-    		"link" => SOY2PageController::createLink("User.Edit.Password." . $this->id)
+    		"link" => SOY2PageController::createLink("User.Edit.Password." . $this->id),
+			"visible" => AUTH_ADMINORDER
     	));
 
 		//登録日時

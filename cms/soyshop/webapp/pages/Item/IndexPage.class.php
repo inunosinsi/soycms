@@ -80,6 +80,7 @@ class IndexPage extends WebPage{
 		$searchLogic->setLimit($limit);
 		$searchLogic->setOffset($offset);
 		$searchLogic->setOrder($sort);
+		$searchLogic->setSearchCondition(array());
 
 		//データ取得
 		$total = (int)$searchLogic->getTotalCount();

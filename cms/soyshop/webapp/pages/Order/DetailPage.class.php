@@ -169,8 +169,8 @@ class DetailPage extends WebPage{
 		));
 
 		$this->addLink("edit_link", array(
-			"link" => (AUTH_OPERATE) ? SOY2PageController::createLink("Order.Edit." . $order->getId()) : "",
-			"visible" => AUTH_OPERATE
+			"link" => (AUTH_ADMINORDER) ? SOY2PageController::createLink("Order.Edit." . $order->getId()) : "",
+			"visible" => (AUTH_ADMINORDER)
 		));
 
 		$this->addLabel("order_status", array(

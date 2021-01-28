@@ -4,6 +4,12 @@ class IndexPage extends WebPage{
 	function __construct($args) {
 		parent::__construct();
 
+		//一覧ページを開いた時に何らかの処理をする
+		SOYShopPlugin::load("soyshop.user");
+		SOYShopPlugin::invoke("soyshop.user", array(
+			"mode" => "list"
+		));
+
 		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
 
     	DisplayPlugin::toggle("registered", (isset($_GET["registered"])));

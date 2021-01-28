@@ -131,157 +131,159 @@ class SearchUserLogic extends SOY2LogicBase{
 		return $this->sorts;
 	}
 
-	function setSearchCondition($search, $custom = array()){
+	function setSearchCondition($cnds, $custom = array()){
 
 		$where = array();
 		$binds = array();
-		foreach($search as $key => $value){
-			if( is_string($value) && strlen($value) ){
-				switch($key){
-					case "area" :
-					case "job_area" :
-						if(!is_numeric($value)) break;
-					case "id":
-					case "name":
-					case "reading":
-					case "mail_address":
-					case "account_id":
-					case "user_code":
-					case "zip_code" :
-					case "address1" :
-					case "address2" :
-					case "telephone_number" :
-					case "fax_number" :
-					case "cellphone_number" :
-					case "job_name" :
-					case "job_zip_code" :
-					case "job_address1" :
-					case "job_address2" :
-					case "job_telephone_number" :
-					case "job_fax_number" :
-					case "memo" :
-					case "attribute1":
-					case "attribute2":
-					case "attribute3":
-					case "shop_error_count" :
-						$where[] = " $key like :$key ";
-						$binds[":$key"] = "%" . $value."%";
-						break;
-					case "is_disabled" :
-						$where[] = ($value == 1) ? " $key = 1 " : " $key != 1 " ;
-						break;
+		if(count($cnds)){
+			foreach($cnds as $key => $value){
+				if( is_string($value) && strlen($value) ){
+					switch($key){
+						case "area" :
+						case "job_area" :
+							if(!is_numeric($value)) break;
+						case "id":
+						case "name":
+						case "reading":
+						case "mail_address":
+						case "account_id":
+						case "user_code":
+						case "zip_code" :
+						case "address1" :
+						case "address2" :
+						case "telephone_number" :
+						case "fax_number" :
+						case "cellphone_number" :
+						case "job_name" :
+						case "job_zip_code" :
+						case "job_address1" :
+						case "job_address2" :
+						case "job_telephone_number" :
+						case "job_fax_number" :
+						case "memo" :
+						case "attribute1":
+						case "attribute2":
+						case "attribute3":
+						case "shop_error_count" :
+							$where[] = " $key like :$key ";
+							$binds[":$key"] = "%" . $value."%";
+							break;
+						case "is_disabled" :
+							$where[] = ($value == 1) ? " $key = 1 " : " $key != 1 " ;
+							break;
+					}
 				}
-			}
-			if( is_array($value) && count($value) ){
-				switch($key){
-					case "gender" :
-						$where_gender = array();
-						foreach($value as $key_2 => $value_2){
-							if( is_string($value_2) && strlen($value_2) ){
-								switch($key_2){
-									case "male" :
-										$where_gender[] = " gender = 0 ";
-										break;
-									case "female" :
-										$where_gender[] = " gender = 1 ";
-										break;
-									case "other" :
-										$where_gender[] = " gender != 0 AND gender != 1 ";
-										break;
+				if( is_array($value) && count($value) ){
+					switch($key){
+						case "gender" :
+							$where_gender = array();
+							foreach($value as $key_2 => $value_2){
+								if( is_string($value_2) && strlen($value_2) ){
+									switch($key_2){
+										case "male" :
+											$where_gender[] = " gender = 0 ";
+											break;
+										case "female" :
+											$where_gender[] = " gender = 1 ";
+											break;
+										case "other" :
+											$where_gender[] = " gender != 0 AND gender != 1 ";
+											break;
+									}
 								}
 							}
-						}
-						if(count($where_gender)) $where[] = " ( ".implode(" OR ", $where_gender). " ) ";
-						break;
-					case "birthday" :
-						//年
-						if(isset($value["year"]) && strlen($value["year"])){
-							$where[] = " " . $key . " LIKE :birthday_year ";
-							$binds[":birthday_year"] = (int)trim($value["year"]) . "-%";
-						}
-						if(isset($value["month"]) && strlen($value["month"])){
-							$m = trim($value["month"]);
-							if($m[0] == "0") $m = (int)substr($m, 1);
-							//1〜9までの場合
-							if(strlen($m) === 1){
-								$where[] = " (" . $key . " LIKE :birthday_month OR " . $key . " LIKE :birthday_month1 )";
-								$binds[":birthday_month1"] = "%-0" . $m . "-%";
-							//10〜12の場合
-							}else{
-								$where[] = " " . $key . " LIKE :birthday_month ";
+							if(count($where_gender)) $where[] = " ( ".implode(" OR ", $where_gender). " ) ";
+							break;
+						case "birthday" :
+							//年
+							if(isset($value["year"]) && strlen($value["year"])){
+								$where[] = " " . $key . " LIKE :birthday_year ";
+								$binds[":birthday_year"] = (int)trim($value["year"]) . "-%";
 							}
-							$binds[":birthday_month"] = "%-" . $m . "-%";
-						}
-						if(isset($value["day"]) && strlen($value["day"])){
-							$d = trim($value["day"]);
-							if($d[0] == "0") $d = (int)substr($d, 1);
-							//1〜9までの場合
-							if(strlen($d) === 1){
-								$where[] = " (" . $key . " LIKE :birthday_day OR " . $key . " LIKE :birthday_day1 )";
-								$binds[":birthday_day1"] = "%-0" . $d;
-							//10〜31の場合
-							}else{
-								$where[] = " " . $key . " LIKE :birthday_day ";
+							if(isset($value["month"]) && strlen($value["month"])){
+								$m = trim($value["month"]);
+								if($m[0] == "0") $m = (int)substr($m, 1);
+								//1〜9までの場合
+								if(strlen($m) === 1){
+									$where[] = " (" . $key . " LIKE :birthday_month OR " . $key . " LIKE :birthday_month1 )";
+									$binds[":birthday_month1"] = "%-0" . $m . "-%";
+								//10〜12の場合
+								}else{
+									$where[] = " " . $key . " LIKE :birthday_month ";
+								}
+								$binds[":birthday_month"] = "%-" . $m . "-%";
 							}
-							$binds[":birthday_day"] = "%-" . $d;
-						}
-						break;
-					case "user_type":
-					case "is_publish":
-						$where[] = " " . $key . " IN (" . implode(",", $value) . ") ";
-						break;
-					case "not_send":
-						foreach($value as $key_2 => $value_2){
-							if( is_string($value_2) && strlen($value_2) ){
-									$where_complex[] = " " . $key . " = " . $value_2 . " ";
+							if(isset($value["day"]) && strlen($value["day"])){
+								$d = trim($value["day"]);
+								if($d[0] == "0") $d = (int)substr($d, 1);
+								//1〜9までの場合
+								if(strlen($d) === 1){
+									$where[] = " (" . $key . " LIKE :birthday_day OR " . $key . " LIKE :birthday_day1 )";
+									$binds[":birthday_day1"] = "%-0" . $d;
+								//10〜31の場合
+								}else{
+									$where[] = " " . $key . " LIKE :birthday_day ";
+								}
+								$binds[":birthday_day"] = "%-" . $d;
 							}
-						}
-						if(count($where_complex)) $where[] = " ( ".implode(" OR ", $where_complex). " ) ";
-						break;
-					case "register_date" :
-					case "update_date" :
-						if(strlen(@$value["start"]["month"]) && strlen(@$value["start"]["day"]) && strlen(@$value["start"]["year"])){
-							$value_start = @mktime(0,0,0,$value["start"]["month"],$value["start"]["day"],$value["start"]["year"]);
-							$key_start = $key . "_start";
-							$where[] = " $key >= :$key_start ";
-							$binds[":$key_start"] = $value_start;
-						}
-						if(strlen(@$value["end"]["month"]) && strlen(@$value["end"]["day"]) && strlen(@$value["end"]["year"])){
-							$value_end = @mktime(23,59,59,$value["end"]["month"],$value["end"]["day"],$value["end"]["year"]);
-							$key_end = $key . "_end";
-							$where[] = " $key <= :$key_end ";
-							$binds[":$key_end"] = $value_end;
-						}
-						break;
-					//一括設定用
-					case "no":
-						foreach($value as $k => $v){
-							$where[] = "(" . $k . " IS NULL or " . $k . " = '')";
-						}
-						break;
+							break;
+						case "user_type":
+						case "is_publish":
+							$where[] = " " . $key . " IN (" . implode(",", $value) . ") ";
+							break;
+						case "not_send":
+							foreach($value as $key_2 => $value_2){
+								if( is_string($value_2) && strlen($value_2) ){
+										$where_complex[] = " " . $key . " = " . $value_2 . " ";
+								}
+							}
+							if(count($where_complex)) $where[] = " ( ".implode(" OR ", $where_complex). " ) ";
+							break;
+						case "register_date" :
+						case "update_date" :
+							if(strlen(@$value["start"]["month"]) && strlen(@$value["start"]["day"]) && strlen(@$value["start"]["year"])){
+								$value_start = @mktime(0,0,0,$value["start"]["month"],$value["start"]["day"],$value["start"]["year"]);
+								$key_start = $key . "_start";
+								$where[] = " $key >= :$key_start ";
+								$binds[":$key_start"] = $value_start;
+							}
+							if(strlen(@$value["end"]["month"]) && strlen(@$value["end"]["day"]) && strlen(@$value["end"]["year"])){
+								$value_end = @mktime(23,59,59,$value["end"]["month"],$value["end"]["day"],$value["end"]["year"]);
+								$key_end = $key . "_end";
+								$where[] = " $key <= :$key_end ";
+								$binds[":$key_end"] = $value_end;
+							}
+							break;
+						//一括設定用
+						case "no":
+							foreach($value as $k => $v){
+								$where[] = "(" . $k . " IS NULL or " . $k . " = '')";
+							}
+							break;
 
-					//注文状況
-					case "order_price":
-						if(isset($value["min"]) && (int)$value["min"] > 0){
-							$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING SUM(price) >= :price_min)";
-							$binds[":price_min"] = (int)$value["min"];
-						}
-						if(isset($value["max"]) && (int)$value["max"] > 0){
-							$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING SUM(price) <= :price_max)";
-							$binds[":price_max"] = (int)$value["max"];
-						}
-						break;
+						//注文状況
+						case "order_price":
+							if(isset($value["min"]) && (int)$value["min"] > 0){
+								$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING SUM(price) >= :price_min)";
+								$binds[":price_min"] = (int)$value["min"];
+							}
+							if(isset($value["max"]) && (int)$value["max"] > 0){
+								$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING SUM(price) <= :price_max)";
+								$binds[":price_max"] = (int)$value["max"];
+							}
+							break;
 
-					case "purchase_count":
-						if(isset($value["min"]) && (int)$value["min"] > 0){
-							$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING COUNT(id) >= :count_min)";
-							$binds[":count_min"] = (int)$value["min"];
-						}
-						if(isset($value["max"]) && (int)$value["max"] > 0){
-							$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING COUNT(id) <= :count_max)";
-							$binds[":count_max"] = (int)$value["max"];
-						}
-						break;
+						case "purchase_count":
+							if(isset($value["min"]) && (int)$value["min"] > 0){
+								$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING COUNT(id) >= :count_min)";
+								$binds[":count_min"] = (int)$value["min"];
+							}
+							if(isset($value["max"]) && (int)$value["max"] > 0){
+								$where[] = "id IN (SELECT user_id FROM soyshop_order GROUP BY user_id HAVING COUNT(id) <= :count_max)";
+								$binds[":count_max"] = (int)$value["max"];
+							}
+							break;
+					}
 				}
 			}
 		}
@@ -319,11 +321,11 @@ class SearchUserLogic extends SOY2LogicBase{
 							$ws = array();
 							if(isset($value["start"]) && strlen($value["start"])){
 								$ws[] = $key . " >= :" . $key . "_start";
-								$binds[":" . $key . "_start"] = self::convertTimestamp($value["start"], "start");
+								$binds[":" . $key . "_start"] = soyshop_convert_timestamp($value["start"], "start");
 							}
 							if(isset($value["end"]) && strlen($value["end"])){
 								$ws[] = $key . " <= :" . $key . "_end";
-								$binds[":" . $key . "_end"] = self::convertTimestamp($value["end"], "end");
+								$binds[":" . $key . "_end"] = self::soyshop_convert_timestamp($value["end"], "end");
 							}
 							if(count($ws)){
 								$customWhere[$key] = "(" . implode(" AND ", $ws) . ")";
@@ -341,20 +343,26 @@ class SearchUserLogic extends SOY2LogicBase{
 			}
 		}
 
+		//拡張ポイントから出力したフォーム用
+		SOYShopPlugin::load("soyshop.user.search");
+		$queries = SOYShopPlugin::invoke("soyshop.user.search", array(
+			"mode" => "search",
+			"params" => (isset($cnds["customs"])) ? $cnds["customs"] : array()
+		))->getQueries();
+
+		if(is_array($queries) && count($queries)){
+			foreach($queries as $moduleId => $values){
+				if(!isset($values["queries"]) || !is_array($values["queries"]) || !count($values["queries"])) continue;
+				$where = array_merge($where, $values["queries"]);
+				if(isset($values["binds"])) $binds = array_merge($binds, $values["binds"]);
+			}
+		}
+		
 		$this->where = $where;
 		$this->binds = $binds;
 	}
 
-	private function convertTimestamp($dateString, $mode="start"){
-		$dateArray = explode("-", $dateString);
-		if($mode == "start"){
-			return mktime(0, 0, 0, $dateArray[1], $dateArray[2], $dateArray[0]);
-		}else{
-			return mktime(0, 0, 0, $dateArray[1], $dateArray[2], $dateArray[0]) + 23 * 59 * 59;
-		}
-	}
-
-	protected function getCountSQL(){
+	protected function _countSql(){
 		$countSql = "select count(*) as count from " . self::TABLE_NAME . " where ";
 		if(count($this->where) > 0){
 			$countSql .= implode(" and ", $this->where) . " and ";
@@ -364,7 +372,7 @@ class SearchUserLogic extends SOY2LogicBase{
 		return $countSql;
 	}
 
-	protected function getUsersSQL(){
+	protected function _sql(){
 		$sql = "select * from " . self::TABLE_NAME . " where ";
 		if(count($this->where) > 0){
 			$sql .= implode(" and ", $this->where) . " and ";
@@ -377,9 +385,8 @@ class SearchUserLogic extends SOY2LogicBase{
 
 	//合計件数取得
 	function getTotalCount(){
-		$countSql = $this->getCountSQL();
 		try{
-			$countResult = $this->getQuery()->executeQuery($countSql, $this->binds);
+			$countResult = $this->getQuery()->executeQuery(self::_countSql(), $this->binds);
 		}catch(Exception $e){
 			return 0;
 		}
@@ -390,7 +397,7 @@ class SearchUserLogic extends SOY2LogicBase{
 	function getUsers(){
 		$this->getQuery()->setLimit($this->limit);
 		$this->getQuery()->setOffset($this->offset);
-		$sql = $this->getUsersSQL();
+		$sql = self::_sql();
 		try{
 			$result = $this->getQuery()->executeQuery($sql, $this->binds);
 		}catch(Exception $e){

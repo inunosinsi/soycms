@@ -5,8 +5,12 @@ class OrderFooterMenuPage extends HTMLPage{
 	function __construct(){
 		parent::__construct();
 
-		self::_buildExportModuleArea();
-		self::_buildExtensionArea();
+		DisplayPlugin::toggle("app_limit_function", AUTH_CSV);
+
+		if(AUTH_CSV) {
+			self::_buildExportModuleArea();
+			self::_buildExtensionArea();
+		}
 	}
 
 	private function _buildExportModuleArea(){

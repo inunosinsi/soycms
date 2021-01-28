@@ -367,12 +367,23 @@
 						</table>
 					</div>
 
+					<!-- soy:display="installed_user_custom_search_field" -->
 					<div class="table-responsive">
-						<table class="table table-striped form_search" soy:display="installed_user_custom_search_field">
-							<caption>ユーザーカスタムサーチフィールド</caption>
-							<!-- soy:id="user_custom_search_field_form_area" /-->
+						<table class="table table-striped form_search">
+							<caption>拡張機能の検索項目</caption>
+							<col style="width:250px;">
+							<tbody>
+								<!-- soy:id="user_custom_search_field_form_area" /-->
+								<!-- soy:id="custom_search_item_list" -->
+								<tr>
+									<th soy:id="label">拡張ポイントからラベルを出力</th>
+									<td soy:id="form">拡張ポイントからフォームを出力</td>
+								</tr>
+								<!-- /soy:id="custom_search_item_list" -->
+							</tbody>
 						</table>
 					</div>
+					<!-- /soy:display="installed_user_custom_search_field" -->
 
 					<div class="text-center">
 						<input type="submit" name="conduct" class="btn btn-primary btn-lg" value="詳細検索">
