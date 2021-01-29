@@ -132,6 +132,4 @@ interface IUserInfoUtil {
      * @return array
      */
     public static function getAppAuth();
-
 }
-?>

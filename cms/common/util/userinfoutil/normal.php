@@ -169,7 +169,9 @@ class UserInfoUtil implements IUserInfoUtil{
      * 現在ログインしているサイトの情報を返す
      */
     public static function getSite(){
-    	return SOY2ActionSession::getUserSession()->getAttribute("Site");
+    	$site = SOY2ActionSession::getUserSession()->getAttribute("Site");
+		if(is_null($site)) $site = new Site();
+		return $site;
     }
 
     /**
