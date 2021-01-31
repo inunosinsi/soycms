@@ -18,7 +18,7 @@ class ReadEntryCountPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.9"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -49,7 +49,7 @@ class ReadEntryCountPlugin{
 
 		$htmlObj->addLabel("view_count", array(
 			"soy2prefix" => "cms",
-			"text" => (isset($entryId) && is_numeric($entryId)) ? self::getReadEntryCountObject($entryId)->getCount() : 0//self::getReadEntryCountObject($entryId)->getCount()
+			"text" => (isset($entryId) && is_numeric($entryId)) ? self::_getReadEntryCountObject($entryId)->getCount() : 0//self::getReadEntryCountObject($entryId)->getCount()
 		));
 	}
 	/**
@@ -60,11 +60,7 @@ class ReadEntryCountPlugin{
 		//ブログの記事ページを開いた時のみ集計
 		SOY2::import('site_include.CMSBlogPage');
 		if(($obj instanceof CMSBlogPage) && $obj->mode == CMSBlogPage::MODE_ENTRY && !is_null($obj->entry->getId())){
-			$cntObj = self::getReadEntryCountObject($obj->entry->getId());
-			$cnt = (int)$cntObj->getCount();
-			$cnt++;
-			$cntObj->setCount($cnt);
-			self::save($cntObj);
+			self::_aggregate($obj->entry->getId());
 		}
 
 		SOY2::imports("site_include.plugin.read_entry_count.component.*");
@@ -104,7 +100,15 @@ class ReadEntryCountPlugin{
 		}
 	}
 
-	private function getReadEntryCountObject($entryId){
+	private function _aggregate($entryId){
+		$obj = self::_getReadEntryCountObject($entryId);
+		$cnt = (int)$obj->getCount();
+		$cnt++;
+		$obj->setCount($cnt);
+		self::save($obj);
+	}
+
+	private function _getReadEntryCountObject($entryId){
 		static $list;
 		if(is_null($list)) $list = array();
 		if(isset($list[$entryId])) return $list[$entryId];
@@ -125,7 +129,7 @@ class ReadEntryCountPlugin{
 			try{
 				self::dao()->update($obj);
 			}catch(Exception $e){
-				var_dump($e);
+				//
 			}
 		}
 	}
@@ -209,7 +213,7 @@ class ReadEntryCountPlugin{
 			try{
 				$dao->executeUpdateQuery($sql, array());
 			}catch(Exception $e){
-				var_dump($e);
+				//
 			}
 		}
 
@@ -242,12 +246,8 @@ class ReadEntryCountPlugin{
 	}
 
 	public static function register(){
-
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(!$obj){
-			$obj = new ReadEntryCountPlugin();
-		}
-
+		if(!$obj) $obj = new ReadEntryCountPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }

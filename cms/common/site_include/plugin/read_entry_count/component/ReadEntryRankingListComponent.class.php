@@ -6,7 +6,7 @@ class ReadEntryRankingListComponent extends HTMLList {
 	private $prefix = "cms";
 
 	protected function populateItem($entity){
-		$url = self::getBlogPageUrl($entity["labels"]);
+		$url = (isset($entity["labels"]) && is_array($entity["labels"]) && count($entity["labels"])) ? self::_getBlogPageUrl($entity["labels"]) : "";
 
 		$this->addLink("entry_link", array(
 			"soy2prefix" => $this->prefix,
@@ -35,10 +35,10 @@ class ReadEntryRankingListComponent extends HTMLList {
 		if(!isset($entity["labels"]) || !count($entity["labels"]) || !strlen($url)) return false;
 	}
 
-	private function getBlogPageUrl($labelIds){
-		if(!count($this->blogs)) return "";
+	private function _getBlogPageUrl($labelIds){
+		if(!count($this->blogs) || !is_array($labelIds) || !count($labelIds)) return "";
 		foreach($this->blogs as $labelId => $url){
-			if(in_array($labelId, $labelIds)) return $url;
+			if(is_numeric(array_search($labelId, $labelIds))) return $url;
 		}
 		return "";
 	}

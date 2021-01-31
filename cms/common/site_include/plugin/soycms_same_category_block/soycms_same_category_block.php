@@ -20,7 +20,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 
 	    if(CMSPlugin::activeCheck($this->getId())){
@@ -39,12 +39,12 @@ class SOYCMSSameCategoryBlockPlugin{
 
 		//検索結果ブロックプラグインのUTILクラスを利用する
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
-		
+
 		//詳細ページでない場合は空の配列を返す
-		if(!self::checkIsBlogEntryPage($pageId)) return array();
+		if(!self::_checkIsBlogEntryPage($pageId)) return array();
 
 		//記事詳細からカテゴリの設定を習得する
-		$labelIds = self::getLabelIds($pageId);
+		$labelIds = self::_getLabelIds($pageId);
 		if(is_null($labelIds)) return array();
 
     	//ラベルIDを取得とデータベースから記事の取得件数指定
@@ -83,7 +83,6 @@ class SOYCMSSameCategoryBlockPlugin{
 	    }catch(Exception $e){
 	        return array();
 	    }
-
 		if(!count($results)) return array();
 
 		$soycms_search_result = array();
@@ -96,20 +95,19 @@ class SOYCMSSameCategoryBlockPlugin{
 	}
 
 	//詳細ページを開いているか？
-	private function checkIsBlogEntryPage($pageId){
+	private function _checkIsBlogEntryPage($pageId){
 		$page = PluginBlockUtil::getBlogPageByPageId($pageId);
 		if(is_null($page->getId())) return false;
 
-		if(strlen($page->getUri())){
-			$uri = "/" . $page->getUri();
-		}else{
-			$uri = "";
-		}
-		return (strpos($_SERVER["PATH_INFO"], $uri . "/" . $page->getEntryPageUri() . "/") !== false);
+		$uri = (strlen($page->getUri())) ? "/" . $page->getUri() : "";
+		return (is_numeric(strpos($_SERVER["REQUEST_URI"], $uri . "/" . $page->getEntryPageUri() . "/")));
 	}
 
-	private function getLabelIds($pageId){
-		$alias = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/") + 1), "/");
+	private function _getLabelIds($pageId){
+		//xampp対策でPATH_INFOではなく、REQUEST_URIを使う
+		$alias = trim(substr($_SERVER["REQUEST_URI"], strrpos($_SERVER["REQUEST_URI"], "/") + 1), "/");
+		//GETパラメータがある場合は除く
+		if(is_numeric(strpos($alias, "?"))) $alias = substr($alias, 0, strpos($alias, "?"));
 
 		$sql = "SELECT ent.id, lab.label_id FROM Entry ent ".
 						"INNER JOIN EntryLabel lab ".
