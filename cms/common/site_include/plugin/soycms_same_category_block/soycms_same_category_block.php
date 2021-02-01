@@ -20,7 +20,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.7"
+			"version"=>"0.8"
 		));
 
 	    if(CMSPlugin::activeCheck($this->getId())){
@@ -100,14 +100,22 @@ class SOYCMSSameCategoryBlockPlugin{
 		if(is_null($page->getId())) return false;
 
 		$uri = (strlen($page->getUri())) ? "/" . $page->getUri() : "";
-		return (is_numeric(strpos($_SERVER["REQUEST_URI"], $uri . "/" . $page->getEntryPageUri() . "/")));
+		if(isset($_SERVER["PATH_INFO"])){
+			return (is_numeric(strpos($_SERVER["PATH_INFO"], $uri . "/" . $page->getEntryPageUri() . "/")));
+		}else{
+			return (is_numeric(strpos($_SERVER["REQUEST_URI"], $uri . "/" . $page->getEntryPageUri() . "/")));
+		}
 	}
 
 	private function _getLabelIds($pageId){
-		//xampp対策でPATH_INFOではなく、REQUEST_URIを使う
-		$alias = trim(substr($_SERVER["REQUEST_URI"], strrpos($_SERVER["REQUEST_URI"], "/") + 1), "/");
-		//GETパラメータがある場合は除く
-		if(is_numeric(strpos($alias, "?"))) $alias = substr($alias, 0, strpos($alias, "?"));
+		if(isset($_SERVER["PATH_INFO"])){
+			$alias = trim(substr($_SERVER["PATH_INFO"], strrpos($_SERVER["PATH_INFO"], "/") + 1), "/");
+		}else{	//xampp対策でPATH_INFOではなく、REQUEST_URIを使う
+			$alias = trim(substr($_SERVER["REQUEST_URI"], strrpos($_SERVER["REQUEST_URI"], "/") + 1), "/");
+			//GETパラメータがある場合は除く
+			if(is_numeric(strpos($alias, "?"))) $alias = substr($alias, 0, strpos($alias, "?"));
+		}
+
 
 		$sql = "SELECT ent.id, lab.label_id FROM Entry ent ".
 						"INNER JOIN EntryLabel lab ".
