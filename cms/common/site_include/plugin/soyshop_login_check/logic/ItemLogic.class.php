@@ -7,7 +7,7 @@ class ItemLogic extends SOY2LogicBase{
 	private $siteId;
 	private $userId;
 
-	function ItemLogic(){}
+	function __construct(){}
 
 	function getItems(){
 		$old = SOYShopUtil::switchShopMode($this->siteId);

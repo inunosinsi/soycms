@@ -2,7 +2,7 @@
 
 class ConfigLogic extends SOY2LogicBase{
 
-	function ConfigLogic(){}
+	function __construct(){}
 
 	function getList(){
 		$shops = self::_getShopList();

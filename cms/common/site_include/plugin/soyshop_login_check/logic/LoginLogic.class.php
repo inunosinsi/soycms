@@ -4,7 +4,7 @@ class LoginLogic extends SOY2LogicBase {
 
 	private $siteId;
 
-	function LoginkLogic(){}
+	function __construct(){}
 
 	function getLoginPageUrl(){
 		$old = SOYShopUtil::switchShopMode($this->siteId);

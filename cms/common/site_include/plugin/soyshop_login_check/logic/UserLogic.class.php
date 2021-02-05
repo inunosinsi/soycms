@@ -5,7 +5,7 @@ class UserLogic extends SOY2LogicBase{
 	private $siteId;
 	private $userId;
 
-	function UserLogic(){}
+	function __construct(){}
 
 	function getAuthorInfo(){
 		$user = $this->getUser();

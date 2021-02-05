@@ -6,7 +6,7 @@ class PointLogic extends SOY2LogicBase{
 	private $point;
 	private $entry;
 
-	function PointLogic(){}
+	function __construct(){}
 
 	function addPoint(){
 
