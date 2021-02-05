@@ -132,6 +132,13 @@ class LabeledBlockComponent implements BlockComponent{
 			}
 		}
 
+		//
+		if(!strlen($this->pagingParameter) && ($this->displayCountFrom > 1 && is_null($this->displayCountTo))){
+			for($i = 0; $i < ($this->displayCountFrom - 1); $i++){
+				array_shift($array);
+			}
+		}
+
 		SOY2::import("site_include.block._common.BlockEntryListComponent");
 		return SOY2HTMLFactory::createInstance("BlockEntryListComponent",array(
 			"list" => $array,
