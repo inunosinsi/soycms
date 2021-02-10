@@ -13,12 +13,12 @@ class UserFooterMenuPage extends HTMLPage{
 
 		//user.function
 		$this->createAdd("function_list", "_common.User.FunctionListComponent", array(
-			"list" => self::_getFunctionList()
+			"list" => (AUTH_CSV) ? self::_getFunctionList() : array()
 		));
 
 		//user.info
 		$this->createAdd("info_list", "_common.User.InfoListComponent", array(
-			"list" => self::_getInfoList()
+			"list" => (AUTH_CSV) ? self::_getInfoList() : array()
 		));
 	}
 

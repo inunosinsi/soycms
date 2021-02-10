@@ -36,7 +36,7 @@ do{
 			//alias付きであることを疑ってみる
 			$values = explode(".", $htmlObj->createPagePath());
 			$args[] = strtolower(array_pop($values));
-		
+
 			$values[] = ucfirst(array_pop($values));
 			$path = implode(".", $values);
 			if(!SOY2HTMLFactory::pageExists($path . "Page")){

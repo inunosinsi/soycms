@@ -197,6 +197,8 @@ class SearchPage extends WebPage{
 			"label" => "非公開"
 		));
 
+		DisplayPlugin::toggle("active_soymail_connector", SOYShopPluginUtil::checkIsActive("soymail_connector"));
+
 		$this->addCheckBox("advanced_search_mail_send_true", array(
 			"name" => "search[]",
 			"value" => 1,
@@ -469,6 +471,9 @@ class SearchPage extends WebPage{
 			"value" => (isset($search["update_date"]["end"]["day"])) ? $search["update_date"]["end"]["day"] : "",
 			"size" => "3"
 		));
+
+		// ショップサイトで注文可の場合(cartIDがnoneでない場合)は下記の項目を出力
+		DisplayPlugin::toggle("thing_about_order", !SOYSHOP_ADMIN_MODE);
 
 		$this->addInput("advanced_search_total_price_min", array(
 			"name" => "search[order_price][min]",

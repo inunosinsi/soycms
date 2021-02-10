@@ -316,7 +316,7 @@ class UserComponent {
 		$page->addModel("active_soymail_connector", array(
 			"visible" => $activeSOYMail
 		));
-
+		
 		DisplayPlugin::toggle("active_soymail_connector", $activeSOYMail);
 
 		$page->addInput("mail_magazine_hidden", array(

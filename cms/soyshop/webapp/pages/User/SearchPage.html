@@ -23,7 +23,7 @@
 									<a class="btn btn-default btn-sm" href="javascript:void(0);" onclick="$(this).hide();$('.delete_btn').css('visibility','visible');">削除</a>
 								</th>
 							</tr>
-						</thead
+						</thead>
 						<tbody>
 							<!-- soy:id="user_list" -->
 							<tr>
@@ -247,7 +247,8 @@
 						</table>
 					</div>
 
-					<div class="table-responsive" soy:display="office_items">
+					<!-- soy:display="office_items" -->
+					<div class="table-responsive">
 						<table class="table table-striped form_search">
 							<caption>勤務先</caption>
 							<col style="width:250px;">
@@ -291,6 +292,7 @@
 							</tr>
 						</table>
 					</div>
+					<!-- /soy:display="office_items" -->
 
 					<div class="table-responsive">
 						<table class="table table-striped form_search">
@@ -304,7 +306,7 @@
 									属性Ｃ：<input type="text" soy:id="advanced_search_attribute3" value="" /><br>
 								</td>
 							</tr>
-							<tr>
+							<tr soy:display="active_soymail_connector">
 								<th>メール配信(SOY Mail)</th>
 								<td>
 									<input type="checkbox" soy:id="advanced_search_is_send">
@@ -346,6 +348,7 @@
 						</table>
 					</div>
 
+					<!-- soy:display="thing_about_order" -->
 					<div class="table-responsive">
 						<table class="table table-striped form_search">
 							<caption>注文</caption>
@@ -366,6 +369,7 @@
 							</tr>
 						</table>
 					</div>
+					<!-- /soy:display="thing_about_order" -->
 
 					<!-- soy:display="installed_user_custom_search_field" -->
 					<div class="table-responsive">

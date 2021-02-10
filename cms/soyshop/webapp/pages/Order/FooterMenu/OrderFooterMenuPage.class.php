@@ -6,16 +6,13 @@ class OrderFooterMenuPage extends HTMLPage{
 		parent::__construct();
 
 		DisplayPlugin::toggle("app_limit_function", AUTH_CSV);
-
-		if(AUTH_CSV) {
-			self::_buildExportModuleArea();
-			self::_buildExtensionArea();
-		}
+		self::_buildExportModuleArea();
+		self::_buildExtensionArea();
 	}
 
 	private function _buildExportModuleArea(){
 		/* 出力用 */
-		$list = self::_getExportModuleList();
+		$list = (AUTH_CSV) ? self::_getExportModuleList() : array();
 
 		DisplayPlugin::toggle("export_module_menu", (count($list) > 0));
 		$this->createAdd("module_list", "_common.Order.ExportModuleListComponent", array(
@@ -35,10 +32,14 @@ class OrderFooterMenuPage extends HTMLPage{
 	}
 
 	private function _buildExtensionArea(){
-		SOYShopPlugin::load("soyshop.order.upload");
-		$list = SOYShopPlugin::invoke("soyshop.order.upload", array(
-			"mode" => "list"
-		))->getList();
+		if(AUTH_CSV){
+			$list = array();
+		}else{
+			SOYShopPlugin::load("soyshop.order.upload");
+			$list = SOYShopPlugin::invoke("soyshop.order.upload", array(
+				"mode" => "list"
+			))->getList();
+		}
 
 		DisplayPlugin::toggle("upload_list", count($list));
 
