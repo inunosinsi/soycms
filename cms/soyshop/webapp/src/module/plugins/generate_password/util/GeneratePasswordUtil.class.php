@@ -40,6 +40,11 @@ class GeneratePasswordUtil {
 		$tmp = (isset($cnf["insert_mail_text"])) ? $cnf["insert_mail_text"] : "";
 		if(!strlen($tmp)) return "";
 
+		if(strpos($tmp, "##ACCOUNT_ID##") !== false){
+			$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mail);
+			$tmp = str_replace("##ACCOUNT_ID##", $user->getAccountId(), $tmp);
+		}
+
 		if(strpos($tmp, "##PASSWORD##") !== false){
 			$tmp = str_replace("##PASSWORD##", $pw, $tmp);
 		}
