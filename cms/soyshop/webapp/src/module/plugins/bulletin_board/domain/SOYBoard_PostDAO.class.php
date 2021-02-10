@@ -101,6 +101,9 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 			if(!isset($list[$topicId])) $list[$topicId] = 0;
 		}
 
+		//ソート
+		arsort($list);
+
 		return $list;
 	}
 
