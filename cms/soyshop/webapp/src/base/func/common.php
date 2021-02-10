@@ -938,6 +938,43 @@ function soyshop_convert_date_string($timestamp){
 	return ($timestamp == 0 || $timestamp == 2147483647) ? "" : date("Y-m-d", $timestamp);
 }
 
+/**
+ * 今から○ヶ月前のタイムスタンプを取得
+ */
+function soyshop_get_a_few_months_ago($n=1, $timestamp=null){
+	if(is_null($timestamp) || !is_numeric($timestamp)) $timestamp = time();
+	if(!is_numeric($n)) $n = 1;
+	$ago = strtotime("-" . $n . " month");
+
+	//月末問題　変換前と変換後の月が同じであれば月末ではない
+	$nowM = date("n", $timestamp);
+	$nowM -= $n;
+	if($nowM <= 0) $nowM = 12 + $nowM;
+	
+	if(date("n", $ago) == $n) return $ago;
+
+	//月末であった場合
+	$dates = explode("-", date("Y-m", $timestamp));
+	$year = (int)$dates[0];
+	$month = (int)$dates[1];
+
+	$month -= $n;
+	if($month <= 0){
+		$month = 12 + $month;
+		$year--;
+	}
+	return mktime(0, 0, 0, $month + 1, 1, $year) - 1;
+}
+
+/**
+ * 任意のタイムスタンプから月始めのタイムスタンプを取得
+ */
+function soyshop_get_begin_of_month($timestamp=null){
+	if(is_null($timestamp) || !is_numeric($timestamp)) $timestamp = time();
+	$dates = explode("-", date("Y-n", $timestamp));
+	return mktime(0, 0, 0, $dates[1], 1, $dates[0]);
+}
+
 function soyshop_file_put_contents($f, $v){
 	$dir = SOYSHOP_SITE_DIRECTORY . ".cache/var_export/";
 	if(!file_exists($dir)) mkdir($dir);
