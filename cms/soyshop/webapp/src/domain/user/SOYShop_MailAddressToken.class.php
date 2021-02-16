@@ -5,11 +5,6 @@
 class SOYShop_MailAddressToken extends SOY2DAO_EntityBase{
 
 	/**
-	 * @id
-	 */
-	private $id;
-
-	/**
 	 * @column user_id
 	 */
 	private $userId;
@@ -29,14 +24,6 @@ class SOYShop_MailAddressToken extends SOY2DAO_EntityBase{
 
 	function check(){
 		return true;
-	}
-
-
-	function getId() {
-		return $this->id;
-	}
-	function setId($id) {
-		$this->id = $id;
 	}
 
 	function getUserId() {

@@ -17,7 +17,6 @@ function register_user_token($stmt){
 
 		foreach($tokens as $token){
 			$stmt->execute(array(
-				":id" => $token->getId(),
 				":user_id" => $token->getUserId(),
 				":token" => $token->getToken(),
 				":time_limit" => $token->getLimit()

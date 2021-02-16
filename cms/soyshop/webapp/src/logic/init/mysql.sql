@@ -190,28 +190,26 @@ create table soyshop_user_attribute(
 
 drop table soyshop_auto_login;
 create table soyshop_auto_login(
-	id integer primary key auto_increment,
-	user_id integer not null,
+	user_id INTEGER NOT NULL UNIQUE,
 	session_token CHAR(32) NOT NULL,
-	time_limit integer,
-	UNIQUE(user_id, session_token)
+	time_limit INTEGER
 ) ENGINE=InnoDB;
 
 drop table soyshop_user_token;
 create table soyshop_user_token(
-	id integer primary key auto_increment,
 	user_id integer not null,
 	token varchar(255) not null,
-	time_limit integer not null
+	time_limit integer not null,
+	UNIQUE(user_id, token)
 ) ENGINE=INNODB;
 
 drop table soyshop_mail_address_token;
 create table soyshop_mail_address_token(
-	id integer primary key auto_increment,
 	user_id integer not null,
 	new_mail_address VARCHAR(255) not null,
 	token varchar(255) not null,
-	time_limit integer not null
+	time_limit integer not null,
+	UNIQUE(user_id, token)
 ) ENGINE=INNODB;
 
 drop table soyshop_mail_log;

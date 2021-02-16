@@ -50,7 +50,6 @@ class IndexPage extends MainMyPagePageBase{
 				$mailLogic->sendMail($newMailAddress, $title, $content, "", $order);
 				$this->send = true;
 			}catch(Exception $e){
-				var_dump($e);
 				//@ToDo エラーログ
 			}
 

@@ -4,19 +4,11 @@
  */
 abstract class SOYShop_MailAddressTokenDAO extends SOY2DAO{
 
-    /**
-	 * @return id
-	 */
     abstract function insert(SOYShop_MailAddressToken $bean);
 
     abstract function update(SOYShop_MailAddressToken $bean);
 
     abstract function get();
-
-    /**
-     * @return object
-     */
-    abstract function getById($id);
 
 	/**
 	 * @return object
@@ -28,7 +20,7 @@ abstract class SOYShop_MailAddressTokenDAO extends SOY2DAO{
 	 */
 	abstract function getByToken($token);
 
-    abstract function delete($id);
+    abstract function deleteByUserId($userId);
 
 	/**
 	 * @final

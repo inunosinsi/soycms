@@ -60,7 +60,7 @@ class CMSBlogPage extends CMSPage{
 				"mailaddress" => $entryComment->getMailAddress(),
 				"url"         => $entryComment->getUrl()
 			);
-			setcookie("soycms_comment",http_build_query($array));//	,time() + (30 * 86400),'/',$_SERVER["HTTP_HOST"],true);
+			soy2_setcookie("soycms_comment", http_build_query($array), array("expires" => 0));//	,time() + (30 * 86400),'/',$_SERVER["HTTP_HOST"],true);
 
 			try{
 				//error check for length of body

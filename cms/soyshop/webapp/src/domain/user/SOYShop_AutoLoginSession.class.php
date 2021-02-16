@@ -5,11 +5,6 @@
 class SOYShop_AutoLoginSession extends SOY2DAO_EntityBase{
 
 	/**
-	 * @id
-	 */
-	private $id;
-
-	/**
 	 * @column user_id
 	 */
 	private $userId;
@@ -30,14 +25,6 @@ class SOYShop_AutoLoginSession extends SOY2DAO_EntityBase{
 
 	/* setter getter */
 
-
-
-	function getId() {
-		return $this->id;
-	}
-	function setId($id) {
-		$this->id = $id;
-	}
 	function getUserId() {
 		return $this->userId;
 	}

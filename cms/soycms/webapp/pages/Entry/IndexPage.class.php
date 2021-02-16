@@ -83,20 +83,12 @@ class IndexPage extends CMSUpdatePageBase{
 	 * クッキーに保存
 	 */
 	function updateCookie(){
-		$path = "/";
-
 		//Entry_Listはリセットする
-		$cookieName = "Entry_List";
-		$value = "";
-		$timeout = 1;
-		setcookie($cookieName,$value,$timeout,$path);
+		soy2_setcookie("Entry_List");
 
 		//Entry_List_Limit
 		if(isset($_GET['limit'])){
-			$cookieName = "Entry_List_Limit";
-			$value = $_GET['limit'];
-			$timeout = 0;
-			setcookie($cookieName,$value,$timeout,$path);
+			soy2_setcookie("Entry_List_Limit", $_GET['limit'], array("expires" => 0, "path" => "/"));
 		}
 	}
 

@@ -8,10 +8,6 @@ class AutoLogin {
 	 * @column user_id
 	 */
 	private $userId;
-
-	/**
-	 * @column session_token
-	 */
 	private $token;
 
 	/**

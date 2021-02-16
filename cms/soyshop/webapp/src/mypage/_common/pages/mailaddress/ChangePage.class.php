@@ -33,7 +33,7 @@ class ChangePage extends MainMyPagePageBase{
 			$user = $userDao->getById($tokenObj->getUserId());
 			$user->setMailAddress($tokenObj->getNew());
 			$userDao->update($user);
-			$mailTokenDao->delete($tokenObj->getId());
+			$mailTokenDao->deleteByUserId($user->getId());
 		}catch(Exception $e){
 			return false;
 		}

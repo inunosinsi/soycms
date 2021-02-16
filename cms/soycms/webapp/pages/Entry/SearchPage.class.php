@@ -68,11 +68,7 @@ class SearchPage extends CMSWebPageBase{
 
 		if(isset($_GET['limit'])){
 			//update Cookie: Entry_List_Limit
-			$cookieName = "Entry_List_Limit";
-			$value = $_GET['limit'];
-			$timeout = 0;
-			$path = "/";
-			setcookie("Entry_List_Limit",$value,$timeout,$path);
+			soy2_setcookie("Entry_List_Limit", $_GET['limit'], array("expires" => 0, "path" => "/"));
 		}else{
 			if(isset($_COOKIE['Entry_List_Limit'])){
 				$_GET['limit'] = $_COOKIE['Entry_List_Limit'];

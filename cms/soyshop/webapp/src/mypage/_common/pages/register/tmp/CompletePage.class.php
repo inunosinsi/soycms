@@ -36,15 +36,12 @@ class CompletePage extends MainMyPagePageBase{
 	}
 
 	private function _executeRegister($query){
-
-		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		$tokenDAO = SOY2DAOFactory::create("user.SOYShop_UserTokenDAO");
-
 		$tokenDAO->deleteOldObjects();
 
 		try{
 			$token = $tokenDAO->getByToken($query);
-			$user = $userDAO->getById($token->getUserId());
+			$user = soyshop_get_user_object($token->getUserId());
 
 			//user type
 			if($user->getUserType() != SOYShop_User::USERTYPE_TMP){
@@ -59,10 +56,10 @@ class CompletePage extends MainMyPagePageBase{
 			$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 			$user->setRealRegisterDate(time());
 
-			$userDAO->update($user);
+			SOY2DAOFactory::create("user.SOYShop_UserDAO")->update($user);
 			self::_sendRegisterMail($user);
 
-			$token->delete();
+			$tokenDAO->deleteByUserId($user->getId());
 
 		}catch(Exception $e){
 			return false;

@@ -52,13 +52,6 @@ CREATE TABLE soycms_admin_data_sets(
   object_data LONGTEXT
 )ENGINE = InnoDB;
 
-CREATE TABLE CookieLogin (
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  user_id INTEGER NOT NULL,
-  token VARCHAR(255) UNIQUE NOT NULL,
-  expire INTEGER
-)ENGINE = InnoDB;
-
 CREATE TABLE LoginErrorLog (
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	ip VARCHAR(128) UNIQUE NOT NULL,
@@ -70,9 +63,9 @@ CREATE TABLE LoginErrorLog (
 
 CREATE TABLE AutoLogin (
 	user_id INTEGER NOT NULL,
-	session_token CHAR(32) NOT NULL,
+	token CHAR(32) NOT NULL,
 	time_limit INTEGER,
-	UNIQUE(user_id, session_token)
+	UNIQUE(user_id, token)
 )ENGINE = InnoDB;
 
 CREATE TABLE Memo(

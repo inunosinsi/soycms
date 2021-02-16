@@ -8,7 +8,7 @@ class LogoutAction extends SOY2Action{
 			$dao = SOY2DAOFactory::create("admin.AutoLoginDAO");
 			try{
 				$login = $dao->getByToken($_COOKIE["soycms_auto_login"]);
-				setcookie("soycms_auto_login", $login->getToken(), time() - 1);
+				soy2_setcookie("soycms_auto_login");
 				$dao->deleteByUserId($login->getUserId());
 			}catch(Exception $e){
 				//

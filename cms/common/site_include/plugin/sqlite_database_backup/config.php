@@ -58,7 +58,7 @@ class SqliteDatabaseBackupConfigPage extends WebPage{
 				if(strpos($file,".") === 0) continue;
 				if(hash(SqliteDatabaseBackupConfigPage::HASH_ALGO, SqliteDatabaseBackupConfigPage::HASH_SALT.$file) == $hash){
 					error_reporting(0);
-					setcookie("downloaded", "yes", time()+2);
+					soy2_setcookie("downloaded", "yes", array("expires" => time() + 2));
 					header("Cache-Control: no-cache");
 					header("Pragma: no-cache");
 					header("Expires: 0");

@@ -28,42 +28,55 @@ class MyPageLogic extends SOY2LogicBase{
 			$myPage = soy2_unserialize($myPage);
 		}
 
-		if(is_null($myPage) || $myPage === false) $myPage = new MyPageLogic($myPageId);
-
+		if(!$myPage instanceof MyPageLogic) $myPage = new MyPageLogic($myPageId);
 
 		/* auto login */
-		if(!$myPage->getIsLoggedin() && @$_COOKIE["soyshop_mypage_" . SOYSHOP_ID . $myPageId . "_auto_login"]){
-			$token = $_COOKIE["soyshop_mypage_" . SOYSHOP_ID . $myPageId . "_auto_login"];
-			$autoLoginDAO = SOY2DAOFactory::create("user.SOYShop_AutoLoginSessionDAO");
+		if(!$myPage->getIsLoggedin() && isset($_COOKIE["soyshop_mypage_" . SOYSHOP_ID . $myPageId . "_auto_login"])){
+			$cookieKey = "soyshop_mypage_" . SOYSHOP_ID . $myPageId . "_auto_login";
+			$token = $_COOKIE[$cookieKey];
+			soy2_setcookie($cookieKey);	//同じIDでcookieを作成してしまう問題を解決する
+			unset($_COOKIE[$cookieKey]);
 
+			$autoLoginDao = SOY2DAOFactory::create("user.SOYShop_AutoLoginSessionDAO");
 			try{
-
-				$autoLogin = $autoLoginDAO->getByToken($token);
-
-				//time limit
-				if($autoLogin->getLimit() > time()){
-					$myPage->setAttribute("loggedin", true);
-					$myPage->setAttribute("userId", $autoLogin->getUserId());
-					$myPage->setAttribute("autoLoginId", $autoLogin->getId());
-
-					/* change key */
-					$token = md5(time() . $autoLogin->getUserId() . rand(0, 65535));
-
-					$expire = $autoLogin->getLimit();
-
-					//SOY CMS側でMyPageLogicを利用する場合に必要な時がある
-					if(!function_exists("soyshop_get_site_url")) SOY2::import("base.func.common",".php");
-					setcookie("soyshop_mypage_" . SOYSHOP_ID . $myPage->getId() . "_auto_login", $token, $expire, soyshop_get_site_url());
-					$autoLogin->setToken($token);
-					$autoLogin->save();
-
-				}else{
-					$autoLogin->delete();
-					setcookie("soyshop_mypage_" . SOYSHOP_ID . $myPage->getId() . "_auto_login", null);
-				}
-
+				$autoLogin = $autoLoginDao->getByToken($token);
 			}catch(Exception $e){
-				setcookie("soyshop_mypage_" . SOYSHOP_ID . $myPage->getId() . "_auto_login", null);
+				$autoLogin = new SOYShop_AutoLoginSession();
+			}
+
+			//事前に同じUserIdのデータを削除
+			try{
+				$autoLoginDao->deleteByUserId($autoLogin->getUserId());
+				$autoLoginDao->deleteOldObjects();	//古いトークンを削除
+			}catch(Exception $e){
+				//
+			}
+
+			//time limit
+			if(is_numeric($autoLogin->getUserId()) && $autoLogin->getLimit() > time()){
+				/* change key */
+				$token = md5(time() . $autoLogin->getUserId() . rand(0, 65535));
+				$myPage->setAttribute("loggedin", true);
+				$myPage->setAttribute("userId", $autoLogin->getUserId());
+				$myPage->setAttribute("autoLoginToken", $token);
+
+				$opts = array(
+					"path" => soyshop_get_site_url(),
+					"secure" => (strpos(soyshop_get_site_url(true), "https") === 0),
+					"httponly" => true
+				);
+				$opts["expires"] = $autoLogin->getLimit();
+
+				//SOY CMS側でMyPageLogicを利用する場合に必要な時がある
+				if(!function_exists("soyshop_get_site_url")) SOY2::import("base.func.common",".php");
+
+				$autoLogin->setToken($token);
+				try{
+					$autoLoginDao->insert($autoLogin);
+				}catch(Exception $e){
+					//
+				}
+				soy2_setcookie($cookieKey, $token, $opts);
 			}
 		}
 
@@ -93,6 +106,11 @@ class MyPageLogic extends SOY2LogicBase{
 	function clear(){
 		MyPageLogic::clearMyPage($this->getId());
 		CartLogic::clearCart();
+	}
+
+	/** cookie **/
+	private static function _setCookie(){
+
 	}
 
 	/**
@@ -428,8 +446,8 @@ class MyPageLogic extends SOY2LogicBase{
 		));
 
 		/* auto login */
-		$autoLoginSessionId = $this->getAttribute("autoLoginId");
-		if($autoLoginSessionId) $this->autoLogout($autoLoginSessionId);
+		if(!is_null($this->getAttribute("autoLoginToken"))) $this->autoLogout();
+		soy2_setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login");
 
 		$this->clear();
 	}
@@ -521,7 +539,8 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @param str defult documentRoot
 	 */
 	function autoLogin($expire = SOYSHOP_AUTOLOGIN_EXPIRE, $url = null){
-		$token = md5(time() . $this->getUserId() . mt_rand(0, 65535));
+		$userId = $this->getAttribute("userId");	//このコードを読む時に$this->getUserId()が使えない事がある
+		$token = md5(time() . $userId . mt_rand(0, 65535));
 		$expire += time();
 
 		if(is_null($url)) $url = soyshop_get_site_url(true);
@@ -541,33 +560,43 @@ class MyPageLogic extends SOY2LogicBase{
 			$path .= "/";
 		}
 
+		$opts = array(
+			"expires" => $expire,
+			"path" => $path,
+			"secure" => $secure,
+			"httponly" => true
+		);
+		if(isset($domain)) $opts["domain"] = $domain;
+		
 		//Cookie
-		if(isset($domain)){
-			setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login", $token, $expire, $path, $domain, $secure);
-		}else{
-			setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login", $token, $expire, $path);
-		}
+		soy2_setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login", $token, $opts);
 
-		SOY2::import("domain.user.SOYShop_AutoLoginSession");
-		$login = new SOYShop_AutoLoginSession();
-		$login->setUserId($this->getUserId());
-		$login->setToken($token);
-		$login->setLimit($expire);
-
-		$login->save();
-
-		$this->setAttribute("autoLoginId", $login->getId());
-	}
-
-	function autoLogout($autoLoginSessionId){
-
+		$autoLoginDao = SOY2DAOFactory::create("user.SOYShop_AutoLoginSessionDAO");
 		try{
-			$dao = SOY2DAOFactory::create("user.SOYShop_AutoLoginSessionDAO");
-			$session = $dao->getById($autoLoginSessionId);
-			$session->delete();
+			$autoLoginDao->deleteByUserId($userId);
+			$autoLoginDao->deleteOldObjects();
 		}catch(Exception $e){
 			//
 		}
+		$autoLogin = new SOYShop_AutoLoginSession();
+		$autoLogin->setUserId($userId);
+		$autoLogin->setToken($token);
+		$autoLogin->setLimit($expire);
+		try{
+			$autoLoginDao->insert($autoLogin);
+			$this->setAttribute("autoLoginToken", $autoLogin->getToken());
+		}catch(Exception $e){
+			//
+		}
+	}
+
+	function autoLogout(){
+		try{
+			SOY2DAOFactory::create("user.SOYShop_AutoLoginSessionDAO")->deleteByUserId($this->getUserId());
+		}catch(Exception $e){
+			//
+		}
+		soy2_setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login");
 	}
 
 	/**
@@ -575,8 +604,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * @return boolean
 	 */
 	function getIsAutoLogin(){
-		$res = $this->getAttribute("autoLoginId");
-		return (!is_null($res));	//値が存在している場合はtrueを返す
+		return (!is_null($this->getAttribute("autoLoginToken")));	//値が存在している場合はtrueを返す
 	}
 
 	/**
@@ -595,7 +623,6 @@ class MyPageLogic extends SOY2LogicBase{
 	 */
 	function createToken($mail){
 
-		$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 		$tokenDAO = SOY2DAOFactory::create("user.SOYShop_UserTokenDAO");
 
 		//翌日の00:00まで
@@ -608,7 +635,7 @@ class MyPageLogic extends SOY2LogicBase{
 		$limit = $limit + 60 * 60 * 24 -1;
 
 		try{
-			$user = $userDAO->getByMailAddress($mail);
+			$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mail);
 			$query = $this->createQuery($user->getMailAddress());
 
 		}catch(Exception $e){
@@ -621,7 +648,7 @@ class MyPageLogic extends SOY2LogicBase{
 			$token = $tokenDAO->getByUserId($user->getId());
 			$token->setToken($query);
 			$token->setLimit($limit);
-			$token->save();
+			$tokenDAO->update($token);
 
 		}catch(Exception $e){
 			$token = new SOYShop_UserToken();
@@ -629,7 +656,7 @@ class MyPageLogic extends SOY2LogicBase{
 			$token->setToken($query);
 			$token->setLimit($limit);
 
-			$token->save();
+			$tokenDAO->insert($token);
 		}
 
 		return array($query, $limit);

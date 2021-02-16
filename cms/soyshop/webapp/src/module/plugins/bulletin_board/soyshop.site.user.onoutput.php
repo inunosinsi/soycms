@@ -16,18 +16,13 @@ class BulletinBoardUserOutput extends SOYShopSiteUserOnOutputAction{
 		}
 
 		$replacements = array(
-			"購入" => "予約",
-			"商品番号" => "プランコード",
-			"商品" => "プラン",
-			"注文" => "予約",
-			"個数" => "人数",
-			"お買い物" => "予約"
+			//"購入" => "予約",
 		);
 
-		if(count($replacements)){
-			foreach($replacements as $old => $new){
-				$html = str_replace($old, $new, $html);
-			}
+		if(!count($replacements)) return $html;
+
+		foreach($replacements as $old => $new){
+			$html = str_replace($old, $new, $html);
 		}
 
 		return $html;

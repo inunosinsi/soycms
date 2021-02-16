@@ -11,8 +11,9 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 のように配置したら、インストールは完了です。
 
 /** リリース **/
-NEXT
+2.3.1
 	- SOY Board on SOY Shop
+	- soy2_setcookie(SameSite属性値の自動挿入)
 2.3.0
 	○追加
 	 - Cart05Pageで在庫数のチェックを追加→廃止
