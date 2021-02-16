@@ -189,9 +189,10 @@ create table soyshop_user_attribute(
 
 drop table soyshop_auto_login;
 create table soyshop_auto_login(
-	user_id INTEGER NOT NULL UNIQUE,
-	session_token VARCHAR NOT NULL,
-	time_limit INTEGER
+	user_id INTEGER NOT NULL,
+	token VARCHAR NOT NULL,
+	time_limit INTEGER,
+	UNIQUE(user_id, token)
 );
 
 drop table soyshop_user_token;

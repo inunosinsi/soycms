@@ -8,10 +8,6 @@ class SOYShop_AutoLoginSession extends SOY2DAO_EntityBase{
 	 * @column user_id
 	 */
 	private $userId;
-
-	/**
-	 * @column session_token
-	 */
 	private $token;
 
 	/**

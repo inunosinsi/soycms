@@ -190,9 +190,10 @@ create table soyshop_user_attribute(
 
 drop table soyshop_auto_login;
 create table soyshop_auto_login(
-	user_id INTEGER NOT NULL UNIQUE,
-	session_token CHAR(32) NOT NULL,
-	time_limit INTEGER
+	user_id INTEGER NOT NULL,
+	token CHAR(32) NOT NULL,
+	time_limit INTEGER,
+	UNIQUE(user_id, token)
 ) ENGINE=InnoDB;
 
 drop table soyshop_user_token;
