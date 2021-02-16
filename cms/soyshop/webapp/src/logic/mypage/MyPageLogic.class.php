@@ -566,8 +566,8 @@ class MyPageLogic extends SOY2LogicBase{
 			"secure" => $secure,
 			"httponly" => true
 		);
-		if(isset($domain)) $opts["domain"] = $domain;
-		
+		//if(isset($domain)) $opts["domain"] = $domain;
+
 		//Cookie
 		soy2_setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login", $token, $opts);
 
