@@ -5,6 +5,29 @@ if(isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
 	$_SERVER["SERVER_PORT"] = "443";
 }
 
+//session
+if(is_null($_SESSION)){
+	$version = phpversion();
+	$majorVersion = (int)substr($version, 0, strpos($version, "."));
+	$minorVersion = (int)substr($version, strpos($version, ".") + 1);
+
+	$opts = array(
+		"lifetime" => 0,
+		"path" => "/",
+		"domain" => null,
+		"secure" => (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on"),
+		"httponly" => true
+	);
+
+	//php 7.3以降 samesiteの指定が出来る
+	if($majorVersion >= 8 || ($majorVersion >= 7 && $minorVersion >= 3)){
+		$opts["samesite"] = ($opts["secure"]) ? "Lax" : "None";
+		session_set_cookie_params($opts);
+	}else{
+		session_set_cookie_params($opts["lifetime"], $opts["path"], $opts["domain"], $opts["secure"], $opts["httponly"]);
+	}
+}
+
 /**
  * commonとあるが管理画面専用
  * 主にSOY2関連の設定
