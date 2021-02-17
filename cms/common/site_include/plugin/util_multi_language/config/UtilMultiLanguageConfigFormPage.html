@@ -5,23 +5,27 @@
 		<tr>
 		<th><!-- soy:id="language_type" /-->サイトのプリフィックスの設定</th>
 		<td>
-			<input type="hitden" soy:id="no_use_hitden"><br>
+			<input type="hidden" soy:id="no_use_hidden">
 			<input type="checkbox" soy:id="is_use_checkbox">
 		</td>
 		<td>
-			<input type="text" soy:id="prefix_input" /><br />
-			※http://<!-- soy:id="domain" /-->/siteの場合、http://<!-- soy:id="domain*" /-->/site<strong><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br />
-			※http://<!-- soy:id="domain*" /-->/site/blog/article/testの場合、http://<!-- soy:id="domain*" /-->/site<strong><!-- soy:id="prefix_text*" /--></strong>/blog/article/testにリダイレクトします
-			
+			<input type="text" soy:id="prefix_input" />
+			<div class="alert alert-warning">
+				※http://<!-- soy:id="domain" /-->/siteの場合、http://<!-- soy:id="domain*" /-->/site<strong><!-- soy:id="prefix_text" /--></strong>にリダイレクトします<br />
+				※http://<!-- soy:id="domain*" /-->/site/blog/article/testの場合、http://<!-- soy:id="domain*" /-->/site<strong><!-- soy:id="prefix_text*" /--></strong>/blog/article/testにリダイレクトします
+			</div>
+
 			<!-- soy:id="display_smartphone_config" -->
-			<h3>スマホ版</h3>
-			※http://<!-- soy:id="domain*" /-->/siteの場合、http://<!-- soy:id="domain*" /-->/site<strong>/<!-- soy:id="smart_prefix" /--><!-- soy:id="prefix_text*" /--></strong>にリダイレクトします<br />
-			※http://<!-- soy:id="domain*" /-->/site/blog/article/testの場合、http://<!-- soy:id="domain*" /-->/site<strong>/<!-- soy:id="smart_prefix*" /--><!-- soy:id="prefix_text*" /--></strong>/blog/article/testにリダイレクトします
+			<div class="alert alert-warning">
+				<h4>スマホ版</h4>
+				※http://<!-- soy:id="domain*" /-->/siteの場合、http://<!-- soy:id="domain*" /-->/site<strong>/<!-- soy:id="smart_prefix" /--><!-- soy:id="prefix_text*" /--></strong>にリダイレクトします<br />
+				※http://<!-- soy:id="domain*" /-->/site/blog/article/testの場合、http://<!-- soy:id="domain*" /-->/site<strong>/<!-- soy:id="smart_prefix*" /--><!-- soy:id="prefix_text*" /--></strong>/blog/article/testにリダイレクトします
+			</div>
 			<!-- /soy:id="display_smartphone_config" -->
 		</td>
 		</tr>
 		<!-- /soy:id="language_list" -->
-		
+
 		<tr><th>公開側の表示の際にブラウザの言語設定を確認する</th>
 		<td>
 			<input type="checkbox" soy:id="confirm_browser_language"><br>
@@ -30,14 +34,14 @@
 	</table>
 </div>
 
-<p class="pageBtn">
-	<input type="submit" class="submit_button" value="変更" />
-</p>
+<div class="text-center">
+	<input type="submit" class="btn btn-primary btn-lg" value="変更" />
+</div>
 
-</form soy:id="form">
+</form>
 
 <h3>テンプレート記述例</h3>
-<pre style="border:1px solid #000000;padding:5px 10px;margin:0 15px;">
+<pre>
 &lt;a cms:id="language_jp_link"&gt;日本語サイト&lt;/a&gt;
 &lt;a cms:id="language_en_link"&gt;英語サイト&lt;/a&gt;
 &lt;a cms:id="language_zh_link"&gt;中国語サイト&lt;/a&gt;

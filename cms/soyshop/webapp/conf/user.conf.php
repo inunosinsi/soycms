@@ -6,7 +6,7 @@ if(isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
 }
 
 //session
-if(is_null($_SESSION)){
+if(!isset($_SESSION) || is_null($_SESSION)){
 	$version = phpversion();
 	$majorVersion = (int)substr($version, 0, strpos($version, "."));
 	$minorVersion = (int)substr($version, strpos($version, ".") + 1);
