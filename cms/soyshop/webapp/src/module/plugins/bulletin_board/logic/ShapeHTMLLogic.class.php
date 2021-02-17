@@ -150,7 +150,7 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 
 		//imgタグの使用方法に問題がないか？あれば消す
 		self::_checkImgTag();
-
+		
 		return $this->html;
 	}
 
@@ -378,6 +378,13 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		if(is_null($tagList)) $tagList = BulletinBoardUtil::getUsagableHtmlTagList();
 
 		foreach($tagList as $t){
+			if($t == "code"){
+				var_dump($t);
+				var_dump(is_numeric(strpos($tag, "<" . $t)));
+				var_dump(is_numeric(strpos($tag, "<" . $t . ">")));
+				var_dump(is_numeric(strpos($tag, "<" . $t . " ")));
+			}
+
 			if(is_numeric(strpos($tag, "<" . $t)) && (is_numeric(strpos($tag, "<" . $t . ">")) || is_numeric(strpos($tag, "<" . $t . " ")))) return false;
 		}
 

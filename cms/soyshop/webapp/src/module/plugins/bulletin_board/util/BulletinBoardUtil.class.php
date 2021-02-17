@@ -66,8 +66,8 @@ class BulletinBoardUtil {
 			if(is_numeric(strpos($line, "  "))) $line = str_replace("  ", "\t", $line);
 
 			//<code>タグの場合は<pre><code>にする
-			if(is_numeric(strpos($line, "<code>")) && is_bool(strpos($line, "<pre><code>"))) $line = "<pre><code>";
-			if(is_numeric(strpos($line, "</code>")) && is_bool(strpos($line, "</code></pre>"))) $line = "</code></pre>";
+			if(is_numeric(strpos($line, "<code>")) && is_bool(strpos($line, "<pre><code>"))) $line = str_replace("<code>", "<pre><code>", $line);
+			if(is_numeric(strpos($line, "</code>")) && is_bool(strpos($line, "</code></pre>"))) $line = str_replace("</code>", "</code></pre>", $line);
 
 			$html .= $line;
 
