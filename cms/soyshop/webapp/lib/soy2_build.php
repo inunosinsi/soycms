@@ -9208,7 +9208,7 @@ function soy2_unserialize($string){
  * tokenを発行など
  */
 function soy2_get_token(){
-	if(!isset($_SESSION))@session_start();
+	if(!isset($_SESSION)) session_start();
 	if(!isset($_SESSION["soy2_token"])){
 		$_SESSION["soy2_token"] = soy2_generate_token();
 	}
