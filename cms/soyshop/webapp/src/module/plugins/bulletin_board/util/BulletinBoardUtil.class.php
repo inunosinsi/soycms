@@ -66,16 +66,26 @@ class BulletinBoardUtil {
 			if(is_numeric(strpos($line, "  "))) $line = str_replace("  ", "\t", $line);
 
 			//<code>タグの場合は<pre><code>にする
-			if(is_numeric(strpos($line, "<code>")) && is_bool(strpos($line, "<pre><code>"))) $line = str_replace("<code>", "<pre><code>", $line);
-			if(is_numeric(strpos($line, "</code>")) && is_bool(strpos($line, "</code></pre>"))) $line = str_replace("</code>", "</code></pre>", $line);
+			if(is_numeric(strpos($line, "<code>")) && is_bool(strpos($line, "<pre><code>"))) $line = trim(str_replace("<code>", "<pre><code>", $line));
+			if(is_numeric(strpos($line, "</code>")) && is_bool(strpos($line, "</code></pre>"))) {
+				$line = trim(str_replace("</code>", "</code></pre>", $line));
+				$html = rtrim($html);	//末端の改行を外す
+			}
+
+			if(is_numeric(strpos($line, "</pre>"))){
+				$html = rtrim($html);	//末端の改行を外す
+			}
+
+			//<pre>内は改行なし
+			if(is_numeric(strpos($line, "<pre>"))) {
+				$line = trim($line);
+				$noBrMode = true;
+			}
 
 			$html .= $line;
 
-			//<pre>内は改行なし
-			if(is_numeric(strpos($line, "<pre>"))) $noBrMode = true;
-
 			//改行なし
-			if($line == "<code>") continue;
+			if(is_numeric(strpos($line, "<pre><code>")) || is_numeric(strpos($line, "<pre>"))) continue;	//二番目の条件は意味ないかも
 
 			if(!$noBrMode && $i < $lastLine - 1) $html .= "<br>";
 
