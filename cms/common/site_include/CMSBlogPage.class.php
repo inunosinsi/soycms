@@ -655,12 +655,16 @@ class CMSBlogPage extends CMSPage{
 		//メッセージの設定
 		$this->createAdd("blog_name","CMSLabel",array(
 			"text" => $this->page->getTitle(),
-			"soy2prefix"=>"b_block")
-		);
+			"soy2prefix"=>"b_block"
+		));
 		$this->addLink("blog_url", array(
 			"link" => $this->getTopPageURL(true),
-			"soy2prefix"=>"b_block")
-		);
+			"soy2prefix"=>"b_block"
+		));
+		$this->createAdd("blog_url_path", "CMSLabel", array(
+			"link" => $this->getTopPageURL(true),
+			"soy2prefix"=>"b_block"
+		));
 		$this->createAdd("blog_description","CMSLabel",array(
 			"html"=>str_replace(array("\r\n","\r","\n"),"<br />",htmlspecialchars($this->page->getDescription())),
 			"soy2prefix"=>"b_block"
