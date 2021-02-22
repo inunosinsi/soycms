@@ -34,47 +34,46 @@ if(strlen($siteId) > 0){
 
 	$config = array();
 	$config[] = "<?php";
-	$config[] ='include(dirname(__FILE__) . "/' . $siteId .  '.admin.conf.php");';
-	$config[] = 'define("SOYSHOP_ID", ' . $siteId . '_SOYSHOP_ID);';
-	$config[] = 'define("SOYSHOP_SITE_DIRECTORY", ' . $siteId . '_SOYSHOP_SITE_DIRECTORY);';
-	$config[] = 'define("SOYSHOP_SITE_URL", ' . $siteId . '_SOYSHOP_SITE_URL);';
+	//$config[] ='include(dirname(__FILE__) . "/' . $siteId .  '.admin.conf.php");';
+	$config[] = 'if(!defined("SOYSHOP_ID")) define("SOYSHOP_ID", "' . $siteId . '");';
+	$config[] = 'if(!defined("SOYSHOP_SITE_DIRECTORY")) define("SOYSHOP_SITE_DIRECTORY", "' . $target. $siteId . '/");';
+	$config[] = 'if(!defined("SOYSHOP_SITE_URL")) define("SOYSHOP_SITE_URL", "' . $url . '");';
 	if($option["dbtype"] == "mysql"){
 		$config[] = '/* configure for mysql */';
-		$config[] = 'define("SOYSHOP_SITE_DSN", ' . $siteId . '_SOYSHOP_SITE_DSN);';
-		$config[] = 'define("SOYSHOP_SITE_USER", ' . $siteId . '_SOYSHOP_SITE_USER);';
-		$config[] = 'define("SOYSHOP_SITE_PASS", ' . $siteId . '_SOYSHOP_SITE_PASS);';
+		$config[] = 'if(!defined("SOYSHOP_SITE_DSN")) define("SOYSHOP_SITE_DSN", "' . $option["dsn"] . '");';
+		$config[] = 'if(!defined("SOYSHOP_SITE_USER")) define("SOYSHOP_SITE_USER", "' . $option["user"] . '");';
+		$config[] = 'if(!defined("SOYSHOP_SITE_PASS")) define("SOYSHOP_SITE_PASS", "' . $option["pass"] . '");';
 	}else{
 		$config[] = '/* configure for sqlite */';
-		$config[] = 'define("SOYSHOP_SITE_DSN", '. $siteId . '_SOYSHOP_SITE_DSN);';
-		$config[] = 'define("SOYSHOP_SITE_USER","");';
-		$config[] = 'define("SOYSHOP_SITE_PASS","");';
+		$config[] = 'if(!defined("SOYSHOP_SITE_DSN")) define("SOYSHOP_SITE_DSN", "sqlite:' . $target . $siteId . '/.db/sqlite.db");';
+		$config[] = 'if(!defined("SOYSHOP_SITE_USER")) define("SOYSHOP_SITE_USER","");';
+		$config[] = 'if(!defined("SOYSHOP_SITE_PASS")) define("SOYSHOP_SITE_PASS","");';
 	}
 	$config[] = '?>';
 
 	file_put_contents($dir . $name, implode("\n", $config));
 
-
-	//admin.config.phpの作成
-	$name = $siteId . ".admin.conf.php";
-	$config = array();
-	$config[] = "<?php";
-	$config[] = 'define("' . $siteId . '_SOYSHOP_ID","' . $siteId . '");';
-	$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_DIRECTORY","'. $target. "${siteId}/" .'");';
-	$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_URL","'.$url.'");';
-	if($option["dbtype"] == "mysql"){
-		$config[] = '/* configure for mysql */';
-		$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_DSN","' . $option["dsn"] . '");';
-		$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_USER","' . $option["user"] . '");';
-		$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_PASS","' . $option["pass"] . '");';
-	}else{
-		$config[] = '/* configure for sqlite */';
-		$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_DSN","sqlite:' . $target . "${siteId}/.db/sqlite.db" . '");';
-		$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_USER","");';
-		$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_PASS","");';
-	}
-	$config[] = '?>';
-
-	file_put_contents($dir . $name, implode("\n", $config));
+	//admin.config.phpの作成 →　廃止
+	// $name = $siteId . ".admin.conf.php";
+	// $config = array();
+	// $config[] = "<?php";
+	// $config[] = 'define("' . $siteId . '_SOYSHOP_ID","' . $siteId . '");';
+	// $config[] = 'define("' . $siteId . '_SOYSHOP_SITE_DIRECTORY","'. $target. "${siteId}/" .'");';
+	// $config[] = 'define("' . $siteId . '_SOYSHOP_SITE_URL","'.$url.'");';
+	// if($option["dbtype"] == "mysql"){
+	// 	$config[] = '/* configure for mysql */';
+	// 	$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_DSN","' . $option["dsn"] . '");';
+	// 	$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_USER","' . $option["user"] . '");';
+	// 	$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_PASS","' . $option["pass"] . '");';
+	// }else{
+	// 	$config[] = '/* configure for sqlite */';
+	// 	$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_DSN","sqlite:' . $target . "${siteId}/.db/sqlite.db" . '");';
+	// 	$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_USER","");';
+	// 	$config[] = 'define("' . $siteId . '_SOYSHOP_SITE_PASS","");';
+	// }
+	/** $config[] = '?>' **/;
+	//
+	// file_put_contents($dir . $name, implode("\n", $config));
 }
 $_SERVER["SCRIPT_FILENAME"] = __FILE__;
 

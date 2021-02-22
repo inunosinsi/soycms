@@ -67,7 +67,7 @@ class SQLMigrateConfigPage extends WebPage {
 		DisplayPlugin::toggle("migrate_en_route", ($dbTypeOnConfigFile == "sqlite" && $dbTypeOnDb == "mysql"));
 
 		$this->addLabel("config_file_path", array(
-			"text" => SOYSHOP_WEBAPP . "conf/shop/" . SOYSHOP_ID . ".admin.conf.php"
+			"text" => SOYSHOP_WEBAPP . "conf/shop/" . SOYSHOP_ID . ".conf.php"
 		));
 
 		$this->addLabel("old_dsn", array(
