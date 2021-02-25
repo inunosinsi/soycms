@@ -46,6 +46,7 @@ class NameTextColumn extends SOYInquiry_ColumnBase{
 		}
 
 		$values = $this->getValue();
+		if(is_null($values)) $values = array("", "");
 
 		$html = array();
 
