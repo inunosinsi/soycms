@@ -73,11 +73,11 @@ class DataBaseLogic extends SOY2LogicBase{
         $langId = UtilMultiLanguageUtil::getLanguageId($lang);
 
         switch($this->getMode()){
-          case self::MODE_CATEGORY:
-            $configs = CustomSearchFieldUtil::getCategoryConfig();
-            break;
-          default:
-            $configs = CustomSearchFieldUtil::getConfig();
+			case self::MODE_CATEGORY:
+				$configs = CustomSearchFieldUtil::getCategoryConfig();
+				break;
+			default:
+				$configs = CustomSearchFieldUtil::getConfig();
         }
 
 
@@ -142,7 +142,7 @@ class DataBaseLogic extends SOY2LogicBase{
         $sql = "INSERT INTO " . $this->getTableName() . " ".
                 "(" . implode(",", $columns) . ") ".
                 "VALUES (" . implode(",", $values) . ")";
-		
+
         $dao = new SOY2DAO();
 
         try{
