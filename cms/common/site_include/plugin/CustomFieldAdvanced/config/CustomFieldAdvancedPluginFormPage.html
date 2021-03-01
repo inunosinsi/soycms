@@ -230,6 +230,7 @@
 
 <form id="export_form" method="post">
 	<h4>CSVエクスポートβ</h4>
+	<div class="alert alert-warning">※「ペア」で設定したペア項目はエクスポートされません。</div>
 	<div>
 		<label><input type="checkbox" name="format[label]" value="1" checked="checked">1行目をラベルとする</label><br>
 		<label><input type="checkbox" name="format[quote]" value="1">データをダブルクォーテーションで必ず括る（オフの場合は自動判別）</label><br>
@@ -240,6 +241,8 @@
 		<input type="submit" name="csv" class="btn btn-default" value="CSV出力">
 	</div>
 </form>
+
+<br><br>
 
 <form id="import_form" method="post" enctype="multipart/form-data">
 <h4>CSVインポートβ</h4>
