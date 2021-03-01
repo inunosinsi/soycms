@@ -145,6 +145,10 @@ class MultiplePageFormUtil {
 		return self::_defaultTemplateDir() . $type . "/default.php";
 	}
 
+	public static function getCustomTemplateFileDir($type){
+		return self::_templateDir($type);
+	}
+
 	/** private method **/
 
 	private static function _types(){

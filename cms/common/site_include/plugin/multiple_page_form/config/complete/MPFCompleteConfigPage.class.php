@@ -54,7 +54,7 @@ class MPFCompleteConfigPage extends WebPage {
 		));
 
 		$this->addLabel("template_dir", array(
-			"text" => dirname(MultiplePageFormUtil::getTemplateFilePath($cnf)) . "/"
+			"text" => MultiplePageFormUtil::getCustomTemplateFileDir($cnf["type"])
 		));
 
 		$this->addLabel("default_template_file_path", array(
