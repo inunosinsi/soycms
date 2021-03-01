@@ -29,7 +29,7 @@ class DownloadListComponent extends HTMLList{
 		));
 
 		$this->addLink("download_link", array(
-			"link" => SOYSHOP_SITE_URL . soyshop_get_mypage_uri() . "?soyshop_download=download_assistant&token=" . $entity->getToken(),
+			"link" => soyshop_get_mypage_url(true) . "?soyshop_download=download_assistant&token=" . $entity->getToken(),
 		));
 
 		$this->addModel("no_download", array(
