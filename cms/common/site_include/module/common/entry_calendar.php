@@ -14,7 +14,8 @@ function soycms_entry_calendar($html, $page){
 		//ブログIDを取得
 		preg_match('/<!--.*cms:blog="(.*)".*\/-->/', $html, $tmp);
 		if(isset($tmp[1]) && is_numeric($tmp[1])){
-			$logic = SOY2Logic::createInstance("site_include.plugin.entry_calendar.logic.EntryCalendarLogic", array("blogId" => $tmp[1]));
+			$blogId = (int)$tmp[1];
+			$logic = SOY2Logic::createInstance("site_include.plugin.entry_calendar.logic.EntryCalendarLogic", array("blogId" => $blogId));
 
 			$dateList = array();
 
@@ -88,124 +89,18 @@ function soycms_entry_calendar($html, $page){
 			));
 
 
-
+			SOY2::import("site_include.plugin.entry_calendar.component.EntryCalendarComponent");
 			$obj->createAdd("date_list", "EntryCalendarComponent", array(
 				"soy2prefix" => "c_block",
 				"list" => $dateList,
 				"year" => $y,
 				"month" => $m,
 				"entries" => $logic->getEntryList($y, $m),
-				"entryPageUrl" => $logic->getEntryPageUrl()
+				"entryPageUrl" => $logic->getEntryPageUrl(),
+				"blogPageId" => $blogId
 			));
 		}
 	}
 
 	$obj->display();
-}
-
-class EntryCalendarComponent extends HTMLList {
-
-	private $year;
-	private $month;
-	private $entries;
-	private $entryPageUrl;
-
-	function populateItem($d){
-		$dd = (isset($d) && is_numeric($d) && $d > 0) ? $d : "";
-
-		//日付
-		$this->addLabel("day", array(
-			"soy2prefix" => "cms",
-			"text" => $dd
-		));
-
-		//曜日を調べて、土(6)だったら、<tr>で敷居を付ける
-		$this->addModel("next_week", array(
-			"soy2prefix" => "cms",
-			"visible" => (is_numeric($dd) && date("w", mktime(0, 0, 0, $this->month, $dd, $this->year)) == 6)
-		));
-
-		$this->createAdd("entry_list", "EntryCalendarEntryList", array(
-			"soy2prefix" => "c_block",
-			"list" => (is_numeric($dd) && isset($this->entries[$dd])) ? $this->entries[$dd] : array(),
-			"link" => self::convertUrlOnModuleBlogParts($this->entryPageUrl)
-		));
-	}
-
-	function setYear($year){
-		$this->year = $year;
-	}
-	function setMonth($month){
-		$this->month = $month;
-	}
-	function setEntries($entries){
-		$this->entries = $entries;
-	}
-
-	function setEntryPageUrl($entryPageUrl){
-		$this->entryPageUrl = $entryPageUrl;
-	}
-
-	private function convertUrlOnModuleBlogParts($url){
-		static $siteUrl;
-		if(is_null($siteUrl)){
-			if(defined("SOYCMS_SITE_ID")){
-				$siteId = SOYCMS_SITE_ID;
-			}else{
-				//SOY CMSの場合
-				if(defined("_SITE_ROOT_")){
-					$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
-				}else{
-					$siteId = UserInfoUtil::getSite()->getSiteId();
-				}
-			}
-
-			$old = CMSUtil::switchDsn();
-			try{
-				$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);
-			}catch(Exception $e){
-				$site = new Site();
-			}
-			CMSUtil::resetDsn($old);
-			$siteUrl = "/";
-			if(!$site->getIsDomainRoot()) $siteUrl .= $site->getSiteId() . "/";
-		}
-		return $siteUrl . $url;
-	}
-}
-
-class EntryCalendarEntryList extends HTMLList {
-
-	private $link;
-
-	function populateItem($entry){
-		$link = $this->link . "/" . rawurlencode($entry->getAlias());
-
-		$this->createAdd("entry_id", "CMSLabel" ,array(
-			"soy2prefix" => "cms",
-			"text" => $entry->getId(),
-		));
-
-		$this->createAdd("title", "CMSLabel", array(
-			"soy2prefix" => "cms",
-			"html" => "<a href=\"" . $link . "\">" . htmlspecialchars($entry->getTitle(), ENT_QUOTES, "UTF-8") . "</a>",
-		));
-
-		$this->createAdd("title_plain", "CMSLabel" ,array(
-			"soy2prefix" => "cms",
-			"text" => $entry->getTitle(),
-		));
-
-		$this->addLink("entry_link", array(
-			"soy2prefix" => "cms",
-			"link" => $link
-		));
-
-		//カスタムフィールド
-		CMSPlugin::callEventFunc('onEntryOutput', array("entryId" => $entry->getId(), "SOY2HTMLObject" => $this, "entry" => $entry));
-	}
-
-	function setLink($link){
-		$this->link = $link;
-	}
 }

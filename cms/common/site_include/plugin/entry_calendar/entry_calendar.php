@@ -6,7 +6,6 @@ class EntryCalendarPlugin{
 
 	const PLUGIN_ID = "entry_calendar";
 
-
 	function getId(){
 		return self::PLUGIN_ID;
 	}
@@ -20,7 +19,7 @@ class EntryCalendarPlugin{
 			"modifier"=>"Tsuyoshi Saito",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.2"
+			"version"=>"0.4"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
