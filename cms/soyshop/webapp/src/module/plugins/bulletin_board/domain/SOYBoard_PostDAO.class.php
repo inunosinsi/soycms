@@ -157,6 +157,18 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 	/**
 	 * @final
 	 */
+	function getLastPostDate(){
+		try{
+			$res = $this->executeQuery("SELECT create_date FROM soyboard_post WHERE is_open = " . SOYBoard_Post::IS_OPEN . " ". "ORDER BY create_date DESC LIMIT 1");
+		}catch(Exception $e){
+			$res = array();
+		}
+		return (isset($res[0]["create_date"])) ? (int)$res[0]["create_date"] : null;
+	}
+
+	/**
+	 * @final
+	 */
 	function getLatestPostByGroupId($groupId){
 		if(!is_numeric($groupId)) return new SOYBoard_Post();
 
@@ -169,6 +181,26 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 				"LIMIT 1";
 		try{
 			$res = $this->executeQuery($sql, array(":groupId" => $groupId));
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		return (isset($res[0])) ? $this->getObject($res[0]) : new SOYBoard_Post();
+	}
+
+	/**
+	 * @final
+	 */
+	function getLatestPostByTopicId($topicId){
+		if(!is_numeric($topicId)) return new SOYBoard_Post();
+
+		$sql = "SELECT * FROM soyboard_post ".
+				"WHERE topic_id = :topicId ".
+				"AND is_open = " . SOYBoard_Post::IS_OPEN . " ".
+				"ORDER BY create_date DESC ".
+				"LIMIT 1";
+		try{
+			$res = $this->executeQuery($sql, array(":topicId" => $topicId));
 		}catch(Exception $e){
 			$res = array();
 		}

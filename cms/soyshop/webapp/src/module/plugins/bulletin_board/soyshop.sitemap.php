@@ -2,13 +2,20 @@
 
 class BulletinBoardSitemap extends SOYShopSitemapBase{
 
-	function __construct(){}
+	function __construct(){
+		SOY2::import("module.plugins.bulletin_board.domain.SOYBoard_PostDAO");
+	}
 
 	function items(){
+		$postDao = SOY2DAOFactory::create("SOYBoard_PostDAO");
+
 		$items = array();
 
 		$uri = str_replace("/" . SOYSHOP_ID . "/", "/", soyshop_get_mypage_url() . "/board");
-		$items[] = array("loc" => $uri, "priority" => "0.8", "lastmod" => time());
+		//lastmodは最後の投稿の時刻を得る
+		$lastmod = $postDao->getLastPostDate();
+		if(is_null($lastmod)) $lastmod = time();
+		$items[] = array("loc" => $uri, "priority" => "0.8", "lastmod" => $lastmod);
 
 		/**
 		 * @ToDo lastmod
@@ -19,7 +26,9 @@ class BulletinBoardSitemap extends SOYShopSitemapBase{
 		$groups = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.GroupLogic")->get();
 		if(count($groups)){
 			foreach($groups as $group){
-				$items[] = array("loc" => $uri . "/topic/" . $group->getId(), "priority" => "0.5", "lastmod" => time());
+				$lastmod = $postDao->getLatestPostByGroupId($group->getId())->getCreateDate();
+				if(is_null($lastmod)) $lastmod = $group->getUpdateDate();
+				$items[] = array("loc" => $uri . "/topic/" . $group->getId(), "priority" => "0.5", "lastmod" => $lastmod);
 			}
 		}
 
@@ -27,17 +36,20 @@ class BulletinBoardSitemap extends SOYShopSitemapBase{
 		$topics = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.TopicLogic")->get(true);
 		if(count($topics)){
 			foreach($topics as $topic){
-				$items[] = array("loc" => $uri . "/topic/detail/" . $topic->getId(), "priority" => "0.5", "lastmod" => time());
+				$lastmod = $postDao->getLatestPostByTopicId($topic->getId())->getCreateDate();
+				$items[] = array("loc" => $uri . "/topic/detail/" . $topic->getId(), "priority" => "0.5", "lastmod" => $lastmod);
 			}
 		}
 
 		//ユーザ
-		$items[] = array("loc" => $uri . "/user/", "priority" => "0.5", "lastmod" => time());
 		$users = self::_getUsers();
 		if(count($users)){
+			$lastmod = 0;
 			foreach($users as $user){
-				$items[] = array("loc" => $uri . "/user/detail/" . $user->getId(), "priority" => "0.5", "lastmod" => time());
+				$items[] = array("loc" => $uri . "/user/detail/" . $user->getId(), "priority" => "0.5", "lastmod" => $user->getUpdateDate());
+				if($lastmod < $user->getUpdateDate()) $lastmod = $user->getUpdateDate();
 			}
+			$items[] = array("loc" => $uri . "/user/", "priority" => "0.5", "lastmod" => $lastmod);
 		}
 
 		return $items;

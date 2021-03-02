@@ -167,6 +167,7 @@ class CartConfigPage extends WebPage{
 			SOY2::import("domain.config.SOYShop_ShopConfig");
 			$sslUrl = SOYShop_ShopConfig::load()->getSiteUrl();
 		}
+		if(is_numeric(strpos($sslUrl, "httpss"))) $sslUrl = str_replace("httpss", "https", $sslUrl);
 		return $sslUrl;
 	}
 
