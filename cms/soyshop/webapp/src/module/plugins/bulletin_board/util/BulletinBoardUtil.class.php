@@ -86,7 +86,7 @@ class BulletinBoardUtil {
 
 			//改行なし
 			//if(is_numeric(strpos($line, "<pre><code>")) || is_numeric(strpos($line, "<pre>"))) continue;	//二番目の条件は意味ないかも
-			if(is_numeric(strpos($line, "<pre><code>")) continue;	//二番目の条件は意味ないかも
+			if(is_numeric(strpos($line, "<pre><code>"))) continue;	//二番目の条件は意味ないかも
 
 			if(!$noBrMode && $i < $lastLine - 1) $html .= "<br>";
 
