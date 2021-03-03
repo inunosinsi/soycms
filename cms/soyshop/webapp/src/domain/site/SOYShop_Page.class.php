@@ -323,16 +323,13 @@ class SOYShop_Page {
 	 */
 	function getWebPageObject($args){
 		include(SOYSHOP_SITE_DIRECTORY . ".page/" . $this->getCustomClassFileName());
-
-		$obj = SOY2HTMLFactory::createInstance($this->getCustomClassName(), array(
+		return SOY2HTMLFactory::createInstance($this->getCustomClassName(), array(
 			"arguments" => array("page" => $this, "arguments" => $args)
 		));
-		return $obj;
 	}
 
 	function getTypeText(){
 		$texts = self::getTypeTexts();
-
 		return $texts[$this->getType()];
 	}
 

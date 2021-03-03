@@ -13,11 +13,9 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
     //グループの場合の処理
     $childItems = array();
     if($item->getType() == SOYShop_Item::TYPE_GROUP || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD_GROUP){
-        $type = (method_exists($obj, "getSortType")) ? $obj->getSortType() : "item_code";
-        $order = (method_exists($obj, "getSortOrder") && $obj->getSortOrder() == 1) ? $type . " desc" : $type . " asc";
-        $logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array(
-        ));
-        $childItems = $logic->getChildItems($item->getId(), $order);
+        $type = ($obj instanceof SOYShop_DetailPage && method_exists($obj, "getSortType")) ? $obj->getSortType() : "item_code";
+        $order = ($obj instanceof SOYShop_DetailPage && method_exists($obj, "getSortOrder") && $obj->getSortOrder() == 1) ? $type . " desc" : $type . " asc";
+        $childItems = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array())->getChildItems($item->getId(), $order);
     }
     if(!$htmlObj instanceof SOYShop_ChildItemListComponent){
         $htmlObj->createAdd("child_item_list", "SOYShop_ChildItemListComponent", array(
