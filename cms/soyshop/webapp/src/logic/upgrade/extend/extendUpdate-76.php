@@ -42,7 +42,7 @@
 // 							unlink($cnfDir . $file);
 // 							unlink($cnfDir . $shopId . ".conf.php.backup");
 // 						}else{	//バックアップに戻す
-// 							move($cnfDir . $shopId . ".conf.php.backup", $cnfDir . $shopId . ".conf.php");
+// 							rename($cnfDir . $shopId . ".conf.php.backup", $cnfDir . $shopId . ".conf.php");
 // 						}
 // 					}
 // 				}
