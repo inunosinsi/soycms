@@ -8,24 +8,24 @@
     "packages": [
         {
             "name": "picqer/php-barcode-generator",
-            "version": "v2.0.1",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/picqer/php-barcode-generator.git",
-                "reference": "16c51a795454198500cdfb4f82de288945af3960"
+                "reference": "2221d834efab0dbfa9d37f9dfb4673d7f27f3757"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/picqer/php-barcode-generator/zipball/16c51a795454198500cdfb4f82de288945af3960",
-                "reference": "16c51a795454198500cdfb4f82de288945af3960",
+                "url": "https://api.github.com/repos/picqer/php-barcode-generator/zipball/2221d834efab0dbfa9d37f9dfb4673d7f27f3757",
+                "reference": "2221d834efab0dbfa9d37f9dfb4673d7f27f3757",
                 "shasum": ""
             },
             "require": {
                 "ext-mbstring": "*",
-                "php": ">=7.2.0"
+                "php": "^7.3|^8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^8.5"
+                "phpunit/phpunit": "^9.5"
             },
             "suggest": {
                 "ext-bcmath": "Barcode IMB (Intelligent Mail Barcode) needs bcmath extension",
@@ -82,9 +82,9 @@
             ],
             "support": {
                 "issues": "https://github.com/picqer/php-barcode-generator/issues",
-                "source": "https://github.com/picqer/php-barcode-generator/tree/master"
+                "source": "https://github.com/picqer/php-barcode-generator/tree/v2.1.0"
             },
-            "time": "2020-01-28T13:00:23+00:00"
+            "time": "2020-12-24T15:31:19+00:00"
         }
     ],
     "packages-dev": [],

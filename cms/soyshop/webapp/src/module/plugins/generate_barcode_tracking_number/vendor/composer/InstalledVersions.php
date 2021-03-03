@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '98b5794ef4b245f9658eff3a64839c24533da373',
+    'reference' => 'bd7b6f491546f088d46b202ae8cc78ddb1d3c4a5',
     'name' => '__root__',
   ),
   'versions' => 
@@ -31,16 +31,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '98b5794ef4b245f9658eff3a64839c24533da373',
+      'reference' => 'bd7b6f491546f088d46b202ae8cc78ddb1d3c4a5',
     ),
     'picqer/php-barcode-generator' => 
     array (
-      'pretty_version' => 'v2.0.1',
-      'version' => '2.0.1.0',
+      'pretty_version' => 'v2.1.0',
+      'version' => '2.1.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '16c51a795454198500cdfb4f82de288945af3960',
+      'reference' => '2221d834efab0dbfa9d37f9dfb4673d7f27f3757',
     ),
   ),
 );

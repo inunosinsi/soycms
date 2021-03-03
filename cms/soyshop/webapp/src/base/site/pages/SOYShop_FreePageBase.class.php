@@ -3,10 +3,8 @@
 class SOYShop_FreePageBase extends SOYShopPageBase{
 
 	function build($args){
-
 		$page = $this->getPageObject();
-		$obj = $page->getPageObject();
-
+		$obj = ($page instanceof SOYShop_Page) ? $page->getPageObject() : new SOYShop_FreePage();
 
 		$this->addLabel("free_title", array(
 			"text" => $obj->getTitle(),
