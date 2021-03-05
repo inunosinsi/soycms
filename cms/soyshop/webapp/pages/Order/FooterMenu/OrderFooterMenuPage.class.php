@@ -33,12 +33,12 @@ class OrderFooterMenuPage extends HTMLPage{
 
 	private function _buildExtensionArea(){
 		if(AUTH_CSV){
-			$list = array();
-		}else{
 			SOYShopPlugin::load("soyshop.order.upload");
 			$list = SOYShopPlugin::invoke("soyshop.order.upload", array(
 				"mode" => "list"
 			))->getList();
+		}else{
+			$list = array();
 		}
 
 		DisplayPlugin::toggle("upload_list", count($list));
