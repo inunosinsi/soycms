@@ -23,7 +23,7 @@ class ModuleFormListComponent extends HTMLList {
 
 		$this->addInput("module_price", array(
 			"name" => "Module[" . $entity->getId() . "][price]",
-			"value" => (is_numeric($entity->getPrice())) ? number_format($entity->getPrice()) : 0
+			"value" => $entity->getPrice()
 		));
 
 		return ($entity->isVisible());

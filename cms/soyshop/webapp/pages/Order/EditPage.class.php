@@ -1093,7 +1093,7 @@ class EditPage extends WebPage{
 
 		foreach($modules as $key => $module){
 			if(isset($newModules[$key])){
-				$newValue = (isset($newModules[$key]["price"])) ? $newModules[$key]["price"] : 0;
+				$newValue = (isset($newModules[$key]["price"])) ? (int)str_replace(",", "", $newModules[$key]["price"]) : 0;
 				$newName  = (isset($newModules[$key]["name"])) ? $newModules[$key]["name"] : "";
 				$newIsInclude = (isset($newModules[$key]["isInclude"]) && $newModules[$key]["isInclude"] == 1);
 				$delete   = ( isset($newModules[$key]["delete"]) && $newModules[$key]["delete"] );
