@@ -49,6 +49,7 @@ class CartLogic extends SOY2LogicBase{
 	 */
 	function __construct($cartId = null){
 		$this->id = $cartId;
+		if(!defined("SOYSHOP_USE_CART_TABLE_MODE")) define("SOYSHOP_USE_CART_TABLE_MODE", false);
 	}
 
 	/**

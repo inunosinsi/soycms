@@ -89,7 +89,7 @@ class AdminCartLogic extends CartLogic{
 			$orderDAO->commit();
 
 			//CartLogicの内容の一部をSQLite DBに移行するモードの場合はデータベースを削除する
-			if(SOYSHOP_USE_CART_TABLE_MODE){
+			if(defined("SOYSHOP_USE_CART_TABLE_MODE") && SOYSHOP_USE_CART_TABLE_MODE){
 				soyshop_cart_delete_db($this->db);
 				soyshop_cart_routine_delete_db();
 			}
@@ -252,7 +252,7 @@ class AdminCartLogic extends CartLogic{
 		$obj->setItemName($name);
 
 		//CartLogicの内容の一部をSQLite DBに移行するモードの場合はデータベースを削除する
-		if(SOYSHOP_USE_CART_TABLE_MODE){
+		if(defined("SOYSHOP_USE_CART_TABLE_MODE") && SOYSHOP_USE_CART_TABLE_MODE){
 			$items = soyshop_cart_get_items($this->db);
 			$items[] = $obj;
 			$this->db = soyshop_cart_set_items($this->db, $items);
