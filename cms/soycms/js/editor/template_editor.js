@@ -3,7 +3,7 @@ function setConfig(config){
 	template_editor_configuration = config;
 }
 
-var editor_mode = "textarea";
+var editor_mode = "editor";
 
 $(function(){
 	PanelManager.init("template_wrapper");
@@ -34,8 +34,7 @@ $(function(){
 	//クッキーからエディターの状態の取得
 	var regexp = new RegExp('; editor_mode=(.*?);');
 	var match  = ('; ' + document.cookie + ';').match(regexp);
-	//editor_mode = (match) ? match[1] : 'editor';
-	editor_mode = (match) ? match[1] : 'textarea';
+	editor_mode = (match) ? match[1] : 'editor';
 
 	//テキストエリアの初期化
 	var textarea = $("#template_content").css({
@@ -57,26 +56,6 @@ $(function(){
 	if(getStyleSheet().length == 0 && $("#cssButton")){
 		$("#cssButton").hide();
 	}
-
-	//tabキーの実行
-	textarea.keydown(function(e){
-		// キーコードが Tabキー押下時と一致した場合
-        if (e.which == 9 || e.keyCode == 9) {
-        	var current_position = this.selectionStart;
-            //var end_position = this.selectionEnd;	//end_positionの取得が無くてもtext2のsubstrは動く
-            var text1 = $(this).val().substr(0, current_position);
-            var text2 = $(this).val().substr(current_position);
-
-            // タブを挿入
-            var value = text1 + '\t' + text2;
-            $(this).val(value);
-            this.selectionStart = current_position + 1;
-            this.selectionEnd = current_position + 1;
-
-            // Tabキー押下時の通常の動作を無効化
-            return false;
-        }
-  });
 
 	$("#main_form").submit(function(){
 		sync_code();
@@ -105,18 +84,15 @@ function debug(str,flag){
  *	エディタの切り替え
  */
 function toggle_editor(){
-
-	// if(editor_mode == "editor"){
-	// 	sync_code();
-	// 	editor_mode = "textarea";
-	// }else{
-	// 	var code = $("#template_content").val();
-	// 	if(code.length < 1)code = "\n";
-	// 	$("#template_editor_frame").get(0).contentWindow.TemplateEditor.setCode(code);
-	// 	editor_mode = "editor";
-	// }
-
-	editor_mode = "textarea";	// @色付きエディタの廃止
+	if(editor_mode == "editor"){
+		sync_code();
+		editor_mode = "textarea";
+	}else{
+		var code = $("#template_content").val();
+		if(code.length < 1)code = "\n";
+		$("#template_editor_frame").get(0).contentWindow.TemplateEditor.setCode(code);
+		editor_mode = "editor";
+	}
 
 	document.cookie = 'editor_mode=' + editor_mode + '; expires=' + new Date(2030, 1).toUTCString();
 
@@ -128,13 +104,11 @@ function toggle_editor(){
  *	HTMLコードの同期を取る
  */
 function sync_code(){
-	editor_mode = "textarea";		// @色付きエディタの廃止
-
 	if(editor_mode == "editor"){
 		$("#template_content").val(template_editor_get_code());
 	}else{
 		var code = $("#template_content").val();
-		if(code.length < 1)code = "\n";
+		if(code.length < 1) code = "\n";
 		if($("#template_editor_frame").get(0).contentWindow.TemplateEditor){
 			$("#template_editor_frame").get(0).contentWindow.TemplateEditor.setCode(code);
 		}
@@ -271,39 +245,8 @@ function showPreview(){
 	}
 }
 function scrollTextArea(line, pos){
-
 	var tab_id = $("#template_editor_wrapper").prop("tab_id");
 	if($("#"+tab_id).length == 0) return;
-	var panel_pos = $("#"+tab_id).prop("panel_pos");
-
-	PanelManager.getPanel(panel_pos).activeTab(tab_id);
-
-	var $textarea = $("#template_content");
-
-	$textarea.scrollTop(line * 12);
-
-	$textarea[0].focus();
-	$textarea[0].setSelectionRange(pos, pos);
-	$textarea[0].focus();
-
-	// TODO ie
-	/*$textarea[0].focus();
-
-	if(is_ie){
-		if($textarea.value.substring(0,pos).indexOf("\n") != -1){
-			var step = $textarea.value.substring(0,pos).match(/\n/g).length;
-		}else{
-			var step = 0;
-		}
-
-		var range = $textarea.createTextRange();
-		range.move('character', pos-step);
-		range.select();
-	}else{
-		$textarea[0].setSelectionRange(pos, pos);
-	}
-
-	$textarea[0].focus();*/
 }
 
 function resizeTextArea($wrapper, $container){
@@ -489,13 +432,9 @@ function saveCSS(){
 }
 
 function insertHTML(code){
-	editor_mode = "textarea";	//エディタは常にtextarea
-
 	if(editor_mode == "editor"){
 		var frame = $("#template_editor_frame");
 		frame.get(0).contentWindow.TemplateEditor.insertCode(code);
-
-
 	}else{
 		textarea = $("#template_content");
 		var text = textarea.val()+ "\n\n" + code;
@@ -505,7 +444,6 @@ function insertHTML(code){
 
 //エディタの初期化
 function init_template_editor(){
-
 	var textarea = $("#template_content");
 	var frame = $("#template_editor_frame");
 
@@ -513,27 +451,28 @@ function init_template_editor(){
 		return;
 	}
 
-	var ua = navigator.userAgent;
+	//var ua = navigator.userAgent;
 
 	try{
-		if(ua.match('MSIE')){
-			frame.get(0).contentWindow.document.getElementById("main").contentEditable = true;
-		}else{
-			frame.get(0).contentWindow.document.designMode = "On";
-		}
-		frame.get(0).inited = true;
+		// if(ua.match('MSIE')){
+		// 	frame.get(0).contentWindow.document.getElementById("main").contentEditable = true;
+		// }else{
+		// 	frame.get(0).contentWindow.document.designMode = "On";
+		// }
+		// frame.get(0).inited = true;
 	}catch(e){
 		//do nothing
 	}
 
 	var code = textarea.val();
-	if(code.length < 1)code = "\n";
+	if(code.length < 1) code = "\n";
 	frame.get(0).contentWindow.TemplateEditor.setCode(code);
 
 	if(editor_mode != "editor"){
-		//editor_mode = "editor";
+		editor_mode = "editor";
 		toggle_editor();
 	}
+
 
 	//TextAreaも拡張する
 	init_text_area(textarea);
@@ -541,28 +480,7 @@ function init_template_editor(){
 
 //テンプレートエディタがactiveになったときに呼び出される
 function activeTemplateEditor(){
-
-	var ua = navigator.userAgent;
-	var frame = $("#template_editor_frame");
-
-	if(frame.inited)return;
-
-	if(!frame.get(0).contentWindow || !frame.get(0).contentWindow.TemplateEditor){
-		return;
-	}
-
-	try{
-		if(ua.match('MSIE')){
-			frame.get(0).contentWindow.document.getElementById("main").contentEditable = true;
-		}else{
-			frame.get(0).contentWindow.document.designMode = "On";
-		}
-		frame.get(0).inited = true;
-
-	}catch(e){
-		//do nothing
-	}
-
+	//
 }
 
 //エディタからHTMLを取得

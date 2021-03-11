@@ -1,4 +1,3 @@
-"use strict";
 /**
  * @class elFinder command "duplicate"
  * Create file/folder copy with suffix "copy Number"
@@ -7,14 +6,15 @@
  * @author  Dmitry (dio) Levashov
  */
 elFinder.prototype.commands.duplicate = function() {
+	"use strict";
 	var fm = this.fm;
 	
-	this.getstate = function(sel) {
-		var sel = this.files(sel),
+	this.getstate = function(select) {
+		var sel = this.files(select),
 			cnt = sel.length;
 
-		return !this._disabled && cnt && fm.cwd().write && $.map(sel, function(f) { return f.phash && f.read ? f : null  }).length == cnt ? 0 : -1;
-	}
+		return cnt && fm.cwd().write && $.grep(sel, function(f) { return f.read && f.phash === fm.cwd().hash && ! fm.isRoot(f)? true : false; }).length == cnt ? 0 : -1;
+	};
 	
 	this.exec = function(hashes) {
 		var fm     = this.fm,
@@ -26,7 +26,7 @@ elFinder.prototype.commands.duplicate = function() {
 				}), 
 			args = [];
 			
-		if (!cnt || this._disabled) {
+		if (! cnt) {
 			return dfrd.reject();
 		}
 		
@@ -42,9 +42,14 @@ elFinder.prototype.commands.duplicate = function() {
 		
 		return fm.request({
 			data   : {cmd : 'duplicate', targets : this.hashes(hashes)},
-			notify : {type : 'copy', cnt : cnt}
+			notify : {type : 'copy', cnt : cnt},
+			navigate : {
+				toast : {
+					inbuffer : {msg: fm.i18n(['complete', fm.i18n('cmdduplicate')])}
+				}
+			}
 		});
 		
-	}
+	};
 
-}
+};

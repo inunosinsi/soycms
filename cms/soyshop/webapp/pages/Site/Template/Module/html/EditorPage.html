@@ -6,7 +6,7 @@
 				<div class="alert alert-success" soy:display="updated">更新しました</div>
 				<div class="alert alert-danger" soy:display="invalid">モジュール名に?{}|&amp;~!()^"を含めることができません。</div>
 
-				<form soy:id="update_form">
+				<form soy:id="update_form" id="form">
 					<div class="form-group">
 						<label for="">モジュール名</label>
 						<input type="text" class="form-control" soy:id="module_name" />
@@ -18,14 +18,15 @@
 							<caption soy:id="module_id">モジュール</caption>
 							<tr>
 								<td>
-									<textarea id="module_editor" class="editor form-control" soy:id="module_content"></textarea>
+									<div id="editor" style="height: 400px" soy:id="module_content_ace"></div>
+									<textarea name="config[content]" style="display:none;"></textarea>
 								</td>
 							</tr>
 						</table>
 					</div>
 
 					<div class="text-center">
-						<input type="submit" class="btn btn-primary btn-lg" value="保存">
+						<button class="btn btn-primary btn-lg" id="save_btn">保存</button>
 					</div>
 				</form>
 
@@ -52,6 +53,36 @@
 	height:100px;
 }
 </style>
-<script src="./js/tools/template_editor.js"></script>
-<script src="./js/tools/advanced_textarea.js"></script>
-<script src="./js/three.js"></script>
+<script soy:id="ace_editor"></script>
+<script>
+var editor = ace.edit("editor");
+editor.setFontSize(16);
+editor.session.setUseSoftTabs(false);
+editor.getSession().setMode("ace/mode/html");
+
+$("#save_btn").on("click", function(){
+	save();
+});
+
+// ctrl + sで保存
+(function(){
+	$(window).on("keydown", function(ele){
+		var code = (ele.keyCode ? ele.keyCode : ele.which);
+	    // 上記コードはブラウザによってキーコードを取得するプロパティが異なる問題をかいけつするものです。
+
+	    if (!(code == 83 && ele.ctrlKey)) return true;
+	    // code 83 は　Sです。
+	　　
+	    ele.preventDefault();
+	    // ctrl+S に割り当てられているデフォルトの機能を無効化します。
+
+		save();
+	    return false;
+	});
+})();
+
+function save(){
+	$('textarea[name="config[content]"]').val(editor.getValue());
+	$("#form").submit();
+}
+</script>

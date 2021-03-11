@@ -73,9 +73,13 @@ class EditorPage extends CMSWebPageBase{
 		));
 
 		$content = (isset($ini["content"])) ? $ini["content"] : "";
-		$this->addTextArea("module_content", array(
-			"name" => "Module[content]",
-			"value" => self::getModuleContent($content, file_get_contents($this->modulePath)),
+		// $this->addTextArea("module_content", array(
+		// 	"name" => "Module[content]",
+		// 	"value" => self::getModuleContent($content, file_get_contents($this->modulePath)),
+		// ));
+
+		$this->addLabel("module_content_ace", array(
+			"text" => $this->getModuleContent($content, file_get_contents($this->modulePath))
 		));
 
 		$this->addLabel("module_example", array(
@@ -83,11 +87,15 @@ class EditorPage extends CMSWebPageBase{
 		));
 
 		//advanced_textarea
-		$this->addModel("advenced_textarea", array(
-			"attr:src" => SOY2PageController::createRelativeLink("js/tools/advanced_textarea.js") . "?" . SOYCMS_BUILD_TIME
-		));
-		$this->addModel("insert_tab", array(
-			"attr:src" => SOY2PageController::createRelativeLink("js/tools/insert_tab.js") . "?" . SOYCMS_BUILD_TIME
+		// $this->addModel("advenced_textarea", array(
+		// 	"attr:src" => SOY2PageController::createRelativeLink("js/tools/advanced_textarea.js") . "?" . SOYCMS_BUILD_TIME
+		// ));
+		// $this->addModel("insert_tab", array(
+		// 	"attr:src" => SOY2PageController::createRelativeLink("js/tools/insert_tab.js") . "?" . SOYCMS_BUILD_TIME
+		// ));
+
+		$this->addModel("ace_editor", array(
+			"attr:src" => SOY2PageController::createRelativeLink("js/ace/ace.js") . "?" . SOYCMS_BUILD_TIME
 		));
 	}
 

@@ -9,6 +9,7 @@ class EditorPage extends WebPage{
 	private $moduleId;
 	private $modulePath;
 	private $iniPath;
+	private $cmsJsDirPath;
 
 	function doPost(){
 
@@ -52,6 +53,10 @@ class EditorPage extends WebPage{
 
 	function __construct($args){
 
+		if(!defined("SOYCMS_ADMIN_URI")) define("SOYCMS_ADMIN_URI", "soycms");
+		if(!defined("SOYSHOP_ADMIN_URI")) define("SOYSHOP_ADMIN_URI", "soyshop");
+		$this->cmsJsDirPath = str_replace("/" . SOYSHOP_ADMIN_URI . "/", "/" . SOYCMS_ADMIN_URI . "/", SOY2PageController::createRelativeLink("./js/"));
+
 		$this->moduleId = (isset($_GET["moduleId"])) ? htmlspecialchars(str_replace("/", ".", $_GET["moduleId"])) : null;
 
 		$moduleDir = SOYSHOP_SITE_DIRECTORY . ".module/html/";
@@ -81,13 +86,21 @@ class EditorPage extends WebPage{
 		));
 
 		$content = (isset($ini["content"])) ? $ini["content"] : "";
-		$this->addTextArea("module_content", array(
-			"name" => "config[content]",
-			"value" => $this->getModuleContent($content, file_get_contents($this->modulePath))
+		// $this->addTextArea("module_content", array(
+		// 	"name" => "config[content]",
+		// 	"value" => $this->getModuleContent($content, file_get_contents($this->modulePath))
+		// ));
+		$this->addLabel("module_content_ace", array(
+			"text" => $this->getModuleContent($content, file_get_contents($this->modulePath))
 		));
 
 		$this->addLabel("module_example", array(
 			"text" => "<!-- shop:module=\"html." . $this->moduleId."\" -->\n" . @$ini["name"] . "のモジュールを読み込みます。\n<!-- /shop:module=\"html." . $this->moduleId."\" -->"
+		));
+
+		//ace editor
+		$this->addModel("ace_editor", array(
+			"attr:src" => $this->cmsJsDirPath . "ace/ace.js"
 		));
 	}
 

@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * @class  elFinder command "undo"
  * Undo previous commands
@@ -7,6 +5,7 @@
  * @author Naoki Sawada
  **/
 elFinder.prototype.commands.undo = function() {
+	"use strict";
 	var self = this,
 		fm = this.fm,
 		setTitle = function(undo) {
@@ -29,7 +28,7 @@ elFinder.prototype.commands.undo = function() {
 	this.syncTitleOnChange = true;
 	
 	this.getstate = function() {
-		return this.state;
+		return cmds.length? 0 : -1;
 	};
 	
 	this.setUndo = function(undo, redo) {
@@ -113,6 +112,7 @@ elFinder.prototype.commands.undo = function() {
  * @author Naoki Sawada
  **/
 elFinder.prototype.commands.redo = function() {
+	"use strict";
 	var self = this,
 		fm   = this.fm,
 		setTitle = function(redo) {
@@ -135,7 +135,7 @@ elFinder.prototype.commands.redo = function() {
 	this.syncTitleOnChange = true;
 	
 	this.getstate = function() {
-		return this.state;
+		return cmds.length? 0 : -1;
 	};
 	
 	this.setRedo = function(redo, undo) {
@@ -151,7 +151,7 @@ elFinder.prototype.commands.redo = function() {
 				setTitle(redo);
 			}
 		}
-	}
+	};
 	
 	this.exec = function() {
 		var undo = fm.getCommand('undo'),
@@ -187,4 +187,3 @@ elFinder.prototype.commands.redo = function() {
 		}
 	};
 };
-

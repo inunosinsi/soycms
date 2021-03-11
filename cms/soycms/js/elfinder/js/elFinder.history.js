@@ -6,6 +6,7 @@
  * @author Dmitry (dio) Levashov
  */
 elFinder.prototype.history = function(fm) {
+	"use strict";
 	var self = this,
 		/**
 		 * Update history on "open" event?
@@ -51,6 +52,16 @@ elFinder.prototype.history = function(fm) {
 				return fm.exec('open', history[fwd ? ++current : --current]).fail(reset);
 			}
 			return $.Deferred().reject();
+		},
+		/**
+		 * Sets the native history.
+		 *
+		 * @param String thash target hash
+		 */
+		setNativeHistory = function(thash) {
+			if (nativeHistory && (! nativeHistory.state || nativeHistory.state.thash !== thash)) {
+				nativeHistory.pushState({thash: thash}, null, location.pathname + location.search + (thash? '#elf_' + thash : ''));
+			}
 		};
 	
 	/**
@@ -60,7 +71,7 @@ elFinder.prototype.history = function(fm) {
 	 */
 	this.canBack = function() {
 		return current > 0;
-	}
+	};
 	
 	/**
 	 * Return true if can go forward
@@ -69,7 +80,7 @@ elFinder.prototype.history = function(fm) {
 	 */
 	this.canForward = function() {
 		return current < history.length - 1;
-	}
+	};
 	
 	/**
 	 * Go back
@@ -85,10 +96,15 @@ elFinder.prototype.history = function(fm) {
 	 */
 	this.forward = function() {
 		return go(true);
-	}
+	};
 	
 	// bind to elfinder events
-	fm.open(function(e) {
+	fm.bind('init', function() {
+		if (nativeHistory && !nativeHistory.state) {
+			setNativeHistory(fm.startDir());
+		}
+	})
+	.open(function() {
 		var l = history.length,
 			cwd = fm.cwd().hash;
 
@@ -99,14 +115,8 @@ elFinder.prototype.history = function(fm) {
 		}
 		update = true;
 
-		if (nativeHistory) {
-			if (! nativeHistory.state) {
-				nativeHistory.replaceState({thash: cwd}, null, location.pathname + location.search + '#elf_' + cwd);
-			} else {
-				nativeHistory.state.thash != cwd && nativeHistory.pushState({thash: cwd}, null, location.pathname + location.search + '#elf_' + cwd);
-			}
-		}
+		setNativeHistory(cwd);
 	})
-	.reload(reset);
+	.reload(fm.options.reloadClearHistory && reset);
 	
-}
+};

@@ -1,4 +1,3 @@
-"use strict";
 /**
  * @class elFinder command "copy".
  * Put files in filemanager clipboard.
@@ -7,17 +6,17 @@
  * @author  Dmitry (dio) Levashov
  */
 elFinder.prototype.commands.copy = function() {
-	
+	"use strict";
 	this.shortcuts = [{
 		pattern     : 'ctrl+c ctrl+insert'
 	}];
 	
-	this.getstate = function(sel) {
-		var sel = this.files(sel),
+	this.getstate = function(select) {
+		var sel = this.files(select),
 			cnt = sel.length;
 
-		return cnt && $.map(sel, function(f) { return f.phash && f.read ? f : null  }).length == cnt ? 0 : -1;
-	}
+		return cnt && $.grep(sel, function(f) { return f.read ? true : false; }).length == cnt ? 0 : -1;
+	};
 	
 	this.exec = function(hashes) {
 		var fm   = this.fm,
@@ -27,12 +26,12 @@ elFinder.prototype.commands.copy = function() {
 				});
 
 		$.each(this.files(hashes), function(i, file) {
-			if (!(file.read && file.phash)) {
+			if (! file.read) {
 				return !dfrd.reject(['errCopy', file.name, 'errPerm']);
 			}
 		});
 		
 		return dfrd.state() == 'rejected' ? dfrd : dfrd.resolve(fm.clipboard(this.hashes(hashes)));
-	}
+	};
 
-}
+};

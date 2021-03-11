@@ -15,7 +15,7 @@ class MultiplePageFormPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3302",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5.1"
+			"version"=>"0.5.2"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(

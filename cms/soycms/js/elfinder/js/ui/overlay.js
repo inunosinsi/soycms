@@ -1,11 +1,14 @@
 
 $.fn.elfinderoverlay = function(opts) {
+	"use strict";
+	var fm = this.parent().elfinder('instance'),
+		o, cnt, show, hide;
 	
 	this.filter(':not(.elfinder-overlay)').each(function() {
-		opts = $.extend({}, opts);
-		$(this).addClass('ui-widget-overlay elfinder-overlay')
+		opts = Object.assign({}, opts);
+		$(this).addClass('ui-front ui-widget-overlay elfinder-overlay')
 			.hide()
-			.mousedown(function(e) {
+			.on('mousedown', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
 			})
@@ -17,31 +20,31 @@ $.fn.elfinderoverlay = function(opts) {
 	});
 	
 	if (opts == 'show') {
-		var o    = this.eq(0),
-			cnt  = o.data('cnt') + 1,
-			show = o.data('show');
+		o    = this.eq(0);
+		cnt  = o.data('cnt') + 1;
+		show = o.data('show');
 
+		fm.toFront(o);
 		o.data('cnt', cnt);
 
 		if (o.is(':hidden')) {
-			o.zIndex(o.parent().zIndex()+1);
 			o.show();
 			show();
 		}
 	} 
 	
 	if (opts == 'hide') {
-		var o    = this.eq(0),
-			cnt  = o.data('cnt') - 1,
-			hide = o.data('hide');
+		o    = this.eq(0);
+		cnt  = o.data('cnt') - 1;
+		hide = o.data('hide');
 		
 		o.data('cnt', cnt);
 			
-		if (cnt == 0 && o.is(':visible')) {
+		if (cnt <= 0) {
 			o.hide();
-			hide();        
+			hide();
 		}
 	}
 	
 	return this;
-}
+};

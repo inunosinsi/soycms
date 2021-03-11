@@ -1,10 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0
-Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta charset="UTF-8">
 <script type="text/javascript" src="../jquery.js"></script>
-<!--script type="text/javascript" src="../prototype.js"></script-->
 <script type="text/javascript">
 //htmlをリプレースする
 function template_editor_replace(html){
@@ -176,20 +174,6 @@ function detectBlockId(html,id){
 	return result;
 }
 </script>
-<script type="text/javascript">
-var ts = (new Date).getTime(); // timestamp to avoid cache
-var ua = navigator.userAgent;
-
-if(ua.match('MSIE')){
-	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_msie.js?ts='+ts+'"></scr'+'ipt>');
-}else if(ua.match('Opera')){
-	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_opera.js?ts='+ts+'"></scr'+'ipt>');
-}else if(ua.match('WebKit')){
-	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_safari.js?ts='+ts+'"></scr'+'ipt>');
-}else{
-	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_gecko.js?ts='+ts+'"></scr'+'ipt>');
-}
-</script>
 <style type="text/css">
 *{
 	margin:0;
@@ -264,5 +248,23 @@ br{
 }
 </style>
 </head>
-<body onload=""><div id="main"></div></body>
+<body>
+	<div id="main"></div>
+</body>
+<script type="text/javascript" src="../ace/ace.js"></script>
+<script type="text/javascript">
+var ts = (new Date).getTime(); // timestamp to avoid cache
+document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_ace.js?ts='+ts+'"></scr'+'ipt>');
+// var ua = navigator.userAgent;
+//
+// if(ua.match('MSIE')){
+// 	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_msie.js?ts='+ts+'"></scr'+'ipt>');
+// }else if(ua.match('Opera')){
+// 	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_opera.js?ts='+ts+'"></scr'+'ipt>');
+// }else if(ua.match('WebKit')){
+// 	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_safari.js?ts='+ts+'"></scr'+'ipt>');
+// }else{
+// 	document.write('<scr'+'ipt type="text/javascript" src="template_editors/template_editor_gecko.js?ts='+ts+'"></scr'+'ipt>');
+// }
+</script>
 </html>

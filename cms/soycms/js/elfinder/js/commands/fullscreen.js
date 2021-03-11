@@ -1,4 +1,3 @@
-"use strict";
 /**
  * @class  elFinder command "fullscreen"
  * elFinder node to full scrren mode
@@ -7,13 +6,17 @@
  **/
 
 elFinder.prototype.commands.fullscreen = function() {
+	"use strict";
 	var self   = this,
 		fm     = this.fm,
 		update = function(e, data) {
+			var full;
 			e.preventDefault();
 			e.stopPropagation();
 			if (data && data.fullscreen) {
-				self.update(void(0), (data.fullscreen === 'on'));
+				full = (data.fullscreen === 'on');
+				self.update(void(0), full);
+				self.title = fm.i18n(full ? 'reinstate' : 'cmdfullscreen');
 			}
 		};
 
@@ -28,7 +31,7 @@ elFinder.prototype.commands.fullscreen = function() {
 
 	this.getstate = function() {
 		return 0;
-	}
+	};
 	
 	this.exec = function() {
 		var node = fm.getUI().get(0),

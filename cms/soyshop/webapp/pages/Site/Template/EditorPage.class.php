@@ -6,6 +6,11 @@
  */
 class EditorPage extends WebPage{
 
+	private $filepath;
+	private $iniFilePath;
+	private $value;
+	private $cmsJsDirPath;
+
 	function doPost(){
 
 		if(soy2_check_token()){
@@ -20,11 +25,11 @@ class EditorPage extends WebPage{
 
 	}
 
-	private $filepath;
-	private $iniFilePath;
-	private $value;
-
 	function __construct($args){
+
+		if(!defined("SOYCMS_ADMIN_URI")) define("SOYCMS_ADMIN_URI", "soycms");
+		if(!defined("SOYSHOP_ADMIN_URI")) define("SOYSHOP_ADMIN_URI", "soyshop");
+		$this->cmsJsDirPath = str_replace("/" . SOYSHOP_ADMIN_URI . "/", "/" . SOYCMS_ADMIN_URI . "/", SOY2PageController::createRelativeLink("./js/"));
 
 		SOY2::import("domain.site.SOYShop_Page");
 
@@ -94,7 +99,8 @@ class EditorPage extends WebPage{
     	$this->addLink("save_template_button", array(
     		"link" => "javascript:void(0);",
     		"id" => "save_template_button",
-    		"onclick" => "javascript:save_template('" . SOY2PageController::createLink("Site.Template.SaveTemplate.-."). $value . "',this);",
+			"onclick" => "javascript:save_ajax('" . SOY2PageController::createLink("Site.Template.SaveTemplate.-."). $value . "',this);",
+    		//"onclick" => "javascript:save_template('" . SOY2PageController::createLink("Site.Template.SaveTemplate.-."). $value . "',this);",
     		"visible" => function_exists("json_encode")
     	));
 
@@ -106,9 +112,13 @@ class EditorPage extends WebPage{
 			"text" => (isset($array["name"])) ? $array["name"] : ""
 		));
 
-		$this->addTextArea("template_content", array(
-			"name" => "template_content",
-			"value" => file_get_contents($filepath)
+		// $this->addTextArea("template_content", array(
+		// 	"name" => "template_content",
+		// 	"value" => file_get_contents($filepath)
+		// ));
+
+		$this->addLabel("template_content_ace", array(
+			"text" => file_get_contents($filepath)
 		));
 
 		/** タグサンプル **/
@@ -126,6 +136,11 @@ class EditorPage extends WebPage{
 
 		$this->createAdd("tag_sample_list", "_common.Site.TemplateTagSampleComponent", array(
 			"list" => $tagList
+		));
+
+		//ace editor
+		$this->addModel("ace_editor", array(
+			"attr:src" => $this->cmsJsDirPath . "ace/ace.js"
 		));
 	}
 

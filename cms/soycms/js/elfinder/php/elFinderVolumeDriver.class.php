@@ -5529,7 +5529,11 @@ abstract class elFinderVolumeDriver
         static $gdMimes = null;
         static $imgmgPS = null;
         if ($gdMimes === null) {
-            $gdMimes = array_flip(array('image/jpeg', 'image/png', 'image/gif', 'image/x-ms-bmp'));
+            $_mimes = array('image/jpeg', 'image/png', 'image/gif', 'image/x-ms-bmp');
+            if (function_exists('imagecreatefromwebp')) {
+                $_mimes[] = 'image/webp';
+            }
+            $gdMimes = array_flip($_mimes);
             $imgmgPS = array_flip(array('application/postscript', 'application/pdf'));
         }
         if ((!$checkTmbPath || $this->tmbPathWritable)
@@ -6413,6 +6417,9 @@ abstract class elFinderVolumeDriver
 
             case 'image/xpm':
                 return imagecreatefromxpm($path);
+
+            case 'image/webp':
+                return imagecreatefromwebp($path);
         }
         return false;
     }
@@ -6704,14 +6711,14 @@ abstract class elFinderVolumeDriver
                 $arcs['extract']['application/zip'] = array('cmd' => ELFINDER_UNZIP_PATH, 'argc' => '-q', 'ext' => 'zip', 'toSpec' => '-d ', 'getsize' => array('argc' => '-Z -t', 'regex' => '/^.+?,\s?([0-9]+).+$/', 'replace' => '$1'));
             }
             unset($o);
-            $this->procExec(ELFINDER_RAR_PATH . ' --version', $o, $c);
+            $this->procExec(ELFINDER_RAR_PATH, $o, $c);
             if ($c == 0 || $c == 7) {
-                $arcs['create']['application/x-rar'] = array('cmd' => ELFINDER_RAR_PATH, 'argc' => 'a -inul', 'ext' => 'rar');
+                $arcs['create']['application/x-rar'] = array('cmd' => ELFINDER_RAR_PATH, 'argc' => 'a -inul' . (defined('ELFINDER_RAR_MA4') && ELFINDER_RAR_MA4? ' -ma4' : ''), 'ext' => 'rar');
             }
             unset($o);
             $this->procExec(ELFINDER_UNRAR_PATH, $o, $c);
             if ($c == 0 || $c == 7) {
-                $arcs['extract']['application/x-rar'] = array('cmd' => ELFINDER_UNRAR_PATH, 'argc' => 'x -y', 'ext' => 'rar', 'toSpec' => '', 'getsize' => array('argc' => 'l', 'regex' => '/^.+(?:\r\n|\n|\r)[^\r\n0-9]+[0-9]+[^\r\n0-9]+([0-9]+)[^\r\n]+$/s', 'replace' => '$1'));
+                $arcs['extract']['application/x-rar'] = array('cmd' => ELFINDER_UNRAR_PATH, 'argc' => 'x -y', 'ext' => 'rar', 'toSpec' => '', 'getsize' => array('argc' => 'l', 'regex' => '/^.+(?:\r\n|\n|\r)(?:(?:[^\r\n0-9]+[0-9]+[^\r\n0-9]+([0-9]+)[^\r\n]+)|(?:[^\r\n0-9]+([0-9]+)[^\r\n0-9]+[0-9]+[^\r\n]*))$/s', 'replace' => '$1'));
             }
             unset($o);
             $this->procExec(ELFINDER_7Z_PATH, $o, $c);

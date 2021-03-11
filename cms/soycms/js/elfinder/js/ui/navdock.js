@@ -4,13 +4,13 @@
  * @author Naoki Sawada
  **/
 $.fn.elfindernavdock = function(fm, opts) {
-	
+	"use strict";
 	this.not('.elfinder-navdock').each(function() {
 		var self = $(this).hide().addClass('ui-state-default elfinder-navdock touch-punch'),
 			node = self.parent(),
 			wz   = node.children('.elfinder-workzone').append(self),
-			resize = function(to, curH) {
-				var curH = curH || self.height(),
+			resize = function(to, h) {
+				var curH = h || self.height(),
 					diff = to - curH,
 					len  = Object.keys(sizeSyncs).length,
 					calc = len? diff / len : 0,
@@ -26,7 +26,7 @@ $.fn.elfindernavdock = function(fm, opts) {
 					self.css('overflow', ovf);
 				}
 			},
-			handle = $('<div class="ui-front ui-resizable-handle ui-resizable-n"/>').appendTo(self),
+			handle = $('<div class="ui-front ui-resizable-handle ui-resizable-n"></div>').appendTo(self),
 			sizeSyncs = {},
 			resizeFn = [],
 			initMaxHeight = (parseInt(opts.initMaxHeight) || 50) / 100,
@@ -137,6 +137,15 @@ $.fn.elfindernavdock = function(fm, opts) {
 							}
 							self.resizable('option', 'maxHeight', maxH);
 						}
+					}).bind('themechange', function() {
+						var oldH = Math.round(self.height());
+						requestAnimationFrame(function() {
+							var curH = Math.round(self.height()),
+								diff = oldH - curH;
+							if (diff !== 0) {
+								resize(self.height(),  curH - diff);
+							}
+						});
 					});
 				}
 				fm.bind('navbarshow navbarhide', function(e) {

@@ -16,7 +16,7 @@ class MPFRouteUtil {
 	public static function doPost(){
 		//soy2_tokenがある場合は次のページを調べてリダイレクト GET版
 		$param = (isset($_POST["soy2_token"])) ? $_POST : $_GET;
-		if(isset($param["soy2_token"]) && soy2_check_token()){
+		if(isset($param["soy2_token"]) && soy2_check_token() && soy2_check_referer()){
 			//値を記録しておきたい
 			$hash = self::_getPageHash();
 
@@ -292,7 +292,7 @@ class MPFRouteUtil {
 	}
 
 	//今まで辿ってきたルートの中に同じハッシュがある場合は繰り返しハッシュを設ける
-	private function _repeatHash($hash){
+	private static function _repeatHash($hash){
 		$route = self::_get("mpf_route");
 		if(is_null($route) || !is_array($route) || !count($route)) return $hash;
 
@@ -330,7 +330,7 @@ class MPFRouteUtil {
 		return self::_generateRepeatHash($hash);
 	}
 
-	private function _generateRepeatHash($hash){
+	private static function _generateRepeatHash($hash){
 		$table = self::_repeatHashTable();
 		if(!isset($table[$hash])) $table[$hash] = array();
 
@@ -342,13 +342,13 @@ class MPFRouteUtil {
 		return $repeatHash;
 	}
 
-	private function _repeatHashTable(){
+	private static function _repeatHashTable(){
 		$table = self::_get("mpf_repeat_hash_table");
 		if(is_null($table)) $table = array();
 		return $table;
 	}
 
-	private function _createHashList($hash){
+	private static function _createHashList($hash){
 		$table = self::_repeatHashTable();
 		$list = array();
 		$list[] = $hash;

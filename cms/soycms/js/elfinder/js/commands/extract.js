@@ -1,4 +1,3 @@
-"use strict"
 /**
  * @class  elFinder command "extract"
  * Extract files from archive
@@ -6,44 +5,55 @@
  * @author Dmitry (dio) Levashov
  **/
 elFinder.prototype.commands.extract = function() {
+	"use strict";
 	var self    = this,
 		fm      = self.fm,
 		mimes   = [],
 		filter  = function(files) {
-			return $.map(files, function(file) { 
-				return file.read && $.inArray(file.mime, mimes) !== -1 ? file : null
-				
-			})
+			return $.grep(files, function(file) { 
+				return file.read && $.inArray(file.mime, mimes) !== -1 ? true : false;
+			});
 		};
 	
+	this.variants = [];
 	this.disableOnSearch = true;
 	
 	// Update mimes list on open/reload
 	fm.bind('open reload', function() {
 		mimes = fm.option('archivers')['extract'] || [];
+		if (fm.api > 2) {
+			self.variants = [[{makedir: true}, fm.i18n('cmdmkdir')], [{}, fm.i18n('btnCwd')]];
+		} else {
+			self.variants = [[{}, fm.i18n('btnCwd')]];
+		}
 		self.change();
 	});
 	
-	this.getstate = function(sel) {
-		var sel = this.files(sel),
+	this.getstate = function(select) {
+		var sel = this.files(select),
 			cnt = sel.length;
 		
-		return !this._disabled && cnt && this.fm.cwd().write && filter(sel).length == cnt ? 0 : -1;
-	}
+		return cnt && this.fm.cwd().write && filter(sel).length == cnt ? 0 : -1;
+	};
 	
-	this.exec = function(hashes) {
+	this.exec = function(hashes, opts) {
 		var files    = this.files(hashes),
 			dfrd     = $.Deferred(),
-			cnt      = files.length, 
+			cnt      = files.length,
+			makedir  = opts && opts.makedir ? 1 : 0,
 			i, error,
 			decision;
 
 		var overwriteAll = false;
 		var omitAll = false;
+		var mkdirAll = 0;
 
 		var names = $.map(fm.files(hashes), function(file) { return file.name; });
 		var map = {};
-		$.map(fm.files(hashes), function(file) { map[file.name] = file; });
+		$.grep(fm.files(hashes), function(file) {
+			map[file.name] = file;
+			return false;
+		});
 		
 		var decide = function(decision) {
 			switch (decision) {
@@ -67,9 +77,17 @@ elFinder.prototype.commands.extract = function() {
 				dfrd.reject(error);
 			} else {
 				fm.request({
-					data:{cmd:'extract', target:file.hash},
+					data:{cmd:'extract', target:file.hash, makedir:makedir},
 					notify:{type:'extract', cnt:1},
-					syncOnFail:true
+					syncOnFail:true,
+					navigate:{
+						toast : makedir? {
+							incwd    : {msg: fm.i18n(['complete', fm.i18n('cmdextract')]), action: {cmd: 'open', msg: 'cmdopen'}},
+							inbuffer : {msg: fm.i18n(['complete', fm.i18n('cmdextract')]), action: {cmd: 'open', msg: 'cmdopen'}}
+						} : {
+							inbuffer : {msg: fm.i18n(['complete', fm.i18n('cmdextract')])}
+						}
+					}
 				})
 				.fail(function (error) {
 					if (dfrd.state() != 'rejected') {
@@ -82,14 +100,21 @@ elFinder.prototype.commands.extract = function() {
 		};
 		
 		var confirm = function(files, index) {
-			var file = files[index];
-			var name = file.name.replace(/\.((tar\.(gz|bz|bz2|z|lzo))|cpio\.gz|ps\.gz|xcf\.(gz|bz2)|[a-z0-9]{1,4})$/ig, '');
-			var existed = ($.inArray(name, names) >= 0);
-			if(existed && map[name].mime != 'directory') {
+			var file = files[index],
+			name = fm.splitFileExtention(file.name)[0],
+			existed = ($.inArray(name, names) >= 0),
+			next = function(){
+				if((index+1) < cnt) {
+					confirm(files, index+1);
+				} else {
+					dfrd.resolve();
+				}
+			};
+			if (!makedir && existed && map[name].mime != 'directory') {
 				fm.confirm(
 					{
 						title : fm.i18n('ntfextract'),
-						text  : fm.i18n(['errExists', name, 'confirmRepl']),
+						text  : ['errExists', name, 'confirmRepl'],
 						accept:{
 							label : 'btnYes',
 							callback:function (all) {
@@ -105,7 +130,7 @@ elFinder.prototype.commands.extract = function() {
 										dfrd.resolve();
 									}
 								} else if(overwriteAll) {
-									for (i = 0; i < cnt; i++) {
+									for (i = index; i < cnt; i++) {
 										unpack(files[i]);
 									}
 									dfrd.resolve();
@@ -130,16 +155,44 @@ elFinder.prototype.commands.extract = function() {
 								dfrd.resolve();
 							}
 						},
-						all : (cnt > 1)
+						all : ((index+1) < cnt)
 					}
 				);
+			} else if (!makedir) {
+				if (mkdirAll == 0) {
+					fm.confirm({
+						title : fm.i18n('cmdextract'),
+						text  : [fm.i18n('cmdextract')+' "'+file.name+'"', 'confirmRepl'],
+						accept:{
+							label : 'btnYes',
+							callback:function (all) {
+								all && (mkdirAll = 1);
+								unpack(file);
+								next();
+							}
+						},
+						reject : {
+							label : 'btnNo',
+							callback:function (all) {
+								all && (mkdirAll = -1);
+								next();
+							}
+						},
+						cancel : {
+							label : 'btnCancel',
+							callback:function () {
+								dfrd.resolve();
+							}
+						},
+						all : ((index+1) < cnt)
+					});
+				} else {
+					(mkdirAll > 0) && unpack(file);
+					next();
+				}
 			} else {
 				unpack(file);
-				if((index+1) < cnt) {
-					confirm(files, index+1);
-				} else {
-					dfrd.resolve();
-				}
+				next();
 			}
 		};
 		
@@ -152,6 +205,6 @@ elFinder.prototype.commands.extract = function() {
 		}
 
 		return dfrd;
-	}
+	};
 
-}
+};

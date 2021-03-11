@@ -9,6 +9,7 @@ class EditorPage extends WebPage{
 	private $moduleId;
 	private $modulePath;
 	private $iniPath;
+	private $cmsJsDirPath;
 
 	function doPost(){
 
@@ -51,6 +52,10 @@ class EditorPage extends WebPage{
 		//PHPモジュールの使用が許可されていない場合はモジュール一覧に遷移
 		if(!defined("SOYCMS_ALLOW_PHP_MODULE") || !SOYCMS_ALLOW_PHP_MODULE) SOY2PageController::jump("Site.Template");
 
+		if(!defined("SOYCMS_ADMIN_URI")) define("SOYCMS_ADMIN_URI", "soycms");
+		if(!defined("SOYSHOP_ADMIN_URI")) define("SOYSHOP_ADMIN_URI", "soyshop");
+		$this->cmsJsDirPath = str_replace("/" . SOYSHOP_ADMIN_URI . "/", "/" . SOYCMS_ADMIN_URI . "/", SOY2PageController::createRelativeLink("./js/"));
+
 		$this->moduleId = (isset($_GET["moduleId"])) ? htmlspecialchars(str_replace("/", ".", $_GET["moduleId"])) : null;
 
 		$moduleDir = SOYSHOP_SITE_DIRECTORY . ".module/";
@@ -85,8 +90,17 @@ class EditorPage extends WebPage{
 			"value" => $this->getModuleContent($content, file_get_contents($this->modulePath))
 		));
 
+		$this->addLabel("module_content_ace", array(
+			"text" => $this->getModuleContent($content, file_get_contents($this->modulePath))
+		));
+
 		$this->addLabel("module_example", array(
 			"text" => "<!-- shop:module=\"" . $this->moduleId."\" -->\n" . @$ini["name"] . "のモジュールを読み込みます。\n<!-- /shop:module=\"" . $this->moduleId."\" -->"
+		));
+
+		//ace editor
+		$this->addModel("ace_editor", array(
+			"attr:src" => $this->cmsJsDirPath . "ace/ace.js"
 		));
 	}
 

@@ -23,7 +23,7 @@
 				<div class="col-lg-9">
 					<div class="panel panel-green">
 						<div class="panel-body">
-							<form soy:id="form">
+							<form soy:id="form" id="form">
 								<div class="form-group">
 									<label>モジュールID</label>
 									<input type="text" soy:id="module_id" class="form-control">
@@ -37,10 +37,11 @@
 
 								<div class="form-group">
 									<label>HTMLモジュールの内容</label>
-									<textarea soy:id="module_content" class="editor form-control" rows="20"></textarea>
+									<div id="editor" style="height: 400px" soy:id="module_content_ace"></div>
+									<textarea name="Edit[content]" style="display:none;"></textarea>
 								</div>
 
-								<input type="submit" value="保存" class="btn btn-default btn-lg btn-block">
+								<button class="btn btn-primary btn-lg btn-block" id="save_btn">保存</button>
 							</form>
 						</div>
 					</div>
@@ -63,5 +64,36 @@
 	</div>
 	<!-- /#wrapper -->
 </body>
-<script soy:id="advenced_textarea"></script>
-<script soy:id="insert_tab"></script>
+<script soy:id="ace_editor"></script>
+<script>
+var editor = ace.edit("editor");
+editor.setFontSize(16);
+editor.session.setUseSoftTabs(false);
+editor.getSession().setMode("ace/mode/html");
+
+$("#save_btn").on("click", function(){
+	save();
+});
+
+// ctrl + sで保存
+(function(){
+	$(window).on("keydown", function(ele){
+		var code = (ele.keyCode ? ele.keyCode : ele.which);
+	    // 上記コードはブラウザによってキーコードを取得するプロパティが異なる問題をかいけつするものです。
+
+	    if (!(code == 83 && ele.ctrlKey)) return true;
+	    // code 83 は　Sです。
+	　　
+	    ele.preventDefault();
+	    // ctrl+S に割り当てられているデフォルトの機能を無効化します。
+
+		save();
+	    return false;
+	});
+})();
+
+function save(){
+	$('textarea[name="Edit[content]"]').val(editor.getValue());
+	$("#form").submit();
+}
+</script>
