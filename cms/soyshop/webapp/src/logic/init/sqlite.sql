@@ -225,6 +225,13 @@ create table soyshop_mail_log(
 	UNIQUE(order_id, user_id, send_date)
 );
 
+drop table soyshop_mypage_login_log;
+create table soyshop_mypage_login_log(
+	user_id INTEGER,
+	log_date INTEGER NOT NULL,
+	UNIQUE(user_id, log_date)
+);
+
 drop table soyshop_ban_ip_address;
 create table soyshop_ban_ip_address(
 	ip_address VARCHAR NOT NULL UNIQUE,

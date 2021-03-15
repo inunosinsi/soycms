@@ -464,9 +464,9 @@ class MyPageLogic extends SOY2LogicBase{
 		$isExtendLogin = SOYShopPlugin::invoke("soyshop.mypage.login")->getResult();
 
 		if(isset($isExtendLogin) && is_bool($isExtendLogin) && $isExtendLogin){	//ログインの拡張
-			SOYShopPlugin::invoke("soyshop.mypage.login", array(
+			$res = SOYShopPlugin::invoke("soyshop.mypage.login", array(
 				"mode" => "login"
-			));
+			))->getResult();
 		}else{	//通常ログイン
 			$userDAO = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 			$hasRegister = true;
@@ -514,8 +514,13 @@ class MyPageLogic extends SOY2LogicBase{
 			$this->setAttribute("userId", $user->getId());
 			$this->setAttribute("loggedin", true);
 			$this->save();
-			return true;
+
+			$res = true;
 		}
+
+		if($res) self::_logMypageLogin();
+
+		return $res;
 	}
 
 	function noPasswordLogin($userId){
@@ -526,8 +531,10 @@ class MyPageLogic extends SOY2LogicBase{
 		//セッションに追加
 		$this->setAttribute("loggedin", true);
 		$this->setAttribute("userId", $userId);
-
 		$this->save();
+
+		self::_logMypageLogin();
+
 		return true;
 	}
 
@@ -597,6 +604,17 @@ class MyPageLogic extends SOY2LogicBase{
 			//
 		}
 		soy2_setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login");
+	}
+
+	private function _logMypageLogin(){
+		$dao = SOY2DAOFactory::create("logging.SOYShop_MypageLoginLogDAO");
+		$obj = new SOYShop_MypageLoginLog();
+		$obj->setUserId($this->getAttribute("userId"));
+		try{
+			$dao->insert($obj);
+		}catch(Exception $e){
+			//
+		}
 	}
 
 	/**

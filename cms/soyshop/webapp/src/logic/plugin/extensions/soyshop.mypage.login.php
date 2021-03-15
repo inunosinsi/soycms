@@ -6,7 +6,7 @@ class SOYShopMypageLoginBase implements SOY2PluginAction{
 	 * ログインの認証方法を変える
 	 */
 	function login(){
-
+		return true;
 	}
 
 	/**
@@ -42,7 +42,7 @@ class SOYShopMypageLoginDeletageAction implements SOY2PluginDelegateAction{
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
 		switch($this->mode){
 			case "login":
-				$action->login();
+				$this->_result = $action->login();
 				break;
 			case "logout":
 				$action->logout();
