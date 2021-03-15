@@ -11,7 +11,8 @@ class BulletinBoardSitemap extends SOYShopSitemapBase{
 
 		$items = array();
 
-		$uri = str_replace("/" . SOYSHOP_ID . "/", "/", soyshop_get_mypage_url() . "/board");
+		$uri = self::_getMypageUri();
+
 		//lastmodは最後の投稿の時刻を得る
 		$lastmod = $postDao->getLastPostDate();
 		if(is_null($lastmod)) $lastmod = time();
@@ -53,6 +54,16 @@ class BulletinBoardSitemap extends SOYShopSitemapBase{
 		}
 
 		return $items;
+	}
+
+	private function _getMypageUri(){
+		$url = soyshop_get_mypage_url();
+		preg_match('/^http.*?:\/\//', $url, $tmp);
+		if(isset($tmp[0])){
+			$url = substr($url, strpos($url, "://") + 3);
+			$url = substr($url, strpos($url, "/"));
+		}
+		return str_replace("/" . SOYSHOP_ID . "/", "/", $url . "/board");
 	}
 
 	private function _getUsers(){
