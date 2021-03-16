@@ -100,7 +100,7 @@ class MailLogic extends SOY2LogicBase{
 		$this->send->setText($body);
 		$this->send->addRecipient($sendTo, $sendToName);
 		$this->send->send();
-
+		sleep(1);
 	}
 
 	/**

@@ -72,6 +72,7 @@ class SOYInquiry_Column{
 		"Question" => "[質問]",
 		"PlainText" => "[見出し表示]",
 		"SOYCMSBlogEntryPage" => "カスタムフィールド [SOY CMSブログ詳細ページ]",
+		"SOYCMSBlogEntry" => "記事名 [SOY CMSブログ連携]",
 		"SOYShop" => "商品名 [SOY Shop連携]",
 		"Enquete" => "アンケート項目",
 		"EnqueteFree" => "アンケート自由記述",
