@@ -13,7 +13,12 @@
 			<a href="javascript:void(0);" class="btn btn-danger btn-sm" soy:id="remove_link">削除</a>
 		</div>
 		<div class="card-body">
-			<textarea class="editor form-control" soy:id="content" style="height:200px;" required="required"></textarea>
+			<div class="mb-1">
+				<a href="javascript:void(0);" class="btn btn-outline-dark btn-sm" id="insert_code">コード</a>
+				<a href="javascript:void(0);" class="btn btn-outline-dark btn-sm" id="insert_quote">引用</a>
+				<a href="javascript:void(0);" class="btn btn-outline-dark btn-sm" id="insert_b">太字</a>
+			</div>
+			<textarea class="editor form-control" id="editor" soy:id="content" style="height:200px;" required="required"></textarea>
 			<script soy:id="advanced_textarea_js"></script>
 			<div class="alert alert-info">
 				<a data-toggle="collapse" href="#usageHtmlTagCollapse" role="button" aria-expanded="false" aria-controls="usageHtmlTagCollapse">使用可のHTMLタグ</a>

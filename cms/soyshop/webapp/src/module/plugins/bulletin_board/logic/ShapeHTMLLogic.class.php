@@ -47,7 +47,7 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		$this->html = trim($this->html);
 		if(!strlen($this->html)) return "";
 
-		//preとcode
+		//pre、quoteとcode
 		self::_shapeHTMLInAnyTags();
 
 		//HTMLのコメントを削除
@@ -210,7 +210,7 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 
 	private function _shapeHTMLInAnyTags(){
 		// <code prop="****">のような形があるかもしれないので整形
-		foreach(array("code", "pre") as $tag){
+		foreach(array("code", "pre", "quote") as $tag){
 			preg_match_all('/<' . $tag . '.*?>/ims', $this->html, $tmps);
 			if(isset($tmps[0]) && is_array($tmps[0]) && count($tmps[0])){
 				foreach($tmps[0] as $tmp){
@@ -361,6 +361,7 @@ class ShapeHTMLLogic extends SOY2LogicBase {
 		if(!count($tmps) || !isset($tmps[0]) || !count($tmps[0])) return;
 
 		foreach($tmps[0] as $tmp){
+			if(is_numeric(strpos($tmp, "<quote>")) || is_numeric(strpos($tmp, "</quote>")))	continue;	//<quote>は削除しない
 			if(is_numeric(strpos($tmp, "</"))) continue;	//閉じタグは処理をしない
 			if(!self::_checkIsRemoveTag($tmp)) continue;
 

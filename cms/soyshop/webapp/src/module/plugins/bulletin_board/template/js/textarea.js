@@ -53,3 +53,60 @@ $(".editor").each(function(){
 		return true;
 	});
 });
+
+//インサートボタン
+function bulletin_board_app_insert(mode){
+	var editor = document.getElementById("editor");
+	var sentence = editor.value;
+
+	var pos = editor.selectionStart;
+	var end = editor.selectionEnd;
+	if(pos == end){
+		var tag, add;
+		switch(mode){
+			case "b":
+				tag = "<b></b>";
+				break;
+			case "quote":
+				tag = "<quote></quote>";
+				break;
+			case "code":
+			default:
+				tag = "<code></code>";
+				break;
+		}
+
+		var len = sentence.length;
+
+		var before = sentence.substr(0, pos);
+		var after = sentence.substr(pos, len);
+
+		editor.value = before + tag + after;
+
+		var add = mode.length + 2;
+
+		editor.focus();
+		editor.setSelectionRange(pos + add, pos + add);
+	}else{	//範囲選択をしている場合
+		var text = sentence.substr(pos, end);
+		text = "<" + mode + ">" + text + "</" + mode + ">";
+		var before = sentence.substr(0, pos);
+		var after = sentence.substr(end);
+
+		editor.value = before + text + after;
+	}
+}
+
+//ボタンの登録
+(function(){
+	var modes = ["code", "quote", "b"];
+	for(var i = 0; i < modes.length; i++){
+		var mode = modes[i];
+		var btn = document.getElementById("insert_" + mode);
+		if(btn){
+			btn.addEventListener("click", function(){
+				bulletin_board_app_insert(this.id.replace("insert_", ""));
+			});
+		}
+	}
+})();

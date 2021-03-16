@@ -61,32 +61,39 @@ class BulletinBoardUtil {
 		for($i = 0; $i < $lastLine; $i++){
 			$line = $lines[$i];
 
+			//<quote>を<backquote>に変換
+			if(is_numeric(strpos($line, "<quote>"))) $line = str_replace("<quote>", "<backquote>", $line);
+			if(is_numeric(strpos($line, "</quote>"))) $line = str_replace("</quote>", "</backquote>", $line);
+
 			//タブスペースの振る舞い
 			if(is_numeric(strpos($line, "    "))) $line = str_replace("    ", "\t", $line);
 			if(is_numeric(strpos($line, "  "))) $line = str_replace("  ", "\t", $line);
 
-			//<code>タグの場合は<pre><code>にする
-			if(is_numeric(strpos($line, "<code>")) && is_bool(strpos($line, "<pre><code>"))) $line = trim(str_replace("<code>", "<pre><code>", $line));
-			if(is_numeric(strpos($line, "</code>")) && is_bool(strpos($line, "</code></pre>"))) {
-				$line = trim(str_replace("</code>", "</code></pre>", $line));
+			//<code>タグの場合は<pre><code>にする。<backquote>も同様の扱い
+			foreach(array("code", "backquote") as $t){
+				if(is_numeric(strpos($line, "<" . $t . ">")) && is_bool(strpos($line, "<pre><" . $t . ">"))) $line = trim(str_replace("<" . $t . ">", "<pre><" . $t . ">", $line));
+				if(is_numeric(strpos($line, "</" . $t . ">")) && is_bool(strpos($line, "</" . $t . "></pre>"))) {
+					$line = trim(str_replace("</" . $t . ">", "</" . $t . "></pre>", $line));
+					if(strpos($line, "</" . $t . ">") === 0){	//何かのテキストの後に</code>がある場合はrtrimを行わない
+						$html = rtrim($html);	//末端の改行を外す
+					}else{
+						$html = rtrim($html) . "\n";
+					}
+				}
+			}
+
+
+			if(is_numeric(strpos($line, "</pre>")) && strpos($line, "</pre>") === 0){	//何かのテキストの後に</pre>がある場合はrtrimを行わない
 				$html = rtrim($html);	//末端の改行を外す
 			}
 
-			if(is_numeric(strpos($line, "</pre>"))){
-				$html = rtrim($html);	//末端の改行を外す
-			}
-
-			//<pre>内は改行なし
+			//<pre>内は<br>の改行なし
 			if(is_numeric(strpos($line, "<pre>"))) {
-				$line = trim($line);
 				$noBrMode = true;
+				if(strlen(strip_tags($line)) === 0) $line = trim($line);
 			}
 
 			$html .= $line;
-
-			//改行なし
-			//if(is_numeric(strpos($line, "<pre><code>")) || is_numeric(strpos($line, "<pre>"))) continue;	//二番目の条件は意味ないかも
-			if(is_numeric(strpos($line, "<pre><code>"))) continue;	//二番目の条件は意味ないかも
 
 			if(!$noBrMode && $i < $lastLine - 1) $html .= "<br>";
 
