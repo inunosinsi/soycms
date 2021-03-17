@@ -6,7 +6,8 @@ function soycms_entry_calendar_next($html, $page){
 	));
 
 	if(!class_exists("EntryCalendarComponent")){
-		include_once(dirname(__FILE__) . "/entry_calendar.php");
+		SOY2::import("site_include.plugin.entry_calendar.component.EntryCalendarComponent");
+		//include_once(dirname(__FILE__) . "/entry_calendar.php");
 	}
 
 	//プラグインがアクティブかどうか？

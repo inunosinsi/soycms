@@ -1,4 +1,4 @@
-<h3>使い方</h3>
+<div class="alert alert-info">使い方</div>
 <p>
 	記事一覧を表示したいページに下記のコードを挿入する。<br>
 	※どのページでも設置可能
@@ -39,7 +39,8 @@
 &lt;/table&gt;
 <strong>&lt;!-- /cms:module="common.entry_calendar" --&gt;</strong></pre>
 <p></p>
-<h3>解説</h3>
+
+<div class="alert alert-info">解説</div>
 <ul class="dsp">
 	<li>
 		&lt;!-- cms:blog="<strong>ページID</strong>" /--&gt;のページIDの個所にブログページのページIDを挿入します。ページIDの取得方法は下記のリンク先の記事をご覧ください。<br>
@@ -52,6 +53,14 @@
 		&lt;!-- c_block:id="entry_list" --&gt;で囲まれた個所は指定日に投稿された記事分だけ繰り返し出力されます。<br>
 		使用できるタグは、cms:id="entry_id"、cms:id="title"、cms:id="title_plain"、cms:id="entry_link"とカスタムフィールドで生成したものになります。
 	</li>
+</ul>
+<p></p>
+
+<div class="alert alert-info">その他の機能</div>
+<ul>
+	<li>先月のカレンダーを同時に出力したい場合は上記の記述でcms:moduleの箇所をcms:module="common.entry_calendar_prev"に変更します</li>
+	<li>翌月のカレンダーを同時に出力したい場合は上記の記述でcms:moduleの箇所をcms:module="common.entry_calendar_next"に変更します</li>
+	<li>翌々月のカレンダーを同時に出力したい場合は上記の記述でcms:moduleの箇所をcms:module="common.entry_calendar_after_next"に変更します</li>
 </ul>
 
 <style>
