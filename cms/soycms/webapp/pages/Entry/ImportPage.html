@@ -46,11 +46,25 @@
 								<input type="checkbox" checked="checked" name="item[content]" value="1" id="item[content]_id" /><label for="item[content]_id">本文</label><br/>
 								<input type="checkbox" checked="checked" name="item[more]" value="1" id="item[more]_id" /><label for="item[more]_id">追記</label><br/>
 								<input type="checkbox" checked="checked" name="item[cdate]" value="1" id="item[cdate]_id" /><label for="item[cdate]_id">作成日時</label><br/>
-								
+
+								<!-- soy:id="custom_field_list" -->
+								<input type="checkbox" checked="checked" soy:id="customfield_input" /><br/>
+								<!-- /soy:id="custom_field_list" -->
+
+								<!-- soy:id="custom_search_field_list" -->
+								<input type="checkbox" checked="checked" soy:id="custom_search_field_input" /><br/>
+								<!-- /soy:id="custom_search_field_list" -->
+
+								<!-- soy:id="plugin_list" -->
+								<input soy:id="checkbox" type="checkbox" checked="checked" name="item[_relative_items]" value="1" id="item[customfield(_relative_link)]_id" /><br />
+								<!-- /soy:id="plugin_list" -->
+
 								<span class="input-group-btn">
 									<input type="submit" class="btn btn-primary" value="アップロード">
 								</span>
 							</div>
+
+							<div class="alert alert-warning">記事のCSVインポートではカスタムフィールドには対応していません。</div>
 						</div>
 			        </form>
 				</div>
@@ -63,4 +77,4 @@
 	</div>
 	<!-- /#wrapper -->
 </body>
-</html>
+<!-- soy:id="check_js" /-->

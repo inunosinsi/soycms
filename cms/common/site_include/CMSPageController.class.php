@@ -109,24 +109,26 @@ class CMSPageController extends SOY2PageController{
 				$this->webPage->main();
 
 				//プラグインonLoadイベントの呼び出し
-				$onLoad = CMSPlugin::getEvent('onPageLoad');
-				foreach($onLoad as $plugin){
-					$func = $plugin[0];
-					$filter = $plugin[1]['filter'];
-					switch($filter){
-						case 'all':
-							call_user_func($func, array('page' => &$page, 'webPage' => &$this->webPage));
-							break;
-						case 'blog':
-							if($page->getPageType() == Page::PAGE_TYPE_BLOG){
+				$onLoads = CMSPlugin::getEvent('onPageLoad');
+				if(is_array($onLoads) && count($onLoads)){
+					foreach($onLoads as $plugin){
+						$func = $plugin[0];
+						$filter = $plugin[1]['filter'];
+						switch($filter){
+							case 'all':
 								call_user_func($func, array('page' => &$page, 'webPage' => &$this->webPage));
-							}
-							break;
-						case 'page':
-							if($page->getPageType() == Page::PAGE_TYPE_NORMAL){
-								call_user_func($func, array('page' => &$page, 'webPage' => &$this->webPage));
-							}
-							break;
+								break;
+							case 'blog':
+								if($page->getPageType() == Page::PAGE_TYPE_BLOG){
+									call_user_func($func, array('page' => &$page, 'webPage' => &$this->webPage));
+								}
+								break;
+							case 'page':
+								if($page->getPageType() == Page::PAGE_TYPE_NORMAL){
+									call_user_func($func, array('page' => &$page, 'webPage' => &$this->webPage));
+								}
+								break;
+						}
 					}
 				}
 
@@ -185,8 +187,9 @@ class CMSPageController extends SOY2PageController{
 	 * onOutputのプラグインを呼び出す。
 	 */
 	function onOutput($html, $page){
-		$onLoad = CMSPlugin::getEvent('onOutput');
-		foreach($onLoad as $plugin){
+		$onLoads = CMSPlugin::getEvent('onOutput');
+		if(!is_array($onLoads) || !count($onLoads)) return $html;
+		foreach($onLoads as $plugin){
 			$func = $plugin[0];
 			$res = call_user_func($func, array('html' => $html, 'page' => &$page, 'webPage' => &$this->webPage));
 			if(!is_null($res) && is_string($res)) $html = $res;

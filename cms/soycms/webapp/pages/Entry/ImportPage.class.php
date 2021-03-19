@@ -12,6 +12,23 @@ class ImportPage extends CMSWebPageBase {
 		$this->addForm("import_form", array(
              "ENCTYPE" => "multipart/form-data"
         ));
+
+		$this->createAdd("custom_field_list", "_component.Entry.CustomFieldImExportListComponent", array(
+            "list" => self::getCustomFieldList()
+        ));
+
+		$this->createAdd("custom_search_field_list", "_component.Entry.CustomSearchFieldImExportListComponent", array(
+            "list" => self::getCustomSearchFieldList()
+        ));
+
+		$this->createAdd("plugin_list", "_component.Entry.PluginCSVListComponent", array(
+            "list" => self::_getPlugins()
+        ));
+
+		//前にチェックした項目 jqueryで制御
+		$this->addLabel("check_js", array(
+			"html" => SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->buildJSCode("entry")
+		));
 	}
 
     function doPost(){
@@ -29,6 +46,9 @@ class ImportPage extends CMSWebPageBase {
         $logic = SOY2Logic::createInstance("logic.site.Entry.ExImportLogic");
         $format = $_POST["format"];
         $item = $_POST["item"];
+
+		//今回チェックした内容を保持する
+		SOY2Logic::createInstance("logic.csv.ItemCheckListLogic")->save($item, "entry");
 
 		//$displayLabel = (isset($format["label"])) ? $format["label"] : null;
         if(isset($format["separator"])) $logic->setSeparator($format["separator"]);
@@ -60,14 +80,19 @@ class ImportPage extends CMSWebPageBase {
         //DAO
         $this->dao = SOY2DAOFactory::create("cms.EntryDAO");
 
+		$attrDao = SOY2DAOFactory::create("cms.EntryAttributeDAO");
+
+		//カスタムサーチフィールド
+        $customSearchFieldDBLogic = SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.DataBaseLogic");
+
         $this->dao->begin();
 
         //データ更新
         foreach($lines as $line){
             if(empty($line)) continue;
 
-            list($obj) = $logic->import($line);
-            $deleted = ($obj["id"] == "delete");
+            list($obj, $attributes, $customSearchFields, $plugins) = $logic->import($line);
+			$deleted = ($obj["id"] == "delete");
 
             $entry = self::import($obj);
 
@@ -78,7 +103,36 @@ class ImportPage extends CMSWebPageBase {
                 }else{
                     $id = self::insertOrUpdate($entry);
 
-					//idの使いみちは今のところない
+					//カスタムフィールドアドバンスド
+					foreach($attributes as $fieldId => $value){
+						try{
+							$attrDao->delete($id, $fieldId);
+						}catch(Exception $e){
+							//
+						}
+
+                        $attr = new EntryAttribute();
+                        $attr->setEntryId($id);
+                        $attr->setFieldId($fieldId);
+                        $attr->setValue($value);
+						try{
+							$attrDao->insert($attr);
+						}catch(Exception $e){
+							//
+						}
+                    }
+
+					//カスタムサーチフィールド
+					if(is_array($customSearchFields) && count($customSearchFields)){
+                        $customSearchFieldDBLogic->save($id, $customSearchFields);
+                    }
+
+					//プラグイン
+					if(is_array($plugins) && count($plugins)){
+						foreach($plugins as $pluginId => $value){
+							CMSPlugin::callLocalPluginEventFunc('onEntryCSVImport', $pluginId, array("entryId" => $id, "value" => $value));
+						}
+					}
                 }
             }
         }
@@ -138,8 +192,7 @@ class ImportPage extends CMSWebPageBase {
         try{
             return $this->dao->insert($entry);
         }catch(Exception $e){
-            var_dump($e);
-			return null;
+            return null;
         }
     }
 
@@ -164,9 +217,32 @@ class ImportPage extends CMSWebPageBase {
         }
     }
 
-    // private function getCustomFieldList($flag = false){
-    //     $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-    //     $config = SOYShop_ItemAttributeConfig::load($flag);
-    //     return $config;
-    // }
+	private function getCustomFieldList($flag = false){
+		$fname = UserInfoUtil::getSiteDirectory() . ".plugin/CustomFieldAdvanced.config";
+		if(!file_exists($fname)) return array();
+
+		include_once(SOY2::RootDir() . "site_include/plugin/CustomFieldAdvanced/CustomFieldAdvanced.php");
+		$obj = unserialize(file_get_contents($fname));
+		return $obj->customFields;
+    }
+
+	private function getCustomSearchFieldList(){
+        SOY2::import("site_include.plugin.CustomSearchField.util.CustomSearchFieldUtil");
+        return CustomSearchFieldUtil::getConfig();
+    }
+
+	private function _getPlugins(){
+		$onLoads = CMSPlugin::getEvent('onEntryCSVExImport');
+		if(!is_array($onLoads) || !count($onLoads)) return array();
+
+		$plugins = array();
+		foreach($onLoads as $pluginId => $plugin){
+			$func = $plugin[0];
+			if(!isset($func[0])) continue;
+			$res = call_user_func($func, array());
+			if(!is_string($res) || !strlen($res)) continue;
+			$plugins[$pluginId] = $res;
+		}
+		return $plugins;
+	}
 }

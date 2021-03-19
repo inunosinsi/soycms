@@ -38,6 +38,11 @@ class CMSPlugin {
 		"onEntryCopy"=>array(),			//エントリー複製時に呼び出される	array(oldId,newId)
 		"onSetupWYSIWYG"=>array(),		//WYSIWYGエディタをセットアップしている時 array(entryId, labelIds)
 
+		//記事のCSV
+		"onEntryCSVExImport"=>array(),			//インポート、エクスポート時に対象となるプラグインを探す array()
+		"onEntryCSVExport"=>array(),		//記事データのエクスポート array(entryId)
+		"onEntryCSVImport"=>array(),		//記事データのインポート array(entryId, value)
+
 		//ラベル関連
 		"onLabelCreate"=>array(),		//ラベルが作成される直前			array(label)
 		"onLabelUpdate"=>array(),		//ラベルが更新される直前			array(new_label)

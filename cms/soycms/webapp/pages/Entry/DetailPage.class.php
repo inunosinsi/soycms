@@ -67,7 +67,6 @@ class DetailPage extends CMSEntryEditorPageBase{
 		$this->id = @$arg[0];
 
 		parent::__construct();
-
 	}
 
 	function main(){
