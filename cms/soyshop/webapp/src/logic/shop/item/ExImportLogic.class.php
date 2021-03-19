@@ -18,9 +18,7 @@ class ExImportLogic extends ExImportLogicBase{
      */
     function export($object){
         if(!$this->_func) $this->buildExFunc($this->getItems());
-
         $array = call_user_func($this->_func, $object, $this->getAttributes($object->getId()), $this->modules, $this->getCustomSearchFieldObject($object->getId()));
-
         return $this->encodeTo($this->implodeToLine($array));
     }
 

@@ -14,7 +14,7 @@ class IndexPage extends MainMyPagePageBase{
 				if(is_numeric($topicId)){
 					//トピックの作成の通知を運営者権限を持つアカウントに送信
 					SOY2Logic::createInstance("module.plugins.bulletin_board.logic.SendMailLogic")->sendTopicNotice($topicId, $this->getUserId());
-					$this->jump("board/topic/" . $this->id . "?successed");
+					$this->jump("board/topic/detail/" . $topicId . "?successed");
 				}
 			}
 		}
