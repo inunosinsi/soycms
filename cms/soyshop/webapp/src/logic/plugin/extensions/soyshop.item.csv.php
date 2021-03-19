@@ -16,7 +16,7 @@ class SOYShopItemCSVBase implements SOY2PluginAction{
 	/**
 	 * export
 	 */
-	function export($userId){
+	function export($itemId){
 
 	}
 

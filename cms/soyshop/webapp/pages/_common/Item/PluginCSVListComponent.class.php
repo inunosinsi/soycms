@@ -14,6 +14,4 @@ class PluginCSVListComponent extends HTMLList{
 			"selected" => true
 		));
 	}
-
 }
-?>
