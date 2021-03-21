@@ -35,8 +35,8 @@ function check_ssl($uri, $args){
 function redirect_to_ssl_url($uri, $args){
 	if(!isset($_SERVER["HTTPS"])){
 		if($uri != SOYSHOP_TOP_PAGE_MARKER) array_unshift($args, $uri);
-		$args = implode($args, "/");
-		SOY2PageController::redirect(soyshop_get_ssl_site_url() . $args, true);
+		$uri = (is_array($args) && count($args)) ? implode("/", $args) : "";
+		SOY2PageController::redirect(soyshop_get_ssl_site_url() . $uri, true);
 		exit;
 	}
 }
@@ -50,7 +50,7 @@ function redirect_to_ssl_url($uri, $args){
 function redirect_to_non_ssl_url($uri, $args){
 	if(isset($_SERVER["HTTPS"])){
 		if($uri != SOYSHOP_TOP_PAGE_MARKER) array_unshift($args, $uri);
-		$uri = implode("/", $args);
+		$uri = (is_array($args) && count($args)) ? implode("/", $args) : "";
 		SOY2PageController::redirect(soyshop_get_site_url(true) . $uri, true);
 		exit;
 	}
