@@ -7,23 +7,15 @@ class SOYInquiryConnectorCustomField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
-		include_once(dirname(__FILE__) . "/common.php");
-		$config = SOYInquiryConnectorCommon::getConfig();
-
-		$url = "";
-
-		if(isset($config["url"])){
-			$url = $config["url"];
-		}
+		SOY2::import("module.plugins.soyinquiry_connector.util.SOYInquiryConnectorUtil");
+		$cnf = SOYInquiryConnectorUtil::getConfig();
+		$url = (isset($cnf["url"])) ? $cnf["url"] : "";
 
 		//すでにGETの値がある場合
-		if(strpos($url, "?")!==false){
-
+		if(is_numeric(strpos($url, "?"))){
 			$url .= "&amp;item_id=" . $item->getId();
-
 		//ない場合
 		}else{
-
 			$url .= "?item_id=" . $item->getId();
 		}
 

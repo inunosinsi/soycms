@@ -10,7 +10,5 @@ class SOYInquiryConnectorInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
-SOYShopPlugin::extension("soyshop.info","soyinquiry_connector","SOYInquiryConnectorInfo");
-?>
+SOYShopPlugin::extension("soyshop.info", "soyinquiry_connector", "SOYInquiryConnectorInfo");
