@@ -525,12 +525,8 @@ class SOYCMSThumbnailPlugin{
 	}
 
 	public static function register(){
-
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(!$obj){
-			$obj = new SOYCMSThumbnailPlugin();
-		}
-
+		if(!$obj) $obj = new SOYCMSThumbnailPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID, array($obj, "init"));
 	}
 }
