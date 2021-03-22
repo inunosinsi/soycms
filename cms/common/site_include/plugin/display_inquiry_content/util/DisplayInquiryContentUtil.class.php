@@ -37,17 +37,23 @@ class DisplayInquiryContentUtil {
 		SOY2::import("site_include.plugin.CustomFieldAdvanced.CustomFieldAdvanced");
 
 		$obj = CMSPlugin::loadPluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new CustomFieldPluginAdvanced();
-		}
+		if(is_null($obj)) $obj = new CustomFieldPluginAdvanced();
 
 		if(!count($obj->customFields)) return array();
 
 		$list = array();
 		foreach($obj->customFields as $fieldId => $field){
-			//一行テキストのみ取得
-			if($field->getType() != "input") continue;
-			$list[$fieldId] = $field->getLabel();
+			switch($field->getType()){
+				case "input":	//許可するフィールド種別
+				case "textarea":
+				case "select":
+				case "image":
+					$list[$fieldId] = $field->getLabel();
+					break;
+				default:
+					//
+			}
+
 		}
 
 		return $list;
@@ -162,5 +168,17 @@ class DisplayInquiryContentUtil {
 		SOYAppUtil::resetAppMode($old);
 
 		return array($trackingNumbers, $contents, $datas, $dates);
+	}
+
+	public static function defineInquiryDsn(){
+		SOY2::import("util.SOYAppUtil");
+		$old = SOYAppUtil::switchAppMode("inquiry");
+
+		//後に使用する定数の設定
+		if(!defined("DISPLAY_INQUIRY_CONTENT_DSN")) define("DISPLAY_INQUIRY_CONTENT_DSN", SOY2DAOConfig::dsn());
+		if(!defined("DISPLAY_INQUIRY_CONTENT_USER")) define("DISPLAY_INQUIRY_CONTENT_USER", SOY2DAOConfig::user());
+		if(!defined("DISPLAY_INQUIRY_CONTENT_PASS")) define("DISPLAY_INQUIRY_CONTENT_PASS", SOY2DAOConfig::pass());
+
+		SOYAppUtil::resetAppMode($old);
 	}
 }
