@@ -1,0 +1,35 @@
+<form soy:id="form">
+	<div class="form-group">
+		<div class="form-inline">
+			<label>URL</label>
+			<select class="form-control" soy:id="pages"><option></option></select>
+			<input type="submit" class="btn btn-primary" value="変更">
+		</div>
+	</div>
+</form>
+
+<br>
+
+<div class="alert alert-info">テンプレートへの記述例</div>
+<pre>
+&lt;!-- b_block:id="entry" --&gt;
+&lt;a cms:id="inquiry_link"&gt;この記事のお問い合わせをする&lt;/a&gt;
+&lt;!-- /b_block:id="entry" --&gt;
+</pre>
+<br>
+<h4>※アプリケーションページ以外のページにお問い合わせフォームを設置した場合</h4>
+<span>お問い合わせフォームを設置したページのURIが/contactの場合</span>
+<pre>
+&lt;!-- b_block:id="entry" --&gt;
+&lt;a href="/contact?entry_id=&lt;!-- cms:id="entry_id" /--&gt;"&gt;この記事のお問い合わせをする&lt;/a&gt;
+&lt;!-- /b_block:id="entry" --&gt;
+</pre>
+
+<br>
+
+<div class="alert alert-info">SOY Inquiryとの連携方法</div>
+<ul style="list-style-type: decimal;">
+	<li>SOY Inquiryで<strong>記事名[SOY CMSブログ連携]</strong>カラムを追加</li>
+	<li>上記フォームでSOY Inquiryを動作させるページのURLを指定</li>
+	<li>記事詳細ページにcms:idタグを追加</li>
+</ul>
