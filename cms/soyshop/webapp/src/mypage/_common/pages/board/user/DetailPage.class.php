@@ -46,5 +46,56 @@ class DetailPage extends MainMyPagePageBase{
 			"pageObj" => $this,
 			"userId" => $user->getId()
 		));
+
+		//SNSのリンク
+		list($ghUrl, $twUrl) = self::_getSnsUrls($user->getId());
+		$isGithub = (isset($ghUrl));
+		$isTwitter = (isset($twUrl));
+
+		DisplayPlugin::toggle("sns", ($isGithub && $isTwitter));
+
+		DisplayPlugin::toggle("github", $isGithub);
+		$this->addLink("github_link", array(
+			"link" => $ghUrl
+		));
+
+		$this->addImage("github_logo", array(
+			"src" => self::_getImageFilePath("gh"),
+			"alt" => "GitHub"
+		));
+
+		DisplayPlugin::toggle("twitter", $isTwitter);
+		$this->addLink("twitter_link", array(
+			"link" => $twUrl
+		));
+
+		$this->addImage("twitter_logo", array(
+			"src" => self::_getImageFilePath("tw"),
+			"alt" => "Twitter"
+		));
+	}
+
+	private function _getSnsUrls($userId){
+		SOY2::import("module.plugins.bulletin_board.util.BulletinBoardUtil");
+		$csfValues = SOY2Logic::createInstance("module.plugins.user_custom_search_field.logic.UserDataBaseLogic")->getByUserId($userId);
+		$urls = array();
+
+		//github
+		$urls[] = (isset($csfValues[BulletinBoardUtil::FIELD_ID_GITHUB]) && strpos($csfValues[BulletinBoardUtil::FIELD_ID_GITHUB], "https://github.com/") === 0) ? $csfValues[BulletinBoardUtil::FIELD_ID_GITHUB] : null;
+
+		//twitter
+		$urls[] = (isset($csfValues[BulletinBoardUtil::FIELD_ID_TWITTER]) && strpos($csfValues[BulletinBoardUtil::FIELD_ID_TWITTER], "https://twitter.com/") === 0) ? $csfValues[BulletinBoardUtil::FIELD_ID_TWITTER] : null;
+
+		return $urls;
+	}
+
+	private function _getImageFilePath($mode){
+		$imgDir = SOYSHOP_SITE_DIRECTORY . "image/";
+		if(!file_exists($imgDir)) mkdir($imgDir);
+		$imgPath = $imgDir . $mode . ".png";
+		if(!file_exists($imgPath)){
+			copy(SOY2::RootDir() . "module/plugins/bulletin_board/img/" . $mode . ".png", $imgPath);
+		}
+		return "/" . SOYSHOP_ID . "/image/" . $mode . ".png";
 	}
 }

@@ -170,6 +170,20 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 					case UserCustomSearchFieldUtil::TYPE_DATE:
 						//公開側で使用不可
 						break;
+					case UserCustomSearchFieldUtil::TYPE_MAILADDRESS:
+						$pageObj->addInput("usf_" . $key, array(
+							"type" => "email",
+							"name" => $nameProperty,
+							"value" => $usfValue
+						));
+						break;
+					case UserCustomSearchFieldUtil::TYPE_URL:
+						$pageObj->addInput("usf_" . $key, array(
+							"type" => "url",
+							"name" => $nameProperty,
+							"value" => $usfValue
+						));
+						break;
 					default:
 						$pageObj->addInput("usf_" . $key, array(
 							"name" => $nameProperty,
@@ -278,7 +292,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 				$app->clearAttribute($attributeKey);
 			}
 		}
-		
+
 		$this->dbLogic->save($userId, $values);
 	}
 

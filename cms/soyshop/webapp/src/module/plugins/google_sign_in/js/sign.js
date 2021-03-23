@@ -45,20 +45,27 @@ function onSignIn(googleUser) {
 					}else{
 						location.href = location.pathname;
 					}
-				}
-
 				// 仮登録モードの場合は他の場所に飛ばす result == 2で返ってくる
-				if(res.result == 2){
+				} else if (res.result == 2){
 					location.href = location.origin + pathname + "/register/tmp";
+				// 失敗した場合はどうしよう？
+				} else {
+					alert("resultの取得に失敗しました");
 				}
-
-				// @ToDo 失敗した場合はどうしよう？
 			}
 		});
 
 		//タイムアウトした時対策
 		xhr.addEventListener("timeout", function(){
 			// @ToDo どうしよう？
+			var resp = xhr.response;
+			if(resp){
+				var res = JSON.parse(resp);
+				console.log(res);
+			}else{
+				console.log(resp);
+			}
+			alert("タイムアウトしました");
 		});
 	}
 }

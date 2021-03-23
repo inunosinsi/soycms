@@ -68,7 +68,7 @@ class BulletinBoardSitemap extends SOYShopSitemapBase{
 
 	private function _getUsers(){
 		try{
-			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getISpublishUsers();
+			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getIsPublishUsers();
 		}catch(Exception $e){
 			return array();
 		}

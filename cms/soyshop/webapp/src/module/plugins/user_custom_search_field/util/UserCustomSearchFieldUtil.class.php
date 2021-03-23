@@ -13,6 +13,8 @@ class UserCustomSearchFieldUtil{
 	const TYPE_RADIO = "radio";
 	const TYPE_SELECT = "select";
 	const TYPE_DATE = "date";
+	const TYPE_URL = "url";
+	const TYPE_MAILADDRESS = "mailaddress";
 
 	//フォームの設置箇所
 	const DISPLAY_ALL = 0;
@@ -46,7 +48,9 @@ class UserCustomSearchFieldUtil{
 			self::TYPE_CHECKBOX => "チェックボックス",
 			self::TYPE_RADIO => "ラジオボタン",
 			self::TYPE_SELECT => "セレクトボックス",
-			self::TYPE_DATE => "日付"
+			self::TYPE_DATE => "日付",
+			self::TYPE_URL => "URL",
+			self::TYPE_MAILADDRESS => "メールアドレス"
 		);
 	}
 

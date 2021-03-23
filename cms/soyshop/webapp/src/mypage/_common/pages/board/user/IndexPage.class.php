@@ -13,7 +13,8 @@ class IndexPage extends MainMyPagePageBase{
 			"link" => soyshop_get_mypage_url() . "/board/"
 		));
 
-		$users = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getISpublishUsers();
+		//$users = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getISpublishUsers();
+		$users = SOY2Logic::createInstance("module.plugins.bulletin_board.logic.UserLogic")->getUsers();
 
 		$this->createAdd("user_list", "_common.board.user.UserListComponent", array(
 			"list" => $users

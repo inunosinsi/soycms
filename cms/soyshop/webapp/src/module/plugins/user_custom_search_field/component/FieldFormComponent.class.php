@@ -86,6 +86,20 @@ class FieldFormComponent {
 			case UserCustomSearchFieldUtil :: TYPE_DATE :
 				$value = (strlen($value)) ? date("Y-m-d", $value) : null;
 				return "<input type=\"text\" class=\"date_picker_start\" name=\"" . $nameProperty . "\" value=\"" . $value . "\">";
+
+			case UserCustomSearchFieldUtil :: TYPE_URL :
+				if($hasStyle){
+					return "<input type=\"url\" name=\"" . $nameProperty . "\" value=\"" . $value . "\" style=\"width:100%;\">";
+				}else{
+					return "<input type=\"url\" name=\"" . $nameProperty . "\" value=\"" . $value . "\">";
+				}
+
+			case UserCustomSearchFieldUtil :: TYPE_MAILADDRESS :
+				if($hasStyle){
+					return "<input type=\"email\" name=\"" . $nameProperty . "\" value=\"" . $value . "\" style=\"width:100%;\">";
+				}else{
+					return "<input type=\"email\" name=\"" . $nameProperty . "\" value=\"" . $value . "\">";
+				}
 		}
 	}
 

@@ -12,20 +12,11 @@ class UserListComponent extends HTMLList{
 		));
 
 		$this->addLabel("post_count", array(
-			"text" => ((int)$user->getId() > 0) ? number_format(self::_dao()->countByUserIdAndIsOpen($user->getId())) : 0
+			"text" => $user->getAttribute("post_count")
 		));
 
 		$this->addLabel("register_date", array(
 			"text" => (is_numeric($user->getRegisterDate())) ? date("Y-m-d H:i:s", $user->getRegisterDate()) : ""
 		));
-	}
-
-	private function _dao(){
-		static $dao;
-		if(is_null($dao)){
-			SOY2::import("module.plugins.bulletin_board.domain.SOYBoard_PostDAO");
-			$dao = SOY2DAOFactory::create("SOYBoard_PostDAO");
-		}
-		return $dao;
 	}
 }
