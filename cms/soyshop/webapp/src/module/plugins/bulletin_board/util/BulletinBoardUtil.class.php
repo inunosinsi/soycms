@@ -12,8 +12,8 @@ class BulletinBoardUtil {
 	public static function getFieldList(){
 		SOY2::import("module.plugins.user_custom_search_field.util.UserCustomSearchFieldUtil");
 		return array(
-			self::FIELD_ID_GITHUB => array("label" => "GitHub", "type" => UserCustomSearchFieldUtil::URL),
-			self::FIELD_ID_TWITTER => array("label" => "Twitter", "type" => UserCustomSearchFieldUtil::URL),
+			self::FIELD_ID_GITHUB => array("label" => "GitHub", "type" => UserCustomSearchFieldUtil::TYPE_URL),
+			self::FIELD_ID_TWITTER => array("label" => "Twitter", "type" => UserCustomSearchFieldUtil::TYPE_URL),
 			self::FIELD_ID_MANAGER_SIDE => array("label" => "運営側アカウント", "type" => UserCustomSearchFieldUtil::TYPE_CHECKBOX, "option" => "運営側", "is_admin_only" => 1),
 			self::FIELD_ID_PROFILE => array("label" => "紹介文", "type" => UserCustomSearchFieldUtil::TYPE_TEXTAREA),
 			self::FIELD_ID_SIGNATURE => array("label" => "署名", "type" => UserCustomSearchFieldUtil::TYPE_TEXTAREA),
