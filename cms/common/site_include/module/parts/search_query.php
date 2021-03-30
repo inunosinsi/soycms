@@ -42,7 +42,7 @@ if(count($keys)){
 				$csfId = str_replace("_start", "", $csfId);
 				if(isset($config[$csfId]) && strlen($config[$csfId]["label"])){
 					$end = (int)$params[$csfId . "_end"];
-					$end = ($end > 0) ? number_format($end) : "";
+					$end = ($end > 0) ? soy2_number_format($end) : "";
 					$html[] = "<li>" . $config[$csfId]["label"] . "：" . $v . "〜" . $end . "</li>";
 
 				}
