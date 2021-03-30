@@ -31,6 +31,9 @@ class CustomFieldPluginAdvanced{
 	var $displayTitle = 0;//「カスタムフィールド」を表示する
 	var $displayID = 0;//IDを表示する
 
+	//フィールド種別事に設定されている属性
+	private $properties = array();
+
 	function init(){
 		CMSPlugin::addPluginMenu(CustomFieldPluginAdvanced::PLUGIN_ID,array(
 			"name" => "カスタムフィールド アドバンスド",
@@ -38,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.9.6"
+			"version"=>"1.9.7"
 		));
 
 		//プラグイン アクティブ
@@ -95,7 +98,6 @@ class CustomFieldPluginAdvanced{
 			$isEntryField = CustomfieldAdvancedUtil::checkIsEntryField($customFields);
 
 			foreach($fields as $field){
-
 				//設定を取得
 				$master = (isset($customFields[$field->getId()])) ? $customFields[$field->getId()] : null;
 
@@ -140,6 +142,13 @@ class CustomFieldPluginAdvanced{
 						$attr["src"] = (strlen($field->getValue()) > 0) ? $field->getValue() : null;
 						unset($attr["html"]);
 						$resetFlag = false;
+
+						$imgProps = self::_getImgProps("image");
+						if(count($imgProps)){
+							foreach($imgProps as $imgProp){
+								$attr[$imgProp] = "";
+							}
+						}
 					}
 
 					//リンク、もしくは画像の場合、パスを表示するためのcms:id
@@ -298,6 +307,26 @@ class CustomFieldPluginAdvanced{
 				$htmlObj->createAdd($field->getId(), $class, $attr);
 			}
 		}
+	}
+
+	//画像フィールドの属性の設定を取得
+	private function _getImgProps($type="image"){
+		if(!is_array($this->customFields) || !count($this->customFields)) return array();
+		if(isset($this->properties[$type])) return $this->properties[$type];
+		$this->properties[$type] = array();
+
+		foreach($this->customFields as $fieldId => $field){
+			if($field->getType() == $type){
+				$extraOutputs = explode("\n", $field->getExtraOutputs());
+				if(!count($extraOutputs)) continue;
+				foreach($extraOutputs as $output){
+					$output = trim($output);
+					if(!strlen($output) || is_numeric(array_search($output, $this->properties[$type]))) continue;
+					$this->properties[$type][] = $output;
+				}
+			}
+		}
+		return $this->properties[$type];
 	}
 
 	/**
