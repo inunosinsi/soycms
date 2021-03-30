@@ -23,7 +23,7 @@ class EntryNavigationComponent extends SOYBodyComponentBase{
 			"link" => $this->entryPageUri . rawurlencode($entry->getAlias()),
 			"soy2prefix" => "cms"
 		));
-		
+
 		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$entry->getId(),"SOY2HTMLObject"=>$this,"entry"=>$entry));
 	}
 }
