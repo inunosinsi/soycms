@@ -35,11 +35,11 @@
 				$html[] = "</tr>";
 				$html[] = "<tr>";
 				$html[] = "<td>価格:</td>";
-				$html[] = "<td>" . number_format($item->getPrice()) . "</td>";
+				$html[] = "<td>" . soy2_number_format($item->getPrice()) . "</td>";
 				$html[] = "</tr>";
 				$html[] = "<tr>";
 				$html[] = "<td>セール価格:</td>";
-				$html[] = "<td>" . number_format($item->getSalePrice()) . "</td>";
+				$html[] = "<td>" . soy2_number_format($item->getSalePrice()) . "</td>";
 				$html[] = "</tr>";
 
 				echo implode("\n",$html);
