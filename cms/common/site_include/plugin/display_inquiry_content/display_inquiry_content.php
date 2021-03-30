@@ -26,7 +26,7 @@ class DisplayInquiryContentPlugin{
 			"modifier"=>"Tsuyoshi Saito",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.9.1"
+			"version"=>"0.10"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -34,13 +34,18 @@ class DisplayInquiryContentPlugin{
 			CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 				$this,"config"));
 
-			CMSPlugin::setEvent('onOutput', self::PLUGIN_ID, array($this, "onOutput"), array("filter" => "all"));
-			CMSPlugin::setEvent('onEntryOutput', self::PLUGIN_ID, array($this, "display"));
+			//公開側
+			if(defined("_SITE_ROOT_")){
+				CMSPlugin::setEvent('onOutput', self::PLUGIN_ID, array($this, "onOutput"), array("filter" => "all"));
+				CMSPlugin::setEvent('onEntryOutput', self::PLUGIN_ID, array($this, "onEntryOutput"));
+			//管理画面側
+			}else{
+				CMSPlugin::setEvent('onAdminTop', self::PLUGIN_ID, array($this, "onAdminTop"));
+			}
 		}
 	}
 
 	function onOutput($arg){
-
 		//アプリケーションページでお問い合わせフォームの完了ページを読み込んでいることを確認
 		if(isset($_GET["complete"]) && isset($_GET["trackid"]) && get_class($arg["webPage"]->page) === "ApplicationPage" && $arg["webPage"]->page->getApplicationId() === "inquiry"){
 
@@ -55,8 +60,17 @@ class DisplayInquiryContentPlugin{
 					CMSPlugin::savePluginConfig($this->getId(), $this);
 				}
 			}
+		//記事の自動生成
+		}else{
+			self::_createEntryAuto();
 		}
+	}
 
+	function onAdminTop(){
+		self::_createEntryAuto();	//管理画面でも記事の自動生成を行えるようにした
+	}
+
+	private function _createEntryAuto(){
 		//時々最終お問い合わせの日を確認しにいくためのフラグ
 		$r = (int)mt_rand(1,10);
 
@@ -206,7 +220,7 @@ class DisplayInquiryContentPlugin{
 		return $path;
 	}
 
-	function display($arg){
+	function onEntryOutput($arg){
 		if(isset($this->connects["create_date"])){
 			$entryId = $arg["entryId"];
 			$htmlObj = $arg["SOY2HTMLObject"];
