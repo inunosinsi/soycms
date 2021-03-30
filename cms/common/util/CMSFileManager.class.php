@@ -345,7 +345,7 @@ class CMSFileManager{
 		$obj->name = $file->getName();
 		$obj->path = str_replace($self->getRoot(),"/",$file->getPath());
 		$obj->url = $file->getUrl();
-		$obj->size = number_format($file->getFileSize());
+		$obj->size = soy2_number_format($file->getFileSize());
 		$obj->create = date("Y-m-d H:i:s",$file->getCreateDate());
 		$obj->update = date("Y-m-d H:i:s",$file->getUpdateDate());
 		$obj->type = $file->getExtension();
