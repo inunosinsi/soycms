@@ -764,10 +764,7 @@ class CustomFieldPluginAdvanced{
 		}
 
 		$obj = CMSPlugin::loadPluginConfig(CustomFieldPluginAdvanced::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new CustomFieldPluginAdvanced();
-		}
-
+		if(is_null($obj)) $obj = new CustomFieldPluginAdvanced();
 		CMSPlugin::addPlugin(CustomFieldPluginAdvanced::PLUGIN_ID, array($obj, "init"));
 	}
 }
