@@ -25,8 +25,7 @@ class PluginBlockUtil {
 
 			//トップページ
 			if(strlen($blog->getTopPageUri()) && $uri === (string)$blog->getTopPageUri()){
-				$tmp = trim(strip_tags($blog->getTopTemplate()));
-				if(strlen($tmp)){
+				if(strlen(trim($blog->getTopTemplate())) > 0){
 					$templates[$pageId] = $blog->getTopTemplate();
 				}
 
@@ -35,26 +34,22 @@ class PluginBlockUtil {
 				(strlen($blog->getCategoryPageUri()) && strpos($uri, $blog->getCategoryPageUri()) === 0) ||
 				(strlen($blog->getMonthPageUri()) && strpos($uri, $blog->getMonthPageUri()) === 0)
 			){
-				$tmp = trim(strip_tags($blog->getArchiveTemplate()));
-				if(strlen($tmp)){
+				if(strlen(trim($blog->getArchiveTemplate())) > 0){
 					$templates[$pageId] = $blog->getArchiveTemplate();
 				}
 				//記事ごとページ
 			}else if(strlen($blog->getEntryPageUri()) && strpos($uri, $blog->getEntryPageUri()) === 0){
-				$tmp = trim(strip_tags($blog->getEntryTemplate()));
-				if(strlen($tmp)){
+				if(strlen(trim($blog->getEntryTemplate()) > 0)){
 					$templates[$pageId] = $blog->getEntryTemplate();
 				}
 			}
 
 			//すべての条件を満たさなかった時は何らかのテンプレートを入れておく
 			if(!isset($templates[$pageId])){
-				$tmp = trim(strip_tags($blog->getTopTemplate()));
-				if(strlen($tmp)){
+				if(strlen(trim($blog->getTopTemplate())) > 0){
 					$templates[$pageId] = $blog->getTopTemplate();
 				}else{
-					$tmp = trim(strip_tags($blog->getArchiveTemplate()));
-					if(strlen($tmp)){
+					if(strlen(trim($blog->getArchiveTemplate()))){
 						$templates[$pageId] = $blog->getArchiveTemplate();
 					}else{
 						$templates[$pageId] = $blog->getEntryTemplate();
