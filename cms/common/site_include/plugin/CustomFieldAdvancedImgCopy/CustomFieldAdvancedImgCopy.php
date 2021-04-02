@@ -17,7 +17,7 @@ class CustomFieldPluginAdvancedImgCopy{
 			"name" => "カスタムフィールドアドバンスド イメージフィールドコピー",
 			"description" => "",
 			"author" => "齋藤毅",
-			"url" => "https://saitodev.co/",
+			"url" => "https://saitodev.co/article/3772",
 			"mail" => "tsuyoshi@saitodev.co",
 			"version"=>"0.1"
 		));
