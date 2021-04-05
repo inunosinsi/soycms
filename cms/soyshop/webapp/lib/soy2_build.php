@@ -2708,7 +2708,7 @@ class SOY2ActionSession {
      * @return SOY2UserSession
      */
     public static function &getUserSession(){
-    	@session_start();
+		if(session_status() == PHP_SESSION_NONE) session_start();
     	if(!isset($_SESSION[self::session_user_key])){
     		$_SESSION[self::session_user_key] = new SOY2UserSession();
     	}
@@ -2718,7 +2718,7 @@ class SOY2ActionSession {
      * @return SOY2FlashSession
      */
     public static function &getFlashSession(){
-    	@session_start();
+		if(session_status() == PHP_SESSION_NONE) session_start();
     	static $_request;
     	if(is_null($_request)){
     		$_request = true;
@@ -2733,8 +2733,8 @@ class SOY2ActionSession {
     	return $_SESSION[self::session_flash_key];
     }
     public static function regenerateSessionId(){
-    	@session_start();
-    	session_regenerate_id(true);
+		if(session_status() == PHP_SESSION_NONE) session_start();
+		session_regenerate_id(true);
     }
 }
 /**
@@ -9208,15 +9208,15 @@ function soy2_unserialize($string){
  * tokenを発行など
  */
 function soy2_get_token(){
-	if(!isset($_SESSION)) session_start();
+	if(session_status() == PHP_SESSION_NONE) session_start();
 	if(!isset($_SESSION["soy2_token"])){
 		$_SESSION["soy2_token"] = soy2_generate_token();
 	}
 	return $_SESSION["soy2_token"];
 }
 function soy2_check_token(){
-	if(!isset($_SESSION)) session_start();
-	if(isset($_SESSION["soy2_token"]) AND isset($_REQUEST["soy2_token"])){
+	if(session_status() == PHP_SESSION_NONE) session_start();
+	if(isset($_SESSION["soy2_token"]) && isset($_REQUEST["soy2_token"])){
 		if($_REQUEST["soy2_token"] === $_SESSION["soy2_token"]){
 			$_SESSION["soy2_token"] = soy2_generate_token();
 			return true;
@@ -9257,7 +9257,10 @@ function soy2_check_referer(){
 	if(isset($queryString) && strlen($queryString)) $_path .= "?" . $queryString;
 	return ($_path == $_SERVER['REQUEST_URI']);
 }
-
+/* function/function.soy2_setcookie.php */
+/*
+ * PHPのバージョンによってsetcookieのオプションの値を変える
+ */
 function soy2_setcookie($key, $value=null, $opts=array()){
 	$version = phpversion();
 	$majorVersion = (int)substr($version, 0, strpos($version, "."));
@@ -9276,4 +9279,12 @@ function soy2_setcookie($key, $value=null, $opts=array()){
 		$httponly = (isset($opts["httponly"]) && is_bool($opts["httponly"])) ? $opts["httponly"] : false;
 		setcookie($key, $value , $opts["expires"], $path, $domain, $opts["secure"], $httponly);
 	}
+}
+/* function/function.soy2_number_format.php */
+/*
+ * number_formatの第一引数が数字ではなかった場合
+ */
+function soy2_number_format($int){
+	if(!is_numeric($int)) return 0;
+	return number_format($int);
 }
