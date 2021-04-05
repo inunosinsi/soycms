@@ -1,0 +1,27 @@
+<?php
+/**
+ * session config
+ * To change session settings → Create session.config.php
+ */
+//すでにセッションが開始している場合は設定できない
+if((!isset($_SESSION) || is_null($_SESSION))){
+	$sessCnf = session_get_cookie_params();
+	if(!$sessCnf["httponly"]){	//httponlyがtrueの場合は既に設定済みとして再び実行しない
+		$sessCnf["domain"] = null;
+		$sessCnf["httponly"] = true;
+
+		//httpsでアクセスした場合はsamesiteをLaxにする
+		if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") $sessCnf["secure"] = true;
+
+		//php 7.3以降 samesiteの指定が出来る
+		$vArr = explode(".", phpversion());
+		if(($vArr[0] >= 8 || ($vArr[0] >= 7 && $vArr[1] >= 3))){
+			$sessCnf["samesite"] = "Lax";
+			session_set_cookie_params($sessCnf);
+		}else{
+			session_set_cookie_params($sessCnf["lifetime"], $sessCnf["path"], $sessCnf["domain"], $sessCnf["secure"], $sessCnf["httponly"]);
+		}
+		unset($vArr);
+	}
+	unset($sessCnf);
+}
