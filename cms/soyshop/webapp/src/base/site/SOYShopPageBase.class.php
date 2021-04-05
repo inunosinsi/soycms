@@ -25,7 +25,7 @@ class SOYShopPageBase extends WebPage{
      */
     function common_execute(){
 		$page = $this->getPageObject();
-		if(!$page instanceof SOYShop_Page) $page = new SOYShop_Page();
+		if(!$page instanceof SOYShop_Page) throw new Exception("failed SOYShop_Page Object on SOYShopPageBase");
         $title = $page->getConvertedTitle();
 
         //SHOP_NAME
@@ -92,22 +92,24 @@ class SOYShopPageBase extends WebPage{
      */
     function convertMeta($string){
 		$page = $this->getPageObject();
-		if(!$page instanceof SOYShop_Page) $page = new SOYShop_Page();
+		if(!$page instanceof SOYShop_Page) throw new Exception("failed SOYShop_Page Object on SOYShopPageBase");
         switch($page->getType()){
             case "list":
 				$obj = $page->getObject();
-				if(!$obj instanceof SOYShop_ListPage) $obj = new SOYShop_ListPage();
+				if(!$obj instanceof SOYShop_ListPage) throw new Exception("failed SOYShop_ListPage Object on SOYShopPageBase");
                 $current = $obj->getCurrentCategory();
 				if($current instanceof SOYShop_Category && method_exists($current, "getName")) return str_replace("%CATEGORY_NAME%", $current->getOpenCategoryName(), $string);
+				break;
             case "detail":
 				$obj = $page->getObject();
-				if(!$obj instanceof SOYShop_DetailPage) $obj = new SOYShop_DetailPage();
+				if(!$obj instanceof SOYShop_DetailPage) throw new Exception("failed SOYShop_DetailPage Object on SOYShopPageBase");
                 $current = $obj->getCurrentItem();
 				if($current instanceof SOYShop_Item){
 					$string = str_replace("%ITEM_NAME%", $current->getOpenItemName(), $string);
 	                $string = str_replace("%ITEM_CODE%", $current->getCode(), $string);
 	                return str_replace("%CATEGORY_NAME%", soyshop_get_category_name($current->getCategory()), $string);
 				}
+				break;
             case "search":
                 $q = "";
                 if(isset($_GET["q"])){
