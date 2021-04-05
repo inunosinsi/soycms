@@ -51,13 +51,13 @@ class ItemListComponent extends HTMLList{
         ));
 
         $this->addLabel("item_price", array(
-            "text" => number_format((int)$item->getPrice())
+            "text" => soy2_number_format((int)$item->getPrice())
         ));
         $this->addModel("is_sale", array(
             "visible" => $item->isOnSale()
         ));
         $this->addLabel("sale_price", array(
-            "text" => number_format((int)$item->getSalePrice())
+            "text" => soy2_number_format((int)$item->getSalePrice())
         ));
 
         //在庫無視モード
@@ -79,7 +79,7 @@ class ItemListComponent extends HTMLList{
         ));
 
         $this->addLabel("order_count", array(
-            "text" => (!$isIgnoreStock && $item instanceof SOYShop_Item) ? number_format(self::_getOrderCount($item)) : null
+            "text" => (!$isIgnoreStock && $item instanceof SOYShop_Item) ? soy2_number_format(self::_getOrderCount($item)) : null
         ));
     }
 
@@ -100,7 +100,7 @@ class ItemListComponent extends HTMLList{
 			}
 		}
 
-		return number_format($item->getStock());
+		return soy2_number_format($item->getStock());
 	}
 
 	private function _getCategoryText(SOYShop_Item $item){
@@ -126,7 +126,7 @@ class ItemListComponent extends HTMLList{
 			}
         }
 
-		return number_format($item->getOrderCount());
+		return soy2_number_format($item->getOrderCount());
     }
 
 	/** dao周り **/

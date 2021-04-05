@@ -34,18 +34,18 @@ class InvoiceItemListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_count", array(
-			"text" => (is_numeric($itemOrder->getItemCount())) ? number_format($itemOrder->getItemCount()) : ""
+			"text" => soy2_number_format($itemOrder->getItemCount())
 		));
 
 		$this->addModel("is_item_price", array(
 			"visible" => (is_numeric($itemOrder->getItemPrice()) && (int)$itemOrder->getItemPrice() > 0)
 		));
 		$this->addLabel("item_price", array(
-			"text" => (is_numeric($itemOrder->getItemPrice())) ? number_format($itemOrder->getItemPrice()) : 0
+			"text" => soy2_number_format($itemOrder->getItemPrice())
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
+			"text" => soy2_number_format($itemOrder->getTotalPrice())
 		));
 	}
 

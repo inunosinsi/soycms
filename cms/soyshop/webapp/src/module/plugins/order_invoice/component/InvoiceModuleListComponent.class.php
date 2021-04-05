@@ -9,7 +9,7 @@ class InvoiceModuleListComponent extends HTMLList {
 		));
 
 		$this->addLabel("module_price", array(
-			"text" => (is_numeric($item->getPrice())) ? number_format($item->getPrice()) : 0
+			"text" => soy2_number_format($item->getPrice())
 		));
 
 		return ($item->isVisible() && is_numeric($item->getPrice()));

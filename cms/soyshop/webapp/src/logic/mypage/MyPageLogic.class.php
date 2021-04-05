@@ -80,8 +80,6 @@ class MyPageLogic extends SOY2LogicBase{
 			}
 		}
 
-		SOY2ActionSession::regenerateSessionId();
-
 		return $myPage;
 	}
 
@@ -89,8 +87,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * マイページを保存
 	 */
 	public static function saveMyPage(MyPageLogic $myPage){
-		$userSession = SOY2ActionSession::getUserSession();
-		$userSession->setAttribute("soyshop_mypage_" . SOYSHOP_ID . $myPage->getId(), soy2_serialize($myPage));
+		SOY2ActionSession::getUserSession()->setAttribute("soyshop_mypage_" . SOYSHOP_ID . $myPage->getId(), soy2_serialize($myPage));
 	}
 	function save(){
 		MypageLogic::saveMyPage($this);
@@ -100,8 +97,7 @@ class MyPageLogic extends SOY2LogicBase{
 	 * マイページを削除
 	 */
 	public static function clearMyPage($myPageId){
-		$userSession = SOY2ActionSession::getUserSession();
-		$userSession->setAttribute("soyshop_mypage_" . SOYSHOP_ID . $myPageId, null);
+		SOY2ActionSession::getUserSession()->setAttribute("soyshop_mypage_" . SOYSHOP_ID . $myPageId, null);
 	}
 	function clear(){
 		MyPageLogic::clearMyPage($this->getId());

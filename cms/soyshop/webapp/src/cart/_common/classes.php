@@ -9,8 +9,7 @@ class ErrorMessageLabel extends HTMLLabel{
 class NumberFormatLabel extends HTMLLabel{
 
 	function getObject(){
-		$int = parent::getObject();
-		return (is_numeric($int)) ? number_format($int) : 0;
+		return soy2_number_format(parent::getObject());
 	}
 }
 

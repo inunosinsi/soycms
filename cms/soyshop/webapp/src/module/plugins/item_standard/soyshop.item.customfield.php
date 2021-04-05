@@ -195,17 +195,17 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		list($sellingMax, $normalMax, $saleMax) = self::getItemStandardPrice($item, "max");
 		$htmlObj->addLabel("standard_price_max", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => ($sellingMax > $sellingMin) ? number_format($sellingMax) : ""
+			"text" => ($sellingMax > $sellingMin) ? soy2_number_format($sellingMax) : ""
 		));
 
 		$htmlObj->addLabel("standard_normal_price_max", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => ($normalMax > $normalMin) ? number_format($normalMax) : ""
+			"text" => ($normalMax > $normalMin) ? soy2_number_format($normalMax) : ""
 		));
 
 		$htmlObj->addLabel("standard_sale_price_max", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => ($saleMax > $saleMin) ? number_format($saleMax) : ""
+			"text" => ($saleMax > $saleMin) ? soy2_number_format($saleMax) : ""
 		));
 
 

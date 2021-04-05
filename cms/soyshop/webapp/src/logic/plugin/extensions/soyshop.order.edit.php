@@ -21,6 +21,10 @@ class SOYShopOrderEditBase implements SOY2PluginAction{
 		return "";
 	}
 
+	function update($orderId, $isChange){
+
+	}
+
 	/**
 	 * @return array({attribute_id} => array({name} => string, {value} => string, {hidden} => boolean, {readonly} => boolen))
 	 */
@@ -40,6 +44,7 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 
 	private $mode = "html";
 	private $orderId;
+	private $isChange = true;
 	private $_html;
 	private $_attributes = array();
 
@@ -63,9 +68,12 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 				$html = $action->html_on_detail();
 				break;
 			case "html":	//注文詳細画面でjavascriptの記述等を追加する時に使用する
-			default:
 				$action->setOrderId($this->orderId);
 				$html = $action->html();
+				break;
+			case "update":
+			default:
+				$action->update($this->orderId, $this->isChange);
 		}
 
 		if(strlen($html)){
@@ -81,6 +89,9 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 	}
 	function setOrderId($orderId){
 		$this->orderId = $orderId;
+	}
+	function setIsChange($isChange){
+		$this->isChange = $isChange;
 	}
 
 	function getHTML(){

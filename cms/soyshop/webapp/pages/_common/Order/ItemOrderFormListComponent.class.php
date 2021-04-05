@@ -36,7 +36,7 @@ class ItemOrderFormListComponent extends HTMLList {
 		));
 
 		$this->addLabel("purchase_price", array(
-			"text" => (is_numeric($item->getPurchasePrice())) ? number_format($item->getPurchasePrice()) : 0
+			"text" => soy2_number_format($item->getPurchasePrice())
 		));
 
 		$this->addInput("item_count", array(
@@ -45,7 +45,7 @@ class ItemOrderFormListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
+			"text" => soy2_number_format($itemOrder->getTotalPrice())
 		));
 
 

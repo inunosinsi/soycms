@@ -475,7 +475,7 @@ class DetailPage extends WebPage{
 					'"html" => $itemName
 				));'.
 				'$this->addLabel("item_price", array(' .
-					'"text" => (is_numeric($entity->getPrice())) ? number_format($entity->getPrice()) : 0
+					'"text" => soy2_number_format($entity->getPrice())
 				));'
 		));
 

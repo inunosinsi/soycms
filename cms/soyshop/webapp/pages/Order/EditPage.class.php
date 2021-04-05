@@ -217,7 +217,8 @@ class EditPage extends WebPage{
 			}
 
 			//変更実行
-			if(count($change) > 0 || count($itemChange) > 0){
+			$isChange = (count($change) || count($itemChange));
+			if($isChange){
 
 				/*
 				 *
@@ -342,14 +343,17 @@ class EditPage extends WebPage{
 					$dao->rollback();
 					SOY2PageController::jump("Order.Edit." . $this->id . "?failed");
 				}
-
-				//SOY2PageController::jump("Order.Detail." . $this->id . "?updated");
-				SOY2PageController::jump("Order.Edit." . $this->id . "?updated");
 			}
 
+			SOYShopPlugin::load("soyshop.order.edit");
+			SOYShopPlugin::invoke("soyshop.order.edit", array(
+				"orderId" => $order->getId(),
+				"mode" => "update",
+				"isChange" => $isChange
+			));
+
 			//変更なし
-			//SOY2PageController::jump("Order.Detail." . $this->id);
-			SOY2PageController::jump("Order.Edit." . $this->id);
+			SOY2PageController::jump("Order.Edit." . $this->id . "?updated");
 		}
 	}
 
@@ -515,7 +519,7 @@ class EditPage extends WebPage{
 		));
 
 		$this->addLabel("order_price", array(
-			"text" => number_format($order->getPrice()) . " 円"
+			"text" => soy2_number_format($order->getPrice()) . " 円"
 		));
 
 		//支払い方法の変更
@@ -672,7 +676,7 @@ class EditPage extends WebPage{
 		));
 
 		$this->addLabel("order_total_price", array(
-			"text" => number_format($order->getPrice())
+			"text" => soy2_number_format($order->getPrice())
 		));
 
 		$this->createAdd("module_list", "_common.Order.ModuleFormListComponent", array(

@@ -56,31 +56,19 @@ class CartLogic extends SOY2LogicBase{
 	 * カートを取得
 	 */
 	public static function getCart($cartId = null){
-
 		if(!$cartId) $cartId = (defined("SOYSHOP_CURRENT_CART_ID")) ? SOYSHOP_CURRENT_CART_ID : "bryon";
-		$userSession = SOY2ActionSession::getUserSession();
-		$cart = $userSession->getAttribute("soyshop_" . SOYSHOP_ID . $cartId);
-		if(is_string($cart) && strlen($cart)){
-			$cart = soy2_unserialize($cart);
-		}
-
-		if(!is_null($cart)){
-			SOY2ActionSession::regenerateSessionId();
-			return $cart;
-		}
-
-		return new CartLogic($cartId);
+		$cart = SOY2ActionSession::getUserSession()->getAttribute("soyshop_" . SOYSHOP_ID . $cartId);
+		if(is_string($cart) && strlen($cart)) $cart = soy2_unserialize($cart);
+		return ($cart instanceof CartLogic) ? $cart : new CartLogic($cartId);
 	}
 
 	/**
 	 * カートを保存
 	 */
 	public static function saveCart(CartLogic $cart){
-		$userSession = SOY2ActionSession::getUserSession();
-		$userSession->setAttribute("soyshop_" . SOYSHOP_ID . $cart->getId(), soy2_serialize($cart));
-
-
+		SOY2ActionSession::getUserSession()->setAttribute("soyshop_" . SOYSHOP_ID . $cart->getId(), soy2_serialize($cart));
 	}
+
 	function save(){
 		CartLogic::saveCart($this);
 	}
@@ -89,9 +77,8 @@ class CartLogic extends SOY2LogicBase{
 	 * カートを削除
 	 */
 	public static function clearCart($cartId = null){
-		if(!$cartId)$cartId = soyshop_get_cart_id();
-		$userSession = SOY2ActionSession::getUserSession();
-		$userSession->setAttribute("soyshop_" . SOYSHOP_ID . $cartId, null);
+		if(is_null($cartId)) $cartId = soyshop_get_cart_id();
+		SOY2ActionSession::getUserSession()->setAttribute("soyshop_" . SOYSHOP_ID . $cartId, null);
 	}
 	function clear(){
 		CartLogic::clearCart($this->getId());

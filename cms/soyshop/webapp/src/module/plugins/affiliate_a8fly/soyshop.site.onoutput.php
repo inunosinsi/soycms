@@ -35,6 +35,12 @@ class AffiliateA8flyOnOutput extends SOYShopSiteOnOutputAction{
 		if(!isset($config["id"]) || !strlen($config["id"])) return $html;
 
 		$tag = "<script src=\"//statics.a8.net/a8sales/a8sales.js\"></script>";
+
+		//カートページではa8crossDomainを読み込まない
+		if(!SOYSHOP_APPLICATION_MODE && !SOYSHOP_CART_MODE){
+			$tag .= "\n<script src=\"//statics.a8.net/a8sales/a8crossDomain.js\"></script>";
+		}
+
 		return str_ireplace('</head>', $tag . "\n" . '</head>', $html);
 	}
 }

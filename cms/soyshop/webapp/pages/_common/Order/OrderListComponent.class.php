@@ -69,7 +69,7 @@ class OrderListComponent extends HTMLList{
 		));
 
 		$this->addLabel("order_price", array(
-			"text" => (is_numeric($order->getPrice())) ? number_format($order->getPrice()) : 0
+			"text" => soy2_number_format($order->getPrice())
 		));
 	}
 

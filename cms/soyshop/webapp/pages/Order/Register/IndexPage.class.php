@@ -265,7 +265,7 @@ class IndexPage extends WebPage{
 		));
 
 		$this->addLabel("total_item_price", array(
-				"text" => number_format($this->cart->getItemPrice())
+				"text" => soy2_number_format($this->cart->getItemPrice())
 		));
 
 		//モジュール料金
@@ -276,7 +276,7 @@ class IndexPage extends WebPage{
 
 		//総額
 		$this->addLabel("total_price", array(
-				"text" => number_format($this->cart->getTotalPrice())
+				"text" => soy2_number_format($this->cart->getTotalPrice())
 		));
 
 		//在庫切れ

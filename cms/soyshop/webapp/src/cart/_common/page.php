@@ -25,6 +25,9 @@ $cart = CartLogic::getCart(SOYSHOP_CURRENT_CART_ID);
 $config = SOYShop_ShopConfig::load();
 $session = SOY2ActionSession::getUserSession();
 
+//PHPSESSIDの値の更新　スマホでは更新すべきではないらしい
+if(USE_SESSION_REGENERATE_ID_MODE) SOY2ActionSession::regenerateSessionId();
+
 /* 表示するページ */
 //進捗の時間切れ判定
 $timeLimit = $config->getCartPageTimeLimit() * 60;//秒に変換（同時に数値に変換される）

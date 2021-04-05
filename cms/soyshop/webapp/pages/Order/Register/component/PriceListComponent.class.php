@@ -9,7 +9,7 @@ class PriceListComponent extends HTMLList{
 		));
 
 		$this->addLabel("price", array(
-			"text" => (isset($entity["price"])) ? number_format($entity["price"]) : ""
+			"text" => (isset($entity["price"])) ? soy2_number_format($entity["price"]) : ""
 		));
 	}
 }

@@ -61,9 +61,32 @@ class BulletinBoardUtil {
 		$html = "";
 
 		$noBrMode = false;
+		$isEnclosePreTag = false;
 		$lastLine = count($lines);
 		for($i = 0; $i < $lastLine; $i++){
 			$line = $lines[$i];
+
+			// >から始まる行は<pre>で囲いたい
+			if(!$isEnclosePreTag){
+				if(strpos($line, ">") === 0) {
+					// >を削除
+					$line = self::_removeGreaterString($line);
+					$line = "<pre>"  . rtrim($line);
+					$isEnclosePreTag = true;
+					//次の行で > から始まらなかった場合は閉じる
+					if(!isset($lines[$i + 1]) || is_bool(strpos($lines[$i + 1], ">"))){
+						$line .= "</pre>";
+						$isEnclosePreTag = false;
+					}
+				}
+			}else{
+				if(is_bool(strpos($line, ">"))){
+					$html = rtrim($html) . "</pre>\n";
+					$isEnclosePreTag = false;
+				}else{
+					$line = self::_removeGreaterString($line);
+				}
+			}
 
 			//<quote>を<backquote>に変換
 			if(is_numeric(strpos($line, "<quote>"))) $line = str_replace("<quote>", "<backquote>", $line);
@@ -113,6 +136,14 @@ class BulletinBoardUtil {
 		$html = str_replace("\n</code>", "</code>", $html);
 
 		return trim($html);
+	}
+
+	private static function _removeGreaterString($line){
+		for(;;){
+			if(is_bool(strpos($line, ">"))) break;
+			$line = substr($line, 1);
+		}
+		return $line;
 	}
 
 	public static function autoInsertAnchorTag($html){

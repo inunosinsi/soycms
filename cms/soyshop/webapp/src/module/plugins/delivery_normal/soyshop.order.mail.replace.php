@@ -44,7 +44,7 @@ class DeliveryNormalMailReplace extends SOYShopOrderMailReplace{
 
 		//送料
 		$list = $order->getModuleList();
-		$postage = (isset($list["delivery_normal"])) ? number_format($list["delivery_normal"]->getPrice()) : "";
+		$postage = (isset($list["delivery_normal"])) ? soy2_number_format($list["delivery_normal"]->getPrice()) : "";
 		$content = str_replace("#POSTAGE#", $postage, $content);
 
 		return $content;

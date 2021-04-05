@@ -312,7 +312,7 @@ function soyshop_display_price($price){
 	if (is_int($price)) return number_format((int)$price);
 
 	//表記の小数点があるか？
-	return (preg_match('/\.[0-9]*/', $price, $tmp)) ? number_format($price, 1) : number_format((int)$price);
+	return (preg_match('/\.[0-9]*/', $price, $tmp)) ? soy2_number_format($price, 1) : soy2_number_format((int)$price);
 }
 
 /**
@@ -335,47 +335,41 @@ function soyshop_get_cart_url($operation = false, $isAbsolute = false){
  * カートのIDを取得
  */
 function soyshop_get_cart_id(){
-    if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-        return SOYShop_DataSets::get("config.cart.mobile_cart_id", "mobile");
-    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-        return SOYShop_DataSets::get("config.cart.smartphone_cart_id", "smart");
-    }else{
-        return SOYShop_DataSets::get("config.cart.cart_id", "bryon");
-    }
+	if( (defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) || (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ) return SOYShop_DataSets::get("config.cart.smartphone_cart_id", "smart");
+    if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE) return SOYShop_DataSets::get("config.cart.mobile_cart_id", "mobile");
+    return SOYShop_DataSets::get("config.cart.cart_id", "bryon");
 }
 
 /**
  * カートのURIを取得
  */
 function soyshop_get_cart_uri(){
+	if(defined("SOYSHOP_CART_URI")) return SOYSHOP_CART_URI;
 
-    if(!defined("SOYSHOP_CART_URI")){
-        if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-            $cartUri = SOYShop_DataSets::get("config.cart.mobile_cart_url", "mb/cart");
-        }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-            $cartUri = SOYShop_DataSets::get("config.cart.smartphone_cart_url", "i/cart");
-        }else{
-            $cartUri = SOYShop_DataSets::get("config.cart.cart_url", "cart");
-        }
+    if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
+        $cartUri = SOYShop_DataSets::get("config.cart.mobile_cart_url", "mb/cart");
+    }else if( (defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) || (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ){
+        $cartUri = SOYShop_DataSets::get("config.cart.smartphone_cart_url", "i/cart");
+    }else{
+        $cartUri = SOYShop_DataSets::get("config.cart.cart_url", "cart");
+    }
 
-		//多言語化対応
-		if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
-			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-			if(class_exists("UtilMultiLanguageUtil")){
-				$config = UtilMultiLanguageUtil::getConfig();
-				if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) && strlen($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
-					if(strpos($cartUri, "/")){
-						$cartUri = str_replace("/", "/" . $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/", $cartUri);
-					}else{
-						$cartUri = $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $cartUri;
-					}
+	//多言語化対応
+	if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
+		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+		if(class_exists("UtilMultiLanguageUtil")){
+			$config = UtilMultiLanguageUtil::getConfig();
+			if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) && strlen($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
+				if(strpos($cartUri, "/")){
+					$cartUri = str_replace("/", "/" . $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/", $cartUri);
+				}else{
+					$cartUri = $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $cartUri;
 				}
 			}
 		}
+	}
 
-        define("SOYSHOP_CART_URI", $cartUri);
-    }
-
+    define("SOYSHOP_CART_URI", $cartUri);
     return SOYSHOP_CART_URI;
 }
 
@@ -490,33 +484,32 @@ function soyshop_get_mypage_id(){
  * マイページ
  */
 function soyshop_get_mypage_uri(){
+	if(defined("SOYSHOP_MYPAGE_URI")) return SOYSHOP_MYPAGE_URI;
 
-    if(!defined("SOYSHOP_MYPAGE_URI")){
-        if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-            $mypageUri = SOYShop_DataSets::get("config.mypage.mobile.url", "mb/user");
-        }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-            $mypageUri = SOYShop_DataSets::get("config.mypage.smartphone.url", "i/user");
-        }else{
-            $mypageUri = SOYShop_DataSets::get("config.mypage.url", "user");
-        }
+	if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
+        $mypageUri = SOYShop_DataSets::get("config.mypage.mobile.url", "mb/user");
+    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
+        $mypageUri = SOYShop_DataSets::get("config.mypage.smartphone.url", "i/user");
+    }else{
+        $mypageUri = SOYShop_DataSets::get("config.mypage.url", "user");
+    }
 
-		//多言語化対応
-		if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
-			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-			if(class_exists("UtilMultiLanguageUtil")){
-				$config = UtilMultiLanguageUtil::getConfig();
-				if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) && strlen($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
-					if(strpos($mypageUri, "/")){
-						$mypageUri = str_replace("/", "/" . $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/", $mypageUri);
-					}else{
-						$mypageUri = $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $mypageUri;
-					}
+	//多言語化対応
+	if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
+		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+		if(class_exists("UtilMultiLanguageUtil")){
+			$config = UtilMultiLanguageUtil::getConfig();
+			if(isset($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"]) && strlen($config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"])){
+				if(strpos($mypageUri, "/")){
+					$mypageUri = str_replace("/", "/" . $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/", $mypageUri);
+				}else{
+					$mypageUri = $config[SOYSHOP_PUBLISH_LANGUAGE]["prefix"] . "/" . $mypageUri;
 				}
 			}
 		}
+	}
 
-        define("SOYSHOP_MYPAGE_URI", $mypageUri);
-    }
+    define("SOYSHOP_MYPAGE_URI", $mypageUri);
 
     return SOYSHOP_MYPAGE_URI;
 }
@@ -950,7 +943,7 @@ function soyshop_get_a_few_months_ago($n=1, $timestamp=null){
 	$nowM = date("n", $timestamp);
 	$nowM -= $n;
 	if($nowM <= 0) $nowM = 12 + $nowM;
-	
+
 	if(date("n", $ago) == $n) return $ago;
 
 	//月末であった場合

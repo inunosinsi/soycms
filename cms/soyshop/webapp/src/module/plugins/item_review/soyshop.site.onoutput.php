@@ -6,9 +6,12 @@ class ItemReviewOnOutput extends SOYShopSiteOnOutputAction{
 
 	    	header("Content-Type: image/jpeg");
 			$captcha = str_replace(array(".", "/", "\\"), "", $_GET["captcha"]);
-			echo file_get_contents(SOY2HTMLConfig::CacheDir() . $captcha . ".jpg");
-			//CAPTCHA画像の削除
-	    	@unlink(SOY2HTMLConfig::CacheDir() . $captcha . ".jpg");
+			$cacheFile = SOY2HTMLConfig::CacheDir() . $captcha . ".jpg";
+			if(file_exists($cacheFile)){
+				echo file_get_contents($cacheFile);
+				//CAPTCHA画像の削除
+		    	@unlink($cacheFile);
+			}
 		}
 	}
 }

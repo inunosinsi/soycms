@@ -143,7 +143,7 @@ class CouponListComponent extends HTMLList{
 
 	private function _getDiscountAmount(SOYShop_Coupon $coupon){
 		if($coupon->getCouponType() == SOYShop_Coupon::TYPE_PRICE){
-			return (is_numeric($coupon->getDiscount())) ? number_format($coupon->getDiscount()) . " 円" : "";
+			return soy2_number_format($coupon->getDiscount()) . " 円";
 		}else{
 			return (is_numeric($coupon->getDiscountPercent())) ? $coupon->getDiscountPercent() . " ％" : "";
 		}

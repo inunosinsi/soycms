@@ -38,15 +38,15 @@ class ItemListComponent extends HTMLList{
 		//親商品であるか？
 		$isParent = ($item instanceof SOYShop_Item && $item->getType() == SOYShop_Item::TYPE_GROUP);
         $this->addLabel("item_price", array(
-            "text" => (!$isParent && is_numeric($item->getPrice())) ? number_format((int)$item->getPrice()) . " 円" : ""
+            "text" => (!$isParent) ? soy2_number_format((int)$item->getPrice()) . " 円" : ""
         ));
 
 		$this->addLabel("purchase_price", array(
-			"text" => (is_numeric($item->getPurchasePrice())) ? number_format($item->getPurchasePrice()) : 0
+			"text" => soy2_number_format($item->getPurchasePrice())
 		));
 
         $this->addLabel("item_stock", array(
-            "text" => (!$isParent && is_numeric($item->getStock())) ? number_format($item->getStock()) : ""
+            "text" => (!$isParent) ? soy2_number_format($item->getStock()) : ""
         ));
 
         $this->addLink("detail_link", array(

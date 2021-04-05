@@ -100,7 +100,7 @@ class Delivery_methodList extends HTMLList{
 		));
 
 		$this->addLabel("delivery_charge", array(
-			"text" => (isset($entity["price"]) && strlen($entity["price"])) ? number_format($entity["price"]) . " 円" : ""
+			"text" => (isset($entity["price"])) ? soy2_number_format($entity["price"]) . " 円" : ""
 		));
 	}
 

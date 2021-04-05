@@ -5,6 +5,11 @@
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
+//すでにセッションスタートしている場合のみ、PHPSESSIDを更新する スマホでは更新すべきではないらしい
+if(session_status() == PHP_SESSION_ACTIVE && USE_SESSION_REGENERATE_ID_MODE){
+	SOY2ActionSession::regenerateSessionId();
+}
+
 SOY2::import("util.SOYShopPluginUtil");
 include_once(dirname(__FILE__) . "/classes.php");
 SOY2HTMLConfig::PageDir(dirname(dirname(__FILE__)). "/" . SOYSHOP_CURRENT_MYPAGE_ID . "/pages/");
@@ -59,7 +64,6 @@ if(file_exists(SOYSHOP_MAIN_MYPAGE_TEMPLATE_DIR . str_replace(".", "/", SOYSHOP_
 	try{
 		$page = SOY2HTMLFactory::createInstance($path, array("arguments" => $args));
 	}catch(Exception $e){
-		var_dump($e);
 		$page = SOY2HTMLFactory::createInstance("ErrorPage", array("arguments" => $args));
 	}
 //HTMLファイルがなければ必ずエラー

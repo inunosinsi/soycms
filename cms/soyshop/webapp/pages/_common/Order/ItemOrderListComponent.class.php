@@ -69,7 +69,7 @@ class ItemOrderListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => (is_numeric($itemOrder->getItemPrice())) ? number_format($itemOrder->getItemPrice()) : 0
+			"text" => soy2_number_format($itemOrder->getItemPrice())
 		));
 
 		//仕入値
@@ -78,15 +78,15 @@ class ItemOrderListComponent extends HTMLList {
 		));
 
 		$this->addLabel("purchase_price", array(
-			"text" => (is_numeric($item->getPurchasePrice())) ? number_format($item->getPurchasePrice()) : 0
+			"text" => soy2_number_format($item->getPurchasePrice())
 		));
 
 		$this->addLabel("item_count", array(
-			"text" => (is_numeric($itemOrder->getItemCount())) ? number_format($itemOrder->getItemCount()) : 0
+			"text" => soy2_number_format($itemOrder->getItemCount())
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
+			"text" => soy2_number_format($itemOrder->getTotalPrice())
 		));
 	}
 

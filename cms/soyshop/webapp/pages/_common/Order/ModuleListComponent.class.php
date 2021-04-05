@@ -8,7 +8,7 @@ class ModuleListComponent extends HTMLList {
 		));
 
 		$this->addLabel("module_price", array(
-			"text" => (is_numeric($entity->getPrice())) ? number_format($entity->getPrice()) : ""
+			"text" => soy2_number_format($entity->getPrice())
 		));
 
 		return ($entity->isVisible() && is_numeric($entity->getPrice()));

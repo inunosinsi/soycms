@@ -38,11 +38,11 @@ class PurchaseItemListComponent extends HTMLList {
 			"visible" => (is_numeric($itemOrder->getItemPrice()) && (int)$itemOrder->getItemPrice() > 0)
 		));
 		$this->addLabel("item_price", array(
-			"text" => (is_numeric($itemOrder->getItemPrice())) ? number_format($itemOrder->getItemPrice()) : 0
+			"text" => soy2_number_format($itemOrder->getItemPrice())
 		));
 
 		$this->addLabel("item_total_price", array(
-			"text" => (is_numeric($itemOrder->getTotalPrice())) ? number_format($itemOrder->getTotalPrice()) : 0
+			"text" => soy2_number_format($itemOrder->getTotalPrice())
 		));
 	}
 }

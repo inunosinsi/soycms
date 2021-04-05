@@ -182,7 +182,7 @@ class DetailPage extends WebPage{
 		));
 
     	$this->addLabel("order_price", array(
-    		"text" => number_format($order->getPrice()) . " 円"
+    		"text" => soy2_number_format($order->getPrice()) . " 円"
     	));
 
        	$this->createAdd("attribute_list", "_common.Order.AttributeListComponent", array(
@@ -302,7 +302,7 @@ class DetailPage extends WebPage{
     	));
 
     	$this->addLabel("order_total_price", array(
-    		"text" => number_format($order->getPrice())
+    		"text" => soy2_number_format($order->getPrice())
     	));
 
 

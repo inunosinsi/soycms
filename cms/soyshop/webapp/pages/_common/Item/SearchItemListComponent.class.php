@@ -45,17 +45,17 @@ class SearchItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => (is_numeric($item->getPrice())) ? number_format($item->getPrice()) : 0
+			"text" => soy2_number_format($item->getPrice())
 		));
 		$this->addModel("is_sale", array(
 			"visible" => $item->isOnSale()
 		));
 		$this->addLabel("sale_price", array(
-			"text" => (is_numeric($item->getSalePrice())) ? number_format($item->getSalePrice()) : 0
+			"text" => soy2_number_format($item->getSalePrice())
 		));
 
 		$this->addLabel("item_stock", array(
-			"text" => (is_numeric($item->getStock())) ? number_format($item->getStock()) : 0
+			"text" => soy2_number_format($item->getStock())
 		));
 
 		$this->addLabel("item_category", array(
@@ -67,9 +67,8 @@ class SearchItemListComponent extends HTMLList{
 			"link" => $detailLink
 		));
 
-		$orderCount = self::_getOrderCount($item->getId());
 		$this->addLabel("order_count", array(
-			"text" => number_format($orderCount)
+			"text" => soy2_number_format(self::_getOrderCount($item->getId()))
 		));
 	}
 
