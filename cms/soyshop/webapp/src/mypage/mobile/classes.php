@@ -10,7 +10,7 @@ class NumberFormatLabel extends HTMLLabel{
 
 	function getObject(){
 		$str = parent::getObject();
-		return (strlen($str) > 0) ? number_format($str) : "";
+		return (strlen($str) > 0) ? soy2_number_format($str) : "";
 	}
 }
 

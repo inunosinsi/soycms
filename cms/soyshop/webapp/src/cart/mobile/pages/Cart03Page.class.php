@@ -11,7 +11,7 @@ class Cart03Page extends MobileCartPageBase{
 		if(isset($_POST["next"]) || isset($_POST["next_x"])){
 
 			$cart = CartLogic::getCart();
-			
+
 			//まずはエラーチェックのみ
 			$this->checkError($cart);
 
@@ -22,13 +22,13 @@ class Cart03Page extends MobileCartPageBase{
 			$cart->removeModule($cart->getAttribute("delivery_module"));
 			$cart->clearAttribute("payment_module");
 			$cart->clearAttribute("delivery_module");
-			
+
 			SOYShopPlugin::load("soyshop.order.customfield");
 			SOYShopPlugin::invoke("soyshop.order.customfield", array(
 				"mode" => "clear",
 				"cart" => $cart,
 			));
-			
+
 			//支払
 			if(!$cart->hasError("payment")){
 				$paymentModule = @$_POST["payment_module"];
@@ -39,7 +39,7 @@ class Cart03Page extends MobileCartPageBase{
 
 				$paymentModule = $moduleDAO->getByPluginId($paymentModule);
 				SOYShopPlugin::load("soyshop.payment",$paymentModule);
-	
+
 				SOYShopPlugin::invoke("soyshop.payment", array(
 					"mode" => "select",
 					"cart" => $cart
@@ -53,17 +53,17 @@ class Cart03Page extends MobileCartPageBase{
 					$deliveryMethod = mb_convert_encoding($deliveryMethod,"UTF-8","SJIS");
 				}
 				$cart->setAttribute("delivery_module",$deliveryMethod);
-				
+
 				$deliveryModule = $moduleDAO->getByPluginId($deliveryMethod);
-		
+
 				SOYShopPlugin::load("soyshop.delivery",$deliveryModule);
-	
+
 				SOYShopPlugin::invoke("soyshop.delivery", array(
 					"mode" => "select",
 					"cart" => $cart
 				));
 			}
-			
+
 			//割引
 			if(!$cart->hasError("discount")){
 				SOYShopPlugin::load("soyshop.discount");
@@ -73,7 +73,7 @@ class Cart03Page extends MobileCartPageBase{
 					"param" => @$_POST["discount_module"]
 				));
 			}
-			
+
 			//カスタムフィールド
 			if(!$cart->hasError("customfield")){
 //				SOYShopPlugin::load("soyshop.order.customfield");
@@ -109,7 +109,7 @@ class Cart03Page extends MobileCartPageBase{
 //			$cart->clearAttribute("delivery_module");
 
 			$cart->clearErrorMessage();
-			
+
 			$param = null;
 			if(isset($_GET[session_name()])){
 				$param = session_name() . "=" . session_id();
@@ -132,7 +132,7 @@ class Cart03Page extends MobileCartPageBase{
 		if(isset($_GET[session_name()])){
 				$url = $url."?".session_name() . "=" . session_id();
 		}
-		
+
 
 		$this->createAdd("order_form","HTMLForm", array(
 			"action" => $url,
@@ -231,7 +231,7 @@ class Cart03Page extends MobileCartPageBase{
 		$this->createAdd("send_address2","HTMLLabel", array(
 			"text" => $send["address2"]
 		));
-		
+
 		$this->createAdd("send_tel","HTMLLabel", array(
 			"text" => $send["telephoneNumber"]
 		));
@@ -286,16 +286,16 @@ class Cart03Page extends MobileCartPageBase{
 		return $delegate->getList();
 
 	}
-	
+
 	function getCustomfieldMethod($cart){
-		
+
 		SOYShopPlugin::load("soyshop.order.customfield");
-		
+
 		$delegate = SOYShopPlugin::invoke("soyshop.order.customfield", array(
 			"mode" => "list",
 			"cart" => $cart
 		));
-		
+
 		$obj = array();
 		if(count($delegate->getList()) > 0){
 			foreach($delegate->getList() as $list){
@@ -305,7 +305,7 @@ class Cart03Page extends MobileCartPageBase{
 					}
 				}
 			}
-		}	
+		}
 		return (count($obj) > 0) ? $obj : array();
 	}
 
@@ -356,7 +356,7 @@ class Cart03Page extends MobileCartPageBase{
 				"cart" => $cart,
 				"param" => @$_POST["discount_module"]
 			));
-			
+
 			if($delegate->hasError()){
 				$cart->addErrorMessage("discount","割引で何らかのエラーが発生しました。");
 				$res = true;
@@ -364,7 +364,7 @@ class Cart03Page extends MobileCartPageBase{
 				$cart->removeErrorMessage("discount");
 			}
 		}
-		
+
 		//Customfield Module
 		{
 			SOYShopPlugin::load("soyshop.order.customfield");
@@ -373,7 +373,7 @@ class Cart03Page extends MobileCartPageBase{
 				"cart" => $cart,
 				"param" => @$_POST["customfield_module"]
 			));
-			
+
 			if($delegate->hasError()){
 				$cart->addErrorMessage("customfield","エラーが発生しました。");
 				$res = true;
@@ -412,7 +412,7 @@ class Payment_methodList extends HTMLList{
 		));
 
 		$this->createAdd("payment_charge","HTMLLabel", array(
-			"text" => strlen($entity["price"]) ? number_format($entity["price"])." 円" : "",
+			"text" => (isset($entity["price"])) ? soy2_number_format($entity["price"])." 円" : "",
 		));
 	}
 
@@ -450,7 +450,7 @@ class Delivery_methodList extends HTMLList{
 		));
 
 		$this->createAdd("delivery_charge","HTMLLabel", array(
-			"text" => strlen($entity["price"]) ? number_format($entity["price"])." 円" : "",
+			"text" => (isset($entity["price"])) ? soy2_number_format($entity["price"])." 円" : "",
 		));
 	}
 

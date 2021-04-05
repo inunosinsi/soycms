@@ -51,6 +51,7 @@ class Cart01Page extends MainCartPageBase{
 					$mypage = MyPageLogic::getMyPage();
 					$mypage->setAttribute("loggedin", true);
 			    	$mypage->setAttribute("userId", $user->getId());
+					$mypage->save();
 				}else{
 					//ログイン失敗または登録なし
 					$user = new SOYShop_User();

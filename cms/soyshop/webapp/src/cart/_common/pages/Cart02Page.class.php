@@ -88,6 +88,7 @@ class Cart02Page extends MainCartPageBase{
 				));
 
 				$cart->setAttribute("page", "Cart01");
+				$cart->save();
 				soyshop_redirect_cart();
 			}
 		}

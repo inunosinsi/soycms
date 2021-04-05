@@ -9,8 +9,7 @@ class ErrorMessageLabel extends HTMLLabel{
 class NumberFormatLabel extends HTMLLabel{
 
 	function getObject(){
-		$str = parent::getObject();
-		return (strlen($str) > 0) ? number_format($str) : "";
+		return soy2_number_format(parent::getObject());
 	}
 }
 
@@ -51,13 +50,13 @@ class MobileCartPageBase extends WebPage{
 
 		return SOYSHOP_DEFAULT_CART_TEMPLATE_DIR . get_class($this) . ".html";
     }
-    
+
     /* convert */
-    
+
 	function _trim($str){
 		return trim($str);
 	}
-	
+
 	function convertKana($str){
 		$str = trim($str);
 		return mb_convert_kana($str,"CK","UTF-8");

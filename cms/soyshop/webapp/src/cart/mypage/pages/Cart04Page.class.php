@@ -337,7 +337,7 @@ class Payment_methodList extends HTMLList{
 		));
 
 		$this->createAdd("payment_charge","HTMLLabel", array(
-			"text" => strlen($entity["price"]) ? number_format($entity["price"])." 円" : "",
+			"text" => (isset($entity["price"])) ? soy2_number_format($entity["price"])." 円" : "",
 		));
 	}
 
@@ -375,7 +375,7 @@ class Delivery_methodList extends HTMLList{
 		));
 
 		$this->createAdd("delivery_charge","HTMLLabel", array(
-			"text" => strlen($entity["price"]) ? number_format($entity["price"])." 円" : "",
+			"text" => (isset($entity["price"])) ? soy2_number_format($entity["price"])." 円" : "",
 		));
 	}
 

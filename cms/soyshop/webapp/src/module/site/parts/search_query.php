@@ -38,7 +38,7 @@ if(count($keys)){
 			//価格
 			if(strpos($csfId, "_min")){
 				$max = (int)$_GET["c_search"]["item_price_max"];
-				$max = ($max > 0) ? number_format($max) : "";
+				$max = ($max > 0) ? soy2_number_format($max) : "";
 				$html[] = "<li>商品価格：" . number_format((int)$v) . "〜" . $max . "</li>";
 				$i++;
 				continue;
@@ -52,7 +52,7 @@ if(count($keys)){
 				$csfId = str_replace("_start", "", $csfId);
 				if(isset($config[$csfId]) && strlen($config[$csfId]["label"])){
 					$end = (int)$_GET["c_search"][$csfId . "_end"];
-					$end = ($end > 0) ? number_format($end) : "";
+					$end = ($end > 0) ? soy2_number_format($end) : "";
 					$html[] = "<li>" . $config[$csfId]["label"] . "：" . $v . "〜" . $end . "</li>";
 
 				}

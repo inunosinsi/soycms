@@ -27,16 +27,16 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => (is_numeric($entity->getItemPrice())) ? number_format($entity->getItemPrice()) : 0,
+			"text" => soy2_number_format($entity->getItemPrice()),
 		));
 
 		//上のタグがなぜか使えないので予備でもう一つ
 		$this->addLabel("item_price_yobi", array(
-			"text" => (is_numeric($entity->getItemPrice())) ? number_format($entity->getItemPrice()) : 0,
+			"text" => soy2_number_format($entity->getItemPrice()),
 		));
 
 		$this->addLabel("item_price_on_cart", array(
-			"text" => (is_numeric($entity->getItemPrice())) ? number_format($entity->getItemPrice()) : 0,
+			"text" => soy2_number_format($entity->getItemPrice()),
 		));
 
 		$this->addLabel("item_id", array(

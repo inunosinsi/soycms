@@ -52,7 +52,7 @@ class DetailPage extends MainMyPagePageBase{
 		$isGithub = (isset($ghUrl));
 		$isTwitter = (isset($twUrl));
 
-		DisplayPlugin::toggle("sns", ($isGithub && $isTwitter));
+		DisplayPlugin::toggle("sns", ($isGithub || $isTwitter));
 
 		DisplayPlugin::toggle("github", $isGithub);
 		$this->addLink("github_link", array(

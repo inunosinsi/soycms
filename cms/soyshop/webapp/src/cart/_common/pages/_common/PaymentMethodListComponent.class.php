@@ -26,11 +26,11 @@ class PaymentMethodListComponent extends HTMLList{
 		));
 
 		$this->addModel("is_payment_charge", array(
-			"visible" => (isset($entity["price"]) && is_numeric($entity["price"]) && (int)$entity["price"] > 0)
+			"visible" => (isset($entity["price"]) && (int)$entity["price"] > 0)
 		));
 
 		$this->addLabel("payment_charge", array(
-			"text" => (isset($entity["price"]) && is_numeric($entity["price"])) ? MessageManager::get("LABEL_PRICE", array("price" => number_format($entity["price"]))) : "",
+			"text" => (isset($entity["price"])) ? MessageManager::get("LABEL_PRICE", array("price" => soy2_number_format($entity["price"]))) : "",
 		));
 
 		//falseを返すことができる拡張ポイント

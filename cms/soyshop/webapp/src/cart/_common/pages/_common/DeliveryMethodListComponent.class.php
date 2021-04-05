@@ -24,7 +24,7 @@ class DeliveryMethodListComponent extends HTMLList{
 		));
 
 		$this->addLabel("delivery_charge", array(
-			"text" => (isset($entity["price"]) && is_numeric($entity["price"])) ? MessageManager::get("LABEL_PRICE", array("price" => number_format($entity["price"]))) : "",
+			"text" => (isset($entity["price"]) && is_numeric($entity["price"])) ? MessageManager::get("LABEL_PRICE", array("price" => soy2_number_format($entity["price"]))) : "",
 		));
 
 		//falseを返すことができる拡張ポイント

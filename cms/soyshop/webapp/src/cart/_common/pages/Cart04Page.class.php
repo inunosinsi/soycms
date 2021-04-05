@@ -108,6 +108,7 @@ class Cart04Page extends MainCartPageBase{
 			if(isset($_POST["prev"]) || isset($_POST["prev_x"])){
 				$cart->setAttribute("prev_page", "Cart04");
 				$cart->setAttribute("page", "Cart03");
+				$cart->save();
 
 				soyshop_redirect_cart();
 			}

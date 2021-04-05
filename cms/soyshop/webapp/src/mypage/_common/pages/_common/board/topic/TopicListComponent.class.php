@@ -15,7 +15,7 @@ class TopicListComponent extends HTMLList {
 
 		//投稿数
 		$this->addLabel("post_count", array(
-			"text" => ($id > 0) ? number_format(self::_logic()->countPostByTopicId($id)) : 0
+			"text" => ($id > 0) ? soy2_number_format(self::_logic()->countPostByTopicId($id)) : 0
 		));
 
 		//最初と最後の投稿を取得する
