@@ -12,7 +12,7 @@ class PaymentDaibikiMailReplace extends SOYShopOrderMailReplace{
 
 		//代引き手数料
 		$list = $order->getModuleList();
-		$fee = (isset($list["payment_daibiki"])) ? number_format($list["payment_daibiki"]->getPrice()) : "";
+		$fee = (isset($list["payment_daibiki"])) ? soy2_number_format($list["payment_daibiki"]->getPrice()) : "";
 		$content = str_replace("#DAIBIKI_FEE#", $fee, $content);
 		
 		return $content;

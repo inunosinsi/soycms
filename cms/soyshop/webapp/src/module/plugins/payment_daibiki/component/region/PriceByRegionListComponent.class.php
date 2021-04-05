@@ -8,12 +8,12 @@ class PriceByRegionListComponent extends HTMLList{
 
 		$this->addInput("item_price", array(
 			"name" => "price_by_region[" . $this->area . "][key][]",
-			"value" => strlen($key) ? number_format($key) : "",
+			"value" => soy2_number_format($key),
 			"attr:tabindex" => $counter
 		));
 		$this->addInput("daibiki_fee", array(
 			"name" => "price_by_region[" . $this->area . "][price][]",
-			"value" => strlen($value) ? number_format($value) : "",
+			"value" => soy2_number_format($value),
 			"attr:tabindex" => $counter + 100
 		));
 	}

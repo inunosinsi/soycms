@@ -24,10 +24,10 @@
 				<!-- soy:id="price_list" -->
 				<tr>
 					<td nowrap>
-						<input class="price_key alR" name="payment_daibiki[price_table][key][]" soy:id="item_price" /> 円以上
+						<input type="number" class="price_key alR" name="payment_daibiki[price_table][key][]" soy:id="item_price" /> 円以上
 					</td>
 					<td nowrap>
-						<input class="text-right" name="payment_daibiki[price_table][price][]" soy:id="daibiki_fee" /> 円
+						<input type="number" class="text-right" name="payment_daibiki[price_table][price][]" soy:id="daibiki_fee" /> 円
 					</td>
 					<td nowrap>
 						<a class="btn btn-danger btn-sm" soy:id="delete_button">削除</a>
@@ -36,10 +36,10 @@
 				<!-- /soy:id="price_list" -->
 				<tr style="display:none;">
 					<td>
-						<input class="price_key alR" name="payment_daibiki[price_table][key][]" value="" disabled="disabled" tabindex="0" /> 円以上
+						<input type="number" class="price_key alR" name="payment_daibiki[price_table][key][]" value="" disabled="disabled" tabindex="0" /> 円以上
 					</td>
 					<td>
-						<input class="text-right" name="payment_daibiki[price_table][price][]" value="" disabled="disabled" tabindex="100" /> 円
+						<input type="number" class="text-right" name="payment_daibiki[price_table][price][]" value="" disabled="disabled" tabindex="100" /> 円
 					</td>
 					<td>
 						<a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="delete_price(this);">削除</a>

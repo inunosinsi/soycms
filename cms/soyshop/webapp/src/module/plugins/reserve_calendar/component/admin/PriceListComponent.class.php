@@ -8,7 +8,7 @@ class PriceListComponent extends HTMLList {
 		));
 
 		$this->addLabel("ext_price", array(
-			"text" => (isset($entity["price"])) ? number_format($entity["price"]) : ""
+			"text" => (isset($entity["price"])) ? soy2_number_format($entity["price"]) : ""
 		));
 
 		if(!isset($entity["label"]) || !isset($entity["price"]) || (int)$entity["price"] === 0) return false;

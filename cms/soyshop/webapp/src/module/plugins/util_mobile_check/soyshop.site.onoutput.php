@@ -11,15 +11,12 @@ class UtilMobileCheckOnOutput extends SOYShopSiteOnOutputAction{
 	 */
 	function onOutput($html){
 		SOY2::import("module.plugins.util_mobile_check.util.UtilMobileCheckUtil");
-		$config = UtilMobileCheckUtil::getConfig();
-		$iPrefix = $config["prefix_i"];
+		$cnf = UtilMobileCheckUtil::getConfig();
+		$iPrefix = $cnf["prefix_i"];
 
 		//PCの時のみ
-		$requestUri = UtilMobileCheckUtil::getRequestUri();
-		$convertUri = UtilMobileCheckUtil::removeCarrierPrefixUri($iPrefix);
-
-		if($requestUri == $convertUri){
-			if(isset($config["i_alternate"]) && $config["i_alternate"] == 1){
+		if(UtilMobileCheckUtil::getRequestUri() == UtilMobileCheckUtil::removeCarrierPrefixUri($iPrefix)){
+			if(isset($cnf["i_alternate"]) && $cnf["i_alternate"] == 1){
 				$http = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") ? "https" : "http";
 				$url = $http . "://" . $_SERVER["HTTP_HOST"] . UtilMobileCheckUtil::buildUrl($iPrefix);
 				$alternateTag = "<link rel=\"alternate\" media=\"only screen and (max-width: 640px)\" href=\"" . $url . "\">";
@@ -27,15 +24,6 @@ class UtilMobileCheckOnOutput extends SOYShopSiteOnOutputAction{
 			}
 		}
 
-
-		//この処理をprepareに移動
-//		if(isset($_GET[session_name()])){
-//			output_add_rewrite_var(session_name(), session_id());
-//			return $html;
-
-//			ob_list_handlers();
-//			exit;
-//		}
 		return $html;
 	}
 }

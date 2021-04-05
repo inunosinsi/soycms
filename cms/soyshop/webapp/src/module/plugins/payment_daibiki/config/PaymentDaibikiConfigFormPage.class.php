@@ -15,7 +15,6 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 		if(soy2_check_token()){
 			if(isset($_POST["payment_daibiki"])){
 				try{
-
 					//設定
 					$config = (isset($_POST["Config"])) ? $_POST["Config"] : array();
 					$config["auto_calc"] = (isset($config["auto_calc"])) ? (int)$config["auto_calc"] : 0;
@@ -26,18 +25,17 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 					//代引き手数料
 					if(isset($_POST["payment_daibiki"]["price_table"])){
 						$keys = $_POST["payment_daibiki"]["price_table"]["key"];
-						$array = $_POST["payment_daibiki"]["price_table"]["price"];
+						$fees = $_POST["payment_daibiki"]["price_table"]["price"];
 
 						$res = array();
-						foreach($keys as $key => $value){
-							if(strlen($array[$key]) < 1)continue;
-							if(strlen($value) < 1)continue;
+						foreach($keys as $key => $price){
+							if(!isset($fees[$key]) || !is_numeric($fees[$key]) || !is_numeric($price)) continue;
 
-							//number_format対応（たぶんヨーロッパだと使えない）
-							$price = (int)str_replace(array(" ",","),"",$value);
-							$fee   = (int)str_replace(array(" ",","),"",$array[$key]);
+							$price = (int)$price;
+							$fee   = (int)$fees[$key];
 
-							if(isset($array[$key]) && strlen($array[$key]) >0 && strlen($value) > 0){
+							//価格に対する手数料がない場合は無条件で入れ、価格に対する手数料が既にある場合は手数料が大きいものを記録しておく
+							if(!isset($res[$price]) || $fee > $res[$price]){
 								$res[$price] = $fee;
 							}
 						}
@@ -45,6 +43,8 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 						ksort($res);
 
 						PaymentDaibikiUtil::savePricesConfig($res);
+					}else{
+						PaymentDaibikiUtil::savePricesConfig(array());
 					}
 
 					//説明文
@@ -192,4 +192,3 @@ class PaymentDaibikiConfigFormPage extends WebPage{
 		$this->config = $obj;
 	}
 }
-?>
