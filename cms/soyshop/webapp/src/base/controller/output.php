@@ -9,13 +9,13 @@ function output_page($uri, $args, $page){
     if(DEBUG_MODE) count_timer("Search");
 
     $webPage = $page->getWebPageObject($args);
-    $webPage->setArguments($args);
+	$webPage->setArguments($args);
 
     /* Event OnLoad */
     SOYShopPlugin::load("soyshop.site.onload");
     SOYShopPlugin::invoke("soyshop.site.onload", array("page" => $webPage));
 
-    $webPage->build($args);
+	$webPage->build($args);
     if(DEBUG_MODE) count_timer("Build");
 
     $webPage->main($args);

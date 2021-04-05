@@ -12,6 +12,11 @@ class SOYShopSiteController extends SOY2PageController{
         SOY2::import("logic.cart.CartLogic");
         SOY2::import("logic.mypage.MyPageLogic");
 
+		include_once("controller/define.php");
+
+		//アクセスした端末のチェック → soyshop.site.prepareよりも前に行う必要がある
+		define_check_access_device();
+
         /* init event */
         SOYShopPlugin::load("soyshop.site.prepare");
         SOYShopPlugin::invoke("soyshop.site.prepare");
@@ -43,9 +48,9 @@ class SOYShopSiteController extends SOY2PageController{
             }
         }
 
-        //https → http
-		include_once("controller/ssl.php");
-        check_ssl($uri, $args);
+        //https → http	廃止
+		// include_once("controller/ssl.php");
+        // check_ssl($uri, $args);
 
         try{
             //URIからページを取得

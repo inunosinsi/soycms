@@ -1,4 +1,65 @@
 <?php
+//端末に関するチェック
+function define_check_access_device(){
+	//モバイルは廃止
+	if(!defined("SOYSHOP_IS_MOBILE")) define("SOYSHOP_IS_MOBILE", false);
+
+	$agent = (isset($_SERVER['HTTP_USER_AGENT'])) ? mb_strtolower($_SERVER['HTTP_USER_AGENT']) : "";
+
+	//スマホ
+	if(!defined("SOYSHOP_IS_SMARTPHONE")){	//念の為
+		$isAccess = false;
+		if(strlen($agent)){
+			if(is_numeric(strpos($agent, "iphone"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "ipod"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "android")) && is_numeric(strpos($agent, "mobile"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "windows")) && is_numeric(strpos($agent, "phone"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "firefox")) && is_numeric(strpos($agent, "mobile"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "blackberry"))){
+				$isAccess = true;
+			}
+		}
+		define("SOYSHOP_IS_SMARTPHONE", $isAccess);
+		if(SOYSHOP_IS_SMARTPHONE){	//タブレットのチェックの無駄を省くため
+			if(!defined("SOYSHOP_IS_TABLET")) define("SOYSHOP_IS_TABLET", false);
+		}
+	}
+
+	//タブレット
+	if(!defined("SOYSHOP_IS_TABLET")){
+		$isAccess = false;
+		if(strlen($agent)){
+			if(is_numeric(strpos($agent, "ipad"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "windows")) && is_numeric(strpos($agent, "touch"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "android")) && is_numeric(strpos($agent, "mobile"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "firefox")) && is_numeric(strpos($agent, "tablet"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "kindle")) || is_numeric(strpos($agent, "silk"))){
+				$isAccess = true;
+			}else if(is_numeric(strpos($agent, "playbook"))){
+				$isAccess = true;
+			}
+		}
+		define("SOYSHOP_IS_TABLET", $isAccess);
+	}
+
+	//session_regenerate_idを利用するか？ スマホやタブレットの場合はsession_regenerate_idを利用しない
+	if(!defined("USE_SESSION_REGENERATE_ID_MODE")) {
+		define("USE_SESSION_REGENERATE_ID_MODE", (!SOYSHOP_IS_SMARTPHONE && !SOYSHOP_IS_TABLET));
+	}
+
+	//念の為に残しておく
+	$carrier = (USE_SESSION_REGENERATE_ID_MODE) ? "PC" : "";
+	if(!defined("SOYSHOP_MOBILE_CARRIER")) define("SOYSHOP_MOBILE_CARRIER", $carrier);
+}
 
 //アプリケーションページに関する定数を定義する
 function define_application_page_constant($uri){
