@@ -124,6 +124,8 @@ class ImportPage extends WebPage{
         //カテゴリのデータを取得
         $categoryLogic = SOY2Logic::createInstance("logic.shop.CategoryLogic");
         $this->categories = $categoryLogic->getCategoryMap();
+		//親子関係なしのカテゴリ一覧
+		$categoryList = $categoryLogic->getCategoryList();
 
         //plugin
         SOYShopPlugin::load("soyshop.item.csv");
@@ -145,8 +147,16 @@ class ImportPage extends WebPage{
 
             if(strlen($item->getCode()) > 0){
 
-                if($item->getCategory()){
-                    $categoryId = $categoryLogic->import(array("name" => $item->getCategory()));
+                if(is_string($item->getCategory())){
+					$categoryId = null;
+					$idx = array_search($item->getCategory(), $categoryList);
+
+					//カテゴリIDで渡されることもある　カテゴリ名が数字のみ対策の確認を追加(idとnameが共に数字で値が異なる場合)
+					if(is_numeric($item->getCategory())){
+						$categoryId = (is_numeric($idx)) ? $idx : $item->getCategory();
+					}else{
+						$categoryId = (is_numeric($idx)) ? $idx : $categoryLogic->import(array("name" => $item->getCategory()));
+					}
                     $item->setCategory($categoryId);
                 }
 

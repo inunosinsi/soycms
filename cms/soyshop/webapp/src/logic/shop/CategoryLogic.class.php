@@ -15,7 +15,7 @@ class CategoryLogic extends SOY2LogicBase{
 	 * 自身の先祖を > でつなげたものの配列
 	 */
 	function getCategoryMap(){
-		$this->categories = $this->getCategories();
+		if(!is_array($this->categories) || !count($this->categories)) $this->categories = $this->getCategories();
 		$ids = array_keys($this->categories);
 
 		foreach($ids as $id){
@@ -23,6 +23,20 @@ class CategoryLogic extends SOY2LogicBase{
 		}
 
 		return $this->categoryMap;
+	}
+
+	/**
+	 *
+	 */
+	function getCategoryList(){
+		if(!is_array($this->categories) || !count($this->categories)) $this->categories = $this->getCategories();
+		if(!count($this->categories)) return array();
+
+		$list = array();
+		foreach($this->categories as $cat){
+			$list[$cat->getId()] = $cat->getName();
+		}
+		return $list;
 	}
 
 
@@ -137,7 +151,7 @@ class CategoryLogic extends SOY2LogicBase{
 
     //カテゴリーカスタムフィールド
     function setAttribute($id, $key, $value){
-    	$dao = $this->getCategoryAttributeDAO();
+    	$dao = self::_attrDao();
     	$dao->delete($id,$key);
 
     	$obj = new SOYShop_CategoryAttribute();
@@ -215,8 +229,8 @@ class CategoryLogic extends SOY2LogicBase{
 	/**
 	 * インポートで新カテゴリーを作成
 	 */
-	function import($obj){
-		$parents = array_reverse(explode(">",$obj["name"]));
+	function import($arr){
+		$parents = array_reverse(explode(">", $arr["name"]));
 		$parentsChains = array();
 		foreach($parents as $cat){
 			foreach($parentsChains as $key => $chain){
@@ -238,7 +252,7 @@ class CategoryLogic extends SOY2LogicBase{
 			}
 		}
 		$newParents = array_reverse($newParents);
-		
+
 		$count = count($this->getCategories());
 		$parent = ($id!==false) ? $id : null ;
 		foreach($newParents as $chain){
@@ -246,10 +260,10 @@ class CategoryLogic extends SOY2LogicBase{
 
 			$name = $this->getNameFromChain($chain);
 			$category->setName($name);
-			
-			if($chain == $obj["name"]){
-				$category->setAlias(@$obj["alias"]);
-				$category->setOrder(@$obj["order"]);
+
+			if($chain == $arr["name"]){
+				if(isset($arr["alias"])) $category->setAlias($arr["alias"]);
+				if(isset($arr["order"])) $category->setOrder($arr["order"]);
 			}
 			if(strlen($category->getAlias()) == 0){
 				$category->setAlias("category-" . $count . ".html");
@@ -270,11 +284,9 @@ class CategoryLogic extends SOY2LogicBase{
 		return $id;
 	}
 
-	function getCategoryAttributeDAO(){
+	private function _attrDao(){
     	static $dao;
-    	if(!$dao){
-    		$dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
-    	}
+    	if(!$dao) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
     	return $dao;
     }
 }
