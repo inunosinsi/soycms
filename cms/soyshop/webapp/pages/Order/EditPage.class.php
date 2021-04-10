@@ -352,6 +352,13 @@ class EditPage extends WebPage{
 				"isChange" => $isChange
 			));
 
+			//エラーがあった時に何らかの事をする
+			SOYShopPlugin::invoke("soyshop.order.edit", array(
+				"orderId" => $order->getId(),
+				"mode" => "error",
+				"isChange" => $isChange
+			));
+
 			//変更なし
 			SOY2PageController::jump("Order.Edit." . $this->id . "?updated");
 		}
@@ -445,20 +452,26 @@ class EditPage extends WebPage{
 	}
 
 	function __construct($args) {
-		if(!AUTH_OPERATE) SOY2PageController::jump("Order");
+		if(!AUTH_OPERATE || !isset($args[0])) SOY2PageController::jump("Order");
+		$this->id = (int)$args[0];
 
 		MessageManager::addMessagePath("admin");
-		$this->id = (isset($args[0])) ? (int)$args[0] : "";
 
 		SOY2::import("domain.config.SOYShop_ShopConfig");
 
 		parent::__construct();
 
-		try{
-			$order = SOY2Logic::createInstance("logic.order.OrderLogic")->getById($this->id);
-		}catch(Exception $e){
-			SOY2PageController::jump("Order.Detail." . $this->id);
-		}
+		$order = soyshop_get_order_object($this->id);
+		if(is_null($order->getId())) SOY2PageController::jump("Order");
+
+		//エラーメッセージ等
+		SOYShopPlugin::load("soyshop.order.edit");
+		$msgs = SOYShopPlugin::invoke("soyshop.order.edit", array("orderId" => $order->getId(),"mode" => "message"))->getMessages();
+		if(is_null($msgs)) $msgs = array();
+
+		$this->createAdd("message_list", "_common.Order.EditPageMessageListComponent", array(
+			"list" => $msgs,
+		));
 
 		//言語設定
 		$attrs = $order->getAttributeList();

@@ -9,6 +9,13 @@ class SOYShopOrderModule implements SOY2PluginAction{
 
 	}
 
+	/**
+	 * 表記を変えたい時
+	 */
+	function replace(){
+
+	}
+
 	function getOrderId(){
 		return $this->orderId;
 	}
@@ -38,6 +45,8 @@ class SOYShopOrderModuleDelegateAction implements SOY2PluginDelegateAction{
 	private $orderId;
 	private $total;
 	private $itemOrders = array();
+	private $moduleIds = array();
+	private $replacements = array();
 
 
 	function run($extentionId,$moduleId,SOY2PluginAction $action){
@@ -52,6 +61,15 @@ class SOYShopOrderModuleDelegateAction implements SOY2PluginDelegateAction{
 			case "edit":
 				if($this->module->getId() == $moduleId){
 					$this->_module = $action->edit($this->module);
+				}
+				break;
+			case "replace":
+				if(is_array($this->moduleIds) && count($this->moduleIds)){
+					foreach($this->moduleIds as $modId){
+						if($modId != $moduleId) continue;
+						$new = $action->replace();
+						if(strlen($new)) $this->replacements[$modId] = $new;
+					}
 				}
 				break;
 		}
@@ -74,6 +92,13 @@ class SOYShopOrderModuleDelegateAction implements SOY2PluginDelegateAction{
 	}
 	function setItemOrders($itemOrders){
 		$this->itemOrders = $itemOrders;
+	}
+	function setModuleIds($moduleIds){
+		$this->moduleIds = $moduleIds;
+	}
+
+	function getReplacements(){
+		return $this->replacements;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.module","SOYShopOrderModuleDelegateAction");

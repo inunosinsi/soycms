@@ -1,6 +1,7 @@
 <?php
 SOY2::import("domain.user.SOYShop_User");
 SOY2::import("domain.order.SOYShop_ItemModule");
+SOYShopPlugin::load("soyshop.order.module");
 SOYShopPlugin::load("soyshop.order.status");
 SOYShopPlugin::load("soyshop.order.status.sort");
 
@@ -215,12 +216,12 @@ class SOYShop_Order {
 		static $list;	//2度読み込むことがないのでstatic
 		if(is_null($list)){
 			$list = array(
-					//支払ステータス
-					SOYShop_Order::PAYMENT_STATUS_WAIT => "支払待ち",
-					SOYShop_Order::PAYMENT_STATUS_CONFIRMED => "支払確認済み",
-					SOYShop_Order::PAYMENT_STATUS_ERROR => "入金エラー",
-					SOYShop_Order::PAYMENT_STATUS_DIRECT => "直接支払",
-					SOYShop_Order::PAYMENT_STATUS_REFUNDED => "返金済み",
+				//支払ステータス
+				SOYShop_Order::PAYMENT_STATUS_WAIT => "支払待ち",
+				SOYShop_Order::PAYMENT_STATUS_CONFIRMED => "支払確認済み",
+				SOYShop_Order::PAYMENT_STATUS_ERROR => "入金エラー",
+				SOYShop_Order::PAYMENT_STATUS_DIRECT => "直接支払",
+				SOYShop_Order::PAYMENT_STATUS_REFUNDED => "返金済み",
 	    	);
 
 			//拡張ポイント
@@ -354,7 +355,22 @@ class SOYShop_Order {
     function getAttributeList(){
     	if(is_array($this->attributes) && count($this->attributes) === 0) return array();
     	$res = soy2_unserialize($this->attributes);
-    	return (is_array($res)) ? $res : array();
+		if(!is_array($res)) return array();
+
+		//表記名を変更する
+		$replacements = SOYShopPlugin::invoke("soyshop.order.module", array(
+			"mode" => "replace",
+			"moduleIds" => array_keys($res)
+		))->getReplacements();
+
+		if(count($replacements)){
+			foreach($replacements as $moduleId => $new){
+				if(!isset($res[$moduleId]) || !isset($res[$moduleId]["value"])) continue;
+				$res[$moduleId]["value"] = $new;
+			}
+		}
+
+		return $res;
     }
     function getAttribute($key) {
     	$attributes = $this->getAttributeList();

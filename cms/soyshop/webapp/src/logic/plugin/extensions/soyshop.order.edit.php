@@ -21,8 +21,15 @@ class SOYShopOrderEditBase implements SOY2PluginAction{
 		return "";
 	}
 
-	function update($orderId, $isChange){
+	function update($orderId, $isChange){}
 
+	function error($orderId){}
+
+	/**
+	 * @return array("message" => "", "alert" => "danger or success") // bootstrap's alerts
+	 */
+	function message($orderId){
+		return array();
 	}
 
 	/**
@@ -47,6 +54,7 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 	private $isChange = true;
 	private $_html;
 	private $_attributes = array();
+	private $_messages = array();
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 		$html = "";
@@ -72,8 +80,18 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 				$html = $action->html();
 				break;
 			case "update":
-			default:
 				$action->update($this->orderId, $this->isChange);
+				break;
+			case "error":
+				$action->error($this->orderId);
+				break;
+			case "message":
+			default:
+				$msg = $action->message($this->orderId);
+				if(is_array($msg) && isset($msg["message"])){
+					$this->_messages[$moduleId] = $msg;
+				}
+				break;
 		}
 
 		if(strlen($html)){
@@ -100,6 +118,9 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 
 	function getAttributes(){
 		return $this->_attributes;
+	}
+	function getMessages(){
+		return $this->_messages;
 	}
 }
 SOYShopPlugin::registerExtension("soyshop.order.edit",      "SOYShopOrderEditBaseDeletageAction");
