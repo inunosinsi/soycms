@@ -26,14 +26,17 @@ class CategoryLogic extends SOY2LogicBase{
 	}
 
 	/**
-	 *
+	 * カテゴリIDに対応したカテゴリ一覧を作成
+	 * @param isDebug only category_id's list
+	 * @return array(id => name)
 	 */
-	function getCategoryList(){
+	function getCategoryList($isDebug=false){
 		if(!is_array($this->categories) || !count($this->categories)) $this->categories = $this->getCategories();
 		if(!count($this->categories)) return array();
 
 		$list = array();
 		foreach($this->categories as $cat){
+			if($isDebug && !is_numeric($cat->getName())) continue;	//isDebugがtrueの場合は数字以外のカテゴリ名を除く
 			$list[$cat->getId()] = $cat->getName();
 		}
 		return $list;

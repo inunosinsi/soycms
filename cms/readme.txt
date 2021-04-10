@@ -12,8 +12,11 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 
 /** リリース **/
 2.3.1
-	- SOY Board on SOY Shop
-	- soy2_setcookie(SameSite属性値の自動挿入)
+	○追加
+	 - SOY Board on SOY Shop
+	 - soy2_setcookie(SameSite属性値の自動挿入)
+	○修正
+	 - 商品CSVインポートでカテゴリの項目を外した状態でインポートをした際にカテゴリIDが登録される不具合を修正
 2.3.0
 	○追加
 	 - Cart05Pageで在庫数のチェックを追加→廃止
