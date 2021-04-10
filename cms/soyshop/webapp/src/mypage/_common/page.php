@@ -5,7 +5,7 @@
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
-//すでにセッションスタートしている場合のみ、PHPSESSIDを更新する スマホでは更新すべきではないらしい
+//すでにセッションスタートしている場合のみ、PHPSESSIDを更新する スマホでは更新すべきではないらしい　PCでもうまくいかなかったことがあったので廃止
 if(session_status() == PHP_SESSION_ACTIVE && USE_SESSION_REGENERATE_ID_MODE){
 	SOY2ActionSession::regenerateSessionId();
 }

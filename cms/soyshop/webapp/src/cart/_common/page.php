@@ -25,8 +25,8 @@ $cart = CartLogic::getCart(SOYSHOP_CURRENT_CART_ID);
 $config = SOYShop_ShopConfig::load();
 $session = SOY2ActionSession::getUserSession();
 
-//PHPSESSIDの値の更新　スマホでは更新すべきではないらしい
-if(USE_SESSION_REGENERATE_ID_MODE) SOY2ActionSession::regenerateSessionId();
+//PHPSESSIDの値の更新　スマホでは更新すべきではないらしい PCでもうまくいかないことがあったので廃止
+//if(USE_SESSION_REGENERATE_ID_MODE) SOY2ActionSession::regenerateSessionId();
 
 /* 表示するページ */
 //進捗の時間切れ判定
