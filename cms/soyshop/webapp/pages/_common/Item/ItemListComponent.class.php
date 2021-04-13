@@ -2,6 +2,8 @@
 
 class ItemListComponent extends HTMLList{
 
+	private $itemStocks = array();
+	private $orderCounts = array();
     private $detailLink;
 
     protected function populateItem($item, $key) {
@@ -83,13 +85,21 @@ class ItemListComponent extends HTMLList{
         ));
     }
 
-
+	function setItemStocks($itemStocks){
+		$this->itemStocks = $itemStocks;
+	}
+	function setOrderCounts($orderCounts){
+		$this->orderCounts = $orderCounts;
+	}
     function setDetailLink($detailLink) {
         $this->detailLink = $detailLink;
     }
 
 	/** 便利な関数 **/
 	private function _getItemStock(SOYShop_Item $item){
+		//表示の高速化の為に事前に在庫数を取得しておく
+		if(isset($this->itemStocks[$item->getId()])) return soy2_number_format($this->itemStocks[$item->getId()]);
+
 		//親商品の時に子商品の合計を出力
 		if($item->getType() == SOYShop_Item::TYPE_GROUP){
 			try{
@@ -99,7 +109,6 @@ class ItemListComponent extends HTMLList{
 				//
 			}
 		}
-
 		return soy2_number_format($item->getStock());
 	}
 
@@ -117,6 +126,9 @@ class ItemListComponent extends HTMLList{
 	}
 
 	private function _getOrderCount(SOYShop_Item $item){
+		//表示の高速化の為に事前に注文数を取得しておく
+		if(isset($this->orderCounts[$item->getId()])) return soy2_number_format($this->orderCounts[$item->getId()]);
+
 		//子商品の在庫管理設定をオン(子商品の注文数合計を取得する)
         if($item->getType() == SOYShop_Item::TYPE_GROUP && self::_config()->getChildItemStock()){
 			try{

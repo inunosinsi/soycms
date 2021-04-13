@@ -1,82 +1,83 @@
 drop table soyshop_page;
 create table soyshop_page(
-	id integer primary key auto_increment,
-	uri VARCHAR(255) not null unique,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	uri VARCHAR(255) NOT NULL UNIQUE,
 	name VARCHAR(255),
-	type VARCHAR(255) not null,
+	type VARCHAR(255) NOT NULL,
 	template VARCHAR(255),
 	config TEXT,
-	create_date integer,
-	update_date integer
+	create_date INTEGER,
+	update_date INTEGER
 ) ENGINE=InnoDB;
 
 drop table soyshop_item;
 create table soyshop_item(
-	id integer primary key auto_increment,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	item_name VARCHAR(512),
 	item_subtitle VARCHAR(512),
-	item_code VARCHAR(255) unique,
-	item_alias VARCHAR(255) unique,
-	item_price integer,
-	item_purchase_price integer,
-	item_sale_price integer,
-	item_selling_price integer,
-	item_sale_flag integer default 0,
-	item_stock integer default 0,
+	item_code VARCHAR(255) NOT NULL UNIQUE,
+	item_alias VARCHAR(255) NOT NULL UNIQUE,
+	item_price INTEGER NOT NULL DEFAULT 0,
+	item_purchase_price INTEGER NOT NULL DEFAULT 0,
+	item_sale_price INTEGER NOT NULL DEFAULT 0,
+	item_selling_price INTEGER NOT NULL DEFAULT 0,
+	item_sale_flag INTEGER NOT NULL DEFAULT 0,
+	item_stock INTEGER NOT NULL DEFAULT 0,
 	item_unit VARCHAR(32),
 	item_config TEXT,
-	item_type VARCHAR(255),
-	item_category integer,
-	create_date integer,
-	update_date integer,
-	order_period_start integer,
-	order_period_end integer,
-	open_period_start integer,
-	open_period_end integer,
-	detail_page_id integer,
-	item_is_open tinyint default 0,
-	is_disabled tinyint default 0
+	item_type VARCHAR(255) NOT NULL,
+	item_category INTEGER,
+	create_date INTEGER NOT NULL DEFAULT 0,
+	update_date INTEGER NOT NULL DEFAULT 0,
+	order_period_start INTEGER NOT NULL DEFAULT 0,
+	order_period_end INTEGER NOT NULL DEFAULT 0,
+	open_period_start INTEGER NOT NULL DEFAULT 0,
+	open_period_end INTEGER NOT NULL DEFAULT 0,
+	detail_page_id INTEGER,
+	item_is_open TINYINT NOT NULL DEFAULT 0,
+	is_disabled TINYINT NOT NULL DEFAULT 0,
+	UNIQUE(item_code, update_date)
 ) ENGINE=InnoDB;
 
 drop table soyshop_item_attribute;
 create table soyshop_item_attribute(
-	item_id integer,
-	item_field_id VARCHAR(255),
-	item_value TEXT,
+	item_id INTEGER NOT NULL,
+	item_field_id VARCHAR(255) NOT NULL,
+	item_value TEXT NOT NULL,
 	item_extra_values TEXT,
-	unique(item_id,item_field_id)
+	UNIQUE(item_id,item_field_id)
 ) ENGINE=InnoDB;
 
 drop table soyshop_category;
 create table soyshop_category(
-	id integer primary key auto_increment,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	category_name VARCHAR(255),
-	category_alias VARCHAR(255) unique,
-	category_order integer default 0,
-	category_parent integer,
+	category_alias VARCHAR(255) NOT NULL UNIQUE,
+	category_order INTEGER NOT NULL DEFAULT 0,
+	category_parent INTEGER,
 	category_config TEXT,
-	category_is_open tinyint default 1
+	category_is_open TINYINT NOT NULL DEFAULT 1
 ) ENGINE=InnoDB;
 
 drop table soyshop_category_attribute;
 create table soyshop_category_attribute(
-	category_id integer,
-	category_field_id VARCHAR(255),
-	category_value TEXT,
+	category_id INTEGER NOT NULL,
+	category_field_id VARCHAR(255) NOT NULL,
+	category_value TEXT NOT NULL,
 	category_value2 TEXT,
-	unique(category_id,category_field_id)
+	UNIQUE(category_id,category_field_id)
 ) ENGINE=InnoDB;
 
 drop table soyshop_order;
 create table soyshop_order(
-	id integer primary key auto_increment,
-	order_date integer not null,
-	price integer not null,
-	order_status tinyint not null,
-	payment_status tinyint not null,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	order_date INTEGER NOT NULL,
+	price INTEGER NOT NULL,
+	order_status TINYINT NOT NULL,
+	payment_status TINYINT NOT NULL,
 	address TEXT,
 	claimed_address TEXT,
-	user_id integer not null,
+	user_id INTEGER NOT NULL,
 	attributes TEXT,
 	modules TEXT,
 	mail_status TEXT,
@@ -86,39 +87,39 @@ create table soyshop_order(
 
 drop table soyshop_orders;
 create table soyshop_orders(
-	id integer primary key auto_increment,
-	order_id integer not null,
-	item_id integer not null,
-	item_count integer not null,
-	item_price integer not null,
-	total_price integer not null,
-	item_name TEXT not null,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	order_id INTEGER NOT NULL,
+	item_id INTEGER NOT NULL,
+	item_count INTEGER NOT NULL,
+	item_price INTEGER NOT NULL,
+	total_price INTEGER NOT NULL,
+	item_name TEXT NOT NULL,
 	status TINYINT NOT NULL DEFAULT 0,
 	flag TINYINT NOT NULL DEFAULT 0,
-	cdate integer not null,
-	is_sended tinyint default 0,
+	cdate INTEGER NOT NULL,
+	is_sended TINYINT DEFAULT 0,
 	attributes TEXT,
-	is_addition tinyint default 0,
-	is_confirm tinyint default 0,
-	display_order tinyint not null default 0,
+	is_addition TINYINT DEFAULT 0,
+	is_confirm TINYINT DEFAULT 0,
+	display_order TINYINT NOT NULL DEFAULT 0,
 	UNIQUE(order_id, item_id, cdate)
 ) ENGINE=InnoDB;
 
 drop table soyshop_plugins;
 create table soyshop_plugins(
-	id integer primary key auto_increment,
-	plugin_id VARCHAR(255) unique not null,
-	plugin_type VARCHAR(255) not null,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	plugin_id VARCHAR(255) UNIQUE NOT NULL,
+	plugin_type VARCHAR(255) NOT NULL,
 	config VARCHAR(255),
-	display_order INTEGER default 2147483647,
-	is_active TINYINT not null default 0
+	display_order INTEGER DEFAULT 2147483647,
+	is_active TINYINT NOT NULL DEFAULT 0
 ) ENGINE=InnoDB;
 
 drop table soyshop_order_state_history;
 create table soyshop_order_state_history(
-	id integer primary key auto_increment,
-	order_id integer not null,
-	order_date integer not null,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	order_id INTEGER NOT NULL,
+	order_date INTEGER NOT NULL,
 	author VARCHAR(255),
 	content TEXT,
 	more VARCHAR(255),
@@ -127,16 +128,16 @@ create table soyshop_order_state_history(
 
 drop table soyshop_data_sets;
 create table soyshop_data_sets(
-	id integer primary key auto_increment,
-	class_name VARCHAR(255) unique,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	class_name VARCHAR(255) UNIQUE,
 	object_data text
 ) ENGINE=InnoDB;
 
 drop table soyshop_user;
 create table soyshop_user (
-	id INTEGER primary key auto_increment,
-	mail_address VARCHAR(255) unique,
-	user_code VARCHAR(54) UNIQUE,
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	mail_address VARCHAR(255) NOT NULL UNIQUE,
+	user_code VARCHAR(54) NOT NULL UNIQUE,
 	attribute1 TEXT,
 	attribute2 TEXT,
 	attribute3 TEXT,
@@ -144,8 +145,8 @@ create table soyshop_user (
 	reading VARCHAR(255),
 	honorific VARCHAR(32),
 	nickname VARCHAR(255),
-	account_id VARCHAR(50) unique,
-	profile_id VARCHAR(50) unique,
+	account_id VARCHAR(50) UNIQUE,
+	profile_id VARCHAR(50) UNIQUE,
 	image_path VARCHAR(255),
 	gender TINYINT,
 	birthday VARCHAR(255),
@@ -165,16 +166,16 @@ create table soyshop_user (
 	job_telephone_number VARCHAR(255),
 	job_fax_number VARCHAR(255),
 	memo VARCHAR(255),
-	mail_error_count INTEGER default 0,
-	not_send TINYINT default 0,
-	is_error TINYINT default 0,
-	is_publish TINYINT default 1,
-	is_disabled TINYINT default 0,
-	is_profile_display TINYINT default 0,
-	register_date INTEGER,
-	update_date INTEGER,
+	mail_error_count INTEGER NOT NULL DEFAULT 0,
+	not_send TINYINT NOT NULL DEFAULT 0,
+	is_error TINYINT NOT NULL DEFAULT 0,
+	is_publish TINYINT NOT NULL DEFAULT 1,
+	is_disabled TINYINT NOT NULL DEFAULT 0,
+	is_profile_display TINYINT NOT NULL DEFAULT 0,
+	register_date INTEGER NOT NULL DEFAULT 0,
+	update_date INTEGER NOT NULL DEFAULT 0,
 	real_register_date INTEGER,
-	user_type INTEGER,
+	user_type INTEGER NOT NULL DEFAULT 10,
 	address_list TEXT,
 	password TEXT,
 	attributes TEXT
@@ -182,10 +183,10 @@ create table soyshop_user (
 
 drop table soyshop_user_attribute;
 create table soyshop_user_attribute(
-	user_id integer,
-	user_field_id VARCHAR(255),
-	user_value TEXT,
-	unique(user_id,user_field_id)
+	user_id INTEGER NOT NULL,
+	user_field_id VARCHAR(255) NOT NULL,
+	user_value TEXT NOT NULL,
+	UNIQUE(user_id,user_field_id)
 ) ENGINE=InnoDB;
 
 drop table soyshop_auto_login;
@@ -198,31 +199,31 @@ create table soyshop_auto_login(
 
 drop table soyshop_user_token;
 create table soyshop_user_token(
-	user_id integer not null,
-	token varchar(255) not null,
-	time_limit integer not null,
+	user_id INTEGER NOT NULL,
+	token varchar(255) NOT NULL,
+	time_limit INTEGER NOT NULL,
 	UNIQUE(user_id, token)
 ) ENGINE=INNODB;
 
 drop table soyshop_mail_address_token;
 create table soyshop_mail_address_token(
-	user_id integer not null,
-	new_mail_address VARCHAR(255) not null,
-	token varchar(255) not null,
-	time_limit integer not null,
+	user_id INTEGER NOT NULL,
+	new_mail_address VARCHAR(255) NOT NULL,
+	token varchar(255) NOT NULL,
+	time_limit INTEGER NOT NULL,
 	UNIQUE(user_id, token)
 ) ENGINE=INNODB;
 
 drop table soyshop_mail_log;
 create table soyshop_mail_log(
-	id integer primary key AUTO_INCREMENT,
+	id INTEGER primary key AUTO_INCREMENT,
 	recipient text,
-	order_id integer,
-	user_id integer,
+	order_id INTEGER,
+	user_id INTEGER,
 	title text,
 	content text,
-	is_success tinyint not null default 0,
-	send_date integer NOT NULL,
+	is_success TINYINT NOT NULL DEFAULT 0,
+	send_date INTEGER NOT NULL,
 	UNIQUE(order_id, user_id, send_date)
 ) ENGINE=InnoDB;
 
@@ -242,35 +243,35 @@ create table soyshop_ban_ip_address(
 
 drop table soyshop_breadcrumb;
 create table soyshop_breadcrumb(
-	item_id integer not null,
-	page_id integer not null,
-	unique(item_id, page_id)
+	item_id INTEGER NOT NULL,
+	page_id INTEGER NOT NULL,
+	UNIQUE(item_id, page_id)
 ) ENGINE=InnoDB;
 
 drop table soyshop_item_review;
 create table soyshop_item_review(
-	id integer primary key AUTO_INCREMENT,
-	item_id integer not null,
-	user_id integer,
+	id INTEGER primary key AUTO_INCREMENT,
+	item_id INTEGER NOT NULL,
+	user_id INTEGER,
 	nickname varchar(255),
 	title varchar(255),
 	content varchar(255),
 	image varchar(255),
 	movie varchar(255),
-	evaluation integer,
-	approval integer,
-	vote integer,
+	evaluation INTEGER,
+	approval INTEGER,
+	vote INTEGER,
 	attributes varchar(255),
-	is_approved integer not null,
-	create_date integer not null,
-	update_date integer,
+	is_approved INTEGER NOT NULL,
+	create_date INTEGER NOT NULL,
+	update_date INTEGER,
 	UNIQUE(item_id, user_id, create_date)
 ) ENGINE = InnoDB;
 
 drop table soyshop_review_point;
 create table soyshop_review_point(
-	review_id integer not null,
-	point integer not null default 0
+	review_id INTEGER NOT NULL,
+	point INTEGER NOT NULL DEFAULT 0
 )ENGINE = InnoDB;
 
 drop table soyshop_favorite_item;
@@ -281,7 +282,7 @@ create table soyshop_favorite_item(
 	purchased TINYINT DEFAULT 0,
 	create_date INTEGER,
 	update_date INTEGER,
-	unique(item_id, user_id, purchased)
+	UNIQUE(item_id, user_id, purchased)
 ) ENGINE=InnoDB;
 
 CREATE TABLE soyshop_memo(

@@ -462,6 +462,73 @@ class OrderLogic extends SOY2LogicBase{
 		return $changes;
 	}
 
+	function getOrderCountListByItemIds($itemIds){
+		//予約カレンダーの場合は保留
+		if(SOYShopPluginUtil::checkIsActive("reserve_calendar")) return array();
+
+		$orders = array();
+
+		$dao = self::itemOrderDao();
+
+		try{
+			$res = $dao->executeQuery(
+				"SELECT item_id, SUM(item_count) AS item_count ".
+					"FROM soyshop_orders ".
+					"WHERE is_sended = 0 ".
+					"AND item_id IN (" . implode(",", $itemIds) . ") ".
+					"AND order_id IN (".
+						"SELECT DISTINCT id ".
+						"FROM soyshop_order ".
+						"WHERE order_status != 0 ".
+						"AND order_status != 1".
+					") ".
+					"GROUP BY item_id"
+				);
+		}catch(Exception $e){
+			$res = array();
+		}
+
+		if(count($res)){
+			foreach($res as $v){
+				$orders[$v["item_id"]] = $v["item_count"];
+			}
+		}
+
+		 try{
+			$res = $dao->executeQuery(
+				"SELECT i.item_type, SUM(o.item_count) AS item_count ".
+				"FROM soyshop_orders o ".
+				"INNER JOIN soyshop_item i ".
+				"ON o.item_id = i.id ".
+				"WHERE o.is_sended = 0 ".
+				"AND i.item_type IN (" . implode(",", $itemIds) . ")".
+				"AND o.order_id IN (".
+					"SELECT DISTINCT id ".
+					"FROM soyshop_order ".
+					"WHERE order_status != 0 ".
+					"AND order_status != 1".
+				") ".
+				"GROUP BY i.item_type"
+			);
+ 		}catch(Exception $e){
+ 			$res = array();
+ 		}
+
+ 		if(count($res)){
+ 			foreach($res as $v){
+ 				$orders[$v["item_type"]] = $v["item_count"];
+ 			}
+ 		}
+
+
+		//高速化の為に最後に0で埋めておく
+		foreach($itemIds as $itemId){
+			if(!isset($orders[$itemId])) $orders[$itemId] = 0;
+		}
+
+		return $orders;
+	}
+
 	private function _getItemsByOrderId($orderId) {
     	try{
 			return self::itemOrderDao()->getByOrderId($orderId);

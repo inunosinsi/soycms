@@ -140,20 +140,15 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 
 		$binds[":alias"] = $binds[":code"] . ".html";
 
-		if(!isset($binds[":purchasePrice"]) || !is_numeric($binds[":purchasePrice"])){
-			$binds[":purchasePrice"] = 0;
+		//価格系すべて
+		foreach(array("price", "purchasePrice", "salePrice", "sellingPrice", "stock") as $t){
+			if(!isset($binds[":" . $t]) || !is_numeric($binds[":" . $t])){
+				$binds[":" . $t] = 0;
+			}
 		}
 
 		if(!isset($binds[":category"]) || strlen($binds[":category"]) < 1){
 			$binds[":category"] = null;
-		}
-
-		if(isset($binds[":createDate"])){
-			$binds[":createDate"] = time();
-		}
-
-		if(isset($binds[":updateDate"])){
-			$binds[":updateDate"] = time();
 		}
 
 		if(!isset($binds[":orderPeriodStart"]) || strlen($binds[":orderPeriodStart"]) < 1){
@@ -170,13 +165,11 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 			$binds[":openPeriodEnd"] = SOYSHOP_DATA_MAX;
 		}
 
-		if(!isset($binds[":isOpen"])){
-			$binds[":isOpen"] = 0;
-		}
+		if(!isset($binds[":isOpen"])) $binds[":isOpen"] = 0;
+		if(!isset($binds[":isDisabled"])) $binds[":isDisabled"] = 0;
 
-		if(!isset($binds[":isDisabled"])){
-			$binds[":isDisabled"] = 0;
-		}
+		if(!isset($binds[":createDate"])) $binds[":createDate"] = time();
+		if(!isset($binds[":updateDate"])) $binds[":updateDate"] = time();
 
    		return array($query, $binds);
    	}
@@ -185,11 +178,17 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
    	 * @final
    	 */
    	function onUpdate($query, $binds){
-		$binds[":updateDate"] = time();
-
 		if(!isset($binds[":alias"]) || strlen($binds[":alias"]) < 1){
 			$binds[":alias"] = $binds[":code"] . ".html";
 		}
+
+		//価格系すべて
+		foreach(array("price", "purchasePrice", "salePrice", "sellingPrice", "stock") as $t){
+			if(!isset($binds[":" . $t]) || !is_numeric($binds[":" . $t])){
+				$binds[":" . $t] = 0;
+			}
+		}
+
 		if(!isset($binds[":category"]) || strlen($binds[":category"]) < 1){
 			$binds[":category"] = null;
 		}
@@ -207,6 +206,8 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		if(!isset($binds[":openPeriodEnd"]) || strlen($binds[":openPeriodEnd"]) < 1){
 			$binds[":openPeriodEnd"] = SOYSHOP_DATA_MAX;
 		}
+
+		$binds[":updateDate"] = time();
 
 		return array($query, $binds);
    	}

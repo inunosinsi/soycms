@@ -76,8 +76,13 @@ class IndexPage extends WebPage{
 
 		$this->addForm("form");
 
+		//在庫数と注文数を事前に取得しておく
+		list($stocks, $orders) = self::_getStocksAndOrders($items);
+
 		$this->createAdd("item_list", "_common.Item.ItemListComponent", array(
 			"list" => $items,
+			"itemStocks" => $stocks,
+			"orderCounts" => $orders,
 			"detailLink" => SOY2PageController::createLink("Item.Detail.")
 		));
 
@@ -85,6 +90,23 @@ class IndexPage extends WebPage{
 			"name" => "category",
 			"options" => self::buildCategoryList(),
 		));
+	}
+
+	//在庫数と注文数を事前に取得しておく
+	private function _getStocksAndOrders($items){
+		if(!count($items)) return array(array(), array());
+
+		$itemIds = array();
+		foreach($items as $item){
+			$itemIds[] = $item->getId();
+		}
+
+		if(!count($itemIds)) return array(array(), array());
+
+		$stocks = SOY2Logic::createInstance("logic.shop.item.ItemLogic")->getStockListByItemIds($itemIds);
+		$orders = SOY2Logic::createInstance("logic.order.OrderLogic")->getOrderCountListByItemIds($itemIds);
+
+		return array($stocks, $orders);
 	}
 
 	private function buildForm(){

@@ -36,7 +36,7 @@ class CategoryLogic extends SOY2LogicBase{
 
 		$list = array();
 		foreach($this->categories as $cat){
-			if($intOnly && !is_numeric($cat->getName())) continue;	//isDebugがtrueの場合は数字以外のカテゴリ名を除く
+			if($intOnly && !is_numeric($cat->getName())) continue;	//intOnlyがtrueの場合は数字以外のカテゴリ名を除く
 			$list[$cat->getId()] = $cat->getName();
 		}
 		return $list;
