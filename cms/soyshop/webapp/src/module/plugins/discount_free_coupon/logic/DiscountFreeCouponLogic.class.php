@@ -177,6 +177,11 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 		return $coupons[$code];
 	}
 
+	function getCouponNameListByIds($ids){
+		if(!is_array($ids) || !count($ids)) return array();
+		return SOY2DAOFactory::create("SOYShop_CouponDAO")->getByIds($ids);
+	}
+
 	function setCart($cart){
 		$this->cart = $cart;
 	}

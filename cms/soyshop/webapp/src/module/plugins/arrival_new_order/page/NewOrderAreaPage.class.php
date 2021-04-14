@@ -22,8 +22,11 @@ class NewOrderAreaPage extends WebPage{
 		DisplayPlugin::toggle("has_order", $cnt > 0);
 		DisplayPlugin::toggle("no_order", $cnt === 0);
 
+		if($cnt > 15) $orders = array_slice($orders, 0, 15);
+
 		$this->createAdd("order_list", "_common.Order.OrderListComponent", array(
-			"list" => array_slice($orders, 0, 15)
+			"list" => $orders,
+			"userNameList" => SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds(soyshop_get_user_ids_by_orders($orders))
 		));
 	}
 

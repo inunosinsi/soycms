@@ -268,37 +268,44 @@ class ItemLogic extends SOY2LogicBase{
 	}
 
 	function getStockListByItemIds($itemIds){
-		$dao = self::getItemDAO();
+		if(!count($itemIds)) return array();
 
-		//在庫数
 		$stocks = array();
-		try{
-			$res = $dao->executeQuery("SELECT id, item_stock FROM soyshop_item WHERE id IN (" . implode(",", $itemIds) . ")");
-		}catch(Exception $e){
-			$res = array();
+
+		$res = self::getItemDAO()->getStockTotalListByItemIds($itemIds);
+		if(count($res)){
+			foreach($res as $itemId => $stock){
+				$stocks[$itemId] = $stock;
+			}
 		}
 
-		if(count($res)){
-			foreach($res as $v){
-				$stocks[$v["id"]] = $v["item_stock"];
-			}
+		if(count($stocks) === count($itemIds)) return $stocks;
+
+		foreach($stocks as $itemId => $stock){
+			$idx = array_search($itemId, $itemIds);
+			unset($itemIds[$idx]);
+			$itemIds = array_values($itemIds);
 		}
 
 		//商品グループの場合
-		try{
-			$res = $dao->executeQuery("SELECT item_type, SUM(item_stock) AS item_stock FROM soyshop_item WHERE item_type IN (" . implode(",", $itemIds) . ") GROUP BY item_type");
-		}catch(Exception $e){
-			$res = array();
-		}
-
+		$res = self::getItemDAO()->getChildStockListByItemIds($itemIds);
 		if(count($res)){
-			foreach($res as $v){
-				foreach($res as $v){
-					$stocks[$v["item_type"]] = $v["item_stock"];
-				}
+			foreach($res as $itemId => $stock){
+				$stocks[$itemId] = $stock;
 			}
 		}
 
+		//高速化の為に最後に0で埋めておく
+		foreach($itemIds as $itemId){
+			if(!isset($stocks[$itemId])) $stocks[$itemId] = 0;
+		}
+
 		return $stocks;
+	}
+
+	function getItemNameListByIds($ids){
+		if(!is_array($ids) || !count($ids)) return array();
+
+		return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getItemNameListByIds($ids);
 	}
 }

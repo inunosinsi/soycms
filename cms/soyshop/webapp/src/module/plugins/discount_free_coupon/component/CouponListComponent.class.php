@@ -151,7 +151,7 @@ class CouponListComponent extends HTMLList{
 
 	private function _convertPrice($value, $max = false){
 		if(is_numeric($value) && (int)$value > 0){
-			return number_format($value) . "　円";
+			return soy2_number_format($value) . "　円";
 		}else{
 			return ($max === true) ? "無制限" : 0 . "　円";
 		}

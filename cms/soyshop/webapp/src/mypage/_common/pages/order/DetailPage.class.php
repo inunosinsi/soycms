@@ -374,6 +374,9 @@ class DetailPage extends MainMyPagePageBase{
 		$mailLogic = SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.NoticeSendMailLogic", array("order" => $order, "user" => $this->getUser()));
 		$mailLogic->send("注文番号『" . $order->getTrackingNumber() . "』の注文をキャンセルしました。");
 
+		//キャッシュの削除
+		SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.HistoryIdCacheLogic")->removeCache();
+
 		//$orderDao->commit();
 		$this->jump("order?canceled");
 	}

@@ -2,17 +2,20 @@
 
 class HistoryOnMyPageListComponent extends HTMLList {
 
+	private $userIds;
+
 	protected function populateItem($entity) {
+		$orderId = (is_numeric($entity->getOrderId())) ? (int)$entity->getOrderId() : 0;
 
 		$this->addLink("order_link", array(
-			"link" => SOY2PageController::createLink("Order.Detail." . $entity->getOrderId())
+			"link" => SOY2PageController::createLink("Order.Detail." . $orderId)
 		));
 
 		$this->addLabel("date", array(
 			"text" => (is_numeric($entity->getDate())) ? date("Y-m-d H:i:s", $entity->getDate()) : ""
 		));
 
-		$userId = (is_numeric($entity->getOrderId())) ? self::_getUserIdByOrderId($entity->getOrderId()) : null;
+		$userId = (isset($this->userIds[$orderId])) ? (int)$this->userIds[$orderId] : 0;
 		$this->addLink("user_link", array(
 			"link" => SOY2PageController::createLink("User.Detail." . $userId)
 		));
@@ -26,21 +29,7 @@ class HistoryOnMyPageListComponent extends HTMLList {
 		));
 	}
 
-	private function _getUserIdByOrderId($orderId){
-		static $userIds, $dao;
-		if(is_null($userIds)){
-			$userIds[] = array();
-			$dao = new SOY2DAO();
-		}
-		if(isset($userIds[$orderId])) return $userIds[$orderId];
-
-		try{
-			$res = $dao->executeQuery("SELECT user_id FROM soyshop_order WHERE id = :orderId LIMIT 1", array(":orderId" => $orderId));
-			$userIds[$orderId] = (isset($res[0]["user_id"])) ? (int)$res[0]["user_id"] : null;
-		}catch(Exception $e){
-			$userIds[$orderId] = null;
-		}
-
-		return $userIds[$orderId];
+	function setUserIds($userIds){
+		$this->userIds = $userIds;
 	}
 }

@@ -2,6 +2,8 @@
 
 class ReviewListComponent extends HTMLList{
 
+	private $itemNameList = array();
+
 	protected function populateItem($entity){
 
 		$this->addInput("review_check", array(
@@ -14,20 +16,22 @@ class ReviewListComponent extends HTMLList{
 			"text" => ($entity->getIsApproved()) ? "許可" : "拒否"
 		));
 
+		$itemId = (is_numeric($entity->getItemId())) ? (int)$entity->getItemId() : 0;
 		$this->addLink("item_name", array(
-			"link" => SOY2PageController::createLink("Item.Detail." . $entity->getItemId()),
-			"text" => ($entity instanceof SOYShop_ItemReview) ? soyshop_get_item_object($entity->getItemId())->getOpenItemName() : ""
+			"link" => SOY2PageController::createLink("Item.Detail." . $itemId),
+			"text" => ($entity instanceof SOYShop_ItemReview && isset($this->itemNameList[$itemId])) ? $this->itemNameList[$itemId] : ""
 		));
 
+		$userId = (is_numeric($entity->getUserId())) ? (int)$entity->getUserId() : 0;
 		$this->addModel("is_user_id", array(
-			"visible" => ($entity->getUserId())
+			"visible" => ($userId > 0)
 		));
 		$this->addModel("no_user_id", array(
-			"visible" => (is_null($entity->getUserId()))
+			"visible" => ($userId === 0)
 		));
 
 		$this->addLink("user_link", array(
-			"link" => SOY2PageController::createLink("User.Detail." . $entity->getUserId())
+			"link" => SOY2PageController::createLink("User.Detail." . $userId)
 		));
 
 		$this->addLabel("user_name", array(
@@ -49,5 +53,9 @@ class ReviewListComponent extends HTMLList{
 		$this->addLink("detail_link", array(
 			"link" => SOY2PageController::createLink("Review.Detail." . $entity->getId())
 		));
+	}
+
+	function setItemNameList($itemNameList){
+		$this->itemNameList = $itemNameList;
 	}
 }

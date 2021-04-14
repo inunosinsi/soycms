@@ -142,6 +142,9 @@ class ItemPage extends MainMyPagePageBase{
 				$mypage->clearAttribute("order_edit_is_edit");
 				$mypage->save();
 
+				//キャッシュの削除
+				SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.HistoryIdCacheLogic")->removeCache();
+
 				$this->jump("order/detail/" . $this->orderId . "?updated");
 			}
 

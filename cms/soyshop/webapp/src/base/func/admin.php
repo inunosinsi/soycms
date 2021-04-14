@@ -133,3 +133,15 @@ function soyshop_get_category_list($isOnlyOpen=false){
 
 	return $list;
 }
+
+// array(user_id...)
+function soyshop_get_user_ids_by_orders($orders){
+	if(!is_array($orders) || !count($orders)) return array();
+
+	$ids = array();
+	foreach($orders as $order){
+		if(count($ids) && is_numeric(array_search((int)$order->getUserId(), $ids))) continue;
+		$ids[] = (int)$order->getUserId();
+	}
+	return $ids;
+}

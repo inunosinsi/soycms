@@ -181,6 +181,8 @@ class ModulePage extends MainMyPagePageBase{
 				$mailLogic->send(implode("\n", $histories));
 			}
 
+			//キャッシュの削除
+			SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.HistoryIdCacheLogic")->removeCache();
 
 			$this->jump("order/edit/module/" . $this->orderId . "?updated");
 		}

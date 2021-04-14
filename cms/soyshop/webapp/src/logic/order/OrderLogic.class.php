@@ -463,63 +463,33 @@ class OrderLogic extends SOY2LogicBase{
 	}
 
 	function getOrderCountListByItemIds($itemIds){
+		if(!count($itemIds)) return array();
+
 		//予約カレンダーの場合は保留
 		if(SOYShopPluginUtil::checkIsActive("reserve_calendar")) return array();
 
 		$orders = array();
 
-		$dao = self::itemOrderDao();
-
-		try{
-			$res = $dao->executeQuery(
-				"SELECT item_id, SUM(item_count) AS item_count ".
-					"FROM soyshop_orders ".
-					"WHERE is_sended = 0 ".
-					"AND item_id IN (" . implode(",", $itemIds) . ") ".
-					"AND order_id IN (".
-						"SELECT DISTINCT id ".
-						"FROM soyshop_order ".
-						"WHERE order_status != 0 ".
-						"AND order_status != 1".
-					") ".
-					"GROUP BY item_id"
-				);
-		}catch(Exception $e){
-			$res = array();
-		}
-
+		$res = self::itemOrderDao()->countOrderCountListByItemIds($itemIds);
 		if(count($res)){
-			foreach($res as $v){
-				$orders[$v["item_id"]] = $v["item_count"];
+			foreach($res as $itemId => $count){
+				$orders[$itemId] = $count;
 			}
 		}
+		if(count($orders) === count($itemIds)) return $orders;
 
-		 try{
-			$res = $dao->executeQuery(
-				"SELECT i.item_type, SUM(o.item_count) AS item_count ".
-				"FROM soyshop_orders o ".
-				"INNER JOIN soyshop_item i ".
-				"ON o.item_id = i.id ".
-				"WHERE o.is_sended = 0 ".
-				"AND i.item_type IN (" . implode(",", $itemIds) . ")".
-				"AND o.order_id IN (".
-					"SELECT DISTINCT id ".
-					"FROM soyshop_order ".
-					"WHERE order_status != 0 ".
-					"AND order_status != 1".
-				") ".
-				"GROUP BY i.item_type"
-			);
- 		}catch(Exception $e){
- 			$res = array();
- 		}
+		foreach($orders as $itemId => $stock){
+			$idx = array_search($itemId, $itemIds);
+			unset($itemIds[$idx]);
+			$itemIds = array_values($itemIds);
+		}
 
- 		if(count($res)){
- 			foreach($res as $v){
- 				$orders[$v["item_type"]] = $v["item_count"];
- 			}
- 		}
-
+		$res = self::itemOrderDao()->countChildOrderCountListByItemIds($itemIds);
+		if(count($res)){
+			foreach($res as $itemId => $count){
+				$orders[$itemId] = $count;
+			}
+		}
 
 		//高速化の為に最後に0で埋めておく
 		foreach($itemIds as $itemId){
@@ -527,6 +497,11 @@ class OrderLogic extends SOY2LogicBase{
 		}
 
 		return $orders;
+	}
+
+	function getTrackingNumberListByIds($ids){
+		if(!is_array($ids) || !count($ids)) return array();
+		return SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getTrackingNumberListByIds($ids);
 	}
 
 	private function _getItemsByOrderId($orderId) {

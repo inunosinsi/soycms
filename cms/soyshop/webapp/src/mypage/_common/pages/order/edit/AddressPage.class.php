@@ -43,6 +43,10 @@ class addressPage extends MainMyPagePageBase{
 					$mailLogic->send(implode("\n", $change));
 
 					$orderDao->commit();
+
+					//キャッシュの削除
+					SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.HistoryIdCacheLogic")->removeCache();
+
 					$this->jump("order/edit/address/" . $this->mode . "/" . $this->orderId . "?updated");
 				}catch(Exception $e){
 					//

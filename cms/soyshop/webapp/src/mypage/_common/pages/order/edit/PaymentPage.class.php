@@ -39,6 +39,9 @@ class PaymentPage extends MainMyPagePageBase{
 				}
 			}
 
+			//キャッシュの削除
+			SOY2Logic::createInstance("module.plugins.order_edit_on_mypage.logic.HistoryIdCacheLogic")->removeCache();
+
 			$this->jump("order/edit/payment/" . $this->orderId . "?updated");
 		}
 		$this->jump("order/edit/payment/" . $this->orderId . "?failed");

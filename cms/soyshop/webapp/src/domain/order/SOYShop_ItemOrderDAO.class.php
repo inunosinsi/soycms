@@ -80,11 +80,75 @@ abstract class SOYShop_ItemOrderDAO extends SOY2DAO{
     abstract function countByItemId($itemId);
 
 	/**
+	 * @final
+	 */
+	function countOrderCountListByItemIds($itemIds){
+		if(!is_array($itemIds) || !count($itemIds)) return array();
+		try{
+			$res = $this->executeQuery(
+				"SELECT item_id, SUM(item_count) AS item_count ".
+					"FROM soyshop_orders ".
+					"WHERE is_sended = 0 ".
+					"AND item_id IN (" . implode(",", $itemIds) . ") ".
+					"AND order_id IN (".
+						"SELECT DISTINCT id ".
+						"FROM soyshop_order ".
+						"WHERE order_status != 0 ".
+						"AND order_status != 1".
+					") ".
+					"GROUP BY item_id"
+				);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["item_id"]] = (int)$v["item_count"];
+		}
+		return $list;
+	}
+
+	/**
      * @columns sum(item_count) as item_count
      * @return column_item_count
      * @query is_sended = 0 and #itemId# in (SELECT id FROM soyshop_item WHERE item_type = :itemId) and order_id in (select distinct id from soyshop_order where order_status != 0 AND order_status != 1)
      */
 	abstract function countChildOrderTotalByItemId($itemId);
+
+	/**
+	 * @final
+	 */
+	function countChildOrderCountListByItemIds($itemIds){
+		if(!is_array($itemIds) || !count($itemIds)) return array();
+		try{
+			$res = $this->executeQuery(
+				"SELECT i.item_type, SUM(o.item_count) AS item_count ".
+				"FROM soyshop_orders o ".
+				"INNER JOIN soyshop_item i ".
+				"ON o.item_id = i.id ".
+				"WHERE o.is_sended = 0 ".
+				"AND i.item_type IN (" . implode(",", $itemIds) . ")".
+				"AND o.order_id IN (".
+					"SELECT DISTINCT id ".
+					"FROM soyshop_order ".
+					"WHERE order_status != 0 ".
+					"AND order_status != 1".
+				") ".
+				"GROUP BY i.item_type"
+			);
+ 		}catch(Exception $e){
+ 			$res = array();
+ 		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["item_type"]] = (int)$v["item_count"];
+		}
+		return $list;
+	}
 
 	/**
 	 * @columns #orderId#,#isSended#

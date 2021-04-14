@@ -145,7 +145,8 @@ class IndexPage extends WebPage{
 
 		//注文結果を出力
 		$this->createAdd("order_list", "_common.Order.OrderListComponent", array(
-			"list" => $orders
+			"list" => $orders,
+			"userNameList" => SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds(soyshop_get_user_ids_by_orders($orders))
 		));
 
 		$orderCnt = count($orders);

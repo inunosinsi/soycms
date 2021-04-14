@@ -84,6 +84,26 @@ abstract class SOYShop_OrderDAO extends SOY2DAO{
 	abstract function getByTrackingNumber($trackingNumber);
 
 	/**
+	 * @final
+	 */
+	function getTrackingNumberListByIds($ids){
+		if(!is_array($ids) || !count($ids)) return array();
+
+		try{
+			$res = $this->executeQuery("SELECT id, tracking_number FROM soyshop_order WHERE id IN (" . implode(",", $ids) . ")");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["id"]] = $v["tracking_number"];
+		}
+		return $list;
+	}
+
+	/**
 	 * @trigger onInsert
 	 * @return id
 	 */

@@ -26,7 +26,19 @@ class ItemReviewAreaPage extends WebPage{
 		$reviews = array_slice($reviews, 0, 5);
 
 		$this->createAdd("reviews_list", "_common.Review.ReviewListComponent", array(
-			"list" => $reviews
+			"list" => $reviews,
+			"itemNameList" => SOY2Logic::createInstance("logic.shop.item.ItemLogic")->getItemNameListByIds(self::_getItemIds($reviews))
 		));
+	}
+
+	private function _getItemIds($reviews){
+		if(!is_array($reviews) || !count($reviews)) return array();
+
+		$ids = array();
+		foreach($reviews as $review){
+			if(is_numeric(array_search((int)$review->getItemId(), $ids))) continue;
+			$ids[] = (int)$review->getItemId();
+		}
+		return $ids;
 	}
 }

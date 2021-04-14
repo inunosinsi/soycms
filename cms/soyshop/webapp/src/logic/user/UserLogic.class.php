@@ -174,4 +174,41 @@ class UserLogic extends SOY2LogicBase{
 		}
 		$dir->close();
 	}
+
+	function getUserNameListByUserIds($userIds){
+		static $list;
+		if(is_null($list)) $list = array();
+
+		//既に取得している顧客名は再び検索しない
+		$alreadyUserIds = array_keys($list);
+		if(count($alreadyUserIds)){
+			foreach($alreadyUserIds as $userId){
+				$idx = array_search($userId, $userIds);
+				if(!is_numeric($idx)) continue;
+				unset($userIds[$idx]);
+				$userIds = array_values($userIds);
+			}
+			if(!count($userIds)) return $list;
+		}
+
+		try{
+			$results = self::_dao()->executeQuery("SELECT id, name FROM soyshop_user WHERE id IN (" . implode(",", $userIds) . ")");
+		}catch(Exception $e){
+			$results = array();
+		}
+		if(count($results)){
+			foreach($results as $res){
+				if(!isset($res["name"]) || !strlen($res["name"])) continue;
+				$list[(int)$res["id"]] = $res["name"];
+			}
+		}
+
+		return $list;
+	}
+
+	private function _dao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
+		return $dao;
+	}
 }

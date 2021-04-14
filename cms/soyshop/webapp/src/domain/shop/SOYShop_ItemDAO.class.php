@@ -340,11 +340,53 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 	}
 
 	/**
+	 * @final
+	 */
+	function getStockTotalListByItemIds($itemIds){
+		if(!is_array($itemIds) || !count($itemIds)) return array();
+
+		try{
+			$res = $this->executeQuery("SELECT id, item_stock FROM soyshop_item WHERE id IN (" . implode(",", $itemIds) . ") AND (item_type = '" . SOYShop_Item::TYPE_SINGLE . "' OR item_type = '" . SOYShop_Item::TYPE_DOWNLOAD . "')");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["id"]] = (int)$v["item_stock"];
+		}
+
+		return $list;
+	}
+
+	/**
      * @columns sum(item_stock) as item_stock
      * @return column_item_stock
      * @query item_type = :itemId and is_disabled != 1
      */
 	abstract function getChildStockTotalByItemId($itemId);
+
+	/**
+	 * @final
+	 */
+	function getChildStockListByItemIds($itemIds){
+		if(!is_array($itemIds) || !count($itemIds)) return array();
+
+
+		try{
+			$res = $this->executeQuery("SELECT item_type, SUM(item_stock) AS item_stock FROM soyshop_item WHERE item_type IN (" . implode(",", $itemIds) . ") GROUP BY item_type");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["item_type"]] = (int)$v["item_stock"];
+		}
+		return $list;
+	}
 
 	/* end サイト側で使用 */
 
@@ -415,6 +457,25 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		}
 	 }
 
+	 /**
+	  * @final
+	  */
+	function getItemNameListByIds($ids){
+		if(!is_array($ids) || !count($ids)) return array();
+
+		try{
+			$res = $this->executeQuery("SELECT id, item_name FROM soyshop_item WHERE id IN (" . implode(",", $ids) . ")");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["id"]] = $v["item_name"];
+		}
+		return $list;
+	}
 
 
 	 /* 以下、削除周り */

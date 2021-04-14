@@ -28,6 +28,26 @@ abstract class SOYShop_OrderStateHistoryDAO extends SOY2DAO{
     abstract function getByOrderIdBetweenDate($orderId, $startDate, $endDate = 2147483647);
 
 	/**
+	 * @final
+	 */
+	function getByIds($ids){
+		if(!is_array($ids) || !count($ids)) return array();
+
+		try{
+			$results = $this->executeQuery("SELECT * FROM soyshop_order_state_history WHERE id IN (" . implode(",", $ids) . ") ORDER BY order_date DESC");
+		}catch(Exception $e){
+			$results = array();
+		}
+		if(!count($results)) return array();
+
+		$histories = array();
+		foreach($results as $res){
+			$histories[] = $this->getObject($res);
+		}
+		return $histories;
+	}
+
+	/**
      * @final
      */
     function onInsert($query, $binds){

@@ -3,7 +3,7 @@
 class OrderListComponent extends HTMLList{
 
 	private $dao;
-	private $userName = array();
+	private $userNameList = array();
 
 	private $orderDetailLink;
 	private $orderMailLink;
@@ -25,7 +25,7 @@ class OrderListComponent extends HTMLList{
 			"text" => $order->getTrackingNumber()
 		));
 
-		$detailLink = self::getOrderDetailLink($order->getId());
+		$detailLink = self::_getOrderDetailLink($order->getId());
 		$this->addLink("order_id_link", array(
 			"text" => $order->getTrackingNumber(),
 			"link" => $detailLink
@@ -50,22 +50,23 @@ class OrderListComponent extends HTMLList{
 		$mailStatus = $order->getMailStatusList();
 		$this->addLink("payment_mail_status", array(
 			"text" => (isset($mailStatus["payment"])) ? "済" : "未送信",
-			"link" => ( (isset($mailStatus["payment"])) ? self::getOrderDetailLink($order->getId()) . "#mail_status" : $this->getOrderMailLink($order->getId())."?type=" . SOYShop_Order::SENDMAIL_TYPE_PAYMENT)
+			"link" => ( (isset($mailStatus["payment"])) ? self::_getOrderDetailLink($order->getId()) . "#mail_status" : self::_getOrderMailLink($order->getId())."?type=" . SOYShop_Order::SENDMAIL_TYPE_PAYMENT)
 		));
 
 		$this->addLink("confirm_mail_status", array(
 			"text" => (isset($mailStatus["confirm"])) ? "済" : "未送信",
-			"link" => ( (isset($mailStatus["confirm"])) ? self::getOrderDetailLink($order->getId()) . "#mail_status" : $this->getOrderMailLink($order->getId())."?type=" . SOYShop_Order::SENDMAIL_TYPE_CONFIRM)
+			"link" => ( (isset($mailStatus["confirm"])) ? self::_getOrderDetailLink($order->getId()) . "#mail_status" : self::_getOrderMailLink($order->getId())."?type=" . SOYShop_Order::SENDMAIL_TYPE_CONFIRM)
 		));
 
 		$this->addLink("delivery_mail_status", array(
 			"text" => (isset($mailStatus["delivery"])) ? "済" : "未送信",
-			"link" => ( (isset($mailStatus["delivery"])) ? self::getOrderDetailLink($order->getId()) . "#mail_status" : $this->getOrderMailLink($order->getId())."?type=" . SOYShop_Order::SENDMAIL_TYPE_DELIVERY)
+			"link" => ( (isset($mailStatus["delivery"])) ? self::_getOrderDetailLink($order->getId()) . "#mail_status" : self::_getOrderMailLink($order->getId())."?type=" . SOYShop_Order::SENDMAIL_TYPE_DELIVERY)
 		));
 
+		$userId = (is_numeric($order->getUserId())) ? $order->getUserId() : 0;
 		$this->addLink("customer_link", array(
-			"link" => self::getUserLink() . "/" . $order->getUserId(),
-			"text" => self::getUserName($order->getUserId())
+			"link" => self::_getUserLink() . "/" . $userId,
+			"text" => (isset($this->userNameList[$userId])) ? $this->userNameList[$userId] : ""
 		));
 
 		$this->addLabel("order_price", array(
@@ -73,33 +74,22 @@ class OrderListComponent extends HTMLList{
 		));
 	}
 
-	private function getUserName($userId){
-		if(!is_numeric($userId)) return "";
-		if(isset($this->userName[$userId])) return $this->userName[$userId];
-		if(!$this->dao) $this->dao = new SOY2DAO();
-
-		try{
-			$res = $this->dao->executeQuery("SELECT name FROM soyshop_user WHERE id = :userId LIMIT 1", array(":userId" => $userId));
-			$this->userName[$userId] = (isset($res[0]["name"])) ? $res[0]["name"] : "---";
-		}catch(Exception $e){
-			$this->userName[$userId] = $e->getMessage();//"---";
-		}
-
-		return $this->userName[$userId];
-	}
-
-	private function getOrderDetailLink($id = null){
+	private function _getOrderDetailLink($id = null){
 		if(!$this->orderDetailLink) $this->orderDetailLink = SOY2PageController::createLink("Order.Detail");
 		return ($id > 0) ? $this->orderDetailLink . "/$id" : $this->orderDetailLink ;
 	}
 
-	private function getOrderMailLink($id = null){
+	private function _getOrderMailLink($id = null){
 		if(!$this->orderMailLink) $this->orderMailLink = SOY2PageController::createLink("Order.Mail");
 		return ($id > 0) ? $this->orderMailLink . "/$id" : $this->orderMailLink ;
 	}
 
-	private function getUserLink(){
+	private function _getUserLink(){
 		if(!$this->userLink) $this->userLink = SOY2PageController::createLink("User.Detail");
 		return $this->userLink;
+	}
+
+	function setUserNameList($userNameList){
+		$this->userNameList = $userNameList;
 	}
 }
