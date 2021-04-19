@@ -10,7 +10,7 @@ class IndexPage extends CMSWebPageBase{
 				set_time_limit(0);
 
 				SOY2Logic::createInstance("logic.cache.CacheLogic")->clearCache();
-				
+
 				$this->addMessage("ADMIN_DELETE_CACHE");
 
 				$this->jump("?cache_cleared");

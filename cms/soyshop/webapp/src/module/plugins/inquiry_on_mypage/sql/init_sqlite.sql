@@ -7,5 +7,6 @@ CREATE TABLE soyshop_inquiry (
 	content TEXT,
 	is_confirm INTEGER NOT NULL DEFAULT 0,
 	create_date INTEGER NOT NULL,
-	update_date INTEGER NOT NULL
+	update_date INTEGER NOT NULL,
+	UNIQUE(user_id, mail_log_id, is_confirm)
 );

@@ -5,6 +5,7 @@
 			<div class="panel-heading">その他</div>
 			<div class="panel-body">
 				<dl>
+					<!-- soy:display="app_config_limit_function" -->
 					<dt><a soy:link="Item.Category">カテゴリ管理</a></dt>
 					<dd>商品カテゴリを編集します</dd>
 
@@ -13,12 +14,15 @@
 
 					<dt><a soy:link="Item.CustomField">カスタム項目設定</a></dt>
 					<dd>商品の追加項目を編集します</dd>
+					<!-- /soy:display="app_config_limit_function" -->
 
+					<!-- soy:display="app_csv_limit_function" -->
 					<dt><a soy:link="Item.Import">CSVインポート</a></dt>
 					<dd>商品情報をCSVから入力します。</dd>
 
 					<dt><a soy:link="Item.Export">CSVエクスポート</a></dt>
 					<dd>商品情報をCSV出力します。</dd>
+					<!-- /soy:display="app_csv_limit_function" -->
 				</dl>
 			</div>
 		</div>

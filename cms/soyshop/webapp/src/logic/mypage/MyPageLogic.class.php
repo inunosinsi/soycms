@@ -67,6 +67,11 @@ class MyPageLogic extends SOY2LogicBase{
 				);
 				$opts["expires"] = $autoLogin->getLimit();
 
+				//SameSiteに関してはsessionと同じ値を利用する
+				$sessCnf = session_get_cookie_params();
+				if(isset($sessCnf["samesite"])) $opts["samesite"] = $sessCnf["samesite"];
+				unset($sessCnf);
+
 				//SOY CMS側でMyPageLogicを利用する場合に必要な時がある
 				if(!function_exists("soyshop_get_site_url")) SOY2::import("base.func.common",".php");
 
@@ -570,6 +575,11 @@ class MyPageLogic extends SOY2LogicBase{
 			"httponly" => true
 		);
 		//if(isset($domain)) $opts["domain"] = $domain;
+
+		//SameSiteに関してはsessionと同じ値を利用する
+		$sessCnf = session_get_cookie_params();
+		if(isset($sessCnf["samesite"])) $opts["samesite"] = $sessCnf["samesite"];
+		unset($sessCnf);
 
 		//Cookie
 		soy2_setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login", $token, $opts);

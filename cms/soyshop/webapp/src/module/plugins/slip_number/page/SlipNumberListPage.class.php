@@ -12,7 +12,7 @@ class SlipNumberListPage extends WebPage {
 
 				$searchLogic = SOY2Logic::createInstance("module.plugins.slip_number.logic.SearchSlipNumberLogic");
 				$searchLogic->setLimit(self::OUTPUT_LIMIT);
-				$searchLogic->setCondition(self::getParameter("search_condition"));
+				$searchLogic->setCondition(self::_getParameter("search_condition"));
 				$lines = $searchLogic->getOnlySlipNumbers();
 
 				$charset = (isset($_POST["charset"])) ? $_POST["charset"] : "Shift-JIS";
@@ -118,34 +118,55 @@ class SlipNumberListPage extends WebPage {
 
 		parent::__construct();
 
-		if(isset($_GET["delivery"])) self::changeStatus();
-		if(isset($_GET["remove"])) self::remove();
+		if(isset($_GET["delivery"])) self::_changeStatus();
+		if(isset($_GET["remove"])) self::_remove();
 
 		foreach(array("successed", "failed", "removed", "invalid") as $t){
 			DisplayPlugin::toggle($t, isset($_GET[$t]));
 		}
 
-		self::buildSearchForm();
+		self::_buildSearchForm();
 
 		$searchLogic = SOY2Logic::createInstance("module.plugins.slip_number.logic.SearchSlipNumberLogic");
 		$searchLogic->setLimit(self::OUTPUT_LIMIT);
-		$searchLogic->setCondition(self::getParameter("search_condition"));
+		$searchLogic->setCondition(self::_getParameter("search_condition"));
 		$slips = $searchLogic->get();
 		$total = $searchLogic->getTotal();
 
-		DisplayPlugin::toggle("no_slip_number", $total === 0);
-		DisplayPlugin::toggle("is_slip_number", $total > 0);
+		$cnt = count($slips);
+
+		DisplayPlugin::toggle("no_slip_number", $cnt === 0);
+		DisplayPlugin::toggle("is_slip_number", $cnt > 0);
+
+		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
+		$orderIds = ($cnt > 0) ? self::_getOrderIds($slips) : array();
+		$pairList = ($cnt > 0) ? $orderLogic->getOrderIdAndUserIdPairList($orderIds) : array();
 
 		SOY2::import("module.plugins.slip_number.component.SlipNumberListComponent");
 		$this->createAdd("slip_number_list", "SlipNumberListComponent", array(
-			"list" => $slips
+			"list" => $slips,
+			"trackingNumberList" => ($cnt > 0) ? $orderLogic->getTrackingNumberListByIds($orderIds) : array(),
+			"userNameList" => ($cnt > 0) ? SOY2Logic::createInstance("logic.user.UserLogic")->getUserNameListByUserIds($pairList) : array(),
+			"pairList" => $pairList,
+			"orderDateList" => ($cnt > 0) ? $orderLogic->getOrderDateListByIds($orderIds) : array()
 		));
 
-		self::buildExportForm();
-		self::buildImportForm();
+		self::_buildExportForm();
+		self::_buildImportForm();
 	}
 
-	private function buildSearchForm(){
+	private function _getOrderIds($slips){
+		if(!is_array($slips) || !count($slips)) return array();
+
+		$ids = array();
+		foreach($slips as $slip){
+			if(is_numeric(array_search((int)$slip->getOrderId(), $ids))) continue;
+			$ids[] = (int)$slip->getOrderId();
+		}
+		return $ids;
+	}
+
+	private function _buildSearchForm(){
 
 		//POSTのリセット
 		if(isset($_POST["search_condition"])){
@@ -161,10 +182,10 @@ class SlipNumberListPage extends WebPage {
 		}
 
 		if(isset($_POST["search"]) && !isset($_POST["search_condition"])){
-			self::setParameter("search_condition", null);
+			self::_setParameter("search_condition", null);
 			$cnd = array();
 		}else{
-			$cnd = self::getParameter("search_condition");
+			$cnd = self::_getParameter("search_condition");
 		}
 		//リセットここまで
 
@@ -190,7 +211,7 @@ class SlipNumberListPage extends WebPage {
 		));
 	}
 
-	private function changeStatus(){
+	private function _changeStatus(){
 		if(soy2_check_token()){
 			$mode = (!isset($_GET["back"])) ? "delivery" : "back";
 			if(SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic")->changeStatus((int)$_GET["delivery"], $mode)){
@@ -201,7 +222,7 @@ class SlipNumberListPage extends WebPage {
 		}
 	}
 
-	private function remove(){
+	private function _remove(){
 		if(soy2_check_token()){
 			$slipId = (int)$_GET["remove"];
 			try{
@@ -213,26 +234,26 @@ class SlipNumberListPage extends WebPage {
 		}
 	}
 
-	private function buildExportForm(){
+	private function _buildExportForm(){
 		$this->addForm("export_form");
 	}
 
-	private function buildImportForm(){
+	private function _buildImportForm(){
 		$this->addForm("import_form", array(
              "ENCTYPE" => "multipart/form-data"
         ));
 	}
 
-	private function getParameter($key){
+	private function _getParameter($key){
 		if(array_key_exists($key, $_POST)){
 			$value = $_POST[$key];
-			self::setParameter($key,$value);
+			self::_setParameter($key,$value);
 		}else{
 			$value = SOY2ActionSession::getUserSession()->getAttribute("Plugin.Slip:" . $key);
 		}
 		return $value;
 	}
-	private function setParameter($key,$value){
+	private function _setParameter($key,$value){
 		SOY2ActionSession::getUserSession()->setAttribute("Plugin.Slip:" . $key, $value);
 	}
 

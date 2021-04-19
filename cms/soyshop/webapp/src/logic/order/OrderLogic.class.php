@@ -504,6 +504,17 @@ class OrderLogic extends SOY2LogicBase{
 		return SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getTrackingNumberListByIds($ids);
 	}
 
+	//orderIdとuserIdの対応一覧
+	function getOrderIdAndUserIdPairList($orderIds){
+		if(!is_array($orderIds) || !count($orderIds)) return array();
+		return SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getOrderIdAndUserIdPairList($orderIds);
+	}
+
+	function getOrderDateListByIds($ids){
+		if(!is_array($ids) || !count($ids)) return array();
+		return SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getOrderDateListByIds($ids);
+	}
+
 	private function _getItemsByOrderId($orderId) {
     	try{
 			return self::itemOrderDao()->getByOrderId($orderId);

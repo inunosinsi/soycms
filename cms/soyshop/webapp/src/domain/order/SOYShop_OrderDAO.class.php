@@ -104,6 +104,46 @@ abstract class SOYShop_OrderDAO extends SOY2DAO{
 	}
 
 	/**
+	 * @final
+	 */
+	function getOrderIdAndUserIdPairList($ids){
+		if(!is_array($ids) || !count($ids)) return array();
+
+		try{
+			$res = $this->executeQuery("SELECT id, user_id FROM soyshop_order WHERE id IN (" . implode(",", $ids) . ")");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["id"]] = (int)$v["user_id"];
+		}
+		return $list;
+	}
+
+	/**
+	 * @final
+	 */
+	function getOrderDateListByIds($ids){
+		if(!is_array($ids) || !count($ids)) return array();
+
+		try{
+			$res = $this->executeQuery("SELECT id, order_date FROM soyshop_order WHERE id IN (" . implode(",", $ids) . ")");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[(int)$v["id"]] = (int)$v["order_date"];
+		}
+		return $list;
+	}
+
+	/**
 	 * @trigger onInsert
 	 * @return id
 	 */

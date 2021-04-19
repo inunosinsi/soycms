@@ -55,6 +55,14 @@ class SOYShopAuthUtil {
 				$authes["ITEM"] = true;
 				$authes["OPERATE"] = true;
 				break;
+			case 11:	//商品管理 + CSV
+				foreach($authes as $key => $auth){
+					$authes[$key] = false;
+				}
+				$authes["ITEM"] = true;
+				$authes["OPERATE"] = true;
+				$authes["CSV"] = true;
+				break;
 			case 20:	//出店者
 				foreach($authes as $key => $auth){
 					$authes[$key] = false;
@@ -133,8 +141,17 @@ class SOYShopAuthUtil {
 			if(!AUTH_USER && strpos($classPath,"User") === 0) return false;
 			if(!AUTH_REVIEW && strpos($classPath,"Review") === 0) return false;
 			if(!AUTH_PLUGIN && strpos($classPath,"Plugin") === 0) return false;
-			if(!AUTH_CONFIG && strpos($classPath,"Config") === 0) return false;
 			if(!AUTH_SITE && strpos($classPath,"Site") === 0) return false;
+
+			//CSVの場合 CSVに関するページは見れなくする
+			if(!AUTH_CSV) {
+				if(strpos($classPath, "Import") || strpos($classPath, "Export")) return false;
+			}
+
+			//CONFIGの場合、設定に関するページは見れなくする
+			if(!AUTH_CONFIG) {
+				if(is_numeric(strpos($classPath,"Config")) || strpos($classPath, "Customfield") || strpos($classPath, "Setting")) return false;
+			}
 		}
 
 		//何もなければtrue

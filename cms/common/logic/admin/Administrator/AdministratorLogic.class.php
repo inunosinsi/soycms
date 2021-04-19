@@ -74,7 +74,12 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 			"secure" => (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on"),
 			"httponly" => true
 		);
-		
+
+		//SameSiteに関してはsessionと同じ値を利用する
+		$sessCnf = session_get_cookie_params();
+		if(isset($sessCnf["samesite"])) $opts["samesite"] = $sessCnf["samesite"];
+		unset($sessCnf);
+
 		soy2_setcookie("soycms_auto_login", $token, $opts);
 
 		$dao = SOY2DAOFactory::create("admin.AutoLoginDAO");

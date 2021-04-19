@@ -130,6 +130,8 @@ class IndexPage extends WebPage{
 	}
 
 	function __construct(){
+		if(!AUTH_CONFIG) SOY2PageController::jump("Item");
+
 		parent::__construct();
 
 		DisplayPlugin::toggle("error", isset($_GET["error"]));

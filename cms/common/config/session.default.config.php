@@ -9,9 +9,7 @@ if((!isset($_SESSION) || is_null($_SESSION))){
 	if(!$sessCnf["httponly"]){	//httponlyがtrueの場合は既に設定済みとして再び実行しない
 		$sessCnf["domain"] = null;
 		$sessCnf["httponly"] = true;
-
-		//httpsでアクセスした場合はsamesiteをLaxにする
-		if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") $sessCnf["secure"] = true;
+		$sessCnf["secure"] = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on");
 
 		//php 7.3以降 samesiteの指定が出来る
 		$vArr = explode(".", phpversion());

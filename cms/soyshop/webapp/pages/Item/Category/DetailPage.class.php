@@ -89,6 +89,7 @@ class DetailPage extends WebPage{
 	}
 
     function __construct($args) {
+		if(!AUTH_CONFIG) SOY2PageController::jump("Item");
 
     	//IDがない場合はカテゴリのトップページに飛ばす
     	if(!isset($args[0])){
