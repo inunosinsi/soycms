@@ -9,12 +9,18 @@ class GeneratePasswordUtil {
 	private static function _getConfig(){
 		return SOYShop_DataSets::get("generate_password.config", array(
 			"password_strlen" => 12,
+			"include_symbol" => 0,	//自動生成されるパスワードの文字列に記号を含めるか？
+			"generate_pw_on_admin" => 0,			//管理画面側で生成したアカウントもパスワードの自動作成の対象にするか？
+			"send_mail_on_admin" => 0,				//
 			"insert_mail_text" => "受信したメールアドレスと下記のパスワードでマイページにログインすることが出来ます。\n##PASSWORD##\n"
 		));
 	}
 
 	public static function saveConfig($values){
 		$values["password_strlen"] = soyshop_convert_number($values["password_strlen"], 12);
+		$values["include_symbol"] = (isset($values["include_symbol"])) ? (int)$values["include_symbol"] : 0;
+		$values["generate_pw_on_admin"] = (isset($values["generate_pw_on_admin"])) ? (int)$values["generate_pw_on_admin"] : 0;
+		$values["send_mail_on_admin"] = (isset($values["send_mail_on_admin"])) ? (int)$values["send_mail_on_admin"] : 0;
 		SOYShop_DataSets::put("generate_password.config", $values);
 	}
 

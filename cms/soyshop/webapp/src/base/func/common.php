@@ -805,13 +805,21 @@ function soyshop_dummy_item_code(){
 	return $code;
 }
 
-function soyshop_create_random_string($n = 10){
+function soyshop_create_random_string($n = 10, $isIncludeSymbol=false){
 	$str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
+
+	//記号も含む
+	if($isIncludeSymbol) $str = array_merge($str, str_split(soyshop_get_symbols()));
+
 	$r_str = "";
 	for ($i = 0; $i < $n; ++$i) {
 		$r_str .= $str[rand(0, count($str) - 1)];
 	}
 	return $r_str;
+}
+
+function soyshop_get_symbols(){
+	return "+-*/_!,.#$%&";
 }
 
 //親商品のIDを取得する
