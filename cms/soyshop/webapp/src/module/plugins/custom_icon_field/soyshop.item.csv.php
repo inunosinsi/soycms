@@ -27,26 +27,36 @@ class CustomIconFieldCSV extends SOYShopItemCSVBase{
 	 * import
 	 */
 	function import($itemId, $value){
+		$value = trim(trim($value, ","));
 
 		$dao = self::dao();
 
-		try{
-			$attr = $dao->get($itemId, self::PLUGIN_ID);
-		}catch(Exception $e){
-			if(strlen($value) < 1) return;
+		if(strlen($value)){
+			try{
+				$attr = $dao->get($itemId, self::PLUGIN_ID);
+			}catch(Exception $e){
+				$attr = new SOYShop_ItemAttribute();
+				$attr->setItemId($itemId);
+				$attr->setFieldId(self::PLUGIN_ID);
+			}
+			$attr->setValue($value);
 
-			$attr = new SOYShop_ItemAttribute();
-			$attr->setItemId($itemId);
-			$attr->setFieldId(self::PLUGIN_ID);
-			$dao->insert($attr);
-		}
+			try{
+				$dao->insert($attr);
+			}catch(Exception $e){
+				try{
+					$dao->update($attr);
+				}catch(Exception $e){
+					//
+				}
+			}
 
-		$attr->setValue($value);
-
-		if(strlen($value) > 0){
-			$dao->update($attr);
-		}else{
-			$dao->delete($attr->getItemId(), $attr->getFieldId());
+		}else{	//削除
+			try{
+				$dao->delete($itemId, self::PLUGIN_ID);
+			}catch(Exception $e){
+				//
+			}
 		}
 	}
 

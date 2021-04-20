@@ -18,13 +18,13 @@ class DisplayCartLinkCSV extends SOYShopItemCSVBase{
 	 */
 	function export($itemId){
 		$dao = self::getDAO();
-		
+
 		try{
 			$obj = $dao->get($itemId, self::PLUGIN_ID);
 		}catch(Exception $e){
 			$obj = new SOYShop_ItemAttribute();
 		}
-		
+
 		return (int)$obj->getValue();
 	}
 
@@ -40,14 +40,14 @@ class DisplayCartLinkCSV extends SOYShopItemCSVBase{
 		}catch(Exception $e){
 			//
 		}
-		
+
 		if((int)$value == self::CHECKED){
 			try{
 				$obj = new SOYShop_ItemAttribute();
 				$obj->setItemId($itemId);
 				$obj->setFieldId(self::PLUGIN_ID);
 				$obj->setValue(self::CHECKED);
-		
+
 				$dao->insert($obj);
 			}catch(Exception $e){
 				//
@@ -57,10 +57,7 @@ class DisplayCartLinkCSV extends SOYShopItemCSVBase{
 
 	private function getDAO(){
 		static $dao;
-		if(!$dao){
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		}
-
+		if(!$dao) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		return $dao;
 	}
 

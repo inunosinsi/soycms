@@ -6,6 +6,8 @@
 
 class SOYShop_RelativeItem_CSV extends SOYShopItemCSVBase{
 
+	const PLUGIN_ID = "_relative_items";
+
 	function getLabel(){
 		return "関連商品";
 	}
@@ -16,7 +18,7 @@ class SOYShop_RelativeItem_CSV extends SOYShopItemCSVBase{
 	function export($itemId){
 		try{
 			$dao = $this->getDAO();
-			$attr = $dao->get($itemId,"_relative_items");
+			$attr = $dao->get($itemId, self::PLUGIN_ID);
 			$array = soy2_unserialize($attr->getValue());
 			$value = (is_array($array)) ? implode(" ",$array) : "";
 
@@ -29,38 +31,42 @@ class SOYShop_RelativeItem_CSV extends SOYShopItemCSVBase{
 	/**
 	 * import
 	 */
-	function import($itemId,$value){
+	function import($itemId, $value){
+		$value = trim($value);
 
 		$dao = $this->getDAO();
 
-		try{
-			$attr = $dao->get($itemId,"_relative_items");
-		}catch(Exception $e){
-			if(strlen($value) < 1)return;
+		if(strlen($value)){
+			try{
+				$attr = $dao->get($itemId, self::PLUGIN_ID);
+			}catch(Exception $e){
+				$attr = new SOYShop_ItemAttribute();
+				$attr->setItemId($itemId);
+				$attr->setFieldId(self::PLUGIN_ID);
+			}
+			$attr->setValue(soy2_serialize(explode(" ",$value)));
 
-			$attr = new SOYShop_ItemAttribute();
-			$attr->setItemId($itemId);
-			$attr->setFieldId("_relative_items");
-			$dao->insert($attr);
-
-		}
-
-		$array = explode(" ",$value);
-		$attr->setValue(soy2_serialize($array));
-
-		if(strlen($value) > 0){
-			$dao->update($attr);
+			try{
+				$dao->insert($attr);
+			}catch(Exception $e){
+				try{
+					$dao->update($attr);
+				}catch(Exception $e){
+					//
+				}
+			}
 		}else{
-			$dao->delete($attr->getItemId(),$attr->getFieldId());
+			try{
+				$dao->delete($itemId, self::PLUGIN_ID);
+			}catch(Exception $e){
+				//
+			}
 		}
 	}
 
 	function getDAO(){
 		static $dao;
-		if(!$dao){
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		}
-
+		if(!$dao) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		return $dao;
 	}
 

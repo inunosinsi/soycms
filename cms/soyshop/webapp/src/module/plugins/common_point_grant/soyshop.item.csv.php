@@ -33,28 +33,36 @@ class CommonPointGrantCSV extends SOYShopItemCSVBase{
 	 * import
 	 * void
 	 */
-	function import($itemId, $value){
-		$point = (int)$value;
+	function import($itemId, $point){
+		$point = trim($point);
+		$point = (is_numeric($point)) ? (int)$point : 0;
+
+		if(!$this->itemAttributeDao) $this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+
 		if($point > 0){
-			if(!$this->itemAttributeDao) $this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+			try{
+				$attr = $this->itemAttributeDao->get($itemId, self::PLUGIN_ID);
+			}catch(Exception $e){
+				$attr = new SOYShop_ItemAttribute();
+				$attr->setItemId($itemId);
+				$attr->setFieldId(self::PLUGIN_ID);
+			}
+			$attr->setValue($point);
 
 			try{
-				$array = $this->itemAttributeDao->getByItemId($itemId);
+				$this->itemAttributeDao->insert($attr);
 			}catch(Exception $e){
-				$array = array();
+				try{
+					$this->itemAttributeDao->update($attr);
+				}catch(Exception $e){
+					//
+				}
 			}
-
-			if(isset($array[self::PLUGIN_ID])){
-				$obj = $array[self::PLUGIN_ID];
-				$obj->setValue($point);
-				$this->itemAttributeDao->update($obj);
-			}else{
-				$obj = new SOYShop_ItemAttribute();
-				$obj->setItemId($itemId);
-				$obj->setFieldId(self::PLUGIN_ID);
-				$obj->setValue($point);
-
-				$this->itemAttributeDao->insert($obj);
+		}else{
+			try{
+				$attr = $this->itemAttributeDao->delete($itemId, self::PLUGIN_ID);
+			}catch(Exception $e){
+				//
 			}
 		}
 	}

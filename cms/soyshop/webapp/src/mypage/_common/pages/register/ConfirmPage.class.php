@@ -19,7 +19,8 @@ class ConfirmPage extends IndexPage{
 					SOY2::import("module.plugins.generate_password.util.GeneratePasswordUtil");
 					$cnf = GeneratePasswordUtil::getConfig();
 					$len = (isset($cnf["password_strlen"]) && is_numeric($cnf["password_strlen"])) ? (int)$cnf["password_strlen"] : 12;
-					$pw = soyshop_create_random_string($len);
+					$isIncludeSymbol = (isset($cnf["include_symbol"]) && $cnf["include_symbol"] == 1);	//ランダムな文字列に記号を含めるか？
+					$pw = soyshop_create_random_string($len, $isIncludeSymbol);
 					GeneratePasswordUtil::saveAutoGeneratePassword($user->getMailAddress(), $pw);
 					$user->setPassword($pw);
 				}
