@@ -359,8 +359,7 @@ class ImportPage extends WebPage{
             $res = array();
         }
 		//IDの一番小さいページを取得する
-		$paegIds[$id] = (isset($res[0]["id"])) ? (int)$res[0]["id"] : self::_getDefaultDetailPage();
-
+		$pageIds[$id] = (isset($res[0]["id"])) ? (int)$res[0]["id"] : self::_getDefaultDetailPage();
 		return $pageIds[$id];
     }
 
