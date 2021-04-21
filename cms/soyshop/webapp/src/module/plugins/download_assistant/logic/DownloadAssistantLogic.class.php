@@ -144,4 +144,3 @@ class DownloadAssistantLogic extends SOY2LogicBase{
 		}
 	}
 }
-?>

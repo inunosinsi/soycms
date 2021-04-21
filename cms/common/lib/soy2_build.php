@@ -9280,6 +9280,7 @@ function soy2_setcookie($key, $value=null, $opts=array()){
 			$opts["samesite"] = (isset($sessParams["samesite"]) && strlen($sessParams["samesite"])) ? $sessParams["samesite"] : "Lax";
 			unset($sessParams);
 		}
+		setcookie($key, $value, $opts);
 	}else{
 		setcookie($key, $value , $opts["expires"], $opts["path"], $opts["domain"], $opts["secure"], $opts["httponly"]);
 	}

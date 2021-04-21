@@ -92,14 +92,15 @@ class DownloadCommonLogic extends SOY2LogicBase{
 	}
 
 	function getDownloadFieldConfig($itemId){
-
 		try{
 			$attrs = $this->attrDao->getByItemId($itemId);
 		}catch(Exception $e){
 			echo $e->getPDOExceptionMessage();
 		}
+		$timeAttr = (isset($attrs["download_assistant_time"])) ? $attrs["download_assistant_time"] : new SOYShop_ItemAttribute();
+		$cntAttr = (isset($attrs["download_assistant_count"])) ? $attrs["download_assistant_count"] : new SOYShop_ItemAttribute();
 
-		return array("timeLimit" => $attrs["download_assistant_time"]->getValue(), "count" => $attrs["download_assistant_count"]->getValue());
+		return array("timeLimit" => $timeAttr->getValue(), "count" => $cntAttr->getValue());
 	}
 
 	function getLimitDate($timeLimit){
