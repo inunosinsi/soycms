@@ -76,11 +76,11 @@ class EntryListPage extends CMSWebPageBase{
 	 */
 	private function updateCookie($labelIds){
 		//Entry_List
-		soy2_setcookie("Entry_List", implode('.',$labelIds), array("expires" => 0, "path" => "/"));
+		soy2_setcookie("Entry_List", implode('.',$labelIds));
 
 		//Entry_List_Limit
 		if(isset($_GET['limit'])){
-			soy2_setcookie("Entry_List_Limit", $_GET['limit'], array("expires" => 0, "path" => "/"));
+			soy2_setcookie("Entry_List_Limit", $_GET['limit']);
 		}
 	}
 

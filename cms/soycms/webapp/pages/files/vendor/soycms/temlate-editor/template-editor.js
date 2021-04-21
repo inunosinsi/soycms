@@ -115,7 +115,7 @@ function toggle_editor(){
 		editor_mode = "editor";
 	}
 
-	document.cookie = 'editor_mode=' + editor_mode + '; expires=' + new Date(2030, 1).toUTCString();
+	document.cookie = 'editor_mode=' + editor_mode + '; expires=' + new Date(2030, 1).toUTCString() + ';secure=true;httponly=true;samesite=Lax';
 
 	$("#template_content").toggle();
 	$("#template_editor_frame").toggle();

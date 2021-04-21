@@ -157,7 +157,7 @@ class SearchActionForm extends SOY2ActionForm{
 	}
 	function setLabel($label){
 		if(isset($_GET["label"]) && is_array($_GET["label"]) && count($_GET["label"])){
-			soy2_setcookie("ENTRY_SEARCH_LABELS", soy2_serialize($_GET["label"]), array("expires" => 0, "path" => "/"));
+			soy2_setcookie("ENTRY_SEARCH_LABELS", soy2_serialize($_GET["label"]));
 		}else if(isset($_GET["labelOperator"])){	//ラベルオペレータは検索ボタンを押したら必ずあるので、この値を検索の有無の判定として利用する
 			soy2_setcookie("ENTRY_SEARCH_LABELS");	//一度ラベル付き検索した後にラベルを外す処理
 		}
@@ -174,7 +174,7 @@ class SearchActionForm extends SOY2ActionForm{
 	}
 	function setFreeword_text($text){
 		if(isset($_GET["freeword_text"])){
-			soy2_setcookie("FREEWORD_TEXT", $_GET["freeword_text"], array("expires" => 0, "path" => "/"));
+			soy2_setcookie("FREEWORD_TEXT", $_GET["freeword_text"]);
 		}
 
 		if(is_null($text) && isset($_COOKIE["FREEWORD_TEXT"])){
@@ -192,7 +192,7 @@ class SearchActionForm extends SOY2ActionForm{
 	}
 	function setLabelOperator($op){
 		if(isset($_GET["labelOperator"])){
-			soy2_setcookie("LABEL_OPERATOR", $_GET["labelOperator"], array("expires" => 0, "path" => "/"));
+			soy2_setcookie("LABEL_OPERATOR", $_GET["labelOperator"]);
 		}
 		$this->labelOperator = $op;
 	}

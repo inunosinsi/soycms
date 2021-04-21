@@ -60,28 +60,16 @@ class MyPageLogic extends SOY2LogicBase{
 				$myPage->setAttribute("userId", $autoLogin->getUserId());
 				$myPage->setAttribute("autoLoginToken", $token);
 
-				$opts = array(
-					"path" => soyshop_get_site_url(),
-					"secure" => (strpos(soyshop_get_site_url(true), "https") === 0),
-					"httponly" => true
-				);
-				$opts["expires"] = $autoLogin->getLimit();
-
-				//SameSiteに関してはsessionと同じ値を利用する
-				$sessCnf = session_get_cookie_params();
-				if(isset($sessCnf["samesite"])) $opts["samesite"] = $sessCnf["samesite"];
-				unset($sessCnf);
-
 				//SOY CMS側でMyPageLogicを利用する場合に必要な時がある
 				if(!function_exists("soyshop_get_site_url")) SOY2::import("base.func.common",".php");
 
 				$autoLogin->setToken($token);
 				try{
 					$autoLoginDao->insert($autoLogin);
+					soy2_setcookie($cookieKey, $token, array("path" => soyshop_get_site_url(), "expires" => $autoLogin->getLimit()));
 				}catch(Exception $e){
 					//
 				}
-				soy2_setcookie($cookieKey, $token, $opts);
 			}
 		}
 
@@ -557,7 +545,6 @@ class MyPageLogic extends SOY2LogicBase{
 			preg_match("/^https?:\\/\\/([^:\\/]+)(?::[0-9]+)?(?:(\\/[^\\?#]*))?/", $url, $matches);
 			$domain = isset($matches[1]) ? $matches[1] : "" ;
 			$path   = isset($matches[2]) ? $matches[2] : "/" ;
-			$secure = (strpos($url, "https://") === 0);
 		}else{
 			$path = $url;
 		}
@@ -568,21 +555,10 @@ class MyPageLogic extends SOY2LogicBase{
 			$path .= "/";
 		}
 
-		$opts = array(
-			"expires" => $expire,
-			"path" => $path,
-			"secure" => $secure,
-			"httponly" => true
-		);
 		//if(isset($domain)) $opts["domain"] = $domain;
 
-		//SameSiteに関してはsessionと同じ値を利用する
-		$sessCnf = session_get_cookie_params();
-		if(isset($sessCnf["samesite"])) $opts["samesite"] = $sessCnf["samesite"];
-		unset($sessCnf);
-
 		//Cookie
-		soy2_setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login", $token, $opts);
+		soy2_setcookie("soyshop_mypage_" . SOYSHOP_ID . $this->getId() . "_auto_login", $token, array("expires" => $expire, "path" => $path));
 
 		$autoLoginDao = SOY2DAOFactory::create("user.SOYShop_AutoLoginSessionDAO");
 		try{
