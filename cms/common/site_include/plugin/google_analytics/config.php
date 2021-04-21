@@ -67,6 +67,12 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 		));
 
 		//挿入箇所の指定
+		$this->createAdd("insert_into_the_beginning_of_head","HTMLCheckBox",array(
+			"value" => GoogleAnalytics::INSERT_INTO_THE_BEGINNING_OF_HEAD,
+			"selected" => ($this->pluginObj->position == GoogleAnalytics::INSERT_INTO_THE_BEGINNING_OF_HEAD),
+			"name"  => "google_analytics_position",
+			"label" => "<head>タグの直後に挿入する"
+		));
 		$this->createAdd("insert_into_the_end_of_head","HTMLCheckBox",array(
 			"value" => GoogleAnalytics::INSERT_INTO_THE_END_OF_HEAD,
 			"selected" => ($this->pluginObj->position == GoogleAnalytics::INSERT_INTO_THE_END_OF_HEAD),
