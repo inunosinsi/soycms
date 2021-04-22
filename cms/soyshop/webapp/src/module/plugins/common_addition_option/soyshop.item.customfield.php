@@ -126,33 +126,38 @@ class CommonAdditionOptionCustomField extends SOYShopItemCustomFieldBase{
 
 		$html = array();
 
-		$html[] = "<h1>加算オプションの設定</h1>";
+		$html[] = "<br>";
+		$html[] = "<div class=\"alert alert-info\">加算オプションの設定</div>";
 
-		$html[] = "<dt>公開側の表示設定</dt>";
-		$html[] = "<dd>";
-		$html[] = "<input type=\"checkbox\" name=\"addition_option_flag\" value=\"1\" id=\"addition_option\" ";
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "<label>公開側の表示設定</label><br>";
+		$html[] = "<label>";
+		$html[] = "<input type=\"checkbox\" name=\"addition_option_flag\" value=\"1\" ";
 		if($flag){
 			$html[] = "checked=\"checked\"";
 		}
 		$html[] = " />";
-		$html[] = "<label for\"addition_option\">公開側に加算オプションを表示する</label>";
-		$html[] = "</dd>";
+		$html[] = "公開側に加算オプションを表示する</label>";
+		$html[] = "</div>";
 
-		$html[] = "<dt>加算項目(カートに入れた時に表示されます)</dt>";
-		$html[] = "<dd>";
-		$html[] = "<input type=\"text\" name=\"addition_option_name\" value=\"" . $name."\" />";
-		$html[] = "</dd>";
-
-		$html[] = "<dt>加算額の設定</dt>";
-		$html[] = "<dd>";
-		$html[] = "<input type=\"text\" name=\"addition_option_price\" value=\"" . $price."\" " . $style." size=\"5\" />&nbsp;円";
-		$html[] = "</dd>";
-
-		$html[] = "<dt>加算時の文言</dt>";
-		$html[] = "<dd>";
-		$html[] = "<textarea name=\"addition_option_text\">".htmlspecialchars($text, ENT_QUOTES, "UTF-8")."</textarea>";
-		$html[] = "<p>※##PRICE##は公開側で加算額で設定した値に置換されます</p>";
-		$html[] = "</dd>";
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "	<label>加算項目(カートに入れた時に表示されます)</label>";
+		$html[] = "	<div class=\"form-inline\">";
+		$html[] = "		<input type=\"text\" name=\"addition_option_name\" class=\"form-control\" value=\"" . $name."\" />";
+		$html[] = "	</div>";
+		$html[] = "	<br>";
+		$html[] = "	<label>加算額の設定</label>";
+		$html[] = "	<div class=\"form-inline\">";
+		$html[] = "		<input type=\"text\" name=\"addition_option_price\" class=\"form-control\" value=\"" . $price."\" " . $style." size=\"5\" />&nbsp;円";
+		$html[] = "	</div>";
+		$html[] = "	<br>";
+		$html[] = "	<label>加算時の文言</label>";
+		$html[] = "	<div class=\"form-inline\">";
+		$html[] = "		<textarea name=\"addition_option_text\" class=\"form-control\">".htmlspecialchars($text, ENT_QUOTES, "UTF-8")."</textarea>";
+		$html[] = "		<div class=\"alert alert-warning\">※##PRICE##は公開側で加算額で設定した値に置換されます</div>";
+		$html[] = "	</div>";
+		$html[] = "</div>";
+		$html[] = "<div class=\"alert alert-info\">加算オプションの設定ここまで</div>";
 
 		return implode("\n", $html);
 	}

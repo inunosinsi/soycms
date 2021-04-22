@@ -15,6 +15,7 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 	○追加
 	 - SOY Board on SOY Shop
 	 - soy2_setcookie(SameSite属性値の自動挿入)
+	 - 別サイト顧客情報引継ぎプラグイン
 	○修正
 	 - 商品CSVインポートでカテゴリの項目を外した状態でインポートをした際にカテゴリIDが登録される不具合を修正
 2.3.0
