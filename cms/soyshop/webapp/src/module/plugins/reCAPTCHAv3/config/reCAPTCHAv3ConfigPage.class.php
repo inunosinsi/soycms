@@ -35,25 +35,9 @@ class reCAPTCHAv3ConfigPage extends WebPage {
 		//お問い合わせページを登録する
 		$this->addSelect("page_id", array(
 			"name" => "Config[page_id]",
-			"options" => self::_getPageList(),
+			"options" => soyshop_get_page_list(),
 			"selected" => (isset($config["page_id"])) ? $config["page_id"] : false
 		));
-	}
-
-	private function _getPageList(){
-		try{
-			$pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
-		}catch(Exception $e){
-			$pages = array();
-		}
-		if(!count($pages)) return array();
-
-		$list = array();
-		$types = SOYShop_Page::getTypeTexts();
-		foreach($pages as $page){
-			$list[$page->getId()] = $page->getName() . "（" . $types[$page->getType()] . "）";
-		}
-		return $list;
 	}
 
 	function setConfigObj($configObj){

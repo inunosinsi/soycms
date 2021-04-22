@@ -6,10 +6,6 @@
 
 class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 
-	const INSERT_INTO_THE_END_OF_HEAD = 2;
-	const INSERT_INTO_THE_BEGINNING_OF_BODY = 1;
-	const INSERT_INTO_THE_END_OF_BODY = 0;
-
 	/**
 	 * @return string
 	 */
@@ -19,9 +15,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 		$config = GoogleAnalyticsUtil::getConfig();
 		$code = $config["tracking_code"];
 
-		if(strlen($code) == 0){
-			return $html;
-		}
+		if(!strlen($code)) return $html;
 
 		//アナリティクスタグの挿入設定　カートとマイページは無条件で挿入→マイページはログインが必要なページは除く
 		if(defined("SOYSHOP_PAGE_ID")){
@@ -31,9 +25,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 			}
 		}
 
-		if(defined("SOYSHOP_MYPAGE_MODE") && SOYSHOP_MYPAGE_MODE){
-			if(!self::_checkInsertTagOnMypage()) return $html;
-		}
+		if(defined("SOYSHOP_MYPAGE_MODE") && SOYSHOP_MYPAGE_MODE && !self::_checkInsertTagOnMypage()) return $html;
 
 		//XHTMLではないXMLでは出力しない
 		if(
@@ -53,59 +45,78 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 			return $html;
 		}
 
-		$completePage = false;	//カートの注文完了画面かどうかのフラグ
+		$isCompletePage = false;	//カートの注文完了画面かどうかのフラグ
 
-		//現在のページがカートページであるか？をチェック
-		if(isset($_SERVER["REDIRECT_URL"]) && strpos(soyshop_get_cart_url(), $_SERVER["REDIRECT_URL"]) !== false){
+		if(SOYSHOP_CART_MODE){	//現在のページがカートページであるか？をチェック
 			$query = "_gaq.push(['_trackPageview', '" . $_SERVER["REDIRECT_URL"] . "/complete/']);";
-			if(is_numeric(strpos($html,$query))) $completePage = true;	//注文完了画面ならばtrue
+			if(is_numeric(strpos($html,$query))) $isCompletePage = true;	//注文完了画面ならばtrue
 		}
 
 		//完了ページならば、eコマーストラッキングを挿入する
-		if($completePage === true) $code = self::_convertTrackingCode($html, $code);
+		if($isCompletePage) $code = self::_convertTrackingCode($html, $code);
+		var_dump($config["insert_to_head"]);
 
-		//</head>の直前
-		if($config["insert_to_head"] == self::INSERT_INTO_THE_END_OF_HEAD){
-			if(is_numeric(stripos($html,'</head>'))){
-				$html = str_ireplace('</head>', $code . "\n" . '</head>', $html);
-			}else if(is_numeric(stripos($html, '<body>'))){
-				$html = str_ireplace('<body>', '<body>' . "\n" . $code, $html);
-			}else if(preg_match('/<body\\s[^>]+>/', $html)){
-				$html = preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . $code, $html);
-			}else if(is_numeric(stripos($html, '<head>'))){
-				$html = str_ireplace('<head>', '<head>' . "\n" . $code, $html);
-			}else if(is_numeric(stripos($html, '<html>'))){
-				$html = str_ireplace('<html>', '<html>' . "\n" . $code, $html);
-			}else if(preg_match('/<html\\s[^>]+>/', $html)){
-				$html = preg_replace('/(<html\\s[^>]+>)/', "\$0\n" . $code, $html);
-			}
-
-		//<body>の直後
-		}elseif($config["insert_to_head"] == self::INSERT_INTO_THE_BEGINNING_OF_BODY){
-			if(is_numeric(stripos($html, '<body>'))){
-				$html = str_ireplace('<body>', '<body>' . "\n" . $code, $html);
-			}else if(preg_match('/<body\\s[^>]+>/', $html)){
-				$html = preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . $code, $html);
-			}else if(is_numeric(stripos($html, '</head>'))){
-				$html = str_ireplace('</head>', $code . "\n" . '</head>', $html);
-			}else if(is_numeric(stripos($html, '<head>'))){
-				$html = str_ireplace('<head>', '<head>' . "\n" . $code, $html);
-			}else if(is_numeric(stripos($html, '<html>'))){
-				$html = str_ireplace('<html>', '<html>' . "\n" . $code, $html);
-			}else if(preg_match('/<html\\s[^>]+>/', $html)){
-				$html = preg_replace('/(<html\\s[^>]+>)/', "\$0\n" . $code, $html);
-			}
-
-		//末尾
-		}else{
-			if(is_numeric(stripos($html, '</body>'))){
-				$html = str_ireplace('</body>', $code . '</body>', $html);
-			}else if(is_numeric(stripos($html, '</html>'))){
-				$html = str_ireplace('</html>', $code . '</html>', $html);
-			}
+		switch($config["insert_to_head"]){
+			case GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_HEAD:	//<head>の直後
+				if(is_numeric(stripos($html,'<head>'))){
+					return str_ireplace('<head>','<head>'."\n".$code,$html);
+				}else if(preg_match('/<body\\s[^>]+>/',$html)){
+					return preg_replace('/(<head\\s[^>]+>)/',"\$0\n".$code,$html);
+				}else if(is_numeric(stripos($html,'<html>'))){
+					return str_ireplace('<html>','<html>'."\n".$code,$html);
+				}else if(preg_match('/<html\\s[^>]+>/',$html)){
+					return preg_replace('/(<html\\s[^>]+>)/',"\$0\n".$code,$html);
+				}
+				break;
+			case GoogleAnalyticsUtil::INSERT_INTO_THE_END_OF_HEAD:	//</head>の直前
+				if(is_numeric(stripos($html,'</head>'))){
+					return str_ireplace('</head>', $code . "\n" . '</head>', $html);
+				}else if(is_numeric(stripos($html, '<body>'))){
+					return str_ireplace('<body>', '<body>' . "\n" . $code, $html);
+				}else if(preg_match('/<body\\s[^>]+>/', $html)){
+					return preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . $code, $html);
+				}else if(is_numeric(stripos($html, '<head>'))){
+					return str_ireplace('<head>', '<head>' . "\n" . $code, $html);
+				}else if(is_numeric(stripos($html, '<html>'))){
+					return str_ireplace('<html>', '<html>' . "\n" . $code, $html);
+				}else if(preg_match('/<html\\s[^>]+>/', $html)){
+					return preg_replace('/(<html\\s[^>]+>)/', "\$0\n" . $code, $html);
+				}
+				break;
+			case GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_BODY:	//<body>の直後
+				if(is_numeric(stripos($html, '<body>'))){
+					return str_ireplace('<body>', '<body>' . "\n" . $code, $html);
+				}else if(preg_match('/<body\\s[^>]+>/', $html)){
+					return preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . $code, $html);
+				}else if(is_numeric(stripos($html, '</head>'))){
+					return str_ireplace('</head>', $code . "\n" . '</head>', $html);
+				}else if(is_numeric(stripos($html, '<head>'))){
+					return str_ireplace('<head>', '<head>' . "\n" . $code, $html);
+				}else if(is_numeric(stripos($html, '<html>'))){
+					return str_ireplace('<html>', '<html>' . "\n" . $code, $html);
+				}else if(preg_match('/<html\\s[^>]+>/', $html)){
+					return preg_replace('/(<html\\s[^>]+>)/', "\$0\n" . $code, $html);
+				}
+				break;
+			case GoogleAnalyticsUtil::INSERT_AFTER_THE_END_OF_BODY:	//</body>の直後
+				if(is_numeric(stripos($html,'</body>'))){
+					return str_ireplace('</body>','</body>'."\n".$code,$html);
+				}else if(preg_match('/</body\\s[^>]+>/',$html)){
+					return preg_replace('/(</body\\s[^>]+>)/',"\$0\n".$code,$html);
+				}
+				break;
+			case GoogleAnalyticsUtil::INSERT_INTO_THE_END_OF_HTML:	//意図的に末尾
+				//何もしない
+				break;
+			default:
+				if(is_numeric(stripos($html, '</body>'))){
+					return str_ireplace('</body>', $code . '</body>', $html);
+				}else if(is_numeric(stripos($html, '</html>'))){
+					return str_ireplace('</html>', $code . '</html>', $html);
+				}
 		}
 
-		return $html;
+		return $html.$code;
 	}
 
 	//マイページでanalyticsタグを挿入するか？

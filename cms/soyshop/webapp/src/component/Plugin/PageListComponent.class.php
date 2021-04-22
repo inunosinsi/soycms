@@ -1,11 +1,11 @@
 <?php
 
 class PageListComponent extends HTMLList{
-	
+
 	private $displayConfig;
-	
+
 	protected function populateItem($entity, $key){
-		
+
 		$this->addCheckBox("page", array(
 			"name" => "display_config[]",
 			"value" => $key,
@@ -13,9 +13,8 @@ class PageListComponent extends HTMLList{
 			"label" => (isset($entity)) ? $entity : ""
 		));
 	}
-	
+
 	function setDisplayConfig($displayConfig){
 		$this->displayConfig = $displayConfig;
 	}
 }
-?>

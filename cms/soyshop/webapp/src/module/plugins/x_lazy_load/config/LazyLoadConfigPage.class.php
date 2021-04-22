@@ -34,7 +34,6 @@ class LazyLoadConfigPage extends WebPage{
 		));
 	}
 
-
 	function setConfigObj($configObj){
 		$this->configObj = $configObj;
 	}

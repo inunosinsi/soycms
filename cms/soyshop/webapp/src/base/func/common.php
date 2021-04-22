@@ -335,8 +335,11 @@ function soyshop_get_cart_url($operation = false, $isAbsolute = false){
  * カートのIDを取得
  */
 function soyshop_get_cart_id(){
-	if( (defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) || (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ) return SOYShop_DataSets::get("config.cart.smartphone_cart_id", "smart");
-    if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE) return SOYShop_DataSets::get("config.cart.mobile_cart_id", "mobile");
+	SOY2::import("util.SOYShopPluginUtil");
+	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
+		if( (defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) || (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ) return SOYShop_DataSets::get("config.cart.smartphone_cart_id", "smart");
+    	if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE) return SOYShop_DataSets::get("config.cart.mobile_cart_id", "mobile");
+	}
     return SOYShop_DataSets::get("config.cart.cart_id", "bryon");
 }
 
@@ -346,13 +349,16 @@ function soyshop_get_cart_id(){
 function soyshop_get_cart_uri(){
 	if(defined("SOYSHOP_CART_URI")) return SOYSHOP_CART_URI;
 
-    if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-        $cartUri = SOYShop_DataSets::get("config.cart.mobile_cart_url", "mb/cart");
-    }else if( (defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) || (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ){
-        $cartUri = SOYShop_DataSets::get("config.cart.smartphone_cart_url", "i/cart");
-    }else{
-        $cartUri = SOYShop_DataSets::get("config.cart.cart_url", "cart");
+	$cartUri = null;
+	SOY2::import("util.SOYShopPluginUtil");
+	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
+	    if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
+	        $cartUri = SOYShop_DataSets::get("config.cart.mobile_cart_url", "mb/cart");
+	    }else if( (defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) || (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ){
+	        $cartUri = SOYShop_DataSets::get("config.cart.smartphone_cart_url", "i/cart");
+	    }
     }
+	if(is_null($cartUri)) $cartUri = SOYShop_DataSets::get("config.cart.cart_url", "cart");
 
 	//多言語化対応
 	if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
@@ -471,13 +477,17 @@ function soyshop_customfield_nl2br($html){
  * マイページのID取得
  */
 function soyshop_get_mypage_id(){
-    if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-        return SOYShop_DataSets::get("config.mypage.mobile.id", "mobile");
-    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-        return SOYShop_DataSets::get("config.mypage.smartphone.id", "smart");
-    }else{
-        return SOYShop_DataSets::get("config.mypage.id", "bryon");
-    }
+	//モバイルチェックプラグインが動いている場合のみマイページの出し分けを行う
+	SOY2::import("util.SOYShopPluginUtil");
+	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
+		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
+	        return SOYShop_DataSets::get("config.mypage.mobile.id", "mobile");
+	    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
+	        return SOYShop_DataSets::get("config.mypage.smartphone.id", "smart");
+	    }
+	}
+
+	return SOYShop_DataSets::get("config.mypage.id", "bryon");
 }
 
 /**
@@ -486,13 +496,16 @@ function soyshop_get_mypage_id(){
 function soyshop_get_mypage_uri(){
 	if(defined("SOYSHOP_MYPAGE_URI")) return SOYSHOP_MYPAGE_URI;
 
-	if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-        $mypageUri = SOYShop_DataSets::get("config.mypage.mobile.url", "mb/user");
-    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-        $mypageUri = SOYShop_DataSets::get("config.mypage.smartphone.url", "i/user");
-    }else{
-        $mypageUri = SOYShop_DataSets::get("config.mypage.url", "user");
-    }
+	$mypageUri = null;
+	SOY2::import("util.SOYShopPluginUtil");
+	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
+		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
+	        $mypageUri = SOYShop_DataSets::get("config.mypage.mobile.url", "mb/user");
+	    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
+	        $mypageUri = SOYShop_DataSets::get("config.mypage.smartphone.url", "i/user");
+	    }
+	}
+    if(is_null($mypageUri)) $mypageUri = SOYShop_DataSets::get("config.mypage.url", "user");
 
 	//多言語化対応
 	if(defined("SOYSHOP_PUBLISH_LANGUAGE")){
@@ -541,13 +554,16 @@ function soyshop_get_mypage_top_url($isAbsolute = false){
 
     if(strrpos($url, "/") == 0) $url = rtrim($url, "/");
 
-    if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
-        return $url . "/" . SOYShop_DataSets::get("config.mypage.mobile.top", "mb/top");
-    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
-        return $url . "/" . SOYShop_DataSets::get("config.mypage.smartphone.top", "i/top");
-    }else{
-        return $url . "/" . SOYShop_DataSets::get("config.mypage.top", "top");
-    }
+	SOY2::import("util.SOYShopPluginUtil");
+	if(SOYShopPluginUtil::checkIsActive("util_mobile_check")){
+		if(defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE){
+	        return $url . "/" . SOYShop_DataSets::get("config.mypage.mobile.top", "mb/top");
+	    }elseif(defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE){
+	        return $url . "/" . SOYShop_DataSets::get("config.mypage.smartphone.top", "i/top");
+	    }
+	}
+
+    return $url . "/" . SOYShop_DataSets::get("config.mypage.top", "top");
 }
 
 /**

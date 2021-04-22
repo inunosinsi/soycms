@@ -23,7 +23,7 @@ class ButtonSocialConfigFormPage extends WebPage{
 		parent::__construct();
 
 		$config = ButtonSocialUtil::getConfig();
-				
+
 		$this->addForm("form");
 
 		$this->addInput("app_id", array(
@@ -51,29 +51,12 @@ class ButtonSocialConfigFormPage extends WebPage{
 
 		include_once(dirname(dirname(__FILE__)) . "/component/PageListComponent.class.php");
 		$this->createAdd("page_list", "PageListComponent", array(
-			"list" => $this->getPageList(),
+			"list" => soyshop_get_page_list(),
 			"displayConfig" => ButtonSocialUtil::getPageDisplayConfig()
 		));
-	}
-
-	function getPageList(){
-		$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		try{
-			$pages = $pageDao->get();
-		}catch(Exception $e){
-			return array();
-		}
-
-		$list = array();
-		foreach($pages as $page){
-			if(is_null($page->getId())) continue;
-			$list[$page->getId()] = $page->getName();
-		}
-		return $list;
 	}
 
 	function setConfigObj($obj) {
 		$this->config = $obj;
 	}
 }
-?>

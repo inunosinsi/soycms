@@ -35,48 +35,46 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 		));
 
 		//nameがinsert_to_headなのは歴史的経緯による
+		$this->addCheckBox("insert_to_head", array(
+			"value" => GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_HEAD,
+			"selected" => ($code["insert_to_head"] == GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_HEAD),
+			"name"  => "google_analytics[insert_to_head]",
+			"label" => "<head>タグの直後に挿入する"
+		));
+
 		$this->addCheckBox("insert_before_end_head", array(
-			"value" => 2,
-			"selected" => ($code["insert_to_head"] == 2),
+			"value" => GoogleAnalyticsUtil::INSERT_INTO_THE_END_OF_HEAD,
+			"selected" => ($code["insert_to_head"] == GoogleAnalyticsUtil::INSERT_INTO_THE_END_OF_HEAD),
 			"name"  => "google_analytics[insert_to_head]",
 			"label" => "</head>タグの直前に挿入する"
 		));
 
-		$this->addCheckBox("insert_to_head", array(
-			"value" => 1,
-			"selected" => ($code["insert_to_head"] == 1),
+		$this->addCheckBox("insert_to_body", array(
+			"value" => GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_BODY,
+			"selected" => ($code["insert_to_head"] == GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_BODY),
 			"name"  => "google_analytics[insert_to_head]",
 			"label" => "<body>タグの直後に挿入する"
 		));
 
 		$this->addCheckBox("insert_to_tail", array(
-			"value" => 0,
-			"selected" => ($code["insert_to_head"] == 0),
+			"value" => GoogleAnalyticsUtil::INSERT_AFTER_THE_END_OF_BODY,
+			"selected" => ($code["insert_to_head"] == GoogleAnalyticsUtil::INSERT_AFTER_THE_END_OF_BODY),
 			"name"  => "google_analytics[insert_to_head]",
 			"label" => "</body>タグの直前に挿入する"
 		));
 
-		SOY2::import("module.plugins.parts_google_analytics.component.PageListComponent");
+		$this->addCheckBox("insert_to_the_end_of_html", array(
+			"value" => GoogleAnalyticsUtil::INSERT_INTO_THE_END_OF_HTML,
+			"selected" => ($code["insert_to_head"] == GoogleAnalyticsUtil::INSERT_INTO_THE_END_OF_HTML),
+			"name"  => "google_analytics[insert_to_head]",
+			"label" => "HTMLの末尾に追加"
+		));
+
+		SOY2::import("component.Plugin.PageListComponent");
 		$this->createAdd("page_list", "PageListComponent", array(
-			"list" => $this->getPageList(),
+			"list" => soyshop_get_page_list(),
 			"displayConfig" => GoogleAnalyticsUtil::getPageDisplayConfig()
 		));
-	}
-
-	function getPageList(){
-		$pageDao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-		try{
-			$pages = $pageDao->get();
-		}catch(Exception $e){
-			return array();
-		}
-
-		$list = array();
-		foreach($pages as $page){
-			if(is_null($page->getId())) continue;
-			$list[$page->getId()] = $page->getName();
-		}
-		return $list;
 	}
 
 	function setConfigObj($obj) {

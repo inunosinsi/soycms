@@ -9,7 +9,6 @@ class HTMLCacheConfigPage extends WebPage{
 	}
 
 	function doPost(){
-
 		if(soy2_check_token()){
 			HTMLCacheUtil::savePageDisplayConfig($_POST["display_config"]);
 			$this->configObj->redirect("updated");
@@ -31,29 +30,13 @@ class HTMLCacheConfigPage extends WebPage{
 
 		SOY2::import("module.plugins.x_html_cache.component.PageListComponent");
 		$this->createAdd("page_list", "PageListComponent", array(
-			"list" => self::_getPageList(),
+			"list" => soyshop_get_page_list(),
 			"displayConfig" => HTMLCacheUtil::getPageDisplayConfig()
 		));
 
 		// $this->addImage("img_cart", array(
 		// 	"src" => "/" . SOYSHOP_ID . "/themes/sample/soyshop_async_add_item.png"
 		// ));
-	}
-
-	private function _getPageList(){
-		try{
-			$pages = SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
-		}catch(Exception $e){
-			return array();
-		}
-
-		$list = array();
-		foreach($pages as $page){
-			if(is_null($page->getId())) continue;
-			$list[$page->getId()] = $page->getName();
-		}
-
-		return $list;
 	}
 
 	function setConfigObj($configObj){
