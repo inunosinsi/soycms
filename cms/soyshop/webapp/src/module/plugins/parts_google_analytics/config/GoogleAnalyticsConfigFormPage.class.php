@@ -57,10 +57,17 @@ class GoogleAnalyticsConfigFormPage extends WebPage{
 		));
 
 		$this->addCheckBox("insert_to_tail", array(
+			"value" => GoogleAnalyticsUtil::INSERT_INTO_THE_END_OF_BODY,
+			"selected" => ($code["insert_to_head"] == GoogleAnalyticsUtil::INSERT_INTO_THE_END_OF_BODY),
+			"name"  => "google_analytics[insert_to_head]",
+			"label" => "</body>タグの直前に挿入する"
+		));
+
+		$this->addCheckBox("insert_to_the_end_of_body", array(
 			"value" => GoogleAnalyticsUtil::INSERT_AFTER_THE_END_OF_BODY,
 			"selected" => ($code["insert_to_head"] == GoogleAnalyticsUtil::INSERT_AFTER_THE_END_OF_BODY),
 			"name"  => "google_analytics[insert_to_head]",
-			"label" => "</body>タグの直前に挿入する"
+			"label" => "</body>タグの直後に挿入する"
 		));
 
 		$this->addCheckBox("insert_to_the_end_of_html", array(

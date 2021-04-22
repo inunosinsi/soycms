@@ -54,8 +54,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 
 		//完了ページならば、eコマーストラッキングを挿入する
 		if($isCompletePage) $code = self::_convertTrackingCode($html, $code);
-		var_dump($config["insert_to_head"]);
-
+		
 		switch($config["insert_to_head"]){
 			case GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_HEAD:	//<head>の直後
 				if(is_numeric(stripos($html,'<head>'))){
@@ -108,7 +107,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 			case GoogleAnalyticsUtil::INSERT_INTO_THE_END_OF_HTML:	//意図的に末尾
 				//何もしない
 				break;
-			default:
+			default:	//</body>直前に挿入
 				if(is_numeric(stripos($html, '</body>'))){
 					return str_ireplace('</body>', $code . '</body>', $html);
 				}else if(is_numeric(stripos($html, '</html>'))){
