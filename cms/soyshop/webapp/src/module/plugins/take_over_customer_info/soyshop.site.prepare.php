@@ -51,7 +51,7 @@ class TakeOverCustomerInfoPrepare extends SOYShopSitePrepareAction{
 			$tmp = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($user->getMailAddress());
 			if(is_numeric($tmp->getId())){
 				$user = $tmp;
-				unset($user);
+				unset($tmp);
 			}
 		}catch(Exception $e){
 			//
@@ -63,6 +63,13 @@ class TakeOverCustomerInfoPrepare extends SOYShopSitePrepareAction{
 		$cart->setAttribute("logined", true);
 		if(is_numeric($user->getId())) $cart->setAttribute("logined_userid", $user->getId());
 		$cart->save();
+
+		// マイページの方でログイン済みにしておく
+		// if(!defined("SOYSHOP_CURRENT_MYPAGE_ID")) define("SOYSHOP_CURRENT_MYPAGE_ID", soyshop_get_mypage_id());
+		// $mypage = MyPageLogic::getMyPage();
+		// $mypage->setAttribute("loggedin", true);
+		// if(is_numeric($user->getId())) $mypage->setAttribute("userId", $user->getId());
+		// $mypage->save();
 	}
 
 	private function _getDsn(){

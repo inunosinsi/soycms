@@ -56,7 +56,7 @@ class CartLogic extends SOY2LogicBase{
 	 * カートを取得
 	 */
 	public static function getCart($cartId = null){
-		if(!$cartId) $cartId = (defined("SOYSHOP_CURRENT_CART_ID")) ? SOYSHOP_CURRENT_CART_ID : "bryon";
+		if(is_null($cartId)) $cartId = (defined("SOYSHOP_CURRENT_CART_ID")) ? SOYSHOP_CURRENT_CART_ID : soyshop_get_cart_id();
 		$cart = SOY2ActionSession::getUserSession()->getAttribute("soyshop_" . SOYSHOP_ID . $cartId);
 		if(is_string($cart) && strlen($cart)) $cart = soy2_unserialize($cart);
 		return ($cart instanceof CartLogic) ? $cart : new CartLogic($cartId);
