@@ -2,9 +2,10 @@
 
 namespace PhpOffice\PhpSpreadsheet\Worksheet;
 
+use Iterator;
 use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 
-class RowIterator implements \Iterator
+class RowIterator implements Iterator
 {
     /**
      * Worksheet to iterate.
@@ -54,7 +55,7 @@ class RowIterator implements \Iterator
      */
     public function __destruct()
     {
-        unset($this->subject);
+        $this->subject = null;
     }
 
     /**
@@ -62,14 +63,14 @@ class RowIterator implements \Iterator
      *
      * @param int $startRow The row number at which to start iterating
      *
-     * @throws PhpSpreadsheetException
-     *
-     * @return RowIterator
+     * @return $this
      */
-    public function resetStart($startRow = 1)
+    public function resetStart(int $startRow = 1)
     {
         if ($startRow > $this->subject->getHighestRow()) {
-            throw new PhpSpreadsheetException("Start row ({$startRow}) is beyond highest row ({$this->subject->getHighestRow()})");
+            throw new PhpSpreadsheetException(
+                "Start row ({$startRow}) is beyond highest row ({$this->subject->getHighestRow()})"
+            );
         }
 
         $this->startRow = $startRow;
@@ -86,11 +87,11 @@ class RowIterator implements \Iterator
      *
      * @param int $endRow The row number at which to stop iterating
      *
-     * @return RowIterator
+     * @return $this
      */
     public function resetEnd($endRow = null)
     {
-        $this->endRow = ($endRow) ? $endRow : $this->subject->getHighestRow();
+        $this->endRow = $endRow ?: $this->subject->getHighestRow();
 
         return $this;
     }
@@ -100,11 +101,9 @@ class RowIterator implements \Iterator
      *
      * @param int $row The row number to set the current pointer at
      *
-     * @throws PhpSpreadsheetException
-     *
-     * @return RowIterator
+     * @return $this
      */
-    public function seek($row = 1)
+    public function seek(int $row = 1)
     {
         if (($row < $this->startRow) || ($row > $this->endRow)) {
             throw new PhpSpreadsheetException("Row $row is out of range ({$this->startRow} - {$this->endRow})");
@@ -117,7 +116,7 @@ class RowIterator implements \Iterator
     /**
      * Rewind the iterator to the starting row.
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = $this->startRow;
     }
@@ -134,10 +133,8 @@ class RowIterator implements \Iterator
 
     /**
      * Return the current iterator key.
-     *
-     * @return int
      */
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
@@ -145,7 +142,7 @@ class RowIterator implements \Iterator
     /**
      * Set the iterator to its next value.
      */
-    public function next()
+    public function next(): void
     {
         ++$this->position;
     }
@@ -153,17 +150,15 @@ class RowIterator implements \Iterator
     /**
      * Set the iterator to its previous value.
      */
-    public function prev()
+    public function prev(): void
     {
         --$this->position;
     }
 
     /**
      * Indicate if more rows exist in the worksheet range of rows that we're iterating.
-     *
-     * @return bool
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->position <= $this->endRow && $this->position >= $this->startRow;
     }

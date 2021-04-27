@@ -60,7 +60,7 @@ class QRDecomposition
     {
         if ($A instanceof Matrix) {
             // Initialize.
-            $this->QR = $A->getArrayCopy();
+            $this->QR = $A->getArray();
             $this->m = $A->getRowDimension();
             $this->n = $A->getColumnDimension();
             // Main loop.
@@ -205,7 +205,7 @@ class QRDecomposition
      *
      * @return Matrix matrix that minimizes the two norm of Q*R*X-B
      */
-    public function solve($B)
+    public function solve(Matrix $B)
     {
         if ($B->getRowDimension() == $this->m) {
             if ($this->isFullRank()) {
