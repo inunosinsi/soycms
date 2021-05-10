@@ -79,14 +79,17 @@ class EditPage extends WebPage{
 
 			$itemChange = array();
 
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$cnf = SOYShop_ShopConfig::load();
+
 			if(isset($_POST["Item"])){
 				$newItems = $_POST["Item"];
 				foreach($itemOrders as $id => $itemOrder){
 					$key = $itemOrder->getId();
 					if(isset($newItems[$key])){
 						$newName  = (isset($newItems[$key]["itemName"])) ? $newItems[$key]["itemName"] : "";
-						$newPrice = (isset($newItems[$key]["itemPrice"])) ? $newItems[$key]["itemPrice"] : null;
-						$newCount = (isset($newItems[$key]["itemCount"])) ? $newItems[$key]["itemCount"] : null;
+						$newPrice = (isset($newItems[$key]["itemPrice"])) ? $newItems[$key]["itemPrice"] : 0;
+						$newCount = (isset($newItems[$key]["itemCount"])) ? $newItems[$key]["itemCount"] : 0;
 						$newAttributes = (isset($newItems[$key]["attributes"])) ? $newItems[$key]["attributes"] : array();
 						$delete   = ( isset($newItems[$key]["itemDelete"]) && $newItems[$key]["itemDelete"] );
 
@@ -145,27 +148,29 @@ class EditPage extends WebPage{
 			){
 				$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 				foreach($_POST["AddItemByName"]["name"] as $key => $value){
-					$name = trim($_POST["AddItemByName"]["name"][$key]);
-					$price = trim($_POST["AddItemByName"]["price"][$key]);
-					$count = trim($_POST["AddItemByName"]["count"][$key]);
+					$name = (isset($_POST["AddItemByName"]["name"][$key])) ? trim($_POST["AddItemByName"]["name"][$key]) : "";
+					if(!strlen($name)) continue;
+					$price = (isset($_POST["AddItemByName"]["price"][$key]) && is_numeric($_POST["AddItemByName"]["price"][$key])) ? (int)trim($_POST["AddItemByName"]["price"][$key]) : 0;
+					if(!$cnf->getAllowRegistrationZeroYenProducts() && $price === 0) continue;	//0円商品をカートに入れる事を許可しない
 
-					if(strlen($name) > 0 && strlen($price)>0 && $count > 0){
-						$itemId = 0;//ない商品はid=0
+					$count = (isset($_POST["AddItemByName"]["count"][$key]) && is_numeric($_POST["AddItemByName"]["count"][$key])) ? (int)trim($_POST["AddItemByName"]["count"][$key]) : 1;
+					if(!$cnf->getAllowRegistrationZeroQuantityProducts() && $count === 0) continue;	//0円商品をカートに入れる事を許可しない
 
-						$itemOrder = new SOYShop_ItemOrder();
-						$itemOrder->setOrderId($this->id);
-						$itemOrder->setItemId($itemId);
-						$itemOrder->setItemCount($count);
-						$itemOrder->setItemPrice($price);
-						$itemOrder->setTotalPrice($price * $count);
-						$itemOrder->setItemName($name);
+					$itemId = 0;//ない商品はid=0
 
-						$newItemOrders[] = $itemOrder;
-						$itemChange[] = $itemOrder->getItemName() . "（" . $itemOrder->getItemPrice() . "円×" . $itemOrder->getItemCount() . "点）を追加しました。";
+					$itemOrder = new SOYShop_ItemOrder();
+					$itemOrder->setOrderId($this->id);
+					$itemOrder->setItemId($itemId);
+					$itemOrder->setItemCount($count);
+					$itemOrder->setItemPrice($price);
+					$itemOrder->setTotalPrice($price * $count);
+					$itemOrder->setItemName($name);
 
-						//在庫数の変更
-						self::changeStock($itemOrder, $count);
-					}
+					$newItemOrders[] = $itemOrder;
+					$itemChange[] = $itemOrder->getItemName() . "（" . $itemOrder->getItemPrice() . "円×" . $itemOrder->getItemCount() . "点）を追加しました。";
+
+					//在庫数の変更
+					self::changeStock($itemOrder, $count);
 				}
 
 				//検索用のセッションのクリア
@@ -307,7 +312,7 @@ class EditPage extends WebPage{
 					if(count($itemChange) > 0){
 						foreach($itemOrders as $itemOrder){
 							//注文数が空の場合は削除
-							if($itemOrder->getItemCount() == 0){
+							if(!$cnf->getAllowRegistrationZeroQuantityProducts() && $itemOrder->getItemCount() == 0){
 								$itemOrderDAO->delete($itemOrder);
 							}else{
 								$itemOrderDAO->update($itemOrder);
@@ -316,13 +321,12 @@ class EditPage extends WebPage{
 						//追加商品
 						SOYShopPlugin::load("soyshop.item.order");
 						foreach($newItemOrders as $itemOrder){
-							if($itemOrder->getItemCount() > 0){
-								$itemOrderId = $itemOrderDAO->insert($itemOrder);
-								SOYShopPlugin::invoke("soyshop.item.order", array(
-									"mode" => "order",
-									"itemOrderId" => $itemOrderId
-								));
-							}
+							if(!$cnf->getAllowRegistrationZeroQuantityProducts() && $itemOrder->getItemCount() === 0) continue;
+							$itemOrderId = $itemOrderDAO->insert($itemOrder);
+							SOYShopPlugin::invoke("soyshop.item.order", array(
+								"mode" => "order",
+								"itemOrderId" => $itemOrderId
+							));
 						}
 
 						SOYShopPlugin::invoke("soyshop.item.order", array(

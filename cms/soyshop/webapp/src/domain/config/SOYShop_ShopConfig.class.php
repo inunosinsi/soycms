@@ -59,6 +59,8 @@ class SOYShop_ShopConfig {
 	//private $isChildItemOnAdminOrder = 0;	//管理画面からの注文の際に子商品を検索結果に含める
 	private $isUnregisteredItem = 1;		//管理画面からの注文の際に未登録商品の追加を許可する
 	private $displayRegisterAfterItemSearchOnAdmin = 1;	//管理画面からの注文の際に商品検索後に商品を登録するフォームを表示する
+	private $allowRegistrationZeroYenProducts = 0;	//管理画面からの注文の際に0円の商品をカートに入れる事を許可する
+	private $allowRegistrationZeroQuantityProducts = 0;	//管理画面からの注文の際に商品をカートに0個入れる事を許可する
 	private $changeParentItemNameOnAdmin = 0;	//管理画面でカートや注文詳細で表記されている子商品名を親商品名に変換する
 	private $displayPurchasePriceOnAdmin = 0;	//管理画面からの注文の際に単価の横に仕入値を出力する
 
@@ -302,7 +304,7 @@ class SOYShop_ShopConfig {
 		foreach($this->customerDisplayFormConfig as $key => $value){
 			$this->customerDisplayFormConfig[$key] = (boolean)@$array[$key];
 		}
-		
+
 		//mailAddres
 		//は必須
 		$this->customerDisplayFormConfig["mailAddress"] = true;
@@ -706,6 +708,20 @@ class SOYShop_ShopConfig {
 	}
 	function setDisplayRegisterAfterItemSearchOnAdmin($displayRegisterAfterItemSearchOnAdmin){
 		$this->displayRegisterAfterItemSearchOnAdmin = $displayRegisterAfterItemSearchOnAdmin;
+	}
+
+	function getAllowRegistrationZeroYenProducts(){
+		return $this->allowRegistrationZeroYenProducts;
+	}
+	function setAllowRegistrationZeroYenProducts($allowRegistrationZeroYenProducts){
+		$this->allowRegistrationZeroYenProducts = $allowRegistrationZeroYenProducts;
+	}
+
+	function getAllowRegistrationZeroQuantityProducts(){
+		return $this->allowRegistrationZeroQuantityProducts;
+	}
+	function setAllowRegistrationZeroQuantityProducts($allowRegistrationZeroQuantityProducts){
+		$this->allowRegistrationZeroQuantityProducts = $allowRegistrationZeroQuantityProducts;
 	}
 
 	function getChangeParentItemNameOnAdmin(){

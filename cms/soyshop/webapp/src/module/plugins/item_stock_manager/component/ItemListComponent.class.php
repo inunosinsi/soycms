@@ -3,7 +3,7 @@
 class ItemListComponent extends HTMLList{
 
 	private $detailLink;
-	private $categories;
+	private $categories=array();
 
 	private $stockLogic;
 
@@ -46,13 +46,13 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => number_format($item->getPrice())
+			"text" => soy2_number_format($item->getPrice())
 		));
 		$this->addModel("is_sale", array(
 			"visible" => $item->isOnSale()
 		));
 		$this->addLabel("sale_price", array(
-			"text" => number_format($item->getSalePrice())
+			"text" => soy2_number_format($item->getSalePrice())
 		));
 
 		$this->addInput("item_stock_input", array(
@@ -74,8 +74,9 @@ class ItemListComponent extends HTMLList{
 //			"text" => number_format(self::getOrderCount($item))
 		));
 
+		$categoryId = (is_numeric($item->getCategory())) ? (int)$item->getCategory() : 0;
 		$this->addLabel("item_category", array(
-			"text" => (isset($this->categories[$item->getCategory()])) ? $this->categories[$item->getCategory()]->getNameWithStatus() : "-"
+			"text" => (is_array($this->categories) && isset($this->categories[$categoryId])) ? $this->categories[$categoryId]->getNameWithStatus() : "-"
 		));
 	}
 
@@ -97,4 +98,3 @@ class ItemListComponent extends HTMLList{
 		$this->stockLogic = $stockLogic;
 	}
 }
-?>

@@ -229,22 +229,34 @@ class CartLogic extends SOY2LogicBase{
 	 * カートでアイテム数の個数を更新
 	 */
 	function updateItem($index, $count){
-		if($count > 0){
-			$items = self::getItems();
-			if(isset($items[$index])){
-				$items[$index]->setItemCount($count);
-				$items[$index]->setTotalPrice($items[$index]->getItemPrice() * $count);
-
-				SOYShopPlugin::load("soyshop.item.order");
-				SOYShopPlugin::invoke("soyshop.item.order", array(
-					"mode" => "update",
-					"itemOrder" => $items[$index]
-				));
-
-				self::setItems($items);
+		if($count === 0){
+			$isRemove = true;
+			//管理画面で注文の場合はカートに0個を許可する設定がある
+			if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+				SOY2::import("domain.config.SOYShop_ShopConfig");
+				$cnf = SOYShop_ShopConfig::load();
+				if($cnf->getAllowRegistrationZeroQuantityProducts()) $isRemove = false;
 			}
-		}else{
-			self::removeItem($index);
+
+			if($isRemove){
+				self::removeItem($index);
+				return;
+			}
+
+		}
+
+		$items = self::getItems();
+		if(isset($items[$index])){
+			$items[$index]->setItemCount($count);
+			$items[$index]->setTotalPrice($items[$index]->getItemPrice() * $count);
+
+			SOYShopPlugin::load("soyshop.item.order");
+			SOYShopPlugin::invoke("soyshop.item.order", array(
+				"mode" => "update",
+				"itemOrder" => $items[$index]
+			));
+
+			self::setItems($items);
 		}
 	}
 

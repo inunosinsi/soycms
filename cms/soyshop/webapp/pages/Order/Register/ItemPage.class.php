@@ -58,6 +58,9 @@ class ItemPage extends WebPage{
 				SOY2PageController::jump("Order.Register.Item");
 			}
 
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$cnf = SOYShop_ShopConfig::load();
+
 			if(isset($_POST["Item"])){
 				$newItems = $_POST["Item"];
 				$counts = array();
@@ -109,7 +112,8 @@ class ItemPage extends WebPage{
 
 				//個数変更や削除
 				foreach($items as $id => $itemOrder){
-					$this->cart->updateItem($id, $counts[$id]);
+					$count = (isset($counts[$id])) ? (int)$counts[$id] : 0;
+					$this->cart->updateItem($id, $count);
 					$this->cart->save();
 				}
 			}
@@ -122,15 +126,19 @@ class ItemPage extends WebPage{
 				foreach($_POST["AddItemByName"]["name"] as $key => $value){
 					$name  = isset($_POST["AddItemByName"]["name"][$key]) && strlen(isset($_POST["AddItemByName"]["name"][$key]))
 					       ? trim($_POST["AddItemByName"]["name"][$key]) : "" ;
+					if(!strlen($name)) continue;
+
 					$price = isset($_POST["AddItemByName"]["price"][$key]) && strlen($_POST["AddItemByName"]["price"][$key])
-					       ? trim($_POST["AddItemByName"]["price"][$key]) : "" ;
+					       ? (int)trim($_POST["AddItemByName"]["price"][$key]) : 0 ;
+					if(!$cnf->getAllowRegistrationZeroYenProducts() && $price === 0) continue;	//0円商品をカートに入れる事を許可しない
+
 					$count = isset($_POST["AddItemByName"]["count"][$key]) && strlen($_POST["AddItemByName"]["count"][$key])
-					       ? trim($_POST["AddItemByName"]["count"][$key]) : 1 ;
-					if(strlen($name)>0 && strlen($price)>0 && $count > 0){
-						$this->cart->addUnlistedItem($name, $count, $price);
-						$this->cart->setAttribute("add_mode_on_admin_order", 0);
-						$this->cart->save();
-					}
+					       ? (int)trim($_POST["AddItemByName"]["count"][$key]) : 1 ;
+					if(!$cnf->getAllowRegistrationZeroQuantityProducts() && $count === 0) continue;	//0円商品をカートに入れる事を許可しない
+
+					$this->cart->addUnlistedItem($name, $count, $price);
+					$this->cart->setAttribute("add_mode_on_admin_order", 0);
+					$this->cart->save();
 				}
 
 				//検索用のセッションのクリア

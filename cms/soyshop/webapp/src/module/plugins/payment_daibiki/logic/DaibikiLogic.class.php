@@ -70,14 +70,9 @@ class DaibikiLogic extends SOY2LogicBase{
 
 		//代引き不可商品があったらこのモジュール自体を表示しない
 		if(count($forbidden) > 0){
-			$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 			foreach($items as $itemOrder){
-				$itemId = $itemOrder->getItemId();
-				$item = $itemDao->getById($itemId);
-				if(in_array($item->getCode(),$forbidden)){
-					return false;
-				}
-
+				$code = soyshop_get_item_object($itemOrder->getItemId())->getCode();
+				if(strlen($code) && in_array($code, $forbidden)) return false;
 			}
 		}
 		return true;
