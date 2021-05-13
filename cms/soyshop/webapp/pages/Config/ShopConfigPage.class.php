@@ -31,6 +31,7 @@ class ShopConfigPage extends WebPage{
 			//"isChildItemOnAdminOrder" => 0,
 			"isUnregisteredItem" => 0,
 			"displayRegisterAfterItemSearchOnAdmin" => 0,
+			"addSearchChildItemNameOnAdmin" => 0,
 			"allowRegistrationZeroYenProducts" => 0,
 			"allowRegistrationZeroQuantityProducts" => 0,
 			"changeParentItemNameOnAdmin" => 0,	//管理画面で子商品名を親商品名(商品コードも含む)に変換する
@@ -436,6 +437,13 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"selected" => $config->getDisplayRegisterAfterItemSearchOnAdmin(),
 			"label" => "管理画面からの注文の際に商品検索後に商品を登録するフォームを表示する"
+		));
+
+		$this->addCheckBox("addSearchChildItemNameOnAdmin", array(
+			"name" => "Config[addSearchChildItemNameOnAdmin]",
+			"value" => 1,
+			"selected" => $config->getAddSearchChildItemNameOnAdmin(),
+			"label" => "管理画面からの注文の際に商品検索で子商品を加味して検索をする"
 		));
 
 		$this->addCheckBox("allowRegistrationZeroYenProducts", array(

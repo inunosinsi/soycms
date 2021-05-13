@@ -82,7 +82,14 @@ class SearchItemLogic extends SOY2LogicBase{
 		if(!is_array($cnds)) return;
 
 		if(count($cnds)){
+			SOY2::import("domain.config.SOYShop_ShopConfig");
+			$cnf = SOYShop_ShopConfig::load();
+
 			foreach($cnds as $key => $value){
+				if(is_string($value)) {
+					$value = trim($value);
+					if(!strlen($value)) continue;
+				}
 				switch($key){
 					case "name":
 					case "code":
@@ -91,16 +98,21 @@ class SearchItemLogic extends SOY2LogicBase{
 						foreach($values as $idx => $v){
 							switch($this->mode){
 								case "admin":	//管理画面での注文の際の商品検索では、子商品も合わせて検索対象にする
-									$subWhere[] = "(item_" . $key . " LIKE :item_" . $key . "_" . $idx . " OR id IN (SELECT item_type FROM soyshop_item WHERE item_" . $key . " LIKE :child_" . $key . "_" . $idx . "))";
+									if($cnf->getAddSearchChildItemNameOnAdmin()){	//子商品も検索対象にする
+										$subWhere[] = "(item_" . $key . " LIKE :item_" . $key . "_" . $idx . " OR id IN (SELECT item_type FROM soyshop_item WHERE item_" . $key . " LIKE :child_" . $key . "_" . $idx . "))";
+										$binds[":child_" . $key . "_" . $idx] = "%" . $v . "%";
+									}else{	//子商品を検索対象から外す→最適化
+										$subWhere[] = "item_" . $key . " LIKE :item_" . $key . "_" . $idx;
+									}
 									$binds[":item_" . $key . "_" . $idx] = "%" . $v . "%";
-									$binds[":child_" . $key . "_" . $idx] = "%" . $v . "%";
 									break;
 								default:
 									$subWhere[] = "item_" . $key . " LIKE :item_" . $key . "_" . $idx;
 									$binds[":item_" . $key . "_" . $idx] = "%" . $v . "%";
 							}
 						}
-						if(count($subWhere)) $where[] = "(" . implode(" OR ", $subWhere) . ")";
+						$logicType = (isset($cnds["search_type"][$key])) ? $cnds["search_type"][$key] : "OR";	// AND(論理積) or OR(論理和)
+						if(count($subWhere)) $where[] = "(" . implode(" " . $logicType . " ", $subWhere) . ")";
 						break;
 					case "categories":
 						$values = explode(" ", $value);
@@ -122,29 +134,31 @@ class SearchItemLogic extends SOY2LogicBase{
 						break;
 					//カテゴリ単体で調べたい時に使う
 					case "category":
-						if(strlen($value)){
-
-							if($value < 0){
-								$where[] = "item_category IS NULL";
+						if($value < 0){
+							$where[] = "item_category IS NULL";
+						}else{
+							//子商品の指定がある場合
+							if(isset($cnds["is_child"])){
+								$where[] = "(item_category = :item_category OR item_type in (SELECT id FROM soyshop_item WHERE item_category = :item_category))";
 							}else{
-								//子商品の指定がある場合
-								if(isset($cnds["is_child"])){
-									$where[] = "(item_category = :item_category OR item_type in (SELECT id FROM soyshop_item WHERE item_category = :item_category))";
-								}else{
-									$where[] = "item_category = :item_category";
-								}
-								$binds[":item_category"] = $value;
+								$where[] = "item_category = :item_category";
 							}
+							$binds[":item_category"] = $value;
 						}
 						break;
 					case "type":
-						$where[] = "item_type IN (\"". implode("\",\"", $value) . "\")";
+						if(is_array($value)){
+							$where[] = "item_type IN (\"". implode("\",\"", $value) . "\")";
+						}
 						break;
 					case "attributes":
 						$attributes = $value;
 						foreach($attributes as $key => $value){
 
 						}
+						break;
+					case "search_type":
+						//何もしない
 						break;
 				}
 			}

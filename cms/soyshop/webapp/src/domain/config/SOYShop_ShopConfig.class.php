@@ -59,6 +59,7 @@ class SOYShop_ShopConfig {
 	//private $isChildItemOnAdminOrder = 0;	//管理画面からの注文の際に子商品を検索結果に含める
 	private $isUnregisteredItem = 1;		//管理画面からの注文の際に未登録商品の追加を許可する
 	private $displayRegisterAfterItemSearchOnAdmin = 1;	//管理画面からの注文の際に商品検索後に商品を登録するフォームを表示する
+	private $addSearchChildItemNameOnAdmin = 1;			//管理画面からの注文の際に商品検索で子商品を加味して検索をする
 	private $allowRegistrationZeroYenProducts = 0;	//管理画面からの注文の際に0円の商品をカートに入れる事を許可する
 	private $allowRegistrationZeroQuantityProducts = 0;	//管理画面からの注文の際に商品をカートに0個入れる事を許可する
 	private $changeParentItemNameOnAdmin = 0;	//管理画面でカートや注文詳細で表記されている子商品名を親商品名に変換する
@@ -708,6 +709,13 @@ class SOYShop_ShopConfig {
 	}
 	function setDisplayRegisterAfterItemSearchOnAdmin($displayRegisterAfterItemSearchOnAdmin){
 		$this->displayRegisterAfterItemSearchOnAdmin = $displayRegisterAfterItemSearchOnAdmin;
+	}
+
+	function getAddSearchChildItemNameOnAdmin(){
+		return $this->addSearchChildItemNameOnAdmin;
+	}
+	function setAddSearchChildItemNameOnAdmin($addSearchChildItemNameOnAdmin){
+		$this->addSearchChildItemNameOnAdmin = $addSearchChildItemNameOnAdmin;
 	}
 
 	function getAllowRegistrationZeroYenProducts(){

@@ -61,7 +61,9 @@ class SearchPage extends WebPage{
 
 		$this->addInput("name", array(
 			"name" => "search_condition[name]",
-			"value" => (isset($cnds["name"])) ? $cnds["name"] : null
+			"value" => (isset($cnds["name"])) ? $cnds["name"] : null,
+			"attr:placeholder" => "スペース区切りで複数キーワードで検索可",
+			"style" => "width:300px;"
 		));
 
 		$this->addInput("code", array(
@@ -74,6 +76,23 @@ class SearchPage extends WebPage{
 			"options" => soyshop_get_category_list(true),
 			"selected" => (isset($cnds["categories"])) ? $cnds["categories"] : null
 		));
+
+		foreach(array("name", "code") as $t){
+			$this->addCheckBox($t . "_search_type_and", array(
+				"name" => "search_condition[search_type][" . $t . "]",
+				"value" => "AND",
+				"label" => "AND",
+				"selected" => (!isset($cnds["search_type"][$t]) || (isset($cnds["search_type"][$t]) && $cnds["search_type"][$t] == "AND"))
+			));
+
+			$this->addCheckBox($t . "_search_type_or", array(
+				"name" => "search_condition[search_type][" . $t . "]",
+				"value" => "OR",
+				"label" => "OR",
+				"selected" => (isset($cnds["search_type"][$t]) && $cnds["search_type"][$t] == "OR")
+			));
+		}
+
 	}
 
 	private function buildSearchResult(){

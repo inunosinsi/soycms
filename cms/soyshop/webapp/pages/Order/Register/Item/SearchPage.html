@@ -6,14 +6,23 @@
 				<form soy:id="form">
 					<div class="table-responsive">
 						<table class="table table-striped order_search">
+							<col width="100px">
 							<caption>登録済み商品検索</caption>
 							<tr>
 								<th>商品名</th>
-								<td><input type="text" soy:id="name"></td>
+								<td>
+									<input type="text" soy:id="name">&nbsp;
+									<input type="radio" soy:id="name_search_type_and">&nbsp;
+									<input type="radio" soy:id="name_search_type_or">
+								</td>
 							</tr>
 							<tr>
 								<th>商品コード</th>
-								<td><input type="text" soy:id="code"></td>
+								<td>
+									<input type="text" soy:id="code">&nbsp;
+									<input type="radio" soy:id="code_search_type_and">&nbsp;
+									<input type="radio" soy:id="code_search_type_or">
+								</td>
 							</tr>
 							<tr>
 								<th>カテゴリ</th>
