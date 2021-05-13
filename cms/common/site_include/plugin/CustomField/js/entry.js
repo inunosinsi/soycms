@@ -22,7 +22,7 @@ var CustomFieldEntryField = {
 					if(res.result && res.list && res.list.length > 0){
 						var $select = $("<select>");
 						$select.prop("name", name);
-						$select.append('<option></option>');
+						$select.append('<option value="' + labelId + '-0"></option>');
 						for(var i = 0; i < res.list.length; i++){
 							var entry = res.list[i];
 							if(selectedEntryId == entry.id){
