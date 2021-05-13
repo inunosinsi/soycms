@@ -130,6 +130,9 @@ class CouponListComponent extends HTMLList{
 			"name" => "Edit[timeLimitEnd]",
 			"value" => self::_convertDate($entity->getTimeLimitEnd())
 		));
+
+		// 下記のコードはSearchCouponLogicを追加したので不要になった
+		//if(is_numeric($entity->getTimeLimitEnd()) && $entity->getTimeLimitEnd() > 0 && $entity->getTimeLimitEnd() < time()) return false;
 	}
 
 	private function _getUsedCount($id){
