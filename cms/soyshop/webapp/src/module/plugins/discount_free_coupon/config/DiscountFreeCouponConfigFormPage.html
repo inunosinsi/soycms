@@ -45,10 +45,18 @@
 				<table class="table table-striped">
 					<caption>検索</caption>
 					<tr>
-						<th class="col-lg-1">クーポン名</th>
-						<td class="col-lg-5"><input type="text" class="form-control" soy:id="coupon_name_or_code" placeholder="クーポン名とクーポンコードが検索対象です"></td>
-						<th class="col-lg-1">使用期限</th>
-						<td class="col-lg-5"><input type="checkbox" soy:id="expired"></td>
+						<th class="col-md-1">クーポン名</th>
+						<td class="col-md-5"><input type="text" soy:id="search_coupon_name_or_code" placeholder="クーポン名とクーポンコードが検索対象です"></td>
+						<th class="col-md-1">種類</th>
+						<td class="col-md-5">
+							<input type="checkbox" soy:id="search_coupon_type_0">&nbsp;
+							<input type="checkbox" soy:id="search_coupon_type_1">&nbsp;
+							<input type="checkbox" soy:id="search_coupon_type_2">
+						</td>
+					</tr>
+					<tr>
+						<th class="col-md-1">使用期限</th>
+						<td class="col-md-11" colspan="3"><input type="checkbox" soy:id="search_expired"></td>
 					</tr>
 				</table>
 			</div>

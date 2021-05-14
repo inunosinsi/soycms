@@ -60,6 +60,13 @@ class SearchCouponLogic extends SOY2LogicBase {
 						$this->binds[":name"] = "%" . $value . "%";
 						$this->binds[":code"] = "%" . $value . "%";
 						break;
+					case "coupon_type":
+						$w = array();
+						foreach($value as $v){
+							$w[] = "coupon_type = " . $v;
+						}
+						if(count($w)) $this->where[$key] = "(" . implode(" OR ", $w) . ")";
+						break;
 					case "expired":	//期限切れクーポンを表示する
 						$this->where["time_limit_end"] = "time_limit_end > 0";
 						break;

@@ -214,4 +214,12 @@ class SOYShop_Coupon {
 	function setUpdateDate($UpdateDate){
 		$this->updateDate = $UpdateDate;
 	}
+
+	public static function getCouponTypeList(){
+		return array(
+			self::TYPE_PRICE => "値引き額",
+			self::TYPE_PERCENT => "値引き率",
+			self::TYPE_DELIVERY => "送料無料"
+		);
+	}
 }

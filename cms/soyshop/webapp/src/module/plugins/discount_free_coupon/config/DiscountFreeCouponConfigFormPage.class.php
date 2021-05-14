@@ -189,14 +189,24 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 		));
 
 		foreach(array("name", "code", "name_or_code") as $t){
-			$this->addInput("coupon_" . $t, array(
+			$this->addInput("search_coupon_" . $t, array(
 				"name" => "Search[" . $t . "]",
 				"value" => (isset($cnds[$t])) ? $cnds[$t] : ""
 			));
 		}
 
+		//クーポンの種類
+		foreach(SOYShop_Coupon::getCouponTypeList() as $idx => $label){
+			$this->addCheckBox("search_coupon_type_" . $idx, array(
+				"name" => "Search[coupon_type][]",
+				"value" => $idx,
+				"selected" => (isset($cnds["coupon_type"]) && is_numeric(array_search($idx, $cnds["coupon_type"]))),
+				"label" => $label
+			));
+		}
+
 		//期限切れ
-		$this->addCheckBox("expired", array(
+		$this->addCheckBox("search_expired", array(
 			"name" => "Search[expired]",
 			"value" => 1,
 			"selected" => (isset($cnds["expired"]) && $cnds["expired"] == 1),
