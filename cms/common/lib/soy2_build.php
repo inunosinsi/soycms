@@ -9114,6 +9114,10 @@ function soy2_resizeimage($filepath,$savepath,$width = null,$height = null){
 }
 function soy2_image_resizeimage_gd($filepath,$savepath,$width = null,$height = null){
 	$info = pathinfo($filepath); //php version is 5.2.0 use pathinfo($filepath,PATHINFO_EXTENSION);
+	if(!isset($info["extension"])) {
+		trigger_error("Failed [Type is empty] " . __FILE__ . ":" . __LINE__,E_USER_ERROR);
+		return -1;
+	}
 	$type = strtolower($info["extension"]);
 	if($type == "jpg")$type = "jpeg";
 	$from = "imagecreatefrom" . $type;

@@ -29,7 +29,7 @@ class LabelCustomFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co/article/3532",
 			"mail" => "info@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.6"
 		));
 
 		//プラグイン アクティブ
@@ -339,7 +339,7 @@ class LabelCustomFieldPlugin{
 	 * ラベル削除時
 	 * @param array $args ラベルID
 	 */
-	function onEntryRemove($args){
+	function onLabelRemove($args){
 		$dao = $this->dao;
 		foreach($args as $labelId){
 			try{
