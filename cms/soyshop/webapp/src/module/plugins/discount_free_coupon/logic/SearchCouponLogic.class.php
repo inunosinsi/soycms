@@ -49,8 +49,33 @@ class SearchCouponLogic extends SOY2LogicBase {
 	function setCondition($cnds){
 		if(!is_array($cnds)) $cnds = array();
 
+		if(count($cnds)){
+			foreach($cnds as $key => $value){
+				if(is_string($value)) $value = trim($value);
+				if(is_string($value) && !strlen($value)) continue;
+				if(is_array($value) && !count($value)) continue;
+				switch($key){
+					case "name_or_code":
+						$this->where[$key] = "(name LIKE :name OR coupon_code LIKE :code)";
+						$this->binds[":name"] = "%" . $value . "%";
+						$this->binds[":code"] = "%" . $value . "%";
+						break;
+					case "expired":	//期限切れクーポンを表示する
+						$this->where["time_limit_end"] = "time_limit_end > 0";
+						break;
+					default:
+						if(is_string($value)){	//文字列として検索
+							$this->where[$key] = $key . " = :" . $key;
+							$this->binds[":" . $key] = "%" . $value . "%";
+						}else if(is_array($value)){	//配列として検索
+							$this->where[$key] = $key . " IN (\"" . implode("\"", $value) . "\")";
+						}
+				}
+			}
+		}
+
 		//期限の設定	@ToDoいずれは検索できるようにしたい
-		$this->where["time_limit_end"] = "time_limit_end > " . time();
+		if(!isset($this->where["time_limit_end"])) $this->where["time_limit_end"] = "time_limit_end > " . time();
 
 		//削除フラグ
 		$this->where["is_delete"] = "is_delete != " . SOYShop_Coupon::DELETED;

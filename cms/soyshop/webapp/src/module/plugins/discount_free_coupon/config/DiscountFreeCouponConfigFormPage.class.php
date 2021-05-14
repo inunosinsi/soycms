@@ -149,6 +149,7 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 			"link" => SOY2PageController::createLink("Config.Detail?plugin=discount_free_coupon&category")
 		));
 
+		self::_buildSearchForm();
 		self::_buildList();
 
 		$this->addForm("form", array(
@@ -174,11 +175,53 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 		));
 	}
 
+	private function _buildSearchForm(){
+		$cnds = self::_getSearchCondition();
+
+		$this->addModel("search_form_area", array(
+			"attr:id" => "search_form",
+			"style" => (count($cnds)) ? "display:block;" : "display:none;"
+		));
+
+		$this->addForm("search_form", array(
+			"method" => "get",
+			"action" => SOY2PageController::createLink("Config.Detail")
+		));
+
+		foreach(array("name", "code", "name_or_code") as $t){
+			$this->addInput("coupon_" . $t, array(
+				"name" => "Search[" . $t . "]",
+				"value" => (isset($cnds[$t])) ? $cnds[$t] : ""
+			));
+		}
+
+		//期限切れ
+		$this->addCheckBox("expired", array(
+			"name" => "Search[expired]",
+			"value" => 1,
+			"selected" => (isset($cnds["expired"]) && $cnds["expired"] == 1),
+			"label" => "期限切れのクーポンを表示する"
+		));
+
+		$pluginId = (isset($_GET["plugin"])) ? $_GET["plugin"] : "";
+		$this->addInput("plugin_id", array(
+			"name" => "plugin",
+			"value" => $pluginId
+		));
+
+		$this->addLink("reset_link", array(
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=" . $pluginId)
+		));
+
+	}
+
 	private function _buildList(){
 		$searchLogic = SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.SearchCouponLogic");
-		$searchLogic->setCondition(array());
+		$searchLogic->setCondition(self::_getSearchCondition());
 		$coupons = $searchLogic->search();
-		DisplayPlugin::toggle("has_coupon", $searchLogic->getTotal() > 0);
+		$total = $searchLogic->getTotal();
+		DisplayPlugin::toggle("coupon", $total > 0);
+		DisplayPlugin::toggle("coupon_list", $total > 0);
 
 		/** CSVフォーム **/
 
@@ -202,6 +245,11 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 			"list" => $coupons,
 			"categoryList" => $this->categoryLogic->getCategoryList()
 		));
+	}
+
+	private function _getSearchCondition(){
+		// @ToDo いずれはセッションで管理
+		return (isset($_GET["Search"]) && is_array($_GET["Search"])) ? $_GET["Search"] : array();
 	}
 
 	private function _getCouponById($id){

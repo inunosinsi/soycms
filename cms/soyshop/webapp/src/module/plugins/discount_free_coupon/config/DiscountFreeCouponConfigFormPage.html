@@ -9,13 +9,13 @@
 </div>
 <br />
 
-<!-- soy:display="has_coupon" -->
 <section class="edit_form">
-	<h4>CSV出力</h4>
+	<!-- soy:display="coupon" -->
+	<div class="alert alert-info">CSV出力</div>
 	<form soy:id="csv_form" id="export_form">
 		<div class="form-group">
 			<label>使用履歴のログ</label><br>
-			<div class="alert alert-info">クーポンの使用履歴を出力します。日付を指定して期間ごとの履歴を出力できます。</div>
+			<div class="alert alert-warning">クーポンの使用履歴を出力します。日付を指定して期間ごとの履歴を出力できます。</div>
 			<input type="text" name="csv_date_start" class="date_picker_start" value="">&nbsp;～&nbsp;
 			<input type="text" name="csv_date_end" class="date_picker_end" value=""><br><br>
 			<label><input type="radio" name="log[charset]" value="UTF-8" checked="checked">UTF-8</label>
@@ -25,14 +25,43 @@
 
 		<div class="form-group">
 			<label>クーポン</label>
-			<div class="alert alert-info">登録されているクーポンを出力します。</div>
+			<div class="alert alert-warning">登録されているクーポンを出力します。</div>
 			<label><input type="radio" name="coupon[charset]" value="UTF-8" checked="checked">UTF-8</label>
 			<label><input type="radio" name="coupon[charset]" value="Shift-JIS">Shift-JIS</label>&nbsp;
 			<input type="submit" name="csv[coupon]" class="btn btn-primary" value="CSV出力">
 		</div>
 	</form>
 
-	<h3>登録済みクーポン</h3>
+	<br><br>
+
+	<!-- /soy:display="coupon" -->
+
+	<div class="alert alert-info">登録済みクーポン</div>
+
+	<a href="javascript:void(0);" class="btn btn-link" onclick="$('#search_form').toggle();">検索フォームを表示する</a>
+	<div soy:id="search_form_area">
+		<form soy:id="search_form">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<caption>検索</caption>
+					<tr>
+						<th class="col-lg-1">クーポン名</th>
+						<td class="col-lg-5"><input type="text" class="form-control" soy:id="coupon_name_or_code" placeholder="クーポン名とクーポンコードが検索対象です"></td>
+						<th class="col-lg-1">使用期限</th>
+						<td class="col-lg-5"><input type="checkbox" soy:id="expired"></td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="text-center">
+				<input type="hidden" name="plugin" soy:id="plugin_id">
+				<input type="submit" class="btn btn-default btn-lg" name="search" value="検索">&nbsp;
+				<a soy:id="reset_link" class="btn btn-warning btn-lg">リセット</a>
+			</div>
+		</form>
+	</div>
+
+	<!-- soy:display="coupon_list" -->
 	<div class="table-responsive">
 		<table class="table table-striped">
 			<caption>クーポン一覧</caption>
@@ -129,13 +158,14 @@
 			</tbody>
 		</table>
 	</div>
+	<!-- /soy:display="coupon_list" -->
 </section>
-<!-- /soy:display="has_coupon" -->
 
-<br>
+<br><br>
 
 <section id="register">
-	<h4>クーポンの新規登録</h4>
+	<div class="alert alert-info">クーポンの新規登録</div>
+
 	<form soy:id="form">
 		<span id="coupon_detail"></span>
 		<!-- soy:display="has_category_list" -->
@@ -212,10 +242,10 @@
 	</form>
 </section>
 
-<br>
+<br><br>
 
 <section>
-	<h4>クーポンの設定</h4>
+	<div class="alert alert-info">クーポンの設定</div>
 	<form soy:id="config_form">
 		<span id="coupon_config"></span>
 
