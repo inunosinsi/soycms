@@ -96,6 +96,7 @@ class CustomFieldPluginAdvanced{
 		if(count($fields)){
 			//設定内に記事フィールドはあるか？
 			$isEntryField = CustomfieldAdvancedUtil::checkIsEntryField($customFields);
+			$isLabelField = CustomfieldAdvancedUtil::checkIsLabelField($customFields);	// @ToDo メモリをたくさん食うからブログ一覧やラベルブロックでは禁止にしたい
 
 			foreach($fields as $field){
 				//設定を取得
@@ -210,6 +211,22 @@ class CustomFieldPluginAdvanced{
 	 						"soy2prefix"=>"cms"
 	 					));
 						/** 記事フィールドの隠しモードここまで **/
+					}
+
+					//ラベルフィールド
+					if($isLabelField){	//メモリをたくさん食うので別の方法で実装するが、一応コードは残しておく
+						// $entries = array();
+						// $selectedLabelId = ($master->getType() == "label" && is_numeric($field->getValue())) ? (int)$field->getValue() : null;
+						// if(isset($selectedLabelId)){
+						// 	// @ToDo 一覧の取得条件
+						//
+						// }
+
+						//if(!class_exists("EntryListComponent")) SOY2::import("site_include.blog.component.EntryListComponent");
+						// $htmlObj->createAdd($field->getId() . "_entry_list", "EntryListComponent", array(
+						// 	"soy2prefix" => "cms",
+						// 	"list" => $entries
+						// ));
 					}
 
 					//属性に出力

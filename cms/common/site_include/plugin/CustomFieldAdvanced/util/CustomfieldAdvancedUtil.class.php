@@ -22,4 +22,20 @@ class CustomfieldAdvancedUtil {
 		}
 		return $isEntry;
 	}
+
+	public static function checkIsLabelField($fields){
+		static $isLabel;
+		if(is_null($isLabel)){
+			$isLabel = false;
+			if(is_array($fields) && count($fields)){
+				foreach($fields as $field){
+					if($field->getType() == "label"){
+						$isLabel = true;
+						break;
+					}
+				}
+			}
+		}
+		return $isLabel;
+	}
 }

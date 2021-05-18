@@ -12,6 +12,7 @@ class CustomField{
 		"richtext" => "リッチテキスト",
 		"link" => "リンク",
 		"entry" => "記事",
+		//"label" => "ラベル",
 		"pair" => "ペア"
 	);
 
@@ -321,6 +322,26 @@ class CustomField{
 						}
 					}
 					$html[] = "</span>";
+				}
+				$body = implode("\n", $html);
+				break;
+			case "label":	//出力する記事を指定 カスタムフィールドアドバンスドのみ使用可
+				$selectedLabelId = (isset($fieldValue) && is_numeric($fieldValue)) ? (int)$fieldValue : null;
+
+				$html = array();
+				//ラベル一覧
+				$labels = self::_getLabels();
+				if(count($labels)){
+					$html[] = "\t<select name=\"" . $h_formName . "\">";
+					$html[] = "\t\t<option></option>";
+					foreach($labels as $labelId => $caption){
+						if($selectedLabelId == $labelId){
+							$html[] = "\t\t<option value=\"" . $labelId . "\" selected>" . $caption . "</option>";
+						}else{
+							$html[] = "\t\t<option value=\"" . $labelId . "\">" . $caption . "</option>";
+						}
+					}
+					$html[] = "\t</select>";
 				}
 				$body = implode("\n", $html);
 				break;

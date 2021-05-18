@@ -13,6 +13,7 @@ class CustomField{
 		"richtext" => "リッチテキスト",
 		"link" => "リンク",
 		"entry" => "記事",
+		//"label" => "ラベル",
 		"pair" => "ペア",
 	);
 

@@ -22,7 +22,7 @@
 		<select name="type" style="width:100px;">
 		<?php
 		foreach(CustomField::$TYPES as $key => $value){
-			if($key === "entry" || $key === "pair") continue;
+			if($key === "entry" || $key === "label" || $key === "pair") continue;
 			echo "<option value=\"$key\">$value</option>";
 		}
 		?>
