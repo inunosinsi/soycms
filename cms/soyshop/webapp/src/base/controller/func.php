@@ -47,7 +47,7 @@ function get_uri_and_args(){
 		 * http://domain.com/_homeへのアクセスはトップページへリダイレクトする
 		 */
 		if(SOYSHOP_TOP_PAGE_MARKER == $uri){
-			$args = implode($args,"/");
+			$args = implode("/", $args);
 			SOY2PageController::redirect(soyshop_get_site_url(true) . $args);
 		}
 

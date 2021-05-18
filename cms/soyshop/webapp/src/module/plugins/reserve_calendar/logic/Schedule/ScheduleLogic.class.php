@@ -17,20 +17,29 @@ class ScheduleLogic extends SOY2LogicBase{
     function getScheduleList($itemId, $year, $month){
         $list = self::dao()->getScheduleList($itemId, $year, $month);
 
-        //スケジュールの自動登録 今日より後の日付でないと動作しない
-        if(!count($list) && mktime(0, 0, 0, $month, 1, $year) > time()){
-            SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
-            $config = ReserveCalendarUtil::getAutoConfig($itemId);
-            if(isset($config["register"]) && (int)$config["register"] === 1 && (int)$config["seat"] > 0){
-                self::autoInsert($itemId, $year, $month, (int)$config["seat"]);
-                $list = self::dao()->getScheduleList($itemId, $year, $month);
-            }
+		$nextY = $year;
+		$nextM = $month + 1;
+		if($nextM > 12) {
+			$nextM = 1;
+			$nextY += 1;
+		}
+
+        //スケジュールの自動登録 指定の年月でスケジュールの登録がない場合は自動登録
+        if(!count($list) && (mktime(0, 0, 0, $nextM, 1, $nextY) - 1) > time()){
+			self::_autoInsert($itemId, $year, $month);
+            $list = self::dao()->getScheduleList($itemId, $year, $month);
         }
 
         return $list;
 	}
 
-    private function autoInsert($itemId, $year, $month, $seat){
+    private function _autoInsert($itemId, $year, $month){
+		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+		$cnf = ReserveCalendarUtil::getAutoConfig($itemId);
+		if(!isset($cnf["register"]) || (int)$cnf["register"] != 1 && (int)$cnf["seat"] === 0) return true;
+
+		$seat = (int)$cnf["seat"];
+
         //今月の日数を取得
         $logic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.HolidayLogic", array("itemId" => $itemId));
         $d = $logic->getDayCount($year, $month);
@@ -40,11 +49,8 @@ class ScheduleLogic extends SOY2LogicBase{
         $labelList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($itemId);
 
         for ($i = 1; $i <= $d; $i++) {
-
-            //営業日のみに絞る
-            if($logic->isBD(mktime(0, 0, 0, $month, $i, $year))){
-
-                foreach($labelList as $labelId => $label){
+            if($logic->isBD(mktime(0, 0, 0, $month, $i, $year))){ //営業日のみに絞る
+				foreach($labelList as $labelId => $label){
                     $obj = new SOYShopReserveCalendar_Schedule();
                     $obj->setItemId($itemId);
                     $obj->setLabelId($labelId);
@@ -56,7 +62,7 @@ class ScheduleLogic extends SOY2LogicBase{
                     try{
                         $dao->insert($obj);
                     }catch(Exception $e){
-                        //
+						//
                     }
                 }
             }
@@ -67,6 +73,26 @@ class ScheduleLogic extends SOY2LogicBase{
 
 	function findLatestScheduleDate($year, $month){
 		return self::dao()->findLatestScheduleDate($year, $month);
+	}
+
+	//指定の日から○日分の予定を取得する
+	function getScheduleListFromDays($itemId, $now=null, $days=30){
+		if(is_null($now)) $now = time();
+		$now = soyshop_shape_timestamp($now);	//整形
+		$list = self::dao()->getScheduleListFromDays($itemId, $now, $days);
+
+		//自動登録
+		if(!count($list)){
+			$month = date("n", $now);
+			self::_autoInsert($itemId, date("Y", $now), $month);
+
+			$future = strtotime("+" . $days . "day", $now);
+			if(date("n", $future) != $month){
+				self::_autoInsert($itemId, date("Y", $future), date("n", $future));
+			}
+			$list = self::dao()->getScheduleListFromDays($itemId, $now, $days);
+		}
+		return $list;
 	}
 
     private function dao(){

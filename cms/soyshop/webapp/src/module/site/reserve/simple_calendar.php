@@ -70,4 +70,3 @@ function soyshop_simple_calendar($html, $page){
 		ob_end_clean();
 	}
 }
-?>

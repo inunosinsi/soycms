@@ -1,49 +1,54 @@
-<dt>送料</dt>
-<dd>
-    <div>
-        <input type="checkbox" id="toggle_checkbox" onclick="toggle_check(this);return true;" />
-        <label for="toggle_checkbox">一括設定</label>
-        <input class="form-control" style="text-align:right;width:30%;" id="toggle_price" value="" />
-        <button type="button" onclick="toggle_all();">設定する</button>&nbsp;
-        <button type="button" onclick="return_default_price();">標準設定に戻す</button>
-    </div>
+<div class="alert alert-info">送料</div>
+<div class="form-group">
+	<div class="form-inline">
+	    <input type="checkbox" id="toggle_checkbox" onclick="toggle_check(this);return true;" />
+	    <label for="toggle_checkbox">一括設定</label>
+	    <input class="form-control" style="text-align:right;width:30%;" id="toggle_price" value="" />
+	    <button type="button" onclick="toggle_all();" class="btn btn-primary">設定する</button>&nbsp;
+	    <button type="button" onclick="return_default_price();" class="btn btn-warning">標準設定に戻す</button>
+	</div>
+</div>
 
 
+<div class="table-responsive">
+	<table class="table table-striped" style="width:45%;float:left;">
+	    <tr>
+	        <th style="width:5em;width:30%;">県名</th>
+	        <th style="width:5em;width:30%;">送料</th>
+	    </tr>
+	    <!--  soy:id="prices" -->
+	    <tr>
+	    <th >
+	        <input type="checkbox" class="price_input_check" soy:id="area_check" />
+	    </th>
+	    <td>
+	        <input class="alR text" style="width: 100px;" type="number" soy:id="price" /> 円
+	    </td>
+	    </tr>
 
-<table class="table table-striped" style="width:45%;float:left;">
-    <tr>
-        <th style="width:5em;width:30%;">県名</th>
-        <th style="width:5em;width:30%;">送料</th>
-    </tr>
-    <!--  soy:id="prices" -->
-    <tr>
-    <th >
-        <input type="checkbox" class="price_input_check" soy:id="area_check" />
-    </th>
-    <td>
-        <input class="alR text" style="width: 100px;" type="text" soy:id="price" /> 円
-    </td>
-    </tr>
+	<!--  soy:id="second_table" -->
+	</table>
+	<table class="table table-striped" style="width:45%;">
+	    <tr>
+	        <th style="width:5em;width:30%;">県名</th>
+	        <th style="width:5em;width:30%;">送料</th>
+	    </tr>
+	<!--  /soy:id="second_table" -->
 
-<!--  soy:id="second_table" -->
-</table>
-<table class="table table-striped" style="width:45%;">
-    <tr>
-        <th style="width:5em;width:30%;">県名</th>
-        <th style="width:5em;width:30%;">送料</th>
-    </tr>
-<!--  /soy:id="second_table" -->
+	    <!--  /soy:id="prices" -->
 
-    <!--  /soy:id="prices" -->
+	</table>
+	<!-- soy:id="default_prices" -->
+	<input type="hidden" soy:id="price">
+	<!-- /soy:id="default_prices" -->
+</div>
 
-</table>
-<!-- soy:id="default_prices" -->
-<input type="hidden" soy:id="price">
-<!-- /soy:id="default_prices" -->
+<br>
 
-</dd>
-<dt style="clear:both;">メールアドレス(注文時にこの商品が含まれている場合に受注メールを受信するメールアドレス)</dt>
-<dd><input type="email" class="form-control" soy:id="delivery_email"></dd>
+<div class="form-group">
+	<label>メールアドレス(注文時にこの商品が含まれている場合に受注メールを受信するメールアドレス)</label><br>
+	<input type="email" class="form-control" soy:id="delivery_email">
+</div>
 
 <script soy:id="toggle_js"></script>
 <script soy:id="default_js"></script>

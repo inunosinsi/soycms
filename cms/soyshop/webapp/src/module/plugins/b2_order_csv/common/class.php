@@ -104,7 +104,7 @@ class B2OutputCSV{
 		}
 		$csv[] = $customerNumber;												//お客様管理番号
 
-		$csv[] = B2OrderCsvUtil::getInvoiceType();								//送り状種類
+		$csv[] = B2OrderCsvUtil::getInvoiceType($order->getId());								//送り状種類
 		$csv[] = "";															//クール区分
 		$csv[] = $slipNumber;													//伝票番号
 

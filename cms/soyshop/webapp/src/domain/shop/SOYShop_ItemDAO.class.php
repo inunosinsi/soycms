@@ -127,6 +127,14 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 	 */
 	abstract function newItems();
 
+	/**
+	 * @return object
+	 * @query item_is_open = 1 AND is_disabled != 1 AND open_period_start < :now AND open_period_end > :now
+	 * @order create_date DESC
+	 * @limit 1
+	 */
+	abstract function getLatestRegisteredItem($now);
+
    	/**
 	 * @trigger onInsert
 	 * @return id

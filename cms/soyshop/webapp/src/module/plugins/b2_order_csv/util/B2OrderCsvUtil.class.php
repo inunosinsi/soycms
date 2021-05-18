@@ -67,7 +67,7 @@ class B2OrderCsvUtil {
 		return false;
 	}
 
-	public static function getInvoiceType(){
+	public static function getInvoiceType($orderId){
 
 		//隠し機能 $_POST["invoice"]がある場合はそれを利用する
 		if(isset($_POST["invoice"]) && is_numeric($_POST["invoice"])) return (int)$_POST["invoice"];

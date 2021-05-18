@@ -5,10 +5,10 @@ class ReserveCalendarInstall extends SOYShopPluginInstallerBase{
 		//初期化時のみテーブルを作成する
 		$dao = new SOY2DAO();
 
-		$values = preg_split('/CREATE TABLE/', self::_sqls(), -1, PREG_SPLIT_NO_EMPTY) ;
-		foreach($values as $value){
+		$sqls = preg_split('/CREATE TABLE/', self::_sqls(), -1, PREG_SPLIT_NO_EMPTY) ;
+		foreach($sqls as $sql){
 			try{
-				$dao->executeQuery("create table " . trim($value));
+				$dao->executeQuery("create table " . trim($sql));
 			}catch(Exception $e){
 				//
 			}

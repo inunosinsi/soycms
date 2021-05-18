@@ -308,4 +308,12 @@ class ItemLogic extends SOY2LogicBase{
 
 		return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getItemNameListByIds($ids);
 	}
+
+	function getLatestRegisteredItem(){
+		try{
+			return self::getItemDAO()->getLatestRegisteredItem(time());
+		}catch(Exception $e){
+			return new SOYShop_Item();
+		}
+	}
 }

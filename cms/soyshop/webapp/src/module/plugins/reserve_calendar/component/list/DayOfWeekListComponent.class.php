@@ -11,6 +11,7 @@ class DayOfWeekListComponent extends HTMLList{
 
 
 	function populateItem($entity, $key, $index){
+		$entity = (is_numeric($entity)) ? (int)$entity : 0;
 
 		$selected = false;
 		if(isset($this->config[$entity]) && !is_null($this->config[$entity])){
