@@ -15,10 +15,11 @@ class UpdateTemplateAction extends SOY2Action{
 
     function execute($request,$form,$response) {
     	$template = $form->template;
-		
+
 		$dao = SOY2DAOFactory::create("cms.BlogPageDAO");
     	$page = $dao->getById($this->id);
-    	
+		$old = $page;
+
     	$templateArray = $page->_getTemplate();
     	switch($this->mode){
     		case "entry":
@@ -34,20 +35,21 @@ class UpdateTemplateAction extends SOY2Action{
     		default:
     			$templateArray[BlogPage::TEMPLATE_ARCHIVE] = $template;
     	}
-		
+
 		$page->setTemplate(serialize($templateArray));
 		$dao->update($page);
-		
+
+		//CMS:PLUGIN callEventFunction
+		CMSPlugin::callEventFunc('onBlogPageUpdate', array("new_page" => $page, "old_page" => $old));
+
 		return SOY2Action::SUCCESS;
     }
 }
 
 class UpdateTemplateActionForm extends SOY2ActionForm{
 	var $template;
-	
+
 	function setTemplate($template){
 		$this->template = $template;
 	}
-
 }
-?>

@@ -69,6 +69,7 @@ class CMSPlugin {
 		"onSubmitTrackback"=>array(),	//*トラックバックを受信したとき		array(trackback)
 		"afterSubmitTrackback"=>array(),//*トラックバックを挿入した後		array(trackback)
 		"onBlogSetupWYSIWYG"=>array(),	//ブログページ詳細でWYSIWYGエディタをセットアップしている時
+		"onBlogPageUpdate"=>array(),		//ページが更新される直前			array(new_page,old_page)
 
 		//ブロック関連
 		"onBlockLoad"=>array(),			//*ブロックが呼び出される直前(blockId)
