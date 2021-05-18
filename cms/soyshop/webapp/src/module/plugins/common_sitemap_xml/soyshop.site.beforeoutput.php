@@ -223,6 +223,12 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$uriConcatedAlias = ltrim($uri . $alias, "/");
 		if(is_numeric(strpos($uriConcatedAlias, "//"))) $uriConcatedAlias = str_replace("//", "/", $uriConcatedAlias);
 
+		//末尾のスラッシュを外す カノニカルURLの設定と合わせる
+		$uriConcatedAlias = rtrim($uriConcatedAlias, "/");
+		if(self::_isTrailingSlash()) {
+			preg_match('/.+\.(html|htm|php?)/i', $uriConcatedAlias, $tmp);
+			if(!count($tmp)) $uriConcatedAlias .= "/";
+		}
 
 		$html = array();
 		$html[] = "	<url>";
@@ -239,6 +245,13 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$html[] = "		<lastmod>" . self::_getDate($updateDate) . "</lastmod>";
 		$html[] = "	</url>";
 		return implode("\n", $html);
+	}
+
+	private function _isTrailingSlash(){
+		static $is;
+		if(is_bool($is)) return $is;
+		$is = (SOYShop_ShopConfig::load()->getIsTrailingSlash() == 1);
+		return $is;
 	}
 
 	private function _isMultiLanguagePage($uri, $lang){

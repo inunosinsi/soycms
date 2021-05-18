@@ -35,7 +35,7 @@ class SitemapPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.2"
+			"version"=>"1.4"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -190,7 +190,8 @@ class SitemapPlugin{
 
 										foreach($res as $v){
 											if(isset($v["alias"])){
-												$xml[] =  self::buildColumn($url . $v["alias"], 0.5, $page->getUdate());
+												$alias = rawurlencode($v["alias"]);
+												$xml[] =  self::buildColumn($url . $alias, 0.5, $page->getUdate());
 											}
 										}
 									}
@@ -220,7 +221,8 @@ class SitemapPlugin{
 									if(count($res)){
 										foreach($res as $v){
 											if(isset($v["alias"])){
-												$xml[] =  self::buildColumn($url . $v["alias"], 0.8, $v["cdate"]);
+												$alias = rawurlencode($v["alias"]);
+												$xml[] =  self::buildColumn($url . $alias, 0.8, $v["cdate"]);
 											}
 										}
 									}
@@ -304,6 +306,12 @@ class SitemapPlugin{
 
 	private function buildColumn($url, $priority = 0.5, $lastmod = 0){
 		if(is_null($lastmod)) $lastmod = time();
+		// カノニカルURLプラグインと合わせる
+		$url = rtrim($url, "/");
+		if(self::_isTrailingSlash()) {
+			preg_match('/.+\.(html|htm|php?)/i', $url, $tmp);
+			if(!count($tmp)) $url .= "/";
+		}
 		$cols = array();
 		$cols[] = "<url>";
 		$cols[] = "	<loc>" . $url . "</loc>";
@@ -312,6 +320,21 @@ class SitemapPlugin{
 		$cols[] = "</url>";
 
 		return implode("\n", $cols);
+	}
+
+	private function _isTrailingSlash(){
+		static $is;
+		if(is_bool($is)) return $is;
+
+		if(file_exists(_SITE_ROOT_ . "/.plugin/canonical_url.active")){
+			if(!class_exists("CanonicalUrlPlugin")) SOY2::import("site_include.plugin.canonical_url.canonical_url", ".php");
+			$cnf = soy2_unserialize(file_get_contents(_SITE_ROOT_ . "/.plugin/canonical_url.config"));
+			$is = ($cnf->getIsTrailingSlash() == 1);
+		}else{	//カノニカルプラグインが無効の場合は何もしない
+			$is = true;
+		}
+
+		return $is;
 	}
 
 	public static function register(){
