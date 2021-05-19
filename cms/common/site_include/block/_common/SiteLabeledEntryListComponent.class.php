@@ -4,6 +4,7 @@ class SiteLabeledEntryListComponent extends HTMLList{
 
 	var $isStickUrl;
 	var $articlePageUrl;
+	var $categoryPageUrl;
 	var $blogPageId;
 	private $dsn = false;
 
@@ -13,6 +14,10 @@ class SiteLabeledEntryListComponent extends HTMLList{
 
 	public function setArticlePageUrl($articlePageUrl){
 		$this->articlePageUrl = $articlePageUrl;
+	}
+
+	public function setCategoryPageUrl($categoryPageUrl){
+		$this->categoryPageUrl = $categoryPageUrl;
 	}
 
 	public function setBlogPageId($id){

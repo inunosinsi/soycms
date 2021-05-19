@@ -4,6 +4,7 @@ class BlockEntryListComponent extends HTMLList{
 
 	private $isStickUrl;
 	private $articlePageUrl;
+	private $categoryPageUrl;
 	private $blogPageId;
 	private $blockId;
 	private $editable = true;
@@ -16,6 +17,10 @@ class BlockEntryListComponent extends HTMLList{
 
 	public function setArticlePageUrl($articlePageUrl){
 		$this->articlePageUrl = $articlePageUrl;
+	}
+
+	public function setCategoryPageUrl($categoryPageUrl){
+		$this->categoryPageUrl = $categoryPageUrl;
 	}
 
 	public function setBlogPageId($id){
@@ -151,6 +156,16 @@ class BlockEntryListComponent extends HTMLList{
 			"text" => $entryUrl,
 			"soy2prefix" => "cms",
 		));
+
+		//カテゴリ
+		$this->createAdd("category_list","CategoryListComponent",array(
+			//"list" => $entry->getLabels(),
+			"list" => ($this->isStickUrl) ? array() : array(),
+			"categoryUrl" => $this->categoryPageUrl,
+			"entryCount" => array(),
+			"soy2prefix" => "cms"
+		));
+
 
 		CMSPlugin::callEventFunc('onEntryOutput',array(
 			"entryId" => $id,

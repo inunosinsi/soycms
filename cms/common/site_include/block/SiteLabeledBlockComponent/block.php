@@ -94,6 +94,8 @@ class SiteLabeledBlockComponent implements BlockComponent{
 				$array = $logic->getOpenEntryByLabelId($this->labelId);
 			}
 
+			$articlePageUrl = "";
+			$categoryPageUrl = "";
 			if($this->isStickUrl){
 				try{
 					$pageDao = SOY2DAOFactory::create("cms.BlogPageDAO");
@@ -114,6 +116,7 @@ class SiteLabeledBlockComponent implements BlockComponent{
 					}
 
 					$articlePageUrl = $siteUrl . $blogPage->getEntryPageURL();
+					$categoryPageUrl = $siteUrl . $blogPage->getCategoryPageURL();
 
 				}catch(Exception $e){
 					$this->isStickUrl = false;
@@ -126,10 +129,12 @@ class SiteLabeledBlockComponent implements BlockComponent{
 		SOY2DAOConfig::Dsn($oldDsn);
 
 		SOY2::import("site_include.block._common.SiteLabeledEntryListComponent");
+		SOY2::import("site_include.blog.component.CategoryListComponent");
 		return SOY2HTMLFactory::createInstance("SiteLabeledEntryListComponent",array(
 			"list" => $array,
 			"isStickUrl" => $this->isStickUrl,
 			"articlePageUrl" => $articlePageUrl,
+			"categoryPageUrl" => $categoryPageUrl,
 			"blogPageId"=>$this->blogPageId,
 			"soy2prefix"=>"block",
 			"dsn" => $siteDsn

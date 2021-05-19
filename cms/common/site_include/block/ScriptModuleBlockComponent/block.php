@@ -81,6 +81,8 @@ class ScriptModuleBlockComponent implements BlockComponent{
 				}
 			}
 
+			$articlePageUrl = "";
+			$categoryPageUrl = "";
 			if($this->isStickUrl){
 				try{
 					$pageDao = SOY2DAOFactory::create("cms.BlogPageDAO");
@@ -101,6 +103,7 @@ class ScriptModuleBlockComponent implements BlockComponent{
 					}
 
 					$articlePageUrl = $siteUrl . $blogPage->getEntryPageURL();
+					$categoryPageUrl = $siteUrl . $blogPage->getCategoryPageURL();
 
 				}catch(Exception $e){
 					$this->isStickUrl = false;
@@ -116,7 +119,8 @@ class ScriptModuleBlockComponent implements BlockComponent{
 		return SOY2HTMLFactory::createInstance("BlockEntryListComponent",array(
 			"list" => $array,
 			"isStickUrl" => $this->isStickUrl,
-			"articlePageUrl" => (isset($articlePageUrl)) ? $articlePageUrl : null,
+			"articlePageUrl" => $articlePageUrl,
+			"categoryPageUrl" => $categoryPageUrl,
 			"blogPageId"=>$this->blogPageId,
 			"soy2prefix"=>"block",
 			"dsn" => (isset($siteDsn)) ? $siteDsn : null,
