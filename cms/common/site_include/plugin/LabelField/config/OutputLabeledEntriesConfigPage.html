@@ -1,0 +1,126 @@
+<h4>ラベルフィールド　<a class="btn btn-primary" href="javascript:void(0);" data-toggle="modal" data-target="#fieldModal">項目の追加</a></h4>
+
+<!-- soy:display="field_table" -->
+<div id="field_table">
+	<table class="list">
+		<thead>
+			<tr>
+				<td>ID</td>
+				<td>フィールド名</td>
+				<td>表示順</td>
+				<td>表示のさせ方</td>
+				<td>&nbsp;</td>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- soy:id="field_list" -->
+			<tr>
+				<form method="post">
+				<td soy:id="id">ID</td>
+				<td>
+					<span soy:id="label">説明</span>
+				</td>
+				<td class="text-center">
+					<input type="hidden" soy:id="field_id" />
+					<input type="submit" name="move_up" value="△" />
+					<input type="submit" name="move_down" value="▽" />
+				</td>
+				<td soy:id="display_form">表示のためのcms:id</td>
+				<td>
+					<a soy:id="toggle_config" class="btn btn-info">Detail</a>&nbsp;&nbsp;
+					<a soy:id="delete" class="btn btn-danger">Delete</a>
+					<input type="submit" soy:id="delete_submit" style="display:none;" />
+				</td>
+				</form>
+			</tr>
+			<tr soy:id="field_config" style="display:none;">
+				<td colspan="3"></td>
+				<td colspan="2">
+					<h4>高度な設定</h4>
+					<form method="post">
+						<!--div class="section">
+							<h5>ラベルとの関連付け<a href="javascript:void(0);" title="記事編集画面において特定のラベルが設定されている時のみ表示するようにできます。"><i class="fa fa-question-circle"></i></a></h5>
+							<div class="body">
+								<input type="radio" soy:id="editer_show"  /><a href="javascript:void(0);" title="どの記事でもカスタムフィールドの入力欄を表示します。"><i class="fa fa-question-circle"></i></a><br/>
+								<input type="radio" soy:id="editer_hide"  /><a href="javascript:void(0);" title="カスタムフィールドの入力欄を表示しません。他のサイトと同じ設定が必要なときに使うと不要な入力欄が表示されないため便利です。"><i class="fa fa-question-circle"></i></a><br/>
+								<input type="radio" soy:id="editer_label" /><a href="javascript:void(0);" title="特定のラベルが設定されている時のみカスタムフィールドの入力欄を表示します。"><i class="fa fa-question-circle"></i></a>
+								&nbsp;
+								<select soy:id="labels">
+									<option value="">----</option>
+								</select>
+							</div>
+						</div>
+
+
+						<div class="section">
+							<h5>フォームの説明<a href="javascript:void(0);" title="記事投稿画面のフォームの上にフィールドの説明文を表示します。"><i class="fa fa-question-circle"></i></a></h5>
+							<div class="body">
+								<input type="text" class="text" soy:id="description" size="20" />
+							</div>
+						</div-->
+
+						<div class="text-right">
+							<input type="button" class="btn btn-primary" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />
+						</div>
+
+						<input type="submit" style="display:none;" soy:id="update_advance_submit" />
+					</form>
+				</td>
+			</tr>
+			<!-- /soy:id="field_list" -->
+		</tbody>
+	</table>
+</div>
+<!-- /soy:display="field_table" -->
+
+<!-- soy:display="add_field" -->
+<div>
+	<div class="alert alert-warning">
+		ラベルフィールドは作成されていません。<br />
+		上のフォームより、ラベルフィールドを追加して下さい。
+	</div>
+</div>
+<!-- /soy:display="add_field" -->
+
+<div class="alert alert-info">使い方</div>
+<pre>&lt;!-- cms:module="labelfield.フィールドのID" --&gt;
+&lt;!-- l_block:id="entry_list" --&gt;
+l_block:id="entry_list"内では<a href="https://saitodev.co/soycms/tags/?t=block" target="_blank" rel="noopener">ラベルブロックと同じcms:id</a>が利用可です。
+&lt;!-- /l_block:id="entry_list" --&gt;
+&lt;!-- /cms:module="labelfield.フィールドのID" --&gt;</pre>
+<div class="alert alert-warning">
+	・ラベルフィールド用のcms:moduleはブログページの記事詳細ページのみ使用可です。<br>
+	・cms:moduleの記述はb_block:id="entry"の外側にしてください。
+</div>
+
+<!-- モーダル -->
+<div class="modal fade" id="fieldModal" tabindex="-1" role="dialog" aria-labelledby="fieldLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<form soy:id="create_form" id="create_form">
+					<div class="form-group">
+						<label for="id">ID</label>
+						<input id="custom_key" name="id" type="text" class="form-control" required="required" pattern="^[a-zA-Z0-9!-/:-@¥[-`{-~]*$">
+					</div>
+
+					<div class="form-group">
+						<label for="label">ラベル</label>
+						<input id="custom_label" name="label" type="text" class="form-control" required="required">
+					</div>
+
+					<div class="text-center">
+						<input type="submit" name="create" class="btn btn-primary btn-lg" value="追加">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.section h5{text-decoration:underline;}
+</style>

@@ -1,0 +1,13 @@
+<?php
+function soycms_##field_id##($html,$page){
+
+	$obj = $page->create("soycms_##field_id##", "HTMLTemplatePage", array(
+		"arguments" => array("soycms_##field_id##", $html)
+	));
+
+	if(!function_exists("soycms_labelfield_base")){
+		include(SOY2::RootDir() . "site_include/module/labelfield/labelfield_base.php");
+	}
+
+	soycms_labelfield_base($html, $page, "##field_id##");
+}
