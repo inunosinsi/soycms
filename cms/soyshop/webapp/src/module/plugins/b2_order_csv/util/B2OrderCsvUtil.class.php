@@ -72,6 +72,16 @@ class B2OrderCsvUtil {
 		//隠し機能 $_POST["invoice"]がある場合はそれを利用する
 		if(isset($_POST["invoice"]) && is_numeric($_POST["invoice"])) return (int)$_POST["invoice"];
 
+		//隠し機能　$_POST["Pattern"][金額]で指定する 例：<input type="hidden" name="Pattern[500]" value="8">
+		if(isset($_POST["Pattern"]) && is_array($_POST["Pattern"])){
+			$mods = soyshop_get_order_object($orderId)->getModuleList();
+			foreach($mods as $moduleId => $mod){
+				if(strpos($moduleId, "delivery_") != 0) continue;
+				$price = (int)$mod->getPrice();
+				if(isset($_POST["Pattern"][$price])) return $_POST["Pattern"][$price];
+			}
+		}
+
 		//送り状 代引き:2、それ以外:0、ネコポス:7	//代引きを最優先にする
 		if(self::_isDaibiki($orderId)) return 2;
 
