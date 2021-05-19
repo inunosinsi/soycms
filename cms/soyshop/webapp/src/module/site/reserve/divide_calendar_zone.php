@@ -49,7 +49,7 @@ class DivideCalendarZoneListComponent extends HTMLList{
 	protected function populateItem($entity, $schId){
 		$labelId = (isset($entity["label_id"]) && is_numeric($entity["label_id"])) ? (int)$entity["label_id"] : 0;
 		$this->addLink("sch_link", array(
-			"link" => null,
+			"link" => soyshop_get_cart_url(true) . "?a=add&schId=" . $schId,
 			"text" => (isset($this->labels[$labelId])) ? $this->labels[$labelId] : ""
 		));
 		//var_dump($this->labels);
