@@ -10,6 +10,8 @@ class DateColumn extends SOYInquiry_ColumnBase{
 
 	private $attribute;
 
+	private $labels = array("y" =>"----", "m" => "--", "d" => "--");
+
 	//HTML5のrequired属性を利用するか？
 	private $requiredProp = false;
 
@@ -44,7 +46,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 
 		$html = array();
 		$html[] = "<select name=\"data[".$this->getColumnId()."][year]\" ".implode(" ",$attributes)."" . $required . ">";
-		$html[] ="<option value=\"\">----</option>";
+		$html[] ="<option value=\"\">" . $this->labels["y"] . "</option>";
 
 		for($i = $startYear; $i <= $endYear; $i++){
 			if(isset($values["year"]) && $values["year"] == $i){
@@ -56,7 +58,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$html[] = "</select>";
 
 		$html[] = "<select name=\"data[".$this->getColumnId()."][month]\" ".implode(" ",$attributes)."" . $required . ">";
-		$html[] ="<option value=\"\">--</option>";
+		$html[] ="<option value=\"\">" . $this->labels["m"] . "</option>";
 		for($i = 1; $i <= 12; $i++){
 			if(isset($values["month"]) && $values["month"] == $i){
 				$html[] = "<option selected=\"selected\">" . sprintf("%0d",$i) . "</option>";
@@ -67,7 +69,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$html[] = "</select>";
 
 		$html[] = "<select name=\"data[".$this->getColumnId()."][day]\" ".implode(" ",$attributes)."" . $required . ">";
-		$html[] ="<option value=\"\">--</option>";
+		$html[] ="<option value=\"\">" . $this->labels["d"] . "</option>";
 		for($i = 1; $i <= 31; $i++){
 			if(isset($values["day"]) && $values["day"] == $i){
 				$html[] = "<option selected=\"selected\">" . sprintf("%0d",$i) . "</option>";
@@ -118,6 +120,11 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$html .= "から";
 		$html .= '<input type="text" name="Column[config][endYear]" value="'.$this->endYear.'" size="4" />まで<br>';
 
+		$html .= "空の値の表示設定:";
+		$html .= '年:<input type="text" name="Column[config][labels][y]" value="'.$this->labels["y"].'" size="3"> ';
+		$html .= '月:<input type="text" name="Column[config][labels][m]" value="'.$this->labels["m"].'" size="3"> ';
+		$html .= '日:<input type="text" name="Column[config][labels][d]" value="'.$this->labels["d"].'" size="3"><br>';
+
 		if(isset($hasToday)){
 			$html .= '<input type="checkbox" name="Column[config][hasToday]" value="1" checked="checked" />';
 		}else{
@@ -156,6 +163,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$this->endYear = (isset($config["endYear"]) && is_numeric($config["endYear"])) ? (int)$config["endYear"] : null;
 		$this->hasToday = isset($config["hasToday"]) ? 1 : null;
 		$this->attribute = (isset($config["attribute"])) ? str_replace("\"","&quot;",$config["attribute"]) : null;
+		$this->labels = (isset($config["labels"]) && is_array($config["labels"])) ? $config["labels"] : array("y" => "----", "m" => "--", "d" => "--");
 		$this->requiredProp = (isset($config["requiredProp"])) ? $config["requiredProp"] : null;
 	}
 
@@ -165,6 +173,7 @@ class DateColumn extends SOYInquiry_ColumnBase{
 		$config["endYear"] = $this->endYear;
 		$config["hasToday"] = $this->hasToday;
 		$config["attribute"] = $this->attribute;
+		$config["labels"] = $this->labels;
 		$config["requiredProp"] = $this->requiredProp;
 		return $config;
 	}
