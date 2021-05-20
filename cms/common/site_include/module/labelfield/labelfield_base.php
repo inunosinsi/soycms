@@ -10,8 +10,7 @@ function soycms_labelfield_base($html, $htmlObj, $fieldId=null){
 
 	//ブログ詳細ページのみ動作
 	if(strlen($fieldId) && get_class($htmlObj) == "CMSBlogPage" && $htmlObj->mode == "_entry_"){
-		$fieldId .= "_1";
-		preg_match('/(.*?)_\d*?/', $fieldId, $tmp);	//隠し機能：複数モジュールに対応
+		preg_match('/(.*)_\d{1,2}?/', $fieldId, $tmp);	//隠し機能：複数モジュールに対応
 		if(isset($tmp[1])) $fieldId = $tmp[1];
 
 		//entryIdを取得
