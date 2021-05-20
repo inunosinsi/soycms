@@ -67,8 +67,10 @@ class MultiLabelBlockComponent implements BlockComponent{
 
 		$array = array();
 		$urlMapping = array();
+		$blogIdMapping = array();
 		$blogTitleMapping = array();
 		$blogUrlMapping = array();
+		$blogCategoryUrlMapping = array();
 
 		try{
 			//DSNを切り替える、ついでにサイトのURLを取得
@@ -138,9 +140,10 @@ class MultiLabelBlockComponent implements BlockComponent{
 						$url = $siteUrl . $blogPage->getEntryPageURL();
 						$urlMapping[$entry->getId()] = $url;
 						$blogTitle = $blogPage->getTitle();
+						$blogIdMapping[$entry->getId()] = $blogId;
 						$blogTitleMapping[$entry->getId()] = $blogTitle;
-						$blogUrl = $siteUrl . $blogPage->getTopPageURL();
-						$blogUrlMapping[$entry->getId()] = $blogUrl;
+						$blogUrlMapping[$entry->getId()] = $siteUrl . $blogPage->getTopPageURL();
+						$blogCategoryUrlMapping[$entry->getId()] = $siteUrl . $blogPage->getCategoryPageURL();
 						continue;
 					}catch(Exception $e){
 
@@ -155,11 +158,14 @@ class MultiLabelBlockComponent implements BlockComponent{
 		}
 
 		SOY2::import("site_include.block._common.MultiEntryListComponent");
+		SOY2::import("site_include.blog.component.CategoryListComponent");
 		$inst = SOY2HTMLFactory::createInstance("MultiEntryListComponent",array(
 			"list" => $array,
 			"url" => $urlMapping,
+			"blogId" => $blogIdMapping,
 			"blogTitle" => $blogTitleMapping,
 			"blogUrl" => $blogUrlMapping,
+			"blogCategoryUrl" => $blogCategoryUrlMapping,
 			"soy2prefix"=>"block",
 			"dsn" => $dsn
 		));

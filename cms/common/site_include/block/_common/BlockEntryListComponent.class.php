@@ -159,8 +159,7 @@ class BlockEntryListComponent extends HTMLList{
 
 		//カテゴリ
 		$this->createAdd("category_list","CategoryListComponent",array(
-			//"list" => $entry->getLabels(),
-			"list" => ($this->isStickUrl) ? array() : array(),
+			"list" => ($this->isStickUrl && $id > 0) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($this->blogPageId, $id) : array(),
 			"categoryUrl" => $this->categoryPageUrl,
 			"entryCount" => array(),
 			"soy2prefix" => "cms"
@@ -173,5 +172,11 @@ class BlockEntryListComponent extends HTMLList{
 			"entry" => $entity,
 			"blockId" => $this->blockId
 		));
+	}
+
+	private function _labelLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
+		return $logic;
 	}
 }

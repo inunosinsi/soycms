@@ -19,14 +19,10 @@ class BlogPageDAO{
 	 * IDを指定して取得
 	 */
 	function getById($id){
-
-		$dao = $this->getPageDAO();
-		$obj = $dao->getById($id);
-
+		$obj = $this->getPageDAO()->getById($id);
 		if($obj->getPageType() != Page::PAGE_TYPE_BLOG){
 			throw new Exception("This Page is not Blog Page.");
 		}
-
 		return $this->cast($obj);
 	}
 

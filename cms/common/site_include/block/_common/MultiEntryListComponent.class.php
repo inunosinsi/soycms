@@ -3,13 +3,19 @@
 class MultiEntryListComponent extends HTMLList{
 
 	private $url = array();
+	private $blogId = array();
 	private $blogTitle = array();
 	private $blogUrl = array();
+	private $blogCategoryUrl = array();
 
 	private $dsn;
 
 	public function setUrl($url){
 		$this->url = $url;
+	}
+
+	public function setBlogId($blogId){
+		$this->blogId = $blogId;
 	}
 
 	public function setBlogTitle($blogTitle){
@@ -18,6 +24,10 @@ class MultiEntryListComponent extends HTMLList{
 
 	public function setBlogUrl($blogUrl){
 		$this->blogUrl = $blogUrl;
+	}
+
+	public function setBlogCategoryUrl($blogCategoryUrl){
+		$this->blogCategoryUrl = $blogCategoryUrl;
 	}
 
 	public function getStartTag(){
@@ -50,7 +60,9 @@ class MultiEntryListComponent extends HTMLList{
 		}
 
 		//blog title
+		$blogId = (isset($this->blogId[$id])) ? (int)$this->blogId[$id] : 0;
 		$blogUrl = (isset($this->blogUrl[$id])) ? $this->blogUrl[$id] : "";
+		$blogCategoryUrl = (isset($this->blogCategoryUrl[$id])) ? $this->blogCategoryUrl[$id] : "";
 		$blogTitle = (isset($this->blogTitle[$id])) ? $this->blogTitle[$id] : "";
 		$hBlogTitle = htmlspecialchars($blogTitle, ENT_QUOTES, "UTF-8");
 
@@ -147,7 +159,21 @@ class MultiEntryListComponent extends HTMLList{
 			"soy2prefix" => "cms",
 		));
 
+		//カテゴリ
+		$this->createAdd("category_list","CategoryListComponent",array(
+			"list" => (is_numeric($blogId) && $blogId > 0 && strlen($blogCategoryUrl)) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($blogId, $id) : array(),
+			"categoryUrl" => $blogCategoryUrl,
+			"entryCount" => array(),
+			"soy2prefix" => "cms"
+		));
+
 		CMSPlugin::callEventFunc('onEntryOutput', array("entryId" => $id, "SOY2HTMLObject" => $this, "entry" => $entity));
+	}
+
+	private function _labelLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
+		return $logic;
 	}
 
 

@@ -123,7 +123,21 @@ class SiteLabeledEntryListComponent extends HTMLList{
 			"soy2prefix"=>"cms",
 		));
 
+		//カテゴリ
+		$this->createAdd("category_list","CategoryListComponent",array(
+			"list" => ($this->isStickUrl && $id > 0) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($this->blogPageId, $id) : array(),
+			"categoryUrl" => $this->categoryPageUrl,
+			"entryCount" => array(),
+			"soy2prefix" => "cms"
+		));
+
 		CMSPlugin::callEventFunc('onEntryOutput',array("entryId"=>$id,"SOY2HTMLObject"=>$this,"entry"=>$entity));
+	}
+
+	private function _labelLogic(){
+		static $logic;
+		if(is_null($logic)) $logic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
+		return $logic;
 	}
 
 
