@@ -51,6 +51,15 @@ class SOYInquiryApplication{
 			))->init();
 		}
 
+		//DBの初期化に失敗することが多いので再度作成を試みる。エラーが出るFormとInquiryのページに限定
+		if((strpos($_SERVER["REQUEST_URI"], "/Inquiry") || strpos($_SERVER["REQUEST_URI"], "/Form"))){
+			if(is_bool(strpos($_SERVER["REQUEST_URI"], "/Detail/"))){
+				SOY2Logic::createInstance("logic.InitLogic", array(
+					"initCheckFile" => SOYINQUIRY_DB_FILE,
+				))->checkAndCreateTable();
+			}
+		}
+
 		//SOY2HTMLの設定
 		SOY2HTMLPlugin::addPlugin("page","PagePlugin");
 		SOY2HTMLPlugin::addPlugin("link","LinkPlugin");
