@@ -18,9 +18,9 @@ class LabelFieldPlugin {
 			"name" => "ラベルフィールド",
 			"description" => "カスタムフィールドアドバンスドで実現できなかったラベルフィールドをこのプラグインで実装した",
 			"author" => "齋藤毅",
-			"url" => "http://saitodev.co",
+			"url" => "https://saitodev.co/article/3886",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version" => "0.1"
+			"version" => "0.5"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -145,8 +145,15 @@ class LabelFieldPlugin {
 				$label = trim($cnf["label"]);
 
 				$selectedLabelId = (is_numeric($entryId)) ? OutputLabeledEntriesUtil::getSelectedLabelId($entryId, $postfix) : 0;
+				if(is_numeric($selectedLabelId) && $selectedLabelId > 0){
+					$displayCount = OutputLabeledEntriesUtil::getDisplayCount($entryId, $postfix);
+					$displaySort = OutputLabeledEntriesUtil::getDisplaySort($entryId, $postfix);
+				}else{
+					$displayCount = OutputLabeledEntriesUtil::DISPLAY_COUNT;
+					$displaySort = OutputLabeledEntriesUtil::SORT_ASC;
+				}
 
-				$html[] = '<div class="section custom_field">';
+				$html[] = '<div class="section custom_field form-inline">';
 				$html[] = "<label>" . $label . "(cms:module=\"labelfield." . $postfix . "\")</label><br>";
 				$html[] = "\t<select name=\"" . OutputLabeledEntriesUtil::FIELD_ID . "_" . $postfix . "\">";
 				$html[] = "\t\t<option></option>";
@@ -157,7 +164,17 @@ class LabelFieldPlugin {
 						$html[] = "\t\t<option value=\"" . $labelId . "\">" . $caption . "</option>";
 					}
 				}
-				$html[] = "\t</select>";
+				$html[] = "\t</select> ";
+				$html[] = "<input type=\"number\" class=\"form-control\" name=\"" . OutputLabeledEntriesUtil::FIELD_ID . "_" . $postfix . "_config[displayCount]\" style=\"width:70px;\" value=\"" . $displayCount . "\">件  ";
+				$html[] = "<select name=\"" . OutputLabeledEntriesUtil::FIELD_ID . "_" . $postfix . "_config[sort]\">";
+				foreach(OutputLabeledEntriesUtil::getSortTypes() as $key => $label){
+					if($key == $displaySort){
+						$html[] = "<option value=\"" . $key . "\" selected=\"selected\">" . $label . "</option>";
+					}else{
+						$html[] = "<option value=\"" . $key . "\">" . $label . "</option>";
+					}
+				}
+				$html[] = "</select>";
 				$html[] = '</div>';
 			}
 		}
@@ -176,11 +193,29 @@ class LabelFieldPlugin {
 				if(!isset($cnf["postfix"]) || !strlen($cnf["postfix"])) continue;
 				$fieldId = OutputLabeledEntriesUtil::FIELD_ID . "_" . $cnf["postfix"];
 				OutputLabeledEntriesUtil::save($entryId, $fieldId, $_POST[$fieldId]);
+
+				//フィールド毎の設定
+				$cnfFieldId = $fieldId . "_config";
+				$v = null;
+				if(isset($_POST[$cnfFieldId]) && is_array($_POST[$cnfFieldId]) && self::_checkIsValueOnArray($_POST[$cnfFieldId])){
+					$v = soy2_serialize($_POST[$cnfFieldId]);
+				}
+				OutputLabeledEntriesUtil::save($entryId, $cnfFieldId, $v);
 			}
 		}
 
-
 		return true;
+	}
+
+	private function _checkIsValueOnArray($arr){
+		if(!count($arr)) return false;
+
+		foreach($arr as $v){
+			$v = trim($v);
+			if(strlen($v)) return true;
+		}
+
+		return false;
 	}
 
 	/**

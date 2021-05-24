@@ -47,7 +47,7 @@ abstract class LabeledEntryDAO extends SOY2DAO{
 
 		if(is_numeric($limit)) $sql .= " LIMIT " . $limit;
 		if(is_numeric($offset)) $sql .= " OFFSET " . $offset;	/** @ToDo 作成日時順に並べて高速化 **/
-
+		
 		try{
 			$results = $this->executeQuery($sql);
 		}catch(Exception $e){

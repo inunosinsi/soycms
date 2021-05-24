@@ -17,13 +17,19 @@ function soycms_labelfield_base($html, $htmlObj, $fieldId=null){
 		$entryId = $htmlObj->entry->getId();
 
 		$selectedLabelId = null;
+		$displayCount = 0;
 		if(is_numeric($entryId)){
 			SOY2::import("site_include.plugin.LabelField.util.OutputLabeledEntriesUtil");
 			$selectedLabelId = OutputLabeledEntriesUtil::getSelectedLabelId($entryId, $fieldId);
+			if(is_numeric($selectedLabelId) && $selectedLabelId > 0) $displayCount = OutputLabeledEntriesUtil::getDisplayCount($entryId, $fieldId);
 		}
 
-		//取り急ぎラベルに紐付いた記事を5件
-		$entries = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("limit" => 5))->getByLabelIds(array($selectedLabelId));
+		if($displayCount > 0){
+			$sort = OutputLabeledEntriesUtil::getDisplaySort($entryId, $fieldId);	// 0:asc, 1:desc
+			$logic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic", array("limit" => $displayCount, "reverse" => ($sort == 1)));
+			$entries = $logic->getOpenEntryByLabelId($selectedLabelId);
+			unset($logic);
+		}
 	}
 
 	$obj->createAdd("entry_list", "BlockEntryListComponent", array(
