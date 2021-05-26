@@ -29,6 +29,12 @@ CREATE TABLE soyinquiry_inquiry (
   UNIQUE(form_id, create_date)
 )ENGINE = InnoDB;
 
+CREATE TABLE soyinquiry_entry_relation (
+	inquiry_id INTEGER NOT NULL,
+	entry_id INTEGER NOT NULL,
+	UNIQUE(inquiry_id, entry_id)
+)ENGINE = InnoDB;
+
 CREATE INDEX soyinquiry_tracking_number_idx on soyinquiry_inquiry(tracking_number);
 
 CREATE TABLE soyinquiry_serverconfig(

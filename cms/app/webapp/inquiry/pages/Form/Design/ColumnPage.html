@@ -1,3 +1,4 @@
+<link type="text/css" rel="stylesheet" href="/main/soycms/webapp/pages/files/vendor/bootstrap/css/bootstrap.min.css?1621996627">
 <style type="text/css">
 .column_box{
 	border:solid 1px black;
@@ -47,10 +48,10 @@ body{
 		<table>
 		<tr>
 			<th id="require_cell_title">必須</th>
-			<th id="item_name_title" style="width:10em;">項目名</th>
-			<th>名前</th>
-			<th style="width:10em;border-left:solid 1px #bbb;">SOY Mail連携</th>
-			<th style="width:10em;border-left:solid 1px #bbb;">SOY Shop連携</th>
+			<th id="item_name_title" class="text-center" style="width:10em;">項目名</th>
+			<th class="text-center">名前</th>
+			<th class="text-center" style="width:10em;border-left:solid 1px #bbb;">SOY Mail連携</th>
+			<th class="text-center" style="width:10em;border-left:solid 1px #bbb;">SOY Shop連携</th>
 		</tr>
 
 		</table>
@@ -66,7 +67,7 @@ body{
 					<input soy:id="not_require" type="hidden">
 					<input soy:id="require" type="checkbox">
 				</td>
-				<td style="width:10em;border-right:solid 1px #bbb;">
+				<td style="width:10em;border-right:solid 1px #bbb;padding-left:5px;">
 					<span soy:id="column_type">一行テキスト</span>
 				</td>
 				<td>
@@ -81,8 +82,8 @@ body{
 			</tr>
 			<tr>
 				<td class="configure" colspan="4">
-					<div soy:id="configure_wrapper">
-
+					<!-- soy:id="configure_wrapper" -->
+					<div style="padding:5px 10px;">
 						<div soy:id="configure" style="margin:8px 0;"></div>
 						<div style="margin:8px 0;" soy:id="is_tr_property">
 							trの属性:<input type="text" soy:id="tr_property" style="width: 90%;"><br>
@@ -94,9 +95,10 @@ body{
 						<span soy:id="replace_wrapper">
 							メールで引用:<input type="input" name="replace" value="#NAME#" soy:id="replace" style="margin-right:10px;margin-left:10px;" />
 						</span>
-						<input type="submit" name="update" value="保存" style="margin-right:50px;margin-left:50px;" />
-						<input type="submit" name="remove" value="削除" />
-					</div soy:id="configure_wrapper">
+						<input type="submit" name="update" class="btn btn-primary" value="保存" style="margin-right:50px;margin-left:50px;" />
+						<input type="submit" name="remove" class="btn btn-danger" value="削除" />
+					</div>
+					<!-- /soy:id="configure_wrapper" -->
 				</td>
 			</tr>
 		</table>

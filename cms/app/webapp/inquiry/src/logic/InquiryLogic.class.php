@@ -88,6 +88,20 @@ class InquiryLogic extends SOY2LogicBase{
     	$id = $inquiryDao->insert($inquiry);
     	$inquiry->setId($id);
 
+		// GETでentry_idがあれば、soyinquiry_entry_relationに登録しておく
+		if(isset($_GET["entry_id"]) && is_numeric($_GET["entry_id"])){
+			$relDao = SOY2DAOFactory::create("SOYInquiry_EntryRelationDAO");
+			$rel = new SOYInquiry_EntryRelation();
+			$rel->setInquiryId($id);
+			$rel->setEntryId($_GET["entry_id"]);
+
+			try{
+				$relDao->insert($rel);
+			}catch(Exception $e){
+				//
+			}
+		}
+
     	return $inquiry;
 
     }
