@@ -149,6 +149,11 @@ $(function(){
 			$("#toggle-side-menu i").removeClass("fa-angle-right").addClass("fa-angle-left");
 			$("#toggle-side-menu").removeClass("active").blur();
 			$.cookie('app-hide-side-menu', false);
+
+			//soyapp_iframeがある場合は、soyapp_iframeの高さを変更
+			if($("#soyapp_iframe")){
+				$("#soyapp_iframe").css("height", "400px");
+			}
 		}else{
 			$("#page-wrapper").css({'margin-left': '50px'});
 			$("#side-menu li a span").hide();
@@ -156,6 +161,11 @@ $(function(){
 			$("#toggle-side-menu i").removeClass("fa-angle-left").addClass("fa-angle-right");
 			$("#toggle-side-menu").removeClass("active").blur();
 			$.cookie('app-hide-side-menu', true);
+
+			//soyapp_iframeがある場合は、soyapp_iframeの高さを変更
+			if($("#soyapp_iframe")){
+				$("#soyapp_iframe").css("height", "44px");
+			}
 		}
 	});
 });

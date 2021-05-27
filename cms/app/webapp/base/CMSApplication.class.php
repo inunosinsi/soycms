@@ -209,7 +209,21 @@ class CMSApplication {
 			}
 			if($isThreeTemp || $isCustomTemp) $html .= "</li>\n";
 		}
+
+
+		$isIframe = false;
+		$h = 400;	//iframeの高さ	後で読み込むiframe.phpがあれば、hの指定も可能
+		if($isThreeTemp){
+			$iframeDir = SOY2HTMLConfig::PageDir() . "Iframe/";
+			$isIframe = (file_exists($iframeDir) && is_dir($iframeDir));	//pagesディレクトリにIframeがある場合
+			// アプリ内ではIframeディレクトリがあっても、ないと見なしたい時があるのでその対応
+			// /ルート/CMSインストールディレクトリ/app/webapp/APPLICATION_ID/iframe.phpに特別な設定を記述できる iframe.phpには$isIframeをbool値で指定 hでiframeの高さの指定
+			if($isIframe && file_exists(dirname(dirname(__FILE__)) . "/" . APPLICATION_ID . "/iframe.php")) include_once(dirname(dirname(__FILE__)) . "/" . APPLICATION_ID . "/iframe.php");
+			unset($iframeDir);
+		}
+
 		if($isThreeTemp) {
+			if($isIframe) $html .= "<li><iframe id=\"soyapp_iframe\" src=\"" . SOY2PageController::createLink(APPLICATION_ID . ".Iframe?mode=print") . "\"></iframe></li>";
 			if( isset($_COOKIE["app-hide-side-menu"]) && $_COOKIE["app-hide-side-menu"] == "true" ){
 				$html .= "<li class=\"hidden-xs\"><a href=\"#\" id=\"toggle-side-menu\" class=\"text-right\"><i class=\"fa fa-fw fa-angle-right\"></i><span>&nbsp;</span></a></li>";
 			}else{
@@ -217,6 +231,9 @@ class CMSApplication {
 			}
 		}
 		if($isThreeTemp || $isCustomTemp) $html .= "</ul>\n";
+
+		//soyapp_iframeのCSS
+		if($isIframe) $html .= "<style>#soyapp_iframe{width:100%; height:" . $h . "px; border:1px solid #FFFFFF;}</style>";
 
 		echo $html;
 	}
