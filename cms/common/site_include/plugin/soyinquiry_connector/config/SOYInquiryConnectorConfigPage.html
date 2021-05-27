@@ -1,8 +1,16 @@
 <form soy:id="form">
 	<div class="form-group">
+		<label>連携するお問い合わせフォームの設定</label>
 		<div class="form-inline">
+			<label>フォームを設置しているサイト</label>
+			<select class="form-control" soy:id="site"><option></option></select>
+
+			<!-- soy:display="pages_selectbox" -->
+			&nbsp;&nbsp;
 			<label>URL</label>
 			<select class="form-control" soy:id="pages"><option></option></select>
+			<!-- /soy:display="pages_selectbox" -->
+
 			<input type="submit" class="btn btn-primary" value="変更">
 		</div>
 	</div>
