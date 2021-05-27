@@ -10,6 +10,16 @@ class SOYInquiry_EntryRelation {
 	private $inquiryId;
 
 	/**
+	 * @column site_id
+	 */
+	private $siteId;
+
+	/**
+	 * @column page_id
+	 */
+	private $pageId;
+
+	/**
 	 * @column entry_id
 	 */
 	private $entryId;
@@ -19,6 +29,20 @@ class SOYInquiry_EntryRelation {
 	}
 	function setInquiryId($inquiryId){
 		$this->inquiryId = $inquiryId;
+	}
+
+	function getSiteId(){
+		return $this->siteId;
+	}
+	function setSiteId($siteId){
+		$this->siteId = $siteId;
+	}
+
+	function getPageId(){
+		return $this->pageId;
+	}
+	function setPageId($pageId){
+		$this->pageId = $pageId;
 	}
 
 	function getEntryId(){

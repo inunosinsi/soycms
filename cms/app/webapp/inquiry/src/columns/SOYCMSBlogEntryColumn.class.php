@@ -15,8 +15,11 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 	 * ユーザに表示する用のフォーム
 	 */
 	function getForm($attr = array()){
-		$title = (isset($_GET["entry_id"]) && is_numeric($_GET["entry_id"])) ? self::_getEntryTitle() : null;
+		$title = self::_getEntryTitle();
 		if(strlen($title)) $title = htmlspecialchars($title, ENT_QUOTES, "UTF-8");
+
+		//ページIDを記録しておく
+		$dust = self::_getParameter("page_id");
 
 		$html = array();
 		if($this->isEditable){
@@ -30,19 +33,31 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 			$html[] = "<input type=\"text\" name=\"data[" . $this->getColumnId() . "]\" value=\"" . $title . "\" " . implode(" ",$attributes) . "" . $required . ">";
 		}else{
 			$html[] = $title;
-			$html[] = "<input type=\"hidden\" name=\"data[" . $this->getColumnId() . "]\" value=\"" . $title . "\">";
+			$html[] = "<input type=\"hidden\" name=\"data[" . $this->getColumnId() . "]\" value=\"" . $title . "\"><br>";
 		}
 
 		return implode("\n", $html);
 	}
 
 	private function _getEntryTitle(){
+		$entryId = self::_getParameter("entry_id");
+		if(!is_numeric($entryId)) return null;
+
 		CMSApplication::switchAdminMode();
 
-		$siteId = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+		$siteId = self::_getParameter("site_id");
+		if(is_null($siteId)){
+			$siteAlias = trim(substr(_SITE_ROOT_, strrpos(_SITE_ROOT_, "/")), "/");
+			try{
+				$siteId = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteAlias)->getId();
+				self::_setParameter("site_id", $siteId);
+			}catch(Exception $e){
+				//
+			}
+		}
 
 		try{
-			$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId($siteId);
+			$site = SOY2DAOFactory::create("admin.SiteDAO")->getById($siteId);
 		}catch(Exception $e){
 			$site = new Site();
 		}
@@ -59,7 +74,7 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 		}
 
 		try{
-			$title = SOY2DAOFactory::create("cms.EntryDAO")->getOpenEntryById($_GET["entry_id"], time())->getTitle();
+			$title = SOY2DAOFactory::create("cms.EntryDAO")->getOpenEntryById($entryId, time())->getTitle();
 		}catch(Exception $e){
 			$title = null;
 		}
@@ -114,6 +129,11 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 		}
 		$html .= '>required属性を利用する</label>';
 
+		$html .= "<br><br>このカラムの使用方法は";
+		$html .= "<a href=\"https://saitodev.co/article/3754/\" target=\"_blank\" rel=\"noopener\">SOY CMSでSOY Inquiry連携プラグインを作成しました - saitodev.co</a>";
+		$html .= "をご覧ください。<br>";
+
+
 		return $html;
 	}
 
@@ -136,4 +156,20 @@ class SOYCMSBlogEntryColumn extends SOYInquiry_ColumnBase{
 	}
 
 	function validate(){}
+
+	private function _getParameter($key){
+		$sess = SOY2ActionSession::getUserSession();
+		if(isset($_GET[$key]) && is_numeric($_GET[$key])){
+			$id = (int)$_GET[$key];
+			$sess->setAttribute("soyinquiry_" . $key, $id);
+		}else{
+			$id = $sess->getAttribute("soyinquiry_" . $key);
+		}
+
+		return $id;
+	}
+
+	private function _setParameter($key, $id){
+		SOY2ActionSession::getUserSession()->setAttribute("soyinquiry_" . $key, $id);
+	}
 }

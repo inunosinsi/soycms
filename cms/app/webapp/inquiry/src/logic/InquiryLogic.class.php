@@ -89,17 +89,29 @@ class InquiryLogic extends SOY2LogicBase{
     	$inquiry->setId($id);
 
 		// GETでentry_idがあれば、soyinquiry_entry_relationに登録しておく
-		if(isset($_GET["entry_id"]) && is_numeric($_GET["entry_id"])){
+		$sess = SOY2ActionSession::getUserSession();
+		$entryId = $sess->getAttribute("soyinquiry_entry_id");
+		if(is_numeric($entryId)){
 			$relDao = SOY2DAOFactory::create("SOYInquiry_EntryRelationDAO");
 			$rel = new SOYInquiry_EntryRelation();
 			$rel->setInquiryId($id);
-			$rel->setEntryId($_GET["entry_id"]);
+			$rel->setEntryId($entryId);
+
+			$siteId = $sess->getAttribute("soyinquiry_site_id");
+			if(is_numeric($siteId)) $rel->setSiteId($siteId);
+
+			$pageId = $sess->getAttribute("soyinquiry_page_id");
+			if(is_numeric($pageId)) $rel->setPageId($pageId);
 
 			try{
 				$relDao->insert($rel);
 			}catch(Exception $e){
 				//
 			}
+		}
+		//セッションのクリア
+		foreach(array("site", "page", "entry") as $key){
+			$sess->setAttribute("soyinquiry_" . $key . "_id", null);
 		}
 
     	return $inquiry;

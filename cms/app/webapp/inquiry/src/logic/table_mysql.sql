@@ -31,6 +31,8 @@ CREATE TABLE soyinquiry_inquiry (
 
 CREATE TABLE soyinquiry_entry_relation (
 	inquiry_id INTEGER NOT NULL,
+	site_id INTEGER,
+	page_id INTEGER,
 	entry_id INTEGER NOT NULL,
 	UNIQUE(inquiry_id, entry_id)
 )ENGINE = InnoDB;
