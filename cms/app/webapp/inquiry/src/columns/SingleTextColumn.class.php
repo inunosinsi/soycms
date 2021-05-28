@@ -45,8 +45,11 @@ class SingleTextColumn extends SOYInquiry_ColumnBase{
 			$attributes[] = htmlspecialchars($key, ENT_QUOTES, "UTF-8") . "=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\"";
 		}
 
+		$value = $this->getValue();
+		if(!is_string($value)) $value = "";
+		
 		$html = array();
-		$html[] = "<input type=\"" . htmlspecialchars($this->inputType, ENT_QUOTES, "UTF-8") . "\" name=\"data[".$this->getColumnId()."]\" value=\"".htmlspecialchars($this->getValue(), ENT_QUOTES, "UTF-8")."\" " . implode(" ",$attributes) . "" . $required . ">";
+		$html[] = "<input type=\"" . htmlspecialchars($this->inputType, ENT_QUOTES, "UTF-8") . "\" name=\"data[".$this->getColumnId()."]\" value=\"".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."\" " . implode(" ",$attributes) . "" . $required . ">";
 
 		return implode("\n",$html);
 

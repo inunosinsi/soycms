@@ -130,8 +130,14 @@ class AddressJsColumn extends SOYInquiry_ColumnBase{
 		$html[] = '</tbody></table>';
 		$html[] = '</div>';
 
+		//住所(JS版)カラムを二回使うことは想定していない
 		$html[] = "<script>";
-		$html[] = file_get_contents(dirname(dirname(dirname(__FILE__))) . "/js/zip2address.js");
+		//カスタマイズ用
+		if(defined("_SITE_ROOT_") && file_exists(_SITE_ROOT_ . "/js/zip2address.js")){
+			$html[] = file_get_contents(_SITE_ROOT_ . "/js/zip2address.js");
+		}else{
+			$html[] = file_get_contents(dirname(dirname(dirname(__FILE__))) . "/js/zip2address.js");
+		}
 		$html[] = "</script>";
 
 		return implode("\n",$html);

@@ -109,7 +109,7 @@ class SOYInquiry_Column{
 
 		if($this->type) SOY2::import("columns." . $this->type . "Column");
 		$className = $this->type . "Column";
-		
+
 		if(!class_exists($className)){
 			$column = new SOYInquiry_ColumnBase();
 		}else{

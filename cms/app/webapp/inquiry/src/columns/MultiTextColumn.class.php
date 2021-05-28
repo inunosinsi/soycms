@@ -39,9 +39,12 @@ class MultiTextColumn extends SOYInquiry_ColumnBase{
 			$attributes[] = htmlspecialchars($key,ENT_QUOTES,"UTF-8") . "=\"".htmlspecialchars($value,ENT_QUOTES,"UTF-8")."\"";
 		}
 
+		$value = $this->getValue();
+		if(!is_string($value)) $value = "";
+
 		$html = array();
 		//<textarea>直後の改行は必須
-		$html[] = "<textarea name=\"data[".$this->getColumnId()."]\" " . implode(" ",$attributes) . $required . ">\n".htmlspecialchars($this->getValue(), ENT_QUOTES, "UTF-8")."</textarea>";
+		$html[] = "<textarea name=\"data[".$this->getColumnId()."]\" " . implode(" ",$attributes) . $required . ">\n".htmlspecialchars($value, ENT_QUOTES, "UTF-8")."</textarea>";
 
 		return implode("\n",$html);
 	}
