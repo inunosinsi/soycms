@@ -48,6 +48,18 @@ class InquiryLogic extends SOY2LogicBase{
     		$values[$id] = $value;
 
     		$maxLabelWidth = max(mb_strwidth($label), $maxLabelWidth);
+
+			//記事名 [SOY CMSブログ連携]の場合は次の行で確認用のURLを挿入
+			if($useMailBody && $column->getType() == "SOYCMSBlogEntry"){
+				SOY2::import("util.SOYInquiryUtil");
+				$blogEntryUrl = SOYInquiryUtil::getBlogEntryUrlByInquiryId($inquiry->getId());
+				if(strlen($blogEntryUrl)){
+					$labels[$id . "_url"] = "記事のURL";
+					$values[$id . "_url"] = $blogEntryUrl;
+
+					$maxLabelWidth = max(mb_strwidth($labels[$id . "_url"]), $maxLabelWidth);
+				}
+			}
     	}
 
     	if($useMailBody){
@@ -89,18 +101,17 @@ class InquiryLogic extends SOY2LogicBase{
     	$inquiry->setId($id);
 
 		// GETでentry_idがあれば、soyinquiry_entry_relationに登録しておく
-		$sess = SOY2ActionSession::getUserSession();
-		$entryId = $sess->getAttribute("soyinquiry_entry_id");
+		$entryId = SOYInquiryUtil::getParameter("entry_id");
 		if(is_numeric($entryId)){
 			$relDao = SOY2DAOFactory::create("SOYInquiry_EntryRelationDAO");
 			$rel = new SOYInquiry_EntryRelation();
 			$rel->setInquiryId($id);
 			$rel->setEntryId($entryId);
 
-			$siteId = $sess->getAttribute("soyinquiry_site_id");
+			$siteId = SOYInquiryUtil::getParameter("site_id");
 			if(is_numeric($siteId)) $rel->setSiteId($siteId);
 
-			$pageId = $sess->getAttribute("soyinquiry_page_id");
+			$pageId = SOYInquiryUtil::getParameter("page_id");
 			if(is_numeric($pageId)) $rel->setPageId($pageId);
 
 			try{
@@ -110,9 +121,7 @@ class InquiryLogic extends SOY2LogicBase{
 			}
 		}
 		//セッションのクリア
-		foreach(array("site", "page", "entry") as $key){
-			$sess->setAttribute("soyinquiry_" . $key . "_id", null);
-		}
+		SOYInquiryUtil::clearParameters();
 
     	return $inquiry;
 

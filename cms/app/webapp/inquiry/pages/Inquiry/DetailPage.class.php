@@ -143,6 +143,13 @@ class DetailPage extends WebPage{
 			"html" => SOYInquiryUtil::shapeInquiryContent($inquiry->getContent())
 		));
 
+		//記事のリンク
+		$blogEntryUrl = SOYInquiryUtil::getBlogEntryUrlByInquiryId($inquiry->getId());
+		DisplayPlugin::toggle("blog_entry_url", strlen($blogEntryUrl));
+		$this->addLink("blog_entry_link", array(
+			"link" => $blogEntryUrl
+		));
+
 		//コメントを取得
 		$commenDAO = SOY2DAOFactory::create("SOYInquiry_CommentDAO");
 		$comments = $commenDAO->getByInquiryId($this->id);

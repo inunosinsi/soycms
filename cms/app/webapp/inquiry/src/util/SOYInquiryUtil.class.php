@@ -2,6 +2,8 @@
 
 class SOYInquiryUtil{
 
+	const SOYINQUIRY_SESSION_ID = "soyinquiry_";
+
 	public static function switchConfig(){
 
 		$old["root"] = SOY2::RootDir();
@@ -247,6 +249,73 @@ class SOYInquiryUtil{
 		return $str;
 	}
 
+	public static function getBlogEntryUrlByInquiryId($inquiryId){
+		try{
+			$rel = SOY2DAOFactory::create("SOYInquiry_EntryRelationDAO")->getByInquiryId($inquiryId);
+		}catch(Exception $e){
+			$rel = new SOYInquiry_EntryRelation();
+		}
+		if(!is_numeric($rel->getEntryId())) return null;
+
+		//siteIDからページのURLを辿る
+		CMSApplication::switchAdminMode();
+
+		try{
+			$site = SOY2DAOFactory::create("admin.SiteDAO")->getById($rel->getSiteId());
+		}catch(Exception $e){
+			$site = new Site();
+		}
+
+		if(!is_numeric($site->getId())){
+			CMSApplication::switchAppMode();
+			return null;
+		}
+
+		//サイトのURLを調べる
+		$http = (isset($_SERVER["HTTPS"]) || defined("SOY2_HTTPS") && SOY2_HTTPS) ? "https" : "http";
+		$host = $_SERVER['SERVER_NAME'];
+		if( (!isset($_SERVER["HTTPS"]) && $_SERVER['SERVER_PORT'] != 80) || (isset($_SERVER["HTTPS"]) && $_SERVER['SERVER_PORT'] != 443) ){
+			$host .= ":".$_SERVER['SERVER_PORT'];
+		}
+
+		$url = $http . "://" . $host . "/";
+		if($site->getIsDomainRoot() != 1){
+			$url .= $site->getSiteId() . "/";
+		}
+
+		$old["dsn"] = SOY2DAOConfig::dsn();
+		$old["user"] = SOY2DAOConfig::user();
+		$old["pass"] = SOY2DAOConfig::pass();
+
+		SOY2DAOConfig::dsn($site->getDataSourceName());
+		if(strpos($site->getDataSourceName(), "mysql") === 0){
+			if(!defined("CMS_COMMON")) define("CMS_COMMON", _CMS_COMMON_DIR_);
+			include_once(rtrim(CMS_COMMON, "/") . "/config/db/mysql.php");
+			SOY2DAOConfig::user(ADMIN_DB_USER);
+			SOY2DAOConfig::pass(ADMIN_DB_PASS);
+		}
+
+		//ページのURLを調べる
+		try{
+			$blogPage = SOY2DAOFactory::create("cms.BlogPageDAO")->getById($rel->getPageId());
+		}catch(Exception $e){
+			$blogPage = new BlogPage();
+		}
+
+		SOY2DAOConfig::dsn($old["dsn"]);
+		SOY2DAOConfig::user($old["user"]);
+		SOY2DAOConfig::pass($old["pass"]);
+
+		CMSApplication::switchAppMode();
+
+		if(!is_numeric($blogPage->getId())) return null;
+
+		if(strlen($blogPage->getUri())) $url .= $blogPage->getUri() . "/";
+		if(strlen($blogPage->getEntryPageUri())) $url .= $blogPage->getEntryPageUri() . "/";
+
+		return $url . $rel->getEntryId();
+	}
+
 	/** Parsely.js連携 **/
 	public static function checkIsParsely(){
 		static $isParsely;
@@ -268,5 +337,44 @@ class SOYInquiryUtil{
 			}
 		}
 		return $isParsely;
+	}
+
+	/** セッション関連 **/
+	public static function getParameter($key){
+		$sess = SOY2ActionSession::getUserSession();
+		if(isset($_GET[$key]) && strlen($_GET[$key])){
+			$v = $_GET[$key];
+			$sess->setAttribute(self::SOYINQUIRY_SESSION_ID . $key, $v);
+		}else{
+			$v = $sess->getAttribute(self::SOYINQUIRY_SESSION_ID . $key);
+		}
+
+		return $v;
+	}
+
+	public static function setParameter($key, $v){
+		self::_setParameter($key, $v);
+	}
+
+	public static function setParameters(){
+		foreach(self::_getParameterKeys() as $key){
+			if(isset($_GET[$key]) && strlen($_GET[$key])){
+				self::_setParameter($key, $_GET[$key]);
+			}
+		}
+	}
+
+	public static function clearParameters(){
+		foreach(self::_getParameterKeys() as $key){
+			self::_setParameter($key, null);
+		}
+	}
+
+	private static function _setParameter($key, $v){
+		SOY2ActionSession::getUserSession()->setAttribute(self::SOYINQUIRY_SESSION_ID . $key, $v);
+	}
+
+	private static function _getParameterKeys(){
+		return array("site_id", "page_id", "entry_id");
 	}
 }

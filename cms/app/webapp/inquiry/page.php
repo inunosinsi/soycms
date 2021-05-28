@@ -301,6 +301,8 @@ class SOYInquiry_PageApplication{
 		//ランダムな値を作成
 		$random_hash = md5(mt_rand());
 
+		SOYInquiryUtil::setParameters();
+
 		ob_start();
 		$this->outputCSS();
     	include_once($templateDir . "form.php");
