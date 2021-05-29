@@ -14,7 +14,7 @@ class StorageLogic extends SOY2LogicBase{
 	private $storageDao;
 
 	function __construct(){
-		SOY2::imports("module.plugins.store_user_folder.domain.*");
+		SOY2::import("module.plugins.store_user_folder.domain.SOYShop_UserStorageDAO");
 		$this->storageDao = SOY2DAOFactory::create("SOYShop_UserStorageDAO");
 	}
 
@@ -89,6 +89,41 @@ class StorageLogic extends SOY2LogicBase{
 		}
 	}
 
+	function uploadWithFilePath($filepath, $userId){
+		if(!file_exists($filepath)) return false;
+
+		$fname = trim(trim(substr($filepath, strrpos($filepath, "/")), "/"));
+		$dir = self::getDirectoryByUserId($userId);
+
+		SOYShopPlugin::load("soyshop.upload.image");
+		$new = SOYShopPlugin::invoke("soyshop.upload.image", array(
+			"mode" => "storage",
+			"pathinfo" => pathinfo($fname)
+		))->getName();
+
+		if(isset($new)) $fname = $new;
+		$dest_name = $dir . "/" . $fname;
+
+		//iconsディレクトリの中にすでにファイルがないかチェックする
+		if(!file_exists($dest_name)){
+			if(rename($filepath, $dest_name)){
+				//データベースに登録する
+				$obj = new SOYShop_UserStorage();
+				$obj->setUserId($userId);
+				$obj->setFileName($fname);
+				$obj->setToken(md5($filepath.rand(0,65535)));
+
+				try{
+					$this->storageDao->insert($obj);
+				}catch(Exception $e){
+					var_dump($e);
+				}
+			}
+		}
+
+		return true;
+	}
+
 	/**
 	 * ファイルをダウンロードする
 	 * @param object SOYShop_UserStorage file, string filepath
@@ -135,4 +170,3 @@ class StorageLogic extends SOY2LogicBase{
 		return $dir;
 	}
 }
-?>

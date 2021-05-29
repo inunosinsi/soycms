@@ -184,6 +184,57 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 		return (isset($res[0]["SEAT"])) ? (int)$res[0]["SEAT"] : 0;
     }
 
+	function getReservedCountListFromDaysByItemId($itemId, $now, $days, $isTmp=false){
+		//計算前に検索用のデータを必ず最新の状態にしておく schedule_dateを利用する
+		SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();
+
+		SOY2::import("domain.order.SOYShop_Order");
+
+		$sql = "SELECT SUM(res.seat) AS SEAT, search.schedule_id FROM soyshop_reserve_calendar_reserve res ".
+				"INNER JOIN soyshop_order o ".
+				"ON res.order_id = o.id ".
+				"INNER JOIN soyshop_reserve_calendar_schedule_search search ".
+				"ON res.schedule_id = search.schedule_id ".
+				"INNER JOIN soyshop_reserve_calendar_schedule sch ".
+				"ON search.schedule_id = sch.id ".
+				"WHERE sch.item_id = :itemId ".
+				"AND search.schedule_date >= :start ".
+                "AND search.schedule_date <= :end ";
+
+		if($isTmp){	//仮登録モード
+			$sql .= "AND o.order_status = " . SOYShop_Order::ORDER_STATUS_INTERIM . " ";
+			$sql .= "AND res.temp = " . SOYShopReserveCalendar_Reserve::IS_TEMP;
+		}else{	//本登録モード
+			//クレジットカード支払の前に予約座席数を確定したい場合
+			$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+
+			//通常
+			//$sql .= "AND o.order_status NOT IN (" . SOYShop_Order::ORDER_STATUS_INVALID . ", " . SOYShop_Order::ORDER_STATUS_INTERIM . ", ".SOYShop_Order::ORDER_STATUS_CANCELED . ") ";
+		}
+
+		$sql .= "GROUP BY search.schedule_id ";
+
+		$binds = array(
+			":itemId" => $itemId,
+			":start" => $now,
+			":end" => strtotime("+" . ($days+1) . "day", $now)
+		);
+
+		try{
+			$res = $this->executeQuery($sql, $binds);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+        foreach($res as $v){
+			$list[$v["schedule_id"]] = array("seat" => $v["SEAT"]);
+        }
+
+        return $list;
+	}
+
     function getReservedSchedulesByPeriod($year, $month, $isTmp = false){	//isTmpで仮登録の予約を検索
         SOY2::import("domain.order.SOYShop_Order");
 

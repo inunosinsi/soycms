@@ -46,9 +46,21 @@ class SOYShop_UserPage extends SOYShopPageBase{
 
 	function common_execute(){
 		$this->checkSSL();
+
+		SOYShopPlugin::load("soyshop.mypage");
+        $canonical = SOYShopPlugin::invoke("soyshop.mypage", array(
+			"mode" => "canonical"
+		))->getCanonicalUrl();
+		if(!empty($canonical)){
+			$this->getHeadElement()->appendHTML(
+                '<link rel="canonical" href="' . $canonical . '" />' . "\n"
+            );
+        }
+
 		$this->buildModules();
 		//マイページのタイトルフォーマットで置換文字列を使用
 		$this->setTitle(soyshop_get_mypage_page_title($this->args));
+
 	}
 
 	function display(){

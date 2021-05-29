@@ -49,8 +49,12 @@ class ReserveCalendarCart extends SOYShopCartBase{
 					$cart->setAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", 0, $items[0]->getItemId()), $schId);
 
 					$item = end($items);
-					$items = array($item);
-					$cart->setItems($items);
+					$item->setItemCount(1);	// @ToDo 要設定項目？
+					$cart->setItems(array($item));
+				}else{	//予定が一つしか入っていない場合、同一予定であれば個数を1にする
+					$item = array_shift($items);
+					$item->setItemCount(1);	// @ToDo 要設定項目？
+					$cart->setItems(array($item));
 				}
 
 				//大人と子供の人数をセッションに入れる
