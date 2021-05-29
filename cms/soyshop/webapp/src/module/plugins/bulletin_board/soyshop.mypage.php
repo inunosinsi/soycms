@@ -9,7 +9,7 @@ class BulletinBoardMypage extends SOYShopMypageBase{
 
 		$args = self::_args();
 		if(!count($args)) return $format;
-		
+
 		switch($args[0]){
 			case "topic":
 				if(isset($args[1]) && is_numeric($args[1])){ //トピックトップ
@@ -56,6 +56,41 @@ class BulletinBoardMypage extends SOYShopMypageBase{
 		$args = explode("/", $uri);
 		if(count($args) && $args[0] == "board") array_shift($args);
 		return $args;
+	}
+
+	function getCanonicalUrl(){
+		$uri = soyshop_get_mypage_url(true);
+		$reqUri = $_SERVER["REQUEST_URI"];
+		$res = strpos($reqUri, "/". SOYSHOP_ID . "/");
+		if(is_numeric($res) && $res === 0){
+			$reqUri = ltrim($reqUri, "/");
+			$reqUri = substr($reqUri, strpos($reqUri, "/"));
+		}
+
+		//mypageのuriを除く
+		$mypageUri = soyshop_get_mypage_uri();
+		$res = strpos($reqUri, "/". $mypageUri . "/");
+		if(is_numeric($res) && $res === 0){
+			$reqUri = ltrim($reqUri, "/");
+			$reqUri = substr($reqUri, strpos($reqUri, "/"));
+		}
+
+		$uri .= "/" . ltrim($reqUri, "/");
+		$uri = rtrim($uri , "/");
+
+		//トライリングスラッシュの設定
+		if((SOYShop_ShopConfig::load()->getIsTrailingSlash() == 1)) $uri .= "/";
+		return $uri;
+	}
+
+	private function _getMypageUri(){
+		// $url = ;
+		// preg_match('/^http.*?:\/\//', $url, $tmp);
+		// if(isset($tmp[0])){
+		// 	$url = substr($url, strpos($url, "://") + 3);
+		// 	$url = substr($url, strpos($url, "/"));
+		// }
+		// return str_replace("/" . SOYSHOP_ID . "/", "/", $url . "/board");
 	}
 }
 SOYShopPlugin::extension("soyshop.mypage", "bulletin_board", "BulletinBoardMypage");
