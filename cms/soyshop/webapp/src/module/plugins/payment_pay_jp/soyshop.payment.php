@@ -223,6 +223,9 @@ class PayJpPayment extends SOYShopPayment{
 		PayJpUtil::clear("name");
 		PayJpUtil::clear("member");
 		PayJpUtil::clear("errorCode");
+
+		// CompleteページにorderComplete()があるが、エラーにならずに回避してくれるのでここでorderComplete()を実行しておく
+		$cart->orderComplete();
 	}
 
 	private function prepare(){

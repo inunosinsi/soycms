@@ -100,6 +100,10 @@ class AmazonPayPayment extends SOYShopPayment{
 		//支払いステータスの変更。
 		$order->setPaymentStatus(SOYShop_Order::PAYMENT_STATUS_CONFIRMED);
 		SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
+
+		// CompleteページにorderComplete()があるが、エラーにならずに回避してくれるのでここでorderComplete()を実行しておく
+		$cart->orderComplete();
+
 		$cart->setAttribute("page", "Complete");
 		soyshop_redirect_cart();
 		exit;
