@@ -122,6 +122,12 @@ class BackwardUserComponent {
     		"value" => $user->getAddress2(),
     	));
 
+		//住所入力2
+    	$page->addInput("address3", array(
+    		"name" => "Customer[address3]",
+    		"value" => $user->getAddress3(),
+    	));
+
 		//電話番号
     	$page->addInput("tel_number", array(
     		"name" => "Customer[telephoneNumber]",
@@ -460,6 +466,10 @@ class BackwardUserComponent {
     		"name" => "Customer[address2]",
     		"value" => $user->getAddress2(),
     	));
+		$page->addInput("user_address3", array(
+    		"name" => "Customer[address3]",
+    		"value" => $user->getAddress3(),
+    	));
 
 		//電話番号
     	$page->addInput("user_tel_number", array(
@@ -699,6 +709,10 @@ class BackwardUserComponent {
     	$page->addInput("user_address2", array(
     		"name" => "Customer[address2]",
     		"value" => $user->getAddress2(),
+    	));
+		$page->addInput("user_address3", array(
+    		"name" => "Customer[address3]",
+    		"value" => $user->getAddress3(),
     	));
 
 		//電話番号

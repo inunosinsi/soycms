@@ -58,6 +58,7 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
             $content = str_replace("#" . $prefix . "_AREA#", $array["area"], $content);
             $content = str_replace("#" . $prefix . "_ADDRESS1#", $array["address1"], $content);
             $content = str_replace("#" . $prefix . "_ADDRESS2#", $array["address2"], $content);
+			$content = str_replace("#" . $prefix . "_ADDRESS3#", $array["address3"], $content);
             $content = str_replace("#" . $prefix . "_TELEPHONE#", $array["telephoneNumber"], $content);
         }
 
@@ -165,6 +166,7 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
         $array["area"] = (isset($array["area"])) ? SOYShop_Area::getAreaText($array["area"]) : "";
         $array["address1"] = (isset($array["address1"])) ? $array["address1"] : "";
         $array["address2"] = (isset($array["address2"])) ? $array["address2"] : "";
+		$array["address3"] = (isset($array["address3"])) ? $array["address3"] : "";
         $array["telephoneNumber"] = (isset($array["telephoneNumber"])) ? $array["telephoneNumber"] : "";
         $array["office"] = (isset($array["office"])) ? $array["office"] : "";
 

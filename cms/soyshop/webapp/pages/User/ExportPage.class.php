@@ -76,6 +76,7 @@ class ExportPage extends WebPage{
 			"areaText" => "住所（都道府県）",
 			"address1" => "住所１",
 			"address2" => "住所２",
+			"address3" => "住所３",
 			"telephoneNumber" => "電話番号",
 			"faxNumber" => "FAX番号",
 
@@ -86,6 +87,7 @@ class ExportPage extends WebPage{
 			"jobAreaText" => "勤務先住所（都道府県）",
 			"jobAddress1" => "勤務先住所１",
 			"jobAddress2" => "勤務先住所２",
+			"jobAddress3" => "勤務先住所３",
 
 			"jobTelephoneNumber" => "勤務先電話番号",
 			"jobFaxNumber" => "勤務先FAX番号",

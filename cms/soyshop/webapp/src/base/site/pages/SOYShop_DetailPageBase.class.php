@@ -89,6 +89,8 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 			throw new Exception("unknown error.");
 		}
 
+		if(!defined("SOYSHOP_PAGE_TYPE")) define("SOYSHOP_PAGE_TYPE", get_class($obj));
+
 		//item
 		$this->createAdd("item", "SOYShop_ItemListComponent", array(
 			"list" => array($item),

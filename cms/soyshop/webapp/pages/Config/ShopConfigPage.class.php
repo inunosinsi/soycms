@@ -275,6 +275,14 @@ class ShopConfigPage extends WebPage{
 			"isBoolean" => 1
 		));
 
+		$this->addCheckBox("searchChildItemOnListPage", array(
+			"selected" => $config->getSearchChildItemOnListPage(),
+			"value" => 1,
+			"name" => "Config[searchChildItemOnListPage]",
+			"label" => "商品一覧ページで子商品のデータを取得する",
+			"isBoolean" => 1
+		));
+
 		//子商品の詳細表示モード
 		$this->addCheckBox("displayChildItem", array(
 			"selected" => $config->getDisplayChildItem(),

@@ -27,4 +27,3 @@ class MaintenancePage extends MainCartPageBase{
 
 	}
 }
-?>

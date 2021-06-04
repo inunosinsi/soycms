@@ -201,7 +201,7 @@ class DetailPage extends MainMyPagePageBase{
             $address = $order->getClaimedAddressArray();
         }
 
-		foreach(array("name", "reading", "office", "zipCode", "area", "address1", "address2", "tel", "telephoneNumber") as $t){
+		foreach(array("name", "reading", "office", "zipCode", "area", "address1", "address2", "address3", "tel", "telephoneNumber") as $t){
 			$this->addModel($prefix . "_" . strtolower($t) . "_show", array(
 				"visible" => (isset($address[$t]) && strlen($address[$t]))
 			));

@@ -43,7 +43,7 @@ td{
 }
 .company_name{
 	font-size: 1.2em;
-	font-weight: bold;	
+	font-weight: bold;
 }
 .stamp_area{
 	float:right;
@@ -62,7 +62,7 @@ td{
 	padding: 5px;
 }
 .buy_detail td{
-	width: 50%; 
+	width: 50%;
 	padding: 20px 30px;
 	word-break: keep-all;
 	height:70px;
@@ -91,7 +91,7 @@ td{
 	padding: 5px;
 }
 .payment_detail td{
-	width: 50%; 
+	width: 50%;
 	padding: 20px 30px;
 }
 
@@ -125,12 +125,12 @@ function onload(){
 			<tr>
 				<th colspan="2" soy:id="document_label">納品書</th>
 			</tr>
-			
+
 			<tr>
 				<td width="50%" valign="top">
 					<div>〒<!-- soy:id="zip_code" -->000-0000<!-- /soy:id="zip_code" --></div>
 					<div><!-- soy:id="area" -->京都府<!-- /soy:id="area" --><!-- soy:id="address1" -->京都市左京区<!-- /soy:id="address1" --></div>
-					<div><!-- soy:id="address2" -->あずき古町203<!-- /soy:id="address2" --></div>
+					<div><!-- soy:id="address2" -->あずき古町<!-- /soy:id="address2" --><!-- soy:id="address3" -->203<!-- /soy:id="address3" --></div>
 					<div><!-- soy:id="office" -->茶豆株式会社<!-- /soy:id="office" --></div>
 					<div><!-- soy:id="name" -->おまめ豆蔵<!-- /soy:id="name" --> 様</div>
 				</td>
@@ -158,7 +158,7 @@ function onload(){
 					</div>
 					<div class="stamp_area" soy:id="is_stamp"><img soy:id="stamp"></div>
 					<br style="clear:both;" />
-						
+
 				</td>
 			</tr>
 		</table>
@@ -183,7 +183,7 @@ function onload(){
 				<td style="text-align:left; padding: 0 5px;">
 					<!-- soy:id="item_name" -->仙豆<!-- /soy:id="item_name" --><br />
 					<!-- soy:id="item_option" /-->
-				</td> 
+				</td>
 				<td><!-- soy:id="item_count" -->2<!-- /soy:id="item_count" --></td>
 				<td><!-- soy:id="is_item_price" --><!-- soy:id="item_price" -->5000<!-- /soy:id="item_price" --> 円<!-- /soy:id="is_item_price" --></td>
 				<td><!-- soy:id="is_item_price*" --><!-- soy:id="item_total_price" -->10000<!-- /soy:id="item_total_price" --> 円<!-- /soy:id="is_item_price*" --></td>
@@ -208,7 +208,7 @@ function onload(){
 				<td><!-- soy:id="order_total_price*" -->15600<!-- /soy:id="order_total_price*" --> 円</td>
 			</tr>
 		</table>
-		
+
 		<!-- soy:id="display_payment" -->
 		<table class="payment_detail">
 			<tr>
@@ -218,7 +218,7 @@ function onload(){
 				<td>
 					<div>[振込先]</div>
 					<div><!-- soy:id="payment" -->○○銀行、何とか支店<!-- /soy:id="payment" --></div>
-					
+
 				</td>
 				<td valign="top">
 					&nbsp;
@@ -226,7 +226,7 @@ function onload(){
 			</tr>
 		</table>
 		<!-- /soy:id="display_payment" -->
-		
+
 		<!-- soy:id="display_content" -->
 		<table class="message_detail">
 			<tr>

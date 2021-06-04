@@ -12,11 +12,26 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 
     //グループの場合の処理
     $childItems = array();
-    if($item->getType() == SOYShop_Item::TYPE_GROUP || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD_GROUP){
-        $type = ($obj instanceof SOYShop_DetailPage && method_exists($obj, "getSortType")) ? $obj->getSortType() : "item_code";
-        $order = ($obj instanceof SOYShop_DetailPage && method_exists($obj, "getSortOrder") && $obj->getSortOrder() == 1) ? $type . " desc" : $type . " asc";
-        $childItems = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array())->getChildItems($item->getId(), $order);
-    }
+
+	//子商品の検索をなくして高速化
+	$isChildren = true;
+	if(defined("SOYSHOP_PAGE_TYPE")){
+		switch(SOYSHOP_PAGE_TYPE){
+			case "SOYShop_ListPage":
+				if($shopConfig->getSearchChildItemOnListPage() != 1) $isChildren = false;
+				break;
+			default:
+				//
+		}
+	}
+
+	if($isChildren){
+		if($item->getType() == SOYShop_Item::TYPE_GROUP || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD_GROUP){
+	        $type = ($obj instanceof SOYShop_DetailPage && method_exists($obj, "getSortType")) ? $obj->getSortType() : "item_code";
+	        $order = ($obj instanceof SOYShop_DetailPage && method_exists($obj, "getSortOrder") && $obj->getSortOrder() == 1) ? $type . " desc" : $type . " asc";
+	        $childItems = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array())->getChildItems($item->getId(), $order);
+	    }
+	}
     if(!$htmlObj instanceof SOYShop_ChildItemListComponent){
         $htmlObj->createAdd("child_item_list", "SOYShop_ChildItemListComponent", array(
             "list" => $childItems,

@@ -252,7 +252,11 @@ class DetailPage extends WebPage{
     	}
     	$customerHTML.= "\n";
     	$customerHTML.= $claimedAddress["zipCode"]. "\n";
-    	$customerHTML.= SOYShop_Area::getAreaText($claimedAddress["area"]) . $claimedAddress["address1"] . $claimedAddress["address2"] . "\n";
+		$addr = "";
+		for($i = 1; $i <= 3; $i++){
+			if(isset($claimedAddress["address" . $i])) $addr .= $claimedAddress["address" . $i];
+		}
+    	$customerHTML.= SOYShop_Area::getAreaText($claimedAddress["area"]) . $addr . "\n";
     	if(isset($claimedAddress["telephoneNumber"])){
     		$customerHTML.= $claimedAddress["telephoneNumber"] . "\n";
     	}
@@ -273,7 +277,11 @@ class DetailPage extends WebPage{
     	}
     	$customerHTML.= "\n";
     	$customerHTML.= $address["zipCode"] . "\n";
-    	$customerHTML.= SOYShop_Area::getAreaText($address["area"]) . $address["address1"] . $address["address2"] . "\n";
+		$addr = "";
+		for($i = 1; $i <= 3; $i++){
+			if(isset($address["address" . $i])) $addr .= $address["address" . $i];
+		}
+    	$customerHTML.= SOYShop_Area::getAreaText($address["area"]) . $addr . "\n";
     	if(isset($address["telephoneNumber"])){
     		$customerHTML.= $address["telephoneNumber"] . "\n";
     	}

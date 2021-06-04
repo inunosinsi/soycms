@@ -50,7 +50,12 @@ class AddressListComponent extends HTMLList{
     		"name" => "Address[$key][address2]",
     		"value" => (isset($entity["address2"])) ? $entity["address2"] : "",
     		"size" => 60
+    	));
 
+		$this->addInput("send_address3", array(
+    		"name" => "Address[$key][address3]",
+    		"value" => (isset($entity["address3"])) ? $entity["address3"] : "",
+    		"size" => 60
     	));
 
     	$this->addInput("send_tel_number", array(

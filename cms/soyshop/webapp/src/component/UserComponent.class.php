@@ -283,6 +283,13 @@ class UserComponent {
 			"attr:autocomplete" => "false"
 		));
 
+		//住所入力2
+		$page->addInput("address3", array(
+			"name" => "Customer[address3]",
+			"value" => $user->getAddress3(),
+			"attr:autocomplete" => "false"
+		));
+
 		//電話番号
 		$page->addInput("telephone_number", array(
 			"name" => "Customer[telephoneNumber]",
@@ -316,7 +323,7 @@ class UserComponent {
 		$page->addModel("active_soymail_connector", array(
 			"visible" => $activeSOYMail
 		));
-		
+
 		DisplayPlugin::toggle("active_soymail_connector", $activeSOYMail);
 
 		$page->addInput("mail_magazine_hidden", array(

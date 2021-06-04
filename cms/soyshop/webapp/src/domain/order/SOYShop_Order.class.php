@@ -337,13 +337,20 @@ class SOYShop_Order {
     	$this->claimedAddress = $claimedAddress;
     }
     function getAddressArray(){
-		if(is_null($this->address) || !strlen($this->address)) return array("name" => "", "zipCode" => "", "area" => "", "address1" => "", "address2" => "");
-		return soy2_unserialize($this->address);
+		return self::_address($this->address);
     }
     function getClaimedAddressArray(){
-		if(is_null($this->claimedAddress) || !strlen($this->claimedAddress)) return array("name" => "", "zipCode" => "", "area" => "", "address1" => "", "address2" => "");
-		return soy2_unserialize($this->claimedAddress);
+		return self::_address($this->claimedAddress);
     }
+	private function _address($str){
+		$addr = (is_string($str) && strlen($str)) ? soy2_unserialize($str) : array();
+		if(!is_array($addr)) $addr = array();
+		foreach(array("name", "zipCode", "area", "address1", "address2", "address3") as $l){
+			if(!isset($addr[$l])) $addr[$l] = "";
+		}
+		return $addr;
+	}
+
     function getAttributes() {
     	return $this->attributes;
     }

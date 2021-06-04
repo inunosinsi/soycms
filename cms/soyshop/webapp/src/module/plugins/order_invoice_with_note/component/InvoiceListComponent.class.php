@@ -105,14 +105,11 @@ class InvoiceListComponent extends HTMLList{
 		));
 
 		//お届け先の住所1
-		$this->addLabel("customer_address1", array(
-			"text" => (isset($address["address1"])) ? $address["address1"] : ""
-		));
-
-		//お届け先の住所2
-		$this->addLabel("customer_address2", array(
-			"text" => (isset($address["address2"])) ? $address["address2"] : ""
-		));
+		for($i = 1; $i <= 3; $i++){
+			$this->addLabel("customer_address" . $i, array(
+				"text" => (isset($address["address" . $i])) ? $address["address" . $i] : ""
+			));
+		}
 
 		//お届け先の法人名
 		$this->addLabel("customer_office", array(
@@ -139,15 +136,12 @@ class InvoiceListComponent extends HTMLList{
 			"text" => (isset($claimedAddress["area"])) ? SOYShop_Area::getAreaText($claimedAddress["area"]) : ""
 		));
 
-		//注文者の住所1
-		$this->addLabel("address1", array(
-			"text" => (isset($claimedAddress["address1"])) ? $claimedAddress["address1"] : ""
-		));
-
-		//注文者の住所2
-		$this->addLabel("address2", array(
-			"text" => (isset($claimedAddress["address2"])) ? $claimedAddress["address2"] : ""
-		));
+		//注文者の住所
+		for($i = 1; $i <= 3; $i++){
+			$this->addLabel("address" . $i, array(
+				"text" => (isset($claimedAddress["address" . $i])) ? $claimedAddress["address" . $i] : ""
+			));
+		}
 
 		//注文者の法人名
 		$this->addLabel("office", array(

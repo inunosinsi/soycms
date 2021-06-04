@@ -15,7 +15,7 @@
 							<tr soy:display="mailAddress">
 								<th>メールアドレス（必須）</th>
 								<td>
-									<input soy:id="mail_address" type="text" class="form-control" name="" value="" />
+									<input soy:id="mail_address" type="text" class="form-control" />
 								</td>
 							</tr>
 							<tr soy:display="accountId">
@@ -33,37 +33,37 @@
 							<tr soy:display="name">
 								<th>氏名</th>
 								<td>
-									<input soy:id="name" type="text" name="" value="" class="form-control">
+									<input soy:id="name" type="text" class="form-control">
 								</td>
 							</tr>
 
 							<tr soy:display="reading">
 								<th>フリガナ</th>
 								<td>
-									<input soy:id="reading" type="text" name="" value="" class="form-control">
+									<input soy:id="reading" type="text" class="form-control">
 								</td>
 							</tr>
 
 							<tr soy:display="honorific">
 								<th>敬称</th>
 								<td>
-									<input soy:id="honorific" type="text" name="" value="" class="form-control" style="width:30%;">
+									<input soy:id="honorific" type="text" class="form-control" style="width:30%;">
 								</td>
 							</tr>
 
 							<tr soy:display="nickname">
 								<th>ニックネーム</th>
 								<td>
-									<input soy:id="nickname" type="text" name="" value="" class="form-control">
+									<input soy:id="nickname" type="text" class="form-control">
 								</td>
 							</tr>
 
 							<tr soy:display="gender">
 								<th>性別</th>
 								<td>
-									<input soy:id="gender_male" type="radio" name="" />
+									<input soy:id="gender_male" type="radio" />
 									<label for="radio_sex_male">男</label>
-									<input soy:id="gender_female" type="radio" name="" value="1" />
+									<input soy:id="gender_female" type="radio" value="1" />
 									<label for="radio_sex_male">女</label>
 								</td>
 							</tr>
@@ -72,9 +72,9 @@
 								<th>生年月日</th>
 								<td>
 									<div class="form-inline">
-										<input soy:id="birth_year" type="text" class="form-control" name="" value="" style="width:80px;" />年
-										<input soy:id="birth_month" type="text" class="form-control" name="" value="" style="width:60px;" />月
-										<input soy:id="birth_day" type="text" class="form-control" name="" value="" style="width:60px;" />日
+										<input soy:id="birth_year" type="text" class="form-control" style="width:80px;" />年
+										<input soy:id="birth_month" type="text" class="form-control" style="width:60px;" />月
+										<input soy:id="birth_day" type="text" class="form-control" style="width:60px;" />日
 									</div>
 								</td>
 							</tr>
@@ -83,7 +83,7 @@
 								<th>郵便番号</th>
 								<td>
 									<div class="form-inline">
-										<input soy:id="post_number" type="text" name="" value="" class="input-zip form-control" />&nbsp;
+										<input soy:id="post_number" type="text" class="input-zip form-control" />&nbsp;
 										<a href="javascript:void(0);" class="search-btn btn btn-primary">検索</a>
 									</div>
 								</td>
@@ -96,8 +96,9 @@
 										<select soy:id="area" id="area" class="input-pref">
 											<option value="">▼選択</option>
 										</select>
-										<input soy:id="address1" type="text" name="" value="" class="form-control"　style="width:60%;" id="address1" class="input-city" /><br>
-										<input soy:id="address2" type="text" name="" value="" class="form-control"　style="width:60%;" id="address2" class="input-town" /><br>
+										<input soy:id="address1" type="text" class="form-control"　style="width:60%;" id="address1" class="input-city"><br>
+										<input soy:id="address2" type="text" class="form-control"　style="width:60%;" id="address2" class="input-town"><br>
+										<input soy:id="address3" type="text" class="form-control"　style="width:60%;" id="address3"><br>
 										<!-- soy:id="advenced_address_list" --><!-- soy:id="form" /--><!-- /soy:id="advenced_address_list" -->
 									</div>
 								</td>
@@ -106,21 +107,21 @@
 							<tr soy:display="telephoneNumber">
 								<th>電話番号</th>
 								<td>
-									<input soy:id="tel_number" type="text" name="" value="" class="form-control">
+									<input soy:id="tel_number" type="text" class="form-control">
 								</td>
 							</tr>
 
 							<tr soy:display="faxNumber">
 								<th>FAX番号</th>
 								<td>
-									<input soy:id="fax_number" type="text" name="" value="" class="form-control">
+									<input soy:id="fax_number" type="text" class="form-control">
 								</td>
 							</tr>
 
 							<tr soy:display="cellphoneNumber">
 								<th>携帯電話番号</th>
 								<td>
-									<input soy:id="ketai_number" type="text" name="" value="" class="form-control">
+									<input soy:id="ketai_number" type="text" class="form-control">
 								</td>
 							</tr>
 						</table>
@@ -133,14 +134,14 @@
 							<tr>
 								<th>法人名（勤務先など）</th>
 								<td>
-									<input soy:id="office" type="text" name="" value="" class="form-control">
+									<input soy:id="office" type="text" class="form-control">
 								</td>
 							</tr>
 
 							<tr>
 								<th>法人所在地郵便番号</th>
 								<td>
-									<input soy:id="office_zip_code" type="text" name="" value="" class="form-control">
+									<input soy:id="office_zip_code" type="text" class="form-control">
 								</td>
 							</tr>
 
@@ -151,8 +152,8 @@
 										<select soy:id="office_area">
 											<option value="">▼選択</option>
 										</select>
-										<input soy:id="office_address1" type="text" name="" value="" class="form-control"　style="width:60%;" /><br>
-										<input soy:id="office_address2" type="text" name="" value="" class="form-control"　style="width:60%;" />
+										<input soy:id="office_address1" type="text" class="form-control"　style="width:60%;" /><br>
+										<input soy:id="office_address2" type="text" class="form-control"　style="width:60%;" />
 									</div>
 								</td>
 							</tr>
@@ -160,14 +161,14 @@
 							<tr>
 								<th>法人電話番号</th>
 								<td>
-									<input soy:id="office_tel_number" type="text" name="" value="" class="form-control">
+									<input soy:id="office_tel_number" type="text" class="form-control">
 								</td>
 							</tr>
 
 							<tr>
 								<th>法人FAX番号</th>
 								<td>
-									<input soy:id="office_fax_number" type="text" name="" value="" class="form-control">
+									<input soy:id="office_fax_number" type="text" class="form-control">
 								</td>
 							</tr>
 						</table>
@@ -180,20 +181,20 @@
 							<tr soy:display="url">
 								<th>URL</th>
 								<td>
-									<input soy:id="url" type="text" name="" value="" class="form-control">
+									<input soy:id="url" type="text" class="form-control">
 								</td>
 							</tr>
 							<tr>
 								<th>属性</th>
 								<td>
 									<div class="form-inline">
-										属性Ａ：<input type="text" soy:id="attribute1" name="" value="" class="form-control">
+										属性Ａ：<input type="text" soy:id="attribute1" class="form-control">
 									</div>
 									<div class="form-inline">
-										属性Ｂ：<input type="text" soy:id="attribute2" name="" value="" class="form-control">
+										属性Ｂ：<input type="text" soy:id="attribute2" class="form-control">
 									</div>
 									<div class="form-inline">
-										属性Ｃ：<input type="text" soy:id="attribute3" name="" value="" class="form-control">
+										属性Ｃ：<input type="text" soy:id="attribute3" class="form-control">
 									</div>
 								</td>
 							</tr>

@@ -55,7 +55,7 @@ class ReserveLogic extends SOY2LogicBase{
 		try{
 			$reserve = $resDao->getById($reserveId);
 		}catch(Exception $e){
-			var_dump($e);
+			//var_dump($e);
 		}
 
 		$resDao->begin();
@@ -67,7 +67,7 @@ class ReserveLogic extends SOY2LogicBase{
 		try{
 			$resDao->update($reserve);
 		}catch(Exception $e){
-			var_dump($e);
+			//var_dump($e);
 		}
 
 		//注文状態を受付中にする
@@ -76,7 +76,8 @@ class ReserveLogic extends SOY2LogicBase{
 		try{
 			SOY2DAOFactory::create("order.SOYShop_OrderDAO")->update($order);
 		}catch(Exception $e){
-			var_dump($e);
+			//var_dump($e);
+			//
 		}
 
 		$resDao->commit();

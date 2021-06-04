@@ -634,6 +634,10 @@ class EditPage extends WebPage{
 			"name" => "ClaimedAddress[address2]",
 			"value" => (isset($claimedAddress["address2"])) ? $claimedAddress["address2"] : ""
 		));
+		$this->addInput("claimed_customerinfo_address3", array(
+			"name" => "ClaimedAddress[address3]",
+			"value" => (isset($claimedAddress["address3"])) ? $claimedAddress["address3"] : ""
+		));
 		$this->addInput("claimed_customerinfo_tel_number", array(
 			"name" => "ClaimedAddress[telephoneNumber]",
 			"value" => (isset($claimedAddress["telephoneNumber"])) ? $claimedAddress["telephoneNumber"] : ""
@@ -670,6 +674,10 @@ class EditPage extends WebPage{
 		$this->addInput("order_customerinfo_address2", array(
 			"name" => "Address[address2]",
 			"value" => (isset($address["address2"])) ? $address["address2"] : ""
+		));
+		$this->addInput("order_customerinfo_address3", array(
+			"name" => "Address[address3]",
+			"value" => (isset($address["address3"])) ? $address["address3"] : ""
 		));
 		$this->addInput("order_customerinfo_tel_number", array(
 			"name" => "Address[telephoneNumber]",
@@ -872,6 +880,7 @@ class EditPage extends WebPage{
 		if(isset($address["area"]) && isset($newAddress["area"]) &&  $address["area"] != $newAddress["area"])			$change[]=self::getHistoryText("請求先",SOYShop_Area::getAreaText($address["area"]) ,SOYShop_Area::getAreaText($newAddress["area"]));
 		if(isset($address["address1"]) && isset($newAddress["address1"]) && $address["address1"] != $newAddress["address1"])$change[]=self::getHistoryText("請求先",$address["address1"] ,$newAddress["address1"]);
 		if(isset($address["address2"]) && isset($newAddress["address2"]) && $address["address2"] != $newAddress["address2"])$change[]=self::getHistoryText("請求先",$address["address2"] ,$newAddress["address2"]);
+		if(isset($address["address3"]) && isset($newAddress["address3"]) && $address["address3"] != $newAddress["address3"])$change[]=self::getHistoryText("請求先",$address["address3"] ,$newAddress["address3"]);
 		if(isset($address["telephoneNumber"]) && isset($newAddress["telephoneNumber"]) && $address["telephoneNumber"] != $newAddress["telephoneNumber"])$change[]=self::getHistoryText("請求先",$address["telephoneNumber"] ,$newAddress["telephoneNumber"]);
 
 		$order->setClaimedAddress($newAddress);
@@ -894,6 +903,7 @@ class EditPage extends WebPage{
 		if(isset($address["area"]) && isset($newAddress["area"]) && $address["area"] != $newAddress["area"])				$change[]=self::getHistoryText("宛先",SOYShop_Area::getAreaText($address["area"]) ,SOYShop_Area::getAreaText($newAddress["area"]));
 		if(isset($address["address1"]) && isset($newAddress["address1"]) && $address["address1"] != $newAddress["address1"])$change[]=self::getHistoryText("宛先",$address["address1"] ,$newAddress["address1"]);
 		if(isset($address["address2"]) && isset($newAddress["address2"]) && $address["address2"] != $newAddress["address2"])$change[]=self::getHistoryText("宛先",$address["address2"] ,$newAddress["address2"]);
+		if(isset($address["address3"]) && isset($newAddress["address3"]) && $address["address3"] != $newAddress["address3"])$change[]=self::getHistoryText("宛先",$address["address3"] ,$newAddress["address3"]);
 		if(isset($address["telephoneNumber"]) && isset($newAddress["telephoneNumber"]) && $address["telephoneNumber"] != $newAddress["telephoneNumber"])$change[]=self::getHistoryText("宛先",$address["telephoneNumber"] ,$newAddress["telephoneNumber"]);
 
 		$order->setAddress($newAddress);

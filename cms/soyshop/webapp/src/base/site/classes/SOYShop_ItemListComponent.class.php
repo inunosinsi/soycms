@@ -51,6 +51,10 @@ class SOYShop_ItemListComponent extends HTMLList{
 		return $isDisplay;
 	}
 
+	function getObj(){
+		return $this->obj;
+	}
+
 	function setObj($obj){
 		$this->obj = $obj;
 		if($obj){

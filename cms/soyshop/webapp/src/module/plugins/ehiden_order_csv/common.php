@@ -6,10 +6,10 @@
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
 class EhidenOutputCSV{
-	
+
 	private $orderId;
 	private $orderDAO;
-	
+
 	private $prefecture = array(
 		"1" => "北海道",
 		"2" => "青森県",
@@ -60,7 +60,7 @@ class EhidenOutputCSV{
 		"47" => "沖縄県",
 		"48" => "その他・海外",
 	);
-	
+
 	function getCSVLine($orderId){
 		if(!$this->orderDAO)$this->orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 		$dao = $this->orderDAO;
@@ -68,22 +68,22 @@ class EhidenOutputCSV{
 
 		//送付先を取得する
 		$address = $order->getAddressArray();
-		
+
 		$csv = array();
 		$csv[] = "";										//空
 		$csv[] = $this->prefecture[$address["area"]];		//県名
 		$csv[] = $address["address1"];						//お届け先住所1
-		$csv[] = $address["address2"];						//お届け先住所2
+		$csv[] = $address["address2"].$address["address3"];	//お届け先住所2
 		$csv[] = $address["name"];							//お届け先氏名
 		$csv[] = "";										//空
-		$csv[] = $address["telephoneNumber"];				//お届け先電話番号 
+		$csv[] = $address["telephoneNumber"];				//お届け先電話番号
 		$csv[] = $address["zipCode"];						//お届け先郵便番号
-					
-		$line = implode(",",$csv);	
-		
+
+		$line = implode(",",$csv);
+
 		return $line;
 	}
-	
+
 	function getLabels(){
 				$label = array();
 		$label[] = "";
@@ -95,10 +95,10 @@ class EhidenOutputCSV{
 		$label[] = "電話番号";
 		$label[] = "郵便番号";
 
-		
+
 		return $label;
 	}
-	
-	
+
+
 }
 ?>

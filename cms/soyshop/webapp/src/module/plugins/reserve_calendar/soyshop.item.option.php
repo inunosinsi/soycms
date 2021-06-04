@@ -67,9 +67,7 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
 
         $itemId = $items[$index]->getItemId();
 
-        $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId);
-        $schId = $cart->getAttribute($obj);
-
+        $schId = $cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId));
         $list = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getLabelList($itemId);
 
         $sch = self::getScheduleById($schId);

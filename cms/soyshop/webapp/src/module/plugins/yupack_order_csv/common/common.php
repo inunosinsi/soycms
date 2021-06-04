@@ -117,8 +117,8 @@ class YupackOutputCSV{
 		$csv[] = "";															//出荷予定日
 		$csv[] = "\"" . $this->convertZipcode($address["zipCode"])."\"";			//お届け先 郵便番号
 		$csv[] = $addressPref;													//お届け先 住所
-		$csv[] = $address["address1"];													//お届け先 住所
-		$csv[] = $address["address2"];													//お届け先 住所
+		$csv[] = $address["address1"];											//お届け先 住所
+		$csv[] = $address["address2"].$address["address3"];						//お届け先 住所
 		$csv[] = $address["name"];												//お届け先 おなまえ
 		$csv[] = $address["reading"];											//お届け先 フリガナ
 		$csv[] = 1;																//お届け先 敬称

@@ -105,9 +105,9 @@
 							<tr soy:display="gender">
 								<th>性別</th>
 								<td>
-									<input soy:id="gender_male" type="radio" id="radio_sex_male" name="" />
+									<input soy:id="gender_male" type="radio" id="radio_sex_male" />
 									<label for="radio_sex_male">男</label>
-									<input soy:id="gender_female" type="radio" id="radio_sex_female" name="" />
+									<input soy:id="gender_female" type="radio" id="radio_sex_female" />
 									<label for="radio_sex_female">女</label>
 								</td>
 							</tr>
@@ -142,6 +142,7 @@
 									</select>
 									<input soy:id="address1" type="text" size="40" id="address1" class="input-city" /><br>
 									<input soy:id="address2" type="text" style="width:95%;" id="address2" class="input-town" /><br>
+									<input soy:id="address3" type="text" style="width:95%;" id="address3"><br>
 									<!-- soy:id="advenced_address_list" --><!-- soy:id="form" /--><!-- /soy:id="advenced_address_list" -->
 								</td>
 							</tr>
@@ -315,28 +316,28 @@
 							<tr>
 								<th>法人名(勤務先)</th>
 								<td>
-									<input soy:id="send_office" type="text" name="" value="" />
+									<input soy:id="send_office" type="text" value="" />
 								</td>
 							</tr>
 
 							<tr>
 								<th>氏名</th>
 								<td>
-									<input soy:id="send_name" type="text" name="" value="" />
+									<input soy:id="send_name" type="text" value="" />
 								</td>
 							</tr>
 
 							<tr>
 								<th>フリガナ</th>
 								<td>
-									<input soy:id="send_reading" type="text" name="" value="" />
+									<input soy:id="send_reading" type="text" value="" />
 								</td>
 							</tr>
 
 							<tr>
 								<th>郵便番号</th>
 								<td>
-									<input soy:id="send_zip_code" type="text" name="" value="" />
+									<input soy:id="send_zip_code" type="text" value="" />
 								</td>
 							</tr>
 
@@ -346,15 +347,15 @@
 									<select soy:id="send_area">
 										<option value=""></option>
 									</select>
-									<input soy:id="send_address1" type="text" name="" value="" /><br>
-									<input soy:id="send_address2" type="text" name="" value="" />
+									<input soy:id="send_address1" type="text" value="" /><br>
+									<input soy:id="send_address2" type="text" value="" />
 								</td>
 							</tr>
 
 							<tr>
 								<th>電話番号</th>
 								<td>
-									<input soy:id="send_tel_number" type="text" name="" value="" />
+									<input soy:id="send_tel_number" type="text" value="" />
 								</td>
 							</tr>
 						</table>

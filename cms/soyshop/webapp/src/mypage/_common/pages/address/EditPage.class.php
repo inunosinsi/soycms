@@ -134,6 +134,11 @@ class EditPage extends MainMyPagePageBase{
     		"value" => (isset($address["address2"])) ? $address["address2"] : "",
     	));
 
+		$this->addInput("send_address3", array(
+    		"name" => "Address[address3]",
+    		"value" => (isset($address["address3"])) ? $address["address3"] : "",
+    	));
+
 		//電話番号
     	$this->addInput("send_tel_number", array(
     		"name" => "Address[telephoneNumber]",

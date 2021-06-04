@@ -16,7 +16,7 @@
 
 	<div class="form-group">
 		<label for="password">パスワード<span class="require"></span></label>
-		<input name="" type="password" class="form-group" autocomplete="off" soy:id="password">
+		<input type="password" class="form-group" autocomplete="off" soy:id="password">
 		<small class="form-text text-muted">【半角英数・<!-- soy:id="password_count" -->8<!-- /soy:id="password_count" -->文字以上】</small>
 	</div>
 
@@ -25,7 +25,7 @@
 		<!-- soy:display="has_error" -->
 		<p class="alert alert-danger" role="role">上と同じパスワードを正しく入力してください。</p>
 		<!-- /soy:display="has_error" -->
-		<input name="" type="password" class="form-control" autocomplete="off" soy:id="confirm">
+		<input type="password" class="form-control" autocomplete="off" soy:id="confirm">
 		<small class="form-text text-muted">【半角英数・<!-- soy:id="password_count*" -->8<!-- /soy:id="password_count*" -->文字以上】</small>
 	</div>
 

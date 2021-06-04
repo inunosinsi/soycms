@@ -82,6 +82,7 @@ class SOYShop_User {
 	private $area;
 	private $address1;
 	private $address2;
+	private $address3;
 
 	/**
 	 * @column telephone_number
@@ -123,6 +124,11 @@ class SOYShop_User {
 	 * @column job_address2
 	 */
 	private $jobAddress2;
+
+	/**
+	 * @column job_address3
+	 */
+	private $jobAddress3;
 
 	/**
 	 * @column job_telephone_number
@@ -370,6 +376,12 @@ class SOYShop_User {
 	function setAddress2($address2) {
 		$this->address2 = $address2;
 	}
+	function getAddress3() {
+		return $this->address3;
+	}
+	function setAddress3($address3) {
+		$this->address3 = $address3;
+	}
 	function getTelephoneNumber() {
 		return $this->telephoneNumber;
 	}
@@ -424,6 +436,12 @@ class SOYShop_User {
 	}
 	function setJobAddress2($jobAddress2) {
 		$this->jobAddress2 = $jobAddress2;
+	}
+	function getJobAddress3() {
+		return $this->jobAddress3;
+	}
+	function setJobAddress3($jobAddress3) {
+		$this->jobAddress3 = $jobAddress3;
 	}
 	function getJobTelephoneNumber() {
 		return $this->jobTelephoneNumber;
@@ -553,6 +571,7 @@ class SOYShop_User {
 				"area" => $this->getArea(),
 				"address1" => $this->getAddress1(),
 				"address2" => $this->getAddress2(),
+				"address3" => $this->getAddress3(),
 				"telephoneNumber" => $this->getTelephoneNumber(),
 				"office" => $this->getJobName(),
 			);
@@ -611,6 +630,7 @@ class SOYShop_User {
 			"area" => "",
 			"address1" => "",
 			"address2" => "",
+			"address3" => "",
 			"telephoneNumber" => "",
 			"office" => ""
 		);

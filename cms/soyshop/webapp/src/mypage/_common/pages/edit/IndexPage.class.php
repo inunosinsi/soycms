@@ -35,6 +35,7 @@ class IndexPage extends MainMyPagePageBase{
 			$user->setArea(SOYShop_Area::getAreaByText($res["prefecture"]));
 			$user->setAddress1($res["address1"]);
 			$user->setAddress2($res["address2"]);
+			$user->setAddress3($res["address3"]);
 			$anchor = "zipcode1";
 
 			$mypage->setUserInfo($user);

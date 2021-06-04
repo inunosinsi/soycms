@@ -93,7 +93,7 @@ class B2OutputCSV{
 
 		$config = B2OrderCsvUtil::getConfig();
 
-		$customerAddress = (isset($address["area"]) && strlen($address["area"])) ? $this->prefecture[$address["area"]].$address["address1"].$address["address2"] : "";
+		$customerAddress = (isset($address["area"]) && strlen($address["area"])) ? $this->prefecture[$address["area"]].$address["address1"].$address["address2"].$address["address3"] : "";
 		$customerReading = (isset($address["reading"])) ? mb_convert_kana($address["reading"],"k") : "";
 
 		$csv = array();

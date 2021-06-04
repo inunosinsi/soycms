@@ -36,7 +36,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 		// 	(isset($_GET[session_name()]) || isset($_POST[session_name()])) && !isset($_COOKIE[session_name()])
 		// ){
 		//
-		// 	$session_time = $config["session"] * 60;
+		// 	$session_time = $cnf["session"] * 60;
 		//
 		// 	ini_set("session.gc_maxlifetime", $session_time);
 		//
@@ -112,7 +112,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 			if($path){
 				//if do not work Location header
 				ob_start();
-				echo "<a href=\"" . htmlspecialchars($path, ENT_QUOTES, "UTF-8") . "\">" . htmlspecialchars($config["message"], ENT_QUOTES, "UTF-8") . "</a>";
+				echo "<a href=\"" . htmlspecialchars($path, ENT_QUOTES, "UTF-8") . "\">" . htmlspecialchars($cnf["message"], ENT_QUOTES, "UTF-8") . "</a>";
 
 				//リダイレクト
 				if($cnf["redirect"]) SOY2PageController::redirect($path);

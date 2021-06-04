@@ -17,48 +17,54 @@
 					<dt nowrap>お名前<span class="require" soy:id="required_label">（必須）</span></dt>
 					<dd>
 						<p class="error" soy:id="name_error">お名前が正しく入力されていません。</p>
-						<input name="" type="text" class="w130" soy:id="name">
+						<input type="text" class="w130" soy:id="name">
 						<span class="note">【全角】</span>
 					</dd>
 					<dt nowrap>お名前カナ<span class="require" soy:id="required_label*">（必須）</span></dt>
 					<dd>
 						<p class="error" soy:id="reading_error">お名前カナが正しく入力されていません。</p>
-						<input name="" type="text" class="w130" soy:id="reading">
+						<input type="text" class="w130" soy:id="reading">
 						<span class="note">【全角カナ】</span>
 					</dd>
 					<dt nowrap>法人名（勤務先など）</dt>
-					<dd><input name="" type="text" class="w300" soy:id="office"></dd>
+					<dd><input type="text" class="w300" soy:id="office"></dd>
 					<dt id="zipcode">郵便番号<span class="require" soy:id="required_label*">（必須）</span></dt>
 					<dd>
 						<p class="error" soy:id="zipcode_error">郵便番号が正しく入力されていません。</p>
-						<input name="" type="text" class="input-zip w80" soy:id="zipcode">
+						<input type="text" class="input-zip w80" soy:id="zipcode">
 						<span class="note">【半角数字】</span>
 						<span class="search-btn btn"><img alt="郵便番号検索" soy:src="themes/common/images/btn_search.png"></span>
 					</dd>
 					<dt nowrap>ご住所<span class="require" soy:id="required_label*">（必須）</span></dt>
 					<dd>
 						<p class="error" soy:id="address_error">ご住所が正しく入力されていません。</p>
-						<select name="" class="input-pref" soy:id="area">
+						<select class="input-pref" soy:id="area">
 							<option value="">都道府県名</option>
 						</select>
 					</dd>
 
 					<dt>市区郡：</dt>
 					<dd>
-						<input name="" type="text" class="input-city w130" soy:id="address1"><br>
+						<input type="text" class="input-city w130" soy:id="address1"><br>
 						<span class="exmpl">（例）京都市左京区</span>
 					</dd>
 
 					<dt>町番地：</dt>
 					<dd>
-						<input name="" type="text" class="input-town w300" soy:id="address2"><br>
-						<span class="exmpl">（例）田中古川町44 SOYビル1F</span>
+						<input type="text" class="input-town w300" soy:id="address2"><br>
+						<span class="exmpl">（例）田中古川町44</span>
+					</dd>
+
+					<dt>建物名：</dt>
+					<dd>
+						<input type="text" class="w300" soy:id="address3"><br>
+						<span class="exmpl">（例）SOYビル1F</span>
 					</dd>
 
 					<dt nowrap>電話番号<span class="require" soy:id="required_label*">（必須）</span></dt>
 					<dd>
 						<p class="error" soy:id="telephonenumber_error">電話番号が正しく入力されていません。</p>
-						<input name="" type="text" class="w130" soy:id="telephonenumber">
+						<input type="text" class="w130" soy:id="telephonenumber">
 						<span class="note">【半角数字】</span><span class="exmpl">（例）075-204-4823</span>
 					</dd>
 				</dl>

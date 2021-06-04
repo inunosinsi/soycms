@@ -584,6 +584,7 @@ class CartLogic extends SOY2LogicBase{
 			"area" => $user->getArea(),
 			"address1" => $user->getAddress1(),
 			"address2" => $user->getAddress2(),
+			"address3" => $user->getAddress3(),
 			"telephoneNumber" => $user->getTelephoneNumber(),
 			"office" => $user->getJobName(),
 		);

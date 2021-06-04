@@ -100,15 +100,12 @@ class SendAddressPage extends WebPage{
     		"value" => (isset($address["area"])) ? $address["area"] : null,
     	));
 
-    	$this->addInput("address1", array(
-    		"name" => "Address[address1]",
-    		"value" => (isset($address["address1"])) ? $address["address1"] : "",
-    	));
-
-    	$this->addInput("address2", array(
-    		"name" => "Address[address2]",
-    		"value" => (isset($address["address2"])) ? $address["address2"] : "",
-    	));
+		for($i = 1; $i <= 3; $i++){
+			$this->addInput("address" . $i, array(
+	    		"name" => "Address[address" . $i . "]",
+	    		"value" => (isset($address["address" . $i])) ? $address["address" . $i] : "",
+	    	));
+		}
 
     	$this->addInput("tel_number", array(
     		"name" => "Address[telephoneNumber]",

@@ -1,39 +1,51 @@
 <div class="alert alert-success" soy:display="updated">変更しました</div>
 
-<div class="table-responsive">
-	<form method="post" soy:id="form">
+<form method="post" soy:id="form">
+	<div class="form-group">
+		<label>送り状に記載の商品名</label>
+		<input type="text" class="form-control" soy:id="object_name">
+	</div>
 
-		<dl>
-			<dt>送り状に記載の商品名</dt>
-			<dd><input class="form-control" value="" soy:id="object_name" style="width: 600px;"/></dd>
-			<dt>送付元名称</dt>
-			<dd><input class="form-control" value="" soy:id="shop_name" style="width: 600px;"/></dd>
+	<div class="form-group">
+		<label>送付元名称</label>
+		<input type="text" class="form-control" soy:id="shop_name">
+	</div>
 
-			<dt>送付元住所</dt>
-			<dd>
-				<h4>郵便番号</h4>
-				<input class="form-control" value="" soy:id="zipcode" />半角数字
-				<h4>都道府県</h4>
-				<input class="form-control" value="" soy:id="address_pref" />
-				<h4>市区町村～番地</h4>
-				<input class="form-control" value="" soy:id="address1" style="width: 600px;"/>
-				<h4>マンション名など</h4>
-				<input class="form-control" value="" soy:id="address2" style="width: 600px;"/>
-			</dd>
-			<dt>送付元情報</dt>
-			<dd>
-				<h4>電話番号</h4>
-				<input class="form-control" value="" soy:id="telephone" />半角数字
-				<h4>FAX</h4>
-				<input class="form-control" value="" soy:id="fax" />半角数字
-				<h4>メールアドレス</h4>
-				<input class="form-control" value="" soy:id="mailaddress" style="width: 600px;"/>
-			</dd>
-		</dl>
+	<br>
 
-		<div class="text-center">
-			<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	<div class="alert alert-info">送付元住所</div>
+	<div class="form-group">
+		<label>郵便番号</label>
+		<div class="form-inline">
+			<input type="text" class="form-control" soy:id="zipcode" />半角数字
 		</div>
+		<label>都道府県</label>
+		<div class="form-inline">
+			<input type="text" class="form-control" soy:id="address_pref" />
+		</div>
+		<label>市区町村～番地</label>
+		<input type="text" class="form-control" soy:id="address1">
+		<label>マンション名など</label>
+		<input type="text" class="form-control" soy:id="address2">
+	</div>
 
-	</form>
-</div>
+	<br>
+
+	<div class="alert alert-info">送付元情報</div>
+	<div class="form-group">
+		<label>電話番号</label>
+		<div class="form-inline">
+			<input type="text" class="form-control" soy:id="telephone" />半角数字
+		</div>
+		<label>FAX</label>
+		<div class="form-inline">
+			<input type="text" class="form-control" soy:id="fax" />半角数字
+		</div>
+		<label>メールアドレス</label>
+		<input type="email" class="form-control" soy:id="mailaddress">
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg" value="変更">
+	</div>
+</form>

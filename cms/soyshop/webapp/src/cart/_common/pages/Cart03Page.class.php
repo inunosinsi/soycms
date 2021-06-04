@@ -338,6 +338,10 @@ class Cart03Page extends MainCartPageBase{
 			"text" => (isset($send["address2"])) ? $send["address2"] : ""
 		));
 
+		$this->addLabel("send_address3", array(
+			"text" => (isset($send["address3"])) ? $send["address3"] : ""
+		));
+
 		$this->addLabel("send_tel", array(
 			"text" => (isset($send["telephoneNumber"])) ? $send["telephoneNumber"] : ""
 		));

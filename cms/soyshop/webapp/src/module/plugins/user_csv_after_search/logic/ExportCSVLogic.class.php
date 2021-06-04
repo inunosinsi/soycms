@@ -60,6 +60,7 @@ class ExportCSVLogic extends SOY2LogicBase{
 		$line[] = (!is_null($user->getArea())) ? SOYShop_Area::getAreaText($user->getArea()) : null;
 		$line[] = $user->getAddress1();
 		$line[] = $user->getAddress2();
+		$line[] = $user->getAddress3();
 
 		$line[] = (!is_null($user->getTelephoneNumber()) && strlen($user->getTelephoneNumber())) ? "=\"" . $user->getTelephoneNumber() . "\"" : null;
 		$line[] = (!is_null($user->getFaxNumber()) && strlen($user->getFaxNumber())) ? "=\"" . $user->getFaxNumber() . "\"" : null;
@@ -103,6 +104,7 @@ class ExportCSVLogic extends SOY2LogicBase{
 			"areaText" => "住所（都道府県）",
 			"address1" => "住所１",
 			"address2" => "住所２",
+			"address3" => "住所３",
 			"telephoneNumber" => "電話番号",
 			"faxNumber" => "FAX番号",
 

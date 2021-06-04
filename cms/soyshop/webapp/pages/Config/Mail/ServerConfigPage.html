@@ -33,11 +33,11 @@
 										<col style="width:100px;text-align:left;" />
 										<tr>
 											<th nowrap>サーバ</th>
-											<td><input soy:id="send_server_address" type="text" name="" value="" class="form-control" /></td>
+											<td><input soy:id="send_server_address" type="text" value="" class="form-control" /></td>
 										</tr>
 										<tr>
 											<th>ポート</th>
-											<td><input soy:id="send_server_port" type="text" name="" value="" class="form-control" /></td>
+											<td><input soy:id="send_server_port" type="text" value="" class="form-control" /></td>
 										</tr>
 									</table>
 								</td>
@@ -45,7 +45,7 @@
 							<tr>
 								<td>
 									<input type="hidden" name="isUseSSLSendServer" value="0" />
-									<input soy:id="is_use_ssl_send_server" type="checkbox" name="" />
+									<input soy:id="is_use_ssl_send_server" type="checkbox" />
 									<label for="is_use_ssl_send_server">SSL(暗号化)を使用する</label>
 
 									<div class="alert alert-info" soy:display="ssl_disabled">SSLが使えないサーバーです。</div>
@@ -66,7 +66,7 @@
 										</tr>
 										<tr>
 											<th nowrap>パスワード</th>
-											<td><input soy:id="send_server_password" type="password" name="" value="" class="form-control" /></td>
+											<td><input soy:id="send_server_password" type="password" value="" class="form-control" /></td>
 										</tr>
 
 									</table>
@@ -75,7 +75,7 @@
 							<tr>
 								<td>
 									<input name="isUsePopBeforeSMTP" type="hidden" value="0" />
-									<input soy:id="is_use_pop_before_smtp" type="checkbox" name="" />
+									<input soy:id="is_use_pop_before_smtp" type="checkbox" />
 									<label for="is_use_pop_before_smtp">「POP/IMAP before SMTP」を使用する</label>
 								</td>
 							</tr>
@@ -106,11 +106,11 @@
 										<col style="width:100px;text-align:left;" />
 										<tr>
 											<th nowrap>サーバ</th>
-											<td><input soy:id="receive_server_address" type="text" name="" value="" class="form-control" /></td>
+											<td><input soy:id="receive_server_address" type="text" value="" class="form-control" /></td>
 										</tr>
 										<tr>
 											<th nowrap>ポート</th>
-											<td><input soy:id="receive_server_port" type="text" name="" value="" class="form-control" /></td>
+											<td><input soy:id="receive_server_port" type="text" value="" class="form-control" /></td>
 										</tr>
 										<tr>
 											<th nowrap>ユーザ名</th>
@@ -118,7 +118,7 @@
 										</tr>
 										<tr>
 											<th nowrap>パスワード</th>
-											<td><input soy:id="receive_server_password" type="password" name="" value="" class="form-control" /></td>
+											<td><input soy:id="receive_server_password" type="password" value="" class="form-control" /></td>
 										</tr>
 									</table>
 								</td>
@@ -127,7 +127,7 @@
 							<tr>
 								<td>
 									<input name="isUseSSLReceiveServer" type="hidden" value="0" />
-									<input soy:id="is_use_ssl_receive_server" type="checkbox" name="" />
+									<input soy:id="is_use_ssl_receive_server" type="checkbox" />
 									<label for="is_use_ssl_receive_server">SSL(暗号化)を使用する</label>
 
 									<div class="alert alert-info" soy:display="ssl_disabled_1">SSLが使えないサーバーです。</div>

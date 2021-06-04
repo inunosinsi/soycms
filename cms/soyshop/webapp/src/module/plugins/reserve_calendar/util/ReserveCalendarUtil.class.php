@@ -230,7 +230,7 @@ class ReserveCalendarUtil{
 
 		if(isset($results[$schedule->getId()])) return $results[$schedule->getId()];
 
-		return $schedule->getUnsoldSeat() - self::_reserveLogic()->getReservedCountByScheduleId($schedule->getId());
+		return $schedule->getUnsoldSeat() - self::_reserveLogic()->getReservedCountByScheduleId($schedule->getId(), false, true);
 	}
 
 	private static function _reserveLogic(){

@@ -50,6 +50,8 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
 
         $this->setTotal($total);
 
+		if(!defined("SOYSHOP_PAGE_TYPE")) define("SOYSHOP_PAGE_TYPE", get_class($obj));
+
         //item_list
         $this->createAdd("item_list", "SOYShop_ItemListComponent", array(
             "list" => $items,

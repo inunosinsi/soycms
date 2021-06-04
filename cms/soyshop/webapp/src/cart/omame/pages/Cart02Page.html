@@ -72,7 +72,7 @@
 				<tr>
 					<th><span class="require_message">[必須]</span>メールアドレス</th>
 					<td>
-						<input id="user_mail_address" soy:id="mail_address" type="text" name="" value="" size="60" />
+						<input id="user_mail_address" soy:id="mail_address" type="text" value="" size="60" />
 						<p soy:id="mail_address_error" class="error">○○が△△△△です。</p>
 					</td>
 				</tr>
@@ -82,7 +82,7 @@
 					<th>パスワード</th>
 					<td>
 						<p class="error" soy:id="password_invalid">パスワードが違います</p>
-						<input soy:id="password" type="password" name="" value="" autocomplete="off" size="30" /><br />
+						<input soy:id="password" type="password" value="" autocomplete="off" size="30" /><br />
 						パスワードを入力することで次回から入力が簡単になります。
 					</td>
 				</tr>
@@ -91,7 +91,7 @@
 				<tr>
 					<th><span class="require_message">[必須]</span>氏名</th>
 					<td>
-						<input id="user_name" soy:id="name" type="text" name="" value="" size="30"/>
+						<input id="user_name" soy:id="name" type="text" value="" size="30"/>
 						<p soy:id="name_error" class="error">○○が△△△△です。</p>
 					</td>
 				</tr>
@@ -99,7 +99,7 @@
 				<tr>
 					<th><span class="require_message">[必須]</span>フリガナ</th>
 					<td>
-						<input id="user_reading" soy:id="furigana" type="text" name="" value="" size="30" />
+						<input id="user_reading" soy:id="furigana" type="text" value="" size="30" />
 						<p soy:id="reading_error" class="error">○○が△△△△です。</p>
 					</td>
 				</tr>
@@ -107,7 +107,7 @@
 				<tr id="zipcode1">
 					<th><span class="require_message">[必須]</span>郵便番号</th>
 					<td>
-						<input id="user_zip_code" soy:id="post_number" type="text" name="" value="" size="20" />
+						<input id="user_zip_code" soy:id="post_number" type="text" value="" size="20" />
 						<input type="submit" name="user_zip_search" value="検索"/>
 						<p soy:id="zip_code_error" class="error">○○が△△△△です。</p>
 					</td>
@@ -119,8 +119,8 @@
 						<select id="user_area" soy:id="area">
 							<option value="">▼選択</option>
 						</select>
-						<input id="user_address1" soy:id="address1" type="text" name="" value="" size="40" /><br>
-						<input id="user_address2" soy:id="address2" type="text" name="" value="" size="60" />
+						<input id="user_address1" soy:id="address1" type="text" value="" size="40" /><br>
+						<input id="user_address2" soy:id="address2" type="text" value="" size="60" />
 
 						<p soy:id="address_error" class="error">○○が△△△△です。</p>
 					</td>
@@ -129,7 +129,7 @@
 				<tr>
 					<th><span class="require_message">[必須]</span>電話番号</th>
 					<td>
-						<input id="user_tel_number" soy:id="tel_number" type="text" name="" value="" size="30" />
+						<input id="user_tel_number" soy:id="tel_number" type="text" value="" size="30" />
 						<p soy:id="tel_number_error" class="error">○○が△△△△です。</p>
 					</td>
 				</tr>
@@ -137,9 +137,9 @@
 				<tr>
 					<th>性別</th>
 					<td>
-						<input soy:id="gender_male" type="radio" id="radio_sex_male" name="" value="0" />
+						<input soy:id="gender_male" type="radio" id="radio_sex_male" value="0" />
 						<label for="radio_sex_male">男</label>
-						<input soy:id="gender_female" type="radio" id="radio_sex_female" name="" value="1" />
+						<input soy:id="gender_female" type="radio" id="radio_sex_female" value="1" />
 						<label for="radio_sex_female">女</label>
 					</td>
 				</tr>
@@ -147,9 +147,9 @@
 				<tr>
 					<th>生年月日</th>
 					<td>
-						<input class="alR" soy:id="birth_year" type="text" name="" value="" size="5" />/
-						<input class="alR" soy:id="birth_month" type="text" name="" value="" size="3" />/
-						<input class="alR" soy:id="birth_day" type="text" name="" value="" size="3" />
+						<input class="alR" soy:id="birth_year" type="text" value="" size="5" />/
+						<input class="alR" soy:id="birth_month" type="text" value="" size="3" />/
+						<input class="alR" soy:id="birth_day" type="text" value="" size="3" />
 					</td>
 				</tr>
 
@@ -157,21 +157,21 @@
 				<tr>
 					<th>FAX番号</th>
 					<td>
-						<input soy:id="fax_number" type="text" name="" value="" size="30" />
+						<input soy:id="fax_number" type="text" value="" size="30" />
 					</td>
 				</tr>
 
 				<tr>
 					<th>携帯電話番号</th>
 					<td>
-						<input soy:id="ketai_number" type="text" name="" value="" size="30" />
+						<input soy:id="ketai_number" type="text" value="" size="30" />
 					</td>
 				</tr>
 
 				<tr>
 					<th>勤務先名称・職種</th>
 					<td>
-						<input soy:id="office" type="text" name="" value="" size="60" />
+						<input soy:id="office" type="text" value="" size="60" />
 					</td>
 				</tr>
 
@@ -192,28 +192,28 @@
 				<tr>
 					<th>法人名（勤務先）</th>
 					<td>
-						<input id="send_office" soy:id="send_office" type="text" name="" value="" size="60" />
+						<input id="send_office" soy:id="send_office" type="text" value="" size="60" />
 					</td>
 				</tr>
 
 				<tr>
 					<th><span class="require_message">[必須]</span>氏名</th>
 					<td>
-						<input id="send_name" soy:id="send_name" type="text" name="" value="" size="30" />
+						<input id="send_name" soy:id="send_name" type="text" value="" size="30" />
 					</td>
 				</tr>
 
 				<tr>
 					<th><span class="require_message">[必須]</span>フリガナ</th>
 					<td>
-						<input id="send_reading" soy:id="send_furigana" type="text" name="" value="" size="30" />
+						<input id="send_reading" soy:id="send_furigana" type="text" value="" size="30" />
 					</td>
 				</tr>
 
 				<tr id="zipcode2">
 					<th><span class="require_message">[必須]</span>郵便番号</th>
 					<td>
-						<input id="send_zip_code" soy:id="send_post_number" type="text" name="" value="" size="20" />
+						<input id="send_zip_code" soy:id="send_post_number" type="text" value="" size="20" />
 						<input type="submit" name="send_zip_search" value="検索"/>
 					</td>
 				</tr>
@@ -224,15 +224,15 @@
 						<select id="send_area" soy:id="send_area">
 							<option value="">▼選択</option>
 						</select>
-						<input id="send_address1" soy:id="send_address1" type="text" name="" value="" size="40" /><br>
-						<input id="send_address2" soy:id="send_address2" type="text" name="" value="" size="60" />
+						<input id="send_address1" soy:id="send_address1" type="text" value="" size="40" /><br>
+						<input id="send_address2" soy:id="send_address2" type="text" value="" size="60" />
 					</td>
 				</tr>
 
 				<tr>
 					<th><span class="require_message">[必須]</span>電話番号</th>
 					<td>
-						<input id="send_tel_number" soy:id="send_tel_number" type="text" name="" value="" size="30" />
+						<input id="send_tel_number" soy:id="send_tel_number" type="text" value="" size="30" />
 					</td>
 				</tr>
 			</table>

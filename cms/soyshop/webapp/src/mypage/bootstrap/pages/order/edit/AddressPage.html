@@ -10,24 +10,24 @@
 	<div class="form-group">
 		<label for="name">お名前<span class="require" soy:id="required_label">（必須）</span></label>
 		<p class="alert alert-danger" role="alert" soy:id="name_error">お名前が正しく入力されていません。</p>
-		<input name="" type="text" class="form-control" soy:id="name">
+		<input type="text" class="form-control" soy:id="name">
 		<small class="form-text text-muted">【全角】</small>
 	</div>
 	<div class="form-group">
 		<label for="reading">フリガナ<span class="require" soy:id="required_label*">（必須）</span></label>
 		<p class="alert alert-danger" role="alert" soy:id="reading_error">フリガナが正しく入力されていません。</p>
-		<input name="" type="text" class="form-control" soy:id="reading">
+		<input type="text" class="form-control" soy:id="reading">
 		<small class="form-text text-muted">【全角カナ】</small>
 	</div>
 	<div class="form-group">
 		<label for="office_name">法人名（勤務先など）</label>
-		<input name="" type="text" class="form-control" soy:id="office">
+		<input type="text" class="form-control" soy:id="office">
 	</div>
 	<div class="form-group" id="zipcode">
 		<label for="zipCode">郵便番号<span class="require" soy:id="required_label*">（必須）</span></label>
 		<p class="alert alert-danger" role="alert" soy:id="zipcode_error">郵便番号が正しく入力されていません。</p>
 		<div class="form-inline">
-			<input name="" type="text" class="input-zip form-control" soy:id="zipcode">&nbsp;
+			<input type="text" class="input-zip form-control" soy:id="zipcode">&nbsp;
 			<a href="javascript:void(0);" class="search-btn btn btn-primary">郵便番号検索</a>
 		</div>
 		<small class="form-text text-muted">【半角数字】</small>
@@ -36,7 +36,7 @@
 		<label for="">ご住所<span class="require" soy:id="required_label*">（必須）</span></label>
 		<p class="alert alert-danger" role="alert" soy:id="address_error">ご住所が正しく入力されていません。</p>
 		<div class="form-inline">
-			<select name="" class="input-pref form-control" soy:id="area">
+			<select class="input-pref form-control" soy:id="area">
 				<option value="">都道府県名</option>
 			</select>
 		</div>
@@ -45,21 +45,28 @@
 	<div class="form-group row">
 		<label for="city" class="col-sm-2 col-form-label">市区郡</label>
 		<div class="col-sm-8">
-			<input name="" type="text" class="input-city form-control" soy:id="address1">
+			<input type="text" class="input-city form-control" soy:id="address1">
 		</div>
 	</div>
 
 	<div class="form-group row">
 		<label for="town" class="col-sm-2 col-form-label">町番地</label>
 		<div class="col-sm-8">
-			<input name="" type="text" class="input-town form-control" soy:id="address2">
+			<input type="text" class="input-town form-control" soy:id="address2">
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<label for="town" class="col-sm-2 col-form-label">建物名</label>
+		<div class="col-sm-8">
+			<input type="text" class="form-control" soy:id="address3">
 		</div>
 	</div>
 
 	<div class="form-group">
 		<label for="telephonenumber">電話番号<span class="require" soy:id="required_label*">（必須）</span></label>
 		<p class="alert alert-danger" role="alert" soy:id="telephonenumber_error">電話番号が正しく入力されていません。</p>
-		<input name="" type="text" class="form-control" soy:id="telephonenumber">
+		<input type="text" class="form-control" soy:id="telephonenumber">
 		<small class="form-text text-muted">【半角数字】</small>
 	</div>
 

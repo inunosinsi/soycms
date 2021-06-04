@@ -13,7 +13,7 @@
 				<div soy:id="search_by_id_error" class="alert alert-dange">エラー</div>
 				<div class="form-group">
 					<form soy:id="user_search_by_id_form">
-						<input type="text" soy:id="search_by_id" name="" value="" size="20" />
+						<input type="text" soy:id="search_by_id" size="20" />
 						<input type="submit" id="search_by_id_button" class="btn btn-primary btn-sm" value="決定">
 					</form>
 				</div>
@@ -22,7 +22,7 @@
 				<div soy:id="search_by_user_code_error" class="alert alert-dange">エラー</div>
 				<div class="form-group">
 					<form soy:id="user_search_by_user_code_form">
-						<input type="text" soy:id="search_by_user_code" name="" value="" size="20" />
+						<input type="text" soy:id="search_by_user_code" size="20" />
 						<input type="submit" id="search_by_user_code_button" class="btn btn-primary btn-sm" value="決定">
 					</form>
 				</div>
@@ -31,7 +31,7 @@
 				<div soy:id="search_by_email_error" class="alert alert-dange">エラー</div>
 				<div class="form-group">
 					<form soy:id="user_search_by_email_form">
-						<input type="text" soy:id="search_by_email" name="" value="" size="60" />
+						<input type="text" soy:id="search_by_email" size="60" />
 						<input type="submit" id="search_by_email_button" class="btn btn-primary btn-sm" value="決定">
 					</form>
 				</div>
@@ -40,7 +40,7 @@
 				<div soy:id="search_by_tell_error" class="alert alert-dange">エラー</div>
 				<div class="form-group">
 					<form soy:id="user_search_by_tell_form">
-						<input type="text" soy:id="search_by_tell" name="" value="" size="60" />
+						<input type="text" soy:id="search_by_tell" size="60" />
 						<input type="submit" id="search_by_tell_button" class="btn btn-primary btn-sm" value="決定">
 					</form>
 				</div>
@@ -49,7 +49,7 @@
 				<div soy:id="search_by_name_error" class="alert alert-dange">エラー</div>
 				<div class="form-group">
 					<form soy:id="user_search_by_name_form">
-						<input type="text" soy:id="search_by_name" name="" value="" size="60" />
+						<input type="text" soy:id="search_by_name" size="60" />
 						<input type="submit" id="search_by_name_button" class="btn btn-primary btn-sm" value="決定"><br>
 						※苗字と名前の間に必ずスペースを入れてから検索してください。
 					</form>
@@ -59,7 +59,7 @@
 				<div soy:id="search_by_reading_error" class="alert alert-dange">エラー</div>
 				<div class="form-group">
 					<form soy:id="user_search_by_reading_form">
-						<input type="text" soy:id="search_by_reading" name="" value="" size="60" />
+						<input type="text" soy:id="search_by_reading" size="60" />
 						<input type="submit" id="search_by_reading_button" class="btn btn-primary btn-sm" value="決定"><br>
 						※苗字と名前の間に必ずスペースを入れてから検索してください。
 					</form>
@@ -73,7 +73,7 @@
 							<table class="table table-striped">
 								<tr>
 									<th>メールアドレス</th>
-									<td><input type="text" soy:id="mail_address" name="" value="" size="60" /></td>
+									<td><input type="text" soy:id="mail_address" size="60" /></td>
 								</tr>
 								<tr soy:display="userCode">
 									<th>顧客コード</th>
@@ -83,20 +83,20 @@
 								</tr>
 								<tr soy:display="name">
 									<th>氏名</th>
-									<td><input type="text" soy:id="name" name="" value="" size="60" /></td>
+									<td><input type="text" soy:id="name" size="60" /></td>
 								</tr>
 								<tr soy:display="reading">
 									<th>フリガナ</th>
-									<td><input type="text" soy:id="reading" name="" value="" size="60" /></td>
+									<td><input type="text" soy:id="reading" size="60" /></td>
 								</tr>
 								<tr soy:display="honorific">
 									<th>敬称</th>
-									<td><input type="text" soy:id="honorific" name="" value="" size="60" /></td>
+									<td><input type="text" soy:id="honorific" size="60" /></td>
 								</tr>
 								<tr soy:display="zipCode">
 									<th>郵便番号</th>
 									<td>
-										<input type="text" soy:id="post_number" name="" value="" size="20" class="input-zip" id="zipcode">
+										<input type="text" soy:id="post_number" size="20" class="input-zip" id="zipcode">
 										<a href="javascript:void(0);" class="search-btn btn btn-primary btn-sm">検索</a>
 									</td>
 								</tr>
@@ -106,25 +106,26 @@
 										<select soy:id="area" class="input-pref" id="pref">
 											<option value="">▼選択</option>
 										</select>
-										<input type="text" name="" value="" soy:id="address1" size="40" class="input-city" id="address"><br>
-										<input type="text" name="" value="" soy:id="address2" size="60" class="input-town">
+										<input type="text" soy:id="address1" size="40" class="input-city" id="address"><br>
+										<input type="text" soy:id="address2" size="60" class="input-town"><br>
+										<input type="text" soy:id="address3" size="60">
 									</td>
 								</tr>
 								<tr soy:display="telephoneNumber">
 									<th>電話番号</th>
-									<td><input type="text" name="" value="" soy:id="tel_number" size="30" id="telephone_number" /></td>
+									<td><input type="text" soy:id="tel_number" size="30" id="telephone_number" /></td>
 								</tr>
 								<tr soy:display="faxNumber">
 									<th>FAX番号</th>
-									<td><input type="text" name="" value="" soy:id="fax_number" size="30" /></td>
+									<td><input type="text" soy:id="fax_number" size="30" /></td>
 								</tr>
 								<tr soy:display="cellphoneNumber">
 									<th>携帯電話番号</th>
-									<td><input type="text" name="" value="" soy:id="ketai_number" size="30" /></td>
+									<td><input type="text" soy:id="ketai_number" size="30" /></td>
 								</tr>
 								<tr soy:display="office_item">
 									<th>勤務先名称・職種</th>
-									<td><input type="text" name="" value="" soy:id="office" size="60" /></td>
+									<td><input type="text" soy:id="office" size="60" /></td>
 								</tr>
 								<!-- soy:id="has_user_customfield" -->
 								<!-- soy:id="user_customfield_list" -->

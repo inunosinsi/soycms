@@ -404,6 +404,11 @@ class IndexPage extends WebPage{
 			"text" => $user->getAddress2(),
 		));
 
+		//住所入力3
+		$this->addLabel("address3_on_admin", array(
+			"text" => $user->getAddress3(),
+		));
+
 		//電話番号
 		$this->addLabel("telephone_number_on_admin", array(
 			"text" => $user->getTelephoneNumber(),
@@ -499,6 +504,10 @@ class IndexPage extends WebPage{
 
     	$this->addLabel("send_address2", array(
     		"text" => (isset($address["address2"])) ? $address["address2"] : "",
+    	));
+
+		$this->addLabel("send_address3", array(
+    		"text" => (isset($address["address3"])) ? $address["address3"] : "",
     	));
 
     	$this->addLabel("send_tel_number", array(

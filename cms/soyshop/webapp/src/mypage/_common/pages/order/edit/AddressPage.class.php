@@ -110,7 +110,7 @@ class addressPage extends MainMyPagePageBase{
 
 		$this->addForm("form");
 
-		foreach(array("name", "reading", "office", "zipCode", "area", "address1", "address2", "telephoneNumber") as $t){
+		foreach(array("name", "reading", "office", "zipCode", "area", "address1", "address2", "address3", "telephoneNumber") as $t){
 			switch($t){
 				case "area":
 					$this->addSelect($t, array(
@@ -208,6 +208,7 @@ class addressPage extends MainMyPagePageBase{
 		if($address["area"] != $newAddress["area"])			$change[]=$this->getHistoryText($label, SOYShop_Area::getAreaText($address["area"]), SOYShop_Area::getAreaText($newAddress["area"]));
 		if($address["address1"] != $newAddress["address1"]) $change[]=$this->getHistoryText($label, $address["address1"], $newAddress["address1"]);
 		if($address["address2"] != $newAddress["address2"]) $change[]=$this->getHistoryText($label, $address["address2"], $newAddress["address2"]);
+		if($address["address3"] != $newAddress["address3"]) $change[]=$this->getHistoryText($label, $address["address3"], $newAddress["address3"]);
 		if($address["telephoneNumber"] != $newAddress["telephoneNumber"]) $change[]=$this->getHistoryText($label, $address["telephoneNumber"], $newAddress["telephoneNumber"]);
 
 		if(($this->mode == self::MODE_SEND)){
