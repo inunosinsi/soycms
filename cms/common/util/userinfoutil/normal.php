@@ -268,7 +268,7 @@ class UserInfoUtil implements IUserInfoUtil{
     	}else{
 	    	$http = (isset($_SERVER["HTTPS"]) || defined("SOY2_HTTPS") && SOY2_HTTPS) ? "https" : "http";
 	    	$host = $_SERVER['SERVER_NAME'];
-	    	if( (!isset($_SERVER["HTTPS"]) && $_SERVER['SERVER_PORT'] != 80) OR (isset($_SERVER["HTTPS"]) && $_SERVER['SERVER_PORT'] != 443) ){
+	    	if( (!isset($_SERVER["HTTPS"]) && $_SERVER['SERVER_PORT'] != 80) || (isset($_SERVER["HTTPS"]) && $_SERVER['SERVER_PORT'] != 443) ){
 	    		$host .= ":".$_SERVER['SERVER_PORT'];
 	    	}
 
