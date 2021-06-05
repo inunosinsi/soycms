@@ -8,7 +8,8 @@ if((!isset($_SESSION) || is_null($_SESSION))){
 	$sessCnf = session_get_cookie_params();
 	if(!$sessCnf["httponly"]){	//httponlyがtrueの場合は既に設定済みとして再び実行しない
 		//localhostでなければドメインを指定してしまう
-		$sessCnf["domain"] = (is_bool(strpos($_SERVER["HTTP_HOST"], "localhost"))) ? $_SERVER["HTTP_HOST"] : null;
+		//$sessCnf["domain"] = (is_bool(strpos($_SERVER["HTTP_HOST"], "localhost"))) ? $_SERVER["HTTP_HOST"] : null;
+		$sessCnf["domain"] = null;
 		$sessCnf["httponly"] = true;
 		$sessCnf["secure"] = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on");
 
