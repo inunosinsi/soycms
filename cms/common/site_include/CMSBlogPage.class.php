@@ -156,7 +156,7 @@ class CMSBlogPage extends CMSPage{
 
 		//モードの取得、モード別の動作など
 		$arguments = implode("/",$this->arguments);
-
+		
 		//ページの取得
 		if(preg_match('/(\/?page-([0-9]*))$/',$arguments,$tmp)){
 			$this->offset = $tmp[2];
@@ -219,7 +219,7 @@ class CMSBlogPage extends CMSPage{
 				$this->mode = CMSBlogPage::MODE_CATEGORY_ARCHIVE;
 				$this->limit = $this->page->getCategoryDisplayCount();
 
-				$label = mb_convert_encoding(
+				$alias = mb_convert_encoding(
 					str_replace(
 						$this->page->getCategoryPageUri()."/",
 						"",
@@ -229,7 +229,7 @@ class CMSBlogPage extends CMSPage{
 					"UTF-8,ASCII,JIS,Shift_JIS,EUC-JP,SJIS,SJIS-win"
 				);
 
-				$this->label = $this->getLabel($label);
+				$this->label = $this->getLabel($alias);
 				$this->entries = self::getEntriesByLabel($this->label);
 
 				$pageFormat = $this->page->getCategoryTitleFormat();
@@ -880,16 +880,15 @@ class CMSBlogPage extends CMSPage{
 	/**
 	 * ラベルを取得
 	 */
-	function getLabel($label){
-
+	function getLabel($alias){
 		$dao = SOY2DAOFactory::create("cms.LabelDAO");
 
 		try{
 			//0から始まる場合は文字列とみなす
-			if($label[0] != "0" && is_numeric($label)){
-				$label = $dao->getById($label);
+			if($alias[0] != "0" && is_numeric($alias)){
+				$label = $dao->getById($alias);
 			}else{
-				$label = $dao->getByAlias($label);
+				$label = $dao->getByAlias($alias);
 			}
 		}catch(Exception $e){
 			//$label = new Label();
