@@ -33,7 +33,7 @@ class BreadPlugin{
 			"author" => "株式会社Brassica",
 			"url" => "https://brassica.jp/",
 			"mail" => "soycms@soycms.net",
-			"version" => "1.3"
+			"version" => "1.4"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -68,35 +68,33 @@ class BreadPlugin{
 				}
 
 				//記事毎ページやアーカイブページの時の対応
-				if(!count($buff)){
+				if(!count($buff) && isset($_SERVER["BLOG_PAGE_MODE"])){
 					$reqUri = $_SERVER["REQUEST_URI"];
-					if(is_numeric(strpos($reqUri, $page->getUri() . "/" . $page->getEntryPageUri() . "/"))){
-						//末尾の値を取得
-						$alias = self::_getAliasByUri($reqUri);
-						try{
-							$buff[] = self::_entryDao()->getByAlias($alias)->getTitle();
-						}catch(Exception $e){
-							//
-						}
-					}else if(is_numeric(strpos($reqUri, $page->getUri() . "/" . $page->getCategoryPageUri() . "/"))){
-						$alias = self::_getAliasByUri($reqUri);
-						if(is_numeric(strpos($alias, "%"))) $alias = rawurldecode($alias);
-						try{
-							$buff[] = self::_labelDao()->getByAlias($alias)->getCaption();
-						}catch(Exception $e){
-							//
-						}
-					}else if(is_numeric(strpos($reqUri, $page->getUri() . "/" . $page->getMonthPageUri() . "/"))){
-						$dateArr = self::_getDateArray($reqUri);
-						$dateStr = "";
-						if(count($dateArr)){
-							$dateStr = $dateArr[0] . "年";
-							if(isset($dateArr[1])) $dateStr .= $dateArr[1] . "月";
-							if(isset($dateArr[2])) $dateStr .= $dateArr[2] . "日";
-						}
-						$buff[] = $dateStr;
-					}else{
-						//何もしない
+					switch($_SERVER["BLOG_PAGE_MODE"]){
+						case BlogPage::MODE_ENTRY:
+							try{
+								$buff[] = SOY2DAOFactory::create("cms.EntryDAO")->getByAlias(self::_getAliasByUri($reqUri))->getTitle();
+							}catch(Exception $e){
+								//
+							}
+							break;
+						case BlogPage::MODE_CATEGORY:
+							try{
+								$buff[] = SOY2DAOFactory::create("cms.LabelDAO")->getByAlias(self::_getAliasByUri($reqUri))->getCaption();
+							}catch(Exception $e){
+								//
+							}
+							break;
+						case BlogPage::MODE_ARCHIVE:
+							$dateArr = self::_getDateArray($reqUri);
+							$dateStr = "";
+							if(count($dateArr)){
+								$dateStr = $dateArr[0] . "年";
+								if(isset($dateArr[1])) $dateStr .= $dateArr[1] . "月";
+								if(isset($dateArr[2])) $dateStr .= $dateArr[2] . "日";
+							}
+							$buff[] = $dateStr;
+							break;
 					}
 				}
 			}else{
@@ -144,7 +142,9 @@ class BreadPlugin{
 
 	private function _getAliasByUri($uri){
 		$uri = rtrim($uri, "/");
-		return trim(substr($uri, strrpos($uri, "/")), "/");
+		$alias = trim(substr($uri, strrpos($uri, "/")), "/");
+		if(is_numeric(strpos($alias, "%"))) $alias = rawurldecode($alias);
+		return $alias;
 	}
 
 	private function _getDateArray($uri){
@@ -178,18 +178,6 @@ class BreadPlugin{
 	private function _blogDao(){
 		static $dao;
 		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.BlogPageDAO");
-		return $dao;
-	}
-
-	private function _entryDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryDAO");
-		return $dao;
-	}
-
-	private function _labelDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.LabelDAO");
 		return $dao;
 	}
 

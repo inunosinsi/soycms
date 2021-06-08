@@ -6,6 +6,11 @@ SOY2::import("domain.cms.Page");
  */
 class BlogPage extends Page{
 
+	const MODE_TOP = 0;
+	const MODE_CATEGORY = 1;
+	const MODE_ARCHIVE = 2;
+	const MODE_ENTRY = 3;
+
 	const TEMPLATE_ARCHIVE = "archive";
 	const TEMPLATE_TOP = "top";
 	const TEMPLATE_ENTRY = "entry";

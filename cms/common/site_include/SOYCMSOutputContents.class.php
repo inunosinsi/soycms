@@ -237,8 +237,8 @@ class SOYCMSOutputContents{
 	 * キャッシュを保存
 	 */
 	private function saveCache($contents){
-		file_put_contents($this->cache, $contents);
-		touch($this->cache, $this->generate_time);
+		@file_put_contents($this->cache, $contents);
+		if(file_exists($this->cache)) touch($this->cache, $this->generate_time);
 	}
 
 	/**
@@ -275,8 +275,8 @@ class SOYCMSOutputContents{
 	 * $lifetimeFileを更新日時を指定して保存
 	 */
 	private function saveLifetime($lifetime){
-		file_put_contents($this->lifetimeFile, $lifetime."\n".date("r",$lifetime));
-		touch($this->lifetimeFile, $lifetime);
+		@file_put_contents($this->lifetimeFile, $lifetime."\n".date("r",$lifetime));
+		if(file_exists($this->lifetimeFile)) touch($this->lifetimeFile, $lifetime);
 		if(file_exists($this->lifetimeFile) && filemtime($this->lifetimeFile) != $lifetime) @unlink($this->lifetimeFile);
 	}
 

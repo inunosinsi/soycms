@@ -156,7 +156,7 @@ class CMSBlogPage extends CMSPage{
 
 		//モードの取得、モード別の動作など
 		$arguments = implode("/",$this->arguments);
-		
+
 		//ページの取得
 		if(preg_match('/(\/?page-([0-9]*))$/',$arguments,$tmp)){
 			$this->offset = $tmp[2];
@@ -210,6 +210,8 @@ class CMSBlogPage extends CMSPage{
 				$pageFormat = preg_replace('/%BLOG%/',$this->page->getTitle(),$pageFormat);
 				$pageFormat = preg_replace('/%ENTRY%/',$this->entry->getTitle(),$pageFormat);
 				$this->title = $pageFormat;
+
+				$_SERVER["BLOG_PAGE_MODE"] = BlogPage::MODE_ENTRY;
 				break;
 
 			case CMSBlogPage::MODE_CATEGORY_ARCHIVE:
@@ -242,6 +244,7 @@ class CMSBlogPage extends CMSPage{
 				//表示しているページの絶対URL
 				$this->currentAbsoluteURL = $this->getCategoryPageURL(true) . rawurlencode($this->label->getAlias());
 
+				$_SERVER["BLOG_PAGE_MODE"] = BlogPage::MODE_CATEGORY;
 				break;
 
 			case CMSBlogPage::MODE_MONTH_ARCHIVE:
@@ -280,6 +283,7 @@ class CMSBlogPage extends CMSPage{
 				//表示しているページの絶対URL
 				$this->currentAbsoluteURL = $this->getCategoryPageURL(true) . implode("/",$date);
 
+				$_SERVER["BLOG_PAGE_MODE"] = BlogPage::MODE_ARCHIVE;
 				break;
 
 			case CMSBlogPage::MODE_RSS:
@@ -385,6 +389,8 @@ class CMSBlogPage extends CMSPage{
 
 				//表示しているページの絶対URL
 				$this->currentAbsoluteURL = $this->getTopPageURL(true);
+
+				$_SERVER["BLOG_PAGE_MODE"] = BlogPage::MODE_TOP;
 
 				break;
 
