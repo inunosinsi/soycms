@@ -397,11 +397,12 @@ function getStyleSheet(){
 			if(!rel || !rel[1].match(/stylesheet/i))continue;
 
 			var href = hrefRegExp.exec(link);
+			if(href){
+				var tmp = this.createElement("a");
+				tmp.href = href[1];
 
-			var tmp = this.createElement("a");
-			tmp.href = href[1];
-
-			styles.push(tmp.href);
+				styles.push(tmp.href);
+			}
 		}
 
 		return styles;
