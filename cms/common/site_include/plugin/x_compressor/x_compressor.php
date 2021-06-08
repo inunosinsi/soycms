@@ -128,7 +128,7 @@ class CompressorPlugin{
 			//リンクでhttpから始まる絶対パスの場合、スラッシュから始まる絶対パスに変更
 			if(stripos($line, "<a") !== false){
 				preg_match_all('/href=\"(.*?)\"/', $line, $tmp);
-				if(isset($tmp[1]) && is_array($tmp[1])){
+				if(isset($tmp[1]) && is_array($tmp[1]) && isset($_SERVER["HTTP_HOST"])){
 					foreach($tmp[1] as $old){
 						if(strpos($old, "http://www.facebook.com") === 0 || strpos($old, "https://www.facebook.com") === 0) continue;
 						if(strpos($old, "http://twitter.com") === 0 || strpos($old, "https://twitter.com") === 0) continue;
