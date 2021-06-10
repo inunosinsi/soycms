@@ -172,6 +172,11 @@ foreach($scripts as $script){
 							<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Help">ヘルプ</a>
 						</li>
 						-->
+						<?php if(AUTH_IFRAME){?>
+						<li class="abstract">
+							<iframe id="soyshop_iframe" src="<?php echo SOY2PageController::createLink("Abstract")?>"></iframe>
+						</li>
+						<?php }?>
 						<li class="hidden-xs">
 							<?php if($hideSideMenu) { ?>
 							<a href="#" id="toggle-side-menu" class="text-right"><i class="fa fa-fw fa-angle-right"></i><span>&nbsp;</span></a>
@@ -260,6 +265,11 @@ dt:before{
 dd:before{
 	content:"　";
 }
+#soyshop_iframe {
+	width:100%;
+	height:600px;
+	border:1px solid #FFFFFF;
+}
 </style>
 
 <script type="text/javascript">
@@ -272,6 +282,11 @@ $("#toggle-side-menu").click(function(){
 		$("#toggle-side-menu i").removeClass("fa-angle-right").addClass("fa-angle-left");
 		$("#toggle-side-menu").removeClass("active").blur();
 		$.cookie('soyshop-hide-side-menu', false);
+
+		//soyshop_iframeがある場合は、soyshop_iframeの高さを変更
+		if($("#soyshop_iframe")){
+			$("#soyshop_iframe").css("height", "600px");
+		}
 	}else{
 		$("#page-wrapper").css({'margin-left': '50px'});
 		$("#side-menu li a span").hide();
@@ -279,6 +294,11 @@ $("#toggle-side-menu").click(function(){
 		$("#toggle-side-menu i").removeClass("fa-angle-left").addClass("fa-angle-right");
 		$("#toggle-side-menu").removeClass("active").blur();
 		$.cookie('soyshop-hide-side-menu', true);
+
+		//soyshop_iframeがある場合は、soyshop_iframeの高さを変更
+		if($("#soyshop_iframe")){
+			$("#soyshop_iframe").css("height", "44px");
+		}
 	}
 });
 });

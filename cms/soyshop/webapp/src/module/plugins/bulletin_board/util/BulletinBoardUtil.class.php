@@ -168,6 +168,29 @@ class BulletinBoardUtil {
 		return $html;
 	}
 
+	//URLの表記を省略する
+	public static function abbrUrlText($html){
+		$html = trim($html);
+		if(!strlen($html)) return "";
+
+		$lines = explode("\n", $html);
+		$html = "";
+		foreach($lines as $line){
+			preg_match_all('/<a.*href=\".*\">(.*?)<\/a>/', $line, $tmps);
+			if(isset($tmps[1]) && count($tmps[1])){
+				$txt = $tmps[1][0];
+				$res = strpos($txt, "http");
+				if(is_numeric($res) && $res === 0 && strlen($txt) > 30){
+					$anc = "<a href=\"" . $txt . "\" target=\"_blank\" rel=\"noopener\">" . substr($txt, 0, 30) . "...</a>";
+					$line = str_replace($tmps[0][0], $anc, $line);
+				}
+			}
+			$html .= $line . "\n";
+		}
+
+		return trim($html);
+	}
+
 	public static function returnHTML($html){
 		return SOY2Logic::createInstance("module.plugins.bulletin_board.logic.ShapeHTMLLogic", array("html" => $html))->return();
 	}

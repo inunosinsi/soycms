@@ -23,7 +23,9 @@ class SOYShopAuthUtil {
 			"CHANGE" => true,	//更新の操作の内、公開に関するもの
 			"ADMINORDER" => true,	//管理画面から注文を追加する
 			"CSV" => true, 	// CSVの操作周り
-			"SOYAPP" => true	//SOY InquiryやSOY Mail
+			"SOYAPP" => true,	//SOY InquiryやSOY Mail,
+			"IFRAME" => SOYShopPluginUtil::checkIsActive("common_abstract"),	//概要のiframeの表示の有無
+			"ABSTRACT" => true	//概要
 		);
 	}
 

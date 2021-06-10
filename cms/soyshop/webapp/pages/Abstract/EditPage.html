@@ -1,0 +1,24 @@
+<div style="font-size:1.2em;padding:10px 15px;">
+	<a href="javascript:void(0);"><i class="fa fa-info-circle fa-fw"></i><span>概要</span></a>
+	<!-- soy:display="button" -->
+	&nbsp;&nbsp;
+	<a href="javascript:void(0);" class="btn btn-default btn-xs" onclick="toggle_page();">戻る</a>
+	<!-- /soy:display="button" -->
+</div>
+
+<form soy:id="form">
+	<textarea soy:id="content" class="form-control"></textarea>
+	<!-- soy:display="edit" -->
+	<input type="submit" class="btn btn-primary btn-block" value="保存">
+	<!-- /soy:display="edit" -->
+</form>
+
+<!-- soy:display="script" -->
+<script>
+function toggle_page(){
+	var iframeSrc = window.parent.soyshop_iframe.src;
+	iframeSrc = iframeSrc.replace("/Abstract/Edit", "/Abstract");
+	window.parent.soyshop_iframe.src = iframeSrc;
+}
+</script>
+<!-- /soy:display="script" -->
