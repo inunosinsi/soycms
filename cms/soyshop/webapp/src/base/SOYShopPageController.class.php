@@ -66,6 +66,7 @@ class SOYShopPageController extends SOY2PageController{
 			strpos($classPath,"Storage") !== false ||
 			strpos($classPath,"Arrival") !== false ||
 			strpos($classPath,"Favorite") !== false ||
+			strpos($classPath,"Abstract") !== false ||
 			strpos($classPath, "Order.Register.Item.SearchPage") === 0 ||
 			strpos($classPath, "Order.Register.Item.PricePage") === 0 ||
 			(isset($_GET["display_mode"]) && $_GET["display_mode"] == "free")
