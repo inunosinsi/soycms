@@ -186,4 +186,7 @@ class ReserveCalendarOrderMailbuilder extends SOYShopOrderMailBuilder{
 	}
 }
 
-SOYShopPlugin::extension("soyshop.order.mailbuilder", "reserve_calendar", "ReserveCalendarOrderMailbuilder");
+//メールビルダーがインストールされている場合はメールビルダーを優先する
+if(!SOYShopPluginUtil::checkIsActive("common_mailbuilder")){
+	SOYShopPlugin::extension("soyshop.order.mailbuilder", "reserve_calendar", "ReserveCalendarOrderMailbuilder");
+}

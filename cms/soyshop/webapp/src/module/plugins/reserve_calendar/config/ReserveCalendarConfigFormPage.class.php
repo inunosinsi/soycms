@@ -64,6 +64,8 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"label" => "キャンセルボタンを表示する"
 		));
 
+		DisplayPlugin::toggle("pre_register_annotation", !SOYShopPluginUtil::checkIsActive("change_order_status_invalid"));
+
 		//
 		$cartId = SOYShop_DataSets::get("config.cart.cart_id");
 		$mypageId = SOYShop_DataSets::get("config.mypage.id");

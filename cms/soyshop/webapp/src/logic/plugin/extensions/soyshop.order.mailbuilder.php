@@ -9,10 +9,10 @@ SOY2::import("logic.mail.SOYShop_MailBuilder");
 class SOYShopOrderMailBuilder implements SOY2PluginAction,SOYShop_MailBuilder{
 
 	function buildOrderMailBodyForUser(SOYShop_Order $order, SOYShop_User $user){
-
+		return null;
 	}
 	function buildOrderMailBodyForAdmin(SOYShop_Order $order, SOYShop_User $user){
-
+		return null;
 	}
 
 	function printColumn($str, $pos = "right", $width = 10){

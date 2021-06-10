@@ -99,8 +99,10 @@ class ReserveCalendarCart extends SOYShopCartBase{
 
 	//古い仮登録注文を無効注文(STATUS_INVALID=0)に変更する
 	private function _changeStatusOlderOrder(){
-		SOY2::import("module.plugins.change_order_status_invalid.util.ChangeOrderStatusInvalidUtil");
-		ChangeOrderStatusInvalidUtil::changeInvalidStatusOlderOrder();
+		if(SOYShopPluginUtil::checkIsActive("change_order_status_invalid")){
+			SOY2::import("module.plugins.change_order_status_invalid.util.ChangeOrderStatusInvalidUtil");
+			ChangeOrderStatusInvalidUtil::changeInvalidStatusOlderOrder();
+		}
 	}
 }
 SOYShopPlugin::extension("soyshop.cart", "reserve_calendar", "ReserveCalendarCart");
