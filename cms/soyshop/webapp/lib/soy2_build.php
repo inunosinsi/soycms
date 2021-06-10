@@ -9233,7 +9233,7 @@ function soy2_generate_token(){
 }
 function soy2_check_referer(){
 	$referer = parse_url($_SERVER['HTTP_REFERER']);
-	$port = (($referer["port"]) && ($referer["port"] != 80 || $referer["port"] != 443)) ? ":" . $referer["port"] : "";
+	$port = (isset($referer["port"]) && ($referer["port"] != 80 || $referer["port"] != 443)) ? ":" . $referer["port"] : "";
 	if($referer['host'] . $port !== $_SERVER['HTTP_HOST']) return false;
 
 	$_path = $referer["path"];
