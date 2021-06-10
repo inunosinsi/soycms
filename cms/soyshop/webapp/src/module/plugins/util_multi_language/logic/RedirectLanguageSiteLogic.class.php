@@ -124,6 +124,8 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 		}
 
 		foreach($config as $lang => $conf){
+			if(!isset($conf["is_use"]) || !is_numeric($conf["is_use"])) continue;
+			if(!isset($conf["prefix"]) || !is_string($conf["prefix"])) continue;
 			if($conf["is_use"] == UtilMultiLanguageUtil::IS_USE && strlen($conf["prefix"])){
 
 				if(strpos($pathInfo, "/" . $conf["prefix"] . "/") === 0 || $pathInfo == "/" . $conf["prefix"]){
