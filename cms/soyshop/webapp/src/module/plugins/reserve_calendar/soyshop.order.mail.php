@@ -48,15 +48,19 @@ class ReserveCalendarOrderMail extends SOYShopOrderMail{
 			$bodies[] = "\n" . $attr["name"] . "：" . $attr["value"];
 		}
 
-		//仮登録モードの場合、注文内容毎にトークンを発行
 		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
 		$config = ReserveCalendarUtil::getConfig();
+
+		//仮登録モードの場合、注文内容毎にトークンを発行
 		if(isset($config["tmp"]) && $config["tmp"] == ReserveCalendarUtil::IS_TMP && $order->getStatus() == SOYShop_Order::ORDER_STATUS_INTERIM){	//仮登録であるか？も調べておく
-			$tokens = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getTokensByOrderId($order->getId());
-			//一つでもクリックすればすべての予約が終わるようにする
-			if(isset($tokens[0])){
-				$url = soyshop_get_cart_url(false, true) . "?soyshop_notification=reserve_calendar&token=" . $tokens[0];
-				$bodies[] = "\n予約を完了するには下記のリンクをクリックします。\n" . $url . "\n";	//@ToDo文章
+			//仮登録モードの時にメール本文に本登録用のURLを挿入するか？
+			if(isset($config["send_at_time_tmp"]) && $config["send_at_time_tmp"] == ReserveCalendarUtil::IS_SEND){
+				$tokens = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getTokensByOrderId($order->getId());
+				//一つでもクリックすればすべての予約が終わるようにする
+				if(isset($tokens[0])){
+					$url = soyshop_get_cart_url(false, true) . "?soyshop_notification=reserve_calendar&token=" . $tokens[0];
+					$bodies[] = "\n予約を完了するには下記のリンクをクリックします。\n" . $url . "\n";	//@ToDo文章
+				}
 			}
 		}
 
@@ -71,3 +75,4 @@ class ReserveCalendarOrderMail extends SOYShopOrderMail{
 
 SOYShopPlugin::extension("soyshop.order.mail.user", "reserve_calendar", "ReserveCalendarOrderMail");
 SOYShopPlugin::extension("soyshop.order.mail.admin", "reserve_calendar", "ReserveCalendarOrderMail");
+SOYShopPlugin::extension("soyshop.order.mail.confirm", "reserve_calendar", "ReserveCalendarOrderMail");

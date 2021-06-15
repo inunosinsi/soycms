@@ -26,14 +26,23 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"name" => "Config[tmp]",
 			"value" => ReserveCalendarUtil::IS_TMP,
 			"selected" => (!isset($config["tmp"]) || $config["tmp"] == ReserveCalendarUtil::IS_TMP),
-			"label" => "仮登録を行う(β版)"
+			"label" => "仮登録を行う(β版)",
+			"elementid" => "is_tmp_order"
 		));
 
 		$this->addCheckBox("no_tmp_order", array(
 			"name" => "Config[tmp]",
 			"value" => ReserveCalendarUtil::NO_TMP,
 			"selected" => (isset($config["tmp"]) && $config["tmp"] == ReserveCalendarUtil::NO_TMP),
-			"label" => "仮登録を行わない"
+			"label" => "仮登録を行わない",
+			"elementid" => "no_tmp_order"
+		));
+
+		$this->addCheckBox("send_at_time_tmp_order", array(
+			"name" => "Config[send_at_time_tmp]",
+			"value" => ReserveCalendarUtil::IS_SEND,
+			"selected" => (isset($config["send_at_time_tmp"]) && $config["send_at_time_tmp"] == ReserveCalendarUtil::IS_SEND),
+			"label" => "仮登録の予約の際にメール文面に本登録用のURLを含める"
 		));
 
 		$this->addCheckBox("only", array(

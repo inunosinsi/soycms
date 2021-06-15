@@ -8,6 +8,10 @@ class SOYShopOrderStatusUpdate implements SOY2PluginAction{
 	function execute(SOYShop_Order $order){
 
 	}
+
+	function executeOnReserve(SOYShop_Order $order){
+		
+	}
 }
 class SOYShopOrderStatusUpdateDeletageAction implements SOY2PluginDelegateAction{
 
@@ -19,6 +23,9 @@ class SOYShopOrderStatusUpdateDeletageAction implements SOY2PluginDelegateAction
 			switch($this->mode){
 				case "status":
 					$action->execute($this->order);
+					break;
+				case "reserve":
+					$action->executeOnReserve($this->order);
 					break;
 				default:
 					break;

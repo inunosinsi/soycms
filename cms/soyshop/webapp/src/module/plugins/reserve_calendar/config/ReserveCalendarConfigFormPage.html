@@ -10,6 +10,10 @@
 		</div>
 	</div>
 
+	<div class="form-group" id="tmp_order_config">
+		<input type="checkbox" soy:id="send_at_time_tmp_order">
+	</div>
+
 	<div class="form-group">
 		<label>注文個数</label><br>
 		<input type="checkbox" soy:id="only">
@@ -164,3 +168,16 @@ ul.reserve_calendar_ul{
 	list-style-type:decimal;
 }
 </style>
+
+<script>
+	$("#tmp_order_config").hide();
+	if($("#is_tmp_order").prop("checked")){
+		$("#tmp_order_config").show();
+	}
+	$("#is_tmp_order").on("click", function(){
+		$("#tmp_order_config").show();
+	});
+	$("#no_tmp_order").on("click", function(){
+		$("#tmp_order_config").hide();
+	});
+</script>

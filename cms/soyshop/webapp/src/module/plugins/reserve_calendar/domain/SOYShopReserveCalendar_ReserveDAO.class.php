@@ -60,6 +60,7 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
             $t = mktime(0, 0, 0, $v["month"], $v["day"], $v["year"]);
             if($t < time()) continue;
 
+			$values["schedule_id"] = $v["id"];
             $values["schedule_date"] = $t;
             $values["label_id"] = $v["label_id"];
             $values["item_id"] = $v["item_id"];

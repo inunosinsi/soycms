@@ -5,6 +5,9 @@ class ReserveCalendarUtil{
 	const IS_TMP = 1;	//注文時の仮登録あり
 	const NO_TMP = 0;	//注文時の仮登録なし
 
+	const IS_SEND = 1;		//仮登録時にメール文面に本登録用のURLを含める
+	const NO_SEND = 0;		//仮登録時にメール文面に本登録用のURLを含めない
+
 	const IS_ONLY = 1;	//注文時の商品個数が1個のみに制限
 	const NO_ONLY = 0;
 
@@ -37,17 +40,23 @@ class ReserveCalendarUtil{
 	}
 
 	public static function getConfig(){
-		return SOYShop_DataSets::get("reserve_calendar.config", array(
+		$cnf = SOYShop_DataSets::get("reserve_calendar.config", array(
 			"tmp" => self::NO_TMP,
+			"send_at_time_tmp" => self::IS_SEND,
 			"only" => self::NO_ONLY,
 			"show_price" => self::NO_SHOW,
 			"ignore" => self::RESERVE_LIMIT,
 			"cancel_button" => self::RESERVE_DISPLAY_CANCEL_BUTTON
 		));
+
+		if(!isset($cnf["send_at_time_tmp"])) $cnf["send_at_time_tmp"] = self::IS_SEND;
+
+		return $cnf;
 	}
 
 	public static function saveConfig($values){
-		$values["tmp"] = (isset($values["tmp"])) ? (int)$values["tmp"] : 0;
+		$values["tmp"] = (isset($values["tmp"])) ? (int)$values["tmp"] : self::NO_TMP;
+		$values["send_at_time_tmp"] = (isset($values["send_at_time_tmp"])) ? (int)$values["send_at_time_tmp"] : self::NO_SEND;
 		$values["only"] = (isset($values["only"])) ? (int)$values["only"] : self::NO_ONLY;
 		$values["ignore"] = (isset($values["ignore"])) ? (int)$values["ignore"] : self::RESERVE_LIMIT;
 		$values["cancel_button"] = (isset($values["cancel_button"])) ? (int)$values["cancel_button"] : self::RESERVE_DISPLAY_CANCEL_BUTTON;

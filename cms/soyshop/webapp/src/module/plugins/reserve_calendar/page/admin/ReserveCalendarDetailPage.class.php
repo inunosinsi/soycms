@@ -204,8 +204,11 @@ class ReserveCalendarDetailPage extends WebPage{
 
 		//本登録
 		if(isset($_GET["reserve"]) && is_numeric($_GET["reserve"])){
-			SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->registration($_GET["reserve"]);
-			SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?registration");
+			if(SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->registration($_GET["reserve"])){
+				SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?registration");
+			}else{
+				SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?error");
+			}
 			exit;
 		}
 

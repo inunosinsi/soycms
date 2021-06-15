@@ -55,7 +55,8 @@ class ReserveLogic extends SOY2LogicBase{
 		try{
 			$reserve = $resDao->getById($reserveId);
 		}catch(Exception $e){
-			//var_dump($e);
+			error_log($e, 0);
+			return false;
 		}
 
 		$resDao->begin();
@@ -67,7 +68,9 @@ class ReserveLogic extends SOY2LogicBase{
 		try{
 			$resDao->update($reserve);
 		}catch(Exception $e){
-			//var_dump($e);
+			$resDao->rollback();
+			error_log($e, 0);
+			return false;
 		}
 
 		//注文状態を受付中にする
@@ -76,11 +79,20 @@ class ReserveLogic extends SOY2LogicBase{
 		try{
 			SOY2DAOFactory::create("order.SOYShop_OrderDAO")->update($order);
 		}catch(Exception $e){
-			//var_dump($e);
-			//
+			$resDao->rollback();
+			error_log($e, 0);
+			return false;
 		}
 
 		$resDao->commit();
+
+		SOYShopPlugin::load("soyshop.order.status.update");
+		SOYShopPlugin::invoke("soyshop.order.status.update", array(
+			"order" => $order,
+			"mode" => "reserve"
+		));
+
+		return true;
 	}
 
 	function getTokensByOrderId($orderId){
