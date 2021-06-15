@@ -20,6 +20,9 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 			case "SOYShop_ListPage":
 				if($shopConfig->getSearchChildItemOnListPage() != 1) $isChildren = false;
 				break;
+			case "SOYShop_DetailPage":
+				if($shopConfig->getSearchChildItemOnDetailPage() != 1) $isChildren = false;
+				break;
 			default:
 				//
 		}

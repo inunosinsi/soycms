@@ -31,6 +31,7 @@ class SOYShop_ShopConfig {
 	private $ignoreStock;
 	private $isHiddenStockCount;	//在庫数無視モードで在庫数を隠すか？
 	private $searchChildItemOnListPage = 1;
+	private $searchChildItemOnDetailPage = 1;
 	private $displayChildItem;
 	private $childItemStock;
 	private $noChildItemStock;
@@ -535,6 +536,13 @@ class SOYShop_ShopConfig {
 	}
 	function setSearchChildItemOnListPage($searchChildItemOnListPage){
 		$this->searchChildItemOnListPage = $searchChildItemOnListPage;
+	}
+
+	function getSearchChildItemOnDetailPage(){
+		return $this->searchChildItemOnDetailPage;
+	}
+	function setSearchChildItemOnDetailPage($searchChildItemOnDetailPage){
+		$this->searchChildItemOnDetailPage = $searchChildItemOnDetailPage;
 	}
 
 	function getDisplayChildItem(){

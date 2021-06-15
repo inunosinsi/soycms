@@ -17,6 +17,8 @@ class ShopConfigPage extends WebPage{
 			"displayStockCount" => 0,
 			"ignoreStock" => 0,
 			"isHiddenStockCount" => 0,
+			"searchChildItemOnListPage" => 0,
+			"searchChildItemOnDetailPage" => 0,
 			"displayPageAfterLogout" => 0,
 			"displaySendInformationForm" => 0,
 			"allowMailAddressLogin" => 0,
@@ -280,6 +282,14 @@ class ShopConfigPage extends WebPage{
 			"value" => 1,
 			"name" => "Config[searchChildItemOnListPage]",
 			"label" => "商品一覧ページで子商品のデータを取得する",
+			"isBoolean" => 1
+		));
+
+		$this->addCheckBox("searchChildItemOnDetailPage", array(
+			"selected" => $config->getSearchChildItemOnDetailPage(),
+			"value" => 1,
+			"name" => "Config[searchChildItemOnDetailPage]",
+			"label" => "商品詳細ページで子商品のデータを取得する",
 			"isBoolean" => 1
 		));
 
