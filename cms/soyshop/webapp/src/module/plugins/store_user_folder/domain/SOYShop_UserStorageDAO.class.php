@@ -24,6 +24,11 @@ abstract class SOYShop_UserStorageDAO extends SOY2DAO{
 	/**
 	 * @return object
 	 */
+	abstract function getByFileName($fileName);
+
+	/**
+	 * @return object
+	 */
 	abstract function getByToken($token);
 
 	/**
@@ -34,4 +39,3 @@ abstract class SOYShop_UserStorageDAO extends SOY2DAO{
 		return array($query, $binds);
 	}
 }
-?>
