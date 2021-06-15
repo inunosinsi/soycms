@@ -19,8 +19,7 @@ class IndexPage extends WebPage{
 		if(isset($_POST["send"]) && isset($_POST["mail_value"])){
 
 			try{
-				$orderDAO = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-				$order = $orderDAO->getById($this->id);
+				$order = soyshop_get_order_object($this->id);
 
 				//送信メールのタイプによって、注文の状況を変更する
 				switch($this->type){
@@ -49,7 +48,7 @@ class IndexPage extends WebPage{
 							}
 						}
 				}
-				$orderDAO->updateStatus($order);
+				SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
 
 				SOYShopPlugin::load("soyshop.order.status.update");
     			SOYShopPlugin::invoke("soyshop.order.status.update", array(
