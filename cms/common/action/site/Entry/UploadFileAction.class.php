@@ -53,6 +53,21 @@ class UploadFileAction extends SOY2Action{
 				$this->setAttribute("result", $responseObject);
 				return;
 			}
+
+			//MIMETYPE
+			if(file_exists(SOY2::RootDir() . "/config/upload.config.php")){
+				include_once(SOY2::RootDir() . "/config/upload.config.php");
+			}
+			if(!isset($mimetypes) || !is_array($mimetypes)){
+				$mimetypes = array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/x-icon', 'text/plain', "text/css", "application/pdf");
+			}
+			if(is_bool(array_search($_FILES['file']["type"], $mimetypes))){
+				$responseObject->result = false;
+				$responseObject->message = "許可されていないMIMETYPEです。";
+				$responseObject->errorCode = 101;
+				$this->setAttribute("result", $responseObject);
+				return;
+			}
 		}
 
 		//エラー POSTされてこなかった状態 post_max_sizeなど
