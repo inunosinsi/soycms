@@ -203,26 +203,52 @@ class SearchOrderLogic extends SOY2LogicBase{
 
 		if(isset($cnds["userName"]) && strlen($cnds["userName"]) > 0){
 			if(!class_exists("SOYShop_User")) SOY2::import("domain.SOYShop_User");
-			$where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where name LIKE :user_name)";
-			$binds[":user_name"] = "%" . $cnds["userName"] . "%";
+			$nameCnds = explode(" ", str_replace("　", " ", $cnds["userName"]));
+			if(count($nameCnds)){
+				$subWhere = array();
+				$i = 0;
+				foreach($nameCnds as $nameCnd){
+					$nameCnd = trim($nameCnd);
+					if(!strlen($nameCnd)) continue;
+					$subWhere[] = "name LIKE :user_name_" . $i;
+					$binds[":user_name_" . $i] = "%" . $nameCnd . "%";
+					$i++;
+				}
+
+				if(count($subWhere)) $where[] = "user_id in (select id from ". SOYShop_User::getTableName() ." where " . implode(" AND ", $subWhere) . ")";
+				unset($subWhere);
+			}
 		}
 
-		if(isset($cnds["userReading"]) && strlen($cnds["userReading"]) > 0){
-			if(!class_exists("SOYShop_User"))SOY2::import("domain.SOYShop_User");
+		if(isset($cnds["userReading"])){
+			$reading = trim($cnds["userReading"]);
+			if(strlen($reading) > 0){
+				if(!class_exists("SOYShop_User")) SOY2::import("domain.SOYShop_User");
+				$readCnds = explode(" ", str_replace("　", " ", $reading));
+				if(count($readCnds)){
+					$subWhere = array();
+					$i = 0;
+					foreach($readCnds as $readCnd){
+						//全角カナであろうデータ
+						$katakana = mb_convert_kana($readCnd,"c");
+						$hiragana = mb_convert_kana($readCnd,"C");
 
-			//全角カナであろうデータ
-			$katakana = mb_convert_kana($cnds["userReading"],"c");
-			$hiragana = mb_convert_kana($cnds["userReading"],"C");
+						//SQLiteで文字列の全角半角を無視して検索する関数が見つからないので、一つ一つ丁寧にSQL構文を発行する
+						$subWhere[] = "(reading LIKE :user_reading_c_" . $i . " OR " .
+						"reading LIKE :user_reading_C_" . $i . " OR " .
+						"reading LIKE :user_reading_k_" . $i . ")";
 
-			//SQLiteで文字列の全角半角を無視して検索する関数が見つからないので、一つ一つ丁寧にSQL構文を発行する
-			$where[] = "user_id in (select id from ". SOYShop_User::getTableName().	" where " .
-					"reading LIKE :user_reading_c OR " .
-					"reading LIKE :user_reading_C OR " .
-					"reading LIKE :user_reading_k" .
-					")";
-			$binds[":user_reading_c"] = "%" . $katakana . "%";
-			$binds[":user_reading_C"] = "%" . $hiragana . "%";
-			$binds[":user_reading_k"] = "%" . mb_convert_kana($hiragana,"k") . "%";
+						$binds[":user_reading_c_" . $i] = "%" . $katakana . "%";
+						$binds[":user_reading_C_" . $i] = "%" . $hiragana . "%";
+						$binds[":user_reading_k_" . $i] = "%" . mb_convert_kana($hiragana,"k") . "%";
+
+						$i++;
+					}
+
+					if(count($subWhere)) $where[] = "user_id in (select id from ". SOYShop_User::getTableName().	" WHERE " . implode(" AND ", $subWhere) . ")";
+					unset($subWhere);
+				}
+			}
 		}
 
 		if(isset($cnds["userMailAddress"]) && strlen($cnds["userMailAddress"]) > 0){
