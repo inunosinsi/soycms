@@ -1,0 +1,14 @@
+<?php
+// MIME type → https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+$mimetypes = array(
+	'image/x-ms-bmp',
+	'image/gif',
+	'image/jpeg',
+	'image/png',
+	'image/x-icon',
+	'text/plain',
+	"text/css",
+	"text/javascript",
+	"application/x-javascript",
+	"application/pdf"
+ );

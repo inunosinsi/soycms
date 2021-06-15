@@ -180,6 +180,12 @@ if(isset($_GET["site_id"])){
 	$url = SOYSHOP_SITE_URL;
 }
 
+if(file_exists(SOY2::RootDir() . "/config/upload.config.php")){
+	include_once(SOY2::RootDir() . "/config/upload.config.php");
+}
+if(!isset($mimetypes) || !is_array($mimetypes)){
+	$mimetypes = array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/x-icon', 'text/plain', "text/css", "application/pdf");
+}
 
 // Documentation for connector options:
 // https://github.com/Studio-42/elFinder/wiki/Connector-configuration-options
@@ -194,7 +200,7 @@ $opts = array(
 			'trashHash'     => 't1_Lw',                     // elFinder's hash of trash folder
 			'winHashFix'    => DIRECTORY_SEPARATOR !== '/', // to make hash same to Linux one on windows too
 			'uploadDeny'    => array('all'),                // All Mimetypes not allowed to upload
-			'uploadAllow'   => array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/x-icon', 'text/plain', "text/css", "application/pdf"), // Mimetype `image` and `text/plain` allowed to upload
+			'uploadAllow'   => $mimetypes, // Mimetype `image` and `text/plain` allowed to upload
 			'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
 			'accessControl' => 'access',                     // disable and hide dot starting files (OPTIONAL)
 			'attributes' => array(
