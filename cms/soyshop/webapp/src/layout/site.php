@@ -76,7 +76,8 @@ foreach($scripts as $script){
 				<li>
 					<p>
 						<a style="text-decoration:none;color:black;" href="<?php echo soyshop_get_site_url(true); ?>" target="_blank" rel="noopener">
-							<?php echo $appName; ?> - <?php echo htmlspecialchars($shopName,ENT_QUOTES,"UTF-8"); ?>
+							<?php $adminTitle = ($appName != $shopName) ? $appName . " - " . htmlspecialchars($shopName,ENT_QUOTES,"UTF-8") : $appName;?>
+							<?php echo $adminTitle; ?>
 						</a> - サイト管理
 					</p>
 				</li>
