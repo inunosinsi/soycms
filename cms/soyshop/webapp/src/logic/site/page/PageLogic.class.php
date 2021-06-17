@@ -50,6 +50,10 @@ class PageLogic extends SOY2LogicBase{
     	$this->errors = $errors;
     }
 
+	function generatePageDirectory(SOYShop_Page $obj, $force = false){
+		self::_generatePageDirectory($obj, $force);
+	}
+
 	/**
 	 * ディレクトリを自動で生成する
 	 */

@@ -14,7 +14,7 @@ class SubMenuPage extends WebPage{
 		$this->addLink("page_detail_link", array(
 			"link" => SOY2PageController::createLink("Site.Pages.Detail." . $this->id)
 		));
-		
+
 		$this->addLink("page_script_link", array(
 			"link" => SOY2PageController::createLink("Site.Pages.Script." . $this->id)
 		));
@@ -23,38 +23,32 @@ class SubMenuPage extends WebPage{
 			"link" => SOY2PageController::createLink("Site.Pages.ReGenerate." . $this->id)
 		));
 
-		$this->addModel("regenerate_link", array(
-			"visible" => $this->checkClass()
-		));
+		DisplayPlugin::toggle("regenerate", self::_checkClass());
 
-		$this->loadSubMenu();
+		self::_loadSubMenu();
     }
 
-	function loadSubMenu(){
+	private function _loadSubMenu(){
 
 		$key = "Site.Pages.SubMenu." . ucwords($this->page->getType()) . "MenuPage";
 
 		if(SOY2HTMLFactory::pageExists($key)){
-
-			$this->createAdd("submenu_page",$key, array(
-				"arguments" => array($this->id,$this->page)
+			$this->createAdd("submenu_page", $key, array(
+				"arguments" => array($this->id, $this->page)
 			));
-
 		}else{
 
-			$this->createAdd("submenu_page","Site.Pages.SubMenu.DefaultMenuPage", array(
-				"arguments" => array($this->id,$this->page)
+			$this->createAdd("submenu_page", "Site.Pages.SubMenu.DefaultMenuPage", array(
+				"arguments" => array($this->id, $this->page)
 			));
 
 		}
-
-
 	}
 
 	/**
 	 * 再生成の必要があるかどうか
 	 */
-	function checkClass(){
+	private function _checkClass(){
 		$className = $this->page->getCustomClassName();
 		$path = SOYSHOP_SITE_DIRECTORY . ".page/" . $this->page->getCustomClassFileName();
 
@@ -69,10 +63,11 @@ class SubMenuPage extends WebPage{
 		$ref = new ReflectionClass($className);
 
 		if($ref->isSubClassOf($this->page->getBaseClassName())){
-			return false;
+			//クラス名と同名の関数がある場合はtrueにする
+			$code = file_get_contents($path);
+			return (is_numeric(strpos($code, "function " . $className)));
 		}else{
 			return true;
 		}
 	}
 }
-?>
