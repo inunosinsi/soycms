@@ -33,7 +33,7 @@ class SearchLogic extends SOY2LogicBase{
         //OFFSET
         $offset = $limit * ($current - 1);
         if($offset > 0) $sql .= " OFFSET " . $offset;
-		
+
         try{
             $res = $this->itemDao->executeQuery($sql, $this->binds);
         }catch(Exception $e){

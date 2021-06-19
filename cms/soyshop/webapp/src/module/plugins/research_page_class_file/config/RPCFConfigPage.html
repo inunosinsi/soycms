@@ -1,0 +1,18 @@
+<div class="alert alert-success" soy:display="finished">調査が終了しました</div>
+
+<!-- soy:display="result_area" -->
+<div class="alert alert-info" soy:display="no_result">未対応ファイルはありません。</div>
+
+<!-- soy:display="is_result" -->
+<div class="alert alert-info">未対応ファイル</div>
+<ul>
+	<!-- soy:id="file_list" -->
+	<li soy:id="filepath"></li>
+	<!-- /soy:id="file_list" -->
+</ul>
+<!-- /soy:display="is_result" -->
+<!-- /soy:display="result_area" -->
+
+<form soy:id="form">
+	<input type="submit" name="research" class="btn btn-primary btn-lg" value="調査開始">
+</form>
