@@ -860,12 +860,13 @@ function soyshop_get_parent_id_by_child_id($itemId){
  * @return Object SOYShop_Item
  */
 function soyshop_convert_item_detail_page_id(SOYShop_Item $item, SOYShop_Page $page){
+	if($page->getType() !== SOYShop_Page::TYPE_DETAIL) return $item;
 
     if(
         (defined("SOYSHOP_IS_MOBILE") && SOYSHOP_IS_MOBILE) ||
         (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE) ||
-        (defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp") &&
-        $page->getType() === SOYShop_Page::TYPE_DETAIL
+		(defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) ||
+        (defined("SOYSHOP_PUBLISH_LANGUAGE") && SOYSHOP_PUBLISH_LANGUAGE != "jp")
     ){
         $item->setDetailPageId($page->getId());
     }

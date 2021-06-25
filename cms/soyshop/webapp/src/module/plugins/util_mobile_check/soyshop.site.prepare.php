@@ -20,7 +20,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 		SOY2::import("module.plugins.util_mobile_check.util.UtilMobileCheckUtil");
 		$cnf = UtilMobileCheckUtil::getConfig();
-
+		
 		//クッキー非対応機種の設定 → 廃止
 		//if(!defined("SOYSHOP_COOKIE")) define("SOYSHOP_COOKIE", ( isset($cnf["cookie"]) && $cnf["cookie"] == 1) );
 
