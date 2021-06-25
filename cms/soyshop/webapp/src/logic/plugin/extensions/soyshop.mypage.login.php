@@ -42,7 +42,8 @@ class SOYShopMypageLoginDeletageAction implements SOY2PluginDelegateAction{
 	function run($extetensionId, $moduleId, SOY2PluginAction $action){
 		switch($this->mode){
 			case "login":
-				$this->_result = $action->login();
+				$res = $action->login();
+				if(is_bool($res)) $this->_result = $res;
 				break;
 			case "logout":
 				$action->logout();

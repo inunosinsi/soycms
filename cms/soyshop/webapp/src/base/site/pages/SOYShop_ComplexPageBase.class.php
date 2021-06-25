@@ -5,25 +5,28 @@ class SOYShop_ComplexPageBase extends SOYShopPageBase{
 	private $logic;
 
 	function build($args){
-		$obj = $this->getPageObject()->getPageObject();
+		if($this->getPageObject() instanceof SOYShop_Page){
+			$obj = $this->getPageObject()->getPageObject();
 
-		//条件によってはComplexページでなくても、このファイルを読み込む可能性があるため、別ページの場合の対策
-		if(method_exists($obj, "getBlocks")){
-			//SearchItemUtilの作成。ソート順作成のためlistPageオブジェクトを渡す
-			$this->logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("mode" => "complex"));
+			//条件によってはComplexページでなくても、このファイルを読み込む可能性があるため、別ページの場合の対策
+			if(method_exists($obj, "getBlocks")){
+				//SearchItemUtilの作成。ソート順作成のためlistPageオブジェクトを渡す
+				$this->logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array("mode" => "complex"));
 
-			$blocks = $obj->getBlocks();
-			foreach($blocks as $blockId => $block){
-				//念のために、クラス名を調べておく
-				if(get_class($block) != "SOYShop_ComplexPageBlock") continue;
+				$blocks = $obj->getBlocks();
+				foreach($blocks as $blockId => $block){
+					//念のために、クラス名を調べておく
+					if(get_class($block) != "SOYShop_ComplexPageBlock") continue;
 
-				//item_list
-				$this->createAdd($blockId, "SOYShop_ItemListComponent", array(
-					"list" => self::getItems($block),
-					"soy2prefix" => "block"
-				));
+					//item_list
+					$this->createAdd($blockId, "SOYShop_ItemListComponent", array(
+						"list" => self::getItems($block),
+						"soy2prefix" => "block"
+					));
+				}
 			}
 		}
+
 	}
 
 	private function getItems(SOYShop_ComplexPageBlock $block){
