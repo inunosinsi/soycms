@@ -22,7 +22,7 @@ class CoineyPaymentModule extends SOYShopPayment{
 	function getName(){
 		$config = CoineyUtil::getConfig();
 		if(isset($config["sandbox"]) && $config["sandbox"] == 1){
-			return "Coineyペイジ(テストモード)で支払い";
+			return "STORES決済(テストモード)で支払い";
 		}
 		return "クレジットカード支払い";
 	}
@@ -63,7 +63,7 @@ class CoineyPaymentModule extends SOYShopPayment{
 
 		//支払を完了する
 		$order->setAttribute("payment_coiney.id", array(
-			"name" => "Coineyペイジ決済: ID",
+			"name" => "STORES決済: ID",
 			"value" => $cart->getAttribute("coiney_id"),
 			"readonly" => true,
 			"hidden" => true,

@@ -16,7 +16,7 @@ class CoineyConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPageTitle(){
-		return "Coineyペイジ決済の設定";
+		return "STORES決済(Coineyペイジ)決済の設定";
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "payment_coiney", "CoineyConfig");
