@@ -116,6 +116,11 @@ class CMSPage extends WebPage{
 			"soy2prefix" => "cms"
 		));
 
+		$this->addLabel("page_uri", array(
+			"text" => $this->page->getUri(),
+			"soy2prefix" => "cms"
+		));
+
 		$this->addMessageProperty("site_name",'<?php echo $'.$this->_soy2_pageParam.'["site_name"]; ?>');
 		$this->addMessageProperty("page_title",'<?php echo $'.$this->_soy2_pageParam.'["page_title"]; ?>');
 		$this->addMessageProperty("raw_page_title",'<?php echo $'.$this->_soy2_pageParam.'["raw_page_title"]; ?>');
