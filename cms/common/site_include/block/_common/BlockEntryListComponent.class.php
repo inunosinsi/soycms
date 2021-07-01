@@ -157,21 +157,20 @@ class BlockEntryListComponent extends HTMLList{
 			"soy2prefix" => "cms",
 		));
 
+		//紐付いているラベルをセット
+		$labels = ($this->isStickUrl && $id > 0) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($this->blogPageId, $id) : array();
+		$entity->setLabels($labels);
+		unset($labels);
+		
 		//カテゴリ
 		$this->createAdd("category_list","CategoryListComponent",array(
-			"list" => ($this->isStickUrl && $id > 0) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($this->blogPageId, $id) : array(),
+			"list" => $entity->getLabels(),
 			"categoryUrl" => $this->categoryPageUrl,
 			"entryCount" => array(),
 			"soy2prefix" => "cms"
 		));
 
-
-		CMSPlugin::callEventFunc('onEntryOutput',array(
-			"entryId" => $id,
-			"SOY2HTMLObject" => $this,
-			"entry" => $entity,
-			"blockId" => $this->blockId
-		));
+		CMSPlugin::callEventFunc('onEntryOutput',array("entryId" => $id, "SOY2HTMLObject" => $this, "entry" => $entity, "blockId" => $this->blockId));
 	}
 
 	private function _labelLogic(){

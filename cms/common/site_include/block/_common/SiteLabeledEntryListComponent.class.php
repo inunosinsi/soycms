@@ -123,9 +123,13 @@ class SiteLabeledEntryListComponent extends HTMLList{
 			"soy2prefix"=>"cms",
 		));
 
+		$labels = ($this->isStickUrl && $id > 0) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($this->blogPageId, $id) : array();
+		$entity->setLabels($labels);
+		unset($labels);
+
 		//カテゴリ
 		$this->createAdd("category_list","CategoryListComponent",array(
-			"list" => ($this->isStickUrl && $id > 0) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($this->blogPageId, $id) : array(),
+			"list" => $entity->getLabels(),
 			"categoryUrl" => $this->categoryPageUrl,
 			"entryCount" => array(),
 			"soy2prefix" => "cms"

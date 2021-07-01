@@ -159,9 +159,14 @@ class MultiEntryListComponent extends HTMLList{
 			"soy2prefix" => "cms",
 		));
 
+		//紐付いているラベルをセット
+		$labels = (is_numeric($blogId) && $blogId > 0 && strlen($blogCategoryUrl)) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($blogId, $id) : array();
+		$entity->setLabels($labels);
+		unset($labels);
+
 		//カテゴリ
 		$this->createAdd("category_list","CategoryListComponent",array(
-			"list" => (is_numeric($blogId) && $blogId > 0 && strlen($blogCategoryUrl)) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($blogId, $id) : array(),
+			"list" => $entity->getLabels(),
 			"categoryUrl" => $blogCategoryUrl,
 			"entryCount" => array(),
 			"soy2prefix" => "cms"
