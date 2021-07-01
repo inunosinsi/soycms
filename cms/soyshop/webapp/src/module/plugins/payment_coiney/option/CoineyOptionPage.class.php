@@ -2,7 +2,6 @@
 
 class CoineyOptionPage extends WebPage{
 
-	private $order;
 	private $cart;
 
 	function __construct(){
@@ -14,7 +13,7 @@ class CoineyOptionPage extends WebPage{
 	function execute(){
 		parent::__construct();
 
-		$json = SOY2Logic::createInstance("module.plugins.payment_coiney.logic.CoineyApiLogic")->createPaymentRequest($this->order);
+		$json = SOY2Logic::createInstance("module.plugins.payment_coiney.logic.CoineyApiLogic")->createPaymentRequest((int)$this->cart->getAttribute("order_id"));
 
 		DisplayPlugin::toggle("error", !isset($json["id"]));
 		DisplayPlugin::toggle("success", isset($json["id"]));
@@ -26,6 +25,7 @@ class CoineyOptionPage extends WebPage{
 		if(isset($json["id"])){
 			//支払いIDを記録しておく
 			$this->cart->setAttribute("coiney_id", $json["id"]);
+			$this->cart->save();
 		}
 
 		$this->addForm("payment_form", array(
@@ -42,9 +42,6 @@ class CoineyOptionPage extends WebPage{
 		));
 	}
 
-	function setOrder($order) {
-		$this->order = $order;
-	}
 	function setCart($cart){
 		$this->cart = $cart;
 	}

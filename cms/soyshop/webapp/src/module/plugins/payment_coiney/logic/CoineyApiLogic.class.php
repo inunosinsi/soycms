@@ -6,9 +6,10 @@ class CoineyApiLogic extends SOY2LogicBase {
 		SOY2::import("module.plugins.payment_coiney.util.CoineyUtil");
 	}
 
-	function createPaymentRequest(SOYShop_Order $order){
+	function createPaymentRequest(int $orderId){
 		static $json;
 		if(is_null($json)){
+			$order = soyshop_get_order_object($orderId);
 			$config = CoineyUtil::getConfig();
 
 			$headers = array(

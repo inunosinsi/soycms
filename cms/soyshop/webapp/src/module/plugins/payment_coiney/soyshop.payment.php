@@ -1,5 +1,4 @@
 <?php
-
 SOY2::import("module.plugins.payment_coiney.util.CoineyUtil");
 class CoineyPaymentModule extends SOYShopPayment{
 
@@ -45,21 +44,20 @@ class CoineyPaymentModule extends SOYShopPayment{
 
 		//if completed
 		if(isset($_GET["complete"])){
-			self::orderComplete();
+			self::_orderComplete();
 		}
 
 		//出力
 		SOY2::import("module.plugins.payment_coiney.option.CoineyOptionPage");
 		$form = SOY2HTMLFactory::createInstance("CoineyOptionPage");
-		$form->setOrder(self::getOrderById($this->getCart()->getAttribute("order_id")));
 		$form->setCart($this->getCart());
 		$form->execute();
 		echo $form->getObject();
 	}
 
-	private function orderComplete(){
+	private function _orderComplete(){
 		$cart = $this->getCart();
-		$order = self::getOrderById($cart->getAttribute("order_id"));
+		$order = soyshop_get_order_object($cart->getAttribute("order_id"));
 
 		//支払を完了する
 		$order->setAttribute("payment_coiney.id", array(
@@ -71,28 +69,13 @@ class CoineyPaymentModule extends SOYShopPayment{
 
 		//支払いステータスの変更。現時点ではCoineyペイジの方はopenしかない
 		$order->setPaymentStatus(SOYShop_Order::PAYMENT_STATUS_CONFIRMED);
-		self::orderDao()->updateStatus($order);
+		SOY2DAOFactory::create("order.SOYShop_OrderDAO")->updateStatus($order);
 		$cart->setAttribute("page", "Complete");
 		soyshop_redirect_cart();
 		exit;
 	}
 
-	function onPostOptionPage(){
-	}
-
-	private function getOrderById($orderId){
-		try{
-			return self::orderDao()->getById($orderId);
-		}catch(Exception $e){
-			return new SOYShop_Order();
-		}
-	}
-
-	private function orderDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-		return $dao;
-	}
+	function onPostOptionPage(){}
 }
 
 SOYShopPlugin::extension("soyshop.payment",			"payment_coiney", "CoineyPaymentModule");

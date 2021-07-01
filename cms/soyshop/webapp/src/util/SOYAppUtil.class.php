@@ -52,8 +52,7 @@ class SOYAppUtil {
 	}
 
 	public static function switchAdminDsn(){
-		$old = self::switchAdminMode();
-		return $old;
+		return self::switchAdminMode();
 	}
 
 	public static function resetAdminDsn($old){

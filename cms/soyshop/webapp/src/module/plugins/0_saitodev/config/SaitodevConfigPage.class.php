@@ -38,8 +38,16 @@ class SaitodevConfigPage extends WebPage{
 	}
 
 	private function _getRoles(){
+		$old = SOYAppUtil::switchAdminDsn();
+		try{
+			$site = SOY2DAOFactory::create("admin.SiteDAO")->getBySiteId(SOYSHOP_ID);
+		}catch(Exception $e){
+			$site = new Site();
+		}
+		SOYAppUtil::resetAdminDsn($old);
+
 		$old = SOYAppUtil::switchAppMode("shop");
-		$roles = SOY2Logic::createInstance("logic.RoleLogic")->getSiteRoleArray();
+		$roles = SOY2Logic::createInstance("logic.RoleLogic")->getSiteRoleArray($site);
 		SOYAppUtil::resetAppMode($old);
 		return $roles;
 	}

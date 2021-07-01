@@ -49,6 +49,7 @@ class RoleLogic extends SOY2LogicBase {
 
 	//ショップ用に特別に配列を準備
 	function getSiteRoleArray(Site $site){
+		if(!class_exists("ShopUtil")) SOY2::import("util.ShopUtil");
 		$old = ShopUtil::switchConfig();
 		ShopUtil::setShopSiteDsn($site);
 
