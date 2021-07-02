@@ -3,7 +3,7 @@
  * @entity SOYShop_Site
  */
 abstract class SOYShop_SiteDAO extends SOY2DAO{
-	
+
 	/**
 	 * @trigger onInsert
 	 * @return id
@@ -13,18 +13,18 @@ abstract class SOYShop_SiteDAO extends SOY2DAO{
    	/**
 	 * @trigger onUpdate
 	 * @return id
-	 */	
+	 */
 	abstract function update(SOYShop_Site $obj);
-	
+
 	abstract function delete($id);
-	
+
 	abstract function get();
 
 	/**
 	 * @return object
 	 */
 	abstract function getBySiteId($siteId);
-	
+
 	/**
 	 * @return object
 	 */
@@ -46,6 +46,4 @@ abstract class SOYShop_SiteDAO extends SOY2DAO{
 		$binds[":updateDate"] = time();
 		return array($query,$binds);
    	}
-	
 }
-?>

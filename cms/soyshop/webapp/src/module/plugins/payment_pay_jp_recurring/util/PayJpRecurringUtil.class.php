@@ -108,6 +108,14 @@ class PayJpRecurringUtil {
 	private static function _getConfig(){
 		return SOYShop_DataSets::get("payment_pay_jp_recurring.config", array(
 			"sandbox" => 1,
+			"test" => array(
+				"secret_key" => "",
+				"public_key" => ""
+			),
+			"production" => array(
+				"secret_key" => "",
+				"public_key" => ""
+			)
 		));
 	}
 

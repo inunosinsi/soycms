@@ -21,9 +21,9 @@ class RecurringLogic extends SOY2LogicBase {
 		if(is_null($config)){
 			$conf = PayJpRecurringUtil::getConfig();
 			if(isset($conf["sandbox"]) && $conf["sandbox"] == 1){
-				$config = $conf["test"];
+				$config = (isset($conf["test"]) && is_array($conf["test"])) ? $conf["test"] : array("secret_key" => "abc");
 			}else{
-				$config = $conf["production"];
+				$config = (isset($conf["production"]) && is_array($conf["production"])) ? $conf["production"] : array("secret_key" => "abc");
 			}
 		}
 		return $config;

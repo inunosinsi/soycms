@@ -48,7 +48,7 @@ function soyshop_convert_number($arg, $value){
 	if(strlen($arg) < 1 || !is_numeric($arg)){
 		$arg = $value;
 	}
-	return $arg;
+	return (int)$arg;
 }
 
 /**

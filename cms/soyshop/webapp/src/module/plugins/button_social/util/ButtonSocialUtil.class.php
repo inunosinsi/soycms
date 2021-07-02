@@ -20,39 +20,25 @@ class ButtonSocialUtil{
 
 	public static function getPageDisplayConfig(){
 		$config = SOYShop_DataSets::get("button_social_page_config", null);
+		if(is_array($config)) return $config;
 
-		if(is_null($config)){
+		$config = array();
 
-			$pages = self::getPages();
-
-			//
-			$config = array();
-
-			foreach($pages as $page){
-				$config[$page->getId()] = self::INSERT_TAG_DISPLAY;
-			}
+		$pageIds = array_keys(soyshop_get_page_list());
+		foreach($pageIds as $pageId){
+			$config[$pageId] = self::INSERT_TAG_DISPLAY;
 		}
 
 		return $config;
 	}
 
 	public static function savePageDisplayConfig($array){
-
-		$pages = self::getPages();
+		$pageIds = array_keys(soyshop_get_page_list());
 
 		$config = array();
-		foreach($pages as $page){
-			$pageId = $page->getId();
+		foreach($pageIds as $pageId){
 			$config[$pageId] = (in_array($pageId, $array)) ? self::INSERT_TAG_DISPLAY : self::INSERT_TAG_NOT_DISPLAY;
 		}
 		SOYShop_DataSets::put("button_social_page_config", $config);
-	}
-
-	private static function getPages(){
-		try{
-			return SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
-		}catch(Exception $e){
-			return array();
-		}
 	}
 }

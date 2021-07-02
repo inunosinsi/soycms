@@ -28,9 +28,9 @@ class GoogleAnalyticsUtil{
 		$config = SOYShop_DataSets::get("google_analytics_page_config", null);
 		if(is_null($config)){
 			$config = array();
-			
-			$pages = self::getPages();
-			foreach($pages as $page){
+
+			$pageIds = array_keys(soyshop_get_page_list());
+			foreach($pageIds as $pageId){
 				$config[$page->getId()] = self::INSERT_TAG_DISPLAY;
 			}
 		}
@@ -40,21 +40,12 @@ class GoogleAnalyticsUtil{
 
 	public static function savePageDisplayConfig($array){
 
-		$pages = self::getPages();
+		$pageIds = array_keys(soyshop_get_page_list());
 
 		$config = array();
-		foreach($pages as $page){
-			$pageId = $page->getId();
+		foreach($pageIds as $pageId){
 			$config[$pageId] = (in_array($pageId, $array)) ? self::INSERT_TAG_DISPLAY : self::INSERT_TAG_NOT_DISPLAY;
 		}
 		SOYShop_DataSets::put("google_analytics_page_config", $config);
-	}
-
-	private static function getPages(){
-		try{
-			return SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
-		}catch(Exception $e){
-			return array();
-		}
 	}
 }

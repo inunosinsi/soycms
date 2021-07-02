@@ -8,12 +8,13 @@ class HTMLCacheUtil{
 	public static function getPageDisplayConfig(){
 		$cnf = SOYShop_DataSets::get("x_html_cache.config", null);
 		if(!is_null($cnf)) return $cnf;
-		$pages = self::_getPages();
+
+		$pageIds = array_keys(soyshop_get_page_list());
 
 		//
 		$cnf = array();
-		foreach($pages as $page){
-			$cnf[$page->getId()] = self::OFF;
+		foreach($pageIds as $pageId){
+			$cnf[$pageId] = self::OFF;
 		}
 
 		return $cnf;
@@ -21,23 +22,14 @@ class HTMLCacheUtil{
 
 	public static function savePageDisplayConfig($values){
 
-		$pages = self::_getPages();
+		$pageIds = array_keys(soyshop_get_page_list());
 
 		$cnf = array();
-		foreach($pages as $page){
-			$pageId = $page->getId();
+		foreach($pageIds as $pageId){
 			$cnf[$pageId] = (in_array($pageId, $values)) ? self::ON : self::OFF;
 		}
 
 		SOYShop_DataSets::put("x_html_cache.config", $cnf);
-	}
-
-	private static function _getPages(){
-		try{
-			return SOY2DAOFactory::create("site.SOYShop_PageDAO")->get();
-		}catch(Exception $e){
-			return array();
-		}
 	}
 
 	/** キャッシュの生成周り **/
