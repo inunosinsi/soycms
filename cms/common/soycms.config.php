@@ -1,6 +1,6 @@
 <?php
 define("SOYCMS_DB_TYPE","mysql");
-define("SOYCMS_VERSION","3.1.3.36");
+define("SOYCMS_VERSION","3.1.3.37");
 define("SOYCMS_BUILD","2018-12-20T07:00:43+0000");
 define("SOYCMS_BUILD_TIME","1545514290");
 define("SOYCMS_REVISION","45154");
