@@ -24,7 +24,7 @@ class XPublisherPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3096",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.6"
+			"version"=>"0.7"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -214,13 +214,15 @@ class XPublisherPlugin{
 
 	private function _removeStaticHTMLBlogPagerFile($targetDir){
 		$targetDir = rtrim($targetDir, "/") . "/";
-		$dirs = scandir($targetDir);
-		foreach($dirs as $dir){
-			if(strpos($dir, ".") === 0) continue;
-			if(preg_match('/page-[0-9]*/', $dir)){
-				$file = $targetDir . $dir . "/index.html";
-				if(file_exists($file)){
-					unlink($file);
+		if(file_exists($targetDir) && is_dir($targetDir)){
+			$dirs = scandir($targetDir);
+			foreach($dirs as $dir){
+				if(strpos($dir, ".") === 0) continue;
+				if(preg_match('/page-[0-9]*/', $dir)){
+					$file = $targetDir . $dir . "/index.html";
+					if(file_exists($file)){
+						unlink($file);
+					}
 				}
 			}
 		}
