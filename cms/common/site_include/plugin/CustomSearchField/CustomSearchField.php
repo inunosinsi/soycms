@@ -17,7 +17,7 @@ class CustomSearchFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.9"
+			"version"=>"0.9.1"
 		));
 
 		//プラグイン アクティブ
@@ -141,8 +141,29 @@ class CustomSearchFieldPlugin{
 
 		$args = $logic->getArgs();
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
-		$current = (isset($args[0]) && strpos($args[0], "page-") === 0) ? (int)str_replace("page-", "", $args[0]) : 0;
-		$last_page_number = (int)ceil($logic->getTotal($labelId) / $limit);
+		$current = (isset($args[0]) && strpos($args[0], "page-") === 0) ? (int)str_replace("page-", "", $args[0]) : 1;
+
+		$total = $logic->getTotal($labelId);
+
+		//total
+		$obj->addLabel("total_count", array(
+			"html" => $total,
+			"soy2prefix" => "cms"
+		));
+
+		$currentCount = ($current - 1) * $limit;
+		
+		$obj->addLabel("count_start", array(
+			"html" => $currentCount + 1,
+			"soy2prefix" => "cms"
+		));
+
+		$obj->addLabel("count_end", array(
+			"html" => $currentCount + $total,
+			"soy2prefix" => "cms"
+		));
+
+		$last_page_number = (int)ceil($total / $limit);
 
 		$obj->createAdd("s_pager", "BlockPluginPagerComponent", array(
 			"list" => array(),
