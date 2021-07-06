@@ -17,7 +17,7 @@ class CustomSearchFieldPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.9.1"
+			"version"=>"0.9.2"
 		));
 
 		//プラグイン アクティブ
@@ -145,21 +145,31 @@ class CustomSearchFieldPlugin{
 
 		$total = $logic->getTotal($labelId);
 
+		$obj->addModel("results", array(
+			"soy2prefix" => "cms",
+			"visible" => ($total > 0)
+		));
+
+		$obj->addModel("no_results", array(
+			"soy2prefix" => "cms",
+			"visible" => ($total === 0)
+		));
+
 		//total
 		$obj->addLabel("total_count", array(
-			"html" => $total,
+			"text" => $total,
 			"soy2prefix" => "cms"
 		));
 
 		$currentCount = ($current - 1) * $limit;
-		
+
 		$obj->addLabel("count_start", array(
-			"html" => $currentCount + 1,
+			"text" => $currentCount + 1,
 			"soy2prefix" => "cms"
 		));
 
 		$obj->addLabel("count_end", array(
-			"html" => $currentCount + $total,
+			"text" => $currentCount + $total,
 			"soy2prefix" => "cms"
 		));
 

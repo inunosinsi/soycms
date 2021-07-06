@@ -102,7 +102,7 @@ class SearchLogic extends SOY2LogicBase{
     private function setCondition(){
 		$q = CustomSearchFieldUtil::getParameter("q");
 		$params = CustomSearchFieldUtil::getParameter("c_search");
-
+		
         if(!count($this->where)){
             //記事検索
 			$q = (is_string($q)) ? trim($q) : null;
