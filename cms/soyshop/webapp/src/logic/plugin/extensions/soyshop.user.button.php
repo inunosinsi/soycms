@@ -13,7 +13,8 @@ class SOYShopUserButtonDeletageAction implements SOY2PluginDelegateAction{
 	private $_buttons = array();
 
 	function run($extensionId,$moduleId,SOY2PluginAction $action){
-		$this->_buttons[$moduleId] = $action->buttonOnTitle($this->userId);
+		$btn = $action->buttonOnTitle($this->userId);
+		if(is_string($btn) && strlen($btn)) $this->_buttons[$moduleId] = $btn;
 	}
 
 	function getButtons(){
