@@ -268,16 +268,31 @@ class CartLogic extends SOY2LogicBase{
 		if(SOYSHOP_USE_CART_TABLE_MODE){
 			return soyshop_cart_get_item_price($this->db);
 		}else{
-			$items = self::getItems();
-			if(!count($items)) return 0;
+			$itemOrders = self::getItems();
+			if(!count($itemOrders)) return 0;
 
 			$total = 0;
-			foreach($items as $item){
-				$total += $item->getTotalPrice();
+			foreach($itemOrders as $itemOrder){
+				$total += $itemOrder->getTotalPrice();
 			}
 
 			return $total;
 		}
+	}
+
+	/**
+	 * 商品合計金額(税込み)を取得
+	 * @return number
+	 */
+	function getItemPriceIncludedTax(){
+		//外税プラグインが有効か？
+		$itemTotal = self::getItemPrice();
+		if(!defined("SOYSHOP_CONSUMPTION_TAX_MODE") || !SOYSHOP_CONSUMPTION_TAX_MODE) return $itemTotal;
+		$taxLogic = SOY2Logic::createInstance("module.plugins.common_consumption_tax.logic.CalculateTaxLogic");
+		list($total, $reducedRateTotal) = $taxLogic->getItemTotalByCart($this, false);
+		$tax = $taxLogic->calculateTaxTotal($total, $reducedRateTotal);
+
+		return $itemTotal + $tax;
 	}
 
 	/**

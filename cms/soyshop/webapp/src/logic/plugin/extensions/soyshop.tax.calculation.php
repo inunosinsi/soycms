@@ -3,12 +3,18 @@ class SOYShopTaxCalculationBase implements SOY2PluginAction{
 
 	private $cart;
 
-	function calculation(CartLogic $cart){
+	/**
+	 * @param CartLogic
+	 * @return void
+	 */
+	function calculation(CartLogic $cart){}
 
-	}
-
-	function calculationOnEditPage($total, $reducedRateTotal){
-
+	/**
+	 * @param int, int
+	 * @return SOYShop_ItemModule
+	 */
+	function calculationOnEditPage(int $total, int $reducedRateTotal){
+		return new SOYShop_ItemModule();
 	}
 }
 class SOYShopTaxCalculationDeletageAction implements SOY2PluginDelegateAction{
@@ -26,7 +32,7 @@ class SOYShopTaxCalculationDeletageAction implements SOY2PluginDelegateAction{
 				$action->calculation($this->cart);
 				break;
 			case "edit":
-				$this->_module = $action->calculationOnEditPage($this->total, $this->reducedRateTotal);
+				if(is_numeric($this->total) && is_numeric($this->reducedRateTotal)) $this->_module = $action->calculationOnEditPage($this->total, $this->reducedRateTotal);
 				break;
 			default:
 				break;

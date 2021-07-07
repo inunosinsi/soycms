@@ -34,7 +34,12 @@ function soyshop_parts_cart($html, $page){
 	));
 
 	$obj->addLabel("cart_total", array(
-		"text" => number_format($cart->getItemPrice()),
+		"text" => soy2_number_format($cart->getItemPrice()),
+		"soy2prefix" => SOYSHOP_SITE_PREFIX
+	));
+
+	$obj->addLabel("cart_total_included_tax", array(
+		"text" => soy2_number_format($cart->getItemPriceIncludedTax()),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 

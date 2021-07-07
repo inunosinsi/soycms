@@ -28,71 +28,34 @@ class ConsumptionTaxUtil{
 		SOYShop_DataSets::put("consumption_tax.config", $values);
 	}
 
-	public static function getTaxRate(){
-		SOY2::imports("module.plugins.common_consumption_tax.domain.*");
-		$scheduleDao = SOY2DAOFactory::create("SOYShop_ConsumptionTaxScheduleDAO");
-		$scheduleDao->setLimit(1);
-
-		try{
-			$schedules =$scheduleDao->getScheduleByDate(time());
-		}catch(Exception $e){
-			return 0;
-		}
-
-		return (isset($schedules[0])) ? (int)$schedules[0]->getTaxRate() : 0;
-	}
-
-	public static function getReducedTaxRate(){
-		$cnf = self::_getConfig();
-		return (isset($cnf["reduced_tax_rate"])) ? (int)$cnf["reduced_tax_rate"] : 0;
-	}
-
-	public static function calculateTax($price, $rate){
-		if($price == 0 || $rate == 0) return 0;
-		$cnf = self::_getConfig();
-		$m = (isset($cnf["method"])) ? $cnf["method"] : 0;
-
-		switch($m){
-			case self::METHOD_ROUND:
-				return (int)round($price * $rate / 100);
-			case self::METHOD_CEIL:
-				return (int)ceil($price * $rate / 100);
-			case self::METHOD_FLOOR:
-			default:
-				return (int)floor($price * $rate / 100);
-		}
-	}
-
-	//該当する商品が軽減率対象商品であるか？を判定する
-	public static function isReducedTaxRateItem($itemId){
-		if(!is_numeric($itemId)) return false;
-		$list = self::_getList();
-		if(!count($list)) return false;
-		return (is_numeric(array_search($itemId, $list)));
-	}
-
-	public static function getItemIdsOfReducedTaxRate(){
-		return self::_getList();
-	}
-
-	private static function _getList(){
-		static $list;
-		if(is_null($list)){
-			$list = array();
-			$sql = "SELECT item_id FROM soyshop_item_attribute WHERE item_field_id = :fieldId";
-			$dao = new SOY2DAO();
+	public static function saveReducedTaxRateItem(bool $on, int $itemId){
+		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
+		if($on){	//save
 			try{
-				$res = $dao->executeQuery($sql, array(":fieldId" => self::FIELD_REDUCED_TAX_RATE));
+				$attr = $dao->get($itemId, self::FIELD_REDUCED_TAX_RATE);
 			}catch(Exception $e){
-				$res = array();
+				$attr = new SOYShop_ItemAttribute();
+				$attr->setItemId($itemId);
+				$attr->setFieldId(self::FIELD_REDUCED_TAX_RATE);
 			}
 
-			if(count($res)){
-				foreach($res as $v){
-					if(isset($v["item_id"]) && is_numeric($v["item_id"])) $list[] = (int)$v["item_id"];
+			$attr->setValue(1);
+
+			try{
+				$dao->insert($attr);
+			}catch(Exception $e){
+				try{
+					$dao->update($attr);
+				}catch(Exception $e){
+
 				}
 			}
+		}else{
+			try{
+				$dao->delete($itemId, self::FIELD_REDUCED_TAX_RATE);
+			}catch(Exception $e){
+				//
+			}
 		}
-		return $list;
 	}
 }
