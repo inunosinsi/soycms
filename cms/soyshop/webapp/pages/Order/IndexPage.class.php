@@ -169,12 +169,17 @@ class IndexPage extends WebPage{
 	 */
 	private function buildSearchForm($search){
 
-		$obj = (object)$search;
+		SOYShopPlugin::load("soyshop.order.search");
+		$buttons = SOYShopPlugin::invoke("soyshop.order.search", array("mode" => "button"))->getButtons();
+		DisplayPlugin::toggle("search_condtion_button", count($buttons));
+
+		$this->createAdd("search_condtion_button_list", "_common.Order.SearchCondtionButtonListComponent", array(
+			"list" => $buttons
+		));
 
 		$form = $this->create("search_form", "_common.Order.SearchFormComponent");
 
-		SOY2::cast($form, $obj);
-
+		SOY2::cast($form, (object)$search);
 		$this->add("search_form", $form);
 
 		return $form;

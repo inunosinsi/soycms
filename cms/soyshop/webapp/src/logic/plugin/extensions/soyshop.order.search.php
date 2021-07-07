@@ -5,6 +5,13 @@
 class SOYShopOrderSearch implements SOY2PluginAction{
 
 	/**
+	 * @return html
+	 */
+	function button(){
+		return null;
+	}
+
+	/**
 	 * @return array("queries" => "", "binds" => array())
 	 * queriesはサブクエリ形式でSQL構文の配列を返せば良い id IN (SELECT id FROM soyshop_order 〜以下省略〜)
 	 */
@@ -24,6 +31,7 @@ class SOYShopOrderSearchDeletageAction implements SOY2PluginDelegateAction{
 
 	private $mode;
 	private $params;
+	private $_buttons = array();
 	private $_items = array();
 	private $_queries = array();
 
@@ -31,6 +39,10 @@ class SOYShopOrderSearchDeletageAction implements SOY2PluginDelegateAction{
 		if($action instanceof SOYShopOrderSearch){
 			$params = (isset($this->params[$moduleId])) ? $this->params[$moduleId] : array();
 			switch($this->mode){
+				case "button":
+					$btn = $action->button();
+					if(is_string($btn) && strlen($btn)) $this->_buttons[$moduleId] = $btn;
+					break;
 				case "search":
 					$this->_queries[$moduleId] = $action->setParameter($params);
 					break;
@@ -41,7 +53,9 @@ class SOYShopOrderSearchDeletageAction implements SOY2PluginDelegateAction{
 			}
 		}
 	}
-
+	function getButtons(){
+		return $this->_buttons;
+	}
 	function getSearchItems(){
 		return $this->_items;
 	}
