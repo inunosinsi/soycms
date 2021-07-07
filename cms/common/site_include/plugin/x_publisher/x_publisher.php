@@ -24,7 +24,7 @@ class XPublisherPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3096",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8.1"
+			"version"=>"0.8.2"
 		));
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
 			$this,"config_page"
@@ -107,6 +107,10 @@ class XPublisherPlugin{
 			foreach($dirs as $dir){
 				if(!strlen($dir)) break;
 				if(is_numeric(strpos($dir, ".html")) || is_numeric(strpos($dir, ".php")) || is_numeric(strpos($dir, "sms:"))) break;
+
+				//電話番号のみのディレクトリである場合は排除
+				preg_match('/\d{9,11}/', $dir, $tmp);
+				if(isset($tmp[0])) break;
 
 				//この２つのディレクトリは確実に関係ないたた調べるのを省く
 				if($dir == "fonts" || $dir == "images") break;
