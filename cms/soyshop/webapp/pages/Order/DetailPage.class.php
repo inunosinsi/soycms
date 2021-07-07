@@ -309,7 +309,7 @@ class DetailPage extends WebPage{
     		"list" => $itemOrders,
     	));
 
-    	$this->addLabel("order_total_price", array(
+		$this->addLabel("order_total_price", array(
     		"text" => soy2_number_format($order->getPrice())
     	));
 
@@ -436,11 +436,8 @@ class DetailPage extends WebPage{
     	$files = array();
 		$items = array();
 		foreach($itemOrders as $itemOrder){
-			try{
-				$item = soyshop_get_item_object($itemOrder->getItemId());
-			}catch(Exception $e){
-				continue;
-			}
+			$item = soyshop_get_item_object($itemOrder->getItemId());
+			if(!is_numeric($item->getId())) continue;
 
 			if($item->getType() === SOYShop_Item::TYPE_DOWNLOAD){
 				$items[] = $item;
@@ -457,10 +454,11 @@ class DetailPage extends WebPage{
 				}catch(Exception $e){
 					continue;
 				}
-				if(count($array) > 0){
-					foreach($array as $file){
-						$files[] = $file;
-					}
+
+				if(!count($array)) continue;
+
+				foreach($array as $file){
+					$files[] = $file;
 				}
 			}
 		}
@@ -481,8 +479,6 @@ class DetailPage extends WebPage{
 				"arguments" => array($this->id)
 			))->getObject();
 		}catch(Exception $e){
-			var_dump($e);
-			//
 			return null;
 		}
 	}
