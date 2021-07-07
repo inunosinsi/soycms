@@ -232,17 +232,17 @@ class EditPage extends WebPage{
 				$price = 0;
 				$reducedRatePrice = 0;	//軽減税率の方の商品合計
 
-				SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");
+				$taxLogic = SOY2Logic::createInstance("module.plugins.common_consumption_tax.logic.CalculateTaxLogic");
 
 				foreach($itemOrders as $itemOrder){
-					if(ConsumptionTaxUtil::isReducedTaxRateItem($itemOrder->getItemId())){	//軽減税率対象商品
+					if($taxLogic->isReducedTaxRateItem($itemOrder->getItemId())){	//軽減税率対象商品
 						$reducedRatePrice += $itemOrder->getTotalPrice();
 					}else{
 						$price += $itemOrder->getTotalPrice();
 					}
 				}
 				foreach($newItemOrders as $itemOrder){
-					if(ConsumptionTaxUtil::isReducedTaxRateItem($itemOrder->getItemId())){	//軽減税率対象商品
+					if($taxLogic->isReducedTaxRateItem($itemOrder->getItemId())){	//軽減税率対象商品
 						$reducedRatePrice += $itemOrder->getTotalPrice();
 					}else{
 						$price += $itemOrder->getTotalPrice();
@@ -286,7 +286,7 @@ class EditPage extends WebPage{
 
 
 				//税金の再計算
-				$module = self::calculateConsumptionTax($price, $modulePrice, $reducedRatePrice);
+				$module = self::_calculateConsumptionTax($price, $modulePrice, $reducedRatePrice);
 				if(isset($module)) $modules["consumption_tax"] = $module;
 
 				//軽減税率対象商品分も加味して合算
@@ -369,7 +369,7 @@ class EditPage extends WebPage{
 	}
 
 	//税金の計算 $reducedRateTotalは軽減税率商品金額の合算
-	private function calculateConsumptionTax($price, $modulePrice, $reducedRateTotal){
+	private function _calculateConsumptionTax($price, $modulePrice, $reducedRateTotal){
 		$config = SOYShop_ShopConfig::load();
 
 		$total = $price;
@@ -382,10 +382,10 @@ class EditPage extends WebPage{
 		//$cart->calculateConsumptionTax();
 		if($config->getConsumptionTax() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON){
 			//外税(プラグインによる処理)
-			return self::setConsumptionTax($config, $total, $reducedRateTotal);
+			return self::_setConsumptionTax($config, $total, $reducedRateTotal);
 		}elseif($config->getConsumptionTaxInclusivePricing() == SOYShop_ShopConfig::CONSUMPTION_TAX_MODE_ON){
 			//内税(標準実装)
-			return self::setConsumptionTaxInclusivePricing($config, $total);
+			return self::_setConsumptionTaxInclusivePricing($config, $total);
 
 		}else{
 			//何もしない
@@ -395,7 +395,7 @@ class EditPage extends WebPage{
 	}
 
 	//外税 $reducedRateTotalは軽減税率商品金額の合算
-	private function setConsumptionTax($config, $total, $reducedRateTotal){
+	private function _setConsumptionTax($config, $total, $reducedRateTotal){
 		$pluginId = $config->getConsumptionTaxModule();
 		if(!isset($pluginId)) return null;
 
@@ -411,7 +411,7 @@ class EditPage extends WebPage{
 	}
 
 	//内税
-	private function setConsumptionTaxInclusivePricing($config, $total){
+	private function _setConsumptionTaxInclusivePricing($config, $total){
 		$taxRate = (int)$config->getConsumptionTaxInclusivePricingRate();	//内税率
 
 		if($taxRate === 0) return null;
