@@ -64,6 +64,7 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 						$this->dao->insert($coupon);
 						$this->config->redirect("issued");
 					}catch(Exception $e){
+						var_dump($e);
 						//
 					}
 				}
@@ -365,18 +366,18 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 
 	private function _buildConfigForm(){
 
-		$config = DiscountFreeCouponUtil::getConfig();
+		$cnf = DiscountFreeCouponUtil::getConfig();
 
 		$this->addForm("config_form");
 
 		$this->addInput("config_enable_amount_min", array(
 			"name" => "Config[min]",
-			"value" => (isset($config["min"])) ? $config["min"] : 0
+			"value" => (isset($cnf["min"])) ? $cnf["min"] : 0
 		));
 
 		$this->addInput("config_enable_amount_max", array(
 			"name" => "Config[max]",
-			"value" => (isset($config["max"])) ? $config["max"] : ""
+			"value" => (isset($cnf["max"])) ? $cnf["max"] : ""
 		));
 
 		$this->addInput("config_code_disits_min", array(
@@ -389,6 +390,13 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 			"name" => "Config[disitsMax]",
 			"value" => DiscountFreeCouponUtil::getDisitsMax(),
 			"style" => "ime-mode:inactive;width:80px;"
+		));
+
+		$this->addCheckBox("config_display_always", array(
+			"name" => "Config[displayAlways]",
+			"value" => DiscountFreeCouponUtil::DISPLAY_ITEM_ALWAYS,
+			"selected" => (isset($cnf["displayAlways"]) && (int)$cnf["displayAlways"] === DiscountFreeCouponUtil::DISPLAY_ITEM_ALWAYS),
+			"label" => "管理画面の注文詳細でクーポンコードの入力フォームを常に表示する"
 		));
 	}
 

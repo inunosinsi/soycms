@@ -5,16 +5,21 @@ class DiscountFreeCouponUtil {
 	const DATE_START = 0;
 	const DATE_END = 2147483647;
 
+	const DISPLAY_ITEM_ALWAYS = 1;	//管理画面の注文詳細でクーポンコードの入力フォームを常に表示する
+	const DISPLAY_ITEM_RESTINCTION = 0;
+
 	public static function getConfig(){
 		return SOYShop_DataSets::get("discount.free.coupon.config", array(
 			"min" => 0,
 			"max" => "",
 			"disitsMin" => 4,
-			"disitsMax" => 16
+			"disitsMax" => 16,
+			"displayAlways" => 0
 		));
 	}
 
-	public static function saveConfig($array){
+	public static function saveConfig(array $array){
+		if(!isset($array["displayAlways"])) $array["displayAlways"] = self::DISPLAY_ITEM_RESTINCTION;
 		SOYShop_DataSets::put("discount.free.coupon.config", $array);
 	}
 

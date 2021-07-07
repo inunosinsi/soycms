@@ -14,7 +14,7 @@ class DiscountFreeCouponComment extends SOYShopCommentFormBase{
 				$module->setName(MessageManager::get("MODULE_NAME_COUPON"));
 				$module->setType("discount_module");	//typeを指定すると同じtypeのモジュールは同時使用できなくなる
 				$module->setPrice(0 - $discount);//負の値
-
+				
 				$order->setPrice($order->getPrice() + $module->getPrice());
 
 				$modules = $order->getModuleList();
