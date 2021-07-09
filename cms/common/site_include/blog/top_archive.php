@@ -161,11 +161,11 @@ function soy_cms_blog_output_entry_list_pager($page,$offset,$limit,$total){
         "soy2prefix" => "b_block"
     ));
 
-    $page->createAdd("has_pager","HTMLModel",array(
+    $page->addModel("has_pager", array(
         "soy2prefix" => "b_block",
         "visible" => ($last_page_number >1)
     ));
-    $page->createAdd("no_pager","HTMLModel",array(
+    $page->addModel("no_pager", array(
         "soy2prefix" => "b_block",
         "visible" => ($last_page_number <2)
     ));
@@ -182,7 +182,7 @@ function soy_cms_blog_output_entry_list_pager($page,$offset,$limit,$total){
 */
 function soy_cms_blog_output_first_page_link($page,$offset,$limit,$total){
     $url = soy_cms_blog_get_current_url($page);
-    $page->createAdd("first_page","HTMLLink",array(
+    $page->addLink("first_page", array(
         "soy2prefix" => "b_block",
         "link" => $url,
     ));
@@ -202,7 +202,7 @@ function soy_cms_blog_output_last_page_link($page,$offset,$limit,$total){
 
     $url = soy_cms_blog_get_current_url($page, $last_page -1);
 
-    $page->createAdd("last_page","HTMLLink",array(
+    $page->addLink("last_page", array(
         "soy2prefix" => "b_block",
         "link" => $url,
     ));
@@ -216,7 +216,7 @@ function soy_cms_blog_output_last_page_link($page,$offset,$limit,$total){
 <!-- b_block:id="pages" /-->ページ中<!-- b_block:id="current_page" /-->ページ目
 */
 function soy_cms_blog_output_current_page($page,$offset){
-    $page->createAdd("current_page","HTMLLabel",array(
+    $page->addLabel("current_page", array(
         "soy2prefix" => "b_block",
         "text" => max(1, $offset + 1),
     ));
@@ -236,11 +236,11 @@ SOY Shopのtotal_pagesも使えるようにする
 function soy_cms_blog_output_pages($page, $limit,$total){
     $last_page = $limit ? max(1, ceil($total / $limit)) : 1;
 
-    $page->createAdd("pages","HTMLLabel",array(
+    $page->addLabel("pages", array(
         "soy2prefix" => "b_block",
         "text" => $last_page,
     ));
-    $page->createAdd("total_pages","HTMLLabel",array(
+    $page->addLabel("total_pages", array(
         "soy2prefix" => "b_block",
         "text" => $last_page,
     ));
@@ -268,24 +268,24 @@ function soy_cms_blog_output_next_link($page,$offset,$limit,$total){
     $url = soy_cms_blog_get_current_url($page, $offset +1);
     $hasNext = ($total > ($limit * ($offset + 1)));
 
-    $page->createAdd("next_link","HTMLLink",array(
+    $page->addLink("next_link", array(
         "soy2prefix" => "b_block",
         "visible" => $hasNext,
         "link" => $url,
     ));
 
-    $page->createAdd("next_page","HTMLLink",array(
+    $page->addLink("next_page", array(
         "soy2prefix" => "b_block",
         "visible" => $hasNext,
         "link" => $url,
     ));
 
-    $page->createAdd("has_next","HTMLModel",array(
+    $page->addModel("has_next", array(
         "soy2prefix" => "b_block",
         "visible" => $hasNext
     ));
 
-    $page->createAdd("no_next","HTMLModel",array(
+    $page->addModel("no_next", array(
         "soy2prefix" => "b_block",
         "visible" => !$hasNext
     ));
@@ -320,24 +320,24 @@ function soy_cms_blog_output_prev_link($page,$offset,$limit){
     $hasPrev = ($offset > 0);
 
     //前のページへ
-    $page->createAdd("prev_link","HTMLLink",array(
+    $page->addLink("prev_link", array(
         "soy2prefix" => "b_block",
         "visible" => $hasPrev,
         "link" => $url
     ));
 
-    $page->createAdd("prev_page","HTMLLink",array(
+    $page->addLink("prev_page", array(
         "soy2prefix" => "b_block",
         "visible" => $hasPrev,
         "link" => $url
     ));
 
-    $page->createAdd("has_prev","HTMLModel",array(
+    $page->addModel("has_prev", array(
         "soy2prefix" => "b_block",
         "visible" => $hasPrev
     ));
 
-    $page->createAdd("no_prev","HTMLModel",array(
+    $page->addModel("no_prev", array(
         "soy2prefix" => "b_block",
         "visible" => !$hasPrev
     ));
