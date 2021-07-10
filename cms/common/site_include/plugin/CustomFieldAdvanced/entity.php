@@ -134,7 +134,7 @@ class CustomField{
 	/**
 	 * 1.2.0でcheckboxを追加
 	 */
-	 function getForm($pluginObj, $fieldValue, $extraValues=null){
+	 function getForm($pluginObj, $fieldValue=null, $extraValues=null){
 
  		//表示しないとき
  		if(!$this->showInput) return "";
@@ -213,6 +213,7 @@ class CustomField{
 
  				break;
  			case "textarea":
+				if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
  				$body = '<textarea class="custom_field_textarea form-control" style="width:100%;"'
  				        .' id="'.$h_formID.'"'
@@ -221,8 +222,9 @@ class CustomField{
  						.$h_value.'</textarea>';
  				break;
  			case "richtext":
+				if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
- 				$body = '<textarea class="custom_field_textarea mceEditor" style="width:100%;"'
+				$body = '<textarea class="custom_field_textarea mceEditor" style="width:100%;"'
  				        .' id="'.$h_formID.'"'
  				        .' name="'.$h_formName.'"'
  				        .'>'
@@ -328,6 +330,7 @@ class CustomField{
  				break;
  			case "input":
  			default:
+				if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();
  				$h_value = htmlspecialchars($fieldValue,ENT_QUOTES,"UTF-8");
  				$body = '<input type="text" class="custom_field_input form-control" style="width:100%"'
  				       .' id="'.$h_formID.'"'
