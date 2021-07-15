@@ -93,7 +93,7 @@ class SOYShopAdminTopDeletageAction implements SOY2PluginDelegateAction{
 					$array["title"] = $action->getTitle();
 					$array["content"] = $action->getContent();
 					$link = $action->getLink();
-					if(strpos($link, "/Config/") && !AUTH_CONFIG){
+					if(strpos($link, "/Config/") && !AUTH_CONFIG && !AUTH_CONFIG_DETAIL){
 						//リンクタイトルを表示させない
 					}else{
 						$array["link"] = $link;

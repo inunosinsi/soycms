@@ -17,6 +17,7 @@ class SOYShopAuthUtil {
 			"USER" => true,
 			"REVIEW" => true,
 			"CONFIG" => true,
+			"CONFIG_DETAIL" => true,	//プラグインの詳細ページのみ許可
 			"PLUGIN" => true,
 			"SITE" => true,		//ページの作成やテンプレートの編集等
 			"OPERATE" => true,	//更新の操作に関するもの,
@@ -43,6 +44,7 @@ class SOYShopAuthUtil {
 				break;
 			case 3:	//管理制限者	更新の操作を封じる
 				$authes["CONFIG"] = false;
+				$authes["CONFIG_DETAIL"] = false;
 				$authes["PLUGIN"] = false;
 				$authes["SITE"] = false;
 				$authes["OPERATE"] = false;
@@ -152,7 +154,17 @@ class SOYShopAuthUtil {
 
 			//CONFIGの場合、設定に関するページは見れなくする
 			if(!AUTH_CONFIG) {
-				if(is_numeric(strpos($classPath,"Config")) || strpos($classPath, "Customfield") || strpos($classPath, "Setting")) return false;
+				if(strpos($classPath, "Customfield") || strpos($classPath, "Setting")) return false;
+				if(is_numeric(strpos($classPath, "Config"))){
+					//AUTH_CONFIG_DETAILがtrueの場合はConfig.Detailは許可する
+					if(is_numeric(strpos($classPath, "Config"))){
+						if(AUTH_CONFIG_DETAIL && isset($_GET["plugin"])){
+							//許可
+						}else{
+							return false;
+						}
+					}
+				}
 			}
 		}
 
