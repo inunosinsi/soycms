@@ -272,6 +272,7 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 	}
 
 	private function isSmartPhone(){
+		if(defined("SOYSHOP_SMARTPHONE_MODE") && SOYSHOP_SMARTPHONE_MODE) return true;
 		return (defined("SOYSHOP_IS_SMARTPHONE") && SOYSHOP_IS_SMARTPHONE);
 	}
 
