@@ -13,6 +13,7 @@ class EntryListComponent extends HTMLList{
 	private $thumbnailConfig;
 
 	protected function populateItem($entity){
+		if(!$entity instanceof Entry) $entity = new Entry();
 
 		$link = $this->blogUrl . rawurlencode($entity->getAlias());
 
@@ -51,12 +52,12 @@ class EntryListComponent extends HTMLList{
 
         $this->addLabel("create_date_ymd", array(
             "soy2prefix" => SOYSHOP_SITE_PREFIX,
-            "text" => date("Y-m-d", $entity->getCdate())
+            "text" => (is_numeric($entity->getCdate())) ? date("Y-m-d", $entity->getCdate()) : ""
         ));
 
 		$this->addLabel("create_date_ymd_slash", array(
             "soy2prefix" => SOYSHOP_SITE_PREFIX,
-            "text" => date("Y/m/d", $entity->getCdate())
+            "text" => (is_numeric($entity->getCdate())) ? date("Y/m/d", $entity->getCdate()) : ""
         ));
 
 		$more = $entity->getMore();
@@ -176,7 +177,7 @@ class EntryListComponent extends HTMLList{
 		}
 	}
 
-	private function _getThumbnailValues($entryId){
+	private function _getThumbnailValues(int $entryId){
 		if(!is_numeric($entryId)) return array();
 		$dao = self::_attrDao();
 		try{
@@ -199,7 +200,8 @@ class EntryListComponent extends HTMLList{
 		return $dao;
 	}
 
-	private function _compareTime($entry){
+	private function _compareTime(Entry $entry){
+		if(!is_numeric($entry->getCdate())) return 0;
 		return $entry->getCdate() + $this->thisIsNewDate * 60*60*24;
 	}
 
