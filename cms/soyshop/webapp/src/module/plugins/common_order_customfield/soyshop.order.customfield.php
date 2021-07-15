@@ -302,6 +302,9 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			$html[] = "<p>" . $config->getForm($value) . "</p>";
 			$obj["description"] = implode("\n", $html);
 
+			// @ToDo 管理画面側の注文で注釈を出力できる
+			$obj["annotation"] = null;
+
 			//必須項目であるか？
 			$obj["isRequired"] = $config->getIsRequired();
 

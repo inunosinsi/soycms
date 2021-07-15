@@ -17,6 +17,10 @@ class CustomfieldMethodListComponent extends HTMLList{
 			"html" => (isset($entity["description"])) ? $entity["description"] : ""
 		));
 
+		$this->addLabel("customfield_annotation", array(
+			"html" => (isset($entity["annotation"])) ? $entity["annotation"] : ""
+		));
+
 		$this->addModel("has_customfield_error", array(
 			"visible" => (isset($entity["error"]) && strlen($entity["error"]) > 0)
 		));

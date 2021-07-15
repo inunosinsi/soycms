@@ -186,6 +186,9 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 			$html[] = "<p>" . $config->getForm($value)."</p>";
 			$obj["description"] = implode("\n", $html);
 
+			// @ToDo 管理画面側の注文で注釈を出力できる
+			$obj["annotation"] = null;
+
 			$error = $cart->getAttribute("order_date_customfield_" . $config->getFieldId() . ".error");
 			if(isset($error)){
 				$obj["error"] = $error;
