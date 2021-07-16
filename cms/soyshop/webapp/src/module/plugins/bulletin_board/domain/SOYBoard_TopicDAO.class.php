@@ -33,6 +33,24 @@ abstract class SOYBoard_TopicDAO extends SOY2DAO {
 	/**
 	 * @final
 	 */
+	function getByIds(array $ids){
+		try{
+			$res = $this->executeQuery("SELECT * FROM soyboard_topic WHERE id IN (" . implode(",", $ids) . ")");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$topics = array();
+		foreach($res as $v){
+			$topics[] = $this->getObject($v);
+		}
+		return $topics;
+	}
+
+	/**
+	 * @final
+	 */
 	function getWithNotDisabledGroup(){
 		try{
 			$res = $this->executeQuery(self::_buildGetSqlStmt(null, null));

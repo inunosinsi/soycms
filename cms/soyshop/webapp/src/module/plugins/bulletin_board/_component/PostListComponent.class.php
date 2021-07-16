@@ -14,7 +14,7 @@ class PostListComponent extends HTMLList {
 		));
 
 		$this->addLabel("topic_label", array(
-			"text" => self::_topicLogic()->getById($entity->getTopicId())->getLabel()
+			"text" => (is_numeric($entity->getTopicId())) ? self::_topicLogic()->getById($entity->getTopicId())->getLabel() : ""
 		));
 
 		$this->addLabel("is_open", array(

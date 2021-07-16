@@ -104,7 +104,7 @@ class MultiCategoryList extends HTMLList{
 		));
 
 		$this->createAdd("entry_count","CMSLabel",array(
-			"text"=>$this->entryCount[$entry->getid()],
+			"text"=>(is_numeric($entry->getId()) && isset($this->entryCount[$entry->getId()])) ? $this->entryCount[$entry->getid()] : "",
 			"soy2prefix"=>"cms"
 		));
 

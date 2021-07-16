@@ -6,7 +6,7 @@ class TopicLogic extends SOY2LogicBase {
 		SOY2::import("module.plugins.bulletin_board.domain.SOYBoard_TopicDAO");
 	}
 
-	function get($notDisabledGroup=false){
+	function get(bool $notDisabledGroup=false){
 		if($notDisabledGroup){
 			return self::_dao()->getWithNotDisabledGroup();
 		}else{
@@ -18,12 +18,16 @@ class TopicLogic extends SOY2LogicBase {
 		}
 	}
 
-	function getById($topicId, $notDisabledGroup=false){
+	function getById(int $topicId, bool $notDisabledGroup=false){
 		if($notDisabledGroup){
 			return self::_dao()->getByIdWithNotDisabledGroup($topicId);
 		}else{
 			return self::_getById($topicId);
 		}
+	}
+
+	function getByIds(array $topicIds){
+		return self::_dao()->getByIds($topicIds);
 	}
 
 	function getByGroupId($groupId, $notDisabledGroup=false, $sortMode=false){
@@ -68,6 +72,7 @@ class TopicLogic extends SOY2LogicBase {
 	}
 
 	function insert($values){
+		$values["label"] = trim($values["label"]);
 		$dao = self::_dao();
 		$topic = SOY2::cast("SOYBoard_Topic", $values);
 		if(!strlen($topic->getLabel())) return null;
@@ -76,6 +81,21 @@ class TopicLogic extends SOY2LogicBase {
 		}catch(Exception $e){
 			return null;
 		}
+	}
+
+	//トピックに紐付いたポスト数のリスト
+	function getNoPostTopicList(){
+		SOY2::import("module.plugins.bulletin_board.domain.SOYBoard_PostDAO");
+		$list = SOY2DAOFactory::create("SOYBoard_PostDAO")->countPostEachTopicId();
+		if(!count($list)) return array();
+
+		//ポスト数が0のトピックIDをまとめる
+		$topicIds = array();
+		foreach($list as $topicId => $cnt){
+			if($cnt > 0) continue;
+			$topicIds[] = $topicId;
+		}
+		return $topicIds;
 	}
 
 	private function _getById($topicId){

@@ -234,6 +234,36 @@ abstract class SOYBoard_PostDAO extends SOY2DAO {
 	/**
 	 * @final
 	 */
+	function countPostEachTopicId(){
+		//先にトピックIDのみをまとめる
+		$list = array();
+		try{
+			$res = $this->executeQuery("SELECT id FROM soyboard_topic");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		foreach($res as $v){
+			$list[(int)$v["id"]] = 0;
+		}
+
+		try{
+			$res = $this->executeQuery("SELECT topic_id, COUNT(*) AS CNT FROM soyboard_post GROUP BY topic_id");
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return $list;
+
+		foreach($res as $v){
+			$list[(int)$v["topic_id"]] = (int)$v["CNT"];
+		}
+		return $list;
+	}
+
+	/**
+	 * @final
+	 */
 	function onInsert($query, $binds){
 		if(!isset($binds[":isOpen"]) || !is_numeric($binds[":isOpen"])) $binds[":isOpen"] = SOYBoard_Post::NO_OPEN;
 		$binds[":createDate"] = time();
