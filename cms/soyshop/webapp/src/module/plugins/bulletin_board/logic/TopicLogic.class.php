@@ -98,6 +98,14 @@ class TopicLogic extends SOY2LogicBase {
 		return $topicIds;
 	}
 
+	function deleteById($topicId){
+		try{
+			self::_dao()->deleteById($topicId);
+		}catch(Exception $e){
+			//
+		}
+	}
+
 	private function _getById($topicId){
 		try{
 			return self::_dao()->getById($topicId);

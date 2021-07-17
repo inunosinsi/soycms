@@ -30,6 +30,8 @@ abstract class SOYBoard_TopicDAO extends SOY2DAO {
 	 */
 	abstract function countByGroupId($groupId);
 
+	abstract function deleteById($id);
+
 	/**
 	 * @final
 	 */

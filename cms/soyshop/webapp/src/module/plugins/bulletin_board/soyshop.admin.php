@@ -12,7 +12,8 @@ class BulletinBoardAdmin extends SOYShopAdminBase{
 			foreach($topics as $topic){
 				if($topic->getCreateDate() > $oneWeekAfter) continue;
 
-				// @ToDo トピックの削除
+				// トピックの削除
+				$topicLogic->deleteById($topic->getId());
 			}
 		}
 	}
