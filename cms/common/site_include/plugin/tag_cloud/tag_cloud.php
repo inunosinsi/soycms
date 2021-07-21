@@ -198,6 +198,7 @@ class TagCloudPlugin{
 
 			$url = (isset($_SERVER["REDIRECT_URL"])) ? $_SERVER["REDIRECT_URL"] : "";
 			if(strpos($url, "page-")) $url = substr($url, 0, strpos($url, "/page-")) . "/";
+			$url = rtrim($url, "/") . "/";
 
 			$limit = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 			if(is_null($limit)) $limit = 100000;
