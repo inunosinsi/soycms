@@ -20,7 +20,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.8"
+			"version"=>"0.10"
 		));
 
 	    if(CMSPlugin::activeCheck($this->getId())){
@@ -37,18 +37,20 @@ class SOYCMSSameCategoryBlockPlugin{
 
 		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
 
-		//検索結果ブロックプラグインのUTILクラスを利用する
-		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
-
 		//詳細ページでない場合は空の配列を返す
 		if(!self::_checkIsBlogEntryPage($pageId)) return array();
+
+		//検索結果ブロックプラグインのUTILクラスを利用する
+		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+		$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
+		if(!isset($soyId)) return array();
 
 		//記事詳細からカテゴリの設定を習得する
 		$labelIds = self::_getLabelIds($pageId);
 		if(is_null($labelIds)) return array();
 
     	//ラベルIDを取得とデータベースから記事の取得件数指定
-		$count = PluginBlockUtil::getLimitByPageId($pageId);
+		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 
 		//並び順の指定
 		$randomMode = PluginBlockUtil::getSortRandomMode($pageId);

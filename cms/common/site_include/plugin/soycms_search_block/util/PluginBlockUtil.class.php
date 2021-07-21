@@ -68,11 +68,25 @@ class PluginBlockUtil {
 		return (isset($templates[$pageId])) ? $templates[$pageId] : null;
 	}
 
-	public static function getBlockByPageId($pageId){
+	public static function getBlockByPageId(int $pageId){
 		return self::__getBlockByPageId($pageId);
 	}
 
-	private static function __getBlockByPageId($pageId){
+	public static function getSoyIdByPageIdAndPluginId(int $pageId, string $pluginId){
+		$blocks = self::__getBlockByPageId($pageId);
+		if(!count($blocks)) return null;
+
+		foreach($blocks as $block){
+			$pageObj = soy2_unserialize($block->getObject());
+			if($pageObj->getPluginId() == $pluginId){
+				return $block->getSoyId();
+			}
+		}
+
+		return null;
+	}
+
+	private static function __getBlockByPageId(int $pageId){
 		static $plugBlocks;
 		if(is_null($plugBlocks)) $plugBlocks = array();
 		if(isset($plugBlocks[$pageId])) return $plugBlocks[$pageId];
@@ -99,7 +113,7 @@ class PluginBlockUtil {
 		return self::getBlogPageById($pageId);
 	}
 
-	public static function getLimitByPageId($pageId){
+	public static function getLimitByPageId($pageId, $soyId=null){
 		$template = self::__getTemplateByPageId($pageId);
 		if(is_null($template)) return null;
 
@@ -107,6 +121,8 @@ class PluginBlockUtil {
 		if(!is_array($blocks) || !count($blocks)) return null;
 
 		foreach($blocks as $block){
+			//soyIdに指定がある場合は正規表現をする前にチェック
+			if(isset($soyId) && $block->getSoyId() != $soyId) continue;
 			if(preg_match('/(<[^>]*[^\/]block:id=\"' . $block->getSoyId() . '\"[^>]*>)/', $template, $tmp)){
 				if(preg_match('/cms:count=\"(.*?)\"/', $tmp[1], $ctmp)){
 					if(isset($ctmp[1]) && is_numeric($ctmp[1])) return (int)$ctmp[1];

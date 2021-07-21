@@ -47,10 +47,10 @@ class BlockPluginPagerComponent extends HTMLList{
     }
 
     protected function populateItem($pager_list){
-        $html = "<a href=\"".htmlspecialchars($pager_list["url"], ENT_QUOTES, "UTF-8")."\"";
+		$html = "<a href=\"".htmlspecialchars($pager_list["url"], ENT_QUOTES, "UTF-8")."\"";
 
         $class = array();
-        if($pager_list["display_number"] == $this->current) $class[] = "current_page_number";
+        if($pager_list["display_number"] == ($this->current + 1)) $class[] = "current_page_number";
         if($pager_list["display_number"] == 1) $class[] = "first_page_number";// 1.3.4-
         if($pager_list["display_number"] == $this->last) $class[] = "last_page_number";// 1.3.4-
         if(count($class)) $html .= " class=\"".implode(" ",$class)."\"";

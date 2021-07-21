@@ -19,7 +19,7 @@ class SelectedEntriesBlockPlugin{
 			"author" => "齋藤毅",
 			"url" => "http://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version" => "0.5"
+			"version" => "0.6"
 		));
 
 		//プラグイン アクティブ
@@ -70,7 +70,10 @@ class SelectedEntriesBlockPlugin{
 
 		//記事の取得件数指定
 		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
-		$count = PluginBlockUtil::getLimitByPageId($pageId);
+		$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
+		if(!isset($soyId)) return array();
+
+		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 
 		$entryDao = SOY2DAOFactory::create("cms.EntryDAO");
         $sql = "SELECT ent.* FROM Entry ent ".

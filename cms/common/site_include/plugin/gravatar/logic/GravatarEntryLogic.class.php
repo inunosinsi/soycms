@@ -22,8 +22,11 @@ class GravatarEntryLogic extends SOY2LogicBase {
 			SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 			$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
 
+			$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
+			if(!isset($soyId)) return array();
+
 			//データベースから記事の取得件数指定
-			$count = PluginBlockUtil::getLimitByPageId($pageId);
+			$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 
 			//gravatarのメールアドレスに紐付いた記事を取得
 			$entryDao = SOY2DAOFactory::create("cms.EntryDAO");

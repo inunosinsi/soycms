@@ -17,7 +17,7 @@ class CustomSearchFieldEntryListBlockPlugin{
 			"author" => "齋藤毅",
 			"url" => "https://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.5"
 		));
 
 		//プラグイン アクティブ
@@ -63,6 +63,8 @@ class CustomSearchFieldEntryListBlockPlugin{
 		//検索結果ブロックプラグインのUTILクラスを利用する
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
+		$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
+		if(!isset($soyId)) return array();
 
 		$uri = $_SERVER["SOYCMS_PAGE_URI"];
 		$pathinfo = $_SERVER["PATH_INFO"];
@@ -81,7 +83,7 @@ class CustomSearchFieldEntryListBlockPlugin{
 		// $labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
 		// if(is_null($labelId)) return array();
 
-		$count = PluginBlockUtil::getLimitByPageId($pageId);
+		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 		return SOY2Logic::createInstance("site_include.plugin.CustomSearchField.logic.SearchLogic")->getEntryList($key, $v, 0, 0, $count);
 	}
 

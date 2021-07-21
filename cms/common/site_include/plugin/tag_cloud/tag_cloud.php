@@ -13,7 +13,7 @@ class TagCloudPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.6"
+			"version"=>"1.7"
 		));
 
 		//active or non active
@@ -155,11 +155,14 @@ class TagCloudPlugin{
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
 
+		$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
+		if(!isset($soyId)) return array();
+
 		//ラベルIDを取得とデータベースから記事の取得件数指定
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
 		if(is_null($labelId)) return array();
 
-		$count = PluginBlockUtil::getLimitByPageId($pageId);
+		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 		return SOY2Logic::createInstance("site_include.plugin.tag_cloud.logic.TagCloudBlockEntryLogic")->search($labelId, $wordId, $count);
 	}
 
@@ -176,30 +179,36 @@ class TagCloudPlugin{
 			"text" => $tag
 		));
 
-
 		/** ページャ **/
 
-		//ブログページでトップページ以外では以下のコードを読み込まない
-		if(!strlen($tag)) return;
+		$current = 0;
+		$last_page_number = 1;
+		$url = null;
 
-		SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
-		$logic = SOY2Logic::createInstance("site_include.plugin.tag_cloud.logic.TagCloudBlockEntryLogic");
+		//タグがない場合
+		if(strlen($tag)) {
+			SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 
-		$url = (isset($_SERVER["REDIRECT_URL"])) ? $_SERVER["REDIRECT_URL"] : "";
-		if(strpos($url, "page-")){
-			$url = substr($url, 0, strpos($url, "/page-")) . "/";
+			//最初にタグクラウド用のプラグインブロックがあるか調べる
+			$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
+			$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
+			if(!isset($soyId)) return;
+
+			$logic = SOY2Logic::createInstance("site_include.plugin.tag_cloud.logic.TagCloudBlockEntryLogic");
+
+			$url = (isset($_SERVER["REDIRECT_URL"])) ? $_SERVER["REDIRECT_URL"] : "";
+			if(strpos($url, "page-")) $url = substr($url, 0, strpos($url, "/page-")) . "/";
+
+			$limit = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
+			if(is_null($limit)) $limit = 100000;
+
+			$args = $logic->getArgs();
+			$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
+			if(isset($args[0]) && strpos($args[0], "page-") === 0) $current = (int)str_replace("page-", "", $args[0]);
+			$last_page_number = (int)ceil($logic->getTotal($labelId, $wordId) / $limit);
 		}
 
-		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
-		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
-		$limit = PluginBlockUtil::getLimitByPageId($pageId);
-		if(is_null($limit)) $limit = 100000;
-
-		$args = $logic->getArgs();
-		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
-		$current = (isset($args[0]) && strpos($args[0], "page-") === 0) ? (int)str_replace("page-", "", $args[0]) : 0;
-		$last_page_number = (int)ceil($logic->getTotal($labelId, $wordId) / $limit);
-
+		SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
 		$obj->createAdd("s_pager", "BlockPluginPagerComponent", array(
 			"list" => array(),
 			"current" => $current,
@@ -211,11 +220,11 @@ class TagCloudPlugin{
 
 		$obj->addModel("s_has_pager", array(
 			"soy2prefix" => "p_block",
-			"visible" => ($last_page_number >1)
+			"visible" => ($last_page_number > 1)
 		));
 		$obj->addModel("s_no_pager", array(
 			"soy2prefix" => "p_block",
-			"visible" => ($last_page_number <2)
+			"visible" => ($last_page_number < 2)
 		));
 
 		$obj->addLink("s_first_page", array(
@@ -225,7 +234,7 @@ class TagCloudPlugin{
 
 		$obj->addLink("s_last_page", array(
 			"soy2prefix" => "p_block",
-			"link" => $url . "page-" . ($last_page_number - 1) . "?tagcloud=" . $wordId,
+			"link" => ($last_page_number > 1) ? $url . "page-" . ($last_page_number - 1) . "?tagcloud=" . $wordId : null,
 		));
 
 		$obj->addLabel("s_current_page", array(
@@ -236,6 +245,26 @@ class TagCloudPlugin{
 		$obj->addLabel("s_pages", array(
 			"soy2prefix" => "p_block",
 			"text" => $last_page_number,
+		));
+
+		$obj->addModel("s_has_next_page", array(
+			"soy2prefix" => "p_block",
+			"visible" => ($last_page_number > 1 && ($current + 1) < $last_page_number)
+		));
+
+		$obj->addLink("s_next_page", array(
+			"soy2prefix" => "p_block",
+			"link" => $url . "page-" . ($current + 1) . "?tagcloud=" . $wordId,
+		));
+
+		$obj->addModel("s_has_prev_page", array(
+			"soy2prefix" => "p_block",
+			"visible" => ($last_page_number > 1 && $current > 0)
+		));
+
+		$obj->addLink("s_prev_page", array(
+			"soy2prefix" => "p_block",
+			"link" => $url . "page-" . ($current - 1) . "?tagcloud=" . $wordId,
 		));
 	}
 

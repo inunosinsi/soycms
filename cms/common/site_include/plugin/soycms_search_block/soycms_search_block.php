@@ -20,7 +20,7 @@ class SOYCMS_Search_Block_Plugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"1.4.1"
+			"version"=>"1.5"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -43,15 +43,19 @@ class SOYCMS_Search_Block_Plugin{
 		//ブログページでトップページ以外では以下のコードを読み込まない
 		if(get_class($obj) == "CMSBlogPage" && ($obj->mode == "_entry_" || $obj->mode == "_month_" || $obj->mode == "_category_")) return;
 
+		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
+
+		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
+		$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
+		if(!isset($soyId)) return;
+
 		SOY2::import("site_include.plugin.soycms_search_block.component.BlockPluginPagerComponent");
 		$logic = SOY2Logic::createInstance("site_include.plugin.soycms_search_block.logic.SearchBlockEntryLogic");
 
 		$url = (isset($_SERVER["REDIRECT_URL"])) ? $_SERVER["REDIRECT_URL"] : "";
 		if(strpos($url, "page-")) $url = substr($url, 0, strpos($url, "/page-")) . "/";
 
-		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
-		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
-		$limit = PluginBlockUtil::getLimitByPageId($pageId);
+		$limit = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 		if(is_null($limit)) $limit = 100000;
 
 		$query = (isset($_GET["q"]) && strlen(trim($_GET["q"]))) ? htmlspecialchars(trim($_GET["q"]), ENT_QUOTES, "UTF-8") : null;
@@ -115,11 +119,14 @@ class SOYCMS_Search_Block_Plugin{
 		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 		$pageId = (int)$_SERVER["SOYCMS_PAGE_ID"];
 
+		$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
+		if(!isset($soyId)) return array();
+
 		//ラベルIDを取得とデータベースから記事の取得件数指定
 		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
 		if(is_null($labelId)) return array();
 
-		$count = PluginBlockUtil::getLimitByPageId($pageId);
+		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
 
 		return SOY2Logic::createInstance("site_include.plugin.soycms_search_block.logic.SearchBlockEntryLogic")->search($labelId, $query, $count);
 	}
