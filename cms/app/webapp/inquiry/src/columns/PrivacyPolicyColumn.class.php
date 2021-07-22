@@ -2,6 +2,11 @@
 
 class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 
+	const MODE_TEXTAREA = 0;	//文章の表示をtextarea形式にする
+	const MODE_PRE = 1;			//文章の表示をpre形式にする
+
+	private $mode = self::MODE_TEXTAREA;
+
 	private $policy;
 	const POLICYDEFAULT = "個人情報保護方針を入力して下さい。";
 
@@ -43,7 +48,11 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 		}
 
 		$html = array();
-		$html[] = "<textarea " . implode(" ",$attributes) . " readonly=\"readonly\">".$this->policy."</textarea>";
+		if($this->mode == self::MODE_TEXTAREA){
+			$html[] = "<textarea " . implode(" ",$attributes) . " readonly=\"readonly\">".$this->policy."</textarea>";
+		}else{
+			$html[] = "<pre " . implode(" ",$attributes) . ">" . $this->policy . "</pre>";
+		}
 
 		$html[] = "<br/>";
 		$html[] = "<input type=\"checkbox\" id=\"data_".$this->getColumnId() . "\" name=\"data[".$this->getColumnId()."]\" value=\"1\" />";
@@ -61,6 +70,18 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 		$html.= "個人情報保護方針：";
 		$html.="<span style=\"color:red;\">※設定にかかわらず、常に必須扱いとなります。</span><br>";
 		$html.= '<textarea type="text" name="Column[config][policy]" style="height:100px;">'."\n".$this->policy.'</textarea>';
+		$html.= "<br/>";
+		$html.= '<label for="">表示モード：</label>';
+		if($this->mode == self::MODE_TEXTAREA){
+			$html.= '<label><input type="radio" name="Column[config][mode]" value="' . self::MODE_TEXTAREA . '" checked="checked">textarea</label>';
+			$html.= "&nbsp;&nbsp;";
+			$html.= '<label><input type="radio" name="Column[config][mode]" value="' . self::MODE_PRE . '">pre</label>';
+		}else{
+			$html.= '<label><input type="radio" name="Column[config][mode]" value="' . self::MODE_TEXTAREA . '">textarea</label>';
+			$html.= "&nbsp;&nbsp;";
+			$html.= '<label><input type="radio" name="Column[config][mode]" value="' . self::MODE_PRE . '" checked="checked">pre</label>';
+		}
+
 		$html.= "<br/>";
 		$html.= '<label for="">チェックボックスの文言：</label>';
 		$html.= '<input type="input" size="60" name="Column[config][checkLabel]" value="'.htmlspecialchars($this->checkLabel,ENT_QUOTES,"UTF-8").'" />';
@@ -80,6 +101,7 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	 */
 	function setConfigure($config){
 		SOYInquiry_ColumnBase::setConfigure($config);
+		$this->mode = (isset($config["mode"]) && is_numeric($config["mode"])) ? (int)$config["mode"] : self::MODE_TEXTAREA;
 		$this->cols = (isset($config["cols"]) && is_numeric($config["cols"])) ? (int)$config["cols"] : null;
 		$this->rows = (isset($config["rows"]) && is_numeric($config["rows"])) ? (int)$config["rows"] : null;
 		$this->policy = (isset($config["policy"])) ? $config["policy"] : self::POLICYDEFAULT;
@@ -88,6 +110,7 @@ class PrivacyPolicyColumn extends SOYInquiry_ColumnBase{
 	}
 	function getConfigure(){
 		$config = parent::getConfigure();
+		$config["mode"] = (int)$this->mode;
 		$config["cols"] = $this->cols;
 		$config["rows"] = $this->rows;
 		$config["policy"] = $this->policy;
