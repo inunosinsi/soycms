@@ -5,10 +5,19 @@ class SOYShopSitemapBase implements SOY2PluginAction{
 	/**
 	 * @return array
 	 * array(
-	 *	array("loc" => ページのuri(必須), "priority" => 0.8, "lastmod" => タイムスタンプ)
-	 * )
+ 	 *	array(
+ 	 *		"loc" => ページのURI,
+ 	 *		"priority" => 優先度(0.0〜1.0),
+ 	 *		"lastmod" => タイムスタンプ,
+ 	 *		"lngs" => array(
+ 	 *			"lng(多言語化の言語のprefix)" => array(
+ 	 *				"uri" => 多言語化した時のページのURI
+ 	 *			)
+ 	 *		)
+ 	 *	)
+ 	 * )
 	 * 上記の形式で返す
-	 */
+ 	 */
 	function items(){
 		return array();
 	}

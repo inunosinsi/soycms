@@ -69,13 +69,20 @@ function soyshop_breadcrumb_navigation($html, $page){
 							$name = (isset($list[$object->getFieldId()])) ? $list[$object->getFieldId()]->getLabel() : "";
 						//その他
 						}else{
-							//カスタムサーチフィールド
-							if(!is_null($pageObject->getObject()->getModuleId()) && $pageObject->getObject()->getModuleId() === "custom_search_field"){
-								$args = $page->getArguments();
-								if(isset($args[1])) $name = htmlspecialchars($args[1], ENT_QUOTES, "UTF-8");
+							if(!is_null($pageObject->getObject()->getModuleId())){
+								switch($pageObject->getObject()->getModuleId()){
+									case "custom_search_field":	//カスタムサーチフィールド
+										$args = $page->getArguments();
+										if(isset($args[1])) $name = htmlspecialchars($args[1], ENT_QUOTES, "UTF-8");
+										break;
+									case "tag_cloud":	//タグクラウド
+										SOY2::import("module.plugins.tag_cloud.util.TagCloudUtil");
+										$alias = TagCloudUtil::getTagCloudAlias();
+										if(strlen($alias)) $name = $alias;
+										break;
+								}
 							}
 						}
-
 					}
 					break;
 

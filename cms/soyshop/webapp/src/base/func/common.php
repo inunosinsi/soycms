@@ -51,6 +51,28 @@ function soyshop_get_ssl_site_url(){
     return $url;
 }
 
+function soyshop_get_arguments(){
+	static $args;
+	if(is_array($args)) return $args;
+
+	$args = array();
+
+	if(!isset($_SERVER["REQUEST_URI"])) return $args;
+	//末尾にスラッシュがない場合はスラッシュを付ける
+	$uri = trim($_SERVER["REQUEST_URI"], "/");
+	if(strpos($uri, SOYSHOP_ID . "/") === 0) $uri = str_replace(SOYSHOP_ID . "/", "", $uri);
+
+	$pageUri = soyshop_get_page_object(SOYSHOP_PAGE_ID)->getUri();
+	if(strpos($uri, $pageUri) === 0) $uri = str_replace($pageUri, "", $uri);
+
+	$uri = trim($uri, "/");
+	$args = explode("/", $uri);
+	unset($pageUri);
+	unset($uri);
+
+	return $args;
+}
+
 /**
  * httpから始まる画像のフルパスを取得する
  */

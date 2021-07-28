@@ -220,7 +220,27 @@ class SOYShop_Page {
 							$url .= "/" . rawurlencode($current->getAlias());
 						}
 						break;
+					case "custom":
+						if(!is_null($this->getPageObject()->getModuleId()) && SOYShopPluginUtil::checkIsActive($this->getPageObject()->getModuleId())){
+							SOYShopPlugin::load("soyshop.canonical", soyshop_get_plugin_object($this->getPageObject()->getModuleId()));
+							$alias = SOYShopPlugin::invoke("soyshop.canonical", array("mode" => "list"))->getAlias();
+							if(isset($alias)) $url .= "/" . rawurlencode($alias);
+						}
+						break;
 				}
+
+				//ページャ
+				$args = soyshop_get_arguments();
+				if(!count($args)) break;
+
+				foreach($args as $arg){
+					$res = strpos($arg, "page-");
+					preg_match('/page-\d*\.html/', $arg, $tmp);
+					if(!count($tmp)) continue;
+					if(strpos($tmp[0], "page-1") === 0) continue;
+					$url = rtrim($url, "/") . "/" . $arg;
+				}
+				unset($args);
 				break;
 			case self::TYPE_DETAIL:
 				$current = $this->getPageObject()->getCurrentItem();
