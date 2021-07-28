@@ -265,7 +265,7 @@ class CartLogic extends SOY2LogicBase{
 	 * @return number
 	 */
 	function getItemPrice(){
-		if(SOYSHOP_USE_CART_TABLE_MODE){
+		if(defined("SOYSHOP_USE_CART_TABLE_MODE") && SOYSHOP_USE_CART_TABLE_MODE){
 			return soyshop_cart_get_item_price($this->db);
 		}else{
 			$itemOrders = self::getItems();
@@ -306,7 +306,7 @@ class CartLogic extends SOY2LogicBase{
 	 * @return integer 商品の個数の合計
 	 */
 	function getOrderItemCount(){
-		if(SOYSHOP_USE_CART_TABLE_MODE){
+		if(defined("SOYSHOP_USE_CART_TABLE_MODE") && SOYSHOP_USE_CART_TABLE_MODE){
 			return soyshop_cart_get_item_count($this->db);
 		}else{
 			$items = self::getItems();
@@ -544,10 +544,10 @@ class CartLogic extends SOY2LogicBase{
 		$this->id = $id;
 	}
 	function getItems() {
-		return (SOYSHOP_USE_CART_TABLE_MODE) ? soyshop_cart_get_items($this->db) : $this->items;
+		return (defined("SOYSHOP_USE_CART_TABLE_MODE") && SOYSHOP_USE_CART_TABLE_MODE) ? soyshop_cart_get_items($this->db) : $this->items;
 	}
 	function setItems($items) {
-		if(SOYSHOP_USE_CART_TABLE_MODE){
+		if(defined("SOYSHOP_USE_CART_TABLE_MODE") && SOYSHOP_USE_CART_TABLE_MODE){
 			// @ToDo データベースインサートモード
 			$this->db = soyshop_cart_set_items($this->db, $items);
 		}else{
@@ -836,7 +836,7 @@ class CartLogic extends SOY2LogicBase{
 		}
 
 		//CartLogicの内容の一部をSQLite DBに移行するモードの場合はデータベースを削除する
-		if(SOYSHOP_USE_CART_TABLE_MODE){
+		if(defined("SOYSHOP_USE_CART_TABLE_MODE") && SOYSHOP_USE_CART_TABLE_MODE){
 			soyshop_cart_delete_db($this->db);
 			soyshop_cart_routine_delete_db();
 		}

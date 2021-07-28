@@ -61,9 +61,10 @@
 					<div class="form-group">
 	                    <label>選択項目<span class="option">(項目を改行で区切ってください)</span></label><br>
 	                    <!-- soy:id="multi_lang_list" -->
-                        <span soy:id="label_area"><!-- soy:id="multi_language_label" /--></span>
+						<br>
+                        <span soy:id="label_area"><strong soy:id="multi_language_label"></strong>用の項目</span>
                         <textarea soy:id="option" class="form-control"></textarea><br>
-						※項目名の前に*を付けると公開側の検索フォームで選択された状態で表示されます。
+						<div class="alert alert-warning">※項目名の前に*を付けると公開側の検索フォームで選択された状態で表示されます。</div>
 						<!-- /soy:id="multi_lang_list" -->
 					</div>
 					<!-- /soy:id="with_options" -->

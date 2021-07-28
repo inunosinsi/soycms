@@ -411,7 +411,6 @@ class SearchLogic extends SOY2LogicBase{
 
     /** 商品一覧ページ用 **/
     function getItemList($obj, $key, $value, $current, $offset, $limit){
-
         $confs = CustomSearchFieldUtil::getConfig();
         if(!isset($confs[$key])) return array();
 
@@ -442,7 +441,6 @@ class SearchLogic extends SOY2LogicBase{
         try{
             $res = $this->itemDao->executeQuery($sql, $binds);
         }catch(Exception $e){
-            var_dump($e);
             return array();
         }
 
@@ -485,6 +483,41 @@ class SearchLogic extends SOY2LogicBase{
         }
 
         return (isset($res[0]["TOTAL"])) ? (int)$res[0]["TOTAL"] : 0;
+    }
+
+	//サイトマップ用のメソッド
+	function getLatestItem($key, $value){
+		SOY2::import("domain.shop.SOYShop_Item");
+        $cnfs = CustomSearchFieldUtil::getConfig();
+        if(!isset($cnfs[$key])) return new SOYShop_Item();
+
+        $binds = array(":now" => time());
+
+        $sql = "SELECT i.* " .
+                "FROM soyshop_item i ".
+                "INNER JOIN soyshop_custom_search s ".
+                "ON i.id = s.item_id ";
+        $sql .= self::buildListWhere();    //カウントの時と共通の処理は切り分ける
+        switch($cnfs[$key]["type"]){
+            case CustomSearchFieldUtil::TYPE_CHECKBOX:
+                $sql .= "AND s." . $key . " LIKE :" . $key;
+                $binds[":" . $key] = "%" . trim($value) . "%";
+                break;
+            default:
+                $sql .= "AND s." . $key . " = :" . $key;
+                $binds[":" . $key] = trim($value);
+        }
+
+        $sql .= " ORDER BY i.update_date ";
+        $sql .= "LIMIT 1" ;
+
+        try{
+            $res = $this->itemDao->executeQuery($sql, $binds);
+        }catch(Exception $e){
+			$res = array();
+        }
+		
+        return (isset($res[0])) ? $this->itemDao->getObject($res[0]) : new SOYShop_Item();
     }
 
     private function buildOrderBySQLOnSearchPage(SOYShop_SearchPage $obj){

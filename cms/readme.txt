@@ -21,6 +21,7 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 	 - 概要欄設置プラグイン
 	 - アクセス制限プラグイン
 	 - common.parts.cartモジュールでcms:id="cart_total_included_tax"タグを追加
+	 - タグクラウドプラグイン
 	○修正
 	 - 商品CSVインポートでカテゴリの項目を外した状態でインポートをした際にカテゴリIDが登録される不具合を修正
 2.3.0

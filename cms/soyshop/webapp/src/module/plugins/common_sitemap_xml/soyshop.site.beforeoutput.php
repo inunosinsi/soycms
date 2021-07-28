@@ -76,16 +76,43 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 					$pageObject = $obj->getPageObject();
 					switch($pageObject->getType()){
 						case SOYShop_ListPage::TYPE_CATEGORY:
+							$logic = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array(
+								"sort" => $pageObject
+							));
+
+							$lim = $pageObject->getLimit();
+
 							//ディフォルトカテゴリがある場合
 							if(!is_null($pageObject->getDefaultCategory())){
 								$html[] = self::_buildUrlTag($url, $uri . "/", "", 0.8, $obj->getUpdateDate());
+
+								//ページャ
+								list($_items, $total) = $logic->getByCategoryIds($pageObject->getDefaultCategory());
+								unset($_items);
+								$div = (int)ceil($total / $lim);
+								if($div > 1){
+									for($i = 2; $i <= $div; $i++){
+										$html[] = self::_buildUrlTag($url, $uri, "page-" . $i . ".html", 0.3, $obj->getUpdateDate());
+									}
+								}
 							}
 
 							$categoryIds = $pageObject->getCategories();
 							foreach($categoryIds as $categoryId){
 								$category = soyshop_get_category_object($categoryId);
 								$html[] = self::_buildUrlTag($url, $uri, $category->getAlias(), 0.5, $obj->getUpdateDate());
+
+								//ページャ
+								list($_items, $total) = $logic->getByCategoryIds($categoryId);
+								unset($_items);
+								$div = (int)ceil($total / $lim);
+								if($div > 1){
+									for($i = 2; $i <= $div; $i++){
+										$html[] = self::_buildUrlTag($url, $uri, $category->getAlias() . "/page-" . $i . ".html", 0.3, $obj->getUpdateDate());
+									}
+								}
 							}
+
 							break;
 						case SOYShop_ListPage::TYPE_FIELD:
 							/**
@@ -94,45 +121,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 							$html[] = self::_buildUrlTag($url, $uri . "/", "", 0.5, $obj->getUpdateDate());
 							break;
 						case SOYShop_ListPage::TYPE_CUSTOM:
-							$moduleId = $pageObject->getModuleId();
-							if(isset($moduleId)){
-								//カスタムサーチフィールド
-								if(strpos($moduleId, "custom_search_field") === 0){
-									if(is_null($this->csfConfigs)){
-											SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
-											$this->csfConfigs = CustomSearchFieldUtil::getConfig();
-									}
-
-									if(!count($this->csfConfigs)) break;
-									foreach($this->csfConfigs as $fieldId => $config){
-										if(!isset($config["sitemap"]) || !is_numeric($config["sitemap"]) || (int)$config["sitemap"] !== (int)$obj->getId()) continue;
-										if(!isset($config["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) || !strlen($config["option"][UtilMultiLanguageUtil::LANGUAGE_JP])) continue;
-
-										foreach(explode("\n", $config["option"][UtilMultiLanguageUtil::LANGUAGE_JP]) as $index => $opt){
-											$opt = trim($opt);
-											if(strlen($opt)){
-												$html[] = "	<url>";
-												$html[] = "		<loc>" . $url . $uri . "/" . $fieldId . "/" . $opt . "</loc>";
-												//多言語化
-												if(count($this->languages)){
-													foreach($this->languages as $lang){
-														if(!self::_isMultiLanguagePage($uri, $lang)) continue;
-														if($lang == UtilMultiLanguageUtil::LANGUAGE_JP || !isset($config["option"][$lang]) || !strlen($config["option"][$lang])) continue;
-														$multiOpts = explode("\n", $config["option"][$lang]);
-														if(!isset($multiOpts[$index])) continue;
-														$multiOpt = trim($multiOpts[$index]);
-														if(!strlen($multiOpt)) continue;
-														$html[] = self::_buildMultiLangagePageUrl($url, $uri . "/" . $fieldId . "/" . $multiOpt, $lang);
-													}
-												}
-		 										$html[] = "		<priority>0.5</priority>";
-		 										$html[] = "		<lastmod>" . self::_getDate($obj->getUpdateDate()) . "</lastmod>";
-		 										$html[] = "	</url>";
-											}
-										}
-									}
-								}
-							}
+							//何もしない
 							break;
 					}
 					break;
@@ -203,7 +192,8 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 				$uri = $urlItem["loc"];
 				$priority = (isset($urlItem["priority"]) && is_numeric($urlItem["priority"])) ? $urlItem["priority"] : 0.1;
 				$lastmod = (isset($urlItem["lastmod"]) && is_numeric($urlItem["lastmod"])) ? $urlItem["lastmod"] : time();
-				$html[] = self::_buildUrlTag($url, $uri, "", $priority, $lastmod);
+				$lngs = (isset($urlItem["lngs"]) && is_array($urlItem["lngs"])) ? $urlItem["lngs"] : array();
+				$html[] = self::_buildUrlTag($url, $uri, "", $priority, $lastmod, $lngs);
 			}
 		}
 
@@ -216,7 +206,7 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		));
 	}
 
-	private function _buildUrlTag($url, $uri, $alias, $priority = 0.8, $updateDate = 0){
+	private function _buildUrlTag($url, $uri, $alias, $priority = 0.8, $updateDate = 0, $lngs = array()){
 		if(strpos($uri, ".html") == false && strlen($uri) > 1) $uri = $uri . "/";
 
 		if(strlen($alias)) $alias = "/" . $alias;
@@ -235,10 +225,16 @@ class CommonSitemapXmlBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		$html[] = "		<loc>" . $url . $uriConcatedAlias . "</loc>";
 		//多言語化
 		if(count($this->languages)){
-			foreach($this->languages as $lang){
-				if(self::_isMultiLanguagePage($uri, $lang)){
-					$html[] = self::_buildMultiLangagePageUrl($url, $uriConcatedAlias, $lang);
+			foreach($this->languages as $lng){
+				if(self::_isMultiLanguagePage($uri, $lng)){
+					$html[] = self::_buildMultiLangagePageUrl($url, $uriConcatedAlias, $lng);
 				}
+			}
+		}
+		// @ToDo lngsの値がある場合
+		if(count($lngs)){
+			foreach($lngs as $lng => $lngValues){
+				$html[] = self::_buildMultiLangagePageUrl($url, $lngValues["uri"], $lng);
 			}
 		}
 		$html[] = "		<priority>" . $priority . "</priority>";
