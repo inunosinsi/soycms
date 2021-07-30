@@ -46,10 +46,14 @@ class CustomFieldAdvancedPluginFormPage extends WebPage{
 					$_POST["config"]["showInput"] = true;
 					//常に表示を選んだときはラベル設定をクリアする
 					$_POST["config"]["labelId"] = "";
+					$_POST["config"]["labelIds"] = array();
 				}elseif($_POST["config"]["showInput"] == self::SHOW_INPUT_LABEL){
 					$_POST["config"]["showInput"] = true;
 				}elseif($_POST["config"]["showInput"] == self::SHOW_INPUT_NO){
 					$_POST["config"]["showInput"] = false;
+					//常に表示を選んだときはラベル設定をクリアする
+					$_POST["config"]["labelId"] = "";
+					$_POST["config"]["labelIds"] = array();
 				}
 			}
 

@@ -90,7 +90,7 @@ class CustomFieldListComponent extends HTMLList {
 			"link" => "javascript:void(0)",
 			"text" => "高度な設定",
 			"onclick" => '$(\'#field_config_'.$i.'\').toggle();',
-			"class" => (!$entity->getShowInput() || $entity->getLabelId() || $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption())) ? "btn btn-warning" : "btn btn-info"
+			"class" => (!$entity->getShowInput() || is_numeric($entity->getLabelId()) || count($entity->getLabelIds())|| $entity->getDefaultValue() || $entity->getEmptyValue() || $entity->getDescription() || $entity->getFixedLabelId() || strlen($entity->getOption())) ? "btn btn-warning" : "btn btn-info"
 		));
 
 		$this->addModel("field_config", array(
@@ -113,7 +113,7 @@ class CustomFieldListComponent extends HTMLList {
 		$this->addCheckBox("editer_label", array(
 			"name" => "config[showInput]",
 			"value" => CustomFieldPluginFormPage::SHOW_INPUT_LABEL,
-			"selected" => strlen($entity->getLabelId()),
+			"selected" => (strlen($entity->getLabelId()) || count($entity->getLabelIds())),
 			"label" => "ラベルと連動",
 		));
 		$this->addSelect("labels", array(
