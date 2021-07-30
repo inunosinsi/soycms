@@ -109,8 +109,7 @@ class CommonAdditionOptionCustomField extends SOYShopItemCustomFieldBase{
 		}
 
 		if(isset($array["addition_option_price"])){
-			$value = $array["addition_option_flag"]->getValue();
-			$flag = ($value) ? true : false;
+			$flag = (isset($array["addition_option_flag"]) && strlen($array["addition_option_flag"]->getValue()));
 			$name = (isset($array["addition_option_name"])) ? $array["addition_option_name"]->getValue() : "";
 			$price = (isset($array["addition_option_price"])) ? $array["addition_option_price"]->getValue() : "";
 			$text = (isset($array["addition_option_text"]))?  $array["addition_option_text"]->getValue() : "";
@@ -153,7 +152,7 @@ class CommonAdditionOptionCustomField extends SOYShopItemCustomFieldBase{
 		$html[] = "	<br>";
 		$html[] = "	<label>加算時の文言</label>";
 		$html[] = "	<div class=\"form-inline\">";
-		$html[] = "		<textarea name=\"addition_option_text\" class=\"form-control\">".htmlspecialchars($text, ENT_QUOTES, "UTF-8")."</textarea>";
+		$html[] = "		<textarea name=\"addition_option_text\" class=\"form-control\" style=\"width:100%;\">".htmlspecialchars($text, ENT_QUOTES, "UTF-8")."</textarea>";
 		$html[] = "		<div class=\"alert alert-warning\">※##PRICE##は公開側で加算額で設定した値に置換されます</div>";
 		$html[] = "	</div>";
 		$html[] = "</div>";
@@ -172,10 +171,9 @@ class CommonAdditionOptionCustomField extends SOYShopItemCustomFieldBase{
 		}
 
 		if(isset($array["addition_option_price"])){
-			$value = $array["addition_option_flag"]->getValue();
-			$visible = ($value) ? true : false;
+			$visible = (isset($array["addition_option_flag"]) && strlen($array["addition_option_flag"]->getValue()));
 			$price = $array["addition_option_price"]->getValue();
-			$text = $array["addition_option_text"]->getValue();
+			$text = (isset($array["addition_option_text"])) ? $array["addition_option_text"]->getValue() : "";
 			$text = str_replace("##PRICE##", $price, $text);
 		}else{
 			$visible = false;
@@ -204,8 +202,11 @@ class CommonAdditionOptionCustomField extends SOYShopItemCustomFieldBase{
 	}
 
 	function onDelete($id){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$attributeDAO->deleteByItemId($id);
+		try{
+			SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
+		}catch(Exception $e){
+			//
+		}
 	}
 }
 
