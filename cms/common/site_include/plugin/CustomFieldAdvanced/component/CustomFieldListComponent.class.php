@@ -123,6 +123,11 @@ class CustomFieldListComponent extends HTMLList {
 			"selected" => $entity->getLabelId(),
 		));
 
+		//複数ラベルの設定
+		$this->addLabel("label_ids", array(
+			"html" => (is_array($entity->getLabelIds()) && count($this->labels)) ? self::_buildLabelSelectBoxes($entity->getLabelIds()) : "<select><option>----</option></select>"
+		));
+
 		$this->addInput("default_value", array(
 			"name" => "config[defaultValue]",
 			"value" => $entity->getDefaultValue()
@@ -204,6 +209,32 @@ class CustomFieldListComponent extends HTMLList {
 			"value" => $entity->getId(),
 			"id" => "update_advance_submit_".$i
 		));
+	}
+
+	private function _buildLabelSelectBoxes(array $selectedLabelIds){
+		$html = array();
+		if(count($selectedLabelIds)){
+			foreach($selectedLabelIds as $selectedLabelId){
+				$html[] = self::_buildLabelSelectBox((int)$selectedLabelId);
+			}
+		}
+		$html[] = self::_buildLabelSelectBox(0);
+
+		return implode("\n", $html);
+	}
+
+	private function _buildLabelSelectBox(int $selectedLabelId){
+		$html[] = "<select name=\"config[labelIds][]\">";
+		$html[] = "<option value=\"\">----</option>";
+		foreach($this->labels as $label){
+			if($selectedLabelId > 0 && $label->getId() == $selectedLabelId){
+				$html[] = "<option value=\"" . $label->getId() . "\" selected=\"selected\">" . $label->getCaption() . "</option>";
+			}else{
+				$html[] = "<option value=\"" . $label->getId() . "\">" . $label->getCaption() . "</option>";
+			}
+		}
+		$html[] = "</select>";
+		return implode("\n", $html);
 	}
 
 	function getLabels() {

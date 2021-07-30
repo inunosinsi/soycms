@@ -32,6 +32,7 @@ class CustomField{
 
 	//ラベルIDとの関連付け
 	private $labelId;
+	private $labelIds;
 
 	//どの属性値に出力するかの設定
 	private $output;
@@ -98,6 +99,36 @@ class CustomField{
 	function setLabelId($labelId) {
 		$this->labelId = $labelId;
 	}
+	/** 関連するラベル複数 **/
+	function getLabelIds(){
+		if(strlen($this->labelIds)){
+			return soy2_unserialize($this->labelIds);
+		}else{
+			$arr = array();
+			if(is_numeric($this->labelId)) $arr[] = $this->labelId;
+			return $arr;
+		}
+	}
+	function setLabelIds($labelIds){
+		if(is_array($labelIds)) {
+			if(count($labelIds) > 1){
+				//重複した値を削除
+				$labelIds = array_unique($labelIds);
+				if(count($labelIds)){
+					//数字以外の値を削除
+					$tmps = array();
+					foreach($labelIds as $labelId){
+						if(!is_numeric($labelId)) continue;
+						$tmps[] = $labelId;
+					}
+					$labelIds = $tmps;
+				}
+			}
+			$labelIds = soy2_serialize($labelIds);
+		}
+		$this->labelIds = $labelIds;
+	}
+	/** /関連するラベル複数 **/
 	function getOutput() {
 		return $this->output;
 	}
@@ -353,12 +384,18 @@ class CustomField{
 				break;
 		}
 
- 		if($this->labelId){
- 			return '<div class="toggled_by_label_'.$this->labelId.'" style="display:none;">' ."\n" . $return . "\n" . '</div>' . "\n";
- 		}else{
- 			return '<div class="toggled_by_label_'.$this->labelId.'">' . "\n" . $return . "\n" . '</div>' . "\n\n";
- 		}
-
+		$classProps = array();
+		$selectedLabelIds = $this->getLabelIds();
+		if(count($selectedLabelIds)){
+			foreach($selectedLabelIds as $labelId){
+				$classProps[] = "toggled_by_label_" . $labelId;
+			}
+		}
+		if(count($classProps)){
+			return '<div class="' . implode(" ", $classProps) . '" style="display:none;">' ."\n" . $return . "\n" . '</div>' . "\n";
+		}else{
+			return '<div>' . "\n" . $return . "\n" . '</div>' . "\n\n";
+		}
  	}
 
 	function getDefaultValue() {

@@ -73,6 +73,7 @@ function toggle_labelmemo(value,checked){
 	if(checked){
 		$('#entry_label_memo_'+ value).show();
 
+		/** 複数ラベルに対応するための書き換え→2行下がshow()だったので変更の必要なし **/
 		var obj = $('.toggled_by_label_' + value);
 		$.each(obj,function(){
 			$(this).show();
@@ -81,9 +82,26 @@ function toggle_labelmemo(value,checked){
 	}else{
 		$('#entry_label_memo_'+ value).hide();
 
+		/** @ToDo 複数ラベルに対応するための書き換え **/
 		var obj = $('.toggled_by_label_' + value);
 		$.each(obj,function(){
-			$(this).hide();
+			//他にtoggled_by_label_{label_id}のクラスがないか？調べる
+			var label_classes = obj.prop("class").split(" ");
+			if(label_classes.length < 2){	//付与されているクラスが1個の場合は無条件でhide()
+				$(this).hide();
+			}else{
+				//今回押したラベル以外のもののチェックの状況を調べる
+				var flg = true;
+				for(var i = 0; i < label_classes.length; i++){
+					cls = label_classes[i].replace("toggled_by_", "");
+					if(flg && $("#" + cls).prop("checked")){
+						flg = false;
+					}
+				}
+				if(flg){	//該当するすべてのラベルにチェックがない場合はtrueで指定の項目も非表示にする
+					$(this).hide();
+				}
+			}
 		});
 	}
 
