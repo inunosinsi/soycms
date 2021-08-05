@@ -41,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.11.2"
+			"version"=>"1.11.3"
 		));
 
 		//プラグイン アクティブ
@@ -210,6 +210,46 @@ class CustomFieldPluginAdvanced{
 	 						"text" => $entry->getCdate(),
 	 						"soy2prefix"=>"cms"
 	 					));
+
+						//サムネイルプラグイン
+						if(file_exists(_SITE_ROOT_ . "/.plugin/soycms_thumbnail.active")){
+							SOY2::import("site_include.plugin.soycms_thumbnail.util.ThumbnailPluginUtil");
+							$tmbObjects = ThumbnailPluginUtil::getThumbnailObjectsByEntryId($entry->getId());
+
+							foreach(array("upload", "trimming", "resize") as $label){
+								$tmb = (isset($tmbObjects["soycms_thumbnail_plugin_" . $label])) ? $tmbObjects["soycms_thumbnail_plugin_" . $label] : new EntryAttribute();
+								if($label == "resize") $label = "thumbnail";
+
+								$imagePath = trim($tmb->getValue());
+								//if($label == "thumbnail" && !strlen($imagePath)) $imagePath = $this->no_thumbnail_path;
+
+								$htmlObj->addModel("is_" . $label, array(
+									"soy2prefix" => "cms",
+									"visible" => (strlen($imagePath) > 0)
+								));
+
+								$htmlObj->addModel("no_" . $label, array(
+									"soy2prefix" => "cms",
+									"visible" => (strlen($imagePath) === 0)
+								));
+
+								$htmlObj->addImage($label, array(
+									"soy2prefix" => "cms",
+									"src" => $imagePath,
+									"alt" => (isset($tmbObjects["soycms_thumbnail_plugin_alt"])) ? $tmbObjects["soycms_thumbnail_plugin_alt"]->getValue() : ""
+								));
+
+								$htmlObj->addLabel($label . "_text", array(
+									"soy2prefix" => "cms",
+									"text" => $imagePath
+								));
+
+								$htmlObj->addLabel($label . "_path_text", array(
+									"soy2prefix" => "cms",
+									"text" => $imagePath
+								));
+							}
+						}
 						/** 記事フィールドの隠しモードここまで **/
 					}
 

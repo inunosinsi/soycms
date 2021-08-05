@@ -20,7 +20,7 @@ class SOYCMSSameCategoryBlockPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.10"
+			"version"=>"0.11"
 		));
 
 	    if(CMSPlugin::activeCheck($this->getId())){
@@ -28,6 +28,7 @@ class SOYCMSSameCategoryBlockPlugin{
 				$this,"config_page"
 			));
 
+			SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 			CMSPlugin::setEvent('onPluginBlockLoad',self::PLUGIN_ID, array($this, "onLoad"));
 			CMSPlugin::setEvent('onPluginBlockAdminReturnPluginId',self::PLUGIN_ID, array($this, "returnPluginId"));
 	    }
@@ -41,7 +42,6 @@ class SOYCMSSameCategoryBlockPlugin{
 		if(!self::_checkIsBlogEntryPage($pageId)) return array();
 
 		//検索結果ブロックプラグインのUTILクラスを利用する
-		SOY2::import("site_include.plugin.soycms_search_block.util.PluginBlockUtil");
 		$soyId = PluginBlockUtil::getSoyIdByPageIdAndPluginId($pageId, self::PLUGIN_ID);
 		if(!isset($soyId)) return array();
 
