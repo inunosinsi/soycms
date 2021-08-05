@@ -223,28 +223,28 @@ class CustomFieldPluginAdvanced{
 								$imagePath = trim($tmb->getValue());
 								//if($label == "thumbnail" && !strlen($imagePath)) $imagePath = $this->no_thumbnail_path;
 
-								$htmlObj->addModel("is_" . $label, array(
+								$htmlObj->addModel($field->getId() . "_is_" . $label, array(
 									"soy2prefix" => "cms",
 									"visible" => (strlen($imagePath) > 0)
 								));
 
-								$htmlObj->addModel("no_" . $label, array(
+								$htmlObj->addModel($field->getId() . "_no_" . $label, array(
 									"soy2prefix" => "cms",
 									"visible" => (strlen($imagePath) === 0)
 								));
 
-								$htmlObj->addImage($label, array(
+								$htmlObj->addImage($field->getId() . "_" . $label, array(
 									"soy2prefix" => "cms",
 									"src" => $imagePath,
 									"alt" => (isset($tmbObjects["soycms_thumbnail_plugin_alt"])) ? $tmbObjects["soycms_thumbnail_plugin_alt"]->getValue() : ""
 								));
 
-								$htmlObj->addLabel($label . "_text", array(
+								$htmlObj->addLabel($field->getId() . "_" . $label . "_text", array(
 									"soy2prefix" => "cms",
 									"text" => $imagePath
 								));
 
-								$htmlObj->addLabel($label . "_path_text", array(
+								$htmlObj->addLabel($field->getId() . "_" . $label . "_path_text", array(
 									"soy2prefix" => "cms",
 									"text" => $imagePath
 								));

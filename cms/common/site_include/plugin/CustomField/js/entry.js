@@ -3,8 +3,14 @@ var CustomFieldEntryField = {
 		var labelId = $(ele).val();
 
 		if(labelId.length){
-			var pos = location.pathname.indexOf("index.php/Entry/") + 16;
-			var url = location.pathname.substr(0, 29) + "CustomField/";
+			var pathname = location.pathname;
+			//var pos = location.pathname.indexOf("index.php/Entry/") + 16;
+			if(pathname.indexOf("/Blog/") > 0){
+				pathname = pathname.substr(0, pathname.indexOf("/Blog/"));
+			}else{
+				pathname = pathname.substr(0, pathname.indexOf("/Entry/"));
+			}
+			var url = pathname + "/Entry/CustomField/";
 
 			//ラベルに格納されたデータを取得する
 			$.ajax({
