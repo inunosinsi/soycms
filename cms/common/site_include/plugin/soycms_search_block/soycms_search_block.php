@@ -66,7 +66,7 @@ class SOYCMS_Search_Block_Plugin{
 		));
 
 		$args = $logic->getArgs();
-		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
+		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId, $soyId);
 		$current = (isset($args[0]) && strpos($args[0], "page-") === 0) ? (int)str_replace("page-", "", $args[0]) : 0;
 		$last_page_number = (int)ceil($logic->getTotal($labelId, $query) / $limit);
 
@@ -123,7 +123,7 @@ class SOYCMS_Search_Block_Plugin{
 		if(!isset($soyId)) return array();
 
 		//ラベルIDを取得とデータベースから記事の取得件数指定
-		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
+		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId, $soyId);
 		if(is_null($labelId)) return array();
 
 		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);

@@ -159,7 +159,7 @@ class TagCloudPlugin{
 		if(!isset($soyId)) return array();
 
 		//ラベルIDを取得とデータベースから記事の取得件数指定
-		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
+		$labelId = PluginBlockUtil::getLabelIdByPageId($pageId, $soyId);
 		if(is_null($labelId)) return array();
 
 		$count = PluginBlockUtil::getLimitByPageId($pageId, $soyId);
@@ -204,7 +204,7 @@ class TagCloudPlugin{
 			if(is_null($limit)) $limit = 100000;
 
 			$args = $logic->getArgs();
-			$labelId = PluginBlockUtil::getLabelIdByPageId($pageId);
+			$labelId = PluginBlockUtil::getLabelIdByPageId($pageId, $soyId);
 			if(isset($args[0]) && strpos($args[0], "page-") === 0) $current = (int)str_replace("page-", "", $args[0]);
 			$last_page_number = (int)ceil($logic->getTotal($labelId, $wordId) / $limit);
 		}
