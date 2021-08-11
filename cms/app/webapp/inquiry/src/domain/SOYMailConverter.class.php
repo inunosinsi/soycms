@@ -187,7 +187,7 @@ class CheckConverter extends SOYMailConverter {
     function convert($value, $linkto=SOYMailConverter::SOYMAIL_NONE) {
 	    switch ($linkto) {
     		default:
-    			if (isset($value)) {
+    			if (isset($value) && is_array($value)) {
 	    			return SOYMailConverter::convert(implode(",",$value), $linkto);
     			} else {
 					return null;

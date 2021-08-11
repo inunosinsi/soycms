@@ -2,25 +2,25 @@
 
 class FormLogic extends SOY2LogicBase{
 	var $form;
-	
+
     /**
      * フォームの新規作成
      */
     function createForm($form){
     	$this->form = $form;
-    	
+
     	try{
 	    	$dao = SOY2DAOFactory::create("SOYInquiry_FormDAO");
-	    	
+
 	    	$this->setNotifyMailSubject($form);
 	    	$this->setIsUseCaptcha($form);
-	    	
+
 	    	$id = $dao->insert($form);
-	    	
+
 	    	$columnDao = SOY2DAOFactory::create("SOYInquiry_ColumnDAO");
-	    	
+
 	    	$columnDao->begin();
-	    	
+
 	    	$column = new SOYInquiry_Column();
     		$column->setFormId($id);
     		$column->setLabel("お名前");
@@ -30,7 +30,7 @@ class FormLogic extends SOY2LogicBase{
 			$columnObject->setReplacement("#NAME#");
    			$column->setColumn($columnObject);
     		$columnDao->insert($column);
-    		
+
     		$column = new SOYInquiry_Column();
     		$column->setFormId($id);
     		$column->setLabel("メールアドレス");
@@ -41,7 +41,7 @@ class FormLogic extends SOY2LogicBase{
 			$columnObject->setSOYMailTo(SOYMailConverter::SOYMAIL_MAIL);
    			$column->setColumn($columnObject);
     		$columnDao->insert($column);
-    		
+
     		$column = new SOYInquiry_Column();
     		$column->setFormId($id);
     		$column->setLabel("件名");
@@ -51,7 +51,7 @@ class FormLogic extends SOY2LogicBase{
 			$columnObject->setReplacement("#TITLE#");
    			$column->setColumn($columnObject);
     		$columnDao->insert($column);
-    		
+
     		$column = new SOYInquiry_Column();
     		$column->setFormId($id);
     		$column->setLabel("問い合わせ内容");
@@ -61,27 +61,25 @@ class FormLogic extends SOY2LogicBase{
 			$columnObject->setReplacement("#CONTENT#");
    			$column->setColumn($columnObject);
     		$columnDao->insert($column);
-    		
+
     		$columnDao->commit();
-    		
+
     		return $id;
-    	
+
     	}catch(Exception $e){
     		throw $e;
     	}
     }
-    
+
     private function setNotifyMailSubject(){
     	$config = $this->form->getConfigObject();
     	$config->setNotifyMailSubject("[SOYInquiry][".$this->form->getFormId()."]問い合わせがあります");
     	$this->form->setConfigObject($config);
     }
-    
+
     private function setIsUseCaptcha(){
     	$config = $this->form->getConfigObject();
 		$config->setIsUseCaptcha($config->enabledGD());
     	$this->form->setConfigObject($config);
     }
-    
 }
-?>
