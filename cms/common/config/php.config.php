@@ -30,3 +30,14 @@ ini_set("log_errors",1);
 if(is_dir(dirname(dirname(__FILE__))."/log") && is_writable(dirname(dirname(__FILE__))."/log")){
 	ini_set("error_log",dirname(dirname(__FILE__))."/log/error-".date("Ym").".log");
 }
+
+// 各種共有サーバのSSLの設定
+if(!isset($_SERVER["HTTPS"])){
+	if(
+		isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"]) ||	//さくらインターネット
+		(isset($_SERVER["HTTP_X_FORWARDED_PROTO"]) && $_SERVER["HTTP_X_FORWARDED_PROTO"] == "https")	//onamae.com
+	){
+		$_SERVER["HTTPS"] = "on";
+		$_SERVER["SERVER_PORT"] = "443";
+	}
+}

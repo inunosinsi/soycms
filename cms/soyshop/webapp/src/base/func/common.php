@@ -30,6 +30,9 @@ function soyshop_shape_page_url($url){
 function soyshop_get_site_url($isAbsolute = false){
 	$url = SOYSHOP_SITE_URL;
 
+	//portがある場合は$_SERVER["SERVER_PORT"]をチェック
+	
+
     if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" && strpos($url, "http:") >= 0) $url = str_replace("http:", "https:", $url);
 
     //ルート設定の場合、ショップIDを削る

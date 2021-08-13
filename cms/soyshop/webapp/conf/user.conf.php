@@ -1,10 +1,4 @@
 <?php
-//さくらの共有サーバのSSL対策
-if(isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
-	$_SERVER["HTTPS"] = "on";
-	$_SERVER["SERVER_PORT"] = "443";
-}
-
 //session → If you do not load it here, set it in php.config.php.
 if(file_exists(dirname(__FILE__) . "/session.conf.php")) include_once("session.conf.php");
 
@@ -117,3 +111,9 @@ if(defined("SOYCMS_ALLOW_PHP_SCRIPT")){
 //define("SOYSHOP_USE_CART_TABLE_MODE", false && extension_loaded("sqlite3") && extension_loaded("pdo_sqlite"));
 define("SOYSHOP_USE_CART_TABLE_MODE", false);
 if(SOYSHOP_USE_CART_TABLE_MODE) SOY2::import("base.cart.db", ".php");
+
+//さくらの共有サーバのSSL対策
+if(!isset($_SERVER["HTTPS"]) && isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
+	$_SERVER["HTTPS"] = "on";
+	$_SERVER["SERVER_PORT"] = "443";
+}

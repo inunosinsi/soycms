@@ -445,7 +445,7 @@ class SOY2_PathInfoPathBuilder implements SOY2_PathBuilder{
 	protected static function createAbsoluteURL($path){
 		static $scheme, $domain, $port;
 		if(!$scheme){
-			$scheme = (isset($_SERVER["HTTPS"]) || defined("SOY2_HTTPS") && SOY2_HTTPS) ? "https" : "http";
+			$scheme = (isset($_SERVER["HTTPS"]) || (defined("SOY2_HTTPS") && SOY2_HTTPS)) ? "https" : "http";
 		}
 		if(!$domain && isset($_SERVER["SERVER_NAME"])){
 			$domain = $_SERVER["SERVER_NAME"];

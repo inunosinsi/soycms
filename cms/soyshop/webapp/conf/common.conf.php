@@ -1,10 +1,4 @@
 <?php
-//さくらの共有サーバのSSL対策
-if(isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
-	$_SERVER["HTTPS"] = "on";
-	$_SERVER["SERVER_PORT"] = "443";
-}
-
 //session → If you do not load it here, set it in php.config.php.
 if(file_exists(dirname(__FILE__) . "/session.conf.php")) include_once("session.conf.php");
 
@@ -90,6 +84,12 @@ SOY2::import("base.func.common", ".php");
 //document rootの末尾は/で終わるのを期待
 if(function_exists("soy2_realpath")){
 	$_SERVER["DOCUMENT_ROOT"] = soy2_realpath($_SERVER["DOCUMENT_ROOT"]);
+}
+
+//さくらの共有サーバのSSL対策
+if(!isset($_SERVER["HTTPS"]) && isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
+	$_SERVER["HTTPS"] = "on";
+	$_SERVER["SERVER_PORT"] = "443";
 }
 
 //fatal error

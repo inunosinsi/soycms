@@ -1,10 +1,4 @@
 <?php
-//さくらの共有サーバのSSL対策
-if(isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
-	$_SERVER["HTTPS"] = "on";
-	$_SERVER["SERVER_PORT"] = "443";
-}
-
 /*
  * 共通の設定を記述
  */
@@ -121,6 +115,12 @@ if(defined("SOYCMS_ADMIN_ROOT")) define("SOY2_DOCUMENT_ROOT", str_replace("\\", 
 //SOY CMS, SOY Shop
 define("SOYCMS_COMMON_DIR", SOY2::RootDir());
 define("SOYSHOP_COMMON_DIR", dirname(SOY2::RootDir()) . "/soyshop/webapp/src/");
+
+//さくらの共有サーバのSSL対策
+if(!isset($_SERVER["HTTPS"]) && isset($_SERVER["HTTP_X_SAKURA_FORWARDED_FOR"])){
+	$_SERVER["HTTPS"] = "on";
+	$_SERVER["SERVER_PORT"] = "443";
+}
 
 //headerの送信
 header("Content-Type: text/html; charset=utf-8");
