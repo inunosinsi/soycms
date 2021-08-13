@@ -2,7 +2,7 @@
 
 <form soy:id="form">
 	<div class="form-group">
-		<label>クライアントID</label>
+		<label>クライアントID(必須)</label>
 		<input type="text" class="form-control" soy:id="client_id" style="width:90%;" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com">
 	</div>
 
@@ -15,7 +15,9 @@
 	<div class="form-group">
 		<label>
 			ボタンのカスタマイズ
-			<a soy:id="return_link" class="btn btn-warning btn-sm" onclick="return confirm('HTMLを戻しますか？');">戻す</a>
+			<a soy:id="return_link" class="btn btn-warning btn-sm" onclick="return confirm('HTMLを戻しますか？');">戻す</a>&nbsp;
+			<a href="https://developers.google.com/identity/gsi/web/tools/configurator" class="btn btn-info btn-sm" target="_blank" rel="noopener">コードジェネレータ</a>&nbsp;
+			<a href="https://saitodev.co/article/4040" target="_blank" rel="noopener">コードジェネレータの使い方</a>
 			<!-- soy:ignore="custom-btn" -->
 			<a soy:id="sample_link" class="btn btn-info btn-sm" onclick="return confirm('HTMLをサンプルに変更しますか？');">サンプル</a>
 			<a href="https://developers.google.com/identity/gsi/web/reference/js-reference#google.accounts.id.renderButton" target="_blank">説明ページへ</a>
@@ -25,7 +27,12 @@
 
 	<div class="form-group">
 		<textarea soy:id="button_html" class="form-control"></textarea>
-		<div class="alert alert-warning"><strong>##YOUR_CLIENT_ID##</strong>は公開側でボタン出力時に設定したクライアントIDに置換されます</div>
+		<div class="alert alert-warning">
+			<ul>
+				<li><strong>##YOUR_CLIENT_ID##</strong>は公開側でボタン出力時に設定したクライアントIDに置換されます</li>
+				<li>コールバック関数(<strong>callback</strong>)は必ず、<strong>onSignIn</strong>を指定してください。</li>
+			</ul>
+		</div>
 		<!-- soy:ignore="render_fn" -->ボタンのカスタマイズ用の関数名：<input type="text" soy:id="render_function">&nbsp;例：renderButton<!-- /soy:ignore="render_fn" -->
 	</div>
 
