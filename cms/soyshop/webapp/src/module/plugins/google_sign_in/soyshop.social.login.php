@@ -4,9 +4,12 @@
 class GoogleSignInSocialLogin extends SOYShopSocialLoginBase{
 
 	function buttonOnMyPageLogin(){
-		$html = array();
 		SOY2::import("module.plugins.google_sign_in.util.GoogleSignInUtil");
-		$html[] = GoogleSignInUtil::getButtonHTML();
+		$cnf = GoogleSignInUtil::getConfig();
+		if(!isset($cnf["client_id"]) || is_bool(strpos($cnf["client_id"], "apps.googleusercontent.com"))) return "";
+
+		$html = array();
+		$html[] = GoogleSignInUtil::getButtonHTML($cnf["client_id"]);
 		$html[] = "<script>\n" . file_get_contents(dirname(__FILE__) . "/js/sign.js") . "\n</script>";
 		return implode("\n", $html);
 	}

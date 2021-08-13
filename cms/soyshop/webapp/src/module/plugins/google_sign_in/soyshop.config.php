@@ -16,7 +16,7 @@ class GoogleSignInConfig extends SOYShopConfigPageBase{
 	 * @return string
 	 */
 	function getConfigPageTitle(){
-		return "Google Sign-In for Websitesの設定";
+		return "Sign In With Googleの設定";
 	}
 }
 SOYShopPlugin::extension("soyshop.config", "google_sign_in", "GoogleSignInConfig");

@@ -2,7 +2,7 @@
 
 class SignInConfigPage extends WebPage {
 
-	private $configObj;
+	private $cnfObj;
 
 	function __construct(){
 		SOY2::import("module.plugins.google_sign_in.util.GoogleSignInUtil");
@@ -19,31 +19,31 @@ class SignInConfigPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
-		$config = GoogleSignInUtil::getConfig();
+		$cnf = GoogleSignInUtil::getConfig();
 
 		if(isset($_GET["return"])){
 			GoogleSignInUtil::returnButtonHtml();	//テンプレートを標準のものに戻す
-			$config["render_function"] = "";
-			GoogleSignInUtil::saveConfig($config);
+			$cnf["render_function"] = "";
+			GoogleSignInUtil::saveConfig($cnf);
 		}
 
 		if(isset($_GET["sample"])){
 			GoogleSignInUtil::setSampleButtonHtml();
-			$config["render_function"] = "renderButton";
-			GoogleSignInUtil::saveConfig($config);
+			$cnf["render_function"] = "renderButton";
+			GoogleSignInUtil::saveConfig($cnf);
 		}
 
 		$this->addForm("form");
 
 		$this->addInput("client_id", array(
 			"name" => "Config[client_id]",
-			"value" => (isset($config["client_id"])) ? $config["client_id"] : ""
+			"value" => (isset($cnf["client_id"])) ? $cnf["client_id"] : ""
 		));
 
 		$this->addCheckBox("pre_register_mode", array(
 			"name" => "Config[pre_register_mode]",
 			"value" => 1,
-			"selected" => (isset($config["pre_register_mode"]) && $config["pre_register_mode"] == 1),
+			"selected" => (isset($cnf["pre_register_mode"]) && $cnf["pre_register_mode"] == 1),
 			"label" => "仮登録モード"
 		));
 
@@ -63,7 +63,7 @@ class SignInConfigPage extends WebPage {
 
 		$this->addInput("render_function", array(
 			"name" => "Config[render_function]",
-			"value" => (isset($config["render_function"])) ? $config["render_function"] : ""
+			"value" => (isset($cnf["render_function"])) ? $cnf["render_function"] : ""
 		));
 
 		$this->addLabel("create_js_url_sample", array(
@@ -81,7 +81,7 @@ class SignInConfigPage extends WebPage {
 		));
 	}
 
-	function setConfigObj($configObj){
-		$this->configObj = $configObj;
+	function setConfigObj($cnfObj){
+		$this->configObj = $cnfObj;
 	}
 }

@@ -1,14 +1,14 @@
-<div id="my-signin2"></div>
+<div id="mybtn"></div>
 <script>
-function renderButton() {
-      gapi.signin2.render('my-signin2', {
-        'scope': 'profile email',
-        'width': 240,
-        'height': 50,
-        'longtitle': true,
-        'theme': 'dark',
-        'onsuccess': onSignIn,
-        'onfailure': onFailure
-      });
-    }
+window.onload = function () {
+	var div = document.getElementById("mybtn");
+	google.accounts.id.initialize({
+		client_id: '##YOUR_CLIENT_ID##',
+		callback: onSignIn
+	});
+	google.accounts.id.renderButton(div, {
+		theme: 'outline',
+		size: 'large',
+	});
+};
 </script>

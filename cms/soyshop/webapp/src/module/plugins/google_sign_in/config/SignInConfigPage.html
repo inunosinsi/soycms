@@ -16,14 +16,17 @@
 		<label>
 			ボタンのカスタマイズ
 			<a soy:id="return_link" class="btn btn-warning btn-sm" onclick="return confirm('HTMLを戻しますか？');">戻す</a>
+			<!-- soy:ignore="custom-btn" -->
 			<a soy:id="sample_link" class="btn btn-info btn-sm" onclick="return confirm('HTMLをサンプルに変更しますか？');">サンプル</a>
-			<a href="https://developers.google.com/identity/sign-in/web/reference#gapisignin2renderid-options" target="_blank">説明ページへ(英語)</a>
+			<a href="https://developers.google.com/identity/gsi/web/reference/js-reference#google.accounts.id.renderButton" target="_blank">説明ページへ</a>
+			<!-- /soy:ignore="custom-btn" -->
 		</label>
 	</div>
 
 	<div class="form-group">
 		<textarea soy:id="button_html" class="form-control"></textarea>
-		ボタンのカスタマイズ用の関数名：<input type="text" soy:id="render_function">&nbsp;例：renderButton
+		<div class="alert alert-warning"><strong>##YOUR_CLIENT_ID##</strong>は公開側でボタン出力時に設定したクライアントIDに置換されます</div>
+		<!-- soy:ignore="render_fn" -->ボタンのカスタマイズ用の関数名：<input type="text" soy:id="render_function">&nbsp;例：renderButton<!-- /soy:ignore="render_fn" -->
 	</div>
 
 	<div class="text-center">
@@ -33,15 +36,14 @@
 
 <br>
 
-<div class="alert alert-info">Google Sign-In For Websiteプラグインの使用方法</div>
+<div class="alert alert-info">Sign In With Googleプラグインの使用方法</div>
 <label>Google Cloud Platformにログイン</label><br>
 <a href="https://console.cloud.google.com" target="_blank">Google Cloud Platform</a>を開き、サイドバーにあるAPIとサービスのリンクをクリックします。
 <br><br>
 <label>OAuth 2.0 クライアント IDを作成</label><br>
-
-	サイドバーにある認証情報のリンクをクリックし、認証情報の作成ボタンからOAuth 2.0クライアント IDを登録します。<br>
-	承認済みの JavaScript 生成元では<strong soy:id="create_js_url_sample"></strong><br>
-	承認済みのリダイレクト URIでは<strong soy:id="redirect_url_sample"></strong>を登録します。
+サイドバーにある認証情報のリンクをクリックし、認証情報の作成ボタンからOAuth 2.0クライアント IDを登録します。<br>
+承認済みの JavaScript 生成元では<strong soy:id="create_js_url_sample"></strong><br>
+承認済みのリダイレクト URIでは<strong soy:id="redirect_url_sample"></strong>を登録します。
 <br><br>
 <label>OAuth 同意画面でサイトの情報を登録</label><br>
 OAuth 同意画面を開き、画面の指示に従い、サイトの情報を入力します。

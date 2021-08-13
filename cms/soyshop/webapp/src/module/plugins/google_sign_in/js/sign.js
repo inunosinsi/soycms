@@ -13,12 +13,16 @@ var GoogleSignInPlugin = {
 	}
 }
 
+/**
+ * @param CredentialResponse
+ * https://developers.google.com/identity/gsi/web/reference/js-reference#CredentialResponse
+ */
+function onSignIn(credentialResponse) {
+	//https://developers.google.com/identity/gsi/web/reference/js-reference#CredentialResponse Json Web Tokenをbase64デコードで読めるようにする
+	var json = parseJwt(credentialResponse.credential);
 
-function onSignIn(googleUser) {
-	var profile = googleUser.getBasicProfile();
-
-	//取得できればAjaxで登録とログインを試みる
-	if(profile.getId().length > 0){
+	//取得できればAjaxで登録とログインを試みる json.subでgoogle_id
+	if(json.sub.length > 0){
 		var xhr = new XMLHttpRequest();
 
 		var pathname = location.pathname;
@@ -29,7 +33,7 @@ function onSignIn(googleUser) {
 		forms = document.querySelectorAll('[name=soy2_token]');
 		var token = (forms[0].value) ? forms[0].value : "";
 		var url = location.origin + pathname + "?soyshop_download=google_sign_in&soy2_token=" + token;
-		var data = {"google_id": profile.getId(), "name": profile.getName(), "mail":profile.getEmail()};
+		var data = {"google_id": json.sub, "name": json.name, "mail":json.email};
 
 		xhr.open('POST', url);
 		xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
@@ -73,3 +77,12 @@ function onSignIn(googleUser) {
 function onFailure(err){
 	console.log(err);
 }
+
+function parseJwt(tk) {
+    var base64Url = tk.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+};

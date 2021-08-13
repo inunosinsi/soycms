@@ -11,12 +11,14 @@ class GoogleSignInUtil {
 		return SOYShop_DataSets::put("google_sign_in.config", $values);
 	}
 
-	public static function getButtonHTML(){
+	public static function getButtonHTML(string $clientId=""){
 		$path = self::_customButtonHtmlPath();
 		if(file_exists($path)){
-			return file_get_contents($path);
+			$btn = file_get_contents($path);
+			if(strlen($clientId)) $btn = str_replace("##YOUR_CLIENT_ID##", $clientId, $btn);
+			return $btn;
 		}
-		return self::_buttonHtml();
+		return self::_buttonHtml($clientId);
 	}
 
 	public static function saveButtonHTML($html){
@@ -37,8 +39,10 @@ class GoogleSignInUtil {
 		file_put_contents(self::_customButtonHtmlPath(), $html);
 	}
 
-	private static function _buttonHtml(){
-		return trim(file_get_contents(dirname(dirname(__FILE__)) . "/template/base.html"));
+	private static function _buttonHtml(string $clientId=""){
+		$btn = trim(file_get_contents(dirname(dirname(__FILE__)) . "/template/base.html"));
+		if(strlen($clientId)) $btn = str_replace("##YOUR_CLIENT_ID##", $clientId, $btn);
+		return $btn;
 	}
 
 	private static function _customButtonHtmlPath(){
