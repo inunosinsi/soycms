@@ -31,7 +31,7 @@ class LogoutAction extends SOY2Action{
 				soy2_setcookie("soycms_auto_login");
 				$dao->deleteByUserId($login->getUserId());
 			}catch(Exception $e){
-				var_dump($e);
+				//var_dump($e);
 				//
 			}
 

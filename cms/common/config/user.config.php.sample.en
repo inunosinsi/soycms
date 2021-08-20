@@ -26,9 +26,9 @@
  * MultiLabelBlockComponent
  * SiteLabeledBlockComponent
  * PluginBlockComponent
- * ScriptModuleBlockComponent (1.2.3 or later) 
+ * ScriptModuleBlockComponent (1.2.3 or later)
  */
- 
+
 // Designate the directory in which Sites are created.
 //define("SOYCMS_TARGET_DIRECTORY", $_SERVER["DOCUMENT_ROOT"]);
 
@@ -47,3 +47,5 @@ define("SOYCMS_LANGUAGE", "en");
 
 //define("SOYINQUIRY_USE_SITE_DB", false);
 //define("SOYMAIL_USE_SITE_DB", false);
+
+//define("SOYCMS_READ_LIBRARY_VIA_CDN", true);

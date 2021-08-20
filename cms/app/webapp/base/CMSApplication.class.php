@@ -428,6 +428,8 @@ class CMSApplication {
 				$hideSideMenu = null;
 			}
 
+			$paths = ($self->mode == "three") ? self::_paths() : array();
+			
 			include_once(dirname(__FILE__) . "/" . $self->mode . ".php");
 		}
 	}
@@ -880,4 +882,52 @@ class CMSApplication {
     	self::switchAppMode();
     	return $users;
     }
+
+	private static function _paths(){
+		if(defined("SOYCMS_READ_LIBRARY_VIA_CDN") && SOYCMS_READ_LIBRARY_VIA_CDN){
+			return array(
+				"css" => array(
+					"bootstrap" => "https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css",
+					"metis" => "https://cdnjs.cloudflare.com/ajax/libs/metisMenu/3.0.7/metisMenu.css",
+					"sb-admin-2" => "https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/3.3.7/css/sb-admin-2.css",
+					"morris" => "https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.4.2/morris.min.css",
+					"fontawesome" => "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css",
+					"jquery-ui" => "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+				),
+				"js" => array(
+					"jquery" => "https://code.jquery.com/jquery-3.6.0.min.js",
+					"jquery-ui" => "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js",
+					"bootstrap" => "https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js",
+					"metis" => "https://cdnjs.cloudflare.com/ajax/libs/metisMenu/3.0.7/metisMenu.min.js",
+					"raphael" => "https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.1/raphael-min.js",
+					"morris" => "https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.4.2/morris.min.js",
+					"sb-admin-2" => "https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/3.3.7/js/sb-admin-2.min.js",
+					"jquery-cookie" => "https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+				)
+			);
+		}else{
+			$dir = rtrim(dirname(CMSApplication::getRoot()), "/") . "/soycms";
+			if(!defined("SOYSHOP_BUILD_TIME")) define("SOYSHOP_BUILD_TIME", time());
+			return array(
+				"css" => array(
+					"bootstrap" => $dir . "/webapp/pages/files/vendor/bootstrap/css/bootstrap.min.css?" . SOYSHOP_BUILD_TIME,
+					"metis" => $dir . "/webapp/pages/files/vendor/metisMenu/metisMenu.min.css?" . SOYSHOP_BUILD_TIME,
+					"sb-admin-2" => $dir . "/webapp/pages/files/dist/css/sb-admin-2.css?" . SOYSHOP_BUILD_TIME,
+					"morris" => $dir . "/webapp/pages/files/vendor/morrisjs/morris.css?" . SOYSHOP_BUILD_TIME,
+					"fontawesome" => $dir . "/webapp/pages/files/vendor/font-awesome/css/font-awesome.min.css?" . SOYSHOP_BUILD_TIME,
+					"jquery-ui" => $dir . "/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.css?" . SOYSHOP_BUILD_TIME
+				),
+				"js" => array(
+					"jquery" => $dir . "/webapp/pages/files/vendor/jquery/jquery.min.js?" . SOYSHOP_BUILD_TIME,
+					"jquery-ui" => $dir . "/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.js?" . SOYSHOP_BUILD_TIME,
+					"bootstrap" => $dir . "/webapp/pages/files/vendor/bootstrap/js/bootstrap.min.js?" . SOYSHOP_BUILD_TIME,
+					"metis" => $dir . "/webapp/pages/files/vendor/metisMenu/metisMenu.min.js?" . SOYSHOP_BUILD_TIME,
+					"raphael" => $dir . "/webapp/pages/files/vendor/raphael/raphael.min.js?" . SOYSHOP_BUILD_TIME,
+					"morris" =>	$dir . "/webapp/pages/files/vendor/morrisjs/morris.min.js?" . SOYSHOP_BUILD_TIME,
+					"sb-admin-2" => $dir . "/webapp/pages/files/dist/js/sb-admin-2.min.js?" . SOYSHOP_BUILD_TIME,
+					"jquery-cookie" => $dir . "/webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js?" . SOYSHOP_BUILD_TIME
+				)
+			);
+		}
+	}
 }

@@ -96,14 +96,12 @@ class UserInfoUtil implements IUserInfoUtil{
 		}
 
 		SOY2ActionSession::getUserSession()->setAttribute("lastAccessTime",time());
-
-		$isAuth = SOY2ActionSession::getUserSession()->getAuthenticated();
-		if($isAuth){
-			return true;
-		}else{
+		if(!SOY2ActionSession::getUserSession()->getAuthenticated()){
 			self::logout();
 			return false;
 		}
+
+		return true;
 	}
 
     /**

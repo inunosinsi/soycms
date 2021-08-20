@@ -30,9 +30,9 @@ define("SOYCMS_BLOCK_LIST","EntryBlockComponent,LabeledBlockComponent,MultiLabel
  * MultiLabelBlockComponent
  * SiteLabeledBlockComponent
  * PluginBlockComponent
- * ScriptModuleBlockComponent (1.2.3以降) 
+ * ScriptModuleBlockComponent (1.2.3以降)
  */
- 
+
 //サイトを作成するディレクトリを指定する（デフォルトはドキュメントルート）。
 //define("SOYCMS_TARGET_DIRECTORY", $_SERVER["DOCUMENT_ROOT"]);
 
@@ -60,3 +60,6 @@ define("SOYCMS_BLOCK_LIST","EntryBlockComponent,LabeledBlockComponent,MultiLabel
 //define("SOYINQUIRY_USE_SITE_DB", false);
 //SOY Mail(ディフォルトでは管理側:false)
 //define("SOYMAIL_USE_SITE_DB", false);
+
+//jQueryやBootstrapの読み込みをCDN経由に変更する
+//define("SOYCMS_READ_LIBRARY_VIA_CDN", true);

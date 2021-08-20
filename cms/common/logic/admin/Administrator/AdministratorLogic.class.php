@@ -67,13 +67,14 @@ class AdministratorLogic extends Administrator implements SOY2LogicInterface{
 		$domain = $_SERVER["HTTP_HOST"];
 		if(strpos($domain, ":")) $domain = substr($domain, 0, strpos($domain, ":"));	//portがある場合は削除
 
-		soy2_setcookie("soycms_auto_login", $token, array("expires" => SOYCMS_AUTOLOGIN_EXPIRE * 24 * 60 * 60 + time(), "domain" => $domain));
+		$expires = SOYCMS_AUTOLOGIN_EXPIRE * 24 * 60 * 60 + time();
+		soy2_setcookie("soycms_auto_login", $token, array("expires" => $expires, "domain" => $domain));
 
 		$dao = SOY2DAOFactory::create("admin.AutoLoginDAO");
 		$login = new AutoLogin();
 		$login->setUserId($userId);
 		$login->setToken($token);
-		$login->setLimit($expire);
+		$login->setLimit($expires);
 
 		try{
 			$dao->insert($login);

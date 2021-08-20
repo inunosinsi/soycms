@@ -475,5 +475,9 @@ table.list td{
 }
 table.list tr {
     background: #FFF;
+}
 
+/** sb-admin-2のリンクの色を強制上書き **/
+.panel-green a {
+	color:#337ab7 !important;
 }
