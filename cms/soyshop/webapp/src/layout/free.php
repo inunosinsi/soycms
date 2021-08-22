@@ -22,16 +22,16 @@
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/css/dashboard.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/bootstrap/css/bootstrap.min.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/metisMenu/metisMenu.min.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/dist/css/sb-admin-2.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["bootstrap"]; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["metis"]; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["sb-admin-2"]; ?>">
 <link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/dist/css/soycms_cp.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/morrisjs/morris.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/font-awesome/css/font-awesome.min.css?<?php echo $time;?>">
-<link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["morris"]; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["fontawesome"]; ?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $paths["css"]["jquery-ui"]; ?>">
 <style>.navbar-static-top{background: linear-gradient(#cdcdcd,#ffffff);}</style>
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery/jquery.min.js?<?php echo $time; ?>" type="text/JavaScript" charset="utf-8"></script>
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.js?<?php echo $time; ?>" type="text/JavaScript" charset="utf-8"></script>
+<script src="<?php echo $paths["js"]["jquery"]; ?>" type="text/JavaScript" charset="utf-8"></script>
+<script src="<?php echo $paths["js"]["jquery-ui"]; ?>" type="text/JavaScript" charset="utf-8"></script>
 <?php if(false){ ?>
 <script type="text/javascript" src="./js/main.pack.js?<?php echo $time; ?>" charset="utf-8"></script>
 <?php } ?>

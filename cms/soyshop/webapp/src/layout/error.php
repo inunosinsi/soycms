@@ -26,13 +26,13 @@
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/css/dashboard.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/bootstrap/css/bootstrap.min.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/metisMenu/metisMenu.min.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/dist/css/sb-admin-2.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["bootstrap"]; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["metis"]; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["sb-admin-2"]; ?>">
 <link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/dist/css/soycms_cp.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/morrisjs/morris.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/font-awesome/css/font-awesome.min.css?<?php echo $time;?>">
-<link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.css?<?php echo $time;?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["morris"]; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["fontawesome"]; ?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $paths["css"]["jquery-ui"]; ?>">
 <style>.navbar-static-top{background: linear-gradient(#cdcdcd,#ffffff);}</style>
 <?php
 foreach($css as $link){
@@ -45,8 +45,8 @@ foreach($scripts as $script){
 	echo "\n";
 }
 ?>
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery/jquery.min.js?1510124446" type="text/JavaScript" charset="utf-8"></script>
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-ui/jquery-ui.min.js?1510124446" type="text/JavaScript" charset="utf-8"></script>
+<script src="<?php echo $paths["js"]["jquery"]; ?>" type="text/JavaScript" charset="utf-8"></script>
+<script src="<?php echo $paths["js"]["jquery-ui"]; ?>" type="text/JavaScript" charset="utf-8"></script>
 <?php if($hideSideMenu) { ?>
 <style type="text/css">
 @media (min-width: 768px) {
@@ -194,21 +194,21 @@ foreach($scripts as $script){
 	</div><!-- /#wrapper -->
 
 <!-- Bootstrap Core JavaScript -->
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/bootstrap/js/bootstrap.min.js?<?php echo $time;?>"></script>
+<script src="<?php echo $paths["js"]["bootstrap"]; ?>"></script>
 
 <!-- Metis Menu Plugin JavaScript -->
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/metisMenu/metisMenu.min.js?<?php echo $time;?>"></script>
+<script src="<?php echo $paths["js"]["metis"]; ?>"></script>
 
 <!-- Morris Charts JavaScript -->
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/raphael/raphael.min.js?<?php echo $time;?>"></script>
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/morrisjs/morris.min.js?<?php echo $time;?>"></script>
+<script src="<?php echo $paths["js"]["raphael"]; ?>"></script>
+<script src="<?php echo $paths["js"]["morris"]; ?>"></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/dist/js/sb-admin-2.min.js?<?php echo $time;?>"></script>
+<script src="<?php echo $paths["js"]["sb-admin-2"]; ?>"></script>
 <script src="<?php echo $soycmsDir;?>/webapp/pages/files/dist/js/soycms-common.js?<?php echo $time;?>"></script>
 <script src="<?php echo $soycmsDir;?>/js/lang/ja.js?<?php echo $time;?>"></script>
 
-<script src="<?php echo $soycmsDir;?>/webapp/pages/files/vendor/jquery-cookie/jquery.cookie.js?<?php echo $time;?>" type="text/javascript"></script>
+<script src="<?php echo $paths["js"]["jquery-cookie"]; ?>" type="text/javascript"></script>
 
 <!-- モーダル -->
 <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="AccountLabel" aria-hidden="true">

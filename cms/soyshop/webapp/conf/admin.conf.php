@@ -79,9 +79,7 @@ if(isset($file) && preg_match('/\("(.*)\//', $file, $res)){
 define("SOYSHOP_IS_ROOT",$isRoot);
 
 //管理画面側
-if(!defined("SOYSHOP_ADMIN_PAGE")){
-	define("SOYSHOP_ADMIN_PAGE", true);
-}
+if(!defined("SOYSHOP_ADMIN_PAGE")) define("SOYSHOP_ADMIN_PAGE", true);
 
 //税金の設定
 if(!defined("SOYSHOP_CONSUMPTION_TAX_MODE")){
