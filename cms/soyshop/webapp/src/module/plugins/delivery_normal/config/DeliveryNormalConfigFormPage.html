@@ -37,6 +37,38 @@
 					</div>
 				</td>
 			</tr>
+			<tr>
+				<td colspan="2">
+					<div id="exception_area">
+						<a href="javascript:void(0);" class="btn btn-success btn-sm" data-toggle="modal" data-target="#exceptionModal">配送料無料の例外を追加する</a>
+						<!-- soy:display="exception_config" -->
+						<div class="table-responsive" style="margin-top:10px;">
+							<table class="table table-striped">
+								<caption>例外</caption>
+								<tbody>
+									<!-- soy:id="exception_list" -->
+									<tr>
+										<th>
+											<!-- soy:id="pattern" /-->
+											<input type="hidden" soy:id="pattern_hidden">
+										</th>
+									</tr>
+									<tr>
+										<td>
+											<div class="form-inline">
+												<!-- soy:id="codes" /-->&nbsp;
+												<a href="javascript:void(0);" class="btn btn-danger btn-sm" soy:id="remove_btn">削除</a>
+											</div>
+										</td>
+									</tr>
+									<!-- /soy:id="exception_list" -->
+								</tbody>
+							</table>
+						</div>
+						<!-- /soy:display="exception_config" -->
+					</div>
+				</td>
+			</tr>
 		</table>
 	</div>
 
@@ -197,6 +229,42 @@
 	</div>
 </form>
 
+<div class="modal" tabindex="-1" role="dialog" id="exceptionModal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">配送料無料の例外の登録</h5>
+			</div>
+			<div class="modal-body">
+				<form soy:id="exception_form" id="create_form">
+					<div class="form-group">
+						<div class="form-inline">
+							<input type="radio" soy:id="new_radio_and"><br>
+							<input type="radio" soy:id="new_radio_or"><br>
+							<input type="radio" soy:id="new_radio_match">
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label>商品コード</label>
+						<div id="exception_code_form" class="form-inline">
+							<input type="text" name="Add[code][]" class="form-control" id="exception_item_code_0">&nbsp;
+							<a href="javascript:void(0);" class="btn btn-default" onclick="add_exception_code_input_form(this);" id="add_exception_code_input_button">追加</a>
+						</div>
+					</div>
+
+					<div class="text-center">
+						<input type="submit" class="btn btn-primary btn-block" name="exception_config_change" value="登録">
+					</div>
+		        </form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
 function toggle_check(all){
 	$(".price_input_check").each(function(){
@@ -206,9 +274,7 @@ function toggle_check(all){
 		}else{
 			ele.removeAttr("checked");
 		}
-
 	});
-
 }
 
 function toggle_all(){
@@ -219,7 +285,6 @@ function toggle_all(){
 		if(ele.attr("checked")){
 			$("#" + ele.attr("targetId")).val(price);
 		}
-
 	});
 }
 var add_time_form = function(){
@@ -240,4 +305,39 @@ var delete_time_form = function(ele){
 		$("#delivery_time_config_table tbody tr a").hide();
 	}
 }
+
+function add_exception_code_input_form(ele){
+	var $div = $("#exception_code_form");
+
+	// jenkins用のコード
+	var i = 1;
+	for(;;){
+		if($("#exception_item_code_" + i).val() == undefined){
+			break;
+		}
+		i++;
+	}
+
+	var $ipt = $("<input>");
+	$ipt.prop("type", "text");
+	$ipt.prop("class", "form-control");
+	$ipt.prop("id", "exception_item_code_" + i);
+	$ipt.prop("name", "Add[code][]");
+	$div.append($("<br>"));
+	$div.append($ipt);
+}
+
+function exception_pattern_remove(i){
+	if(confirm("削除しますか？")){
+		$('input[name="Change[' + i + '][code][]"]').each(function(){
+			$(this).val("");
+		});
+		alert("削除は更新ボタンを押すと反映されます");
+	}
+}
 </script>
+<style>
+#exception_area{
+	margin-top:10px;
+}
+</style>

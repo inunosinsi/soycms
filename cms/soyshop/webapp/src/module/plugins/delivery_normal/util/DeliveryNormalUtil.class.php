@@ -1,6 +1,11 @@
 <?php
 class DeliveryNormalUtil{
 
+	//送料無料の例外設定の定数
+	const PATTERN_AND = 0;	//カートに指定の商品がすべて含まれている時
+	const PATTERN_OR = 1;	//カートに指定の商品のどれかが含まれている時
+	const PATTERN_MATCH = 2;	//カートに指定の商品のみの時
+
 	public static function getFreePrice(){
 		return SOYShop_DataSets::get("delivery.default.free_price", array(
 			"free" => null
@@ -61,6 +66,23 @@ class DeliveryNormalUtil{
 		SOYShop_DataSets::put("delivery.default.delivery_date.config", $values);
 	}
 
+	public static function getExceptionFeeConfig(){
+		return SOYShop_DataSets::get("delivery.default.fee_exception.config", array());
+	}
+
+	public static function saveExceptionFeeConfig(array $cnfs){
+		$logic = SOY2Logic::createInstance("module.plugins.delivery_normal.logic.FeeExceptionLogic");
+		$arr = array();	//各設定の商品コードが一つでもあれば格納しておく
+		foreach($cnfs as $cnf){
+			if(!is_array($cnf["code"])) continue;
+			$cnf["code"] = $logic->checkIsExistItemCodes($cnf["code"]);
+			if(!count($cnf["code"])) continue;
+			$cnf["pattern"] = (isset($cnf["pattern"]) && is_numeric($cnf["pattern"])) ? (int)$cnf["pattern"] : self::PATTERN_OR;
+			$arr[] = $cnf;
+		}
+		SOYShop_DataSets::put("delivery.default.fee_exception.config", $arr);
+	}
+
 	public static function getTitle(){
 		return SOYShop_DataSets::get("delivery.default.title", "宅配便");
 	}
@@ -109,5 +131,16 @@ class DeliveryNormalUtil{
 		}while($shortest < $last);
 
 		return $opts;
+	}
+
+	public static function getPatternText(int $pat){
+		switch($pat){
+			case self::PATTERN_AND:
+				return "全ての商品を含む場合は配送料無料";
+			case self::PATTERN_OR:
+				return "どれか一つの商品がある場合は配送料無料";
+			case self::PATTERN_MATCH:
+				return "カートに入っている商品が指定の商品のみの場合は配送料無料";
+		}
 	}
 }

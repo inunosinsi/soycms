@@ -91,6 +91,59 @@ class DeliveryNormalModule extends SOYShopDelivery{
 			$area = $address["area"];
 			$price = (isset($prices[$area])) ? (int)$prices[$area] : 0;
 		}
+
+		//配送料無料の例外
+		if($price > 0){
+			$cnfs = DeliveryNormalUtil::getExceptionFeeConfig();
+			if(!is_array($cnfs) || !count($cnfs)) return $price;
+
+			$itemOrders = $cart->getItems();
+			if(!count($itemOrders)) return $price;
+
+			foreach($cnfs as $cnf){
+				if(!isset($cnf["code"]) || !is_array($cnf["code"]) || !count($cnf["code"])) continue;
+				$codes = $cnf["code"];
+				switch($cnf["pattern"]){
+					case DeliveryNormalUtil::PATTERN_OR:
+						foreach($itemOrders as $itemOrder){	//一つでもヒットがあれば0円にする
+							if(is_numeric(array_search(soyshop_get_item_object($itemOrder->getItemId())->getCode(), $codes))){
+								return 0;
+							}
+						}
+						break;
+					case DeliveryNormalUtil::PATTERN_AND:
+						foreach($itemOrders as $itemOrder){	//一つでもヒットがあれば0円にする
+							$res = array_search(soyshop_get_item_object($itemOrder->getItemId())->getCode(), $codes);
+							if(!is_numeric($res)) continue;
+							unset($codes[$res]);
+							$codes = array_values($codes);
+						}
+
+						//$codesが空の配列になっていれば0円にする
+						if(!count($codes)) return 0;
+						break;
+					case DeliveryNormalUtil::PATTERN_MATCH:
+						//例外設定している商品コードの数が現在カートに入っている商品の種類よりも上の場合は条件に一致しないので調べるのをやめる
+						if(count($codes) > count($itemOrders)) break;
+
+						$itemCodes = array();
+						foreach($itemOrders as $itemOrder){
+							$itemCodes[] = soyshop_get_item_object($itemOrder->getItemId())->getCode();
+							if(count($itemCodes) > 1) array_unique($itemCodes);
+						}
+
+						//両方共ソート
+						asort($codes);
+						asort($itemCodes);
+
+						//配列が一致するか？
+						if($codes == $itemCodes) return 0;
+
+						break;
+				}
+			}
+		}
+
 		return $price;
 	}
 

@@ -7,6 +7,7 @@ class DeliveryNormalConfigFormPage extends WebPage{
 		SOY2::import("module.plugins.delivery_normal.util.DeliveryNormalUtil");
 		SOY2::import("module.plugins.delivery_normal.component.DeliveryPriceListComponent");
 		SOY2::import("module.plugins.delivery_normal.component.DeliveryTimeConfigListComponent");
+		SOY2::import("module.plugins.delivery_normal.component.FeeExceptionListComponent");
 		SOY2DAOFactory::importEntity("config.SOYShop_Area");
 		SOY2DAOFactory::importEntity("SOYShop_DataSets");
 		SOY2::import("util.SOYShopPluginUtil");
@@ -41,9 +42,21 @@ class DeliveryNormalConfigFormPage extends WebPage{
 
 			if(isset($_POST["Date"])){
 				//jQuryUIのファイルをコピーする
-				self::copyFiles();
+				self::_copyFiles();
 				DeliveryNormalUtil::saveDeliveryDateConfig($_POST["Date"]);
 			}
+
+			/** 配送料無料の例外設定 **/
+			if(isset($_POST["Add"]) && isset($_POST["Add"]["code"]) && is_array($_POST["Add"]["code"]) && count($_POST["Add"]["code"])){
+				$cnfs = DeliveryNormalUtil::getExceptionFeeConfig();
+				$cnfs[] = $_POST["Add"];
+				DeliveryNormalUtil::saveExceptionFeeConfig($cnfs);
+			}
+
+			if(isset($_POST["Change"])){
+				DeliveryNormalUtil::saveExceptionFeeConfig($_POST["Change"]);
+			}
+			/** 配送料無料の例外設定ここまで **/
 
 			$this->configObj->redirect("updated");
 		}
@@ -54,13 +67,13 @@ class DeliveryNormalConfigFormPage extends WebPage{
 
 		$this->addForm("form");
 
-		self::buildTextForm();
-		self::buildPriceForm();
-		self::buildTimeForm();
-		self::buildDateForm();
+		self::_buildTextForm();
+		self::_buildPriceForm();
+		self::_buildTimeForm();
+		self::_buildDateForm();
 	}
 
-	private function copyFiles(){
+	private function _copyFiles(){
 		$filesDir = dirname(dirname(__FILE__)) . "/files/";
 		$commonDir = SOYSHOP_SITE_DIRECTORY . "themes/common/";
 
@@ -83,7 +96,7 @@ class DeliveryNormalConfigFormPage extends WebPage{
 		}
 	}
 
-	private function buildTextForm(){
+	private function _buildTextForm(){
 
 		$this->addInput("title", array(
 			"value" => DeliveryNormalUtil::getTitle(),
@@ -95,7 +108,7 @@ class DeliveryNormalConfigFormPage extends WebPage{
 		));
 	}
 
-	private function buildPriceForm(){
+	private function _buildPriceForm(){
 		$free = DeliveryNormalUtil::getFreePrice();
 
 		$this->addInput("price_free", array(
@@ -107,9 +120,46 @@ class DeliveryNormalConfigFormPage extends WebPage{
 			"list"   => SOYShop_Area::getAreas(),
 			"prices" => DeliveryNormalUtil::getPrice()
 		));
+
+		//配送料無料の例外の設定
+		self::_buildExceptionListArea();
+		self::_buildExceptionForm();
 	}
 
-	private function buildTimeForm(){
+	private function _buildExceptionListArea(){
+		$cnf = DeliveryNormalUtil::getExceptionFeeConfig();
+		DisplayPlugin::toggle("exception_config", count($cnf));
+
+		$this->createAdd("exception_list", "FeeExceptionListComponent", array(
+			"list" => $cnf
+		));
+	}
+
+	private function _buildExceptionForm(){
+		$this->addForm("exception_form");
+
+		//新規作成の方
+		$this->addCheckBox("new_radio_and", array(
+			"name" => "Add[pattern]",
+			"value" => DeliveryNormalUtil::PATTERN_AND,
+			"selected" => true,
+			"label" => DeliveryNormalUtil::getPatternText(DeliveryNormalUtil::PATTERN_AND)
+		));
+
+		$this->addCheckBox("new_radio_or", array(
+			"name" => "Add[pattern]",
+			"value" => DeliveryNormalUtil::PATTERN_OR,
+			"label" => DeliveryNormalUtil::getPatternText(DeliveryNormalUtil::PATTERN_OR)
+		));
+
+		$this->addCheckBox("new_radio_match", array(
+			"name" => "Add[pattern]",
+			"value" => DeliveryNormalUtil::PATTERN_MATCH,
+			"label" => DeliveryNormalUtil::getPatternText(DeliveryNormalUtil::PATTERN_MATCH)
+		));
+	}
+
+	private function _buildTimeForm(){
 		$time_config = DeliveryNormalUtil::getDeliveryTimeConfig();
 		while(count($time_config) < 6){
 			$time_config[] = "";
@@ -128,7 +178,7 @@ class DeliveryNormalConfigFormPage extends WebPage{
 		));
 	}
 
-	private function buildDateForm(){
+	private function _buildDateForm(){
 		$config = DeliveryNormalUtil::getDeliveryDateConfig();
 
 		$this->addCheckBox("use_delivery_date", array(
