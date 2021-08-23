@@ -1,0 +1,46 @@
+<form soy:id="form">
+	<div class="alert alert-info">記事の履歴の自動削除設定</div>
+	<div class="form-group">
+		<div class="form-inline">
+			<input type="checkbox" soy:id="active_auto_delete_entry">
+		</div>
+	</div>
+	<div class="form-group">
+		<label>履歴の作成日の設定：</label>
+		<div class="form-inline">
+			<input type="number" class="form-control" soy:id="entry_cdate">日より前の履歴は自動で削除する<br>
+			※0日の場合は自動削除を行わない
+		</div>
+	</div>
+	<div class="form-group">
+		<label>記事毎の履歴の保持件数の設定：</label>
+		<div class="form-inline">
+			<input type="number" class="form-control" soy:id="entry_count">件<br>
+			※0件の場合は自動削除を行わない
+		</div>
+	</div>
+
+	<div class="alert alert-info">テンプレートの履歴の自動削除設定</div>
+	<div class="form-group">
+		<div class="form-inline">
+			<input type="checkbox" soy:id="active_auto_delete_template">
+		</div>
+	</div>
+	<div class="form-group">
+		<label>履歴の作成日の設定：</label>
+		<div class="form-inline">
+			<input type="number" class="form-control" soy:id="template_cdate">日より前の履歴は自動で削除する<br>
+			※0日の場合は自動削除を行わない
+		</div>
+	</div>
+	<div class="form-group">
+		<label>ページ毎の履歴の保持件数の設定：</label>
+		<div class="form-inline">
+			<input type="number" class="form-control" soy:id="template_count">件<br>
+			※0件の場合は自動削除を行わない
+		</div>
+	</div>
+	<div class="text-center">
+		<input type="submit" name="update" class="btn btn-primary btn-lg btn-block" value="更新">
+	</div>
+</form>
