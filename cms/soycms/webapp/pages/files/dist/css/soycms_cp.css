@@ -479,5 +479,8 @@ table.list tr {
 
 /** sb-admin-2のリンクの色を強制上書き **/
 .panel-green a {
-	color:#337ab7 !important;
+	color:#337ab7;
+}
+.panel-green a.btn {
+	color:#ffffff;
 }

@@ -165,11 +165,17 @@ h1{
 
 /** sb-admin-2のリンクの色を強制上書き **/
 .panel-red a,
-.panel-yellow a.btn-info,
-.panel-green a.btn-warning {
-	color:#ffffff !important;
+.panel-yellow a.btn,
+.panel-green a.btn {
+	color:#ffffff;
 }
 
-.panel-yellow a.btn-default{
-	color:#337ab7 !important;
+.panel-yellow a,
+.panel-yellow a.btn-default,
+.panel-green a.btn-default{
+	color:#337ab7;
+}
+
+.panel-yellow a.btn-danger{
+	color:#ac2925;
 }
