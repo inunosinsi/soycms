@@ -4,10 +4,10 @@ class SOYShopOrderStatus implements SOY2PluginAction{
 
 	/**
 	 * mailにメールタイプを指定すれば自動送信メール @ToDo mailに値を指定したら、ステータス変更時に自動送信メール
-	 * @return array(ステータスコード => array(label => "ラベル", mail => "メールの種別"))
+	 * @return array(ステータスコード => array(label => "ラベル", mail => "メールの種別", cancel => "キャンセルのように扱うか？"))
 	 */
 	function statusItem(){
-
+		return array();
 	}
 
 	/**
@@ -15,7 +15,7 @@ class SOYShopOrderStatus implements SOY2PluginAction{
 	 * @return array(ステータスコード => array(label => "ラベル", mail => "メールの種別"))
 	 */
 	function paymentStatusItem(){
-
+		return array();
 	}
 }
 class SOYShopOrderStatusDeletageAction implements SOY2PluginDelegateAction{
