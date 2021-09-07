@@ -421,6 +421,36 @@ class SOYShop_Order {
     }
 
     /* util */
+	/**
+	 * キャンセルの注文であるか？キャンセルであればtrue
+	 * @return bool
+	 */
+	function isOrderStatusCancel(){
+		static $cancelCodeList;
+		if(!is_array($cancelCodeList)){
+			//キャンセルに該当する注文状態
+			$cancelCodeList = array(self::ORDER_STATUS_INVALID, self::ORDER_STATUS_INTERIM, self::ORDER_STATUS_CANCELED);
+
+			//拡張機能でキャンセルと同等の状態を調べる
+			$adds = SOYShopPlugin::invoke("soyshop.order.status", array(
+				"mode" => "status",
+			))->getList();
+
+			if(is_array($adds) && count($adds)){
+				foreach($adds as $add){
+					if(!is_array($add) || !count($add)) continue;
+					foreach($add as $key => $values){
+						if(isset($values["cancel"]) && (int)$values["cancel"] === 1){
+							$cancelCodeList[] = $key;
+						}
+					}
+				}
+			}
+		}
+
+		return (is_numeric(array_search($this->status, $cancelCodeList)));
+	}
+
     /**
      * マイページで表示するかどうか
      * @return boolean
@@ -431,15 +461,12 @@ class SOYShop_Order {
 		 * 仮登録以外は見せる
 		 */
 		switch( $this->getStatus() ){
-			case self::ORDER_STATUS_REGISTERED :
-			case self::ORDER_STATUS_RECEIVED :
-			case self::ORDER_STATUS_SENDED :
-			case self::ORDER_STATUS_CANCELED :
-				$order = true;
-				break;
+			case self::ORDER_STATUS_INVALID :
 			case self::ORDER_STATUS_INTERIM :
-			default:
 				$order = false;
+				break;
+			default:
+				$order = true;
 		}
 
 		/*

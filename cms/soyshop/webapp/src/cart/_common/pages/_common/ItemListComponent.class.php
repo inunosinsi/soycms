@@ -12,7 +12,12 @@ class ItemListComponent extends HTMLList{
 	protected function populateItem($entity, $key){
 
 		$item = soyshop_get_item_object($entity->getItemId());
-		$url = soyshop_get_page_url(soyshop_get_page_object($item->getDetailPageId())->getUri(), $item->getAlias()) . "?index=" . $key; //末尾にindexを付けておく
+		if(is_numeric($item->getDetailPageId())){
+			$url = soyshop_get_page_url(soyshop_get_page_object($item->getDetailPageId())->getUri(), $item->getAlias());
+		}else{
+			$url = (is_numeric($item->getId())) ? soyshop_get_item_detail_link($item) : null;
+		}
+		$url .= "?index=" . $key;	//末尾にindexを付けておく
 
 		$this->addLink("item_link", array(
 			"link" => $url

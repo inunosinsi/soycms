@@ -193,8 +193,12 @@ class OrderLogic extends SOY2LogicBase{
 			$oldStatus = $order->getStatus();
 			if($oldStatus != $status){
 				$order->setStatus($status);
-				if(isset($author) && strlen($author)){	//マイページでの実行
-					$historyContent = "注文番号『" . $order->getTrackingNumber() . "』の注文をキャンセルしました。";
+				if(isset($author) && strlen($author)){	//マイページでの実行　マイページで注文状態の変更はキャンセルしかない @ToDo $statusは見ておいた方が良いかも
+					if($status == SOYShop_Order::ORDER_STATUS_CANCELED){
+						$historyContent = "注文番号『" . $order->getTrackingNumber() . "』の注文をキャンセルしました。";
+					}else{
+						$historyContent = "注文番号『" . $order->getTrackingNumber() . "』の注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。";
+					}
 					$author = "顧客：" . $author;
 				}else{	//管理画面
 					$historyContent = "注文状態を<strong>「" . $order->getOrderStatusText() ."」</strong>に変更しました。";
