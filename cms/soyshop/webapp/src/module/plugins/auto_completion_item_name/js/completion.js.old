@@ -1,0 +1,52 @@
+(function(){
+	var old = ""; //前回打ち込んだ文字を記録しておく
+
+	// @ToDo 引数の配列は初回はランダムで取得したい
+	init_auto_completion_tag();
+	insert_auto_completion_options([]);
+
+	//日本語入力ではない時
+	document.getElementById("auto_completion").addEventListener("keyup", function(){
+		if(old != this.value){
+			old = this.value;
+
+			// ajaxでデータを取得する
+			var xhr = new XMLHttpRequest();
+			if(xhr.addEventListener) {
+				var param = "q=" + this.value;
+				xhr.open("POST", document.getElementById("auto_completion_url").value);
+				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+				xhr.send(param);
+
+				xhr.addEventListener("load", function(){
+					if(xhr.status == 200 && xhr.readyState == 4){
+						var opts = JSON.parse(xhr.response);
+						insert_auto_completion_options(opts);
+					}
+				});
+			}
+		}
+	});
+}());
+
+function init_auto_completion_tag(){
+	var nameSearchInput = document.getElementById("auto_completion");
+	nameSearchInput.setAttribute("list", "auto_completion_item_name_list");
+	nameSearchInput.setAttribute("autocomplete", "on");
+
+	var completeTag = document.createElement("datalist");
+	completeTag.setAttribute("id", "auto_completion_item_name_list");
+	nameSearchInput.parentNode.insertBefore(completeTag, nameSearchInput.nextSibling);
+}
+
+function insert_auto_completion_options(opts){
+	var completeTag = document.getElementById("auto_completion_item_name_list");
+	completeTag.innerHTML = "";
+
+	for(var i = 0; i < opts.length; i++){
+		var opt = document.createElement("option");
+		opt.value = opts[i][0];
+		completeTag.appendChild(opt);
+	}
+}

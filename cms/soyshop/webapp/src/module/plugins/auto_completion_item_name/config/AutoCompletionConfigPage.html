@@ -1,0 +1,18 @@
+<div class="alert alert-success" soy:display="updated">更新しました</div>
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>商品名の候補の出力件数</label>
+		<div class="form-inline">
+			<input type="number" soy:id="candidate_output_count">&nbsp;件&nbsp;
+			<input type="submit" class="btn btn-primary btn-sm" value="更新">
+		</div>
+	</div>
+</form>
+
+<br>
+
+<div class="alert alert-info">設定方法</div>
+検索モジュールプラグイン等の検索用のフォームを設置するプラグインで、
+<pre>&lt;input <strong>id="auto_completion"</strong> type="text" name="q"&gt;</pre>
+のようにid="auto_completion"を追加すると、自動でオートコンプリートで必要なライブラリを読み込み、使用できる状態になります。
