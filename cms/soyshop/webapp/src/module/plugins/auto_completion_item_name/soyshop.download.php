@@ -20,9 +20,9 @@ class AutoCompletionDownload extends SOYShopDownload{
 				"WHERE (".
 					"item_name LIKE :name ".
 					"OR id IN (".
-						"SELECT item_id FROM soyshop_item_attribute ".
-						"WHERE item_field_id LIKE '" . AutoCompletionUtil::FIELD_ID . "_%' ".
-						"AND item_value LIKE :reading".
+						"SELECT item_id FROM soyshop_auto_complete_dictionary ".
+						"WHERE hiragana LIKE :hiragana ".
+						"OR katakana LIKE :katakana".
 					") ".
 				") ".
 				"AND order_period_start < " . $now . " ".
@@ -56,7 +56,7 @@ class AutoCompletionDownload extends SOYShopDownload{
 			}
 
 			try{
-				$res = $dao->executeQuery($customSql . "LIMIT " . ($lim - count($list)), array(":name" => $bind, ":reading" => $bind));
+				$res = $dao->executeQuery($customSql . "LIMIT " . ($lim - count($list)), array(":name" => $bind, ":hiragana" => $bind, ":katakana" => $bind));
 			}catch(Exception $e){
 				$res = array();
 			}

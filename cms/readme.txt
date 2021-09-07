@@ -23,6 +23,7 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 	 - common.parts.cartモジュールでcms:id="cart_total_included_tax"タグを追加
 	 - タグクラウドプラグイン
 	 - 標準配送モジュールで配送料無料設定に例外の設定を追加
+	 - 商品名検索入力補完プラグイン
 	○変更
 	 - Google Sign-In for WebsitesプラグインからSign In With Googleプラグインに変更
 	○修正
