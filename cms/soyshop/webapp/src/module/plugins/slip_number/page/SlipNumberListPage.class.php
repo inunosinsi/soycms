@@ -88,12 +88,15 @@ class SlipNumberListPage extends WebPage {
 						$slipNumber = trim(str_replace("\"", "", $v[0]));
 
 						try{
-							$slipId = $slipDao->getBySlipNumberAndNoDelivery($slipNumber)->getId();
+							$slip = $slipDao->getBySlipNumberAndNoDelivery($slipNumber);
 						}catch(Exception $e){
 							continue;
 						}
 
-						$slipLogic->changeStatus((int)$slipId, "delivery");
+						//注文状態がキャンセルの場合はスルーする
+						if(soyshop_get_order_object($slip->getOrderId())->isOrderStatusCancel()) continue;
+
+						$slipLogic->changeStatus((int)$slip->getId(), "delivery");
 					}
 				}
 
