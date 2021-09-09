@@ -7,8 +7,8 @@ class AutoCompleteDictionaryLogic extends SOY2LogicBase {
 	}
 
 	function getReadingsByItemId(int $itemId){
-		$obj = self::_getByItemId($itemId);
-		return array("hiragana" => $obj->getHiragana(), "katakana" => $obj->getKatakana());
+		$dic = self::_getByItemId($itemId);
+		return array("hiragana" => $dic->getHiragana(), "katakana" => $dic->getKatakana());
 	}
 
 	function save(int $itemId, string $hiragana, string $katakana){
@@ -22,14 +22,14 @@ class AutoCompleteDictionaryLogic extends SOY2LogicBase {
 				//
 			}
 		}else{
-			$obj = self::_getByItemId($itemId);
-			$obj->setHiragana($hiragana);
-			$obj->setKatakana($katakana);
+			$dic = self::_getByItemId($itemId);
+			$dic->setHiragana($hiragana);
+			$dic->setKatakana($katakana);
 			try{
-				self::_dao()->insert($obj);
+				self::_dao()->insert($dic);
 			}catch(Exception $e){
 				try{
-					self::_dao()->update($obj);
+					self::_dao()->update($dic);
 				}catch(Exception $e){
 					//
 				}
@@ -41,9 +41,9 @@ class AutoCompleteDictionaryLogic extends SOY2LogicBase {
 		try{
 			return self::_dao()->getByItemId($itemId);
 		}catch(Exception $e){
-			$obj = new SOYShop_AutoComplete_Dictionary();
-			$obj->setItemId($itemId);
-			return $obj;
+			$dic = new SOYShop_AutoComplete_Dictionary();
+			$dic->setItemId($itemId);
+			return $dic;
 		}
 	}
 

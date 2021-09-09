@@ -1,14 +1,45 @@
 <div class="alert alert-success" soy:display="updated">更新しました</div>
+<div class="alert alert-success" soy:display="finished">商品毎の読み方を取得しました</div>
 
 <form soy:id="form">
 	<div class="form-group">
 		<label>商品名の候補の出力件数</label>
 		<div class="form-inline">
 			<input type="number" soy:id="candidate_output_count">&nbsp;件&nbsp;
-			<input type="submit" class="btn btn-primary btn-sm" value="更新">
+			<input type="submit" name="update" class="btn btn-primary btn-sm" value="更新">
 		</div>
 	</div>
 </form>
+
+<br>
+<div class="alert alert-info">読み方の自動取得</div>
+
+<!-- soy:display="mecab" -->
+<div class="form-group">
+	<div class="form-inline">
+		<label>読み方未取得商品件数：</label>
+		<strong soy:id="unacquired_count"></strong>&nbsp;件
+	</div>
+</div>
+<!-- soy:display="unacquired" -->
+<form soy:id="unacquired_form">
+	<div class="text-left">
+		<input type="submit" name="reading" class="btn btn-primary btn-lg" value="商品毎の読み方を取得する">
+	</div>
+</form>
+<!-- /soy:display="unacquired" -->
+<!-- soy:display="log" -->
+<ul>
+	<!-- soy:id="log_list" -->
+	<li><a soy:id="log_link"></a></li>
+	<!-- /soy:id="log_list" -->
+</ul>
+<!-- /soy:display="log" -->
+<!-- /soy:display="mecab" -->
+
+<!-- soy:display="no_mecab" -->
+ご利用中のサーバにMecabをインストールすると、読み方の自動取得の機能が使用できます。<br>
+<!-- /soy:display="no_mecab" -->
 
 <br>
 

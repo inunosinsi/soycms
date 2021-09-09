@@ -3,7 +3,7 @@
 class AutoCompletionDownload extends SOYShopDownload{
 
 	function execute(){
-		if(!isset($_POST["q"])) $_POST["q"] = "おぶじぇ";	//debug
+		if(!isset($_POST["q"])) $_POST["q"] = "ぜ";	//debug
 		if(!isset($_POST["q"])) self::_send();;
 		$q = htmlspecialchars(trim($_POST["q"]), ENT_QUOTES, "UTF-8");
 		if(!strlen($q)) self::_send();
@@ -101,7 +101,7 @@ class AutoCompletionDownload extends SOYShopDownload{
 		}
 
 		//読み方
-		$sql = "SELECT item_id, item_field_id, item_value FROM soyshop_item_attribute WHERE item_id IN (" . implode(",", $list) . ") AND item_field_id LIKE '" . AutoCompletionUtil::FIELD_ID . "_%'";
+		$sql = "SELECT * FROM soyshop_auto_complete_dictionary WHERE item_id IN (" . implode(",", $list) . ")";
 		try{
 			$res = $dao->executeQuery($sql);
 		}catch(Exception $e){
@@ -111,13 +111,8 @@ class AutoCompletionDownload extends SOYShopDownload{
 
 		foreach($list as $id){
 			foreach($res as $v){
-				if($v["item_id"] == $id){
-					if(is_numeric(strpos($v["item_field_id"], "_hiragana"))){
-						$results[$id][1] = $v["item_value"];
-					}else{
-						$results[$id][2] = $v["item_value"];
-					}
-				}
+				$results[$id][1] = $v["hiragana"];
+				$results[$id][2] = $v["katakana"];
 			}
 		}
 
