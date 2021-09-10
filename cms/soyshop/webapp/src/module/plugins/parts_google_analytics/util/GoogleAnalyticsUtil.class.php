@@ -25,17 +25,18 @@ class GoogleAnalyticsUtil{
 	}
 
 	public static function getPageDisplayConfig(){
-		$config = SOYShop_DataSets::get("google_analytics_page_config", null);
-		if(is_null($config)){
-			$config = array();
+		$cnf = SOYShop_DataSets::get("google_analytics_page_config", null);
+		if(is_null($cnf)){
+			$cnf = array();
 
 			$pageIds = array_keys(soyshop_get_page_list());
+			if(!count($pageIds)) return array();
 			foreach($pageIds as $pageId){
-				$config[$page->getId()] = self::INSERT_TAG_DISPLAY;
+				$cnf[$pageId] = self::INSERT_TAG_DISPLAY;
 			}
 		}
 
-		return $config;
+		return $cnf;
 	}
 
 	public static function savePageDisplayConfig($array){
