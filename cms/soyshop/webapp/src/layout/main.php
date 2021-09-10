@@ -241,6 +241,15 @@ $widget = new MemoWidgetComponent();
 echo $widget->buildWidget();
 ?>
 
+<!-- auto completion -->
+<?php
+if(SOYShopPluginUtil::checkIsActive("auto_completion_item_name")){
+	echo "<input type=\"hidden\" id=\"auto_completion_url\" value=\"" . soyshop_get_mypage_url() . "?soyshop_action=auto_completion_item_name\">";
+	echo "<script>" . file_get_contents(SOY2::RootDir() . "module/plugins/auto_completion_item_name/js/completion.js") . "</script>";
+}
+?>
+
+
 <!-- モーダル -->
 <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="AccountLabel" aria-hidden="true">
 <div class="modal-dialog" role="document">
