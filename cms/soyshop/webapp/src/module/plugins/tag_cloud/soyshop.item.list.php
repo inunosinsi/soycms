@@ -37,20 +37,6 @@ class TagCloudItemList extends SOYShopItemListBase{
 		return TagCloudUtil::getWordIdByAlias($args[0]);
 	}
 
-	private function _getTagByWordId($wordId){
-		SOY2::import("module.plugins.tag_cloud.domain.SOYShop_TagCloudDictionaryDAO");
-		try{
-			if(is_numeric($wordId)){
-				return SOY2DAOFactory::create("SOYShop_TagCloudDictionaryDAO")->getById($wordId)->getWord();
-			}else{	//ハッシュ値の場合
-				return SOY2DAOFactory::create("SOYShop_TagCloudDictionaryDAO")->getByHash($wordId)->getWord();
-			}
-		}catch(Exception $e){
-			//
-		}
-		return null;
-	}
-
 	private function _logic(){
 		static $logic;
 		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.tag_cloud.logic.TagCloudBlockItemLogic");
