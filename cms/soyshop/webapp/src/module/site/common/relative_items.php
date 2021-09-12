@@ -16,31 +16,24 @@ function soyshop_relative_items($html, $htmlObj){
 		}
 	}
 
-	try{
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$attr = $dao->get($item->getId(), "_relative_items");
-		$codes = soy2_unserialize($attr->getValue());
-		if(!is_array($codes)) $codes = array();
-	}catch(Exception $e){
-		$codes = array();
-	}
+	SOY2::import("module.plugins.common_relative_item.util.RelativeItemUtil");
+	$codes = RelativeItemUtil::getCodesByItemId($item->getId());
 
     $items = array();
 
     if(count($codes)){
-        
         SOY2::import("module.plugins.common_relative_item.util.RelativeItemUtil");
-		$config = RelativeItemUtil::getConfig();
-		
+		$cnf = RelativeItemUtil::getConfig();
+
 		$sql = "SELECT * FROM soyshop_item ".
              "WHERE item_code IN (\"". implode("\",\"", $codes) . "\") ".
              "AND item_is_open != 0 ".
              "AND is_disabled != 1 ";
-				
+
 		//ソートの設定
-		if(isset($config["defaultSort"])){
+		if(isset($cnf["defaultSort"])){
             //ランダム表示
-            if($config["defaultSort"] == "random"){
+            if($cnf["defaultSort"] == "random"){
                 if(SOY2DAOConfig::type() == "mysql"){
                     $sql .= "ORDER BY Rand() ";
                 }else{
@@ -48,18 +41,23 @@ function soyshop_relative_items($html, $htmlObj){
                 }
             }else{
                 //ランダム以外
-                switch($config["defaultSort"]){
+                switch($cnf["defaultSort"]){
 				case "cdate":
 					$key = "create_date";
 					break;
 				case "udate":
 					$key = "update_date";
 					break;
+				case "add":	//追加順
+					$key = null;
+					break;
 				default:
-					$key = "item_" . $config["defaultSort"];
+					$key = "item_" . $cnf["defaultSort"];
                 }
-                $sql .= "ORDER BY " . $key . " ";
-                $sql .= ($config["isReverse"] == 1) ? "ASC" : "DESC";    
+				if(strlen($key)){
+					$sql .= "ORDER BY " . $key . " ";
+	                $sql .= ($cnf["isReverse"] == 1) ? "ASC" : "DESC";
+				}
             }
 
             try{
@@ -69,8 +67,23 @@ function soyshop_relative_items($html, $htmlObj){
             }
 
             if(count($res)) foreach($res as $v){
-                    $items[] = $itemDao->getObject($v);
-                }
+                $items[] = $itemDao->getObject($v);
+            }
+
+			// 管理画面で追加した順
+			if($cnf["defaultSort"] == "add"){
+				$tmps = array();
+				foreach($codes as $code){
+					foreach($items as $item){
+						if($item->getCode() == $code){
+							$tmps[] = $item;
+							continue;
+						}
+					}
+				}
+				$items = $tmps;
+				unset($tmps);
+			}
 		}
 	}
 
