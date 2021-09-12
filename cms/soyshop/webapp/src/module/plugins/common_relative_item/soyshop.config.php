@@ -22,4 +22,3 @@ class CommonRelativeItemConfig extends SOYShopConfigPageBase{
 
 }
 SOYShopPlugin::extension("soyshop.config","common_relative_item","CommonRelativeItemConfig");
-?>

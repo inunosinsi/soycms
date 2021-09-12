@@ -1,31 +1,31 @@
 <?php
 
 class RelativeItemConfigPage extends WebPage{
-	
+
 	private $configObj;
-	
+
 	function __construct(){
 		SOY2::import("module.plugins.common_relative_item.util.RelativeItemUtil");
 	}
-	
+
 	function doPost(){
 		if(soy2_check_token()){
-			
 			RelativeItemUtil::saveConfig($_POST["Page"]);
 			$this->configObj->redirect("updated");
 		}
 	}
-		
+
 	function execute(){
 		$config = RelativeItemUtil::getConfig();
-		
+
 		parent::__construct();
-		
+
 		$this->addForm("form");
-		
+
 		/* sort */
 		$this->addList("sort_list", array(
 			"list" => array(
+				"add" => "追加順",
 				"name" => "商品名",
 				"code" => "商品コード",
 				"stock" => "在庫数",
@@ -56,12 +56,10 @@ class RelativeItemConfigPage extends WebPage{
 			"value" => 1,
 			"label" => "降順",
 		));
-		
+
 	}
-	
+
 	function setConfigObj($obj) {
 		$this->configObj = $obj;
 	}
-		
 }
-?>

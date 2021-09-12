@@ -13,7 +13,5 @@ class CommonRelativeItemInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info","common_relative_item","CommonRelativeItemInfo");
-?>

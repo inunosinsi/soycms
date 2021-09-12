@@ -3,39 +3,19 @@
  */
 class CommonRelativeItemField extends SOYShopItemCustomFieldBase{
 
-	var $itemDAO;
-
 	function doPost(SOYShop_Item $item){
-		if(isset($_POST["relative_items"]) && is_array($_POST["relative_items"])){
-
-			$array = $_POST["relative_items"];
-
-			//空は削除
-			$array = array_diff($array,array(""));
-
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-
-			try{
-				$attr = $dao->get($item->getId(),"_relative_items");
-			}catch(Exception $e){
-				$attr = new SOYShop_ItemAttribute();
-				$attr->setItemId($item->getId());
-				$attr->setFieldId("_relative_items");
-				$dao->insert($attr);
-			}
-
-			$attr->setValue(soy2_serialize($array));
-			$dao->update($attr);
-		}
+		SOY2::import("module.plugins.common_relative_item.util.RelativeItemUtil");
+		$arr = (isset($_POST["relative_items"]) && is_array($_POST["relative_items"])) ? array_diff($_POST["relative_items"], array("")) : array();
+		RelativeItemUtil::save($item->getId(), $arr);	//空は削除
 	}
 
 	function getForm(SOYShop_Item $item){
-		include_once(dirname(__FILE__) . "/form/RelativeItemFormPage.class.php");
+		SOY2::import("module.plugins.common_relative_item.form.RelativeItemFormPage");
 		$form = SOY2HTMLFactory::createInstance("RelativeItemFormPage");
-		$form->setItem($item);
+		$form->setItemId($item->getId());
 		$form->setConfigObj($this);
 		$form->execute();
-		echo $form->getObject();
+		return $form->getObject();
 	}
 
 	/**
@@ -47,10 +27,12 @@ class CommonRelativeItemField extends SOYShopItemCustomFieldBase{
 	}
 
 	function onDelete($id){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$attributeDAO->deleteByItemId($id);
+		try{
+			self::_dao()->deleteByItemId($id);
+		}catch(Exception $e){
+			//
+		}
 	}
 }
 
 SOYShopPlugin::extension("soyshop.item.customfield","common_relative_item","CommonRelativeItemField");
-?>

@@ -1,103 +1,55 @@
 <?php
 
 class RelativeItemFormPage extends WebPage{
-	
-	private $item;
+
+	private $itemId;
 	private $configObj;
-	
-	private $itemDao;
-	
+
 	function __construct(){
-		$this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
+		SOY2::import("module.plugins.common_relative_item.util.RelativeItemUtil");
+		SOY2::import("module.plugins.common_relative_item.component.RelativeItemListComponent");
 	}
-	
+
 	function execute(){
 		parent::__construct();
-		
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 
-		try{
-			$attr = $dao->get($this->item->getId(),"_relative_items");
-			$codes = soy2_unserialize($attr->getValue());
-			if(!is_array($codes)) $codes = array();
-		}catch(Exception $e){
-			$codes = array();
-		}
-		
-		$this->createAdd("relative_item_list", "RelativeItemList", array(
-			"list" => array_unique($codes),
-			"itemDao" => $this->itemDao
+		$codes = RelativeItemUtil::getCodesByItemId($this->itemId);
+
+		$this->createAdd("relative_item_list", "RelativeItemListComponent", array(
+			"list" => array_unique($codes)
 		));
-				
-		$this->addSelect("relative_item_select" , array(
-			"options" => $this->buildRelativeItemSelect($codes)
+
+		$this->addSelect("relative_item_select", array(
+			"options" => self::_buildRelativeItemSelect($codes)
 		));
 	}
-	
-	function buildRelativeItemSelect($codes){
-		$list = $this->getAllItemList();
-		$options = array();
-		foreach($list as $obj){
-			if(is_numeric($obj->getType())) continue;
-			if(!in_array($obj->getCode(), $codes)){
-				$options[$obj->getCode()] = $obj->getCode() . " : " . $obj->getName();
+
+	private function _buildRelativeItemSelect(array $codes){
+		$dao = new SOY2DAO();
+		try{
+			$results = $dao->executeQuery("SELECT item_name, item_code, item_type FROM soyshop_item WHERE is_disabled != 1");
+		}catch(Exception $e){
+			$results = array();
+		}
+		unset($dao);
+		if(!count($results)) return array();
+
+		$opts = array();
+		foreach($results as $res){
+			if(is_numeric($res["item_type"]) || !strlen($res["item_code"])) continue;
+			if(!in_array($res["item_code"], $codes)){
+				$opts[$res["item_code"]] = $res["item_code"] . " : " . $res["item_name"];
 			}
 		}
-		return $options;
+		unset($results);
+		return $opts;
 	}
-	
-	function getAllItemList(){
-		try{
-			$items = $this->itemDao->get();
-		}catch(Exception $e){
-			$items = array();
-		}
-		
-		return $items;
+
+	function setItemId($itemId){
+		$this->itemId = $itemId;
 	}
-	
-	function setItem($item){
-		$this->item = $item;
-	}
-	
+
 	function setConfigObj($configObj){
 		$this->configObj = $configObj;
 	}
 }
-
-class RelativeItemList extends HTMLList{
-	
-	private $itemDao;
-	
-	protected function populateItem($entity, $key){
-		
-		$this->addInput("item_code_input", array(
-			"name" => "relative_items[]",
-			"value" => (isset($entity)) ? $entity : "",
-			"id" => "relative_items_" . $key
-		));
-		
-		$this->addModel("label_for", array(
-			"attr:for" => "relative_items_" . $key
-		));
-		
-		$this->addLabel("item_name", array(
-			"text" => (isset($entity) && strlen($entity)) ? $this->getItemName($entity) : ""
-		));
-	}
-	
-	function getItemName($code){
-
-		try{
-			$item = $this->itemDao->getByCode($code);
-			return $item->getName();
-		}catch(Exception $e){
-			return "該当の商品が見付かりません";
-		}
-	}
-	
-	function setItemDao($itemDao){
-		$this->itemDao = $itemDao;
-	}
-}
-?>
