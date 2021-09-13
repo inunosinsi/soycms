@@ -28,9 +28,16 @@ class TCConfigPage extends WebPage {
 			"style" => "width:80px;"
 		));
 
+		$tags = (isset($cnf["tags"])) ? trim($cnf["tags"]) : "";
 		$this->addTextArea("tags", array(
 			"name" => "Config[tags]",
-			"value" => (isset($cnf["tags"])) ? $cnf["tags"] : "",
+			"value" => $tags,
+		));
+
+		DisplayPlugin::toggle("tag_category", strlen($tags));
+
+		$this->addLink("tag_category_setting_link", array(
+			"link" => SOY2PageController::createLink("Config.Detail?plugin=tag_cloud&category")
 		));
 	}
 

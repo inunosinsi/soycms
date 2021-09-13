@@ -19,7 +19,7 @@ class TagCloudUtil {
 	}
 
 	public static function getDisplayCount($tmp){
-		if(preg_match('/(<[^>]*[^\/]p_block:id=\"tag_cloud_word_list\"[^>]*>)/', $tmp, $tm)){
+		if(preg_match('/(<[^>]*[^\/]block:id=\"tag_cloud_word_list\"[^>]*>)/', $tmp, $tm)){
 			if(preg_match('/cms:count=\"(.*?)\"/', $tm[1], $t)){
 				if(isset($t[1]) && is_numeric($t[1])) return (int)$t[1];
 			}
@@ -28,7 +28,7 @@ class TagCloudUtil {
 	}
 
 	public static function isRandomMode($tmp){
-		if(preg_match('/(<[^>]*[^\/]p_block:id=\"tag_cloud_word_list\"[^>]*>)/', $tmp, $tm)){
+		if(preg_match('/(<[^>]*[^\/]block:id=\"tag_cloud_word_list\"[^>]*>)/', $tmp, $tm)){
 			if(preg_match('/cms:random=\"(.*?)\"/', $tm[1], $t)){
 				if(isset($t[1]) && $t[1] = "on") return true;
 			}

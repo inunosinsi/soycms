@@ -11,6 +11,11 @@ class SOYShop_TagCloudDictionary {
 	private $word;
 	private $hash;
 
+	/**
+	 * @column category_id
+	 */
+	private $categoryId;
+
 	function getId(){
 		return $this->id;
 	}
@@ -30,5 +35,12 @@ class SOYShop_TagCloudDictionary {
 	}
 	function setHash($hash){
 		$this->hash = $hash;
+	}
+
+	function getCategoryId(){
+		return $this->categoryId;
+	}
+	function setCategoryId($categoryId){
+		$this->categoryId = $categoryId;
 	}
 }
