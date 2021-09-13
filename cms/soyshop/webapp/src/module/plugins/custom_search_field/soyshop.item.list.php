@@ -35,7 +35,6 @@ class CustomSearchFieldItemList extends SOYShopItemListBase{
 			preg_match('/%[0-9a-zA-Z]*$/', $value, $tmp);
 			if(isset($tmp[0])){
 				$value = rawurldecode($value);
-				var_dump($value);
 			}
 
 			return array($fieldId, $value);
