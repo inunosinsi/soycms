@@ -28,8 +28,19 @@ class CustomSearchFieldItemList extends SOYShopItemListBase{
 
 	private function _getKeyAndValue(){
 		$args = soyshop_get_arguments();
-		return (count($args) > 1) ? array($args[0], $args[1]) : array(null, null);
-		return array("", "");
+		if (count($args) > 1) {
+			$fieldId = $args[0];
+			$value = $args[1];
+
+			preg_match('/%[0-9a-zA-Z]*$/', $value, $tmp);
+			if(isset($tmp[0])){
+				$value = rawurldecode($value);
+				var_dump($value);
+			}
+
+			return array($fieldId, $value);
+		}
+		return array(null, null);
 	}
 
 	private function _current(){
