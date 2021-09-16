@@ -677,7 +677,7 @@ function soyshop_remove_get_value($param){
  */
 function soyshop_add_get_value($url){
     if(count($_GET) > 0){
-        $query = http_build_query($_GET);
+		$query = http_build_query($_GET);
         if(strpos($url, "?")){
             $url .= "&" . $query;
         }else{

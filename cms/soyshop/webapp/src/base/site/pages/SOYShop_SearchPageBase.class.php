@@ -144,7 +144,7 @@ class SOYShop_SearchPagePager extends SOYShop_PagerBase{
 	function getPagerUrl(){
 		if(!$this->_pagerUrl){
 			$url = $this->page->getPageUrl(true);
-			if($url[strlen($url)-1] == "/")$url = substr($url,0,strlen($url)-1);
+			if($url[strlen($url)-1] == "/") $url = substr($url,0,strlen($url)-1);
 			$this->_pagerUrl = $url;
 		}
 		return $this->_pagerUrl;
@@ -153,12 +153,9 @@ class SOYShop_SearchPagePager extends SOYShop_PagerBase{
 	function getNextPageUrl(){
 		$url = $this->getPagerUrl();
 		$next = $this->getCurrentPage() + 1;
-		$url .= "/page-" . $next . ".html?";
+		$url .= "/page-" . $next . ".html";
 
-		$query = http_build_query($_GET);
-		$url .= $query;
-
-		return $url;
+		return self::_addGETParameters($url);
 	}
 
 	function getPrevPageUrl(){
@@ -166,12 +163,38 @@ class SOYShop_SearchPagePager extends SOYShop_PagerBase{
 		$prev = $this->getCurrentPage() - 1;
 		$url .= "/page-" . $prev . ".html?";
 
-		$query = http_build_query($_GET);
-		$url .= $query;
-
-		return $url;
+		return self::_addGETParameters($url);
 	}
 
 	function hasNext(){ return $this->getTotalPage() >= ($this->getCurrentPage() + 1); }
 	function hasPrev(){ return ($this->getCurrentPage() - 1) > 0; }
+
+	private function _addGETParameters(string $url){
+		//末尾に?があることがある。
+		$res = strpos($url, "?");
+		if(is_numeric($res)){
+			if(strlen($url) - 1 === $res){
+				$url = substr($url, 0, $res);
+			}
+		}
+
+		if(!count($_GET)) return $url;
+
+		//button_xとbutton_yは消しておく
+		if(isset($_GET["button_x"])) unset($_GET["button_x"]);
+		if(isset($_GET["button_y"])) unset($_GET["button_y"]);
+
+		//カスタムサーチフィールドに関するGETパラメータも消しておく
+		$params = $_GET;
+		foreach(array("c_search", "q", "type") as $idx){
+			if(isset($params[$idx])) unset($params[$idx]);
+		}
+
+		if(!count($params)) return $url;
+
+		$query = trim(http_build_query($params));
+		if(!strlen($query)) return $url;
+
+		return $url . "?" . $query;
+	}
 }
