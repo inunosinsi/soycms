@@ -156,14 +156,24 @@ class SOYShopPageController extends SOY2PageController{
 	}
 
 	private function _clearCache(){
-		$files = soy2_scanfiles(SOYSHOP_SITE_DIRECTORY . "/.cache/");
-		if(count($files)){
-			foreach($files as $file){
-				@unlink($dir . $file);
-			}
-		}
+		self::_clearCacheRecursion(SOYSHOP_SITE_DIRECTORY . ".cache/");
 		header("Location:" . $_SERVER["HTTP_REFERER"]);
 		exit;
+	}
+
+	private function _clearCacheRecursion(string $dir){
+		$files = soy2_scandir($dir);
+		if(!count($files)) return;
+
+		foreach($files as $file){
+			if(!file_exists($dir . $file)) continue;
+			if(is_dir($dir . $file)){
+				self::_clearCacheRecursion($dir . $file . "/");
+				rmdir($dir . $file . "/");
+			}else{
+				unlink($dir . $file);
+			}
+		}
 	}
 
     /**
