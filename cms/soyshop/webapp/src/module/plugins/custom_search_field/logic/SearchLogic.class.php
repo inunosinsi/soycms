@@ -107,6 +107,9 @@ class SearchLogic extends SOY2LogicBase{
             $where .= "AND (" .implode(" OR ", $item_where) .") ";
         }
 
+		//検索の対象から外す detail_page_idが0のものは除く
+		$this->where["detail_page_id"] = "i.detail_page_id > 0";
+
         foreach($this->where as $key => $w){
             if(!strlen($w)) continue;
             $where .= "AND " . $w . " ";
@@ -413,6 +416,7 @@ class SearchLogic extends SOY2LogicBase{
         return "WHERE i.open_period_start < :now ".
                 "AND i.open_period_end > :now ".
                 "AND i.item_is_open = 1 ".
+				"AND i.detail_page_id > 0 ".
                 "AND i.is_disabled != 1 ".
                 "AND i.item_type IN (\"" . SOYShop_Item::TYPE_SINGLE . "\",\"" . SOYShop_Item::TYPE_GROUP . "\",\"" . SOYShop_Item::TYPE_DOWNLOAD . "\") ".
                 "AND s.lang = " . UtilMultiLanguageUtil::getLanguageId(SOYSHOP_PUBLISH_LANGUAGE) . " ";

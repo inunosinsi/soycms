@@ -244,6 +244,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		$binds = $this->getBinds();
 
 		$query->where = "item_category in (" . implode(",", $categories) . ") AND is_disabled != 1";
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $query->where .= " AND detail_page_id > 0 ";
 		if($this->getOrder()){
 			$query->order = $this->getOrder();
 		}
@@ -267,6 +268,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 	function executeOpenItemQuery($query, $binds){
 		$query->where .= (strlen($query->where) > 0) ? " AND " : "";
 		$query->where .= "item_is_open = 1 AND open_period_start <= :now AND open_period_end >= :now AND is_disabled != 1";
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $query->where .= " AND detail_page_id > 0 ";
 
 		$binds[":now"] = SOY2_NOW;
 
@@ -286,6 +288,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		$binds = $this->getBinds();
 
 		$query->where = "item_category in (" . implode(",", $categories) . ") AND is_disabled != 1";
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $query->where .= " AND detail_page_id > 0 ";
 		if($this->getOrder()){
 			$query->order = $this->getOrder();
 		}
@@ -311,6 +314,7 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		$binds = $this->getBinds();
 
 		$query->where = "id in (" . implode(",", $itemIds) . ") AND is_disabled != 1";
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $query->where .= " AND detail_page_id > 0 ";
 		if($this->getOrder()){
 			$query->order = $this->getOrder();
 		}
@@ -337,9 +341,10 @@ abstract class SOYShop_ItemDAO extends SOY2DAO{
 		$binds = $this->getBinds();
 
 		$query->where = "item_category in (" . implode(",", $categories) . ") AND is_disabled != 1";
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) $query->where .= " AND detail_page_id > 0 ";
 
 		$result = $this->executeOpenItemQuery($query, $binds);
-
+		
 		if(count($result) > 0){
 			return $result[0]["item_count"];
 		}

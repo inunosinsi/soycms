@@ -395,6 +395,10 @@ class DetailPage extends WebPage{
 			"style" => (isset($this->errors["alias"])) ? "" : "display:none;"
 		));
 
+		$nonePage = new SOYShop_Page();
+		$nonePage->setName("None");
+		$nonePage->setId(0);
+		$detailPages[0] = $nonePage;
 		$this->addSelect("detail_page_list", array(
 			"name" => "Item[detailPageId]",
 			"options" => $detailPages,

@@ -74,6 +74,7 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 		}
 		$sql->where .= " (".implode(") AND (",$where).")";
 		$sql->where .= " AND item_type in (" . $this->getItemType() . ") ";
+		$sql->where .= " AND detail_page_id > 0 ";
 
 		$result = $dao->executeOpenItemQuery($sql, $binds);
 		$count = (isset($result[0]["count(id)"])) ? (int)$result[0]["count(id)"] : 0;
@@ -105,6 +106,7 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 		}
 		$sql->where .= " (".implode(") AND (",$where).")";
 		$sql->where .= " AND item_type in (" . $this->getItemType() . ") ";
+		$sql->where .= " AND detail_page_id > 0 ";
 
 		$dao->setLimit($limit);
 		$offset = ($current -1) * $limit;

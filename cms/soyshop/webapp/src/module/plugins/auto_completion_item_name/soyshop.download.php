@@ -34,6 +34,7 @@ class AutoCompletionDownload extends SOYShopDownload{
 					"AND order_period_end > " . $now . " ".
 					"AND open_period_start < " . $now . " ".
 					"AND open_period_end > " . $now . " ".
+					"AND detail_page_id > 0 ".
 					"AND item_is_open = 1 ".
 					"AND is_disabled = 0 ";
 
@@ -82,7 +83,7 @@ class AutoCompletionDownload extends SOYShopDownload{
 
 		$results = array();
 
-		$sql = "SELECT id, item_name FROM soyshop_item WHERE id IN (" . implode(",", $list) . ")";
+		$sql = "SELECT id, item_name FROM soyshop_item WHERE id IN (" . implode(",", $list) . ") AND detail_page_id > 0";
 		try{
 			$res = $dao->executeQuery($sql);
 		}catch(Exception $e){
