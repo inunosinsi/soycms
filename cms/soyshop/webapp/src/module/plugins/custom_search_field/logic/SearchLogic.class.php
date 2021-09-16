@@ -290,16 +290,25 @@ class SearchLogic extends SOY2LogicBase{
 					$word = trim($words[$i]);
 					if(!strlen($word)) continue;
 					$freeSubQueries = array();
-					foreach(CustomSearchFieldUtil::getConfig() as $key => $field){
-						$freeSubQueries[] = "s." . $key . " LIKE :csffree" . $key . $i;
-						$this->binds[":csffree" . $key . $i] = "%" . $word . "%";
+
+					$cnfs = CustomSearchFieldUtil::getConfig();
+					if(count($cnfs)){
+						foreach($cnfs as $key => $field){
+							$freeSubQueries[] = "s." . $key . " LIKE :csffree" . $key . $i;
+							$this->binds[":csffree" . $key . $i] = "%" . $word . "%";
+						}
 					}
+					unset($cnfs);
 
 					//商品名等
 					foreach(array("item_name", "item_subtitle", "item_code") as $key){
 						$freeSubQueries[] = "i." . $key . " LIKE :csffree" . $key . $i;
 						$this->binds[":csffree" . $key . $i] = "%" . $word . "%";
 					}
+
+					//カテゴリ
+					$freeSubQueries[] = "i.item_category IN (SELECT id FROM soyshop_category WHERE category_name LIKE :csffree_category)";
+					$this->binds[":csffree_category"] = "%" . $word . "%";
 
 					if(count($freeSubQueries)){
 						$freeQueries[] = "(" . implode(" OR ", $freeSubQueries) . ")";
@@ -516,7 +525,7 @@ class SearchLogic extends SOY2LogicBase{
         }catch(Exception $e){
 			$res = array();
         }
-		
+
         return (isset($res[0])) ? $this->itemDao->getObject($res[0]) : new SOYShop_Item();
     }
 
