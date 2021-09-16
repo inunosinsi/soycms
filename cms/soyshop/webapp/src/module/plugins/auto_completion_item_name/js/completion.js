@@ -27,7 +27,7 @@ function set_auto_completion_tag(opts){
             var list = [];
 
             $.each(opts, function(i, v) {
-                if(v[0].match(re) || v[1].match(re) || v[2].match(re)){
+                if(v[0].match(re) || v[1].match(re) || v[2].match(re) || v[3].match(re)){
                     list.push(v[0]);
                 }
             });

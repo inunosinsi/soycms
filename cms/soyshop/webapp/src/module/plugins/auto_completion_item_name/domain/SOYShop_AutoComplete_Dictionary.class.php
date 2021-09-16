@@ -10,6 +10,7 @@ class SOYShop_AutoComplete_Dictionary {
 	private $itemId;
 	private $hiragana;
 	private $katakana;
+	private $other;
 
 	function getItemId(){
 		return $this->itemId;
@@ -30,5 +31,12 @@ class SOYShop_AutoComplete_Dictionary {
 	}
 	function setkatakana($katakana){
 		$this->katakana = $katakana;
+	}
+
+	function getOther(){
+		return $this->other;
+	}
+	function setOther($other){
+		$this->other = $other;
 	}
 }

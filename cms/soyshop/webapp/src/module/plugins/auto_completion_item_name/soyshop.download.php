@@ -26,7 +26,8 @@ class AutoCompletionDownload extends SOYShopDownload{
 						"OR id IN (".
 							"SELECT item_id FROM soyshop_auto_complete_dictionary ".
 							"WHERE hiragana LIKE :hiragana ".
-							"OR katakana LIKE :katakana".
+							"OR katakana LIKE :katakana ".
+							"OR other LIKE :other".
 						") ".
 					") ".
 					"AND order_period_start < " . $now . " ".
@@ -60,7 +61,7 @@ class AutoCompletionDownload extends SOYShopDownload{
 				}
 
 				try{
-					$res = $dao->executeQuery($customSql . "LIMIT " . ($lim - count($list)), array(":name" => $bind, ":hiragana" => $bind, ":katakana" => $bind));
+					$res = $dao->executeQuery($customSql . "LIMIT " . ($lim - count($list)), array(":name" => $bind, ":hiragana" => $bind, ":katakana" => $bind, ":other" => $bind));
 				}catch(Exception $e){
 					$res = array();
 				}
@@ -120,6 +121,7 @@ class AutoCompletionDownload extends SOYShopDownload{
 			foreach($res as $v){
 				$results[$id][1] = $v["hiragana"];
 				$results[$id][2] = $v["katakana"];
+				$results[$id][3] = $v["other"];
 			}
 		}
 

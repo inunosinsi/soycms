@@ -9,13 +9,10 @@ class AutoCompletionItemName extends SOYShopItemNameBase{
 		$html = array();
 
 		//読み方
-		foreach(array("hiragana", "katakana") as $t){
-			$label = "読み方(";
-			$label .= ($t == "hiragana") ? "ひらがな" : "カタカナ";
-			$label .= ")";
-
+		SOY2::import("module.plugins.auto_completion_item_name.util.AutoCompletionUtil");
+		foreach(AutoCompletionUtil::getItemTypes() as $t => $label){
 			$html[] = "<div class=\"form-group\">";
-			$html[] = "<label>" . $label . "</label>";
+			$html[] = "<label>読み方(" . $label . ")</label>";
 			$html[] = "<input type=\"text\" name=\"AutoCompletion[" . $t . "]\" class=\"form-control\" value=\"" . $readings[$t] . "\">";
 			$html[] = "</div>";
 		}
@@ -25,9 +22,13 @@ class AutoCompletionItemName extends SOYShopItemNameBase{
 
 	function doPost(SOYShop_Item $item){
 		if(isset($_POST["AutoCompletion"])){
-			$hiragana = (isset($_POST["AutoCompletion"]["hiragana"])) ? $_POST["AutoCompletion"]["hiragana"] : "";
-			$katakana = (isset($_POST["AutoCompletion"]["katakana"])) ? $_POST["AutoCompletion"]["katakana"] : "";
-			SOY2Logic::createInstance("module.plugins.auto_completion_item_name.logic.AutoCompleteDictionaryLogic")->save($item->getId(), $hiragana, $katakana);
+			SOY2::import("module.plugins.auto_completion_item_name.util.AutoCompletionUtil");
+			$arr = array();
+			foreach(AutoCompletionUtil::getItemTypes() as $t => $label){
+				$arr[$t] = (isset($_POST["AutoCompletion"][$t])) ? $_POST["AutoCompletion"][$t] : "";
+			}
+			
+			SOY2Logic::createInstance("module.plugins.auto_completion_item_name.logic.AutoCompleteDictionaryLogic")->save($item->getId(), $arr);
 		}
 	}
 }
