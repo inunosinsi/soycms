@@ -36,6 +36,13 @@ class AutoCompletionConfigPage extends WebPage {
 			"style" => "width:80px;"
 		));
 
+		$this->addCheckBox("candidate_include_category", array(
+			"name" => "Config[include_category]",
+			"value" => 1,
+			"selected" => (isset($cnf["include_category"]) && (int)$cnf["include_category"] === AutoCompletionUtil::INCLUDE_CATEGORY),
+			"label" => "候補にカテゴリ名も含める"
+		));
+
 		self::_mecab();
 	}
 

@@ -9,6 +9,17 @@
 			<input type="submit" name="update" class="btn btn-primary btn-sm" value="更新">
 		</div>
 	</div>
+	<div class="form-group">
+		<label>カテゴリも対象に含める</label>
+		<div class="form-inline">
+			<input type="checkbox" soy:id="candidate_include_category">
+			<input type="submit" name="update" class="btn btn-primary btn-sm" value="更新">
+			<div class="alert alert-warning">
+				カスタムサーチフィールドのフリーワード検索で重宝します。<br>
+				※<strong>&lt;input type="search" name="c_search[csf_free_word]" id="auto_completion"&gt;</strong>
+			</div>
+		</div>
+	</div>
 </form>
 
 <br>

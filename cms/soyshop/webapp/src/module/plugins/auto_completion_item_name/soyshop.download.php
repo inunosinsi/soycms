@@ -2,8 +2,11 @@
 
 class AutoCompletionDownload extends SOYShopDownload{
 
+	const TYPE_CATEGORY = 0;
+	const TYPE_ITEM = 1;
+
 	function execute(){
-		if(!isset($_POST["q"])) $_POST["q"] = "ぜ";	//debug
+		if(!isset($_POST["q"])) $_POST["q"] = "て";	//debug
 		if(!isset($_POST["q"])) self::_send();;
 		$q = htmlspecialchars(trim($_POST["q"]), ENT_QUOTES, "UTF-8");
 		if(!strlen($q)) self::_send();
@@ -11,13 +14,13 @@ class AutoCompletionDownload extends SOYShopDownload{
 		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 
 		$list = self::_read($q);
+		$list = null;
 		if(is_null($list)){
-			$list = array();
+			$list = array(self::TYPE_CATEGORY => array(), self::TYPE_ITEM => array());
 
 			SOY2::import("module.plugins.auto_completion_item_name.util.AutoCompletionUtil");
 			$cnf = AutoCompletionUtil::getConfig();
 			$lim = (isset($cnf["count"]) && is_numeric($cnf["count"]))? (int)$cnf["count"] : 10;
-
 
 			$now = time();
 			$sql = "SELECT id FROM soyshop_item ".
@@ -57,43 +60,44 @@ class AutoCompletionDownload extends SOYShopDownload{
 				}
 
 				$customSql = $sql;
-				if(count($list)){	//既に得られた結果は除く
-					$customSql = "AND id NOT IN ('" . implode("','", $list) . "') ";
+				if(count($list[self::TYPE_ITEM])){	//既に得られた結果は除く
+					$customSql = "AND id NOT IN ('" . implode("','", $list[self::TYPE_ITEM]) . "') ";
 				}
 
 				try{
-					$res = $dao->executeQuery($customSql . "LIMIT " . ($lim - count($list)), array(":name" => $bind, ":hiragana" => $bind, ":katakana" => $bind, ":other" => $bind));
+					$res = $dao->executeQuery($customSql . "LIMIT " . ($lim - self::_count($list)), array(":name" => $bind, ":hiragana" => $bind, ":katakana" => $bind, ":other" => $bind));
 				}catch(Exception $e){
 					$res = array();
 				}
 				if(!count($res)) continue;
 
 				foreach($res as $v){
-					if(count($list) && is_numeric(array_search($v["id"], $list))) continue;
-					$list[] = $v["id"];
+					if(count($list[self::TYPE_ITEM]) && is_numeric(array_search($v["id"], $list[self::TYPE_ITEM]))) continue;
+					$list[self::TYPE_ITEM][] = $v["id"];
 				}
 
-				if(count($list) >= $lim) break;
+				if(self::_count($list) >= $lim) break;
 
 				self::_save($q, $list);	//検索結果を記録
 			}
 		}
 
-		if(!count($list)) self::_send(array());
+		if(!self::_count($list)) self::_send(array());
 
 		$results = array();
 
-		$sql = "SELECT id, item_name FROM soyshop_item WHERE id IN (" . implode(",", $list) . ") AND detail_page_id > 0";
+		$sql = "SELECT id, item_name FROM soyshop_item WHERE id IN (" . implode(",", $list[self::TYPE_ITEM]) . ") AND detail_page_id > 0";
 		try{
 			$res = $dao->executeQuery($sql);
 		}catch(Exception $e){
 			$res = array();
 		}
 
-		foreach($list as $id){
+		foreach($list[self::TYPE_ITEM] as $id){
 			foreach($res as $v){
-				if(!isset($results[$id])) $results[$id] = array("", "", "");
-				if($v["id"] == $id){
+				$hash = self::_hash(self::TYPE_ITEM . $id);
+				if(!isset($results[$hash])) $results[$hash] = array("", "", "");
+				if(self::_hash(self::TYPE_ITEM . $v["id"]) == $hash){
 					// $isDuplicate = false;
 					//
 					// //商品名の重複を除く
@@ -104,13 +108,13 @@ class AutoCompletionDownload extends SOYShopDownload{
 					// }
 					//
 					// if(!$isDuplicate) $results[$id][0] = $v["item_name"];
-					$results[$id][0] = $v["item_name"];
+					$results[$hash][0] = $v["item_name"];
 				}
 			}
 		}
 
 		//読み方
-		$sql = "SELECT * FROM soyshop_auto_complete_dictionary WHERE item_id IN (" . implode(",", $list) . ")";
+		$sql = "SELECT * FROM soyshop_auto_complete_dictionary WHERE item_id IN (" . implode(",", $list[self::TYPE_ITEM]) . ")";
 		try{
 			$res = $dao->executeQuery($sql);
 		}catch(Exception $e){
@@ -118,18 +122,22 @@ class AutoCompletionDownload extends SOYShopDownload{
 		}
 		unset($dao);
 
-		foreach($list as $id){
+		foreach($list[self::TYPE_ITEM] as $id){
 			foreach($res as $v){
-				$results[$id][1] = $v["hiragana"];
-				$results[$id][2] = $v["katakana"];
-				$results[$id][3] = $v["other"];
+				$hash = self::_hash(self::TYPE_ITEM . $id);
+				$results[$hash][1] = $v["hiragana"];
+				$results[$hash][2] = $v["katakana"];
+				$results[$hash][3] = $v["other"];
 			}
 		}
-
+		
 		self::_send($results);
 	}
 
-
+	//カテゴリと商品を含めた検索結果
+	private function _count(array $list){
+		return count($list[self::TYPE_CATEGORY]) + count($list[self::TYPE_ITEM]);
+	}
 
 	// JSONを送信
 	private function _send(array $arr=array()){
@@ -139,7 +147,11 @@ class AutoCompletionDownload extends SOYShopDownload{
 
 	// 検索の省力化の為に結果を残しておく
 	private function _save(string $q, array $ids){
-		file_put_contents(self::_cachePath($q), implode(",", $ids));
+		file_put_contents(self::_cachePath($q), json_encode($ids));
+	}
+
+	private function _hash(string $str){
+		return substr(md5($str), 0, 3);
 	}
 
 	private function _read(string $q){
@@ -147,7 +159,7 @@ class AutoCompletionDownload extends SOYShopDownload{
 		if(!file_exists($filepath)) return null;
 
 		$c = file_get_contents($filepath);
-		return (strlen($c)) ? explode(",", $c) : array();
+		return (strlen($c)) ? json_decode($c) : array(self::TYPE_CATEGORY => array(), self::TYPE_ITEM => array());
 	}
 
 	private function _cachePath(string $q){

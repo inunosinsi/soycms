@@ -34,7 +34,7 @@ class ItemReviewSitemapUtil {
 		static $id;
 		if(is_null($id)){
 			$cnf = self::_config();
-			$id = (isset($cnf["review_page_id"]) && is_numeric($cnf["review_page_id"])) ? (int)$cnf["review_page_id"] : nul;
+			$id = (isset($cnf["review_page_id"]) && is_numeric($cnf["review_page_id"])) ? (int)$cnf["review_page_id"] : null;
 		}
 		return $id;
 	}

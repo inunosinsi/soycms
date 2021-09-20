@@ -27,8 +27,8 @@ class AutoCompletionItemName extends SOYShopItemNameBase{
 			foreach(AutoCompletionUtil::getItemTypes() as $t => $label){
 				$arr[$t] = (isset($_POST["AutoCompletion"][$t])) ? $_POST["AutoCompletion"][$t] : "";
 			}
-			
-			SOY2Logic::createInstance("module.plugins.auto_completion_item_name.logic.AutoCompleteDictionaryLogic")->save($item->getId(), $arr);
+
+			SOY2Logic::createInstance("module.plugins.auto_completion_item_name.logic.AutoCompleteDictionaryLogic")->saveItemReadings($item->getId(), $arr);
 		}
 	}
 }
