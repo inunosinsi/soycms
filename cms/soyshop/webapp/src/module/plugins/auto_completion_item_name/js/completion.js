@@ -13,6 +13,7 @@
 				data: "q=" + old,
 				success: function(data){
 					var arr = JSON.parse(data);
+					console.log(arr);
 					set_auto_completion_tag(arr);
 				}
 			});

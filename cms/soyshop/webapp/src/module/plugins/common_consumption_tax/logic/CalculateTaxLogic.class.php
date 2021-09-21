@@ -102,6 +102,10 @@ class CalculateTaxLogic extends SOY2LogicBase {
 		return $rate;
 	}
 
+	function getReducedTaxRate(){
+		return self::_getReducedTaxRate();
+	}
+
 	private function _getReducedTaxRate(){
 		$cnf = ConsumptionTaxUtil::getConfig();
 		return (isset($cnf["reduced_tax_rate"])) ? (int)$cnf["reduced_tax_rate"] : 0;

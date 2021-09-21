@@ -85,21 +85,54 @@ function soyshop_smart_calendar($html, $page){
 
 	if(!defined("RESERVE_CALENDAR_MODE")) define("RESERVE_CALENDAR_MODE", "bootstrap");
 
-	//商品分だけタグを生成する
-	$itemIdList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemIdsOnLabel();
-	foreach($itemIdList as $itemId){
+	$itemId = 0;
+	$sess = SOY2ActionSession::getUserSession();
+	if((isset($_GET["calendar_id"]) && is_numeric($_GET["calendar_id"])) || (isset($_GET["item_id"]) && is_numeric($_GET["item_id"]))){
+		$itemId = (isset($_GET["calendar_id"]) && is_numeric($_GET["calendar_id"])) ? (int)$_GET["calendar_id"] : (int)$_GET["itemId"];
+		$sess->setAttribute("smart_calendar_item_id", $itemId);
+	}else{
+		$itemId = $sess->getAttribute("smart_calendar_item_id");
+		$itemId = (is_numeric($itemId)) ? (int)$itemId : 0;
+	}
+
+	//メモリの節約のために個別に出力できるようにする
+	if($itemId > 0){
+		$itemIdList = array($itemId);
+
+		$obj->add("item_name", array(
+			"soy2prefix" => SOYSHOP_SITE_PREFIX,
+			"text" => soyshop_get_item_object($itemId)->getOpenItemName()
+		));
 
 		//ボタンの非同期設定 syncがtrueで同期 falseで非同期
 		$sync = true;
-		if(preg_match('/block:id=\"calendar_' . $itemId . '\".*cms:async=\"(.*?)\"/', $html, $tmp)){
+		if(preg_match('/block:id=\"calendar\".*cms:async=\"(.*?)\"/', $html, $tmp)){
 			if(isset($tmp[1]) && is_numeric($tmp[1]) && (int)$tmp[1] === 1) $sync = false;
 		}
 
-		$obj->addLabel("calendar_" . $itemId, array(
+		$obj->addLabel("calendar", array(
 			"soy2prefix" => "block",
 			"html" => (soyshop_get_item_object($itemId)->isPublished()) ? SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync))->build($year, $month) : ""
 		));
+	}else{
+		//商品分だけタグを生成する
+		$itemIdList = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Calendar.LabelLogic")->getRegisteredItemIdsOnLabel();
+		foreach($itemIdList as $itemId){
+
+			//ボタンの非同期設定 syncがtrueで同期 falseで非同期
+			$sync = true;
+			if(preg_match('/block:id=\"calendar_' . $itemId . '\".*cms:async=\"(.*?)\"/', $html, $tmp)){
+				if(isset($tmp[1]) && is_numeric($tmp[1]) && (int)$tmp[1] === 1) $sync = false;
+			}
+
+			$obj->addLabel("calendar_" . $itemId, array(
+				"soy2prefix" => "block",
+				"html" => (soyshop_get_item_object($itemId)->isPublished()) ? SOY2Logic::createInstance("module.plugins.calendar_expand_smart.logic.View.CalendarLogic", array("itemId" => $itemId, "sync" => $sync))->build($year, $month) : ""
+			));
+		}
 	}
+
+
 
 	//非同期の場合のjsファイルの挿入
 	// $obj->addLabel("async_js", array(

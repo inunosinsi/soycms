@@ -1,5 +1,5 @@
 <?php
-
+SOY2::import("module.plugins.common_consumption_tax.util.ConsumptionTaxUtil");
 class InvoiceListComponent extends HTMLList{
 
 	private $config;
@@ -175,8 +175,10 @@ class InvoiceListComponent extends HTMLList{
 			"visible" => ($reducedTaxRateTargetItemTotal > 0)
 		));
 
+		$taxLogic = SOY2Logic::createInstance("module.plugins.common_consumption_tax.logic.CalculateTaxLogic");
+		$reducedTaxRate = $taxLogic->getReducedTaxRate();
 		$this->addLabel("reduced_tax_rate_subtotal_label", array(
-			"text" => ConsumptionTaxUtil::getReducedTaxRate() . "%税率対象小計"
+			"text" => $reducedTaxRate . "%税率対象小計"
 		));
 
 		$this->addLabel("reduced_tax_rate_items_subtotal", array(
@@ -184,24 +186,25 @@ class InvoiceListComponent extends HTMLList{
 		));
 
 		$this->addLabel("reduced_tax_rate_target_tax_label", array(
-			"text" => ConsumptionTaxUtil::getReducedTaxRate() . "%税率対象消費税"
+			"text" => $reducedTaxRate . "%税率対象消費税"
 		));
 
-		$reducedTax = ConsumptionTaxUtil::calculateTax($reducedTaxRateTargetItemTotal, ConsumptionTaxUtil::getReducedTaxRate());
+		$reducedTax = $taxLogic->calculateTax($reducedTaxRateTargetItemTotal, $reducedTaxRate);
 		$this->addLabel("reduced_tax_rate_items_tax_total", array(
 			"text" => number_format($reducedTax)
 		));
 
 		$this->addLabel("reduced_tax_rate_total_label", array(
-			"text" => ConsumptionTaxUtil::getReducedTaxRate() . "%税率対象合計(税込)"
+			"text" => $reducedTaxRate . "%税率対象合計(税込)"
 		));
 
 		$this->addLabel("reduced_tax_rate_total", array(
 			"text" => number_format($reducedTaxRateTargetItemTotal + $reducedTax)
 		));
 
+		$taxRate = $taxLogic->getTaxRate();
 		$this->addLabel("normal_tax_rate_subtotal_label", array(
-			"text" => ConsumptionTaxUtil::getTaxRate() . "%税率対象小計"
+			"text" => $taxRate . "%税率対象小計"
 		));
 
 		$normalTaxTargetTotal = self::getNormalTaxTargetTotal($order) - $reducedTaxRateTargetItemTotal;
@@ -210,16 +213,16 @@ class InvoiceListComponent extends HTMLList{
 		));
 
 		$this->addLabel("normal_tax_rate_target_tax_label", array(
-			"text" => ConsumptionTaxUtil::getTaxRate() . "%税率対象消費税"
+			"text" => $taxRate . "%税率対象消費税"
 		));
 
-		$normalTax = ConsumptionTaxUtil::calculateTax($normalTaxTargetTotal, ConsumptionTaxUtil::getTaxRate());
+		$normalTax = $taxLogic->calculateTax($normalTaxTargetTotal, $taxRate);
 		$this->addLabel("normal_tax_rate_items_tax_total", array(
 			"text" => number_format($normalTax)
 		));
 
 		$this->addLabel("normal_tax_rate_total_label", array(
-			"text" => ConsumptionTaxUtil::getTaxRate() . "%税率対象合計"
+			"text" => $taxRate . "%税率対象合計"
 		));
 
 		$this->addLabel("normal_tax_rate_items_total", array(
