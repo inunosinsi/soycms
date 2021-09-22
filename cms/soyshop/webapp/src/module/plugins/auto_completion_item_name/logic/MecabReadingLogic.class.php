@@ -74,6 +74,75 @@ class MecabReadingLogic extends SOY2LogicBase {
 		return array($hiragana, $katakana);
 	}
 
+	//読み方が未取得の商品ID一覧を取得
+	function getUnacquiredReadingCategoryIds(){
+		$dao = new SOY2DAO();
+		try{
+			$res = $dao->executeQuery(
+				"SELECT id ".
+				"FROM soyshop_category ".
+				"WHERE id NOT IN (".
+					"SELECT category_id ".
+					"FROM soyshop_auto_complete_dictionary_category".
+				")"
+			);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$list[] = (int)$v["id"];
+		}
+		return $list;
+	}
+
+	//商品ごとの読み方を取得する
+	function setReadingEachCategories(){
+		$ids = self::getUnacquiredReadingCategoryIds();
+		$cnt = count($ids);
+
+		if($cnt === 0) return;
+
+		//50件ずつにする
+		if($cnt > self::LIMIT){
+			$ids = array_slice($ids, self::LIMIT);
+		}
+
+		SOY2::import("module.plugins.auto_completion_item_name.domain.SOYShop_AutoComplete_DictionaryCategoryDAO");
+		$dao = SOY2DAOFactory::create("SOYShop_AutoComplete_DictionaryCategoryDAO");
+		foreach($ids as $id){
+			list($hiragana, $katakana) = self::_getReadingByCategoryId($id);
+			$dic = new SOYShop_AutoComplete_DictionaryCategory();
+			$dic->setCategoryId($id);
+			$dic->setHiragana($hiragana);
+			$dic->setKatakana($katakana);
+			try{
+				$dao->insert($dic);
+				self::_saveCategoryLog($dic);
+			}catch(Exception $e){
+				//
+			}
+		}
+	}
+
+	private function _getReadingByCategoryId(int $categoryId){
+		$name = soyshop_get_category_object($categoryId)->getName();
+		if(!strlen($name)) return array("", "");
+		exec("echo " . $name . " | mecab", $res);
+		if(!is_array($res) || count($res) === 0) return array("", "");
+		$katakana = "";
+		foreach($res as $v){
+			$arr = explode(",", $v);
+			//idx:7にカタカナの読み方がある
+			if(count($arr) < 8) continue;
+			$katakana .= $arr[7];
+		}
+		$hiragana = mb_convert_kana($katakana, "c");
+		return array($hiragana, $katakana);
+	}
+
 	function getLogs(){
 		$files = soy2_scandir(self::_dir());
 		if(!count($files));
@@ -86,6 +155,11 @@ class MecabReadingLogic extends SOY2LogicBase {
 
 	private function _saveLog(SOYShop_AutoComplete_Dictionary $dic){
 		$txt = $dic->getItemId() . "," . soyshop_get_item_object($dic->getItemId())->getName() . "," . $dic->getHiragana() . "," . $dic->getKatakana() . "\n";
+		file_put_contents(self::_dir() . date("Ymd") . ".log", $txt, FILE_APPEND);
+	}
+
+	private function _saveCategoryLog(SOYShop_AutoComplete_DictionaryCategory $dic){
+		$txt = $dic->getCategoryId() . "," . soyshop_get_category_object($dic->getCategoryId())->getName() . "," . $dic->getHiragana() . "," . $dic->getKatakana() . "\n";
 		file_put_contents(self::_dir() . date("Ymd") . ".log", $txt, FILE_APPEND);
 	}
 

@@ -8,7 +8,7 @@ class AutoCompletionDownload extends SOYShopDownload{
 	private $q;
 
 	function execute(){
-		//if(!isset($_POST["q"])) $_POST["q"] = "て";	//debug
+		//if(!isset($_POST["q"])) $_POST["q"] = "さ";	//debug
 		if(!isset($_POST["q"])) self::_send();;
 		$q = htmlspecialchars(trim($_POST["q"]), ENT_QUOTES, "UTF-8");
 		if(!strlen($q)) self::_send();
@@ -165,8 +165,8 @@ class AutoCompletionDownload extends SOYShopDownload{
 
 		foreach($ids as $id){
 			foreach($res as $v){
-				$hash = (isset($v["item_id"])) ? self::_hash($mode . $v["item_id"]) : self::_hash($mode, $v["category_id"]);
-				if(!isset($arr[$hash])) continue;
+				$hash = self::_hash($mode . $id);
+				if(!isset($arr[$hash])) $arr[$hash] = array();
 				$arr[$hash][1] = $v["hiragana"];
 				$arr[$hash][2] = $v["katakana"];
 				$arr[$hash][3] = $v["other"];
@@ -203,6 +203,11 @@ class AutoCompletionDownload extends SOYShopDownload{
 		if(count($arr)){
 			$tmps = array();
 			foreach($arr as $values){
+				if(count($values) < 3){
+					for($i = 0; $i < 4; $i++){
+						if(!isset($values[$i]) || is_null($values[$i])) $values[$i] = "";
+					}
+				}
 				$tmps[] = $values;
 			}
 			$arr = $tmps;

@@ -28,9 +28,14 @@ function set_auto_completion_tag(opts){
             var list = [];
 
             $.each(opts, function(i, v) {
-                if(v[0].match(re) || v[1].match(re) || v[2].match(re) || v[3].match(re)){
-                    list.push(v[0]);
-                }
+				var isPush = false;
+				for(var i = 0; i < 4; i++){
+					if(v[i] != null && v[i].match(re)){
+						isPush = true;
+						break;
+					}
+				}
+				if(isPush) list.push(v[0]);
             });
             rsp(list);
         }

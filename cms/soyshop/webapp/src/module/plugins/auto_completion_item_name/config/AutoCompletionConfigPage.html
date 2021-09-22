@@ -39,6 +39,21 @@
 	</div>
 </form>
 <!-- /soy:display="unacquired" -->
+
+<!-- soy:display="unacquired_category" -->
+<div class="form-group">
+	<div class="form-inline">
+		<label>カテゴリの読み方未取得商品件数：</label>
+		<strong soy:id="unacquired_category_count"></strong>&nbsp;件
+	</div>
+</div>
+<form soy:id="unacquired_category_form">
+	<div class="text-left">
+		<input type="submit" name="reading_category" class="btn btn-primary btn-lg" value="カテゴリ毎の読み方を取得する">
+	</div>
+</form>
+<!-- /soy:display="unacquired_category" -->
+
 <!-- soy:display="log" -->
 <ul>
 	<!-- soy:id="log_list" -->

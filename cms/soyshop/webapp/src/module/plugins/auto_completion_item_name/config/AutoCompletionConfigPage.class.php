@@ -18,6 +18,10 @@ class AutoCompletionConfigPage extends WebPage {
 				SOY2Logic::createInstance("module.plugins.auto_completion_item_name.logic.MecabReadingLogic")->setReadingEachItems();
 				$this->configObj->redirect("finished");
 			}
+			if(isset($_POST["reading_category"])){
+				SOY2Logic::createInstance("module.plugins.auto_completion_item_name.logic.MecabReadingLogic")->setReadingEachCategories();
+				$this->configObj->redirect("finished");
+			}
 		}
 	}
 
@@ -54,14 +58,19 @@ class AutoCompletionConfigPage extends WebPage {
 		DisplayPlugin::toggle("mecab", $isMecab);
 		DisplayPlugin::toggle("no_mecab", !$isMecab);
 
+		$cnf = AutoCompletionUtil::getConfig();
+
 		$ids = array();
+		$categoryIds = array();
 		$logs = array();
 		if($isMecab){
 			$logic = SOY2Logic::createInstance("module.plugins.auto_completion_item_name.logic.MecabReadingLogic");
 			$ids = $logic->getUnacquiredReadingItemIds();
+			$categoryIds = (isset($cnf["include_category"]) && (int)$cnf["include_category"] === AutoCompletionUtil::INCLUDE_CATEGORY) ? $logic->getUnacquiredReadingCategoryIds() : array();
 			$logs = $logic->getLogs();
 		}
 		$cnt = count($ids);
+		$catCnt = count($categoryIds);
 
 		//未取得分の商品件数
 		$this->addLabel("unacquired_count", array(
@@ -71,6 +80,13 @@ class AutoCompletionConfigPage extends WebPage {
 		DisplayPlugin::toggle("unacquired", $cnt > 0);
 
 		$this->addForm("unacquired_form");
+
+		DisplayPlugin::toggle("unacquired_category", $catCnt > 0);
+		$this->addLabel("unacquired_category_count", array(
+			"text" => $catCnt
+		));
+
+		$this->addForm("unacquired_category_form");
 
 		//ログ
 		DisplayPlugin::toggle("log", count($logs));
