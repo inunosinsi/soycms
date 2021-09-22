@@ -46,17 +46,17 @@ table th.reg,table td.reg{
 table th.hol,table td.hol{
 /**color:#990000;**/
 }
-	
+
 /*= 本日の色 =*/
 table td.today{
-	background-color:#FEFEFE;
+	background-color:#DEDEDE;
 }
 
 /*= 定休日の背景色=*/
 table th.close,table td.close{
 	background-color:#FFCCCC;
 }
-	
+
 /*= その他の日の背景色 =*/
 table th.event,table td.other{
 	background-color:#BCBCBC;

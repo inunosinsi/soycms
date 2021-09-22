@@ -45,12 +45,23 @@ class ReserveCalendarCart extends SOYShopCartBase{
 				if(count($items) > 1){
 					$indexOne = ReserveCalendarUtil::getCartAttributeId("schedule_id", 1, $items[1]->getItemId());
 					$schId = $cart->getAttribute($indexOne);
-					$cart->clearAttribute($indexOne);
-					$cart->setAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", 0, $items[0]->getItemId()), $schId);
+
+					//スケジュールIDに関するセッションはすべて削除
+					$attrs = $cart->getAttributes();
+					if(is_array($attrs) && count($attrs)){
+						foreach($attrs as $key => $v){
+							if(is_bool(strpos($key, "reserve_calendar_schedule_id_"))) continue;
+							unset($attrs[$key]);
+						}
+					}
+					$cart->setAttributes($attrs);
+
+					//$cart->clearAttribute($indexOne);
 
 					$item = end($items);
 					$item->setItemCount(1);	// @ToDo 要設定項目？
 					$cart->setItems(array($item));
+					$cart->setAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", 0, $item->getItemId()), $schId);
 				}else{	//予定が一つしか入っていない場合、同一予定であれば個数を1にする
 					$item = array_shift($items);
 					$item->setItemCount(1);	// @ToDo 要設定項目？
