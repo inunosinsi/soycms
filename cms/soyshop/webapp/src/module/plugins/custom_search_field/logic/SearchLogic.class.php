@@ -108,7 +108,7 @@ class SearchLogic extends SOY2LogicBase{
         }
 
 		//検索の対象から外す detail_page_idが0のものは除く
-		$this->where["detail_page_id"] = "i.detail_page_id > 0";
+		$this->where["detail_page_id"] = "(i.detail_page_id = '' OR i.detail_page_id IS NULL OR i.detail_page_id > 0)";
 
         foreach($this->where as $key => $w){
             if(!strlen($w)) continue;
