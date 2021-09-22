@@ -52,7 +52,7 @@ class HistoryList extends HTMLList{
 	public function populateItem($entity){
 		$this->createAdd("date","HTMLLink",array(
 			"link" => SOY2PageController::createLink("Page.TemplateHistoryDetail.{$this->pageId}.{$entity->getId()}"),
-			"text"=> date("Y-m-d H:i:s", $entity->getUpdateDate())
+			"text"=> (is_numeric($entity->getUpdateDate())) ? date("Y-m-d H:i:s", $entity->getUpdateDate()) : ""
 		));
 
 		$this->createAdd("contents","HTMLLabel",array(
