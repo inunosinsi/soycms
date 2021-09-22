@@ -18,7 +18,8 @@ class CalendarExpandSmartOnOutput extends SOYShopSiteOnOutputAction{
 			//jQueryは事前に読み込んでおいてもらうことにする
 
 			$js = "<script>\n" . file_get_contents(dirname(__FILE__) . "/js/smart.js") . "</script>";
-			$css = "<link rel=\"stylesheet\" title=\"output calendar plugin\" type=\"text/css\" href=\"?output_css_mode=calendar\">";
+			$urlWithParam = soyshop_get_site_url() . "?output_css_mode=calendar";
+			$css = "<link rel=\"stylesheet\" title=\"output calendar plugin\" type=\"text/css\" href=\"" . $urlWithParam . "\">";
 			if(stripos($html, "</html>")){
 				$html = str_ireplace("</html>", $js . "\n" . $css . "\n</html>", $html);
 			}else{
