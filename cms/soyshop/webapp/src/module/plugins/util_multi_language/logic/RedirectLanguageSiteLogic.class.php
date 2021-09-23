@@ -107,8 +107,10 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 	//無限ループになるかチェック
 	private function checkLoop($path, $config){
 		$prefix = self::getLanguagePrefix($config);
-		if((self::isMobile() || self::isSmartPhone()) && strlen(self::getCarrierPrefix())){
-			$path = str_replace("/" . SOYSHOP_CARRIER_PREFIX, "", $path);
+		if(defined("SOYSHOP_CARRIER_PREFIX")){
+			if((self::isMobile() || self::isSmartPhone()) && strlen(self::getCarrierPrefix())){
+				$path = str_replace("/" . SOYSHOP_CARRIER_PREFIX, "", $path);
+			}
 		}
 		return ($path === "/" . $prefix || strpos($path, "/" . $prefix . "/") === 0 );
 	}
@@ -139,8 +141,10 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 
 	private function removeInsertedPrefix($path, $config){
 		//スマホ分のプレフィックスを先に削除
-		if((self::isMobile() || self::isSmartPhone()) && strlen(self::getCarrierPrefix())){
-			$path = str_replace("/" . SOYSHOP_CARRIER_PREFIX, "", $path);
+		if(defined("SOYSHOP_CARRIER_PREFIX")){
+			if((self::isMobile() || self::isSmartPhone()) && strlen(self::getCarrierPrefix())){
+				$path = str_replace("/" . SOYSHOP_CARRIER_PREFIX, "", $path);
+			}
 		}
 
 		if(isset($config["check_browser_language_config"])) unset($config["check_browser_language_config"]);
@@ -158,9 +162,11 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 	//パスの整形周りの処理
 	private function convertPath($siteDir, $prefix, $pathInfo){
 		//パスの結合を行う前にpathInfoからスマホプレフィックスを除く
-		if((self::isMobile() || self::isSmartPhone()) && strlen(self::getCarrierPrefix())){
-			if($pathInfo === "/" . SOYSHOP_CARRIER_PREFIX || strpos($pathInfo, "/" . SOYSHOP_CARRIER_PREFIX . "/") === 0){
-				$pathInfo = str_replace("/" . SOYSHOP_CARRIER_PREFIX, "", $pathInfo);
+		if(defined("SOYSHOP_CARRIER_PREFIX")){
+			if((self::isMobile() || self::isSmartPhone()) && strlen(self::getCarrierPrefix())){
+				if($pathInfo === "/" . SOYSHOP_CARRIER_PREFIX || strpos($pathInfo, "/" . SOYSHOP_CARRIER_PREFIX . "/") === 0){
+					$pathInfo = str_replace("/" . SOYSHOP_CARRIER_PREFIX, "", $pathInfo);
+				}
 			}
 		}
 
@@ -193,11 +199,13 @@ class RedirectLanguageSiteLogic extends SOY2LogicBase{
 		$prefix = self::getLanguagePrefix($config);
 
 		//スマホページもしくはガラケーページを見ている場合、requestUriにスマホページ分も考慮する
-		if((self::isMobile() || self::isSmartPhone())){
-			if(strlen($prefix) && strlen(self::getCarrierPrefix())){
-				$prefix = SOYSHOP_CARRIER_PREFIX . "/" . $prefix;
-			}else{
-				$prefix = SOYSHOP_CARRIER_PREFIX;
+		if(defined("SOYSHOP_CARRIER_PREFIX")){
+			if((self::isMobile() || self::isSmartPhone())){
+				if(strlen($prefix) && strlen(self::getCarrierPrefix())){
+					$prefix = SOYSHOP_CARRIER_PREFIX . "/" . $prefix;
+				}else{
+					$prefix = SOYSHOP_CARRIER_PREFIX;
+				}
 			}
 		}
 
