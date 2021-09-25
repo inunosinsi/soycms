@@ -106,7 +106,7 @@ class SOYShopCommonSearchModule extends SOYShopSearchModule{
 		}
 		$sql->where .= " (".implode(") AND (",$where).")";
 		$sql->where .= " AND item_type in (" . $this->getItemType() . ") ";
-		$sql->where .= " AND detail_page_id > 0 ";
+		$sql->where .= " AND (detail_page_id = '' OR detail_page_id IS NULL OR detail_page_id > 0) ";
 
 		$dao->setLimit($limit);
 		$offset = ($current -1) * $limit;
