@@ -4,6 +4,7 @@
 class AutoCompletionItemName extends SOYShopItemNameBase{
 
 	function getForm(SOYShop_Item $item){
+		if(!is_numeric($item->getId())) return "";
 		$readings = SOY2Logic::createInstance("module.plugins.auto_completion_item_name.logic.AutoCompleteDictionaryLogic")->getReadingsByItemId($item->getId());
 
 		$html = array();

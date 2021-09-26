@@ -4,6 +4,8 @@
 class AutoCompletionCategoryName extends SOYShopCategoryNameBase{
 
 	function getForm(SOYShop_Category $category){
+		if(!is_numeric($category->getId())) return "";
+
 		SOY2::import("module.plugins.auto_completion_item_name.util.AutoCompletionUtil");
 		$cnf = AutoCompletionUtil::getConfig();
 		if(!isset($cnf["include_category"]) || (int)$cnf["include_category"] !== AutoCompletionUtil::INCLUDE_CATEGORY) return "";
