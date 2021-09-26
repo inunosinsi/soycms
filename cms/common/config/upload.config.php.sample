@@ -1,5 +1,9 @@
 <?php
-// MIME type → https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+/**
+ * MIME type ファイルのアップロードで許可したいファイルの拡張子は下記のページを参考にしてください。
+ * https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+ * https://developer.mozilla.org/ja/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+ */
 $mimetypes = array(
 	'image/x-ms-bmp',
 	'image/gif',
