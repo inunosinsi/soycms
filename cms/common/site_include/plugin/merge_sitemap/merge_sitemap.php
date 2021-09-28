@@ -41,7 +41,7 @@ class MergeSitemapPlugin{
 	function onSiteAccess($args){
 
 		//設定がなければ動作しない
-		if(!isset($this->urls) || !strlen(trim($this->urls[0]))) return;
+		if(!isset($this->urls) || !isset($this->urls[0]) || !strlen(trim($this->urls[0]))) return;
 
 		//URLの末尾に.xmlがあるページでは動作しない
 		if(strpos($_SERVER["REQUEST_URI"], ".xml")) return;
