@@ -17,6 +17,9 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 		if(isset($_POST["google_analytics_track_code_smartphone"])){
 			$this->pluginObj->google_analytics_track_code_smartphone = $_POST["google_analytics_track_code_smartphone"];
 		}
+		if(isset($_POST["google_analytics_global_site_tag"])){
+			$this->pluginObj->google_analytics_global_site_tag = $_POST["google_analytics_global_site_tag"];
+		}
 		if(isset($_POST["google_analytics_position"])){
 			$this->pluginObj->position = $_POST["google_analytics_position"];
 		}
@@ -63,6 +66,12 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 		//スマホ用
 		$this->createAdd("google_analytics_track_code_smartphone","HTMLTextArea",array(
 			"text"  => $this->pluginObj->google_analytics_track_code_smartphone,
+			"style" => "display:block; margin:0; width:90%; height:250px;"
+		));
+
+		//グローバルサイトタグ(gtag.js)
+		$this->addTextArea("google_analytics_global_site_tag", array(
+			"text" => $this->pluginObj->google_analytics_global_site_tag,
 			"style" => "display:block; margin:0; width:90%; height:250px;"
 		));
 

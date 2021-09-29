@@ -21,6 +21,7 @@ class GoogleAnalytics{
 	var $google_analytics_track_code;
 	var $google_analytics_track_code_mobile;
 	var $google_analytics_track_code_smartphone;
+	var $google_analytics_global_site_tag;
 
 	//挿入箇所
 	var $position = self::INSERT_INTO_THE_END_OF_HEAD;
@@ -40,7 +41,7 @@ class GoogleAnalytics{
 			"modifier"=>"Jun Okada",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.9.1"
+			"version"=>"1.10"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -115,6 +116,16 @@ class GoogleAnalytics{
 		}
 
 		/* コードを挿入 */
+
+		//お問い合わせフォームの最終ページの場合はグローバルサイトタグを設置
+		if(isset($_GET["complete"]) && isset($_GET["trackid"])){
+			preg_match('/\d*-\d*-\d*/', $_GET["trackid"], $tmp);
+			if(isset($tmp[0])){
+				if(strlen($this->google_analytics_global_site_tag) && is_numeric(stripos($html, "<head>"))){
+					$html = str_ireplace("<head>", "<head>\n" . $this->google_analytics_global_site_tag, $html);
+				}
+			}
+		}
 
 		//モバイルで見てる時
 		if(defined("SOYCMS_IS_MOBILE") && SOYCMS_IS_MOBILE == true){
