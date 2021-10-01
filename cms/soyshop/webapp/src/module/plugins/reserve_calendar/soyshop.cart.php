@@ -21,9 +21,20 @@ class ReserveCalendarCart extends SOYShopCartBase{
 					$sch = new SOYShopReserveCalendar_Schedule();
 				}
 
-				if(!is_null($sch->getItemId())){
+				if(is_numeric($sch->getItemId())){
+					$cnf = ReserveCalendarUtil::getConfig();
+
+					//受付期限内か？
+					$isSch = true;
+					if(isset($cnf["deadline"]) && is_numeric($cnf["deadline"]) && (int)$cnf["deadline"]){
+						$scheduleDate = mktime(0, 0, 0, $sch->getMonth(), $sch->getDay(), $sch->getYear());
+						if($scheduleDate < soyshop_shape_timestamp(strtotime("+". $cnf["deadline"] . " day"))){
+							$isSch = false;
+						}
+					}
+
 					//残席数の確認もしておきたい
-					if(SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->checkIsUnsoldSeatByScheduleId($sch->getId())){
+					if($isSch && SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->checkIsUnsoldSeatByScheduleId($sch->getId())){
 						$_REQUEST["item"] = $sch->getItemId();
 						$_REQUEST["item_option"]["schedule_id"] = $sch->getId();	//商品オプションの拡張ポイントを起動させるための処理
 					}

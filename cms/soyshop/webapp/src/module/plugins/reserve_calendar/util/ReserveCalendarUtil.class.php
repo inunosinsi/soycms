@@ -43,6 +43,7 @@ class ReserveCalendarUtil{
 		$cnf = SOYShop_DataSets::get("reserve_calendar.config", array(
 			"tmp" => self::NO_TMP,
 			"send_at_time_tmp" => self::IS_SEND,
+			"deadline" => 0,
 			"only" => self::NO_ONLY,
 			"show_price" => self::NO_SHOW,
 			"ignore" => self::RESERVE_LIMIT,
@@ -57,6 +58,7 @@ class ReserveCalendarUtil{
 	public static function saveConfig($values){
 		$values["tmp"] = (isset($values["tmp"])) ? (int)$values["tmp"] : self::NO_TMP;
 		$values["send_at_time_tmp"] = (isset($values["send_at_time_tmp"])) ? (int)$values["send_at_time_tmp"] : self::NO_SEND;
+		$values["deadline"] = (isset($values["deadline"]) && is_numeric($values["deadline"])) ? (int)$values["deadline"] : 0;
 		$values["only"] = (isset($values["only"])) ? (int)$values["only"] : self::NO_ONLY;
 		$values["ignore"] = (isset($values["ignore"])) ? (int)$values["ignore"] : self::RESERVE_LIMIT;
 		$values["cancel_button"] = (isset($values["cancel_button"])) ? (int)$values["cancel_button"] : self::RESERVE_DISPLAY_CANCEL_BUTTON;

@@ -63,6 +63,8 @@ class CalendarLogic extends CalendarBaseComponent{
 		//予定がある場合
 		if(count($sch)){
 			foreach($sch as $schId => $v){
+				//受付期限内であるか？
+				if(!self::checkWithinReceptionDeadline($i)) continue;
 
 				//残席があるか調べる
 				if(self::checkIsUnsoldSeat($i, $schId, $v["seat"])){
@@ -93,7 +95,13 @@ class CalendarLogic extends CalendarBaseComponent{
 		return implode("<br>", $html);
 	}
 
-	private function checkIsUnsoldSeat($d, $schId, $seat){
+	private function checkWithinReceptionDeadline(int $d){
+		//受付期限設定がない、もしくは期限設定が0日の場合は必ずtrue
+		if(!isset($this->config["deadline"]) || !is_numeric($this->config["deadline"]) || $this->config["deadline"] == 0) return true;
+		return (mktime(0, 0, 0, $this->month, $d, $this->year) >= soyshop_shape_timestamp(strtotime("+ " . $this->config["deadline"] . "day")));
+	}
+
+	private function checkIsUnsoldSeat(int $d, int $schId, int $seat){
 		//今日よりも前の日の場合は残席数は0になる
 		$schDate = mktime(0, 0, 0, $this->month, $d, $this->year) + 24 * 60 * 60 - 1;
 		if($schDate < time()) return false;

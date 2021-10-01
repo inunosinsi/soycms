@@ -38,10 +38,10 @@ class ReserveLogic extends SOY2LogicBase{
 	}
 
 	//指定の日から○日分の予定を取得する
-	function getReservedCountListFromDaysByItemId($itemId, $now=null, $days=30){
+	function getReservedCountListFromDaysByItemId($itemId, $now=null, $days=30, $isTmp=false){
 		if(is_null($now)) $now = time();
 		$now = soyshop_shape_timestamp($now);	//整形
-		return self::dao()->getReservedCountListFromDaysByItemId($itemId, $now, $days);
+		return self::dao()->getReservedCountListFromDaysByItemId($itemId, $now, $days, $isTmp);
 	}
 
 	function checkIsUnsoldSeatByScheduleId($scheduleId){

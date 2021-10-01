@@ -45,6 +45,11 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"label" => "仮登録の予約の際にメール文面に本登録用のURLを含める"
 		));
 
+		$this->addInput("reception_deadline", array(
+			"name" => "Config[deadline]",
+			"value" => (isset($config["deadline"]) && is_numeric($config["deadline"])) ? (int)$config["deadline"] : 0
+		));
+
 		$this->addCheckBox("only", array(
 			"name" => "Config[only]",
 			"value" => ReserveCalendarUtil::IS_ONLY,

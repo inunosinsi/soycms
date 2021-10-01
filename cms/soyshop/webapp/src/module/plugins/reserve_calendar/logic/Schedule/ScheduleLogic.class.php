@@ -76,10 +76,10 @@ class ScheduleLogic extends SOY2LogicBase{
 	}
 
 	//指定の日から○日分の予定を取得する
-	function getScheduleListFromDays($itemId, $now=null, $days=30){
+	function getScheduleListFromDays($itemId, $now=null, $days=30, $deadline=0){
 		if(is_null($now)) $now = time();
 		$now = soyshop_shape_timestamp($now);	//整形
-		$list = self::dao()->getScheduleListFromDays($itemId, $now, $days);
+		$list = self::dao()->getScheduleListFromDays($itemId, $now, $days, $deadline);
 
 		//自動登録
 		if(!count($list)){
@@ -90,7 +90,7 @@ class ScheduleLogic extends SOY2LogicBase{
 			if(date("n", $future) != $month){
 				self::_autoInsert($itemId, date("Y", $future), date("n", $future));
 			}
-			$list = self::dao()->getScheduleListFromDays($itemId, $now, $days);
+			$list = self::dao()->getScheduleListFromDays($itemId, $now, $days, $deadline);
 		}
 		return $list;
 	}

@@ -12,6 +12,10 @@ function soyshop_divide_calendar_zone($html, $page){
 	$itemId = (int)$arr[0];
 	$scheduleDate = (int)$arr[1];
 
+	$obj->addLabel("schedule_date_wareki", array(
+		"text" => date("Y年n月j日", $scheduleDate)
+	));
+
 	$days = 0;
 
 	// $year = (isset($_GET["y"]) && is_numeric($_GET["y"])) ? (int)$_GET["y"] : (int)date("Y");

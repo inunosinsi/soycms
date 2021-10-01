@@ -12,12 +12,15 @@ function soyshop_divide_calendar_date($html, $page){
 	//最新の商品を一つ取得する
 	$item = SOY2Logic::createInstance("logic.shop.item.ItemLogic")->getLatestRegisteredItem();
 
-	$days = 30;
+	SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+	$cnf = ReserveCalendarUtil::getConfig();
+	$deadline = (isset($cnf["deadline"]) && is_numeric($cnf["deadline"])) ? (int)$cnf["deadline"] : 0;
+	$days = 30 + $deadline;
 
 	$GLOBALS["reserved_schedules"] = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Reserve.ReserveLogic")->getReservedCountListFromDaysByItemId($item->getId(), time(), $days);
 
 	$schLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic");
-	$schList = $schLogic->getScheduleListFromDays($item->getId(), time(), $days);
+	$schList = $schLogic->getScheduleListFromDays($item->getId(), time(), $days, $deadline);
 	ksort($schList);
 
 	$obj->createAdd("day_list", "DivideCalendarDateListComponent", array(

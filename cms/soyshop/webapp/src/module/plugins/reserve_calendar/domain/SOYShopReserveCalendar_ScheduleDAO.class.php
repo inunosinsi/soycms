@@ -190,8 +190,10 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
 
 	/**
 	 * @final
+	 * @param int $itemId, int $now, int $days, int $deadline
+	 * @return array
 	 */
-	function getScheduleListFromDays($itemId, $now, $days){
+	function getScheduleListFromDays($itemId, $now, $days, $deadline=0){
 		//計算前に検索用のデータを必ず最新の状態にしておく schedule_dateを利用する
 		SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Search.CustomSearchLogic")->prepare();
 
@@ -210,7 +212,7 @@ abstract class SOYShopReserveCalendar_ScheduleDAO extends SOY2DAO{
                 "AND item.open_period_end > " . $now . " ".
                 "AND item.item_is_open = " . SOYShop_Item::IS_OPEN . " ".
                 "AND item.is_disabled != " . SOYShop_Item::IS_DISABLED . " ";
-        $binds = array(":start" => $now, ":end" => strtotime("+" . ($days+1) . "day", $now));
+        $binds = array(":start" => ($now + ($deadline*24*60*60)), ":end" => strtotime("+" . ($days+1+$deadline) . "day", $now));
 
         if(isset($itemId) && is_numeric($itemId)){
             $sql .= "AND sch.item_id = :itemId ";
