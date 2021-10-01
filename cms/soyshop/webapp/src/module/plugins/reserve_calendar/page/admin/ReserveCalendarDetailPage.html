@@ -160,6 +160,24 @@
 								<td><input type="email" class="form-control" soy:id="mail_address"></td>
 							</tr>
 							<tr>
+								<th>郵便番号</th>
+								<td class="form-inline">
+									<input type="text" soy:id="zip_code" class="form-control input-zip">&nbsp;
+									<a href="javascript:void(0);" class="search-btn btn btn-primary btn-sm">検索</a>
+								</td>
+							</tr>
+							<tr>
+								<th>住所</th>
+								<td>
+									<select soy:id="area" id="area" class="input-pref">
+										<option value="">▼選択</option>
+									</select>
+									<input type="text" soy:id="address1" class="form-control input-city" id="address1">
+									<input type="text" soy:id="address2" class="form-control input-town" id="address2">
+									<input type="text" soy:id="address3" class="form-control" id="address3">
+								</td>
+							</tr>
+							<tr>
 								<th>電話番号</th>
 								<td><input type="text" class="form-control" soy:id="telephone_number"></td>
 							</tr>
@@ -167,10 +185,16 @@
 								<th>席数</th>
 								<td><input type="number" class="form-control" soy:id="seat_input" min="1"></td>
 							</tr>
+							<tr>
+								<th>備考</th>
+								<td>
+									<textarea class="form-control" soy:id="memo"></textarea>
+								</td>
+							</tr>
 						</table>
 
 						<div class="text-center">
-							<input type="submit" class="btn btn-primary btn-lg" value="登録する">
+							<input type="submit" name="register" class="btn btn-primary btn-lg" value="登録する">
 						</div>
 					</div>
 				</form>
@@ -179,6 +203,18 @@
 		</div>
 	</div>
 </div>
+
+<script>
+    $(function(){
+        $("input"). keydown(function(e) {
+            if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+    });
+</script>
 
 <style>
 table.form_list{
@@ -207,3 +243,4 @@ $("#show_change_button").on("click", function(){
 	$("#show_change_button").hide();
 });
 </script>
+<script soy:id="zip2address_js"></script>

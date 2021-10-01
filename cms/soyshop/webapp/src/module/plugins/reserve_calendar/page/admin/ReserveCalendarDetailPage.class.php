@@ -74,7 +74,20 @@ class ReserveCalendarDetailPage extends WebPage{
 				$order->setUserId($userId);
 				$order->setPrice($item->getPrice() * $seat);	/** @ToDo 消費税も考慮しないと **/
 				$order->setStatus(SOYShop_Order::ORDER_STATUS_REGISTERED);
+
+				//請求先を記録しておく
+				$claimedAddressArray = self::_getClaimedAddressArray(soyshop_get_user_object($userId));
+				$order->setClaimedAddress($claimedAddressArray);
+
 				$order->setOrderDate(time());
+				if(isset($_POST["Order"]["memo"])){	//備考
+					$order->setAttribute("memo", array(
+						"name" => "備考",
+						"value" => trim($_POST["Order"]["memo"]),
+						"hidden" => false,
+						"readonly" => false
+					));
+				}
 				try{
 					$orderId = $orderDao->insert($order);
 					$order->setId($orderId);
@@ -141,7 +154,7 @@ class ReserveCalendarDetailPage extends WebPage{
 					SOY2DAOFactory::create("SOYShopReserveCalendar_ScheduleDAO")->update($this->schedule);
 					SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?updated");
 				}catch(Exception $e){
-					var_dump($e);
+					//var_dump($e);
 				}
 			}
 		}
@@ -149,7 +162,7 @@ class ReserveCalendarDetailPage extends WebPage{
 		SOY2PageController::jump("Extension.Detail.reserve_calendar." . $this->schId . "?error");
 	}
 
-	private function getUserIdAfterRegister($values){
+	private function getUserIdAfterRegister(array $values){
 		try{
 			$old = $this->userDao->getByMailAddress($values["mailAddress"]);
 			}catch(Exception $e){
@@ -159,21 +172,31 @@ class ReserveCalendarDetailPage extends WebPage{
 		$user = SOY2::cast($old, $values);
 		$user->setUserType(SOYShop_User::USERTYPE_REGISTER);
 
-		if(is_null($user->getId())){
-			try{
-				return $this->userDao->insert($user);
-			}catch(Exception $e){
-				return null;
-			}
-		}else{
+		try{
+			return $this->userDao->insert($user);
+		}catch(Exception $e){
 			try{
 				$this->userDao->update($user);
+				return $user->getId();
 			}catch(Exception $e){
 				return null;
 			}
-
-			return $user->getId();
 		}
+	}
+
+	private function _getClaimedAddressArray(SOYShop_User $user){
+		//$user = $this->customerInformation;
+		return array(
+			"name" => $user->getName(),
+			"reading" => $user->getReading(),
+			"zipCode" => $user->getZipCode(),
+			"area" => $user->getArea(),
+			"address1" => $user->getAddress1(),
+			"address2" => $user->getAddress2(),
+			"address3" => $user->getAddress3(),
+			"telephoneNumber" => $user->getTelephoneNumber(),
+			"office" => $user->getJobName(),
+		);
 	}
 
 	function execute(){
@@ -223,6 +246,10 @@ class ReserveCalendarDetailPage extends WebPage{
 		self::buildTmpReservedList();	//仮予約
 		self::buildCanceledList();
 		self::buildReserveFormArea();
+
+		$this->addModel("zip2address_js", array(
+			"src" => soyshop_get_site_url() . "themes/common/js/zip2address.js"
+		));
 	}
 
 	private function buildScheduleInfoArea(){
@@ -313,7 +340,7 @@ class ReserveCalendarDetailPage extends WebPage{
 		DisplayPlugin::toggle("display_register_form", self::checkDisplayForm());
 
 		//共通フォーム
-		$this->component->buildForm($this, self::getUser(), null, UserComponent::MODE_CUSTOM_FORM);
+		$this->component->buildForm($this, soyshop_get_user_object(ReserveCalendarUtil::getSessionValue("user")), null, UserComponent::MODE_CUSTOM_FORM);
 
 		//残席数
 		$unsoldSeat = (isset($this->config["ignore"]) && $this->config["ignore"] == ReserveCalendarUtil::RESERVE_LIMIT_IGNORE) ? 10000 : ($this->schedule->getUnsoldSeat() - $this->reservedCount);
@@ -324,14 +351,11 @@ class ReserveCalendarDetailPage extends WebPage{
 			"attr:max" => $unsoldSeat,
 			"attr:required" => "required"
 		));
-	}
 
-	private function getUser(){
-		try{
-			return $this->userDao->getById(ReserveCalendarUtil::getSessionValue("user"));
-		}catch(Exception $e){
-			return new SOYShop_User();
-		}
+		$this->addTextArea("memo", array(
+			"name" => "Order[memo]",
+			"value" => ""
+		));
 	}
 
 	private function checkDisplayForm(){
