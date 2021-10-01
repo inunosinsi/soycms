@@ -20,6 +20,9 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 		if(isset($_POST["google_analytics_global_site_tag"])){
 			$this->pluginObj->google_analytics_global_site_tag = $_POST["google_analytics_global_site_tag"];
 		}
+		if(isset($_POST["google_analytics_global_site_tag_conversion_tag"])){
+			$this->pluginObj->google_analytics_global_site_tag_conversion_tag = $_POST["google_analytics_global_site_tag_conversion_tag"];
+		}
 		if(isset($_POST["google_analytics_position"])){
 			$this->pluginObj->position = $_POST["google_analytics_position"];
 		}
@@ -72,7 +75,12 @@ class GoogleAnalyticsPluginConfigPage extends WebPage{
 		//グローバルサイトタグ(gtag.js)
 		$this->addTextArea("google_analytics_global_site_tag", array(
 			"text" => $this->pluginObj->google_analytics_global_site_tag,
-			"style" => "display:block; margin:0; width:90%; height:250px;"
+			"style" => "display:block; margin:0; width:90%; height:200px;"
+		));
+
+		$this->addTextArea("google_analytics_global_site_tag_conversion_tag", array(
+			"text" => $this->pluginObj->google_analytics_global_site_tag_conversion_tag,
+			"style" => "display:block; margin:0; width:90%; height:80px;"
 		));
 
 		//挿入箇所の指定
