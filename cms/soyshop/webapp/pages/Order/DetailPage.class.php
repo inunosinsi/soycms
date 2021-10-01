@@ -185,7 +185,7 @@ class DetailPage extends WebPage{
     		"text" => soy2_number_format($order->getPrice()) . " 円"
     	));
 
-       	$this->createAdd("attribute_list", "_common.Order.AttributeListComponent", array(
+		$this->createAdd("attribute_list", "_common.Order.AttributeListComponent", array(
     		"list" => $order->getAttributeList()
     	));
 
