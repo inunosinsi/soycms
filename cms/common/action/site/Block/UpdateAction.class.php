@@ -14,8 +14,8 @@ class UpdateAction extends SOY2Action{
 
 		$component = $block->getBlockComponent();
 		SOY2::cast($component,$form->object);
-		if(strlen($form->object->displayCountFrom) === 0) $component->setDisplayCountFrom(null);
-		if(strlen($form->object->displayCountTo) === 0) $component->setDisplayCountTo(null);
+		if(!property_exists($form->object, "displayCountFrom") || strlen($form->object->displayCountFrom) === 0) $component->setDisplayCountFrom(null);
+		if(!property_exists($form->object, "displayCountTo") || strlen($form->object->displayCountTo) === 0) $component->setDisplayCountTo(null);
 
 		$block->setObject($component);
 

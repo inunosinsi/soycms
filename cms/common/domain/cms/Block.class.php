@@ -88,26 +88,19 @@ class Block {
 	 *
 	 */
 	function getBlockComponent(){
-
 		try{
+			if(strlen($this->getClass()) < 1) throw new Exception();
 
-			if(strlen($this->getClass())<1)throw new Exception();
+			if(!class_exists($this->getClass())) include_once(CMS_BLOCK_DIRECTORY . $this->getClass() . "/block.php");
 
-			if(!class_exists($this->getClass())){
-				include_once(CMS_BLOCK_DIRECTORY . $this->getClass() . "/block.php");
-			}
-
-			if($this->getObject()){
-				$component = unserialize($this->object);
+			if ($this->getObject()) {
+				return unserialize($this->object);
 			}else{
 				$className = $this->getClass();
-				$component = new $className;
+				return new $className;
 			}
-
-			return $component;
-
 		}catch(Exception $e){
-
+			//
 		}
 
 		return new BrokenBlockComponent();
