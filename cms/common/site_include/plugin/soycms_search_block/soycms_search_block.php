@@ -150,11 +150,8 @@ class SOYCMS_Search_Block_Plugin{
 	 * プラグインの登録
 	 */
 	public static function registerPlugin(){
-
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new SOYCMS_Search_Block_Plugin();
-		}
+		if(is_null($obj)) $obj = new SOYCMS_Search_Block_Plugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }
