@@ -49,12 +49,12 @@ class AutoDeleteHistoryPlugin{
 
 			//日による履歴の自動実行の方が高速で行われるので先に行う
 			if((int)$this->entryCdate > 0){
-				$logic->deleteHistory($this->entryCdate);
+				$logic->deleteHistory((int)$this->entryCdate);
 			}
 
 			//記事毎の履歴の保持設定
 			if((int)$this->entryCount > 0){
-				$logic->deleteHistoryEachEntryIds($this->entryCount);
+				$logic->deleteHistoryEachEntryIds((int)$this->entryCount);
 			}
 		}
 
