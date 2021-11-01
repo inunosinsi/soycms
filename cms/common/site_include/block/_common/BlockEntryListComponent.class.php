@@ -80,7 +80,7 @@ class BlockEntryListComponent extends HTMLList{
 		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
-		$entryUrl = $this->articlePageUrl.($entity->getAlias());
+		$entryUrl = ($entity instanceof Entry) ? self::_getArticleUrl($entity) : null;
 
 		if($this->isStickUrl){
 			$hTitle = "<a href=\"".htmlspecialchars($entryUrl, ENT_QUOTES, "UTF-8")."\">".$hTitle."</a>";
@@ -161,7 +161,7 @@ class BlockEntryListComponent extends HTMLList{
 		$labels = ($this->isStickUrl && $id > 0) ? self::_labelLogic()->getLabelsByBlogPageIdAndEntryId($this->blogPageId, $id) : array();
 		$entity->setLabels($labels);
 		unset($labels);
-		
+
 		//カテゴリ
 		$this->createAdd("category_list","CategoryListComponent",array(
 			"list" => $entity->getLabels(),
@@ -171,6 +171,18 @@ class BlockEntryListComponent extends HTMLList{
 		));
 
 		CMSPlugin::callEventFunc('onEntryOutput',array("entryId" => $id, "SOY2HTMLObject" => $this, "entry" => $entity, "blockId" => $this->blockId));
+	}
+
+	private function _getArticleUrl(Entry $entry){
+		//プラグインブロックから記事詳細ページのURLを制御する
+		if(isset($GLOBALS["plugin_block_correspondence_table"]) && is_array($GLOBALS["plugin_block_correspondence_table"]) && isset($GLOBALS["plugin_block_correspondence_table"][$entry->getId()])){
+			$blogPageId = $GLOBALS["plugin_block_correspondence_table"][$entry->getId()];
+			//ページのURLを取得
+			$articlePageUrl = "";
+		}else{
+			$articlePageUrl = $this->articlePageUrl;
+		}
+		return $articlePageUrl.($entry->getAlias());
 	}
 
 	private function _labelLogic(){

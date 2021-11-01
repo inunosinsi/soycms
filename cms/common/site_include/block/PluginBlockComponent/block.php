@@ -34,10 +34,8 @@ class PluginBlockComponent implements BlockComponent{
 	 * 表示用コンポーネント
 	 */
 	function getViewPage($page){
-
         $array = array();
         $articlePageUrl = "";
-
 
         $onLoad = CMSPlugin::getEvent('onPluginBlockLoad');
 		foreach($onLoad as $pluginId => $plugin){
@@ -71,7 +69,7 @@ class PluginBlockComponent implements BlockComponent{
 			"isStickUrl" => $this->isStickUrl,
 			"articlePageUrl" => $articlePageUrl,
 			"categoryPageUrl" => $categoryPageUrl,
-			"blogPageId"=>$this->blogPageId,
+			"blogPageId" => $this->blogPageId,
 			"soy2prefix"=>"block",
 		));
 
