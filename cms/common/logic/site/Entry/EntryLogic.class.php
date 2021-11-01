@@ -29,9 +29,6 @@ class EntryLogic extends SOY2LogicBase{
 		$this->blockClass = $blockClass;
 	}
 
-	/**
-	 * エントリーを新規作成
-	 */
 	 /**
  	 * エントリーを新規作成
  	 */
@@ -39,8 +36,8 @@ class EntryLogic extends SOY2LogicBase{
 
  		$dao = self::entryDao();
 
- 		$bean->setContent($this->cleanupMCETags($bean->getContent()));
- 		$bean->setMore($this->cleanupMCETags($bean->getMore()));
+ 		if(is_string($bean->getContent())) $bean->setContent(self::_cleanupMCETags($bean->getContent()));
+ 		if(is_string($bean->getMore())) $bean->setMore(self::_cleanupMCETags($bean->getMore()));
 
  		//数値以外（空文字列を含む）がcdateに入っていれば現在時刻を作成日時にする
  		if(!is_numeric($bean->getCdate())){
@@ -70,7 +67,7 @@ class EntryLogic extends SOY2LogicBase{
 	/**
 	 * エントリーを更新
 	 */
-	function update($bean){
+	function update(Entry $bean){
 
 		$dao = self::entryDao();
 
@@ -83,8 +80,8 @@ class EntryLogic extends SOY2LogicBase{
 			$bean->setAlias($this->getUniqueAlias($bean->getId(),$bean->getTitle()));
 		}
 
-		$bean->setContent($this->cleanupMCETags($bean->getContent()));
-		$bean->setMore($this->cleanupMCETags($bean->getMore()));
+		if(is_string($bean->getContent())) $bean->setContent(self::_cleanupMCETags($bean->getContent()));
+		if(is_string($bean->getMore())) $bean->setMore(self::_cleanupMCETags($bean->getMore()));
 
 		if(UserInfoUtil::hasEntryPublisherRole() != true){
 			$old = $dao->getById($bean->getId());
@@ -589,7 +586,7 @@ class EntryLogic extends SOY2LogicBase{
 	 * MCEの特殊なタグを取り除く
 	 * 空の<p></p>または<p />は<br />に変換
 	 */
-	function cleanupMCETags($html){
+	private function _cleanupMCETags(string $html){
 		return  preg_replace('/<p><\/p>|<p\s+\/>/','<br />',preg_replace('/\s?mce_[a-zA-Z0-9_]+\s*=\s*"[^"]*"/','',$html));
 	}
 
