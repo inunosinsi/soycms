@@ -131,11 +131,11 @@ class IndexPage extends CMSUpdatePageBase{
 		$limit  = isset($_GET['limit'])? (int)$_GET['limit'] : ( isset($_COOKIE['Entry_List_Limit'])? (int)$_COOKIE['Entry_List_Limit'] : 10 );
 
 		//記事を取得
-		list($entries,$count,$offset) = self::getEntries($offset,$limit);
+		list($entries,$count,$offset) = self::_getEntries($offset,$limit);
 
 		include_once(dirname(__FILE__).'/_EntryBlankPage.class.php');
 		$this->createAdd("no_entry_message","_EntryBlankPage",array(
-			"visible"=>(count($entries) == 0)
+			"visible"=> (is_array($entries) && count($entries) == 0)
 		));
 
 		if(count($entries) > 0){
@@ -191,7 +191,7 @@ class IndexPage extends CMSUpdatePageBase{
 	 * @param $offset,$limit
 	 * @return (entry_array,記事の数,大きすぎた場合最終オフセット)
 	 */
-	private function getEntries($offset,$limit){
+	private function _getEntries($offset,$limit){
 		$action = SOY2ActionFactory::createInstance("Entry.EntryListAction",array(
 			"offset"=>$offset,
 			"limit"=>$limit
@@ -199,6 +199,7 @@ class IndexPage extends CMSUpdatePageBase{
 
 		$result = $action->run();
 		$entities = $result->getAttribute("Entities");
+		if(!is_array($entities)) $entities = array();
 		$totalCount = $result->getAttribute("total");
 
 		return array($entities,$totalCount,min($offset,$totalCount));
