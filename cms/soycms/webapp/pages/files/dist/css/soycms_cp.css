@@ -484,3 +484,6 @@ table.list tr {
 .panel-green a.btn {
 	color:#ffffff;
 }
+.panel-green .icon_link a.btn{
+	color: #333;
+}
