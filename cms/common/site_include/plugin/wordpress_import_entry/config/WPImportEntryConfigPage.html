@@ -1,0 +1,47 @@
+<!-- soy:display="import_area" -->
+<div class="alert alert-info">WordPress → SOY CMS データの移行</div>
+<form soy:id="import_form">
+	<div class="alert alert-warning">
+		@ToDo
+		<ul>
+			<li>WordPress側のpost_excerpt(記事の抜粋)の移行先が未決定</li>
+		</ul>
+	</div>
+	データの移行：<input type="submit" name="import" class="btn btn-warning" value="実行">
+</form>
+<br><br>
+<!-- /soy:display="import_area" -->
+
+<div class="alert alert-info">WordPressのMySQLの設定の登録</div>
+<div><small>※wp-config.phpに記載されている値を登録します。</small></div><br>
+
+<form soy:id="form">
+	<div class="form-group">
+		<label>データベース名(DB_NAME)</label>
+		<div class="form-inline">
+			<input type="text" class="form-control" soy:id="name">
+		</div>
+	</div>
+	<div class="form-group">
+		<label>データベースのユーザ名(DB_USER)</label>
+		<div class="form-inline">
+			<input type="text" class="form-control" soy:id="user">
+		</div>
+	</div>
+	<div class="form-group">
+		<label>データベースのパスワード(DB_PASSWORD)</label>
+		<div class="form-inline">
+			<input type="password" class="form-control" soy:id="password">
+		</div>
+	</div>
+	<div class="form-group">
+		<label>データベースのホスト(DB_HOST)</label>
+		<div class="form-inline">
+			<input type="text" class="form-control" placeholder="localhost" soy:id="host">
+		</div>
+	</div>
+
+	<div class="text-left">
+		<input type="submit" name="update" class="btn btn-primary btn-lg" value="更新">
+	</div>
+</form>
