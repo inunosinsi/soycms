@@ -19,7 +19,7 @@ class ReadEntryCountConfigPage extends WebPage{
 				try{
 					$dao->executeUpdateQuery("UPDATE ReadEntryCount SET count = 0;");
 				}catch(Exception $e){
-					var_dump($e);
+					//var_dump($e);
 				}
 				//SOY2::imports("site_include.plugin.read_entry_count.domain.*");
 				//SOY2DAOFactory::create("ReadEntryCountDAO")->reset();
@@ -34,6 +34,10 @@ class ReadEntryCountConfigPage extends WebPage{
 		}else{
 			parent::__construct();
 		}
+
+		$isBlockPluginVer = is_numeric(strpos($this->pluginObj->getId(), "BlockPlugin"));
+		DisplayPlugin::toggle("block_plugin_ver", $isBlockPluginVer);
+		DisplayPlugin::toggle("normal_ver", !$isBlockPluginVer);
 
 		$this->addForm("form");
 

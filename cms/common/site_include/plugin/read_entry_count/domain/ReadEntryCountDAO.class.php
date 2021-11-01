@@ -22,9 +22,15 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
 	abstract function get();
 
 	function getRanking($limit = 5){
+		SOY2::import("domain.cms.Entry");
+		$now = time();
+		
 		$sql = "SELECT ent.*, cnt.count FROM ReadEntryCount cnt ".
 						"INNER JOIN Entry ent ".
 						"ON cnt.entry_id = ent.id ".
+						"WHERE ent.isPublished = " . Entry::ENTRY_ACTIVE . " ".
+						"AND ent.openPeriodStart < " . $now . " ".
+						"AND ent.openPeriodEnd > " . $now . " ".
 						"ORDER BY cnt.count DESC ".
 						"LIMIT " . $limit;
 		try{
@@ -53,7 +59,7 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
 		return $results;
 	}
 
-	function getRankingByLabelIds($labelIds, $blogPageId, $limit = 5){
+	function getRankingByLabelIds(array $labelIds, int $blogPageId, $limit = 5){
 		$sql = "SELECT ent.*, cnt.count FROM ReadEntryCount cnt ".
 						"INNER JOIN Entry ent ".
 						"ON cnt.entry_id = ent.id ".
@@ -69,7 +75,7 @@ abstract class ReadEntryCountDAO extends SOY2DAO {
 		}
 
 		foreach($results as $key => $result){
-			$labelIds[] = $blogPageId;
+			if($blogPageId > 0) $labelIds[] = $blogPageId;
 			$results[$key]["labels"] = $labelIds;
 		}
 

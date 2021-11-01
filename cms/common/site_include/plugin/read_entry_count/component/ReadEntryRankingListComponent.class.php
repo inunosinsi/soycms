@@ -24,7 +24,7 @@ class ReadEntryRankingListComponent extends HTMLList {
 		));
 
 		if(isset($entity["id"]) && is_numeric($entity["id"])){
-			$entry = $this->entryDao->getObject($entity);
+			$entry = self::_dao()->getObject($entity);
 		}else{
 			$entry = new Entry();
 		}
@@ -43,11 +43,13 @@ class ReadEntryRankingListComponent extends HTMLList {
 		return "";
 	}
 
-	function setBlogs($blogs){
-		$this->blogs = $blogs;
+	private function _dao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("cms.EntryDAO");
+		return $dao;
 	}
 
-	function setEntryDao($entryDao){
-		$this->entryDao = $entryDao;
+	function setBlogs($blogs){
+		$this->blogs = $blogs;
 	}
 }
