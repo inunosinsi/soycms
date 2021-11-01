@@ -36,12 +36,8 @@ class SqliteVacuumPlugin{
 	}
 
 	public static function register(){
-
 		$obj = CMSPlugin::loadPluginConfig(self::PLUGIN_ID);
-		if(is_null($obj)){
-			$obj = new SqliteVacuumPlugin();
-		}
-
+		if(is_null($obj)) $obj = new SqliteVacuumPlugin();
 		CMSPlugin::addPlugin(self::PLUGIN_ID,array($obj,"init"));
 	}
 }
