@@ -33,7 +33,7 @@ class CreateHeadingLogic extends SOY2LogicBase {
 		static $j;
 		if(is_null($j)) $j = 1;
 		$href = "heading-" . $i . "-" . $j++;
-		$anchorTag = "<a href=\"#" . $href . "\" class=\"layer-" . $i . "\">" . $v ."</a>";
+		$anchorTag = "<a href=\"#" . $href . "\" class=\"layer-" . $i . "\">" . strip_tags($v) ."</a>";
 		$this->headingList[$href] = $v;
 		return $anchorTag;
 	}

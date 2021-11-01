@@ -13,7 +13,7 @@ class TableOfContentsPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.4"
+			"version"=>"0.6"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -65,8 +65,8 @@ class TableOfContentsPlugin{
 				$list = $logic->getHeadingList();
 				if(count($list)){
 					foreach($list as $href => $title){
-						$title = htmlspecialchars($title, ENT_QUOTES, "UTF-8");
-						preg_match('/<h[0-9].*?>' . self::addEscapeChar($title) . '<\/h[0-9]>/', $html, $tmp);
+						$title = self::addEscapeChar(htmlspecialchars($title, ENT_QUOTES, "UTF-8"));
+						preg_match('/<h[0-9].*?>' . $title . '<\/h[0-9]>/', $html, $tmp);
 						if(!isset($tmp[0]) || !strlen($tmp[0])) continue;
 						$hTag = str_replace(">" . $title, " id=\"" . $href . "\">" . $title, $tmp[0]);
 						$html = str_replace($tmp[0], $hTag, $html);
@@ -79,8 +79,12 @@ class TableOfContentsPlugin{
 	}
 
 	private function addEscapeChar($str){
-		foreach(array("(", ")", "?") as $c){
+		foreach(array("(", ")", "?", "/") as $c){
 			$str = str_replace($c, "\\" . $c, $str);
+		}
+		//裏技　下記の文字列がある場合は戻す
+		if(is_numeric(strpos($str, "&amp;times;"))){
+			$str = str_replace("&amp;times;", "&times;", $str);
 		}
 		return $str;
 	}
@@ -131,14 +135,14 @@ class TableOfContentsPlugin{
 				try{
 					$attrDao->update($attr);
 				}catch(Exception $e){
-					var_dump($e);
+					//var_dump($e);
 				}
 			}
 		}else{
 			try{
 				$attrDao->delete($entry->getId(), self::PLUGIN_ID);
 			}catch(Exception $e){
-				var_dump($e);
+				//var_dump($e);
 			}
 		}
 	}
