@@ -1,0 +1,27 @@
+<form soy:id="form">
+	<div class="table-responsive">
+		<table class="table table-striped">
+			<tr>
+				<th colspan="2">WYSIWYG</th>
+			</tr>
+			<tr>
+				<td colspan="2" class="form-inline"><select soy:id="editor_select" class="form-control"></select></td>
+			</tr>
+		</table>
+		<table class="table table-striped">
+			<tr>
+				<th>ラベル名</th><th>設定</th>
+			</tr>
+			<!-- soy:id="labels" -->
+			<tr>
+				<td nowrap class="col-lg-3"><img soy:id="icon"><!-- soy:id="caption" /--></td>
+				<td class="form-inline"><select soy:id="config" class="form-control"></select></td>
+			</tr>
+			<!-- /soy:id="labels" -->
+		</table>
+	</div>
+
+	<div class="text-center">
+		<input type="submit" class="btn btn-primary btn-lg btn-block" value="保存" />
+	</div>
+</form>

@@ -592,7 +592,7 @@ class CustomFieldPluginAdvanced{
 
 	private function buildFormOnEntryPage($entryId){
 		$html = $this->getScripts();
-		$html .= '<div class="section custom_field">';
+		$html .= '<div class="section custom_field">' . "\n";
 		$db_arr = $this->getCustomFields($entryId);
 
 		$db_values = array();

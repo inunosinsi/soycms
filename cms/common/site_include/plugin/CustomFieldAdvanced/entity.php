@@ -177,7 +177,7 @@ class CustomField{
  		         .( ($pluginObj->displayTitle) ? 'カスタムフィールド：' : '' )
  		         .htmlspecialchars($this->getLabel(),ENT_QUOTES,"UTF-8")
  		         .( ($pluginObj->displayID) ? ' ('.htmlspecialchars($this->getId(),ENT_QUOTES,"UTF-8").')' : '' )
- 		         .'</label>';
+ 		         .'</label>' . "\n";
  		$title .= (strlen($this->getDescription())) ? '<br /><span>' . $this->getDescription() . '</span>' : "";
 
  		switch($this->getType()){
