@@ -16,7 +16,7 @@ class MultiUploaderPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3150",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5"
+			"version"=>"0.5.1"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -121,7 +121,7 @@ class MultiUploaderPlugin{
 
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : null;
+		$entryId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : 0;
 
 		SOY2::import("site_include.plugin.multi_uploader.component.MultiUploaderFormComponent");
 		return MultiUploaderFormComponent::buildForm($entryId);
@@ -129,7 +129,7 @@ class MultiUploaderPlugin{
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[1]) && is_numeric($arg[1])) ? (int)$arg[1] : null;
+		$entryId = (isset($arg[1]) && is_numeric($arg[1])) ? (int)$arg[1] : 0;
 
 		SOY2::import("site_include.plugin.multi_uploader.component.MultiUploaderFormComponent");
 		return MultiUploaderFormComponent::buildForm($entryId);

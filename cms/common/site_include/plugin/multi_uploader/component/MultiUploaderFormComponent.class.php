@@ -2,7 +2,7 @@
 
 class MultiUploaderFormComponent {
 
-	public static function buildForm($entryId){
+	public static function buildForm(int $entryId){
 		$html = array();
 
 		$html[] = "<script>";
@@ -19,9 +19,9 @@ class MultiUploaderFormComponent {
 		$html[] = "</div>";
 		$html[] = "</div>";
 
-		$images = MultiUploaderUtil::getImagePathes($entryId);
-		$alts = MultiUploaderUtil::getAltList($entryId);
+		$images = (is_numeric($entryId) && $entryId > 0) ? MultiUploaderUtil::getImagePathes($entryId) : array();
 		if(is_array($images) && count($images)){
+			$alts = MultiUploaderUtil::getAltList($entryId);
 			$html[] = "<table class=\"table table-striped\" style=\"width:600px;\">";
 			$html[] = "<thead>";
 			$html[] = "<tr><th>&nbsp;</th><th class=\"text-center\">並び順</th><th>&nbsp;</th></tr>";
