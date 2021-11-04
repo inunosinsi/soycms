@@ -10,7 +10,7 @@
 <h3 class="mt-3">im.phpを利用する場合</h3>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
 &lt;!-- p_block:id="multi_uploader_image_list" --&gt;
-&lt;img src="/<!-- soy:id="site_id" /-->/im.php?src=&lt;!-- cms:id="image_path" /--&gt;&width=150"&gt;
+&lt;img src="/<!-- soy:id="site_id" /-->/im.php?src=&lt;!-- cms:id="image_path" /--&gt;&width=150" alt="&lt;!-- cms:id="image_alt" /--&gt;"&gt;
 &lt;!-- /p_block:id="multi_uploader_image_list" --&gt;
 </pre>
 <div style="margin:5px 0 0 35px;">※im.phpに関しては<a href="https://saitodev.co/article/529" target="_blank" rel="noopener">SOY CMSで表示直前で画像のリサイズ表示を行う - saitodev.co</a>をご覧ください。</div>
@@ -33,6 +33,11 @@
 			<td>image_path</td>
 			<td>すべて</td>
 			<td>画像のパスを出力します。</td>
+		</tr>
+		<tr>
+			<td>image_alt</td>
+			<td>すべて</td>
+			<td>画像のalt属性の値を出力します。</td>
 		</tr>
 		<tr>
 			<td>image_link</td>

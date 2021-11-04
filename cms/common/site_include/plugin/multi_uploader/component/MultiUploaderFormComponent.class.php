@@ -12,30 +12,39 @@ class MultiUploaderFormComponent {
 		$html[] = "</script>";
 
 		$html[] = "<div class=\"form-group\">";
-		$html[] = "<label>画像アップローダ</label><br>";
-		$html[] = "<input type=\"text\" class=\"custom_field_input\" style=\"width:50%\" id=\"multi_uploader\" name=\"" . MultiUploaderUtil::FIELD_ID . "\" value=\"\" readonly=\"readonly\"> ";
+		$html[] = "<label>画像アップローダ</label>";
+		$html[] = "<div class=\"form-inline\">";
+		$html[] = "<input type=\"text\" class=\"custom_field_input form-control\" style=\"width:50%\" id=\"multi_uploader\" name=\"" . MultiUploaderUtil::FIELD_ID . "\" value=\"\" readonly=\"readonly\"> ";
 		$html[] = "<button type=\"button\" class=\"btn btn-default\" onclick=\"open_multi_uploader_filemanager($('#multi_uploader'));\" style=\"margin-right:10px;\">ファイルを指定する</button>";
+		$html[] = "</div>";
 		$html[] = "</div>";
 
 		$images = MultiUploaderUtil::getImagePathes($entryId);
+		$alts = MultiUploaderUtil::getAltList($entryId);
 		if(is_array($images) && count($images)){
-			$html[] = "<table class=\"table table-striped\" style=\"width:500px;\">";
+			$html[] = "<table class=\"table table-striped\" style=\"width:600px;\">";
 			$html[] = "<thead>";
 			$html[] = "<tr><th>&nbsp;</th><th class=\"text-center\">並び順</th><th>&nbsp;</th></tr>";
 			$html[] = "</thead>";
 			$html[] = "<tbody>";
 			foreach($images as $idx => $img){
 				$hash = MultiUploaderUtil::path2Hash($img);	//並べ替えや削除の時に使う
+				$alt = (isset($alts[$hash])) ? htmlspecialchars($alts[$hash], ENT_QUOTES, "UTF-8") : "";
 
 				$html[] = "<tr>";
-				$html[] = "<td class=\"text-center\">";
-				$html[] = "<img src=\"/" . UserInfoUtil::getSite()->getSiteId() . "/im.php?src=" . $img . "&width=150\">";
-				$html[] = "</td>";
-				$html[] = "<td class=\"text-center\"><input type=\"number\" name=\"" . MultiUploaderUtil::FIELD_ID . "_sort[" . $hash . "]\" style=\"width:80px;\" value=\"\"></td>";
-				$html[] = "<td class=\"text-center\">";
-				$html[] = "<a href=\"javascript:void(0);\" class=\"btn btn-warning\" id=\"multi_uploader_delete_btn_" . $hash . "\" onclick=\"toggle_multi_uploader_delete('" . $hash . "');\">削除</a>";
-				$html[] = "<input type=\"hidden\" name=\"" . MultiUploaderUtil::FIELD_ID . "_delete[" . $hash . "]\" id=\"multi_uploader_delete_" . $hash . "\" value=\"0\">";
-				$html[] = "</td>";
+				$html[] = "	<td class=\"text-center\" rowspan=\"2\">";
+				$html[] = "		<img src=\"/" . UserInfoUtil::getSite()->getSiteId() . "/im.php?src=" . $img . "&width=150\">";
+				$html[] = "	</td>";
+				$html[] = "	<td class=\"text-center\"><input type=\"number\" class=\"form-control\" name=\"" . MultiUploaderUtil::FIELD_ID . "_sort[" . $hash . "]\" style=\"width:80px;\" value=\"\"></td>";
+				$html[] = "	<td class=\"text-center\">";
+				$html[] = "		<a href=\"javascript:void(0);\" class=\"btn btn-warning\" id=\"multi_uploader_delete_btn_" . $hash . "\" onclick=\"toggle_multi_uploader_delete('" . $hash . "');\">削除</a>";
+				$html[] = "		<input type=\"hidden\" name=\"" . MultiUploaderUtil::FIELD_ID . "_delete[" . $hash . "]\" id=\"multi_uploader_delete_" . $hash . "\" value=\"0\">";
+				$html[] = "	</td>";
+				$html[] = "</tr>";
+				$html[] = "<tr>";
+				$html[] = "	<td colspan=\"2\" class=\"form-inline\">";
+				$html[] = "		alt：<input type=\"text\" class=\"form-control\" name=\"" . MultiUploaderUtil::FIELD_ID . "_alt[" . $hash . "]\" value=\"" . $alt . "\">";
+				$html[] = "	</td>";
 				$html[] = "</tr>";
 			}
 			$html[] = "</tbody>";

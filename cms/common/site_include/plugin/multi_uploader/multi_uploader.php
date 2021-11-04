@@ -16,7 +16,7 @@ class MultiUploaderPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3150",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.5"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -39,11 +39,13 @@ class MultiUploaderPlugin{
 
 	function onEntryOutput($arg){
 		$htmlObj = &$arg["SOY2HTMLObject"];
+		$entryId = (isset($arg["entryId"]) && is_numeric($arg["entryId"])) ? (int)$arg["entryId"] : 0;
 
-		$images = MultiUploaderUtil::getImagePathes($arg["entryId"]);
+		$images = ($entryId > 0) ? MultiUploaderUtil::getImagePathes($entryId) : array();
 		$htmlObj->createAdd("multi_uploader_image_list", "MultiUploaderImageListComponent", array(
 			"soy2prefix" => "p_block",
-			"list" => (count($images)) ? $images : array()
+			"list" => (count($images)) ? $images : array(),
+			"alts" => ($entryId > 0) ? MultiUploaderUtil::getAltList($entryId) : array()
 		));
 	}
 
@@ -92,7 +94,7 @@ class MultiUploaderPlugin{
 
 			//ソートする
 			if($doSort){
-				krsort($sortList);
+				asort($sortList);
 				$images = MultiUploaderUtil::getImagePathes($entry->getId());
 				$resultList = array();	//結果リスト
 				foreach($sortList as $sortHash => $s){
@@ -105,6 +107,14 @@ class MultiUploaderPlugin{
 				}
 
 				MultiUploaderUtil::update($entry->getId(), array_unique($resultList));
+			}
+		}
+
+		//alt
+		if(isset($_POST[MultiUploaderUtil::FIELD_ID . "_alt"])){
+			foreach($_POST[MultiUploaderUtil::FIELD_ID . "_alt"] as $hash => $alt){
+				$alt = trim($alt);
+				MultiUploaderUtil::updateAlt($entry->getId(), $hash, $alt);
 			}
 		}
 	}
