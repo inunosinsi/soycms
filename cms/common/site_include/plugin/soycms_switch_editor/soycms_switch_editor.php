@@ -17,7 +17,7 @@ class SOYCMS_SwitchEditor{
 			"author"=>"株式会社Brassica",
 			"url"=>"https://brassica.jp/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"2.2"
+			"version"=>"2.2.1"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
