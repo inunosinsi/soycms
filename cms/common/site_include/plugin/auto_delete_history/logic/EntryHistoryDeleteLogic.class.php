@@ -46,4 +46,22 @@ class EntryHistoryDeleteLogic extends SOY2LogicBase{
 			if($try++ > 5) break;
 		}
 	}
+
+	//重複する履歴の削除
+	function deleteNoChangeHistory(){
+		$dao = new SOY2DAO();
+
+		try{
+			$dao->executeUpdateQuery(
+				"DELETE FROM EntryHistory ".
+				"WHERE change_title = 0 ".
+				"AND change_content = 0 ".
+				"AND change_more = 0 ".
+				"AND change_additional = 0 ".
+				"AND change_is_published = 0"
+			);
+		}catch(Exception $e){
+			//
+		}
+	}
 }

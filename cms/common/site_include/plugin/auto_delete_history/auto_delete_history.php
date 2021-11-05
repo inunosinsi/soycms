@@ -23,7 +23,7 @@ class AutoDeleteHistoryPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"http://saitodev.co/",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.1"
+			"version"=>"0.5"
 		));
 
 		if(CMSPlugin::activeCheck(self::PLUGIN_ID)){
@@ -46,6 +46,9 @@ class AutoDeleteHistoryPlugin{
 		//記事の編集履歴
 		if($this->isEntryDelete == AutoDeleteHistoryUtil::ACTIVE){
 			$logic = SOY2Logic::createInstance("site_include.plugin.auto_delete_history.logic.EntryHistoryDeleteLogic");
+
+			//何も変更していない履歴を削除
+			$logic->deleteNoChangeHistory();
 
 			//日による履歴の自動実行の方が高速で行われるので先に行う
 			if((int)$this->entryCdate > 0){
