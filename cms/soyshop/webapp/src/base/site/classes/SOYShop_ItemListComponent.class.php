@@ -31,7 +31,7 @@ class SOYShop_ItemListComponent extends HTMLList{
 		soyshop_output_item($this, $entity, $this->obj);
 
 		//非公開は表示しない。ただし、商品詳細確認モードがtrueの場合は表示する。
-		return $this->getIsDisplay($entity);
+		return self::_isDisplay($entity);
 	}
 
 	/**
@@ -39,16 +39,15 @@ class SOYShop_ItemListComponent extends HTMLList{
 	 * @param object SOYShop_Item
 	 * @return boolean
 	 */
-	function getIsDisplay($entity){
+	private function _isDisplay(SOYShop_Item $item){
 		//商品詳細確認モード forAdminOnlyがboolean値の場合
 		if(isset($this->forAdminOnly) && is_bool($this->forAdminOnly)){
-			$isDisplay = $this->forAdminOnly;
+			return $this->forAdminOnly;
 
 		//通常モード forAdminOnlyがnullの場合
 		}else{
-			$isDisplay = ($entity->isPublished());
+			return ($item->isPublished());
 		}
-		return $isDisplay;
 	}
 
 	function getObj(){

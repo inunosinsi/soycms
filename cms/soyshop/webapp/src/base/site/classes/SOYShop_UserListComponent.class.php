@@ -30,7 +30,7 @@ class SOYShop_UserListComponent extends HTMLList{
 		soyshop_output_user($this, $entity, $this->obj);
 
 		//非公開は表示しない。ただし、商品詳細確認モードがtrueの場合は表示する。
-		return $this->getIsDisplay($entity);
+		return self::_isDisplay($entity);
 	}
 
 	/**
@@ -38,9 +38,9 @@ class SOYShop_UserListComponent extends HTMLList{
 	 * @param object SOYShop_Item
 	 * @return boolean
 	 */
-	function getIsDisplay($entity){
-		if($entity->getIsDisabled() == SOYShop_User::USER_IS_DISABLED) return false;
-		if($entity->getIsPublish() != SOYShop_User::USER_IS_PUBLISH) return false;
+	private function _isDisplay(SOYShop_User $user){
+		if($user->getIsDisabled() == SOYShop_User::USER_IS_DISABLED) return false;
+		if($user->getIsPublish() != SOYShop_User::USER_IS_PUBLISH) return false;
 		return true;
 	}
 
@@ -55,4 +55,3 @@ class SOYShop_UserListComponent extends HTMLList{
 		return $this->pageClassName;
 	}
 }
-?>

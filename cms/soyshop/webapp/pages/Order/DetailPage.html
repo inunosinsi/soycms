@@ -113,21 +113,21 @@
 						<table class="table table-striped">
 							<caption>注文の内訳&nbsp;<a href="javascript:void(0);" soy:id="order_link" class="btn btn-primary btn-sm">並び順の変更</a></caption>
 							<thead>
-								<tr class="text-center">
-									<th class="col-lg-1">確認</th>
+								<tr>
+									<th class="col-lg-1 text-center">確認</th>
 									<th>商品コード</th>
 									<th>商品名</th>
-									<th>単価<!-- soy:id="is_purchase_price" -->(仕入値)<!-- /soy:id="is_purchase_price" --></th>
-									<th>注文数</th>
-									<th>代金小計</th>
+									<th class="text-right">単価<!-- soy:id="is_purchase_price" -->(仕入値)<!-- /soy:id="is_purchase_price" --></th>
+									<th class="text-right">注文数</th>
+									<th class="text-right">代金小計</th>
 								</tr>
 							</thead>
 
 							<tbody>
 								<!--  soy:id="item_list" -->
 								<tr soy:id="is_confirm_tr">
-									<td class="col-lg-1"><input type="checkbox" soy:id="is_confirm"></td>
-									<td class="text-center"><a soy:id="item_id">11</a></td>
+									<td class="col-lg-1 text-center"><input type="checkbox" soy:id="is_confirm"></td>
+									<td><a soy:id="item_id">11</a></td>
 									<td>
 										<div class="form-group">
 											<!-- soy:id="item_name" -->豆腐<!-- /soy:id="item_name" -->
