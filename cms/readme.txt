@@ -25,6 +25,7 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 	 - 標準配送モジュールで配送料無料設定に例外の設定を追加
 	 - 商品名検索入力補完プラグイン
 	 - 商品設定で商品詳細ページのIDなしの項目を追加
+	 - B2CSVプラグインで依頼主の内容を注文の請求者の情報に切り替えるチェックボックスを追加
 	○変更
 	 - Google Sign-In for WebsitesプラグインからSign In With Googleプラグインに変更
 	○修正
