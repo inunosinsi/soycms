@@ -201,18 +201,41 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	                    if(strlen($field["option"])){
 	                        $vals = explode(",", $usfValue);
 	                        $opts = explode("\n", $field["option"]);
-	                        foreach($opts as $i => $opt){
-	                            $opt = trim($opt);
-	                            $pageObj->addModel($key . "_"  . $i . "_visible", array(
-	                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-	                                "visible" => (in_array($opt, $vals))
-	                            ));
+							if(count($opts) > 1){	//optsが複数の場合は、usf:id="***_i(整数)_visible"にする
+								foreach($opts as $i => $opt){
+		                            $opt = trim($opt);
+		                            $pageObj->addModel($key . "_"  . $i . "_visible", array(
+		                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+		                                "visible" => (in_array($opt, $vals))
+		                            ));
 
-	                            $pageObj->addLabel($key . "_" . $i, array(
-	                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
-	                                "text" => $opt
-	                            ));
-	                        }
+		                            $pageObj->addLabel($key . "_" . $i, array(
+		                                "soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+		                                "text" => $opt
+		                            ));
+		                        }
+							}else{	//optsが一つの場合はusf:id="***_visible"にする。互換性のため、usf:id="***_0_visible"も残す
+								$opt = (isset($opts[0])) ? trim($opts[0]) : "";
+								$pageObj->addModel($key . "_visible", array(
+									"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+									"visible" => (in_array($opt, $vals))
+								));
+
+								$pageObj->addLabel($key, array(
+									"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+									"text" => $opt
+								));
+
+								$pageObj->addModel($key . "_0_visible", array(
+									"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+									"visible" => (in_array($opt, $vals))
+								));
+
+								$pageObj->addLabel($key . "_0", array(
+									"soy2prefix" => UserCustomSearchFieldUtil::PLUGIN_PREFIX,
+									"text" => $opt
+								));
+							}
 	                    }
 	                    break;
 					default:

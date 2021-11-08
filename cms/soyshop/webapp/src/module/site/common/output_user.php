@@ -134,7 +134,7 @@ function soyshop_output_user($htmlObj, SOYShop_User $user, $obj=null){
 		"html" =>  nl2br($user->getMemo()),
 	));
 
-	$htmlObj->addModel("image_visilbe", array(
+	$htmlObj->addModel("image_visible", array(
 		"soy2prefix" => SOYSHOP_SITE_PREFIX,
 		"visible" => (strlen($user->getImagePath()) > 0),
 	));

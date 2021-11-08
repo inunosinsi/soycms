@@ -134,18 +134,41 @@ class CustomSearchField extends SOYShopItemCustomFieldBase{
                     if(isset($field["option"][SOYSHOP_PUBLISH_LANGUAGE]) && strlen($field["option"][SOYSHOP_PUBLISH_LANGUAGE])){
                         $vals = explode(",", $csfValue);
                         $opts = explode("\n", $field["option"][SOYSHOP_PUBLISH_LANGUAGE]);
-                        foreach($opts as $i => $opt){
-                            $opt = trim($opt);
-                            $htmlObj->addModel($key . "_"  . $i . "_visible", array(
-                                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                                "visible" => (in_array($opt, $vals))
-                            ));
+						if(count($opts) > 1){	//optsが複数の場合は、csf:id="***_i(整数)_visible"にする
+							foreach($opts as $i => $opt){
+								$opt = trim($opt);
+								$htmlObj->addModel($key . "_"  . $i . "_visible", array(
+									"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+									"visible" => (in_array($opt, $vals))
+								));
 
-                            $htmlObj->addLabel($key . "_" . $i, array(
-                                "soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
-                                "text" => $opt
-                            ));
-                        }
+								$htmlObj->addLabel($key . "_" . $i, array(
+									"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+									"text" => $opt
+								));
+							}
+						}else{	//optsが一つの場合はcsf:id="***_visible"にする。互換性のため、csf:id="***_0_visible"も残す
+							$opt = (isset($opts[0])) ? trim($opts[0]) : "";
+							$htmlObj->addModel($key . "_visible", array(
+								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+								"visible" => (in_array($opt, $vals))
+							));
+
+							$htmlObj->addLabel($key, array(
+								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+								"text" => $opt
+							));
+
+							$htmlObj->addModel($key . "_0_visible", array(
+								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+								"visible" => (in_array($opt, $vals))
+							));
+
+							$htmlObj->addLabel($key . "_0", array(
+								"soy2prefix" => CustomSearchFieldUtil::PLUGIN_PREFIX,
+								"text" => $opt
+							));
+						}
                     }
                     break;
             }
