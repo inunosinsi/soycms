@@ -125,16 +125,42 @@ class B2OutputCSV{
 		$csv[] = B2OrderCsvUtil::convertSpace($address["name"]);				//お届け先名
 		$csv[] = B2OrderCsvUtil::convertSpace($customerReading);				//お届け先名略称カナ
 		$csv[] = "";															//敬称
+
+		//依頼主の情報を注文の請求者の情報に切り替える
+		if(isset($_POST["change_client_claimant"]) && (int)$_POST["change_client_claimant"] === 1){
+			$claimed = $order->getClaimedAddressArray();
+			$pref = (is_numeric($claimed["area"]) && isset($this->prefecture[$claimed["area"]])) ? $this->prefecture[$claimed["area"]] : "";
+			$clientArr = array(
+				"tel" => $claimed["telephoneNumber"],
+				"zip" => $claimed["zipCode"],
+				"addr" => $pref . $claimed["address1"] . $claimed["address2"],
+				"bldg" => $claimed["address3"],
+				"name" => $claimed["name"],
+				"reading" => $claimed["reading"]
+			);
+		}else{
+			$clientArr = array(
+				"tel" => $company["telephone"],
+				"zip" => $company["address1"],
+				"addr" => $company["address2"],
+				"bldg" => $company["building"],
+				"name" => $company["shop_name"],
+				"reading" => ""
+			);
+		}
+
+
+
 		$csv[] = "";															//ご依頼主コード
-		$csv[] = $company["telephone"];											//ご依頼主電話番号
+		$csv[] = $clientArr["tel"];												//ご依頼主電話番号
 
 		$csv[] = "";															//ご依頼主電話番号枝番
-		$csv[] = $company["address1"];											//ご依頼主郵便番号
-		$csv[] = $company["address2"];											//ご依頼主住所
-		$csv[] = $company["building"];											//ご依頼主建物名
-		$csv[] = $company["shop_name"];											//ご依頼主名
+		$csv[] = $clientArr["zip"];												//ご依頼主郵便番号
+		$csv[] = $clientArr["addr"];											//ご依頼主住所
+		$csv[] = $clientArr["bldg"];											//ご依頼主建物名
+		$csv[] = $clientArr["name"];											//ご依頼主名
 
-		$csv[] = "";															//ご依頼主名略称カナ
+		$csv[] = $clientArr["reading"];											//ご依頼主名略称カナ
 		$csv[] = "";															//品名コード１
 		$csv[] = $config["name"];												//品名１
 		$csv[] = "";															//品名コード２
