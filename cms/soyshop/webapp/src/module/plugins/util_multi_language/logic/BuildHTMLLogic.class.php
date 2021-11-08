@@ -11,11 +11,11 @@ class BuildHTMLLogic extends SOY2LogicBase{
 
 		$htmls = array();
 
-		$htmls[] = "<h1>" . $languageName . "版用</h1>";
+		$htmls[] = "<div class=\"alert alert-info\">" . $languageName . "版用</div>";
 
-		$htmls[] = "<dl>";
-		$htmls[] = "<dt>自動送信設定</dt>";
-		$htmls[] = "<dd>";
+		$htmls[] = "<div class=\"form-group\">";
+		$htmls[] = "	<label>自動送信設定</label>";
+		$htmls[] = "	<div class=\"form-inline\">";
 		if(!isset($config["active"]) || $config["active"] == 1){
 			$htmls[] = "<input name=\"Config[" . $lang . "][active]\" value=\"1\" type=\"radio\" id=\"active_is_" . $lang . "\" checked=\"checked\"><label for=\"active_is_" . $lang . "\">送信する</label>";
 			$htmls[] = "<input name=\"Config[" . $lang . "][active]\" value=\"0\" type=\"radio\" id=\"active_no_" . $lang . "\"><label for=\"active_no_" . $lang . "\">送信しない</label>";
@@ -23,16 +23,19 @@ class BuildHTMLLogic extends SOY2LogicBase{
 			$htmls[] = "<input name=\"Config[" . $lang . "][active]\" value=\"1\" type=\"radio\" id=\"active_is_" . $lang . "\"><label for=\"active_is_" . $lang . "\">送信する</label>";
 			$htmls[] = "<input name=\"Config[" . $lang . "][active]\" value=\"0\" type=\"radio\" id=\"active_no_" . $lang . "\" checked=\"checked\"><label for=\"active_no_" . $lang . "\">送信しない</label>";
 		}
+		$htmls[] = "	</div>";
+		$htmls[] = "</div>";
 
-		$htmls[] = "<dt>メール本文出力設定</dt>";
-		$htmls[] = "<dd>";
+		$htmls[] = "<div class=\"form-group\">";
+		$htmls[] = "	<label>メール本文出力設定</label><br>";
 
 		$txt = "システム(購入状況等)から出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する";
 		if(isset($config["output"]) && $config["output"] == 1){
-			$htmls[] = "<label><input name=\"Config[" . $lang . "][output]\" value=\"1\" type=\"checkbox\" checked=\"checked\">" . $txt . "</label><br>";
+			$htmls[] = "<label><input name=\"Config[" . $lang . "][output]\" value=\"1\" type=\"checkbox\" checked=\"checked\">" . $txt . "</label>";
 		}else{
-			$htmls[] = "<label><input name=\"Config[" . $lang . "][output]\" value=\"1\" type=\"checkbox\">" . $txt . "</label><br>";
+			$htmls[] = "<label><input name=\"Config[" . $lang . "][output]\" value=\"1\" type=\"checkbox\">" . $txt . "</label>";
 		}
+		$htmls[] = "<br>";
 
 		$txt = "プラグイン(配送方法等)から出力される注文詳細等のメール本文をヘッダーとフッター間に挿入する";
 		if(isset($config["plugin"]) && $config["plugin"] == 1){
@@ -40,17 +43,16 @@ class BuildHTMLLogic extends SOY2LogicBase{
 		}else{
 			$htmls[] = "<label><input name=\"Config[" . $lang . "][plugin]\" value=\"1\" type=\"checkbox\">" . $txt . "</label>";
 		}
-		$html[] = "</dd>";
+		$htmls[] = "</div>";
 
 		$title = (isset($config["title"])) ? $config["title"] : "";
 
-		$htmls[] = "</dd>";
-		$htmls[] = "<dt>件名</dt>";
-		$htmls[] = "<dd>";
-		$htmls[] = "<input name=\"Config[" . $lang . "][title]\" value=\"" . htmlspecialchars($title,ENT_QUOTES,"UTF-8") . "\" class=\"title\">";
-		$htmls[] = "</dd>";
-		$htmls[] = "</dl>";
+		$htmls[] = "<div class=\"form-group\">";
+		$htmls[] = "	<label>件名</label>";
+		$htmls[] = "	<input name=\"Config[" . $lang . "][title]\" value=\"" . htmlspecialchars($title,ENT_QUOTES,"UTF-8") . "\" class=\"form-control\">";
+		$htmls[] = "</div>";
 
+		$htmls[] = "<div class=\"table-responsive\">";
 		$htmls[] = "<table class=\"table table-striped\" style=\"table-layout:auto;\">";
 		$htmls[] = "<caption>本文</caption>";
 
@@ -63,7 +65,7 @@ class BuildHTMLLogic extends SOY2LogicBase{
 			$htmls[] = "</tr>";
 			$htmls[] = "<tr class=\"last_row\">";
 			$htmls[] = "<td>";
-			$htmls[] = "<textarea name=\"Config[" . $lang . "][" . $pos . "]\" id=\"" . $lang . "_" . $pos . "\" class=\"editor\">" . htmlspecialchars($content,ENT_QUOTES,"UTF-8") . "</textarea>";
+			$htmls[] = "<textarea name=\"Config[" . $lang . "][" . $pos . "]\" id=\"" . $lang . "_" . $pos . "\" class=\"editor form-control\">" . htmlspecialchars($content,ENT_QUOTES,"UTF-8") . "</textarea>";
 			$htmls[] = "</td>";
 			$htmls[] = "<td class=\"mail_replace_word_panel\">";
 
@@ -73,6 +75,7 @@ class BuildHTMLLogic extends SOY2LogicBase{
 			$htmls[] = "</tr>";
 		}
 		$htmls[] = "</table>";
+		$htmls[] = "</div>";
 
 		return implode("\n", $htmls);
 	}
@@ -111,4 +114,3 @@ class BuildHTMLLogic extends SOY2LogicBase{
 		return implode("\n", $htmls);
 	}
 }
-?>
