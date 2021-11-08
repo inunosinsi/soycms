@@ -31,7 +31,7 @@ class ReserveCalendarOrderComplete extends SOYShopOrderComplete{
 			try{
 				$dao->update($order);
 			}catch(Exception $e){
-				var_dump($e);
+				//var_dump($e);
 			}
 		}
 	}

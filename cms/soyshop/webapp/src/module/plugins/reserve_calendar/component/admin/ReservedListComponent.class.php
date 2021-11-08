@@ -30,12 +30,13 @@ class ReservedListComponent extends HTMLList{
 			"text" => (isset($entity["telephone_number"])) ? $entity["telephone_number"] : ""
 		));
 
+		$on = self::_checkCancelModeTmpWrapper();
 		$this->addModel("is_cancel_button", array(
-			"visible" => self::_checkCancelMode()
+			"visible" => $on
 		));
 
 		$this->addLink("cancel_link", array(
-			"link" => (!$this->tempMode && isset($entity["id"])) ? SOY2PageController::createLink("Extension.Detail.reserve_calendar." . $this->scheduleId . "?cancel=" . $entity["id"]) : "",
+			"link" => ($on && isset($entity["id"])) ? SOY2PageController::createLink("Extension.Detail.reserve_calendar." . $this->scheduleId . "?cancel=" . $entity["id"]) : "",
 			"onclick" => "return confirm('キャンセルしますか？');"
 		));
 
@@ -45,14 +46,31 @@ class ReservedListComponent extends HTMLList{
 		));
 	}
 
+	//キャンセル許可に対して仮登録の予約も加味する
+	private function _checkCancelModeTmpWrapper(){
+		$on = self::_checkCancelMode();
+		if(!$on || !$this->tempMode) return $on;	//仮登録の予約一覧ではない場合は結果をそのまま返す onがfalseの場合も返す
+
+		$cnf = self::_config();
+		return (isset($cnf["tmp_cancel_button"]) && (int)$cnf["tmp_cancel_button"] === ReserveCalendarUtil::RESERVE_DISPLAY_CANCEL_BUTTON);
+	}
+
 	private function _checkCancelMode(){
 		static $on;
 		if(is_null($on)){
-			SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
-			$cnf = ReserveCalendarUtil::getConfig();
+			$cnf = self::_config();
 			$on = (isset($cnf["cancel_button"]) && (int)$cnf["cancel_button"] === ReserveCalendarUtil::RESERVE_DISPLAY_CANCEL_BUTTON);
 		}
 		return $on;
+	}
+
+	private function _config(){
+		static $cnf;
+		if(is_null($cnf)){
+			SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+			$cnf = ReserveCalendarUtil::getConfig();
+		}
+		return $cnf;
 	}
 
 	function setScheduleId($scheduleId){

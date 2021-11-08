@@ -18,7 +18,6 @@ class ReserveCalendarUtil{
 	const RESERVE_LIMIT_IGNORE = 1;	//管理画面で残席数以上の予約を行うことが出来る
 	const RESERVE_DISPLAY_CANCEL_BUTTON = 1;	//管理画面の予約詳細でキャンセルボタンを表示する
 
-
 /* sync customfield config */
 	const DELIVERY_TWO_DAYS = "1～2営業日";
 	const DELIVERY_FOUR_DAYS = "3～4営業日";
@@ -47,7 +46,8 @@ class ReserveCalendarUtil{
 			"only" => self::NO_ONLY,
 			"show_price" => self::NO_SHOW,
 			"ignore" => self::RESERVE_LIMIT,
-			"cancel_button" => self::RESERVE_DISPLAY_CANCEL_BUTTON
+			"cancel_button" => self::RESERVE_DISPLAY_CANCEL_BUTTON,
+			"tmp_cancel_button" => self::NO_SHOW
 		));
 
 		if(!isset($cnf["send_at_time_tmp"])) $cnf["send_at_time_tmp"] = self::IS_SEND;

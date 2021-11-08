@@ -78,6 +78,13 @@ class ReserveCalendarConfigFormPage extends WebPage{
 			"label" => "キャンセルボタンを表示する"
 		));
 
+		$this->addCheckBox("tmp_cancel_button", array(
+			"name" => "Config[tmp_cancel_button]",
+			"value" => ReserveCalendarUtil::RESERVE_DISPLAY_CANCEL_BUTTON,
+			"selected" => (isset($config["tmp_cancel_button"]) && (int)$config["tmp_cancel_button"] === ReserveCalendarUtil::RESERVE_DISPLAY_CANCEL_BUTTON),
+			"label" => "仮登録の予約でもキャンセルボタンを表示する"
+		));
+
 		DisplayPlugin::toggle("pre_register_annotation", !SOYShopPluginUtil::checkIsActive("change_order_status_invalid"));
 
 		//

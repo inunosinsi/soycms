@@ -20,7 +20,7 @@ class ReserveCalendarItemOrder extends SOYShopItemOrderBase{
 		try{
 			$resDao->update($res);
 		}catch(Exception $e){
-			var_dump($e);
+			//var_dump($e);
 		}
 	}
 }

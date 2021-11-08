@@ -412,7 +412,6 @@ abstract class SOYShopReserveCalendar_ReserveDAO extends SOY2DAO {
 			try{
 				$res = $this->executeQuery("SELECT id FROM soyshop_reserve_calendar_reserve WHERE schedule_id = :scheduleId AND order_id = :orderId AND reserve_date = :reserveDate LIMIT 1;", array(":scheduleId" => $binds[":scheduleId"], ":orderId" => $binds[":orderId"], ":reserveDate" => $binds[":reserveDate"] + $i));
 			}catch(Exception $e){
-				var_dump($e);
 				$res = array();
 			}
 
