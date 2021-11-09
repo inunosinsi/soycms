@@ -2,9 +2,9 @@
 
 class GetTemplateAjaxPage extends CMSWebPageBase{
 
-	function GetTemplateAjaxPage() {
-    	$result = SOY2ActionFactory::createInstance("EntryTemplate.TemplateDetailAction")->run();
-    	$template = $result->getAttribute("entity");
+	function __construct() {
+		$result = SOY2ActionFactory::createInstance("EntryTemplate.TemplateDetailAction")->run();
+		$template = $result->getAttribute("entity");
     	if(is_null($template)){
     		echo "";
     	}else{
@@ -14,8 +14,7 @@ class GetTemplateAjaxPage extends CMSWebPageBase{
 						"templates"=>$template->getTemplates())
 					);
     	}
-    	
+
     	exit;
     }
 }
-?>

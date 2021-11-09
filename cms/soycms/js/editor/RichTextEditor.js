@@ -43,7 +43,7 @@ tinymce.init({
 
 function applyTemplate(){
 	var template = $("#list_templates").val();
-
+	
 	if(template.length == 0){
 		return;
 	}

@@ -58,23 +58,23 @@ class DetailPage extends CMSWebPageBase{
 		));
 		$temp = $template->getTemplates();
 		$this->createAdd("content","HTMLTextArea",array(
-			"text"=>$temp['content'],
+			"text" => (isset($temp['content'])) ? $temp['content'] : "",
 			"name"=>"templates[content]"
 		));
 		$this->createAdd("more","HTMLTextArea",array(
-			"text"=>$temp['more'],
+			"text" => (isset($temp['more'])) ? $temp['more'] : "",
 			"name"=>"templates[more]"
 		));
 		$this->createAdd("style","HTMLTextArea",array(
-			"text"=>$temp['style'],
-			"name"=>"templates[style]"
+			"text" => (isset($temp['style'])) ? $temp['style'] : "",
+			"name" => "templates[style]"
 		));
 
 		$this->createAdd("label_list","HTMLSelect",array(
 			"name" => "templates[labelId]",
 			"options" => $this->getLabelList(),
 			"property" => "caption",
-			"selected" => @$temp["labelId"]
+			"selected" => (isset($temp["labelId"])) ? $temp["labelId"] : false
 		));
 
 		$this->createAdd("submit_button","HTMLInput",array(

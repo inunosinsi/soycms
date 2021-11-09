@@ -1,16 +1,15 @@
 <?php
 class RemovePage extends CMSWebPageBase{
 
-	function __construct($arg) {
+	function __construct($args) {
+		if(!isset($args[0]) || !is_numeric($args[0])){
+			$this->jump("EntryTemplate");
+			exit;
+		}
+
 		if(soy2_check_token()){
 			parent::__construct();
-			$id = @$arg[0];
-			if(is_null($id)){
-				$this->jump("EntryTemplate");
-				exit;
-			}
-			$result = SOY2ActionFactory::createInstance("EntryTemplate.TemplateRemoveAction",array("id"=>$id))->run();
-			if($result->success()){
+			if(SOY2ActionFactory::createInstance("EntryTemplate.TemplateRemoveAction",array("id"=>(int)$args[0]))->run()->success()){
 				$this->addMessage("ENTRY_TEMPLATE_REMOVE_SUCCESS");
 			}else{
 				$this->addMessage("ENTRY_TEMPLATE_REMOVE_FAILED");
