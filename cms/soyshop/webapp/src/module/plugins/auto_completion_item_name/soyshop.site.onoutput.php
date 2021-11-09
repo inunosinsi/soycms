@@ -31,6 +31,14 @@ class AutoCompletionOnOutput extends SOYShopSiteOnOutputAction{
 						continue;
 					}
 
+					//jqueryの古い書き方
+					if(!$arr["jquery"] && is_numeric(strpos($line, "jquery"))){
+						//jquery-の後に数字の判定を入れることでjquery-uiではないようにできる
+						preg_match('/jquery-\d*-.*\.js/', $line, $tmp);
+						if(isset($tmp[0])) $arr["jquery"] = true;
+						continue;
+					}
+
 					foreach(array("js", "css") as $t){
 						if(!$arr["jquery-ui-" . $t] && is_numeric(strpos($line, "jquery-ui.min." . $t)) || is_numeric(strpos($line, "jquery-ui." . $t))){
 							$arr["jquery-ui-" . $t] = true;
