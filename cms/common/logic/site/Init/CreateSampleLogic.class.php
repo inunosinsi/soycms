@@ -11,18 +11,18 @@ class CreateSampleLogic extends SOY2LogicBase {
 	function createSampleData() {
     	SOY2::import("domain.cms.Page");
     	SOY2::import("domain.cms.Block");
-    	
+
     	$pagelogic  = SOY2Logic::createInstance("logic.site.Page.CreatePageLogic");
 		$entrylogic = SOY2Logic::createInstance("logic.site.Entry.EntryLogic");
 		$labellogic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
 		$blocklogic = SOY2Logic::createInstance("logic.site.Block.BlockLogic");
-				
+
 		//Sample Block ID
 		$soyid = "omame_news";
 
 		// Upload sample template pack
     	$templatelogic = SOY2Logic::createInstance("logic.site.Template.TemplateLogic");
-    	
+
     	if((!defined("SOYCMS_LANGUAGE")||SOYCMS_LANGUAGE=="ja")){
 			$sampleTemplateFile="sampleomame.zip";
 			$id = "0_sampleomame_manifest";
@@ -34,10 +34,10 @@ class CreateSampleLogic extends SOY2LogicBase {
     		if(!file_exists(dirname(__FILE__)."/".$sampleTemplateFile)){
     			$sampleTemplateFile="sampleomame.zip";
     			$id = "0_sampleomame_manifest";
-  
+
     		}
-    	} 	
-    	   	
+    	}
+
    		$templatelogic->uploadTemplate("", dirname(__FILE__)."/".$sampleTemplateFile);
 
 		// Install sample template pack
@@ -46,7 +46,7 @@ class CreateSampleLogic extends SOY2LogicBase {
 		$filelist = $template->getFileList();
     	$templatelogic->installTemplate($id,array_keys($filelist));
 
-    	
+
     	// Setting of the templates
     	$subs = $template->getTemplate();
 		$tmp1 = array_shift($subs);
@@ -71,11 +71,11 @@ class CreateSampleLogic extends SOY2LogicBase {
 			$label->setCaption($caption);
 			$labelid = $labellogic->create($label);
 		}
-		
+
 		$dao = new SOY2DAO();
 		$dao->executeUpdateQuery("delete from Page where page_type != ".Page::PAGE_TYPE_ERROR,array());
-		
-		
+
+
 		// Create top page
     	$page = new Page();
     	$page->setTitle(CMSMessageManager::get("SOYCMS_SAMPLE_TITLE"));
@@ -92,24 +92,24 @@ class CreateSampleLogic extends SOY2LogicBase {
 
 		// Insert top page via DAO
 		$pageid = $pagelogic->getPageDAO()->insert($page);
-	
+
 		// Create company information page
     	$infopage = new Page();
     	$infopage->setTitle(CMSMessageManager::get("SOYCMS_SAMPLE_COMPANY_INFORMATION"));
 		$infopage->setIsPublished(Page::PAGE_ACTIVE);
 		$infopage->setUri("company_information");
 		$infopage->setPageType(Page::PAGE_TYPE_NORMAL);
-		
+
 		// Apply template pack to the webpage
     	$companyInfoTemplate = str_replace("@@TITLE@@",$infopage->getTitle(),$companyInfoTemplate);
 		$companyInfoTemplate = str_replace("@@ENCODING@@",$encoding,$companyInfoTemplate);
 		$infopage->setTemplate($companyInfoTemplate);
 		$infopage->setPageTitleFormat("%PAGE%");
-	
+
 		// Insert company info page via DAO
 		$infopageid = $pagelogic->getPageDAO()->insert($infopage);
-		
-	
+
+
 		// Create LabelBlock setting in these webpages
 		$block = new Block();
 		$block->setClass("LabeledBlockComponent");
@@ -118,13 +118,13 @@ class CreateSampleLogic extends SOY2LogicBase {
 		$component = $block->getBlockComponent();
 		$component->setLabelId($labelid);
 		$block->setObject($component);
-		
+
 		try{
 			$blockid = $blocklogic->create($block);
 		}catch(Exception $e){
 			//soyid "omame_news" is already set.
-		}				
-						
+		}
+
 		// Create sample entry
 		$entry = new Entry();
 		$entry->setTitle(CMSMessageManager::get("SOYCMS_SAMPLE_ENTRY_TITLE"));
@@ -133,12 +133,11 @@ class CreateSampleLogic extends SOY2LogicBase {
 		$entry->setOpenPeriodEnd(CMSUtil::encodeDate(null,false));
 		$entry->setOpenPeriodStart(CMSUtil::encodeDate(null,true));
 		$entryid = $entrylogic->create($entry);
-		
+
 		// Label sample entry
 		$entrylogic->setEntryLabel($entryid,$labelid);
-	
+
 
 		return true;
     }
 }
-?>

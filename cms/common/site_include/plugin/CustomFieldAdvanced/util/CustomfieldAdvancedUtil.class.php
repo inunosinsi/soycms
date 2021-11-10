@@ -2,12 +2,12 @@
 
 class CustomfieldAdvancedUtil {
 
-	public static function createHash($v){
+	public static function createHash(string $v){
 		return substr(md5($v), 0, 6);
 	}
 
 	//カスタムフィールドアドバンスドの設定内に記事フィールドはあるか？
-	public static function checkIsEntryField($fields){
+	public static function checkIsEntryField(array $fields){
 		static $isEntry;
 		if(is_null($isEntry)){
 			$isEntry = false;
@@ -23,7 +23,7 @@ class CustomfieldAdvancedUtil {
 		return $isEntry;
 	}
 
-	public static function checkIsLabelField($fields){
+	public static function checkIsLabelField(array $fields){
 		static $isLabel;
 		if(is_null($isLabel)){
 			$isLabel = false;
@@ -37,5 +37,21 @@ class CustomfieldAdvancedUtil {
 			}
 		}
 		return $isLabel;
+	}
+
+	public static function checkIsListField(array $fields){
+		static $isList;
+		if(is_null($isList)){
+			$isList = false;
+			if(is_array($fields) && count($fields)){
+				foreach($fields as $field){
+					if($field->getType() == "list"){
+						$isList = true;
+						break;
+					}
+				}
+			}
+		}
+		return $isList;
 	}
 }

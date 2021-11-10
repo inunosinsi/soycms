@@ -96,7 +96,8 @@ class CustomFieldPluginAdvanced{
 		if(count($fields)){
 			//設定内に記事フィールドはあるか？
 			$isEntryField = CustomfieldAdvancedUtil::checkIsEntryField($customFields);
-			$isLabelField = CustomfieldAdvancedUtil::checkIsLabelField($customFields);	// @ToDo メモリをたくさん食うからブログ一覧やラベルブロックでは禁止にしたい
+			$isLabelField = CustomfieldAdvancedUtil::checkIsLabelField($customFields);	// @ToDo メモリをたくさん食うからブログ一覧やラベルブロックでは禁止にしたい → 別のプラグインで対応
+			$isListField = CustomfieldAdvancedUtil::checkIsListField($customFields);;	//
 
 			foreach($fields as $field){
 				//設定を取得
@@ -267,6 +268,15 @@ class CustomFieldPluginAdvanced{
 						// 	"soy2prefix" => "cms",
 						// 	"list" => $entries
 						// ));
+					}
+
+					//リストフィールド
+					if($isListField){
+						SOY2::import("site_include.plugin.CustomFieldAdvanced.component.ListFieldListComponent");
+						$htmlObj->createAdd($field->getId() . "_list", "ListFieldListComponent", array(
+							"soy2prefix" => "cms",
+							"list" => array()
+						));
 					}
 
 					//属性に出力
