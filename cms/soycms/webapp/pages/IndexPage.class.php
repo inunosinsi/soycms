@@ -127,7 +127,7 @@ class IndexPage extends CMSWebPageBase{
 			foreach($customs as $mkey => $custom){
 				if($custom["func"]){
 						$html .= '<iframe src="' . SOY2PageController::createLink("Plugin.CustomPage") . '?id=' . $id . '&menuId=' . $mkey . '"' .
-							' style="width:230px;border:0;" frameborder="no"></iframe>';
+							' style="border:0;" frameborder="no"></iframe>';
 				}else{
 					$html .= $custom["html"];
 				}
@@ -144,7 +144,7 @@ class IndexPage extends CMSWebPageBase{
 
 		$widgets = "<table><tr>";
 		foreach($box as $key => $htmls){
-			$widgets .= "<td id=\"widigets_$key\" style=\"width:245px;vertical-align:top;\">";
+			$widgets .= "<td id=\"widigets_$key\" style=\"vertical-align:top;\">";
 			$widgets .= implode("", $htmls);
 			$widgets .= "</td>";
 		}

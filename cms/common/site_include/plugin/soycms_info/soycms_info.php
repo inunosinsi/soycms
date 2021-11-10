@@ -11,6 +11,7 @@ class SOYCMS_Info_Plugin{
 	const INTERVAL = 86400;	//24*60*60
 	const INFO_RSS_URL = "http://www.soycms.net/info/feed?feed=rss&soycms_info=1";
 	const FORUM_RSS_URL = "http://www.soycms.org/rss.php?soycms_info=1";
+	const SAITODEV_FORUM_JSON_URL = "https://saitodev.co/app/bulletin/?soyshop_action=bulletin_board&forum_id=1";
 
 	private $rssCache = array();
 
@@ -37,10 +38,10 @@ class SOYCMS_Info_Plugin{
 		CMSPlugin::addPluginMenu($this->getId(),array(
 			"name"=>"SOY CMS更新情報プラグイン",
 			"description"=>"SOY CMSの更新情報を表示します",
-			"author"=>"株式会社Brassica",
-			"url"=>"https://brassica.jp/",
-			"mail"=>"soycms@soycms.net",
-			"version"=>"1.2"
+			"author"=>"齋藤毅",
+			"url"=>"https://saitodev.co/",
+			"mail"=>"info@saitodev.co",
+			"version"=>"1.3"
 		));
 		CMSPlugin::addPluginConfigPage($this->getId(),array(
 			$this,"config_page"
@@ -61,28 +62,37 @@ class SOYCMS_Info_Plugin{
 	function widget(){
 		if(ini_get("allow_url_fopen") && function_exists("simplexml_load_string")){
 			//list($rss,$time) = $this->loadRSS(self::INFO_RSS_URL);
-			list($forum,$time2) = $this->loadRSS(self::FORUM_RSS_URL);
+			//list($forum,$time2) = $this->loadRSS(self::FORUM_RSS_URL);
 
-			$html = $this->getStyleSheet();
+			$html = array();
+			$html[] = $this->getStyleSheet();
+			$html[] = "<h1><a href=\"https://saitodev.co/app/bulletin/board/topic/1\" target=\"_blank\" rel=\"noopener\" style=\"color:gray;text-decoration:none;\">SOY CMSフォーラム - saitodev.co</a></h1>";
+			$html[] = "<ul>";
+			$arr = json_decode(file_get_contents(self::SAITODEV_FORUM_JSON_URL), true);
+			foreach($arr as $v){
+				$label = mb_strimwidth(SOY2HTML::ToText($v["label"]),0,80,"...");
+				$html[] = "<li><a href=\"" . $v["url"] . "\" target=\"_blank\" rel=\"noopener\">" . $label . "</a></li>";
+			}
+			$html[] = "</ul>";
 			//if($rss)$html .= $this->outputRSS("お知らせ",$rss,$time);
-			if($forum)$html .= $this->outputRSS("フォーラム",$forum,$time2,6);
+			//if($forum)$html .= $this->outputRSS("フォーラム",$forum,$time2,6);
 
 			// if(!$rss && !$forum){
 			// 	$html = "<p>RSSの取得に失敗しました。</p>";
 			// }
-		}elseif(!function_exists("simplexml_load_string")){
-			$html = "<p class='warning'>SimpleXMLが必要です。</p>";
-
-			$html .= '<p><small><a target="_top" href="'.htmlspecialchars(SOY2PageController::createLink("Plugin.Config")."?soycms_info",ENT_QUOTES,'UTF-8').'">プラグインの設定画面へ</a></small></p>';
-
-
-		}elseif(!ini_get("allow_url_fopen")){
-			$html = "allow_url_fopen=0の環境では情報が取得できません。";
-		}else{
-			$html = "";
+		// }elseif(!function_exists("simplexml_load_string")){
+		// 	$html = "<p class='warning'>SimpleXMLが必要です。</p>";
+		//
+		// 	$html .= '<p><small><a target="_top" href="'.htmlspecialchars(SOY2PageController::createLink("Plugin.Config")."?soycms_info",ENT_QUOTES,'UTF-8').'">プラグインの設定画面へ</a></small></p>';
+		//
+		//
+		// }elseif(!ini_get("allow_url_fopen")){
+		// 	$html = "allow_url_fopen=0の環境では情報が取得できません。";
+		// }else{
+		// 	$html = "";
 		}
 
-		return $html;
+		return implode("\n", $html);
 	}
 
 	function outputRSS($title,$rss,$time,$count = 3){
