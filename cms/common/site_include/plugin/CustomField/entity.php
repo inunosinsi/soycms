@@ -13,7 +13,8 @@ class CustomField{
 		"link" => "リンク",
 		"entry" => "記事",
 		//"label" => "ラベル",
-		"pair" => "ペア"
+		"pair" => "ペア",
+		//"list" => "リスト"
 	);
 
 	private $id;

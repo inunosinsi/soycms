@@ -36,7 +36,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.0"
+			"version"=>"1.1"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -168,17 +168,21 @@ class SOYCMSThumbnailPlugin{
 				$h = $w / $ratio;
 			}
 
-			//Siteのアップロードディレクトリを調べる
-			$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
+			//念の為にwidthの値を確認
+			if($w > 0 && $h > 0){
+				//Siteのアップロードディレクトリを調べる
+				$siteConfig = SOY2DAOFactory::create("cms.SiteConfigDAO")->get();
 
-			$resizeDir = str_replace("//" , "/" , UserInfoUtil::getSiteDirectory() . $siteConfig->getDefaultUploadDirectory()) . "/resize";
-			if(!file_exists($resizeDir)) mkdir($resizeDir);
+				$resizeDir = str_replace("//" , "/" , UserInfoUtil::getSiteDirectory() . $siteConfig->getDefaultUploadDirectory()) . "/resize";
+				if(!file_exists($resizeDir)) mkdir($resizeDir);
 
-			$imageFileName = substr($imageFilePath, strrpos($imageFilePath, "/") + 1);
-			$resizePath = $resizeDir . "/" . $imageFileName;
-			soy2_resizeimage($path, $resizePath, $w, $h);
-			$images[self::RESIZE_IMAGE] = "/" . UserInfoUtil::getSite()->getSiteId() . $siteConfig->getDefaultUploadDirectory() . "/resize/" . $imageFileName;
-
+				$imageFileName = substr($imageFilePath, strrpos($imageFilePath, "/") + 1);
+				$resizePath = $resizeDir . "/" . $imageFileName;
+				soy2_resizeimage($path, $resizePath, $w, $h);
+				$images[self::RESIZE_IMAGE] = "/" . UserInfoUtil::getSite()->getSiteId() . $siteConfig->getDefaultUploadDirectory() . "/resize/" . $imageFileName;
+			}else{
+				$images[self::RESIZE_IMAGE] = "";
+			}
 		}else{
 			$images[self::RESIZE_IMAGE] = trim($_POST["jcrop_resize_field"]);
 		}
@@ -186,9 +190,10 @@ class SOYCMSThumbnailPlugin{
 		$obj = new EntryAttribute();
 		$obj->setEntryId($entryId);
 
-		foreach($images as $key => $image){
+		foreach($images as $key => $path){
+			if(!strlen($path)) continue;
 			$obj->setFieldId($key);
-			$obj->setValue($image);
+			$obj->setValue($path);
 			try{
 				self::_attrDao()->insert($obj);
 			}catch(Exception $e){

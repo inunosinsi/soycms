@@ -41,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.11.3"
+			"version"=>"1.12"
 		));
 
 		//プラグイン アクティブ
@@ -177,12 +177,17 @@ class CustomFieldPluginAdvanced{
 					//記事フィールド
 					if($isEntryField){
 						$entry = new Entry();
+						$labelCaption = null;
 						if($master->getType() == "entry" && strlen($field->getValue()) && strpos($field->getValue(), "-")){
 							$v = explode("-", $field->getValue());
 							$selectedEntryId = (isset($v[1]) && is_numeric($v[1])) ? (int)$v[1] : null;
 							if($selectedEntryId){
 								$entry = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getTitleAndContentByEntryId($selectedEntryId);
 								$attr["html"] = $entry->getContent();
+							}
+							$selectedLabelId = (isset($v[0]) && is_numeric($v[0])) ? (int)$v[0] : null;
+							if($selectedLabelId){
+								$labelCaption = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getById($selectedLabelId)->getCaption();
 							}
 						}
 
@@ -211,6 +216,11 @@ class CustomFieldPluginAdvanced{
 	 						"text" => $entry->getCdate(),
 	 						"soy2prefix"=>"cms"
 	 					));
+
+						$htmlObj->createAdd($field->getId() . "_label_caption", "CMSLabel", array(
+							"text" => $labelCaption,
+	 						"soy2prefix"=>"cms"
+						));
 
 						//サムネイルプラグイン
 						if(file_exists(_SITE_ROOT_ . "/.plugin/soycms_thumbnail.active")){

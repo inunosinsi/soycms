@@ -15,6 +15,7 @@ class CustomField{
 		"entry" => "記事",
 		//"label" => "ラベル",
 		"pair" => "ペア",
+		//"list" => "リスト"
 	);
 
 	private $id;
