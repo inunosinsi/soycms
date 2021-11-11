@@ -41,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.13"
+			"version"=>"1.13.1"
 		));
 
 		//プラグイン アクティブ
@@ -86,10 +86,10 @@ class CustomFieldPluginAdvanced{
 		if($this->acceleration == 1){
 			if(!$this->displayLogic) $this->displayLogic = SOY2Logic::createInstance("site_include.plugin.CustomFieldAdvanced.logic.DisplayLogic");
 			list($labelIdWithBlock, $blogCategoryLabelList) = $this->displayLogic->checkAcceleration($entryId, $htmlObj);
-			$fields = (is_numeric($entryId) && $entryId > 0) ? self::_getCustomFields($entryId, $labelIdWithBlock, $blogCategoryLabelList) : array();
+			$fields = self::_getCustomFields($entryId, $labelIdWithBlock, $blogCategoryLabelList);
 			$customFields = (isset($this->advancedCustomFields)) ? $this->advancedCustomFields : $this->customFields;
 		}else{
-			$fields = (is_numeric($entryId) && $entryId > 0) ? self::_getCustomFields($entryId) : array();
+			$fields = self::_getCustomFields($entryId);
 			$customFields = $this->customFields;
 		}
 
@@ -694,7 +694,7 @@ class CustomFieldPluginAdvanced{
 	 * @param int entryId 記事のID
 	 * @return Array <CustomField>
 	 */
-	private function _getCustomFields(int $entryId, $labelIdWithBlock = null, $blogCategoryLabelList = array()){
+	private function _getCustomFields($entryId, $labelIdWithBlock = null, $blogCategoryLabelList = array()){
 		$dao = $this->dao;
 
 		if(is_null($labelIdWithBlock)){
