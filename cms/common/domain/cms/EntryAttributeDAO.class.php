@@ -55,13 +55,13 @@ abstract class EntryAttributeDAO extends SOY2DAO{
     		return array();
     	}
 
-    	$attributes = array();
+    	$attrs = array();
     	foreach($results as $result){
     		if(!isset($result["entry_field_id"])) continue;
-    		$attributes[$result["entry_field_id"]] = $this->getObject($result);
+    		$attrs[$result["entry_field_id"]] = $this->getObject($result);
     	}
 
-    	return $attributes;
+    	return $attrs;
     }
 
     abstract function deleteByEntryId($entryId);

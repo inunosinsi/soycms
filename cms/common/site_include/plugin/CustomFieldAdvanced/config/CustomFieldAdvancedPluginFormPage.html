@@ -145,7 +145,51 @@
 								</select>
 							</div>
 						</div>
+
+						<div class="section">
+							<h5>記事フィールドで追加されるタグ</h5>
+							<ul>
+								<li>cms:id="<!-- soy:id="id*" /-->_id"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_title"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_content"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_more"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_create_date"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_label_caption"</li>
+								<!-- soy:id="is_entry_field_with_thumbnail_plugin" -->
+								<li>cms:id="<!-- soy:id="id*" /-->_upload"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_is_upload"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_no_upload"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_upload_text"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_upload_path_text"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_trimming"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_is_trimming"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_no_trimming"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_trimming_text"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_trimming_path_text"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_thumbnail"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_is_thumbnail"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_no_thumbnail"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_thumbnail_text"</li>
+								<li>cms:id="<!-- soy:id="id*" /-->_thumbnail_path_text"</li>
+								<!-- /soy:id="is_entry_field_with_thumbnail_plugin" -->
+							</ul>
+						</div>
 						<!-- /soy:id="is_entry_field" -->
+
+						<!-- soy:id="is_list_field" -->
+						<div class="section">
+							<h5>リストフィールドの記述例</h5>
+							<div class="body">
+<pre style="max-width:560px;">&lt;!-- cms:id="<!-- soy:id="id*" /-->_visible" --&gt;
+&lt;ul&gt;
+	&lt;!-- cms:id="<!-- soy:id="id*" /-->_list" --&gt;
+	&lt;li&gt;&lt;!-- cms:id="value" --&gt;リンゴ&lt;!-- /cms:id="value" --&gt;&lt;/li&gt;
+	&lt;!-- /cms:id="<!-- soy:id="id*" /-->_list" --&gt;
+&lt;/ul&gt;
+&lt;!-- /cms:id="<!-- soy:id="id*" /-->_visible" --&gt;</pre>
+							</div>
+						</div>
+						<!-- /soy:id="is_list_field" -->
 
 						<div class="text-right">
 							<input type="button" class="btn btn-primary" soy:id="update_advance" style="padding:10px 20px;" value="設定保存" />

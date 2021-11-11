@@ -15,7 +15,7 @@ class CustomField{
 		"entry" => "記事",
 		//"label" => "ラベル",
 		"pair" => "ペア",
-		//"list" => "リスト"
+		"list" => "リスト"
 	);
 
 	private $id;
@@ -360,6 +360,24 @@ class CustomField{
  				}
  				$body = implode("\n", $html);
  				break;
+			case "list":
+				$values = (is_string($fieldValue) && strlen($fieldValue)) ? soy2_unserialize($fieldValue) : array();
+
+				$html = array();
+				if(count($values)){
+					foreach($values as $v){
+						$html[] = "<div class=\"form-inline\">";
+						$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control\" value=\"" . htmlspecialchars($v, ENT_QUOTES, "UTF-8") . "\">";
+						$html[] = "</div>";
+					}
+				}
+
+				$html[] = "<div class=\"form-inline " . $h_formID . "\">";
+				$html[] = "	<input type=\"text\" name=\"" . $h_formName . "[]\" class=\"form-control\">";
+				$html[] = "	<a href=\"javascript:void(0);\" class=\"btn btn-info btn-sm\" onclick=\"CustomFieldListField.add('" . str_replace("custom_field_", "", $h_formID) . "')\">追加</a>";
+				$html[] = "</div>";
+				$body = implode("\n", $html);
+				break;
  			case "input":
  			default:
 				if(is_null($fieldValue)) $fieldValue = $this->getDefaultValue();

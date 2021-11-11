@@ -196,8 +196,17 @@ class CustomFieldListComponent extends HTMLList {
 			"options" => $entity->getLabels(),
 			"selected" => $entity->getFixedLabelId()
 		));
+		$this->addModel("is_entry_field_with_thumbnail_plugin", array(
+			"visible" => ($entity->getType() == "entry" && file_exists(UserInfoUtil::getSiteDirectory() . ".plugin/soycms_thumbnail.active"))
+		));
 
 		/** 記事フィールド用 **/
+
+		/** リストフィールド用 **/
+		$this->addModel("is_list_field", array(
+			"visible" => ($entity->getType() == "list")
+		));
+		/** リストフィールド用 **/
 
 		$this->addInput("update_advance", array(
 			"value"=>"設定保存",
