@@ -5,11 +5,12 @@
 class BlogPageDAO{
 
 	function get(){
-		$dao = $this->getPageDAO();
-		$pages = $dao->getByPageType(Page::PAGE_TYPE_BLOG);
+		$pages = self::_dao()->getByPageType(Page::PAGE_TYPE_BLOG);
 
-		foreach($pages as $key => $page){
-			$pages[$key] = $this->cast($page);
+		if(count($pages)){
+			foreach($pages as $key => $page){
+				$pages[$key] = $this->cast($page);
+			}
 		}
 
 		return $pages;
@@ -18,8 +19,8 @@ class BlogPageDAO{
 	/**
 	 * IDを指定して取得
 	 */
-	function getById($id){
-		$obj = $this->getPageDAO()->getById($id);
+	function getById(int $id){
+		$obj = self::_dao()->getById($id);
 		if($obj->getPageType() != Page::PAGE_TYPE_BLOG){
 			throw new Exception("This Page is not Blog Page.");
 		}
@@ -44,7 +45,7 @@ class BlogPageDAO{
 	 */
 	function insert(Page $page){
 
-		$dao = $this->getPageDAO();
+		$dao = self::_dao();
 		$page = SOY2::cast("BlogPage",$page);
 
 		//初期データ
@@ -79,7 +80,7 @@ class BlogPageDAO{
 	 */
 	function updatePageConfig(BlogPage $page){
 
-		$dao = $this->getPageDAO();
+		$dao = self::_dao();
 		$_page = $dao->getById($page->getId());
 
 		//テンプレートは更新しない
@@ -92,11 +93,34 @@ class BlogPageDAO{
 	}
 
 	function update(BlogPage $page){
-		$dao = $this->getPageDAO();
-		$dao->update($page);
+		self::_dao()->update($page);
 	}
 
-	function getPageDAO(){
+	/**
+	 * @final
+	 * @return array(label_id => array(uri...)...)
+	 */
+	function getBlogPageUriListCorrespondingToBlogLabelId(){
+		$dao = self::_dao();
+		try{
+			$res = $dao->executeQuery("SELECT uri, page_config FROM Page WHERE page_type = " . Page::PAGE_TYPE_BLOG);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$cnf = soy2_unserialize($v["page_config"]);
+			if(!property_exists($cnf, "blogLabelId")) continue;
+
+			if(!isset($list[$cnf->blogLabelId])) $list[$cnf->blogLabelId] = array();
+			$list[$cnf->blogLabelId][] = $v["uri"];
+		}
+		return $list;
+	}
+
+	private function _dao(){
 		return SOY2DAOFactory::create("cms.PageDAO");
 	}
 }

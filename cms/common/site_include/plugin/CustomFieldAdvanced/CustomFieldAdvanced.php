@@ -178,6 +178,8 @@ class CustomFieldPluginAdvanced{
 					if($isEntryField){
 						$entry = new Entry();
 						$labelCaption = null;
+						$labelAlias = null;
+						$blogUri = null;
 						if($master->getType() == "entry" && strlen($field->getValue()) && strpos($field->getValue(), "-")){
 							$v = explode("-", $field->getValue());
 							$selectedEntryId = (isset($v[1]) && is_numeric($v[1])) ? (int)$v[1] : null;
@@ -187,7 +189,12 @@ class CustomFieldPluginAdvanced{
 							}
 							$selectedLabelId = (isset($v[0]) && is_numeric($v[0])) ? (int)$v[0] : null;
 							if($selectedLabelId){
-								$labelCaption = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getById($selectedLabelId)->getCaption();
+								$label = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getById($selectedLabelId);
+								$labelCaption = $label->getCaption();
+								$labelAlias = $label->getAlias();
+								unset($label);
+
+								$blogUri = SOY2Logic::createInstance("logic.site.Page.BlogPageLogic")->getBlogPageUriByLabelId($selectedLabelId);
 							}
 						}
 
@@ -220,6 +227,16 @@ class CustomFieldPluginAdvanced{
 						$htmlObj->createAdd($field->getId() . "_label_caption", "CMSLabel", array(
 							"text" => $labelCaption,
 	 						"soy2prefix"=>"cms"
+						));
+
+						$htmlObj->createAdd($field->getId() . "_label_alias", "CMSLabel", array(
+							"text" => $labelAlias,
+	 						"soy2prefix"=>"cms"
+						));
+
+						$htmlObj->createAdd($field->getId() . "_blog_uri", "CMSLabel", array(
+							"text" => $blogUri,
+							"soy2prefix" => "cms"
 						));
 
 						//サムネイルプラグイン

@@ -30,7 +30,6 @@ class IndexPage extends CMSWebPageBase{
 		}
 		$page = $result->getAttribute("Page");
 
-
 		$this->createAdd("blog_config_page_link","HTMLLink",array("link"=>SOY2PageController::createLink("Blog.Config.".$id)));
 		$this->createAdd("blog_entry_page_link","HTMLLink",array("link"=>SOY2PageController::createLink("Blog.Entry.".$id)));
 
