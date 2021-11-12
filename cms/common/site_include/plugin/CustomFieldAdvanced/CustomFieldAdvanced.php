@@ -41,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.13.2"
+			"version"=>"1.13.3"
 		));
 
 		//プラグイン アクティブ
@@ -176,41 +176,21 @@ class CustomFieldPluginAdvanced{
 
 					//記事フィールド
 					if($isEntryField){
-						$entry = new Entry();
-						$labelCaption = null;
-						$labelAlias = null;
-						$blogUri = null;
-						if($master->getType() == "entry" && strlen($field->getValue()) && strpos($field->getValue(), "-")){
-							$v = explode("-", $field->getValue());
-							$selectedEntryId = (isset($v[1]) && is_numeric($v[1])) ? (int)$v[1] : null;
-							if($selectedEntryId){
-								$entry = SOY2Logic::createInstance("site_include.plugin.CustomField.logic.EntryFieldLogic")->getTitleAndContentByEntryId($selectedEntryId);
-								$attr["html"] = $entry->getContent();
-							}
-							$selectedLabelId = (isset($v[0]) && is_numeric($v[0])) ? (int)$v[0] : null;
-							if($selectedLabelId){
-								$labelLogic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
-								$label = $labelLogic->getById($selectedLabelId);
-								$labelCaption = $label->getCaption();
-								$labelAlias = $label->getAlias();
-								unset($label);
 
-								//ラベル名にスラッシュがある場合、親ラベルと分離する
-								if(is_numeric(strpos($labelCaption, "/"))){
-									$caps = explode("/", $labelCaption);
-									//親カテゴリ一つの場合
-									$labelCaption = $caps[1];
-									$parentLabelId = $labelLogic->getByCaption(trim($caps[0]))->getId();
-									if(is_numeric($parentLabelId)) $selectedLabelId = $parentLabelId;
-									unset($parentLabelId);
-								}
-								$blogPageLogic = SOY2Logic::createInstance("logic.site.Page.BlogPageLogic");
-								$blogUri = $blogPageLogic->getBlogPageUriByLabelId($selectedLabelId);
-
-								unset($labelLogic);
-								unset($blogPageLogic);
-							}
+						if($master->getType() == "entry"){
+							if(!class_exists("EntryFieldUtil")) SOY2::import("site_include.plugin.CustomFieldAdvanced.util.EntryFieldUtil");
+							$fieldValue = (is_string($field->getValue())) ? $field->getValue() : "";
+							$entry = EntryFieldUtil::getEntryObject($fieldValue);
+							$labelArr = EntryFieldUtil::getLabelCaptionAndAlias($fieldValue);
+							$blogArr = EntryFieldUtil::getBlogTitleAndUri($fieldValue, $labelArr["caption"]);
+							unset($fieldValue);
+						}else{
+							$entry = new Entry();
+							$labelArr = array("caption" => "", "alias" => "");
+							$blogArr = array("title" => "", "uri" => "");
 						}
+
+						$attr["html"] = $entry->getContent();
 
 						/**
 						 * @記事フィールドの隠しモード
@@ -239,17 +219,22 @@ class CustomFieldPluginAdvanced{
 	 					));
 
 						$htmlObj->createAdd($field->getId() . "_label_caption", "CMSLabel", array(
-							"text" => $labelCaption,
+							"text" => (isset($labelArr["caption"])) ? $labelArr["caption"] : "",
 	 						"soy2prefix"=>"cms"
 						));
 
 						$htmlObj->createAdd($field->getId() . "_label_alias", "CMSLabel", array(
-							"text" => $labelAlias,
+							"text" => (isset($labelArr["alias"])) ? $labelArr["alias"] : "",
 	 						"soy2prefix"=>"cms"
 						));
 
+						$htmlObj->createAdd($field->getId() . "_blog_title", "CMSLabel", array(
+							"text" => (isset($blogArr["title"])) ? $blogArr["title"] : "",
+							"soy2prefix" => "cms"
+						));
+
 						$htmlObj->createAdd($field->getId() . "_blog_uri", "CMSLabel", array(
-							"text" => $blogUri,
+							"text" => (isset($blogArr["uri"])) ? $blogArr["uri"] : "",
 							"soy2prefix" => "cms"
 						));
 

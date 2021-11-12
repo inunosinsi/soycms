@@ -27,6 +27,13 @@ class BlogPageLogic extends SOY2LogicBase{
 		return (isset($uris[0])) ? $uris[0] : "";	//一番最初の値を返す
 	}
 
+	function getBlogPageTitleAndUriByLabelId(int $labelId){
+		$list = self::_getBlogPageTitleAndUriListCorrespondingToBlogLabelId();
+		if(!isset($list[$labelId])) return "";
+		$arr = $list[$labelId];
+		return (isset($arr[0])) ? $arr[0] : array("title" => "", "uri" => "");	//一番最初の値を返す
+	}
+
 	/**
 	 * blogLabelIdに対応したblog_uriの一覧を返す
 	 */
@@ -34,6 +41,14 @@ class BlogPageLogic extends SOY2LogicBase{
 		static $list;
 		if(is_null($list)){
 			$list = SOY2DAOFactory::create("cms.BlogPageDAO")->getBlogPageUriListCorrespondingToBlogLabelId();
+		}
+		return $list;
+	}
+
+	private function _getBlogPageTitleAndUriListCorrespondingToBlogLabelId(){
+		static $list;
+		if(is_null($list)){
+			$list = SOY2DAOFactory::create("cms.BlogPageDAO")->getBlogPageTitleAndUriListCorrespondingToBlogLabelId();
 		}
 		return $list;
 	}

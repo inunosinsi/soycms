@@ -120,6 +120,30 @@ class BlogPageDAO{
 		return $list;
 	}
 
+	/**
+	 * @final
+	 * @return array(label_id => array("title" => "", "uri" => "")...)
+	 */
+	function getBlogPageTitleAndUriListCorrespondingToBlogLabelId(){
+		$dao = self::_dao();
+		try{
+			$res = $dao->executeQuery("SELECT title, uri, page_config FROM Page WHERE page_type = " . Page::PAGE_TYPE_BLOG);
+		}catch(Exception $e){
+			$res = array();
+		}
+		if(!count($res)) return array();
+
+		$list = array();
+		foreach($res as $v){
+			$cnf = soy2_unserialize($v["page_config"]);
+			if(!property_exists($cnf, "blogLabelId")) continue;
+
+			if(!isset($list[$cnf->blogLabelId])) $list[$cnf->blogLabelId] = array();
+			$list[$cnf->blogLabelId][] = array("title" => $v["title"], "uri" => $v["uri"]);
+		}
+		return $list;
+	}
+
 	private function _dao(){
 		return SOY2DAOFactory::create("cms.PageDAO");
 	}
