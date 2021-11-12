@@ -41,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.13.1"
+			"version"=>"1.13.2"
 		));
 
 		//プラグイン アクティブ
@@ -189,12 +189,26 @@ class CustomFieldPluginAdvanced{
 							}
 							$selectedLabelId = (isset($v[0]) && is_numeric($v[0])) ? (int)$v[0] : null;
 							if($selectedLabelId){
-								$label = SOY2Logic::createInstance("logic.site.Label.LabelLogic")->getById($selectedLabelId);
+								$labelLogic = SOY2Logic::createInstance("logic.site.Label.LabelLogic");
+								$label = $labelLogic->getById($selectedLabelId);
 								$labelCaption = $label->getCaption();
 								$labelAlias = $label->getAlias();
 								unset($label);
 
-								$blogUri = SOY2Logic::createInstance("logic.site.Page.BlogPageLogic")->getBlogPageUriByLabelId($selectedLabelId);
+								//ラベル名にスラッシュがある場合、親ラベルと分離する
+								if(is_numeric(strpos($labelCaption, "/"))){
+									$caps = explode("/", $labelCaption);
+									//親カテゴリ一つの場合
+									$labelCaption = $caps[1];
+									$parentLabelId = $labelLogic->getByCaption(trim($caps[0]))->getId();
+									if(is_numeric($parentLabelId)) $selectedLabelId = $parentLabelId;
+									unset($parentLabelId);
+								}
+								$blogPageLogic = SOY2Logic::createInstance("logic.site.Page.BlogPageLogic");
+								$blogUri = $blogPageLogic->getBlogPageUriByLabelId($selectedLabelId);
+
+								unset($labelLogic);
+								unset($blogPageLogic);
 							}
 						}
 
