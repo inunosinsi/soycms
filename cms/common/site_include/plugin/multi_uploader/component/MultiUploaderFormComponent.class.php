@@ -2,7 +2,7 @@
 
 class MultiUploaderFormComponent {
 
-	public static function buildForm(int $entryId){
+	public static function buildForm(int $entryId, array $labelIds){
 		$html = array();
 
 		$html[] = "<script>";
@@ -10,6 +10,18 @@ class MultiUploaderFormComponent {
 		$html[] = "	common_to_layer(\"" . SOY2PageController::createLink("Page.Editor.FileUpload?multi_uploader") . "\");";
 		$html[] = "}";
 		$html[] = "</script>";
+
+		//ラベルと連動の設定
+		if(count($labelIds)){
+			$classProps = array();
+			foreach($labelIds as $labelId){
+				$classProps[] = "toggled_by_label_" . $labelId;
+			}
+
+			$html[] = "<div class=\"" . implode(" ", $classProps) . "\" style=\"display:none;\">";
+		}else{
+			$html[] = "<div>";
+		}
 
 		$html[] = "<div class=\"form-group\">";
 		$html[] = "<label>画像アップローダ</label>";
@@ -50,6 +62,7 @@ class MultiUploaderFormComponent {
 			$html[] = "</tbody>";
 			$html[] = "</table>";
 		}
+		$html[] = "</div>";
 
 		$html[] = "<script>";
 		$html[] = file_get_contents(dirname(dirname(__FILE__)) . "/js/delete.js");

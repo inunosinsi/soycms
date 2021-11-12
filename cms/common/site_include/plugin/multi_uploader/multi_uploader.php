@@ -5,6 +5,8 @@ class MultiUploaderPlugin{
 
 	const PLUGIN_ID = "multi_uploader";
 
+	private $labelIds = array();
+
 	function getId(){
 		return self::PLUGIN_ID;
 	}
@@ -16,7 +18,7 @@ class MultiUploaderPlugin{
 			"author"=>"齋藤毅",
 			"url"=>"https://saitodev.co/article/3150",
 			"mail"=>"tsuyoshi@saitodev.co",
-			"version"=>"0.5.1"
+			"version"=>"0.6"
 		));
 
 		CMSPlugin::addPluginConfigPage(self::PLUGIN_ID,array(
@@ -124,7 +126,7 @@ class MultiUploaderPlugin{
 		$entryId = (isset($arg[0]) && is_numeric($arg[0])) ? (int)$arg[0] : 0;
 
 		SOY2::import("site_include.plugin.multi_uploader.component.MultiUploaderFormComponent");
-		return MultiUploaderFormComponent::buildForm($entryId);
+		return MultiUploaderFormComponent::buildForm($entryId, $this->labelIds);
 	}
 
 	function onCallCustomField_inBlog(){
@@ -132,7 +134,7 @@ class MultiUploaderPlugin{
 		$entryId = (isset($arg[1]) && is_numeric($arg[1])) ? (int)$arg[1] : 0;
 
 		SOY2::import("site_include.plugin.multi_uploader.component.MultiUploaderFormComponent");
-		return MultiUploaderFormComponent::buildForm($entryId);
+		return MultiUploaderFormComponent::buildForm($entryId, $this->labelIds);
 	}
 
 	function config_page(){
@@ -141,6 +143,13 @@ class MultiUploaderPlugin{
 		$form->setPluginObj($this);
 		$form->execute();
 		return $form->getObject();
+	}
+
+	function getLabelIds(){
+		return $this->labelIds;
+	}
+	function setLabelIds($labelIds){
+		$this->labelIds = $labelIds;
 	}
 
 	public static function register(){

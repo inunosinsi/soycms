@@ -1,5 +1,13 @@
 <div class="alert alert-info">記事編集画面で画像を複数枚アップロードできるフォームを設置します。</div>
 
+<form soy:id="form">
+	<div class="form-group">
+		<label>ラベルと連動</label>
+		<!-- soy:id="label_select" /-->
+		<input type="submit" class="btn btn-primary btn-sm" value="変更">
+	</div>
+</form>
+
 <h3>テンプレートへの記述例(ブロック内、p_block:id="entry_list"とp_block:id="entry"で使用できます)</h3>
 <pre style="border:1px solid #000000;padding:5px 20px;margin:0 35px;">
 &lt;!-- p_block:id="multi_uploader_image_list" --&gt;

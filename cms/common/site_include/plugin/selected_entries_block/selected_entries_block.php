@@ -7,6 +7,7 @@ class SelectedEntriesBlockPlugin{
 	const PLUGIN_ID = "selected_entries_block";
 
 	private $itemName = "記事一覧選択表示ブロックプラグインで表示する記事";	//カスタムフィールドで表示する項目名
+	private $labelIds = array();
 
 	function getId(){
 		return self::PLUGIN_ID;
@@ -19,7 +20,7 @@ class SelectedEntriesBlockPlugin{
 			"author" => "齋藤毅",
 			"url" => "http://saitodev.co",
 			"mail" => "tsuyoshi@saitodev.co",
-			"version" => "0.6"
+			"version" => "0.7"
 		));
 
 		//プラグイン アクティブ
@@ -54,14 +55,14 @@ class SelectedEntriesBlockPlugin{
 
 	function onCallCustomField(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[0])) ? (int)$arg[0] : null;
-		return SelectedEntriesCustomFieldForm::buildForm($entryId, $this->getItemName());
+		$entryId = (isset($arg[0])) ? (int)$arg[0] : 0;
+		return SelectedEntriesCustomFieldForm::buildForm($entryId, $this->getItemName(), $this->labelIds);
 	}
 
 	function onCallCustomField_inBlog(){
 		$arg = SOY2PageController::getArguments();
-		$entryId = (isset($arg[1])) ? (int)$arg[1] : null;
-		return SelectedEntriesCustomFieldForm::buildForm($entryId, $this->getItemName());
+		$entryId = (isset($arg[1])) ? (int)$arg[1] : 0;
+		return SelectedEntriesCustomFieldForm::buildForm($entryId, $this->getItemName(), $this->labelIds);
 	}
 
 	function onLoad(){
@@ -124,9 +125,15 @@ class SelectedEntriesBlockPlugin{
 	function getItemName(){
 		return $this->itemName;
 	}
-
 	function setItemName($itemName){
 		$this->itemName = $itemName;
+	}
+
+	function getLabelIds(){
+		return $this->labelIds;
+	}
+	function setLabelIds($labelIds){
+		$this->labelIds = $labelIds;
 	}
 
 	public static function register(){
