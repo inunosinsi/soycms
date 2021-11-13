@@ -41,7 +41,7 @@ class CustomFieldPluginAdvanced{
 			"author" => "日本情報化農業研究所",
 			"url" => "http://www.n-i-agroinformatics.com/",
 			"mail" => "soycms@soycms.net",
-			"version"=>"1.13.3"
+			"version"=>"1.13.4"
 		));
 
 		//プラグイン アクティブ
@@ -181,6 +181,8 @@ class CustomFieldPluginAdvanced{
 							if(!class_exists("EntryFieldUtil")) SOY2::import("site_include.plugin.CustomFieldAdvanced.util.EntryFieldUtil");
 							$fieldValue = (is_string($field->getValue())) ? $field->getValue() : "";
 							$entry = EntryFieldUtil::getEntryObject($fieldValue);
+							$attr["html"] = $entry->getContent();
+
 							$labelArr = EntryFieldUtil::getLabelCaptionAndAlias($fieldValue);
 							$blogArr = EntryFieldUtil::getBlogTitleAndUri($fieldValue, $labelArr["caption"]);
 							unset($fieldValue);
@@ -189,8 +191,6 @@ class CustomFieldPluginAdvanced{
 							$labelArr = array("caption" => "", "alias" => "");
 							$blogArr = array("title" => "", "uri" => "");
 						}
-
-						$attr["html"] = $entry->getContent();
 
 						/**
 						 * @記事フィールドの隠しモード
