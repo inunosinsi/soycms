@@ -4,35 +4,37 @@ class ItemOrderListComponent extends HTMLList {
 
 	protected function populateItem($itemOrder) {
 
-		$item = soyshop_get_item_object($itemOrder->getItemId());
+		$itemOrderId = (is_numeric($itemOrder->getId())) ? (int)$itemOrder->getId() : 0;
+		$itemId = (is_numeric($itemOrder->getItemId())) ? (int)$itemOrder->getItemId() : 0;
+		$item = soyshop_get_item_object($itemId);
 
 		//確認済みの時は背景色を変更する
 		$this->addModel("is_confirm_tr", array(
 			"style" => ($itemOrder->getIsConfirm()) ? "background-color:#cdcdcd;" : ""
 		));
 
-		$itemExists = ((int)$itemOrder->getItemId() > 0 && method_exists($item, "getCodeOnAdmin") && strlen($item->getCodeOnAdmin()) > 0);
+		$itemExists = ($itemId > 0 && method_exists($item, "getCodeOnAdmin") && strlen($item->getCodeOnAdmin()) > 0);
 		$this->addLink("item_id", array(
-			"text" => $itemExists ? $item->getCodeOnAdmin() : "Deleted Item (ID=" . $itemOrder->getItemId() . ")",
-			"link" => $itemExists ? SOY2PageController::createLink("Item.Detail." . $itemOrder->getItemId()) : "",
+			"text" => $itemExists ? $item->getCodeOnAdmin() : "Deleted Item (ID=" . $itemId . ")",
+			"link" => $itemExists ? SOY2PageController::createLink("Item.Detail." . $itemId) : "",
 		));
 
 		$this->addInput("index_hidden", array(
-			"name" => "Item[" . $itemOrder->getId() . "]",
-			"value" => $itemOrder->getId()
+			"name" => "Item[" . $itemOrderId . "]",
+			"value" => $itemOrderId
 		));
 
 		$this->addCheckBox("is_confirm", array(
 			"name" => "Confirm[]",
-			"value" => $itemOrder->getId(),
+			"value" => $itemOrderId,
 			"selected" => $itemOrder->getIsConfirm(),
-			"elementId" => "is_confirm_" . $itemOrder->getId(),	//テストコード用
+			"elementId" => "is_confirm_" . $itemOrderId,	//テストコード用
 			"onchange" => '$(\'#confirm_operation\').show();'
 		));
 
 		//item_idが0の場合は名前を表示する
 		$this->addLabel("item_name", array(
-			"text" => ((int)$itemOrder->getItemId() === 0 || strpos($item->getCodeOnAdmin(), "_delete_") === false) ? $itemOrder->getItemNameOnAdmin() : "---"
+			"text" => ($itemId === 0 || strpos($item->getCodeOnAdmin(), "_delete_") === false) ? $itemOrder->getItemNameOnAdmin() : "---"
 		));
 
 		//状態のセレクトボックス 状態が2個以上の場合にセレクトボックスを出力する
@@ -42,7 +44,7 @@ class ItemOrderListComponent extends HTMLList {
 		));
 
 		$this->addSelect("status", array(
-			"name" => "Status[" . $itemOrder->getId() . "]",
+			"name" => "Status[" . $itemOrderId . "]",
 			"options" => $statusList,
 			"selected" => $itemOrder->getStatus(),
 			"indexOrder" => true,
@@ -56,7 +58,7 @@ class ItemOrderListComponent extends HTMLList {
 		));
 
 		$this->addSelect("flag", array(
-			"name" => "Flag[" . $itemOrder->getId() . "]",
+			"name" => "Flag[" . $itemOrderId . "]",
 			"options" => $flagList,
 			"selected" => $itemOrder->getFlag(),
 			"indexOrder" => true,
@@ -69,7 +71,7 @@ class ItemOrderListComponent extends HTMLList {
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => soy2_number_format($itemOrder->getItemPrice())
+			"text" => (is_numeric($itemOrder->getItemPrice())) ? soy2_number_format($itemOrder->getItemPrice()) : 0
 		));
 
 		//仕入値

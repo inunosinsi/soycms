@@ -21,7 +21,7 @@ class TagCloudWordListComponent extends HTMLList {
 			"attr:class" => self::_buildClass($rank)
 		));
 
-		$hash = (isset($entity["hash"]) && is_string($entity["hash"])) ? $entity["hash"] : null;
+		$hash = (isset($entity["hash"]) && is_string($entity["hash"])) ? $entity["hash"] : "";
 
 		$this->addLabel("tag_word_hash", array(
 			"soy2prefix" => "cms",

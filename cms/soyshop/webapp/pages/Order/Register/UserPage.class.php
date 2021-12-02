@@ -190,12 +190,8 @@ class UserPage extends WebPage{
 
 		//入力値を呼び出す
 		$user = $this->session->getAttribute("order_register.input.user");
-		if(strlen($user)){
-			$user = soy2_unserialize($user);
-		}
-		if( ! $user instanceof SOYShop_User){
-			$user = new SOYShop_User();
-		}
+		if(is_string($user) && strlen($user)) $user = soy2_unserialize($user);
+		if(!$user instanceof SOYShop_User) $user = new SOYShop_User();
 
 		parent::__construct();
 
@@ -204,9 +200,10 @@ class UserPage extends WebPage{
 
 			//エラー文言
 			$error = $this->session->getAttribute("order_register.error." . $t);
+			if(!is_string($error)) $error = "";
 			$this->addLabel("search_by_" . $t . "_error", array(
 				"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
-				"visible" => isset($error) && strlen($error)
+				"visible" => (strlen($error))
 			));
 
 			//クリア
@@ -218,9 +215,10 @@ class UserPage extends WebPage{
 
 		//エラー文言
 		$error = $this->session->getAttribute("order_register.error.user");
+		if(!is_string($error)) $error = "";
 		$this->addLabel("register_user_error", array(
 			"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
-			"visible" => isset($error) && strlen($error)
+			"visible" => (strlen($error))
 		));
 
 		//クリア
@@ -256,9 +254,8 @@ class UserPage extends WebPage{
 		}
 
 		$mailAddress = $user->getMailAddress();
-		if(!strlen($mailAddress) && $config->getInsertDummyMailAddressOnAdmin()){
-			$mailAddress = soyshop_dummy_mail_address();
-		}
+		if(!is_string($mailAddress)) $mailAddress = "";
+		if(!strlen($mailAddress) && $config->getInsertDummyMailAddressOnAdmin()) $mailAddress = soyshop_dummy_mail_address();
 
 		$this->addForm("user_create_form");
 

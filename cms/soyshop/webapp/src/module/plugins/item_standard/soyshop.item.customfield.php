@@ -6,38 +6,18 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 	const PLUGIN_ID = "item_standard_plugin";
 
 	private $attrDao;
-	private $itemDao;
 
 	function doPost(SOYShop_Item $item){
 		$itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 
 		if(isset($_POST["Standard"])){
 			self::prepare();
-			foreach($_POST["Standard"] as $confId => $value){
-				if(!strlen($value)) $value = null;
+			foreach($_POST["Standard"] as $cnfId => $value){
+				if(!strlen($value)) $value = "";
 
-				$obj = self::get($item->getId(), $confId);
-				$obj->setValue(trim($value));
-
-				//新規
-				if(is_null($obj->getItemId())){
-					$obj->setItemId($item->getId());
-					$obj->setFieldId(self::PLUGIN_ID . "_" . $confId);
-					try{
-						$this->attrDao->insert($obj);
-						$res = true;
-					}catch(Exception $e){
-						//
-					}
-
-				//更新
-				}else{
-					try{
-						$this->attrDao->update($obj);
-					}catch(Exception $e){
-						//
-					}
-				}
+				$attr = soyshop_get_item_attribute_object($item->getId(), $cnfId);
+				$attr->setValue(trim($value));
+				soyshop_save_item_attribute_object($attr);
 			}
 
 			//登録終了した後、商品のタイプをsingleからgroupに変更　逆もある
@@ -106,7 +86,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 				foreach($cands as $cand){
 					if(strpos($child->getName(), $cand)) $hit = true;
 				}
-				
+
 				if($hit){
 					$child->setIsOpen(SOYShop_Item::IS_OPEN);
 				}else{
@@ -145,15 +125,14 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		self::prepare();
 
 		foreach(ItemStandardUtil::getConfig() as $values){
-			$obj = self::get($item->getId(), $values["id"]);
-
+			$v = soyshop_get_item_attribute_value($item->getId(), $values["id"], "string");
 
 			$htmlObj->addModel("item_standard_" . $values["id"] . "_show", array(
 				"soy2prefix" => SOYSHOP_SITE_PREFIX,
-				"visible" => (strlen($obj->getValue()))
+				"visible" => (strlen($v))
 			));
 
-			$opts = explode("\n", $obj->getValue());
+			$opts = explode("\n", $v);
 			$list = array();
 			foreach($opts as $opt){
 				$list[] = trim($opt);
@@ -175,15 +154,15 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		));
 
 		//小商品の価格の最小値
-		list($sellingMin, $normalMin, $saleMin) = self::getItemStandardPrice($item, "min");
+		list($sellingMin, $normalMin, $saleMin) = self::_getItemStandardPrice($item, "min");
 		$htmlObj->addLabel("standard_price_min", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => number_format($sellingMin)
+			"text" => soy2_number_format($sellingMin)
 		));
 
 		$htmlObj->addLabel("standard_normal_price_min", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => number_format($normalMin)
+			"text" => soy2_number_format($normalMin)
 		));
 
 		$htmlObj->addLabel("standard_sale_price_min", array(
@@ -192,7 +171,7 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		));
 
 		//小商品の価格の最大値
-		list($sellingMax, $normalMax, $saleMax) = self::getItemStandardPrice($item, "max");
+		list($sellingMax, $normalMax, $saleMax) = self::_getItemStandardPrice($item, "max");
 		$htmlObj->addLabel("standard_price_max", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"text" => ($sellingMax > $sellingMin) ? soy2_number_format($sellingMax) : ""
@@ -239,14 +218,6 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 	function onDelete($id){}
 
-	private function get($itemId, $confId){
-		try{
-			return $this->attrDao->get($itemId, self::PLUGIN_ID . "_" . $confId);
-		}catch(Exception $e){
-			return new SOYShop_ItemAttribute();
-		}
-	}
-
 	private function checkIsChildItemStock($parentId, $type){
 		if($type != "group") return false;
 
@@ -264,8 +235,8 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 		return (isset($res[0]["COUNT(*)"]) && $res[0]["COUNT(*)"] > 0);
 	}
 
-	private function getItemStandardPrice(SOYShop_Item $item, $mode = "min"){
-		if($item->getType() != SOYShop_Item::TYPE_GROUP) return 0;
+	private function _getItemStandardPrice(SOYShop_Item $item, string $mode = "min"){
+		if($item->getType() != SOYShop_Item::TYPE_GROUP) return array(0, 0, 0);
 
 		$sql = "SELECT item_price, item_sale_price, item_selling_price FROM soyshop_item ".
 				"WHERE item_type = :t ".
@@ -282,17 +253,17 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 		if(!count($res)) return array(0, 0, 0);
 
-		$sellingPrice = null;
-		$normalPrice = null;
-		$salePrice = null;
+		$sellingPrice = 0;
+		$normalPrice = 0;
+		$salePrice = 0;
 
 		foreach($res as $v){
 			if(!isset($v["item_selling_price"])) continue;
 
 			//初回は必ずデータを入れる
-			if(is_null($normalPrice)) $normalPrice = (int)$v["item_price"];
-			if(is_null($salePrice)) $salePrice = (int)$v["item_sale_price"];
-			if(is_null($sellingPrice)) $sellingPrice = (int)$v["item_selling_price"];
+			if($normalPrice === 0) $normalPrice = (int)$v["item_price"];
+			if($salePrice === 0) $salePrice = (int)$v["item_sale_price"];
+			if($sellingPrice === 0) $sellingPrice = (int)$v["item_selling_price"];
 
 			if($mode == "min"){
 				if($v["item_price"] < $normalPrice) $normalPrice = (int)$v["item_price"];
@@ -310,19 +281,12 @@ class ItemStandardField extends SOYShopItemCustomFieldBase{
 
 	private function getStandartChain(SOYShop_Item $item){
 		if(!is_numeric($item->getType())) return "";
-
-		try{
-			$parent = $this->itemDao->getById($item->getType());
-		}catch(Exception $e){
-			return "";
-		}
-
+		$parent = soyshop_get_item_object($item->getType());
 		return trim(str_replace($parent->getName(), "", $item->getName()));
 	}
 
 	private function prepare(){
 		if(!$this->attrDao) $this->attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		if(!$this->itemDao) $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	}
 }
 

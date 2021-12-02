@@ -105,6 +105,7 @@ class SOYShopPageController extends SOY2PageController{
 		$shopName = $shopConfig->getShopName();
 		$appName = trim(htmlspecialchars($shopConfig->getAppName(), ENT_QUOTES, "UTF-8"));
 		$appLogoPath = trim(htmlspecialchars($shopConfig->getAppLogoPath(), ENT_QUOTES, "UTF-8"));
+		$adminName = SOY2ActionSession::getUserSession()->getAttribute("username");
 
 		//ぱんくず
 		SOY2::import("component.Breadcrumb.BreadcrumbComponent");

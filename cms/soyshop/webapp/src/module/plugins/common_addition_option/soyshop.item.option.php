@@ -5,7 +5,7 @@ class AdditionOption extends SOYShopItemOptionBase{
 		return "addition_option_{$itemIndex}_{$itemId}";
 	}
 
-	function clear($index,CartLogic $cart){
+	function clear(int $index, CartLogic $cart){
 
 		$items = $cart->getItems();
 		if(isset($items[$index])){
@@ -19,7 +19,7 @@ class AdditionOption extends SOYShopItemOptionBase{
 	/**
 	 * 配列が一致したindexを返す
 	 */
-	function compare($postedOption,CartLogic $cart){
+	function compare(array $postedOption, CartLogic $cart){
 		$checkOptionId = null;
 
 		$isAddition = (isset($_POST["item_option"]["addition_option"]) && $_POST["item_option"]["addition_option"]> 0) ? $_POST["item_option"]["addition_option"] : null;
@@ -65,7 +65,7 @@ class AdditionOption extends SOYShopItemOptionBase{
 
 	}
 
-	function doPost($index,CartLogic $cart){
+	function doPost(int $index, CartLogic $cart){
 
 		//加算したかどうかのフラグ
 		$checkAddition = false;

@@ -64,7 +64,7 @@ class DiscountFreeCouponConfigFormPage extends WebPage{
 						$this->dao->insert($coupon);
 						$this->config->redirect("issued");
 					}catch(Exception $e){
-						var_dump($e);
+						//var_dump($e);
 						//
 					}
 				}

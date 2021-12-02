@@ -3,9 +3,11 @@
 class PricePage extends WebPage{
 
 	function __construct($args){
+		$itemId = (isset($args[0]) && is_numeric($args[0])) ? (int)$args[0] : 0;
+
 		parent::__construct();
 
-		$item = soyshop_get_item_object($args[0]);
+		$item = soyshop_get_item_object($itemId);
 
 		$this->addLabel("item_name", array(
 			"text" => $item->getName()

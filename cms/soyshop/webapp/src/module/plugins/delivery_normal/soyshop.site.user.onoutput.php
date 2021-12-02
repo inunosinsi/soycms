@@ -5,7 +5,7 @@ class DeliveryNormalOnOutput extends SOYShopSiteUserOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 
 		//カートページのみ動作します。
 		$res = strpos($_SERVER["PATH_INFO"], "/" . soyshop_get_cart_uri());

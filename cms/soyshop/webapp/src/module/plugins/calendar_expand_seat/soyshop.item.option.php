@@ -1,10 +1,6 @@
 <?php
 class CalendarExpandSeatItemOption extends SOYShopItemOptionBase{
 
-	function clear($index, CartLogic $cart){}
-	function compare($postedOption, CartLogic $cart){}
-	function doPost($index, CartLogic $cart){}
-
 	/**
 	 * 商品情報の下に表示される情報
 	 * @param htmlObj, integer index

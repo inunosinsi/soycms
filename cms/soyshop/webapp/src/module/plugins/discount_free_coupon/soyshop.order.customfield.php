@@ -4,11 +4,7 @@ class DiscountFreeCouponOrderCustomfieldModule extends SOYShopOrderCustomfield{
 
 	private $config;
 
-	function clear(CartLogic $cart){
-		//管理画面側では使い勝手が悪いので、ここでセッションのクリアは行わない
-	}
-
-	function doPost($param){
+	function doPost(array $param){
 		//管理画面からの注文の時のみ動作
 		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE && strpos($_SERVER["REQUEST_URI"], "/Order/Register")){
 
@@ -47,9 +43,7 @@ class DiscountFreeCouponOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 	}
 
-	function complete(CartLogic $cart){}
-
-	function hasError($param){
+	function hasError(array $param){
 		//管理画面からの注文の時のみ動作
 		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE && strpos($_SERVER["REQUEST_URI"], "/Order/Register")){
 			$cart = $this->getCart();
@@ -107,9 +101,5 @@ class DiscountFreeCouponOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			return array("discount_free_coupon" => array("name" => "クーポン", "description" => $form->getObject()));
 		}
 	}
-
-	function display($orderId){}
-	function edit($orderId){}
-	function config($orderId){}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "discount_free_coupon", "DiscountFreeCouponOrderCustomfieldModule");

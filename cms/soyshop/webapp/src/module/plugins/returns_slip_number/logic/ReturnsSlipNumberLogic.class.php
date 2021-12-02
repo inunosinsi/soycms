@@ -5,53 +5,27 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 	const MODE_RETURN = "return";
 	const MODE_CANCEL = "cancel";
 
-	private $orderAttributeDao;
-	private $slipDao;
-
 	function __construct(){
 		SOY2::import("module.plugins.returns_slip_number.util.ReturnsSlipNumberUtil");
-		$this->orderAttributeDao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
-		SOY2::import("module.plugins.returns_slip_number.domain.SOYShop_ReturnsSlipNumberDAO");
-		$this->slipDao = SOY2DAOFactory::create("SOYShop_ReturnsSlipNumberDAO");
 	}
 
-	function getSlipNumberByOrderId($orderId){
-		return self::getAttribute($orderId)->getValue1();
-	}
-
-	function getAttribute($orderId){
+	function getSlipNumberByOrderId(int $orderId){
 		try{
-			return $this->orderAttributeDao->get($orderId, ReturnsSlipNumberUtil::PLUGIN_ID);
+			$slips = self::_dao()->getByOrderId($orderId);
 		}catch(Exception $e){
-			return new SOYShop_OrderAttribute();
+			$slips = array();
 		}
+		if(!count($slips)) return "";
+		$txt = "";
+		foreach($slips as $slip){
+			$txt .= $slip->getSlipNumber() . ",";
+		}
+		return trim($txt, ",");
 	}
 
-	function save($orderId, $value){
-
-		$attr = self::getAttribute($orderId);
-		$attr->setValue1(self::convert($value));
-
-		//新規登録
-		if(is_null($attr->getOrderId())){
-			$attr->setOrderId($orderId);
-			$attr->setFieldId(ReturnsSlipNumberUtil::PLUGIN_ID);
-
-			try{
-				$this->orderAttributeDao->insert($attr);
-			}catch(Exception $e){
-				var_dump($e);
-			}
-		}else{
-			try{
-				$this->orderAttributeDao->update($attr);
-			}catch(Exception $e){
-				var_dump($e);
-			}
-		}
-
+	function save(int $orderId, string $value){
 		//既に登録されているもの
-		$oldList = $this->slipDao->getRegisteredNumberListByOrderId($orderId);
+		$oldList = self::_dao()->getRegisteredNumberListByOrderId($orderId);
 
 		//伝票番号の記録テーブルの記録する
 		$numbers = explode(",", $value);
@@ -65,7 +39,7 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 				$obj->setSlipNumber($number);
 				$obj->setOrderId($orderId);
 				try{
-					$this->slipDao->insert($obj);
+					self::_dao()->insert($obj);
 				}catch(Exception $e){
 					//
 				}
@@ -79,7 +53,7 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 			foreach($oldList as $number => $flag){
 				if($flag != 1){
 					try{
-						$this->slipDao->deleteBySlipNumber($number);
+						self::_dao()->deleteBySlipNumber($number);
 					}catch(Exception $e){
 						//var_dump($e);
 					}
@@ -89,23 +63,40 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 	}
 
 	//新しい伝票番号を加える
-	function add($orderId, $new){
-		$slipNumbers = self::getSlipNumberByOrderId($orderId);
-		self::save($orderId, $slipNumbers . "," . $new);
-	}
+	function add(int $orderId, string $new){
+		$new = trim($new);
+		$slipNumberChain = self::getSlipNumberByOrderId($orderId);
 
-	function delete($orderId){
-		try{
-			$this->orderAttributeDao->delete($orderId, ReturnsSlipNumberUtil::PLUGIN_ID);
-
-			//返送伝票番号の方も削除
-			$this->slipDao->deleteByOrderId($orderId);
-		}catch(Exception $e){
-			var_dump($e);
+		//同じ文字列があった場合はスルーする
+		if(is_bool(strpos($slipNumberChain, $new))){
+			self::save($orderId, $slipNumberChain . "," . $new);
 		}
 	}
 
-	function convert($str){
+	function delete(int $orderId){
+		$slipNumbers = explode(",", self::getSlipNumberByOrderId($orderId));
+		if(!count($slipNumbers)) return;
+
+		foreach($slipNumbers as $slipNumber){
+			try{
+				self::_dao()->deleteBySlipNumberWithOrderId(trim($slipNumber), $orderId);
+			}catch(Exception $e){
+				//
+			}
+		}
+
+		try{
+			self::_dao()->deleteByOrderId($orderId);
+		}catch(Exception $e){
+			//
+		}
+	}
+
+	function convert(string $str){
+		return self::_convert($str);
+	}
+
+	private function _convert(string $str){
 		$str = str_replace("、", ",", $str);
 		$str = str_replace(array(" ", "　"), "", $str);
 		$str = preg_replace('/,+/', ",", $str);
@@ -122,20 +113,19 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 		}
 
 		try{
-			$this->slipDao->update($slipNumber);
+			self::_dao()->update($slipNumber);
 		}catch(Exception $e){
 			return false;
 		}
 
 		//一つの注文ですべて返送済みにしたら注文ステータスを返却済みにする @Todo 在庫数
 		SOY2::import("domain.order.SOYShop_Order");
-		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
 
 		//注文が既にキャンセルの場合は注文状態を変更しない
-		if($orderLogic->getById($slipNumber->getOrderId())->getStatus() == SOYShop_Order::ORDER_STATUS_CANCELED) return true;
+		if(soyshop_get_order_object($slipNumber->getOrderId())->getStatus() == SOYShop_Order::ORDER_STATUS_CANCELED) return true;
 
-		$cnt = $this->slipDao->countNoReturnByOrderId($slipNumber->getOrderId());
-		if($cnt === 0){
+		$orderLogic = SOY2Logic::createInstance("logic.order.OrderLogic");
+		if(self::_dao()->countNoReturnByOrderId($slipNumber->getOrderId()) === 0){
 			$orderLogic->changeOrderStatus($slipNumber->getOrderId(), ReturnsSlipNumberUtil::STATUS_CODE);
 		//戻す
 		}else{
@@ -146,9 +136,18 @@ class ReturnsSlipNumberLogic extends SOY2LogicBase{
 
 	private function getSlipNumberById($slipId){
 		try{
-			return $this->slipDao->getById($slipId);
+			return self::_dao()->getById($slipId);
 		}catch(Exception $e){
 			return new SOYShop_ReturnsSlipNumber();
 		}
+	}
+
+	private function _dao(){
+		static $dao;
+		if(is_null($dao)){
+			SOY2::import("module.plugins.returns_slip_number.domain.SOYShop_ReturnsSlipNumberDAO");
+			$dao = SOY2DAOFactory::create("SOYShop_ReturnsSlipNumberDAO");
+		}
+		return $dao;
 	}
 }

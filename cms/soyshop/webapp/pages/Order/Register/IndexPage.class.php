@@ -42,9 +42,11 @@ class IndexPage extends WebPage{
 		self::checkError($cart);
 
 		/* 古いのをクリア */
-		$cart->removeModule($cart->getAttribute("payment_module"));
+		$paymentModuleId = $cart->getAttribute("payment_module");
+		if(is_string($paymentModuleId)) $cart->removeModule($paymentModuleId);
 		$cart->clearAttribute("payment_module");
-		$cart->removeModule($cart->getAttribute("delivery_module"));
+		$deliveryModuleId = $cart->getAttribute("delivery_module");
+		if(is_string($deliveryModuleId)) $cart->removeModule($deliveryModuleId);
 		$cart->clearAttribute("delivery_module");
 		SOYShopPlugin::load("soyshop.point.payment");
 		SOYShopPlugin::invoke("soyshop.point.payment", array(
@@ -219,7 +221,8 @@ class IndexPage extends WebPage{
 		$items = $this->cart->getItems();
 		$user = $this->cart->getCustomerInformation();
 
-		DisplayPlugin::toggle("has_order", (count($items) || strlen($user->getMailAddress())));
+		$mailAddress = (is_string($user->getMailAddress())) ? $user->getMailAddress() : "";
+		DisplayPlugin::toggle("has_order", (count($items) || strlen($mailAddress)));
 
 		$this->cart->clearErrorMessage();
 		$this->cart->save();
@@ -280,9 +283,11 @@ class IndexPage extends WebPage{
 		));
 
 		//在庫切れ
+		$stockErrMsg = $this->cart->getErrorMessage("stock");
+		if(!is_string($stockErrMsg)) $stockErrMsg = "";
 		$this->addLabel("stock_error",array(
-				"text" => $this->cart->getErrorMessage("stock"),
-				"visible" => strlen($this->cart->getErrorMessage("stock")),
+				"text" => $stockErrMsg,
+				"visible" => (strlen($stockErrMsg)),
 		));
 	}
 
@@ -319,7 +324,7 @@ class IndexPage extends WebPage{
 
     	//セッションからユーザIDの取得
     	$user = $this->cart->getCustomerInformation();
-		$has_user = strlen($user->getMailAddress());
+		$has_user = (is_string($user->getMailAddress()) && strlen($user->getMailAddress()));
 
 		//登録あり
 		DisplayPlugin::toggle("has_user", $has_user);
@@ -329,11 +334,11 @@ class IndexPage extends WebPage{
 		DisplayPlugin::toggle("no_user", !$has_user && count($options));
 
 		//登録済みユーザー
-		DisplayPlugin::toggle("user_is_registered", strlen($user->getId()));
+		DisplayPlugin::toggle("user_is_registered", is_numeric($user->getId()));
 
 		//ユーザ情報がある場合
-		DisplayPlugin::toggle("user_info", strlen($user->getMailAddress()));
-		DisplayPlugin::toggle("user_info1", strlen($user->getMailAddress()));
+		DisplayPlugin::toggle("user_info", $has_user);
+		DisplayPlugin::toggle("user_info1", $has_user);
 
     	/* 以下、ユーザー情報 */
     	$this->addLabel("user_id", array(
@@ -576,6 +581,7 @@ class IndexPage extends WebPage{
 
 		//エラー文言
 		$error = $this->cart->getErrorMessage("payment");
+		if(!is_string($error)) $error = "";
 		$this->addLabel("payment_error", array(
 			"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
 			"visible" => (isset($error) && strlen($error))
@@ -602,6 +608,7 @@ class IndexPage extends WebPage{
 
 		//エラー文言
 		$error = $this->cart->getErrorMessage("delivery");
+		if(!is_string($error)) $error = "";
 		$this->addLabel("delivery_error", array(
 				"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
 				"visible" => (isset($error) && strlen($error))
@@ -614,11 +621,13 @@ class IndexPage extends WebPage{
 	function pointForm(){
 		SOYShopPlugin::active("soyshop.point.payment");
 
-		$modules = $this->cart->getPointMethodList($this->cart->getCustomerInformation()->getId());
+		$userId = $this->cart->getCustomerInformation()->getId();
+		if(!is_numeric($userId)) $userId = 0;
+		$modules = $this->cart->getPointMethodList($userId);
 
 		DisplayPlugin::toggle("has_point_method", count($modules));
-		DisplayPlugin::toggle("no_valid_user_for_point", !strlen($this->cart->getCustomerInformation()->getId()));
-		DisplayPlugin::toggle("has_valid_user_for_point", strlen($this->cart->getCustomerInformation()->getId()));
+		DisplayPlugin::toggle("no_valid_user_for_point", $userId === 0);
+		DisplayPlugin::toggle("has_valid_user_for_point", $userId > 0);
 
 		include_once(dirname(__FILE__) . "/component/PointMethodListComponent.class.php");
 		$this->createAdd("point_method_list", "PointMethodListComponent", array(

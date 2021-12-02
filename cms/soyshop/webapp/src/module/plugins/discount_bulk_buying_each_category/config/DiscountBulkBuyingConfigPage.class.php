@@ -60,7 +60,8 @@ class DiscountBulkBuyingConfigPage extends WebPage{
 			DiscountBulkBuyingUtil::saveCategoryCondition($categoryCondition);
 
 			//条件
-			DiscountBulkBuyingUtil::saveCategoryCombinationCondition((int)$_POST["CategoryCombination"]);
+			$cnd = (isset($_POST["CategoryCombination"])) ? (int)$_POST["CategoryCombination"] : DiscountBulkBuyingUtil::COMBINATION_ALL;
+			DiscountBulkBuyingUtil::saveCategoryCombinationCondition($cnd);
 
 			$this->config->redirect("updated");
 		}

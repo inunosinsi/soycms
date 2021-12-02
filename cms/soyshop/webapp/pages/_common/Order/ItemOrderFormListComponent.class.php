@@ -7,7 +7,8 @@ class ItemOrderFormListComponent extends HTMLList {
 	protected function populateItem($itemOrder) {
 
 		$id = (is_numeric($itemOrder->getId())) ? (int)$itemOrder->getId() : 0;
-		$item = soyshop_get_item_object($itemOrder->getItemId());
+		$itemId = (is_numeric($itemOrder->getItemId())) ? (int)$itemOrder->getItemId() : 0;
+		$item = soyshop_get_item_object($itemId);
 
 		$this->addInput("item_delete", array(
 			"name" => "Item[" . $id . "][itemDelete]",
@@ -16,8 +17,8 @@ class ItemOrderFormListComponent extends HTMLList {
 
 		$itemExists = ((int)$itemOrder->getItemId() > 0 && method_exists($item, "getCode") && strlen($item->getCode()) > 0);
 		$this->addLink("item_id", array(
-			"text" => $itemExists ? $item->getCode() : "Deleted Item (ID=" . $itemOrder->getItemId() . ")",
-			"link" => $itemExists ? SOY2PageController::createLink("Item.Detail." . $itemOrder->getItemId()) : "",
+			"text" => $itemExists ? $item->getCode() : "Deleted Item (ID=" . $itemId . ")",
+			"link" => $itemExists ? SOY2PageController::createLink("Item.Detail." . $itemId) : "",
 		));
 
 		$this->addInput("item_name", array(
@@ -51,7 +52,7 @@ class ItemOrderFormListComponent extends HTMLList {
 
 		$orderAttributeList = array();
 		if(class_exists("SOYShopPluginUtil") && SOYShopPluginUtil::checkIsActive("common_item_option")){
-			$orderAttributeList = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : self::getOptionIndex($itemOrder->getItemId());
+			$orderAttributeList = (count($itemOrder->getAttributeList()) > 0) ? $itemOrder->getAttributeList() : self::_getOptionIndex($itemId);
 		}
 
 		$this->createAdd("item_option_list", "_common.Order.ItemOptionFormListComponent", array(
@@ -61,8 +62,8 @@ class ItemOrderFormListComponent extends HTMLList {
 
 	}
 
-	private function getOptionIndex($itemId){
-		if(!isset($itemId) || !is_numeric($itemId)) return array();
+	private function _getOptionIndex(int $itemId){
+		if($itemId === 0) return array();
 
 		$optList = self::attrDao()->getOnLikeSearch($itemId, "item_option_%", true, false);
 		if(!count($optList)) return array();
@@ -72,9 +73,9 @@ class ItemOrderFormListComponent extends HTMLList {
 		if(!count($opts)) return array();
 
 		$array = array();
-		foreach($opts as $index => $value){
-			if(!isset($optList["item_option_" . $index])) continue;	//商品オプションの設定のないものは除く
-			$array[$index] = "";
+		foreach($opts as $idx => $value){
+			if(!isset($optList["item_option_" . $idx])) continue;	//商品オプションの設定のないものは除く
+			$array[$idx] = "";
 		}
 
 		return $array;

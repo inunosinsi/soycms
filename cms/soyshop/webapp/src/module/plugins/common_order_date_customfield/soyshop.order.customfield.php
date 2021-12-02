@@ -1,10 +1,4 @@
 <?php
-/*
- * Created on 2009/07/28
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 
 class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 
@@ -39,7 +33,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 	}
 
-	function doPost($param){
+	function doPost(array $param){
 
 		self::prepare();
 		if(is_null($this->list) && !count($this->list)) return;
@@ -68,10 +62,10 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 			$value = null;
 			switch($obj["type"]){
 				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
-					$value = self::getDateText($obj["value"]["date"]);
+					$value = soyshop_convert_date_string_by_array($obj["value"]["date"]);
 					break;
 				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
-					$value = self::getDateText($obj["value"]["start"]) . " ～ " . self::getDateText($obj["value"]["end"]);
+					$value = soyshop_convert_date_string_by_array($obj["value"]["start"]) . " ～ " . soyshop_convert_date_string_by_array($obj["value"]["end"]);
 					break;
 			}
 
@@ -84,7 +78,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	function complete(CartLogic $cart){
 
 		$orderId = $cart->getAttribute("order_id");
-		if(!strlen($orderId)){
+		if(!is_numeric($orderId)){
 			throw new Exception("No order.id designated for this order custom field.");
 		}
 
@@ -101,11 +95,11 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 
 			switch($config->getType()){
 				case "date":
-					$obj->setValue1($this->getTimeStamp($value["date"]));
+					$obj->setValue1(soyshop_convert_timestamp_on_array($value["date"]));
 					break;
 				case "period":
-					$obj->setValue1($this->getTimeStamp($value["start"]));
-					$obj->setValue2($this->getTimeStamp($value["end"]));
+					$obj->setValue1(soyshop_convert_timestamp_on_array($value["start"]));
+					$obj->setValue2(soyshop_convert_timestamp_on_array($value["end"]));
 					break;
 			}
 
@@ -115,7 +109,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 	}
 
-	function hasError($param){
+	function hasError(array $param){
 
 		self::prepare();
 		if(is_null($this->list) || !count($this->list)) return array();
@@ -142,11 +136,10 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 					//スルー
 					break;
 				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
-
 					$value = $obj["value"];
-					$start = self::getTimestamp($value["start"]);
-					$end = self::getTimestamp($value["end"]);
-					if($start>$end){
+					$start = soyshop_convert_timestamp_on_array($value["start"]);
+					$end = soyshop_convert_timestamp_on_array($value["end"]);
+					if($start > $end){
 						$error = "入力した内容が正しくありません。";
 					}
 					break;
@@ -202,7 +195,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		return $array;
 	}
 
-	function display($orderId){
+	function display(int $orderId){
 
 		self::prepare();
 		if(is_null($this->list) || !count($this->list)) return array();
@@ -229,10 +222,10 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 
 			switch($list[$obj->getFieldId()]["type"]){
 				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
-					$value["value"] = self::getTimeText($obj->getValue1());
+					$value["value"] = soyshop_convert_date_string($obj->getValue1());
 					break;
 				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
-					$value["value"] = self::getTimeText($obj->getValue1()) . " ～ " . self::getTimeText($obj->getValue2());
+					$value["value"] = soyshop_convert_date_string($obj->getValue1()) . " ～ " . soyshop_convert_date_string($obj->getValue2());
 					break;
 			}
 
@@ -246,7 +239,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	 * @param int $orderID
 	 * @return array labelとformの連想配列を格納
 	 */
-	function edit($orderId){
+	function edit(int $orderId){
 
 		self::prepare();
 		if(is_null($this->list) || !count($this->list)) return array();
@@ -260,61 +253,67 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		if(count($attrList) === 0) return array();
 
 		try{
-			$attributes = $this->dao->getByOrderId($orderId);
+			$attrs = $this->dao->getByOrderId($orderId);
 		}catch(Exception $e){
-			return array();
+			$attrs = array();
 		}
+		if(!count($attrs)) return array();
 
 		//値が登録されていなければフィールドを追加
 		foreach($attrList as $fieldId => $attrConf){
-			if(!isset($attributes[$fieldId])){
+			if(!isset($attrs[$fieldId])){
 				$attrObj = new SOYShop_OrderDateAttribute();
 				$attrObj->setFieldId($fieldId);
 				$attrObj->setOrderId($orderId);
-				$attributes[$fieldId] = $attrObj;
+				$attrs[$fieldId] = $attrObj;
 			}
 		}
 
+		SOY2::import("module.plugins.common_order_date_customfield.component.DateSelectBoxComponent");
+
 		$array = array();
-		foreach($attributes as $attribute){
-			if(!isset($attrList[$attribute->getFieldId()])) continue;
+		foreach($attrs as $attr){
+			if(!isset($attrList[$attr->getFieldId()])) continue;
 			//ラベルとフォームを放り込む変数
-			$attrObjects = array();
-			$htmls = array();
-			$attrObjects["label"] = $attrList[$attribute->getFieldId()]["label"];
-			$name = "Customfield[" . $attribute->getFieldId() . "]";
-			switch($attrList[$attribute->getFieldId()]["type"]){
+			$attrObj = array();
+			$html = array();
+			$attrObj["label"] = $attrList[$attr->getFieldId()]["label"];
+			$name = "Customfield[" . $attr->getFieldId() . "]";
+			switch($attrList[$attr->getFieldId()]["type"]){
 				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
 					$name = $name . "[date]";
-					$value1 = (!is_null($attribute->getValue1())) ? date("Y-m-d", $attribute->getValue1()) : "--";
-					$dateArray = explode("-", $value1);
-					$htmls[] = self::buildSelectBox($dateArray[0], $name, "year") . "年";
-					$htmls[] = self::buildSelectBox($dateArray[1], $name, "month") . "月";
-					$htmls[] = self::buildSelectBox($dateArray[2], $name, "day") . "日";
+					$v = (is_numeric($attr->getValue1())) ? (int)$attr->getValue1() : 0;
+					$dateArr = soyshop_convert_date_array_by_timestamp($v);
+					
+					$html[] = DateSelectBoxComponent::build((int)$dateArr["year"], $name, "year") . "年";
+					$html[] = DateSelectBoxComponent::build((int)$dateArr["month"], $name, "month") . "月";
+					$html[] = DateSelectBoxComponent::build((int)$dateArr["day"], $name, "day") . "日";
 
 					break;
 				case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
 					{
 						$startName = $name . "[start]";
-						$value1 = (!is_null($attribute->getValue1())) ? date("Y-m-d", $attribute->getValue1()) : "--";
-						$dateArray = explode("-", $value1);
-						$htmls[] = self::buildSelectBox($dateArray[0], $startName, "year") . "年";
-						$htmls[] = self::buildSelectBox($dateArray[1], $startName, "month") . "月";
-						$htmls[] = self::buildSelectBox($dateArray[2], $startName, "day") . "日";
-						$htmls[] = "～";
+						$v = (is_numeric($attr->getValue1())) ? (int)$attr->getValue1() : 0;
+						$dateArr = soyshop_convert_date_array_by_timestamp($v);
+
+						$html[] = DateSelectBoxComponent::build((int)$dateArr["year"], $startName, "year") . "年";
+						$html[] = DateSelectBoxComponent::build((int)$dateArr["month"], $startName, "month") . "月";
+						$html[] = DateSelectBoxComponent::build((int)$dateArr["day"], $startName, "day") . "日";
+						$html[] = "～";
 					}
 					{
 						$endName = $name . "[end]";
-						$value2 = (!is_null($attribute->getValue2())) ? date("Y-m-d", $attribute->getValue2()) : "--";
-						$dateArray = explode("-", $value2);
-						$htmls[] = self::buildSelectBox($dateArray[0], $endName, "year") . "年";
-						$htmls[] = self::buildSelectBox($dateArray[1], $endName, "month") . "月";
-						$htmls[] = self::buildSelectBox($dateArray[2], $endName, "day") . "日";
+						$v = (is_numeric($attr->getValue2())) ? (int)$attr->getValue2() : 0;
+						$dateArr = soyshop_convert_date_array_by_timestamp($v);
+
+						$html[] = DateSelectBoxComponent::build((int)$dateArr["year"], $endName, "year") . "年";
+						$html[] = DateSelectBoxComponent::build((int)$dateArr["month"], $endName, "month") . "月";
+						$html[] = DateSelectBoxComponent::build((int)$dateArr["day"], $endName, "day") . "日";
 					}
 					break;
 			}
-			$attrObjects["form"] = implode("\n", $htmls);
-			$array[] = $attrObjects;
+			$attrObj["form"] = implode("\n", $html);
+			$array[] = $attrObj;
 		}
 
 		return $array;
@@ -325,7 +324,7 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 	 * @param int $orderId
 	 * @return array saveするための配列
 	 */
-	function config($orderId){
+	function config(int $orderId){
 		self::prepare();
 		if(is_null($this->list) || !count($this->list)) return array();
 
@@ -340,23 +339,23 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		$list = $array;
 
 		try{
-			$attributes = $this->dao->getByOrderId($orderId);
+			$attrs = $this->dao->getByOrderId($orderId);
 		}catch(Exception $e){
-			$attributes = array();
+			$attrs = array();
 		}
 
 		//値が登録されていなければフィールドを追加
 		foreach($list as $fieldId => $attrConf){
-			if(!isset($attributes[$fieldId])){
+			if(!isset($attrs[$fieldId])){
 				$attrObj = new SOYShop_OrderDateAttribute();
 				$attrObj->setFieldId($fieldId);
 				$attrObj->setOrderId($orderId);
-				$attributes[$fieldId] = $attrObj;
+				$attrs[$fieldId] = $attrObj;
 			}
 		}
 
 		$array = array();
-		foreach($attributes as $obj){
+		foreach($attrs as $obj){
 			if(!isset($list[$obj->getFieldId()])) continue;
 			$value["label"] = $list[$obj->getFieldId()]["label"];
 			$value["value1"] = $obj->getValue1();
@@ -367,56 +366,6 @@ class CommonOrderDateCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 
 		return $array;
-	}
-
-	private function getTimestamp($value){
-		return mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
-	}
-
-	private function getDateText($value){
-		return $value["year"] . "-" . $value["month"] . "-" . $value["day"];
-	}
-	private function getTimeText($value){
-		return date("Y", $value) . "-" . date("m", $value) . "-" . date("d", $value);
-	}
-
-	private function buildSelectBox($value, $name, $type="year"){
-		$html[] = "<select name=\"" . $name . "[" . $type . "]\">";
-
-		switch($type){
-			case "year":
-				$year = date("Y", time());
-				$start = $year - 5;
-				$end = $year + 4;
-				for($i = $start; $i <= $end; $i++){
-					$html[] = self::buildSelectBoxOption($i, $value);
-				}
-				break;
-			case "month":
-				for($i = 1; $i <= 12; $i++){
-					if(strlen($i) === 1) $i = "0" . $i;
-					$html[] = self::buildSelectBoxOption($i, $value);
-				}
-				break;
-			case "day":
-				for($i = 1; $i <= 31; $i++){
-					if(strlen($i) === 1) $i = "0" . $i;
-					$html[] = self::buildSelectBoxOption($i, $value);
-				}
-				break;
-		}
-
-		$html[] = "</select>";
-
-		return implode("\n", $html);
-	}
-
-	private function buildSelectBoxOption($int, $value){
-		if($int == $value){
-			return "<option value=\"" . $int . "\" selected=\"selected\">" . $int . "</option>";
-		}else{
-			return "<option value=\"" . $int . "\">" . $int . "</option>";
-		}
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "common_order_date_customfield", "CommonOrderDateCustomfieldModule");

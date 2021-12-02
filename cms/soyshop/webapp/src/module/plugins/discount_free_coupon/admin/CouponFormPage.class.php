@@ -14,10 +14,12 @@ class CouponFormPage extends WebPage {
 
 		//顧客メールアドレスが取得できるか？
 		$mailAddress = $this->cart->getCustomerInformation()->getMailAddress();
-		DisplayPlugin::toggle("no_coupon_code_area", is_null($mailAddress));
-		DisplayPlugin::toggle("coupon_code_area", isset($mailAddress));
+		if(!is_string($mailAddress)) $mailAddress = "";
+		DisplayPlugin::toggle("no_coupon_code_area", !strlen($mailAddress));
+		DisplayPlugin::toggle("coupon_code_area", strlen($mailAddress));
 
 		$error = $this->cart->getAttribute("discount_free_coupon.error");
+		if(!is_string($error)) $error = "";
 		DisplayPlugin::toggle("coupon_error", strlen($error));
 		$this->addLabel("coupon_error", array(
 			"text" => $error

@@ -23,7 +23,7 @@ class SOYMailConnectorOrderCustomfield extends SOYShopOrderCustomfield{
 		$cart->clearOrderAttribute(self::PLUGIN_ID . ".value");
 	}
 
-	function doPost($param){
+	function doPost(array $param){
 
 		$this->prepare();
 		$cart = $this->getCart();
@@ -98,7 +98,7 @@ class SOYMailConnectorOrderCustomfield extends SOYShopOrderCustomfield{
 				if(strlen($cart->getCustomerInformation()->getPassword()) > 0){
 
 					//念の為、すでに顧客登録がないかメールアドレスで調べる
-					if(self::checkNoRegisterMailAdress($cart->getCustomerInformation())){
+					if(self::_checkNoRegisterMailAdress($cart->getCustomerInformation()->getMailAddress())){
 						$text = htmlspecialchars($config["first_order_add_point_text"], ENT_QUOTES, "UTF-8");
 						$obj["description"] .= "<br>" . str_replace("#POINT#", $config["first_order_add_point"], $text);
 					}
@@ -111,14 +111,12 @@ class SOYMailConnectorOrderCustomfield extends SOYShopOrderCustomfield{
 		return array(self::PLUGIN_ID => $obj);
 	}
 
-	private function checkNoRegisterMailAdress($mailAddress){
+	private function _checkNoRegisterMailAdress(string $mailAddress){
 		try{
-			$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress);
+			return ((int)SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId() > 0);
 		}catch(Exception $e){
-			return true;
+			return false;
 		}
-
-		return false;
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "soymail_connector", "SOYMailConnectorOrderCustomfield");

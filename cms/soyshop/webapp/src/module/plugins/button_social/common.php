@@ -27,10 +27,9 @@ class ButtonSocialCommon {
 
         //詳細ページの場合、商品のサムネイルを優先
         if($page->getType() == SOYShop_Page::TYPE_DETAIL){
-                $item = $page->getObject()->getCurrentItem();
-                if(!is_null($item->getAttribute("image_small"))){
-                    $imagePath = soyshop_get_image_full_path($item->getAttribute("image_small"));
-                }
+            $item = $page->getObject()->getCurrentItem();
+			$smallImagePath = $item->getAttribute("image_small");
+            if(is_string($smallImagePath)) $imagePath = soyshop_get_image_full_path($smallImagePath);
         }
 
         if(is_null($imagePath)){

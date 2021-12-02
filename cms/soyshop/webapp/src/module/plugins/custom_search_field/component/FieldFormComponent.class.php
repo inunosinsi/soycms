@@ -3,6 +3,7 @@ SOY2::import("module.plugins.custom_search_field.util.CustomSearchFieldUtil");
 class FieldFormComponent {
 
     public static function buildForm($fieldId, $field, $value = null, $lang = UtilMultiLanguageUtil::LANGUAGE_JP) {
+		if(is_null($value)) $value = "";
 
         switch ($field["type"]) {
             case CustomSearchFieldUtil :: TYPE_STRING :

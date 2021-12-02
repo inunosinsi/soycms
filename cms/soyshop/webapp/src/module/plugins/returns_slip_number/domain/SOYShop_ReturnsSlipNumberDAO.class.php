@@ -39,6 +39,11 @@ abstract class SOYShop_ReturnsSlipNumberDAO extends SOY2DAO {
 	abstract function deleteBySlipNumber($slipNumber);
 
 	/**
+	 * @query slip_number = :slipNumber AND order_id = :orderId
+	 */
+	abstract function deleteBySlipNumberWithOrderId($slipNumber, $orderId);
+
+	/**
 	 * @final
 	 */
 	function getRegisteredNumberListByOrderId($orderId){

@@ -15,22 +15,22 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 	private $cart;
 
 	function __construct(){
-		SOY2DAOFactory::importEntity("SOYShop_DataSets");
+
 		SOY2::imports("module.plugins.discount_free_coupon.domain.*");
-		SOY2::import("module.plugins.discount_free_coupon.util.DiscountFreeCouponUtil");
 	}
 
 	/**
 	 * 使用可能金額の範囲内におさまっているかどうかを返す
 	 * @return Boolean
 	 */
-	function checkItemPrice($total){
+	function checkItemPrice(int $total){
 		static $res;
 		if(is_null($res)){
-			$config = DiscountFreeCouponUtil::getConfig();
+			SOY2::import("module.plugins.discount_free_coupon.util.DiscountFreeCouponUtil");
+			$cnf = DiscountFreeCouponUtil::getConfig();
 
-	  		$min = (isset($config["min"]) && strlen($config["min"]) && is_numeric($config["min"])) ? (int)$config["min"] : 0;
-	 		$max = (isset($config["max"]) && strlen($config["max"]) && is_numeric($config["max"])) ? (int)$config["max"] : 1000000000; //$maxが空だった場合、限りなく大きな数字を代入しておく
+	  		$min = (isset($cnf["min"]) && strlen($cnf["min"]) && is_numeric($cnf["min"])) ? (int)$cnf["min"] : 0;
+	 		$max = (isset($cnf["max"]) && strlen($cnf["max"]) && is_numeric($cnf["max"])) ? (int)$cnf["max"] : 1000000000; //$maxが空だった場合、限りなく大きな数字を代入しておく
 
 	  		$res = ($total > $min || $total < $max);
 		}
@@ -41,24 +41,25 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 	 * @param string code, integer userId
 	 * @return boolean
 	 */
-	function checkUsable($code, $userId){
+	function checkUsable(string $code, int $userId){
 
 		//クーポンが存在するかチェック
-		if(!$this->checkCouponExists($code)) return false;
+		if(!self::_checkCouponExists($code)) return false;
 
 		//有効期限のチェック
-		$coupon = self::getCouponByCode($code); //チェックする関数内で取得したものを取り出す
-		if(!self::checkTimeLimit($coupon)) return false;
+		$coupon = self::_getCouponByCode($code); //チェックする関数内で取得したものを取り出す
+		if(!self::_checkTimeLimit($coupon)) return false;
 
-		//ユーザIDがnullの場合は初めての購入になるので、購入履歴のチェックはスルーする
-		if(isset($userId) && !$this->checkHistory($coupon, $userId)) return false;
+		//ユーザIDが0の場合は初めての購入になるので、購入履歴のチェックはスルーする
+		if($userId === 0) return true;
 
-		return true;
+		//二回目移行の場合は履歴を確認する
+		return (self::_checkHistory($coupon, $userId));
 	}
 
-	function checkEachCouponUsable($code, $itemPrice){
+	function checkEachCouponUsable(string $code, int $itemPrice){
 
-		$coupon = self::getCouponByCode($code);
+		$coupon = self::_getCouponByCode($code);
 
 		//各クーポンの利用価格チェック
 		$priceLimitMin = $coupon->getPriceLimitMin();
@@ -86,27 +87,24 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 	 * @param string code
 	 * @return boolean
 	 */
-	function checkCouponExists($code){
-		return (!is_null(self::getCouponByCode($code)->getId()));
+	private function _checkCouponExists(string $code){
+		$coupon = self::_getCouponByCode($code);
+		return (is_numeric($coupon->getId()) && $coupon->getId() > 0);
 	}
 
 	/**
 	 * @param object SOYShop_Coupon
 	 * @return boolean
 	 */
-	function checkTimeLimit(SOYShop_Coupon $coupon){
-		$timeLimitStart = $coupon->getTimeLimitStart();
-		$timeLimitEnd = $coupon->getTimeLimitEnd();
-		return ($timeLimitStart < time() && $timeLimitEnd > time());
+	private function _checkTimeLimit(SOYShop_Coupon $coupon){
+		return ($coupon->getTimeLimitStart() < time() && $coupon->getTimeLimitEnd() > time());
 	}
 
 	/**
 	 * @param object SOYShop_Coupon coupon, integer userId
 	 * @return boolean
 	 */
-	function checkHistory(SOYShop_Coupon $coupon, $userId){
-		$couponId = $coupon->getId();
-
+	private function _checkHistory(SOYShop_Coupon $coupon, int $userId){
 		$dao = new SOY2DAO();
 
 		$sql = "SELECT * ".
@@ -115,24 +113,24 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 						"coupon_id = :couponId;";
 
 		try{
-			$result = $dao->executeQuery($sql, array(":userId"=>$userId, ":couponId"=>$couponId));
+			$res = $dao->executeQuery($sql, array(":userId" => $userId, ":couponId" => $coupon->getId()));
 		}catch(Exception $e){
 			return true;
 		}
 
 		//使用回数のチェック
-		return (count($result) < $coupon->getCount());
+		return (count($res) < $coupon->getCount());
 	}
 
-	function getDiscountPriceByCode($code){
+	function getDiscountPriceByCode(string $code){
 		return self::_getDiscountPrice($code, $this->cart->getItemPrice());
 	}
 
-	function getDiscountPriceByCodeWithTotalPrice($code, $total){
+	function getDiscountPriceByCodeWithTotalPrice(string $code, int $total){
 		return self::_getDiscountPrice($code, $total);
 	}
 
-	private function _getDiscountPrice($code, $total){
+	private function _getDiscountPrice(string $code, int $total){
 		$coupon = self::getCouponByCode(trim($code));
 		if(is_null($coupon->getId())) return 0;
 
@@ -159,10 +157,15 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 		return 0;
 	}
 
-	function getCouponByCode($code){
+	function getCouponByCode(string $code){
+		return self::_getCouponByCode($code);
+	}
+
+	private function _getCouponByCode(string $code){
 		static $coupons, $dao;	//複数個のクーポンコードに対応できるように
-		if(is_null($coupons)) {
+		if(!is_array($coupons)) {
 			$coupons = array();
+			SOY2::import("module.plugins.discount_free_coupon.domain.SOYShop_CouponDAO");
 			$dao = SOY2DAOFactory::create("SOYShop_CouponDAO");
 		}
 
@@ -177,8 +180,8 @@ class DiscountFreeCouponLogic extends SOY2LogicBase{
 		return $coupons[$code];
 	}
 
-	function getCouponNameListByIds($ids){
-		if(!is_array($ids) || !count($ids)) return array();
+	function getCouponNameListByIds(array $ids){
+		if(!count($ids)) return array();
 		return SOY2DAOFactory::create("SOYShop_CouponDAO")->getByIds($ids);
 	}
 

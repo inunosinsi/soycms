@@ -189,4 +189,20 @@ abstract class SOYShop_OrderDAO extends SOY2DAO{
 
 	abstract function deleteAll();
 
+	/**
+	 * @final
+	 * 最初の有効な一件目の注文を取得する
+	 */
+	function getFirstOrderDate(){
+		static $timestamp;
+		if(!is_numeric($timestamp)){
+			try{
+				$res = $this->executeQuery("SELECT order_date FROM soyshop_order ORDER BY order_date ASC LIMIT 1");
+			}catch(Exception $e){
+				$res = array();
+			}
+			$timestamp = (isset($res[0]["order_date"])) ? (int)$res[0]["order_date"] : time();
+		}
+		return $timestamp;
+	}
 }

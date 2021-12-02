@@ -18,7 +18,7 @@
 	$soycmsDir = rtrim(dirname(SOY2PageController::createRelativeLink("./")), "/") . "/soycms";
 	$hideSideMenu = ( isset($_COOKIE["soyshop-hide-side-menu"]) && $_COOKIE["soyshop-hide-side-menu"] == "true" );
 	$time = SOYSHOP_BUILD_TIME;
-	$isSubMenu = (strlen($subMenu) > 0);
+	$isSubMenu = (is_string($subMenu) && strlen($subMenu) > 0);
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/css/dashboard.css?<?php echo $time;?>">

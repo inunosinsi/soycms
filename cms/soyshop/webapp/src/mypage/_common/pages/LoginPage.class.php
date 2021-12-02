@@ -110,11 +110,13 @@ class LoginPage extends MainMyPagePageBase{
 		));
 
 		//エラー周り
-		DisplayPlugin::toggle("has_error", strlen($mypage->getErrorMessage("login_error")));
+		$loginErrMsg = $mypage->getErrorMessage("login_error");
+		if(!is_string($loginErrMsg)) $loginErrMsg = "";
+		DisplayPlugin::toggle("has_error", strlen($loginErrMsg));
 
 		//エラーメッセージ
 		$this->createAdd("login_error", "ErrorMessageLabel", array(
-			"text" => $mypage->getErrorMessage("login_error")
+			"text" => $loginErrMsg
 		));
 
 		$mypage->clearErrorMessage();
@@ -122,13 +124,13 @@ class LoginPage extends MainMyPagePageBase{
 
 		//ソーシャルログイン
 		SOYShopPlugin::load("soyshop.social.login");
-		$buttons = SOYShopPlugin::invoke("soyshop.social.login", array(
+		$btns = SOYShopPlugin::invoke("soyshop.social.login", array(
 			"mode" => "mypage_login"
 		))->getButtons();
 
-		DisplayPlugin::toggle("social_login", count($buttons));
+		DisplayPlugin::toggle("social_login", count($btns));
 		$this->createAdd("social_login_list", "_common.login.SocialLoginListComponent", array(
-			"list" => $buttons
+			"list" => $btns
 		));
 	}
 

@@ -86,7 +86,7 @@ function get_uri_and_args(){
 		"args" => $args
 	));
 
-	$newUri = $delegate->getUri();
+	$newUri = (string)$delegate->getUri();
 	if(strlen($newUri)) $uri = $newUri;
 
 	$newArgs = $delegate->getArgs();

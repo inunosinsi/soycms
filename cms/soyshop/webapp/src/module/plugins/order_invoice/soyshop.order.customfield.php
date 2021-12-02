@@ -1,32 +1,13 @@
 <?php
-/*
- * Created on 2009/07/28
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 
 class OrderInvoiceCustomfieldModule extends SOYShopOrderCustomfield{
 
-	function display($orderId){
-		$attr = self::getAttributeByOrderId($orderId);
-		if(strlen($attr->getValue1())){
-			return array(array("name" => "納品書の最終出力日", "value" => date("Y-m-d H:i:s", $attr->getValue1())));
+	function display(int $orderId){
+		$outputDate = soyshop_get_order_date_attribute_value($orderId, "order_invoice_mode_delivery", "int");
+		if(is_numeric($outputDate)){
+			return array(array("name" => "納品書の最終出力日", "value" => date("Y-m-d H:i:s", $outputDate)));
 		}
-	}
-
-	private function getAttributeByOrderId($orderId){
-		try{
-			return self::dao()->get($orderId, "order_invoice_mode_delivery");
-		}catch(Exception $e){
-			return new SOYShop_OrderDateAttribute();
-		}
-	}
-
-	private function dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
-		return $dao;
+		return array();
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "order_invoice", "OrderInvoiceCustomfieldModule");

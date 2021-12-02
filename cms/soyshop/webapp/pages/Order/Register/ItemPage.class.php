@@ -13,8 +13,10 @@ class ItemPage extends WebPage{
 		if(soy2_check_token()){
 
 			//モジュールをクリアする
-			$this->cart->removeModule($this->cart->getAttribute("payment_module"));
-			$this->cart->removeModule($this->cart->getAttribute("delivery_module"));
+			$paymentModuleId = $this->cart->getAttribute("payment_module");
+			if(is_string($paymentModuleId)) $this->cart->removeModule($paymentModuleId);
+			$deliveryModuleId = $this->cart->getAttribute("delivery_module");
+			if(is_string($deliveryModuleId)) $this->cart->removeModule($deliveryModuleId);
 			$this->cart->removeModule("consumption_tax");
 
 			$items = $this->cart->getItems();

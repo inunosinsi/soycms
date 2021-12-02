@@ -12,4 +12,3 @@ class UserCustomSearchFieldInfo extends SOYShopInfoPageBase{
 	}
 }
 SOYShopPlugin::extension("soyshop.info", "user_custom_search_field", "UserCustomSearchFieldInfo");
-?>

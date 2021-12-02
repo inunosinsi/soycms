@@ -30,7 +30,7 @@ class CategorySelectComponent extends HTMLSelect{
 		$this->setOptions(array());
 
 		//嘘を設定
-		if(strlen($this->selected) > 0){
+		if(is_string($this->selected) && strlen($this->selected) > 0){
 			$this->setOptions(array($this->selected =>$this->label));
 		}
 

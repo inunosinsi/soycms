@@ -32,7 +32,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 		if($item->getType() == SOYShop_Item::TYPE_GROUP || $item->getType() == SOYShop_Item::TYPE_DOWNLOAD_GROUP){
 	        $type = ($obj instanceof SOYShop_DetailPage && method_exists($obj, "getSortType")) ? $obj->getSortType() : "item_code";
 	        $order = ($obj instanceof SOYShop_DetailPage && method_exists($obj, "getSortOrder") && $obj->getSortOrder() == 1) ? $type . " desc" : $type . " asc";
-	        $childItems = SOY2Logic::createInstance("logic.shop.item.SearchItemUtil", array())->getChildItems($item->getId(), $order);
+	        $childItems = soyshop_get_item_children($item->getId(), false, $order);
 	    }
 	}
     if(!$htmlObj instanceof SOYShop_ChildItemListComponent){
@@ -61,7 +61,7 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 
 	//商品名サブタイトル
 	$htmlObj->addLabel("item_subtitle_visible", array(
-		"text" => (strlen($item->getSubtitle())),
+		"text" => (is_string($item->getSubtitle()) && strlen($item->getSubtitle())),
 		"soy2prefix" => SOYSHOP_SITE_PREFIX
 	));
 
@@ -205,7 +205,9 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 
     //cms:id="item_small_image"とcms:id="item_large_image"
     foreach(array("small", "large") as $tp){
-        $img = soyshop_convert_file_path($item->getAttribute("image_" . $tp), $item);
+		$v = $item->getAttribute("image_" . $tp);
+		if(!is_string($v)) $v = "";
+		$img = soyshop_convert_file_path($v, $item);
         $key = "item_" . $tp . "_image";
         $htmlObj->addImage($key, array(
             "src" => $img,
@@ -302,7 +304,9 @@ function soyshop_output_item($htmlObj, SOYShop_Item $item, $obj=null){
 
     //cms:id="parent_small_image"とcms:id="parent_large_image"
     foreach(array("small", "large") as $tp){
-        $img = soyshop_convert_file_path($parent->getAttribute("image_" . $tp), $parent);
+		$v = $parent->getAttribute("image_" . $tp);
+		if(!is_string($v)) $v = "";
+        $img = soyshop_convert_file_path($v, $parent);
         $key = "parent_" . $tp . "_image";
         $htmlObj->addImage($key, array(
             "soy2prefix" => SOYSHOP_SITE_PREFIX,

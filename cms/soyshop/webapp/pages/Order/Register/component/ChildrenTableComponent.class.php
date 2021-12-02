@@ -8,7 +8,7 @@ class ChildrenTableComponent {
 
 		SOYShopPlugin::load("soyshop.admin.order.children");
 		$html = SOYShopPlugin::invoke("soyshop.admin.order.children", array("items" => $children))->getHtml();
-		if(strlen($html)) return $html;
+		if(is_string($html) && strlen($html)) return $html;
 
 		include_once(dirname(__FILE__) . "/item/ChildrenTablePage.class.php");
         $table = SOY2HTMLFactory::createInstance("ChildrenTablePage");

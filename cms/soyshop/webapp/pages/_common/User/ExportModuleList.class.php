@@ -15,9 +15,10 @@ class ExportModuleList extends HTMLList{
 			"text" => $entity["title"],
 		));
 
+		$dsp = (isset($entity["description"]) && is_string($entity["description"])) ? $entity["description"] : "";
 		$this->addLabel("export_description", array(
-			"html" => $entity["description"],
-			"visible" => (strlen($entity["description"]) > 0)
+			"html" => $dsp,
+			"visible" => (strlen($dsp) > 0)
 		));
 	}
 

@@ -330,13 +330,14 @@ class DetailPage extends WebPage{
     	));
 
 		//パスワード 登録済みの場合 表示
+		$pw = (is_string($user->getPassword())) ? $user->getPassword() : "";
     	$this->addModel("password_is_registered", array(
-    		"visible" => strlen($user->getPassword())
+    		"visible" => (strlen($pw))
     	));
 
     	//パスワード 登録していない場合 表示
     	$this->addModel("password_is_not_registered", array(
-    		"visible" => (!strlen($user->getPassword()))
+    		"visible" => (!strlen($pw))
     	));
 
     	//パスワード 変更リンク

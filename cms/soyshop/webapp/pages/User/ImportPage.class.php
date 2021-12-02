@@ -157,7 +157,7 @@ class ImportPage extends WebPage{
 				//ポイントの付与
 				if(strlen($user->getId()) && isset($point) && (int)$point > 0){
 					if(!$this->pointLogic) $this->pointLogic = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic");
-					$oldPoint = $this->pointLogic->getPointByUserId($user->getId())->getPoint();
+					$oldPoint = $this->pointLogic->getPointObjByUserId($user->getId())->getPoint();
 
 					if($point != $oldPoint){
 						$this->pointLogic->updatePoint($point, $user->getId());

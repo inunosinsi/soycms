@@ -6,22 +6,22 @@
 
 class FacebookLoginUserOnOutput extends SOYShopSiteUserOnOutputAction{
 
-	function onOutput($html){
-		//ログインページのみ
-		if(strpos($_SERVER["REQUEST_URI"], "/" . soyshop_get_mypage_uri() . "/login") !== false){
-			SOY2::import("module.plugins.facebook_login.util.FacebookLoginUtil");
-			$config = FacebookLoginUtil::getConfig();
-			if(!isset($config["app_id"]) || !isset($config["api_version"])) return $html;
-			$appId = htmlspecialchars(trim($config["app_id"]), ENT_QUOTES, "UTF-8");
-			$version = htmlspecialchars(trim($config["api_version"]), ENT_QUOTES, "UTF-8");
+	function onOutput(string $html){
+		if(is_bool(strpos($_SERVER["REQUEST_URI"], "/" . soyshop_get_mypage_uri() . "/login"))) return $html;
 
-			if(stripos($html, '<body>') !== false){
-				$html = str_ireplace('<body>', '<body>' . "\n" . self::buildFbRoot($appId, $version), $html);
-			}elseif(preg_match('/<body\\s[^>]+>/', $html)){
-				$html = preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . self::buildFbRoot($appId, $version), $html);
-			}else{
-				//何もしない
-			}
+		//ログインページのみ
+		SOY2::import("module.plugins.facebook_login.util.FacebookLoginUtil");
+		$config = FacebookLoginUtil::getConfig();
+		if(!isset($config["app_id"]) || !isset($config["api_version"])) return $html;
+		$appId = htmlspecialchars(trim($config["app_id"]), ENT_QUOTES, "UTF-8");
+		$version = htmlspecialchars(trim($config["api_version"]), ENT_QUOTES, "UTF-8");
+
+		if(stripos($html, '<body>') !== false){
+			$html = str_ireplace('<body>', '<body>' . "\n" . self::buildFbRoot($appId, $version), $html);
+		}elseif(preg_match('/<body\\s[^>]+>/', $html)){
+			$html = preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . self::buildFbRoot($appId, $version), $html);
+		}else{
+			//何もしない
 		}
 
 		return $html;

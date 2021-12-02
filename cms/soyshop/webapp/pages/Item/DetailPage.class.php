@@ -218,7 +218,7 @@ class DetailPage extends WebPage{
 	var $config;
 
 	function __construct($args) {
-		$this->id = (isset($args[0])) ? (int)$args[0] : null;
+		$this->id = (isset($args[0])) ? (int)$args[0] : 0;
 
 		$this->config = SOYShop_ShopConfig::load();
 		MessageManager::addMessagePath("admin");
@@ -249,7 +249,7 @@ class DetailPage extends WebPage{
 		self::buildFavoriteButton();
 	}
 
-	private function _buildForm($id){
+	private function _buildForm(int $id){
 
 		$item = ($this->obj) ? $this->obj : soyshop_get_item_object($id);
 		if(is_null($item->getId())){
@@ -450,10 +450,11 @@ class DetailPage extends WebPage{
 
 		/* parent item */
 		DisplayPlugin::toggle("item_parent_area", $item->isChild());
-		$parentItem = soyshop_get_item_object($item->getType());
+		$parentItemId = (is_numeric($item->getType())) ? (int)$item->getType() : 0;
+		$parentItem = soyshop_get_item_object($parentItemId);
 
 		$this->addLink("parent_item_link", array(
-			"link" => SOY2PageController::createLink("Item.Detail." . $item->getType()),
+			"link" => SOY2PageController::createLink("Item.Detail." . $parentItemId),
 			"text" => (is_numeric($parentItem->getId())) ? $parentItem->getName() : "[この商品グループは削除されています]"
 		));
 
@@ -498,17 +499,19 @@ class DetailPage extends WebPage{
 			"readonly" => $readOnly
 		));
 
+		$smallImagePath = $item->getAttribute("image_small");
 		DisplayPlugin::toggle("item_image", $this->config->getDisplayItemImage());
 		$this->createAdd("item_small_image","_common.Item.ImageSelectComponent", array(
 			"domId" => "item_small_image",
 			"name" => "Item[config][image_small]",
-			"value" => soyshop_convert_file_path_on_admin($item->getAttribute("image_small"))
+			"value" => (is_string($smallImagePath)) ? soyshop_convert_file_path_on_admin($smallImagePath) : null
 		));
 
+		$largeImagePath = $item->getAttribute("image_large");
 		$this->createAdd("item_large_image","_common.Item.ImageSelectComponent", array(
 			"domId" => "item_large_image",
 			"name" => "Item[config][image_large]",
-			"value" => soyshop_convert_file_path_on_admin($item->getAttribute("image_large"))
+			"value" => (is_string($largeImagePath)) ? soyshop_convert_file_path_on_admin($largeImagePath) : null
 		));
 
 		//error

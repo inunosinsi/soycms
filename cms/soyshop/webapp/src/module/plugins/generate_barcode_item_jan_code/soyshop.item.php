@@ -7,9 +7,7 @@ class GenerateBarcodeItemJanCodeItem extends SOYShopItemBase{
 		$jancode = GenerateJancodeUtil::getJancode($itemId);
 		if(!strlen($jancode)) return;
 
-		$dir = GenerateJancodeUtil::getJancodeDirectory(soyshop_get_item_object($itemId)->getCode());
-		$jpgFile = $dir . $jancode . ".jpg";
-
+		$jpgFile = GenerateJancodeUtil::getJancodeDirectory(soyshop_get_item_object($itemId)->getCode()) . $jancode . ".jpg";
 		if(!file_exists($jpgFile)){
 			require_once(dirname(dirname(__FILE__)) . "/generate_barcode_tracking_number/vendor/autoload.php");
 			$generator = new Picqer\Barcode\BarcodeGeneratorJPG();

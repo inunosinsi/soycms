@@ -5,7 +5,7 @@ class DetailFooterMenuPage extends HTMLPage{
 	private $id;
 
 	function __construct($args){
-		$this->id = (isset($args[0])) ? (int)$args[0] : null;
+		$this->id = (isset($args[0])) ? (int)$args[0] : 0;
 		parent::__construct();
 
 		$this->addLabel("user_label", array("text" => SHOP_USER_LABEL));
@@ -84,7 +84,7 @@ class DetailFooterMenuPage extends HTMLPage{
 		));
 	}
 
-	private function _getPointHistories($userId){
+	private function _getPointHistories(int $userId){
 		SOY2::imports("module.plugins.common_point_base.domain.*");
 		try{
 			return SOY2DAOFactory::create("SOYShop_PointHistoryDAO")->getByUserId($userId);

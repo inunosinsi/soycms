@@ -11,8 +11,10 @@ if(count($results)){
 		$updateDate = (isset($res["update_date"]) && is_numeric($res["update_date"])) ? (int)$res["update_date"] : time();
 		$createDate = $updateDate;
 
-		$item = soyshop_get_item_object($res["id"]);
-		if(is_null($item->getId())) continue;
+		$itemId = (is_numeric($res["id"])) ? (int)$res["id"] : 0;
+		$item = soyshop_get_item_object($itemId);
+		if(!is_numeric($item->getId())) continue;
+
 		$item->setCreateDate($createDate);
 		$item->setUpdateDate($updateDate);
 		try{

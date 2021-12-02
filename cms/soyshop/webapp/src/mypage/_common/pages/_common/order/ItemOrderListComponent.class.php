@@ -6,7 +6,8 @@ class ItemOrderListComponent extends HTMLList{
 	private $itemCount;
 
 	protected function populateItem($itemOrder, $key, $counter) {
-		$item = soyshop_get_item_object($itemOrder->getItemId());
+		$itemId = (is_numeric($itemOrder->getItemId())) ? (int)$itemOrder->getItemId() : 0;
+		$item = soyshop_get_item_object($itemId);
 
 		$this->addLink("item_link", array(
 			"link" => soyshop_get_item_detail_link($item)
@@ -20,8 +21,9 @@ class ItemOrderListComponent extends HTMLList{
 			"text" => (is_string($item->getCode()) && strlen($item->getCode()) > 0) ? $item->getCode() : "deleted item " . $itemOrder->getItemId()
 		));
 
+		$smallImagePath = $item->getAttribute("image_small");
 		$this->addImage("item_small_image", array(
-			"src" => soyshop_convert_file_path($item->getAttribute("image_small"), $item)
+			"src" => (is_string($smallImagePath)) ? soyshop_convert_file_path($smallImagePath, $item) : ""
 		));
 
 		$this->addLabel("item_name", array(
@@ -82,12 +84,14 @@ class ItemOrderListComponent extends HTMLList{
 			"text" => $parent->getCode(),
 		));
 
+		$smallImagePath = $parent->getAttribute("image_small");
 		$this->addImage("parent_small_image", array(
-			"src" => soyshop_convert_file_path($parent->getAttribute("image_small"), $parent)
+			"src" => (is_string($smallImagePath)) ? soyshop_convert_file_path($smallImagePath, $parent) : null
 		));
 
+		$largeImagePath = $parent->getAttribute("image_large");
 		$this->addImage("parent_large_image", array(
-			"src" => soyshop_convert_file_path($parent->getAttribute("image_large"), $parent)
+			"src" => (is_string($largeImagePath)) ? soyshop_convert_file_path($largeImagePath, $parent) : null
 		));
 	}
 

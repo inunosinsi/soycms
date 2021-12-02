@@ -3210,7 +3210,7 @@ class SOY2DAO{
 	 */
 	function executeQuery($query,$binds = array(),$keepStatement = false){
 		if($query instanceof SOY2DAO_Query){
-			if(strlen($this->getOrder())){
+			if(is_string($this->getOrder()) && strlen($this->getOrder())){
 				$query->setOrder($this->getOrder());
 			}
 			$query->replaceTableNames();
@@ -3339,7 +3339,7 @@ class SOY2DAO{
 	 */
 	function executeUpdateQuery($sql,$binds = array(),$keepStatement = false){
 		if($sql instanceof SOY2DAO_Query){
-			if(strlen($this->getOrder())){
+			if(is_string($this->getOrder()) && strlen($this->getOrder())){
 				$sql->setOrder($this->getOrder());
 			}
 			$sql->replaceTableNames();
@@ -4285,7 +4285,7 @@ class SOY2DAO_Query{
 		switch($this->prefix){
 			case "insert":
 				$sql =  $this->prefix." into ".$this->quoteIdentifier($this->table)." ".$this->sql;
-				if(strlen($this->where)){
+				if(is_string($this->where) && strlen($this->where)){
 					$sql .= " where ".$this->where;
 				}
 				break;
@@ -4295,28 +4295,28 @@ class SOY2DAO_Query{
 					$sql .= "distinct ";
 				}
 				$sql .= $this->sql." from ".$this->quoteIdentifier($this->table);
-				if(strlen($this->where)){
+				if(is_string($this->where) && strlen($this->where)){
 					$sql .= " where ".$this->where;
 				}
-				if(strlen($this->group)){
+				if(is_string($this->group) && strlen($this->group)){
 					$sql .= " group by ".$this->group;
 				}
-				if(strlen($this->having)){
+				if(is_string($this->having) && strlen($this->having)){
 					$sql .= " having ".$this->having;
 				}
-				if(strlen($this->order)){
+				if(is_string($this->order) && strlen($this->order)){
 					$sql .= " order by ".$this->order;
 				}
 				break;
 			case "update":
 				$sql =  $this->prefix." ".$this->quoteIdentifier($this->table)." set ".$this->sql;
-				if(strlen($this->where)){
+				if(is_string($this->where) && strlen($this->where)){
 					$sql .= " where ".$this->where;
 				}
 				break;
 			case "delete":
 				$sql =  $this->prefix." from ".$this->quoteIdentifier($this->table);
-				if(strlen($this->where)){
+				if(is_string($this->where) && strlen($this->where)){
 					$sql .= " where ".$this->where;
 				}
 				break;
@@ -4332,7 +4332,7 @@ class SOY2DAO_Query{
 		 * 引数の$argumentsはevalの中で使われている
 		 */
 		$phpExpression = '/<\?php\s(.*)?\?>/';
-		if(preg_match($phpExpression,$this->where,$tmp)){
+		if(is_string($this->where) && preg_match($phpExpression,$this->where,$tmp)){
 			$expression = $tmp[1];
 			$expression = str_replace("\\:","@:@",$expression);
 			$expression = preg_replace("/:([a-zA-Z0-9_]+)/",'$arguments[\'$1\']',$expression);
@@ -4342,7 +4342,7 @@ class SOY2DAO_Query{
 			if(!is_string($replace) AND !is_numeric($replace))throw new SOY2DAOException("PHP式の変換に失敗しました。(".$tmp[1].")");
 			$this->where = preg_replace($phpExpression,$replace,$this->where);
 		}
-		if(preg_match($phpExpression,$this->having,$tmp)){
+		if(is_string($this->having) && preg_match($phpExpression,$this->having,$tmp)){
 			$expression = $tmp[1];
 			$expression = preg_replace("/:([a-zA-Z0-9_]*)/",'$arguments[\'$1\']',$expression);
 			$replace = "";
@@ -4356,10 +4356,10 @@ class SOY2DAO_Query{
 	 * （使われていない模様）
 	 */
 	function replaceTableNames(){
-		$this->table = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->table);
-		$this->sql = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->sql);
-		$this->where = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->where);
-		$this->having = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->having);
+		if(is_string($this->table)) $this->table = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->table);
+		if(is_string($this->sql)) $this->sql = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->sql);
+		if(is_string($this->where))	$this->where = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->where);
+		if(is_string($this->having)) $this->having = preg_replace_callback('/([a-zA-Z_0-9]+)\?/',array($this,'replaceTableName'),$this->having);
 	}
 	function replaceTableName($key){
 		return SOY2DAOConfig::getTableMapping($key[1]);
@@ -5910,9 +5910,10 @@ class SOYBodyComponentBase extends SOY2HTML{
 	function addCSSLink($id, $array=array()){self::createAdd($id, "HTMLCSSLink", $array);}
 	function addText($id, $array=array()){
 		$new = array();
-		if(isset($array["soy2prefix"]) && strlen($array["soy2prefix"])) $new["soy2prefix"] = $array["soy2prefix"];
-		$new["text"] = (isset($array["value"])) ? $array["value"] : null;
+		if(isset($array["soy2prefix"]) && is_string($array["soy2prefix"]) && strlen($array["soy2prefix"])) $new["soy2prefix"] = $array["soy2prefix"];
+		$new["text"] = (isset($array["value"]) && (is_string($array["value"]) || is_numeric($array["value"]))) ? $array["value"] : "";
 		if(!strlen($new["text"]) && isset($array["text"]) && strlen($array["text"])) $new["text"] = $array["text"]; //addTextAreaの場合
+
 		self::createAdd($id. "_text", "HTMLLabel", $new);
 	}
 	function addList($id, $array=array()){self::createAdd($id, "HTMLList", $array);}
@@ -5987,7 +5988,7 @@ class SOY2HTMLElement extends SOY2HTML{
 class SOY2HTMLStyle{
 	var $_styles = array();
 	function __construct($style = ""){
-		$styles = explode(";",$style);
+		$styles = (is_string($style) && strlen($style)) ? explode(";",$style) : array();
 		foreach($styles as $str){
 			if(!strstr($str,":"))continue;
 			$array = explode(":",$str,2);
@@ -6628,7 +6629,8 @@ class HTMLLabel extends SOY2HTML{
 		if($this->isHtml){
 			return $text;
 		}else{
-			if(strlen($this->width) >0){
+			if(is_numeric($this->width) && (int)$this->width >= 0){
+				$this->width = (int)$this->width;
 				if($this->isFolding != true){
 					$width = max(0, $this->width - mb_strwidth($this->suffix));
 					$short_text = mb_strimwidth($text,0,$width);
@@ -6704,7 +6706,7 @@ class HTMLLink extends HTMLLabel{
 			$this->link .= $suffix;
 		}
 		$this->setAttribute("href",$this->link);
-		if(strlen($this->target)){
+		if(is_string($this->target) && strlen($this->target)){
 			$this->setAttribute("target",$this->target);
 		}elseif(isset($this->target)){
 			$this->clearAttribute("target");
@@ -6728,7 +6730,8 @@ class HTMLActionLink extends HTMLLink{
 			HTMLLabel::execute();
 		}
 		$link = $this->link;
-		if(strpos($link,"?")===false){
+		if(!is_string($link)) $link = "";
+		if(is_bool(strpos($link,"?"))){
 			$link .= "?";
 		}else{
 			$link .= "&";
@@ -7194,7 +7197,9 @@ class HTMLPage extends SOYBodyComponentBase{
 		}
 		fwrite($fp,'<?php /* created ' . date("Y-m-d h:i:s") .' */ ?>');
 		fwrite($fp,"\r\n");
-		if(strlen($this->getId())){
+		if(is_null($this->getId())){	//←重要
+			fwrite($fp,'<?php $'.$this->getPageParam().' = HTMLPage::getPage(); ?>');
+		}else if(strlen($this->getId())){
 			fwrite($fp,'<?php $'.$this->getPageParam().' = HTMLPage::getPage("'.$this->getId().'"); ?>');
 		}else{
 			fwrite($fp,'<?php $'.$this->getPageParam().' = HTMLPage::getPage(); ?>');

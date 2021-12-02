@@ -1,10 +1,9 @@
 CREATE TABLE soyshop_point(
-	user_id INTEGER not null,
+	user_id INTEGER not null UNIQUE,
 	point INTEGER default 0,
 	time_limit INTEGER default null,
 	create_date INTEGER not null,
-	update_date INTEGER,
-	UNIQUE(user_id, point)
+	update_date INTEGER
 ) ENGINE=InnoDB;
 
 CREATE TABLE soyshop_point_history(

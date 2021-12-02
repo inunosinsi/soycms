@@ -1,16 +1,14 @@
 <?php
 class SOYShopPointBase implements SOY2PluginAction{
-	
-	function doPost($userId){
-		
+
+	function doPost(int $userId){}
+
+	function getPoint(int $userId){
+		return 0;
 	}
-	
-	function getPoint($userId){
-		
-	}
-	
-	function getTimeLimit($userId){
-		
+
+	function getTimeLimit(int $userId){
+		return 0;
 	}
 }
 
@@ -29,14 +27,14 @@ class SOYShopPointDeletageAction implements SOY2PluginDelegateAction{
 			$this->_limit = $action->getTimeLimit($this->userId);
 		}
 	}
-	
+
 	function getPoint(){
 		return $this->_point;
 	}
 	function getTimeLimit(){
 		return $this->_limit;
 	}
-	
+
 	function getMode() {
 		return $this->mode;
 	}

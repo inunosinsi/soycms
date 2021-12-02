@@ -3,9 +3,11 @@
 class LabelsListComponent extends HTMLList{
 
 	function populateItem($entity, $key, $cnt){
+		if(!is_string($key)) $key = "";
+		
 		$this->addLabel("category_name", array(
 			"text" => $key,
-			"visible" => !is_int($key) && strlen($key),
+			"visible" => (!is_int($key) && strlen($key)),
 		));
 
 		$this->addLabel("parent_category_count", array(

@@ -48,14 +48,14 @@ class DetailPage extends MainMyPagePageBase{
 
 		//伝票番号プラグイン slip_number
 		$slipNumber = (SOYShopPluginUtil::checkIsActive("slip_number")) ? SOY2Logic::createInstance("module.plugins.slip_number.logic.SlipNumberLogic")->getSlipNumberByOrderId($order->getId()) : null;
-		DisplayPlugin::toggle("slip_number", strlen($slipNumber));
+		DisplayPlugin::toggle("slip_number", (is_string($slipNumber) && strlen($slipNumber)));
 		$this->addLabel("slip_number", array(
 			"text" => $slipNumber
 		));
 
 		//返送伝票番号プラグイン returns_slip_number
 		$slipNumber = (SOYShopPluginUtil::checkIsActive("returns_slip_number")) ? SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic")->getSlipNumberByOrderId($order->getId()) : null;
-		DisplayPlugin::toggle("returns_slip_number", strlen($slipNumber));
+		DisplayPlugin::toggle("returns_slip_number", (is_string($slipNumber) && strlen($slipNumber)));
 		$this->addLabel("returns_slip_number", array(
 			"text" => $slipNumber
 		));

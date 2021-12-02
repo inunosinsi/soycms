@@ -15,7 +15,7 @@ class NoticeLogic extends SOY2LogicBase{
 	 * 入荷通知登録
 	 * @params itemId, userId
 	 */
-	function registerNotice($itemId, $userId){
+	function registerNotice(int $itemId, int $userId){
 
 		$obj = new SOYShop_NoticeArrival();
 		$obj->setItemId($itemId);
@@ -31,7 +31,7 @@ class NoticeLogic extends SOY2LogicBase{
 	 * 入荷通知のメール送信後にデータベースの更新を行う
 	 * @params itemId, userId
 	 */
-	function sended($itemId, $userId){
+	function sended(int $itemId, int $userId){
 		$noticeItem = $this->getNoticeItem($itemId, $userId, SOYShop_NoticeArrival::NOT_SENDED, SOYShop_NoticeArrival::NOT_CHECKED);
 		$noticeItem->setSended(SOYShop_NoticeArrival::SENDED);
 		try{

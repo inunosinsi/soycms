@@ -53,7 +53,7 @@ class SOYShop_OrderAttribute {
 	private $extraValues;
 
 	function getOrderId() {
-		return $this->orderId;
+		return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
 	}
 	function setOrderId($orderId) {
 		$this->orderId = $orderId;
@@ -64,8 +64,14 @@ class SOYShop_OrderAttribute {
 	function setFieldId($fieldId) {
 		$this->fieldId = $fieldId;
 	}
+	function getValue() {
+		return $this->value1;
+	}
 	function getValue1() {
 		return $this->value1;
+	}
+	function setValue($value){
+		$this->value1 = $value;
 	}
 	function setValue1($value1) {
 		$this->value1 = $value1;
@@ -306,7 +312,8 @@ class SOYShop_OrderAttributeConfig{
 			case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_CHECKBOX:
 				//DefaultValueがあればそれを使う
 				$ini = is_null($value);
-				$checkbox_value = ($ini && strlen($this->getDefaultValue()) > 0) ? (explode(",", $this->getDefaultValue())) : explode(",", $value);
+				$defaultValue = (is_string($this->getDefaultValue())) ? $this->getDefaultValue() : "";
+				$checkbox_value = ($ini && strlen($defaultValue) > 0) ? (explode(",", $defaultValue)) : explode(",", (string)$value);
 				$options = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getOption()));
 				$body = "";
 
@@ -444,6 +451,7 @@ class SOYShop_OrderAttributeConfig{
 
 			default:
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
+				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 				$body = '<input type="text" class="custom_field_input" style="width:100%"'
 				       .' id="' . $h_formID . '"'
@@ -459,13 +467,13 @@ class SOYShop_OrderAttributeConfig{
 	}
 
 	function getDefaultValue() {
-		return (isset($this->config["defaultValue"])) ? $this->config["defaultValue"] : null;
+		return (isset($this->config["defaultValue"])) ? $this->config["defaultValue"] : "";
 	}
 	function setDefaultValue($defaultValue) {
 		$this->config["defaultValue"] = $defaultValue;
 	}
 	function getEmptyValue() {
-		return (isset($this->config["emptyValue"])) ? $this->config["emptyValue"] : null;
+		return (isset($this->config["emptyValue"])) ? $this->config["emptyValue"] : "";
 	}
 	function setEmptyValue($emptyValue) {
 		$this->config["emptyValue"] = $emptyValue;

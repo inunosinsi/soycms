@@ -66,7 +66,7 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 
 			//ユーザIDが取得できなかった場合、念の為、ユーザテーブルからオブジェクトを取得
 			$userId = $cart->getAttribute("logined_userid");
-			if(is_null($userId)) $userId = self::getUserIdByMailAddress($cart->getCustomerInformation()->getMailAddress());
+			if(is_null($userId)) $userId = self::_getUserIdByMailAddress($cart->getCustomerInformation()->getMailAddress());
 
 			$logic = SOY2Logic::createInstance("module.plugins.discount_free_coupon.logic.DiscountFreeCouponLogic");
 			if(!isset($param["coupon_codes"]) || !is_array($param["coupon_codes"]) || count($param["coupon_codes"]) === 0){
@@ -108,17 +108,18 @@ class SOYShopDiscountFreeCouponModule extends SOYShopDiscount{
 		}
 	}
 
-	private function getUserIdByMailAddress($mailAddress){
+	private function _getUserIdByMailAddress(string $mailAddress){
 		//userIdを取得する
 		try{
-			return SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId();
+			return (int)SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId();
 		}catch(Exception $e){
-			return null;
+			return 0;
 		}
 	}
 
 	function getDescription(){
 		$code  = $this->getCart()->getAttribute("discount_free_coupon.code");
+		if(!is_string($code)) $code = "";
 
 		$html = array();
 		$html[] = "<table><tr><th>" . MessageManager::get("INPUT_COUPON_CODE") . "</th><td>";

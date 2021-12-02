@@ -3,6 +3,8 @@
 class TemplateListComponent extends HTMLList{
 
 	protected function populateItem($entity){
+		$path = (isset($entity["path"]) && is_string($entity["path"])) ? $entity["path"] : "";
+
 		$this->addLabel("name", array(
 			"text" => $entity["name"]
 		));
@@ -16,11 +18,11 @@ class TemplateListComponent extends HTMLList{
 		));
 
 		$this->addLink("edit_link", array(
-			"link" => $this->getDetailLink() . $entity["path"],
+			"link" => $this->getDetailLink() . $path,
 			"attr:id" => (is_array($entity)) ? self::_getTemplateId($entity) : null
 		));
 
-		$path = str_replace(".html", "", $entity["path"]);
+		$path = str_replace(".html", "", $path);
 		$templateType = substr($path, 0, strpos($path, "/"));
 		$templateId = substr($path, strpos($path, "/") + 1);
 		$this->addLink("remove_link", array(
@@ -28,7 +30,7 @@ class TemplateListComponent extends HTMLList{
 		));
 	}
 
-	private function _getTemplateId($array){
+	private function _getTemplateId(array $array){
 		if(!is_array($array) || !count($array) || !isset($array["path"]) || !strlen($array["path"])) return null;
 
 		$id = str_replace("/", "_", $array["path"]);
@@ -45,4 +47,3 @@ class TemplateListComponent extends HTMLList{
 		return $this->detailLink;
 	}
 }
-?>

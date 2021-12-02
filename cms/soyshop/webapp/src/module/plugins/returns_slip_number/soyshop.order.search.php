@@ -28,7 +28,7 @@ class ReturnsSlipNumberSearch extends SOYShopOrderSearch{
 	}
 
 	private function getParameter($param){
-		return (!is_array($param) && is_string($param) && strlen($param)) ? $param : null;
+		return (!is_array($param) && is_string($param) && strlen($param)) ? $param : "";
 	}
 
 	private function getParameters($param){

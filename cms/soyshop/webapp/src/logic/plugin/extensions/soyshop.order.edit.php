@@ -40,7 +40,7 @@ class SOYShopOrderEditBase implements SOY2PluginAction{
 	}
 
 	function getOrderId(){
-		return $this->orderId;
+		return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
 	}
 	function setOrderId($orderId){
 		$this->orderId = $orderId;
@@ -52,7 +52,7 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 	private $mode = "html";
 	private $orderId;
 	private $isChange = true;
-	private $_html;
+	private $_html = "";
 	private $_attributes = array();
 	private $_messages = array();
 
@@ -94,10 +94,8 @@ class SOYShopOrderEditBaseDeletageAction implements SOY2PluginDelegateAction{
 				break;
 		}
 
-		if(strlen($html)){
-			if(strlen($this->_html)){
-				$this->_html .= "\n";
-			}
+		if(is_string($html) && strlen($html)){
+			if(strlen($this->_html)) $this->_html .= "\n";
 			$this->_html .= $html;
 		}
 	}

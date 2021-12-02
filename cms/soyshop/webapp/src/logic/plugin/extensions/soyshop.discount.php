@@ -9,18 +9,18 @@ class SOYShopDiscount implements SOY2PluginAction{
 	function doPost($param){
 
 	}
-	
+
 	function clear(){
-		
+
 	}
-	
+
 	/**
 	 * 注文処理時にクーポンコードを使用済にする
 	 */
 	function order(){
-		
+
 	}
-	
+
 	/**
 	 * エラーチェック
 	 * @return Boolean
@@ -28,7 +28,7 @@ class SOYShopDiscount implements SOY2PluginAction{
 	function hasError($param){
 		return false;
 	}
-	
+
 	/*
 	 * エラーメッセージ
 	 * @return string
@@ -73,7 +73,7 @@ class SOYShopDiscountDeletageAction implements SOY2PluginDelegateAction{
 	private $mode = "list";
 	private $cart;
 	private $param;//$_POST["discount_module"]
-	
+
 	private $_list = array();
 	private $hasError = false;
 
@@ -85,14 +85,14 @@ class SOYShopDiscountDeletageAction implements SOY2PluginDelegateAction{
 		}
 
 		$action->setCart($this->getCart());
-		
+
 		//割引の対象とならない場合
 		if(!$action->checkAddList())return;
-		
-		
+
+
 		switch($this->mode){
 			case "list":
-				if(strlen($action->getName())){
+				if(is_string($action->getName()) && strlen($action->getName())){
 					$this->_list[$moduleId] = array(
 						"name"        => $action->getName(),
 						"description" => $action->getDescription(),
@@ -100,36 +100,36 @@ class SOYShopDiscountDeletageAction implements SOY2PluginDelegateAction{
 					);
 				}
 				break;
-			
+
 			//Cart03のdoPost内でセッションをクリア
 			case "clear":
 				$action->clear();
 				break;
-			
+
 			//ページのdoPost内で
 			case "checkError":
-				if($action->hasError(@$this->param[$moduleId])){
+				if(isset($this->param[$moduleId]) && $action->hasError($this->param[$moduleId])){
 					$this->hasError = true;
 				}else{
 					//do nothing
 				}
 				break;
-			
+
 			//ページのdoPost内でエラーのないとき
 			case "select":
-				$action->doPost(@$this->param[$moduleId]);
+				if(isset($this->param[$moduleId])) $action->doPost($this->param[$moduleId]);
 				break;
-			
+
 			//注文処理後：クーポンコードを使用済にする
 			case "order":
 				$action->order();
 				break;
-			
+
 			//割引内容のcreateAdd()
 			case "addDiscountLabel":
 				$action->addDiscountLabel();
 				break;
-			
+
 			//合計から割り引く
 			case "discount":
 				$action->discount();
@@ -162,7 +162,6 @@ class SOYShopDiscountDeletageAction implements SOY2PluginDelegateAction{
 	function hasError(){
 		return $this->hasError;
 	}
-	
+
 }
 SOYShopPlugin::registerExtension("soyshop.discount","SOYShopDiscountDeletageAction");
-?>

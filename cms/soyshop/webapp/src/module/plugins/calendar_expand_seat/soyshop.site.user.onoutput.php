@@ -5,10 +5,9 @@ class CalendarExpandSeatUserOnOutput extends SOYShopSiteUserOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 		//改行
-		$html = str_replace("{#br#}", "<br>", $html);
-		return $html;
+		return str_replace("{#br#}", "<br>", $html);
 	}
 }
 

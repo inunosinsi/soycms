@@ -80,7 +80,7 @@ class SOYShopOrderMailDeletageAction implements SOY2PluginDelegateAction{
 			//改行で連結
 			foreach($this->_body as $displayGroup){
 				foreach($displayGroup as $module){
-					if(strlen($module) > 0) $res .= $module."\n";
+					if(is_string($module) && strlen($module) > 0) $res .= $module."\n";
 				}
 			}
 		}

@@ -14,11 +14,8 @@ class CommonPointGrantOrderComplete extends SOYShopOrderComplete{
 		SOY2::imports("module.plugins.common_point_grant.util.*");
 		$config = PointGrantUtil::getConfig();
 		if(isset($config["point_birthday_present"]) && (int)$config["point_birthday_present"] > 0){
-			try{
-				$user = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
-			}catch(Exception $e){
-				return;
-			}
+			$user = soyshop_get_user_object($order->getUserId());
+			if(!is_numeric($user->getId())) return;
 
 			$birthday = $user->getBirthday();
 			if(strlen($birthday)){

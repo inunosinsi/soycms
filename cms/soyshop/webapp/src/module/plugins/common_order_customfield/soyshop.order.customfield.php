@@ -1,10 +1,4 @@
 <?php
-/*
- * Created on 2009/07/28
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 
 class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 
@@ -33,14 +27,15 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 
 		if(is_array($this->list) && count($this->list)){
 			foreach($this->list as $config){
-				$cart->removeModule($cart->getAttribute("order_customfield_" . $config->getFieldId()));
+				$moduleId = $cart->getAttribute("order_customfield_" . $config->getFieldId());
+				if(is_string($moduleId)) $cart->removeModule($moduleId);
 				$cart->clearAttribute("order_customfield_" . $config->getFieldId() . ".value");
 				$cart->clearOrderAttribute("order_customfield_" . $config->getFieldId());
 			}
 		}
 	}
 
-	function doPost($param){
+	function doPost(array $param){
 
 		$cart = $this->getCart();
 
@@ -74,7 +69,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 						$filename = $_FILES["customfield_module"]["name"][$obj->getFieldId()];
 						$new[$obj->getFieldId()] = date("YmdHis") . "." . substr($filename, strrpos($filename, ".") + 1);
 
-						if(move_uploaded_file($tmp, self::getCacheDir() . $new[$obj->getFieldId()])){
+						if(move_uploaded_file($tmp, self::_getCacheDir() . $new[$obj->getFieldId()])){
 							$value["value"] = $filename;
 						}else{
 							$isContinue = true;//ファイルアップロードに関する処理を止める
@@ -153,7 +148,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	function complete(CartLogic $cart){
 
 		$orderId = $cart->getAttribute("order_id");
-		if(!strlen($orderId)){
+		if(!is_numeric($orderId)){
 			throw new Exception("No order.id designated for this order custom field.");
 		}
 
@@ -175,14 +170,15 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
 					//ファイルを各顧客用のフォルダに移動
 					$tmp = $cart->getAttribute("order_customfield_" . $config->getFieldId() . ".tmp");
-					$tmpFile = self::getCacheDir() .$tmp;
+					$tmpFile = self::_getCacheDir() .$tmp;
 					if(file_exists($tmpFile) && !is_dir($tmpFile)){
 						//value1にアップロード時のファイル名、value2にはリネーム後のファイル名
 						$obj->setValue1($value);
 						$obj->setValue2($tmp);
 
 						$userId = $cart->getCustomerInformation()->getId();
-						$new = self::getDirectoryByUserId($userId)  . $tmp;
+						if(!is_numeric($userId)) $userId = 0;
+						$new = self::_getDirectoryByUserId($userId)  . $tmp;
 						if(copy($tmpFile, $new)){
 							//ファイルのアップロードに成功したら、仮のアップロードを削除する
 							unlink($tmpFile);
@@ -214,7 +210,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		}
 	}
 
-	function hasError($param){
+	function hasError(array $param){
 		$cart = $this->getCart();
 
 		self::prepare();
@@ -321,7 +317,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		return $array;
 	}
 
-	function display($orderId){
+	function display(int $orderId){
 
 		self::prepare();
 		if(is_null($this->list) || !count($this->list)) return array();
@@ -348,7 +344,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 			switch($list[$obj->getFieldId()]["type"]){
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_RADIO:
 					$msg = $obj->getValue1();
-					if(strlen($obj->getValue2()) > 0){
+					if(is_string($obj->getValue2()) && strlen($obj->getValue2()) > 0){
 						$msg .= ":" . $obj->getValue2();
 					}
 					$value["value"] = $msg;
@@ -356,7 +352,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					break;
 				case SOYShop_OrderAttribute::CUSTOMFIELD_TYPE_FILE:
 					$value["value"] = $obj->getValue2();
-					$value["link"] = self::getFilePathByUserId(self::getUserIdByOrderId($orderId)) . $value["value"];
+					$value["link"] = self::_getFilePathByUserId(soyshop_get_order_object($orderId)->getUserId()) . $value["value"];
 					break;
 				default:
 					$value["value"] = $obj->getValue1();
@@ -374,7 +370,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	 * @param int $orderID
 	 * @return array labelとformの連想配列を格納
 	 */
-	function edit($orderId){
+	function edit(int $orderId){
 		self::prepare();
 		if(is_null($this->list) || !count($this->list)) return array();
 
@@ -458,7 +454,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 					$config = $attrList[$attribute->getFieldId()]["config"];
 					if(isset($config["attributeOther"]) && $config["attributeOther"] == 1){
 						$htmls[] = "<label>";
-						$otherValue = (isset($config["attributeOtherText"]) && strlen($config["attributeOtherText"])  > 0) ? $config["attributeOtherText"] : "その他";
+						$otherValue = (isset($config["attributeOtherText"]) && is_string($config["attributeOtherText"]) && strlen($config["attributeOtherText"])  > 0) ? $config["attributeOtherText"] : "その他";
 						if($attribute->getValue1() == $otherValue){
 							$htmls[] = "<input type=\"radio\" name=\"" . $name . "\" value=\"" . $otherValue . "\" checked=\"checked\">";
 						}else{
@@ -515,7 +511,7 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 	 * @param int $orderId
 	 * @return array saveするための配列
 	 */
-	function config($orderId){
+	function config(int $orderId){
 		self::prepare();
 		if(is_null($this->list) || !count($this->list)) return array();
 
@@ -574,30 +570,13 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		return $res;
 	}
 
-	//最新の注文IDを取得する
-	private function getNewOrderId(){
-		$dao = new SOY2DAO();
-
-		$sql = "SELECT id "
-			  ."FROM soyshop_order "
-			  ."ORDER BY id desc "
-			  ."LIMIT 1";
-		try{
-			$result = $dao->executeQuery($sql);
-		}catch(Exception $e){
-			return 1;
-		}
-
-		return (isset($result[0]["id"])) ? (int)$result[0]["id"] + 1 : 1;
-	}
-
-	private function getCacheDir(){
+	private function _getCacheDir(){
 		$path = SOY2HTMLConfig::CacheDir() . "tmp/";
 		if(!file_exists($path)) mkdir($path);
 		return $path;
 	}
 
-	private function getDirectoryByUserId($userId){
+	private function _getDirectoryByUserId(int $userId){
 		$dir = SOYSHOP_SITE_DIRECTORY . "files/user/";
 		if(!is_dir($dir)) mkdir($dir);
 
@@ -606,21 +585,8 @@ class CommonOrderCustomfieldModule extends SOYShopOrderCustomfield{
 		return $dir;
 	}
 
-	private function getFilePathByUserId($userId){
+	private function _getFilePathByUserId(int $userId){
 		return SOYSHOP_SITE_URL . "files/user/" . $userId . "/";
-	}
-
-	private function getUserIdByOrderId($orderId){
-		static $userId;
-		if(is_null($userId)){
-			try{
-				$userId = SOY2DAOFactory::create("order.SOYShop_OrderDAO")->getById($orderId)->getUserId();
-			}catch(Exception $e){
-				//
-			}
-		}
-
-		return $userId;
 	}
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "common_order_customfield", "CommonOrderCustomfieldModule");

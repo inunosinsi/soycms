@@ -5,7 +5,7 @@ class TagCloudTagListComponent extends HTMLList {
 	private $url;
 
 	protected function populateItem($entity, $id, $int){
-		$word = (isset($entity["word"]) && is_string($entity["word"])) ? $entity["word"] : null;
+		$word = (isset($entity["word"]) && is_string($entity["word"])) ? $entity["word"] : "";
 		$this->addLink("tag_cloud_tag_link", array(
 			"soy2prefix" => "cms",
 			"link" => (strlen($word)) ? $this->url . "/" . rawurlencode($word) : ""

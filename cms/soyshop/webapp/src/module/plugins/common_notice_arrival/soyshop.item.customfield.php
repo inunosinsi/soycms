@@ -21,7 +21,7 @@ class CommonNoticeArrivalCustomField extends SOYShopItemCustomFieldBase{
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
 
-		$this->prepare($item->getId());
+		$this->prepare((int)$item->getId());
 
 //		$htmlObj->addActionLink("notice_arrival_register_link", array(
 //			"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -45,7 +45,7 @@ class CommonNoticeArrivalCustomField extends SOYShopItemCustomFieldBase{
 		));
 	}
 
-	function prepare($itemId){
+	function prepare(int $itemId){
 		if(!$this->noticeLogic) $this->noticeLogic = SOY2Logic::createInstance("module.plugins.common_notice_arrival.logic.NoticeLogic");
 
 		$this->checkRegister = $this->noticeLogic->checkRegisterNotice($itemId);

@@ -82,7 +82,7 @@ class UtilMobileCheckUtil{
 		}elseif(isset($_GET['pathinfo'])){
 			$path = $_GET['pathinfo'];
 		}else{
-			return null;
+			return "";
 		}
 
 		//先頭はスラッシュ

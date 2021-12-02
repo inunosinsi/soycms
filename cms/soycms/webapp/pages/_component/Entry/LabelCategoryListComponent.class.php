@@ -2,9 +2,11 @@
 
 class LabelCategoryListComponent extends HTMLList{
 	function populateItem($entity, $key, $index){
+		if(!is_string($key)) $key = "";
+
 		$this->addLabel("label_category_name",array(
 			"text" => $key,
-			"visible" => !is_int($key) && strlen($key),
+			"visible" => (!is_int($key) && strlen($key)),
 		));
 
 		$toggleId = "label-".$index;

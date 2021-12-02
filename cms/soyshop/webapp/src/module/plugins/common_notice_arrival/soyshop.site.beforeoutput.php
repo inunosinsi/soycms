@@ -24,7 +24,7 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
             //ログインしているかを調べる
             $userId = $noticeLogic->getUserId();
-            if(!isset($userId)) $this->jumpLoginPage($this->itemId);
+            if(!is_numeric($userId) || $userId === 0) $this->jumpLoginPage($this->itemId);
 
             switch($_GET["a"]){
                 case "add":
@@ -43,7 +43,7 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
                         if(strlen($adminMailAddress)){
                             $mailLogic = SOY2Logic::createInstance("logic.mail.MailLogic");
-							$item = self::getItemById($this->itemId);
+							$item = soyshop_get_item_object($this->itemId);
 
                             SOY2::import("domain.user.SOYShop_User");
                             $user = new SOYShop_User();
@@ -81,8 +81,8 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
     }
 
-    function redirect($params = array()){
-		$url = soyshop_get_page_url($this->uri) . "/" . self::getItemById($this->itemId)->getAlias();
+    function redirect(array $params = array()){
+		$url = soyshop_get_page_url($this->uri) . "/" . soyshop_get_item_object($this->itemId)->getAlias();
 
         $q = "";
         if(count($params)){
@@ -95,17 +95,9 @@ class CommonNoticeArrivalBeforeOutput extends SOYShopSiteBeforeOutputAction{
         exit;
     }
 
-    function jumpLoginPage($itemId){
+    function jumpLoginPage(int $itemId){
         header("Location:" . soyshop_get_mypage_url(true) . "/login?r=" . $_SERVER["REDIRECT_URL"] . "&notice_register=" . $this->itemId);
         exit;
     }
-
-	private function getItemById($itemId){
-		try{
-			return SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($this->itemId);
-		}catch(Exception $e){
-			return new SOYShop_Item();
-		}
-	}
 }
 SOYShopPlugin::extension("soyshop.site.beforeoutput", "common_notice_arrival", "CommonNoticeArrivalBeforeOutput");

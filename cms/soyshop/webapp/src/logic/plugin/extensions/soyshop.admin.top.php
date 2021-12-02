@@ -71,6 +71,7 @@ class SOYShopAdminTopDeletageAction implements SOY2PluginDelegateAction{
 		switch($this->mode){
 			case "notice":
 				$notice = $action->notice();
+				if(!is_string($notice)) $notice = "";
 				if(strlen($notice)) {
 					$array = array();
 					$array["wording"] = $notice;
@@ -80,6 +81,7 @@ class SOYShopAdminTopDeletageAction implements SOY2PluginDelegateAction{
 				break;
 			case "error":
 				$error = $action->error();
+				if(!is_string($error)) $error = "";
 				if(strlen($error)) {
 					$array = array();
 					$array["wording"] = $error;
@@ -93,6 +95,7 @@ class SOYShopAdminTopDeletageAction implements SOY2PluginDelegateAction{
 					$array["title"] = $action->getTitle();
 					$array["content"] = $action->getContent();
 					$link = $action->getLink();
+					if(!is_string($link)) $link = "";
 					if(strpos($link, "/Config/") && !AUTH_CONFIG && !AUTH_CONFIG_DETAIL){
 						//リンクタイトルを表示させない
 					}else{

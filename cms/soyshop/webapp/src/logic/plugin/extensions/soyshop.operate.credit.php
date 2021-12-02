@@ -59,7 +59,7 @@ class SOYShopOperateCreditDeletageAction implements SOY2PluginDelegateAction{
 				$action->doPostOnUserDetailPage($this->user);
 			}else{
 				$title = $action->getFormOnUserDetailPageTitle($this->user);
-				if(strlen($title)){
+				if(is_string($title) && strlen($title)){
 					$this->_list[$moduleId]["title"] = $title;
 					$this->_list[$moduleId]["content"] = $action->getFormOnUserDetailPageContent($this->user);
 				}
@@ -71,7 +71,7 @@ class SOYShopOperateCreditDeletageAction implements SOY2PluginDelegateAction{
 				$action->doPostOnOrderDetailPage($this->order);
 			}else{
 				$title = $action->getFormOnOrderDetailPageTitle($this->order);
-				if(strlen($title)){
+				if(is_string($title) && strlen($title)){
 					$this->_list[$moduleId]["title"] = $title;
 					$this->_list[$moduleId]["content"] = $action->getFormOnOrderDetailPageContent($this->order);
 				}

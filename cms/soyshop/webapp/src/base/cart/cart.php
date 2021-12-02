@@ -34,8 +34,8 @@ if(isset($_REQUEST["a"])) {
 		}
 	}
 
-	//隠しモード 差し替え用index カートのフォームのactionで?a=add&replace_index=idx&item=intのように指定すると使える
-	$replaceIdx = (isset($_REQUEST["replace_index"]) && is_numeric($_REQUEST["replace_index"])) ? $_REQUEST["replace_index"] : null;
+	//隠しモード 差し替え用index カートのフォームのactionで?a=add&replace_index=idx&item=intのように指定すると使える -1は未選択
+	$replaceIdx = (isset($_REQUEST["replace_index"]) && is_numeric($_REQUEST["replace_index"])) ? $_REQUEST["replace_index"] : -1;
 
 	//カートに入っている商品に変更がある場合は、選択されているモジュールをクリアする
 	$cart->clearModules();
@@ -52,7 +52,7 @@ if(isset($_REQUEST["a"])) {
 				if($res){
 					SOYShopPlugin::invoke("soyshop.item.option", array(
 						"mode" => "post",
-						"index" => (is_numeric($replaceIdx)) ? $replaceIdx : max(array_keys($cart->getItems())),
+						"index" => (is_numeric($replaceIdx) && $replaceIdx >= 0) ? $replaceIdx : max(array_keys($cart->getItems())),
 						"cart" => $cart
 					));
 				}

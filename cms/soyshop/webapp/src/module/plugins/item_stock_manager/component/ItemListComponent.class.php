@@ -13,7 +13,8 @@ class ItemListComponent extends HTMLList{
 			"text" => $key + 1
 		));
 
-		$imagePath = soyshop_convert_file_path_on_admin($item->getAttribute("image_small"));
+		$smallImagePath = $item->getAttribute("image_small");
+		$imagePath = (is_string($smallImagePath)) ? soyshop_convert_file_path_on_admin($smallImagePath);
 		if(!strlen($imagePath)) $imagePath = soyshop_get_item_sample_image();
 		$this->addImage("item_small_image", array(
 			//"src" => "/" . SOYSHOP_ID . "/im.php?src=" . $imagePath . "&width=60",	//im.phpが使えなくなった

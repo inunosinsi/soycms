@@ -16,7 +16,7 @@ class RelativeItemUtil{
 	}
 
 	public static function getCodesByItemId(int $itemId){
-		$v = self::_attr($itemId)->getValue();
+		$v = soyshop_get_item_attribute_value($itemId, self::FIELD_ID, "string");
 		if(!strlen($v)) return array();
 
 		$codes = soy2_unserialize($v);
@@ -24,42 +24,9 @@ class RelativeItemUtil{
 	}
 
 	public static function save(int $itemId, array $arr){
-		if(count($arr)){
-			$attr = self::_attr($itemId);
-			$attr->setValue(soy2_serialize($arr));
-
-			try{
-				self::_dao()->insert($attr);
-			}catch(Exception $e){
-				try{
-					self::_dao()->update($attr);
-				}catch(Exception $e){
-					//
-				}
-			}
-		}else{
-			try{
-				self::_dao()->delete($itemId, self::FIELD_ID);
-			}catch(Exception $e){
-				//
-			}
-		}
-	}
-
-	private static function _attr(int $itemId){
-		try{
-			return self::_dao()->get($itemId, self::FIELD_ID);
-		}catch(Exception $e){
-			$attr = new SOYShop_ItemAttribute();
-			$attr->setItemId($itemId);
-			$attr->setFieldId(self::FIELD_ID);
-			return $attr;
-		}
-	}
-
-	private static function _dao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		return $dao;
+		$v = (count($arr)) ? soy2_serialize($arr) : "";
+		$attr = soyshop_get_item_attribute_object($itemId, self::FIELD_ID);
+		$attr->setValue($v);
+		soyshop_save_item_attribute_object($attr);
 	}
 }

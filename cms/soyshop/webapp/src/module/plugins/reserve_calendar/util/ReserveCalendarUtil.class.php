@@ -209,7 +209,7 @@ class ReserveCalendarUtil{
 	}
 
 	/** 便利なメソッド **/
-	public static function getScheduleByItemIndexAndItemId(CartLogic $cart, $itemIndex, $itemId){
+	public static function getScheduleByItemIndexAndItemId(CartLogic $cart, int $itemIndex, int $itemId){
 		static $schedules, $scheduleLogic;
 		if(is_null($schedules)) $schedules = array();
 		if(is_null($scheduleLogic)) $scheduleLogic = SOY2Logic::createInstance("module.plugins.reserve_calendar.logic.Schedule.ScheduleLogic");

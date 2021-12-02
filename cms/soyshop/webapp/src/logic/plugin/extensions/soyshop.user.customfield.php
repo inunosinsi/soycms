@@ -17,7 +17,7 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	 * @param integer $userId
 	 * @return array(["name"], ["description"], ["error"])
 	 */
-	function getForm($app, $userId){}
+	function getForm($app, int $userId){}
 
 	/**
 	 * 各項目ごとに、createAdd()を行う。
@@ -25,13 +25,13 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	 * @param SOYBodyComponentBase $pageObj
 	 * @param integer $userId
 	 */
-	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId = null){}
+	function buildNamedForm($app, SOYBodyComponentBase $pageObj, int $userId){}
 
 	/**
 	 * エラーチェック
 	 * @return Boolean
 	 */
-	function hasError($param){
+	function hasError(array $param){
 		return false;
 	}
 
@@ -44,13 +44,13 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	 * 管理画面の注文の追加で表示できるエリア
 	* @return Array array(array("name" => "", "value" => "", "style" => "")) ※styleはなしで良い
 	 */
-	function order($userId){}
+	function order(int $userId){}
 
 	/**
 	 * UserAttributeに登録する
 	 * @param MyPageLogic || CartLogic $mypage
 	 */
-	function register($app, $userId){}
+	function register($app, int $userId){}
 
 	function getApp() {
 		return $this->app;
@@ -60,7 +60,7 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	}
 
 	function getUserId(){
-		return $this->userId;
+		return (is_numeric($this->userId)) ? (int)$this->userId : 0;
 	}
 	function setUserId($userId){
 		$this->userId = $userId;
@@ -85,7 +85,7 @@ class SOYShopUserCustomfieldDelegateAction implements SOY2PluginDelegateAction{
 
 		switch($this->mode){
 			case "form";//_listプロパティに、input生成用配列を詰める。要$delegate->getList();
-				$this->_list[$moduleId] = $action->getForm($this->app, $this->userId);
+				$this->_list[$moduleId] = $action->getForm($this->app, (int)$this->userId);
 				break;
 
 			case "clear":
@@ -145,7 +145,7 @@ class SOYShopUserCustomfieldDelegateAction implements SOY2PluginDelegateAction{
 		$this->app = $app;
 	}
 	function getUserId(){
-		return $this->userId;
+		return (is_numeric($this->userId)) ? (int)$this->userId : 0;
 	}
 	function setUserId($userId){
 		$this->userId = $userId;

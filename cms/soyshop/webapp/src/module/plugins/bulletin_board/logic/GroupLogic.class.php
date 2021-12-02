@@ -65,11 +65,11 @@ class GroupLogic extends SOY2LogicBase {
 	}
 
 	function getGroupDescriptionById($groupId){
-		return self::_groupAttr($groupId, self::DESCRIPTION_FIELD_ID)->getValue();
+		return (string)self::_groupAttr($groupId, self::DESCRIPTION_FIELD_ID)->getValue();
 	}
 
 	function getGroupAbstractById($groupId){
-		return self::_groupAttr($groupId, self::ABSTRACT_FIELD_ID)->getValue();
+		return (string)self::_groupAttr($groupId, self::ABSTRACT_FIELD_ID)->getValue();
 	}
 
 	function getGroupAbstracts(){

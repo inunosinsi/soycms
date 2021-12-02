@@ -64,7 +64,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
      *
      * @return array
      */
-    function getItemsByCategory($args){
+    function getItemsByCategory(array $args){
         $res = array();
         $total = 0;
 
@@ -112,7 +112,7 @@ class SOYShop_ListPageBase extends SOYShopPageBase{
                         list($res, $total) = array(array(), 0);
                     }
                 }else{
-                    list($res, $total) = $logic->getByCategoryIds($category->getId(), $offset, $limit);
+					list($res, $total) = $logic->getByCategoryIds($category->getId(), $offset, $limit);
                 }
 
 

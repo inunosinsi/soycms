@@ -325,7 +325,7 @@ class SOYShop_CustomSearchAttributeConfig{
                         .$h_value.'</textarea>';
                 break;
             case "image":
-                $h_value = soyshop_convert_file_path_on_admin(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
+                $h_value = (is_string($value)) ? soyshop_convert_file_path_on_admin(htmlspecialchars($value, ENT_QUOTES, "UTF-8")) : null;
                 $h_value2 = htmlspecialchars($value2, ENT_QUOTES, "UTF-8");
 
                 $style = (strlen($h_value) > 0) ? "" : "display:none;";

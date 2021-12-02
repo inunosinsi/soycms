@@ -13,7 +13,7 @@ class SOYShop_AutoComplete_Dictionary {
 	private $other;
 
 	function getItemId(){
-		return $this->itemId;
+		return (is_numeric($this->itemId)) ? (int)$this->itemId : 0;
 	}
 	function setItemId($itemId){
 		$this->itemId = $itemId;

@@ -12,7 +12,7 @@ class ScheduleNoticeListComponent extends HTMLList {
 		$this->addInput("schedule", array(
 			"name" => "Config[schedule][" . $entity . "]",
 			"value" => (isset($this->config["schedule"][$entity])) ? (int)$this->config["schedule"][$entity] : 1,
-			"style" => "width:40px;"
+			"style" => "width:60px;"
 		));
 
 		$this->addTextArea("wording", array(

@@ -254,7 +254,7 @@ class SOYShop_User {
 		return $this->reading;
 	}
 	function setReading($reading, $convert = true) {
-		if($convert) $reading = mb_convert_kana($reading, "CKr", "UTF-8");
+		if($convert && is_string($reading)) $reading = mb_convert_kana($reading, "CKr", "UTF-8");
 		$this->reading = $reading;
 	}
 	function getAccountId(){
@@ -555,10 +555,10 @@ class SOYShop_User {
 	}
 
 	function getAddressListArray(){
+		if(is_null($this->addressList)) return array();
+		if(!is_string($this->addressList) || !strlen($this->addressList)) return array();
 		$array = unserialize($this->addressList);
-		if(is_array($array))return $array;
-
-		return array();
+		return (is_array($array)) ? $array : array();
 	}
 
 	function getAddress($index){
@@ -641,8 +641,7 @@ class SOYShop_User {
 	}
 
 	function getAttributesArray() {
-		$array = unserialize($this->attributes);
-		if(is_array($array))return $array;
+		if(is_string($this->attributes) && strlen($this->attributes)) return unserialize($this->attributes);
 		return array();
 	}
 
@@ -746,7 +745,7 @@ class SOYShop_User {
 	}
 
 	function getDisplayName(){
-		return (strlen($this->getNickname())) ? $this->getNickname() : $this->getName();
+		return (is_string($this->getNickname()) && strlen($this->getNickname())) ? $this->getNickname() : $this->getName();
 	}
 
 	//一覧に表示させる時のメソッド
@@ -766,14 +765,12 @@ class SOYShop_User {
 	 */
 	function getPoint(){
 		$dao = new SOY2DAO();
-		$sql = "SELECT point FROM soyshop_point WHERE user_id = :userId;";
 		try{
-			$result = $dao->executeQuery($sql, array(":userId" => $this->getId()));
-			$point = (isset($result[0])) ? (int)$result[0]["point"] : 0;
+			$res = $dao->executeQuery("SELECT point FROM soyshop_point WHERE user_id = :userId;", array(":userId" => $this->getId()));
+			return (isset($res[0])) ? (int)$res[0]["point"] : 0;
 		}catch(Exception $e){
-			$point = 0;
+			return 0;
 		}
-		return $point;
 	}
 
 	/**
@@ -805,7 +802,7 @@ class SOYShop_User {
 		static $isUse;
 		if(is_null($isUse)){
 			$isUse = false;
-			if(strlen($this->mailAddress) && self::isValidEmail()){
+			if(is_string($this->mailAddress) && strlen($this->mailAddress) && self::isValidEmail()){
 				preg_match('/@' . DUMMY_MAIL_ADDRESS_DOMAIN . '$/', $this->mailAddress, $tmp);
 				$isUse = (!isset($tmp[0]));
 			}

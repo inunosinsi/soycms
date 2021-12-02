@@ -122,10 +122,10 @@ class Entry {
    	}
 
    	function getAlias() {
-   		if(strlen($this->alias)<1){
-   			return $this->getId();
+   		if(is_string($this->alias) && strlen($this->alias) < 1){
+   			return (is_numeric($this->getId())) ? $this->getId() : "";
    		}
-   		return $this->alias;
+   		return (is_string($this->alias)) ? $this->alias : "";
    	}
    	function setAlias($alias) {
    		$this->alias = $alias;

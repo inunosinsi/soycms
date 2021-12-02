@@ -68,7 +68,7 @@ class PagerLogic extends SOY2LogicBase{
 		}else{
 			$link = ($this->total > $this->end) ? $this->pageURL . ($this->page + 1) : $this->pageURL . $this->page;
 		}
-		if(strlen($this->getQuery()))$link .= "?" . $this->getQuery();
+		if(is_string($this->getQuery()) && strlen($this->getQuery())) $link .= "?" . $this->getQuery();
 
 		return array(
     		"link" => $link,
@@ -83,7 +83,7 @@ class PagerLogic extends SOY2LogicBase{
 			$link = ($this->page > 1) ? $this->pageURL . ($this->page - 1) : $this->pageURL . ($this->page);
 		}
 
-		if(strlen($this->getQuery())) $link .= "?" . $this->getQuery();
+		if(is_string($this->getQuery()) && strlen($this->getQuery())) $link .= "?" . $this->getQuery();
 		return array(
     		"link" => $link,
     		"class" => ($this->page <= 1) ? "pager_disable" : ""
@@ -199,7 +199,7 @@ class SimplePager extends HTMLList{
 		}else{
 			$url = $this->url . $bean;
 		}
-		if(strlen($this->query)) $url .= "?" . $this->query;
+		if(is_string($this->query) && strlen($this->query)) $url .= "?" . $this->query;
 
 		$this->addLink("target_link", array(
 			"text" => $bean,

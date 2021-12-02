@@ -86,11 +86,12 @@ class PasswordPage extends WebPage{
     		"text" => is_null($user->getUpdateDate()) ? "" : date("Y-m-d H:i:s", $user->getUpdateDate()),
     	));
 
+		$pw = (is_string($user->getPassword())) ? $user->getPassword() : "";
     	$this->addModel("password_is_registered", array(
-    		"visible" => strlen($user->getPassword())
+    		"visible" => (strlen($pw))
     	));
     	$this->addModel("password_is_not_registered", array(
-    		"visible" => !strlen($user->getPassword())
+    		"visible" => (!strlen($pw))
     	));
 
     	$this->addInput("password", array(

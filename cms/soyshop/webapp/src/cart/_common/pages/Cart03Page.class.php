@@ -30,8 +30,10 @@ class Cart03Page extends MainCartPageBase{
 				 * 古いのをクリア
 				 * ポイントとカスタムフィールドの値はプラグイン内で削除
 				 */
-				$cart->removeModule($cart->getAttribute("payment_module"));
-				$cart->removeModule($cart->getAttribute("delivery_module"));
+				$paymentModuleId = $cart->getAttribute("payment_module");
+				if(isset($paymentModuleId)) $cart->removeModule($paymentModuleId);
+				$deliveryModuleId = $cart->getAttribute("delivery_module");
+				if(isset($deliveryModuleId)) $cart->removeModule($deliveryModuleId);
 				$cart->clearAttribute("payment_module");
 				$cart->clearAttribute("delivery_module");
 
@@ -404,23 +406,26 @@ class Cart03Page extends MainCartPageBase{
 	 */
 	function appendErrors(CartLogic $cart){
 
+		$paymentErrMsg = $cart->getErrorMessage("payment");
+		if(!is_string($paymentErrMsg)) $paymentErrMsg = "";
+		if(strlen($paymentErrMsg) < 1) DisplayPlugin::hide("has_payment_error");
 		$this->createAdd("payment_error", "ErrorMessageLabel", array(
-			"text" => $cart->getErrorMessage("payment")
+			"text" => $paymentErrMsg
 		));
 
-		if(strlen($cart->getErrorMessage("payment")) < 1) DisplayPlugin::hide("has_payment_error");
-
+		$deliveryErrMsg = $cart->getErrorMessage("delivery");
+		if(!is_string($deliveryErrMsg)) $deliveryErrMsg = "";
+		if(strlen($deliveryErrMsg) < 1) DisplayPlugin::hide("has_delivery_error");
 		$this->createAdd("delivery_error", "ErrorMessageLabel", array(
-			"text" => $cart->getErrorMessage("delivery")
+			"text" => $deliveryErrMsg
 		));
 
-		if(strlen($cart->getErrorMessage("delivery")) < 1) DisplayPlugin::hide("has_delivery_error");
-
+		$pointErrMsg = $cart->getErrorMessage("point");
+		if(!is_string($pointErrMsg)) $pointErrMsg = "";
+		if(strlen($pointErrMsg) < 1) DisplayPlugin::hide("has_point_error");
 		$this->createAdd("point_error", "ErrorMessageLabel", array(
-			"text" => $cart->getErrorMessage("point")
+			"text" => $pointErrMsg
 		));
-
-		if(strlen($cart->getErrorMessage("point")) < 1) DisplayPlugin::hide("has_point_error");
 	}
 
 	/**

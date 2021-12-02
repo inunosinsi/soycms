@@ -5,20 +5,20 @@
  */
 
 class SOYShopSiteOnOutputAction implements SOY2PluginAction{
-	
+
 	private $page;
 
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
-
+	function onOutput(string $html){
+		return "";
 	}
-	
+
 	function getPage(){
 		return $this->page;
 	}
-		
+
 	function setPage($page){
 		$this->page = $page;
 	}
@@ -42,7 +42,7 @@ class SOYShopSiteOnOutputDelegateAction implements SOY2PluginDelegateAction{
 	function setHtml($html) {
 		$this->html = $html;
 	}
-	
+
 	function getPage(){
 		return $this->page;
 	}

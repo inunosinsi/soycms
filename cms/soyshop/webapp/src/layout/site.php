@@ -18,7 +18,7 @@
 	$soycmsDir = rtrim(dirname(SOY2PageController::createRelativeLink("./")), "/") . "/soycms";
 	$hideSideMenu = ( isset($_COOKIE["soyshop-hide-side-menu"]) && $_COOKIE["soyshop-hide-side-menu"] == "true" );
 	$time = SOYSHOP_BUILD_TIME;
-	$isSubMenu = (strlen($subMenu) > 0);
+	$isSubMenu = (is_string($subMenu) && strlen($subMenu) > 0);
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/css/dashboard.css?<?php echo $time;?>">
@@ -95,7 +95,7 @@ foreach($scripts as $script){
 					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Site" id="site_manager_link"><i class="fa fa-file fa-fw"></i>サイト管理</a>
 				</li>
 				<li class="user">
-					<a href="javascript:void(0);" data-toggle="modal" data-target="#accountModal"><i class="fa fa-user fa-fw"></i>ユーザー情報</a>
+					<a href="javascript:void(0);" data-toggle="modal" data-target="#accountModal"><i class="fa fa-user fa-fw"></i>管理者情報(<?php echo $adminName; ?>)</a>
 				</li>
 				<?php }?>
 				<li>

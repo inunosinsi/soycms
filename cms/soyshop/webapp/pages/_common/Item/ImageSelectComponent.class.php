@@ -7,14 +7,12 @@ class ImageSelectComponent extends HTMLInput{
 	private $domId;
 
 	function getStartTag(){
-
 		return $this->getWrapperStart() . parent::getStartTag() . $this->getWrapperEnd();
-
 	}
 
 	function setValue($value){
-		$array = parse_url($value);
-		if($array)$value = $array["path"];
+		$array = (is_string($value)) ? parse_url($value) : array("path" => "");
+		if(is_array($array)) $value = $array["path"];
 		parent::setValue($value);
 	}
 

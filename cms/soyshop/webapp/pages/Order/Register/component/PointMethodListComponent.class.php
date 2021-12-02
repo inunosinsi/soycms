@@ -3,21 +3,23 @@
 class PointMethodListComponent extends HTMLList{
 
 	protected function populateItem($entity, $key, $counter, $length){
+		$name = (isset($entity["name"]) && is_string($entity["name"])) ? $entity["name"] : "";
 		$this->addLabel("point_name", array(
-				"text" => $entity["name"]
+				"text" => $name
 		));
 
 		$this->addLabel("point_description", array(
 				"html" => $entity["description"]
 		));
 
+		$err = (is_string($entity["error"])) ? $entity["error"] : "";
 		$this->addModel("has_point_error", array(
-				"visible" => (strlen($entity["error"]) > 0)
+				"visible" => (strlen($err) > 0)
 		));
 		$this->addLabel("point_error", array(
-				"text" => $entity["error"]
+				"text" => $err
 		));
 
-		return strlen($entity["name"]) >0;
+		return (strlen($name) > 0);
 	}
 }

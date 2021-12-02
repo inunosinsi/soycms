@@ -92,7 +92,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 			$html[] = $config->getForm($value, $extraValues);
 
 			//関連付けモードを起動するか調べる
-			if(!$associationMode && strlen($config->getShowInput()) && is_numeric($config->getShowInput())) $associationMode = true;
+			if(!$associationMode && is_string($config->getShowInput()) && strlen($config->getShowInput()) && is_numeric($config->getShowInput())) $associationMode = true;
 		}
 
 		if(!$associationMode) return implode("\n", $html);
@@ -169,7 +169,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 				}
 			}
 
-			$valueLength = strlen(trim(strip_tags($value)));
+			$valueLength = (is_string($value)) ? strlen(trim(strip_tags($value))) : 0;
 
 			$htmlObj->addModel($config->getFieldId() . "_visible", array(
 				"visible" => ($valueLength > 0),
@@ -184,7 +184,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 					 * 隠し機能:携帯自動振り分け、多言語化プラグイン用で画像の配置場所を別で用意する
 					 * @ToDo 管理画面でもいじれる様にしたい
 					 */
-					$value = soyshop_convert_file_path($value, $item);
+					$value = (is_string($value)) ? soyshop_convert_file_path($value, $item) : null;
 
 					$extraValues = (isset($this->fieldTable[$config->getFieldId()])) ? $this->fieldTable[$config->getFieldId()]->getExtraValuesArray() : array();
 					if(!count($extraValues) && strlen($config->getExtraOutputs())){	//追加属性があるかだけ調べておく
@@ -233,14 +233,14 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 					break;
 
 				case "textarea":
-					if(strlen($config->getOutput()) > 0){
+					if(is_string($config->getOutput()) && strlen($config->getOutput()) > 0){
 						$htmlObj->addModel($config->getFieldId(), array(
-							"attr:" . htmlspecialchars($config->getOutput()) => soyshop_customfield_nl2br($value),
+							"attr:" . htmlspecialchars($config->getOutput()) => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}else{
 						$htmlObj->addLabel($config->getFieldId(), array(
-							"html" => soyshop_customfield_nl2br($value),
+							"html" => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}
@@ -266,7 +266,7 @@ class CommonItemCustomField extends SOYShopItemCustomFieldBase{
 					break;
 
 				default:
-					if(strlen($config->getOutput()) > 0){
+					if(is_string($config->getOutput()) && strlen($config->getOutput()) > 0){
 						if($config->getOutput() == "href" && $config->getType() != "link"){
 							$htmlObj->addLink($config->getFieldId(), array(
 								"link" => $value,

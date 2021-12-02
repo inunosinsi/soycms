@@ -17,8 +17,25 @@ if(file_exists(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php")){
 	mb_regex_encoding(mb_internal_encoding());
 }
 
+//SOY Shopのバージョン
+if(!defined("SOYSHOP_VERSION")) define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
+if(!defined("DEBUG_MODE")){
+	if(preg_match('/^\d/', SOYSHOP_VERSION)){	//本番環境
+		//define("false", false);
+		define("DEBUG_MODE", false);
+	}else{
+		//debug switch
+		//define("false", true);
+		define("DEBUG_MODE", true);
+	}
+}
+
 //include SOY2
-include(SOYSHOP_WEBAPP . "lib/soy2_build.php");
+if(DEBUG_MODE && file_exists(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.php")){
+	include(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.php");
+}else{
+	include(SOYSHOP_WEBAPP . "lib/soy2_build.php");
+}
 include_once(SOYSHOP_WEBAPP . "lib/magic_quote_gpc.php");
 
 //configure SOY2
@@ -46,21 +63,11 @@ SOY2::import("domain.config.SOYShop_DataSets");
 SOY2::import("base.SOYShopSiteController");
 SOY2::import("base.define", ".php");
 SOY2::import("base.func.common", ".php");
+SOY2::import("base.func.dao", ".php");
 SOY2::import("logic.plugin.SOYShopPlugin");
 
 //init controller
 SOY2PageController::init("SOYShopSiteController");
-
-//SOY Shopのバージョン
-define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
-if(preg_match('/^\d/', SOYSHOP_VERSION)){	//本番環境
-	//define("false", false);
-	define("DEBUG_MODE", false);
-}else{
-	//debug switch
-	//define("false", true);
-	define("DEBUG_MODE", true);
-}
 
 define("SOY2HTML_AUTO_GENERATE", false);
 

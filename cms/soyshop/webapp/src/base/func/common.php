@@ -3,7 +3,7 @@
 /**
  * ページのURLを取得する
  */
-function soyshop_get_page_url($uri, $suffix = null){
+function soyshop_get_page_url(string $uri, string $suffix = null){
 	SOY2::import("domain.site.SOYShop_Page");
 	if($uri == SOYShop_Page::URI_HOME) $uri = "";
 
@@ -15,7 +15,7 @@ function soyshop_get_page_url($uri, $suffix = null){
 }
 
 //URLの小手先の修正集は下記のラッパー関数で行う
-function soyshop_shape_page_url($url){
+function soyshop_shape_page_url(string $url){
 	//サイトIDが２つ繋がってしまった時
 	if(strpos($url, "/" . SOYSHOP_ID . "//" . SOYSHOP_ID . "/") !== false){
 		$url = str_replace("/" . SOYSHOP_ID . "//" . SOYSHOP_ID . "/", "/" . SOYSHOP_ID . "/", $url);
@@ -27,7 +27,7 @@ function soyshop_shape_page_url($url){
 /**
  * サイトのURLを取得する
  */
-function soyshop_get_site_url($isAbsolute = false){
+function soyshop_get_site_url(bool $isAbsolute = false){
 	$url = SOYSHOP_SITE_URL;
 
 	//portがある場合は$_SERVER["SERVER_PORT"]をチェック
@@ -57,6 +57,7 @@ function soyshop_get_ssl_site_url(){
 function soyshop_get_arguments(){
 	static $args;
 	if(is_array($args)) return $args;
+	if(!defined("SOYSHOP_PAGE_ID")) return array();	//SOYSHOP_PAGE_IDが定義されていない場合は以後の処理を無視する。
 
 	$args = array();
 
@@ -79,7 +80,7 @@ function soyshop_get_arguments(){
 /**
  * httpから始まる画像のフルパスを取得する
  */
-function soyshop_get_image_full_path($imagePath){
+function soyshop_get_image_full_path(string $imagePath){
 	static $url;
 	if(is_null($url)){
 		$url = soyshop_get_site_url(true);
@@ -93,7 +94,7 @@ function soyshop_get_image_full_path($imagePath){
 /**
  * 画像のディレクトリからのファイルパスを取得する
  */
- function soyshop_get_image_file_path($imagePath){
+ function soyshop_get_image_file_path(string $imagePath){
  	static $dir;
  	if(is_null($dir)){
  		$dir = SOYSHOP_SITE_DIRECTORY;
@@ -110,130 +111,6 @@ function soyshop_get_image_full_path($imagePath){
 function soyshop_get_site_path(){
     $dir = (defined("SOYCMS_TARGET_DIRECTORY")) ? SOYCMS_TARGET_DIRECTORY : $_SERVER["DOCUMENT_ROOT"];
     return str_replace($dir, '/', SOYSHOP_SITE_DIRECTORY);
-}
-
-/** 商品IDから商品オブジェクト **/
-function soyshop_get_item_object($itemId){
-	static $items, $dao;
-	if(is_null($items)) $items = array();
-	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-	if(is_null($itemId) || !is_numeric($itemId)) return new SOYShop_Item();
-	if(isset($items[$itemId])) return $items[$itemId];
-
-	try{
-        $items[$itemId] = $dao->getById($itemId);
-    }catch(Exception $e){
-        $items[$itemId] = new SOYShop_Item();
-    }
-    return $items[$itemId];
-}
-
-/** 商品IDから子商品のリストを取得 **/
-function soyshop_get_item_children($itemId, $isOpen=false){
-	static $list, $dao;
-	if(is_null($list)) $list = array();
-	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-	if(!is_numeric($itemId)) return array();
-	if(isset($list[$itemId])) return $list[$itemId];
-	try{
-		if($isOpen){
-			$list[$itemId] = $dao->getByTypeIsOpenNoDisabled($itemId);
-		}else{
-			$list[$itemId] = $dao->getByTypeNoDisabled($itemId);
-		}
-	}catch(Exception $e){
-		$list[$itemId] = array();
-	}
-	return $list[$itemId];
-}
-
-/** カテゴリIDからカテゴリオブジェクトを取得する **/
-function soyshop_get_category_object($categoryId){
-    static $categories, $dao;
-	if(is_null($categories)) $categories = array();
-    if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
-    if(is_null($categoryId) || !is_numeric($categoryId)) return new SOYShop_Category();
-    if(isset($categories[$categoryId])) return $categories[$categoryId];
-
-    try{
-        $categories[$categoryId] = $dao->getById($categoryId);
-    }catch(Exception $e){
-        $categories[$categoryId] = new SOYShop_Category();
-    }
-
-    return $categories[$categoryId];
-}
-
-/** 顧客IDから顧客オブジェクトを取得する **/
-function soyshop_get_user_object($userId){
-	static $users, $dao;
-	if(is_null($users)) $users = array();
-	if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-	if(is_null($userId) || !is_numeric($userId) || $userId == 0) return new SOYShop_User();
-	if(isset($users[$userId])) return $users[$userId];
-
-	try{
-		$users[$userId] = $dao->getById($userId);
-	}catch(Exception $e){
-		$users[$userId] = new SOYShop_User();
-	}
-
-	return $users[$userId];
-}
-
-/** ページIDからページオブジェクトを取得する **/
-function soyshop_get_page_object($pageId){
-	static $pages, $dao;
-	if(is_null($pages)) $pages = array();
-	if(is_null($dao)) $dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
-	if(is_null($pageId) || !is_numeric($pageId)) return new SOYShop_Page();
-	if(isset($pages[$pageId])) return $pages[$pageId];
-
-	try{
-		$pages[$pageId] = $dao->getById($pageId);
-	}catch(Exception $e){
-		$pages[$pageId] = new SOYShop_Page();
-	}
-
-	return $pages[$pageId];
-}
-
-/** 注文IDから注文オブジェクトを取得する **/
-function soyshop_get_order_object($orderId){
-	static $orders, $dao;
-	if(is_null($orders)) $orders = array();
-	if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
-	if(is_null($orderId) || !is_numeric($orderId)) return new SOYShop_Order();
-
-	try{
-		$orders[$orderId] = $dao->getById($orderId);
-	}catch(Exception $e){
-		$orders[$orderId] = new SOYShop_Order();
-	}
-
-	return $orders[$orderId];
-}
-
-/** IDもしくはプラグインIDからプラグインオブジェクトを取得する **/
-function soyshop_get_plugin_object($pluginId){
-	static $plugins, $dao;
-	if(is_null($plugins)) $plugins = array();
-	if(is_null($dao)) $dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
-	if(is_numeric($pluginId)){	//数字のIDの場合
-		try{
-			$plugins[$pluginId] = $dao->getById($pluginId);
-		}catch(Exception $e){
-			$plugins[$pluginId] = new SOYShop_PluginConfig();
-		}
-	}else{	//プラグインIDの場合
-		try{
-			$plugins[$pluginId] = $dao->getByPluginId($pluginId);
-		}catch(Exception $e){
-			$plugins[$pluginId] = new SOYShop_PluginConfig();
-		}
-	}
-
-	return $plugins[$pluginId];
 }
 
 /**
@@ -284,7 +161,7 @@ function soyshop_get_item_list_link(SOYShop_Item $item, SOYShop_Category $catego
         }
     }
 
-    return (isset($uri)) ? soyshop_get_page_url($uri, $category->getAlias()) : null;
+    return (isset($uri)) ? soyshop_get_page_url($uri, $category->getAlias()) : "";
 }
 
 /**
@@ -292,7 +169,6 @@ function soyshop_get_item_list_link(SOYShop_Item $item, SOYShop_Category $catego
  */
 function soyshop_get_item_detail_link(SOYShop_Item $item){
     static $results, $urls;
-
     if(is_null($item->getAlias())) return null;
 
     $url = (isset($results[$item->getDetailPageId()])) ? $results[$item->getDetailPageId()] : null;
@@ -314,13 +190,13 @@ function soyshop_get_item_detail_link(SOYShop_Item $item){
         }
     }
 
-    return (isset($url)) ? soyshop_get_page_url($url, $item->getAlias()) : null;
+    return (isset($url)) ? soyshop_get_page_url($url, $item->getAlias()) : "";
 }
 
 /**
  * カテゴリIDからカテゴリ名を取得する
  */
-function soyshop_get_category_name($categoryId){
+function soyshop_get_category_name(int $categoryId){
     return soyshop_get_category_object($categoryId)->getOpenCategoryName();
 }
 
@@ -488,7 +364,7 @@ function soyshop_conver_kana($str){
  * @param string $html
  * @return string
  */
-function soyshop_customfield_nl2br($html){
+function soyshop_customfield_nl2br(string $html){
 	$html = nl2br($html);
 	preg_match_all('/><br.*?>/', $html, $tmp);
 	if(isset($tmp[0]) && count($tmp[0])){
@@ -696,7 +572,7 @@ function soyshop_add_get_value($url){
  * @param Object SOYShop_Item, String path 画像の絶対パス
  * @return path 画像ファイルの絶対パス
  */
-function soyshop_convert_file_path($path, SOYShop_Item $item, $isAbsolute=false){
+function soyshop_convert_file_path(string $path, SOYShop_Item $item, bool $isAbsolute=false){
     static $isOwnDomain;
     if(is_null($isOwnDomain)){
         $siteUrl = trim(SOYSHOP_SITE_URL, "/") . "/";
@@ -753,7 +629,7 @@ function soyshop_convert_file_path($path, SOYShop_Item $item, $isAbsolute=false)
 /**
  * 独自ドメインで表示している場合、管理画面で画像のパスがずれることがあるのでパスを修正する
  */
-function soyshop_convert_file_path_on_admin($path){
+function soyshop_convert_file_path_on_admin(string $path){
     if(!strlen($path)) return $path;
 
     if(strpos(SOYSHOP_SITE_URL, $_SERVER["HTTP_HOST"]) === false && strpos(SOYSHOP_SITE_URL, "/" . SOYSHOP_ID) === false){
@@ -846,7 +722,7 @@ function soyshop_dummy_item_code(){
 	return $code;
 }
 
-function soyshop_create_random_string($n = 10, $isIncludeSymbol=false){
+function soyshop_create_random_string(int $n = 10, bool $isIncludeSymbol=false){
 	$str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
 
 	//記号も含む
@@ -930,7 +806,7 @@ function soyshop_build_item_option_html_on_item_order(SOYShop_ItemOrder $itemOrd
  * @param string $str, string mode:startとendがある
  * @return integer
  */
-function soyshop_convert_timestamp($str, $mode = "start"){
+function soyshop_convert_timestamp(string $str, string $mode="start"){
 	$array = explode("-", $str);
 
 	if(
@@ -947,7 +823,7 @@ function soyshop_convert_timestamp($str, $mode = "start"){
 	}
 }
 
-function soyshop_convert_timestamp_on_array($array, $mode = "start"){
+function soyshop_convert_timestamp_on_array(array $array, string $mode = "start"){
 	if(
 		(!isset($array["year"]) || !isset($array["month"]) || !isset($array["day"])) ||
 		(!is_numeric($array["year"]) || !is_numeric($array["month"]) || !is_numeric($array["day"]))
@@ -962,7 +838,7 @@ function soyshop_convert_timestamp_on_array($array, $mode = "start"){
 	}
 }
 
-function soyshop_shape_timestamp($timestamp, $mode="start"){
+function soyshop_shape_timestamp(int $timestamp, string $mode="start"){
 	$array = explode("-", date("Y-m-d", $timestamp));
 	if($mode == "start"){
 		return mktime(0, 0, 0, $array[1], $array[2], $array[0]);
@@ -976,16 +852,38 @@ function soyshop_shape_timestamp($timestamp, $mode="start"){
  * @param integer $timestamp
  * @return string
  */
-function soyshop_convert_date_string($timestamp){
-	if(!is_numeric($timestamp)) $timestamp = 0;
-	return ($timestamp == 0 || $timestamp == 2147483647) ? "" : date("Y-m-d", $timestamp);
+function soyshop_convert_date_string(int $timestamp){
+	if($timestamp == 0 || $timestamp == 2147483647) return "";
+	return date("Y-m-d", $timestamp);
+}
+
+/**
+ * タイムスタンプからarray("year"=>int, "month"=>1, "day"=>1)の配列に変換
+ * @param integer $timestamp
+ * @return array("year"=>int, "month"=>int, "day"=>int)
+ */
+function soyshop_convert_date_array_by_timestamp(int $timestamp){
+	if($timestamp === 0) return array("year" => 0, "month" => 0, "day" => 0);
+	$dateArr = array("year" => date("Y", $timestamp), "month" => date("n", $timestamp), "day" => date("j", $timestamp));
+	if(strlen($dateArr["year"]) < 4){
+		$dateArr["month"] = 0;
+		$dateArr["day"] = 0;
+	}
+	return $dateArr;
+}
+
+function soyshop_convert_date_string_by_array(array $arr){
+	foreach(array("year", "month", "day") as $lab){
+		if(!isset($arr[$lab])) $arr[$lab] = "";
+	}
+	return $arr["year"] . "-" . $arr["month"] . "-" . $arr["day"];
 }
 
 /**
  * 今から○ヶ月前のタイムスタンプを取得
  */
-function soyshop_get_a_few_months_ago($n=1, $timestamp=null){
-	if(is_null($timestamp) || !is_numeric($timestamp)) $timestamp = time();
+function soyshop_get_a_few_months_ago(int $n=1, int $timestamp=0){
+	if($timestamp == 0) $timestamp = time();
 	if(!is_numeric($n)) $n = 1;
 	$ago = strtotime("-" . $n . " month");
 
@@ -1012,13 +910,13 @@ function soyshop_get_a_few_months_ago($n=1, $timestamp=null){
 /**
  * 任意のタイムスタンプから月始めのタイムスタンプを取得
  */
-function soyshop_get_begin_of_month($timestamp=null){
-	if(is_null($timestamp) || !is_numeric($timestamp)) $timestamp = time();
+function soyshop_get_begin_of_month(int $timestamp){
+	if($timestamp === 0) $timestamp = time();
 	$dates = explode("-", date("Y-n", $timestamp));
 	return mktime(0, 0, 0, $dates[1], 1, $dates[0]);
 }
 
-function soyshop_file_put_contents($f, $v){
+function soyshop_file_put_contents(string $f, string $v){
 	$dir = SOYSHOP_SITE_DIRECTORY . ".cache/var_export/";
 	if(!file_exists($dir)) mkdir($dir);
 	file_put_contents($dir . $f . ".txt", var_export($v, true) . "\n", FILE_APPEND);

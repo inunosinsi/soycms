@@ -3,6 +3,7 @@
 class AttributeListComponent extends HTMLList {
 
 	protected function populateItem($item, $key) {
+		if(!is_string($key)) $key = "";
 		$this->addLabel("attribute_title", array(
 			"text" => (isset($item["name"])) ? $item["name"] : "",
 			"title" => (isset($item["name"])) ? $item["name"]." (" . $key . ")" : ""

@@ -34,7 +34,7 @@ class DiscountBulkBuyingUtil {
 		));
 	}
 
-	public static function saveConfig($values){
+	public static function saveConfig(array $values){
 		SOYShop_DataSets::put("discount_bulk_buying_each_category.config", $values);
 	}
 
@@ -46,7 +46,7 @@ class DiscountBulkBuyingUtil {
 		));
 	}
 
-	public static function saveCondition($values){
+	public static function saveCondition(array $values){
 		foreach(array("price", "amount") as $t){
 			foreach(array("active", "value") as $tt){
 				if(!isset($values[$t][$tt])) $values[$t][$tt] = 0;
@@ -69,7 +69,7 @@ class DiscountBulkBuyingUtil {
 		return SOYShop_DataSets::get("discount_bulk_buying_each_category.cat_comb", self::COMBINATION_ALL);
 	}
 
-	public static function saveCategoryCombinationCondition($v){
-		return SOYShop_DataSets::put("discount_bulk_buying_each_category.cat_comb", $v);
+	public static function saveCategoryCombinationCondition(int $i){
+		return SOYShop_DataSets::put("discount_bulk_buying_each_category.cat_comb", $i);
 	}
 }

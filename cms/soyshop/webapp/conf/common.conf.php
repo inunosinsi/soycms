@@ -13,6 +13,12 @@ define("SOYSHOP_WEBAPP", SOYSHOP_ROOT . "webapp/");
 define("SOY2_NOW", time());	//現在時刻
 define("SOYSHOP_BUILD_TIME",1434600689);//ビルド日時：ビルド時に置換される
 define("SOYSHOP_VERSION", trim(file_get_contents(SOYSHOP_ROOT . "VERSION")));
+if(preg_match('/^\d/', SOYSHOP_VERSION)){	//本番環境
+	define("DEBUG_MODE", false);
+}else{
+	//debug switch
+	define("DEBUG_MODE", true);
+}
 
 //SOY CMSのphp.config.phpを読み込む
 if(file_exists(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php")){
@@ -24,7 +30,14 @@ if(file_exists(dirname(SOYSHOP_ROOT) . "/common/config/php.config.php")){
 }
 
 //include SOY2
-if(!class_exists("SOY2")) include_once(SOYSHOP_WEBAPP . "lib/soy2_build.php");
+if(!class_exists("SOY2")) {
+	//デバックモードの場合はSOY CMSの方から読み込む
+	if(DEBUG_MODE && file_exists(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.php")){
+		include_once(dirname(SOYSHOP_ROOT) . "/common/lib/soy2_build.php");
+	}else{
+		include_once(SOYSHOP_WEBAPP . "lib/soy2_build.php");
+	}
+}
 include_once(SOYSHOP_WEBAPP . "lib/magic_quote_gpc.php");
 
 //configure SOY2
@@ -80,6 +93,7 @@ if(!defined("SOYCMS_PHP_CGI_MODE")) define("SOYCMS_PHP_CGI_MODE", function_exist
 //include
 SOY2::import("base.define", ".php");
 SOY2::import("base.func.common", ".php");
+SOY2::import("base.func.dao", ".php");
 
 //document rootの末尾は/で終わるのを期待
 if(function_exists("soy2_realpath")){

@@ -81,7 +81,7 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 			"link" => soyshop_get_mypage_url() . "/login?r=" . rawurldecode($_SERVER["REQUEST_URI"])
 		));
 
-		$config = ItemReviewUtil::getConfig();
+		$config = self::_config();
 		$cnt = (isset($config["review_count"]) && is_numeric($config["review_count"])) ? (int)$config["review_count"] : null;
 
 		$reviews = (is_numeric($cnt)) ? self::_logic()->getReviews($cnt + 1) : self::_logic()->getReviews();
@@ -141,7 +141,8 @@ class ItemReviewBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	private function _buildForm($page){
 
 		$user = self::_logic()->getUser();
-		$nickname = (!is_null($user->getNickname()) && strlen($user->getNickname())) ? $user->getNickname() : $user->getName();
+		$nickname = (is_string($user->getNickname()) && strlen($user->getNickname())) ? $user->getNickname() : $user->getName();
+		if(is_null($nickname)) $nickname = "";
 
 		$page->addForm("review_form", array(
 			"soy2prefix" => "block"

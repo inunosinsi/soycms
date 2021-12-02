@@ -20,7 +20,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 
 		SOY2::import("module.plugins.util_mobile_check.util.UtilMobileCheckUtil");
 		$cnf = UtilMobileCheckUtil::getConfig();
-		
+
 		//クッキー非対応機種の設定 → 廃止
 		//if(!defined("SOYSHOP_COOKIE")) define("SOYSHOP_COOKIE", ( isset($cnf["cookie"]) && $cnf["cookie"] == 1) );
 
@@ -130,6 +130,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 		}
 
 		//リダイレクトをしなかった場合、prefixを定数に入れておく
+		if(!is_string($prefix)) $prefix = "";
 		if(!defined("SOYSHOP_CARRIER_PREFIX")) define("SOYSHOP_CARRIER_PREFIX", $prefix);
 	}
 
@@ -137,7 +138,7 @@ class MobileCheckPrepareAction extends SOYShopSitePrepareAction{
 	 * キャリア判定でパスとキャリアが間違っている時、
 	 * 一旦PCサイトにリダイレクトさせてから、サイドキャリアに対応したサイトにリダイレクト
 	 */
-	private function _checkCarrier($prefix){
+	private function _checkCarrier(string $prefix=""){
 		//PATH_INFO
 		$pathInfo = UtilMobileCheckUtil::getPathInfo();
 

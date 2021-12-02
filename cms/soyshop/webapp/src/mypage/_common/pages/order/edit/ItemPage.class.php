@@ -61,8 +61,8 @@ class ItemPage extends MainMyPagePageBase{
 					//商品オプション
 					$optChanges = SOYShopPlugin::invoke("soyshop.item.option", array(
 						"mode" => "history",
-						"newItemOrder" => $newItemOrders[$itemOrderId],
-						"oldItemOrder" => $oldItemOrders[$itemOrderId]
+						"newItemOrder" => (isset($newItemOrders[$itemOrderId])) ? $newItemOrders[$itemOrderId] : new SOYShop_ItemOrder(),
+						"oldItemOrder" => (isset($oldItemOrders[$itemOrderId])) ? $oldItemOrders[$itemOrderId] : new SOYShop_ItemOrder()
 					))->getChanges();
 
 					if(count($optChanges)){

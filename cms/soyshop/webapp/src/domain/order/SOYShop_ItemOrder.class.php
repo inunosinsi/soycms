@@ -78,13 +78,13 @@ class SOYShop_ItemOrder {
     	$this->id = $id;
     }
     function getOrderId() {
-    	return $this->orderId;
+    	return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
     }
     function setOrderId($orderId) {
     	$this->orderId = $orderId;
     }
     function getItemId() {
-    	return $this->itemId;
+    	return (is_numeric($this->itemId)) ? (int)$this->itemId : 0;
     }
     function setItemId($itemId) {
     	$this->itemId = $itemId;
@@ -212,10 +212,8 @@ class SOYShop_ItemOrder {
 	function getItemNameOnAdmin(){
 		if(!self::_isConvertParentNameConfig()) return $this->itemName;
 
-		$parentId = soyshop_get_item_object($this->itemId)->getType();
-		if(!is_numeric($parentId)) return $this->itemName;
-
-		return soyshop_get_item_object($parentId)->getName();
+		$parentId = (is_numeric($this->itemId)) ? soyshop_get_item_object($this->itemId)->getType() : 0;
+		return ($parentId > 0) ? soyshop_get_item_object($parentId)->getName() : $this->itemName;
 	}
 
 	private function _isConvertParentNameConfig(){

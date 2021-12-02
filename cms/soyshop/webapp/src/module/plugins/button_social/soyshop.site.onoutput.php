@@ -9,8 +9,8 @@ class ButtonSocialOnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
-		
+	function onOutput(string $html){
+
 		//fb_rootの挿入設定　カートとマイページは無条件で挿入
 		if(defined("SOYSHOP_PAGE_ID")){
 			SOY2::import("module.plugins.button_social.util.ButtonSocialUtil");
@@ -19,7 +19,7 @@ class ButtonSocialOnOutput extends SOYShopSiteOnOutputAction{
 				return $html;
 			}
 		}
-		
+
 		$common = new ButtonSocialCommon();
 		if(stripos($html, '<body>') !== false){
 			$html = str_ireplace('<body>', '<body>' . "\n" . $common->getFbRoot(), $html);
@@ -28,7 +28,7 @@ class ButtonSocialOnOutput extends SOYShopSiteOnOutputAction{
 		}else{
 			//何もしない
 		}
-		
+
 		return $html;
 	}
 }

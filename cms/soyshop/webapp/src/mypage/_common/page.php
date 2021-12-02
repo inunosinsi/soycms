@@ -42,7 +42,7 @@ do{
 			$values = explode(".", $htmlObj->createPagePath());
 			$args[] = strtolower(array_pop($values));
 
-			$values[] = ucfirst(array_pop($values));
+			$values[] = (count($values)) ? ucfirst(array_pop($values)) : "";
 			$path = implode(".", $values);
 			if(!SOY2HTMLFactory::pageExists($path . "Page")){
 				$path = strtolower($path) . ".Index";

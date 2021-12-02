@@ -42,7 +42,7 @@ class ItemListComponent extends HTMLList {
 			"attr:id" => "change_item_" . $id
 		));
 
-		$priceList = self::itemLogic()->getItemPriceListByItemId($item->getId());
+		$priceList = (is_numeric($item->getId())) ? self::itemLogic()->getItemPriceListByItemId($item->getId()) : array();
 
 		$this->addModel("display_price_list_link", array(
 			"visible" => (count($priceList) > 2)	//セール価格があったり会員特別価格があったり
@@ -149,7 +149,7 @@ class ItemListComponent extends HTMLList {
 		return implode("<br>", $html);
 	}
 
-	private function getItemOptionAttributeById($itemId){
+	private function getItemOptionAttributeById(int $itemId){
 		static $dao, $list;
 		if(is_null($dao)){
 			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
@@ -159,8 +159,8 @@ class ItemListComponent extends HTMLList {
 		if(isset($list[$itemId])) return $list[$itemId];
 
 		//今見ている商品が子商品であるか調べる
-		$type = soyshop_get_item_object($itemId)->getType();
-		if(is_numeric($type)) $itemId = $type;
+		$typ = soyshop_get_item_object($itemId)->getType();
+		if(is_numeric($typ)) $itemId = (int)$typ;
 
 		$list[$itemId] = array();
 		try{

@@ -162,11 +162,13 @@ class Cart04Page extends MainCartPageBase{
 		$this->addExtensions($cart);
 
 		//error
+		$orderErrMsg = $cart->getErrorMessage("order_error");
+		if(!is_string($orderErrMsg)) $orderErrMsg = "";
+		if(strlen($orderErrMsg) < 1) DisplayPlugin::hide("has_order_error");
 		$this->createAdd("order_error", "ErrorMessageLabel", array(
-			"html" => $cart->getErrorMessage("order_error")
+			"html" => $orderErrMsg
 		));
 
-		if(strlen($cart->getErrorMessage("order_error")) < 1) DisplayPlugin::hide("has_order_error");
 		$cart->clearErrorMessage();
 	}
 

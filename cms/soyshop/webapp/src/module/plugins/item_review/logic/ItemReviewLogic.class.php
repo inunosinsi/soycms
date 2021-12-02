@@ -84,7 +84,7 @@ class ItemReviewLogic extends SOY2LogicBase{
 		static $userId;
 		if(is_null($userId)){
 			$attributes = self::_getAttributes();
-			$userId = (isset($attributes["userId"])) ? (int)$attributes["userId"] : null;
+			$userId = (isset($attributes["userId"])) ? (int)$attributes["userId"] : 0;
 		}
 		return $userId;
 	}

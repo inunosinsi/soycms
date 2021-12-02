@@ -167,7 +167,7 @@ class TagCloudUtil {
 	}
 
 	public static function getWordIdByAlias(string $tag){
-		return self::_getWordObjectByAlias($tag)->getId();
+		return (string)self::_getWordObjectByAlias($tag)->getId();
 	}
 
 	private static function _getWordObjectByAlias(string $tag){

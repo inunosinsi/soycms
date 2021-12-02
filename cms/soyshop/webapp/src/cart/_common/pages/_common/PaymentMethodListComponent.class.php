@@ -41,9 +41,7 @@ class PaymentMethodListComponent extends HTMLList{
 		return $this->selected;
 	}
 	function setSelected($selected) {
-		if(strlen($selected)){
-			$this->selected = $selected;
-		}
+		if(is_string($selected) && strlen($selected)) $this->selected = $selected;
 	}
 
 	function getCart(){

@@ -11,29 +11,12 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	function doPost(SOYShop_Item $item){
 
 		if(isset($_POST["item_option"])){
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-
-			$options = $_POST["item_option"];
-			foreach($options as $key => $value){
-				try{
-					$attr = $dao->get($item->getId(), "item_option_" . $key);
-				}catch(Exception $e){
-					$attr = new SOYShop_ItemAttribute();
-					$attr->setItemId($item->getId());
-					$attr->setFieldId("item_option_" . $key);
-				}
-
+			$opts = $_POST["item_option"];
+			foreach($opts as $key => $value){
+				$value = trim($value);
+				$attr = soyshop_get_item_attribute_object($item->getId(), "item_option_" . $key);
 				$attr->setValue($value);
-
-				try{
-					$dao->insert($attr);
-				}catch(Exception $e){
-					try{
-						$dao->update($attr);
-					}catch(Exception $e){
-						//
-					}
-				}
+				soyshop_save_item_attribute_object($attr);
 			}
 		}
 	}
@@ -70,8 +53,8 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 * @retrun string html
 	 */
 	private function buildTextArea($key, $conf, $itemId, $types){
-
-		$v = ItemOptionUtil::getFieldValue($key, $itemId, $this->prefix);
+		$prefix = (is_string($this->prefix)) ? $this->prefix : "";
+		$v = ItemOptionUtil::getFieldValue($key, $itemId, $prefix);
 
 		//古いバージョンから使用していて、typeの値がない場合はselectにする
 		$type = (isset($conf["type"])) ? $conf["type"] : "select";
@@ -96,11 +79,12 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
 		self::prepare();
+		$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
 
 		$opts = ItemOptionUtil::getOptions();
 		if(count($opts)){
 			foreach($opts as $key => $conf){
-				$html = ItemOptionUtil::buildOptions($key, $conf, $item->getId(), $this->prefix);
+				$html = ItemOptionUtil::buildOptions($key, $conf, $itemId, $this->prefix);
 
 				$htmlObj->addModel($key . "_visible", array(
 					"soy2prefix" => SOYSHOP_SITE_PREFIX,
@@ -134,7 +118,8 @@ class CommonItemOptionCustomField extends SOYShopItemCustomFieldBase{
 
 			//古いバージョンから使用していて、typeの値がない場合はselectにする
 			$type = (isset($conf["type"])) ? $conf["type"] : "select";
-			$v = ItemOptionUtil::getFieldValue($key, $item->getId(), $this->prefix);
+			$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
+			$v = ItemOptionUtil::getFieldValue($key, $itemId, $this->prefix);
 			if(!strlen($v)) continue;
 
 			$html[] = htmlspecialchars($conf["name"], ENT_QUOTES, "UTF-8") . ": ";

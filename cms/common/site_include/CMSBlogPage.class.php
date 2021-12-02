@@ -260,9 +260,9 @@ class CMSBlogPage extends CMSPage{
 					array_shift($date);
 				}
 
-				$this->year  = isset($date[0]) && is_numeric($date[0]) ? (int)$date[0] : null ;
-				$this->month = isset($date[1]) && is_numeric($date[1]) ? (int)$date[1] : null ;
-				$this->day   = isset($date[2]) && is_numeric($date[2]) ? (int)$date[2] : null ;
+				$this->year  = isset($date[0]) && is_numeric($date[0]) ? (int)$date[0] : 0 ;
+				$this->month = isset($date[1]) && is_numeric($date[1]) ? (int)$date[1] : 0 ;
+				$this->day   = isset($date[2]) && is_numeric($date[2]) ? (int)$date[2] : 0 ;
 				$this->entries = ($this->limit > 0) ? $this->getEntriesByDate($this->year,$this->month,$this->day) : array();
 
 				$pageFormat = $this->page->getMonthTitleFormat();

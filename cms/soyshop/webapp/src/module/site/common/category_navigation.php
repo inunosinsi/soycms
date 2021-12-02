@@ -51,7 +51,7 @@ function soyshop_category_navigation_build_tree($args,$array,$tree){
 
 	foreach($array as $obj){
 		$id = (isset($config[$obj->getId()])) ? $config[$obj->getId()]["id"] : null;
-		$parameter = (isset($config[$obj->getId()])) ? $config[$obj->getId()]["parameter"] : null;
+		$parameter = (isset($config[$obj->getId()])) ? $config[$obj->getId()]["parameter"] : "";
 
 		$url = (!isset($urls[$id])) ? $defaultUrl : $urls[$id]["uri"];
 		$href = soyshop_get_page_url($url,$obj->getAlias());

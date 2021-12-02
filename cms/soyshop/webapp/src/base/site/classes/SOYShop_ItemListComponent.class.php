@@ -11,21 +11,15 @@ class SOYShop_ItemListComponent extends HTMLList{
 
 	function execute(){
 		$iteration = $this->getAttribute("cms:count");
-		if(strlen($iteration)){
-			$this->iteration = $iteration;
-		}
+		if(is_string($iteration) && strlen($iteration)) $this->iteration = $iteration;
 		parent::execute();
 	}
 
 	protected function populateItem($entity, $key, $counter, $length){
-		if(false == ($entity instanceof SOYShop_Item)){
-			$entity = new SOYShop_Item();
-		}
+		if(false == ($entity instanceof SOYShop_Item)) $entity = new SOYShop_Item();
 
 		//指定の表示回数を超えていたら表示しない
-		if($this->iteration > 0 && $counter > $this->iteration){
-			return false;
-		}
+		if($this->iteration > 0 && $counter > $this->iteration) return false;
 
 		//実行
 		soyshop_output_item($this, $entity, $this->obj);

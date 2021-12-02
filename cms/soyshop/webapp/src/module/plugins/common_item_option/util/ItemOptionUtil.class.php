@@ -14,7 +14,7 @@ class ItemOptionUtil {
 		return self::_getOptions();
 	}
 
-	public static function saveOptions($opts){
+	public static function saveOptions(array $opts){
 		SOYShop_DataSets::put("item_option", soy2_serialize($opts));
 	}
 
@@ -27,18 +27,18 @@ class ItemOptionUtil {
 		return $opts;
 	}
 
-	public static function getFieldValue($key, $itemId, $prefix = "jp"){
+	public static function getFieldValue(string $key, int $itemId, string $prefix = "jp"){
 		return self::_getFieldValue($key, $itemId, $prefix);
 	}
 
-	public static function getFieldValueByItemOrderId($key, $itemOrderId, $prefix = "jp"){
+	public static function getFieldValueByItemOrderId(string $key, int $itemOrderId, string $prefix = "jp"){
 		return self::_getFieldValueByItemOrderId($key, $itemOrderId, $prefix);
 	}
 
 	/**
 	 * 設定に従いフォームを組み立てる
 	 */
-	public static function buildOptions($key, $conf, $itemId, $prefix = "jp"){
+	public static function buildOptions($key, $conf, $itemId, $prefix="jp"){
 		$v = self::_getFieldValue($key, $itemId, $prefix);
 		if(!strlen($v)) return "";
 
@@ -48,7 +48,7 @@ class ItemOptionUtil {
 		return self::_buildOpt($name, $type, $v);
 	}
 
-	public static function buildOptionsWithSelected($key, $conf, SOYShop_ItemOrder $itemOrder, $selected, $prefix = "jp", $isBr = true){
+	public static function buildOptionsWithSelected(string $key, array $conf, SOYShop_ItemOrder $itemOrder, $selected, string $prefix = "jp", $isBr = true){
 		$v = self::_getFieldValue($key, $itemOrder->getItemId(), $prefix);
 		if(!strlen($v)) return "";
 
@@ -128,35 +128,25 @@ class ItemOptionUtil {
 		$key = "item_option_" . $k;
 
 		if(SOYSHOP_PUBLISH_LANGUAGE != "jp"){
-			$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key . "_" . self::convertConfigPrefix(SOYSHOP_PUBLISH_LANGUAGE))->getValue());
+			$v[$prefix][$itemId][$k] = trim(soyshop_get_item_attribute_value($itemId, $key . "_" . self::convertConfigPrefix(SOYSHOP_PUBLISH_LANGUAGE), "string"));
 			if(strlen($v[$prefix][$itemId][$k])) return $v[$prefix][$itemId][$k];
 
 			if(SOYSHOP_PUBLISH_LANGUAGE != $prefix){
-				$v[$prefix][$itemId][$k] = trim(self::_get($itemId, $key . "_" . self::convertConfigPrefix($prefix))->getValue());
+				$v[$prefix][$itemId][$k] = trim(soyshop_get_item_attribute_value($itemId, $key . "_" . self::convertConfigPrefix($prefix), "string"));
 				if(strlen($v[$prefix][$itemId][$k])) return $v[$prefix][$itemId][$k];
 			}
 		}
 
 		//多言語化の方の値を取得できなかった場合
-		$val = trim(self::_get($itemId, $key)->getValue());
+		$val = trim(soyshop_get_item_attribute_value($itemId, $key, "string"));
 		if(!strlen($val)) {	//なければ親商品も調べる
 			$parentId = soyshop_get_parent_id_by_child_id($itemId);
-			if($parentId > 0) $val = trim(self::_get($parentId, $key)->getValue());
+			if($parentId > 0) $val = trim(soyshop_get_item_attribute_value($parentId, $key, "string"));
 		}
 
 		$v[$prefix][$itemId][$k] = $val;
 
 		return $v[$prefix][$itemId][$k];
-	}
-
-	private static function _get($itemId, $key){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		try{
-			return $dao->get($itemId, $key);
-		}catch(Exception $e){
-			return new SOYShop_ItemAttribute();
-		}
 	}
 
 	private static function _getFieldValueByItemOrderId($key, $itemOrderId, $prefix = "jp"){
@@ -185,16 +175,14 @@ class ItemOptionUtil {
 		return trim(self::_getByItemOrderId($itemOrderId, $key)->getValue());
 	}
 
-	private static function _getByItemOrderId($itemOrderId, $key){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-
+	private static function _getByItemOrderId(int $itemOrderId, string $key){
 		$sql = "SELECT attr.* FROM soyshop_item_attribute attr ".
 				"INNER JOIN soyshop_orders os ".
 				"ON attr.item_id = os.item_id ".
 				"WHERE os.id = :itemOrderId ".
 				"AND attr.item_field_id = :fieldId";
 
+		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 		try{
 			$res = $dao->executeQuery($sql, array(":itemOrderId" => $itemOrderId, ":fieldId" => "item_option_" . $key));
 		}catch(Exception $e){
@@ -205,24 +193,18 @@ class ItemOptionUtil {
 
 		//子商品である場合は親商品の設定を調べる
 		$itemId = self::itemOrderDao()->getItemIdById($itemOrderId);
-		$parentId = soyshop_get_parent_id_by_child_id($itemId);
-		if($parentId === 0) return new SOYShop_ItemAttribute();
-
-		try{
-			return $dao->get($parentId, "item_option_" . $key);
-		}catch(Exception $e){
-			return new SOYShop_ItemAttribute();
-		}
+		if(!is_numeric($itemId)) $itemId = 0;
+		return soyshop_get_item_attribute_object(soyshop_get_parent_id_by_child_id($itemId), "item_option_" . $key);
 	}
 
 	//多言語のプレフィックスでプラグイン側で決めたプレフィックスに変換する 例：zhをcnに変換
 	private static function convertConfigPrefix($prefix = "jp"){
-		static $config;
-		if(is_null($config)){
+		static $cnf;
+		if(is_null($cnf)){
 			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-			$config = UtilMultiLanguageUtil::getConfig();
+			$cnf = UtilMultiLanguageUtil::getConfig();
 		}
-		return (isset($config[$prefix]["prefix"])) ? $config[$prefix]["prefix"] : $prefix;
+		return (isset($cnf[$prefix]["prefix"])) ? $cnf[$prefix]["prefix"] : $prefix;
 	}
 
 	//文字列エスケープしつつ、エスケープしてはいけない文字列を元に戻す

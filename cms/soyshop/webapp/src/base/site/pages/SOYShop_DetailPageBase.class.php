@@ -31,13 +31,8 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 		}
 
 		//子商品だった場合は、親商品の詳細ページにリダイレクト
-		if(is_numeric($item->getType())){
-			$config = SOYShop_ShopConfig::load();
-			$displayDetail = $config->getDisplayChildItem();
-			if($displayDetail == 0){
-				$parent = $itemDAO->getById($item->getType());
-				header("Location: " . soyshop_get_page_url($page->getUri(),$parent->getAlias()));
-			}
+		if(is_numeric($item->getType()) && (int)SOYShop_ShopConfig::load()->getDisplayChildItem() == 0){
+			header("Location: " . soyshop_get_page_url($page->getUri(),soyshop_get_item_object($item->getType())->getAlias()));
 		}
 
 		$this->setItem($item);
@@ -57,7 +52,7 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 			$this->setTotalItemCount($total);
 
 			$counter = 1;
-			$prev_item = null;
+			$prev_item = false;
 			$next_item = false;
 			foreach($items as $tmp){
 				if($tmp->getId() == $item->getId()){
@@ -79,11 +74,11 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 
 			//keywords
 			$keywords = $item->getAttribute("keywords");
-			if(strlen($keywords)) $this->getHeadElement()->insertMeta("keywords", $keywords . ",");
+			if(is_string($keywords) && strlen($keywords)) $this->getHeadElement()->insertMeta("keywords", $keywords . ",");
 
 			//description
 			$description = $item->getAttribute("description");
-			if(strlen($description)) $this->getHeadElement()->insertMeta("description", $description . " ");
+			if(is_string($description) && strlen($description)) $this->getHeadElement()->insertMeta("description", $description . " ");
 
 		}catch(Exception $e){
 			throw new Exception("unknown error.");
@@ -103,9 +98,9 @@ class SOYShop_DetailPageBase extends SOYShopPageBase{
 	/**
 	 * 商品が非公開で商品詳細ページ確認モードのフラグが立っている場合はページを表示するか調べる
 	 * @param object SOYShop_Item
-	 * @return booleanもしくはnull
+	 * @return boolean or null ← どうにかしたい
 	 */
-	function getForAdminOnly($item){
+	function getForAdminOnly(SOYShop_Item $item){
 
 		if(!$item->isPublished() && isset($_GET["foradminonly"])){
 			$session = SOY2ActionSession::getUserSession();
@@ -186,46 +181,34 @@ class SOYShop_DetailPagePager extends SOYShop_PagerBase{
 	}
 
 	function getNextPageUrl(){
-		$url = $this->getPagerUrl();
-		$page = $this->page;
-		$nextItem = $page->getNextItem();
-		if(!is_null($nextItem)){
-			if($this->page->getPageObject()->getId() != $nextItem->getDetailPageId()){
-				try{
-					$uri = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getById($nextItem->getDetailPageId())->getUri();
-					$url = soyshop_get_page_url($uri);
-				}catch(Exception $e){
-					$nextItem = null;
-				}
-			}
+		$nextItem = $this->page->getNextItem();
+		if(!$nextItem instanceof SOYShop_Item) return "-";
+
+		if($this->page->getPageObject()->getId() != $nextItem->getDetailPageId()){
+			$url = soyshop_get_page_url(soyshop_get_page_object($nextItem->getDetailPageId())->getUri());
+		}else{
+			$url = $this->getPagerUrl();
 		}
-		$next_link = ($nextItem) ? $url . "/" . ($nextItem->getAlias()) : "-";
-		return $next_link;
+		return $url . "/" . ($nextItem->getAlias());
 	}
 
 	function getPrevPageUrl(){
-		$url = $this->getPagerUrl();
-		$page = $this->page;
-		$prevItem = $page->getPrevItem();
-		if(!is_null($prevItem)){
-			if($this->page->getPageObject()->getId() != $prevItem->getDetailPageId()){
-				try{
-					$uri = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getById($prevItem->getDetailPageId())->getUri();
-					$url = soyshop_get_page_url($uri);
-				}catch(Exception $e){
-					$prevItem = null;
-				}
-			}
+		$prevItem = $this->page->getPrevItem();
+		if(!$prevItem instanceof SOYShop_Item) return "-";
+
+		if($this->page->getPageObject()->getId() != $prevItem->getDetailPageId()){
+			$url = soyshop_get_page_url(soyshop_get_page_object($prevItem->getDetailPageId())->getUri());
+		}else{
+			$url = $this->getPagerUrl();
 		}
-		$prev_link = ($prevItem) ? $url . "/" . ($prevItem->getAlias()) : "-";
-		return $prev_link;
+		return $url . "/" . ($prevItem->getAlias());
 	}
 
 	function hasNext(){
-		return ($this->page->getNextItem()) ? true : false;
+		return ($this->page->getNextItem());
 	}
 
 	function hasPrev(){
-		return ($this->page->getPrevItem()) ? true : false;
+		return ($this->page->getPrevItem());
 	}
 }

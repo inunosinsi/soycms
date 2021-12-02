@@ -9,7 +9,7 @@ class PointHistoryListComponent extends HTMLList{
 		));
 
 		$this->addLink("order_link", array(
-			"link" => (is_numeric($entity->getOrderId())) ? SOY2PageController::createLink("Order.Detail." . $entity->getOrderId()) : null
+			"link" => (is_numeric($entity->getOrderId()) && $entity->getOrderId() > 0) ? SOY2PageController::createLink("Order.Detail." . $entity->getOrderId()) : null
 		));
 
 		$this->addLabel("content", array(

@@ -55,7 +55,7 @@ class ModulePage extends MainMyPagePageBase{
 						}
 					}
 				}
-				$newCustomfields = $_POST["Customfield"];
+				$newCustomfields = (isset($_POST["Customfield"])) ? $_POST["Customfield"] : array();
 
 				$dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
 				$dateDao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
@@ -215,10 +215,10 @@ class ModulePage extends MainMyPagePageBase{
 		DisplayPlugin::toggle("failed", isset($_GET["failed"]));
 		DisplayPlugin::toggle("error", isset($_GET["error"]));
 
-		$errMsg = (isset($_GET["error"])) ? SOYShopPlugin::invoke("soyshop.order.customfield", array("mode" => "error_message", "mypage" => $this->getMyPage()))->getErrorMessage() : null;
+		$errMsg = (isset($_GET["error"])) ? SOYShopPlugin::invoke("soyshop.order.customfield", array("mode" => "error_message", "mypage" => $this->getMyPage()))->getErrorMessage() : "";
 
 		$this->addLabel("error_message", array(
-			"text" => (strlen($errMsg)) ? $errMsg : "失敗しました"
+			"text" => (is_string($errMsg) && strlen($errMsg)) ? $errMsg : "失敗しました"
 		));
 
 		$this->addLabel("order_number", array(

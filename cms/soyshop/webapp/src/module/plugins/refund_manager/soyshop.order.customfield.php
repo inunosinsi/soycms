@@ -2,14 +2,7 @@
 
 class RefundManagerOrderCustomfield extends SOYShopOrderCustomfield{
 
-	function clear(CartLogic $cart){}
-	function doPost($param){}
-	function order(CartLogic $cart){}
-	function complete(CartLogic $cart){}
-	function hasError($param){}
-	function getForm(CartLogic $cart){}
-
-	function display($orderId){
+	function display(int $orderId){
 
 		self::prepare();
 		list($values, $isProcessed) = RefundManagerUtil::get($orderId);
@@ -44,7 +37,7 @@ class RefundManagerOrderCustomfield extends SOYShopOrderCustomfield{
 	 * @param int $orderID
 	 * @return array labelとformの連想配列を格納
 	 */
-	function edit($orderId){
+	function edit(int $orderId){
 		//マイページでは表示しない
 		if(!defined("SOYSHOP_MYPAGE_MODE") || !SOYSHOP_MYPAGE_MODE){
 			SOY2::import("module.plugins.refund_manager.form.RefundManagerForm");
@@ -60,7 +53,7 @@ class RefundManagerOrderCustomfield extends SOYShopOrderCustomfield{
 	 * @param int $orderId
 	 * @return array saveするための配列
 	 */
-	function config($orderId){
+	function config(int $orderId){
 		//マイページでは読み込まない
 		if(defined("SOYSHOP_MYPAGE_MODE") && SOYSHOP_MYPAGE_MODE) return array();
 
@@ -77,7 +70,7 @@ class RefundManagerOrderCustomfield extends SOYShopOrderCustomfield{
 			$oldComment = (isset($old[0]["comment"])) ? $old[0]["comment"] : "";
 			if(
 				$comment != $oldComment ||
-				(!strlen($oldComment) && strlen($comment)) || 
+				(!strlen($oldComment) && strlen($comment)) ||
 				(strlen($oldComment) && !strlen($comment))
 			){
 				SOY2::import("logic.order.OrderHistoryLogic");

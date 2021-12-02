@@ -166,13 +166,13 @@ function soyshop_pager_navigation($html, $page){
 		$prevItem = $page->getPrevItem();
 
 		$obj->addLabel("next_item_name", array(
-			"text" => (!is_null($nextItem)) ? $nextItem->getName() : null,
+			"text" => ($nextItem instanceof SOYShop_Item) ? $nextItem->getName() : "",
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"style" => ($hasNext) ? "" : "visibility:hidden;"
 		));
 
 		$obj->addLabel("prev_item_name", array(
-			"text" => (!is_null($prevItem)) ? $prevItem->getName() : null,
+			"text" => ($prevItem instanceof SOYShop_Item) ? $prevItem->getName() : "",
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"style" => ($hasPrev) ? "" : "visibility:hidden;"
 		));

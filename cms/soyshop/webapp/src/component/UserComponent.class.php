@@ -69,10 +69,11 @@ class UserComponent {
 			}else{
 				if($this->config->getInsertDummyMailAddressOnAdminRegister()) $mailAddress = soyshop_dummy_mail_address();
 			}
+			if(!is_string($mailAddress)) $mailAddress = "";
 		}
 
 		//LINE Loginで生成したダミーの場合はメールアドレスを空にする
-		if(preg_match('/^line_.*@' . DUMMY_MAIL_ADDRESS_DOMAIN . '$/', $mailAddress, $tmp)){
+		if(is_string($mailAddress) && preg_match('/^line_.*@' . DUMMY_MAIL_ADDRESS_DOMAIN . '$/', $mailAddress, $tmp)){
 			if(isset($tmp[0]) && strlen($tmp[0]) && strpos($tmp[0], "@")){
 				$mailAddress = "";
 			}
@@ -137,7 +138,7 @@ class UserComponent {
 		));
 
 		$passText = "";
-		$pwlen = strlen($user->getPassword());
+		$pwlen = (is_string($user->getPassword())) ? strlen($user->getPassword()) : 0;
 		for($i = 0; $i < $pwlen; ++$i){
 			$passText .= "*";
 		}
@@ -199,7 +200,6 @@ class UserComponent {
 		$page->addLabel("gender_text", array(
 			"text" => self::_genderText($user->getGender())
 		));
-
 		//生年月日 年
 		$page->addInput("birth_year", array(
 			"type" => "number",
@@ -245,7 +245,7 @@ class UserComponent {
 		));
 
 		//郵便番号をバラして使う
-		$zip = explode("-", $user->getZipCode());
+		$zip = (is_string($user->getZipCode()) && is_numeric(strpos($user->getZipCode(), "-"))) ? explode("-", $user->getZipCode()) : array("", "");
 		$page->addInput("zip_code1", array(
 			"name" => "Customer[zipCode1]",
 			"value" => (isset($zip[0])) ? $zip[0] : null,
@@ -364,9 +364,14 @@ class UserComponent {
 		));
 
 		/* ユーザカスタムフィールド */
+		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+			if(is_numeric(strpos($_SERVER["PATH_INFO"], "User/Detail"))) $mode = "none";	//管理画面を開いている時は二重読み込みを防止する意味でnoneモードを渡す
+		}else{	//マイページでの確認画面
+			if(is_numeric(strpos($_SERVER["PATH_INFO"], "/confirm"))) $mode = "confirm";
+		}
 		SOYShopPlugin::load("soyshop.user.customfield");
 		$delegate = SOYShopPlugin::invoke("soyshop.user.customfield", array(
-			"mode" => (!(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE && strpos($_SERVER["PATH_INFO"], "User/Detail"))) ? $mode : "none",	//管理画面を開いている時は二重読み込みを防止する意味でnoneモードを渡す
+			"mode" => $mode,
 			"app" => $app,
 			"userId" => $user->getId()
 		));
@@ -450,7 +455,7 @@ class UserComponent {
 		/* 各エラーメッセージは/soyshop/webapp/src/message/以下にあります */
 
 		/* メールアドレス */
-		if($this->checkFormConfig("mailAddress")){
+		if(self::_checkFormConfig("mailAddress")){
 			if(tstrlen($user->getMailAddress()) < 1){
 				//メールアドレスを入力していない場合
 				$app->addErrorMessage("mail_address", MessageManager::get("MAIL_ADDRESS_EMPTY"));
@@ -489,7 +494,7 @@ class UserComponent {
 		}
 
 		/* 名前 */
-		if($this->checkFormConfig("name")){
+		if(self::_checkFormConfig("name")){
 			if(tstrlen($user->getName()) < 1){
 				//名前を入力していない場合
 				$app->addErrorMessage("name", MessageManager::get("USER_NAME_EMPTY"));
@@ -498,7 +503,7 @@ class UserComponent {
 		}
 
 		/* フリガナ */
-		if($this->checkFormConfig("reading")){
+		if(self::_checkFormConfig("reading")){
 			$reading = str_replace(array(" ", "　"), "", $user->getReading());
 			if(tstrlen($reading) < 1){
 				//フリガナを入力していない場合
@@ -514,7 +519,7 @@ class UserComponent {
 		}
 
 		/* ニックネーム(マイページのみ) */
-		if($this->checkFormConfig("nickname")){
+		if(self::_checkFormConfig("nickname")){
 			if(tstrlen($user->getNickname()) < 1){
 				//名前を入力していない場合
 				$app->addErrorMessage("nickname", MessageManager::get("USER_NICKNAME_EMPTY"));
@@ -523,7 +528,7 @@ class UserComponent {
 		}
 
 		/* 郵便番号 */
-		if($this->checkFormConfig("zipCode")){
+		if(self::_checkFormConfig("zipCode")){
 			if(tstrlen($user->getZipCode()) < 1){
 				//郵便番号を入力していない場合
 				$app->addErrorMessage("zip_code", MessageManager::get("ZIP_CODE_EMPTY"));
@@ -532,7 +537,7 @@ class UserComponent {
 		}
 
 		/* 住所 */
-		if($this->checkFormConfig("address")){
+		if(self::_checkFormConfig("address")){
 			if(tstrlen($user->getArea()) < 1 || tstrlen($user->getAddress1()) < 1){
 				//住所を入力していない場合
 				$app->addErrorMessage("address", MessageManager::get("ADDRESS_EMPTY"));
@@ -541,7 +546,7 @@ class UserComponent {
 		}
 
 		/* 電話番号 */
-		if($this->checkFormConfig("telephoneNumber")){
+		if(self::_checkFormConfig("telephoneNumber")){
 			if(tstrlen($user->getTelephoneNumber()) < 1){
 				//電話番号を入力していない場合
 				$app->addErrorMessage("tel_number", MessageManager::get("TELEPHONE_NUMBER_EMPTY"));
@@ -550,7 +555,7 @@ class UserComponent {
 		}
 
 		/* 職種 */
-		if($this->checkFormConfig("jobName")){
+		if(self::_checkFormConfig("jobName")){
 			if(tstrlen($user->getJobName()) < 1){
 				$app->addErrorMessage("job_name", MessageManager::get("JOB_NAME_EMPTY"));
 				$res = false;
@@ -558,15 +563,16 @@ class UserComponent {
 		}
 
 		/* 性別 */
-		if($this->checkFormConfig("gender")){
-			if(tstrlen($user->getGender()) < 1){
+		if(self::_checkFormConfig("gender")){
+			$gender = $user->getGender();
+			if(!is_numeric($gender) || $gender < 0 || $gender > 1){	//genderの値は0 or 1
 				$app->addErrorMessage("gender", MessageManager::get("GENDER_EMPTY"));
 				$res = false;
 			}
 		}
 
 		/* 誕生日 */
-		if($this->checkFormConfig("birthday")){
+		if(self::_checkFormConfig("birthday")){
 			if(is_null($user->getBirthday())){
 				$app->addErrorMessage("birthday", MessageManager::get("BIRTHDAY_EMPTY"));
 				$res = false;
@@ -574,7 +580,7 @@ class UserComponent {
 		}
 
 		/* FAX番号 */
-		if($this->checkFormConfig("faxNumber")){
+		if(self::_checkFormConfig("faxNumber")){
 			if(tstrlen($user->getFaxNumber()) < 1){
 				//FAX番号を入力していない場合
 				$app->addErrorMessage("fax_number", MessageManager::get("FAX_NUMBER_EMPTY"));
@@ -583,7 +589,7 @@ class UserComponent {
 		}
 
 		/* 携帯番号 */
-		if($this->checkFormConfig("cellphoneNumber")){
+		if(self::_checkFormConfig("cellphoneNumber")){
 			if(tstrlen($user->getCellphoneNumber()) < 1){
 				//携帯番号を入力していない場合
 				$app->addErrorMessage("cellphone_number", MessageManager::get("CELLPHONE_NUMBER_EMPTY"));
@@ -592,7 +598,7 @@ class UserComponent {
 		}
 
 		/* URL(マイページのみ) */
-		if($this->checkFormConfig("url")){
+		if(self::_checkFormConfig("url")){
 			if(tstrlen($user->getUrl()) < 1){
 				//携帯番号を入力していない場合
 				$app->addErrorMessage("url", MessageManager::get("URL_EMPTY"));
@@ -601,7 +607,7 @@ class UserComponent {
 		}
 
 		/* 備考 */
-		if($this->checkFormConfig("memo")){
+		if(self::_checkFormConfig("memo")){
 
 			//カートの場合
 			if(preg_match("/^cart/", $mode)){
@@ -774,7 +780,7 @@ class UserComponent {
 		}
 
 		/* ログインID(マイページのみ) */
-		if($this->checkFormConfig("accountId")){
+		if(self::_checkFormConfig("accountId")){
 			if(tstrlen($user->getAccountId()) < 1){
 				//ログインIDを入力していない場合
 				$app->addErrorMessage("account_id", MessageManager::get("ACCOUNT_ID_EMPTY"));
@@ -937,20 +943,22 @@ class UserComponent {
 		/* 送り先 */
 
 		//送り先
+		$sendAddrErrMsg = $app->getErrorMessage("send_address");
+		if(!is_string($sendAddrErrMsg)) $sendAddrErrMsg = "";
 		$page->createAdd("send_address_error", "ErrorMessageLabel", array(
-			"text" => $app->getErrorMessage("send_address")
+			"text" => $sendAddrErrMsg
 		));
 
 		//送り先 表示
-		$page->createAdd("has_send_address_error","HTMLModel", array(
-			"visible" => (strlen($app->getErrorMessage("send_address")) > 0)
+		$page->addModel("has_send_address_error", array(
+			"visible" => (strlen($sendAddrErrMsg) > 0)
 		));
 	}
 
 	private $display;
 	private $required;
 
-	function checkFormConfig($key){
+	private function _checkFormConfig(string $key){
 
 		if(!$this->display){
 			$this->display = $this->config->getCustomerDisplayFormConfig();
@@ -973,30 +981,30 @@ class UserComponent {
 
 	/**
 	 * POST時の値調整
-	 * @param array $user $_POST["customer"]想定
+	 * @param array $userArray $_POST["customer"]想定
 	 * @return array 調整後の$_POST["customer"]
 	 */
-	function adjustUser($user){
+	function adjustUser(array $userArray){
 		/* 名前関連 */
 
 		//氏名
-		if(isset($user["name"])){
-			$user["name"] = soyshop_trim($user["name"]);
+		if(isset($userArray["name"])){
+			$userArray["name"] = soyshop_trim($userArray["name"]);
 		}
 
 		//フリガナ
-		if(isset($user["reading"])){
-			$user["reading"] = soyshop_trim($user["reading"]);
+		if(isset($userArray["reading"])){
+			$userArray["reading"] = soyshop_trim($userArray["reading"]);
 		}
 
 		//郵便番号を分割している場合
-		if(!isset($user["zipCode"]) && isset($user["zipCode1"])){
-			$zip = soyshop_trim($user["zipCode1"]);
-			if(isset($user["zipCode2"])) $zip .= "-" . soyshop_trim($user["zipCode2"]);
-			$user["zipCode"] = $zip;
+		if(!isset($userArray["zipCode"]) && isset($userArray["zipCode1"])){
+			$zip = soyshop_trim($userArray["zipCode1"]);
+			if(isset($userArray["zipCode2"])) $zip .= "-" . soyshop_trim($userArray["zipCode2"]);
+			$userArray["zipCode"] = $zip;
 		}
 
-		return $user;
+		return $userArray;
 	}
 
 	/**
@@ -1004,6 +1012,6 @@ class UserComponent {
 	 * @return boolean
 	 */
 	function getIsCheckMailMagazine(SOYShop_User $user){
-		return $isCheck = ($user->getNotSend() == SOYShop_User::USER_SEND);
+		return ($user->getNotSend() == SOYShop_User::USER_SEND);
 	}
 }

@@ -77,7 +77,7 @@ class PageLogic extends SOY2LogicBase{
 	/**
 	 * generate css file
 	 */
-	private function _generateCSSFile(SOYShop_Page $obj, $force = false){
+	private function _generateCSSFile(SOYShop_Page $obj, bool $force = false){
 		/* CSSの出力 */
     	$uri = $obj->getUri();
 
@@ -123,5 +123,12 @@ class PageLogic extends SOY2LogicBase{
 		}
 
 		SOYShop_DataSets::put("site.url_mapping", $mapping);
+	}
+
+	//一番IDの小さい詳細ページを取得する
+	function getOldestDetailPageId(){
+		static $id;
+		if(!is_numeric($id)) $id = SOY2DAOFactory::create("site.SOYShop_PageDAO")->getOldestDetailPageId();
+		return $id;
 	}
 }

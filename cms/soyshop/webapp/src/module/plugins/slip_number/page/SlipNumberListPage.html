@@ -38,7 +38,7 @@
 		</div>
 
 		<!-- soy:display="no_slip_number" -->
-		<div class="alert alert-info">返送待ちの伝票はありません。</div>
+		<div class="alert alert-info">発送待ちの伝票はありません。</div>
 		<!-- /soy:display="no_slip_number" -->
 
 		<!-- soy:display="is_slip_number" -->
@@ -75,20 +75,29 @@
 			</table>
 		</div>
 
-		<h4>CSVエクスポート</h4>
+		<br>
+
+		<div class="alert alert-info">CSVエクスポート</div>
 		<form soy:id="export_form" id="export_form">
-			<p class="content">未発送分のCSVエクスポート&nbsp;<input type="submit" name="export" value="出力"></p>
+			<div class="form-group">
+				<label>未発送分のCSVエクスポート</label>
+				<input type="submit" name="export" class="btn btn-primary" value="出力">
+			</div>
 		</form>
 
-		<h4>CSVインポート</h4>
+		<br>
+
+		<div class="alert alert-info">CSVインポート</div>
 		<form soy:id="import_form">
-			<p class="content">
-				未発送分の一括変更<br>
-				<input type="file" name="csv">&nbsp;
-				<label><input type="radio" name="charset" value="Shift_JIS" checked="checked">Shift_JIS</label>&nbsp;
-				<label><input type="radio" name="charset" value="UTF-8">UTF-8</label>&nbsp;
-				<input type="submit" name="import" value="一括変更">
-			</p>
+			<div class="form-group">
+				<label>未発送分の一括変更</label>
+				<div class="form-inline">
+					<input type="file" name="csv" class="form-control">&nbsp;
+					<label><input type="radio" name="charset" value="Shift_JIS" checked="checked">Shift_JIS</label>&nbsp;
+					<label><input type="radio" name="charset" value="UTF-8">UTF-8</label>&nbsp;
+					<input type="submit" name="import" class="btn btn-primary" value="一括変更">
+				</div>
+			</div>
 		</form>
 		<!-- /soy:display="is_slip_number" -->
 	</div>

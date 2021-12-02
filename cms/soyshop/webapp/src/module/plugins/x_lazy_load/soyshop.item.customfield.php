@@ -21,7 +21,7 @@ class LazyLoadCustomField extends SOYShopItemCustomFieldBase{
 			"text" => ($isLazyLoad) ? "lazy" : "auto"
 		));
 
-		$img = (!is_null($item->getId())) ? soyshop_convert_file_path($item->getAttribute("image_small"), $item) : "";
+		$img = (is_numeric($item->getId()) && is_string($item->getAttribute("image_small"))) ? soyshop_convert_file_path($item->getAttribute("image_small"), $item) : "";
 		$htmlObj->addImage("lazy_load_item_small_image", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
             "src" => $img,

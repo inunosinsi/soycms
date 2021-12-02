@@ -87,7 +87,7 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	        foreach(CustomSearchFieldUtil::getCategoryConfig() as $key => $field){
 
 	            //多言語化対応はデータベースから値を取得した時点で行っている
-	            $csfValue = (isset($values[$key])) ? $values[$key] : null;
+	            $csfValue = (isset($values[$key])) ? $values[$key] : "";
 				if(isset($csfValue) && $field["type"] == CustomSearchFieldUtil::TYPE_TEXTAREA){
 					$csfValue = soyshop_customfield_nl2br($csfValue);
 				}
@@ -174,7 +174,7 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 						 * 隠し機能:携帯自動振り分け、多言語化プラグイン用で画像の配置場所を別で用意する
 						 * @ToDo 管理画面でもいじれる様にしたい
 						 */
-						$value = soyshop_convert_file_path($value, new SOYShop_Item());
+						$value = (is_string($value)) ? soyshop_convert_file_path($value, new SOYShop_Item()) : null;
 
 						if(strlen($config->getOutput()) > 0){
 							$page->addModel($config->getFieldId(), array(

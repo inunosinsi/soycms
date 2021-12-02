@@ -112,7 +112,7 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 
 		switch($this->mode){
 			case "list":
-				if(strlen($action->getName())){
+				if(is_string($action->getName()) && strlen($action->getName())){
 					$this->_list[$moduleId] = array(
 						"name" => $action->getName(),
 						"description" => $action->getDescription(),
@@ -130,7 +130,7 @@ class SOYShopDeliveryDeletageAction implements SOY2PluginDelegateAction{
 				}
 				break;
 			case "mypage":
-				if(strlen($action->getName())){
+				if(is_string($action->getName()) && strlen($action->getName())){
 					$this->_list[$moduleId] = $action->edit();
 				}
 				break;

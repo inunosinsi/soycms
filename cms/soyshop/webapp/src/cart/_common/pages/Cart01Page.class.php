@@ -209,29 +209,39 @@ class Cart01Page extends MainCartPageBase{
 			"link" => soyshop_get_site_url(true)
 		));
 
-		DisplayPlugin::toggle("has_stock_error", (strlen($cart->getErrorMessage("stock")) > 0));
+		$stockMsg = $cart->getErrorMessage("stock");
+		if(!is_string($stockMsg)) $stockMsg = "";
+		DisplayPlugin::toggle("has_stock_error", (strlen($stockMsg) > 0));
 		$this->addLabel("stock_error", array(
-			"text" => $cart->getErrorMessage("stock")
+			"text" => $stockMsg
 		));
 
-		DisplayPlugin::toggle("has_accept_error", (strlen($cart->getErrorMessage("accept")) > 0));
+		$acceptMsg = $cart->getErrorMessage("accept");
+		if(!is_string($acceptMsg)) $acceptMsg = "";
+		DisplayPlugin::toggle("has_accept_error", (strlen($acceptMsg) > 0));
 		$this->addLabel("accept_error", array(
-			"text" => $cart->getErrorMessage("accept")
+			"text" => $acceptMsg
 		));
 
-		DisplayPlugin::toggle("has_login_error", (strlen($cart->getErrorMessage("login_error")) > 0));
+		$loginErrMsg = $cart->getErrorMessage("login_error");
+		if(!is_string($loginErrMsg)) $loginErrMsg = "";
+		DisplayPlugin::toggle("has_login_error", (strlen($loginErrMsg) > 0));
 		$this->addLabel("login_error", array(
-			"text" => $cart->getErrorMessage("login_error")
+			"text" => $loginErrMsg
 		));
 
-		DisplayPlugin::toggle("has_plugin_error", (strlen($cart->getErrorMessage("plugin_error")) > 0));
+		$pluginErrMsg = $cart->getErrorMessage("plugin_error");
+		if(!is_string($pluginErrMsg)) $pluginErrMsg = "";
+		DisplayPlugin::toggle("has_plugin_error", (strlen($pluginErrMsg) > 0));
 		$this->addLabel("plugin_error", array(
-			"html" => nl2br($cart->getErrorMessage("plugin_error"))
+			"html" => nl2br($pluginErrMsg)
 		));
 
-		DisplayPlugin::toggle("has_plugin_notice", (strlen($cart->getNoticeMessage("plugin_notice")) > 0));
+		$pluginNoticeMsg = $cart->getNoticeMessage("plugin_notice");
+		if(!is_string($pluginNoticeMsg)) $pluginNoticeMsg = "";
+		DisplayPlugin::toggle("has_plugin_notice", (strlen($pluginNoticeMsg) > 0));
 		$this->addLabel("plugin_notice", array(
-			"html" => nl2br($cart->getNoticeMessage("plugin_notice"))
+			"html" => nl2br($pluginNoticeMsg)
 		));
 
 		//マイページ関連のリンク

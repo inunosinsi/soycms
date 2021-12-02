@@ -36,12 +36,14 @@ class ReturnsSlipNumberListComponent extends HTMLList {
 		$this->addActionLink("return_link", array(
 			"link" => self::_getReturnLink($entity->getId(), $entity->getIsReturn()),
 			"text" => ($entity->getIsReturn() == SOYShop_ReturnsSlipNumber::NO_RETURN) ? "返送" : "戻す",
-			"onclick" => "return confirm('" . self::_getConfirmText($entity->getIsReturn()) . "')"
+			"onclick" => "return confirm('" . self::_getConfirmText($entity->getIsReturn()) . "')",
+			"attr:id" => "return_link_" . $entity->getSlipNumber()
 		));
 
 		$this->addActionLink("remove_link", array(
 			"link" => SOY2PageController::createLink("Extension.returns_slip_number?remove=" . $entity->getId()),
-			"onclick" => "return confirm('削除しますか？')"
+			"onclick" => "return confirm('削除しますか？')",
+			"attr:id" => "remove_link_" . $entity->getSlipNumber()
 		));
 	}
 

@@ -92,7 +92,7 @@ class ConfirmPage extends IndexPage{
 		if($mypage->getIsLoggedin()) $this->jumpToTop();
 
 		$user = $mypage->getUserInfo();
-
+		
 		//直接URLを入力したら入力フォームに戻す
 		if(is_null($user)) $this->jump("register");
 

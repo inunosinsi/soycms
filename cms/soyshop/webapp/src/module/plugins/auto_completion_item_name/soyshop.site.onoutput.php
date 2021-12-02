@@ -4,7 +4,7 @@ class AutoCompletionOnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 		//JSのコードを追加すべきページか？調べる
 		$uri = $_SERVER["REQUEST_URI"];
 		if(is_numeric(strpos($uri, "?"))) $uri = substr($uri, 0, strpos($uri, "?"));

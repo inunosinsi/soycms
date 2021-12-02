@@ -92,39 +92,35 @@ class SOYShop_Category {
 
        //多言語化プラグインを考慮した商品名の取得
     function getOpenCategoryName(){
-        static $attrDao, $lngCnf;
+        static $lngCnf;
         if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
         if(!defined("SOYSHOP_MAIL_LANGUAGE")) define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
 
 		if(SOYSHOP_MAIL_LANGUAGE != "jp"){
-            if(is_null($attrDao)) {
-				$attrDao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
+            if(is_null($lngCnf)) {
 				SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
 				$lngCnf = UtilMultiLanguageUtil::getConfig();
 			}
 
             try{
-                $name = $attrDao->get($this->id, "category_name_" . SOYSHOP_MAIL_LANGUAGE)->getValue();
+                $name = soyshop_get_category_attribute_value($this->id, "category_name_" . SOYSHOP_MAIL_LANGUAGE, "string");
                 if(strlen($name)) return $name;
             }catch(Exception $e){
                 try{
 					$lng = (isset($lngCnf[SOYSHOP_MAIL_LANGUAGE]["prefix"])) ? $lngCnf[SOYSHOP_MAIL_LANGUAGE]["prefix"] : SOYSHOP_MAIL_LANGUAGE;
-					$name = $attrDao->get($this->id, "category_name_" . $lng)->getValue();
+					$name = soyshop_get_category_attribute_value($this->id, "category_name_" . $lng, "string");
 	                if(strlen($name)) return $name;
 				}catch(Exception $e){
 					//
 				}
             }
         }
-        return $this->name;
+        return (is_string($this->name)) ? $this->name : "";
     }
 
     function getAttachmentsPath(){
         $dir = SOYSHOP_SITE_DIRECTORY . "files/category-" . $this->getId() . "/";
-        if(!file_exists($dir)){
-            mkdir($dir);
-        }
-
+        if(!file_exists($dir)) mkdir($dir);
         return $dir;
     }
 
@@ -161,7 +157,6 @@ class SOYShop_Category {
      * 親カテゴリーを > でつなげたもの
      */
     function getCategoryChain(){
-        $logic = SOY2Logic::createInstance("logic.shop.CategoryLogic");
-        return $logic->getCategoryChain($this->id);
+        return SOY2Logic::createInstance("logic.shop.CategoryLogic")->getCategoryChain($this->id);
     }
 }

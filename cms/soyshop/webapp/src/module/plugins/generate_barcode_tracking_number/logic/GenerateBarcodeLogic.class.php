@@ -6,11 +6,9 @@ class GenerateBarcodeLogic extends SOY2LogicBase {
 		SOY2::import("module.plugins.generate_barcode_tracking_number.util.GenerateBarcodeUtil");
 	}
 
-	function generate($orderId){
-		$dir = GenerateBarcodeUtil::getBarcodeDirectory();
-		
-		$trackingNumber = SOY2Logic::createInstance("logic.order.OrderLogic")->getById($orderId)->getTrackingNumber();
-		$jpgFile = $dir . $trackingNumber . ".jpg";
+	function generate(int $orderId){
+		$trackingNumber = soyshop_get_order_object($orderId)->getTrackingNumber();
+		$jpgFile = GenerateBarcodeUtil::getBarcodeDirectory() . $trackingNumber . ".jpg";
 
 		if(!file_exists($jpgFile)){
 			require_once(dirname(dirname(__FILE__)) . "/vendor/autoload.php");

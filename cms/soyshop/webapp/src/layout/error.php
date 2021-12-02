@@ -15,24 +15,27 @@
 	<![endif]-->
 
 <?php
+	if(!isset($appLogoPath)) $appLogoPath = "";
+	if(!isset($paths)) $paths = array("css" => array(), "js" => array());
 	$soycmsDir = rtrim(dirname(SOY2PageController::createRelativeLink("./")), "/") . "/soycms";
 	$hideSideMenu = false;
 	$time = time();
 	$extConts = array();
 	$shopName = "ショップ";
 	$appName = "SOY Shop";
+	$adminName = "---";
 	$css = array();
 	$scripts = array();
 ?>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $soycmsDir;?>/css/dashboard.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["bootstrap"]; ?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["metis"]; ?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["sb-admin-2"]; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo (isset($paths["css"]["bootstrap"])) ? $paths["css"]["bootstrap"] : ""; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo (isset($paths["css"]["metis"])) ? $paths["css"]["metis"] : ""; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo (isset($paths["css"]["sb-admin-2"])) ? $paths["css"]["sb-admin-2"] : ""; ?>">
 <link type="text/css" rel="stylesheet" href="<?php echo $soycmsDir;?>/webapp/pages/files/dist/css/soycms_cp.css?<?php echo $time;?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["morris"]; ?>">
-<link type="text/css" rel="stylesheet" href="<?php echo $paths["css"]["fontawesome"]; ?>">
-<link rel="stylesheet" type="text/css" href="<?php echo $paths["css"]["jquery-ui"]; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo (isset($paths["css"]["morris"])) ? $paths["css"]["morris"] : ""; ?>">
+<link type="text/css" rel="stylesheet" href="<?php echo (isset($paths["css"]["fontawesome"])) ? $paths["css"]["fontawesome"] : ""; ?>">
+<link rel="stylesheet" type="text/css" href="<?php echo (isset($paths["css"]["jquery-ui"])) ? $paths["css"]["jquery-ui"] : ""; ?>">
 <style>.navbar-static-top{background: linear-gradient(#cdcdcd,#ffffff);}</style>
 <?php
 foreach($css as $link){
@@ -45,8 +48,8 @@ foreach($scripts as $script){
 	echo "\n";
 }
 ?>
-<script src="<?php echo $paths["js"]["jquery"]; ?>" type="text/JavaScript" charset="utf-8"></script>
-<script src="<?php echo $paths["js"]["jquery-ui"]; ?>" type="text/JavaScript" charset="utf-8"></script>
+<script src="<?php echo (isset($paths["js"]["jquery"])) ? $paths["js"]["jquery"] : ""; ?>" type="text/JavaScript" charset="utf-8"></script>
+<script src="<?php echo (isset($paths["js"]["jquery-ui"])) ? $paths["js"]["jquery-ui"] : ""; ?>" type="text/JavaScript" charset="utf-8"></script>
 <?php if($hideSideMenu) { ?>
 <style type="text/css">
 @media (min-width: 768px) {
@@ -105,7 +108,7 @@ foreach($scripts as $script){
 					<a href="<?php echo SOYSHOP_ADMIN_URL; ?>/Site">サイト管理</a>
 				</li>
 				<li class="user">
-					<a href="javascript:void(0);" data-toggle="modal" data-target="#accountModal"><i class="fa fa-user fa-fw"></i>ユーザー情報</a>
+					<a href="javascript:void(0);" data-toggle="modal" data-target="#accountModal"><i class="fa fa-user fa-fw"></i>管理者情報(<?php echo $adminName; ?>)</a>
 				</li>
 				<?php }?>
 				<li>
@@ -180,7 +183,7 @@ foreach($scripts as $script){
 			<!-- /.navbar-static-side -->
 		</nav>
 		<!-- div id="sub">
-			<?php echo $subMenu; ?>
+			<?php echo (isset($subMenu)) ? $subMenu : ""; ?>
 		</div-->
 
 		<div id="page-wrapper" style="padding-top: 30px;">
@@ -194,21 +197,21 @@ foreach($scripts as $script){
 	</div><!-- /#wrapper -->
 
 <!-- Bootstrap Core JavaScript -->
-<script src="<?php echo $paths["js"]["bootstrap"]; ?>"></script>
+<script src="<?php echo (isset($paths["js"]["bootstrap"])) ? $paths["js"]["bootstrap"] : ""; ?>"></script>
 
 <!-- Metis Menu Plugin JavaScript -->
-<script src="<?php echo $paths["js"]["metis"]; ?>"></script>
+<script src="<?php echo (isset($paths["js"]["metis"])) ? $paths["js"]["metis"] : ""; ?>"></script>
 
 <!-- Morris Charts JavaScript -->
-<script src="<?php echo $paths["js"]["raphael"]; ?>"></script>
-<script src="<?php echo $paths["js"]["morris"]; ?>"></script>
+<script src="<?php echo (isset($paths["js"]["raphael"])) ? $paths["js"]["raphael"] : ""; ?>"></script>
+<script src="<?php echo (isset($paths["js"]["morris"])) ? $paths["js"]["morris"] : ""; ?>"></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="<?php echo $paths["js"]["sb-admin-2"]; ?>"></script>
+<script src="<?php echo (isset($paths["js"]["sb-admin-2"])) ? $paths["js"]["sb-admin-2"] : ""; ?>"></script>
 <script src="<?php echo $soycmsDir;?>/webapp/pages/files/dist/js/soycms-common.js?<?php echo $time;?>"></script>
 <script src="<?php echo $soycmsDir;?>/js/lang/ja.js?<?php echo $time;?>"></script>
 
-<script src="<?php echo $paths["js"]["jquery-cookie"]; ?>" type="text/javascript"></script>
+<script src="<?php echo (isset($paths["js"]["jquery-cookie"])) ? $paths["js"]["jquery-cookie"] : ""; ?>" type="text/javascript"></script>
 
 <!-- モーダル -->
 <div class="modal fade" id="accountModal" tabindex="-1" role="dialog" aria-labelledby="AccountLabel" aria-hidden="true">

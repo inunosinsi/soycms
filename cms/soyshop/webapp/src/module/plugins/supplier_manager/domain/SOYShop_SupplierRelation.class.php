@@ -22,7 +22,7 @@ class SOYShop_SupplierRelation {
 	}
 
 	function getItemId(){
-		return $this->itemId;
+		return (is_numeric($this->itemId)) ? (int)$this->itemId : 0;
 	}
 	function setItemId($itemId){
 		$this->itemId = $itemId;

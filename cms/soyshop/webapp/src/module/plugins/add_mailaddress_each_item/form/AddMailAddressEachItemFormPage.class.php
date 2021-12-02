@@ -6,15 +6,15 @@ class AddMailAddressEachItemFormPage extends WebPage{
     private $itemId;
 
     function __construct(){
-        SOY2::import("module.plugins.add_mailaddress_each_item.util.AddMailAddressEachItemUtil");
-    }
+		SOY2::import("module.plugins.add_mailaddress_each_item.util.AddMailAddressEachItemUtil");
+	}
 
     function execute(){
         parent::__construct();
 
         $this->addInput("email", array(
             "name" => "AddMailAddress",
-            "value" => AddMailAddressEachItemUtil::get($this->itemId, AddMailAddressEachItemUtil::MODE_EMAIL)
+            "value" => soyshop_get_item_attribute_value($this->itemId, AddMailAddressEachItemUtil::PLUGIN_ID . "_" . AddMailAddressEachItemUtil::MODE_EMAIL)
         ));
     }
 

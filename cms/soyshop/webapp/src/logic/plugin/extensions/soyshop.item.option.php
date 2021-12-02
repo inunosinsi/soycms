@@ -2,15 +2,18 @@
 
 class SOYShopItemOptionBase implements SOY2PluginAction{
 
-	function clear($index, CartLogic $cart){
+	function clear(int $index, CartLogic $cart){
 
 	}
 
-	function compare($index, CartLogic $cart){
-
+	/**
+	 * @return int
+	 */
+	function compare(array $postedOptions, CartLogic $cart){
+		return $index;
 	}
 
-	function doPost($index, CartLogic $cart){
+	function doPost(int $index, CartLogic $cart){
 
 	}
 

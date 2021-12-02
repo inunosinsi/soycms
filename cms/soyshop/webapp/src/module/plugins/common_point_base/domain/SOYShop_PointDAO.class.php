@@ -1,4 +1,5 @@
 <?php
+SOY2::import("module.plugins.common_point_base.domain.SOYShop_Point");
 /**
  * @entity SOYShop_Point
  */

@@ -19,7 +19,6 @@ class CMSPage extends WebPage{
 	const SOYCMS_COMMENT_PHRASE = "cms:ignore";
 
 	function __construct($args){
-
 		$id = $args[0];
 		$this->arguments = $args[1];
 		$this->siteConfig = $args[2];

@@ -4,42 +4,27 @@ class CommonPointGrantCustomField extends SOYShopItemCustomFieldBase{
 
 	const PLUGIN_ID = "common_point_base";
 
-	private $itemAttributeDao;
-	private $percentage;
-
 	function doPost(SOYShop_Item $item){
 
 		if(isset($_POST[self::PLUGIN_ID])){
-			$percentage = soyshop_convert_number($_POST[self::PLUGIN_ID], 0);
-
-			$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			try{
-				$attr = $dao->get($item->getId(),self::PLUGIN_ID);
-			}catch(Exception $e){
-				$attr = new SOYShop_ItemAttribute();
-			}
-
-			if(!is_null($attr->getItemId())){
-				$attr->setValue($percentage);
-				$dao->update($attr);
-			}else{
-				$attr->setItemId($item->getId());
-				$attr->setFieldId(self::PLUGIN_ID);
-				$attr->setValue($percentage);
-
-				$dao->insert($attr);
-			}
+			$point = (strlen($_POST[self::PLUGIN_ID])) ? soyshop_convert_number($_POST[self::PLUGIN_ID], 0) : null;
+			if($point === self::_getDefaultSetPointPercentage()) $point = null;	//データの軽量化
+			$attr = soyshop_get_item_attribute_object($item->getId(), self::PLUGIN_ID);
+			$attr->setValue($point);
+			soyshop_save_item_attribute_object($attr);
 		}
 	}
 
 	function getForm(SOYShop_Item $item){
+		$p = (is_numeric($item->getId())) ? self::_getPercentage($item->getId()) : 0;
 
 		$html = array();
-		$html[] = "<dt>ポイント</dt>";
-		$html[] = "<dd>";
-		$html[] = "<input type=\"text\" name=\"" . self::PLUGIN_ID . "\" value=\"" . self::getPercentage($item) . "\" style=\"width:40px;ime-mode:inactive;\">&nbsp;%";
-		$html[] = "</dd>";
-
+		$html[] = "<div class=\"form-group\">";
+		$html[] = "	<label>ポイント</label>";
+		$html[] = "	<div class=\"form-inline\">";
+		$html[] = "		<input type=\"number\" name=\"" . self::PLUGIN_ID . "\" class=\"form-control\" value=\"" . $p . "\" style=\"width:80px;ime-mode:inactive;\">&nbsp;%";
+		$html[] = "	</div>";
+		$html[] = "</div>";
 		return implode("\n", $html);
 	}
 
@@ -47,41 +32,38 @@ class CommonPointGrantCustomField extends SOYShopItemCustomFieldBase{
 	 * onOutput
 	 */
 	function onOutput($htmlObj, SOYShop_Item $item){
+		$itemId = (is_numeric($item->getId())) ? (int)$item->getId() : 0;
 
 		$htmlObj->addLabel("item_point_grant_percentage", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => SOY2Logic::createInstance("module.plugins.common_point_grant.logic.PointGrantLogic")->getPercentage($item)
+			"text" => ($itemId > 0) ? SOY2Logic::createInstance("module.plugins.common_point_grant.logic.PointGrantLogic")->getPercentage($item) : 0
 		));
 
 		//common_point_baseから持ってきた
 		$htmlObj->addLabel("item_point_percentage", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
-			"text" => self::getPercentage($item)
+			"text" => ($itemId > 0) ? self::_getPercentage($item->getId()) : 0
 		));
 	}
 
 	function onDelete($id){
-		$attributeDAO = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		$attributeDAO->deleteByItemId($id);
+		SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->deleteByItemId($id);
 	}
 
-	function getPercentage(SOYShop_Item $item){
-		self::prepare();
-
-		try{
-			return (int)$this->itemAttributeDao->get($item->getId(), self::PLUGIN_ID)->getValue();
-		}catch(Exception $e){
-			return $this->percentage;
-		}
+	private function _getPercentage(int $itemId){
+		$v = soyshop_get_item_attribute_value($itemId, self::PLUGIN_ID, "int");
+		if(is_numeric($v)) return (int)$v;
+		return self::_getDefaultSetPointPercentage();
 	}
 
-	private function prepare(){
-		if(!$this->itemAttributeDao) $this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		if(!$this->percentage){
+	private function _getDefaultSetPointPercentage(){
+		static $p;
+		if(is_null($p)){
 			SOY2::import("module.plugins.common_point_grant.util.PointGrantUtil");
-			$config = PointGrantUtil::getConfig();
-			$this->percentage = (int)$config["percentage"];
+			$cnf = PointGrantUtil::getConfig();
+			$p = (int)$cnf["percentage"];
 		}
+		return $p;
 	}
 }
 

@@ -6,28 +6,24 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
 		SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
 	}
 
-    function clear($index, CartLogic $cart){
-        $items = $cart->getItems();
-        if(isset($items[$index])){
-            $itemId = $items[$index]->getItemId();
+    function clear(int $index, CartLogic $cart){
+        $itemOrders = $cart->getItems();
+        if(!isset($itemOrders[$index])) return;
 
-            $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId);
-            $cart->clearAttribute($obj);
-        }
+        $cart->clearAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrders[$index]->getItemId()));
     }
 
-    function compare($postedOption, CartLogic $cart){
+    function compare(array $postedOption, CartLogic $cart){
         $checkOptionId = null;
 
-        $items = $cart->getItems();
+        $itemOrders = $cart->getItems();
 
         //比較用の配列を作成する
-        $attributes = array();
-        foreach($items as $index => $item){
-            $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $item->getItemId());
-            $attributes[$index]["schedule_id"] = $cart->getAttribute($obj);
+        $attrs = array();
+        foreach($itemOrders as $index => $itemOrder){
+            $attrs[$index]["schedule_id"] = $cart->getAttribute(ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrder->getItemId()));
 
-            $currentOptions = array_diff($attributes[$index], array(null));
+            $currentOptions = array_diff($attrs[$index], array(null));
 
             if($postedOption == $currentOptions){
                 $checkOptionId = $index;
@@ -38,14 +34,12 @@ class ReserveCalendarOption extends SOYShopItemOptionBase{
         return $checkOptionId;
     }
 
-    function doPost($index, CartLogic $cart){
+    function doPost(int $index, CartLogic $cart){
         if(isset($_REQUEST["item_option"]["schedule_id"])){
-            $items = $cart->getItems();
-			if(isset($items[$index])){
-                $itemId = $items[$index]->getItemId();
-
-                $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemId);
-                $cart->setAttribute($obj, $_REQUEST["item_option"]["schedule_id"]);
+            $itemOrders = $cart->getItems();
+			if(isset($itemOrders[$index])){
+                $obj = ReserveCalendarUtil::getCartAttributeId("schedule_id", $index, $itemOrders[$index]->getItemId());
+				$cart->setAttribute($obj, $_REQUEST["item_option"]["schedule_id"]);
             }else{	//存在していない時
 
 			}

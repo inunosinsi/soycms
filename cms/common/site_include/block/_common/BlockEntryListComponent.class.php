@@ -80,7 +80,7 @@ class BlockEntryListComponent extends HTMLList{
 		$id = (is_numeric($entity->getId())) ? (int)$entity->getId() : 0;
 
 		$hTitle = htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8");
-		$entryUrl = ($entity instanceof Entry) ? self::_getArticleUrl($entity) : null;
+		$entryUrl = ($entity instanceof Entry) ? self::_getArticleUrl($entity) : "";
 
 		if($this->isStickUrl){
 			$hTitle = "<a href=\"".htmlspecialchars($entryUrl, ENT_QUOTES, "UTF-8")."\">".$hTitle."</a>";

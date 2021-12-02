@@ -30,7 +30,7 @@ class SOYShop_ItemAttribute {
 	private $extraValues;
 
 	function getItemId() {
-		return $this->itemId;
+		return (is_numeric($this->itemId)) ? (int)$this->itemId : 0;
 	}
 	function setItemId($itemId) {
 		$this->itemId = $itemId;
@@ -316,13 +316,13 @@ class SOYShop_ItemAttributeConfig{
 		         //.' ('.htmlspecialchars($this->getFieldId(), ENT_QUOTES, "UTF-8").')'
 						 .' (cms:id="' . htmlspecialchars($this->getFieldId(), ENT_QUOTES, "UTF-8") . '")';
 
-		$title .= (strlen($this->getDescription())) ? "<span class=\"option\">(" . $this->getDescription() . ")</span><br>" : "";
+		$title .= (is_string($this->getDescription()) && strlen($this->getDescription())) ? "<span class=\"option\">(" . $this->getDescription() . ")</span><br>" : "";
 		$title .= '</label><br>' . "\n";
 
 		switch($this->getType()){
 			case "checkbox":
 				//DefaultValueがあればそれを使う
-				$checkbox_value = (strlen($this->getDefaultValue()) > 0) ? $this->getDefaultValue() : $this->getLabel() ;
+				$checkbox_value = (is_string($this->getDefaultValue()) && strlen($this->getDefaultValue()) > 0) ? $this->getDefaultValue() : $this->getLabel() ;
 				$h_checkbox_value = htmlspecialchars($checkbox_value, ENT_QUOTES, "UTF-8");
 				$body = '<input type="checkbox" class="custom_field_checkbox"'
 				       .' id="'.$h_formID.'"'
@@ -333,35 +333,41 @@ class SOYShop_ItemAttributeConfig{
 
 				break;
 			case "checkboxes":
-				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->getOption()));
+				$optValue = (is_string($this->getOption())) ? $this->getOption() : "";
+				$options = (strlen($optValue)) ? explode("\n", str_replace(array("\r\n"), "\n", $optValue)) : array();
 				//$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
 				if(isset($value) && strlen($value)){
 					$values = explode(",", $value);
 				}else{
 					//カンマ区切りの初期値
-					$values = strpos($this->getDefaultValue(), ",") ? array($this->getDefaultValue()) : explode(",", $this->getDefaultValue());
+					$defaultValue = (is_string($this->getDefaultValue())) ? $this->getDefaultValue() : "";
+					$values = (strpos($defaultValue, ",")) ? array($defaultValue) : explode(",", $defaultValue);
 				}
 
 				$body = "";
-				foreach($options as $key => $option){
-					$option = trim($option);
-					if(strlen($option) > 0){
-						$h_option = htmlspecialchars($option, ENT_QUOTES, "UTF-8");
-						$id = 'custom_field_radio_'.$this->getFieldId().'_'.$key;
+				if(count($options)){
+					foreach($options as $key => $option){
+						$option = trim($option);
+						if(strlen($option) > 0){
+							$h_option = htmlspecialchars($option, ENT_QUOTES, "UTF-8");
+							$id = 'custom_field_radio_'.$this->getFieldId().'_'.$key;
 
-						$body .= '<input type="checkbox" class="custom_field_radio"' .
-								 ' name="'.$h_formName.'[]"' .
-								 ' id="'.$id.'"'.
-								 ' value="'.$h_option.'"' .
-								 ((!is_bool(array_search($option, $values))) ? ' checked="checked"' : "") .
-								 ' />';
-						$body .= '<label for="'.$id.'">'.$h_option.'</label>';
+							$body .= '<input type="checkbox" class="custom_field_radio"' .
+									 ' name="'.$h_formName.'[]"' .
+									 ' id="'.$id.'"'.
+									 ' value="'.$h_option.'"' .
+									 ((!is_bool(array_search($option, $values))) ? ' checked="checked"' : "") .
+									 ' />';
+							$body .= '<label for="'.$id.'">'.$h_option.'</label>';
+						}
 					}
 				}
 				break;
 			case "radio":
-				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->getOption()));
+				$optValue = (is_string($this->getOption())) ? $this->getOption() : "";
+				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$optValue));
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
+				if(!is_string($value)) $value = "";
 
 				$body = "";
 				foreach($options as $key => $option){
@@ -384,6 +390,7 @@ class SOYShop_ItemAttributeConfig{
 			case "select":
 				$options = explode("\n",str_replace(array("\r\n","\r"),"\n",$this->getOption()));
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
+				if(!is_string($value)) $value = "";
 
 				$body = '<select class="custom_field_select" name="'.$h_formName.'" id="'.$h_formID.'">';
 				$body .= '<option value="">----</option>';
@@ -401,6 +408,7 @@ class SOYShop_ItemAttributeConfig{
 				break;
 			case "textarea":
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
+				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 				$body = '<textarea class="custom_field_textarea" style="width:100%;"'
 				        .' id="'.$h_formID.'"'
@@ -413,6 +421,7 @@ class SOYShop_ItemAttributeConfig{
 				break;
 			case "richtext":
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
+				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 				$body = '<textarea class="custom_field_textarea mceEditor" style="width:100%;"'
 				        .' id="'.$h_formID.'"'
@@ -422,6 +431,7 @@ class SOYShop_ItemAttributeConfig{
 				break;
 			case "file":
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
+				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 
 				$html[] = '<div><input type="file" id="'.$h_formID.'_upload"'
@@ -443,7 +453,7 @@ class SOYShop_ItemAttributeConfig{
 				break;
 			case "image":
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value ;
-				$h_value = soyshop_convert_file_path_on_admin(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
+				$h_value = (is_string($value)) ? soyshop_convert_file_path_on_admin(htmlspecialchars($value, ENT_QUOTES, "UTF-8")) : "";
 
 				$style = (strlen($h_value) > 0) ? "" : "display:none;";
 
@@ -466,7 +476,7 @@ class SOYShop_ItemAttributeConfig{
 				       .' name="'.$h_formName.'"'
 				       .' value="'.$h_value.'" />';
 
-				$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getExtraOutputs()));
+				$extraOutputs = (is_string($this->getExtraOutputs())) ? explode("\n", str_replace(array("\r\n", "\r"), "\n", $this->getExtraOutputs())) : array();
 
 				foreach($extraOutputs as $key => $extraOutput){
 					$extraOutput = trim($extraOutput);
@@ -490,6 +500,7 @@ class SOYShop_ItemAttributeConfig{
 				break;
 			case "link":
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
+				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 				$body = '<input type="text" class="custom_field_input" style="width:70%"'
 				       .' id="'.$h_formID.'"'
@@ -506,6 +517,7 @@ class SOYShop_ItemAttributeConfig{
 			case "input":
 			default:
 				$value = (is_null($value)) ? $this->getDefaultValue() : $value;
+				if(!is_string($value)) $value = "";
 				$h_value = htmlspecialchars($value, ENT_QUOTES, "UTF-8");
 				$body = '<input type="text" class="custom_field_input" style="width:100%"'
 				       .' id="'.$h_formID.'"'

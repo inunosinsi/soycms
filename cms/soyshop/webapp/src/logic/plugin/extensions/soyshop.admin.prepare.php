@@ -21,6 +21,5 @@ class SOYShopAdminPrepareDelegateAction implements SOY2PluginDelegateAction{
 			$action->prepare();
 		}
 	}
-
 }
 SOYShopPlugin::registerExtension("soyshop.admin.prepare","SOYShopAdminPrepareDelegateAction");

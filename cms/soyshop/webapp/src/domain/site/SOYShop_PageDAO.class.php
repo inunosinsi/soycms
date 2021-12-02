@@ -77,12 +77,24 @@ abstract class SOYShop_PageDAO extends SOY2DAO{
 	 * @column id,uri
 	 * @query uri = :uri
 	 */
-	function checkUri($uri){
+	function checkUri(string $uri){
 
 		$query = $this->getQuery();
 		$result = $this->executeQuery($query, $this->getBinds());
 
 		return (boolean)count($result);
 
+	}
+
+	/**
+	 * @return int
+	 */
+	function getOldestDetailPageId(){
+		try{
+			$res = $this->executeQuery("SELECT id FROM soyshop_page WHERE type = :typ ORDER BY id ASC LIMIT 1;", array(":typ" => SOYShop_Page::TYPE_DETAIL));
+		}catch(Exception $e){
+			$res = array();
+		}
+		return (isset($res[0]["id"])) ? $res[0]["id"] : 0;
 	}
 }

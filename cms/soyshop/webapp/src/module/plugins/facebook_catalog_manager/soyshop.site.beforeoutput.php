@@ -64,7 +64,7 @@ class FacebookCatalogManagerBeforeOutput extends SOYShopSiteBeforeOutputAction{
 		}
 		$xml[] = "<g:link>" . soyshop_get_item_detail_link($item) . "</g:link>";
 
-		if(isset($info["image"]) && strlen($info["image"])){
+		if(isset($info["image"]) && is_string($info["image"]) && strlen($info["image"])){
 			$xml[] = "<g:image_link>" . soyshop_convert_file_path($info["image"], $item, true) . "</g:image_link>";
 		}
 

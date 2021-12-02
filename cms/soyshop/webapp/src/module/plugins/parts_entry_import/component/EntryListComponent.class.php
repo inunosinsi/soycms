@@ -15,20 +15,22 @@ class EntryListComponent extends HTMLList{
 	protected function populateItem($entity){
 		if(!$entity instanceof Entry) $entity = new Entry();
 
-		$link = $this->blogUrl . rawurlencode($entity->getAlias());
+		$alias = (is_string($entity->getAlias())) ? $entity->getAlias() : "";
+		$link = $this->blogUrl . rawurlencode($alias);
 
 		$this->addLabel("entry_id", array(
 			"text" => $entity->getId(),
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
+		$title = (is_string($entity->getTitle())) ? $entity->getTitle() : "";
 		$this->addLabel("title", array(
-			"html" => "<a href=\"" . $link . "\">".htmlspecialchars($entity->getTitle(), ENT_QUOTES, "UTF-8")."</a>",
+			"html" => "<a href=\"" . $link . "\">".htmlspecialchars($title, ENT_QUOTES, "UTF-8")."</a>",
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
 		$this->addLabel("title_plain", array(
-			"text" => $entity->getTitle(),
+			"text" => $title,
 			"soy2prefix" => SOYSHOP_SITE_PREFIX
 		));
 
@@ -81,7 +83,7 @@ class EntryListComponent extends HTMLList{
 		$this->addLink("more_link", array(
 			"soy2prefix" => SOYSHOP_SITE_PREFIX,
 			"link" => $link ."#more",
-			"visible"=>(strlen($entity->getMore()) != 0)
+			"visible"=>(is_string($entity->getMore()) && strlen($entity->getMore()))
 		));
 
 		//カスタムフィールドを呼び出す
@@ -136,7 +138,7 @@ class EntryListComponent extends HTMLList{
 
 				if($label == "resize") $label = "thumbnail";
 
-				$imagePath = trim($obj->getValue());
+				$imagePath = (is_string($obj->getValue())) ? trim($obj->getValue()) : "";
 				if($label == "thumbnail" && !strlen($imagePath)) $imagePath = $this->thumbnailConfig;
 
 				$this->addModel("is_" . $label, array(

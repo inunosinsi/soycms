@@ -18,7 +18,5 @@ class AsyncCartButtonConfig extends SOYShopConfigPageBase{
 	function getConfigPageTitle(){
 		return "非同期カートボタンの設定方法";
 	}	
-
 }
 SOYShopPlugin::extension("soyshop.config", "async_cart_button", "AsyncCartButtonConfig");
-?>

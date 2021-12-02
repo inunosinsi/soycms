@@ -29,7 +29,7 @@ class CommonOrderCustomfieldMailModule extends SOYShopOrderMail{
 
 		$array = array();
 		foreach($attributes as $obj){
-			if(isset($list[$obj->getFieldId()]["type"]) && strlen($obj->getValue1()) > 0){
+			if(isset($list[$obj->getFieldId()]["type"]) && is_string($obj->getValue1()) && strlen($obj->getValue1()) > 0){
 				$res = array();
 				$res[] = $list[$obj->getFieldId()]["label"];
 
@@ -37,7 +37,7 @@ class CommonOrderCustomfieldMailModule extends SOYShopOrderMail{
 					case "radio":
 						if(strlen($obj->getValue1())){
 							$msg = $obj->getValue1();
-							if(strlen($obj->getValue2())){
+							if(is_string($obj->getValue2()) && strlen($obj->getValue2())){
 								$msg .= ":" . $obj->getValue2();
 							}
 							$res[] = $msg;
@@ -58,10 +58,6 @@ class CommonOrderCustomfieldMailModule extends SOYShopOrderMail{
 
 	function getDisplayOrder(){
 		return 200;//delivery系は200番台
-	}
-
-	function getTimeText($value){
-		return date("Y", $value) . "-" . date("m", $value) . "-" . date("d", $value);
 	}
 }
 

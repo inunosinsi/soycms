@@ -10,7 +10,5 @@ class AsyncCartButtonInfo extends SOYShopInfoPageBase{
 			return "";
 		}
 	}
-
 }
 SOYShopPlugin::extension("soyshop.info", "async_cart_button", "AsyncCartButtonInfo");
-?>

@@ -166,7 +166,7 @@ class Label {
 			if(!class_exists("UserInfoUtil")) SOY2::import("util.UserInfoUtil");
 			$useLabelCategory = UserInfoUtil::getSiteConfig("useLabelCategory");
 		}
-		if( $useLabelCategory && ( $pos = strpos($this->caption,"/") ) > 0 ){
+		if( is_string($this->caption) && $useLabelCategory && ( $pos = strpos($this->caption,"/") ) > 0 ){
 			return substr($this->caption, $pos+1);
 		}else{
 			return $this->caption;

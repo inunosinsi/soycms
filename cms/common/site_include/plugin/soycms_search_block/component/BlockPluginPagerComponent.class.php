@@ -47,21 +47,24 @@ class BlockPluginPagerComponent extends HTMLList{
     }
 
     protected function populateItem($pager_list){
-		$html = "<a href=\"".htmlspecialchars($pager_list["url"], ENT_QUOTES, "UTF-8")."\"";
+		$url = (isset($pager_list["url"]) && is_string($pager_list["url"])) ? $pager_list["url"] : "";
+		$dspNum = (isset($pager_list["display_number"]) && is_numeric($pager_list["display_number"])) ? $pager_list["display_number"] : 0;
+
+		$html = "<a href=\"".htmlspecialchars($url, ENT_QUOTES, "UTF-8")."\"";
 
         $class = array();
-        if($pager_list["display_number"] == ($this->current + 1)) $class[] = "current_page_number";
-        if($pager_list["display_number"] == 1) $class[] = "first_page_number";// 1.3.4-
-        if($pager_list["display_number"] == $this->last) $class[] = "last_page_number";// 1.3.4-
+        if($dspNum == ($this->current + 1)) $class[] = "current_page_number";
+        if($dspNum == 1) $class[] = "first_page_number";// 1.3.4-
+        if($dspNum == $this->last) $class[] = "last_page_number";// 1.3.4-
         if(count($class)) $html .= " class=\"".implode(" ",$class)."\"";
 
         $html .= ">";
-        $html .= htmlspecialchars($pager_list["display_number"], ENT_QUOTES, "UTF-8");
+        $html .= htmlspecialchars($dspNum, ENT_QUOTES, "UTF-8");
         $html .= "</a>";
 
         $this->addLink("pager_item_link", array(
-                "link" => htmlspecialchars($pager_list["url"], ENT_QUOTES, "UTF-8"),
-                "text" => htmlspecialchars($pager_list["display_number"], ENT_QUOTES, "UTF-8"),
+                "link" => htmlspecialchars($url, ENT_QUOTES, "UTF-8"),
+                "text" => htmlspecialchars($dspNum, ENT_QUOTES, "UTF-8"),
                 "soy2prefix" => "cms"
         ));
         $this->addLabel("pager_item", array(
@@ -70,15 +73,15 @@ class BlockPluginPagerComponent extends HTMLList{
         ));
 
         $this->addModel("is_first", array(
-                "visible" => ($pager_list["display_number"] == 1),
+                "visible" => ($dspNum == 1),
                 "soy2prefix" => "cms"
         ));
         $this->addModel("is_last", array(
-                "visible" => ($pager_list["display_number"] == $this->last),
+                "visible" => ($dspNum == $this->last),
                 "soy2prefix" => "cms"
         ));
         $this->addModel("is_current", array(
-                "visible" => ($pager_list["display_number"] == $this->current),
+                "visible" => ($dspNum == $this->current),
                 "soy2prefix" => "cms"
         ));
     }

@@ -24,6 +24,7 @@ function soyshop_new_items($html, $htmlObj){
         $sql = "SELECT id FROM soyshop_item ".
              "WHERE item_is_open != " . SOYShop_Item::NO_OPEN . " ".
              "AND is_disabled != " . SOYShop_Item::IS_DISABLED . " ".
+			 "AND detail_page_id > 0 ".
              "AND open_period_start < " . time() . " ".
              "AND open_period_end > " . time() . " ".
              "AND (create_date > :edate AND create_date <= :cdate) ";

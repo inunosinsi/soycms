@@ -33,14 +33,14 @@ class SOYShopReserveCalendar_Cancel {
 	}
 
 	function getScheduleId(){
-		return $this->scheduleId;
+		return (is_numeric($this->scheduleId)) ? (int)$this->scheduleId : 0;
 	}
 	function setScheduleId($scheduleId){
 		$this->scheduleId = $scheduleId;
 	}
 
 	function getOrderId(){
-		return $this->orderId;
+		return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
 	}
 	function setOrderId($orderId){
 		$this->orderId = $orderId;

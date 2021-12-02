@@ -47,14 +47,14 @@ class SOYShop_NoticeArrival{
 	}
 
 	function getItemId(){
-		return $this->itemId;
+		return (is_numeric($this->itemId)) ? (int)$this->itemId : 0;
 	}
 	function setItemId($itemId){
 		$this->itemId = $itemId;
 	}
 
 	function getUserId(){
-		return $this->userId;
+		return (is_numeric($this->userId)) ? (int)$this->userId : 0;
 	}
 	function setUserId($userId){
 		$this->userId = $userId;

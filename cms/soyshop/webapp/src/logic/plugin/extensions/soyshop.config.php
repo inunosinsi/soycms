@@ -37,7 +37,7 @@ class SOYShopConfigPageBase implements SOY2PluginAction{
 	/**
 	 * プラグイン毎の詳細ページにリダイレクトする
 	 */
-	function redirect($query = ""){
+	function redirect(string $query = ""){
 		if(strlen($query) > 0) $query = "&" . $query;
 		SOY2PageController::jump("Config.Detail?plugin=" . $this->moduleId . $query);
 	}

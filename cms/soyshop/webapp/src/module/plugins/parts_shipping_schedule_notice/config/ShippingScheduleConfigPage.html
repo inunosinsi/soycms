@@ -28,10 +28,12 @@
 			<!-- /soy:id="is_consecutive_holidays" -->
 
 			<!-- soy:id="no_consecutive_holidays" -->
-			出荷日は&nbsp;<input type="number" soy:id="schedule">&nbsp;日以降の営業日の日付を出力する<br>
+			<div class="form-inline">
+				出荷日は&nbsp;<input type="number" class="form-control" soy:id="schedule">&nbsp;日以降の営業日の日付を出力する
+			</div>
 			<span style="font-size:0.9em; color:#787878;">※0日にすると当日の日付を出力</span><br>
 			<!-- /soy:id="no_consecutive_holidays" -->
-			<textarea soy:id="wording" style="height:70px;"></textarea>
+			<textarea soy:id="wording" class="form-control" style="height:100px;"></textarea>
 		</dd>
 		<!-- /soy:id="notice_list" -->
 	</dl>

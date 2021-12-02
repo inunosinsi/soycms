@@ -9,7 +9,7 @@ class reCAPTCHAv3OnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 		SOY2::import("module.plugins.reCAPTCHAv3.util.reCAPTCHAUtil");
 		$config = reCAPTCHAUtil::getConfig();
 		if(!isset($config["page_id"]) || !is_numeric($config["page_id"]) || (int)$config["page_id"] != (int)SOYSHOP_PAGE_ID) return $html;

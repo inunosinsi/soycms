@@ -55,8 +55,8 @@ class CartLogic extends SOY2LogicBase{
 	/**
 	 * カートを取得
 	 */
-	public static function getCart($cartId = null){
-		if(is_null($cartId)) $cartId = (defined("SOYSHOP_CURRENT_CART_ID")) ? SOYSHOP_CURRENT_CART_ID : soyshop_get_cart_id();
+	public static function getCart(string $cartId=""){
+		if(!strlen($cartId)) $cartId = (defined("SOYSHOP_CURRENT_CART_ID")) ? SOYSHOP_CURRENT_CART_ID : soyshop_get_cart_id();
 		$cart = SOY2ActionSession::getUserSession()->getAttribute("soyshop_" . SOYSHOP_ID . $cartId);
 		if(is_string($cart) && strlen($cart)) $cart = soy2_unserialize($cart);
 		return ($cart instanceof CartLogic) ? $cart : new CartLogic($cartId);
@@ -76,8 +76,8 @@ class CartLogic extends SOY2LogicBase{
 	/**
 	 * カートを削除
 	 */
-	public static function clearCart($cartId = null){
-		if(is_null($cartId)) $cartId = soyshop_get_cart_id();
+	public static function clearCart(string $cartId=""){
+		if(!strlen($cartId)) $cartId = soyshop_get_cart_id();
 		SOY2ActionSession::getUserSession()->setAttribute("soyshop_" . SOYSHOP_ID . $cartId, null);
 	}
 	function clear(){
@@ -87,7 +87,7 @@ class CartLogic extends SOY2LogicBase{
 	/**
 	 * カートに商品を追加 replaceIdxに値がある場合は商品の差し替え
 	 */
-	function addItem($itemId, $count = 1, $replaceIdx=null){
+	function addItem(int $itemId, int $count = 1, int $replaceIdx=-1){
 		$item = soyshop_get_item_object($itemId);
 
 		//追加不可能
@@ -100,7 +100,7 @@ class CartLogic extends SOY2LogicBase{
 		$items = self::getItems();
 
 		//商品の差し替え
-		if(is_numeric($replaceIdx) && isset($items[$replaceIdx])){
+		if(is_numeric($replaceIdx) && $replaceIdx >= 0 && isset($items[$replaceIdx])){
 			$items[$replaceIdx] = $this->setItemOrder($item, $count);
 			self::setItems($items);
 			return true;
@@ -151,7 +151,7 @@ class CartLogic extends SOY2LogicBase{
 		//商品オプションの値がポストされていない場合
 		}else{
 			//商品差替モードの場合はカート内に既に同じ商品があっても別商品として扱う
-			$index = (is_null($replaceIdx)) ? self::_checkExistedIndex($items, $itemId) : null;
+			$index = (!is_numeric($replaceIdx) || $replaceIdx < 0) ? self::_checkExistedIndex($items, $itemId) : null;
 
 			if(isset($index)){
 				self::updateItem($index, $count + $items[$index]->getItemCount());
@@ -170,9 +170,8 @@ class CartLogic extends SOY2LogicBase{
 	}
 
 	//カートに同じ商品があるか？
-	private function _checkExistedIndex($itemOrders, $itemId){
+	private function _checkExistedIndex(array $itemOrders, int $itemId){
 		if(!count($itemOrders)) return null;
-
 		foreach($itemOrders as $index => $itemOrder){
 			if((int)$itemOrder->getItemId() === (int)$itemId){
 				return $index;
@@ -192,7 +191,7 @@ class CartLogic extends SOY2LogicBase{
 		return $count;
 	}
 
-	function setItemOrder(SOYShop_Item $item, $count){
+	function setItemOrder(SOYShop_Item $item, int $count=0){
 		SOYShopPlugin::load("soyshop.cart.set.itemorder");
 		$obj = SOYShopPlugin::invoke("soyshop.cart.set.itemorder", array(
 			"item" => $item,
@@ -216,11 +215,11 @@ class CartLogic extends SOY2LogicBase{
 	/**
 	 * カートから商品を削除
 	 */
-	function removeItem($index){
+	function removeItem(int $idx){
 		$items = self::getItems();
-		if(isset($items[$index])){
-			$items[$index] = null;
-			unset($items[$index]);
+		if(isset($items[$idx])){
+			$items[$idx] = null;
+			unset($items[$idx]);
 			self::setItems($items);
 		}
 	}
@@ -228,7 +227,7 @@ class CartLogic extends SOY2LogicBase{
 	/**
 	 * カートでアイテム数の個数を更新
 	 */
-	function updateItem($index, $count){
+	function updateItem(int $idx, int $count=0){
 		if($count === 0){
 			$isRemove = true;
 			//管理画面で注文の場合はカートに0個を許可する設定がある
@@ -239,21 +238,21 @@ class CartLogic extends SOY2LogicBase{
 			}
 
 			if($isRemove){
-				self::removeItem($index);
+				self::removeItem($idx);
 				return;
 			}
 
 		}
 
 		$items = self::getItems();
-		if(isset($items[$index])){
-			$items[$index]->setItemCount($count);
-			$items[$index]->setTotalPrice($items[$index]->getItemPrice() * $count);
+		if(isset($items[$idx])){
+			$items[$idx]->setItemCount($count);
+			$items[$idx]->setTotalPrice($items[$idx]->getItemPrice() * $count);
 
 			SOYShopPlugin::load("soyshop.item.order");
 			SOYShopPlugin::invoke("soyshop.item.order", array(
 				"mode" => "update",
-				"itemOrder" => $items[$index]
+				"itemOrder" => $items[$idx]
 			));
 
 			self::setItems($items);
@@ -343,7 +342,7 @@ class CartLogic extends SOY2LogicBase{
 	/**
 	 * モジュール削除
 	 */
-	function removeModule($moduleId){
+	function removeModule(string $moduleId){
 		if(isset($this->modules[$moduleId])){
 			$this->modules[$moduleId] = null;
 			unset($this->modules[$moduleId]);
@@ -459,7 +458,7 @@ class CartLogic extends SOY2LogicBase{
 	 * 総合計金額を取得
 	 * @return number
 	 */
-	function getTotalPrice($exceptedTax = false){
+	function getTotalPrice(bool $exceptedTax=false){
 		$total = $this->getItemPrice();
 
 		foreach($this->modules as $moduleId => $module){
@@ -546,7 +545,7 @@ class CartLogic extends SOY2LogicBase{
 	function getItems() {
 		return (defined("SOYSHOP_USE_CART_TABLE_MODE") && SOYSHOP_USE_CART_TABLE_MODE) ? soyshop_cart_get_items($this->db) : $this->items;
 	}
-	function setItems($items) {
+	function setItems(array $items) {
 		if(defined("SOYSHOP_USE_CART_TABLE_MODE") && SOYSHOP_USE_CART_TABLE_MODE){
 			// @ToDo データベースインサートモード
 			$this->db = soyshop_cart_set_items($this->db, $items);
@@ -628,7 +627,7 @@ class CartLogic extends SOY2LogicBase{
 	 * trueの場合はすべてのモジュールをクリアする
 	 * falseの場合はisVisibleがtrueのもののみクリアする
 	 */
-	function clearModules($all = false){
+	function clearModules(bool $all=false){
 		foreach($this->modules as $moduleId => $module){
 			if($all === false && $module->getIsVisible() === false) continue;
 			$this->removeModule($moduleId);
@@ -907,7 +906,7 @@ class CartLogic extends SOY2LogicBase{
 	 * 注文可能かチェック
 	 * $allがfalseの場合(クレジットカード支払関係)は予約カレンダーの残席チェックは行わない
 	 */
-	function checkOrderable($all=true){
+	function checkOrderable(bool $all=true){
 		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 		$config = SOYShop_ShopConfig::load();
 		$ignoreStock = $config->getIgnoreStock();
@@ -1006,7 +1005,7 @@ class CartLogic extends SOY2LogicBase{
 	}
 
 	//子商品の注文数の合計
-	function getChildItemOrders($itemId){
+	function getChildItemOrders(int $itemId){
 		$cart = CartLogic::getCart();
 
 		$itemCount = 0;
@@ -1188,54 +1187,54 @@ class CartLogic extends SOY2LogicBase{
 		$this->setAttribute("order_id", $id);
 
 		$itemOrderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
-		$items = $this->getItems();
+		$itemOrders = $this->getItems();
 
 		//foreach内で読み込む拡張ポイントはここでロードしておく
 		SOYShopPlugin::load("soyshop.item.option");
 		SOYShopPlugin::load("soyshop.item.order");
 
-		foreach($items as $key => $item){
+		foreach($itemOrders as $key => $itemOrder){
 			$config = SOYShop_ShopConfig::load();
 
 			//子商品かどうかの判定が必要
 
 			//在庫を減らす（管理画面から未登録商品を追加したときはスキップ）
-			if($item->getItemId() > 0){
+			if($itemOrder->getItemId() > 0){
 				//子商品の在庫管理設定をオン(子商品購入時に在庫を減らさない)
 				$noChildItemStock = $config->getNoChildItemStock();
-				if(!$noChildItemStock) $itemDAO->orderItem($item->getItemId(), $item->getItemCount());
+				if(!$noChildItemStock) $itemDAO->orderItem($itemOrder->getItemId(), $itemOrder->getItemCount());
 
 				//子商品の在庫管理設定をオン(子商品購入時に親商品の在庫も減らす)
 				$childItemStock = $config->getChildItemStock();
 				if($childItemStock){
 					//SOYShop_Item
-					$itemObj = soyshop_get_item_object($item->getItemId());
-					if(is_numeric($itemObj->getType())){
-						$parent = soyshop_get_item_object($itemObj->getType());
-						$itemDAO->orderItem($parent->getId(), $item->getItemCount());
+					$item = soyshop_get_item_object($itemOrder->getItemId());
+					if(is_numeric($item->getType())){
+						$parent = soyshop_get_item_object($item->getType());
+						$itemDAO->orderItem($parent->getId(), $itemOrder->getItemCount());
 					}
 				}
 			}
 
-			$item->setOrderId($id);
+			$itemOrder->setOrderId($id);
 
 			//商品オプションがある場合は、attributeに値を挿入
 			$attrs = SOYShopPlugin::invoke("soyshop.item.option", array(
 				"mode" => "order",
 				"index" => $key
 			))->getAttributes();
-			$item->setAttributes($attrs);
+			$itemOrder->setAttributes($attrs);
 
 			//加算オプションがある場合は、is_additionに値を挿入
 			$add = SOYShopPlugin::invoke("soyshop.item.option", array(
 				"mode" => "addition",
 				"index" => $key
 			))->getAddition();
-			$item->setIsAddition($add);
+			$itemOrder->setIsAddition($add);
 
 			//どこかで商品名がnullになる場合があるのでその対処
-			if(is_null($item->getItemName())) $item->setItemName(soyshop_get_item_object($item->getItemId())->getName());
-			$itemOrderId = $itemOrderDAO->insert($item);
+			if(is_null($itemOrder->getItemName())) $itemOrder->setItemName(soyshop_get_item_object($itemOrder->getItemId())->getName());
+			$itemOrderId = $itemOrderDAO->insert($itemOrder);
 
 			// SOYShop_ItemOrderに関することなら何でもできる
 
@@ -1260,13 +1259,12 @@ class CartLogic extends SOY2LogicBase{
 		//$orderDAO->commit();
 
 		$this->order = $order;
-
 	}
 
 	/**
 	 * メールの送信
 	 */
-	function sendMail($type="order"){
+	function sendMail(string $type="order"){
 
 		$logic = SOY2Logic::createInstance("logic.mail.MailLogic");
 		$user = $this->getCustomerInformation();
@@ -1384,13 +1382,12 @@ class CartLogic extends SOY2LogicBase{
 		if(isset($id) && strlen($id) > 0){
 			return isset($this->errorMessage[$id]) && (strlen($this->errorMessage[$id]) > 0);
 		}else{
-			if(DEBUG_MODE){
-				$this->log("number of errors: ".count($this->errorMessage));
-				if(count($this->errorMessage)){
-					$this->log("errors: ".var_export($this->errorMessage,true));
-				}
+			$errMsgCnt = count($this->errorMessage);
+			if(DEBUG_MODE && $errMsgCnt > 0){
+				$this->log("number of errors: ".$errMsgCnt);
+				$this->log("errors: ".var_export($this->errorMessage,true));
 			}
-			return (count($this->errorMessage) > 0);
+			return ($errMsgCnt > 0);
 		}
 	}
 

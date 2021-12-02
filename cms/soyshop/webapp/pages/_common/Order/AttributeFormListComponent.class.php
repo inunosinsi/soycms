@@ -2,16 +2,19 @@
 
 class AttributeFormListComponent extends HTMLList {
 
-	protected function populateItem($item, $key) {
+	protected function populateItem($entity, $key) {
+		if(!is_string($key)) $key = "";
+		$name = (isset($entity["name"]) && is_string($entity["name"])) ? $entity["name"] : "";
+
 
 		$this->addLabel("attribute_title", array(
-			"text" => (isset($item["name"])) ? $item["name"] : ""
+			"text" => $name
 		));
 
 		$this->addTextArea("attribute_value", array(
 			"name" => "Attribute[" . $key . "]",
-			"value" => (isset($item["value"])) ? $item["value"] : "",
-			"readonly" => (isset($item["readonly"]) && $item["readonly"] == true)
+			"value" => (isset($entity["value"])) ? $entity["value"] : "",
+			"readonly" => (isset($entity["readonly"]) && $entity["readonly"] == true)
 		));
 
 		//オーダーカスタムフィールドの値は表示しない

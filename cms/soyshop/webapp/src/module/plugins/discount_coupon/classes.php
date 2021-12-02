@@ -161,13 +161,13 @@ class SOYShopCouponCode{
 		$this->status = $status;
 	}
 	public function getOrderId() {
-		return $this->orderId;
+		return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
 	}
 	public function setOrderId($orderId) {
 		$this->orderId = $orderId;
 	}
 	public function getUserId() {
-		return $this->userId;
+		return (is_numeric($this->userId)) ? (int)$this->userId : 0;
 	}
 	public function setUserId($userId) {
 		$this->userId = $userId;

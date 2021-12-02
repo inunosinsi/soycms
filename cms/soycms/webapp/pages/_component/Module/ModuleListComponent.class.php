@@ -7,7 +7,7 @@ class ModuleListComponent extends HTMLList{
 
 	protected function populateItem($entity){
 
-		$moduleId = self::convertModuleId($entity["moduleId"]);
+		$moduleId = (isset($entity["moduleId"]) && is_string($entity["moduleId"])) ? self::convertModuleId($entity["moduleId"]) : "";
 
 		$this->addLink("module_name", array(
 			"text" => (isset($entity["name"])) ? $entity["name"] : null,
@@ -27,8 +27,9 @@ class ModuleListComponent extends HTMLList{
 		));
 	}
 
-	private function convertModuleId($moduleId){
-		if(strpos($moduleId, "html.") === 0){
+	private function convertModuleId(string $moduleId){
+		$res = strpos($moduleId, "html.");
+		if(is_numeric($res) && $res === 0){
 			return str_replace("html.", "", $moduleId);
 		}else{
 			return $moduleId;

@@ -44,21 +44,21 @@ class SOYShop_Notepad {
 	}
 
 	function getItemId(){
-		return $this->itemId;
+		return (is_numeric($this->itemId)) ? (int)$this->itemId : 0;
 	}
 	function setItemId($itemId){
 		$this->itemId = $itemId;
 	}
 
 	function getCategoryId(){
-		return $this->categoryId;
+		return (is_numeric($this->categoryId)) ? (int)$this->categoryId : 0;
 	}
 	function setCategoryId($categoryId){
 		$this->categoryId = $categoryId;
 	}
 
 	function getUserId(){
-		return $this->userId;
+		return (is_numeric($this->userId)) ? (int)$this->userId : 0;
 	}
 	function setUserId($userId){
 		$this->userId = $userId;

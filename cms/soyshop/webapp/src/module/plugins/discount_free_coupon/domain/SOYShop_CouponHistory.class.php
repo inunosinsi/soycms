@@ -31,14 +31,14 @@ class SOYShop_CouponHistory {
     private $createDate;
 
     function getUserId(){
-    	return $this->userId;
+    	return (is_numeric($this->userId)) ? (int)$this->userId : 0;
     }
     function setUserId($userId){
     	$this->userId = $userId;
     }
 
     function getOrderId(){
-    	return $this->orderId;
+    	return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
     }
     function setOrderId($orderId){
     	$this->orderId = $orderId;

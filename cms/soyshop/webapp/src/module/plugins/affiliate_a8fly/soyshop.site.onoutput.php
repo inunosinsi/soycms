@@ -5,7 +5,7 @@ class AffiliateA8flyOnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 		//XHTMLではないXMLでは出力しない
 		if(
 			strpos($html, '<?xml version="1"') !== false

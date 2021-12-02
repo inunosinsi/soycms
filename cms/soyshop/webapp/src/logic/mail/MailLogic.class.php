@@ -400,16 +400,16 @@ class MailLogic extends SOY2LogicBase{
 	 */
 	function convertMailContent($content, SOYShop_User $user, SOYShop_Order $order){
 		//ユーザー情報
-		$content = str_replace("#NAME#", $user->getName(), $content);
-		$content = str_replace("#READING#", $user->getReading(), $content);
-		$content = str_replace("#MAILADDRESS#", $user->getMailAddress(), $content);
-		$content = str_replace("#BIRTH_YEAR#", $user->getBirthdayYear(), $content);
-		$content = str_replace("#BIRTH_MONTH#", $user->getBirthdayMonth(), $content);
-		$content = str_replace("#BIRTH_DAY#", $user->getBirthdayDay(), $content);
+		$content = str_replace("#NAME#", (string)$user->getName(), $content);
+		$content = str_replace("#READING#", (string)$user->getReading(), $content);
+		$content = str_replace("#MAILADDRESS#", (string)$user->getMailAddress(), $content);
+		$content = str_replace("#BIRTH_YEAR#", (string)$user->getBirthdayYear(), $content);
+		$content = str_replace("#BIRTH_MONTH#", (string)$user->getBirthdayMonth(), $content);
+		$content = str_replace("#BIRTH_DAY#", (string)$user->getBirthdayDay(), $content);
 
 		//注文情報
-		$content = str_replace("#ORDER_RAWID#", $order->getId(), $content);
-		$content = str_replace("#ORDER_ID#", $order->getTrackingNumber(), $content);
+		$content = str_replace("#ORDER_RAWID#", (string)$order->getId(), $content);
+		$content = str_replace("#ORDER_ID#", (string)$order->getTrackingNumber(), $content);
 		$config = $this->getShopConfig();
 		if(!$config){
 			SOY2::import("domain.config.SOYShop_ShopConfig");
@@ -417,20 +417,18 @@ class MailLogic extends SOY2LogicBase{
 			$this->setShopConfig($config);
 		}
 
-		$content = str_replace("#SHOP_NAME#", $config->getShopName(), $content);
+		$content = str_replace("#SHOP_NAME#", (string)$config->getShopName(), $content);
 
 		$company = $config->getCompanyInformation();
     	foreach($company as $key => $value){
-    		$content = str_replace(strtoupper("#COMPANY_" . $key ."#"), $value, $content);
+    		$content = str_replace(strtoupper("#COMPANY_" . $key ."#"), (string)$value, $content);
     	}
 
 		//マイページログイン
 		$content = str_replace("#MYPAGE_LOGIN#", soyshop_get_mypage_url(true) . "/login", $content);
 
 		$adminUrl = $config->getAdminUrl();
-		if(false === strpos($adminUrl, "http")){
-			$adminUrl = "http://" . $_SERVER["SERVER_NAME"] . $adminUrl;
-		}
+		if(is_bool(strpos($adminUrl, "http"))) $adminUrl = "http://" . $_SERVER["SERVER_NAME"] . $adminUrl;
 
     	$content = str_replace("#SITE_URL#", soyshop_get_site_url(true), $content);
     	$content = str_replace("#ADMIN_URL#", $adminUrl, $content);

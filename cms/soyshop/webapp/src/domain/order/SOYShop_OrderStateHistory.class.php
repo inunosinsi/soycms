@@ -33,7 +33,7 @@ class SOYShop_OrderStateHistory {
     }
 
     function getOrderId() {
-    	return $this->orderId;
+    	return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
     }
     function setOrderId($orderId) {
     	$this->orderId = $orderId;

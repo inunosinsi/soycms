@@ -5,7 +5,7 @@ class HTMLCacheOnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 		//GETがある場合は検索ページと見なして対象外とする
 		if(isset($_GET["q"])) return $html;
 

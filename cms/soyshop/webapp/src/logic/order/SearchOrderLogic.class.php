@@ -408,7 +408,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 		}catch(Exception $e){
 			return array();
 		}
-
+		
 		$orders = array();
 		$itemOrderDAO = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
 		foreach($res as $row){
@@ -481,7 +481,7 @@ class SearchOrderLogic extends SOY2LogicBase{
 	/* getter setter */
 
 	function getTable() {
-		if(strlen($this->table) < 1)$this->table = SOYShop_Order::getTableName();
+		if(!is_string($this->table) || strlen($this->table) < 1) $this->table = SOYShop_Order::getTableName();
 		return $this->table;
 	}
 	function setTable($table) {

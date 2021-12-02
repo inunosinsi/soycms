@@ -65,7 +65,7 @@ class CustomSearchFieldPlugin{
 		if(isset($configs) && count($configs)){
 			foreach($configs as $key => $field){
 
-				$csfValue = (isset($values[$key])) ? $values[$key] : null;
+				$csfValue = (isset($values[$key])) ? $values[$key] : "";
 				if(isset($csfValue) && $field["type"] == CustomSearchFieldUtil::TYPE_TEXTAREA){
 					$csfValue = nl2br($csfValue);
 				}

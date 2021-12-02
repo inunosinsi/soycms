@@ -13,11 +13,10 @@ class DiscountMethodListComponent extends HTMLList{
 		));
 
 		$this->addModel("has_discount_error", array(
-			"visible" => (strlen($entity["error"]) > 0)
+			"visible" => (is_string($entity["error"]) && strlen($entity["error"]) > 0)
 		));
 		$this->addLabel("discount_error", array(
 			"text" => $entity["error"]
 		));
 	}
 }
-?>

@@ -17,7 +17,7 @@ class SOYShopOrderModule implements SOY2PluginAction{
 	}
 
 	function getOrderId(){
-		return $this->orderId;
+		return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
 	}
 	function setOrderId($orderId){
 		$this->orderId = $orderId;
@@ -68,7 +68,7 @@ class SOYShopOrderModuleDelegateAction implements SOY2PluginDelegateAction{
 					foreach($this->moduleIds as $modId){
 						if($modId != $moduleId) continue;
 						$new = $action->replace();
-						if(strlen($new)) $this->replacements[$modId] = $new;
+						if(is_string($new) && strlen($new)) $this->replacements[$modId] = $new;
 					}
 				}
 				break;
@@ -96,7 +96,6 @@ class SOYShopOrderModuleDelegateAction implements SOY2PluginDelegateAction{
 	function setModuleIds($moduleIds){
 		$this->moduleIds = $moduleIds;
 	}
-
 	function getReplacements(){
 		return $this->replacements;
 	}

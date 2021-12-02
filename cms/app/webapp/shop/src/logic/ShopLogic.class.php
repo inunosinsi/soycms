@@ -55,7 +55,7 @@ class ShopLogic extends SOY2LogicBase{
 			$this->siteDao->delete($site->getId());
 			$this->siteRoleDao->deleteBySiteId($site->getId());
 			unlink($webappDir . "conf/shop/" . SOYSHOP_ID . ".conf.php");
-			unlink($webappDir . "conf/shop/" . SOYSHOP_ID . ".admin.conf.php");
+			if(file_exists($webappDir . "conf/shop/" . SOYSHOP_ID . ".admin.conf.php")) unlink($webappDir . "conf/shop/" . SOYSHOP_ID . ".admin.conf.php");
 			self::_removeDirectory(SOYSHOP_SITE_DIRECTORY);
 			$res = true;
 		}catch(Exception $e){

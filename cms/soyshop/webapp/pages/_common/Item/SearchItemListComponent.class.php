@@ -4,25 +4,25 @@ class SearchItemListComponent extends HTMLList{
 
 	private $detailLink;
 	private $categories;
-	private $orderDAO;
 
-	protected function populateItem($item, $key) {
+	protected function populateItem($entity, $key) {
 
 		$this->addLabel("item_id", array(
-			"text" => $item->getId()
+			"text" => $entity->getId()
 		));
 
 		$this->addInput("item_check", array(
 			"name" => "items[]",
-			"value" => $item->getId(),
+			"value" => $entity->getId(),
 			"onchange" => '$(\'#items_operation\').show();'
 		));
 
 		$this->addLabel("item_publish", array(
-			"text" => $item->getPublishText()
+			"text" => $entity->getPublishText()
 		));
 
-		$imagePath = soyshop_convert_file_path_on_admin($item->getAttribute("image_small"));
+		$smallImagePath = $entity->getAttribute("image_small");
+		$imagePath = (is_string($smallImagePath)) ? soyshop_convert_file_path_on_admin($smallImagePath) : "";
 		if(!strlen($imagePath)) $imagePath = soyshop_get_item_sample_image();
 		$this->addImage("item_small_image", array(
             //"src" => "/" . SOYSHOP_ID . "/im.php?src=" . $imagePath . "&width=60",	//im.phpが使えなくなった
@@ -33,42 +33,42 @@ class SearchItemListComponent extends HTMLList{
 
 		$this->addLabel("sale_text", array(
 			"text" => " ".MessageManager::get("ITEM_ON_SALE"),
-			"visible" => $item->isOnSale()
+			"visible" => $entity->isOnSale()
 		));
 
 		$this->addLabel("item_name", array(
-			"text" => $item->getName()
+			"text" => $entity->getName()
 		));
 
 		$this->addLabel("item_code", array(
-			"text" => $item->getCode()
+			"text" => $entity->getCode()
 		));
 
 		$this->addLabel("item_price", array(
-			"text" => soy2_number_format($item->getPrice())
+			"text" => soy2_number_format($entity->getPrice())
 		));
 		$this->addModel("is_sale", array(
-			"visible" => $item->isOnSale()
+			"visible" => $entity->isOnSale()
 		));
 		$this->addLabel("sale_price", array(
-			"text" => soy2_number_format($item->getSalePrice())
+			"text" => soy2_number_format($entity->getSalePrice())
 		));
 
 		$this->addLabel("item_stock", array(
-			"text" => soy2_number_format($item->getStock())
+			"text" => soy2_number_format($entity->getStock())
 		));
 
 		$this->addLabel("item_category", array(
-			"text" => (is_numeric($item->getCategory()) && isset($this->categories[$item->getCategory()])) ? $this->categories[$item->getCategory()]->getName() : "-"
+			"text" => (is_numeric($entity->getCategory()) && isset($this->categories[$entity->getCategory()])) ? $this->categories[$entity->getCategory()]->getName() : "-"
 		));
 
-		$detailLink = $this->getDetailLink() . $item->getId();
+		$detailLink = $this->getDetailLink() . $entity->getId();
 		$this->addLink("detail_link", array(
 			"link" => $detailLink
 		));
 
 		$this->addLabel("order_count", array(
-			"text" => soy2_number_format(self::_getOrderCount($item->getId()))
+			"text" => (is_numeric($entity->getId())) ? soy2_number_format(self::_getOrderCount($entity->getId())) : 0
 		));
 	}
 
@@ -87,19 +87,17 @@ class SearchItemListComponent extends HTMLList{
 		$this->categories = $categories;
 	}
 
-	function getOrderDAO() {
-		return $this->orderDAO;
-	}
-	function setOrderDAO($orderDAO) {
-		$this->orderDAO = $orderDAO;
-	}
-
-	private function _getOrderCount($id){
-		if(!is_numeric($id)) return 0;
+	private function _getOrderCount(int $id){
 		try{
-			return $this->orderDAO->countByItemId($id);
+			return self::_dao()->countByItemId($id);
 		}catch(Exception $e){
 			return 0;
 		}
+	}
+
+	private function _dao(){
+		static $dao;
+		if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO");
+		return $dao;
 	}
 }

@@ -9,13 +9,8 @@ class ReturnsSlipNumberMailReplace extends SOYShopOrderMailReplace{
 	}
 
 	function replace(SOYShop_Order $order, $content){
-		$slipNumber = "";
-
-		$attr = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic")->getAttribute($order->getId());
-		if(strlen($attr->getValue1())){
-			$slipNumber = $attr->getValue1();
-		}
-
+		SOY2::import("module.plugins.returns_slip_number.util.ReturnsSlipNumberUtil");
+		$slipNumber = soyshop_get_order_attribute_value($order->getId(), ReturnsSlipNumberUtil::PLUGIN_ID, "string");
 		return str_replace("#RETURNS_SLIP_NUMBER#", $slipNumber, $content);
 	}
 }

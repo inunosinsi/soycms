@@ -11,7 +11,8 @@ class ItemListComponent extends HTMLList{
 
 	protected function populateItem($entity, $key){
 
-		$item = soyshop_get_item_object($entity->getItemId());
+		$itemId = (is_numeric($entity->getItemId())) ? (int)$entity->getItemId() : 0;
+		$item = soyshop_get_item_object($itemId);
 		if(is_numeric($item->getDetailPageId())){
 			$url = soyshop_get_page_url(soyshop_get_page_object($item->getDetailPageId())->getUri(), $item->getAlias());
 		}else{
@@ -53,11 +54,11 @@ class ItemListComponent extends HTMLList{
 		));
 
 		$this->addImage("item_small_image", array(
-			"src" => (!is_null($item->getId())) ? self::_getParentAndChildImage($item->getId(), "image_small") : ""
+			"src" => (is_numeric($item->getId())) ? self::_getParentAndChildImage($item->getId(), "image_small") : ""
 		));
 
 		$this->addImage("item_large_image", array(
-			"src" => (!is_null($item->getId())) ? self::_getParentAndChildImage($item->getId(), "image_large") : ""
+			"src" => (is_numeric($item->getId())) ? self::_getParentAndChildImage($item->getId(), "image_large") : ""
 		));
 
 		SOYShopPlugin::invoke("soyshop.item.customfield", array(
@@ -116,18 +117,20 @@ class ItemListComponent extends HTMLList{
 			$isItemStockError = ($itemCount > $openStock && !$this->ignoreStock);
 			$itemStockErrorMessage = ($openStock > 0) ? MessageManager::get("STOCK_NOTICE", array("stock" => $openStock)) : MessageManager::get("NO_STOCK");
 		}else{	//予約カレンダーモード
-			SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
-			$schedule = ReserveCalendarUtil::getScheduleByItemIndexAndItemId(CartLogic::getCart(), $key, $entity->getItemId());
-			if(!is_null($schedule->getId())){
-				//定員数0
-				if(!ReserveCalendarUtil::checkIsUnsoldSeatByScheduleId($schedule->getId())){
-					$itemStockErrorMessage = "予約受付を終了しました";	//@ToDo 多言語化
-				}
+			if(is_numeric($entity->getItemId())){
+				SOY2::import("module.plugins.reserve_calendar.util.ReserveCalendarUtil");
+				$schedule = ReserveCalendarUtil::getScheduleByItemIndexAndItemId(CartLogic::getCart(), $key, $entity->getItemId());
+				if(is_numeric($schedule->getId())){
+					//定員数0
+					if(!ReserveCalendarUtil::checkIsUnsoldSeatByScheduleId($schedule->getId())){
+						$itemStockErrorMessage = "予約受付を終了しました";	//@ToDo 多言語化
+					}
 
-				//定員数オーバー
-				$unsoldSeat = ReserveCalendarUtil::getCountUnsoldSeat($schedule);
-				if($unsoldSeat < $itemCount){
-					$itemStockErrorMessage = MessageManager::get("STOCK_NOTICE", array("stock" => $unsoldSeat));	//@ToDo 多言語化
+					//定員数オーバー
+					$unsoldSeat = ReserveCalendarUtil::getCountUnsoldSeat($schedule);
+					if($unsoldSeat < $itemCount){
+						$itemStockErrorMessage = MessageManager::get("STOCK_NOTICE", array("stock" => $unsoldSeat));	//@ToDo 多言語化
+					}
 				}
 			}
 
@@ -183,15 +186,18 @@ class ItemListComponent extends HTMLList{
 		));
 	}
 
-	private function _getParentAndChildImage($itemId, $key){
+	private function _getParentAndChildImage(int $itemId, string $key){
 		$item = soyshop_get_item_object($itemId);
-		if(strlen($item->getAttribute($key))) return soyshop_convert_file_path($item->getAttribute($key), $item);
+		$imagePath = $item->getAttribute($key);
+		if(is_string($imagePath) && strlen($imagePath)) return soyshop_convert_file_path($imagePath, $item);
 
 		if(!is_numeric($item->getId())) return null;
 
 		//親商品を取得してみる
-		$parent = soyshop_get_item_object($item->getType());
-		return soyshop_convert_file_path($parent->getAttribute($key), $parent);
+		$paremtItemId = (is_numeric($item->getType())) ? (int)$item->getType() : 0;
+		$parent = soyshop_get_item_object($paremtItemId);
+		$imagePath = $parent->getAttribute($key);
+		return (is_string($imagePath)) ? soyshop_convert_file_path($imagePath, $parent) : null;
 	}
 
 	private function getItemOptionHtml($key){

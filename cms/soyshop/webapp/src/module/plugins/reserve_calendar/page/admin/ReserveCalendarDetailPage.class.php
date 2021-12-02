@@ -62,6 +62,7 @@ class ReserveCalendarDetailPage extends WebPage{
 
 				/** 注文する **/
 				$orderId = ReserveCalendarUtil::getSessionValue("order");
+				if(!is_numeric($orderId)) $orderId = 0;
 				try{
 					$order = soyshop_get_order_object($orderId);
 					$order->setId(null);
@@ -340,7 +341,9 @@ class ReserveCalendarDetailPage extends WebPage{
 		DisplayPlugin::toggle("display_register_form", self::checkDisplayForm());
 
 		//共通フォーム
-		$this->component->buildForm($this, soyshop_get_user_object(ReserveCalendarUtil::getSessionValue("user")), null, UserComponent::MODE_CUSTOM_FORM);
+		$userId = ReserveCalendarUtil::getSessionValue("user");
+		if(!is_numeric($userId)) $userId = 0;
+		$this->component->buildForm($this, soyshop_get_user_object($userId), null, UserComponent::MODE_CUSTOM_FORM);
 
 		//残席数
 		$unsoldSeat = (isset($this->config["ignore"]) && $this->config["ignore"] == ReserveCalendarUtil::RESERVE_LIMIT_IGNORE) ? 10000 : ($this->schedule->getUnsoldSeat() - $this->reservedCount);

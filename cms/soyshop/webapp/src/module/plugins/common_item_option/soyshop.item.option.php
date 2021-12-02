@@ -11,7 +11,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * カートから商品を削除した時にセッションに放り込んだ値を削除する
 	 * @param integer index, object CartLogic
 	 */
-	function clear($index, CartLogic $cart){
+	function clear(int $index, CartLogic $cart){
 		self::prepare();
 
 		$opts = ItemOptionUtil::getOptions();
@@ -33,39 +33,37 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * @param array postedOption, object CartLogic
 	 * @return integer index
 	 */
-	function compare($postedOption, CartLogic $cart){
+	function compare(array $postedOption, CartLogic $cart){
 		self::prepare();
 
-		$checkOptionId = null;
+		$itemOrders = $cart->getItems();
+		if(!count($itemOrders)) return null;
 
 		$opts = ItemOptionUtil::getOptions();
-		if(count($opts)){
+		if(!count($opts)) return null;
 
-			$items = $cart->getItems();
+		$checkOptionId = null;
+		$attrs = array();	//比較用の配列を作成する
+		foreach($itemOrders as $idx => $itemOrder){
+			if((int)$itemOrder->getItemId() === 0) continue;	//未登録商品の場合は確認しない
 
-			//比較用の配列を作成する
-			$attributes = array();
-			foreach($items as $index => $item){
-				if((int)$item->getItemid() === 0) continue;	//未登録商品の場合は確認しない
-
-				//管理画面側では商品一覧のセッションの中にオプションが格納されている
-				if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
-					$attrs = $item->getAttributes();
-					$currentOptions = (isset($attrs)) ? soy2_unserialize($attrs) : array();
-					$currentOptions["itemId"] = $item->getItemId();
-				//公開側の場合はカートのセッション内にオプションが格納されている
-				}else{
-					foreach($opts as $key => $conf){
-						$attrs[$index][$key] = $cart->getAttribute(self::getCartAttributeId($key, $index, $item->getItemId()));
-					}
-
-					$currentOptions = array_diff($attrs[$index], array(null));
+			//管理画面側では商品一覧のセッションの中にオプションが格納されている
+			if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+				$attrs = $itemOrder->getAttributes();
+				$currentOptions = (isset($attrs)) ? soy2_unserialize($attrs) : array();
+				$currentOptions["itemId"] = $itemOrder->getItemId();
+			//公開側の場合はカートのセッション内にオプションが格納されている
+			}else{
+				foreach($opts as $key => $_dust){
+					$attrs[$idx][$key] = $cart->getAttribute(self::getCartAttributeId($key, $idx, $item->getItemId()));
 				}
 
-				if($postedOption == $currentOptions){
-					$checkOptionId = $index;
-					break;
-				}
+				$currentOptions = array_diff($attrs[$idx], array(null));
+			}
+
+			if($postedOption == $currentOptions){
+				$checkOptionId = $idx;
+				break;
 			}
 		}
 
@@ -77,7 +75,7 @@ class CommonItemOption extends SOYShopItemOptionBase{
 	 * オプション内容をセッションに放り込む
 	 * @param integer index, object CartLogic
 	 */
-	function doPost($index, CartLogic $cart){
+	function doPost(int $index, CartLogic $cart){
 
 		if(isset($_POST["item_option"]) && is_array($_POST["item_option"]) && count($_POST["item_option"])){
 			$opts = $_POST["item_option"];

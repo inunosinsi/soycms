@@ -9,8 +9,8 @@ class SOYShopSiteUserOnOutputAction implements SOY2PluginAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
-
+	function onOutput(string $html){
+		return "";
 	}
 
 }

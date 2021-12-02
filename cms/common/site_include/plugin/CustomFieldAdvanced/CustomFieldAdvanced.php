@@ -121,7 +121,7 @@ class CustomFieldPluginAdvanced{
 					}
 
 					//空の時の動作
-					if(strlen($field->getValue()) == 0 ){
+					if(is_string($field->getValue()) && strlen($field->getValue()) == 0 ){
 						if($master->getHideIfEmpty()){
 							//空の時は表示しない
 							$attr["visible"] = false;
@@ -165,7 +165,7 @@ class CustomFieldPluginAdvanced{
 					if($master->getType() == "textarea"){
 						$htmlObj->addLabel($field->getId() . "_br_mode", array(
 							"soy2prefix" => "cms",
-							"html" => nl2br($field->getValue())
+							"html" => (is_string($field->getValue())) ? nl2br($field->getValue()) : ""
 						));
 					}
 
@@ -306,7 +306,7 @@ class CustomFieldPluginAdvanced{
 					}
 
 					//属性に出力
-					if(strlen($master->getOutput()) > 0){
+					if(is_string($master->getOutput()) && strlen($master->getOutput()) > 0){
 
 						//リンクタイプ以外でhrefを使う場合
 						if($master->getOutput() == "href" && $master->getType() != "link"){
@@ -334,7 +334,7 @@ class CustomFieldPluginAdvanced{
 					}
 
 					//追加属性を出力
-					if(strlen($master->getExtraOutputs()) > 0){
+					if(is_string($master->getExtraOutputs()) && strlen($master->getExtraOutputs()) > 0){
 						$extraOutputs = explode("\n", str_replace(array("\r\n", "\r"), "\n", $master->getExtraOutputs()));
 						$extraValues = $field->getExtraValues();
 						foreach($extraOutputs as $key => $extraOutput){
@@ -381,19 +381,20 @@ class CustomFieldPluginAdvanced{
 					}
 				}
 
+				$fieldValueLength = (is_string($field->getValue())) ? strlen($field->getValue()) : 0;
 				$htmlObj->addModel($field->getId() . "_visible", array(
 					"soy2prefix" => "cms",
-					"visible" => (strlen($field->getValue()) > 0)
+					"visible" => ($fieldValueLength > 0)
 				));
 
 				$htmlObj->addModel($field->getId() . "_is_not_empty", array(
 					"soy2prefix" => "cms",
-					"visible" => (strlen($field->getValue()) > 0)
+					"visible" => ($fieldValueLength > 0)
 				));
 
 				$htmlObj->addModel($field->getId()."_is_empty", array(
 					"soy2prefix" => "cms",
-					"visible" => (strlen($field->getValue()) === 0)
+					"visible" => ($fieldValueLength === 0)
 				));
 
 				//SOY2HTMLのデフォルトの _visibleがあるので、$field->getId()."_visible"より後にこれをやらないと表示されなくなる

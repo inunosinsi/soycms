@@ -9,7 +9,7 @@ class ReplacementStringOnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 		SOY2::import("module.plugins.replacement_string.util.ReplacementStringUtil");
 		$list = ReplacementStringUtil::getConfig();
 		if(!count($list)) return $html;

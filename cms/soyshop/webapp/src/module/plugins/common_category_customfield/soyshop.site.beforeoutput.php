@@ -73,8 +73,8 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 		$list = SOYShop_CategoryAttributeConfig::load();
 
 		foreach($list as $config){
-			$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : null;
-			$value2 = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue2() : null;
+			$value = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue() : "";
+			$value2 = (isset($array[$config->getFieldId()])) ? $array[$config->getFieldId()]->getValue2() : "";
 
 			//空の時の挙動
 			if(!is_null($config->getConfig()) && (is_null($value) || !strlen($value))){
@@ -108,16 +108,16 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 					 * 隠し機能:携帯自動振り分け、多言語化プラグイン用で画像の配置場所を別で用意する
 					 * @ToDo 管理画面でもいじれる様にしたい
 					 */
-					$value = soyshop_convert_file_path($value, $dummyItem);
+					$value = (is_string($value)) ? soyshop_convert_file_path($value, $dummyItem) : null;
 
-					if(strlen($config->getOutput()) > 0){
+					if(is_string($config->getOutput()) && strlen($config->getOutput()) > 0){
 						$page->addModel($config->getFieldId(), array(
 							"attr:" . htmlspecialchars($config->getOutput()) => $value,
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}else{
 						//imgタグにalt属性を追加するか？
-						if(isset($value2) && strlen($value2) > 0){
+						if(isset($value2) && is_string($value2) && strlen($value2) > 0){
 							$page->addImage($config->getFieldId(), array(
 								"src" => $value,
 								"attr:alt" => $value2,
@@ -146,12 +146,12 @@ class CommonCategoryCustomfieldBeforeOutput extends SOYShopSiteBeforeOutputActio
 				case "textarea":
 					if(strlen($config->getOutput()) > 0){
 						$page->addModel($config->getFieldId(), array(
-							"attr:" . htmlspecialchars($config->getOutput()) => soyshop_customfield_nl2br($value),
+							"attr:" . htmlspecialchars($config->getOutput()) => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}else{
 						$page->addLabel($config->getFieldId(), array(
-							"html" => soyshop_customfield_nl2br($value),
+							"html" => (is_string($value)) ? soyshop_customfield_nl2br($value) : "",
 							"soy2prefix" => SOYSHOP_SITE_PREFIX
 						));
 					}

@@ -4,41 +4,30 @@ class PointGrantLogic extends SOY2LogicBase{
 
 	const PONIT_PLUGIN_ID = "common_point_base";
 
-	private $itemAttributeDao;
-	private $percentage;
-
-	function __construct(){
-		if(!$this->itemAttributeDao) $this->itemAttributeDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		if(!$this->percentage){
-			SOY2::import("module.plugins.common_point_grant.util.PointGrantUtil");
-			$config = PointGrantUtil::getConfig();
-			$this->percentage = (int)$config["percentage"];
-		}
-	}
+	function __construct(){}
 
 	function getPercentage(SOYShop_Item $item){
+		static $p;
 		//小商品の場合は親商品のポイント設定を調べる
 		$itemId = (is_numeric($item->getType())) ? (int)$item->getType() : (int)$item->getId();
 
-		try{
-			$percentage = $this->itemAttributeDao->get($itemId, self::PONIT_PLUGIN_ID)->getValue();
-		}catch(Exception $e){
-			$percentage = $this->percentage;
+		$percentage = ($itemId > 0) ? soyshop_get_item_attribute_value($itemId, self::PONIT_PLUGIN_ID, "int") : null;
+		if(!is_numeric($percentage)){
+			if(is_null($p)){
+				SOY2::import("module.plugins.common_point_grant.util.PointGrantUtil");
+				$cnf = PointGrantUtil::getConfig();
+				$p = (isset($cnf["percentage"])) ? (int)$cnf["percentage"] : 0;
+			}
+			$percentage = $p;
 		}
 
-		return self::getPercentageAfterCheckSale($item->getId(), $percentage);
+		return self::getPercentageAfterCheckSale($itemId, $percentage);
 	}
 
-	function getPercentageAfterCheckSale($itemId, $percentage){
+	function getPercentageAfterCheckSale(int $itemId, int $percentage){
 		//商品IDしか渡せない箇所があるので、
-		try{
-			$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
-		}catch(Exception $e){
-			return $percentage;
-		}
-
-		SOY2::imports("module.plugins.common_point_grant.util.*");
-		$config = PointGrantUtil::getConfig();
+		$item = soyshop_get_item_object($itemId);
+		if(!is_numeric($item->getId())) return $percentage;
 
 		//セール時のポイント設定
 		if($item->getSaleFlag() != SOYShop_Item::IS_SALE) return $percentage;
@@ -49,8 +38,11 @@ class PointGrantLogic extends SOY2LogicBase{
 			if(!SOY2Logic::createInstance("module.plugins.common_sale_period.logic.PriceLogic")->checkOnSale($item)) return $percentage;
 		}
 
-		if(isset($config["sale_point_double_on"]) && $config["sale_point_double_on"]){
-			$percentage *= $config["sale_point_double"];
+		SOY2::imports("module.plugins.common_point_grant.util.*");
+		$cnf = PointGrantUtil::getConfig();
+
+		if(isset($cnf["sale_point_double_on"]) && $cnf["sale_point_double_on"]){
+			$percentage *= $cnf["sale_point_double"];
 		}
 
 		return $percentage;

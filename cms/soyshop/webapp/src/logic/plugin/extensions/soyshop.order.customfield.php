@@ -13,7 +13,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	/**
 	 * @param array $param 中身は$_POST["customfield_module"]
 	 */
-	function doPost($param){
+	function doPost(array $param){
 	}
 
 	/**
@@ -34,7 +34,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 * エラーチェック
 	 * @return Boolean
 	 */
-	function hasError($param){
+	function hasError(array $param){
 		return false;
 	}
 
@@ -53,7 +53,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 * @param Integer OrderId
 	 * @return Array array(array("name" => "", "value" => "", "style" => "")) ※styleはなしで良い
 	 */
-	function display($orderId){
+	function display(int $orderId){
 
 	}
 
@@ -61,7 +61,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 * @param int $orderID
 	 * @return Array labelとformの連想配列を格納 array(array("label" => "", "form" => ""))
 	 */
-	function edit($orderId){
+	function edit(int $orderId){
 
 	}
 
@@ -69,7 +69,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	 * @param int $orderID
 	 * @return boolen
 	 */
-	function error($orderId){
+	function error(int $orderId){
 		return false;
 	}
 
@@ -80,7 +80,7 @@ class SOYShopOrderCustomfield implements SOY2PluginAction{
 	/**
 	 * saveする際のconfigを取得して返す
 	 */
-	function config($orderId){
+	function config(int $orderId){
 
 	}
 
@@ -152,7 +152,7 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 				$this->_label[$moduleId] = $action->edit($this->orderId);
 				break;
 			case "error":
-				if($action->error($this->param)){
+				if(is_numeric($this->orderId) && $action->error($this->orderId)){
 					$this->hasError = true;
 				}else{
 					//do nothing
@@ -198,7 +198,7 @@ class SOYShopOrderCustomfieldDeletageAction implements SOY2PluginDelegateAction{
 		$this->mypage = $mypage;
 	}
 	function getOrderId(){
-		return $this->orderId;
+		return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
 	}
 	function setOrderId($orderId){
 		$this->orderId = $orderId;

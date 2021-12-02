@@ -11,6 +11,9 @@ appとsoyshopのディレクトリをcommon,admin,soycmsと同じディレクト
 のように配置したら、インストールは完了です。
 
 /** リリース **/
+2.4.0
+	○変更
+	- PHP8.1対応
 2.3.1
 	○追加
 	 - SOY Board on SOY Shop

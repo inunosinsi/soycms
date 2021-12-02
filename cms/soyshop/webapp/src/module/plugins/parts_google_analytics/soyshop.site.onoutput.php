@@ -9,7 +9,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 
 		SOY2::import("module.plugins.parts_google_analytics.util.GoogleAnalyticsUtil");
 		$config = GoogleAnalyticsUtil::getConfig();
@@ -54,7 +54,7 @@ class GoogleAnalyticsOnOutput extends SOYShopSiteOnOutputAction{
 
 		//完了ページならば、eコマーストラッキングを挿入する
 		if($isCompletePage) $code = self::_convertTrackingCode($html, $code);
-		
+
 		switch($config["insert_to_head"]){
 			case GoogleAnalyticsUtil::INSERT_INTO_THE_BEGINNING_OF_HEAD:	//<head>の直後
 				if(is_numeric(stripos($html,'<head>'))){

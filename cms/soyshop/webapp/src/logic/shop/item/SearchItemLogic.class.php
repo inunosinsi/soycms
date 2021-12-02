@@ -228,7 +228,7 @@ class SearchItemLogic extends SOY2LogicBase{
 
 		//削除フラグ
 		$sql .= " and is_disabled != 1 ";
-		if(strlen($this->order)) $sql .= " " . $this->order;
+		if(is_string($this->order) && strlen($this->order)) $sql .= " " . $this->order;
 		return $sql;
 	}
 

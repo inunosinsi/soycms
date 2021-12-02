@@ -16,7 +16,7 @@ class SOYShopReserveCalendar_ScheduleSearch {
 	private $scheduleDate;
 
 	function getScheduleId(){
-		return $this->scheduleId;
+		return (is_numeric($this->scheduleId)) ? (int)$this->scheduleId : 0;
 	}
 	function setScheduleId($scheduleId){
 		$this->scheduleId = $scheduleId;

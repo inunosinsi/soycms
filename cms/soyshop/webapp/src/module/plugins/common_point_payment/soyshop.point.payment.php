@@ -3,17 +3,17 @@
 class CommonPointPayment extends SOYShopPointPaymentBase{
 	private $config;
 
-	function doPost($param, $userId){
+	function doPost(int $param, int $userId){
 
 		$cart = $this->getCart();
 
 		//使用したいポイント
-		$usePoint = (int)$_POST["point_module"];
+		$usePoint = (int)$param;
 
 		if(isset($param) && $usePoint > 0){
 
 			//所有するポイントよりも指定するポイントが多かった場合
-			$ownedPoint = self::getPointByUserId($userId);
+			$ownedPoint = self::getPointObjByUserId($userId);
 			if($usePoint > $ownedPoint){
 				$cart->addErrorMessage("point", "所持しているポイントよりもポイントを多く指定しています。");
 				$cart->removeModule("point_payment");
@@ -89,18 +89,18 @@ class CommonPointPayment extends SOYShopPointPaymentBase{
 	 * {@inheritDoc}
 	 * @see SOYShopPointPaymentBase::hasError()
 	 */
-	function hasError($param){
+	function hasError(array $param){
 		//ここでのチェックはあまり意味がないのでやらない
 		return false;
 	}
 
-	function getError($userId){
+	function getError(int $userId){
 		$cart = $this->getCart();
 		return $cart->getAttribute("point_payment.error");
 	}
 
-	function getName($userId){
-		$pointObj = $this->getPointObjectByUserId($userId);
+	function getName(int $userId){
+		$pointObj = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->getPointObjByUserId($userId);
 
 		//ログインしている場合だけポイントを表示する
 		if(strlen($pointObj->getUserId())){
@@ -110,11 +110,11 @@ class CommonPointPayment extends SOYShopPointPaymentBase{
 		}
 	}
 
-	function getDescription($userId){
+	function getDescription(int $userId){
 
 		$cart = $this->getCart();
 		$user = $cart->getCustomerInformation();
-		$point = self::getPointByUserId($userId);
+		$point = self::getPointObjByUserId($userId);
 		$value = $cart->getAttribute("point_payment");
 
 		//決済時にポイントが不足して戻ってきたときのためのエラー
@@ -147,41 +147,29 @@ class CommonPointPayment extends SOYShopPointPaymentBase{
 	 * @param unknown $userId
 	 * @return unknown
 	 */
-	private function getPointByUserId($userId){
-		$pointObj = self::getPointObjectByUserId($userId);
+	private function getPointObjByUserId(int $userId){
+		$pointObj = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->getPointObjByUserId($userId);
 
 		//有効期限チェック
 		$timeLimit = $pointObj->getTimeLimit();
 		$timeLimit = (isset($timeLimit)) ? (int)$timeLimit : null;
 		if(isset($timeLimit) && $timeLimit >0 && $timeLimit < time()){
 			//期限切れの場合は0にする
-			$point = 0;
+			return 0;
 		}else{
-			$point = $pointObj->getPoint();
+			return (int)$pointObj->getPoint();
 		}
-		return $point;
 	}
 
-	private function getPointObjectByUserId($userId){
-		return SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->getPointByUserId($userId);
-	}
-
-	private function getPoint($userId){
+	private function getPoint(int $userId){
 		$cart = $this->getCart();
 
-		$point = self::getPointByUserId($userId);
+		$point = self::getPointObjByUserId($userId);
 		$total = $cart->getTotalPrice(true);	//外税を省いた合算
-
-		if($point <= $total){
-			$price = $point;
-		}else{
-			$price = $total;
-		}
-
-		return $price;
+		return ($point <= $total) ? $point : $total;
 	}
 
-	private function getTotalPrice($items){
+	private function getTotalPrice(array $items){
 		$total = 0;
 		if(count($items)) foreach($items as $item){
 			$total += $item->getTotalPrice();

@@ -9,7 +9,7 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 	 */
     function insert(SOYShop_User $bean){
     	$password = $bean->getPassword();
-    	if(strlen($password) > 0 && strlen($password) < 100){	//念の為文字数制限を加えておく
+		if(is_string($password) && strlen($password) > 0 && strlen($password) < 100){	//念の為文字数制限を加えておく
     		$bean->setPassword($bean->hashPassword($password));
     	}
 
@@ -135,8 +135,8 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 		if(!isset($binds[":honorific"]) || !strlen($binds[":honorific"])) $binds[":honorific"] = "様";
 		if(!isset($binds[":userCode"]) || !strlen($binds[":userCode"])) $binds[":userCode"] = null;
 		if((int)$binds[":area"] === 0) $binds[":area"] = null;
-		if(strlen($binds[":accountId"]) === 0) $binds[":accountId"] = null;
-		if(strlen($binds[":profileId"]) === 0) $binds[":profileId"] = null;
+		if(!is_string($binds[":accountId"]) || strlen($binds[":accountId"]) === 0) $binds[":accountId"] = null;
+		if(!is_string($binds[":profileId"]) || strlen($binds[":profileId"]) === 0) $binds[":profileId"] = null;
 		if(!isset($binds[":isProfileDisplay"]) || !is_numeric($binds[":isProfileDisplay"])) $binds[":isProfileDisplay"] = SOYShop_User::PROFILE_NO_DISPLAY;
 
 		//別システムからのインポートを考慮して必ずチェック
@@ -157,10 +157,10 @@ abstract class SOYShop_UserDAO extends SOY2DAO{
 	 * @final
 	 */
 	function onUpdate($query, $binds){
-		if(!isset($binds[":userCode"]) || !strlen($binds[":userCode"])) $binds[":userCode"] = null;
+		if(!isset($binds[":userCode"]) || !is_string($binds[":userCode"]) || !strlen($binds[":userCode"])) $binds[":userCode"] = null;
 		if((int)$binds[":area"] === 0) $binds[":area"] = null;
-		if(strlen($binds[":accountId"]) === 0) $binds[":accountId"] = null;
-		if(strlen($binds[":profileId"]) === 0) $binds[":profileId"] = null;
+		if(!is_string($binds[":accountId"]) || strlen($binds[":accountId"]) === 0) $binds[":accountId"] = null;
+		if(!is_string($binds[":profileId"]) || strlen($binds[":profileId"]) === 0) $binds[":profileId"] = null;
 		if(!isset($binds[":isProfileDisplay"]) || !is_numeric($binds[":isProfileDisplay"])) $binds[":isProfileDisplay"] = SOYShop_User::PROFILE_NO_DISPLAY;
 
     	$binds[":updateDate"] = time();

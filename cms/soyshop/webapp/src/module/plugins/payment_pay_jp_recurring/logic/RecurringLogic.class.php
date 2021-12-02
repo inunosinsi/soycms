@@ -225,15 +225,15 @@ class RecurringLogic extends SOY2LogicBase {
 
 	function getCustomerTokenByMailAddress($mailAddress){
 		try{
-			$userId = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId();
+			$userId = (int)SOY2DAOFactory::create("user.SOYShop_UserDAO")->getByMailAddress($mailAddress)->getId();
 		}catch(Exception $e){
 			return null;
 		}
 		return self::getCustomerTokenByUserId($userId);
 	}
 
-	function getCustomerTokenByUserId($userId){
-		return self::getTokenAttributeByUserId($userId)->getValue();
+	function getCustomerTokenByUserId(int $userId){
+		return soyshop_get_user_attribute_value($userId, self::FIELD_KEY, "string");
 	}
 
 	function checkCardExpirationDateByUserId($userId){
@@ -320,61 +320,26 @@ class RecurringLogic extends SOY2LogicBase {
 		return true;
 	}
 
-	function getTokenAttributeByUserId($userId){
-		try{
-			return self::userAttrDao()->get($userId, self::FIELD_KEY);
-		}catch(Exception $e){
-			$attr = new SOYShop_UserAttribute();
-			$attr->setUserId($userId);
-			$attr->setFieldId(self::FIELD_KEY);
-			return $attr;
-		}
-	}
-
-	function saveCustomerTokenByUserId($token, $userId){
-		$attr = $this->getTokenAttributeByUserId($userId);
+	function saveCustomerTokenByUserId(string $token="", int $userId){
+		$attr = soyshop_get_user_attribute_object($userId, self::FIELD_KEY);
 		$attr->setValue($token);
-
-		try{
-			self::userAttrDao()->insert($attr);
-		}catch(Exception $e){
-			try{
-				self::userAttrDao()->update($attr);
-			}catch(Exception $e){
-				var_dump($e);
-			}
-		}
+		soyshop_save_user_attribute_object($attr);
 	}
 
-	function deleteCustomerTokenByUserId($userId){
-		try{
-			self::userAttrDao()->delete($userId, self::FIELD_KEY);
-		}catch(Exception $e){
-			//
-		}
+	function deleteCustomerTokenByUserId(int $userId){
+		self::saveCustomerTokenByUserId("", $userId);
 	}
 
-	function getPlanTokenByItemId($itemId){
-		try{
-			$token = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO")->get($itemId, self::FIELD_KEY)->getValue();
-		}catch(Exception $e){
-			$token = null;
-		}
-
-		if(isset($token)) return $token;
+	function getPlanTokenByItemId(int $itemId){
+		$token = soyshop_get_item_attribute_value($itemId, self::FIELD_KEY, "string");
+		if(strlen($token)) return $token;
 
 		//トークンがなければ作る
 		return self::createPlanTokenByItemId($itemId);
 	}
 
 	function createPlanTokenByItemId($itemId){
-		try{
-			$item = SOY2DAOFactory::create("shop.SOYShop_ItemDAO")->getById($itemId);
-		}catch(Exception $e){
-			var_dump($e);
-			//return null;
-		}
-
+		$item = soyshop_get_item_object($itemId);
 		$plan = array("amount" => $item->getSellingPrice(), "currency" => "jpy", "interval" => "month", "name" => $item->getName());
 
 		/** @ToDo いずれは諸々の設定も使えるようにしたい **/
@@ -382,21 +347,9 @@ class RecurringLogic extends SOY2LogicBase {
 
 		//商品属性に登録
 		if(isset($res)){
-			$itemAttrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-			$attr = new SOYShop_ItemAttribute();
-			$attr->setItemId($itemId);
-			$attr->setFieldId(self::FIELD_KEY);
+			$attr = soyshop_get_item_attribute_object($itemId, self::FIELD_KEY);
 			$attr->setValue($res->id);
-
-			try{
-				$itemAttrDao->insert($attr);
-			}catch(Exception $e){
-				try{
-					$itemAttrDao->update($attr);
-				}catch(Exception $e){
-					var_dump($e);
-				}
-			}
+			soyshop_save_item_attribute_object($attr);
 
 			//キャッシュファイルの削除
 			$cacheFilePath = self::getCacheFilePath();
@@ -493,11 +446,5 @@ class RecurringLogic extends SOY2LogicBase {
 		$script[] = "};";
 
 		return implode("\n", $script);
-	}
-
-	private function userAttrDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
-		return $dao;
 	}
 }

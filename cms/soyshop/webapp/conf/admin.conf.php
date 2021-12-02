@@ -59,8 +59,8 @@ require(SOYSHOP_SITE_CONFIG_FILE);
 soyshop_load_db_config();
 
 //debug switch
+if(!defined("DEBUG_MODE")) define("DEBUG_MODE", false);
 define("SOYSHOP_"."DEVELOPING_MODE", true);
-define("DEBUG_MODE", false);
 define("SOY2HTML_AUTO_GENERATE", false);
 if(DEBUG_MODE){
 	ini_set("display_errors", "On");

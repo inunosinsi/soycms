@@ -38,12 +38,14 @@ class SlipNumberListComponent extends HTMLList {
 		$this->addActionLink("delivery_link", array(
 			"link" => self::_getDeliveryLink($entity->getId(), $entity->getIsDelivery()),
 			"text" => (is_numeric($entity->getIsDelivery()) && $entity->getIsDelivery() == SOYShop_SlipNumber::NO_DELIVERY) ? "発送" : "戻す",
-			"onclick" => "return confirm('" . self::_getConfirmText($entity->getIsDelivery()) . "')"
+			"onclick" => "return confirm('" . self::_getConfirmText($entity->getIsDelivery()) . "')",
+			"attr:id" => "delivery_link_" . $entity->getSlipNumber()	//テストコード用
 		));
 
 		$this->addActionLink("remove_link", array(
 			"link" => SOY2PageController::createLink("Extension.slip_number?remove=" . $entity->getId()),
-			"onclick" => "return confirm('削除しますか？')"
+			"onclick" => "return confirm('削除しますか？')",
+			"attr:id" => "remove_link_" . $entity->getSlipNumber()	//テストコード用
 		));
 	}
 

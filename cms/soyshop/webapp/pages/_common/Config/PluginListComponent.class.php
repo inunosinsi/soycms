@@ -10,9 +10,10 @@ class PluginListComponent extends HTMLList{
 			"link" => $this->configPageLink . "?plugin=" . $key
 		));
 
+		$dsp = (is_string($entity["description"]) && strlen($entity["description"])) ? trim($entity["description"]) : "";
 		$this->addLabel("config_page_description", array(
-			"html" => $entity["description"],
-			"visible" => (strlen($entity["description"]) > 0)
+			"html" => $dsp,
+			"visible" => (strlen($dsp) > 0)
 		));
 	}
 

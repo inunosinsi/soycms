@@ -62,7 +62,7 @@ class SOYShop_Page {
 		$this->name = $name;
 	}
 	function getUri() {
-		return $this->uri;
+		return (is_string($this->uri)) ? $this->uri : "";
 	}
 	function setUri($uri) {
 		if(strlen($uri) > 0 && $uri[0] == "/") $uri = substr($uri, 1);

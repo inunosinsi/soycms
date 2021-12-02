@@ -7,14 +7,13 @@ class ReturnsSlipNumberMail extends SOYShopOrderMail{
 	 * @return string
 	 */
 	function getMailBody(SOYShop_Order $order){
+		SOY2::import("module.plugins.returns_slip_number.util.ReturnsSlipNumberUtil");
+		$slipNumber = soyshop_get_order_attribute_value($order->getId(), ReturnsSlipNumberUtil::PLUGIN_ID, "string");
+		if(strlen($slipNumber)){
+			$cnf = ReturnsSlipNumberUtil::getConfig();
 
-		$attr = SOY2Logic::createInstance("module.plugins.returns_slip_number.logic.ReturnsSlipNumberLogic")->getAttribute($order->getId());
-		if(strlen($attr->getValue1())){
-			SOY2::import("module.plugins.returns_slip_number.util.ReturnsSlipNumberUtil");
-			$config = ReturnsSlipNumberUtil::getConfig();
-
-			$content = (isset($config["content"])) ? $config["content"] : "";
-			return str_replace("#RETURNS_SLIP_NUMBER#", $attr->getValue1(), $content);
+			$content = (isset($cnf)) ? $cnf : "";
+			return str_replace("#RETURNS_SLIP_NUMBER#", $slipNumber, $content);
 		}
 	}
 

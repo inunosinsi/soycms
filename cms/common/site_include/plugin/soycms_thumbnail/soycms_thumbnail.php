@@ -36,7 +36,7 @@ class SOYCMSThumbnailPlugin{
 			"author"=>"日本情報化農業研究所",
 			"url"=>"http://www.n-i-agroinformatics.com/",
 			"mail"=>"soycms@soycms.net",
-			"version"=>"1.1"
+			"version"=>"1.2"
 		));
 
 		if(CMSPlugin::activeCheck($this->getId())){
@@ -74,7 +74,7 @@ class SOYCMSThumbnailPlugin{
 			$label = str_replace("soycms_thumbnail_plugin_", "", $imageType);
 			if($label == "resize") $label = "thumbnail";
 
-			$imagePath = trim($obj->getValue());
+			$imagePath = (is_string($obj->getValue())) ? trim($obj->getValue()) : "";
 			if($label == "thumbnail" && !strlen($imagePath)) $imagePath = $this->no_thumbnail_path;
 
 			$htmlObj->addModel("is_" . $label, array(

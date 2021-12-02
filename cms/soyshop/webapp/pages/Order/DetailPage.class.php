@@ -145,7 +145,7 @@ class DetailPage extends WebPage{
 			SOY2::import("module.plugins.generate_barcode_tracking_number.util.GenerateBarcodeUtil");
 			$barcodeSrc = GenerateBarcodeUtil::getBarcodeImagePath($order->getTrackingNumber() . ".jpg");
 		}else{
-			$barcodeSrc = null;
+			$barcodeSrc = "";
 		}
 
 		DisplayPlugin::toggle("barcode", strlen($barcodeSrc));
@@ -216,7 +216,7 @@ class DetailPage extends WebPage{
         SOY2DAOFactory::importEntity("user.SOYShop_User");
         SOY2DAOFactory::importEntity("config.SOYShop_Area");
 
-		$customer = SOY2DAOFactory::create("user.SOYShop_UserDAO")->getById($order->getUserId());
+		$customer = soyshop_get_user_object($order->getUserId());
 		if(is_null($customer->getId())) $customer->setName("[deleted]");
 
     	$this->addLink("customer", array(

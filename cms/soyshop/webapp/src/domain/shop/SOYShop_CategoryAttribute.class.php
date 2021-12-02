@@ -29,7 +29,7 @@ class SOYShop_CategoryAttribute {
     private $value2;
 
     function getCategoryId() {
-        return $this->categoryId;
+        return (is_numeric($this->categoryId)) ? (int)$this->categoryId : 0;
     }
     function setCategoryId($categoryId) {
         $this->categoryId = $categoryId;
@@ -255,7 +255,7 @@ class SOYShop_CategoryAttributeConfig{
         $title = '<label for="">'
                  .''
                  .htmlspecialchars($this->getLabel(), ENT_QUOTES, "UTF-8");
-        $title .= (strlen($this->getDescription())) ? "<span class=\"option\">(" . $this->getDescription() . ")</span>" : "";
+        $title .= (is_string($this->getDescription()) && strlen($this->getDescription())) ? "<span class=\"option\">(" . $this->getDescription() . ")</span>" : "";
         $title .= '</label><br>';
 
         switch($this->getType()){
@@ -355,8 +355,8 @@ class SOYShop_CategoryAttributeConfig{
                         .$h_value.'</textarea>';
                 break;
             case "image":
-                $h_value = soyshop_convert_file_path_on_admin(htmlspecialchars($value, ENT_QUOTES, "UTF-8"));
-                $h_value2 = htmlspecialchars($value2, ENT_QUOTES, "UTF-8");
+                $h_value = (is_string($value)) ? soyshop_convert_file_path_on_admin(htmlspecialchars($value, ENT_QUOTES, "UTF-8")) : "";
+                $h_value2 = (is_string($value2)) ? htmlspecialchars($value2, ENT_QUOTES, "UTF-8") : "";
 
                 $style = (strlen($h_value) > 0) ? "" : "display:none;";
 

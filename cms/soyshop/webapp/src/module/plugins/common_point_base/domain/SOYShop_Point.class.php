@@ -26,14 +26,14 @@ class SOYShop_Point {
 	private $timeLimit;
 
 	function getUserId(){
-		return $this->userId;
+		return (is_numeric($this->userId)) ? (int)$this->userId : 0;
 	}
 	function setUserId($userId){
 		$this->userId = $userId;
 	}
 
 	function getPoint(){
-		return $this->point;
+		return (is_numeric($this->point)) ? (int)$this->point : 0;
 	}
 	function setPoint($point){
 		$this->point = $point;

@@ -54,7 +54,7 @@ function soyshop_relative_items($html, $htmlObj){
 				default:
 					$key = "item_" . $cnf["defaultSort"];
                 }
-				if(strlen($key)){
+				if(is_string($key) && strlen($key)){
 					$sql .= "ORDER BY " . $key . " ";
 	                $sql .= ($cnf["isReverse"] == 1) ? "ASC" : "DESC";
 				}
@@ -109,4 +109,3 @@ function soyshop_relative_items($html, $htmlObj){
 		ob_end_clean();
 	}
 }
-?>

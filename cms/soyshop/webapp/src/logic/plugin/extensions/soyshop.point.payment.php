@@ -15,7 +15,7 @@ class SOYShopPointPaymentBase implements SOY2PluginAction{
 	 * Cart03で表示するモジュール名
 	 * （空にするとそのモジュールは丸ごと表示されない）
 	 */
-	function getName($userId){
+	function getName(int $userId){
 		return "";
 	}
 
@@ -23,7 +23,7 @@ class SOYShopPointPaymentBase implements SOY2PluginAction{
 	 * Cart03で表示するフォーム
 	 * name="discount_module[***]"
 	 */
-	function getDescription($userId){
+	function getDescription(int $userId){
 		return "";
 	}
 
@@ -31,7 +31,7 @@ class SOYShopPointPaymentBase implements SOY2PluginAction{
 	 * Cart03の選択時に表示するエラーメッセージ
 	 * @return string
 	 */
-	function getError($userId){
+	function getError(int $userId){
 		return "";
 	}
 
@@ -41,7 +41,7 @@ class SOYShopPointPaymentBase implements SOY2PluginAction{
 	 * あまり意味はなさそう
 	 * @return Boolean
 	 */
-	function hasError($param){
+	function hasError(array $param){
 		return false;
 	}
 
@@ -49,7 +49,7 @@ class SOYShopPointPaymentBase implements SOY2PluginAction{
 	 * ポイント支払金額の計算とモジュールの登録
 	 * Cart03->doPostで選択されたときに実行される
 	 */
-	function doPost($param, $userId){
+	function doPost(int $param, int $userId){
 
 	}
 
@@ -119,6 +119,7 @@ class SOYShopPointPaymentDeletageAction implements SOY2PluginDelegateAction{
 				}else if(is_array($this->param) && is_string($moduleId) && isset($this->param[$moduleId])){
 					$param = $this->param[$moduleId];
 				}
+				$param = (is_numeric($param)) ? (int)$param : 0;
 				$action->doPost($param, $this->userId);
 				break;
 
@@ -149,7 +150,7 @@ class SOYShopPointPaymentDeletageAction implements SOY2PluginDelegateAction{
 		$this->cart = $cart;
 	}
 	function getUserId(){
-		return $this->userId;
+		return (is_numeric($this->userId)) ? (int)$this->userId : 0;
 	}
 	function setUserId($userId){
 		$this->userId = $userId;

@@ -44,7 +44,7 @@ class FbCatalogCustomfieldFormPage extends WebPage {
 		$this->createAdd("fb_catalog_image","_common.Item.ImageSelectComponent", array(
 			"domId" => "fb_catalog_image",
 			"name" => "FbCatalogManager[" . FbCatalogManagerUtil::FIELD_ID_ITEM_INFO . "][image]",
-			"value" => (isset($itemCnf["image"]) && strlen($itemCnf["image"])) ? soyshop_convert_file_path_on_admin($itemCnf["image"]) : ""
+			"value" => (isset($itemCnf["image"]) && is_string($itemCnf["image"]) && strlen($itemCnf["image"])) ? soyshop_convert_file_path_on_admin($itemCnf["image"]) : ""
 		));
 
 		$brand = (isset($itemCnf["brand"])) ? $itemCnf["brand"] : null;

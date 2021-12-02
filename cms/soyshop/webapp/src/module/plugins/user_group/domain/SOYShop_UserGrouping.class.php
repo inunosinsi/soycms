@@ -16,7 +16,7 @@ class SOYShop_UserGrouping {
 	private $groupId;
 
 	function getUserId(){
-		return $this->userId;
+		return (is_numeric($this->userId)) ? (int)$this->userId : 0;
 	}
 	function setUserId($userId){
 		$this->userId = $userId;

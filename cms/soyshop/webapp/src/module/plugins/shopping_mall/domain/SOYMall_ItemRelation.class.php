@@ -15,7 +15,7 @@ class SOYMall_ItemRelation {
 	private $adminId;
 
 	function getItemId(){
-		return $this->itemId;
+		return (is_numeric($this->itemId)) ? (int)$this->itemId : 0;
 	}
 	function setItemId($itemId){
 		$this->itemId = $itemId;

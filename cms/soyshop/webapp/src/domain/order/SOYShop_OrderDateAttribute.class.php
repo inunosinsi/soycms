@@ -37,7 +37,7 @@ class SOYShop_OrderDateAttribute {
 	private $value2;
 
 	function getOrderId() {
-		return $this->orderId;
+		return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
 	}
 	function setOrderId($orderId) {
 		$this->orderId = $orderId;
@@ -47,6 +47,12 @@ class SOYShop_OrderDateAttribute {
 	}
 	function setFieldId($fieldId) {
 		$this->fieldId = $fieldId;
+	}
+	function getValue() {
+		return $this->value1;
+	}
+	function setValue($value) {
+		$this->value1 = $value1;
 	}
 	function getValue1() {
 		return $this->value1;

@@ -153,8 +153,9 @@ class ReturnsSlipNumberListPage extends WebPage {
 		self::_buildExportForm();
 		self::_buildImportForm();
 
+		$html = SOYShopPlugin::display("soyshop.slip.html");
 		$this->addLabel("extension_html", array(
-			"html" => SOYShopPlugin::display("soyshop.slip.html")
+			"html" => (is_string($html) && strlen($html)) ? "<br>" . $html : ""
 		));
 	}
 

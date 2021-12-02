@@ -41,80 +41,80 @@ class SOYShop_AppContainer extends SOY2HTML{
 	}
 
 	function getObject(){
-		$applicationIds = $this->getApplicationIds();
+		$applicationIds = self::_getApplicationIds();
+		if(!count($applicationIds)) return $this->getInnerHTML();
 
-		if(count($applicationIds)){
-			//定数の作成
-			if(!defined("CMS_APPLICATION_ROOT_DIR")){
-				define("CMS_APPLICATION_ROOT_DIR", dirname(dirname(dirname(SOY2::RootDir()))) . "/app/");
-			}
-			if(!defined("CMS_COMMON")){
-				define("CMS_COMMON", dirname(dirname(dirname(SOY2::RootDir()))) . "/common/");
-			}
-
-			//読み込み
-			include_once(CMS_COMMON . "soycms.config.php");
-			include_once(CMS_APPLICATION_ROOT_DIR . "webapp/base/CMSApplication.class.php");
-
-			//MySQL版の場合はCMS本体のmysqlの設定ファイルを確認する必要がある
-			if(SOYCMS_DB_TYPE == "mysql" && !defined("ADMIN_DB_DSN")){
-				$mysqlFilePath = CMS_COMMON . "config/db/mysql.php";
-				if(file_exists($mysqlFilePath)) include_once($mysqlFilePath);
-			}
-
-			//保険
-			$oldRooDir = SOY2::RootDir();
-			$oldPagDir = SOY2HTMLConfig::PageDir();
-			$oldCacheDir = SOY2HTMLConfig::CacheDir();
-			$oldDaoDir = SOY2DAOConfig::DaoDir();
-			$oldEntityDir = SOY2DAOConfig::EntityDir();
-			$oldDsn = SOY2DAOConfig::Dsn();
-			$oldUser = SOY2DAOConfig::user();
-			$oldPass = SOY2DAOConfig::pass();
-
-			try{
-
-				foreach($applicationIds as $applicationId){
-					$pagePHP = CMS_APPLICATION_ROOT_DIR . "webapp/" . $applicationId . "/page.php";
-					if(strlen($applicationId) && file_exists($pagePHP)){
-						include_once($pagePHP);
-
-						//実行
-						CMSApplication::page($this->page, $this->page->getArguments());
-					}
-				}
-
-			}catch(Exception $e){
-				SOY2::RootDir($oldRooDir);
-				SOY2HTMLConfig::PageDir($oldPagDir);
-				SOY2HTMLConfig::CacheDir($oldCacheDir);
-				SOY2DAOConfig::DaoDir($oldDaoDir);
-				SOY2DAOConfig::EntityDir($oldEntityDir);
-				SOY2DAOConfig::Dsn($oldDsn);
-				SOY2DAOConfig::user($oldUser);
-				SOY2DAOConfig::pass($oldPass);
-
-	    		throw $e;
-	    	}
+		//定数の作成
+		if(!defined("CMS_APPLICATION_ROOT_DIR")){
+			define("CMS_APPLICATION_ROOT_DIR", dirname(dirname(dirname(SOY2::RootDir()))) . "/app/");
 		}
+		if(!defined("CMS_COMMON")){
+			define("CMS_COMMON", dirname(dirname(dirname(SOY2::RootDir()))) . "/common/");
+		}
+
+		//読み込み
+		include_once(CMS_COMMON . "soycms.config.php");
+		include_once(CMS_APPLICATION_ROOT_DIR . "webapp/base/CMSApplication.class.php");
+
+		//MySQL版の場合はCMS本体のmysqlの設定ファイルを確認する必要がある
+		if(SOYCMS_DB_TYPE == "mysql" && !defined("ADMIN_DB_DSN")){
+			$mysqlFilePath = CMS_COMMON . "config/db/mysql.php";
+			if(file_exists($mysqlFilePath)) include_once($mysqlFilePath);
+		}
+
+		//保険
+		$oldRooDir = SOY2::RootDir();
+		$oldPagDir = SOY2HTMLConfig::PageDir();
+		$oldCacheDir = SOY2HTMLConfig::CacheDir();
+		$oldDaoDir = SOY2DAOConfig::DaoDir();
+		$oldEntityDir = SOY2DAOConfig::EntityDir();
+		$oldDsn = SOY2DAOConfig::Dsn();
+		$oldUser = SOY2DAOConfig::user();
+		$oldPass = SOY2DAOConfig::pass();
+
+		try{
+			foreach($applicationIds as $applicationId){
+				$pagePHP = CMS_APPLICATION_ROOT_DIR . "webapp/" . $applicationId . "/page.php";
+				if(strlen($applicationId) && file_exists($pagePHP)){
+					include_once($pagePHP);
+
+					//実行
+					CMSApplication::page($this->page, $this->page->getArguments());
+				}
+			}
+		}catch(Exception $e){
+			SOY2::RootDir($oldRooDir);
+			SOY2HTMLConfig::PageDir($oldPagDir);
+			SOY2HTMLConfig::CacheDir($oldCacheDir);
+			SOY2DAOConfig::DaoDir($oldDaoDir);
+			SOY2DAOConfig::EntityDir($oldEntityDir);
+			SOY2DAOConfig::Dsn($oldDsn);
+			SOY2DAOConfig::user($oldUser);
+			SOY2DAOConfig::pass($oldPass);
+
+    		throw $e;
+    	}
 
 		return $this->getInnerHTML();
-
 	}
 
-	private function getApplicationIds(){
-		$appIds = trim($this->getAttribute("cms:app"));
+	private function _getApplicationIds(){
+		$appIds = $this->getAttribute("cms:app");
+		if(!is_string($appIds)) return array();
 
-		$applicationIds = array($appIds);
-		if(strpos($appIds, " ") !== false){
-			$applicationIds = explode(" ", $appIds);
-		}elseif(strpos($appIds, ";") !== false){
-			$applicationIds = explode(";", $appIds);
-		}elseif(strpos($appIds, ":") !== false){
-			$applicationIds = explode(":", $appIds);
-		}elseif(strpos($appIds, ",") !== false){
-			$applicationIds = explode(",", $appIds);
+		$appIds = trim($appIds);
+		if(!strlen($appIds)) return array();
+
+		if(is_numeric(strpos($appIds, " "))){
+			return explode(" ", $appIds);
+		}else if(is_numeric(strpos($appIds, ";"))){
+			return explode(";", $appIds);
+		}elseif(is_numeric(strpos($appIds, ":"))){
+			return explode(":", $appIds);
+		}elseif(is_numeric(strpos($appIds, ","))){
+			return explode(",", $appIds);
+		}else{
+			return array($appIds);
 		}
-		return $applicationIds;
 	}
 }

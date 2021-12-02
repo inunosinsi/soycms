@@ -14,7 +14,7 @@ class TagCloudBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 	private function _getWordIdFromParam(){
 		$args = soyshop_get_arguments();
-		if(!isset($args[0])) return null;
+		if(!isset($args[0])) return "";
 
 		SOY2::import("module.plugins.tag_cloud.util.TagCloudUtil");
 		return TagCloudUtil::getWordIdByAlias($args[0]);

@@ -20,7 +20,7 @@ class SOYShopOrderFunction implements SOY2PluginAction{
 	function getPage(){}
 
 	function getOrderId() {
-		return $this->orderId;
+		return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
 	}
 	function setOrderId($orderId) {
 		$this->orderId = $orderId;
@@ -66,7 +66,7 @@ class SOYShopOrderFunctionDelegateAction implements SOY2PluginDelegateAction{
 		$this->mode = $mode;
 	}
 	function getOrderId() {
-		return $this->orderId;
+		return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
 	}
 	function setOrderId($orderId) {
 		$this->orderId = $orderId;

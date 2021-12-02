@@ -74,7 +74,6 @@ class IndexPage extends WebPage{
 		//ItemListの準備
 		$this->createAdd("item_list", "_common.Item.SearchItemListComponent", array(
 			"list" => $items,
-			"orderDAO" => SOY2DAOFactory::create("order.SOYShop_ItemOrderDAO"),
 			"detailLink" => SOY2PageController::createLink("Item.Detail."),
 			"categories" => soyshop_get_category_objects()
 		));
@@ -107,11 +106,10 @@ class IndexPage extends WebPage{
 		}
 
 		if(isset($_POST["do_remove"])){
-			$publish = $_POST["do_change_publish"];
-			$items = $_POST["items"];
-
-			$logic = SOY2Logic::createInstance("logic.shop.item.ItemLogic");
-			$logic->delete($items);
+			//$publish = $_POST["do_change_publish"];
+			if(isset($_POST["items"])){
+				SOY2Logic::createInstance("logic.shop.item.ItemLogic")->delete($_POST["items"]);
+			}
 
 			SOY2PageController::jump("Item.Search?deleted");
 			exit;
@@ -162,7 +160,7 @@ class IndexPage extends WebPage{
 
 		//カテゴリ
 
-		$selected_categories = (strlen(@$form["categories"]) > 0) ? explode(" ", trim(@$form["categories"])) : array();
+		$selected_categories = (isset($form["categories"]) && is_string($form["categories"]) && strlen($form["categories"]) > 0) ? explode(" ", trim($form["categories"])) : array();
 
 		$this->createAdd("category_tree","_base.MyTreeComponent", array(
 			"list" => soyshop_get_category_objects(),

@@ -5,7 +5,7 @@ class AsyncCartButtonOnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 
 		SOY2::import("module.plugins.async_cart_button.util.AsyncCartButtonUtil");
 

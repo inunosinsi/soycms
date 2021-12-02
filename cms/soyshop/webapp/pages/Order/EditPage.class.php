@@ -1077,13 +1077,16 @@ class EditPage extends WebPage{
 					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
 						//value2に値がない場合 dateとか
 						if(is_null($newValue2)){
-							if($newValue1 != $obj["value1"]){
+							if(is_numeric($obj["value1"]) && $newValue1 != $obj["value1"]){
 								$change[] = self::getHistoryText($obj["label"], soyshop_convert_date_string($obj["value1"]), soyshop_convert_date_string($newValue1));
 							}
 
 						//value2に値がある場合 periodとか
 						}else{
-							if($newValue1 != $obj["value1"] || $newValue2 != $obj["value2"]){
+							if(
+								(is_numeric($obj["value1"]) && $newValue1 != $obj["value1"]) ||
+								(is_numeric($obj["value2"]) && $newValue2 != $obj["value2"])
+							){
 								$change[] = self::getHistoryText($obj["label"], soyshop_convert_date_string($obj["value1"]) . " ～ " . soyshop_convert_date_string($obj["value1"]), soyshop_convert_date_string($newValue1) . " ～ " . soyshop_convert_date_string($newValue2));
 							}
 						}

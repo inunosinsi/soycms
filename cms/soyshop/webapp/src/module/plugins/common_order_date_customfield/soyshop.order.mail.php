@@ -29,16 +29,16 @@ class CommonOrderDateCustomfieldMailModule extends SOYShopOrderMail{
 
 		$array = array();
 		foreach($attributes as $obj){
-			if(isset($list[$obj->getFieldId()]["type"]) && strlen($obj->getValue1()) > 0){
+			if(isset($list[$obj->getFieldId()]["type"]) && is_string($obj->getValue1()) && strlen($obj->getValue1()) > 0){
 				$res = array();
 				$res[] = $list[$obj->getFieldId()]["label"];
 
 				switch($list[$obj->getFieldId()]["type"]){
 					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_DATE:
-						$res[] = $this->getTimeText($obj->getValue1());
+						$res[] = soyshop_convert_date_string((int)$obj->getValue1());
 						break;
 					case SOYShop_OrderDateAttribute::CUSTOMFIELD_TYPE_PERIOD:
-						$res[] = $this->getTimeText($obj->getValue1()) . " ～ " . $this->getTimeText($obj->getValue2());
+						$res[] = soyshop_convert_date_string((int)$obj->getValue1()) . " ～ " . soyshop_convert_date_string((int)$obj->getValue2());
 						break;
 				}
 				$res[] = "";
@@ -51,10 +51,6 @@ class CommonOrderDateCustomfieldMailModule extends SOYShopOrderMail{
 
 	function getDisplayOrder(){
 		return 200;//delivery系は200番台
-	}
-
-	function getTimeText($value){
-		return date("Y", $value) . "-" . date("m", $value) . "-" . date("d", $value);
 	}
 }
 

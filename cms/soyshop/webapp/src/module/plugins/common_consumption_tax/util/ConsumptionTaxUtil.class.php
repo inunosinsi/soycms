@@ -29,33 +29,9 @@ class ConsumptionTaxUtil{
 	}
 
 	public static function saveReducedTaxRateItem(bool $on, int $itemId){
-		$dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
-		if($on){	//save
-			try{
-				$attr = $dao->get($itemId, self::FIELD_REDUCED_TAX_RATE);
-			}catch(Exception $e){
-				$attr = new SOYShop_ItemAttribute();
-				$attr->setItemId($itemId);
-				$attr->setFieldId(self::FIELD_REDUCED_TAX_RATE);
-			}
-
-			$attr->setValue(1);
-
-			try{
-				$dao->insert($attr);
-			}catch(Exception $e){
-				try{
-					$dao->update($attr);
-				}catch(Exception $e){
-
-				}
-			}
-		}else{
-			try{
-				$dao->delete($itemId, self::FIELD_REDUCED_TAX_RATE);
-			}catch(Exception $e){
-				//
-			}
-		}
+		$v = ($on) ? 1 : null;
+		$attr = soyshop_get_item_attribute_object($itemId, self::FIELD_REDUCED_TAX_RATE);
+		$attr->setValue($v);
+		soyshop_save_item_attribute_object($attr);
 	}
 }

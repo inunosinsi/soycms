@@ -9,38 +9,36 @@ class UtilMultiLanguageOnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 		//canonicalがある場合はhreflangも出力
 		preg_match('/<link.*rel=\"canonical\".*href="(.*?)".*?>/', $html, $tmp);
-		if(isset($tmp[1])){
-			$canonicalTag = $tmp[0];
+		if(!isset($tmp[1])) return $html;
 
-			SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
-			$config = UtilMultiLanguageUtil::getConfig();
+		$canonicalTag = $tmp[0];
 
-			//多言語設定がすでに入っている場合は除く
-			$canonicalUrl = SOY2Logic::createInstance("module.plugins.util_multi_language.logic.RedirectLanguageSiteLogic")->getJapanaseUrl($config, $tmp[1]);
+		SOY2::import("module.plugins.util_multi_language.util.UtilMultiLanguageUtil");
+		$config = UtilMultiLanguageUtil::getConfig();
 
-			$host = $_SERVER["HTTP_HOST"];
+		//多言語設定がすでに入っている場合は除く
+		$canonicalUrl = SOY2Logic::createInstance("module.plugins.util_multi_language.logic.RedirectLanguageSiteLogic")->getJapanaseUrl($config, $tmp[1]);
 
-			foreach(UtilMultiLanguageUtil::allowLanguages() as $lang => $title){
-				if(!isset($config[$lang])) continue;
-				$conf = $config[$lang];
-				if(!isset($conf["is_use"]) || (int)$conf["is_use"] !== 1) continue;
-				if(isset($conf["prefix"]) && strlen($conf["prefix"])){
-					$hreflang = str_replace($host . "/", $host . "/" . $conf["prefix"] . "/", $canonicalUrl);
-					$tag = "<link rel=\"alternate\" hreflang=\"" . $lang . "\" href=\"" . $hreflang . "\">";
-				}else{
-					$tag = "<link rel=\"alternate\" hreflang=\"" . $lang . "\" href=\"" . $canonicalUrl . "\">";
-				}
+		$host = $_SERVER["HTTP_HOST"];
 
-				$canonicalTag .= "\n" . $tag;
+		foreach(UtilMultiLanguageUtil::allowLanguages() as $lang => $title){
+			if(!isset($config[$lang])) continue;
+			$conf = $config[$lang];
+			if(!isset($conf["is_use"]) || (int)$conf["is_use"] !== 1) continue;
+			if(isset($conf["prefix"]) && strlen($conf["prefix"])){
+				$hreflang = str_replace($host . "/", $host . "/" . $conf["prefix"] . "/", $canonicalUrl);
+				$tag = "<link rel=\"alternate\" hreflang=\"" . $lang . "\" href=\"" . $hreflang . "\">";
+			}else{
+				$tag = "<link rel=\"alternate\" hreflang=\"" . $lang . "\" href=\"" . $canonicalUrl . "\">";
 			}
 
-			$html = str_replace($tmp[0], $canonicalTag, $html);
+			$canonicalTag .= "\n" . $tag;
 		}
 
-		return $html;
+		return str_replace($tmp[0], $canonicalTag, $html);
 	}
 }
 

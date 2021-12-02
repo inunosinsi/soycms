@@ -583,32 +583,34 @@ class BackwardUserComponent {
 
 		$userLogic = SOY2Logic::createInstance("logic.user.UserLogic");
 		$width = $userLogic->getDisplayImage($user);
+		$imagePath = (is_string($user->getImagePath())) ? $user->getImagePath() : "";
     	$page->addImage("user_image", array(
-    		"src" => $user->getAttachmentsUrl() . $user->getImagePath(),
-    		"visible" => (strlen($user->getImagePath()) > 0),
+    		"src" => $user->getAttachmentsUrl() . $imagePath,
+    		"visible" => (strlen($imagePath) > 0),
     		"style" => "width:" . $width . "px;"
     	));
 
     	$page->addInput("user_image_path", array(
     		"name" => "Customer[imagePath]",
-    		"value" => $user->getImagePath(),
-    		"visible" => (strlen($user->getImagePath()) > 0)
+    		"value" => $imagePath,
+    		"visible" => (strlen($imagePath) > 0)
     	));
 
     	$page->addModel("is_user_image", array(
-    		"visible" => (strlen($user->getImagePath()) > 0)
+    		"visible" => (strlen($imagePath) > 0)
     	));
 
 		$isDeleteImage = $mypage->getAttribute("user.edit.delete_image");
+		if(!is_bool($isDeleteImage)) $isDeleteImage = false;
     	$page->addCheckBox("delete_image", array(
     		"name" => "Delete",
     		"value" => 1,
-    		"selected" => (isset($isDeleteImage) && $isDeleteImage === true),
+    		"selected" => ($isDeleteImage),
     		"label" => MessageManager::get("DELETE_PROFILE_IMAGE")
     	));
 
     	$page->addModel("confirm_detele_image", array(
-    		"visible" => (isset($isDeleteImage) && $isDeleteImage === true)
+    		"visible" => ($isDeleteImage)
     	));
 
     	//URL

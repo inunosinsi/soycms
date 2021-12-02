@@ -133,6 +133,10 @@ class ItemLogic extends SOY2LogicBase{
     function create(SOYShop_Item $obj){
 		$dao = self::getItemDAO();
 
+		//一番IDの小さい詳細ページを紐付ける
+		$detailPageId = SOY2Logic::createInstance("logic.site.page.PageLogic")->getOldestDetailPageId();
+		if(is_numeric($detailPageId)) $obj->setDetailPageId($detailPageId);
+
 		$obj->setAttribute("image_small", soyshop_get_item_sample_image());
 		$obj->setAttribute("image_large", soyshop_get_item_sample_image());
 
@@ -233,7 +237,7 @@ class ItemLogic extends SOY2LogicBase{
     	}
     }
 
-	function getItemPriceListByItemId($itemId){
+	function getItemPriceListByItemId(int $itemId){
 		static $list;
 		if(isset($list[$itemId])) return $list[$itemId];
 		$list = array();

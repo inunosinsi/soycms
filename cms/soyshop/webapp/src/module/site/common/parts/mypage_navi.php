@@ -176,7 +176,7 @@ function soyshop_parts_mypage_navi($html, $page){
 	//
 	// $timeLimit = null;
 	// if($isLoggedIn && SOYShopPluginUtil::checkIsActive("common_point_base")){
-	// 	$timeLimit = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->getPointByUserId($user->getId())->getTimeLimit();
+	// 	$timeLimit = SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->getPointObjByUserId($user->getId())->getTimeLimit();
 	// }
 	//
 	// $obj->addModel("is_point_time_limit", array(

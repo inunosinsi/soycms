@@ -8,7 +8,8 @@ class MypageReviewsListComponent extends HTMLList{
 
 		$config = $this->config;
 
-		$item = soyshop_get_item_object($entity->getItemId());
+		$itemId = (is_numeric($entity->getItemId())) ? (int)$entity->getItemId() : 0;
+		$item = soyshop_get_item_object($itemId);
 
 		$this->addLabel("create_date", array(
 			"text" => (is_numeric($entity->getCreateDate())) ? date("Y年n月j日 H:i", $entity->getCreateDate()) : ""

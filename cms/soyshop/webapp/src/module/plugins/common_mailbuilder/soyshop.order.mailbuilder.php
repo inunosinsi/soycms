@@ -2,8 +2,6 @@
 
 class CommonMailbuilder extends SOYShopOrderMailBuilder{
 
-    private $itemDao;
-
     /**
      * 注文者向け注文情報を作る
      */
@@ -108,13 +106,11 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
         $itemColumnSize += "5";
 
         foreach($orderItems as $orderItem){
-            try{
-                $item = $this->itemDao->getById($orderItem->getItemId());
-            }catch(Exception $e){
-                $item = new SOYShop_Item();
-                $item->getName($orderItem->getItemName());
-                $item->getCode("-");
-            }
+			$item = soyshop_get_item_object($orderItem->getItemId());
+			if(!strlen($item->getName())){
+				$item->setName($orderItem->getItemName());
+				$item->setCode("-");
+			}
 
             $str  = $this->printColumn($orderItem->getItemName(),"left",$itemColumnSize);
             $str .= $this->printColumn($item->getCode(),"left");
@@ -222,7 +218,6 @@ class CommonMailbuilder extends SOYShopOrderMailBuilder{
     protected function prepare(){
         SOY2::import("module.plugins.common_mailbuilder.common.CommonMailbuilderCommon");
         SOY2::import("domain.config.SOYShop_Area");
-        $this->itemDao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
     }
 }
 

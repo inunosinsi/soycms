@@ -35,7 +35,7 @@ class SOYShop_Categories {
 	}
 	
 	function getCategoryId(){
-		return $this->categoryId;
+		return (is_numeric($this->categoryId)) ? (int)$this->categoryId : 0;
 	}
 	function setCategoryId($categoryId){
 		$this->categoryId = $categoryId;

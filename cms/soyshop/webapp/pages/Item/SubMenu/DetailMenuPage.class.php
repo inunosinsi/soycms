@@ -17,7 +17,7 @@ class DetailMenuPage extends HTMLPage{
 		$item = soyshop_get_item_object($this->id);
 
 		$page = soyshop_get_page_object($item->getDetailPageId());
-		$url = (!is_null($page->getId())) ? soyshop_get_page_url($page->getUri(), $item->getAlias()) : null;
+		$url = (is_numeric($page->getId())) ? soyshop_get_page_url($page->getUri(), $item->getAlias()) : "";
 
 		//
 		DisplayPlugin::toggle("is_open", $item->isPublished());

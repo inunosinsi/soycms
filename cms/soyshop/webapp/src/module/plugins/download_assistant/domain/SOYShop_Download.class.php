@@ -55,21 +55,21 @@ class SOYShop_Download {
     }
 
     function getOrderId(){
-    	return $this->orderId;
+    	return (is_numeric($this->orderId)) ? (int)$this->orderId : 0;
     }
     function setOrderId($orderId){
     	$this->orderId = $orderId;
     }
 
     function getItemId(){
-    	return $this->itemId;
+    	return (is_numeric($this->itemId)) ? (int)$this->itemId : 0;
     }
     function setItemId($itemId){
     	$this->itemId = $itemId;
     }
 
     function getUserId(){
-    	return $this->userId;
+    	return (is_numeric($this->userId)) ? (int)$this->userId : 0;
     }
     function setUserId($userId){
     	$this->userId = $userId;

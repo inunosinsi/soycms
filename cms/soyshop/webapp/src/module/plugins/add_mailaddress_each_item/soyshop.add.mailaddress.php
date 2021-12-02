@@ -18,7 +18,7 @@ class AddMailAddressEachItemAddMailAddress extends SOYShopAddMailAddress{
 
         SOY2::import("module.plugins.add_mailaddress_each_item.util.AddMailAddressEachItemUtil");
         foreach($itemOrders as $itemOrder){
-            $mailAddress = trim(AddMailAddressEachItemUtil::get($itemOrder->getItemId(), AddMailAddressEachItemUtil::MODE_EMAIL));
+            $mailAddress = trim(soyshop_get_item_attribute_value($itemOrder->getItemId(), AddMailAddressEachItemUtil::PLUGIN_ID . "_" . AddMailAddressEachItemUtil::MODE_EMAIL, "string"));
             if(!strlen($mailAddress) || !(bool)filter_var($mailAddress, FILTER_VALIDATE_EMAIL)) continue;
             $list[] = $mailAddress;
         }

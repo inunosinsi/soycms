@@ -7,7 +7,7 @@ class ReserveCalendarUserOutput extends SOYShopSiteUserOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 		$replacements = array();
 
 		if(!defined("MYPAGE_EXTEND_BOOTSTRAP")){

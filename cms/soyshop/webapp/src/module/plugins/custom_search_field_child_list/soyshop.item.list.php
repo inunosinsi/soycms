@@ -66,4 +66,3 @@ class CustomSearchFieldChildList extends SOYShopItemListBase{
 }
 
 SOYShopPlugin::extension("soyshop.item.list", "custom_search_field_child_list", "CustomSearchFieldChildList");
-

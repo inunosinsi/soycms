@@ -7,7 +7,8 @@ class PostListComponent extends HTMLList {
 			"text" => (is_numeric($entity->getCreateDate())) ? date("Y-m-d H:i:s", $entity->getCreateDate()) : ""
 		));
 
-		$user = soyshop_get_user_object($entity->getUserId());
+		$userId = (is_numeric($entity->getUserId())) ? (int)$entity->getUserId() : 0;
+		$user = soyshop_get_user_object($userId);
 		$this->addLink("user_name", array(
 			"text" => $user->getDisplayName(),
 			"link" => SOY2PageController::createLink("User.Detail.") . $user->getId()

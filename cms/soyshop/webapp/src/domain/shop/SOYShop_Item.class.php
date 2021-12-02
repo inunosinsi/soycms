@@ -189,8 +189,7 @@ class SOYShop_Item {
 		$this->subtitle = $subtitle;
 	}
     function getCode() {
-		if(is_null($this->code)) $this->code = soyshop_dummy_item_code();
-		return $this->code;
+		return (is_string($this->code)) ? $this->code : soyshop_dummy_item_code();
     }
     function setCode($code) {
         $this->code = $code;
@@ -259,7 +258,7 @@ class SOYShop_Item {
     }
 
     function getCategory() {
-        return $this->category;
+        return (is_numeric($this->category)) ? (int)$this->category : 0;
     }
     function setCategory($category) {
         $this->category = $category;
@@ -297,13 +296,13 @@ class SOYShop_Item {
     }
 
     function getOpenPeriodStart() {
-        return (!is_null($this->openPeriodStart)) ? $this->openPeriodStart : self::PERIOD_START;
+        return (is_numeric($this->openPeriodStart)) ? $this->openPeriodStart : self::PERIOD_START;
     }
     function setOpenPeriodStart($openPeriodStart) {
         $this->openPeriodStart = $openPeriodStart;
     }
     function getOpenPeriodEnd() {
-        return (!is_null($this->openPeriodEnd)) ? $this->openPeriodEnd : self::PERIOD_END;
+        return (is_numeric($this->openPeriodEnd)) ? $this->openPeriodEnd : self::PERIOD_END;
     }
     function setOpenPeriodEnd($openPeriodEnd) {
         $this->openPeriodEnd = $openPeriodEnd;
@@ -317,14 +316,14 @@ class SOYShop_Item {
     }
 
     function getDetailPageId() {
-        return $this->detailPageId;
+        return (is_numeric($this->detailPageId)) ? (int)$this->detailPageId : SOY2Logic::createInstance("logic.site.page.PageLogic")->getOldestDetailPageId();
     }
     function setDetailPageId($detailPageId) {
         $this->detailPageId = $detailPageId;
     }
 
     function getAlias() {
-        return $this->alias;
+        return (is_string($this->alias)) ? $this->alias : "";
     }
     function setAlias($alias) {
         $this->alias = $alias;
@@ -334,20 +333,18 @@ class SOYShop_Item {
 
     //多言語化プラグインを考慮した商品名の取得
     function getOpenItemName(){
-        static $attrDao;
         if(!defined("SOYSHOP_PUBLISH_LANGUAGE")) define("SOYSHOP_PUBLISH_LANGUAGE", "jp");
         if(!defined("SOYSHOP_MAIL_LANGUAGE")) define("SOYSHOP_MAIL_LANGUAGE", SOYSHOP_PUBLISH_LANGUAGE);
 
         if(SOYSHOP_MAIL_LANGUAGE != "jp"){
-            if(is_null($attrDao)) $attrDao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
             try{
-                $name = $attrDao->get($this->id, "item_name_" . SOYSHOP_MAIL_LANGUAGE)->getValue();
+                $name = soyshop_get_item_attribute_value($this->id, "item_name_" . SOYSHOP_MAIL_LANGUAGE, "string");
                 if(strlen($name)) return $name;
             }catch(Exception $e){
                 //
             }
         }
-        return $this->name;
+        return (is_string($this->name)) ? $this->name : "";
     }
 
 	//注文数
@@ -368,10 +365,8 @@ class SOYShop_Item {
 	function getCodeOnAdmin(){
 		if(!self::_isConvertParentNameConfig()) return $this->code;
 
-		$parentId = soyshop_get_item_object($this->id)->getType();
-		if(!is_numeric($parentId)) return $this->code;
-
-		return soyshop_get_item_object($parentId)->getCode();
+		$parentId = (is_numeric($this->id)) ? soyshop_get_item_object($this->id)->getType() : 0;
+		return ($parentId > 0) ? soyshop_get_item_object($parentId)->getCode() : $this->code;;
 	}
 
 	private function _isConvertParentNameConfig(){
@@ -429,7 +424,8 @@ class SOYShop_Item {
      * @return boolean
      */
     function isPublished(){
-        if($this->isOpen > 0 &&
+        if(
+			$this->isOpen > 0 &&
             $this->getOpenPeriodStart() <= SOY2_NOW &&
             $this->getOpenPeriodEnd() >= SOY2_NOW
         ){

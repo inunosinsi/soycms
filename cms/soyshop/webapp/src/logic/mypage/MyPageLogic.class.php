@@ -356,14 +356,11 @@ class MyPageLogic extends SOY2LogicBase{
 				"mode" => "user_id"
 			))->getUserId();
 
-			if(!is_numeric($userId)){
-				$userId = $this->getAttribute("userId");
-			}
-
-			if(is_null($userId)) $userId = 0;
+			if(!is_numeric($userId)) $userId = $this->getAttribute("userId");
+			if(!is_numeric($userId)) $userId = 0;
 		}
 
-		return $userId;
+		return (is_numeric($userId)) ? (int)$userId : 0;
 	}
 
 	/**

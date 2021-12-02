@@ -16,8 +16,6 @@ class CommonPointPayment_OrderCustomfieldModule extends SOYShopOrderCustomfield{
 		if(DEBUG_MODE)$cart->log("point: ". $cart->getAttribute("point_payment"));
 		if(DEBUG_MODE)$cart->log("point: ". var_export($cart->getModule("point_payment"),true));
 		if(DEBUG_MODE)$cart->log("point: ". var_export($cart->getOrderAttribute("point_payment"),true));
-
 	}
-
 }
 SOYShopPlugin::extension("soyshop.order.customfield", "common_point_payment", "CommonPointPayment_OrderCustomfieldModule");

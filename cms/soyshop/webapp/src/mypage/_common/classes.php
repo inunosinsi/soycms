@@ -14,7 +14,7 @@ class NumberFormatLabel extends HTMLLabel{
 }
 
 function tstrlen($str){
-	return strlen(trim($str));
+	return (is_string($str)) ? strlen(trim($str)) : 0;
 }
 
 function isValidEmail($email){
@@ -148,13 +148,13 @@ class MainMyPagePageBase extends WebPage{
 		}
 	}
 
-	function getOrderByIdAndUserId($orderId, $userId){
+	function getOrderByIdAndUserId(int $orderId, int $userId){
 		$order = soyshop_get_order_object($orderId);
 		if((int)$order->getUserId() !== (int)$userId) $order = new SOYShop_Order();
 		return $order;
 	}
 
-	function getItemOrdersByOrderId($orderId){
+	function getItemOrdersByOrderId(int $orderId){
 		static $itemOrders;
 		if(is_null($itemOrders)){
 			try{
@@ -166,11 +166,11 @@ class MainMyPagePageBase extends WebPage{
 		return $itemOrders;
 	}
 
-	function getItemCodeByItemId($itemId){
+	function getItemCodeByItemId(int $itemId){
 		return soyshop_get_item_object($itemId)->getCode();
 	}
 
-	function getModuleByOrderIdAndUserId($orderId, $userId){
+	function getModuleByOrderIdAndUserId(int $orderId, int $userId){
 		static $module;
 		if(is_null($module)){
 			$moduleId = null;
@@ -186,7 +186,7 @@ class MainMyPagePageBase extends WebPage{
 	}
 
 	/* check */
-	function checkUnDeliveried($orderId, $userId){
+	function checkUnDeliveried(int $orderId, int $userId){
 		$order = self::getOrderByIdAndUserId($orderId, $userId);
         if(!$order->isOrderDisplay()) return false;
 
@@ -195,13 +195,13 @@ class MainMyPagePageBase extends WebPage{
 		return ($status === SOYShop_Order::ORDER_STATUS_REGISTERED || $status === SOYShop_Order::ORDER_STATUS_RECEIVED);
 	}
 
-	function checkUsedDeliveryModule($orderId, $userId){
+	function checkUsedDeliveryModule(int $orderId, int $userId){
 		$module = self::getModuleByOrderIdAndUserId($orderId, $userId);
 		return (!is_null($module->getPluginId()));
 	}
 
 	/** mypage edit common **/
-	function getHistoryText($label, $old, $new){
+	function getHistoryText(string $label, string $old, string $new){
 		return $label . "を『" . $old . "』から『" . $new . "』に変更しました";
 	}
 

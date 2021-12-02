@@ -67,8 +67,6 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 	 */
 	private function buildOrderInfo($order, $orderItems){
 
-		$itemDAO = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
-
 		$mail = array();
 
 		//商品のみ小計
@@ -89,10 +87,8 @@ class MailBuilder implements SOY2LogicInterface,SOYShop_MailBuilder{
 		$mail[] = str_repeat("-",$itemColumnSize + 30);
 
 		foreach($orderItems as $orderItem){
-			try{
-				$item = $itemDAO->getById($orderItem->getItemId());
-			}catch(Exception $e){
-				$item = new SOYShop_Item();
+			$item = soyshop_get_item_object($orderItem->getItemId());
+			if(!strlen($item->getName())){
 				$item->setName($orderItem->getItemName());
 				$item->setCode("-");
 			}

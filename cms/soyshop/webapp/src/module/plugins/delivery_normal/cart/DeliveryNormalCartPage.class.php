@@ -35,7 +35,7 @@ class DeliveryNormalCartPage extends WebPage{
 		//カレンダー形式
 		DisplayPlugin::toggle("display_format_calendar", (isset($config["use_format_calendar"]) && $config["use_format_calendar"] == 1));
 
-		$dateStr = (isset($this->cart->getOrderAttribute("delivery_normal.date")["value"])) ? $this->cart->getOrderAttribute("delivery_normal.date")["value"] : null;
+		$dateStr = (isset($this->cart->getOrderAttribute("delivery_normal.date")["value"])) ? $this->cart->getOrderAttribute("delivery_normal.date")["value"] : "";
 		if(strpos($dateStr, "指定") !== false) $dateStr = null;
 
 		$this->addInput("delivery_date_calendar", array(

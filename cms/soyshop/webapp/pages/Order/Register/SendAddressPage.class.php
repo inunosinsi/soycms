@@ -46,7 +46,7 @@ class SendAddressPage extends WebPage{
 
 		//入力値を呼び出す
 		$address = $this->session->getAttribute("order_register.input.send_address");
-		if(strlen($address)){
+		if(is_string($address) && strlen($address)){
 			$address = soy2_unserialize($address);
 		}
 		if( ! is_array($address)){
@@ -62,9 +62,10 @@ class SendAddressPage extends WebPage{
 
 		//エラー文言
 		$error = $this->session->getAttribute("order_register.error.send_address");
+		if(!is_string($error)) $error = "";
 		$this->addLabel("error", array(
 			"html" => nl2br(htmlspecialchars($error, ENT_QUOTES, "UTF-8")),
-			"visible" => isset($error) && strlen($error)
+			"visible" => (strlen($error))
 		));
 
 		//クリア

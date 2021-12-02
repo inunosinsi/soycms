@@ -5,7 +5,7 @@ class CalendarExpandSeatOnOutput extends SOYShopSiteOnOutputAction{
 	/**
 	 * @return string
 	 */
-	function onOutput($html){
+	function onOutput(string $html){
 
 		//プラグイン側からCSSを出力
 		if(isset($_GET["output_css_mode"]) && $_GET["output_css_mode"] == "calendar"){
