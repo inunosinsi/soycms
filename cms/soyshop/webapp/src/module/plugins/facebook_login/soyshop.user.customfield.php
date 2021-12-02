@@ -8,18 +8,12 @@
 
 class FacebookLoginUserCustomSearchField extends SOYShopUserCustomfield{
 
-	function getForm($app, $userId){
-		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
-			$facebookId = SOY2Logic::createInstance("module.plugins.facebook_login.logic.FBLoginLogic")->getFacebookIdByUserId($userId);
-			if(isset($facebookId)){
-				return array(array("name" => "Facebook ID", "form" => $facebookId));
-			}
-		}
-	}
+	function getForm($app, int $userId){
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) return array();
 
-	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){}
-	function hasError($param){}
-	function confirm($app){}
-	function register($app, $userId){}
+		SOY2::import("module.plugins.facebook_login.util.FacebookLoginUtil");
+		$facebookId = soyshop_get_user_attribute_value($userId, FacebookLoginUtil::FIELD_ID, "string");
+		return (strlen($facebookId)) ? array(array("name" => "Facebook ID", "form" => $facebookId)) : array();
+	}
 }
 SOYShopPlugin::extension("soyshop.user.customfield","facebook_login","FacebookLoginUserCustomSearchField");

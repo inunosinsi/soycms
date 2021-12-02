@@ -1,21 +1,6 @@
 <?php
-/*
- * Created on 2009/07/28
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 
 class UserGroupCustomField extends SOYShopUserCustomfield{
-
-	function clear($app){}
-
-	/**
-	 * @param array $param 中身は$_POST["user_customfield"]
-	 */
-	function doPost($param){
-		// 公開側でグループ登録の予定はない
-	}
 
 	/**
 	 * マイページ・カートの登録で表示するフォーム部品の生成
@@ -24,7 +9,7 @@ class UserGroupCustomField extends SOYShopUserCustomfield{
 	 * @return array(["name"], ["description"], ["error"])
 	 *
 	 */
-	function getForm($app, $userId){
+	function getForm($app, int $userId){
 
 		//出力する内容を格納する
 		$array = array();
@@ -36,7 +21,7 @@ class UserGroupCustomField extends SOYShopUserCustomfield{
 		return $array;
 	}
 
-	private function getGroupForm($userId){
+	private function getGroupForm(int $userId){
 		$list = self::getGroupList();
 		if(!count($list)) return "";
 
@@ -72,7 +57,7 @@ class UserGroupCustomField extends SOYShopUserCustomfield{
 		return $list;
 	}
 
-	private function getGroupIdListByUserId($userId){
+	private function getGroupIdListByUserId(int $userId){
 		static $list;
 		if(isset($list)) return $list;
 		try{
@@ -96,7 +81,7 @@ class UserGroupCustomField extends SOYShopUserCustomfield{
 	 * @param SOYBodyComponentBase $pageObj
 	 * @param integer $userId
 	 */
-	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){
+	function buildNamedForm($app, SOYBodyComponentBase $pageObj, int $userId=0){
 		SOY2::import("module.plugins.user_group.component.public.GroupListComponent");
 		$pageObj->createAdd("group_list", "GroupListComponent", array(
 			"soy2prefix" => "g_block",
@@ -104,21 +89,11 @@ class UserGroupCustomField extends SOYShopUserCustomfield{
 		));
 	}
 
-
-	function hasError($param){}
-
-	/**
-	 * @param MyPageLogic || CartLogic $app
-	 */
-	function confirm($app){
-		// 公開側でグループ登録の予定はない
-	}
-
 	/**
 	 * @param MyPageLogic || CartLogic $app
 	 * @param integer $userId
 	 */
-	function register($app, $userId){
+	function register($app, int $userId){
 		//管理画面側での登録処理
 		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
 			//最初にすべて削除

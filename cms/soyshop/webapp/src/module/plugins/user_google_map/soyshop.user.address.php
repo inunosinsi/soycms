@@ -4,7 +4,7 @@ class UserGoogleMapAddress extends SOYShopUserAddressBase{
 
 	const PLUGIN_ID = "user_google_map";
 
-	function getForm($userId){
+	function getForm(int $userId){
 		SOY2::import("module.plugins.user_google_map.util.UserGoogleMapUtil");
 		$config = UserGoogleMapUtil::getConfig();
 		$key = (isset($config["google_maps_api_key"])) ? $config["google_maps_api_key"] : "";
@@ -12,8 +12,8 @@ class UserGoogleMapAddress extends SOYShopUserAddressBase{
 		$html = array();
 		$html[] = "<a href=\"javascript:void(0)\" id=\"search_by_address\">住所から地図検索</a>";
 		$html[] = "<div id=\"map\"></div>";
-		$html[] = "<input type=\"hidden\" id=\"lat\" name=\"user_google_map[lat]\" value=\"" . self::getGeoInfo($userId, "lat") . "\">";
-		$html[] = "<input type=\"hidden\" id=\"lng\" name=\"user_google_map[lng]\" value=\"" . self::getGeoInfo($userId, "lng") . "\">";
+		$html[] = "<input type=\"hidden\" id=\"lat\" name=\"user_google_map[lat]\" value=\"" . self::_getGeoInfo($userId, "lat") . "\">";
+		$html[] = "<input type=\"hidden\" id=\"lng\" name=\"user_google_map[lng]\" value=\"" . self::_getGeoInfo($userId, "lng") . "\">";
 
 		//顧客グループプラグインからスクリプトを取得する
 		$html[] = "<script>\n" . file_get_contents(dirname(dirname(__FILE__)) . "/user_group/js/map.js") . "</script>";
@@ -28,14 +28,8 @@ class UserGoogleMapAddress extends SOYShopUserAddressBase{
 		return implode("\n", $html);
 	}
 
-	private function getGeoInfo($userId, $mode = "lat"){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
-		try{
-			return $dao->get($userId, self::PLUGIN_ID . "_" . $mode)->getValue();
-		}catch(Exception $e){
-			return null;
-		}
+	private function _getGeoInfo($userId, string $mode = "lat"){
+		return soyshop_get_user_attribute_value($userId, self::PLUGIN_ID . "_" . $mode, "string");
 	}
 }
 

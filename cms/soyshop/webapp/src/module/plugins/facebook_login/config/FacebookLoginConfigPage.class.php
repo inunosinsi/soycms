@@ -2,7 +2,7 @@
 
 class FacebookLoginConfigPage extends WebPage {
 
-	private $configObj;
+	private $cnfObj;
 
 	function __construct(){
 		SOY2::import("module.plugins.facebook_login.util.FacebookLoginUtil");
@@ -18,23 +18,23 @@ class FacebookLoginConfigPage extends WebPage {
 	function execute(){
 		parent::__construct();
 
-		$config = FacebookLoginUtil::getConfig();
+		$cnf = FacebookLoginUtil::getConfig();
 
 		$this->addForm("form");
 
 		$this->addInput("api_version", array(
 			"name" => "Config[api_version]",
-			"value" => (isset($config["api_version"])) ? $config["api_version"]: ""
+			"value" => (isset($cnf["api_version"])) ? $cnf["api_version"]: ""
 		));
 
 		$this->addInput("app_id", array(
 			"name" => "Config[app_id]",
-			"value" => (isset($config["app_id"])) ? $config["app_id"] : ""
+			"value" => (isset($cnf["app_id"])) ? $cnf["app_id"] : ""
 		));
 
 		$this->addInput("app_secret", array(
 			"name" => "Config[app_secret]",
-			"value" => (isset($config["app_secret"])) ? $config["app_secret"] : ""
+			"value" => (isset($cnf["app_secret"])) ? $cnf["app_secret"] : ""
 		));
 
 		$this->addLabel("create_js_url_sample", array(
@@ -52,7 +52,7 @@ class FacebookLoginConfigPage extends WebPage {
 		));
 	}
 
-	function setConfigObj($configObj){
-		$this->configObj = $configObj;
+	function setConfigObj($cnfObj){
+		$this->configObj = $cnfObj;
 	}
 }

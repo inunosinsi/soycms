@@ -1,49 +1,39 @@
 <?php
-/*
- * Created on 2009/07/28
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 
 class BlackCustomerListUserCustomfield extends SOYShopUserCustomfield{
 
-	function register($app, $userId){
+	function register($app, int $userId){
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) return;
 
 		//管理画面側でのみ実行
-		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
-			$checked = (isset($_POST["BlackCustomerList"])) ? 1 : 0;
-			self::getLogic()->save($userId, $checked);
-		}
+		$checked = (isset($_POST["BlackCustomerList"])) ? 1 : "";
+
+		SOY2::import("module.plugins.black_customer_list.util.BlackCustomerListUtil");
+		$attr = soyshop_get_user_attribute_object($userId, BlackCustomerListUtil::PLUGIN_ID);
+		$attr->setValue($checked);
+		soyshop_save_user_attribute_object($attr);
 	}
 
-	function getForm($app, $userId){
-
+	function getForm($app, int $userId){
 		//管理画面側でのみ表示
-		if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
+		if(!defined("SOYSHOP_ADMIN_PAGE") || !SOYSHOP_ADMIN_PAGE) return array();
 
-			$attr = self::getLogic()->getAttribute($userId);
-
-			if(!is_null($attr->getValue()) && $attr->getValue() == 1){
-				$form = "<label><input type=\"checkbox\" name=\"BlackCustomerList\" value=\"1\" checked>ブラックリストに登録する</label>";
-			}else{
-				$form = "<label><input type=\"checkbox\" name=\"BlackCustomerList\" value=\"1\">ブラックリストに登録する</label>";
-			}
-
-
-			return array(array(
-				"name" => "ブラック顧客",
-				"form" => $form
-			));
+		SOY2::import("module.plugins.black_customer_list.util.BlackCustomerListUtil");
+		if(soyshop_get_user_attribute_value($userId, BlackCustomerListUtil::PLUGIN_ID, "int")){
+			$form = "<label><input type=\"checkbox\" name=\"BlackCustomerList\" value=\"1\" checked>ブラックリストに登録する</label>";
+		}else{
+			$form = "<label><input type=\"checkbox\" name=\"BlackCustomerList\" value=\"1\">ブラックリストに登録する</label>";
 		}
 
-
-		return array();
+		return array(array(
+			"name" => "ブラック顧客",
+			"form" => $form
+		));
 	}
 
-	function order($userId){
-		$attr = self::getLogic()->getAttribute($userId);
-		if(!is_null($attr->getValue()) && $attr->getValue() == 1){
+	function order(int $userId){
+		SOY2::import("module.plugins.black_customer_list.util.BlackCustomerListUtil");
+		if(soyshop_get_user_attribute_value($userId, BlackCustomerListUtil::PLUGIN_ID, "int")){
 			return array(array(
 				"name" => "ブラックリスト",
 				"value" => "ブラックリストに登録されています。",
@@ -52,12 +42,6 @@ class BlackCustomerListUserCustomfield extends SOYShopUserCustomfield{
 		}
 
 		return array();
-	}
-
-	private function getLogic(){
-		static $logic;
-		if(is_null($logic)) $logic = SOY2Logic::createInstance("module.plugins.black_customer_list.logic.BlackListLogic");
-		return $logic;
 	}
 }
 SOYShopPlugin::extension("soyshop.user.customfield", "black_customer_list", "BlackCustomerListUserCustomfield");

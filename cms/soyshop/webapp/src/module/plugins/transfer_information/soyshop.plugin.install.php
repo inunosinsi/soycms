@@ -2,16 +2,12 @@
 class TransferInformationInstall extends SOYShopPluginInstallerBase{
 
 	function onInstall(){
-		//初期化時のみテーブルを作成する
-		$sql = $this->getSQL();
 		$dao = new SOY2DAO();
-
 		try{
-			$dao->executeQuery($sql);
+			$dao->executeQuery(self::_sql());
 		}catch(Exception $e){
 			//データベースが存在する場合はスルー
 		}
-
 	}
 
 	function onUnInstall(){
@@ -21,7 +17,7 @@ class TransferInformationInstall extends SOYShopPluginInstallerBase{
 	/**
 	 * @return String sql for init
 	 */
-	function getSQL(){
+	private function _sql(){
 		return file_get_contents(dirname(dirname(__FILE__)) . "/common_user_customfield/sql/init_" . SOYSHOP_DB_TYPE . ".sql");
 	}
 }

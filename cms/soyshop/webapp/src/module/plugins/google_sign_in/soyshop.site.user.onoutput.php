@@ -31,15 +31,12 @@ class GooleSignInUserOnOutput extends SOYShopSiteUserOnOutputAction{
 		$insertTag = "<script src=\"https://accounts.google.com/gsi/client\" async defer></script>";
 
 		if(strpos($html, "</head>")){
-			$html = str_replace("</head>", $insertTag . "\n</head>", $html);
+			return str_replace("</head>", $insertTag . "\n</head>", $html);
 		}else if(strpos($html, "</HEAD>")){
-			$html = str_replace("</HEAD>", $insertTag . "\n</HEAD>", $html);
+			return str_replace("</HEAD>", $insertTag . "\n</HEAD>", $html);
 		}else{
-			//
+			return $html;
 		}
-
-		return $html;
 	}
 }
-
 SOYShopPlugin::extension("soyshop.site.user.onoutput", "google_sign_in", "GooleSignInUserOnOutput");

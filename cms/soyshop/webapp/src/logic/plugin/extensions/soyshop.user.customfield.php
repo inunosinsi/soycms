@@ -109,15 +109,15 @@ class SOYShopUserCustomfieldDelegateAction implements SOY2PluginDelegateAction{
 				break;
 
 			case "register":
-				$action ->register($this->app, $this->userId);
+				$action ->register($this->app, (int)$this->userId);
 				break;
 
 			case "build_named_form"://各項目ごとに、createAdd()を行う
-				$action ->buildNamedForm($this->app, $this->pageObj, $this->userId);
+				$action ->buildNamedForm($this->app, $this->pageObj, (int)$this->userId);
 				break;
 
 			case "order":
-				$this->_list[$moduleId] = $action->order($this->userId);
+				$this->_list[$moduleId] = $action->order((int)$this->userId);
 				break;
 
 			case "none":

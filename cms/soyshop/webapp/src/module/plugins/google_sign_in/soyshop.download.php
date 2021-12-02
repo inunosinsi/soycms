@@ -13,7 +13,7 @@ class GoogleSignInDownload extends SOYShopDownload{
 				$user->setName($_POST["name"]);
 				$user->setUserType(SOYShop_User::USERTYPE_REGISTER);	//身元がわかっているので、仮登録の期間を飛ばすことにする
 
-				$userId = $logic->registUser($user);
+				$userId = $logic->registerUser($user);
 
 				//失敗
 				if(is_null($userId)) self::sendResult(0);
@@ -39,7 +39,7 @@ class GoogleSignInDownload extends SOYShopDownload{
 		}
 	}
 
-	private function sendResult($res = 1){
+	private function sendResult(int $res=1){
 		echo json_encode(array("result" => $res));
 		exit;
 	}

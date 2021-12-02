@@ -1,14 +1,8 @@
 <?php
-/*
- * Created on 2009/07/28
- *
- * To change the template for this generated file go to
- * Window - Preferences - PHPeclipse - PHP - Code Templates
- */
 
 class SOYMailUserCustomfieldModule extends SOYShopUserCustomfield{
 
-	function register($app, $userId){
+	function register($app, int $userId){
 
 		if(is_null($app) || get_class($app) !== "MyPageLogic") return;
 
@@ -26,10 +20,10 @@ class SOYMailUserCustomfieldModule extends SOYShopUserCustomfield{
 		if($user->getNotSend() == SOYShop_User::USER_NOT_SEND) return;
 
 		SOY2::import("module.plugins.soymail_connector.util.SOYMailConnectorUtil");
-		$config = SOYMailConnectorUtil::getConfig();
+		$cnf = SOYMailConnectorUtil::getConfig();
 
-		if(isset($config["first_order_add_point"]) && (int)$config["first_order_add_point"] > 0){
-			SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->insert((int)$config["first_order_add_point"], "メールマガジン会員登録プレゼント：" . $config["first_order_add_point"] . "ポイント", $userId);
+		if(isset($cnf["first_order_add_point"]) && (int)$cnf["first_order_add_point"] > 0){
+			SOY2Logic::createInstance("module.plugins.common_point_base.logic.PointBaseLogic")->insert((int)$config["first_order_add_point"], "メールマガジン会員登録プレゼント：" . $cnf["first_order_add_point"] . "ポイント", $userId);
 		}
 	}
 }

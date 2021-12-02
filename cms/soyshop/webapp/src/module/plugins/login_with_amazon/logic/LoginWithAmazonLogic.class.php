@@ -2,8 +2,6 @@
 
 class LoginWithAmazonLogic extends SOY2LogicBase {
 
-	const FIELD_ID = "social_login_with_amazon";
-
 	function __construct(){
 		SOY2::import("module.plugins.login_with_amazon.util.LoginWithAmazonUtil");
 	}
@@ -59,17 +57,9 @@ class LoginWithAmazonLogic extends SOY2LogicBase {
 
 		//登録に成功した場合
 		if(is_numeric($user->getId())){
-			$attrDao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
-			$attr = new SOYShop_UserAttribute();
-			$attr->setUserId($user->getId());
-			$attr->setFieldId(self::FIELD_ID);
+			$attr = soyshop_get_user_attribute_object($user->getId(), LoginWithAmazonUtil::FIELD_ID);
 			$attr->setValue($amazonId);
-
-			try{
-				$attrDao->insert($attr);
-			}catch(Exception $e){
-				return null;
-			}
+			soyshop_save_user_attribute_object($attr);
 		}
 
 		return $user->getId();
@@ -78,7 +68,7 @@ class LoginWithAmazonLogic extends SOY2LogicBase {
 	function getUserIdByAmazonId($amazonId){
 		$attrDao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
 		$sql = "SELECT user_id FROM soyshop_user_attribute ".
-				"WHERE user_field_id = '" . self::FIELD_ID . "' ".
+				"WHERE user_field_id = '" . LoginWithAmazonUtil::FIELD_ID . "' ".
 				"AND user_value = :amazonId";
 
 		try{
@@ -96,19 +86,11 @@ class LoginWithAmazonLogic extends SOY2LogicBase {
 
 		//削除
 		try{
-			$attrDao->delete($userId, self::FIELD_ID);
+			$attrDao->delete($userId, LoginWithAmazonUtil::FIELD_ID);
 		}catch(Exception $e){
 			//
 		}
 
 		return null;
-	}
-
-	function getAmazonIdByUserId($userId){
-		try{
-			return SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO")->get($userId, self::FIELD_ID)->getValue();
-		}catch(Exception $e){
-			return null;
-		}
 	}
 }

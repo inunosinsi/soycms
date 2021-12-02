@@ -2,7 +2,9 @@
 
 class SOYShopUserAddressBase implements SOY2PluginAction{
 
-	function getForm($userId){}
+	function getForm(int $userId){
+		return "";
+	}
 }
 
 class SOYShopUserAddressDeletageAction implements SOY2PluginDelegateAction{
@@ -11,8 +13,7 @@ class SOYShopUserAddressDeletageAction implements SOY2PluginDelegateAction{
 	private $_form = array();
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
-
-		$this->_form[$moduleId] = $action->getForm($this->userId);
+		$this->_form[$moduleId] = $action->getForm((int)$this->userId);
 	}
 
 	function getForm(){

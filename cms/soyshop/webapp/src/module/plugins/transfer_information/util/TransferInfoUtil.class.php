@@ -24,46 +24,4 @@ class TransferInfoUtil {
 		$list = self::_depositTypes();
 		return (isset($list[$t])) ? $list[$t] : $list["ordinary"];
 	}
-
-	public static function getUserAttr($userId, $fieldId){
-		return self::_getUserAttr($userId, $fieldId);
-	}
-
-	private static function _getUserAttr($userId, $fieldId){
-		try{
-			return self::_userAttrDao()->get($userId, $fieldId);
-		}catch(Exception $e){
-			$obj = new SOYShop_UserAttribute();
-			$obj->setUserId($userId);
-			$obj->setFieldId($fieldId);
-			return $obj;
-		}
-	}
-
-
-	public static function saveAttr(SOYShop_UserAttribute $attr){
-		if(strlen($attr->getValue())){
-			try{
-				self::_userAttrDao()->insert($attr);
-			}catch(Exception $e){
-				try{
-					self::_userAttrDao()->update($attr);
-				}catch(Exception $e){
-					//
-				}
-			}
-		}else{
-			try{
-				self::_userAttrDao()->delete($attr->getUserId(), $attr->getFieldId());
-			}catch(Exception $e){
-				//
-			}
-		}
-	}
-
-	private static function _userAttrDao(){
-		static $dao;
-		if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
-		return $dao;
-	}
 }

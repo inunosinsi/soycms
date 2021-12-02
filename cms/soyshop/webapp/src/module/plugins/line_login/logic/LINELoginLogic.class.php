@@ -2,8 +2,6 @@
 
 class LINELoginLogic extends SOY2LogicBase {
 
-	const FIELD_ID = "social_login_line_login";
-
 	function __construct(){
 		SOY2::import("module.plugins.line_login.util.LINELoginUtil");
 	}
@@ -123,17 +121,9 @@ class LINELoginLogic extends SOY2LogicBase {
 			return null;
 		}
 
-		$userAttrDao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
-		$attr = new SOYShop_UserAttribute();
-		$attr->setUserId($userId);
-		$attr->setFieldId(self::FIELD_ID);
+		$attr = soyshop_get_user_attribute_object($userId, LINELoginUtil::FIELD_ID);
 		$attr->setValue($values["userId"]);
-
-		try{
-			$userAttrDao->insert($attr);
-		}catch(Exception $e){
-			return null;
-		}
+		soyshop_save_user_attribute_object($attr);
 
 		return $userId;
 	}
@@ -148,7 +138,7 @@ class LINELoginLogic extends SOY2LogicBase {
 	function getUserIdByLineId($lineId){
 		$userAttrDao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
 		$sql = "SELECT user_id FROM soyshop_user_attribute ".
-				"WHERE user_field_id = '" . self::FIELD_ID . "' ".
+				"WHERE user_field_id = '" . LINELoginUtil::FIELD_ID . "' ".
 				"AND user_value = :lineId";
 
 		try{
@@ -166,19 +156,11 @@ class LINELoginLogic extends SOY2LogicBase {
 
 		//削除
 		try{
-			$attrDao->delete($userId, self::FIELD_ID);
+			$userAttrDao->delete($userId, LINELoginUtil::FIELD_ID);
 		}catch(Exception $e){
 			//
 		}
 
 		return null;
-	}
-
-	function getLINEIdByUserId($userId){
-		try{
-			return SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO")->get($userId, self::FIELD_ID)->getValue();
-		}catch(Exception $e){
-			return null;
-		}
 	}
 }

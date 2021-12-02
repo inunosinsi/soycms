@@ -1,8 +1,4 @@
 <?php
-/*
- * soyshop.site.onoutput.php
- * Created: 2010/03/04
- */
 
 class FacebookLoginUserOnOutput extends SOYShopSiteUserOnOutputAction{
 
@@ -11,23 +7,22 @@ class FacebookLoginUserOnOutput extends SOYShopSiteUserOnOutputAction{
 
 		//ログインページのみ
 		SOY2::import("module.plugins.facebook_login.util.FacebookLoginUtil");
-		$config = FacebookLoginUtil::getConfig();
-		if(!isset($config["app_id"]) || !isset($config["api_version"])) return $html;
-		$appId = htmlspecialchars(trim($config["app_id"]), ENT_QUOTES, "UTF-8");
-		$version = htmlspecialchars(trim($config["api_version"]), ENT_QUOTES, "UTF-8");
+		$cnf = FacebookLoginUtil::getConfig();
+		if(!isset($cnf["app_id"]) || !isset($cnf["api_version"])) return $html;
+
+		$appId = htmlspecialchars(trim($cnf["app_id"]), ENT_QUOTES, "UTF-8");
+		$version = htmlspecialchars(trim($cnf["api_version"]), ENT_QUOTES, "UTF-8");
 
 		if(stripos($html, '<body>') !== false){
-			$html = str_ireplace('<body>', '<body>' . "\n" . self::buildFbRoot($appId, $version), $html);
+			return str_ireplace('<body>', '<body>' . "\n" . self::buildFbRoot($appId, $version), $html);
 		}elseif(preg_match('/<body\\s[^>]+>/', $html)){
-			$html = preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . self::buildFbRoot($appId, $version), $html);
+			return preg_replace('/(<body\\s[^>]+>)/', "\$0\n" . self::buildFbRoot($appId, $version), $html);
 		}else{
-			//何もしない
+			return $html;
 		}
-
-		return $html;
 	}
 
-	private function buildFbRoot($appId, $version){
+	private function buildFbRoot(string $appId, string $version){
 		$html = array();
 		$html[] = "<script>";
 		$html[] = "window.fbAsyncInit = function() {";

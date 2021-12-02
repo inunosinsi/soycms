@@ -8,11 +8,11 @@ class SignInLogic extends SOY2LogicBase {
 	private $userAttrDao;
 
 	function __construct(){
+		SOY2::import("module.plugins.google_sign_in.util.GoogleSignInUtil");
 		$this->userDao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
-		$this->userAttrDao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
 	}
 
-	function getUserByMailAddress($mailAddress){
+	function getUserByMailAddress(string $mailAddress){
 		try{
 			return $this->userDao->getByMailAddress($mailAddress);
 		}catch(Exception $e){
@@ -23,7 +23,7 @@ class SignInLogic extends SOY2LogicBase {
 		}
 	}
 
-	function registUser(SOYShop_User $user){
+	function registerUser(SOYShop_User $user){
 		try{
 			return $this->userDao->insert($user);
 		}catch(Exception $e){
@@ -31,40 +31,9 @@ class SignInLogic extends SOY2LogicBase {
 		}
 	}
 
-	function saveGoogleId($userId, $googleId){
-		$attr = self::getAttributeObjectByUserId($userId);
+	function saveGoogleId(int $userId, string $googleId){
+		$attr = soyshop_get_user_attribute_object($userId, GoogleSignInUtil::FIELD_ID);
 		$attr->setValue($googleId);
-		try{
-			$this->userAttrDao->insert($attr);
-		}catch(Exception $e){
-			try{
-				$this->userAttrDao->update($attr);
-			}catch(Exception $e){
-				//
-			}
-		}
-	}
-
-	function getGoogleIdByUserId($userId){
-		return self::getAttributeObjectByUserId($userId)->getValue();
-	}
-
-	private function getAttributeObjectByUserId($userId){
-		//指定のユーザが削除されていれば、カスタムフィールドの値を削除
-		if(soyshop_get_user_object($userId)->getIsDisabled() == SOYShop_User::USER_IS_DISABLED){
-			try{
-				$this->userAttrDao->delete($userId, self::FIELD_ID);
-			}catch(Exception $e){
-				//
-			}
-		}
-		try{
-			return $this->userAttrDao->get($userId, self::FIELD_ID);
-		}catch(Exception $e){
-			$attr = new SOYShop_UserAttribute();
-			$attr->setUserId($userId);
-			$attr->setFieldId(self::FIELD_ID);
-			return $attr;
-		}
+		soyshop_save_user_attribute_object($attr);
 	}
 }

@@ -48,8 +48,8 @@ class TransferInfoBankFormPage extends WebPage {
 	private function _value($t){
 		static $v;
 		if(is_null($v)){
-			$attr = TransferInfoUtil::getUserAttr($this->userId, TransferInfoUtil::BANK_INFO);
-			$v = (strlen($attr->getValue())) ? soy2_unserialize($attr->getValue()) : array();
+			$attrValue = soyshop_get_user_attribute_value($this->userId, TransferInfoUtil::BANK_INFO, "string");
+			$v = (strlen($attrValue)) ? soy2_unserialize($attrValue) : array();
 		}
 		return (isset($v[$t])) ? $v[$t] : "";
 	}

@@ -7,12 +7,12 @@ class FacebookLoginDownload extends SOYShopDownload{
 			require_once(dirname(__FILE__) . "/lib/autoload.php");
 
 			SOY2::import("module.plugins.facebook_login.util.FacebookLoginUtil");
-			$config = FacebookLoginUtil::getConfig();
+			$cnf = FacebookLoginUtil::getConfig();
 
 			$fb = new \Facebook\Facebook([
-				'app_id' => htmlspecialchars(trim($config["app_id"]), ENT_QUOTES, "UTF-8"),
-				'app_secret' => htmlspecialchars(trim($config["app_secret"]), ENT_QUOTES, "UTF-8"),
-				'default_graph_version' => htmlspecialchars(trim($config["api_version"]), ENT_QUOTES, "UTF-8"),
+				'app_id' => htmlspecialchars(trim($cnf["app_id"]), ENT_QUOTES, "UTF-8"),
+				'app_secret' => htmlspecialchars(trim($cnf["app_secret"]), ENT_QUOTES, "UTF-8"),
+				'default_graph_version' => htmlspecialchars(trim($cnf["api_version"]), ENT_QUOTES, "UTF-8"),
   			]);
 
 			try {
@@ -33,10 +33,10 @@ class FacebookLoginDownload extends SOYShopDownload{
 				$user = $logic->getUserByMailAddress($me->getEmail());
 				if(is_null($user->getId())){
 					$user->setName($me->getName());
-					$userId = $logic->registUser($user);
+					$userId = $logic->registerUser($user);
 
 					//失敗
-					if(is_null($userId)) self::sendResult("failed", 0);
+					if(is_null($userId) || (int)$userId === 0) self::sendResult("failed", 0);
 					$user->setId($userId);
 				}
 

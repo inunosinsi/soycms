@@ -2,6 +2,8 @@
 
 class GoogleSignInUtil {
 
+	const FIELD_ID = "social_login_google_sign_in";
+
 	public static function getConfig(){
 		return SOYShop_DataSets::get("google_sign_in.config", array());
 	}

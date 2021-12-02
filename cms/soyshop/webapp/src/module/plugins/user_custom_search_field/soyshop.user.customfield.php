@@ -25,7 +25,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	/**
 	 * @param array $param 中身は$_POST["user_customfield"]
 	 */
-	function doPost($param){
+	function doPost(array $param){
 		if(!isset($_POST["user_custom_search"])) return;
 
 		$cnfs = UserCustomSearchFieldUtil::getConfig();
@@ -47,7 +47,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 * @return array(["name"], ["description"], ["error"])
 	 *
 	 */
-	function getForm($app, $userId){
+	function getForm($app, int $userId){
 		// 現時点では管理画面のみ
 		//if(defined("SOYSHOP_ADMIN_PAGE") && SOYSHOP_ADMIN_PAGE){
 			self::_prepare();
@@ -88,7 +88,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 * @param SOYBodyComponentBase $pageObj
 	 * @param integer $userId
 	 */
-	function buildNamedForm($app, SOYBodyComponentBase $pageObj, $userId=null){
+	function buildNamedForm($app, SOYBodyComponentBase $pageObj, int $userId=0){
 		self::_prepare();
 
 		$cnfs = UserCustomSearchFieldUtil::getConfig();
@@ -261,7 +261,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 		}
 	}
 
-	function hasError($param){
+	function hasError(array $param){
 		/** @ToDo 必須の設定をそのうち追加したいところ **/
 	}
 
@@ -295,7 +295,7 @@ class UserCustomSearchFieldModule extends SOYShopUserCustomfield{
 	 * @param MyPageLogic || CartLogic $app
 	 * @param integer $userId
 	 */
-	function register($app, $userId){
+	function register($app, int $userId){
 		self::_prepare();
 
 		//登録用の配列
