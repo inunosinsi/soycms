@@ -342,6 +342,8 @@ class SearchFormComponent extends SOYBodyComponentBase{
 		$list = array();
 		foreach($items as $item){
 			if(is_null($item)) continue;
+			if(is_string($item) && !strlen($item)) continue;
+			
 			$key = key($item);
 			if($key == "label"){
 				$list[] = $item;

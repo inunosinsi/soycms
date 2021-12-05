@@ -2,7 +2,7 @@
 
 class UserLogic extends SOY2LogicBase{
 
-    function remove($userId){
+    function remove(int $userId){
 		$user = soyshop_get_user_object($userId);
 		if(is_null($user->getId())) return false;
 
@@ -175,7 +175,7 @@ class UserLogic extends SOY2LogicBase{
 		$dir->close();
 	}
 
-	function getUserNameListByUserIds($userIds){
+	function getUserNameListByUserIds(array $userIds){
 		static $list;
 		if(is_null($list)) $list = array();
 

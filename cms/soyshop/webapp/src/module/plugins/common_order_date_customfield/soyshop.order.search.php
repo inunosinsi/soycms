@@ -17,7 +17,7 @@ class OrderDateCustomfieldOrderSearch extends SOYShopOrderSearch{
 		}
 	}
 
-	function setParameter($params){
+	function setParameter(array $params){
 		self::prepare();
 		if(count($this->list)){
 			$queries = array();
@@ -45,7 +45,7 @@ class OrderDateCustomfieldOrderSearch extends SOYShopOrderSearch{
 		}
 	}
 
-	function searchItems($params){
+	function searchItems(array $params){
 		self::prepare();
 		if(count($this->list)){
 			$array = array();

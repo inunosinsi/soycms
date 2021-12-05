@@ -51,42 +51,40 @@ function soyshop_get_attribute_value($v=null, $dataType=""){
 
 /** 商品IDから商品オブジェクト **/
 function soyshop_get_item_object(int $itemId){
-	static $items, $dao;
-	if(is_null($items)) $items = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	if((int)$itemId <= 0) return new SOYShop_Item();
 
 	$idx = soyshop_get_hash_index((string)$itemId, __FUNCTION__);
-	if(isset($items[$idx])) return $items[$idx];
+	if(isset($GLOBALS["soyshop_item_hash_table"][$idx])) return $GLOBALS["soyshop_item_hash_table"][$idx];
 
 	try{
-        $items[$idx] = $dao->getById($itemId);
+        $GLOBALS["soyshop_item_hash_table"][$idx] = $dao->getById($itemId);
     }catch(Exception $e){
-        $items[$idx] = new SOYShop_Item();
+        $GLOBALS["soyshop_item_hash_table"][$idx] = new SOYShop_Item();
     }
-	return $items[$idx];
+	return $GLOBALS["soyshop_item_hash_table"][$idx];
 }
 
 /** 商品IDとカスタムフィールドのIDから商品属性のオブジェクトを取得する **/
 function soyshop_get_item_attribute_object(int $itemId, string $fieldId){
-	static $attrs, $dao;	//tableはハッシュを格納するテーブル
-	if(is_null($attrs)) $attrs = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemAttributeDAO");
 	if((int)$itemId <= 0 || !strlen($fieldId)) return new SOYShop_ItemAttribute();
 
 	$idx = soyshop_get_hash_index(((string)$itemId . $fieldId), __FUNCTION__);
-	if(isset($attrs[$idx])) return $attrs[$idx];
+	if(isset($GLOBALS["soyshop_item_attribute_hash_table"][$idx])) return $GLOBALS["soyshop_item_attribute_hash_table"][$idx];
 
 	try{
-		$attrs[$idx] = $dao->get($itemId, $fieldId);
+		$GLOBALS["soyshop_item_attribute_hash_table"][$idx] = $dao->get($itemId, $fieldId);
 	}catch(Exception $e){
 		$attr = new SOYShop_ItemAttribute();
 		$attr->setItemId($itemId);
 		$attr->setFieldId($fieldId);
-		$attrs[$idx] = $attr;
+		$GLOBALS["soyshop_item_attribute_hash_table"][$idx] = $attr;
 	}
 
-	return $attrs[$idx];
+	return $GLOBALS["soyshop_item_attribute_hash_table"][$idx];
 }
 
 function soyshop_get_item_attribute_value(int $itemId, string $fieldId, string $dataType=""){
@@ -121,62 +119,59 @@ function soyshop_save_item_attribute_object(SOYShop_ItemAttribute $attr){
 
 /** 商品IDから子商品のリストを取得 **/
 function soyshop_get_item_children(int $itemId, bool $isOpen=false, string $sortCondition="item_code desc"){
-	static $list, $dao;
-	if(is_null($list)) $list = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_ItemDAO");
 	if(!is_numeric($itemId)) return array();
 
 	$idx = soyshop_get_hash_index((string)$itemId, __FUNCTION__);
-	if(isset($list[$idx])) return $list[$idx];
+	if(isset($GLOBALS["soyshop_item_children_hash_table"][$idx])) return $GLOBALS["soyshop_item_children_hash_table"][$idx];
 
 	$dao->setOrder($sortCondition);
 
 	try{
-		$list[$idx] = ($isOpen) ? $dao->getByTypeIsOpenNoDisabled($itemId) : $dao->getByTypeNoDisabled($itemId);
+		$GLOBALS["soyshop_item_children_hash_table"][$idx] = ($isOpen) ? $dao->getByTypeIsOpenNoDisabled($itemId) : $dao->getByTypeNoDisabled($itemId);
 	}catch(Exception $e){
-		$list[$idx] = array();
+		$GLOBALS["soyshop_item_children_hash_table"][$idx] = array();
 	}
-	return $list[$idx];
+	return $GLOBALS["soyshop_item_children_hash_table"][$idx];
 }
 
 /** カテゴリIDからカテゴリオブジェクトを取得する **/
 function soyshop_get_category_object(int $categoryId){
-    static $categories, $dao;
-	if(is_null($categories)) $categories = array();
+    static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryDAO");
     if($categoryId <= 0) return new SOYShop_Category();
 
 	$idx = soyshop_get_hash_index((string)$categoryId, __FUNCTION__);
-	if(isset($categories[$idx])) return $categories[$idx];
+	if(isset($GLOBALS["soyshop_category_hash_table"][$idx])) return $GLOBALS["soyshop_category_hash_table"][$idx];
 
     try{
-        $categories[$idx] = $dao->getById($categoryId);
+        $GLOBALS["soyshop_category_hash_table"][$idx] = $dao->getById($categoryId);
     }catch(Exception $e){
-        $categories[$idx] = new SOYShop_Category();
+        $GLOBALS["soyshop_category_hash_table"][$idx] = new SOYShop_Category();
     }
 
-    return $categories[$idx];
+    return $GLOBALS["soyshop_category_hash_table"][$idx];
 }
 
 function soyshop_get_category_attribute_object(int $categoryId, string $fieldId){
-	static $attrs, $dao;	//tableはハッシュを格納するテーブル
-	if(is_null($attrs)) $attrs = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("shop.SOYShop_CategoryAttributeDAO");
 	if((int)$categoryId <= 0 || !strlen($fieldId)) return new SOYShop_CategoryAttribute();
 
 	$idx = soyshop_get_hash_index(((string)$categoryId . $fieldId), __FUNCTION__);
-	if(isset($attrs[$idx])) return $attrs[$idx];
+	if(isset($GLOBALS["soyshop_category_attribute_hash_table"][$idx])) return $GLOBALS["soyshop_category_attribute_hash_table"][$idx];
 
 	try{
-		$attrs[$idx] = $dao->get($categoryId, $fieldId);
+		$GLOBALS["soyshop_category_attribute_hash_table"][$idx] = $dao->get($categoryId, $fieldId);
 	}catch(Exception $e){
 		$attr = new SOYShop_CategoryAttribute();
 		$attr->setCategoryId($categoryId);
 		$attr->setFieldId($fieldId);
-		$attrs[$idx] = $attr;
+		$GLOBALS["soyshop_category_attribute_hash_table"][$idx] = $attr;
 	}
 
-	return $attrs[$idx];
+	return $GLOBALS["soyshop_category_attribute_hash_table"][$idx];
 }
 
 function soyshop_get_category_attribute_value(int $categoryId, string $fieldId, string $dataType=""){
@@ -213,43 +208,42 @@ function soyshop_save_category_attribute_object(SOYShop_CategoryAttribute $attr)
 
 /** 顧客IDから顧客オブジェクトを取得する **/
 function soyshop_get_user_object(int $userId){
-	static $users, $dao;
-	if(is_null($users)) $users = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserDAO");
 	if($userId <= 0) return new SOYShop_User();
 
 	$idx = soyshop_get_hash_index((string)$userId, __FUNCTION__);
-	if(isset($users[$idx])) return $users[$idx];
+	if(isset($GLOBALS["soyshop_user_hash_table"][$idx])) return $GLOBALS["soyshop_user_hash_table"][$idx];
 
 	try{
-		$users[$idx] = $dao->getById($userId);
+		$GLOBALS["soyshop_user_hash_table"][$idx] = $dao->getById($userId);
 	}catch(Exception $e){
-		$users[$idx] = new SOYShop_User();
+		$user = new SOYShop_User();
+		$user->setName("[deleted]");
+		$GLOBALS["soyshop_user_hash_table"][$idx] = $user;
 	}
-
-	return $users[$idx];
+	return $GLOBALS["soyshop_user_hash_table"][$idx];
 }
 
 /** 顧客IDとカスタムフィールドのIDから顧客属性のオブジェクトを取得する **/
 function soyshop_get_user_attribute_object(int $userId, string $fieldId){
-	static $attrs, $dao;	//tableはハッシュを格納するテーブル
-	if(is_null($attrs)) $attrs = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("user.SOYShop_UserAttributeDAO");
 	if((int)$userId <= 0 || !strlen($fieldId)) return new SOYShop_UserAttribute();
 
 	$idx = soyshop_get_hash_index(((string)$userId . $fieldId), __FUNCTION__);
-	if(isset($attrs[$idx])) return $attrs[$idx];
+	if(isset($GLOBALS["soyshop_user_attribute_hash_table"][$idx])) return $GLOBALS["soyshop_user_attribute_hash_table"][$idx];
 
 	try{
-		$attrs[$idx] = $dao->get($userId, $fieldId);
+		$GLOBALS["soyshop_user_attribute_hash_table"][$idx] = $dao->get($userId, $fieldId);
 	}catch(Exception $e){
 		$attr = new SOYShop_UserAttribute();
 		$attr->setUserId($userId);
 		$attr->setFieldId($fieldId);
-		$attrs[$idx] = $attr;
+		$GLOBALS["soyshop_user_attribute_hash_table"][$idx] = $attr;
 	}
 
-	return $attrs[$idx];
+	return $GLOBALS["soyshop_user_attribute_hash_table"][$idx];
 }
 
 function soyshop_get_user_attribute_value(int $userId, string $fieldId, string $dataType=""){
@@ -283,62 +277,59 @@ function soyshop_save_user_attribute_object(SOYShop_UserAttribute $attr){
 
 /** ページIDからページオブジェクトを取得する **/
 function soyshop_get_page_object(int $pageId){
-	static $pages, $dao;
-	if(is_null($pages)) $pages = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("site.SOYShop_PageDAO");
 	if($pageId <= 0) return new SOYShop_Page();
 
 	$idx = soyshop_get_hash_index((string)$pageId, __FUNCTION__);
-	if(isset($pages[$idx])) return $pages[$idx];
+	if(isset($GLOBALS["soyshop_page_hash_table"][$idx])) return $GLOBALS["soyshop_page_hash_table"][$idx];
 
 	try{
-		$pages[$idx] = $dao->getById($pageId);
+		$GLOBALS["soyshop_page_hash_table"][$idx] = $dao->getById($pageId);
 	}catch(Exception $e){
-		$pages[$idx] = new SOYShop_Page();
+		$GLOBALS["soyshop_page_hash_table"][$idx] = new SOYShop_Page();
 	}
 
-	return $pages[$idx];
+	return $GLOBALS["soyshop_page_hash_table"][$idx];
 }
 
 /** 注文IDから注文オブジェクトを取得する **/
 function soyshop_get_order_object(int $orderId){
-	static $orders, $dao;
-	if(is_null($orders)) $orders = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderDAO");
 	if($orderId <= 0) return new SOYShop_Order();
 
 	$idx = soyshop_get_hash_index((string)$orderId, __FUNCTION__);
-	if(isset($orders[$idx])) return $orders[$idx];
+	if(isset($GLOBALS["soyshop_order_hash_table"][$idx])) return $GLOBALS["soyshop_order_hash_table"][$idx];
 
 	try{
-		$orders[$idx] = $dao->getById($orderId);
+		$GLOBALS["soyshop_order_hash_table"][$idx] = $dao->getById($orderId);
 	}catch(Exception $e){
-		$orders[$idx] = new SOYShop_Order();
+		$GLOBALS["soyshop_order_hash_table"][$idx] = new SOYShop_Order();
 	}
 
-	return $orders[$idx];
+	return $GLOBALS["soyshop_order_hash_table"][$idx];
 }
 
 /** 注文IDとカスタムフィールドのIDから注文属性のオブジェクトを取得する **/
 function soyshop_get_order_attribute_object(int $orderId, string $fieldId){
-	static $attrs, $dao;	//tableはハッシュを格納するテーブル
-	if(is_null($attrs)) $attrs = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderAttributeDAO");
 	if((int)$orderId <= 0 || !strlen($fieldId)) return new SOYShop_OrderAttribute();
 
 	$idx = soyshop_get_hash_index(((string)$orderId . $fieldId), __FUNCTION__);
-	if(isset($attrs[$idx])) return $attrs[$idx];
+	if(isset($GLOBALS["soyshop_order_attribute_hash_table"][$idx])) return $GLOBALS["soyshop_order_attribute_hash_table"][$idx];
 
 	try{
-		$attrs[$idx] = $dao->get($orderId, $fieldId);
+		$GLOBALS["soyshop_order_attribute_hash_table"][$idx] = $dao->get($orderId, $fieldId);
 	}catch(Exception $e){
 		$attr = new SOYShop_OrderAttribute();
 		$attr->setOrderId($orderId);
 		$attr->setFieldId($fieldId);
-		$attrs[$idx] = $attr;
+		$GLOBALS["soyshop_order_attribute_hash_table"][$idx] = $attr;
 	}
 
-	return $attrs[$idx];
+	return $GLOBALS["soyshop_order_attribute_hash_table"][$idx];
 }
 
 function soyshop_get_order_attribute_value(int $orderId, string $fieldId, string $dataType=""){
@@ -375,24 +366,32 @@ function soyshop_save_order_attribute_object(SOYShop_OrderAttribute $attr){
 
 /** 注文IDとカスタムフィールドのIDから注文属性のオブジェクトを取得する **/
 function soyshop_get_order_date_attribute_object(int $orderId, string $fieldId){
-	static $attrs, $dao;	//tableはハッシュを格納するテーブル
-	if(is_null($attrs)) $attrs = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("order.SOYShop_OrderDateAttributeDAO");
 	if((int)$orderId <= 0 || !strlen($fieldId)) return new SOYShop_OrderDateAttribute();
 
 	$idx = soyshop_get_hash_index(((string)$orderId . $fieldId), __FUNCTION__);
-	if(isset($attrs[$idx])) return $attrs[$idx];
+	if(isset($GLOBALS["soyshop_order_date_attribute_hash_table"][$idx])) return $GLOBALS["soyshop_order_date_attribute_hash_table"][$idx];
 
 	try{
-		$attrs[$idx] = $dao->get($orderId, $fieldId);
+		$GLOBALS["soyshop_order_date_attribute_hash_table"][$idx] = $dao->get($orderId, $fieldId);
 	}catch(Exception $e){
 		$attr = new SOYShop_OrderDateAttribute();
 		$attr->setOrderId($orderId);
 		$attr->setFieldId($fieldId);
-		$attrs[$idx] = $attr;
+		$GLOBALS["soyshop_order_date_attribute_hash_table"][$idx] = $attr;
 	}
+	
+	return $GLOBALS["soyshop_order_date_attribute_hash_table"][$idx];
+}
 
-	return $attrs[$idx];
+function soyshop_get_order_date_attribute_objects(int $orderId, array $fieldIds){
+	if(!count($fieldIds)) return array();
+	$attrs = array();
+	foreach($fieldIds as $fieldId){
+		$attrs[$fieldId] = soyshop_get_order_date_attribute_object($orderId, $fieldId);
+	}
+	return $attrs;
 }
 
 function soyshop_get_order_date_attribute_value(int $orderId, string $fieldId, string $dataType="", int $which=1){
@@ -436,23 +435,22 @@ function soyshop_save_order_date_attribute_object(SOYShop_OrderDateAttribute $at
 
 /** IDもしくはプラグインIDからプラグインオブジェクトを取得する **/
 function soyshop_get_plugin_object($pluginId){
-	static $plugins, $dao;
-	if(is_null($plugins)) $plugins = array();
+	static $dao;
 	if(is_null($dao)) $dao = SOY2DAOFactory::create("plugin.SOYShop_PluginConfigDAO");
 
 	$idx = soyshop_get_hash_index((string)$pluginId, __FUNCTION__);
-	if(isset($plugins[$idx])) return $plugins[$idx];
+	if(isset($GLOBALS["soyshop_plugin_hash_table"][$idx])) return $GLOBALS["soyshop_plugin_hash_table"][$idx];
 
 	//最初に数字の場合を試して、次に文字列の場合を再度試して、ダメだったら空のオブジェクトを返す
 	try{
-		$plugins[$idx] = (is_numeric($pluginId)) ? $dao->getById($pluginId) : $dao->getByPluginId($pluginId);
+		$GLOBALS["soyshop_plugin_hash_table"][$idx] = (is_numeric($pluginId)) ? $dao->getById($pluginId) : $dao->getByPluginId($pluginId);
 	}catch(Exception $e){
 		try{
-			$plugins[$idx] = $dao->getByPluginId($pluginId);
+			$GLOBALS["soyshop_plugin_hash_table"][$idx] = $dao->getByPluginId($pluginId);
 		}catch(Exception $e){
-			$plugins[$idx] = new SOYShop_PluginConfig();
+			$GLOBALS["soyshop_plugin_hash_table"][$idx] = new SOYShop_PluginConfig();
 		}
 	}
 
-	return $plugins[$idx];
+	return $GLOBALS["soyshop_plugin_hash_table"][$idx];
 }

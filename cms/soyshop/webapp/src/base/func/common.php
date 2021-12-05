@@ -794,7 +794,7 @@ function soyshop_build_item_option_html_on_item_order(SOYShop_ItemOrder $itemOrd
 
 	$html = array();
 	foreach($htmls as $h){
-		if(!strlen($h)) continue;
+		if(!is_string($h) || !strlen($h)) continue;
 		$html[] = $h;
 	}
 
@@ -849,12 +849,12 @@ function soyshop_shape_timestamp(int $timestamp, string $mode="start"){
 
 /**
  * タイムスタンプから時刻へ変換
- * @param integer $timestamp
+ * @param integer $timestamp, string $divide
  * @return string
  */
-function soyshop_convert_date_string(int $timestamp){
+function soyshop_convert_date_string(int $timestamp, string $divide="-"){
 	if($timestamp == 0 || $timestamp == 2147483647) return "";
-	return date("Y-m-d", $timestamp);
+	return date("Y" . $divide . "m" . $divide . "d", $timestamp);
 }
 
 /**

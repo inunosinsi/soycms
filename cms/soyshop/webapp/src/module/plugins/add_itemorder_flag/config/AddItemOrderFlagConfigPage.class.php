@@ -40,7 +40,7 @@ class AddItemOrderFlagConfigPage extends WebPage{
 
 		$this->addForm("form");
 
-		$this->createAdd("Flag_list", "AddItemOrderFlagListComponent", array(
+		$this->createAdd("flag_list", "AddItemOrderFlagListComponent", array(
 			"list" => AddItemOrderFlagUtil::getConfig()
 		));
 

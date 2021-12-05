@@ -37,7 +37,7 @@ class XLazyLoadPlugin{
 
 		$content = "";
 
-		//記事一覧ページを開いている時のみ
+		//記事詳細ページを開いている時のみ
 		if($htmlObj instanceOf EntryComponent){
 			try{
 				$content = SOY2DAOFactory::create("cms.EntryDAO")->getById($entryId)->getContent();

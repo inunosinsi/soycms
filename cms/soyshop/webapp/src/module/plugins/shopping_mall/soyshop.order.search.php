@@ -2,7 +2,7 @@
 
 class ShoppingMallOrderSearch extends SOYShopOrderSearch{
 
-	function setParameter($params){
+	function setParameter(array $params){
 		if(!SOYMALL_SELLER_ACCOUNT) return array(array(), array());
 
 		$adminId = (int)SOY2ActionSession::getUserSession()->getAttribute("userid");
@@ -28,7 +28,5 @@ class ShoppingMallOrderSearch extends SOYShopOrderSearch{
 
 		return array("queries" => $queries, "binds" => $binds);
 	}
-
-	function searchItems($params){}
 }
 SOYShopPlugin::extension("soyshop.order.search", "shopping_mall", "ShoppingMallOrderSearch");

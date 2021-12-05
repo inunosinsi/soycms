@@ -2,7 +2,12 @@
 
 class CustomSearchFormComponent {
 
-	public static function parameter($params, $moduleId, $propName, $mode){
+	/**
+	 * @param array $params, string $moduleId, string $propName, string $mode
+	 * @return array(array $queries, array $binds)
+	 * $modeにはrecipient等のorder_invoiceの種類を入れる
+	 */
+	public static function parameter(array $params, string $moduleId, string $propName, string $mode){
 		$where = array();
 		$binds = array();
 		$queries = array();
@@ -30,7 +35,7 @@ class CustomSearchFormComponent {
 		return array($queries, $binds);
 	}
 
-	public static function buildSearchForm($params, $moduleId, $propName){
+	public static function buildSearchForm(array $params, string $moduleId, string $propName){
 		$start = (isset($params[$propName . "Start"])) ? $params[$propName . "Start"] : "";
 		$end = (isset($params[$propName . "End"])) ? $params[$propName . "End"] : "";
 

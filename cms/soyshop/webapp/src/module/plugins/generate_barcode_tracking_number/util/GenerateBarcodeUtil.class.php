@@ -7,12 +7,12 @@ class GenerateBarcodeUtil {
 		return self::_getBarcodeDirectory();
 	}
 
-	public static function getBarcodeImagePath($filename){
+	public static function getBarcodeImagePath(string $filename){
 		//画像ファイルが存在しているか？を調べてからパスを返す
 		if(file_exists(self::_getBarcodeDirectory() . $filename)){
 			return "/" . SOYSHOP_ID . "/files/barcode/" . $filename;
 		}else{
-			return null;
+			return "";
 		}
 	}
 

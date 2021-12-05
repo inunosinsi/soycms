@@ -2,7 +2,7 @@
 
 class RefundManagerOrderSearch extends SOYShopOrderSearch{
 
-	function setParameter($params){
+	function setParameter(array $params){
 		SOY2::import("module.plugins.refund_manager.util.RefundManagerUtil");
 		$where = array();
 		if(in_array(0, $params)){
@@ -19,7 +19,7 @@ class RefundManagerOrderSearch extends SOYShopOrderSearch{
 		}
 	}
 
-	function searchItems($params){
+	function searchItems(array $params){
 		$html = array();
 		if(in_array(0, $params)){
 			$html[] = "<label><input type=\"checkbox\" name=\"search[customs][refund_manager][]\" value=\"0\" checked=\"checked\">未処理</label>";

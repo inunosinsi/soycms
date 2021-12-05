@@ -20,7 +20,7 @@ class CustomSearchFieldBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
             //_homeでもソートボタン設置プラグインを使用できるようにする
             if($page->getPageObject()->getUri() == SOYShop_Page::URI_HOME){
-                $pageUrl = soyshop_get_page_url(null);
+                $pageUrl = soyshop_get_page_url("");
             }else{
                 $pageUrl = soyshop_get_page_url($page->getPageObject()->getUri());
             }

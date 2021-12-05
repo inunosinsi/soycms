@@ -2,25 +2,27 @@
 
 class AddItemOrderFlagSearch extends SOYShopOrderSearch{
 
-	function setParameter($param){
-		$param = self::_getParameter($param);
+	function setParameter(array $params){
+		$param = SOYShopPluginUtil::convertArray2String($params);
 		if(is_string($param)){
-			$q = "id IN (SELECT order_id FROM soyshop_orders WHERE flag = :flag)";
-			return array("queries" => array($q), "binds" => array(":flag" => $param));
+			return array(
+				"queries" => array("id IN (SELECT order_id FROM soyshop_orders WHERE flag = :flag)"),
+				"binds" => array(":flag" => $param)
+			);
 		}
 	}
 
-	function searchItems($params){
+	function searchItems(array $params){
 		SOY2::import("module.plugins.add_itemorder_flag.util.AddItemOrderFlagUtil");
-		$config = AddItemOrderFlagUtil::getConfig();
-		if(!is_array($config) || !count($config)) return "";
+		$cnf = AddItemOrderFlagUtil::getConfig();
+		if(!is_array($cnf) || !count($cnf)) return array();
 
-		$param = self::_getParameter($params);
+		$param = SOYShopPluginUtil::convertArray2String($params);
 
 		$html = array();
 		$html[] = "<select name=\"search[customs][add_itemorder_flag]\">";
 		$html[] = "<option></option>";
-		foreach($config as $idx => $label){
+		foreach($cnf as $idx => $label){
 			if($idx == $param){
 				$html[] = "<option value=\"" . $idx . "\" selected=\"selected\">" . $label . "</option>";
 			}else{
@@ -29,11 +31,10 @@ class AddItemOrderFlagSearch extends SOYShopOrderSearch{
 		}
 		$html[] = "</select>";
 		$html[] = "に設定された商品を含む注文";
-		return array("label" => "商品毎のフラグ", "form" => implode("\n", $html));
-	}
-
-	private function _getParameter($param){
-		return (!is_array($param) && is_string($param) && strlen($param)) ? $param : null;
+		return array(
+			"label" => "商品毎のフラグ",
+			"form" => implode("\n", $html)
+		);
 	}
 }
 SOYShopPlugin::extension("soyshop.order.search", "add_itemorder_flag", "AddItemOrderFlagSearch");

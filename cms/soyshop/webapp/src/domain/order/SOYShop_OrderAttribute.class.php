@@ -67,11 +67,11 @@ class SOYShop_OrderAttribute {
 	function getValue() {
 		return $this->value1;
 	}
-	function getValue1() {
-		return $this->value1;
-	}
 	function setValue($value){
 		$this->value1 = $value;
+	}
+	function getValue1() {
+		return $this->value1;
 	}
 	function setValue1($value1) {
 		$this->value1 = $value1;

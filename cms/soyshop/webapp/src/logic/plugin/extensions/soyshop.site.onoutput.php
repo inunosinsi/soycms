@@ -31,10 +31,8 @@ class SOYShopSiteOnOutputDelegateAction implements SOY2PluginDelegateAction{
 
 	function run($extetensionId,$moduleId,SOY2PluginAction $action){
 		$action->setPage($this->getPage());
-		$res = $action->onOutput($this->getHtml());
-		if(!is_null($res)){
-			$this->setHtml($res);
-		}
+		$res = $action->onOutput((string)$this->getHtml());
+		if(is_string($res) && strlen($res)) $this->setHtml($res);
 	}
 	function getHtml() {
 		return $this->html;

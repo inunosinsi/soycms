@@ -17,7 +17,7 @@ class SOYShopSortButtonBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 			//_homeでもソートボタン設置プラグインを使用できるようにする
 			if($page->getPageObject()->getUri() == SOYShop_Page::URI_HOME){
-				$pageUrl = soyshop_get_page_url(null);
+				$pageUrl = soyshop_get_page_url("");
 			}else{
 				$pageUrl = soyshop_get_page_url($page->getPageObject()->getUri());
 			}
@@ -62,7 +62,7 @@ class SOYShopSortButtonBeforeOutput extends SOYShopSiteBeforeOutputAction{
 
 			SOY2::import("module.plugins.common_sort_button.util.SortButtonUtil");
 			foreach(SortButtonUtil::getColumnList() as $key => $column){
-				
+
 				$page->addLink("sort_" . $key . "_desc", array(
 					"soy2prefix" => SOYSHOP_SITE_PREFIX,
 					"link" => $pageUrl . "?sort=" . $key . "&r=1" . $query
@@ -77,4 +77,3 @@ class SOYShopSortButtonBeforeOutput extends SOYShopSiteBeforeOutputAction{
 	}
 }
 SOYShopPlugin::extension("soyshop.site.beforeoutput", "common_sort_button", "SOYShopSortButtonBeforeOutput");
-?>

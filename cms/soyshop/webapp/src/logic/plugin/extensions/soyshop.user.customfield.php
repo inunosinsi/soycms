@@ -9,7 +9,7 @@ class SOYShopUserCustomfield implements SOY2PluginAction{
 	/**
 	 * @param array $param 中身は$_POST["custom_field"]
 	 */
-	function doPost($app){}
+	function doPost(array $param){}
 
 	/**
 	 * マイページ・カートの登録で表示するフォーム部品の生成

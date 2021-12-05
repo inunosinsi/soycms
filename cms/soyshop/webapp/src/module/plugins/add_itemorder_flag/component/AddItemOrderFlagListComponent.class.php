@@ -12,5 +12,7 @@ class AddItemOrderFlagListComponent extends HTMLList {
 			"name" => "label[]",
 			"value" => (isset($entity)) ? $entity : ""
 		));
+
+		if(!is_numeric($key)) return false;
 	}
 }

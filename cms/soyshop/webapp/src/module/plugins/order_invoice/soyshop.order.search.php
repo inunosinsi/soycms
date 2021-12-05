@@ -6,12 +6,12 @@ class OrderInvoiceSearch extends SOYShopOrderSearch{
 	const PLUGIN_ID = "order_invoice";
 	const PROP_NAME = "deliveryNote";
 
-	function setParameter($params){
+	function setParameter(array $params){
 		list($queries, $binds) = CustomSearchFormComponent::parameter($params, self::PLUGIN_ID, self::PROP_NAME, "delivery");
 		if(count($queries)) return array("queries" => $queries, "binds" => $binds);
 	}
 
-	function searchItems($params){
+	function searchItems(array $params){
 		return array("label" => "納品書", "form" => CustomSearchFormComponent::buildSearchForm($params, self::PLUGIN_ID, self::PROP_NAME));
 	}
 }

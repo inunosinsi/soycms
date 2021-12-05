@@ -4,7 +4,7 @@ class DiscountFreeCouponSearch extends SOYShopOrderSearch{
 
 	const PLUGIN_ID = "discount_free_coupon";
 
-	function setParameter($params){
+	function setParameter(array $params){
 		$queries = array();
 		$binds = array();
 
@@ -36,7 +36,7 @@ class DiscountFreeCouponSearch extends SOYShopOrderSearch{
 		if(count($queries)) return array("queries" => $queries, "binds" => $binds);
 	}
 
-	function searchItems($params){
+	function searchItems(array $params){
 		$form = array();
 
 		$code = (isset($params["code"])) ? htmlspecialchars($params["code"], ENT_QUOTES, "UTF-8") : "";
